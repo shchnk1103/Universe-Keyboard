@@ -41,6 +41,8 @@ class KeyboardViewController: UIInputViewController {
     var variantPopupView: KeyPopupView?
     var longPressedButton: UIButton?
     var candidateFadeGradient: CAGradientLayer?
+    var candidateExpandedPanel: UIView?
+    var candidateExpandButton: UIButton?
 
     // MARK: - 布局常量
 
@@ -82,10 +84,11 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if let gradient = candidateFadeGradient, let bar = candidateBar {
+        // 更新候选栏右侧渐隐遮罩
+        if let gradient = candidateFadeGradient, let scrollView = candidateScrollView {
             CATransaction.begin()
             CATransaction.setDisableActions(true)
-            gradient.frame = bar.bounds
+            gradient.frame = scrollView.bounds
             CATransaction.commit()
         }
     }
@@ -136,6 +139,7 @@ class KeyboardViewController: UIInputViewController {
         }
 
         letterButtons.removeAll()
+        candidateExpandedPanel = nil
         candidateBar = makeCandidateBar()
         rootStack.addArrangedSubview(candidateBar)
 

@@ -3,7 +3,7 @@
 //  Keyboard
 //
 //  候选栏的创建、刷新和数据源。
-//  使用 UIScrollView 实现横向滚动，贴近原生体验。
+//  使用 UIScrollView 实现横向滚动，右侧展开按钮可弹出多行候选面板。
 //
 
 import UIKit
@@ -19,6 +19,11 @@ extension KeyboardViewController {
         container.layer.cornerRadius = 6
         container.clipsToBounds = true
 
+        // 展开按钮（固定在右侧，不随候选滚动）
+        let expandBtn = makeExpandButton()
+        container.addSubview(expandBtn)
+        candidateExpandButton = expandBtn
+
         // 滚动视图
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
@@ -26,7 +31,7 @@ extension KeyboardViewController {
         scrollView.bounces = true
         scrollView.alwaysBounceHorizontal = true
         scrollView.decelerationRate = .fast
-        scrollView.contentInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
+        scrollView.contentInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 4)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         candidateScrollView = scrollView
 
@@ -43,8 +48,13 @@ extension KeyboardViewController {
         container.addSubview(scrollView)
 
         NSLayoutConstraint.activate([
+            expandBtn.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -3),
+            expandBtn.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            expandBtn.widthAnchor.constraint(equalToConstant: 34),
+            expandBtn.heightAnchor.constraint(equalToConstant: candidateBarHeight),
+
             scrollView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: expandBtn.leadingAnchor),
             scrollView.topAnchor.constraint(equalTo: container.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
 
@@ -59,10 +69,194 @@ extension KeyboardViewController {
 
         fillCandidateBar()
 
-        // 右侧渐隐遮罩
-        addFadeMask(to: container)
+        // 右侧渐隐遮罩（只遮滚动区域，不影响展开按钮）
+        addFadeMask(to: scrollView)
 
         return container
+    }
+
+    // MARK: - 展开按钮
+
+    private func makeExpandButton() -> UIButton {
+        var config = UIButton.Configuration.plain()
+        config.title = "…"
+        config.contentInsets = .zero
+
+        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+            outgoing.foregroundColor = UIColor.secondaryLabel
+            return outgoing
+        }
+
+        let button = UIButton(configuration: config, primaryAction: nil)
+        button.addTarget(self, action: #selector(toggleCandidateExpand), for: .touchUpInside)
+        return button
+    }
+
+    @objc func toggleCandidateExpand() {
+        if let panel = candidateExpandedPanel {
+            dismissExpandedPanel(panel)
+        } else {
+            showExpandedPanel()
+        }
+    }
+
+    // MARK: - 展开面板
+
+    private func showExpandedPanel() {
+        guard candidateExpandedPanel == nil else { return }
+
+        let panel = makeExpandedCandidatePanel()
+        candidateExpandedPanel = panel
+
+        // 插入到候选栏下方
+        guard let barIndex = rootStack.arrangedSubviews.firstIndex(of: candidateBar) else { return }
+        rootStack.insertArrangedSubview(panel, at: barIndex + 1)
+
+        panel.alpha = 0
+        panel.transform = CGAffineTransform(translationX: 0, y: -8)
+        UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseOut) {
+            panel.alpha = 1
+            panel.transform = .identity
+        }
+
+        updateExpandButtonAppearance(expanded: true)
+    }
+
+    private func dismissExpandedPanel(_ panel: UIView) {
+        candidateExpandedPanel = nil
+
+        UIView.animate(withDuration: 0.12, delay: 0, options: .curveEaseIn) {
+            panel.alpha = 0
+            panel.transform = CGAffineTransform(translationX: 0, y: -8)
+        } completion: { _ in
+            panel.removeFromSuperview()
+        }
+
+        updateExpandButtonAppearance(expanded: false)
+    }
+
+    private func updateExpandButtonAppearance(expanded: Bool) {
+        guard let btn = candidateExpandButton else { return }
+        var config = btn.configuration
+        if expanded {
+            config?.title = "收起"
+            config?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+                var outgoing = incoming
+                outgoing.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+                outgoing.foregroundColor = view.tintColor
+                return outgoing
+            }
+        } else {
+            config?.title = "…"
+            config?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+                var outgoing = incoming
+                outgoing.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+                outgoing.foregroundColor = UIColor.secondaryLabel
+                return outgoing
+            }
+        }
+        btn.configuration = config
+    }
+
+    func makeExpandedCandidatePanel() -> UIView {
+        let container = UIView()
+        container.backgroundColor = UIColor.systemGray5
+        container.layer.cornerRadius = 6
+
+        let verticalStack = UIStackView()
+        verticalStack.axis = .vertical
+        verticalStack.spacing = 4
+        verticalStack.distribution = .fillEqually
+        verticalStack.translatesAutoresizingMaskIntoConstraints = false
+
+        let items = candidateItems()
+        let candidates = items.filter { $0.kind == "candidate" || $0.kind == "composition" }
+
+        guard !candidates.isEmpty else {
+            let label = UILabel()
+            label.text = "暂无候选"
+            label.font = .systemFont(ofSize: 14)
+            label.textColor = .secondaryLabel
+            label.textAlignment = .center
+            verticalStack.addArrangedSubview(label)
+            container.addSubview(verticalStack)
+            NSLayoutConstraint.activate([
+                verticalStack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8),
+                verticalStack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8),
+                verticalStack.topAnchor.constraint(equalTo: container.topAnchor, constant: 6),
+                verticalStack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -6),
+                container.heightAnchor.constraint(equalToConstant: 32)
+            ])
+            return container
+        }
+
+        // 每行 4 个候选，计算行数
+        let columns = 4
+        let rows = (candidates.count + columns - 1) / columns
+        let rowHeight: CGFloat = 36
+
+        for rowIndex in 0..<rows {
+            let rowStack = UIStackView()
+            rowStack.axis = .horizontal
+            rowStack.spacing = 4
+            rowStack.distribution = .fillEqually
+
+            for colIndex in 0..<columns {
+                let itemIndex = rowIndex * columns + colIndex
+                if itemIndex < candidates.count {
+                    let item = candidates[itemIndex]
+                    let button = makeCandidateButton(title: item.title, kind: item.kind)
+                    button.accessibilityIdentifier = item.kind
+                    button.addTarget(self, action: #selector(insertCandidateFromPanel(_:)), for: .touchUpInside)
+                    button.heightAnchor.constraint(equalToConstant: rowHeight).isActive = true
+
+                    // 高亮第一候选
+                    if itemIndex == 0 && item.kind == "candidate" {
+                        button.configuration?.baseForegroundColor = view.tintColor
+                    }
+                    if item.kind == "composition" {
+                        button.configuration?.baseForegroundColor = UIColor.secondaryLabel
+                    }
+
+                    rowStack.addArrangedSubview(button)
+                } else {
+                    // 占位，保持 grid 对齐
+                    let spacer = UIView()
+                    rowStack.addArrangedSubview(spacer)
+                }
+            }
+
+            verticalStack.addArrangedSubview(rowStack)
+        }
+
+        container.addSubview(verticalStack)
+
+        let totalHeight = CGFloat(rows) * rowHeight + CGFloat(rows - 1) * 4 + 12
+        NSLayoutConstraint.activate([
+            verticalStack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8),
+            verticalStack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8),
+            verticalStack.topAnchor.constraint(equalTo: container.topAnchor, constant: 6),
+            verticalStack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -6),
+            container.heightAnchor.constraint(equalToConstant: totalHeight)
+        ])
+
+        return container
+    }
+
+    @objc func insertCandidateFromPanel(_ sender: UIButton) {
+        guard let candidate = sender.title(for: .normal),
+              let kind = sender.accessibilityIdentifier else { return }
+        playKeyClick()
+        playHaptic()
+        let effects = controller.handle(.insertCandidate(candidate, kind: kind))
+        syncUI(with: effects)
+
+        // 选词后收起面板
+        if let panel = candidateExpandedPanel {
+            dismissExpandedPanel(panel)
+        }
     }
 
     // MARK: - 右侧渐隐遮罩
@@ -74,7 +268,7 @@ extension KeyboardViewController {
             UIColor.black.cgColor,
             UIColor.clear.cgColor
         ]
-        gradient.locations = [0, 0.88, 1]
+        gradient.locations = [0, 0.82, 1]
         gradient.startPoint = CGPoint(x: 0, y: 0.5)
         gradient.endPoint = CGPoint(x: 1, y: 0.5)
         gradient.frame = view.bounds
@@ -91,8 +285,14 @@ extension KeyboardViewController {
             arrangedSubview.removeFromSuperview()
         }
         fillCandidateBar()
-        // 刷新后回到最左
         candidateScrollView.setContentOffset(.zero, animated: false)
+
+        // 如果展开面板在显示，同步刷新
+        if let panel = candidateExpandedPanel {
+            panel.removeFromSuperview()
+            candidateExpandedPanel = nil
+            showExpandedPanel()
+        }
     }
 
     func fillCandidateBar() {
@@ -100,7 +300,6 @@ extension KeyboardViewController {
 
         let items = candidateItems()
 
-        // 空候选时显示占位
         guard !items.isEmpty else {
             let label = UILabel()
             label.text = " "
@@ -113,10 +312,9 @@ extension KeyboardViewController {
             let button = makeCandidateButton(title: item.title, kind: item.kind)
             button.accessibilityIdentifier = item.kind
 
-            // 高亮首个候选（composition 或第一候选）
+            // 高亮首个候选
             if index == 0 && item.kind == "candidate" {
-                button.setTitleColor(tintColor, for: .normal)
-                button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+                button.configuration?.baseForegroundColor = view.tintColor
             }
 
             button.addTarget(self, action: #selector(insertCandidate(_:)), for: .touchUpInside)
@@ -124,29 +322,43 @@ extension KeyboardViewController {
         }
     }
 
-    // MARK: - 候选按钮工厂
+    // MARK: - 候选按钮工厂（UIButtonConfiguration，iOS 15+）
 
     private func makeCandidateButton(title: String, kind: String) -> UIButton {
-        let button = UIButton(type: .system)
-        button.setTitle(title, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
-        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        button.setTitleColor(UIColor.label, for: .normal)
+        var config = UIButton.Configuration.plain()
+        config.title = title
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+        config.baseForegroundColor = UIColor.label
+
+        let button = UIButton(configuration: config, primaryAction: nil)
+
+        // 字体通过 transformer 设置
+        updateButtonFont(button, kind: kind)
 
         // composition 字符串使用浅色
         if kind == "composition" {
-            button.setTitleColor(UIColor.secondaryLabel, for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+            button.configuration?.baseForegroundColor = UIColor.secondaryLabel
         }
 
         // placeholder 不可交互
         if kind == "placeholder" {
             button.isUserInteractionEnabled = false
-            button.setTitleColor(UIColor.tertiaryLabel, for: .normal)
+            button.configuration?.baseForegroundColor = UIColor.tertiaryLabel
         }
 
         button.heightAnchor.constraint(equalToConstant: candidateBarHeight).isActive = true
         return button
+    }
+
+    private func updateButtonFont(_ button: UIButton, kind: String) {
+        let fontSize: CGFloat = kind == "composition" ? 14 : 16
+        let weight: UIFont.Weight = kind == "composition" ? .regular : .regular
+
+        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+            var outgoing = incoming
+            outgoing.font = UIFont.systemFont(ofSize: fontSize, weight: weight)
+            return outgoing
+        }
     }
 
     // MARK: - 候选数据
@@ -159,7 +371,12 @@ extension KeyboardViewController {
         }
 
         guard !state.currentComposition.isEmpty else {
-            return [("输入拼音", "placeholder"), ("你好", "candidate"), ("世界", "candidate"), ("中国", "candidate"), ("测试", "candidate"), ("更多候选", "placeholder")]
+            return [
+                ("输入拼音", "placeholder"),
+                ("你好", "candidate"), ("世界", "candidate"), ("中国", "candidate"),
+                ("测试", "candidate"), ("我们", "candidate"), ("他们", "candidate"),
+                ("更多候选", "placeholder")
+            ]
         }
 
         let candidates = controller.candidateProvider.candidates(for: state.currentComposition)
