@@ -19,7 +19,9 @@ class KeyboardViewController: UIInputViewController {
     // MARK: - 视图引用
 
     var rootStack: UIStackView!
-    var candidateBar: UIStackView!
+    var candidateBar: UIView!
+    var candidateScrollView: UIScrollView!
+    var candidateStack: UIStackView!
     var nextKeyboardButton: UIButton!
     var shiftButton: UIButton!
     var returnButton: UIButton!
@@ -38,6 +40,7 @@ class KeyboardViewController: UIInputViewController {
 
     var variantPopupView: KeyPopupView?
     var longPressedButton: UIButton?
+    var candidateFadeGradient: CAGradientLayer?
 
     // MARK: - 布局常量
 
@@ -75,6 +78,16 @@ class KeyboardViewController: UIInputViewController {
     override func viewWillLayoutSubviews() {
         nextKeyboardButton.isHidden = !needsInputModeSwitchKey
         super.viewWillLayoutSubviews()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if let gradient = candidateFadeGradient, let bar = candidateBar {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            gradient.frame = bar.bounds
+            CATransaction.commit()
+        }
     }
 
     override func textWillChange(_ textInput: UITextInput?) {
