@@ -1,0 +1,40 @@
+# Xcode
+xcuserdata/
+xcshareddata/IDEWorkspaceChecks.plist
+DerivedData/
+*.xcbkptlist
+*.backup
+
+# Build artifacts
+build/
+*.o
+*.LinkFileList
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/*/.build/
+
+# CocoaPods
+Pods/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# VS Code / Cursor
+.vscode/
+
+# Claude Code
+.claude/
+
+# Temporary files
+*.swp
+*.swo
+*~
