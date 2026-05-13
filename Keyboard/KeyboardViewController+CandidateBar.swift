@@ -83,6 +83,7 @@ extension KeyboardViewController {
         config.attributedTitle = attributedButtonTitle("…", fontSize: 14, color: .secondaryLabel)
 
         let button = UIButton(configuration: config, primaryAction: nil)
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(toggleCandidateExpand), for: .touchUpInside)
         return button
     }
@@ -302,20 +303,20 @@ extension KeyboardViewController {
         }
     }
 
-    // MARK: - 候选按钮工厂（UIButtonConfiguration，iOS 15+）
+    // MARK: - 候选按钮工厂
 
     private func makeCandidateButton(title: String, kind: String, color: UIColor) -> UIButton {
+        let button = UIButton(type: .system)
+        button.setTitle(title, for: .normal)
+        button.setTitleColor(color, for: .normal)
         let fontSize: CGFloat = kind == "composition" ? 14 : 16
-        var config = UIButton.Configuration.plain()
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-        config.attributedTitle = attributedButtonTitle(title, fontSize: fontSize, color: color)
-
-        let button = UIButton(configuration: config, primaryAction: nil)
+        button.titleLabel?.font = .systemFont(ofSize: fontSize, weight: .regular)
+        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         button.heightAnchor.constraint(equalToConstant: candidateBarHeight).isActive = true
         return button
     }
 
-    // MARK: - AttributedString 工具
+    // MARK: - AttributedString 工具（展开按钮用）
 
     private func attributedButtonTitle(_ text: String, fontSize: CGFloat, color: UIColor) -> AttributedString {
         var attr = AttributedString(text)
