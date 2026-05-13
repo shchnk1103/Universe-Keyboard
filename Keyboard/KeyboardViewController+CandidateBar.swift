@@ -3,11 +3,46 @@
 //  Keyboard
 //
 //  候选栏的创建、刷新和数据源。
-//  使用 UIScrollView 实现横向滚动，右侧 SF Symbol 按钮展开/收起候选面板。
+//  UIScrollView 横向滚动 + 可视区高亮 + SF Symbol 展开/收起候选面板。
 //
 
 import UIKit
 import KeyboardCore
+
+// MARK: - UIScrollViewDelegate（候选可视区高亮）
+
+extension KeyboardViewController: UIScrollViewDelegate {
+
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView === candidateScrollView else { return }
+        updateCandidateVisibility()
+    }
+
+    /// 根据按钮在可视区内的可见比例平滑调整 alpha：
+    /// 完全在视口内 → alpha 1.0，滚出视口 → alpha 0.35
+    private func updateCandidateVisibility() {
+        guard let stack = candidateStack, let scrollView = candidateScrollView else { return }
+        let visibleBounds = scrollView.bounds
+
+        for case let button as UIButton in stack.arrangedSubviews {
+            guard button.accessibilityIdentifier == "candidate" else { continue }
+
+            let frameInScroll = stack.convert(button.frame, to: scrollView)
+            let intersection = frameInScroll.intersection(visibleBounds)
+            let ratio: CGFloat
+            if frameInScroll.width > 0 {
+                ratio = max(0, min(1, intersection.width / frameInScroll.width))
+            } else {
+                ratio = 0
+            }
+
+            let targetAlpha = 0.35 + ratio * 0.65
+            button.alpha = targetAlpha
+        }
+    }
+}
+
+// MARK: - 候选栏
 
 extension KeyboardViewController {
 
@@ -33,6 +68,7 @@ extension KeyboardViewController {
         scrollView.decelerationRate = .fast
         scrollView.contentInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 4)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.delegate = self
         candidateScrollView = scrollView
 
         // 水平排列候选词的 Stack
@@ -68,6 +104,7 @@ extension KeyboardViewController {
         container.heightAnchor.constraint(equalToConstant: candidateBarHeight).isActive = true
 
         fillCandidateBar()
+        updateCandidateVisibility()
 
         // 右侧渐隐遮罩（只遮滚动区域，不影响展开按钮）
         addFadeMask(to: scrollView)
@@ -95,20 +132,19 @@ extension KeyboardViewController {
     @objc func toggleCandidateExpand() {
         isCandidateExpanded.toggle()
 
-        // 动画：chevron 旋转 180°
+        // chevron 旋转 180°
         if let btn = candidateExpandButton {
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut) {
                 btn.imageView?.transform = self.isCandidateExpanded
                     ? CGAffineTransform(rotationAngle: .pi)
                     : .identity
             }
-
             var config = btn.configuration
             config?.baseForegroundColor = isCandidateExpanded ? view.tintColor : .secondaryLabel
             btn.configuration = config
         }
 
-        // 动画：键盘内容区淡入淡出
+        // 键盘内容区淡入淡出
         UIView.transition(with: rootStack, duration: 0.2, options: .transitionCrossDissolve) {
             self.reloadKeyboardContent()
         }
@@ -150,7 +186,7 @@ extension KeyboardViewController {
 
         let columns = 4
         let rows = (candidates.count + columns - 1) / columns
-        let rowHeight: CGFloat = 44   // 与普通按键同高，填充键盘区域时比例更舒服
+        let rowHeight: CGFloat = 44
 
         for rowIndex in 0..<rows {
             let rowStack = UIStackView()
@@ -178,7 +214,6 @@ extension KeyboardViewController {
             verticalStack.addArrangedSubview(rowStack)
         }
 
-        // 用空白 View 填充剩余空间，让候选面板撑满原本键盘区域
         let filler = UIView()
         filler.setContentHuggingPriority(.defaultLow, for: .vertical)
         verticalStack.addArrangedSubview(filler)
@@ -205,7 +240,6 @@ extension KeyboardViewController {
         let effects = controller.handle(.insertCandidate(candidate, kind: kind))
         syncUI(with: effects)
 
-        // 选词后收起面板
         isCandidateExpanded = false
         UIView.transition(with: rootStack, duration: 0.2, options: .transitionCrossDissolve) {
             self.reloadKeyboardContent()
@@ -239,8 +273,8 @@ extension KeyboardViewController {
         }
         fillCandidateBar()
         candidateScrollView.setContentOffset(.zero, animated: false)
+        updateCandidateVisibility()
 
-        // 展开面板同步刷新
         if isCandidateExpanded {
             UIView.transition(with: rootStack, duration: 0.15, options: .transitionCrossDissolve) {
                 self.reloadKeyboardContent()
@@ -285,15 +319,19 @@ extension KeyboardViewController {
         }
     }
 
-    // MARK: - 候选按钮工厂
+    // MARK: - 候选按钮工厂（UIButtonConfiguration）
 
     private func makeCandidateButton(title: String, kind: String, color: UIColor) -> UIButton {
-        let button = UIButton(type: .system)
-        button.setTitle(title, for: .normal)
-        button.setTitleColor(color, for: .normal)
         let fontSize: CGFloat = kind == "composition" ? 14 : 16
-        button.titleLabel?.font = .systemFont(ofSize: fontSize, weight: .regular)
-        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        var config = UIButton.Configuration.plain()
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+
+        var attr = AttributedString(title)
+        attr.font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
+        attr.foregroundColor = color
+        config.attributedTitle = attr
+
+        let button = UIButton(configuration: config, primaryAction: nil)
         button.heightAnchor.constraint(equalToConstant: candidateBarHeight).isActive = true
         return button
     }
