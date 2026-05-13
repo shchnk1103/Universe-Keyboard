@@ -79,15 +79,8 @@ extension KeyboardViewController {
 
     private func makeExpandButton() -> UIButton {
         var config = UIButton.Configuration.plain()
-        config.title = "…"
         config.contentInsets = .zero
-
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-            outgoing.foregroundColor = UIColor.secondaryLabel
-            return outgoing
-        }
+        config.attributedTitle = attributedButtonTitle("…", fontSize: 14, color: .secondaryLabel)
 
         let button = UIButton(configuration: config, primaryAction: nil)
         button.addTarget(self, action: #selector(toggleCandidateExpand), for: .touchUpInside)
@@ -110,7 +103,6 @@ extension KeyboardViewController {
         let panel = makeExpandedCandidatePanel()
         candidateExpandedPanel = panel
 
-        // 插入到候选栏下方
         guard let barIndex = rootStack.arrangedSubviews.firstIndex(of: candidateBar) else { return }
         rootStack.insertArrangedSubview(panel, at: barIndex + 1)
 
@@ -141,21 +133,9 @@ extension KeyboardViewController {
         guard let btn = candidateExpandButton else { return }
         var config = btn.configuration
         if expanded {
-            config?.title = "收起"
-            config?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-                var outgoing = incoming
-                outgoing.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-                outgoing.foregroundColor = view.tintColor
-                return outgoing
-            }
+            config?.attributedTitle = attributedButtonTitle("收起", fontSize: 12, color: view.tintColor)
         } else {
-            config?.title = "…"
-            config?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-                var outgoing = incoming
-                outgoing.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-                outgoing.foregroundColor = UIColor.secondaryLabel
-                return outgoing
-            }
+            config?.attributedTitle = attributedButtonTitle("…", fontSize: 14, color: .secondaryLabel)
         }
         btn.configuration = config
     }
@@ -192,7 +172,6 @@ extension KeyboardViewController {
             return container
         }
 
-        // 每行 4 个候选，计算行数
         let columns = 4
         let rows = (candidates.count + columns - 1) / columns
         let rowHeight: CGFloat = 36
@@ -207,22 +186,14 @@ extension KeyboardViewController {
                 let itemIndex = rowIndex * columns + colIndex
                 if itemIndex < candidates.count {
                     let item = candidates[itemIndex]
-                    let button = makeCandidateButton(title: item.title, kind: item.kind)
+                    let color: UIColor = item.kind == "composition" ? .secondaryLabel
+                        : (itemIndex == 0 ? view.tintColor : .label)
+                    let button = makeCandidateButton(title: item.title, kind: item.kind, color: color)
                     button.accessibilityIdentifier = item.kind
                     button.addTarget(self, action: #selector(insertCandidateFromPanel(_:)), for: .touchUpInside)
                     button.heightAnchor.constraint(equalToConstant: rowHeight).isActive = true
-
-                    // 高亮第一候选
-                    if itemIndex == 0 && item.kind == "candidate" {
-                        button.configuration?.baseForegroundColor = view.tintColor
-                    }
-                    if item.kind == "composition" {
-                        button.configuration?.baseForegroundColor = UIColor.secondaryLabel
-                    }
-
                     rowStack.addArrangedSubview(button)
                 } else {
-                    // 占位，保持 grid 对齐
                     let spacer = UIView()
                     rowStack.addArrangedSubview(spacer)
                 }
@@ -253,7 +224,6 @@ extension KeyboardViewController {
         let effects = controller.handle(.insertCandidate(candidate, kind: kind))
         syncUI(with: effects)
 
-        // 选词后收起面板
         if let panel = candidateExpandedPanel {
             dismissExpandedPanel(panel)
         }
@@ -309,12 +279,22 @@ extension KeyboardViewController {
         }
 
         for (index, item) in items.enumerated() {
-            let button = makeCandidateButton(title: item.title, kind: item.kind)
+            let color: UIColor
+            if item.kind == "composition" {
+                color = .secondaryLabel
+            } else if item.kind == "placeholder" {
+                color = .tertiaryLabel
+            } else if index == 0 {
+                color = view.tintColor
+            } else {
+                color = .label
+            }
+
+            let button = makeCandidateButton(title: item.title, kind: item.kind, color: color)
             button.accessibilityIdentifier = item.kind
 
-            // 高亮首个候选
-            if index == 0 && item.kind == "candidate" {
-                button.configuration?.baseForegroundColor = view.tintColor
+            if item.kind == "placeholder" {
+                button.isUserInteractionEnabled = false
             }
 
             button.addTarget(self, action: #selector(insertCandidate(_:)), for: .touchUpInside)
@@ -324,41 +304,24 @@ extension KeyboardViewController {
 
     // MARK: - 候选按钮工厂（UIButtonConfiguration，iOS 15+）
 
-    private func makeCandidateButton(title: String, kind: String) -> UIButton {
+    private func makeCandidateButton(title: String, kind: String, color: UIColor) -> UIButton {
+        let fontSize: CGFloat = kind == "composition" ? 14 : 16
         var config = UIButton.Configuration.plain()
-        config.title = title
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-        config.baseForegroundColor = UIColor.label
+        config.attributedTitle = attributedButtonTitle(title, fontSize: fontSize, color: color)
 
         let button = UIButton(configuration: config, primaryAction: nil)
-
-        // 字体通过 transformer 设置
-        updateButtonFont(button, kind: kind)
-
-        // composition 字符串使用浅色
-        if kind == "composition" {
-            button.configuration?.baseForegroundColor = UIColor.secondaryLabel
-        }
-
-        // placeholder 不可交互
-        if kind == "placeholder" {
-            button.isUserInteractionEnabled = false
-            button.configuration?.baseForegroundColor = UIColor.tertiaryLabel
-        }
-
         button.heightAnchor.constraint(equalToConstant: candidateBarHeight).isActive = true
         return button
     }
 
-    private func updateButtonFont(_ button: UIButton, kind: String) {
-        let fontSize: CGFloat = kind == "composition" ? 14 : 16
-        let weight: UIFont.Weight = kind == "composition" ? .regular : .regular
+    // MARK: - AttributedString 工具
 
-        button.configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = UIFont.systemFont(ofSize: fontSize, weight: weight)
-            return outgoing
-        }
+    private func attributedButtonTitle(_ text: String, fontSize: CGFloat, color: UIColor) -> AttributedString {
+        var attr = AttributedString(text)
+        attr.font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
+        attr.foregroundColor = color
+        return attr
     }
 
     // MARK: - 候选数据
