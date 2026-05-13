@@ -43,6 +43,7 @@ class KeyboardViewController: UIInputViewController {
     var candidateFadeGradient: CAGradientLayer?
     var candidateExpandedPanel: UIView?
     var candidateExpandButton: UIButton?
+    var isCandidateExpanded = false
 
     // MARK: - 布局常量
 
@@ -133,6 +134,9 @@ class KeyboardViewController: UIInputViewController {
     }
 
     func reloadKeyboard() {
+        // 页面切换时收起展开面板
+        isCandidateExpanded = false
+
         for arrangedSubview in rootStack.arrangedSubviews {
             rootStack.removeArrangedSubview(arrangedSubview)
             arrangedSubview.removeFromSuperview()
@@ -165,6 +169,56 @@ class KeyboardViewController: UIInputViewController {
             rootStack.addArrangedSubview(makeTextRow(["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "&"]))
             rootStack.addArrangedSubview(makeTextRow(["·", "•", "…", "—", "–", "/", "'", "\"", "!", "?"]))
             rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: true))
+        }
+    }
+
+    /// 仅重建键盘内容区（保留候选栏），用于展开/收起候选面板
+    func reloadKeyboardContent() {
+        // 移除候选栏下方的所有视图
+        let subviews = rootStack.arrangedSubviews
+        var foundBar = false
+        for view in subviews {
+            if view === candidateBar {
+                foundBar = true
+                continue
+            }
+            if foundBar {
+                rootStack.removeArrangedSubview(view)
+                view.removeFromSuperview()
+            }
+        }
+
+        letterButtons.removeAll()
+        candidateExpandedPanel = nil
+
+        if isCandidateExpanded {
+            let panel = makeExpandedCandidatePanel()
+            rootStack.addArrangedSubview(panel)
+            candidateExpandedPanel = panel
+        } else {
+            let state = controller.state
+            switch state.currentPage {
+            case .letters:
+                rootStack.addArrangedSubview(makeLetterRow(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]))
+                rootStack.addArrangedSubview(makeLetterRow(["a", "s", "d", "f", "g", "h", "j", "k", "l"]))
+                rootStack.addArrangedSubview(makeLetterThirdRow())
+                rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: false))
+            case .numbers:
+                rootStack.addArrangedSubview(makeTextRow(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]))
+                if state.inputMode == .chinese {
+                    rootStack.addArrangedSubview(makeTextRow(["-", "/", "：", "；", "（", "）", "¥", "\u{201C}", "\u{201D}", "\u{2018}"]))
+                    rootStack.addArrangedSubview(makeTextRow(["。", "，", "、", "？", "！", "…", "·", "《", "》"]))
+                } else {
+                    rootStack.addArrangedSubview(makeTextRow(["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""]))
+                    rootStack.addArrangedSubview(makeTextRow([".", ",", "?", "!", "'", "\"", "—", "…", "~"]))
+                }
+                rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: true))
+            case .symbols:
+                rootStack.addArrangedSubview(makeTextRow(["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]))
+                rootStack.addArrangedSubview(makeTextRow(["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "&"]))
+                rootStack.addArrangedSubview(makeTextRow(["·", "•", "…", "—", "–", "/", "'", "\"", "!", "?"]))
+                rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: true))
+            }
         }
     }
 

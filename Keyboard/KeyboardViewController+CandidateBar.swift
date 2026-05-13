@@ -3,7 +3,7 @@
 //  Keyboard
 //
 //  候选栏的创建、刷新和数据源。
-//  使用 UIScrollView 实现横向滚动，右侧展开按钮可弹出多行候选面板。
+//  使用 UIScrollView 实现横向滚动，右侧 SF Symbol 按钮展开/收起候选面板。
 //
 
 import UIKit
@@ -19,7 +19,7 @@ extension KeyboardViewController {
         container.layer.cornerRadius = 6
         container.clipsToBounds = true
 
-        // 展开按钮（固定在右侧，不随候选滚动）
+        // 展开按钮（SF Symbol，固定在右侧）
         let expandBtn = makeExpandButton()
         container.addSubview(expandBtn)
         candidateExpandButton = expandBtn
@@ -75,12 +75,16 @@ extension KeyboardViewController {
         return container
     }
 
-    // MARK: - 展开按钮
+    // MARK: - 展开按钮（SF Symbol）
 
     private func makeExpandButton() -> UIButton {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .zero
-        config.attributedTitle = attributedButtonTitle("…", fontSize: 14, color: .secondaryLabel)
+        config.image = UIImage(
+            systemName: "chevron.down",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)
+        )
+        config.baseForegroundColor = .secondaryLabel
 
         let button = UIButton(configuration: config, primaryAction: nil)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -89,57 +93,28 @@ extension KeyboardViewController {
     }
 
     @objc func toggleCandidateExpand() {
-        if let panel = candidateExpandedPanel {
-            dismissExpandedPanel(panel)
-        } else {
-            showExpandedPanel()
+        isCandidateExpanded.toggle()
+
+        // 动画：chevron 旋转 180°
+        if let btn = candidateExpandButton {
+            UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut) {
+                btn.imageView?.transform = self.isCandidateExpanded
+                    ? CGAffineTransform(rotationAngle: .pi)
+                    : .identity
+            }
+
+            var config = btn.configuration
+            config?.baseForegroundColor = isCandidateExpanded ? view.tintColor : .secondaryLabel
+            btn.configuration = config
+        }
+
+        // 动画：键盘内容区淡入淡出
+        UIView.transition(with: rootStack, duration: 0.2, options: .transitionCrossDissolve) {
+            self.reloadKeyboardContent()
         }
     }
 
     // MARK: - 展开面板
-
-    private func showExpandedPanel() {
-        guard candidateExpandedPanel == nil else { return }
-
-        let panel = makeExpandedCandidatePanel()
-        candidateExpandedPanel = panel
-
-        guard let barIndex = rootStack.arrangedSubviews.firstIndex(of: candidateBar) else { return }
-        rootStack.insertArrangedSubview(panel, at: barIndex + 1)
-
-        panel.alpha = 0
-        panel.transform = CGAffineTransform(translationX: 0, y: -8)
-        UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseOut) {
-            panel.alpha = 1
-            panel.transform = .identity
-        }
-
-        updateExpandButtonAppearance(expanded: true)
-    }
-
-    private func dismissExpandedPanel(_ panel: UIView) {
-        candidateExpandedPanel = nil
-
-        UIView.animate(withDuration: 0.12, delay: 0, options: .curveEaseIn) {
-            panel.alpha = 0
-            panel.transform = CGAffineTransform(translationX: 0, y: -8)
-        } completion: { _ in
-            panel.removeFromSuperview()
-        }
-
-        updateExpandButtonAppearance(expanded: false)
-    }
-
-    private func updateExpandButtonAppearance(expanded: Bool) {
-        guard let btn = candidateExpandButton else { return }
-        var config = btn.configuration
-        if expanded {
-            config?.attributedTitle = attributedButtonTitle("收起", fontSize: 12, color: view.tintColor)
-        } else {
-            config?.attributedTitle = attributedButtonTitle("…", fontSize: 14, color: .secondaryLabel)
-        }
-        btn.configuration = config
-    }
 
     func makeExpandedCandidatePanel() -> UIView {
         let container = UIView()
@@ -149,7 +124,7 @@ extension KeyboardViewController {
         let verticalStack = UIStackView()
         verticalStack.axis = .vertical
         verticalStack.spacing = 4
-        verticalStack.distribution = .fillEqually
+        verticalStack.distribution = .fill
         verticalStack.translatesAutoresizingMaskIntoConstraints = false
 
         let items = candidateItems()
@@ -168,14 +143,14 @@ extension KeyboardViewController {
                 verticalStack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8),
                 verticalStack.topAnchor.constraint(equalTo: container.topAnchor, constant: 6),
                 verticalStack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -6),
-                container.heightAnchor.constraint(equalToConstant: 32)
+                container.heightAnchor.constraint(greaterThanOrEqualToConstant: 32)
             ])
             return container
         }
 
         let columns = 4
         let rows = (candidates.count + columns - 1) / columns
-        let rowHeight: CGFloat = 36
+        let rowHeight: CGFloat = 44   // 与普通按键同高，填充键盘区域时比例更舒服
 
         for rowIndex in 0..<rows {
             let rowStack = UIStackView()
@@ -203,15 +178,20 @@ extension KeyboardViewController {
             verticalStack.addArrangedSubview(rowStack)
         }
 
+        // 用空白 View 填充剩余空间，让候选面板撑满原本键盘区域
+        let filler = UIView()
+        filler.setContentHuggingPriority(.defaultLow, for: .vertical)
+        verticalStack.addArrangedSubview(filler)
+
         container.addSubview(verticalStack)
 
-        let totalHeight = CGFloat(rows) * rowHeight + CGFloat(rows - 1) * 4 + 12
+        let minHeight = CGFloat(rows) * rowHeight + CGFloat(rows - 1) * 4 + 12
         NSLayoutConstraint.activate([
             verticalStack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8),
             verticalStack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8),
             verticalStack.topAnchor.constraint(equalTo: container.topAnchor, constant: 6),
             verticalStack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -6),
-            container.heightAnchor.constraint(equalToConstant: totalHeight)
+            container.heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight)
         ])
 
         return container
@@ -225,8 +205,10 @@ extension KeyboardViewController {
         let effects = controller.handle(.insertCandidate(candidate, kind: kind))
         syncUI(with: effects)
 
-        if let panel = candidateExpandedPanel {
-            dismissExpandedPanel(panel)
+        // 选词后收起面板
+        isCandidateExpanded = false
+        UIView.transition(with: rootStack, duration: 0.2, options: .transitionCrossDissolve) {
+            self.reloadKeyboardContent()
         }
     }
 
@@ -258,11 +240,11 @@ extension KeyboardViewController {
         fillCandidateBar()
         candidateScrollView.setContentOffset(.zero, animated: false)
 
-        // 如果展开面板在显示，同步刷新
-        if let panel = candidateExpandedPanel {
-            panel.removeFromSuperview()
-            candidateExpandedPanel = nil
-            showExpandedPanel()
+        // 展开面板同步刷新
+        if isCandidateExpanded {
+            UIView.transition(with: rootStack, duration: 0.15, options: .transitionCrossDissolve) {
+                self.reloadKeyboardContent()
+            }
         }
     }
 
@@ -314,15 +296,6 @@ extension KeyboardViewController {
         button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         button.heightAnchor.constraint(equalToConstant: candidateBarHeight).isActive = true
         return button
-    }
-
-    // MARK: - AttributedString 工具（展开按钮用）
-
-    private func attributedButtonTitle(_ text: String, fontSize: CGFloat, color: UIColor) -> AttributedString {
-        var attr = AttributedString(text)
-        attr.font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
-        attr.foregroundColor = color
-        return attr
     }
 
     // MARK: - 候选数据
