@@ -21,8 +21,10 @@ extension KeyboardViewController {
     }
 
     @objc func insertCandidate(_ sender: UIButton) {
-        guard let candidate = sender.title(for: .normal),
-              let kind = sender.accessibilityIdentifier else { return }
+        // 从 configuration.title 读取候选文字，比 title(for:) 更可靠
+        // 因为 titleTextAttributesTransformer 不会影响 configuration.title
+        guard let candidate = sender.configuration?.title,
+              let kind = CandidateKind(rawValue: sender.tag) else { return }
         playKeyClick()
         playHaptic()
         let effects = controller.handle(.insertCandidate(candidate, kind: kind))
@@ -59,7 +61,16 @@ extension KeyboardViewController {
     @objc func toggleInputMode() {
         playKeyClick()
         playHaptic()
-        let effects = controller.handle(.toggleInputMode)
+        var effects = controller.handle(.toggleInputMode)
+
+        // 切换到英文模式后，根据当前文本上下文决定是否需要自动大写
+        // 例如：从中文切换到英文时，如果输入框为空或光标在句首，应自动开启 Shift
+        if controller.state.inputMode == .english {
+            let context = textDocumentProxy.documentContextBeforeInput
+            let autoCapEffect = controller.applyAutoCapitalization(contextBeforeInput: context)
+            effects.formUnion(autoCapEffect)
+        }
+
         syncUI(with: effects)
     }
 }
@@ -111,7 +122,17 @@ extension KeyboardViewController {
     func performDeleteBackward() {
         playKeyClick()
         playHaptic()
-        let effects = controller.handle(.deleteBackward)
+        var effects = controller.handle(.deleteBackward)
+
+        // 删除后检查是否需要重新触发自动大写。
+        // 这里显式做一次检测，而不是只依赖 textDidChange 中的检测：
+        // UITextDocumentProxy 的 documentContextBeforeInput 在 textDidChange
+        // 被调用时可能还未更新（已知的系统延迟），导致应该大写时没大写。
+        // 在 performDeleteBackward 中加一层兜底，确保删除到空文档时自动大写能重新启用。
+        let context = textDocumentProxy.documentContextBeforeInput
+        let autoCapEffect = controller.applyAutoCapitalization(contextBeforeInput: context)
+        effects.formUnion(autoCapEffect)
+
         syncUI(with: effects)
     }
 

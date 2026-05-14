@@ -74,12 +74,23 @@ extension KeyboardController {
         }
     }
 
-    func handleInsertCandidate(_ candidate: String, kind: String) -> KeyboardEffect {
-        guard kind != "placeholder" else { return [] }
-
-        if kind == "composition" {
+    /// 处理候选词/拼音组合的点击。
+    ///
+    /// 根据 CandidateKind 枚举进行三路分支：
+    /// - .placeholder: 不执行任何操作（UI 层已禁用这些按钮，此处是安全兜底）
+    /// - .composition: 把原始拼音串直接上屏（用于用户不想选候选而直接提交拼音的场景）
+    /// - .candidate: 插入选中的候选词，然后清除拼音组合缓冲区
+    ///
+    /// 为什么用 switch 而不是 if/else？
+    /// switch 在枚举上是"穷尽性"的 —— 如果将来有人给 CandidateKind 新增了一个 case，
+    /// 编译器会在此处报错，强制开发者处理新分支。字符串 if/else 做不到这一点。
+    func handleInsertCandidate(_ candidate: String, kind: CandidateKind) -> KeyboardEffect {
+        switch kind {
+        case .placeholder:
+            return []
+        case .composition:
             commitComposition()
-        } else {
+        case .candidate:
             insertText(candidate)
             state.currentComposition = ""
         }
@@ -143,6 +154,12 @@ extension KeyboardController {
         return effects
     }
 
+    /// 切换中英文输入模式。
+    ///
+    /// 副作用：
+    /// - 如果有未完成的拼音组合，先上屏再切换
+    /// - 如果当前不在字母页，切回字母页
+    /// - 切换到中文时，自动重置大写状态（auto-cap 只在英文模式有效）
     func handleToggleInputMode() -> KeyboardEffect {
         var effects: KeyboardEffect = []
 
@@ -152,12 +169,21 @@ extension KeyboardController {
             effects.insert(.compositionChanged)
         }
 
-        state.inputMode = state.inputMode == .chinese ? .english : .chinese
+        let switchingToChinese = state.inputMode == .english
+        state.inputMode = switchingToChinese ? .chinese : .english
         effects.insert(.inputModeChanged)
 
         if state.currentPage != .letters {
             state.currentPage = .letters
             effects.insert(.pageChanged)
+        }
+
+        // 切换到中文模式时清除之前英文模式下设置的自动大写（单次大写 / Caps Lock）
+        // 这是正确的行为：中文输入不涉及字母大小写，保留大写状态会让用户困惑
+        if switchingToChinese && state.shiftState != .off {
+            state.shiftState = .off
+            state.lastShiftTapTime = nil
+            effects.insert(.shiftStateChanged)
         }
 
         return effects

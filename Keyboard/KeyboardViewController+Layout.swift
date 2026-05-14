@@ -79,63 +79,58 @@ extension KeyboardViewController {
         row.spacing = keySpacing
         row.distribution = .fill
 
+        let showEmail = shouldShowEmailShortcutKeys
+        let showURL = shouldShowURLShortcutKeys
+
         nextKeyboardButton = makeKeyButton(title: "", action: #selector(handleInputModeList(from:with:)))
         nextKeyboardButton.setImage(UIImage(systemName: "globe"), for: .normal)
         let pageSwitchButton = makeKeyButton(title: pageSwitchTitle, action: #selector(toggleKeyboardPage))
-        let inputModeButton = makeKeyButton(title: inputModeButtonTitle, action: #selector(toggleInputMode))
-        let atButton = makeKeyButton(title: "@", action: #selector(insertDirectText(_:)))
-        let dotButton = makeKeyButton(title: ".", action: #selector(insertDirectText(_:)))
-        let slashButton = makeKeyButton(title: "/", action: #selector(insertDirectText(_:)))
-        let dotComButton = makeKeyButton(title: ".com", action: #selector(insertDirectText(_:)))
         let spaceButton = makeKeyButton(title: spaceButtonTitle, action: #selector(insertSpace))
-        let deleteButton = makeDeleteButton()
         returnButton = makeKeyButton(title: returnKeyTitle, action: #selector(insertReturn))
 
         row.addArrangedSubview(nextKeyboardButton)
         row.addArrangedSubview(pageSwitchButton)
 
-        if shouldShowEmailShortcutKeys {
-            row.addArrangedSubview(atButton)
-        } else if shouldShowURLShortcutKeys {
-            row.addArrangedSubview(slashButton)
-        } else {
-            row.addArrangedSubview(inputModeButton)
-        }
-
-        row.addArrangedSubview(spaceButton)
-
-        if shouldShowEmailShortcutKeys {
-            row.addArrangedSubview(dotButton)
-        } else if shouldShowURLShortcutKeys {
-            row.addArrangedSubview(dotComButton)
-        }
-
-        if includeDelete {
-            row.addArrangedSubview(deleteButton)
-        }
-
-        row.addArrangedSubview(returnButton)
-
-        var constraints = [
+        var constraints: [NSLayoutConstraint] = [
             row.heightAnchor.constraint(equalToConstant: keyHeight),
             nextKeyboardButton.widthAnchor.constraint(equalToConstant: 48),
             pageSwitchButton.widthAnchor.constraint(equalToConstant: 58),
             returnButton.widthAnchor.constraint(equalToConstant: 78)
         ]
 
-        if shouldShowEmailShortcutKeys {
+        if showEmail {
+            let atButton = makeKeyButton(title: "@", action: #selector(insertDirectText(_:)))
+            row.addArrangedSubview(atButton)
             constraints.append(atButton.widthAnchor.constraint(equalToConstant: 40))
-            constraints.append(dotButton.widthAnchor.constraint(equalToConstant: 40))
-        } else if shouldShowURLShortcutKeys {
+        } else if showURL {
+            let slashButton = makeKeyButton(title: "/", action: #selector(insertDirectText(_:)))
+            row.addArrangedSubview(slashButton)
             constraints.append(slashButton.widthAnchor.constraint(equalToConstant: 40))
-            constraints.append(dotComButton.widthAnchor.constraint(equalToConstant: 60))
         } else {
+            let inputModeButton = makeKeyButton(title: inputModeButtonTitle, action: #selector(toggleInputMode))
+            row.addArrangedSubview(inputModeButton)
             constraints.append(inputModeButton.widthAnchor.constraint(equalToConstant: 48))
         }
 
+        row.addArrangedSubview(spaceButton)
+
+        if showEmail {
+            let dotButton = makeKeyButton(title: ".", action: #selector(insertDirectText(_:)))
+            row.addArrangedSubview(dotButton)
+            constraints.append(dotButton.widthAnchor.constraint(equalToConstant: 40))
+        } else if showURL {
+            let dotComButton = makeKeyButton(title: ".com", action: #selector(insertDirectText(_:)))
+            row.addArrangedSubview(dotComButton)
+            constraints.append(dotComButton.widthAnchor.constraint(equalToConstant: 60))
+        }
+
         if includeDelete {
+            let deleteButton = makeDeleteButton()
+            row.addArrangedSubview(deleteButton)
             constraints.append(deleteButton.widthAnchor.constraint(equalToConstant: 58))
         }
+
+        row.addArrangedSubview(returnButton)
 
         NSLayoutConstraint.activate(constraints)
 

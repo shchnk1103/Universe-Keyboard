@@ -148,14 +148,14 @@ final class CompositionTests: XCTestCase {
 
     func testCommitCandidate() {
         controller.state.currentComposition = "ni"
-        _ = controller.handle(.insertCandidate("你", kind: "candidate"))
+        _ = controller.handle(.insertCandidate("你", kind: .candidate))
         XCTAssertEqual(client.text, "你")
         XCTAssertEqual(controller.state.currentComposition, "")
     }
 
     func testTapCompositionStringCommitsRawPinyin() {
         controller.state.currentComposition = "ni"
-        _ = controller.handle(.insertCandidate("ni", kind: "composition"))
+        _ = controller.handle(.insertCandidate("ni", kind: .composition))
         XCTAssertEqual(client.text, "ni")
         XCTAssertEqual(controller.state.currentComposition, "")
     }
@@ -163,7 +163,7 @@ final class CompositionTests: XCTestCase {
     func testTapPlaceholderDoesNothing() {
         controller.state.currentComposition = "ni"
         client.text = "existing"
-        _ = controller.handle(.insertCandidate("...", kind: "placeholder"))
+        _ = controller.handle(.insertCandidate("...", kind: .placeholder))
         // Placeholder taps should not change anything
         XCTAssertEqual(client.text, "existing")
         XCTAssertEqual(controller.state.currentComposition, "ni")

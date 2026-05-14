@@ -9,36 +9,14 @@
 import UIKit
 import KeyboardCore
 
-// MARK: - UIScrollViewDelegate（候选可视区高亮）
+// MARK: - UIScrollViewDelegate
 
 extension KeyboardViewController: UIScrollViewDelegate {
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard scrollView === candidateScrollView else { return }
-        updateCandidateVisibility()
-    }
-
-    /// 根据按钮在可视区内的可见比例平滑调整 alpha：
-    /// 完全在视口内 → alpha 1.0，滚出视口 → alpha 0.35
-    private func updateCandidateVisibility() {
-        guard let stack = candidateStack, let scrollView = candidateScrollView else { return }
-        let visibleBounds = scrollView.bounds
-
-        for case let button as UIButton in stack.arrangedSubviews {
-            guard button.accessibilityIdentifier == "candidate" else { continue }
-
-            let frameInScroll = stack.convert(button.frame, to: scrollView)
-            let intersection = frameInScroll.intersection(visibleBounds)
-            let ratio: CGFloat
-            if frameInScroll.width > 0 {
-                ratio = max(0, min(1, intersection.width / frameInScroll.width))
-            } else {
-                ratio = 0
-            }
-
-            let targetAlpha = 0.35 + ratio * 0.65
-            button.alpha = targetAlpha
-        }
+        // 不再基于滚动位置调整 alpha —— 高亮逻辑改为：
+        // 只高亮第一个真正的候选词（按空格会输入的那个词）
+        // 见 fillCandidateBar() 中的 isFirstCandidate 处理
     }
 }
 
@@ -50,8 +28,9 @@ extension KeyboardViewController {
 
     func makeCandidateBar() -> UIView {
         let container = UIView()
-        container.backgroundColor = UIColor.systemGray5
-        container.layer.cornerRadius = 6
+        // 与键盘底板同色（systemGray4），使候选栏和键盘融为一体
+        container.backgroundColor = UIColor.systemGray4
+        container.layer.cornerRadius = keyCornerRadius
         container.clipsToBounds = true
 
         // 展开按钮（SF Symbol，固定在右侧）
@@ -83,10 +62,13 @@ extension KeyboardViewController {
         scrollView.addSubview(stack)
         container.addSubview(scrollView)
 
+        let expandWidth = expandBtn.widthAnchor.constraint(equalToConstant: 34)
+        candidateExpandButtonWidthConstraint = expandWidth
+
         NSLayoutConstraint.activate([
             expandBtn.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -3),
             expandBtn.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            expandBtn.widthAnchor.constraint(equalToConstant: 34),
+            expandWidth,
             expandBtn.heightAnchor.constraint(equalToConstant: candidateBarHeight),
 
             scrollView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
@@ -104,7 +86,6 @@ extension KeyboardViewController {
         container.heightAnchor.constraint(equalToConstant: candidateBarHeight).isActive = true
 
         fillCandidateBar()
-        updateCandidateVisibility()
 
         // 右侧渐隐遮罩（只遮滚动区域，不影响展开按钮）
         addFadeMask(to: scrollView)
@@ -154,8 +135,8 @@ extension KeyboardViewController {
 
     func makeExpandedCandidatePanel() -> UIView {
         let container = UIView()
-        container.backgroundColor = UIColor.systemGray5
-        container.layer.cornerRadius = 6
+        container.backgroundColor = UIColor.systemGray4
+        container.layer.cornerRadius = keyCornerRadius
 
         let verticalStack = UIStackView()
         verticalStack.axis = .vertical
@@ -164,7 +145,8 @@ extension KeyboardViewController {
         verticalStack.translatesAutoresizingMaskIntoConstraints = false
 
         let items = candidateItems()
-        let candidates = items.filter { $0.kind == "candidate" || $0.kind == "composition" }
+        // 展开面板只显示候选词和拼音组合，过滤掉占位提示
+        let candidates = items.filter { $0.kind != .placeholder }
 
         guard !candidates.isEmpty else {
             let label = UILabel()
@@ -188,6 +170,9 @@ extension KeyboardViewController {
         let rows = (candidates.count + columns - 1) / columns
         let rowHeight: CGFloat = 44
 
+        // 追踪第一个真正的候选词（.candidate），与横向滚动栏的高亮逻辑一致
+        var firstCandidateFound = false
+
         for rowIndex in 0..<rows {
             let rowStack = UIStackView()
             rowStack.axis = .horizontal
@@ -198,10 +183,32 @@ extension KeyboardViewController {
                 let itemIndex = rowIndex * columns + colIndex
                 if itemIndex < candidates.count {
                     let item = candidates[itemIndex]
-                    let color: UIColor = item.kind == "composition" ? .secondaryLabel
-                        : (itemIndex == 0 ? view.tintColor : .label)
-                    let button = makeCandidateButton(title: item.title, kind: item.kind, color: color)
-                    button.accessibilityIdentifier = item.kind
+
+                    let isFirstCandidate: Bool = {
+                        if firstCandidateFound { return false }
+                        if item.kind == .candidate {
+                            firstCandidateFound = true
+                            return true
+                        }
+                        return false
+                    }()
+
+                    let color: UIColor
+                    if item.kind == .composition {
+                        color = .secondaryLabel
+                    } else if isFirstCandidate {
+                        color = view.tintColor
+                    } else {
+                        color = .label
+                    }
+
+                    let button = makeCandidateButton(
+                        title: item.title,
+                        kind: item.kind,
+                        color: color,
+                        bold: isFirstCandidate
+                    )
+                    button.tag = item.kind.rawValue
                     button.addTarget(self, action: #selector(insertCandidateFromPanel(_:)), for: .touchUpInside)
                     button.heightAnchor.constraint(equalToConstant: rowHeight).isActive = true
                     rowStack.addArrangedSubview(button)
@@ -233,8 +240,8 @@ extension KeyboardViewController {
     }
 
     @objc func insertCandidateFromPanel(_ sender: UIButton) {
-        guard let candidate = sender.title(for: .normal),
-              let kind = sender.accessibilityIdentifier else { return }
+        guard let candidate = sender.configuration?.title,
+              let kind = CandidateKind(rawValue: sender.tag) else { return }
         playKeyClick()
         playHaptic()
         let effects = controller.handle(.insertCandidate(candidate, kind: kind))
@@ -273,7 +280,6 @@ extension KeyboardViewController {
         }
         fillCandidateBar()
         candidateScrollView.setContentOffset(.zero, animated: false)
-        updateCandidateVisibility()
 
         if isCandidateExpanded {
             UIView.transition(with: rootStack, duration: 0.15, options: .transitionCrossDissolve) {
@@ -282,11 +288,31 @@ extension KeyboardViewController {
         }
     }
 
+    /// 填充候选栏的横向滚动区域。
+    ///
+    /// 和 makeExpandedCandidatePanel() 共享同一份数据源（candidateItems()），
+    /// 并且同样过滤掉 .placeholder 类型的提示项。
+    /// 两者展示的候选词数量和内容完全一致。
+    ///
+    /// 高亮逻辑：只高亮第一个真正的候选词（.candidate 类型）。
+    /// 这是按空格键会输入的那个词 —— 对它加粗 + 主题色，
+    /// 让用户一眼就知道空格会输入什么。
     func fillCandidateBar() {
         guard let stack = candidateStack else { return }
 
-        let items = candidateItems()
+        let allItems = candidateItems()
+        // 过滤掉占位提示，只展示候选词和拼音组合
+        // 与 makeExpandedCandidatePanel() 保持一致的过滤逻辑
+        let items = allItems.filter { $0.kind != .placeholder }
 
+        // 展开按钮只在有候选内容时才显示
+        // 与原生键盘行为一致：没有候选词时没有展开面板的必要
+        // 收起宽度到 0，让 scrollView 填充整个容器
+        let hasCandidates = items.contains { $0.kind == .candidate }
+        candidateExpandButton?.isHidden = !hasCandidates
+        candidateExpandButtonWidthConstraint?.constant = hasCandidates ? 34 : 0
+
+        // 全部被过滤掉了（如英文模式只有 placeholder 或完全无输入）→ 显示空栏
         guard !items.isEmpty else {
             let label = UILabel()
             label.text = " "
@@ -295,24 +321,39 @@ extension KeyboardViewController {
             return
         }
 
-        for (index, item) in items.enumerated() {
+        // 用布尔标记追踪"第一个 .candidate 已经出现过了吗"
+        // 这样 index=0 即使是 .composition（拼音组合），也能正确识别
+        // 真正的第一个候选词（即按空格会输入的那个）
+        var firstCandidateFound = false
+
+        for item in items {
+            let isFirstCandidate: Bool = {
+                if firstCandidateFound { return false }
+                if item.kind == .candidate {
+                    firstCandidateFound = true
+                    return true
+                }
+                return false
+            }()
+
+            // 颜色：拼音组合用次要灰，第一个候选用主题色，其余用标签色
             let color: UIColor
-            if item.kind == "composition" {
+            if item.kind == .composition {
                 color = .secondaryLabel
-            } else if item.kind == "placeholder" {
-                color = .tertiaryLabel
-            } else if index == 0 {
+            } else if isFirstCandidate {
                 color = view.tintColor
             } else {
                 color = .label
             }
 
-            let button = makeCandidateButton(title: item.title, kind: item.kind, color: color)
-            button.accessibilityIdentifier = item.kind
-
-            if item.kind == "placeholder" {
-                button.isUserInteractionEnabled = false
-            }
+            let button = makeCandidateButton(
+                title: item.title,
+                kind: item.kind,
+                color: color,
+                bold: isFirstCandidate
+            )
+            // 将 CandidateKind 存到 tag 中，供 action handler 读取
+            button.tag = item.kind.rawValue
 
             button.addTarget(self, action: #selector(insertCandidate(_:)), for: .touchUpInside)
             stack.addArrangedSubview(button)
@@ -321,15 +362,34 @@ extension KeyboardViewController {
 
     // MARK: - 候选按钮工厂（UIButtonConfiguration）
 
-    private func makeCandidateButton(title: String, kind: String, color: UIColor) -> UIButton {
-        let fontSize: CGFloat = kind == "composition" ? 14 : 16
+    /// 候选按钮工厂，使用现代 UIButton.Configuration API（iOS 15+）。
+    /// 拼音组合使用比候选词小一号的字体（14pt vs 16pt），视觉上区分"输入中"和"可选择"。
+    /// 第一个真正的候选词（bold=true）使用粗体 + 主题色，指示这是按空格会输入的那个词。
+    ///
+    /// 关键设计决策：使用 titleTextAttributesTransformer 而非 attributedTitle 来设置字体和颜色。
+    /// 原因：UIButton.Configuration 中 attributedTitle 和 title 是互斥的 ——
+    /// 一旦设置 attributedTitle，title 就被忽略，导致 sender.title(for: .normal) 返回 nil。
+    /// titleTextAttributesTransformer 只改变 title 的显示属性，不替换 title 本身，
+    /// 因此 action handler 中能可靠读取 sender.configuration?.title。
+    private func makeCandidateButton(
+        title: String,
+        kind: CandidateKind,
+        color: UIColor,
+        bold: Bool = false
+    ) -> UIButton {
+        let fontSize: CGFloat = kind == .composition ? 14 : 16
+        let weight: UIFont.Weight = bold ? .bold : .regular
+
         var config = UIButton.Configuration.plain()
+        config.title = title
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
 
-        var attr = AttributedString(title)
-        attr.font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
-        attr.foregroundColor = color
-        config.attributedTitle = attr
+        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { container in
+            var container = container
+            container.font = UIFont.systemFont(ofSize: fontSize, weight: weight)
+            container.foregroundColor = color
+            return container
+        }
 
         let button = UIButton(configuration: config, primaryAction: nil)
         button.heightAnchor.constraint(equalToConstant: candidateBarHeight).isActive = true
@@ -338,32 +398,39 @@ extension KeyboardViewController {
 
     // MARK: - 候选数据
 
-    func candidateItems() -> [(title: String, kind: String)] {
+    /// 构建候选栏要显示的数据数组。
+    ///
+    /// 数据流：CandidateProvider.candidates(for:) 返回 [String]
+    ///       → 这个方法把它们包装成 [CandidateItem]
+    ///       → fillCandidateBar() / makeExpandedCandidatePanel() 渲染为 UIButton
+    ///
+    /// 行为模仿原生 iOS 键盘：
+    /// - 英文模式：候选栏为空（英文直接上屏，无需候选）
+    /// - 中文模式，无拼音组合：候选栏为空（和原生键盘一样，不输入时候选栏不显示任何东西）
+    /// - 中文模式，有拼音但无匹配：只显示拼音组合本身（用户可以点它提交原始拼音）
+    /// - 中文模式，有拼音且有匹配：拼音组合 + 候选词列表
+    func candidateItems() -> [CandidateItem] {
         let state = controller.state
 
+        // 英文模式：候选栏为空（原生键盘在英文模式下不显示候选）
         guard state.inputMode == .chinese else {
-            return [("英文模式", "placeholder"), ("字母直接上屏", "placeholder")]
+            return []
         }
 
+        // 没有拼音输入：候选栏为空（原生键盘不输入时候选栏是空的）
         guard !state.currentComposition.isEmpty else {
-            return [
-                ("输入拼音", "placeholder"),
-                ("你好", "candidate"), ("世界", "candidate"), ("中国", "candidate"),
-                ("测试", "candidate"), ("我们", "candidate"), ("他们", "candidate"),
-                ("更多候选", "placeholder")
-            ]
+            return []
         }
 
         let candidates = controller.candidateProvider.candidates(for: state.currentComposition)
 
         if candidates.isEmpty {
-            return [
-                (state.currentComposition, "composition"),
-                ("继续输入拼音", "placeholder"),
-                ("空格提交", "placeholder")
-            ]
+            // 有拼音但无匹配候选：只显示拼音组合本身，用户可以点击提交原始拼音
+            return [CandidateItem(title: state.currentComposition, kind: .composition)]
         } else {
-            return [(state.currentComposition, "composition")] + candidates.map { ($0, "candidate") }
+            // 有拼音且有匹配候选：拼音组合 + 候选词列表
+            return [CandidateItem(title: state.currentComposition, kind: .composition)]
+                + candidates.map { CandidateItem(title: $0, kind: .candidate) }
         }
     }
 }

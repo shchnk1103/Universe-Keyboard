@@ -8,7 +8,8 @@ extension KeyboardType {
         case .URL:          return .URL
         case .webSearch:    return .webSearch
         case .default:      return .default
-        default:            return .other
+        case .none:         return .default
+        @unknown default:   return .other
         }
     }
 }

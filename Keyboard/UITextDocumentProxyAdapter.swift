@@ -1,3 +1,10 @@
+//
+//  UITextDocumentProxyAdapter.swift
+//  Keyboard
+//
+//  将 UITextDocumentProxy 适配为 KeyboardCore.TextInputClient 协议。
+//
+
 import UIKit
 import KeyboardCore
 

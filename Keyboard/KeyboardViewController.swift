@@ -43,20 +43,28 @@ class KeyboardViewController: UIInputViewController {
     var candidateFadeGradient: CAGradientLayer?
     var candidateExpandedPanel: UIView?
     var candidateExpandButton: UIButton?
+    var candidateExpandButtonWidthConstraint: NSLayoutConstraint?
     var isCandidateExpanded = false
+
+    // MARK: - 缓存的设置（避免每次按键都通过 XPC 访问 UserDefaults）
+
+    private var cachedKeyClickEnabled: Bool = true
+    private var cachedHapticEnabled: Bool = false
 
     // MARK: - 布局常量
 
     let candidateBarHeight: CGFloat = 36
     let keyHeight: CGFloat = 44
     let keySpacing: CGFloat = 6
+    let keyCornerRadius: CGFloat = 10
 
     // MARK: - 生命周期
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = UIColor.systemGray5
+        // 接近原生 iOS 键盘背景色：系统键盘使用比 systemGray5 更深的灰底
+        view.backgroundColor = UIColor.systemGray4
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
         let state = KeyboardState(activeKeyboardType: keyboardType)
@@ -68,6 +76,8 @@ class KeyboardViewController: UIInputViewController {
             _ = controller.applyAutoCapitalization(contextBeforeInput: context)
         }
 
+        refreshCachedSettings()
+        observeSettingsChanges()
         hapticGenerator.prepare()
 
         setupRootStack()
@@ -76,6 +86,7 @@ class KeyboardViewController: UIInputViewController {
 
     deinit {
         stopDeleteRepeat()
+        NotificationCenter.default.removeObserver(self)
     }
 
     override func viewWillLayoutSubviews() {
@@ -110,6 +121,7 @@ class KeyboardViewController: UIInputViewController {
         let autoCapEffect = controller.applyAutoCapitalization(contextBeforeInput: context)
         effects.formUnion(autoCapEffect)
 
+        guard !effects.isEmpty else { return }
         syncUI(with: effects)
     }
 
@@ -134,20 +146,32 @@ class KeyboardViewController: UIInputViewController {
     }
 
     func reloadKeyboard() {
-        // 页面切换时收起展开面板
         isCandidateExpanded = false
-
-        for arrangedSubview in rootStack.arrangedSubviews {
-            rootStack.removeArrangedSubview(arrangedSubview)
-            arrangedSubview.removeFromSuperview()
-        }
-
-        letterButtons.removeAll()
-        candidateExpandedPanel = nil
+        clearAllRows()
         candidateBar = makeCandidateBar()
         rootStack.addArrangedSubview(candidateBar)
+        addKeyboardRows(for: controller.state)
+    }
 
-        let state = controller.state
+    /// 仅重建键盘内容区（保留候选栏），用于展开/收起候选面板
+    func reloadKeyboardContent() {
+        removeContentRows()
+
+        if isCandidateExpanded {
+            let panel = makeExpandedCandidatePanel()
+            rootStack.addArrangedSubview(panel)
+            candidateExpandedPanel = panel
+        } else {
+            addKeyboardRows(for: controller.state)
+        }
+    }
+
+    // MARK: - 键盘行构建（私有）
+
+    private func addKeyboardRows(for state: KeyboardState) {
+        letterButtons.removeAll()
+        candidateExpandedPanel = nil
+
         switch state.currentPage {
         case .letters:
             rootStack.addArrangedSubview(makeLetterRow(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]))
@@ -172,12 +196,16 @@ class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// 仅重建键盘内容区（保留候选栏），用于展开/收起候选面板
-    func reloadKeyboardContent() {
-        // 移除候选栏下方的所有视图
-        let subviews = rootStack.arrangedSubviews
+    private func clearAllRows() {
+        for view in rootStack.arrangedSubviews {
+            rootStack.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+    }
+
+    private func removeContentRows() {
         var foundBar = false
-        for view in subviews {
+        for view in rootStack.arrangedSubviews {
             if view === candidateBar {
                 foundBar = true
                 continue
@@ -187,56 +215,40 @@ class KeyboardViewController: UIInputViewController {
                 view.removeFromSuperview()
             }
         }
-
-        letterButtons.removeAll()
-        candidateExpandedPanel = nil
-
-        if isCandidateExpanded {
-            let panel = makeExpandedCandidatePanel()
-            rootStack.addArrangedSubview(panel)
-            candidateExpandedPanel = panel
-        } else {
-            let state = controller.state
-            switch state.currentPage {
-            case .letters:
-                rootStack.addArrangedSubview(makeLetterRow(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]))
-                rootStack.addArrangedSubview(makeLetterRow(["a", "s", "d", "f", "g", "h", "j", "k", "l"]))
-                rootStack.addArrangedSubview(makeLetterThirdRow())
-                rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: false))
-            case .numbers:
-                rootStack.addArrangedSubview(makeTextRow(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]))
-                if state.inputMode == .chinese {
-                    rootStack.addArrangedSubview(makeTextRow(["-", "/", "：", "；", "（", "）", "¥", "\u{201C}", "\u{201D}", "\u{2018}"]))
-                    rootStack.addArrangedSubview(makeTextRow(["。", "，", "、", "？", "！", "…", "·", "《", "》"]))
-                } else {
-                    rootStack.addArrangedSubview(makeTextRow(["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""]))
-                    rootStack.addArrangedSubview(makeTextRow([".", ",", "?", "!", "'", "\"", "—", "…", "~"]))
-                }
-                rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: true))
-            case .symbols:
-                rootStack.addArrangedSubview(makeTextRow(["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]))
-                rootStack.addArrangedSubview(makeTextRow(["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "&"]))
-                rootStack.addArrangedSubview(makeTextRow(["·", "•", "…", "—", "–", "/", "'", "\"", "!", "?"]))
-                rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: true))
-            }
-        }
     }
 
     // MARK: - 按键反馈
 
     private let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
+    private static let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 
     func playKeyClick() {
-        guard hasFullAccess else { return }
-        let defaults = UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")
-        guard defaults?.bool(forKey: "key_click_enabled") ?? true else { return }
+        guard hasFullAccess && cachedKeyClickEnabled else { return }
         AudioServicesPlaySystemSound(1104)
     }
 
     func playHaptic() {
-        let defaults = UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")
-        guard defaults?.bool(forKey: "haptic_enabled") ?? false else { return }
+        guard cachedHapticEnabled else { return }
         hapticGenerator.impactOccurred()
+    }
+
+    private func refreshCachedSettings() {
+        let defaults = UserDefaults(suiteName: Self.appGroupID)
+        cachedKeyClickEnabled = defaults?.bool(forKey: "key_click_enabled") ?? true
+        cachedHapticEnabled = defaults?.bool(forKey: "haptic_enabled") ?? false
+    }
+
+    private func observeSettingsChanges() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleSettingsChanged),
+            name: UserDefaults.didChangeNotification,
+            object: UserDefaults(suiteName: Self.appGroupID)
+        )
+    }
+
+    @objc private func handleSettingsChanged() {
+        refreshCachedSettings()
     }
 
     // MARK: - UI 同步
