@@ -18,24 +18,25 @@ final class CompositionTests: XCTestCase {
     func testChineseModeCollectsLetters() {
         _ = controller.handle(.insertKey("n"))
         XCTAssertEqual(controller.state.currentComposition, "n")
-        XCTAssertEqual(client.text, "")
+        XCTAssertEqual(client.text, "n")  // inline preedit: 拼音显示在输入框中
 
         _ = controller.handle(.insertKey("i"))
         XCTAssertEqual(controller.state.currentComposition, "ni")
-        XCTAssertEqual(client.text, "")
+        XCTAssertEqual(client.text, "ni") // inline preedit 更新
     }
 
     func testChineseModeLowercasesInput() {
         _ = controller.handle(.insertKey("N"))
         XCTAssertEqual(controller.state.currentComposition, "n")
+        XCTAssertEqual(client.text, "n")  // inline preedit
     }
 
     func testChineseModeShiftActiveEntersComposition() {
-        // 中文模式 + 手动大写 → 首字母保留大小写进入拼音组合，不直接输出
+        // 中文模式 + 手动大写 → 首字母保留大小写进入拼音组合
         controller.state.shiftState = .singleUse
         _ = controller.handle(.insertKey("N"))
         XCTAssertEqual(controller.state.currentComposition, "N")
-        XCTAssertEqual(client.text, "")
+        XCTAssertEqual(client.text, "N")  // inline preedit
         XCTAssertEqual(controller.state.shiftState, .off)
     }
 
@@ -45,7 +46,7 @@ final class CompositionTests: XCTestCase {
         _ = controller.handle(.insertKey("N"))
         _ = controller.handle(.insertKey("i"))
         XCTAssertEqual(controller.state.currentComposition, "Ni")
-        XCTAssertEqual(client.text, "")
+        XCTAssertEqual(client.text, "Ni") // inline preedit
     }
 
     func testCapitalizedCompositionDoesNotMatchCandidates() {

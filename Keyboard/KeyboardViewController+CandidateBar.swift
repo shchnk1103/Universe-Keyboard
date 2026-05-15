@@ -400,24 +400,33 @@ extension KeyboardViewController {
 
     /// 构建候选栏要显示的数据数组。
     ///
-    /// 数据流：CandidateProvider.candidates(for:) 返回 [String]
-    ///       → 这个方法把它们包装成 [CandidateItem]
-    ///       → fillCandidateBar() / makeExpandedCandidatePanel() 渲染为 UIButton
-    ///
-    /// 行为模仿原生 iOS 键盘：
-    /// - 英文模式：候选栏为空（英文直接上屏，无需候选）
-    /// - 中文模式，无拼音组合：候选栏为空（和原生键盘一样，不输入时候选栏不显示任何东西）
-    /// - 中文模式，有拼音但无匹配：只显示拼音组合本身（用户可以点它提交原始拼音）
-    /// - 中文模式，有拼音且有匹配：拼音组合 + 候选词列表
+    /// 优先使用 RIME 引擎输出（state.lastRimeOutput），
+    /// 无 RIME 输出时回退到 CandidateProvider 路径。
     func candidateItems() -> [CandidateItem] {
         let state = controller.state
 
-        // 英文模式：候选栏为空（原生键盘在英文模式下不显示候选）
+        // 英文模式：候选栏为空
         guard state.inputMode == .chinese else {
             return []
         }
 
-        // 没有拼音输入：候选栏为空（原生键盘不输入时候选栏是空的）
+        // RIME 路径：拼音已通过 inline preedit 显示在输入框中
+        // 候选栏只显示候选词，不重复显示拼音
+        if let rimeOutput = state.lastRimeOutput,
+           let comp = rimeOutput.composition,
+           !comp.preeditText.isEmpty {
+            var items: [CandidateItem] = []
+            for candidate in rimeOutput.candidates {
+                items.append(CandidateItem(title: candidate.text, kind: .candidate))
+            }
+            if items.isEmpty {
+                // 有拼音但无候选：显示拼音组合让用户能点它提交原始拼音
+                items.append(CandidateItem(title: comp.preeditText, kind: .composition))
+            }
+            return items
+        }
+
+        // 回退路径：同样使用 inline preedit 逻辑
         guard !state.currentComposition.isEmpty else {
             return []
         }
@@ -425,12 +434,9 @@ extension KeyboardViewController {
         let candidates = controller.candidateProvider.candidates(for: state.currentComposition)
 
         if candidates.isEmpty {
-            // 有拼音但无匹配候选：只显示拼音组合本身，用户可以点击提交原始拼音
             return [CandidateItem(title: state.currentComposition, kind: .composition)]
         } else {
-            // 有拼音且有匹配候选：拼音组合 + 候选词列表
-            return [CandidateItem(title: state.currentComposition, kind: .composition)]
-                + candidates.map { CandidateItem(title: $0, kind: .candidate) }
+            return candidates.map { CandidateItem(title: $0, kind: .candidate) }
         }
     }
 }

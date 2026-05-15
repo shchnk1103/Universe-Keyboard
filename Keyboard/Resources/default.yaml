@@ -1,0 +1,21 @@
+__build_info:
+  rime_version: 1.16.1
+  timestamps:
+    default: 1778856294
+    default.custom: 0
+ascii_composer:
+  switch_key:
+    Shift_L: commit_code
+    Shift_R: commit_code
+config_version: 0.1
+key_binder:
+  bindings:
+    - {accept: "Control+p", send: Up, when: composing}
+    - {accept: "Control+n", send: Down, when: composing}
+menu:
+  page_size: 9
+schema_list:
+  - name: "朙月拼音"
+    schema: luna_pinyin
+switcher:
+  caption: "[方案选单]"

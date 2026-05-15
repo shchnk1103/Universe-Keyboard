@@ -71,6 +71,32 @@ class KeyboardViewController: UIInputViewController {
         controller = KeyboardController(state: state)
         controller.textClient = UITextDocumentProxyAdapter(proxy: textDocumentProxy)
 
+        var diag = RimeDiagnostics()
+        diag.log("viewDidLoad 开始")
+
+        // 始终尝试创建真实 RIME 引擎
+        if let (sharedDir, userDir) = RimeConfigManager.prepareDirectories() {
+            diag.log("App Group 可用，创建 RimeEngineImpl")
+            controller.rimeEngine = RimeEngineImpl(sharedDataDir: sharedDir, userDataDir: userDir)
+
+            // 健康检查
+            var testOutput = controller.rimeEngine!.processKey("n")
+            diag.log("processKey(n) → preedit: \(testOutput.composition?.preeditText ?? "nil"), candidates: \(testOutput.candidates.count)")
+            testOutput = controller.rimeEngine!.processKey("i")
+            diag.log("processKey(i) → preedit: \(testOutput.composition?.preeditText ?? "nil"), candidates: \(testOutput.candidates.count)")
+            controller.rimeEngine!.resetSession()
+
+            if testOutput.candidates.isEmpty {
+                diag.log("首次检查无候选，引擎将在按键时自动部署")
+            } else {
+                diag.log("✓ RIME 已就绪，候选数: \(testOutput.candidates.count)")
+            }
+        } else {
+            controller.enableDefaultRimeEngine()
+            diag.log("App Group 不可用 → Fake 适配器")
+        }
+        diag.save()
+
         if controller.state.inputMode == .english {
             let context = textDocumentProxy.documentContextBeforeInput
             _ = controller.applyAutoCapitalization(contextBeforeInput: context)

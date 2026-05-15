@@ -100,17 +100,15 @@ extension KeyboardViewController {
 
     @objc func deleteKeyTouchDown(_ sender: UIButton) {
         sender.alpha = 0.5
+        // 立即执行第一次删除（模拟原生键盘行为）
+        performDeleteBackward()
         isDeleteRepeatActive = false
         scheduleDeleteRepeat()
     }
 
     @objc func deleteKeyTouchUpInside(_ sender: UIButton) {
-        if isDeleteRepeatActive {
-            stopDeleteRepeat()
-        } else {
-            stopDeleteRepeat()
-            performDeleteBackward()
-        }
+        stopDeleteRepeat()
+        // 如果长按自动重复未触发，touchDown 时已经执行过删除，不再重复
         sender.alpha = 1.0
     }
 
@@ -138,11 +136,12 @@ extension KeyboardViewController {
 
     func scheduleDeleteRepeat() {
         stopDeleteRepeat()
-        let timer = Timer(timeInterval: 0.35, repeats: false) { [weak self] _ in
+        // 延迟 0.5s 后开始连续删除（模拟原生键盘节奏）
+        let timer = Timer(timeInterval: 0.5, repeats: false) { [weak self] _ in
             guard let self else { return }
             self.isDeleteRepeatActive = true
-            self.performDeleteBackward()
-            let repeatTimer = Timer(timeInterval: 0.1, repeats: true) { [weak self] _ in
+            // 快速连续删除，间隔 0.08s（原生键盘约 0.08-0.1s）
+            let repeatTimer = Timer(timeInterval: 0.08, repeats: true) { [weak self] _ in
                 self?.performDeleteBackward()
             }
             self.deleteRepeatTimer = repeatTimer

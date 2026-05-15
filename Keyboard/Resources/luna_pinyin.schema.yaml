@@ -1,0 +1,38 @@
+__build_info:
+  rime_version: 1.16.1
+  timestamps:
+    default: 1778856294
+    default.custom: 0
+    luna_pinyin.custom: 0
+    luna_pinyin.schema: 1778856294
+engine:
+  filters:
+    - uniquifier
+  processors:
+    - ascii_composer
+    - speller
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - fallback_segmentor
+  translators:
+    - table_translator
+menu:
+  page_size: 9
+schema:
+  name: "朙月拼音"
+  schema_id: luna_pinyin
+  version: 0.1
+speller:
+  alphabet: abcdefghijklmnopqrstuvwxyz
+  delimiter: "'"
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: ["中文", "英文"]
+translator:
+  dictionary: luna_pinyin

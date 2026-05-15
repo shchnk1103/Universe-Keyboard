@@ -34,6 +34,12 @@ Icon
 # Claude Code
 .claude/
 
+# RIME xcframework binaries (too large, download/build separately)
+Packages/RimeBridge/Vendor/
+
+# RIME test tool binary
+Packages/RimeBridge/TestTool/test_rime
+
 # Temporary files
 *.swp
 *.swo

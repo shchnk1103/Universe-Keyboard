@@ -33,6 +33,11 @@ public struct KeyboardState: Equatable {
     public var activeKeyboardType: KeyboardType
     public var lastShiftTapTime: Date?
     public var lastSpaceTapTime: Date?
+    /// RIME 引擎最近一次操作的输出缓存。nil 表示未使用 RIME 路径。
+    public var lastRimeOutput: RimeOutput?
+    /// 当前已插入到文本输入框中的拼音串长度。用于实现 inline preedit：
+    /// 每次按键更新拼音时，先删除旧拼音再插入新拼音。
+    public var insertedPreeditCount: Int = 0
 
     public init(
         currentPage: KeyboardPage = .letters,
@@ -41,7 +46,9 @@ public struct KeyboardState: Equatable {
         currentComposition: String = "",
         activeKeyboardType: KeyboardType = .default,
         lastShiftTapTime: Date? = nil,
-        lastSpaceTapTime: Date? = nil
+        lastSpaceTapTime: Date? = nil,
+        lastRimeOutput: RimeOutput? = nil,
+        insertedPreeditCount: Int = 0
     ) {
         self.currentPage = currentPage
         self.inputMode = inputMode
@@ -50,5 +57,7 @@ public struct KeyboardState: Equatable {
         self.activeKeyboardType = activeKeyboardType
         self.lastShiftTapTime = lastShiftTapTime
         self.lastSpaceTapTime = lastSpaceTapTime
+        self.lastRimeOutput = lastRimeOutput
+        self.insertedPreeditCount = insertedPreeditCount
     }
 }

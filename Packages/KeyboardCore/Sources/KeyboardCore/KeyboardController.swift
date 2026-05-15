@@ -7,6 +7,7 @@ public final class KeyboardController {
     public internal(set) var state: KeyboardState
     public var textClient: TextInputClient?
     public let candidateProvider: CandidateProvider
+    public var rimeEngine: RimeEngine?
 
     public var currentDate: () -> Date = { Date() }
 
@@ -18,6 +19,13 @@ public final class KeyboardController {
     ) {
         self.state = state
         self.candidateProvider = candidateProvider
+    }
+
+    /// 启用基于 CandidateProvider 的 RIME 适配器引擎。
+    /// 在真正的 librime 就绪之前，此方法将现有的 FakeCandidateProvider 包装为 RimeEngine，
+    /// 使键盘通过新架构运行，但行为与当前完全一致。
+    public func enableDefaultRimeEngine() {
+        rimeEngine = CandidateProviderRimeAdapter(candidateProvider: candidateProvider)
     }
 
     // MARK: - Public entry point
@@ -55,13 +63,22 @@ extension KeyboardController {
 
     func handleInsertKey(_ key: String) -> KeyboardEffect {
         if state.currentPage == .letters && state.inputMode == .chinese {
+            if let engine = rimeEngine {
+                let output = engine.processKey(key)
+                state.lastRimeOutput = output
+                state.currentComposition = output.composition?.preeditText ?? ""
+                updateInlinePreedit(state.currentComposition)
+                if let commit = output.committedText {
+                    insertText(commit)
+                }
+                return consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+            }
             if state.currentComposition.isEmpty && state.shiftState != .off {
-                // 首字母大写进拼音组合，但不匹配中文候选。
-                // 用户想打英文就按回车，误触就删掉重新输入小写。
                 state.currentComposition += key
             } else {
                 state.currentComposition += key.lowercased()
             }
+            updateInlinePreedit(state.currentComposition)
             return consumeSingleUseShiftIfNeeded().union(.compositionChanged)
         } else {
             insertText(key)
@@ -90,9 +107,25 @@ extension KeyboardController {
             return []
         case .composition:
             commitComposition()
+            rimeEngine?.resetSession()
+            state.lastRimeOutput = nil
         case .candidate:
-            insertText(candidate)
-            state.currentComposition = ""
+            if let engine = rimeEngine,
+               let output = state.lastRimeOutput,
+               let idx = output.candidates.firstIndex(where: { $0.text == candidate }) {
+                let result = engine.selectCandidate(at: idx)
+                state.lastRimeOutput = result
+                state.currentComposition = result.composition?.preeditText ?? ""
+                deleteInlinePreedit()
+                if let commit = result.committedText {
+                    insertText(commit)
+                }
+            } else {
+                deleteInlinePreedit()
+                insertText(candidate)
+                state.currentComposition = ""
+                state.lastRimeOutput = nil
+            }
         }
         return .compositionChanged
     }
@@ -100,6 +133,7 @@ extension KeyboardController {
     func handleInsertDirectText(_ text: String) -> KeyboardEffect {
         var effects: KeyboardEffect = []
         if !state.currentComposition.isEmpty {
+            deleteInlinePreedit()
             insertText(state.currentComposition)
             state.currentComposition = ""
             effects.insert(.compositionChanged)
@@ -138,7 +172,15 @@ extension KeyboardController {
         switch state.currentPage {
         case .letters:
             effects = resetShiftState()
-            if !state.currentComposition.isEmpty {
+            if let engine = rimeEngine, engine.isComposing() {
+                deleteInlinePreedit()
+                insertText(state.currentComposition)
+                engine.resetSession()
+                state.currentComposition = ""
+                state.lastRimeOutput = nil
+                effects.insert(.compositionChanged)
+            } else if !state.currentComposition.isEmpty {
+                deleteInlinePreedit()
                 insertText(state.currentComposition)
                 state.currentComposition = ""
                 effects.insert(.compositionChanged)
@@ -163,7 +205,15 @@ extension KeyboardController {
     func handleToggleInputMode() -> KeyboardEffect {
         var effects: KeyboardEffect = []
 
-        if !state.currentComposition.isEmpty {
+        if let engine = rimeEngine, engine.isComposing() {
+            deleteInlinePreedit()
+            insertText(state.currentComposition)
+            engine.resetSession()
+            state.currentComposition = ""
+            state.lastRimeOutput = nil
+            effects.insert(.compositionChanged)
+        } else if !state.currentComposition.isEmpty {
+            deleteInlinePreedit()
             insertText(state.currentComposition)
             state.currentComposition = ""
             effects.insert(.compositionChanged)
@@ -209,8 +259,20 @@ extension KeyboardController {
 extension KeyboardController {
 
     func handleInsertSpace() -> KeyboardEffect {
+        if let engine = rimeEngine, engine.isComposing() {
+            let result = engine.selectCandidate(at: 0)
+            state.lastRimeOutput = result
+            state.currentComposition = result.composition?.preeditText ?? ""
+            deleteInlinePreedit()
+            if let commit = result.committedText {
+                insertText(commit)
+            }
+            state.lastSpaceTapTime = nil
+            return .compositionChanged
+        }
         if !state.currentComposition.isEmpty {
             let first = candidateProvider.candidates(for: state.currentComposition).first ?? state.currentComposition
+            deleteInlinePreedit()
             insertText(first)
             state.currentComposition = ""
             state.lastSpaceTapTime = nil
@@ -240,8 +302,12 @@ extension KeyboardController {
 
     func handleInsertReturn() -> KeyboardEffect {
         if !state.currentComposition.isEmpty {
+            deleteInlinePreedit()
             insertText(state.currentComposition)
             state.currentComposition = ""
+            state.lastRimeOutput = nil
+            state.insertedPreeditCount = 0
+            rimeEngine?.resetSession()
             return .compositionChanged
         } else {
             insertText("\n")
@@ -255,8 +321,16 @@ extension KeyboardController {
 extension KeyboardController {
 
     func handleDeleteBackward() -> KeyboardEffect {
+        if let engine = rimeEngine, engine.isComposing() {
+            let result = engine.deleteBackward()
+            state.lastRimeOutput = result
+            state.currentComposition = result.composition?.preeditText ?? ""
+            updateInlinePreedit(state.currentComposition)
+            return .compositionChanged
+        }
         if !state.currentComposition.isEmpty {
             state.currentComposition.removeLast()
+            updateInlinePreedit(state.currentComposition)
             return .compositionChanged
         } else {
             textClient?.deleteBackward()
@@ -276,6 +350,7 @@ extension KeyboardController {
 
         if type == .emailAddress || type == .URL || type == .webSearch {
             if !state.currentComposition.isEmpty {
+                deleteInlinePreedit()
                 insertText(state.currentComposition)
                 state.currentComposition = ""
                 effects.insert(.compositionChanged)
@@ -331,11 +406,32 @@ extension KeyboardController {
 
     func commitComposition() {
         guard !state.currentComposition.isEmpty else { return }
+        deleteInlinePreedit()
         insertText(state.currentComposition)
         state.currentComposition = ""
     }
 
     func insertText(_ text: String) {
         textClient?.insertText(text)
+    }
+
+    // MARK: - Inline preedit
+
+    /// 更新输入框中显示的拼音串：先删除旧的，再插入新的。
+    /// 实现类似原生键盘的 inline composition 效果。
+    func updateInlinePreedit(_ text: String) {
+        deleteInlinePreedit()
+        guard !text.isEmpty else { return }
+        insertText(text)
+        state.insertedPreeditCount = text.count
+    }
+
+    /// 从输入框中删除当前已插入的拼音串。
+    func deleteInlinePreedit() {
+        guard state.insertedPreeditCount > 0 else { return }
+        for _ in 0..<state.insertedPreeditCount {
+            textClient?.deleteBackward()
+        }
+        state.insertedPreeditCount = 0
     }
 }
