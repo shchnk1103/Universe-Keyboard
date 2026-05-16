@@ -10,7 +10,6 @@
 //  UI 工厂方法 → KeyboardViewController+Layout.swift
 //
 
-import AudioToolbox
 import UIKit
 import KeyboardCore
 
@@ -63,6 +62,8 @@ class KeyboardViewController: UIInputViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let startupTime = CACurrentMediaTime()
+
         // 接近原生 iOS 键盘背景色：系统键盘使用比 systemGray5 更深的灰底
         view.backgroundColor = UIColor.systemGray4
 
@@ -71,31 +72,32 @@ class KeyboardViewController: UIInputViewController {
         controller = KeyboardController(state: state)
         controller.textClient = UITextDocumentProxyAdapter(proxy: textDocumentProxy)
 
-        var diag = RimeDiagnostics()
-        diag.log("viewDidLoad 开始")
+        Logger.shared.info("viewDidLoad, keyboardType=\(keyboardType)", category: .general)
 
         // 始终尝试创建真实 RIME 引擎
         if let (sharedDir, userDir) = RimeConfigManager.prepareDirectories() {
-            diag.log("App Group 可用，创建 RimeEngineImpl")
+            Logger.shared.info("App Group available, creating RimeEngineImpl", category: .engine)
             controller.rimeEngine = RimeEngineImpl(sharedDataDir: sharedDir, userDataDir: userDir)
 
             // 健康检查
             var testOutput = controller.rimeEngine!.processKey("n")
-            diag.log("processKey(n) → preedit: \(testOutput.composition?.preeditText ?? "nil"), candidates: \(testOutput.candidates.count)")
+            Logger.shared.info("processKey(n) → preedit: \(testOutput.composition?.preeditText ?? "nil"), candidates: \(testOutput.candidates.count)", category: .engine)
             testOutput = controller.rimeEngine!.processKey("i")
-            diag.log("processKey(i) → preedit: \(testOutput.composition?.preeditText ?? "nil"), candidates: \(testOutput.candidates.count)")
+            Logger.shared.info("processKey(i) → preedit: \(testOutput.composition?.preeditText ?? "nil"), candidates: \(testOutput.candidates.count)", category: .engine)
             controller.rimeEngine!.resetSession()
 
             if testOutput.candidates.isEmpty {
-                diag.log("首次检查无候选，引擎将在按键时自动部署")
+                Logger.shared.warning("No candidates on first check; engine will deploy on keystroke", category: .engine)
             } else {
-                diag.log("✓ RIME 已就绪，候选数: \(testOutput.candidates.count)")
+                Logger.shared.info("RIME ready, candidates: \(testOutput.candidates.count)", category: .engine)
             }
         } else {
             controller.enableDefaultRimeEngine()
-            diag.log("App Group 不可用 → Fake 适配器")
+            Logger.shared.warning("App Group unavailable, using Fake adapter", category: .engine)
         }
-        diag.save()
+
+        let elapsed = (CACurrentMediaTime() - startupTime) * 1000
+        Logger.shared.performance("viewDidLoad complete", durationMs: elapsed)
 
         if controller.state.inputMode == .english {
             let context = textDocumentProxy.documentContextBeforeInput
@@ -111,6 +113,7 @@ class KeyboardViewController: UIInputViewController {
     }
 
     deinit {
+        Logger.shared.flush()
         stopDeleteRepeat()
         NotificationCenter.default.removeObserver(self)
     }
@@ -246,22 +249,31 @@ class KeyboardViewController: UIInputViewController {
     // MARK: - 按键反馈
 
     private let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
+    private let clickPlayer = KeyClickPlayer()
     private static let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 
+    private var cachedKeyClickVolume: Float = 0.8
+    private var cachedHapticIntensity: CGFloat = 0.5
+
     func playKeyClick() {
-        guard hasFullAccess && cachedKeyClickEnabled else { return }
-        AudioServicesPlaySystemSound(1104)
+        guard cachedKeyClickEnabled else { return }
+        clickPlayer.play(volume: cachedKeyClickVolume)
     }
 
     func playHaptic() {
         guard cachedHapticEnabled else { return }
-        hapticGenerator.impactOccurred()
+        hapticGenerator.impactOccurred(intensity: cachedHapticIntensity)
+        hapticGenerator.prepare()
     }
 
     private func refreshCachedSettings() {
         let defaults = UserDefaults(suiteName: Self.appGroupID)
         cachedKeyClickEnabled = defaults?.bool(forKey: "key_click_enabled") ?? true
         cachedHapticEnabled = defaults?.bool(forKey: "haptic_enabled") ?? false
+        let volume = defaults?.double(forKey: "key_click_volume") ?? 0
+        cachedKeyClickVolume = volume > 0 ? Float(volume) : 0.8
+        let intensity = defaults?.double(forKey: "haptic_intensity") ?? 0
+        cachedHapticIntensity = intensity > 0 ? CGFloat(intensity) : 0.5
     }
 
     private func observeSettingsChanges() {

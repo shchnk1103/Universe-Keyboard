@@ -73,7 +73,6 @@ NSString * const RimeKeyPageNo           = @"pageNo";
     BOOL alreadyDeployed = [defaults boolForKey:@"rime_deployed"];
 
     if (!alreadyDeployed || needsDeploy) {
-        NSLog(@"[RimeBridge] 开始全量部署…");
         // 通知主 App 部署已开始
         [defaults setBool:YES forKey:@"rime_deploying"];
         [defaults synchronize];
@@ -86,7 +85,6 @@ NSString * const RimeKeyPageNo           = @"pageNo";
         [defaults setBool:NO forKey:@"rime_deploying"];
         [defaults setBool:YES forKey:@"rime_deployed"];
         [defaults synchronize];
-        NSLog(@"[RimeBridge] 部署完成");
     } else {
         // 已部署过，只做快速检查
         if (_api->start_maintenance(/*full_check=*/False)) {
@@ -104,7 +102,6 @@ NSString * const RimeKeyPageNo           = @"pageNo";
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.DoubleShy0N.Universe-Keyboard"];
     if (![defaults boolForKey:@"rime_needs_deploy"]) return NO;
 
-    NSLog(@"[RimeBridge] 检测到部署标记，开始重新部署…");
     [defaults setBool:YES forKey:@"rime_deploying"];
     [defaults synchronize];
 
@@ -121,7 +118,6 @@ NSString * const RimeKeyPageNo           = @"pageNo";
     if ([fm fileExistsAtPath:buildDir]) {
         [fm removeItemAtPath:buildDir error:nil];
         [fm createDirectoryAtPath:buildDir withIntermediateDirectories:YES attributes:nil error:nil];
-        NSLog(@"[RimeBridge] 已清空构建缓存: %@", buildDir);
     }
 
     // 全量部署
@@ -135,7 +131,6 @@ NSString * const RimeKeyPageNo           = @"pageNo";
     [defaults setBool:NO forKey:@"rime_deploying"];
     [defaults setBool:YES forKey:@"rime_deployed"];
     [defaults synchronize];
-    NSLog(@"[RimeBridge] 部署完成，新 session: %lu", (unsigned long)_sessionId);
     return YES;
 }
 

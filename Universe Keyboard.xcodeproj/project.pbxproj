@@ -27,8 +27,6 @@
 		79E64D972FB7563B009FCFAD /* libmarisa.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D852FB7563B009FCFAD /* libmarisa.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		79E64D982FB7563B009FCFAD /* libyaml-cpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D862FB7563B009FCFAD /* libyaml-cpp.xcframework */; };
 		79E64D992FB7563B009FCFAD /* libyaml-cpp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D862FB7563B009FCFAD /* libyaml-cpp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79E64D9A2FB7563B009FCFAD /* boost_system.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D872FB7563B009FCFAD /* boost_system.xcframework */; };
-		79E64D9B2FB7563B009FCFAD /* boost_system.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D872FB7563B009FCFAD /* boost_system.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,7 +59,6 @@
 			files = (
 				79E64D972FB7563B009FCFAD /* libmarisa.xcframework in Embed Frameworks */,
 				79E64D932FB7563B009FCFAD /* librime.xcframework in Embed Frameworks */,
-				79E64D9B2FB7563B009FCFAD /* boost_system.xcframework in Embed Frameworks */,
 				79E64D8B2FB7563B009FCFAD /* libglog.xcframework in Embed Frameworks */,
 				79E64D8D2FB7563B009FCFAD /* boost_filesystem.xcframework in Embed Frameworks */,
 				79E64D8F2FB7563B009FCFAD /* libleveldb.xcframework in Embed Frameworks */,
@@ -87,7 +84,6 @@
 		79E64D842FB7563B009FCFAD /* boost_atomic.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = boost_atomic.xcframework; path = Packages/RimeBridge/Vendor/boost_atomic.xcframework; sourceTree = "<group>"; };
 		79E64D852FB7563B009FCFAD /* libmarisa.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libmarisa.xcframework; path = Packages/RimeBridge/Vendor/libmarisa.xcframework; sourceTree = "<group>"; };
 		79E64D862FB7563B009FCFAD /* libyaml-cpp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = "libyaml-cpp.xcframework"; path = "Packages/RimeBridge/Vendor/libyaml-cpp.xcframework"; sourceTree = "<group>"; };
-		79E64D872FB7563B009FCFAD /* boost_system.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = boost_system.xcframework; path = Packages/RimeBridge/Vendor/boost_system.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -135,7 +131,6 @@
 				79E64D982FB7563B009FCFAD /* libyaml-cpp.xcframework in Frameworks */,
 				79E64D8E2FB7563B009FCFAD /* libleveldb.xcframework in Frameworks */,
 				79E64D8C2FB7563B009FCFAD /* boost_filesystem.xcframework in Frameworks */,
-				79E64D9A2FB7563B009FCFAD /* boost_system.xcframework in Frameworks */,
 				79E64D8A2FB7563B009FCFAD /* libglog.xcframework in Frameworks */,
 				79E64D902FB7563B009FCFAD /* boost_regex.xcframework in Frameworks */,
 				79E64D922FB7563B009FCFAD /* librime.xcframework in Frameworks */,
@@ -170,7 +165,6 @@
 				79E64D842FB7563B009FCFAD /* boost_atomic.xcframework */,
 				79E64D802FB7563B009FCFAD /* boost_filesystem.xcframework */,
 				79E64D822FB7563B009FCFAD /* boost_regex.xcframework */,
-				79E64D872FB7563B009FCFAD /* boost_system.xcframework */,
 				79E64D7F2FB7563B009FCFAD /* libglog.xcframework */,
 				79E64D812FB7563B009FCFAD /* libleveldb.xcframework */,
 				79E64D852FB7563B009FCFAD /* libmarisa.xcframework */,
@@ -240,7 +234,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2640;
-				LastUpgradeCheck = 2640;
+				LastUpgradeCheck = 2650;
 				TargetAttributes = {
 					793AC8492FB0BDB000DAE835 = {
 						CreatedOnToolsVersion = 26.4.1;
@@ -376,6 +370,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -433,6 +428,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};

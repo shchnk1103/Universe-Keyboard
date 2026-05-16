@@ -222,6 +222,7 @@ extension KeyboardController {
         let switchingToChinese = state.inputMode == .english
         state.inputMode = switchingToChinese ? .chinese : .english
         effects.insert(.inputModeChanged)
+        Logger.shared.debug("Input mode switched to \(switchingToChinese ? "中文" : "英文")", category: .general)
 
         if state.currentPage != .letters {
             state.currentPage = .letters
@@ -357,6 +358,7 @@ extension KeyboardController {
             }
             state.inputMode = .english
             effects.insert(.inputModeChanged)
+            Logger.shared.debug("Input mode auto-switched to English for keyboard type \(type)", category: .general)
         }
 
         return effects

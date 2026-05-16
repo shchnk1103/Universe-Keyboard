@@ -1,4 +1,5 @@
 import Foundation
+import QuartzCore
 import KeyboardCore
 
 /// 基于真实 librime 引擎的 RimeEngine 实现。
@@ -16,20 +17,20 @@ public final class RimeEngineImpl: RimeEngine {
     // MARK: - Init
 
     public init(sharedDataDir: String, userDataDir: String) {
+        let startTime = CACurrentMediaTime()
+
         self.bridge = RimeSessionManager()
         bridge.setup(withSharedDataDir: sharedDataDir, userDataDir: userDataDir)
         bridge.initializeEngine()
         bridge.createSession()
 
-        // 写入诊断信息（插入到日志最前面）
-        let schemas = bridge.availableSchemas()
+        let elapsed = (CACurrentMediaTime() - startTime) * 1000
+
         let version = bridge.librimeVersion()
-        let defaults = UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")
-        let diagText = "[RimeEngine] librime \(version)\n[RimeEngine] Schemas: \(schemas)"
-        var existing = defaults?.string(forKey: "rime_diag_log") ?? ""
-        existing = diagText + "\n" + existing  // 放在日志最前面
-        defaults?.set(existing, forKey: "rime_diag_log")
-        defaults?.synchronize()
+        let schemas = bridge.availableSchemas()
+        Logger.shared.info("librime \(version)", category: .engine)
+        Logger.shared.info("Schemas: \(schemas)", category: .engine)
+        Logger.shared.performance("Engine init complete", durationMs: elapsed)
     }
 
     deinit {
@@ -39,16 +40,32 @@ public final class RimeEngineImpl: RimeEngine {
     // MARK: - RimeEngine
 
     public func processKey(_ key: String) -> RimeOutput {
-        // 每次按键检查是否需要部署（支持主 App 点击部署后实时生效）
-        bridge.deployIfNeeded()
+        // 部署前同步主 App 的配置变更到 .custom.yaml
+        if UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")?.bool(forKey: "rime_needs_deploy") == true {
+            RimeConfigManager.syncCustomYamlFiles()
+        }
+        let didDeploy = bridge.deployIfNeeded()
+        if didDeploy {
+            Logger.shared.info("Hot-reload deployment completed on keystroke", category: .deployment)
+        }
         let keycode = Self.keycode(for: key)
         let raw = bridge.processKey(keycode, modifiers: 0)
-        return parseOutput(raw)
+        let output = parseOutput(raw)
+        if key != "BackSpace" && key != "Delete" {
+            let preedit = output.composition?.preeditText ?? ""
+            Logger.shared.debug("\(key) → preedit: \(preedit), candidates: \(output.candidates.count)", category: .engine)
+        }
+        if raw.isEmpty && !bridge.isComposing() && key != "BackSpace" && key != "Delete" {
+            Logger.shared.warning("processKey(\(key)) returned empty output", category: .engine)
+        }
+        return output
     }
 
     public func selectCandidate(at index: Int) -> RimeOutput {
         let raw = bridge.selectCandidate(at: Int32(index))
-        return parseOutput(raw)
+        let output = parseOutput(raw)
+        Logger.shared.debug("selectCandidate(\(index)) → commit: \(output.committedText ?? "nil")", category: .engine)
+        return output
     }
 
     public func deleteBackward() -> RimeOutput {

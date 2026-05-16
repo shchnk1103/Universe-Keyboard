@@ -1,4 +1,5 @@
 import Foundation
+import KeyboardCore
 
 /// 管理 RIME 配置文件的部署和数据目录。
 ///
@@ -13,7 +14,7 @@ struct RimeConfigManager {
         guard let containerURL = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: appGroupID
         ) else {
-            diag("App Group 容器不可用")
+            Logger.shared.error("App Group 容器不可用", category: .config)
             return nil
         }
 
@@ -28,8 +29,8 @@ struct RimeConfigManager {
         // 列出 bundle 中所有可用的 yaml 文件
         let bundleYamls = Bundle.main.urls(forResourcesWithExtension: "yaml", subdirectory: nil) ?? []
         let bundleRimes = Bundle.main.urls(forResourcesWithExtension: "yaml", subdirectory: "Resources") ?? []
-        diag("Bundle yaml (root): \(bundleYamls.map { $0.lastPathComponent }.joined(separator: ", "))")
-        diag("Bundle yaml (Resources/): \(bundleRimes.map { $0.lastPathComponent }.joined(separator: ", "))")
+        Logger.shared.info("Bundle yaml (root): \(bundleYamls.map { $0.lastPathComponent }.joined(separator: ", "))", category: .config)
+        Logger.shared.info("Bundle yaml (Resources/): \(bundleRimes.map { $0.lastPathComponent }.joined(separator: ", "))", category: .config)
 
         // 1. 写入小文件（字符串字面量）
         writeIfChanged(name: "default.yaml", content: defaultYaml, to: sharedDir)
@@ -47,32 +48,155 @@ struct RimeConfigManager {
             copyFromBundleIfNeeded(name: name, to: buildDir)
         }
 
+        // 4. 写入 OpenCC 配置文件 + 字典（简繁转换）
+        let openccDir = sharedDir.appendingPathComponent("opencc")
+        try? FileManager.default.createDirectory(at: openccDir, withIntermediateDirectories: true)
+        writeIfChanged(name: "t2s.json", content: openccT2S, to: openccDir)
+        writeIfChanged(name: "s2t.json", content: openccS2T, to: openccDir)
+        for name in ["TSCharacters.ocd2", "TSPhrases.ocd2", "STCharacters.ocd2", "STPhrases.ocd2"] {
+            copyFromBundleIfNeeded(name: name, to: openccDir)
+        }
+        Logger.shared.info("OpenCC configs written to shared/opencc/", category: .config)
+
+        // 5. 检查配置版本号，高于已部署版本则清除 build 缓存
+        let currentGen = 2  // 递增此数字可强制全部用户重新部署
+        let defs = UserDefaults(suiteName: appGroupID)
+        let deployedGen = defs?.integer(forKey: "config_generation") ?? 0
+        if currentGen > deployedGen {
+            if FileManager.default.fileExists(atPath: buildDir.path) {
+                try? FileManager.default.removeItem(at: buildDir)
+                try? FileManager.default.createDirectory(at: buildDir, withIntermediateDirectories: true)
+            }
+            for name in ["luna_pinyin.table.bin", "luna_pinyin.prism.bin", "luna_pinyin.reverse.bin"] {
+                copyFromBundleIfNeeded(name: name, to: buildDir)
+            }
+            defs?.set(currentGen, forKey: "config_generation")
+            defs?.set(false, forKey: "rime_deployed")
+            defs?.set(true, forKey: "rime_needs_deploy")
+            defs?.synchronize()
+            Logger.shared.info("Config gen \(deployedGen) → \(currentGen), cleared build cache", category: .config)
+        }
+
         // 列出已部署文件
         let sharedFiles = (try? FileManager.default.contentsOfDirectory(at: sharedDir, includingPropertiesForKeys: nil)) ?? []
-        diag("SharedDir: \(sharedFiles.map { "\($0.lastPathComponent)(\((try? $0.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0)/1024K)" }.joined(separator: ", "))")
+        Logger.shared.info("SharedDir: \(sharedFiles.map { "\($0.lastPathComponent)(\((try? $0.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0)/1024K)" }.joined(separator: ", "))", category: .config)
 
         return (sharedDir.path, userDir.path)
     }
 
-    // MARK: - Diagnostics
+    // MARK: - Configuration (custom.yaml)
 
-    private static func diag(_ msg: String) {
-        print("[RimeConfig] \(msg)")
-        let defaults = UserDefaults(suiteName: appGroupID)
-        let line = "[RimeConfig] \(msg)"
-        var existing = defaults?.string(forKey: "rime_diag_log") ?? ""
-        existing = line + "\n" + existing
-        defaults?.set(existing, forKey: "rime_diag_log")
+    /// 从 UserDefaults 读取配置并生成 .custom.yaml 文件到 user_data_dir。
+    /// 在部署前调用，确保用户通过主 App 修改的配置被写入。
+    static func syncCustomYamlFiles() {
+        guard let containerURL = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: appGroupID
+        ) else { return }
+
+        let userDir = containerURL.appendingPathComponent("Rime/user")
+        try? FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
+
+        let defs = UserDefaults(suiteName: appGroupID)
+
+        // default.custom.yaml — 候选数量
+        let pageSize = defs?.integer(forKey: "rime_page_size") ?? 0
+        if pageSize >= 5 {
+            let yaml = "patch:\n  \"menu/page_size\": \(pageSize)\n"
+            try? yaml.write(to: userDir.appendingPathComponent("default.custom.yaml"), atomically: true, encoding: .utf8)
+            Logger.shared.info("Synced default.custom.yaml (page_size=\(pageSize))", category: .config)
+        }
+
+        // luna_pinyin.custom.yaml — 简繁
+        if defs?.object(forKey: "rime_simplification") != nil {
+            let simplified = defs?.bool(forKey: "rime_simplification") ?? true
+            let reset = simplified ? 1 : 0
+            let yaml = "patch:\n  \"switches/@1/reset\": \(reset)\n"
+            try? yaml.write(to: userDir.appendingPathComponent("luna_pinyin.custom.yaml"), atomically: true, encoding: .utf8)
+            Logger.shared.info("Synced luna_pinyin.custom.yaml (simplification.reset=\(reset))", category: .config)
+        }
+    }
+
+    // MARK: - Configuration UI helpers (called by main app via UserDefaults)
+
+    private static var defaults: UserDefaults? {
+        UserDefaults(suiteName: appGroupID)
+    }
+
+    /// 获取当前候选数量。默认 9。
+    static func currentPageSize() -> Int {
+        let val = defaults?.integer(forKey: "rime_page_size") ?? 0
+        return val > 0 ? val : 9
+    }
+
+    /// 设置候选数量（5-20）。写入 default.custom.yaml。
+    static func setPageSize(_ value: Int) {
+        let clamped = max(5, min(20, value))
+        defaults?.set(clamped, forKey: "rime_page_size")
+        writeCustomYaml(filename: "default.custom.yaml", patch: [
+            "\"menu/page_size\"": clamped,
+        ])
+        requestDeploy()
+    }
+
+    /// 获取默认简繁状态。true = 简体。
+    static func currentSimplification() -> Bool {
+        if defaults?.object(forKey: "rime_simplification") == nil {
+            return true // 默认简体
+        }
+        return defaults?.bool(forKey: "rime_simplification") ?? true
+    }
+
+    /// 设置默认简繁。true = 简体（reset=1），false = 繁体（reset=0）。
+    static func setSimplification(_ simplified: Bool) {
+        defaults?.set(simplified, forKey: "rime_simplification")
+        writeCustomYaml(filename: "luna_pinyin.custom.yaml", patch: [
+            "\"switches/@1/reset\"": simplified ? 1 : 0,
+        ])
+        requestDeploy()
+    }
+
+    /// 设置部署标记，键盘下次按键时自动部署。
+    static func requestDeploy() {
+        defaults?.set(false, forKey: "rime_deployed")
+        defaults?.set(true, forKey: "rime_needs_deploy")
         defaults?.synchronize()
+        Logger.shared.info("Deploy requested — rime_needs_deploy set", category: .config)
+    }
+
+    /// 将 patch 字典写入 user_data_dir 下的 .custom.yaml 文件。
+    private static func writeCustomYaml(filename: String, patch: [String: Any]) {
+        guard let containerURL = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: appGroupID
+        ) else { return }
+
+        let userDir = containerURL.appendingPathComponent("Rime/user")
+        try? FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
+
+        var yaml = "patch:\n"
+        for (key, value) in patch {
+            if let intVal = value as? Int {
+                yaml += "  \(key): \(intVal)\n"
+            } else if let boolVal = value as? Bool {
+                yaml += "  \(key): \(boolVal)\n"
+            } else if let strVal = value as? String {
+                yaml += "  \(key): \(strVal)\n"
+            }
+        }
+
+        let fileURL = userDir.appendingPathComponent(filename)
+        try? yaml.write(to: fileURL, atomically: true, encoding: .utf8)
+        Logger.shared.info("Wrote \(filename): \(yaml.replacingOccurrences(of: "\n", with: " "))", category: .config)
     }
 
     // MARK: - Private helpers
 
-    private static func writeIfChanged(name: String, content: String, to dir: URL) {
+    @discardableResult
+    private static func writeIfChanged(name: String, content: String, to dir: URL) -> Bool {
         let url = dir.appendingPathComponent(name)
-        if (try? String(contentsOf: url, encoding: .utf8)) == content { return }
+        if (try? String(contentsOf: url, encoding: .utf8)) == content { return false }
         try? content.write(to: url, atomically: true, encoding: .utf8)
-        print("[RimeConfigManager] 已写入 \(name)")
+        Logger.shared.info("已写入 \(name)", category: .config)
+        return true
     }
 
     private static func copyFromBundleIfNeeded(name: String, to dir: URL) {
@@ -86,7 +210,7 @@ struct RimeConfigManager {
                      ?? Bundle.main.url(forResource: resourceName, withExtension: ext, subdirectory: "Resources")
 
         guard let source = sourceURL else {
-            diag("Bundle 中未找到 \(name)，使用内嵌词库")
+            Logger.shared.warning("Bundle 中未找到 \(name)，使用内嵌词库", category: .config)
             writeIfChanged(name: name, content: fallbackDict, to: dir)
             return
         }
@@ -98,9 +222,9 @@ struct RimeConfigManager {
         if sourceSize != destSize {
             try? FileManager.default.removeItem(at: dest)
             try? FileManager.default.copyItem(at: source, to: dest)
-            diag("已从 bundle 复制 \(name) (\(sourceSize/1024) KB)")
+            Logger.shared.info("已从 bundle 复制 \(name) (\(sourceSize/1024) KB)", category: .config)
         } else {
-            diag("\(name) 已是最新 (\(sourceSize/1024) KB)")
+            Logger.shared.info("\(name) 已是最新 (\(sourceSize/1024) KB)", category: .config)
         }
     }
 
@@ -160,6 +284,9 @@ switches:
   - name: ascii_mode
     reset: 0
     states: [ 中文, ABC ]
+  - name: simplification
+    reset: 1
+    states: [ 漢字, 汉字 ]
 
 engine:
   processors:
@@ -181,6 +308,7 @@ engine:
     - punct_translator
     - script_translator
   filters:
+    - simplifier
     - uniquifier
 
 speller:
@@ -212,6 +340,51 @@ key_binder:
 
 recognizer:
   import_preset: default
+
+simplifier:
+  option_name: simplification
+  opencc_config: opencc/t2s.json
+  tips: none
+"""
+
+    // MARK: - OpenCC 配置文件
+
+    private static let openccT2S = """
+{
+  "name": "Traditional Chinese to Simplified Chinese",
+  "segmentation": {
+    "type": "mmseg",
+    "dict": {
+      "type": "ocd2",
+      "file": "TSPhrases.ocd2"
+    }
+  },
+  "conversion_chain": [{
+    "dict": {
+      "type": "ocd2",
+      "file": "TSCharacters.ocd2"
+    }
+  }]
+}
+"""
+
+    private static let openccS2T = """
+{
+  "name": "Simplified Chinese to Traditional Chinese",
+  "segmentation": {
+    "type": "mmseg",
+    "dict": {
+      "type": "ocd2",
+      "file": "STPhrases.ocd2"
+    }
+  },
+  "conversion_chain": [{
+    "dict": {
+      "type": "ocd2",
+      "file": "STCharacters.ocd2"
+    }
+  }]
+}
 """
 
     /// 内嵌最小词库（当 bundle 中找不到官方 dict 时使用）

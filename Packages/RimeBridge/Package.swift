@@ -34,7 +34,6 @@ let package = Package(
         .binaryTarget(name: "boost_atomicRIME", path: "Vendor/boost_atomic.xcframework"),
         .binaryTarget(name: "boost_filesystemRIME", path: "Vendor/boost_filesystem.xcframework"),
         .binaryTarget(name: "boost_regexRIME", path: "Vendor/boost_regex.xcframework"),
-        .binaryTarget(name: "boost_systemRIME", path: "Vendor/boost_system.xcframework"),
         .binaryTarget(name: "libglogRIME", path: "Vendor/libglog.xcframework"),
         .binaryTarget(name: "libleveldbRIME", path: "Vendor/libleveldb.xcframework"),
         .binaryTarget(name: "libmarisaRIME", path: "Vendor/libmarisa.xcframework"),
