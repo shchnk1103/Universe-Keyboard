@@ -37,6 +37,9 @@ Icon
 # RIME xcframework binaries (too large, download/build separately)
 Packages/RimeBridge/Vendor/
 
+# Main App vendor stubs
+Universe Keyboard/Vendor/
+
 # RIME test tool binary
 Packages/RimeBridge/TestTool/test_rime
 

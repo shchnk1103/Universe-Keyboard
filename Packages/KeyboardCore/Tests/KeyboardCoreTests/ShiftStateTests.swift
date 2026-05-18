@@ -91,4 +91,34 @@ final class ShiftStateTests: XCTestCase {
         _ = controller.resetShiftState()
         XCTAssertEqual(controller.state.shiftState, .off)
     }
+
+    // MARK: - Edge cases
+
+    func testShiftDuringComposition() {
+        controller.state.currentComposition = "ni"
+        _ = controller.handle(.toggleShift)
+        // composition 存在时 shift 切换不影响输入
+        XCTAssertEqual(controller.state.shiftState, .singleUse)
+    }
+
+    func testCapsLockPersistence() {
+        // Double tap → caps lock
+        _ = controller.handle(.toggleShift)
+        _ = controller.handle(.toggleShift)
+        XCTAssertEqual(controller.state.shiftState, .capsLock)
+        // 换页后 caps lock 应 reset
+        _ = controller.handle(.togglePage)
+        XCTAssertEqual(controller.state.shiftState, .off)
+    }
+
+    func testRapidShiftToggle() {
+        // 快速双击 (<0.35s) 触发 caps lock
+        _ = controller.handle(.toggleShift)
+        XCTAssertEqual(controller.state.shiftState, .singleUse)
+        _ = controller.handle(.toggleShift)
+        XCTAssertEqual(controller.state.shiftState, .capsLock)
+        // 第三次单击退出 caps lock
+        _ = controller.handle(.toggleShift)
+        XCTAssertEqual(controller.state.shiftState, .off)
+    }
 }

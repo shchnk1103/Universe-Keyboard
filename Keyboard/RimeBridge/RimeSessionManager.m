@@ -51,9 +51,13 @@ NSString * const RimeKeyPageNo           = @"pageNo";
     traits.distribution_version = "1.0.0";
     traits.app_name = "rime.UniverseKeyboard";
 
-    // 显式加载必要模块（参考 Hamster 的做法）
-    // "core" 和 "dict" 是词典翻译器必需的
+    // 加载模块：core, dict, gears 为基础模块
+    // 当 librime-lua 插件已编译链接时，添加 "lua" 到列表中
+#ifdef RIME_HAS_LUA
+    const char* modules[] = { "core", "dict", "gears", "lua", NULL };
+#else
     const char* modules[] = { "core", "dict", "gears", NULL };
+#endif
     traits.modules = modules;
 
     _api->setup(&traits);
@@ -92,6 +96,18 @@ NSString * const RimeKeyPageNo           = @"pageNo";
         }
     }
 
+    // 记录 lua 模块可用性（当前需定义 RIME_HAS_LUA 编译宏才启用）
+    {
+        NSUserDefaults *defs = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.DoubleShy0N.Universe-Keyboard"];
+#ifdef RIME_HAS_LUA
+        [defs setBool:YES forKey:@"rime_lua_available"];
+        NSLog(@"[RIME] Lua module available");
+#else
+        [defs setBool:NO forKey:@"rime_lua_available"];
+#endif
+        [defs synchronize];
+    }
+
     _initialized = YES;
     return YES;
 }
@@ -112,7 +128,12 @@ NSString * const RimeKeyPageNo           = @"pageNo";
     }
 
     // 清空构建缓存（强制从 YAML 重新编译）
-    NSString *userDataDir = [NSString stringWithUTF8String:_api->get_user_data_dir()];
+    const char *udDir = _api->get_user_data_dir();
+    if (udDir == NULL) {
+        NSLog(@"[RIME] get_user_data_dir() returned NULL, cannot clear build cache");
+        return NO;
+    }
+    NSString *userDataDir = [NSString stringWithUTF8String:udDir];
     NSString *buildDir = [userDataDir stringByAppendingPathComponent:@"build"];
     NSFileManager *fm = [NSFileManager defaultManager];
     if ([fm fileExistsAtPath:buildDir]) {
@@ -267,6 +288,22 @@ NSString * const RimeKeyPageNo           = @"pageNo";
 /// 返回空输出（无 composition、无 candidates）
 - (NSDictionary *)emptyOutput {
     return @{};
+}
+
+// MARK: - Schema switching
+
+- (BOOL)selectSchema:(NSString *)schemaID {
+    if (_sessionId == 0) return NO;
+    return _api->select_schema(_sessionId, [schemaID UTF8String]);
+}
+
+- (NSString *)currentSchemaID {
+    if (_sessionId == 0) return nil;
+    char buffer[256] = {0};
+    if (_api->get_current_schema(_sessionId, buffer, sizeof(buffer))) {
+        return [NSString stringWithUTF8String:buffer];
+    }
+    return nil;
 }
 
 // MARK: - Cleanup

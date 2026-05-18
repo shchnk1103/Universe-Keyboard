@@ -11,18 +11,27 @@ Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chines
 
 The long-term goal is a full-featured Chinese keyboard with RIME/librime engine + 雾凇拼音 configuration, swipe input, and near-native iOS feel. The full development plan is documented in `ios-rime-keyboard-development-plan.md`.
 
-## Current Status (2026-05-16)
+## Current Status (2026-05-18)
 
-**Phase 3 (RIME Bridge) COMPLETE — librime 1.16.1 running on iOS.** All 9 dependency xcframeworks compiled from source and linked. Keyboard successfully produces Chinese candidates via real librime engine with OpenCC simplified/traditional conversion. 
+**Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.**
 
-**Next major milestone**: Integrate 雾凇拼音 (rime-ice) schema for production-quality dictionary coverage. Current luna_pinyin dictionary is minimal (demo-level).
+- **9 dependency xcframeworks** compiled from source and linked
+- **雾凇拼音 (rime-ice)** downloadable from main App (automatic download + deploy flow)
+- **librime-lua plugin** compiled as `librime-lua.xcframework` (~3MB, 10 C++ source files + 32 Lua 5.4 C files)
+- **liblua.xcframework** compiled (PUC Lua 5.4, ~400KB)
+- All Lua-dependent features now available: date input, calculator, typo correction, auto-cap, candidate pinning, etc.
+- Conditional Lua stripping: `RIME_HAS_LUA=1` enables full Lua support; without it, Lua references are stripped for compatibility
+- RIME schema picker UI: built-in luna_pinyin + downloadable rime_ice
+- Deploy system: 5-phase deploy flow (idle → triggered → deploying → deployed → failed) with polling
 
 **Recent additions**:
-- Unified logging system (`Logger`) with on/off toggle, level filtering, ring buffer
-- RIME configuration UI (sub-page): candidate count, simplified/traditional toggle, deploy status
-- Keyboard feedback sub-page: key click volume slider, haptic intensity slider with live preview
-- Custom key click sound generation (AVAudioPlayer) — no Full Access required
-- Diagnostics log sub-page with animated refresh/clear buttons
+- SchemaManager: download, extract, Lua-strip, install rime-ice full.zip (~16MB) from GitHub releases
+- Unzip.swift: minimal zip extractor using system libz (raw deflate), with bounds checking + 100MB safety limit
+- RimeConfigPostProcessor: conditional Lua stripping with indentation-aware continuation line handling
+- RimeSessionManager: schema switching (`selectSchema:`, `currentSchemaID`), Lua module loading, NULL safety
+- LicenseView: GPL-3.0 acknowledgment before rime-ice download
+- SchemaPickerRow: reusable schema selection component
+- Bug fixes: BinaryReader bounds checking, HTTP 304 handling, cancel race condition, inflate max-iterations guard
 
 ## Build & Run
 
@@ -31,14 +40,14 @@ The long-term goal is a full-featured Chinese keyboard with RIME/librime engine 
 - Team: `C33N6HTS9N`, code signing is automatic.
 - To test the keyboard: run the Keyboard extension target on a simulator/device, then enable it in Settings → General → Keyboard → Keyboards → Add New Keyboard → Keyboard.
 - Build with `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build`
-- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (120 tests across 10 files). Run with `swift test` in the `Packages/KeyboardCore/` directory.
+- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**152 tests across 11 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
 - A **macOS verification tool** at `Packages/RimeBridge/TestTool/` validates the bridge code against real librime 1.16.1. Run with `cd Packages/RimeBridge/TestTool && make && ./test_rime`.
 
 ## Architecture
 
 ### Keyboard Extension — file layout
 
-The keyboard is split across **16 files**:
+The keyboard is split across **15 files**:
 
 ```
 Keyboard/
@@ -56,19 +65,47 @@ Keyboard/
 ├── RimeConfigManager.swift               — RIME 配置部署 + OpenCC + custom.yaml 生成
 └── RimeBridge/                           — ObjC 桥接层
     ├── Keyboard-Bridging-Header.h
-    ├── RimeSessionManager.h/.m           — librime C API 封装
+    ├── RimeSessionManager.h/.m           — librime C API 封装（含 schema 切换 + lua 检测）
     ├── rime_api.h                        — librime 官方 C API 头文件
-    └── RimeEngineImpl.swift              — RimeEngine 协议实现（keycode 翻译 + session 管理）
+    └── RimeEngineImpl.swift              — RimeEngine 协议实现（keycode 翻译 + session 管理 + deploy）
+```
+
+**Main App additions**:
+
+```
+Universe Keyboard/
+├── SchemaManager.swift                   — 雾凇下载/解压/安装/Lua剥离 编排器
+├── Unzip.swift                           — 最小 zip 解压器（系统 libz，raw deflate）
+├── LicenseView.swift                     — GPL-3.0 许可证查看
+├── SchemaPickerRow.swift                 — 方案选择行组件
+├── UniverseKeyboard-Bridging-Header.h     — 主 App zlib 桥接头
+└── Components/                           — 复用 UI 组件
+    ├── InfoSection.swift
+    └── ToggleRow.swift
+```
+
+**Testing** (152 tests across 11 files, 0 failures):
+
+```
+Packages/KeyboardCore/Tests/KeyboardCoreTests/
+├── AutoCapitalizeTests.swift (29 tests)  ├── CompositionTests.swift (23 tests)
+├── DeleteTests.swift (5 tests)           ├── InputModeTests.swift (6 tests)
+├── KeyboardTypeTests.swift (6 tests)     ├── LoggerTests.swift (7 tests)
+├── PageSwitchTests.swift (12 tests)      ├── RimeConfigPostProcessorTests.swift (17 tests)
+├── RimeControllerTests.swift (26 tests)  ├── ShiftStateTests.swift (12 tests)
+├── SpaceReturnTests.swift (9 tests)
 ```
 
 All state is managed in `KeyboardCore.KeyboardState` (via `KeyboardController`), not in the view controller. The VC delegates to `controller.handle(_:)` for all business logic and calls `syncUI(with:)` to refresh views.
 
-### RIME Architecture (Phase 3)
+### RIME Architecture (Phase 3 + librime-lua)
 
 The keyboard uses a **dual-path** design in `KeyboardController`:
 
 - **RIME path** (`rimeEngine != nil`): delegates composition and candidate lookup to the engine. Supports hot-reload via `deployIfNeeded()` on every keystroke.
 - **Fallback path** (`rimeEngine == nil`): uses `CandidateProvider` + manual composition (original behavior).
+
+**librime-lua integration**: `Packages/RimeBridge/Vendor/` contains 11 xcframeworks (9 original + `liblua.xcframework` + `librime-lua.xcframework`). The lua module is registered at runtime via `RIME_HAS_LUA=1` preprocessor macro. Lua scripts are deployed from rime-ice's `lua/` directory to `AppGroup/Rime/shared/lua/`.
 
 **Inline preedit**: When typing in Chinese mode, the pinyin string is displayed directly in the host text field (like native iOS). `KeyboardState.insertedPreeditCount` tracks the length. On each keystroke, old preedit is deleted and new preedit is inserted. On candidate selection, preedit is deleted and the candidate text is inserted.
 

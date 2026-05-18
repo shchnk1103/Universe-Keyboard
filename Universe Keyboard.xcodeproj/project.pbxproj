@@ -465,6 +465,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+					SWIFT_OBJC_BRIDGING_HEADER = "Universe Keyboard/UniverseKeyboard-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -502,6 +503,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+					SWIFT_OBJC_BRIDGING_HEADER = "Universe Keyboard/UniverseKeyboard-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -529,6 +531,10 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
+					"-force_load",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64_x86_64-simulator/liblua.a",
+					"-force_load",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64_x86_64-simulator/librime-lua.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.Keyboard";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -540,6 +546,18 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
+					HEADER_SEARCH_PATHS = (
+						"$(PROJECT_DIR)/Keyboard/RimeBridge/lua",
+						"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin",
+						"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin/rime_headers",
+						"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin/boost_headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime.xcframework/ios-arm64/Headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/Headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libleveldb.xcframework/ios-arm64/Headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libmarisa.xcframework/ios-arm64/Headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libopencc.xcframework/ios-arm64/Headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libyaml-cpp.xcframework/ios-arm64/Headers",
+					);
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -565,6 +583,10 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lc++",
+					"-force_load",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64_x86_64-simulator/liblua.a",
+					"-force_load",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64_x86_64-simulator/librime-lua.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.Keyboard";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -575,6 +597,18 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Keyboard/RimeBridge/Keyboard-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
+					HEADER_SEARCH_PATHS = (
+						"$(PROJECT_DIR)/Keyboard/RimeBridge/lua",
+						"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin",
+						"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin/rime_headers",
+						"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin/boost_headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime.xcframework/ios-arm64/Headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/Headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libleveldb.xcframework/ios-arm64/Headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libmarisa.xcframework/ios-arm64/Headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libopencc.xcframework/ios-arm64/Headers",
+						"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libyaml-cpp.xcframework/ios-arm64/Headers",
+					);
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

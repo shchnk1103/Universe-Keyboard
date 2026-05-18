@@ -33,7 +33,10 @@ struct RimeConfigManager {
         Logger.shared.info("Bundle yaml (Resources/): \(bundleRimes.map { $0.lastPathComponent }.joined(separator: ", "))", category: .config)
 
         // 1. 写入小文件（字符串字面量）
-        writeIfChanged(name: "default.yaml", content: defaultYaml, to: sharedDir)
+        let defs = UserDefaults(suiteName: appGroupID)
+        let activeSchema = defs?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
+        let rimeIceInstalled = defs?.bool(forKey: "rime_ice_installed") ?? false
+        writeIfChanged(name: "default.yaml", content: generateDefaultYaml(activeSchemaID: activeSchema, rimeIceInstalled: rimeIceInstalled), to: sharedDir)
         writeIfChanged(name: "installation.yaml", content: installationYaml, to: sharedDir)
         writeIfChanged(name: "luna_pinyin.schema.yaml", content: lunaPinyinSchema, to: sharedDir)
 
@@ -59,8 +62,7 @@ struct RimeConfigManager {
         Logger.shared.info("OpenCC configs written to shared/opencc/", category: .config)
 
         // 5. 检查配置版本号，高于已部署版本则清除 build 缓存
-        let currentGen = 2  // 递增此数字可强制全部用户重新部署
-        let defs = UserDefaults(suiteName: appGroupID)
+        let currentGen = 3  // Phase 5: 多 schema 支持 + 雾凇拼音集成
         let deployedGen = defs?.integer(forKey: "config_generation") ?? 0
         if currentGen > deployedGen {
             if FileManager.default.fileExists(atPath: buildDir.path) {
@@ -97,8 +99,9 @@ struct RimeConfigManager {
         try? FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
 
         let defs = UserDefaults(suiteName: appGroupID)
+        let activeSchema = defs?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
 
-        // default.custom.yaml — 候选数量
+        // default.custom.yaml — 候选数量（全局）
         let pageSize = defs?.integer(forKey: "rime_page_size") ?? 0
         if pageSize >= 5 {
             let yaml = "patch:\n  \"menu/page_size\": \(pageSize)\n"
@@ -106,13 +109,14 @@ struct RimeConfigManager {
             Logger.shared.info("Synced default.custom.yaml (page_size=\(pageSize))", category: .config)
         }
 
-        // luna_pinyin.custom.yaml — 简繁
+        // {schema}.custom.yaml — 简繁（schema-specific）
         if defs?.object(forKey: "rime_simplification") != nil {
             let simplified = defs?.bool(forKey: "rime_simplification") ?? true
             let reset = simplified ? 1 : 0
             let yaml = "patch:\n  \"switches/@1/reset\": \(reset)\n"
-            try? yaml.write(to: userDir.appendingPathComponent("luna_pinyin.custom.yaml"), atomically: true, encoding: .utf8)
-            Logger.shared.info("Synced luna_pinyin.custom.yaml (simplification.reset=\(reset))", category: .config)
+            let filename = "\(activeSchema).custom.yaml"
+            try? yaml.write(to: userDir.appendingPathComponent(filename), atomically: true, encoding: .utf8)
+            Logger.shared.info("Synced \(filename) (simplification.reset=\(reset))", category: .config)
         }
     }
 
@@ -228,15 +232,25 @@ struct RimeConfigManager {
         }
     }
 
-    // MARK: - YAML 字面量
+    // MARK: - Dynamic YAML generation
 
-    private static let defaultYaml = """
+    private static func generateDefaultYaml(activeSchemaID: String, rimeIceInstalled: Bool) -> String {
+        var schemaList = """
+  - schema: luna_pinyin
+    name: 朙月拼音
+"""
+        if rimeIceInstalled {
+            schemaList += """
+  - schema: rime_ice
+    name: 雾凇拼音
+"""
+        }
+
+        return """
 config_version: "0.1"
 
 schema_list:
-  - schema: luna_pinyin
-    name: 朙月拼音
-
+\(schemaList)
 switcher:
   caption: "[方案选单]"
   hotkeys:
@@ -244,7 +258,7 @@ switcher:
     - "F4"
 
 menu:
-  page_size: 9
+  page_size: \(currentPageSize())
   alternative_select_keys: "123456789"
 
 ascii_composer:
@@ -261,6 +275,7 @@ punctuator:
 recognizer:
   import_preset: default
 """
+    }
 
     private static let installationYaml = """
 distribution_code_name: "UniverseKeyboard"

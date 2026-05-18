@@ -185,4 +185,31 @@ final class CompositionTests: XCTestCase {
         XCTAssertEqual(client.text, "xyz")
         XCTAssertEqual(controller.state.currentComposition, "")
     }
+
+    // MARK: - Edge cases
+
+    func testCompositionWithSpecialChars() {
+        // 数字和符号页的字符直接上屏
+        _ = controller.handle(.togglePage) // switch to numbers
+        _ = controller.handle(.insertKey("1"))
+        XCTAssertEqual(client.text, "1")
+        XCTAssertEqual(controller.state.currentComposition, "")
+    }
+
+    func testCompositionMaxLength() {
+        let longPinyin = String(repeating: "abcdefghij", count: 10)
+        for ch in longPinyin {
+            _ = controller.handle(.insertKey(String(ch)))
+        }
+        XCTAssertEqual(controller.state.currentComposition, longPinyin)
+    }
+
+    func testCompositionToggleDuringPreedit() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        XCTAssertEqual(controller.state.currentComposition, "ni")
+        _ = controller.handle(.toggleInputMode)
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertEqual(client.text, "ni")
+    }
 }

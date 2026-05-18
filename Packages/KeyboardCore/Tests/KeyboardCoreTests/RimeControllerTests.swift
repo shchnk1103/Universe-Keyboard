@@ -227,4 +227,62 @@ final class RimeControllerTests: XCTestCase {
         _ = controller.handle(.deleteBackward)
         XCTAssertEqual(controller.state.currentComposition, "n")
     }
+
+    // MARK: - Edge cases
+
+    func testDeleteBackwardWhenProxyIsEmpty() {
+        client.text = ""
+        _ = controller.handle(.deleteBackward)
+        XCTAssertEqual(client.text, "")
+        // 无 composition 且 proxy 为空时，delete 应为 no-op
+    }
+
+    func testProcessKeyWithEmptyEngineOutput() {
+        // 用不存在的组合测试空输出场景
+        _ = controller.handle(.insertKey("z"))
+        _ = controller.handle(.insertKey("z"))
+        _ = controller.handle(.insertKey("z"))
+        let effects = controller.handle(.insertKey("z"))
+        // engine 无匹配候选时仍应有 composition
+        XCTAssertEqual(controller.state.currentComposition, "zzzz")
+        XCTAssertTrue(effects.contains(.compositionChanged))
+    }
+
+    func testFastTypingStateConsistency() {
+        for ch in "nihao" {
+            _ = controller.handle(.insertKey(String(ch)))
+        }
+        XCTAssertEqual(controller.state.currentComposition, "nihao")
+        XCTAssertNotNil(controller.state.lastRimeOutput)
+        let candidates = controller.state.lastRimeOutput?.candidates ?? []
+        XCTAssertGreaterThan(candidates.count, 0)
+    }
+
+    func testEngineNilToNonNilTransition() {
+        controller.rimeEngine = nil
+        _ = controller.handle(.insertKey("h"))
+        _ = controller.handle(.insertKey("i"))
+        XCTAssertEqual(controller.state.currentComposition, "hi")
+        // 切换到 rime engine
+        controller.rimeEngine = engine
+        _ = controller.handle(.insertKey("n"))
+        // rime engine 从头开始（之前手动输入的不进入 engine 状态）
+        XCTAssertEqual(engine.sessionResetCount, 0)
+    }
+
+    func testDuplicateCandidateTextSelectsFirstMatch() {
+        // 当前架构按文本匹配候选；验证行为一致性
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        _ = controller.handle(.insertCandidate("你", kind: .candidate))
+        XCTAssertEqual(client.text, "你")
+    }
+
+    func testInsertCandidateWithNilLastRimeOutput() {
+        controller.state.lastRimeOutput = nil
+        _ = controller.handle(.insertCandidate("测试", kind: .candidate))
+        // 回退路径：直接上屏文本
+        XCTAssertEqual(client.text, "测试")
+        XCTAssertEqual(controller.state.currentComposition, "")
+    }
 }

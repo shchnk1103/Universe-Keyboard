@@ -24,6 +24,16 @@ public final class RimeEngineImpl: RimeEngine {
         bridge.initializeEngine()
         bridge.createSession()
 
+        // 选择当前激活的方案
+        let activeSchema = UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")?
+            .string(forKey: "rime_active_schema") ?? "luna_pinyin"
+        if !bridge.selectSchema(activeSchema) {
+            Logger.shared.warning("Failed to select schema '\(activeSchema)', falling back to luna_pinyin", category: .engine)
+            bridge.selectSchema("luna_pinyin")
+        } else {
+            Logger.shared.info("Active schema: \(activeSchema)", category: .engine)
+        }
+
         let elapsed = (CACurrentMediaTime() - startTime) * 1000
 
         let version = bridge.librimeVersion()
@@ -47,6 +57,13 @@ public final class RimeEngineImpl: RimeEngine {
         let didDeploy = bridge.deployIfNeeded()
         if didDeploy {
             Logger.shared.info("Hot-reload deployment completed on keystroke", category: .deployment)
+            // 部署重建了 session，需要重新选择方案
+            let schema = UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")?
+                .string(forKey: "rime_active_schema") ?? "luna_pinyin"
+            if !bridge.selectSchema(schema) {
+                Logger.shared.warning("Post-deploy schema select failed: \(schema)", category: .engine)
+                bridge.selectSchema("luna_pinyin")
+            }
         }
         let keycode = Self.keycode(for: key)
         let raw = bridge.processKey(keycode, modifiers: 0)

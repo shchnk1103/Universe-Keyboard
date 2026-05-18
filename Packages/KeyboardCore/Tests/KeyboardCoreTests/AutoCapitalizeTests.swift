@@ -160,4 +160,22 @@ final class AutoCapitalizeTests: XCTestCase {
         _ = controller.handle(.insertKey("."))
         XCTAssertEqual(controller.state.shiftState, .off)
     }
+
+    // MARK: - Edge cases
+
+    func testAutoCapAfterEmoji() {
+        // emoji 不是句尾标点，不应触发自动大写
+        XCTAssertFalse(controller.shouldAutoCapitalize(contextBeforeInput: "hello 😊"))
+    }
+
+    func testAutoCapAfterMixedPunctuation() {
+        // 多标点后应触发自动大写
+        XCTAssertTrue(controller.shouldAutoCapitalize(contextBeforeInput: "hello..."))
+    }
+
+    func testAutoCapOnEmptyDocumentAfterDelete() {
+        // 空/nil 上下文应触发自动大写
+        XCTAssertTrue(controller.shouldAutoCapitalize(contextBeforeInput: nil))
+        XCTAssertTrue(controller.shouldAutoCapitalize(contextBeforeInput: ""))
+    }
 }

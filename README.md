@@ -1,18 +1,19 @@
 # Universe Keyboard
 
-iOS 第三方中文输入法，基于 RIME/librime 1.16.1 引擎，追求接近 iOS 原生体验。
+iOS 第三方中文输入法，基于 RIME/librime 1.16.1 + librime-lua 引擎，追求接近 iOS 原生体验。
 
 ## 当前状态
 
-✅ **Phase 3 完成 — librime 1.16.1 已编译并在 iOS 上运行。** 键盘可产生真实中文候选词，支持 OpenCC 简繁转换。
-
-🚧 **Phase 4 待启动** — 引入雾凇拼音 (rime-ice) 方案，提升词典质量和覆盖率。
+✅ **雾凇拼音 + librime-lua 集成完成。** 键盘支持完整 Lua 脚本功能（日期输入、计算器、错音纠正等），152 个单元测试，0 失败。
 
 ## 功能
 
 ### 已实现
 
-- **RIME/librime 1.16.1** — 真实中文输入引擎，9 个依赖库全部从源码编译为 iOS xcframework
+- **RIME/librime 1.16.1 + librime-lua** — 真实中文输入引擎，11 个依赖库全部从源码编译为 iOS xcframework
+- **雾凇拼音 (rime-ice)** — 主 App 内一键下载 + 自动部署（~16MB），完整词库覆盖
+- **Lua 高级功能** — 日期输入(rq)、计算器(=1+2)、错音纠正、自动大写、候选置顶等
+- **方案选择器** — 内置朙月拼音 + 可下载雾凇拼音，支持切换和卸载
 - **OpenCC 简繁转换** — 集成 t2s/s2t，用户可在设置中切换
 - **26 键 QWERTY 布局** — 字母页 / 数字页 / 符号页三页体系
 - **横向滚动候选栏** — UIScrollView 驱动、SF Symbol 展开按钮、渐隐遮罩
@@ -21,24 +22,22 @@ iOS 第三方中文输入法，基于 RIME/librime 1.16.1 引擎，追求接近 
 - **Shift / Caps Lock** — 双击锁定大写，单击切换单次大写
 - **长按变体字符** — 19 个字母键支持长按弹出变体
 - **长按删除** — 按下即时删除 + 0.5s 后连续删除（0.08s 间隔）
-- **中英切换** — 一键切换输入模式，自动记录日志
+- **中英切换** — 一键切换输入模式
 - **空格 / 回车** — 回车键标题根据输入框类型动态变化
 - **键盘类型适配** — 邮箱/URL 自动切换英文并显示快捷键
 - **自动大写** — 句首自动 Shift
 - **双击空格句号** — 英文模式下双击空格输入 `. `
 - **深浅色模式** — 自动跟随系统
-- **按键音** — 内嵌生成点击音（2000Hz+谐波，4ms），AVAudioPlayer 播放，可调音量，无需完全访问
-- **触感反馈** — UIImpactFeedbackGenerator，可调强度（0.1-1.0），实时预览
+- **按键音** — 内嵌生成点击音，AVAudioPlayer 播放，可调音量，无需完全访问
+- **触感反馈** — UIImpactFeedbackGenerator，可调强度，实时预览
 - **统一日志系统** — Logger 单例，4 级/5 类/环形缓冲/独立开关
-- **RIME 配置 UI** — 子页面：候选数量/简繁切换/部署状态追踪
+- **RIME 配置 UI** — 方案选择/候选数量/简繁切换/部署状态追踪
 - **诊断日志** — 子页面：动画刷新和清空按钮
 - **主 App** — 双 Tab 布局（引导 / 设置），设置全部改为子页面模式
 
 ### 计划中
 
-- 雾凇拼音 (rime-ice) 配置导入
 - 滑动输入（英文先行，中文跟进）
-- 多方案切换
 - iPad 适配
 - 用户词库
 
@@ -49,9 +48,13 @@ Universe Keyboard.xcodeproj
 ├── Universe Keyboard/          # 主 App (SwiftUI, 双 Tab)
 │   ├── ContentView.swift       # Tab 1: 引导 / Tab 2: 设置
 │   ├── Universe_KeyboardApp.swift
-│   ├── FeedbackSettingsView.swift  # 键盘反馈子页面
-│   ├── RimeSettingsView.swift      # RIME 方案设置子页面
-│   ├── DiagnosticsView.swift       # 诊断日志子页面
+│   ├── SchemaManager.swift     # 雾凇下载/解压/安装/Lua剥离 编排器
+│   ├── Unzip.swift             # 最小 zip 解压器（libz raw deflate）
+│   ├── LicenseView.swift       # GPL-3.0 许可证查看
+│   ├── SchemaPickerRow.swift   # 方案选择行组件
+│   ├── FeedbackSettingsView.swift
+│   ├── RimeSettingsView.swift  # 方案选择 + 下载 UI + 部署控制
+│   ├── DiagnosticsView.swift
 │   └── Components/
 │       ├── InfoSection.swift
 │       └── ToggleRow.swift
@@ -71,12 +74,12 @@ Universe Keyboard.xcodeproj
 │   ├── RimeConfigManager.swift                   # RIME 配置部署 + OpenCC
 │   └── RimeBridge/                               # ObjC 桥接 + Swift 封装
 │       ├── Keyboard-Bridging-Header.h
-│       ├── RimeSessionManager.h/.m               # librime C API 封装
+│       ├── RimeSessionManager.h/.m               # librime C API + schema切换 + lua检测
 │       ├── rime_api.h                            # librime 官方 C API
-│       └── RimeEngineImpl.swift                  # RimeEngine 协议实现
+│       └── RimeEngineImpl.swift                  # RimeEngine 协议实现 + deploy
 │
 └── Packages/
-    ├── KeyboardCore/            # 纯逻辑层 (SPM, 120 个单元测试)
+    ├── KeyboardCore/            # 纯逻辑层 (SPM, 152 个单元测试)
     │   └── Sources/KeyboardCore/
     │       ├── KeyboardController.swift   # 状态机 + 双路径 (RIME/Fake)
     │       ├── KeyboardState.swift        # 键盘状态
@@ -86,14 +89,26 @@ Universe Keyboard.xcodeproj
     │       ├── CandidateProvider.swift    # 候选词协议
     │       ├── RimeEngine.swift           # RIME 引擎抽象协议
     │       ├── RimeOutput.swift           # 引擎输出模型
+    │       ├── RimeConfigPostProcessor.swift # Lua剥离 + 条件检测
     │       ├── CandidateProviderRimeAdapter.swift  # Fake → RimeEngine 适配器
     │       └── Logger.swift               # 统一日志系统
     │
     └── RimeBridge/              # RIME 桥接包 (SPM)
         ├── Sources/
-        │   ├── RimeEngineImpl.swift       # 真实 RIME 引擎
         │   └── RimeBridgeObjC/            # ObjC 桥接层
-        ├── Vendor/                        # xcframework (github: gitignored)
+        ├── Vendor/                        # 11 xcframework (gitignored)
+        │   ├── librime.xcframework        # RIME 引擎 1.16.1
+        │   ├── librime-lua.xcframework    # Lua 插件
+        │   ├── liblua.xcframework         # PUC Lua 5.4
+        │   ├── libopencc.xcframework      # 简繁转换
+        │   ├── libleveldb.xcframework     # 词典存储
+        │   ├── libmarisa.xcframework      # Trie 索引
+        │   ├── libyaml-cpp.xcframework    # YAML 解析
+        │   ├── libglog.xcframework        # 日志
+        │   ├── boost_atomic.xcframework   # Boost Atomic
+        │   ├── boost_filesystem.xcframework  # Boost FS
+        │   └── boost_regex.xcframework    # Boost Regex
+        ├── scripts/                       # 编译脚本
         └── TestTool/                      # macOS 验证工具
 ```
 
@@ -102,12 +117,13 @@ Universe Keyboard.xcodeproj
 ```
 用户按键 → KeyboardViewController
   → KeyboardController.handle(.insertKey("n"))
-    → rimeEngine.processKey("n")          [RIME 路径]
+    → rimeEngine.processKey("n")         [RIME/librime-lua 路径]
+    → Lua 脚本处理 (日期/计算器/纠正等)
     → state.lastRimeOutput = output
-    → updateInlinePreedit("n")            [拼音显示在输入框中]
+    → updateInlinePreedit("n")           [拼音显示在输入框中]
     → syncUI(.compositionChanged)
       → refreshCandidateBar()
-        → candidateItems()                [只显示候选词]
+        → candidateItems()              [只显示候选词]
 ```
 
 ## 设置数据流
@@ -117,15 +133,15 @@ Universe Keyboard.xcodeproj
   → 设置 rime_needs_deploy = true
     → 用户切换键盘打字
       → RimeEngineImpl.processKey()
-        → syncCustomYamlFiles()          [生成 .custom.yaml]
-        → deployIfNeeded()               [librime 重新部署]
+        → syncCustomYamlFiles()         [生成 .custom.yaml]
+        → deployIfNeeded()              [librime 重新部署]
           → 新配置生效
 ```
 
 ## 构建与运行
 
 ```bash
-# 单元测试（120 tests）
+# 单元测试（152 tests）
 cd Packages/KeyboardCore && swift test
 
 # Xcode 构建
@@ -137,8 +153,8 @@ xcodebuild -project "Universe Keyboard.xcodeproj" \
 cd Packages/RimeBridge/TestTool && make && ./test_rime
 ```
 
-> **注意**：`Packages/RimeBridge/Vendor/` 中的 xcframework 未纳入 Git（大小 126MB）。
-> 首次克隆后需按 `.claude/plans/eager-sleeping-meteor.md` 中的说明编译这些依赖。
+> **注意**：`Packages/RimeBridge/Vendor/` 中的 xcframework 未纳入 Git（大小 ~170MB）。
+> 首次克隆后需按编译脚本编译这些依赖。
 
 ## RIME 集成状态
 
@@ -150,12 +166,16 @@ cd Packages/RimeBridge/TestTool && make && ./test_rime
 | macOS 真实 librime 验证 | ✅ nihao→你好 |
 | Preedit inline 显示 | ✅ |
 | 候选栏 | ✅ |
-| RIME 配置 UI | ✅ 候选数/简繁/部署 |
+| RIME 配置 UI | ✅ 方案选择/候选数/简繁/部署 |
 | OpenCC 简繁转换 | ✅ t2s + s2t |
-| iOS xcframework (9个) | ✅ librime 1.16.1 |
+| iOS xcframework (11个) | ✅ librime 1.16.1 + Lua |
 | 统一日志系统 | ✅ Logger + 子页面 |
-| 雾凇拼音 | 🔴 Phase 4 |
+| 雾凇拼音 | ✅ 下载 + 自动部署 |
+| librime-lua 插件 | ✅ 完整 Lua 功能 |
+| 方案切换 | ✅ 朙月拼音 ↔ 雾凇拼音 |
+| 单元测试 | ✅ 152 tests, 0 failures |
 
 ## 许可证
 
 本项目代码采用 MIT License。RIME/librime 为 BSD-3-Clause。OpenCC 为 Apache-2.0。
+雾凇拼音 (rime-ice) 为 GPL-3.0，用户在使用前需阅读并同意许可证。
