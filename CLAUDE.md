@@ -11,9 +11,9 @@ Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chines
 
 The long-term goal is a full-featured Chinese keyboard with RIME/librime engine + 雾凇拼音 configuration, swipe input, and near-native iOS feel. The full development plan is documented in `ios-rime-keyboard-development-plan.md`.
 
-## Current Status (2026-05-18)
+## Current Status (2026-05-19)
 
-**Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.**
+**Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.** Code quality & test coverage milestone.
 
 - **9 dependency xcframeworks** compiled from source and linked
 - **雾凇拼音 (rime-ice)** downloadable from main App (automatic download + deploy flow)
@@ -26,12 +26,14 @@ The long-term goal is a full-featured Chinese keyboard with RIME/librime engine 
 
 **Recent additions**:
 - SchemaManager: download, extract, Lua-strip, install rime-ice full.zip (~16MB) from GitHub releases
-- Unzip.swift: minimal zip extractor using system libz (raw deflate), with bounds checking + 100MB safety limit
-- RimeConfigPostProcessor: conditional Lua stripping with indentation-aware continuation line handling
+- Unzip.swift: moved to KeyboardCore; fixed 2 off-by-2 field parsing bugs (CD + local header) + localOffset>=0 guard; 37 unit tests
+- RimeConfigPostProcessor: conditional Lua stripping with indentation-aware continuation line handling; 17 tests
+- RimeConfigTemplates: extracted pure YAML generation + string constants from RimeConfigManager (~400 lines dedup); 26 tests
 - RimeSessionManager: schema switching (`selectSchema:`, `currentSchemaID`), Lua module loading, NULL safety
 - LicenseView: GPL-3.0 acknowledgment before rime-ice download
 - SchemaPickerRow: reusable schema selection component
-- Bug fixes: BinaryReader bounds checking, HTTP 304 handling, cancel race condition, inflate max-iterations guard
+- Bug fixes: BinaryReader bounds checking, HTTP 304 handling, cancel race condition, inflate max-iterations guard, Shift double-tap Caps Lock exit
+- pre-push-review skill: automated code review → test → commit → push workflow (`/pre-push-review` or "push this")
 
 ## Build & Run
 
@@ -40,7 +42,7 @@ The long-term goal is a full-featured Chinese keyboard with RIME/librime engine 
 - Team: `C33N6HTS9N`, code signing is automatic.
 - To test the keyboard: run the Keyboard extension target on a simulator/device, then enable it in Settings → General → Keyboard → Keyboards → Add New Keyboard → Keyboard.
 - Build with `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build`
-- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**152 tests across 11 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
+- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**215 tests across 13 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
 - A **macOS verification tool** at `Packages/RimeBridge/TestTool/` validates the bridge code against real librime 1.16.1. Run with `cd Packages/RimeBridge/TestTool && make && ./test_rime`.
 
 ## Architecture
@@ -75,7 +77,6 @@ Keyboard/
 ```
 Universe Keyboard/
 ├── SchemaManager.swift                   — 雾凇下载/解压/安装/Lua剥离 编排器
-├── Unzip.swift                           — 最小 zip 解压器（系统 libz，raw deflate）
 ├── LicenseView.swift                     — GPL-3.0 许可证查看
 ├── SchemaPickerRow.swift                 — 方案选择行组件
 ├── UniverseKeyboard-Bridging-Header.h     — 主 App zlib 桥接头
@@ -84,7 +85,7 @@ Universe Keyboard/
     └── ToggleRow.swift
 ```
 
-**Testing** (152 tests across 11 files, 0 failures):
+**Testing** (215 tests across 13 files, 0 failures):
 
 ```
 Packages/KeyboardCore/Tests/KeyboardCoreTests/
@@ -92,8 +93,9 @@ Packages/KeyboardCore/Tests/KeyboardCoreTests/
 ├── DeleteTests.swift (5 tests)           ├── InputModeTests.swift (6 tests)
 ├── KeyboardTypeTests.swift (6 tests)     ├── LoggerTests.swift (7 tests)
 ├── PageSwitchTests.swift (12 tests)      ├── RimeConfigPostProcessorTests.swift (17 tests)
-├── RimeControllerTests.swift (26 tests)  ├── ShiftStateTests.swift (12 tests)
-├── SpaceReturnTests.swift (9 tests)
+├── RimeConfigTests.swift (26 tests)      ├── RimeControllerTests.swift (26 tests)
+├── ShiftStateTests.swift (12 tests)      ├── SpaceReturnTests.swift (9 tests)
+├── UnzipTests.swift (37 tests)
 ```
 
 All state is managed in `KeyboardCore.KeyboardState` (via `KeyboardController`), not in the view controller. The VC delegates to `controller.handle(_:)` for all business logic and calls `syncUI(with:)` to refresh views.
@@ -131,6 +133,9 @@ A local Swift Package at `Packages/KeyboardCore/`. Contains:
 - **`CandidateProvider`** — protocol for candidate lookup (currently `FakeCandidateProvider`; will be replaced by RIME).
 - **`TextInputClient`** — protocol abstracting `UITextDocumentProxy` (enables unit testing with `FakeTextInputClient`).
 - **`Logger`** — unified logging singleton. Log levels (debug/info/warning/error), categories (general/engine/config/deployment/performance), 500-entry ring buffer, master toggle via `logging_enabled` UserDefaults key. Tests in `LoggerTests.swift` (7 tests).
+- **`Unzip`** — minimal zip extractor using system libz (raw deflate). Supports store (method 0) and deflate (method 8). Bounds checking + 100MB safety limit + 10K iteration guard. 37 tests.
+- **`RimeConfigTemplates`** — pure YAML generation logic + string constants (default.yaml, luna_pinyin.schema.yaml, OpenCC configs, fallbackDict). Extracted from RimeConfigManager. 26 tests.
+- **`CZLib`** — system library target wrapping `<zlib.h>` via module.map, linked by KeyboardCore for inflate/deflate.
 
 ### Main App
 
@@ -195,3 +200,7 @@ Keyboard Extension (UIInputViewController) → thin UI + state machine
 - **Runtime deploy** (`RimeEngineImpl.processKey`): calls `syncCustomYamlFiles()` before `deployIfNeeded()`. Custom YAML generated from UserDefaults settings (page_size, simplification). If `rime_needs_deploy` is true, clears build cache, runs full maintenance, creates new session.
 - **OpenCC integration**: `simplifier` filter added to luna_pinyin schema with `opencc_config: opencc/t2s.json`. OpenCC configs + OCD2 dictionaries auto-deployed to `shared/opencc/`.
 - **Diagnostics**: `Logger` (singleton, KeyboardCore) with levels (debug/info/warning/error), categories, 500-entry ring buffer. Writes to `rime_diag_log` via shared UserDefaults. Main app DiagnosticsView shows logs with animated refresh/clear buttons.
+
+## Project Skills
+
+- **`pre-push-review`** (`.claude/skills/pre-push-review/SKILL.md`): automated workflow — scans diff + runs `swift test` + reviews for .bak/.DS_Store + creates commit + pushes. Trigger with "push", "upload to GitHub", "ship it", "commit and push". Blocks on test failures or exclusion-pattern files.
