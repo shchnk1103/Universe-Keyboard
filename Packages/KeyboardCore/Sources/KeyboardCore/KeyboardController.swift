@@ -152,7 +152,7 @@ extension KeyboardController {
         let isDoubleTap = state.lastShiftTapTime.map { now.timeIntervalSince($0) < 0.35 } ?? false
         state.lastShiftTapTime = now
 
-        if isDoubleTap {
+        if isDoubleTap && state.shiftState != .capsLock {
             state.shiftState = .capsLock
         } else {
             switch state.shiftState {

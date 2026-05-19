@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import KeyboardCore
 
 // MARK: - Schema metadata
 

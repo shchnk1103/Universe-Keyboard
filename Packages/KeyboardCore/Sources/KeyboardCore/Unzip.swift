@@ -1,25 +1,31 @@
 import Foundation
+import CZLib
 
 /// 最小 zip 解压工具，使用系统 libz 进行 raw deflate 解压。
 /// 只支持 store（method 0）和 deflate（method 8），足够处理 rime-ice full.zip。
-enum Unzip {
+public enum Unzip {
 
     /// 解压后单个条目的安全上限（100 MB）
-    static let maxUncompressedSize = 100_000_000
+    public static let maxUncompressedSize = 100_000_000
 
-    struct Entry {
-        let filename: String
-        let data: Data
+    public struct Entry {
+        public let filename: String
+        public let data: Data
+
+        public init(filename: String, data: Data) {
+            self.filename = filename
+            self.data = data
+        }
     }
 
-    enum Error: Swift.Error, LocalizedError {
+    public enum Error: Swift.Error, LocalizedError {
         case cannotOpen
         case badFormat(String)
         case decompressionFailed(String)
         case unsupportedMethod(UInt16, String)
         case tooLarge(String)
 
-        var errorDescription: String? {
+        public var errorDescription: String? {
             switch self {
             case .cannotOpen: return "无法打开 zip 文件"
             case .badFormat(let msg): return "Zip 格式错误：\(msg)"
@@ -33,7 +39,7 @@ enum Unzip {
 
     // MARK: - Public
 
-    static func extract(zipPath: String, to destinationDir: URL) throws -> [String] {
+    public static func extract(zipPath: String, to destinationDir: URL) throws -> [String] {
         let data = try Data(contentsOf: URL(fileURLWithPath: zipPath), options: .mappedIfSafe)
         let entries = try extract(data: data)
         var extracted: [String] = []
@@ -49,7 +55,7 @@ enum Unzip {
         return extracted
     }
 
-    static func extract(data: Data) throws -> [Entry] {
+    public static func extract(data: Data) throws -> [Entry] {
         guard data.count > 22 else { throw Error.badFormat("文件太小") }
 
         let eocdOffset = try findEOCD(in: data)
@@ -75,11 +81,11 @@ enum Unzip {
         for _ in 0..<min(totalEntries, 50_000) {
             let sig = try reader.readUInt32()
             if sig == 0x02014b50 {
-                reader.skip(4)
+                reader.skip(6)  // version made by (2) + version needed (2) + flags (2)
                 let method = try reader.readUInt16()
                 reader.skip(8)
                 let compressedSize = Int(try reader.readUInt32())
-                let uncompressedSize = Int(try reader.readUInt32())
+                let _ = Int(try reader.readUInt32())  // uncompressedSize, read from local header
                 let filenameLen = Int(try reader.readUInt16())
                 let extraLen = Int(try reader.readUInt16())
                 let commentLen = Int(try reader.readUInt16())
@@ -104,8 +110,8 @@ enum Unzip {
         }
 
         var entries: [Entry] = []
-        for (filename, localOffset, method) in localOffsets {
-            guard localOffset > 0, localOffset < data.count else {
+        for (filename, localOffset, _) in localOffsets {
+            guard localOffset >= 0, localOffset < data.count else {
                 throw Error.badFormat("本地文件偏移无效: \(filename)")
             }
 
@@ -114,10 +120,10 @@ enum Unzip {
             guard localSig == 0x04034b50 else {
                 throw Error.badFormat("本地文件头签名错误: \(filename)")
             }
-            reader.skip(4)
-            let _ = try reader.readUInt16()
-            let fileMethod = try reader.readUInt16()
-            reader.skip(8)
+            reader.skip(4)  // version needed (2) + flags (2)
+            let fileMethod = try reader.readUInt16()  // compression method
+            reader.skip(2)  // mod time
+            reader.skip(6)  // mod date (2) + crc32 (4)
             let compressedSize = Int(try reader.readUInt32())
             let uncompressedSize = Int(try reader.readUInt32())
             let filenameLen = Int(try reader.readUInt16())
@@ -242,7 +248,7 @@ enum Unzip {
 
 // MARK: - Binary reader helper
 
-private final class BinaryReader {
+final class BinaryReader {
     let data: Data
     var position: Int = 0
 
