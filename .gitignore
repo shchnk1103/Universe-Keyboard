@@ -31,8 +31,9 @@ Icon
 # VS Code / Cursor
 .vscode/
 
-# Claude Code
-.claude/
+# Claude Code (skills are shared project configuration)
+.claude/*
+!.claude/skills/
 
 # RIME xcframework binaries (too large, download/build separately)
 Packages/RimeBridge/Vendor/
