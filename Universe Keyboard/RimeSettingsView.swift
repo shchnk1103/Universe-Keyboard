@@ -320,6 +320,15 @@ struct RimeSettingsView: View {
                     .buttonStyle(.bordered)
                     .controlSize(.small)
 
+                    Button {
+                        schemaManager.forceRedownload()
+                    } label: {
+                        Label("重新下载", systemImage: "arrow.down.circle")
+                            .font(.subheadline)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+
                     Button(role: .destructive) {
                         showUninstallAlert = true
                     } label: {

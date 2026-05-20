@@ -134,6 +134,20 @@ final class SchemaManager: ObservableObject {
         }
     }
 
+    /// 强制重新下载（清除缓存版本和 ETag，即使已安装也重新下载）
+    func forceRedownload() {
+        switch rimeIceDownloadState {
+        case .idle, .failed: break
+        default: return
+        }
+        defaults.removeObject(forKey: "rime_ice_etag")
+        defaults.removeObject(forKey: "rime_ice_version")
+        rimeIceDownloadState = .fetchingReleaseInfo
+        currentDownloadTask = Task { [weak self] in
+            await self?.fetchAndDownload()
+        }
+    }
+
     func cancelDownload() {
         downloadTask?.cancel()
         downloadTask = nil
@@ -180,13 +194,18 @@ final class SchemaManager: ObservableObject {
             rimeIceDownloadState = .postProcessing
             try await Task.sleep(nanoseconds: 200_000_000) // 让 UI 刷新
 
-            // 6. Lua 剥离
-            let schemaContent = try String(contentsOf: schemaURL, encoding: .utf8)
-            let processed = Self.stripLuaDependencies(from: schemaContent)
-            guard Self.validateStrippedSchema(processed) else {
-                throw DownloadError.postProcessingFailed("剥离 Lua 后 schema 无效")
+            // 6. Lua 可用性检查 — librime-lua 已编译链接时保留 Lua
+            // 仅在 rime_lua_available 明确为 false 时剥离
+            // object(forKey:) 区分 nil（首次，键盘未启动）和 false（明确禁用）
+            let luaAvailable = UserDefaults(suiteName: appGroupID)?.object(forKey: "rime_lua_available") as? Bool
+            if luaAvailable == false {
+                let schemaContent = try String(contentsOf: schemaURL, encoding: .utf8)
+                let processed = Self.stripLuaDependencies(from: schemaContent)
+                guard Self.validateStrippedSchema(processed) else {
+                    throw DownloadError.postProcessingFailed("剥离 Lua 后 schema 无效")
+                }
+                try processed.write(to: schemaURL, atomically: true, encoding: .utf8)
             }
-            try processed.write(to: schemaURL, atomically: true, encoding: .utf8)
 
             // 7. 复制到 App Group shared 目录
             try installRimeIceFiles(from: extractDir)
@@ -245,7 +264,8 @@ final class SchemaManager: ObservableObject {
     private func downloadZip(from url: URL) async throws -> (URL, URLResponse) {
         var request = URLRequest(url: url)
         request.timeoutInterval = 300
-        if let etag = defaults.string(forKey: "rime_ice_etag"), !etag.isEmpty {
+        let hasEtag = defaults.string(forKey: "rime_ice_etag")
+        if let etag = hasEtag, !etag.isEmpty {
             request.setValue(etag, forHTTPHeaderField: "If-None-Match")
         }
 
@@ -253,14 +273,17 @@ final class SchemaManager: ObservableObject {
         guard let httpResponse = response as? HTTPURLResponse else {
             throw DownloadError.networkError("无效的 HTTP 响应")
         }
-        // 304 Not Modified — 使用缓存版本
-        guard httpResponse.statusCode != 304 else {
+
+        if httpResponse.statusCode == 304 {
             let localURL = fm.temporaryDirectory.appendingPathComponent("rime_ice_full.zip")
             if fm.fileExists(atPath: localURL.path) {
                 return (localURL, response)
             }
-            throw DownloadError.networkError("缓存过期，需要重新下载")
+            // ETag 缓存命中但临时文件已被清除：清除 ETag 后重试
+            defaults.removeObject(forKey: "rime_ice_etag")
+            return try await downloadZip(from: url)
         }
+
         guard httpResponse.statusCode == 200 else {
             throw DownloadError.networkError("下载失败，HTTP \(httpResponse.statusCode)")
         }
@@ -312,7 +335,8 @@ final class SchemaManager: ObservableObject {
             let destURL = sharedDir.appendingPathComponent(relativePath)
 
             // 跳过桌面前端配置（lua/ 目录保留 — Lua 模块可用时需要）
-            let luaAvailable = UserDefaults(suiteName: appGroupID)?.bool(forKey: "rime_lua_available") ?? false
+            // object(forKey:) 区分 nil（首次，默认 Lua 可用）和明确 false
+            let luaAvailable = (UserDefaults(suiteName: appGroupID)?.object(forKey: "rime_lua_available") as? Bool) ?? true
             let skipPrefixes = ["squirrel", "weasel", "recipe", "others/"] + (luaAvailable ? [] : ["lua/"])
             let skipFiles = (luaAvailable ? [] : ["t9.schema.yaml"]) + ["radical_pinyin.schema.yaml", "radical_pinyin.dict.yaml"]
             let fileName = fileURL.lastPathComponent
@@ -421,15 +445,37 @@ final class SchemaManager: ObservableObject {
         defaults.synchronize()
     }
 
-    // MARK: - Lua stripping (mirrors RimeConfigPostProcessor for main app use)
+    // MARK: - Lua stripping (仅在 rime_lua_available == false 时使用)
 
     static func stripLuaDependencies(from yaml: String) -> String {
         let lines = yaml.components(separatedBy: "\n")
         var result: [String] = []
+        var skipUntilIndent: Int? = nil
         for line in lines {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
-            if trimmed.contains("lua_translator@") || trimmed.contains("lua_filter@") { continue }
-            if trimmed.hasPrefix("- lua_translator") || trimmed.hasPrefix("- lua_filter") || trimmed.hasPrefix("- lua_processor") { continue }
+            let indent = line.prefix(while: { $0 == " " || $0 == "\t" }).count
+
+            let isLuaLine = trimmed.contains("lua_translator@")
+                         || trimmed.contains("lua_filter@")
+                         || trimmed.hasPrefix("- lua_translator")
+                         || trimmed.hasPrefix("- lua_filter")
+                         || trimmed.hasPrefix("- lua_processor")
+
+            // rime_ice 的 speller initials 包含全部字母，无 Lua 时 speller 无法工作
+            let isInitialsLine = trimmed.hasPrefix("initials:") &&
+                (trimmed.contains("zyxwvutsrqponmlkjihgfedcba") ||
+                 trimmed.contains("abcdefghijklmnopqrstuvwxyz"))
+
+            // Skip continuation lines of stripped Lua entries
+            if !isLuaLine, let skipIndent = skipUntilIndent, indent > skipIndent, !trimmed.isEmpty {
+                continue
+            }
+            if !isLuaLine && indent <= (skipUntilIndent ?? -1) { skipUntilIndent = nil }
+            if trimmed.isEmpty { skipUntilIndent = nil }
+
+            if isLuaLine { skipUntilIndent = indent; continue }
+            if isInitialsLine { continue }
+
             result.append(line)
         }
         return result.joined(separator: "\n")

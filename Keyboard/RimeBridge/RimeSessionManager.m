@@ -71,32 +71,7 @@ NSString * const RimeKeyPageNo           = @"pageNo";
 
     _api->initialize(NULL);
 
-    // 检查是否需要全量部署（首次使用或主 App 触发配置更新后）
-    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.DoubleShy0N.Universe-Keyboard"];
-    BOOL needsDeploy = [defaults boolForKey:@"rime_needs_deploy"];
-    BOOL alreadyDeployed = [defaults boolForKey:@"rime_deployed"];
-
-    if (!alreadyDeployed || needsDeploy) {
-        // 通知主 App 部署已开始
-        [defaults setBool:YES forKey:@"rime_deploying"];
-        [defaults synchronize];
-
-        _api->start_maintenance(/*full_check=*/True);
-        _api->join_maintenance_thread();
-
-        // 部署完成，更新状态
-        [defaults setBool:NO forKey:@"rime_needs_deploy"];
-        [defaults setBool:NO forKey:@"rime_deploying"];
-        [defaults setBool:YES forKey:@"rime_deployed"];
-        [defaults synchronize];
-    } else {
-        // 已部署过，只做快速检查
-        if (_api->start_maintenance(/*full_check=*/False)) {
-            _api->join_maintenance_thread();
-        }
-    }
-
-    // 记录 lua 模块可用性（当前需定义 RIME_HAS_LUA 编译宏才启用）
+    // 记录 lua 模块可用性
     {
         NSUserDefaults *defs = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.DoubleShy0N.Universe-Keyboard"];
 #ifdef RIME_HAS_LUA
@@ -106,6 +81,35 @@ NSString * const RimeKeyPageNo           = @"pageNo";
         [defs setBool:NO forKey:@"rime_lua_available"];
 #endif
         [defs synchronize];
+    }
+
+    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.DoubleShy0N.Universe-Keyboard"];
+    BOOL needsDeploy = [defaults boolForKey:@"rime_needs_deploy"];
+
+    if (needsDeploy) {
+        // 只做快速检查（luna_pinyin 有预编译 .bin 会立即可用），
+        // 全量部署延后到 deployIfNeeded（首次按键触发，但 deployIfNeeded 也会阻塞）
+        // 先快速检查确保 luna_pinyin 可用
+        if (_api->start_maintenance(/*full_check=*/False)) {
+            _api->join_maintenance_thread();
+        }
+    } else {
+        BOOL alreadyDeployed = [defaults boolForKey:@"rime_deployed"];
+        if (!alreadyDeployed) {
+            // 首次使用：全量部署
+            [defaults setBool:YES forKey:@"rime_deploying"];
+            [defaults synchronize];
+            _api->start_maintenance(/*full_check=*/True);
+            _api->join_maintenance_thread();
+            [defaults setBool:NO forKey:@"rime_deploying"];
+            [defaults setBool:YES forKey:@"rime_deployed"];
+            [defaults synchronize];
+        } else {
+            // 已部署过，只做快速检查
+            if (_api->start_maintenance(/*full_check=*/False)) {
+                _api->join_maintenance_thread();
+            }
+        }
     }
 
     _initialized = YES;

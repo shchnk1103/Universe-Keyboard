@@ -267,6 +267,43 @@ final class RimeConfigTests: XCTestCase {
 
     // MARK: - Page size edge cases
 
+    func testGenerateDefaultYamlSchemaListLineStructure() {
+        // 验证 schema_list 中每个条目都在独立行上（不能合并）
+        let yaml = RimeConfigTemplates.generateDefaultYaml(
+            activeSchemaID: "luna_pinyin",
+            rimeIceInstalled: true,
+            pageSize: 9
+        )
+        let lines = yaml.components(separatedBy: "\n")
+        // 找到 schema_list 后面的每一行并验证结构
+        var inSchemaList = false
+        var foundLuna = false
+        var foundRimeIce = false
+        for line in lines {
+            if line.trimmingCharacters(in: .whitespaces) == "schema_list:" {
+                inSchemaList = true
+                continue
+            }
+            guard inSchemaList else { continue }
+            // schema_list 结束后退出的条件：遇到不缩进的顶级键
+            let t = line.trimmingCharacters(in: .whitespaces)
+            if !t.isEmpty && !line.hasPrefix(" ") && !line.hasPrefix("\t") && !t.hasPrefix("-") {
+                break
+            }
+            if t.hasPrefix("- schema:") {
+                if t.contains("luna_pinyin") { foundLuna = true }
+                if t.contains("rime_ice") { foundRimeIce = true }
+                // schema 行不应该同时包含 name
+                XCTAssertFalse(t.contains("name:"), "schema 行不应包含 name: \(t)")
+            }
+            if t.hasPrefix("name:") {
+                // name 行不应包含 schema
+                XCTAssertFalse(t.contains("- schema:"), "name 行不应包含 - schema: \(t)")
+            }
+        }
+        XCTAssertTrue(foundLuna && foundRimeIce, "应该同时包含 luna_pinyin 和 rime_ice")
+    }
+
     func testGenerateDefaultYamlPageSizeZero() {
         // pageSize of 0 should still appear in the output
         let yaml = RimeConfigTemplates.generateDefaultYaml(

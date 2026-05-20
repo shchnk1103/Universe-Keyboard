@@ -1,6 +1,5 @@
 import XCTest
 @testable import KeyboardCore
-import CZLib
 
 final class UnzipTests: XCTestCase {
 
@@ -146,7 +145,7 @@ final class UnzipTests: XCTestCase {
         zs.zalloc = nil
         zs.zfree = nil
         zs.opaque = nil
-        deflateInit2_(&zs, Z_DEFAULT_COMPRESSION, Z_DEFLATED, -MAX_WBITS, 8, Z_DEFAULT_STRATEGY, ZLIB_VERSION, Int32(MemoryLayout<z_stream>.size))
+        deflateInit2_(&zs, Z_DEFAULT_COMPRESSION, Z_DEFLATED, -MAX_WBITS, 8, Z_DEFAULT_STRATEGY, zlibVersion(), Int32(MemoryLayout<z_stream>.size))
         defer { deflateEnd(&zs) }
 
         let inCount = data.count

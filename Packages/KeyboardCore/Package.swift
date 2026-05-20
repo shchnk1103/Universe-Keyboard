@@ -8,11 +8,10 @@ let package = Package(
         .library(name: "KeyboardCore", targets: ["KeyboardCore"])
     ],
     targets: [
-        .systemLibrary(name: "CZLib"),
         .target(
             name: "KeyboardCore",
-            dependencies: ["CZLib"]
+            linkerSettings: [.linkedLibrary("z")]
         ),
-        .testTarget(name: "KeyboardCoreTests", dependencies: ["KeyboardCore", "CZLib"])
+        .testTarget(name: "KeyboardCoreTests", dependencies: ["KeyboardCore"])
     ]
 )

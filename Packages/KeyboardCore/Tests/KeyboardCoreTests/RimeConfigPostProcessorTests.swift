@@ -164,8 +164,8 @@ final class RimeConfigPostProcessorTests: XCTestCase {
     func testShouldStripLuaWhenKeyMissing() {
         let defaults = UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")
         defaults?.removeObject(forKey: "rime_lua_available")
-        XCTAssertTrue(RimeConfigPostProcessor.shouldStripLua(),
-                       "当 rime_lua_available 键缺失时，默认应该剥离 Lua")
+        XCTAssertFalse(RimeConfigPostProcessor.shouldStripLua(),
+                       "当 rime_lua_available 键缺失时，默认认为 Lua 可用（librime-lua 已链接）")
     }
 
     func testShouldStripLuaWhenFalse() {
@@ -180,5 +180,174 @@ final class RimeConfigPostProcessorTests: XCTestCase {
         XCTAssertFalse(RimeConfigPostProcessor.shouldStripLua(),
                         "当 rime_lua_available 为 true 时，不应该剥离 Lua")
         defaults?.removeObject(forKey: "rime_lua_available")
+    }
+
+    // MARK: - initials stripping
+
+    func testStripInitialsWithAllLetters() {
+        let yaml = """
+        speller:
+          alphabet: zyxwvutsrqponmlkjihgfedcba
+          initials: zyxwvutsrqponmlkjihgfedcba
+          delimiter: " '"
+        """
+        let result = RimeConfigPostProcessor.stripLuaDependencies(from: yaml)
+        XCTAssertFalse(result.contains("initials:"), "包含全字母的 initials 行应该被移除")
+        XCTAssertTrue(result.contains("alphabet:"), "alphabet 行应该保留")
+    }
+
+    func testStripInitialsWithNormalInitials() {
+        // 小鹤双拼等方案的 initials 只包含声母，不应该被移除
+        let yaml = """
+        speller:
+          alphabet: zyxwvutsrqponmlkjihgfedcba
+          initials: bpmfdtnlgkhjqxzcsryw
+          delimiter: " '"
+        """
+        let result = RimeConfigPostProcessor.stripLuaDependencies(from: yaml)
+        XCTAssertTrue(result.contains("initials: bpmfdtnlgkhjqxzcsryw"), "普通方案的 initials 应该保留")
+    }
+
+    // MARK: - repairSchemaIfNeeded
+
+    func testRepairDoesNotTouchCorrectLuaSchema() {
+        let tmpFile = NSTemporaryDirectory() + "rime_test_correct.yaml"
+        let correctSchema = """
+        engine:
+          translators:
+            - lua_translator@*date_translator
+            - script_translator
+        speller:
+          alphabet: zyxwvutsrqponmlkjihgfedcba
+          initials: zyxwvutsrqponmlkjihgfedcba
+        """
+        try? correctSchema.write(toFile: tmpFile, atomically: true, encoding: .utf8)
+        RimeConfigPostProcessor.repairSchemaIfNeeded(at: tmpFile)
+        let result = String(data: (try! Data(contentsOf: URL(fileURLWithPath: tmpFile))), encoding: .utf8)!
+        XCTAssertEqual(result, correctSchema, "包含 Lua 引用的正确 schema 不应该被修改")
+        try? FileManager.default.removeItem(atPath: tmpFile)
+    }
+
+    func testRepairFixesOldStrippedSchema() {
+        let tmpFile = NSTemporaryDirectory() + "rime_test_stripped.yaml"
+        // 模拟旧剥离代码的真实产物：Lua 引用已被删除，孤行 date_locale: zh 残留，
+        // 破坏性 initials 保留，script_translator + table_translator 保留
+        let strippedSchema = """
+        engine:
+          translators:
+            - punct_translator
+            - script_translator
+            date_locale: zh
+            - table_translator@custom_phrase
+        speller:
+          alphabet: zyxwvutsrqponmlkjihgfedcba
+          initials: zyxwvutsrqponmlkjihgfedcba
+        translator:
+          dictionary: rime_ice
+        """
+        try? strippedSchema.write(toFile: tmpFile, atomically: true, encoding: .utf8)
+        RimeConfigPostProcessor.repairSchemaIfNeeded(at: tmpFile)
+        let result = String(data: (try! Data(contentsOf: URL(fileURLWithPath: tmpFile))), encoding: .utf8)!
+        XCTAssertFalse(result.contains("initials: zyxwvutsrqponmlkjihgfedcba"), "修复后破坏性 initials 应该被移除")
+        XCTAssertFalse(result.contains("date_locale: zh"), "修复后孤行应该被移除")
+        XCTAssertTrue(result.contains("script_translator"), "script_translator 应该保留")
+        XCTAssertTrue(result.contains("table_translator@custom_phrase"), "table_translator 应该保留")
+        XCTAssertTrue(result.contains("alphabet:"), "alphabet 应该保留")
+        try? FileManager.default.removeItem(atPath: tmpFile)
+    }
+
+    func testRepairSkipsSchemaWithoutDamagingInitials() {
+        let tmpFile = NSTemporaryDirectory() + "rime_test_normal.yaml"
+        let schema = """
+        speller:
+          alphabet: zyxwvutsrqponmlkjihgfedcba
+          delimiter: " '"
+        translator:
+          dictionary: rime_ice
+        """
+        try? schema.write(toFile: tmpFile, atomically: true, encoding: .utf8)
+        RimeConfigPostProcessor.repairSchemaIfNeeded(at: tmpFile)
+        let result = try? String(contentsOfFile: tmpFile, encoding: .utf8)
+        XCTAssertEqual(result, schema, "没有破坏性 initials 的 schema 不应该被修改")
+        try? FileManager.default.removeItem(atPath: tmpFile)
+    }
+
+    func testRepairRemovesOrphanWithoutInitials() {
+        let tmpFile = NSTemporaryDirectory() + "rime_test_orphan_only.yaml"
+        // 模拟第一次修复已移除 initials，但孤行 date_locale: zh 仍残留
+        let schema = """
+        engine:
+          translators:
+            - punct_translator
+            - script_translator
+            date_locale: zh
+            - table_translator@custom_phrase
+        speller:
+          alphabet: zyxwvutsrqponmlkjihgfedcba
+        translator:
+          dictionary: rime_ice
+        """
+        try? schema.write(toFile: tmpFile, atomically: true, encoding: .utf8)
+        RimeConfigPostProcessor.repairSchemaIfNeeded(at: tmpFile)
+        let result = String(data: (try! Data(contentsOf: URL(fileURLWithPath: tmpFile))), encoding: .utf8)!
+        XCTAssertFalse(result.contains("date_locale: zh"), "孤行应该被移除（即使没有 initials）")
+        XCTAssertTrue(result.contains("script_translator"), "script_translator 应该保留")
+        try? FileManager.default.removeItem(atPath: tmpFile)
+    }
+
+    func testRepairHandlesMissingFile() {
+        // 不应该崩溃
+        RimeConfigPostProcessor.repairSchemaIfNeeded(at: "/tmp/nonexistent_rime_test.yaml")
+    }
+
+    // MARK: - Full old-stripper simulation
+
+    func testOldStripperDamageRepair() {
+        // 模拟完整的旧剥离→修复流程
+        let original = """
+        engine:
+          processors:
+            - lua_processor@*select_character
+            - ascii_composer
+            - speller
+          translators:
+            - punct_translator
+            - script_translator
+            - lua_translator@*date_translator
+              date_locale: zh
+            - lua_translator@*lunar
+            - table_translator@custom_phrase
+          filters:
+            - lua_filter@*corrector
+            - uniquifier
+        speller:
+          initials: zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA
+          alphabet: zyxwvutsrqponmlkjihgfedcba
+        translator:
+          dictionary: rime_ice
+        """
+
+        // Step 1: 模拟旧剥离（只删 Lua 行，不处理续行和 initials）
+        let oldStripped = original.components(separatedBy: "\n")
+            .filter { line in
+                let t = line.trimmingCharacters(in: .whitespaces)
+                if t.contains("lua_translator@") || t.contains("lua_filter@") { return false }
+                if t.hasPrefix("- lua_translator") || t.hasPrefix("- lua_filter") || t.hasPrefix("- lua_processor") { return false }
+                return true
+            }
+            .joined(separator: "\n")
+
+        // 验证旧剥离后有问题
+        XCTAssertTrue(oldStripped.contains("initials:"), "旧剥离后 initials 仍在")
+        XCTAssertTrue(oldStripped.contains("date_locale: zh"), "旧剥离后孤行仍在")
+
+        // Step 2: 用新代码修复
+        let repaired = RimeConfigPostProcessor.stripLuaDependencies(from: original)
+        XCTAssertFalse(repaired.contains("initials: zyxwvutsrqponmlkjihgfedcba"), "新剥离后 initials 被移除")
+        XCTAssertFalse(repaired.contains("date_locale: zh"), "新剥离后孤行被移除")
+        XCTAssertFalse(repaired.contains("lua_translator@"), "新剥离后 Lua 引用被移除")
+        XCTAssertTrue(repaired.contains("script_translator"), "script_translator 保留")
+        XCTAssertTrue(repaired.contains("table_translator@custom_phrase"), "table_translator 保留")
+        XCTAssertTrue(RimeConfigPostProcessor.validateStrippedSchema(repaired), "修复后 schema 有效")
     }
 }

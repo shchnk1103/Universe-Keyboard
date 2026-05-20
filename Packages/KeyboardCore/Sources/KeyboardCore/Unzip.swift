@@ -1,5 +1,4 @@
 import Foundation
-import CZLib
 
 /// 最小 zip 解压工具，使用系统 libz 进行 raw deflate 解压。
 /// 只支持 store（method 0）和 deflate（method 8），足够处理 rime-ice full.zip。
@@ -192,7 +191,7 @@ public enum Unzip {
         zs.zfree = nil
         zs.opaque = nil
 
-        let initRet = inflateInit2_(&zs, -MAX_WBITS, ZLIB_VERSION, Int32(MemoryLayout<z_stream>.size))
+        let initRet = inflateInit2_(&zs, -MAX_WBITS, zlibVersion(), Int32(MemoryLayout<z_stream>.size))
         guard initRet == Z_OK else {
             throw Error.decompressionFailed("inflateInit2 失败，代码: \(initRet)")
         }

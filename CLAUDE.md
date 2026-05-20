@@ -11,29 +11,28 @@ Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chines
 
 The long-term goal is a full-featured Chinese keyboard with RIME/librime engine + 雾凇拼音 configuration, swipe input, and near-native iOS feel. The full development plan is documented in `ios-rime-keyboard-development-plan.md`.
 
-## Current Status (2026-05-19)
+## Current Status (2026-05-20)
 
-**Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.** Code quality & test coverage milestone.
+**Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.** Bug fixes & schema repairs applied.
 
-- **9 dependency xcframeworks** compiled from source and linked
+- **11 dependency xcframeworks** compiled from source and linked (9 base + liblua + librime-lua)
 - **雾凇拼音 (rime-ice)** downloadable from main App (automatic download + deploy flow)
 - **librime-lua plugin** compiled as `librime-lua.xcframework` (~3MB, 10 C++ source files + 32 Lua 5.4 C files)
 - **liblua.xcframework** compiled (PUC Lua 5.4, ~400KB)
-- All Lua-dependent features now available: date input, calculator, typo correction, auto-cap, candidate pinning, etc.
+- **CZLib target eliminated** — pure Swift `@_silgen_name` zlib calls (`ZLib.swift`), removing SPM C-target explicit-module-build issues
+- **Schema auto-repair**: corrupted rime_ice.schema.yaml (from old Lua-stripping) replaced with clean `rimeIceMinimalSchema` template at runtime
 - Conditional Lua stripping: `RIME_HAS_LUA=1` enables full Lua support; without it, Lua references are stripped for compatibility
 - RIME schema picker UI: built-in luna_pinyin + downloadable rime_ice
-- Deploy system: 5-phase deploy flow (idle → triggered → deploying → deployed → failed) with polling
+- 5-phase deploy flow (idle → triggered → deploying → deployed → failed)
+- **Schema verification**: `selectAndVerifySchema` with Phase 1 (currentSchemaID check) + Phase 2 (functional test with "ni") + auto-fallback to luna_pinyin
+- **force_load paths**: SDK-conditional (`[sdk=iphonesimulator*]`) supporting both simulator and device builds
+- **DiagnosticsView**: copy button, enhanced engine-side repair logging
 
-**Recent additions**:
-- SchemaManager: download, extract, Lua-strip, install rime-ice full.zip (~16MB) from GitHub releases
-- Unzip.swift: moved to KeyboardCore; fixed 2 off-by-2 field parsing bugs (CD + local header) + localOffset>=0 guard; 37 unit tests
-- RimeConfigPostProcessor: conditional Lua stripping with indentation-aware continuation line handling; 17 tests
-- RimeConfigTemplates: extracted pure YAML generation + string constants from RimeConfigManager (~400 lines dedup); 26 tests
-- RimeSessionManager: schema switching (`selectSchema:`, `currentSchemaID`), Lua module loading, NULL safety
-- LicenseView: GPL-3.0 acknowledgment before rime-ice download
-- SchemaPickerRow: reusable schema selection component
-- Bug fixes: BinaryReader bounds checking, HTTP 304 handling, cancel race condition, inflate max-iterations guard, Shift double-tap Caps Lock exit
-- pre-push-review skill: automated code review → test → commit → push workflow (`/pre-push-review` or "push this")
+**Recent bug fixes**:
+- `generateDefaultYaml`: Swift multiline string concatenation missing `\n` between schema_list entries (librime couldn't see rime_ice)
+- SchemaManager: `object(forKey:)` instead of `bool(forKey:)` to distinguish nil vs false for `rime_lua_available`; HTTP 304 retry when cached zip missing; `forceRedownload()` method
+- `RimeConfigPostProcessor`: made public; `stripLuaDependencies` now also removes damaging `initials:` lines; added `repairSchemaIfNeeded` with orphan line detection
+- `RimeSessionManager.initializeEngine`: optimized — quick check only when `needsDeploy` (luna_pinyin precompiled .bin available immediately), full deploy deferred to first keystroke
 
 ## Build & Run
 
@@ -42,7 +41,7 @@ The long-term goal is a full-featured Chinese keyboard with RIME/librime engine 
 - Team: `C33N6HTS9N`, code signing is automatic.
 - To test the keyboard: run the Keyboard extension target on a simulator/device, then enable it in Settings → General → Keyboard → Keyboards → Add New Keyboard → Keyboard.
 - Build with `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build`
-- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**215 tests across 13 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
+- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**223 tests across 13 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
 - A **macOS verification tool** at `Packages/RimeBridge/TestTool/` validates the bridge code against real librime 1.16.1. Run with `cd Packages/RimeBridge/TestTool && make && ./test_rime`.
 
 ## Architecture
@@ -85,7 +84,7 @@ Universe Keyboard/
     └── ToggleRow.swift
 ```
 
-**Testing** (215 tests across 13 files, 0 failures):
+**Testing** (223 tests across 13 files, 0 failures):
 
 ```
 Packages/KeyboardCore/Tests/KeyboardCoreTests/
@@ -135,7 +134,7 @@ A local Swift Package at `Packages/KeyboardCore/`. Contains:
 - **`Logger`** — unified logging singleton. Log levels (debug/info/warning/error), categories (general/engine/config/deployment/performance), 500-entry ring buffer, master toggle via `logging_enabled` UserDefaults key. Tests in `LoggerTests.swift` (7 tests).
 - **`Unzip`** — minimal zip extractor using system libz (raw deflate). Supports store (method 0) and deflate (method 8). Bounds checking + 100MB safety limit + 10K iteration guard. 37 tests.
 - **`RimeConfigTemplates`** — pure YAML generation logic + string constants (default.yaml, luna_pinyin.schema.yaml, OpenCC configs, fallbackDict). Extracted from RimeConfigManager. 26 tests.
-- **`CZLib`** — system library target wrapping `<zlib.h>` via module.map, linked by KeyboardCore for inflate/deflate.
+- **`ZLib`** — pure Swift `@_silgen_name` declarations for zlib types (`z_stream`, `uInt`), functions (`inflateInit2_`, `inflate`, `inflateEnd`, `deflateInit2_`, `deflate`, `deflateEnd`), and constants. Eliminates the CZLib SPM C-target to avoid Xcode 26 explicit-module-build issues.
 
 ### Main App
 

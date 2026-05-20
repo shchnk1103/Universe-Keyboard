@@ -19,7 +19,7 @@ public struct RimeConfigTemplates {
     name: 朙月拼音
 """
         if rimeIceInstalled {
-            schemaList += """
+            schemaList += "\n" + """
   - schema: rime_ice
     name: 雾凇拼音
 """
@@ -175,6 +175,64 @@ simplifier:
     }
   }]
 }
+"""
+
+    /// 雾凇拼音最小可用 schema——用于替代被旧 Lua 剥离破坏的 rime_ice.schema.yaml。
+    /// 基于 script_translator（非 Lua），挂载 rime_ice 词库 + melt_eng + custom_phrase + cn_en + radical_lookup。
+    /// 不依赖 librime-lua，可独立产生候选词。
+    public static let rimeIceMinimalSchema = """
+schema:
+  schema_id: rime_ice
+  name: 雾凇拼音
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中, Ａ ]
+  - name: simplification
+    reset: 1
+    states: [ 漢字, 汉字 ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - script_translator
+    - table_translator@custom_phrase
+    - table_translator@melt_eng
+    - table_translator@cn_en
+  filters:
+    - simplifier
+    - uniquifier
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  delimiter: " '"
+  algebra:
+    - erase/^xx$/
+    - abbrev/^([a-z]).+$/$1/
+    - abbrev/^([zcs]h).+$/$1/
+    - derive/^([nl])ve$/$1ue/
+    - derive/^([jqxy])u/$1v/
+    - derive/^([nl])ue$/$1ve/
+    - derive/^([jqxy])v/$1u/
+
+translator:
+  dictionary: rime_ice
 """
 
     public static let fallbackDict = """

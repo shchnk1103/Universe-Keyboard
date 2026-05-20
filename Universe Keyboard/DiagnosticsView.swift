@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 private let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 
@@ -31,6 +34,22 @@ struct DiagnosticsView: View {
                 .controlSize(.small)
                 .disabled(isRefreshing)
                 .animation(.easeInOut(duration: 0.2), value: isRefreshing)
+
+                Spacer()
+
+                // 复制按钮
+                if !lines.isEmpty {
+                    Button(action: copyLog) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "doc.on.doc")
+                            Text("复制")
+                                .font(.subheadline)
+                        }
+                        .frame(minWidth: 80)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                }
 
                 Spacer()
 
@@ -123,6 +142,10 @@ struct DiagnosticsView: View {
             return
         }
         lines = log.components(separatedBy: "\n")
+    }
+
+    private func copyLog() {
+        UIPasteboard.general.string = lines.joined(separator: "\n")
     }
 
     private func refresh() {

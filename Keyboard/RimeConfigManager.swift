@@ -36,7 +36,9 @@ struct RimeConfigManager {
         let defs = UserDefaults(suiteName: appGroupID)
         let activeSchema = defs?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
         let rimeIceInstalled = defs?.bool(forKey: "rime_ice_installed") ?? false
-        writeIfChanged(name: "default.yaml", content: RimeConfigTemplates.generateDefaultYaml(activeSchemaID: activeSchema, rimeIceInstalled: rimeIceInstalled, pageSize: currentPageSize()), to: sharedDir)
+        let defaultYaml = RimeConfigTemplates.generateDefaultYaml(activeSchemaID: activeSchema, rimeIceInstalled: rimeIceInstalled, pageSize: currentPageSize())
+        Logger.shared.info("rime_ice_installed=\(rimeIceInstalled), active=\(activeSchema), schema_list has rime_ice: \(defaultYaml.contains("rime_ice"))", category: .config)
+        writeIfChanged(name: "default.yaml", content: defaultYaml, to: sharedDir)
         writeIfChanged(name: "installation.yaml", content: RimeConfigTemplates.installationYaml, to: sharedDir)
         writeIfChanged(name: "luna_pinyin.schema.yaml", content: RimeConfigTemplates.lunaPinyinSchema, to: sharedDir)
 
@@ -77,6 +79,27 @@ struct RimeConfigManager {
             defs?.set(true, forKey: "rime_needs_deploy")
             defs?.synchronize()
             Logger.shared.info("Config gen \(deployedGen) → \(currentGen), cleared build cache", category: .config)
+        }
+
+        // 6. rime_ice 配置：若已安装但 schema 不含 Lua（被旧剥离破坏），用干净模板替换
+        if rimeIceInstalled {
+            let iceSchemaURL = sharedDir.appendingPathComponent("rime_ice.schema.yaml")
+            let existingContent = (try? String(contentsOf: iceSchemaURL, encoding: .utf8)) ?? ""
+            let hasLua = existingContent.contains("lua_translator@") ||
+                          existingContent.contains("lua_filter@") ||
+                          existingContent.contains("lua_processor@")
+            if !hasLua {
+                writeIfChanged(name: "rime_ice.schema.yaml", content: RimeConfigTemplates.rimeIceMinimalSchema, to: sharedDir)
+                // 清除 build 缓存以确保重新编译
+                if FileManager.default.fileExists(atPath: buildDir.path) {
+                    try? FileManager.default.removeItem(at: buildDir)
+                    try? FileManager.default.createDirectory(at: buildDir, withIntermediateDirectories: true)
+                }
+                defs?.set(false, forKey: "rime_deployed")
+                defs?.set(true, forKey: "rime_needs_deploy")
+                defs?.synchronize()
+                Logger.shared.info("rime_ice.schema.yaml was Lua-stripped — replaced with minimal working schema", category: .config)
+            }
         }
 
         // 列出已部署文件
