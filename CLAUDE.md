@@ -43,7 +43,12 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 - **Schema verification**: `selectAndVerifySchema` with Phase 1 (currentSchemaID check) + Phase 2 (functional test with "ni") + auto-fallback to luna_pinyin
 
 **Recent changes (2026-05-21)**:
-- Enterprise-grade refactoring: 5 duplicate blocks unified, 2 large files split, project reorganized into logical subdirectories (224 tests, 0 failures)
+- **Performance optimization**: `KeyClickPlayer` audio moved to background serial queue — main-thread blocking reduced from 18-76ms to <1ms per keystroke
+- **Double-tap bug fix**: removed `UIView.animate` from `keyTouchDown`/`restoreKeyAppearance` — rapid same-key taps now register reliably
+- **Candidate button reuse**: associated-object tracking skips redundant `UIButton.Configuration` rebuilds when title/kind unchanged
+- **Deduplicated data source**: `candidateItems()` called once per keystroke (was twice in expanded mode)
+- **Touch feedback**: instantaneous `transform` + `backgroundColor` (no Core Animation transactions per keystroke)
+- Enterprise-grade refactoring: 5 duplicate blocks unified, 2 large files split, project reorganized into logical subdirectories (225 tests, 0 failures)
 - Duplicate WAV generation unified → `ClickSoundGenerator` in KeyboardCore
 - Duplicate Lua stripping removed from SchemaManager → uses `RimeConfigPostProcessor`
 - Duplicate schema repair removed from `RimeEngineImpl.init` → uses `RimeConfigPostProcessor.repairSchemaIfNeeded`
@@ -62,7 +67,7 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 - Team: `C33N6HTS9N`, code signing is automatic.
 - To test the keyboard: run the Keyboard extension target on a simulator/device, then enable it in Settings → General → Keyboard → Keyboards → Add New Keyboard → Keyboard.
 - Build with `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build`
-- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**224 tests across 13 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
+- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**225 tests across 13 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
 - A **macOS verification tool** at `Packages/RimeBridge/TestTool/` validates the bridge code against real librime 1.16.1. Run with `cd Packages/RimeBridge/TestTool && make && ./test_rime`.
 
 ## Architecture
@@ -131,7 +136,7 @@ Universe Keyboard/
 └── Universe Keyboard.entitlements
 ```
 
-**Testing** (224 tests across 13 files, 0 failures):
+**Testing** (225 tests across 13 files, 0 failures):
 
 ```
 Packages/KeyboardCore/Tests/KeyboardCoreTests/
@@ -235,15 +240,15 @@ Keyboard Extension (UIInputViewController) → thin UI + state machine
 - **Double-space period** (within 0.45s) is enabled only in English mode with empty composition.
 - **Auto-capitalization** applies at sentence start (after `.`, `!`, `?`, `。`, `！`, `？`) and on empty/new documents. It triggers when switching input mode to English (checks current text context) and after each delete operation (defensive check in `performDeleteBackward` in addition to `textDidChange`, because `UITextDocumentProxy.documentContextBeforeInput` can be stale when `textDidChange` fires). When switching back to Chinese mode, any active shift state (singleUse or capsLock) is automatically reset to off — auto-cap is explicitly English-mode-only.
 - **Long-press letter keys** (0.3s) shows a popup with diacritic variants (e.g., a → à á â ä æ). 19 letters have variants. Selection follows finger position; releasing outside the popup cancels. Variants respect Shift state (uppercase/lowercase).
-- **Keyboard click sound** uses `KeyClickPlayer` — generates a 4ms, 2000Hz+4000Hz harmonic click WAV in-memory, played via `AVAudioPlayer` with configurable volume (`key_click_volume`, 0.0–1.0). Dual-player architecture prevents clipping on rapid keystrokes. No Full Access required.
+- **Keyboard click sound** uses `KeyClickPlayer` — generates a 4ms, 2000Hz+4000Hz harmonic click WAV in-memory, played via `AVAudioPlayer` on a background serial queue (`qos: .userInitiated`) with configurable volume (`key_click_volume`, 0.0–1.0). Dual-player architecture prevents clipping on rapid keystrokes. The background queue eliminates 18-76ms of main-thread blocking per keystroke. No Full Access required.
 - **Haptic feedback** uses `UIImpactFeedbackGenerator(style: .light)` with `impactOccurred(intensity:)`. Intensity is configurable via `haptic_intensity` (0.1–1.0), cached at VC level. Generator is pre-warmed in `viewDidLoad` for low latency. Live preview available in settings.
 - **Candidate bar** uses `UIScrollView` for horizontal scrolling (`decelerationRate: .fast`). With inline preedit, the candidate bar shows only candidates (the pinyin is already displayed in the text field). A `CAGradientLayer` fade mask on the scroll view fades the right edge. The expanded panel uses a 4-column grid layout. **Critical**: use `titleTextAttributesTransformer` for font/color styling, NOT `attributedTitle`. `candidateItems()` reads from `state.lastRimeOutput` first (RIME path), falls back to `candidateProvider.candidates(for:)` (Fake path). When RIME produces an empty composition, the preedit text is shown as a `.composition` item so users can commit raw pinyin.
 - **Inline preedit**: In Chinese mode, the pinyin composition is displayed directly in the host text field. `KeyboardController` tracks `state.insertedPreeditCount` and uses `updateInlinePreedit()` / `deleteInlinePreedit()` to manage the text field cursor. On each keystroke the old preedit is deleted and the new one inserted. On candidate selection or mode switch, the preedit is cleared before committing.
 - **Long-press delete**: Touch-down immediately performs the first delete. After 0.5s, auto-repeat starts at 0.08s intervals (matching native iOS keyboard behavior).
 - **Key click & haptic settings are cached** at the VC level on `viewDidLoad` (not read from `UserDefaults(suiteName:)` on every keypress, which would incur XPC overhead). Cache is invalidated via `UserDefaults.didChangeNotification` observer.
 - **Layout extraction**: `reloadKeyboard()` and `reloadKeyboardContent()` share keyboard row construction through `addKeyboardRows(for:)`. No duplicated layout code.
-- **iOS 26 native appearance**: key buttons use `systemBackground` with 10pt corner radius and subtle shadow, on a `systemGray4` keyboard background. The candidate bar shares the same `systemGray4` background and 10pt corner radius.
-- Keyboard uses programmatic UIKit layout (UIStackView-based rows, no Storyboards) with fixed key sizes (`keyHeight: 44`, `candidateBarHeight: 36`, `keySpacing: 6`, `keyCornerRadius: 10`).
+- **iOS 26 native appearance**: key buttons use `KeyVisualStyle` enum for consistent styling (`.character`/`.function`/`.space`/`.returnKey`/`.active`). Dark/light mode custom colors for keyboard background, character keys, function keys, and highlighted state. Keys use `.continuous` corner curve with 9pt radius. Touch feedback uses instantaneous `backgroundColor` + `CGAffineTransform(scaleX: 0.96)` — no Core Animation transactions.
+- Keyboard uses programmatic UIKit layout (UIStackView-based rows, no Storyboards) with fixed key sizes (`keyHeight: 44`, `candidateBarHeight: 36`, `keySpacing: 6`, `keyCornerRadius: 9`).
 
 ### RIME Deployment System
 

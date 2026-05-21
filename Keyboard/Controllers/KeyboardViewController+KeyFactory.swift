@@ -137,4 +137,15 @@ extension KeyboardViewController {
         }
         return KeyVisualStyle(rawValue: rawValue)
     }
+
+    func backgroundForStyle(_ style: KeyVisualStyle) -> UIColor {
+        switch style {
+        case .character, .space:
+            return characterKeyColor
+        case .function, .returnKey:
+            return functionKeyColor
+        case .active:
+            return .label
+        }
+    }
 }

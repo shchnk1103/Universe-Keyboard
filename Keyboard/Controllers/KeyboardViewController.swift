@@ -183,11 +183,11 @@ class KeyboardViewController: UIInputViewController {
     }
 
     /// 仅重建键盘内容区（保留候选栏），用于展开/收起候选面板
-    func reloadKeyboardContent() {
+    func reloadKeyboardContent(with precomputedCandidates: [CandidateItem]? = nil) {
         removeContentRows()
 
         if isCandidateExpanded {
-            let panel = makeExpandedCandidatePanel()
+            let panel = makeExpandedCandidatePanel(with: precomputedCandidates)
             rootStack.addArrangedSubview(panel)
             candidateExpandedPanel = panel
         } else {

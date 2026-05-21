@@ -21,9 +21,7 @@ extension KeyboardViewController {
         }
 
         sender.backgroundColor = highlightedKeyColor
-        UIView.animate(withDuration: 0.06) {
-            sender.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
-        }
+        sender.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
     }
 
     @objc func keyTouchUp(_ sender: UIButton) {
@@ -31,9 +29,7 @@ extension KeyboardViewController {
     }
 
     func restoreKeyAppearance(_ sender: UIButton) {
-        UIView.animate(withDuration: 0.08) {
-            sender.transform = .identity
-        }
+        sender.transform = .identity
 
         if sender === shiftButton {
             updateShiftButtonAppearance()
@@ -41,11 +37,11 @@ extension KeyboardViewController {
         }
 
         guard let style = keyStyle(for: sender) else {
-            applyKeyStyle(.character, to: sender)
+            sender.backgroundColor = characterKeyColor
             return
         }
 
-        applyKeyStyle(style, to: sender)
+        sender.backgroundColor = backgroundForStyle(style)
     }
 }
 

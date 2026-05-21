@@ -4,10 +4,13 @@ import KeyboardCore
 /// 键盘点击音播放器。
 /// 使用 AVAudioPlayer 播放内嵌生成的点击音，支持音量控制。
 /// 不需要「完全访问」权限。
+/// 播放通过专用后台队列调度，避免阻塞主线程（AVAudioPlayer.play() 可能阻塞 18-76ms）。
 final class KeyClickPlayer {
 
-    private var player: AVAudioPlayer?
-    private var player2: AVAudioPlayer?  // 双播放器避免快速连按时截断
+    private let player: AVAudioPlayer?
+    private let player2: AVAudioPlayer?
+    private var toggle = false
+    private let queue = DispatchQueue(label: "com.universekeyboard.click", qos: .userInitiated)
 
     // MARK: - Init
 
@@ -25,16 +28,16 @@ final class KeyClickPlayer {
 
     // MARK: - Play
 
-    private var toggle = false
-
-    /// 播放点击音。
+    /// 播放点击音。调用立即返回，实际播放通过后台串行队列调度。
     /// - Parameter volume: 0.0（静音）到 1.0（最大）。
     func play(volume: Float) {
         guard volume > 0 else { return }
-        let active = toggle ? player : player2
-        toggle.toggle()
-        active?.volume = volume
-        active?.currentTime = 0
-        active?.play()
+        queue.async {
+            let active = self.toggle ? self.player : self.player2
+            self.toggle.toggle()
+            active?.volume = volume
+            active?.currentTime = 0
+            active?.play()
+        }
     }
 }

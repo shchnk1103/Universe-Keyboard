@@ -6,8 +6,12 @@
 //  UIScrollView 横向滚动 + 可视区高亮 + SF Symbol 展开/收起候选面板。
 //
 
+import ObjectiveC
 import UIKit
 import KeyboardCore
+
+private var candidateButtonLastTitleKey: UInt8 = 0
+private var candidateButtonLastKindKey: UInt8 = 0
 
 // MARK: - UIScrollViewDelegate
 
@@ -143,7 +147,7 @@ extension KeyboardViewController {
 
     // MARK: - 展开面板
 
-    func makeExpandedCandidatePanel() -> UIView {
+    func makeExpandedCandidatePanel(with precomputedItems: [CandidateItem]? = nil) -> UIView {
         let container = UIView()
         container.backgroundColor = keyboardBackgroundColor
         container.layer.cornerRadius = keyCornerRadius
@@ -154,7 +158,7 @@ extension KeyboardViewController {
         verticalStack.distribution = .fill
         verticalStack.translatesAutoresizingMaskIntoConstraints = false
 
-        let items = candidateItems()
+        let items = precomputedItems ?? candidateItems()
         // 展开面板只显示候选词和拼音组合，过滤掉占位提示
         let candidates = items.filter { $0.kind != .placeholder }
 
@@ -284,13 +288,18 @@ extension KeyboardViewController {
     // MARK: - 刷新
 
     func refreshCandidateBar() {
-        guard let stack = candidateStack else { return }
-        fillCandidateBar()
-        candidateScrollView.setContentOffset(.zero, animated: false)
+        guard candidateStack != nil else { return }
+
+        let allItems = candidateItems()
+        fillCandidateBar(precomputedItems: allItems)
+
+        if candidateScrollView.contentOffset.x != 0 {
+            candidateScrollView.setContentOffset(.zero, animated: false)
+        }
 
         if isCandidateExpanded {
             UIView.transition(with: rootStack, duration: 0.15, options: .transitionCrossDissolve) {
-                self.reloadKeyboardContent()
+                self.reloadKeyboardContent(with: allItems)
             }
         }
     }
@@ -304,10 +313,10 @@ extension KeyboardViewController {
     /// 高亮逻辑：只高亮第一个真正的候选词（.candidate 类型）。
     /// 这是按空格键会输入的那个词 —— 对它加粗 + 主题色，
     /// 让用户一眼就知道空格会输入什么。
-    func fillCandidateBar() {
+    func fillCandidateBar(precomputedItems: [CandidateItem]? = nil) {
         guard let stack = candidateStack else { return }
 
-        let allItems = candidateItems()
+        let allItems = precomputedItems ?? candidateItems()
         // 过滤掉占位提示，只展示候选词和拼音组合
         // 与 makeExpandedCandidatePanel() 保持一致的过滤逻辑
         let items = allItems.filter { $0.kind != .placeholder }
@@ -317,7 +326,10 @@ extension KeyboardViewController {
         // 收起宽度到 0，让 scrollView 填充整个容器
         let hasCandidates = items.contains { $0.kind == .candidate }
         candidateExpandButton?.isHidden = !hasCandidates
-        candidateExpandButtonWidthConstraint?.constant = hasCandidates ? 34 : 0
+        let targetWidth: CGFloat = hasCandidates ? 34 : 0
+        if candidateExpandButtonWidthConstraint?.constant != targetWidth {
+            candidateExpandButtonWidthConstraint?.constant = targetWidth
+        }
 
         removeNonCandidateSubviews(from: stack)
 
@@ -369,14 +381,21 @@ extension KeyboardViewController {
                 stack.addArrangedSubview(button)
             }
 
-            CandidateButtonFactory.configureCandidateButton(
-                button,
-                title: item.title,
-                kind: item.kind,
-                color: color,
-                bold: isFirstCandidate,
-                highlighted: isFirstCandidate
-            )
+            let lastTitle = objc_getAssociatedObject(button, &candidateButtonLastTitleKey) as? String
+            let lastKind = objc_getAssociatedObject(button, &candidateButtonLastKindKey) as? Int
+
+            if lastTitle != item.title || lastKind != item.kind.rawValue {
+                CandidateButtonFactory.configureCandidateButton(
+                    button,
+                    title: item.title,
+                    kind: item.kind,
+                    color: color,
+                    bold: isFirstCandidate,
+                    highlighted: isFirstCandidate
+                )
+                objc_setAssociatedObject(button, &candidateButtonLastTitleKey, item.title, .OBJC_ASSOCIATION_COPY_NONATOMIC)
+                objc_setAssociatedObject(button, &candidateButtonLastKindKey, item.kind.rawValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            }
         }
 
         removeCandidateSubviews(from: stack, startingAt: items.count)
