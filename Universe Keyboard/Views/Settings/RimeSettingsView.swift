@@ -137,13 +137,7 @@ struct RimeSettingsView: View {
                     HStack(spacing: 6) {
                         Text("雾凇拼音")
                             .font(.body.bold())
-                        Text("需要下载")
-                            .font(.caption2)
-                            .foregroundStyle(.orange)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 1)
-                            .background(Color.orange.opacity(0.12))
-                            .clipShape(Capsule())
+                        CapsuleBadge(text: "需要下载", color: .orange, style: .tinted)
                     }
                     Text("社区维护的高质量简体词库，词条丰富、更新活跃。")
                         .font(.caption)
@@ -203,10 +197,10 @@ struct RimeSettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 VStack(alignment: .leading, spacing: 4) {
-                    bullet("完整 cn_dicts 词库（8105 + base + ext + tencent），大幅提高候选准确率")
-                    bullet("支持简繁转换")
-                    bullet("支持 emoji 候选")
-                    bullet("部分高级功能（如日期输入、计算器）需要 Lua 插件，暂不可用")
+                    BulletRow(text:"完整 cn_dicts 词库（8105 + base + ext + tencent），大幅提高候选准确率", style: .dot, bulletColor: .blue)
+                    BulletRow(text:"支持简繁转换", style: .dot, bulletColor: .blue)
+                    BulletRow(text:"支持 emoji 候选", style: .dot, bulletColor: .blue)
+                    BulletRow(text:"部分高级功能（如日期输入、计算器）需要 Lua 插件，暂不可用", style: .dot, bulletColor: .blue)
                 }
                 Text("下载后可在方案列表中选择切换，随时可卸载恢复默认方案。")
                     .font(.caption)
@@ -217,14 +211,6 @@ struct RimeSettingsView: View {
         }
     }
 
-    private func bullet(_ text: String) -> some View {
-        HStack(alignment: .top, spacing: 6) {
-            Text("•").foregroundStyle(.blue)
-            Text(text)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-    }
 
     // MARK: - Download progress
 

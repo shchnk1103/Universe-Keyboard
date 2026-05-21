@@ -80,47 +80,8 @@ public final class RimeEngineImpl: RimeEngine {
                     Logger.shared.info("Schema contains lua_translator: \(hasLua)", category: .engine)
                     Logger.shared.info("Schema contains script/table_translator: \(hasTranslator)", category: .engine)
 
-                    // 就地修复旧剥离代码遗留的损坏（独立于 RimeConfigManager.repairSchemaIfNeeded）
                     if !hasLua && hasTranslator {
-                        let lines = content.components(separatedBy: "\n")
-                        let hasBadInitials = lines.contains { line in
-                            let t = line.trimmingCharacters(in: .whitespaces)
-                            return t.hasPrefix("initials:") &&
-                                (t.contains("zyxwvutsrqponmlkjihgfedcba") || t.contains("abcdefghijklmnopqrstuvwxyz"))
-                        }
-                        let hasOrphan = lines.contains { line in
-                            line.trimmingCharacters(in: .whitespaces) == "date_locale: zh"
-                        }
-                        if hasBadInitials || hasOrphan {
-                            var fixed = content
-                            if hasBadInitials {
-                                fixed = lines.filter { line in
-                                    let t = line.trimmingCharacters(in: .whitespaces)
-                                    if t.hasPrefix("initials:") && (t.contains("zyxwvutsrqponmlkjihgfedcba") || t.contains("abcdefghijklmnopqrstuvwxyz")) {
-                                        return false
-                                    }
-                                    return true
-                                }.joined(separator: "\n")
-                            }
-                            if hasOrphan {
-                                fixed = fixed.components(separatedBy: "\n")
-                                    .filter { $0.trimmingCharacters(in: .whitespaces) != "date_locale: zh" }
-                                    .joined(separator: "\n")
-                            }
-                            try? fixed.write(toFile: schemaFile, atomically: true, encoding: .utf8)
-                            let what = [hasBadInitials ? "initials" : nil, hasOrphan ? "orphan" : nil].compactMap{$0}.joined(separator: "+")
-                            Logger.shared.warning("Engine-side repair: removed \(what) from rime_ice.schema.yaml", category: .engine)
-
-                            // 清除 build 缓存并触发重新部署
-                            let buildDir = "\(sharedDir)/build"
-                            try? fm.removeItem(atPath: buildDir)
-                            try? fm.createDirectory(atPath: buildDir, withIntermediateDirectories: true)
-                            let defs = UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")
-                            defs?.set(false, forKey: "rime_deployed")
-                            defs?.set(true, forKey: "rime_needs_deploy")
-                            defs?.synchronize()
-                            Logger.shared.info("Cleared build cache after engine-side repair", category: .engine)
-                        }
+                        RimeConfigPostProcessor.repairSchemaIfNeeded(at: schemaFile)
                     }
 
                     // 检测是否是旧代码剥离后的损坏文件

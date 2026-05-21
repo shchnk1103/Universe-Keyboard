@@ -120,23 +120,23 @@ final class AutoCapitalizeTests: XCTestCase {
     // MARK: - isSentenceTerminator
 
     func testPeriodIsSentenceTerminator() {
-        XCTAssertTrue(KeyboardController.isSentenceTerminator("."))
+        XCTAssertTrue(AutoCapitalizationRules.isSentenceTerminator("."))
     }
 
     func testExclamationIsSentenceTerminator() {
-        XCTAssertTrue(KeyboardController.isSentenceTerminator("!"))
+        XCTAssertTrue(AutoCapitalizationRules.isSentenceTerminator("!"))
     }
 
     func testQuestionIsSentenceTerminator() {
-        XCTAssertTrue(KeyboardController.isSentenceTerminator("?"))
+        XCTAssertTrue(AutoCapitalizationRules.isSentenceTerminator("?"))
     }
 
     func testLetterIsNotSentenceTerminator() {
-        XCTAssertFalse(KeyboardController.isSentenceTerminator("h"))
+        XCTAssertFalse(AutoCapitalizationRules.isSentenceTerminator("h"))
     }
 
     func testMultiCharIsNotSentenceTerminator() {
-        XCTAssertFalse(KeyboardController.isSentenceTerminator(".com"))
+        XCTAssertFalse(AutoCapitalizationRules.isSentenceTerminator(".com"))
     }
 
     // MARK: - English sentence terminator triggers auto-cap on insert

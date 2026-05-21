@@ -77,23 +77,23 @@ private struct GuideTab: View {
 
     private var progressSection: some View {
         InfoSection(title: "当前进度", systemImage: "checkmark.circle") {
-            BulletRow(text: "26 键字母输入")
-            BulletRow(text: "Shift 大小写切换 + Caps Lock")
-            BulletRow(text: "123 数字/符号页")
-            BulletRow(text: "Inline preedit（拼音内联显示）")
-            BulletRow(text: "RIME 中文候选引擎")
-            BulletRow(text: "长按删除")
-            BulletRow(text: "长按变体字符弹出")
+            BulletRow(text:"26 键字母输入", style: .checkmark)
+            BulletRow(text:"Shift 大小写切换 + Caps Lock", style: .checkmark)
+            BulletRow(text:"123 数字/符号页", style: .checkmark)
+            BulletRow(text:"Inline preedit（拼音内联显示）", style: .checkmark)
+            BulletRow(text:"RIME 中文候选引擎", style: .checkmark)
+            BulletRow(text:"长按删除", style: .checkmark)
+            BulletRow(text:"长按变体字符弹出", style: .checkmark)
         }
     }
 
     private var testChecklistSection: some View {
         InfoSection(title: "测试清单", systemImage: "list.bullet.clipboard") {
-            BulletRow(text: "输入 nihao，候选栏应显示候选词")
-            BulletRow(text: "按空格，应上屏第一个候选")
-            BulletRow(text: "按 return，应提交原始拼音")
-            BulletRow(text: "长按删除键，应连续删除")
-            BulletRow(text: "长按字母键，应弹出变体字符")
+            BulletRow(text:"输入 nihao，候选栏应显示候选词", style: .checkmark)
+            BulletRow(text:"按空格，应上屏第一个候选", style: .checkmark)
+            BulletRow(text:"按 return，应提交原始拼音", style: .checkmark)
+            BulletRow(text:"长按删除键，应连续删除", style: .checkmark)
+            BulletRow(text:"长按字母键，应弹出变体字符", style: .checkmark)
         }
     }
 }
@@ -245,20 +245,9 @@ private struct SettingsTab: View {
         .id(diagRefreshToken)
         .onAppear { diagRefreshToken += 1 }
     }
-
 }
 
-// MARK: - 共用小组件
 
-private struct BulletRow: View {
-    let text: String
-    var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Image(systemName: "checkmark").font(.caption).foregroundStyle(.green)
-            Text(text).font(.body)
-        }
-    }
-}
 
 private struct NumberedRow: View {
     let number: Int

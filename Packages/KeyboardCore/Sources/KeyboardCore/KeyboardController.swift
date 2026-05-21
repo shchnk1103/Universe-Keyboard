@@ -83,7 +83,7 @@ extension KeyboardController {
         } else {
             insertText(key)
             var effects = consumeSingleUseShiftIfNeeded()
-            if state.inputMode == .english && Self.isSentenceTerminator(key) {
+            if state.inputMode == .english && AutoCapitalizationRules.isSentenceTerminator(key) {
                 state.shiftState = .singleUse
                 effects.insert(.shiftStateChanged)
             }
@@ -369,26 +369,8 @@ extension KeyboardController {
 
 extension KeyboardController {
 
-    static let sentenceTerminators: Set<Character> = [
-        ".", "!", "?", "。", "！", "？"
-    ]
-
-    static func isSentenceTerminator(_ text: String) -> Bool {
-        text.count == 1 && sentenceTerminators.contains(text.first!)
-    }
-
     public func shouldAutoCapitalize(contextBeforeInput: String?) -> Bool {
-        guard let context = contextBeforeInput else {
-            return true
-        }
-        if context.isEmpty {
-            return true
-        }
-        let trimmed = context.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let lastChar = trimmed.last else {
-            return true
-        }
-        return Self.sentenceTerminators.contains(lastChar)
+        AutoCapitalizationRules.shouldAutoCapitalize(contextBeforeInput: contextBeforeInput)
     }
 
     @discardableResult

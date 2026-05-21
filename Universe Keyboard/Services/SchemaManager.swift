@@ -201,8 +201,8 @@ final class SchemaManager: ObservableObject {
             let luaAvailable = UserDefaults(suiteName: appGroupID)?.object(forKey: "rime_lua_available") as? Bool
             if luaAvailable == false {
                 let schemaContent = try String(contentsOf: schemaURL, encoding: .utf8)
-                let processed = Self.stripLuaDependencies(from: schemaContent)
-                guard Self.validateStrippedSchema(processed) else {
+                let processed = RimeConfigPostProcessor.stripLuaDependencies(from: schemaContent)
+                guard RimeConfigPostProcessor.validateStrippedSchema(processed) else {
                     throw DownloadError.postProcessingFailed("剥离 Lua 后 schema 无效")
                 }
                 try processed.write(to: schemaURL, atomically: true, encoding: .utf8)
@@ -493,45 +493,6 @@ final class SchemaManager: ObservableObject {
         }.value
     }
 
-    // MARK: - Lua stripping (仅在 rime_lua_available == false 时使用)
-
-    static func stripLuaDependencies(from yaml: String) -> String {
-        let lines = yaml.components(separatedBy: "\n")
-        var result: [String] = []
-        var skipUntilIndent: Int? = nil
-        for line in lines {
-            let trimmed = line.trimmingCharacters(in: .whitespaces)
-            let indent = line.prefix(while: { $0 == " " || $0 == "\t" }).count
-
-            let isLuaLine = trimmed.contains("lua_translator@")
-                         || trimmed.contains("lua_filter@")
-                         || trimmed.hasPrefix("- lua_translator")
-                         || trimmed.hasPrefix("- lua_filter")
-                         || trimmed.hasPrefix("- lua_processor")
-
-            // rime_ice 的 speller initials 包含全部字母，无 Lua 时 speller 无法工作
-            let isInitialsLine = trimmed.hasPrefix("initials:") &&
-                (trimmed.contains("zyxwvutsrqponmlkjihgfedcba") ||
-                 trimmed.contains("abcdefghijklmnopqrstuvwxyz"))
-
-            // Skip continuation lines of stripped Lua entries
-            if !isLuaLine, let skipIndent = skipUntilIndent, indent > skipIndent, !trimmed.isEmpty {
-                continue
-            }
-            if !isLuaLine && indent <= (skipUntilIndent ?? -1) { skipUntilIndent = nil }
-            if trimmed.isEmpty { skipUntilIndent = nil }
-
-            if isLuaLine { skipUntilIndent = indent; continue }
-            if isInitialsLine { continue }
-
-            result.append(line)
-        }
-        return result.joined(separator: "\n")
-    }
-
-    static func validateStrippedSchema(_ yaml: String) -> Bool {
-        yaml.contains("script_translator") || yaml.contains("table_translator")
-    }
 }
 
 // MARK: - Download errors

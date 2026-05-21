@@ -202,15 +202,15 @@ extension KeyboardViewController {
                         color = .label
                     }
 
-                    let button = makeCandidateButton(
+                    let button = CandidateButtonFactory.makeCandidateButton(
                         title: item.title,
                         kind: item.kind,
                         color: color,
-                        bold: isFirstCandidate
+                        bold: isFirstCandidate,
+                        height: rowHeight
                     )
                     button.tag = item.kind.rawValue
                     button.addTarget(self, action: #selector(insertCandidateFromPanel(_:)), for: .touchUpInside)
-                    button.heightAnchor.constraint(equalToConstant: rowHeight).isActive = true
                     rowStack.addArrangedSubview(button)
                 } else {
                     let spacer = UIView()
@@ -346,97 +346,22 @@ extension KeyboardViewController {
                 color = .label
             }
 
-            let button = makeCandidateButton(
+            let button = CandidateButtonFactory.makeCandidateButton(
                 title: item.title,
                 kind: item.kind,
                 color: color,
-                bold: isFirstCandidate
+                bold: isFirstCandidate,
+                height: candidateBarHeight
             )
-            // 将 CandidateKind 存到 tag 中，供 action handler 读取
             button.tag = item.kind.rawValue
-
             button.addTarget(self, action: #selector(insertCandidate(_:)), for: .touchUpInside)
             stack.addArrangedSubview(button)
         }
     }
 
-    // MARK: - 候选按钮工厂（UIButtonConfiguration）
-
-    /// 候选按钮工厂，使用现代 UIButton.Configuration API（iOS 15+）。
-    /// 拼音组合使用比候选词小一号的字体（14pt vs 16pt），视觉上区分"输入中"和"可选择"。
-    /// 第一个真正的候选词（bold=true）使用粗体 + 主题色，指示这是按空格会输入的那个词。
-    ///
-    /// 关键设计决策：使用 titleTextAttributesTransformer 而非 attributedTitle 来设置字体和颜色。
-    /// 原因：UIButton.Configuration 中 attributedTitle 和 title 是互斥的 ——
-    /// 一旦设置 attributedTitle，title 就被忽略，导致 sender.title(for: .normal) 返回 nil。
-    /// titleTextAttributesTransformer 只改变 title 的显示属性，不替换 title 本身，
-    /// 因此 action handler 中能可靠读取 sender.configuration?.title。
-    private func makeCandidateButton(
-        title: String,
-        kind: CandidateKind,
-        color: UIColor,
-        bold: Bool = false
-    ) -> UIButton {
-        let fontSize: CGFloat = kind == .composition ? 14 : 16
-        let weight: UIFont.Weight = bold ? .bold : .regular
-
-        var config = UIButton.Configuration.plain()
-        config.title = title
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { container in
-            var container = container
-            container.font = UIFont.systemFont(ofSize: fontSize, weight: weight)
-            container.foregroundColor = color
-            return container
-        }
-
-        let button = UIButton(configuration: config, primaryAction: nil)
-        button.heightAnchor.constraint(equalToConstant: candidateBarHeight).isActive = true
-        return button
-    }
-
     // MARK: - 候选数据
 
-    /// 构建候选栏要显示的数据数组。
-    ///
-    /// 优先使用 RIME 引擎输出（state.lastRimeOutput），
-    /// 无 RIME 输出时回退到 CandidateProvider 路径。
     func candidateItems() -> [CandidateItem] {
-        let state = controller.state
-
-        // 英文模式：候选栏为空
-        guard state.inputMode == .chinese else {
-            return []
-        }
-
-        // RIME 路径：拼音已通过 inline preedit 显示在输入框中
-        // 候选栏只显示候选词，不重复显示拼音
-        if let rimeOutput = state.lastRimeOutput,
-           let comp = rimeOutput.composition,
-           !comp.preeditText.isEmpty {
-            var items: [CandidateItem] = []
-            for candidate in rimeOutput.candidates {
-                items.append(CandidateItem(title: candidate.text, kind: .candidate))
-            }
-            if items.isEmpty {
-                // 有拼音但无候选：显示拼音组合让用户能点它提交原始拼音
-                items.append(CandidateItem(title: comp.preeditText, kind: .composition))
-            }
-            return items
-        }
-
-        // 回退路径：同样使用 inline preedit 逻辑
-        guard !state.currentComposition.isEmpty else {
-            return []
-        }
-
-        let candidates = controller.candidateProvider.candidates(for: state.currentComposition)
-
-        if candidates.isEmpty {
-            return [CandidateItem(title: state.currentComposition, kind: .composition)]
-        } else {
-            return candidates.map { CandidateItem(title: $0, kind: .candidate) }
-        }
+        CandidateBarDataSource.candidateItems(from: controller)
     }
 }

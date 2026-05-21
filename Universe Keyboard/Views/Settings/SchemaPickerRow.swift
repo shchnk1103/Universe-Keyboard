@@ -17,13 +17,7 @@ struct SchemaPickerRow: View {
                             .foregroundStyle(.primary)
                         sourceBadge
                         if let version = schema.version {
-                            Text(version)
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 4)
-                                .padding(.vertical, 1)
-                                .background(Color(.systemGray6))
-                                .clipShape(Capsule())
+                            CapsuleBadge(text: version, color: .secondary, style: .tinted)
                         }
                     }
                     Text(schema.description)
@@ -39,14 +33,7 @@ struct SchemaPickerRow: View {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(.blue)
                 } else if !schema.installed {
-                    Text("下载")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 4)
-                        .background(Color.blue)
-                        .clipShape(Capsule())
+                    CapsuleBadge(text: "下载", color: .blue, style: .filled)
                 }
             }
             .padding(12)
@@ -64,22 +51,10 @@ struct SchemaPickerRow: View {
     private var sourceBadge: some View {
         switch schema.source {
         case .builtin:
-            Text("内置")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 1)
-                .background(Color(.systemGray5))
-                .clipShape(Capsule())
+            CapsuleBadge(text: "内置", color: Color(.systemGray5), style: .tinted)
         case .downloaded:
             if schema.installed {
-                Text("已下载")
-                    .font(.caption2)
-                    .foregroundStyle(.green)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 1)
-                    .background(Color.green.opacity(0.12))
-                    .clipShape(Capsule())
+                CapsuleBadge(text: "已下载", color: .green, style: .tinted)
             }
         }
     }

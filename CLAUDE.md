@@ -13,7 +13,7 @@ The long-term goal is a full-featured Chinese keyboard with RIME/librime engine 
 
 ## Current Status (2026-05-21)
 
-**Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.** Main-app-side deployment + keyboard crash fixes applied.
+**Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.** Enterprise-grade refactoring applied: duplicate code eliminated, large files split, project reorganized into logical subdirectories.
 
 - **11 dependency xcframeworks** compiled from source and linked (9 base + liblua + librime-lua)
 - **雾凇拼音 (rime-ice)** downloadable from main App (automatic download + deploy flow)
@@ -21,16 +21,21 @@ The long-term goal is a full-featured Chinese keyboard with RIME/librime engine 
 - **liblua.xcframework** compiled (PUC Lua 5.4, ~400KB)
 - **Main-app-side RIME deployment**: `RimeDeployer` (ObjC) runs `start_maintenance(full_check=True)` + `join_maintenance_thread()` in main App process, removing 5-15s blocking from keyboard extension startup. Keyboard only does lightweight `start_maintenance(full_check=False)` quick check.
 - **`RIME_HAS_LUA=1`** defined in Keyboard target `GCC_PREPROCESSOR_DEFINITIONS`, ensuring Lua module loads correctly
-- **CZLib target eliminated** — pure Swift `@_silgen_name` zlib calls (`ZLib.swift`), removing SPM C-target explicit-module-build issues
-- **Schema auto-repair**: corrupted rime_ice.schema.yaml replaced with clean `rimeIceMinimalSchema` template at runtime (only when `rime_deployed=false`, respecting main App deploy)
+- **Shared UI components**: `BulletRow`, `CapsuleBadge`, `ClickSoundGenerator`, `SettingsNavigationLink` extracted to eliminate duplication
+- **CandidateBar split**: `CandidateButtonFactory` + `CandidateBarDataSource` extracted from 443-line extension
+- **AutoCapitalizationRules** extracted from `KeyboardController` into standalone type
+- **Project reorganized**: Main App (`App/` `Views/{Components,Settings,Diagnostics,License}` `Services/`), Keyboard (`Controllers/` `Views/CandidateBar/` `Services/` `Bridge/`)
 - RIME schema picker UI: built-in luna_pinyin + downloadable rime_ice
 - 6-phase download flow (idle → fetchingReleaseInfo → downloading → extracting → postProcessing → deploying → completed)
 - **Schema verification**: `selectAndVerifySchema` with Phase 1 (currentSchemaID check) + Phase 2 (functional test with "ni") + auto-fallback to luna_pinyin
-- **force_load paths**: SDK-conditional (`[sdk=iphonesimulator*]`) supporting both simulator and device builds
-- **DiagnosticsView**: copy button, enhanced engine-side repair logging
 
-**Recent bug fixes (2026-05-21)**:
-- `RIME_HAS_LUA=1` now defined in Keyboard target preprocessor macros (was missing, causing `rime_lua_available` to always be false → downloader stripped Lua → keyboard deleted build cache → crash)
+**Recent changes (2026-05-21)**:
+- Enterprise-grade refactoring: 5 duplicate blocks unified, 2 large files split, project reorganized into logical subdirectories (224 tests, 0 failures)
+- Duplicate WAV generation unified → `ClickSoundGenerator` in KeyboardCore
+- Duplicate Lua stripping removed from SchemaManager → uses `RimeConfigPostProcessor`
+- Duplicate schema repair removed from `RimeEngineImpl.init` → uses `RimeConfigPostProcessor.repairSchemaIfNeeded`
+- BulletRow + CapsuleBadge patterns unified into shared components (11 call sites updated)
+- `RIME_HAS_LUA=1` defined in Keyboard target preprocessor macros
 - `activateRimeIce()` + `deployRimeConfig()` order swapped: schema activated BEFORE deploy, so deploy compiles the correct schema and flags are not overridden
 - `t9.schema.yaml` always installed (was conditionally skipped, causing "missing input schema: t9" in deployment_tasks.cc)
 - `RimeConfigManager.prepareDirectories()` schema repair now guarded by `!rimeDeployed` — respects main App deploy results
@@ -51,41 +56,66 @@ The long-term goal is a full-featured Chinese keyboard with RIME/librime engine 
 
 ### Keyboard Extension — file layout
 
-The keyboard is split across **15 files**:
+The keyboard is split across **17 files** in 4 subdirectories:
 
 ```
 Keyboard/
-├── KeyboardViewController.swift          — 主控：生命周期、引擎选择、UI 同步
-├── KeyboardViewController+Display.swift   — 按钮标题计算 + 状态刷新
-├── KeyboardViewController+KeyFactory.swift — 按键工厂方法
-├── KeyboardViewController+CandidateBar.swift — 候选栏（RIME 优先，回退 Fake）
-├── KeyboardViewController+Layout.swift   — 键盘行布局
-├── KeyboardViewController+Actions.swift  — 按键动作 + 长按删除
-├── KeyboardViewController+Gestures.swift — 高亮 + 长按变体
-├── KeyPopupView.swift                    — 变体弹出面板
-├── KeyClickPlayer.swift                  — 内嵌键盘点击音播放器（AVAudioPlayer，无需完全访问）
-├── UITextDocumentProxyAdapter.swift      — 代理适配器
-├── KeyboardType+UIKit.swift              — 类型桥接
-├── RimeConfigManager.swift               — RIME 配置部署 + OpenCC + custom.yaml 生成
-└── RimeBridge/                           — ObjC 桥接层
-    ├── Keyboard-Bridging-Header.h
-    ├── RimeSessionManager.h/.m           — librime C API 封装（含 schema 切换 + lua 检测）
-    ├── rime_api.h                        — librime 官方 C API 头文件
-    └── RimeEngineImpl.swift              — RimeEngine 协议实现（keycode 翻译 + session 管理 + deploy）
+├── Controllers/
+│   ├── KeyboardViewController.swift          — 主控：生命周期、引擎选择、UI 同步
+│   ├── KeyboardViewController+Display.swift   — 按钮标题计算 + 状态刷新
+│   ├── KeyboardViewController+KeyFactory.swift — 按键工厂方法
+│   ├── KeyboardViewController+CandidateBar.swift — 候选栏协调器（scroll、展开、数据源）
+│   ├── KeyboardViewController+Layout.swift   — 键盘行布局
+│   ├── KeyboardViewController+Actions.swift  — 按键动作 + 长按删除
+│   └── KeyboardViewController+Gestures.swift — 高亮 + 长按变体
+├── Views/
+│   ├── KeyPopupView.swift                    — 变体弹出面板
+│   └── CandidateBar/
+│       ├── CandidateButtonFactory.swift       — 候选按钮工厂（UIButtonConfiguration）
+│       └── CandidateBarDataSource.swift       — 候选数据源（RIME 优先，回退 Fake）
+├── Services/
+│   ├── KeyClickPlayer.swift                  — 内嵌键盘点击音播放器
+│   ├── RimeConfigManager.swift               — RIME 配置部署 + OpenCC + custom.yaml 生成
+│   └── UITextDocumentProxyAdapter.swift      — 代理适配器
+├── Bridge/
+│   ├── KeyboardType+UIKit.swift              — 类型桥接
+│   └── RimeBridge/                           — ObjC 桥接层
+│       ├── Keyboard-Bridging-Header.h
+│       ├── RimeSessionManager.h/.m           — librime C API 封装
+│       ├── rime_api.h                        — librime 官方 C API 头文件
+│       └── RimeEngineImpl.swift              — RimeEngine 协议实现
+├── Info.plist
+└── Keyboard.entitlements
 ```
 
 **Main App additions**:
 
 ```
 Universe Keyboard/
-├── SchemaManager.swift                   — 雾凇下载/解压/安装/Lua剥离/主App部署 编排器
-├── RimeDeployer.h/.m                     — 主 App 端最小 RIME 部署封装（start_maintenance + join）
-├── LicenseView.swift                     — GPL-3.0 许可证查看
-├── SchemaPickerRow.swift                 — 方案选择行组件
+├── App/
+│   ├── Universe_KeyboardApp.swift        — @main 入口
+│   └── ContentView.swift                 — 双 Tab 布局（引导 / 设置）
+├── Views/
+│   ├── Components/
+│   │   ├── InfoSection.swift             — 信息卡片容器
+│   │   ├── ToggleRow.swift               — 设置开关行
+│   │   ├── BulletRow.swift               — 项目符号行（dot / checkmark）
+│   │   ├── CapsuleBadge.swift            — 胶囊标签（filled / tinted）
+│   │   └── SettingsNavigationLink.swift   — 设置导航行
+│   ├── Settings/
+│   │   ├── FeedbackSettingsView.swift    — 按键音 + 触感设置
+│   │   ├── RimeSettingsView.swift        — RIME 方案设置（方案选择/下载/部署）
+│   │   └── SchemaPickerRow.swift        — 方案选择行组件
+│   ├── Diagnostics/
+│   │   └── DiagnosticsView.swift         — 诊断日志查看器
+│   └── License/
+│       └── LicenseView.swift             — GPL-3.0 许可证查看
+├── Services/
+│   ├── SchemaManager.swift               — 方案管理 + 下载编排（@MainActor ObservableObject）
+│   ├── RimeDeployer.h/.m                 — 主 App 端 RIME 部署封装
+│   └── (future: SchemaDownloadService, SchemaInstallService, etc.)
 ├── UniverseKeyboard-Bridging-Header.h     — 主 App zlib + RimeDeployer 桥接头
-└── Components/                           — 复用 UI 组件
-    ├── InfoSection.swift
-    └── ToggleRow.swift
+└── Universe Keyboard.entitlements
 ```
 
 **Testing** (224 tests across 13 files, 0 failures):
@@ -138,20 +168,26 @@ A local Swift Package at `Packages/KeyboardCore/`. Contains:
 - **`Logger`** — unified logging singleton. Log levels (debug/info/warning/error), categories (general/engine/config/deployment/performance), 500-entry ring buffer, master toggle via `logging_enabled` UserDefaults key. Tests in `LoggerTests.swift` (7 tests).
 - **`Unzip`** — minimal zip extractor using system libz (raw deflate). Supports store (method 0) and deflate (method 8). Bounds checking + 100MB safety limit + 10K iteration guard. 37 tests.
 - **`RimeConfigTemplates`** — pure YAML generation logic + string constants (default.yaml, luna_pinyin.schema.yaml, OpenCC configs, fallbackDict). Extracted from RimeConfigManager. 26 tests.
+- **`RimeConfigPostProcessor`** — canonical Lua stripping + schema repair logic (used by both main App and keyboard engine-side). 17 tests.
+- **`ClickSoundGenerator`** — shared WAV click sound generator (used by `KeyClickPlayer` + `FeedbackSettingsView`).
+- **`AutoCapitalizationRules`** — pure static auto-capitalization logic, extracted from `KeyboardController`.
 - **`ZLib`** — pure Swift `@_silgen_name` declarations for zlib types (`z_stream`, `uInt`), functions (`inflateInit2_`, `inflate`, `inflateEnd`, `deflateInit2_`, `deflate`, `deflateEnd`), and constants. Eliminates the CZLib SPM C-target to avoid Xcode 26 explicit-module-build issues.
 
 ### Main App
 
 ```
 Universe Keyboard/
-├── ContentView.swift                     — 主页面：引导 Tab + 设置 Tab（子页面导航）
-├── Universe_KeyboardApp.swift            — @main 入口
-├── FeedbackSettingsView.swift            — 键盘反馈设置子页面（按键音/音量/震动强度）
-├── RimeSettingsView.swift                — RIME 方案设置子页面（候选数/简繁/部署）
-├── DiagnosticsView.swift                 — 诊断日志子页面（动画刷新/清空按钮）
-└── Components/
-    ├── InfoSection.swift                 — 可复用信息卡片容器
-    └── ToggleRow.swift                   — 可复用设置开关行
+├── App/
+│   ├── Universe_KeyboardApp.swift        — @main 入口
+│   └── ContentView.swift                 — 双 Tab 布局（引导 / 设置）
+├── Views/
+│   ├── Components/                       — 5 shared components
+│   ├── Settings/                         — 3 setting views
+│   ├── Diagnostics/                      — log viewer
+│   └── License/                          — GPL-3.0 viewer
+└── Services/
+    ├── SchemaManager.swift               — schema download + deploy orchestrator
+    └── RimeDeployer.h/.m                 — main-app-side librime deploy wrapper
 ```
 
 ### Shared infrastructure

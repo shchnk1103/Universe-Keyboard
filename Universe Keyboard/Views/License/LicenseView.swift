@@ -53,10 +53,10 @@ struct LicenseView: View {
                 .font(.headline)
 
             VStack(alignment: .leading, spacing: 10) {
-                bulletRow("可以自由使用、修改和分发该配置")
-                bulletRow("分发修改后的版本时必须同样以 GPL-3.0 开源")
-                bulletRow("不提供任何担保，作者不承担任何责任")
-                bulletRow("详情见完整 GPL-3.0 许可证文本")
+                BulletRow(text:"可以自由使用、修改和分发该配置", style: .dot, bulletColor: .secondary)
+                BulletRow(text:"分发修改后的版本时必须同样以 GPL-3.0 开源", style: .dot, bulletColor: .secondary)
+                BulletRow(text:"不提供任何担保，作者不承担任何责任", style: .dot, bulletColor: .secondary)
+                BulletRow(text:"详情见完整 GPL-3.0 许可证文本", style: .dot, bulletColor: .secondary)
             }
         }
     }
@@ -66,10 +66,10 @@ struct LicenseView: View {
             Text("对 Universe Keyboard 的影响")
                 .font(.headline)
             VStack(alignment: .leading, spacing: 10) {
-                bulletRow("雾凇拼音配置（词库和 schema 文件）来自 rime-ice 项目")
-                bulletRow("本 App 通过下载方式获取配置，不直接分发 GPL 代码")
-                bulletRow("配置的修改（如去除 Lua 依赖）仅用于兼容性，不改变原始版权")
-                bulletRow("用户可以随时删除雾凇拼音配置，只使用内置方案")
+                BulletRow(text:"雾凇拼音配置（词库和 schema 文件）来自 rime-ice 项目", style: .dot, bulletColor: .secondary)
+                BulletRow(text:"本 App 通过下载方式获取配置，不直接分发 GPL 代码", style: .dot, bulletColor: .secondary)
+                BulletRow(text:"配置的修改（如去除 Lua 依赖）仅用于兼容性，不改变原始版权", style: .dot, bulletColor: .secondary)
+                BulletRow(text:"用户可以随时删除雾凇拼音配置，只使用内置方案", style: .dot, bulletColor: .secondary)
             }
         }
     }
@@ -92,15 +92,6 @@ struct LicenseView: View {
         .background(.regularMaterial)
     }
 
-    private func bulletRow(_ text: String) -> some View {
-        HStack(alignment: .top, spacing: 8) {
-            Text("•")
-                .foregroundStyle(.secondary)
-            Text(text)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-    }
 }
 
 #Preview {
