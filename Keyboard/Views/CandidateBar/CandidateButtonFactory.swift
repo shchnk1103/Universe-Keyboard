@@ -16,6 +16,42 @@ struct CandidateButtonFactory {
         height: CGFloat,
         highlighted: Bool = false
     ) -> UIButton {
+        let button = UIButton(configuration: candidateConfiguration(
+            title: title,
+            kind: kind,
+            color: color,
+            bold: bold,
+            highlighted: highlighted
+        ), primaryAction: nil)
+        button.heightAnchor.constraint(equalToConstant: height).isActive = true
+        return button
+    }
+
+    static func configureCandidateButton(
+        _ button: UIButton,
+        title: String,
+        kind: CandidateKind,
+        color: UIColor,
+        bold: Bool = false,
+        highlighted: Bool = false
+    ) {
+        button.configuration = candidateConfiguration(
+            title: title,
+            kind: kind,
+            color: color,
+            bold: bold,
+            highlighted: highlighted
+        )
+        button.tag = kind.rawValue
+    }
+
+    private static func candidateConfiguration(
+        title: String,
+        kind: CandidateKind,
+        color: UIColor,
+        bold: Bool,
+        highlighted: Bool
+    ) -> UIButton.Configuration {
         let fontSize: CGFloat = kind == .composition ? 14 : 16
         let weight: UIFont.Weight = bold ? .semibold : .regular
 
@@ -38,8 +74,6 @@ struct CandidateButtonFactory {
             return container
         }
 
-        let button = UIButton(configuration: config, primaryAction: nil)
-        button.heightAnchor.constraint(equalToConstant: height).isActive = true
-        return button
+        return config
     }
 }

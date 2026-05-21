@@ -10,6 +10,17 @@ import UIKit
 
 private var keyVisualStyleAssociationKey: UInt8 = 0
 
+private final class KeyboardKeyButton: UIButton {
+    var touchSlop: CGFloat = 10
+
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        guard isEnabled, !isHidden, alpha > 0.01 else {
+            return false
+        }
+        return bounds.insetBy(dx: -touchSlop, dy: -touchSlop).contains(point)
+    }
+}
+
 enum KeyVisualStyle: String {
     case character
     case function
@@ -21,7 +32,7 @@ enum KeyVisualStyle: String {
 extension KeyboardViewController {
 
     func makeKeyButton(title: String, action: Selector) -> UIButton {
-        let button = UIButton(type: .system)
+        let button = KeyboardKeyButton(type: .system)
         button.setTitle(title, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 20, weight: .regular)
         applyKeyStyle(.character, to: button)

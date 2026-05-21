@@ -285,10 +285,6 @@ extension KeyboardViewController {
 
     func refreshCandidateBar() {
         guard let stack = candidateStack else { return }
-        for arrangedSubview in stack.arrangedSubviews {
-            stack.removeArrangedSubview(arrangedSubview)
-            arrangedSubview.removeFromSuperview()
-        }
         fillCandidateBar()
         candidateScrollView.setContentOffset(.zero, animated: false)
 
@@ -323,12 +319,11 @@ extension KeyboardViewController {
         candidateExpandButton?.isHidden = !hasCandidates
         candidateExpandButtonWidthConstraint?.constant = hasCandidates ? 34 : 0
 
-        // 全部被过滤掉了（如英文模式只有 placeholder 或完全无输入）→ 显示空栏
+        removeNonCandidateSubviews(from: stack)
+
+        // 全部被过滤掉了（如英文模式只有 placeholder 或完全无输入）→ 清空候选栏
         guard !items.isEmpty else {
-            let label = UILabel()
-            label.text = " "
-            label.font = .systemFont(ofSize: 16)
-            stack.addArrangedSubview(label)
+            removeCandidateSubviews(from: stack, startingAt: 0)
             return
         }
 
@@ -337,7 +332,7 @@ extension KeyboardViewController {
         // 真正的第一个候选词（即按空格会输入的那个）
         var firstCandidateFound = false
 
-        for item in items {
+        for (index, item) in items.enumerated() {
             let isFirstCandidate: Bool = {
                 if firstCandidateFound { return false }
                 if item.kind == .candidate {
@@ -357,23 +352,56 @@ extension KeyboardViewController {
                 color = .label
             }
 
-            let button = CandidateButtonFactory.makeCandidateButton(
+            let button: UIButton
+            if index < stack.arrangedSubviews.count,
+               let existingButton = stack.arrangedSubviews[index] as? UIButton {
+                button = existingButton
+            } else {
+                button = CandidateButtonFactory.makeCandidateButton(
+                    title: item.title,
+                    kind: item.kind,
+                    color: color,
+                    bold: isFirstCandidate,
+                    height: candidateBarHeight,
+                    highlighted: isFirstCandidate
+                )
+                button.addTarget(self, action: #selector(insertCandidate(_:)), for: .touchUpInside)
+                stack.addArrangedSubview(button)
+            }
+
+            CandidateButtonFactory.configureCandidateButton(
+                button,
                 title: item.title,
                 kind: item.kind,
                 color: color,
                 bold: isFirstCandidate,
-                height: candidateBarHeight,
                 highlighted: isFirstCandidate
             )
-            button.tag = item.kind.rawValue
-            button.addTarget(self, action: #selector(insertCandidate(_:)), for: .touchUpInside)
-            stack.addArrangedSubview(button)
         }
+
+        removeCandidateSubviews(from: stack, startingAt: items.count)
     }
 
     // MARK: - 候选数据
 
     func candidateItems() -> [CandidateItem] {
         CandidateBarDataSource.candidateItems(from: controller)
+    }
+
+    private func removeNonCandidateSubviews(from stack: UIStackView) {
+        for subview in stack.arrangedSubviews where !(subview is UIButton) {
+            stack.removeArrangedSubview(subview)
+            subview.removeFromSuperview()
+        }
+    }
+
+    private func removeCandidateSubviews(from stack: UIStackView, startingAt startIndex: Int) {
+        guard startIndex < stack.arrangedSubviews.count else { return }
+
+        for index in stride(from: stack.arrangedSubviews.count - 1, through: startIndex, by: -1) {
+            let subview = stack.arrangedSubviews[index]
+            stack.removeArrangedSubview(subview)
+            subview.removeFromSuperview()
+        }
     }
 }

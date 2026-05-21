@@ -13,6 +13,13 @@ import KeyboardCore
 extension KeyboardViewController {
 
     @objc func keyTouchDown(_ sender: UIButton) {
+        let now = CACurrentMediaTime()
+        keyTouchDownTimes[ObjectIdentifier(sender)] = now
+        if Logger.shared.isEnabled {
+            let title = sender.title(for: .normal) ?? sender.accessibilityIdentifier ?? "?"
+            Logger.shared.performance("keyDown '\(title)'")
+        }
+
         sender.backgroundColor = highlightedKeyColor
         UIView.animate(withDuration: 0.06) {
             sender.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)

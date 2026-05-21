@@ -308,6 +308,7 @@ extension KeyboardController {
             state.currentComposition = ""
             state.lastRimeOutput = nil
             state.insertedPreeditCount = 0
+            state.insertedPreeditText = ""
             rimeEngine?.resetSession()
             return .compositionChanged
         } else {
@@ -401,12 +402,26 @@ extension KeyboardController {
 
     // MARK: - Inline preedit
 
-    /// 更新输入框中显示的拼音串：先删除旧的，再插入新的。
+    /// 更新输入框中显示的拼音串：只删除/插入和上一轮不同的后缀。
     /// 实现类似原生键盘的 inline composition 效果。
     func updateInlinePreedit(_ text: String) {
-        deleteInlinePreedit()
-        guard !text.isEmpty else { return }
-        insertText(text)
+        let previous = state.insertedPreeditText
+        guard previous != text else { return }
+
+        let commonPrefix = commonPrefixCount(with: previous, text)
+        let deleteCount = previous.count - commonPrefix
+        if deleteCount > 0 {
+            for _ in 0..<deleteCount {
+                textClient?.deleteBackward()
+            }
+        }
+
+        let insertion = String(text.dropFirst(commonPrefix))
+        if !insertion.isEmpty {
+            insertText(insertion)
+        }
+
+        state.insertedPreeditText = text
         state.insertedPreeditCount = text.count
     }
 
@@ -416,6 +431,22 @@ extension KeyboardController {
         for _ in 0..<state.insertedPreeditCount {
             textClient?.deleteBackward()
         }
+        state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
+    }
+
+    private func commonPrefixCount(with lhs: String, _ rhs: String) -> Int {
+        var count = 0
+        var leftIndex = lhs.startIndex
+        var rightIndex = rhs.startIndex
+
+        while leftIndex < lhs.endIndex, rightIndex < rhs.endIndex {
+            guard lhs[leftIndex] == rhs[rightIndex] else { break }
+            count += 1
+            leftIndex = lhs.index(after: leftIndex)
+            rightIndex = rhs.index(after: rightIndex)
+        }
+
+        return count
     }
 }

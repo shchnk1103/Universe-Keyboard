@@ -44,6 +44,7 @@ class KeyboardViewController: UIInputViewController {
     var candidateExpandButton: UIButton?
     var candidateExpandButtonWidthConstraint: NSLayoutConstraint?
     var isCandidateExpanded = false
+    var keyTouchDownTimes: [ObjectIdentifier: CFTimeInterval] = [:]
 
     // MARK: - 缓存的设置（避免每次按键都通过 XPC 访问 UserDefaults）
 
@@ -291,6 +292,11 @@ class KeyboardViewController: UIInputViewController {
     // MARK: - UI 同步
 
     func syncUI(with effects: KeyboardEffect) {
+        let startTime = CACurrentMediaTime()
+        defer {
+            logKeyPerformance("syncUI \(effects)", startTime: startTime)
+        }
+
         if effects.contains(.pageChanged) || effects.contains(.inputModeChanged) || effects.contains(.keyboardTypeChanged) {
             reloadKeyboard()
             return
@@ -302,5 +308,11 @@ class KeyboardViewController: UIInputViewController {
             refreshLetterButtons()
             updateShiftButtonAppearance()
         }
+    }
+
+    func logKeyPerformance(_ message: String, startTime: CFTimeInterval) {
+        guard Logger.shared.isEnabled else { return }
+        let elapsed = (CACurrentMediaTime() - startTime) * 1000
+        Logger.shared.performance("\(message) (\(String(format: "%.1f", elapsed))ms)")
     }
 }

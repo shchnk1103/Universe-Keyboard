@@ -258,6 +258,17 @@ final class RimeControllerTests: XCTestCase {
         XCTAssertGreaterThan(candidates.count, 0)
     }
 
+    func testInlinePreeditAppendsWithoutFullRewrite() {
+        for ch in "nihao" {
+            _ = controller.handle(.insertKey(String(ch)))
+        }
+
+        XCTAssertEqual(client.text, "nihao")
+        XCTAssertEqual(client.deletedCount, 0)
+        XCTAssertEqual(controller.state.insertedPreeditText, "nihao")
+        XCTAssertEqual(controller.state.insertedPreeditCount, 5)
+    }
+
     func testEngineNilToNonNilTransition() {
         controller.rimeEngine = nil
         _ = controller.handle(.insertKey("h"))

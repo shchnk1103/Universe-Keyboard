@@ -14,10 +14,24 @@ extension KeyboardViewController {
 
     @objc func insertKey(_ sender: UIButton) {
         guard let key = sender.title(for: .normal) else { return }
+        let startTime = CACurrentMediaTime()
+        if Logger.shared.isEnabled {
+            let identifier = ObjectIdentifier(sender)
+            if let touchDownTime = keyTouchDownTimes.removeValue(forKey: identifier) {
+                let delay = (startTime - touchDownTime) * 1000
+                Logger.shared.performance("insertKey enter '\(key)' after keyDown (\(String(format: "%.1f", delay))ms)")
+            } else {
+                Logger.shared.performance("insertKey enter '\(key)' without keyDown timestamp")
+            }
+        }
+
         playKeyClick()
         playHaptic()
+        let handleStartTime = CACurrentMediaTime()
         let effects = controller.handle(.insertKey(key))
+        logKeyPerformance("controller.handle insertKey '\(key)'", startTime: handleStartTime)
         syncUI(with: effects)
+        logKeyPerformance("insertKey total '\(key)'", startTime: startTime)
     }
 
     @objc func insertCandidate(_ sender: UIButton) {

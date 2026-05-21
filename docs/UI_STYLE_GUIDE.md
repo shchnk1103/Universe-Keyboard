@@ -50,6 +50,8 @@ Never use low-contrast colored text on a colored or translucent pill. Candidate 
 
 Use `makeKeyButton(...)` and `applyKeyStyle(_:to:)` for all keyboard keys. Do not hand-style button colors, fonts, corner radii, or shadows at call sites unless a new reusable style is first added.
 
+Keyboard keys must use the custom `KeyboardKeyButton` created by `makeKeyButton(...)`, not raw `UIButton(type: .system)`. The custom button expands touch tracking with a small slop area so fast typing is tolerant of slight finger drift.
+
 Current key styles:
 
 - `.character`: letters, numbers, and symbols.

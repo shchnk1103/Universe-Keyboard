@@ -102,11 +102,17 @@ public final class RimeEngineImpl: RimeEngine {
     // MARK: - RimeEngine
 
     public func processKey(_ key: String) -> RimeOutput {
+        let startTime = CACurrentMediaTime()
         // 部署前同步主 App 的配置变更到 .custom.yaml
         if UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")?.bool(forKey: "rime_needs_deploy") == true {
             RimeConfigManager.syncCustomYamlFiles()
         }
+        let deployStartTime = CACurrentMediaTime()
         let didDeploy = bridge.deployIfNeeded()
+        if didDeploy, Logger.shared.isEnabled {
+            let deployElapsed = (CACurrentMediaTime() - deployStartTime) * 1000
+            Logger.shared.performance("RIME deployIfNeeded on key '\(key)' (\(String(format: "%.1f", deployElapsed))ms)")
+        }
         if didDeploy {
             Logger.shared.info("Hot-reload deployment completed on keystroke", category: .deployment)
             // 部署重建了 session，需要重新选择方案（带验证）
@@ -118,8 +124,14 @@ public final class RimeEngineImpl: RimeEngine {
             }
         }
         let keycode = Self.keycode(for: key)
+        let bridgeStartTime = CACurrentMediaTime()
         let raw = bridge.processKey(keycode, modifiers: 0)
+        let bridgeElapsed = (CACurrentMediaTime() - bridgeStartTime) * 1000
         let output = parseOutput(raw)
+        if Logger.shared.isEnabled, key != "BackSpace", key != "Delete" {
+            let totalElapsed = (CACurrentMediaTime() - startTime) * 1000
+            Logger.shared.performance("RIME processKey '\(key)' returned (bridge \(String(format: "%.1f", bridgeElapsed))ms, total \(String(format: "%.1f", totalElapsed))ms, candidates \(output.candidates.count))")
+        }
         if key != "BackSpace" && key != "Delete" {
             let preedit = output.composition?.preeditText ?? ""
             Logger.shared.debug("\(key) → preedit: \(preedit), candidates: \(output.candidates.count)", category: .engine)
