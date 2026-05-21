@@ -118,6 +118,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				793AC8802FB0BE0600DAE8A0 /* KeyboardCore in Frameworks */,
+				79E64D962FB7563B009FCFAD /* libmarisa.xcframework in Frameworks */,
+				79E64D882FB7563B009FCFAD /* libopencc.xcframework in Frameworks */,
+				79E64D942FB7563B009FCFAD /* boost_atomic.xcframework in Frameworks */,
+				79E64D982FB7563B009FCFAD /* libyaml-cpp.xcframework in Frameworks */,
+				79E64D8E2FB7563B009FCFAD /* libleveldb.xcframework in Frameworks */,
+				79E64D8C2FB7563B009FCFAD /* boost_filesystem.xcframework in Frameworks */,
+				79E64D8A2FB7563B009FCFAD /* libglog.xcframework in Frameworks */,
+				79E64D902FB7563B009FCFAD /* boost_regex.xcframework in Frameworks */,
+				79E64D922FB7563B009FCFAD /* librime.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,7 +455,21 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C33N6HTS9N;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Keyboard/RimeBridge",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime.xcframework/ios-arm64/Headers",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/Headers",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libleveldb.xcframework/ios-arm64/Headers",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libmarisa.xcframework/ios-arm64/Headers",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libopencc.xcframework/ios-arm64/Headers",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libyaml-cpp.xcframework/ios-arm64/Headers",
+				);
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -484,7 +507,21 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C33N6HTS9N;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Keyboard/RimeBridge",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime.xcframework/ios-arm64/Headers",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/Headers",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libleveldb.xcframework/ios-arm64/Headers",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libmarisa.xcframework/ios-arm64/Headers",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libopencc.xcframework/ios-arm64/Headers",
+					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libyaml-cpp.xcframework/ios-arm64/Headers",
+				);
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -520,6 +557,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"RIME_HAS_LUA=1",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Keyboard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Keyboard;
@@ -576,6 +617,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"RIME_HAS_LUA=1",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Keyboard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Keyboard;

@@ -59,18 +59,7 @@ struct RimeSettingsView: View {
             }
 
             // MARK: 下载进度
-            if case .downloading = schemaManager.rimeIceDownloadState,
-               case .fetchingReleaseInfo = schemaManager.rimeIceDownloadState,
-               case .extracting = schemaManager.rimeIceDownloadState,
-               case .postProcessing = schemaManager.rimeIceDownloadState {
-                downloadProgressSection
-            } else if case .downloading = schemaManager.rimeIceDownloadState {
-                downloadProgressSection
-            } else if case .fetchingReleaseInfo = schemaManager.rimeIceDownloadState {
-                downloadProgressSection
-            } else if case .extracting = schemaManager.rimeIceDownloadState {
-                downloadProgressSection
-            } else if case .postProcessing = schemaManager.rimeIceDownloadState {
+            if isShowingProgress {
                 downloadProgressSection
             }
 
@@ -95,6 +84,9 @@ struct RimeSettingsView: View {
         }
         .navigationTitle("RIME 方案设置")
         .onAppear { loadSettings() }
+        .onChange(of: schemaManager.rimeIceDownloadState) { _, _ in
+            checkDeployState()
+        }
         .onDisappear { deployTimer?.invalidate() }
         .sheet(isPresented: $showLicense) {
             LicenseView { schemaManager.acceptLicense() }
@@ -252,9 +244,13 @@ struct RimeSettingsView: View {
                 }
                 if case .downloading(let progress) = schemaManager.rimeIceDownloadState {
                     ProgressView(value: progress)
+                } else if case .fetchingReleaseInfo = schemaManager.rimeIceDownloadState {
+                    ProgressView()
                 } else if case .extracting = schemaManager.rimeIceDownloadState {
                     ProgressView()
                 } else if case .postProcessing = schemaManager.rimeIceDownloadState {
+                    ProgressView()
+                } else if case .deploying = schemaManager.rimeIceDownloadState {
                     ProgressView()
                 }
             }
@@ -263,12 +259,22 @@ struct RimeSettingsView: View {
         }
     }
 
+    private var isShowingProgress: Bool {
+        switch schemaManager.rimeIceDownloadState {
+        case .fetchingReleaseInfo, .downloading, .extracting, .postProcessing, .deploying:
+            return true
+        default:
+            return false
+        }
+    }
+
     private var downloadStatusLabel: String {
         switch schemaManager.rimeIceDownloadState {
         case .fetchingReleaseInfo: return "正在获取最新版本信息…"
         case .downloading(let p):   return "正在下载… \(Int(p * 100))%"
         case .extracting:           return "正在解压配置文件…"
-        case .postProcessing:       return "正在处理配置（剥离 Lua 依赖）…"
+        case .postProcessing:       return "正在处理配置…"
+        case .deploying:            return "正在编译词库…"
         default:                    return "准备中…"
         }
     }

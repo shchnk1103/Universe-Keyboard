@@ -24,6 +24,7 @@ enum DownloadState: Equatable {
     case downloading(progress: Double)
     case extracting
     case postProcessing
+    case deploying
     case completed
     case failed(String)
 }
@@ -210,16 +211,22 @@ final class SchemaManager: ObservableObject {
             // 7. 复制到 App Group shared 目录
             try installRimeIceFiles(from: extractDir)
 
-            // 8. 更新状态
+            // 8. 清理临时文件
+            try? fm.removeItem(at: extractDir)
+            try? fm.removeItem(at: tempURL)
+
+            // 9. 更新版本和 schema
             let version = extractVersionFrom(files: extractedFiles) ?? "unknown"
             rimeIceVersion = version
             defaults.set(version, forKey: "rime_ice_version")
             defaults.set(true, forKey: "rime_ice_installed")
+
+            // 10. 先激活 schema（设置 active + requestDeploy），再执行全量部署
             activateRimeIce()
 
-            // 清理
-            try? fm.removeItem(at: extractDir)
-            try? fm.removeItem(at: tempURL)
+            // 11. 主 App 端全量部署（编译 YAML → .bin，覆盖 requestDeploy 标记）
+            rimeIceDownloadState = .deploying
+            await deployRimeConfig()
 
             rimeIceDownloadState = .completed
             refreshSchemaList()
@@ -338,7 +345,7 @@ final class SchemaManager: ObservableObject {
             // object(forKey:) 区分 nil（首次，默认 Lua 可用）和明确 false
             let luaAvailable = (UserDefaults(suiteName: appGroupID)?.object(forKey: "rime_lua_available") as? Bool) ?? true
             let skipPrefixes = ["squirrel", "weasel", "recipe", "others/"] + (luaAvailable ? [] : ["lua/"])
-            let skipFiles = (luaAvailable ? [] : ["t9.schema.yaml"]) + ["radical_pinyin.schema.yaml", "radical_pinyin.dict.yaml"]
+            let skipFiles = ["radical_pinyin.schema.yaml", "radical_pinyin.dict.yaml"]
             let fileName = fileURL.lastPathComponent
 
             if skipFiles.contains(fileName) || skipPrefixes.contains(where: { relativePath.hasPrefix($0) }) {
@@ -443,6 +450,47 @@ final class SchemaManager: ObservableObject {
         defaults.set(false, forKey: "rime_deployed")
         defaults.set(true, forKey: "rime_needs_deploy")
         defaults.synchronize()
+    }
+
+    /// 在主 App 端执行全量 RIME 部署（编译 YAML → .bin）。
+    /// 部署在后台线程执行，避免阻塞 UI。
+    private func deployRimeConfig() async {
+        guard let containerURL = fm.containerURL(
+            forSecurityApplicationGroupIdentifier: appGroupID
+        ) else {
+            Logger.shared.error("deployRimeConfig: App Group 不可用", category: .deployment)
+            return
+        }
+
+        let sharedDir = containerURL.appendingPathComponent("Rime/shared").path
+        let userDir = containerURL.appendingPathComponent("Rime/user").path
+
+        try? fm.createDirectory(atPath: userDir, withIntermediateDirectories: true)
+
+        Logger.shared.info("deployRimeConfig: 开始主 App 端全量部署", category: .deployment)
+
+        defaults.set(true, forKey: "rime_deploying")
+        defaults.set(false, forKey: "rime_deployed")
+        defaults.synchronize()
+
+        await Task.detached {
+            let deployer = RimeDeployer()
+            Logger.shared.info("deployRimeConfig: librime version \(deployer.librimeVersion())", category: .deployment)
+            let success = deployer.deploy(withSharedDataDir: sharedDir, userDataDir: userDir)
+            let defaults = UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")
+            if success {
+                Logger.shared.info("deployRimeConfig: 部署成功 ✓", category: .deployment)
+                defaults?.set(true, forKey: "rime_deployed")
+                defaults?.set(false, forKey: "rime_needs_deploy")
+                defaults?.set(false, forKey: "rime_deploying")
+            } else {
+                Logger.shared.error("deployRimeConfig: 部署失败 ✗（键盘扩展将兜底部署）", category: .deployment)
+                defaults?.set(false, forKey: "rime_deployed")
+                defaults?.set(true, forKey: "rime_needs_deploy")
+                defaults?.set(false, forKey: "rime_deploying")
+            }
+            defaults?.synchronize()
+        }.value
     }
 
     // MARK: - Lua stripping (仅在 rime_lua_available == false 时使用)

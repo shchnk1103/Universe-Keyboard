@@ -48,7 +48,8 @@ Universe Keyboard.xcodeproj
 ├── Universe Keyboard/          # 主 App (SwiftUI, 双 Tab)
 │   ├── ContentView.swift       # Tab 1: 引导 / Tab 2: 设置
 │   ├── Universe_KeyboardApp.swift
-│   ├── SchemaManager.swift     # 雾凇下载/解压/安装/Lua剥离 编排器
+│   ├── SchemaManager.swift     # 雾凇下载/解压/安装/Lua剥离/主App部署 编排器
+│   ├── RimeDeployer.h/.m       # 主 App 端最小 RIME 部署封装
 │   ├── LicenseView.swift       # GPL-3.0 许可证查看
 │   ├── SchemaPickerRow.swift   # 方案选择行组件
 │   ├── FeedbackSettingsView.swift
@@ -131,19 +132,26 @@ Universe Keyboard.xcodeproj
 ## 设置数据流
 
 ```
+主 App 下载雾凇 → SchemaManager.installRimeIceFiles()
+  → activateRimeIce()                  [设置 active schema + requestDeploy]
+  → deployRimeConfig()                  [主 App 端 RimeDeployer 全量部署]
+    → RimeDeployer.deployWithSharedDataDir:userDataDir:
+      → setup + initialize + start_maintenance(True) + join + cleanup
+    → rime_deployed = true             [键盘启动直接使用预编译 .bin]
+
 主 App 修改设置 → UserDefaults (App Group)
   → 设置 rime_needs_deploy = true
     → 用户切换键盘打字
       → RimeEngineImpl.processKey()
         → syncCustomYamlFiles()         [生成 .custom.yaml]
-        → deployIfNeeded()              [librime 重新部署]
+        → deployIfNeeded()              [librime 增量部署]
           → 新配置生效
 ```
 
 ## 构建与运行
 
 ```bash
-# 单元测试（215 tests）
+# 单元测试（224 tests）
 cd Packages/KeyboardCore && swift test
 
 # Xcode 构建
@@ -173,9 +181,10 @@ cd Packages/RimeBridge/TestTool && make && ./test_rime
 | iOS xcframework (11个) | ✅ librime 1.16.1 + Lua |
 | 统一日志系统 | ✅ Logger + 子页面 |
 | 雾凇拼音 | ✅ 下载 + 自动部署 |
-| librime-lua 插件 | ✅ 完整 Lua 功能 |
+| 主 App 端 RIME 部署 | ✅ 全量编译，键盘秒启动 |
+| librime-lua 插件 | ✅ 完整 Lua 功能，RIME_HAS_LUA=1 |
 | 方案切换 | ✅ 朙月拼音 ↔ 雾凇拼音 |
-| 单元测试 | ✅ 215 tests, 0 failures |
+| 单元测试 | ✅ 224 tests, 0 failures |
 
 ## 许可证
 

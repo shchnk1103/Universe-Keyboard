@@ -11,28 +11,31 @@ Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chines
 
 The long-term goal is a full-featured Chinese keyboard with RIME/librime engine + 雾凇拼音 configuration, swipe input, and near-native iOS feel. The full development plan is documented in `ios-rime-keyboard-development-plan.md`.
 
-## Current Status (2026-05-20)
+## Current Status (2026-05-21)
 
-**Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.** Bug fixes & schema repairs applied.
+**Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.** Main-app-side deployment + keyboard crash fixes applied.
 
 - **11 dependency xcframeworks** compiled from source and linked (9 base + liblua + librime-lua)
 - **雾凇拼音 (rime-ice)** downloadable from main App (automatic download + deploy flow)
 - **librime-lua plugin** compiled as `librime-lua.xcframework` (~3MB, 10 C++ source files + 32 Lua 5.4 C files)
 - **liblua.xcframework** compiled (PUC Lua 5.4, ~400KB)
+- **Main-app-side RIME deployment**: `RimeDeployer` (ObjC) runs `start_maintenance(full_check=True)` + `join_maintenance_thread()` in main App process, removing 5-15s blocking from keyboard extension startup. Keyboard only does lightweight `start_maintenance(full_check=False)` quick check.
+- **`RIME_HAS_LUA=1`** defined in Keyboard target `GCC_PREPROCESSOR_DEFINITIONS`, ensuring Lua module loads correctly
 - **CZLib target eliminated** — pure Swift `@_silgen_name` zlib calls (`ZLib.swift`), removing SPM C-target explicit-module-build issues
-- **Schema auto-repair**: corrupted rime_ice.schema.yaml (from old Lua-stripping) replaced with clean `rimeIceMinimalSchema` template at runtime
-- Conditional Lua stripping: `RIME_HAS_LUA=1` enables full Lua support; without it, Lua references are stripped for compatibility
+- **Schema auto-repair**: corrupted rime_ice.schema.yaml replaced with clean `rimeIceMinimalSchema` template at runtime (only when `rime_deployed=false`, respecting main App deploy)
 - RIME schema picker UI: built-in luna_pinyin + downloadable rime_ice
-- 5-phase deploy flow (idle → triggered → deploying → deployed → failed)
+- 6-phase download flow (idle → fetchingReleaseInfo → downloading → extracting → postProcessing → deploying → completed)
 - **Schema verification**: `selectAndVerifySchema` with Phase 1 (currentSchemaID check) + Phase 2 (functional test with "ni") + auto-fallback to luna_pinyin
 - **force_load paths**: SDK-conditional (`[sdk=iphonesimulator*]`) supporting both simulator and device builds
 - **DiagnosticsView**: copy button, enhanced engine-side repair logging
 
-**Recent bug fixes**:
-- `generateDefaultYaml`: Swift multiline string concatenation missing `\n` between schema_list entries (librime couldn't see rime_ice)
-- SchemaManager: `object(forKey:)` instead of `bool(forKey:)` to distinguish nil vs false for `rime_lua_available`; HTTP 304 retry when cached zip missing; `forceRedownload()` method
-- `RimeConfigPostProcessor`: made public; `stripLuaDependencies` now also removes damaging `initials:` lines; added `repairSchemaIfNeeded` with orphan line detection
-- `RimeSessionManager.initializeEngine`: optimized — quick check only when `needsDeploy` (luna_pinyin precompiled .bin available immediately), full deploy deferred to first keystroke
+**Recent bug fixes (2026-05-21)**:
+- `RIME_HAS_LUA=1` now defined in Keyboard target preprocessor macros (was missing, causing `rime_lua_available` to always be false → downloader stripped Lua → keyboard deleted build cache → crash)
+- `activateRimeIce()` + `deployRimeConfig()` order swapped: schema activated BEFORE deploy, so deploy compiles the correct schema and flags are not overridden
+- `t9.schema.yaml` always installed (was conditionally skipped, causing "missing input schema: t9" in deployment_tasks.cc)
+- `RimeConfigManager.prepareDirectories()` schema repair now guarded by `!rimeDeployed` — respects main App deploy results
+- `RimeSettingsView.deployState` now refreshes via `.onChange(of: rimeIceDownloadState)` instead of only on `onAppear`
+- `RimeDeployer.finalize` renamed to `cleanup` to avoid NSObject deprecated-method collision
 
 ## Build & Run
 
@@ -41,7 +44,7 @@ The long-term goal is a full-featured Chinese keyboard with RIME/librime engine 
 - Team: `C33N6HTS9N`, code signing is automatic.
 - To test the keyboard: run the Keyboard extension target on a simulator/device, then enable it in Settings → General → Keyboard → Keyboards → Add New Keyboard → Keyboard.
 - Build with `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build`
-- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**223 tests across 13 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
+- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**224 tests across 13 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
 - A **macOS verification tool** at `Packages/RimeBridge/TestTool/` validates the bridge code against real librime 1.16.1. Run with `cd Packages/RimeBridge/TestTool && make && ./test_rime`.
 
 ## Architecture
@@ -75,16 +78,17 @@ Keyboard/
 
 ```
 Universe Keyboard/
-├── SchemaManager.swift                   — 雾凇下载/解压/安装/Lua剥离 编排器
+├── SchemaManager.swift                   — 雾凇下载/解压/安装/Lua剥离/主App部署 编排器
+├── RimeDeployer.h/.m                     — 主 App 端最小 RIME 部署封装（start_maintenance + join）
 ├── LicenseView.swift                     — GPL-3.0 许可证查看
 ├── SchemaPickerRow.swift                 — 方案选择行组件
-├── UniverseKeyboard-Bridging-Header.h     — 主 App zlib 桥接头
+├── UniverseKeyboard-Bridging-Header.h     — 主 App zlib + RimeDeployer 桥接头
 └── Components/                           — 复用 UI 组件
     ├── InfoSection.swift
     └── ToggleRow.swift
 ```
 
-**Testing** (223 tests across 13 files, 0 failures):
+**Testing** (224 tests across 13 files, 0 failures):
 
 ```
 Packages/KeyboardCore/Tests/KeyboardCoreTests/
@@ -194,9 +198,11 @@ Keyboard Extension (UIInputViewController) → thin UI + state machine
 
 ### RIME Deployment System
 
-- **Main App** (Settings → RIME 方案设置): unified sub-page with settings (candidate count, simplified/traditional) and deploy controls. Trigger deploy → polls `rime_deployed`/`rime_deploying` every 2s. Shows 5 phases: idle → triggered → deploying → deployed → failed with icon/color/label.
-- **Keyboard Extension** (`viewDidLoad`): `RimeConfigManager.prepareDirectories()` writes YAML configs + OpenCC dictionaries to App Group. Uses `config_generation` counter to detect code-level config changes and force rebuild cache. `RimeEngineImpl` is always created.
-- **Runtime deploy** (`RimeEngineImpl.processKey`): calls `syncCustomYamlFiles()` before `deployIfNeeded()`. Custom YAML generated from UserDefaults settings (page_size, simplification). If `rime_needs_deploy` is true, clears build cache, runs full maintenance, creates new session.
+- **Main App deploy** (`SchemaManager.fetchAndDownload` → `deployRimeConfig()`): after downloading and installing rime_ice, main App calls `RimeDeployer` (minimal ObjC wrapper around librime C API) to run `start_maintenance(full_check=True)` + `join_maintenance_thread()`. This compiles all YAML → .bin (including rime_ice's 词库) in the main App process, so the keyboard starts with pre-built cache. Deploy runs in `Task.detached` to keep UI responsive.
+- **Main App settings** (Settings → RIME 方案设置): unified sub-page with schema picker, download UI (6 phases: idle → fetchingReleaseInfo → downloading → extracting → postProcessing → deploying → completed), candidate count slider, simplification toggle, and deploy controls. Deploy section polls `rime_deployed`/`rime_deploying` and auto-refreshes via `.onChange(of: rimeIceDownloadState)`.
+- **Keyboard Extension** (`viewDidLoad`): `RimeConfigManager.prepareDirectories()` writes YAML configs + OpenCC dictionaries to App Group. Uses `config_generation` counter to detect code-level config changes. Schema repair (replacing Lua-stripped schemas) only runs when `rime_deployed=false` — respects main App deploy results.
+- **Keyboard initialize** (`RimeSessionManager.initializeEngine`): lightweight only — `initialize(NULL)` + Lua availability record + `start_maintenance(full_check=False)` quick check. No full deploy (already done by main App). Entire keyboard startup is sub-second.
+- **Runtime deploy** (`RimeEngineImpl.processKey`): calls `syncCustomYamlFiles()` before `deployIfNeeded()`. Custom YAML generated from UserDefaults settings (page_size, simplification). If `rime_needs_deploy` is true (e.g., after settings change without main-app deploy), clears build cache, runs full maintenance, creates new session.
 - **OpenCC integration**: `simplifier` filter added to luna_pinyin schema with `opencc_config: opencc/t2s.json`. OpenCC configs + OCD2 dictionaries auto-deployed to `shared/opencc/`.
 - **Diagnostics**: `Logger` (singleton, KeyboardCore) with levels (debug/info/warning/error), categories, 500-entry ring buffer. Writes to `rime_diag_log` via shared UserDefaults. Main app DiagnosticsView shows logs with animated refresh/clear buttons.
 

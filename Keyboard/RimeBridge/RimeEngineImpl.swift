@@ -74,7 +74,7 @@ public final class RimeEngineImpl: RimeEngine {
             Logger.shared.warning("Schema file '\(activeSchema).schema.yaml' exists: \(schemaExists)", category: .engine)
             Logger.shared.warning("Dict file '\(activeSchema).dict.yaml' exists: \(dictExists)", category: .engine)
             if schemaExists {
-                if var content = try? String(contentsOfFile: schemaFile, encoding: .utf8) {
+                if let content = try? String(contentsOfFile: schemaFile, encoding: .utf8) {
                     let hasLua = content.contains("lua_translator") || content.contains("lua_filter") || content.contains("lua_processor")
                     let hasTranslator = content.contains("script_translator") || content.contains("table_translator")
                     Logger.shared.info("Schema contains lua_translator: \(hasLua)", category: .engine)

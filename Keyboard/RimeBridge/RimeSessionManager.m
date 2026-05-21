@@ -83,33 +83,9 @@ NSString * const RimeKeyPageNo           = @"pageNo";
         [defs synchronize];
     }
 
-    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.DoubleShy0N.Universe-Keyboard"];
-    BOOL needsDeploy = [defaults boolForKey:@"rime_needs_deploy"];
-
-    if (needsDeploy) {
-        // 只做快速检查（luna_pinyin 有预编译 .bin 会立即可用），
-        // 全量部署延后到 deployIfNeeded（首次按键触发，但 deployIfNeeded 也会阻塞）
-        // 先快速检查确保 luna_pinyin 可用
-        if (_api->start_maintenance(/*full_check=*/False)) {
-            _api->join_maintenance_thread();
-        }
-    } else {
-        BOOL alreadyDeployed = [defaults boolForKey:@"rime_deployed"];
-        if (!alreadyDeployed) {
-            // 首次使用：全量部署
-            [defaults setBool:YES forKey:@"rime_deploying"];
-            [defaults synchronize];
-            _api->start_maintenance(/*full_check=*/True);
-            _api->join_maintenance_thread();
-            [defaults setBool:NO forKey:@"rime_deploying"];
-            [defaults setBool:YES forKey:@"rime_deployed"];
-            [defaults synchronize];
-        } else {
-            // 已部署过，只做快速检查
-            if (_api->start_maintenance(/*full_check=*/False)) {
-                _api->join_maintenance_thread();
-            }
-        }
+    // 全量部署已由主 App 完成，这里只做快速增量检查
+    if (_api->start_maintenance(/*full_check=*/False)) {
+        _api->join_maintenance_thread();
     }
 
     _initialized = YES;

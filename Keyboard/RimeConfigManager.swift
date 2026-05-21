@@ -81,8 +81,11 @@ struct RimeConfigManager {
             Logger.shared.info("Config gen \(deployedGen) → \(currentGen), cleared build cache", category: .config)
         }
 
-        // 6. rime_ice 配置：若已安装但 schema 不含 Lua（被旧剥离破坏），用干净模板替换
-        if rimeIceInstalled {
+        // 6. rime_ice 配置修复：若主 App 已完成部署（rime_deployed=true），跳过修复
+        //    主 App 的 deployRimeConfig 已编译全部 schema，键盘不应覆盖其结果
+        //    仅在部署标记为 false 且 schema 损坏时才修复
+        let rimeDeployed = defs?.bool(forKey: "rime_deployed") ?? false
+        if rimeIceInstalled && !rimeDeployed {
             let iceSchemaURL = sharedDir.appendingPathComponent("rime_ice.schema.yaml")
             let existingContent = (try? String(contentsOf: iceSchemaURL, encoding: .utf8)) ?? ""
             let hasLua = existingContent.contains("lua_translator@") ||
@@ -90,7 +93,6 @@ struct RimeConfigManager {
                           existingContent.contains("lua_processor@")
             if !hasLua {
                 writeIfChanged(name: "rime_ice.schema.yaml", content: RimeConfigTemplates.rimeIceMinimalSchema, to: sharedDir)
-                // 清除 build 缓存以确保重新编译
                 if FileManager.default.fileExists(atPath: buildDir.path) {
                     try? FileManager.default.removeItem(at: buildDir)
                     try? FileManager.default.createDirectory(at: buildDir, withIntermediateDirectories: true)
