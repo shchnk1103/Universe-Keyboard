@@ -111,7 +111,7 @@ struct DiagnosticsView: View {
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 2) {
-                        ForEach(lines, id: \.self) { line in
+                        ForEach(Array(lines.enumerated()), id: \.offset) { _, line in
                             Text(line)
                                 .font(.system(.caption, design: .monospaced))
                                 .foregroundStyle(.secondary)

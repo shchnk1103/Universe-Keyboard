@@ -42,12 +42,25 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 - 6-phase download flow (idle → fetchingReleaseInfo → downloading → extracting → postProcessing → deploying → completed)
 - **Schema verification**: `selectAndVerifySchema` with Phase 1 (currentSchemaID check) + Phase 2 (functional test with "ni") + auto-fallback to luna_pinyin
 
-**Recent changes (2026-05-21)**:
+**Recent changes (2026-05-21, evening)**:
+- **Keyboard flickering mitigation**: `view.alpha = 0` with height-stability-detection fade-in (via `fadeInKeyboardIfNeeded()`) to mask iOS system's 3-phase keyboard resize (full-screen → intermediate → final). Apple DTS confirmed no API can prevent the resize itself.
+- **Candidate bar simplified**: removed button reuse + associated-object tracking (`objc_getAssociatedObject` Bool bridging issue). Replaced with simple clear-rebuild each refresh. 20-button creation <0.5ms vs RIME 2-5ms — negligible.
+- **Enter key chat-app adaptation**: `updateReturnKeyAppearance()` checks `textDocumentProxy.returnKeyType` and `hasText` — action keys (send/search/go) show blue accent when text present, gray when empty. Called from `textDidChange`, `syncUI`, `reloadKeyboard`.
+- **ForEach duplicate ID fix**: `DiagnosticsView.swift` + `RimeSettingsView.swift` — changed `ForEach(lines, id: \.self)` to `ForEach(Array(lines.enumerated()), id: \.offset)` to handle repeated log lines.
+- **Aggressive diagnostic logging**: `viewDidLayoutSubviews`, `fadeIn`, `fillCandidateBar`, `refreshCandidateBar`, `reloadKeyboard` all emit debug logs with view bounds, rootStack/candidateBar frames, and item counts. Critical for debugging keyboard resize/flickering issues.
 - **Performance optimization**: `KeyClickPlayer` audio moved to background serial queue — main-thread blocking reduced from 18-76ms to <1ms per keystroke
 - **Double-tap bug fix**: removed `UIView.animate` from `keyTouchDown`/`restoreKeyAppearance` — rapid same-key taps now register reliably
-- **Candidate button reuse**: associated-object tracking skips redundant `UIButton.Configuration` rebuilds when title/kind unchanged
 - **Deduplicated data source**: `candidateItems()` called once per keystroke (was twice in expanded mode)
 - **Touch feedback**: instantaneous `transform` + `backgroundColor` (no Core Animation transactions per keystroke)
+
+### Key Lessons Learned (2026-05-21)
+
+1. **iOS keyboard flickering is unfixable at the API level.** Apple DTS engineers confirmed: the keyboard extension runs in a separate process, the system assigns wrong heights (844→445→216) before correcting. No constraint, `intrinsicContentSize`, `allowsSelfSizing`, or `preferredContentSize` prevents it. The only mitigation is making the keyboard invisible during the transition (alpha fade-in).
+2. **Final keyboard height varies.** On iPhone 17 with iOS 26 non-adapted apps, the final height is **216pt** (not the standard 250-268pt). Any fixed-height constraint larger than `viewHeight - bottomMargin` causes clipping.
+3. **Do NOT override `loadView` in `UIInputViewController`.** It breaks the RIME bridge (processKey returns 0 candidates with 0.0ms bridge time), likely by skipping internal `UIInputViewController` setup.
+4. **Bottom anchoring causes candidate bar clipping at 216pt.** `rootStack.height(236) + bottomMargin(8) = 244pt` minimum, but view is only 216pt → top 28pt clipped including the candidate bar.
+5. **Associated-object Bool bridging is unreliable.** `objc_getAssociatedObject(...) as? Bool` can fail on `__NSCFBoolean`, making the reuse check always think bold state changed. Simpler: just rebuild.
+6. **Log aggressively.** Without `viewDidLayoutSubviews` frame logging, we wouldn't know the final height is 216pt or that viewDidAppear fires at intermediate height 445pt.
 - Enterprise-grade refactoring: 5 duplicate blocks unified, 2 large files split, project reorganized into logical subdirectories (225 tests, 0 failures)
 - Duplicate WAV generation unified → `ClickSoundGenerator` in KeyboardCore
 - Duplicate Lua stripping removed from SchemaManager → uses `RimeConfigPostProcessor`

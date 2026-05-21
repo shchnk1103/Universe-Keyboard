@@ -45,6 +45,10 @@ class KeyboardViewController: UIInputViewController {
     var candidateExpandButtonWidthConstraint: NSLayoutConstraint?
     var isCandidateExpanded = false
     var keyTouchDownTimes: [ObjectIdentifier: CFTimeInterval] = [:]
+    private var hasViewAppeared = false
+    private var hasFadedIn = false
+    private var lastLayoutHeight: CGFloat = 0
+    private var heightStableCount = 0
 
     // MARK: - 缓存的设置（避免每次按键都通过 XPC 访问 UserDefaults）
 
@@ -66,6 +70,11 @@ class KeyboardViewController: UIInputViewController {
         let startupTime = CACurrentMediaTime()
 
         view.backgroundColor = keyboardBackgroundColor
+        inputView?.allowsSelfSizing = true
+        let totalHeight = candidateBarHeight + keyHeight * 4 + keySpacing * 4 + 14
+        preferredContentSize = CGSize(width: 0, height: totalHeight)
+
+        view.alpha = 0
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
         let state = KeyboardState(activeKeyboardType: keyboardType)
@@ -109,13 +118,22 @@ class KeyboardViewController: UIInputViewController {
         hapticGenerator.prepare()
 
         setupRootStack()
-        reloadKeyboard()
+        UIView.performWithoutAnimation {
+            reloadKeyboard()
+        }
     }
 
     deinit {
         Logger.shared.flush()
         stopDeleteRepeat()
         NotificationCenter.default.removeObserver(self)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        hasViewAppeared = true
+        Logger.shared.debug("viewDidAppear: bounds=\(view.bounds), alpha=\(view.alpha)", category: .general)
+        fadeInKeyboardIfNeeded()
     }
 
     override func viewWillLayoutSubviews() {
@@ -132,6 +150,43 @@ class KeyboardViewController: UIInputViewController {
             gradient.frame = scrollView.bounds
             CATransaction.commit()
         }
+        Logger.shared.debug("viewDidLayoutSubviews: view.bounds=\(view.bounds), rootStack.frame=\(rootStack?.frame ?? .zero), candidateBar.frame=\(candidateBar?.frame ?? .zero), alpha=\(view.alpha)", category: .general)
+        fadeInKeyboardIfNeeded()
+    }
+
+    /// 键盘从 alpha=0 淡入。要求高度连续稳定才触发（避免在系统 resize 过程中提前淡入）。
+    /// viewDidLayoutSubviews 是快速路径（高度稳定时），viewDidAppear 是安全兜底。
+    private func fadeInKeyboardIfNeeded() {
+        guard !hasFadedIn else { return }
+
+        let h = view.bounds.height
+
+        if hasViewAppeared {
+            // viewDidAppear 已经触发，但高度可能还是中间态（如 445pt）— 系统可能在此之后
+            // 再做一次 resize 到最终高度（如 250pt）。必须等高度合理后再淡入。
+            guard h > 0, h < 400 else {
+                Logger.shared.debug("fadeIn: viewDidAppear but h=\(h) out of range, waiting", category: .general)
+                return
+            }
+            hasFadedIn = true
+            Logger.shared.info("fadeIn: viewDidAppear path, h=\(h)", category: .general)
+            UIView.animate(withDuration: 0.15) { self.view.alpha = 1 }
+            return
+        }
+
+        if abs(h - lastLayoutHeight) < 1 {
+            heightStableCount += 1
+        } else {
+            heightStableCount = 0
+        }
+        lastLayoutHeight = h
+        Logger.shared.debug("fadeIn check: h=\(h), stable=\(heightStableCount)", category: .general)
+
+        guard h > 0, h < 400, heightStableCount >= 1 else { return }
+
+        hasFadedIn = true
+        Logger.shared.info("fadeIn: stable path, h=\(h)", category: .general)
+        UIView.animate(withDuration: 0.15) { self.view.alpha = 1 }
     }
 
     override func textWillChange(_ textInput: UITextInput?) {
@@ -141,7 +196,7 @@ class KeyboardViewController: UIInputViewController {
         let proxy = self.textDocumentProxy
         let textColor: UIColor = proxy.keyboardAppearance == .dark ? .white : .black
         nextKeyboardButton.setTitleColor(textColor, for: [])
-        updateReturnKeyTitle()
+        updateReturnKeyAppearance()
 
         let keyboardType = KeyboardType.from(uiKeyboardType: proxy.keyboardType)
         var effects = controller.handle(.keyboardTypeChanged(keyboardType))
@@ -163,15 +218,17 @@ class KeyboardViewController: UIInputViewController {
         rootStack.distribution = .fill
         rootStack.translatesAutoresizingMaskIntoConstraints = false
 
+        view.clipsToBounds = true
         view.addSubview(rootStack)
 
         NSLayoutConstraint.activate([
             rootStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 6),
             rootStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -6),
             rootStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 6),
-            rootStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8),
-            rootStack.heightAnchor.constraint(greaterThanOrEqualToConstant: candidateBarHeight + keyHeight * 4 + keySpacing * 4)
+            rootStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8)
         ])
+
+        Logger.shared.debug("setupRootStack: top+6, bottom-8", category: .general)
     }
 
     func reloadKeyboard() {
@@ -180,6 +237,8 @@ class KeyboardViewController: UIInputViewController {
         candidateBar = makeCandidateBar()
         rootStack.addArrangedSubview(candidateBar)
         addKeyboardRows(for: controller.state)
+        updateReturnKeyAppearance()
+        Logger.shared.debug("reloadKeyboard: candidateBar=\(candidateBar != nil ? "OK" : "nil"), rows=\(rootStack.arrangedSubviews.count)", category: .general)
     }
 
     /// 仅重建键盘内容区（保留候选栏），用于展开/收起候选面板
@@ -297,8 +356,16 @@ class KeyboardViewController: UIInputViewController {
             logKeyPerformance("syncUI \(effects)", startTime: startTime)
         }
 
+        updateReturnKeyAppearance()
+
         if effects.contains(.pageChanged) || effects.contains(.inputModeChanged) || effects.contains(.keyboardTypeChanged) {
-            reloadKeyboard()
+            if hasViewAppeared {
+                reloadKeyboard()
+            } else {
+                UIView.performWithoutAnimation {
+                    reloadKeyboard()
+                }
+            }
             return
         }
         if effects.contains(.compositionChanged) {

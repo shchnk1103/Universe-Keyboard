@@ -15,6 +15,9 @@ final class KeyClickPlayer {
     // MARK: - Init
 
     init() {
+        try? AVAudioSession.sharedInstance().setCategory(.ambient, options: .mixWithOthers)
+        try? AVAudioSession.sharedInstance().setActive(true)
+
         let wav = ClickSoundGenerator.generateClickWAV()
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("keyclick.wav")
         try? wav.write(to: tempURL)

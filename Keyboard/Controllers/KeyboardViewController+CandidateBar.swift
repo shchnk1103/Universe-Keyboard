@@ -3,24 +3,17 @@
 //  Keyboard
 //
 //  候选栏的创建、刷新和数据源。
-//  UIScrollView 横向滚动 + 可视区高亮 + SF Symbol 展开/收起候选面板。
+//  UIScrollView 横向滚动 + SF Symbol 展开/收起候选面板。
 //
 
-import ObjectiveC
 import UIKit
 import KeyboardCore
-
-private var candidateButtonLastTitleKey: UInt8 = 0
-private var candidateButtonLastKindKey: UInt8 = 0
 
 // MARK: - UIScrollViewDelegate
 
 extension KeyboardViewController: UIScrollViewDelegate {
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // 不再基于滚动位置调整 alpha —— 高亮逻辑改为：
-        // 只高亮第一个真正的候选词（按空格会输入的那个词）
-        // 见 fillCandidateBar() 中的 isFirstCandidate 处理
     }
 }
 
@@ -127,7 +120,6 @@ extension KeyboardViewController {
     @objc func toggleCandidateExpand() {
         isCandidateExpanded.toggle()
 
-        // chevron 旋转 180°
         if let btn = candidateExpandButton {
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut) {
                 btn.imageView?.transform = self.isCandidateExpanded
@@ -139,7 +131,6 @@ extension KeyboardViewController {
             btn.configuration = config
         }
 
-        // 键盘内容区淡入淡出
         UIView.transition(with: rootStack, duration: 0.2, options: .transitionCrossDissolve) {
             self.reloadKeyboardContent()
         }
@@ -159,7 +150,6 @@ extension KeyboardViewController {
         verticalStack.translatesAutoresizingMaskIntoConstraints = false
 
         let items = precomputedItems ?? candidateItems()
-        // 展开面板只显示候选词和拼音组合，过滤掉占位提示
         let candidates = items.filter { $0.kind != .placeholder }
 
         guard !candidates.isEmpty else {
@@ -184,7 +174,6 @@ extension KeyboardViewController {
         let rows = (candidates.count + columns - 1) / columns
         let rowHeight: CGFloat = 44
 
-        // 追踪第一个真正的候选词（.candidate），与横向滚动栏的高亮逻辑一致
         var firstCandidateFound = false
 
         for rowIndex in 0..<rows {
@@ -207,14 +196,7 @@ extension KeyboardViewController {
                         return false
                     }()
 
-                    let color: UIColor
-                    if item.kind == .composition {
-                        color = .secondaryLabel
-                    } else if isFirstCandidate {
-                        color = .label
-                    } else {
-                        color = .label
-                    }
+                    let color: UIColor = item.kind == .composition ? .secondaryLabel : .label
 
                     let button = CandidateButtonFactory.makeCandidateButton(
                         title: item.title,
@@ -291,6 +273,7 @@ extension KeyboardViewController {
         guard candidateStack != nil else { return }
 
         let allItems = candidateItems()
+        Logger.shared.debug("refreshCandidateBar: items=\(allItems.count), expanded=\(isCandidateExpanded)", category: .general)
         fillCandidateBar(precomputedItems: allItems)
 
         if candidateScrollView.contentOffset.x != 0 {
@@ -304,26 +287,17 @@ extension KeyboardViewController {
         }
     }
 
-    /// 填充候选栏的横向滚动区域。
-    ///
-    /// 和 makeExpandedCandidatePanel() 共享同一份数据源（candidateItems()），
-    /// 并且同样过滤掉 .placeholder 类型的提示项。
-    /// 两者展示的候选词数量和内容完全一致。
-    ///
-    /// 高亮逻辑：只高亮第一个真正的候选词（.candidate 类型）。
-    /// 这是按空格键会输入的那个词 —— 对它加粗 + 主题色，
-    /// 让用户一眼就知道空格会输入什么。
+    /// 填充候选栏。每次完整清除旧按钮后重建，简单可靠，避免复用逻辑的边界 bug。
+    /// 20 个候选词创建 UIButton 耗时 <0.5ms，RIME 处理耗时 2-5ms，创建开销可忽略。
     func fillCandidateBar(precomputedItems: [CandidateItem]? = nil) {
-        guard let stack = candidateStack else { return }
+        guard let stack = candidateStack else {
+            Logger.shared.warning("fillCandidateBar: candidateStack is nil", category: .general)
+            return
+        }
 
         let allItems = precomputedItems ?? candidateItems()
-        // 过滤掉占位提示，只展示候选词和拼音组合
-        // 与 makeExpandedCandidatePanel() 保持一致的过滤逻辑
         let items = allItems.filter { $0.kind != .placeholder }
 
-        // 展开按钮只在有候选内容时才显示
-        // 与原生键盘行为一致：没有候选词时没有展开面板的必要
-        // 收起宽度到 0，让 scrollView 填充整个容器
         let hasCandidates = items.contains { $0.kind == .candidate }
         candidateExpandButton?.isHidden = !hasCandidates
         let targetWidth: CGFloat = hasCandidates ? 34 : 0
@@ -331,20 +305,21 @@ extension KeyboardViewController {
             candidateExpandButtonWidthConstraint?.constant = targetWidth
         }
 
-        removeNonCandidateSubviews(from: stack)
+        // 清除所有旧按钮
+        let oldCount = stack.arrangedSubviews.count
+        for subview in stack.arrangedSubviews.reversed() {
+            stack.removeArrangedSubview(subview)
+            subview.removeFromSuperview()
+        }
 
-        // 全部被过滤掉了（如英文模式只有 placeholder 或完全无输入）→ 清空候选栏
         guard !items.isEmpty else {
-            removeCandidateSubviews(from: stack, startingAt: 0)
+            Logger.shared.debug("fillCandidateBar: cleared \(oldCount) old views, 0 new items", category: .general)
             return
         }
 
-        // 用布尔标记追踪"第一个 .candidate 已经出现过了吗"
-        // 这样 index=0 即使是 .composition（拼音组合），也能正确识别
-        // 真正的第一个候选词（即按空格会输入的那个）
         var firstCandidateFound = false
 
-        for (index, item) in items.enumerated() {
+        for item in items {
             let isFirstCandidate: Bool = {
                 if firstCandidateFound { return false }
                 if item.kind == .candidate {
@@ -354,73 +329,26 @@ extension KeyboardViewController {
                 return false
             }()
 
-            // 颜色：拼音组合用次要灰，第一个候选用主题色，其余用标签色
-            let color: UIColor
-            if item.kind == .composition {
-                color = .secondaryLabel
-            } else if isFirstCandidate {
-                color = .label
-            } else {
-                color = .label
-            }
+            let color: UIColor = item.kind == .composition ? .secondaryLabel : .label
 
-            let button: UIButton
-            if index < stack.arrangedSubviews.count,
-               let existingButton = stack.arrangedSubviews[index] as? UIButton {
-                button = existingButton
-            } else {
-                button = CandidateButtonFactory.makeCandidateButton(
-                    title: item.title,
-                    kind: item.kind,
-                    color: color,
-                    bold: isFirstCandidate,
-                    height: candidateBarHeight,
-                    highlighted: isFirstCandidate
-                )
-                button.addTarget(self, action: #selector(insertCandidate(_:)), for: .touchUpInside)
-                stack.addArrangedSubview(button)
-            }
-
-            let lastTitle = objc_getAssociatedObject(button, &candidateButtonLastTitleKey) as? String
-            let lastKind = objc_getAssociatedObject(button, &candidateButtonLastKindKey) as? Int
-
-            if lastTitle != item.title || lastKind != item.kind.rawValue {
-                CandidateButtonFactory.configureCandidateButton(
-                    button,
-                    title: item.title,
-                    kind: item.kind,
-                    color: color,
-                    bold: isFirstCandidate,
-                    highlighted: isFirstCandidate
-                )
-                objc_setAssociatedObject(button, &candidateButtonLastTitleKey, item.title, .OBJC_ASSOCIATION_COPY_NONATOMIC)
-                objc_setAssociatedObject(button, &candidateButtonLastKindKey, item.kind.rawValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            }
+            let button = CandidateButtonFactory.makeCandidateButton(
+                title: item.title,
+                kind: item.kind,
+                color: color,
+                bold: isFirstCandidate,
+                height: candidateBarHeight,
+                highlighted: isFirstCandidate
+            )
+            button.addTarget(self, action: #selector(insertCandidate(_:)), for: .touchUpInside)
+            stack.addArrangedSubview(button)
         }
 
-        removeCandidateSubviews(from: stack, startingAt: items.count)
+        Logger.shared.debug("fillCandidateBar: cleared \(oldCount) old views, added \(items.count) new buttons, kinds=\(items.map { $0.kind.rawValue })", category: .general)
     }
 
     // MARK: - 候选数据
 
     func candidateItems() -> [CandidateItem] {
         CandidateBarDataSource.candidateItems(from: controller)
-    }
-
-    private func removeNonCandidateSubviews(from stack: UIStackView) {
-        for subview in stack.arrangedSubviews where !(subview is UIButton) {
-            stack.removeArrangedSubview(subview)
-            subview.removeFromSuperview()
-        }
-    }
-
-    private func removeCandidateSubviews(from stack: UIStackView, startingAt startIndex: Int) {
-        guard startIndex < stack.arrangedSubviews.count else { return }
-
-        for index in stride(from: stack.arrangedSubviews.count - 1, through: startIndex, by: -1) {
-            let subview = stack.arrangedSubviews[index]
-            stack.removeArrangedSubview(subview)
-            subview.removeFromSuperview()
-        }
     }
 }

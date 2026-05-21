@@ -412,7 +412,7 @@ struct RimeSettingsView: View {
                 if !deployLog.isEmpty {
                     DisclosureGroup(isExpanded: $logExpanded) {
                         VStack(alignment: .leading, spacing: 2) {
-                            ForEach(deployLog, id: \.self) { line in
+                            ForEach(Array(deployLog.enumerated()), id: \.offset) { _, line in
                                 Text(line)
                                     .font(.system(.caption, design: .monospaced))
                                     .foregroundStyle(.secondary)

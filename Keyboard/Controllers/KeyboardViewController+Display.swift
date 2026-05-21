@@ -97,8 +97,33 @@ extension KeyboardViewController {
         }
     }
 
-    func updateReturnKeyTitle() {
+    func updateReturnKeyAppearance() {
         guard let returnButton else { return }
+
         returnButton.setTitle(returnKeyTitle, for: .normal)
+
+        // 仿原生键盘：send/search/go 等动作键，空文本时灰色，有文本时蓝色强调
+        let rt = textDocumentProxy.returnKeyType
+        let isActionKey: Bool = {
+            switch rt {
+            case .send, .search, .go, .join, .route, .yahoo, .google:
+                return true
+            default:
+                return false
+            }
+        }()
+
+        if isActionKey {
+            let hasText = textDocumentProxy.hasText
+            if hasText {
+                returnButton.backgroundColor = view.tintColor
+                returnButton.setTitleColor(.white, for: .normal)
+                returnButton.tintColor = .white
+            } else {
+                applyKeyStyle(.returnKey, to: returnButton)
+            }
+        } else {
+            applyKeyStyle(.returnKey, to: returnButton)
+        }
     }
 }
