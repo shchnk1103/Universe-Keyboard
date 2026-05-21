@@ -13,14 +13,23 @@ struct CandidateButtonFactory {
         kind: CandidateKind,
         color: UIColor,
         bold: Bool = false,
-        height: CGFloat
+        height: CGFloat,
+        highlighted: Bool = false
     ) -> UIButton {
         let fontSize: CGFloat = kind == .composition ? 14 : 16
-        let weight: UIFont.Weight = bold ? .bold : .regular
+        let weight: UIFont.Weight = bold ? .semibold : .regular
 
         var config = UIButton.Configuration.plain()
         config.title = title
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)
+        if highlighted {
+            config.background.backgroundColor = UIColor { traits in
+                traits.userInterfaceStyle == .dark
+                    ? UIColor(red: 116 / 255, green: 117 / 255, blue: 121 / 255, alpha: 1)
+                    : UIColor.white.withAlphaComponent(0.92)
+            }
+            config.background.cornerRadius = 8
+        }
 
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { container in
             var container = container

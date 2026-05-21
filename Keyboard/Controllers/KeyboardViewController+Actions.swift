@@ -99,7 +99,7 @@ extension KeyboardViewController {
 extension KeyboardViewController {
 
     @objc func deleteKeyTouchDown(_ sender: UIButton) {
-        sender.alpha = 0.5
+        keyTouchDown(sender)
         // 立即执行第一次删除（模拟原生键盘行为）
         performDeleteBackward()
         isDeleteRepeatActive = false
@@ -109,12 +109,12 @@ extension KeyboardViewController {
     @objc func deleteKeyTouchUpInside(_ sender: UIButton) {
         stopDeleteRepeat()
         // 如果长按自动重复未触发，touchDown 时已经执行过删除，不再重复
-        sender.alpha = 1.0
+        restoreKeyAppearance(sender)
     }
 
     @objc func deleteKeyTouchUpOutside(_ sender: UIButton) {
         stopDeleteRepeat()
-        sender.alpha = 1.0
+        restoreKeyAppearance(sender)
     }
 
     func performDeleteBackward() {

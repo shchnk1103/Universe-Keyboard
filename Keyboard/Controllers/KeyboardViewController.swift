@@ -55,7 +55,7 @@ class KeyboardViewController: UIInputViewController {
     let candidateBarHeight: CGFloat = 36
     let keyHeight: CGFloat = 44
     let keySpacing: CGFloat = 6
-    let keyCornerRadius: CGFloat = 10
+    let keyCornerRadius: CGFloat = 9
 
     // MARK: - 生命周期
 
@@ -64,8 +64,7 @@ class KeyboardViewController: UIInputViewController {
 
         let startupTime = CACurrentMediaTime()
 
-        // 接近原生 iOS 键盘背景色：系统键盘使用比 systemGray5 更深的灰底
-        view.backgroundColor = UIColor.systemGray4
+        view.backgroundColor = keyboardBackgroundColor
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
         let state = KeyboardState(activeKeyboardType: keyboardType)
@@ -168,7 +167,7 @@ class KeyboardViewController: UIInputViewController {
         NSLayoutConstraint.activate([
             rootStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 6),
             rootStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -6),
-            rootStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 8),
+            rootStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 6),
             rootStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8),
             rootStack.heightAnchor.constraint(greaterThanOrEqualToConstant: candidateBarHeight + keyHeight * 4 + keySpacing * 4)
         ])
@@ -204,7 +203,7 @@ class KeyboardViewController: UIInputViewController {
         switch state.currentPage {
         case .letters:
             rootStack.addArrangedSubview(makeLetterRow(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]))
-            rootStack.addArrangedSubview(makeLetterRow(["a", "s", "d", "f", "g", "h", "j", "k", "l"]))
+            rootStack.addArrangedSubview(makeLetterRow(["a", "s", "d", "f", "g", "h", "j", "k", "l"], horizontalInset: 18))
             rootStack.addArrangedSubview(makeLetterThirdRow())
             rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: false))
         case .numbers:

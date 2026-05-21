@@ -21,6 +21,7 @@ struct ContentView: View {
                     Label("设置", systemImage: "gearshape")
                 }
         }
+        .tint(.blue)
     }
 }
 
@@ -30,13 +31,14 @@ private struct GuideTab: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 16) {
                     headerSection
                     enableKeyboardSection
                     progressSection
                     testChecklistSection
                 }
-                .padding()
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Universe Keyboard")
@@ -45,20 +47,33 @@ private struct GuideTab: View {
 
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Image(systemName: "keyboard")
-                .font(.system(size: 34, weight: .semibold))
-                .foregroundStyle(.blue)
-            Text("基础键盘已经可以测试")
-                .font(.title2)
-                .fontWeight(.semibold)
-            Text("本 App 负责引导启用键盘和配置引擎。真正输入文字的是 Keyboard Extension。")
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(.blue)
+                    Image(systemName: "keyboard")
+                        .font(.system(size: 25, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
+                .frame(width: 52, height: 52)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Universe Keyboard")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                    Text("RIME 中文输入法")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Text("先在系统设置中添加键盘，再回到这里管理方案、候选数量和按键反馈。")
                 .font(.body)
                 .foregroundStyle(.secondary)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
     private var enableKeyboardSection: some View {
@@ -109,12 +124,13 @@ private struct SettingsTab: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 16) {
                     feedbackNavigationLink
                     rimeNavigationLink
                     diagnosticsSection
                 }
-                .padding()
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("设置")
@@ -124,28 +140,13 @@ private struct SettingsTab: View {
     // MARK: 键盘反馈
 
     private var feedbackNavigationLink: some View {
-        NavigationLink(destination: FeedbackSettingsView()) {
-            HStack(spacing: 14) {
-                Image(systemName: "waveform")
-                    .font(.title3)
-                    .foregroundStyle(.blue)
-                    .frame(width: 28)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("键盘反馈")
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                    Text("按键音、触感震动")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .padding()
-            .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+        SettingsNavigationLink(
+            systemImage: "waveform",
+            title: "键盘反馈",
+            subtitle: "按键音、触感震动",
+            imageColor: .blue
+        ) {
+            FeedbackSettingsView()
         }
     }
 
@@ -158,27 +159,13 @@ private struct SettingsTab: View {
     // MARK: RIME 方案设置
 
     private var rimeNavigationLink: some View {
-        NavigationLink(destination: RimeSettingsView()) {
-            HStack(spacing: 14) {
-                Image(systemName: "character.book.closed.zh")
-                    .font(.title3)
-                    .frame(width: 28)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("RIME 方案设置")
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                    Text("候选数量、简繁转换、方案部署")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .padding()
-            .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+        SettingsNavigationLink(
+            systemImage: "character.book.closed.zh",
+            title: "RIME 方案设置",
+            subtitle: "候选数量、简繁转换、方案部署",
+            imageColor: .indigo
+        ) {
+            RimeSettingsView()
         }
     }
 
@@ -186,10 +173,15 @@ private struct SettingsTab: View {
 
     private var diagnosticsSection: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 14) {
-                Image(systemName: "terminal")
-                    .font(.title3)
-                    .frame(width: 28)
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                        .fill(.gray)
+                    Image(systemName: "terminal")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
+                .frame(width: 30, height: 30)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("诊断日志")
                         .font(.body)
@@ -208,9 +200,10 @@ private struct SettingsTab: View {
                         diagRefreshToken += 1
                     }
             }
-            .padding()
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
             .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
             // 仅当开关打开且有日志时才显示查看入口
             if loggingEnabled {
@@ -227,7 +220,7 @@ private struct SettingsTab: View {
                         }
                         .padding()
                         .background(Color(.secondarySystemGroupedBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                     }
                 } else {
                     HStack {

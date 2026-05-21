@@ -13,11 +13,32 @@ import KeyboardCore
 extension KeyboardViewController {
 
     @objc func keyTouchDown(_ sender: UIButton) {
-        sender.alpha = 0.5
+        sender.backgroundColor = highlightedKeyColor
+        UIView.animate(withDuration: 0.06) {
+            sender.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+        }
     }
 
     @objc func keyTouchUp(_ sender: UIButton) {
-        sender.alpha = 1.0
+        restoreKeyAppearance(sender)
+    }
+
+    func restoreKeyAppearance(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.08) {
+            sender.transform = .identity
+        }
+
+        if sender === shiftButton {
+            updateShiftButtonAppearance()
+            return
+        }
+
+        guard let style = keyStyle(for: sender) else {
+            applyKeyStyle(.character, to: sender)
+            return
+        }
+
+        applyKeyStyle(style, to: sender)
     }
 }
 
@@ -64,7 +85,7 @@ extension KeyboardViewController {
             popup.transform = .identity
         }
 
-        button.alpha = 0.6
+        button.backgroundColor = highlightedKeyColor
     }
 
     private func updateVariantPopup(gesture: UILongPressGestureRecognizer) {
@@ -92,7 +113,9 @@ extension KeyboardViewController {
     }
 
     private func dismissVariantPopup(animated: Bool = true) {
-        longPressedButton?.alpha = 1.0
+        if let longPressedButton {
+            restoreKeyAppearance(longPressedButton)
+        }
         longPressedButton = nil
 
         guard let popup = variantPopupView else { return }

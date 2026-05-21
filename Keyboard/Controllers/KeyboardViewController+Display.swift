@@ -87,17 +87,13 @@ extension KeyboardViewController {
 
         switch controller.state.shiftState {
         case .off:
-            // 与普通按键相同的白色背景，不突出
-            shiftButton.backgroundColor = UIColor.systemBackground
-            shiftButton.setTitleColor(UIColor.label, for: .normal)
+            applyKeyStyle(.function, to: shiftButton)
         case .singleUse:
-            // 稍微变暗，提示用户 Shift 已激活
-            shiftButton.backgroundColor = UIColor.systemGray5
-            shiftButton.setTitleColor(UIColor.label, for: .normal)
+            shiftButton.backgroundColor = characterKeyColor
+            shiftButton.setTitleColor(.label, for: .normal)
+            shiftButton.tintColor = .label
         case .capsLock:
-            // 蓝色高亮是最显眼的锁定状态指示
-            shiftButton.backgroundColor = UIColor.systemBlue
-            shiftButton.setTitleColor(UIColor.white, for: .normal)
+            applyKeyStyle(.active, to: shiftButton)
         }
     }
 

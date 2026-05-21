@@ -25,10 +25,14 @@ public struct SettingsNavigationLink<Destination: View>: View {
     public var body: some View {
         NavigationLink(destination: destination) {
             HStack(spacing: 12) {
-                Image(systemName: systemImage)
-                    .font(.title3)
-                    .foregroundStyle(imageColor)
-                    .frame(width: 28)
+                ZStack {
+                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                        .fill(imageColor)
+                    Image(systemName: systemImage)
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
+                .frame(width: 30, height: 30)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .font(.body)
@@ -42,9 +46,11 @@ public struct SettingsNavigationLink<Destination: View>: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            .padding()
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
             .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         }
+        .buttonStyle(.plain)
     }
 }

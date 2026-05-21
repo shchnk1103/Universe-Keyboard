@@ -28,9 +28,8 @@ extension KeyboardViewController {
 
     func makeCandidateBar() -> UIView {
         let container = UIView()
-        // 与键盘底板同色（systemGray4），使候选栏和键盘融为一体
-        container.backgroundColor = UIColor.systemGray4
-        container.layer.cornerRadius = keyCornerRadius
+        container.backgroundColor = keyboardBackgroundColor
+        container.layer.cornerRadius = 0
         container.clipsToBounds = true
 
         // 展开按钮（SF Symbol，固定在右侧）
@@ -45,7 +44,7 @@ extension KeyboardViewController {
         scrollView.bounces = true
         scrollView.alwaysBounceHorizontal = true
         scrollView.decelerationRate = .fast
-        scrollView.contentInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 4)
+        scrollView.contentInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.delegate = self
         candidateScrollView = scrollView
@@ -53,7 +52,7 @@ extension KeyboardViewController {
         // 水平排列候选词的 Stack
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.spacing = 2
+        stack.spacing = 3
         stack.alignment = .center
         stack.distribution = .fill
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -84,6 +83,17 @@ extension KeyboardViewController {
         ])
 
         container.heightAnchor.constraint(equalToConstant: candidateBarHeight).isActive = true
+
+        let separator = UIView()
+        separator.backgroundColor = UIColor.separator.withAlphaComponent(0.22)
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(separator)
+        NSLayoutConstraint.activate([
+            separator.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            separator.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            separator.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            separator.heightAnchor.constraint(equalToConstant: 0.5)
+        ])
 
         fillCandidateBar()
 
@@ -135,7 +145,7 @@ extension KeyboardViewController {
 
     func makeExpandedCandidatePanel() -> UIView {
         let container = UIView()
-        container.backgroundColor = UIColor.systemGray4
+        container.backgroundColor = keyboardBackgroundColor
         container.layer.cornerRadius = keyCornerRadius
 
         let verticalStack = UIStackView()
@@ -197,7 +207,7 @@ extension KeyboardViewController {
                     if item.kind == .composition {
                         color = .secondaryLabel
                     } else if isFirstCandidate {
-                        color = view.tintColor
+                        color = .label
                     } else {
                         color = .label
                     }
@@ -207,7 +217,8 @@ extension KeyboardViewController {
                         kind: item.kind,
                         color: color,
                         bold: isFirstCandidate,
-                        height: rowHeight
+                        height: rowHeight,
+                        highlighted: isFirstCandidate
                     )
                     button.tag = item.kind.rawValue
                     button.addTarget(self, action: #selector(insertCandidateFromPanel(_:)), for: .touchUpInside)
@@ -341,7 +352,7 @@ extension KeyboardViewController {
             if item.kind == .composition {
                 color = .secondaryLabel
             } else if isFirstCandidate {
-                color = view.tintColor
+                color = .label
             } else {
                 color = .label
             }
@@ -351,7 +362,8 @@ extension KeyboardViewController {
                 kind: item.kind,
                 color: color,
                 bold: isFirstCandidate,
-                height: candidateBarHeight
+                height: candidateBarHeight,
+                highlighted: isFirstCandidate
             )
             button.tag = item.kind.rawValue
             button.addTarget(self, action: #selector(insertCandidate(_:)), for: .touchUpInside)
