@@ -46,9 +46,7 @@ class KeyboardViewController: UIInputViewController {
     var isCandidateExpanded = false
     var keyTouchDownTimes: [ObjectIdentifier: CFTimeInterval] = [:]
     private var hasViewAppeared = false
-    private var hasFadedIn = false
-    private var lastLayoutHeight: CGFloat = 0
-    private var heightStableCount = 0
+    private var hasShownKeyboard = false
 
     // MARK: - 缓存的设置（避免每次按键都通过 XPC 访问 UserDefaults）
 
@@ -71,9 +69,11 @@ class KeyboardViewController: UIInputViewController {
 
         view.backgroundColor = keyboardBackgroundColor
         inputView?.allowsSelfSizing = true
-        let totalHeight = candidateBarHeight + keyHeight * 4 + keySpacing * 4 + 14
+        // iPhone 13 Pro 原生键盘约 260pt；实际高度由 iOS 根据设备决定
+        let totalHeight = candidateBarHeight + keyHeight * 4 + keySpacing * 4 + 14  // 36+176+24+14=250
         preferredContentSize = CGSize(width: 0, height: totalHeight)
 
+        // 隐藏键盘直到首次 layout 完成 — 避免 3 阶段 resize 中内容跳动
         view.alpha = 0
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
@@ -132,8 +132,7 @@ class KeyboardViewController: UIInputViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         hasViewAppeared = true
-        Logger.shared.debug("viewDidAppear: bounds=\(view.bounds), alpha=\(view.alpha)", category: .general)
-        fadeInKeyboardIfNeeded()
+        Logger.shared.debug("viewDidAppear: bounds=\(view.bounds)", category: .display)
     }
 
     override func viewWillLayoutSubviews() {
@@ -150,43 +149,15 @@ class KeyboardViewController: UIInputViewController {
             gradient.frame = scrollView.bounds
             CATransaction.commit()
         }
-        Logger.shared.debug("viewDidLayoutSubviews: view.bounds=\(view.bounds), rootStack.frame=\(rootStack?.frame ?? .zero), candidateBar.frame=\(candidateBar?.frame ?? .zero), alpha=\(view.alpha)", category: .general)
-        fadeInKeyboardIfNeeded()
-    }
+        Logger.shared.debug("viewDidLayoutSubviews: view.bounds=\(view.bounds), rootStack.frame=\(rootStack?.frame ?? .zero), candidateBar.frame=\(candidateBar?.frame ?? .zero)", category: .display)
 
-    /// 键盘从 alpha=0 淡入。要求高度连续稳定才触发（避免在系统 resize 过程中提前淡入）。
-    /// viewDidLayoutSubviews 是快速路径（高度稳定时），viewDidAppear 是安全兜底。
-    private func fadeInKeyboardIfNeeded() {
-        guard !hasFadedIn else { return }
-
-        let h = view.bounds.height
-
-        if hasViewAppeared {
-            // viewDidAppear 已经触发，但高度可能还是中间态（如 445pt）— 系统可能在此之后
-            // 再做一次 resize 到最终高度（如 250pt）。必须等高度合理后再淡入。
-            guard h > 0, h < 400 else {
-                Logger.shared.debug("fadeIn: viewDidAppear but h=\(h) out of range, waiting", category: .general)
-                return
-            }
-            hasFadedIn = true
-            Logger.shared.info("fadeIn: viewDidAppear path, h=\(h)", category: .general)
-            UIView.animate(withDuration: 0.15) { self.view.alpha = 1 }
-            return
+        // 仅在 viewDidAppear 之后、高度已稳定到合理范围（< 400pt 过滤掉 844/445 中间态）
+        // 时才将 alpha 还原为 1。避免 3 阶段 resize 过程中键盘在错误高度短暂可见。
+        if !hasShownKeyboard, hasViewAppeared, view.bounds.height > 0, view.bounds.height < 400 {
+            hasShownKeyboard = true
+            view.alpha = 1
+            Logger.shared.info("keyboard revealed at h=\(view.bounds.height)", category: .display)
         }
-
-        if abs(h - lastLayoutHeight) < 1 {
-            heightStableCount += 1
-        } else {
-            heightStableCount = 0
-        }
-        lastLayoutHeight = h
-        Logger.shared.debug("fadeIn check: h=\(h), stable=\(heightStableCount)", category: .general)
-
-        guard h > 0, h < 400, heightStableCount >= 1 else { return }
-
-        hasFadedIn = true
-        Logger.shared.info("fadeIn: stable path, h=\(h)", category: .general)
-        UIView.animate(withDuration: 0.15) { self.view.alpha = 1 }
     }
 
     override func textWillChange(_ textInput: UITextInput?) {
@@ -228,7 +199,7 @@ class KeyboardViewController: UIInputViewController {
             rootStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8)
         ])
 
-        Logger.shared.debug("setupRootStack: top+6, bottom-8", category: .general)
+        Logger.shared.debug("setupRootStack: top+6, bottom-8", category: .display)
     }
 
     func reloadKeyboard() {
@@ -238,7 +209,7 @@ class KeyboardViewController: UIInputViewController {
         rootStack.addArrangedSubview(candidateBar)
         addKeyboardRows(for: controller.state)
         updateReturnKeyAppearance()
-        Logger.shared.debug("reloadKeyboard: candidateBar=\(candidateBar != nil ? "OK" : "nil"), rows=\(rootStack.arrangedSubviews.count)", category: .general)
+        Logger.shared.debug("reloadKeyboard: candidateBar=\(candidateBar != nil ? "OK" : "nil"), rows=\(rootStack.arrangedSubviews.count)", category: .display)
     }
 
     /// 仅重建键盘内容区（保留候选栏），用于展开/收起候选面板

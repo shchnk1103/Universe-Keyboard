@@ -96,7 +96,10 @@ NSString * const RimeKeyPageNo           = @"pageNo";
 
 - (BOOL)deployIfNeeded {
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.DoubleShy0N.Universe-Keyboard"];
-    if (![defaults boolForKey:@"rime_needs_deploy"]) return NO;
+    BOOL needsDeploy = [defaults boolForKey:@"rime_needs_deploy"];
+    if (!needsDeploy) return NO;
+
+    NSLog(@"[RIME] deployIfNeeded: rime_needs_deploy=YES, starting full maintenance (sessionId=%lu→0)", (unsigned long) _sessionId);
 
     [defaults setBool:YES forKey:@"rime_deploying"];
     [defaults synchronize];
@@ -127,6 +130,7 @@ NSString * const RimeKeyPageNo           = @"pageNo";
 
     // 重建 session
     _sessionId = _api->create_session();
+    NSLog(@"[RIME] deployIfNeeded: maintenance done, new sessionId=%lu", (unsigned long) _sessionId);
 
     [defaults setBool:NO forKey:@"rime_needs_deploy"];
     [defaults setBool:NO forKey:@"rime_deploying"];
@@ -142,11 +146,13 @@ NSString * const RimeKeyPageNo           = @"pageNo";
     if (_sessionId != 0) return YES; // already has session
 
     _sessionId = _api->create_session();
+    NSLog(@"[RIME] createSession: sessionId=%lu", (unsigned long) _sessionId);
     return _sessionId != 0;
 }
 
 - (BOOL)destroySession {
     if (_sessionId == 0) return NO;
+    NSLog(@"[RIME] destroySession: sessionId=%lu", (unsigned long) _sessionId);
     _api->destroy_session(_sessionId);
     _sessionId = 0;
     return YES;
@@ -155,7 +161,25 @@ NSString * const RimeKeyPageNo           = @"pageNo";
 // MARK: - Input
 
 - (NSDictionary *)processKey:(int)keycode modifiers:(int)modifiers {
-    if (_sessionId == 0) return [self emptyOutput];
+    if (_sessionId == 0) {
+        NSLog(@"[RIME] ⚠️ processKey(keycode=%d) called with sessionId=0 — attempting auto-recovery", keycode);
+        if (!_initialized) {
+            NSLog(@"[RIME] ⚠️ processKey: engine not initialized, cannot recover");
+            return [self emptyOutput];
+        }
+        _sessionId = _api->create_session();
+        if (_sessionId == 0) {
+            NSLog(@"[RIME] ⚠️ processKey: session auto-recreation FAILED");
+            return [self emptyOutput];
+        }
+        NSLog(@"[RIME] processKey: auto-recreated session, new sessionId=%lu", (unsigned long) _sessionId);
+        // 重新选择上次激活的方案
+        NSUserDefaults *defs = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.DoubleShy0N.Universe-Keyboard"];
+        NSString *schema = [defs stringForKey:@"rime_active_schema"] ?: @"luna_pinyin";
+        if (!_api->select_schema(_sessionId, [schema UTF8String])) {
+            NSLog(@"[RIME] ⚠️ processKey: select_schema('%@') failed after session recovery", schema);
+        }
+    }
 
     _api->process_key(_sessionId, keycode, modifiers);
     return [self collectOutput];

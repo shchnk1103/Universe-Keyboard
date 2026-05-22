@@ -142,12 +142,10 @@ extension KeyboardViewController {
         let container = UIView()
         container.backgroundColor = keyboardBackgroundColor
         container.layer.cornerRadius = keyCornerRadius
+        container.clipsToBounds = true
 
-        let verticalStack = UIStackView()
-        verticalStack.axis = .vertical
-        verticalStack.spacing = 4
-        verticalStack.distribution = .fill
-        verticalStack.translatesAutoresizingMaskIntoConstraints = false
+        // 展开面板高度严格匹配 4 行正常按键区域，避免键盘整体升高到半屏
+        let keyRowsHeight = keyHeight * 4 + keySpacing * 3
 
         let items = precomputedItems ?? candidateItems()
         let candidates = items.filter { $0.kind != .placeholder }
@@ -158,14 +156,12 @@ extension KeyboardViewController {
             label.font = .systemFont(ofSize: 14)
             label.textColor = .secondaryLabel
             label.textAlignment = .center
-            verticalStack.addArrangedSubview(label)
-            container.addSubview(verticalStack)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(label)
             NSLayoutConstraint.activate([
-                verticalStack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8),
-                verticalStack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8),
-                verticalStack.topAnchor.constraint(equalTo: container.topAnchor, constant: 6),
-                verticalStack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -6),
-                container.heightAnchor.constraint(greaterThanOrEqualToConstant: 32)
+                label.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+                container.heightAnchor.constraint(equalToConstant: keyRowsHeight)
             ])
             return container
         }
@@ -173,6 +169,18 @@ extension KeyboardViewController {
         let columns = 4
         let rows = (candidates.count + columns - 1) / columns
         let rowHeight: CGFloat = 44
+
+        // 候选 Grid 放入滚动视图，超出的内容可纵向滚动
+        let scrollView = UIScrollView()
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.bounces = true
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+
+        let verticalStack = UIStackView()
+        verticalStack.axis = .vertical
+        verticalStack.spacing = 4
+        verticalStack.distribution = .fill
+        verticalStack.translatesAutoresizingMaskIntoConstraints = false
 
         var firstCandidateFound = false
 
@@ -218,19 +226,22 @@ extension KeyboardViewController {
             verticalStack.addArrangedSubview(rowStack)
         }
 
-        let filler = UIView()
-        filler.setContentHuggingPriority(.defaultLow, for: .vertical)
-        verticalStack.addArrangedSubview(filler)
+        scrollView.addSubview(verticalStack)
+        container.addSubview(scrollView)
 
-        container.addSubview(verticalStack)
-
-        let minHeight = CGFloat(rows) * rowHeight + CGFloat(rows - 1) * 4 + 12
         NSLayoutConstraint.activate([
-            verticalStack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8),
-            verticalStack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8),
-            verticalStack.topAnchor.constraint(equalTo: container.topAnchor, constant: 6),
-            verticalStack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -6),
-            container.heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight)
+            scrollView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: container.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+
+            verticalStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 8),
+            verticalStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -8),
+            verticalStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 6),
+            verticalStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -6),
+            verticalStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -16),
+
+            container.heightAnchor.constraint(equalToConstant: keyRowsHeight)
         ])
 
         return container
@@ -273,7 +284,7 @@ extension KeyboardViewController {
         guard candidateStack != nil else { return }
 
         let allItems = candidateItems()
-        Logger.shared.debug("refreshCandidateBar: items=\(allItems.count), expanded=\(isCandidateExpanded)", category: .general)
+        Logger.shared.debug("refreshCandidateBar: items=\(allItems.count), expanded=\(isCandidateExpanded)", category: .display)
         fillCandidateBar(precomputedItems: allItems)
 
         if candidateScrollView.contentOffset.x != 0 {
@@ -313,7 +324,7 @@ extension KeyboardViewController {
         }
 
         guard !items.isEmpty else {
-            Logger.shared.debug("fillCandidateBar: cleared \(oldCount) old views, 0 new items", category: .general)
+            Logger.shared.debug("fillCandidateBar: cleared \(oldCount) old views, 0 new items", category: .display)
             return
         }
 
@@ -343,7 +354,7 @@ extension KeyboardViewController {
             stack.addArrangedSubview(button)
         }
 
-        Logger.shared.debug("fillCandidateBar: cleared \(oldCount) old views, added \(items.count) new buttons, kinds=\(items.map { $0.kind.rawValue })", category: .general)
+        Logger.shared.debug("fillCandidateBar: cleared \(oldCount) old views, added \(items.count) new buttons, kinds=\(items.map { $0.kind.rawValue })", category: .display)
     }
 
     // MARK: - 候选数据

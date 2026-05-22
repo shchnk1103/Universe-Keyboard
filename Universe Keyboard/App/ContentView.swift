@@ -173,6 +173,7 @@ private struct SettingsTab: View {
 
     private var diagnosticsSection: some View {
         VStack(spacing: 0) {
+            // 主开关行
             HStack(spacing: 12) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 7, style: .continuous)
@@ -204,6 +205,11 @@ private struct SettingsTab: View {
             .padding(.vertical, 12)
             .background(Color(.secondarySystemGroupedBackground))
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+
+            // 分类开关：仅在主开关打开时显示
+            if loggingEnabled {
+                categoryTogglesSection
+            }
 
             // 仅当开关打开且有日志时才显示查看入口
             if loggingEnabled {
@@ -238,6 +244,43 @@ private struct SettingsTab: View {
         .id(diagRefreshToken)
         .onAppear { diagRefreshToken += 1 }
     }
+
+    /// 日志分类开关：性能 (PERF) / 画面 (DISP) / 引擎 (ENGINE) / 配置 (CONFIG) / 部署 (DEPLOY) / 通用 (GEN)
+    private var categoryTogglesSection: some View {
+        let categories: [(String, String, String, String)] = [
+            ("gauge.with.dots.needle.33percent", "性能", "perf", "按键延迟、渲染耗时"),
+            ("rectangle.on.rectangle", "画面", "disp", "布局尺寸、淡入动画、候选栏刷新"),
+            ("gearshape.2", "引擎", "engine", "RIME 处理、候选生成"),
+            ("doc.text", "配置", "config", "YAML 生成、OpenCC"),
+            ("arrow.down.circle", "部署", "deploy", "词库编译、配置部署"),
+            ("text.alignleft", "通用", "gen", "生命周期、状态切换"),
+        ]
+        return VStack(spacing: 0) {
+            ForEach(categories, id: \.2) { icon, name, key, desc in
+                CategoryToggleRow(
+                    icon: icon,
+                    name: name,
+                    description: desc,
+                    isOn: Binding(
+                        get: {
+                            let defaults = UserDefaults(suiteName: appGroupID)
+                            let fullKey = "log_category_\(key)"
+                            if defaults?.object(forKey: fullKey) == nil { return true }
+                            return defaults?.bool(forKey: fullKey) ?? true
+                        },
+                        set: { newValue in
+                            UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "log_category_\(key)")
+                            diagRefreshToken += 1
+                        }
+                    )
+                )
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
 }
 
 
@@ -253,6 +296,35 @@ private struct NumberedRow: View {
                 .background(Color.blue).clipShape(Circle())
             Text(text).font(.body)
         }
+    }
+}
+
+/// 日志分类开关行：图标 + 名称 + 描述 + Toggle
+private struct CategoryToggleRow: View {
+    let icon: String
+    let name: String
+    let description: String
+    @Binding var isOn: Bool
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: icon)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .frame(width: 20)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(name)
+                    .font(.subheadline)
+                Text(description)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Toggle("", isOn: $isOn)
+                .labelsHidden()
+                .scaleEffect(0.85)
+        }
+        .padding(.vertical, 6)
     }
 }
 

@@ -34,6 +34,7 @@ public final class Logger: @unchecked Sendable {
         case config      = "CONFIG"
         case deployment  = "DEPLOY"
         case performance = "PERF"
+        case display     = "DISP"
     }
 
     public struct Entry: CustomStringConvertible, Sendable {
@@ -53,6 +54,14 @@ public final class Logger: @unchecked Sendable {
     public static let logKey = "rime_diag_log"
     public static let toggleKey = "logging_enabled"
     private static let maxEntries = 500
+
+    // MARK: - Category toggle keys
+
+    /// 每个分类的独立开关 key，存储在 App Group UserDefaults 中。
+    /// 这些开关只在总开关 `logging_enabled` 打开后生效。
+    public static func categoryToggleKey(for category: Category) -> String {
+        "log_category_\(category.rawValue.lowercased())"
+    }
 
     // MARK: - Singleton
 
@@ -104,6 +113,17 @@ public final class Logger: @unchecked Sendable {
         UserDefaults(suiteName: Self.appGroupID)?.bool(forKey: Self.toggleKey) ?? false
     }
 
+    /// 指定分类的日志是否启用。总开关关闭时所有分类都为 false。
+    /// 默认：所有分类都开启（当总开关打开时无需单独启用每个分类）。
+    public func isCategoryEnabled(_ category: Category) -> Bool {
+        guard isEnabled else { return false }
+        let key = Self.categoryToggleKey(for: category)
+        let defaults = UserDefaults(suiteName: Self.appGroupID)
+        // key 不存在时返回 true（默认全部开启）
+        if defaults?.object(forKey: key) == nil { return true }
+        return defaults?.bool(forKey: key) ?? true
+    }
+
     /// 强制刷新缓冲到 UserDefaults。
     public func flush() {
         queue.sync { persistBuffer() }
@@ -131,7 +151,7 @@ public final class Logger: @unchecked Sendable {
     // MARK: - Private
 
     private func log(level: Level, message: String, category: Category) {
-        guard isEnabled else { return }
+        guard isCategoryEnabled(category) else { return }
 
         let entry = Entry(
             timestamp: dateFormatter.string(from: Date()),

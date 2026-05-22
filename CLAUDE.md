@@ -24,10 +24,11 @@ All UI work must follow `docs/UI_STYLE_GUIDE.md`.
 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
-## Current Status (2026-05-21)
+## Current Status (2026-05-22)
 
 **Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.** Enterprise-grade refactoring applied: duplicate code eliminated, large files split, project reorganized into logical subdirectories.
 
+- **Test device**: iPhone 13 Pro (real device, primary). Simulator: iPhone 17 (iOS 26).
 - **11 dependency xcframeworks** compiled from source and linked (9 base + liblua + librime-lua)
 - **雾凇拼音 (rime-ice)** downloadable from main App (automatic download + deploy flow)
 - **librime-lua plugin** compiled as `librime-lua.xcframework` (~3MB, 10 C++ source files + 32 Lua 5.4 C files)
@@ -43,7 +44,7 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 - **Schema verification**: `selectAndVerifySchema` with Phase 1 (currentSchemaID check) + Phase 2 (functional test with "ni") + auto-fallback to luna_pinyin
 
 **Recent changes (2026-05-21, evening)**:
-- **Keyboard flickering mitigation**: `view.alpha = 0` with height-stability-detection fade-in (via `fadeInKeyboardIfNeeded()`) to mask iOS system's 3-phase keyboard resize (full-screen → intermediate → final). Apple DTS confirmed no API can prevent the resize itself.
+- **Keyboard flickering mitigation**: view.alpha = 0 with height-stability-detection fade-in (via `fadeInKeyboardIfNeeded()`) to mask iOS system's 3-phase keyboard resize (full-screen → intermediate → final). Apple DTS confirmed no API can prevent the resize itself.
 - **Candidate bar simplified**: removed button reuse + associated-object tracking (`objc_getAssociatedObject` Bool bridging issue). Replaced with simple clear-rebuild each refresh. 20-button creation <0.5ms vs RIME 2-5ms — negligible.
 - **Enter key chat-app adaptation**: `updateReturnKeyAppearance()` checks `textDocumentProxy.returnKeyType` and `hasText` — action keys (send/search/go) show blue accent when text present, gray when empty. Called from `textDidChange`, `syncUI`, `reloadKeyboard`.
 - **ForEach duplicate ID fix**: `DiagnosticsView.swift` + `RimeSettingsView.swift` — changed `ForEach(lines, id: \.self)` to `ForEach(Array(lines.enumerated()), id: \.offset)` to handle repeated log lines.
@@ -52,6 +53,20 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 - **Double-tap bug fix**: removed `UIView.animate` from `keyTouchDown`/`restoreKeyAppearance` — rapid same-key taps now register reliably
 - **Deduplicated data source**: `candidateItems()` called once per keystroke (was twice in expanded mode)
 - **Touch feedback**: instantaneous `transform` + `backgroundColor` (no Core Animation transactions per keystroke)
+
+**Recent changes (2026-05-22, afternoon)**:
+- **Flickering fix (current approach)**: `view.alpha = 0` in `viewDidLoad` + height-triggered reveal in `viewDidLayoutSubviews`. After `viewDidAppear`, the first layout pass with `view.bounds.height` in range (0, 400) sets `view.alpha = 1`. This waits until the 3-phase resize settles to the final height (250pt on iPhone 13 Pro) before making the keyboard visible. The intermediate heights (844pt, 445pt) are filtered out by the `< 400` guard.
+- **RIME session auto-recovery**: `RimeSessionManager.processKey` now detects `sessionId == 0` and automatically calls `create_session()` + `select_schema()` to recover, instead of returning empty output. Handles intermittent session loss between `viewDidLoad` health check and first keystroke.
+- **Expanded candidate panel height capped**: `makeExpandedCandidatePanel()` container constrained to `keyHeight * 4 + keySpacing * 3` (194pt), matching normal 4-row key area. Overflow candidates scroll vertically in `UIScrollView`. Prevents keyboard from jumping to half-screen height when expand button is pressed.
+- **Flickering investigation — approaches attempted and discarded**:
+  1. *Alpha=0 + fadeInKeyboardIfNeeded()* (original): iOS presentation animation overrides `view.alpha=0` during the 3-phase resize, causing half-screen flash at 445pt.
+  2. *Mask overlay*: solid-color mask view covered keyboard content. Mask itself visibly changes size 844→445→250pt — user sees the mask shrinking.
+  3. *Bottom-anchored layout*: rootStack pinned to view bottom with fixed height. Failed because final view height varies (216-250pt), and fixed content height either clips or leaves too much empty space.
+  4. *Async alpha in viewDidAppear*: `DispatchQueue.main.async` not guaranteed to land after the final layout pass.
+  5. *Current approach*: top+bottom pinning (original layout) + `view.alpha = 0` + height-triggered reveal. Simplest solution that works.
+- **RIME session diagnostics**: NSLog in `RimeSessionManager.m` for `processKey(sessionId=0)`, `deployIfNeeded`, `createSession`, `destroySession`, plus `select_schema` after auto-recovery. All `_sessionId` format strings use `%lu` with `(unsigned long)` cast.
+- **Logger category enhancement**: Added `Category.display` (DISP). Per-category toggle switches in settings (性能/画面/引擎/配置/部署/通用). `DiagnosticsView` with category filter chips and color-coded log lines (ERROR=red, WARN=orange, PERF=blue, DISP=purple).
+- **iPhone 13 Pro**: Primary test device. Final keyboard view height: 250pt (may vary 216-250pt). Layout constants: `candidateBarHeight=36`, `keyHeight=44`, `keySpacing=6`, `keyCornerRadius=9`. `preferredContentSize=250pt`.
 
 ### Key Lessons Learned (2026-05-21)
 

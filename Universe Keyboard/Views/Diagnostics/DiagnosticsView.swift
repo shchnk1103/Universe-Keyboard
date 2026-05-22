@@ -2,22 +2,41 @@ import SwiftUI
 #if canImport(UIKit)
 import UIKit
 #endif
+import KeyboardCore
 
 private let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 
 /// 键盘诊断日志子页面。
-/// 顶部固定刷新 + 清空按钮，带加载过渡动画。
+/// 顶部固定刷新 + 清空按钮，含分类筛选器。
 struct DiagnosticsView: View {
     @State private var lines: [String] = []
     @State private var isRefreshing = false
     @State private var isClearing = false
     @State private var showClearConfirm = false
+    @State private var selectedCategory: Logger.Category? = nil
+
+    /// 显示的分类标签（含 "全部"）
+    private let filterOptions: [(String, Logger.Category?)] = [
+        ("全部", nil),
+        ("性能", .performance),
+        ("画面", .display),
+        ("引擎", .engine),
+        ("配置", .config),
+        ("部署", .deployment),
+        ("通用", .general),
+    ]
+
+    /// 按选中分类过滤后的行
+    private var filteredLines: [String] {
+        guard let category = selectedCategory else { return lines }
+        let tag = "[\(category.rawValue)]"
+        return lines.filter { $0.contains(tag) }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             // 固定顶部按钮栏
             HStack(spacing: 14) {
-                // 刷新按钮
                 Button(action: refresh) {
                     HStack(spacing: 6) {
                         if isRefreshing {
@@ -37,7 +56,6 @@ struct DiagnosticsView: View {
 
                 Spacer()
 
-                // 复制按钮
                 if !lines.isEmpty {
                     Button(action: copyLog) {
                         HStack(spacing: 6) {
@@ -53,16 +71,12 @@ struct DiagnosticsView: View {
 
                 Spacer()
 
-                // 条目计数
-                if !lines.isEmpty {
-                    Text("\(lines.count) 条")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+                Text("\(filteredLines.count)/\(lines.count) 条")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
 
                 Spacer()
 
-                // 清空按钮
                 Button(role: .destructive, action: {
                     if isClearing {
                         performClear()
@@ -90,18 +104,55 @@ struct DiagnosticsView: View {
             .padding(.vertical, 10)
             .background(.bar)
 
-            Divider()
+            // 分类筛选
+            if !lines.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(filterOptions, id: \.0) { label, category in
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.15)) {
+                                    selectedCategory = category
+                                }
+                            } label: {
+                                Text(label)
+                                    .font(.caption)
+                                    .fontWeight(selectedCategory == category ? .semibold : .regular)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                                    .background(
+                                        selectedCategory == category
+                                            ? Color.blue.opacity(0.15)
+                                            : Color(.systemGray5)
+                                    )
+                                    .foregroundStyle(
+                                        selectedCategory == category
+                                            ? .blue
+                                            : .secondary
+                                    )
+                                    .clipShape(Capsule())
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                }
+                .background(.bar)
+
+                Divider()
+            }
 
             // 日志内容
-            if lines.isEmpty {
+            if filteredLines.isEmpty {
                 VStack(spacing: 12) {
                     Image(systemName: "text.alignleft")
                         .font(.largeTitle)
                         .foregroundStyle(.secondary.opacity(0.4))
-                    Text("暂无诊断日志")
+                    Text(lines.isEmpty ? "暂无诊断日志" : "当前筛选无匹配日志")
                         .font(.body)
                         .foregroundStyle(.secondary)
-                    Text("在设置中开启「引擎诊断日志」开关，切换到键盘输入后返回此页面刷新。")
+                    Text(lines.isEmpty
+                         ? "在设置中开启「引擎诊断日志」开关，切换到键盘输入后返回此页面刷新。"
+                         : "尝试切换分类筛选或选择「全部」。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -111,10 +162,10 @@ struct DiagnosticsView: View {
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 2) {
-                        ForEach(Array(lines.enumerated()), id: \.offset) { _, line in
+                        ForEach(Array(filteredLines.enumerated()), id: \.offset) { _, line in
                             Text(line)
                                 .font(.system(.caption, design: .monospaced))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(colorForLine(line))
                         }
                     }
                     .padding(12)
@@ -133,6 +184,16 @@ struct DiagnosticsView: View {
         .onAppear { loadLog() }
     }
 
+    // MARK: - Line coloring
+
+    private func colorForLine(_ line: String) -> Color {
+        if line.contains("[ERROR]") { return .red }
+        if line.contains("[WARN]")  { return .orange }
+        if line.contains("[PERF]")  { return .blue }
+        if line.contains("[DISP]")  { return .purple }
+        return .secondary
+    }
+
     // MARK: - Actions
 
     private func loadLog() {
@@ -145,12 +206,11 @@ struct DiagnosticsView: View {
     }
 
     private func copyLog() {
-        UIPasteboard.general.string = lines.joined(separator: "\n")
+        UIPasteboard.general.string = filteredLines.joined(separator: "\n")
     }
 
     private func refresh() {
         isRefreshing = true
-        // 短暂延迟让用户看到加载动画
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             loadLog()
             isRefreshing = false
