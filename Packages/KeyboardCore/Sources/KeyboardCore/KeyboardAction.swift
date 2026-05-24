@@ -17,4 +17,8 @@ public enum KeyboardAction: Equatable {
     case insertReturn
     case deleteBackward
     case keyboardTypeChanged(KeyboardType)
+    /// 候选栏翻页。RIME 路径发送 Page_Up / Page_Down 按键码；
+    /// 回退路径调整候选页索引。
+    case candidatePageUp
+    case candidatePageDown
 }

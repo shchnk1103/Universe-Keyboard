@@ -57,6 +57,15 @@ final class CandidateProviderRimeAdapter: RimeEngine {
         !composition.isEmpty
     }
 
+    func pageUp() -> RimeOutput {
+        // 回退路径无分页机制 — 返回当前输出
+        return buildOutput()
+    }
+
+    func pageDown() -> RimeOutput {
+        return buildOutput()
+    }
+
     // MARK: - Private
 
     private func buildOutput() -> RimeOutput {

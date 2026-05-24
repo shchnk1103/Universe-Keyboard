@@ -58,10 +58,10 @@ final class PageSwitchTests: XCTestCase {
 
     // MARK: - Symbols → Letters
 
-    func testSymbolsToLettersPage() {
+    func testSymbolsToEmojiPage() {
         controller.state.currentPage = .symbols
         let effects = controller.handle(.togglePage)
-        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertEqual(controller.state.currentPage, .emoji)
         XCTAssertTrue(effects.contains(.pageChanged))
     }
 
@@ -74,18 +74,22 @@ final class PageSwitchTests: XCTestCase {
         // numbers → symbols
         _ = controller.handle(.togglePage)
         XCTAssertEqual(controller.state.currentPage, .symbols)
-        // symbols → letters
+        // symbols → emoji
+        _ = controller.handle(.togglePage)
+        XCTAssertEqual(controller.state.currentPage, .emoji)
+        // emoji → letters
         _ = controller.handle(.togglePage)
         XCTAssertEqual(controller.state.currentPage, .letters)
     }
 
     // MARK: - Shift survives round-trips
 
-    func testShiftSurvivesLettersToSymbols() {
+    func testShiftSurvivesLettersToEmoji() {
         controller.state.inputMode = .english
         _ = controller.handle(.togglePage) // letters → numbers
         _ = controller.handle(.togglePage) // numbers → symbols
-        _ = controller.handle(.togglePage) // symbols → letters
+        _ = controller.handle(.togglePage) // symbols → emoji
+        _ = controller.handle(.togglePage) // emoji → letters (full round trip)
         XCTAssertEqual(controller.state.currentPage, .letters)
     }
 
@@ -100,6 +104,9 @@ final class PageSwitchTests: XCTestCase {
 
         _ = controller.handle(.togglePage) // → symbols
         XCTAssertEqual(controller.state.currentPage, .symbols)
+
+        _ = controller.handle(.togglePage) // → emoji
+        XCTAssertEqual(controller.state.currentPage, .emoji)
 
         _ = controller.handle(.togglePage) // → letters
         XCTAssertEqual(controller.state.currentPage, .letters)
@@ -120,5 +127,106 @@ final class PageSwitchTests: XCTestCase {
         let effects = controller.handle(.toggleInputMode)
         XCTAssertEqual(controller.state.currentPage, .letters)
         XCTAssertTrue(effects.contains(.pageChanged))
+    }
+
+    func testToggleInputModeFromEmojiResetsToLetters() {
+        controller.state.currentPage = .emoji
+        let effects = controller.handle(.toggleInputMode)
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.pageChanged))
+    }
+
+    // MARK: - Input mode preserved across page cycles
+
+    func testChineseModePreservedThroughPageCycle() {
+        controller.state.inputMode = .chinese
+        XCTAssertEqual(controller.state.inputMode, .chinese)
+        _ = controller.handle(.togglePage) // letters → numbers
+        XCTAssertEqual(controller.state.inputMode, .chinese)
+        _ = controller.handle(.togglePage) // numbers → symbols
+        XCTAssertEqual(controller.state.inputMode, .chinese)
+        _ = controller.handle(.togglePage) // symbols → emoji
+        XCTAssertEqual(controller.state.inputMode, .chinese)
+        _ = controller.handle(.togglePage) // emoji → letters
+        XCTAssertEqual(controller.state.inputMode, .chinese)
+    }
+
+    func testEnglishModePreservedThroughPageCycle() {
+        controller.state.inputMode = .english
+        XCTAssertEqual(controller.state.inputMode, .english)
+        _ = controller.handle(.togglePage) // letters → numbers
+        XCTAssertEqual(controller.state.inputMode, .english)
+        _ = controller.handle(.togglePage) // numbers → symbols
+        XCTAssertEqual(controller.state.inputMode, .english)
+        _ = controller.handle(.togglePage) // symbols → emoji
+        XCTAssertEqual(controller.state.inputMode, .english)
+        _ = controller.handle(.togglePage) // emoji → letters
+        XCTAssertEqual(controller.state.inputMode, .english)
+    }
+
+    // MARK: - Symbols page mode context
+
+    func testSymbolsPageWhenChinese() {
+        controller.state.inputMode = .chinese
+        controller.state.currentPage = .symbols
+        XCTAssertEqual(controller.state.inputMode, .chinese)
+        XCTAssertEqual(controller.state.currentPage, .symbols)
+        // UI 层会根据 inputMode 显示中文符号（【】「」等）
+    }
+
+    func testSymbolsPageWhenEnglish() {
+        controller.state.inputMode = .english
+        controller.state.currentPage = .symbols
+        XCTAssertEqual(controller.state.inputMode, .english)
+        XCTAssertEqual(controller.state.currentPage, .symbols)
+        // UI 层会根据 inputMode 显示英文符号（[] {} 等）
+    }
+
+    func testNumbersPageWhenChinese() {
+        controller.state.inputMode = .chinese
+        controller.state.currentPage = .numbers
+        XCTAssertEqual(controller.state.inputMode, .chinese)
+        // UI 层显示：中文标点（。，、？！：；等）
+    }
+
+    func testNumbersPageWhenEnglish() {
+        controller.state.inputMode = .english
+        controller.state.currentPage = .numbers
+        XCTAssertEqual(controller.state.inputMode, .english)
+        // UI 层显示：英文标点（. , ? ! : ; 等）
+    }
+
+    // MARK: - Candidate page switching
+
+    func testCandidatePageUpAction() {
+        let effects = controller.handle(.candidatePageUp)
+        // 无 RIME 引擎时，pageUp 返回空效果
+        XCTAssertEqual(effects, [])
+    }
+
+    func testCandidatePageDownAction() {
+        let effects = controller.handle(.candidatePageDown)
+        XCTAssertEqual(effects, [])
+    }
+
+    func testCandidatePageUpWithRimeEngine() {
+        let engine = FakeRimeEngine()
+        controller.rimeEngine = engine
+        controller.state.inputMode = .chinese
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        let effects = controller.handle(.candidatePageUp)
+        // pageUp 会通过 engine 触发 composition 变化
+        XCTAssertTrue(effects.contains(.compositionChanged))
+    }
+
+    func testCandidatePageDownWithRimeEngine() {
+        let engine = FakeRimeEngine()
+        controller.rimeEngine = engine
+        controller.state.inputMode = .chinese
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        let effects = controller.handle(.candidatePageDown)
+        XCTAssertTrue(effects.contains(.compositionChanged))
     }
 }

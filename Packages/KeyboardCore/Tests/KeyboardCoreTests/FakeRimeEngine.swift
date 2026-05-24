@@ -55,6 +55,10 @@ final class FakeRimeEngine: RimeEngine {
         !composition.isEmpty
     }
 
+    func pageUp() -> RimeOutput { buildOutput() }
+
+    func pageDown() -> RimeOutput { buildOutput() }
+
     // MARK: - Private
 
     private func buildOutput() -> RimeOutput {

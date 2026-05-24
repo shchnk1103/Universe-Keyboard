@@ -53,6 +53,10 @@ public final class KeyboardController {
             return handleDeleteBackward()
         case .keyboardTypeChanged(let type):
             return handleKeyboardTypeChanged(type)
+        case .candidatePageUp:
+            return handleCandidatePageUp()
+        case .candidatePageDown:
+            return handleCandidatePageDown()
         }
     }
 }
@@ -189,6 +193,8 @@ extension KeyboardController {
         case .numbers:
             state.currentPage = .symbols
         case .symbols:
+            state.currentPage = .emoji
+        case .emoji:
             state.currentPage = .letters
         }
 
@@ -363,6 +369,37 @@ extension KeyboardController {
         }
 
         return effects
+    }
+}
+
+// MARK: - Candidate Page Switching
+
+extension KeyboardController {
+
+    func handleCandidatePageUp() -> KeyboardEffect {
+        if let engine = rimeEngine {
+            let output = engine.pageUp()
+            state.lastRimeOutput = output
+            state.currentComposition = output.composition?.preeditText ?? ""
+            if let commit = output.committedText {
+                insertText(commit)
+            }
+            return .compositionChanged
+        }
+        return []
+    }
+
+    func handleCandidatePageDown() -> KeyboardEffect {
+        if let engine = rimeEngine {
+            let output = engine.pageDown()
+            state.lastRimeOutput = output
+            state.currentComposition = output.composition?.preeditText ?? ""
+            if let commit = output.committedText {
+                insertText(commit)
+            }
+            return .compositionChanged
+        }
+        return []
     }
 }
 

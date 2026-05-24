@@ -22,4 +22,12 @@ public protocol RimeEngine: AnyObject {
 
     /// 当前是否正在输入中（有活跃的拼音组合）。
     func isComposing() -> Bool
+
+    /// 候选词翻页（上一页）。RIME 发送 Page_Up 按键码。
+    /// 返回更新后的候选列表和拼音状态。
+    func pageUp() -> RimeOutput
+
+    /// 候选词翻页（下一页）。RIME 发送 Page_Down 按键码。
+    /// 返回更新后的候选列表和拼音状态。
+    func pageDown() -> RimeOutput
 }

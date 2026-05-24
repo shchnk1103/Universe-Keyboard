@@ -4,6 +4,7 @@ public enum KeyboardPage: Equatable {
     case letters
     case numbers
     case symbols
+    case emoji
 }
 
 public enum InputMode: Equatable {
