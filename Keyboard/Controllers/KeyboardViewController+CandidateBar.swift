@@ -125,28 +125,40 @@ extension KeyboardViewController: UIScrollViewDelegate {
     }
 
     /// 向 RIME 请求下一页候选并追加到累积列表。
+    /// 使用直接 engine 调用避免污染 state.lastRimeOutput，加载后回到第 1 页
+    /// 确保空格/候选选择始终对应当前最佳候选。
     func loadMoreCandidates() {
+        guard let engine = controller.rimeEngine else { return }
+
         Logger.shared.info(
-            "loadMoreCandidates START: accCount=\(accumulatedCandidates.count), expanded=\(isCandidateExpanded)",
+            "loadMoreCandidates START: accCount=\(accumulatedCandidates.count), depth=\(candidatePageDepth), expanded=\(isCandidateExpanded)",
             category: .display
         )
         isLoadingMoreCandidates = true
 
-        let effects = controller.handle(.candidatePageDown)
-        let newItems = CandidateBarDataSource.candidateItems(from: controller)
-        let newHasMore = controller.state.lastRimeOutput?.hasMorePages ?? false
-        let comp = controller.state.lastRimeOutput?.composition?.preeditText ?? "nil"
+        // 前进到当前最深页
+        for i in 0..<candidatePageDepth {
+            _ = engine.pageDown()
+        }
+        // 获取下一页
+        let nextPage = engine.pageDown()
+        let nextItems = nextPage.candidates.map { CandidateItem(title: $0.text, kind: .candidate) }
+        let newHasMore = nextPage.hasMorePages
+
+        // 回到第 1 页，保持与 state.lastRimeOutput 一致
+        for i in 0..<(candidatePageDepth + 1) {
+            _ = engine.pageUp()
+        }
 
         Logger.shared.info(
-            "loadMoreCandidates RIME: rawNewItems=\(newItems.count), hasMorePages=\(newHasMore), " +
-            "preedit=\(comp)",
+            "loadMoreCandidates RIME: rawNewItems=\(nextItems.count), hasMorePages=\(newHasMore)",
             category: .display
         )
 
-        // 去重，同时记录本次新增（用于 UI 追加）
+        // 去重追加
         var newAppended: [CandidateItem] = []
         var dupCount = 0
-        for item in newItems {
+        for item in nextItems {
             if !accumulatedCandidates.contains(where: { $0.title == item.title }) {
                 accumulatedCandidates.append(item)
                 newAppended.append(item)
@@ -156,6 +168,7 @@ extension KeyboardViewController: UIScrollViewDelegate {
         }
 
         hasMoreCandidates = newHasMore
+        candidatePageDepth += 1
         isLoadingMoreCandidates = false
 
         if !newAppended.isEmpty {
@@ -168,7 +181,7 @@ extension KeyboardViewController: UIScrollViewDelegate {
 
         Logger.shared.info(
             "loadMoreCandidates DONE: +\(newAppended.count) new, \(dupCount) dup, " +
-            "total=\(accumulatedCandidates.count), hasMore=\(hasMoreCandidates)",
+            "total=\(accumulatedCandidates.count), depth=\(candidatePageDepth), hasMore=\(hasMoreCandidates)",
             category: .display
         )
     }
@@ -692,6 +705,7 @@ extension KeyboardViewController {
         accumulatedCandidates = CandidateBarDataSource.candidateItems(from: controller)
         hasMoreCandidates = controller.state.lastRimeOutput?.hasMorePages ?? false
         isLoadingMoreCandidates = false
+        candidatePageDepth = 0
         let preedit = controller.state.lastRimeOutput?.composition?.preeditText ?? "nil"
 
         Logger.shared.info(
@@ -699,18 +713,21 @@ extension KeyboardViewController {
             category: .display
         )
 
-        // ── 预加载第二页（让初始即有更多候选，避免滚动即遇空白） ──
-        if hasMoreCandidates {
-            controller.handle(.candidatePageDown)
-            let page2Items = CandidateBarDataSource.candidateItems(from: controller)
+        // ── 预加载第二页（直接用 engine，不污染 state.lastRimeOutput） ──
+        if hasMoreCandidates, let engine = controller.rimeEngine {
+            let page2 = engine.pageDown()
+            let page2Candidates = page2.candidates.map { CandidateItem(title: $0.text, kind: .candidate) }
             var page2Added = 0
-            for item in page2Items {
+            for item in page2Candidates {
                 if !accumulatedCandidates.contains(where: { $0.title == item.title }) {
                     accumulatedCandidates.append(item)
                     page2Added += 1
                 }
             }
-            hasMoreCandidates = controller.state.lastRimeOutput?.hasMorePages ?? false
+            hasMoreCandidates = page2.hasMorePages
+            candidatePageDepth = 1  // 已加载第 2 页
+            // 回到第一页，保持 RIME 内部状态与 lastRimeOutput 一致
+            _ = engine.pageUp()
             Logger.shared.info(
                 "refreshCandidateBar preload page2: +\(page2Added) items, total=\(accumulatedCandidates.count), hasMore=\(hasMoreCandidates)",
                 category: .display
@@ -809,6 +826,12 @@ extension KeyboardViewController {
             stack.addArrangedSubview(button)
         }
 
+        // ── trailing spacer：吸收多余宽度，防止首候选被 .fill 分布拉伸 ─
+        let trailingSpacer = UIView()
+        trailingSpacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        trailingSpacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        stack.addArrangedSubview(trailingSpacer)
+
         // ── "更多"指示器（提示用户可继续滚动查看后续候选） ──────────
         if hasMoreCandidates {
             let moreLabel = UILabel()
@@ -878,6 +901,12 @@ extension KeyboardViewController {
             moreLabel.accessibilityLabel = "更多候选词可用，继续滚动以查看"
             stack.addArrangedSubview(moreLabel)
         }
+
+        // trailing spacer：吸收多余宽度，防止首候选被 .fill 分布拉伸
+        let trailingSpacer = UIView()
+        trailingSpacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        trailingSpacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        stack.addArrangedSubview(trailingSpacer)
 
         // 无更多候选时禁用横向弹性
         candidateScrollView.alwaysBounceHorizontal = hasMoreCandidates

@@ -125,10 +125,13 @@ extension KeyboardController {
                     insertText(commit)
                 }
             } else {
+                // 候选不在当前页（用户滚动后选择了前面页的候选），
+                // 直接插入文字并重置 RIME 引擎，避免残留 composition 导致删除后拼音重现
                 deleteInlinePreedit()
                 insertText(candidate)
                 state.currentComposition = ""
                 state.lastRimeOutput = nil
+                rimeEngine?.resetSession()
             }
         }
         return .compositionChanged
@@ -266,14 +269,20 @@ extension KeyboardController {
 extension KeyboardController {
 
     func handleInsertSpace() -> KeyboardEffect {
-        if let engine = rimeEngine, engine.isComposing() {
-            let result = engine.selectCandidate(at: 0)
-            state.lastRimeOutput = result
-            state.currentComposition = result.composition?.preeditText ?? ""
+        if let engine = rimeEngine, engine.isComposing(),
+           let firstCandidate = state.lastRimeOutput?.candidates.first?.text {
+            // 始终提交第一页最佳候选（即使用户已滚动候选栏到后续页），
+            // 然后重置引擎，确保下次输入从干净状态开始
             deleteInlinePreedit()
-            if let commit = result.committedText {
-                insertText(commit)
-            }
+            insertText(firstCandidate)
+            state.currentComposition = ""
+            state.lastRimeOutput = RimeOutput(
+                composition: nil,
+                candidates: [],
+                committedText: firstCandidate,
+                hasMorePages: false
+            )
+            engine.resetSession()
             state.lastSpaceTapTime = nil
             return .compositionChanged
         }
@@ -282,6 +291,8 @@ extension KeyboardController {
             deleteInlinePreedit()
             insertText(first)
             state.currentComposition = ""
+            state.lastRimeOutput = nil
+            rimeEngine?.resetSession()
             state.lastSpaceTapTime = nil
             return .compositionChanged
         }

@@ -68,7 +68,7 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 - **Logger category enhancement**: Added `Category.display` (DISP). Per-category toggle switches in settings (性能/画面/引擎/配置/部署/通用). `DiagnosticsView` with category filter chips and color-coded log lines (ERROR=red, WARN=orange, PERF=blue, DISP=purple).
 - **iPhone 13 Pro**: Primary test device. Final keyboard view height: 258pt (may vary 216-268pt). Layout constants: `candidateBarHeight=44`, `keyHeight=44`, `keySpacing=8` (vertical), `keyHorizontalSpacing=6` (within-row), `keyCornerRadius=9`, horizontal margins 4pt. `preferredContentSize=258pt`.
 
-**Recent changes (2026-05-25)** — 候选栏交互全面重构 + Apple HIG 合规:
+**Recent changes (2026-05-25, morning)** — 候选栏交互全面重构 + Apple HIG 合规:
 
 - **Candidate bar swipe-based pagination**: Removed ◀ ▶ page buttons. Infinite horizontal scroll with auto-load: user scrolls right → near-edge detection triggers RIME page-down → new candidates appended smoothly via `appendToCandidateBar()` (no clear+rebuild flash). `scrollViewDidScroll` near-right-edge detection (80pt) + `scrollViewDidEndDragging` overscroll fallback (40pt).
 - **Pre-load 2 pages**: `refreshCandidateBar()` immediately fetches RIME page 1 + page 2 on new input, showing ~18 candidates upfront. `loadMoreCandidates()` appends subsequent pages on demand.
@@ -81,7 +81,23 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 - **Apple HIG P2 (Semantic colors + 8pt grid)**: Highlighted background uses `.systemGray3`/`.systemGray6`. Candidate stack spacing 3→4pt, highlighted insets 6→8pt, vertical panel spacing 5→4pt.
 - **Apple HIG P3 (Spring animation + indicator)**: Chevron rotation uses `usingSpringWithDamping: 0.75` spring. "More" indicator `⋯` (U+22EF, `.quaternaryLabel`) appended when `hasMoreCandidates`, removed when exhausted.
 - **KeySpacing split**: `keySpacing: 8` (vertical between rows) + `keyHorizontalSpacing: 6` (horizontal within rows). Total height 250→258pt.
-- **Test suite**: 328 tests, 0 failures (was 225).
+- **Test suite**: 335 tests, 0 failures (was 225).
+
+**Recent changes (2026-05-25, afternoon)** — 关键 bug 修复:
+
+- **Bug 1 (候选栏滚动后空格失效)**: 预加载和 `loadMoreCandidates` 使用 `controller.handle(.candidatePageDown)` 污染了 `state.lastRimeOutput`（从第1页变为第2/N页）。修复：直接用 `engine.pageDown()`/`pageUp()`，不经过 controller。添加 `candidatePageDepth` 跟踪深度，每次加载后回到第1页。`handleInsertSpace` 改为从 `lastRimeOutput.candidates.first` 直接取最佳候选提交。
+- **Bug 2 (首候选背景拉伸)**: 候选栏 `UIStackView` 的 `.fill` distribution 导致单按钮被拉伸至整行宽。修复：在 `fillCandidateBar` 和 `appendToCandidateBar` 末尾添加 low-hugging trailing spacer。
+- **Bug 3 (选择候选后删除键重现拼音)**: `handleInsertCandidate` fallback 路径没有调用 `engine.resetSession()`，RIME 残留旧 composition。删除时 `isComposing()` 仍返回 true → 从残留拼音删除 → 重现旧拼音。修复：fallback 路径添加 `rimeEngine?.resetSession()`，`handleInsertSpace` 所有分支都确保重置。
+- **Bug 4 (应用切换后无候选词)**: 键盘挂起恢复后 RIME session 可能失效，`viewDidAppear` 未做检查。修复：`viewDidAppear` 调用 `engine.resetSession()` + 清空累积状态。
+- **新增 7 个回归测试**: 空格重置 session、fallback 候选重置、删除不重现拼音、pageDown 不污染 lastRimeOutput、空格始终选第1页、无候选空格重置、reset 后按键正常。
+- **Test suite**: 335 tests, 0 failures (was 328).
+
+### Key Lessons Learned (2026-05-25)
+
+1. **预加载/翻页必须直接用 engine，不能经过 controller.handle。** `controller.handle(.candidatePageDown)` 会更新 `state.lastRimeOutput`，破坏 UI 层依赖的"第1页"假设。UI 层翻页累积候选词 ≠ RIME 引擎翻页改变内部状态，两者必须解耦。
+2. **所有候选/空格提交路径都必须 `engine.resetSession()`。** 无论是 RIME 路径还是 fallback 路径，提交后残留的 composition 会导致下次删除从旧拼音删除、重现候选词。
+3. **`.fill` distribution 的 UIStackView 不能有单按钮行。** 每行末尾加 trailing spacer 是最简单的防御措施。
+4. **`viewDidAppear` 是键盘恢复的最后防线。** 应用切换后 session 可能丢失，在这里重置保证干净状态。
 
 ### Key Lessons Learned (2026-05-21)
 

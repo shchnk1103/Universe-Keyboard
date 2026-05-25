@@ -296,4 +296,96 @@ final class RimeControllerTests: XCTestCase {
         XCTAssertEqual(client.text, "测试")
         XCTAssertEqual(controller.state.currentComposition, "")
     }
+
+    // MARK: - Bug 修复回归测试
+
+    /// Bug 1/3: 空格提交后 RIME session 必须被重置，
+    /// 否则删除键会从残留 composition 中删除导致拼音重现。
+    func testSpaceResetsRimeSession() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        XCTAssertTrue(engine.isComposing())
+        _ = controller.handle(.insertSpace)
+        XCTAssertFalse(engine.isComposing(), "空格提交后 RIME 引擎必须不是 composing 状态")
+        XCTAssertEqual(engine.sessionResetCount, 1)
+    }
+
+    /// Bug 1: 候选不在当前 lastRimeOutput 中（用户滚动后选择前面页的候选），
+    /// fallback 路径应直接上屏 + 重置 RIME，不残留 composition。
+    func testInsertCandidateFallbackResetsRime() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        // 模拟候选来自非当前页（不在 lastRimeOutput.candidates 中）
+        _ = controller.handle(.insertCandidate("你好", kind: .candidate))
+        XCTAssertEqual(client.text, "你好")
+        XCTAssertFalse(engine.isComposing(), "fallback 候选选择后 RIME 必须被重置")
+        XCTAssertEqual(controller.state.currentComposition, "")
+    }
+
+    /// Bug 3: 选择候选后按删除键，不应重现已提交的拼音。
+    func testDeleteAfterCandidateSelectionDoesNotRevivePinyin() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        // 选择候选（走 RIME 路径）
+        _ = controller.handle(.insertCandidate("你", kind: .candidate))
+        XCTAssertEqual(client.text, "你")
+        XCTAssertFalse(engine.isComposing())
+        // 按删除键：应删除宿主文本中的"你"，不应触发 RIME composition
+        client.text = "你"
+        _ = controller.handle(.deleteBackward)
+        XCTAssertEqual(client.text, "", "删除应清空宿主文本")
+        XCTAssertFalse(engine.isComposing(), "删除后不应重新进入 composing 状态")
+        XCTAssertNil(controller.state.lastRimeOutput?.composition)
+    }
+
+    /// Bug 1: pageDown/pageUp 不应影响 state.lastRimeOutput，
+    /// lastRimeOutput 始终反映 processKey 产出的第一页结果。
+    func testPageDownDoesNotAffectLastRimeOutput() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        let page1Output = controller.state.lastRimeOutput
+        XCTAssertEqual(page1Output?.candidates.count, 3)
+
+        // 直接用 engine 翻页（模拟 loadMoreCandidates）
+        _ = engine.pageDown()
+        // lastRimeOutput 不应被 pageDown 改变
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.count, 3,
+                       "lastRimeOutput 应保持 processKey 的原始值")
+        XCTAssertEqual(controller.state.lastRimeOutput?.composition?.preeditText, "ni")
+    }
+
+    /// Bug 1: 空格始终提交第一页最佳候选，即使用户翻页后 RIME 处于后续页。
+    func testSpaceAlwaysSelectsFirstPageCandidate() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        // 模拟翻到第 2 页
+        _ = engine.pageDown()
+        // 空格应仍提交第 1 页的首候选
+        _ = controller.handle(.insertSpace)
+        XCTAssertEqual(client.text, "你", "空格应始终提交第1页首候选（最佳匹配）")
+        XCTAssertFalse(engine.isComposing())
+    }
+
+    /// Bug 1: 无候选时空格走 fallback 候选路径，也应重置 RIME。
+    func testSpaceWithEmptyCandidatesResetsRime() {
+        // "n" 在 FakeRimeEngine 中没有候选词
+        _ = controller.handle(.insertKey("n"))
+        XCTAssertTrue(engine.isComposing())
+        _ = controller.handle(.insertSpace)
+        XCTAssertFalse(engine.isComposing(), "无候选时空格也应重置 RIME")
+        XCTAssertNil(controller.state.lastRimeOutput?.composition)
+    }
+
+    /// Bug 4: 连续两次 processKey 之间调用 resetSession 后状态正常。
+    func testResetSessionBetweenKeystrokes() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        engine.resetSession()
+        // reset 后引擎不应 composing
+        XCTAssertFalse(engine.isComposing())
+        // 下一次按键应正常工作
+        _ = controller.handle(.insertKey("h"))
+        XCTAssertTrue(engine.isComposing())
+        XCTAssertEqual(controller.state.lastRimeOutput?.composition?.preeditText, "h")
+    }
 }

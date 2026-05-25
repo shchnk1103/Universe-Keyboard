@@ -84,6 +84,8 @@ class KeyboardViewController: UIInputViewController {
     var hasMoreCandidates: Bool = false
     /// 是否正在加载更多候选（防止重复触发）
     var isLoadingMoreCandidates: Bool = false
+    /// 候选栏已加载的页数深度（用于 loadMoreCandidates 回到第 1 页时计算 pageUp 次数）
+    var candidatePageDepth: Int = 0
     /// 记录每个按钮的 touchDown 时间戳，用于性能日志
     var keyTouchDownTimes: [ObjectIdentifier: CFTimeInterval] = [:]
 
@@ -246,12 +248,24 @@ class KeyboardViewController: UIInputViewController {
     }
 
     /// viewDidAppear 在键盘视图对用户可见时调用。
-    /// Apple 文档提醒：此时键盘可能仍处于 3 阶段 resize 的中间态，
-    /// 所以不能在这里直接设置 view.alpha = 1。
-    /// 我们只记录已出现，真正的显示触发在 viewDidLayoutSubviews 中。
+    /// 执行 RIME 会话健康检查：应用切换后 session 可能丢失，
+    /// 预先重置确保下次输入不从脏状态开始。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         hasViewAppeared = true
+
+        // 应用切换后 RIME session 可能失效 — 重置以确保干净状态
+        if let engine = controller.rimeEngine {
+            engine.resetSession()
+            accumulatedCandidates = []
+            hasMoreCandidates = false
+            candidatePageDepth = 0
+            Logger.shared.info(
+                "viewDidAppear: RIME session reset for app-switch safety",
+                category: .engine
+            )
+        }
+
         Logger.shared.debug(
             "viewDidAppear: bounds=\(view.bounds)",
             category: .display
