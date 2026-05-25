@@ -268,11 +268,10 @@ extension KeyboardViewController {
             scrollView.topAnchor.constraint(equalTo: container.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
 
-            // Apple 文档推荐的 UIScrollView Auto Layout 模式：
-            //   内容子视图锚定到 contentLayoutGuide（表示可滚动内容区域）
-            //   高度锚定到 frameLayoutGuide（保持与可见区域等高，实现单行滚动）
+            // UIScrollView 水平滚动 Auto Layout 模式：
+            //   仅约束 leading（不约束 trailing），宽度 = 内容的 intrinsic size。
+            //   高 = frameLayoutGuide 保持单行。
             stack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
             stack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             stack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
             stack.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor)
@@ -836,12 +835,6 @@ extension KeyboardViewController {
             stack.addArrangedSubview(button)
         }
 
-        // ── trailing spacer：吸收多余宽度，防止首候选被 .fill 分布拉伸 ─
-        let trailingSpacer = UIView()
-        trailingSpacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        trailingSpacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        stack.addArrangedSubview(trailingSpacer)
-
         // ── "更多"指示器（提示用户可继续滚动查看后续候选） ──────────
         if hasMoreCandidates {
             let moreLabel = UILabel()
@@ -911,12 +904,6 @@ extension KeyboardViewController {
             moreLabel.accessibilityLabel = "更多候选词可用，继续滚动以查看"
             stack.addArrangedSubview(moreLabel)
         }
-
-        // trailing spacer：吸收多余宽度，防止首候选被 .fill 分布拉伸
-        let trailingSpacer = UIView()
-        trailingSpacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        trailingSpacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        stack.addArrangedSubview(trailingSpacer)
 
         // 无更多候选时禁用横向弹性
         candidateScrollView.alwaysBounceHorizontal = hasMoreCandidates

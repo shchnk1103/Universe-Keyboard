@@ -306,25 +306,28 @@ class KeyboardViewController: UIInputViewController {
     ///    - 条件满足后一次性设置 view.alpha = 1
     ///
     ///    hasShownKeyboard 保证只执行一次，避免每次 layout 都触发。
+    /// 上次记录日志时的 bounds，避免 layout 频繁触发时刷屏日志。
+    private var lastLoggedBounds: CGRect = .zero
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         // ── 任务 1：更新渐隐遮罩 frame ─────────────────────────────
         if let gradient = candidateFadeGradient, let scrollView = candidateScrollView {
-            // 使用 CATransaction.setDisableActions(true) 禁止隐式动画
-            // 因为 layout 变化时 CA 会为 bounds 变化添加默认动画，导致遮罩"追着"滚动视图跑
             CATransaction.begin()
             CATransaction.setDisableActions(true)
             gradient.frame = scrollView.bounds
             CATransaction.commit()
         }
 
-        Logger.shared.debug(
-            "viewDidLayoutSubviews: view.bounds=\(view.bounds), " +
-            "rootStack.frame=\(rootStack?.frame ?? .zero), " +
-            "candidateBar.frame=\(candidateBar?.frame ?? .zero)",
-            category: .display
-        )
+        // 仅在 bounds 变化时记录（避免 layout 循环时刷屏日志）
+        if view.bounds != lastLoggedBounds {
+            lastLoggedBounds = view.bounds
+            Logger.shared.debug(
+                "viewDidLayoutSubviews: bounds=\(view.bounds)",
+                category: .display
+            )
+        }
 
         // ── 任务 2：条件触发键盘显示 ───────────────────────────────
         // 三个条件必须同时满足：
