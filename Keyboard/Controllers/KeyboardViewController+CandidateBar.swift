@@ -6,14 +6,16 @@
 //
 //  候选栏架构：
 //    ┌──────────────────────────────────────────┐
-//    │ [◀] [cand1] [cand2] ...  [scroll] [▶][▼]│ ← 翻页按钮 + 展开按钮
+//    │ [cand1] [cand2] ... [scroll right]  [▼] │ ← 左右无极滑动 + 展开按钮
 //    └──────────────────────────────────────────┘
 //
-//  展开后面板：
-//    ┌──────────────────────────────────────────┐
-//    │  [cand1]  [cand2]  [cand3]  [cand4]     │
-//    │  [cand5]  [cand6]  [cand7]  [cand8]     │ ← 4 列网格，可纵向滚动
-//    │  [cand9]  ...                            │
+//  翻页：预加载 2 页候选（~18 个），向右滚动近末尾时自动追加后续页。
+//
+//  展开后面板（流式布局，填满整个键盘区域）：
+//    ┌─────────────────────────────────[▲]─────┐
+//    │  [你好] [你好吗] [你] [你们] [你好啊]    │ ← 宽度自适应 + 自动换行
+//    │  [你好世界] [你好呀] [你的] ...          │
+//    │  ...                          (scroll ↓) │
 //    └──────────────────────────────────────────┘
 //
 //  UIScrollView 关键 API（Apple 文档）：
@@ -36,11 +38,139 @@ import KeyboardCore
 
 extension KeyboardViewController: UIScrollViewDelegate {
 
-    /// 候选栏滚动时的回调。
-    /// 当前实现为空 — 保留以备将来需要跟踪滚动位置时使用。
-    /// 例如：可以在滚动时暂停/恢复某些更新操作。
+    /// 统一的滚动检测 — 同时处理候选栏（横向）和展开面板（纵向）的无限滚动。
+    ///
+    /// 候选栏：接近右边缘 60pt 时自动加载下一页候选。
+    /// 展开面板：接近底部 60pt 时自动加载下一页候选。
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // 预留：可在此追踪滚动位置或做懒加载
+        if scrollView === candidateScrollView {
+            handleCandidateBarScroll(scrollView)
+        } else if scrollView === expandedPanelScrollView {
+            handleExpandedPanelScroll(scrollView)
+        }
+    }
+
+    /// 候选栏拖拽结束时的额外检测：overscroll 超过 40pt 时也触发加载。
+    /// 这是 handleCandidateBarScroll 的补充 — 当内容未溢出时作为备选触发方式。
+    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard scrollView === candidateScrollView else { return }
+        guard hasMoreCandidates, !isLoadingMoreCandidates, !accumulatedCandidates.isEmpty else {
+            Logger.shared.debug(
+                "candidateBar dragEnd skip: hasMore=\(hasMoreCandidates), " +
+                "loading=\(isLoadingMoreCandidates), accCount=\(accumulatedCandidates.count)",
+                category: .display
+            )
+            return
+        }
+
+        let contentWidth = scrollView.contentSize.width
+        let viewWidth = scrollView.bounds.width
+        let maxOffset = max(0, contentWidth - viewWidth)
+        let rightOverscroll = scrollView.contentOffset.x - maxOffset
+
+        Logger.shared.debug(
+            "candidateBar dragEnd: overscroll=\(Int(rightOverscroll))pt, " +
+            "contentW=\(Int(contentWidth)), viewW=\(Int(viewWidth)), maxOffset=\(Int(maxOffset))",
+            category: .display
+        )
+
+        if rightOverscroll > 40 {
+            Logger.shared.info("candidateBar overscroll trigger: \(Int(rightOverscroll))pt", category: .display)
+            loadMoreCandidates()
+        }
+    }
+
+    // MARK: - 私有滚动处理
+
+    /// 候选栏横向滚动：接近右边缘时自动加载更多。
+    private func handleCandidateBarScroll(_ scrollView: UIScrollView) {
+        guard hasMoreCandidates else {
+            // hasMoreCandidates false 时不应触发，但若用户仍在滑动说明状态异常
+            return
+        }
+        guard !isLoadingMoreCandidates else { return }
+        guard !accumulatedCandidates.isEmpty else { return }
+
+        let contentWidth = scrollView.contentSize.width
+        let viewWidth = scrollView.bounds.width
+        guard contentWidth > viewWidth else {
+            // 内容未溢出：scrollViewDidEndDragging 的 overscroll 可作为备选触发
+            return
+        }
+
+        let distanceToRightEdge = contentWidth - (scrollView.contentOffset.x + viewWidth)
+        if distanceToRightEdge < 80 {
+            Logger.shared.info(
+                "candidateBar near right edge: distance=\(Int(distanceToRightEdge))pt, " +
+                "contentW=\(Int(contentWidth)), viewW=\(Int(viewWidth)), " +
+                "hasMore=\(hasMoreCandidates), total=\(accumulatedCandidates.count)",
+                category: .display
+            )
+            loadMoreCandidates()
+        }
+    }
+
+    /// 展开面板纵向滚动：接近底部时自动加载更多。
+    private func handleExpandedPanelScroll(_ scrollView: UIScrollView) {
+        guard hasMoreCandidates, !isLoadingMoreCandidates, !accumulatedCandidates.isEmpty else { return }
+
+        let contentHeight = scrollView.contentSize.height
+        let viewHeight = scrollView.bounds.height
+        guard contentHeight > viewHeight else { return }
+
+        let distanceToBottom = contentHeight - (scrollView.contentOffset.y + viewHeight)
+        if distanceToBottom < 80 {
+            loadMoreCandidates()
+        }
+    }
+
+    /// 向 RIME 请求下一页候选并追加到累积列表。
+    func loadMoreCandidates() {
+        Logger.shared.info(
+            "loadMoreCandidates START: accCount=\(accumulatedCandidates.count), expanded=\(isCandidateExpanded)",
+            category: .display
+        )
+        isLoadingMoreCandidates = true
+
+        let effects = controller.handle(.candidatePageDown)
+        let newItems = CandidateBarDataSource.candidateItems(from: controller)
+        let newHasMore = controller.state.lastRimeOutput?.hasMorePages ?? false
+        let comp = controller.state.lastRimeOutput?.composition?.preeditText ?? "nil"
+
+        Logger.shared.info(
+            "loadMoreCandidates RIME: rawNewItems=\(newItems.count), hasMorePages=\(newHasMore), " +
+            "preedit=\(comp)",
+            category: .display
+        )
+
+        // 去重，同时记录本次新增（用于 UI 追加）
+        var newAppended: [CandidateItem] = []
+        var dupCount = 0
+        for item in newItems {
+            if !accumulatedCandidates.contains(where: { $0.title == item.title }) {
+                accumulatedCandidates.append(item)
+                newAppended.append(item)
+            } else {
+                dupCount += 1
+            }
+        }
+
+        hasMoreCandidates = newHasMore
+        isLoadingMoreCandidates = false
+
+        if !newAppended.isEmpty {
+            if isCandidateExpanded {
+                refreshExpandedPanel()
+            } else {
+                appendToCandidateBar(newItems: newAppended)
+            }
+        }
+
+        Logger.shared.info(
+            "loadMoreCandidates DONE: +\(newAppended.count) new, \(dupCount) dup, " +
+            "total=\(accumulatedCandidates.count), hasMore=\(hasMoreCandidates)",
+            category: .display
+        )
     }
 }
 
@@ -71,15 +201,6 @@ extension KeyboardViewController {
         container.layer.cornerRadius = 0
         container.clipsToBounds = true
 
-        // ── 翻页按钮 (◀ ◀) ──────────────────────────────────────
-        let pageUpBtn = makePageButton(title: "◀", action: #selector(candidatePageUp))
-        container.addSubview(pageUpBtn)
-        candidatePageUpButton = pageUpBtn
-
-        let pageDownBtn = makePageButton(title: "▶", action: #selector(candidatePageDown))
-        container.addSubview(pageDownBtn)
-        candidatePageDownButton = pageDownBtn
-
         // ── 展开按钮 ──────────────────────────────────────────────
         let expandBtn = makeExpandButton()
         container.addSubview(expandBtn)
@@ -100,7 +221,7 @@ extension KeyboardViewController {
         // ── 水平候选词 Stack ─────────────────────────────────────
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.spacing = 3
+        stack.spacing = 4
         stack.alignment = .center
         stack.distribution = .fill
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -109,29 +230,18 @@ extension KeyboardViewController {
         scrollView.addSubview(stack)
         container.addSubview(scrollView)
 
-        let expandWidth = expandBtn.widthAnchor.constraint(equalToConstant: 34)
+        let expandWidth = expandBtn.widthAnchor.constraint(equalToConstant: 44)
         candidateExpandButtonWidthConstraint = expandWidth
-        let pageBtnWidth: CGFloat = 24
 
-        // ── Auto Layout 约束: [◀(24)][scrollView][▶(24)][▼(28)] ─
+        // ── Auto Layout: [scrollView 填充空间] [▼(44)] ─
         NSLayoutConstraint.activate([
-            pageUpBtn.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 2),
-            pageUpBtn.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            pageUpBtn.widthAnchor.constraint(equalToConstant: pageBtnWidth),
-            pageUpBtn.heightAnchor.constraint(equalToConstant: candidateBarHeight),
-
-            pageDownBtn.trailingAnchor.constraint(equalTo: expandBtn.leadingAnchor, constant: -2),
-            pageDownBtn.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            pageDownBtn.widthAnchor.constraint(equalToConstant: pageBtnWidth),
-            pageDownBtn.heightAnchor.constraint(equalToConstant: candidateBarHeight),
-
             expandBtn.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -3),
             expandBtn.centerYAnchor.constraint(equalTo: container.centerYAnchor),
             expandWidth,
             expandBtn.heightAnchor.constraint(equalToConstant: candidateBarHeight),
 
-            scrollView.leadingAnchor.constraint(equalTo: pageUpBtn.trailingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: pageDownBtn.leadingAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 2),
+            scrollView.trailingAnchor.constraint(equalTo: expandBtn.leadingAnchor, constant: -2),
             scrollView.topAnchor.constraint(equalTo: container.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
 
@@ -169,25 +279,6 @@ extension KeyboardViewController {
         return container
     }
 
-    // MARK: --- 翻页按钮 ---
-
-    /// 创建候选栏翻页按钮（◀ 或 ◀）。
-    /// 只有有候选词时才显示，置于滚动视图两侧。
-    private func makePageButton(title: String, action: Selector) -> UIButton {
-        var config = UIButton.Configuration.plain()
-        config.contentInsets = .zero
-        config.title = title
-        config.baseForegroundColor = .secondaryLabel
-
-        let button = UIButton(configuration: config, primaryAction: nil)
-        button.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: action, for: .touchUpInside)
-        // 默认隐藏，有候选时在 fillCandidateBar 中显示
-        button.isHidden = true
-        return button
-    }
-
     // MARK: --- 展开按钮 ---
 
     private func makeExpandButton() -> UIButton {
@@ -202,22 +293,29 @@ extension KeyboardViewController {
         let button = UIButton(configuration: config, primaryAction: nil)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(toggleCandidateExpand), for: .touchUpInside)
+        button.accessibilityLabel = "展开更多候选词"
+        button.accessibilityHint = "双击以查看完整候选列表"
         return button
     }
 
     /// 切换候选面板展开/收起。
     ///
     /// 视觉效果：
-    ///   - 展开按钮旋转 180°（chevron.down → chevron.up）
+    ///   - 展开按钮旋转 180°（chevron.down ↔ chevron.up），spring 动画匹配 Liquid Glass
     ///   - 颜色从 secondaryLabel → tintColor（强调"已激活"状态）
     ///   - 键盘内容区以交叉溶解过渡到展开面板/恢复按键行
     @objc func toggleCandidateExpand() {
         isCandidateExpanded.toggle()
 
         if let btn = candidateExpandButton {
-            // 图标旋转动画（0.25s，弹性曲线），尊重 Reduce Motion
             if !UIAccessibility.isReduceMotionEnabled {
-                UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut) {
+                UIView.animate(
+                    withDuration: 0.4,
+                    delay: 0,
+                    usingSpringWithDamping: 0.75,
+                    initialSpringVelocity: 0.5,
+                    options: []
+                ) {
                     btn.imageView?.transform = self.isCandidateExpanded
                         ? CGAffineTransform(rotationAngle: .pi)
                         : .identity
@@ -245,30 +343,25 @@ extension KeyboardViewController {
 
     // MARK: --- 展开面板 ---
 
-    /// 构建展开的候选面板（4 列网格，可纵向滚动）。
+    /// 构建展开的候选面板（流式布局，自适应宽度和列数）。
     ///
-    /// 面板高度严格限制为 keyHeight * 4 + keySpacing * 3 = 194pt，
-    /// 匹配正常 4 行按键区域的高度。防止键盘突然升高到半屏。
-    /// 超出 4 行的候选从纵向滚动。
-    ///
-    /// 候选类型区分：
-    ///   - .candidate 用 .label 颜色 + 16pt 字体
-    ///   - .composition 用 .secondaryLabel 颜色 + 14pt 字体（表示拼音正输入中）
-    ///   - 第一个真正的候选词（.candidate）加粗 + 高亮背景
+    /// 特性：
+    ///   - 流式布局：按钮宽度 = 文字宽度 + 内边距，溢出换行
+    ///   - 每行末尾添加 spacer 吸收剩余空间，防止单独按钮被 .fill 分布拉伸
+    ///   - 面板填满整个键盘内容区（236pt）
+    ///   - 右上角收起按钮（chevron.up），首行右侧留空，z-order 在最上
+    ///   - 纵向无限滚动
     func makeExpandedCandidatePanel(with precomputedItems: [CandidateItem]? = nil) -> UIView {
         let container = UIView()
         container.backgroundColor = keyboardBackgroundColor
-        container.layer.cornerRadius = keyCornerRadius
         container.clipsToBounds = true
-
-        // 面板高度 = 正常 4 行按键区域高度
-        let keyRowsHeight = keyHeight * 4 + keySpacing * 3
 
         let items = precomputedItems ?? candidateItems()
         let candidates = items.filter { $0.kind != .placeholder }
 
+        let fullContentHeight = candidateBarHeight + keyHeight * 4 + keySpacing * 4
+
         guard !candidates.isEmpty else {
-            // 空状态：居中显示提示文字
             let label = UILabel()
             label.text = "暂无候选"
             label.font = .systemFont(ofSize: 14)
@@ -279,116 +372,264 @@ extension KeyboardViewController {
             NSLayoutConstraint.activate([
                 label.centerXAnchor.constraint(equalTo: container.centerXAnchor),
                 label.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-                container.heightAnchor.constraint(equalToConstant: keyRowsHeight)
+                container.heightAnchor.constraint(equalToConstant: fullContentHeight)
             ])
             return container
         }
 
-        let columns = 4
-        let rows = (candidates.count + columns - 1) / columns
-        let rowHeight: CGFloat = 44
+        let collapseBtnSize: CGFloat = 44
 
-        // 纵向滚动视图 — 候选词超出 4 行时使用
+        // ── 纵向滚动视图 ────────────────────────────────────────
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = false
         scrollView.bounces = true
+        scrollView.delegate = self
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        expandedPanelScrollView = scrollView
 
         let verticalStack = UIStackView()
         verticalStack.axis = .vertical
         verticalStack.spacing = 4
         verticalStack.distribution = .fill
+        verticalStack.alignment = .leading
         verticalStack.translatesAutoresizingMaskIntoConstraints = false
 
-        // 追踪是否已找到第一个真正的候选词（用于加粗 + 高亮）
+        // ── 流式布局 ──────────────────────────────────────────
+        let totalAvailableWidth = view.bounds.width - 12 - 16
+        let rowSpacing: CGFloat = 4
+
+        var currentRowStack: UIStackView?
+        var currentRowWidth: CGFloat = 0
         var firstCandidateFound = false
+        var rowIndex = 0
+        var totalRows = 0
 
-        for rowIndex in 0..<rows {
-            let rowStack = UIStackView()
-            rowStack.axis = .horizontal
-            rowStack.spacing = 4
-            rowStack.distribution = .fillEqually
+        /// 结束当前行：添加 trailing spacer 吸收剩余宽度，防止按钮被拉伸
+        func finishRow() {
+            guard let row = currentRowStack else { return }
+            let spacer = UIView()
+            spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+            spacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+            row.addArrangedSubview(spacer)
+            totalRows += 1
+        }
 
-            for colIndex in 0..<columns {
-                let itemIndex = rowIndex * columns + colIndex
-                if itemIndex < candidates.count {
-                    let item = candidates[itemIndex]
-
-                    let isFirstCandidate: Bool = {
-                        if firstCandidateFound { return false }
-                        if item.kind == .candidate {
-                            firstCandidateFound = true
-                            return true
-                        }
-                        return false
-                    }()
-
-                    let color: UIColor = item.kind == .composition
-                        ? .secondaryLabel
-                        : .label
-
-                    let button = CandidateButtonFactory.makeCandidateButton(
-                        title: item.title,
-                        kind: item.kind,
-                        color: color,
-                        bold: isFirstCandidate,
-                        height: rowHeight,
-                        highlighted: isFirstCandidate
-                    )
-                    // tag 存储 CandidateKind.rawValue，用于 insertCandidateFromPanel 识别
-                    button.tag = item.kind.rawValue
-                    button.addTarget(
-                        self,
-                        action: #selector(insertCandidateFromPanel(_:)),
-                        for: .touchUpInside
-                    )
-                    rowStack.addArrangedSubview(button)
-                } else {
-                    // 填充空位，保持网格对齐
-                    let spacer = UIView()
-                    rowStack.addArrangedSubview(spacer)
+        for item in candidates {
+            let isFirstCandidate: Bool = {
+                if firstCandidateFound { return false }
+                if item.kind == .candidate {
+                    firstCandidateFound = true
+                    return true
                 }
+                return false
+            }()
+
+            let color: UIColor = item.kind == .composition ? .secondaryLabel : .label
+            let button = CandidateButtonFactory.makeCandidateButton(
+                title: item.title,
+                kind: item.kind,
+                color: color,
+                bold: isFirstCandidate,
+                height: 38,
+                highlighted: isFirstCandidate
+            )
+            button.tag = item.kind.rawValue
+            button.addTarget(self, action: #selector(insertCandidateFromPanel(_:)), for: .touchUpInside)
+            button.accessibilityLabel = item.kind == .composition
+                ? "提交拼音 \(item.title)" : item.title
+            button.accessibilityHint = item.kind == .composition
+                ? "双击以提交原始拼音" : "双击选择候选词并关闭面板"
+
+            let buttonWidth = button.systemLayoutSizeFitting(
+                CGSize(width: totalAvailableWidth, height: 38),
+                withHorizontalFittingPriority: .defaultLow,
+                verticalFittingPriority: .required
+            ).width
+
+            // 首行右侧留空给收起按钮
+            let rowAvailableWidth: CGFloat = (rowIndex == 0)
+                ? totalAvailableWidth - collapseBtnSize - 6
+                : totalAvailableWidth
+
+            let widthWithSpacing = buttonWidth + (currentRowStack != nil ? rowSpacing : 0)
+
+            if currentRowStack != nil, currentRowWidth + widthWithSpacing > rowAvailableWidth {
+                finishRow()
+                currentRowStack = nil
+                currentRowWidth = 0
+                rowIndex += 1
             }
 
-            verticalStack.addArrangedSubview(rowStack)
+            if currentRowStack == nil {
+                currentRowStack = UIStackView()
+                currentRowStack!.axis = .horizontal
+                currentRowStack!.spacing = rowSpacing
+                currentRowStack!.distribution = .fill
+                currentRowStack!.alignment = .center
+                verticalStack.addArrangedSubview(currentRowStack!)
+            }
+
+            currentRowStack!.addArrangedSubview(button)
+            currentRowWidth += widthWithSpacing
         }
+        finishRow()  // 结束最后一行
 
         scrollView.addSubview(verticalStack)
         container.addSubview(scrollView)
 
+        // ── 收起按钮（浮动在右上角，scrollView 之后添加以保持最上层） ──
+        var collapseConfig = UIButton.Configuration.plain()
+        collapseConfig.contentInsets = .zero
+        collapseConfig.image = UIImage(
+            systemName: "chevron.up",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)
+        )
+        collapseConfig.baseForegroundColor = view.tintColor
+        let collapseBtn = UIButton(configuration: collapseConfig, primaryAction: nil)
+        collapseBtn.translatesAutoresizingMaskIntoConstraints = false
+        collapseBtn.addTarget(self, action: #selector(toggleCandidateExpand), for: .touchUpInside)
+        collapseBtn.accessibilityLabel = "收起候选面板"
+        collapseBtn.accessibilityHint = "双击以返回键盘"
+        container.addSubview(collapseBtn)  // 最后添加 = 最上层
+
         NSLayoutConstraint.activate([
+            collapseBtn.topAnchor.constraint(equalTo: container.topAnchor, constant: 2),
+            collapseBtn.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -4),
+            collapseBtn.widthAnchor.constraint(equalToConstant: collapseBtnSize),
+            collapseBtn.heightAnchor.constraint(equalToConstant: collapseBtnSize),
+
             scrollView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             scrollView.topAnchor.constraint(equalTo: container.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
 
-            // 垂直栈锚定到 scrollView 的 contentLayoutGuide
             verticalStack.leadingAnchor.constraint(
-                equalTo: scrollView.contentLayoutGuide.leadingAnchor,
-                constant: 8
-            ),
+                equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 8),
             verticalStack.trailingAnchor.constraint(
-                equalTo: scrollView.contentLayoutGuide.trailingAnchor,
-                constant: -8
-            ),
+                equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -8),
             verticalStack.topAnchor.constraint(
-                equalTo: scrollView.contentLayoutGuide.topAnchor,
-                constant: 6
-            ),
+                equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 6),
             verticalStack.bottomAnchor.constraint(
-                equalTo: scrollView.contentLayoutGuide.bottomAnchor,
-                constant: -6
-            ),
-            // 宽度锚定到 frameLayoutGuide（让垂直栈宽度 = 滚动视图可见宽度，减去 padding）
+                equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -6),
             verticalStack.widthAnchor.constraint(
-                equalTo: scrollView.frameLayoutGuide.widthAnchor,
-                constant: -16
-            ),
+                equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -16),
 
-            container.heightAnchor.constraint(equalToConstant: keyRowsHeight)
+            container.heightAnchor.constraint(equalToConstant: fullContentHeight)
         ])
 
+        Logger.shared.info(
+            "expandedPanel: \(candidates.count) candidates → \(totalRows) rows, availW=\(Int(totalAvailableWidth))",
+            category: .display
+        )
+
         return container
+    }
+
+    /// 增量刷新展开面板 — 清除并重建流式布局（保留滚动位置）。
+    func refreshExpandedPanel() {
+        guard let scrollView = expandedPanelScrollView,
+              let verticalStack = scrollView.subviews.first as? UIStackView,
+              isCandidateExpanded else { return }
+
+        let currentOffset = scrollView.contentOffset.y
+        let candidates = accumulatedCandidates.filter { $0.kind != .placeholder }
+
+        // 清除垂直栈中所有现有行
+        for row in verticalStack.arrangedSubviews.reversed() {
+            verticalStack.removeArrangedSubview(row)
+            row.removeFromSuperview()
+        }
+
+        // 重建流式布局
+        let totalAvailableWidth = view.bounds.width - 12 - 16
+        let rowSpacing: CGFloat = 4
+        let collapseBtnSize: CGFloat = 44
+
+        var currentRowStack: UIStackView?
+        var currentRowWidth: CGFloat = 0
+        var firstCandidateFound = false
+        var rowIndex = 0
+        var totalRows = 0
+
+        func finishRow() {
+            guard let row = currentRowStack else { return }
+            let spacer = UIView()
+            spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+            spacer.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+            row.addArrangedSubview(spacer)
+            totalRows += 1
+        }
+
+        for item in candidates {
+            let isFirstCandidate: Bool = {
+                if firstCandidateFound { return false }
+                if item.kind == .candidate {
+                    firstCandidateFound = true
+                    return true
+                }
+                return false
+            }()
+
+            let color: UIColor = item.kind == .composition ? .secondaryLabel : .label
+            let button = CandidateButtonFactory.makeCandidateButton(
+                title: item.title,
+                kind: item.kind,
+                color: color,
+                bold: isFirstCandidate,
+                height: 38,
+                highlighted: isFirstCandidate
+            )
+            button.tag = item.kind.rawValue
+            button.addTarget(self, action: #selector(insertCandidateFromPanel(_:)), for: .touchUpInside)
+            button.accessibilityLabel = item.kind == .composition
+                ? "提交拼音 \(item.title)" : item.title
+            button.accessibilityHint = item.kind == .composition
+                ? "双击以提交原始拼音" : "双击选择候选词并关闭面板"
+
+            let buttonWidth = button.systemLayoutSizeFitting(
+                CGSize(width: totalAvailableWidth, height: 38),
+                withHorizontalFittingPriority: .defaultLow,
+                verticalFittingPriority: .required
+            ).width
+
+            let rowAvailableWidth: CGFloat = (rowIndex == 0)
+                ? totalAvailableWidth - collapseBtnSize - 6
+                : totalAvailableWidth
+
+            let widthWithSpacing = buttonWidth + (currentRowStack != nil ? rowSpacing : 0)
+
+            if currentRowStack != nil, currentRowWidth + widthWithSpacing > rowAvailableWidth {
+                finishRow()
+                currentRowStack = nil
+                currentRowWidth = 0
+                rowIndex += 1
+            }
+
+            if currentRowStack == nil {
+                currentRowStack = UIStackView()
+                currentRowStack!.axis = .horizontal
+                currentRowStack!.spacing = rowSpacing
+                currentRowStack!.distribution = .fill
+                currentRowStack!.alignment = .center
+                verticalStack.addArrangedSubview(currentRowStack!)
+            }
+
+            currentRowStack!.addArrangedSubview(button)
+            currentRowWidth += widthWithSpacing
+        }
+        finishRow()
+
+        // 布局后恢复滚动位置
+        verticalStack.layoutIfNeeded()
+        if currentOffset > 0 {
+            let maxOffset = max(0, scrollView.contentSize.height - scrollView.bounds.height)
+            scrollView.contentOffset.y = min(currentOffset, maxOffset)
+        }
+
+        Logger.shared.info(
+            "expandedPanel refresh: \(candidates.count) candidates → \(totalRows) rows",
+            category: .display
+        )
     }
 
     /// 展开面板中候选按钮的点击处理。
@@ -416,28 +657,20 @@ extension KeyboardViewController {
 
     /// 为滚动视图添加右侧渐隐效果。
     ///
-    /// 使用 CAGradientLayer 作为 view.layer.mask：
-    /// 在灰度颜色空间中，mask 中黑色的部分 → 显示，白色 → 隐藏。
-    /// 但此处使用的是 RGBA 颜色空间：
-    ///   - blackColor (R=0,G=0,B=0,A=1)：完全不透明 → 内容完全可见
-    ///   - clearColor (A=0)：完全透明 → 内容被隐藏（在此 mask 中是显示，因为 mask 用 alpha 控制可见性）
-    ///
-    /// 实际上 layer.mask 使用 alpha 通道：alpha=1 处可见，alpha=0 处隐藏。
-    /// 所以：
-    ///   locations [0, 0.82, 1]：
-    ///     0% → 82% 完全可见（alpha=1）
-    ///     82% → 100% 逐渐隐藏（alpha 从 1 过渡到 0）
+    /// 使用 CAGradientLayer 作为 view.layer.mask。
+    /// 渐变范围设为 92%→100%，仅在最右边缘轻柔渐隐，
+    /// 避免最后一个候选词颜色明显变淡。
     ///
     /// 需要与 viewDidLayoutSubviews 配合，在每次 layout 时更新 gradient.frame。
     private func addFadeMask(to view: UIView) {
         let gradient = CAGradientLayer()
         gradient.colors = [
-            UIColor.black.cgColor,   // 位置 0-82%：完全可见
-            UIColor.black.cgColor,   // （保持可见）
-            UIColor.clear.cgColor    // 位置 82-100%：渐隐
+            UIColor.black.cgColor,
+            UIColor.black.cgColor,
+            UIColor.clear.cgColor
         ]
-        gradient.locations = [0, 0.82, 1]
-        gradient.startPoint = CGPoint(x: 0, y: 0.5)    // 水平渐变（左 → 右）
+        gradient.locations = [0, 0.92, 1]
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
         gradient.endPoint = CGPoint(x: 1, y: 0.5)
         gradient.frame = view.bounds
         view.layer.mask = gradient
@@ -448,35 +681,51 @@ extension KeyboardViewController {
 
     /// 刷新候选栏内容。
     ///
-    /// 刷新流程：
-    ///   1. 从 CandidateBarDataSource 获取最新候选列表
-    ///   2. 重建候选按钮（fillCandidateBar）
-    ///   3. 滚动回最左侧（因为候选列表可能完全换了）
-    ///   4. 如果展开面板处于打开状态，同步更新面板内容
+    /// 每次新的拼音输入时：
+    ///   1. 从 RIME 获取第一页候选
+    ///   2. 如果有更多页，立即预加载第二页（让初始滚动更平滑，首次即有 ~18 个候选）
+    ///   3. 用户向右滚动接近末尾时自动加载后续页
     func refreshCandidateBar() {
         guard candidateStack != nil else { return }
 
-        let allItems = candidateItems()
-        Logger.shared.debug(
-            "refreshCandidateBar: items=\(allItems.count), expanded=\(isCandidateExpanded)",
+        // 重置累积列表，从当前 RIME 第一页开始
+        accumulatedCandidates = CandidateBarDataSource.candidateItems(from: controller)
+        hasMoreCandidates = controller.state.lastRimeOutput?.hasMorePages ?? false
+        isLoadingMoreCandidates = false
+        let preedit = controller.state.lastRimeOutput?.composition?.preeditText ?? "nil"
+
+        Logger.shared.info(
+            "refreshCandidateBar: page1=\(accumulatedCandidates.count), hasMore=\(hasMoreCandidates), preedit=\(preedit)",
             category: .display
         )
-        fillCandidateBar(precomputedItems: allItems)
 
-        // 新候选列表出现时，滚动回最左侧
+        // ── 预加载第二页（让初始即有更多候选，避免滚动即遇空白） ──
+        if hasMoreCandidates {
+            controller.handle(.candidatePageDown)
+            let page2Items = CandidateBarDataSource.candidateItems(from: controller)
+            var page2Added = 0
+            for item in page2Items {
+                if !accumulatedCandidates.contains(where: { $0.title == item.title }) {
+                    accumulatedCandidates.append(item)
+                    page2Added += 1
+                }
+            }
+            hasMoreCandidates = controller.state.lastRimeOutput?.hasMorePages ?? false
+            Logger.shared.info(
+                "refreshCandidateBar preload page2: +\(page2Added) items, total=\(accumulatedCandidates.count), hasMore=\(hasMoreCandidates)",
+                category: .display
+            )
+        }
+
+        fillCandidateBar()
+
+        // 滚动回最左侧
         if candidateScrollView.contentOffset.x != 0 {
             candidateScrollView.setContentOffset(.zero, animated: false)
         }
 
-        // 展开状态下同步更新面板
         if isCandidateExpanded {
-            UIView.transition(
-                with: rootStack,
-                duration: 0.15,
-                options: .transitionCrossDissolve
-            ) {
-                self.reloadKeyboardContent(with: allItems)
-            }
+            refreshExpandedPanel()
         }
     }
 
@@ -489,29 +738,21 @@ extension KeyboardViewController {
     ///   2. 复用逻辑的边界错误难以追踪（曾导致 Bold 状态不一致、
     ///      associatedObject 桥接失败等难以调试的问题）
     ///   3. 清除+重建保证了 UI 始终与数据源完全一致
-    func fillCandidateBar(precomputedItems: [CandidateItem]? = nil) {
+    ///
+    /// - Parameter keepScrollPosition: true 时保留当前滚动位置（用于加载更多候选后追加）
+    func fillCandidateBar(keepScrollPosition: Bool = false) {
         guard let stack = candidateStack else {
             Logger.shared.warning("fillCandidateBar: candidateStack is nil", category: .general)
             return
         }
 
-        let allItems = precomputedItems ?? candidateItems()
-        let items = allItems.filter { $0.kind != .placeholder }
+        let items = accumulatedCandidates.filter { $0.kind != .placeholder }
 
-        // ── 控制翻页和展开按钮可见性 ───────────────────────────────
-        // 有候选词时显示翻页和展开按钮，无候选词时隐藏
+        // ── 控制展开按钮可见性 ─────────────────────────────────────
         let hasCandidates = items.contains { $0.kind == .candidate }
         candidateExpandButton?.isHidden = !hasCandidates
-        candidatePageUpButton?.isHidden = !hasCandidates
-        candidatePageDownButton?.isHidden = !hasCandidates
 
-        // 检查 RIME 返回的 hasMorePages 标志 — 末页时禁用下一页按钮
-        if let lastOutput = controller.state.lastRimeOutput {
-            candidatePageDownButton?.isEnabled = lastOutput.hasMorePages
-            // 上一页按钮始终启用（只要不是第一页），RIME 会自行处理
-        }
-
-        let targetWidth: CGFloat = hasCandidates ? 34 : 0
+        let targetWidth: CGFloat = hasCandidates ? 44 : 0
         if candidateExpandButtonWidthConstraint?.constant != targetWidth {
             candidateExpandButtonWidthConstraint?.constant = targetWidth
         }
@@ -530,6 +771,9 @@ extension KeyboardViewController {
             )
             return
         }
+
+        // ── 保存滚动位置 ─────────────────────────────────────────
+        let currentOffset = candidateScrollView.contentOffset.x
 
         // ── 创建新按钮 ───────────────────────────────────────────
         var firstCandidateFound = false
@@ -558,8 +802,33 @@ extension KeyboardViewController {
                 highlighted: isFirstCandidate
             )
             button.addTarget(self, action: #selector(insertCandidate(_:)), for: .touchUpInside)
+            button.accessibilityLabel = item.kind == .composition
+                ? "提交拼音 \(item.title)" : item.title
+            button.accessibilityHint = item.kind == .composition
+                ? "双击以提交原始拼音" : "双击选择候选词"
             stack.addArrangedSubview(button)
         }
+
+        // ── "更多"指示器（提示用户可继续滚动查看后续候选） ──────────
+        if hasMoreCandidates {
+            let moreLabel = UILabel()
+            moreLabel.text = "\u{22EF}"  // ⋯ 水平省略号
+            moreLabel.font = .systemFont(ofSize: 14)
+            moreLabel.textColor = .quaternaryLabel
+            moreLabel.textAlignment = .center
+            moreLabel.accessibilityLabel = "更多候选词可用，继续滚动以查看"
+            stack.addArrangedSubview(moreLabel)
+        }
+
+        // ── 恢复滚动位置 ─────────────────────────────────────────
+        if keepScrollPosition {
+            stack.layoutIfNeeded()
+            let maxOffset = max(0, candidateScrollView.contentSize.width - candidateScrollView.bounds.width)
+            candidateScrollView.contentOffset.x = min(currentOffset, maxOffset)
+        }
+
+        // ── 控制弹性滚动 ─────────────────────────────────────────
+        candidateScrollView.alwaysBounceHorizontal = hasMoreCandidates
 
         Logger.shared.debug(
             "fillCandidateBar: cleared \(oldCount) old views, " +
@@ -568,11 +837,67 @@ extension KeyboardViewController {
         )
     }
 
+    /// 向现有候选栏追加按钮（不清除已有按钮）。
+    /// 用于加载更多候选时平滑追加，避免清除+重建造成的视觉闪烁。
+    func appendToCandidateBar(newItems: [CandidateItem]) {
+        guard let stack = candidateStack else { return }
+
+        // 移除旧的"更多"指示器（始终是最后一个子视图）
+        if let lastView = stack.arrangedSubviews.last as? UILabel,
+           lastView.text == "\u{22EF}" {
+            stack.removeArrangedSubview(lastView)
+            lastView.removeFromSuperview()
+        }
+
+        for item in newItems {
+            guard item.kind != .placeholder else { continue }
+            let color: UIColor = item.kind == .composition ? .secondaryLabel : .label
+            let button = CandidateButtonFactory.makeCandidateButton(
+                title: item.title,
+                kind: item.kind,
+                color: color,
+                bold: false,
+                height: candidateBarHeight,
+                highlighted: false
+            )
+            button.addTarget(self, action: #selector(insertCandidate(_:)), for: .touchUpInside)
+            button.accessibilityLabel = item.kind == .composition
+                ? "提交拼音 \(item.title)" : item.title
+            button.accessibilityHint = item.kind == .composition
+                ? "双击以提交原始拼音" : "双击选择候选词"
+            stack.addArrangedSubview(button)
+        }
+
+        // 重新添加"更多"指示器（如果仍有更多候选）
+        if hasMoreCandidates {
+            let moreLabel = UILabel()
+            moreLabel.text = "\u{22EF}"
+            moreLabel.font = .systemFont(ofSize: 14)
+            moreLabel.textColor = .quaternaryLabel
+            moreLabel.textAlignment = .center
+            moreLabel.accessibilityLabel = "更多候选词可用，继续滚动以查看"
+            stack.addArrangedSubview(moreLabel)
+        }
+
+        // 无更多候选时禁用横向弹性
+        candidateScrollView.alwaysBounceHorizontal = hasMoreCandidates
+
+        Logger.shared.debug(
+            "appendToCandidateBar: +\(newItems.count) buttons, alwaysBounce=\(hasMoreCandidates)",
+            category: .display
+        )
+    }
+
     // MARK: --- 候选数据 ---
 
-    /// 从 CandidateBarDataSource 获取当前候选词列表。
-    /// 封装为方法，方便在不同位置（普通栏和展开面板）以相同方式获取。
+    /// 获取当前应显示的候选词列表。
+    ///
+    /// 无极滑动模式下优先返回累积列表（包含已加载的所有页的候选），
+    /// 确保候选栏和展开面板始终显示相同的候选集合。
     func candidateItems() -> [CandidateItem] {
-        CandidateBarDataSource.candidateItems(from: controller)
+        if !accumulatedCandidates.isEmpty {
+            return accumulatedCandidates
+        }
+        return CandidateBarDataSource.candidateItems(from: controller)
     }
 }

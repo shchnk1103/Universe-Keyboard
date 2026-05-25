@@ -49,7 +49,7 @@ extension KeyboardViewController {
     func makeLetterRow(_ keys: [String], horizontalInset: CGFloat = 0) -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
-        row.spacing = keySpacing
+        row.spacing = keyHorizontalSpacing
         row.distribution = .fillEqually
 
         // Apple 文档：isLayoutMarginsRelativeArrangement = true 时，
@@ -97,7 +97,7 @@ extension KeyboardViewController {
     func makeTextRow(_ keys: [String]) -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
-        row.spacing = keySpacing
+        row.spacing = keyHorizontalSpacing
         // .fillEqually 确保每个按键等宽 — 数字/符号行都是 10 个按键各占 1/10 宽度
         row.distribution = .fillEqually
 
@@ -126,7 +126,7 @@ extension KeyboardViewController {
     func makeLetterThirdRow() -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
-        row.spacing = keySpacing
+        row.spacing = keyHorizontalSpacing
         row.distribution = .fill  // 非 fillEqually：子视图宽度由各自约束/内容决定
 
         // Shift 键 — 使用计算属性 shiftButtonTitle（⇧ 或 ⇪）
@@ -275,7 +275,7 @@ extension KeyboardViewController {
     func makeBottomRow(pageSwitchTitle: String, includeDelete: Bool) -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
-        row.spacing = keySpacing
+        row.spacing = keyHorizontalSpacing
         row.distribution = .fill
 
         let showEmail = shouldShowEmailShortcutKeys

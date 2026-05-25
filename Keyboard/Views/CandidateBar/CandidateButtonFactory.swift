@@ -16,9 +16,13 @@ import KeyboardCore
 /// 它接收当前状态的 AttributeContainer，返回修改后的版本。
 /// 这保持了 configuration.title 的可读性，同时允许自定义字体和颜色。
 ///
+/// Dynamic Type 支持：
+///   使用 UIFontMetrics(forTextStyle: .body) 缩放字体，最大 28pt。
+///   用户调整系统字号后候选词跟随缩放，同时不会破坏候选栏布局。
+///
 /// 候选词类型视觉区分：
-///   - .candidate（可选择的候选词）：16pt 字体，.label 颜色
-///   - .composition（拼音组合/正输入中）：14pt 字体，.secondaryLabel 颜色
+///   - .candidate（可选择的候选词）：16pt 字体（Dynamic Type 缩放），.label 颜色
+///   - .composition（拼音组合/正输入中）：14pt 字体（Dynamic Type 缩放），.secondaryLabel 颜色
 ///   - 第一个候选词（推荐候选）：加粗 + 高亮背景圆角
 struct CandidateButtonFactory {
 
@@ -80,7 +84,7 @@ struct CandidateButtonFactory {
     ///
     /// 配置要点：
     ///   - .plain() 风格：无默认背景，外观完全由我们控制
-    ///   - contentInsets：水平 12pt padding，让文字不贴边缘
+    ///   - contentInsets：高亮候选用 6pt（紧凑包裹文字），普通候选用 12pt（舒适间距）
     ///   - titleTextAttributesTransformer：动态设置字体大小、粗细和颜色
     ///     （每次按钮状态变化时重新调用）
     private static func candidateConfiguration(
@@ -97,25 +101,31 @@ struct CandidateButtonFactory {
 
         var config = UIButton.Configuration.plain()
         config.title = title
-        // 水平 12pt 内边距，让候选字不紧贴按钮边缘
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)
 
         // 第一个候选词的高亮背景（类似原生键盘的首选候选）
+        // 使用系统语义灰度色，自动适配深色/浅色/高对比度模式
         if highlighted {
+            config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8)
             config.background.backgroundColor = UIColor { traits in
                 traits.userInterfaceStyle == .dark
-                    ? UIColor(red: 116 / 255, green: 117 / 255, blue: 121 / 255, alpha: 1)
-                    : UIColor.white.withAlphaComponent(0.92)
+                    ? .systemGray3   // 深色模式：中灰（≈RGB 116,117,121）
+                    : .systemGray6.withAlphaComponent(0.92)  // 浅色模式：近白
             }
             config.background.cornerRadius = 8
+        } else {
+            // 普通候选：标准 12pt 水平内边距，确保候选字间距舒适
+            config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 12, bottom: 0, trailing: 12)
         }
 
-        // Apple 推荐的标题样式设置方式：
-        // titleTextAttributesTransformer 接收当前 AttributeContainer，
-        // 返回修改后的版本。这不会影响 configuration.title 本身。
+        // Dynamic Type：使用 UIFontMetrics 缩放基准字体，上限 28pt
+        // 候选栏 44pt 高度可安全容纳 28pt 以内的文字
+        let baseFont = UIFont.systemFont(ofSize: fontSize, weight: weight)
+        let metrics = UIFontMetrics(forTextStyle: .body)
+        let maxSize: CGFloat = 28
+
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { container in
             var container = container
-            container.font = UIFont.systemFont(ofSize: fontSize, weight: weight)
+            container.font = metrics.scaledFont(for: baseFont, maximumPointSize: maxSize)
             container.foregroundColor = color
             return container
         }

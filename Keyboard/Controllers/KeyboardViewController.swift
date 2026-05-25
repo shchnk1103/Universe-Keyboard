@@ -66,17 +66,24 @@ class KeyboardViewController: UIInputViewController {
     var longPressedButton: UIButton?
     /// 候选栏右侧渐隐遮罩（CAGradientLayer）
     var candidateFadeGradient: CAGradientLayer?
-    /// 展开的候选面板（4 列网格）
+    /// 展开的候选面板（流式布局）
     var candidateExpandedPanel: UIView?
+    /// 展开面板内部的纵向滚动视图（用于无限滚动检测）
+    var expandedPanelScrollView: UIScrollView?
     /// 展开/收起候选面板的 SF Symbol 按钮
     var candidateExpandButton: UIButton?
     /// 展开按钮宽度约束（无候选时设为 0 隐藏）
     var candidateExpandButtonWidthConstraint: NSLayoutConstraint?
-    /// 候选栏翻页按钮（上一页 / 下一页）
-    var candidatePageUpButton: UIButton?
-    var candidatePageDownButton: UIButton?
     /// 候选面板是否处于展开状态
     var isCandidateExpanded = false
+    /// 上次滑动翻页的时间戳（用于防抖，避免连续触发）
+    var lastPageSwipeTime: CFTimeInterval = 0
+    /// 累积候选词列表（无极滑动：随着用户滚动持续追加后续页的候选）
+    var accumulatedCandidates: [CandidateItem] = []
+    /// RIME 是否还有更多页的候选
+    var hasMoreCandidates: Bool = false
+    /// 是否正在加载更多候选（防止重复触发）
+    var isLoadingMoreCandidates: Bool = false
     /// 记录每个按钮的 touchDown 时间戳，用于性能日志
     var keyTouchDownTimes: [ObjectIdentifier: CFTimeInterval] = [:]
 
@@ -100,12 +107,14 @@ class KeyboardViewController: UIInputViewController {
 
     // MARK: - 布局常量
 
-    /// 候选栏高度（点）
-    let candidateBarHeight: CGFloat = 36
+    /// 候选栏高度（点）。44pt 满足 HIG 最小触摸目标，同时对齐 8pt 网格。
+    let candidateBarHeight: CGFloat = 44
     /// 单个按键高度（点）
     let keyHeight: CGFloat = 44
-    /// 按键之间和行之间的间距（点）
-    let keySpacing: CGFloat = 6
+    /// 行间垂直间距（点）。8pt 对齐网格，接近原生键盘行间距。
+    let keySpacing: CGFloat = 8
+    /// 行内按键水平间距（点）。保持 6pt 紧凑排列，与原生键盘一致（行内键距 < 行间距）。
+    let keyHorizontalSpacing: CGFloat = 6
     /// 按键圆角半径（点），使用 .continuous 曲线获得 iOS 原生外观
     let keyCornerRadius: CGFloat = 9
 
@@ -132,8 +141,8 @@ class KeyboardViewController: UIInputViewController {
 
         // preferredContentSize 告诉系统我们期望的键盘高度。
         // width=0 表示不限制宽度（系统会自动填满屏幕宽度）。
-        // 高度计算公式：候选栏(36) + 4行按键(4×44) + 4个行间距(4×6) + 底部留白(14) = 250
-        let totalHeight = candidateBarHeight + keyHeight * 4 + keySpacing * 4 + 14
+        // 高度：候选栏(44) + 4行按键(4×44) + 4个行间距(4×8) + 上下边距(6) = 258
+        let totalHeight = candidateBarHeight + keyHeight * 4 + keySpacing * 4 + 6
         preferredContentSize = CGSize(width: 0, height: totalHeight)
 
         // ── 2. 防闪烁机制（详见 viewDidLayoutSubviews 注释）──────────
@@ -425,14 +434,13 @@ class KeyboardViewController: UIInputViewController {
         view.addSubview(rootStack)
 
         NSLayoutConstraint.activate([
-            rootStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 6),
-            rootStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -6),
-            rootStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 6),
-            // 底部留 8pt 间距，为 iPhone X 及更新机型的 Home Indicator 留空间
-            rootStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8)
+            rootStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 4),
+            rootStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -4),
+            rootStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 4),
+            rootStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2)
         ])
 
-        Logger.shared.debug("setupRootStack: top+6, bottom-8", category: .display)
+        Logger.shared.debug("setupRootStack: top+4, bottom-2, hMargin=4", category: .display)
     }
 
     /// 完整重建键盘：清除所有行 → 构建候选栏 → 构建按键行
@@ -450,16 +458,23 @@ class KeyboardViewController: UIInputViewController {
         )
     }
 
-    /// 仅重建键盘内容区（保留候选栏），用于展开/收起候选面板时
-    /// 避免重建整个键盘造成不必要的性能开销
+    /// 仅重建键盘内容区，用于展开/收起候选面板时。
+    ///
+    /// 展开时：移除候选栏和所有按键行，面板填满整个键盘区域。
+    /// 收起时：重建候选栏和按键行。
     func reloadKeyboardContent(with precomputedCandidates: [CandidateItem]? = nil) {
-        removeContentRows()
+        // ── 清除所有视图（包括候选栏） ─────────────────────────────
+        clearAllRows()
 
         if isCandidateExpanded {
+            // 展开状态：只显示展开面板（填满整个内容区）
             let panel = makeExpandedCandidatePanel(with: precomputedCandidates)
             rootStack.addArrangedSubview(panel)
             candidateExpandedPanel = panel
         } else {
+            // 收起状态：重建候选栏 + 按键行
+            candidateBar = makeCandidateBar()
+            rootStack.addArrangedSubview(candidateBar)
             addKeyboardRows(for: controller.state)
         }
     }
@@ -471,6 +486,7 @@ class KeyboardViewController: UIInputViewController {
         // 清理上一次的字母按钮引用（Shift 状态刷新需要最新的引用列表）
         letterButtons.removeAll()
         candidateExpandedPanel = nil
+        expandedPanelScrollView = nil
 
         switch state.currentPage {
         case .letters:
@@ -547,6 +563,7 @@ class KeyboardViewController: UIInputViewController {
             rootStack.removeArrangedSubview(view)
             view.removeFromSuperview()
         }
+        expandedPanelScrollView = nil
     }
 
     /// 移除除候选栏以外的所有子视图。

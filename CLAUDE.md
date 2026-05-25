@@ -24,7 +24,7 @@ All UI work must follow `docs/UI_STYLE_GUIDE.md`.
 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
-## Current Status (2026-05-22)
+## Current Status (2026-05-25)
 
 **Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.** Enterprise-grade refactoring applied: duplicate code eliminated, large files split, project reorganized into logical subdirectories.
 
@@ -66,7 +66,22 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
   5. *Current approach*: top+bottom pinning (original layout) + `view.alpha = 0` + height-triggered reveal. Simplest solution that works.
 - **RIME session diagnostics**: NSLog in `RimeSessionManager.m` for `processKey(sessionId=0)`, `deployIfNeeded`, `createSession`, `destroySession`, plus `select_schema` after auto-recovery. All `_sessionId` format strings use `%lu` with `(unsigned long)` cast.
 - **Logger category enhancement**: Added `Category.display` (DISP). Per-category toggle switches in settings (性能/画面/引擎/配置/部署/通用). `DiagnosticsView` with category filter chips and color-coded log lines (ERROR=red, WARN=orange, PERF=blue, DISP=purple).
-- **iPhone 13 Pro**: Primary test device. Final keyboard view height: 250pt (may vary 216-250pt). Layout constants: `candidateBarHeight=36`, `keyHeight=44`, `keySpacing=6`, `keyCornerRadius=9`. `preferredContentSize=250pt`.
+- **iPhone 13 Pro**: Primary test device. Final keyboard view height: 258pt (may vary 216-268pt). Layout constants: `candidateBarHeight=44`, `keyHeight=44`, `keySpacing=8` (vertical), `keyHorizontalSpacing=6` (within-row), `keyCornerRadius=9`, horizontal margins 4pt. `preferredContentSize=258pt`.
+
+**Recent changes (2026-05-25)** — 候选栏交互全面重构 + Apple HIG 合规:
+
+- **Candidate bar swipe-based pagination**: Removed ◀ ▶ page buttons. Infinite horizontal scroll with auto-load: user scrolls right → near-edge detection triggers RIME page-down → new candidates appended smoothly via `appendToCandidateBar()` (no clear+rebuild flash). `scrollViewDidScroll` near-right-edge detection (80pt) + `scrollViewDidEndDragging` overscroll fallback (40pt).
+- **Pre-load 2 pages**: `refreshCandidateBar()` immediately fetches RIME page 1 + page 2 on new input, showing ~18 candidates upfront. `loadMoreCandidates()` appends subsequent pages on demand.
+- **Expanded panel redesign**: Flow layout replaces fixed 4-column grid. Buttons wrap naturally by text width, trailing spacers prevent `.fill` distribution stretch. Panel fills entire keyboard area (252pt, candidate bar disappears when expanded). Collapse button (chevron.up, 44×44pt) floats top-right above scrollView. Vertical infinite scroll with bottom-edge detection (80pt).
+- **Fade mask refined**: Gradient range 82%→92%, last candidate almost fully visible.
+- **Comprehensive diagnostic logging**: All scroll/load methods emit info-level DISP logs with candidate counts, distances, hasMorePages, RIME raw returns, dedup counts.
+- **Apple HIG P0 (Touch Targets)**: `candidateBarHeight: 36→44` (≥44pt). Expand/collapse buttons: 34×36→44×44pt.
+- **Apple HIG P0 (VoiceOver)**: All candidate/expand/collapse buttons have `accessibilityLabel` + `accessibilityHint`. Composition items read "提交拼音 X".
+- **Apple HIG P1 (Dynamic Type)**: `UIFontMetrics(forTextStyle: .body).scaledFont(for:maximumPointSize: 28)` replaces hardcoded `systemFont(ofSize:)`.
+- **Apple HIG P2 (Semantic colors + 8pt grid)**: Highlighted background uses `.systemGray3`/`.systemGray6`. Candidate stack spacing 3→4pt, highlighted insets 6→8pt, vertical panel spacing 5→4pt.
+- **Apple HIG P3 (Spring animation + indicator)**: Chevron rotation uses `usingSpringWithDamping: 0.75` spring. "More" indicator `⋯` (U+22EF, `.quaternaryLabel`) appended when `hasMoreCandidates`, removed when exhausted.
+- **KeySpacing split**: `keySpacing: 8` (vertical between rows) + `keyHorizontalSpacing: 6` (horizontal within rows). Total height 250→258pt.
+- **Test suite**: 328 tests, 0 failures (was 225).
 
 ### Key Lessons Learned (2026-05-21)
 
@@ -76,7 +91,7 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 4. **Bottom anchoring causes candidate bar clipping at 216pt.** `rootStack.height(236) + bottomMargin(8) = 244pt` minimum, but view is only 216pt → top 28pt clipped including the candidate bar.
 5. **Associated-object Bool bridging is unreliable.** `objc_getAssociatedObject(...) as? Bool` can fail on `__NSCFBoolean`, making the reuse check always think bold state changed. Simpler: just rebuild.
 6. **Log aggressively.** Without `viewDidLayoutSubviews` frame logging, we wouldn't know the final height is 216pt or that viewDidAppear fires at intermediate height 445pt.
-- Enterprise-grade refactoring: 5 duplicate blocks unified, 2 large files split, project reorganized into logical subdirectories (225 tests, 0 failures)
+- Enterprise-grade refactoring: 5 duplicate blocks unified, 2 large files split, project reorganized into logical subdirectories (328 tests, 0 failures)
 - Duplicate WAV generation unified → `ClickSoundGenerator` in KeyboardCore
 - Duplicate Lua stripping removed from SchemaManager → uses `RimeConfigPostProcessor`
 - Duplicate schema repair removed from `RimeEngineImpl.init` → uses `RimeConfigPostProcessor.repairSchemaIfNeeded`
@@ -95,7 +110,7 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 - Team: `C33N6HTS9N`, code signing is automatic.
 - To test the keyboard: run the Keyboard extension target on a simulator/device, then enable it in Settings → General → Keyboard → Keyboards → Add New Keyboard → Keyboard.
 - Build with `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build`
-- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**225 tests across 13 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
+- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**328 tests across 13 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
 - A **macOS verification tool** at `Packages/RimeBridge/TestTool/` validates the bridge code against real librime 1.16.1. Run with `cd Packages/RimeBridge/TestTool && make && ./test_rime`.
 
 ## Architecture
@@ -164,7 +179,7 @@ Universe Keyboard/
 └── Universe Keyboard.entitlements
 ```
 
-**Testing** (225 tests across 13 files, 0 failures):
+**Testing** (328 tests across 13 files, 0 failures):
 
 ```
 Packages/KeyboardCore/Tests/KeyboardCoreTests/
@@ -270,7 +285,7 @@ Keyboard Extension (UIInputViewController) → thin UI + state machine
 - **Long-press letter keys** (0.3s) shows a popup with diacritic variants (e.g., a → à á â ä æ). 19 letters have variants. Selection follows finger position; releasing outside the popup cancels. Variants respect Shift state (uppercase/lowercase).
 - **Keyboard click sound** uses `KeyClickPlayer` — generates a 4ms, 2000Hz+4000Hz harmonic click WAV in-memory, played via `AVAudioPlayer` on a background serial queue (`qos: .userInitiated`) with configurable volume (`key_click_volume`, 0.0–1.0). Dual-player architecture prevents clipping on rapid keystrokes. The background queue eliminates 18-76ms of main-thread blocking per keystroke. No Full Access required.
 - **Haptic feedback** uses `UIImpactFeedbackGenerator(style: .light)` with `impactOccurred(intensity:)`. Intensity is configurable via `haptic_intensity` (0.1–1.0), cached at VC level. Generator is pre-warmed in `viewDidLoad` for low latency. Live preview available in settings.
-- **Candidate bar** uses `UIScrollView` for horizontal scrolling (`decelerationRate: .fast`). With inline preedit, the candidate bar shows only candidates (the pinyin is already displayed in the text field). A `CAGradientLayer` fade mask on the scroll view fades the right edge. The expanded panel uses a 4-column grid layout. **Critical**: use `titleTextAttributesTransformer` for font/color styling, NOT `attributedTitle`. `candidateItems()` reads from `state.lastRimeOutput` first (RIME path), falls back to `candidateProvider.candidates(for:)` (Fake path). When RIME produces an empty composition, the preedit text is shown as a `.composition` item so users can commit raw pinyin.
+- **Candidate bar** uses `UIScrollView` for horizontal swipeless scrolling (`decelerationRate: .fast`, `alwaysBounceHorizontal` tied to `hasMoreCandidates`). With inline preedit, the candidate bar shows only candidates (the pinyin is already displayed in the text field). A `CAGradientLayer` fade mask (92%→100%) on the scroll view gently fades the right edge. **No page buttons** — instead, pre-loaded 2-page candidates + near-edge auto-fetch (infinite scroll). New candidates appended directly to stack via `appendToCandidateBar()` (no clear+rebuild flash). **Expanded panel**: flow layout (adaptive width + wrap), fills entire keyboard area, vertical infinite scroll with bottom-edge detection, collapse button floating top-right. "More" indicator `⋯` when `hasMoreCandidates`. **Critical**: use `titleTextAttributesTransformer` for font/color styling, NOT `attributedTitle`. `candidateItems()` returns accumulated candidates (or falls back to current RIME page). When RIME produces an empty composition, the preedit text is shown as a `.composition` item so users can commit raw pinyin.
 - **Inline preedit**: In Chinese mode, the pinyin composition is displayed directly in the host text field. `KeyboardController` tracks `state.insertedPreeditCount` and uses `updateInlinePreedit()` / `deleteInlinePreedit()` to manage the text field cursor. On each keystroke the old preedit is deleted and the new one inserted. On candidate selection or mode switch, the preedit is cleared before committing.
 - **Long-press delete**: Touch-down immediately performs the first delete. After 0.5s, auto-repeat starts at 0.08s intervals (matching native iOS keyboard behavior).
 - **Key click & haptic settings are cached** at the VC level on `viewDidLoad` (not read from `UserDefaults(suiteName:)` on every keypress, which would incur XPC overhead). Cache is invalidated via `UserDefaults.didChangeNotification` observer.
