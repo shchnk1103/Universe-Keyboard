@@ -21,7 +21,7 @@ struct ContentView: View {
                     Label("设置", systemImage: "gearshape")
                 }
         }
-        .tint(.blue)
+        .tint(.primary)
     }
 }
 
@@ -57,10 +57,10 @@ private struct GuideTab: View {
             HStack(spacing: 12) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(.blue)
+                        .fill(.primary)
                     Image(systemName: "keyboard")
                         .font(.system(size: 25, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color(.systemBackground))
                 }
                 .frame(width: 52, height: 52)
 
@@ -102,19 +102,19 @@ private struct GuideTab: View {
             StatusRow(
                 title: "输入方案",
                 value: activeSchemaID == "rime_ice" ? "雾凇拼音" : "朙月拼音",
-                color: .blue
+                color: .primary
             )
             Divider()
             StatusRow(
                 title: "词库部署",
                 value: rimeDeployed ? "已就绪" : "待部署",
-                color: rimeDeployed ? .green : .orange
+                color: rimeDeployed ? .primary : .orange
             )
             Divider()
             StatusRow(
                 title: "卡顿诊断",
                 value: loggingEnabled ? "记录中" : "未开启",
-                color: loggingEnabled ? .blue : .secondary
+                color: loggingEnabled ? .primary : .secondary
             )
         }
     }
@@ -140,6 +140,8 @@ private struct SettingsTab: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
+                    appearanceNavigationLink
+                    dictionaryNavigationLink
                     feedbackNavigationLink
                     rimeNavigationLink
                     diagnosticsSection
@@ -154,12 +156,31 @@ private struct SettingsTab: View {
 
     // MARK: 键盘反馈
 
+    private var appearanceNavigationLink: some View {
+        SettingsNavigationLink(
+            systemImage: "circle.lefthalf.filled",
+            title: "外观",
+            subtitle: "跟随系统、浅色或深色模式"
+        ) {
+            AppearanceSettingsView()
+        }
+    }
+
+    private var dictionaryNavigationLink: some View {
+        SettingsNavigationLink(
+            systemImage: "character.book.closed",
+            title: "本地词典",
+            subtitle: "查看词典文件与搜索本地词条"
+        ) {
+            DictionaryBrowserView()
+        }
+    }
+
     private var feedbackNavigationLink: some View {
         SettingsNavigationLink(
             systemImage: "waveform",
             title: "键盘反馈",
-            subtitle: "按键音、触感震动",
-            imageColor: .blue
+            subtitle: "按键音、触感震动"
         ) {
             FeedbackSettingsView()
         }
@@ -177,8 +198,7 @@ private struct SettingsTab: View {
         SettingsNavigationLink(
             systemImage: "character.book.closed.zh",
             title: "RIME 方案设置",
-            subtitle: "候选数量、简繁转换、方案部署",
-            imageColor: .indigo
+            subtitle: "候选数量、简繁转换、方案部署"
         ) {
             RimeSettingsView()
         }
@@ -193,10 +213,10 @@ private struct SettingsTab: View {
                 HStack(spacing: 12) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 7, style: .continuous)
-                            .fill(.gray)
+                            .fill(.primary)
                         Image(systemName: "waveform.path.ecg.text")
                             .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Color(.systemBackground))
                     }
                     .frame(width: 30, height: 30)
                     VStack(alignment: .leading, spacing: 2) {
@@ -300,9 +320,9 @@ private struct NumberedRow: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Text("\(number)")
-                .font(.caption).fontWeight(.bold).foregroundStyle(.white)
+                .font(.caption).fontWeight(.bold).foregroundStyle(Color(.systemBackground))
                 .frame(width: 22, height: 22)
-                .background(Color.blue).clipShape(Circle())
+                .background(Color.primary).clipShape(Circle())
             Text(text).font(.body)
         }
     }

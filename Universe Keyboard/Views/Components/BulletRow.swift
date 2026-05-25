@@ -9,7 +9,7 @@ public struct BulletRow: View {
     let style: BulletStyle
     let bulletColor: Color
 
-    public init(text: String, style: BulletStyle = .dot, bulletColor: Color = .blue) {
+    public init(text: String, style: BulletStyle = .dot, bulletColor: Color = .primary) {
         self.text = text
         self.style = style
         self.bulletColor = bulletColor

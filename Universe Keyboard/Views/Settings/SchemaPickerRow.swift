@@ -31,9 +31,9 @@ struct SchemaPickerRow: View {
                 // Status or checkmark
                 if isActive {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(.primary)
                 } else if !schema.installed {
-                    CapsuleBadge(text: "下载", color: .blue, style: .filled)
+                    CapsuleBadge(text: "下载", color: .primary, style: .filled)
                 }
             }
             .padding(12)
@@ -41,7 +41,7 @@ struct SchemaPickerRow: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(isActive ? Color.blue.opacity(0.4) : Color.clear, lineWidth: 1.5)
+                    .stroke(isActive ? Color.primary.opacity(0.35) : Color.clear, lineWidth: 1.5)
             )
         }
         .buttonStyle(.plain)

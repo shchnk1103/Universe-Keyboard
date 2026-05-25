@@ -12,7 +12,7 @@ public struct SettingsNavigationLink<Destination: View>: View {
         systemImage: String,
         title: String,
         subtitle: String,
-        imageColor: Color = .blue,
+        imageColor: Color = .primary,
         destination: @escaping () -> Destination
     ) {
         self.systemImage = systemImage
@@ -30,7 +30,7 @@ public struct SettingsNavigationLink<Destination: View>: View {
                         .fill(imageColor)
                     Image(systemName: systemImage)
                         .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color(.systemBackground))
                 }
                 .frame(width: 30, height: 30)
                 VStack(alignment: .leading, spacing: 2) {

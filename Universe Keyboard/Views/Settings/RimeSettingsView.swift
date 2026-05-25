@@ -31,7 +31,7 @@ struct RimeSettingsView: View {
         var color: Color {
             switch self {
             case .idle, .triggered: return .orange
-            case .deploying:        return .blue
+            case .deploying:        return .primary
             case .deployed:         return .green
             case .failed:           return .red
             }
@@ -83,6 +83,7 @@ struct RimeSettingsView: View {
             deploySection
         }
         .navigationTitle("RIME 方案设置")
+        .tint(.primary)
         .onAppear { loadSettings() }
         .onChange(of: schemaManager.rimeIceDownloadState) { _, _ in
             checkDeployState()
@@ -197,10 +198,10 @@ struct RimeSettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 VStack(alignment: .leading, spacing: 4) {
-                    BulletRow(text:"完整 cn_dicts 词库（8105 + base + ext + tencent），大幅提高候选准确率", style: .dot, bulletColor: .blue)
-                    BulletRow(text:"支持简繁转换", style: .dot, bulletColor: .blue)
-                    BulletRow(text:"支持 emoji 候选", style: .dot, bulletColor: .blue)
-                    BulletRow(text:"部分高级功能（如日期输入、计算器）需要 Lua 插件，暂不可用", style: .dot, bulletColor: .blue)
+                    BulletRow(text:"完整 cn_dicts 词库（8105 + base + ext + tencent），大幅提高候选准确率", style: .dot)
+                    BulletRow(text:"支持简繁转换", style: .dot)
+                    BulletRow(text:"支持 emoji 候选", style: .dot)
+                    BulletRow(text:"部分高级功能（如日期输入、计算器）需要 Lua 插件，暂不可用", style: .dot)
                 }
                 Text("下载后可在方案列表中选择切换，随时可卸载恢复默认方案。")
                     .font(.caption)
@@ -355,7 +356,7 @@ struct RimeSettingsView: View {
                     Text("\(Int(pageSize)) 个")
                         .font(.title3)
                         .fontWeight(.medium)
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(.primary)
                     Spacer()
                 }
                 Slider(value: $pageSize, in: 5...20, step: 1)

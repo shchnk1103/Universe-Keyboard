@@ -21,7 +21,7 @@ public struct CapsuleBadge: View {
             .padding(.horizontal, 6)
             .padding(.vertical, 1)
             .background(style == .filled ? color : color.opacity(0.12))
-            .foregroundStyle(style == .filled ? .white : color)
+            .foregroundStyle(style == .filled ? Color(.systemBackground) : color)
             .clipShape(Capsule())
     }
 }

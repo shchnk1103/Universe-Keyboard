@@ -68,12 +68,12 @@ struct DiagnosticsView: View {
                                     .padding(.vertical, 5)
                                     .background(
                                         selectedCategory == category
-                                            ? Color.blue.opacity(0.15)
+                                            ? Color.primary.opacity(0.14)
                                             : Color(.systemGray5)
                                     )
                                     .foregroundStyle(
                                         selectedCategory == category
-                                            ? .blue
+                                            ? .primary
                                             : .secondary
                                     )
                                     .clipShape(Capsule())
@@ -183,8 +183,8 @@ struct DiagnosticsView: View {
     private func colorForLine(_ line: String) -> Color {
         if line.contains("[ERROR]") { return .red }
         if line.contains("[WARN]")  { return .orange }
-        if line.contains("[PERF]")  { return .blue }
-        if line.contains("[DISP]")  { return .purple }
+        if line.contains("[PERF]")  { return .primary }
+        if line.contains("[DISP]")  { return .secondary }
         return .secondary
     }
 

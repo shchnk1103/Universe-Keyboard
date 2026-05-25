@@ -67,7 +67,7 @@ struct FeedbackSettingsView: View {
                             Spacer()
                             Text(volumeLabel)
                                 .font(.caption)
-                                .foregroundStyle(.blue)
+                                .foregroundStyle(.primary)
                             Spacer()
                             Text("最大")
                                 .font(.caption2)
@@ -119,7 +119,7 @@ struct FeedbackSettingsView: View {
                             Spacer()
                             Text(intensityLabel)
                                 .font(.caption)
-                                .foregroundStyle(.blue)
+                                .foregroundStyle(.primary)
                             Spacer()
                             Text("强烈")
                                 .font(.caption2)
@@ -135,6 +135,7 @@ struct FeedbackSettingsView: View {
 
         }
         .navigationTitle("键盘反馈")
+        .tint(.primary)
         .onAppear { previewHaptic.prepare() }
     }
 

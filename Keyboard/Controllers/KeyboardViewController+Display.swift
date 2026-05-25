@@ -155,7 +155,7 @@ extension KeyboardViewController {
     ///
     /// 根据 Apple 文档的建议，匹配原生 iOS 键盘行为：
     ///   - 动作键（send/search/go/join/route/yahoo/google）：
-    ///     有文本时 → 蓝色高亮背景 + 白色文字（暗示"可以执行"）
+    ///     有文本时 → 黑白反转背景（暗示"可以执行"）
     ///     无文本时 → functionKeyColor 背景（灰色，暗示"需要先输入"）
     ///   - 非动作键（return/next/done/emergencyCall/continue）：
     ///     始终使用 functionKeyColor 背景
@@ -171,7 +171,7 @@ extension KeyboardViewController {
 
         let rt = textDocumentProxy.returnKeyType
 
-        // 判断是否是"动作"类型的回车键（有蓝色高亮行为）
+        // 判断是否是"动作"类型的回车键（有强调高亮行为）
         let isActionKey: Bool = {
             switch rt {
             case .send, .search, .go, .join, .route, .yahoo, .google:
@@ -185,10 +185,10 @@ extension KeyboardViewController {
             // textDocumentProxy.hasText 检查宿主 App 输入框中是否有文本
             let hasText = textDocumentProxy.hasText
             if hasText {
-                // 有文本时的蓝色高亮状态（使用系统 tintColor 保持与 App 主题一致）
-                returnButton.backgroundColor = view.tintColor
-                returnButton.setTitleColor(.white, for: .normal)
-                returnButton.tintColor = .white
+                // 有文本时使用动态反转色：浅色模式黑底、深色模式白底。
+                returnButton.backgroundColor = .label
+                returnButton.setTitleColor(.systemBackground, for: .normal)
+                returnButton.tintColor = .systemBackground
             } else {
                 // 无文本时的灰色状态
                 applyKeyStyle(.returnKey, to: returnButton)

@@ -308,7 +308,7 @@ extension KeyboardViewController {
         guard let button = candidateExpandButton else { return }
         let transform = isCandidateExpanded ? CGAffineTransform(rotationAngle: .pi) : .identity
         var config = button.configuration
-        config?.baseForegroundColor = isCandidateExpanded ? view.tintColor : .secondaryLabel
+        config?.baseForegroundColor = isCandidateExpanded ? .label : .secondaryLabel
         button.configuration = config
 
         if UIAccessibility.isReduceMotionEnabled {
@@ -424,7 +424,7 @@ extension KeyboardViewController {
             systemName: "chevron.up",
             withConfiguration: UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)
         )
-        collapseConfig.baseForegroundColor = view.tintColor
+        collapseConfig.baseForegroundColor = .label
         let collapseBtn = UIButton(configuration: collapseConfig, primaryAction: nil)
         collapseBtn.translatesAutoresizingMaskIntoConstraints = false
         collapseBtn.addTarget(self, action: #selector(toggleCandidateExpand), for: .touchUpInside)
