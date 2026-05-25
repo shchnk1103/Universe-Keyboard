@@ -174,35 +174,35 @@ extension KeyboardViewController {
     /// 键盘背景色（动态跟随系统浅色/深色模式）。
     ///
     /// 使用 UIColor(dynamicProvider:) 闭包提供动态颜色：
-    ///   - 浅色模式：亮灰色（R:207 G:210 B:216），匹配原生 iOS 键盘
-    ///   - 深色模式：深灰黑色（R:44 G:45 B:48），匹配原生 iOS 键盘深色外观
+    ///   - 浅色模式：中性亮灰，匹配原生 iOS 键盘
+    ///   - 深色模式：中性深灰黑，匹配原生 iOS 键盘深色外观
     var keyboardBackgroundColor: UIColor {
         UIColor { traits in
             traits.userInterfaceStyle == .dark
-                ? UIColor(red: 44 / 255, green: 45 / 255, blue: 48 / 255, alpha: 1)
-                : UIColor(red: 207 / 255, green: 210 / 255, blue: 216 / 255, alpha: 1)
+                ? UIColor(red: 30 / 255, green: 30 / 255, blue: 32 / 255, alpha: 1)
+                : UIColor(red: 209 / 255, green: 209 / 255, blue: 214 / 255, alpha: 1)
         }
     }
 
     /// 字符键背景色。
     /// 浅色模式：白色（与原生键盘一致）
-    /// 深色模式：深灰（R:92 G:93 B:96）
+    /// 深色模式：深灰
     var characterKeyColor: UIColor {
         UIColor { traits in
             traits.userInterfaceStyle == .dark
-                ? UIColor(red: 92 / 255, green: 93 / 255, blue: 96 / 255, alpha: 1)
+                ? UIColor(red: 62 / 255, green: 62 / 255, blue: 64 / 255, alpha: 1)
                 : UIColor.white
         }
     }
 
     /// 功能键背景色（Shift、删除、123、地球、中/英等）。
-    /// 浅色模式：灰蓝色（R:174 G:180 B:188）
-    /// 深色模式：深灰（R:65 G:66 B:70）
+    /// 浅色模式：中性灰
+    /// 深色模式：深灰
     var functionKeyColor: UIColor {
         UIColor { traits in
             traits.userInterfaceStyle == .dark
-                ? UIColor(red: 65 / 255, green: 66 / 255, blue: 70 / 255, alpha: 1)
-                : UIColor(red: 174 / 255, green: 180 / 255, blue: 188 / 255, alpha: 1)
+                ? UIColor(red: 44 / 255, green: 44 / 255, blue: 46 / 255, alpha: 1)
+                : UIColor(red: 174 / 255, green: 174 / 255, blue: 178 / 255, alpha: 1)
         }
     }
 
@@ -212,8 +212,8 @@ extension KeyboardViewController {
     var highlightedKeyColor: UIColor {
         UIColor { traits in
             traits.userInterfaceStyle == .dark
-                ? UIColor(red: 116 / 255, green: 117 / 255, blue: 121 / 255, alpha: 1)
-                : UIColor(red: 235 / 255, green: 236 / 255, blue: 239 / 255, alpha: 1)
+                ? UIColor(red: 92 / 255, green: 92 / 255, blue: 96 / 255, alpha: 1)
+                : UIColor(red: 235 / 255, green: 235 / 255, blue: 237 / 255, alpha: 1)
         }
     }
 

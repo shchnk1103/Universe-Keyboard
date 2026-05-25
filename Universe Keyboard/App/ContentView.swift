@@ -21,20 +21,27 @@ struct ContentView: View {
                     Label("设置", systemImage: "gearshape")
                 }
         }
-        .tint(.blue)
+        .tint(.primary)
     }
 }
 
 // MARK: - Tab 1: 引导
 
 private struct GuideTab: View {
+    @AppStorage("rime_active_schema", store: UserDefaults(suiteName: appGroupID))
+    private var activeSchemaID = "luna_pinyin"
+    @AppStorage("rime_deployed", store: UserDefaults(suiteName: appGroupID))
+    private var rimeDeployed = false
+    @AppStorage("logging_enabled", store: UserDefaults(suiteName: appGroupID))
+    private var loggingEnabled = false
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     headerSection
                     enableKeyboardSection
-                    progressSection
+                    statusSection
                     testChecklistSection
                 }
                 .padding(.horizontal, 16)
@@ -50,10 +57,10 @@ private struct GuideTab: View {
             HStack(spacing: 12) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(.blue)
+                        .fill(.primary)
                     Image(systemName: "keyboard")
                         .font(.system(size: 25, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color(.systemBackground))
                 }
                 .frame(width: 52, height: 52)
 
@@ -90,25 +97,33 @@ private struct GuideTab: View {
         }
     }
 
-    private var progressSection: some View {
-        InfoSection(title: "当前进度", systemImage: "checkmark.circle") {
-            BulletRow(text:"26 键字母输入", style: .checkmark)
-            BulletRow(text:"Shift 大小写切换 + Caps Lock", style: .checkmark)
-            BulletRow(text:"123 数字/符号页", style: .checkmark)
-            BulletRow(text:"Inline preedit（拼音内联显示）", style: .checkmark)
-            BulletRow(text:"RIME 中文候选引擎", style: .checkmark)
-            BulletRow(text:"长按删除", style: .checkmark)
-            BulletRow(text:"长按变体字符弹出", style: .checkmark)
+    private var statusSection: some View {
+        InfoSection(title: "当前状态", systemImage: "keyboard.badge.ellipsis") {
+            StatusRow(
+                title: "输入方案",
+                value: activeSchemaID == "rime_ice" ? "雾凇拼音" : "朙月拼音",
+                color: .primary
+            )
+            Divider()
+            StatusRow(
+                title: "词库部署",
+                value: rimeDeployed ? "已就绪" : "待部署",
+                color: rimeDeployed ? .primary : .orange
+            )
+            Divider()
+            StatusRow(
+                title: "卡顿诊断",
+                value: loggingEnabled ? "记录中" : "未开启",
+                color: loggingEnabled ? .primary : .secondary
+            )
         }
     }
 
     private var testChecklistSection: some View {
         InfoSection(title: "测试清单", systemImage: "list.bullet.clipboard") {
-            BulletRow(text:"输入 nihao，候选栏应显示候选词", style: .checkmark)
-            BulletRow(text:"按空格，应上屏第一个候选", style: .checkmark)
-            BulletRow(text:"按 return，应提交原始拼音", style: .checkmark)
-            BulletRow(text:"长按删除键，应连续删除", style: .checkmark)
-            BulletRow(text:"长按字母键，应弹出变体字符", style: .checkmark)
+            BulletRow(text:"输入 nihao，确认候选出现且空格可选词", style: .checkmark)
+            BulletRow(text:"连续快速输入一段拼音，观察是否停顿", style: .checkmark)
+            BulletRow(text:"出现卡顿后回到「设置 > 诊断日志」查看记录", style: .checkmark)
         }
     }
 }
@@ -119,12 +134,13 @@ private struct SettingsTab: View {
     @State private var loggingEnabled: Bool = {
         UserDefaults(suiteName: appGroupID)?.bool(forKey: "logging_enabled") ?? false
     }()
-    @State private var diagRefreshToken = 0  // 递增以触发 SwiftUI 刷新
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
+                    appearanceNavigationLink
+                    dictionaryNavigationLink
                     feedbackNavigationLink
                     rimeNavigationLink
                     diagnosticsSection
@@ -139,12 +155,31 @@ private struct SettingsTab: View {
 
     // MARK: 键盘反馈
 
+    private var appearanceNavigationLink: some View {
+        SettingsNavigationLink(
+            systemImage: "circle.lefthalf.filled",
+            title: "外观",
+            subtitle: "跟随系统、浅色或深色模式"
+        ) {
+            AppearanceSettingsView()
+        }
+    }
+
+    private var dictionaryNavigationLink: some View {
+        SettingsNavigationLink(
+            systemImage: "character.book.closed",
+            title: "本地词典",
+            subtitle: "查看词典文件与搜索本地词条"
+        ) {
+            DictionaryBrowserView()
+        }
+    }
+
     private var feedbackNavigationLink: some View {
         SettingsNavigationLink(
             systemImage: "waveform",
             title: "键盘反馈",
-            subtitle: "按键音、触感震动",
-            imageColor: .blue
+            subtitle: "按键音、触感震动"
         ) {
             FeedbackSettingsView()
         }
@@ -162,8 +197,7 @@ private struct SettingsTab: View {
         SettingsNavigationLink(
             systemImage: "character.book.closed.zh",
             title: "RIME 方案设置",
-            subtitle: "候选数量、简繁转换、方案部署",
-            imageColor: .indigo
+            subtitle: "候选数量、简繁转换、方案部署"
         ) {
             RimeSettingsView()
         }
@@ -172,77 +206,69 @@ private struct SettingsTab: View {
     // MARK: 诊断日志
 
     private var diagnosticsSection: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 12) {
             // 主开关行
-            HStack(spacing: 12) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 7, style: .continuous)
-                        .fill(.gray)
-                    Image(systemName: "terminal")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.white)
-                }
-                .frame(width: 30, height: 30)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("诊断日志")
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                    Text("键盘引擎运行记录")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                Toggle("", isOn: $loggingEnabled)
-                    .labelsHidden()
-                    .onChange(of: loggingEnabled) { _, newValue in
-                        UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "logging_enabled")
+            VStack(spacing: 0) {
+                HStack(spacing: 12) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 7, style: .continuous)
+                            .fill(.primary)
+                        Image(systemName: "waveform.path.ecg.text")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(Color(.systemBackground))
                     }
-                    .onChange(of: loggingEnabled) { _, _ in
-                        diagRefreshToken += 1
+                    .frame(width: 30, height: 30)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("诊断日志")
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                        Text(loggingEnabled ? "正在捕获输入耗时与引擎边界" : "用于定位快速输入卡顿")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
+                    Spacer()
+                    Toggle("", isOn: $loggingEnabled)
+                        .labelsHidden()
+                        .toggleStyle(MonochromeToggleStyle())
+                        .onChange(of: loggingEnabled) { _, newValue in
+                            UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "logging_enabled")
+                        }
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+
+                Divider().padding(.leading, 56)
+
+                NavigationLink(destination: DiagnosticsView()) {
+                    HStack(spacing: 12) {
+                        Text("查看记录")
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        let count = keyboardDiagLog.count
+                        Text(count == 0 ? "暂无记录" : "\(count) 条")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                }
+                .buttonStyle(.plain)
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 12)
             .background(Color(.secondarySystemGroupedBackground))
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
-            // 分类开关：仅在主开关打开时显示
             if loggingEnabled {
+                Text("复现卡顿时请保留「性能」与「引擎」分类开启；卡住后返回本页查看最后一条 BEGIN 记录。")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 4)
                 categoryTogglesSection
             }
-
-            // 仅当开关打开且有日志时才显示查看入口
-            if loggingEnabled {
-                let diagLines = keyboardDiagLog
-                if !diagLines.isEmpty {
-                    NavigationLink(destination: DiagnosticsView()) {
-                        HStack {
-                            Text("查看日志 (\(diagLines.count) 条)")
-                                .font(.subheadline)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding()
-                        .background(Color(.secondarySystemGroupedBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    }
-                } else {
-                    HStack {
-                        Image(systemName: "info.circle")
-                            .font(.caption).foregroundStyle(.secondary)
-                        Text("已开启，切换到键盘输入后即可查看日志")
-                            .font(.caption).foregroundStyle(.secondary)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .padding(.top, 8)
-                }
-            }
         }
-        .id(diagRefreshToken)
-        .onAppear { diagRefreshToken += 1 }
     }
 
     /// 日志分类开关：性能 (PERF) / 画面 (DISP) / 引擎 (ENGINE) / 配置 (CONFIG) / 部署 (DEPLOY) / 通用 (GEN)
@@ -261,18 +287,7 @@ private struct SettingsTab: View {
                     icon: icon,
                     name: name,
                     description: desc,
-                    isOn: Binding(
-                        get: {
-                            let defaults = UserDefaults(suiteName: appGroupID)
-                            let fullKey = "log_category_\(key)"
-                            if defaults?.object(forKey: fullKey) == nil { return true }
-                            return defaults?.bool(forKey: fullKey) ?? true
-                        },
-                        set: { newValue in
-                            UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "log_category_\(key)")
-                            diagRefreshToken += 1
-                        }
-                    )
+                    defaultsKey: "log_category_\(key)"
                 )
             }
         }
@@ -291,10 +306,27 @@ private struct NumberedRow: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Text("\(number)")
-                .font(.caption).fontWeight(.bold).foregroundStyle(.white)
+                .font(.caption).fontWeight(.bold).foregroundStyle(Color(.systemBackground))
                 .frame(width: 22, height: 22)
-                .background(Color.blue).clipShape(Circle())
+                .background(Color.primary).clipShape(Circle())
             Text(text).font(.body)
+        }
+    }
+}
+
+private struct StatusRow: View {
+    let title: String
+    let value: String
+    let color: Color
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .foregroundStyle(.primary)
+            Spacer()
+            Text(value)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(color)
         }
     }
 }
@@ -304,7 +336,18 @@ private struct CategoryToggleRow: View {
     let icon: String
     let name: String
     let description: String
-    @Binding var isOn: Bool
+    @AppStorage private var isOn: Bool
+
+    init(icon: String, name: String, description: String, defaultsKey: String) {
+        self.icon = icon
+        self.name = name
+        self.description = description
+        _isOn = AppStorage(
+            wrappedValue: true,
+            defaultsKey,
+            store: UserDefaults(suiteName: appGroupID)
+        )
+    }
 
     var body: some View {
         HStack(spacing: 10) {
@@ -322,6 +365,7 @@ private struct CategoryToggleRow: View {
             Spacer()
             Toggle("", isOn: $isOn)
                 .labelsHidden()
+                .toggleStyle(MonochromeToggleStyle())
                 .scaleEffect(0.85)
         }
         .padding(.vertical, 6)

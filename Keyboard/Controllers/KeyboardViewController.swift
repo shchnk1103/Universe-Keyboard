@@ -33,10 +33,10 @@ class KeyboardViewController: UIInputViewController {
     var rootStack: UIStackView!
     /// 候选栏的容器视图（包含 scrollView + 展开按钮）
     var candidateBar: UIView!
-    /// 候选词横向滚动的 UIScrollView
+    /// 候选词横向滚动区域
     var candidateScrollView: UIScrollView!
-    /// 候选词水平排列的 StackView（放在 scrollView 内部）
-    var candidateStack: UIStackView!
+    /// 横向候选集合视图，按需复用可见 cell
+    var candidateCollectionView: UICollectionView?
     /// 地球键（输入法切换），iOS 要求所有第三方键盘必须提供
     var nextKeyboardButton: UIButton!
     /// Shift 键，位于第 3 行左侧
@@ -64,12 +64,12 @@ class KeyboardViewController: UIInputViewController {
     var variantPopupView: KeyPopupView?
     /// 正在长按的按钮引用
     var longPressedButton: UIButton?
-    /// 候选栏右侧渐隐遮罩（CAGradientLayer）
-    var candidateFadeGradient: CAGradientLayer?
     /// 展开的候选面板（流式布局）
     var candidateExpandedPanel: UIView?
     /// 展开面板内部的纵向滚动视图（用于无限滚动检测）
     var expandedPanelScrollView: UIScrollView?
+    /// 展开态使用的流式候选列表，支持增量插入而无需重建整个面板
+    var expandedCandidateCollectionView: UICollectionView?
     /// 展开/收起候选面板的 SF Symbol 按钮
     var candidateExpandButton: UIButton?
     /// 展开按钮宽度约束（无候选时设为 0 隐藏）
@@ -88,6 +88,10 @@ class KeyboardViewController: UIInputViewController {
     var candidatePageDepth: Int = 0
     /// 记录每个按钮的 touchDown 时间戳，用于性能日志
     var keyTouchDownTimes: [ObjectIdentifier: CFTimeInterval] = [:]
+    /// 输入事件编号，将按键、引擎和渲染日志关联到同一次操作
+    var inputEventSequence = 0
+    /// 前一个字母输入完成时间，用于观察快速输入中的事件排队现象
+    var lastInputCompletionTime: CFTimeInterval?
 
     // MARK: - 键盘可见性状态（防闪烁机制）
 
@@ -248,20 +252,21 @@ class KeyboardViewController: UIInputViewController {
     }
 
     /// viewDidAppear 在键盘视图对用户可见时调用。
-    /// 执行 RIME 会话健康检查：应用切换后 session 可能丢失，
-    /// 预先重置确保下次输入不从脏状态开始。
+    /// 清理返回前未完成的 RIME 组合状态；仅在后续输入确认
+    /// session 已失效时，控制器才会触发真正的 runtime 恢复。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        let isReturningToExistingKeyboard = hasViewAppeared
         hasViewAppeared = true
 
-        // 应用切换后 RIME session 可能失效 — 重置以确保干净状态
-        if let engine = controller.rimeEngine {
-            engine.resetSession()
+        // 返回键盘时只清理输入状态，避免不必要地销毁仍然健康的 session。
+        if isReturningToExistingKeyboard, controller.rimeEngine != nil {
+            controller.resetRimeSessionForVisibilityChange()
             accumulatedCandidates = []
             hasMoreCandidates = false
             candidatePageDepth = 0
             Logger.shared.info(
-                "viewDidAppear: RIME session reset for app-switch safety",
+                "viewDidAppear: RIME composition cleared after keyboard return",
                 category: .engine
             )
         }
@@ -270,6 +275,12 @@ class KeyboardViewController: UIInputViewController {
             "viewDidAppear: bounds=\(view.bounds)",
             category: .display
         )
+    }
+
+    /// 切回主 App 查看诊断时，确保最后一批异步合并日志已经写入共享容器。
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        Logger.shared.flush()
     }
 
     /// viewWillLayoutSubviews 在子视图布局之前调用。
@@ -311,14 +322,6 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-
-        // ── 任务 1：更新渐隐遮罩 frame ─────────────────────────────
-        if let gradient = candidateFadeGradient, let scrollView = candidateScrollView {
-            CATransaction.begin()
-            CATransaction.setDisableActions(true)
-            gradient.frame = scrollView.bounds
-            CATransaction.commit()
-        }
 
         // 仅在 bounds 变化时记录（避免 layout 循环时刷屏日志）
         if view.bounds != lastLoggedBounds {
@@ -414,21 +417,13 @@ class KeyboardViewController: UIInputViewController {
         // 1. 清除按键触控时间戳缓存（性能日志用，可丢弃）
         keyTouchDownTimes.removeAll()
 
-        // 2. 关闭展开的候选面板（释放大量 UIButton）
+        // 2. 关闭展开的候选面板，释放屏外 cell 缓存
         if isCandidateExpanded {
             isCandidateExpanded = false
-            removeContentRows()
-            addKeyboardRows(for: controller.state)
+            dismissExpandedCandidatePanel(animated: false)
         }
 
-        // 3. 重建候选栏（释放旧 UIButton 对象）
-        //    fillCandidateBar 会在下次刷新时重新创建
-        if let stack = candidateStack {
-            for subview in stack.arrangedSubviews.reversed() {
-                stack.removeArrangedSubview(subview)
-                subview.removeFromSuperview()
-            }
-        }
+        // 3. 集合视图只保留可见 cell，无需手动清空所有候选按钮。
 
         // 4. 通知 RIME 引擎释放内部缓存（如果支持）
         //    librime 内部的词库缓存可能占用数十 MB 内存
@@ -463,6 +458,13 @@ class KeyboardViewController: UIInputViewController {
     /// 完整重建键盘：清除所有行 → 构建候选栏 → 构建按键行
     func reloadKeyboard() {
         isCandidateExpanded = false
+        candidateExpandedPanel?.removeFromSuperview()
+        candidateExpandedPanel = nil
+        candidateCollectionView = nil
+        expandedPanelScrollView = nil
+        expandedCandidateCollectionView = nil
+        rootStack.alpha = 1
+        rootStack.isUserInteractionEnabled = true
         clearAllRows()
         candidateBar = makeCandidateBar()
         rootStack.addArrangedSubview(candidateBar)
@@ -581,6 +583,7 @@ class KeyboardViewController: UIInputViewController {
             view.removeFromSuperview()
         }
         expandedPanelScrollView = nil
+        expandedCandidateCollectionView = nil
     }
 
     /// 移除除候选栏以外的所有子视图。

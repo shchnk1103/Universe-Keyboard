@@ -31,6 +31,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// @return 是否成功
 - (BOOL)destroySession;
 
+/// 当 librime 无法创建新 session 时，重新初始化引擎并创建 session。
+/// @return 是否成功
+- (BOOL)restartEngineAndCreateSession;
+
 /// 处理一个按键。
 /// @param keycode X11 keysym 值（如 'n' = 0x006e, BackSpace = 0xFF08）
 /// @param modifiers 修饰键掩码（通常为 0）

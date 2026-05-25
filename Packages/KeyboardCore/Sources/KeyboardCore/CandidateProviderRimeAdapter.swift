@@ -53,6 +53,10 @@ final class CandidateProviderRimeAdapter: RimeEngine {
         composition = ""
     }
 
+    func recoverSession() {
+        resetSession()
+    }
+
     func isComposing() -> Bool {
         !composition.isEmpty
     }

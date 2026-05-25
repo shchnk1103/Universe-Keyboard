@@ -32,6 +32,14 @@ extension KeyboardViewController {
     @objc func insertKey(_ sender: UIButton) {
         guard let key = sender.title(for: .normal) else { return }
         let startTime = CACurrentMediaTime()
+        inputEventSequence += 1
+        let eventID = inputEventSequence
+        let idleMs = lastInputCompletionTime.map { (startTime - $0) * 1000 }
+        Logger.shared.debug(
+            "KEY BEGIN #\(eventID) key='\(key)' idleMs=\(idleMs.map { String(format: "%.1f", $0) } ?? "first") " +
+            "compositionLength=\(controller.state.currentComposition.count)",
+            category: .performance
+        )
 
         // 性能诊断：计算 touchDown → 动作触发延迟
         if Logger.shared.isEnabled {
@@ -51,9 +59,30 @@ extension KeyboardViewController {
 
         let handleStartTime = CACurrentMediaTime()
         let effects = controller.handle(.insertKey(key))
-        logKeyPerformance("controller.handle insertKey '\(key)'", startTime: handleStartTime)
+        let handleMs = (CACurrentMediaTime() - handleStartTime) * 1000
+        Logger.shared.debug(
+            "KEY ENGINE END #\(eventID) durationMs=\(String(format: "%.1f", handleMs)) " +
+            "candidates=\(controller.state.lastRimeOutput?.candidates.count ?? 0)",
+            category: .performance
+        )
+
+        let uiStartTime = CACurrentMediaTime()
         syncUI(with: effects)
-        logKeyPerformance("insertKey total '\(key)'", startTime: startTime)
+        let endTime = CACurrentMediaTime()
+        let uiMs = (endTime - uiStartTime) * 1000
+        let totalMs = (endTime - startTime) * 1000
+        lastInputCompletionTime = endTime
+        Logger.shared.performance(
+            "KEY END #\(eventID) key='\(key)' total=\(String(format: "%.1f", totalMs))ms " +
+            "engine=\(String(format: "%.1f", handleMs))ms ui=\(String(format: "%.1f", uiMs))ms"
+        )
+        if totalMs >= 50 {
+            Logger.shared.warning(
+                "SLOW KEY #\(eventID) key='\(key)' total=\(String(format: "%.1f", totalMs))ms " +
+                "engine=\(String(format: "%.1f", handleMs))ms ui=\(String(format: "%.1f", uiMs))ms",
+                category: .performance
+            )
+        }
     }
 
     /// 插入候选词（@objc 方法，由候选栏按钮的 .touchUpInside 触发）。

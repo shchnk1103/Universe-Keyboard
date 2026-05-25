@@ -83,6 +83,7 @@ struct LicenseView: View {
             } label: {
                 Label("我已阅读并同意", systemImage: "checkmark")
                     .font(.headline)
+                    .foregroundStyle(Color(.systemBackground))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
             }

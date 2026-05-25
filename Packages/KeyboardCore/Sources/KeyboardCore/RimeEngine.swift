@@ -20,6 +20,9 @@ public protocol RimeEngine: AnyObject {
     /// 重置当前 session（清空未完成的拼音输入）。
     func resetSession()
 
+    /// 宿主切换键盘后重建可用会话，并恢复用户选择的输入方案。
+    func recoverSession()
+
     /// 当前是否正在输入中（有活跃的拼音组合）。
     func isComposing() -> Bool
 

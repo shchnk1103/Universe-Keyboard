@@ -31,6 +31,7 @@ struct FeedbackSettingsView: View {
             // MARK: 按键音
             Section {
                 Toggle("按键音", isOn: $keyClickEnabled)
+                    .toggleStyle(MonochromeToggleStyle())
                     .onChange(of: keyClickEnabled) { _, newValue in
                         UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "key_click_enabled")
                         if newValue { previewClick() }
@@ -67,7 +68,7 @@ struct FeedbackSettingsView: View {
                             Spacer()
                             Text(volumeLabel)
                                 .font(.caption)
-                                .foregroundStyle(.blue)
+                                .foregroundStyle(.primary)
                             Spacer()
                             Text("最大")
                                 .font(.caption2)
@@ -84,6 +85,7 @@ struct FeedbackSettingsView: View {
             // MARK: 按键震动
             Section {
                 Toggle("按键震动", isOn: $hapticEnabled)
+                    .toggleStyle(MonochromeToggleStyle())
                     .onChange(of: hapticEnabled) { _, newValue in
                         UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "haptic_enabled")
                         if newValue { previewHaptic.impactOccurred(intensity: hapticIntensity) }
@@ -119,7 +121,7 @@ struct FeedbackSettingsView: View {
                             Spacer()
                             Text(intensityLabel)
                                 .font(.caption)
-                                .foregroundStyle(.blue)
+                                .foregroundStyle(.primary)
                             Spacer()
                             Text("强烈")
                                 .font(.caption2)
@@ -135,6 +137,7 @@ struct FeedbackSettingsView: View {
 
         }
         .navigationTitle("键盘反馈")
+        .tint(.primary)
         .onAppear { previewHaptic.prepare() }
     }
 

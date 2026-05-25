@@ -69,6 +69,13 @@ public final class RimeEngineImpl: RimeEngine {
         bridge.clearComposition()
     }
 
+    public func recoverSession() {
+        _ = bridge.destroySession()
+        if !bridge.createSession() {
+            _ = bridge.restartEngineAndCreateSession()
+        }
+    }
+
     public func isComposing() -> Bool {
         bridge.isComposing()
     }

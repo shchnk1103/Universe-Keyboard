@@ -170,7 +170,7 @@ final class KeyPopupView: UIView {
     /// 根据容器坐标系中的触摸点更新高亮的变体字符。
     ///
     /// 将容器坐标系中的点转换为面板本地坐标，然后检查哪个标签的 frame
-    /// 包含了该点。命中的标签变为蓝色加粗，其他恢复白色。
+    /// 包含了该点。命中的标签反转为高对比文字，其他恢复白色。
     ///
     /// - Parameter point: 容器坐标系中的触摸点
     func selectVariant(at point: CGPoint) {
@@ -186,13 +186,13 @@ final class KeyPopupView: UIView {
     /// 高亮指定索引的变体字符标签。
     ///
     /// 高亮效果：
-    ///   - 选中的变体：蓝色 + 粗体
+    ///   - 选中的变体：黑色 + 粗体
     ///   - 未选中的变体：白色 + 中等粗细
     private func highlight(index: Int) {
         selectedIndex = index
         for (i, label) in labels.enumerated() {
             if i == index {
-                label.textColor = .systemBlue
+                label.textColor = .black
                 label.font = .systemFont(ofSize: 17, weight: .bold)
             } else {
                 label.textColor = .white

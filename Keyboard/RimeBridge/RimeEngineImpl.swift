@@ -37,6 +37,7 @@ public final class RimeEngineImpl: RimeEngine {
 
     /// ObjC 桥接层实例（封装 librime C API）
     private let bridge: RimeSessionManager
+    private var nextRecoveryAttemptTime: CFTimeInterval = 0
 
     // MARK: === Init ===
 
@@ -219,6 +220,7 @@ public final class RimeEngineImpl: RimeEngine {
     /// - Returns: RimeOutput（包含 composition、candidates、committed text）
     public func processKey(_ key: String) -> RimeOutput {
         let startTime = CACurrentMediaTime()
+        Logger.shared.debug("RIME BEGIN key='\(key)'", category: .engine)
 
         // ── 1. 部署前配置同步 ──────────────────────────────────
         // 从 UserDefaults 同步主 App 的配置变更到 .custom.yaml
@@ -231,8 +233,8 @@ public final class RimeEngineImpl: RimeEngine {
         // deployIfNeeded 是轻量检查 — 只在 rime_needs_deploy=true 时执行重操作
         let deployStartTime = CACurrentMediaTime()
         let didDeploy = bridge.deployIfNeeded()
+        let deployElapsed = (CACurrentMediaTime() - deployStartTime) * 1000
         if didDeploy, Logger.shared.isEnabled {
-            let deployElapsed = (CACurrentMediaTime() - deployStartTime) * 1000
             Logger.shared.performance(
                 "RIME deployIfNeeded on key '\(key)' " +
                 "(\(String(format: "%.1f", deployElapsed))ms)"
@@ -264,8 +266,16 @@ public final class RimeEngineImpl: RimeEngine {
 
         // ── 4. 调用 librime process_key ──────────────────────
         let bridgeStartTime = CACurrentMediaTime()
+        Logger.shared.debug(
+            "RIME BRIDGE BEGIN key='\(key)' deployCheckMs=\(String(format: "%.1f", deployElapsed))",
+            category: .engine
+        )
         let raw = bridge.processKey(keycode, modifiers: 0)
         let bridgeElapsed = (CACurrentMediaTime() - bridgeStartTime) * 1000
+        Logger.shared.debug(
+            "RIME BRIDGE END key='\(key)' durationMs=\(String(format: "%.1f", bridgeElapsed))",
+            category: .engine
+        )
 
         // ── 5. 解析输出 ──────────────────────────────────────
         let output = parseOutput(raw)
@@ -279,6 +289,13 @@ public final class RimeEngineImpl: RimeEngine {
                 "total \(String(format: "%.1f", totalElapsed))ms, " +
                 "candidates \(output.candidates.count))"
             )
+            if bridgeElapsed >= 30 || totalElapsed >= 50 {
+                Logger.shared.warning(
+                    "SLOW RIME key='\(key)' bridge=\(String(format: "%.1f", bridgeElapsed))ms " +
+                    "total=\(String(format: "%.1f", totalElapsed))ms candidates=\(output.candidates.count)",
+                    category: .performance
+                )
+            }
         }
 
         // 每个按键的调试日志（跳过删除键）
@@ -327,6 +344,41 @@ public final class RimeEngineImpl: RimeEngine {
         bridge.clearComposition()
     }
 
+    /// 宿主展示自己的表情/键盘后，旧 session 可能仍有 id 但已经不能处理输入。
+    /// 先重建 session；若 librime 已无法创建 session，则重新初始化整个引擎。
+    public func recoverSession() {
+        let now = CACurrentMediaTime()
+        guard now >= nextRecoveryAttemptTime else { return }
+
+        _ = bridge.destroySession()
+        let sessionReady: Bool
+        if bridge.createSession() {
+            sessionReady = true
+        } else {
+            Logger.shared.warning(
+                "RIME session recreation failed; restarting engine runtime",
+                category: .engine
+            )
+            sessionReady = bridge.restartEngineAndCreateSession()
+        }
+
+        guard sessionReady else {
+            nextRecoveryAttemptTime = now + 0.5
+            Logger.shared.warning("RIME engine restart failed after keyboard return", category: .engine)
+            return
+        }
+        nextRecoveryAttemptTime = 0
+
+        let schema = UserDefaults(
+            suiteName: "group.com.DoubleShy0N.Universe-Keyboard"
+        )?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
+        let actual = selectAndVerifySchema(schema, fallback: "luna_pinyin")
+        Logger.shared.info(
+            "RIME session recreated after keyboard return; requested=\(schema), actual=\(actual ?? "nil")",
+            category: .engine
+        )
+    }
+
     /// 查询 RIME 是否有活跃的 composition（拼音正在输入中）。
     public func isComposing() -> Bool {
         bridge.isComposing()
@@ -335,15 +387,29 @@ public final class RimeEngineImpl: RimeEngine {
     /// 候选词翻页（上一页）。
     /// 发送 XK_Page_Up (0xFF55) 按键码到 librime。
     public func pageUp() -> RimeOutput {
+        let startTime = CACurrentMediaTime()
+        Logger.shared.debug("RIME PAGE_UP BEGIN", category: .engine)
         let raw = bridge.processKey(0xFF55, modifiers: 0)
-        return parseOutput(raw)
+        let output = parseOutput(raw)
+        Logger.shared.debug(
+            "RIME PAGE_UP END durationMs=\(String(format: "%.1f", (CACurrentMediaTime() - startTime) * 1000))",
+            category: .engine
+        )
+        return output
     }
 
     /// 候选词翻页（下一页）。
     /// 发送 XK_Page_Down (0xFF56) 按键码到 librime。
     public func pageDown() -> RimeOutput {
+        let startTime = CACurrentMediaTime()
+        Logger.shared.debug("RIME PAGE_DOWN BEGIN", category: .engine)
         let raw = bridge.processKey(0xFF56, modifiers: 0)
-        return parseOutput(raw)
+        let output = parseOutput(raw)
+        Logger.shared.debug(
+            "RIME PAGE_DOWN END durationMs=\(String(format: "%.1f", (CACurrentMediaTime() - startTime) * 1000))",
+            category: .engine
+        )
+        return output
     }
 
     /// 获取可用 schema 列表字符串。

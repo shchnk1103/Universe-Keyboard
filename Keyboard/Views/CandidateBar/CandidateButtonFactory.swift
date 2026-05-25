@@ -54,6 +54,7 @@ struct CandidateButtonFactory {
             ),
             primaryAction: nil   // 使用 addTarget 手动绑定 action（更灵活）
         )
+        button.tag = kind.rawValue
         button.heightAnchor.constraint(equalToConstant: height).isActive = true
         return button
     }
@@ -101,16 +102,12 @@ struct CandidateButtonFactory {
 
         var config = UIButton.Configuration.plain()
         config.title = title
+        config.titleLineBreakMode = .byTruncatingTail
 
-        // 第一个候选词的高亮背景（类似原生键盘的首选候选）
-        // 使用系统语义灰度色，自动适配深色/浅色/高对比度模式
+        // 首选候选使用动态反转色，浅色模式黑底白字、深色模式白底黑字。
         if highlighted {
             config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8)
-            config.background.backgroundColor = UIColor { traits in
-                traits.userInterfaceStyle == .dark
-                    ? .systemGray3   // 深色模式：中灰（≈RGB 116,117,121）
-                    : .systemGray6.withAlphaComponent(0.92)  // 浅色模式：近白
-            }
+            config.background.backgroundColor = .label
             config.background.cornerRadius = 8
         } else {
             // 普通候选：标准 12pt 水平内边距，确保候选字间距舒适
@@ -126,7 +123,7 @@ struct CandidateButtonFactory {
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { container in
             var container = container
             container.font = metrics.scaledFont(for: baseFont, maximumPointSize: maxSize)
-            container.foregroundColor = color
+            container.foregroundColor = highlighted ? .systemBackground : color
             return container
         }
 
