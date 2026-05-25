@@ -37,6 +37,7 @@ public final class RimeEngineImpl: RimeEngine {
 
     /// ObjC 桥接层实例（封装 librime C API）
     private let bridge: RimeSessionManager
+    private var nextRecoveryAttemptTime: CFTimeInterval = 0
 
     // MARK: === Init ===
 
@@ -341,6 +342,41 @@ public final class RimeEngineImpl: RimeEngine {
     /// 重置当前 RIME session 的输入状态（清除拼音 composition）。
     public func resetSession() {
         bridge.clearComposition()
+    }
+
+    /// 宿主展示自己的表情/键盘后，旧 session 可能仍有 id 但已经不能处理输入。
+    /// 先重建 session；若 librime 已无法创建 session，则重新初始化整个引擎。
+    public func recoverSession() {
+        let now = CACurrentMediaTime()
+        guard now >= nextRecoveryAttemptTime else { return }
+
+        _ = bridge.destroySession()
+        let sessionReady: Bool
+        if bridge.createSession() {
+            sessionReady = true
+        } else {
+            Logger.shared.warning(
+                "RIME session recreation failed; restarting engine runtime",
+                category: .engine
+            )
+            sessionReady = bridge.restartEngineAndCreateSession()
+        }
+
+        guard sessionReady else {
+            nextRecoveryAttemptTime = now + 0.5
+            Logger.shared.warning("RIME engine restart failed after keyboard return", category: .engine)
+            return
+        }
+        nextRecoveryAttemptTime = 0
+
+        let schema = UserDefaults(
+            suiteName: "group.com.DoubleShy0N.Universe-Keyboard"
+        )?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
+        let actual = selectAndVerifySchema(schema, fallback: "luna_pinyin")
+        Logger.shared.info(
+            "RIME session recreated after keyboard return; requested=\(schema), actual=\(actual ?? "nil")",
+            category: .engine
+        )
     }
 
     /// 查询 RIME 是否有活跃的 composition（拼音正在输入中）。

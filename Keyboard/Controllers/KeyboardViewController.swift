@@ -86,8 +86,6 @@ class KeyboardViewController: UIInputViewController {
     var isLoadingMoreCandidates: Bool = false
     /// 候选栏已加载的页数深度（用于 loadMoreCandidates 回到第 1 页时计算 pageUp 次数）
     var candidatePageDepth: Int = 0
-    /// 输入停止后的轻量预取任务；手指触碰候选栏时会取消，避免干扰滚动
-    var candidatePrefetchWorkItem: DispatchWorkItem?
     /// 记录每个按钮的 touchDown 时间戳，用于性能日志
     var keyTouchDownTimes: [ObjectIdentifier: CFTimeInterval] = [:]
     /// 输入事件编号，将按键、引擎和渲染日志关联到同一次操作
@@ -254,20 +252,21 @@ class KeyboardViewController: UIInputViewController {
     }
 
     /// viewDidAppear 在键盘视图对用户可见时调用。
-    /// 执行 RIME 会话健康检查：应用切换后 session 可能丢失，
-    /// 预先重置确保下次输入不从脏状态开始。
+    /// 清理返回前未完成的 RIME 组合状态；仅在后续输入确认
+    /// session 已失效时，控制器才会触发真正的 runtime 恢复。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        let isReturningToExistingKeyboard = hasViewAppeared
         hasViewAppeared = true
 
-        // 应用切换后 RIME session 可能失效 — 重置以确保干净状态
-        if let engine = controller.rimeEngine {
-            engine.resetSession()
+        // 返回键盘时只清理输入状态，避免不必要地销毁仍然健康的 session。
+        if isReturningToExistingKeyboard, controller.rimeEngine != nil {
+            controller.resetRimeSessionForVisibilityChange()
             accumulatedCandidates = []
             hasMoreCandidates = false
             candidatePageDepth = 0
             Logger.shared.info(
-                "viewDidAppear: RIME session reset for app-switch safety",
+                "viewDidAppear: RIME composition cleared after keyboard return",
                 category: .engine
             )
         }
@@ -459,8 +458,6 @@ class KeyboardViewController: UIInputViewController {
     /// 完整重建键盘：清除所有行 → 构建候选栏 → 构建按键行
     func reloadKeyboard() {
         isCandidateExpanded = false
-        candidatePrefetchWorkItem?.cancel()
-        candidatePrefetchWorkItem = nil
         candidateExpandedPanel?.removeFromSuperview()
         candidateExpandedPanel = nil
         candidateCollectionView = nil

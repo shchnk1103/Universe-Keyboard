@@ -248,6 +248,52 @@ final class RimeControllerTests: XCTestCase {
         XCTAssertTrue(effects.contains(.compositionChanged))
     }
 
+    func testRejectedEngineKeyRetriesInRimeAndPreservesCandidates() {
+        engine.processKeysToDrop = 2
+
+        _ = controller.handle(.insertKey("n"))
+        XCTAssertEqual(client.text, "n")
+        XCTAssertNil(controller.state.lastRimeOutput)
+        XCTAssertFalse(engine.isComposing())
+
+        _ = controller.handle(.insertKey("i"))
+
+        XCTAssertEqual(client.text, "ni")
+        XCTAssertEqual(controller.state.currentComposition, "ni")
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.map(\.text), ["你", "呢", "尼"])
+        XCTAssertTrue(engine.isComposing())
+        _ = controller.handle(.insertSpace)
+        XCTAssertEqual(client.text, "你")
+        XCTAssertEqual(controller.state.currentComposition, "")
+    }
+
+    func testSessionResetDuringCompositionRestoresExistingTextAndCandidates() {
+        _ = controller.handle(.insertKey("n"))
+        controller.resetRimeSessionForVisibilityChange()
+        XCTAssertEqual(engine.sessionRecoveryCount, 0)
+        _ = controller.handle(.insertKey("i"))
+
+        XCTAssertEqual(engine.sessionRecoveryCount, 0)
+        XCTAssertEqual(client.text, "ni")
+        XCTAssertEqual(controller.state.currentComposition, "ni")
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.map(\.text), ["你", "呢", "尼"])
+        XCTAssertTrue(engine.isComposing())
+    }
+
+    func testInvalidSessionAfterVisibilityChangeRecoversRuntimeAndCandidates() {
+        _ = controller.handle(.insertKey("n"))
+        controller.resetRimeSessionForVisibilityChange()
+        engine.processKeysToDrop = 1
+
+        _ = controller.handle(.insertKey("i"))
+
+        XCTAssertEqual(engine.sessionRecoveryCount, 1)
+        XCTAssertEqual(client.text, "ni")
+        XCTAssertEqual(controller.state.currentComposition, "ni")
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.map(\.text), ["你", "呢", "尼"])
+        XCTAssertTrue(engine.isComposing())
+    }
+
     func testFastTypingStateConsistency() {
         for ch in "nihao" {
             _ = controller.handle(.insertKey(String(ch)))

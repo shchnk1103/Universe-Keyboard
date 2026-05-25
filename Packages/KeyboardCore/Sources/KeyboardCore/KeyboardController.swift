@@ -10,6 +10,8 @@ public final class KeyboardController {
     public var rimeEngine: RimeEngine?
 
     public var currentDate: () -> Date = { Date() }
+    private var shouldRestoreRimeComposition = false
+    private var shouldRebuildSessionDuringRestore = false
 
     // MARK: - Init
 
@@ -26,6 +28,15 @@ public final class KeyboardController {
     /// 使键盘通过新架构运行，但行为与当前完全一致。
     public func enableDefaultRimeEngine() {
         rimeEngine = CandidateProviderRimeAdapter(candidateProvider: candidateProvider)
+    }
+
+    /// Reset RIME after the keyboard becomes visible again while preserving
+    /// enough state to reconstruct an in-progress inline composition.
+    public func resetRimeSessionForVisibilityChange() {
+        guard let engine = rimeEngine else { return }
+        engine.resetSession()
+        shouldRestoreRimeComposition = !state.currentComposition.isEmpty
+        shouldRebuildSessionDuringRestore = false
     }
 
     // MARK: - Public entry point
@@ -68,22 +79,66 @@ extension KeyboardController {
     func handleInsertKey(_ key: String) -> KeyboardEffect {
         if state.currentPage == .letters && state.inputMode == .chinese {
             if let engine = rimeEngine {
-                let output = engine.processKey(key)
-                state.lastRimeOutput = output
-                state.currentComposition = output.composition?.preeditText ?? ""
-                updateInlinePreedit(state.currentComposition)
-                if let commit = output.committedText {
-                    insertText(commit)
+                // Returning from another keyboard can reset the RIME session
+                // while the host still displays our inline composition.
+                if shouldRestoreRimeComposition,
+                   !state.currentComposition.isEmpty,
+                   !engine.isComposing() {
+                    let intendedComposition = state.currentComposition + fallbackInputText(for: key)
+                    if restoreRimeComposition(
+                        intendedComposition,
+                        using: engine,
+                        rebuildSession: shouldRebuildSessionDuringRestore
+                    ) {
+                        Logger.shared.info(
+                            "RIME composition restored after session interruption",
+                            category: .engine
+                        )
+                        return consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+                    }
+                    if !shouldRebuildSessionDuringRestore,
+                       restoreRimeComposition(intendedComposition, using: engine, rebuildSession: true) {
+                        Logger.shared.info(
+                            "RIME composition restored after runtime recreation",
+                            category: .engine
+                        )
+                        return consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+                    }
+                    shouldRestoreRimeComposition = true
+                    shouldRebuildSessionDuringRestore = true
+                    state.lastRimeOutput = nil
+                    return appendFallbackCompositionKey(key)
                 }
+
+                let output = engine.processKey(key)
+
+                // librime can occasionally reject a printable key while idle,
+                // yielding no preedit and no commit. Do not silently lose it.
+                if output.composition == nil,
+                   output.committedText == nil,
+                   !engine.isComposing() {
+                    let intendedComposition = state.currentComposition + fallbackInputText(for: key)
+                    if restoreRimeComposition(intendedComposition, using: engine, rebuildSession: true) {
+                        Logger.shared.info(
+                            "RIME recovered after ignoring key '\(key)'",
+                            category: .engine
+                        )
+                        return consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+                    }
+                    shouldRestoreRimeComposition = true
+                    shouldRebuildSessionDuringRestore = true
+                    state.lastRimeOutput = nil
+                    Logger.shared.warning(
+                        "RIME ignored key '\(key)'; fallback shown and recovery will retry",
+                        category: .engine
+                    )
+                    return appendFallbackCompositionKey(key)
+                }
+
+                applyRimeOutput(output)
                 return consumeSingleUseShiftIfNeeded().union(.compositionChanged)
             }
-            if state.currentComposition.isEmpty && state.shiftState != .off {
-                state.currentComposition += key
-            } else {
-                state.currentComposition += key.lowercased()
-            }
-            updateInlinePreedit(state.currentComposition)
-            return consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+            return appendFallbackCompositionKey(key)
         } else {
             insertText(key)
             var effects = consumeSingleUseShiftIfNeeded()
@@ -436,6 +491,53 @@ extension KeyboardController {
 // MARK: - Private helpers
 
 extension KeyboardController {
+
+    func appendFallbackCompositionKey(_ key: String) -> KeyboardEffect {
+        state.currentComposition += fallbackInputText(for: key)
+        updateInlinePreedit(state.currentComposition)
+        return consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+    }
+
+    func fallbackInputText(for key: String) -> String {
+        state.currentComposition.isEmpty && state.shiftState != .off ? key : key.lowercased()
+    }
+
+    func restoreRimeComposition(
+        _ text: String,
+        using engine: RimeEngine,
+        rebuildSession: Bool = false
+    ) -> Bool {
+        if rebuildSession {
+            engine.recoverSession()
+        } else {
+            engine.resetSession()
+        }
+        var output = RimeOutput()
+
+        for character in text {
+            output = engine.processKey(String(character))
+            if output.composition == nil,
+               output.committedText == nil,
+               !engine.isComposing() {
+                engine.resetSession()
+                return false
+            }
+        }
+
+        applyRimeOutput(output)
+        return true
+    }
+
+    func applyRimeOutput(_ output: RimeOutput) {
+        shouldRestoreRimeComposition = false
+        shouldRebuildSessionDuringRestore = false
+        state.lastRimeOutput = output
+        state.currentComposition = output.composition?.preeditText ?? ""
+        updateInlinePreedit(state.currentComposition)
+        if let commit = output.committedText {
+            insertText(commit)
+        }
+    }
 
     func commitComposition() {
         guard !state.currentComposition.isEmpty else { return }

@@ -102,6 +102,7 @@ struct CandidateButtonFactory {
 
         var config = UIButton.Configuration.plain()
         config.title = title
+        config.titleLineBreakMode = .byTruncatingTail
 
         // 首选候选使用动态反转色，浅色模式黑底白字、深色模式白底黑字。
         if highlighted {

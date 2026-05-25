@@ -158,6 +158,23 @@ NSString * const RimeKeyPageNo           = @"pageNo";
     return YES;
 }
 
+- (BOOL)restartEngineAndCreateSession {
+    NSLog(@"[RIME] restartEngineAndCreateSession: reinitializing librime");
+    if (_sessionId != 0) {
+        _api->destroy_session(_sessionId);
+        _sessionId = 0;
+    }
+    if (_initialized) {
+        _api->finalize();
+        _initialized = NO;
+    }
+    if (![self initializeEngine]) {
+        NSLog(@"[RIME] restartEngineAndCreateSession: initializeEngine failed");
+        return NO;
+    }
+    return [self createSession];
+}
+
 // MARK: - Input
 
 - (NSDictionary *)processKey:(int)keycode modifiers:(int)modifiers {

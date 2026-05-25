@@ -176,6 +176,7 @@ struct RimeSettingsView: View {
                     Label("同意并下载", systemImage: "arrow.down.to.line")
                         .font(.subheadline)
                         .fontWeight(.medium)
+                        .foregroundStyle(Color(.systemBackground))
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.small)
@@ -376,6 +377,7 @@ struct RimeSettingsView: View {
     private var simplificationSection: some View {
         Section {
             Toggle("默认简体", isOn: $simplified)
+                .toggleStyle(MonochromeToggleStyle())
                 .onChange(of: simplified) { _, _ in
                     saveSettings()
                 }
@@ -429,7 +431,9 @@ struct RimeSettingsView: View {
                         Label(
                             deployState == .deployed ? "重新部署" : "应用并重新部署",
                             systemImage: "arrow.triangle.2.circlepath"
-                        ).font(.subheadline)
+                        )
+                        .font(.subheadline)
+                        .foregroundStyle(Color(.systemBackground))
                     }
                     .buttonStyle(.borderedProminent)
                     .disabled(deployState == .triggered || deployState == .deploying)

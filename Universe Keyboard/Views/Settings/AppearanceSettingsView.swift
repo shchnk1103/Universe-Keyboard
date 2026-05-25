@@ -58,7 +58,7 @@ struct AppearanceSettingsView: View {
             } header: {
                 Text("强调色")
             } footer: {
-                Text("按钮、选中状态和键盘首选候选均采用黑白高对比样式。")
+                Text("按钮与选中状态采用随外观切换的黑白高对比样式。")
             }
         }
         .navigationTitle("外观")

@@ -31,6 +31,7 @@ struct FeedbackSettingsView: View {
             // MARK: 按键音
             Section {
                 Toggle("按键音", isOn: $keyClickEnabled)
+                    .toggleStyle(MonochromeToggleStyle())
                     .onChange(of: keyClickEnabled) { _, newValue in
                         UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "key_click_enabled")
                         if newValue { previewClick() }
@@ -84,6 +85,7 @@ struct FeedbackSettingsView: View {
             // MARK: 按键震动
             Section {
                 Toggle("按键震动", isOn: $hapticEnabled)
+                    .toggleStyle(MonochromeToggleStyle())
                     .onChange(of: hapticEnabled) { _, newValue in
                         UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "haptic_enabled")
                         if newValue { previewHaptic.impactOccurred(intensity: hapticIntensity) }

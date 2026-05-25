@@ -29,6 +29,8 @@ private final class CandidateCollectionCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        button.titleLabel?.numberOfLines = 1
+        button.titleLabel?.lineBreakMode = .byTruncatingTail
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isUserInteractionEnabled = false
         contentView.addSubview(button)
@@ -67,8 +69,6 @@ extension KeyboardViewController: UIScrollViewDelegate {
 
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         guard scrollView === candidateScrollView || scrollView === expandedPanelScrollView else { return }
-        candidatePrefetchWorkItem?.cancel()
-        candidatePrefetchWorkItem = nil
         Logger.shared.debug(
             "candidate scroll begin: expanded=\(scrollView === expandedPanelScrollView), " +
             "items=\(accumulatedCandidates.count), offset=(\(Int(scrollView.contentOffset.x)),\(Int(scrollView.contentOffset.y))), " +
@@ -127,9 +127,8 @@ extension KeyboardViewController: UIScrollViewDelegate {
     /// 向 RIME 请求下一页候选并追加到累积列表。
     /// 使用直接 engine 调用避免污染 state.lastRimeOutput，加载后回到第 1 页
     /// 确保空格/候选选择始终对应当前最佳候选。
-    func loadMoreCandidates(updateVisibleUI: Bool = true) {
+    func loadMoreCandidates() {
         guard let engine = controller.rimeEngine else { return }
-        candidatePrefetchWorkItem = nil
 
         Logger.shared.info(
             "loadMoreCandidates START: accCount=\(accumulatedCandidates.count), depth=\(candidatePageDepth), expanded=\(isCandidateExpanded)",
@@ -173,7 +172,7 @@ extension KeyboardViewController: UIScrollViewDelegate {
         candidatePageDepth += 1
         isLoadingMoreCandidates = false
 
-        if updateVisibleUI, !newAppended.isEmpty {
+        if !newAppended.isEmpty {
             if isCandidateExpanded {
                 appendToExpandedCandidatePanel(newItems: newAppended, startingAt: visibleStartIndex)
             } else {
@@ -291,8 +290,6 @@ extension KeyboardViewController {
     /// 切换候选面板展开/收起。展开面板覆盖在现有键盘之上，
     /// 不拆除底层按键和候选栏，因此切换动画期间没有整页重排。
     @objc func toggleCandidateExpand() {
-        candidatePrefetchWorkItem?.cancel()
-        candidatePrefetchWorkItem = nil
         isCandidateExpanded.toggle()
         updateExpandButtonAppearance()
         if isCandidateExpanded {
@@ -497,7 +494,7 @@ extension KeyboardViewController {
     /// 每次新的拼音输入时：
     ///   1. 从 RIME 获取第一页候选
     ///   2. 集合视图立即显示第一页，仅渲染可见 cell
-    ///   3. 下一轮主线程准备后续多页数据，供连续快速滑动直接浏览
+    ///   3. 用户实际滚动到末尾时，再按需请求后续页
     func refreshCandidateBar() {
         guard candidateCollectionView != nil else { return }
         let refreshStart = CACurrentMediaTime()
@@ -515,7 +512,6 @@ extension KeyboardViewController {
         )
 
         fillCandidateBar()
-        scheduleIdleCandidatePrefetch()
         let refreshMs = (CACurrentMediaTime() - refreshStart) * 1000
         Logger.shared.performance(
             "CANDIDATES refresh total=\(String(format: "%.1f", refreshMs))ms items=\(accumulatedCandidates.count)"
@@ -536,38 +532,6 @@ extension KeyboardViewController {
         if isCandidateExpanded {
             refreshExpandedPanel()
         }
-    }
-
-    /// 下一轮主线程准备多页数据。横向集合视图只创建可见 cell，
-    /// 因而数据量增加不会重新引入大量按钮布局开销。
-    private func scheduleIdleCandidatePrefetch() {
-        candidatePrefetchWorkItem?.cancel()
-        candidatePrefetchWorkItem = nil
-        guard hasMoreCandidates, !isCandidateExpanded, !accumulatedCandidates.isEmpty else { return }
-
-        let workItem = DispatchWorkItem { [weak self] in
-            guard let self,
-                  self.hasMoreCandidates,
-                  !self.isCandidateExpanded,
-                  !self.isLoadingMoreCandidates,
-                  !self.candidateScrollView.isTracking,
-                  !self.candidateScrollView.isDragging,
-                  !self.candidateScrollView.isDecelerating else { return }
-            let prefetchStart = CACurrentMediaTime()
-            var pagesLoaded = 0
-            while self.hasMoreCandidates && pagesLoaded < 6 {
-                self.loadMoreCandidates(updateVisibleUI: false)
-                pagesLoaded += 1
-            }
-            self.candidateCollectionView?.reloadData()
-            let elapsedMs = (CACurrentMediaTime() - prefetchStart) * 1000
-            Logger.shared.performance(
-                "CANDIDATES prefetch pages=\(pagesLoaded) items=\(self.accumulatedCandidates.count) " +
-                "duration=\(String(format: "%.1f", elapsedMs))ms"
-            )
-        }
-        candidatePrefetchWorkItem = workItem
-        DispatchQueue.main.async(execute: workItem)
     }
 
     /// 刷新横向候选列表的数据呈现。`UICollectionView` 自行复用可见 cell，
@@ -706,8 +670,12 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         )
         let horizontalInsets: CGFloat = indexPath.item == 0 ? 16 : 24
         let textWidth = (item.title as NSString).size(withAttributes: [.font: font]).width
+        let naturalWidth = max(44, ceil(textWidth + horizontalInsets))
+        if collectionView === candidateCollectionView {
+            return CGSize(width: naturalWidth, height: 38)
+        }
         let maximumWidth = max(44, collectionView.bounds.width - 16)
-        return CGSize(width: min(maximumWidth, ceil(textWidth + horizontalInsets)), height: 38)
+        return CGSize(width: min(maximumWidth, naturalWidth), height: 38)
     }
 
     private func commitCandidate(_ item: CandidateItem) {

@@ -9,10 +9,17 @@ private let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 /// 键盘诊断日志子页面。
 /// 顶部固定刷新 + 清空按钮，含分类筛选器。
 struct DiagnosticsView: View {
+    private enum SummaryFilter {
+        case all
+        case slowEvents
+        case warnings
+    }
+
     @State private var lines: [String] = []
     @State private var isRefreshing = false
     @State private var isClearing = false
     @State private var showClearConfirm = false
+    @State private var selectedSummaryFilter: SummaryFilter = .all
     @State private var selectedCategory: Logger.Category? = nil
 
     /// 显示的分类标签（含 "全部"）
@@ -28,9 +35,19 @@ struct DiagnosticsView: View {
 
     /// 按选中分类过滤后的行
     private var filteredLines: [String] {
-        guard let category = selectedCategory else { return lines }
+        let scopedLines: [String]
+        switch selectedSummaryFilter {
+        case .all:
+            scopedLines = lines
+        case .slowEvents:
+            scopedLines = lines.filter(isSlowEvent)
+        case .warnings:
+            scopedLines = lines.filter(isWarning)
+        }
+
+        guard let category = selectedCategory else { return scopedLines }
         let tag = "[\(category.rawValue)]"
-        return lines.filter { $0.contains(tag) }
+        return scopedLines.filter { $0.contains(tag) }
     }
 
     private var displayedLines: [String] {
@@ -38,11 +55,28 @@ struct DiagnosticsView: View {
     }
 
     private var slowEventCount: Int {
-        lines.filter { $0.contains("SLOW ") }.count
+        lines.filter(isSlowEvent).count
     }
 
     private var warningCount: Int {
-        lines.filter { $0.contains("[WARN]") || $0.contains("[ERROR]") }.count
+        lines.filter(isWarning).count
+    }
+
+    private var selectionDescription: String {
+        switch (selectedSummaryFilter, selectedCategory) {
+        case (.all, nil):
+            return "全部日志"
+        case (.slowEvents, nil):
+            return "慢事件"
+        case (.warnings, nil):
+            return "警告"
+        case (.all, .some(let category)):
+            return "\(category.rawValue) 分类"
+        case (.slowEvents, .some(let category)):
+            return "慢事件 · \(category.rawValue)"
+        case (.warnings, .some(let category)):
+            return "警告 · \(category.rawValue)"
+        }
     }
 
     var body: some View {
@@ -58,6 +92,7 @@ struct DiagnosticsView: View {
                         ForEach(filterOptions, id: \.0) { label, category in
                             Button {
                                 withAnimation(.easeInOut(duration: 0.15)) {
+                                    selectedSummaryFilter = .all
                                     selectedCategory = category
                                 }
                             } label: {
@@ -99,7 +134,7 @@ struct DiagnosticsView: View {
                         .foregroundStyle(.secondary)
                     Text(lines.isEmpty
                          ? "在设置中开启「引擎诊断日志」开关，切换到键盘输入后返回此页面刷新。"
-                         : "尝试切换分类筛选或选择「全部」。")
+                         : "尝试切换统计项、分类筛选或选择「全部」。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -110,7 +145,7 @@ struct DiagnosticsView: View {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 5) {
                         HStack {
-                            Text("最新记录优先")
+                            Text("\(selectionDescription) · 最新记录优先")
                             Spacer()
                             Text("\(filteredLines.count)/\(lines.count) 条")
                         }
@@ -168,11 +203,34 @@ struct DiagnosticsView: View {
 
     private var summaryBar: some View {
         HStack(spacing: 0) {
-            SummaryMetric(value: "\(lines.count)", label: "记录")
+            SummaryMetric(
+                value: "\(lines.count)",
+                label: "记录",
+                isSelected: selectedSummaryFilter == .all,
+                accessibilityLabel: "查看全部日志"
+            ) {
+                selectSummaryFilter(.all)
+            }
             Divider().frame(height: 28)
-            SummaryMetric(value: "\(slowEventCount)", label: "慢事件", color: slowEventCount > 0 ? .orange : .secondary)
+            SummaryMetric(
+                value: "\(slowEventCount)",
+                label: "慢事件",
+                color: slowEventCount > 0 ? .orange : .secondary,
+                isSelected: selectedSummaryFilter == .slowEvents,
+                accessibilityLabel: "查看慢事件日志"
+            ) {
+                selectSummaryFilter(.slowEvents)
+            }
             Divider().frame(height: 28)
-            SummaryMetric(value: "\(warningCount)", label: "警告", color: warningCount > 0 ? .red : .secondary)
+            SummaryMetric(
+                value: "\(warningCount)",
+                label: "警告",
+                color: warningCount > 0 ? .red : .secondary,
+                isSelected: selectedSummaryFilter == .warnings,
+                accessibilityLabel: "查看警告日志"
+            ) {
+                selectSummaryFilter(.warnings)
+            }
         }
         .padding(.vertical, 10)
         .background(Color(.secondarySystemGroupedBackground))
@@ -189,6 +247,21 @@ struct DiagnosticsView: View {
     }
 
     // MARK: - Actions
+
+    private func isSlowEvent(_ line: String) -> Bool {
+        line.contains("SLOW ")
+    }
+
+    private func isWarning(_ line: String) -> Bool {
+        line.contains("[WARN]") || line.contains("[ERROR]")
+    }
+
+    private func selectSummaryFilter(_ filter: SummaryFilter) {
+        withAnimation(.easeInOut(duration: 0.15)) {
+            selectedSummaryFilter = filter
+            selectedCategory = nil
+        }
+    }
 
     private func loadLog() {
         let defaults = UserDefaults(suiteName: appGroupID)
@@ -228,17 +301,34 @@ private struct SummaryMetric: View {
     let value: String
     let label: String
     var color: Color = .primary
+    let isSelected: Bool
+    let accessibilityLabel: String
+    let action: () -> Void
 
     var body: some View {
-        VStack(spacing: 2) {
-            Text(value)
-                .font(.headline)
-                .foregroundStyle(color)
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+        Button(action: action) {
+            VStack(spacing: 2) {
+                Text(value)
+                    .font(.headline)
+                    .foregroundStyle(color)
+                Text(label)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 5)
+            .background {
+                if isSelected {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Color.primary.opacity(0.08))
+                }
+            }
+            .padding(.horizontal, 6)
         }
-        .frame(maxWidth: .infinity)
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityValue("\(value) 条")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 

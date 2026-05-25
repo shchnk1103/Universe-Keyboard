@@ -6,6 +6,8 @@ final class FakeRimeEngine: RimeEngine {
 
     private var composition: String = ""
     var sessionResetCount = 0
+    var sessionRecoveryCount = 0
+    var processKeysToDrop = 0
 
     private let dictionary: [String: [String]] = [
         "ni":       ["你", "呢", "尼"],
@@ -18,6 +20,10 @@ final class FakeRimeEngine: RimeEngine {
     // MARK: - RimeEngine
 
     func processKey(_ key: String) -> RimeOutput {
+        if processKeysToDrop > 0 {
+            processKeysToDrop -= 1
+            return RimeOutput()
+        }
         composition += key.lowercased()
         return buildOutput()
     }
@@ -49,6 +55,11 @@ final class FakeRimeEngine: RimeEngine {
     func resetSession() {
         composition = ""
         sessionResetCount += 1
+    }
+
+    func recoverSession() {
+        sessionRecoveryCount += 1
+        resetSession()
     }
 
     func isComposing() -> Bool {

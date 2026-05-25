@@ -134,7 +134,6 @@ private struct SettingsTab: View {
     @State private var loggingEnabled: Bool = {
         UserDefaults(suiteName: appGroupID)?.bool(forKey: "logging_enabled") ?? false
     }()
-    @State private var diagRefreshToken = 0  // 递增以触发 SwiftUI 刷新
 
     var body: some View {
         NavigationStack {
@@ -230,9 +229,9 @@ private struct SettingsTab: View {
                     Spacer()
                     Toggle("", isOn: $loggingEnabled)
                         .labelsHidden()
+                        .toggleStyle(MonochromeToggleStyle())
                         .onChange(of: loggingEnabled) { _, newValue in
                             UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "logging_enabled")
-                            diagRefreshToken += 1
                         }
                 }
                 .padding(.horizontal, 14)
@@ -270,8 +269,6 @@ private struct SettingsTab: View {
                 categoryTogglesSection
             }
         }
-        .id(diagRefreshToken)
-        .onAppear { diagRefreshToken += 1 }
     }
 
     /// 日志分类开关：性能 (PERF) / 画面 (DISP) / 引擎 (ENGINE) / 配置 (CONFIG) / 部署 (DEPLOY) / 通用 (GEN)
@@ -290,18 +287,7 @@ private struct SettingsTab: View {
                     icon: icon,
                     name: name,
                     description: desc,
-                    isOn: Binding(
-                        get: {
-                            let defaults = UserDefaults(suiteName: appGroupID)
-                            let fullKey = "log_category_\(key)"
-                            if defaults?.object(forKey: fullKey) == nil { return true }
-                            return defaults?.bool(forKey: fullKey) ?? true
-                        },
-                        set: { newValue in
-                            UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "log_category_\(key)")
-                            diagRefreshToken += 1
-                        }
-                    )
+                    defaultsKey: "log_category_\(key)"
                 )
             }
         }
@@ -350,7 +336,18 @@ private struct CategoryToggleRow: View {
     let icon: String
     let name: String
     let description: String
-    @Binding var isOn: Bool
+    @AppStorage private var isOn: Bool
+
+    init(icon: String, name: String, description: String, defaultsKey: String) {
+        self.icon = icon
+        self.name = name
+        self.description = description
+        _isOn = AppStorage(
+            wrappedValue: true,
+            defaultsKey,
+            store: UserDefaults(suiteName: appGroupID)
+        )
+    }
 
     var body: some View {
         HStack(spacing: 10) {
@@ -368,6 +365,7 @@ private struct CategoryToggleRow: View {
             Spacer()
             Toggle("", isOn: $isOn)
                 .labelsHidden()
+                .toggleStyle(MonochromeToggleStyle())
                 .scaleEffect(0.85)
         }
         .padding(.vertical, 6)
