@@ -38,10 +38,9 @@ import KeyboardCore
 
 extension KeyboardViewController: UIScrollViewDelegate {
 
-    /// 统一的滚动检测 — 同时处理候选栏（横向）和展开面板（纵向）的无限滚动。
-    ///
-    /// 候选栏：接近右边缘 60pt 时自动加载下一页候选。
-    /// 展开面板：接近底部 60pt 时自动加载下一页候选。
+    // MARK: - 三层滚动检测（确保任意滚动方式都能触发加载）
+
+    /// 第一层：滚动进行中检测（百分比阈值，比绝对距离更可靠）。
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView === candidateScrollView {
             handleCandidateBarScroll(scrollView)
@@ -50,67 +49,76 @@ extension KeyboardViewController: UIScrollViewDelegate {
         }
     }
 
-    /// 候选栏拖拽结束时的额外检测：overscroll 超过 40pt 时也触发加载。
-    /// 这是 handleCandidateBarScroll 的补充 — 当内容未溢出时作为备选触发方式。
+    /// 第二层：拖拽结束预测检测 — Apple 推荐的方式。
+    /// `targetContentOffset` 是系统预测的最终滚动位置（含 deceleration）。
+    /// 此时触发加载，新候选在滚动动画结束前追加完成。
+    public func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                           withVelocity velocity: CGPoint,
+                                           targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        guard scrollView === candidateScrollView else { return }
+        guard hasMoreCandidates, !isLoadingMoreCandidates, !accumulatedCandidates.isEmpty else { return }
+
+        let contentWidth = scrollView.contentSize.width
+        let viewWidth = scrollView.bounds.width
+        guard contentWidth > viewWidth else { return }
+
+        let targetX = targetContentOffset.pointee.x
+        let scrollableWidth = contentWidth - viewWidth
+        let progress = scrollableWidth > 0 ? targetX / scrollableWidth : 0
+
+        Logger.shared.debug(
+            "candidateBar willEndDrag: progress=\(String(format: "%.0f", progress * 100))%, " +
+            "targetX=\(Int(targetX)), scrollableW=\(Int(scrollableWidth))",
+            category: .display
+        )
+
+        // 预测位置超过 50% → 用户意图继续浏览 → 提前加载
+        if progress > 0.5 {
+            Logger.shared.info("candidateBar predictive load (progress=\(String(format: "%.0f", progress * 100))%)", category: .display)
+            loadMoreCandidates()
+        }
+    }
+
+    /// 第三层：拖拽结束 overscroll 兜底（内容不足溢出时也能触发）。
     public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         guard scrollView === candidateScrollView else { return }
-        guard hasMoreCandidates, !isLoadingMoreCandidates, !accumulatedCandidates.isEmpty else {
-            Logger.shared.debug(
-                "candidateBar dragEnd skip: hasMore=\(hasMoreCandidates), " +
-                "loading=\(isLoadingMoreCandidates), accCount=\(accumulatedCandidates.count)",
-                category: .display
-            )
-            return
-        }
+        guard hasMoreCandidates, !isLoadingMoreCandidates, !accumulatedCandidates.isEmpty else { return }
 
         let contentWidth = scrollView.contentSize.width
         let viewWidth = scrollView.bounds.width
         let maxOffset = max(0, contentWidth - viewWidth)
         let rightOverscroll = scrollView.contentOffset.x - maxOffset
 
-        Logger.shared.debug(
-            "candidateBar dragEnd: overscroll=\(Int(rightOverscroll))pt, " +
-            "contentW=\(Int(contentWidth)), viewW=\(Int(viewWidth)), maxOffset=\(Int(maxOffset))",
-            category: .display
-        )
-
-        if rightOverscroll > 40 {
-            Logger.shared.info("candidateBar overscroll trigger: \(Int(rightOverscroll))pt", category: .display)
+        if rightOverscroll > 30 {
+            Logger.shared.info("candidateBar overscroll: \(Int(rightOverscroll))pt", category: .display)
             loadMoreCandidates()
         }
     }
 
     // MARK: - 私有滚动处理
 
-    /// 候选栏横向滚动：接近右边缘时自动加载更多。
+    /// 候选栏横向：滚动超过可滚宽度的 60% 时加载。
     private func handleCandidateBarScroll(_ scrollView: UIScrollView) {
-        guard hasMoreCandidates else {
-            // hasMoreCandidates false 时不应触发，但若用户仍在滑动说明状态异常
-            return
-        }
-        guard !isLoadingMoreCandidates else { return }
-        guard !accumulatedCandidates.isEmpty else { return }
+        guard hasMoreCandidates, !isLoadingMoreCandidates, !accumulatedCandidates.isEmpty else { return }
 
         let contentWidth = scrollView.contentSize.width
         let viewWidth = scrollView.bounds.width
-        guard contentWidth > viewWidth else {
-            // 内容未溢出：scrollViewDidEndDragging 的 overscroll 可作为备选触发
-            return
-        }
+        guard contentWidth > viewWidth else { return }
 
-        let distanceToRightEdge = contentWidth - (scrollView.contentOffset.x + viewWidth)
-        if distanceToRightEdge < 80 {
+        let scrollableWidth = contentWidth - viewWidth
+        let progress = scrollView.contentOffset.x / max(1, scrollableWidth)
+
+        if progress > 0.6 {
             Logger.shared.info(
-                "candidateBar near right edge: distance=\(Int(distanceToRightEdge))pt, " +
-                "contentW=\(Int(contentWidth)), viewW=\(Int(viewWidth)), " +
-                "hasMore=\(hasMoreCandidates), total=\(accumulatedCandidates.count)",
+                "candidateBar progress trigger: \(String(format: "%.0f", progress * 100))%, " +
+                "total=\(accumulatedCandidates.count)",
                 category: .display
             )
             loadMoreCandidates()
         }
     }
 
-    /// 展开面板纵向滚动：接近底部时自动加载更多。
+    /// 展开面板纵向：滚动超过 60% 时加载。
     private func handleExpandedPanelScroll(_ scrollView: UIScrollView) {
         guard hasMoreCandidates, !isLoadingMoreCandidates, !accumulatedCandidates.isEmpty else { return }
 
@@ -118,8 +126,10 @@ extension KeyboardViewController: UIScrollViewDelegate {
         let viewHeight = scrollView.bounds.height
         guard contentHeight > viewHeight else { return }
 
-        let distanceToBottom = contentHeight - (scrollView.contentOffset.y + viewHeight)
-        if distanceToBottom < 80 {
+        let scrollableHeight = contentHeight - viewHeight
+        let progress = scrollView.contentOffset.y / max(1, scrollableHeight)
+
+        if progress > 0.6 {
             loadMoreCandidates()
         }
     }

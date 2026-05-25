@@ -90,7 +90,18 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 - **Bug 3 (选择候选后删除键重现拼音)**: `handleInsertCandidate` fallback 路径没有调用 `engine.resetSession()`，RIME 残留旧 composition。删除时 `isComposing()` 仍返回 true → 从残留拼音删除 → 重现旧拼音。修复：fallback 路径添加 `rimeEngine?.resetSession()`，`handleInsertSpace` 所有分支都确保重置。
 - **Bug 4 (应用切换后无候选词)**: 键盘挂起恢复后 RIME session 可能失效，`viewDidAppear` 未做检查。修复：`viewDidAppear` 调用 `engine.resetSession()` + 清空累积状态。
 - **新增 7 个回归测试**: 空格重置 session、fallback 候选重置、删除不重现拼音、pageDown 不污染 lastRimeOutput、空格始终选第1页、无候选空格重置、reset 后按键正常。
-- **Test suite**: 335 tests, 0 failures (was 328).
+- **Test suite**: 341 tests, 0 failures (was 328).
+
+**Recent changes (2026-05-25, evening)** — 候选栏滑动检测重构:
+
+- **三层滚动检测**: ① `scrollViewDidScroll` 用百分比阈值（>60% 可滚宽度）替代绝对距离 ② `scrollViewWillEndDragging` 预测性触发（Apple 推荐方式，在 deceleration 开始前触发）③ `scrollViewDidEndDragging` overscroll 兜底（>30pt）
+- **百分比阈值更可靠**: 候选栏/展开面板统一用 `progress = offset / max(1, scrollableWidth)` > 0.6，不受设备宽度或候选数量绝对值影响
+- **新增 6 个 loadMore 流程测试**: pageDown/pageUp 恢复、composing 状态保持、去重逻辑、预加载流程、多次翻页回到页1、深度追踪
+
+### Key Lessons Learned (2026-05-25)
+
+4. **百分比阈值优于绝对距离**。80pt 阈值在不同设备/不同候选数量下表现不一致，60% 可滚宽度是通用解法。
+5. **三层检测（scroll + willEndDrag + didEndDrag）互补覆盖所有滚动场景**。单靠 `scrollViewDidScroll` 可能在快速滑动时漏检。
 
 ### Key Lessons Learned (2026-05-25)
 

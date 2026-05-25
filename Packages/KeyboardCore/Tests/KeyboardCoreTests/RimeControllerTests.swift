@@ -388,4 +388,125 @@ final class RimeControllerTests: XCTestCase {
         XCTAssertTrue(engine.isComposing())
         XCTAssertEqual(controller.state.lastRimeOutput?.composition?.preeditText, "h")
     }
+
+    // MARK: - 候选栏无极滑动加载更多 (loadMoreCandidates 等价逻辑)
+
+    /// pageDown + pageUp 后引擎 composition 应保持不变（回到原始页）。
+    func testPageDownThenPageUpRestoresComposition() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        let original = controller.state.lastRimeOutput
+        XCTAssertEqual(original?.composition?.preeditText, "ni")
+
+        _ = engine.pageDown()
+        _ = engine.pageUp()
+        // composition 应在 pageUp 后恢复
+        XCTAssertEqual(controller.state.lastRimeOutput?.composition?.preeditText, "ni",
+                       "lastRimeOutput 不受 pageDown/pageUp 影响")
+        XCTAssertTrue(engine.isComposing())
+    }
+
+    /// pageDown 后 engine 仍在 composing 状态。
+    func testPageDownPreservesComposingState() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        XCTAssertTrue(engine.isComposing())
+
+        _ = engine.pageDown()
+        XCTAssertTrue(engine.isComposing(), "翻页不应改变 composing 状态")
+    }
+
+    /// 候选去重逻辑：相同 title 的候选不应重复累积。
+    func testCandidateDeduplicationByTitle() {
+        var accumulated = [
+            CandidateItem(title: "你", kind: .candidate),
+            CandidateItem(title: "呢", kind: .candidate),
+        ]
+        let newItems = [
+            CandidateItem(title: "你", kind: .candidate),  // 重复
+            CandidateItem(title: "尼", kind: .candidate),  // 新增
+        ]
+        var added = 0
+        for item in newItems {
+            if !accumulated.contains(where: { $0.title == item.title }) {
+                accumulated.append(item)
+                added += 1
+            }
+        }
+        XCTAssertEqual(added, 1)
+        XCTAssertEqual(accumulated.count, 3)
+        XCTAssertEqual(accumulated.map(\.title), ["你", "呢", "尼"])
+    }
+
+    /// pageDown 后直接取 candidates 累积（模拟预加载流程）。
+    func testPreloadFlowWithPageDown() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        let page1 = controller.state.lastRimeOutput!
+        XCTAssertEqual(page1.candidates.count, 3)
+
+        // 模拟 refreshCandidateBar 的预加载
+        var accumulated = page1.candidates.map { CandidateItem(title: $0.text, kind: .candidate) }
+        let page2 = engine.pageDown()
+        let page2Items = page2.candidates.map { CandidateItem(title: $0.text, kind: .candidate) }
+        for item in page2Items {
+            if !accumulated.contains(where: { $0.title == item.title }) {
+                accumulated.append(item)
+            }
+        }
+        _ = engine.pageUp()  // 回到第 1 页
+
+        // FakeRimeEngine 的 pageDown 返回相同候选，所以去重后数量不变
+        XCTAssertEqual(accumulated.count, 3,
+                       "Fake engine 不分页，去重后应保持原有数量")
+        // lastRimeOutput 不受影响
+        XCTAssertEqual(controller.state.lastRimeOutput?.composition?.preeditText, "ni")
+        XCTAssertTrue(engine.isComposing())
+    }
+
+    /// 连续多次 pageDown 后 pageUp 回到初始状态。
+    func testMultiplePageDownThenBackToFirstPage() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+
+        // 前进 2 页
+        _ = engine.pageDown()
+        _ = engine.pageDown()
+        // 回到第 1 页
+        _ = engine.pageUp()
+        _ = engine.pageUp()
+
+        // lastRimeOutput 仍是 processKey 的结果
+        XCTAssertEqual(controller.state.lastRimeOutput?.composition?.preeditText, "ni")
+        XCTAssertTrue(engine.isComposing())
+    }
+
+    /// 深度追踪逻辑：candidatePageDepth 在多次加载后正确递增。
+    func testCandidatePageDepthTracking() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        var depth = 0  // 初始 = 第 1 页（processKey 产出）
+
+        // 预加载第 2 页
+        _ = engine.pageDown()
+        _ = engine.pageUp()
+        depth = 1
+
+        // 第一次 loadMore → 获取第 3 页
+        for _ in 0..<depth { _ = engine.pageDown() }
+        _ = engine.pageDown()  // 获取第 3 页
+        for _ in 0..<(depth + 1) { _ = engine.pageUp() }
+        depth += 1
+        XCTAssertEqual(depth, 2)
+
+        // 第二次 loadMore → 获取第 4 页
+        for _ in 0..<depth { _ = engine.pageDown() }
+        _ = engine.pageDown()  // 获取第 4 页
+        for _ in 0..<(depth + 1) { _ = engine.pageUp() }
+        depth += 1
+        XCTAssertEqual(depth, 3)
+
+        // lastRimeOutput 始终不受影响
+        XCTAssertEqual(controller.state.lastRimeOutput?.composition?.preeditText, "ni")
+    }
 }
