@@ -54,6 +54,7 @@ struct CandidateButtonFactory {
             ),
             primaryAction: nil   // 使用 addTarget 手动绑定 action（更灵活）
         )
+        button.tag = kind.rawValue
         button.heightAnchor.constraint(equalToConstant: height).isActive = true
         return button
     }

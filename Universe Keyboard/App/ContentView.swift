@@ -28,13 +28,20 @@ struct ContentView: View {
 // MARK: - Tab 1: 引导
 
 private struct GuideTab: View {
+    @AppStorage("rime_active_schema", store: UserDefaults(suiteName: appGroupID))
+    private var activeSchemaID = "luna_pinyin"
+    @AppStorage("rime_deployed", store: UserDefaults(suiteName: appGroupID))
+    private var rimeDeployed = false
+    @AppStorage("logging_enabled", store: UserDefaults(suiteName: appGroupID))
+    private var loggingEnabled = false
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     headerSection
                     enableKeyboardSection
-                    progressSection
+                    statusSection
                     testChecklistSection
                 }
                 .padding(.horizontal, 16)
@@ -90,25 +97,33 @@ private struct GuideTab: View {
         }
     }
 
-    private var progressSection: some View {
-        InfoSection(title: "当前进度", systemImage: "checkmark.circle") {
-            BulletRow(text:"26 键字母输入", style: .checkmark)
-            BulletRow(text:"Shift 大小写切换 + Caps Lock", style: .checkmark)
-            BulletRow(text:"123 数字/符号页", style: .checkmark)
-            BulletRow(text:"Inline preedit（拼音内联显示）", style: .checkmark)
-            BulletRow(text:"RIME 中文候选引擎", style: .checkmark)
-            BulletRow(text:"长按删除", style: .checkmark)
-            BulletRow(text:"长按变体字符弹出", style: .checkmark)
+    private var statusSection: some View {
+        InfoSection(title: "当前状态", systemImage: "keyboard.badge.ellipsis") {
+            StatusRow(
+                title: "输入方案",
+                value: activeSchemaID == "rime_ice" ? "雾凇拼音" : "朙月拼音",
+                color: .blue
+            )
+            Divider()
+            StatusRow(
+                title: "词库部署",
+                value: rimeDeployed ? "已就绪" : "待部署",
+                color: rimeDeployed ? .green : .orange
+            )
+            Divider()
+            StatusRow(
+                title: "卡顿诊断",
+                value: loggingEnabled ? "记录中" : "未开启",
+                color: loggingEnabled ? .blue : .secondary
+            )
         }
     }
 
     private var testChecklistSection: some View {
         InfoSection(title: "测试清单", systemImage: "list.bullet.clipboard") {
-            BulletRow(text:"输入 nihao，候选栏应显示候选词", style: .checkmark)
-            BulletRow(text:"按空格，应上屏第一个候选", style: .checkmark)
-            BulletRow(text:"按 return，应提交原始拼音", style: .checkmark)
-            BulletRow(text:"长按删除键，应连续删除", style: .checkmark)
-            BulletRow(text:"长按字母键，应弹出变体字符", style: .checkmark)
+            BulletRow(text:"输入 nihao，确认候选出现且空格可选词", style: .checkmark)
+            BulletRow(text:"连续快速输入一段拼音，观察是否停顿", style: .checkmark)
+            BulletRow(text:"出现卡顿后回到「设置 > 诊断日志」查看记录", style: .checkmark)
         }
     }
 }
@@ -172,73 +187,67 @@ private struct SettingsTab: View {
     // MARK: 诊断日志
 
     private var diagnosticsSection: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 12) {
             // 主开关行
-            HStack(spacing: 12) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 7, style: .continuous)
-                        .fill(.gray)
-                    Image(systemName: "terminal")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.white)
-                }
-                .frame(width: 30, height: 30)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("诊断日志")
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                    Text("键盘引擎运行记录")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                Toggle("", isOn: $loggingEnabled)
-                    .labelsHidden()
-                    .onChange(of: loggingEnabled) { _, newValue in
-                        UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "logging_enabled")
+            VStack(spacing: 0) {
+                HStack(spacing: 12) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 7, style: .continuous)
+                            .fill(.gray)
+                        Image(systemName: "waveform.path.ecg.text")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(.white)
                     }
-                    .onChange(of: loggingEnabled) { _, _ in
-                        diagRefreshToken += 1
+                    .frame(width: 30, height: 30)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("诊断日志")
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                        Text(loggingEnabled ? "正在捕获输入耗时与引擎边界" : "用于定位快速输入卡顿")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
+                    Spacer()
+                    Toggle("", isOn: $loggingEnabled)
+                        .labelsHidden()
+                        .onChange(of: loggingEnabled) { _, newValue in
+                            UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "logging_enabled")
+                            diagRefreshToken += 1
+                        }
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+
+                Divider().padding(.leading, 56)
+
+                NavigationLink(destination: DiagnosticsView()) {
+                    HStack(spacing: 12) {
+                        Text("查看记录")
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        let count = keyboardDiagLog.count
+                        Text(count == 0 ? "暂无记录" : "\(count) 条")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                }
+                .buttonStyle(.plain)
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 12)
             .background(Color(.secondarySystemGroupedBackground))
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
-            // 分类开关：仅在主开关打开时显示
             if loggingEnabled {
+                Text("复现卡顿时请保留「性能」与「引擎」分类开启；卡住后返回本页查看最后一条 BEGIN 记录。")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 4)
                 categoryTogglesSection
-            }
-
-            // 仅当开关打开且有日志时才显示查看入口
-            if loggingEnabled {
-                let diagLines = keyboardDiagLog
-                if !diagLines.isEmpty {
-                    NavigationLink(destination: DiagnosticsView()) {
-                        HStack {
-                            Text("查看日志 (\(diagLines.count) 条)")
-                                .font(.subheadline)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding()
-                        .background(Color(.secondarySystemGroupedBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    }
-                } else {
-                    HStack {
-                        Image(systemName: "info.circle")
-                            .font(.caption).foregroundStyle(.secondary)
-                        Text("已开启，切换到键盘输入后即可查看日志")
-                            .font(.caption).foregroundStyle(.secondary)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .padding(.top, 8)
-                }
             }
         }
         .id(diagRefreshToken)
@@ -295,6 +304,23 @@ private struct NumberedRow: View {
                 .frame(width: 22, height: 22)
                 .background(Color.blue).clipShape(Circle())
             Text(text).font(.body)
+        }
+    }
+}
+
+private struct StatusRow: View {
+    let title: String
+    let value: String
+    let color: Color
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .foregroundStyle(.primary)
+            Spacer()
+            Text(value)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(color)
         }
     }
 }

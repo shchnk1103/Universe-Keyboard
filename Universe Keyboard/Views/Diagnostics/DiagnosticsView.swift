@@ -33,76 +33,23 @@ struct DiagnosticsView: View {
         return lines.filter { $0.contains(tag) }
     }
 
+    private var displayedLines: [String] {
+        Array(filteredLines.reversed())
+    }
+
+    private var slowEventCount: Int {
+        lines.filter { $0.contains("SLOW ") }.count
+    }
+
+    private var warningCount: Int {
+        lines.filter { $0.contains("[WARN]") || $0.contains("[ERROR]") }.count
+    }
+
     var body: some View {
         VStack(spacing: 0) {
-            // 固定顶部按钮栏
-            HStack(spacing: 14) {
-                Button(action: refresh) {
-                    HStack(spacing: 6) {
-                        if isRefreshing {
-                            ProgressView()
-                                .scaleEffect(0.7)
-                        }
-                        Image(systemName: isRefreshing ? "" : "arrow.clockwise")
-                        Text("刷新")
-                            .font(.subheadline)
-                    }
-                    .frame(minWidth: 80)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-                .disabled(isRefreshing)
-                .animation(.easeInOut(duration: 0.2), value: isRefreshing)
-
-                Spacer()
-
-                if !lines.isEmpty {
-                    Button(action: copyLog) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "doc.on.doc")
-                            Text("复制")
-                                .font(.subheadline)
-                        }
-                        .frame(minWidth: 80)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
-                }
-
-                Spacer()
-
-                Text("\(filteredLines.count)/\(lines.count) 条")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
-                Spacer()
-
-                Button(role: .destructive, action: {
-                    if isClearing {
-                        performClear()
-                    } else {
-                        showClearConfirm = true
-                    }
-                }) {
-                    HStack(spacing: 6) {
-                        if isClearing {
-                            ProgressView()
-                                .scaleEffect(0.7)
-                        }
-                        Image(systemName: isClearing ? "" : "trash")
-                        Text(isClearing ? "清空中" : "清空")
-                            .font(.subheadline)
-                    }
-                    .frame(minWidth: 80)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-                .disabled(lines.isEmpty || isClearing)
-                .animation(.easeInOut(duration: 0.2), value: isClearing)
+            if !lines.isEmpty {
+                summaryBar
             }
-            .padding(.horizontal)
-            .padding(.vertical, 10)
-            .background(.bar)
 
             // 分类筛选
             if !lines.isEmpty {
@@ -142,7 +89,7 @@ struct DiagnosticsView: View {
             }
 
             // 日志内容
-            if filteredLines.isEmpty {
+            if displayedLines.isEmpty {
                 VStack(spacing: 12) {
                     Image(systemName: "text.alignleft")
                         .font(.largeTitle)
@@ -161,11 +108,21 @@ struct DiagnosticsView: View {
                 .frame(maxHeight: .infinity)
             } else {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 2) {
-                        ForEach(Array(filteredLines.enumerated()), id: \.offset) { _, line in
+                    LazyVStack(alignment: .leading, spacing: 5) {
+                        HStack {
+                            Text("最新记录优先")
+                            Spacer()
+                            Text("\(filteredLines.count)/\(lines.count) 条")
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .padding(.bottom, 4)
+
+                        ForEach(Array(displayedLines.enumerated()), id: \.offset) { _, line in
                             Text(line)
                                 .font(.system(.caption, design: .monospaced))
                                 .foregroundStyle(colorForLine(line))
+                                .textSelection(.enabled)
                         }
                     }
                     .padding(12)
@@ -175,6 +132,31 @@ struct DiagnosticsView: View {
         }
         .navigationTitle("键盘诊断")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                Button(action: refresh) {
+                    if isRefreshing {
+                        ProgressView()
+                    } else {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                }
+                .accessibilityLabel("刷新日志")
+                .disabled(isRefreshing)
+
+                Button(action: copyLog) {
+                    Image(systemName: "doc.on.doc")
+                }
+                .accessibilityLabel("复制当前日志")
+                .disabled(filteredLines.isEmpty)
+
+                Button(role: .destructive, action: { showClearConfirm = true }) {
+                    Image(systemName: "trash")
+                }
+                .accessibilityLabel("清空日志")
+                .disabled(lines.isEmpty || isClearing)
+            }
+        }
         .alert("确认清空", isPresented: $showClearConfirm) {
             Button("取消", role: .cancel) {}
             Button("清空", role: .destructive, action: performClear)
@@ -182,6 +164,18 @@ struct DiagnosticsView: View {
             Text("清空后诊断日志将永久删除，无法恢复。")
         }
         .onAppear { loadLog() }
+    }
+
+    private var summaryBar: some View {
+        HStack(spacing: 0) {
+            SummaryMetric(value: "\(lines.count)", label: "记录")
+            Divider().frame(height: 28)
+            SummaryMetric(value: "\(slowEventCount)", label: "慢事件", color: slowEventCount > 0 ? .orange : .secondary)
+            Divider().frame(height: 28)
+            SummaryMetric(value: "\(warningCount)", label: "警告", color: warningCount > 0 ? .red : .secondary)
+        }
+        .padding(.vertical, 10)
+        .background(Color(.secondarySystemGroupedBackground))
     }
 
     // MARK: - Line coloring
@@ -227,6 +221,24 @@ struct DiagnosticsView: View {
             lines = []
             isClearing = false
         }
+    }
+}
+
+private struct SummaryMetric: View {
+    let value: String
+    let label: String
+    var color: Color = .primary
+
+    var body: some View {
+        VStack(spacing: 2) {
+            Text(value)
+                .font(.headline)
+                .foregroundStyle(color)
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 

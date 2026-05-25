@@ -4,9 +4,9 @@ import Foundation
 ///
 /// - 单例模式：`Logger.shared`
 /// - 线程安全：串行 DispatchQueue
-/// - 内存环形缓冲（最多 500 条），刷新到共享 UserDefaults `rime_diag_log`
+/// - 内存环形缓冲（最多 500 条），批量刷新到共享 UserDefaults `rime_diag_log`
 /// - 总开关：`logging_enabled`（默认 false，生产级安全）
-/// - 格式：`[HH:mm:ss] [LEVEL] [CATEGORY] message`
+/// - 格式：`[HH:mm:ss.SSS] [LEVEL] [CATEGORY] message`
 public final class Logger: @unchecked Sendable {
 
     // MARK: - Nested types
@@ -54,6 +54,7 @@ public final class Logger: @unchecked Sendable {
     public static let logKey = "rime_diag_log"
     public static let toggleKey = "logging_enabled"
     private static let maxEntries = 500
+    private static let persistDelay: TimeInterval = 0.2
 
     // MARK: - Category toggle keys
 
@@ -71,9 +72,10 @@ public final class Logger: @unchecked Sendable {
 
     private var buffer: [Entry] = []
     private let queue = DispatchQueue(label: "com.universekeyboard.logger", qos: .utility)
+    private var pendingPersistWorkItem: DispatchWorkItem?
     private let dateFormatter: DateFormatter = {
         let f = DateFormatter()
-        f.dateFormat = "HH:mm:ss"
+        f.dateFormat = "HH:mm:ss.SSS"
         return f
     }()
 
@@ -126,7 +128,11 @@ public final class Logger: @unchecked Sendable {
 
     /// 强制刷新缓冲到 UserDefaults。
     public func flush() {
-        queue.sync { persistBuffer() }
+        queue.sync {
+            pendingPersistWorkItem?.cancel()
+            pendingPersistWorkItem = nil
+            persistBuffer()
+        }
     }
 
     /// 读取所有缓冲条目（供主 App 诊断显示）。
@@ -140,6 +146,8 @@ public final class Logger: @unchecked Sendable {
     public func clearAll() {
         queue.async { [weak self] in
             guard let self else { return }
+            self.pendingPersistWorkItem?.cancel()
+            self.pendingPersistWorkItem = nil
             self.buffer.removeAll()
             let defaults = UserDefaults(suiteName: Self.appGroupID)
             defaults?.removeObject(forKey: Self.logKey)
@@ -153,23 +161,41 @@ public final class Logger: @unchecked Sendable {
     private func log(level: Level, message: String, category: Category) {
         guard isCategoryEnabled(category) else { return }
 
-        let entry = Entry(
-            timestamp: dateFormatter.string(from: Date()),
-            level: level,
-            category: category,
-            message: message
-        )
-
-        print("[UniverseKB] \(entry.description)")
+        let date = Date()
 
         queue.async { [weak self] in
             guard let self else { return }
+            let entry = Entry(
+                timestamp: self.dateFormatter.string(from: date),
+                level: level,
+                category: category,
+                message: message
+            )
             self.buffer.append(entry)
             if self.buffer.count > Self.maxEntries {
                 self.buffer.removeFirst(self.buffer.count - Self.maxEntries)
             }
+            if level == .error {
+                self.pendingPersistWorkItem?.cancel()
+                self.pendingPersistWorkItem = nil
+                self.persistBuffer()
+            } else {
+                self.schedulePersist()
+            }
+        }
+    }
+
+    /// 合并高频键入期间的写入，避免诊断日志反过来阻塞输入主线程。
+    /// 该 work item 在独立队列运行，即使 UI/RIME 调用卡住，也会将此前的 BEGIN 记录写出。
+    private func schedulePersist() {
+        pendingPersistWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            self.pendingPersistWorkItem = nil
             self.persistBuffer()
         }
+        pendingPersistWorkItem = workItem
+        queue.asyncAfter(deadline: .now() + Self.persistDelay, execute: workItem)
     }
 
     private func persistBuffer() {
