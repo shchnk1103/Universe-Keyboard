@@ -34,6 +34,14 @@ import KeyboardCore
 
 extension KeyboardViewController {
 
+    /// 高度是布局期望值而不是对系统输入容器的硬性要求。
+    /// 与 Hamster/KeyboardKit 一致，系统过渡布局时可临时压缩或扩展按键行。
+    private func preferredRowHeightConstraint(for view: UIView, height: CGFloat) -> NSLayoutConstraint {
+        let constraint = view.heightAnchor.constraint(equalToConstant: height)
+        constraint.priority = .defaultHigh
+        return constraint
+    }
+
     // MARK: === 字母行 ===
 
     /// 构建一排字母键按钮。
@@ -83,8 +91,7 @@ extension KeyboardViewController {
             row.addArrangedSubview(button)
         }
 
-        // 固定行高 = 按键高度（44pt）
-        row.heightAnchor.constraint(equalToConstant: keyHeight).isActive = true
+        preferredRowHeightConstraint(for: row, height: keyHeight).isActive = true
         return row
     }
 
@@ -107,7 +114,7 @@ extension KeyboardViewController {
             )
         }
 
-        row.heightAnchor.constraint(equalToConstant: keyHeight).isActive = true
+        preferredRowHeightConstraint(for: row, height: keyHeight).isActive = true
         return row
     }
 
@@ -141,7 +148,7 @@ extension KeyboardViewController {
         row.addArrangedSubview(deleteButton)
 
         NSLayoutConstraint.activate([
-            row.heightAnchor.constraint(equalToConstant: keyHeight),
+            preferredRowHeightConstraint(for: row, height: keyHeight),
             shiftButton.widthAnchor.constraint(equalToConstant: 58),
             deleteButton.widthAnchor.constraint(equalToConstant: 58)
         ])
@@ -233,7 +240,7 @@ extension KeyboardViewController {
             emojiGrid.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
             emojiGrid.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
             // Emoji 网格高度: 4行 × 每行高度
-            emojiGrid.heightAnchor.constraint(equalToConstant: keyHeight * 3 + keySpacing * 2),
+            preferredRowHeightConstraint(for: emojiGrid, height: keyHeight * 3 + keySpacing * 2),
         ])
 
         return container
@@ -313,7 +320,7 @@ extension KeyboardViewController {
         row.addArrangedSubview(pageSwitchButton)
 
         var constraints: [NSLayoutConstraint] = [
-            row.heightAnchor.constraint(equalToConstant: keyHeight),
+            preferredRowHeightConstraint(for: row, height: keyHeight),
             nextKeyboardButton.widthAnchor.constraint(equalToConstant: 48),
             pageSwitchButton.widthAnchor.constraint(equalToConstant: 58),
             returnButton.widthAnchor.constraint(equalToConstant: 78)
