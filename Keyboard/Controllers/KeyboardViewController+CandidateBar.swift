@@ -75,6 +75,7 @@ extension KeyboardViewController: UIScrollViewDelegate {
             "content=(\(Int(scrollView.contentSize.width)),\(Int(scrollView.contentSize.height)))",
             category: .display
         )
+        if Logger.shared.isEnabled { Logger.shared.flush() }
     }
 
     /// 在触控结束且滚动静止后再追加候选，避免改变手指下方的内容宽度。
@@ -84,6 +85,7 @@ extension KeyboardViewController: UIScrollViewDelegate {
                 "candidate scroll endDrag: decelerate=\(decelerate), offset=(\(Int(scrollView.contentOffset.x)),\(Int(scrollView.contentOffset.y)))",
                 category: .display
             )
+            if Logger.shared.isEnabled { Logger.shared.flush() }
         }
         guard !decelerate else { return }
         requestMoreCandidatesIfNeeded(after: scrollView)
@@ -96,6 +98,7 @@ extension KeyboardViewController: UIScrollViewDelegate {
                 "content=(\(Int(scrollView.contentSize.width)),\(Int(scrollView.contentSize.height)))",
                 category: .display
             )
+            if Logger.shared.isEnabled { Logger.shared.flush() }
         }
         requestMoreCandidatesIfNeeded(after: scrollView)
     }
@@ -134,6 +137,7 @@ extension KeyboardViewController: UIScrollViewDelegate {
             "loadMoreCandidates START: accCount=\(accumulatedCandidates.count), depth=\(candidatePageDepth), expanded=\(isCandidateExpanded)",
             category: .display
         )
+        if Logger.shared.isEnabled { Logger.shared.flush() }
         isLoadingMoreCandidates = true
 
         // 前进到当前最深页
@@ -156,7 +160,6 @@ extension KeyboardViewController: UIScrollViewDelegate {
         )
 
         // 去重追加
-        let visibleStartIndex = accumulatedCandidates.filter { $0.kind != .placeholder }.count
         var newAppended: [CandidateItem] = []
         var dupCount = 0
         for item in nextItems {
@@ -174,9 +177,9 @@ extension KeyboardViewController: UIScrollViewDelegate {
 
         if !newAppended.isEmpty {
             if isCandidateExpanded {
-                appendToExpandedCandidatePanel(newItems: newAppended, startingAt: visibleStartIndex)
+                appendToExpandedCandidatePanel()
             } else {
-                appendToCandidateBar(newItems: newAppended, startingAt: visibleStartIndex)
+                appendToCandidateBar()
             }
         }
 
@@ -185,6 +188,7 @@ extension KeyboardViewController: UIScrollViewDelegate {
             "total=\(accumulatedCandidates.count), depth=\(candidatePageDepth), hasMore=\(hasMoreCandidates)",
             category: .display
         )
+        if Logger.shared.isEnabled { Logger.shared.flush() }
     }
 }
 
@@ -449,23 +453,20 @@ extension KeyboardViewController {
         return container
     }
 
-    /// 输入状态改变时刷新集合内容；分页路径使用增量插入而不触发全量刷新。
+    /// 输入状态改变时刷新集合内容。
     func refreshExpandedPanel() {
         guard isCandidateExpanded, let collectionView = expandedCandidateCollectionView else { return }
         collectionView.reloadData()
         collectionView.alwaysBounceVertical = hasMoreCandidates
     }
 
-    func appendToExpandedCandidatePanel(newItems: [CandidateItem], startingAt firstIndex: Int) {
+    func appendToExpandedCandidatePanel() {
         guard isCandidateExpanded, let collectionView = expandedCandidateCollectionView else { return }
-        let indexPaths = newItems.enumerated().compactMap { offset, item -> IndexPath? in
-            guard item.kind != .placeholder else { return nil }
-            return IndexPath(item: firstIndex + offset, section: 0)
-        }
-        guard !indexPaths.isEmpty else { return }
-        collectionView.performBatchUpdates {
-            collectionView.insertItems(at: indexPaths)
-        }
+        let currentOffset = collectionView.contentOffset
+        collectionView.reloadData()
+        collectionView.layoutIfNeeded()
+        let maxOffset = max(0, collectionView.contentSize.height - collectionView.bounds.height)
+        collectionView.contentOffset.y = min(currentOffset.y, maxOffset)
         collectionView.alwaysBounceVertical = hasMoreCandidates
     }
 
@@ -571,17 +572,8 @@ extension KeyboardViewController {
         )
     }
 
-    func appendToCandidateBar(newItems: [CandidateItem], startingAt firstIndex: Int) {
-        guard let collectionView = candidateCollectionView else { return }
-        let indexPaths = newItems.enumerated().compactMap { offset, item -> IndexPath? in
-            guard item.kind != .placeholder else { return nil }
-            return IndexPath(item: firstIndex + offset, section: 0)
-        }
-        guard !indexPaths.isEmpty else { return }
-        collectionView.performBatchUpdates {
-            collectionView.insertItems(at: indexPaths)
-        }
-        collectionView.alwaysBounceHorizontal = hasMoreCandidates
+    func appendToCandidateBar() {
+        fillCandidateBar(keepScrollPosition: true)
     }
 
     // MARK: --- 候选数据 ---
@@ -634,9 +626,9 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
               ) as? CandidateCollectionCell else {
             return UICollectionViewCell()
         }
-        let item = isExpanded
-            ? expandedVisibleCandidates[indexPath.item]
-            : horizontalVisibleCandidates[indexPath.item]
+        let items = isExpanded ? expandedVisibleCandidates : horizontalVisibleCandidates
+        guard items.indices.contains(indexPath.item) else { return cell }
+        let item = items[indexPath.item]
         cell.configure(
             with: item,
             preferred: indexPath.item == 0 && item.kind == .candidate,
@@ -647,9 +639,13 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView === candidateCollectionView {
-            commitCandidate(horizontalVisibleCandidates[indexPath.item])
+            let items = horizontalVisibleCandidates
+            guard items.indices.contains(indexPath.item) else { return }
+            commitCandidate(items[indexPath.item])
         } else if collectionView === expandedCandidateCollectionView {
-            commitExpandedCandidate(expandedVisibleCandidates[indexPath.item])
+            let items = expandedVisibleCandidates
+            guard items.indices.contains(indexPath.item) else { return }
+            commitExpandedCandidate(items[indexPath.item])
         }
     }
 
@@ -661,6 +657,9 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         let items = collectionView === candidateCollectionView
             ? horizontalVisibleCandidates
             : expandedVisibleCandidates
+        guard items.indices.contains(indexPath.item) else {
+            return CGSize(width: 44, height: 38)
+        }
         let item = items[indexPath.item]
         let fontSize: CGFloat = item.kind == .composition ? 14 : 16
         let weight: UIFont.Weight = indexPath.item == 0 && item.kind == .candidate ? .semibold : .regular

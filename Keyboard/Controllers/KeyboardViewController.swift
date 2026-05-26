@@ -93,15 +93,12 @@ class KeyboardViewController: UIInputViewController {
     /// 前一个字母输入完成时间，用于观察快速输入中的事件排队现象
     var lastInputCompletionTime: CFTimeInterval?
 
-    // MARK: - 键盘可见性状态（防闪烁机制）
+    // MARK: - 键盘生命周期与尺寸状态
 
     /// viewDidAppear 是否已被调用过。
-    /// Apple 文档指出：iOS 在呈现键盘时会经历 3 阶段的尺寸调整
-    /// （全屏 → 中间态 → 最终高度），无法通过任何公开 API 阻止。
-    /// 我们使用 alpha=0 隐藏键盘，等到 viewDidAppear 后、高度稳定时才显示。
     private var hasViewAppeared = false
-    /// 键盘是否已经完成首次显示（alpha=1）
-    private var hasShownKeyboard = false
+    /// 按键内容仅在键盘即将呈现时安装，避免初始过渡容器绘制整份键盘。
+    private var isKeyboardUIInstalled = false
 
     // MARK: - 缓存的设置值
 
@@ -123,7 +120,6 @@ class KeyboardViewController: UIInputViewController {
     let keyHorizontalSpacing: CGFloat = 6
     /// 按键圆角半径（点），使用 .continuous 曲线获得 iOS 原生外观
     let keyCornerRadius: CGFloat = 9
-
     // MARK: === 生命周期 ===
 
     /// viewDidLoad 是键盘扩展的第一个入口点。
@@ -138,25 +134,12 @@ class KeyboardViewController: UIInputViewController {
         let startupTime = CACurrentMediaTime()
 
         // ── 1. 基础视图配置 ──────────────────────────────────────────
-        // 设置键盘背景色（跟随系统深色/浅色模式自动切换）
-        view.backgroundColor = keyboardBackgroundColor
+        // 与 Hamster 一致，不向系统请求自定义总高度。
+        // 内容在 viewWillAppear 中安装，主视图此前不绘制键盘表面。
+        view.isOpaque = false
+        view.backgroundColor = .clear
 
-        // allowsSelfSizing = true 告诉系统：我们的键盘可以自适应高度。
-        // 虽然 iOS 仍会执行 3 阶段 resize，但此设置确保系统不会忽略 intrinsicContentSize。
-        inputView?.allowsSelfSizing = true
-
-        // preferredContentSize 告诉系统我们期望的键盘高度。
-        // width=0 表示不限制宽度（系统会自动填满屏幕宽度）。
-        // 高度：候选栏(44) + 4行按键(4×44) + 4个行间距(4×8) + 上下边距(6) = 258
-        let totalHeight = candidateBarHeight + keyHeight * 4 + keySpacing * 4 + 6
-        preferredContentSize = CGSize(width: 0, height: totalHeight)
-
-        // ── 2. 防闪烁机制（详见 viewDidLayoutSubviews 注释）──────────
-        // 初始 alpha=0：在 3 阶段 resize 完成前完全隐藏键盘。
-        // Apple DTS 确认：没有任何公开 API 可以阻止这个过程。
-        view.alpha = 0
-
-        // ── 3. 设置键盘类型和状态控制器 ───────────────────────────────
+        // ── 2. 设置键盘类型和状态控制器 ───────────────────────────────
         // 声明键盘的主要语言为简体中文（Apple 用于输入法管理）
         // 注意：primaryLanguage 在 iOS 26 中是只读属性，只能在 Info.plist 中设置。
         // 此处保留仅供参考。
@@ -169,7 +152,7 @@ class KeyboardViewController: UIInputViewController {
 
         Logger.shared.info("viewDidLoad, keyboardType=\(keyboardType)", category: .general)
 
-        // ── 4. 初始化 RIME 引擎（双路径设计） ─────────────────────────
+        // ── 3. 初始化 RIME 引擎（双路径设计） ─────────────────────────
         // RIME 路径：真正的中文引擎（librime + 雾凇拼音）
         // 回退路径：FakeCandidateProvider（在 RIME 不可用时提供基本功能）
         if let (sharedDir, userDir) = RimeConfigManager.prepareDirectories() {
@@ -211,8 +194,10 @@ class KeyboardViewController: UIInputViewController {
 
         let elapsed = (CACurrentMediaTime() - startupTime) * 1000
         Logger.shared.performance("viewDidLoad complete", durationMs: elapsed)
+        // 呈现阶段异常退出时 viewDidDisappear 可能不会执行，保留启动证据。
+        Logger.shared.flush()
 
-        // ── 5. 自动大写检查（英文模式启动时） ─────────────────────────
+        // ── 4. 自动大写检查（英文模式启动时） ─────────────────────────
         // 如果键盘以英文模式启动，检查当前文本上下文是否需要自动大写
         // 例如：新文档、句号后、换行后等情况
         if controller.state.inputMode == .english {
@@ -220,7 +205,7 @@ class KeyboardViewController: UIInputViewController {
             _ = controller.applyAutoCapitalization(contextBeforeInput: context)
         }
 
-        // ── 6. 缓存设置值和注册通知监听 ───────────────────────────────
+        // ── 5. 缓存设置值和注册通知监听 ───────────────────────────────
         // 将 UserDefaults 值缓存在本地变量中，避免每次按键都进行 XPC 调用。
         // 当主 App 修改设置时，通过 didChangeNotification 通知更新缓存。
         refreshCachedSettings()
@@ -229,13 +214,6 @@ class KeyboardViewController: UIInputViewController {
         // 预热触觉反馈引擎，减少第一次按键的延迟
         hapticGenerator.prepare()
 
-        // ── 7. 构建键盘 UI ───────────────────────────────────────────
-        setupRootStack()
-        // 使用 performWithoutAnimation 确保初始布局无过渡动画，
-        // 避免在 alpha=0 状态下出现奇怪的过渡效果
-        UIView.performWithoutAnimation {
-            reloadKeyboard()
-        }
     }
 
     /// deinit 是键盘扩展被销毁前的最后一个清理机会。
@@ -249,6 +227,11 @@ class KeyboardViewController: UIInputViewController {
         stopDeleteRepeat()
         // 移除所有通知观察者，防止野指针
         NotificationCenter.default.removeObserver(self)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        installKeyboardUIIfNeeded()
     }
 
     /// viewDidAppear 在键盘视图对用户可见时调用。
@@ -277,9 +260,22 @@ class KeyboardViewController: UIInputViewController {
         )
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        Logger.shared.debug(
+            "viewWillDisappear: bounds=\(view.bounds)",
+            category: .display
+        )
+        Logger.shared.flush()
+    }
+
     /// 切回主 App 查看诊断时，确保最后一批异步合并日志已经写入共享容器。
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        Logger.shared.debug(
+            "viewDidDisappear: bounds=\(view.bounds)",
+            category: .display
+        )
         Logger.shared.flush()
     }
 
@@ -291,33 +287,12 @@ class KeyboardViewController: UIInputViewController {
         // Apple 文档明确要求：在此生命周期方法中更新地球键可见性
         // 这是因为 needsInputModeSwitchKey 的值可能在键盘生命周期中改变
         // （例如用户启用了新键盘），必须实时响应
-        nextKeyboardButton.isHidden = !needsInputModeSwitchKey
+        nextKeyboardButton?.isHidden = !needsInputModeSwitchKey
         super.viewWillLayoutSubviews()
     }
 
-    /// viewDidLayoutSubviews 在子视图布局完成后调用。
-    /// 我们在此执行两个关键任务：
-    ///
-    /// 1. 更新候选栏右侧的 CAGradientLayer 渐隐遮罩的 frame。
-    ///    因为 layout 完成后 scrollView 的 bounds 才最终确定，
-    ///    必须同步更新遮罩 layer 的 frame 以匹配。
-    ///
-    /// 2. 键盘闪烁缓解（核心逻辑）：
-    ///    iOS 系统呈现自定义键盘时经历 3 阶段 resize：
-    ///     阶段 1：全屏高度（如 844pt on iPhone 13 Pro）
-    ///     阶段 2：中间态（如 445pt）
-    ///     阶段 3：最终高度（216-250pt，取决于设备和系统版本）
-    ///    在阶段 1-2 中显示键盘，用户会看到明显的跳动和闪烁。
-    ///    Apple DTS 工程师确认：没有任何公开 API 可以阻止或绕过这个过程。
-    ///
-    ///    我们的策略：
-    ///    - viewDidLoad 时设置 view.alpha = 0
-    ///    - 等待 viewDidAppear 完成（hasViewAppeared == true）
-    ///    - 等待 view.bounds.height 降到合理范围（< 400pt 过滤掉 844/445pt 中间态）
-    ///    - 条件满足后一次性设置 view.alpha = 1
-    ///
-    ///    hasShownKeyboard 保证只执行一次，避免每次 layout 都触发。
-    /// 上次记录日志时的 bounds，避免 layout 频繁触发时刷屏日志。
+    /// viewDidLayoutSubviews 记录系统实际采用的输入视图尺寸。
+    /// 若仍出现临时高度，此日志可区分系统容器行为与已安装内容布局。
     private var lastLoggedBounds: CGRect = .zero
 
     override func viewDidLayoutSubviews() {
@@ -328,20 +303,6 @@ class KeyboardViewController: UIInputViewController {
             lastLoggedBounds = view.bounds
             Logger.shared.debug(
                 "viewDidLayoutSubviews: bounds=\(view.bounds)",
-                category: .display
-            )
-        }
-
-        // ── 任务 2：条件触发键盘显示 ───────────────────────────────
-        // 三个条件必须同时满足：
-        //   1. hasShownKeyboard == false（保证只触发一次）
-        //   2. hasViewAppeared == true（viewDidAppear 已经调用过）
-        //   3. view.bounds.height > 0 且 < 400（高度已稳定到合理范围）
-        if !hasShownKeyboard, hasViewAppeared, view.bounds.height > 0, view.bounds.height < 400 {
-            hasShownKeyboard = true
-            view.alpha = 1
-            Logger.shared.info(
-                "keyboard revealed at h=\(view.bounds.height)",
                 category: .display
             )
         }
@@ -368,14 +329,6 @@ class KeyboardViewController: UIInputViewController {
     override func textDidChange(_ textInput: UITextInput?) {
         let proxy = self.textDocumentProxy
 
-        // 根据宿主 App 的外观模式（深色/浅色）更新地球键文字颜色
-        // 这是 Apple 文档明确建议的做法
-        let textColor: UIColor = proxy.keyboardAppearance == .dark ? .white : .black
-        nextKeyboardButton.setTitleColor(textColor, for: [])
-
-        // 检查并更新回车键样式（send/search/go 等动作键的空文本/有文本状态切换）
-        updateReturnKeyAppearance()
-
         // ── 检测键盘类型变化 ──────────────────────────────────────
         // Apple 文档：使用 textDocumentProxy.keyboardType 来适配不同输入场景
         // 例如：ASCII 键盘、邮箱地址键盘、数字键盘等
@@ -388,6 +341,17 @@ class KeyboardViewController: UIInputViewController {
         let context = proxy.documentContextBeforeInput
         let autoCapEffect = controller.applyAutoCapitalization(contextBeforeInput: context)
         effects.formUnion(autoCapEffect)
+
+        // UIKit 可能在 viewWillAppear 前回调文本状态；此时只同步业务状态，
+        // 不能访问尚未安装的键盘视图。
+        guard isKeyboardUIInstalled else { return }
+
+        // 根据宿主 App 的外观模式（深色/浅色）更新地球键文字颜色
+        let textColor: UIColor = proxy.keyboardAppearance == .dark ? .white : .black
+        nextKeyboardButton?.setTitleColor(textColor, for: [])
+
+        // 检查并更新回车键样式（send/search/go 等动作键的空文本/有文本状态切换）
+        updateReturnKeyAppearance()
 
         // 无变化则跳过 UI 刷新（性能优化：避免不必要的视图重建）
         guard !effects.isEmpty else { return }
@@ -432,7 +396,7 @@ class KeyboardViewController: UIInputViewController {
 
     // MARK: === 根布局（详见 KeyboardViewController+Layout.swift）===
 
-    /// 初始化根布局：垂直 UIStackView，上边距 6pt，下边距 8pt（给系统指示条留空间）
+    /// 初始化根布局：按键内容填充系统提供的原生输入区域，不请求额外高度。
     func setupRootStack() {
         rootStack = UIStackView()
         rootStack.axis = .vertical
@@ -452,7 +416,10 @@ class KeyboardViewController: UIInputViewController {
             rootStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2)
         ])
 
-        Logger.shared.debug("setupRootStack: top+4, bottom-2, hMargin=4", category: .display)
+        Logger.shared.debug(
+            "setupRootStack: system height, top+4, bottom-2, hMargin=4",
+            category: .display
+        )
     }
 
     /// 完整重建键盘：清除所有行 → 构建候选栏 → 构建按键行
@@ -475,6 +442,24 @@ class KeyboardViewController: UIInputViewController {
             "rows=\(rootStack.arrangedSubviews.count)",
             category: .display
         )
+    }
+
+    /// Hamster/KeyboardKit 的入口不主动指定扩展总高度，而是在即将显示时安装内容。
+    /// 内容会被控制器复用，避免键盘切换时反复拆除整棵可交互视图树。
+    private func installKeyboardUIIfNeeded() {
+        guard !isKeyboardUIInstalled else { return }
+        isKeyboardUIInstalled = true
+        view.backgroundColor = keyboardBackgroundColor
+        setupRootStack()
+        UIView.performWithoutAnimation {
+            reloadKeyboard()
+            view.layoutIfNeeded()
+        }
+        Logger.shared.debug(
+            "installKeyboardUI: systemBounds=\(view.bounds)",
+            category: .display
+        )
+        Logger.shared.flush()
     }
 
     /// 仅重建键盘内容区，用于展开/收起候选面板时。
