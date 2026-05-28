@@ -51,6 +51,15 @@ NSString * const RimeKeyPageNo           = @"pageNo";
     traits.distribution_version = "1.0.0";
     traits.app_name = "rime.UniverseKeyboard";
 
+    // 加载模块：core, dict, gears 为基础模块
+    // 当 librime-lua 插件已编译链接时，添加 "lua" 到列表中
+#ifdef RIME_HAS_LUA
+    const char* modules[] = { "core", "dict", "gears", "lua", NULL };
+#else
+    const char* modules[] = { "core", "dict", "gears", NULL };
+#endif
+    traits.modules = modules;
+
     _api->setup(&traits);
     _setupDone = YES;
     return YES;
@@ -62,10 +71,7 @@ NSString * const RimeKeyPageNo           = @"pageNo";
 
     _api->initialize(NULL);
 
-    // 首次运行时检查是否需要 full deploy
-    if (_api->start_maintenance(/*full_check=*/False)) {
-        _api->join_maintenance_thread();
-    }
+    // 部署与共享偏好写入均由主 App 完成；扩展启动只创建可输入的 session。
 
     _initialized = YES;
     return YES;
@@ -78,17 +84,20 @@ NSString * const RimeKeyPageNo           = @"pageNo";
     if (_sessionId != 0) return YES; // already has session
 
     _sessionId = _api->create_session();
+    NSLog(@"[RIME] createSession: sessionId=%lu", (unsigned long) _sessionId);
     return _sessionId != 0;
 }
 
 - (BOOL)destroySession {
     if (_sessionId == 0) return NO;
+    NSLog(@"[RIME] destroySession: sessionId=%lu", (unsigned long) _sessionId);
     _api->destroy_session(_sessionId);
     _sessionId = 0;
     return YES;
 }
 
 - (BOOL)restartEngineAndCreateSession {
+    NSLog(@"[RIME] restartEngineAndCreateSession: reinitializing librime");
     if (_sessionId != 0) {
         _api->destroy_session(_sessionId);
         _sessionId = 0;
@@ -97,14 +106,35 @@ NSString * const RimeKeyPageNo           = @"pageNo";
         _api->finalize();
         _initialized = NO;
     }
-    if (![self initializeEngine]) return NO;
+    if (![self initializeEngine]) {
+        NSLog(@"[RIME] restartEngineAndCreateSession: initializeEngine failed");
+        return NO;
+    }
     return [self createSession];
 }
 
 // MARK: - Input
 
 - (NSDictionary *)processKey:(int)keycode modifiers:(int)modifiers {
-    if (_sessionId == 0) return [self emptyOutput];
+    if (_sessionId == 0) {
+        NSLog(@"[RIME] ⚠️ processKey(keycode=%d) called with sessionId=0 — attempting auto-recovery", keycode);
+        if (!_initialized) {
+            NSLog(@"[RIME] ⚠️ processKey: engine not initialized, cannot recover");
+            return [self emptyOutput];
+        }
+        _sessionId = _api->create_session();
+        if (_sessionId == 0) {
+            NSLog(@"[RIME] ⚠️ processKey: session auto-recreation FAILED");
+            return [self emptyOutput];
+        }
+        NSLog(@"[RIME] processKey: auto-recreated session, new sessionId=%lu", (unsigned long) _sessionId);
+        // 重新选择上次激活的方案
+        NSUserDefaults *defs = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.DoubleShy0N.Universe-Keyboard"];
+        NSString *schema = [defs stringForKey:@"rime_active_schema"] ?: @"luna_pinyin";
+        if (!_api->select_schema(_sessionId, [schema UTF8String])) {
+            NSLog(@"[RIME] ⚠️ processKey: select_schema('%@') failed after session recovery", schema);
+        }
+    }
 
     _api->process_key(_sessionId, keycode, modifiers);
     return [self collectOutput];
@@ -135,6 +165,25 @@ NSString * const RimeKeyPageNo           = @"pageNo";
 - (void)clearComposition {
     if (_sessionId == 0) return;
     _api->clear_composition(_sessionId);
+}
+
+- (NSString *)librimeVersion {
+    if (!_api) return @"(no api)";
+    const char *v = _api->get_version();
+    return v ? [NSString stringWithUTF8String:v] : @"(unknown)";
+}
+
+- (NSString *)availableSchemas {
+    if (!_initialized) return @"(未初始化)";
+    RimeSchemaList list;
+    if (!_api->get_schema_list(&list)) return @"(获取失败)";
+    NSMutableArray *items = [NSMutableArray array];
+    for (size_t i = 0; i < list.size && i < 20; i++) {
+        [items addObject:[NSString stringWithFormat:@"%s — %s",
+                          list.list[i].schema_id, list.list[i].name]];
+    }
+    _api->free_schema_list(&list);
+    return items.count ? [items componentsJoinedByString:@", "] : @"(空)";
 }
 
 - (BOOL)isComposing {
@@ -198,6 +247,22 @@ NSString * const RimeKeyPageNo           = @"pageNo";
 /// 返回空输出（无 composition、无 candidates）
 - (NSDictionary *)emptyOutput {
     return @{};
+}
+
+// MARK: - Schema switching
+
+- (BOOL)selectSchema:(NSString *)schemaID {
+    if (_sessionId == 0) return NO;
+    return _api->select_schema(_sessionId, [schemaID UTF8String]);
+}
+
+- (NSString *)currentSchemaID {
+    if (_sessionId == 0) return nil;
+    char buffer[256] = {0};
+    if (_api->get_current_schema(_sessionId, buffer, sizeof(buffer))) {
+        return [NSString stringWithUTF8String:buffer];
+    }
+    return nil;
 }
 
 // MARK: - Cleanup

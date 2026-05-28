@@ -1,5 +1,5 @@
-import UIKit
 import KeyboardCore
+import UIKit
 
 /// 候选按钮工厂 — 使用 UIButton.Configuration（iOS 15+）创建候选词按钮。
 ///
@@ -24,6 +24,7 @@ import KeyboardCore
 ///   - .candidate（可选择的候选词）：16pt 字体（Dynamic Type 缩放），.label 颜色
 ///   - .composition（拼音组合/正输入中）：14pt 字体（Dynamic Type 缩放），.secondaryLabel 颜色
 ///   - 第一个候选词（推荐候选）：加粗 + 高亮背景圆角
+@MainActor
 struct CandidateButtonFactory {
 
     /// 创建候选词按钮（用于候选栏和展开面板）。
@@ -52,7 +53,7 @@ struct CandidateButtonFactory {
                 bold: bold,
                 highlighted: highlighted
             ),
-            primaryAction: nil   // 使用 addTarget 手动绑定 action（更灵活）
+            primaryAction: nil  // 使用 addTarget 手动绑定 action（更灵活）
         )
         button.tag = kind.rawValue
         button.heightAnchor.constraint(equalToConstant: height).isActive = true

@@ -1,0 +1,93 @@
+name: Swift 6 Quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: macos-26
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Prepare pinned RIME artifacts
+        run: bash scripts/ensure_rime_vendor.sh fetch
+
+      - name: Check Swift formatting
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "${BASE_SHA}" ] || [[ "${BASE_SHA}" =~ ^0+$ ]]; then
+            BASE_SHA="$(git rev-parse "${GITHUB_SHA}^")"
+          fi
+          swift_files="$(git diff --name-only --diff-filter=ACMR "${BASE_SHA}" "${GITHUB_SHA}" -- \
+            "Universe Keyboard" "Keyboard" "Packages" "UniverseKeyboardTests" "KeyboardTests" | grep '\.swift$' || true)"
+          if [ -n "${swift_files}" ]; then
+            while IFS= read -r file; do
+              xcrun swift-format lint --strict --configuration .swift-format "${file}"
+            done <<< "${swift_files}"
+          fi
+
+      - name: Test KeyboardCore
+        run: swift test --package-path Packages/KeyboardCore
+
+      # The checked-in package binaries intentionally target iOS; test them on
+      # the same simulator platform used by the host app.
+      - name: Test RimeBridge on iOS Simulator
+        run: |
+          xcodebuild \
+            -project "Universe Keyboard.xcodeproj" \
+            -scheme "RimeBridgeTests" \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+            CODE_SIGNING_ALLOWED=NO \
+            SWIFT_VERSION=6.0 \
+            SWIFT_STRICT_CONCURRENCY=complete \
+            SWIFT_SUPPRESS_WARNINGS=NO \
+            SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
+            test
+
+      - name: Test app and keyboard contracts on iOS Simulator
+        run: |
+          xcodebuild \
+            -project "Universe Keyboard.xcodeproj" \
+            -scheme "Universe Keyboard" \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+            CODE_SIGNING_ALLOWED=NO \
+            SWIFT_VERSION=6.0 \
+            SWIFT_STRICT_CONCURRENCY=complete \
+            SWIFT_SUPPRESS_WARNINGS=NO \
+            SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
+            test
+
+      - name: Build Swift 6 app and keyboard extension for debug
+        run: |
+          xcodebuild \
+            -project "Universe Keyboard.xcodeproj" \
+            -scheme "Universe Keyboard" \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+            CODE_SIGNING_ALLOWED=NO \
+            SWIFT_VERSION=6.0 \
+            SWIFT_STRICT_CONCURRENCY=complete \
+            SWIFT_SUPPRESS_WARNINGS=NO \
+            SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
+            build
+
+      - name: Build Swift 6 app and keyboard extension for release
+        run: |
+          xcodebuild \
+            -project "Universe Keyboard.xcodeproj" \
+            -scheme "Universe Keyboard" \
+            -configuration Release \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+            CODE_SIGNING_ALLOWED=NO \
+            SWIFT_VERSION=6.0 \
+            SWIFT_STRICT_CONCURRENCY=complete \
+            SWIFT_SUPPRESS_WARNINGS=NO \
+            SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
+            build

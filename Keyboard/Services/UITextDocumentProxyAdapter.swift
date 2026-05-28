@@ -22,9 +22,10 @@
 //  适配器不应持有强引用延长 proxy 的生命周期。
 //
 
-import UIKit
 import KeyboardCore
+import UIKit
 
+@MainActor
 final class UITextDocumentProxyAdapter: TextInputClient {
 
     /// 底层 UITextDocumentProxy 的弱引用。

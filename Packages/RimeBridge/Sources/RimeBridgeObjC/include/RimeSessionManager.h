@@ -55,8 +55,22 @@ NS_ASSUME_NONNULL_BEGIN
 /// 清除当前 composition
 - (void)clearComposition;
 
+/// 返回 librime 版本号
+- (NSString *)librimeVersion;
+
+/// 返回可用的 schema 列表（schema_id: schema_name）
+- (NSString *)availableSchemas;
+
 /// 当前是否有活跃的 composition
 - (BOOL)isComposing;
+
+/// 选择输入方案（schema）。
+/// @param schemaID schema 标识符，如 "luna_pinyin"、"rime_ice"
+/// @return 是否成功
+- (BOOL)selectSchema:(NSString *)schemaID;
+
+/// 获取当前激活的 schema_id。
+- (NSString *)currentSchemaID;
 
 /// 关闭引擎（释放所有资源）
 - (void)finalize;

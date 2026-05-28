@@ -9,35 +9,13 @@
 /* Begin PBXBuildFile section */
 		793AC8632FB0BE0600DAE835 /* Keyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 793AC85C2FB0BE0600DAE835 /* Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		793AC8802FB0BE0600DAE8A0 /* KeyboardCore in Frameworks */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
-		79E64D882FB7563B009FCFAD /* libopencc.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D7E2FB7563B009FCFAD /* libopencc.xcframework */; };
-		79E64D892FB7563B009FCFAD /* libopencc.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D7E2FB7563B009FCFAD /* libopencc.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79E64D8A2FB7563B009FCFAD /* libglog.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D7F2FB7563B009FCFAD /* libglog.xcframework */; };
-		79E64D8B2FB7563B009FCFAD /* libglog.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D7F2FB7563B009FCFAD /* libglog.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79E64D8C2FB7563B009FCFAD /* boost_filesystem.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D802FB7563B009FCFAD /* boost_filesystem.xcframework */; };
-		79E64D8D2FB7563B009FCFAD /* boost_filesystem.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D802FB7563B009FCFAD /* boost_filesystem.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79E64D8E2FB7563B009FCFAD /* libleveldb.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D812FB7563B009FCFAD /* libleveldb.xcframework */; };
-		79E64D8F2FB7563B009FCFAD /* libleveldb.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D812FB7563B009FCFAD /* libleveldb.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79E64D902FB7563B009FCFAD /* boost_regex.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D822FB7563B009FCFAD /* boost_regex.xcframework */; };
-		79E64D912FB7563B009FCFAD /* boost_regex.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D822FB7563B009FCFAD /* boost_regex.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79E64D922FB7563B009FCFAD /* librime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D832FB7563B009FCFAD /* librime.xcframework */; };
-		79E64D932FB7563B009FCFAD /* librime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D832FB7563B009FCFAD /* librime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79E64D942FB7563B009FCFAD /* boost_atomic.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D842FB7563B009FCFAD /* boost_atomic.xcframework */; };
-		79E64D952FB7563B009FCFAD /* boost_atomic.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D842FB7563B009FCFAD /* boost_atomic.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79E64D962FB7563B009FCFAD /* libmarisa.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D852FB7563B009FCFAD /* libmarisa.xcframework */; };
-		79E64D972FB7563B009FCFAD /* libmarisa.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D852FB7563B009FCFAD /* libmarisa.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79E64D982FB7563B009FCFAD /* libyaml-cpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D862FB7563B009FCFAD /* libyaml-cpp.xcframework */; };
-		79E64D992FB7563B009FCFAD /* libyaml-cpp.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D862FB7563B009FCFAD /* libyaml-cpp.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		79FFF9712FBED2DC00A61DE2 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
-		79FFF9722FBED2DC00A61DE2 /* libmarisa.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D852FB7563B009FCFAD /* libmarisa.xcframework */; };
-		79FFF9732FBED2DC00A61DE2 /* libopencc.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D7E2FB7563B009FCFAD /* libopencc.xcframework */; };
-		79FFF9742FBED2DC00A61DE2 /* boost_atomic.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D842FB7563B009FCFAD /* boost_atomic.xcframework */; };
-		79FFF9752FBED2DC00A61DE2 /* libyaml-cpp.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D862FB7563B009FCFAD /* libyaml-cpp.xcframework */; };
-		79FFF9762FBED2DC00A61DE2 /* libleveldb.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D812FB7563B009FCFAD /* libleveldb.xcframework */; };
-		79FFF9772FBED2DC00A61DE2 /* boost_filesystem.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D802FB7563B009FCFAD /* boost_filesystem.xcframework */; };
-		79FFF9782FBED2DC00A61DE2 /* libglog.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D7F2FB7563B009FCFAD /* libglog.xcframework */; };
-		79FFF9792FBED2DC00A61DE2 /* boost_regex.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D822FB7563B009FCFAD /* boost_regex.xcframework */; };
-		79FFF97A2FBED2DC00A61DE2 /* librime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E64D832FB7563B009FCFAD /* librime.xcframework */; };
+		794D5D042FC58EE90044A0B9 /* RimeBridge in Frameworks */ = {isa = PBXBuildFile; productRef = 7A6000042FC0000000000001 /* RimeBridge */; };
 		79FFF97B2FBED2DC00A61DE2 /* KeyboardCore in Frameworks */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
+		7A6000012FC0000000000001 /* RimeBridge in Frameworks */ = {isa = PBXBuildFile; productRef = 7A6000042FC0000000000001 /* RimeBridge */; };
+		7A6000022FC0000000000001 /* RimeBridge in Frameworks */ = {isa = PBXBuildFile; productRef = 7A6000042FC0000000000001 /* RimeBridge */; };
+		7A6100092FC0000000000001 /* RimeBridge in Frameworks */ = {isa = PBXBuildFile; productRef = 7A6000042FC0000000000001 /* RimeBridge */; };
+		7A6200012FC0000000000001 /* KeyboardCore in Frameworks */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
+		7A6200022FC0000000000001 /* KeyboardCore in Frameworks */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +25,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 793AC85B2FB0BE0600DAE835;
 			remoteInfo = Keyboard;
+		};
+		7A6200152FC0000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 793AC8422FB0BDB000DAE835 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 793AC8492FB0BDB000DAE835;
+			remoteInfo = "Universe Keyboard";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -62,39 +47,14 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		79E64D9C2FB7563B009FCFAD /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				79E64D972FB7563B009FCFAD /* libmarisa.xcframework in Embed Frameworks */,
-				79E64D932FB7563B009FCFAD /* librime.xcframework in Embed Frameworks */,
-				79E64D8B2FB7563B009FCFAD /* libglog.xcframework in Embed Frameworks */,
-				79E64D8D2FB7563B009FCFAD /* boost_filesystem.xcframework in Embed Frameworks */,
-				79E64D8F2FB7563B009FCFAD /* libleveldb.xcframework in Embed Frameworks */,
-				79E64D992FB7563B009FCFAD /* libyaml-cpp.xcframework in Embed Frameworks */,
-				79E64D952FB7563B009FCFAD /* boost_atomic.xcframework in Embed Frameworks */,
-				79E64D892FB7563B009FCFAD /* libopencc.xcframework in Embed Frameworks */,
-				79E64D912FB7563B009FCFAD /* boost_regex.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		793AC84A2FB0BDB000DAE835 /* Universe Keyboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Universe Keyboard.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		793AC85C2FB0BE0600DAE835 /* Keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Keyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		79E64D7E2FB7563B009FCFAD /* libopencc.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libopencc.xcframework; path = Packages/RimeBridge/Vendor/libopencc.xcframework; sourceTree = "<group>"; };
-		79E64D7F2FB7563B009FCFAD /* libglog.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libglog.xcframework; path = Packages/RimeBridge/Vendor/libglog.xcframework; sourceTree = "<group>"; };
-		79E64D802FB7563B009FCFAD /* boost_filesystem.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = boost_filesystem.xcframework; path = Packages/RimeBridge/Vendor/boost_filesystem.xcframework; sourceTree = "<group>"; };
-		79E64D812FB7563B009FCFAD /* libleveldb.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libleveldb.xcframework; path = Packages/RimeBridge/Vendor/libleveldb.xcframework; sourceTree = "<group>"; };
-		79E64D822FB7563B009FCFAD /* boost_regex.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = boost_regex.xcframework; path = Packages/RimeBridge/Vendor/boost_regex.xcframework; sourceTree = "<group>"; };
-		79E64D832FB7563B009FCFAD /* librime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = librime.xcframework; path = Packages/RimeBridge/Vendor/librime.xcframework; sourceTree = "<group>"; };
-		79E64D842FB7563B009FCFAD /* boost_atomic.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = boost_atomic.xcframework; path = Packages/RimeBridge/Vendor/boost_atomic.xcframework; sourceTree = "<group>"; };
-		79E64D852FB7563B009FCFAD /* libmarisa.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libmarisa.xcframework; path = Packages/RimeBridge/Vendor/libmarisa.xcframework; sourceTree = "<group>"; };
-		79E64D862FB7563B009FCFAD /* libyaml-cpp.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = "libyaml-cpp.xcframework"; path = "Packages/RimeBridge/Vendor/libyaml-cpp.xcframework"; sourceTree = "<group>"; };
+		7A6100012FC0000000000001 /* RimeBridgeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RimeBridgeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A6200032FC0000000000001 /* UniverseKeyboardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UniverseKeyboardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A6200042FC0000000000001 /* KeyboardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyboardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -121,6 +81,21 @@
 			path = Keyboard;
 			sourceTree = "<group>";
 		};
+		7A6100022FC0000000000001 /* Packages/RimeBridge/Tests/RimeBridgeTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Packages/RimeBridge/Tests/RimeBridgeTests;
+			sourceTree = "<group>";
+		};
+		7A6200052FC0000000000001 /* UniverseKeyboardTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = UniverseKeyboardTests;
+			sourceTree = "<group>";
+		};
+		7A6200062FC0000000000001 /* KeyboardTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KeyboardTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,17 +103,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				79FFF9712FBED2DC00A61DE2 /* (null) in Frameworks */,
-				79FFF9722FBED2DC00A61DE2 /* libmarisa.xcframework in Frameworks */,
 				79FFF97B2FBED2DC00A61DE2 /* KeyboardCore in Frameworks */,
-				79FFF9732FBED2DC00A61DE2 /* libopencc.xcframework in Frameworks */,
-				79FFF9742FBED2DC00A61DE2 /* boost_atomic.xcframework in Frameworks */,
-				79FFF9752FBED2DC00A61DE2 /* libyaml-cpp.xcframework in Frameworks */,
-				79FFF9762FBED2DC00A61DE2 /* libleveldb.xcframework in Frameworks */,
-				79FFF9772FBED2DC00A61DE2 /* boost_filesystem.xcframework in Frameworks */,
-				79FFF9782FBED2DC00A61DE2 /* libglog.xcframework in Frameworks */,
-				79FFF9792FBED2DC00A61DE2 /* boost_regex.xcframework in Frameworks */,
-				79FFF97A2FBED2DC00A61DE2 /* librime.xcframework in Frameworks */,
+				7A6000012FC0000000000001 /* RimeBridge in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,15 +113,32 @@
 			buildActionMask = 2147483647;
 			files = (
 				793AC8802FB0BE0600DAE8A0 /* KeyboardCore in Frameworks */,
-				79E64D962FB7563B009FCFAD /* libmarisa.xcframework in Frameworks */,
-				79E64D882FB7563B009FCFAD /* libopencc.xcframework in Frameworks */,
-				79E64D942FB7563B009FCFAD /* boost_atomic.xcframework in Frameworks */,
-				79E64D982FB7563B009FCFAD /* libyaml-cpp.xcframework in Frameworks */,
-				79E64D8E2FB7563B009FCFAD /* libleveldb.xcframework in Frameworks */,
-				79E64D8C2FB7563B009FCFAD /* boost_filesystem.xcframework in Frameworks */,
-				79E64D8A2FB7563B009FCFAD /* libglog.xcframework in Frameworks */,
-				79E64D902FB7563B009FCFAD /* boost_regex.xcframework in Frameworks */,
-				79E64D922FB7563B009FCFAD /* librime.xcframework in Frameworks */,
+				7A6000022FC0000000000001 /* RimeBridge in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A6100032FC0000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A6100092FC0000000000001 /* RimeBridge in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A6200072FC0000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				794D5D042FC58EE90044A0B9 /* RimeBridge in Frameworks */,
+				7A6200012FC0000000000001 /* KeyboardCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A6200082FC0000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A6200022FC0000000000001 /* KeyboardCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,7 +150,9 @@
 			children = (
 				793AC84C2FB0BDB000DAE835 /* Universe Keyboard */,
 				793AC85D2FB0BE0600DAE835 /* Keyboard */,
-				79E64D7D2FB7563B009FCFAD /* Frameworks */,
+				7A6100022FC0000000000001 /* Packages/RimeBridge/Tests/RimeBridgeTests */,
+				7A6200052FC0000000000001 /* UniverseKeyboardTests */,
+				7A6200062FC0000000000001 /* KeyboardTests */,
 				793AC84B2FB0BDB000DAE835 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -177,24 +162,11 @@
 			children = (
 				793AC84A2FB0BDB000DAE835 /* Universe Keyboard.app */,
 				793AC85C2FB0BE0600DAE835 /* Keyboard.appex */,
+				7A6100012FC0000000000001 /* RimeBridgeTests.xctest */,
+				7A6200032FC0000000000001 /* UniverseKeyboardTests.xctest */,
+				7A6200042FC0000000000001 /* KeyboardTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		79E64D7D2FB7563B009FCFAD /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				79E64D842FB7563B009FCFAD /* boost_atomic.xcframework */,
-				79E64D802FB7563B009FCFAD /* boost_filesystem.xcframework */,
-				79E64D822FB7563B009FCFAD /* boost_regex.xcframework */,
-				79E64D7F2FB7563B009FCFAD /* libglog.xcframework */,
-				79E64D812FB7563B009FCFAD /* libleveldb.xcframework */,
-				79E64D852FB7563B009FCFAD /* libmarisa.xcframework */,
-				79E64D7E2FB7563B009FCFAD /* libopencc.xcframework */,
-				79E64D832FB7563B009FCFAD /* librime.xcframework */,
-				79E64D862FB7563B009FCFAD /* libyaml-cpp.xcframework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -220,6 +192,7 @@
 			name = "Universe Keyboard";
 			packageProductDependencies = (
 				793AC8812FB0BE0600DAE8A0 /* KeyboardCore */,
+				7A6000042FC0000000000001 /* RimeBridge */,
 			);
 			productName = "Universe Keyboard";
 			productReference = 793AC84A2FB0BDB000DAE835 /* Universe Keyboard.app */;
@@ -232,7 +205,6 @@
 				793AC8582FB0BE0600DAE835 /* Sources */,
 				793AC8592FB0BE0600DAE835 /* Frameworks */,
 				793AC85A2FB0BE0600DAE835 /* Resources */,
-				79E64D9C2FB7563B009FCFAD /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -244,10 +216,82 @@
 			name = Keyboard;
 			packageProductDependencies = (
 				793AC8812FB0BE0600DAE8A0 /* KeyboardCore */,
+				7A6000042FC0000000000001 /* RimeBridge */,
 			);
 			productName = Keyboard;
 			productReference = 793AC85C2FB0BE0600DAE835 /* Keyboard.appex */;
 			productType = "com.apple.product-type.app-extension";
+		};
+		7A6100062FC0000000000001 /* RimeBridgeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A61000A2FC0000000000001 /* Build configuration list for PBXNativeTarget "RimeBridgeTests" */;
+			buildPhases = (
+				7A6100042FC0000000000001 /* Sources */,
+				7A6100032FC0000000000001 /* Frameworks */,
+				7A6100052FC0000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				7A6100022FC0000000000001 /* Packages/RimeBridge/Tests/RimeBridgeTests */,
+			);
+			name = RimeBridgeTests;
+			packageProductDependencies = (
+				7A6000042FC0000000000001 /* RimeBridge */,
+			);
+			productName = RimeBridgeTests;
+			productReference = 7A6100012FC0000000000001 /* RimeBridgeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		7A6200092FC0000000000001 /* UniverseKeyboardTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A6200132FC0000000000001 /* Build configuration list for PBXNativeTarget "UniverseKeyboardTests" */;
+			buildPhases = (
+				7A62000D2FC0000000000001 /* Sources */,
+				7A6200072FC0000000000001 /* Frameworks */,
+				7A62000B2FC0000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7A6200172FC0000000000001 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				7A6200052FC0000000000001 /* UniverseKeyboardTests */,
+			);
+			name = UniverseKeyboardTests;
+			packageProductDependencies = (
+				793AC8812FB0BE0600DAE8A0 /* KeyboardCore */,
+				7A6000042FC0000000000001 /* RimeBridge */,
+			);
+			productName = UniverseKeyboardTests;
+			productReference = 7A6200032FC0000000000001 /* UniverseKeyboardTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		7A62000A2FC0000000000001 /* KeyboardTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A6200142FC0000000000001 /* Build configuration list for PBXNativeTarget "KeyboardTests" */;
+			buildPhases = (
+				7A62000E2FC0000000000001 /* Sources */,
+				7A6200082FC0000000000001 /* Frameworks */,
+				7A62000C2FC0000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				7A6200062FC0000000000001 /* KeyboardTests */,
+			);
+			name = KeyboardTests;
+			packageProductDependencies = (
+				793AC8812FB0BE0600DAE8A0 /* KeyboardCore */,
+			);
+			productName = KeyboardTests;
+			productReference = 7A6200042FC0000000000001 /* KeyboardTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -266,6 +310,15 @@
 						CreatedOnToolsVersion = 26.4.1;
 						LastSwiftMigration = 2650;
 					};
+					7A6100062FC0000000000001 = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
+					7A6200092FC0000000000001 = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
+					7A62000A2FC0000000000001 = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
 				};
 			};
 			buildConfigurationList = 793AC8452FB0BDB000DAE835 /* Build configuration list for PBXProject "Universe Keyboard" */;
@@ -279,6 +332,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				793AC8832FB0BE0600DAE8A0 /* XCLocalSwiftPackageReference "Packages/KeyboardCore" */,
+				7A6000032FC0000000000001 /* XCLocalSwiftPackageReference "Packages/RimeBridge" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 793AC84B2FB0BDB000DAE835 /* Products */;
@@ -287,6 +341,9 @@
 			targets = (
 				793AC8492FB0BDB000DAE835 /* Universe Keyboard */,
 				793AC85B2FB0BE0600DAE835 /* Keyboard */,
+				7A6100062FC0000000000001 /* RimeBridgeTests */,
+				7A6200092FC0000000000001 /* UniverseKeyboardTests */,
+				7A62000A2FC0000000000001 /* KeyboardTests */,
 			);
 		};
 /* End PBXProject section */
@@ -300,6 +357,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		793AC85A2FB0BE0600DAE835 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A6100052FC0000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A62000B2FC0000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A62000C2FC0000000000001 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -323,6 +401,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7A6100042FC0000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A62000D2FC0000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A62000E2FC0000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -330,6 +429,11 @@
 			isa = PBXTargetDependency;
 			target = 793AC85B2FB0BE0600DAE835 /* Keyboard */;
 			targetProxy = 793AC8612FB0BE0600DAE835 /* PBXContainerItemProxy */;
+		};
+		7A6200172FC0000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 793AC8492FB0BDB000DAE835 /* Universe Keyboard */;
+			targetProxy = 7A6200152FC0000000000001 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -467,21 +571,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C33N6HTS9N;
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor",
-				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Keyboard/RimeBridge",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libleveldb.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libmarisa.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libopencc.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libyaml-cpp.xcframework/ios-arm64/Headers",
-				);
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -502,9 +593,10 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Universe Keyboard/UniverseKeyboard-Bridging-Header.h";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -519,21 +611,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C33N6HTS9N;
 				ENABLE_PREVIEWS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor",
-				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Keyboard/RimeBridge",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libleveldb.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libmarisa.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libopencc.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libyaml-cpp.xcframework/ios-arm64/Headers",
-				);
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -554,9 +633,10 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Universe Keyboard/UniverseKeyboard-Bridging-Header.h";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -569,23 +649,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C33N6HTS9N;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"RIME_HAS_LUA=1",
-				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/Keyboard/RimeBridge/lua",
-					"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin",
-					"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin/rime_headers",
-					"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin/boost_headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libleveldb.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libmarisa.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libopencc.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libyaml-cpp.xcframework/ios-arm64/Headers",
-				);
 				INFOPLIST_FILE = Keyboard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Keyboard;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -612,11 +677,13 @@
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Keyboard/RimeBridge/Keyboard-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -629,23 +696,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C33N6HTS9N;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"RIME_HAS_LUA=1",
-				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/Keyboard/RimeBridge/lua",
-					"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin",
-					"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin/rime_headers",
-					"$(PROJECT_DIR)/Keyboard/RimeBridge/lua-plugin/boost_headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libleveldb.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libmarisa.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libopencc.xcframework/ios-arm64/Headers",
-					"$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libyaml-cpp.xcframework/ios-arm64/Headers",
-				);
 				INFOPLIST_FILE = Keyboard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Keyboard;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -672,11 +724,183 @@
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "Keyboard/RimeBridge/Keyboard-Bridging-Header.h";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		7A6100072FC0000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.RimeBridgeTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "";
+			};
+			name = Debug;
+		};
+		7A6100082FC0000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.RimeBridgeTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "";
+			};
+			name = Release;
+		};
+		7A62000F2FC0000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.UniverseKeyboardTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Universe Keyboard.app/Universe Keyboard";
+				TEST_TARGET_NAME = "Universe Keyboard";
+			};
+			name = Debug;
+		};
+		7A6200102FC0000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.UniverseKeyboardTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Universe Keyboard.app/Universe Keyboard";
+				TEST_TARGET_NAME = "Universe Keyboard";
+			};
+			name = Release;
+		};
+		7A6200112FC0000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.KeyboardTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "";
+			};
+			name = Debug;
+		};
+		7A6200122FC0000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.KeyboardTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "";
 			};
 			name = Release;
 		};
@@ -710,6 +934,33 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		7A61000A2FC0000000000001 /* Build configuration list for PBXNativeTarget "RimeBridgeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A6100072FC0000000000001 /* Debug */,
+				7A6100082FC0000000000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7A6200132FC0000000000001 /* Build configuration list for PBXNativeTarget "UniverseKeyboardTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A62000F2FC0000000000001 /* Debug */,
+				7A6200102FC0000000000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7A6200142FC0000000000001 /* Build configuration list for PBXNativeTarget "KeyboardTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A6200112FC0000000000001 /* Debug */,
+				7A6200122FC0000000000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -717,12 +968,20 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/KeyboardCore;
 		};
+		7A6000032FC0000000000001 /* XCLocalSwiftPackageReference "Packages/RimeBridge" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/RimeBridge;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		793AC8812FB0BE0600DAE8A0 /* KeyboardCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = KeyboardCore;
+		};
+		7A6000042FC0000000000001 /* RimeBridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RimeBridge;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

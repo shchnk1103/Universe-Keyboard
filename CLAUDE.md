@@ -24,17 +24,27 @@ All UI work must follow `docs/UI_STYLE_GUIDE.md`.
 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
-## Current Status (2026-05-25)
+## Current Status (2026-05-26)
 
-**Phase 3 (RIME Bridge) + 雾凇拼音 Integration + librime-lua COMPLETE.** Enterprise-grade refactoring applied: duplicate code eliminated, large files split, project reorganized into logical subdirectories.
+**Swift 6 migration is active.** Both Xcode targets use Swift 6 with complete strict concurrency checking. The only
+production C/ObjC RIME boundary now lives in `Packages/RimeBridge`: it contains `RimeEngineImpl`,
+`RimeDeploymentService`, `RimeConfigManager`, `RimeSessionManager`, and `RimeDeployer`. The Keyboard target imports
+that package for its session engine; the main app imports it for full deployment. Do not recreate direct bridge
+sources in either target.
+
+The App and Keyboard Extension targets use default `MainActor` isolation for UI and input coordination. The
+`KeyboardCore` and `RimeBridge` packages remain explicitly isolated at real ownership boundaries rather than
+globally MainActor-isolated. Do not silence shared-state issues with `@unchecked Sendable` or unsafe isolation.
+
+**Phase 3 (RIME Bridge) + 雾凇拼音 integration + librime-lua linked.** Duplicate bridge code is eliminated and core files are split; Lua user-facing behavior still requires real-artifact smoke testing.
 
 - **Test device**: iPhone 13 Pro (real device, primary). Simulator: iPhone 17 (iOS 26).
 - **11 dependency xcframeworks** compiled from source and linked (9 base + liblua + librime-lua)
 - **雾凇拼音 (rime-ice)** downloadable from main App (automatic download + deploy flow)
 - **librime-lua plugin** compiled as `librime-lua.xcframework` (~3MB, 10 C++ source files + 32 Lua 5.4 C files)
 - **liblua.xcframework** compiled (PUC Lua 5.4, ~400KB)
-- **Main-app-side RIME deployment**: `RimeDeployer` (ObjC) runs `start_maintenance(full_check=True)` + `join_maintenance_thread()` in main App process, removing 5-15s blocking from keyboard extension startup. Keyboard only does lightweight `start_maintenance(full_check=False)` quick check.
-- **`RIME_HAS_LUA=1`** defined in Keyboard target `GCC_PREPROCESSOR_DEFINITIONS`, ensuring Lua module loads correctly
+- **Main-app-side RIME deployment**: `RimeDeploymentService` in `Packages/RimeBridge` drives the package-private ObjC deployer in the main App process, removing deployment and capability persistence from keyboard extension startup. Keyboard only creates and recovers an input session over already-prepared runtime data.
+- **`RIME_HAS_LUA=1`** defined in Keyboard target `GCC_PREPROCESSOR_DEFINITIONS`; real-schema Lua behavior must still be verified with release artifacts
 - **Shared UI components**: `BulletRow`, `CapsuleBadge`, `ClickSoundGenerator`, `SettingsNavigationLink` extracted to eliminate duplication
 - **CandidateBar split**: `CandidateButtonFactory` + `CandidateBarDataSource` extracted from 443-line extension
 - **AutoCapitalizationRules** extracted from `KeyboardController` into standalone type
@@ -64,7 +74,7 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
   3. *Bottom-anchored layout*: rootStack pinned to view bottom with fixed height. Failed because final view height varies (216-250pt), and fixed content height either clips or leaves too much empty space.
   4. *Async alpha in viewDidAppear*: `DispatchQueue.main.async` not guaranteed to land after the final layout pass.
   5. *Current approach*: top+bottom pinning (original layout) + `view.alpha = 0` + height-triggered reveal. Simplest solution that works.
-- **RIME session diagnostics**: NSLog in `RimeSessionManager.m` for `processKey(sessionId=0)`, `deployIfNeeded`, `createSession`, `destroySession`, plus `select_schema` after auto-recovery. All `_sessionId` format strings use `%lu` with `(unsigned long)` cast.
+- **RIME session diagnostics**: NSLog in `RimeSessionManager.m` for `processKey(sessionId=0)`, `createSession`, `destroySession`, plus `select_schema` after auto-recovery. Full deployment diagnostics belong to the main-app deployment service, never the input path.
 - **Logger category enhancement**: Added `Category.display` (DISP). Per-category toggle switches in settings (性能/画面/引擎/配置/部署/通用). `DiagnosticsView` with category filter chips and color-coded log lines (ERROR=red, WARN=orange, PERF=blue, DISP=purple).
 - **iPhone 13 Pro**: Primary test device. Final keyboard view height: 258pt (may vary 216-268pt). Layout constants: `candidateBarHeight=44`, `keyHeight=44`, `keySpacing=8` (vertical), `keyHorizontalSpacing=6` (within-row), `keyCornerRadius=9`, horizontal margins 4pt. `preferredContentSize=258pt`.
 
@@ -81,7 +91,7 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 - **Apple HIG P2 (Semantic colors + 8pt grid)**: Highlighted background uses `.systemGray3`/`.systemGray6`. Candidate stack spacing 3→4pt, highlighted insets 6→8pt, vertical panel spacing 5→4pt.
 - **Apple HIG P3 (Spring animation + indicator)**: Chevron rotation uses `usingSpringWithDamping: 0.75` spring. "More" indicator `⋯` (U+22EF, `.quaternaryLabel`) appended when `hasMoreCandidates`, removed when exhausted.
 - **KeySpacing split**: `keySpacing: 8` (vertical between rows) + `keyHorizontalSpacing: 6` (horizontal within rows). Total height 250→258pt.
-- **Test suite**: 335 tests, 0 failures (was 225).
+- **Test suite baseline**: 347 KeyboardCore tests, 0 failures.
 
 **Recent changes (2026-05-25, afternoon)** — 关键 bug 修复:
 
@@ -118,15 +128,15 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 4. **Bottom anchoring causes candidate bar clipping at 216pt.** `rootStack.height(236) + bottomMargin(8) = 244pt` minimum, but view is only 216pt → top 28pt clipped including the candidate bar.
 5. **Associated-object Bool bridging is unreliable.** `objc_getAssociatedObject(...) as? Bool` can fail on `__NSCFBoolean`, making the reuse check always think bold state changed. Simpler: just rebuild.
 6. **Log aggressively.** Without `viewDidLayoutSubviews` frame logging, we wouldn't know the final height is 216pt or that viewDidAppear fires at intermediate height 445pt.
-- Enterprise-grade refactoring: 5 duplicate blocks unified, 2 large files split, project reorganized into logical subdirectories (328 tests, 0 failures)
+- Enterprise-grade refactoring: RIME C/ObjC ownership is consolidated in `Packages/RimeBridge`; the Swift 6 baseline verified 347 KeyboardCore tests with 0 failures.
 - Duplicate WAV generation unified → `ClickSoundGenerator` in KeyboardCore
 - Duplicate Lua stripping removed from SchemaManager → uses `RimeConfigPostProcessor`
-- Duplicate schema repair removed from `RimeEngineImpl.init` → uses `RimeConfigPostProcessor.repairSchemaIfNeeded`
+- Schema repair and Lua stripping are performed in the main App preparation/deployment flow; `RimeEngineImpl.init` only starts an input session over prepared data.
 - BulletRow + CapsuleBadge patterns unified into shared components (11 call sites updated)
 - `RIME_HAS_LUA=1` defined in Keyboard target preprocessor macros
 - `activateRimeIce()` + `deployRimeConfig()` order swapped: schema activated BEFORE deploy, so deploy compiles the correct schema and flags are not overridden
 - `t9.schema.yaml` always installed (was conditionally skipped, causing "missing input schema: t9" in deployment_tasks.cc)
-- `RimeConfigManager.prepareDirectories()` schema repair now guarded by `!rimeDeployed` — respects main App deploy results
+- App-side `RimeConfigManager.prepareDirectories()` schema repair is guarded by `!rimeDeployed` so it respects prior deployment results.
 - `RimeSettingsView.deployState` now refreshes via `.onChange(of: rimeIceDownloadState)` instead of only on `onAppear`
 - `RimeDeployer.finalize` renamed to `cleanup` to avoid NSObject deprecated-method collision
 
@@ -137,14 +147,15 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 - Team: `C33N6HTS9N`, code signing is automatic.
 - To test the keyboard: run the Keyboard extension target on a simulator/device, then enable it in Settings → General → Keyboard → Keyboards → Add New Keyboard → Keyboard.
 - Build with `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build`
-- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**328 tests across 13 files**). Run with `swift test` in the `Packages/KeyboardCore/` directory.
+- KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/` (**347 tests at the Swift 6 migration baseline**). Run with `swift test --package-path Packages/KeyboardCore`.
+- `RimeBridgeTests` is an iOS Simulator Xcode test target because the pinned RIME xcframework inventory is iOS-only; do not replace it with macOS `swift test --package-path Packages/RimeBridge`.
 - A **macOS verification tool** at `Packages/RimeBridge/TestTool/` validates the bridge code against real librime 1.16.1. Run with `cd Packages/RimeBridge/TestTool && make && ./test_rime`.
 
 ## Architecture
 
 ### Keyboard Extension — file layout
 
-The keyboard is split across **17 files** in 4 subdirectories:
+The keyboard is split by presentation, input action, candidate paging, feedback, and accessibility responsibilities:
 
 ```
 Keyboard/
@@ -152,26 +163,26 @@ Keyboard/
 │   ├── KeyboardViewController.swift          — 主控：生命周期、引擎选择、UI 同步
 │   ├── KeyboardViewController+Display.swift   — 按钮标题计算 + 状态刷新
 │   ├── KeyboardViewController+KeyFactory.swift — 按键工厂方法
-│   ├── KeyboardViewController+CandidateBar.swift — 候选栏协调器（scroll、展开、数据源）
-│   ├── KeyboardViewController+Layout.swift   — 键盘行布局
-│   ├── KeyboardViewController+Actions.swift  — 按键动作 + 长按删除
-│   └── KeyboardViewController+Gestures.swift — 高亮 + 长按变体
+│   ├── KeyboardViewController+CandidateBar.swift — 候选栏薄适配
+│   ├── KeyboardViewController+CandidatePaging.swift — 候选分页
+│   ├── KeyboardViewController+ExpandedCandidatePanel.swift — 展开面板
+│   ├── KeyboardViewController+InputActions.swift — 输入动作
+│   ├── KeyboardViewController+DeleteActions.swift — 删除交互
+│   ├── KeyboardViewController+Presentation.swift — 展示布局
+│   ├── KeyboardViewController+Bootstrap.swift — 轻量会话启动
+│   └── KeyboardViewController+KeyAccessibility.swift — 无障碍语义
 ├── Views/
 │   ├── KeyPopupView.swift                    — 变体弹出面板
 │   └── CandidateBar/
 │       ├── CandidateButtonFactory.swift       — 候选按钮工厂（UIButtonConfiguration）
+│       ├── CandidateBarView.swift             — 候选栏容器
+│       ├── CandidateCell.swift                — 候选单元格
 │       └── CandidateBarDataSource.swift       — 候选数据源（RIME 优先，回退 Fake）
 ├── Services/
-│   ├── KeyClickPlayer.swift                  — 内嵌键盘点击音播放器
-│   ├── RimeConfigManager.swift               — RIME 配置部署 + OpenCC + custom.yaml 生成
-│   └── UITextDocumentProxyAdapter.swift      — 代理适配器
+│   ├── KeyClickPlayer.swift                  — actor 隔离点击音播放器
+│   └── UITextDocumentProxyAdapter.swift      — 文本代理适配器
 ├── Bridge/
 │   ├── KeyboardType+UIKit.swift              — 类型桥接
-│   └── RimeBridge/                           — ObjC 桥接层
-│       ├── Keyboard-Bridging-Header.h
-│       ├── RimeSessionManager.h/.m           — librime C API 封装
-│       ├── rime_api.h                        — librime 官方 C API 头文件
-│       └── RimeEngineImpl.swift              — RimeEngine 协议实现
 ├── Info.plist
 └── Keyboard.entitlements
 ```
@@ -190,7 +201,10 @@ Universe Keyboard/
 │   │   ├── BulletRow.swift               — 项目符号行（dot / checkmark）
 │   │   ├── CapsuleBadge.swift            — 胶囊标签（filled / tinted）
 │   │   └── SettingsNavigationLink.swift   — 设置导航行
+│   ├── Guide/
+│   │   └── GuideTab.swift                — 首次启用与系统设置引导
 │   ├── Settings/
+│   │   ├── SettingsTab.swift             — 设置页导航与诊断开关
 │   │   ├── FeedbackSettingsView.swift    — 按键音 + 触感设置
 │   │   ├── RimeSettingsView.swift        — RIME 方案设置（方案选择/下载/部署）
 │   │   └── SchemaPickerRow.swift        — 方案选择行组件
@@ -199,24 +213,21 @@ Universe Keyboard/
 │   └── License/
 │       └── LicenseView.swift             — GPL-3.0 许可证查看
 ├── Services/
-│   ├── SchemaManager.swift               — 方案管理 + 下载编排（@MainActor ObservableObject）
-│   ├── RimeDeployer.h/.m                 — 主 App 端 RIME 部署封装
-│   └── (future: SchemaDownloadService, SchemaInstallService, etc.)
-├── UniverseKeyboard-Bridging-Header.h     — 主 App zlib + RimeDeployer 桥接头
+│   └── SchemaManager.swift               — 方案管理 + 下载编排（@MainActor @Observable）
 └── Universe Keyboard.entitlements
 ```
 
-**Testing** (328 tests across 13 files, 0 failures):
+**Testing** (`KeyboardCore` Swift 6 baseline: 347 tests, 0 failures):
 
 ```
 Packages/KeyboardCore/Tests/KeyboardCoreTests/
 ├── AutoCapitalizeTests.swift (29 tests)  ├── CompositionTests.swift (23 tests)
 ├── DeleteTests.swift (5 tests)           ├── InputModeTests.swift (6 tests)
 ├── KeyboardTypeTests.swift (6 tests)     ├── LoggerTests.swift (7 tests)
-├── PageSwitchTests.swift (12 tests)      ├── RimeConfigPostProcessorTests.swift (17 tests)
-├── RimeConfigTests.swift (26 tests)      ├── RimeControllerTests.swift (26 tests)
+├── PageSwitchTests.swift                  ├── RimeConfigPostProcessor*Tests.swift
+├── RimeConfig*Tests.swift                 ├── RimeController*Tests.swift
 ├── ShiftStateTests.swift (12 tests)      ├── SpaceReturnTests.swift (9 tests)
-├── UnzipTests.swift (37 tests)
+├── Unzip*Tests.swift
 ```
 
 All state is managed in `KeyboardCore.KeyboardState` (via `KeyboardController`), not in the view controller. The VC delegates to `controller.handle(_:)` for all business logic and calls `syncUI(with:)` to refresh views.
@@ -225,10 +236,10 @@ All state is managed in `KeyboardCore.KeyboardState` (via `KeyboardController`),
 
 The keyboard uses a **dual-path** design in `KeyboardController`:
 
-- **RIME path** (`rimeEngine != nil`): delegates composition and candidate lookup to the engine. Supports hot-reload via `deployIfNeeded()` on every keystroke.
+- **RIME path** (`rimeEngine != nil`): delegates composition and candidate lookup to the engine. Keystrokes never run deployment or configuration file synchronization.
 - **Fallback path** (`rimeEngine == nil`): uses `CandidateProvider` + manual composition (original behavior).
 
-**librime-lua integration**: `Packages/RimeBridge/Vendor/` contains 11 xcframeworks (9 original + `liblua.xcframework` + `librime-lua.xcframework`). The lua module is registered at runtime via `RIME_HAS_LUA=1` preprocessor macro. Lua scripts are deployed from rime-ice's `lua/` directory to `AppGroup/Rime/shared/lua/`.
+**librime-lua integration**: `Packages/RimeBridge/Vendor/` expects 11 xcframeworks (9 original + `liblua.xcframework` + `librime-lua.xcframework`). The lua module is registered at runtime via `RIME_HAS_LUA=1` preprocessor macro. Full Lua behavior remains subject to a real-artifact schema smoke test before release.
 
 **Inline preedit**: When typing in Chinese mode, the pinyin string is displayed directly in the host text field (like native iOS). `KeyboardState.insertedPreeditCount` tracks the length. On each keystroke, old preedit is deleted and new preedit is inserted. On candidate selection, preedit is deleted and the candidate text is inserted.
 
@@ -236,9 +247,9 @@ The keyboard uses a **dual-path** design in `KeyboardController`:
 - `KeyboardCore/Sources/KeyboardCore/RimeEngine.swift` — protocol definition
 - `KeyboardCore/Sources/KeyboardCore/RimeOutput.swift` — output data model
 - `KeyboardCore/Sources/KeyboardCore/CandidateProviderRimeAdapter.swift` — Fake → RimeEngine adapter
-- `Keyboard/RimeBridge/RimeSessionManager.h/.m` — ObjC wrapper around librime C API
-- `Keyboard/RimeBridge/RimeEngineImpl.swift` — Swift engine implementation
-- `Packages/RimeBridge/` — SPM package (will contain compiled xcframework)
+- `Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m` — ObjC wrapper around librime C API
+- `Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl.swift` — Swift session engine implementation
+- `Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift` — app-side full-deployment API
 
 **macOS verification**: `Packages/RimeBridge/TestTool/main.cpp` tests the bridge code against Homebrew librime 1.16.1.
 
@@ -253,10 +264,10 @@ A local Swift Package at `Packages/KeyboardCore/`. Contains:
 - **`CandidateItem`** — `CandidateKind` enum (`.candidate`, `.composition`, `.placeholder`) + `CandidateItem` struct. Replaces the old `(title: String, kind: String)` tuple scattered across 25+ locations. `CandidateKind` uses `Int` rawValue so it maps directly to `UIButton.tag`, avoiding the misuse of `accessibilityIdentifier` for business data.
 - **`CandidateProvider`** — protocol for candidate lookup (currently `FakeCandidateProvider`; will be replaced by RIME).
 - **`TextInputClient`** — protocol abstracting `UITextDocumentProxy` (enables unit testing with `FakeTextInputClient`).
-- **`Logger`** — unified logging singleton. Log levels (debug/info/warning/error), categories (general/engine/config/deployment/performance), 500-entry ring buffer, master toggle via `logging_enabled` UserDefaults key. Tests in `LoggerTests.swift` (7 tests).
-- **`Unzip`** — minimal zip extractor using system libz (raw deflate). Supports store (method 0) and deflate (method 8). Bounds checking + 100MB safety limit + 10K iteration guard. 37 tests.
-- **`RimeConfigTemplates`** — pure YAML generation logic + string constants (default.yaml, luna_pinyin.schema.yaml, OpenCC configs, fallbackDict). Extracted from RimeConfigManager. 26 tests.
-- **`RimeConfigPostProcessor`** — canonical Lua stripping + schema repair logic (used by both main App and keyboard engine-side). 17 tests.
+- **`Logger`** — lightweight `Sendable` facade backed by a FIFO serial writer. Log filtering, bounded buffering and persistence run away from the keyboard input path; `requestFlush()` never synchronously blocks a key event.
+- **`Unzip` / `ZipArchiveReader` / `ZipBinaryReader` / `ZipInflater`** — minimal ZIP extraction boundary using system libz (raw deflate), with parsing, binary reads and inflate responsibilities split for focused tests.
+- **`RimeConfigTemplateGenerator` / template files** — pure YAML generation logic plus schema, OpenCC and fallback dictionary templates extracted from `RimeConfigManager`.
+- **`RimeConfigPostProcessor`** — canonical Lua stripping and schema repair logic used from the main App deployment preparation path; the Keyboard Extension does not repair files while opening a session.
 - **`ClickSoundGenerator`** — shared WAV click sound generator (used by `KeyClickPlayer` + `FeedbackSettingsView`).
 - **`AutoCapitalizationRules`** — pure static auto-capitalization logic, extracted from `KeyboardController`.
 - **`ZLib`** — pure Swift `@_silgen_name` declarations for zlib types (`z_stream`, `uInt`), functions (`inflateInit2_`, `inflate`, `inflateEnd`, `deflateInit2_`, `deflate`, `deflateEnd`), and constants. Eliminates the CZLib SPM C-target to avoid Xcode 26 explicit-module-build issues.
@@ -275,7 +286,7 @@ Universe Keyboard/
 │   └── License/                          — GPL-3.0 viewer
 └── Services/
     ├── SchemaManager.swift               — schema download + deploy orchestrator
-    └── RimeDeployer.h/.m                 — main-app-side librime deploy wrapper
+    └── RimeDeploymentService.swift       — main-app-side full deployment API
 ```
 
 ### Shared infrastructure
@@ -318,15 +329,15 @@ Keyboard Extension (UIInputViewController) → thin UI + state machine
 - **Key click & haptic settings are cached** at the VC level on `viewDidLoad` (not read from `UserDefaults(suiteName:)` on every keypress, which would incur XPC overhead). Cache is invalidated via `UserDefaults.didChangeNotification` observer.
 - **Layout extraction**: `reloadKeyboard()` and `reloadKeyboardContent()` share keyboard row construction through `addKeyboardRows(for:)`. No duplicated layout code.
 - **iOS 26 native appearance**: key buttons use `KeyVisualStyle` enum for consistent styling (`.character`/`.function`/`.space`/`.returnKey`/`.active`). Dark/light mode custom colors for keyboard background, character keys, function keys, and highlighted state. Keys use `.continuous` corner curve with 9pt radius. Touch feedback uses instantaneous `backgroundColor` + `CGAffineTransform(scaleX: 0.96)` — no Core Animation transactions.
-- Keyboard uses programmatic UIKit layout (UIStackView-based rows, no Storyboards) with fixed key sizes (`keyHeight: 44`, `candidateBarHeight: 36`, `keySpacing: 6`, `keyCornerRadius: 9`).
+- Keyboard uses programmatic UIKit layout (UIStackView-based rows, no Storyboards) with stable geometry (`keyHeight: 44`, `candidateBarHeight: 44`, `keySpacing: 8`, `keyHorizontalSpacing: 6`, `keyCornerRadius: 9`).
 
 ### RIME Deployment System
 
-- **Main App deploy** (`SchemaManager.fetchAndDownload` → `deployRimeConfig()`): after downloading and installing rime_ice, main App calls `RimeDeployer` (minimal ObjC wrapper around librime C API) to run `start_maintenance(full_check=True)` + `join_maintenance_thread()`. This compiles all YAML → .bin (including rime_ice's 词库) in the main App process, so the keyboard starts with pre-built cache. Deploy runs in `Task.detached` to keep UI responsive.
-- **Main App settings** (Settings → RIME 方案设置): unified sub-page with schema picker, download UI (6 phases: idle → fetchingReleaseInfo → downloading → extracting → postProcessing → deploying → completed), candidate count slider, simplification toggle, and deploy controls. Deploy section polls `rime_deployed`/`rime_deploying` and auto-refreshes via `.onChange(of: rimeIceDownloadState)`.
-- **Keyboard Extension** (`viewDidLoad`): `RimeConfigManager.prepareDirectories()` writes YAML configs + OpenCC dictionaries to App Group. Uses `config_generation` counter to detect code-level config changes. Schema repair (replacing Lua-stripped schemas) only runs when `rime_deployed=false` — respects main App deploy results.
-- **Keyboard initialize** (`RimeSessionManager.initializeEngine`): lightweight only — `initialize(NULL)` + Lua availability record + `start_maintenance(full_check=False)` quick check. No full deploy (already done by main App). Entire keyboard startup is sub-second.
-- **Runtime deploy** (`RimeEngineImpl.processKey`): calls `syncCustomYamlFiles()` before `deployIfNeeded()`. Custom YAML generated from UserDefaults settings (page_size, simplification). If `rime_needs_deploy` is true (e.g., after settings change without main-app deploy), clears build cache, runs full maintenance, creates new session.
+- **Main App deploy** (`SchemaManager.fetchAndDownload` → `deployRimeConfig()`): after installing rime_ice, the app calls the actor-isolated `RimeDeploymentService` package API. Its ObjC implementation runs full maintenance in the app process, so the keyboard starts with pre-built cache without owning the deployment boundary.
+- **Main App settings** (Settings → RIME 方案设置): unified sub-page with schema picker, download UI, candidate count slider, simplification toggle, and deploy controls. The deploy action awaits main-app compilation and reports success before the user returns to the keyboard.
+- **Keyboard Extension** (`viewDidLoad`): resolves already-prepared runtime directories and creates a session only. It does not write YAML, repair schemas, invalidate caches, or deploy while the keyboard is being presented.
+- **Keyboard initialize** (`RimeSessionManager.initializeEngine`): lightweight only — `initialize(NULL)` followed by session creation over prepared runtime data. It performs no maintenance and writes no deployment or Lua capability preference state.
+- **Deployment ownership**: the main App writes `.custom.yaml` and calls `RimeDeploymentService.deploy(.fullCheck)` before the user returns to the keyboard. `RimeEngineImpl.processKey` performs session input only; Extension recovery may recreate a session but must never run full maintenance.
 - **OpenCC integration**: `simplifier` filter added to luna_pinyin schema with `opencc_config: opencc/t2s.json`. OpenCC configs + OCD2 dictionaries auto-deployed to `shared/opencc/`.
 - **Diagnostics**: `Logger` (singleton, KeyboardCore) with levels (debug/info/warning/error), categories, 500-entry ring buffer. Writes to `rime_diag_log` via shared UserDefaults. Main app DiagnosticsView shows logs with animated refresh/clear buttons.
 

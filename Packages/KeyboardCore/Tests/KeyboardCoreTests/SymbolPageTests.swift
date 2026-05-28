@@ -1,21 +1,20 @@
 import XCTest
+
 @testable import KeyboardCore
 
 /// 测试符号页和数字页在不同输入模式下的行为。
 ///
 /// UI 层的内容（具体显示哪些字符）定义在 KeyboardViewController 中，
 /// 这里测试底层状态机和 Key 分类逻辑的正确性。
+@MainActor
 final class SymbolPageTests: XCTestCase {
 
-    var controller: KeyboardController!
-    var client: FakeTextInputClient!
-
-    override func setUp() {
-        super.setUp()
-        client = FakeTextInputClient()
-        controller = KeyboardController()
+    let client = FakeTextInputClient()
+    lazy var controller: KeyboardController = {
+        let controller = KeyboardController()
         controller.textClient = client
-    }
+        return controller
+    }()
 
     // MARK: - KeyboardPage enumeration
 
@@ -138,8 +137,8 @@ final class SymbolPageTests: XCTestCase {
         XCTAssertTrue(engine.isComposing())
 
         // 切换到符号页（composition 被提交，因为离开字母页时 commit 了）
-        _ = controller.handle(.togglePage) // → numbers
-        _ = controller.handle(.togglePage) // → symbols
+        _ = controller.handle(.togglePage)  // → numbers
+        _ = controller.handle(.togglePage)  // → symbols
         XCTAssertEqual(controller.state.currentPage, .symbols)
         // 从字母页切换走时 composition 已提交
         // 现在的 composition 为空

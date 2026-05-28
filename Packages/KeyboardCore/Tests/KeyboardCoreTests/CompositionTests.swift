@@ -1,17 +1,16 @@
 import XCTest
+
 @testable import KeyboardCore
 
+@MainActor
 final class CompositionTests: XCTestCase {
 
-    var controller: KeyboardController!
-    var client: FakeTextInputClient!
-
-    override func setUp() {
-        super.setUp()
-        client = FakeTextInputClient()
-        controller = KeyboardController()
+    let client = FakeTextInputClient()
+    lazy var controller: KeyboardController = {
+        let controller = KeyboardController()
         controller.textClient = client
-    }
+        return controller
+    }()
 
     // MARK: - Chinese mode collects letters
 
@@ -22,7 +21,7 @@ final class CompositionTests: XCTestCase {
 
         _ = controller.handle(.insertKey("i"))
         XCTAssertEqual(controller.state.currentComposition, "ni")
-        XCTAssertEqual(client.text, "ni") // inline preedit 更新
+        XCTAssertEqual(client.text, "ni")  // inline preedit 更新
     }
 
     func testChineseModeLowercasesInput() {
@@ -46,7 +45,7 @@ final class CompositionTests: XCTestCase {
         _ = controller.handle(.insertKey("N"))
         _ = controller.handle(.insertKey("i"))
         XCTAssertEqual(controller.state.currentComposition, "Ni")
-        XCTAssertEqual(client.text, "Ni") // inline preedit
+        XCTAssertEqual(client.text, "Ni")  // inline preedit
     }
 
     func testCapitalizedCompositionDoesNotMatchCandidates() {
@@ -190,7 +189,7 @@ final class CompositionTests: XCTestCase {
 
     func testCompositionWithSpecialChars() {
         // 数字和符号页的字符直接上屏
-        _ = controller.handle(.togglePage) // switch to numbers
+        _ = controller.handle(.togglePage)  // switch to numbers
         _ = controller.handle(.insertKey("1"))
         XCTAssertEqual(client.text, "1")
         XCTAssertEqual(controller.state.currentComposition, "")

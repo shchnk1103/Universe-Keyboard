@@ -21,6 +21,48 @@
                ReferencedContainer = "container:Universe Keyboard.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "793AC85B2FB0BE0600DAE835"
+               BuildableName = "Keyboard.appex"
+               BlueprintName = "Keyboard"
+               ReferencedContainer = "container:Universe Keyboard.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7A6200092FC0000000000001"
+               BuildableName = "UniverseKeyboardTests.xctest"
+               BlueprintName = "UniverseKeyboardTests"
+               ReferencedContainer = "container:Universe Keyboard.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7A62000A2FC0000000000001"
+               BuildableName = "KeyboardTests.xctest"
+               BlueprintName = "KeyboardTests"
+               ReferencedContainer = "container:Universe Keyboard.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -29,6 +71,28 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7A6200092FC0000000000001"
+               BuildableName = "UniverseKeyboardTests.xctest"
+               BlueprintName = "UniverseKeyboardTests"
+               ReferencedContainer = "container:Universe Keyboard.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7A62000A2FC0000000000001"
+               BuildableName = "KeyboardTests.xctest"
+               BlueprintName = "KeyboardTests"
+               ReferencedContainer = "container:Universe Keyboard.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

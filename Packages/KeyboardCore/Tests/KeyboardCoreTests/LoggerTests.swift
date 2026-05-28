@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import KeyboardCore
 
 final class LoggerTests: XCTestCase {
@@ -49,15 +50,6 @@ final class LoggerTests: XCTestCase {
         XCTAssertTrue(a === b)
     }
 
-    // MARK: - isEnabled
-
-    func testIsEnabledDefaultFalse() {
-        // Default should be false (logging disabled in production)
-        // We can't guarantee UserDefaults state in tests,
-        // but the property should be readable without crashing.
-        _ = Logger.shared.isEnabled
-    }
-
     // MARK: - Entry Sendable conformance
 
     func testEntryIsSendable() {
@@ -69,5 +61,106 @@ final class LoggerTests: XCTestCase {
         )
         // Compile-time check: Entry conforms to Sendable
         let _: any Sendable = entry
+    }
+
+    func testLoggerIsSendable() {
+        let _: any Sendable = Logger.shared
+    }
+
+    // MARK: - Ordered writer
+
+    func testFlushPersistsRecordsInSubmissionOrder() {
+        let logger = makeLogger()
+
+        logger.debug("BEGIN", category: .engine)
+        logger.debug("END", category: .engine)
+        logger.requestFlush()
+
+        let snapshot = logger.snapshotForTesting()
+        XCTAssertEqual(snapshot.persistedLines.count, 2)
+        XCTAssertTrue(snapshot.persistedLines[0].hasSuffix("BEGIN"))
+        XCTAssertTrue(snapshot.persistedLines[1].hasSuffix("END"))
+    }
+
+    func testWriterFiltersCategoriesAndKeepsRingBufferBounded() {
+        let logger = makeLogger(maxEntries: 2) { category in
+            category != .config
+        }
+
+        logger.info("hidden", category: .config)
+        logger.info("first", category: .engine)
+        logger.info("second", category: .engine)
+        logger.info("third", category: .engine)
+        logger.requestFlush()
+
+        let snapshot = logger.snapshotForTesting()
+        XCTAssertEqual(snapshot.persistedLines.count, 2)
+        XCTAssertFalse(snapshot.persistedLines.joined().contains("hidden"))
+        XCTAssertFalse(snapshot.persistedLines.joined().contains("first"))
+        XCTAssertTrue(snapshot.persistedLines[0].hasSuffix("second"))
+        XCTAssertTrue(snapshot.persistedLines[1].hasSuffix("third"))
+    }
+
+    func testRequestFlushDoesNotWaitForBlockedPersistence() {
+        let persistenceStarted = DispatchSemaphore(value: 0)
+        let allowPersistenceToFinish = DispatchSemaphore(value: 0)
+        let suiteName = "LoggerTests.blocked.\(UUID().uuidString)"
+        let logger = Logger(
+            configuration: LoggerWriterConfiguration(
+                persistence: LoggerPersistence(
+                    isCategoryEnabled: { _ in true },
+                    readLines: {
+                        let text = UserDefaults(suiteName: suiteName)?.string(forKey: Logger.logKey) ?? ""
+                        return text.isEmpty ? [] : text.components(separatedBy: "\n")
+                    },
+                    persist: { lines, _ in
+                        UserDefaults(suiteName: suiteName)?
+                            .set(lines.joined(separator: "\n"), forKey: Logger.logKey)
+                        persistenceStarted.signal()
+                        allowPersistenceToFinish.wait()
+                    },
+                    clear: {}
+                )
+            )
+        )
+        defer { UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName) }
+
+        logger.info("event", category: .performance)
+        let start = ContinuousClock.now
+        logger.requestFlush()
+        let submitDuration = start.duration(to: .now)
+
+        XCTAssertLessThan(submitDuration, .milliseconds(50))
+        XCTAssertEqual(persistenceStarted.wait(timeout: .now() + 1), .success)
+        allowPersistenceToFinish.signal()
+        let snapshot = logger.snapshotForTesting()
+        XCTAssertTrue(snapshot.persistedLines[0].hasSuffix("event"))
+    }
+
+    private func makeLogger(
+        maxEntries: Int = 500,
+        isCategoryEnabled: @escaping @Sendable (Logger.Category) -> Bool = { _ in true }
+    ) -> Logger {
+        let suiteName = "LoggerTests.\(UUID().uuidString)"
+        return Logger(
+            configuration: LoggerWriterConfiguration(
+                maxEntries: maxEntries,
+                persistence: LoggerPersistence(
+                    isCategoryEnabled: isCategoryEnabled,
+                    readLines: {
+                        let text = UserDefaults(suiteName: suiteName)?.string(forKey: Logger.logKey) ?? ""
+                        return text.isEmpty ? [] : text.components(separatedBy: "\n")
+                    },
+                    persist: { lines, summary in
+                        let defaults = UserDefaults(suiteName: suiteName)
+                        defaults?.set(lines.joined(separator: "\n"), forKey: Logger.logKey)
+                        defaults?.set(summary, forKey: "rime_diag_summary")
+                    },
+                    clear: {
+                        UserDefaults(suiteName: suiteName)?.removePersistentDomain(forName: suiteName)
+                    }
+                )
+            )
+        )
     }
 }
