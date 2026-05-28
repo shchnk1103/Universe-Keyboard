@@ -1,9 +1,11 @@
 import XCTest
+
 @testable import KeyboardCore
 
 /// 测试 CandidateKind 枚举和 CandidateItem 结构体。
 /// 这两个类型是候选栏数据模型的基础，被 KeyboardController、CandidateBarDataSource、
 /// CandidateButtonFactory 使用。
+@MainActor
 final class CandidateKindTests: XCTestCase {
 
     // MARK: - CandidateKind raw values

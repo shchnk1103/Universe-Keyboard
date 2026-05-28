@@ -1,17 +1,16 @@
 import XCTest
+
 @testable import KeyboardCore
 
+@MainActor
 final class SpaceReturnTests: XCTestCase {
 
-    var controller: KeyboardController!
-    var client: FakeTextInputClient!
-
-    override func setUp() {
-        super.setUp()
-        client = FakeTextInputClient()
-        controller = KeyboardController()
+    let client = FakeTextInputClient()
+    lazy var controller: KeyboardController = {
+        let controller = KeyboardController()
         controller.textClient = client
-    }
+        return controller
+    }()
 
     // MARK: - Space with composition
 
@@ -89,10 +88,10 @@ final class SpaceReturnTests: XCTestCase {
         controller.state.inputMode = .english
         controller.state.currentComposition = "ni"
 
-        _ = controller.handle(.insertSpace) // selects candidate
+        _ = controller.handle(.insertSpace)  // selects candidate
         XCTAssertEqual(client.text, "你")
 
-        _ = controller.handle(.insertSpace) // normal space
+        _ = controller.handle(.insertSpace)  // normal space
         XCTAssertEqual(client.text, "你 ")
     }
 

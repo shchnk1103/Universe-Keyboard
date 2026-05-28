@@ -1,23 +1,21 @@
 import XCTest
+
 @testable import KeyboardCore
 
 /// 测试 RimeEngine 协议在 FakeRimeEngine 上的额外边界行为。
 /// RimeControllerTests（27 个测试）已覆盖了主要的 controller + engine 集成路径。
 /// 此文件补充协议级别的边界情况。
+@MainActor
 final class RimeEngineProtocolTests: XCTestCase {
 
-    var controller: KeyboardController!
-    var client: FakeTextInputClient!
-    var engine: FakeRimeEngine!
-
-    override func setUp() {
-        super.setUp()
-        client = FakeTextInputClient()
-        engine = FakeRimeEngine()
-        controller = KeyboardController()
+    let client = FakeTextInputClient()
+    let engine = FakeRimeEngine()
+    lazy var controller: KeyboardController = {
+        let controller = KeyboardController()
         controller.textClient = client
         controller.rimeEngine = engine
-    }
+        return controller
+    }()
 
     // MARK: - processKey: empty / single / unknown
 

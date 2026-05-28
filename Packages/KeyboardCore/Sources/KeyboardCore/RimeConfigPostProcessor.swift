@@ -4,11 +4,12 @@ import Foundation
 public struct RimeConfigPostProcessor {
 
     /// 仅在 lua 模块不可用时剥离 Lua 依赖。
-    /// 读取 rime_lua_available（由 RimeSessionManager 设置）。
+    /// Reads Lua capability recorded by the main-app deployment path.
     /// 默认 true：librime-lua 已编译链接。
     public static func shouldStripLua() -> Bool {
-        let luaAvailable = (UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")?
-            .object(forKey: "rime_lua_available") as? Bool) ?? true
+        let luaAvailable =
+            (UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")?
+                .object(forKey: "rime_lua_available") as? Bool) ?? true
         return !luaAvailable
     }
 
@@ -25,16 +26,17 @@ public struct RimeConfigPostProcessor {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             let indent = line.prefix(while: { $0 == " " || $0 == "\t" }).count
 
-            let isLuaLine = trimmed.contains("lua_translator@")
-                         || trimmed.contains("lua_filter@")
-                         || trimmed.hasPrefix("- lua_translator")
-                         || trimmed.hasPrefix("- lua_filter")
-                         || trimmed.hasPrefix("- lua_processor")
+            let isLuaLine =
+                trimmed.contains("lua_translator@")
+                || trimmed.contains("lua_filter@")
+                || trimmed.hasPrefix("- lua_translator")
+                || trimmed.hasPrefix("- lua_filter")
+                || trimmed.hasPrefix("- lua_processor")
 
             // rime_ice speller initials 包含全部字母，无 Lua 时 speller 无法工作
-            let isInitialsLine = trimmed.hasPrefix("initials:") &&
-                (trimmed.contains("zyxwvutsrqponmlkjihgfedcba") ||
-                 trimmed.contains("abcdefghijklmnopqrstuvwxyz"))
+            let isInitialsLine =
+                trimmed.hasPrefix("initials:")
+                && (trimmed.contains("zyxwvutsrqponmlkjihgfedcba") || trimmed.contains("abcdefghijklmnopqrstuvwxyz"))
 
             // 检查是否应该跳过当前行（续行检测）
             if !isLuaLine, let skipIndent = skipUntilIndentation, indent > skipIndent, !trimmed.isEmpty {
@@ -80,15 +82,14 @@ public struct RimeConfigPostProcessor {
         guard let content = try? String(contentsOfFile: path, encoding: .utf8) else { return }
 
         // 如果已有 Lua 引用，说明是完整下载的正确版本，不需要修复
-        let hasLuaReferences = content.contains("lua_translator@") ||
-                                content.contains("lua_filter@") ||
-                                content.contains("lua_processor@")
+        let hasLuaReferences =
+            content.contains("lua_translator@") || content.contains("lua_filter@") || content.contains("lua_processor@")
         guard !hasLuaReferences else { return }
 
         let hasDamagingInitials = content.components(separatedBy: "\n").contains { line in
             let t = line.trimmingCharacters(in: .whitespaces)
-            return t.hasPrefix("initials:") &&
-                (t.contains("zyxwvutsrqponmlkjihgfedcba") || t.contains("abcdefghijklmnopqrstuvwxyz"))
+            return t.hasPrefix("initials:")
+                && (t.contains("zyxwvutsrqponmlkjihgfedcba") || t.contains("abcdefghijklmnopqrstuvwxyz"))
         }
         let hasOrphanDateLocale = content.components(separatedBy: "\n").contains { line in
             line.trimmingCharacters(in: .whitespaces) == "date_locale: zh"
@@ -101,8 +102,9 @@ public struct RimeConfigPostProcessor {
             repaired = repaired.components(separatedBy: "\n")
                 .filter { line in
                     let t = line.trimmingCharacters(in: .whitespaces)
-                    if t.hasPrefix("initials:") &&
-                        (t.contains("zyxwvutsrqponmlkjihgfedcba") || t.contains("abcdefghijklmnopqrstuvwxyz")) {
+                    if t.hasPrefix("initials:")
+                        && (t.contains("zyxwvutsrqponmlkjihgfedcba") || t.contains("abcdefghijklmnopqrstuvwxyz"))
+                    {
                         return false
                     }
                     return true

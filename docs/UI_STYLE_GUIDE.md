@@ -63,7 +63,7 @@ Current key styles:
 Key rules:
 
 - Keep key height at `44`.
-- Keep spacing at `6`.
+- Keep vertical row spacing at `8` and within-row horizontal spacing at `6`.
 - Keep key corner radius near `9`; do not make keys pill-shaped.
 - Character keys may have a subtle 1 px downward shadow.
 - Function keys should be flatter and darker/lower-emphasis than character keys.

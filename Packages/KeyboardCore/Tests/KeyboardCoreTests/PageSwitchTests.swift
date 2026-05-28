@@ -1,17 +1,16 @@
 import XCTest
+
 @testable import KeyboardCore
 
+@MainActor
 final class PageSwitchTests: XCTestCase {
 
-    var controller: KeyboardController!
-    var client: FakeTextInputClient!
-
-    override func setUp() {
-        super.setUp()
-        client = FakeTextInputClient()
-        controller = KeyboardController()
+    let client = FakeTextInputClient()
+    lazy var controller: KeyboardController = {
+        let controller = KeyboardController()
         controller.textClient = client
-    }
+        return controller
+    }()
 
     func testInitialPageIsLetters() {
         XCTAssertEqual(controller.state.currentPage, .letters)
@@ -86,29 +85,29 @@ final class PageSwitchTests: XCTestCase {
 
     func testShiftSurvivesLettersToEmoji() {
         controller.state.inputMode = .english
-        _ = controller.handle(.togglePage) // letters → numbers
-        _ = controller.handle(.togglePage) // numbers → symbols
-        _ = controller.handle(.togglePage) // symbols → emoji
-        _ = controller.handle(.togglePage) // emoji → letters (full round trip)
+        _ = controller.handle(.togglePage)  // letters → numbers
+        _ = controller.handle(.togglePage)  // numbers → symbols
+        _ = controller.handle(.togglePage)  // symbols → emoji
+        _ = controller.handle(.togglePage)  // emoji → letters (full round trip)
         XCTAssertEqual(controller.state.currentPage, .letters)
     }
 
     func testAutoCapSurvivesRoundTripThroughNumbersPage() {
         controller.state.inputMode = .english
         controller.state.currentPage = .letters
-        _ = controller.handle(.togglePage) // → numbers
+        _ = controller.handle(.togglePage)  // → numbers
         XCTAssertEqual(controller.state.currentPage, .numbers)
 
         _ = controller.handle(.insertKey("!"))
         XCTAssertEqual(controller.state.shiftState, .singleUse)
 
-        _ = controller.handle(.togglePage) // → symbols
+        _ = controller.handle(.togglePage)  // → symbols
         XCTAssertEqual(controller.state.currentPage, .symbols)
 
-        _ = controller.handle(.togglePage) // → emoji
+        _ = controller.handle(.togglePage)  // → emoji
         XCTAssertEqual(controller.state.currentPage, .emoji)
 
-        _ = controller.handle(.togglePage) // → letters
+        _ = controller.handle(.togglePage)  // → letters
         XCTAssertEqual(controller.state.currentPage, .letters)
         XCTAssertEqual(controller.state.shiftState, .singleUse)
     }
@@ -141,26 +140,26 @@ final class PageSwitchTests: XCTestCase {
     func testChineseModePreservedThroughPageCycle() {
         controller.state.inputMode = .chinese
         XCTAssertEqual(controller.state.inputMode, .chinese)
-        _ = controller.handle(.togglePage) // letters → numbers
+        _ = controller.handle(.togglePage)  // letters → numbers
         XCTAssertEqual(controller.state.inputMode, .chinese)
-        _ = controller.handle(.togglePage) // numbers → symbols
+        _ = controller.handle(.togglePage)  // numbers → symbols
         XCTAssertEqual(controller.state.inputMode, .chinese)
-        _ = controller.handle(.togglePage) // symbols → emoji
+        _ = controller.handle(.togglePage)  // symbols → emoji
         XCTAssertEqual(controller.state.inputMode, .chinese)
-        _ = controller.handle(.togglePage) // emoji → letters
+        _ = controller.handle(.togglePage)  // emoji → letters
         XCTAssertEqual(controller.state.inputMode, .chinese)
     }
 
     func testEnglishModePreservedThroughPageCycle() {
         controller.state.inputMode = .english
         XCTAssertEqual(controller.state.inputMode, .english)
-        _ = controller.handle(.togglePage) // letters → numbers
+        _ = controller.handle(.togglePage)  // letters → numbers
         XCTAssertEqual(controller.state.inputMode, .english)
-        _ = controller.handle(.togglePage) // numbers → symbols
+        _ = controller.handle(.togglePage)  // numbers → symbols
         XCTAssertEqual(controller.state.inputMode, .english)
-        _ = controller.handle(.togglePage) // symbols → emoji
+        _ = controller.handle(.togglePage)  // symbols → emoji
         XCTAssertEqual(controller.state.inputMode, .english)
-        _ = controller.handle(.togglePage) // emoji → letters
+        _ = controller.handle(.togglePage)  // emoji → letters
         XCTAssertEqual(controller.state.inputMode, .english)
     }
 

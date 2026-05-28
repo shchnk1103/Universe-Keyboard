@@ -2,137 +2,14 @@
 //  KeyboardViewController+Gestures.swift
 //  Keyboard
 //
-//  按键高亮反馈 + 长按变体字符弹出面板。
+//  长按变体字符弹出面板。
 //
 //  Apple 文档参考：
 //  - UILongPressGestureRecognizer: 用于检测按键长按
 //  - UIButton.cancelTracking: 取消按钮的默认 touch 追踪
 //
-//  触摸反馈设计原理：
-//  原生 iOS 键盘在 touchDown 时立即改变按键外观（变暗 + 轻微缩放），
-//  使用瞬时 transform + backgroundColor 而非 UIView.animate，
-//  原因：Core Animation 动画事务会有 1 帧延迟，导致快速输入时反馈跟不上。
-//
-
-import UIKit
 import KeyboardCore
-
-// MARK: === 按键高亮 ===
-
-extension KeyboardViewController {
-
-    /// 按键按下时的视觉反馈（.touchDown 事件）。
-    ///
-    /// 设计决策 — touchDown 必须瞬时响应：
-    ///   快速打字时（>10 次/秒），Core Animation 的 1 帧延迟（~16ms）
-    ///   会导致反馈明显滞后。因此 touchDown 使用瞬时属性设置，
-    ///   不用 UIView.animate。
-    ///
-    /// 同时记录 touchDown 时间戳，用于性能诊断。
-    @objc func keyTouchDown(_ sender: UIButton) {
-        let now = CACurrentMediaTime()
-        keyTouchDownTimes[ObjectIdentifier(sender)] = now
-
-        if Logger.shared.isEnabled {
-            let title = sender.title(for: .normal) ?? sender.accessibilityIdentifier ?? "?"
-            Logger.shared.performance("keyDown '\(title)'")
-        }
-
-        // 瞬时高亮：略暗的背景色 + 96% 缩放（模拟按下感）
-        sender.backgroundColor = highlightedKeyColor
-        sender.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
-    }
-
-    /// 按键松开时的视觉恢复。
-    @objc func keyTouchUp(_ sender: UIButton) {
-        restoreKeyAppearance(sender)
-    }
-
-    /// 恢复按键的正常外观 — 使用弹性动画模拟原生 iOS 键盘的"弹回"效果。
-    ///
-    /// 弹性动画参数说明：
-    ///   - duration: 0.25s — 足够短，不影响连续输入节奏
-    ///   - delay: 0 — 立即开始
-    ///   - dampingRatio: 0.6 — 轻微弹跳（0=最大弹跳, 1=无弹跳）
-    ///   - initialSpringVelocity: 0 — 从静止开始
-    ///
-    /// 无障碍适配：若开启 Reduce Motion，跳过动画直接恢复。
-    func restoreKeyAppearance(_ sender: UIButton) {
-        // 尊重用户的 Reduce Motion 设置（Apple HIG 要求）
-        let shouldAnimate = !UIAccessibility.isReduceMotionEnabled
-
-        let restore = {
-            sender.transform = .identity  // 恢复原始尺寸
-
-            if sender === self.shiftButton {
-                self.updateShiftButtonAppearance()
-                return
-            }
-
-            guard let style = self.keyStyle(for: sender) else {
-                sender.backgroundColor = self.characterKeyColor
-                return
-            }
-            sender.backgroundColor = self.backgroundForStyle(style)
-        }
-
-        if shouldAnimate {
-            // 使用 UIView 的弹性动画 API（iOS 7+），
-            // 比 CASpringAnimation 更简洁且自动处理 completion
-            UIView.animate(
-                withDuration: 0.25,
-                delay: 0,
-                usingSpringWithDamping: 0.6,
-                initialSpringVelocity: 0,
-                options: [.allowUserInteraction, .beginFromCurrentState],
-                animations: restore,
-                completion: nil
-            )
-        } else {
-            restore()
-        }
-    }
-}
-
-// MARK: === 空格键光标滑动 ===
-
-extension KeyboardViewController {
-
-    /// 空格键左右滑动 — 移动文本光标。
-    ///
-    /// 模仿原生 iOS 键盘的 Space Cursor 行为：
-    ///   手指在空格键上左右滑动 → 光标跟随移动。
-    ///   每 10pt 水平移动 = 1 个字符偏移。
-    ///
-    /// 使用 UITextDocumentProxy.adjustTextPosition(byCharacterOffset:) (iOS 15+)。
-    @objc func handleSpaceCursorPan(_ gesture: UIPanGestureRecognizer) {
-        guard let spaceButton = gesture.view else { return }
-
-        switch gesture.state {
-        case .changed:
-            let translation = gesture.translation(in: spaceButton)
-            // 每 10pt 水平滑动 = 移动 1 个字符
-            let sensitivity: CGFloat = 10
-            let offset = Int(translation.x / sensitivity)
-            if offset != 0 {
-                // 调整光标位置后重置手势基准点
-                textDocumentProxy.adjustTextPosition(byCharacterOffset: offset)
-                gesture.setTranslation(.zero, in: spaceButton)
-            }
-
-        case .ended, .cancelled:
-            // 松手后恢复正常空格外观
-            if let btn = spaceButton as? UIButton {
-                restoreKeyAppearance(btn)
-            }
-
-        default:
-            break
-        }
-    }
-}
-
-// MARK: === 长按变体字符 ===
+import UIKit
 
 extension KeyboardViewController {
 

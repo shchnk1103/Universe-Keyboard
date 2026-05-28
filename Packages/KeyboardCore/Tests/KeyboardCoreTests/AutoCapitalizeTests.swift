@@ -1,17 +1,16 @@
 import XCTest
+
 @testable import KeyboardCore
 
+@MainActor
 final class AutoCapitalizeTests: XCTestCase {
 
-    var controller: KeyboardController!
-    var client: FakeTextInputClient!
-
-    override func setUp() {
-        super.setUp()
-        client = FakeTextInputClient()
-        controller = KeyboardController()
+    let client = FakeTextInputClient()
+    lazy var controller: KeyboardController = {
+        let controller = KeyboardController()
         controller.textClient = client
-    }
+        return controller
+    }()
 
     // MARK: - shouldAutoCapitalize
 
@@ -151,7 +150,7 @@ final class AutoCapitalizeTests: XCTestCase {
     func testEnglishPeriodInsertOnNumbersPageTriggersAutoCap() {
         controller.state.inputMode = .english
         controller.state.currentPage = .numbers
-        let effects = controller.handle(.insertKey("."))
+        _ = controller.handle(.insertKey("."))
         XCTAssertEqual(controller.state.shiftState, .singleUse)
     }
 

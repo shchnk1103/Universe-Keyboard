@@ -1,21 +1,20 @@
 import XCTest
+
 @testable import KeyboardCore
 
 /// 测试键盘显示逻辑，这些值驱动 KeyboardViewController+Display.swift 中的计算属性。
 ///
 /// 虽然具体的 UI 标题计算（如 "拼音" / "English" / "123"）定义在 UIKit 层，
 /// 但底层状态转换和分支逻辑可以通过 KeyboardState 和 KeyboardController 进行测试。
+@MainActor
 final class DisplayLogicTests: XCTestCase {
 
-    var controller: KeyboardController!
-    var client: FakeTextInputClient!
-
-    override func setUp() {
-        super.setUp()
-        client = FakeTextInputClient()
-        controller = KeyboardController()
+    let client = FakeTextInputClient()
+    lazy var controller: KeyboardController = {
+        let controller = KeyboardController()
         controller.textClient = client
-    }
+        return controller
+    }()
 
     // MARK: - Page switch title (derived from currentPage)
 
@@ -124,21 +123,24 @@ final class DisplayLogicTests: XCTestCase {
     func testShiftActiveInSingleUse() {
         controller.state.shiftState = .singleUse
         // isShiftActive = true (singleUse || capsLock)
-        let isActive = controller.state.shiftState == .singleUse
+        let isActive =
+            controller.state.shiftState == .singleUse
             || controller.state.shiftState == .capsLock
         XCTAssertTrue(isActive)
     }
 
     func testShiftActiveInCapsLock() {
         controller.state.shiftState = .capsLock
-        let isActive = controller.state.shiftState == .singleUse
+        let isActive =
+            controller.state.shiftState == .singleUse
             || controller.state.shiftState == .capsLock
         XCTAssertTrue(isActive)
     }
 
     func testShiftInactiveWhenOff() {
         controller.state.shiftState = .off
-        let isActive = controller.state.shiftState == .singleUse
+        let isActive =
+            controller.state.shiftState == .singleUse
             || controller.state.shiftState == .capsLock
         XCTAssertFalse(isActive)
     }

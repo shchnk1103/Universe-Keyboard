@@ -12,11 +12,11 @@ import KeyboardCore
 /// 结束之前再次按下按键，新的 play() 调用会截断当前正在播放的音频。
 /// 使用双播放器交替，避免快速打字时的音频截断。
 ///
-/// ── 后台队列 ────────────────────────────────────────────────────
-/// 播放操作通过专用后台串行队列（qos: .userInitiated）调度。
+/// ── 隔离执行器 ──────────────────────────────────────────────────
+/// 播放器状态仅由此 actor 访问，调用方通过异步消息触发播放。
 /// 原因：AVAudioPlayer.play() 在某些设备上可能阻塞主线程 18-76ms，
 /// 在快速打字时（>10 次/秒）这个延迟会明显影响键盘响应速度。
-/// 将播放移到后台队列后，主线程阻塞降到 <1ms。
+/// 将播放移出主 actor 后，主线程只承担提交播放请求的开销。
 ///
 /// ── 音频配置 ────────────────────────────────────────────────────
 /// AVAudioSession category: .ambient + mixWithOthers
@@ -24,7 +24,7 @@ import KeyboardCore
 ///   - 遵循设备的静音开关（铃声模式下播放，静音模式下不播放）
 ///   - 不打断其他音频（如音乐播放）
 ///   - 不需要激活音频会话（与 .playback 不同）
-final class KeyClickPlayer {
+actor KeyClickPlayer {
 
     /// 第一个播放器实例
     private let player: AVAudioPlayer?
@@ -32,12 +32,6 @@ final class KeyClickPlayer {
     private let player2: AVAudioPlayer?
     /// 交替标志：true → 用 player2；false → 用 player
     private var toggle = false
-    /// 专用后台队列，串行确保播放顺序
-    private let queue = DispatchQueue(
-        label: "com.universekeyboard.click",
-        qos: .userInitiated
-    )
-
     // MARK: === Init ===
 
     init() {
@@ -71,20 +65,18 @@ final class KeyClickPlayer {
 
     /// 播放按键点击音。
     ///
-    /// 调用后立即返回 — 实际播放通过后台队列异步调度。
+    /// 调用由 actor 串行处理，调用方不等待实际音频播放结束。
     /// volume=0 时直接返回（避免无用调度）。
     ///
     /// - Parameter volume: 音量 0.0（静音）~ 1.0（最大声）
     func play(volume: Float) {
         guard volume > 0 else { return }
-        queue.async {
-            // 交替选择播放器：防止上一次播放被截断
-            let active = self.toggle ? self.player : self.player2
-            self.toggle.toggle()
+        // 交替选择播放器：防止上一次播放被截断
+        let active = toggle ? player : player2
+        toggle.toggle()
 
-            active?.volume = volume
-            active?.currentTime = 0    // 从头播放
-            active?.play()             // 异步播放，立即返回
-        }
+        active?.volume = volume
+        active?.currentTime = 0
+        active?.play()
     }
 }
