@@ -24,8 +24,7 @@ extension KeyboardViewController {
             Logger.shared.performance("insertKey enter without keyDown timestamp")
         }
 
-        playKeyClick()
-        playHaptic()
+        emitKeyPressFeedbackIfNeeded(for: sender)
 
         let handleStartTime = CACurrentMediaTime()
         let effects = controller.handle(.insertKey(key))
@@ -60,24 +59,21 @@ extension KeyboardViewController {
             let candidate = sender.configuration?.title,
             let kind = CandidateKind(rawValue: sender.tag)
         else { return }
-        playKeyClick()
-        playHaptic()
+        emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.insertCandidate(candidate, kind: kind))
         syncUI(with: effects)
     }
 
     @objc func insertDirectText(_ sender: UIButton) {
         guard let text = sender.title(for: .normal) else { return }
-        playKeyClick()
-        playHaptic()
+        emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.insertDirectText(text))
         syncUI(with: effects)
     }
 
     @objc func insertEmoji(_ sender: UIButton) {
         guard let emoji = sender.title(for: .normal) else { return }
-        playKeyClick()
-        playHaptic()
+        emitKeyPressFeedbackIfNeeded(for: sender)
         textDocumentProxy.insertText(emoji)
     }
 }

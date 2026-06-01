@@ -2,6 +2,17 @@ import KeyboardCore
 import UIKit
 
 extension KeyboardViewController {
+    func emitKeyPressFeedback() {
+        playHaptic()
+        playKeyClick()
+    }
+
+    func emitKeyPressFeedbackIfNeeded(for sender: UIButton) {
+        let identifier = ObjectIdentifier(sender)
+        guard keyPressFeedbackEmittedButtonIDs.remove(identifier) == nil else { return }
+        emitKeyPressFeedback()
+    }
+
     func playKeyClick() {
         guard cachedKeyClickEnabled else { return }
         let volume = cachedKeyClickVolume

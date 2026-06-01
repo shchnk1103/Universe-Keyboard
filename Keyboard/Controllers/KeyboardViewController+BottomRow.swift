@@ -18,18 +18,22 @@ extension KeyboardViewController {
             action: #selector(handleInputModeList(from:with:))
         )
         nextKeyboardButton.setImage(UIImage(systemName: "globe"), for: .normal)
+        nextKeyboardButton.setPreferredSymbolConfiguration(
+            UIImage.SymbolConfiguration(pointSize: functionKeySymbolPointSize, weight: .regular),
+            forImageIn: .normal
+        )
 
         let pageSwitchButton = makeKeyButton(
             title: pageSwitchTitle,
-            action: #selector(toggleKeyboardPage)
+            action: #selector(toggleKeyboardPage(_:))
         )
         let spaceButton = makeKeyButton(
             title: spaceButtonTitle,
-            action: #selector(insertSpace)
+            action: #selector(insertSpace(_:))
         )
         returnButton = makeKeyButton(
             title: returnKeyTitle,
-            action: #selector(insertReturn)
+            action: #selector(insertReturn(_:))
         )
 
         applyKeyStyle(.function, to: nextKeyboardButton)
@@ -42,8 +46,8 @@ extension KeyboardViewController {
 
         var constraints: [NSLayoutConstraint] = [
             preferredRowHeightConstraint(for: row, height: keyHeight),
-            nextKeyboardButton.widthAnchor.constraint(equalToConstant: 48),
-            pageSwitchButton.widthAnchor.constraint(equalToConstant: 58),
+            nextKeyboardButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
+            pageSwitchButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
             returnButton.widthAnchor.constraint(equalToConstant: 78),
         ]
 
@@ -60,11 +64,11 @@ extension KeyboardViewController {
         } else {
             let inputModeButton = makeKeyButton(
                 title: inputModeButtonTitle,
-                action: #selector(toggleInputMode)
+                action: #selector(toggleInputMode(_:))
             )
             applyKeyStyle(.function, to: inputModeButton)
             row.addArrangedSubview(inputModeButton)
-            constraints.append(inputModeButton.widthAnchor.constraint(equalToConstant: 48))
+            constraints.append(inputModeButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth))
         }
 
         let spacePan = UIPanGestureRecognizer(target: self, action: #selector(handleSpaceCursorPan(_:)))
@@ -88,7 +92,7 @@ extension KeyboardViewController {
         if includeDelete {
             let deleteButton = makeDeleteButton()
             row.addArrangedSubview(deleteButton)
-            constraints.append(deleteButton.widthAnchor.constraint(equalToConstant: 58))
+            constraints.append(deleteButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth))
         }
 
         row.addArrangedSubview(returnButton)

@@ -24,6 +24,7 @@ extension KeyboardViewController {
     func releaseRecoverableResourcesAfterMemoryWarning() {
         Logger.shared.warning("didReceiveMemoryWarning: releasing caches", category: .general)
         keyTouchDownTimes.removeAll()
+        keyPressFeedbackEmittedButtonIDs.removeAll()
 
         if isCandidateExpanded {
             isCandidateExpanded = false

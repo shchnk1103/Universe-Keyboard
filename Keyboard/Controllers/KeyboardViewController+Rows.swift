@@ -64,10 +64,10 @@ extension KeyboardViewController {
     func makeLetterThirdRow() -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
-        row.spacing = keyHorizontalSpacing
+        row.spacing = thirdRowFunctionSpacing
         row.distribution = .fill
 
-        shiftButton = makeKeyButton(title: shiftButtonTitle, action: #selector(toggleShift))
+        shiftButton = makeKeyButton(title: shiftButtonTitle, action: #selector(toggleShift(_:)))
         let letterRow = makeLetterRow(["z", "x", "c", "v", "b", "n", "m"])
         let deleteButton = makeDeleteButton()
         applyKeyStyle(.function, to: shiftButton)
@@ -78,8 +78,8 @@ extension KeyboardViewController {
 
         NSLayoutConstraint.activate([
             preferredRowHeightConstraint(for: row, height: keyHeight),
-            shiftButton.widthAnchor.constraint(equalToConstant: 58),
-            deleteButton.widthAnchor.constraint(equalToConstant: 58),
+            shiftButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
+            deleteButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
         ])
 
         updateShiftButtonAppearance()

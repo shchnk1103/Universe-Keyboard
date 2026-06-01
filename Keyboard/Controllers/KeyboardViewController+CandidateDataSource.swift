@@ -68,8 +68,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     private func commitCandidate(_ item: CandidateItem) {
-        playKeyClick()
-        playHaptic()
+        emitKeyPressFeedback()
         let effects = controller.handle(.insertCandidate(item.title, kind: item.kind))
         syncUI(with: effects)
     }

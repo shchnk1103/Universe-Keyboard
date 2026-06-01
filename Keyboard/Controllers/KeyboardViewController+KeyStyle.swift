@@ -55,7 +55,7 @@ extension KeyboardViewController {
             button.titleLabel?.font = .systemFont(ofSize: 20, weight: .regular)
         case .function:
             button.backgroundColor = functionKeyColor
-            button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
+            button.titleLabel?.font = .systemFont(ofSize: functionKeySymbolPointSize, weight: .regular)
         case .space:
             button.backgroundColor = characterKeyColor
             button.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
@@ -66,7 +66,7 @@ extension KeyboardViewController {
             button.backgroundColor = .label
             button.setTitleColor(.systemBackground, for: .normal)
             button.tintColor = .systemBackground
-            button.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
+            button.titleLabel?.font = .systemFont(ofSize: functionKeySymbolPointSize, weight: .semibold)
         }
     }
 

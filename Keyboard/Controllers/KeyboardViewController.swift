@@ -90,6 +90,8 @@ class KeyboardViewController: UIInputViewController {
     var candidatePageDepth: Int = 0
     /// 记录每个按钮的 touchDown 时间戳，用于性能日志
     var keyTouchDownTimes: [ObjectIdentifier: CFTimeInterval] = [:]
+    /// 已在 touchDown 发出反馈的按钮，避免 touchUpInside 业务方法重复播放声音/触感。
+    var keyPressFeedbackEmittedButtonIDs: Set<ObjectIdentifier> = []
     /// 输入事件编号，将按键、引擎和渲染日志关联到同一次操作
     var inputEventSequence = 0
     /// 前一个字母输入完成时间，用于观察快速输入中的事件排队现象
@@ -121,12 +123,20 @@ class KeyboardViewController: UIInputViewController {
 
     /// 候选栏高度（点）。44pt 满足 HIG 最小触摸目标，同时对齐 8pt 网格。
     let candidateBarHeight: CGFloat = 44
-    /// 单个按键高度（点）
-    let keyHeight: CGFloat = 44
+    /// 单个按键高度（点）。45pt 比 HIG 最小触控目标略高，接近原生键盘手感。
+    let keyHeight: CGFloat = 45
     /// 行间垂直间距（点）。8pt 对齐网格，接近原生键盘行间距。
     let keySpacing: CGFloat = 8
+    /// 字母区与底部功能区之间的分组间距。只比常规行距略大，避免键盘显得松散。
+    let keyboardGroupSpacing: CGFloat = 10
     /// 行内按键水平间距（点）。保持 6pt 紧凑排列，与原生键盘一致（行内键距 < 行间距）。
     let keyHorizontalSpacing: CGFloat = 6
+    /// 第三行功能键与字母组之间的分组间距，对齐字母区与底部功能区的视觉节奏。
+    let thirdRowFunctionSpacing: CGFloat = 10
+    /// 主要功能键宽度（Shift、123、删除、语言切换），保持触控舒适但弱化视觉占比。
+    let primaryFunctionKeyWidth: CGFloat = 46
+    /// 功能键符号字号。略大于普通功能键文字，提高 Shift/Delete/Globe 可读性。
+    let functionKeySymbolPointSize: CGFloat = 18
     /// 按键圆角半径（点），使用 .continuous 曲线获得 iOS 原生外观
     let keyCornerRadius: CGFloat = 9
     // MARK: === 生命周期 ===

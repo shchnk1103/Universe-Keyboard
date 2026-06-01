@@ -13,7 +13,7 @@ extension KeyboardViewController {
             button.accessibilityLabel = "删除"
             button.accessibilityHint = "删除光标前的字符。按住可连续删除。"
 
-        case #selector(toggleShift):
+        case #selector(toggleShift(_:)):
             button.accessibilityLabel = "大写"
             button.accessibilityHint = "切换单次大写或大写锁定。"
             button.accessibilityValue = shiftAccessibilityValue
@@ -27,22 +27,22 @@ extension KeyboardViewController {
             button.accessibilityLabel = "切换键盘"
             button.accessibilityHint = "按住以选择其他键盘。"
 
-        case #selector(toggleKeyboardPage):
+        case #selector(toggleKeyboardPage(_:)):
             button.accessibilityLabel = "键盘页面"
             button.accessibilityValue = keyboardPageAccessibilityValue(for: title)
             button.accessibilityHint = "切换到\(keyboardPageAccessibilityValue(for: title))。"
 
-        case #selector(toggleInputMode):
+        case #selector(toggleInputMode(_:)):
             button.accessibilityLabel = "输入语言"
             button.accessibilityValue = inputModeAccessibilityValue(for: title)
             button.accessibilityHint = "切换中文与英文输入。"
 
-        case #selector(insertSpace):
+        case #selector(insertSpace(_:)):
             button.accessibilityLabel = "空格"
             button.accessibilityValue = spaceAccessibilityValue(for: title)
             button.accessibilityHint = "插入空格。左右滑动可移动光标。"
 
-        case #selector(insertReturn):
+        case #selector(insertReturn(_:)):
             button.accessibilityLabel = returnKeyAccessibilityLabel(for: title)
             button.accessibilityHint = "执行\(returnKeyAccessibilityLabel(for: title))。"
 

@@ -13,12 +13,12 @@ extension KeyboardViewController {
         view.clipsToBounds = true
         view.addSubview(rootStack)
         NSLayoutConstraint.activate([
-            rootStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 4),
-            rootStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -4),
+            rootStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 7),
+            rootStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -7),
             rootStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 4),
             rootStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2),
         ])
-        Logger.shared.debug("setupRootStack: system height, top+4, bottom-2, hMargin=4", category: .display)
+        Logger.shared.debug("setupRootStack: system height, top+4, bottom-2, hMargin=7", category: .display)
     }
 
     func reloadKeyboard() {
@@ -77,7 +77,9 @@ extension KeyboardViewController {
             rootStack.addArrangedSubview(
                 makeLetterRow(["a", "s", "d", "f", "g", "h", "j", "k", "l"], horizontalInset: 18)
             )
-            rootStack.addArrangedSubview(makeLetterThirdRow())
+            let thirdRow = makeLetterThirdRow()
+            rootStack.addArrangedSubview(thirdRow)
+            rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)
             rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: false))
         case .numbers:
             rootStack.addArrangedSubview(makeTextRow(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]))

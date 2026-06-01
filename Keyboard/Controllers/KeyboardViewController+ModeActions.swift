@@ -2,23 +2,20 @@ import KeyboardCore
 import UIKit
 
 extension KeyboardViewController {
-    @objc func toggleShift() {
-        playKeyClick()
-        playHaptic()
+    @objc func toggleShift(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.toggleShift)
         syncUI(with: effects)
     }
 
-    @objc func toggleKeyboardPage() {
-        playKeyClick()
-        playHaptic()
+    @objc func toggleKeyboardPage(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.togglePage)
         syncUI(with: effects)
     }
 
-    @objc func toggleInputMode() {
-        playKeyClick()
-        playHaptic()
+    @objc func toggleInputMode(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
         var effects = controller.handle(.toggleInputMode)
 
         if controller.state.inputMode == .english {
@@ -31,29 +28,25 @@ extension KeyboardViewController {
     }
 
     @objc func candidatePageUp() {
-        playKeyClick()
-        playHaptic()
+        emitKeyPressFeedback()
         let effects = controller.handle(.candidatePageUp)
         syncUI(with: effects)
     }
 
     @objc func candidatePageDown() {
-        playKeyClick()
-        playHaptic()
+        emitKeyPressFeedback()
         let effects = controller.handle(.candidatePageDown)
         syncUI(with: effects)
     }
 
-    @objc func insertSpace() {
-        playKeyClick()
-        playHaptic()
+    @objc func insertSpace(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.insertSpace)
         syncUI(with: effects)
     }
 
-    @objc func insertReturn() {
-        playKeyClick()
-        playHaptic()
+    @objc func insertReturn(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.insertReturn)
         syncUI(with: effects)
     }

@@ -6,7 +6,7 @@ extension KeyboardViewController {
 
     @objc func deleteKeyTouchDown(_ sender: UIButton) {
         keyTouchDown(sender)
-        performDeleteBackward()
+        performDeleteBackward(emitFeedback: false)
         deleteRepeatController.begin { [weak self] in
             self?.performDeleteBackward()
         }
@@ -14,17 +14,20 @@ extension KeyboardViewController {
 
     @objc func deleteKeyTouchUpInside(_ sender: UIButton) {
         deleteRepeatController.stop()
+        keyPressFeedbackEmittedButtonIDs.remove(ObjectIdentifier(sender))
         restoreKeyAppearance(sender)
     }
 
     @objc func deleteKeyTouchUpOutside(_ sender: UIButton) {
         deleteRepeatController.stop()
+        keyPressFeedbackEmittedButtonIDs.remove(ObjectIdentifier(sender))
         restoreKeyAppearance(sender)
     }
 
-    func performDeleteBackward() {
-        playKeyClick()
-        playHaptic()
+    func performDeleteBackward(emitFeedback: Bool = true) {
+        if emitFeedback {
+            emitKeyPressFeedback()
+        }
         var effects = controller.handle(.deleteBackward)
 
         let context = textDocumentProxy.documentContextBeforeInput
