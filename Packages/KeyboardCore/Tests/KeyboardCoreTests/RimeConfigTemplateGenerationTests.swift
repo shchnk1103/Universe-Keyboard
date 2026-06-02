@@ -79,8 +79,26 @@ final class RimeConfigTemplateGenerationTests: XCTestCase {
         )
         XCTAssertTrue(yaml.contains("key_binder:"))
         XCTAssertTrue(yaml.contains("punctuator:"))
+        XCTAssertTrue(yaml.contains("full_shape:"))
+        XCTAssertTrue(yaml.contains("half_shape:"))
         XCTAssertTrue(yaml.contains("recognizer:"))
-        XCTAssertTrue(yaml.contains("import_preset: default"))
+    }
+
+    func testGenerateDefaultYamlUsesSafePunctuatorKeyQuoting() {
+        let yaml = RimeConfigTemplates.generateDefaultYaml(
+            activeSchemaID: "luna_pinyin",
+            rimeIceInstalled: false,
+            pageSize: 9
+        )
+        let trimmedLines = yaml.components(separatedBy: "\n").map {
+            $0.trimmingCharacters(in: .whitespaces)
+        }
+
+        XCTAssertFalse(trimmedLines.contains { $0.hasPrefix("\"\"\":") })
+        XCTAssertFalse(trimmedLines.contains { $0.hasPrefix("\"\\\":") })
+        XCTAssertTrue(trimmedLines.contains { $0.hasPrefix("'''':") })
+        XCTAssertTrue(trimmedLines.contains { $0.hasPrefix("'\"':") })
+        XCTAssertTrue(trimmedLines.contains { $0.hasPrefix("'\\':") })
     }
 
     func testGenerateDefaultYamlPageSizePlacement() {
