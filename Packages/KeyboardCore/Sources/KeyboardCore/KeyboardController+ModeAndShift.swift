@@ -27,11 +27,13 @@ extension KeyboardController {
                 engine.resetSession()
                 state.currentComposition = ""
                 state.lastRimeOutput = nil
+                clearTypoCorrectionSuggestions()
                 effects.insert(.compositionChanged)
             } else if !state.currentComposition.isEmpty {
                 deleteInlinePreedit()
                 insertText(state.currentComposition)
                 state.currentComposition = ""
+                clearTypoCorrectionSuggestions()
                 effects.insert(.compositionChanged)
             }
             state.currentPage = .numbers
@@ -54,11 +56,13 @@ extension KeyboardController {
             engine.resetSession()
             state.currentComposition = ""
             state.lastRimeOutput = nil
+            clearTypoCorrectionSuggestions()
             effects.insert(.compositionChanged)
         } else if !state.currentComposition.isEmpty {
             deleteInlinePreedit()
             insertText(state.currentComposition)
             state.currentComposition = ""
+            clearTypoCorrectionSuggestions()
             effects.insert(.compositionChanged)
         }
 
@@ -87,6 +91,7 @@ extension KeyboardController {
                 deleteInlinePreedit()
                 insertText(state.currentComposition)
                 state.currentComposition = ""
+                clearTypoCorrectionSuggestions()
                 effects.insert(.compositionChanged)
             }
             state.inputMode = .english

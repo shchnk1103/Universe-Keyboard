@@ -9,6 +9,9 @@ public enum KeyboardAction: Equatable {
     /// - .composition: 提交原始拼音
     /// - .placeholder: 无操作（按钮已被禁用，这里是安全网）
     case insertCandidate(String, kind: CandidateKind)
+    /// 插入误触纠错候选。当前真实 composition 保持原样展示到用户点选为止；
+    /// 点选后直接提交纠错候选文本并清空 RIME session。
+    case insertCorrectionCandidate(TypoCorrectionCommit)
     case insertDirectText(String)
     case toggleShift
     case togglePage

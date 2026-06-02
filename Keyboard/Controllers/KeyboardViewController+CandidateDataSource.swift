@@ -60,16 +60,29 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
             for: .systemFont(ofSize: fontSize, weight: weight),
             maximumPointSize: 28
         )
+        let title = displayTitle(for: item)
         let horizontalInsets: CGFloat = indexPath.item == 0 ? 16 : 24
         let naturalWidth = max(
-            44, ceil((item.title as NSString).size(withAttributes: [.font: font]).width + horizontalInsets))
+            44, ceil((title as NSString).size(withAttributes: [.font: font]).width + horizontalInsets))
         if collectionView === candidateCollectionView { return CGSize(width: naturalWidth, height: 38) }
         return CGSize(width: min(max(44, collectionView.bounds.width - 16), naturalWidth), height: 38)
     }
 
     private func commitCandidate(_ item: CandidateItem) {
         emitKeyPressFeedback()
-        let effects = controller.handle(.insertCandidate(item.title, kind: item.kind))
+        let effects: KeyboardEffect
+        if let correction = item.correction {
+            effects = controller.handle(.insertCorrectionCandidate(correction))
+        } else {
+            effects = controller.handle(.insertCandidate(item.title, kind: item.kind))
+        }
         syncUI(with: effects)
+    }
+
+    private func displayTitle(for item: CandidateItem) -> String {
+        guard let correction = item.correction else { return item.title }
+        let summary = correction.edits.map { "\($0.original)→\($0.replacement)" }.joined(separator: " ")
+        guard !summary.isEmpty else { return item.title }
+        return "\(item.title)  \(summary)"
     }
 }

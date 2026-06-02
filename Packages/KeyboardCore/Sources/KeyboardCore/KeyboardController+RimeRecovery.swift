@@ -67,6 +67,7 @@ extension KeyboardController {
     func appendFallbackCompositionKey(_ key: String) -> KeyboardEffect {
         state.currentComposition += fallbackInputText(for: key)
         updateInlinePreedit(state.currentComposition)
+        refreshTypoCorrectionSuggestions()
         return consumeSingleUseShiftIfNeeded().union(.compositionChanged)
     }
 
@@ -107,6 +108,9 @@ extension KeyboardController {
         updateInlinePreedit(state.currentComposition)
         if let commit = output.committedText {
             insertText(commit)
+            clearTypoCorrectionSuggestions()
+        } else {
+            refreshTypoCorrectionSuggestions()
         }
     }
 
@@ -115,5 +119,6 @@ extension KeyboardController {
         deleteInlinePreedit()
         insertText(state.currentComposition)
         state.currentComposition = ""
+        clearTypoCorrectionSuggestions()
     }
 }

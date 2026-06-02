@@ -140,7 +140,12 @@ extension KeyboardViewController {
 
     func commitExpandedCandidate(_ item: CandidateItem) {
         emitKeyPressFeedback()
-        let effects = controller.handle(.insertCandidate(item.title, kind: item.kind))
+        let effects: KeyboardEffect
+        if let correction = item.correction {
+            effects = controller.handle(.insertCorrectionCandidate(correction))
+        } else {
+            effects = controller.handle(.insertCandidate(item.title, kind: item.kind))
+        }
         isCandidateExpanded = false
         updateExpandButtonAppearance()
         dismissExpandedCandidatePanel(animated: true)

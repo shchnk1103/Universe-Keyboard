@@ -6,6 +6,13 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-02 — Typo correction benchmark reference
+
+- Added `docs/TYPO_BENCHMARK.md` as the benchmark reference for fuzzy pinyin typo correction coverage, scoring principles, known unsupported categories, and next milestone guidance.
+- Linked typo correction work in `CONTEXT_INDEX.md` and added a long-term `CLAUDE.md` note requiring future correction rules, ranking, and UI work to use `TypoCorrectionTests` plus the benchmark document as the source of truth.
+
+---
+
 ## 2026-06-01 — Keyboard UI V1 freeze
 
 - **Frozen layout baseline**: `candidateBarHeight=44`, `keyHeight=45`, `keySpacing=8`, `keyboardGroupSpacing=10`, `keyHorizontalSpacing=6`, `thirdRowFunctionSpacing=10`, `primaryFunctionKeyWidth=46`, `functionKeySymbolPointSize=18`, horizontal margins `7`, `keyCornerRadius=9`.

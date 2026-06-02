@@ -1,12 +1,13 @@
 extension KeyboardController {
     func handleInsertCandidate(_ candidate: String, kind: CandidateKind) -> KeyboardEffect {
         switch kind {
-        case .placeholder:
+        case .placeholder, .correctionCandidate:
             return []
         case .composition:
             commitComposition()
             rimeEngine?.resetSession()
             state.lastRimeOutput = nil
+            clearTypoCorrectionSuggestions()
         case .candidate:
             if let engine = rimeEngine,
                 let output = state.lastRimeOutput,
@@ -19,6 +20,7 @@ extension KeyboardController {
                 if let commit = result.committedText {
                     insertText(commit)
                 }
+                clearTypoCorrectionSuggestions()
             } else {
                 // Candidates from cached later pages cannot leave stale engine composition behind.
                 deleteInlinePreedit()
@@ -26,8 +28,19 @@ extension KeyboardController {
                 state.currentComposition = ""
                 state.lastRimeOutput = nil
                 rimeEngine?.resetSession()
+                clearTypoCorrectionSuggestions()
             }
         }
+        return .compositionChanged
+    }
+
+    func handleInsertCorrectionCandidate(_ correction: TypoCorrectionCommit) -> KeyboardEffect {
+        deleteInlinePreedit()
+        insertText(correction.committedText)
+        state.currentComposition = ""
+        state.lastRimeOutput = nil
+        clearTypoCorrectionSuggestions()
+        rimeEngine?.resetSession()
         return .compositionChanged
     }
 

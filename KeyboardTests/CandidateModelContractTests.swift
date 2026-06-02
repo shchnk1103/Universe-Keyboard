@@ -6,6 +6,7 @@ final class CandidateModelContractTests: XCTestCase {
         XCTAssertEqual(CandidateKind.candidate.rawValue, 0)
         XCTAssertEqual(CandidateKind.composition.rawValue, 1)
         XCTAssertEqual(CandidateKind.placeholder.rawValue, 2)
+        XCTAssertEqual(CandidateKind.correctionCandidate.rawValue, 3)
     }
 
     func testCandidateItemPreservesDisplayTextAndBehaviorKind() {

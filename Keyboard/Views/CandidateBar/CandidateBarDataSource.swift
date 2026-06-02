@@ -45,14 +45,22 @@ struct CandidateBarDataSource {
                 items.append(CandidateItem(title: candidate.text, kind: .candidate))
             }
 
-            // 如果 RIME 返回了 composition 但无候选词，
-            // 将拼音原始文本作为 composition 类型展示
-            // 这样用户可以点击来提交原始拼音（而非中文候选）
             if items.isEmpty {
-                items.append(CandidateItem(title: comp.preeditText, kind: .composition))
+                let correctionItems = correctionItems(from: state, excluding: [])
+                if !correctionItems.isEmpty {
+                    return correctionItems + [CandidateItem(title: comp.preeditText, kind: .composition)]
+                }
+
+                // 如果 RIME 返回了 composition 但无候选词，
+                // 将拼音原始文本作为 composition 类型展示
+                // 这样用户可以点击来提交原始拼音（而非中文候选）
+                return [CandidateItem(title: comp.preeditText, kind: .composition)]
             }
 
-            return items
+            return TypoCorrectionCandidateRanker.mergedCandidates(
+                normalItems: items,
+                correctionItems: correctionItems(from: state, excluding: items.map(\.title))
+            )
         }
 
         // ── 路径 2：回退（FakeCandidateProvider）──────────────
@@ -65,10 +73,44 @@ struct CandidateBarDataSource {
 
         if candidates.isEmpty {
             // 无匹配候选词时，展示拼音原始字符串（可提交）
+            let correctionItems = correctionItems(from: state, excluding: [])
+            if !correctionItems.isEmpty {
+                return correctionItems + [CandidateItem(title: state.currentComposition, kind: .composition)]
+            }
             return [CandidateItem(title: state.currentComposition, kind: .composition)]
         } else {
             // 将匹配的候选词包装为 CandidateItem
-            return candidates.map { CandidateItem(title: $0, kind: .candidate) }
+            let items = candidates.map { CandidateItem(title: $0, kind: .candidate) }
+            return TypoCorrectionCandidateRanker.mergedCandidates(
+                normalItems: items,
+                correctionItems: correctionItems(from: state, excluding: candidates)
+            )
         }
+    }
+
+    private static func correctionItems(from state: KeyboardState, excluding titles: [String]) -> [CandidateItem] {
+        guard let typoCorrection = state.typoCorrection else { return [] }
+        var seen = Set(titles)
+        var items: [CandidateItem] = []
+
+        for suggestion in typoCorrection.suggestions {
+            for candidate in suggestion.candidates where seen.insert(candidate.text).inserted {
+                let commit = TypoCorrectionCommit(
+                    committedText: candidate.text,
+                    originalInput: suggestion.originalInput,
+                    correctedInput: suggestion.correctedInput,
+                    edits: suggestion.edits
+                )
+                items.append(
+                    CandidateItem(
+                        title: candidate.text,
+                        kind: .correctionCandidate,
+                        correction: commit
+                    )
+                )
+            }
+        }
+
+        return items
     }
 }

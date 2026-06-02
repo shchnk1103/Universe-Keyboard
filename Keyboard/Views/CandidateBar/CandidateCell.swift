@@ -28,18 +28,36 @@ final class CandidateCollectionCell: UICollectionViewCell {
 
     func configure(with item: CandidateItem, preferred: Bool, expanded: Bool) {
         let color: UIColor = item.kind == .composition ? .secondaryLabel : .label
+        let title = displayTitle(for: item)
         CandidateButtonFactory.configureCandidateButton(
             button,
-            title: item.title,
+            title: title,
             kind: item.kind,
             color: color,
             bold: preferred,
             highlighted: preferred
         )
-        accessibilityLabel = item.kind == .composition ? "提交拼音 \(item.title)" : item.title
+        accessibilityLabel = accessibilityLabel(for: item)
         accessibilityHint =
             item.kind == .composition
             ? "双击以提交原始拼音"
-            : expanded ? "双击选择候选词并关闭面板" : "双击选择候选词"
+            : item.kind == .correctionCandidate
+                ? "双击选择纠错候选词"
+                : expanded ? "双击选择候选词并关闭面板" : "双击选择候选词"
+    }
+
+    private func displayTitle(for item: CandidateItem) -> String {
+        guard let correction = item.correction else { return item.title }
+        let summary = correction.edits.map { "\($0.original)→\($0.replacement)" }.joined(separator: " ")
+        guard !summary.isEmpty else { return item.title }
+        return "\(item.title)  \(summary)"
+    }
+
+    private func accessibilityLabel(for item: CandidateItem) -> String {
+        if let correction = item.correction {
+            let summary = correction.edits.map { "\($0.original) 改为 \($0.replacement)" }.joined(separator: "，")
+            return "纠错候选 \(item.title)，\(summary)"
+        }
+        return item.kind == .composition ? "提交拼音 \(item.title)" : item.title
     }
 }

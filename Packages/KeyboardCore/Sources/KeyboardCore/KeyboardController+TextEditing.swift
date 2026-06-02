@@ -5,6 +5,7 @@ extension KeyboardController {
             deleteInlinePreedit()
             insertText(state.currentComposition)
             state.currentComposition = ""
+            clearTypoCorrectionSuggestions()
             effects.insert(.compositionChanged)
         }
         insertText(text)
@@ -26,6 +27,7 @@ extension KeyboardController {
                 hasMorePages: false
             )
             engine.resetSession()
+            clearTypoCorrectionSuggestions()
             state.lastSpaceTapTime = nil
             return .compositionChanged
         }
@@ -36,6 +38,7 @@ extension KeyboardController {
             state.currentComposition = ""
             state.lastRimeOutput = nil
             rimeEngine?.resetSession()
+            clearTypoCorrectionSuggestions()
             state.lastSpaceTapTime = nil
             return .compositionChanged
         }
@@ -69,6 +72,7 @@ extension KeyboardController {
             state.insertedPreeditCount = 0
             state.insertedPreeditText = ""
             rimeEngine?.resetSession()
+            clearTypoCorrectionSuggestions()
             return .compositionChanged
         }
         insertText("\n")
@@ -81,11 +85,13 @@ extension KeyboardController {
             state.lastRimeOutput = result
             state.currentComposition = result.composition?.preeditText ?? ""
             updateInlinePreedit(state.currentComposition)
+            refreshTypoCorrectionSuggestions()
             return .compositionChanged
         }
         if !state.currentComposition.isEmpty {
             state.currentComposition.removeLast()
             updateInlinePreedit(state.currentComposition)
+            refreshTypoCorrectionSuggestions()
             return .compositionChanged
         }
         textClient?.deleteBackward()

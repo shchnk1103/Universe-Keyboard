@@ -50,6 +50,10 @@ public enum CandidateKind: Int, CaseIterable, Sendable {
     /// 占位提示文字：不可点击，仅用于视觉提示。
     /// 例如 "输入拼音"、"英文模式"、"更多候选" 等灰色提示。
     case placeholder = 2
+
+    /// 误触纠错候选：点击后直接提交纠错候选文本，不从当前 RIME session 选择。
+    /// 例如：输入 "nihap" → 显示 "你好 p→o" → 点击后提交 "你好"。
+    case correctionCandidate = 3
 }
 
 // MARK: - 候选项目结构体
@@ -64,9 +68,12 @@ public struct CandidateItem: Equatable, Sendable {
     public let title: String
     /// 该项目的类型：候选词 / 拼音组合 / 提示占位
     public let kind: CandidateKind
+    /// 误触纠错候选的提交与展示元数据。普通候选为 nil。
+    public let correction: TypoCorrectionCommit?
 
-    public init(title: String, kind: CandidateKind) {
+    public init(title: String, kind: CandidateKind, correction: TypoCorrectionCommit? = nil) {
         self.title = title
         self.kind = kind
+        self.correction = correction
     }
 }

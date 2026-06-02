@@ -29,6 +29,7 @@ final class CandidateKindTests: XCTestCase {
         XCTAssertEqual(CandidateKind(rawValue: 0), .candidate)
         XCTAssertEqual(CandidateKind(rawValue: 1), .composition)
         XCTAssertEqual(CandidateKind(rawValue: 2), .placeholder)
+        XCTAssertEqual(CandidateKind(rawValue: 3), .correctionCandidate)
         // 非法 rawValue 返回 nil
         XCTAssertNil(CandidateKind(rawValue: 99))
         XCTAssertNil(CandidateKind(rawValue: -1))
@@ -52,6 +53,21 @@ final class CandidateKindTests: XCTestCase {
         let item = CandidateItem(title: "...", kind: .placeholder)
         XCTAssertEqual(item.title, "...")
         XCTAssertEqual(item.kind, .placeholder)
+    }
+
+    func testCandidateItemForCorrectionCandidate() {
+        let commit = TypoCorrectionCommit(
+            committedText: "你好",
+            originalInput: "nihap",
+            correctedInput: "nihao",
+            edits: [TypoCorrectionEdit(index: 4, original: "p", replacement: "o")]
+        )
+
+        let item = CandidateItem(title: "你好", kind: .correctionCandidate, correction: commit)
+
+        XCTAssertEqual(item.title, "你好")
+        XCTAssertEqual(item.kind, .correctionCandidate)
+        XCTAssertEqual(item.correction, commit)
     }
 
     func testCandidateItemEquality() {

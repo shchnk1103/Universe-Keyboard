@@ -49,6 +49,8 @@ public final class KeyboardController {
             return handleInsertKey(key)
         case .insertCandidate(let candidate, let kind):
             return handleInsertCandidate(candidate, kind: kind)
+        case .insertCorrectionCandidate(let correction):
+            return handleInsertCorrectionCandidate(correction)
         case .insertDirectText(let text):
             return handleInsertDirectText(text)
         case .toggleShift:
