@@ -97,6 +97,12 @@ class KeyboardViewController: UIInputViewController {
     /// 前一个字母输入完成时间，用于观察快速输入中的事件排队现象
     var lastInputCompletionTime: CFTimeInterval?
 
+    // MARK: - 光标移动状态
+
+    /// 是否处于光标移动模式（长按空格键触发，此模式下其他按键禁用）
+    var isCursorMovementModeActive: Bool = false
+    /// 光标移动模式下，上一次有效计算的 X 坐标
+    var spaceCursorLastLocationX: CGFloat?
     // MARK: - 键盘生命周期与尺寸状态
 
     /// viewDidAppear 是否已被调用过。

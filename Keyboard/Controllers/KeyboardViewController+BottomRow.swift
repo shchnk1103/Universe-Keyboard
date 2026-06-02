@@ -4,15 +4,28 @@ import UIKit
 extension KeyboardViewController {
     // MARK: === 底部功能行 ===
 
+    /// Builds the keyboard's bottom row: globe, page switch, input-mode or shortcut keys,
+    /// space, optional delete, and return.
+    ///
+    /// The exact set of keys changes with the host text field type. Email fields get `@` and `.`;
+    /// URL fields get `/` and `.com`; normal text fields get the Chinese/English input-mode toggle.
+    ///
+    /// The space key is intentionally configured in this file with two behaviors:
+    /// tapping inserts a space, while horizontal panning is handled by
+    /// `handleSpaceCursorPan(_:)` to move the host text cursor.
     func makeBottomRow(pageSwitchTitle: String, includeDelete: Bool) -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
         row.spacing = keyHorizontalSpacing
         row.distribution = .fill
 
+        // These flags are derived from the current UIKeyboardType and decide whether the bottom row
+        // should expose text-field-specific shortcut keys.
         let showEmail = shouldShowEmailShortcutKeys
         let showURL = shouldShowURLShortcutKeys
 
+        // System-required input-mode switch key. iOS expects third-party keyboards to provide a way
+        // to move to the next keyboard, so this uses `handleInputModeList(from:with:)` directly.
         nextKeyboardButton = makeKeyButton(
             title: "",
             action: #selector(handleInputModeList(from:with:))
@@ -44,6 +57,7 @@ extension KeyboardViewController {
         row.addArrangedSubview(nextKeyboardButton)
         row.addArrangedSubview(pageSwitchButton)
 
+        // Fixed widths keep the utility keys stable while the space key absorbs remaining room.
         var constraints: [NSLayoutConstraint] = [
             preferredRowHeightConstraint(for: row, height: keyHeight),
             nextKeyboardButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
@@ -51,6 +65,7 @@ extension KeyboardViewController {
             returnButton.widthAnchor.constraint(equalToConstant: 78),
         ]
 
+        // Leading-side shortcut slot, immediately before the space key.
         if showEmail {
             let atButton = makeKeyButton(title: "@", action: #selector(insertDirectText(_:)))
             applyKeyStyle(.function, to: atButton)
@@ -71,12 +86,15 @@ extension KeyboardViewController {
             constraints.append(inputModeButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth))
         }
 
-        let spacePan = UIPanGestureRecognizer(target: self, action: #selector(handleSpaceCursorPan(_:)))
-        spacePan.cancelsTouchesInView = false
-        spacePan.delaysTouchesBegan = false
-        spaceButton.addGestureRecognizer(spacePan)
+        // Add the trackpad-like cursor gesture to the space key. The tap action belongs to the
+        // button itself, while the long-press gesture enters cursor movement mode.
+        // UILongPressGestureRecognizer defaults to cancelsTouchesInView = true, which correctly
+        // prevents the underlying touchUpInside (space insertion) once the long press is recognized.
+        let spaceLongPress = UILongPressGestureRecognizer(target: self, action: #selector(handleSpaceCursorLongPress(_:)))
+        spaceButton.addGestureRecognizer(spaceLongPress)
         row.addArrangedSubview(spaceButton)
 
+        // Trailing-side shortcut slot, immediately after the space key.
         if showEmail {
             let dotButton = makeKeyButton(title: ".", action: #selector(insertDirectText(_:)))
             applyKeyStyle(.function, to: dotButton)
