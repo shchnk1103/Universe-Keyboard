@@ -47,8 +47,8 @@ Check each item before allowing a push:
 ### Good: work complete, clean push
 ```
 User: "push this"
-Agent scans → 215 tests pass, no .bak/.DS_Store, no issues
-       Commits: "Fix zip parsing off-by-2 bug + 63 new tests"
+Agent scans → [N] tests pass, no .bak/.DS_Store, no issues
+       Commits: "Fix zip parsing off-by-2 bug + [X] new tests"
        Pushes → reports success with hash 8a05113
 ```
 

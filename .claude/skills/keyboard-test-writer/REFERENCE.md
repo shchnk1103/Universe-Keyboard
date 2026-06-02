@@ -137,24 +137,24 @@ static func setPageSize(_ value: Int)       // clamps 5-20, writes custom.yaml
 static func setSimplification(_ simplified: Bool)
 ```
 
-## Existing Test Files (14 files, 225 tests)
+## Existing Test Files
 
-| File | Test Count | Domain |
-|------|-----------|--------|
-| UnzipTests.swift | 37 | ZIP extraction |
-| AutoCapitalizeTests.swift | 29 | Auto-cap rules |
-| RimeConfigTests.swift | 27 | Config YAML generation |
-| RimeControllerTests.swift | 27 | RIME engine integration via controller |
-| RimeConfigPostProcessorTests.swift | 25 | Lua stripping + schema repair |
-| CompositionTests.swift | 23 | Pinyin composition |
-| ShiftStateTests.swift | 12 | Shift toggle logic |
-| PageSwitchTests.swift | 12 | Letter/number/symbol pages |
-| SpaceReturnTests.swift | 9 | Space + Return behavior |
-| LoggerTests.swift | 7 | Ring buffer logging |
-| InputModeTests.swift | 6 | Chinese/English toggle |
-| KeyboardTypeTests.swift | 6 | Keyboard type handling |
-| DeleteTests.swift | 5 | Backspace logic |
-| FakeRimeEngine.swift | 0 | Mock (helper, not tests) |
+| File | Domain |
+|------|--------|
+| UnzipTests.swift | ZIP extraction |
+| AutoCapitalizeTests.swift | Auto-cap rules |
+| RimeConfigTests.swift | Config YAML generation |
+| RimeControllerTests.swift | RIME engine integration via controller |
+| RimeConfigPostProcessorTests.swift | Lua stripping + schema repair |
+| CompositionTests.swift | Pinyin composition |
+| ShiftStateTests.swift | Shift toggle logic |
+| PageSwitchTests.swift | Letter/number/symbol pages |
+| SpaceReturnTests.swift | Space + Return behavior |
+| LoggerTests.swift | Ring buffer logging |
+| InputModeTests.swift | Chinese/English toggle |
+| KeyboardTypeTests.swift | Keyboard type handling |
+| DeleteTests.swift | Backspace logic |
+| FakeRimeEngine.swift | Mock (helper, not tests) |
 
 ## Running Tests
 

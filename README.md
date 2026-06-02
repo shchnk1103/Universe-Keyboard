@@ -121,7 +121,7 @@ Extension 运行期异常
 # 校验固定版本 RIME 二进制制品与本地 receipt
 bash scripts/ensure_rime_vendor.sh verify
 
-# 纯逻辑单元测试（当前基线 347 tests）
+# 纯逻辑单元测试（运行测试以查看数量）
 swift test --package-path Packages/KeyboardCore
 
 # 桥接契约测试（制品仅支持 iOS，因此由工程测试目标在 Simulator 上执行）
@@ -182,7 +182,7 @@ cd Packages/RimeBridge/TestTool && make && ./test_rime
 | 主 App 端 RIME 部署 | ✅ 全量编译，键盘秒启动 |
 | librime-lua 插件 | 已链接 `RIME_HAS_LUA=1`；发布前仍需真实制品下的 Lua schema 冒烟验证 |
 | 方案切换 | ✅ 朙月拼音 ↔ 雾凇拼音 |
-| `KeyboardCore` 单元测试 | ✅ 347 tests, 0 failures |
+| `KeyboardCore` 单元测试 | ✅ All tests passing |
 | `RimeBridgeTests` | ✅ iOS Simulator, 7 contract tests |
 | `UniverseKeyboardTests` / `KeyboardTests` | ✅ iOS Simulator, 23 store/model/coordination contract tests |
 | Swift 6 构建 | ✅ App + Keyboard Extension strict concurrency |

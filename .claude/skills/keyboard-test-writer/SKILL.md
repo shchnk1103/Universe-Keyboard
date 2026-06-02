@@ -82,7 +82,7 @@ See [EXAMPLES.md](EXAMPLES.md) for concrete test implementations.
 cd Packages/KeyboardCore && swift test
 ```
 
-All 225 existing tests must still pass. New test file must compile with `@testable import KeyboardCore`.
+All existing tests must still pass. New test file must compile with `@testable import KeyboardCore`.
 
 ## Priority order
 
