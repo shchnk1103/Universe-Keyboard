@@ -3,23 +3,18 @@ import AVFoundation
 import KeyboardCore
 
 private let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
+private let feedbackSettingsDefaults = UserDefaults(suiteName: appGroupID)
 
 /// 键盘反馈设置子页面。
 struct FeedbackSettingsView: View {
-    @State private var keyClickEnabled: Bool = {
-        UserDefaults(suiteName: appGroupID)?.bool(forKey: "key_click_enabled") ?? true
-    }()
-    @State private var keyClickVolume: Double = {
-        let v = UserDefaults(suiteName: appGroupID)?.double(forKey: "key_click_volume") ?? 0
-        return v > 0 ? v : 0.8
-    }()
-    @State private var hapticEnabled: Bool = {
-        UserDefaults(suiteName: appGroupID)?.bool(forKey: "haptic_enabled") ?? false
-    }()
-    @State private var hapticIntensity: Double = {
-        let v = UserDefaults(suiteName: appGroupID)?.double(forKey: "haptic_intensity") ?? 0
-        return v > 0 ? v : 0.5
-    }()
+    @AppStorage("key_click_enabled", store: feedbackSettingsDefaults)
+    private var keyClickEnabled = true
+    @AppStorage("key_click_volume", store: feedbackSettingsDefaults)
+    private var keyClickVolume = 0.8
+    @AppStorage("haptic_enabled", store: feedbackSettingsDefaults)
+    private var hapticEnabled = false
+    @AppStorage("haptic_intensity", store: feedbackSettingsDefaults)
+    private var hapticIntensity = 0.5
 
     /// 预览专用：主 App 内生成点击音
     @State private var previewPlayer: AVAudioPlayer?
@@ -33,14 +28,14 @@ struct FeedbackSettingsView: View {
                 Toggle("按键音", isOn: $keyClickEnabled)
                     .toggleStyle(MonochromeToggleStyle())
                     .onChange(of: keyClickEnabled) { _, newValue in
-                        UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "key_click_enabled")
+                        feedbackSettingsDefaults?.synchronize()
                         if newValue { previewClick() }
                     }
             } header: {
                 Text("按键音")
             } footer: {
                 Text(keyClickEnabled
-                     ? "无需「完全访问」权限。使用内嵌键盘点击音，可独立调节音量。"
+                     ? "键盘声音和部分键盘功能需要在 iOS 键盘设置中开启「允许完全访问」。"
                      : "开启后按下按键时播放点击音。")
             }
 
@@ -54,7 +49,10 @@ struct FeedbackSettingsView: View {
                             Slider(value: $keyClickVolume, in: 0.0...1.0, step: 0.1)
                                 .onChange(of: keyClickVolume) { _, newValue in
                                     let rounded = (newValue * 10).rounded() / 10
-                                    UserDefaults(suiteName: appGroupID)?.set(rounded, forKey: "key_click_volume")
+                                    if rounded != keyClickVolume {
+                                        keyClickVolume = rounded
+                                    }
+                                    feedbackSettingsDefaults?.synchronize()
                                     previewClick()
                                 }
                             Image(systemName: "speaker.wave.3")
@@ -87,7 +85,7 @@ struct FeedbackSettingsView: View {
                 Toggle("按键震动", isOn: $hapticEnabled)
                     .toggleStyle(MonochromeToggleStyle())
                     .onChange(of: hapticEnabled) { _, newValue in
-                        UserDefaults(suiteName: appGroupID)?.set(newValue, forKey: "haptic_enabled")
+                        feedbackSettingsDefaults?.synchronize()
                         if newValue { previewHaptic.impactOccurred(intensity: hapticIntensity) }
                     }
             } header: {
@@ -106,7 +104,10 @@ struct FeedbackSettingsView: View {
                             Slider(value: $hapticIntensity, in: 0.1...1.0, step: 0.1)
                                 .onChange(of: hapticIntensity) { _, newValue in
                                     let rounded = (newValue * 10).rounded() / 10
-                                    UserDefaults(suiteName: appGroupID)?.set(rounded, forKey: "haptic_intensity")
+                                    if rounded != hapticIntensity {
+                                        hapticIntensity = rounded
+                                    }
+                                    feedbackSettingsDefaults?.synchronize()
                                     previewHaptic.impactOccurred(intensity: rounded)
                                     previewHaptic.prepare()
                                 }
@@ -177,6 +178,7 @@ struct FeedbackSettingsView: View {
             _ = player
         }
     }
+
 }
 
 #Preview {

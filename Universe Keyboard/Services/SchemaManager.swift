@@ -109,7 +109,7 @@ final class SchemaManager {
 
     func startDownload() {
         switch rimeIceDownloadState {
-        case .idle, .failed: break
+        case .idle, .completed, .failed: break
         default: return
         }
         rimeIceDownloadState = .fetchingReleaseInfo

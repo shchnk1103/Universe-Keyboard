@@ -38,7 +38,8 @@ struct SchemaDownloadSection: View {
             Section {
                 RimeIceManageContent(
                     version: store.rimeIceVersion,
-                    onCheckForUpdate: { store.checkForUpdateAndDownload() },
+                    updateStatusMessage: store.updateStatusMessage,
+                    onCheckForUpdate: { Task { await store.checkForUpdateAndDownload() } },
                     onRedownload: { store.forceRedownload() },
                     onUninstall: onUninstall,
                     onShowLicense: onShowLicense

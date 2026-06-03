@@ -45,6 +45,40 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertTrue(updateAvailable)
     }
 
+    func testCheckForUpdateUsesGitHubReleaseTagWhenAvailable() async {
+        let manager = makeManager(
+            settings: StubSharedSettingsStore(values: ["rime_ice_version": "2026.05.01"]),
+            catalogClient: StubSchemaCatalogClient(
+                latestURL: URL(string: "https://github.com/iDvel/rime-ice/releases/download/2026.05.01/full.zip")
+            )
+        )
+
+        let updateAvailable = await manager.checkForUpdate()
+
+        XCTAssertFalse(updateAvailable)
+    }
+
+    func testCheckForUpdateDetectsDifferentGitHubReleaseTag() async {
+        let manager = makeManager(
+            settings: StubSharedSettingsStore(values: ["rime_ice_version": "2026.05.01"]),
+            catalogClient: StubSchemaCatalogClient(
+                latestURL: URL(string: "https://github.com/iDvel/rime-ice/releases/download/2026.05.02/full.zip")
+            )
+        )
+
+        let updateAvailable = await manager.checkForUpdate()
+
+        XCTAssertTrue(updateAvailable)
+    }
+
+    func testReleaseVersionIdentifierFallsBackToFilenameForNonReleaseURLs() {
+        let manager = makeManager()
+
+        let version = manager.releaseVersionIdentifier(from: URL(string: "https://example.test/releases/full-new.zip")!)
+
+        XCTAssertEqual(version, "full-new.zip")
+    }
+
     func testDownloadUsesStoredETagAndPersistsReturnedETag() async throws {
         let settings = StubSharedSettingsStore(values: ["rime_ice_etag": "old-etag"])
         let downloader = StubSchemaArchiveDownloader(returnedETag: "new-etag")
@@ -56,6 +90,32 @@ final class SchemaManagerTests: XCTestCase {
         let requests = await downloader.requests
         XCTAssertEqual(requests.first?.existingETag, "old-etag")
         XCTAssertEqual(settings.string(forKey: "rime_ice_etag"), "new-etag")
+    }
+
+    func testStartDownloadAllowsCompletedStateForInstalledSchemaUpdates() {
+        let manager = makeManager()
+        manager.rimeIceDownloadState = .completed
+
+        manager.startDownload()
+
+        XCTAssertEqual(manager.rimeIceDownloadState, .fetchingReleaseInfo)
+    }
+
+    func testForceRedownloadAllowsCompletedStateAndClearsCachedMetadata() {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_ice_etag": "old-etag",
+                "rime_ice_version": "old-version",
+            ]
+        )
+        let manager = makeManager(settings: settings)
+        manager.rimeIceDownloadState = .completed
+
+        manager.forceRedownload()
+
+        XCTAssertEqual(manager.rimeIceDownloadState, .fetchingReleaseInfo)
+        XCTAssertNil(settings.string(forKey: "rime_ice_etag"))
+        XCTAssertNil(settings.string(forKey: "rime_ice_version"))
     }
 
     func testInstallationPassesSharedLuaCapabilityToInstaller() throws {

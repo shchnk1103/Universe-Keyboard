@@ -133,6 +133,7 @@ struct RimeDownloadErrorContent: View {
 
 struct RimeIceManageContent: View {
     let version: String?
+    let updateStatusMessage: String?
     let onCheckForUpdate: () -> Void
     let onRedownload: () -> Void
     let onUninstall: () -> Void
@@ -176,6 +177,12 @@ struct RimeIceManageContent: View {
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.small)
+            }
+
+            if let updateStatusMessage {
+                Text(updateStatusMessage)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
         }
     }

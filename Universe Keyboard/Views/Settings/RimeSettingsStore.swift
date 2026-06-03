@@ -65,6 +65,7 @@ final class RimeSettingsStore {
     var simplified = true
     var deploymentState: RimeDeploymentState = .idle
     var deploymentLog: [String] = []
+    var updateStatusMessage: String?
 
     init(
         schemaManager: SchemaManager = SchemaManager(),
@@ -137,14 +138,19 @@ final class RimeSettingsStore {
     func acceptLicense() { schemaManager.acceptLicense() }
     func startDownload() { schemaManager.startDownload() }
     func cancelDownload() { schemaManager.cancelDownload() }
-    func forceRedownload() { schemaManager.forceRedownload() }
+    func forceRedownload() {
+        updateStatusMessage = nil
+        schemaManager.forceRedownload()
+    }
     func uninstallRimeIce() { schemaManager.uninstallRimeIce() }
 
-    func checkForUpdateAndDownload() {
-        Task {
-            guard await schemaManager.checkForUpdate() else { return }
-            schemaManager.startDownload()
+    func checkForUpdateAndDownload() async {
+        updateStatusMessage = nil
+        guard await schemaManager.checkForUpdate() else {
+            updateStatusMessage = "已是最新版本"
+            return
         }
+        schemaManager.startDownload()
     }
 
     func triggerDeployment() async {

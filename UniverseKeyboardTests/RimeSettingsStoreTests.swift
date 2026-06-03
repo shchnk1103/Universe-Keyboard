@@ -42,6 +42,27 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertEqual(store.deploymentState, .deployed)
         XCTAssertTrue(store.deploymentLog.contains { $0.contains("键盘可直接使用") })
     }
+
+    func testCheckForUpdateReportsAlreadyCurrentWithoutStartingDownload() async {
+        let settings = StoreSharedSettingsStore(values: ["rime_ice_version": "2026.05.01"])
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(
+                settings: settings,
+                catalogClient: StoreCatalogClient(
+                    latestURL: URL(string: "https://github.com/iDvel/rime-ice/releases/download/2026.05.01/full.zip")
+                ),
+                archiveDownloader: StoreArchiveDownloader(),
+                archiveInstaller: StoreArchiveInstaller(),
+                deploymentService: StoreDeploymentService(succeeded: true)
+            ),
+            persistence: StubRimeSettingsPersistence()
+        )
+
+        await store.checkForUpdateAndDownload()
+
+        XCTAssertEqual(store.updateStatusMessage, "已是最新版本")
+        XCTAssertEqual(store.downloadState, .idle)
+    }
 }
 
 @MainActor
@@ -61,7 +82,11 @@ private final class StubRimeSettingsPersistence: RimeSettingsPersisting {
 
 @MainActor
 private final class StoreSharedSettingsStore: SharedSettingsStoring {
-    private var values: [String: Any] = [:]
+    private var values: [String: Any]
+
+    init(values: [String: Any] = [:]) {
+        self.values = values
+    }
 
     func string(forKey key: String) -> String? { values[key] as? String }
     func bool(forKey key: String) -> Bool { values[key] as? Bool ?? false }
@@ -72,7 +97,13 @@ private final class StoreSharedSettingsStore: SharedSettingsStoring {
 }
 
 private struct StoreCatalogClient: SchemaCatalogClient {
-    func latestRimeIceArchiveURL() async throws -> URL? { nil }
+    let latestURL: URL?
+
+    init(latestURL: URL? = nil) {
+        self.latestURL = latestURL
+    }
+
+    func latestRimeIceArchiveURL() async throws -> URL? { latestURL }
 }
 
 private struct StoreArchiveDownloader: SchemaArchiveDownloading {

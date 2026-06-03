@@ -30,7 +30,7 @@ extension KeyboardViewController {
             )
         }
 
-        refreshCachedSettings()
+        refreshCachedSettings(source: "viewDidLoad")
         observeSettingsChanges()
         hapticGenerator.prepare()
     }
@@ -38,6 +38,7 @@ extension KeyboardViewController {
     func handleKeyboardDidAppear() {
         let isReturningToExistingKeyboard = hasViewAppeared
         hasViewAppeared = true
+        refreshCachedSettings(source: "viewDidAppear")
 
         if isReturningToExistingKeyboard, controller.rimeEngine != nil {
             controller.resetRimeSessionForVisibilityChange()
@@ -92,4 +93,5 @@ extension KeyboardViewController {
             )
         }
     }
+
 }

@@ -13,9 +13,16 @@ extension SchemaManager {
         return nil
     }
 
-    func extractVersionFrom(files: [String]) -> String? {
-        _ = files
-        return rimeIceVersion ?? "latest"
+    func releaseVersionIdentifier(from url: URL) -> String {
+        let components = url.pathComponents
+        if
+            let downloadIndex = components.firstIndex(of: "download"),
+            components.indices.contains(downloadIndex + 1)
+        {
+            return components[downloadIndex + 1]
+        }
+
+        return url.lastPathComponent
     }
 
     func installRimeIceFiles(from extractDir: URL) throws {
@@ -49,7 +56,7 @@ extension SchemaManager {
     func checkForUpdate() async -> Bool {
         do {
             guard let url = try await fetchLatestReleaseURL() else { return false }
-            let newVersion = url.lastPathComponent
+            let newVersion = releaseVersionIdentifier(from: url)
             return newVersion != rimeIceVersion
         } catch {
             return false

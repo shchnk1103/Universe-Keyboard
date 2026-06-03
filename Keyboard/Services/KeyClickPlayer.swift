@@ -70,13 +70,19 @@ actor KeyClickPlayer {
     ///
     /// - Parameter volume: 音量 0.0（静音）~ 1.0（最大声）
     func play(volume: Float) {
-        guard volume > 0 else { return }
+        guard volume > 0 else {
+            return
+        }
         // 交替选择播放器：防止上一次播放被截断
         let active = toggle ? player : player2
         toggle.toggle()
 
-        active?.volume = volume
-        active?.currentTime = 0
-        active?.play()
+        guard let active else {
+            return
+        }
+
+        active.volume = volume
+        active.currentTime = 0
+        active.play()
     }
 }

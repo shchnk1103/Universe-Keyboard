@@ -4,7 +4,7 @@ import KeyboardCore
 extension SchemaManager {
     func forceRedownload() {
         switch rimeIceDownloadState {
-        case .idle, .failed:
+        case .idle, .completed, .failed:
             break
         default:
             return
@@ -24,6 +24,7 @@ extension SchemaManager {
             guard let url = releaseURL else {
                 throw DownloadError.networkError("无法获取最新版本信息")
             }
+            let version = releaseVersionIdentifier(from: url)
 
             rimeIceDownloadState = .downloading(progress: 0)
 
@@ -40,7 +41,7 @@ extension SchemaManager {
 
             let extractDir = try archiveInstaller.prepareExtractionDirectory()
 
-            let extractedFiles = try Unzip.extract(zipPath: tempURL.path, to: extractDir)
+            _ = try Unzip.extract(zipPath: tempURL.path, to: extractDir)
             guard let schemaURL = findFile(named: "rime_ice.schema.yaml", in: extractDir) else {
                 throw DownloadError.corruptArchive
             }
@@ -62,7 +63,6 @@ extension SchemaManager {
             archiveInstaller.removeTemporaryItem(at: extractDir)
             archiveInstaller.removeTemporaryItem(at: tempURL)
 
-            let version = extractVersionFrom(files: extractedFiles) ?? "unknown"
             rimeIceVersion = version
             settings.set(version, forKey: "rime_ice_version")
             settings.set(true, forKey: "rime_ice_installed")

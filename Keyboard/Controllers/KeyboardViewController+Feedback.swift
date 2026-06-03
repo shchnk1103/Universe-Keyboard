@@ -9,30 +9,53 @@ extension KeyboardViewController {
 
     func emitKeyPressFeedbackIfNeeded(for sender: UIButton) {
         let identifier = ObjectIdentifier(sender)
-        guard keyPressFeedbackEmittedButtonIDs.remove(identifier) == nil else { return }
+        guard keyPressFeedbackEmittedButtonIDs.remove(identifier) == nil else {
+            return
+        }
         emitKeyPressFeedback()
     }
 
     func playKeyClick() {
-        guard cachedKeyClickEnabled else { return }
+        guard cachedKeyClickEnabled else {
+            return
+        }
         let volume = cachedKeyClickVolume
+        guard volume > 0 else {
+            return
+        }
         Task { await clickPlayer.play(volume: volume) }
     }
 
     func playHaptic() {
-        guard cachedHapticEnabled else { return }
+        guard cachedHapticEnabled else {
+            return
+        }
         hapticGenerator.impactOccurred(intensity: cachedHapticIntensity)
         hapticGenerator.prepare()
     }
 
-    func refreshCachedSettings() {
+    func refreshCachedSettings(source: String = "unspecified") {
         let defaults = UserDefaults(suiteName: Self.appGroupID)
-        cachedKeyClickEnabled = defaults?.bool(forKey: "key_click_enabled") ?? true
-        cachedHapticEnabled = defaults?.bool(forKey: "haptic_enabled") ?? false
-        let volume = defaults?.double(forKey: "key_click_volume") ?? 0
+        let rawSound = defaults?.object(forKey: "key_click_enabled")
+        let rawHaptic = defaults?.object(forKey: "haptic_enabled")
+        let rawVolume = defaults?.object(forKey: "key_click_volume")
+        let rawIntensity = defaults?.object(forKey: "haptic_intensity")
+        cachedKeyClickEnabled =
+            rawSound as? Bool ?? true
+        cachedHapticEnabled =
+            rawHaptic as? Bool ?? false
+        let volume = feedbackDoubleValue(rawVolume)
         cachedKeyClickVolume = volume > 0 ? Float(volume) : 0.8
-        let intensity = defaults?.double(forKey: "haptic_intensity") ?? 0
+        let intensity = feedbackDoubleValue(rawIntensity)
         cachedHapticIntensity = intensity > 0 ? CGFloat(intensity) : 0.5
+    }
+
+    func feedbackDoubleValue(_ rawValue: Any?) -> Double {
+        if let value = rawValue as? Double { return value }
+        if let value = rawValue as? Float { return Double(value) }
+        if let value = rawValue as? Int { return Double(value) }
+        if let value = rawValue as? NSNumber { return value.doubleValue }
+        return 0
     }
 
     func observeSettingsChanges() {
@@ -45,7 +68,7 @@ extension KeyboardViewController {
     }
 
     @objc private func handleSettingsChanged() {
-        refreshCachedSettings()
+        refreshCachedSettings(source: "UserDefaults.didChangeNotification")
     }
 
     func logKeyPerformance(_ message: String, startTime: CFTimeInterval) {
