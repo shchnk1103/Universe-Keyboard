@@ -31,8 +31,23 @@ final class RimeEngineProtocolTests: XCTestCase {
         XCTAssertEqual(controller.state.currentComposition, "a")
         let output = controller.state.lastRimeOutput
         // "a" 不在字典中 → 有 preedit 但无候选
+        XCTAssertEqual(output?.rawInput, "a")
         XCTAssertEqual(output?.composition?.preeditText, "a")
         XCTAssertEqual(output?.candidates.count, 0)
+    }
+
+    func testRawInputRemainsUnformattedWhenPreeditIsSegmented() {
+        let segmentedEngine = FakeRimeEngine(
+            preeditFormatter: { input in input.map(String.init).joined(separator: " ") }
+        )
+
+        var output = RimeOutput()
+        for character in "nihap" {
+            output = segmentedEngine.processKey(String(character))
+        }
+
+        XCTAssertEqual(output.rawInput, "nihap")
+        XCTAssertEqual(output.composition?.preeditText, "n i h a p")
     }
 
     func testProcessKeyUnknownCompositionReturnsEmptyCandidates() {
@@ -105,6 +120,27 @@ final class RimeEngineProtocolTests: XCTestCase {
         XCTAssertNil(output.composition)
         XCTAssertEqual(output.candidates.count, 0)
         XCTAssertNil(output.committedText)
+    }
+
+    // MARK: - replaceInput
+
+    func testReplaceInputRestoresCompositionAndCandidates() {
+        let output = engine.replaceInput("nihao")
+
+        XCTAssertTrue(engine.isComposing())
+        XCTAssertEqual(output.rawInput, "nihao")
+        XCTAssertEqual(output.composition?.preeditText, "nihao")
+        XCTAssertEqual(output.candidates.map(\.text), ["你好", "拟好", "你号"])
+    }
+
+    func testReplaceInputEmptyStringClearsComposition() {
+        _ = engine.replaceInput("nihao")
+        let output = engine.replaceInput("")
+
+        XCTAssertFalse(engine.isComposing())
+        XCTAssertNil(output.rawInput)
+        XCTAssertNil(output.composition)
+        XCTAssertTrue(output.candidates.isEmpty)
     }
 
     // MARK: - selectCandidate via engine directly
@@ -187,6 +223,8 @@ final class RimeEngineProtocolTests: XCTestCase {
         XCTAssertEqual(output.composition?.cursorPosition, 2)
         XCTAssertEqual(output.candidates.count, 3)
         XCTAssertEqual(output.highlightedIndex, 0)
+        XCTAssertEqual(output.rawInput, "ni")
+        XCTAssertEqual(output.candidatePageNumber, 0)
         XCTAssertNil(output.committedText)
         XCTAssertFalse(output.hasMorePages)  // Fake engine always returns false/empty
     }

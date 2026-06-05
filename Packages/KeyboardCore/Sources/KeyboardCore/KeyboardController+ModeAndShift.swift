@@ -22,18 +22,11 @@ extension KeyboardController {
         case .letters:
             effects = resetShiftState()
             if let engine = rimeEngine, engine.isComposing() {
-                deleteInlinePreedit()
-                insertText(state.currentComposition)
+                finishActiveCompositionAsDisplayText()
                 engine.resetSession()
-                state.currentComposition = ""
-                state.lastRimeOutput = nil
-                clearTypoCorrectionSuggestions()
                 effects.insert(.compositionChanged)
             } else if !state.currentComposition.isEmpty {
-                deleteInlinePreedit()
-                insertText(state.currentComposition)
-                state.currentComposition = ""
-                clearTypoCorrectionSuggestions()
+                finishActiveCompositionAsDisplayText()
                 effects.insert(.compositionChanged)
             }
             state.currentPage = .numbers
@@ -51,18 +44,11 @@ extension KeyboardController {
     func handleToggleInputMode() -> KeyboardEffect {
         var effects: KeyboardEffect = []
         if let engine = rimeEngine, engine.isComposing() {
-            deleteInlinePreedit()
-            insertText(state.currentComposition)
+            finishActiveCompositionAsDisplayText()
             engine.resetSession()
-            state.currentComposition = ""
-            state.lastRimeOutput = nil
-            clearTypoCorrectionSuggestions()
             effects.insert(.compositionChanged)
         } else if !state.currentComposition.isEmpty {
-            deleteInlinePreedit()
-            insertText(state.currentComposition)
-            state.currentComposition = ""
-            clearTypoCorrectionSuggestions()
+            finishActiveCompositionAsDisplayText()
             effects.insert(.compositionChanged)
         }
 
@@ -88,10 +74,7 @@ extension KeyboardController {
         var effects: KeyboardEffect = .keyboardTypeChanged
         if type == .emailAddress || type == .URL || type == .webSearch {
             if !state.currentComposition.isEmpty {
-                deleteInlinePreedit()
-                insertText(state.currentComposition)
-                state.currentComposition = ""
-                clearTypoCorrectionSuggestions()
+                finishActiveCompositionAsDisplayText()
                 effects.insert(.compositionChanged)
             }
             state.inputMode = .english

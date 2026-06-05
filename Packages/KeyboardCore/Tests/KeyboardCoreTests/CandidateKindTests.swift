@@ -41,6 +41,22 @@ final class CandidateKindTests: XCTestCase {
         let item = CandidateItem(title: "你好", kind: .candidate)
         XCTAssertEqual(item.title, "你好")
         XCTAssertEqual(item.kind, .candidate)
+        XCTAssertNil(item.selectionReference)
+    }
+
+    func testCandidateItemForRimeCandidateCarriesSelectionReference() {
+        let item = CandidateItem.rimeCandidate(
+            RimeCandidate(text: "你好"),
+            page: 2,
+            indexOnPage: 4
+        )
+
+        XCTAssertEqual(item.title, "你好")
+        XCTAssertEqual(item.kind, .candidate)
+        XCTAssertEqual(
+            item.selectionReference,
+            CandidateSelectionReference(page: 2, indexOnPage: 4)
+        )
     }
 
     func testCandidateItemForComposition() {
@@ -68,6 +84,7 @@ final class CandidateKindTests: XCTestCase {
         XCTAssertEqual(item.title, "你好")
         XCTAssertEqual(item.kind, .correctionCandidate)
         XCTAssertEqual(item.correction, commit)
+        XCTAssertNil(item.selectionReference)
     }
 
     func testCandidateItemEquality() {

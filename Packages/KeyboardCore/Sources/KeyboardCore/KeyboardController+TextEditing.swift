@@ -2,10 +2,8 @@ extension KeyboardController {
     func handleInsertDirectText(_ text: String) -> KeyboardEffect {
         var effects: KeyboardEffect = []
         if !state.currentComposition.isEmpty {
-            deleteInlinePreedit()
-            insertText(state.currentComposition)
-            state.currentComposition = ""
-            clearTypoCorrectionSuggestions()
+            finishActiveCompositionAsDisplayText()
+            rimeEngine?.resetSession()
             effects.insert(.compositionChanged)
         }
         insertText(text)
@@ -18,7 +16,7 @@ extension KeyboardController {
         {
             // Preserve the first page selection even if later pages were prefetched for display.
             deleteInlinePreedit()
-            insertText(firstCandidate)
+            insertText((state.partialCommit?.confirmedText ?? "") + firstCandidate)
             state.currentComposition = ""
             state.lastRimeOutput = RimeOutput(
                 composition: nil,
@@ -26,6 +24,7 @@ extension KeyboardController {
                 committedText: firstCandidate,
                 hasMorePages: false
             )
+            state.partialCommit = nil
             engine.resetSession()
             clearTypoCorrectionSuggestions()
             state.lastSpaceTapTime = nil
@@ -37,6 +36,7 @@ extension KeyboardController {
             insertText(first)
             state.currentComposition = ""
             state.lastRimeOutput = nil
+            state.partialCommit = nil
             rimeEngine?.resetSession()
             clearTypoCorrectionSuggestions()
             state.lastSpaceTapTime = nil
@@ -65,14 +65,8 @@ extension KeyboardController {
 
     func handleInsertReturn() -> KeyboardEffect {
         if !state.currentComposition.isEmpty {
-            deleteInlinePreedit()
-            insertText(state.currentComposition)
-            state.currentComposition = ""
-            state.lastRimeOutput = nil
-            state.insertedPreeditCount = 0
-            state.insertedPreeditText = ""
+            finishActiveCompositionAsDisplayText()
             rimeEngine?.resetSession()
-            clearTypoCorrectionSuggestions()
             return .compositionChanged
         }
         insertText("\n")
@@ -80,12 +74,12 @@ extension KeyboardController {
     }
 
     func handleDeleteBackward() -> KeyboardEffect {
+        if let engine = rimeEngine, restorePartialCommitCheckpoint(using: engine) {
+            return .compositionChanged
+        }
         if let engine = rimeEngine, engine.isComposing() {
             let result = engine.deleteBackward()
-            state.lastRimeOutput = result
-            state.currentComposition = result.composition?.preeditText ?? ""
-            updateInlinePreedit(state.currentComposition)
-            refreshTypoCorrectionSuggestions()
+            applyRimeOutputPreservingPartialCommit(result)
             return .compositionChanged
         }
         if !state.currentComposition.isEmpty {

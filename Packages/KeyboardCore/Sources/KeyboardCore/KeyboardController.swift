@@ -11,6 +11,7 @@ public final class KeyboardController {
     public var rimeEngine: RimeEngine?
 
     public var currentDate: () -> Date = { Date() }
+    public var isTypoCorrectionPartialCommitEnabled = false
     var shouldRestoreRimeComposition = false
     var shouldRebuildSessionDuringRestore = false
 
@@ -47,8 +48,12 @@ public final class KeyboardController {
         switch action {
         case .insertKey(let key):
             return handleInsertKey(key)
-        case .insertCandidate(let candidate, let kind):
-            return handleInsertCandidate(candidate, kind: kind)
+        case .insertCandidate(let candidate, let kind, let selectionReference):
+            return handleInsertCandidate(
+                candidate,
+                kind: kind,
+                selectionReference: selectionReference
+            )
         case .insertCorrectionCandidate(let correction):
             return handleInsertCorrectionCandidate(correction)
         case .insertDirectText(let text):

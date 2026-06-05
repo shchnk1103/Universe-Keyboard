@@ -38,8 +38,8 @@ import Foundation
 /// 候选栏中每个按钮的"类型"，决定点击后的行为。
 /// 使用枚举替代字符串字面量，利用编译器的类型检查保证安全。
 public enum CandidateKind: Int, CaseIterable, Sendable {
-    /// 正常候选词：点击后将候选词插入文本，同时清除拼音组合缓冲区。
-    /// 例如：输入 "nihao" → 点击 "你好" → 文本中插入 "你好"。
+    /// 正常候选词：点击后交给 RIME 选择；完整候选会结束 composition，
+    /// 部分候选可保留剩余输入继续编辑。
     case candidate = 0
 
     /// 原始拼音组合：点击后把当前输入的拼音串直接上屏（不选候选词）。
@@ -56,6 +56,19 @@ public enum CandidateKind: Int, CaseIterable, Sendable {
     case correctionCandidate = 3
 }
 
+/// RIME 候选在候选页中的稳定位置。
+///
+/// Phase 1 仅保存该元数据，不参与候选点击或提交行为。
+public struct CandidateSelectionReference: Equatable, Sendable {
+    public let page: Int
+    public let indexOnPage: Int
+
+    public init(page: Int, indexOnPage: Int) {
+        self.page = page
+        self.indexOnPage = indexOnPage
+    }
+}
+
 // MARK: - 候选项目结构体
 
 /// 候选栏中显示的一个"项"，包含显示文字和行为类型。
@@ -70,10 +83,34 @@ public struct CandidateItem: Equatable, Sendable {
     public let kind: CandidateKind
     /// 误触纠错候选的提交与展示元数据。普通候选为 nil。
     public let correction: TypoCorrectionCommit?
+    /// 普通 RIME 候选的页码和页内索引。其他候选类型为 nil。
+    public let selectionReference: CandidateSelectionReference?
 
-    public init(title: String, kind: CandidateKind, correction: TypoCorrectionCommit? = nil) {
+    public init(
+        title: String,
+        kind: CandidateKind,
+        correction: TypoCorrectionCommit? = nil,
+        selectionReference: CandidateSelectionReference? = nil
+    ) {
         self.title = title
         self.kind = kind
         self.correction = correction
+        self.selectionReference = selectionReference
+    }
+
+    /// Creates a normal RIME candidate with its stable page position.
+    public static func rimeCandidate(
+        _ candidate: RimeCandidate,
+        page: Int,
+        indexOnPage: Int
+    ) -> CandidateItem {
+        CandidateItem(
+            title: candidate.text,
+            kind: .candidate,
+            selectionReference: CandidateSelectionReference(
+                page: page,
+                indexOnPage: indexOnPage
+            )
+        )
     }
 }

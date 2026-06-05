@@ -6,6 +6,7 @@
 
 NSString * const RimeKeyPreedit          = @"preedit";
 NSString * const RimeKeyCursorPos        = @"cursorPos";
+NSString * const RimeKeyRawInput         = @"rawInput";
 NSString * const RimeKeyCandidates       = @"candidates";
 NSString * const RimeKeyCandidateText    = @"text";
 NSString * const RimeKeyCandidateComment = @"comment";
@@ -155,6 +156,13 @@ NSString * const RimeKeyPageNo           = @"pageNo";
     return [self collectOutput];
 }
 
+- (NSDictionary *)replaceInput:(NSString *)input {
+    if (_sessionId == 0) return [self emptyOutput];
+
+    _api->set_input(_sessionId, [input UTF8String]);
+    return [self collectOutput];
+}
+
 - (NSDictionary *)commitComposition {
     if (_sessionId == 0) return [self emptyOutput];
 
@@ -203,6 +211,13 @@ NSString * const RimeKeyPageNo           = @"pageNo";
 /// 将 C 字符串数据复制到 NSString 中，避免悬挂指针。
 - (NSDictionary *)collectOutput {
     NSMutableDictionary *output = [NSMutableDictionary dictionary];
+
+    // --- Raw input ---
+    // 与可能包含分段空格的 preedit 分离，供未来 composition 恢复使用。
+    const char *rawInput = _api->get_input(_sessionId);
+    if (rawInput && strlen(rawInput) > 0) {
+        output[RimeKeyRawInput] = [NSString stringWithUTF8String:rawInput];
+    }
 
     // --- Commit text ---
     RIME_STRUCT(RimeCommit, commit);

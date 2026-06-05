@@ -2,13 +2,13 @@ extension KeyboardController {
     func refreshTypoCorrectionSuggestions() {
         guard state.currentPage == .letters,
             state.inputMode == .chinese,
+            state.partialCommit == nil,
             !state.currentComposition.isEmpty
         else {
             state.typoCorrection = nil
             return
         }
 
-        // V0.1 只在正常候选为空时提供误触建议，避免覆盖 RIME 的原生排序。
         let normalCandidates: [RimeCandidate]
         if let output = state.lastRimeOutput {
             normalCandidates = output.candidates
@@ -16,12 +16,11 @@ extension KeyboardController {
             normalCandidates = candidateProvider.candidates(for: state.currentComposition)
                 .map { RimeCandidate(text: $0) }
         }
-        guard normalCandidates.isEmpty else {
-            state.typoCorrection = nil
-            return
-        }
 
-        let generated = TypoCorrectionEngine().suggestions(for: state.currentComposition)
+        // librime may expose segmented preedit text such as "ni h a p" or "ni hap".
+        // Typo correction operates on the user's key sequence, so ignore display-only whitespace.
+        let correctionInput = normalizedTypoCorrectionInput(state.currentComposition)
+        let generated = TypoCorrectionEngine().suggestions(for: correctionInput)
         var resolved: [TypoCorrectionSuggestion] = []
         var seenCandidateTexts: Set<String> = []
 
@@ -45,12 +44,41 @@ extension KeyboardController {
             if resolved.count >= 2 { break }
         }
 
+        if let firstNormalCandidate = normalCandidates.first {
+            resolved = resolved.compactMap { suggestion in
+                let candidates = suggestion.candidates.filter { candidate in
+                    let commit = TypoCorrectionCommit(
+                        committedText: candidate.text,
+                        originalInput: suggestion.originalInput,
+                        correctedInput: suggestion.correctedInput,
+                        edits: suggestion.edits
+                    )
+                    return TypoCorrectionCandidateRanker.shouldPromoteCorrection(
+                        title: candidate.text,
+                        correction: commit,
+                        over: firstNormalCandidate.text
+                    )
+                }
+                guard !candidates.isEmpty else { return nil }
+                return TypoCorrectionSuggestion(
+                    originalInput: suggestion.originalInput,
+                    correctedInput: suggestion.correctedInput,
+                    edits: suggestion.edits,
+                    candidates: candidates
+                )
+            }
+        }
+
         state.typoCorrection = resolved.isEmpty
             ? nil
-            : TypoCorrectionState(originalInput: state.currentComposition, suggestions: resolved)
+            : TypoCorrectionState(originalInput: correctionInput, suggestions: resolved)
     }
 
     func clearTypoCorrectionSuggestions() {
         state.typoCorrection = nil
+    }
+
+    private func normalizedTypoCorrectionInput(_ input: String) -> String {
+        input.filter { !$0.isWhitespace }
     }
 }

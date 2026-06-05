@@ -144,7 +144,13 @@ extension KeyboardViewController {
         if let correction = item.correction {
             effects = controller.handle(.insertCorrectionCandidate(correction))
         } else {
-            effects = controller.handle(.insertCandidate(item.title, kind: item.kind))
+            effects = controller.handle(
+                .insertCandidate(
+                    item.title,
+                    kind: item.kind,
+                    selectionReference: item.selectionReference
+                )
+            )
         }
         isCandidateExpanded = false
         updateExpandButtonAppearance()

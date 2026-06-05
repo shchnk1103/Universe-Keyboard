@@ -70,7 +70,13 @@ extension KeyboardViewController: UIScrollViewDelegate {
         isLoadingMoreCandidates = true
         for _ in 0..<candidatePageDepth { _ = engine.pageDown() }
         let nextPage = engine.pageDown()
-        let nextItems = nextPage.candidates.map { CandidateItem(title: $0.text, kind: .candidate) }
+        let nextItems = nextPage.candidates.enumerated().map { index, candidate in
+            CandidateItem.rimeCandidate(
+                candidate,
+                page: nextPage.candidatePageNumber,
+                indexOnPage: index
+            )
+        }
         for _ in 0..<(candidatePageDepth + 1) { _ = engine.pageUp() }
         Logger.shared.info(
             "loadMoreCandidates RIME: rawNewItems=\(nextItems.count), hasMorePages=\(nextPage.hasMorePages)",

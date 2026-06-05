@@ -1,4 +1,5 @@
 import XCTest
+import KeyboardCore
 
 @testable import RimeBridge
 
@@ -25,6 +26,31 @@ final class RimeEngineContractTests: XCTestCase {
     func testEmptyAndMultiscalarInputDoNotEmitAKeycode() {
         XCTAssertEqual(RimeEngineImpl.keycode(for: ""), 0)
         XCTAssertEqual(RimeEngineImpl.keycode(for: "ni"), 0)
+    }
+
+    func testOutputParserSeparatesRawInputFromDisplayPreedit() {
+        let output = RimeEngineImpl.parseOutputDictionary([
+            "rawInput": "nihap",
+            "preedit": "ni h a p",
+            "cursorPos": 8,
+            "candidates": [["text": "你好安排", "comment": ""]],
+            "pageNo": 2,
+            "isLastPage": false,
+            "highlightedIndex": 0,
+        ])
+
+        XCTAssertEqual(output.rawInput, "nihap")
+        XCTAssertEqual(output.composition?.preeditText, "ni h a p")
+        XCTAssertEqual(output.candidatePageNumber, 2)
+        XCTAssertEqual(output.candidates.map(\.text), ["你好安排"])
+        XCTAssertTrue(output.hasMorePages)
+    }
+
+    func testOutputParserUsesPhaseOneDefaultsWhenMetadataIsMissing() {
+        let output = RimeEngineImpl.parseOutputDictionary([:])
+
+        XCTAssertNil(output.rawInput)
+        XCTAssertEqual(output.candidatePageNumber, 0)
     }
 
     func testDeploymentRequestCarriesFullCheckBoundary() {

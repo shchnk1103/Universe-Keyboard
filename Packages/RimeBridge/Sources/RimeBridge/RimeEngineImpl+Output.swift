@@ -4,6 +4,11 @@ import KeyboardCore
 extension RimeEngineImpl {
     /// Converts the bridge dictionary into the typed state consumed by KeyboardCore.
     func parseOutput(_ raw: [AnyHashable: Any]) -> KeyboardCore.RimeOutput {
+        Self.parseOutputDictionary(raw)
+    }
+
+    /// Pure parsing entry point used by contract tests without creating a live librime session.
+    static func parseOutputDictionary(_ raw: [AnyHashable: Any]) -> KeyboardCore.RimeOutput {
         let preedit = raw[RimeKey.preedit] as? String
         let cursorPosition = (raw[RimeKey.cursorPosition] as? NSNumber)?.intValue ?? 0
         let composition = preedit.flatMap { value -> KeyboardCore.RimeComposition? in
@@ -21,11 +26,13 @@ extension RimeEngineImpl {
 
         let isLastPage = (raw[RimeKey.isLastPage] as? NSNumber)?.boolValue ?? true
         return KeyboardCore.RimeOutput(
+            rawInput: raw[RimeKey.rawInput] as? String,
             composition: composition,
             candidates: candidates,
             committedText: raw[RimeKey.commit] as? String,
             hasMorePages: !isLastPage,
-            highlightedIndex: (raw[RimeKey.highlightedIndex] as? NSNumber)?.intValue ?? -1
+            highlightedIndex: (raw[RimeKey.highlightedIndex] as? NSNumber)?.intValue ?? -1,
+            candidatePageNumber: (raw[RimeKey.pageNumber] as? NSNumber)?.intValue ?? 0
         )
     }
 }
@@ -33,10 +40,12 @@ extension RimeEngineImpl {
 private enum RimeKey {
     static let preedit = "preedit"
     static let cursorPosition = "cursorPos"
+    static let rawInput = "rawInput"
     static let candidates = "candidates"
     static let candidateText = "text"
     static let candidateComment = "comment"
     static let commit = "commit"
     static let isLastPage = "isLastPage"
     static let highlightedIndex = "highlightedIndex"
+    static let pageNumber = "pageNo"
 }

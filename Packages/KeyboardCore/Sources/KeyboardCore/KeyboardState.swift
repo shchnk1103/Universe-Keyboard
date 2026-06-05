@@ -38,6 +38,8 @@ public struct KeyboardState: Equatable {
     public var lastRimeOutput: RimeOutput?
     /// 当前拼音串的可选误触纠错建议。nil 表示没有可展示的纠错候选。
     public var typoCorrection: TypoCorrectionState?
+    /// 当前普通 RIME 候选的部分确认状态。nil 表示没有已确认片段。
+    public var partialCommit: PartialCommitState?
     /// 当前已插入到文本输入框中的拼音串。用于实现 inline preedit 的差量更新。
     public var insertedPreeditText: String = ""
     /// 当前已插入到文本输入框中的拼音串长度。保留长度字段，方便删除时避免重复计算。
@@ -53,6 +55,7 @@ public struct KeyboardState: Equatable {
         lastSpaceTapTime: Date? = nil,
         lastRimeOutput: RimeOutput? = nil,
         typoCorrection: TypoCorrectionState? = nil,
+        partialCommit: PartialCommitState? = nil,
         insertedPreeditText: String = "",
         insertedPreeditCount: Int = 0
     ) {
@@ -65,6 +68,7 @@ public struct KeyboardState: Equatable {
         self.lastSpaceTapTime = lastSpaceTapTime
         self.lastRimeOutput = lastRimeOutput
         self.typoCorrection = typoCorrection
+        self.partialCommit = partialCommit
         self.insertedPreeditText = insertedPreeditText
         self.insertedPreeditCount = insertedPreeditCount
     }

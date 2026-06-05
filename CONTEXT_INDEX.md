@@ -13,6 +13,7 @@
 | UI 改动（SwiftUI / UIKit） | `CLAUDE.md` + `docs/UI_STYLE_GUIDE.md` | — |
 | Swift 并发 / 架构决策 | `CLAUDE.md` + `docs/architecture/swift6-migration.md` | — |
 | RIME 桥接 / xcframework 管理 | `CLAUDE.md` + `docs/architecture/rime-artifacts.md` | — |
+| Partial Commit / composition restore | `CLAUDE.md` + `docs/architecture/partial-commit.md` | `docs/TYPO_BENCHMARK.md`（涉及 typo correction 时） |
 | 写测试 | `CLAUDE.md` + `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md` | `EXAMPLES.md` |
 | 模糊拼音 / typo correction | `CLAUDE.md` + `docs/TYPO_BENCHMARK.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
 | commit / push | `.claude/skills/pre-push-review/SKILL.md` | — |
@@ -116,7 +117,25 @@
 
 ---
 
-### 6. `docs/architecture/rime-artifacts.md` — RIME 制品管理
+### 6. `docs/architecture/partial-commit.md` — Partial Commit 架构与合并边界
+
+| 属性 | 值 |
+|------|----|
+| 路径 | `docs/architecture/partial-commit.md` |
+| 目的 | 记录 Partial Commit Phase 1/2/3 V1/V2 的功能矩阵、产品决策、feature flag 状态、已知边界和合并建议 |
+| 加载时机 | 涉及 Partial Commit、composition restore、Delete restore、候选选择引用、或 typo correction partial commit 时 |
+| 强制性 | ✅ 必须（Partial Commit 工作） |
+| 是否过时 | ⚠️ 中风险。feature flag 默认值或合并策略变化后需要更新 |
+
+**核心内容摘要：**
+- Normal RIME Partial Commit、Delete Restore、Typo Partial Commit V1、Phase 3 V2 Stabilization 的当前状态
+- 当前产品决策：Typo correction partial commit 的 Delete restore 暂时保留，不在本里程碑继续优化
+- Feature flag 默认关闭，flag-on 路径已通过测试与真机验证但仍需单独批准才能生产开启
+- 推荐合并方式：Squash Merge，建议标签 `partial-commit-v1`
+
+---
+
+### 7. `docs/architecture/rime-artifacts.md` — RIME 制品管理
 
 | 属性 | 值 |
 |------|----|

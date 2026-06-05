@@ -49,6 +49,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// @return 同 processKey 的返回格式
 - (NSDictionary *)deleteBackward;
 
+/// 用未格式化输入替换当前 composition。
+/// @param input 原始输入；空字符串表示清空 composition
+/// @return 同 processKey 的返回格式
+- (NSDictionary *)replaceInput:(NSString *)input;
+
 /// 提交当前 composition（不选候选，直接上屏拼音）
 - (NSDictionary *)commitComposition;
 
@@ -83,6 +88,8 @@ NS_ASSUME_NONNULL_BEGIN
 extern NSString * const RimeKeyPreedit;
 /// composition.cursorPos — 光标位置（NSNumber int）
 extern NSString * const RimeKeyCursorPos;
+/// 未格式化的原始输入，如 "nihao"
+extern NSString * const RimeKeyRawInput;
 /// candidates — 候选词数组，每个元素是 @{@"text": ..., @"comment": ...}
 extern NSString * const RimeKeyCandidates;
 /// candidate.text

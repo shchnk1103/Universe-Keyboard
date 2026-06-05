@@ -17,6 +17,10 @@ public protocol RimeEngine: AnyObject {
     /// 从 composition 中删除一个字符。返回更新后的状态。
     func deleteBackward() -> RimeOutput
 
+    /// 用指定的未格式化输入替换当前 composition，并返回更新后的状态。
+    /// 空字符串表示清空 composition。
+    func replaceInput(_ input: String) -> RimeOutput
+
     /// 重置当前 session（清空未完成的拼音输入）。
     func resetSession()
 

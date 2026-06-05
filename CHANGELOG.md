@@ -6,6 +6,55 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-05 — Partial Commit milestone closure
+
+- Documented the completed Partial Commit milestone across normal RIME candidates, Delete restore, typo correction Partial Commit V1, and Phase 3 V2 stabilization.
+- Recorded the current product decision: typo correction Partial Commit keeps Delete restore behavior for now, with no further optimization until English input mode architecture is revisited.
+- Added `docs/architecture/partial-commit.md` as the architecture and merge-readiness reference, including feature flag status, known boundaries, and recommended squash-merge/tag strategy.
+
+---
+
+## 2026-06-05 — Typo correction Partial Commit Phase 3 V2 stabilization
+
+- Expanded stabilization coverage for typo correction Partial Commit without changing typo generation, ranking, UI, or the default-off feature flag.
+- Added regression coverage for full-commit fallback boundaries: repeated-final deletion, multi-edit corrections, missing corrected candidates, no remaining composition, and typo correction selection during an active partial commit.
+- Added lifecycle and parity coverage for final candidate commit, space/return/direct-text commit, visibility recovery, and candidate paging while typo partial commit is active.
+- Clarified feature-flag exit requirements and documented that intermediate-syllable typo correction remains outside the current typo engine scope.
+
+---
+
+## 2026-06-05 — Typo correction Partial Commit Phase 3 V1
+
+- Completed a default-off internal path for typo correction candidates to reuse the existing Partial Commit pipeline.
+- Typo correction partial commit preserves the exact original typo input as the Delete restore target, continues composition through the corrected RIME input, and invalidates the checkpoint after continued typing.
+- Real-device validation passed for flag-off regression behavior and flag-on typo partial commit, Delete restore, and checkpoint invalidation.
+- Known boundary: V1 only supports typo correction candidates already produced by the current typo engine. Intermediate-syllable typo correction, such as `nihapanpai -> nihaoanpai`, is not implemented and belongs to a later phase.
+- Added regression coverage for flag-off full commit behavior, repeated-final deletion exclusion, corrected-candidate fallback, and real RIME-style selected-segment preedit.
+
+---
+
+## 2026-06-04 — Reversible partial commit for RIME candidates
+
+- Added normal RIME partial commit for selecting a shorter candidate inside an active composition, e.g. `nihaoanpai -> 你好an pai`.
+- First Delete restores the previous raw composition and candidate list by rebuilding the RIME session from raw input; subsequent Delete resumes normal RIME deletion.
+- Real-device validation confirmed no duplicate selected segment, restored `你好安排` candidates after undo, and normal candidate refresh after the second Delete.
+
+---
+
+## 2026-06-03 — Partial Commit Phase 1 infrastructure
+
+- Added RIME raw-input and candidate-page contracts, plus a `replaceInput` capability for future composition restoration.
+- Added stable candidate selection reference metadata and a single-checkpoint `PartialCommitState` model without changing candidate, Delete, UI, or typo-correction behavior.
+
+---
+
+## 2026-06-03 — Segmented RIME preedit typo correction
+
+- Normalized display-oriented segmentation spaces in real RIME preedit before typo matching and corrected-candidate lookup.
+- Verified on a real device that `nihap -> nihao -> 你好` appears as a correction candidate, commits immediately, clears composition, and no longer continues matching `安排`.
+
+---
+
 ## 2026-06-03 — Feedback settings and RIME management reliability
 
 - Persisted keyboard sound and haptic settings through the shared App Group store, refreshed extension-side cached values when the keyboard appears, and documented the Allow Full Access dependency for shared settings and diagnostics.

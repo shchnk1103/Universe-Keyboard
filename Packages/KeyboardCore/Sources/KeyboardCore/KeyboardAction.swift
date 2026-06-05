@@ -5,10 +5,14 @@
 public enum KeyboardAction: Equatable {
     case insertKey(String)
     /// 插入候选词/拼音组合。kind 参数决定行为：
-    /// - .candidate: 上屏候选词并清除拼音
+    /// - .candidate: 选择普通 RIME 候选；若 RIME 仍有剩余输入，则进入部分确认状态
     /// - .composition: 提交原始拼音
     /// - .placeholder: 无操作（按钮已被禁用，这里是安全网）
-    case insertCandidate(String, kind: CandidateKind)
+    case insertCandidate(
+        String,
+        kind: CandidateKind,
+        selectionReference: CandidateSelectionReference? = nil
+    )
     /// 插入误触纠错候选。当前真实 composition 保持原样展示到用户点选为止；
     /// 点选后直接提交纠错候选文本并清空 RIME session。
     case insertCorrectionCandidate(TypoCorrectionCommit)

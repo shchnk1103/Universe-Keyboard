@@ -2,17 +2,35 @@ import Foundation
 
 /// 拼音误触纠错的纯逻辑引擎。
 ///
-/// V0.1 只处理最后一个字符的一处相邻按键替换。这样能覆盖小屏键盘最常见的
-/// 尾部误触，同时避免在输入热路径里枚举过多组合。
+/// 当前只处理低风险的尾部误触：最后一个字符的一处相邻按键替换，或末尾
+/// 重复字符删除。这样能覆盖小屏键盘最常见的尾部误触，同时避免在输入热路径里
+/// 枚举过多组合。
 public struct TypoCorrectionEngine: Sendable {
     public init() {}
 
     public func suggestions(for input: String) -> [TypoCorrectionSuggestion] {
         let letters = Array(input.lowercased())
         guard letters.count >= 2, let last = letters.last else { return [] }
-        guard let replacements = Self.nearbyKeys[last], !replacements.isEmpty else { return [] }
 
+        var suggestions: [TypoCorrectionSuggestion] = []
+        if let deletion = repeatedFinalDeletionSuggestion(for: letters) {
+            suggestions.append(deletion)
+        }
+
+        if let replacements = Self.nearbyKeys[last], !replacements.isEmpty {
+            suggestions.append(contentsOf: trailingSubstitutionSuggestions(for: letters, replacements: replacements))
+        }
+
+        return suggestions
+    }
+
+    private func trailingSubstitutionSuggestions(
+        for letters: [Character],
+        replacements: [Character]
+    ) -> [TypoCorrectionSuggestion] {
         let editIndex = letters.count - 1
+        guard let last = letters.last else { return [] }
+
         return replacements.map { replacement in
             var corrected = letters
             corrected[editIndex] = replacement
@@ -23,13 +41,39 @@ public struct TypoCorrectionEngine: Sendable {
                     TypoCorrectionEdit(
                         index: editIndex,
                         original: last,
-                        replacement: replacement
+                        replacement: replacement,
+                        kind: .substitution
                     )
                 ],
                 candidates: []
             )
         }
     }
+
+    private func repeatedFinalDeletionSuggestion(for letters: [Character]) -> TypoCorrectionSuggestion? {
+        guard letters.count >= Self.repeatedFinalDeletionMinimumLength,
+            let last = letters.last,
+            letters[letters.count - 2] == last
+        else { return nil }
+
+        let editIndex = letters.count - 1
+        let corrected = letters.dropLast()
+        return TypoCorrectionSuggestion(
+            originalInput: String(letters),
+            correctedInput: String(corrected),
+            edits: [
+                TypoCorrectionEdit(
+                    index: editIndex,
+                    original: last,
+                    replacement: last,
+                    kind: .deletion
+                )
+            ],
+            candidates: []
+        )
+    }
+
+    private static let repeatedFinalDeletionMinimumLength = 5
 
     private static let nearbyKeys: [Character: [Character]] = [
         "q": ["w", "a"],
@@ -90,15 +134,29 @@ public struct TypoCorrectionSuggestion: Equatable, Sendable {
     }
 }
 
+public enum TypoCorrectionEditKind: Equatable, Sendable {
+    case substitution
+    case deletion
+}
+
 public struct TypoCorrectionEdit: Equatable, Sendable {
     public let index: Int
     public let original: Character
+    /// Substitution replacement. For deletion edits this is a compatibility value and
+    /// deletion semantics are represented by `kind`.
     public let replacement: Character
+    public let kind: TypoCorrectionEditKind
 
-    public init(index: Int, original: Character, replacement: Character) {
+    public init(
+        index: Int,
+        original: Character,
+        replacement: Character,
+        kind: TypoCorrectionEditKind = .substitution
+    ) {
         self.index = index
         self.original = original
         self.replacement = replacement
+        self.kind = kind
     }
 }
 
@@ -138,11 +196,26 @@ public enum TypoCorrectionCandidateRanker {
         guard let promotedIndex = remainingCorrections.firstIndex(where: {
             shouldPromote($0, over: firstNormal)
         }) else {
-            return normalItems + correctionItems
+            let normalTitles = Set(normalItems.map(\.title))
+            return normalItems + correctionItems.filter { !normalTitles.contains($0.title) }
         }
 
         let promoted = remainingCorrections.remove(at: promotedIndex)
-        return [promoted] + normalItems + remainingCorrections
+        let normalItemsWithoutPromotedDuplicate = normalItems.filter { $0.title != promoted.title }
+        let normalTitles = Set(normalItemsWithoutPromotedDuplicate.map(\.title)).union([promoted.title])
+        let dedupedCorrections = remainingCorrections.filter { !normalTitles.contains($0.title) }
+        return [promoted] + normalItemsWithoutPromotedDuplicate + dedupedCorrections
+    }
+
+    static func shouldPromoteCorrection(
+        title: String,
+        correction: TypoCorrectionCommit,
+        over normalTitle: String
+    ) -> Bool {
+        shouldPromote(
+            CandidateItem(title: title, kind: .correctionCandidate, correction: correction),
+            over: CandidateItem(title: normalTitle, kind: .candidate)
+        )
     }
 
     private static func shouldPromote(_ correctionItem: CandidateItem, over normalItem: CandidateItem) -> Bool {
@@ -157,6 +230,7 @@ public enum TypoCorrectionCandidateRanker {
         else { return false }
 
         guard let edit = correction.edits.first,
+            edit.kind == .substitution,
             edit.index == correction.originalInput.count - 1
         else { return false }
 

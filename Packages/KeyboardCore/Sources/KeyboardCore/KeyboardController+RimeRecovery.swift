@@ -18,7 +18,9 @@ extension KeyboardController {
             !state.currentComposition.isEmpty,
             !engine.isComposing()
         {
-            let intendedComposition = state.currentComposition + fallbackInputText(for: key)
+            let intendedComposition =
+                (state.partialCommit?.remainingRawInput ?? state.currentComposition)
+                + fallbackInputText(for: key)
             if restoreRimeComposition(
                 intendedComposition,
                 using: engine,
@@ -66,8 +68,22 @@ extension KeyboardController {
 
     func appendFallbackCompositionKey(_ key: String) -> KeyboardEffect {
         state.currentComposition += fallbackInputText(for: key)
-        updateInlinePreedit(state.currentComposition)
-        refreshTypoCorrectionSuggestions()
+        if let partialCommit = state.partialCommit {
+            let displayText = partialCommit.confirmedText + state.currentComposition
+            state.partialCommit = PartialCommitState(
+                confirmedText: partialCommit.confirmedText,
+                remainingRawInput: partialCommit.remainingRawInput + fallbackInputText(for: key),
+                remainingPreeditText: state.currentComposition,
+                displayText: displayText,
+                checkpoint: nil,
+                source: partialCommit.source
+            )
+            updateInlinePreedit(displayText)
+            clearTypoCorrectionSuggestions()
+        } else {
+            updateInlinePreedit(state.currentComposition)
+            refreshTypoCorrectionSuggestions()
+        }
         return consumeSingleUseShiftIfNeeded().union(.compositionChanged)
     }
 
@@ -103,22 +119,10 @@ extension KeyboardController {
     func applyRimeOutput(_ output: RimeOutput) {
         shouldRestoreRimeComposition = false
         shouldRebuildSessionDuringRestore = false
-        state.lastRimeOutput = output
-        state.currentComposition = output.composition?.preeditText ?? ""
-        updateInlinePreedit(state.currentComposition)
-        if let commit = output.committedText {
-            insertText(commit)
-            clearTypoCorrectionSuggestions()
-        } else {
-            refreshTypoCorrectionSuggestions()
-        }
+        applyRimeOutputPreservingPartialCommit(output)
     }
 
     func commitComposition() {
-        guard !state.currentComposition.isEmpty else { return }
-        deleteInlinePreedit()
-        insertText(state.currentComposition)
-        state.currentComposition = ""
-        clearTypoCorrectionSuggestions()
+        finishActiveCompositionAsDisplayText()
     }
 }

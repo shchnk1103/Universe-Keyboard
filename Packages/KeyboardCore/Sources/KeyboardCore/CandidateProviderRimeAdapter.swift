@@ -49,6 +49,11 @@ final class CandidateProviderRimeAdapter: RimeEngine {
         return buildOutput()
     }
 
+    func replaceInput(_ input: String) -> RimeOutput {
+        composition = input
+        return buildOutput()
+    }
+
     func resetSession() {
         composition = ""
     }
@@ -78,6 +83,7 @@ final class CandidateProviderRimeAdapter: RimeEngine {
         }
         let candidates = candidateProvider.candidates(for: composition)
         return RimeOutput(
+            rawInput: composition,
             composition: RimeComposition(
                 preeditText: composition,
                 cursorPosition: composition.count

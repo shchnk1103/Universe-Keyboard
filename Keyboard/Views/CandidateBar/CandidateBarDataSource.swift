@@ -41,8 +41,14 @@ struct CandidateBarDataSource {
 
             var items: [CandidateItem] = []
             // 将 RIME 返回的每个候选文本包装为 CandidateItem
-            for candidate in rimeOutput.candidates {
-                items.append(CandidateItem(title: candidate.text, kind: .candidate))
+            for (index, candidate) in rimeOutput.candidates.enumerated() {
+                items.append(
+                    CandidateItem.rimeCandidate(
+                        candidate,
+                        page: rimeOutput.candidatePageNumber,
+                        indexOnPage: index
+                    )
+                )
             }
 
             if items.isEmpty {
@@ -59,7 +65,7 @@ struct CandidateBarDataSource {
 
             return TypoCorrectionCandidateRanker.mergedCandidates(
                 normalItems: items,
-                correctionItems: correctionItems(from: state, excluding: items.map(\.title))
+                correctionItems: correctionItems(from: state, excluding: [])
             )
         }
 
@@ -83,7 +89,7 @@ struct CandidateBarDataSource {
             let items = candidates.map { CandidateItem(title: $0, kind: .candidate) }
             return TypoCorrectionCandidateRanker.mergedCandidates(
                 normalItems: items,
-                correctionItems: correctionItems(from: state, excluding: candidates)
+                correctionItems: correctionItems(from: state, excluding: [])
             )
         }
     }

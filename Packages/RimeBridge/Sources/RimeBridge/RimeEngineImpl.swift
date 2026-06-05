@@ -137,6 +137,11 @@ public final class RimeEngineImpl: RimeEngine {
         processDeletion()
     }
 
+    /// 用未格式化输入替换当前 RIME composition。
+    public func replaceInput(_ input: String) -> KeyboardCore.RimeOutput {
+        parseOutput(bridge.replaceInput(input))
+    }
+
     /// 重置当前 RIME session 的输入状态（清除拼音 composition）。
     public func resetSession() {
         bridge.clearComposition()
