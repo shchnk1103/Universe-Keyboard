@@ -82,6 +82,12 @@ private final class PagedRimeEngine: RimeEngine {
         return output()
     }
 
+    func replaceInput(_ input: String) -> RimeOutput {
+        composition = input
+        page = 0
+        return output()
+    }
+
     func resetSession() {
         composition = ""
         page = 0
