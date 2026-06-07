@@ -6,6 +6,16 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-07 — Native-style symbol page layout refresh
+
+- Reworked Chinese and English number/symbol pages to match native keyboard ordering more closely while keeping the V1 frozen geometry constants unchanged.
+- Added first-level and second-level symbol rows with function-wrapped third rows (`#+=` / `123` on the left, Delete on the right) and shared non-letter bottom rows (`拼音` or `English`, emoji, space, dynamic Return).
+- Switched emoji page buttons to a template SF Symbol so they follow the same text color as other function keys instead of rendering as a colored emoji glyph.
+- Added an English smart double-quote key: the visible `”` key inserts `“` first, then `”`, and returns to opening behavior after the surrounding quotes are deleted from the input context.
+- Added a visible `^_^` kaomoji entry point on the Chinese second-level symbol page as a placeholder for a future candidate-bar kaomoji picker.
+
+---
+
 ## 2026-06-05 — Partial Commit milestone closure
 
 - Documented the completed Partial Commit milestone across normal RIME candidates, Delete restore, typo correction Partial Commit V1, and Phase 3 V2 stabilization.

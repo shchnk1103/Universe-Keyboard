@@ -40,6 +40,9 @@ extension KeyboardViewController {
             title: pageSwitchTitle,
             action: #selector(toggleKeyboardPage(_:))
         )
+        if pageSwitchTitle == "😊" {
+            configureEmojiSwitchButton(pageSwitchButton)
+        }
         let spaceButton = makeKeyButton(
             title: spaceButtonTitle,
             action: #selector(insertSpace(_:))
@@ -116,5 +119,71 @@ extension KeyboardViewController {
         row.addArrangedSubview(returnButton)
         NSLayoutConstraint.activate(constraints)
         return row
+    }
+
+    /// 数字/二级符号页底部功能行。
+    ///
+    /// 系统会在键盘外侧提供地球键和语音入口，这里只保留页内常用功能：
+    /// 回到当前语言字母页、进入表情页、空格、动态 Return。
+    func makeSymbolicBottomRow(languageTitle: String) -> UIStackView {
+        let row = UIStackView()
+        row.axis = .horizontal
+        row.spacing = keyHorizontalSpacing
+        row.distribution = .fill
+
+        let languageButton = makeKeyButton(
+            title: languageTitle,
+            action: #selector(switchToLettersPage(_:))
+        )
+        let emojiButton = makeKeyButton(
+            title: "😊",
+            action: #selector(switchToEmojiPage(_:))
+        )
+        configureEmojiSwitchButton(emojiButton)
+        let spaceButton = makeKeyButton(
+            title: "space",
+            action: #selector(insertSpace(_:))
+        )
+        returnButton = makeKeyButton(
+            title: returnKeyTitle,
+            action: #selector(insertReturn(_:))
+        )
+
+        applyKeyStyle(.function, to: languageButton)
+        applyKeyStyle(.function, to: emojiButton)
+        applyKeyStyle(.space, to: spaceButton)
+        applyKeyStyle(.returnKey, to: returnButton)
+        languageButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        languageButton.titleLabel?.minimumScaleFactor = 0.65
+
+        let spaceLongPress = UILongPressGestureRecognizer(target: self, action: #selector(handleSpaceCursorLongPress(_:)))
+        spaceButton.addGestureRecognizer(spaceLongPress)
+
+        row.addArrangedSubview(languageButton)
+        row.addArrangedSubview(emojiButton)
+        row.addArrangedSubview(spaceButton)
+        row.addArrangedSubview(returnButton)
+
+        NSLayoutConstraint.activate([
+            preferredRowHeightConstraint(for: row, height: keyHeight),
+            languageButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
+            emojiButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
+            returnButton.widthAnchor.constraint(equalToConstant: 78),
+        ])
+
+        return row
+    }
+
+    /// 使用模板 SF Symbol 代替彩色 emoji 字形，使表情切换键跟随功能键文字颜色。
+    private func configureEmojiSwitchButton(_ button: UIButton) {
+        let image = UIImage(systemName: "face.smiling")?.withRenderingMode(.alwaysTemplate)
+        button.setTitle(nil, for: .normal)
+        button.setImage(image, for: .normal)
+        button.setPreferredSymbolConfiguration(
+            UIImage.SymbolConfiguration(pointSize: functionKeySymbolPointSize, weight: .regular),
+            forImageIn: .normal
+        )
+        button.accessibilityLabel = "表情键盘"
+        button.accessibilityHint = "切换到表情键盘。"
     }
 }

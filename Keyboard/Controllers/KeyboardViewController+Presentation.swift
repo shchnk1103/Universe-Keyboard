@@ -84,24 +84,36 @@ extension KeyboardViewController {
         case .numbers:
             rootStack.addArrangedSubview(makeTextRow(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]))
             if state.inputMode == .chinese {
-                rootStack.addArrangedSubview(makeTextRow(["-", "/", "：", "；", "（", "）", "¥", "“", "”", "‘"]))
-                rootStack.addArrangedSubview(makeTextRow(["。", "，", "、", "？", "！", "…", "·", "《", "》"]))
+                rootStack.addArrangedSubview(makeTextRow(["-", "/", "：", "；", "（", "）", "¥", "@", "“", "”"]))
+                let thirdRow = makeChineseNumbersThirdRow()
+                rootStack.addArrangedSubview(thirdRow)
+                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)
+                rootStack.addArrangedSubview(makeSymbolicBottomRow(languageTitle: "拼音"))
             } else {
-                rootStack.addArrangedSubview(makeTextRow(["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""]))
-                rootStack.addArrangedSubview(makeTextRow([".", ",", "?", "!", "'", "\"", "—", "…", "~"]))
+                rootStack.addArrangedSubview(makeTextRow(["-", "/", ":", ";", "(", ")", "$", "&", "@", "”"], actionOverrides: [
+                    "”": #selector(insertSmartDoubleQuote(_:))
+                ]))
+                let thirdRow = makeEnglishNumbersThirdRow()
+                rootStack.addArrangedSubview(thirdRow)
+                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)
+                rootStack.addArrangedSubview(makeSymbolicBottomRow(languageTitle: "English"))
             }
-            rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: true))
         case .symbols:
             if state.inputMode == .chinese {
-                rootStack.addArrangedSubview(makeTextRow(["【", "】", "「", "」", "『", "』", "《", "》", "［", "］"]))
-                rootStack.addArrangedSubview(makeTextRow(["～", "—", "…", "·", "￥", "$", "€", "£", "¥", "&"]))
-                rootStack.addArrangedSubview(makeTextRow(["#", "%", "^", "*", "+", "=", "｜", "\\", "/", "<"]))
+                rootStack.addArrangedSubview(makeTextRow(["【", "】", "｛", "｝", "#", "%", "^", "*", "+", "="]))
+                rootStack.addArrangedSubview(makeTextRow(["_", "—", "\\", "｜", "～", "《", "》", "$", "&", "·"]))
+                let thirdRow = makeChineseSymbolsThirdRow()
+                rootStack.addArrangedSubview(thirdRow)
+                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)
+                rootStack.addArrangedSubview(makeSymbolicBottomRow(languageTitle: "拼音"))
             } else {
                 rootStack.addArrangedSubview(makeTextRow(["[", "]", "{", "}", "#", "%", "^", "*", "+", "="]))
-                rootStack.addArrangedSubview(makeTextRow(["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "&"]))
-                rootStack.addArrangedSubview(makeTextRow(["·", "•", "…", "—", "–", "/", "'", "\"", "!", "?"]))
+                rootStack.addArrangedSubview(makeTextRow(["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "•"]))
+                let thirdRow = makeEnglishSymbolsThirdRow()
+                rootStack.addArrangedSubview(thirdRow)
+                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)
+                rootStack.addArrangedSubview(makeSymbolicBottomRow(languageTitle: "English"))
             }
-            rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: true))
         case .emoji:
             rootStack.addArrangedSubview(makeEmojiPage())
             rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: true))

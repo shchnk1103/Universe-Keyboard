@@ -14,6 +14,41 @@ extension KeyboardViewController {
         syncUI(with: effects)
     }
 
+    @objc func switchToLettersPage(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
+        let effects = cycleKeyboardPage(to: .letters)
+        syncUI(with: effects)
+    }
+
+    @objc func switchToNumbersPage(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
+        let effects = cycleKeyboardPage(to: .numbers)
+        syncUI(with: effects)
+    }
+
+    @objc func switchToEmojiPage(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
+        let effects = cycleKeyboardPage(to: .emoji)
+        syncUI(with: effects)
+    }
+
+    @objc func showKaomojiCandidatesPlaceholder(_ sender: UIButton) {
+        // TODO: 后续在候选栏展示颜表情列表；当前阶段只保留 UI 入口。
+        emitKeyPressFeedbackIfNeeded(for: sender)
+    }
+
+    private func cycleKeyboardPage(to targetPage: KeyboardPage) -> KeyboardEffect {
+        var effects: KeyboardEffect = []
+        var remainingSteps = 4
+
+        while controller.state.currentPage != targetPage && remainingSteps > 0 {
+            effects.formUnion(controller.handle(.togglePage))
+            remainingSteps -= 1
+        }
+
+        return effects
+    }
+
     @objc func toggleInputMode(_ sender: UIButton) {
         emitKeyPressFeedbackIfNeeded(for: sender)
         var effects = controller.handle(.toggleInputMode)
