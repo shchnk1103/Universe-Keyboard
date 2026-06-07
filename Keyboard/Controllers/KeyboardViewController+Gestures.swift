@@ -108,7 +108,7 @@ extension KeyboardViewController {
         if expandedFrame.contains(point) {
             let variant = popup.currentVariant
             dismissVariantPopup()
-            emitKeyPressFeedback()
+            emitFeedback(for: .commit)
             // 插入变体字符（如 à、ç、ñ 等）
             let effects = controller.handle(.insertKey(variant))
             syncUI(with: effects)

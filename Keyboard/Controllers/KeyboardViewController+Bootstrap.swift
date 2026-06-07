@@ -33,6 +33,7 @@ extension KeyboardViewController {
         refreshCachedSettings(source: "viewDidLoad")
         observeSettingsChanges()
         hapticGenerator.prepare()
+        modeEnterHapticGenerator.prepare()
     }
 
     func handleKeyboardDidAppear() {

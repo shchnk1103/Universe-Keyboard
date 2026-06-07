@@ -1,3 +1,4 @@
+import KeyboardCore
 import UIKit
 
 // MARK: - Space Key Cursor Control
@@ -18,6 +19,7 @@ extension KeyboardViewController {
             setCursorMovementModeUI(active: true, exceptionView: spaceButton)
             // Restoring the key appearance removes the default pressed state color
             restoreKeyAppearance(spaceButton)
+            emitFeedback(for: .modeEnter)
 
         case .changed:
             guard let lastX = spaceCursorLastLocationX else { return }

@@ -6,6 +6,18 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-07 — Feedback UX Phase 1
+
+- Replaced continuous key click and haptic controls with independent switches plus five discrete levels: light, softer, normal, stronger, and heavy.
+- Added `KeyboardFeedbackSettings` as the shared feedback settings model, including `KeyboardFeedbackEvent` (`tap`, `modeEnter`, `repeat`, `commit`, `preview`) and migration from legacy `key_click_volume` / `haptic_intensity` values without deleting the old keys.
+- Rebuilt the main-app feedback settings UI around list-based level selection with automatic preview, same-level suppression, and preview throttling to avoid click or haptic bursts during rapid changes.
+- Added a clear `modeEnter` haptic when space long-press actually enters cursor movement mode; cursor movement itself remains silent.
+- Completed Delete Repeat UX Phase 1.1: delete speed stays unchanged, repeat feedback is emitted only after an effective delete, empty-field long press is silent after the first tap feedback, click feedback is more frequent than haptic feedback, and repeat click keeps an independent `tapVolume * 0.60` multiplier.
+- Tuned key click audio for long-session comfort: final `ClickSoundGenerator` uses a short native-style 9ms click with 1450Hz fundamental, 2900Hz light harmonic, low noise, softened attack/decay, and a reduced five-level volume curve (`0.15 / 0.24 / 0.36 / 0.48 / 0.60`).
+- Real-device validation completed across normal typing, long-press delete, settings preview, and heavy-level click tuning; the final target is light, short, restrained feedback that confirms typing without taking over the interaction.
+
+---
+
 ## 2026-06-07 — Native-style symbol page layout refresh
 
 - Reworked Chinese and English number/symbol pages to match native keyboard ordering more closely while keeping the V1 frozen geometry constants unchanged.

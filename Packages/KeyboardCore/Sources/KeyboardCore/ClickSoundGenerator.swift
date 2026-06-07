@@ -1,23 +1,26 @@
 import Foundation
 
 /// 键盘点击音 WAV 生成器。
-/// 生成接近原生 iOS 键盘的点击音（4ms，2000Hz+4000Hz 谐波，含噪音起音）。
+/// 生成轻薄短促的键盘点击音（9ms，1450Hz+2900Hz 轻谐波，柔和噪音起音）。
 /// 主 App 预览和键盘扩展共用。
 public struct ClickSoundGenerator {
 
     public static func generateClickWAV() -> Data {
         let sampleRate = 44100.0
-        let duration = 0.004
+        let duration = 0.009
+        let attackDuration = 0.0006
+        let decayConstant = 0.0020
         let sampleCount = Int(sampleRate * duration)
 
         var samples = [Int16](repeating: 0, count: sampleCount)
         for i in 0..<sampleCount {
             let t = Double(i) / sampleRate
-            let envelope = exp(-t / 0.0008)
-            let fundamental = sin(2.0 * .pi * 2000.0 * t)
-            let harmonic = sin(2.0 * .pi * 4000.0 * t) * 0.35
-            let noise = Double.random(in: -0.15...0.15) * exp(-t / 0.0002)
-            let amplitude = 0.75 * envelope
+            let attack = min(1.0, t / attackDuration)
+            let envelope = attack * exp(-t / decayConstant)
+            let fundamental = sin(2.0 * .pi * 1450.0 * t)
+            let harmonic = sin(2.0 * .pi * 2900.0 * t) * 0.075
+            let noise = Double.random(in: -0.018...0.018) * exp(-t / 0.0002)
+            let amplitude = 0.44 * envelope
             let signal = (fundamental + harmonic + noise) * amplitude
             samples[i] = Int16(max(-1.0, min(1.0, signal)) * Double(Int16.max))
         }

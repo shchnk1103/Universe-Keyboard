@@ -139,7 +139,7 @@ extension KeyboardViewController {
     }
 
     func commitExpandedCandidate(_ item: CandidateItem) {
-        emitKeyPressFeedback()
+        emitFeedback(for: .commit)
         let effects: KeyboardEffect
         if let correction = item.correction {
             effects = controller.handle(.insertCorrectionCandidate(correction))

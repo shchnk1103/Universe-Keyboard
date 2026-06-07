@@ -1,184 +1,172 @@
-import SwiftUI
-import AVFoundation
 import KeyboardCore
+import SwiftUI
 
 private let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 private let feedbackSettingsDefaults = UserDefaults(suiteName: appGroupID)
 
 /// 键盘反馈设置子页面。
 struct FeedbackSettingsView: View {
-    @AppStorage("key_click_enabled", store: feedbackSettingsDefaults)
+    @AppStorage(KeyboardFeedbackSettingsKey.keyClickEnabled, store: feedbackSettingsDefaults)
     private var keyClickEnabled = true
-    @AppStorage("key_click_volume", store: feedbackSettingsDefaults)
-    private var keyClickVolume = 0.8
-    @AppStorage("haptic_enabled", store: feedbackSettingsDefaults)
+    @AppStorage(KeyboardFeedbackSettingsKey.keyClickLevel, store: feedbackSettingsDefaults)
+    private var keyClickLevel = KeyboardFeedbackLevel.defaultLevel.rawValue
+    @AppStorage(KeyboardFeedbackSettingsKey.hapticEnabled, store: feedbackSettingsDefaults)
     private var hapticEnabled = false
-    @AppStorage("haptic_intensity", store: feedbackSettingsDefaults)
-    private var hapticIntensity = 0.5
+    @AppStorage(KeyboardFeedbackSettingsKey.hapticLevel, store: feedbackSettingsDefaults)
+    private var hapticLevel = KeyboardFeedbackLevel.defaultLevel.rawValue
 
-    /// 预览专用：主 App 内生成点击音
-    @State private var previewPlayer: AVAudioPlayer?
-    /// 预览专用：主 App 内触感反馈
-    private let previewHaptic = UIImpactFeedbackGenerator(style: .light)
+    @StateObject private var previewCoordinator = FeedbackPreviewCoordinator()
+    @State private var permissionMessage: String?
 
     var body: some View {
         Form {
-            // MARK: 按键音
             Section {
-                Toggle("按键音", isOn: $keyClickEnabled)
+                Toggle("按键音", isOn: keyClickBinding)
                     .toggleStyle(MonochromeToggleStyle())
-                    .onChange(of: keyClickEnabled) { _, newValue in
-                        feedbackSettingsDefaults?.synchronize()
-                        if newValue { previewClick() }
-                    }
             } header: {
                 Text("按键音")
             } footer: {
-                Text(keyClickEnabled
-                     ? "键盘声音和部分键盘功能需要在 iOS 键盘设置中开启「允许完全访问」。"
-                     : "开启后按下按键时播放点击音。")
+                Text(keyClickFooter)
             }
 
             if keyClickEnabled {
                 Section {
-                    VStack(spacing: 12) {
-                        HStack {
-                            Image(systemName: "speaker.wave.1")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Slider(value: $keyClickVolume, in: 0.0...1.0, step: 0.1)
-                                .onChange(of: keyClickVolume) { _, newValue in
-                                    let rounded = (newValue * 10).rounded() / 10
-                                    if rounded != keyClickVolume {
-                                        keyClickVolume = rounded
-                                    }
-                                    feedbackSettingsDefaults?.synchronize()
-                                    previewClick()
-                                }
-                            Image(systemName: "speaker.wave.3")
-                                .font(.body)
-                                .foregroundStyle(.secondary)
-                        }
-                        HStack {
-                            Text("静音")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            Text(volumeLabel)
-                                .font(.caption)
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Text("最大")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
+                    FeedbackLevelSelectionView(selection: $keyClickLevel) { level in
+                        feedbackSettingsDefaults?.synchronize()
+                        previewCoordinator.previewClick(level: level)
                     }
                 } header: {
                     Text("按键音量")
                 } footer: {
-                    Text("拖动滑块可实时试听点击音效果。")
+                    Text("选择档位后会自动试听一次。同一档位不会重复试听，快速连续选择时会自动节流。")
                 }
             }
 
-            // MARK: 按键震动
             Section {
-                Toggle("按键震动", isOn: $hapticEnabled)
+                Toggle("按键震动", isOn: hapticBinding)
                     .toggleStyle(MonochromeToggleStyle())
-                    .onChange(of: hapticEnabled) { _, newValue in
-                        feedbackSettingsDefaults?.synchronize()
-                        if newValue { previewHaptic.impactOccurred(intensity: hapticIntensity) }
-                    }
             } header: {
                 Text("触感反馈")
             } footer: {
-                Text("按下按键时提供震动反馈。无需额外权限。")
+                Text(hapticFooter)
             }
 
             if hapticEnabled {
                 Section {
-                    VStack(spacing: 12) {
-                        HStack {
-                            Image(systemName: "wave.3.right")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Slider(value: $hapticIntensity, in: 0.1...1.0, step: 0.1)
-                                .onChange(of: hapticIntensity) { _, newValue in
-                                    let rounded = (newValue * 10).rounded() / 10
-                                    if rounded != hapticIntensity {
-                                        hapticIntensity = rounded
-                                    }
-                                    feedbackSettingsDefaults?.synchronize()
-                                    previewHaptic.impactOccurred(intensity: rounded)
-                                    previewHaptic.prepare()
-                                }
-                            Image(systemName: "wave.3.right")
-                                .font(.body)
-                                .foregroundStyle(.secondary)
-                        }
-                        HStack {
-                            Text("轻柔")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            Text(intensityLabel)
-                                .font(.caption)
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Text("强烈")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
+                    FeedbackLevelSelectionView(selection: $hapticLevel) { level in
+                        feedbackSettingsDefaults?.synchronize()
+                        previewCoordinator.previewHaptic(level: level)
                     }
                 } header: {
                     Text("震动强度")
                 } footer: {
-                    Text("拖动滑块即可实时感受当前强度。强度越高，震动越明显。")
+                    Text("选择档位后会自动感受一次。同一档位不会重复触发，快速连续选择时会自动节流。")
                 }
             }
-
         }
         .navigationTitle("键盘反馈")
         .tint(.primary)
-        .onAppear { previewHaptic.prepare() }
-    }
-
-    // MARK: - 标签
-
-    private var volumeLabel: String {
-        switch keyClickVolume {
-        case 0:       return "静音"
-        case 0.0..<0.3: return "微弱"
-        case 0.3..<0.6: return "适中"
-        case 0.6..<0.9: return "响亮"
-        default:       return "最大"
+        .alert(
+            "需要完全访问",
+            isPresented: Binding(
+                get: { permissionMessage != nil },
+                set: { if !$0 { permissionMessage = nil } }
+            )
+        ) {
+            Button("知道了", role: .cancel) { permissionMessage = nil }
+        } message: {
+            Text(permissionMessage ?? "")
+        }
+        .onAppear {
+            migrateLegacyFeedbackSettingsIfNeeded()
+            previewCoordinator.prepare()
         }
     }
 
-    private var intensityLabel: String {
-        switch hapticIntensity {
-        case 0.0..<0.3: return "轻"
-        case 0.3..<0.6: return "中"
-        case 0.6..<0.9: return "强"
-        default:        return "最强"
-        }
+    private var keyClickFooter: String {
+        keyClickEnabled
+            ? "按键音设置会通过 App Group 同步到键盘，需要在系统键盘设置中开启「允许完全访问」。"
+            : "开启后按下按键时播放点击音。"
     }
 
-    // MARK: - 点击音预览
-
-    private func previewClick() {
-        guard keyClickEnabled else { return }
-        let wav = ClickSoundGenerator.generateClickWAV()
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("preview_click.wav")
-        try? wav.write(to: tempURL)
-        let player = try? AVAudioPlayer(contentsOf: tempURL)
-        player?.volume = Float(keyClickVolume)
-        player?.play()
-        // 延迟释放以完整播放
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            _ = player
-        }
+    private var hapticFooter: String {
+        hapticEnabled
+            ? "震动设置会通过 App Group 同步到键盘，需要在系统键盘设置中开启「允许完全访问」。"
+            : "开启后按下按键时提供震动反馈。"
     }
 
+    private var keyClickBinding: Binding<Bool> {
+        Binding(
+            get: { keyClickEnabled },
+            set: { newValue in
+                setKeyClickEnabled(newValue)
+            }
+        )
+    }
+
+    private var hapticBinding: Binding<Bool> {
+        Binding(
+            get: { hapticEnabled },
+            set: { newValue in
+                setHapticEnabled(newValue)
+            }
+        )
+    }
+
+    private func setKeyClickEnabled(_ enabled: Bool) {
+        guard enabled else {
+            keyClickEnabled = false
+            feedbackSettingsDefaults?.synchronize()
+            return
+        }
+
+        guard canAccessSharedFeedbackSettings else {
+            keyClickEnabled = false
+            permissionMessage = "按键音需要键盘的「允许完全访问」权限。请在系统设置中开启后再回来打开。"
+            return
+        }
+
+        keyClickEnabled = true
+        feedbackSettingsDefaults?.synchronize()
+        previewCoordinator.previewClick(
+            level: KeyboardFeedbackLevel.clamped(keyClickLevel),
+            force: true
+        )
+    }
+
+    private func setHapticEnabled(_ enabled: Bool) {
+        guard enabled else {
+            hapticEnabled = false
+            feedbackSettingsDefaults?.synchronize()
+            return
+        }
+
+        guard canAccessSharedFeedbackSettings else {
+            hapticEnabled = false
+            permissionMessage = "按键震动需要键盘的「允许完全访问」权限。请在系统设置中开启后再回来打开。"
+            return
+        }
+
+        hapticEnabled = true
+        feedbackSettingsDefaults?.synchronize()
+        previewCoordinator.previewHaptic(
+            level: KeyboardFeedbackLevel.clamped(hapticLevel),
+            force: true
+        )
+    }
+
+    /// 主 App 无法可靠读取键盘扩展的 Full Access 实时状态。
+    /// 这里仅确认共享设置容器可写，避免用户已开启权限但尚未打开过键盘时被误拦截。
+    private var canAccessSharedFeedbackSettings: Bool {
+        feedbackSettingsDefaults != nil
+    }
+
+    private func migrateLegacyFeedbackSettingsIfNeeded() {
+        KeyboardFeedbackSettingsMigration.migrateLegacyLevelsIfNeeded(in: feedbackSettingsDefaults)
+        keyClickLevel = KeyboardFeedbackLevel.clamped(keyClickLevel).rawValue
+        hapticLevel = KeyboardFeedbackLevel.clamped(hapticLevel).rawValue
+        feedbackSettingsDefaults?.synchronize()
+    }
 }
 
 #Preview {

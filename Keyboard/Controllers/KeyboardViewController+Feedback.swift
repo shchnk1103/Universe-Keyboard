@@ -3,8 +3,7 @@ import UIKit
 
 extension KeyboardViewController {
     func emitKeyPressFeedback() {
-        playHaptic()
-        playKeyClick()
+        emitFeedback(for: .tap)
     }
 
     func emitKeyPressFeedbackIfNeeded(for sender: UIButton) {
@@ -15,47 +14,85 @@ extension KeyboardViewController {
         emitKeyPressFeedback()
     }
 
-    func playKeyClick() {
+    func emitFeedback(for event: KeyboardFeedbackEvent) {
+        switch event {
+        case .tap, .commit:
+            playHaptic()
+            playKeyClick()
+
+        case .modeEnter:
+            playModeEnterHaptic()
+
+        case .`repeat`:
+            break
+
+        case .preview:
+            break
+        }
+    }
+
+    func playKeyClick(volume: Float? = nil) {
         guard cachedKeyClickEnabled else {
             return
         }
-        let volume = cachedKeyClickVolume
+        let volume = volume ?? cachedKeyClickVolume
         guard volume > 0 else {
             return
         }
         Task { await clickPlayer.play(volume: volume) }
     }
 
-    func playHaptic() {
+    func playHaptic(intensity: CGFloat? = nil) {
         guard cachedHapticEnabled else {
             return
         }
-        hapticGenerator.impactOccurred(intensity: cachedHapticIntensity)
+        hapticGenerator.impactOccurred(intensity: intensity ?? cachedHapticIntensity)
         hapticGenerator.prepare()
+    }
+
+    func playModeEnterHaptic() {
+        guard cachedHapticEnabled else {
+            return
+        }
+        modeEnterHapticGenerator.impactOccurred(intensity: 1.0)
+        modeEnterHapticGenerator.prepare()
+    }
+
+    func playRepeatFeedback(effectiveDeleteCount: Int) {
+        if effectiveDeleteCount == 1 || effectiveDeleteCount.isMultiple(of: 2) {
+            playKeyClick(volume: cachedKeyClickVolume * 0.60)
+        }
+
+        if effectiveDeleteCount.isMultiple(of: 4) {
+            playHaptic(intensity: max(0.25, cachedHapticIntensity * 0.7))
+        }
     }
 
     func refreshCachedSettings(source: String = "unspecified") {
         let defaults = UserDefaults(suiteName: Self.appGroupID)
-        let rawSound = defaults?.object(forKey: "key_click_enabled")
-        let rawHaptic = defaults?.object(forKey: "haptic_enabled")
-        let rawVolume = defaults?.object(forKey: "key_click_volume")
-        let rawIntensity = defaults?.object(forKey: "haptic_intensity")
-        cachedKeyClickEnabled =
-            rawSound as? Bool ?? true
-        cachedHapticEnabled =
-            rawHaptic as? Bool ?? false
-        let volume = feedbackDoubleValue(rawVolume)
-        cachedKeyClickVolume = volume > 0 ? Float(volume) : 0.8
-        let intensity = feedbackDoubleValue(rawIntensity)
-        cachedHapticIntensity = intensity > 0 ? CGFloat(intensity) : 0.5
+        KeyboardFeedbackSettingsMigration.migrateLegacyLevelsIfNeeded(in: defaults)
+
+        let rawSound = defaults?.object(forKey: KeyboardFeedbackSettingsKey.keyClickEnabled)
+        let rawHaptic = defaults?.object(forKey: KeyboardFeedbackSettingsKey.hapticEnabled)
+        let rawClickLevel = defaults?.object(forKey: KeyboardFeedbackSettingsKey.keyClickLevel)
+        let rawHapticLevel = defaults?.object(forKey: KeyboardFeedbackSettingsKey.hapticLevel)
+
+        cachedKeyClickEnabled = rawSound as? Bool ?? true
+        cachedHapticEnabled = rawHaptic as? Bool ?? false
+        cachedKeyClickLevel = feedbackLevelValue(rawClickLevel)
+        cachedHapticLevel = feedbackLevelValue(rawHapticLevel)
+        cachedKeyClickVolume = cachedKeyClickLevel.clickVolume
+        cachedHapticIntensity = CGFloat(cachedHapticLevel.hapticIntensity)
     }
 
-    func feedbackDoubleValue(_ rawValue: Any?) -> Double {
-        if let value = rawValue as? Double { return value }
-        if let value = rawValue as? Float { return Double(value) }
-        if let value = rawValue as? Int { return Double(value) }
-        if let value = rawValue as? NSNumber { return value.doubleValue }
-        return 0
+    func feedbackLevelValue(_ rawValue: Any?) -> KeyboardFeedbackLevel {
+        if let value = rawValue as? Int {
+            return KeyboardFeedbackLevel.clamped(value)
+        }
+        if let value = rawValue as? NSNumber {
+            return KeyboardFeedbackLevel.clamped(value.intValue)
+        }
+        return .defaultLevel
     }
 
     func observeSettingsChanges() {

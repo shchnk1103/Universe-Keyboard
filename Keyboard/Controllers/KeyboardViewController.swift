@@ -120,10 +120,14 @@ class KeyboardViewController: UIInputViewController {
 
     /// Feedback resources and cached levels stay owned by the view controller; methods live in +Feedback.
     let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
+    let modeEnterHapticGenerator = UIImpactFeedbackGenerator(style: .heavy)
     let clickPlayer = KeyClickPlayer()
     static let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
+    var cachedKeyClickLevel: KeyboardFeedbackLevel = .defaultLevel
+    var cachedHapticLevel: KeyboardFeedbackLevel = .defaultLevel
     var cachedKeyClickVolume: Float = 0.8
     var cachedHapticIntensity: CGFloat = 0.5
+    var deleteRepeatEffectiveFeedbackCount = 0
 
     // MARK: - 布局常量
 
