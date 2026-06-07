@@ -71,6 +71,26 @@ extension KeyboardViewController {
         syncUI(with: effects)
     }
 
+    @objc func insertSmartDoubleQuote(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
+        let quote = nextSmartDoubleQuote(contextBeforeInput: textDocumentProxy.documentContextBeforeInput)
+        let effects = controller.handle(.insertDirectText(quote))
+        syncUI(with: effects)
+    }
+
+    private func nextSmartDoubleQuote(contextBeforeInput: String?) -> String {
+        guard let contextBeforeInput, !contextBeforeInput.isEmpty else { return "“" }
+
+        let openingCount = contextBeforeInput.filter { $0 == "“" }.count
+        let closingCount = contextBeforeInput.filter { $0 == "”" }.count
+
+        // 第一次输入左引号；如果已有未闭合的左引号，下一次输入右引号。
+        // 一旦左右引号都被删除，光标前不再包含它们，下一次又会回到左引号。
+        if openingCount == 0 && closingCount == 0 { return "“" }
+        if openingCount > closingCount { return "”" }
+        return "”"
+    }
+
     @objc func insertEmoji(_ sender: UIButton) {
         guard let emoji = sender.title(for: .normal) else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)

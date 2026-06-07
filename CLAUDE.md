@@ -212,9 +212,9 @@ Keyboard Extension (UIInputViewController) → thin UI + state machine
 - **Composition-first deletion**: when `currentComposition` is non-empty, delete key removes from the pinyin buffer first. Only after composition is empty does it call `textDocumentProxy.deleteBackward()`.
 - **Email keyboard type auto-switches to English mode** and shows `@`/`.` shortcut keys in the bottom row.
 - **URL/webSearch keyboard type auto-switches to English mode** and shows `/`/`.com` shortcut keys in the bottom row.
-- **Number page is context-aware**: in Chinese mode it shows Chinese punctuation (。，、？！：；""''（）《》¥), in English mode it shows English punctuation (.,?!:;()$&@)—.
-- **Symbol page (#+=)** is the third page in the cycle, with brackets, math symbols, currency signs, and typographic marks.
-- **Dynamic page switch button** title: "123" on letters page, "#+=" on numbers page, "ABC" on symbols page.
+- **Number and symbol pages are context-aware**: Chinese mode mirrors native Chinese symbol ordering with a `#+=` second-level symbol key, `123` return key, kaomoji placeholder entry (`^_^`), and a `拼音 / emoji / space / return` bottom row. English mode uses matching first/second-level symbol layouts with `English / emoji / space / return`.
+- **Smart quote key on English number page**: the visible `”` key inserts `“` first, then `”`; once an open/close pair exists in the context, repeated presses insert `”` until both quotes are deleted from the context.
+- **Dynamic page switch button** title: "123" on letters page, "#+=" on numbers page, emoji on symbols page, and "ABC" on emoji page.
 - **Return key title** dynamically reflects `textDocumentProxy.returnKeyType` (return, search, go, send, etc.).
 - **Shift double-tap** (within 0.35s) enters Caps Lock. Single tap cycles between off and single-use uppercase.
 - **Double-space period** (within 0.45s) is enabled only in English mode with empty composition.
