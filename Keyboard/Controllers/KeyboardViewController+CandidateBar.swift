@@ -31,7 +31,7 @@ extension KeyboardViewController {
     func makeCandidateBar() -> UIView {
         let view = CandidateBarView(
             height: candidateBarHeight,
-            backgroundColor: keyboardBackgroundColor,
+            backgroundColor: .clear,
             interactionTarget: self,
             expandAction: #selector(toggleCandidateExpand)
         )
@@ -119,7 +119,7 @@ extension KeyboardViewController {
         let hasCandidates = items.contains { $0.kind == .candidate }
         candidateExpandButton?.isHidden = !hasCandidates
 
-        let targetWidth: CGFloat = hasCandidates ? 44 : 0
+        let targetWidth: CGFloat = hasCandidates ? 56 : 0
         if candidateExpandButtonWidthConstraint?.constant != targetWidth {
             candidateExpandButtonWidthConstraint?.constant = targetWidth
         }

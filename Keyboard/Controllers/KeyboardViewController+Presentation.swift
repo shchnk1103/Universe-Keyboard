@@ -4,6 +4,18 @@ import UIKit
 extension KeyboardViewController {
     /// Installs content inside the system-provided input region without requesting a custom height.
     func setupRootStack() {
+        keyboardSurfaceView = UIView()
+        keyboardSurfaceView.translatesAutoresizingMaskIntoConstraints = false
+
+        keyboardSurfaceMaterialView = UIVisualEffectView(effect: nil)
+        keyboardSurfaceMaterialView.translatesAutoresizingMaskIntoConstraints = false
+
+        keyboardSurfaceFillView = UIView()
+        keyboardSurfaceFillView.translatesAutoresizingMaskIntoConstraints = false
+
+        keyboardSurfaceHighlightView = UIView()
+        keyboardSurfaceHighlightView.translatesAutoresizingMaskIntoConstraints = false
+
         rootStack = UIStackView()
         rootStack.axis = .vertical
         rootStack.spacing = keySpacing
@@ -11,14 +23,44 @@ extension KeyboardViewController {
         rootStack.translatesAutoresizingMaskIntoConstraints = false
 
         view.clipsToBounds = true
-        view.addSubview(rootStack)
+        applyKeyboardSurfaceStyle()
+
+        view.addSubview(keyboardSurfaceView)
+        keyboardSurfaceView.addSubview(keyboardSurfaceMaterialView)
+        keyboardSurfaceView.addSubview(keyboardSurfaceFillView)
+        keyboardSurfaceView.addSubview(keyboardSurfaceHighlightView)
+        keyboardSurfaceView.addSubview(rootStack)
         NSLayoutConstraint.activate([
-            rootStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 7),
-            rootStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -7),
-            rootStack.topAnchor.constraint(equalTo: view.topAnchor, constant: 4),
-            rootStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2),
+            keyboardSurfaceView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            keyboardSurfaceView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            keyboardSurfaceView.topAnchor.constraint(equalTo: view.topAnchor),
+            keyboardSurfaceView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            keyboardSurfaceMaterialView.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor),
+            keyboardSurfaceMaterialView.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor),
+            keyboardSurfaceMaterialView.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor),
+            keyboardSurfaceMaterialView.bottomAnchor.constraint(equalTo: keyboardSurfaceView.bottomAnchor),
+
+            keyboardSurfaceFillView.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor),
+            keyboardSurfaceFillView.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor),
+            keyboardSurfaceFillView.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor),
+            keyboardSurfaceFillView.bottomAnchor.constraint(equalTo: keyboardSurfaceView.bottomAnchor),
+
+            keyboardSurfaceHighlightView.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor, constant: 18),
+            keyboardSurfaceHighlightView.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor, constant: -18),
+            keyboardSurfaceHighlightView.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor, constant: 1),
+            keyboardSurfaceHighlightView.heightAnchor.constraint(equalToConstant: 1),
+
+            rootStack.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor, constant: 7),
+            rootStack.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor, constant: -7),
+            rootStack.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor, constant: keyboardContentTopInset),
+            rootStack.bottomAnchor.constraint(equalTo: keyboardSurfaceView.bottomAnchor, constant: -keyboardContentBottomInset),
         ])
-        Logger.shared.debug("setupRootStack: system height, top+4, bottom-2, hMargin=7", category: .display)
+        Logger.shared.debug(
+            "setupRootStack: transparent surface, content top+\(keyboardContentTopInset), "
+                + "bottom-\(keyboardContentBottomInset), hMargin=7",
+            category: .display
+        )
     }
 
     func reloadKeyboard() {
@@ -33,6 +75,7 @@ extension KeyboardViewController {
         clearAllRows()
         candidateBar = makeCandidateBar()
         rootStack.addArrangedSubview(candidateBar)
+        rootStack.setCustomSpacing(candidateToKeySpacing, after: candidateBar)
         addKeyboardRows(for: controller.state)
         updateReturnKeyAppearance()
         Logger.shared.debug(
@@ -44,7 +87,7 @@ extension KeyboardViewController {
     func installKeyboardUIIfNeeded() {
         guard !isKeyboardUIInstalled else { return }
         isKeyboardUIInstalled = true
-        view.backgroundColor = keyboardBackgroundColor
+        view.backgroundColor = .clear
         setupRootStack()
         UIView.performWithoutAnimation {
             reloadKeyboard()
@@ -63,6 +106,7 @@ extension KeyboardViewController {
         } else {
             candidateBar = makeCandidateBar()
             rootStack.addArrangedSubview(candidateBar)
+            rootStack.setCustomSpacing(candidateToKeySpacing, after: candidateBar)
             addKeyboardRows(for: controller.state)
         }
     }

@@ -6,6 +6,14 @@ import UIKit
 /// baseline: changing them can reintroduce keyboard resize/flicker regressions.
 @MainActor
 final class CandidateBarView: UIView {
+    private enum Layout {
+        /// Keeps candidate text visually settled in the thinner bar.
+        static let verticalTextInset: CGFloat = 0
+        /// Hit area is intentionally larger than the visible chevron for reliable touch.
+        static let expandButtonTouchSize: CGFloat = 56
+        static let expandButtonHorizontalHitSlop: CGFloat = 10
+    }
+
     let collectionView: UICollectionView
     let expandButton: UIButton
     let expandButtonWidthConstraint: NSLayoutConstraint
@@ -20,28 +28,28 @@ final class CandidateBarView: UIView {
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 4
         layout.minimumInteritemSpacing = 4
-        layout.sectionInset = UIEdgeInsets(top: 3, left: 4, bottom: 3, right: 8)
+        layout.sectionInset = UIEdgeInsets(top: Layout.verticalTextInset, left: 4, bottom: 0, right: 8)
 
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         expandButton = Self.makeExpandButton(target: interactionTarget, action: expandAction)
-        expandButtonWidthConstraint = expandButton.widthAnchor.constraint(equalToConstant: 44)
+        expandButtonWidthConstraint = expandButton.widthAnchor.constraint(equalToConstant: Layout.expandButtonTouchSize)
 
         super.init(frame: .zero)
 
         self.backgroundColor = backgroundColor
+        isOpaque = false
         layer.cornerRadius = 0
         clipsToBounds = true
 
         configureCollectionView()
         addSubview(collectionView)
         addSubview(expandButton)
-        addSeparator()
 
         NSLayoutConstraint.activate([
             expandButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -3),
             expandButton.centerYAnchor.constraint(equalTo: centerYAnchor),
             expandButtonWidthConstraint,
-            expandButton.heightAnchor.constraint(equalToConstant: height),
+            expandButton.heightAnchor.constraint(equalToConstant: Layout.expandButtonTouchSize),
 
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2),
             collectionView.trailingAnchor.constraint(equalTo: expandButton.leadingAnchor, constant: -2),
@@ -57,8 +65,24 @@ final class CandidateBarView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        super.point(inside: point, with: event)
+            || (!expandButton.isHidden && expandedButtonHitFrame.contains(point))
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if !expandButton.isHidden && expandedButtonHitFrame.contains(point) {
+            return expandButton
+        }
+        return super.hitTest(point, with: event)
+    }
+
+    private var expandedButtonHitFrame: CGRect {
+        expandButton.frame.insetBy(dx: -Layout.expandButtonHorizontalHitSlop, dy: 0)
+    }
+
     private func configureCollectionView() {
-        collectionView.backgroundColor = .clear
+        CandidateScrollViewStyle.apply(to: collectionView)
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.bounces = true
@@ -69,19 +93,6 @@ final class CandidateBarView: UIView {
             CandidateCollectionCell.self,
             forCellWithReuseIdentifier: CandidateCollectionCell.barReuseIdentifier
         )
-    }
-
-    private func addSeparator() {
-        let separator = UIView()
-        separator.backgroundColor = UIColor.separator.withAlphaComponent(0.22)
-        separator.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(separator)
-        NSLayoutConstraint.activate([
-            separator.leadingAnchor.constraint(equalTo: leadingAnchor),
-            separator.trailingAnchor.constraint(equalTo: trailingAnchor),
-            separator.bottomAnchor.constraint(equalTo: bottomAnchor),
-            separator.heightAnchor.constraint(equalToConstant: 0.5),
-        ])
     }
 
     private static func makeExpandButton(target: Any?, action: Selector) -> UIButton {

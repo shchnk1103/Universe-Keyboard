@@ -7,9 +7,10 @@ extension KeyboardViewController {
     func bootstrapKeyboard() {
         let startupTime = CACurrentMediaTime()
 
-        // Keep system-managed input-view sizing intact; content is installed when presentation begins.
+        // Request a compact keyboard height while keeping the system-provided outer container.
         view.isOpaque = false
         view.backgroundColor = .clear
+        installPreferredKeyboardHeight()
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
         controller = KeyboardController(state: KeyboardState(activeKeyboardType: keyboardType))

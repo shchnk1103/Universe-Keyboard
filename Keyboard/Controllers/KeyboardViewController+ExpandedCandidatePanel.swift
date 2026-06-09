@@ -74,17 +74,17 @@ extension KeyboardViewController {
 
     func makeExpandedCandidatePanel(with precomputedItems: [CandidateItem]? = nil) -> UIView {
         let container = UIView()
-        container.backgroundColor = keyboardBackgroundColor
-        container.clipsToBounds = true
+        container.backgroundColor = .clear
+        container.clipsToBounds = false
         let candidates = (precomputedItems ?? candidateItems()).filter { $0.kind != .placeholder }
-        let collapseButtonSize: CGFloat = 44
+        let collapseButtonSize: CGFloat = 56
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 4
         layout.minimumInteritemSpacing = 4
         layout.sectionInset = UIEdgeInsets(top: 5, left: 8, bottom: 8, right: collapseButtonSize + 8)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
+        CandidateScrollViewStyle.apply(to: collectionView)
         collectionView.showsVerticalScrollIndicator = false
         collectionView.alwaysBounceVertical = hasMoreCandidates
         collectionView.dataSource = self

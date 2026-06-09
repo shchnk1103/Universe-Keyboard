@@ -39,7 +39,10 @@ Keyboard UI is frozen for V1. Future keyboard UI changes must state a specific u
 
 Frozen keyboard baseline:
 
-- Candidate bar height: `44`.
+- Keyboard content top inset: `2`.
+- Keyboard content bottom inset: `0`.
+- Candidate bar height: `34`.
+- Candidate-to-key spacing: `8`.
 - Letter key height: `45`.
 - Function key width for Shift, Delete, 123, globe, and input-mode keys: `46`.
 - Function key symbol size: `18`.
@@ -96,14 +99,17 @@ Key rules:
 The candidate bar must prioritize readability and speed:
 
 - The bar background should match the keyboard background.
-- Use a subtle separator instead of a card-like container.
+- Do not add a card-like container or separator between the candidate bar and key rows unless a specific readability regression requires it.
 - The first real candidate, such as `你好` after typing `nihao`, should be visually clear:
   - Text color: `.label`.
   - Weight: semibold.
-  - Background: high-contrast pill via `CandidateButtonFactory`.
+  - Background: high-contrast pill drawn by `CandidateCollectionCell`.
 - Composition/preedit fallback should use `.secondaryLabel`.
 - Placeholder items should not appear as selectable candidates.
 - The expand button should be quiet: SF Symbol, secondary color, fixed width only when candidates exist.
+- Normal horizontal candidates use a 17pt base font; composition fallback uses 15pt. Keep Dynamic Type capped at 28pt so candidate rows do not resize unpredictably.
+- Candidate cells should render text with `UILabel` and an explicit highlighted background view. Avoid `UIButton.Configuration` for candidate display; it can interact poorly with system material compositing.
+- Candidate `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. On iOS 26+, `UIScrollEdgeEffect` can create a rectangular fade/overlay over the first candidate row inside the system keyboard glass container.
 
 Do not use tint-colored candidate text if it reduces contrast against the candidate background.
 
@@ -113,7 +119,7 @@ Keyboard layout is built from `UIStackView` rows:
 
 - Keep row construction in `KeyboardViewController+Layout.swift`.
 - Keep style creation in `KeyboardViewController+KeyFactory.swift`.
-- Keep candidate styling in `CandidateButtonFactory.swift`.
+- Keep candidate styling in `CandidateCell.swift` and candidate scroll-view safeguards in `CandidateScrollViewStyle.swift`.
 - Keep visual state refresh in `KeyboardViewController+Display.swift`.
 - Keep press and long-press visuals in `KeyboardViewController+Gestures.swift`.
 
@@ -169,6 +175,7 @@ Every UI change must pass this mental checklist:
 - Making the keyboard look like an app toolbar instead of a native keyboard.
 - Using brand blue for candidate text when it lowers contrast.
 - Adding card backgrounds inside the keyboard surface.
+- Reintroducing candidate scroll fade masks or leaving iOS 26 `UIScrollEdgeEffect` enabled on candidate lists.
 - Styling one button directly instead of adding or reusing a key style.
 - Adding large custom SwiftUI sections when a `Form` or existing component would be more native.
 - Changing layout constants without checking keyboard height and row stability.

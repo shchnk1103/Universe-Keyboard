@@ -33,6 +33,26 @@ import KeyboardCore
 import UIKit
 
 extension KeyboardViewController {
+    var preferredKeyboardHeight: CGFloat {
+        keyboardContentTopInset
+            + candidateBarHeight
+            + candidateToKeySpacing
+            + keyHeight * 4
+            + keySpacing * 2
+            + keyboardGroupSpacing
+            + keyboardContentBottomInset
+    }
+
+    /// Requests the compact visual height used by the current keyboard layout.
+    /// Row heights remain unchanged; the reduction comes from candidate/top spacing only.
+    func installPreferredKeyboardHeight() {
+        keyboardHeightConstraint?.isActive = false
+        let constraint = view.heightAnchor.constraint(equalToConstant: preferredKeyboardHeight)
+        constraint.priority = .defaultHigh
+        constraint.isActive = true
+        keyboardHeightConstraint = constraint
+    }
+
     /// 高度是布局期望值而不是对系统输入容器的硬性要求。
     /// 与 Hamster/KeyboardKit 一致，系统过渡布局时可临时压缩或扩展按键行。
     func preferredRowHeightConstraint(for view: UIView, height: CGFloat) -> NSLayoutConstraint {

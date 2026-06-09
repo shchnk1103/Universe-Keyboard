@@ -33,6 +33,16 @@ class KeyboardViewController: UIInputViewController {
 
     // MARK: - 视图引用
 
+    /// Liquid Glass-inspired 外层承载面。只负责背景、圆角和轻量层次，不参与输入逻辑。
+    var keyboardSurfaceView: UIView!
+    /// 实验性系统材质层。默认关闭；由主 App 的实验开关控制。
+    var keyboardSurfaceMaterialView: UIVisualEffectView!
+    /// 统一 surface 底色层。覆盖整个键盘区域，避免候选栏单独形成矩形断层。
+    var keyboardSurfaceFillView: UIView!
+    /// Surface 顶部的克制高光，用于在浅色/深色模式下提供轻微玻璃层次。
+    var keyboardSurfaceHighlightView: UIView!
+    /// 自定义键盘高度约束。只约束整体输入视图高度，不改变单行按键高度。
+    var keyboardHeightConstraint: NSLayoutConstraint?
     /// 根布局容器，垂直排列候选栏 + 4 行按键
     var rootStack: UIStackView!
     /// 候选栏的容器视图（包含 scrollView + 展开按钮）
@@ -131,8 +141,16 @@ class KeyboardViewController: UIInputViewController {
 
     // MARK: - 布局常量
 
-    /// 候选栏高度（点）。44pt 满足 HIG 最小触摸目标，同时对齐 8pt 网格。
-    let candidateBarHeight: CGFloat = 44
+    /// 键盘内容顶部留白。保留少量空间，避免候选栏贴住系统外层圆角。
+    let keyboardContentTopInset: CGFloat = 2
+    /// 键盘内容底部留白。底部由系统容器提供圆角与安全区域，这里只保留极小间距。
+    let keyboardContentBottomInset: CGFloat = 0
+    /// 候选栏高度（点）。系统键盘外层容器已提供顶部承载面，候选栏保持更紧凑。
+    let candidateBarHeight: CGFloat = 34
+    /// 候选栏与第一行按键之间的间距，和顶部留白一致。
+    let candidateToKeySpacing: CGFloat = 8
+    /// 仅用于裁切内部布局，避免透明内容超出系统外层大圆角；不绘制额外 surface。
+    let keyboardSurfaceMaskCornerRadius: CGFloat = 34
     /// 单个按键高度（点）。45pt 比 HIG 最小触控目标略高，接近原生键盘手感。
     let keyHeight: CGFloat = 45
     /// 行间垂直间距（点）。8pt 对齐网格，接近原生键盘行间距。
@@ -211,6 +229,9 @@ class KeyboardViewController: UIInputViewController {
         // 这是因为 needsInputModeSwitchKey 的值可能在键盘生命周期中改变
         // （例如用户启用了新键盘），必须实时响应
         nextKeyboardButton?.isHidden = !needsInputModeSwitchKey
+        if keyboardSurfaceView != nil {
+            applyKeyboardSurfaceStyle()
+        }
         super.viewWillLayoutSubviews()
     }
 

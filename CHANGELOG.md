@@ -6,6 +6,19 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-09 — Liquid Glass keyboard appearance tuning
+
+- Adapted the keyboard presentation toward the iOS 26/27 system rounded keyboard container while avoiding a second custom rounded surface inside the extension.
+- Added a main-app experimental switch for the material-based Liquid Glass path, but kept the default keyboard path conservative so visual regressions can be compared against the system-provided container.
+- Reduced the candidate bar height and tightened the candidate/top spacing while keeping key row heights, input logic, RIME, feedback, and delete behavior unchanged.
+- Final visual tuning lowers the keyboard by trimming only content insets (`top 2pt`, `bottom 0pt`) while preserving input-row height and candidate-bar height; candidate text was increased slightly for readability.
+- Removed the candidate/key separator and expanded the candidate chevron hit area to make candidate expansion easier to trigger.
+- Fixed an iOS 26 candidate-list washout: `UICollectionView` inherits `UIScrollView` edge effects, and the new `UIScrollEdgeEffect` visually added a rectangular fade/overlay over the first candidate row. Candidate scroll views now hide all four scroll edge effects on iOS 26+.
+- Candidate cells now render with a plain `UILabel` plus an explicit highlighted background view instead of `UIButton.Configuration`, keeping candidate text rendering independent from system button/material compositing.
+- Real-device validation confirmed the horizontal candidate overlay disappeared after disabling candidate scroll edge effects.
+
+---
+
 ## 2026-06-07 — Feedback UX Phase 1
 
 - Replaced continuous key click and haptic controls with independent switches plus five discrete levels: light, softer, normal, stronger, and heavy.

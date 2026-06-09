@@ -1,7 +1,10 @@
+import KeyboardCore
 import SwiftUI
 
 struct AppearanceSettingsView: View {
     @AppStorage("app_appearance") private var appearanceRawValue = AppAppearance.system.rawValue
+    @AppStorage(KeyboardAppearanceSettingsKey.liquidGlassMaterialEnabled, store: UserDefaults(suiteName: universeAppGroupID))
+    private var liquidGlassMaterialEnabled = false
 
     private var appearance: AppAppearance {
         AppAppearance(rawValue: appearanceRawValue) ?? .system
@@ -59,6 +62,18 @@ struct AppearanceSettingsView: View {
                 Text("强调色")
             } footer: {
                 Text("按钮与选中状态采用随外观切换的黑白高对比样式。")
+            }
+
+            Section {
+                ToggleRow(
+                    title: "实验性 Liquid Glass 材质",
+                    description: "开启后键盘扩展会尝试使用系统公开材质层；如可读性或性能不稳定，可关闭回到统一 tint surface。",
+                    isOn: $liquidGlassMaterialEnabled
+                )
+            } header: {
+                Text("实验性功能")
+            } footer: {
+                Text("该开关用于调试键盘外观。开启后需要重新唤起键盘，才能稳定观察扩展中的材质变化。")
             }
         }
         .navigationTitle("外观")

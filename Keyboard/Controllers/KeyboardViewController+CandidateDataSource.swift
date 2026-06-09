@@ -52,9 +52,10 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
         let items = collectionView === candidateCollectionView ? horizontalVisibleCandidates : expandedVisibleCandidates
-        guard items.indices.contains(indexPath.item) else { return CGSize(width: 44, height: 38) }
+        let itemHeight: CGFloat = collectionView === candidateCollectionView ? 32 : 38
+        guard items.indices.contains(indexPath.item) else { return CGSize(width: 44, height: itemHeight) }
         let item = items[indexPath.item]
-        let fontSize: CGFloat = item.kind == .composition ? 14 : 16
+        let fontSize: CGFloat = item.kind == .composition ? 15 : 17
         let weight: UIFont.Weight = indexPath.item == 0 && item.kind == .candidate ? .semibold : .regular
         let font = UIFontMetrics(forTextStyle: .body).scaledFont(
             for: .systemFont(ofSize: fontSize, weight: weight),
@@ -64,8 +65,8 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         let horizontalInsets: CGFloat = indexPath.item == 0 ? 16 : 24
         let naturalWidth = max(
             44, ceil((title as NSString).size(withAttributes: [.font: font]).width + horizontalInsets))
-        if collectionView === candidateCollectionView { return CGSize(width: naturalWidth, height: 38) }
-        return CGSize(width: min(max(44, collectionView.bounds.width - 16), naturalWidth), height: 38)
+        if collectionView === candidateCollectionView { return CGSize(width: naturalWidth, height: itemHeight) }
+        return CGSize(width: min(max(44, collectionView.bounds.width - 16), naturalWidth), height: itemHeight)
     }
 
     private func commitCandidate(_ item: CandidateItem) {

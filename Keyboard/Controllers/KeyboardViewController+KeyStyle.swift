@@ -1,3 +1,4 @@
+import KeyboardCore
 import UIKit
 
 extension KeyboardViewController {
@@ -7,6 +8,36 @@ extension KeyboardViewController {
                 ? UIColor(red: 30 / 255, green: 30 / 255, blue: 32 / 255, alpha: 1)
                 : UIColor(red: 209 / 255, green: 209 / 255, blue: 214 / 255, alpha: 1)
         }
+    }
+
+    var keyboardSurfaceHighlightColor: UIColor {
+        UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor.white.withAlphaComponent(0.035)
+                : UIColor.white.withAlphaComponent(0.08)
+        }
+    }
+
+    var keyboardSurfaceFillColor: UIColor {
+        UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 30 / 255, green: 30 / 255, blue: 32 / 255, alpha: 0.18)
+                : UIColor(red: 209 / 255, green: 209 / 255, blue: 214 / 255, alpha: 0.10)
+        }
+    }
+
+    var keyboardSurfaceMaterialTintColor: UIColor {
+        UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 30 / 255, green: 30 / 255, blue: 32 / 255, alpha: 0.10)
+                : UIColor(red: 209 / 255, green: 209 / 255, blue: 214 / 255, alpha: 0.06)
+        }
+    }
+
+    var isExperimentalLiquidGlassMaterialEnabled: Bool {
+        guard !UIAccessibility.isReduceTransparencyEnabled else { return false }
+        return UserDefaults(suiteName: Self.appGroupID)?
+            .bool(forKey: KeyboardAppearanceSettingsKey.liquidGlassMaterialEnabled) ?? false
     }
 
     var characterKeyColor: UIColor {
@@ -83,5 +114,48 @@ extension KeyboardViewController {
         case .active:
             return .label
         }
+    }
+
+    func applyKeyboardSurfaceStyle() {
+        // iOS 26/27 already provides the rounded keyboard container.
+        // Keep our surface as a transparent layout container so we do not create
+        // a second rounded frame or clip the always-visible bottom corners.
+        keyboardSurfaceView.backgroundColor = .clear
+        keyboardSurfaceView.layer.cornerRadius = 0
+        keyboardSurfaceView.layer.cornerCurve = .continuous
+        keyboardSurfaceView.layer.borderWidth = 0
+        keyboardSurfaceView.layer.borderColor = nil
+        keyboardSurfaceView.layer.masksToBounds = false
+
+        keyboardSurfaceMaterialView.isUserInteractionEnabled = false
+        keyboardSurfaceFillView.isUserInteractionEnabled = false
+
+        if isExperimentalLiquidGlassMaterialEnabled {
+            keyboardSurfaceMaterialView.effect = keyboardSurfaceMaterialEffect()
+            keyboardSurfaceMaterialView.isHidden = false
+            keyboardSurfaceFillView.backgroundColor = keyboardSurfaceMaterialTintColor
+        } else {
+            keyboardSurfaceMaterialView.effect = nil
+            keyboardSurfaceMaterialView.isHidden = true
+            keyboardSurfaceFillView.backgroundColor = .clear
+        }
+
+        keyboardSurfaceHighlightView.backgroundColor = .clear
+        keyboardSurfaceHighlightView.isHidden = true
+        keyboardSurfaceHighlightView.isUserInteractionEnabled = false
+    }
+
+    private func keyboardSurfaceMaterialEffect() -> UIVisualEffect {
+        if #available(iOS 26.0, *) {
+            let effect = UIGlassEffect(style: .regular)
+            effect.tintColor = keyboardSurfaceMaterialTintColor
+            return effect
+        }
+
+        let style: UIBlurEffect.Style =
+            traitCollection.userInterfaceStyle == .dark
+            ? .systemUltraThinMaterialDark
+            : .systemUltraThinMaterialLight
+        return UIBlurEffect(style: style)
     }
 }
