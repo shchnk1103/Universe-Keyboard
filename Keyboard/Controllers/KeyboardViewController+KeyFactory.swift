@@ -8,9 +8,10 @@
 //
 //  1. KeyboardKeyButton（UIButton 子类）— 扩大触控区域
 //     Apple 人机界面指南（HIG）建议触控目标不小于 44×44pt。
-//     但键盘按键间的实际间距只有 6pt，而 UIKit 默认的 hit testing
-//     只在按钮的 bounds 内响应。我们覆盖 point(inside:with:) 方法，
-//     将触控区域向四周扩展 touchSlop=10pt，减少了"按到按键缝隙"的情况。
+//     按键视觉间距仍由 UIStackView.spacing 保持；真实触控由
+//     KeyboardInputHitAreaStackView 按相邻按键中线切分为连续触控单元。
+//     KeyboardKeyButton 的 touchSlop 负责让这些转发触摸在 touch-up
+//     和长按 tracking 阶段仍被视为有效。
 //
 import UIKit
 

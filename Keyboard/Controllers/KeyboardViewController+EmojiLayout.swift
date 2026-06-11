@@ -79,7 +79,7 @@ extension KeyboardViewController {
     }
 
     private func makeEmojiButton(emoji: String) -> UIButton {
-        let button = UIButton(type: .system)
+        let button = KeyboardKeyButton(type: .system)
         button.setTitle(emoji, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 24)
         button.backgroundColor = characterKeyColor

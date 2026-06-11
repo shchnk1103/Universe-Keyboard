@@ -16,7 +16,7 @@ extension KeyboardViewController {
         keyboardSurfaceHighlightView = UIView()
         keyboardSurfaceHighlightView.translatesAutoresizingMaskIntoConstraints = false
 
-        rootStack = UIStackView()
+        rootStack = KeyboardInputHitAreaStackView()
         rootStack.axis = .vertical
         rootStack.spacing = keySpacing
         rootStack.distribution = .fill

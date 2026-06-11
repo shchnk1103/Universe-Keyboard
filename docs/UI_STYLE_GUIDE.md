@@ -90,6 +90,7 @@ Key rules:
 - Character keys may have a subtle 1 px downward shadow.
 - Function keys should be flatter and darker/lower-emphasis than character keys.
 - Function key symbols should remain readable at the frozen `18` point size.
+- Keep visual key gaps native-looking, but do not leave dead touch zones inside the key input area. Split key-area gaps at adjacent midlines into per-key touch cells through the root hit-test container instead of changing visible spacing. As with candidate cells, keep a nearly invisible backing view (`alpha` around `0.001`) for each expanded key touch cell; diagnostic visuals must not be the reason hit testing works.
 - Press feedback should use brief background highlight plus subtle scale, not full alpha fading.
 - Visual press state, key click, and haptic feedback should be emitted together from key touch-down for standard keys. Paths without a normal touch-down, such as candidate commit or long-press variant commit, should use the shared feedback helper at commit time.
 - The middle letter row should stay slightly inset, matching native QWERTY rhythm.
