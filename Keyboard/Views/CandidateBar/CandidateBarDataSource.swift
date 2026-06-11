@@ -46,7 +46,8 @@ struct CandidateBarDataSource {
                     CandidateItem.rimeCandidate(
                         candidate,
                         page: rimeOutput.candidatePageNumber,
-                        indexOnPage: index
+                        indexOnPage: index,
+                        globalIndex: candidate.globalIndex ?? (rimeOutput.candidatePageNumber == 0 ? index : nil)
                     )
                 )
             }

@@ -110,6 +110,9 @@ The candidate bar must prioritize readability and speed:
 - Normal horizontal candidates use a 17pt base font; composition fallback uses 15pt. Keep Dynamic Type capped at 28pt so candidate rows do not resize unpredictably.
 - Candidate cells should render text with `UILabel` and an explicit highlighted background view. Avoid `UIButton.Configuration` for candidate display; it can interact poorly with system material compositing.
 - Candidate `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. On iOS 26+, `UIScrollEdgeEffect` can create a rectangular fade/overlay over the first candidate row inside the system keyboard glass container.
+- Candidate `UICollectionView` layouts should avoid real spacing between items. Keep item spacing at zero, put the visual gap inside the cell, and keep a nearly invisible backing view (`alpha` around `0.001`) so the apparent gap remains part of a cell's touch area in the Keyboard Extension.
+- Candidate expand and collapse chevrons may have a larger real hit area than their visible symbol. Do this through the button's own `point(inside:with:)` and nearly invisible backing, not through visible diagnostic overlays or red debug backgrounds.
+- Candidate touch diagnostics should use the shared logger. Diagnostic logging must not change visible candidate or chevron styling; otherwise real-device hit testing can accidentally depend on the debug view.
 
 Do not use tint-colored candidate text if it reduces contrast against the candidate background.
 

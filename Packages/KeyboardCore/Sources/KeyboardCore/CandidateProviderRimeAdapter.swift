@@ -26,6 +26,10 @@ final class CandidateProviderRimeAdapter: RimeEngine {
     }
 
     func selectCandidate(at index: Int) -> RimeOutput {
+        selectCandidate(globalIndex: index)
+    }
+
+    func selectCandidate(globalIndex index: Int) -> RimeOutput {
         let candidates = candidateProvider.candidates(for: composition)
         let committed: String
         if index >= 0 && index < candidates.count {
@@ -39,6 +43,27 @@ final class CandidateProviderRimeAdapter: RimeEngine {
             candidates: [],
             committedText: committed,
             highlightedIndex: -1
+        )
+    }
+
+    func candidateWindow(from globalIndex: Int, limit: Int) -> RimeCandidateWindow {
+        let candidates = candidateProvider.candidates(for: composition)
+        let safeStart = max(0, globalIndex)
+        let safeLimit = max(0, limit)
+        guard safeStart < candidates.count, safeLimit > 0 else {
+            return RimeCandidateWindow(
+                candidates: [],
+                startIndex: safeStart,
+                nextIndex: safeStart,
+                hasMoreCandidates: false
+            )
+        }
+        let end = min(candidates.count, safeStart + safeLimit)
+        return RimeCandidateWindow(
+            candidates: candidates[safeStart..<end].map { RimeCandidate(text: $0) },
+            startIndex: safeStart,
+            nextIndex: end,
+            hasMoreCandidates: end < candidates.count
         )
     }
 

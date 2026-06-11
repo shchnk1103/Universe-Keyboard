@@ -46,11 +46,48 @@ final class RimeEngineContractTests: XCTestCase {
         XCTAssertTrue(output.hasMorePages)
     }
 
+    func testOutputParserAcceptsObjectiveCCollections() {
+        let candidate = NSMutableDictionary()
+        candidate["text"] = "你" as NSString
+        candidate["comment"] = "" as NSString
+        candidate["globalIndex"] = NSNumber(value: 0)
+
+        let output = RimeEngineImpl.parseOutputDictionary([
+            "rawInput": "ni",
+            "preedit": "ni",
+            "cursorPos": 2,
+            "candidates": NSMutableArray(object: candidate),
+            "isLastPage": true,
+        ])
+
+        XCTAssertEqual(output.candidates.map(\.text), ["你"])
+        XCTAssertEqual(output.candidates.map(\.globalIndex), [0])
+    }
+
     func testOutputParserUsesPhaseOneDefaultsWhenMetadataIsMissing() {
         let output = RimeEngineImpl.parseOutputDictionary([:])
 
         XCTAssertNil(output.rawInput)
         XCTAssertEqual(output.candidatePageNumber, 0)
+    }
+
+    func testCandidateWindowParserPreservesGlobalIndexes() {
+        let window = RimeEngineImpl.parseCandidateWindowDictionary([
+            "startIndex": 9,
+            "nextIndex": 12,
+            "hasMoreCandidates": true,
+            "candidates": [
+                ["text": "今", "comment": "", "globalIndex": 9],
+                ["text": "金", "comment": "", "globalIndex": 10],
+                ["text": "仅", "comment": "", "globalIndex": 11],
+            ],
+        ])
+
+        XCTAssertEqual(window.startIndex, 9)
+        XCTAssertEqual(window.nextIndex, 12)
+        XCTAssertTrue(window.hasMoreCandidates)
+        XCTAssertEqual(window.candidates.map(\.text), ["今", "金", "仅"])
+        XCTAssertEqual(window.candidates.map(\.globalIndex), [9, 10, 11])
     }
 
     func testDeploymentRequestCarriesFullCheckBoundary() {

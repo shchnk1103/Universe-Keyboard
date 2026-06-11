@@ -42,3 +42,26 @@ public struct RimeOutput: Equatable, Sendable {
         self.candidatePageNumber = candidatePageNumber
     }
 }
+
+/// 从 RIME 全局候选列表中读取的一段候选窗口。
+///
+/// `startIndex` 和 `nextIndex` 都是 librime candidate list 的全局索引；
+/// UI 可以用它们做无极滚动和展开面板预取，而不必改变当前 RIME 页码。
+public struct RimeCandidateWindow: Equatable, Sendable {
+    public let candidates: [RimeCandidate]
+    public let startIndex: Int
+    public let nextIndex: Int
+    public let hasMoreCandidates: Bool
+
+    public init(
+        candidates: [RimeCandidate],
+        startIndex: Int,
+        nextIndex: Int,
+        hasMoreCandidates: Bool
+    ) {
+        self.candidates = candidates
+        self.startIndex = startIndex
+        self.nextIndex = nextIndex
+        self.hasMoreCandidates = hasMoreCandidates
+    }
+}

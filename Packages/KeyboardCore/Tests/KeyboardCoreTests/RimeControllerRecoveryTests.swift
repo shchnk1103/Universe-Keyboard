@@ -97,13 +97,13 @@ final class RimeControllerRecoveryTests: RimeControllerTestSupport {
         XCTAssertEqual(engine.sessionResetCount, 1)
     }
 
-    func testInsertCandidateFallbackResetsRime() {
+    func testStaleCandidateWithoutReferenceKeepsRimeComposition() {
         _ = controller.handle(.insertKey("n"))
         _ = controller.handle(.insertKey("i"))
         _ = controller.handle(.insertCandidate("你好", kind: .candidate))
-        XCTAssertEqual(client.text, "你好")
-        XCTAssertFalse(engine.isComposing(), "fallback 候选选择后 RIME 必须被重置")
-        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertEqual(client.text, "ni")
+        XCTAssertTrue(engine.isComposing(), "过期候选点击不能重置 RIME")
+        XCTAssertEqual(controller.state.currentComposition, "ni")
     }
 
     func testDeleteAfterCandidateSelectionDoesNotRevivePinyin() {

@@ -1,6 +1,13 @@
 import KeyboardCore
 import UIKit
 
+private enum CandidateSizing {
+    /// 视觉间距并入 cell 尺寸；layout spacing 保持为 0，避免候选之间出现真实触控空洞。
+    static let visualHorizontalGap: CGFloat = 4
+    static let expandedVisualVerticalGap: CGFloat = 4
+    static let minimumTouchWidth: CGFloat = 44
+}
+
 extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     var horizontalVisibleCandidates: [CandidateItem] {
         accumulatedCandidates.filter { $0.kind != .placeholder }
@@ -52,21 +59,42 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
         let items = collectionView === candidateCollectionView ? horizontalVisibleCandidates : expandedVisibleCandidates
-        let itemHeight: CGFloat = collectionView === candidateCollectionView ? 32 : 38
+        let isExpanded = collectionView === expandedCandidateCollectionView
+        let visualHeight: CGFloat = isExpanded ? 38 : 32
+        let itemHeight = visualHeight + (isExpanded ? CandidateSizing.expandedVisualVerticalGap : 0)
         guard items.indices.contains(indexPath.item) else { return CGSize(width: 44, height: itemHeight) }
         let item = items[indexPath.item]
+        let preferred = indexPath.item == 0 && item.kind == .candidate
+        let title = displayTitle(for: item)
+        let cacheKey =
+            "\(isExpanded)|\(preferred)|\(Int(collectionView.bounds.width))|\(item.kind.rawValue)|\(title)"
+        if let cachedSize = candidateCellSizeCache[cacheKey] {
+            return cachedSize
+        }
+
         let fontSize: CGFloat = item.kind == .composition ? 15 : 17
-        let weight: UIFont.Weight = indexPath.item == 0 && item.kind == .candidate ? .semibold : .regular
+        let weight: UIFont.Weight = preferred ? .semibold : .regular
         let font = UIFontMetrics(forTextStyle: .body).scaledFont(
             for: .systemFont(ofSize: fontSize, weight: weight),
             maximumPointSize: 28
         )
-        let title = displayTitle(for: item)
         let horizontalInsets: CGFloat = indexPath.item == 0 ? 16 : 24
         let naturalWidth = max(
-            44, ceil((title as NSString).size(withAttributes: [.font: font]).width + horizontalInsets))
-        if collectionView === candidateCollectionView { return CGSize(width: naturalWidth, height: itemHeight) }
-        return CGSize(width: min(max(44, collectionView.bounds.width - 16), naturalWidth), height: itemHeight)
+            CandidateSizing.minimumTouchWidth,
+            ceil((title as NSString).size(withAttributes: [.font: font]).width + horizontalInsets)
+        )
+        let size: CGSize
+        if collectionView === candidateCollectionView {
+            size = CGSize(width: naturalWidth + CandidateSizing.visualHorizontalGap, height: itemHeight)
+        } else {
+            let maxWidth = max(44, collectionView.bounds.width - 16)
+            size = CGSize(
+                width: min(maxWidth, naturalWidth + CandidateSizing.visualHorizontalGap),
+                height: itemHeight
+            )
+        }
+        candidateCellSizeCache[cacheKey] = size
+        return size
     }
 
     private func commitCandidate(_ item: CandidateItem) {

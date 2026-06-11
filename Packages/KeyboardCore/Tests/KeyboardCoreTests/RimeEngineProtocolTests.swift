@@ -73,13 +73,12 @@ final class RimeEngineProtocolTests: XCTestCase {
 
     // MARK: - selectCandidate: out-of-range
 
-    func testSelectCandidateOutOfRange() {
+    func testSelectCandidateOutOfRangeKeepsComposition() {
         _ = controller.handle(.insertKey("n"))
         _ = controller.handle(.insertKey("i"))
-        // "ni" has 3 candidates [0,1,2], index 5 is out of range
         _ = controller.handle(.insertCandidate("fallback", kind: .candidate))
-        XCTAssertEqual(client.text, "fallback")
-        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertEqual(client.text, "ni")
+        XCTAssertEqual(controller.state.currentComposition, "ni")
     }
 
     func testSelectCandidateNegativeIndex() {

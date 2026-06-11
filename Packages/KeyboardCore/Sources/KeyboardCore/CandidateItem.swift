@@ -62,10 +62,12 @@ public enum CandidateKind: Int, CaseIterable, Sendable {
 public struct CandidateSelectionReference: Equatable, Sendable {
     public let page: Int
     public let indexOnPage: Int
+    public let globalIndex: Int?
 
-    public init(page: Int, indexOnPage: Int) {
+    public init(page: Int, indexOnPage: Int, globalIndex: Int? = nil) {
         self.page = page
         self.indexOnPage = indexOnPage
+        self.globalIndex = globalIndex
     }
 }
 
@@ -102,14 +104,16 @@ public struct CandidateItem: Equatable, Sendable {
     public static func rimeCandidate(
         _ candidate: RimeCandidate,
         page: Int,
-        indexOnPage: Int
+        indexOnPage: Int,
+        globalIndex: Int? = nil
     ) -> CandidateItem {
         CandidateItem(
             title: candidate.text,
             kind: .candidate,
             selectionReference: CandidateSelectionReference(
                 page: page,
-                indexOnPage: indexOnPage
+                indexOnPage: indexOnPage,
+                globalIndex: globalIndex
             )
         )
     }

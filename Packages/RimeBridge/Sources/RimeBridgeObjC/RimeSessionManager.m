@@ -14,6 +14,10 @@ NSString * const RimeKeyCommit           = @"commit";
 NSString * const RimeKeyIsLastPage       = @"isLastPage";
 NSString * const RimeKeyHighlightedIndex = @"highlightedIndex";
 NSString * const RimeKeyPageNo           = @"pageNo";
+NSString * const RimeKeyCandidateWindowStartIndex = @"startIndex";
+NSString * const RimeKeyCandidateWindowNextIndex = @"nextIndex";
+NSString * const RimeKeyCandidateWindowHasMore = @"hasMoreCandidates";
+NSString * const RimeKeyCandidateGlobalIndex = @"globalIndex";
 
 // MARK: - Private interface
 
@@ -146,6 +150,69 @@ NSString * const RimeKeyPageNo           = @"pageNo";
 
     _api->select_candidate_on_current_page(_sessionId, index);
     return [self collectOutput];
+}
+
+- (NSDictionary *)selectCandidateAtGlobalIndex:(int)index {
+    if (_sessionId == 0) return [self emptyOutput];
+    if (index < 0) return [self collectOutput];
+    if (!RIME_API_AVAILABLE(_api, select_candidate)) {
+        NSLog(@"[RIME] ⚠️ select_candidate API unavailable");
+        return [self collectOutput];
+    }
+
+    if (!_api->select_candidate(_sessionId, (size_t)index)) {
+        NSLog(@"[RIME] ⚠️ select_candidate(%d) failed", index);
+    }
+    return [self collectOutput];
+}
+
+- (NSDictionary *)candidatesFromIndex:(int)index limit:(int)limit {
+    NSMutableDictionary *window = [NSMutableDictionary dictionary];
+    int safeIndex = MAX(0, index);
+    int safeLimit = MAX(0, limit);
+    window[RimeKeyCandidateWindowStartIndex] = @(safeIndex);
+    window[RimeKeyCandidateWindowNextIndex] = @(safeIndex);
+    window[RimeKeyCandidateWindowHasMore] = @NO;
+    window[RimeKeyCandidates] = @[];
+
+    if (_sessionId == 0 || safeLimit == 0) return window;
+    if (!RIME_API_AVAILABLE(_api, candidate_list_from_index)) {
+        NSLog(@"[RIME] ⚠️ candidate_list_from_index API unavailable");
+        return window;
+    }
+
+    RimeCandidateListIterator iterator = {0};
+    if (!_api->candidate_list_from_index(_sessionId, &iterator, safeIndex)) {
+        return window;
+    }
+
+    NSMutableArray *candidates = [NSMutableArray arrayWithCapacity:safeLimit];
+    int consumed = 0;
+    int lastGlobalIndex = safeIndex - 1;
+    BOOL hasMore = NO;
+    do {
+        if (consumed >= safeLimit) {
+            hasMore = YES;
+            break;
+        }
+        NSMutableDictionary *item = [NSMutableDictionary dictionary];
+        if (iterator.candidate.text) {
+            item[RimeKeyCandidateText] = [NSString stringWithUTF8String:iterator.candidate.text];
+        }
+        if (iterator.candidate.comment) {
+            item[RimeKeyCandidateComment] = [NSString stringWithUTF8String:iterator.candidate.comment];
+        }
+        item[RimeKeyCandidateGlobalIndex] = @(iterator.index);
+        [candidates addObject:item];
+        lastGlobalIndex = iterator.index;
+        consumed += 1;
+    } while (_api->candidate_list_next(&iterator));
+
+    _api->candidate_list_end(&iterator);
+    window[RimeKeyCandidates] = candidates;
+    window[RimeKeyCandidateWindowNextIndex] = @(consumed > 0 ? lastGlobalIndex + 1 : safeIndex);
+    window[RimeKeyCandidateWindowHasMore] = @(hasMore);
+    return window;
 }
 
 - (NSDictionary *)deleteBackward {

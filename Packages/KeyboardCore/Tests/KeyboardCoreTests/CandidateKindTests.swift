@@ -48,14 +48,15 @@ final class CandidateKindTests: XCTestCase {
         let item = CandidateItem.rimeCandidate(
             RimeCandidate(text: "你好"),
             page: 2,
-            indexOnPage: 4
+            indexOnPage: 4,
+            globalIndex: 24
         )
 
         XCTAssertEqual(item.title, "你好")
         XCTAssertEqual(item.kind, .candidate)
         XCTAssertEqual(
             item.selectionReference,
-            CandidateSelectionReference(page: 2, indexOnPage: 4)
+            CandidateSelectionReference(page: 2, indexOnPage: 4, globalIndex: 24)
         )
     }
 

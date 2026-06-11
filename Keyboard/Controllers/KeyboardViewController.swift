@@ -96,8 +96,24 @@ class KeyboardViewController: UIInputViewController {
     var hasMoreCandidates: Bool = false
     /// 是否正在加载更多候选（防止重复触发）
     var isLoadingMoreCandidates: Bool = false
-    /// 候选栏已加载的页数深度（用于 loadMoreCandidates 回到第 1 页时计算 pageUp 次数）
+    /// 候选栏已加载的页数深度。旧分页诊断字段保留，当前全局索引预取路径不再依赖它。
     var candidatePageDepth: Int = 0
+    /// 下一次从 RIME 全局候选列表读取的起始索引。
+    var nextCandidateGlobalIndex: Int = 0
+    /// 当前候选快照对应的 raw input，用于丢弃旧输入的延迟预取结果。
+    var candidateSnapshotRawInput: String?
+    /// 候选快照代数；每次 composition 变化递增。
+    var candidateSnapshotGeneration: Int = 0
+    /// 当前预取目标。展开态会加载更多候选，横向栏保持小批量。
+    var candidatePrefetchMode: CandidatePrefetchMode = .bar
+    /// 用户正在拖动候选栏或展开面板时不做同步 RIME 预取，避免滑动中卡住。
+    var isCandidateScrollInteracting = false
+    /// 滑动期间被推迟的预取请求，手势结束后再执行。
+    var deferredCandidatePrefetchMode: CandidatePrefetchMode?
+    /// 预取请求序号。新的输入、展开/收起或新的预取安排会让旧延迟任务自然失效。
+    var candidatePrefetchRequestSerial = 0
+    /// 候选 cell 尺寸缓存。滚动布局会频繁查询 sizeForItemAt，缓存可避免重复文本测量。
+    var candidateCellSizeCache: [String: CGSize] = [:]
     /// 记录每个按钮的 touchDown 时间戳，用于性能日志
     var keyTouchDownTimes: [ObjectIdentifier: CFTimeInterval] = [:]
     /// 已在 touchDown 发出反馈的按钮，避免 touchUpInside 业务方法重复播放声音/触感。
@@ -147,8 +163,8 @@ class KeyboardViewController: UIInputViewController {
     let keyboardContentBottomInset: CGFloat = 0
     /// 候选栏高度（点）。系统键盘外层容器已提供顶部承载面，候选栏保持更紧凑。
     let candidateBarHeight: CGFloat = 34
-    /// 候选栏与第一行按键之间的间距，和顶部留白一致。
-    let candidateToKeySpacing: CGFloat = 8
+    /// 候选栏与第一行按键之间的间距。并入候选栏自身高度，保证这块区域也能接收候选手势。
+    let candidateToKeySpacing: CGFloat = 14
     /// 仅用于裁切内部布局，避免透明内容超出系统外层大圆角；不绘制额外 surface。
     let keyboardSurfaceMaskCornerRadius: CGFloat = 34
     /// 单个按键高度（点）。45pt 比 HIG 最小触控目标略高，接近原生键盘手感。
@@ -290,4 +306,9 @@ class KeyboardViewController: UIInputViewController {
         releaseRecoverableResourcesAfterMemoryWarning()
     }
 
+}
+
+enum CandidatePrefetchMode {
+    case bar
+    case expanded
 }

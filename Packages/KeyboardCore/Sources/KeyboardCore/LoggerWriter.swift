@@ -8,11 +8,7 @@ struct LoggerPersistence: Sendable {
 
     static let live = LoggerPersistence(
         isCategoryEnabled: { category in
-            let defaults = UserDefaults(suiteName: Logger.appGroupID)
-            guard defaults?.bool(forKey: Logger.toggleKey) ?? false else { return false }
-            let key = Logger.categoryToggleKey(for: category)
-            guard defaults?.object(forKey: key) != nil else { return true }
-            return defaults?.bool(forKey: key) ?? true
+            Logger.isLiveCategoryEnabled(category)
         },
         readLines: {
             let text = UserDefaults(suiteName: Logger.appGroupID)?.string(forKey: Logger.logKey) ?? ""

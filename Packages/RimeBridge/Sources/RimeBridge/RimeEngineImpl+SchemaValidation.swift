@@ -61,6 +61,6 @@ extension RimeEngineImpl {
         }
 
         Logger.shared.error("All schema fallbacks failed. Engine will not produce candidates.", category: .engine)
-        return bridge.currentSchemaID()
+        return nil
     }
 }

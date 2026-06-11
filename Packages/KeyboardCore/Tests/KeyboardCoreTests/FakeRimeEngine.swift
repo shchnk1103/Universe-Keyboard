@@ -61,6 +61,10 @@ final class FakeRimeEngine: RimeEngine {
     }
 
     func selectCandidate(at index: Int) -> RimeOutput {
+        selectCandidate(globalIndex: index)
+    }
+
+    func selectCandidate(globalIndex index: Int) -> RimeOutput {
         let candidates = dictionary[composition] ?? []
         let committed: String
         if index >= 0 && index < candidates.count {
@@ -101,6 +105,27 @@ final class FakeRimeEngine: RimeEngine {
                 highlightedIndex: -1
             )
         }
+    }
+
+    func candidateWindow(from globalIndex: Int, limit: Int) -> RimeCandidateWindow {
+        let output = buildOutput()
+        let safeStart = max(0, globalIndex)
+        let safeLimit = max(0, limit)
+        guard safeStart < output.candidates.count, safeLimit > 0 else {
+            return RimeCandidateWindow(
+                candidates: [],
+                startIndex: safeStart,
+                nextIndex: safeStart,
+                hasMoreCandidates: false
+            )
+        }
+        let end = min(output.candidates.count, safeStart + safeLimit)
+        return RimeCandidateWindow(
+            candidates: Array(output.candidates[safeStart..<end]),
+            startIndex: safeStart,
+            nextIndex: end,
+            hasMoreCandidates: end < output.candidates.count
+        )
     }
 
     func deleteBackward() -> RimeOutput {

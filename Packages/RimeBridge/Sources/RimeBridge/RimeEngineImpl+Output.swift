@@ -16,13 +16,7 @@ extension RimeEngineImpl {
             return KeyboardCore.RimeComposition(preeditText: value, cursorPosition: cursorPosition)
         }
 
-        let rawCandidates = raw[RimeKey.candidates] as? [[String: String]] ?? []
-        let candidates = rawCandidates.map { item in
-            KeyboardCore.RimeCandidate(
-                text: item[RimeKey.candidateText] ?? "",
-                comment: item[RimeKey.candidateComment]
-            )
-        }
+        let candidates = parseCandidates(raw[RimeKey.candidates])
 
         let isLastPage = (raw[RimeKey.isLastPage] as? NSNumber)?.boolValue ?? true
         return KeyboardCore.RimeOutput(
@@ -35,6 +29,64 @@ extension RimeEngineImpl {
             candidatePageNumber: (raw[RimeKey.pageNumber] as? NSNumber)?.intValue ?? 0
         )
     }
+
+    static func parseCandidateWindowDictionary(_ raw: [AnyHashable: Any]) -> KeyboardCore.RimeCandidateWindow {
+        let candidates = parseCandidates(raw[RimeKey.candidates])
+        let startIndex = (raw[RimeKey.windowStartIndex] as? NSNumber)?.intValue ?? 0
+        let nextIndex = (raw[RimeKey.windowNextIndex] as? NSNumber)?.intValue ?? startIndex + candidates.count
+        let hasMore = (raw[RimeKey.windowHasMore] as? NSNumber)?.boolValue ?? false
+        return KeyboardCore.RimeCandidateWindow(
+            candidates: candidates,
+            startIndex: startIndex,
+            nextIndex: nextIndex,
+            hasMoreCandidates: hasMore
+        )
+    }
+
+    /// ObjC bridge returns Foundation collections. Avoid depending on one
+    /// specific Swift generic cast, otherwise a valid RIME candidate array can
+    /// be parsed as empty on a different bridge shape.
+    private static func parseCandidates(_ rawValue: Any?) -> [KeyboardCore.RimeCandidate] {
+        let rawItems: [Any]
+        if let array = rawValue as? [Any] {
+            rawItems = array
+        } else if let array = rawValue as? NSArray {
+            rawItems = array.map { $0 }
+        } else {
+            return []
+        }
+
+        return rawItems.compactMap { rawItem in
+            let item = normalizedCandidateDictionary(rawItem)
+            let text = item[RimeKey.candidateText] as? String
+            guard let text, !text.isEmpty else { return nil }
+            return KeyboardCore.RimeCandidate(
+                text: text,
+                comment: item[RimeKey.candidateComment] as? String,
+                globalIndex: (item[RimeKey.candidateGlobalIndex] as? NSNumber)?.intValue
+                    ?? item[RimeKey.candidateGlobalIndex] as? Int
+            )
+        }
+    }
+
+    private static func normalizedCandidateDictionary(_ rawItem: Any) -> [String: Any] {
+        if let item = rawItem as? [String: Any] { return item }
+        if let item = rawItem as? [AnyHashable: Any] {
+            return item.reduce(into: [:]) { result, pair in
+                guard let key = pair.key as? String else { return }
+                result[key] = pair.value
+            }
+        }
+        if let item = rawItem as? NSDictionary {
+            var result: [String: Any] = [:]
+            item.forEach { key, value in
+                guard let key = key as? String else { return }
+                result[key] = value
+            }
+            return result
+        }
+        return [:]
+    }
 }
 
 private enum RimeKey {
@@ -44,8 +96,12 @@ private enum RimeKey {
     static let candidates = "candidates"
     static let candidateText = "text"
     static let candidateComment = "comment"
+    static let candidateGlobalIndex = "globalIndex"
     static let commit = "commit"
     static let isLastPage = "isLastPage"
     static let highlightedIndex = "highlightedIndex"
     static let pageNumber = "pageNo"
+    static let windowStartIndex = "startIndex"
+    static let windowNextIndex = "nextIndex"
+    static let windowHasMore = "hasMoreCandidates"
 }

@@ -58,6 +58,18 @@ public final class Logger: Sendable {
         "log_category_\(category.rawValue.lowercased())"
     }
 
+    /// Returns the live App Group logging state for a category.
+    ///
+    /// This is intentionally separate from `Logger.shared.record`: hot UI probes can
+    /// skip building diagnostic strings when the diagnostics app has logging disabled.
+    public static func isLiveCategoryEnabled(_ category: Category) -> Bool {
+        let defaults = UserDefaults(suiteName: appGroupID)
+        guard defaults?.bool(forKey: toggleKey) ?? false else { return false }
+        let key = categoryToggleKey(for: category)
+        guard defaults?.object(forKey: key) != nil else { return true }
+        return defaults?.bool(forKey: key) ?? true
+    }
+
     // MARK: - Lifetime
 
     public static let shared = Logger()

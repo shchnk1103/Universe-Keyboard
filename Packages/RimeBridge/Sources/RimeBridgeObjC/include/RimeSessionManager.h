@@ -45,6 +45,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// @return 同 processKey 的返回格式
 - (NSDictionary *)selectCandidateAtIndex:(int)index;
 
+/// 选择全局候选列表中的第 index 个候选词（0-based，不限当前页）
+/// @return 同 processKey 的返回格式；选择失败时返回当前输出
+- (NSDictionary *)selectCandidateAtGlobalIndex:(int)index;
+
+/// 从全局候选列表读取候选窗口，不改变当前页。
+/// 返回 @{@"startIndex": ..., @"nextIndex": ..., @"hasMoreCandidates": ..., @"candidates": ...}
+- (NSDictionary *)candidatesFromIndex:(int)index limit:(int)limit;
+
 /// 删除 composition 中最后一个字符
 /// @return 同 processKey 的返回格式
 - (NSDictionary *)deleteBackward;
@@ -104,5 +112,9 @@ extern NSString * const RimeKeyIsLastPage;
 extern NSString * const RimeKeyHighlightedIndex;
 /// menu.pageNo — 当前页码
 extern NSString * const RimeKeyPageNo;
+extern NSString * const RimeKeyCandidateWindowStartIndex;
+extern NSString * const RimeKeyCandidateWindowNextIndex;
+extern NSString * const RimeKeyCandidateWindowHasMore;
+extern NSString * const RimeKeyCandidateGlobalIndex;
 
 NS_ASSUME_NONNULL_END

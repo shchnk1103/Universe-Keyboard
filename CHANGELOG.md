@@ -6,6 +6,12 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-11 — Candidate touch hit-area hardening
+
+- Fixed candidate-gap hit testing in the Keyboard Extension by keeping `UICollectionView` item spacing at zero, preserving the visual gap inside each cell, and retaining a nearly invisible cell backing so the apparent gap is still a valid pan start area on real devices.
+- Removed visible red diagnostic backgrounds from candidate cells and expand/collapse chevrons. Candidate touch diagnostics now remain log-only for visuals, so enabling display diagnostics no longer changes the touch surface being tested.
+- Expanded the real hit area for the candidate expand/collapse chevrons through button hit testing and invisible backing, preserving the native-looking chevron while improving tap and downward-swipe reliability.
+
 ## 2026-06-09 — Liquid Glass keyboard appearance tuning
 
 - Adapted the keyboard presentation toward the iOS 26/27 system rounded keyboard container while avoiding a second custom rounded surface inside the extension.

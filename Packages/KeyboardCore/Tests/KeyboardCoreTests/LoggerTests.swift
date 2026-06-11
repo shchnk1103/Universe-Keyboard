@@ -67,6 +67,32 @@ final class LoggerTests: XCTestCase {
         let _: any Sendable = Logger.shared
     }
 
+    func testLiveCategoryToggleRequiresGlobalAndCategorySwitches() {
+        let defaults = UserDefaults(suiteName: Logger.appGroupID)
+        let categoryKey = Logger.categoryToggleKey(for: .display)
+        let originalGlobal = defaults?.object(forKey: Logger.toggleKey)
+        let originalCategory = defaults?.object(forKey: categoryKey)
+        defer {
+            restore(originalGlobal, forKey: Logger.toggleKey, in: defaults)
+            restore(originalCategory, forKey: categoryKey, in: defaults)
+        }
+
+        defaults?.set(false, forKey: Logger.toggleKey)
+        defaults?.set(true, forKey: categoryKey)
+        XCTAssertFalse(Logger.isLiveCategoryEnabled(.display))
+
+        defaults?.set(true, forKey: Logger.toggleKey)
+        defaults?.set(false, forKey: categoryKey)
+        XCTAssertFalse(Logger.isLiveCategoryEnabled(.display))
+
+        defaults?.set(true, forKey: Logger.toggleKey)
+        defaults?.removeObject(forKey: categoryKey)
+        XCTAssertTrue(Logger.isLiveCategoryEnabled(.display))
+
+        defaults?.set(true, forKey: categoryKey)
+        XCTAssertTrue(Logger.isLiveCategoryEnabled(.display))
+    }
+
     // MARK: - Ordered writer
 
     func testFlushPersistsRecordsInSubmissionOrder() {
@@ -162,5 +188,14 @@ final class LoggerTests: XCTestCase {
                 )
             )
         )
+    }
+
+    private func restore(_ value: Any?, forKey key: String, in defaults: UserDefaults?) {
+        if let value {
+            defaults?.set(value, forKey: key)
+        } else {
+            defaults?.removeObject(forKey: key)
+        }
+        defaults?.synchronize()
     }
 }

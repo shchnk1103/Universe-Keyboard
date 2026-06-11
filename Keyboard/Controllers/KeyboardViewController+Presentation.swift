@@ -70,12 +70,13 @@ extension KeyboardViewController {
         candidateCollectionView = nil
         expandedPanelScrollView = nil
         expandedCandidateCollectionView = nil
+        candidateCellSizeCache.removeAll(keepingCapacity: true)
         rootStack.alpha = 1
         rootStack.isUserInteractionEnabled = true
         clearAllRows()
         candidateBar = makeCandidateBar()
         rootStack.addArrangedSubview(candidateBar)
-        rootStack.setCustomSpacing(candidateToKeySpacing, after: candidateBar)
+        rootStack.setCustomSpacing(0, after: candidateBar)
         addKeyboardRows(for: controller.state)
         updateReturnKeyAppearance()
         Logger.shared.debug(
@@ -98,6 +99,7 @@ extension KeyboardViewController {
     }
 
     func reloadKeyboardContent(with precomputedCandidates: [CandidateItem]? = nil) {
+        candidateCellSizeCache.removeAll(keepingCapacity: true)
         clearAllRows()
         if isCandidateExpanded {
             let panel = makeExpandedCandidatePanel(with: precomputedCandidates)
@@ -106,7 +108,7 @@ extension KeyboardViewController {
         } else {
             candidateBar = makeCandidateBar()
             rootStack.addArrangedSubview(candidateBar)
-            rootStack.setCustomSpacing(candidateToKeySpacing, after: candidateBar)
+            rootStack.setCustomSpacing(0, after: candidateBar)
             addKeyboardRows(for: controller.state)
         }
     }
@@ -165,6 +167,7 @@ extension KeyboardViewController {
     }
 
     func clearAllRows() {
+        candidateCellSizeCache.removeAll(keepingCapacity: true)
         for view in rootStack.arrangedSubviews {
             rootStack.removeArrangedSubview(view)
             view.removeFromSuperview()

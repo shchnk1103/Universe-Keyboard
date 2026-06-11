@@ -31,6 +31,7 @@ extension KeyboardViewController {
     func makeCandidateBar() -> UIView {
         let view = CandidateBarView(
             height: candidateBarHeight,
+            bottomHitExtension: candidateToKeySpacing,
             backgroundColor: .clear,
             interactionTarget: self,
             expandAction: #selector(toggleCandidateExpand)
@@ -50,10 +51,17 @@ extension KeyboardViewController {
     /// 不拆除底层按键和候选栏，因此切换动画期间没有整页重排。
     @objc func toggleCandidateExpand() {
         isCandidateExpanded.toggle()
+        candidatePrefetchRequestSerial += 1
+        deferredCandidatePrefetchMode = nil
         updateExpandButtonAppearance()
         if isCandidateExpanded {
+            candidatePrefetchMode = .expanded
             presentExpandedCandidatePanel()
+            if hasMoreCandidates {
+                scheduleCandidatePrefetch(mode: .expanded)
+            }
         } else {
+            candidatePrefetchMode = .bar
             dismissExpandedCandidatePanel(animated: true)
         }
     }
@@ -72,13 +80,21 @@ extension KeyboardViewController {
 
         // 重置累积列表，从当前 RIME 第一页开始
         accumulatedCandidates = CandidateBarDataSource.candidateItems(from: controller)
+        candidateSnapshotGeneration += 1
+        candidateSnapshotRawInput = controller.state.lastRimeOutput?.rawInput ?? controller.state.currentComposition
+        nextCandidateGlobalIndex = nextGlobalIndexAfterCurrentItems()
         hasMoreCandidates = controller.state.lastRimeOutput?.hasMorePages ?? false
         isLoadingMoreCandidates = false
+        deferredCandidatePrefetchMode = nil
+        candidatePrefetchRequestSerial += 1
+        candidateCellSizeCache.removeAll(keepingCapacity: true)
         candidatePageDepth = 0
+        candidatePrefetchMode = isCandidateExpanded ? .expanded : .bar
         let preeditLength = controller.state.lastRimeOutput?.composition?.preeditText.count ?? 0
 
         Logger.shared.info(
-            "refreshCandidateBar: page1=\(accumulatedCandidates.count), hasMore=\(hasMoreCandidates), preeditLength=\(preeditLength)",
+            "refreshCandidateBar: page1=\(accumulatedCandidates.count), next=\(nextCandidateGlobalIndex), "
+                + "hasMore=\(hasMoreCandidates), preeditLength=\(preeditLength)",
             category: .display
         )
 
@@ -102,6 +118,9 @@ extension KeyboardViewController {
 
         if isCandidateExpanded {
             refreshExpandedPanel()
+        }
+        if hasMoreCandidates {
+            scheduleCandidatePrefetch(mode: candidatePrefetchMode)
         }
     }
 
@@ -142,8 +161,39 @@ extension KeyboardViewController {
         )
     }
 
-    func appendToCandidateBar() {
-        fillCandidateBar(keepScrollPosition: true)
+    func appendToCandidateBar(insertedCount: Int? = nil) {
+        guard let collectionView = candidateCollectionView,
+            let insertedCount,
+            insertedCount > 0
+        else {
+            fillCandidateBar(keepScrollPosition: true)
+            return
+        }
+
+        let currentCount = collectionView.numberOfItems(inSection: 0)
+        let expectedOldCount = max(0, horizontalVisibleCandidates.count - insertedCount)
+        guard currentCount == expectedOldCount else {
+            fillCandidateBar(keepScrollPosition: true)
+            return
+        }
+
+        let indexPaths = (expectedOldCount..<(expectedOldCount + insertedCount)).map {
+            IndexPath(item: $0, section: 0)
+        }
+        let currentOffset = candidateScrollView.contentOffset
+        let generation = candidateSnapshotGeneration
+        UIView.performWithoutAnimation {
+            collectionView.performBatchUpdates {
+                collectionView.insertItems(at: indexPaths)
+            } completion: { _ in
+                guard self.candidateSnapshotGeneration == generation,
+                    collectionView === self.candidateCollectionView
+                else { return }
+                let maxOffset = max(0, self.candidateScrollView.contentSize.width - self.candidateScrollView.bounds.width)
+                self.candidateScrollView.contentOffset.x = min(currentOffset.x, maxOffset)
+                collectionView.alwaysBounceHorizontal = self.hasMoreCandidates && !self.horizontalVisibleCandidates.isEmpty
+            }
+        }
     }
 
     // MARK: --- 候选数据 ---
@@ -157,5 +207,13 @@ extension KeyboardViewController {
             return accumulatedCandidates
         }
         return CandidateBarDataSource.candidateItems(from: controller)
+    }
+
+    private func nextGlobalIndexAfterCurrentItems() -> Int {
+        let referencedNextIndex = accumulatedCandidates.compactMap { item in
+            item.selectionReference?.globalIndex.map { $0 + 1 }
+        }.max()
+        if let referencedNextIndex { return referencedNextIndex }
+        return controller.state.lastRimeOutput?.candidates.count ?? 0
     }
 }

@@ -47,6 +47,13 @@ extension KeyboardViewController {
             accumulatedCandidates = []
             hasMoreCandidates = false
             candidatePageDepth = 0
+            nextCandidateGlobalIndex = 0
+            candidateSnapshotRawInput = nil
+            candidateSnapshotGeneration += 1
+            candidatePrefetchMode = .bar
+            isCandidateScrollInteracting = false
+            deferredCandidatePrefetchMode = nil
+            candidatePrefetchRequestSerial += 1
             Logger.shared.info(
                 "viewDidAppear: RIME composition cleared after keyboard return",
                 category: .engine
@@ -86,6 +93,11 @@ extension KeyboardViewController {
         if testOutput.candidates.isEmpty {
             Logger.shared.warning(
                 "No candidates on first check; deploy schema from the main app before typing",
+                category: .engine
+            )
+            controller.enableDefaultRimeEngine()
+            Logger.shared.warning(
+                "RIME runtime disabled for this keyboard session; using built-in fallback candidates",
                 category: .engine
             )
         } else {

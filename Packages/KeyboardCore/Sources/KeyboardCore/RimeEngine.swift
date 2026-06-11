@@ -14,6 +14,15 @@ public protocol RimeEngine: AnyObject {
     /// 选择第 index 个候选词（0-based）。返回更新后的状态。
     func selectCandidate(at index: Int) -> RimeOutput
 
+    /// 选择全局候选列表中的第 index 个候选词（0-based）。
+    ///
+    /// 与 `selectCandidate(at:)` 不同，这个索引不局限于当前页，供候选栏
+    /// 无极滚动和展开面板点击后续候选使用。
+    func selectCandidate(globalIndex index: Int) -> RimeOutput
+
+    /// 从全局候选列表读取一段候选，不改变当前 RIME 候选页。
+    func candidateWindow(from globalIndex: Int, limit: Int) -> RimeCandidateWindow
+
     /// 从 composition 中删除一个字符。返回更新后的状态。
     func deleteBackward() -> RimeOutput
 

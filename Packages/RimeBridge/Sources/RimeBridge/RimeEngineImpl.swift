@@ -132,6 +132,14 @@ public final class RimeEngineImpl: RimeEngine {
         chooseCandidate(at: index)
     }
 
+    public func selectCandidate(globalIndex index: Int) -> KeyboardCore.RimeOutput {
+        chooseCandidate(globalIndex: index)
+    }
+
+    public func candidateWindow(from globalIndex: Int, limit: Int) -> KeyboardCore.RimeCandidateWindow {
+        readCandidateWindow(from: globalIndex, limit: limit)
+    }
+
     /// 在 RIME 中删除一个字符（回退拼音）。
     public func deleteBackward() -> KeyboardCore.RimeOutput {
         processDeletion()
