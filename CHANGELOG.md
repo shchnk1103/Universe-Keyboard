@@ -9,9 +9,11 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 ## 2026-06-12 — Marked text composing underline
 
 - Replaced the plain inline preedit rewrite path with `UITextDocumentProxy.setMarkedText(_:selectedRange:)` / `unmarkText()`, allowing host text fields to show the system composing underline for active Chinese input.
+- Return now commits non-partial RIME composition using `rawInput` instead of display `preeditText`, so segmented preedit such as `ni h` confirms as `nih` and clears the underline.
+- Number and symbol pages now behave as one-shot symbol layers: after a normal symbol is inserted from either page, the keyboard returns to the letters page while preserving Chinese/English input mode.
 - Kept active Partial Commit displays marked until final commit, so selected Chinese segments and the remaining preedit stay visually connected as one unfinished composition.
 - Added `TextInputClient` marked-text methods and expanded `FakeTextInputClient` test state so unit tests can distinguish visible text from still-marked composition text.
-- Updated regression coverage for normal RIME commits, unknown raw commits, Partial Commit, typo Partial Commit, delete restore, mode switch, Return, direct text insertion, and final-commit fallback paths.
+- Updated regression coverage for normal RIME commits, unknown raw commits, segmented RIME Return commits, Partial Commit, typo Partial Commit, delete restore, mode switch, Return, direct text insertion, one-shot symbol pages, and final-commit fallback paths.
 
 ---
 

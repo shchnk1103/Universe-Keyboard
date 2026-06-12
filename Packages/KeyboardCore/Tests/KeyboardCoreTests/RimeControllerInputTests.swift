@@ -119,6 +119,30 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         XCTAssertEqual(controller.state.currentComposition, "")
     }
 
+    func testReturnWithSegmentedRimePreeditCommitsRawInputAndClearsMarkedText() {
+        let engine = FakeRimeEngine(preeditFormatter: { input in
+            input == "nih" ? "ni h" : input
+        })
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        _ = controller.handle(.insertKey("h"))
+
+        XCTAssertEqual(client.text, "ni h")
+        XCTAssertEqual(client.markedText, "ni h")
+
+        _ = controller.handle(.insertReturn)
+
+        XCTAssertEqual(client.text, "nih")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.lastRimeOutput)
+    }
+
     func testToggleInputModeResetsEngineSession() {
         _ = controller.handle(.insertKey("n"))
         _ = controller.handle(.insertKey("i"))

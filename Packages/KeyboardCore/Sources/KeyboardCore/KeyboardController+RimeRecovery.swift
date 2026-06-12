@@ -7,6 +7,7 @@ extension KeyboardController {
                 state.shiftState = .singleUse
                 effects.insert(.shiftStateChanged)
             }
+            effects.formUnion(returnToLettersAfterSymbolInputIfNeeded())
             return effects
         }
         guard let engine = rimeEngine else {

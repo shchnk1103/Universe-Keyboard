@@ -7,6 +7,7 @@ extension KeyboardController {
             effects.insert(.compositionChanged)
         }
         insertText(text)
+        effects.formUnion(returnToLettersAfterSymbolInputIfNeeded())
         return effects
     }
 
@@ -63,7 +64,7 @@ extension KeyboardController {
 
     func handleInsertReturn() -> KeyboardEffect {
         if !state.currentComposition.isEmpty {
-            finishActiveCompositionAsDisplayText()
+            finishActiveCompositionAsRawInput()
             rimeEngine?.resetSession()
             return .compositionChanged
         }

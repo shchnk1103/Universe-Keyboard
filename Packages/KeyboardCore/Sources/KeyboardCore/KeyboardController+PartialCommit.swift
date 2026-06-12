@@ -220,6 +220,27 @@ extension KeyboardController {
         clearTypoCorrectionSuggestions()
     }
 
+    /// Commits Return as the user's raw input when RIME exposes a segmented
+    /// display preedit such as "ni h". Partial Commit keeps its visible display
+    /// because it may already contain confirmed Chinese text.
+    func finishActiveCompositionAsRawInput() {
+        let commitText = state.partialCommit?.displayText
+            ?? state.lastRimeOutput?.rawInput
+            ?? state.currentComposition
+        guard !commitText.isEmpty else { return }
+        commitInlinePreedit(as: commitText)
+        state.currentComposition = ""
+        state.lastRimeOutput = nil
+        state.partialCommit = nil
+        clearTypoCorrectionSuggestions()
+    }
+
+    func returnToLettersAfterSymbolInputIfNeeded() -> KeyboardEffect {
+        guard state.currentPage == .numbers || state.currentPage == .symbols else { return [] }
+        state.currentPage = .letters
+        return .pageChanged
+    }
+
     private func finishNormalCandidateSelection(candidate: String, result: RimeOutput) {
         let confirmedPrefix = state.partialCommit?.confirmedText ?? ""
         let committedText = result.committedText ?? candidate
