@@ -1,7 +1,9 @@
 # CONTEXT_INDEX.md
 
 > **面向 AI 协作助手的上下文导航索引。**
-> 每次新会话开始前，先读本文件，再按任务类型加载对应文档，避免不必要的全量扫描。
+> 每次新会话开始前，先读 `AGENTS.md`，再读本文件并按任务类型加载对应文档，避免不必要的全量扫描。
+
+> **新会话入口：** 先读 `AGENTS.md` 了解仓库级协作规则；复杂任务或多 agent 协作时，再读 `docs/AI_WORKFLOW.md`。
 
 ---
 
@@ -9,13 +11,14 @@
 
 | 任务类型 | 必须加载 | 可选加载 |
 |----------|----------|----------|
-| 任何代码改动 | `CLAUDE.md` | — |
-| UI 改动（SwiftUI / UIKit） | `CLAUDE.md` + `docs/UI_STYLE_GUIDE.md` | — |
-| Swift 并发 / 架构决策 | `CLAUDE.md` + `docs/architecture/swift6-migration.md` | — |
-| RIME 桥接 / xcframework 管理 | `CLAUDE.md` + `docs/architecture/rime-artifacts.md` | — |
-| Partial Commit / composition restore | `CLAUDE.md` + `docs/architecture/partial-commit.md` | `docs/TYPO_BENCHMARK.md`（涉及 typo correction 时） |
-| 写测试 | `CLAUDE.md` + `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md` | `EXAMPLES.md` |
-| 模糊拼音 / typo correction | `CLAUDE.md` + `docs/TYPO_BENCHMARK.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
+| 新会话入口 | `AGENTS.md` + `CONTEXT_INDEX.md` | `docs/AI_WORKFLOW.md`（复杂任务 / subagent 分工） |
+| 任何代码改动 | `docs/PROJECT_CONTEXT.md` | — |
+| UI 改动（SwiftUI / UIKit） | `docs/PROJECT_CONTEXT.md` + `docs/UI_STYLE_GUIDE.md` | — |
+| Swift 并发 / 架构决策 | `docs/PROJECT_CONTEXT.md` + `docs/architecture/swift6-migration.md` | — |
+| RIME 桥接 / xcframework 管理 | `docs/PROJECT_CONTEXT.md` + `docs/architecture/rime-artifacts.md` | — |
+| Partial Commit / composition restore | `docs/PROJECT_CONTEXT.md` + `docs/architecture/partial-commit.md` | `docs/TYPO_BENCHMARK.md`（涉及 typo correction 时） |
+| 写测试 | `docs/PROJECT_CONTEXT.md` + `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md` | `EXAMPLES.md` |
+| 模糊拼音 / typo correction | `docs/PROJECT_CONTEXT.md` + `docs/TYPO_BENCHMARK.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
 | commit / push | `.claude/skills/pre-push-review/SKILL.md` | — |
 | 了解长期路线图 | `ios-rime-keyboard-development-plan.md` | — |
 | Swift 6 迁移合规审计 | `docs/architecture/swift6-manual-acceptance.md` | — |
@@ -25,26 +28,26 @@
 
 ## 文档清单
 
-### 1. `CLAUDE.md` ★ 核心上下文（每次必读）
+### 1. `docs/PROJECT_CONTEXT.md` ★ 核心上下文（代码改动必读）
 
 | 属性 | 值 |
 |------|---|
-| 路径 | `/CLAUDE.md` |
+| 路径 | `/docs/PROJECT_CONTEXT.md` |
 | 大小 | ~23 KB，248 行（精简后） |
-| 目的 | AI 工作主指南：项目概述、当前状态摘要、架构速览、构建命令、关键设计决策 |
-| 加载时机 | **每次会话开始时必须加载** |
+| 目的 | 项目长期上下文：项目概述、架构速览、构建命令、关键设计决策、实现约束 |
+| 加载时机 | 涉及代码、架构、构建、测试或实现判断时加载 |
 | 强制性 | ✅ 必须 |
 | 是否过时 | 🟢 低风险。历史变更日志已迁移至 `CHANGELOG.md`，核心内容为永久知识 |
 
 **核心内容摘要：**
 - Project Overview：两个 Xcode target（主 App + Keyboard Extension）
-- Current Status：~10 行摘要（详细历史见 `CHANGELOG.md`）
+- Status And History：说明最新状态统一查 `CHANGELOG.md`，本文件只保留稳定实现约束
 - Architecture：`Keyboard/`、`Universe Keyboard/`、`Packages/` 文件布局
 - RIME Architecture：双路径设计（rimeEngine / fallback）
 - Key Design Decisions：约 22 条永久性决策（含 iPhone 17 高度警告 + viewDidAppear 恢复规则）
 - Build & Run：构建命令
 
-**维护规则：** 禁止在 CLAUDE.md 中添加 "Recent changes" 条目。所有变更写入 `CHANGELOG.md`。
+**维护规则：** 禁止在 `docs/PROJECT_CONTEXT.md` 中添加 "Recent changes"、流水账或带日期的当前状态快照。所有变更与状态更新写入 `CHANGELOG.md`。`CLAUDE.md` 仅保留为兼容入口。
 
 ---
 
@@ -54,12 +57,12 @@
 |------|---|
 | 路径 | `/CHANGELOG.md` |
 | 大小 | ~12 KB，105 行 |
-| 目的 | 2026-05-21 至今的所有 "Recent changes" + Key Lessons（从 CLAUDE.md 迁移而来），按日期倒序 |
+| 目的 | 2026-05-21 至今的所有 "Recent changes" + Key Lessons（从原 `CLAUDE.md` 迁移而来），按日期倒序 |
 | 加载时机 | 调查历史决策、追溯 bug 上下文、理解某个实现为何如此选择时 |
 | 强制性 | 🔷 可选 |
 | 是否过时 | ⚠️ 中风险。每次迭代后须手动追加新条目，否则历史将断档 |
 
-**维护规则：** 每次重大改动后，在 CHANGELOG.md 顶部添加 `## YYYY-MM-DD — 简要标题` 条目。不要更新 CLAUDE.md Current Status 的流水账。
+**维护规则：** 每次重大改动后，在 CHANGELOG.md 顶部添加 `## YYYY-MM-DD — 简要标题` 条目。不要在 `docs/PROJECT_CONTEXT.md` 维护带日期的当前状态。
 
 ---
 
@@ -72,7 +75,7 @@
 | 目的 | 键盘扩展（UIKit）与主 App（SwiftUI）的视觉规范，包括颜色、按键样式、候选栏、布局约束、无障碍检查清单 |
 | 加载时机 | 涉及 `Keyboard/Views/`、`Keyboard/Controllers/`、`Universe Keyboard/Views/` 任何 UI 改动时 |
 | 强制性 | ✅ 必须（UI 工作） |
-| 是否过时 | 🟢 低风险，稳定。几何常量（keyHeight=44, keySpacing=8 等）与 `CLAUDE.md` 保持一致，无矛盾 |
+| 是否过时 | 🟢 低风险，稳定。几何常量（keyHeight=44, keySpacing=8 等）与 `docs/PROJECT_CONTEXT.md` 保持一致，无矛盾 |
 
 **核心内容摘要：**
 - 键盘：`KeyVisualStyle` 枚举、语义色、makeKeyButton/applyKeyStyle、候选栏规则
@@ -208,7 +211,7 @@
 | 目的 | 项目初期生成的完整教学级开发方案：背景、限制、技术路线、阶段规划、模块设计、滑动输入设计 |
 | 加载时机 | 理解项目长期方向、规划新功能（如滑动输入 SwipeEngine）时 |
 | 强制性 | 🔷 可选 |
-| 是否过时 | ⚠️ 高风险。生成于 2026-05-10，项目初期规划文档。部分内容（结构规划、Swift 版本要求、测试建议）已被实际实现超越。当前实际架构以 `CLAUDE.md` 为准 |
+| 是否过时 | ⚠️ 高风险。生成于 2026-05-10，项目初期规划文档。部分内容（结构规划、Swift 版本要求、测试建议）已被实际实现超越。当前实际架构以 `docs/PROJECT_CONTEXT.md` 为准 |
 
 **警告：** 此文档的目录结构、模块划分与当前实际实现**存在差异**（例如文档中的 `KeyboardUI` Package 未建立，实际使用 UIKit 直接实现）。勿以此文档指导代码修改。
 
@@ -221,7 +224,7 @@
 | 路径 | `/README.md` |
 | 大小 | ~10 KB，194 行 |
 | 目的 | 面向开发者和用户的项目说明：功能清单、架构概览、构建命令、RIME 集成状态表 |
-| 加载时机 | 几乎不需要主动加载 — `CLAUDE.md` 包含更详尽的内部视图 |
+| 加载时机 | 几乎不需要主动加载 — `docs/PROJECT_CONTEXT.md` 包含更详尽的内部视图 |
 | 强制性 | 🔷 可选 |
 | 是否过时 | ⚠️ 中风险。功能清单、测试计数（347 tests）需随开发同步更新 |
 
@@ -231,9 +234,10 @@
 
 ```
 层级 1：必须上下文（每次必读）
-└── CLAUDE.md
+├── AGENTS.md
+└── docs/PROJECT_CONTEXT.md
     ├── 项目概述 + 两个 target
-    ├── 当前状态摘要（详细历史见 CHANGELOG.md）
+    ├── 状态与历史入口（最新状态见 CHANGELOG.md）
     ├── 架构文件布局
     ├── RIME 双路径架构
     ├── Key Design Decisions（20+ 条永久规则）
@@ -266,12 +270,12 @@
 
 | 信息 | 出现位置 | 结论 |
 |------|----------|------|
-| 架构文件布局 | `CLAUDE.md` §Architecture + `README.md` §架构 | 内容一致，`CLAUDE.md` 更详尽 |
-| 构建命令 | `CLAUDE.md` §Build & Run + `README.md` §构建与运行 + `swift6-migration.md` §Verification | 命令相同，三处维护成本高。主权在 `CLAUDE.md`，其余为补充 |
+| 架构文件布局 | `docs/PROJECT_CONTEXT.md` §Architecture + `README.md` §架构 | 内容一致，`docs/PROJECT_CONTEXT.md` 更详尽 |
+| 构建命令 | `docs/PROJECT_CONTEXT.md` §Build & Run + `README.md` §构建与运行 + `swift6-migration.md` §Verification | 命令相同，三处维护成本高。主权在 `docs/PROJECT_CONTEXT.md`，其余为补充 |
 | 动态测试计数 | 各地散落的旧引用已被清理 | ✅ **已解决**。文档中不再硬编码测试计数，开发时依赖 `swift test` 输出，仅在验收快照和 CHANGELOG 中保留历史基线。 |
-| 几何常量（keyHeight=44 等）| `CLAUDE.md` §Key Design Decisions + `UI_STYLE_GUIDE.md` §Keys | 一致，UI_STYLE_GUIDE 是规范声明，CLAUDE 是实现记录 |
-| RIME 部署边界规则 | `CLAUDE.md` + `swift6-migration.md` + `swift6-manual-acceptance.md` | 一致，分别从不同角度（实现/约束/验证）描述同一规则 |
-| 目录结构规划 | `ios-rime-keyboard-development-plan.md` + `CLAUDE.md` | ⚠️ **存在差异**。开发计划是早期设想，实际实现不同。以 `CLAUDE.md` 为准 |
+| 几何常量（keyHeight=44 等）| `docs/PROJECT_CONTEXT.md` §Key Design Decisions + `UI_STYLE_GUIDE.md` §Keys | 一致，UI_STYLE_GUIDE 是规范声明，PROJECT_CONTEXT 是实现记录 |
+| RIME 部署边界规则 | `docs/PROJECT_CONTEXT.md` + `swift6-migration.md` + `swift6-manual-acceptance.md` | 一致，分别从不同角度（实现/约束/验证）描述同一规则 |
+| 目录结构规划 | `ios-rime-keyboard-development-plan.md` + `docs/PROJECT_CONTEXT.md` | ⚠️ **存在差异**。开发计划是早期设想，实际实现不同。以 `docs/PROJECT_CONTEXT.md` 为准 |
 
 ---
 
@@ -281,12 +285,12 @@
 
 | 信息类型 | 覆盖文档 | 结论 |
 |----------|----------|------|
-| 项目背景与目标 | `CLAUDE.md` §Project Overview | ✅ 已覆盖 |
-| 架构设计 | `CLAUDE.md` §Architecture | ✅ 已覆盖 |
+| 项目背景与目标 | `docs/PROJECT_CONTEXT.md` §Project Overview | ✅ 已覆盖 |
+| 架构设计 | `docs/PROJECT_CONTEXT.md` §Architecture | ✅ 已覆盖 |
 | UI 规范 | `docs/UI_STYLE_GUIDE.md` | ✅ 已覆盖 |
 | 并发规则 | `docs/architecture/swift6-migration.md` | ✅ 已覆盖 |
-| AI 工作规则 | `CLAUDE.md` 整体 + 各 skill | ✅ 已覆盖 |
-| 已知坑点 | `CLAUDE.md` §Key Lessons Learned | ✅ 已覆盖 |
+| AI 工作规则 | `AGENTS.md` + `docs/AI_WORKFLOW.md` + 各 skill | ✅ 已覆盖 |
+| 已知坑点 | `docs/PROJECT_CONTEXT.md` §Key Design Decisions + `CHANGELOG.md` | ✅ 已覆盖 |
 
 注：历史变更记录已提取为单独的 `CHANGELOG.md`。项目文档架构目前已达最优状态。
 
@@ -294,9 +298,9 @@
 
 ## 使用规则（for AI Agents）
 
-1. **不要扫描整个 codebase** 来理解项目。从 `CLAUDE.md` 开始。
+1. **不要扫描整个 codebase** 来理解项目。从 `AGENTS.md`、`CONTEXT_INDEX.md` 和 `docs/PROJECT_CONTEXT.md` 开始。
 2. **不要同时加载所有文档**。按任务类型参考快速导读表，按需加载。
-3. **`ios-rime-keyboard-development-plan.md` 不代表当前实现**。它是早期规划，以 `CLAUDE.md` 为准。
+3. **`ios-rime-keyboard-development-plan.md` 不代表当前实现**。它是早期规划，以 `docs/PROJECT_CONTEXT.md` 为准。
 4. **测试计数会变化**。不要假设文档中的任何数字都是最新的。当需要准确数字时，应从 CI 或当前测试套件中获取。
 5. **修改 UI 前必须读 `UI_STYLE_GUIDE.md`**。不得绕过，不得自行发明样式。
 6. **修改并发隔离前必须读 `swift6-migration.md`**。`@unchecked Sendable` 和 unsafe isolation 是被明确禁止的。
