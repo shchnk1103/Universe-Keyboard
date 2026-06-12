@@ -6,6 +6,15 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-12 — Marked text composing underline
+
+- Replaced the plain inline preedit rewrite path with `UITextDocumentProxy.setMarkedText(_:selectedRange:)` / `unmarkText()`, allowing host text fields to show the system composing underline for active Chinese input.
+- Kept active Partial Commit displays marked until final commit, so selected Chinese segments and the remaining preedit stay visually connected as one unfinished composition.
+- Added `TextInputClient` marked-text methods and expanded `FakeTextInputClient` test state so unit tests can distinguish visible text from still-marked composition text.
+- Updated regression coverage for normal RIME commits, unknown raw commits, Partial Commit, typo Partial Commit, delete restore, mode switch, Return, direct text insertion, and final-commit fallback paths.
+
+---
+
 ## 2026-06-11 — Candidate touch hit-area hardening
 
 - Fixed candidate-gap hit testing in the Keyboard Extension by keeping `UICollectionView` item spacing at zero, preserving the visual gap inside each cell, and retaining a nearly invisible cell backing so the apparent gap is still a valid pan start area on real devices.

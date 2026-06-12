@@ -48,4 +48,33 @@ final class UITextDocumentProxyAdapter: TextInputClient {
     func deleteBackward() {
         proxy.deleteBackward()
     }
+
+    /// 委托给 UITextDocumentProxy.setMarkedText(_:selectedRange:)。
+    /// Apple 文档：如果已有 marked text，会替换现有 marked text；
+    /// 如果没有，则在当前插入点插入一段 marked text。
+    func setMarkedText(_ text: String, selectedRange: Range<Int>) {
+        let selectedRange = nsRange(for: selectedRange, in: text)
+        proxy.setMarkedText(
+            text,
+            selectedRange: selectedRange
+        )
+    }
+
+    /// 委托给 UITextDocumentProxy.unmarkText()，用于确认当前 marked text。
+    func unmarkText() {
+        proxy.unmarkText()
+    }
+
+    private func nsRange(for range: Range<Int>, in text: String) -> NSRange {
+        let lowerIndex = characterIndex(range.lowerBound, in: text)
+        let upperIndex = characterIndex(range.upperBound, in: text)
+        let location = lowerIndex.utf16Offset(in: text)
+        let upperBound = upperIndex.utf16Offset(in: text)
+        return NSRange(location: location, length: max(0, upperBound - location))
+    }
+
+    private func characterIndex(_ offset: Int, in text: String) -> String.Index {
+        let clampedOffset = min(max(0, offset), text.count)
+        return text.index(text.startIndex, offsetBy: clampedOffset)
+    }
 }

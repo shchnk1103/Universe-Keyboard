@@ -51,8 +51,7 @@ extension KeyboardController {
             return .compositionChanged
         }
 
-        deleteInlinePreedit()
-        insertText(correction.committedText)
+        commitInlinePreedit(as: correction.committedText)
         state.currentComposition = ""
         state.lastRimeOutput = nil
         state.partialCommit = nil
@@ -117,8 +116,7 @@ extension KeyboardController {
     }
 
     private func commitFallbackCandidate(_ candidate: String) {
-        deleteInlinePreedit()
-        insertText((state.partialCommit?.confirmedText ?? "") + candidate)
+        commitInlinePreedit(as: (state.partialCommit?.confirmedText ?? "") + candidate)
         state.currentComposition = ""
         state.lastRimeOutput = nil
         state.partialCommit = nil

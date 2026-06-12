@@ -68,8 +68,7 @@ extension KeyboardController {
             let finalText = committedText.hasPrefix(partialCommit.confirmedText)
                 ? committedText
                 : partialCommit.confirmedText + committedText
-            deleteInlinePreedit()
-            insertText(finalText)
+            commitInlinePreedit(as: finalText)
             state.currentComposition = ""
             state.lastRimeOutput = output
             state.partialCommit = nil
@@ -83,8 +82,7 @@ extension KeyboardController {
             !rimePreeditText.isEmpty
         else {
             let confirmedText = partialCommit.confirmedText
-            deleteInlinePreedit()
-            insertText(confirmedText)
+            commitInlinePreedit(as: confirmedText)
             state.currentComposition = ""
             state.lastRimeOutput = output
             state.partialCommit = nil
@@ -215,8 +213,7 @@ extension KeyboardController {
     func finishActiveCompositionAsDisplayText() {
         let displayText = activeCompositionDisplayText
         guard !displayText.isEmpty else { return }
-        deleteInlinePreedit()
-        insertText(displayText)
+        commitInlinePreedit(as: displayText)
         state.currentComposition = ""
         state.lastRimeOutput = nil
         state.partialCommit = nil
@@ -225,12 +222,11 @@ extension KeyboardController {
 
     private func finishNormalCandidateSelection(candidate: String, result: RimeOutput) {
         let confirmedPrefix = state.partialCommit?.confirmedText ?? ""
-        deleteInlinePreedit()
         let committedText = result.committedText ?? candidate
         let finalText = committedText.hasPrefix(confirmedPrefix)
             ? committedText
             : confirmedPrefix + committedText
-        insertText(finalText)
+        commitInlinePreedit(as: finalText)
         state.currentComposition = ""
         state.lastRimeOutput = result
         state.partialCommit = nil
@@ -240,11 +236,12 @@ extension KeyboardController {
     private func applyRimeOutputWithoutPartialCommit(_ output: RimeOutput) {
         state.lastRimeOutput = output
         state.currentComposition = output.composition?.preeditText ?? ""
-        updateInlinePreedit(state.currentComposition)
         if let commit = output.committedText {
-            insertText(commit)
+            commitInlinePreedit(as: commit)
+            state.currentComposition = ""
             clearTypoCorrectionSuggestions()
         } else {
+            updateInlinePreedit(state.currentComposition)
             refreshTypoCorrectionSuggestions()
         }
     }

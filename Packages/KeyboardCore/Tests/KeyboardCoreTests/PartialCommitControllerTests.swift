@@ -24,6 +24,7 @@ final class PartialCommitControllerTests: XCTestCase {
         )
 
         XCTAssertEqual(client.text, "你好anpai")
+        XCTAssertEqual(client.markedText, "你好anpai")
         XCTAssertEqual(controller.state.currentComposition, "anpai")
         XCTAssertEqual(controller.state.insertedPreeditText, "你好anpai")
         XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "anpai")
@@ -42,6 +43,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.deleteBackward)
 
         XCTAssertEqual(client.text, "nihaoanpai")
+        XCTAssertEqual(client.markedText, "nihaoanpai")
         XCTAssertEqual(controller.state.currentComposition, "nihaoanpai")
         XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "nihaoanpai")
         XCTAssertNil(controller.state.partialCommit)
@@ -60,6 +62,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.insertKey("x"))
 
         XCTAssertEqual(client.text, "你好anpaix")
+        XCTAssertEqual(client.markedText, "你好anpaix")
         XCTAssertEqual(controller.state.currentComposition, "anpaix")
         XCTAssertEqual(controller.state.partialCommit?.displayText, "你好anpaix")
         XCTAssertNil(controller.state.partialCommit?.checkpoint)
@@ -67,6 +70,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.deleteBackward)
 
         XCTAssertEqual(client.text, "你好anpai")
+        XCTAssertEqual(client.markedText, "你好anpai")
         XCTAssertEqual(controller.state.currentComposition, "anpai")
         XCTAssertNotNil(controller.state.partialCommit)
     }
@@ -84,6 +88,7 @@ final class PartialCommitControllerTests: XCTestCase {
         )
 
         XCTAssertEqual(client.text, "你好安排")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertNil(controller.state.partialCommit)
     }
@@ -102,6 +107,7 @@ final class PartialCommitControllerTests: XCTestCase {
         )
 
         XCTAssertEqual(client.text, "你好安排")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertNil(controller.state.partialCommit)
     }
@@ -124,6 +130,7 @@ final class PartialCommitControllerTests: XCTestCase {
         )
 
         XCTAssertEqual(client.text, "你好anpai")
+        XCTAssertEqual(client.markedText, "你好anpai")
         XCTAssertNotNil(controller.state.partialCommit)
     }
 
@@ -139,6 +146,7 @@ final class PartialCommitControllerTests: XCTestCase {
         selectNihao(using: controller)
 
         XCTAssertEqual(client.text, "你好anpai")
+        XCTAssertEqual(client.markedText, "你好anpai")
         XCTAssertEqual(controller.state.partialCommit?.confirmedText, "你好")
     }
 
@@ -159,6 +167,7 @@ final class PartialCommitControllerTests: XCTestCase {
         selectNihao(using: controller)
 
         XCTAssertEqual(client.text, "你好an pai")
+        XCTAssertEqual(client.markedText, "你好an pai")
         XCTAssertEqual(controller.state.currentComposition, "an pai")
         XCTAssertEqual(controller.state.partialCommit?.confirmedText, "你好")
         XCTAssertEqual(controller.state.partialCommit?.remainingRawInput, "nihaoanpai")
@@ -185,6 +194,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.deleteBackward)
 
         XCTAssertEqual(client.text, "ni hao an pai")
+        XCTAssertEqual(client.markedText, "ni hao an pai")
         XCTAssertEqual(controller.state.currentComposition, "ni hao an pai")
         XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "nihaoanpai")
         XCTAssertEqual(controller.state.lastRimeOutput?.candidates.map(\.text), ["你好安排", "你好"])
@@ -193,6 +203,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.deleteBackward)
 
         XCTAssertEqual(client.text, "ni hao an pa")
+        XCTAssertEqual(client.markedText, "ni hao an pa")
         XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "nihaoanpa")
         XCTAssertEqual(controller.state.lastRimeOutput?.candidates.map(\.text), ["你好安帕"])
     }
@@ -206,6 +217,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.deleteBackward)
 
         XCTAssertEqual(client.text, "你好anpai")
+        XCTAssertEqual(client.markedText, "你好anpai")
         XCTAssertEqual(controller.state.partialCommit?.displayText, "你好anpai")
         XCTAssertNil(controller.state.partialCommit?.checkpoint)
     }
@@ -219,6 +231,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.insertKey("x"))
 
         XCTAssertEqual(client.text, "你好anpaix")
+        XCTAssertEqual(client.markedText, "你好anpaix")
         XCTAssertEqual(controller.state.partialCommit?.confirmedText, "你好")
         XCTAssertEqual(controller.state.partialCommit?.remainingRawInput, "anpaix")
         XCTAssertNil(controller.state.partialCommit?.checkpoint)
@@ -232,6 +245,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.toggleInputMode)
 
         XCTAssertEqual(client.text, "你好anpai")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertNil(controller.state.partialCommit)
     }
@@ -253,6 +267,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.insertCorrectionCandidate(nihapAnpaiCorrection()))
 
         XCTAssertEqual(client.text, "你好anpai")
+        XCTAssertEqual(client.markedText, "你好anpai")
         XCTAssertEqual(controller.state.currentComposition, "anpai")
         XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "anpai")
         XCTAssertEqual(controller.state.lastRimeOutput?.candidates.map(\.text), ["安排", "按排"])
@@ -357,6 +372,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.insertCorrectionCandidate(nihapAnpaiCorrection()))
 
         XCTAssertEqual(client.text, "你好")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertNil(controller.state.partialCommit)
         XCTAssertFalse(engine.isComposing())
@@ -382,6 +398,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.insertCorrectionCandidate(correction))
 
         XCTAssertEqual(client.text, "你好")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertNil(controller.state.partialCommit)
     }
@@ -400,6 +417,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.insertCorrectionCandidate(nihapAnpaiCorrection()))
 
         XCTAssertEqual(client.text, "你好")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertNil(controller.state.partialCommit)
         XCTAssertFalse(engine.isComposing())
@@ -425,6 +443,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.insertCorrectionCandidate(correction))
 
         XCTAssertEqual(client.text, "你好")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertNil(controller.state.partialCommit)
         XCTAssertFalse(engine.isComposing())
@@ -505,6 +524,7 @@ final class PartialCommitControllerTests: XCTestCase {
         )
 
         XCTAssertEqual(client.text, "你好安排")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertNil(controller.state.partialCommit)
     }
@@ -528,6 +548,7 @@ final class PartialCommitControllerTests: XCTestCase {
             _ = controller.handle(.insertSpace)
 
             XCTAssertEqual(client.text, "你好安排")
+            XCTAssertEqual(client.markedText, "")
             XCTAssertNil(controller.state.partialCommit)
         }
 
@@ -548,6 +569,7 @@ final class PartialCommitControllerTests: XCTestCase {
             _ = controller.handle(.insertReturn)
 
             XCTAssertEqual(client.text, "你好anpai")
+            XCTAssertEqual(client.markedText, "")
             XCTAssertNil(controller.state.partialCommit)
         }
 
@@ -568,6 +590,7 @@ final class PartialCommitControllerTests: XCTestCase {
             _ = controller.handle(.insertDirectText("，"))
 
             XCTAssertEqual(client.text, "你好anpai，")
+            XCTAssertEqual(client.markedText, "")
             XCTAssertNil(controller.state.partialCommit)
         }
     }
@@ -591,6 +614,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.insertKey("x"))
 
         XCTAssertEqual(client.text, "你好anpaix")
+        XCTAssertEqual(client.markedText, "你好anpaix")
         XCTAssertEqual(controller.state.partialCommit?.confirmedText, "你好")
         XCTAssertEqual(controller.state.partialCommit?.remainingRawInput, "anpaix")
         XCTAssertNil(controller.state.partialCommit?.checkpoint)
@@ -614,12 +638,14 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.candidatePageUp)
 
         XCTAssertEqual(client.text, "你好anpai")
+        XCTAssertEqual(client.markedText, "你好anpai")
         XCTAssertEqual(controller.state.currentComposition, "anpai")
         XCTAssertNotNil(controller.state.partialCommit?.checkpoint)
 
         _ = controller.handle(.deleteBackward)
 
         XCTAssertEqual(client.text, "nihapanpai")
+        XCTAssertEqual(client.markedText, "nihapanpai")
         XCTAssertNil(controller.state.partialCommit)
     }
 
@@ -636,6 +662,7 @@ final class PartialCommitControllerTests: XCTestCase {
         _ = controller.handle(.insertCorrectionCandidate(correction))
 
         XCTAssertEqual(client.text, "你好")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertNil(controller.state.partialCommit)
         XCTAssertEqual(controller.state.currentComposition, "")
     }

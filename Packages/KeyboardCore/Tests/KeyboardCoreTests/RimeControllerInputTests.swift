@@ -42,7 +42,7 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
 
         client.insertText("x")
         _ = controller.handle(.deleteBackward)
-        XCTAssertEqual(client.deletedCount, 2)
+        XCTAssertEqual(client.deletedCount, 1)
     }
 
     func testDeleteBackwardEmptySkipsEngine() {
@@ -58,6 +58,7 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         _ = controller.handle(.insertSpace)
 
         XCTAssertEqual(client.text, "你")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertNil(controller.state.lastRimeOutput?.composition)
     }
@@ -69,6 +70,7 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         _ = controller.handle(.insertSpace)
 
         XCTAssertEqual(client.text, "zzz")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
     }
 
@@ -84,6 +86,7 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         _ = controller.handle(.insertCandidate("呢", kind: .candidate))
 
         XCTAssertEqual(client.text, "呢")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
     }
 
@@ -93,6 +96,7 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         _ = controller.handle(.insertCandidate("ni", kind: .composition))
 
         XCTAssertEqual(client.text, "ni")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(engine.sessionResetCount, 1)
         XCTAssertEqual(controller.state.currentComposition, "")
     }
@@ -111,6 +115,7 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         _ = controller.handle(.insertReturn)
 
         XCTAssertEqual(client.text, "ni")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
     }
 
@@ -120,6 +125,7 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         _ = controller.handle(.toggleInputMode)
 
         XCTAssertEqual(client.text, "ni")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(engine.sessionResetCount, 1)
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertEqual(controller.state.inputMode, .english)
@@ -130,6 +136,7 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         _ = controller.handle(.togglePage)
 
         XCTAssertEqual(client.text, "n")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(engine.sessionResetCount, 1)
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertEqual(controller.state.currentPage, .numbers)
@@ -183,12 +190,13 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         XCTAssertGreaterThan(candidates.count, 0)
     }
 
-    func testInlinePreeditAppendsWithoutFullRewrite() {
+    func testInlinePreeditUsesMarkedText() {
         for character in "nihao" {
             _ = controller.handle(.insertKey(String(character)))
         }
 
         XCTAssertEqual(client.text, "nihao")
+        XCTAssertEqual(client.markedText, "nihao")
         XCTAssertEqual(client.deletedCount, 0)
         XCTAssertEqual(controller.state.insertedPreeditText, "nihao")
         XCTAssertEqual(controller.state.insertedPreeditCount, 5)
@@ -199,6 +207,7 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         _ = controller.handle(.insertKey("i"))
         _ = controller.handle(.insertCandidate("你", kind: .candidate))
         XCTAssertEqual(client.text, "你")
+        XCTAssertEqual(client.markedText, "")
     }
 
     func testInsertCandidateWithNilLastRimeOutput() {

@@ -15,8 +15,7 @@ extension KeyboardController {
             let firstCandidate = state.lastRimeOutput?.candidates.first?.text
         {
             // Preserve the first page selection even if later pages were prefetched for display.
-            deleteInlinePreedit()
-            insertText((state.partialCommit?.confirmedText ?? "") + firstCandidate)
+            commitInlinePreedit(as: (state.partialCommit?.confirmedText ?? "") + firstCandidate)
             state.currentComposition = ""
             state.lastRimeOutput = RimeOutput(
                 composition: nil,
@@ -32,8 +31,7 @@ extension KeyboardController {
         }
         if !state.currentComposition.isEmpty {
             let first = candidateProvider.candidates(for: state.currentComposition).first ?? state.currentComposition
-            deleteInlinePreedit()
-            insertText(first)
+            commitInlinePreedit(as: first)
             state.currentComposition = ""
             state.lastRimeOutput = nil
             state.partialCommit = nil
@@ -96,22 +94,16 @@ extension KeyboardController {
         textClient?.insertText(text)
     }
 
-    /// Updates inline preedit by only deleting and inserting the changed suffix.
+    /// Updates inline preedit as marked text so host text fields can display
+    /// the active composition with the system's composing underline.
     func updateInlinePreedit(_ text: String) {
         let previous = state.insertedPreeditText
         guard previous != text else { return }
 
-        let commonPrefix = commonPrefixCount(with: previous, text)
-        let deleteCount = previous.count - commonPrefix
-        if deleteCount > 0 {
-            for _ in 0..<deleteCount {
-                textClient?.deleteBackward()
-            }
-        }
-
-        let insertion = String(text.dropFirst(commonPrefix))
-        if !insertion.isEmpty {
-            insertText(insertion)
+        if text.isEmpty {
+            clearInlinePreedit()
+        } else {
+            textClient?.setMarkedText(text, selectedRange: text.count..<text.count)
         }
 
         state.insertedPreeditText = text
@@ -120,23 +112,27 @@ extension KeyboardController {
 
     func deleteInlinePreedit() {
         guard state.insertedPreeditCount > 0 else { return }
-        for _ in 0..<state.insertedPreeditCount {
-            textClient?.deleteBackward()
+        clearInlinePreedit()
+        state.insertedPreeditText = ""
+        state.insertedPreeditCount = 0
+    }
+
+    func commitInlinePreedit(as text: String) {
+        guard state.insertedPreeditCount > 0 else {
+            insertText(text)
+            return
+        }
+        if text.isEmpty {
+            clearInlinePreedit()
+        } else {
+            textClient?.setMarkedText(text, selectedRange: text.count..<text.count)
+            textClient?.unmarkText()
         }
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
     }
 
-    private func commonPrefixCount(with lhs: String, _ rhs: String) -> Int {
-        var count = 0
-        var leftIndex = lhs.startIndex
-        var rightIndex = rhs.startIndex
-        while leftIndex < lhs.endIndex, rightIndex < rhs.endIndex {
-            guard lhs[leftIndex] == rhs[rightIndex] else { break }
-            count += 1
-            leftIndex = lhs.index(after: leftIndex)
-            rightIndex = rhs.index(after: rightIndex)
-        }
-        return count
+    private func clearInlinePreedit() {
+        textClient?.setMarkedText("", selectedRange: 0..<0)
     }
 }
