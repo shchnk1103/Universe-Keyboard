@@ -33,6 +33,10 @@ final class UITextDocumentProxyAdapter: TextInputClient {
     /// VC 存在期间 proxy 一定存在，所以不会造成悬空引用。
     private unowned let proxy: UITextDocumentProxy
 
+    var hasTextBeforeInput: Bool {
+        proxy.hasText
+    }
+
     init(proxy: UITextDocumentProxy) {
         self.proxy = proxy
     }
@@ -47,6 +51,12 @@ final class UITextDocumentProxyAdapter: TextInputClient {
     /// Apple 文档：从插入点向前删除一个字符。
     func deleteBackward() {
         proxy.deleteBackward()
+    }
+
+    /// 委托给 UITextDocumentProxy.adjustTextPosition(byCharacterOffset:)。
+    /// 用于成对符号插入后把光标移动回左右符号之间。
+    func adjustTextPosition(byCharacterOffset offset: Int) {
+        proxy.adjustTextPosition(byCharacterOffset: offset)
     }
 
     /// 委托给 UITextDocumentProxy.setMarkedText(_:selectedRange:)。

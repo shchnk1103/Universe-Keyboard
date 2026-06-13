@@ -235,10 +235,150 @@ extension KeyboardController {
         clearTypoCorrectionSuggestions()
     }
 
-    func returnToLettersAfterSymbolInputIfNeeded() -> KeyboardEffect {
+    var hasActiveCompositionForSymbolInput: Bool {
+        !state.currentComposition.isEmpty || (rimeEngine?.isComposing() ?? false)
+    }
+
+    func handleSymbolPageTextInput(
+        _ text: String,
+        updatesEnglishAutoCap: Bool = false
+    ) -> KeyboardEffect? {
+        guard state.currentPage == .numbers || state.currentPage == .symbols else { return nil }
+
+        if shouldUseChineseCompositionSeparator(text) {
+            var effects = handleInsertKey(text)
+            effects.formUnion(returnToLettersAfterSymbolInput())
+            return effects
+        }
+
+        var effects: KeyboardEffect = []
+
+        if hasActiveCompositionForSymbolInput {
+            let closingSymbol = pairedClosingSymbol(for: text)
+            let appendedText = text + (closingSymbol ?? "")
+            let cursorOffsetFromAppendedTextStart = closingSymbol == nil ? appendedText.count : text.count
+            finishActiveCompositionForSymbolInput(
+                appending: appendedText,
+                cursorOffsetFromAppendedTextStart: cursorOffsetFromAppendedTextStart
+            )
+            effects.insert(.compositionChanged)
+        } else if let closingSymbol = pairedClosingSymbol(for: text) {
+            insertText(text + closingSymbol)
+            adjustTextPosition(byCharacterOffset: -closingSymbol.count)
+        } else {
+            insertText(text)
+        }
+
+        effects.formUnion(consumeSingleUseShiftIfNeeded())
+        if updatesEnglishAutoCap,
+            state.inputMode == .english,
+            AutoCapitalizationRules.isSentenceTerminator(text)
+        {
+            state.shiftState = .singleUse
+            effects.insert(.shiftStateChanged)
+        }
+
+        if shouldReturnToLettersAfterSymbolInput(text) {
+            effects.formUnion(returnToLettersAfterSymbolInput())
+        }
+
+        return effects
+    }
+
+    func returnToLettersAfterSymbolInput() -> KeyboardEffect {
         guard state.currentPage == .numbers || state.currentPage == .symbols else { return [] }
         state.currentPage = .letters
         return .pageChanged
+    }
+
+    func shouldUseChineseCompositionSeparator(_ text: String) -> Bool {
+        state.inputMode == .chinese
+            && isChineseCompositionSeparator(text)
+            && hasActiveCompositionForSymbolInput
+    }
+
+    func isChineseCompositionSeparator(_ text: String) -> Bool {
+        text == "‘"
+    }
+
+    private func shouldReturnToLettersAfterSymbolInput(_ text: String) -> Bool {
+        switch state.inputMode {
+        case .chinese:
+            Self.chineseOneShotSymbols.contains(text)
+        case .english:
+            Self.englishOneShotSymbols.contains(text)
+        }
+    }
+
+    /// Chinese one-shot symbols are intentionally exact: ASCII "." is not a Chinese-mode sentence terminator here.
+    private static let chineseOneShotSymbols: Set<String> = [
+        "；", "（", "）", "@", "“", "”", "。", "，", "、", "？", "！", "【", "】",
+        "｛", "｝", "#", "%", "^", "*", "+", "=", "_", "\\", "｜", "《", "》",
+        "&", "·",
+    ]
+
+    /// English keeps half-width punctuation semantics; "." returns to letters as the English period.
+    private static let englishOneShotSymbols: Set<String> = [
+        ";", "(", ")", "@", "“", "”", ".", ",", "?", "!", "[", "]", "{", "}",
+        "#", "%", "^", "*", "+", "=", "_", "\\", "|", "<", ">", "&",
+    ]
+
+    private static let pairedClosingSymbols: [String: String] = [
+        "（": "）",
+        "(": ")",
+        "“": "”",
+        "【": "】",
+        "[": "]",
+        "｛": "｝",
+        "{": "}",
+        "《": "》",
+        "<": ">",
+    ]
+
+    private func pairedClosingSymbol(for text: String) -> String? {
+        guard isPairedSymbolCompletionEnabled else { return nil }
+        return Self.pairedClosingSymbols[text]
+    }
+
+    private func finishActiveCompositionForSymbolInput(
+        appending appendedText: String,
+        cursorOffsetFromAppendedTextStart: Int
+    ) {
+        let commitText = commitFirstCandidateForSymbolInput()
+        let finalText = commitText + appendedText
+        let selectedOffset = commitText.count + cursorOffsetFromAppendedTextStart
+        commitInlinePreedit(as: finalText, selectedOffset: selectedOffset)
+        state.currentComposition = ""
+        state.partialCommit = nil
+        clearTypoCorrectionSuggestions()
+        rimeEngine?.resetSession()
+    }
+
+    /// Symbol-triggered commit should behave like confirming the first candidate,
+    /// while still replacing the marked range atomically so the following paired
+    /// symbol can place the cursor inside the pair.
+    private func commitFirstCandidateForSymbolInput() -> String {
+        if let engine = rimeEngine, engine.isComposing() {
+            let result = engine.selectCandidate(at: 0)
+            let confirmedPrefix = state.partialCommit?.confirmedText ?? ""
+            let selectedText = result.committedText
+                ?? state.lastRimeOutput?.candidates.first?.text
+                ?? result.composition?.preeditText
+                ?? state.lastRimeOutput?.rawInput
+                ?? state.currentComposition
+            let commitText = selectedText.hasPrefix(confirmedPrefix)
+                ? selectedText
+                : confirmedPrefix + selectedText
+            state.lastRimeOutput = RimeOutput(
+                composition: nil,
+                candidates: [],
+                committedText: commitText,
+                hasMorePages: false
+            )
+            return commitText
+        }
+
+        return activeCompositionDisplayText
     }
 
     private func finishNormalCandidateSelection(candidate: String, result: RimeOutput) {

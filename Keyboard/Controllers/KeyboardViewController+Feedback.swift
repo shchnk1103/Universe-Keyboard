@@ -76,6 +76,9 @@ extension KeyboardViewController {
         let rawHaptic = defaults?.object(forKey: KeyboardFeedbackSettingsKey.hapticEnabled)
         let rawClickLevel = defaults?.object(forKey: KeyboardFeedbackSettingsKey.keyClickLevel)
         let rawHapticLevel = defaults?.object(forKey: KeyboardFeedbackSettingsKey.hapticLevel)
+        let rawPairedSymbolCompletion = defaults?.object(
+            forKey: KeyboardInputSettingsKey.pairedSymbolCompletionEnabled
+        )
 
         cachedKeyClickEnabled = rawSound as? Bool ?? true
         cachedHapticEnabled = rawHaptic as? Bool ?? false
@@ -83,6 +86,7 @@ extension KeyboardViewController {
         cachedHapticLevel = feedbackLevelValue(rawHapticLevel)
         cachedKeyClickVolume = cachedKeyClickLevel.clickVolume
         cachedHapticIntensity = CGFloat(cachedHapticLevel.hapticIntensity)
+        controller.isPairedSymbolCompletionEnabled = rawPairedSymbolCompletion as? Bool ?? true
     }
 
     func feedbackLevelValue(_ rawValue: Any?) -> KeyboardFeedbackLevel {

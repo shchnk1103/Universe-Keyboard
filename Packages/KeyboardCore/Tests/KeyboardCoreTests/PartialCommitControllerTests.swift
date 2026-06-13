@@ -112,6 +112,75 @@ final class PartialCommitControllerTests: XCTestCase {
         XCTAssertNil(controller.state.partialCommit)
     }
 
+    func testPairedSymbolAfterPartialCommitCommitsRemainingCandidateBeforePair() {
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "haizhaodedao": ["还找得到", "还找"],
+                "dedao": ["得到"],
+            ],
+            selectionRemainders: ["haizhaodedao": [1: "dedao"]]
+        )
+        let (controller, client) = makeController(engine: engine)
+        type("haizhaodedao", into: controller)
+
+        _ = controller.handle(
+            .insertCandidate(
+                "还找",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+        _ = controller.handle(.togglePage)
+        let effects = controller.handle(.insertKey("（"))
+
+        XCTAssertEqual(client.text, "还找得到（）")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertEqual(client.cursorOffset, "还找得到（".count)
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.partialCommit)
+        XCTAssertNil(controller.state.lastRimeOutput?.composition)
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates, [])
+        XCTAssertEqual(controller.state.lastRimeOutput?.committedText, "还找得到")
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.compositionChanged))
+        XCTAssertTrue(effects.contains(.pageChanged))
+    }
+
+    func testDisabledPairedSymbolCompletionAfterPartialCommitCommitsRemainingCandidateBeforeSingleSymbol() {
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "haizhaodedao": ["还找得到", "还找"],
+                "dedao": ["得到"],
+            ],
+            selectionRemainders: ["haizhaodedao": [1: "dedao"]]
+        )
+        let (controller, client) = makeController(engine: engine)
+        controller.isPairedSymbolCompletionEnabled = false
+        type("haizhaodedao", into: controller)
+
+        _ = controller.handle(
+            .insertCandidate(
+                "还找",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+        _ = controller.handle(.togglePage)
+        let effects = controller.handle(.insertKey("（"))
+
+        XCTAssertEqual(client.text, "还找得到（")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertEqual(client.cursorOffset, "还找得到（".count)
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.partialCommit)
+        XCTAssertNil(controller.state.lastRimeOutput?.composition)
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates, [])
+        XCTAssertEqual(controller.state.lastRimeOutput?.committedText, "还找得到")
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.compositionChanged))
+        XCTAssertTrue(effects.contains(.pageChanged))
+    }
+
     func testSelectionReferenceSelectsDuplicateCandidateByIndex() {
         let dictionary = ["nihaoanpai": ["你好", "你好"], "anpai": ["安排"]]
         let engine = FakeRimeEngine(

@@ -1,7 +1,14 @@
+import KeyboardCore
 import SwiftUI
 
 struct SettingsTab: View {
     let rimeStore: RimeSettingsStore
+
+    @AppStorage(
+        KeyboardInputSettingsKey.pairedSymbolCompletionEnabled,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var pairedSymbolCompletionEnabled = true
 
     @State private var loggingEnabled: Bool = {
         UserDefaults(suiteName: universeAppGroupID)?.bool(forKey: "logging_enabled") ?? false
@@ -18,6 +25,7 @@ struct SettingsTab: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     settingsLinks
+                    inputBehaviorSection
                     diagnosticsSection
                 }
                 .padding(.horizontal, 16)
@@ -25,6 +33,39 @@ struct SettingsTab: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("设置")
+        }
+    }
+
+    private var inputBehaviorSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("输入体验")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
+
+            VStack(spacing: 0) {
+                HStack(spacing: 12) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 7, style: .continuous).fill(.primary)
+                        Image(systemName: "parentheses")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(Color(.systemBackground))
+                    }
+                    .frame(width: 30, height: 30)
+
+                    ToggleRow(
+                        title: "成对符号自动匹配",
+                        description: pairedSymbolCompletionEnabled
+                            ? "输入左括号、书名号等符号时自动补全右侧符号"
+                            : "输入左侧符号时只插入当前符号",
+                        isOn: $pairedSymbolCompletionEnabled
+                    )
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+            }
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         }
     }
 

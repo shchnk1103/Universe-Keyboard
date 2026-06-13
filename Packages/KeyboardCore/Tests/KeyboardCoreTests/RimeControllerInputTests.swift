@@ -143,6 +143,67 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         XCTAssertNil(controller.state.lastRimeOutput)
     }
 
+    func testPairedSymbolDuringChineseCompositionCommitsFirstCandidateBeforePair() {
+        for character in "nihao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        _ = controller.handle(.togglePage)
+        XCTAssertEqual(controller.state.currentPage, .numbers)
+
+        let effects = controller.handle(.insertKey("（"))
+
+        XCTAssertEqual(client.text, "你好（）")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertEqual(client.cursorOffset, 3)
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.lastRimeOutput?.composition)
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates, [])
+        XCTAssertEqual(controller.state.lastRimeOutput?.committedText, "你好")
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.compositionChanged))
+        XCTAssertTrue(effects.contains(.pageChanged))
+        XCTAssertFalse(engine.isComposing())
+    }
+
+    func testDisabledPairedSymbolCompletionStillCommitsChineseCompositionBeforeSymbol() {
+        controller.isPairedSymbolCompletionEnabled = false
+        for character in "nihao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        _ = controller.handle(.togglePage)
+
+        let effects = controller.handle(.insertKey("（"))
+
+        XCTAssertEqual(client.text, "你好（")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertEqual(client.cursorOffset, 3)
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.lastRimeOutput?.composition)
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates, [])
+        XCTAssertEqual(controller.state.lastRimeOutput?.committedText, "你好")
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.compositionChanged))
+        XCTAssertTrue(effects.contains(.pageChanged))
+        XCTAssertFalse(engine.isComposing())
+    }
+
+    func testChineseApostropheOnSymbolPageContinuesCompositionAsSeparator() {
+        _ = controller.handle(.insertKey("w"))
+        _ = controller.handle(.insertKey("a"))
+        _ = controller.handle(.togglePage)
+        XCTAssertEqual(controller.state.currentPage, .numbers)
+
+        let effects = controller.handle(.insertKey("‘"))
+
+        XCTAssertEqual(client.text, "wa'")
+        XCTAssertEqual(client.markedText, "wa'")
+        XCTAssertEqual(controller.state.currentComposition, "wa'")
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.compositionChanged))
+        XCTAssertTrue(effects.contains(.pageChanged))
+        XCTAssertTrue(engine.isComposing())
+    }
+
     func testToggleInputModeResetsEngineSession() {
         _ = controller.handle(.insertKey("n"))
         _ = controller.handle(.insertKey("i"))
@@ -155,14 +216,14 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         XCTAssertEqual(controller.state.inputMode, .english)
     }
 
-    func testTogglePageFromLettersResetsEngineSession() {
+    func testTogglePageFromLettersKeepsRimeCompositionForSymbolCommit() {
         _ = controller.handle(.insertKey("n"))
         _ = controller.handle(.togglePage)
 
         XCTAssertEqual(client.text, "n")
-        XCTAssertEqual(client.markedText, "")
-        XCTAssertEqual(engine.sessionResetCount, 1)
-        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertEqual(client.markedText, "n")
+        XCTAssertEqual(engine.sessionResetCount, 0)
+        XCTAssertEqual(controller.state.currentComposition, "n")
         XCTAssertEqual(controller.state.currentPage, .numbers)
     }
 

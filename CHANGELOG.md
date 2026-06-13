@@ -35,6 +35,20 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-13 — Context-aware symbol page input
+
+- Added a main App input setting for paired-symbol auto-completion, stored as `paired_symbol_completion_enabled` and defaulting to enabled.
+- Strengthened number/symbol page one-shot behavior with mode-specific whitelists: Chinese mode uses `；（）@“”。，、？！【】｛｝#%^*+=_\｜《》&·`, while English mode keeps half-width punctuation such as `.` as one-shot.
+- Fixed Chinese-mode ASCII period and non-composition `‘` handling so they no longer return to letters, while symbols such as `#`, `（`, and `“` do.
+- Added digit-key protection so symbol-page numbers never auto-return to letters.
+- Added paired-symbol insertion for left paired marks such as `（`, `“`, `【`, `｛`, and `《`, placing the cursor between the inserted pair when the setting is enabled.
+- Chinese composition now stays alive when switching from letters to the number page; pressing ordinary punctuation commits the first RIME candidate before inserting the symbol, while active-composition `‘` is routed to RIME as an apostrophe separator for inputs such as `wa'o` and then returns to letters.
+- Fixed Partial Commit + paired-symbol ordering so selecting a prefix candidate and then pressing a left paired symbol commits the remaining first candidate before inserting the pair, for example `还找` + `（` becomes `还找得到（|）`.
+- Cleared stale candidate presentation when symbol input both commits composition and returns to letters, so the candidate bar reflects the same state as a first-candidate confirmation.
+- Expanded KeyboardCore regression coverage for empty-context symbols, digit symbols, paired-symbol cursor placement, RIME composition + punctuation commit, and the Chinese apostrophe separator path.
+
+---
+
 ## 2026-06-12 — Marked text composing underline
 
 - Replaced the plain inline preedit rewrite path with `UITextDocumentProxy.setMarkedText(_:selectedRange:)` / `unmarkText()`, allowing host text fields to show the system composing underline for active Chinese input.

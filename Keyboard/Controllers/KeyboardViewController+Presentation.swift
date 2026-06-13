@@ -197,6 +197,9 @@ extension KeyboardViewController {
         if effects.contains(.pageChanged) || effects.contains(.inputModeChanged)
             || effects.contains(.keyboardTypeChanged)
         {
+            if effects.contains(.compositionChanged) {
+                resetCandidateSnapshotFromController()
+            }
             if hasViewAppeared {
                 reloadKeyboard()
             } else {
