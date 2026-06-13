@@ -41,7 +41,7 @@ struct ContentView: View {
         }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .inactive || phase == .background else { return }
-            Task { await rimeSettingsStore.triggerFuzzyDeploymentIfNeeded() }
+            Task { await rimeSettingsStore.triggerPendingDeploymentIfNeeded() }
         }
     }
 

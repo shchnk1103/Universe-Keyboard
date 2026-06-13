@@ -22,6 +22,8 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertTrue(store.fuzzyChCEnabled)
         XCTAssertTrue(store.fuzzyShSEnabled)
         XCTAssertTrue(store.fuzzyNLEnabled)
+        XCTAssertTrue(store.lunaPinyinUserDictionaryEnabled)
+        XCTAssertTrue(store.rimeIceUserDictionaryEnabled)
     }
 
     func testLoadReadsStoredFuzzyPinyinPreferences() {
@@ -43,6 +45,21 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertTrue(store.fuzzyChCEnabled)
         XCTAssertFalse(store.fuzzyShSEnabled)
         XCTAssertFalse(store.fuzzyNLEnabled)
+    }
+
+    func testLoadReadsStoredUserDictionaryPreferences() {
+        let persistence = StubRimeSettingsPersistence(
+            values: [
+                RimeUserDictionarySettings.lunaPinyinEnabledKey: false,
+                RimeUserDictionarySettings.rimeIceEnabledKey: true,
+            ]
+        )
+        let store = RimeSettingsStore(persistence: persistence)
+
+        store.load()
+
+        XCTAssertFalse(store.lunaPinyinUserDictionaryEnabled)
+        XCTAssertTrue(store.rimeIceUserDictionaryEnabled)
     }
 
     func testSaveFuzzyPinyinSettingsPersistsAndMarksDeploymentNeeded() {
@@ -80,6 +97,36 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertEqual(store.deploymentState, .idle)
     }
 
+    func testSaveUserDictionarySettingsPersistsAndMarksDeploymentNeeded() {
+        let persistence = StubRimeSettingsPersistence()
+        let store = RimeSettingsStore(persistence: persistence)
+        store.lunaPinyinUserDictionaryEnabled = false
+        store.rimeIceUserDictionaryEnabled = true
+
+        store.saveUserDictionarySettings()
+
+        XCTAssertEqual(persistence.value(forKey: RimeUserDictionarySettings.lunaPinyinEnabledKey) as? Bool, false)
+        XCTAssertEqual(persistence.value(forKey: RimeUserDictionarySettings.rimeIceEnabledKey) as? Bool, true)
+        XCTAssertEqual(persistence.value(forKey: RimeUserDictionarySettings.pendingDeployKey) as? Bool, true)
+        XCTAssertEqual(persistence.value(forKey: "rime_deployed") as? Bool, false)
+        XCTAssertEqual(persistence.value(forKey: "rime_needs_deploy") as? Bool, true)
+        XCTAssertEqual(store.deploymentState, .needsDeploy)
+    }
+
+    func testSaveUserDictionarySettingsSkipsDeployWhenSignatureAlreadyMatches() {
+        let signature = RimeUserDictionarySettings().deploymentSignature()
+        let persistence = StubRimeSettingsPersistence(
+            values: [RimeUserDictionarySettings.deployedSignatureKey: signature]
+        )
+        let store = RimeSettingsStore(persistence: persistence)
+
+        store.saveUserDictionarySettings()
+
+        XCTAssertEqual(persistence.value(forKey: RimeUserDictionarySettings.pendingDeployKey) as? Bool, false)
+        XCTAssertNil(persistence.value(forKey: "rime_needs_deploy"))
+        XCTAssertEqual(store.deploymentState, .idle)
+    }
+
     func testTriggerFuzzyDeploymentIfNeededOnlyRunsWhenPending() async {
         let settings = StoreSharedSettingsStore()
         let deploymentService = StoreDeploymentService(succeeded: true)
@@ -98,6 +145,30 @@ final class RimeSettingsStoreTests: XCTestCase {
         )
 
         await store.triggerFuzzyDeploymentIfNeeded()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(store.deploymentState, .deployed)
+    }
+
+    func testTriggerPendingDeploymentIfNeededRunsForUserDictionaryIntent() async {
+        let settings = StoreSharedSettingsStore()
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let persistence = StubRimeSettingsPersistence(
+            values: [RimeUserDictionarySettings.pendingDeployKey: true]
+        )
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(
+                settings: settings,
+                catalogClient: StoreCatalogClient(),
+                archiveDownloader: StoreArchiveDownloader(),
+                archiveInstaller: StoreArchiveInstaller(),
+                deploymentService: deploymentService
+            ),
+            persistence: persistence
+        )
+
+        await store.triggerPendingDeploymentIfNeeded()
 
         let requests = await deploymentService.requests
         XCTAssertEqual(requests.count, 1)

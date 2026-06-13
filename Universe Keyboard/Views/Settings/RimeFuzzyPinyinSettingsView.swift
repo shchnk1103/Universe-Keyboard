@@ -47,7 +47,7 @@ struct RimeFuzzyPinyinSettingsView: View {
         .tint(.primary)
         .onAppear { store.load() }
         .onDisappear {
-            Task { await store.triggerFuzzyDeploymentIfNeeded() }
+            Task { await store.triggerPendingDeploymentIfNeeded() }
         }
     }
 }

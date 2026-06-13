@@ -6,6 +6,15 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-13 — RIME candidate learning settings
+
+- Added a main Settings entry for candidate learning, covering the built-in `luna_pinyin` scheme and the downloaded `rime_ice` scheme separately.
+- Added per-schema user dictionary learning switches that write `translator/enable_user_dict` into schema custom YAML during the main-app deployment path.
+- Added per-schema learning-record reset actions that remove only the matching `{schema}.userdb*` data from the App Group RIME user directory.
+- Extended the pending-deploy flow so candidate-learning changes use the same automatic apply behavior and global bottom toast as fuzzy pinyin settings.
+
+---
+
 ## 2026-06-13 — RIME fuzzy pinyin UX refinement
 
 - Moved fuzzy pinyin settings out of the RIME scheme page and into the main Settings page as an input-habit preference.

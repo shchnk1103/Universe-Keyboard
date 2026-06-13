@@ -73,6 +73,8 @@ final class RimeSettingsStore {
     var fuzzyChCEnabled = true
     var fuzzyShSEnabled = true
     var fuzzyNLEnabled = true
+    var lunaPinyinUserDictionaryEnabled = true
+    var rimeIceUserDictionaryEnabled = true
     var deploymentState: RimeDeploymentState = .idle
     var deploymentLog: [String] = []
     var updateStatusMessage: String?
@@ -136,6 +138,14 @@ final class RimeSettingsStore {
         fuzzyChCEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.chCKey, defaultValue: true)
         fuzzyShSEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.shSKey, defaultValue: true)
         fuzzyNLEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.nLKey, defaultValue: true)
+        lunaPinyinUserDictionaryEnabled = boolPreference(
+            forKey: RimeUserDictionarySettings.lunaPinyinEnabledKey,
+            defaultValue: true
+        )
+        rimeIceUserDictionaryEnabled = boolPreference(
+            forKey: RimeUserDictionarySettings.rimeIceEnabledKey,
+            defaultValue: true
+        )
         refreshDeploymentState()
     }
 
@@ -154,6 +164,18 @@ final class RimeSettingsStore {
         persistence.set(fuzzyShSEnabled, forKey: RimeFuzzyPinyinSettings.shSKey)
         persistence.set(fuzzyNLEnabled, forKey: RimeFuzzyPinyinSettings.nLKey)
         updateFuzzyDeploymentIntent()
+    }
+
+    func saveUserDictionarySettings() {
+        persistence.set(
+            lunaPinyinUserDictionaryEnabled,
+            forKey: RimeUserDictionarySettings.lunaPinyinEnabledKey
+        )
+        persistence.set(
+            rimeIceUserDictionaryEnabled,
+            forKey: RimeUserDictionarySettings.rimeIceEnabledKey
+        )
+        updateUserDictionaryDeploymentIntent()
     }
 
     func switchToSchema(_ schemaID: String) async {
@@ -195,10 +217,22 @@ final class RimeSettingsStore {
         }
     }
 
-    func triggerFuzzyDeploymentIfNeeded() async {
-        guard persistence.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey) else { return }
+    func triggerPendingDeploymentIfNeeded() async {
+        guard hasPendingDeploymentIntent else { return }
         guard deploymentState != .triggered, deploymentState != .deploying else { return }
         await triggerDeployment()
+    }
+
+    func triggerFuzzyDeploymentIfNeeded() async {
+        await triggerPendingDeploymentIfNeeded()
+    }
+
+    func resetUserDictionary(for schemaID: String) {
+        let removed = removeUserDictionaryStorage(for: schemaID)
+        let name = displayName(forSchemaID: schemaID)
+        let reason = removed ? "\(name) 的学习记录已清空" : "\(name) 暂无可清空的学习记录"
+        persistence.set(true, forKey: RimeUserDictionarySettings.pendingDeployKey)
+        markDeploymentNeeded(reason: reason)
     }
 
     func cancelDeployment() {
@@ -236,6 +270,18 @@ final class RimeSettingsStore {
         )
     }
 
+    private var currentUserDictionarySettings: RimeUserDictionarySettings {
+        RimeUserDictionarySettings(
+            lunaPinyinEnabled: lunaPinyinUserDictionaryEnabled,
+            rimeIceEnabled: rimeIceUserDictionaryEnabled
+        )
+    }
+
+    private var hasPendingDeploymentIntent: Bool {
+        persistence.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey)
+            || persistence.bool(forKey: RimeUserDictionarySettings.pendingDeployKey)
+    }
+
     private func updateFuzzyDeploymentIntent() {
         let signature = currentFuzzySettings.deploymentSignature(activeSchemaID: activeSchemaID)
         let deployedSignature = persistence.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey)
@@ -256,12 +302,66 @@ final class RimeSettingsStore {
         markDeploymentNeeded(reason: "模糊音设置已修改")
     }
 
+    private func updateUserDictionaryDeploymentIntent() {
+        let signature = currentUserDictionarySettings.deploymentSignature()
+        let deployedSignature = persistence.string(forKey: RimeUserDictionarySettings.deployedSignatureKey)
+        if signature == deployedSignature {
+            let wasPending = persistence.bool(forKey: RimeUserDictionarySettings.pendingDeployKey)
+            persistence.set(false, forKey: RimeUserDictionarySettings.pendingDeployKey)
+            if wasPending && !hasPendingDeploymentIntent {
+                persistence.set(true, forKey: "rime_deployed")
+                persistence.set(false, forKey: "rime_needs_deploy")
+                deploymentState = .deployed
+                deploymentLog = ["✓ 候选学习设置与当前部署一致"]
+            }
+            persistence.synchronize()
+            return
+        }
+
+        persistence.set(true, forKey: RimeUserDictionarySettings.pendingDeployKey)
+        markDeploymentNeeded(reason: "候选学习设置已修改")
+    }
+
+    private func removeUserDictionaryStorage(for schemaID: String) -> Bool {
+        guard
+            let containerURL = FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: universeAppGroupID
+            )
+        else { return false }
+
+        let userDir = containerURL.appendingPathComponent("Rime/user")
+        guard let items = try? FileManager.default.contentsOfDirectory(
+            at: userDir,
+            includingPropertiesForKeys: nil
+        ) else { return false }
+
+        var removed = false
+        let prefix = "\(schemaID).userdb"
+        for item in items where item.lastPathComponent.hasPrefix(prefix) {
+            do {
+                try FileManager.default.removeItem(at: item)
+                removed = true
+            } catch {
+                Logger.shared.warning(
+                    "Failed to remove user dictionary item \(item.lastPathComponent): \(error.localizedDescription)",
+                    category: .config
+                )
+            }
+        }
+        return removed
+    }
+
+    private func displayName(forSchemaID schemaID: String) -> String {
+        schemas.first(where: { $0.schemaID == schemaID })?.name
+            ?? (schemaID == "rime_ice" ? "雾凇拼音" : "朙月拼音")
+    }
+
     private func markDeploymentNeeded(reason: String) {
         persistence.set(false, forKey: "rime_deployed")
         persistence.set(true, forKey: "rime_needs_deploy")
         persistence.synchronize()
         deploymentState = .needsDeploy
-        deploymentLog = ["→ \(reason)，重新部署后生效"]
+        deploymentLog = ["→ \(reason)，应用完成后生效"]
     }
 
     private func appendDeploymentLog(_ message: String) {

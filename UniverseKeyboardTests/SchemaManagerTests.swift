@@ -173,9 +173,14 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertFalse(settings.bool(forKey: "rime_needs_deploy"))
         XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
         XCTAssertFalse(settings.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey))
+        XCTAssertFalse(settings.bool(forKey: RimeUserDictionarySettings.pendingDeployKey))
         XCTAssertEqual(
             settings.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey),
             RimeFuzzyPinyinSettings().deploymentSignature(activeSchemaID: "luna_pinyin")
+        )
+        XCTAssertEqual(
+            settings.string(forKey: RimeUserDictionarySettings.deployedSignatureKey),
+            RimeUserDictionarySettings().deploymentSignature()
         )
     }
 

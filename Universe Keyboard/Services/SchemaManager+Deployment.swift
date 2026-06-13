@@ -44,9 +44,14 @@ extension SchemaManager {
                 settings.set(false, forKey: "rime_needs_deploy")
                 settings.set(false, forKey: "rime_deploying")
                 settings.set(false, forKey: RimeFuzzyPinyinSettings.pendingDeployKey)
+                settings.set(false, forKey: RimeUserDictionarySettings.pendingDeployKey)
                 settings.set(
                     currentFuzzyPinyinSettings().deploymentSignature(activeSchemaID: activeSchemaIDForDeployment),
                     forKey: RimeFuzzyPinyinSettings.deployedSignatureKey
+                )
+                settings.set(
+                    currentUserDictionarySettings().deploymentSignature(),
+                    forKey: RimeUserDictionarySettings.deployedSignatureKey
                 )
                 settings.synchronize()
                 return true
@@ -117,6 +122,17 @@ extension SchemaManager {
             chCEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.chCKey) as? Bool ?? true,
             shSEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool ?? true,
             nLEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.nLKey) as? Bool ?? true
+        )
+    }
+
+    private func currentUserDictionarySettings() -> RimeUserDictionarySettings {
+        RimeUserDictionarySettings(
+            lunaPinyinEnabled: settings.object(
+                forKey: RimeUserDictionarySettings.lunaPinyinEnabledKey
+            ) as? Bool ?? true,
+            rimeIceEnabled: settings.object(
+                forKey: RimeUserDictionarySettings.rimeIceEnabledKey
+            ) as? Bool ?? true
         )
     }
 }

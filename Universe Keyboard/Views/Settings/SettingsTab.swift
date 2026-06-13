@@ -42,6 +42,9 @@ struct SettingsTab: View {
             SettingsNavigationLink(systemImage: "waveform.path", title: "模糊音设置", subtitle: "平翘舌、鼻边音") {
                 RimeFuzzyPinyinSettingsView(store: rimeStore)
             }
+            SettingsNavigationLink(systemImage: "text.badge.checkmark", title: "候选学习", subtitle: "记住常选词、清空学习记录") {
+                RimeUserDictionarySettingsView(store: rimeStore)
+            }
             SettingsNavigationLink(
                 systemImage: "character.book.closed.zh", title: "RIME 方案设置", subtitle: "候选数量、简繁转换、方案部署"
             ) {
