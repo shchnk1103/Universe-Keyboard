@@ -19,6 +19,7 @@
 | Partial Commit / composition restore | `docs/PROJECT_CONTEXT.md` + `docs/architecture/partial-commit.md` | `docs/TYPO_BENCHMARK.md`（涉及 typo correction 时） |
 | 写测试 | `docs/PROJECT_CONTEXT.md` + `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md` | `EXAMPLES.md` |
 | RIME 传统模糊音 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_FUZZY_PINYIN.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
+| RIME 候选学习 / 用户词典备份 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_USER_DICTIONARY.md` | `docs/UI_STYLE_GUIDE.md`（改主 App UI 时） |
 | 小屏误触 typo correction | `docs/PROJECT_CONTEXT.md` + `docs/TYPO_BENCHMARK.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
 | commit / push | `.claude/skills/pre-push-review/SKILL.md` | — |
 | 了解长期路线图 | `ios-rime-keyboard-development-plan.md` | — |
@@ -114,6 +115,22 @@
 - 当前支持：总开关 + `zh/z`、`ch/c`、`sh/s`、`n/l` 四组双向声母模糊音，默认开启
 - 部署边界：主 App 保存设置并重新部署当前 active schema；Keyboard Extension 只读取编译结果
 - 托管 block：只管理 `# universe:fuzzy-pinyin begin/end` 之间的规则，保留 schema 原有 algebra
+
+### 4c. `docs/RIME_USER_DICTIONARY.md` — RIME 候选学习与用户词典备份
+
+| 属性 | 值 |
+|------|----|
+| 路径 | `docs/RIME_USER_DICTIONARY.md` |
+| 目的 | 记录候选学习设置、用户词典备份/恢复、自动备份、主 App UI 结构和 Keyboard Extension 边界 |
+| 加载时机 | 修改候选学习、用户词典、备份/恢复、自动备份、多方案候选学习 UI 时 |
+| 强制性 | 🔶 条件必须（RIME 候选学习 / 用户词典工作） |
+| 是否过时 | ⚠️ 中风险。新增方案、备份策略或 UI 结构变化后应更新 |
+
+**核心内容摘要：**
+- 当前只管理 `luna_pinyin` 和 `rime_ice` 的 RIME 用户词典学习记录
+- 主 App 负责设置、备份、恢复、manifest 比较和自动备份；Keyboard Extension 不在输入热路径做文件扫描、hash、复制或部署
+- 候选学习 UI 按方案聚合：顶层是方案列表，详情页管理该方案的学习开关、备份/恢复和重置
+- 操作结果使用全局底部 toast，方案行只显示短状态和紧凑状态图标
 
 ---
 

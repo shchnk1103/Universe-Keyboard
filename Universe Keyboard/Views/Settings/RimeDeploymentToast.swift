@@ -59,6 +59,32 @@ struct RimeDeploymentToast: View {
     }
 }
 
+struct RimeUserDictionaryOperationToast: View {
+    let message: String
+    let succeeded: Bool
+
+    var body: some View {
+        HStack(spacing: 11) {
+            Image(systemName: succeeded ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundStyle(succeeded ? .green : .orange)
+                .frame(width: 24, height: 24)
+
+            Text(message)
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(.primary)
+                .lineLimit(2)
+                .minimumScaleFactor(0.9)
+
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 11)
+        .frame(maxWidth: 520)
+        .modifier(RimeDeploymentToastSurface())
+    }
+}
+
 private struct RimeDeploymentToastSurface: ViewModifier {
     private let cornerRadius: CGFloat = 24
 

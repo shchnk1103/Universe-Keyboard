@@ -6,6 +6,19 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-13 — RIME candidate learning V1.1 backup basics
+
+- Refined the candidate learning settings page with plain-language status text for whether learning is on, whether there is anything learned, and whether a backup exists.
+- Added per-schema local backup and latest-backup restore actions for the built-in `luna_pinyin` scheme and the downloaded `rime_ice` scheme.
+- Added backup manifests so the settings page can disable redundant backups when the latest backup already matches current learning data.
+- Added an off-by-default automatic backup switch that runs only from the main App at low-risk moments and skips duplicate backups.
+- Reworked the candidate learning UI into a scalable scheme list with per-scheme detail pages, so future open-source schemes do not repeat across multiple long sections.
+- Moved candidate-learning operation feedback into the shared global bottom toast and kept scheme rows focused on short status text plus a compact status icon.
+- Made restore replace the matching scheme learning data and mark RIME for the same automatic main-app apply flow used by candidate learning and fuzzy pinyin settings.
+- Added regression coverage for backup, restore, no-backup, status-copy, and file-level `{schema}.userdb*` restore behavior.
+
+---
+
 ## 2026-06-13 — RIME candidate learning settings
 
 - Added a main Settings entry for candidate learning, covering the built-in `luna_pinyin` scheme and the downloaded `rime_ice` scheme separately.

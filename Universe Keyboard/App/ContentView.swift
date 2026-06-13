@@ -13,7 +13,9 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var rimeSettingsStore = RimeSettingsStore()
     @State private var showDeploymentToast = false
+    @State private var showUserDictionaryToast = false
     @State private var toastDismissTask: Task<Void, Never>?
+    @State private var userDictionaryToastDismissTask: Task<Void, Never>?
 
     var body: some View {
         TabView {
@@ -33,14 +35,27 @@ struct ContentView: View {
                     .padding(.horizontal, 16)
                     .padding(.bottom, 74)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
+            } else if showUserDictionaryToast, let message = rimeSettingsStore.userDictionaryMessage {
+                RimeUserDictionaryOperationToast(
+                    message: message,
+                    succeeded: rimeSettingsStore.userDictionaryMessageSucceeded
+                )
+                .padding(.horizontal, 16)
+                .padding(.bottom, 74)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
         .animation(.easeInOut(duration: 0.2), value: showDeploymentToast)
+        .animation(.easeInOut(duration: 0.2), value: showUserDictionaryToast)
         .onChange(of: rimeSettingsStore.deploymentState) { _, state in
             updateDeploymentToast(for: state)
         }
+        .onChange(of: rimeSettingsStore.userDictionaryMessageVersion) { _, _ in
+            updateUserDictionaryToast()
+        }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .inactive || phase == .background else { return }
+            rimeSettingsStore.runAutomaticUserDictionaryBackupIfNeeded()
             Task { await rimeSettingsStore.triggerPendingDeploymentIfNeeded() }
         }
     }
@@ -61,6 +76,21 @@ struct ContentView: View {
             }
         case .idle, .needsDeploy:
             showDeploymentToast = false
+        }
+    }
+
+    private func updateUserDictionaryToast() {
+        userDictionaryToastDismissTask?.cancel()
+        guard rimeSettingsStore.userDictionaryMessage != nil else {
+            showUserDictionaryToast = false
+            return
+        }
+
+        showUserDictionaryToast = true
+        userDictionaryToastDismissTask = Task {
+            try? await Task.sleep(nanoseconds: 2_000_000_000)
+            guard !Task.isCancelled else { return }
+            await MainActor.run { showUserDictionaryToast = false }
         }
     }
 }
