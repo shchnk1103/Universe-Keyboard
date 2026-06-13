@@ -13,6 +13,7 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - Replaced the fuzzy page deploy button with pending-deploy scheduling on page exit/app lifecycle, guarded by a fuzzy settings deployment signature to avoid unnecessary redeploys.
 - Added a main-app global bottom deployment toast for RIME applying/success/failure states; the Keyboard Extension continues using the last compiled config and does not block input while deployment is pending.
 - Refined the RIME scheme management UI with non-cramped two-column action buttons and made the scheme deployment page rely on the shared global deployment toast for transient progress/results.
+- Added a reusable `AppActionButton` so main-app content actions share one Liquid Glass style across RIME download, deployment, retry, reset, destructive management, and license acceptance flows.
 
 ---
 

@@ -145,6 +145,7 @@ The main app lives under `Universe Keyboard/` and is SwiftUI-based. It should fe
 
 Reuse these components:
 
+- `AppActionButton`: main-app content actions such as download, deploy, retry, reset, and destructive management commands.
 - `InfoSection`: grouped information sections.
 - `SettingsNavigationLink`: settings-style navigation rows.
 - `ToggleRow`: toggle plus explanatory text.
@@ -161,6 +162,7 @@ Do not duplicate navigation row markup when `SettingsNavigationLink` fits.
 - App/settings icon tiles should be small rounded squares, around `30x30`, with white SF Symbols.
 - Keep spacing compact: roughly `14-16` horizontal screen padding and `12-16` between groups.
 - Use `.blue` as the primary tint; use other system colors only for clear semantic categories.
+- Use `AppActionButton` for explicit in-page commands. Do not hand-style `.bordered` / `.borderedProminent` buttons for download, deploy, retry, reset, license acceptance, or destructive management actions unless a new reusable variant is added first.
 - For dense management actions inside `Form` sections, prefer a two-column adaptive grid with stable full-width action buttons over a single horizontal button row. Button labels must remain one line at normal text sizes and avoid vertical wrapping on narrow devices.
 - RIME deployment progress, success, and failure notifications should use the main-app global bottom toast instead of one-off page-local popups. Detail pages may keep logs and retry actions, but should not duplicate transient deployment notifications.
 - Avoid oversized hero sections, gradients, decorative illustrations, and promotional copy.

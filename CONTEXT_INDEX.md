@@ -80,7 +80,7 @@
 
 **核心内容摘要：**
 - 键盘：`KeyVisualStyle` 枚举、语义色、makeKeyButton/applyKeyStyle、候选栏规则
-- 主 App：NavigationStack/Form 结构、5 个共享组件清单
+- 主 App：NavigationStack/Form 结构、共享组件清单
 - Review Checklist：UI 改动完成前的验证步骤
 
 ---

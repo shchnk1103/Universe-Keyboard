@@ -35,21 +35,18 @@ struct RimeIceDownloadCardView: View {
             }
 
             HStack(spacing: 10) {
-                Button(action: onShowLicense) {
-                    Label("查看许可证", systemImage: "doc.text.magnifyingglass")
-                        .font(.subheadline)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
+                AppActionButton(
+                    title: "查看许可证",
+                    systemImage: "doc.text.magnifyingglass",
+                    action: onShowLicense
+                )
 
-                Button(action: onDownload) {
-                    Label("同意并下载", systemImage: "arrow.down.to.line")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundStyle(Color(.systemBackground))
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.small)
+                AppActionButton(
+                    title: "同意并下载",
+                    systemImage: "arrow.down.to.line",
+                    prominence: .primary,
+                    action: onDownload
+                )
                 .disabled(!isLicenseAccepted)
             }
         }
@@ -93,10 +90,13 @@ struct RimeDownloadProgressContent: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Button("取消", action: onCancel)
-                    .font(.caption)
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
+                AppActionButton(
+                    title: "取消",
+                    systemImage: "xmark",
+                    minHeight: 30,
+                    action: onCancel
+                )
+                .frame(maxWidth: 92)
             }
 
             switch state {
@@ -123,10 +123,13 @@ struct RimeDownloadErrorContent: View {
                 .font(.subheadline)
                 .foregroundStyle(.red)
             Spacer()
-            Button("重试", action: onRetry)
-                .font(.caption)
-                .buttonStyle(.bordered)
-                .controlSize(.small)
+            AppActionButton(
+                title: "重试",
+                systemImage: "arrow.clockwise",
+                minHeight: 30,
+                action: onRetry
+            )
+            .frame(maxWidth: 92)
         }
     }
 }
@@ -154,23 +157,24 @@ struct RimeIceManageContent: View {
             }
 
             LazyVGrid(columns: columns, spacing: 10) {
-                RimeIceManageActionButton(
+                AppActionButton(
                     title: "检查更新",
                     systemImage: "arrow.triangle.2.circlepath",
                     action: onCheckForUpdate
                 )
-                RimeIceManageActionButton(
+                AppActionButton(
                     title: "重新下载",
                     systemImage: "arrow.down.circle",
                     action: onRedownload
                 )
-                RimeIceManageActionButton(
+                AppActionButton(
                     title: "卸载",
                     systemImage: "trash",
+                    prominence: .destructive,
                     role: .destructive,
                     action: onUninstall
                 )
-                RimeIceManageActionButton(
+                AppActionButton(
                     title: "许可证",
                     systemImage: "doc.text",
                     action: onShowLicense
@@ -183,65 +187,5 @@ struct RimeIceManageContent: View {
                     .foregroundStyle(.secondary)
             }
         }
-    }
-}
-
-private struct RimeIceManageActionButton: View {
-    let title: String
-    let systemImage: String
-    var role: ButtonRole?
-    let action: () -> Void
-
-    var body: some View {
-        Button(role: role, action: action) {
-            Label(title, systemImage: systemImage)
-                .font(.system(.subheadline, weight: .semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.85)
-                .frame(maxWidth: .infinity, minHeight: 38)
-        }
-        .buttonStyle(.plain)
-        .foregroundStyle(role == .destructive ? .red : .primary)
-        .modifier(RimeIceManageActionSurface(isDestructive: role == .destructive))
-    }
-}
-
-private struct RimeIceManageActionSurface: ViewModifier {
-    let isDestructive: Bool
-    private let cornerRadius: CGFloat = 16
-
-    func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content
-                .padding(.horizontal, 10)
-                .padding(.vertical, 7)
-                .glassEffect(
-                    .regular
-                        .tint((isDestructive ? Color.red : Color(.systemBackground)).opacity(0.16))
-                        .interactive(),
-                    in: .rect(cornerRadius: cornerRadius)
-                )
-        } else {
-            content
-                .padding(.horizontal, 10)
-                .padding(.vertical, 7)
-                .background(backgroundColor, in: shape)
-                .overlay(border)
-        }
-    }
-
-    private var shape: RoundedRectangle {
-        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-    }
-
-    private var backgroundColor: Color {
-        isDestructive ? Color.red.opacity(0.10) : Color(.tertiarySystemGroupedBackground)
-    }
-
-    private var border: some View {
-        shape.stroke(
-            isDestructive ? Color.red.opacity(0.18) : Color(.separator).opacity(0.30),
-            lineWidth: 0.7
-        )
     }
 }

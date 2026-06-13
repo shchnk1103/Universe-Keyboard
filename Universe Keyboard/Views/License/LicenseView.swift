@@ -77,17 +77,15 @@ struct LicenseView: View {
     private var acceptButton: some View {
         VStack(spacing: 0) {
             Divider()
-            Button {
+            AppActionButton(
+                title: "我已阅读并同意",
+                systemImage: "checkmark",
+                prominence: .primary,
+                minHeight: 46
+            ) {
                 onAccept()
                 dismiss()
-            } label: {
-                Label("我已阅读并同意", systemImage: "checkmark")
-                    .font(.headline)
-                    .foregroundStyle(Color(.systemBackground))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
             }
-            .buttonStyle(.borderedProminent)
             .padding()
         }
         .background(.regularMaterial)

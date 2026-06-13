@@ -50,31 +50,32 @@ struct RimeDeploymentContent: View {
             }
 
             HStack(spacing: 12) {
-                Button(action: onTriggerDeploy) {
-                    Label(
-                        state == .deployed ? "重新部署" : "应用并重新部署",
-                        systemImage: "arrow.triangle.2.circlepath"
-                    )
-                    .font(.subheadline)
-                    .foregroundStyle(Color(.systemBackground))
-                }
-                .buttonStyle(.borderedProminent)
+                AppActionButton(
+                    title: state == .deployed ? "重新部署" : "应用并重新部署",
+                    systemImage: "arrow.triangle.2.circlepath",
+                    prominence: .primary,
+                    action: onTriggerDeploy
+                )
                 .disabled(state == .triggered || state == .deploying)
 
                 if state == .failed {
-                    Button("取消", action: onCancel)
-                        .buttonStyle(.bordered)
+                    AppActionButton(
+                        title: "取消",
+                        systemImage: "xmark",
+                        action: onCancel
+                    )
                 }
 
                 Spacer()
 
                 if !deployLog.isEmpty {
-                    Button(role: .destructive, action: onReset) {
-                        Label("重置", systemImage: "arrow.counterclockwise")
-                            .font(.caption)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
+                    AppActionButton(
+                        title: "重置",
+                        systemImage: "arrow.counterclockwise",
+                        minHeight: 30,
+                        action: onReset
+                    )
+                    .frame(maxWidth: 112)
                 }
             }
         }

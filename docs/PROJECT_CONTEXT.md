@@ -95,6 +95,7 @@ Universe Keyboard/
 │   └── ContentView.swift                 — 双 Tab 布局（引导 / 设置）
 ├── Views/
 │   ├── Components/
+│   │   ├── AppActionButton.swift         — 主 App 内容操作按钮（Liquid Glass + fallback）
 │   │   ├── InfoSection.swift             — 信息卡片容器
 │   │   ├── ToggleRow.swift               — 设置开关行
 │   │   ├── BulletRow.swift               — 项目符号行（dot / checkmark）
@@ -179,7 +180,7 @@ Universe Keyboard/
 │   ├── Universe_KeyboardApp.swift        — @main 入口
 │   └── ContentView.swift                 — 双 Tab 布局（引导 / 设置）
 ├── Views/
-│   ├── Components/                       — 5 shared components
+│   ├── Components/                       — shared SwiftUI components
 │   ├── Settings/                         — 3 setting views
 │   ├── Diagnostics/                      — log viewer
 │   └── License/                          — GPL-3.0 viewer
