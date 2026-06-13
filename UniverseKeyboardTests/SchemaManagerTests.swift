@@ -1,4 +1,5 @@
 import Foundation
+import KeyboardCore
 import RimeBridge
 import XCTest
 
@@ -173,6 +174,49 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
     }
 
+    func testDeploymentAppliesFuzzyPinyinOnlyToActiveSchema() async throws {
+        let tempRoot = FileManager.default.temporaryDirectory
+            .appendingPathComponent("schema-manager-fuzzy-\(UUID().uuidString)")
+        let sharedURL = tempRoot.appendingPathComponent("shared")
+        let userURL = tempRoot.appendingPathComponent("user")
+        try FileManager.default.createDirectory(at: sharedURL, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: userURL, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: tempRoot) }
+
+        let schemaYaml = """
+        schema:
+          schema_id: rime_ice
+        speller:
+          algebra:
+            - erase/^xx$/
+        """
+        try schemaYaml.write(to: sharedURL.appendingPathComponent("rime_ice.schema.yaml"), atomically: true, encoding: .utf8)
+        try schemaYaml.write(to: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"), atomically: true, encoding: .utf8)
+
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                RimeFuzzyPinyinSettings.zhZKey: true,
+                RimeFuzzyPinyinSettings.chCKey: false,
+                RimeFuzzyPinyinSettings.shSKey: false,
+                RimeFuzzyPinyinSettings.nLKey: false,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            directories: SchemaDeploymentDirectories(sharedDataURL: sharedURL, userDataURL: userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        await manager.deployRimeConfig()
+
+        let activeSchema = try String(contentsOf: sharedURL.appendingPathComponent("rime_ice.schema.yaml"), encoding: .utf8)
+        let inactiveSchema = try String(contentsOf: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"), encoding: .utf8)
+        XCTAssertTrue(activeSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        XCTAssertTrue(activeSchema.contains("- derive/^zh/z/"))
+        XCTAssertFalse(activeSchema.contains("- derive/^ch/c/"))
+        XCTAssertFalse(inactiveSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+    }
+
     func testFailedDeploymentPreservesRecoveryIntent() async {
         let settings = StubSharedSettingsStore()
         let manager = makeManager(
@@ -258,16 +302,20 @@ private actor StubSchemaArchiveDownloader: SchemaArchiveDownloading {
 
 @MainActor
 private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
-    let directories = SchemaDeploymentDirectories(
-        sharedDataURL: URL(fileURLWithPath: "/test/Rime/shared"),
-        userDataURL: URL(fileURLWithPath: "/test/Rime/user")
-    )
+    let directories: SchemaDeploymentDirectories
     private let containsInstalledSchema: Bool
     private(set) var installedLuaAvailability: Bool?
     private(set) var didUninstall = false
 
-    init(containsInstalledSchema: Bool = false) {
+    init(
+        containsInstalledSchema: Bool = false,
+        directories: SchemaDeploymentDirectories = SchemaDeploymentDirectories(
+            sharedDataURL: URL(fileURLWithPath: "/test/Rime/shared"),
+            userDataURL: URL(fileURLWithPath: "/test/Rime/user")
+        )
+    ) {
         self.containsInstalledSchema = containsInstalledSchema
+        self.directories = directories
     }
 
     var cachedArchiveURL: URL { URL(fileURLWithPath: "/test/rime_ice_full.zip") }

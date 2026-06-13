@@ -254,6 +254,7 @@ Keyboard Extension (UIInputViewController) → thin UI + state machine
 - **Keyboard initialize** (`RimeSessionManager.initializeEngine`): lightweight only — `initialize(NULL)` followed by session creation over prepared runtime data. It performs no maintenance and writes no deployment or Lua capability preference state.
 - **Deployment ownership**: the main App writes `.custom.yaml` and calls `RimeDeploymentService.deploy(.fullCheck)` before the user returns to the keyboard. `RimeEngineImpl.processKey` performs session input only; Extension recovery may recreate a session but must never run full maintenance.
 - **OpenCC integration**: `simplifier` filter added to luna_pinyin schema with `opencc_config: opencc/t2s.json`. OpenCC configs + OCD2 dictionaries auto-deployed to `shared/opencc/`.
+- **Traditional RIME fuzzy pinyin**: main-app settings write App Group flags for `zh/z`, `ch/c`, `sh/s`, and `n/l`. Full deployment post-processes only the active schema's `speller/algebra` managed block in `Rime/shared/{schema}.schema.yaml`; Keyboard Extension consumes compiled results and must not write schema YAML at runtime. This is separate from small-screen typo correction.
 - **Diagnostics**: `Logger` (singleton, KeyboardCore) with levels (debug/info/warning/error), categories, 500-entry ring buffer. Writes to `rime_diag_log` via shared UserDefaults. Main app DiagnosticsView shows logs with animated refresh/clear buttons.
 
 ## Project Skills

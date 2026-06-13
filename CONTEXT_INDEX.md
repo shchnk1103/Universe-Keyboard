@@ -18,7 +18,8 @@
 | RIME 桥接 / xcframework 管理 | `docs/PROJECT_CONTEXT.md` + `docs/architecture/rime-artifacts.md` | — |
 | Partial Commit / composition restore | `docs/PROJECT_CONTEXT.md` + `docs/architecture/partial-commit.md` | `docs/TYPO_BENCHMARK.md`（涉及 typo correction 时） |
 | 写测试 | `docs/PROJECT_CONTEXT.md` + `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md` | `EXAMPLES.md` |
-| 模糊拼音 / typo correction | `docs/PROJECT_CONTEXT.md` + `docs/TYPO_BENCHMARK.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
+| RIME 传统模糊音 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_FUZZY_PINYIN.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
+| 小屏误触 typo correction | `docs/PROJECT_CONTEXT.md` + `docs/TYPO_BENCHMARK.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
 | commit / push | `.claude/skills/pre-push-review/SKILL.md` | — |
 | 了解长期路线图 | `ios-rime-keyboard-development-plan.md` | — |
 | Swift 6 迁移合规审计 | `docs/architecture/swift6-manual-acceptance.md` | — |
@@ -89,15 +90,30 @@
 | 属性 | 值 |
 |------|----|
 | 路径 | `docs/TYPO_BENCHMARK.md` |
-| 目的 | 记录 fuzzy pinyin / typo correction 的代表性样例、当前覆盖、已知限制、评分原则和下一步优先级 |
+| 目的 | 记录小屏键盘误触 typo correction 的代表性样例、当前覆盖、已知限制、评分原则和下一步优先级 |
 | 加载时机 | 设计或修改 typo correction 规则、候选排序、纠错 UI、或相关 benchmark 测试时 |
-| 强制性 | 🔶 条件必须（模糊拼音 / typo correction 工作） |
+| 强制性 | 🔶 条件必须（小屏误触 typo correction 工作） |
 | 是否过时 | ⚠️ 中风险。真实误触样例出现后应持续补充 |
 
 **核心内容摘要：**
 - 当前支持：有效输入不干扰、末尾邻键替换、保守候选提升
 - 当前不支持：重复字符、漏字、转置、中间字符错误、部分末尾错误
 - 评分原则：precision 优先，false positive 比 missed correction 更严重
+
+### 4b. `docs/RIME_FUZZY_PINYIN.md` — RIME 传统模糊音
+
+| 属性 | 值 |
+|------|----|
+| 路径 | `docs/RIME_FUZZY_PINYIN.md` |
+| 目的 | 记录传统拼音模糊音设置、RIME `speller/algebra` derive 规则、部署方式和边界 |
+| 加载时机 | 设计或修改 RIME 模糊音设置、schema 后处理、部署前 YAML 生成时 |
+| 强制性 | 🔶 条件必须（RIME 传统模糊音工作） |
+| 是否过时 | ⚠️ 中风险。新增模糊音规则或部署策略变化后应更新 |
+
+**核心内容摘要：**
+- 当前支持：`zh/z`、`ch/c`、`sh/s`、`n/l` 四组双向声母模糊音，默认开启
+- 部署边界：主 App 保存设置并重新部署当前 active schema；Keyboard Extension 只读取编译结果
+- 托管 block：只管理 `# universe:fuzzy-pinyin begin/end` 之间的规则，保留 schema 原有 algebra
 
 ---
 

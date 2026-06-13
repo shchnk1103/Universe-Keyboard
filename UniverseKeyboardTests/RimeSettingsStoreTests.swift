@@ -1,4 +1,5 @@
 import Foundation
+import KeyboardCore
 import RimeBridge
 import XCTest
 
@@ -16,6 +17,48 @@ final class RimeSettingsStoreTests: XCTestCase {
 
         XCTAssertEqual(store.pageSize, 12)
         XCTAssertFalse(store.simplified)
+        XCTAssertTrue(store.fuzzyZhZEnabled)
+        XCTAssertTrue(store.fuzzyChCEnabled)
+        XCTAssertTrue(store.fuzzyShSEnabled)
+        XCTAssertTrue(store.fuzzyNLEnabled)
+    }
+
+    func testLoadReadsStoredFuzzyPinyinPreferences() {
+        let persistence = StubRimeSettingsPersistence(
+            values: [
+                RimeFuzzyPinyinSettings.zhZKey: false,
+                RimeFuzzyPinyinSettings.chCKey: true,
+                RimeFuzzyPinyinSettings.shSKey: false,
+                RimeFuzzyPinyinSettings.nLKey: false,
+            ]
+        )
+        let store = RimeSettingsStore(persistence: persistence)
+
+        store.load()
+
+        XCTAssertFalse(store.fuzzyZhZEnabled)
+        XCTAssertTrue(store.fuzzyChCEnabled)
+        XCTAssertFalse(store.fuzzyShSEnabled)
+        XCTAssertFalse(store.fuzzyNLEnabled)
+    }
+
+    func testSaveFuzzyPinyinSettingsPersistsAndMarksDeploymentNeeded() {
+        let persistence = StubRimeSettingsPersistence()
+        let store = RimeSettingsStore(persistence: persistence)
+        store.fuzzyZhZEnabled = false
+        store.fuzzyChCEnabled = true
+        store.fuzzyShSEnabled = false
+        store.fuzzyNLEnabled = true
+
+        store.saveFuzzyPinyinSettings()
+
+        XCTAssertEqual(persistence.value(forKey: RimeFuzzyPinyinSettings.zhZKey) as? Bool, false)
+        XCTAssertEqual(persistence.value(forKey: RimeFuzzyPinyinSettings.chCKey) as? Bool, true)
+        XCTAssertEqual(persistence.value(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool, false)
+        XCTAssertEqual(persistence.value(forKey: RimeFuzzyPinyinSettings.nLKey) as? Bool, true)
+        XCTAssertEqual(persistence.value(forKey: "rime_deployed") as? Bool, false)
+        XCTAssertEqual(persistence.value(forKey: "rime_needs_deploy") as? Bool, true)
+        XCTAssertEqual(store.deploymentState, .needsDeploy)
     }
 
     func testTriggerDeploymentCompletesInsideMainAppBeforeKeyboardUse() async {
@@ -78,6 +121,7 @@ private final class StubRimeSettingsPersistence: RimeSettingsPersisting {
     func hasValue(forKey key: String) -> Bool { values[key] != nil }
     func set(_ value: Any?, forKey key: String) { values[key] = value }
     func synchronize() {}
+    func value(forKey key: String) -> Any? { values[key] }
 }
 
 @MainActor

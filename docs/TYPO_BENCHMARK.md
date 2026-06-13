@@ -2,9 +2,11 @@
 
 ## Purpose
 
-This document is the reference for fuzzy pinyin typo-correction coverage. It records representative typo categories, the current expected behavior, and the next coverage priorities so future work is guided by measurable cases instead of intuition.
+This document is the reference for small-screen pinyin typo-correction coverage. It records representative typo categories, the current expected behavior, and the next coverage priorities so future work is guided by measurable cases instead of intuition.
 
 This is not runtime telemetry. It does not measure live user input, keyboard frequency, or production correction rates. It is a benchmark reference backed by `TypoCorrectionTests`, and new real-world typo cases should be added over time as they are observed.
+
+This document does not evaluate traditional RIME fuzzy pinyin such as `zh/z`, `ch/c`, `sh/s`, or `n/l`. Those settings are implemented through RIME `speller/algebra` derive rules and are documented separately in `docs/RIME_FUZZY_PINYIN.md`.
 
 ## Segmented RIME Preedit
 
@@ -106,8 +108,6 @@ Phase 3 V2 completed real-device validation with the feature flag off and on. Th
 
 ## Next Recommended Milestone
 
-V0.2.6 adds repeated final character deletion, for example `nihaoo -> nihao`. The next quality milestone should keep this path conservative by collecting real-world examples and reviewing whether deletion suggestions need confidence scoring before they are promoted.
+The next typo-correction quality milestone should continue to be benchmark-driven. Before expanding coverage to middle-character mistakes, omitted characters, or transpositions, add enough confidence scoring and real-world examples to avoid increasing false positives.
 
-Before aggressive coverage expansion, add confidence scoring so middle-character mistakes, omitted characters, and transpositions can be evaluated without increasing false positives.
-
-V0.3 UI work should wait until correction quality is stable enough that visual correction hints reflect trustworthy suggestions.
+Traditional RIME fuzzy pinyin expansion is a separate feature track and should not be measured with this typo benchmark.

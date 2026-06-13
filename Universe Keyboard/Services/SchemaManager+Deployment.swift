@@ -24,6 +24,7 @@ extension SchemaManager {
         await Task.detached(priority: .userInitiated) {
             RimeConfigManager.syncCustomYamlFiles()
         }.value
+        applyFuzzyPinyinPostProcessing(to: directories.sharedDataURL)
         settings.set(true, forKey: "rime_deploying")
         settings.set(false, forKey: "rime_deployed")
         settings.synchronize()
@@ -62,5 +63,46 @@ extension SchemaManager {
 
         settings.synchronize()
         return false
+    }
+
+    private func applyFuzzyPinyinPostProcessing(to sharedDataURL: URL) {
+        let activeSchema = settings.string(forKey: "rime_active_schema") ?? "luna_pinyin"
+        let schemaURL = sharedDataURL.appendingPathComponent("\(activeSchema).schema.yaml")
+        guard let originalYaml = try? String(contentsOf: schemaURL, encoding: .utf8) else {
+            Logger.shared.warning(
+                "deployRimeConfig: fuzzy pinyin skipped, schema file missing: \(activeSchema)",
+                category: .deployment
+            )
+            return
+        }
+
+        let fuzzySettings = RimeFuzzyPinyinSettings(
+            zhZEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.zhZKey) as? Bool ?? true,
+            chCEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.chCKey) as? Bool ?? true,
+            shSEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool ?? true,
+            nLEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.nLKey) as? Bool ?? true
+        )
+
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: fuzzySettings, to: originalYaml)
+        guard result.yaml != originalYaml else {
+            Logger.shared.info(
+                "deployRimeConfig: fuzzy pinyin unchanged (\(activeSchema), status=\(result.status))",
+                category: .deployment
+            )
+            return
+        }
+
+        do {
+            try result.yaml.write(to: schemaURL, atomically: true, encoding: .utf8)
+            Logger.shared.info(
+                "deployRimeConfig: fuzzy pinyin \(result.status) for \(activeSchema)",
+                category: .deployment
+            )
+        } catch {
+            Logger.shared.warning(
+                "deployRimeConfig: fuzzy pinyin write failed for \(activeSchema): \(error.localizedDescription)",
+                category: .deployment
+            )
+        }
     }
 }

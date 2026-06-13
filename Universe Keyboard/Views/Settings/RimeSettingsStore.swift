@@ -1,4 +1,5 @@
 import Foundation
+import KeyboardCore
 import Observation
 import SwiftUI
 
@@ -24,11 +25,12 @@ struct SharedDefaultsRimeSettingsPersistence: RimeSettingsPersisting {
 }
 
 enum RimeDeploymentState {
-    case idle, triggered, deploying, deployed, failed
+    case idle, needsDeploy, triggered, deploying, deployed, failed
 
     var icon: String {
         switch self {
         case .idle: return "circle"
+        case .needsDeploy: return "exclamationmark.circle.fill"
         case .triggered: return "hourglass"
         case .deploying: return "arrow.triangle.2.circlepath"
         case .deployed: return "checkmark.circle.fill"
@@ -38,7 +40,7 @@ enum RimeDeploymentState {
 
     var color: Color {
         switch self {
-        case .idle, .triggered: return .orange
+        case .idle, .needsDeploy, .triggered: return .orange
         case .deploying: return .primary
         case .deployed: return .green
         case .failed: return .red
@@ -48,6 +50,7 @@ enum RimeDeploymentState {
     var label: String {
         switch self {
         case .idle: return "未部署"
+        case .needsDeploy: return "需重新部署"
         case .triggered: return "准备部署…"
         case .deploying: return "正在部署…"
         case .deployed: return "已部署"
@@ -63,6 +66,10 @@ final class RimeSettingsStore {
     private let persistence: any RimeSettingsPersisting
     var pageSize: Double = 9
     var simplified = true
+    var fuzzyZhZEnabled = true
+    var fuzzyChCEnabled = true
+    var fuzzyShSEnabled = true
+    var fuzzyNLEnabled = true
     var deploymentState: RimeDeploymentState = .idle
     var deploymentLog: [String] = []
     var updateStatusMessage: String?
@@ -107,6 +114,7 @@ final class RimeSettingsStore {
     var deploymentStatusHint: String {
         switch deploymentState {
         case .idle: return "修改设置后需重新部署方可生效"
+        case .needsDeploy: return "设置已修改，请点击「应用并重新部署」"
         case .triggered: return "主 App 正在准备配置文件…"
         case .deploying: return "主 App 正在编译配置和词库…"
         case .deployed: return "配置已生效 ✓"
@@ -120,6 +128,10 @@ final class RimeSettingsStore {
         simplified =
             persistence.hasValue(forKey: "rime_simplification")
             ? persistence.bool(forKey: "rime_simplification") : true
+        fuzzyZhZEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.zhZKey, defaultValue: true)
+        fuzzyChCEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.chCKey, defaultValue: true)
+        fuzzyShSEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.shSKey, defaultValue: true)
+        fuzzyNLEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.nLKey, defaultValue: true)
         refreshDeploymentState()
     }
 
@@ -129,6 +141,14 @@ final class RimeSettingsStore {
         persistence.set(Int(pageSize), forKey: "rime_page_size")
         persistence.set(simplified, forKey: "rime_simplification")
         persistence.synchronize()
+    }
+
+    func saveFuzzyPinyinSettings() {
+        persistence.set(fuzzyZhZEnabled, forKey: RimeFuzzyPinyinSettings.zhZKey)
+        persistence.set(fuzzyChCEnabled, forKey: RimeFuzzyPinyinSettings.chCKey)
+        persistence.set(fuzzyShSEnabled, forKey: RimeFuzzyPinyinSettings.shSKey)
+        persistence.set(fuzzyNLEnabled, forKey: RimeFuzzyPinyinSettings.nLKey)
+        markDeploymentNeeded(reason: "模糊音设置已修改")
     }
 
     func switchToSchema(_ schemaID: String) async {
@@ -186,8 +206,20 @@ final class RimeSettingsStore {
         } else if persistence.bool(forKey: "rime_deploying") {
             deploymentState = .deploying
         } else if persistence.bool(forKey: "rime_needs_deploy") {
-            deploymentState = .failed
+            deploymentState = .needsDeploy
         }
+    }
+
+    private func boolPreference(forKey key: String, defaultValue: Bool) -> Bool {
+        persistence.hasValue(forKey: key) ? persistence.bool(forKey: key) : defaultValue
+    }
+
+    private func markDeploymentNeeded(reason: String) {
+        persistence.set(false, forKey: "rime_deployed")
+        persistence.set(true, forKey: "rime_needs_deploy")
+        persistence.synchronize()
+        deploymentState = .needsDeploy
+        deploymentLog = ["→ \(reason)，重新部署后生效"]
     }
 
     private func appendDeploymentLog(_ message: String) {
