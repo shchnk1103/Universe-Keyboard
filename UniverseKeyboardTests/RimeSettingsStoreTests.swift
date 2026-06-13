@@ -17,6 +17,7 @@ final class RimeSettingsStoreTests: XCTestCase {
 
         XCTAssertEqual(store.pageSize, 12)
         XCTAssertFalse(store.simplified)
+        XCTAssertTrue(store.fuzzyEnabled)
         XCTAssertTrue(store.fuzzyZhZEnabled)
         XCTAssertTrue(store.fuzzyChCEnabled)
         XCTAssertTrue(store.fuzzyShSEnabled)
@@ -26,6 +27,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     func testLoadReadsStoredFuzzyPinyinPreferences() {
         let persistence = StubRimeSettingsPersistence(
             values: [
+                RimeFuzzyPinyinSettings.enabledKey: false,
                 RimeFuzzyPinyinSettings.zhZKey: false,
                 RimeFuzzyPinyinSettings.chCKey: true,
                 RimeFuzzyPinyinSettings.shSKey: false,
@@ -36,6 +38,7 @@ final class RimeSettingsStoreTests: XCTestCase {
 
         store.load()
 
+        XCTAssertFalse(store.fuzzyEnabled)
         XCTAssertFalse(store.fuzzyZhZEnabled)
         XCTAssertTrue(store.fuzzyChCEnabled)
         XCTAssertFalse(store.fuzzyShSEnabled)
@@ -45,6 +48,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     func testSaveFuzzyPinyinSettingsPersistsAndMarksDeploymentNeeded() {
         let persistence = StubRimeSettingsPersistence()
         let store = RimeSettingsStore(persistence: persistence)
+        store.fuzzyEnabled = true
         store.fuzzyZhZEnabled = false
         store.fuzzyChCEnabled = true
         store.fuzzyShSEnabled = false
@@ -52,6 +56,7 @@ final class RimeSettingsStoreTests: XCTestCase {
 
         store.saveFuzzyPinyinSettings()
 
+        XCTAssertEqual(persistence.value(forKey: RimeFuzzyPinyinSettings.enabledKey) as? Bool, true)
         XCTAssertEqual(persistence.value(forKey: RimeFuzzyPinyinSettings.zhZKey) as? Bool, false)
         XCTAssertEqual(persistence.value(forKey: RimeFuzzyPinyinSettings.chCKey) as? Bool, true)
         XCTAssertEqual(persistence.value(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool, false)
@@ -59,6 +64,44 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertEqual(persistence.value(forKey: "rime_deployed") as? Bool, false)
         XCTAssertEqual(persistence.value(forKey: "rime_needs_deploy") as? Bool, true)
         XCTAssertEqual(store.deploymentState, .needsDeploy)
+    }
+
+    func testSaveFuzzyPinyinSettingsSkipsDeployWhenSignatureAlreadyMatches() {
+        let signature = RimeFuzzyPinyinSettings().deploymentSignature(activeSchemaID: "luna_pinyin")
+        let persistence = StubRimeSettingsPersistence(
+            values: [RimeFuzzyPinyinSettings.deployedSignatureKey: signature]
+        )
+        let store = RimeSettingsStore(persistence: persistence)
+
+        store.saveFuzzyPinyinSettings()
+
+        XCTAssertEqual(persistence.value(forKey: RimeFuzzyPinyinSettings.pendingDeployKey) as? Bool, false)
+        XCTAssertNil(persistence.value(forKey: "rime_needs_deploy"))
+        XCTAssertEqual(store.deploymentState, .idle)
+    }
+
+    func testTriggerFuzzyDeploymentIfNeededOnlyRunsWhenPending() async {
+        let settings = StoreSharedSettingsStore()
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let persistence = StubRimeSettingsPersistence(
+            values: [RimeFuzzyPinyinSettings.pendingDeployKey: true]
+        )
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(
+                settings: settings,
+                catalogClient: StoreCatalogClient(),
+                archiveDownloader: StoreArchiveDownloader(),
+                archiveInstaller: StoreArchiveInstaller(),
+                deploymentService: deploymentService
+            ),
+            persistence: persistence
+        )
+
+        await store.triggerFuzzyDeploymentIfNeeded()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(store.deploymentState, .deployed)
     }
 
     func testTriggerDeploymentCompletesInsideMainAppBeforeKeyboardUse() async {
@@ -116,6 +159,7 @@ private final class StubRimeSettingsPersistence: RimeSettingsPersisting {
         self.values = values
     }
 
+    func string(forKey key: String) -> String? { values[key] as? String }
     func integer(forKey key: String) -> Int { values[key] as? Int ?? 0 }
     func bool(forKey key: String) -> Bool { values[key] as? Bool ?? false }
     func hasValue(forKey key: String) -> Bool { values[key] != nil }

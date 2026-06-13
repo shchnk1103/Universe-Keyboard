@@ -10,18 +10,58 @@ import SwiftUI
 let universeAppGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 
 struct ContentView: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var rimeSettingsStore = RimeSettingsStore()
+    @State private var showDeploymentToast = false
+    @State private var toastDismissTask: Task<Void, Never>?
+
     var body: some View {
         TabView {
             GuideTab()
                 .tabItem {
                     Label("引导", systemImage: "book.pages")
                 }
-            SettingsTab()
+            SettingsTab(rimeStore: rimeSettingsStore)
                 .tabItem {
                     Label("设置", systemImage: "gearshape")
                 }
         }
         .tint(.primary)
+        .overlay(alignment: .bottom) {
+            if showDeploymentToast {
+                RimeDeploymentToast(state: rimeSettingsStore.deploymentState)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 74)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.easeInOut(duration: 0.2), value: showDeploymentToast)
+        .onChange(of: rimeSettingsStore.deploymentState) { _, state in
+            updateDeploymentToast(for: state)
+        }
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .inactive || phase == .background else { return }
+            Task { await rimeSettingsStore.triggerFuzzyDeploymentIfNeeded() }
+        }
+    }
+
+    private func updateDeploymentToast(for state: RimeDeploymentState) {
+        toastDismissTask?.cancel()
+
+        switch state {
+        case .triggered, .deploying, .failed:
+            showDeploymentToast = true
+        case .deployed:
+            guard showDeploymentToast else { return }
+            showDeploymentToast = true
+            toastDismissTask = Task {
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
+                guard !Task.isCancelled else { return }
+                await MainActor.run { showDeploymentToast = false }
+            }
+        case .idle, .needsDeploy:
+            showDeploymentToast = false
+        }
     }
 }
 

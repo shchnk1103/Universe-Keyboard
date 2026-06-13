@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct SettingsTab: View {
+    let rimeStore: RimeSettingsStore
+
     @State private var loggingEnabled: Bool = {
         UserDefaults(suiteName: universeAppGroupID)?.bool(forKey: "logging_enabled") ?? false
     }()
@@ -37,10 +39,13 @@ struct SettingsTab: View {
             SettingsNavigationLink(systemImage: "waveform", title: "键盘反馈", subtitle: "按键音、触感震动") {
                 FeedbackSettingsView()
             }
+            SettingsNavigationLink(systemImage: "waveform.path", title: "模糊音设置", subtitle: "平翘舌、鼻边音") {
+                RimeFuzzyPinyinSettingsView(store: rimeStore)
+            }
             SettingsNavigationLink(
                 systemImage: "character.book.closed.zh", title: "RIME 方案设置", subtitle: "候选数量、简繁转换、方案部署"
             ) {
-                RimeSettingsView()
+                RimeSettingsView(store: rimeStore)
             }
         }
     }

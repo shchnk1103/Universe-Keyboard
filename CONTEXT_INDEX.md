@@ -111,7 +111,7 @@
 | 是否过时 | ⚠️ 中风险。新增模糊音规则或部署策略变化后应更新 |
 
 **核心内容摘要：**
-- 当前支持：`zh/z`、`ch/c`、`sh/s`、`n/l` 四组双向声母模糊音，默认开启
+- 当前支持：总开关 + `zh/z`、`ch/c`、`sh/s`、`n/l` 四组双向声母模糊音，默认开启
 - 部署边界：主 App 保存设置并重新部署当前 active schema；Keyboard Extension 只读取编译结果
 - 托管 block：只管理 `# universe:fuzzy-pinyin begin/end` 之间的规则，保留 schema 原有 algebra
 

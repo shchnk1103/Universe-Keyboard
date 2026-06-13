@@ -26,9 +26,9 @@ struct RimeDeploymentContent: View {
             VStack(alignment: .leading, spacing: 6) {
                 RimeDeploymentStep(number: 1, text: "修改上方设置", done: state != .idle)
                 RimeDeploymentStep(
-                    number: 2, text: "点击「应用并重新部署」",
+                    number: 2, text: "点击下方部署按钮",
                     done: state == .triggered || state == .deploying || state == .deployed)
-                RimeDeploymentStep(number: 3, text: "在主 App 中等待部署完成", done: state == .deployed)
+                RimeDeploymentStep(number: 3, text: "等待底部提示显示完成", done: state == .deployed)
                 RimeDeploymentStep(number: 4, text: "切换到键盘直接输入", done: state == .deployed)
             }
 

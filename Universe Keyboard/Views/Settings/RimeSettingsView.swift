@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct RimeSettingsView: View {
-    @State private var store = RimeSettingsStore()
+    let store: RimeSettingsStore
     @State private var logExpanded = false
     @State private var showLicense = false
     @State private var showUninstallAlert = false
@@ -18,15 +18,6 @@ struct RimeSettingsView: View {
                 onUninstall: { showUninstallAlert = true }
             )
             RimePreferencesSections(store: store)
-            Section {
-                NavigationLink {
-                    RimeFuzzyPinyinSettingsView(store: store)
-                } label: {
-                    Label("模糊音设置", systemImage: "waveform.path")
-                }
-            } footer: {
-                Text("传统拼音模糊音只作用于当前 RIME 方案，修改后需重新部署。")
-            }
             RimeDeploymentStatusSection(store: store, logExpanded: $logExpanded)
         }
         .navigationTitle("RIME 方案设置")
@@ -48,6 +39,6 @@ struct RimeSettingsView: View {
 
 #Preview {
     NavigationStack {
-        RimeSettingsView()
+        RimeSettingsView(store: RimeSettingsStore())
     }
 }

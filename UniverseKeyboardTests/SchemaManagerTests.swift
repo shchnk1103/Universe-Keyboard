@@ -172,6 +172,11 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertTrue(settings.bool(forKey: "rime_deployed"))
         XCTAssertFalse(settings.bool(forKey: "rime_needs_deploy"))
         XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
+        XCTAssertFalse(settings.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey))
+        XCTAssertEqual(
+            settings.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey),
+            RimeFuzzyPinyinSettings().deploymentSignature(activeSchemaID: "luna_pinyin")
+        )
     }
 
     func testDeploymentAppliesFuzzyPinyinOnlyToActiveSchema() async throws {
@@ -215,6 +220,59 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertTrue(activeSchema.contains("- derive/^zh/z/"))
         XCTAssertFalse(activeSchema.contains("- derive/^ch/c/"))
         XCTAssertFalse(inactiveSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        XCTAssertEqual(
+            settings.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey),
+            RimeFuzzyPinyinSettings(
+                enabled: true,
+                zhZEnabled: true,
+                chCEnabled: false,
+                shSEnabled: false,
+                nLEnabled: false
+            ).deploymentSignature(activeSchemaID: "rime_ice")
+        )
+    }
+
+    func testDeploymentRemovesFuzzyPinyinBlockWhenMasterSwitchDisabled() async throws {
+        let tempRoot = FileManager.default.temporaryDirectory
+            .appendingPathComponent("schema-manager-fuzzy-disabled-\(UUID().uuidString)")
+        let sharedURL = tempRoot.appendingPathComponent("shared")
+        let userURL = tempRoot.appendingPathComponent("user")
+        try FileManager.default.createDirectory(at: sharedURL, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: userURL, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: tempRoot) }
+
+        let schemaYaml = """
+        schema:
+          schema_id: luna_pinyin
+        speller:
+          algebra:
+            - erase/^xx$/
+            # universe:fuzzy-pinyin begin
+            - derive/^zh/z/
+            # universe:fuzzy-pinyin end
+        """
+        try schemaYaml.write(
+            to: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+
+        let settings = StubSharedSettingsStore(
+            values: [RimeFuzzyPinyinSettings.enabledKey: false]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            directories: SchemaDeploymentDirectories(sharedDataURL: sharedURL, userDataURL: userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        await manager.deployRimeConfig()
+
+        let schema = try String(
+            contentsOf: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"),
+            encoding: .utf8
+        )
+        XCTAssertFalse(schema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        XCTAssertTrue(schema.contains("- erase/^xx$/"))
     }
 
     func testFailedDeploymentPreservesRecoveryIntent() async {

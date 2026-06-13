@@ -139,8 +139,13 @@ struct RimeIceManageContent: View {
     let onUninstall: () -> Void
     let onShowLicense: () -> Void
 
+    private let columns = [
+        GridItem(.flexible(), spacing: 10),
+        GridItem(.flexible(), spacing: 10)
+    ]
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Label("版本：\(version ?? "未知")", systemImage: "tag")
                     .font(.subheadline)
@@ -148,42 +153,95 @@ struct RimeIceManageContent: View {
                 Spacer()
             }
 
-            HStack(spacing: 10) {
-                Button(action: onCheckForUpdate) {
-                    Label("检查更新", systemImage: "arrow.triangle.2.circlepath")
-                        .font(.subheadline)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-
-                Button(action: onRedownload) {
-                    Label("重新下载", systemImage: "arrow.down.circle")
-                        .font(.subheadline)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-
-                Button(role: .destructive, action: onUninstall) {
-                    Label("卸载", systemImage: "trash")
-                        .font(.subheadline)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-                .tint(.red)
-
-                Button(action: onShowLicense) {
-                    Label("许可证", systemImage: "doc.text")
-                        .font(.subheadline)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
+            LazyVGrid(columns: columns, spacing: 10) {
+                RimeIceManageActionButton(
+                    title: "检查更新",
+                    systemImage: "arrow.triangle.2.circlepath",
+                    action: onCheckForUpdate
+                )
+                RimeIceManageActionButton(
+                    title: "重新下载",
+                    systemImage: "arrow.down.circle",
+                    action: onRedownload
+                )
+                RimeIceManageActionButton(
+                    title: "卸载",
+                    systemImage: "trash",
+                    role: .destructive,
+                    action: onUninstall
+                )
+                RimeIceManageActionButton(
+                    title: "许可证",
+                    systemImage: "doc.text",
+                    action: onShowLicense
+                )
             }
 
             if let updateStatusMessage {
-                Text(updateStatusMessage)
+                Label(updateStatusMessage, systemImage: "checkmark.circle.fill")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
         }
+    }
+}
+
+private struct RimeIceManageActionButton: View {
+    let title: String
+    let systemImage: String
+    var role: ButtonRole?
+    let action: () -> Void
+
+    var body: some View {
+        Button(role: role, action: action) {
+            Label(title, systemImage: systemImage)
+                .font(.system(.subheadline, weight: .semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
+                .frame(maxWidth: .infinity, minHeight: 38)
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(role == .destructive ? .red : .primary)
+        .modifier(RimeIceManageActionSurface(isDestructive: role == .destructive))
+    }
+}
+
+private struct RimeIceManageActionSurface: ViewModifier {
+    let isDestructive: Bool
+    private let cornerRadius: CGFloat = 16
+
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content
+                .padding(.horizontal, 10)
+                .padding(.vertical, 7)
+                .glassEffect(
+                    .regular
+                        .tint((isDestructive ? Color.red : Color(.systemBackground)).opacity(0.16))
+                        .interactive(),
+                    in: .rect(cornerRadius: cornerRadius)
+                )
+        } else {
+            content
+                .padding(.horizontal, 10)
+                .padding(.vertical, 7)
+                .background(backgroundColor, in: shape)
+                .overlay(border)
+        }
+    }
+
+    private var shape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+    }
+
+    private var backgroundColor: Color {
+        isDestructive ? Color.red.opacity(0.10) : Color(.tertiarySystemGroupedBackground)
+    }
+
+    private var border: some View {
+        shape.stroke(
+            isDestructive ? Color.red.opacity(0.18) : Color(.separator).opacity(0.30),
+            lineWidth: 0.7
+        )
     }
 }

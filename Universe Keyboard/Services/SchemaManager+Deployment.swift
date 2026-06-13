@@ -43,6 +43,11 @@ extension SchemaManager {
                 settings.set(true, forKey: "rime_deployed")
                 settings.set(false, forKey: "rime_needs_deploy")
                 settings.set(false, forKey: "rime_deploying")
+                settings.set(false, forKey: RimeFuzzyPinyinSettings.pendingDeployKey)
+                settings.set(
+                    currentFuzzyPinyinSettings().deploymentSignature(activeSchemaID: activeSchemaIDForDeployment),
+                    forKey: RimeFuzzyPinyinSettings.deployedSignatureKey
+                )
                 settings.synchronize()
                 return true
             } else {
@@ -66,7 +71,7 @@ extension SchemaManager {
     }
 
     private func applyFuzzyPinyinPostProcessing(to sharedDataURL: URL) {
-        let activeSchema = settings.string(forKey: "rime_active_schema") ?? "luna_pinyin"
+        let activeSchema = activeSchemaIDForDeployment
         let schemaURL = sharedDataURL.appendingPathComponent("\(activeSchema).schema.yaml")
         guard let originalYaml = try? String(contentsOf: schemaURL, encoding: .utf8) else {
             Logger.shared.warning(
@@ -76,12 +81,7 @@ extension SchemaManager {
             return
         }
 
-        let fuzzySettings = RimeFuzzyPinyinSettings(
-            zhZEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.zhZKey) as? Bool ?? true,
-            chCEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.chCKey) as? Bool ?? true,
-            shSEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool ?? true,
-            nLEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.nLKey) as? Bool ?? true
-        )
+        let fuzzySettings = currentFuzzyPinyinSettings()
 
         let result = RimeFuzzyPinyinPostProcessor.apply(settings: fuzzySettings, to: originalYaml)
         guard result.yaml != originalYaml else {
@@ -104,5 +104,19 @@ extension SchemaManager {
                 category: .deployment
             )
         }
+    }
+
+    private var activeSchemaIDForDeployment: String {
+        settings.string(forKey: "rime_active_schema") ?? "luna_pinyin"
+    }
+
+    private func currentFuzzyPinyinSettings() -> RimeFuzzyPinyinSettings {
+        RimeFuzzyPinyinSettings(
+            enabled: settings.object(forKey: RimeFuzzyPinyinSettings.enabledKey) as? Bool ?? true,
+            zhZEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.zhZKey) as? Bool ?? true,
+            chCEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.chCKey) as? Bool ?? true,
+            shSEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool ?? true,
+            nLEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.nLKey) as? Bool ?? true
+        )
     }
 }

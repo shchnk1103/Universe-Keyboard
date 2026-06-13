@@ -6,6 +6,16 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-13 — RIME fuzzy pinyin UX refinement
+
+- Moved fuzzy pinyin settings out of the RIME scheme page and into the main Settings page as an input-habit preference.
+- Added a master fuzzy pinyin switch while preserving detailed `zh/z`, `ch/c`, `sh/s`, and `n/l` preferences.
+- Replaced the fuzzy page deploy button with pending-deploy scheduling on page exit/app lifecycle, guarded by a fuzzy settings deployment signature to avoid unnecessary redeploys.
+- Added a main-app global bottom deployment toast for RIME applying/success/failure states; the Keyboard Extension continues using the last compiled config and does not block input while deployment is pending.
+- Refined the RIME scheme management UI with non-cramped two-column action buttons and made the scheme deployment page rely on the shared global deployment toast for transient progress/results.
+
+---
+
 ## 2026-06-13 — RIME fuzzy pinyin Phase 1
 
 - Added traditional RIME fuzzy pinyin settings for `zh/z`, `ch/c`, `sh/s`, and `n/l`, defaulting the four common initial-consonant groups to enabled.

@@ -6,6 +6,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
     func testDefaultSettingsEnableCommonInitialFuzzyRules() {
         let settings = RimeFuzzyPinyinSettings()
 
+        XCTAssertTrue(settings.enabled)
         XCTAssertTrue(settings.zhZEnabled)
         XCTAssertTrue(settings.chCEnabled)
         XCTAssertTrue(settings.shSEnabled)
@@ -23,6 +24,13 @@ final class RimeFuzzyPinyinTests: XCTestCase {
                 "derive/^l/n/",
             ]
         )
+    }
+
+    func testDisabledMasterSwitchProducesNoRules() {
+        let settings = RimeFuzzyPinyinSettings(enabled: false)
+
+        XCTAssertFalse(settings.hasEnabledRules)
+        XCTAssertEqual(settings.algebraRules, [])
     }
 
     func testRuleGeneratorOmitsDisabledGroups() {
@@ -106,6 +114,40 @@ final class RimeFuzzyPinyinTests: XCTestCase {
         XCTAssertEqual(result.status, .removed)
         XCTAssertFalse(result.yaml.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
         XCTAssertTrue(result.yaml.contains("    - erase/^xx$/"))
+    }
+
+    func testPostProcessorRemovesManagedBlockWhenMasterSwitchDisabled() {
+        let withBlock = """
+        schema:
+          schema_id: luna_pinyin
+        speller:
+          algebra:
+            - erase/^xx$/
+            # universe:fuzzy-pinyin begin
+            - derive/^zh/z/
+            # universe:fuzzy-pinyin end
+        """
+
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: false), to: withBlock)
+
+        XCTAssertEqual(result.status, .removed)
+        XCTAssertFalse(result.yaml.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        XCTAssertTrue(result.yaml.contains("    - erase/^xx$/"))
+    }
+
+    func testDeploymentSignatureIncludesSchemaAndAllSwitches() {
+        let settings = RimeFuzzyPinyinSettings(
+            enabled: true,
+            zhZEnabled: false,
+            chCEnabled: true,
+            shSEnabled: false,
+            nLEnabled: true
+        )
+
+        XCTAssertEqual(
+            settings.deploymentSignature(activeSchemaID: "rime_ice"),
+            "schema=rime_ice;enabled=1;zh_z=0;ch_c=1;sh_s=0;n_l=1"
+        )
     }
 
     func testPostProcessorCreatesAlgebraInsideExistingSpeller() {

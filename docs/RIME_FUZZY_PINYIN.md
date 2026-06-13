@@ -14,18 +14,19 @@ Phase 1 supports four initial-consonant groups:
 
 | Setting | App Group key | Rules |
 |---|---|---|
+| Master switch | `rime_fuzzy_enabled` | Enables or disables all managed fuzzy pinyin rules |
 | `zh / z` | `rime_fuzzy_zh_z_enabled` | `derive/^zh/z/`, `derive/^z/zh/` |
 | `ch / c` | `rime_fuzzy_ch_c_enabled` | `derive/^ch/c/`, `derive/^c/ch/` |
 | `sh / s` | `rime_fuzzy_sh_s_enabled` | `derive/^sh/s/`, `derive/^s/sh/` |
 | `n / l` | `rime_fuzzy_n_l_enabled` | `derive/^n/l/`, `derive/^l/n/` |
 
-All four groups default to enabled.
+The master switch and all four groups default to enabled.
 
 ## Deployment Model
 
-Fuzzy pinyin settings are saved by the main App in App Group `UserDefaults`. Toggle changes only mark RIME as needing deployment.
+Fuzzy pinyin settings are saved by the main App in App Group `UserDefaults`. Toggle changes save immediately and mark fuzzy pinyin as pending deployment only when the effective settings signature differs from the last successfully deployed signature.
 
-The rules take effect only after the user taps **应用并重新部署** in the main App:
+The rules take effect after the main App runs full deployment:
 
 1. Main App prepares the RIME shared and user directories.
 2. Main App writes `default.custom.yaml` and schema custom YAML.
@@ -35,6 +36,13 @@ The rules take effect only after the user taps **应用并重新部署** in the 
 5. Keyboard Extension only reads the compiled result during runtime.
 
 Keyboard Extension must not write YAML, repair schema files, or run deployment for fuzzy pinyin.
+
+The fuzzy pinyin settings page does not show a local deploy button. Instead:
+
+- Leaving the fuzzy pinyin settings page triggers one deployment if fuzzy settings are pending.
+- Moving the app to inactive/background also attempts one pending deployment.
+- A global main-app bottom toast shows RIME deployment progress, success, or failure.
+- The keyboard continues using the last known good compiled RIME config if the user opens it before deployment finishes.
 
 ## Managed Schema Block
 
@@ -52,6 +60,8 @@ speller:
 The processor is idempotent. Running deployment repeatedly updates the existing managed block instead of duplicating rules.
 
 If all fuzzy pinyin settings are disabled, the managed block is removed and original schema rules are left unchanged.
+
+If the master switch is disabled, the managed block is also removed. Individual group toggles are preserved so the user's detailed preferences can be restored when the master switch is turned back on.
 
 If the active schema has `speller:` but no `algebra:`, deployment creates `speller/algebra` and inserts the managed block.
 

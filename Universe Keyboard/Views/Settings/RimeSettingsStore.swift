@@ -5,6 +5,7 @@ import SwiftUI
 
 @MainActor
 protocol RimeSettingsPersisting {
+    func string(forKey key: String) -> String?
     func integer(forKey key: String) -> Int
     func bool(forKey key: String) -> Bool
     func hasValue(forKey key: String) -> Bool
@@ -17,6 +18,7 @@ struct SharedDefaultsRimeSettingsPersistence: RimeSettingsPersisting {
     private let defaults =
         UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard") ?? .standard
 
+    func string(forKey key: String) -> String? { defaults.string(forKey: key) }
     func integer(forKey key: String) -> Int { defaults.integer(forKey: key) }
     func bool(forKey key: String) -> Bool { defaults.bool(forKey: key) }
     func hasValue(forKey key: String) -> Bool { defaults.object(forKey: key) != nil }
@@ -66,6 +68,7 @@ final class RimeSettingsStore {
     private let persistence: any RimeSettingsPersisting
     var pageSize: Double = 9
     var simplified = true
+    var fuzzyEnabled = true
     var fuzzyZhZEnabled = true
     var fuzzyChCEnabled = true
     var fuzzyShSEnabled = true
@@ -128,6 +131,7 @@ final class RimeSettingsStore {
         simplified =
             persistence.hasValue(forKey: "rime_simplification")
             ? persistence.bool(forKey: "rime_simplification") : true
+        fuzzyEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.enabledKey, defaultValue: true)
         fuzzyZhZEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.zhZKey, defaultValue: true)
         fuzzyChCEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.chCKey, defaultValue: true)
         fuzzyShSEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.shSKey, defaultValue: true)
@@ -144,11 +148,12 @@ final class RimeSettingsStore {
     }
 
     func saveFuzzyPinyinSettings() {
+        persistence.set(fuzzyEnabled, forKey: RimeFuzzyPinyinSettings.enabledKey)
         persistence.set(fuzzyZhZEnabled, forKey: RimeFuzzyPinyinSettings.zhZKey)
         persistence.set(fuzzyChCEnabled, forKey: RimeFuzzyPinyinSettings.chCKey)
         persistence.set(fuzzyShSEnabled, forKey: RimeFuzzyPinyinSettings.shSKey)
         persistence.set(fuzzyNLEnabled, forKey: RimeFuzzyPinyinSettings.nLKey)
-        markDeploymentNeeded(reason: "模糊音设置已修改")
+        updateFuzzyDeploymentIntent()
     }
 
     func switchToSchema(_ schemaID: String) async {
@@ -174,6 +179,7 @@ final class RimeSettingsStore {
     }
 
     func triggerDeployment() async {
+        guard deploymentState != .triggered, deploymentState != .deploying else { return }
         deploymentState = .triggered
         deploymentLog = []
         appendDeploymentLog("→ 主 App 正在准备部署")
@@ -187,6 +193,12 @@ final class RimeSettingsStore {
             deploymentState = .failed
             appendDeploymentLog("✗ 部署失败，请在主 App 中重试")
         }
+    }
+
+    func triggerFuzzyDeploymentIfNeeded() async {
+        guard persistence.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey) else { return }
+        guard deploymentState != .triggered, deploymentState != .deploying else { return }
+        await triggerDeployment()
     }
 
     func cancelDeployment() {
@@ -212,6 +224,36 @@ final class RimeSettingsStore {
 
     private func boolPreference(forKey key: String, defaultValue: Bool) -> Bool {
         persistence.hasValue(forKey: key) ? persistence.bool(forKey: key) : defaultValue
+    }
+
+    private var currentFuzzySettings: RimeFuzzyPinyinSettings {
+        RimeFuzzyPinyinSettings(
+            enabled: fuzzyEnabled,
+            zhZEnabled: fuzzyZhZEnabled,
+            chCEnabled: fuzzyChCEnabled,
+            shSEnabled: fuzzyShSEnabled,
+            nLEnabled: fuzzyNLEnabled
+        )
+    }
+
+    private func updateFuzzyDeploymentIntent() {
+        let signature = currentFuzzySettings.deploymentSignature(activeSchemaID: activeSchemaID)
+        let deployedSignature = persistence.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey)
+        if signature == deployedSignature {
+            let wasFuzzyPending = persistence.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey)
+            persistence.set(false, forKey: RimeFuzzyPinyinSettings.pendingDeployKey)
+            if wasFuzzyPending {
+                persistence.set(true, forKey: "rime_deployed")
+                persistence.set(false, forKey: "rime_needs_deploy")
+                deploymentState = .deployed
+                deploymentLog = ["✓ 模糊音设置与当前部署一致"]
+            }
+            persistence.synchronize()
+            return
+        }
+
+        persistence.set(true, forKey: RimeFuzzyPinyinSettings.pendingDeployKey)
+        markDeploymentNeeded(reason: "模糊音设置已修改")
     }
 
     private func markDeploymentNeeded(reason: String) {
