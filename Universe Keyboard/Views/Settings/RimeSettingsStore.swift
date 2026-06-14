@@ -153,6 +153,10 @@ final class RimeSettingsStore {
         }
     }
 
+    func licenseAccepted(for schemaID: String) -> Bool {
+        schemaManager.licenseAccepted(for: schemaID)
+    }
+
     func load() {
         let savedPageSize = persistence.integer(forKey: "rime_page_size")
         pageSize = Double(savedPageSize > 0 ? savedPageSize : 9)
@@ -348,22 +352,30 @@ final class RimeSettingsStore {
         schemaManager.switchToSchema(schemaID)
         await triggerDeployment()
     }
-    func acceptLicense() { schemaManager.acceptLicense() }
-    func startDownload() { schemaManager.startDownload() }
+    func acceptLicense() { acceptLicense(for: "rime_ice") }
+    func acceptLicense(for schemaID: String) { schemaManager.acceptLicense(for: schemaID) }
+    func startDownload() { startDownload(schemaID: "rime_ice") }
+    func startDownload(schemaID: String) { schemaManager.startDownload(schemaID: schemaID) }
     func cancelDownload() { schemaManager.cancelDownload() }
-    func forceRedownload() {
+    func forceRedownload() { forceRedownload(schemaID: "rime_ice") }
+    func forceRedownload(schemaID: String) {
         updateStatusMessage = nil
-        schemaManager.forceRedownload()
+        schemaManager.forceRedownload(schemaID: schemaID)
     }
-    func uninstallRimeIce() { schemaManager.uninstallRimeIce() }
+    func uninstallRimeIce() { uninstallSchema("rime_ice") }
+    func uninstallSchema(_ schemaID: String) { schemaManager.uninstallSchema(schemaID) }
 
     func checkForUpdateAndDownload() async {
+        await checkForUpdateAndDownload(schemaID: "rime_ice")
+    }
+
+    func checkForUpdateAndDownload(schemaID: String) async {
         updateStatusMessage = nil
-        guard await schemaManager.checkForUpdate() else {
+        guard await schemaManager.checkForUpdate(schemaID: schemaID) else {
             updateStatusMessage = "已是最新版本"
             return
         }
-        schemaManager.startDownload()
+        schemaManager.startDownload(schemaID: schemaID)
     }
 
     func triggerDeployment() async {

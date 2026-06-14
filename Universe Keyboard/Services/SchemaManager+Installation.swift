@@ -26,45 +26,79 @@ extension SchemaManager {
     }
 
     func installRimeIceFiles(from extractDir: URL) throws {
+        guard let plan = downloadableEntry(for: "rime_ice")?.installationPlan else {
+            throw DownloadError.networkError("暂不支持安装这个方案")
+        }
+        try installSchemaFiles(from: extractDir, plan: plan)
+    }
+
+    func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan) throws {
         let luaAvailable = (settings.object(forKey: "rime_lua_available") as? Bool) ?? true
-        try archiveInstaller.installRimeIceFiles(from: extractDir, luaAvailable: luaAvailable)
+        try archiveInstaller.installSchemaFiles(from: extractDir, plan: plan, luaAvailable: luaAvailable)
     }
 
     func activateRimeIce() {
-        settings.set("rime_ice", forKey: "rime_active_schema")
-        activeSchemaID = "rime_ice"
+        activateSchema("rime_ice")
+    }
+
+    func activateSchema(_ schemaID: String) {
+        settings.set(schemaID, forKey: "rime_active_schema")
+        activeSchemaID = schemaID
         requestDeploy()
     }
 
     func uninstallRimeIce() {
-        archiveInstaller.uninstallRimeIceFiles()
+        uninstallSchema("rime_ice")
+    }
+
+    func uninstallSchema(_ schemaID: String) {
+        guard let entry = downloadableEntry(for: schemaID), let plan = entry.installationPlan else { return }
+
+        archiveInstaller.uninstallSchemaFiles(plan: plan)
 
         for key in [
-            "rime_ice_installed", "rime_ice_version", "rime_ice_license_accepted",
-            "rime_ice_download_url", "rime_ice_etag", "rime_ice_checksum",
-        ] {
+            entry.storage.installed,
+            entry.storage.version,
+            entry.storage.licenseAccepted,
+            entry.storage.eTag,
+            entry.storage.checksum,
+        ].compactMap({ $0 }) {
             settings.removeObject(forKey: key)
         }
 
-        switchToSchema("luna_pinyin")
+        if activeSchemaID == schemaID {
+            switchToSchema("luna_pinyin")
+        } else {
+            requestDeploy()
+        }
         rimeIceDownloadState = .idle
-        rimeIceLicenseAccepted = false
-        rimeIceVersion = nil
+        if schemaID == "rime_ice" {
+            rimeIceLicenseAccepted = false
+            rimeIceVersion = nil
+        }
         refreshSchemaList()
     }
 
     func checkForUpdate() async -> Bool {
+        await checkForUpdate(schemaID: "rime_ice")
+    }
+
+    func checkForUpdate(schemaID: String) async -> Bool {
         do {
-            guard let url = try await fetchLatestReleaseURL() else { return false }
+            guard
+                let entry = downloadableEntry(for: schemaID),
+                let url = try await fetchLatestReleaseURL(for: entry)
+            else { return false }
             let newVersion = releaseVersionIdentifier(from: url)
-            return newVersion != rimeIceVersion
+            return newVersion != installedVersion(for: schemaID)
         } catch {
             return false
         }
     }
 
     func rimeIceFilesExist() -> Bool {
-        archiveInstaller.containsInstalledRimeIceSchema()
+        guard let plan = downloadableEntry(for: "rime_ice")?.installationPlan else { return false }
+        return archiveInstaller.containsInstalledSchema(plan: plan)
     }
 
     func checkDiskSpace(needed: Int64) throws {

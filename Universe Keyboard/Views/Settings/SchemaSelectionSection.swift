@@ -10,6 +10,7 @@ struct SchemaSelectionSection: View {
                 ForEach(store.schemas) { schema in
                     if schema.schemaID == "rime_ice" && !schema.installed {
                         RimeIceDownloadCardView(
+                            schema: schema,
                             isLicenseAccepted: store.licenseAccepted,
                             onShowLicense: onShowLicense,
                             onDownload: { store.startDownload() }

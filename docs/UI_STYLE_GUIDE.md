@@ -167,6 +167,7 @@ Do not duplicate navigation row markup when `SettingsNavigationLink` fits.
 - RIME deployment progress, success, and failure notifications should use the main-app global bottom toast instead of one-off page-local popups. Detail pages may keep logs and retry actions, but should not duplicate transient deployment notifications.
 - RIME candidate-learning backup, restore, reset, and automatic-backup operation results should also use the global bottom toast. The settings page should show stable per-scheme status with short text and compact icons, not a persistent message section for the last operation.
 - Multi-scheme RIME settings should scale as a scheme list with per-scheme detail pages when each scheme has multiple controls. Avoid repeating every scheme across separate feature sections such as learning, backup, and reset.
+- Scheme-specific RIME actions belong on that scheme's detail page. Keep global settings, such as candidate count, simplification, and deployment status, at the top-level RIME settings page unless the setting truly belongs to one scheme.
 - Avoid oversized hero sections, gradients, decorative illustrations, and promotional copy.
 
 ## Accessibility And Contrast

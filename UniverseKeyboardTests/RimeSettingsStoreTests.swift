@@ -526,7 +526,7 @@ private struct StoreCatalogClient: SchemaCatalogClient {
         self.latestURL = latestURL
     }
 
-    func latestRimeIceArchiveURL() async throws -> URL? { latestURL }
+    func latestArchiveURL(for distribution: RimeSchemeDistribution) async throws -> URL? { latestURL }
 }
 
 private struct StoreArchiveDownloader: SchemaArchiveDownloading {
@@ -541,13 +541,17 @@ private struct StoreArchiveDownloader: SchemaArchiveDownloading {
 
 @MainActor
 private final class StoreArchiveInstaller: SchemaArchiveInstalling {
-    var cachedArchiveURL: URL { URL(fileURLWithPath: "/tmp/rime.zip") }
-    func prepareExtractionDirectory() throws -> URL { URL(fileURLWithPath: "/tmp/rime-extract") }
+    func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
+        URL(fileURLWithPath: "/tmp/\(distribution.cachedArchiveFileName)")
+    }
+    func prepareExtractionDirectory(for distribution: RimeSchemeDistribution) throws -> URL {
+        URL(fileURLWithPath: "/tmp/\(distribution.extractionDirectoryName)")
+    }
     func removeTemporaryItem(at url: URL) {}
-    func containsInstalledRimeIceSchema() -> Bool { false }
+    func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool { false }
     func checkDiskSpace(needed: Int64) throws {}
-    func installRimeIceFiles(from extractDir: URL, luaAvailable: Bool) throws {}
-    func uninstallRimeIceFiles() {}
+    func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws {}
+    func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) {}
     func deploymentDirectories() throws -> SchemaDeploymentDirectories {
         SchemaDeploymentDirectories(
             sharedDataURL: URL(fileURLWithPath: "/tmp/shared"),

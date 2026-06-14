@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct RimeIceDownloadCardView: View {
+    let schema: SchemaMetadata
     let isLicenseAccepted: Bool
     let onShowLicense: () -> Void
     let onDownload: () -> Void
@@ -10,11 +11,11 @@ struct RimeIceDownloadCardView: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
-                        Text("雾凇拼音")
+                        Text(schema.name)
                             .font(.body.bold())
                         CapsuleBadge(text: "需要下载", color: .orange, style: .tinted)
                     }
-                    Text("社区维护的高质量简体词库，词条丰富、更新活跃。")
+                    Text(schema.description)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(2)
@@ -23,15 +24,19 @@ struct RimeIceDownloadCardView: View {
             }
 
             HStack(spacing: 12) {
-                Label("约 16 MB", systemImage: "arrow.down.circle")
+                Label(schema.downloadSize, systemImage: "arrow.down.circle")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Label("GPL-3.0", systemImage: "doc.text")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Label("解压约 60 MB", systemImage: "internaldrive")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                if let licenseName = schema.licenseName {
+                    Label(licenseName, systemImage: "doc.text")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                if let installedSize = schema.installedSize {
+                    Label(installedSize, systemImage: "internaldrive")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
 
             HStack(spacing: 10) {

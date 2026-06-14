@@ -53,7 +53,7 @@ Scheme detail page:
 - Reset learning-record action for that scheme.
 - Short explanatory footers for each section.
 
-This structure is intentional. As more open-source schemes are added, the top-level page should grow as a list of schemes instead of repeating every scheme under separate "learning", "backup", and "reset" sections.
+This structure is intentional and should stay aligned with the main RIME scheme-management pattern in `docs/RIME_SCHEME_MANAGEMENT.md`. As more open-source schemes are added, the top-level page should grow as a list of schemes instead of repeating every scheme under separate "learning", "backup", and "reset" sections.
 
 ## Status Icons
 

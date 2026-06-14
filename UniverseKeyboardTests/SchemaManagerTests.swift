@@ -18,6 +18,9 @@ final class SchemaManagerTests: XCTestCase {
 
         XCTAssertEqual(rimeIce?.version, "2026.05.01")
         XCTAssertEqual(rimeIce?.installed, true)
+        XCTAssertEqual(rimeIce?.licenseName, "GPL-3.0")
+        XCTAssertTrue(rimeIce?.isDownloadable == true)
+        XCTAssertTrue(rimeIce?.supportsUserDictionary == true)
     }
 
     func testSchemaSwitchAndLicenseAcceptancePersistIntentFlags() {
@@ -330,7 +333,7 @@ private final class StubSharedSettingsStore: SharedSettingsStoring {
 private struct StubSchemaCatalogClient: SchemaCatalogClient {
     let latestURL: URL?
 
-    func latestRimeIceArchiveURL() async throws -> URL? { latestURL }
+    func latestArchiveURL(for distribution: RimeSchemeDistribution) async throws -> URL? { latestURL }
 }
 
 private actor StubSchemaArchiveDownloader: SchemaArchiveDownloading {
@@ -381,15 +384,19 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
         self.directories = directories
     }
 
-    var cachedArchiveURL: URL { URL(fileURLWithPath: "/test/rime_ice_full.zip") }
-    func prepareExtractionDirectory() throws -> URL { URL(fileURLWithPath: "/test/rime_ice_extract") }
+    func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
+        URL(fileURLWithPath: "/test/\(distribution.cachedArchiveFileName)")
+    }
+    func prepareExtractionDirectory(for distribution: RimeSchemeDistribution) throws -> URL {
+        URL(fileURLWithPath: "/test/\(distribution.extractionDirectoryName)")
+    }
     func removeTemporaryItem(at url: URL) {}
-    func containsInstalledRimeIceSchema() -> Bool { containsInstalledSchema }
+    func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool { containsInstalledSchema }
     func checkDiskSpace(needed: Int64) throws {}
-    func installRimeIceFiles(from extractDir: URL, luaAvailable: Bool) throws {
+    func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws {
         installedLuaAvailability = luaAvailable
     }
-    func uninstallRimeIceFiles() { didUninstall = true }
+    func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) { didUninstall = true }
     func deploymentDirectories() throws -> SchemaDeploymentDirectories { directories }
 }
 

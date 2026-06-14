@@ -6,6 +6,26 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-14 — RIME multi-scheme management V1.1 infrastructure
+
+- Added a catalog-backed RIME scheme model covering scheme metadata, download distribution, storage keys, license metadata, user-dictionary capability, and installation plans.
+- Moved rime_ice download, version, ETag, installation, uninstall, and update checks onto generic schema-ID based manager methods while preserving the existing user-facing 雾凇 behavior.
+- Generalized archive installer boundaries so cache paths, extraction directories, installed-file checks, install filters, uninstall cleanup, and build-cache cleanup come from each scheme's installation plan.
+- Kept the V1 list/detail UI visually stable while making download cards, license acceptance, update checks, redownload, and uninstall actions use the current scheme metadata and schema ID.
+- Expanded SchemaManager coverage to assert catalog metadata reaches the scheme list and kept the existing update, install, uninstall, and deployment tests passing.
+
+---
+
+## 2026-06-14 — RIME multi-scheme management V1
+
+- Reworked the main RIME settings page into a scalable scheme list with per-scheme detail pages, preparing the UI for more open-source schemes without making the top-level settings page long.
+- Moved scheme-specific actions such as setting the active scheme, downloading, updating, redownloading, uninstalling, and viewing the license into the matching scheme detail page.
+- Kept global RIME preferences and deployment status on the top-level RIME settings page because they apply across schemes rather than belonging to one scheme.
+- Added compact per-scheme status text and icons for current, installed, downloadable, downloading, and failed states.
+- Documented the V1 scheme-management structure and future extension rules in `docs/RIME_SCHEME_MANAGEMENT.md`.
+
+---
+
 ## 2026-06-13 — RIME candidate learning V1.1 backup basics
 
 - Refined the candidate learning settings page with plain-language status text for whether learning is on, whether there is anything learned, and whether a backup exists.

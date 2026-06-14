@@ -106,7 +106,7 @@ Universe Keyboard/
 │   ├── Settings/
 │   │   ├── SettingsTab.swift             — 设置页导航与诊断开关
 │   │   ├── FeedbackSettingsView.swift    — 按键音 + 触感设置
-│   │   ├── RimeSettingsView.swift        — RIME 方案设置（方案选择/下载/部署）
+│   │   ├── RimeSettingsView.swift        — RIME 多方案设置（方案列表/详情/下载/部署）
 │   │   └── SchemaPickerRow.swift        — 方案选择行组件
 │   ├── Diagnostics/
 │   │   └── DiagnosticsView.swift         — 诊断日志查看器
@@ -250,7 +250,7 @@ Keyboard Extension (UIInputViewController) → thin UI + state machine
 ### RIME Deployment System
 
 - **Main App deploy** (`SchemaManager.fetchAndDownload` → `deployRimeConfig()`): after installing rime_ice, the app calls the actor-isolated `RimeDeploymentService` package API. Its ObjC implementation runs full maintenance in the app process, so the keyboard starts with pre-built cache without owning the deployment boundary.
-- **Main App settings** (Settings → RIME 方案设置): unified sub-page with schema picker, download UI, candidate count slider, simplification toggle, and deploy controls. The deploy action awaits main-app compilation and reports success before the user returns to the keyboard.
+- **Main App settings** (Settings → RIME 方案设置): scalable scheme-list page with per-scheme detail pages for active-scheme switching, download/update/redownload/uninstall/license actions, plus global candidate count, simplification, and deployment status on the top-level page. Downloadable scheme metadata, storage keys, distribution info, and install/uninstall cleanup rules belong in the scheme catalog model rather than the view layer. Full details live in `docs/RIME_SCHEME_MANAGEMENT.md`.
 - **Keyboard Extension** (`viewDidLoad`): resolves already-prepared runtime directories and creates a session only. It does not write YAML, repair schemas, invalidate caches, or deploy while the keyboard is being presented.
 - **Keyboard initialize** (`RimeSessionManager.initializeEngine`): lightweight only — `initialize(NULL)` followed by session creation over prepared runtime data. It performs no maintenance and writes no deployment or Lua capability preference state.
 - **Deployment ownership**: the main App writes `.custom.yaml` and calls `RimeDeploymentService.deploy(.fullCheck)` before the user returns to the keyboard. `RimeEngineImpl.processKey` performs session input only; Extension recovery may recreate a session but must never run full maintenance.

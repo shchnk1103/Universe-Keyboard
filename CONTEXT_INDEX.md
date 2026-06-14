@@ -16,6 +16,7 @@
 | UI 改动（SwiftUI / UIKit） | `docs/PROJECT_CONTEXT.md` + `docs/UI_STYLE_GUIDE.md` | — |
 | Swift 并发 / 架构决策 | `docs/PROJECT_CONTEXT.md` + `docs/architecture/swift6-migration.md` | — |
 | RIME 桥接 / xcframework 管理 | `docs/PROJECT_CONTEXT.md` + `docs/architecture/rime-artifacts.md` | — |
+| RIME 多方案管理 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_SCHEME_MANAGEMENT.md` | `docs/UI_STYLE_GUIDE.md`（改主 App UI 时） |
 | Partial Commit / composition restore | `docs/PROJECT_CONTEXT.md` + `docs/architecture/partial-commit.md` | `docs/TYPO_BENCHMARK.md`（涉及 typo correction 时） |
 | 写测试 | `docs/PROJECT_CONTEXT.md` + `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md` | `EXAMPLES.md` |
 | RIME 传统模糊音 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_FUZZY_PINYIN.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
@@ -116,7 +117,23 @@
 - 部署边界：主 App 保存设置并重新部署当前 active schema；Keyboard Extension 只读取编译结果
 - 托管 block：只管理 `# universe:fuzzy-pinyin begin/end` 之间的规则，保留 schema 原有 algebra
 
-### 4c. `docs/RIME_USER_DICTIONARY.md` — RIME 候选学习与用户词典备份
+### 4c. `docs/RIME_SCHEME_MANAGEMENT.md` — RIME 多方案管理
+
+| 属性 | 值 |
+|------|----|
+| 路径 | `docs/RIME_SCHEME_MANAGEMENT.md` |
+| 目的 | 记录 RIME 多方案设置、方案列表/详情 UI、主 App 与 Keyboard Extension 边界、未来新增开源方案规则 |
+| 加载时机 | 修改 RIME 方案列表、方案详情、下载/更新/卸载、方案切换或新增开源方案时 |
+| 强制性 | 🔶 条件必须（RIME 多方案管理工作） |
+| 是否过时 | ⚠️ 中风险。新增方案、下载策略或设置结构变化后应更新 |
+
+**核心内容摘要：**
+- RIME 设置顶层按方案列表组织，点击进入方案详情
+- 方案详情承载下载、更新、重新下载、卸载、许可证和设为当前方案等方案专属动作
+- 候选数、简繁转换、部署状态等全局设置保留在 RIME 顶层页面
+- Keyboard Extension 只使用已准备好的运行时数据，不在输入时下载、更新、卸载或部署方案
+
+### 4d. `docs/RIME_USER_DICTIONARY.md` — RIME 候选学习与用户词典备份
 
 | 属性 | 值 |
 |------|----|
