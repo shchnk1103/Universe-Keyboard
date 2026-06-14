@@ -277,6 +277,63 @@ final class PartialCommitControllerTests: XCTestCase {
         XCTAssertEqual(controller.state.lastRimeOutput?.candidates.map(\.text), ["你好安帕"])
     }
 
+    func testDeleteAfterSecondPartialSelectionRestoresOnlyLatestCandidateThenDeletesSuffix() {
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "fangzidouhuizheng": ["房子都会震", "房子"],
+                "douhuizheng": ["都会", "都汇"],
+                "douhuizhen": ["都会真"],
+                "zheng": ["震", "正"],
+                "zhen": ["真"],
+            ],
+            selectedSegments: [
+                "fangzidouhuizheng": [
+                    1: FakeRimeSelectedSegment(rawPrefix: "fangzi", text: "房子"),
+                    0: FakeRimeSelectedSegment(rawPrefix: "fangzidouhui", text: "房子都会"),
+                ]
+            ],
+            partialSelectionEmitsCommit: false
+        )
+        let (controller, client) = makeController(engine: engine)
+        type("fangzidouhuizheng", into: controller)
+
+        _ = controller.handle(
+            .insertCandidate(
+                "房子",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+        _ = controller.handle(
+            .insertCandidate(
+                "都会",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 0)
+            )
+        )
+
+        XCTAssertEqual(client.markedText, "房子都会zheng")
+        XCTAssertEqual(controller.state.currentComposition, "zheng")
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "房子都会")
+
+        _ = controller.handle(.deleteBackward)
+
+        XCTAssertEqual(client.text, "房子douhuizheng")
+        XCTAssertEqual(client.markedText, "房子douhuizheng")
+        XCTAssertEqual(controller.state.currentComposition, "douhuizheng")
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "douhuizheng")
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "房子")
+        XCTAssertNil(controller.state.partialCommit?.checkpoint)
+
+        _ = controller.handle(.deleteBackward)
+
+        XCTAssertEqual(client.text, "房子douhuizhen")
+        XCTAssertEqual(client.markedText, "房子douhuizhen")
+        XCTAssertEqual(controller.state.currentComposition, "douhuizhen")
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "douhuizhen")
+        XCTAssertFalse(client.text.contains("fangzi"))
+    }
+
     func testFailedCheckpointRebuildDoesNotDeleteVisibleText() {
         let (controller, client, engine) = makeController()
         type("nihaoanpai", into: controller)

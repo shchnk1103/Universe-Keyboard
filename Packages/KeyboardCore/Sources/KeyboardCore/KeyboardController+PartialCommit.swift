@@ -178,7 +178,8 @@ extension KeyboardController {
             return false
         }
 
-        guard let output = rebuildRimeOutput(for: checkpoint.previousRawInput, using: engine) else {
+        let restoreRawInput = rawInputForCheckpointRestore(checkpoint)
+        guard let output = rebuildRimeOutput(for: restoreRawInput, using: engine) else {
             state.partialCommit = PartialCommitState(
                 confirmedText: partialCommit.confirmedText,
                 remainingRawInput: partialCommit.remainingRawInput,
@@ -198,7 +199,7 @@ extension KeyboardController {
         } else {
             state.partialCommit = PartialCommitState(
                 confirmedText: checkpoint.previousConfirmedText,
-                remainingRawInput: checkpoint.previousRawInput,
+                remainingRawInput: output.rawInput ?? restoreRawInput,
                 remainingPreeditText: state.currentComposition,
                 displayText: checkpoint.previousDisplayText,
                 checkpoint: nil,
@@ -207,6 +208,22 @@ extension KeyboardController {
         }
         clearTypoCorrectionSuggestions()
         return true
+    }
+
+    private func rawInputForCheckpointRestore(_ checkpoint: PartialCommitCheckpoint) -> String {
+        guard !checkpoint.previousConfirmedText.isEmpty else {
+            return checkpoint.previousRawInput
+        }
+
+        // Real librime may keep rawInput as the whole original string after a
+        // selected segment. Once an earlier segment is already confirmed, Delete
+        // should rebuild only the editable suffix after that stable prefix.
+        let remainingDisplayText = partialRemainingPreeditText(
+            confirmedText: checkpoint.previousConfirmedText,
+            displayText: checkpoint.previousDisplayText
+        )
+        let editableRawInput = remainingDisplayText.filter { !$0.isWhitespace }
+        return editableRawInput.isEmpty ? checkpoint.previousRawInput : editableRawInput
     }
 
     /// Commits the complete active display without losing a previously confirmed prefix.
