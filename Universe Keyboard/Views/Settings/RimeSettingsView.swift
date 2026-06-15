@@ -30,7 +30,7 @@ struct RimeSettingsView: View {
         .navigationTitle("RIME 方案设置")
         .tint(.primary)
         .onAppear { store.load() }
-        .onChange(of: store.downloadState) { _, _ in store.handleDownloadStateChange() }
+        .onChange(of: store.downloadState) { _, _ in store.refreshDeploymentState() }
         .onDisappear { store.stop() }
     }
 
@@ -160,7 +160,6 @@ private struct RimeSchemaDetailView: View {
                 RimeIceDownloadCardView(
                     schema: schema,
                     isLicenseAccepted: store.licenseAccepted(for: schema.schemaID),
-                    operation: store.activeOperation(for: schema.schemaID),
                     onShowLicense: { showLicense = true },
                     onDownload: { store.startDownload(schemaID: schema.schemaID) }
                 )
@@ -193,7 +192,7 @@ private struct RimeSchemaDetailView: View {
             Section {
                 RimeIceManageContent(
                     version: schema.version,
-                    activeOperation: store.activeOperation(for: schema.schemaID),
+                    updateStatusMessage: store.updateStatusMessage,
                     onCheckForUpdate: { Task { await store.checkForUpdateAndDownload(schemaID: schema.schemaID) } },
                     onRedownload: { store.forceRedownload(schemaID: schema.schemaID) },
                     onUninstall: { showUninstallAlert = true },
