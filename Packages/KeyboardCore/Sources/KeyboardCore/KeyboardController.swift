@@ -12,6 +12,7 @@ public final class KeyboardController {
 
     public var currentDate: () -> Date = { Date() }
     public var isTypoCorrectionPartialCommitEnabled = false
+    public var isPairedSymbolCompletionEnabled = true
     var shouldRestoreRimeComposition = false
     var shouldRebuildSessionDuringRestore = false
 

@@ -1,7 +1,10 @@
 @MainActor
 public protocol TextInputClient: AnyObject {
+    var hasTextBeforeInput: Bool { get }
+
     func insertText(_ text: String)
     func deleteBackward()
+    func adjustTextPosition(byCharacterOffset offset: Int)
 
     /// Replaces the active composing range in the host text field.
     /// `selectedRange` uses character offsets in KeyboardCore and is converted

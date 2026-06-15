@@ -6,6 +6,59 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-14 — RIME scheme operation feedback V1.2
+
+- Added a shared in-flight operation state for scheme-side effects such as checking updates, downloading, redownloading, and uninstalling.
+- Prevented repeated taps from starting duplicate scheme operations; repeated taps while a scheme operation or download is active now show a throttled global toast instead of creating extra tasks.
+- Added loading labels and disabled states to scheme management buttons while an operation is running.
+- Moved scheme operation results into the global bottom toast, including up-to-date, update-check failure, download start/completion/failure, redownload start, and uninstall completion messages.
+- Split update checking into explicit results for update available, already current, and failed, so network failures no longer look like "already current".
+- Added regression coverage for duplicate update taps, update-check failure release, and uninstall toast/release behavior.
+
+---
+
+## 2026-06-14 — RIME multi-scheme management V1.1 infrastructure
+
+- Added a catalog-backed RIME scheme model covering scheme metadata, download distribution, storage keys, license metadata, user-dictionary capability, and installation plans.
+- Moved rime_ice download, version, ETag, installation, uninstall, and update checks onto generic schema-ID based manager methods while preserving the existing user-facing 雾凇 behavior.
+- Generalized archive installer boundaries so cache paths, extraction directories, installed-file checks, install filters, uninstall cleanup, and build-cache cleanup come from each scheme's installation plan.
+- Kept the V1 list/detail UI visually stable while making download cards, license acceptance, update checks, redownload, and uninstall actions use the current scheme metadata and schema ID.
+- Expanded SchemaManager coverage to assert catalog metadata reaches the scheme list and kept the existing update, install, uninstall, and deployment tests passing.
+
+---
+
+## 2026-06-14 — RIME multi-scheme management V1
+
+- Reworked the main RIME settings page into a scalable scheme list with per-scheme detail pages, preparing the UI for more open-source schemes without making the top-level settings page long.
+- Moved scheme-specific actions such as setting the active scheme, downloading, updating, redownloading, uninstalling, and viewing the license into the matching scheme detail page.
+- Kept global RIME preferences and deployment status on the top-level RIME settings page because they apply across schemes rather than belonging to one scheme.
+- Added compact per-scheme status text and icons for current, installed, downloadable, downloading, and failed states.
+- Documented the V1 scheme-management structure and future extension rules in `docs/RIME_SCHEME_MANAGEMENT.md`.
+
+---
+
+## 2026-06-13 — RIME candidate learning V1.1 backup basics
+
+- Refined the candidate learning settings page with plain-language status text for whether learning is on, whether there is anything learned, and whether a backup exists.
+- Added per-schema local backup and latest-backup restore actions for the built-in `luna_pinyin` scheme and the downloaded `rime_ice` scheme.
+- Added backup manifests so the settings page can disable redundant backups when the latest backup already matches current learning data.
+- Added an off-by-default automatic backup switch that runs only from the main App at low-risk moments and skips duplicate backups.
+- Reworked the candidate learning UI into a scalable scheme list with per-scheme detail pages, so future open-source schemes do not repeat across multiple long sections.
+- Moved candidate-learning operation feedback into the shared global bottom toast and kept scheme rows focused on short status text plus a compact status icon.
+- Made restore replace the matching scheme learning data and mark RIME for the same automatic main-app apply flow used by candidate learning and fuzzy pinyin settings.
+- Added regression coverage for backup, restore, no-backup, status-copy, and file-level `{schema}.userdb*` restore behavior.
+
+---
+
+## 2026-06-13 — RIME candidate learning settings
+
+- Added a main Settings entry for candidate learning, covering the built-in `luna_pinyin` scheme and the downloaded `rime_ice` scheme separately.
+- Added per-schema user dictionary learning switches that write `translator/enable_user_dict` into schema custom YAML during the main-app deployment path.
+- Added per-schema learning-record reset actions that remove only the matching `{schema}.userdb*` data from the App Group RIME user directory.
+- Extended the pending-deploy flow so candidate-learning changes use the same automatic apply behavior and global bottom toast as fuzzy pinyin settings.
+
+---
+
 ## 2026-06-13 — RIME fuzzy pinyin UX refinement
 
 - Moved fuzzy pinyin settings out of the RIME scheme page and into the main Settings page as an input-habit preference.
@@ -23,6 +76,20 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - Added active-schema-only deployment post-processing that preserves existing `speller/algebra` rules and manages only the `# universe:fuzzy-pinyin begin/end` block.
 - Added a dedicated main-app fuzzy pinyin settings page; toggles save App Group settings and mark RIME as needing redeploy instead of compiling on every change.
 - Documented the separation between RIME fuzzy pinyin and small-screen typo correction in `docs/RIME_FUZZY_PINYIN.md`, `CONTEXT_INDEX.md`, and `docs/TYPO_BENCHMARK.md`.
+
+---
+
+## 2026-06-13 — Context-aware symbol page input
+
+- Added a main App input setting for paired-symbol auto-completion, stored as `paired_symbol_completion_enabled` and defaulting to enabled.
+- Strengthened number/symbol page one-shot behavior with mode-specific whitelists: Chinese mode uses `；（）@“”。，、？！【】｛｝#%^*+=_\｜《》&·`, while English mode keeps half-width punctuation such as `.` as one-shot.
+- Fixed Chinese-mode ASCII period and non-composition `‘` handling so they no longer return to letters, while symbols such as `#`, `（`, and `“` do.
+- Added digit-key protection so symbol-page numbers never auto-return to letters.
+- Added paired-symbol insertion for left paired marks such as `（`, `“`, `【`, `｛`, and `《`, placing the cursor between the inserted pair when the setting is enabled.
+- Chinese composition now stays alive when switching from letters to the number page; pressing ordinary punctuation commits the first RIME candidate before inserting the symbol, while active-composition `‘` is routed to RIME as an apostrophe separator for inputs such as `wa'o` and then returns to letters.
+- Fixed Partial Commit + paired-symbol ordering so selecting a prefix candidate and then pressing a left paired symbol commits the remaining first candidate before inserting the pair, for example `还找` + `（` becomes `还找得到（|）`.
+- Cleared stale candidate presentation when symbol input both commits composition and returns to letters, so the candidate bar reflects the same state as a first-candidate confirmation.
+- Expanded KeyboardCore regression coverage for empty-context symbols, digit symbols, paired-symbol cursor placement, RIME composition + punctuation commit, and the Chinese apostrophe separator path.
 
 ---
 

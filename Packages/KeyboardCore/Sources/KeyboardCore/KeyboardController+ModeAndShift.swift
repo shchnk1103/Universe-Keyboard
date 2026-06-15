@@ -21,14 +21,6 @@ extension KeyboardController {
         switch state.currentPage {
         case .letters:
             effects = resetShiftState()
-            if let engine = rimeEngine, engine.isComposing() {
-                finishActiveCompositionAsDisplayText()
-                engine.resetSession()
-                effects.insert(.compositionChanged)
-            } else if !state.currentComposition.isEmpty {
-                finishActiveCompositionAsDisplayText()
-                effects.insert(.compositionChanged)
-            }
             state.currentPage = .numbers
         case .numbers:
             state.currentPage = .symbols

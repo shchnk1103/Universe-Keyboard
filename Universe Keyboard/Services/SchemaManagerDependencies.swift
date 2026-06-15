@@ -29,12 +29,14 @@ final class AppGroupSharedSettingsStore: SharedSettingsStoring {
 }
 
 protocol SchemaCatalogClient: Sendable {
-    func latestRimeIceArchiveURL() async throws -> URL?
+    func latestArchiveURL(for distribution: RimeSchemeDistribution) async throws -> URL?
 }
 
 struct GitHubSchemaCatalogClient: SchemaCatalogClient {
-    func latestRimeIceArchiveURL() async throws -> URL? {
-        let apiURL = URL(string: "https://api.github.com/repos/iDvel/rime-ice/releases/latest")!
+    func latestArchiveURL(for distribution: RimeSchemeDistribution) async throws -> URL? {
+        let apiURL = URL(
+            string: "https://api.github.com/repos/\(distribution.githubOwner)/\(distribution.githubRepository)/releases/latest"
+        )!
         var request = URLRequest(url: apiURL)
         request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
         request.setValue("UniverseKeyboard/1.0", forHTTPHeaderField: "User-Agent")
@@ -53,7 +55,7 @@ struct GitHubSchemaCatalogClient: SchemaCatalogClient {
 
         guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
             let assets = json["assets"] as? [[String: Any]],
-            let fullZip = assets.first(where: { ($0["name"] as? String) == "full.zip" }),
+            let fullZip = assets.first(where: { ($0["name"] as? String) == distribution.assetName }),
             let downloadURL = fullZip["browser_download_url"] as? String
         else {
             return nil

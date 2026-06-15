@@ -3,6 +3,10 @@ import KeyboardCore
 
 extension SchemaManager {
     func forceRedownload() {
+        forceRedownload(schemaID: "rime_ice")
+    }
+
+    func forceRedownload(schemaID: String) {
         switch rimeIceDownloadState {
         case .idle, .completed, .failed:
             break
@@ -10,17 +14,34 @@ extension SchemaManager {
             return
         }
 
-        settings.removeObject(forKey: "rime_ice_etag")
-        settings.removeObject(forKey: "rime_ice_version")
+        guard let entry = downloadableEntry(for: schemaID) else { return }
+        if let key = entry.storage.eTag {
+            settings.removeObject(forKey: key)
+        }
+        if let key = entry.storage.version {
+            settings.removeObject(forKey: key)
+        }
         rimeIceDownloadState = .fetchingReleaseInfo
         currentDownloadTask = Task { [weak self] in
-            await self?.fetchAndDownload()
+            await self?.fetchAndDownload(schemaID: schemaID)
         }
     }
 
     func fetchAndDownload() async {
+        await fetchAndDownload(schemaID: "rime_ice")
+    }
+
+    func fetchAndDownload(schemaID: String) async {
         do {
-            let releaseURL = try await fetchLatestReleaseURL()
+            guard
+                let entry = downloadableEntry(for: schemaID),
+                let distribution = entry.distribution,
+                let plan = entry.installationPlan
+            else {
+                throw DownloadError.networkError("暂不支持下载这个方案")
+            }
+
+            let releaseURL = try await fetchLatestReleaseURL(for: entry)
             guard let url = releaseURL else {
                 throw DownloadError.networkError("无法获取最新版本信息")
             }
@@ -39,10 +60,10 @@ extension SchemaManager {
 
             rimeIceDownloadState = .extracting
 
-            let extractDir = try archiveInstaller.prepareExtractionDirectory()
+            let extractDir = try archiveInstaller.prepareExtractionDirectory(for: distribution)
 
             _ = try Unzip.extract(zipPath: tempURL.path, to: extractDir)
-            guard let schemaURL = findFile(named: "rime_ice.schema.yaml", in: extractDir) else {
+            guard let schemaURL = findFile(named: plan.schemaFileName, in: extractDir) else {
                 throw DownloadError.corruptArchive
             }
 
@@ -59,15 +80,21 @@ extension SchemaManager {
                 try processed.write(to: schemaURL, atomically: true, encoding: .utf8)
             }
 
-            try installRimeIceFiles(from: extractDir)
+            try installSchemaFiles(from: extractDir, plan: plan)
             archiveInstaller.removeTemporaryItem(at: extractDir)
             archiveInstaller.removeTemporaryItem(at: tempURL)
 
-            rimeIceVersion = version
-            settings.set(version, forKey: "rime_ice_version")
-            settings.set(true, forKey: "rime_ice_installed")
+            if let key = entry.storage.version {
+                settings.set(version, forKey: key)
+            }
+            if let key = entry.storage.installed {
+                settings.set(true, forKey: key)
+            }
+            if schemaID == "rime_ice" {
+                rimeIceVersion = version
+            }
 
-            activateRimeIce()
+            activateSchema(schemaID)
             rimeIceDownloadState = .deploying
             await deployRimeConfig()
 
@@ -81,17 +108,33 @@ extension SchemaManager {
     }
 
     func fetchLatestReleaseURL() async throws -> URL? {
-        try await catalogClient.latestRimeIceArchiveURL()
+        guard let entry = downloadableEntry(for: "rime_ice") else { return nil }
+        return try await fetchLatestReleaseURL(for: entry)
+    }
+
+    func fetchLatestReleaseURL(for entry: RimeSchemeCatalogEntry) async throws -> URL? {
+        guard let distribution = entry.distribution else { return nil }
+        return try await catalogClient.latestArchiveURL(for: distribution)
     }
 
     func downloadZip(from url: URL) async throws -> DownloadedSchemaArchive {
+        guard let entry = downloadableEntry(for: "rime_ice") else {
+            throw DownloadError.networkError("暂不支持下载这个方案")
+        }
+        return try await downloadZip(from: url, for: entry)
+    }
+
+    func downloadZip(from url: URL, for entry: RimeSchemeCatalogEntry) async throws -> DownloadedSchemaArchive {
+        guard let distribution = entry.distribution else {
+            throw DownloadError.networkError("暂不支持下载这个方案")
+        }
         let archive = try await archiveDownloader.downloadArchive(
             from: url,
-            existingETag: settings.string(forKey: "rime_ice_etag"),
-            cachedArchiveURL: archiveInstaller.cachedArchiveURL
+            existingETag: entry.storage.eTag.flatMap { settings.string(forKey: $0) },
+            cachedArchiveURL: archiveInstaller.cachedArchiveURL(for: distribution)
         )
-        if let eTag = archive.eTag {
-            settings.set(eTag, forKey: "rime_ice_etag")
+        if let eTag = archive.eTag, let key = entry.storage.eTag {
+            settings.set(eTag, forKey: key)
         }
         return archive
     }

@@ -16,9 +16,11 @@
 | UI 改动（SwiftUI / UIKit） | `docs/PROJECT_CONTEXT.md` + `docs/UI_STYLE_GUIDE.md` | — |
 | Swift 并发 / 架构决策 | `docs/PROJECT_CONTEXT.md` + `docs/architecture/swift6-migration.md` | — |
 | RIME 桥接 / xcframework 管理 | `docs/PROJECT_CONTEXT.md` + `docs/architecture/rime-artifacts.md` | — |
+| RIME 多方案管理 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_SCHEME_MANAGEMENT.md` | `docs/UI_STYLE_GUIDE.md`（改主 App UI 时） |
 | Partial Commit / composition restore | `docs/PROJECT_CONTEXT.md` + `docs/architecture/partial-commit.md` | `docs/TYPO_BENCHMARK.md`（涉及 typo correction 时） |
 | 写测试 | `docs/PROJECT_CONTEXT.md` + `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md` | `EXAMPLES.md` |
 | RIME 传统模糊音 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_FUZZY_PINYIN.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
+| RIME 候选学习 / 用户词典备份 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_USER_DICTIONARY.md` | `docs/UI_STYLE_GUIDE.md`（改主 App UI 时） |
 | 小屏误触 typo correction | `docs/PROJECT_CONTEXT.md` + `docs/TYPO_BENCHMARK.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
 | commit / push | `.claude/skills/pre-push-review/SKILL.md` | — |
 | 了解长期路线图 | `ios-rime-keyboard-development-plan.md` | — |
@@ -114,6 +116,38 @@
 - 当前支持：总开关 + `zh/z`、`ch/c`、`sh/s`、`n/l` 四组双向声母模糊音，默认开启
 - 部署边界：主 App 保存设置并重新部署当前 active schema；Keyboard Extension 只读取编译结果
 - 托管 block：只管理 `# universe:fuzzy-pinyin begin/end` 之间的规则，保留 schema 原有 algebra
+
+### 4c. `docs/RIME_SCHEME_MANAGEMENT.md` — RIME 多方案管理
+
+| 属性 | 值 |
+|------|----|
+| 路径 | `docs/RIME_SCHEME_MANAGEMENT.md` |
+| 目的 | 记录 RIME 多方案设置、方案列表/详情 UI、主 App 与 Keyboard Extension 边界、未来新增开源方案规则 |
+| 加载时机 | 修改 RIME 方案列表、方案详情、下载/更新/卸载、方案切换或新增开源方案时 |
+| 强制性 | 🔶 条件必须（RIME 多方案管理工作） |
+| 是否过时 | ⚠️ 中风险。新增方案、下载策略或设置结构变化后应更新 |
+
+**核心内容摘要：**
+- RIME 设置顶层按方案列表组织，点击进入方案详情
+- 方案详情承载下载、更新、重新下载、卸载、许可证和设为当前方案等方案专属动作
+- 候选数、简繁转换、部署状态等全局设置保留在 RIME 顶层页面
+- Keyboard Extension 只使用已准备好的运行时数据，不在输入时下载、更新、卸载或部署方案
+
+### 4d. `docs/RIME_USER_DICTIONARY.md` — RIME 候选学习与用户词典备份
+
+| 属性 | 值 |
+|------|----|
+| 路径 | `docs/RIME_USER_DICTIONARY.md` |
+| 目的 | 记录候选学习设置、用户词典备份/恢复、自动备份、主 App UI 结构和 Keyboard Extension 边界 |
+| 加载时机 | 修改候选学习、用户词典、备份/恢复、自动备份、多方案候选学习 UI 时 |
+| 强制性 | 🔶 条件必须（RIME 候选学习 / 用户词典工作） |
+| 是否过时 | ⚠️ 中风险。新增方案、备份策略或 UI 结构变化后应更新 |
+
+**核心内容摘要：**
+- 当前只管理 `luna_pinyin` 和 `rime_ice` 的 RIME 用户词典学习记录
+- 主 App 负责设置、备份、恢复、manifest 比较和自动备份；Keyboard Extension 不在输入热路径做文件扫描、hash、复制或部署
+- 候选学习 UI 按方案聚合：顶层是方案列表，详情页管理该方案的学习开关、备份/恢复和重置
+- 操作结果使用全局底部 toast，方案行只显示短状态和紧凑状态图标
 
 ---
 

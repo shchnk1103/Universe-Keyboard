@@ -78,18 +78,7 @@ extension KeyboardViewController {
         guard candidateCollectionView != nil else { return }
         let refreshStart = CACurrentMediaTime()
 
-        // 重置累积列表，从当前 RIME 第一页开始
-        accumulatedCandidates = CandidateBarDataSource.candidateItems(from: controller)
-        candidateSnapshotGeneration += 1
-        candidateSnapshotRawInput = controller.state.lastRimeOutput?.rawInput ?? controller.state.currentComposition
-        nextCandidateGlobalIndex = nextGlobalIndexAfterCurrentItems()
-        hasMoreCandidates = controller.state.lastRimeOutput?.hasMorePages ?? false
-        isLoadingMoreCandidates = false
-        deferredCandidatePrefetchMode = nil
-        candidatePrefetchRequestSerial += 1
-        candidateCellSizeCache.removeAll(keepingCapacity: true)
-        candidatePageDepth = 0
-        candidatePrefetchMode = isCandidateExpanded ? .expanded : .bar
+        resetCandidateSnapshotFromController()
         let preeditLength = controller.state.lastRimeOutput?.composition?.preeditText.count ?? 0
 
         Logger.shared.info(
@@ -215,5 +204,24 @@ extension KeyboardViewController {
         }.max()
         if let referencedNextIndex { return referencedNextIndex }
         return controller.state.lastRimeOutput?.candidates.count ?? 0
+    }
+
+    /// Rebuilds the presentation cache from the controller state.
+    ///
+    /// Page changes rebuild the keyboard before `refreshCandidateBar()` can run.
+    /// When a key both commits composition and returns to letters, this prevents
+    /// the newly created candidate bar from reusing stale accumulated candidates.
+    func resetCandidateSnapshotFromController() {
+        accumulatedCandidates = CandidateBarDataSource.candidateItems(from: controller)
+        candidateSnapshotGeneration += 1
+        candidateSnapshotRawInput = controller.state.lastRimeOutput?.rawInput ?? controller.state.currentComposition
+        nextCandidateGlobalIndex = nextGlobalIndexAfterCurrentItems()
+        hasMoreCandidates = controller.state.lastRimeOutput?.hasMorePages ?? false
+        isLoadingMoreCandidates = false
+        deferredCandidatePrefetchMode = nil
+        candidatePrefetchRequestSerial += 1
+        candidateCellSizeCache.removeAll(keepingCapacity: true)
+        candidatePageDepth = 0
+        candidatePrefetchMode = isCandidateExpanded ? .expanded : .bar
     }
 }

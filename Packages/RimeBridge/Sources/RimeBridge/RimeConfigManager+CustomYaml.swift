@@ -33,14 +33,62 @@ extension RimeConfigManager {
             category: .config
         )
 
-        // {schema}.custom.yaml — 简繁（schema-specific）
+        // {schema}.custom.yaml — schema-specific preferences.
+        //
+        // User dictionary learning is intentionally written for both built-in
+        // pinyin schemas so switching schemes does not silently lose the user's
+        // selected learning policy.
+        syncSchemaCustomYaml(
+            schemaID: "luna_pinyin",
+            activeSchema: activeSchema,
+            defs: defs,
+            userDir: userDir
+        )
+        syncSchemaCustomYaml(
+            schemaID: "rime_ice",
+            activeSchema: activeSchema,
+            defs: defs,
+            userDir: userDir
+        )
+    }
+
+    private static func syncSchemaCustomYaml(
+        schemaID: String,
+        activeSchema: String,
+        defs: UserDefaults?,
+        userDir: URL
+    ) {
+        var patch: [(String, String)] = []
+
         if defs?.object(forKey: "rime_simplification") != nil {
             let simplified = defs?.bool(forKey: "rime_simplification") ?? true
             let reset = simplified ? 1 : 0
-            let yaml = "patch:\n  \"switches/@1/reset\": \(reset)\n"
-            let filename = "\(activeSchema).custom.yaml"
-            try? yaml.write(to: userDir.appendingPathComponent(filename), atomically: true, encoding: .utf8)
-            Logger.shared.info("Synced \(filename) (simplification.reset=\(reset))", category: .config)
+            if schemaID == activeSchema {
+                patch.append(("\"switches/@1/reset\"", "\(reset)"))
+            }
         }
+
+        let userDictionarySettings = RimeUserDictionarySettings(
+            lunaPinyinEnabled: defs?.object(
+                forKey: RimeUserDictionarySettings.lunaPinyinEnabledKey
+            ) as? Bool ?? true,
+            rimeIceEnabled: defs?.object(
+                forKey: RimeUserDictionarySettings.rimeIceEnabledKey
+            ) as? Bool ?? true
+        )
+        patch.append((
+            "\"translator/enable_user_dict\"",
+            userDictionarySettings.isEnabled(for: schemaID) ? "true" : "false"
+        ))
+
+        guard !patch.isEmpty else { return }
+
+        var yaml = "patch:\n"
+        for (key, value) in patch {
+            yaml += "  \(key): \(value)\n"
+        }
+        let filename = "\(schemaID).custom.yaml"
+        try? yaml.write(to: userDir.appendingPathComponent(filename), atomically: true, encoding: .utf8)
+        Logger.shared.info("Synced \(filename) user dictionary settings", category: .config)
     }
 }

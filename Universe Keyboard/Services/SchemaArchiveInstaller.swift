@@ -11,13 +11,13 @@ struct SchemaDeploymentDirectories: Sendable {
 /// in tests; installation can be moved off-main without changing the store API.
 @MainActor
 protocol SchemaArchiveInstalling: AnyObject {
-    var cachedArchiveURL: URL { get }
-    func prepareExtractionDirectory() throws -> URL
+    func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL
+    func prepareExtractionDirectory(for distribution: RimeSchemeDistribution) throws -> URL
     func removeTemporaryItem(at url: URL)
-    func containsInstalledRimeIceSchema() -> Bool
+    func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool
     func checkDiskSpace(needed: Int64) throws
-    func installRimeIceFiles(from extractDir: URL, luaAvailable: Bool) throws
-    func uninstallRimeIceFiles()
+    func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
+    func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan)
     func deploymentDirectories() throws -> SchemaDeploymentDirectories
 }
 
@@ -31,12 +31,12 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         self.fileManager = fileManager
     }
 
-    var cachedArchiveURL: URL {
-        fileManager.temporaryDirectory.appendingPathComponent("rime_ice_full.zip")
+    func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
+        fileManager.temporaryDirectory.appendingPathComponent(distribution.cachedArchiveFileName)
     }
 
-    func prepareExtractionDirectory() throws -> URL {
-        let directory = fileManager.temporaryDirectory.appendingPathComponent("rime_ice_extract")
+    func prepareExtractionDirectory(for distribution: RimeSchemeDistribution) throws -> URL {
+        let directory = fileManager.temporaryDirectory.appendingPathComponent(distribution.extractionDirectoryName)
         try? fileManager.removeItem(at: directory)
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         return directory
@@ -46,10 +46,10 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         try? fileManager.removeItem(at: url)
     }
 
-    func containsInstalledRimeIceSchema() -> Bool {
+    func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool {
         guard let sharedDirectory = sharedDirectory() else { return false }
         return fileManager.fileExists(
-            atPath: sharedDirectory.appendingPathComponent("rime_ice.schema.yaml").path
+            atPath: sharedDirectory.appendingPathComponent(plan.schemaFileName).path
         )
     }
 
@@ -62,7 +62,7 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         }
     }
 
-    func installRimeIceFiles(from extractDir: URL, luaAvailable: Bool) throws {
+    func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws {
         guard let sharedDirectory = sharedDirectory() else {
             throw DownloadError.networkError("App Group 不可用")
         }
@@ -77,10 +77,8 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
 
             let relativePath = fileURL.path.replacingOccurrences(of: extractDir.path + "/", with: "")
             let destinationURL = sharedDirectory.appendingPathComponent(relativePath)
-            let skipPrefixes = ["squirrel", "weasel", "recipe", "others/"] + (luaAvailable ? [] : ["lua/"])
-            let skipFiles = ["radical_pinyin.schema.yaml", "radical_pinyin.dict.yaml"]
-            if skipFiles.contains(fileURL.lastPathComponent)
-                || skipPrefixes.contains(where: { relativePath.hasPrefix($0) })
+            if plan.skippedFiles.contains(fileURL.lastPathComponent)
+                || plan.prefixesToSkip(luaAvailable: luaAvailable).contains(where: { relativePath.hasPrefix($0) })
             {
                 continue
             }
@@ -96,24 +94,19 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         }
     }
 
-    func uninstallRimeIceFiles() {
+    func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) {
         guard let sharedDirectory = sharedDirectory() else { return }
 
-        for file in [
-            "rime_ice.schema.yaml", "rime_ice.dict.yaml",
-            "melt_eng.schema.yaml", "melt_eng.dict.yaml",
-            "symbols_v.yaml", "symbols_caps_v.yaml",
-            "custom_phrase.txt",
-        ] {
+        for file in plan.removableFiles {
             try? fileManager.removeItem(at: sharedDirectory.appendingPathComponent(file))
         }
-        for subdirectory in ["cn_dicts", "en_dicts"] {
+        for subdirectory in plan.removableDirectories {
             try? fileManager.removeItem(at: sharedDirectory.appendingPathComponent(subdirectory))
         }
 
         let buildDirectory = sharedDirectory.appendingPathComponent("build")
         guard let buildFiles = try? fileManager.contentsOfDirectory(atPath: buildDirectory.path) else { return }
-        for file in buildFiles where file.contains("rime_ice") || file.contains("melt_eng") {
+        for file in buildFiles where plan.removableBuildFileSubstrings.contains(where: file.contains) {
             try? fileManager.removeItem(at: buildDirectory.appendingPathComponent(file))
         }
     }

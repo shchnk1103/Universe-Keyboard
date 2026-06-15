@@ -61,11 +61,31 @@ enum RimeDeploymentState {
     }
 }
 
+enum RimeUserDictionaryStatusSymbol: Equatable {
+    case unavailable
+    case off
+    case empty
+    case ready
+    case upToDate
+    case changed
+    case warning
+}
+
 @MainActor
 @Observable
 final class RimeSettingsStore {
+    private enum UserDictionaryAutoBackup {
+        static let enabledKey = "rime_user_dict_auto_backup_enabled"
+        static let throttleInterval: TimeInterval = 12 * 60 * 60
+
+        static func lastRunKey(for schemaID: String) -> String {
+            "rime_user_dict_auto_backup_last_run_\(schemaID)"
+        }
+    }
+
     private let schemaManager: SchemaManager
     private let persistence: any RimeSettingsPersisting
+    private let userDictionaryBackupService: any RimeUserDictionaryBackingUp
     var pageSize: Double = 9
     var simplified = true
     var fuzzyEnabled = true
@@ -73,16 +93,24 @@ final class RimeSettingsStore {
     var fuzzyChCEnabled = true
     var fuzzyShSEnabled = true
     var fuzzyNLEnabled = true
+    var lunaPinyinUserDictionaryEnabled = true
+    var rimeIceUserDictionaryEnabled = true
+    var userDictionaryAutoBackupEnabled = false
     var deploymentState: RimeDeploymentState = .idle
     var deploymentLog: [String] = []
     var updateStatusMessage: String?
+    var userDictionaryMessage: String?
+    var userDictionaryMessageSucceeded = true
+    var userDictionaryMessageVersion = 0
 
     init(
         schemaManager: SchemaManager = SchemaManager(),
-        persistence: any RimeSettingsPersisting = SharedDefaultsRimeSettingsPersistence()
+        persistence: any RimeSettingsPersisting = SharedDefaultsRimeSettingsPersistence(),
+        userDictionaryBackupService: any RimeUserDictionaryBackingUp = AppGroupRimeUserDictionaryBackupService()
     ) {
         self.schemaManager = schemaManager
         self.persistence = persistence
+        self.userDictionaryBackupService = userDictionaryBackupService
     }
 
     var schemas: [SchemaMetadata] { schemaManager.schemas }
@@ -125,6 +153,10 @@ final class RimeSettingsStore {
         }
     }
 
+    func licenseAccepted(for schemaID: String) -> Bool {
+        schemaManager.licenseAccepted(for: schemaID)
+    }
+
     func load() {
         let savedPageSize = persistence.integer(forKey: "rime_page_size")
         pageSize = Double(savedPageSize > 0 ? savedPageSize : 9)
@@ -136,6 +168,18 @@ final class RimeSettingsStore {
         fuzzyChCEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.chCKey, defaultValue: true)
         fuzzyShSEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.shSKey, defaultValue: true)
         fuzzyNLEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.nLKey, defaultValue: true)
+        lunaPinyinUserDictionaryEnabled = boolPreference(
+            forKey: RimeUserDictionarySettings.lunaPinyinEnabledKey,
+            defaultValue: true
+        )
+        rimeIceUserDictionaryEnabled = boolPreference(
+            forKey: RimeUserDictionarySettings.rimeIceEnabledKey,
+            defaultValue: true
+        )
+        userDictionaryAutoBackupEnabled = boolPreference(
+            forKey: UserDictionaryAutoBackup.enabledKey,
+            defaultValue: false
+        )
         refreshDeploymentState()
     }
 
@@ -156,26 +200,182 @@ final class RimeSettingsStore {
         updateFuzzyDeploymentIntent()
     }
 
+    func saveUserDictionarySettings() {
+        persistence.set(
+            lunaPinyinUserDictionaryEnabled,
+            forKey: RimeUserDictionarySettings.lunaPinyinEnabledKey
+        )
+        persistence.set(
+            rimeIceUserDictionaryEnabled,
+            forKey: RimeUserDictionarySettings.rimeIceEnabledKey
+        )
+        updateUserDictionaryDeploymentIntent()
+    }
+
+    func saveUserDictionaryAutoBackupSetting() {
+        persistence.set(userDictionaryAutoBackupEnabled, forKey: UserDictionaryAutoBackup.enabledKey)
+        persistence.synchronize()
+    }
+
+    func userDictionaryLearningStatusText(for schemaID: String) -> String {
+        if schemaID == "rime_ice" && !isRimeIceInstalled {
+            return "安装雾凇拼音后可用。"
+        }
+        if !isUserDictionaryEnabled(for: schemaID) {
+            return "已关闭：键盘不会调整这个方案的候选顺序。"
+        }
+        switch deploymentState {
+        case .needsDeploy:
+            return "等待应用：设置会自动生效。"
+        case .triggered, .deploying:
+            return "正在应用：完成后键盘会按你的选择学习。"
+        case .failed:
+            return "应用失败：请回到主 App 后重试。"
+        case .idle, .deployed:
+            return "已开启：键盘会记住你常选的词。"
+        }
+    }
+
+    func userDictionaryBackupStatusText(for schemaID: String) -> String {
+        if schemaID == "rime_ice" && !isRimeIceInstalled {
+            return "安装雾凇拼音后可用。"
+        }
+        let status = userDictionaryBackupService.status(for: schemaID)
+        switch status.readiness {
+        case .noLearningData:
+            return "暂无学习记录，暂时不用备份。"
+        case .needsInitialBackup:
+            return "已有学习记录，可以先备份一份。"
+        case .upToDate:
+            return "已备份，暂无新的学习记录。"
+        case .hasNewLearningData:
+            return "有新的学习记录，可以更新备份。"
+        case .unknown:
+            if let date = status.latestBackupDate {
+                return "无法确认是否有新变化，可以重新备份。最近备份：\(Self.backupDateFormatter.string(from: date))"
+            }
+            return "无法确认是否有新变化，可以重新备份。"
+        }
+    }
+
+    func userDictionaryListStatusText(for schemaID: String) -> String {
+        if schemaID == "rime_ice" && !isRimeIceInstalled {
+            return "安装后可用"
+        }
+        guard isUserDictionaryEnabled(for: schemaID) else {
+            return "已关闭"
+        }
+
+        switch userDictionaryBackupService.status(for: schemaID).readiness {
+        case .noLearningData:
+            return "已开启 · 暂无学习记录"
+        case .needsInitialBackup:
+            return "已开启 · 可以备份"
+        case .upToDate:
+            return "已开启 · 已备份"
+        case .hasNewLearningData:
+            return "已开启 · 有新的学习记录"
+        case .unknown:
+            return "已开启 · 可重新备份"
+        }
+    }
+
+    func userDictionaryStatusSymbol(for schemaID: String) -> RimeUserDictionaryStatusSymbol {
+        if schemaID == "rime_ice" && !isRimeIceInstalled {
+            return .unavailable
+        }
+        guard isUserDictionaryEnabled(for: schemaID) else {
+            return .off
+        }
+
+        switch userDictionaryBackupService.status(for: schemaID).readiness {
+        case .noLearningData:
+            return .empty
+        case .needsInitialBackup:
+            return .ready
+        case .upToDate:
+            return .upToDate
+        case .hasNewLearningData:
+            return .changed
+        case .unknown:
+            return .warning
+        }
+    }
+
+    func userDictionaryHasBackup(for schemaID: String) -> Bool {
+        userDictionaryBackupService.status(for: schemaID).latestBackupDate != nil
+    }
+
+    func userDictionaryCanBackup(for schemaID: String) -> Bool {
+        userDictionaryBackupService.status(for: schemaID).canBackup
+    }
+
+    func backupUserDictionary(for schemaID: String) {
+        let name = displayName(forSchemaID: schemaID)
+        let result = userDictionaryBackupService.backup(schemaID: schemaID, displayName: name)
+        presentUserDictionaryMessage(result.message, succeeded: result.succeeded)
+    }
+
+    func runAutomaticUserDictionaryBackupIfNeeded() {
+        guard userDictionaryAutoBackupEnabled else { return }
+        let backedUpNames = ["luna_pinyin", "rime_ice"].compactMap { schemaID -> String? in
+            guard schemaID != "rime_ice" || isRimeIceInstalled else { return nil }
+            guard shouldRunAutomaticBackup(for: schemaID) else { return nil }
+            let status = userDictionaryBackupService.status(for: schemaID)
+            guard status.canBackup else { return nil }
+
+            let name = displayName(forSchemaID: schemaID)
+            let result = userDictionaryBackupService.backup(schemaID: schemaID, displayName: name)
+            guard result.succeeded else { return nil }
+            persistence.set(Int(Date().timeIntervalSince1970), forKey: UserDictionaryAutoBackup.lastRunKey(for: schemaID))
+            return name
+        }
+
+        guard !backedUpNames.isEmpty else { return }
+        persistence.synchronize()
+        presentUserDictionaryMessage(
+            "已自动备份 \(backedUpNames.joined(separator: "、")) 的学习记录。",
+            succeeded: true
+        )
+    }
+
+    func restoreLatestUserDictionaryBackup(for schemaID: String) {
+        let name = displayName(forSchemaID: schemaID)
+        let result = userDictionaryBackupService.restoreLatest(schemaID: schemaID, displayName: name)
+        presentUserDictionaryMessage(result.message, succeeded: result.succeeded)
+        guard result.succeeded else { return }
+        persistence.set(true, forKey: RimeUserDictionarySettings.pendingDeployKey)
+        markDeploymentNeeded(reason: "\(name) 的学习记录已恢复")
+    }
+
     func switchToSchema(_ schemaID: String) async {
         schemaManager.switchToSchema(schemaID)
         await triggerDeployment()
     }
-    func acceptLicense() { schemaManager.acceptLicense() }
-    func startDownload() { schemaManager.startDownload() }
+    func acceptLicense() { acceptLicense(for: "rime_ice") }
+    func acceptLicense(for schemaID: String) { schemaManager.acceptLicense(for: schemaID) }
+    func startDownload() { startDownload(schemaID: "rime_ice") }
+    func startDownload(schemaID: String) { schemaManager.startDownload(schemaID: schemaID) }
     func cancelDownload() { schemaManager.cancelDownload() }
-    func forceRedownload() {
+    func forceRedownload() { forceRedownload(schemaID: "rime_ice") }
+    func forceRedownload(schemaID: String) {
         updateStatusMessage = nil
-        schemaManager.forceRedownload()
+        schemaManager.forceRedownload(schemaID: schemaID)
     }
-    func uninstallRimeIce() { schemaManager.uninstallRimeIce() }
+    func uninstallRimeIce() { uninstallSchema("rime_ice") }
+    func uninstallSchema(_ schemaID: String) { schemaManager.uninstallSchema(schemaID) }
 
     func checkForUpdateAndDownload() async {
+        await checkForUpdateAndDownload(schemaID: "rime_ice")
+    }
+
+    func checkForUpdateAndDownload(schemaID: String) async {
         updateStatusMessage = nil
-        guard await schemaManager.checkForUpdate() else {
+        guard await schemaManager.checkForUpdate(schemaID: schemaID) else {
             updateStatusMessage = "已是最新版本"
             return
         }
-        schemaManager.startDownload()
+        schemaManager.startDownload(schemaID: schemaID)
     }
 
     func triggerDeployment() async {
@@ -195,10 +395,26 @@ final class RimeSettingsStore {
         }
     }
 
-    func triggerFuzzyDeploymentIfNeeded() async {
-        guard persistence.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey) else { return }
+    func triggerPendingDeploymentIfNeeded() async {
+        guard hasPendingDeploymentIntent else { return }
         guard deploymentState != .triggered, deploymentState != .deploying else { return }
         await triggerDeployment()
+    }
+
+    func triggerFuzzyDeploymentIfNeeded() async {
+        await triggerPendingDeploymentIfNeeded()
+    }
+
+    func resetUserDictionary(for schemaID: String) {
+        let removed = userDictionaryBackupService.removeLearningData(for: schemaID)
+        let name = displayName(forSchemaID: schemaID)
+        let reason = removed ? "\(name) 的学习记录已清空" : "\(name) 暂无可清空的学习记录"
+        presentUserDictionaryMessage(
+            removed ? "已清空 \(name) 的学习记录。" : "\(name) 现在没有可清空的学习记录。",
+            succeeded: removed
+        )
+        persistence.set(true, forKey: RimeUserDictionarySettings.pendingDeployKey)
+        markDeploymentNeeded(reason: reason)
     }
 
     func cancelDeployment() {
@@ -236,6 +452,25 @@ final class RimeSettingsStore {
         )
     }
 
+    private var currentUserDictionarySettings: RimeUserDictionarySettings {
+        RimeUserDictionarySettings(
+            lunaPinyinEnabled: lunaPinyinUserDictionaryEnabled,
+            rimeIceEnabled: rimeIceUserDictionaryEnabled
+        )
+    }
+
+    private var hasPendingDeploymentIntent: Bool {
+        persistence.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey)
+            || persistence.bool(forKey: RimeUserDictionarySettings.pendingDeployKey)
+    }
+
+    private static var backupDateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter
+    }
+
     private func updateFuzzyDeploymentIntent() {
         let signature = currentFuzzySettings.deploymentSignature(activeSchemaID: activeSchemaID)
         let deployedSignature = persistence.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey)
@@ -256,12 +491,58 @@ final class RimeSettingsStore {
         markDeploymentNeeded(reason: "模糊音设置已修改")
     }
 
+    private func updateUserDictionaryDeploymentIntent() {
+        let signature = currentUserDictionarySettings.deploymentSignature()
+        let deployedSignature = persistence.string(forKey: RimeUserDictionarySettings.deployedSignatureKey)
+        if signature == deployedSignature {
+            let wasPending = persistence.bool(forKey: RimeUserDictionarySettings.pendingDeployKey)
+            persistence.set(false, forKey: RimeUserDictionarySettings.pendingDeployKey)
+            if wasPending && !hasPendingDeploymentIntent {
+                persistence.set(true, forKey: "rime_deployed")
+                persistence.set(false, forKey: "rime_needs_deploy")
+                deploymentState = .deployed
+                deploymentLog = ["✓ 候选学习设置与当前部署一致"]
+            }
+            persistence.synchronize()
+            return
+        }
+
+        persistence.set(true, forKey: RimeUserDictionarySettings.pendingDeployKey)
+        markDeploymentNeeded(reason: "候选学习设置已修改")
+    }
+
+    private func isUserDictionaryEnabled(for schemaID: String) -> Bool {
+        switch schemaID {
+        case "rime_ice":
+            return rimeIceUserDictionaryEnabled
+        default:
+            return lunaPinyinUserDictionaryEnabled
+        }
+    }
+
+    private func shouldRunAutomaticBackup(for schemaID: String) -> Bool {
+        let lastRun = persistence.integer(forKey: UserDictionaryAutoBackup.lastRunKey(for: schemaID))
+        guard lastRun > 0 else { return true }
+        return Date().timeIntervalSince1970 - TimeInterval(lastRun) >= UserDictionaryAutoBackup.throttleInterval
+    }
+
+    private func presentUserDictionaryMessage(_ message: String, succeeded: Bool) {
+        userDictionaryMessage = message
+        userDictionaryMessageSucceeded = succeeded
+        userDictionaryMessageVersion += 1
+    }
+
+    private func displayName(forSchemaID schemaID: String) -> String {
+        schemas.first(where: { $0.schemaID == schemaID })?.name
+            ?? (schemaID == "rime_ice" ? "雾凇拼音" : "朙月拼音")
+    }
+
     private func markDeploymentNeeded(reason: String) {
         persistence.set(false, forKey: "rime_deployed")
         persistence.set(true, forKey: "rime_needs_deploy")
         persistence.synchronize()
         deploymentState = .needsDeploy
-        deploymentLog = ["→ \(reason)，重新部署后生效"]
+        deploymentLog = ["→ \(reason)，应用完成后生效"]
     }
 
     private func appendDeploymentLog(_ message: String) {

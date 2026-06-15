@@ -1,5 +1,8 @@
 extension KeyboardController {
     func handleInsertDirectText(_ text: String) -> KeyboardEffect {
+        if let effects = handleSymbolPageTextInput(text) {
+            return effects
+        }
         var effects: KeyboardEffect = []
         if !state.currentComposition.isEmpty {
             finishActiveCompositionAsDisplayText()
@@ -7,7 +10,6 @@ extension KeyboardController {
             effects.insert(.compositionChanged)
         }
         insertText(text)
-        effects.formUnion(returnToLettersAfterSymbolInputIfNeeded())
         return effects
     }
 
@@ -95,6 +97,10 @@ extension KeyboardController {
         textClient?.insertText(text)
     }
 
+    func adjustTextPosition(byCharacterOffset offset: Int) {
+        textClient?.adjustTextPosition(byCharacterOffset: offset)
+    }
+
     /// Updates inline preedit as marked text so host text fields can display
     /// the active composition with the system's composing underline.
     func updateInlinePreedit(_ text: String) {
@@ -118,7 +124,17 @@ extension KeyboardController {
         state.insertedPreeditCount = 0
     }
 
-    func commitInlinePreedit(as text: String) {
+    func commitInlinePreedit(as text: String, selectedOffset: Int? = nil) {
+        // When commitText matches current preedit content, use insertText
+        // to replace the current marked range. setMarkedText + unmarkText
+        // does not reliably clear composing underline when content is unchanged.
+
+        if text == state.insertedPreeditText, !text.isEmpty {
+            insertText(text)
+            state.insertedPreeditText = ""
+            state.insertedPreeditCount = 0
+            return
+        }
         guard state.insertedPreeditCount > 0 else {
             insertText(text)
             return
@@ -126,7 +142,8 @@ extension KeyboardController {
         if text.isEmpty {
             clearInlinePreedit()
         } else {
-            textClient?.setMarkedText(text, selectedRange: text.count..<text.count)
+            let offset = min(max(0, selectedOffset ?? text.count), text.count)
+            textClient?.setMarkedText(text, selectedRange: offset..<offset)
             textClient?.unmarkText()
         }
         state.insertedPreeditText = ""

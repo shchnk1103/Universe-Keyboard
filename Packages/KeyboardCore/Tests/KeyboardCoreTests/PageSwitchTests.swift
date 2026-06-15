@@ -31,12 +31,12 @@ final class PageSwitchTests: XCTestCase {
         XCTAssertTrue(effects.contains(.shiftStateChanged))
     }
 
-    func testLettersToNumbersCommitsComposition() {
+    func testLettersToNumbersKeepsCompositionForSymbolInput() {
         controller.state.currentComposition = "ni"
         let effects = controller.handle(.togglePage)
-        XCTAssertEqual(client.text, "ni")
-        XCTAssertEqual(controller.state.currentComposition, "")
-        XCTAssertTrue(effects.contains(.compositionChanged))
+        XCTAssertEqual(client.text, "")
+        XCTAssertEqual(controller.state.currentComposition, "ni")
+        XCTAssertFalse(effects.contains(.compositionChanged))
     }
 
     // MARK: - Numbers → Symbols
@@ -95,15 +95,29 @@ final class PageSwitchTests: XCTestCase {
     func testAutoCapAfterTerminatorOnNumbersPageReturnsToLetters() {
         controller.state.inputMode = .english
         controller.state.currentPage = .letters
+        client.insertText("Hi")
         _ = controller.handle(.togglePage)  // → numbers
         XCTAssertEqual(controller.state.currentPage, .numbers)
 
         _ = controller.handle(.insertKey("!"))
+        XCTAssertEqual(client.text, "Hi!")
         XCTAssertEqual(controller.state.shiftState, .singleUse)
         XCTAssertEqual(controller.state.currentPage, .letters)
     }
 
     func testChineseNumbersSymbolInputReturnsToLetters() {
+        controller.state.inputMode = .chinese
+        controller.state.currentPage = .numbers
+        client.insertText("你")
+
+        let effects = controller.handle(.insertKey("。"))
+
+        XCTAssertEqual(client.text, "你。")
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.pageChanged))
+    }
+
+    func testChineseNumbersOneShotSymbolWithoutExistingTextReturnsToLetters() {
         controller.state.inputMode = .chinese
         controller.state.currentPage = .numbers
 
@@ -114,13 +128,38 @@ final class PageSwitchTests: XCTestCase {
         XCTAssertTrue(effects.contains(.pageChanged))
     }
 
-    func testChineseSecondarySymbolInputReturnsToLetters() {
+    func testChineseHalfWidthPeriodDoesNotReturnToLetters() {
+        controller.state.inputMode = .chinese
+        controller.state.currentPage = .symbols
+        client.insertText("你")
+
+        let effects = controller.handle(.insertKey("."))
+
+        XCTAssertEqual(client.text, "你.")
+        XCTAssertEqual(controller.state.currentPage, .symbols)
+        XCTAssertFalse(effects.contains(.pageChanged))
+    }
+
+    func testChineseHashReturnsToLetters() {
         controller.state.inputMode = .chinese
         controller.state.currentPage = .symbols
 
+        let effects = controller.handle(.insertKey("#"))
+
+        XCTAssertEqual(client.text, "#")
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.pageChanged))
+    }
+
+    func testChineseSecondarySymbolInputReturnsToLetters() {
+        controller.state.inputMode = .chinese
+        controller.state.currentPage = .symbols
+        client.insertText("你")
+
         let effects = controller.handle(.insertKey("【"))
 
-        XCTAssertEqual(client.text, "【")
+        XCTAssertEqual(client.text, "你【】")
+        XCTAssertEqual(client.cursorOffset, 2)
         XCTAssertEqual(controller.state.currentPage, .letters)
         XCTAssertTrue(effects.contains(.pageChanged))
     }
@@ -128,21 +167,71 @@ final class PageSwitchTests: XCTestCase {
     func testEnglishNumbersSymbolInputReturnsToLetters() {
         controller.state.inputMode = .english
         controller.state.currentPage = .numbers
+        client.insertText("Hi")
 
         let effects = controller.handle(.insertKey("!"))
 
-        XCTAssertEqual(client.text, "!")
+        XCTAssertEqual(client.text, "Hi!")
         XCTAssertEqual(controller.state.currentPage, .letters)
         XCTAssertTrue(effects.contains(.pageChanged))
+    }
+
+    func testEnglishHalfWidthPeriodReturnsToLetters() {
+        controller.state.inputMode = .english
+        controller.state.currentPage = .numbers
+
+        let effects = controller.handle(.insertKey("."))
+
+        XCTAssertEqual(client.text, ".")
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.pageChanged))
+    }
+
+    func testNonOneShotSymbolDoesNotReturnToLetters() {
+        controller.state.inputMode = .chinese
+        controller.state.currentPage = .symbols
+        client.insertText("你")
+
+        let effects = controller.handle(.insertKey("$"))
+
+        XCTAssertEqual(client.text, "你$")
+        XCTAssertEqual(controller.state.currentPage, .symbols)
+        XCTAssertFalse(effects.contains(.pageChanged))
+    }
+
+    func testChineseApostropheWithoutCompositionDoesNotReturnToLetters() {
+        controller.state.inputMode = .chinese
+        controller.state.currentPage = .symbols
+        client.insertText("你")
+
+        let effects = controller.handle(.insertKey("‘"))
+
+        XCTAssertEqual(client.text, "你‘")
+        XCTAssertEqual(controller.state.currentPage, .symbols)
+        XCTAssertFalse(effects.contains(.pageChanged))
+    }
+
+    func testSymbolPageDigitsNeverReturnToLetters() {
+        controller.state.inputMode = .english
+        controller.state.currentPage = .numbers
+        client.insertText("Room ")
+
+        let effects = controller.handle(.insertKey("1"))
+
+        XCTAssertEqual(client.text, "Room 1")
+        XCTAssertEqual(controller.state.currentPage, .numbers)
+        XCTAssertFalse(effects.contains(.pageChanged))
     }
 
     func testEnglishSecondarySymbolInputReturnsToLetters() {
         controller.state.inputMode = .english
         controller.state.currentPage = .symbols
+        client.insertText("Hi")
 
         let effects = controller.handle(.insertKey("["))
 
-        XCTAssertEqual(client.text, "[")
+        XCTAssertEqual(client.text, "Hi[]")
+        XCTAssertEqual(client.cursorOffset, 3)
         XCTAssertEqual(controller.state.currentPage, .letters)
         XCTAssertTrue(effects.contains(.pageChanged))
     }
@@ -150,10 +239,36 @@ final class PageSwitchTests: XCTestCase {
     func testDirectTextFromSymbolPageReturnsToLetters() {
         controller.state.inputMode = .english
         controller.state.currentPage = .numbers
+        client.insertText("Hi")
 
         let effects = controller.handle(.insertDirectText("”"))
 
-        XCTAssertEqual(client.text, "”")
+        XCTAssertEqual(client.text, "Hi”")
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.pageChanged))
+    }
+
+    func testPairedSymbolKeepsCursorBetweenSymbols() {
+        controller.state.inputMode = .chinese
+        controller.state.currentPage = .numbers
+
+        let effects = controller.handle(.insertKey("（"))
+
+        XCTAssertEqual(client.text, "（）")
+        XCTAssertEqual(client.cursorOffset, 1)
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.pageChanged))
+    }
+
+    func testPairedSymbolCompletionCanBeDisabled() {
+        controller.state.inputMode = .chinese
+        controller.state.currentPage = .numbers
+        controller.isPairedSymbolCompletionEnabled = false
+
+        let effects = controller.handle(.insertKey("（"))
+
+        XCTAssertEqual(client.text, "（")
+        XCTAssertEqual(client.cursorOffset, 1)
         XCTAssertEqual(controller.state.currentPage, .letters)
         XCTAssertTrue(effects.contains(.pageChanged))
     }
