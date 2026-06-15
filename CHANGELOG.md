@@ -6,6 +6,17 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-14 — RIME scheme operation feedback V1.2
+
+- Added a shared in-flight operation state for scheme-side effects such as checking updates, downloading, redownloading, and uninstalling.
+- Prevented repeated taps from starting duplicate scheme operations; repeated taps while a scheme operation or download is active now show a throttled global toast instead of creating extra tasks.
+- Added loading labels and disabled states to scheme management buttons while an operation is running.
+- Moved scheme operation results into the global bottom toast, including up-to-date, update-check failure, download start/completion/failure, redownload start, and uninstall completion messages.
+- Split update checking into explicit results for update available, already current, and failed, so network failures no longer look like "already current".
+- Added regression coverage for duplicate update taps, update-check failure release, and uninstall toast/release behavior.
+
+---
+
 ## 2026-06-14 — RIME multi-scheme management V1.1 infrastructure
 
 - Added a catalog-backed RIME scheme model covering scheme metadata, download distribution, storage keys, license metadata, user-dictionary capability, and installation plans.

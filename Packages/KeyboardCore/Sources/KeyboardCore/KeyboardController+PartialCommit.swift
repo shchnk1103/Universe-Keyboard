@@ -244,7 +244,9 @@ extension KeyboardController {
         let commitText = state.partialCommit?.displayText
             ?? state.lastRimeOutput?.rawInput
             ?? state.currentComposition
-        guard !commitText.isEmpty else { return }
+        guard !commitText.isEmpty else {
+            return
+        }
         commitInlinePreedit(as: commitText)
         state.currentComposition = ""
         state.lastRimeOutput = nil

@@ -295,10 +295,32 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         XCTAssertEqual(client.markedText, "")
     }
 
-    func testInsertCandidateWithNilLastRimeOutput() {
-        controller.state.lastRimeOutput = nil
-        _ = controller.handle(.insertCandidate("测试", kind: .candidate))
-        XCTAssertEqual(client.text, "测试")
+   func testInsertCandidateWithNilLastRimeOutput() {
+       controller.state.lastRimeOutput = nil
+       _ = controller.handle(.insertCandidate("测试", kind: .candidate))
+       XCTAssertEqual(client.text, "测试")
+       XCTAssertEqual(controller.state.currentComposition, "")
+   }
+
+    // MARK: - Return key with single‑character composition (commitInlinePreedit edge case)
+
+    func testReturnWithSingleCharCommitsRawWithoutUnderline() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertReturn)
+
+        XCTAssertEqual(client.text, "n")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertEqual(controller.state.currentComposition, "")
+    }
+
+    func testReturnWithCapitalizedSingleCharCommitsRawWithoutUnderline() {
+        controller.state.shiftState = .singleUse
+        _ = controller.handle(.insertKey("N"))
+        _ = controller.handle(.insertReturn)
+        // FakeRimeEngine 内部将 key.lowercased() 传给 librime，
+        // 所以大写字母在 RIME 路径中会被转为小写。
+        XCTAssertEqual(client.text, "n")
+        XCTAssertEqual(client.markedText, "")
         XCTAssertEqual(controller.state.currentComposition, "")
     }
 }

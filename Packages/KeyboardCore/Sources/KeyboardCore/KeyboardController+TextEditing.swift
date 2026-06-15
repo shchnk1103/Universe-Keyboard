@@ -125,6 +125,16 @@ extension KeyboardController {
     }
 
     func commitInlinePreedit(as text: String, selectedOffset: Int? = nil) {
+        // When commitText matches current preedit content, use insertText
+        // to replace the current marked range. setMarkedText + unmarkText
+        // does not reliably clear composing underline when content is unchanged.
+
+        if text == state.insertedPreeditText, !text.isEmpty {
+            insertText(text)
+            state.insertedPreeditText = ""
+            state.insertedPreeditCount = 0
+            return
+        }
         guard state.insertedPreeditCount > 0 else {
             insertText(text)
             return
