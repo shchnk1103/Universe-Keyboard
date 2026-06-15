@@ -313,3 +313,13 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - App-side `RimeConfigManager.prepareDirectories()` schema repair is guarded by `!rimeDeployed` so it respects prior deployment results.
 - `RimeSettingsView.deployState` now refreshes via `.onChange(of: rimeIceDownloadState)` instead of only on `onAppear`.
 - `RimeDeployer.finalize` renamed to `cleanup` to avoid NSObject deprecated-method collision.
+## 2026-06-15 — 输入体验区域重构：简繁转换与候选数量移至设置页顶层
+
+- 将简繁转换和候选数量设置从「RIME 方案设置」内部提升到「设置 > 输入体验」区域，让用户更方便调节日常输入体验。
+- 简繁切换和候选数量（松手时）都会自动触发 RIME 部署，无需手动点「应用并重新部署」。
+- 候选数量 slider 使用 `onEditingChanged` 防抖，快速拖动不会触发多次部署。
+- 修复 RIME 桥接层 `syncSchemaCustomYaml` 中简繁设置只写给当前激活方案的 bug，现在两个拼音方案都写入 `switches/@1/reset`。
+- 移除了已无内容的 `RimePreferencesSections.swift`。
+- 更新了 RIME 部署页的步骤文案和 footer 说明，删除"修改上方设置"等失效引用。
+
+---

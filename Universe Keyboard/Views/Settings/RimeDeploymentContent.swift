@@ -24,7 +24,7 @@ struct RimeDeploymentContent: View {
             }
 
             VStack(alignment: .leading, spacing: 6) {
-                RimeDeploymentStep(number: 1, text: "修改上方设置", done: state != .idle)
+                RimeDeploymentStep(number: 1, text: "完成方案与输入设置", done: state != .idle)
                 RimeDeploymentStep(
                     number: 2, text: "点击下方部署按钮",
                     done: state == .triggered || state == .deploying || state == .deployed)

@@ -25,13 +25,12 @@ struct RimeSettingsView: View {
                 Text("选择一个方案，查看说明、下载状态、更新和卸载选项。")
             }
 
-            RimePreferencesSections(store: store)
             RimeDeploymentStatusSection(store: store, logExpanded: $logExpanded)
         }
         .navigationTitle("RIME 方案设置")
         .tint(.primary)
         .onAppear { store.load() }
-        .onChange(of: store.downloadState) { _, _ in store.refreshDeploymentState() }
+        .onChange(of: store.downloadState) { _, _ in store.handleDownloadStateChange() }
         .onDisappear { store.stop() }
     }
 
@@ -161,6 +160,7 @@ private struct RimeSchemaDetailView: View {
                 RimeIceDownloadCardView(
                     schema: schema,
                     isLicenseAccepted: store.licenseAccepted(for: schema.schemaID),
+                    operation: store.activeOperation(for: schema.schemaID),
                     onShowLicense: { showLicense = true },
                     onDownload: { store.startDownload(schemaID: schema.schemaID) }
                 )
@@ -193,7 +193,7 @@ private struct RimeSchemaDetailView: View {
             Section {
                 RimeIceManageContent(
                     version: schema.version,
-                    updateStatusMessage: store.updateStatusMessage,
+                    activeOperation: store.activeOperation(for: schema.schemaID),
                     onCheckForUpdate: { Task { await store.checkForUpdateAndDownload(schemaID: schema.schemaID) } },
                     onRedownload: { store.forceRedownload(schemaID: schema.schemaID) },
                     onUninstall: { showUninstallAlert = true },

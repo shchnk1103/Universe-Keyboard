@@ -2,7 +2,7 @@ import KeyboardCore
 import SwiftUI
 
 struct SettingsTab: View {
-    let rimeStore: RimeSettingsStore
+    @Bindable var rimeStore: RimeSettingsStore
 
     @AppStorage(
         KeyboardInputSettingsKey.pairedSymbolCompletionEnabled,
@@ -42,6 +42,10 @@ struct SettingsTab: View {
                 .font(.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 4)
+            
+            SettingsNavigationLink(systemImage: "waveform", title: "键盘反馈", subtitle: "按键音、触感震动") {
+                FeedbackSettingsView()
+            }
 
             VStack(spacing: 0) {
                 HStack(spacing: 12) {
@@ -65,31 +69,92 @@ struct SettingsTab: View {
                 .padding(.vertical, 8)
             }
             .background(Color(.secondarySystemGroupedBackground))
+           .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+
+            VStack(spacing: 0) {
+                HStack(spacing: 12) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 7, style: .continuous).fill(.primary)
+                        Image(systemName: "textformat.size")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(Color(.systemBackground))
+                    }
+                    .frame(width: 30, height: 30)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text("候选数量")
+                                .font(.body)
+                            Spacer()
+                            Text("\(Int(rimeStore.pageSize)) 个")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        Slider(value: $rimeStore.pageSize, in: 5...20, step: 1) { editing in
+                            if !editing {
+                                rimeStore.savePreferences()
+                                Task { await rimeStore.triggerDeployment() }
+                            }
+                        }
+                        Text("每页最多显示的候选词个数。数量越少选词越快，数量越多翻页更少。")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+            }
+            .background(Color(.secondarySystemGroupedBackground))
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+
+            VStack(spacing: 0) {
+                HStack(spacing: 12) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 7, style: .continuous).fill(.primary)
+                        Image(systemName: "a.circle")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(Color(.systemBackground))
+                    }
+                    .frame(width: 30, height: 30)
+
+                    ToggleRow(
+                        title: "默认简体",
+                        description: rimeStore.simplified
+                            ? "开启后使用 OpenCC 将结果转为简体中文输出。"
+                            : "关闭后保留词典原始字形。",
+                        isOn: $rimeStore.simplified
+                    )
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+            }
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .onChange(of: rimeStore.simplified) { _, _ in
+                rimeStore.savePreferences()
+                Task { await rimeStore.triggerDeployment() }
+            }
         }
     }
 
     private var settingsLinks: some View {
         Group {
+            SettingsNavigationLink(
+                systemImage: "character.book.closed.zh", title: "RIME 方案设置", subtitle: "方案列表、方案部署"
+            ) {
+                RimeSettingsView(store: rimeStore)
+            }
             SettingsNavigationLink(systemImage: "circle.lefthalf.filled", title: "外观", subtitle: "跟随系统、浅色或深色模式") {
                 AppearanceSettingsView()
             }
             SettingsNavigationLink(systemImage: "character.book.closed", title: "本地词典", subtitle: "查看词典文件与搜索本地词条") {
                 DictionaryBrowserView()
             }
-            SettingsNavigationLink(systemImage: "waveform", title: "键盘反馈", subtitle: "按键音、触感震动") {
-                FeedbackSettingsView()
-            }
             SettingsNavigationLink(systemImage: "waveform.path", title: "模糊音设置", subtitle: "平翘舌、鼻边音") {
                 RimeFuzzyPinyinSettingsView(store: rimeStore)
             }
             SettingsNavigationLink(systemImage: "text.badge.checkmark", title: "候选学习", subtitle: "记住常选词、清空学习记录") {
                 RimeUserDictionarySettingsView(store: rimeStore)
-            }
-            SettingsNavigationLink(
-                systemImage: "character.book.closed.zh", title: "RIME 方案设置", subtitle: "候选数量、简繁转换、方案部署"
-            ) {
-                RimeSettingsView(store: rimeStore)
             }
         }
     }

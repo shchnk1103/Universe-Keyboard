@@ -63,9 +63,7 @@ extension RimeConfigManager {
         if defs?.object(forKey: "rime_simplification") != nil {
             let simplified = defs?.bool(forKey: "rime_simplification") ?? true
             let reset = simplified ? 1 : 0
-            if schemaID == activeSchema {
-                patch.append(("\"switches/@1/reset\"", "\(reset)"))
-            }
+            patch.append(("\"switches/@1/reset\"", "\(reset)"))
         }
 
         let userDictionarySettings = RimeUserDictionarySettings(

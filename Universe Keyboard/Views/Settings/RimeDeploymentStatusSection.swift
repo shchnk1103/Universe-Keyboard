@@ -18,7 +18,7 @@ struct RimeDeploymentStatusSection: View {
         } header: {
             Text("部署")
         } footer: {
-            Text("修改设置后请在此完成部署。部署进度和结果会显示在底部全局提示中；成功后切换到键盘即可直接使用。")
+                Text("部署进度和结果会显示在底部全局提示中；成功后切换到键盘即可直接使用。")
         }
     }
 }
