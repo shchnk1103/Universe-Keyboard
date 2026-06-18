@@ -6,6 +6,22 @@
     BOOL _cleanedUp;
 }
 
++ (NSArray<NSString *> *)configuredModules {
+#ifdef RIME_HAS_LUA
+    return @[ @"core", @"dict", @"gears", @"lua" ];
+#else
+    return @[ @"core", @"dict", @"gears" ];
+#endif
+}
+
++ (BOOL)luaModuleCompiledIn {
+#ifdef RIME_HAS_LUA
+    return YES;
+#else
+    return NO;
+#endif
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -28,8 +44,12 @@
     traits.distribution_version = "1.0.0";
     traits.app_name = "rime.UniverseKeyboard";
 
-    // 2. 加载核心模块（不需要 Lua——部署只编译 YAML → .bin）
+#ifdef RIME_HAS_LUA
+    // 2. 部署阶段也要注册 lua，否则含 Lua 组件的 schema 可能无法完整编译。
+    const char* modules[] = { "core", "dict", "gears", "lua", NULL };
+#else
     const char* modules[] = { "core", "dict", "gears", NULL };
+#endif
     traits.modules = modules;
 
     _api->setup(&traits);

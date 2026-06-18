@@ -15,6 +15,9 @@ extension SchemaManager {
         }
 
         guard let entry = downloadableEntry(for: schemaID) else { return }
+        if let plan = entry.installationPlan {
+            archiveInstaller.clearBuildCache(plan: plan)
+        }
         if let key = entry.storage.eTag {
             settings.removeObject(forKey: key)
         }

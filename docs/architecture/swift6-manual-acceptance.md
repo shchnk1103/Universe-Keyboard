@@ -92,6 +92,29 @@ tagging when practical.
 
 Create one entry per testing session. Do not mark a matrix row passed without a matching execution entry.
 
+### Lua Smoke Test Procedure
+
+The optional automated Lua smoke test lives in `RimeBridgeTests/RimeLuaSmokeTests`.
+It intentionally skips unless a real `rime_ice` runtime is provided:
+
+```bash
+UK_RIME_LUA_SMOKE_SHARED_DIR=/path/to/Rime/shared \
+UK_RIME_LUA_SMOKE_USER_DIR=/path/to/Rime/user \
+xcodebuild test \
+  -project "Universe Keyboard.xcodeproj" \
+  -scheme RimeBridgeTests \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -only-testing:RimeBridgeTests/RimeLuaSmokeTests
+```
+
+Before marking the Lua row passed, record:
+
+- The RIME vendor receipt version and checksum.
+- The `rime_ice` release/version installed.
+- Whether the test produced `PASS`, `FAIL`, or `SKIP`.
+- Manual keyboard observations for `rq`, `sj`, `xq`, `dt`, `ts`, `R123`, and `cC1+1`.
+- Any diagnostic state shown in the App's `雾凇拼音 > 高级输入功能` section.
+
 ```markdown
 ### Session: YYYY-MM-DD HH:mm TZ
 

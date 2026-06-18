@@ -386,6 +386,64 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertEqual(store.updateStatusMessage, "已是最新版本")
         XCTAssertEqual(store.downloadState, .idle)
     }
+
+    func testAdvancedInputStatusUsesConservativeReadyTextBeforeRealSmokeTest() {
+        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+        let diagnostic = makeAdvancedInputDiagnostic(status: .available)
+
+        XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "基础检查通过")
+        XCTAssertTrue(store.advancedInputStatusDetail(for: diagnostic).contains("仍需完成真实测试"))
+        XCTAssertNil(store.advancedInputRecoveryAction(for: diagnostic))
+    }
+
+    func testAdvancedInputStatusOffersApplyWhenDeploymentIsPending() {
+        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+        let diagnostic = makeAdvancedInputDiagnostic(status: .needsDeploy)
+
+        XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "需要重新应用")
+        XCTAssertEqual(store.advancedInputRecoveryAction(for: diagnostic), .applySettings)
+    }
+
+    func testAdvancedInputStatusOffersRedownloadForStrippedOrMissingLuaFiles() {
+        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+
+        XCTAssertEqual(
+            store.advancedInputRecoveryAction(for: makeAdvancedInputDiagnostic(status: .schemaStripped)),
+            .redownloadSchema
+        )
+        XCTAssertEqual(
+            store.advancedInputRecoveryAction(for: makeAdvancedInputDiagnostic(status: .luaFilesMissing)),
+            .redownloadSchema
+        )
+    }
+
+    func testAdvancedInputStatusOffersSchemaSwitchForInactiveRimeIce() {
+        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+        let diagnostic = makeAdvancedInputDiagnostic(status: .inactiveSchema)
+
+        XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "未使用")
+        XCTAssertEqual(store.advancedInputRecoveryAction(for: diagnostic), .setCurrentSchema)
+    }
+
+    private func makeAdvancedInputDiagnostic(
+        status: RimeLuaCapabilityDiagnostic.Status
+    ) -> RimeLuaCapabilityDiagnostic {
+        RimeLuaCapabilityDiagnostic(
+            luaCompiledIn: status != .engineUnavailable,
+            deploymentModules: status == .engineUnavailable ? ["core", "dict", "gears"] : ["core", "dict", "gears", "lua"],
+            persistedLuaAvailable: status == .engineUnavailable ? false : true,
+            rimeIceInstalled: status != .notInstalled,
+            activeSchemaID: status == .inactiveSchema ? "luna_pinyin" : "rime_ice",
+            rimeDeployed: status != .needsDeploy,
+            rimeNeedsDeploy: status == .needsDeploy,
+            schemaExists: status != .schemaMissing,
+            schemaHasLuaComponents: status != .schemaStripped && status != .schemaMissing,
+            luaDirectoryExists: status != .luaFilesMissing,
+            dateTranslatorExists: status != .luaFilesMissing,
+            requiredLuaComponentNames: ["date_translator"],
+            missingLuaComponentNames: status == .luaFilesMissing ? ["date_translator"] : []
+        )
+    }
 }
 
 @MainActor
@@ -552,6 +610,8 @@ private final class StoreArchiveInstaller: SchemaArchiveInstalling {
     func checkDiskSpace(needed: Int64) throws {}
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws {}
     func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) {}
+    func clearBuildCache(plan: RimeSchemeInstallationPlan) {}
+    func sharedDataDirectoryURL() -> URL? { URL(fileURLWithPath: "/tmp/shared") }
     func deploymentDirectories() throws -> SchemaDeploymentDirectories {
         SchemaDeploymentDirectories(
             sharedDataURL: URL(fileURLWithPath: "/tmp/shared"),

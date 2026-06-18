@@ -6,6 +6,21 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-18 — RIME Lua diagnostics and deploy module alignment
+
+- Added a main-App `rime_ice` Lua capability diagnostic that distinguishes unavailable engine support, stripped schema files, missing Lua files, pending deployment, inactive schema, and ready states without touching the keyboard input path.
+- Exposed RimeBridge Lua capability metadata so tests and main-App diagnostics can verify the compiled bridge and deployment module list.
+- Aligned `RimeDeployer` with the keyboard session engine by loading the `lua` module under `RIME_HAS_LUA` during full main-App deployment.
+- Added a conservative "高级输入功能" status section on the `rime_ice` detail page with recovery actions for selecting the scheme, reapplying RIME settings, redownloading incomplete files, and opening diagnostics.
+- Documented the scheme-detail status boundary in `docs/RIME_SCHEME_MANAGEMENT.md`; the UI says "基础检查通过" instead of claiming Lua dynamic candidates are fully available before real smoke testing.
+- Expanded Lua file diagnostics to derive required `lua/*.lua` files from schema `lua_processor` / `lua_translator` / `lua_filter` references.
+- Cleared scheme-specific RIME build cache entries before forced redownloads so old compiled artifacts do not mask recovered schema files.
+- Added an opt-in iOS Simulator Lua smoke-test skeleton gated by `UK_RIME_LUA_SMOKE_SHARED_DIR` and `UK_RIME_LUA_SMOKE_USER_DIR`; it skips without a real runtime fixture.
+- Added simulator and service tests for deployment module coverage and the new Lua diagnostic states.
+- Recorded the staged 雾凇拼音 Lua implementation plan in `docs/plans/rime-ice-lua-full-capability-plan.md`; real Lua smoke testing remains pending.
+
+---
+
 ## 2026-06-14 — RIME scheme operation feedback V1.2
 
 - Added a shared in-flight operation state for scheme-side effects such as checking updates, downloading, redownloading, and uninstalling.

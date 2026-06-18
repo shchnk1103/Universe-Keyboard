@@ -104,6 +104,11 @@ final class RimeEngineContractTests: XCTestCase {
         XCTAssertEqual(request.userDataURL.path, "/user")
     }
 
+    func testDeploymentModulesIncludeLuaWhenBridgeIsLuaCapable() {
+        XCTAssertTrue(RimeBridgeCapabilities.luaModuleCompiledIn)
+        XCTAssertTrue(RimeBridgeCapabilities.deploymentModules.contains("lua"))
+    }
+
     func testRuntimeRecoveryRequestPreservesSessionOwnedBoundary() {
         let request = RimeDeploymentRequest(
             mode: .runtimeRecovery,

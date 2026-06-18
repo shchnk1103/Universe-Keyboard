@@ -38,8 +38,35 @@ Scheme detail page:
 - Installed schemes can be set as the current scheme.
 - Downloaded schemes may expose download, update, redownload, uninstall, and license actions.
 - Built-in schemes should not expose destructive download-management actions.
+- `rime_ice` may show an "高级输入功能" status section because Lua-backed dynamic candidates are a scheme-specific capability. This section should use plain status copy, not internal RIME terms.
 
 This keeps the top-level page short when more open-source schemes are added.
+
+## rime_ice Advanced Input Status
+
+雾凇拼音的高级输入状态属于方案详情页，不属于全局 RIME 设置。
+
+The main App may inspect already-installed files and shared deployment flags to show:
+
+- `基础检查通过`: engine capability, schema files, Lua scripts, and deployment flags look ready. This is not the same as a passed real Lua smoke test.
+- `安装后可用`: `rime_ice` is not installed.
+- `未使用`: `rime_ice` is installed but not the active scheme.
+- `需要重新应用`: files are ready, but RIME has not been redeployed with the latest state.
+- `暂不可用`: engine support is missing, the schema file is missing, the schema was stripped, or Lua scripts are missing.
+
+Lua file completeness should be inferred from the installed schema's `lua_processor`, `lua_translator`, and
+`lua_filter` references. Avoid maintaining a hard-coded upstream file list in the UI layer; upstream scheme changes
+should be visible through diagnostics instead of silently ignored.
+
+Recovery actions stay on the scheme detail page:
+
+- `设为当前方案` for inactive `rime_ice`.
+- `重新应用 RIME 设置` for pending deployment.
+- `重新下载雾凇拼音` when the installed schema or Lua files are incomplete.
+- `查看诊断日志` for developer-readable details.
+
+Do not label the feature as fully available until a real Lua-enabled schema smoke test has been recorded in
+`docs/architecture/swift6-manual-acceptance.md`.
 
 ## Runtime Boundary
 

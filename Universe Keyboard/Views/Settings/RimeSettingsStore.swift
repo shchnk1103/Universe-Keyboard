@@ -71,6 +71,28 @@ enum RimeUserDictionaryStatusSymbol: Equatable {
     case warning
 }
 
+enum RimeAdvancedInputRecoveryAction: Equatable {
+    case setCurrentSchema
+    case applySettings
+    case redownloadSchema
+
+    var title: String {
+        switch self {
+        case .setCurrentSchema: return "设为当前方案"
+        case .applySettings: return "重新应用 RIME 设置"
+        case .redownloadSchema: return "重新下载雾凇拼音"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .setCurrentSchema: return "keyboard"
+        case .applySettings: return "arrow.triangle.2.circlepath"
+        case .redownloadSchema: return "arrow.down.circle"
+        }
+    }
+}
+
 @MainActor
 @Observable
 final class RimeSettingsStore {
@@ -299,6 +321,59 @@ final class RimeSettingsStore {
             return .changed
         case .unknown:
             return .warning
+        }
+    }
+
+    func rimeIceAdvancedInputDiagnostic() -> RimeLuaCapabilityDiagnostic {
+        schemaManager.rimeIceLuaCapabilityDiagnostic(logResult: false)
+    }
+
+    func advancedInputStatusText(for diagnostic: RimeLuaCapabilityDiagnostic) -> String {
+        switch diagnostic.status {
+        case .available:
+            return "基础检查通过"
+        case .notInstalled:
+            return "安装后可用"
+        case .inactiveSchema:
+            return "未使用"
+        case .needsDeploy:
+            return "需要重新应用"
+        case .engineUnavailable, .schemaMissing, .schemaStripped, .luaFilesMissing:
+            return "暂不可用"
+        }
+    }
+
+    func advancedInputStatusDetail(for diagnostic: RimeLuaCapabilityDiagnostic) -> String {
+        switch diagnostic.status {
+        case .available:
+            return "文件和部署状态正常；日期、时间、计算器等动态候选仍需完成真实测试后再标记为可用。"
+        case .notInstalled:
+            return "安装雾凇拼音后，可以检查日期、时间、计算器等高级输入功能。"
+        case .inactiveSchema:
+            return "当前键盘没有使用雾凇拼音。设为当前方案并应用后，再检查高级输入功能。"
+        case .needsDeploy:
+            return "雾凇拼音文件已准备好，但最新设置还没有应用到 RIME。"
+        case .engineUnavailable:
+            return "当前键盘引擎未启用高级输入能力，基础输入仍可继续使用。"
+        case .schemaMissing:
+            return "没有找到雾凇拼音配置文件，基础输入可能会回退到其他方案。"
+        case .schemaStripped:
+            return "当前安装缺少高级输入配置，需要重新下载完整的雾凇拼音文件。"
+        case .luaFilesMissing:
+            return "当前安装缺少高级输入脚本，需要重新下载完整的雾凇拼音文件。"
+        }
+    }
+
+    func advancedInputRecoveryAction(for diagnostic: RimeLuaCapabilityDiagnostic) -> RimeAdvancedInputRecoveryAction? {
+        switch diagnostic.status {
+        case .inactiveSchema:
+            return .setCurrentSchema
+        case .needsDeploy:
+            return .applySettings
+        case .schemaMissing, .schemaStripped, .luaFilesMissing:
+            return .redownloadSchema
+        case .available, .notInstalled, .engineUnavailable:
+            return nil
         }
     }
 

@@ -157,6 +157,69 @@ enum DownloadState: Equatable {
     case failed(String)
 }
 
+struct RimeLuaCapabilityDiagnostic: Equatable, Sendable {
+    enum Status: Equatable, Sendable {
+        case available
+        case notInstalled
+        case inactiveSchema
+        case needsDeploy
+        case engineUnavailable
+        case schemaMissing
+        case schemaStripped
+        case luaFilesMissing
+    }
+
+    let luaCompiledIn: Bool
+    let deploymentModules: [String]
+    let persistedLuaAvailable: Bool?
+    let rimeIceInstalled: Bool
+    let activeSchemaID: String
+    let rimeDeployed: Bool
+    let rimeNeedsDeploy: Bool
+    let schemaExists: Bool
+    let schemaHasLuaComponents: Bool
+    let luaDirectoryExists: Bool
+    let dateTranslatorExists: Bool
+    let requiredLuaComponentNames: [String]
+    let missingLuaComponentNames: [String]
+
+    var status: Status {
+        guard rimeIceInstalled else { return .notInstalled }
+        guard activeSchemaID == "rime_ice" else { return .inactiveSchema }
+        guard luaCompiledIn, deploymentModules.contains("lua"), persistedLuaAvailable != false else {
+            return .engineUnavailable
+        }
+        guard schemaExists else { return .schemaMissing }
+        guard schemaHasLuaComponents else { return .schemaStripped }
+        guard luaDirectoryExists, dateTranslatorExists, missingLuaComponentNames.isEmpty else { return .luaFilesMissing }
+        guard rimeDeployed, !rimeNeedsDeploy else { return .needsDeploy }
+        return .available
+    }
+
+    var developerSummary: String {
+        let modulesSummary = deploymentModules.joined(separator: "+")
+        let persistedLuaSummary = persistedLuaAvailable.map { String($0) } ?? "nil"
+        let requiredComponentsSummary = requiredLuaComponentNames.joined(separator: "+")
+        let missingComponentsSummary = missingLuaComponentNames.joined(separator: "+")
+        return [
+            "status=\(status)",
+            "luaCompiledIn=\(luaCompiledIn)",
+            "deploymentModules=\(modulesSummary)",
+            "persistedLuaAvailable=\(persistedLuaSummary)",
+            "activeSchema=\(activeSchemaID)",
+            "installed=\(rimeIceInstalled)",
+            "schemaExists=\(schemaExists)",
+            "schemaHasLua=\(schemaHasLuaComponents)",
+            "luaDir=\(luaDirectoryExists)",
+            "dateTranslator=\(dateTranslatorExists)",
+            "requiredLuaComponents=\(requiredComponentsSummary)",
+            "missingLuaComponents=\(missingComponentsSummary)",
+            "deployed=\(rimeDeployed)",
+            "needsDeploy=\(rimeNeedsDeploy)",
+        ].joined(separator: ";")
+    }
+}
+
 enum DownloadError: Error, LocalizedError {
     case networkError(String)
     case gitHubRateLimit

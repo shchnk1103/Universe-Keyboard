@@ -18,6 +18,8 @@ protocol SchemaArchiveInstalling: AnyObject {
     func checkDiskSpace(needed: Int64) throws
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
     func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan)
+    func clearBuildCache(plan: RimeSchemeInstallationPlan)
+    func sharedDataDirectoryURL() -> URL?
     func deploymentDirectories() throws -> SchemaDeploymentDirectories
 }
 
@@ -104,11 +106,21 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
             try? fileManager.removeItem(at: sharedDirectory.appendingPathComponent(subdirectory))
         }
 
+        clearBuildCache(plan: plan)
+    }
+
+    func clearBuildCache(plan: RimeSchemeInstallationPlan) {
+        guard let sharedDirectory = sharedDirectory() else { return }
         let buildDirectory = sharedDirectory.appendingPathComponent("build")
         guard let buildFiles = try? fileManager.contentsOfDirectory(atPath: buildDirectory.path) else { return }
+
         for file in buildFiles where plan.removableBuildFileSubstrings.contains(where: file.contains) {
             try? fileManager.removeItem(at: buildDirectory.appendingPathComponent(file))
         }
+    }
+
+    func sharedDataDirectoryURL() -> URL? {
+        sharedDirectory()
     }
 
     func deploymentDirectories() throws -> SchemaDeploymentDirectories {

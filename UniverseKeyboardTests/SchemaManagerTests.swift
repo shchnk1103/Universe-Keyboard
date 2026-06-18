@@ -112,7 +112,8 @@ final class SchemaManagerTests: XCTestCase {
                 "rime_ice_version": "old-version",
             ]
         )
-        let manager = makeManager(settings: settings)
+        let installer = StubSchemaArchiveInstaller()
+        let manager = makeManager(settings: settings, installer: installer)
         manager.rimeIceDownloadState = .completed
 
         manager.forceRedownload()
@@ -120,6 +121,7 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(manager.rimeIceDownloadState, .fetchingReleaseInfo)
         XCTAssertNil(settings.string(forKey: "rime_ice_etag"))
         XCTAssertNil(settings.string(forKey: "rime_ice_version"))
+        XCTAssertTrue(installer.didClearBuildCache)
     }
 
     func testInstallationPassesSharedLuaCapabilityToInstaller() throws {
@@ -130,6 +132,189 @@ final class SchemaManagerTests: XCTestCase {
         try manager.installRimeIceFiles(from: URL(fileURLWithPath: "/test/extracted"))
 
         XCTAssertEqual(installer.installedLuaAvailability, false)
+    }
+
+    func testLuaDiagnosticReportsAvailableWhenEngineSchemaFilesAndDeploymentAreReady() throws {
+        let fixture = try makeLuaDiagnosticFixture(
+            schemaContent: "engine:\n  translators:\n    - lua_translator@*date_translator\n",
+            includeLuaDirectory: true,
+            includeDateTranslator: true
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_lua_available": true,
+                "rime_deployed": true,
+                "rime_needs_deploy": false,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            directories: SchemaDeploymentDirectories(sharedDataURL: fixture.sharedURL, userDataURL: fixture.userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        let diagnostic = manager.rimeIceLuaCapabilityDiagnostic()
+
+        XCTAssertEqual(diagnostic.status, .available)
+        XCTAssertTrue(diagnostic.deploymentModules.contains("lua"))
+        XCTAssertTrue(diagnostic.schemaHasLuaComponents)
+        XCTAssertTrue(diagnostic.dateTranslatorExists)
+    }
+
+    func testLuaDiagnosticDetectsStrippedSchemaBeforeLuaFileChecks() throws {
+        let fixture = try makeLuaDiagnosticFixture(
+            schemaContent: "engine:\n  translators:\n    - script_translator\n",
+            includeLuaDirectory: true,
+            includeDateTranslator: true
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_lua_available": true,
+                "rime_deployed": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            directories: SchemaDeploymentDirectories(sharedDataURL: fixture.sharedURL, userDataURL: fixture.userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        let diagnostic = manager.rimeIceLuaCapabilityDiagnostic()
+
+        XCTAssertEqual(diagnostic.status, .schemaStripped)
+    }
+
+    func testLuaDiagnosticDetectsMissingLuaFiles() throws {
+        let fixture = try makeLuaDiagnosticFixture(
+            schemaContent: "engine:\n  translators:\n    - lua_translator@*date_translator\n",
+            includeLuaDirectory: true,
+            includeDateTranslator: false
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_lua_available": true,
+                "rime_deployed": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            directories: SchemaDeploymentDirectories(sharedDataURL: fixture.sharedURL, userDataURL: fixture.userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        let diagnostic = manager.rimeIceLuaCapabilityDiagnostic()
+
+        XCTAssertEqual(diagnostic.status, .luaFilesMissing)
+    }
+
+    func testLuaDiagnosticReportsSchemaReferencedMissingLuaComponents() throws {
+        let fixture = try makeLuaDiagnosticFixture(
+            schemaContent: """
+            engine:
+              translators:
+                - lua_translator@*date_translator
+              filters:
+                - lua_filter@*corrector
+            """,
+            includeLuaDirectory: true,
+            includeDateTranslator: true
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_lua_available": true,
+                "rime_deployed": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            directories: SchemaDeploymentDirectories(sharedDataURL: fixture.sharedURL, userDataURL: fixture.userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        let diagnostic = manager.rimeIceLuaCapabilityDiagnostic()
+
+        XCTAssertEqual(diagnostic.status, .luaFilesMissing)
+        XCTAssertEqual(diagnostic.requiredLuaComponentNames, ["corrector", "date_translator"])
+        XCTAssertEqual(diagnostic.missingLuaComponentNames, ["corrector"])
+    }
+
+    func testLuaDiagnosticPassesWhenAllSchemaReferencedLuaComponentsExist() throws {
+        let fixture = try makeLuaDiagnosticFixture(
+            schemaContent: """
+            engine:
+              translators:
+                - lua_translator@*date_translator
+              filters:
+                - lua_filter@*corrector
+            """,
+            includeLuaDirectory: true,
+            includeDateTranslator: true,
+            extraLuaComponentNames: ["corrector"]
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_lua_available": true,
+                "rime_deployed": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            directories: SchemaDeploymentDirectories(sharedDataURL: fixture.sharedURL, userDataURL: fixture.userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        let diagnostic = manager.rimeIceLuaCapabilityDiagnostic()
+
+        XCTAssertEqual(diagnostic.status, .available)
+        XCTAssertEqual(diagnostic.missingLuaComponentNames, [])
+    }
+
+    func testLuaDiagnosticReportsNeedsDeployAfterCompleteInstallButBeforeDeployment() throws {
+        let fixture = try makeLuaDiagnosticFixture(
+            schemaContent: "engine:\n  translators:\n    - lua_translator@*date_translator\n",
+            includeLuaDirectory: true,
+            includeDateTranslator: true
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_lua_available": true,
+                "rime_deployed": false,
+                "rime_needs_deploy": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            directories: SchemaDeploymentDirectories(sharedDataURL: fixture.sharedURL, userDataURL: fixture.userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        let diagnostic = manager.rimeIceLuaCapabilityDiagnostic()
+
+        XCTAssertEqual(diagnostic.status, .needsDeploy)
     }
 
     func testUninstallDelegatesFileRemovalAndClearsInstalledMetadata() {
@@ -312,6 +497,48 @@ final class SchemaManagerTests: XCTestCase {
             deploymentService: deploymentService
         )
     }
+
+    private func makeLuaDiagnosticFixture(
+        schemaContent: String?,
+        includeLuaDirectory: Bool,
+        includeDateTranslator: Bool,
+        extraLuaComponentNames: [String] = []
+    ) throws -> (rootURL: URL, sharedURL: URL, userURL: URL) {
+        let rootURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("schema-manager-lua-\(UUID().uuidString)")
+        let sharedURL = rootURL.appendingPathComponent("shared")
+        let userURL = rootURL.appendingPathComponent("user")
+        try FileManager.default.createDirectory(at: sharedURL, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: userURL, withIntermediateDirectories: true)
+
+        if let schemaContent {
+            try schemaContent.write(
+                to: sharedURL.appendingPathComponent("rime_ice.schema.yaml"),
+                atomically: true,
+                encoding: .utf8
+            )
+        }
+        if includeLuaDirectory {
+            let luaURL = sharedURL.appendingPathComponent("lua", isDirectory: true)
+            try FileManager.default.createDirectory(at: luaURL, withIntermediateDirectories: true)
+            if includeDateTranslator {
+                try "-- test fixture\n".write(
+                    to: luaURL.appendingPathComponent("date_translator.lua"),
+                    atomically: true,
+                    encoding: .utf8
+                )
+            }
+            for name in extraLuaComponentNames {
+                try "-- test fixture\n".write(
+                    to: luaURL.appendingPathComponent("\(name).lua"),
+                    atomically: true,
+                    encoding: .utf8
+                )
+            }
+        }
+
+        return (rootURL, sharedURL, userURL)
+    }
 }
 
 @MainActor
@@ -372,6 +599,7 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     private let containsInstalledSchema: Bool
     private(set) var installedLuaAvailability: Bool?
     private(set) var didUninstall = false
+    private(set) var didClearBuildCache = false
 
     init(
         containsInstalledSchema: Bool = false,
@@ -397,6 +625,8 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
         installedLuaAvailability = luaAvailable
     }
     func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) { didUninstall = true }
+    func clearBuildCache(plan: RimeSchemeInstallationPlan) { didClearBuildCache = true }
+    func sharedDataDirectoryURL() -> URL? { directories.sharedDataURL }
     func deploymentDirectories() throws -> SchemaDeploymentDirectories { directories }
 }
 

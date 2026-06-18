@@ -131,6 +131,16 @@ private struct RimeSchemaDetailView: View {
 
     @ViewBuilder
     private var schemaActionSections: some View {
+        if schema.schemaID == "rime_ice" {
+            Section {
+                RimeAdvancedInputStatusContent(store: store)
+            } header: {
+                Text("高级输入功能")
+            } footer: {
+                Text("这里显示日期、时间、计算器等动态候选的准备状态；真实候选输出仍需完成单独测试。")
+            }
+        }
+
         if schema.installed {
             Section {
                 AppActionButton(
@@ -217,6 +227,71 @@ private struct RimeSchemaDetailView: View {
         switch schema.source {
         case .builtin: return .blue
         case .downloaded: return .orange
+        }
+    }
+}
+
+private struct RimeAdvancedInputStatusContent: View {
+    let store: RimeSettingsStore
+
+    private var diagnostic: RimeLuaCapabilityDiagnostic {
+        store.rimeIceAdvancedInputDiagnostic()
+    }
+
+    var body: some View {
+        let currentDiagnostic = diagnostic
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Label(
+                    store.advancedInputStatusText(for: currentDiagnostic),
+                    systemImage: statusImage(for: currentDiagnostic)
+                )
+                .font(.body)
+
+                Spacer()
+            }
+
+            Text(store.advancedInputStatusDetail(for: currentDiagnostic))
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+
+            if let action = store.advancedInputRecoveryAction(for: currentDiagnostic) {
+                AppActionButton(title: action.title, systemImage: action.systemImage) {
+                    perform(action)
+                }
+            }
+
+            NavigationLink(destination: DiagnosticsView()) {
+                Label("查看诊断日志", systemImage: "doc.text.magnifyingglass")
+            }
+            .font(.subheadline)
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func statusImage(for diagnostic: RimeLuaCapabilityDiagnostic) -> String {
+        switch diagnostic.status {
+        case .available:
+            return "checkmark.circle"
+        case .needsDeploy:
+            return "exclamationmark.circle"
+        case .notInstalled:
+            return "arrow.down.circle"
+        case .inactiveSchema:
+            return "keyboard"
+        case .engineUnavailable, .schemaMissing, .schemaStripped, .luaFilesMissing:
+            return "xmark.circle"
+        }
+    }
+
+    private func perform(_ action: RimeAdvancedInputRecoveryAction) {
+        switch action {
+        case .setCurrentSchema:
+            Task { await store.switchToSchema("rime_ice") }
+        case .applySettings:
+            Task { await store.triggerDeployment() }
+        case .redownloadSchema:
+            store.forceRedownload(schemaID: "rime_ice")
         }
     }
 }
