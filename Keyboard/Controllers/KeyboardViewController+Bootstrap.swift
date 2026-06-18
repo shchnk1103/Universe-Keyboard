@@ -42,25 +42,61 @@ extension KeyboardViewController {
         hasViewAppeared = true
         refreshCachedSettings(source: "viewDidAppear")
 
-        if isReturningToExistingKeyboard, controller.rimeEngine != nil {
-            controller.resetRimeSessionForVisibilityChange()
-            accumulatedCandidates = []
-            hasMoreCandidates = false
-            candidatePageDepth = 0
-            nextCandidateGlobalIndex = 0
-            candidateSnapshotRawInput = nil
-            candidateSnapshotGeneration += 1
-            candidatePrefetchMode = .bar
-            isCandidateScrollInteracting = false
-            deferredCandidatePrefetchMode = nil
-            candidatePrefetchRequestSerial += 1
+        if isReturningToExistingKeyboard {
+            let effects = cleanupTransientKeyboardState(
+                reason: "viewDidAppear",
+                abandonsComposition: true
+            )
+            if !effects.isEmpty, isKeyboardUIInstalled {
+                syncUI(with: effects)
+            }
             Logger.shared.info(
-                "viewDidAppear: RIME composition cleared after keyboard return",
+                "viewDidAppear: stale input and press state cleared after keyboard return",
                 category: .engine
             )
         }
 
         Logger.shared.debug("viewDidAppear: bounds=\(view.bounds)", category: .display)
+    }
+
+    @discardableResult
+    func cleanupTransientKeyboardState(
+        reason: String,
+        abandonsComposition: Bool
+    ) -> KeyboardEffect {
+        deleteRepeatController.stop()
+        dismissVariantPopup(animated: false)
+        if isCandidateExpanded {
+            isCandidateExpanded = false
+            dismissExpandedCandidatePanel(animated: false)
+        }
+        resetAllKeyPressVisualState()
+        resetCandidatePresentationState()
+
+        let effects = abandonsComposition
+            ? controller.abandonCompositionForVisibilityChange()
+            : KeyboardEffect()
+
+        Logger.shared.debug(
+            "\(reason): transient keyboard state cleared, abandonComposition=\(abandonsComposition)",
+            category: .display
+        )
+        return effects
+    }
+
+    func resetCandidatePresentationState() {
+        accumulatedCandidates = []
+        hasMoreCandidates = false
+        isLoadingMoreCandidates = false
+        candidatePageDepth = 0
+        nextCandidateGlobalIndex = 0
+        candidateSnapshotRawInput = nil
+        candidateSnapshotGeneration += 1
+        candidatePrefetchMode = .bar
+        isCandidateScrollInteracting = false
+        deferredCandidatePrefetchMode = nil
+        candidatePrefetchRequestSerial += 1
+        candidateCellSizeCache.removeAll(keepingCapacity: true)
     }
 
     private func prepareRimeSession() {
@@ -75,37 +111,7 @@ extension KeyboardViewController {
 
         Logger.shared.info("App Group available, creating RimeEngineImpl", category: .engine)
         controller.rimeEngine = RimeEngineImpl(sharedDataDir: sharedDir, userDataDir: userDir)
-
-        var testOutput = controller.rimeEngine!.processKey("n")
-        Logger.shared.info(
-            "healthCheck step=1 preeditLength=\(testOutput.composition?.preeditText.count ?? 0), "
-                + "candidates: \(testOutput.candidates.count)",
-            category: .engine
-        )
-        testOutput = controller.rimeEngine!.processKey("i")
-        Logger.shared.info(
-            "healthCheck step=2 preeditLength=\(testOutput.composition?.preeditText.count ?? 0), "
-                + "candidates: \(testOutput.candidates.count)",
-            category: .engine
-        )
-        controller.rimeEngine!.resetSession()
-
-        if testOutput.candidates.isEmpty {
-            Logger.shared.warning(
-                "No candidates on first check; deploy schema from the main app before typing",
-                category: .engine
-            )
-            controller.enableDefaultRimeEngine()
-            Logger.shared.warning(
-                "RIME runtime disabled for this keyboard session; using built-in fallback candidates",
-                category: .engine
-            )
-        } else {
-            Logger.shared.info(
-                "RIME ready, candidates: \(testOutput.candidates.count)",
-                category: .engine
-            )
-        }
+        Logger.shared.info("RIME session prepared for keyboard input", category: .engine)
     }
 
 }

@@ -42,6 +42,35 @@ public final class KeyboardController {
         shouldRebuildSessionDuringRestore = false
     }
 
+    /// Drops unfinished input when the keyboard is hidden or shown again.
+    ///
+    /// Visibility changes are different from a transient RIME session loss:
+    /// the user sees a newly presented keyboard, so stale composition and
+    /// candidates must not remain visible from the previous host interaction.
+    @discardableResult
+    public func abandonCompositionForVisibilityChange() -> KeyboardEffect {
+        let hadVisibleComposition =
+            !state.currentComposition.isEmpty
+            || state.lastRimeOutput != nil
+            || state.partialCommit != nil
+            || state.typoCorrection != nil
+            || state.insertedPreeditCount > 0
+            || !state.insertedPreeditText.isEmpty
+
+        rimeEngine?.resetSession()
+        shouldRestoreRimeComposition = false
+        shouldRebuildSessionDuringRestore = false
+        deleteInlinePreedit()
+        state.currentComposition = ""
+        state.lastRimeOutput = nil
+        state.partialCommit = nil
+        state.typoCorrection = nil
+        state.insertedPreeditText = ""
+        state.insertedPreeditCount = 0
+
+        return hadVisibleComposition ? .compositionChanged : []
+    }
+
     // MARK: - Public entry point
 
     @discardableResult

@@ -77,10 +77,10 @@ extension KeyboardViewController: UIScrollViewDelegate {
         let delay: TimeInterval
         switch mode {
         case .expanded:
-            delay = 0.02
+            delay = 0.04
         case .bar:
-            // 先尽快补出一段横向缓冲，避免用户刚开始滑动就撞到分页边界。
-            delay = accumulatedCandidates.count < 36 ? 0.0 : 0.10
+            // 预取仍在主线程访问 librime；给当前按键和首屏渲染让出一小段时间。
+            delay = accumulatedCandidates.count < 36 ? 0.06 : 0.14
         }
         let scheduledOwner = WeakKeyboardViewControllerReference(self)
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
@@ -218,9 +218,9 @@ extension KeyboardViewController: UIScrollViewDelegate {
     private func batchLimitForCandidatePrefetch(mode: CandidatePrefetchMode) -> Int {
         switch mode {
         case .bar:
-            return accumulatedCandidates.count < 48 ? 24 : 12
+            return accumulatedCandidates.count < 48 ? 16 : 8
         case .expanded:
-            return accumulatedCandidates.count < 80 ? 32 : 16
+            return accumulatedCandidates.count < 80 ? 24 : 12
         }
     }
 

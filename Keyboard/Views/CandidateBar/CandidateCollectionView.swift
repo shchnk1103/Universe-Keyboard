@@ -1,9 +1,19 @@
 import KeyboardCore
 import UIKit
 
+@MainActor
 enum CandidateTouchDiagnostics {
+    private static var cachedDisplayEnabled = false
+    private static var lastRefreshTime: CFTimeInterval = 0
+
     static var isEnabled: Bool {
-        Logger.isLiveCategoryEnabled(.display)
+        let now = CACurrentMediaTime()
+        guard now - lastRefreshTime >= 0.25 else {
+            return cachedDisplayEnabled
+        }
+        lastRefreshTime = now
+        cachedDisplayEnabled = Logger.isLiveCategoryEnabled(.display)
+        return cachedDisplayEnabled
     }
     static let minimumLogInterval: CFTimeInterval = 0.08
 

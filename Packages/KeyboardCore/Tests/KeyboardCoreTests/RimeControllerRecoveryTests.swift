@@ -78,6 +78,26 @@ final class RimeControllerRecoveryTests: RimeControllerTestSupport {
         XCTAssertTrue(engine.isComposing())
     }
 
+    func testAbandonCompositionForVisibilityChangeClearsVisibleState() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+
+        XCTAssertEqual(client.markedText, "ni")
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.map(\.text), ["你", "呢", "尼"])
+
+        let effects = controller.abandonCompositionForVisibilityChange()
+
+        XCTAssertTrue(effects.contains(.compositionChanged))
+        XCTAssertEqual(client.text, "")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.lastRimeOutput)
+        XCTAssertNil(controller.state.partialCommit)
+        XCTAssertNil(controller.state.typoCorrection)
+        XCTAssertFalse(engine.isComposing())
+        XCTAssertEqual(engine.sessionResetCount, 1)
+    }
+
     func testEngineNilToNonNilTransition() {
         controller.rimeEngine = nil
         _ = controller.handle(.insertKey("h"))

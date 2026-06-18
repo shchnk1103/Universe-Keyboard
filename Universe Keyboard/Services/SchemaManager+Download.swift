@@ -62,8 +62,34 @@ extension SchemaManager {
 
             let extractDir = try archiveInstaller.prepareExtractionDirectory(for: distribution)
 
-            _ = try Unzip.extract(zipPath: tempURL.path, to: extractDir)
-            guard let schemaURL = findFile(named: plan.schemaFileName, in: extractDir) else {
+            _ = try await Task.detached(priority: .userInitiated) {
+                try Unzip.extract(zipPath: tempURL.path, to: extractDir)
+            }.value
+            let schemaLookupTask = Task.detached(priority: .userInitiated) { () -> URL? in
+                let fileManager = FileManager.default
+                var pendingDirectories = [extractDir]
+
+                while let directory = pendingDirectories.popLast() {
+                    let children = (try? fileManager.contentsOfDirectory(
+                        at: directory,
+                        includingPropertiesForKeys: [.isDirectoryKey],
+                        options: [.skipsHiddenFiles]
+                    )) ?? []
+
+                    for url in children {
+                        if url.lastPathComponent == plan.schemaFileName {
+                            return url
+                        }
+                        let values = try? url.resourceValues(forKeys: [.isDirectoryKey])
+                        if values?.isDirectory == true {
+                            pendingDirectories.append(url)
+                        }
+                    }
+                }
+                return nil
+            }
+            let schemaURL = await schemaLookupTask.value
+            guard let schemaURL else {
                 throw DownloadError.corruptArchive
             }
 
@@ -72,12 +98,15 @@ extension SchemaManager {
 
             let luaAvailable = settings.object(forKey: "rime_lua_available") as? Bool
             if luaAvailable == false {
-                let schemaContent = try String(contentsOf: schemaURL, encoding: .utf8)
-                let processed = RimeConfigPostProcessor.stripLuaDependencies(from: schemaContent)
-                guard RimeConfigPostProcessor.validateStrippedSchema(processed) else {
-                    throw DownloadError.postProcessingFailed("剥离 Lua 后 schema 无效")
+                let postProcessTask = Task.detached(priority: .userInitiated) { () throws -> Void in
+                    let schemaContent = try String(contentsOf: schemaURL, encoding: .utf8)
+                    let processed = RimeConfigPostProcessor.stripLuaDependencies(from: schemaContent)
+                    guard RimeConfigPostProcessor.validateStrippedSchema(processed) else {
+                        throw DownloadError.postProcessingFailed("剥离 Lua 后 schema 无效")
+                    }
+                    try processed.write(to: schemaURL, atomically: true, encoding: .utf8)
                 }
-                try processed.write(to: schemaURL, atomically: true, encoding: .utf8)
+                try await postProcessTask.value
             }
 
             try installSchemaFiles(from: extractDir, plan: plan)

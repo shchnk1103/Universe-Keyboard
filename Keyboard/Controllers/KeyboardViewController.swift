@@ -218,7 +218,13 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        deleteRepeatController.stop()
+        let effects = cleanupTransientKeyboardState(
+            reason: "viewWillDisappear",
+            abandonsComposition: true
+        )
+        if !effects.isEmpty, isKeyboardUIInstalled {
+            syncUI(with: effects)
+        }
         Logger.shared.debug(
             "viewWillDisappear: bounds=\(view.bounds)",
             category: .display

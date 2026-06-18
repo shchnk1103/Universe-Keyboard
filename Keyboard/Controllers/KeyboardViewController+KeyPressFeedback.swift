@@ -51,4 +51,28 @@ extension KeyboardViewController {
             completion: nil
         )
     }
+
+    func resetAllKeyPressVisualState() {
+        keyTouchDownTimes.removeAll()
+        keyPressFeedbackEmittedButtonIDs.removeAll()
+        restoreButtons(in: view)
+    }
+
+    private func restoreButtons(in root: UIView?) {
+        guard let root else { return }
+        if let button = root as? UIButton {
+            UIView.performWithoutAnimation {
+                button.transform = .identity
+                if button === shiftButton {
+                    updateShiftButtonAppearance()
+                } else if let style = keyStyle(for: button) {
+                    button.backgroundColor = backgroundForStyle(style)
+                }
+            }
+        }
+
+        for subview in root.subviews {
+            restoreButtons(in: subview)
+        }
+    }
 }

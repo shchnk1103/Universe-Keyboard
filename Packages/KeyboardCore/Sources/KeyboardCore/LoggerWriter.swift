@@ -22,7 +22,6 @@ struct LoggerPersistence: Sendable {
             } else {
                 defaults?.removeObject(forKey: "rime_diag_summary")
             }
-            defaults?.synchronize()
         },
         clear: {
             let defaults = UserDefaults(suiteName: Logger.appGroupID)

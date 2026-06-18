@@ -122,7 +122,7 @@ extension KeyboardViewController {
     ///
     /// 动画（animated=true）：淡出 + 缩小到 85%（0.1s），动画完成后从视图层级移除。
     /// 立即（animated=false）：直接 removeFromSuperview，用于新面板创建前的快速清理。
-    private func dismissVariantPopup(animated: Bool = true) {
+    func dismissVariantPopup(animated: Bool = true) {
         // 恢复长按按钮的原始外观
         if let longPressedButton {
             restoreKeyAppearance(longPressedButton)
