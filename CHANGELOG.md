@@ -6,6 +6,26 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-19 — Advanced input settings and Settings cleanup
+
+- Added a shared advanced-input settings model for user-facing features such as 日期与时间、计算器、数字大写、随机编号, and candidate optimization without exposing internal Lua component names in the UI.
+- Added a global Advanced Input settings page that disables controls when the active scheme does not support them, while preserving the user's choices for supported schemes.
+- Added plain-language usage guidance for advanced input examples such as date/time shortcuts, calculation results, number formatting, random identifiers, and special content.
+- Reorganized the main Settings tab into clearer sections for input experience, input schemes, tools, and diagnostics.
+- Moved diagnostic logging controls into a second-level diagnostics settings page so the Settings tab keeps only one entry point.
+- Fixed the app appearance setting to update the active root view reliably and migrated any previous standard-defaults value into the shared settings store.
+- Split the `rime_ice` advanced-input settings and diagnostics links into separate Form rows to avoid overlapping tap targets.
+- Made deployment apply advanced-input preferences before full RIME deployment, preserving a restorable source schema so disabled features can be turned back on without redownloading.
+- Expanded dynamic-input diagnostics and compatibility post-processing to cover the full processor/segmentor/translator/filter component family.
+- Prevented app launch/settings refresh from showing a stale "RIME 设置已生效" toast when the app merely reads an already-deployed state from shared storage.
+- Removed the duplicate Advanced Input entry from the RIME scheme settings page; advanced-input switches now stay in the main Settings tab while scheme pages focus on scheme state and recovery actions.
+- Kept number and calculator-style symbol keys inside the active Chinese RIME composition so inputs such as `N20260619` and `cC1+2` are not split by the symbol page, while ordinary punctuation still commits the current candidate first.
+- For ordinary pinyin followed by number-page digits, keep the inline preedit as raw input such as `nihao123` while showing the transformed first candidate such as `你好123`, avoiding librime's default number-key candidate selection until the user confirms.
+- Preserved raw-input deletion and highlighted candidates for ordinary pinyin-number suffix input, so `nihao123` deletes as `3`, `2`, `1`, `o`... while the candidate bar updates or clears at the right composition boundary.
+- Updated RIME scheme-management docs, the Lua capability plan, and the Swift 6 manual acceptance record with the partial physical-device Lua smoke evidence and remaining coverage gaps.
+
+---
+
 ## 2026-06-18 — RIME Lua diagnostics and deploy module alignment
 
 - Added a main-App `rime_ice` Lua capability diagnostic that distinguishes unavailable engine support, stripped schema files, missing Lua files, pending deployment, inactive schema, and ready states without touching the keyboard input path.

@@ -24,6 +24,7 @@ extension SchemaManager {
         await Task.detached(priority: .userInitiated) {
             RimeConfigManager.syncCustomYamlFiles()
         }.value
+        applyAdvancedInputPostProcessing(to: directories.sharedDataURL)
         applyFuzzyPinyinPostProcessing(to: directories.sharedDataURL)
         settings.set(true, forKey: "rime_deploying")
         settings.set(false, forKey: "rime_deployed")
@@ -50,6 +51,7 @@ extension SchemaManager {
                 settings.set(false, forKey: "rime_deploying")
                 settings.set(false, forKey: RimeFuzzyPinyinSettings.pendingDeployKey)
                 settings.set(false, forKey: RimeUserDictionarySettings.pendingDeployKey)
+                settings.set(false, forKey: RimeAdvancedInputSettings.pendingDeployKey)
                 settings.set(
                     currentFuzzyPinyinSettings().deploymentSignature(activeSchemaID: activeSchemaIDForDeployment),
                     forKey: RimeFuzzyPinyinSettings.deployedSignatureKey
@@ -57,6 +59,13 @@ extension SchemaManager {
                 settings.set(
                     currentUserDictionarySettings().deploymentSignature(),
                     forKey: RimeUserDictionarySettings.deployedSignatureKey
+                )
+                settings.set(
+                    currentAdvancedInputSettings().deploymentSignature(
+                        activeSchemaID: activeSchemaIDForDeployment,
+                        supportedFeatures: supportedAdvancedInputFeatures(for: activeSchemaIDForDeployment)
+                    ),
+                    forKey: RimeAdvancedInputSettings.deployedSignatureKey
                 )
                 settings.synchronize()
                 return true
@@ -78,6 +87,46 @@ extension SchemaManager {
 
         settings.synchronize()
         return false
+    }
+
+    private func applyAdvancedInputPostProcessing(to sharedDataURL: URL) {
+        let activeSchema = activeSchemaIDForDeployment
+        guard activeSchema == "rime_ice" else { return }
+
+        let schemaURL = sharedDataURL.appendingPathComponent("\(activeSchema).schema.yaml")
+        let result = RimeAdvancedInputPostProcessor.apply(
+            settings: currentAdvancedInputSettings(),
+            supportedFeatures: supportedAdvancedInputFeatures(for: activeSchema),
+            schemaURL: schemaURL
+        )
+
+        switch result.status {
+        case .unchanged:
+            Logger.shared.info(
+                "deployRimeConfig: advanced input unchanged (\(activeSchema))",
+                category: .deployment
+            )
+        case .restoredAllFeatures:
+            Logger.shared.info(
+                "deployRimeConfig: advanced input restored all features (\(activeSchema))",
+                category: .deployment
+            )
+        case .disabledComponents(let names):
+            Logger.shared.info(
+                "deployRimeConfig: advanced input disabled components=\(names.joined(separator: "+"))",
+                category: .deployment
+            )
+        case .missingSchema:
+            Logger.shared.warning(
+                "deployRimeConfig: advanced input skipped, schema file missing: \(activeSchema)",
+                category: .deployment
+            )
+        case .noRestorableSource:
+            Logger.shared.warning(
+                "deployRimeConfig: advanced input skipped, no restorable source: \(activeSchema)",
+                category: .deployment
+            )
+        }
     }
 
     private func applyFuzzyPinyinPostProcessing(to sharedDataURL: URL) {
@@ -139,5 +188,25 @@ extension SchemaManager {
                 forKey: RimeUserDictionarySettings.rimeIceEnabledKey
             ) as? Bool ?? true
         )
+    }
+
+    private func currentAdvancedInputSettings() -> RimeAdvancedInputSettings {
+        let featureValues = Dictionary(
+            uniqueKeysWithValues: RimeAdvancedInputFeature.allCases.map { feature in
+                (
+                    feature,
+                    settings.object(forKey: RimeAdvancedInputSettings.enabledKey(for: feature)) as? Bool ?? true
+                )
+            }
+        )
+
+        return RimeAdvancedInputSettings(
+            masterEnabled: settings.object(forKey: RimeAdvancedInputSettings.masterEnabledKey) as? Bool ?? true,
+            featureEnabled: featureValues
+        )
+    }
+
+    private func supportedAdvancedInputFeatures(for schemaID: String) -> Set<RimeAdvancedInputFeature> {
+        schemaID == "rime_ice" ? Set(RimeAdvancedInputFeature.allCases) : []
     }
 }

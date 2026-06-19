@@ -5,6 +5,9 @@ enum AppAppearance: String, CaseIterable, Identifiable {
     case light
     case dark
 
+    static let storageKey = "app_appearance"
+    static let storage = UserDefaults(suiteName: universeAppGroupID)
+
     var id: String { rawValue }
 
     var title: String {
@@ -37,5 +40,16 @@ enum AppAppearance: String, CaseIterable, Identifiable {
         case .light: return .light
         case .dark: return .dark
         }
+    }
+
+    static func migrateLegacyPreferenceIfNeeded() {
+        let standard = UserDefaults.standard
+        guard storage?.object(forKey: storageKey) == nil,
+              let legacyValue = standard.string(forKey: storageKey),
+              AppAppearance(rawValue: legacyValue) != nil
+        else {
+            return
+        }
+        storage?.set(legacyValue, forKey: storageKey)
     }
 }

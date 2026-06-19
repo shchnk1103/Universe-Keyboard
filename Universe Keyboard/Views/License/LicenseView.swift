@@ -68,7 +68,7 @@ struct LicenseView: View {
             VStack(alignment: .leading, spacing: 10) {
                 BulletRow(text:"雾凇拼音配置（词库和 schema 文件）来自 rime-ice 项目", style: .dot, bulletColor: .secondary)
                 BulletRow(text:"本 App 通过下载方式获取配置，不直接分发 GPL 代码", style: .dot, bulletColor: .secondary)
-                BulletRow(text:"配置的修改（如去除 Lua 依赖）仅用于兼容性，不改变原始版权", style: .dot, bulletColor: .secondary)
+                BulletRow(text:"配置的兼容性修改仅用于适配当前键盘能力，不改变原始版权", style: .dot, bulletColor: .secondary)
                 BulletRow(text:"用户可以随时删除雾凇拼音配置，只使用内置方案", style: .dot, bulletColor: .secondary)
             }
         }

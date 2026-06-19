@@ -23,6 +23,7 @@ public struct PartialCommitCheckpoint: Equatable, Sendable {
 public enum PartialCommitSource: Equatable, Sendable {
     case rime
     case typoCorrection
+    case numberSuffix
 }
 
 /// 当前 composition 中已确认文本与剩余输入的基础状态。

@@ -363,11 +363,15 @@ extension KeyboardController {
         appending appendedText: String,
         cursorOffsetFromAppendedTextStart: Int
     ) {
+        let shouldClearCandidateState = state.partialCommit?.source == .numberSuffix
         let commitText = commitFirstCandidateForSymbolInput()
         let finalText = commitText + appendedText
         let selectedOffset = commitText.count + cursorOffsetFromAppendedTextStart
         commitInlinePreedit(as: finalText, selectedOffset: selectedOffset)
         state.currentComposition = ""
+        if shouldClearCandidateState {
+            state.lastRimeOutput = nil
+        }
         state.partialCommit = nil
         clearTypoCorrectionSuggestions()
         rimeEngine?.resetSession()
@@ -377,6 +381,10 @@ extension KeyboardController {
     /// while still replacing the marked range atomically so the following paired
     /// symbol can place the cursor inside the pair.
     private func commitFirstCandidateForSymbolInput() -> String {
+        if state.partialCommit?.source == .numberSuffix {
+            return state.lastRimeOutput?.candidates.first?.text ?? activeCompositionDisplayText
+        }
+
         if let engine = rimeEngine, engine.isComposing() {
             let result = engine.selectCandidate(at: 0)
             let confirmedPrefix = state.partialCommit?.confirmedText ?? ""

@@ -204,6 +204,225 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         XCTAssertTrue(engine.isComposing())
     }
 
+    func testNumbersPageDigitsContinueChineseComposition() {
+        for character in "nihao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        _ = controller.handle(.togglePage)
+        XCTAssertEqual(controller.state.currentPage, .numbers)
+
+        for character in "123" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        XCTAssertEqual(client.text, "nihao123")
+        XCTAssertEqual(client.markedText, "nihao123")
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "你好")
+        XCTAssertEqual(controller.state.currentComposition, "nihao123")
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "nihao123")
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.first?.text, "你好123")
+        XCTAssertFalse(engine.isComposing())
+    }
+
+    func testNumbersPageDigitsUseRimeFirstCandidateForAnyPinyinPrefix() {
+        let engine = FakeRimeEngine(dictionary: ["jintian": ["今天", "金天"]])
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+
+        for character in "jintian" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        _ = controller.handle(.togglePage)
+        for character in "123" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        XCTAssertEqual(client.text, "jintian123")
+        XCTAssertEqual(client.markedText, "jintian123")
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "今天")
+        XCTAssertEqual(controller.state.currentComposition, "jintian123")
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "jintian123")
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.first?.text, "今天123")
+        XCTAssertFalse(engine.isComposing())
+    }
+
+    func testDeleteAfterNumbersPageDigitsKeepsNumberSuffixCandidate() {
+        for character in "nihao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        _ = controller.handle(.togglePage)
+        for character in "123" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        _ = controller.handle(.deleteBackward)
+
+        XCTAssertEqual(client.text, "nihao12")
+        XCTAssertEqual(client.markedText, "nihao12")
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "你好")
+        XCTAssertEqual(controller.state.currentComposition, "nihao12")
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "nihao12")
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.first?.text, "你好12")
+        XCTAssertEqual(controller.state.lastRimeOutput?.highlightedIndex, 0)
+        XCTAssertFalse(engine.isComposing())
+    }
+
+    func testDeletingAllNumberSuffixRestoresRawPinyinComposition() {
+        for character in "nihao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        _ = controller.handle(.togglePage)
+        _ = controller.handle(.insertKey("1"))
+
+        _ = controller.handle(.deleteBackward)
+
+        XCTAssertEqual(client.text, "nihao")
+        XCTAssertEqual(client.markedText, "nihao")
+        XCTAssertEqual(controller.state.currentComposition, "nihao")
+        XCTAssertNil(controller.state.partialCommit)
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "nihao")
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.first?.text, "你好")
+        XCTAssertTrue(engine.isComposing())
+    }
+
+    func testDeleteAfterNumberSuffixContinuesDeletingRawPinyin() {
+        for character in "nihao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        _ = controller.handle(.togglePage)
+        for character in "12" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        _ = controller.handle(.deleteBackward)
+        _ = controller.handle(.deleteBackward)
+        _ = controller.handle(.deleteBackward)
+
+        XCTAssertEqual(client.text, "niha")
+        XCTAssertEqual(client.markedText, "niha")
+        XCTAssertEqual(controller.state.currentComposition, "niha")
+        XCTAssertNil(controller.state.partialCommit)
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "niha")
+        XCTAssertTrue(engine.isComposing())
+    }
+
+    func testSpaceAfterNumberSuffixCommitsCandidateText() {
+        for character in "nihao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        _ = controller.handle(.togglePage)
+        for character in "123" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        _ = controller.handle(.insertSpace)
+
+        XCTAssertEqual(client.text, "你好123")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.partialCommit)
+        XCTAssertEqual(controller.state.lastRimeOutput?.committedText, "你好123")
+        XCTAssertFalse(engine.isComposing())
+    }
+
+    func testTapNumberSuffixCandidateCommitsCandidateText() {
+        for character in "nihao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        _ = controller.handle(.togglePage)
+        for character in "123" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        _ = controller.handle(.insertCandidate("你好123", kind: .candidate))
+
+        XCTAssertEqual(client.text, "你好123")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.partialCommit)
+        XCTAssertEqual(controller.state.lastRimeOutput?.committedText, "你好123")
+        XCTAssertFalse(engine.isComposing())
+    }
+
+    func testSymbolAfterNumberSuffixCommitsDisplayTextBeforeSymbol() {
+        for character in "nihao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        _ = controller.handle(.togglePage)
+        for character in "123" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        _ = controller.handle(.insertKey("."))
+
+        XCTAssertEqual(client.text, "你好123.")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.lastRimeOutput)
+        XCTAssertNil(controller.state.partialCommit)
+        XCTAssertFalse(engine.isComposing())
+    }
+
+    func testNumbersPageUppercasePrefixDigitsStayInRimeComposition() {
+        controller.state.shiftState = .singleUse
+        _ = controller.handle(.insertKey("N"))
+        _ = controller.handle(.togglePage)
+        XCTAssertEqual(controller.state.currentPage, .numbers)
+
+        for character in "20260619" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        // FakeRimeEngine lowercases printable keys, but this still proves the keyboard
+        // keeps the whole input in the RIME session instead of committing the prefix early.
+        XCTAssertEqual(client.text, "n20260619")
+        XCTAssertEqual(client.markedText, "n20260619")
+        XCTAssertEqual(controller.state.currentComposition, "n20260619")
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n20260619")
+        XCTAssertEqual(engine.sessionResetCount, 0)
+        XCTAssertTrue(engine.isComposing())
+    }
+
+    func testCalculatorOperatorContinuesChineseCompositionFromSymbolPage() {
+        _ = controller.handle(.insertKey("c"))
+        _ = controller.handle(.togglePage)
+        XCTAssertEqual(controller.state.currentPage, .numbers)
+        _ = controller.handle(.togglePage)
+        XCTAssertEqual(controller.state.currentPage, .symbols)
+
+        let effects = controller.handle(.insertKey("+"))
+
+        XCTAssertEqual(client.text, "c+")
+        XCTAssertEqual(client.markedText, "c+")
+        XCTAssertEqual(controller.state.currentComposition, "c+")
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "c+")
+        XCTAssertTrue(effects.contains(.compositionChanged))
+        XCTAssertFalse(effects.contains(.pageChanged))
+        XCTAssertTrue(engine.isComposing())
+    }
+
+    func testChinesePunctuationStillCommitsCompositionBeforeSymbol() {
+        for character in "nihao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        _ = controller.handle(.togglePage)
+        XCTAssertEqual(controller.state.currentPage, .numbers)
+
+        let effects = controller.handle(.insertKey("？"))
+
+        XCTAssertEqual(client.text, "你好？")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.lastRimeOutput?.composition)
+        XCTAssertEqual(controller.state.lastRimeOutput?.committedText, "你好")
+        XCTAssertEqual(controller.state.currentPage, .letters)
+        XCTAssertTrue(effects.contains(.compositionChanged))
+        XCTAssertTrue(effects.contains(.pageChanged))
+        XCTAssertFalse(engine.isComposing())
+    }
+
     func testToggleInputModeResetsEngineSession() {
         _ = controller.handle(.insertKey("n"))
         _ = controller.handle(.insertKey("i"))

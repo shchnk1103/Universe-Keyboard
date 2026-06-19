@@ -37,6 +37,17 @@ final class RimeConfigPostProcessorBasicTests: XCTestCase {
         XCTAssertTrue(result.contains("key_binder"))
     }
 
+    func testStripLuaSegmentor() {
+        let yaml = """
+            segmentors:
+              - lua_segmentor@some_segmentor
+              - abc_segmentor
+            """
+        let result = RimeConfigPostProcessor.stripLuaDependencies(from: yaml)
+        XCTAssertFalse(result.contains("lua_segmentor"))
+        XCTAssertTrue(result.contains("abc_segmentor"))
+    }
+
     func testMixedLuaAndNonLua() {
         let yaml = """
             translators:

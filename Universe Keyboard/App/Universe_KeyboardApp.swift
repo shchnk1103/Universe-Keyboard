@@ -9,14 +9,13 @@ import SwiftUI
 
 @main
 struct Universe_KeyboardApp: App {
-    @AppStorage("app_appearance") private var appearanceRawValue = AppAppearance.system.rawValue
+    init() {
+        AppAppearance.migrateLegacyPreferenceIfNeeded()
+    }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .preferredColorScheme(
-                    AppAppearance(rawValue: appearanceRawValue)?.colorScheme
-                )
         }
     }
 }

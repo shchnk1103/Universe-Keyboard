@@ -30,7 +30,7 @@ Top-level screen:
 - Shows one compact row per scheme.
 - Each row shows the scheme name, short metadata, current status text, and a compact status icon.
 - Tapping a row opens the scheme detail page.
-- Global RIME preferences and deployment status remain on the top-level page because they are not owned by a single scheme.
+- Deployment status remains on the top-level page. User-facing advanced-input switches live in the main Settings tab so this page can stay focused on schemes.
 
 Scheme detail page:
 
@@ -42,21 +42,40 @@ Scheme detail page:
 
 This keeps the top-level page short when more open-source schemes are added.
 
-## rime_ice Advanced Input Status
+## Advanced Input Settings
 
-雾凇拼音的高级输入状态属于方案详情页，不属于全局 RIME 设置。
+高级输入功能使用「全局偏好 + 当前方案能力」模型，不属于某一个方案详情页的私有设置。
+
+User-facing settings live in the main Settings tab:
+
+- The settings entry is visible even when the current scheme does not support advanced input.
+- Feature switches are disabled when the active scheme does not support them.
+- Copy should say plain feature names such as 日期与时间、计算器、数字大写、随机编号, not internal terms such as Lua, translator, filter, or processor.
+- The settings page should include short "how to use" examples, such as `rq` / `sj` / `xq` / `dt` for date and time candidates, simple expressions for calculation results, and numbers for uppercase or amount-format candidates.
+- Each feature row should show concrete input examples when the upstream scheme has a known trigger, such as `R1234.56`, `cC1+2*3`, `uuid`, or `U62fc`.
+- The app preserves the user's choices while an unsupported scheme is active. Those choices become controllable and deployable after switching to a supported scheme.
+
+Scheme detail pages may show a compact advanced-input status, but should not duplicate the shared settings entry.
+Do not duplicate the full switch list on every scheme detail page.
+When adding multiple actions inside a scheme detail status section, keep them as separate Form rows so each row owns a stable tap target.
+
+Current scheme support:
+
+- `rime_ice`: supports the advanced-input feature set.
+- `luna_pinyin`: does not support these advanced-input features.
 
 The main App may inspect already-installed files and shared deployment flags to show:
 
-- `基础检查通过`: engine capability, schema files, Lua scripts, and deployment flags look ready. This is not the same as a passed real Lua smoke test.
+- `基础检查通过`: engine capability, scheme files, dynamic-input scripts, deployment flags, and basic runtime smoke look ready.
+- `未开启`: the user turned off advanced input.
 - `安装后可用`: `rime_ice` is not installed.
 - `未使用`: `rime_ice` is installed but not the active scheme.
 - `需要重新部署`: files are ready, but RIME has not been redeployed with the latest state.
-- `暂不可用`: engine support is missing, the schema file is missing, the schema was stripped, or Lua scripts are missing.
+- `暂不可用`: engine support is missing, the scheme file is missing, the scheme was stripped, or dynamic-input files are missing.
 
-Lua file completeness should be inferred from the installed schema's `lua_processor`, `lua_translator`, and
-`lua_filter` references. Avoid maintaining a hard-coded upstream file list in the UI layer; upstream scheme changes
-should be visible through diagnostics instead of silently ignored.
+Lua file completeness should be inferred from the installed schema's `lua_processor`, `lua_segmentor`,
+`lua_translator`, and `lua_filter` references. Avoid maintaining a hard-coded upstream file list in the UI layer;
+upstream scheme changes should be visible through diagnostics instead of silently ignored.
 
 Recovery actions stay on the scheme detail page:
 
@@ -65,8 +84,11 @@ Recovery actions stay on the scheme detail page:
 - `重新下载雾凇拼音` when the installed schema or Lua files are incomplete.
 - `查看诊断日志` for developer-readable details.
 
-Do not label the feature as fully available until a real Lua-enabled schema smoke test has been recorded in
-`docs/architecture/swift6-manual-acceptance.md`.
+Deployment should derive the effective feature set as:
+
+`user preference` + `active scheme support` + `successful main-App deployment`.
+
+The Keyboard Extension must not evaluate individual feature switches while typing.
 
 ## Runtime Boundary
 

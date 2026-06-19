@@ -14,6 +14,21 @@ extension KeyboardController {
             state.partialCommit = nil
             clearTypoCorrectionSuggestions()
         case .candidate:
+            if state.partialCommit?.source == .numberSuffix {
+                commitInlinePreedit(as: candidate)
+                state.currentComposition = ""
+                state.lastRimeOutput = RimeOutput(
+                    composition: nil,
+                    candidates: [],
+                    committedText: candidate,
+                    hasMorePages: false
+                )
+                state.partialCommit = nil
+                rimeEngine?.resetSession()
+                clearTypoCorrectionSuggestions()
+                return .compositionChanged
+            }
+
             if let engine = rimeEngine, let output = state.lastRimeOutput,
                 let index = candidateIndex(for: candidate, selectionReference: selectionReference, output: output)
                     ?? selectionReference?.globalIndex
