@@ -2,7 +2,8 @@ import KeyboardCore
 import SwiftUI
 
 struct AppearanceSettingsView: View {
-    @AppStorage("app_appearance") private var appearanceRawValue = AppAppearance.system.rawValue
+    @AppStorage(AppAppearance.storageKey, store: AppAppearance.storage)
+    private var appearanceRawValue = AppAppearance.system.rawValue
     @AppStorage(KeyboardAppearanceSettingsKey.liquidGlassMaterialEnabled, store: UserDefaults(suiteName: universeAppGroupID))
     private var liquidGlassMaterialEnabled = false
 

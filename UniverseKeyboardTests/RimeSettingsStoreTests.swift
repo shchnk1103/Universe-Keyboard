@@ -22,6 +22,8 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertTrue(store.fuzzyChCEnabled)
         XCTAssertTrue(store.fuzzyShSEnabled)
         XCTAssertTrue(store.fuzzyNLEnabled)
+        XCTAssertTrue(store.advancedInputMasterEnabled)
+        XCTAssertTrue(store.isAdvancedInputFeatureEnabled(.dateTime))
         XCTAssertTrue(store.lunaPinyinUserDictionaryEnabled)
         XCTAssertTrue(store.rimeIceUserDictionaryEnabled)
         XCTAssertFalse(store.userDictionaryAutoBackupEnabled)
@@ -61,6 +63,23 @@ final class RimeSettingsStoreTests: XCTestCase {
 
         XCTAssertFalse(store.lunaPinyinUserDictionaryEnabled)
         XCTAssertTrue(store.rimeIceUserDictionaryEnabled)
+    }
+
+    func testLoadReadsStoredAdvancedInputPreferences() {
+        let persistence = StubRimeSettingsPersistence(
+            values: [
+                RimeAdvancedInputSettings.masterEnabledKey: true,
+                RimeAdvancedInputSettings.enabledKey(for: .dateTime): false,
+                RimeAdvancedInputSettings.enabledKey(for: .calculator): true,
+            ]
+        )
+        let store = RimeSettingsStore(persistence: persistence)
+
+        store.load()
+
+        XCTAssertTrue(store.advancedInputMasterEnabled)
+        XCTAssertFalse(store.isAdvancedInputFeatureEnabled(.dateTime))
+        XCTAssertTrue(store.isAdvancedInputFeatureEnabled(.calculator))
     }
 
     func testSaveFuzzyPinyinSettingsPersistsAndMarksDeploymentNeeded() {
@@ -126,6 +145,81 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertEqual(persistence.value(forKey: RimeUserDictionarySettings.pendingDeployKey) as? Bool, false)
         XCTAssertNil(persistence.value(forKey: "rime_needs_deploy"))
         XCTAssertEqual(store.deploymentState, .idle)
+    }
+
+    func testSaveAdvancedInputSettingsPersistsAndMarksDeploymentNeeded() {
+        let settings = StoreSharedSettingsStore(values: ["rime_active_schema": "rime_ice"])
+        let persistence = StubRimeSettingsPersistence()
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(settings: settings, archiveInstaller: StoreArchiveInstaller()),
+            persistence: persistence
+        )
+        store.advancedInputMasterEnabled = true
+        store.advancedInputFeatureEnabled[.dateTime] = false
+
+        store.saveAdvancedInputSettings()
+
+        XCTAssertEqual(persistence.value(forKey: RimeAdvancedInputSettings.masterEnabledKey) as? Bool, true)
+        XCTAssertEqual(
+            persistence.value(forKey: RimeAdvancedInputSettings.enabledKey(for: .dateTime)) as? Bool,
+            false
+        )
+        XCTAssertEqual(persistence.value(forKey: RimeAdvancedInputSettings.pendingDeployKey) as? Bool, true)
+        XCTAssertEqual(persistence.value(forKey: "rime_deployed") as? Bool, false)
+        XCTAssertEqual(persistence.value(forKey: "rime_needs_deploy") as? Bool, true)
+        XCTAssertEqual(store.deploymentState, .needsDeploy)
+    }
+
+    func testSaveAdvancedInputSettingsSkipsDeployWhenSignatureAlreadyMatches() {
+        let settings = StoreSharedSettingsStore(values: ["rime_active_schema": "rime_ice"])
+        let signature = RimeAdvancedInputSettings().deploymentSignature(
+            activeSchemaID: "rime_ice",
+            supportedFeatures: Set(RimeAdvancedInputFeature.allCases)
+        )
+        let persistence = StubRimeSettingsPersistence(
+            values: [RimeAdvancedInputSettings.deployedSignatureKey: signature]
+        )
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(settings: settings, archiveInstaller: StoreArchiveInstaller()),
+            persistence: persistence
+        )
+
+        store.saveAdvancedInputSettings()
+
+        XCTAssertEqual(persistence.value(forKey: RimeAdvancedInputSettings.pendingDeployKey) as? Bool, false)
+        XCTAssertNil(persistence.value(forKey: "rime_needs_deploy"))
+        XCTAssertEqual(store.deploymentState, .idle)
+    }
+
+    func testAdvancedInputUnsupportedSchemeKeepsSettingsButDisablesCapability() {
+        let settings = StoreSharedSettingsStore(values: ["rime_active_schema": "luna_pinyin"])
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(settings: settings, archiveInstaller: StoreArchiveInstaller())
+        )
+
+        XCTAssertFalse(store.activeSchemaSupportsAdvancedInput)
+        XCTAssertFalse(store.advancedInputFeatureIsSupported(.dateTime))
+        XCTAssertTrue(store.activeSchemaAdvancedInputStatusText.contains("暂不支持"))
+        XCTAssertTrue(store.activeSchemaAdvancedInputStatusText.contains("选择会保留"))
+    }
+
+    func testAdvancedInputSupportedSchemeReportsAvailablePreferences() {
+        let settings = StoreSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+            ]
+        )
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(
+                settings: settings,
+                archiveInstaller: StoreArchiveInstaller(containsInstalledSchema: true)
+            )
+        )
+
+        XCTAssertTrue(store.activeSchemaSupportsAdvancedInput)
+        XCTAssertTrue(store.advancedInputFeatureIsSupported(RimeAdvancedInputFeature.calculator))
+        XCTAssertTrue(store.activeSchemaAdvancedInputStatusText.contains("支持这些高级输入功能"))
     }
 
     func testTriggerFuzzyDeploymentIfNeededOnlyRunsWhenPending() async {
@@ -458,7 +552,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let diagnostic = makeAdvancedInputDiagnostic(status: .runtimeModuleMissing)
 
         XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "暂不可用")
-        XCTAssertTrue(store.advancedInputStatusDetail(for: diagnostic).contains("运行时没有加载 Lua 模块"))
+        XCTAssertTrue(store.advancedInputStatusDetail(for: diagnostic).contains("没有加载高级输入能力"))
         XCTAssertNil(store.advancedInputRecoveryAction(for: diagnostic))
     }
 
@@ -642,6 +736,12 @@ private struct StoreArchiveDownloader: SchemaArchiveDownloading {
 
 @MainActor
 private final class StoreArchiveInstaller: SchemaArchiveInstalling {
+    private let containsInstalledSchemaValue: Bool
+
+    init(containsInstalledSchema: Bool = false) {
+        self.containsInstalledSchemaValue = containsInstalledSchema
+    }
+
     func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
         URL(fileURLWithPath: "/tmp/\(distribution.cachedArchiveFileName)")
     }
@@ -649,7 +749,7 @@ private final class StoreArchiveInstaller: SchemaArchiveInstalling {
         URL(fileURLWithPath: "/tmp/\(distribution.extractionDirectoryName)")
     }
     func removeTemporaryItem(at url: URL) {}
-    func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool { false }
+    func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool { containsInstalledSchemaValue }
     func checkDiskSpace(needed: Int64) throws {}
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws {}
     func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) {}

@@ -56,6 +56,11 @@ final class FakeRimeEngine: RimeEngine {
             processKeysToDrop -= 1
             return RimeOutput()
         }
+        if let index = digitSelectionIndex(for: key),
+           !(dictionary[composition] ?? []).isEmpty
+        {
+            return selectCandidate(at: index)
+        }
         composition += key.lowercased()
         return buildOutput()
     }
@@ -190,5 +195,11 @@ final class FakeRimeEngine: RimeEngine {
             candidates: candidates.map { RimeCandidate(text: $0) },
             highlightedIndex: candidates.isEmpty ? -1 : 0
         )
+    }
+
+    private func digitSelectionIndex(for key: String) -> Int? {
+        guard key.count == 1, let scalar = key.unicodeScalars.first else { return nil }
+        guard scalar.value >= 49 && scalar.value <= 57 else { return nil }
+        return Int(scalar.value - 49)
     }
 }

@@ -14,6 +14,25 @@ extension KeyboardController {
     }
 
     func handleInsertSpace() -> KeyboardEffect {
+        if let partialCommit = state.partialCommit,
+           partialCommit.source == .numberSuffix,
+           let firstCandidate = state.lastRimeOutput?.candidates.first?.text
+        {
+            commitInlinePreedit(as: firstCandidate)
+            state.currentComposition = ""
+            state.lastRimeOutput = RimeOutput(
+                composition: nil,
+                candidates: [],
+                committedText: firstCandidate,
+                hasMorePages: false
+            )
+            state.partialCommit = nil
+            rimeEngine?.resetSession()
+            clearTypoCorrectionSuggestions()
+            state.lastSpaceTapTime = nil
+            return .compositionChanged
+        }
+
         if let engine = rimeEngine, engine.isComposing(),
             let firstCandidate = state.lastRimeOutput?.candidates.first?.text
         {
@@ -78,9 +97,12 @@ extension KeyboardController {
         if let engine = rimeEngine, restorePartialCommitCheckpoint(using: engine) {
             return .compositionChanged
         }
+        if let effects = handleNumberSuffixDeleteIfNeeded() {
+            return effects
+        }
         if let engine = rimeEngine, engine.isComposing() {
             let result = engine.deleteBackward()
-            applyRimeOutputPreservingPartialCommit(result)
+            applyRimeOutputPreservingPartialCommit(augmentRimeOutputIfNeeded(result))
             return .compositionChanged
         }
         if !state.currentComposition.isEmpty {
@@ -91,6 +113,52 @@ extension KeyboardController {
         }
         textClient?.deleteBackward()
         return []
+    }
+
+    func handleNumberSuffixDeleteIfNeeded() -> KeyboardEffect? {
+        guard let partialCommit = state.partialCommit,
+              partialCommit.source == .numberSuffix
+        else {
+            return nil
+        }
+
+        let rawInput = String(partialCommit.remainingRawInput.dropLast())
+        guard !rawInput.isEmpty else {
+            clearInlinePreedit()
+            state.currentComposition = ""
+            state.lastRimeOutput = nil
+            state.partialCommit = nil
+            clearTypoCorrectionSuggestions()
+            return .compositionChanged
+        }
+
+        guard splitLetterPrefixAndNumericSuffix(rawInput) != nil else {
+            state.partialCommit = nil
+            state.currentComposition = ""
+            state.lastRimeOutput = nil
+            if let engine = rimeEngine,
+               restoreRimeComposition(rawInput, using: engine, rebuildSession: true)
+            {
+                return .compositionChanged
+            }
+            state.currentComposition = rawInput
+            updateInlinePreedit(rawInput)
+            refreshTypoCorrectionSuggestions()
+            return .compositionChanged
+        }
+
+        state.partialCommit = numberSuffixPartialCommit(
+            prefix: partialCommit.confirmedText,
+            rawInput: rawInput
+        )
+        state.currentComposition = rawInput
+        state.lastRimeOutput = numberSuffixRimeOutput(
+            prefix: partialCommit.confirmedText,
+            rawInput: rawInput
+        )
+        updateInlinePreedit(rawInput)
+        clearTypoCorrectionSuggestions()
+        return .compositionChanged
     }
 
     func insertText(_ text: String) {

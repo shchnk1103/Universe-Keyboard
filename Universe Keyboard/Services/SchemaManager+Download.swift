@@ -105,7 +105,7 @@ extension SchemaManager {
                     let schemaContent = try String(contentsOf: schemaURL, encoding: .utf8)
                     let processed = RimeConfigPostProcessor.stripLuaDependencies(from: schemaContent)
                     guard RimeConfigPostProcessor.validateStrippedSchema(processed) else {
-                        throw DownloadError.postProcessingFailed("剥离 Lua 后 schema 无效")
+                        throw DownloadError.postProcessingFailed("高级功能兼容处理后配置无效")
                     }
                     try processed.write(to: schemaURL, atomically: true, encoding: .utf8)
                 }

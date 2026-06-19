@@ -115,6 +115,10 @@ final class RimeSettingsStore {
     var fuzzyChCEnabled = true
     var fuzzyShSEnabled = true
     var fuzzyNLEnabled = true
+    var advancedInputMasterEnabled = true
+    var advancedInputFeatureEnabled: [RimeAdvancedInputFeature: Bool] = Dictionary(
+        uniqueKeysWithValues: RimeAdvancedInputFeature.allCases.map { ($0, true) }
+    )
     var lunaPinyinUserDictionaryEnabled = true
     var rimeIceUserDictionaryEnabled = true
     var userDictionaryAutoBackupEnabled = false
@@ -170,6 +174,21 @@ final class RimeSettingsStore {
         fuzzyChCEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.chCKey, defaultValue: true)
         fuzzyShSEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.shSKey, defaultValue: true)
         fuzzyNLEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.nLKey, defaultValue: true)
+        advancedInputMasterEnabled = boolPreference(
+            forKey: RimeAdvancedInputSettings.masterEnabledKey,
+            defaultValue: true
+        )
+        advancedInputFeatureEnabled = Dictionary(
+            uniqueKeysWithValues: RimeAdvancedInputFeature.allCases.map { feature in
+                (
+                    feature,
+                    boolPreference(
+                        forKey: RimeAdvancedInputSettings.enabledKey(for: feature),
+                        defaultValue: true
+                    )
+                )
+            }
+        )
         lunaPinyinUserDictionaryEnabled = boolPreference(
             forKey: RimeUserDictionarySettings.lunaPinyinEnabledKey,
             defaultValue: true
@@ -200,6 +219,17 @@ final class RimeSettingsStore {
         persistence.set(fuzzyShSEnabled, forKey: RimeFuzzyPinyinSettings.shSKey)
         persistence.set(fuzzyNLEnabled, forKey: RimeFuzzyPinyinSettings.nLKey)
         updateFuzzyDeploymentIntent()
+    }
+
+    func saveAdvancedInputSettings() {
+        persistence.set(advancedInputMasterEnabled, forKey: RimeAdvancedInputSettings.masterEnabledKey)
+        for feature in RimeAdvancedInputFeature.allCases {
+            persistence.set(
+                isAdvancedInputFeatureEnabled(feature),
+                forKey: RimeAdvancedInputSettings.enabledKey(for: feature)
+            )
+        }
+        updateAdvancedInputDeploymentIntent()
     }
 
     func saveUserDictionarySettings() {
@@ -308,7 +338,54 @@ final class RimeSettingsStore {
         schemaManager.rimeIceLuaCapabilityDiagnostic(logResult: logResult)
     }
 
+    func isAdvancedInputFeatureEnabled(_ feature: RimeAdvancedInputFeature) -> Bool {
+        advancedInputFeatureEnabled[feature] ?? true
+    }
+
+    func setAdvancedInputFeature(_ feature: RimeAdvancedInputFeature, enabled: Bool) {
+        advancedInputFeatureEnabled[feature] = enabled
+        saveAdvancedInputSettings()
+    }
+
+    func supportedAdvancedInputFeatures(for schemaID: String) -> Set<RimeAdvancedInputFeature> {
+        schemaID == "rime_ice" ? Set(RimeAdvancedInputFeature.allCases) : []
+    }
+
+    func advancedInputFeatureIsSupported(_ feature: RimeAdvancedInputFeature) -> Bool {
+        supportedAdvancedInputFeatures(for: activeSchemaID).contains(feature)
+    }
+
+    var activeSchemaSupportsAdvancedInput: Bool {
+        !supportedAdvancedInputFeatures(for: activeSchemaID).isEmpty
+    }
+
+    var activeSchemaAdvancedInputStatusText: String {
+        let schemaName = displayName(forSchemaID: activeSchemaID)
+        guard activeSchemaSupportsAdvancedInput else {
+            return "\(schemaName) 暂不支持这些高级输入功能。你的选择会保留，切换到支持的方案后可用。"
+        }
+
+        if !advancedInputMasterEnabled {
+            return "高级输入功能已关闭。基础拼音输入不受影响。"
+        }
+
+        switch deploymentState {
+        case .needsDeploy:
+            return "设置已修改，重新部署后在键盘中生效。"
+        case .triggered, .deploying:
+            return "正在应用设置，完成后回到键盘即可使用。"
+        case .failed:
+            return "设置应用失败，请重新部署后再试。"
+        case .idle, .deployed:
+            return "\(schemaName) 支持这些高级输入功能。"
+        }
+    }
+
     func advancedInputStatusText(for diagnostic: RimeLuaCapabilityDiagnostic) -> String {
+        if diagnostic.status == .available, !advancedInputMasterEnabled {
+            return "未开启"
+        }
+
         switch diagnostic.status {
         case .available:
             return "基础检查通过"
@@ -324,6 +401,10 @@ final class RimeSettingsStore {
     }
 
     func advancedInputStatusDetail(for diagnostic: RimeLuaCapabilityDiagnostic) -> String {
+        if diagnostic.status == .available, !advancedInputMasterEnabled {
+            return "高级输入功能已关闭。基础拼音输入可以继续使用。"
+        }
+
         switch diagnostic.status {
         case .available:
             return "文件、部署和基础动态候选检查正常；日期、时间等高级输入可以使用。"
@@ -336,7 +417,7 @@ final class RimeSettingsStore {
         case .engineUnavailable:
             return "当前键盘引擎未启用高级输入能力，基础输入仍可继续使用。"
         case .runtimeModuleMissing:
-            return "当前 RIME 运行时没有加载 Lua 模块，日期、时间等动态候选不会出现。请重新部署后检查诊断日志。"
+            return "当前键盘没有加载高级输入能力，日期、时间等动态候选不会出现。请重新部署后检查诊断日志。"
         case .schemaMissing:
             return "没有找到雾凇拼音配置文件，基础输入可能会回退到其他方案。"
         case .schemaStripped:
@@ -535,9 +616,17 @@ final class RimeSettingsStore {
         )
     }
 
+    private var currentAdvancedInputSettings: RimeAdvancedInputSettings {
+        RimeAdvancedInputSettings(
+            masterEnabled: advancedInputMasterEnabled,
+            featureEnabled: advancedInputFeatureEnabled
+        )
+    }
+
     private var hasPendingDeploymentIntent: Bool {
         persistence.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey)
             || persistence.bool(forKey: RimeUserDictionarySettings.pendingDeployKey)
+            || persistence.bool(forKey: RimeAdvancedInputSettings.pendingDeployKey)
     }
 
     private static var backupDateFormatter: DateFormatter {
@@ -585,6 +674,29 @@ final class RimeSettingsStore {
 
         persistence.set(true, forKey: RimeUserDictionarySettings.pendingDeployKey)
         markDeploymentNeeded(reason: "候选学习设置已修改")
+    }
+
+    private func updateAdvancedInputDeploymentIntent() {
+        let signature = currentAdvancedInputSettings.deploymentSignature(
+            activeSchemaID: activeSchemaID,
+            supportedFeatures: supportedAdvancedInputFeatures(for: activeSchemaID)
+        )
+        let deployedSignature = persistence.string(forKey: RimeAdvancedInputSettings.deployedSignatureKey)
+        if signature == deployedSignature {
+            let wasPending = persistence.bool(forKey: RimeAdvancedInputSettings.pendingDeployKey)
+            persistence.set(false, forKey: RimeAdvancedInputSettings.pendingDeployKey)
+            if wasPending && !hasPendingDeploymentIntent {
+                persistence.set(true, forKey: "rime_deployed")
+                persistence.set(false, forKey: "rime_needs_deploy")
+                deploymentState = .deployed
+                deploymentLog = ["✓ 高级输入功能设置与当前部署一致"]
+            }
+            persistence.synchronize()
+            return
+        }
+
+        persistence.set(true, forKey: RimeAdvancedInputSettings.pendingDeployKey)
+        markDeploymentNeeded(reason: "高级输入功能设置已修改")
     }
 
     private func isUserDictionaryEnabled(for schemaID: String) -> Bool {

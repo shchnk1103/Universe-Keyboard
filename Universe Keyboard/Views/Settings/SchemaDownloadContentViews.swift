@@ -73,7 +73,7 @@ struct RimeIceInfoContent: View {
                 BulletRow(text: "完整 cn_dicts 词库（8105 + base + ext + tencent），大幅提高候选准确率", style: .dot)
                 BulletRow(text: "支持简繁转换", style: .dot)
                 BulletRow(text: "支持 emoji 候选", style: .dot)
-                BulletRow(text: "部分高级功能（如日期输入、计算器）需要 Lua 插件，暂不可用", style: .dot)
+                BulletRow(text: "部分高级功能（如日期输入、计算器）当前暂不可用", style: .dot)
             }
             Text("下载后可在方案列表中选择切换，随时可卸载恢复默认方案。")
                 .font(.caption)

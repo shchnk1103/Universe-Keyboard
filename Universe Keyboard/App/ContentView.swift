@@ -11,10 +11,13 @@ let universeAppGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
+    @AppStorage(AppAppearance.storageKey, store: AppAppearance.storage)
+    private var appearanceRawValue = AppAppearance.system.rawValue
     @State private var rimeSettingsStore = RimeSettingsStore()
     @State private var operationToast: AppOperationToastState?
     @State private var showOperationToast = false
     @State private var toastDismissTask: Task<Void, Never>?
+    @State private var deploymentToastOperationActive = false
 
     var body: some View {
         TabView {
@@ -28,6 +31,9 @@ struct ContentView: View {
                 }
         }
         .tint(.primary)
+        .preferredColorScheme(
+            AppAppearance(rawValue: appearanceRawValue)?.colorScheme
+        )
         .overlay(alignment: .bottom) {
             if showOperationToast, let operationToast {
                 AppOperationToast(state: operationToast)
@@ -57,8 +63,30 @@ struct ContentView: View {
     private func updateDeploymentToast(for state: RimeDeploymentState) {
         guard !(showOperationToast && operationToast?.source == .download) else { return }
         guard !rimeSettingsStore.downloadState.isActiveOperation else { return }
+
+        switch state {
+        case .triggered, .deploying:
+            deploymentToastOperationActive = true
+        case .deployed, .failed:
+            guard deploymentToastOperationActive else {
+                if operationToast?.source == .deployment {
+                    hideToast()
+                }
+                return
+            }
+            deploymentToastOperationActive = false
+        case .idle, .needsDeploy:
+            deploymentToastOperationActive = false
+            if operationToast?.source == .deployment {
+                hideToast()
+            }
+            return
+        }
+
         guard let toastState = AppOperationToastState(deploymentState: state) else {
-            hideToast()
+            if operationToast?.source == .deployment {
+                hideToast()
+            }
             return
         }
         presentToast(toastState)

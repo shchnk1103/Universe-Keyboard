@@ -13,7 +13,7 @@ public struct RimeConfigPostProcessor {
         return !luaAvailable
     }
 
-    /// 从 rime_ice.schema.yaml 中移除所有 Lua 处理器、翻译器和过滤器。
+    /// 从 rime_ice.schema.yaml 中移除所有 Lua 处理器、分段器、翻译器和过滤器。
     /// 同时跳过 Lua 条目的更深缩进续行（option:, extra: 等），防止产生孤立 YAML 键。
     /// 同时移除 `initials:` 行（speller 配置），因为 rime_ice 的 initials 包含全部字母，
     /// 会导致 speller 无法组成完整音节（依赖 Lua processor 才能正常工作）。
@@ -29,9 +29,11 @@ public struct RimeConfigPostProcessor {
             let isLuaLine =
                 trimmed.contains("lua_translator@")
                 || trimmed.contains("lua_filter@")
+                || trimmed.contains("lua_segmentor@")
                 || trimmed.hasPrefix("- lua_translator")
                 || trimmed.hasPrefix("- lua_filter")
                 || trimmed.hasPrefix("- lua_processor")
+                || trimmed.hasPrefix("- lua_segmentor")
 
             // rime_ice speller initials 包含全部字母，无 Lua 时 speller 无法工作
             let isInitialsLine =
@@ -83,7 +85,8 @@ public struct RimeConfigPostProcessor {
 
         // 如果已有 Lua 引用，说明是完整下载的正确版本，不需要修复
         let hasLuaReferences =
-            content.contains("lua_translator@") || content.contains("lua_filter@") || content.contains("lua_processor@")
+            content.contains("lua_translator@") || content.contains("lua_filter@")
+                || content.contains("lua_processor@") || content.contains("lua_segmentor@")
         guard !hasLuaReferences else { return }
 
         let hasDamagingInitials = content.components(separatedBy: "\n").contains { line in

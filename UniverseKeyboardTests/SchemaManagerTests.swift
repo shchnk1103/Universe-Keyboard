@@ -315,6 +315,8 @@ final class SchemaManagerTests: XCTestCase {
             engine:
               translators:
                 - lua_translator@*date_translator
+              segmentors:
+                - lua_segmentor@*unicode
               filters:
                 - lua_filter@*corrector
             """,
@@ -340,8 +342,8 @@ final class SchemaManagerTests: XCTestCase {
         let diagnostic = manager.rimeIceLuaCapabilityDiagnostic()
 
         XCTAssertEqual(diagnostic.status, .luaFilesMissing)
-        XCTAssertEqual(diagnostic.requiredLuaComponentNames, ["corrector", "date_translator"])
-        XCTAssertEqual(diagnostic.missingLuaComponentNames, ["corrector"])
+        XCTAssertEqual(diagnostic.requiredLuaComponentNames, ["corrector", "date_translator", "unicode"])
+        XCTAssertEqual(diagnostic.missingLuaComponentNames, ["corrector", "unicode"])
     }
 
     func testLuaDiagnosticPassesWhenAllSchemaReferencedLuaComponentsExist() throws {
@@ -350,12 +352,14 @@ final class SchemaManagerTests: XCTestCase {
             engine:
               translators:
                 - lua_translator@*date_translator
+              segmentors:
+                - lua_segmentor@*unicode
               filters:
                 - lua_filter@*corrector
             """,
             includeLuaDirectory: true,
             includeDateTranslator: true,
-            extraLuaComponentNames: ["corrector"]
+            extraLuaComponentNames: ["corrector", "unicode"]
         )
         defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
 
@@ -452,6 +456,7 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
         XCTAssertFalse(settings.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey))
         XCTAssertFalse(settings.bool(forKey: RimeUserDictionarySettings.pendingDeployKey))
+        XCTAssertFalse(settings.bool(forKey: RimeAdvancedInputSettings.pendingDeployKey))
         XCTAssertEqual(
             settings.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey),
             RimeFuzzyPinyinSettings().deploymentSignature(activeSchemaID: "luna_pinyin")
@@ -459,6 +464,10 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(
             settings.string(forKey: RimeUserDictionarySettings.deployedSignatureKey),
             RimeUserDictionarySettings().deploymentSignature()
+        )
+        XCTAssertEqual(
+            settings.string(forKey: RimeAdvancedInputSettings.deployedSignatureKey),
+            RimeAdvancedInputSettings().deploymentSignature(activeSchemaID: "luna_pinyin", supportedFeatures: [])
         )
     }
 
@@ -513,6 +522,55 @@ final class SchemaManagerTests: XCTestCase {
                 nLEnabled: false
             ).deploymentSignature(activeSchemaID: "rime_ice")
         )
+    }
+
+    func testDeploymentAppliesAdvancedInputFeatureSwitchesToRimeIce() async throws {
+        let tempRoot = FileManager.default.temporaryDirectory
+            .appendingPathComponent("schema-manager-advanced-input-\(UUID().uuidString)")
+        let sharedURL = tempRoot.appendingPathComponent("shared")
+        let userURL = tempRoot.appendingPathComponent("user")
+        try FileManager.default.createDirectory(at: sharedURL, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: userURL, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: tempRoot) }
+
+        let schemaYaml = """
+        schema:
+          schema_id: rime_ice
+        engine:
+          translators:
+            - lua_translator@*date_translator
+              date_locale: zh
+            - lua_translator@*calc_translator
+            - script_translator
+        """
+        let schemaURL = sharedURL.appendingPathComponent("rime_ice.schema.yaml")
+        try schemaYaml.write(to: schemaURL, atomically: true, encoding: .utf8)
+
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                RimeAdvancedInputSettings.enabledKey(for: .dateTime): false,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            directories: SchemaDeploymentDirectories(sharedDataURL: sharedURL, userDataURL: userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        await manager.deployRimeConfig()
+
+        let disabledSchema = try String(contentsOf: schemaURL, encoding: .utf8)
+        XCTAssertFalse(disabledSchema.contains("date_translator"))
+        XCTAssertFalse(disabledSchema.contains("date_locale"))
+        XCTAssertTrue(disabledSchema.contains("calc_translator"))
+
+        settings.set(true, forKey: RimeAdvancedInputSettings.enabledKey(for: .dateTime))
+        await manager.deployRimeConfig()
+
+        let restoredSchema = try String(contentsOf: schemaURL, encoding: .utf8)
+        XCTAssertTrue(restoredSchema.contains("date_translator"))
+        XCTAssertTrue(restoredSchema.contains("date_locale"))
+        XCTAssertTrue(restoredSchema.contains("calc_translator"))
     }
 
     func testDeploymentRemovesFuzzyPinyinBlockWhenMasterSwitchDisabled() async throws {

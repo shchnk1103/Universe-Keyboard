@@ -51,7 +51,7 @@ tagging when practical.
 | Repeated delete | Long-press delete and perform repeated deletions after composing text and candidates. | No timer leak, stuck repeat, UI freeze, or inconsistent composition/session state. | Passed by user report | Physical device smoke test on 2026-05-28 reported no observed issue. |
 | App deployment then keyboard use | In the App install/update/select a schema and complete deployment, then switch immediately to a text field. | Updated schema is usable immediately; keyboard does not require typing to start deployment and does not show stale configuration. | Passed by user report | Physical device smoke test on 2026-05-28 reported no observed issue. This directly validates the App-deploy-before-typing boundary. |
 | Schema switching and recovery | Switch schema in the App, deploy, then test after changing apps and returning to input. | Session recovers correctly and uses the deployed schema without performing full deployment in the extension. | Passed by user report | Physical device smoke test on 2026-05-28 reported no observed issue. Record exact schemas before release tagging if available. |
-| Lua-enabled schema smoke test | Deploy an available schema that relies on Lua capability and exercise the Lua-specific input path. | Expected Lua behavior works using the verified packaged artifacts, or failure is documented before capability is advertised. | Not run | Record artifact version, schema, test input class, and result without retaining private entered text. |
+| Lua-enabled schema smoke test | Deploy an available schema that relies on Lua capability and exercise the Lua-specific input path. | Expected Lua behavior works using the verified packaged artifacts, or failure is documented before capability is advertised. | Partially passed by user report | iPhone 13 Pro on iOS 27 beta 1 reported `rime_ice` dynamic candidates for `rq`, `sj`, `xq`, and `dt` after main-App deployment smoke passed. Full automated runtime-fixture smoke and `ts` / `R123` / `cC1+1` / Unicode / UUID / 农历 manual coverage remain pending. |
 | VoiceOver | Enable VoiceOver and navigate functional keys and candidate controls. | Labels, hints, and state/value announcements are meaningful for shift, delete, globe/mode, space, return, and candidate expand/collapse controls. | Not run | Record device and any missing announcement. |
 | Dynamic Type | Increase text size and inspect App settings and diagnostics screens. | App screens remain usable and legible; the keyboard's fixed interaction geometry is not changed by this validation. | Not run | Capture affected screens at tested setting. |
 | Light and dark appearance | Compare keyboard after deployment in light and dark appearances. | Contrast is readable and stable keyboard geometry matches the migration baseline. | Not run | Save paired screenshots. |
@@ -78,6 +78,38 @@ tagging when practical.
 | VoiceOver | BLOCKED | Not explicitly covered by the reported test scope. | None |
 | Dynamic Type | BLOCKED | Not explicitly covered by the reported test scope. | None |
 | Light and dark appearance | BLOCKED | Not explicitly covered by the reported test scope. | None |
+
+### Session: 2026-06-18 Asia/Shanghai
+
+- Tester: Project owner
+- Build or commit: local post-Lua diagnostic worktree; exact commit not recorded in the device log
+- Device / OS: iPhone 13 Pro, iOS 27 beta 1
+- Keyboard enabled as system keyboard: Yes
+- RIME artifact version: app diagnostic reported librime 1.16.1 with Lua module registered
+- Schema tested: `rime_ice`
+- App diagnostic state: `status=available`, `luaModuleRegistered=true`, `luaComponentsRegistered=true`, `runtimeSmokePassed=true`
+
+| Scenario | Result (`PASS` / `FAIL` / `BLOCKED`) | Observation | Evidence Path |
+| --- | --- | --- | --- |
+| Lua-enabled schema smoke test: `rq` | PASS | Date candidates appeared after redeploy. | User report and App diagnostic log in project thread |
+| Lua-enabled schema smoke test: `sj` | PASS | Time candidates appeared after redeploy. | User report and App diagnostic log in project thread |
+| Lua-enabled schema smoke test: `xq` | PASS | Weekday candidates appeared after redeploy. | User report and App diagnostic log in project thread |
+| Lua-enabled schema smoke test: `dt` | PASS | Date-time candidates appeared after redeploy. | User report and App diagnostic log in project thread |
+| Lua-enabled schema smoke test: remaining representative inputs | BLOCKED | `ts`, `R123`, `cC1+1`, Unicode, UUID, and 农历 were not explicitly recorded in this session. | None |
+
+### Session: 2026-06-19 Asia/Shanghai
+
+- Tester: Project owner
+- Build or commit: local advanced-input and pinyin-number continuation worktree; exact commit not recorded before this commit
+- Device / OS: Physical iPhone; exact model and OS not recorded in this session
+- Keyboard enabled as system keyboard: Yes
+- Schema tested: `rime_ice`
+
+| Scenario | Result (`PASS` / `FAIL` / `BLOCKED`) | Observation | Evidence Path |
+| --- | --- | --- | --- |
+| Ordinary pinyin + number suffix candidate display | PASS | `nihao123` keeps raw inline preedit while showing `你好123` as the candidate; user reported no issue after testing. | User report in project thread |
+| Ordinary pinyin + number suffix delete order | PASS | Delete removes raw input in reverse order (`3`, `2`, `1`, then pinyin letters) instead of deleting committed Chinese characters. | User report in project thread |
+| Number suffix followed by ordinary punctuation | PASS | Punctuation commits the transformed candidate and clears the stale candidate-bar state. | User report in project thread |
 
 #### Issues Found
 

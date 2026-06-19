@@ -103,7 +103,7 @@ private struct RimeSchemaDetailView: View {
                             RimeSchemaMetricLabel(systemImage: "tag", text: version)
                         }
                         if schema.requiresLua {
-                            RimeSchemaMetricLabel(systemImage: "puzzlepiece.extension", text: "需要 Lua")
+                            RimeSchemaMetricLabel(systemImage: "sparkles", text: "高级输入")
                         }
                     }
                 }
@@ -168,7 +168,7 @@ private struct RimeSchemaDetailView: View {
             } header: {
                 Text("高级输入功能")
             } footer: {
-                Text("这里显示日期、时间、计算器等动态候选的准备状态；真实候选输出仍需完成单独测试。")
+                Text("这里显示日期、时间、计算器等动态候选的准备状态；具体开关可在高级输入功能设置中调整。")
             }
         }
 
@@ -243,20 +243,23 @@ private struct RimeAdvancedInputStatusContent: View {
 
     var body: some View {
         let currentDiagnostic = diagnostic
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Label(
-                    store.advancedInputStatusText(for: currentDiagnostic),
-                    systemImage: statusImage(for: currentDiagnostic)
-                )
-                .font(.body)
+        Group {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Label(
+                        store.advancedInputStatusText(for: currentDiagnostic),
+                        systemImage: statusImage(for: currentDiagnostic)
+                    )
+                    .font(.body)
 
-                Spacer()
+                    Spacer()
+                }
+
+                Text(store.advancedInputStatusDetail(for: currentDiagnostic))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
-
-            Text(store.advancedInputStatusDetail(for: currentDiagnostic))
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+            .padding(.vertical, 2)
 
             if let action = store.advancedInputRecoveryAction(for: currentDiagnostic) {
                 AppActionButton(title: action.title, systemImage: action.systemImage) {
@@ -264,12 +267,16 @@ private struct RimeAdvancedInputStatusContent: View {
                 }
             }
 
+            NavigationLink(destination: RimeAdvancedInputSettingsView(store: store)) {
+                Label("查看高级输入设置", systemImage: "slider.horizontal.3")
+            }
+            .font(.subheadline)
+
             NavigationLink(destination: DiagnosticsView()) {
                 Label("查看诊断日志", systemImage: "doc.text.magnifyingglass")
             }
             .font(.subheadline)
         }
-        .padding(.vertical, 2)
         .onAppear {
             guard !hasLoggedDiagnostic else { return }
             hasLoggedDiagnostic = true

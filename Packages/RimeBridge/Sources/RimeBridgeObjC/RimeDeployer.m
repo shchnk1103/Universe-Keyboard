@@ -42,7 +42,8 @@ static NSString *RimeLogDirectory(NSString *userDir) {
 + (BOOL)luaComponentsRegistered {
     return RimeLuaComponentRegistered("lua_processor")
         && RimeLuaComponentRegistered("lua_translator")
-        && RimeLuaComponentRegistered("lua_filter");
+        && RimeLuaComponentRegistered("lua_filter")
+        && RimeLuaComponentRegistered("lua_segmentor");
 }
 
 + (NSArray<NSString *> *)luaComponentRegistrySummary {

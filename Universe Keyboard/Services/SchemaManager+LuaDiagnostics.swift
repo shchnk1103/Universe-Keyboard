@@ -53,10 +53,11 @@ extension SchemaManager {
         yaml.contains("lua_processor@")
             || yaml.contains("lua_translator@")
             || yaml.contains("lua_filter@")
+            || yaml.contains("lua_segmentor@")
     }
 
     private static func requiredLuaComponents(_ yaml: String) -> [String] {
-        let componentPattern = #"lua_(?:processor|translator|filter)@\*?([A-Za-z0-9_./-]+)"#
+        let componentPattern = #"lua_(?:processor|translator|filter|segmentor)@\*?([A-Za-z0-9_./-]+)"#
         guard let regex = try? NSRegularExpression(pattern: componentPattern) else { return [] }
         let nsRange = NSRange(yaml.startIndex..<yaml.endIndex, in: yaml)
         let names = regex.matches(in: yaml, range: nsRange).compactMap { match -> String? in
@@ -68,7 +69,7 @@ extension SchemaManager {
 
     private static func luaEntryScriptRequired(_ yaml: String) -> Bool {
         yaml.range(
-            of: #"lua_(?:processor|translator|filter)@(?!\*)[A-Za-z0-9_./-]+"#,
+            of: #"lua_(?:processor|translator|filter|segmentor)@(?!\*)[A-Za-z0-9_./-]+"#,
             options: .regularExpression
         ) != nil
     }
