@@ -1,4 +1,6 @@
 #import "RimeSessionManager.h"
+#import "RimeDeployer.h"
+#import "RimeLuaModuleShim.h"
 #include "rime_api.h"
 #include <string.h>
 
@@ -31,9 +33,19 @@ NSString * const RimeKeyCandidateGlobalIndex = @"globalIndex";
     RimeApi *_api;
 }
 
+static NSString *RimeSessionLogDirectory(NSString *userDir) {
+    NSString *logDir = [userDir stringByAppendingPathComponent:@"logs"];
+    [[NSFileManager defaultManager] createDirectoryAtPath:logDir
+                              withIntermediateDirectories:YES
+                                               attributes:nil
+                                                    error:nil];
+    return logDir;
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {
+        RimeEnsureLuaModuleLinked();
         _api = rime_get_api();
         _sessionId = 0;
         _setupDone = NO;
@@ -47,6 +59,7 @@ NSString * const RimeKeyCandidateGlobalIndex = @"globalIndex";
 - (BOOL)setupWithSharedDataDir:(NSString *)sharedDataDir
                    userDataDir:(NSString *)userDataDir {
     if (_setupDone) return YES;
+    RimeEnsureLuaModuleLinked();
 
     RIME_STRUCT(RimeTraits, traits);
     traits.shared_data_dir = [sharedDataDir UTF8String];
@@ -55,6 +68,8 @@ NSString * const RimeKeyCandidateGlobalIndex = @"globalIndex";
     traits.distribution_code_name = "UniverseKeyboard";
     traits.distribution_version = "1.0.0";
     traits.app_name = "rime.UniverseKeyboard";
+    traits.min_log_level = 0;
+    traits.log_dir = [RimeSessionLogDirectory(userDataDir) UTF8String];
 
     // 加载模块：core, dict, gears 为基础模块
     // 当 librime-lua 插件已编译链接时，添加 "lua" 到列表中
@@ -65,7 +80,16 @@ NSString * const RimeKeyCandidateGlobalIndex = @"globalIndex";
 #endif
     traits.modules = modules;
 
+    NSLog(@"[RIME] keyboard setup: modules=%@ luaCompiledIn=%@ luaModuleRegisteredBeforeSetup=%@",
+          [[RimeDeployer configuredModules] componentsJoinedByString:@"+"],
+          [RimeDeployer luaModuleCompiledIn] ? @"YES" : @"NO",
+          [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO");
+
     _api->setup(&traits);
+    RimeEnsureLuaComponentsLoaded();
+    NSLog(@"[RIME] keyboard setup complete: luaModuleRegisteredAfterSetup=%@ luaComponents=%@",
+          [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO",
+          [[RimeDeployer luaComponentRegistrySummary] componentsJoinedByString:@"+"]);
     _setupDone = YES;
     return YES;
 }
@@ -75,6 +99,9 @@ NSString * const RimeKeyCandidateGlobalIndex = @"globalIndex";
     if (!_setupDone) return NO;
 
     _api->initialize(NULL);
+    NSLog(@"[RIME] keyboard initialize complete: luaModuleRegisteredAfterInitialize=%@ luaComponents=%@",
+          [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO",
+          [[RimeDeployer luaComponentRegistrySummary] componentsJoinedByString:@"+"]);
 
     // 部署与共享偏好写入均由主 App 完成；扩展启动只创建可输入的 session。
 

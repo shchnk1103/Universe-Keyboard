@@ -34,10 +34,15 @@ extension SchemaManager {
                 RimeDeploymentRequest(
                     mode: .fullCheck,
                     sharedDataURL: directories.sharedDataURL,
-                    userDataURL: directories.userDataURL
+                    userDataURL: directories.userDataURL,
+                    runtimeSmokeSchemaID: activeSchemaIDForDeployment
                 )
             )
             Logger.shared.info("deployRimeConfig: \(result.diagnosticMessage)", category: .deployment)
+            if let runtimeSmokePassed = result.runtimeSmokePassed {
+                settings.set(runtimeSmokePassed, forKey: "rime_ice_lua_smoke_passed")
+                settings.set(Int(Date().timeIntervalSince1970), forKey: "rime_ice_lua_smoke_timestamp")
+            }
             if result.succeeded {
                 Logger.shared.info("deployRimeConfig: 部署成功 ✓", category: .deployment)
                 settings.set(true, forKey: "rime_deployed")

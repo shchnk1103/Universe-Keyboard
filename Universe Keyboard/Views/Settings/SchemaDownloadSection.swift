@@ -14,18 +14,6 @@ struct SchemaDownloadSection: View {
             }
         }
 
-        if store.isShowingDownloadProgress {
-            Section {
-                RimeDownloadProgressContent(
-                    statusLabel: store.downloadStatusLabel,
-                    state: store.downloadState,
-                    onCancel: { store.cancelDownload() }
-                )
-            } header: {
-                Text("下载进度")
-            }
-        }
-
         if case .failed(let message) = store.downloadState {
             Section {
                 RimeDownloadErrorContent(message: message, onRetry: { store.startDownload() })

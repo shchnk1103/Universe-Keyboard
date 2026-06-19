@@ -128,7 +128,10 @@ extension SchemaManager {
 
             activateSchema(schemaID)
             rimeIceDownloadState = .deploying
-            await deployRimeConfig()
+            let deployed = await deployRimeConfig()
+            guard deployed else {
+                throw DownloadError.postProcessingFailed("部署失败，请稍后重试")
+            }
 
             rimeIceDownloadState = .completed
             refreshSchemaList()

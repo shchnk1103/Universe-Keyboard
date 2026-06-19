@@ -12,10 +12,9 @@ let universeAppGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var rimeSettingsStore = RimeSettingsStore()
-    @State private var showDeploymentToast = false
-    @State private var showUserDictionaryToast = false
+    @State private var operationToast: AppOperationToastState?
+    @State private var showOperationToast = false
     @State private var toastDismissTask: Task<Void, Never>?
-    @State private var userDictionaryToastDismissTask: Task<Void, Never>?
 
     var body: some View {
         TabView {
@@ -30,25 +29,20 @@ struct ContentView: View {
         }
         .tint(.primary)
         .overlay(alignment: .bottom) {
-            if showDeploymentToast {
-                RimeDeploymentToast(state: rimeSettingsStore.deploymentState)
+            if showOperationToast, let operationToast {
+                AppOperationToast(state: operationToast)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 74)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
-            } else if showUserDictionaryToast, let message = rimeSettingsStore.userDictionaryMessage {
-                RimeUserDictionaryOperationToast(
-                    message: message,
-                    succeeded: rimeSettingsStore.userDictionaryMessageSucceeded
-                )
-                .padding(.horizontal, 16)
-                .padding(.bottom, 74)
-                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
-        .animation(.easeInOut(duration: 0.2), value: showDeploymentToast)
-        .animation(.easeInOut(duration: 0.2), value: showUserDictionaryToast)
+        .animation(.easeInOut(duration: 0.2), value: showOperationToast)
         .onChange(of: rimeSettingsStore.deploymentState) { _, state in
             updateDeploymentToast(for: state)
+        }
+        .onChange(of: rimeSettingsStore.downloadState) { _, state in
+            updateDownloadToast(for: state)
+            rimeSettingsStore.handleDownloadStateChange()
         }
         .onChange(of: rimeSettingsStore.userDictionaryMessageVersion) { _, _ in
             updateUserDictionaryToast()
@@ -61,40 +55,63 @@ struct ContentView: View {
     }
 
     private func updateDeploymentToast(for state: RimeDeploymentState) {
-        toastDismissTask?.cancel()
-
-        switch state {
-        case .triggered, .deploying, .failed:
-            showDeploymentToast = true
-        case .deployed:
-            guard showDeploymentToast else { return }
-            showDeploymentToast = true
-            toastDismissTask = Task {
-                try? await Task.sleep(nanoseconds: 2_000_000_000)
-                guard !Task.isCancelled else { return }
-                await MainActor.run { showDeploymentToast = false }
-            }
-        case .idle, .needsDeploy:
-            showDeploymentToast = false
+        guard !(showOperationToast && operationToast?.source == .download) else { return }
+        guard !rimeSettingsStore.downloadState.isActiveOperation else { return }
+        guard let toastState = AppOperationToastState(deploymentState: state) else {
+            hideToast()
+            return
         }
+        presentToast(toastState)
+    }
+
+    private func updateDownloadToast(for state: DownloadState) {
+        guard let toastState = AppOperationToastState(downloadState: state) else {
+            hideToast()
+            return
+        }
+        presentToast(toastState)
     }
 
     private func updateUserDictionaryToast() {
-        userDictionaryToastDismissTask?.cancel()
-        guard rimeSettingsStore.userDictionaryMessage != nil else {
-            showUserDictionaryToast = false
-            return
-        }
+        guard let message = rimeSettingsStore.userDictionaryMessage else { return }
+        presentToast(
+            .userDictionary(
+                message: message,
+                succeeded: rimeSettingsStore.userDictionaryMessageSucceeded
+            )
+        )
+    }
 
-        showUserDictionaryToast = true
-        userDictionaryToastDismissTask = Task {
+    private func presentToast(_ state: AppOperationToastState) {
+        toastDismissTask?.cancel()
+        operationToast = state
+        showOperationToast = true
+
+        guard state.automaticallyDismisses else { return }
+        toastDismissTask = Task {
             try? await Task.sleep(nanoseconds: 2_000_000_000)
             guard !Task.isCancelled else { return }
-            await MainActor.run { showUserDictionaryToast = false }
+            await MainActor.run { showOperationToast = false }
         }
+    }
+
+    private func hideToast() {
+        toastDismissTask?.cancel()
+        showOperationToast = false
     }
 }
 
 #Preview {
     ContentView()
+}
+
+private extension DownloadState {
+    var isActiveOperation: Bool {
+        switch self {
+        case .fetchingReleaseInfo, .downloading, .extracting, .postProcessing, .deploying:
+            return true
+        case .idle, .completed, .failed:
+            return false
+        }
+    }
 }

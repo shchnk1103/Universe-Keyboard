@@ -82,40 +82,6 @@ struct RimeIceInfoContent: View {
     }
 }
 
-struct RimeDownloadProgressContent: View {
-    let statusLabel: String
-    let state: DownloadState
-    let onCancel: () -> Void
-
-    var body: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 10) {
-                ProgressView()
-                Text(statusLabel)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                AppActionButton(
-                    title: "取消",
-                    systemImage: "xmark",
-                    minHeight: 30,
-                    action: onCancel
-                )
-                .frame(maxWidth: 92)
-            }
-
-            switch state {
-            case .downloading(let progress):
-                ProgressView(value: progress)
-            case .fetchingReleaseInfo, .extracting, .postProcessing, .deploying:
-                ProgressView()
-            default:
-                EmptyView()
-            }
-        }
-    }
-}
-
 struct RimeDownloadErrorContent: View {
     let message: String
     let onRetry: () -> Void

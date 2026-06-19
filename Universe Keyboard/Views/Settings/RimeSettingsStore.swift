@@ -79,7 +79,7 @@ enum RimeAdvancedInputRecoveryAction: Equatable {
     var title: String {
         switch self {
         case .setCurrentSchema: return "设为当前方案"
-        case .applySettings: return "重新应用 RIME 设置"
+        case .applySettings: return "重新部署"
         case .redownloadSchema: return "重新下载雾凇拼音"
         }
     }
@@ -142,26 +142,6 @@ final class RimeSettingsStore {
     var rimeIceVersion: String? { schemaManager.rimeIceVersion }
     var isRimeIceInstalled: Bool {
         schemas.contains { $0.schemaID == "rime_ice" && $0.installed }
-    }
-
-    var isShowingDownloadProgress: Bool {
-        switch downloadState {
-        case .fetchingReleaseInfo, .downloading, .extracting, .postProcessing, .deploying:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var downloadStatusLabel: String {
-        switch downloadState {
-        case .fetchingReleaseInfo: return "正在获取最新版本信息…"
-        case .downloading(let progress): return "正在下载… \(Int(progress * 100))%"
-        case .extracting: return "正在解压配置文件…"
-        case .postProcessing: return "正在处理配置…"
-        case .deploying: return "正在编译词库…"
-        default: return "准备中…"
-        }
     }
 
     var deploymentStatusHint: String {
@@ -324,8 +304,8 @@ final class RimeSettingsStore {
         }
     }
 
-    func rimeIceAdvancedInputDiagnostic() -> RimeLuaCapabilityDiagnostic {
-        schemaManager.rimeIceLuaCapabilityDiagnostic(logResult: false)
+    func rimeIceAdvancedInputDiagnostic(logResult: Bool = false) -> RimeLuaCapabilityDiagnostic {
+        schemaManager.rimeIceLuaCapabilityDiagnostic(logResult: logResult)
     }
 
     func advancedInputStatusText(for diagnostic: RimeLuaCapabilityDiagnostic) -> String {
@@ -337,8 +317,8 @@ final class RimeSettingsStore {
         case .inactiveSchema:
             return "未使用"
         case .needsDeploy:
-            return "需要重新应用"
-        case .engineUnavailable, .schemaMissing, .schemaStripped, .luaFilesMissing:
+            return "需要重新部署"
+        case .engineUnavailable, .runtimeModuleMissing, .schemaMissing, .schemaStripped, .luaFilesMissing:
             return "暂不可用"
         }
     }
@@ -346,7 +326,7 @@ final class RimeSettingsStore {
     func advancedInputStatusDetail(for diagnostic: RimeLuaCapabilityDiagnostic) -> String {
         switch diagnostic.status {
         case .available:
-            return "文件和部署状态正常；日期、时间、计算器等动态候选仍需完成真实测试后再标记为可用。"
+            return "文件、部署和基础动态候选检查正常；日期、时间等高级输入可以使用。"
         case .notInstalled:
             return "安装雾凇拼音后，可以检查日期、时间、计算器等高级输入功能。"
         case .inactiveSchema:
@@ -355,6 +335,8 @@ final class RimeSettingsStore {
             return "雾凇拼音文件已准备好，但最新设置还没有应用到 RIME。"
         case .engineUnavailable:
             return "当前键盘引擎未启用高级输入能力，基础输入仍可继续使用。"
+        case .runtimeModuleMissing:
+            return "当前 RIME 运行时没有加载 Lua 模块，日期、时间等动态候选不会出现。请重新部署后检查诊断日志。"
         case .schemaMissing:
             return "没有找到雾凇拼音配置文件，基础输入可能会回退到其他方案。"
         case .schemaStripped:
@@ -372,7 +354,7 @@ final class RimeSettingsStore {
             return .applySettings
         case .schemaMissing, .schemaStripped, .luaFilesMissing:
             return .redownloadSchema
-        case .available, .notInstalled, .engineUnavailable:
+        case .available, .notInstalled, .engineUnavailable, .runtimeModuleMissing:
             return nil
         }
     }
@@ -451,6 +433,25 @@ final class RimeSettingsStore {
             return
         }
         schemaManager.startDownload(schemaID: schemaID)
+    }
+
+    func handleDownloadStateChange() {
+        switch downloadState {
+        case .deploying:
+            guard deploymentState != .deploying else { return }
+            deploymentState = .deploying
+            deploymentLog = ["→ 正在部署下载后的 RIME 方案"]
+        case .completed:
+            deploymentState = .deployed
+            deploymentLog = ["✓ RIME 方案已下载并部署"]
+        case .failed where deploymentState == .deploying:
+            deploymentState = .failed
+            deploymentLog = ["✗ RIME 方案部署失败"]
+        case .failed:
+            refreshDeploymentState()
+        case .idle, .fetchingReleaseInfo, .downloading, .extracting, .postProcessing:
+            refreshDeploymentState()
+        }
     }
 
     func triggerDeployment() async {

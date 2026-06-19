@@ -30,7 +30,6 @@ struct RimeSettingsView: View {
         .navigationTitle("RIME 方案设置")
         .tint(.primary)
         .onAppear { store.load() }
-        .onChange(of: store.downloadState) { _, _ in store.refreshDeploymentState() }
         .onDisappear { store.stop() }
     }
 
@@ -74,6 +73,8 @@ private struct RimeSchemaDetailView: View {
     let initialSchema: SchemaMetadata
     @State private var showLicense = false
     @State private var showUninstallAlert = false
+    @State private var schemaPendingSwitch: SchemaMetadata?
+    @State private var showSchemaSwitchAlert = false
 
     var body: some View {
         Form {
@@ -114,8 +115,33 @@ private struct RimeSchemaDetailView: View {
         }
         .navigationTitle(schema.name)
         .tint(.primary)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if schema.installed && schema.schemaID != store.activeSchemaID {
+                    Button {
+                        schemaPendingSwitch = schema
+                        showSchemaSwitchAlert = true
+                    } label: {
+                        Label("使用", systemImage: "keyboard")
+                    }
+                    .disabled(store.deploymentState == .triggered || store.deploymentState == .deploying)
+                }
+            }
+        }
         .sheet(isPresented: $showLicense) {
             LicenseView { store.acceptLicense(for: schema.schemaID) }
+        }
+        .alert("切换输入方案？", isPresented: $showSchemaSwitchAlert) {
+            Button("切换并部署") {
+                guard let selectedSchema = schemaPendingSwitch else { return }
+                schemaPendingSwitch = nil
+                Task { await store.switchToSchema(selectedSchema.schemaID) }
+            }
+            Button("取消", role: .cancel) {
+                schemaPendingSwitch = nil
+            }
+        } message: {
+            Text(switchConfirmationMessage)
         }
         .alert("确认卸载", isPresented: $showUninstallAlert) {
             Button("取消", role: .cancel) {}
@@ -129,6 +155,11 @@ private struct RimeSchemaDetailView: View {
         store.schemas.first { $0.schemaID == initialSchema.schemaID } ?? initialSchema
     }
 
+    private var switchConfirmationMessage: String {
+        let name = schemaPendingSwitch?.name ?? schema.name
+        return "切换到「\(name)」后，主 App 会自动重新部署 RIME。完成后回到键盘即可使用。"
+    }
+
     @ViewBuilder
     private var schemaActionSections: some View {
         if schema.schemaID == "rime_ice" {
@@ -138,23 +169,6 @@ private struct RimeSchemaDetailView: View {
                 Text("高级输入功能")
             } footer: {
                 Text("这里显示日期、时间、计算器等动态候选的准备状态；真实候选输出仍需完成单独测试。")
-            }
-        }
-
-        if schema.installed {
-            Section {
-                AppActionButton(
-                    title: schema.schemaID == store.activeSchemaID ? "正在使用" : "设为当前方案",
-                    systemImage: schema.schemaID == store.activeSchemaID ? "checkmark.circle.fill" : "keyboard",
-                    prominence: schema.schemaID == store.activeSchemaID ? .secondary : .primary
-                ) {
-                    Task { await store.switchToSchema(schema.schemaID) }
-                }
-                .disabled(schema.schemaID == store.activeSchemaID)
-            } header: {
-                Text("使用")
-            } footer: {
-                Text("切换方案后，主 App 会自动应用设置。完成后回到键盘即可使用。")
             }
         }
 
@@ -175,18 +189,6 @@ private struct RimeSchemaDetailView: View {
                 )
             } header: {
                 Text("下载")
-            }
-        }
-
-        if store.isShowingDownloadProgress {
-            Section {
-                RimeDownloadProgressContent(
-                    statusLabel: store.downloadStatusLabel,
-                    state: store.downloadState,
-                    onCancel: { store.cancelDownload() }
-                )
-            } header: {
-                Text("下载进度")
             }
         }
 
@@ -233,6 +235,7 @@ private struct RimeSchemaDetailView: View {
 
 private struct RimeAdvancedInputStatusContent: View {
     let store: RimeSettingsStore
+    @State private var hasLoggedDiagnostic = false
 
     private var diagnostic: RimeLuaCapabilityDiagnostic {
         store.rimeIceAdvancedInputDiagnostic()
@@ -267,6 +270,11 @@ private struct RimeAdvancedInputStatusContent: View {
             .font(.subheadline)
         }
         .padding(.vertical, 2)
+        .onAppear {
+            guard !hasLoggedDiagnostic else { return }
+            hasLoggedDiagnostic = true
+            _ = store.rimeIceAdvancedInputDiagnostic(logResult: true)
+        }
     }
 
     private func statusImage(for diagnostic: RimeLuaCapabilityDiagnostic) -> String {
@@ -279,7 +287,7 @@ private struct RimeAdvancedInputStatusContent: View {
             return "arrow.down.circle"
         case .inactiveSchema:
             return "keyboard"
-        case .engineUnavailable, .schemaMissing, .schemaStripped, .luaFilesMissing:
+        case .engineUnavailable, .runtimeModuleMissing, .schemaMissing, .schemaStripped, .luaFilesMissing:
             return "xmark.circle"
         }
     }

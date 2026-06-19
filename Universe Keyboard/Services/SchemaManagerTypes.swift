@@ -124,15 +124,17 @@ enum RimeSchemeCatalog {
                 schemaFileName: "rime_ice.schema.yaml",
                 luaDirectoryPrefix: "lua/",
                 skippedPrefixes: ["squirrel", "weasel", "recipe", "others/"],
-                skippedFiles: ["radical_pinyin.schema.yaml", "radical_pinyin.dict.yaml"],
+                skippedFiles: [],
                 removableFiles: [
                     "rime_ice.schema.yaml", "rime_ice.dict.yaml",
+                    "radical_pinyin.schema.yaml", "radical_pinyin.dict.yaml",
                     "melt_eng.schema.yaml", "melt_eng.dict.yaml",
                     "symbols_v.yaml", "symbols_caps_v.yaml",
                     "custom_phrase.txt",
+                    "rime.lua",
                 ],
                 removableDirectories: ["cn_dicts", "en_dicts"],
-                removableBuildFileSubstrings: ["rime_ice", "melt_eng"]
+                removableBuildFileSubstrings: ["rime_ice", "melt_eng", "radical_pinyin"]
             )
         ),
     ]
@@ -164,24 +166,31 @@ struct RimeLuaCapabilityDiagnostic: Equatable, Sendable {
         case inactiveSchema
         case needsDeploy
         case engineUnavailable
+        case runtimeModuleMissing
         case schemaMissing
         case schemaStripped
         case luaFilesMissing
     }
 
     let luaCompiledIn: Bool
+    let luaModuleRegistered: Bool
+    let luaComponentsRegistered: Bool
     let deploymentModules: [String]
     let persistedLuaAvailable: Bool?
     let rimeIceInstalled: Bool
     let activeSchemaID: String
     let rimeDeployed: Bool
     let rimeNeedsDeploy: Bool
+    let runtimeSmokePassed: Bool
     let schemaExists: Bool
     let schemaHasLuaComponents: Bool
     let luaDirectoryExists: Bool
+    let luaEntryScriptRequired: Bool
+    let luaEntryScriptExists: Bool
     let dateTranslatorExists: Bool
     let requiredLuaComponentNames: [String]
     let missingLuaComponentNames: [String]
+    let missingLuaDependencyNames: [String]
 
     var status: Status {
         guard rimeIceInstalled else { return .notInstalled }
@@ -189,10 +198,19 @@ struct RimeLuaCapabilityDiagnostic: Equatable, Sendable {
         guard luaCompiledIn, deploymentModules.contains("lua"), persistedLuaAvailable != false else {
             return .engineUnavailable
         }
+        guard luaModuleRegistered else { return .runtimeModuleMissing }
         guard schemaExists else { return .schemaMissing }
         guard schemaHasLuaComponents else { return .schemaStripped }
-        guard luaDirectoryExists, dateTranslatorExists, missingLuaComponentNames.isEmpty else { return .luaFilesMissing }
-        guard rimeDeployed, !rimeNeedsDeploy else { return .needsDeploy }
+        guard
+            luaDirectoryExists,
+            !luaEntryScriptRequired || luaEntryScriptExists,
+            dateTranslatorExists,
+            missingLuaComponentNames.isEmpty,
+            missingLuaDependencyNames.isEmpty
+        else {
+            return .luaFilesMissing
+        }
+        guard runtimeSmokePassed || (rimeDeployed && !rimeNeedsDeploy) else { return .needsDeploy }
         return .available
     }
 
@@ -201,9 +219,12 @@ struct RimeLuaCapabilityDiagnostic: Equatable, Sendable {
         let persistedLuaSummary = persistedLuaAvailable.map { String($0) } ?? "nil"
         let requiredComponentsSummary = requiredLuaComponentNames.joined(separator: "+")
         let missingComponentsSummary = missingLuaComponentNames.joined(separator: "+")
+        let missingDependenciesSummary = missingLuaDependencyNames.joined(separator: "+")
         return [
             "status=\(status)",
             "luaCompiledIn=\(luaCompiledIn)",
+            "luaModuleRegistered=\(luaModuleRegistered)",
+            "luaComponentsRegistered=\(luaComponentsRegistered)",
             "deploymentModules=\(modulesSummary)",
             "persistedLuaAvailable=\(persistedLuaSummary)",
             "activeSchema=\(activeSchemaID)",
@@ -211,11 +232,15 @@ struct RimeLuaCapabilityDiagnostic: Equatable, Sendable {
             "schemaExists=\(schemaExists)",
             "schemaHasLua=\(schemaHasLuaComponents)",
             "luaDir=\(luaDirectoryExists)",
+            "luaEntryScriptRequired=\(luaEntryScriptRequired)",
+            "luaEntryScript=\(luaEntryScriptExists)",
             "dateTranslator=\(dateTranslatorExists)",
             "requiredLuaComponents=\(requiredComponentsSummary)",
             "missingLuaComponents=\(missingComponentsSummary)",
+            "missingLuaDependencies=\(missingDependenciesSummary)",
             "deployed=\(rimeDeployed)",
             "needsDeploy=\(rimeNeedsDeploy)",
+            "runtimeSmokePassed=\(runtimeSmokePassed)",
         ].joined(separator: ";")
     }
 }

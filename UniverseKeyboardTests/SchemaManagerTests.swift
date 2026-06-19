@@ -162,6 +162,7 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(diagnostic.status, .available)
         XCTAssertTrue(diagnostic.deploymentModules.contains("lua"))
         XCTAssertTrue(diagnostic.schemaHasLuaComponents)
+        XCTAssertTrue(diagnostic.luaEntryScriptExists)
         XCTAssertTrue(diagnostic.dateTranslatorExists)
     }
 
@@ -217,6 +218,95 @@ final class SchemaManagerTests: XCTestCase {
         let diagnostic = manager.rimeIceLuaCapabilityDiagnostic()
 
         XCTAssertEqual(diagnostic.status, .luaFilesMissing)
+    }
+
+    func testLuaDiagnosticDetectsMissingLuaEntryScript() throws {
+        let fixture = try makeLuaDiagnosticFixture(
+            schemaContent: "engine:\n  translators:\n    - lua_translator@date_translator\n",
+            includeLuaDirectory: true,
+            includeLuaEntryScript: false,
+            includeDateTranslator: true
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_lua_available": true,
+                "rime_deployed": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            directories: SchemaDeploymentDirectories(sharedDataURL: fixture.sharedURL, userDataURL: fixture.userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        let diagnostic = manager.rimeIceLuaCapabilityDiagnostic()
+
+        XCTAssertEqual(diagnostic.status, .luaFilesMissing)
+        XCTAssertTrue(diagnostic.luaEntryScriptRequired)
+        XCTAssertFalse(diagnostic.luaEntryScriptExists)
+    }
+
+    func testLuaDiagnosticDoesNotRequireEntryScriptForAutoloadLuaComponents() throws {
+        let fixture = try makeLuaDiagnosticFixture(
+            schemaContent: "engine:\n  translators:\n    - lua_translator@*date_translator\n",
+            includeLuaDirectory: true,
+            includeLuaEntryScript: false,
+            includeDateTranslator: true
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_lua_available": true,
+                "rime_deployed": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            directories: SchemaDeploymentDirectories(sharedDataURL: fixture.sharedURL, userDataURL: fixture.userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        let diagnostic = manager.rimeIceLuaCapabilityDiagnostic()
+
+        XCTAssertEqual(diagnostic.status, .available)
+        XCTAssertFalse(diagnostic.luaEntryScriptRequired)
+        XCTAssertFalse(diagnostic.luaEntryScriptExists)
+    }
+
+    func testLuaDiagnosticReportsMissingLuaRequireDependencies() throws {
+        let fixture = try makeLuaDiagnosticFixture(
+            schemaContent: "engine:\n  translators:\n    - lua_translator@*date_translator\n",
+            includeLuaDirectory: true,
+            includeDateTranslator: true,
+            dateTranslatorContent: #"local convert = require("convert_ar_num_to_zh")"#
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_lua_available": true,
+                "rime_deployed": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            directories: SchemaDeploymentDirectories(sharedDataURL: fixture.sharedURL, userDataURL: fixture.userURL)
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        let diagnostic = manager.rimeIceLuaCapabilityDiagnostic()
+
+        XCTAssertEqual(diagnostic.status, .luaFilesMissing)
+        XCTAssertEqual(diagnostic.missingLuaDependencyNames, ["convert_ar_num_to_zh"])
     }
 
     func testLuaDiagnosticReportsSchemaReferencedMissingLuaComponents() throws {
@@ -501,7 +591,9 @@ final class SchemaManagerTests: XCTestCase {
     private func makeLuaDiagnosticFixture(
         schemaContent: String?,
         includeLuaDirectory: Bool,
+        includeLuaEntryScript: Bool = true,
         includeDateTranslator: Bool,
+        dateTranslatorContent: String = "-- test fixture\n",
         extraLuaComponentNames: [String] = []
     ) throws -> (rootURL: URL, sharedURL: URL, userURL: URL) {
         let rootURL = FileManager.default.temporaryDirectory
@@ -518,11 +610,18 @@ final class SchemaManagerTests: XCTestCase {
                 encoding: .utf8
             )
         }
+        if includeLuaEntryScript {
+            try "-- test fixture\n".write(
+                to: sharedURL.appendingPathComponent("rime.lua"),
+                atomically: true,
+                encoding: .utf8
+            )
+        }
         if includeLuaDirectory {
             let luaURL = sharedURL.appendingPathComponent("lua", isDirectory: true)
             try FileManager.default.createDirectory(at: luaURL, withIntermediateDirectories: true)
             if includeDateTranslator {
-                try "-- test fixture\n".write(
+                try dateTranslatorContent.write(
                     to: luaURL.appendingPathComponent("date_translator.lua"),
                     atomically: true,
                     encoding: .utf8

@@ -387,12 +387,12 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertEqual(store.downloadState, .idle)
     }
 
-    func testAdvancedInputStatusUsesConservativeReadyTextBeforeRealSmokeTest() {
+    func testAdvancedInputStatusUsesReadyTextForAvailableDiagnostic() {
         let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
         let diagnostic = makeAdvancedInputDiagnostic(status: .available)
 
         XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "基础检查通过")
-        XCTAssertTrue(store.advancedInputStatusDetail(for: diagnostic).contains("仍需完成真实测试"))
+        XCTAssertTrue(store.advancedInputStatusDetail(for: diagnostic).contains("高级输入可以使用"))
         XCTAssertNil(store.advancedInputRecoveryAction(for: diagnostic))
     }
 
@@ -400,8 +400,36 @@ final class RimeSettingsStoreTests: XCTestCase {
         let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
         let diagnostic = makeAdvancedInputDiagnostic(status: .needsDeploy)
 
-        XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "需要重新应用")
+        XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "需要重新部署")
         XCTAssertEqual(store.advancedInputRecoveryAction(for: diagnostic), .applySettings)
+    }
+
+    func testAdvancedInputStatusUsesSmokePassOverStaleDeploymentFlag() {
+        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+        let diagnostic = RimeLuaCapabilityDiagnostic(
+            luaCompiledIn: true,
+            luaModuleRegistered: true,
+            luaComponentsRegistered: false,
+            deploymentModules: ["core", "dict", "gears", "lua"],
+            persistedLuaAvailable: true,
+            rimeIceInstalled: true,
+            activeSchemaID: "rime_ice",
+            rimeDeployed: false,
+            rimeNeedsDeploy: true,
+            runtimeSmokePassed: true,
+            schemaExists: true,
+            schemaHasLuaComponents: true,
+            luaDirectoryExists: true,
+            luaEntryScriptRequired: false,
+            luaEntryScriptExists: false,
+            dateTranslatorExists: true,
+            requiredLuaComponentNames: ["date_translator"],
+            missingLuaComponentNames: [],
+            missingLuaDependencyNames: []
+        )
+
+        XCTAssertEqual(diagnostic.status, .available)
+        XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "基础检查通过")
     }
 
     func testAdvancedInputStatusOffersRedownloadForStrippedOrMissingLuaFiles() {
@@ -425,23 +453,38 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertEqual(store.advancedInputRecoveryAction(for: diagnostic), .setCurrentSchema)
     }
 
+    func testAdvancedInputStatusExplainsRuntimeLuaModuleMissing() {
+        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+        let diagnostic = makeAdvancedInputDiagnostic(status: .runtimeModuleMissing)
+
+        XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "暂不可用")
+        XCTAssertTrue(store.advancedInputStatusDetail(for: diagnostic).contains("运行时没有加载 Lua 模块"))
+        XCTAssertNil(store.advancedInputRecoveryAction(for: diagnostic))
+    }
+
     private func makeAdvancedInputDiagnostic(
         status: RimeLuaCapabilityDiagnostic.Status
     ) -> RimeLuaCapabilityDiagnostic {
         RimeLuaCapabilityDiagnostic(
             luaCompiledIn: status != .engineUnavailable,
+            luaModuleRegistered: status != .runtimeModuleMissing,
+            luaComponentsRegistered: status != .runtimeModuleMissing,
             deploymentModules: status == .engineUnavailable ? ["core", "dict", "gears"] : ["core", "dict", "gears", "lua"],
             persistedLuaAvailable: status == .engineUnavailable ? false : true,
             rimeIceInstalled: status != .notInstalled,
             activeSchemaID: status == .inactiveSchema ? "luna_pinyin" : "rime_ice",
             rimeDeployed: status != .needsDeploy,
             rimeNeedsDeploy: status == .needsDeploy,
+            runtimeSmokePassed: false,
             schemaExists: status != .schemaMissing,
             schemaHasLuaComponents: status != .schemaStripped && status != .schemaMissing,
             luaDirectoryExists: status != .luaFilesMissing,
+            luaEntryScriptRequired: false,
+            luaEntryScriptExists: status != .luaFilesMissing,
             dateTranslatorExists: status != .luaFilesMissing,
             requiredLuaComponentNames: ["date_translator"],
-            missingLuaComponentNames: status == .luaFilesMissing ? ["date_translator"] : []
+            missingLuaComponentNames: status == .luaFilesMissing ? ["date_translator"] : [],
+            missingLuaDependencyNames: []
         )
     }
 }

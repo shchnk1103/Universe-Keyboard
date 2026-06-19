@@ -13,6 +13,16 @@ NS_ASSUME_NONNULL_BEGIN
 /// 当前二进制是否在 ObjC 桥接层启用了 Lua 模块。
 + (BOOL)luaModuleCompiledIn;
 
+/// librime 运行时是否已经注册 Lua 模块。
+/// 这比编译宏更接近真实可用性：模块被 dead-strip 或目标未链接时会返回 NO。
++ (BOOL)luaModuleRegistered;
+
+/// Lua 组件是否已经进入 librime 的组件 Registry。
++ (BOOL)luaComponentsRegistered;
+
+/// 返回关键 Lua 组件的 Registry 状态，便于 App 侧诊断日志记录。
++ (NSArray<NSString *> *)luaComponentRegistrySummary;
+
 /// 执行全量部署。
 /// @param sharedDir RIME shared_data_dir（App Group 中 Rime/shared）
 /// @param userDir RIME user_data_dir（App Group 中 Rime/user）

@@ -51,7 +51,7 @@ The main App may inspect already-installed files and shared deployment flags to 
 - `基础检查通过`: engine capability, schema files, Lua scripts, and deployment flags look ready. This is not the same as a passed real Lua smoke test.
 - `安装后可用`: `rime_ice` is not installed.
 - `未使用`: `rime_ice` is installed but not the active scheme.
-- `需要重新应用`: files are ready, but RIME has not been redeployed with the latest state.
+- `需要重新部署`: files are ready, but RIME has not been redeployed with the latest state.
 - `暂不可用`: engine support is missing, the schema file is missing, the schema was stripped, or Lua scripts are missing.
 
 Lua file completeness should be inferred from the installed schema's `lua_processor`, `lua_translator`, and
@@ -61,7 +61,7 @@ should be visible through diagnostics instead of silently ignored.
 Recovery actions stay on the scheme detail page:
 
 - `设为当前方案` for inactive `rime_ice`.
-- `重新应用 RIME 设置` for pending deployment.
+- `重新部署` for pending deployment.
 - `重新下载雾凇拼音` when the installed schema or Lua files are incomplete.
 - `查看诊断日志` for developer-readable details.
 
@@ -95,11 +95,18 @@ Transient scheme operations should use the shared global bottom toast pattern.
 
 Examples:
 
+- "正在下载雾凇拼音..."
+- "正在解压雾凇拼音..."
+- "正在部署雾凇拼音..."
+- "雾凇拼音已下载并部署。"
 - "正在应用 RIME 设置..."
 - "RIME 设置已应用。"
 - "下载失败，请稍后再试。"
 
 Scheme rows should show stable status only. Do not add permanent rows for the latest transient operation result.
+The top-level app shell owns the toast trigger so feedback is not lost when the user leaves a scheme detail page.
+Scheme detail pages should not duplicate download progress once the global toast is available; they may keep durable
+failure recovery rows such as retry actions.
 
 ## Extension Rule For Future Schemes
 
