@@ -6,6 +6,7 @@ private enum CandidateSizing {
     static let visualHorizontalGap: CGFloat = 4
     static let expandedVisualVerticalGap: CGFloat = 4
     static let minimumTouchWidth: CGFloat = 44
+    static let correctionHintSpacing: CGFloat = 3
 }
 
 extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -37,7 +38,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         let items = isExpanded ? expandedVisibleCandidates : horizontalVisibleCandidates
         guard items.indices.contains(indexPath.item) else { return cell }
         let item = items[indexPath.item]
-        cell.configure(with: item, preferred: indexPath.item == 0 && item.kind == .candidate, expanded: isExpanded)
+        cell.configure(with: item, preferred: isPreferredCandidate(item, at: indexPath.item), expanded: isExpanded)
         return cell
     }
 
@@ -64,10 +65,11 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         let itemHeight = visualHeight + (isExpanded ? CandidateSizing.expandedVisualVerticalGap : 0)
         guard items.indices.contains(indexPath.item) else { return CGSize(width: 44, height: itemHeight) }
         let item = items[indexPath.item]
-        let preferred = indexPath.item == 0 && item.kind == .candidate
-        let title = displayTitle(for: item)
+        let preferred = isPreferredCandidate(item, at: indexPath.item)
+        let title = item.title
+        let correctionHint = correctionHint(for: item)
         let cacheKey =
-            "\(isExpanded)|\(preferred)|\(Int(collectionView.bounds.width))|\(item.kind.rawValue)|\(title)"
+            "\(isExpanded)|\(preferred)|\(Int(collectionView.bounds.width))|\(item.kind.rawValue)|\(title)|\(correctionHint ?? "")"
         if let cachedSize = candidateCellSizeCache[cacheKey] {
             return cachedSize
         }
@@ -78,10 +80,22 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
             for: .systemFont(ofSize: fontSize, weight: weight),
             maximumPointSize: 28
         )
-        let horizontalInsets: CGFloat = indexPath.item == 0 ? 16 : 24
+        let titleInsets: CGFloat = preferred ? 16 : 24
+        let titleWidth = ceil((title as NSString).size(withAttributes: [.font: font]).width + titleInsets)
+        let hintWidth: CGFloat
+        if let correctionHint {
+            let hintFont = UIFontMetrics(forTextStyle: .caption1).scaledFont(
+                for: .systemFont(ofSize: 13, weight: .semibold),
+                maximumPointSize: 18
+            )
+            hintWidth = CandidateSizing.correctionHintSpacing
+                + ceil((correctionHint as NSString).size(withAttributes: [.font: hintFont]).width)
+        } else {
+            hintWidth = 0
+        }
         let naturalWidth = max(
             CandidateSizing.minimumTouchWidth,
-            ceil((title as NSString).size(withAttributes: [.font: font]).width + horizontalInsets)
+            titleWidth + hintWidth
         )
         let size: CGSize
         if collectionView === candidateCollectionView {
@@ -114,10 +128,13 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         syncUI(with: effects)
     }
 
-    private func displayTitle(for item: CandidateItem) -> String {
-        guard let correction = item.correction else { return item.title }
+    private func isPreferredCandidate(_ item: CandidateItem, at index: Int) -> Bool {
+        index == 0 && (item.kind == .candidate || item.kind == .correctionCandidate)
+    }
+
+    private func correctionHint(for item: CandidateItem) -> String? {
+        guard let correction = item.correction else { return nil }
         let summary = correction.edits.map { "\($0.original)→\($0.replacement)" }.joined(separator: " ")
-        guard !summary.isEmpty else { return item.title }
-        return "\(item.title)  \(summary)"
+        return summary.isEmpty ? nil : summary
     }
 }

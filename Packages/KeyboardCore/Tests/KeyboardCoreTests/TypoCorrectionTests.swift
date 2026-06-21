@@ -15,6 +15,143 @@ final class TypoCorrectionTests: XCTestCase {
         })
     }
 
+    func testEngineSuggestsNearbyReplacementForInitialMistouch() {
+        let suggestions = TypoCorrectionEngine().suggestions(for: "bihao")
+
+        XCTAssertTrue(suggestions.contains { suggestion in
+            suggestion.correctedInput == "nihao"
+                && suggestion.edits == [
+                    TypoCorrectionEdit(index: 0, original: "b", replacement: "n")
+                ]
+        })
+    }
+
+    func testEngineSuggestsNearbyReplacementForMiddleMistouch() {
+        let suggestions = TypoCorrectionEngine().suggestions(for: "nigao")
+
+        XCTAssertTrue(suggestions.contains { suggestion in
+            suggestion.correctedInput == "nihao"
+                && suggestion.edits == [
+                    TypoCorrectionEdit(index: 2, original: "g", replacement: "h")
+                ]
+        })
+    }
+
+    func testEngineSkipsUnsafeMiddleVowelConsonantReplacement() {
+        let suggestions = TypoCorrectionEngine().suggestions(for: "nihso")
+
+        XCTAssertFalse(
+            suggestions.contains { $0.correctedInput == "nihao" },
+            "非末尾位置暂不做辅音/元音跨类替换，避免扩大中间字符误纠错噪声"
+        )
+    }
+
+    func testEngineLimitsGeneratedSuggestionCount() {
+        let suggestions = TypoCorrectionEngine().suggestions(for: "zhongguopinyin")
+
+        XCTAssertLessThanOrEqual(suggestions.count, 16)
+    }
+
+    func testAssessmentMarksTrailingSubstitutionAsPromotionEligibleHighConfidence() {
+        let assessment = TypoCorrectionAssessment.evaluate(
+            title: "你好",
+            originalInput: "nihap",
+            correctedInput: "nihao",
+            edits: [TypoCorrectionEdit(index: 4, original: "p", replacement: "o")],
+            firstNormalCandidate: "你好安排"
+        )
+
+        XCTAssertEqual(assessment.confidence, .high)
+        XCTAssertEqual(assessment.score, 90)
+        XCTAssertTrue(assessment.isDisplayEligible)
+        XCTAssertTrue(assessment.isPromotionEligible)
+        XCTAssertNil(assessment.rejectReason)
+    }
+
+    func testAssessmentMarksInitialSubstitutionAsDisplayOnlyHighConfidence() {
+        let assessment = TypoCorrectionAssessment.evaluate(
+            title: "你好",
+            originalInput: "bihao",
+            correctedInput: "nihao",
+            edits: [TypoCorrectionEdit(index: 0, original: "b", replacement: "n")],
+            firstNormalCandidate: "笔画"
+        )
+
+        XCTAssertEqual(assessment.confidence, .high)
+        XCTAssertEqual(assessment.score, 75)
+        XCTAssertTrue(assessment.isDisplayEligible)
+        XCTAssertFalse(assessment.isPromotionEligible)
+        XCTAssertNil(assessment.rejectReason)
+    }
+
+    func testAssessmentMarksRepeatedFinalDeletionAsMediumDisplayOnly() {
+        let assessment = TypoCorrectionAssessment.evaluate(
+            title: "你好",
+            originalInput: "nihaoo",
+            correctedInput: "nihao",
+            edits: [TypoCorrectionEdit(index: 5, original: "o", replacement: "o", kind: .deletion)],
+            firstNormalCandidate: "你好哦"
+        )
+
+        XCTAssertEqual(assessment.confidence, .medium)
+        XCTAssertEqual(assessment.score, 55)
+        XCTAssertTrue(assessment.isDisplayEligible)
+        XCTAssertFalse(assessment.isPromotionEligible)
+        XCTAssertNil(assessment.rejectReason)
+    }
+
+    func testAssessmentRejectsUnsafeMiddleReplacement() {
+        let assessment = TypoCorrectionAssessment.evaluate(
+            title: "你好",
+            originalInput: "nihso",
+            correctedInput: "nihao",
+            edits: [TypoCorrectionEdit(index: 3, original: "s", replacement: "a")],
+            firstNormalCandidate: nil
+        )
+
+        XCTAssertEqual(assessment.confidence, .rejected)
+        XCTAssertFalse(assessment.isDisplayEligible)
+        XCTAssertEqual(assessment.rejectReason, .unsafeReplacement)
+    }
+
+    func testAssessmentRejectsShortInputLongCandidateAndNormalCandidateConflict() {
+        let shortInput = TypoCorrectionAssessment.evaluate(
+            title: "你好",
+            originalInput: "haop",
+            correctedInput: "haoo",
+            edits: [TypoCorrectionEdit(index: 3, original: "p", replacement: "o")],
+            firstNormalCandidate: nil
+        )
+        XCTAssertEqual(shortInput.rejectReason, .inputTooShort)
+
+        let longCandidate = TypoCorrectionAssessment.evaluate(
+            title: "你好啊朋友",
+            originalInput: "nihap",
+            correctedInput: "nihao",
+            edits: [TypoCorrectionEdit(index: 4, original: "p", replacement: "o")],
+            firstNormalCandidate: nil
+        )
+        XCTAssertEqual(longCandidate.rejectReason, .candidateTextTooLong)
+
+        let normalCandidateConflict = TypoCorrectionAssessment.evaluate(
+            title: "你好",
+            originalInput: "womem",
+            correctedInput: "women",
+            edits: [TypoCorrectionEdit(index: 4, original: "m", replacement: "n")],
+            firstNormalCandidate: "你好"
+        )
+        XCTAssertEqual(normalCandidateConflict.rejectReason, .normalCandidateAlreadyMatches)
+    }
+
+    func testAssessmentCanRepresentMissingCorrectedCandidates() {
+        let assessment = TypoCorrectionAssessment.rejected(.noCorrectedCandidates)
+
+        XCTAssertEqual(assessment.confidence, .rejected)
+        XCTAssertFalse(assessment.isDisplayEligible)
+        XCTAssertFalse(assessment.isPromotionEligible)
+        XCTAssertEqual(assessment.rejectReason, .noCorrectedCandidates)
+    }
+
     func testEngineSuggestsRepeatedFinalCharacterDeletion() {
         let suggestions = TypoCorrectionEngine().suggestions(for: "nihaoo")
 
@@ -116,6 +253,46 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "你好")
         XCTAssertEqual(correction?.suggestions.first?.edits, [
             TypoCorrectionEdit(index: 4, original: "p", replacement: "o")
+        ])
+    }
+
+    func testControllerBuildsCorrectionStateForInitialMistouch() {
+        let client = FakeTextInputClient()
+        let engine = FakeRimeEngine()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+
+        for character in "bihao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        let correction = controller.state.typoCorrection
+        XCTAssertEqual(correction?.originalInput, "bihao")
+        XCTAssertEqual(correction?.suggestions.first?.correctedInput, "nihao")
+        XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "你好")
+        XCTAssertEqual(correction?.suggestions.first?.edits, [
+            TypoCorrectionEdit(index: 0, original: "b", replacement: "n")
+        ])
+    }
+
+    func testControllerBuildsCorrectionStateForMiddleMistouch() {
+        let client = FakeTextInputClient()
+        let engine = FakeRimeEngine()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+
+        for character in "nigao" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        let correction = controller.state.typoCorrection
+        XCTAssertEqual(correction?.originalInput, "nigao")
+        XCTAssertEqual(correction?.suggestions.first?.correctedInput, "nihao")
+        XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "你好")
+        XCTAssertEqual(correction?.suggestions.first?.edits, [
+            TypoCorrectionEdit(index: 2, original: "g", replacement: "h")
         ])
     }
 
@@ -430,6 +607,55 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(merged.first?.kind, .correctionCandidate)
     }
 
+    func testRankerPlacesInitialMistouchCorrectionNearFrontWithoutReplacingTopCandidate() {
+        let normalItems = [
+            CandidateItem(title: "笔画", kind: .candidate),
+            CandidateItem(title: "比好", kind: .candidate),
+        ]
+        let correctionItems = [
+            correctionItem(
+                title: "你好",
+                originalInput: "bihao",
+                correctedInput: "nihao",
+                edits: [TypoCorrectionEdit(index: 0, original: "b", replacement: "n")]
+            )
+        ]
+
+        let merged = TypoCorrectionCandidateRanker.mergedCandidates(
+            normalItems: normalItems,
+            correctionItems: correctionItems
+        )
+
+        XCTAssertEqual(merged.map(\.title), ["笔画", "你好", "比好"])
+        XCTAssertEqual(merged[0].kind, .candidate)
+        XCTAssertEqual(merged[1].kind, .correctionCandidate)
+    }
+
+    func testRankerPlacesMiddleMistouchCorrectionNearFrontAndDropsDuplicateNormalCandidate() {
+        let normalItems = [
+            CandidateItem(title: "你高", kind: .candidate),
+            CandidateItem(title: "你好", kind: .candidate),
+            CandidateItem(title: "拟稿", kind: .candidate),
+        ]
+        let correctionItems = [
+            correctionItem(
+                title: "你好",
+                originalInput: "nigao",
+                correctedInput: "nihao",
+                edits: [TypoCorrectionEdit(index: 2, original: "g", replacement: "h")]
+            )
+        ]
+
+        let merged = TypoCorrectionCandidateRanker.mergedCandidates(
+            normalItems: normalItems,
+            correctionItems: correctionItems
+        )
+
+        XCTAssertEqual(merged.map(\.title), ["你高", "你好", "拟稿"])
+        XCTAssertEqual(merged[0].kind, .candidate)
+        XCTAssertEqual(merged[1].kind, .correctionCandidate)
+    }
+
     func testRankerLeavesNormalNihaoInputUnchangedWithoutCorrectionItems() {
         let normalItems = [
             CandidateItem(title: "你好", kind: .candidate),
@@ -512,6 +738,24 @@ final class TypoCorrectionTests: XCTestCase {
                 note: "末尾 p 邻键误触 o，当前核心成功样例"
             ),
             benchmarkCase(
+                input: "bihao",
+                category: .adjacentKeySubstitution,
+                expectedCorrectedInput: "nihao",
+                expectedCandidate: "你好",
+                expectedOutcome: .correctedSuccessfully,
+                shouldPromote: false,
+                note: "首字符 b 邻键误触 n，可生成纠错候选但不盲目压过普通首候选"
+            ),
+            benchmarkCase(
+                input: "nigao",
+                category: .middleCharacterMistake,
+                expectedCorrectedInput: "nihao",
+                expectedCandidate: "你好",
+                expectedOutcome: .correctedSuccessfully,
+                shouldPromote: false,
+                note: "中间 g 邻键误触 h，可生成纠错候选但不盲目压过普通首候选"
+            ),
+            benchmarkCase(
                 input: "nihal",
                 category: .adjacentKeySubstitution,
                 expectedCorrectedInput: "nihao",
@@ -554,7 +798,7 @@ final class TypoCorrectionTests: XCTestCase {
                 input: "nihso",
                 category: .middleCharacterMistake,
                 expectedOutcome: .notCorrected,
-                note: "当前只替换最后一个字符，不修正中间 s -> a"
+                note: "非末尾辅音/元音跨类替换仍不支持，避免扩大中间字符误纠错噪声"
             ),
             benchmarkCase(
                 input: "zhongguo",
@@ -661,6 +905,24 @@ final class TypoCorrectionTests: XCTestCase {
                 expectedOutcome: .correctedSuccessfully,
                 shouldPromote: true,
                 note: "短纠错候选应排在更长前缀扩展前"
+            ),
+            benchmarkCase(
+                input: "bihao",
+                category: .adjacentKeySubstitution,
+                expectedCorrectedInput: "nihao",
+                expectedCandidate: "你好",
+                expectedOutcome: .correctedSuccessfully,
+                shouldPromote: false,
+                note: "首字符纠错进入前排，但不提升到普通首候选之前"
+            ),
+            benchmarkCase(
+                input: "nigao",
+                category: .middleCharacterMistake,
+                expectedCorrectedInput: "nihao",
+                expectedCandidate: "你好",
+                expectedOutcome: .correctedSuccessfully,
+                shouldPromote: false,
+                note: "中间同类邻键纠错进入前排，但不提升到普通首候选之前"
             ),
             benchmarkCase(
                 input: "nihaoo",
@@ -823,8 +1085,7 @@ final class TypoCorrectionTests: XCTestCase {
             .filter { _, pair in pair.0 != pair.1 }
 
         guard mismatches.count == 1,
-            let mismatch = mismatches.first,
-            mismatch.0 == originalLetters.count - 1
+            let mismatch = mismatches.first
         else { return nil }
 
         return TypoCorrectionEdit(

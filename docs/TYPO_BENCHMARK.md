@@ -20,7 +20,8 @@ The correction pipeline normalizes segmented preedit by removing whitespace befo
 ## Current Supported Categories
 
 - Valid input should not be disturbed. When input already maps to normal candidates, correction should stay out of the way.
-- Final adjacent-key substitution is supported for conservative one-character mistakes, such as `nihap -> nihao`.
+- Adjacent-key substitution is supported for conservative one-character mistakes, such as `nihap -> nihao`, `bihao -> nihao`, and `nigao -> nihao`.
+- Non-final adjacent-key substitution is limited to same-class letters, such as consonant-to-consonant `g -> h`, to avoid broad middle-character noise.
 - Repeated final-character deletion is supported for conservative end-of-input duplicates, such as `nihaoo -> nihao`.
 - Candidate promotion is conservative. A correction candidate may be promoted only when it is a high-confidence single-character correction and the normal top candidate appears to be a longer expansion of the corrected phrase.
 
@@ -28,7 +29,7 @@ The correction pipeline normalizes segmented preedit by removing whitespace befo
 
 - Omitted characters, for example `niho -> nihao`.
 - Transposed characters, for example `nihoa -> nihao`.
-- Middle-character mistakes, for example `nihso -> nihao`.
+- Unsafe middle-character mistakes, for example non-final consonant/vowel cross-class `nihso -> nihao`.
 - Unsupported final mistakes, for example `nihau -> nihao`.
 
 Unsupported cases are known limitations, not failures of the current benchmark. They should remain recorded until a future milestone intentionally adds coverage.
@@ -39,14 +40,17 @@ Unsupported cases are known limitations, not failures of the current benchmark. 
 |---|---|---|---|---|
 | `nihao` | none | valid input | not corrected; normal candidates preserved | no |
 | `nihap` | `nihao -> 你好` | final adjacent-key substitution | corrected successfully | yes |
+| `bihao` | `nihao -> 你好` | initial adjacent-key substitution | corrected successfully | near-front only |
+| `nigao` | `nihao -> 你好` | middle adjacent-key substitution | corrected successfully | near-front only |
 | `nihal` | `nihao -> 你好` | final adjacent-key substitution | corrected successfully | yes |
 | `nihak` | `nihao -> 你好` | final adjacent-key substitution | corrected successfully | yes |
 | `nihau` | `nihao -> 你好` | unsupported final mistake | not corrected | no |
 | `nihaoo` | `nihao -> 你好` | repeated final character | corrected successfully | no |
 | `nihoa` | `nihao -> 你好` | transposed character | not corrected | no |
-| `nihso` | `nihao -> 你好` | middle-character mistake | not corrected | no |
+| `nihso` | `nihao -> 你好` | unsafe middle-character mistake | not corrected | no |
 | `zhongguo` | none | valid input | not corrected; normal candidates preserved | no |
 | `zhonggup` | `zhongguo -> 中国` | final adjacent-key substitution | corrected successfully | yes |
+| `zhonghuo` | `zhongguo -> 中国` | middle adjacent-key substitution | known lookup-priority gap; not currently corrected | no |
 | `zhongguoo` | `zhongguo -> 中国` | repeated final character | corrected successfully | no |
 | `woaini` | none | valid input | not corrected; normal candidates preserved | no |
 | `woainj` | `woaini -> 我爱你` | final adjacent-key substitution | corrected successfully | yes |
@@ -64,6 +68,40 @@ Unsupported cases are known limitations, not failures of the current benchmark. 
 - Unsupported cases should be recorded as known limitations so coverage gaps stay visible.
 - Promotion must remain conservative. Do not blindly put correction candidates first.
 - Typo matching must use normalized pinyin because real RIME preedit may contain segmentation spaces.
+- Full-position typo correction is limited to a single adjacent-key substitution. Non-final replacements must keep the same broad pinyin role, such as consonant-to-consonant or vowel-to-vowel.
+- Very short inputs remain conservative; inputs shorter than the typo engine's safe substitution length do not receive broad adjacent-key substitution.
+
+## Assessment Model
+
+V0.4 records confidence as an explicit assessment instead of scattering boolean checks across filtering and ranking:
+
+| Tier | Meaning | Candidate behavior |
+|---|---|---|
+| High | Safe single-character adjacent-key substitution with a short verified RIME candidate | May be displayed; final-position cases may be promoted when the normal top candidate is a longer expansion |
+| Medium | Conservative correction such as repeated-final deletion | May be displayed, but should not aggressively replace normal RIME order |
+| Low | Plausible but not strong enough for the current benchmark | Do not show unless a future milestone explicitly adds coverage |
+| Rejected | Unsafe, unsupported, or conflicting correction | Do not show |
+
+Common reject reasons:
+
+- Input too short.
+- Replacement is not a safe adjacent-key edit.
+- Corrected input has no verified candidate.
+- Normal RIME top candidate already matches the correction text.
+- Corrected candidate text is too long for the current conservative front-row behavior.
+
+Benchmark examples are representative samples, not a hardcoded allowlist. Some inputs may satisfy the broad rule shape but still miss the current bounded lookup window. For example, `zhonghuo -> zhongguo` is a plausible single adjacent-key substitution (`h -> g`), but current generation order may exhaust the correction lookup budget before reaching that edit position. Treat this as a known recall gap for a future suggestion-prioritization milestone, not as a reason to add broad edit distance or unsafe multi-edit correction.
+
+## RIME Weighting Boundary
+
+RIME's weighting system ranks candidates for the same input code. For example, repeated user selection can make `你好` appear earlier for `nihao`.
+
+Typo correction scoring does not replace or rewrite RIME weights. It decides whether a different corrected input code should contribute an optional side-channel candidate. For example:
+
+- RIME ranks `nihao -> [你好, 拟好, 你号...]`.
+- Typo correction decides whether `bihao` is likely enough to query `nihao` and show `你好` as an optional correction candidate.
+
+Candidate merging must respect this boundary. Typo correction candidates should not blindly override normal RIME candidates, especially when the original input already has a strong normal candidate.
 
 ## Partial Commit Eligibility
 
@@ -108,6 +146,6 @@ Phase 3 V2 completed real-device validation with the feature flag off and on. Th
 
 ## Next Recommended Milestone
 
-The next typo-correction quality milestone should continue to be benchmark-driven. Before expanding coverage to middle-character mistakes, omitted characters, or transpositions, add enough confidence scoring and real-world examples to avoid increasing false positives.
+The next typo-correction quality milestone should continue to be benchmark-driven. Prefer improving suggestion prioritization for existing safe one-edit cases, such as `zhonghuo -> zhongguo`, before expanding coverage to omitted characters, transpositions, multi-edit corrections, or non-final consonant/vowel cross-class mistakes. Add enough confidence scoring and real-world examples to avoid increasing false positives.
 
 Traditional RIME fuzzy pinyin expansion is a separate feature track and should not be measured with this typo benchmark.

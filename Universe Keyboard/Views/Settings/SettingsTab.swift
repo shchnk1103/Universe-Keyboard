@@ -39,6 +39,10 @@ struct SettingsTab: View {
                 FeedbackSettingsView()
             }
 
+            SettingsNavigationLink(systemImage: "wand.and.stars", title: "智能纠错", subtitle: "误触纠错、基准覆盖") {
+                TypoCorrectionBenchmarkView()
+            }
+
             VStack(spacing: 0) {
                 HStack(spacing: 12) {
                     ZStack {

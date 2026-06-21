@@ -12,14 +12,17 @@ final class CandidateCollectionCell: UICollectionViewCell {
 
     /// cell bounds 是完整触控区；内部视觉层保持内缩，让候选看起来仍有间距。
     private let visualContentView = UIView()
+    private let contentStackView = UIStackView()
+    private let titleContainerView = UIView()
     private let highlightedBackgroundView = UIView()
     private let titleLabel = UILabel()
+    private let correctionHintLabel = UILabel()
     private var visualLeadingConstraint: NSLayoutConstraint!
     private var visualTrailingConstraint: NSLayoutConstraint!
     private var visualTopConstraint: NSLayoutConstraint!
     private var visualBottomConstraint: NSLayoutConstraint!
-    private var labelLeadingConstraint: NSLayoutConstraint!
-    private var labelTrailingConstraint: NSLayoutConstraint!
+    private var titleLeadingConstraint: NSLayoutConstraint!
+    private var titleTrailingConstraint: NSLayoutConstraint!
     private var currentKind: CandidateKind = .candidate
     private var currentBaseColor: UIColor = .label
     private var usesPreferredStyle = false
@@ -53,6 +56,17 @@ final class CandidateCollectionCell: UICollectionViewCell {
         visualContentView.isUserInteractionEnabled = false
         visualContentView.translatesAutoresizingMaskIntoConstraints = false
 
+        contentStackView.axis = .horizontal
+        contentStackView.alignment = .center
+        contentStackView.spacing = 3
+        contentStackView.isUserInteractionEnabled = false
+        contentStackView.translatesAutoresizingMaskIntoConstraints = false
+
+        titleContainerView.backgroundColor = .clear
+        titleContainerView.isOpaque = false
+        titleContainerView.isUserInteractionEnabled = false
+        titleContainerView.translatesAutoresizingMaskIntoConstraints = false
+
         highlightedBackgroundView.backgroundColor = .clear
         highlightedBackgroundView.isOpaque = false
         highlightedBackgroundView.isUserInteractionEnabled = false
@@ -67,16 +81,29 @@ final class CandidateCollectionCell: UICollectionViewCell {
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
+        correctionHintLabel.backgroundColor = .clear
+        correctionHintLabel.isOpaque = false
+        correctionHintLabel.numberOfLines = 1
+        correctionHintLabel.lineBreakMode = .byTruncatingTail
+        correctionHintLabel.textAlignment = .left
+        correctionHintLabel.textColor = .secondaryLabel
+        correctionHintLabel.translatesAutoresizingMaskIntoConstraints = false
+        correctionHintLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        correctionHintLabel.setContentHuggingPriority(.required, for: .horizontal)
+
         contentView.addSubview(visualContentView)
-        visualContentView.addSubview(highlightedBackgroundView)
-        visualContentView.addSubview(titleLabel)
+        visualContentView.addSubview(contentStackView)
+        contentStackView.addArrangedSubview(titleContainerView)
+        contentStackView.addArrangedSubview(correctionHintLabel)
+        titleContainerView.addSubview(highlightedBackgroundView)
+        titleContainerView.addSubview(titleLabel)
 
         visualLeadingConstraint = visualContentView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
         visualTrailingConstraint = visualContentView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         visualTopConstraint = visualContentView.topAnchor.constraint(equalTo: contentView.topAnchor)
         visualBottomConstraint = visualContentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        labelLeadingConstraint = titleLabel.leadingAnchor.constraint(equalTo: visualContentView.leadingAnchor, constant: 12)
-        labelTrailingConstraint = titleLabel.trailingAnchor.constraint(equalTo: visualContentView.trailingAnchor, constant: -12)
+        titleLeadingConstraint = titleLabel.leadingAnchor.constraint(equalTo: titleContainerView.leadingAnchor, constant: 12)
+        titleTrailingConstraint = titleLabel.trailingAnchor.constraint(equalTo: titleContainerView.trailingAnchor, constant: -12)
 
         NSLayoutConstraint.activate([
             visualLeadingConstraint,
@@ -84,16 +111,21 @@ final class CandidateCollectionCell: UICollectionViewCell {
             visualTopConstraint,
             visualBottomConstraint,
 
-            highlightedBackgroundView.leadingAnchor.constraint(equalTo: visualContentView.leadingAnchor),
-            highlightedBackgroundView.trailingAnchor.constraint(equalTo: visualContentView.trailingAnchor),
-            highlightedBackgroundView.topAnchor.constraint(equalTo: visualContentView.topAnchor),
-            highlightedBackgroundView.bottomAnchor.constraint(equalTo: visualContentView.bottomAnchor),
+            contentStackView.centerXAnchor.constraint(equalTo: visualContentView.centerXAnchor),
+            contentStackView.centerYAnchor.constraint(equalTo: visualContentView.centerYAnchor),
+            contentStackView.leadingAnchor.constraint(greaterThanOrEqualTo: visualContentView.leadingAnchor),
+            contentStackView.trailingAnchor.constraint(lessThanOrEqualTo: visualContentView.trailingAnchor),
 
-            labelLeadingConstraint,
-            labelTrailingConstraint,
-            titleLabel.centerYAnchor.constraint(equalTo: visualContentView.centerYAnchor),
-            titleLabel.topAnchor.constraint(greaterThanOrEqualTo: visualContentView.topAnchor),
-            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: visualContentView.bottomAnchor),
+            highlightedBackgroundView.leadingAnchor.constraint(equalTo: titleContainerView.leadingAnchor),
+            highlightedBackgroundView.trailingAnchor.constraint(equalTo: titleContainerView.trailingAnchor),
+            highlightedBackgroundView.topAnchor.constraint(equalTo: titleContainerView.topAnchor),
+            highlightedBackgroundView.bottomAnchor.constraint(equalTo: titleContainerView.bottomAnchor),
+
+            titleLeadingConstraint,
+            titleTrailingConstraint,
+            titleLabel.topAnchor.constraint(equalTo: titleContainerView.topAnchor, constant: 4),
+            titleLabel.bottomAnchor.constraint(equalTo: titleContainerView.bottomAnchor, constant: -4),
+            titleLabel.centerYAnchor.constraint(equalTo: titleContainerView.centerYAnchor),
         ])
     }
 
@@ -142,6 +174,8 @@ final class CandidateCollectionCell: UICollectionViewCell {
         contentView.layer.borderColor = nil
         highlightedBackgroundView.backgroundColor = .clear
         titleLabel.text = nil
+        correctionHintLabel.text = nil
+        correctionHintLabel.isHidden = true
         currentKind = .candidate
         currentBaseColor = .label
         usesPreferredStyle = false
@@ -151,13 +185,21 @@ final class CandidateCollectionCell: UICollectionViewCell {
 
     func configure(with item: CandidateItem, preferred: Bool, expanded: Bool) {
         let color: UIColor = item.kind == .composition ? .secondaryLabel : .label
-        let title = displayTitle(for: item)
+        let title = item.title
+        let correctionHint = correctionHint(for: item)
         currentKind = item.kind
         currentBaseColor = color
         usesPreferredStyle = preferred
         applyVisualSpacing(expanded: expanded)
         applyDiagnosticTouchFrameStyle()
-        configureTitle(title, kind: item.kind, color: color, bold: preferred, highlighted: preferred)
+        configureTitle(
+            title,
+            correctionHint: correctionHint,
+            kind: item.kind,
+            color: color,
+            bold: preferred,
+            highlighted: preferred
+        )
         accessibilityLabel = accessibilityLabel(for: item)
         accessibilityHint =
             item.kind == .composition
@@ -219,6 +261,7 @@ final class CandidateCollectionCell: UICollectionViewCell {
 
     private func configureTitle(
         _ title: String,
+        correctionHint: String?,
         kind: CandidateKind,
         color: UIColor,
         bold: Bool,
@@ -233,8 +276,14 @@ final class CandidateCollectionCell: UICollectionViewCell {
             ? Self.highlightedCandidateTextColor
             : (kind == .candidate ? Self.candidateTextColor : color)
 
-        labelLeadingConstraint.constant = highlighted ? 8 : 12
-        labelTrailingConstraint.constant = highlighted ? -8 : -12
+        let hintFont = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        correctionHintLabel.font = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: hintFont, maximumPointSize: 18)
+        correctionHintLabel.text = correctionHint
+        correctionHintLabel.textColor = .secondaryLabel
+        correctionHintLabel.isHidden = correctionHint == nil
+
+        titleLeadingConstraint.constant = highlighted ? 8 : 12
+        titleTrailingConstraint.constant = highlighted ? -8 : -12
         applyHighlightStyle(highlighted)
     }
 
@@ -245,11 +294,10 @@ final class CandidateCollectionCell: UICollectionViewCell {
         highlightedBackgroundView.backgroundColor = highlighted ? Self.highlightedCandidateBackgroundColor : .clear
     }
 
-    private func displayTitle(for item: CandidateItem) -> String {
-        guard let correction = item.correction else { return item.title }
+    private func correctionHint(for item: CandidateItem) -> String? {
+        guard let correction = item.correction else { return nil }
         let summary = correction.edits.map { "\($0.original)→\($0.replacement)" }.joined(separator: " ")
-        guard !summary.isEmpty else { return item.title }
-        return "\(item.title)  \(summary)"
+        return summary.isEmpty ? nil : summary
     }
 
     private func accessibilityLabel(for item: CandidateItem) -> String {

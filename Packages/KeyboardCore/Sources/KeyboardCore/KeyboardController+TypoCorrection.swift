@@ -58,6 +58,11 @@ extension KeyboardController {
                         correction: commit,
                         over: firstNormalCandidate.text
                     )
+                    || TypoCorrectionConfidence.isHighConfidenceDisplayCandidate(
+                        title: candidate.text,
+                        suggestion: suggestion,
+                        firstNormalCandidate: firstNormalCandidate.text
+                    )
                 }
                 guard !candidates.isEmpty else { return nil }
                 return TypoCorrectionSuggestion(

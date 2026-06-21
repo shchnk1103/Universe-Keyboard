@@ -6,6 +6,26 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-21 — Typo correction V0.4 scoring and benchmark UI
+
+- Added an explicit typo-correction assessment model for confidence tier, score, display eligibility, promotion eligibility, and reject reasons.
+- Kept RIME weighting and typo scoring separate: RIME continues ranking candidates for the same input code, while typo correction only decides whether a corrected input code can contribute an optional side-channel candidate.
+- Added a read-only main-App 智能纠错 page that explains local correction behavior, benchmark examples, scoring principles, unsupported boundaries, and the relationship to RIME candidate learning.
+- Documented the V0.4 plan and updated the typo benchmark with assessment tiers and rejection reasons.
+
+---
+
+## 2026-06-21 — Typo correction V0.3 coverage
+
+- Expanded the KeyboardCore typo-correction engine from final-character-only substitution to conservative all-position single-character adjacent-key substitution, covering examples such as `bihao -> nihao` and `nigao -> nihao`.
+- Kept correction behavior benchmark-driven and optional: corrected inputs must still resolve through the candidate provider/RIME flow, and normal RIME candidates remain preserved.
+- Added conservative ranking so final high-confidence corrections can still be promoted ahead of longer expansions, while initial and middle corrections enter the front area without blindly replacing the normal top candidate.
+- Preserved safety boundaries: repeated-final deletion remains conservative, very short inputs are protected, and omitted characters, transpositions, multi-edit corrections, and unsafe non-final consonant/vowel cross-class replacements remain unsupported.
+- Refined correction-candidate rendering so a first-position correction uses the same preferred candidate emphasis while showing the typo hint as a small secondary label instead of truncating the candidate text.
+- Documented the V0.3 coverage plan and updated the typo benchmark to distinguish typo correction from traditional RIME fuzzy pinyin and Lua advanced input.
+
+---
+
 ## 2026-06-19 — Advanced input settings and Settings cleanup
 
 - Added a shared advanced-input settings model for user-facing features such as 日期与时间、计算器、数字大写、随机编号, and candidate optimization without exposing internal Lua component names in the UI.
