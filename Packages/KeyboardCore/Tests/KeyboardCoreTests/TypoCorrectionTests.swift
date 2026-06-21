@@ -37,6 +37,18 @@ final class TypoCorrectionTests: XCTestCase {
         })
     }
 
+    func testEnginePrioritizesLongMiddleMistouchWithinLookupWindow() {
+        let suggestions = TypoCorrectionEngine().suggestions(for: "zhonghuo")
+
+        XCTAssertLessThanOrEqual(suggestions.count, 16)
+        XCTAssertTrue(suggestions.contains { suggestion in
+            suggestion.correctedInput == "zhongguo"
+                && suggestion.edits == [
+                    TypoCorrectionEdit(index: 5, original: "h", replacement: "g")
+                ]
+        })
+    }
+
     func testEngineSkipsUnsafeMiddleVowelConsonantReplacement() {
         let suggestions = TypoCorrectionEngine().suggestions(for: "nihso")
 
@@ -293,6 +305,26 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "你好")
         XCTAssertEqual(correction?.suggestions.first?.edits, [
             TypoCorrectionEdit(index: 2, original: "g", replacement: "h")
+        ])
+    }
+
+    func testControllerBuildsCorrectionStateForLongMiddleMistouch() {
+        let client = FakeTextInputClient()
+        let engine = FakeRimeEngine()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+
+        for character in "zhonghuo" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        let correction = controller.state.typoCorrection
+        XCTAssertEqual(correction?.originalInput, "zhonghuo")
+        XCTAssertEqual(correction?.suggestions.first?.correctedInput, "zhongguo")
+        XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "中国")
+        XCTAssertEqual(correction?.suggestions.first?.edits, [
+            TypoCorrectionEdit(index: 5, original: "h", replacement: "g")
         ])
     }
 
@@ -656,6 +688,30 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(merged[1].kind, .correctionCandidate)
     }
 
+    func testRankerPlacesLongMiddleMistouchNearFrontWithoutReplacingTopCandidate() {
+        let normalItems = [
+            CandidateItem(title: "中火", kind: .candidate),
+            CandidateItem(title: "中华", kind: .candidate),
+        ]
+        let correctionItems = [
+            correctionItem(
+                title: "中国",
+                originalInput: "zhonghuo",
+                correctedInput: "zhongguo",
+                edits: [TypoCorrectionEdit(index: 5, original: "h", replacement: "g")]
+            )
+        ]
+
+        let merged = TypoCorrectionCandidateRanker.mergedCandidates(
+            normalItems: normalItems,
+            correctionItems: correctionItems
+        )
+
+        XCTAssertEqual(merged.map(\.title), ["中火", "中国", "中华"])
+        XCTAssertEqual(merged[0].kind, .candidate)
+        XCTAssertEqual(merged[1].kind, .correctionCandidate)
+    }
+
     func testRankerLeavesNormalNihaoInputUnchangedWithoutCorrectionItems() {
         let normalItems = [
             CandidateItem(title: "你好", kind: .candidate),
@@ -816,6 +872,15 @@ final class TypoCorrectionTests: XCTestCase {
                 note: "末尾 p 邻键误触 o，验证长拼音样例"
             ),
             benchmarkCase(
+                input: "zhonghuo",
+                category: .middleCharacterMistake,
+                expectedCorrectedInput: "zhongguo",
+                expectedCandidate: "中国",
+                expectedOutcome: .correctedSuccessfully,
+                shouldPromote: false,
+                note: "长拼音中后段 h 邻键误触 g，可生成纠错候选但不盲目压过普通首候选"
+            ),
+            benchmarkCase(
                 input: "zhongguoo",
                 category: .repeatedCharacter,
                 expectedCorrectedInput: "zhongguo",
@@ -923,6 +988,15 @@ final class TypoCorrectionTests: XCTestCase {
                 expectedOutcome: .correctedSuccessfully,
                 shouldPromote: false,
                 note: "中间同类邻键纠错进入前排，但不提升到普通首候选之前"
+            ),
+            benchmarkCase(
+                input: "zhonghuo",
+                category: .middleCharacterMistake,
+                expectedCorrectedInput: "zhongguo",
+                expectedCandidate: "中国",
+                expectedOutcome: .correctedSuccessfully,
+                shouldPromote: false,
+                note: "长拼音中后段同类邻键纠错进入前排，但不提升到普通首候选之前"
             ),
             benchmarkCase(
                 input: "nihaoo",

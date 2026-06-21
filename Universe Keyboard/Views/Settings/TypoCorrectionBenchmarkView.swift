@@ -5,6 +5,7 @@ struct TypoCorrectionBenchmarkView: View {
         TypoCorrectionExample(input: "nihap", correction: "nihao -> 你好", badge: "高置信", color: .green),
         TypoCorrectionExample(input: "bihao", correction: "nihao -> 你好", badge: "前排展示", color: .blue),
         TypoCorrectionExample(input: "nigao", correction: "nihao -> 你好", badge: "前排展示", color: .blue),
+        TypoCorrectionExample(input: "zhonghuo", correction: "zhongguo -> 中国", badge: "长拼音覆盖", color: .blue),
         TypoCorrectionExample(input: "nihaoo", correction: "nihao -> 你好", badge: "保守展示", color: .orange),
     ]
 
@@ -12,7 +13,6 @@ struct TypoCorrectionBenchmarkView: View {
         TypoCorrectionExample(input: "niho", correction: "漏字暂不支持", badge: "不纠错", color: .secondary),
         TypoCorrectionExample(input: "nihoa", correction: "转置暂不支持", badge: "不纠错", color: .secondary),
         TypoCorrectionExample(input: "nihso", correction: "中间跨类替换风险高", badge: "不纠错", color: .secondary),
-        TypoCorrectionExample(input: "zhonghuo", correction: "当前生成优先级可能漏召回", badge: "待优化", color: .orange),
     ]
 
     var body: some View {

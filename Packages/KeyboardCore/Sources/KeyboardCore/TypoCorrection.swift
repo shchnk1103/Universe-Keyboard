@@ -24,70 +24,101 @@ public struct TypoCorrectionEngine: Sendable {
     private func adjacentSubstitutionSuggestions(for letters: [Character]) -> [TypoCorrectionSuggestion] {
         guard letters.count >= Self.substitutionMinimumLength else { return [] }
 
-        let editIndices = prioritizedSubstitutionIndices(for: letters)
+        let editDescriptors = prioritizedSubstitutionEditDescriptors(for: letters)
         var suggestions: [TypoCorrectionSuggestion] = []
         var seenCorrectedInputs: Set<String> = []
 
-        for editIndex in editIndices {
-            let original = letters[editIndex]
-            guard let replacements = TypoCorrectionKeyboard.nearbyKeys[original] else { continue }
+        for descriptor in editDescriptors {
+            var corrected = letters
+            corrected[descriptor.index] = descriptor.replacement
+            let correctedInput = String(corrected)
+            guard seenCorrectedInputs.insert(correctedInput).inserted else { continue }
 
-            for replacement in replacements {
-                guard TypoCorrectionKeyboard.isSafeReplacement(
-                    original,
-                    replacement,
-                    at: editIndex,
-                    lastIndex: letters.count - 1
-                ) else { continue }
-
-                var corrected = letters
-                corrected[editIndex] = replacement
-                let correctedInput = String(corrected)
-                guard seenCorrectedInputs.insert(correctedInput).inserted else { continue }
-
-                suggestions.append(
-                    TypoCorrectionSuggestion(
-                        originalInput: String(letters),
-                        correctedInput: correctedInput,
-                        edits: [
-                            TypoCorrectionEdit(
-                                index: editIndex,
-                                original: original,
-                                replacement: replacement,
-                                kind: .substitution
-                            )
-                        ],
-                        candidates: []
-                    )
+            suggestions.append(
+                TypoCorrectionSuggestion(
+                    originalInput: String(letters),
+                    correctedInput: correctedInput,
+                    edits: [
+                        TypoCorrectionEdit(
+                            index: descriptor.index,
+                            original: descriptor.original,
+                            replacement: descriptor.replacement,
+                            kind: .substitution
+                        )
+                    ],
+                    candidates: []
                 )
+            )
 
-                if suggestions.count >= Self.maximumSuggestions {
-                    return suggestions
-                }
+            if suggestions.count >= Self.maximumSuggestions {
+                return suggestions
             }
         }
 
         return suggestions
     }
 
-    private func prioritizedSubstitutionIndices(for letters: [Character]) -> [Int] {
+    private func prioritizedSubstitutionEditDescriptors(for letters: [Character]) -> [SubstitutionEditDescriptor] {
         guard !letters.isEmpty else { return [] }
 
         let lastIndex = letters.count - 1
-        var indices = [lastIndex]
-        if lastIndex > 0 {
-            indices.append(0)
+        var descriptors: [SubstitutionEditDescriptor] = []
+
+        for editIndex in letters.indices {
+            let original = letters[editIndex]
+            guard let replacements = TypoCorrectionKeyboard.nearbyKeys[original] else { continue }
+
+            for (replacementOrder, replacement) in replacements.enumerated() {
+                guard TypoCorrectionKeyboard.isSafeReplacement(
+                    original,
+                    replacement,
+                    at: editIndex,
+                    lastIndex: lastIndex
+                ) else { continue }
+
+                descriptors.append(
+                    SubstitutionEditDescriptor(
+                        index: editIndex,
+                        original: original,
+                        replacement: replacement,
+                        indexPriority: substitutionIndexPriority(editIndex, lastIndex: lastIndex),
+                        replacementOrder: replacementOrder
+                    )
+                )
+            }
         }
-        if letters.count > 2 {
-            indices.append(contentsOf: 1..<lastIndex)
+
+        return descriptors.sorted { lhs, rhs in
+            if lhs.indexPriority != rhs.indexPriority {
+                return lhs.indexPriority < rhs.indexPriority
+            }
+            if lhs.replacementOrder != rhs.replacementOrder {
+                return lhs.replacementOrder < rhs.replacementOrder
+            }
+            return lhs.index < rhs.index
         }
-        var seen: Set<Int> = []
-        return indices.filter { seen.insert($0).inserted }
+    }
+
+    private func substitutionIndexPriority(_ index: Int, lastIndex: Int) -> Int {
+        if index == lastIndex { return 0 }
+        if index == 0 { return 1 }
+
+        // 长拼音里常见误触可能发生在后半段。中间位置从右向左验证，
+        // 让 `zhonghuo -> zhongguo` 这类安全同类替换进入有限 lookup window。
+        return 2 + (lastIndex - index)
     }
 
     private static let substitutionMinimumLength = 5
     private static let repeatedFinalDeletionMinimumLength = 5
     private static let maximumSuggestions = 16
+
+    private struct SubstitutionEditDescriptor {
+        let index: Int
+        let original: Character
+        let replacement: Character
+        let indexPriority: Int
+        let replacementOrder: Int
+    }
 
     private func repeatedFinalDeletionSuggestion(for letters: [Character]) -> TypoCorrectionSuggestion? {
         guard letters.count >= Self.repeatedFinalDeletionMinimumLength,

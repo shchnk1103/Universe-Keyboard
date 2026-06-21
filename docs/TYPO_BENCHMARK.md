@@ -50,7 +50,7 @@ Unsupported cases are known limitations, not failures of the current benchmark. 
 | `nihso` | `nihao -> 你好` | unsafe middle-character mistake | not corrected | no |
 | `zhongguo` | none | valid input | not corrected; normal candidates preserved | no |
 | `zhonggup` | `zhongguo -> 中国` | final adjacent-key substitution | corrected successfully | yes |
-| `zhonghuo` | `zhongguo -> 中国` | middle adjacent-key substitution | known lookup-priority gap; not currently corrected | no |
+| `zhonghuo` | `zhongguo -> 中国` | middle adjacent-key substitution | corrected successfully | near-front only |
 | `zhongguoo` | `zhongguo -> 中国` | repeated final character | corrected successfully | no |
 | `woaini` | none | valid input | not corrected; normal candidates preserved | no |
 | `woainj` | `woaini -> 我爱你` | final adjacent-key substitution | corrected successfully | yes |
@@ -90,7 +90,7 @@ Common reject reasons:
 - Normal RIME top candidate already matches the correction text.
 - Corrected candidate text is too long for the current conservative front-row behavior.
 
-Benchmark examples are representative samples, not a hardcoded allowlist. Some inputs may satisfy the broad rule shape but still miss the current bounded lookup window. For example, `zhonghuo -> zhongguo` is a plausible single adjacent-key substitution (`h -> g`), but current generation order may exhaust the correction lookup budget before reaching that edit position. Treat this as a known recall gap for a future suggestion-prioritization milestone, not as a reason to add broad edit distance or unsafe multi-edit correction.
+Benchmark examples are representative samples, not a hardcoded allowlist. V0.5 keeps the bounded lookup window but prioritizes safe one-edit descriptors so long-pinyin back-half mistakes such as `zhonghuo -> zhongguo` (`h -> g`) are verified before lower-value middle edits. This is a recall-priority fix inside the existing safe rule set, not a move toward broad edit distance or unsafe multi-edit correction.
 
 ## RIME Weighting Boundary
 
@@ -146,6 +146,6 @@ Phase 3 V2 completed real-device validation with the feature flag off and on. Th
 
 ## Next Recommended Milestone
 
-The next typo-correction quality milestone should continue to be benchmark-driven. Prefer improving suggestion prioritization for existing safe one-edit cases, such as `zhonghuo -> zhongguo`, before expanding coverage to omitted characters, transpositions, multi-edit corrections, or non-final consonant/vowel cross-class mistakes. Add enough confidence scoring and real-world examples to avoid increasing false positives.
+The next typo-correction quality milestone should continue to be benchmark-driven. Prefer adding more real-world safe one-edit examples and measuring false positives before expanding coverage to omitted characters, transpositions, multi-edit corrections, or non-final consonant/vowel cross-class mistakes.
 
 Traditional RIME fuzzy pinyin expansion is a separate feature track and should not be measured with this typo benchmark.

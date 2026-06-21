@@ -6,6 +6,15 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-21 — Typo correction V0.5 prioritized recall
+
+- Prioritized safe single-edit typo suggestions before applying the fixed lookup window, so long-pinyin back-half mistakes such as `zhonghuo -> zhongguo -> 中国` can be resolved without increasing hot-path lookup volume.
+- Preserved existing safety boundaries: no omitted-character, transposition, multi-edit, RIME schema, RIME weight, ranking, or candidate UI changes.
+- Updated the smart-correction benchmark and read-only main-App explanation page to mark `zhonghuo -> zhongguo` as supported near-front coverage.
+- Added the V0.5 prioritized-recall plan for future benchmark-driven typo correction work.
+
+---
+
 ## 2026-06-21 — Typo correction V0.4 scoring and benchmark UI
 
 - Added an explicit typo-correction assessment model for confidence tier, score, display eligibility, promotion eligibility, and reject reasons.
