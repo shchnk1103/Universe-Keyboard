@@ -86,6 +86,29 @@ public struct TypoCorrectionBenchmarkSummary: Equatable, Sendable {
         guard totalCount > 0 else { return 1 }
         return Double(passedCount) / Double(totalCount)
     }
+
+    public var targetCorrectionCount: Int {
+        results.filter { $0.testCase.expectedOutcome == .corrected }.count
+    }
+
+    public var targetCorrectionPassedCount: Int {
+        results.filter { $0.testCase.expectedOutcome == .corrected && $0.passed }.count
+    }
+
+    public var normalInputCount: Int {
+        results.filter { $0.testCase.category == .normalInput }.count
+    }
+
+    public var normalInputPassedCount: Int {
+        results.filter { $0.testCase.category == .normalInput && $0.passed }.count
+    }
+
+    public var isReadyForDeviceValidation: Bool {
+        totalCount > 0
+            && passedCount == totalCount
+            && falsePositiveCount == 0
+            && dangerousCorrectionCount == 0
+    }
 }
 
 public struct TypoCorrectionBenchmarkEvaluator {
@@ -268,6 +291,34 @@ public extension TypoCorrectionBenchmarkEvaluator {
         .init(input: "nihso", category: .unsupported, expectedOutcome: .notCorrected, note: "unsafe middle replacement"),
         .init(input: "haop", category: .dangerous, expectedOutcome: .notCorrected, note: "ambiguous short input"),
         .init(input: "xianp", category: .dangerous, expectedOutcome: .notCorrected, note: "ambiguous input"),
+        .init(input: "nihao", category: .normalInput, expectedOutcome: .notCorrected, note: "valid pinyin"),
+        .init(input: "women", category: .normalInput, expectedOutcome: .notCorrected, note: "valid pinyin"),
+        .init(input: "jintian", category: .normalInput, expectedOutcome: .notCorrected, note: "valid pinyin"),
+        .init(input: "xiexie", category: .normalInput, expectedOutcome: .notCorrected, note: "valid pinyin"),
+        .init(input: "shijian", category: .normalInput, expectedOutcome: .notCorrected, note: "valid pinyin"),
+        .init(input: "zhongwen", category: .normalInput, expectedOutcome: .notCorrected, note: "valid pinyin"),
+        .init(input: "ceshi", category: .normalInput, expectedOutcome: .notCorrected, note: "valid pinyin"),
+    ]
+
+    static let experimentalAuditCases: [TypoCorrectionBenchmarkCase] = [
+        .init(
+            input: "niho",
+            category: .supported,
+            expectedCorrectedInput: "nihao",
+            expectedCandidate: "你好",
+            expectedOutcome: .corrected,
+            note: "V0.8 candidate: conservative near-final insertion"
+        ),
+        .init(
+            input: "nihoa",
+            category: .supported,
+            expectedCorrectedInput: "nihao",
+            expectedCandidate: "你好",
+            expectedOutcome: .corrected,
+            note: "V0.9 candidate: adjacent transposition"
+        ),
+        .init(input: "haop", category: .dangerous, expectedOutcome: .notCorrected, note: "dangerous short input"),
+        .init(input: "xianp", category: .dangerous, expectedOutcome: .notCorrected, note: "dangerous ambiguous input"),
         .init(input: "nihao", category: .normalInput, expectedOutcome: .notCorrected, note: "valid pinyin"),
         .init(input: "women", category: .normalInput, expectedOutcome: .notCorrected, note: "valid pinyin"),
         .init(input: "jintian", category: .normalInput, expectedOutcome: .notCorrected, note: "valid pinyin"),

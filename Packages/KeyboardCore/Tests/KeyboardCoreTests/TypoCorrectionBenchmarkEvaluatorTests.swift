@@ -9,6 +9,7 @@ final class TypoCorrectionBenchmarkEvaluatorTests: XCTestCase {
         XCTAssertEqual(summary.passedCount, summary.totalCount)
         XCTAssertEqual(summary.falsePositiveCount, 0)
         XCTAssertEqual(summary.dangerousCorrectionCount, 0)
+        XCTAssertTrue(summary.isReadyForDeviceValidation)
     }
 
     func testSupportedCaseReportsCorrectionAssessmentAndPromotionEligibility() {
@@ -146,6 +147,21 @@ final class TypoCorrectionBenchmarkEvaluatorTests: XCTestCase {
         XCTAssertTrue(result.passed)
         XCTAssertEqual(result.assessment?.reasonSummary, .adjacentTransposition)
         XCTAssertFalse(result.didPromote)
+    }
+
+    func testExperimentalAuditSummaryPassesFlagOnDeviceValidationGate() {
+        let evaluator = TypoCorrectionBenchmarkEvaluator(
+            engine: TypoCorrectionEngine(experimentalEdits: [.insertion, .transposition])
+        )
+
+        let summary = evaluator.evaluate(TypoCorrectionBenchmarkEvaluator.experimentalAuditCases)
+
+        XCTAssertEqual(summary.passedCount, summary.totalCount)
+        XCTAssertEqual(summary.targetCorrectionPassedCount, summary.targetCorrectionCount)
+        XCTAssertEqual(summary.normalInputPassedCount, summary.normalInputCount)
+        XCTAssertEqual(summary.falsePositiveCount, 0)
+        XCTAssertEqual(summary.dangerousCorrectionCount, 0)
+        XCTAssertTrue(summary.isReadyForDeviceValidation)
     }
 
     func testExperimentalInsertionAndTranspositionAssessmentsAreDisplayOnlyLowConfidence() {

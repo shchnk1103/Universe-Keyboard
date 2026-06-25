@@ -3,9 +3,16 @@ import KeyboardCore
 
 struct TypoCorrectionBenchmarkModel {
     let summary: TypoCorrectionBenchmarkSummary
+    let experimentalSummary: TypoCorrectionBenchmarkSummary
 
-    init(evaluator: TypoCorrectionBenchmarkEvaluator = TypoCorrectionBenchmarkEvaluator()) {
+    init(
+        evaluator: TypoCorrectionBenchmarkEvaluator = TypoCorrectionBenchmarkEvaluator(),
+        experimentalEvaluator: TypoCorrectionBenchmarkEvaluator = TypoCorrectionBenchmarkEvaluator(
+            engine: TypoCorrectionEngine(experimentalEdits: [.insertion, .transposition])
+        )
+    ) {
         summary = evaluator.evaluate()
+        experimentalSummary = experimentalEvaluator.evaluate(TypoCorrectionBenchmarkEvaluator.experimentalAuditCases)
     }
 
     var passRateText: String {
@@ -19,12 +26,37 @@ struct TypoCorrectionBenchmarkModel {
         return "需要复核"
     }
 
+    var experimentalPassRateText: String {
+        "\(experimentalSummary.passedCount)/\(experimentalSummary.totalCount)"
+    }
+
+    var experimentalStatusText: String {
+        experimentalSummary.isReadyForDeviceValidation ? "可进入真机验证" : "暂不建议真机验证"
+    }
+
+    var experimentalGateDetails: [String] {
+        [
+            "目标样例 \(experimentalSummary.targetCorrectionPassedCount)/\(experimentalSummary.targetCorrectionCount)",
+            "正常输入 \(experimentalSummary.normalInputPassedCount)/\(experimentalSummary.normalInputCount)",
+            "误纠错 \(experimentalSummary.falsePositiveCount)",
+            "危险纠错 \(experimentalSummary.dangerousCorrectionCount)",
+        ]
+    }
+
     var groupedResults: [TypoCorrectionBenchmarkGroup] {
         [
             group(title: "当前覆盖", category: .supported),
             group(title: "正常输入", category: .normalInput),
             group(title: "已知边界", category: .unsupported),
             group(title: "危险样例", category: .dangerous),
+        ].filter { !$0.results.isEmpty }
+    }
+
+    var experimentalGroupedResults: [TypoCorrectionBenchmarkGroup] {
+        [
+            experimentalGroup(title: "实验目标", category: .supported),
+            experimentalGroup(title: "正常输入回归", category: .normalInput),
+            experimentalGroup(title: "危险样例", category: .dangerous),
         ].filter { !$0.results.isEmpty }
     }
 
@@ -35,6 +67,16 @@ struct TypoCorrectionBenchmarkModel {
         TypoCorrectionBenchmarkGroup(
             title: title,
             results: summary.results.filter { $0.testCase.category == category }
+        )
+    }
+
+    private func experimentalGroup(
+        title: String,
+        category: TypoCorrectionBenchmarkCategory
+    ) -> TypoCorrectionBenchmarkGroup {
+        TypoCorrectionBenchmarkGroup(
+            title: title,
+            results: experimentalSummary.results.filter { $0.testCase.category == category }
         )
     }
 }

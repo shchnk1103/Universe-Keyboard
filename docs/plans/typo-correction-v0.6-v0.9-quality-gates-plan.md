@@ -54,10 +54,27 @@ Defaults:
 - Keep behavior display-only and non-promoting.
 - Do not combine with insertion or substitution into multi-edit correction.
 
+## V0.8/V0.9 Flag-On Audit
+
+Before any real-device validation, run the default-off experimental features through a local flag-on audit:
+
+- Enable insertion and transposition only inside the benchmark evaluator.
+- Keep production `TypoCorrectionEngine()` defaults unchanged.
+- Require all experimental targets to pass.
+- Require normal input preservation to stay at 100%.
+- Require false positives and dangerous corrections to stay at 0.
+- Treat successful audit as permission to test on a device, not permission to ship.
+
+Recommended rollout order:
+
+1. V0.8 insertion may enter device validation first because near-final omission is easier to explain and keep display-only.
+2. V0.9 transposition should remain benchmark-first until device testing proves candidate noise is acceptable.
+
 ## Acceptance Criteria
 
 - The Main App can show local benchmark status without telemetry.
 - `KeyboardCore` tests enforce zero false positives and zero dangerous corrections in the default benchmark.
 - Feature-flag-off behavior preserves all current typo correction behavior.
 - Feature-flag-on tests prove insertion and transposition can be evaluated without changing production runtime defaults.
+- Main App shows the flag-on audit result as a read-only readiness signal, not as a runtime switch.
 - Documentation remains clear that RIME weighting and schema fuzzy pinyin are separate systems.

@@ -23,6 +23,23 @@ final class TypoCorrectionBenchmarkModelTests: XCTestCase {
         XCTAssertTrue(model.groupedResults.allSatisfy { !$0.results.isEmpty })
     }
 
+    func testModelSummarizesExperimentalAuditReadiness() {
+        let model = TypoCorrectionBenchmarkModel()
+
+        XCTAssertEqual(model.experimentalStatusText, "可进入真机验证")
+        XCTAssertEqual(
+            model.experimentalPassRateText,
+            "\(model.experimentalSummary.totalCount)/\(model.experimentalSummary.totalCount)"
+        )
+        XCTAssertEqual(model.experimentalSummary.falsePositiveCount, 0)
+        XCTAssertEqual(model.experimentalSummary.dangerousCorrectionCount, 0)
+        XCTAssertEqual(
+            model.experimentalGroupedResults.map(\.title),
+            ["实验目标", "正常输入回归", "危险样例"]
+        )
+    }
+
+
     func testResultDisplayTextUsesExpectedAndActualValues() {
         let model = TypoCorrectionBenchmarkModel()
         let zhonghuo = model.summary.results.first { $0.testCase.input == "zhonghuo" }

@@ -23,6 +23,7 @@ struct TypoCorrectionBenchmarkView: View {
                 statusSection
                 scoringSection
                 localEvaluationSection
+                experimentalAuditSection
                 benchmarkSection(title: "当前覆盖", examples: supportedExamples)
                 benchmarkSection(title: "已知边界", examples: unsupportedExamples)
                 rimeBoundarySection
@@ -82,6 +83,32 @@ struct TypoCorrectionBenchmarkView: View {
             }
         }
     }
+
+    private var experimentalAuditSection: some View {
+        InfoSection(title: "实验开关审计", systemImage: "testtube.2") {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 10) {
+                    CapsuleBadge(text: benchmarkModel.experimentalStatusText, color: .purple)
+                    CapsuleBadge(text: "通过 \(benchmarkModel.experimentalPassRateText)", color: .blue)
+                }
+
+                Text("这是 V0.8/V0.9 默认关闭能力的 flag-on 本地审计，只用于判断是否值得进入真机验证，不代表键盘运行时已经启用。")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 118), spacing: 8)], spacing: 8) {
+                    ForEach(benchmarkModel.experimentalGateDetails, id: \.self) { detail in
+                        CapsuleBadge(text: detail, color: .secondary)
+                    }
+                }
+
+                ForEach(benchmarkModel.experimentalGroupedResults) { group in
+                    TypoCorrectionBenchmarkGroupView(group: group)
+                }
+            }
+        }
+    }
+
 
     private func benchmarkSection(title: String, examples: [TypoCorrectionExample]) -> some View {
         InfoSection(title: title, systemImage: "tablecells") {

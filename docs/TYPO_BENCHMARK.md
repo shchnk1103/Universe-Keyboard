@@ -105,6 +105,19 @@ V0.8 and V0.9 introduce default-off experimental edit flags for future validatio
 
 These flags are available for tests and local benchmark evaluation only. They are not enabled by the production keyboard controller, are not connected to Partial Commit, and must not be used to broaden runtime behavior without a separate approval milestone.
 
+### Device Validation Gate
+
+Experimental edit flags may enter real-device validation only after the local flag-on audit passes all quality gates:
+
+- Target experimental cases pass, such as `niho -> nihao -> 你好` and `nihoa -> nihao -> 你好`.
+- Normal input regression remains clean for representative inputs such as `nihao`, `women`, `jintian`, `xiexie`, `shijian`, `zhongwen`, and `ceshi`.
+- False positives remain `0`.
+- Dangerous corrections remain `0`.
+- Experimental corrections stay display-only and non-promoting.
+- Production defaults remain unchanged.
+
+Passing this gate means the feature is ready to be tested on a real device; it does not mean the feature is approved for production enablement.
+
 ## RIME Weighting Boundary
 
 RIME's weighting system ranks candidates for the same input code. For example, repeated user selection can make `你好` appear earlier for `nihao`.

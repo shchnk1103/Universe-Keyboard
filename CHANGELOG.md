@@ -6,6 +6,14 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-21 — Typo correction experimental audit gate
+
+- Added a local flag-on audit for default-off V0.8/V0.9 insertion and transposition experiments, keeping production typo correction behavior unchanged.
+- Extended the main-App 智能纠错 page with a read-only "实验开关审计" section that reports target coverage, normal-input regression, false positives, dangerous corrections, and device-validation readiness.
+- Documented that passing the audit only qualifies a feature for real-device validation; it does not approve production enablement.
+
+---
+
 ## 2026-06-21 — Typo correction V0.6 quality gates
 
 - Added a pure KeyboardCore benchmark evaluator and result model so smart-correction coverage can be checked without runtime telemetry or real user input.
