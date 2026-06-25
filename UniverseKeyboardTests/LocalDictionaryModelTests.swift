@@ -132,7 +132,8 @@ final class DictionaryIndexServiceTests: XCTestCase {
     }
 }
 
-private actor StubDictionaryIndexService: DictionaryIndexServicing {
+@MainActor
+private final class StubDictionaryIndexService: DictionaryIndexServicing {
     private let snapshot: DictionarySnapshot
     private let previewEntries: [LocalDictionaryEntry]
     private var scanQueries: [String] = []
@@ -161,11 +162,11 @@ private actor StubDictionaryIndexService: DictionaryIndexServicing {
         return previewEntries
     }
 
-    func receivedScanQueries() -> [String] {
+    func receivedScanQueries() async -> [String] {
         scanQueries
     }
 
-    func receivedPreviewQueries() -> [String] {
+    func receivedPreviewQueries() async -> [String] {
         previewQueries
     }
 }

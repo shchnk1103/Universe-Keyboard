@@ -102,6 +102,7 @@
 - 当前不支持：漏字、转置、多字符纠错、非末尾辅音/元音跨类替换、部分末尾错误
 - 评分原则：precision 优先，false positive 比 missed correction 更严重
 - V0.4 评分与展示计划：`docs/plans/typo-correction-v0.4-scoring-and-ui-plan.md`
+- V0.6-V0.9 质量闸门计划：`docs/plans/typo-correction-v0.6-v0.9-quality-gates-plan.md`
 
 ### 4b. `docs/RIME_FUZZY_PINYIN.md` — RIME 传统模糊音
 

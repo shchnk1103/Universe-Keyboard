@@ -8,6 +8,8 @@ This is not runtime telemetry. It does not measure live user input, keyboard fre
 
 This document does not evaluate traditional RIME fuzzy pinyin such as `zh/z`, `ch/c`, `sh/s`, or `n/l`. Those settings are implemented through RIME `speller/algebra` derive rules and are documented separately in `docs/RIME_FUZZY_PINYIN.md`.
 
+The main App may display a local read-only evaluation of these built-in cases. That evaluation is not telemetry: it does not read arbitrary user input, store live typing data, upload results, or change keyboard behavior.
+
 ## Segmented RIME Preedit
 
 Real librime preedit text may contain display-oriented segmentation spaces even when the user typed one continuous pinyin key sequence. For example:
@@ -92,6 +94,17 @@ Common reject reasons:
 
 Benchmark examples are representative samples, not a hardcoded allowlist. V0.5 keeps the bounded lookup window but prioritizes safe one-edit descriptors so long-pinyin back-half mistakes such as `zhonghuo -> zhongguo` (`h -> g`) are verified before lower-value middle edits. This is a recall-priority fix inside the existing safe rule set, not a move toward broad edit distance or unsafe multi-edit correction.
 
+V0.7 adds an assessment reason summary for display and tests. The reason explains why a candidate is displayable, promotable, conservative, or rejected; it does not replace the confidence tier or RIME candidate weights.
+
+## Experimental Edit Flags
+
+V0.8 and V0.9 introduce default-off experimental edit flags for future validation:
+
+- `insertion`: conservative near-final single-character insertion, for example `niho -> nihao`.
+- `transposition`: one adjacent character swap, for example `nihoa -> nihao`.
+
+These flags are available for tests and local benchmark evaluation only. They are not enabled by the production keyboard controller, are not connected to Partial Commit, and must not be used to broaden runtime behavior without a separate approval milestone.
+
 ## RIME Weighting Boundary
 
 RIME's weighting system ranks candidates for the same input code. For example, repeated user selection can make `你好` appear earlier for `nihao`.
@@ -146,6 +159,6 @@ Phase 3 V2 completed real-device validation with the feature flag off and on. Th
 
 ## Next Recommended Milestone
 
-The next typo-correction quality milestone should continue to be benchmark-driven. Prefer adding more real-world safe one-edit examples and measuring false positives before expanding coverage to omitted characters, transpositions, multi-edit corrections, or non-final consonant/vowel cross-class mistakes.
+The next typo-correction quality milestone should continue to be benchmark-driven. Use the V0.6-V0.9 quality-gate plan in `docs/plans/typo-correction-v0.6-v0.9-quality-gates-plan.md`: evaluate current behavior locally, explain assessment reasons, then validate default-off insertion and transposition before considering any production enablement.
 
 Traditional RIME fuzzy pinyin expansion is a separate feature track and should not be measured with this typo benchmark.

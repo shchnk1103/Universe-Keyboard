@@ -6,6 +6,15 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-21 — Typo correction V0.6 quality gates
+
+- Added a pure KeyboardCore benchmark evaluator and result model so smart-correction coverage can be checked without runtime telemetry or real user input.
+- Extended the main-App 智能纠错 page with a local read-only evaluation section showing pass status, expected/actual results, confidence, promotion, and assessment reason.
+- Added assessment reason summaries and default-off experimental edit flags for future insertion and transposition validation without changing production keyboard behavior.
+- Documented the V0.6-V0.9 quality-gate roadmap and kept RIME schema, RIME weights, candidate UI, and Typo Partial Commit defaults unchanged.
+
+---
+
 ## 2026-06-21 — Typo correction V0.5 prioritized recall
 
 - Prioritized safe single-edit typo suggestions before applying the fixed lookup window, so long-pinyin back-half mistakes such as `zhonghuo -> zhongguo -> 中国` can be resolved without increasing hot-path lookup volume.

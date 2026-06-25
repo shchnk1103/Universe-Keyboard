@@ -5,7 +5,11 @@ import Foundation
 /// 当前只处理低风险的单点误触：一处相邻按键替换，或末尾重复字符删除。
 /// 引擎只生成候选输入，真正是否展示仍要经过 RIME/候选 provider 验证。
 public struct TypoCorrectionEngine: Sendable {
-    public init() {}
+    private let experimentalEdits: TypoCorrectionExperimentalEdits
+
+    public init(experimentalEdits: TypoCorrectionExperimentalEdits = []) {
+        self.experimentalEdits = experimentalEdits
+    }
 
     public func suggestions(for input: String) -> [TypoCorrectionSuggestion] {
         let letters = Array(input.lowercased())
@@ -16,6 +20,12 @@ public struct TypoCorrectionEngine: Sendable {
             suggestions.append(deletion)
         }
 
+        if experimentalEdits.contains(.transposition) {
+            suggestions.append(contentsOf: transpositionSuggestions(for: letters))
+        }
+        if experimentalEdits.contains(.insertion) {
+            suggestions.append(contentsOf: insertionSuggestions(for: letters))
+        }
         suggestions.append(contentsOf: adjacentSubstitutionSuggestions(for: letters))
 
         return Array(suggestions.prefix(Self.maximumSuggestions))
@@ -109,8 +119,11 @@ public struct TypoCorrectionEngine: Sendable {
     }
 
     private static let substitutionMinimumLength = 5
+    private static let insertionMinimumLength = 4
+    private static let transpositionMinimumLength = 5
     private static let repeatedFinalDeletionMinimumLength = 5
     private static let maximumSuggestions = 16
+    private static let conservativeInsertionCharacters: [Character] = ["a", "e", "i", "o", "u"]
 
     private struct SubstitutionEditDescriptor {
         let index: Int
@@ -142,6 +155,71 @@ public struct TypoCorrectionEngine: Sendable {
             candidates: []
         )
     }
+
+    private func insertionSuggestions(for letters: [Character]) -> [TypoCorrectionSuggestion] {
+        guard letters.count >= Self.insertionMinimumLength else { return [] }
+
+        let originalInput = String(letters)
+        let insertionRange = max(0, letters.count - 1)...letters.count
+        return insertionRange.flatMap { insertionIndex in
+            Self.conservativeInsertionCharacters.map { inserted in
+                var corrected = letters
+                corrected.insert(inserted, at: insertionIndex)
+                return TypoCorrectionSuggestion(
+                    originalInput: originalInput,
+                    correctedInput: String(corrected),
+                    edits: [
+                        TypoCorrectionEdit(
+                            index: insertionIndex,
+                            original: inserted,
+                            replacement: inserted,
+                            kind: .insertion,
+                            inserted: inserted
+                        )
+                    ],
+                    candidates: []
+                )
+            }
+        }
+    }
+
+    private func transpositionSuggestions(for letters: [Character]) -> [TypoCorrectionSuggestion] {
+        guard letters.count >= Self.transpositionMinimumLength else { return [] }
+
+        let originalInput = String(letters)
+        return letters.indices.dropLast().compactMap { firstIndex in
+            let secondIndex = firstIndex + 1
+            guard letters[firstIndex] != letters[secondIndex] else { return nil }
+
+            var corrected = letters
+            corrected.swapAt(firstIndex, secondIndex)
+            return TypoCorrectionSuggestion(
+                originalInput: originalInput,
+                correctedInput: String(corrected),
+                edits: [
+                    TypoCorrectionEdit(
+                        index: firstIndex,
+                        original: letters[firstIndex],
+                        replacement: letters[secondIndex],
+                        kind: .transposition,
+                        secondIndex: secondIndex
+                    )
+                ],
+                candidates: []
+            )
+        }
+    }
+}
+
+public struct TypoCorrectionExperimentalEdits: OptionSet, Sendable {
+    public let rawValue: Int
+
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+
+    public static let insertion = TypoCorrectionExperimentalEdits(rawValue: 1 << 0)
+    public static let transposition = TypoCorrectionExperimentalEdits(rawValue: 1 << 1)
 }
 
 enum TypoCorrectionKeyboard {
@@ -210,25 +288,37 @@ public enum TypoCorrectionRejectReason: Equatable, Sendable {
     case candidateTextTooLong
 }
 
+public enum TypoCorrectionAssessmentReason: Equatable, Sendable {
+    case finalAdjacentSubstitution
+    case initialAdjacentSubstitution
+    case middleSafeSubstitution
+    case repeatedFinalDeletion
+    case conservativeInsertion
+    case adjacentTransposition
+}
+
 public struct TypoCorrectionAssessment: Equatable, Sendable {
     public let score: Int
     public let confidence: TypoCorrectionConfidenceTier
     public let isDisplayEligible: Bool
     public let isPromotionEligible: Bool
     public let rejectReason: TypoCorrectionRejectReason?
+    public let reasonSummary: TypoCorrectionAssessmentReason?
 
     public init(
         score: Int,
         confidence: TypoCorrectionConfidenceTier,
         isDisplayEligible: Bool,
         isPromotionEligible: Bool,
-        rejectReason: TypoCorrectionRejectReason?
+        rejectReason: TypoCorrectionRejectReason?,
+        reasonSummary: TypoCorrectionAssessmentReason? = nil
     ) {
         self.score = score
         self.confidence = confidence
         self.isDisplayEligible = isDisplayEligible
         self.isPromotionEligible = isPromotionEligible
         self.rejectReason = rejectReason
+        self.reasonSummary = reasonSummary
     }
 
     public static func rejected(_ reason: TypoCorrectionRejectReason) -> TypoCorrectionAssessment {
@@ -237,7 +327,8 @@ public struct TypoCorrectionAssessment: Equatable, Sendable {
             confidence: .rejected,
             isDisplayEligible: false,
             isPromotionEligible: false,
-            rejectReason: reason
+            rejectReason: reason,
+            reasonSummary: nil
         )
     }
 
@@ -282,9 +373,6 @@ public struct TypoCorrectionAssessment: Equatable, Sendable {
         guard firstNormalCandidate != title else {
             return .rejected(.normalCandidateAlreadyMatches)
         }
-        guard originalInput.count >= TypoCorrectionEngine.safeSubstitutionMinimumLength else {
-            return .rejected(.inputTooShort)
-        }
         guard edits.count == 1,
             originalInput != correctedInput,
             let edit = edits.first
@@ -294,6 +382,9 @@ public struct TypoCorrectionAssessment: Equatable, Sendable {
 
         switch edit.kind {
         case .substitution:
+            guard originalInput.count >= TypoCorrectionEngine.safeSubstitutionMinimumLength else {
+                return .rejected(.inputTooShort)
+            }
             return substitutionAssessment(
                 edit: edit,
                 originalInput: originalInput,
@@ -301,6 +392,18 @@ public struct TypoCorrectionAssessment: Equatable, Sendable {
             )
         case .deletion:
             return deletionAssessment(
+                edit: edit,
+                originalInput: originalInput,
+                correctedInput: correctedInput
+            )
+        case .insertion:
+            return insertionAssessment(
+                edit: edit,
+                originalInput: originalInput,
+                correctedInput: correctedInput
+            )
+        case .transposition:
+            return transpositionAssessment(
                 edit: edit,
                 originalInput: originalInput,
                 correctedInput: correctedInput
@@ -335,12 +438,22 @@ public struct TypoCorrectionAssessment: Equatable, Sendable {
         }
 
         let isFinalEdit = edit.index == lastIndex
+        let reason: TypoCorrectionAssessmentReason
+        if isFinalEdit {
+            reason = .finalAdjacentSubstitution
+        } else if edit.index == 0 {
+            reason = .initialAdjacentSubstitution
+        } else {
+            reason = .middleSafeSubstitution
+        }
+
         return TypoCorrectionAssessment(
             score: isFinalEdit ? 90 : 75,
             confidence: .high,
             isDisplayEligible: true,
             isPromotionEligible: isFinalEdit,
-            rejectReason: nil
+            rejectReason: nil,
+            reasonSummary: reason
         )
     }
 
@@ -368,7 +481,76 @@ public struct TypoCorrectionAssessment: Equatable, Sendable {
             confidence: .medium,
             isDisplayEligible: true,
             isPromotionEligible: false,
-            rejectReason: nil
+            rejectReason: nil,
+            reasonSummary: .repeatedFinalDeletion
+        )
+    }
+
+    private static func insertionAssessment(
+        edit: TypoCorrectionEdit,
+        originalInput: String,
+        correctedInput: String
+    ) -> TypoCorrectionAssessment {
+        let originalLetters = Array(originalInput)
+        let correctedLetters = Array(correctedInput)
+        guard originalLetters.count + 1 == correctedLetters.count,
+            let inserted = edit.inserted,
+            correctedLetters.indices.contains(edit.index),
+            correctedLetters[edit.index] == inserted
+        else {
+            return .rejected(.unsupportedEdit)
+        }
+
+        var reconstructed = correctedLetters
+        reconstructed.remove(at: edit.index)
+        guard reconstructed == originalLetters else {
+            return .rejected(.unsupportedEdit)
+        }
+        guard edit.index >= originalLetters.count - 1 else {
+            return .rejected(.unsupportedEdit)
+        }
+
+        return TypoCorrectionAssessment(
+            score: 45,
+            confidence: .low,
+            isDisplayEligible: true,
+            isPromotionEligible: false,
+            rejectReason: nil,
+            reasonSummary: .conservativeInsertion
+        )
+    }
+
+    private static func transpositionAssessment(
+        edit: TypoCorrectionEdit,
+        originalInput: String,
+        correctedInput: String
+    ) -> TypoCorrectionAssessment {
+        let originalLetters = Array(originalInput)
+        let correctedLetters = Array(correctedInput)
+        guard originalLetters.count == correctedLetters.count,
+            let secondIndex = edit.secondIndex,
+            secondIndex == edit.index + 1,
+            originalLetters.indices.contains(edit.index),
+            originalLetters.indices.contains(secondIndex),
+            originalLetters[edit.index] == edit.original,
+            originalLetters[secondIndex] == edit.replacement
+        else {
+            return .rejected(.unsupportedEdit)
+        }
+
+        var reconstructed = originalLetters
+        reconstructed.swapAt(edit.index, secondIndex)
+        guard reconstructed == correctedLetters else {
+            return .rejected(.unsupportedEdit)
+        }
+
+        return TypoCorrectionAssessment(
+            score: 45,
+            confidence: .low,
+            isDisplayEligible: true,
+            isPromotionEligible: false,
+            rejectReason: nil,
+            reasonSummary: .adjacentTransposition
         )
     }
 }
@@ -458,26 +640,34 @@ public struct TypoCorrectionSuggestion: Equatable, Sendable {
 public enum TypoCorrectionEditKind: Equatable, Sendable {
     case substitution
     case deletion
+    case insertion
+    case transposition
 }
 
 public struct TypoCorrectionEdit: Equatable, Sendable {
     public let index: Int
     public let original: Character
-    /// Substitution replacement. For deletion edits this is a compatibility value and
-    /// deletion semantics are represented by `kind`.
+    /// Substitution replacement. For deletion, insertion, and transposition edits this is
+    /// a compatibility value; exact semantics are represented by `kind` and optional fields.
     public let replacement: Character
     public let kind: TypoCorrectionEditKind
+    public let inserted: Character?
+    public let secondIndex: Int?
 
     public init(
         index: Int,
         original: Character,
         replacement: Character,
-        kind: TypoCorrectionEditKind = .substitution
+        kind: TypoCorrectionEditKind = .substitution,
+        inserted: Character? = nil,
+        secondIndex: Int? = nil
     ) {
         self.index = index
         self.original = original
         self.replacement = replacement
         self.kind = kind
+        self.inserted = inserted
+        self.secondIndex = secondIndex
     }
 }
 

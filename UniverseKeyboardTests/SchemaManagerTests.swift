@@ -91,7 +91,7 @@ final class SchemaManagerTests: XCTestCase {
 
         _ = try await manager.downloadZip(from: sourceURL)
 
-        let requests = await downloader.requests
+        let requests = downloader.requests
         XCTAssertEqual(requests.first?.existingETag, "old-etag")
         XCTAssertEqual(settings.string(forKey: "rime_ice_etag"), "new-etag")
     }
@@ -720,7 +720,8 @@ private struct StubSchemaCatalogClient: SchemaCatalogClient {
     func latestArchiveURL(for distribution: RimeSchemeDistribution) async throws -> URL? { latestURL }
 }
 
-private actor StubSchemaArchiveDownloader: SchemaArchiveDownloading {
+@MainActor
+private final class StubSchemaArchiveDownloader: SchemaArchiveDownloading {
     struct Request: Sendable {
         let sourceURL: URL
         let existingETag: String?

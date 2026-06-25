@@ -1,6 +1,8 @@
+import KeyboardCore
 import SwiftUI
 
 struct TypoCorrectionBenchmarkView: View {
+    private let benchmarkModel = TypoCorrectionBenchmarkModel()
     private let supportedExamples = [
         TypoCorrectionExample(input: "nihap", correction: "nihao -> 你好", badge: "高置信", color: .green),
         TypoCorrectionExample(input: "bihao", correction: "nihao -> 你好", badge: "前排展示", color: .blue),
@@ -20,6 +22,7 @@ struct TypoCorrectionBenchmarkView: View {
             VStack(alignment: .leading, spacing: 16) {
                 statusSection
                 scoringSection
+                localEvaluationSection
                 benchmarkSection(title: "当前覆盖", examples: supportedExamples)
                 benchmarkSection(title: "已知边界", examples: unsupportedExamples)
                 rimeBoundarySection
@@ -57,6 +60,25 @@ struct TypoCorrectionBenchmarkView: View {
                 TypoCorrectionRuleRow(text: "纠错必须先通过 RIME 候选验证，不能只靠字符串猜测。")
                 TypoCorrectionRuleRow(text: "末尾邻键替换可以更靠前，首字母和中间替换保持前排但不抢首位。")
                 TypoCorrectionRuleRow(text: "重复末尾字符删除保持保守，不激进提升。")
+            }
+        }
+    }
+
+    private var localEvaluationSection: some View {
+        InfoSection(title: "本地评估", systemImage: "checkmark.seal") {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 10) {
+                    CapsuleBadge(text: benchmarkModel.statusText, color: .green)
+                    CapsuleBadge(text: "通过 \(benchmarkModel.passRateText)", color: .blue)
+                }
+
+                Text("评估只运行内置样例，不读取真实输入、不联网、不上传数据。")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                ForEach(benchmarkModel.groupedResults) { group in
+                    TypoCorrectionBenchmarkGroupView(group: group)
+                }
             }
         }
     }
@@ -132,6 +154,62 @@ private struct TypoCorrectionRuleRow: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
+    }
+}
+
+private struct TypoCorrectionBenchmarkGroupView: View {
+    let group: TypoCorrectionBenchmarkGroup
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(group.title)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.secondary)
+
+            VStack(spacing: 0) {
+                ForEach(group.results) { result in
+                    TypoCorrectionBenchmarkResultRow(result: result)
+                    if result.id != group.results.last?.id {
+                        Divider().padding(.leading, 74)
+                    }
+                }
+            }
+            .padding(.vertical, 2)
+            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 10))
+        }
+    }
+}
+
+private struct TypoCorrectionBenchmarkResultRow: View {
+    let result: TypoCorrectionBenchmarkResult
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: result.passed ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                .font(.footnote)
+                .foregroundStyle(result.passed ? .green : .orange)
+                .padding(.top, 2)
+
+            Text(result.testCase.input)
+                .font(.system(.footnote, design: .monospaced).weight(.semibold))
+                .frame(width: 58, alignment: .leading)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(result.displayActual)
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(.primary)
+                Text("预期：\(result.displayExpected) · 置信：\(result.displayConfidence) · \(result.displayPromotion)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(result.displayReason)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
     }
 }
 
