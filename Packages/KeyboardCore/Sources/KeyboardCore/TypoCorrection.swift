@@ -758,9 +758,7 @@ public enum TypoCorrectionCandidateRanker {
                 $0,
                 firstNormalCandidate: firstNormal.title
             )
-            return assessment.isDisplayEligible
-                && !assessment.isPromotionEligible
-                && assessment.confidence == .high
+            return assessment.isNearFrontDisplayEligible
         }
 
         guard let nearFront = nearFrontCorrections.first else {
@@ -779,4 +777,14 @@ public enum TypoCorrectionCandidateRanker {
             + remainingCorrections
     }
 
+}
+
+private extension TypoCorrectionAssessment {
+    var isNearFrontDisplayEligible: Bool {
+        guard isDisplayEligible, !isPromotionEligible else { return false }
+
+        // V0.8a: conservative near-final insertion is still not promotable, but it must
+        // be visible enough to evaluate on device. Keep transposition benchmark-only.
+        return confidence == .high || reasonSummary == .conservativeInsertion
+    }
 }

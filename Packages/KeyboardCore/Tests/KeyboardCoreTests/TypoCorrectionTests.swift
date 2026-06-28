@@ -175,6 +175,24 @@ final class TypoCorrectionTests: XCTestCase {
         })
     }
 
+    func testExperimentalSettingsDefaultToStableEdits() {
+        let settings = TypoCorrectionExperimentalSettings()
+
+        XCTAssertFalse(settings.insertionEnabled)
+        XCTAssertFalse(settings.transpositionEnabled)
+        XCTAssertTrue(settings.experimentalEdits.isEmpty)
+    }
+
+    func testExperimentalSettingsMapEnabledFlagsToEdits() {
+        let settings = TypoCorrectionExperimentalSettings(
+            insertionEnabled: true,
+            transpositionEnabled: true
+        )
+
+        XCTAssertTrue(settings.experimentalEdits.contains(.insertion))
+        XCTAssertTrue(settings.experimentalEdits.contains(.transposition))
+    }
+
     func testEngineSkipsSingleCharacterInput() {
         XCTAssertTrue(TypoCorrectionEngine().suggestions(for: "n").isEmpty)
     }
@@ -342,6 +360,45 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(controller.state.currentComposition, "nihao")
         XCTAssertEqual(controller.state.lastRimeOutput?.candidates.first?.text, "你好")
         XCTAssertNil(controller.state.typoCorrection)
+    }
+
+    func testControllerKeepsExperimentalInsertionDisabledByDefault() {
+        let client = FakeTextInputClient()
+        let engine = FakeRimeEngine(dictionary: [
+            "niho": ["你或"],
+            "nihao": ["你好"],
+        ])
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+
+        for character in "niho" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        XCTAssertNil(controller.state.typoCorrection)
+    }
+
+    func testControllerCanEnableExperimentalInsertionForLocalValidation() {
+        let client = FakeTextInputClient()
+        let engine = FakeRimeEngine(dictionary: [
+            "niho": ["你或"],
+            "nihao": ["你好"],
+        ])
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+        controller.typoCorrectionExperimentalEdits = [.insertion]
+
+        for character in "niho" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+
+        let correction = controller.state.typoCorrection
+        XCTAssertEqual(correction?.originalInput, "niho")
+        XCTAssertEqual(correction?.suggestions.first?.correctedInput, "nihao")
+        XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "你好")
+        XCTAssertEqual(correction?.suggestions.first?.edits.first?.kind, .insertion)
     }
 
     func testNormalUnrelatedPinyinKeepsRimeCandidates() {
@@ -774,6 +831,71 @@ final class TypoCorrectionTests: XCTestCase {
 
         XCTAssertEqual(merged.map(\.title), ["你好哦", "你好"])
         XCTAssertEqual(merged.first?.kind, .candidate)
+    }
+
+    func testRankerPlacesConservativeInsertionNearFrontWithoutReplacingTopCandidate() {
+        let normalItems = [
+            CandidateItem(title: "你或", kind: .candidate),
+            CandidateItem(title: "拟或", kind: .candidate),
+            CandidateItem(title: "你好", kind: .candidate),
+        ]
+        let correctionItems = [
+            correctionItem(
+                title: "你好",
+                originalInput: "niho",
+                correctedInput: "nihao",
+                edits: [
+                    TypoCorrectionEdit(
+                        index: 3,
+                        original: "a",
+                        replacement: "a",
+                        kind: .insertion,
+                        inserted: "a"
+                    )
+                ]
+            )
+        ]
+
+        let merged = TypoCorrectionCandidateRanker.mergedCandidates(
+            normalItems: normalItems,
+            correctionItems: correctionItems
+        )
+
+        XCTAssertEqual(merged.map(\.title), ["你或", "你好", "拟或"])
+        XCTAssertEqual(merged[0].kind, .candidate)
+        XCTAssertEqual(merged[1].kind, .correctionCandidate)
+    }
+
+    func testRankerDoesNotMoveTranspositionCorrectionNearFront() {
+        let normalItems = [
+            CandidateItem(title: "你好", kind: .candidate),
+            CandidateItem(title: "你号", kind: .candidate),
+        ]
+        let correctionItems = [
+            correctionItem(
+                title: "你号",
+                originalInput: "nihoa",
+                correctedInput: "nihao",
+                edits: [
+                    TypoCorrectionEdit(
+                        index: 3,
+                        original: "o",
+                        replacement: "a",
+                        kind: .transposition,
+                        secondIndex: 4
+                    )
+                ]
+            )
+        ]
+
+        let merged = TypoCorrectionCandidateRanker.mergedCandidates(
+            normalItems: normalItems,
+            correctionItems: correctionItems
+        )
+
+        XCTAssertEqual(merged.map(\.title), ["你好", "你号"])
+        XCTAssertEqual(merged[0].kind, .candidate)
+        XCTAssertEqual(merged[1].kind, .candidate)
     }
 
     func testBenchmarkDocumentsCurrentCorrectionCoverage() {

@@ -79,6 +79,7 @@ extension KeyboardViewController {
         let rawPairedSymbolCompletion = defaults?.object(
             forKey: KeyboardInputSettingsKey.pairedSymbolCompletionEnabled
         )
+        let typoExperimentSettings = TypoCorrectionExperimentalSettings.load(from: defaults)
 
         cachedKeyClickEnabled = rawSound as? Bool ?? true
         cachedHapticEnabled = rawHaptic as? Bool ?? false
@@ -87,6 +88,7 @@ extension KeyboardViewController {
         cachedKeyClickVolume = cachedKeyClickLevel.clickVolume
         cachedHapticIntensity = CGFloat(cachedHapticLevel.hapticIntensity)
         controller.isPairedSymbolCompletionEnabled = rawPairedSymbolCompletion as? Bool ?? true
+        controller.typoCorrectionExperimentalEdits = typoExperimentSettings.experimentalEdits
     }
 
     func feedbackLevelValue(_ rawValue: Any?) -> KeyboardFeedbackLevel {

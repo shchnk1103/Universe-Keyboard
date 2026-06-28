@@ -20,7 +20,9 @@ extension KeyboardController {
         // librime may expose segmented preedit text such as "ni h a p" or "ni hap".
         // Typo correction operates on the user's key sequence, so ignore display-only whitespace.
         let correctionInput = normalizedTypoCorrectionInput(state.currentComposition)
-        let generated = TypoCorrectionEngine().suggestions(for: correctionInput)
+        let generated = TypoCorrectionEngine(
+            experimentalEdits: typoCorrectionExperimentalEdits
+        ).suggestions(for: correctionInput)
         var resolved: [TypoCorrectionSuggestion] = []
         var seenCandidateTexts: Set<String> = []
 

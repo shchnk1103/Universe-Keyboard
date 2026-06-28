@@ -3,6 +3,21 @@ import SwiftUI
 
 struct TypoCorrectionBenchmarkView: View {
     private let benchmarkModel = TypoCorrectionBenchmarkModel()
+
+    #if DEBUG
+    @AppStorage(
+        TypoCorrectionExperimentalSettings.insertionEnabledKey,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var experimentalInsertionEnabled = false
+
+    @AppStorage(
+        TypoCorrectionExperimentalSettings.transpositionEnabledKey,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var experimentalTranspositionEnabled = false
+    #endif
+
     private let supportedExamples = [
         TypoCorrectionExample(input: "nihap", correction: "nihao -> 你好", badge: "高置信", color: .green),
         TypoCorrectionExample(input: "bihao", correction: "nihao -> 你好", badge: "前排展示", color: .blue),
@@ -24,6 +39,9 @@ struct TypoCorrectionBenchmarkView: View {
                 scoringSection
                 localEvaluationSection
                 experimentalAuditSection
+                #if DEBUG
+                developerExperimentSection
+                #endif
                 benchmarkSection(title: "当前覆盖", examples: supportedExamples)
                 benchmarkSection(title: "已知边界", examples: unsupportedExamples)
                 rimeBoundarySection
@@ -108,6 +126,32 @@ struct TypoCorrectionBenchmarkView: View {
             }
         }
     }
+
+    #if DEBUG
+    private var developerExperimentSection: some View {
+        InfoSection(title: "内部实验开关", systemImage: "switch.2") {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("仅 Debug 构建显示并生效，用于本机真机验证。Release 构建会忽略这些开关，不会影响普通用户或测试人员。")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                Toggle("安全漏字纠错实验", isOn: $experimentalInsertionEnabled)
+                    .font(.subheadline.weight(.medium))
+                Text("用于验证 niho -> nihao 这类保守 insertion 候选的展示价值。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Divider()
+
+                Toggle("相邻转置纠错实验", isOn: $experimentalTranspositionEnabled)
+                    .font(.subheadline.weight(.medium))
+                Text("用于审计 nihoa -> nihao 这类 transposition 候选；当前不进入前排展示。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+    #endif
 
 
     private func benchmarkSection(title: String, examples: [TypoCorrectionExample]) -> some View {

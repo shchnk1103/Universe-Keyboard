@@ -118,6 +118,28 @@ Experimental edit flags may enter real-device validation only after the local fl
 
 Passing this gate means the feature is ready to be tested on a real device; it does not mean the feature is approved for production enablement.
 
+### V0.8 Real-Device Finding
+
+Flag-on device validation showed:
+
+- `niho` safely generated corrected `nihao` candidates, but `你好`, `拟好`, and `你号` started around the 13th candidate position. This is too low to be useful in normal typing.
+- `nihoa` showed `你好` as the first candidate through normal RIME behavior rather than typo correction, while the experimental typo path only surfaced `你号` much later. This makes transposition lower priority for now.
+- Normal inputs such as `nihao`, `women`, `jintian`, and `xiexie` kept correct first candidates.
+- Dangerous examples `haop` and `xianp` did not receive strong correction.
+- Candidate tap, Delete, Space, Return, and general interaction remained normal.
+
+Conclusion:
+
+- V0.8 insertion is safe enough to optimize further, but not useful enough at its current candidate position.
+- V0.9 transposition should stay benchmark-first because RIME already covers the primary `nihoa -> 你好` case on device.
+
+Next work should split V0.8 into:
+
+- V0.8a: front-display optimization for eligible near-final insertion, targeting position 2 or 3 without first-position promotion.
+- V0.8b: local correction-selection learning, where repeated explicit selection can gradually improve ranking while staying separate from RIME weights and RIME user dictionaries.
+
+V0.8a implementation keeps insertion behind the default-off experimental flag, but eligible insertion correction candidates now have near-front ranking behavior when the flag is enabled for validation. The expected behavior for `niho -> nihao -> 你好` is front-area display without first-position promotion.
+
 ## RIME Weighting Boundary
 
 RIME's weighting system ranks candidates for the same input code. For example, repeated user selection can make `你好` appear earlier for `nihao`.

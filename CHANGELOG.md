@@ -6,6 +6,29 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-21 — Typo correction internal experiment switches
+
+- Added Debug-only main-App switches for local insertion and transposition typo correction experiments, so real-device validation no longer requires temporary code edits.
+- Kept Release behavior stable: experiment keys are ignored outside Debug builds and all experimental typo edits remain disabled by default.
+- Wired the Keyboard Extension to refresh experiment settings through the existing App Group settings path, without changing RIME, candidate UI, ranking rules, or production typo behavior.
+
+---
+
+## 2026-06-21 — Typo correction V0.8a insertion display value
+
+- Made eligible conservative near-final insertion correction candidates rank near the front when the experimental insertion flag is enabled, without allowing first-position promotion.
+- Kept production typo correction defaults unchanged and kept transposition benchmark-only.
+- Added ranker regression tests for insertion near-front placement and transposition non-promotion.
+
+---
+
+## 2026-06-21 — Typo correction V0.8 staging plan
+
+- Recorded the V0.8 flag-on real-device finding: `niho -> nihao` is safe but appears too far back in the candidate list, while `nihoa -> 你好` is already handled by normal RIME behavior on device.
+- Split the next insertion work into V0.8a front-display optimization and V0.8b local correction-selection learning, keeping both separate from RIME weights, RIME user dictionaries, telemetry, and production defaults.
+
+---
+
 ## 2026-06-21 — Typo correction experimental audit gate
 
 - Added a local flag-on audit for default-off V0.8/V0.9 insertion and transposition experiments, keeping production typo correction behavior unchanged.
