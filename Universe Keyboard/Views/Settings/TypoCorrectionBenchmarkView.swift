@@ -16,6 +16,8 @@ struct TypoCorrectionBenchmarkView: View {
         store: UserDefaults(suiteName: universeAppGroupID)
     )
     private var experimentalTranspositionEnabled = false
+
+    @State private var learnedCorrectionCount = 0
     #endif
 
     private let supportedExamples = [
@@ -148,8 +150,44 @@ struct TypoCorrectionBenchmarkView: View {
                 Text("用于审计 nihoa -> nihao 这类 transposition 候选；当前不进入前排展示。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+
+                Divider()
+
+                HStack {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("本地纠错学习")
+                            .font(.subheadline.weight(.medium))
+                        Text("已记录 \(learnedCorrectionCount) 组明确选择，仅用于 insertion 排序。")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: 12)
+                }
+
+                AppActionButton(
+                    title: "重置实验学习记录",
+                    systemImage: "arrow.counterclockwise",
+                    prominence: .destructive,
+                    role: .destructive
+                ) {
+                    typoCorrectionLearningStore.reset()
+                    learnedCorrectionCount = 0
+                }
+                .disabled(learnedCorrectionCount == 0)
+                .opacity(learnedCorrectionCount == 0 ? 0.45 : 1)
             }
+            .onAppear(perform: refreshLearnedCorrectionCount)
         }
+    }
+
+    private var typoCorrectionLearningStore: TypoCorrectionLearningStore {
+        TypoCorrectionLearningStore(
+            defaults: UserDefaults(suiteName: universeAppGroupID)
+        )
+    }
+
+    private func refreshLearnedCorrectionCount() {
+        learnedCorrectionCount = typoCorrectionLearningStore.snapshot().records.count
     }
     #endif
 

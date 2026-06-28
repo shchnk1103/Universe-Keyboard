@@ -163,6 +163,15 @@ Acceptance criteria:
 - Normal input, dangerous examples, Delete, Space, Return, and candidate tap behavior remain unchanged.
 - App Group read/write failure does not break keyboard input.
 
+Implementation status:
+
+- V0.8b stores only explicit insertion-correction selections as compact correction-pair records in App Group preferences.
+- Records are capped at 64 entries, selection counts are capped, and entries older than 90 days are ignored.
+- One or two selections only prioritize the learned correction among near-front correction candidates.
+- Three selections may move an insertion correction to position 1 only when the normal top candidate has no prefix relationship with the correction text and the correction still passes assessment.
+- Substitution, deletion, transposition, multi-edit, and rejected corrections are not learned.
+- Debug builds expose the learned record count and a reset action under the internal experiment controls; Release builds still keep insertion disabled by default.
+
 ## V0.9: Adjacent Transposition V1
 
 - Add experimental `transposition` edit support behind a default-off flag.

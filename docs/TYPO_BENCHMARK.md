@@ -140,6 +140,19 @@ Next work should split V0.8 into:
 
 V0.8a implementation keeps insertion behind the default-off experimental flag, but eligible insertion correction candidates now have near-front ranking behavior when the flag is enabled for validation. The expected behavior for `niho -> nihao -> 你好` is front-area display without first-position promotion.
 
+V0.8b adds local selection learning for that experimental insertion path:
+
+- Learning happens only after the user explicitly taps an insertion correction candidate.
+- Stored data is limited to the original/corrected pinyin pair, selected candidate, edit kind, count, and last-selection date. Surrounding text and real typing context are not stored.
+- One or two selections prioritize the learned item among near-front correction candidates.
+- Three selections may allow a first-position learned correction only when it still passes assessment and does not displace a prefix-related normal candidate.
+- Records are bounded and expire after 90 days; Debug builds provide a reset action.
+- Substitution, deletion, transposition, rejected, and multi-edit corrections do not participate in V0.8b learning.
+
+This learning remains separate from RIME weights and the RIME user dictionary. It only changes the merge position of an already validated typo correction candidate.
+
+Real-device validation confirmed the V0.8b progression: after repeatedly selecting the correction candidate for `niho`, `你好` moved from the V0.8a near-front position to position 1. Existing normal-input behavior remained unchanged, and resetting the local learning records restores the V0.8a ranking baseline.
+
 ## RIME Weighting Boundary
 
 RIME's weighting system ranks candidates for the same input code. For example, repeated user selection can make `你好` appear earlier for `nihao`.

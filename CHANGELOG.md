@@ -6,6 +6,16 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-28 — Typo correction V0.8b local selection learning
+
+- Added bounded, local learning for explicit insertion-correction selections without writing RIME weights, schemas, user dictionaries, surrounding text, or telemetry.
+- Kept V0.8a ranking as the default: early selections only prioritize near-front correction candidates, while three explicit selections can promote an eligible insertion correction under conservative prefix guards.
+- Added 90-day expiry, a 64-record limit, malformed-store fallback, and a Debug-only reset action on the smart-correction page.
+- Kept substitution, deletion, transposition, multi-edit, rejected corrections, and Release-default behavior outside V0.8b learning.
+- Validated on a real device that repeated explicit selection moves `niho -> 你好` to first position without regressing existing normal-input behavior.
+
+---
+
 ## 2026-06-21 — Typo correction internal experiment switches
 
 - Added Debug-only main-App switches for local insertion and transposition typo correction experiments, so real-device validation no longer requires temporary code edits.

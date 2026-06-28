@@ -62,6 +62,10 @@ extension KeyboardController {
     }
 
     func handleInsertCorrectionCandidate(_ correction: TypoCorrectionCommit) -> KeyboardEffect {
+        if TypoCorrectionLearningKey(correction: correction) != nil {
+            onTypoCorrectionSelected?(correction)
+        }
+
         if applyTypoCorrectionPartialCommit(correction) {
             return .compositionChanged
         }

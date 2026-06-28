@@ -89,6 +89,7 @@ extension KeyboardViewController {
         cachedHapticIntensity = CGFloat(cachedHapticLevel.hapticIntensity)
         controller.isPairedSymbolCompletionEnabled = rawPairedSymbolCompletion as? Bool ?? true
         controller.typoCorrectionExperimentalEdits = typoExperimentSettings.experimentalEdits
+        controller.typoCorrectionLearningSnapshot = typoCorrectionLearningStore.snapshot()
     }
 
     func feedbackLevelValue(_ rawValue: Any?) -> KeyboardFeedbackLevel {

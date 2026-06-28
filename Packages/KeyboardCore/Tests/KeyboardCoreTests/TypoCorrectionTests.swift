@@ -193,6 +193,83 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertTrue(settings.experimentalEdits.contains(.transposition))
     }
 
+    func testLearningStoreRecordsOnlyInsertionSelections() {
+        let suiteName = "TypoCorrectionTests.learning.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let store = TypoCorrectionLearningStore(defaults: defaults)
+        let insertion = correctionCommit(
+            title: "你好",
+            originalInput: "niho",
+            correctedInput: "nihao",
+            edit: TypoCorrectionEdit(
+                index: 3,
+                original: "a",
+                replacement: "a",
+                kind: .insertion,
+                inserted: "a"
+            )
+        )
+        let substitution = correctionCommit(
+            title: "你好",
+            originalInput: "nihap",
+            correctedInput: "nihao",
+            edit: TypoCorrectionEdit(index: 4, original: "p", replacement: "o")
+        )
+
+        _ = store.recordSelection(insertion)
+        let snapshot = store.recordSelection(insertion)
+        let afterUnsupportedSelection = store.recordSelection(substitution)
+
+        XCTAssertEqual(snapshot.selectionCount(for: insertion), 2)
+        XCTAssertEqual(afterUnsupportedSelection.records.count, 1)
+        XCTAssertEqual(afterUnsupportedSelection.selectionCount(for: substitution), 0)
+    }
+
+    func testLearningStoreBoundsAndExpiresRecords() {
+        let suiteName = "TypoCorrectionTests.learning.bounds.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let store = TypoCorrectionLearningStore(
+            defaults: defaults,
+            maximumRecordCount: 2,
+            retentionInterval: 60
+        )
+        let baseDate = Date(timeIntervalSince1970: 1_000)
+        let corrections = ["你好", "拟好", "你号"].map {
+            correctionCommit(
+                title: $0,
+                originalInput: "niho",
+                correctedInput: "nihao",
+                edit: TypoCorrectionEdit(
+                    index: 3,
+                    original: "a",
+                    replacement: "a",
+                    kind: .insertion,
+                    inserted: "a"
+                )
+            )
+        }
+
+        for (offset, correction) in corrections.enumerated() {
+            _ = store.recordSelection(correction, at: baseDate.addingTimeInterval(Double(offset)))
+        }
+
+        XCTAssertEqual(store.snapshot(now: baseDate.addingTimeInterval(3)).records.count, 2)
+        XCTAssertTrue(store.snapshot(now: baseDate.addingTimeInterval(120)).records.isEmpty)
+    }
+
+    func testLearningStoreIgnoresMalformedPersistence() {
+        let suiteName = "TypoCorrectionTests.learning.malformed.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.set(Data("not-json".utf8), forKey: TypoCorrectionLearningStorageKey.records)
+
+        let snapshot = TypoCorrectionLearningStore(defaults: defaults).snapshot()
+
+        XCTAssertTrue(snapshot.records.isEmpty)
+    }
+
     func testEngineSkipsSingleCharacterInput() {
         XCTAssertTrue(TypoCorrectionEngine().suggestions(for: "n").isEmpty)
     }
@@ -399,6 +476,36 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(correction?.suggestions.first?.correctedInput, "nihao")
         XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "你好")
         XCTAssertEqual(correction?.suggestions.first?.edits.first?.kind, .insertion)
+    }
+
+    func testControllerRecordsOnlyEligibleInsertionCandidateSelections() {
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        var recordedCorrections: [TypoCorrectionCommit] = []
+        controller.onTypoCorrectionSelected = { recordedCorrections.append($0) }
+        let insertion = correctionCommit(
+            title: "你好",
+            originalInput: "niho",
+            correctedInput: "nihao",
+            edit: TypoCorrectionEdit(
+                index: 3,
+                original: "a",
+                replacement: "a",
+                kind: .insertion,
+                inserted: "a"
+            )
+        )
+        let substitution = correctionCommit(
+            title: "你好",
+            originalInput: "nihap",
+            correctedInput: "nihao",
+            edit: TypoCorrectionEdit(index: 4, original: "p", replacement: "o")
+        )
+
+        _ = controller.handle(.insertCorrectionCandidate(insertion))
+        _ = controller.handle(.insertCorrectionCandidate(substitution))
+
+        XCTAssertEqual(recordedCorrections, [insertion])
     }
 
     func testNormalUnrelatedPinyinKeepsRimeCandidates() {
@@ -866,6 +973,125 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(merged[1].kind, .correctionCandidate)
     }
 
+    func testRankerUsesLearnedInsertionSelectionsToOrderNearFrontCandidates() {
+        let normalItems = [
+            CandidateItem(title: "你或", kind: .candidate),
+            CandidateItem(title: "拟或", kind: .candidate),
+        ]
+        let nihao = correctionItem(
+            title: "你好",
+            originalInput: "niho",
+            correctedInput: "nihao",
+            edits: [
+                TypoCorrectionEdit(
+                    index: 3,
+                    original: "a",
+                    replacement: "a",
+                    kind: .insertion,
+                    inserted: "a"
+                )
+            ]
+        )
+        let nihaoAlternative = correctionItem(
+            title: "你号",
+            originalInput: "niho",
+            correctedInput: "nihao",
+            edits: [
+                TypoCorrectionEdit(
+                    index: 3,
+                    original: "a",
+                    replacement: "a",
+                    kind: .insertion,
+                    inserted: "a"
+                )
+            ]
+        )
+        let learnedRecord = TypoCorrectionLearningRecord(
+            key: TypoCorrectionLearningKey(correction: nihaoAlternative.correction!)!,
+            selectionCount: 1,
+            lastSelectedAt: Date()
+        )
+
+        let merged = TypoCorrectionCandidateRanker.mergedCandidates(
+            normalItems: normalItems,
+            correctionItems: [nihao, nihaoAlternative],
+            learningSnapshot: TypoCorrectionLearningSnapshot(records: [learnedRecord])
+        )
+
+        XCTAssertEqual(merged.map(\.title), ["你或", "你号", "拟或", "你好"])
+        XCTAssertEqual(merged[1].kind, .correctionCandidate)
+    }
+
+    func testRankerPromotesInsertionAfterThreeExplicitSelections() {
+        let normalItems = [
+            CandidateItem(title: "你或", kind: .candidate),
+            CandidateItem(title: "拟或", kind: .candidate),
+        ]
+        let correction = correctionItem(
+            title: "你好",
+            originalInput: "niho",
+            correctedInput: "nihao",
+            edits: [
+                TypoCorrectionEdit(
+                    index: 3,
+                    original: "a",
+                    replacement: "a",
+                    kind: .insertion,
+                    inserted: "a"
+                )
+            ]
+        )
+        let learnedRecord = TypoCorrectionLearningRecord(
+            key: TypoCorrectionLearningKey(correction: correction.correction!)!,
+            selectionCount: 3,
+            lastSelectedAt: Date()
+        )
+
+        let merged = TypoCorrectionCandidateRanker.mergedCandidates(
+            normalItems: normalItems,
+            correctionItems: [correction],
+            learningSnapshot: TypoCorrectionLearningSnapshot(records: [learnedRecord])
+        )
+
+        XCTAssertEqual(merged.map(\.title), ["你好", "你或", "拟或"])
+        XCTAssertEqual(merged[0].kind, .correctionCandidate)
+    }
+
+    func testLearnedInsertionDoesNotOverrideRelatedNormalTopCandidate() {
+        let normalItems = [
+            CandidateItem(title: "你好啊", kind: .candidate),
+            CandidateItem(title: "拟或", kind: .candidate),
+        ]
+        let correction = correctionItem(
+            title: "你好",
+            originalInput: "niho",
+            correctedInput: "nihao",
+            edits: [
+                TypoCorrectionEdit(
+                    index: 3,
+                    original: "a",
+                    replacement: "a",
+                    kind: .insertion,
+                    inserted: "a"
+                )
+            ]
+        )
+        let learnedRecord = TypoCorrectionLearningRecord(
+            key: TypoCorrectionLearningKey(correction: correction.correction!)!,
+            selectionCount: 9,
+            lastSelectedAt: Date()
+        )
+
+        let merged = TypoCorrectionCandidateRanker.mergedCandidates(
+            normalItems: normalItems,
+            correctionItems: [correction],
+            learningSnapshot: TypoCorrectionLearningSnapshot(records: [learnedRecord])
+        )
+
+        XCTAssertEqual(merged.map(\.title), ["你好啊", "你好", "拟或"])
+        XCTAssertEqual(merged[0].kind, .candidate)
+    }
+
     func testRankerDoesNotMoveTranspositionCorrectionNearFront() {
         let normalItems = [
             CandidateItem(title: "你好", kind: .candidate),
@@ -1182,6 +1408,20 @@ final class TypoCorrectionTests: XCTestCase {
                 correctedInput: correctedInput,
                 edits: edits
             )
+        )
+    }
+
+    private func correctionCommit(
+        title: String,
+        originalInput: String,
+        correctedInput: String,
+        edit: TypoCorrectionEdit
+    ) -> TypoCorrectionCommit {
+        TypoCorrectionCommit(
+            committedText: title,
+            originalInput: originalInput,
+            correctedInput: correctedInput,
+            edits: [edit]
         )
     }
 

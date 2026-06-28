@@ -15,6 +15,10 @@ extension KeyboardViewController {
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
         controller = KeyboardController(state: KeyboardState(activeKeyboardType: keyboardType))
         controller.textClient = UITextDocumentProxyAdapter(proxy: textDocumentProxy)
+        controller.onTypoCorrectionSelected = { [weak self] correction in
+            guard let self else { return }
+            self.controller.typoCorrectionLearningSnapshot = self.typoCorrectionLearningStore.recordSelection(correction)
+        }
 
         Logger.shared.info("viewDidLoad, keyboardType=\(keyboardType)", category: .general)
         prepareRimeSession()

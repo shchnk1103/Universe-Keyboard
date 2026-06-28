@@ -698,17 +698,29 @@ public enum TypoCorrectionCandidateRanker {
     /// 其他位置的邻键替换只插入到首个普通候选之后。
     public static func mergedCandidates(
         normalItems: [CandidateItem],
-        correctionItems: [CandidateItem]
+        correctionItems: [CandidateItem],
+        learningSnapshot: TypoCorrectionLearningSnapshot = .empty
     ) -> [CandidateItem] {
         guard let firstNormal = normalItems.first else {
             return correctionItems + normalItems
         }
 
         var remainingCorrections = correctionItems
-        guard let promotedIndex = remainingCorrections.firstIndex(where: {
+        let promotedIndex = remainingCorrections.firstIndex(where: {
             shouldPromote($0, over: firstNormal)
-        }) else {
-            return mergeWithoutTopPromotion(normalItems: normalItems, correctionItems: correctionItems)
+        }) ?? remainingCorrections.firstIndex(where: {
+            shouldApplyLearnedTopPromotion(
+                $0,
+                over: firstNormal,
+                learningSnapshot: learningSnapshot
+            )
+        })
+        guard let promotedIndex else {
+            return mergeWithoutTopPromotion(
+                normalItems: normalItems,
+                correctionItems: correctionItems,
+                learningSnapshot: learningSnapshot
+            )
         }
 
         let promoted = remainingCorrections.remove(at: promotedIndex)
@@ -746,20 +758,26 @@ public enum TypoCorrectionCandidateRanker {
 
     private static func mergeWithoutTopPromotion(
         normalItems: [CandidateItem],
-        correctionItems: [CandidateItem]
+        correctionItems: [CandidateItem],
+        learningSnapshot: TypoCorrectionLearningSnapshot
     ) -> [CandidateItem] {
         guard let firstNormal = normalItems.first else {
             return correctionItems
         }
 
-        let nearFrontCorrections = correctionItems.filter {
-            guard $0.title != firstNormal.title else { return false }
+        let nearFrontCorrections = correctionItems.enumerated().filter { _, item in
+            guard item.title != firstNormal.title else { return false }
             let assessment = TypoCorrectionConfidence.assessment(
-                $0,
+                item,
                 firstNormalCandidate: firstNormal.title
             )
             return assessment.isNearFrontDisplayEligible
-        }
+        }.sorted { lhs, rhs in
+            let lhsCount = learnedSelectionCount(for: lhs.element, in: learningSnapshot)
+            let rhsCount = learnedSelectionCount(for: rhs.element, in: learningSnapshot)
+            if lhsCount != rhsCount { return lhsCount > rhsCount }
+            return lhs.offset < rhs.offset
+        }.map(\.element)
 
         guard let nearFront = nearFrontCorrections.first else {
             let normalTitles = Set(normalItems.map(\.title))
@@ -775,6 +793,35 @@ public enum TypoCorrectionCandidateRanker {
         return [normalItemsWithoutDuplicate[0], nearFront]
             + normalItemsWithoutDuplicate.dropFirst()
             + remainingCorrections
+    }
+
+    private static func shouldApplyLearnedTopPromotion(
+        _ correctionItem: CandidateItem,
+        over normalItem: CandidateItem,
+        learningSnapshot: TypoCorrectionLearningSnapshot
+    ) -> Bool {
+        guard normalItem.kind == .candidate,
+            let correction = correctionItem.correction,
+            learningSnapshot.selectionCount(for: correction) >= 3,
+            correctionItem.title != normalItem.title,
+            !normalItem.title.hasPrefix(correctionItem.title),
+            !correctionItem.title.hasPrefix(normalItem.title)
+        else { return false }
+
+        let assessment = TypoCorrectionConfidence.assessment(
+            correctionItem,
+            firstNormalCandidate: normalItem.title
+        )
+        return assessment.isDisplayEligible
+            && assessment.reasonSummary == .conservativeInsertion
+    }
+
+    private static func learnedSelectionCount(
+        for item: CandidateItem,
+        in learningSnapshot: TypoCorrectionLearningSnapshot
+    ) -> Int {
+        guard let correction = item.correction else { return 0 }
+        return learningSnapshot.selectionCount(for: correction)
     }
 
 }

@@ -149,6 +149,9 @@ class KeyboardViewController: UIInputViewController {
     let modeEnterHapticGenerator = UIImpactFeedbackGenerator(style: .heavy)
     let clickPlayer = KeyClickPlayer()
     static let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
+    lazy var typoCorrectionLearningStore = TypoCorrectionLearningStore(
+        defaults: UserDefaults(suiteName: Self.appGroupID)
+    )
     var cachedKeyClickLevel: KeyboardFeedbackLevel = .defaultLevel
     var cachedHapticLevel: KeyboardFeedbackLevel = .defaultLevel
     var cachedKeyClickVolume: Float = 0.8

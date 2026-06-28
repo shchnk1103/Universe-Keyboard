@@ -66,7 +66,8 @@ struct CandidateBarDataSource {
 
             return TypoCorrectionCandidateRanker.mergedCandidates(
                 normalItems: items,
-                correctionItems: correctionItems(from: state, excluding: [])
+                correctionItems: correctionItems(from: state, excluding: []),
+                learningSnapshot: controller.typoCorrectionLearningSnapshot
             )
         }
 
@@ -90,7 +91,8 @@ struct CandidateBarDataSource {
             let items = candidates.map { CandidateItem(title: $0, kind: .candidate) }
             return TypoCorrectionCandidateRanker.mergedCandidates(
                 normalItems: items,
-                correctionItems: correctionItems(from: state, excluding: [])
+                correctionItems: correctionItems(from: state, excluding: []),
+                learningSnapshot: controller.typoCorrectionLearningSnapshot
             )
         }
     }
