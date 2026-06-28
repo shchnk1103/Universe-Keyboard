@@ -6,6 +6,24 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-28 — Typo correction V0.9a/V0.9b transposition value
+
+- Moved eligible adjacent-transposition correction candidates into the near-front area without default first-position promotion.
+- Reused the bounded V0.8b learning store for explicit transposition selections; three selections may enable conservative learned promotion under existing assessment and prefix guards.
+- Preserved the normal-RIME satisfaction gate: when RIME already returns the corrected best candidate first, the entire transposition suggestion remains suppressed.
+- Kept Release defaults off and kept substitution, deletion, rejected, and multi-edit corrections outside local learning.
+- Validated on a real device that `zohngguo -> 中国` enters the front area, accumulates local selections, reaches first position after repeated explicit choices, and preserves the `nihoa` normal-RIME suppression path.
+
+---
+
+## 2026-06-28 — Typo correction V0.9 transposition preflight
+
+- Added a long-pinyin transposition audit case, `zohngguo -> zhongguo -> 中国`, because real RIME already handles the original `nihoa -> 你好` example in some environments.
+- Suppressed the entire corrected-input suggestion when normal RIME already returns the corrected best candidate first, preventing low-value secondary candidates such as `拟好` or `你号` from leaking into the candidate bar.
+- Added assessment-level short-input protection and kept transposition Debug-only, display-only, non-promoting, and excluded from V0.8b local learning.
+
+---
+
 ## 2026-06-28 — Typo correction V0.8b local selection learning
 
 - Added bounded, local learning for explicit insertion-correction selections without writing RIME weights, schemas, user dictionaries, surrounding text, or telemetry.

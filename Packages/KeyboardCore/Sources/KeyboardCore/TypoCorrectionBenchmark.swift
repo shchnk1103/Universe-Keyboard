@@ -173,6 +173,7 @@ public struct TypoCorrectionBenchmarkEvaluator {
                 .prefix(3)
                 .map { RimeCandidate(text: $0) }
             guard let firstCandidate = candidates.first else { continue }
+            guard normalCandidates.first != firstCandidate.text else { continue }
 
             let assessment = TypoCorrectionAssessment.evaluate(
                 title: firstCandidate.text,
@@ -316,6 +317,14 @@ public extension TypoCorrectionBenchmarkEvaluator {
             expectedCandidate: "你好",
             expectedOutcome: .corrected,
             note: "V0.9 candidate: adjacent transposition"
+        ),
+        .init(
+            input: "zohngguo",
+            category: .supported,
+            expectedCorrectedInput: "zhongguo",
+            expectedCandidate: "中国",
+            expectedOutcome: .corrected,
+            note: "V0.9 candidate: long-pinyin adjacent transposition"
         ),
         .init(input: "haop", category: .dangerous, expectedOutcome: .notCorrected, note: "dangerous short input"),
         .init(input: "xianp", category: .dangerous, expectedOutcome: .notCorrected, note: "dangerous ambiguous input"),

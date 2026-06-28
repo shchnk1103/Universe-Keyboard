@@ -527,6 +527,9 @@ public struct TypoCorrectionAssessment: Equatable, Sendable {
     ) -> TypoCorrectionAssessment {
         let originalLetters = Array(originalInput)
         let correctedLetters = Array(correctedInput)
+        guard originalLetters.count >= TypoCorrectionEngine.safeTranspositionMinimumLength else {
+            return .rejected(.inputTooShort)
+        }
         guard originalLetters.count == correctedLetters.count,
             let secondIndex = edit.secondIndex,
             secondIndex == edit.index + 1,
@@ -558,6 +561,10 @@ public struct TypoCorrectionAssessment: Equatable, Sendable {
 extension TypoCorrectionEngine {
     static var safeSubstitutionMinimumLength: Int {
         substitutionMinimumLength
+    }
+
+    static var safeTranspositionMinimumLength: Int {
+        transpositionMinimumLength
     }
 }
 
@@ -813,7 +820,7 @@ public enum TypoCorrectionCandidateRanker {
             firstNormalCandidate: normalItem.title
         )
         return assessment.isDisplayEligible
-            && assessment.reasonSummary == .conservativeInsertion
+            && assessment.reasonSummary.isLearnableExperimentalEdit
     }
 
     private static func learnedSelectionCount(
@@ -830,8 +837,14 @@ private extension TypoCorrectionAssessment {
     var isNearFrontDisplayEligible: Bool {
         guard isDisplayEligible, !isPromotionEligible else { return false }
 
-        // V0.8a: conservative near-final insertion is still not promotable, but it must
-        // be visible enough to evaluate on device. Keep transposition benchmark-only.
-        return confidence == .high || reasonSummary == .conservativeInsertion
+        // Experimental insertion/transposition remain non-promoting by default, but
+        // must be visible near the front before explicit selection can teach ranking.
+        return confidence == .high || reasonSummary.isLearnableExperimentalEdit
+    }
+}
+
+private extension Optional where Wrapped == TypoCorrectionAssessmentReason {
+    var isLearnableExperimentalEdit: Bool {
+        self == .conservativeInsertion || self == .adjacentTransposition
     }
 }

@@ -149,6 +149,46 @@ final class TypoCorrectionBenchmarkEvaluatorTests: XCTestCase {
         XCTAssertFalse(result.didPromote)
     }
 
+    func testExperimentalTranspositionCoversLongPinyinSwap() {
+        let evaluator = TypoCorrectionBenchmarkEvaluator(
+            engine: TypoCorrectionEngine(experimentalEdits: [.transposition])
+        )
+
+        let result = evaluator.evaluate(.init(
+            input: "zohngguo",
+            category: .supported,
+            expectedCorrectedInput: "zhongguo",
+            expectedCandidate: "中国",
+            expectedOutcome: .corrected,
+            note: "long-pinyin experimental transposition"
+        ))
+
+        XCTAssertTrue(result.passed)
+        XCTAssertEqual(result.assessment?.reasonSummary, .adjacentTransposition)
+        XCTAssertFalse(result.didPromote)
+    }
+
+    func testExperimentalTranspositionIsSuppressedWhenNormalTopAlreadyMatchesCorrectedBest() {
+        let provider = BenchmarkDictionaryCandidateProvider(dictionary: [
+            "nihoa": ["你好", "你花"],
+            "nihao": ["你好", "拟好", "你号"],
+        ])
+        let evaluator = TypoCorrectionBenchmarkEvaluator(
+            engine: TypoCorrectionEngine(experimentalEdits: [.transposition]),
+            candidateProvider: provider
+        )
+
+        let result = evaluator.evaluate(.init(
+            input: "nihoa",
+            category: .normalInput,
+            expectedOutcome: .notCorrected,
+            note: "normal RIME already provides corrected best candidate"
+        ))
+
+        XCTAssertTrue(result.passed)
+        XCTAssertNil(result.actualCandidate)
+    }
+
     func testExperimentalAuditSummaryPassesFlagOnDeviceValidationGate() {
         let evaluator = TypoCorrectionBenchmarkEvaluator(
             engine: TypoCorrectionEngine(experimentalEdits: [.insertion, .transposition])
@@ -190,5 +230,32 @@ final class TypoCorrectionBenchmarkEvaluatorTests: XCTestCase {
         XCTAssertEqual(transposition.confidence, .low)
         XCTAssertEqual(transposition.reasonSummary, .adjacentTransposition)
         XCTAssertFalse(transposition.isPromotionEligible)
+    }
+
+    func testExperimentalTranspositionAssessmentRejectsShortInput() {
+        let assessment = TypoCorrectionAssessment.evaluate(
+            title: "你好",
+            originalInput: "ab",
+            correctedInput: "ba",
+            edits: [
+                TypoCorrectionEdit(index: 0, original: "a", replacement: "b", kind: .transposition, secondIndex: 1)
+            ],
+            firstNormalCandidate: nil
+        )
+
+        XCTAssertEqual(assessment.rejectReason, .inputTooShort)
+        XCTAssertFalse(assessment.isDisplayEligible)
+    }
+}
+
+private final class BenchmarkDictionaryCandidateProvider: CandidateProvider {
+    private let dictionary: [String: [String]]
+
+    init(dictionary: [String: [String]]) {
+        self.dictionary = dictionary
+    }
+
+    func candidates(for composition: String) -> [String] {
+        dictionary[composition] ?? []
     }
 }

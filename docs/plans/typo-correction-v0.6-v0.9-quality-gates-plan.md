@@ -42,7 +42,7 @@ Defaults:
 - Limit to single-character near-final insertion.
 - Target benchmark example:
   - `niho -> nihao -> 你好`
-- Keep behavior display-only and non-promoting.
+- V0.9a places eligible transposition corrections near-front, normally position 2, while keeping default promotion disabled.
 - Do not integrate with runtime controller until separately approved.
 
 ### V0.8a: Insertion Display-Value Optimization
@@ -176,10 +176,23 @@ Implementation status:
 
 - Add experimental `transposition` edit support behind a default-off flag.
 - Limit to one adjacent swap.
-- Target benchmark example:
-  - `nihoa -> nihao -> 你好`
+- Target benchmark examples:
+  - `nihoa -> nihao -> 你好` when normal RIME does not already provide `你好` as its best result.
+  - `zohngguo -> zhongguo -> 中国` as a longer input that better distinguishes typo correction value from RIME's own tolerance.
 - Keep behavior display-only and non-promoting.
 - Do not combine with insertion or substitution into multi-edit correction.
+- Reject transposition assessment below the existing safe minimum input length, even if a handcrafted correction bypasses engine generation.
+- If normal RIME already returns the corrected input's best candidate at position 1, suppress the entire correction suggestion instead of exposing secondary corrected candidates.
+- V0.9b reuses the V0.8b local store for eligible transposition selections; it does not create a second learning system.
+- One or two explicit selections keep the correction near-front. Three selections may allow position 1 under the same assessment and prefix guards used by insertion learning.
+
+V0.9 device-validation gate:
+
+- `nihoa` should remain normal RIME behavior when `你好` is already first; no secondary typo hint such as `你号` should be injected.
+- `zohngguo` should expose `中国` near-front, normally at position 2, when RIME does not already satisfy the intent.
+- After three explicit selections, `中国` may move to position 1 when the normal top candidate is unrelated and all assessment guards still pass.
+- Transposition selections must increase the shared local learning record count, while substitution/deletion selections remain excluded.
+- `haop`, `xianp`, short swaps, normal input, Delete, Space, Return, and candidate selection must remain unchanged.
 
 ## V0.8/V0.9 Flag-On Audit
 

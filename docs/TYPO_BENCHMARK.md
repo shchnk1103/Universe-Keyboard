@@ -147,11 +147,24 @@ V0.8b adds local selection learning for that experimental insertion path:
 - One or two selections prioritize the learned item among near-front correction candidates.
 - Three selections may allow a first-position learned correction only when it still passes assessment and does not displace a prefix-related normal candidate.
 - Records are bounded and expire after 90 days; Debug builds provide a reset action.
-- Substitution, deletion, transposition, rejected, and multi-edit corrections do not participate in V0.8b learning.
+- V0.8b itself learns insertion only. V0.9b later reuses the same bounded store for eligible adjacent transposition corrections; substitution, deletion, rejected, and multi-edit corrections remain excluded.
 
 This learning remains separate from RIME weights and the RIME user dictionary. It only changes the merge position of an already validated typo correction candidate.
 
 Real-device validation confirmed the V0.8b progression: after repeatedly selecting the correction candidate for `niho`, `你好` moved from the V0.8a near-front position to position 1. Existing normal-input behavior remained unchanged, and resetting the local learning records restores the V0.8a ranking baseline.
+
+## V0.9 Transposition Preflight
+
+The original `nihoa -> nihao` audit case is not sufficient by itself because real RIME may already return `你好` as the normal first candidate. In that situation typo correction adds no value and must suppress the whole corrected-input suggestion, including secondary candidates such as `拟好` or `你号`.
+
+V0.9 therefore uses two complementary cases:
+
+- `nihoa`: when normal RIME already places `你好` first, preserve normal behavior and show no transposition correction candidate.
+- `zohngguo -> zhongguo -> 中国`: validate a longer adjacent swap where the correction layer may provide real recall value.
+
+Transposition remains behind the Debug-only experiment flag and subject to the safe minimum input length. V0.9a places a useful transposition correction near-front without default first-position promotion. V0.9b records explicit transposition selections in the same bounded local store used by insertion; after three selections, conservative learned promotion may apply under the existing assessment and prefix guards.
+
+Real-device validation confirmed both V0.9 stages: `zohngguo -> 中国` entered the front candidate area, each explicit selection increased the local selection count, and repeated choices moved `中国` to position 1. The `nihoa` case continued using normal RIME `你好` without leaking secondary transposition suggestions, and the existing normal/dangerous regression matrix remained stable.
 
 ## RIME Weighting Boundary
 

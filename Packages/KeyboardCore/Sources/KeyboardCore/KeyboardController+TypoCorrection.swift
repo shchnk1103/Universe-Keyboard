@@ -48,6 +48,12 @@ extension KeyboardController {
 
         if let firstNormalCandidate = normalCandidates.first {
             resolved = resolved.compactMap { suggestion in
+                // RIME 已经把纠正输入的最佳结果放在普通首位时，用户无需旁路纠错。
+                // 整组丢弃可避免只剩下“次优纠错候选”的低价值噪声。
+                guard suggestion.candidates.first?.text != firstNormalCandidate.text else {
+                    return nil
+                }
+
                 let candidates = suggestion.candidates.filter { candidate in
                     let commit = TypoCorrectionCommit(
                         committedText: candidate.text,

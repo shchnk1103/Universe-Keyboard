@@ -18,6 +18,7 @@ struct TypoCorrectionBenchmarkView: View {
     private var experimentalTranspositionEnabled = false
 
     @State private var learnedCorrectionCount = 0
+    @State private var learnedSelectionCount = 0
     #endif
 
     private let supportedExamples = [
@@ -157,7 +158,7 @@ struct TypoCorrectionBenchmarkView: View {
                     VStack(alignment: .leading, spacing: 3) {
                         Text("本地纠错学习")
                             .font(.subheadline.weight(.medium))
-                        Text("已记录 \(learnedCorrectionCount) 组明确选择，仅用于 insertion 排序。")
+                        Text("已记录 \(learnedCorrectionCount) 组、共 \(learnedSelectionCount) 次明确选择，用于 insertion / transposition 排序。")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -172,6 +173,7 @@ struct TypoCorrectionBenchmarkView: View {
                 ) {
                     typoCorrectionLearningStore.reset()
                     learnedCorrectionCount = 0
+                    learnedSelectionCount = 0
                 }
                 .disabled(learnedCorrectionCount == 0)
                 .opacity(learnedCorrectionCount == 0 ? 0.45 : 1)
@@ -187,7 +189,9 @@ struct TypoCorrectionBenchmarkView: View {
     }
 
     private func refreshLearnedCorrectionCount() {
-        learnedCorrectionCount = typoCorrectionLearningStore.snapshot().records.count
+        let records = typoCorrectionLearningStore.snapshot().records
+        learnedCorrectionCount = records.count
+        learnedSelectionCount = records.reduce(0) { $0 + $1.selectionCount }
     }
     #endif
 

@@ -6,6 +6,7 @@ public enum TypoCorrectionLearningStorageKey {
 
 public enum TypoCorrectionLearnedEditKind: String, Codable, Equatable, Sendable {
     case insertion
+    case transposition
 }
 
 public struct TypoCorrectionLearningKey: Codable, Equatable, Hashable, Sendable {
@@ -16,16 +17,30 @@ public struct TypoCorrectionLearningKey: Codable, Equatable, Hashable, Sendable 
 
     public init?(correction: TypoCorrectionCommit) {
         guard correction.edits.count == 1,
-            correction.edits.first?.kind == .insertion,
             !correction.originalInput.isEmpty,
             !correction.correctedInput.isEmpty,
             !correction.committedText.isEmpty
         else { return nil }
 
+        let assessment = TypoCorrectionAssessment.evaluate(
+            title: correction.committedText,
+            correction: correction,
+            firstNormalCandidate: nil
+        )
+        guard assessment.isDisplayEligible else { return nil }
+
+        switch assessment.reasonSummary {
+        case .conservativeInsertion:
+            editKind = .insertion
+        case .adjacentTransposition:
+            editKind = .transposition
+        default:
+            return nil
+        }
+
         originalInput = correction.originalInput
         correctedInput = correction.correctedInput
         candidateText = correction.committedText
-        editKind = .insertion
     }
 }
 
