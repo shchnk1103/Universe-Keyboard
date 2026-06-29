@@ -38,7 +38,7 @@ Default verification commands by change area:
 
 - `Packages/KeyboardCore/**`: `swift test --package-path Packages/KeyboardCore`
 - `Keyboard/**`, `Universe Keyboard/**`, project/package wiring, or cross-target changes: also run the iOS Simulator build when practical:
-  `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build`
+  `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'generic/platform=iOS Simulator' build`
 
 If the user says "不用过多测试", "直接推", or equivalent, reuse valid recent evidence and only run lightweight checks unless the diff changed after verification.
 
@@ -50,6 +50,15 @@ Check each item before allowing a push:
 - Test evidence — must be successful and current under the policy above
 - Staged files — prefer `git add <specific>` over `git add -A`
 - No orphaned `// MARK:` comments or dead code without explanation
+- Documentation governance — review changed behavior and documents against `docs/DOCUMENTATION_GOVERNANCE.md`
+- Source of Truth — block competing copies of durable facts or updates made only to a non-authoritative summary
+- Volatile data — block new hardcoded test counts, line counts, temporary simulator/branch names, unverified performance numbers, or planned status presented as current fact unless snapshot metadata and expiry are present
+- ADR coverage — block durable architecture/product/cross-target/user-data decisions without a new or superseding ADR
+- Debug/release coverage — block changed diagnostic or release behavior when `docs/DEBUGGING.md` or `docs/RELEASE_CHECKLIST.md` should change but did not
+- Plan lifecycle — block new/completed/replaced plans without `Active`/`Archived`/`Superseded`/`Abandoned` metadata and required closure links
+- Technical debt — block newly introduced or repaid material debt when `docs/TECH_DEBT.md` was not updated
+
+When none of these documents changes, the review summary must state why documentation impact is `none`; do not infer that from an empty docs diff.
 
 ### 4. If gate passes
 - Craft a commit message matching existing style (brief descriptive title, Co-Authored-By footer)
@@ -67,7 +76,7 @@ Check each item before allowing a push:
 - **KeyboardCore**: SPM at `Packages/KeyboardCore/`, tests via `swift test`
 - **Main app**: `Universe Keyboard/` — Xcode file-system-sync, all Swift files auto-included
 - **Keyboard extension**: `Keyboard/` — UIKit input controller
-- **Commit style**: bilingual zh/EN titles, e.g. "Fix zip format off-by-2 + add 63 tests"
+- **Commit style**: bilingual zh/EN titles, e.g. "Fix zip format boundary + add regression tests"
 
 ## Examples
 

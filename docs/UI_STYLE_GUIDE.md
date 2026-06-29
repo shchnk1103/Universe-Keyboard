@@ -24,7 +24,7 @@ For every UI change:
 5. Build after code changes:
 
 ```bash
-xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build
+xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'generic/platform=iOS Simulator' build
 ```
 
 If the build cannot run because of local Xcode or simulator state, state that clearly in the final note.

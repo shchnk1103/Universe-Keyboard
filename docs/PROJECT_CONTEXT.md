@@ -2,11 +2,13 @@
 
 > **Maintenance Rule:** Do NOT add "Recent changes", chronological logs, or dated current-status snapshots to this file. All historical changes and status updates must go to `CHANGELOG.md`. Keep this file focused on permanent architecture, design decisions, and implementation constraints.
 
+Documentation ownership and update triggers are defined in `docs/DOCUMENTATION_GOVERNANCE.md`; this file is the architecture overview, not the source for history, debugging procedures or release evidence.
+
 This file provides durable project context for AI assistants working with code in this repository.
 
 ## Project Overview
 
-Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chinese input. It has two Xcode targets:
+Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chinese input. It has two product targets plus three test targets (`RimeBridgeTests`, `UniverseKeyboardTests`, and `KeyboardTests`):
 
 - **`Universe Keyboard`** (main App) — SwiftUI app (two tabs: Guide / Settings) for keyboard setup, RIME deployment, and feedback configuration.
 - **`Keyboard`** (Keyboard Extension, `Keyboard.appex`) — the actual keyboard that appears in other apps. Built with UIKit (`UIInputViewController`). Primary language: `zh-Hans`.
@@ -23,7 +25,7 @@ All UI work must follow `docs/UI_STYLE_GUIDE.md`.
 - After UI code changes, build with:
 
 ```bash
-xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build
+xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'generic/platform=iOS Simulator' build
 ```
 
 ## Status And History
@@ -45,7 +47,7 @@ The durable implementation constraints are:
 - Bundle ID: `com.DoubleShy0N.Universe-Keyboard`, Keyboard extension: `com.DoubleShy0N.Universe-Keyboard.Keyboard`
 - Team: `C33N6HTS9N`, code signing is automatic.
 - To test the keyboard: run the Keyboard extension target on a simulator/device, then enable it in Settings → General → Keyboard → Keyboards → Add New Keyboard → Keyboard.
-- Build with `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'platform=iOS Simulator,name=iPhone 17' build`
+- Build with `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'generic/platform=iOS Simulator' build`
 - KeyboardCore has unit tests under `Packages/KeyboardCore/Tests/`. Run `swift test --package-path Packages/KeyboardCore` for the current count and result.
 - `RimeBridgeTests` is an iOS Simulator Xcode test target because the pinned RIME xcframework inventory is iOS-only; do not replace it with macOS `swift test --package-path Packages/RimeBridge`.
 - A **macOS verification tool** at `Packages/RimeBridge/TestTool/` validates the bridge code against real librime 1.16.1. Run with `cd Packages/RimeBridge/TestTool && make && ./test_rime`.
@@ -55,6 +57,8 @@ The durable implementation constraints are:
 ### Keyboard Extension — file layout
 
 The keyboard is split by presentation, input action, candidate paging, feedback, and accessibility responsibilities:
+
+The following trees are responsibility maps, not exhaustive file inventories. Use `rg --files Keyboard`, `rg --files 'Universe Keyboard'`, and `rg --files Packages` for the current file list.
 
 ```
 Keyboard/
@@ -104,16 +108,17 @@ Universe Keyboard/
 │   ├── Guide/
 │   │   └── GuideTab.swift                — 首次启用与系统设置引导
 │   ├── Settings/
-│   │   ├── SettingsTab.swift             — 设置页导航与诊断开关
-│   │   ├── FeedbackSettingsView.swift    — 按键音 + 触感设置
-│   │   ├── RimeSettingsView.swift        — RIME 多方案设置（方案列表/详情/下载/部署）
-│   │   └── SchemaPickerRow.swift        — 方案选择行组件
+│   │   ├── SettingsTab.swift             — 设置导航
+│   │   ├── RimeSettings*.swift           — RIME 多方案设置与状态
+│   │   └── *SettingsView.swift           — 反馈、外观、高级输入、模糊音、用户词典与纠错
 │   ├── Diagnostics/
-│   │   └── DiagnosticsView.swift         — 诊断日志查看器
+│   │   └── Diagnostics*.swift            — 诊断日志查看、过滤与存储
+│   ├── Dictionary/                         — 本地词典扫描、索引与浏览
 │   └── License/
 │       └── LicenseView.swift             — GPL-3.0 许可证查看
 ├── Services/
-│   └── SchemaManager.swift               — 方案管理 + 下载编排（@MainActor @Observable）
+│   ├── SchemaManager*.swift              — 方案、下载、安装、部署与 Lua 诊断
+│   └── RimeUserDictionaryBackupService.swift — 用户词典备份/恢复
 └── Universe Keyboard.entitlements
 ```
 
@@ -193,8 +198,11 @@ Universe Keyboard/
 
 - **App Group**: `group.com.DoubleShy0N.Universe-Keyboard` — configured via entitlements on both targets. Used for sharing keyboard settings, diagnostics, and RIME state between the main app and keyboard extension.
 - **Full Access dependency**: App Group settings, diagnostics, and user-configured keyboard feedback may not function correctly unless the user enables "Allow Full Access" for the keyboard in iOS Keyboard Settings. The sound and haptic APIs run inside the extension, but their persisted enable/level settings are App Group-backed.
+- **Full Access and privacy contract**: absence of Full Access must not be presented as full functionality. App Group-dependent RIME runtime/configuration, shared settings, diagnostics, persisted feedback settings and user-dictionary management are unavailable or degraded and require actionable status. The main App cannot always determine the Extension's live access state before the Extension runs, so status must come from observed capability/failure. Typed content, surrounding host text, user dictionaries, logs and correction-learning records remain on-device; network access is limited to explicit main-App download operations. See ADR 0007.
 
-### Planned architecture (future)
+### Early planned architecture (historical reference only)
+
+The following diagram is an early direction, not the current module layout. `KeyboardUI` and `SwipeEngine` do not currently exist as packages. Do not use this diagram to locate production code or infer an approved refactor.
 
 ```
 Main App (SwiftUI) → settings, config import, onboarding
@@ -247,7 +255,7 @@ Keyboard Extension (UIInputViewController) → thin UI + state machine
 - **iOS 26 native appearance**: key buttons use `KeyVisualStyle` enum for consistent styling (`.character`/`.function`/`.space`/`.returnKey`/`.active`). Dark/light mode custom colors for keyboard background, character keys, function keys, and highlighted state. Keys use `.continuous` corner curve with 9pt radius. The system now provides the outer rounded keyboard container; keep `view.backgroundColor` clear and avoid drawing a second large rounded surface inside the extension. Touch feedback uses instantaneous `backgroundColor` + `CGAffineTransform(scaleX: 0.96)` — no Core Animation transactions.
 - Keyboard uses programmatic UIKit layout (UIStackView-based rows, no Storyboards) with current appearance geometry: `keyboardContentTopInset=2`, `keyboardContentBottomInset=0`, `keyHeight=45`, `candidateBarHeight=34`, `candidateToKeySpacing=8`, `keySpacing=8`, `keyboardGroupSpacing=10`, `keyHorizontalSpacing=6`, `thirdRowFunctionSpacing=10`, `primaryFunctionKeyWidth=46`, `functionKeySymbolPointSize=18`, horizontal margins `7`, `keyCornerRadius=9`. Horizontal candidate text uses 17pt for normal candidates and 15pt for composition fallback, with Dynamic Type capped at 28pt. Future UI changes must have a specific usability reason; avoid cosmetic tuning while the V1 UI freeze is active.
 - **iPhone 17 final keyboard height may be 216pt** (vs. standard 250–268pt on iOS 26 non-adapted apps). Never use a fixed-height constraint larger than `viewHeight - bottomMargin`. The current approach — `view.alpha = 0` in `viewDidLoad` + height-triggered reveal in `viewDidLayoutSubviews` (guard: `height > 0 && height < 400`) — handles all device/OS height variations correctly.
-- **`viewDidAppear` is the session recovery safety net.** After an app-switch, the RIME session may be lost. Always call `engine.resetSession()` and clear accumulated candidate state in `viewDidAppear` to guarantee a clean state before the next keystroke.
+- **Visibility changes abandon unfinished composition instead of restoring it.** The first `viewDidAppear` completes initial presentation without clearing state. On a later appearance, and in `viewWillDisappear`, the controller stops transient interactions, clears accumulated candidate presentation state, resets the RIME session, removes marked preedit, and discards unfinished composition/Partial Commit state. A new extension process creates a fresh session from already deployed runtime directories; it does not recover in-memory composition. Runtime session recovery inside an active presentation remains separate and may rebuild the session when librime stops accepting input. See `docs/architecture/shared-container-and-rime-lifecycle.md`.
 
 ### RIME Deployment System
 

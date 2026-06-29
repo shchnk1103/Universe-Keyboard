@@ -1,5 +1,7 @@
 # Typo Correction V0.4 Scoring And UI Plan
 
+> **Status: archived implementation plan.** V0.4 has been implemented. Current behavior and supported boundaries are defined by `docs/TYPO_BENCHMARK.md` and tests, not by this plan.
+
 ## Summary
 
 V0.4 strengthens the existing typo-correction layer by making confidence decisions explicit and visible. It does not expand typo coverage to omitted characters, transpositions, multi-edit corrections, or intermediate-syllable correction.

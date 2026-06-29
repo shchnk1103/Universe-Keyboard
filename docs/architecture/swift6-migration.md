@@ -57,22 +57,24 @@ complete deployment before continuing with the updated configuration.
 bash scripts/ensure_rime_vendor.sh verify
 swift test --package-path Packages/KeyboardCore
 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "RimeBridgeTests" \
-  -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  -configuration Debug -destination 'platform=iOS Simulator,name=<installed device>' \
   CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete \
   SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test
 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" \
-  -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  -configuration Debug -destination 'platform=iOS Simulator,name=<installed device>' \
   CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete \
   SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test
 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" \
-  -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  -configuration Debug -destination 'generic/platform=iOS Simulator' \
   CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete \
   SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" \
-  -configuration Release -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  -configuration Release -destination 'generic/platform=iOS Simulator' \
   CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete \
   SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
 ```
+
+Replace `<installed device>` with a destination reported by `xcrun simctl list devices available`. Builds use the generic Simulator destination; tests require a concrete bootable destination.
 
 The binary RIME package is iOS-only, so its tests must run through `RimeBridgeTests` on Simulator rather than
 macOS `swift test`. CI repeats artifact preparation, changed-file formatting checks, `KeyboardCore` tests, the

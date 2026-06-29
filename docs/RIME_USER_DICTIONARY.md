@@ -101,6 +101,12 @@ The UI disables the Backup button when:
 
 If manifest comparison fails, the UI should allow manual backup instead of blocking the user.
 
+## Restore Safety Decision
+
+The accepted long-term contract is defined by ADR 0005: before replacing current `{schema}.userdb*` data, the main App must create and verify a recovery backup of the current data. If current learning data exists and that safety backup fails, restore must stop. Silent overwrite is prohibited.
+
+This contract is **not implemented by the current restore path yet**. Until ADR 0005 is implemented and verified, restore remains tracked as High-priority technical debt in `docs/TECH_DEBT.md`; documentation and UI must not describe it as automatically rollback-safe.
+
 ## Automatic Backup
 
 Automatic backup is off by default.

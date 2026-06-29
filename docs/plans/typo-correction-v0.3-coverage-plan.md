@@ -1,5 +1,7 @@
 # Typo Correction V0.3 Coverage Plan
 
+> **Status: archived implementation plan.** V0.3 has been implemented. Current behavior and supported boundaries are defined by `docs/TYPO_BENCHMARK.md` and tests, not by this plan.
+
 ## Summary
 
 V0.3 strengthens the existing KeyboardCore typo-correction layer. It does not use traditional RIME fuzzy pinyin, Lua advanced input, or schema-level automatic correction rules.
@@ -62,4 +64,3 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 ```
 
 If SwiftPM cannot run because of local cache or XCTest runner issues, record the exact failure and use the Xcode build as a secondary compile validation.
-

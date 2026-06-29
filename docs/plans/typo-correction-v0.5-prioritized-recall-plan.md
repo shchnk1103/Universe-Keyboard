@@ -1,5 +1,7 @@
 # Typo Correction V0.5: Prioritized Safe One-Edit Recall
 
+> **Status: archived implementation plan.** V0.5 has been implemented. Current behavior and supported boundaries are defined by `docs/TYPO_BENCHMARK.md` and tests, not by this plan.
+
 ## Summary
 
 V0.5 fixes safe one-character adjacent-key corrections that were previously missed because they appeared too late in the bounded suggestion window. The core acceptance example is:

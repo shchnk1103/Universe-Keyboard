@@ -2,6 +2,8 @@
 
 本文件定义多个 agent 协作时的分工、交接格式和决策边界。
 
+本文件只负责多 agent 编排。每个角色的可执行权限、证据、停止与交接规则以 `docs/playbooks/` 下的对应 playbook 为准；架构事实仍以 Knowledge Index 指向的权威文档为准。
+
 ## 核心原则
 
 - Coordinator 负责最终判断，subagent 只提供受限范围内的调查、建议或补丁。
@@ -10,6 +12,18 @@
 - 先确认问题属于哪个系统边界，再决定是否写代码。
 
 ## 推荐角色
+
+| 角色 | 执行手册 |
+|---|---|
+| Coordinator | `docs/playbooks/coordinator.md` |
+| Context Scout | `docs/playbooks/context-scout.md` |
+| Bug Investigator | `docs/playbooks/debug-investigator.md` |
+| KeyboardCore Agent | `docs/playbooks/keyboard-core.md` |
+| RimeBridge Agent | `docs/playbooks/rime-bridge.md` |
+| Keyboard UI Agent | `docs/playbooks/keyboard-ui.md` |
+| Main App UI Agent | `docs/playbooks/main-app-ui.md` |
+| Test / Release Agent | `docs/playbooks/test-release.md` |
+| Documentation Maintainer | `docs/playbooks/documentation-maintainer.md` |
 
 ### Coordinator
 
@@ -26,7 +40,7 @@
 
 只读上下文，不改代码。负责：
 
-- 阅读 `CONTEXT_INDEX.md`
+- 从 `docs/KNOWLEDGE_INDEX.md` 和 `docs/READING_MAPS.md` 定位任务上下文
 - 找出任务相关文档
 - 摘要当前架构约束
 - 标记可能过时的信息
@@ -120,7 +134,7 @@
 ## 标准任务流程
 
 1. 归类任务：bug / UI / Core / RIME / docs / release。
-2. 读取上下文：先读 `AGENTS.md` 和 `CONTEXT_INDEX.md`，再按任务类型读对应文档。
+2. 读取上下文：先读 `AGENTS.md` 和 `docs/KNOWLEDGE_INDEX.md`，再按 `docs/READING_MAPS.md` 和领域 playbook 加载对应文档。
 3. 第一性原理拆解：输入、状态、副作用、输出、验证方式。
 4. 决定策略：
    - 根因不清楚：先加日志或复现工具。

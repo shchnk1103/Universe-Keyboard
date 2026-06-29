@@ -16,9 +16,12 @@
 新会话开始时先阅读：
 
 1. `AGENTS.md`
-2. `CONTEXT_INDEX.md`
-3. 按任务类型加载对应文档
+2. `docs/KNOWLEDGE_INDEX.md`
+3. 按 `docs/READING_MAPS.md` 中的任务类型加载对应文档
 4. 涉及代码改动时再阅读 `docs/PROJECT_CONTEXT.md`
+
+`CONTEXT_INDEX.md` 保留为详细文档注册表，不再是新会话的第一导航入口。
+需要领域 agent 时，必须选择 `docs/playbooks/` 下的对应操作手册，并遵守其停止、交接和证据规则。
 
 ## 调试原则
 

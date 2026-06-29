@@ -1,5 +1,7 @@
 # Typo Correction V0.6-V0.9: Quality Gates Before Coverage Expansion
 
+> **Status: archived milestone plan with historical validation notes.** V0.6-V0.9 implementation work is recorded here for traceability. Production defaults and current supported behavior are defined by `docs/TYPO_BENCHMARK.md`, `CHANGELOG.md`, and tests; this file must not be treated as approval to enable experimental edits.
+
 ## Summary
 
 This roadmap keeps typo correction benchmark-driven. The next priority is not broad coverage expansion, but a repeatable local evaluation system that proves safety before any higher-risk edit type is enabled.

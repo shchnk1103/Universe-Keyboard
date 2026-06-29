@@ -6,6 +6,51 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-29 — Executable subagent playbooks
+
+- Added nine domain playbooks with explicit mission, scope, forbidden changes, evidence, output, stop, escalation and documentation-impact rules.
+- Separated multi-agent orchestration in `AI_WORKFLOW.md` from executable domain boundaries in `docs/playbooks/`.
+- Connected playbooks to the Knowledge Index, Reading Maps, documentation graph/dependencies and health dashboard without copying architecture facts.
+
+---
+
+## 2026-06-29 — Knowledge OS v1.0
+
+- Added a pure navigation index, task reading maps, documentation graph, dependency routing and change decision trees.
+- Added staged onboarding, a project glossary and an ADR-linked architecture timeline without replacing current architecture sources.
+- Added a reproducible documentation-health dashboard and recorded the current governance debt instead of hiding it.
+- Changed the new-thread entry path to `AGENTS.md` → `docs/KNOWLEDGE_INDEX.md` → `docs/READING_MAPS.md`; retained `CONTEXT_INDEX.md` as the detailed legacy registry.
+
+---
+
+## 2026-06-29 — Documentation governance baseline
+
+- Established one Source of Truth per knowledge category, mandatory documentation triggers, ADR requirements and volatile-data rules.
+- Defined plan lifecycle metadata, changelog boundaries, subagent playbook boundaries and monthly/milestone Knowledge Audit outputs.
+- Connected governance checks to pre-push review without duplicating the full rules across project documents.
+
+---
+
+## 2026-06-29 — Decision lock-in and ADR baseline
+
+- Accepted eight ADRs covering deployment ownership, visibility cleanup, shared-container ownership, RIME sessions, restore safety, transactional schema installation, Full Access/privacy and fallback semantics.
+- Locked the long-term user-dictionary rule: create and verify a safety backup before restore; current implementation remains explicitly tracked as debt.
+- Added a measurement-only Extension performance baseline without invented latency or memory budgets.
+- Added the canonical technical-debt register for schema transactions, `Rime/user` coordination, performance evidence, Full Access degradation, crash/jetsam operations and reproducible RIME artifacts.
+- Adopted the current minimum acceptance matrix: primary development device, current development iOS and one available Simulator; expansion is required before broader TestFlight/App Store release.
+
+---
+
+## 2026-06-29 — Critical documentation stabilization
+
+- Corrected the keyboard visibility contract: returning/disappearing keyboards abandon unfinished composition and marked preedit; runtime session recovery remains a separate in-presentation path.
+- Removed current hardcoded test counts, refreshed README architecture/feature status, and standardized build destinations versus concrete simulator test destinations.
+- Marked completed Lua and typo-correction implementation plans as archived historical references.
+- Added durable documentation for the shared-container/RIME lifecycle, input and marked-text invariants, debugging flows, and release acceptance.
+- Refreshed `CONTEXT_INDEX.md` so future work loads these documents instead of relying on stale summaries.
+
+---
+
 ## 2026-06-28 — Typo correction V0.9a/V0.9b transposition value
 
 - Moved eligible adjacent-transposition correction candidates into the near-front area without default first-position promotion.

@@ -19,7 +19,7 @@ execution evidence are marked passed here.
 
 | Scope | Command or Target | Result | Evidence Status | Notes |
 | --- | --- | --- | --- | --- |
-| `KeyboardCore` package | `swift test --package-path Packages/KeyboardCore` | 347 tests passed, 0 failed after Logger/actor integration | Passed | Executed outside the filesystem sandbox because SwiftPM manifest sandboxing is blocked in the contained environment. |
+| `KeyboardCore` package | `swift test --package-path Packages/KeyboardCore` | Passed after Logger/actor integration; exact count belongs to retained command output | Passed | Executed outside the filesystem sandbox because SwiftPM manifest sandboxing is blocked in the contained environment. |
 | RIME/Lua artifact provenance | `bash scripts/ensure_rime_vendor.sh fetch && verify` | Fixed Release downloaded, 11 frameworks verified, receipt matches SHA-256 | Passed | `rime-vendor-ios-1.16.1-lua.1`, SHA-256 `c299f36eae4966a8c22f83046c7015a04b3f047abcc4bab9355ca19ac840436c`. |
 | `RimeBridgeTests` simulator scheme | `RimeBridgeTests`, Debug, iOS Simulator, strict warnings | 7 tests passed, 0 failed, 0 warnings | Passed | Rerun on 2026-05-28 using iPhone 17 simulator; includes keycode/deployment-boundary contracts; this is not a real Lua schema smoke test. |
 | App and Keyboard contract tests | `Universe Keyboard`, Debug, iOS Simulator, strict warnings | 23 tests passed, 0 failed, 0 warnings | Passed | Rerun on the integrated worktree on 2026-05-28; includes app services, dictionary actor, and candidate paging contracts. |
@@ -32,7 +32,7 @@ Fill this table from the final integrated worktree. Attach or reference logs whe
 
 | Date and Time | Git Commit / Worktree State | Xcode and Simulator | Verification Command | Result | Log or Evidence Path | Recorded By |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2026-05-28 18:43 Asia/Shanghai | `codex/swift6-enterprise-migration` integrated worktree | Xcode 17 toolchain; local macOS SwiftPM | `swift test --package-path Packages/KeyboardCore` | PASS, 347 tests | Terminal output from this verification run | Codex |
+| 2026-05-28 18:43 Asia/Shanghai | `codex/swift6-enterprise-migration` integrated worktree | Xcode 17 toolchain; local macOS SwiftPM | `swift test --package-path Packages/KeyboardCore` | PASS; exact count belongs to retained command output | Terminal output from this verification run | Codex |
 | 2026-05-28 18:44 Asia/Shanghai | `codex/swift6-enterprise-migration` integrated worktree | Xcode 17 toolchain; iPhone 17 simulator, iOS 26.5 runtime | `RimeBridgeTests` Debug test with Swift 6 strict warnings-as-errors | PASS, 7 tests | `/tmp/universe-keyboard-final-verify/Logs/Test/Test-RimeBridgeTests-2026.05.28_18-43-59-+0800.xcresult` | Codex |
 | 2026-05-28 18:45 Asia/Shanghai | `codex/swift6-enterprise-migration` integrated worktree | Xcode 17 toolchain; iPhone 17 simulator, iOS 26.5 runtime | `Universe Keyboard` Debug test with Swift 6 strict warnings-as-errors | PASS, 23 tests | `/tmp/universe-keyboard-final-verify/Logs/Test/Test-Universe Keyboard-2026.05.28_18-44-50-+0800.xcresult` | Codex |
 | 2026-05-28 18:46 Asia/Shanghai | `codex/swift6-enterprise-migration` integrated worktree | Xcode 17 toolchain; iPhone 17 simulator, iOS 26.5 runtime | `Universe Keyboard` Release build with Swift 6 strict warnings-as-errors | PASS | Terminal output from isolated `/private/tmp/universe-keyboard-final-release-verify` build | Codex |
@@ -135,7 +135,7 @@ UK_RIME_LUA_SMOKE_USER_DIR=/path/to/Rime/user \
 xcodebuild test \
   -project "Universe Keyboard.xcodeproj" \
   -scheme RimeBridgeTests \
-  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -destination 'platform=iOS Simulator,name=<installed device>' \
   -only-testing:RimeBridgeTests/RimeLuaSmokeTests
 ```
 
