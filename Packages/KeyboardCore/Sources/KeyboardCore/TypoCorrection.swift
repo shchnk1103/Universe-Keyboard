@@ -717,7 +717,6 @@ public enum TypoCorrectionCandidateRanker {
         traceMerge(
             normalItems: normalItems,
             correctionItems: correctionItems,
-            learningSnapshot: learningSnapshot,
             finalItems: result
         )
         #endif
@@ -857,7 +856,6 @@ public enum TypoCorrectionCandidateRanker {
     private static func traceMerge(
         normalItems: [CandidateItem],
         correctionItems: [CandidateItem],
-        learningSnapshot: TypoCorrectionLearningSnapshot,
         finalItems: [CandidateItem]
     ) {
         guard TypoCorrectionDecisionTrace.isCapturing else { return }
@@ -912,43 +910,30 @@ public enum TypoCorrectionCandidateRanker {
             )
         )
         traceFinalLearningDecisions(
-            normalItems: normalItems,
             correctionItems: correctionItems,
-            learningSnapshot: learningSnapshot,
             finalItems: finalItems
         )
     }
 
     private static func traceFinalLearningDecisions(
-        normalItems: [CandidateItem],
         correctionItems: [CandidateItem],
-        learningSnapshot: TypoCorrectionLearningSnapshot,
         finalItems: [CandidateItem]
     ) {
-        let firstNormal = normalItems.first
         for correctionItem in correctionItems {
             guard let correction = correctionItem.correction else { continue }
             let subject = TypoCorrectionDecisionTrace.subject(for: correction)
-            let selectionCount = learningSnapshot.selectionCount(for: correction)
             let decision: TypoCorrectionDecisionTrace.LearningDecision
-
-            if TypoCorrectionLearningKey(correction: correction) == nil {
-                decision = .ineligible
-            } else if selectionCount == 0 {
-                decision = .noRecord
-            } else if selectionCount < 3 {
-                decision = .nearFront(selectionCount: selectionCount)
-            } else if finalItems.first?.title == correctionItem.title,
-                finalItems.first?.kind == .correctionCandidate
-            {
-                decision = .topPromotion(selectionCount: selectionCount)
-            } else if let firstNormal,
-                firstNormal.title.hasPrefix(correctionItem.title)
-                    || correctionItem.title.hasPrefix(firstNormal.title)
-            {
-                decision = .blockedByPrefix(selectionCount: selectionCount)
+            if let finalPosition = finalItems.firstIndex(of: correctionItem) {
+                switch finalPosition {
+                case 0:
+                    decision = .top(finalPosition: finalPosition)
+                case 1:
+                    decision = .nearFront(finalPosition: finalPosition)
+                default:
+                    decision = .present(finalPosition: finalPosition)
+                }
             } else {
-                decision = .notPromoted(selectionCount: selectionCount)
+                decision = .absent
             }
 
             TypoCorrectionDecisionTrace.record(

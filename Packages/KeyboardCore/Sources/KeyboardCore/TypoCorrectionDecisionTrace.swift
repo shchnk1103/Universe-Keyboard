@@ -55,12 +55,10 @@ enum TypoCorrectionDecisionTrace {
     }
 
     enum LearningDecision: Equatable, Sendable {
-        case ineligible
-        case noRecord
-        case nearFront(selectionCount: Int)
-        case topPromotion(selectionCount: Int)
-        case blockedByPrefix(selectionCount: Int)
-        case notPromoted(selectionCount: Int)
+        case top(finalPosition: Int)
+        case nearFront(finalPosition: Int)
+        case present(finalPosition: Int)
+        case absent
         case notEvaluatedDueSuppression
     }
 

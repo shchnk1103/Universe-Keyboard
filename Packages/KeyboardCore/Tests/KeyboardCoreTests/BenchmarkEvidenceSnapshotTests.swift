@@ -36,7 +36,7 @@ final class BenchmarkEvidenceSnapshotTests: XCTestCase {
         XCTAssertEqual(snapshot.executionFacts.finalPosition, .observed(0))
         XCTAssertEqual(snapshot.executionFacts.representedSource, .observed(.typoCorrection))
         assertSuppression(snapshot, equals: .notSuppressed, candidateTitle: "你好")
-        assertLearning(snapshot, equals: .ineligible, candidateTitle: "你好")
+        assertLearning(snapshot, equals: .top(finalPosition: 0), candidateTitle: "你好")
         assertEnvironmentBlocked(snapshot)
 
         let encoded = try JSONEncoder().encode(snapshot)
@@ -46,7 +46,7 @@ final class BenchmarkEvidenceSnapshotTests: XCTestCase {
         )
     }
 
-    func testSnapshotReadsLearningDecisionAndSelectionCountFromRankerTrace() {
+    func testSnapshotReadsLearningDecisionFromFinalRankerPosition() {
         let correction = insertionCorrection(title: "你好")
         let learningSnapshot = TypoCorrectionLearningSnapshot(records: [
             .init(
@@ -85,7 +85,7 @@ final class BenchmarkEvidenceSnapshotTests: XCTestCase {
             trace: traced.capture
         )
 
-        assertLearning(snapshot, equals: .topPromotion(selectionCount: 3), candidateTitle: "你好")
+        assertLearning(snapshot, equals: .top(finalPosition: 0), candidateTitle: "你好")
         XCTAssertEqual(snapshot.executionFacts.effectiveFlags, .observed(.init(
             insertionEnabled: true,
             transpositionEnabled: false,
@@ -345,27 +345,25 @@ final class BenchmarkEvidenceSnapshotTests: XCTestCase {
         XCTAssertTrue(reasons.contains("merge trace payload exceeded bounded capacity"))
     }
 
-    func testLearningTraceRecordsFinalNearFrontAndIneligibleDecisions() {
-        let insertion = insertionCorrection(title: "你好")
+    func testMultipleEligibleCorrectionsRecordOnlyActualNearFrontSubject() {
+        let firstInsertion = insertionCorrection(title: "你好")
+        let secondInsertion = insertionCorrection(title: "拟好")
         let learned = TypoCorrectionLearningSnapshot(records: [
             .init(
-                key: try! XCTUnwrap(TypoCorrectionLearningKey(correction: insertion)),
+                key: try! XCTUnwrap(TypoCorrectionLearningKey(correction: firstInsertion)),
                 selectionCount: 1,
                 lastSelectedAt: Date(timeIntervalSince1970: 1)
+            ),
+            .init(
+                key: try! XCTUnwrap(TypoCorrectionLearningKey(correction: secondInsertion)),
+                selectionCount: 2,
+                lastSelectedAt: Date(timeIntervalSince1970: 2)
             )
         ])
-        let deletion = TypoCorrectionCommit(
-            committedText: "你好",
-            originalInput: "nihaoo",
-            correctedInput: "nihao",
-            edits: [
-                TypoCorrectionEdit(index: 5, original: "o", replacement: "o", kind: .deletion)
-            ]
-        )
         let normal = [CandidateItem(title: "你或", kind: .candidate)]
         let corrections = [
-            CandidateItem(title: "你好", kind: .correctionCandidate, correction: insertion),
-            CandidateItem(title: "你好删除", kind: .correctionCandidate, correction: deletion),
+            CandidateItem(title: "你好", kind: .correctionCandidate, correction: firstInsertion),
+            CandidateItem(title: "拟好", kind: .correctionCandidate, correction: secondInsertion),
         ]
 
         let traced = TypoCorrectionDecisionTrace.withSyntheticInvocation(id: "invocation-learning-final") {
@@ -381,16 +379,21 @@ final class BenchmarkEvidenceSnapshotTests: XCTestCase {
             return decision
         }
 
+        XCTAssertEqual(learningEvents.filter {
+            if case .nearFront = $0.decision { return true }
+            return false
+        }.count, 1)
         XCTAssertTrue(learningEvents.contains {
-            $0.subject.candidateTitle == "你好" && $0.decision == .nearFront(selectionCount: 1)
+            $0.subject.candidateTitle == "拟好" && $0.decision == .nearFront(finalPosition: 1)
         })
         XCTAssertTrue(learningEvents.contains {
-            !$0.subject.correlationID.isEmpty && $0.decision == .ineligible
+            $0.subject.candidateTitle == "你好" && $0.decision == .present(finalPosition: 2)
         })
         XCTAssertEqual(traced.result.first?.title, "你或")
+        XCTAssertEqual(traced.result.map(\.title), ["你或", "拟好", "你好"])
     }
 
-    func testLearningPredicateDoesNotOverrideFinalPrefixBlockedDecision() {
+    func testLearningDecisionMatchesFinalPositionInsteadOfPrefixPredicate() {
         let correction = insertionCorrection(title: "你好")
         let learned = TypoCorrectionLearningSnapshot(records: [
             .init(
@@ -416,7 +419,12 @@ final class BenchmarkEvidenceSnapshotTests: XCTestCase {
 
         XCTAssertEqual(traced.result.first?.title, "你好呀")
         XCTAssertEqual(learningEvents.count, 1)
-        XCTAssertEqual(learningEvents.first?.decision, .blockedByPrefix(selectionCount: 3))
+        XCTAssertEqual(learningEvents.first?.decision, .nearFront(finalPosition: 1))
+        XCTAssertEqual(traced.result.firstIndex(of: CandidateItem(
+            title: "你好",
+            kind: .correctionCandidate,
+            correction: correction
+        )), 1)
     }
 
     func testMultipleSuppressionEventsResolveByUniqueDecisionSubject() {

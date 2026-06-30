@@ -106,12 +106,10 @@ struct BenchmarkEvidenceSnapshot: Codable, Equatable, Sendable {
     }
 
     enum LearningDecision: Codable, Equatable, Sendable {
-        case ineligible
-        case noRecord
-        case nearFront(selectionCount: Int)
-        case topPromotion(selectionCount: Int)
-        case blockedByPrefix(selectionCount: Int)
-        case notPromoted(selectionCount: Int)
+        case top(finalPosition: Int)
+        case nearFront(finalPosition: Int)
+        case present(finalPosition: Int)
+        case absent
         case notEvaluatedDueSuppression
     }
 
@@ -504,12 +502,10 @@ enum BenchmarkEvidenceSnapshotBuilder {
         _ value: TypoCorrectionDecisionTrace.LearningDecision
     ) -> BenchmarkEvidenceSnapshot.LearningDecision {
         switch value {
-        case .ineligible: .ineligible
-        case .noRecord: .noRecord
-        case let .nearFront(count): .nearFront(selectionCount: count)
-        case let .topPromotion(count): .topPromotion(selectionCount: count)
-        case let .blockedByPrefix(count): .blockedByPrefix(selectionCount: count)
-        case let .notPromoted(count): .notPromoted(selectionCount: count)
+        case let .top(position): .top(finalPosition: position)
+        case let .nearFront(position): .nearFront(finalPosition: position)
+        case let .present(position): .present(finalPosition: position)
+        case .absent: .absent
         case .notEvaluatedDueSuppression: .notEvaluatedDueSuppression
         }
     }
