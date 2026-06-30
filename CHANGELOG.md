@@ -6,6 +6,14 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-06-30 — Typo Correction Benchmark Registry v1.0
+
+- Published the accepted `TC-CTR-*`, `TC-CASE-*` and `TC-PERF::*` namespaces as the repository Source of Truth in `docs/TYPO_BENCHMARK_REGISTRY.md`.
+- Added ADR 0009 for independent, versioned Registry ownership and linked benchmark, performance, Partial Commit, navigation and governance documents without copying authority.
+- Preserved historical aliases, independent `nihoa-satisfied`/`nihoa-unsatisfied` Cases, cross-layer coverage rules and the Task 7 prohibition; publication does not claim current evidence passed.
+
+---
+
 ## 2026-06-29 — Executable subagent playbooks
 
 - Added nine domain playbooks with explicit mission, scope, forbidden changes, evidence, output, stop, escalation and documentation-impact rules.

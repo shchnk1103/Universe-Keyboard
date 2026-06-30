@@ -135,6 +135,21 @@ Playbook: [`playbooks/debug-investigator.md`](playbooks/debug-investigator.md), 
 
 Required review: comparable measurements, no invented thresholds, hot-path storage/logging, memory growth and whether architecture changes require an ADR.
 
+For Typo Correction Benchmark v1.0 evidence, also read `TYPO_BENCHMARK_REGISTRY.md`. Use Canonical `TC-PERF::{CaseID}::{ScenarioClass}` references and do not treat behavior coverage as performance evidence.
+
+## Change Typo Correction Benchmark Registry Or Evidence References
+
+Ownership: Primary Architecture & Knowledge Steward using [`documentation-maintainer.md`](playbooks/documentation-maintainer.md); Product Lead approves product intent, Input Intelligence reviews Contract/Case facts, and Test / Release reviews evidence references.
+
+1. `TYPO_BENCHMARK_REGISTRY.md` — Canonical IDs, relationships, aliases and version.
+2. ADR 0009 — Source-of-Truth and dependency decision.
+3. `TYPO_BENCHMARK.md` — behavior explanation only.
+4. `PERFORMANCE_BASELINE.md` — measurement procedure only.
+5. `architecture/partial-commit.md` when Integration Cases reference Partial Commit.
+6. `DOCUMENTATION_GOVERNANCE.md` and `KNOWLEDGE_DEPENDENCIES.md`.
+
+Required review: immutable Canonical IDs, exactly one Primary Contract per Case, valid secondary references, `TC-PERF::*` targets, Alias/Superseded lifecycle, no duplicated authority, Markdown links and `git diff --check`. Registry publication does not mark evidence passed or authorize Task 7.
+
 ## Change UI
 
 1. `PROJECT_CONTEXT.md`.

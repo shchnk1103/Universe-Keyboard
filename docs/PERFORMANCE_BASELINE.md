@@ -1,5 +1,7 @@
 # Performance Baseline
 
+> Typo Correction Benchmark v1.0 Performance Evidence references and frozen measurement profiles are registered in [`TYPO_BENCHMARK_REGISTRY.md`](TYPO_BENCHMARK_REGISTRY.md). This document remains the authority for repository-wide measurement procedure and collected-evidence requirements.
+
 ## Purpose
 
 This document defines how to collect repeatable Extension performance evidence. It intentionally contains no invented acceptance numbers. Initial values and future budgets must come from recorded simulator and physical-device measurements.
@@ -109,6 +111,7 @@ No numeric baseline or budget is accepted yet. The following remain to be collec
 
 ## Related Documents
 
+- `docs/TYPO_BENCHMARK_REGISTRY.md`
 - `docs/architecture/decisions/0004-rime-runtime-session-model.md`
 - `docs/RELEASE_CHECKLIST.md`
 - `docs/DEBUGGING.md`

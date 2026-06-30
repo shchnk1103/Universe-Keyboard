@@ -1,5 +1,7 @@
 # Partial Commit Architecture
 
+> Typo Benchmark v1.0 Integration Contract and Case identities are defined only in [`../TYPO_BENCHMARK_REGISTRY.md`](../TYPO_BENCHMARK_REGISTRY.md), including `TC-CTR-INT-008...012` and `TC-CASE-INT-008...013`. This document remains the authority for current Partial Commit architecture and product boundary.
+
 This document records the completed Partial Commit milestone and the current product boundary. It is a merge-readiness reference, not a roadmap for new features.
 
 ## Product Decision

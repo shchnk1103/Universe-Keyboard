@@ -37,6 +37,7 @@ Navigation/index files are downstream consumers. They should change only when ro
 | Lua/RIME artifacts | relevant domain/architecture source, debugging, release, performance method, tech debt | generic README detail |
 | `DEBUGGING` procedure | release evidence if gate changed, reading maps, bug-investigator playbook | architecture rationale |
 | `PERFORMANCE_BASELINE` method | release performance gate, performance playbook, health evidence | product feature docs |
+| Typo Benchmark Registry ID/relationship/version | `TYPO_BENCHMARK`, `PERFORMANCE_BASELINE`, Partial Commit when referenced, release evidence, reading maps/index/graph | runtime and tests unless a separately approved implementation task changes them |
 | `RELEASE_CHECKLIST` | test/release playbook, reading maps, governance if responsibility changed | current architecture |
 | `TECH_DEBT` item/status | related ADR/plan, release gate if risk blocks release, health dashboard | README |
 | plan lifecycle/status | changelog when work completed, current source and ADR links, health dashboard | architecture unless behavior changed |
@@ -62,6 +63,7 @@ Navigation/index files are downstream consumers. They should change only when ro
 - `plan -> production contract` after the plan closes.
 - `health dashboard -> manually copied counts` without reproducible commands and snapshot metadata.
 - `ADR -> implementation status claim` when implementation remains pending.
+- `TYPO_BENCHMARK`, performance or archived plans -> copied Canonical Registry definitions instead of links.
 
 ## Adding A New Knowledge Source
 

@@ -1,5 +1,7 @@
 # Typo Correction Benchmark
 
+> Canonical Benchmark v1.0 Contract, Case and Performance Evidence identifiers are defined only in [`TYPO_BENCHMARK_REGISTRY.md`](TYPO_BENCHMARK_REGISTRY.md). This document explains behavior and historical validation context; it does not own Registry IDs or evidence pass status.
+
 ## Purpose
 
 This document is the reference for small-screen pinyin typo-correction coverage. It records representative typo categories, the current expected behavior, and the next coverage priorities so future work is guided by measurable cases instead of intuition.

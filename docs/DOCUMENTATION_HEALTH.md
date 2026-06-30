@@ -17,6 +17,7 @@ This dashboard makes knowledge quality observable without turning manually maint
 | Evidence quality | Snapshots carry date/commit/environment/command/location/expiry | Inspect acceptance and performance records |
 | Playbook independence | Agents can work without copied chat context | Execute playbook dry-run against reading maps and current sources |
 | Navigation integrity | All index links resolve and no orphan source exists | Link/file scan plus documentation graph review |
+| Registry integrity | Canonical IDs are unique and all Contract/Case/Performance/Alias targets resolve | Registry structural scan plus downstream duplicate-authority review |
 
 ## Reproducible Inventory Commands
 
@@ -74,6 +75,7 @@ Observed state:
 6. Resolve duplicated durable facts by preserving one owner plus links.
 7. Decide whether OpenCC integration requires a rationale ADR.
 8. Remove or explicitly manage tracked `.DS_Store` files under documentation directories.
+9. Keep the Typo Benchmark Registry structural checks current as new Canonical IDs, aliases or supersessions are approved.
 
 ## Knowledge Audit Record
 
@@ -82,6 +84,17 @@ Add one row per monthly/milestone audit. Detailed findings belong in the audit a
 | Date | Scope | Base commit | Result location | Next trigger |
 |---|---|---|---|---|
 | 2026-06-29 | Knowledge OS v1.0 + Phase C playbook structure | `75a5e8c` + documentation working tree | `DOCUMENTATION_HEALTH.md` current snapshot | Independent playbook audit or next milestone |
+| 2026-06-30 | Typo Correction Benchmark Registry v1.0 publication | `3cb5a6c` + existing documentation working tree | `TYPO_BENCHMARK_REGISTRY.md`, ADR 0009 and validation output | Registry version change, evidence-reference change or `TYPO-BENCHMARK-004B` review |
+
+### 2026-06-30 Registry Publication Snapshot
+
+- Scope: `TYPO-BENCHMARK-006B` documentation governance only.
+- Registry: version `1.0.0`, 51 Canonical Contracts, 71 Canonical Cases and 17 frozen performance measurement profiles.
+- Structural checks: unique Contract/Case IDs; every Case Primary Contract resolves; all secondary, Alias and Performance example targets resolve; `TC-CASE-EXP-004` and `TC-CASE-EXP-005` remain independent.
+- Link check: all repository-local Markdown file links resolve.
+- Formatting: `git diff --check` passed; new Registry/ADR files also passed trailing-whitespace and end-of-file checks.
+- Change boundary: documentation only; no production source, test, Runtime, algorithm, behavior or Benchmark Case changed.
+- Evidence boundary: publication does not mark any Case or Performance Scenario passed and does not authorize Task 7.
 
 ## Health Gate
 
