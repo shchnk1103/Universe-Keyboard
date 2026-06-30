@@ -8,6 +8,18 @@ Every implementation task also requires the documentation review checklist in `D
 
 When work is delegated, use the matching file under [`playbooks/`](playbooks/). Reading maps define knowledge inputs; playbooks define allowed work, evidence, stop conditions and handoff.
 
+Long-lived thread ownership is defined in [`VIRTUAL_ENGINEERING_TEAM.md`](VIRTUAL_ENGINEERING_TEAM.md). Read it when creating a permanent thread, resolving ownership, coordinating multiple maintainers or handing work between long-lived threads. Short-term ✍️ Typo Maintainer threads may continue during the transition, but their benchmark, candidate-ranking, learning and regression evidence must hand off to the 🧠 Input Intelligence Maintainer.
+
+## Review Or Update Program Status
+
+Ownership: Primary 📋 Program Manager / Engineering Coordinator for status aggregation only. Product Lead owns product decisions and Gates; Architecture & Knowledge Steward owns architecture and Source of Truth; domain Maintainers own implementation/evidence; Test / Release owns Quality conclusions.
+
+1. `ENGINEERING_DASHBOARD.md` — current status, dependencies, handoffs, blockers and recommended next actions.
+2. `VIRTUAL_ENGINEERING_TEAM.md` — role boundaries and escalation rules.
+3. The task's current Product, Architecture, domain and Quality sources cited by the Dashboard.
+
+Required review: every status has an owner and source; implementation is not presented as acceptance; recommendations are not presented as decisions; Stop Conditions remain visible; Dashboard changes do not alter Product Contracts, ADRs, Registry entries or Quality Gates.
+
 ## Modify Candidate Bar
 
 Ownership: Primary [`Keyboard UI`](playbooks/keyboard-ui.md); secondary [`KeyboardCore`](playbooks/keyboard-core.md) when selection/state semantics change and [`Debug Investigator`](playbooks/debug-investigator.md) when the boundary is unproven; escalate ownership conflicts or durable product changes to [`Coordinator`](playbooks/coordinator.md).

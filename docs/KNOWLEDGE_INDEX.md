@@ -37,6 +37,7 @@
 
 ## Operations And Risk
 
+- Current engineering status: [`ENGINEERING_DASHBOARD.md`](ENGINEERING_DASHBOARD.md)
 - Debugging: [`DEBUGGING.md`](DEBUGGING.md)
 - Performance measurement: [`PERFORMANCE_BASELINE.md`](PERFORMANCE_BASELINE.md)
 - Release: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)
@@ -45,6 +46,7 @@
 
 ## Collaboration And Governance
 
+- Permanent team ownership and bootstrap prompts: [`VIRTUAL_ENGINEERING_TEAM.md`](VIRTUAL_ENGINEERING_TEAM.md)
 - Knowledge operating model: [`KNOWLEDGE_OS.md`](KNOWLEDGE_OS.md)
 - Documentation graph: [`DOCUMENTATION_GRAPH.md`](DOCUMENTATION_GRAPH.md)
 - Governance: [`DOCUMENTATION_GOVERNANCE.md`](DOCUMENTATION_GOVERNANCE.md)

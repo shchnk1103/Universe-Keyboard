@@ -17,6 +17,9 @@ Implementation evidence
   -> current source or technical debt
        -> changelog history
 
+Owner-confirmed task state / handoff / blocker
+  -> ENGINEERING_DASHBOARD summary
+
 Governance
   -> health checks
        -> pre-push enforcement
@@ -44,6 +47,8 @@ Navigation/index files are downstream consumers. They should change only when ro
 | target/module add/remove | `PROJECT_CONTEXT`, reading maps, graph, onboarding, playbooks, release/build commands | ADR only if decision is durable |
 | governance | index/graph, pre-push skill, health metrics, playbook format | domain architecture |
 | playbook | `AI_WORKFLOW`, reading maps/index if role or route changes, documentation health | domain facts |
+| permanent team ownership/bootstrap contract | `VIRTUAL_ENGINEERING_TEAM`, `AGENTS`, knowledge index, reading maps, graph, governance, affected playbooks and documentation health | domain architecture unless the system boundary also changed |
+| owner-confirmed task status, handoff or blocker | `ENGINEERING_DASHBOARD`, then linked owner sources for consistency | Registry, ADRs, Product Contracts, runtime and tests unless their owning facts changed separately |
 
 ## Impact Algorithm
 
@@ -64,6 +69,8 @@ Navigation/index files are downstream consumers. They should change only when ro
 - `health dashboard -> manually copied counts` without reproducible commands and snapshot metadata.
 - `ADR -> implementation status claim` when implementation remains pending.
 - `TYPO_BENCHMARK`, performance or archived plans -> copied Canonical Registry definitions instead of links.
+- `VIRTUAL_ENGINEERING_TEAM -> copied architecture or playbook procedure` instead of links to their owners.
+- `ENGINEERING_DASHBOARD -> new Product, Architecture or Quality decision` without confirmation from the owning role and source.
 
 ## Adding A New Knowledge Source
 
