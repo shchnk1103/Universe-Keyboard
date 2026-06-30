@@ -1,71 +1,52 @@
+#if DEBUG
 import XCTest
 
 @testable import KeyboardCore
 
+@MainActor
 final class BenchmarkEvidenceSnapshotTests: XCTestCase {
-    func testSnapshotContainsRegistryIdentityMetadataAndSyntheticInputs() throws {
-        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(baseObservation())
+    func testSnapshotConsumesCorrelatedExecutionFactsAndKeepsSourcesSeparate() throws {
+        let captured = captureControllerPath(
+            invocationID: "invocation-stable",
+            input: "nihap",
+            dictionary: [
+                "nihap": ["你好安排", "拟好安排"],
+                "nihao": ["你好"],
+            ]
+        )
+        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(
+            fixture: fixture(
+                caseID: "TC-CASE-STB-016",
+                normalInput: "nihap",
+                correctedInput: "nihao",
+                target: "你好"
+            ),
+            environment: unavailableEnvironment(runID: "run-stable"),
+            trace: captured.capture
+        )
 
-        XCTAssertEqual(snapshot.identity.registryVersion, "1.0.0")
-        XCTAssertEqual(snapshot.identity.registryCommit, "49b000bcbb3a90d04f00dd803981a24a25b70e28")
-        XCTAssertEqual(snapshot.identity.canonicalCaseID, "TC-CASE-STB-016")
-        XCTAssertEqual(snapshot.identity.build.commit, "fixture-build-commit")
-        XCTAssertEqual(snapshot.identity.schema.identifier, "fixture-schema")
-        XCTAssertEqual(snapshot.inputs.provenance, .syntheticFixture)
-        XCTAssertEqual(snapshot.inputs.normalInput, "nihap")
-        XCTAssertEqual(snapshot.inputs.correctedInput, "nihao")
+        XCTAssertEqual(snapshot.registryIdentity.registryVersion, "1.0.0")
+        XCTAssertEqual(snapshot.registryIdentity.registryCommit, "49b000bcbb3a90d04f00dd803981a24a25b70e28")
+        XCTAssertEqual(snapshot.registryIdentity.canonicalCaseID, "TC-CASE-STB-016")
+        XCTAssertEqual(snapshot.fixtureMetadata.inputProvenance, .syntheticFixture)
+        XCTAssertEqual(snapshot.fixtureMetadata.normalInput, "nihap")
+        XCTAssertEqual(snapshot.environmentMetadata.buildCommit.source, .unavailable)
+        XCTAssertEqual(snapshot.environmentMetadata.schemaIdentifier.source, .unavailable)
+        XCTAssertEqual(snapshot.environmentMetadata.invocationID, "invocation-stable")
+        XCTAssertEqual(snapshot.executionFacts.finalPosition, .observed(0))
+        XCTAssertEqual(snapshot.executionFacts.representedSource, .observed(.typoCorrection))
+        assertSuppression(snapshot, equals: .notSuppressed, candidateTitle: "你好")
+        assertLearning(snapshot, equals: .ineligible, candidateTitle: "你好")
+        assertEnvironmentBlocked(snapshot)
 
         let encoded = try JSONEncoder().encode(snapshot)
-        let decoded = try JSONDecoder().decode(BenchmarkEvidenceSnapshot.self, from: encoded)
-        XCTAssertEqual(decoded, snapshot)
-    }
-
-    func testSnapshotReportsFinalPositionFromExistingProductMerge() {
-        let observation = baseObservation()
-        let directMerge = TypoCorrectionCandidateRanker.mergedCandidates(
-            normalItems: observation.normalItems,
-            correctionItems: observation.resolvedCorrectionItems,
-            learningSnapshot: observation.learningSnapshot
+        XCTAssertEqual(
+            try JSONDecoder().decode(BenchmarkEvidenceSnapshot.self, from: encoded),
+            snapshot
         )
-
-        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(observation)
-
-        XCTAssertEqual(snapshot.candidates.finalCandidates.map(\.title), directMerge.map(\.title))
-        XCTAssertEqual(snapshot.candidates.finalPosition, 0)
-        XCTAssertEqual(snapshot.candidates.representedSource, .typoCorrection)
     }
 
-    func testSnapshotMakesSuppressionDecisionVisible() {
-        var observation = baseObservation()
-        observation = .init(
-            canonicalCaseID: "TC-CASE-EXP-005",
-            build: observation.build,
-            schema: observation.schema,
-            flags: .init(
-                insertionEnabled: false,
-                transpositionEnabled: true,
-                typoPartialCommitEnabled: false
-            ),
-            configuration: observation.configuration,
-            input: .init(normalInput: "nihoa", correctedInput: "nihao"),
-            normalItems: [CandidateItem(title: "你好", kind: .candidate)],
-            resolvedCorrectionItems: [],
-            correctedCandidates: ["你好", "拟好", "你号"],
-            learningSnapshot: .empty,
-            learningDecision: .blockedBySatisfaction(selectionCount: 0),
-            suppressionDecision: .suppressedNormalTopMatchesCorrectedBest,
-            targetCandidate: "你好"
-        )
-
-        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(observation)
-
-        XCTAssertEqual(snapshot.candidates.suppressionDecision, .suppressedNormalTopMatchesCorrectedBest)
-        XCTAssertEqual(snapshot.candidates.correctedCandidates, ["你好", "拟好", "你号"])
-        XCTAssertEqual(snapshot.candidates.finalCandidates.map(\.title), ["你好"])
-        XCTAssertEqual(snapshot.candidates.representedSource, .normalRime)
-    }
-
-    func testSnapshotMakesLearningTopPromotionVisibleWithoutChangingMerge() {
+    func testSnapshotReadsLearningDecisionAndSelectionCountFromRankerTrace() {
         let correction = insertionCorrection(title: "你好")
         let learningSnapshot = TypoCorrectionLearningSnapshot(records: [
             .init(
@@ -74,134 +55,573 @@ final class BenchmarkEvidenceSnapshotTests: XCTestCase {
                 lastSelectedAt: Date(timeIntervalSince1970: 1)
             )
         ])
-        var observation = baseObservation()
-        observation = .init(
-            canonicalCaseID: "TC-CASE-LRN-008",
-            build: observation.build,
-            schema: observation.schema,
-            flags: .init(
-                insertionEnabled: true,
-                transpositionEnabled: false,
-                typoPartialCommitEnabled: false
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = FakeRimeEngine(dictionary: [
+            "niho": ["你或"],
+            "nihao": ["你好"],
+        ])
+        controller.typoCorrectionExperimentalEdits = [.insertion]
+        controller.typoCorrectionLearningSnapshot = learningSnapshot
+
+        type("nih", into: controller)
+        let traced = TypoCorrectionDecisionTrace.withSyntheticInvocation(id: "invocation-learning") {
+            type("o", into: controller)
+            return mergeCurrentCandidates(from: controller)
+        }
+        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(
+            fixture: fixture(
+                caseID: "TC-CASE-LRN-008",
+                normalInput: "niho",
+                correctedInput: "nihao",
+                target: "你好",
+                requestedFlags: .init(
+                    insertionEnabled: true,
+                    transpositionEnabled: false,
+                    typoPartialCommitEnabled: false
+                )
             ),
-            configuration: .init(
-                learningState: "three-explicit-selections",
-                deploymentState: "fixture-deployed",
-                sessionState: "fixture-active"
-            ),
-            input: .init(normalInput: "niho", correctedInput: "nihao"),
-            normalItems: [CandidateItem(title: "你或", kind: .candidate)],
-            resolvedCorrectionItems: [
-                CandidateItem(title: "你好", kind: .correctionCandidate, correction: correction)
-            ],
-            correctedCandidates: ["你好"],
-            learningSnapshot: learningSnapshot,
-            learningDecision: .topPromotion(selectionCount: 3),
-            suppressionDecision: .notSuppressed,
-            targetCandidate: "你好"
+            environment: unavailableEnvironment(runID: "run-learning"),
+            trace: traced.capture
         )
 
-        let directMerge = TypoCorrectionCandidateRanker.mergedCandidates(
-            normalItems: observation.normalItems,
-            correctionItems: observation.resolvedCorrectionItems,
-            learningSnapshot: learningSnapshot
-        )
-        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(observation)
-
-        XCTAssertEqual(snapshot.candidates.learningDecision, .topPromotion(selectionCount: 3))
-        XCTAssertEqual(snapshot.candidates.finalCandidates.map(\.title), directMerge.map(\.title))
-        XCTAssertEqual(snapshot.candidates.finalPosition, 0)
+        assertLearning(snapshot, equals: .topPromotion(selectionCount: 3), candidateTitle: "你好")
+        XCTAssertEqual(snapshot.executionFacts.effectiveFlags, .observed(.init(
+            insertionEnabled: true,
+            transpositionEnabled: false,
+            typoPartialCommitEnabled: false
+        )))
+        XCTAssertEqual(snapshot.executionFacts.finalPosition, .observed(0))
+        assertEnvironmentBlocked(snapshot)
+        let mergeSequence = traced.capture.events.first {
+            if case .merge = $0.kind { return true }
+            return false
+        }?.sequence
+        let learningSequence = traced.capture.events.first {
+            if case .learning = $0.kind { return true }
+            return false
+        }?.sequence
+        XCTAssertNotNil(mergeSequence)
+        XCTAssertNotNil(learningSequence)
+        XCTAssertGreaterThan(learningSequence!, mergeSequence!)
     }
 
-    func testSnapshotPreservesDedupeProvenance() {
-        var observation = baseObservation()
-        let correction = trailingCorrection(title: "你好")
-        observation = .init(
-            canonicalCaseID: "TC-CASE-INT-004",
-            build: observation.build,
-            schema: observation.schema,
-            flags: observation.flags,
-            configuration: observation.configuration,
-            input: observation.input,
-            normalItems: [
-                CandidateItem(title: "你好安排", kind: .candidate),
-                CandidateItem(title: "你好", kind: .candidate),
-            ],
-            resolvedCorrectionItems: [
-                CandidateItem(title: "你好", kind: .correctionCandidate, correction: correction)
-            ],
-            correctedCandidates: ["你好"],
-            learningSnapshot: .empty,
-            learningDecision: .notApplicable,
-            suppressionDecision: .notSuppressed,
-            targetCandidate: "你好"
-        )
+    func testSuppressionTraceReportsRankingNotEvaluated() {
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = FakeRimeEngine(dictionary: [
+            "nihoa": ["你好", "你花"],
+            "nihao": ["你好", "拟好", "你号"],
+        ])
+        controller.typoCorrectionExperimentalEdits = [.transposition]
 
-        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(observation)
-        let decision = snapshot.candidates.dedupeDecisions.first { $0.title == "你好" }
-
-        XCTAssertEqual(decision?.originSet, [.normalRime, .typoCorrection])
-        XCTAssertEqual(decision?.representedSource, .typoCorrection)
-        XCTAssertEqual(decision?.removedDuplicateCount, 1)
-        XCTAssertEqual(snapshot.candidates.finalCandidates.filter { $0.title == "你好" }.count, 1)
-    }
-
-    func testSnapshotCapabilityIsTestOnlyAndDoesNotMutateCandidateInputs() {
-        let observation = baseObservation()
-        let normalBefore = observation.normalItems
-        let correctionBefore = observation.resolvedCorrectionItems
-
-        _ = BenchmarkEvidenceSnapshotBuilder.capture(observation)
-
-        XCTAssertEqual(observation.normalItems, normalBefore)
-        XCTAssertEqual(observation.resolvedCorrectionItems, correctionBefore)
-        // Both the capability and this assertion compile only in KeyboardCoreTests.
-        XCTAssertEqual(BenchmarkEvidenceSnapshot.registryVersion, "1.0.0")
-    }
-
-    private func baseObservation() -> BenchmarkEvidenceSnapshotBuilder.Observation {
-        let correction = trailingCorrection(title: "你好")
-        return .init(
-            canonicalCaseID: "TC-CASE-STB-016",
-            build: .init(
-                commit: "fixture-build-commit",
-                configuration: "test",
-                target: "KeyboardCoreTests"
+        type("niho", into: controller)
+        let traced = TypoCorrectionDecisionTrace.withSyntheticInvocation(id: "invocation-suppressed") {
+            type("a", into: controller)
+            return mergeCurrentCandidates(from: controller)
+        }
+        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(
+            fixture: fixture(
+                caseID: "TC-CASE-EXP-005",
+                normalInput: "nihoa",
+                correctedInput: "nihao",
+                target: "你好",
+                requestedFlags: .init(
+                    insertionEnabled: false,
+                    transpositionEnabled: true,
+                    typoPartialCommitEnabled: false
+                )
             ),
-            schema: .init(identifier: "fixture-schema", artifactVersion: "fixture-artifact"),
-            flags: .init(
-                insertionEnabled: false,
-                transpositionEnabled: false,
-                typoPartialCommitEnabled: false
+            environment: unavailableEnvironment(runID: "run-suppressed"),
+            trace: traced.capture
+        )
+
+        assertSuppression(
+            snapshot,
+            equals: .suppressedNormalTopMatchesCorrectedBest,
+            candidateTitle: "你好"
+        )
+        assertLearning(snapshot, equals: .notEvaluatedDueSuppression, candidateTitle: "你好")
+        XCTAssertEqual(snapshot.executionFacts.representedSource, .observed(.normalRime))
+        assertEnvironmentBlocked(snapshot)
+    }
+
+    func testMergeTraceProvidesDedupeProvenanceWithoutChangingCandidates() {
+        let captured = captureControllerPath(
+            invocationID: "invocation-dedupe",
+            input: "nihap",
+            dictionary: [
+                "nihap": ["你好安排", "你好"],
+                "nihao": ["你好"],
+            ]
+        )
+        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(
+            fixture: fixture(
+                caseID: "TC-CASE-INT-004",
+                normalInput: "nihap",
+                correctedInput: "nihao",
+                target: "你好"
             ),
-            configuration: .init(
-                learningState: "no-record",
-                deploymentState: "fixture-deployed",
-                sessionState: "fixture-active"
+            environment: unavailableEnvironment(runID: "run-dedupe"),
+            trace: captured.capture
+        )
+
+        guard case let .observed(decisions) = snapshot.executionFacts.dedupeDecisions,
+            let decision = decisions.first(where: { $0.title == "你好" })
+        else {
+            return XCTFail("Expected observed dedupe provenance")
+        }
+        XCTAssertEqual(decision.originSet, [.normalRime, .typoCorrection])
+        XCTAssertEqual(decision.representedSource, .typoCorrection)
+        XCTAssertEqual(decision.removedDuplicateCount, 1)
+        guard case let .observed(finalCandidates) = snapshot.executionFacts.finalCandidates else {
+            return XCTFail("Expected final candidates from the merge event")
+        }
+        XCTAssertEqual(finalCandidates.map(\.title), captured.result.map(\.title))
+        XCTAssertEqual(finalCandidates.first, .init(
+            title: "你好",
+            subject: finalCandidates.first?.subject,
+            representedSource: .typoCorrection,
+            originSet: [.normalRime, .typoCorrection]
+        ))
+    }
+
+    func testMissingExecutionEventsFailClosedWithoutFixtureSubstitution() {
+        let emptyTrace = TypoCorrectionDecisionTrace.withSyntheticInvocation(id: "invocation-empty") {
+            "no product decision executed"
+        }.capture
+        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(
+            fixture: fixture(
+                caseID: "TC-CASE-LRN-008",
+                normalInput: "niho",
+                correctedInput: "nihao",
+                target: "你好",
+                requestedFlags: .init(
+                    insertionEnabled: true,
+                    transpositionEnabled: false,
+                    typoPartialCommitEnabled: false
+                )
             ),
-            input: .init(normalInput: "nihap", correctedInput: "nihao"),
-            normalItems: [
-                CandidateItem(title: "你好安排", kind: .candidate),
-                CandidateItem(title: "拟好安排", kind: .candidate),
-            ],
-            resolvedCorrectionItems: [
-                CandidateItem(title: "你好", kind: .correctionCandidate, correction: correction)
-            ],
-            correctedCandidates: ["你好"],
-            learningSnapshot: .empty,
-            learningDecision: .notApplicable,
-            suppressionDecision: .notSuppressed,
-            targetCandidate: "你好"
+            environment: unavailableEnvironment(runID: "run-empty"),
+            trace: emptyTrace
+        )
+
+        guard case let .blocked(reasons) = snapshot.evidenceStatus else {
+            return XCTFail("Missing events must block evidence")
+        }
+        XCTAssertTrue(reasons.contains("missing effective-flags execution event"))
+        XCTAssertTrue(reasons.contains("missing suppression execution event"))
+        XCTAssertTrue(reasons.contains("missing learning execution event"))
+        XCTAssertTrue(reasons.contains("missing merge execution event"))
+        XCTAssertEqual(snapshot.executionFacts.learningDecision, .unavailable(
+            reason: "learning execution fact unavailable"
+        ))
+        XCTAssertEqual(snapshot.fixtureMetadata.requestedFlags.insertionEnabled, true)
+    }
+
+    func testRequestedFlagsCannotOverrideObservedEffectiveFlags() {
+        let captured = captureControllerPath(
+            invocationID: "invocation-flags",
+            input: "nihap",
+            dictionary: [
+                "nihap": ["你好安排"],
+                "nihao": ["你好"],
+            ]
+        )
+        let requestedFlags = BenchmarkEvidenceSnapshot.Flags(
+            insertionEnabled: true,
+            transpositionEnabled: true,
+            typoPartialCommitEnabled: true
+        )
+        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(
+            fixture: fixture(
+                caseID: "TC-CASE-STB-016",
+                normalInput: "nihap",
+                correctedInput: "nihao",
+                target: "你好",
+                requestedFlags: requestedFlags
+            ),
+            environment: unavailableEnvironment(runID: "run-flags"),
+            trace: captured.capture
+        )
+
+        XCTAssertEqual(snapshot.fixtureMetadata.requestedFlags, requestedFlags)
+        XCTAssertEqual(snapshot.executionFacts.effectiveFlags, .observed(.init(
+            insertionEnabled: false,
+            transpositionEnabled: false,
+            typoPartialCommitEnabled: false
+        )))
+        assertEnvironmentBlocked(snapshot)
+    }
+
+    func testFixtureEnvironmentDeclarationsCannotAcquireTrustedSources() {
+        let captured = captureControllerPath(
+            invocationID: "invocation-environment",
+            input: "nihap",
+            dictionary: [
+                "nihap": ["你好安排"],
+                "nihao": ["你好"],
+            ]
+        )
+        let environment = BenchmarkEnvironmentBindingFactory.rejectingFixtureDeclarations(
+            runID: "run-environment",
+            declarations: [
+                "buildCommit": "fixture-pretends-build-generated",
+                "schema": "fixture-pretends-verified",
+                "session": "fixture-pretends-runtime-observed",
+            ]
+        )
+
+        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(
+            fixture: fixture(
+                caseID: "TC-CASE-STB-016",
+                normalInput: "nihap",
+                correctedInput: "nihao",
+                target: "你好"
+            ),
+            environment: environment,
+            trace: captured.capture
+        )
+
+        assertEnvironmentBlocked(snapshot)
+        XCTAssertEqual(snapshot.environmentMetadata.buildCommit.source, .unavailable)
+        XCTAssertEqual(snapshot.environmentMetadata.schemaIdentifier.source, .unavailable)
+        XCTAssertEqual(snapshot.environmentMetadata.sessionState.source, .unavailable)
+        XCTAssertNil(snapshot.environmentMetadata.buildCommit.value)
+    }
+
+    func testInvalidMetadataSourceCannotDecodeAsTrustedSource() {
+        let data = Data(#""fixtureDeclared""#.utf8)
+        XCTAssertThrowsError(
+            try JSONDecoder().decode(BenchmarkEvidenceSnapshot.MetadataSource.self, from: data)
         )
     }
 
-    private func trailingCorrection(title: String) -> TypoCorrectionCommit {
-        TypoCorrectionCommit(
-            committedText: title,
-            originalInput: "nihap",
+    func testCollectorIsBoundedAndSequencesEventsDeterministically() {
+        let trace = TypoCorrectionDecisionTrace.withSyntheticInvocation(id: "invocation-bounded") {
+            for _ in 0..<(TypoCorrectionDecisionTrace.maximumEventsPerInvocation + 3) {
+                TypoCorrectionDecisionTrace.record(
+                    .suppression(
+                        .init(
+                            subject: TypoCorrectionDecisionTrace.invocationSubject,
+                            decision: .notApplicable
+                        )
+                    )
+                )
+            }
+        }.capture
+
+        XCTAssertEqual(trace.events.count, TypoCorrectionDecisionTrace.maximumEventsPerInvocation)
+        XCTAssertEqual(trace.droppedEventCount, 3)
+        XCTAssertEqual(trace.events.map(\.sequence), Array(0..<TypoCorrectionDecisionTrace.maximumEventsPerInvocation))
+        XCTAssertTrue(trace.events.allSatisfy { $0.invocationID == "invocation-bounded" })
+    }
+
+    func testOversizedMergeTraceFailsClosedWithoutChangingMergeResult() {
+        let normalItems = (0...TypoCorrectionDecisionTrace.maximumCandidatesPerMergeEvent).map {
+            CandidateItem(title: "候选\($0)", kind: .candidate)
+        }
+        let traced = TypoCorrectionDecisionTrace.withSyntheticInvocation(id: "invocation-large-merge") {
+            TypoCorrectionCandidateRanker.mergedCandidates(
+                normalItems: normalItems,
+                correctionItems: []
+            )
+        }
+        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(
+            fixture: fixture(
+                caseID: "TC-CASE-STB-015",
+                normalInput: "synthetic",
+                correctedInput: nil,
+                target: nil
+            ),
+            environment: unavailableEnvironment(runID: "run-large-merge"),
+            trace: traced.capture
+        )
+
+        XCTAssertEqual(traced.result, normalItems)
+        guard case let .blocked(reasons) = snapshot.evidenceStatus else {
+            return XCTFail("An incomplete merge trace must block evidence")
+        }
+        XCTAssertTrue(reasons.contains("merge trace payload exceeded bounded capacity"))
+    }
+
+    func testLearningTraceRecordsFinalNearFrontAndIneligibleDecisions() {
+        let insertion = insertionCorrection(title: "你好")
+        let learned = TypoCorrectionLearningSnapshot(records: [
+            .init(
+                key: try! XCTUnwrap(TypoCorrectionLearningKey(correction: insertion)),
+                selectionCount: 1,
+                lastSelectedAt: Date(timeIntervalSince1970: 1)
+            )
+        ])
+        let deletion = TypoCorrectionCommit(
+            committedText: "你好",
+            originalInput: "nihaoo",
             correctedInput: "nihao",
-            edits: [TypoCorrectionEdit(index: 4, original: "p", replacement: "o")]
+            edits: [
+                TypoCorrectionEdit(index: 5, original: "o", replacement: "o", kind: .deletion)
+            ]
         )
+        let normal = [CandidateItem(title: "你或", kind: .candidate)]
+        let corrections = [
+            CandidateItem(title: "你好", kind: .correctionCandidate, correction: insertion),
+            CandidateItem(title: "你好删除", kind: .correctionCandidate, correction: deletion),
+        ]
+
+        let traced = TypoCorrectionDecisionTrace.withSyntheticInvocation(id: "invocation-learning-final") {
+            TypoCorrectionCandidateRanker.mergedCandidates(
+                normalItems: normal,
+                correctionItems: corrections,
+                learningSnapshot: learned
+            )
+        }
+        let learningEvents = traced.capture.events.compactMap { event ->
+            TypoCorrectionDecisionTrace.DecisionEvent<TypoCorrectionDecisionTrace.LearningDecision>? in
+            guard case let .learning(decision) = event.kind else { return nil }
+            return decision
+        }
+
+        XCTAssertTrue(learningEvents.contains {
+            $0.subject.candidateTitle == "你好" && $0.decision == .nearFront(selectionCount: 1)
+        })
+        XCTAssertTrue(learningEvents.contains {
+            !$0.subject.correlationID.isEmpty && $0.decision == .ineligible
+        })
+        XCTAssertEqual(traced.result.first?.title, "你或")
+    }
+
+    func testLearningPredicateDoesNotOverrideFinalPrefixBlockedDecision() {
+        let correction = insertionCorrection(title: "你好")
+        let learned = TypoCorrectionLearningSnapshot(records: [
+            .init(
+                key: try! XCTUnwrap(TypoCorrectionLearningKey(correction: correction)),
+                selectionCount: 3,
+                lastSelectedAt: Date(timeIntervalSince1970: 1)
+            )
+        ])
+        let traced = TypoCorrectionDecisionTrace.withSyntheticInvocation(id: "invocation-prefix") {
+            TypoCorrectionCandidateRanker.mergedCandidates(
+                normalItems: [CandidateItem(title: "你好呀", kind: .candidate)],
+                correctionItems: [
+                    CandidateItem(title: "你好", kind: .correctionCandidate, correction: correction)
+                ],
+                learningSnapshot: learned
+            )
+        }
+        let learningEvents = traced.capture.events.compactMap { event ->
+            TypoCorrectionDecisionTrace.DecisionEvent<TypoCorrectionDecisionTrace.LearningDecision>? in
+            guard case let .learning(decision) = event.kind else { return nil }
+            return decision
+        }
+
+        XCTAssertEqual(traced.result.first?.title, "你好呀")
+        XCTAssertEqual(learningEvents.count, 1)
+        XCTAssertEqual(learningEvents.first?.decision, .blockedByPrefix(selectionCount: 3))
+    }
+
+    func testMultipleSuppressionEventsResolveByUniqueDecisionSubject() {
+        let provider = DictionaryCandidateProvider(dictionary: [
+            "nihao": ["你好"],
+            "nihal": ["你哈了"],
+        ])
+        let controller = KeyboardController(candidateProvider: provider)
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = FakeRimeEngine(dictionary: ["nihap": ["你好"]])
+        type("niha", into: controller)
+
+        let traced = TypoCorrectionDecisionTrace.withSyntheticInvocation(id: "invocation-multiple") {
+            type("p", into: controller)
+            return mergeCurrentCandidates(from: controller)
+        }
+        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(
+            fixture: fixture(
+                caseID: "TC-CASE-STB-003",
+                normalInput: "nihap",
+                correctedInput: "nihao",
+                target: "你好"
+            ),
+            environment: unavailableEnvironment(runID: "run-multiple"),
+            trace: traced.capture
+        )
+
+        let suppressionEvents = traced.capture.events.filter {
+            if case .suppression = $0.kind { return true }
+            return false
+        }
+        XCTAssertEqual(suppressionEvents.count, 2)
+        assertSuppression(
+            snapshot,
+            equals: .suppressedNormalTopMatchesCorrectedBest,
+            candidateTitle: "你好"
+        )
+        XCTAssertFalse(blockReasons(snapshot).contains("ambiguous decision subject correlation"))
+    }
+
+    func testMissingInvocationCorrelationFailsClosed() {
+        let subject = TypoCorrectionDecisionTrace.invocationSubject
+        let malformed = TypoCorrectionDecisionTrace.Capture(
+            invocationID: "expected-invocation",
+            events: [
+                .init(
+                    invocationID: "wrong-invocation",
+                    sequence: 0,
+                    kind: .suppression(.init(subject: subject, decision: .notApplicable))
+                )
+            ],
+            droppedEventCount: 0
+        )
+        let snapshot = BenchmarkEvidenceSnapshotBuilder.capture(
+            fixture: fixture(
+                caseID: "TC-CASE-STB-001",
+                normalInput: "nihao",
+                correctedInput: nil,
+                target: nil
+            ),
+            environment: unavailableEnvironment(runID: "run-correlation"),
+            trace: malformed
+        )
+
+        XCTAssertTrue(blockReasons(snapshot).contains("trace correlation mismatch"))
+    }
+
+    func testTraceObservationDoesNotChangeMergeOutput() {
+        let correction = insertionCorrection(title: "你好")
+        let normal = [CandidateItem(title: "你或", kind: .candidate)]
+        let corrections = [
+            CandidateItem(title: "你好", kind: .correctionCandidate, correction: correction)
+        ]
+        let withoutTrace = TypoCorrectionCandidateRanker.mergedCandidates(
+            normalItems: normal,
+            correctionItems: corrections
+        )
+        let withTrace = TypoCorrectionDecisionTrace.withSyntheticInvocation(id: "invocation-purity") {
+            TypoCorrectionCandidateRanker.mergedCandidates(
+                normalItems: normal,
+                correctionItems: corrections
+            )
+        }.result
+
+        XCTAssertEqual(withTrace, withoutTrace)
+    }
+
+    private func captureControllerPath(
+        invocationID: String,
+        input: String,
+        dictionary: [String: [String]]
+    ) -> (result: [CandidateItem], capture: TypoCorrectionDecisionTrace.Capture) {
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = FakeRimeEngine(dictionary: dictionary)
+        let prefix = String(input.dropLast())
+        let finalCharacter = input.last.map(String.init) ?? ""
+        type(prefix, into: controller)
+        return TypoCorrectionDecisionTrace.withSyntheticInvocation(id: invocationID) {
+            type(finalCharacter, into: controller)
+            return mergeCurrentCandidates(from: controller)
+        }
+    }
+
+    private func type(_ input: String, into controller: KeyboardController) {
+        for character in input {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+    }
+
+    private func mergeCurrentCandidates(from controller: KeyboardController) -> [CandidateItem] {
+        let normalItems = (controller.state.lastRimeOutput?.candidates ?? []).map {
+            CandidateItem(title: $0.text, kind: .candidate)
+        }
+        let correctionItems = (controller.state.typoCorrection?.suggestions ?? []).flatMap { suggestion in
+            suggestion.candidates.map { candidate in
+                CandidateItem(
+                    title: candidate.text,
+                    kind: .correctionCandidate,
+                    correction: TypoCorrectionCommit(
+                        committedText: candidate.text,
+                        originalInput: suggestion.originalInput,
+                        correctedInput: suggestion.correctedInput,
+                        edits: suggestion.edits
+                    )
+                )
+            }
+        }
+        return TypoCorrectionCandidateRanker.mergedCandidates(
+            normalItems: normalItems,
+            correctionItems: correctionItems,
+            learningSnapshot: controller.typoCorrectionLearningSnapshot
+        )
+    }
+
+    private func fixture(
+        caseID: String,
+        normalInput: String,
+        correctedInput: String?,
+        target: String?,
+        requestedFlags: BenchmarkEvidenceSnapshot.Flags = .init(
+            insertionEnabled: false,
+            transpositionEnabled: false,
+            typoPartialCommitEnabled: false
+        )
+    ) -> BenchmarkEvidenceFixture {
+        .init(
+            canonicalCaseID: caseID,
+            normalInput: normalInput,
+            correctedInput: correctedInput,
+            correctedProviderCandidates: target.map { [$0] } ?? [],
+            requestedFlags: requestedFlags,
+            expectedTargetCandidate: target
+        )
+    }
+
+    private func unavailableEnvironment(runID: String) -> BenchmarkEnvironmentBinding {
+        BenchmarkEnvironmentBindingFactory.unavailable(runID: runID)
+    }
+
+    private func assertSuppression(
+        _ snapshot: BenchmarkEvidenceSnapshot,
+        equals expected: BenchmarkEvidenceSnapshot.SuppressionDecision,
+        candidateTitle: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        guard case let .observed(fact) = snapshot.executionFacts.suppressionDecision else {
+            return XCTFail("Expected observed suppression decision", file: file, line: line)
+        }
+        XCTAssertEqual(fact.decision, expected, file: file, line: line)
+        XCTAssertEqual(fact.subject.candidateTitle, candidateTitle, file: file, line: line)
+        XCTAssertFalse(fact.subject.correlationID.isEmpty, file: file, line: line)
+    }
+
+    private func assertLearning(
+        _ snapshot: BenchmarkEvidenceSnapshot,
+        equals expected: BenchmarkEvidenceSnapshot.LearningDecision,
+        candidateTitle: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        guard case let .observed(fact) = snapshot.executionFacts.learningDecision else {
+            return XCTFail("Expected observed learning decision", file: file, line: line)
+        }
+        XCTAssertEqual(fact.decision, expected, file: file, line: line)
+        XCTAssertEqual(fact.subject.candidateTitle, candidateTitle, file: file, line: line)
+        XCTAssertFalse(fact.subject.correlationID.isEmpty, file: file, line: line)
+    }
+
+    private func assertEnvironmentBlocked(
+        _ snapshot: BenchmarkEvidenceSnapshot,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertTrue(
+            blockReasons(snapshot).contains("required environment metadata unavailable"),
+            file: file,
+            line: line
+        )
+    }
+
+    private func blockReasons(_ snapshot: BenchmarkEvidenceSnapshot) -> [String] {
+        guard case let .blocked(reasons) = snapshot.evidenceStatus else { return [] }
+        return reasons
     }
 
     private func insertionCorrection(title: String) -> TypoCorrectionCommit {
@@ -221,3 +641,16 @@ final class BenchmarkEvidenceSnapshotTests: XCTestCase {
         )
     }
 }
+
+private final class DictionaryCandidateProvider: CandidateProvider {
+    private let dictionary: [String: [String]]
+
+    init(dictionary: [String: [String]]) {
+        self.dictionary = dictionary
+    }
+
+    func candidates(for composition: String) -> [String] {
+        dictionary[composition] ?? []
+    }
+}
+#endif

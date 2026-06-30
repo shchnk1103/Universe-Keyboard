@@ -708,6 +708,28 @@ public enum TypoCorrectionCandidateRanker {
         correctionItems: [CandidateItem],
         learningSnapshot: TypoCorrectionLearningSnapshot = .empty
     ) -> [CandidateItem] {
+        let result = mergedCandidatesProductPath(
+            normalItems: normalItems,
+            correctionItems: correctionItems,
+            learningSnapshot: learningSnapshot
+        )
+        #if DEBUG
+        traceMerge(
+            normalItems: normalItems,
+            correctionItems: correctionItems,
+            learningSnapshot: learningSnapshot,
+            finalItems: result
+        )
+        #endif
+        return result
+    }
+
+    /// Existing product merge path. Debug observation runs only after this returns.
+    private static func mergedCandidatesProductPath(
+        normalItems: [CandidateItem],
+        correctionItems: [CandidateItem],
+        learningSnapshot: TypoCorrectionLearningSnapshot
+    ) -> [CandidateItem] {
         guard let firstNormal = normalItems.first else {
             return correctionItems + normalItems
         }
@@ -830,6 +852,132 @@ public enum TypoCorrectionCandidateRanker {
         guard let correction = item.correction else { return 0 }
         return learningSnapshot.selectionCount(for: correction)
     }
+
+    #if DEBUG
+    private static func traceMerge(
+        normalItems: [CandidateItem],
+        correctionItems: [CandidateItem],
+        learningSnapshot: TypoCorrectionLearningSnapshot,
+        finalItems: [CandidateItem]
+    ) {
+        guard TypoCorrectionDecisionTrace.isCapturing else { return }
+        let allPreDedupeItems = normalItems + correctionItems
+        let hasOversizedTitle = (allPreDedupeItems + finalItems).contains {
+            $0.title.count > TypoCorrectionDecisionTrace.maximumCandidateTitleLength
+        }
+        let isComplete = allPreDedupeItems.count <= TypoCorrectionDecisionTrace.maximumCandidatesPerMergeEvent
+            && finalItems.count <= TypoCorrectionDecisionTrace.maximumCandidatesPerMergeEvent
+            && !hasOversizedTitle
+        let preDedupeItems = Array(
+            allPreDedupeItems.prefix(TypoCorrectionDecisionTrace.maximumCandidatesPerMergeEvent)
+        )
+        let boundedFinalItems = Array(
+            finalItems.prefix(TypoCorrectionDecisionTrace.maximumCandidatesPerMergeEvent)
+        )
+        let sourcesByTitle = Dictionary(grouping: preDedupeItems, by: \.title)
+        let finalFacts = boundedFinalItems.map { item in
+            TypoCorrectionDecisionTrace.CandidateFact(
+                title: boundedTraceTitle(item.title),
+                subject: traceSubject(for: item),
+                representedSource: traceSource(for: item),
+                originSet: orderedTraceSources(
+                    Set((sourcesByTitle[item.title] ?? [item]).map { traceSource(for: $0) })
+                )
+            )
+        }
+        let dedupe = boundedFinalItems.map { item in
+            let sources = sourcesByTitle[item.title] ?? [item]
+            return TypoCorrectionDecisionTrace.DedupeDecision(
+                title: boundedTraceTitle(item.title),
+                originSet: orderedTraceSources(Set(sources.map { traceSource(for: $0) })),
+                representedSource: traceSource(for: item),
+                removedDuplicateCount: max(0, sources.count - 1)
+            )
+        }
+        TypoCorrectionDecisionTrace.record(
+            .merge(
+                .init(
+                    preDedupeSources: preDedupeItems.map { item in
+                        .init(
+                            title: boundedTraceTitle(item.title),
+                            subject: traceSubject(for: item),
+                            representedSource: traceSource(for: item),
+                            originSet: [traceSource(for: item)]
+                        )
+                    },
+                    finalCandidates: finalFacts,
+                    dedupeDecisions: dedupe,
+                    isComplete: isComplete
+                )
+            )
+        )
+        traceFinalLearningDecisions(
+            normalItems: normalItems,
+            correctionItems: correctionItems,
+            learningSnapshot: learningSnapshot,
+            finalItems: finalItems
+        )
+    }
+
+    private static func traceFinalLearningDecisions(
+        normalItems: [CandidateItem],
+        correctionItems: [CandidateItem],
+        learningSnapshot: TypoCorrectionLearningSnapshot,
+        finalItems: [CandidateItem]
+    ) {
+        let firstNormal = normalItems.first
+        for correctionItem in correctionItems {
+            guard let correction = correctionItem.correction else { continue }
+            let subject = TypoCorrectionDecisionTrace.subject(for: correction)
+            let selectionCount = learningSnapshot.selectionCount(for: correction)
+            let decision: TypoCorrectionDecisionTrace.LearningDecision
+
+            if TypoCorrectionLearningKey(correction: correction) == nil {
+                decision = .ineligible
+            } else if selectionCount == 0 {
+                decision = .noRecord
+            } else if selectionCount < 3 {
+                decision = .nearFront(selectionCount: selectionCount)
+            } else if finalItems.first?.title == correctionItem.title,
+                finalItems.first?.kind == .correctionCandidate
+            {
+                decision = .topPromotion(selectionCount: selectionCount)
+            } else if let firstNormal,
+                firstNormal.title.hasPrefix(correctionItem.title)
+                    || correctionItem.title.hasPrefix(firstNormal.title)
+            {
+                decision = .blockedByPrefix(selectionCount: selectionCount)
+            } else {
+                decision = .notPromoted(selectionCount: selectionCount)
+            }
+
+            TypoCorrectionDecisionTrace.record(
+                .learning(.init(subject: subject, decision: decision))
+            )
+        }
+    }
+
+    private static func traceSource(for item: CandidateItem) -> TypoCorrectionDecisionTrace.Source {
+        item.kind == .correctionCandidate ? .typoCorrection : .normalRime
+    }
+
+    private static func traceSubject(
+        for item: CandidateItem
+    ) -> TypoCorrectionDecisionTrace.DecisionSubject? {
+        guard let correction = item.correction else { return nil }
+        return TypoCorrectionDecisionTrace.subject(for: correction)
+    }
+
+    private static func orderedTraceSources(
+        _ sources: Set<TypoCorrectionDecisionTrace.Source>
+    ) -> [TypoCorrectionDecisionTrace.Source] {
+        [.normalRime, .typoCorrection].filter(sources.contains)
+    }
+
+    private static func boundedTraceTitle(_ title: String) -> String {
+        String(title.prefix(TypoCorrectionDecisionTrace.maximumCandidateTitleLength))
+    }
+    #endif
 
 }
 
