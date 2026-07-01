@@ -18,7 +18,7 @@ This record applies [`ASSIGNMENT_POLICY.md`](../ASSIGNMENT_POLICY.md) to `TYPO-B
 
 - Scope: On the designated physical device, prepare and verify the deployment environment for `TYPO-BENCHMARK-004C-R1`; capture the exact device, OS, build, deployed artifacts, active runtime schema, Full Access state, canonical clean state and Real RIME `nihoa-satisfied` / `nihoa-unsatisfied` environment facts; preserve a traceable evidence package for Quality review.
 - Non-goals: Do not make a Quality conclusion or Product Gate decision; do not change Product Contracts, ADRs, Registry entries or production implementation; do not start Task 7; do not expand beyond physical-device deployment and environment capture.
-- Required Inputs: Assignment Policy v1.0.0; Registry v1.0.0 at `49b000bcbb3a90d04f00dd803981a24a25b70e28`; ADR 0010 at `6bb6b1412240ca70e7c965592ccff429ce1a9929`; accepted governance commit `4188dccef2083e998185e242c6d5ab45af3ea9b4`; 004D implementation commit `3f948cfac8b2b303a03de6fefe24b3258adfcb02`; designated unlocked physical device and required access from the Human Dependency; identified build, deployment artifacts and schema target; agreed canonical clean-state procedure; evidence archive location and policy.
+- Required Inputs: Assignment Policy v1.0.0; Registry v1.0.0 at `49b000bcbb3a90d04f00dd803981a24a25b70e28`; ADR 0010 at `6bb6b1412240ca70e7c965592ccff429ce1a9929`; accepted governance commit `4188dccef2083e998185e242c6d5ab45af3ea9b4`; 004D implementation commit `3f948cfac8b2b303a03de6fefe24b3258adfcb02`; the accepted [`004C-R1 Environment Evidence Template v1.0.0`](../evidence/004c-r1-environment-evidence-template.md); designated unlocked physical device and required access from the Human Dependency; identified build, deployment artifacts and schema target; agreed canonical clean-state procedure; evidence archive location and policy.
 
 ## Assignment
 
@@ -35,6 +35,7 @@ This record applies [`ASSIGNMENT_POLICY.md`](../ASSIGNMENT_POLICY.md) to `TYPO-B
   - The Assignment Record is complete and the RIME Platform Maintainer has acknowledged the Scope, dependencies and ability to proceed.
   - The Human Dependency has provided the designated unlocked physical device and required access.
   - The exact build, deployment artifacts and schema target are identified and frozen for the run.
+  - The Environment Executor uses the accepted [`004C-R1 Environment Evidence Template v1.0.0`](../evidence/004c-r1-environment-evidence-template.md) as the only capture, provenance and archive contract.
   - Full Access can be set and its actual state can be observed.
   - The canonical clean-state procedure is agreed and executable on the designated device.
   - The evidence archive location and policy are identified before capture begins.
