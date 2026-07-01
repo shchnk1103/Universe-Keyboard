@@ -10,6 +10,16 @@ When work is delegated, use the matching file under [`playbooks/`](playbooks/). 
 
 Long-lived thread ownership is defined in [`VIRTUAL_ENGINEERING_TEAM.md`](VIRTUAL_ENGINEERING_TEAM.md). Read it when creating a permanent thread, resolving ownership, coordinating multiple maintainers or handing work between long-lived threads. Short-term ✍️ Typo Maintainer threads may continue during the transition, but their benchmark, candidate-ranking, learning and regression evidence must hand off to the 🧠 Input Intelligence Maintainer.
 
+## Create, Review Or Change A Task Assignment
+
+Ownership: Product Lead makes Assignment and Reassignment decisions; Program Manager checks completeness only; Architecture & Knowledge Steward owns Policy governance.
+
+1. `ASSIGNMENT_POLICY.md` — required fields, lifecycle, `UNKNOWN`, completeness, Reassignment and handoff.
+2. `VIRTUAL_ENGINEERING_TEAM.md` — permanent ownership boundaries; do not convert an Assignment into a new role.
+3. The task's Product decision, domain source and required review sources.
+
+Required review: explicit Product Decision source; one Domain Owner; Executor, Environment Executor, Human Dependency and reviewers assigned or justified `Not Applicable`; executable Entry/Exit/Stop Conditions; named Handoff Target; no `UNKNOWN` before `Ready`. Program Manager reports gaps and escalates but never chooses the assignee.
+
 ## Review Or Update Program Status
 
 Ownership: Primary 📋 Program Manager / Engineering Coordinator for status aggregation only. Product Lead owns product decisions and Gates; Architecture & Knowledge Steward owns architecture and Source of Truth; domain Maintainers own implementation/evidence; Test / Release owns Quality conclusions.

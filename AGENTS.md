@@ -21,6 +21,7 @@
 4. 涉及代码改动时再阅读 `docs/PROJECT_CONTEXT.md`
 
 `CONTEXT_INDEX.md` 保留为详细文档注册表，不再是新会话的第一导航入口。
+正式任务进入 `Ready` 或开始执行前，必须按 `docs/ASSIGNMENT_POLICY.md` 核对 Assignment；任何必需字段为 `UNKNOWN` 时停止并交回 Product Lead。
 需要领域 agent 时，必须选择 `docs/playbooks/` 下的对应操作手册，并遵守其停止、交接和证据规则。
 
 ## 调试原则

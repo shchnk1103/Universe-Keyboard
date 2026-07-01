@@ -8,6 +8,7 @@
 - 长期决策理由以 [`architecture/decisions/`](architecture/decisions/) 为准。
 - 任务读取路径以 [`READING_MAPS.md`](READING_MAPS.md) 为准。
 - 可执行范围、证据和停止条件以 [`playbooks/`](playbooks/) 为准。
+- 任务级 Assignment、完整性和 Reassignment 以 [`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md) 为准。
 - 文档所有权规则以 [`DOCUMENTATION_GOVERNANCE.md`](DOCUMENTATION_GOVERNANCE.md) 为准。
 
 本文中的负责人名称是长期 ownership boundary，不等同于当前目录、单次 subagent 或必须一直运行的线程。
@@ -21,6 +22,7 @@
 5. Debug Investigator 和 Context Scout 是临时工作模式，不是永久子系统。
 6. Playbook 定义执行方式；本文定义长期所有权。两者发生冲突时停止工作并由 Architecture & Knowledge Steward 修复路由。
 7. 所有长期线程从仓库 Knowledge OS 重建上下文，不依赖历史对话。
+8. Permanent Role 与 Task Assignment 分离；Assignment 不创建或转移长期 ownership。
 
 ## 团队结构
 
@@ -68,6 +70,7 @@
 - 定义问题、目标行为、非目标、优先级和验收条件。
 - 识别受影响负责人并协调多领域里程碑。
 - 明确隐私、数据保留、降级体验和 feature gate。
+- 按 Assignment Policy 决定任务级责任配置和 Reassignment。
 - 处理产品语义冲突并向人类负责人升级风险接受。
 
 **Non-responsibilities**
@@ -127,6 +130,7 @@
 - 从 Product Lead、Architecture & Knowledge Steward、领域 Maintainer 和 Quality 的当前仓库证据汇总状态。
 - 标明状态更新时间、证据位置、未决 owner、Stop Condition 和需要谁做决定。
 - 发现状态冲突、遗漏交接或长期未解除的 Blocker，并路由给对应负责人。
+- 按 Assignment Policy 检查完整性；发现 `UNKNOWN` 时阻止任务进入 `Ready` 并交回 Product Lead。
 
 **Non-responsibilities**
 
@@ -135,6 +139,7 @@
 - 不是实现者，不修改领域实现来推进状态；实现和证据仍归各领域 Maintainer。
 - 不是 Quality Reviewer，不判定测试、性能、真机、Release 或 Evidence Gate 通过；这些仍归 🧪 Quality, Performance & Release Maintainer 和 Product Lead。
 - 不把建议、代码存在、测试能力或聊天结论升级为 `Accepted`、`Ready`、`Closed` 或 `Authorized`。
+- 不选择、推断、替换或确认任务 assignee。
 
 **Required reading:** `AGENTS.md` → `KNOWLEDGE_INDEX.md` → `ENGINEERING_DASHBOARD.md` → `READING_MAPS.md` → 当前任务的 owner source、handoff 和证据。
 

@@ -22,6 +22,7 @@ Every fact has one primary document. Other documents may provide a short summary
 | Known unresolved engineering risk | `docs/TECH_DEBT.md` | Risk, mitigation, owner area, recommended fix and resolution trigger |
 | Changes that already happened | `CHANGELOG.md` | Dated historical record; never the authority for current behavior |
 | Stage-specific implementation work | `docs/plans/` | Temporary plan and milestone context; archive or supersede after use |
+| Task Assignment authority, completeness and lifecycle | `docs/ASSIGNMENT_POLICY.md` | Reusable Assignment contract only; task records contain assignees and Product decisions, while permanent ownership remains in `VIRTUAL_ENGINEERING_TEAM.md` |
 | Agent operating procedure | subagent playbooks | How an agent works, required inputs/outputs and boundaries; link to architecture instead of copying it |
 
 When two documents describe the same fact, select one primary source and replace the other copy with a link or a clearly non-authoritative summary. If source and implementation disagree, treat the discrepancy as a defect: verify current behavior, then correct the source of truth and affected links.
@@ -156,6 +157,7 @@ For every important PR or substantial Codex change, check:
 - [ ] Does the change introduce volatile hardcoded data?
 - [ ] Is the same fact maintained in more than one document?
 - [ ] Is a plan presented as current implementation truth?
+- [ ] Did task Assignment authority, completeness, lifecycle or handoff change?
 - [ ] If no documentation changed, is the reason explicit and defensible?
 
 ## Monthly And Milestone Knowledge Audit

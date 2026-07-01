@@ -20,6 +20,11 @@ Implementation evidence
 Owner-confirmed task state / handoff / blocker
   -> ENGINEERING_DASHBOARD summary
 
+Product Assignment Decision
+  -> ASSIGNMENT_POLICY-conformant task record
+       -> Program Manager completeness check
+            -> ENGINEERING_DASHBOARD summary when separately updated
+
 Governance
   -> health checks
        -> pre-push enforcement
@@ -48,6 +53,8 @@ Navigation/index files are downstream consumers. They should change only when ro
 | governance | index/graph, pre-push skill, health metrics, playbook format | domain architecture |
 | playbook | `AI_WORKFLOW`, reading maps/index if role or route changes, documentation health | domain facts |
 | permanent team ownership/bootstrap contract | `VIRTUAL_ENGINEERING_TEAM`, `AGENTS`, knowledge index, reading maps, graph, governance, affected playbooks and documentation health | domain architecture unless the system boundary also changed |
+| Assignment Policy authority/fields/lifecycle | `AGENTS`, knowledge index, reading maps, graph, governance, coordinator workflow and task templates | permanent roles, Product Contracts, ADRs and domain implementation |
+| task Assignment or Reassignment decision | task Assignment Record and handoff; Dashboard only after separate owner-confirmed update | Assignment Policy, permanent roles and domain sources unless their own contracts changed |
 | owner-confirmed task status, handoff or blocker | `ENGINEERING_DASHBOARD`, then linked owner sources for consistency | Registry, ADRs, Product Contracts, runtime and tests unless their owning facts changed separately |
 
 ## Impact Algorithm
@@ -71,6 +78,8 @@ Navigation/index files are downstream consumers. They should change only when ro
 - `TYPO_BENCHMARK`, performance or archived plans -> copied Canonical Registry definitions instead of links.
 - `VIRTUAL_ENGINEERING_TEAM -> copied architecture or playbook procedure` instead of links to their owners.
 - `ENGINEERING_DASHBOARD -> new Product, Architecture or Quality decision` without confirmation from the owning role and source.
+- `Program Manager -> inferred Assignment` without an explicit Product Lead decision.
+- `Task Assignment -> permanent role creation or ownership transfer` without a separate organization governance decision.
 
 ## Adding A New Knowledge Source
 

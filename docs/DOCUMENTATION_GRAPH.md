@@ -17,6 +17,8 @@ AGENTS
             -> TECH_DEBT
        -> VIRTUAL_ENGINEERING_TEAM
             -> playbooks / reading maps / domain sources
+       -> ASSIGNMENT_POLICY
+            -> task Assignment Records / handoffs
        -> ENGINEERING_DASHBOARD
             -> current task sources / handoffs / evidence (summary only)
 
@@ -57,6 +59,7 @@ Arrows mean “navigate to” or “depends on”; they do not transfer Source o
 | `DECISION_TREES.md` | Change-classification workflow | Before planning/review | What governance path applies? | Domain implementation instructions |
 | `ONBOARDING.md` | Staged learning | New humans/agents | What should I learn and in what order? | A substitute for current task sources |
 | `AI_WORKFLOW.md` | Multi-agent roles/handoffs | Complex delegated work | How are agents coordinated? | Domain architecture copied into prompts |
+| `ASSIGNMENT_POLICY.md` | Task-level Assignment governance | Before formal work becomes Ready or is reassigned | Who is assigned, by whose authority, with which dependencies, gates and handoff? | Permanent roles, Product behavior, implementation design or current task status |
 | `VIRTUAL_ENGINEERING_TEAM.md` | Permanent team ownership blueprint | Long-lived thread creation, ownership or handoff | Who owns a stable subsystem and how permanent threads collaborate/bootstrap? | Architecture facts, ADR rationale or executable domain procedure |
 | `ENGINEERING_DASHBOARD.md` | Current program-status summary | Product review, coordination and handoff | What is closed, blocked, awaiting review or recommended next? | Product/architecture decisions, implementation truth or Quality acceptance |
 | `playbooks/*` | Executable domain operating boundaries | Assigned agent before work | What may this agent do, prove and hand off? | Domain architecture or ADR content |
@@ -109,6 +112,8 @@ Program status
 - Historical documents point forward to current sources.
 - Playbooks point to domain sources; domain sources do not depend on playbooks.
 - The team blueprint points to playbooks and domain sources; neither architecture facts nor playbook procedure depend on copied team prose.
+- Assignment Records depend on `ASSIGNMENT_POLICY`; the Policy references permanent roles but never creates or transfers them.
+- Dashboard may summarize Assignment completeness only after following the Product Decision source; it never assigns work.
 - The Dashboard summarizes owner-confirmed status and links to authority; no owner source depends on Dashboard conclusions.
 - ADRs may link to current architecture, but architecture summaries link back to ADR rationale.
 - A circular link is acceptable for navigation; circular ownership is not.
