@@ -1,6 +1,6 @@
-# Unknown Company Assignment Policy v1.0
+# Universe Keyboard Assignment Policy v1.0
 
-> **Status:** Proposed
+> **Status:** Accepted
 >
 > **Policy version:** `1.0.0`
 >
