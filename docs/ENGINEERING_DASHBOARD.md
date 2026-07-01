@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-06-30 Asia/Shanghai
+> **Updated:** 2026-07-01 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -15,6 +15,15 @@
 - 状态冲突时，以对应 owner 的当前仓库记录为准，并在 Dashboard 中标记待同步。
 
 ## Typo Benchmark v1.0
+
+### Governance Baseline
+
+| Field | Value |
+|---|---|
+| Assignment Policy | [`v1.0.0`](ASSIGNMENT_POLICY.md) / Accepted |
+| Policy commit | `4188dccef2083e998185e242c6d5ab45af3ea9b4` |
+| Governance tag | `governance-v1.0.0` |
+| Governance synchronization | `main` pushed, range `3cb5a6c..4188dcc` |
 
 ### Current Registry
 
@@ -29,10 +38,11 @@
 
 | Task | Current status | Coordination note |
 |---|---|---|
+| `ORG-POLICY-001A` | Accepted / Closed | Assignment Policy v1.0.0 accepted at `4188dccef2083e998185e242c6d5ab45af3ea9b4`; governance tag `governance-v1.0.0`. |
 | `TYPO-BENCHMARK-006B` | Accepted / Closed | Registry v1.0 Source-of-Truth publication completed at the commit above. |
 | `TYPO-BENCHMARK-004B` | Accepted with Implementation Blockers / Closed | Product status is closed; implementation/environment blockers remain visible below. |
-| `TYPO-BENCHMARK-004C` | Not Ready / Stop Condition / Product follow-up required | Do not advance until Product reviews the result and chooses the next action. |
-| `TYPO-BENCHMARK-004D` | Ready with Blockers / implemented test-only capability | Capability exists only in test scope; Product and Quality acceptance remains pending. |
+| `TYPO-BENCHMARK-004C-R1` | Assigned / Not Ready | Assignment Record is complete with no `UNKNOWN` fields, but remaining Entry Criteria block `Ready`; do not start. See the [Assignment Record](assignments/typo-benchmark-004c-r1.md). |
+| `TYPO-BENCHMARK-004D` | Accepted / Closed | Test-only Structured Evidence Capability completed through its required Architecture, Quality and Product reviews. |
 | Task 7 | Not Authorized | Registry publication and test-only capability do not authorize Task 7. |
 
 `Closed` describes the owning task decision, not the removal of downstream implementation or evidence blockers. `Implemented` describes capability presence, not Product or Quality acceptance.
@@ -41,24 +51,25 @@
 
 | Blocker | Impact / exit owner |
 |---|---|
-| Physical device offline | Physical-device evidence cannot be collected; environment/device owner must restore availability. |
+| Physical device offline | Human Dependency must provide the designated unlocked device and access; Environment Executor must confirm operational availability before capture. |
 | Deployment not frozen | Runs are not comparable until deployment inputs and artifact state are frozen. |
 | Actual runtime schema not verified | Real RIME conclusions remain blocked until the active runtime schema is captured and verified. |
 | Clean state not established | Baseline and scenario comparisons cannot claim a controlled starting state. |
 | Real RIME `nihoa-satisfied` / `nihoa-unsatisfied` not verified | Required provider-dependent behavior remains unverified in the real runtime. |
 | Release baseline not prepared | Release-default comparison and isolation evidence are unavailable. |
 | Performance baseline not executed | No current comparable performance baseline exists. |
-| 004D capability still needs Product / Quality acceptance | Test-only implementation must not be treated as an accepted Gate or production capability. |
+| Evidence archive policy not established | Capture must not begin until the archive location and policy are identified. |
 
-## Next Recommended Product Actions
+## Current Assignment Coordination
 
-1. Review the `TYPO-BENCHMARK-004C` result.
-2. Review the `TYPO-BENCHMARK-004D` result.
-3. Decide whether to create `TYPO-BENCHMARK-004C-R1 Physical Device Deployment & Environment Capture`.
-4. Decide whether `TYPO-BENCHMARK-004D` can be closed after Quality/Product Review.
-5. Keep Task 7 blocked.
+- Current task: `TYPO-BENCHMARK-004C-R1 Physical Device Deployment & Environment Capture`.
+- Lifecycle: `Assigned / Not Ready`.
+- Assignment source: [004C-R1 Assignment Record](assignments/typo-benchmark-004c-r1.md).
+- Assignment completeness: complete; no required field remains `UNKNOWN`.
+- Remaining readiness work: satisfy every Entry Criterion with current evidence before any separate `Ready` decision.
+- Task 7 remains `Not Authorized`.
 
-These are recommendations for Product Lead review, not decisions made by the Program Manager.
+This is an Assignment completeness report, not an Assignment Decision made by the Program Manager.
 
 ## Update Contract
 
