@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-07-01 Asia/Shanghai
+> **Updated:** 2026-07-02 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -24,6 +24,8 @@
 | Policy commit | `4188dccef2083e998185e242c6d5ab45af3ea9b4` |
 | Governance tag | `governance-v1.0.0` |
 | Governance synchronization | `main` pushed, range `3cb5a6c..4188dcc` |
+| Environment Capture Procedure | [`v1.0.0`](ENVIRONMENT_CAPTURE_PROCEDURE.md) / Accepted |
+| Procedure publication chain | Template `760aa4a722f397fbcbf21e3430189ab46ce33cbe`; baseline `8d55b9c1b817016b17b97bc80014e9b53dea28f8`; accepted `05784106df50c4accb94233cf22681f3901f542a` |
 
 ### Current Registry
 
@@ -39,6 +41,7 @@
 | Task | Current status | Coordination note |
 |---|---|---|
 | `ORG-POLICY-001A` | Accepted / Closed | Assignment Policy v1.0.0 accepted at `4188dccef2083e998185e242c6d5ab45af3ea9b4`; governance tag `governance-v1.0.0`. |
+| `ORG-PROCEDURE-001` | Accepted / Closed | Environment Capture Procedure v1.0.0 accepted at `05784106df50c4accb94233cf22681f3901f542a`. |
 | `TYPO-BENCHMARK-006B` | Accepted / Closed | Registry v1.0 Source-of-Truth publication completed at the commit above. |
 | `TYPO-BENCHMARK-004B` | Accepted with Implementation Blockers / Closed | Product status is closed; implementation/environment blockers remain visible below. |
 | `TYPO-BENCHMARK-004C-R1` | Assigned / Not Ready | Assignment Record is complete with no `UNKNOWN` fields, but remaining Entry Criteria block `Ready`; do not start. See the [Assignment Record](assignments/typo-benchmark-004c-r1.md). |
@@ -65,6 +68,7 @@
 - Current task: `TYPO-BENCHMARK-004C-R1 Physical Device Deployment & Environment Capture`.
 - Lifecycle: `Assigned / Not Ready`.
 - Assignment source: [004C-R1 Assignment Record](assignments/typo-benchmark-004c-r1.md).
+- Required capture procedure: [Environment Capture Procedure v1.0.0](ENVIRONMENT_CAPTURE_PROCEDURE.md); every future `004C-R1` capture must cite and follow this accepted version.
 - Assignment completeness: complete; no required field remains `UNKNOWN`.
 - Remaining readiness work: satisfy every Entry Criterion with current evidence before any separate `Ready` decision.
 - Task 7 remains `Not Authorized`.
