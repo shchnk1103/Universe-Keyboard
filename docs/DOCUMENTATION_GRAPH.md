@@ -12,6 +12,7 @@ AGENTS
                  -> architecture documents
                       -> ADRs
             -> DEBUGGING / PERFORMANCE_BASELINE
+            -> ENVIRONMENT_CAPTURE_PROCEDURE / applicable evidence template
             -> TYPO_BENCHMARK_REGISTRY (Typo Contract/Case/Performance identity)
             -> RELEASE_CHECKLIST
             -> TECH_DEBT
@@ -48,6 +49,7 @@ Arrows mean “navigate to” or “depends on”; they do not transfer Source o
 | `architecture/decisions/*` | Durable rationale | Before contract changes | Why this decision and what alternatives? | Step-by-step debugging or release procedure |
 | `DEBUGGING.md` | Diagnostic entry and flows | Bug investigation | What evidence and boundary should I inspect? | Release approval or architecture history |
 | `PERFORMANCE_BASELINE.md` | Measurement method | Performance work/release | How should performance be measured? | Invented targets or current architecture rationale |
+| `ENVIRONMENT_CAPTURE_PROCEDURE.md` | Environment evidence operating procedure | Assigned environment capture, before a Run ID is created | How are capture, tool limitations, handoff and correction handled? | Evidence-template fields, Product decisions or Quality conclusions |
 | `TYPO_BENCHMARK_REGISTRY.md` | Typo Benchmark identity Registry | Typo evidence planning, collection and review | Which Contract, Case and Performance reference is canonical? | Evidence pass status, implementation or copied domain architecture |
 | `RELEASE_CHECKLIST.md` | Release gates and evidence | Release/test work | What must pass before release? | Why architecture exists |
 | `TECH_DEBT.md` | Canonical unresolved risk | Planning/review | What is intentionally incomplete and when must it be fixed? | Feature roadmap |

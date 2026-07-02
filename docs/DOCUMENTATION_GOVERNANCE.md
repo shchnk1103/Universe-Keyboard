@@ -18,6 +18,7 @@ Every fact has one primary document. Other documents may provide a short summary
 | Troubleshooting procedures | `docs/DEBUGGING.md` | Diagnostic flows, evidence and common failure boundaries |
 | Release and acceptance procedure | `docs/RELEASE_CHECKLIST.md` | Current release gates and required evidence |
 | Performance measurement | `docs/PERFORMANCE_BASELINE.md` | Measurement method and collected evidence requirements; no invented budgets |
+| Environment evidence capture procedure | `docs/ENVIRONMENT_CAPTURE_PROCEDURE.md` | Reusable preparation, sequencing, tool-observation, handoff and correction procedure only; evidence fields remain in the applicable template |
 | Typo Benchmark Contract/Case/Performance identity | `docs/TYPO_BENCHMARK_REGISTRY.md` | Canonical IDs, relationships, aliases and version only; behavior, measurement procedure and evidence status remain in their owning sources |
 | Known unresolved engineering risk | `docs/TECH_DEBT.md` | Risk, mitigation, owner area, recommended fix and resolution trigger |
 | Changes that already happened | `CHANGELOG.md` | Dated historical record; never the authority for current behavior |

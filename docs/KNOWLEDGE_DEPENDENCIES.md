@@ -45,6 +45,7 @@ Navigation/index files are downstream consumers. They should change only when ro
 | Lua/RIME artifacts | relevant domain/architecture source, debugging, release, performance method, tech debt | generic README detail |
 | `DEBUGGING` procedure | release evidence if gate changed, reading maps, bug-investigator playbook | architecture rationale |
 | `PERFORMANCE_BASELINE` method | release performance gate, performance playbook, health evidence | product feature docs |
+| environment capture procedure | applicable evidence template, Assignment Record, ADR provenance boundary, reading maps/index/graph | runtime, Registry and Product Contract unless separately authorized |
 | Typo Benchmark Registry ID/relationship/version | `TYPO_BENCHMARK`, `PERFORMANCE_BASELINE`, Partial Commit when referenced, release evidence, reading maps/index/graph | runtime and tests unless a separately approved implementation task changes them |
 | `RELEASE_CHECKLIST` | test/release playbook, reading maps, governance if responsibility changed | current architecture |
 | `TECH_DEBT` item/status | related ADR/plan, release gate if risk blocks release, health dashboard | README |

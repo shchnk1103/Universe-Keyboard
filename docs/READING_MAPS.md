@@ -30,6 +30,17 @@ Ownership: Primary 📋 Program Manager / Engineering Coordinator for status agg
 
 Required review: every status has an owner and source; implementation is not presented as acceptance; recommendations are not presented as decisions; Stop Conditions remain visible; Dashboard changes do not alter Product Contracts, ADRs, Registry entries or Quality Gates.
 
+## Capture Environment Evidence
+
+Ownership: The task Assignment names the Domain Owner and Environment Executor; Architecture & Knowledge Steward owns the reusable procedure, and Test / Release owns the Quality conclusion.
+
+1. `ASSIGNMENT_POLICY.md` and the task-specific Assignment Record.
+2. `ENVIRONMENT_CAPTURE_PROCEDURE.md` — preparation, sequencing, tool-observation, handoff and correction procedure.
+3. The applicable accepted evidence template — required fields, provenance, unavailable form, Run ID, naming, blocking and archive contract.
+4. Applicable ADRs, including ADR 0010 when execution facts or debug-only trace provenance are involved.
+
+Required review: no `UNKNOWN` Assignment field; frozen inputs and archive location; current-run provenance; tool failures not treated as absence; actual SHA-256 values and complete manifest; immutable handoff; no Product, Runtime or Quality conclusion inferred by the Executor.
+
 ## Modify Candidate Bar
 
 Ownership: Primary [`Keyboard UI`](playbooks/keyboard-ui.md); secondary [`KeyboardCore`](playbooks/keyboard-core.md) when selection/state semantics change and [`Debug Investigator`](playbooks/debug-investigator.md) when the boundary is unproven; escalate ownership conflicts or durable product changes to [`Coordinator`](playbooks/coordinator.md).
