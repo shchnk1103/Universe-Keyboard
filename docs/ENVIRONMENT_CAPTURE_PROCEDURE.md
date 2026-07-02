@@ -2,7 +2,7 @@
 
 > **Version:** `1.0.0`
 >
-> **Status:** Proposed
+> **Status:** Accepted
 >
 > **Source of Truth:** This document is the only repository authority for environment-capture preparation, execution sequencing, observation handling, handoff and correction procedure.
 >
