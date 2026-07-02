@@ -41,6 +41,8 @@ Ownership: The task Assignment names the Domain Owner and Environment Executor; 
 
 Required review: no `UNKNOWN` Assignment field; frozen inputs and archive location; current-run provenance; tool failures not treated as absence; actual SHA-256 values and complete manifest; immutable handoff; no Product, Runtime or Quality conclusion inferred by the Executor.
 
+For `ENV-TOOLING-001` capability implementation or Quality verification, also read `ENVIRONMENT_DIGEST_TOOLING.md`. It is the authority for digest roots, include/exclude rules, user-configuration separation, canonical manifest bytes, privacy and non-shipping boundaries. Fixture results validate tooling only and cannot replace a new Environment Capture.
+
 ## Modify Candidate Bar
 
 Ownership: Primary [`Keyboard UI`](playbooks/keyboard-ui.md); secondary [`KeyboardCore`](playbooks/keyboard-core.md) when selection/state semantics change and [`Debug Investigator`](playbooks/debug-investigator.md) when the boundary is unproven; escalate ownership conflicts or durable product changes to [`Coordinator`](playbooks/coordinator.md).
