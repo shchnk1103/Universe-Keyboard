@@ -9,6 +9,36 @@
 - `libglog.xcframework`, `libleveldb.xcframework`, `libmarisa.xcframework`
 - `libopencc.xcframework`, `libyaml-cpp.xcframework`
 
+## Canonical Platform And Slice Contract
+
+This section is the Source of Truth for the platform and architecture slices required by the pinned artifact declared in `config/rime-vendor-manifest.env`. It supports artifact restoration and dependency-resolution verification only; it does not change the artifact, package integration or product deployment target.
+
+Every framework must contain an iOS device `arm64` static-library slice and the listed iOS Simulator slice:
+
+| XCFramework | iOS device entry | iOS Simulator entry |
+|---|---|---|
+| `boost_atomic.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64-simulator` (`arm64`) |
+| `boost_filesystem.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64-simulator` (`arm64`) |
+| `boost_regex.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64-simulator` (`arm64`) |
+| `libglog.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
+| `libleveldb.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
+| `liblua.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
+| `libmarisa.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
+| `libopencc.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
+| `librime-lua.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
+| `librime.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
+| `libyaml-cpp.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
+
+Contract rules:
+
+- `SupportedPlatform` must be `ios`; the simulator entry must also declare `SupportedPlatformVariant=simulator`.
+- The declared architectures in each XCFramework `Info.plist` and the architectures in its static-library payload must agree with the table.
+- All 11 frameworks must satisfy the matrix as one artifact set. A partial intersection is not sufficient.
+- Non-iOS entries present in the pinned archive do not satisfy an iOS requirement and are outside the required integration surface. They may remain only as bytes already covered by the pinned archive checksum.
+- Homebrew, macOS libraries, source builds and locally substituted slices cannot satisfy this contract.
+- Version, URL, archive checksum and framework identity remain owned by `config/rime-vendor-manifest.env`; checksum verification remains mandatory in addition to slice verification.
+- Any change to a required platform, architecture set or framework row is an integration-boundary change and requires Architecture and Product revalidation before the manifest or artifact changes.
+
 ## Pinned Delivery
 
 Publish a zip archive containing the framework directories at its root as a versioned GitHub Release asset. Record
