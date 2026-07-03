@@ -53,29 +53,6 @@ private struct Arguments {
     }
 }
 
-private func envelopeJSON(_ envelope: ProvenanceEnvelope, exclusions: [ExclusionEntry]) throws -> Data {
-    let object: [String: Any] = [
-        "authorizedCaller": envelope.authorizedCaller,
-        "environmentIdentity": envelope.environmentIdentity,
-        "evidenceClassification": envelope.evidenceClassification,
-        "exclusions": exclusions.map { ["path": $0.path, "reason": $0.reason] },
-        "distributionArtifactApprovals": envelope.distributionArtifactApprovals.map {
-            [
-                "authority": $0.authority,
-                "environmentIdentity": $0.environmentIdentity,
-                "evidenceReference": $0.evidenceReference,
-                "path": $0.path,
-            ]
-        },
-        "implementationCommit": envelope.implementationCommit,
-        "manifestDigest": envelope.manifestDigest,
-        "profile": envelope.profile.rawValue,
-        "sourceClassification": envelope.sourceClassification,
-        "toolVersion": envelope.toolVersion,
-    ]
-    return try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
-}
-
 do {
     let arguments = try Arguments(Array(CommandLine.arguments.dropFirst()))
     let request = FilesystemDigestRequest(
@@ -90,11 +67,10 @@ do {
     )
     let result = try EnvironmentDigester().digest(request)
     FileHandle.standardOutput.write(result.manifest)
-    FileHandle.standardError.write(try envelopeJSON(result.envelope, exclusions: result.exclusions))
-    FileHandle.standardError.write(Data("\n".utf8))
+    FileHandle.standardError.write(
+        try EvidenceArtifactEncoder.provenance(envelope: result.envelope, exclusions: result.exclusions))
 } catch let failure as DigestFailure {
-    let path = failure.path.map { ":\($0)" } ?? ""
-    FileHandle.standardError.write(Data("\(failure.code.rawValue)\(path)\n".utf8))
+    FileHandle.standardError.write(try EvidenceArtifactEncoder.failure(failure))
     exit(2)
 } catch {
     FileHandle.standardError.write(Data("unreadableInput\n".utf8))

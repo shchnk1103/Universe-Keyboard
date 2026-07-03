@@ -23,6 +23,7 @@ final class EnvironmentDigesterTests: XCTestCase {
         XCTAssertEqual(a.entries.map(\.path), ["rime_ice.schema.yaml"])
         XCTAssertTrue(a.manifest.last == 0x0a)
         XCTAssertFalse(a.manifest.dropLast().contains(0x0a))
+        XCTAssertFalse(a.manifest.starts(with: [0xef, 0xbb, 0xbf]))
         XCTAssertTrue(a.manifestDigest.matches("^[0-9a-f]{64}$"))
         XCTAssertFalse(String(decoding: a.manifest, as: UTF8.self).contains(first.path))
     }
@@ -40,6 +41,44 @@ final class EnvironmentDigesterTests: XCTestCase {
             [.modificationDate: Date(timeIntervalSince1970: 1)],
             ofItemAtPath: root.appendingPathComponent("rime_ice.schema.yaml").path)
         XCTAssertEqual(sizeChanged.manifestDigest, try digest(.schema, root: root).manifestDigest)
+    }
+
+    func testCanonicalJSONEscapingAndCaseDistinctPaths() throws {
+        let upperRoot = try fixture([
+            "A.yaml": "upper",
+            "lua/quote\"filter.lua": "lua",
+        ])
+        let lowerRoot = try fixture(["a.yaml": "lower"])
+        let result = try digest(.sharedRuntime, root: upperRoot)
+        let lowerResult = try digest(.sharedRuntime, root: lowerRoot)
+        XCTAssertEqual(result.entries.map(\.path), ["A.yaml", "lua/quote\"filter.lua"])
+        XCTAssertEqual(lowerResult.entries.map(\.path), ["a.yaml"])
+        XCTAssertNotEqual(result.manifestDigest, lowerResult.manifestDigest)
+
+        let text = String(decoding: result.manifest, as: UTF8.self)
+        XCTAssertTrue(text.contains("quote\\\"filter.lua"))
+        XCTAssertTrue(text.contains("lua/quote"))
+        XCTAssertFalse(text.contains("lua\\/quote"))
+
+        let object = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: result.manifest) as? [String: Any])
+        let entries = try XCTUnwrap(object["entries"] as? [[String: Any]])
+        XCTAssertEqual(entries.compactMap { $0["path"] as? String }, result.entries.map(\.path))
+    }
+
+    func testUnicodeNormalizationCollisionAndInvalidPathFailClosed() throws {
+        let composed = "é.yaml"
+        let decomposed = "e\u{301}.yaml"
+        let digester = EnvironmentDigester()
+
+        try assertFailure(.pathNormalizationCollision) {
+            try digester.validateNormalization([composed, decomposed])
+        }
+        try assertFailure(.unsupportedInput) {
+            try digester.validatePath(decomposed)
+        }
+        XCTAssertNoThrow(try digester.validateNormalization(["A.yaml", "a.yaml"]))
+        XCTAssertNoThrow(try digester.validatePath(composed))
     }
 
     func testMissingWrongSchemaUnsupportedAndForbiddenProvenanceFailClosed() throws {
@@ -96,31 +135,28 @@ final class EnvironmentDigesterTests: XCTestCase {
         try assertFailure(.unsupportedInput) { try digest(.sharedRuntime, root: root) }
     }
 
-    func testNestedExclusionDirectoriesAtAnyDepthAreExcludedBeforeRead() throws {
-        let excludedPaths = [
+    func testUnlistedNestedDirectoriesFailClosedInsteadOfExpandingExclusions() throws {
+        let unsupportedPaths = [
             "nested/logs/private.yaml",
             "nested/cache/data.yaml",
             "one/two/three/tmp/incomplete.yaml",
             "one/two/backup/history.yaml",
-            "one/two/crash/report.yaml",
-            "one/two/telemetry/event.yaml",
-            "one/two/diagnostics/report.yaml",
-            "one/two/credentials/secret.yaml",
         ]
-        var files = Dictionary(uniqueKeysWithValues: excludedPaths.map { ($0, "DO-NOT-READ") })
-        files["root.yaml"] = "approved"
-        let root = try fixture(files)
-        let result = try EnvironmentDigester(readFile: { url in
-            if excludedPaths.contains(String(url.path.dropFirst(root.path.count + 1))) {
-                XCTFail("nested excluded content was read")
-            }
-            return try Data(contentsOf: url)
-        }).digest(request(.sharedRuntime, root: root))
-
-        XCTAssertEqual(result.entries.map(\.path), ["root.yaml"])
-        for path in excludedPaths {
-            XCTAssertTrue(result.exclusions.contains { $0.path == path }, "missing exclusion for \(path)")
+        for path in unsupportedPaths {
+            let root = try fixture(["root.yaml": "approved", path: "unsupported"])
+            try assertFailure(.unsupportedInput) { try digest(.sharedRuntime, root: root) }
         }
+    }
+
+    func testExcludedItemsDoNotParticipateInMetadataSnapshot() throws {
+        let root = try fixture(["root.yaml": "approved", "logs/private.log": "before"])
+        let result = try EnvironmentDigester(readFile: { url in
+            let data = try Data(contentsOf: url)
+            try Data("changed-size-and-mtime".utf8).write(to: root.appendingPathComponent("logs/private.log"))
+            return data
+        }).digest(request(.sharedRuntime, root: root))
+        XCTAssertEqual(result.entries.map(\.path), ["root.yaml"])
+        XCTAssertTrue(result.exclusions.contains { $0.path == "logs/private.log" })
     }
 
     func testExplicitUserTextClassificationExcludesBeforeRead() throws {
@@ -290,6 +326,33 @@ final class EnvironmentDigesterTests: XCTestCase {
         XCTAssertEqual(fixtureResult.envelope.toolVersion, "1.0.0")
         let deployed = try digest(.schema, root: root, provenance: .deployedRuntime)
         XCTAssertEqual(deployed.envelope.evidenceClassification, "caller-bound-deployed-input")
+    }
+
+    func testProvenanceAndFailureArtifactsAreStructuredAndPrivacyBounded() throws {
+        let root = try fixture(["custom_phrase.txt": "distribution"])
+        let result = try digest(.sharedRuntime, root: root, customPhraseApproved: true)
+        let provenance = try EvidenceArtifactEncoder.provenance(
+            envelope: result.envelope,
+            exclusions: result.exclusions)
+        XCTAssertEqual(provenance.last, 0x0a)
+        XCTAssertFalse(String(decoding: provenance, as: UTF8.self).contains(root.path))
+        let provenanceObject = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: provenance) as? [String: Any])
+        let approvals = try XCTUnwrap(
+            provenanceObject["distributionArtifactApprovals"] as? [[String: Any]])
+        XCTAssertEqual(approvals.first?["path"] as? String, "custom_phrase.txt")
+        XCTAssertEqual(approvals.first?["authority"] as? String, "fixture-authority")
+
+        let failure = try EvidenceArtifactEncoder.failure(
+            DigestFailure(.unsupportedInput, path: "nested/logs/private.yaml"))
+        let failureObject = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: failure) as? [String: Any])
+        XCTAssertEqual(failureObject["code"] as? String, "unsupportedInput")
+        XCTAssertEqual(failureObject["path"] as? String, "nested/logs/private.yaml")
+
+        let unsafeFailure = try EvidenceArtifactEncoder.failure(
+            DigestFailure(.unreadableInput, path: root.path))
+        XCTAssertFalse(String(decoding: unsafeFailure, as: UTF8.self).contains(root.path))
     }
 
     private func validFacts(identity: String) -> [CleanStateFact] {

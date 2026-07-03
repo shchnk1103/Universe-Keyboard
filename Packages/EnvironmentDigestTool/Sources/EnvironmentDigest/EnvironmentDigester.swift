@@ -20,7 +20,7 @@ public struct EnvironmentDigester: Sendable {
         }
         try validateRequest(request)
 
-        let initialSnapshot = try inventorySnapshot(at: request.root, failure: .unreadableInput)
+        let initialSnapshot = try inventorySnapshot(for: request, failure: .unreadableInput)
         let inventory = try inventory(for: request)
         let required = requiredPaths(for: request.profile)
         for path in required where !inventory.included.contains(where: { $0.path == path }) {
@@ -33,7 +33,7 @@ public struct EnvironmentDigester: Sendable {
         let entries = try inventory.included.map { candidate in
             try manifestEntry(for: candidate)
         }.sorted { CanonicalJSON.utf8LessThan($0.path, $1.path) }
-        let finalSnapshot = try inventorySnapshot(at: request.root, failure: .inputChangedDuringRead)
+        let finalSnapshot = try inventorySnapshot(for: request, failure: .inputChangedDuringRead)
         guard initialSnapshot == finalSnapshot else {
             throw DigestFailure(.inputChangedDuringRead)
         }
@@ -257,6 +257,11 @@ public struct EnvironmentDigester: Sendable {
 
     private struct InventorySnapshotEntry: Equatable {
         let path: String
+        let classification: String
+        let metadata: InventorySnapshotMetadata?
+    }
+
+    private struct InventorySnapshotMetadata: Equatable {
         let kind: mode_t
         let device: dev_t
         let inode: ino_t
@@ -266,10 +271,13 @@ public struct EnvironmentDigester: Sendable {
     }
 
     private func inventorySnapshot(
-        at root: URL,
+        for request: FilesystemDigestRequest,
         failure: DigestFailureCode
     ) throws -> [InventorySnapshotEntry] {
-        var entries: [InventorySnapshotEntry] = [try snapshotEntry(for: root, path: "", failure: failure)]
+        let root = request.root
+        var entries: [InventorySnapshotEntry] = [
+            try snapshotEntry(for: root, path: "", classification: "root", captureMetadata: true, failure: failure)
+        ]
         var enumerationFailed = false
         guard
             let enumerator = FileManager.default.enumerator(
@@ -286,8 +294,24 @@ public struct EnvironmentDigester: Sendable {
         }
         while let item = enumerator.nextObject() as? URL {
             let path = relativePath(of: item, under: root)
-            entries.append(try snapshotEntry(for: item, path: path, failure: failure))
-            if (try? item.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink) == true {
+            let values: URLResourceValues
+            do {
+                values = try item.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
+            } catch {
+                throw DigestFailure(failure, path: path)
+            }
+            let exclusionReason =
+                exclusion(for: path, isDirectory: values.isDirectory == true)
+                ?? (request.explicitlyProhibitedPaths.contains(path) ? "user-or-host-text" : nil)
+            entries.append(
+                try snapshotEntry(
+                    for: item,
+                    path: path,
+                    classification: exclusionReason.map { "excluded:\($0)" } ?? "observed",
+                    captureMetadata: exclusionReason == nil,
+                    failure: failure
+                ))
+            if values.isSymbolicLink == true {
                 enumerator.skipDescendants()
             }
         }
@@ -298,20 +322,28 @@ public struct EnvironmentDigester: Sendable {
     private func snapshotEntry(
         for url: URL,
         path: String,
+        classification: String,
+        captureMetadata: Bool,
         failure: DigestFailureCode
     ) throws -> InventorySnapshotEntry {
+        guard captureMetadata else {
+            return InventorySnapshotEntry(path: path, classification: classification, metadata: nil)
+        }
         var info = stat()
         guard lstat(url.path, &info) == 0 else {
             throw DigestFailure(failure, path: path.isEmpty ? nil : path)
         }
         return InventorySnapshotEntry(
             path: path,
-            kind: info.st_mode & S_IFMT,
-            device: info.st_dev,
-            inode: info.st_ino,
-            size: info.st_size,
-            modifiedSeconds: info.st_mtimespec.tv_sec,
-            modifiedNanoseconds: info.st_mtimespec.tv_nsec
+            classification: classification,
+            metadata: InventorySnapshotMetadata(
+                kind: info.st_mode & S_IFMT,
+                device: info.st_dev,
+                inode: info.st_ino,
+                size: info.st_size,
+                modifiedSeconds: info.st_mtimespec.tv_sec,
+                modifiedNanoseconds: info.st_mtimespec.tv_nsec
+            )
         )
     }
 
@@ -475,7 +507,7 @@ public struct EnvironmentDigester: Sendable {
         return String(path.dropFirst(rootPath.count + 1))
     }
 
-    private func validatePath(_ path: String) throws {
+    func validatePath(_ path: String) throws {
         guard !path.isEmpty,
             !path.hasPrefix("/"),
             !path.hasSuffix("/"),
@@ -487,17 +519,17 @@ public struct EnvironmentDigester: Sendable {
             !path.split(separator: "/", omittingEmptySubsequences: false).contains(where: {
                 $0 == "." || $0 == ".." || $0.isEmpty
             }),
-            path == path.precomposedStringWithCanonicalMapping
+            Array(path.utf8) == Array(path.precomposedStringWithCanonicalMapping.utf8)
         else {
             throw DigestFailure(.unsupportedInput, path: path)
         }
     }
 
-    private func validateNormalization(_ paths: [String]) throws {
-        var normalized = Set<String>()
+    func validateNormalization(_ paths: [String]) throws {
+        var normalized = Set<[UInt8]>()
         for path in paths {
             let value = path.precomposedStringWithCanonicalMapping
-            guard normalized.insert(value).inserted else {
+            guard normalized.insert(Array(value.utf8)).inserted else {
                 throw DigestFailure(.pathNormalizationCollision, path: value)
             }
         }
@@ -560,31 +592,31 @@ public struct EnvironmentDigester: Sendable {
         }
         if directoryNames.contains("sync") { return "sync-data" }
         if name == "user.yaml" { return "runtime-user-metadata" }
-        if directoryNames.contains("logs") || name.hasSuffix(".log") { return "runtime-log" }
-        if !directoryNames.isDisjoint(with: [".cache", "cache"]) { return "runtime-cache" }
-        if !directoryNames.isDisjoint(with: ["tmp", "temp"])
+        if components.first == "logs" || name.hasSuffix(".log") { return "runtime-log" }
+        if components.first == ".cache" || components.first == "cache" { return "runtime-cache" }
+        if components.first == "tmp" || components.first == "temp"
             || [".tmp", ".temp", ".partial", ".download", ".swp"].contains(where: name.hasSuffix) || name.hasSuffix("~")
         {
             return "temporary"
         }
         if [".lock", ".pid", ".socket"].contains(where: name.hasSuffix) { return "process-state" }
         if [".bak", ".backup"].contains(where: name.hasSuffix)
-            || !directoryNames.isDisjoint(with: ["backup", "user_dictionary_backups"])
+            || components.first == "user_dictionary_backups"
         {
             return "backup"
         }
-        if !directoryNames.isDisjoint(with: ["crash", "crashes"]) || name.hasSuffix(".crash")
+        if components.first == "crash" || components.first == "crashes" || name.hasSuffix(".crash")
             || name.hasSuffix(".ips")
         {
             return "crash-report"
         }
-        if !directoryNames.isDisjoint(with: ["telemetry", "analytics"]) { return "telemetry" }
-        if !directoryNames.isDisjoint(with: ["diagnostics", "reports"])
+        if components.first == "telemetry" || components.first == "analytics" { return "telemetry" }
+        if components.first == "diagnostics" || components.first == "reports"
             || [".trace", ".memgraph"].contains(where: name.hasSuffix)
         {
             return "generated-diagnostic"
         }
-        if !directoryNames.isDisjoint(with: ["credentials", "secrets"])
+        if components.first == "credentials" || components.first == "secrets"
             || [".key", ".pem", ".p12", ".mobileprovision"].contains(where: name.hasSuffix)
         {
             return "credential"
