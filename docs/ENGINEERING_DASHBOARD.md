@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-07-02 Asia/Shanghai
+> **Updated:** 2026-07-07 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -42,7 +42,7 @@
 |---|---|---|
 | `ORG-POLICY-001A` | Accepted / Closed | Assignment Policy v1.0.0 accepted at `4188dccef2083e998185e242c6d5ab45af3ea9b4`; governance tag `governance-v1.0.0`. |
 | `ORG-PROCEDURE-001` | Accepted / Closed | Environment Capture Procedure v1.0.0 accepted at `05784106df50c4accb94233cf22681f3901f542a`. |
-| `ENV-TOOLING-001` | Assigned / Not Ready | Canonical [Assignment Record](assignments/env-tooling-001.md) is published. Executor Acknowledgement and required Architecture/Quality inputs must precede any `Ready` decision; implementation is not authorized. |
+| `ENV-TOOLING-001` | Accepted / Closed | Product Review completed; capability is accepted and closed. `004C-R1` may remove the ENV-TOOLING-001 capability blocker, but still requires its own Entry Criteria evidence and lifecycle handling before start. |
 | `TYPO-BENCHMARK-006B` | Accepted / Closed | Registry v1.0 Source-of-Truth publication completed at the commit above. |
 | `TYPO-BENCHMARK-004B` | Accepted with Implementation Blockers / Closed | Product status is closed; implementation/environment blockers remain visible below. |
 | `TYPO-BENCHMARK-004C-R1` | Assigned / Not Ready | Assignment Record is complete with no `UNKNOWN` fields, but remaining Entry Criteria block `Ready`; do not start. See the [Assignment Record](assignments/typo-benchmark-004c-r1.md). |
@@ -70,19 +70,20 @@
 - Lifecycle: `Assigned / Not Ready`.
 - Assignment source: [004C-R1 Assignment Record](assignments/typo-benchmark-004c-r1.md).
 - Required capture procedure: [Environment Capture Procedure v1.0.0](ENVIRONMENT_CAPTURE_PROCEDURE.md); every future `004C-R1` capture must cite and follow this accepted version.
+- ENV capability dependency: `ENV-TOOLING-001` is `Accepted / Closed`; the capability blocker may be removed for `004C-R1`.
 - Assignment completeness: complete; no required field remains `UNKNOWN`.
-- Remaining readiness work: satisfy every Entry Criterion with current evidence before any separate `Ready` decision.
+- Remaining readiness work: satisfy every remaining `004C-R1` Entry Criterion with current evidence, including frozen build/deployment artifacts, active runtime schema, Full Access observation, canonical clean-state procedure and evidence archive policy, before any separate lifecycle progression.
 - Task 7 remains `Not Authorized`.
 
 This is an Assignment completeness report, not an Assignment Decision made by the Program Manager.
 
 ## ENV-TOOLING-001 Assignment Coordination
 
-- Lifecycle: `Assigned / Not Ready`.
+- Lifecycle: `Accepted / Closed`.
 - Assignment source: [ENV-TOOLING-001 Assignment Record](assignments/env-tooling-001.md).
-- Routing: RIME Platform Maintainer Acknowledgement → Architecture and Quality Required Inputs → Program Manager Completeness Check → Product Lead `Ready` decision.
-- Predecessor relationship: `ENV-TOOLING-001` must complete its capability and handoff before `004C-R1` may use that capability; `004C-R1` requires separate Assignment Revalidation before use.
-- Implementation is not authorized.
+- Product Review: completed by Product Lead; this Dashboard records the lifecycle result and does not modify the Assignment Contract.
+- Routing: ENV-TOOLING-001 no longer requires Executor, Architecture or Quality routing. Future use by `004C-R1` is routed through the `004C-R1` Assignment and its required Quality handoff.
+- Predecessor relationship: ENV capability dependency is satisfied for coordination purposes; `004C-R1` still requires separate Entry Criteria evidence and lifecycle handling before using the capability in capture.
 - Task 7 remains `Not Authorized`.
 
 ## Update Contract
