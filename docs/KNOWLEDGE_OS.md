@@ -6,6 +6,8 @@ The Knowledge OS is the operating model for repository knowledge. It tells contr
 
 Start at `docs/KNOWLEDGE_INDEX.md`. Select a task in `docs/READING_MAPS.md`, then read only the sources required for that task.
 
+Knowledge OS 2.0 canonical specification is published at [`docs/kos/`](kos/). It is a governance Source of Truth and does not execute repository migration.
+
 ## Knowledge Layers
 
 | Layer | Responsibility | Entry |
@@ -17,7 +19,7 @@ Start at `docs/KNOWLEDGE_INDEX.md`. Select a task in `docs/READING_MAPS.md`, the
 | Risk | What remains unsafe or incomplete | `docs/TECH_DEBT.md` |
 | History | What changed and why architecture evolved | `CHANGELOG.md`, `docs/ARCHITECTURE_TIMELINE.md`, archived plans |
 | Collaboration | How agents and contributors work | `AGENTS.md`, `docs/AI_WORKFLOW.md`, `docs/playbooks/` |
-| Governance | How knowledge is maintained | `docs/DOCUMENTATION_GOVERNANCE.md`, `docs/DOCUMENTATION_HEALTH.md` |
+| Governance | How knowledge is maintained | `docs/kos/`, `docs/DOCUMENTATION_GOVERNANCE.md`, `docs/DOCUMENTATION_HEALTH.md` |
 
 ## Navigation Protocol
 

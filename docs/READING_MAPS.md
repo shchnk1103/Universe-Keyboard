@@ -224,7 +224,8 @@ Ownership: Primary [`Documentation Maintainer`](playbooks/documentation-maintain
 1. `DOCUMENTATION_GOVERNANCE.md`.
 2. `KNOWLEDGE_DEPENDENCIES.md`.
 3. `DECISION_TREES.md` documentation tree.
-4. `DOCUMENTATION_HEALTH.md` if a metric/status changes.
+4. `docs/kos/` when work concerns Knowledge OS 2.0 specification or migration readiness.
+5. `DOCUMENTATION_HEALTH.md` if a metric/status changes.
 
 Required review: one owner, links instead of copies, lifecycle/status metadata, archive condition, ADR need and navigation route.
 

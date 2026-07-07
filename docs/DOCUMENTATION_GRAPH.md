@@ -20,6 +20,8 @@ AGENTS
             -> playbooks / reading maps / domain sources
        -> ASSIGNMENT_POLICY
             -> task Assignment Records / handoffs
+       -> kos
+            -> Knowledge OS 2.0 specification / migration readiness
        -> ENGINEERING_DASHBOARD
             -> current task sources / handoffs / evidence (summary only)
 
@@ -43,6 +45,7 @@ Arrows mean “navigate to” or “depends on”; they do not transfer Source o
 | `README.md` | Public/project entry | First visit | What is this project and how do I enter? | Durable rationale or exhaustive status |
 | `KNOWLEDGE_INDEX.md` | Pure navigation | Every new thread after AGENTS | Where should I go? | Domain facts |
 | `KNOWLEDGE_OS.md` | Knowledge operating model | Maintainers, doc authors | How is repository knowledge organized? | Current product architecture |
+| `kos/*` | Knowledge OS 2.0 canonical specification | System governance work, migration planning and Product review | What is the canonical Knowledge OS 2.0 contract and migration readiness? | Runtime behavior, migration execution or implementation detail |
 | `READING_MAPS.md` | Task-based routing | Before implementation | What must I read for this task? | The content of those sources |
 | `PROJECT_CONTEXT.md` | Current architecture overview | Any code/architecture task | What modules and boundaries exist? | Historical chronology or troubleshooting |
 | `architecture/*.md` | Current subsystem contracts | Relevant subsystem change | How does this boundary currently work? | Why every decision was selected |
@@ -115,6 +118,7 @@ Program status
 - Playbooks point to domain sources; domain sources do not depend on playbooks.
 - The team blueprint points to playbooks and domain sources; neither architecture facts nor playbook procedure depend on copied team prose.
 - Assignment Records depend on `ASSIGNMENT_POLICY`; the Policy references permanent roles but never creates or transfers them.
+- Knowledge OS 2.0 specification documents under `docs/kos/` own the Knowledge OS 2.0 contract; navigation documents link to them without copying substantive rules.
 - Dashboard may summarize Assignment completeness only after following the Product Decision source; it never assigns work.
 - The Dashboard summarizes owner-confirmed status and links to authority; no owner source depends on Dashboard conclusions.
 - ADRs may link to current architecture, but architecture summaries link back to ADR rationale.
