@@ -20,7 +20,7 @@
 
 | Work item | Lifecycle state | Current phase | Routing / coordination note |
 |---|---|---|---|
-| `KOS-GOV-001` | Assigned | Architecture Review | Canonical [Assignment Record](assignments/kos-gov-001.md) is published and is repository truth. Next authorized owner is 🏛️ Architecture & Knowledge Steward. Repository synchronization is complete when Dashboard routing reflects the Assignment; Specification Publication and Repository Migration are not started by this state sync. |
+| `KOS-GOV-001` | Accepted / Closed | Closed | Product Review accepted the completed Knowledge OS 2.0 publication. Closure synchronization records the concluded state only; Repository Migration, implementation, Benchmark work and Task 7 remain unauthorized by this closure. |
 
 ### KOS-GOV-001 Coordination
 
@@ -28,14 +28,15 @@
 - Classification: `Level S — System Governance`.
 - Repository Change Type for this synchronization: `State`.
 - Assignment source: [KOS-GOV-001 Assignment Record](assignments/kos-gov-001.md).
-- Lifecycle state: `Assigned`.
-- Current phase: `Architecture Review`.
+- Lifecycle state: `Accepted / Closed`.
+- Current phase: `Closure Synchronization complete`.
 - Domain Owner / Executor: 🏛️ Architecture & Knowledge Steward.
 - Product Approver: 🧭 Product Lead.
 - Quality Reviewer: `Not Required` per the published Assignment.
-- Next authorized owner: 🏛️ Architecture & Knowledge Steward.
-- Authorized next action: Architecture role reviews the published Assignment and frozen Knowledge OS 2.0 architecture before any Specification Publication begins.
-- Not authorized by this synchronization: modifying the Assignment, redesigning Knowledge OS, creating Specification documents, publishing `docs/kos/`, beginning implementation, beginning Repository Migration, Benchmark work or Task 7.
+- Product Review: `Accepted`.
+- Routing: concluded; no further KOS-GOV-001 owner action is pending after closure synchronization.
+- Next independent work item: requires a separate Product Lead Assignment before start.
+- Not authorized by this synchronization: modifying the Assignment, modifying the Specification, redesigning Knowledge OS, beginning implementation, beginning Repository Migration, Benchmark work or Task 7.
 
 ## Typo Benchmark v1.0
 
