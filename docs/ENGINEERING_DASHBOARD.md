@@ -14,6 +14,29 @@
 - 测试、性能、真机和 Release 证据判定归 🧪 Quality, Performance & Release Maintainer。
 - 状态冲突时，以对应 owner 的当前仓库记录为准，并在 Dashboard 中标记待同步。
 
+## System Governance
+
+### Active Governance Work Items
+
+| Work item | Lifecycle state | Current phase | Routing / coordination note |
+|---|---|---|---|
+| `KOS-GOV-001` | Assigned | Architecture Review | Canonical [Assignment Record](assignments/kos-gov-001.md) is published and is repository truth. Next authorized owner is 🏛️ Architecture & Knowledge Steward. Repository synchronization is complete when Dashboard routing reflects the Assignment; Specification Publication and Repository Migration are not started by this state sync. |
+
+### KOS-GOV-001 Coordination
+
+- Work item: `KOS-GOV-001 — Publish Knowledge OS 2.0 Canonical Specification`.
+- Classification: `Level S — System Governance`.
+- Repository Change Type for this synchronization: `State`.
+- Assignment source: [KOS-GOV-001 Assignment Record](assignments/kos-gov-001.md).
+- Lifecycle state: `Assigned`.
+- Current phase: `Architecture Review`.
+- Domain Owner / Executor: 🏛️ Architecture & Knowledge Steward.
+- Product Approver: 🧭 Product Lead.
+- Quality Reviewer: `Not Required` per the published Assignment.
+- Next authorized owner: 🏛️ Architecture & Knowledge Steward.
+- Authorized next action: Architecture role reviews the published Assignment and frozen Knowledge OS 2.0 architecture before any Specification Publication begins.
+- Not authorized by this synchronization: modifying the Assignment, redesigning Knowledge OS, creating Specification documents, publishing `docs/kos/`, beginning implementation, beginning Repository Migration, Benchmark work or Task 7.
+
 ## Typo Benchmark v1.0
 
 ### Governance Baseline
