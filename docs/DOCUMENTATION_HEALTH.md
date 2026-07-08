@@ -16,6 +16,7 @@ This dashboard makes knowledge quality observable without turning manually maint
 | Debt integrity | Risks have correct mitigation, owner and trigger | Review `TECH_DEBT.md` against source and completed work |
 | Evidence quality | Snapshots carry date/commit/environment/command/location/expiry | Inspect acceptance and performance records |
 | Playbook independence | Agents can work without copied chat context | Execute playbook dry-run against reading maps and current sources |
+| Ownership continuity | Every stable capability has one long-term owner and a reusable bootstrap | Review `VIRTUAL_ENGINEERING_TEAM.md` against reading maps, playbooks and recent work |
 | Navigation integrity | All index links resolve and no orphan source exists | Link/file scan plus documentation graph review |
 | Registry integrity | Canonical IDs are unique and all Contract/Case/Performance/Alias targets resolve | Registry structural scan plus downstream duplicate-authority review |
 
@@ -61,6 +62,7 @@ Observed state:
 | Technical debt | Seven canonical debt items exist | Healthy structure; status must be revalidated monthly |
 | Navigation | Knowledge index, maps, graph and dependencies now exist | New; requires usage validation |
 | Playbooks | Nine domain operating playbooks exist with required evidence, stop and handoff sections | Structurally healthy; independent task dry-runs remain pending |
+| Permanent ownership | Seven long-term roles are defined; short-term Typo ownership has an explicit handoff to Input Intelligence | New; validate with long-lived-thread dry-runs |
 | Volatile evidence | Manual acceptance/history still contains old counts, device/branch snapshots and temporary evidence paths | Governance debt |
 | README scope | README still carries extensive feature/architecture details | Overloaded |
 | Duplicate facts | Lifecycle, deployment, Full Access and UI constants appear in multiple long-lived documents | Requires ownership cleanup |
@@ -75,7 +77,8 @@ Observed state:
 6. Resolve duplicated durable facts by preserving one owner plus links.
 7. Decide whether OpenCC integration requires a rationale ADR.
 8. Remove or explicitly manage tracked `.DS_Store` files under documentation directories.
-9. Keep the Typo Benchmark Registry structural checks current as new Canonical IDs, aliases or supersessions are approved.
+9. Dry-run the permanent bootstrap prompts and verify that Typo transition handoffs preserve benchmark, ranking, learning and regression evidence.
+10. Keep the Typo Benchmark Registry structural checks current as new Canonical IDs, aliases or supersessions are approved.
 
 ## Knowledge Audit Record
 
@@ -84,6 +87,7 @@ Add one row per monthly/milestone audit. Detailed findings belong in the audit a
 | Date | Scope | Base commit | Result location | Next trigger |
 |---|---|---|---|---|
 | 2026-06-29 | Knowledge OS v1.0 + Phase C playbook structure | `75a5e8c` + documentation working tree | `DOCUMENTATION_HEALTH.md` current snapshot | Independent playbook audit or next milestone |
+| 2026-06-29 | Virtual Engineering Team v1.0 ownership blueprint | Current documentation working tree | `VIRTUAL_ENGINEERING_TEAM.md` | Permanent-thread dry-run or ownership change |
 | 2026-06-30 | Typo Correction Benchmark Registry v1.0 publication | `3cb5a6c` + existing documentation working tree | `TYPO_BENCHMARK_REGISTRY.md`, ADR 0009 and validation output | Registry version change, evidence-reference change or `TYPO-BENCHMARK-004B` review |
 
 ### 2026-06-30 Registry Publication Snapshot
@@ -104,5 +108,6 @@ The Knowledge OS is not healthy merely because documents exist. A milestone fail
 - a plan appears current after closure;
 - a release claim lacks reproducible evidence;
 - a playbook requires historical chat to operate;
+- a permanent thread has no single long-term owner or reusable repository-based bootstrap;
 - an index route leads to conflicting facts;
 - documentation debt is known but has no visible queue or owner area.

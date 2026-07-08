@@ -24,6 +24,7 @@ Every fact has one primary document. Other documents may provide a short summary
 | Changes that already happened | `CHANGELOG.md` | Dated historical record; never the authority for current behavior |
 | Stage-specific implementation work | `docs/plans/` | Temporary plan and milestone context; archive or supersede after use |
 | Task Assignment authority, completeness and lifecycle | `docs/ASSIGNMENT_POLICY.md` | Reusable Assignment contract only; task records contain assignees and Product decisions, while permanent ownership remains in `VIRTUAL_ENGINEERING_TEAM.md` |
+| Permanent virtual-team ownership and bootstrap contracts | `docs/VIRTUAL_ENGINEERING_TEAM.md` | Stable role ownership, collaboration and handoff only; no architecture facts or copied playbook procedure |
 | Agent operating procedure | subagent playbooks | How an agent works, required inputs/outputs and boundaries; link to architecture instead of copying it |
 
 When two documents describe the same fact, select one primary source and replace the other copy with a link or a clearly non-authoritative summary. If source and implementation disagree, treat the discrepancy as a defect: verify current behavior, then correct the source of truth and affected links.
@@ -141,6 +142,8 @@ If a changelog entry contains durable knowledge, promote that knowledge to its p
 
 Playbooks define how an agent operates: responsibilities, required reading, allowed scope, prohibited actions, evidence, output and handoff. They must link to `PROJECT_CONTEXT`, ADRs and domain documents rather than copying architecture facts. A changed architecture contract therefore updates one source, not every playbook.
 
+Permanent role ownership and reusable bootstrap prompts live in `VIRTUAL_ENGINEERING_TEAM.md`. Playbooks remain the authority for task execution. A role change reviews both layers, but must not copy domain architecture or executable procedure between them. Short-term role transitions must name the destination long-term owner and preserve the evidence required by the team blueprint.
+
 ## Documentation Review Checklist
 
 For every important PR or substantial Codex change, check:
@@ -158,6 +161,7 @@ For every important PR or substantial Codex change, check:
 - [ ] Does the change introduce volatile hardcoded data?
 - [ ] Is the same fact maintained in more than one document?
 - [ ] Is a plan presented as current implementation truth?
+- [ ] Did permanent ownership, handoff or bootstrap contracts change?
 - [ ] Did task Assignment authority, completeness, lifecycle or handoff change?
 - [ ] If no documentation changed, is the reason explicit and defensible?
 
@@ -175,6 +179,7 @@ At minimum, report:
 - plans requiring archive, supersession or abandonment;
 - README details that belong in another source of truth;
 - whether subagent playbooks can still operate independently without chat history.
+- whether permanent ownership remains singular, complete and aligned with playbook routing.
 
 Each finding must name the primary source to update, severity and recommended owner area. Do not resolve drift by copying the same fact into more files.
 
