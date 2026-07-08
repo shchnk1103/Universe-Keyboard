@@ -48,3 +48,6 @@ Packages/RimeBridge/TestTool/test_rime
 *.swp
 *.swo
 *~
+
+# Local evidence artifacts (environment captures, benchmarks)
+evidence/
