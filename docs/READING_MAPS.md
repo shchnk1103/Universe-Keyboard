@@ -10,6 +10,17 @@ When work is delegated, use the matching file under [`playbooks/`](playbooks/). 
 
 Long-lived thread ownership is defined in [`VIRTUAL_ENGINEERING_TEAM.md`](VIRTUAL_ENGINEERING_TEAM.md). Read it when creating a permanent thread, resolving ownership, coordinating multiple maintainers or handing work between long-lived threads. Short-term ✍️ Typo Maintainer threads may continue during the transition, but their benchmark, candidate-ranking, learning and regression evidence must hand off to the 🧠 Input Intelligence Maintainer.
 
+## Enter With Zero Context
+
+Ownership: Architecture & Knowledge Steward owns startup routing; Product Lead owns any new Product Assignment required before formal work; Program Manager may synchronize status only after owner-confirmed sources exist.
+
+1. `AGENTS.md` — mandatory collaboration rules.
+2. `KNOWLEDGE_INDEX.md` — top-level navigation.
+3. `kos/zero-context-startup.md` — startup reading order, repository discovery, Work Item discovery, lifecycle discovery, role discovery, repository truth and prompt compression.
+4. The task-specific reading map selected after startup.
+
+Required review: repository truth comes from Assignment and canonical documents, not conversation; current Work Item and lifecycle are discovered before action; missing Assignment or `UNKNOWN` fields stop formal work unless the user objective authorizes governance bootstrap.
+
 ## Create, Review Or Change A Task Assignment
 
 Ownership: Product Lead makes Assignment and Reassignment decisions; Program Manager checks completeness only; Architecture & Knowledge Steward owns Policy governance.

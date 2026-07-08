@@ -172,6 +172,7 @@ Knowledge OS 2.0 canonical specification lives under:
 docs/kos/
   README.md
   knowledge-os-2.0-specification.md
+  zero-context-startup.md
   migration-readiness.md
 ```
 
@@ -187,7 +188,7 @@ AGENTS.md
 
 Structure rules:
 
-- `docs/kos/` owns Knowledge OS 2.0 specification text.
+- `docs/kos/` owns Knowledge OS 2.0 specification text and the Zero-Context Startup Layer.
 - `docs/KNOWLEDGE_OS.md` remains the operational entrypoint until separately migrated.
 - `docs/KNOWLEDGE_INDEX.md`, `docs/READING_MAPS.md`, `docs/DOCUMENTATION_GRAPH.md` and `docs/KNOWLEDGE_DEPENDENCIES.md` may link to `docs/kos/` for discoverability.
 - Existing domain, architecture, ADR, Registry, Template, Procedure, Assignment and Dashboard documents keep their current ownership unless a separate Assignment changes them.
@@ -222,6 +223,8 @@ Stop and return to Product Lead if any future Knowledge OS 2.0 work requires:
 ## Related Documents
 
 - [`KOS-GOV-001 Assignment`](../assignments/kos-gov-001.md)
+- [`KOS-BOOT-001 Assignment`](../assignments/kos-boot-001.md)
+- [`Zero-Context Startup Layer`](zero-context-startup.md)
 - [`Knowledge OS`](../KNOWLEDGE_OS.md)
 - [`Knowledge Index`](../KNOWLEDGE_INDEX.md)
 - [`Reading Maps`](../READING_MAPS.md)

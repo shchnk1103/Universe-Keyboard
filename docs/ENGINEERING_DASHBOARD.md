@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-07-07 Asia/Shanghai
+> **Updated:** 2026-07-08 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -21,6 +21,23 @@
 | Work item | Lifecycle state | Current phase | Routing / coordination note |
 |---|---|---|---|
 | `KOS-GOV-001` | Accepted / Closed | Closed | Product Review accepted the completed Knowledge OS 2.0 publication. Closure synchronization records the concluded state only; Repository Migration, implementation, Benchmark work and Task 7 remain unauthorized by this closure. |
+| `KOS-BOOT-001` | Accepted / Closed | Closed | Product Review accepted the Zero-Context Startup Layer publication. Closure synchronization records the concluded state only; Repository Migration, Knowledge OS 2.1, implementation, Benchmark work and Task 7 remain unauthorized by this closure. |
+
+### KOS-BOOT-001 Coordination
+
+- Work item: `KOS-BOOT-001 — Publish Zero-Context Startup Layer`.
+- Classification: `Level S — System Governance`.
+- Repository Change Type for publication: `Contract`; closure synchronization: `State`.
+- Assignment source: [KOS-BOOT-001 Assignment Record](assignments/kos-boot-001.md).
+- Startup source: [Zero-Context Startup Layer](kos/zero-context-startup.md).
+- Lifecycle state: `Accepted / Closed`.
+- Current phase: `Closure Synchronization complete`.
+- Domain Owner / Executor: 🏛️ Architecture & Knowledge Steward.
+- Product Approver: 🧭 Product Lead.
+- Quality Reviewer: `Not Required` per the published Assignment.
+- Product Review: `Accepted`.
+- Routing: concluded; no further KOS-BOOT-001 owner action is pending after closure synchronization.
+- Not authorized by this synchronization: Repository Migration, KOS-MIG-001, Knowledge OS 2.1, implementation, Benchmark work or Task 7.
 
 ### KOS-GOV-001 Coordination
 

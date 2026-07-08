@@ -6,6 +6,14 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-07-08 — Knowledge OS 2.0 Zero-Context Startup Layer
+
+- Published `KOS-BOOT-001` as the accepted and closed Assignment for Zero-Context Startup governance bootstrap.
+- Added `docs/kos/zero-context-startup.md` to define startup reading order, repository discovery, Work Item/lifecycle/role/repository-truth discovery, startup validation and prompt compression.
+- Linked the startup layer through Knowledge OS navigation and synchronized the Engineering Dashboard closure state without beginning Repository Migration, implementation, Benchmark work or Task 7.
+
+---
+
 ## 2026-06-30 — Typo Correction Benchmark Registry v1.0
 
 - Published the accepted `TC-CTR-*`, `TC-CASE-*` and `TC-PERF::*` namespaces as the repository Source of Truth in `docs/TYPO_BENCHMARK_REGISTRY.md`.

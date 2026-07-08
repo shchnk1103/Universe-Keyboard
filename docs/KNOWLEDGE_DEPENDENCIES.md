@@ -52,7 +52,7 @@ Navigation/index files are downstream consumers. They should change only when ro
 | plan lifecycle/status | changelog when work completed, current source and ADR links, health dashboard | architecture unless behavior changed |
 | target/module add/remove | `PROJECT_CONTEXT`, reading maps, graph, onboarding, playbooks, release/build commands | ADR only if decision is durable |
 | governance | index/graph, pre-push skill, health metrics, playbook format | domain architecture |
-| Knowledge OS 2.0 specification | knowledge index, reading maps, graph, dependencies, documentation governance, dashboard when state changes | runtime, tests, Registry, ADRs and Product Contracts unless separately authorized |
+| Knowledge OS 2.0 specification or startup layer | knowledge index, reading maps, graph, dependencies, documentation governance, dashboard when state changes | runtime, tests, Registry, ADRs and Product Contracts unless separately authorized |
 | playbook | `AI_WORKFLOW`, reading maps/index if role or route changes, documentation health | domain facts |
 | permanent team ownership/bootstrap contract | `VIRTUAL_ENGINEERING_TEAM`, `AGENTS`, knowledge index, reading maps, graph, governance, affected playbooks and documentation health | domain architecture unless the system boundary also changed |
 | Assignment Policy authority/fields/lifecycle | `AGENTS`, knowledge index, reading maps, graph, governance, coordinator workflow and task templates | permanent roles, Product Contracts, ADRs and domain implementation |

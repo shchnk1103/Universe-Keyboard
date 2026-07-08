@@ -2,11 +2,11 @@
 
 > **Version:** `2.0.0`
 >
-> **Status:** Canonical specification published for KOS-GOV-001 Product Review
+> **Status:** Knowledge OS 2.0 canonical specification and Zero-Context Startup Layer accepted
 >
 > **Source of Truth:** this directory
 >
-> **Assignment:** [`KOS-GOV-001`](../assignments/kos-gov-001.md)
+> **Assignments:** [`KOS-GOV-001`](../assignments/kos-gov-001.md), [`KOS-BOOT-001`](../assignments/kos-boot-001.md)
 
 This directory is the canonical repository-backed specification for Knowledge OS 2.0.
 
@@ -15,13 +15,14 @@ Knowledge OS 2.0 is a governance specification. It defines how repository knowle
 ## Canonical Documents
 
 - [`Knowledge OS 2.0 Specification`](knowledge-os-2.0-specification.md) — frozen principles, authority model, lifecycle model, state and phase model, task level specification, repository change policy, migration specification and repository structure specification.
+- [`Zero-Context Startup Layer`](zero-context-startup.md) — startup workflow, reading order, discovery rules, repository-truth discovery, validation and prompt compression guidance for new AI sessions.
 - [`Migration Readiness Assessment`](migration-readiness.md) — readiness assessment for future migration work. It does not execute migration.
 
 ## Authority Boundary
 
-The published [`KOS-GOV-001 Assignment`](../assignments/kos-gov-001.md) remains the execution authority for this publication. This directory records the canonical Knowledge OS 2.0 specification produced by that Assignment.
+The published [`KOS-GOV-001 Assignment`](../assignments/kos-gov-001.md) remains the execution authority for the canonical Knowledge OS 2.0 specification publication. The published [`KOS-BOOT-001 Assignment`](../assignments/kos-boot-001.md) is the execution authority for the Zero-Context Startup Layer.
 
-If this directory conflicts with the Assignment before Product Review closes, return to Product Lead for revalidation. Do not resolve the conflict by redesigning Knowledge OS.
+If this directory conflicts with the applicable Assignment, return to Product Lead for revalidation. Do not resolve the conflict by redesigning Knowledge OS.
 
 ## Non-goals
 

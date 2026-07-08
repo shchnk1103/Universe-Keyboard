@@ -52,6 +52,7 @@
 - Permanent team ownership and bootstrap prompts: [`VIRTUAL_ENGINEERING_TEAM.md`](VIRTUAL_ENGINEERING_TEAM.md)
 - Knowledge operating model: [`KNOWLEDGE_OS.md`](KNOWLEDGE_OS.md)
 - Knowledge OS 2.0 canonical specification: [`docs/kos/`](kos/)
+- Zero-Context Startup for new AI sessions: [`kos/zero-context-startup.md`](kos/zero-context-startup.md)
 - Documentation graph: [`DOCUMENTATION_GRAPH.md`](DOCUMENTATION_GRAPH.md)
 - Governance: [`DOCUMENTATION_GOVERNANCE.md`](DOCUMENTATION_GOVERNANCE.md)
 - Multi-agent workflow: [`AI_WORKFLOW.md`](AI_WORKFLOW.md)
