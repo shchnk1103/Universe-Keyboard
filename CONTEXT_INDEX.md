@@ -36,7 +36,7 @@
 | 已知技术债 | `docs/TECH_DEBT.md` | 相关 ADR |
 | 小屏误触 typo correction | `docs/PROJECT_CONTEXT.md` + `docs/TYPO_BENCHMARK.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
 | commit / push | `.claude/skills/pre-push-review/SKILL.md` | — |
-| 了解长期路线图 | `ios-rime-keyboard-development-plan.md` | — |
+| 了解长期路线图（历史参考） | `docs/plans/ios-rime-keyboard-development-plan.md` | 已 Superseded，仅供追溯 |
 | Swift 6 迁移合规审计 | `docs/architecture/swift6-manual-acceptance.md` | — |
 | **调查历史决策 / Bug 上下文** | **`CHANGELOG.md`** | — |
 
@@ -267,16 +267,16 @@
 
 ---
 
-### 10. `ios-rime-keyboard-development-plan.md` — 长期路线图
+### 10. `docs/plans/ios-rime-keyboard-development-plan.md` — 长期路线图（已归档）
 
 | 属性 | 值 |
 |------|----|
-| 路径 | `/ios-rime-keyboard-development-plan.md` |
+| 路径 | `/docs/plans/ios-rime-keyboard-development-plan.md` |
 | 大小 | 大型历史路线图；行数不作为新鲜度依据 |
 | 目的 | 项目初期生成的完整教学级开发方案：背景、限制、技术路线、阶段规划、模块设计、滑动输入设计 |
 | 加载时机 | 理解项目长期方向、规划新功能（如滑动输入 SwipeEngine）时 |
 | 强制性 | 🔷 可选 |
-| 是否过时 | ⚠️ 高风险。生成于 2026-05-10，项目初期规划文档。部分内容（结构规划、Swift 版本要求、测试建议）已被实际实现超越。当前实际架构以 `docs/PROJECT_CONTEXT.md` 为准 |
+| 是否过时 | ✅ Superseded。已归档至 `docs/plans/`，添加生命周期头，仅供历史追溯。当前架构以 `docs/PROJECT_CONTEXT.md`、`docs/architecture/`（含 ADR）及 Knowledge OS 体系为准 |
 
 **警告：** 此文档的目录结构、模块划分与当前实际实现**存在差异**（例如文档中的 `KeyboardUI` Package 未建立，实际使用 UIKit 直接实现）。勿以此文档指导代码修改。
 
@@ -332,7 +332,7 @@
 └── docs/architecture/swift6-manual-acceptance.md
 
 层级 4：背景参考（规划新功能时加载）
-├── ios-rime-keyboard-development-plan.md
+├── docs/plans/ios-rime-keyboard-development-plan.md
 └── README.md
 ```
 
@@ -347,7 +347,7 @@
 | 动态测试计数 | 各地散落的旧引用已被清理 | ✅ **已解决**。文档中不再硬编码测试计数，开发时依赖 `swift test` 输出，仅在验收快照和 CHANGELOG 中保留历史基线。 |
 | 几何常量 | `docs/PROJECT_CONTEXT.md` §Key Design Decisions + `UI_STYLE_GUIDE.md` §Keys + 源码 | 索引不复制数值；改动时必须三者校验 |
 | RIME 部署边界规则 | `docs/PROJECT_CONTEXT.md` + `swift6-migration.md` + `swift6-manual-acceptance.md` | 一致，分别从不同角度（实现/约束/验证）描述同一规则 |
-| 目录结构规划 | `ios-rime-keyboard-development-plan.md` + `docs/PROJECT_CONTEXT.md` | ⚠️ **存在差异**。开发计划是早期设想，实际实现不同。以 `docs/PROJECT_CONTEXT.md` 为准 |
+| 目录结构规划 | `docs/plans/ios-rime-keyboard-development-plan.md` + `docs/PROJECT_CONTEXT.md` | ✅ 开发计划已归档为历史参考。以 `docs/PROJECT_CONTEXT.md` 为准 |
 
 ---
 
@@ -372,7 +372,7 @@
 
 1. **不要扫描整个 codebase** 来理解项目。从 `AGENTS.md`、`docs/KNOWLEDGE_INDEX.md` 和 `docs/READING_MAPS.md` 开始；仅在任务路由需要时查阅本注册表或 `docs/PROJECT_CONTEXT.md`。
 2. **不要同时加载所有文档**。按任务类型参考快速导读表，按需加载。
-3. **`ios-rime-keyboard-development-plan.md` 不代表当前实现**。它是早期规划，以 `docs/PROJECT_CONTEXT.md` 为准。
+3. **`docs/plans/ios-rime-keyboard-development-plan.md` 是历史参考**。已归档并标记 Superseded，以 `docs/PROJECT_CONTEXT.md`、`docs/architecture/`（含 ADR）及 Knowledge OS 体系为准。
 4. **测试计数会变化**。不要假设文档中的任何数字都是最新的。当需要准确数字时，应从 CI 或当前测试套件中获取。
 5. **修改 UI 前必须读 `UI_STYLE_GUIDE.md`**。不得绕过，不得自行发明样式。
 6. **修改并发隔离前必须读 `swift6-migration.md`**。`@unchecked Sendable` 和 unsafe isolation 是被明确禁止的。

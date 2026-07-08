@@ -111,3 +111,9 @@ The Knowledge OS is not healthy merely because documents exist. A milestone fail
 - a permanent thread has no single long-term owner or reusable repository-based bootstrap;
 - an index route leads to conflicting facts;
 - documentation debt is known but has no visible queue or owner area.
+## Documentation Hygiene Records
+
+### DH-2026-07-08: Archive ios-rime-keyboard-development-plan.md
+
+- **Action**：将 `ios-rime-keyboard-development-plan.md` 归档至 `docs/plans/`，添加 Superseded 生命周期头。
+- **Impact**：Plan hygiene 维度改善；路线图引用统一更新至新路径；文档体系不再包含无生命周期标记的游离 plan 文件。

@@ -13,7 +13,7 @@ Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chines
 - **`Universe Keyboard`** (main App) — SwiftUI app (two tabs: Guide / Settings) for keyboard setup, RIME deployment, and feedback configuration.
 - **`Keyboard`** (Keyboard Extension, `Keyboard.appex`) — the actual keyboard that appears in other apps. Built with UIKit (`UIInputViewController`). Primary language: `zh-Hans`.
 
-The long-term goal is a full-featured Chinese keyboard with RIME/librime engine + 雾凇拼音 configuration, swipe input, and near-native iOS feel. The full development plan is documented in `ios-rime-keyboard-development-plan.md`.
+The original development plan is archived as a historical reference in `docs/plans/ios-rime-keyboard-development-plan.md` (Superseded). Current architecture and decisions are governed by this document, `docs/architecture/` (including ADRs), `CONTEXT_INDEX.md`, and the Knowledge OS system.
 
 ## UI Style Guide
 
