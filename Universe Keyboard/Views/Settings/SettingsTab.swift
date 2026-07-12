@@ -43,6 +43,14 @@ struct SettingsTab: View {
                 TypoCorrectionBenchmarkView()
             }
 
+            SettingsNavigationLink(
+                systemImage: "chart.xyaxis.line",
+                title: "输入洞察",
+                subtitle: "本地统计、趋势与字符构成"
+            ) {
+                TypingIntelligenceView()
+            }
+
             VStack(spacing: 0) {
                 HStack(spacing: 12) {
                     ZStack {
@@ -175,6 +183,14 @@ struct SettingsTab: View {
 
             SettingsNavigationLink(systemImage: "circle.lefthalf.filled", title: "外观", subtitle: "跟随系统、浅色或深色模式") {
                 AppearanceSettingsView()
+            }
+
+            SettingsNavigationLink(
+                systemImage: "hand.raised",
+                title: "隐私与数据",
+                subtitle: "本地处理、完全访问与数据控制"
+            ) {
+                PrivacyDataView()
             }
 
             SettingsNavigationLink(systemImage: "character.book.closed", title: "本地词典", subtitle: "查看词典文件与搜索本地词条") {

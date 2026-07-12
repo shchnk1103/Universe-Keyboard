@@ -29,6 +29,7 @@
 
 ## Domain Sources
 
+- Typing Intelligence: [`TYPING_INTELLIGENCE.md`](TYPING_INTELLIGENCE.md)
 - Scheme management: [`RIME_SCHEME_MANAGEMENT.md`](RIME_SCHEME_MANAGEMENT.md)
 - Fuzzy pinyin: [`RIME_FUZZY_PINYIN.md`](RIME_FUZZY_PINYIN.md)
 - User dictionary: [`RIME_USER_DICTIONARY.md`](RIME_USER_DICTIONARY.md)
@@ -37,6 +38,7 @@
 
 ## Operations And Risk
 
+- Privacy policy: [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md)
 - Environment evidence capture procedure: [`ENVIRONMENT_CAPTURE_PROCEDURE.md`](ENVIRONMENT_CAPTURE_PROCEDURE.md)
 - Environment digest tooling architecture: [`ENVIRONMENT_DIGEST_TOOLING.md`](ENVIRONMENT_DIGEST_TOOLING.md)
 - Current engineering status: [`ENGINEERING_DASHBOARD.md`](ENGINEERING_DASHBOARD.md)

@@ -6,6 +6,15 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-07-11 — Local Typing Intelligence implementation
+
+- Added a final-commit observation contract that classifies committed graphemes into irreversible local aggregates without persisting raw text, candidates, composition or host context.
+- Added a bounded, versioned App Group statistics store with asynchronous coalescing, 365-day retention, corruption recovery and reset-epoch protection against stale queued writes.
+- Added disabled, empty, active and failure-state main-App views for local typing trends, composition, activity, privacy controls and permanent clearing; collection remains disabled by default.
+- Added a top-level Home tab with a single, tappable daily aggregate card that leads to detailed insights.
+- Added target privacy manifests, prohibited-payload tests, exactly-once commit tests, store/model coverage and synthetic Release performance evidence.
+- Preserved RIME, candidate generation and keyboard lifecycle behavior. Physical-device Full Access, process-death, sustained-typing, appearance and final review gates remain open before release acceptance.
+
 ## 2026-07-08 — Knowledge OS 2.0 Zero-Context Startup Layer
 
 - Published `KOS-BOOT-001` as the accepted and closed Assignment for Zero-Context Startup governance bootstrap.

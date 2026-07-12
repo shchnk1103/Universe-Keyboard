@@ -15,7 +15,7 @@ extension KeyboardController {
             clearTypoCorrectionSuggestions()
         case .candidate:
             if state.partialCommit?.source == .numberSuffix {
-                commitInlinePreedit(as: candidate)
+                commitInlinePreedit(as: candidate, source: .candidate)
                 state.currentComposition = ""
                 state.lastRimeOutput = RimeOutput(
                     composition: nil,
@@ -70,7 +70,7 @@ extension KeyboardController {
             return .compositionChanged
         }
 
-        commitInlinePreedit(as: correction.committedText)
+        commitInlinePreedit(as: correction.committedText, source: .correction)
         state.currentComposition = ""
         state.lastRimeOutput = nil
         state.partialCommit = nil
@@ -89,7 +89,7 @@ extension KeyboardController {
         state.lastRimeOutput = output
         state.currentComposition = output.composition?.preeditText ?? ""
         if let commit = output.committedText {
-            insertText(commit)
+            insertText(commit, source: .engineCommit)
         }
         return .compositionChanged
     }
@@ -104,7 +104,7 @@ extension KeyboardController {
         state.lastRimeOutput = output
         state.currentComposition = output.composition?.preeditText ?? ""
         if let commit = output.committedText {
-            insertText(commit)
+            insertText(commit, source: .engineCommit)
         }
         return .compositionChanged
     }
@@ -135,7 +135,10 @@ extension KeyboardController {
     }
 
     private func commitFallbackCandidate(_ candidate: String) {
-        commitInlinePreedit(as: (state.partialCommit?.confirmedText ?? "") + candidate)
+        commitInlinePreedit(
+            as: (state.partialCommit?.confirmedText ?? "") + candidate,
+            source: .candidate
+        )
         state.currentComposition = ""
         state.lastRimeOutput = nil
         state.partialCommit = nil

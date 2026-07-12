@@ -2,7 +2,7 @@ extension KeyboardController {
     func handleInsertKey(_ key: String) -> KeyboardEffect {
         guard shouldHandleAsChineseCompositionKey(key) else {
             guard let effects = handleSymbolPageTextInput(key, updatesEnglishAutoCap: true) else {
-                insertText(key)
+                insertText(key, source: .key)
                 var effects = consumeSingleUseShiftIfNeeded()
                 if state.inputMode == .english && AutoCapitalizationRules.isSentenceTerminator(key) {
                     state.shiftState = .singleUse

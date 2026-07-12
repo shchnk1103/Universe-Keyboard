@@ -253,3 +253,5 @@ Ownership: Primary [`Coordinator`](playbooks/coordinator.md); secondary the affe
 5. Relevant architecture/domain source, then `PERFORMANCE_BASELINE.md`, `DEBUGGING.md`, `RELEASE_CHECKLIST.md` and `TECH_DEBT.md` according to impact.
 
 Required review: product definition, data owner, collection point, retention/deletion, Full Access behavior, hot-path cost, privacy boundary, migration/recovery, ADR, tests and physical-device acceptance. Stop before implementation when any of these contracts remains unspecified.
+
+For `TYPING-INTELLIGENCE-001`, also read `TYPING_INTELLIGENCE.md`, its Assignment, ADR 0011 and the Active implementation plan before entering a domain work package.

@@ -87,6 +87,25 @@ If behavior differs, start in `KeyboardController+TextEditing.swift` and `Keyboa
 
 Visibility changes intentionally abandon unfinished composition. If old input reappears, the cleanup contract is broken. If completed text disappears, investigate host marked-range finalization before visibility cleanup. Do not implement composition restoration without a new product/architecture decision.
 
+### Typing Intelligence Is Empty, Duplicated Or Returns After Clear
+
+1. Confirm `typing_intelligence_enabled` is true in the App Group and that the Extension refreshed its cached settings.
+2. Verify the action reaches a final `KeyboardController` commit exit. Marked-text updates and unfinished composition must not count.
+3. Check the exactly-once event tests before changing candidate or RIME code.
+4. Confirm the Extension callback converts `CommittedTextEvent.text` directly to `TypingStatisticsDelta`; never add text logging to diagnose this path.
+5. Confirm `typing_intelligence_reset_epoch` matches the persisted snapshot and the Extension's current cached epoch.
+6. If data reappears after clear, treat it as a reset-epoch race and stop release; do not mask it in the UI.
+7. If the snapshot is corrupt or a future version is unsupported, the main App shows an empty safe state. Preserve the corrupt payload only in a synthetic test, never copy real keyboard data into an issue.
+8. Without writable App Group access, basic typing remains functional and statistics may be unavailable. Do not infer a reliable live Full Access flag from the main App alone.
+
+Useful keys contain only controls or aggregates:
+
+- `typing_intelligence_enabled`
+- `typing_intelligence_reset_epoch`
+- `typing_intelligence_snapshot_v1`
+
+The snapshot must never contain committed text, candidates, raw input, host identity or per-commit timestamps.
+
 ### Lua Feature Missing
 
 Check in order:

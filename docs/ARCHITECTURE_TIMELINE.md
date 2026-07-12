@@ -75,3 +75,11 @@ Decision: ADR 0006. Risk source: `TECH_DEBT.md`.
 Documentation moved from accumulated context and plans toward explicit Source of Truth ownership, accepted ADRs, operational guides, technical-debt triggers and task-based navigation. This milestone governs discoverability; it does not change production architecture.
 
 Current sources: `KNOWLEDGE_OS.md`, `DOCUMENTATION_GOVERNANCE.md`, `DOCUMENTATION_HEALTH.md`.
+
+## Local Typing Intelligence Boundary
+
+Typing statistics were introduced as a final-commit observation in KeyboardCore, followed by immediate content-free classification and bounded Extension-owned aggregation. The main App receives only versioned aggregate snapshots. Raw text, RIME output, candidate generation, host context and visibility lifecycle remain outside the feature.
+
+SwiftData was rejected as the V1 cross-process authority; an explicit store protocol, coalesced App Group backend and reset epoch preserve Extension performance and deletion semantics while allowing a future backend migration.
+
+Decision: ADR 0011. Product source: `TYPING_INTELLIGENCE.md`. Current runtime sources: input-pipeline and shared-container architecture documents.

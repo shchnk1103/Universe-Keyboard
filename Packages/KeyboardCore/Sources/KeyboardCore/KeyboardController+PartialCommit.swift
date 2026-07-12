@@ -68,7 +68,7 @@ extension KeyboardController {
             let finalText = committedText.hasPrefix(partialCommit.confirmedText)
                 ? committedText
                 : partialCommit.confirmedText + committedText
-            commitInlinePreedit(as: finalText)
+            commitInlinePreedit(as: finalText, source: .engineCommit)
             state.currentComposition = ""
             state.lastRimeOutput = output
             state.partialCommit = nil
@@ -240,14 +240,16 @@ extension KeyboardController {
     /// Commits Return as the user's raw input when RIME exposes a segmented
     /// display preedit such as "ni h". Partial Commit keeps its visible display
     /// because it may already contain confirmed Chinese text.
-    func finishActiveCompositionAsRawInput() {
+    func finishActiveCompositionAsRawInput(
+        source: CommittedTextSource = .compositionFinalization
+    ) {
         let commitText = state.partialCommit?.displayText
             ?? state.lastRimeOutput?.rawInput
             ?? state.currentComposition
         guard !commitText.isEmpty else {
             return
         }
-        commitInlinePreedit(as: commitText)
+        commitInlinePreedit(as: commitText, source: source)
         state.currentComposition = ""
         state.lastRimeOutput = nil
         state.partialCommit = nil
@@ -282,10 +284,10 @@ extension KeyboardController {
             )
             effects.insert(.compositionChanged)
         } else if let closingSymbol = pairedClosingSymbol(for: text) {
-            insertText(text + closingSymbol)
+            insertText(text + closingSymbol, source: .directText)
             adjustTextPosition(byCharacterOffset: -closingSymbol.count)
         } else {
-            insertText(text)
+            insertText(text, source: .directText)
         }
 
         effects.formUnion(consumeSingleUseShiftIfNeeded())
@@ -367,7 +369,11 @@ extension KeyboardController {
         let commitText = commitFirstCandidateForSymbolInput()
         let finalText = commitText + appendedText
         let selectedOffset = commitText.count + cursorOffsetFromAppendedTextStart
-        commitInlinePreedit(as: finalText, selectedOffset: selectedOffset)
+        commitInlinePreedit(
+            as: finalText,
+            selectedOffset: selectedOffset,
+            source: .directText
+        )
         state.currentComposition = ""
         if shouldClearCandidateState {
             state.lastRimeOutput = nil
@@ -414,7 +420,7 @@ extension KeyboardController {
         let finalText = committedText.hasPrefix(confirmedPrefix)
             ? committedText
             : confirmedPrefix + committedText
-        commitInlinePreedit(as: finalText)
+        commitInlinePreedit(as: finalText, source: .candidate)
         state.currentComposition = ""
         state.lastRimeOutput = result
         state.partialCommit = nil
@@ -425,7 +431,7 @@ extension KeyboardController {
         state.lastRimeOutput = output
         state.currentComposition = output.composition?.preeditText ?? ""
         if let commit = output.committedText {
-            commitInlinePreedit(as: commit)
+            commitInlinePreedit(as: commit, source: .engineCommit)
             state.currentComposition = ""
             clearTypoCorrectionSuggestions()
         } else {

@@ -152,6 +152,9 @@ class KeyboardViewController: UIInputViewController {
     lazy var typoCorrectionLearningStore = TypoCorrectionLearningStore(
         defaults: UserDefaults(suiteName: Self.appGroupID)
     )
+    lazy var typingStatisticsWriter = TypingStatisticsWriter(appGroupID: Self.appGroupID)
+    var cachedTypingIntelligenceEnabled = false
+    var cachedTypingIntelligenceResetEpoch = 0
     var cachedKeyClickLevel: KeyboardFeedbackLevel = .defaultLevel
     var cachedHapticLevel: KeyboardFeedbackLevel = .defaultLevel
     var cachedKeyClickVolume: Float = 0.8

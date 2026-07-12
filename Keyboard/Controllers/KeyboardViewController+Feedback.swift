@@ -90,6 +90,12 @@ extension KeyboardViewController {
         controller.isPairedSymbolCompletionEnabled = rawPairedSymbolCompletion as? Bool ?? true
         controller.typoCorrectionExperimentalEdits = typoExperimentSettings.experimentalEdits
         controller.typoCorrectionLearningSnapshot = typoCorrectionLearningStore.snapshot()
+        cachedTypingIntelligenceEnabled = defaults?.bool(
+            forKey: TypingStatisticsStorageKey.enabled
+        ) ?? false
+        cachedTypingIntelligenceResetEpoch = defaults?.integer(
+            forKey: TypingStatisticsStorageKey.resetEpoch
+        ) ?? 0
     }
 
     func feedbackLevelValue(_ rawValue: Any?) -> KeyboardFeedbackLevel {

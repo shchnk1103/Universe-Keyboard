@@ -94,6 +94,7 @@ extension KeyboardViewController {
     @objc func insertEmoji(_ sender: UIButton) {
         guard let emoji = sender.title(for: .normal) else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
-        textDocumentProxy.insertText(emoji)
+        let effects = controller.handle(.insertEmoji(emoji))
+        syncUI(with: effects)
     }
 }

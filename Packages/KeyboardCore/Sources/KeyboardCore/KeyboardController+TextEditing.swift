@@ -1,5 +1,8 @@
 extension KeyboardController {
-    func handleInsertDirectText(_ text: String) -> KeyboardEffect {
+    func handleInsertDirectText(
+        _ text: String,
+        source: CommittedTextSource = .directText
+    ) -> KeyboardEffect {
         if let effects = handleSymbolPageTextInput(text) {
             return effects
         }
@@ -9,7 +12,7 @@ extension KeyboardController {
             rimeEngine?.resetSession()
             effects.insert(.compositionChanged)
         }
-        insertText(text)
+        insertText(text, source: source)
         return effects
     }
 
@@ -18,7 +21,7 @@ extension KeyboardController {
            partialCommit.source == .numberSuffix,
            let firstCandidate = state.lastRimeOutput?.candidates.first?.text
         {
-            commitInlinePreedit(as: firstCandidate)
+            commitInlinePreedit(as: firstCandidate, source: .space)
             state.currentComposition = ""
             state.lastRimeOutput = RimeOutput(
                 composition: nil,
@@ -37,7 +40,10 @@ extension KeyboardController {
             let firstCandidate = state.lastRimeOutput?.candidates.first?.text
         {
             // Preserve the first page selection even if later pages were prefetched for display.
-            commitInlinePreedit(as: (state.partialCommit?.confirmedText ?? "") + firstCandidate)
+            commitInlinePreedit(
+                as: (state.partialCommit?.confirmedText ?? "") + firstCandidate,
+                source: .space
+            )
             state.currentComposition = ""
             state.lastRimeOutput = RimeOutput(
                 composition: nil,
@@ -53,7 +59,7 @@ extension KeyboardController {
         }
         if !state.currentComposition.isEmpty {
             let first = candidateProvider.candidates(for: state.currentComposition).first ?? state.currentComposition
-            commitInlinePreedit(as: first)
+            commitInlinePreedit(as: first, source: .space)
             state.currentComposition = ""
             state.lastRimeOutput = nil
             state.partialCommit = nil
@@ -65,7 +71,7 @@ extension KeyboardController {
 
         guard state.currentPage == .letters && state.inputMode == .english else {
             state.lastSpaceTapTime = nil
-            insertText(" ")
+            insertText(" ", source: .space)
             return []
         }
 
@@ -75,21 +81,21 @@ extension KeyboardController {
 
         if isDoubleSpace {
             textClient?.deleteBackward()
-            insertText(". ")
+            insertText(". ", source: .space)
             state.lastSpaceTapTime = nil
         } else {
-            insertText(" ")
+            insertText(" ", source: .space)
         }
         return []
     }
 
     func handleInsertReturn() -> KeyboardEffect {
         if !state.currentComposition.isEmpty {
-            finishActiveCompositionAsRawInput()
+            finishActiveCompositionAsRawInput(source: .returnKey)
             rimeEngine?.resetSession()
             return .compositionChanged
         }
-        insertText("\n")
+        insertText("\n", source: .returnKey)
         return []
     }
 
@@ -161,8 +167,13 @@ extension KeyboardController {
         return .compositionChanged
     }
 
-    func insertText(_ text: String) {
-        textClient?.insertText(text)
+    func insertText(
+        _ text: String,
+        source: CommittedTextSource = .compositionFinalization
+    ) {
+        guard !text.isEmpty, let textClient else { return }
+        textClient.insertText(text)
+        onCommittedText?(CommittedTextEvent(text: text, source: source))
     }
 
     func adjustTextPosition(byCharacterOffset offset: Int) {
@@ -192,27 +203,34 @@ extension KeyboardController {
         state.insertedPreeditCount = 0
     }
 
-    func commitInlinePreedit(as text: String, selectedOffset: Int? = nil) {
+    func commitInlinePreedit(
+        as text: String,
+        selectedOffset: Int? = nil,
+        source: CommittedTextSource = .compositionFinalization
+    ) {
         // When commitText matches current preedit content, use insertText
         // to replace the current marked range. setMarkedText + unmarkText
         // does not reliably clear composing underline when content is unchanged.
 
         if text == state.insertedPreeditText, !text.isEmpty {
-            insertText(text)
+            insertText(text, source: source)
             state.insertedPreeditText = ""
             state.insertedPreeditCount = 0
             return
         }
         guard state.insertedPreeditCount > 0 else {
-            insertText(text)
+            insertText(text, source: source)
             return
         }
         if text.isEmpty {
             clearInlinePreedit()
         } else {
             let offset = min(max(0, selectedOffset ?? text.count), text.count)
-            textClient?.setMarkedText(text, selectedRange: offset..<offset)
-            textClient?.unmarkText()
+            if let textClient {
+                textClient.setMarkedText(text, selectedRange: offset..<offset)
+                textClient.unmarkText()
+                onCommittedText?(CommittedTextEvent(text: text, source: source))
+            }
         }
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0

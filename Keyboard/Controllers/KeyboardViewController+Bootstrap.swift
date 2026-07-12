@@ -19,6 +19,16 @@ extension KeyboardViewController {
             guard let self else { return }
             self.controller.typoCorrectionLearningSnapshot = self.typoCorrectionLearningStore.recordSelection(correction)
         }
+        controller.onCommittedText = { [weak self] event in
+            guard let self, self.cachedTypingIntelligenceEnabled else { return }
+            let delta = TypingStatisticsClassifier.classify(event.text)
+            self.typingStatisticsWriter.record(
+                delta,
+                source: event.source,
+                at: Date(),
+                resetEpoch: self.cachedTypingIntelligenceResetEpoch
+            )
+        }
 
         Logger.shared.info("viewDidLoad, keyboardType=\(keyboardType)", category: .general)
         prepareRimeSession()

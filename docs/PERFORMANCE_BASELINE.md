@@ -53,6 +53,17 @@ Correlate UI feedback, `KeyboardController.handle`, RIME processing and `syncUI`
 
 Use a fixed synthetic sequence at controlled cadence. Record per-key distribution, worst stalls, dropped visual/audio feedback and main-thread blocking. Run English direct input and Chinese RIME composition separately.
 
+For Typing Intelligence, compare the same synthetic sequence with collection disabled and enabled. Separately record:
+
+- bounded grapheme-classification cost at final commit;
+- time spent enqueuing/merging the content-free delta;
+- background batch frequency and encoded payload size;
+- main-thread stalls around flush activity;
+- memory retained by pending aggregation;
+- sudden process termination loss bounded to the pending batch.
+
+The enabled path must not synchronously read/write App Group defaults, encode JSON or wait for the persistence queue. Do not use real typed content in performance evidence.
+
 ### Candidate Refresh Latency
 
 Measure RIME output availability to candidate snapshot application for:
@@ -108,6 +119,7 @@ No numeric baseline or budget is accepted yet. The following remain to be collec
 - [ ] RIME session creation/recovery;
 - [ ] Lua smoke impact;
 - [ ] OpenCC impact.
+- [ ] Typing Intelligence disabled/enabled commit-path comparison and bounded store evidence.
 
 ## Related Documents
 
@@ -116,3 +128,5 @@ No numeric baseline or budget is accepted yet. The following remain to be collec
 - `docs/RELEASE_CHECKLIST.md`
 - `docs/DEBUGGING.md`
 - `docs/TECH_DEBT.md`
+- `docs/TYPING_INTELLIGENCE.md`
+- `docs/architecture/decisions/0011-local-typing-intelligence-data-boundary.md`

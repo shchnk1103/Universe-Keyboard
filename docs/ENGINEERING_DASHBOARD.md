@@ -8,6 +8,21 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## TYPING-INTELLIGENCE-001 — Local Typing Intelligence Foundation
+
+- **Confirmed status:** `Active`
+- **Status owner/source:** Product Lead; [`Assignment`](assignments/typing-intelligence-001.md)
+- **Product source:** [`Typing Intelligence Product Contract`](TYPING_INTELLIGENCE.md)
+- **Architecture source:** [ADR 0011](architecture/decisions/0011-local-typing-intelligence-data-boundary.md)
+- **Current phase:** Implementation; automated and physical-device validation pending
+- **Domain Owner / Executor:** Input Intelligence Maintainer
+- **Supporting owners:** Keyboard Experience, App & Data Operations, Architecture, Quality
+- **Dependencies:** Pre-feature baseline and privacy API inventory are Gate 0 work; physical-device Full Access evidence is required before final acceptance.
+- **NE1 boundary:** NATIVE-EXPERIENCE-001 remains independently frozen/traceable and is not modified by this Work Item.
+- **Current implementation:** Commit/classification contract, bounded writer/store, Extension wiring, main-App dashboard, privacy page and target manifests are present; Quality has not yet validated them.
+- **Next handoff:** Quality runs the automated matrix and reports compile/test/privacy/performance findings; App/Data and Input Intelligence address evidence-backed defects.
+- **Stop conditions:** Raw/reconstructable input persistence, synchronous key-path storage, RIME/candidate/lifecycle redesign, network/SDK data sharing or NE1 contamination.
+
 - Product 决策和 Gate 归 🧭 Product Lead。
 - 架构、ADR 和 Source of Truth 归 🏛️ Architecture & Knowledge Steward。
 - 领域实现和领域证据归各 Maintainer。

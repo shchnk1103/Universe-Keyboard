@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Universe Keyboard
 //
-//  主页面：Tab 分为「引导」和「设置」。
+//  主页面：Tab 分为「首页」、「引导」和「设置」。
 //
 
 import SwiftUI
@@ -19,8 +19,18 @@ struct ContentView: View {
     @State private var toastDismissTask: Task<Void, Never>?
     @State private var deploymentToastOperationActive = false
 
+    init() {
+        #if DEBUG
+        TypingIntelligencePreviewFixture.installIfRequested()
+        #endif
+    }
+
     var body: some View {
         TabView {
+            HomeTab()
+                .tabItem {
+                    Label("首页", systemImage: "house")
+                }
             GuideTab()
                 .tabItem {
                     Label("引导", systemImage: "book.pages")

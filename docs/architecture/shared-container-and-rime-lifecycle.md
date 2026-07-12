@@ -15,7 +15,7 @@ Both targets use App Group `group.com.DoubleShy0N.Universe-Keyboard`.
 | `Rime/shared/` | schema, dictionary, Lua, OpenCC and compiled `build/` data | Main App deployment and schema installation paths | Main App diagnostics; Keyboard Extension session |
 | `Rime/user/` | RIME user data, custom YAML and `{schema}.userdb*` learning data | Main App configuration/deployment; librime runtime may update its user data | Main App backup/diagnostics; Keyboard Extension RIME session |
 | `Rime/user_dictionary_backups/{schemaID}/{timestamp}/` | local user-dictionary backup plus `manifest.json` | Main App only | Main App only |
-| App Group `UserDefaults` | settings, active schema, deploy flags, diagnostics, feedback levels and bounded typo-learning metadata | Main App; Extension only for explicitly runtime-owned state such as diagnostics and typo selection learning | Both targets |
+| App Group `UserDefaults` | settings, active schema, deploy flags, diagnostics, feedback levels, bounded typo-learning metadata and versioned Typing Intelligence aggregates | Main App; Extension only for explicitly runtime-owned state such as diagnostics, typo selection learning and Typing Intelligence aggregates | Both targets |
 | process temporary directory | downloaded archive and extraction workspace | Main App only | Main App only |
 
 `Packages/RimeBridge/Vendor/` is a repository-local build dependency, not App Group runtime data.
@@ -45,6 +45,10 @@ At startup the Extension calls `RimeConfigManager.runtimeDirectories()`. This re
 - It must not generate YAML, install files, clear deployment caches or run full maintenance.
 
 The Extension may write state that is inherently runtime-owned, including librime user data, bounded diagnostic output and explicit typo-correction selection learning. It must not synchronously scan, hash, copy or persist large data from a key-event hot path.
+
+Typing Intelligence is a separate bounded runtime-owned writer. Final committed text is classified in memory and discarded; only content-free aggregate deltas enter an ordered utility writer. JSON/defaults reads and writes are outside key handling. The main App reads snapshots and controls enable/reset. Reset advances an epoch before deleting the payload so stale Extension batches cannot restore cleared data.
+
+Typing Intelligence does not use `Rime/shared`, `Rime/user`, candidate storage or keyboard visibility callbacks. Sudden Extension termination may lose one bounded unflushed aggregate batch; typing correctness takes priority over statistical durability.
 
 ## Deployment Lifecycle
 
@@ -99,3 +103,5 @@ All in-memory controller, composition, candidate paging and session state is los
 - `Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift`
 - `Universe Keyboard/Services/SchemaArchiveInstaller.swift`
 - `Universe Keyboard/Services/RimeUserDictionaryBackupService.swift`
+- `Packages/KeyboardCore/Sources/KeyboardCore/TypingStatisticsStore.swift`
+- `Universe Keyboard/Models/TypingIntelligenceViewModel.swift`

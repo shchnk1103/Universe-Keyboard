@@ -158,6 +158,7 @@ final class SymbolPageTests: XCTestCase {
             .candidatePageDown,
             .togglePage,
             .toggleInputMode,
+            .insertEmoji("😀"),
         ]
         for action in actions {
             // 每个 action 都应该能被 handle 处理而不崩溃

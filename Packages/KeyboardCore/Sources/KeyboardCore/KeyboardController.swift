@@ -15,6 +15,9 @@ public final class KeyboardController {
     public var typoCorrectionExperimentalEdits: TypoCorrectionExperimentalEdits = []
     public var typoCorrectionLearningSnapshot: TypoCorrectionLearningSnapshot = .empty
     public var onTypoCorrectionSelected: ((TypoCorrectionCommit) -> Void)?
+    /// Called synchronously with ephemeral final text. Consumers must convert
+    /// it to content-free aggregates before returning and must not persist it.
+    public var onCommittedText: ((CommittedTextEvent) -> Void)?
     public var isPairedSymbolCompletionEnabled = true
     var shouldRestoreRimeComposition = false
     var shouldRebuildSessionDuringRestore = false
@@ -90,7 +93,9 @@ public final class KeyboardController {
         case .insertCorrectionCandidate(let correction):
             return handleInsertCorrectionCandidate(correction)
         case .insertDirectText(let text):
-            return handleInsertDirectText(text)
+            return handleInsertDirectText(text, source: .directText)
+        case .insertEmoji(let emoji):
+            return handleInsertDirectText(emoji, source: .emoji)
         case .toggleShift:
             return handleToggleShift()
         case .togglePage:

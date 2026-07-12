@@ -17,6 +17,9 @@ public enum KeyboardAction: Equatable {
     /// 点选后直接提交纠错候选文本并清空 RIME session。
     case insertCorrectionCandidate(TypoCorrectionCommit)
     case insertDirectText(String)
+    /// Emoji uses the same final-commit path as other direct text while
+    /// retaining a content-free source category for aggregate statistics.
+    case insertEmoji(String)
     case toggleShift
     case togglePage
     case toggleInputMode

@@ -98,6 +98,10 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 - [ ] User-dictionary learning switch, backup, restore and reset behave correctly for supported schemas.
 - [ ] Diagnostics can filter, refresh, copy and clear without exposing private host text.
 - [ ] Global operation toast survives navigation and duplicate actions are guarded.
+- [ ] Typing Intelligence covers disabled, empty, active and safe-error states.
+- [ ] Today/7-day/30-day/all-time totals, trend, composition and streak match controlled fixtures.
+- [ ] Typing Intelligence enable/disable is explicit and clear permanently removes local aggregates.
+- [ ] Privacy & Data copy matches current behavior, bundled manifests and App Store privacy answers.
 
 ## Keyboard Acceptance On A Physical Device
 
@@ -113,6 +117,10 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 - [ ] Session recovery does not invoke deployment or block a key event with file work.
 - [ ] Light/dark mode, VoiceOver, Dynamic Type and compact keyboard height remain usable.
 - [ ] Key sound/haptic settings refresh and do not double-fire.
+- [ ] Typing Intelligence counts candidate, Space, Return, direct key, direct text and Emoji commits exactly once.
+- [ ] Marked-text updates, Delete and visibility abandonment do not increment statistics.
+- [ ] Full Access off keeps basic typing usable and does not claim shared statistics are active.
+- [ ] Extension process death loses at most a bounded pending batch and resumes from a valid snapshot.
 
 ## RIME, Lua And OpenCC
 
@@ -135,8 +143,22 @@ OpenCC current integration ownership is defined in
 - [ ] Missing runtime directories produce fallback plus actionable main-App recovery.
 - [ ] Failed deployment remains pending and succeeds after retry.
 - [ ] Interrupted/incomplete scheme installation is recoverable by main-App reinstall/redownload.
+- [ ] Typing Intelligence classification/enqueue adds no unexplained key-path regression against the disabled baseline.
+- [ ] Typing Intelligence persistence is coalesced, bounded and absent from synchronous key handling.
+- [ ] Reset epoch prevents delayed writes from restoring cleared statistics.
 
 The project does not yet have numeric Extension latency or memory budgets. Follow `docs/PERFORMANCE_BASELINE.md`, record real measurements and regressions, and do not mark this section passed solely because no crash was observed.
+
+## Privacy And App Store Metadata
+
+- [ ] Main App and Keyboard Extension bundles contain valid `PrivacyInfo.xcprivacy` files.
+- [ ] Required Reason API declarations match the final binary API inventory and approved reasons.
+- [ ] `NSPrivacyCollectedDataTypes` and App Store privacy answers reflect off-device collection, not merely local processing.
+- [ ] No keyboard text, surrounding text, candidates, user dictionary, diagnostics or Typing Intelligence aggregates leave the device.
+- [ ] No analytics, advertising or tracking SDK receives keyboard-derived data.
+- [ ] The in-app privacy page and externally hosted privacy-policy URL match `docs/PRIVACY_POLICY.md`.
+- [ ] App Review notes explain Full Access, local RIME resources and on-device Typing Intelligence in plain language.
+- [ ] Current App Review Guidelines are rechecked at submission time; prior review behavior is not treated as a guarantee.
 
 ## Documentation And Release Record
 

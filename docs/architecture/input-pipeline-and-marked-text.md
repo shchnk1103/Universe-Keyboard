@@ -41,6 +41,20 @@ Never reconstruct raw input from display preedit.
 7. If no marked range is tracked, finalization falls back to `insertText`.
 8. Visibility cleanup removes marked preedit and discards unfinished composition; it does not commit it.
 
+## Committed-Text Observation
+
+Typing Intelligence observes final commits at the `KeyboardController` finalization boundary. The observation is downstream of the selected final text and upstream of content-free aggregation.
+
+Invariants:
+
+1. One successful final host commit emits exactly one `CommittedTextEvent`.
+2. `updateInlinePreedit`, candidate generation and unfinished composition emit no event.
+3. Both `insertText` replacement and `setMarkedText` plus `unmarkText` finalization are covered.
+4. No event is emitted when no `TextInputClient` can perform the commit.
+5. Emoji and other direct UIKit text route through a KeyboardCore action instead of bypassing the commit boundary.
+6. Event text is ephemeral: consumers classify it synchronously and never persist or log it.
+7. Observation does not change RIME, candidate, marked-text or visibility semantics.
+
 ## Action Semantics
 
 ### Candidate
@@ -96,6 +110,9 @@ Direct symbols/text first finalize any active composition through the appropriat
 - Partial Commit and first-Delete restore preserve raw input;
 - visibility changes discard, rather than restore or commit, unfinished input;
 - runtime session recovery does not duplicate committed text.
+- every final commit path emits exactly once with the approved source category;
+- marked-text updates and visibility abandonment emit no committed-text event;
+- Emoji uses the same committed-text boundary as other direct text.
 
 ## Source Of Truth
 
@@ -104,3 +121,4 @@ Direct symbols/text first finalize any active composition through the appropriat
 - `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PartialCommit.swift`
 - `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+RimeRecovery.swift`
 - `Keyboard/Services/UITextDocumentProxyAdapter.swift`
+- `Packages/KeyboardCore/Sources/KeyboardCore/TypingIntelligence.swift`
