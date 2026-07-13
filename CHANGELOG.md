@@ -6,6 +6,34 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-07-13 — 安全的 RIME 自动同步与同步提醒
+
+- 完成一次用户确认的 RIME 标准同步后，默认启用自动同步；用户可改为每天或每 7 天一次，并可随时关闭。
+- 新增 iOS 后台处理任务、键盘活动心跳和本地通知：系统只在合适的空闲机会运行；键盘正在使用、目录授权失效或冷却期未结束时会安全跳过。开始与完成提醒需要用户单独授权。
+- 自动路径继续使用 librime `sync_user_data` 快照合并，不复制运行中的 `*.userdb*`，不自动导入其他设备 YAML，也不进入键盘按键路径。
+- 更新同步、隐私、架构、调试和发布文档，明确后台任务不保证固定时刻或实时完成。
+
+## 2026-07-12 — RIME standard sync as the interoperability path
+
+- Added a main-App-only bridge to librime `sync_user_data` and configured its standard `sync_dir` / installation ID through a user-selected file-provider folder.
+- Made standard sync an explicitly confirmed manual operation: it refreshes managed `.custom.yaml`, merges official user-dictionary snapshots and backs up RIME YAML/TXT without copying live `*.userdb*` files.
+- Kept `universe-rime-sync` as a separate encrypted auxiliary package. WebDAV continues to carry only that private package and is not presented as an interoperable RIME `sync_dir`.
+- Added fail-closed `installation.yaml` preservation checks, clear privacy copy and no-auto-sync boundaries. Physical-device, multi-frontend and configuration-import evidence remain open.
+- Consolidated the two visible sync commands into one staged `立即同步` flow: standard-folder users see RIME user-data sync followed by encrypted private-settings sync, with each state shown through the shared global toast.
+- Coordinated all local-folder and standard-sync writes with `NSFileCoordinator` and the file provider's supplied URL, fixing provider paths that could create folders but rejected saving `format.json` during atomic writes.
+- Added a coordinated write/read/delete preflight before switching standard folders. The file-picker callback now holds the security-scoped directory access through preflight and bookmark persistence, which fixes iCloud Drive selections that could become unavailable after the callback returns. A failed selection pauses sync, retains the old directory only as recovery reference, and records a non-sensitive diagnostic phase/error code instead of silently continuing to the old directory.
+- Moved candidate learning into “数据与同步” as “RIME 用户词典”, aligned the RIME 云同步 icon with the app's neutral settings-icon style, and clarified that cross-device learned-dictionary exchange uses standard RIME sync.
+- Hardened local user-dictionary restore and reset: both now create and verify a distinct recovery backup before modifying live `userdb` files, abort safely on preparation failure, and attempt rollback after a failed replacement.
+
+## 2026-07-12 — Portable encrypted RIME settings sync V1
+
+- Added a main-App-only RIME sync coordinator with deterministic field-level logical versions, unknown-field preservation and conflict-safe retries.
+- Added ChaCha20-Poly1305 end-to-end encryption, a device-local Keychain key, an exportable recovery code and fail-closed handling for wrong keys or damaged packages.
+- Added WebDAV transport with HTTPS enforcement, Basic authentication, ETag conditional writes and remote deletion, plus a security-scoped local-folder transport with atomic writes.
+- Added a native Settings page for provider setup, stable sync status, explicit content scope, recovery information, foreground/manual synchronization and destructive data controls.
+- Kept user dictionaries, Typing Intelligence, diagnostics, Typo learning, typed text and custom YAML files outside V1; keyboard input remains offline and unchanged.
+- Added focused merge, crypto, local-folder, conflict-retry and WebDAV request-contract tests. Real provider, physical-device, accessibility and cross-platform client evidence remain open before Product acceptance.
+
 ## 2026-07-11 — Local Typing Intelligence implementation
 
 - Added a final-commit observation contract that classifies committed graphemes into irreversible local aggregates without persisting raw text, candidates, composition or host context.

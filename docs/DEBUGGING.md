@@ -129,6 +129,21 @@ Current integration ownership and boundaries are defined in
 4. Confirm `shared/opencc` configs and `.ocd2` assets exist.
 5. Confirm the active schema includes the simplifier filter and correct option.
 
+### RIME Settings Sync Fails Or Repeats
+
+1. Confirm the failure is in the main App. The Keyboard Extension never performs network, private sync or RIME standard sync work.
+2. For WebDAV, verify the URL is HTTPS, credentials have read/write/create/delete permission and the service supports `GET`, `PUT`, `MKCOL`, `DELETE` and conditional requests.
+3. HTTP 401/403 is an authentication or permission failure; 412 is a concurrent-write conflict and should be retried from a fresh `GET`; 507 is remote storage exhaustion.
+4. For local-folder sync, first confirm diagnostics contains the non-sensitive `rimeSync folder selection` outcome. `preflight.coordinate` / `preflight.write` / `preflight.read` / `preflight.delete` identify the failed access stage; `bookmark` means the directory was accessible but its persistent authorization could not be saved. A failed selection pauses sync rather than falling back to the previous directory; reselect the folder and retry. Both paths use `NSFileCoordinator` and the file provider's coordinated URL.
+5. “数据损坏或密钥不匹配” is fail-closed authenticated-decryption behavior. Verify the recovery code; never bypass authentication or replace remote data automatically.
+6. Inspect `universe-rime-sync/format.json` and the existence/size of `profiles/default/settings.json`, but do not paste decrypted user settings or credentials into logs.
+7. If upload succeeds but keyboard behavior is unchanged, inspect the normal RIME deployment state separately. Remote persistence and local deployment are distinct operations.
+8. If two devices change the same field offline, the larger logical version and then device ID wins deterministically. Different fields should both survive.
+9. “立即同步” only runs standard user-data sync after explicit confirmation with a local/file-provider folder. Confirm the keyboard is not being used, then verify `Rime/user/installation.yaml` points to the selected `sync_dir`.
+10. Standard sync merges `*.userdb.txt` snapshots and backs up YAML/TXT per device. It does not copy live `*.userdb*`, auto-import another device's YAML, or sync a complete schema installation.
+11. User dictionaries and custom YAML are intentionally absent from the encrypted `universe-rime-sync` package; their absence from that package is not a failure when standard RIME sync is configured.
+12. For automatic standard sync, first confirm an initial manual standard sync succeeded. Then check `rimeSync automatic background task scheduled` and the result logs. `keyboardActive=true` means the App intentionally skipped the run; folder-access failure pauses sync and requires reselecting the folder. iOS can delay a background task, so a missing run at the earliest time is not by itself a product failure.
+
 ## Crash, Performance And Memory
 
 The repository does not yet define production budgets. Until that work exists:

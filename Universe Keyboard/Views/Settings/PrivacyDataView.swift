@@ -48,10 +48,16 @@ struct PrivacyDataView: View {
             }
 
             Section {
-                Label("主 App 只在你请求下载或更新可选输入方案时访问 GitHub。键盘输入和本地数据不会加入请求。", systemImage: "arrow.down.circle")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .padding(.vertical, 4)
+                privacyRow(
+                    "方案下载",
+                    detail: "主 App 只在你请求下载或更新可选输入方案时访问 GitHub。键盘输入不会加入请求。",
+                    icon: "arrow.down.circle"
+                )
+                privacyRow(
+                    "可选的 RIME 云同步",
+                    detail: "默认关闭。开启后，主 App 只把端到端加密的 RIME 设置发送到你选择的 WebDAV 或文件夹；不包含用户词典、输入洞察、日志或输入内容。",
+                    icon: "icloud.and.arrow.up"
+                )
             } header: {
                 Text("网络")
             }

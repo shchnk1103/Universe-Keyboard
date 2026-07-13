@@ -102,6 +102,15 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 - [ ] Today/7-day/30-day/all-time totals, trend, composition and streak match controlled fixtures.
 - [ ] Typing Intelligence enable/disable is explicit and clear permanently removes local aggregates.
 - [ ] Privacy & Data copy matches current behavior, bundled manifests and App Store privacy answers.
+- [ ] RIME sync covers unconfigured, configured, syncing, success, authentication failure, wrong-key, conflict and folder-access states.
+- [ ] WebDAV setup rejects non-HTTPS remote servers except loopback test addresses and never exposes credentials in UI feedback or logs.
+- [ ] Local-folder sync survives relaunch through a valid security-scoped bookmark, or provides actionable reselection when access is revoked.
+- [ ] Recovery code export/import decrypts the same profile; a wrong key or modified ciphertext fails closed without overwriting local settings.
+- [ ] Disconnect and remote-delete actions have distinct confirmation copy and verified effects.
+- [ ] RIME standard-sync confirmation plainly states that user-dictionary snapshots and YAML/TXT backups are not encrypted by Universe Keyboard.
+- [ ] Standard sync is unavailable for WebDAV-only configuration. The first standard sync requires explicit confirmation; later automatic maintenance is only scheduled by the containing App's permitted background task, never by launch, foregrounding or the Keyboard Extension.
+- [ ] With the keyboard closed, standard sync writes a valid `installation.yaml` `sync_dir`, generates a safe device ID, and completes a librime snapshot merge without copying live `*.userdb*` files.
+- [ ] A compatible desktop RIME frontend using the same folder can observe the expected per-device sync layout; an incompatible frontend is reported as unsupported rather than assumed compatible.
 
 ## Keyboard Acceptance On A Physical Device
 
@@ -146,6 +155,12 @@ OpenCC current integration ownership is defined in
 - [ ] Typing Intelligence classification/enqueue adds no unexplained key-path regression against the disabled baseline.
 - [ ] Typing Intelligence persistence is coalesced, bounded and absent from synchronous key handling.
 - [ ] Reset epoch prevents delayed writes from restoring cleared statistics.
+- [ ] Sync hashing, encryption, file access, WebDAV and merge work remain main-App-only and absent from key handling.
+- [ ] Foreground automatic sync is rate-limited and does not claim guaranteed real-time/background delivery.
+- [ ] Interrupted or conflicting sync keeps the last local settings usable and converges after a fresh conditional retry.
+- [ ] First standard RIME sync is manual, main-App-only and performed only after the user confirms the keyboard is not in use. Automatic follow-up verifies valid folder access, elapsed cooldown and inactive keyboard heartbeat; it never enters key handling or the Extension.
+- [ ] Automatic sync offers daily and seven-day cooldowns, never claims fixed timing, skips safely while the keyboard is visible, and retries only in a later system opportunity.
+- [ ] Notification permission is requested only from the in-app “同步提醒” control. Allowed notifications reveal only automatic sync start/completion; denied permission does not disable syncing.
 
 The project does not yet have numeric Extension latency or memory budgets. Follow `docs/PERFORMANCE_BASELINE.md`, record real measurements and regressions, and do not mark this section passed solely because no crash was observed.
 
@@ -154,7 +169,10 @@ The project does not yet have numeric Extension latency or memory budgets. Follo
 - [ ] Main App and Keyboard Extension bundles contain valid `PrivacyInfo.xcprivacy` files.
 - [ ] Required Reason API declarations match the final binary API inventory and approved reasons.
 - [ ] `NSPrivacyCollectedDataTypes` and App Store privacy answers reflect off-device collection, not merely local processing.
-- [ ] No keyboard text, surrounding text, candidates, user dictionary, diagnostics or Typing Intelligence aggregates leave the device.
+- [ ] No keyboard text, surrounding text, candidates, diagnostics or Typing Intelligence aggregates enter any sync package or leave the device.
+- [ ] Standard RIME sync transfers only user-approved librime snapshots and YAML/TXT backups to the selected folder; it does not copy live `*.userdb*` files and its non-encrypted storage boundary is disclosed.
+- [ ] User-enabled RIME settings sync sends only authenticated ciphertext plus the documented minimal format metadata to the selected destination.
+- [ ] App Store privacy answers distinguish user-directed encrypted storage transfer from developer collection and match current App Review requirements.
 - [ ] No analytics, advertising or tracking SDK receives keyboard-derived data.
 - [ ] The in-app privacy page and externally hosted privacy-policy URL match `docs/PRIVACY_POLICY.md`.
 - [ ] App Review notes explain Full Access, local RIME resources and on-device Typing Intelligence in plain language.

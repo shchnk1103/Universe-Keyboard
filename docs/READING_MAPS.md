@@ -134,6 +134,18 @@ Ownership: Primary [`Main App UI`](playbooks/main-app-ui.md) for backup/restore 
 
 Required review: reader/writer ownership, active-session coordination, backup-before-restore, failure recovery, Full Access/privacy and migration compatibility.
 
+## Modify Portable RIME Sync
+
+Ownership: Primary [`Main App UI`](playbooks/main-app-ui.md) for sync orchestration, provider credentials and settings UX; secondary [`RimeBridge`](playbooks/rime-bridge.md) only when librime user-data APIs are involved and [`Test / Release`](playbooks/test-release.md) for security, interruption and compatibility evidence.
+
+1. `RIME_SYNC.md` and the current `RIME-SYNC-001` Assignment.
+2. ADR 0012, then ADR 0003, 0005 and 0007.
+3. `architecture/shared-container-and-rime-lifecycle.md`.
+4. `PRIVACY_POLICY.md`, `DEBUGGING.md`, `RELEASE_CHECKLIST.md` and `TECH_DEBT.md`.
+5. `UI_STYLE_GUIDE.md` for the main-App surface.
+
+Required review: transport-independent package format, authenticated encryption, credential/key separation, conditional writes, non-destructive conflict handling, provider deletion, unknown-field preservation, main-App-only execution, no keyboard hot-path work and representative cross-platform fixtures. CloudKit additionally requires verified membership, container, entitlement and physical-device evidence.
+
 ## Modify Schema Download, Install Or Rollback
 
 Ownership: Primary [`Main App UI`](playbooks/main-app-ui.md) for download/install/deploy orchestration; secondary [`RimeBridge`](playbooks/rime-bridge.md) for deployment/runtime boundaries and [`Test / Release`](playbooks/test-release.md) for interruption evidence; escalate transaction-model, rollback or cross-target decisions to [`Coordinator`](playbooks/coordinator.md).

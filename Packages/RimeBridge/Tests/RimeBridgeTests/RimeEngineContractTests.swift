@@ -133,4 +133,97 @@ final class RimeEngineContractTests: XCTestCase {
         XCTAssertFalse(result.succeeded)
         XCTAssertTrue(result.diagnosticMessage.contains("keyboard session engine"))
     }
+
+    func testStandardSyncInstallationKeepsUnrelatedConfiguration() throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-standard-sync-\(UUID().uuidString)", isDirectory: true)
+        let userDataURL = root.appendingPathComponent("user", isDirectory: true)
+        let syncURL = root.appendingPathComponent("sync", isDirectory: true)
+        try FileManager.default.createDirectory(at: userDataURL, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let installationURL = userDataURL.appendingPathComponent("installation.yaml")
+        try "distribution_name: Existing Rime\ninstallation_id: old-device\ncustom_flag: true\n".write(
+            to: installationURL,
+            atomically: true,
+            encoding: .utf8
+        )
+
+        try RimeStandardSyncInstallation.configure(
+            userDataURL: userDataURL,
+            syncDirectoryURL: syncURL,
+            installationID: "universe-ios-device"
+        )
+
+        let output = try String(contentsOf: installationURL, encoding: .utf8)
+        XCTAssertTrue(output.contains("distribution_name: Existing Rime"))
+        XCTAssertTrue(output.contains("custom_flag: true"))
+        XCTAssertTrue(output.contains("installation_id: 'universe-ios-device'"))
+        XCTAssertTrue(output.contains("sync_dir: '\(syncURL.path)'"))
+        XCTAssertFalse(output.contains("installation_id: old-device"))
+    }
+
+    func testStandardSyncInstallationRejectsComplexManagedField() throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-standard-sync-invalid-\(UUID().uuidString)", isDirectory: true)
+        let userDataURL = root.appendingPathComponent("user", isDirectory: true)
+        try FileManager.default.createDirectory(at: userDataURL, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        try "sync_dir: |\n  /unsafe\n".write(
+            to: userDataURL.appendingPathComponent("installation.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+
+        XCTAssertThrowsError(
+            try RimeStandardSyncInstallation.configure(
+                userDataURL: userDataURL,
+                syncDirectoryURL: root.appendingPathComponent("sync", isDirectory: true),
+                installationID: "universe-ios-device"
+            )
+        ) { error in
+            XCTAssertEqual(error as? RimeStandardSyncError, .invalidInstallationConfiguration)
+        }
+    }
+
+    func testStandardSyncServiceCreatesOfficialDeviceDirectory() async throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-standard-sync-service-\(UUID().uuidString)", isDirectory: true)
+        let sharedDataURL = root.appendingPathComponent("shared", isDirectory: true)
+        let userDataURL = root.appendingPathComponent("user", isDirectory: true)
+        let syncDirectoryURL = root.appendingPathComponent("sync", isDirectory: true)
+        try FileManager.default.createDirectory(at: sharedDataURL, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: userDataURL, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        // librime 维护器要求共享目录至少含有基础 default.yaml；无需为这个
+        // 资料同步测试构造完整 schema 或创建运行中的 userdb。
+        try "config_version: '0.1'\nschema_list: []\n".write(
+            to: sharedDataURL.appendingPathComponent("default.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+
+        try await RimeStandardSyncService().synchronize(
+            RimeStandardSyncRequest(
+                sharedDataURL: sharedDataURL,
+                userDataURL: userDataURL,
+                syncDirectoryURL: syncDirectoryURL,
+                installationID: "universe-ios-integration"
+            )
+        )
+
+        let deviceDirectory = syncDirectoryURL.appendingPathComponent(
+            "universe-ios-integration",
+            isDirectory: true
+        )
+        XCTAssertTrue(FileManager.default.fileExists(atPath: deviceDirectory.path))
+        XCTAssertTrue(FileManager.default.fileExists(
+            atPath: deviceDirectory.appendingPathComponent("installation.yaml").path
+        ))
+        XCTAssertFalse(FileManager.default.fileExists(
+            atPath: userDataURL.appendingPathComponent("luna_pinyin.userdb").path
+        ))
+    }
 }

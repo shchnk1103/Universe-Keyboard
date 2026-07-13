@@ -13,13 +13,19 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage(AppAppearance.storageKey, store: AppAppearance.storage)
     private var appearanceRawValue = AppAppearance.system.rawValue
-    @State private var rimeSettingsStore = RimeSettingsStore()
+    @State private var rimeSettingsStore: RimeSettingsStore
+    @State private var rimeSyncViewModel: RimeSyncViewModel
     @State private var operationToast: AppOperationToastState?
     @State private var showOperationToast = false
     @State private var toastDismissTask: Task<Void, Never>?
     @State private var deploymentToastOperationActive = false
 
     init() {
+        let rimeSettingsStore = RimeSettingsStore()
+        _rimeSettingsStore = State(initialValue: rimeSettingsStore)
+        _rimeSyncViewModel = State(
+            initialValue: RimeSyncViewModel(rimeStore: rimeSettingsStore)
+        )
         #if DEBUG
         TypingIntelligencePreviewFixture.installIfRequested()
         #endif
@@ -35,7 +41,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("引导", systemImage: "book.pages")
                 }
-            SettingsTab(rimeStore: rimeSettingsStore)
+            SettingsTab(rimeStore: rimeSettingsStore, syncModel: rimeSyncViewModel)
                 .tabItem {
                     Label("设置", systemImage: "gearshape")
                 }
@@ -63,10 +69,25 @@ struct ContentView: View {
         .onChange(of: rimeSettingsStore.userDictionaryMessageVersion) { _, _ in
             updateUserDictionaryToast()
         }
+        .onChange(of: rimeSyncViewModel.statusVersion) { _, _ in
+            updateSyncToast()
+        }
         .onChange(of: scenePhase) { _, phase in
-            guard phase == .inactive || phase == .background else { return }
-            rimeSettingsStore.runAutomaticUserDictionaryBackupIfNeeded()
-            Task { await rimeSettingsStore.triggerPendingDeploymentIfNeeded() }
+            switch phase {
+            case .active:
+                Task { await rimeSyncViewModel.synchronizeIfNeeded() }
+            case .inactive, .background:
+                rimeSettingsStore.runAutomaticUserDictionaryBackupIfNeeded()
+                Task { await rimeSettingsStore.triggerPendingDeploymentIfNeeded() }
+                RimeAutomaticSyncScheduler.shared.refreshSchedule()
+            @unknown default:
+                break
+            }
+        }
+        .task {
+            await rimeSyncViewModel.loadSecrets()
+            await rimeSyncViewModel.synchronizeIfNeeded()
+            RimeAutomaticSyncScheduler.shared.refreshSchedule()
         }
     }
 
@@ -118,6 +139,16 @@ struct ContentView: View {
                 succeeded: rimeSettingsStore.userDictionaryMessageSucceeded
             )
         )
+    }
+
+    private func updateSyncToast() {
+        guard let toastState = AppOperationToastState(syncStatus: rimeSyncViewModel.status) else {
+            if operationToast?.source == .sync {
+                hideToast()
+            }
+            return
+        }
+        presentToast(toastState)
     }
 
     private func presentToast(_ state: AppOperationToastState) {

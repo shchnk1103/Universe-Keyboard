@@ -22,7 +22,7 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 - **Current mitigation:** Heavy user-dictionary operations remain in the main App and are not run from the key hot path; documentation advises avoiding active-session overlap.
 - **Recommended fix:** Establish librime-supported cross-process semantics and add file/process coordination or an explicit quiesce workflow where required.
 - **Owner area:** RimeBridge, main-App user dictionary, Extension lifecycle.
-- **Trigger to resolve:** Before implementing ADR 0005 restore safety or any background/automatic restore operation.
+- **Trigger to resolve:** Before enabling background/automatic restore or claiming safe operation while the Keyboard Extension may be writing.
 
 ## TD-003: Collect Extension Performance Baseline
 
@@ -60,14 +60,14 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 - **Owner area:** RimeBridge artifacts and release engineering.
 - **Trigger to resolve:** Before publishing a new vendor artifact version or App Store release relying on rebuilt dependencies.
 
-## TD-007: Pre-Restore User Dictionary Backup
+## TD-008: Complete Portable RIME Data Compatibility
 
 - **Priority:** High
-- **Risk:** Current restore removes newer learning data before copying a selected backup.
-- **Current mitigation:** Manual backup exists, but it does not enforce restore safety.
-- **Recommended fix:** Implement ADR 0005 with verified pre-restore snapshot, abort-on-backup-failure and recovery tests.
-- **Owner area:** Main App user-dictionary service/UI.
-- **Trigger to resolve:** Before presenting restore as non-destructive or enabling it for broader users.
+- **Risk:** Standard RIME sync now exports per-device YAML/TXT backups and merges user-dictionary snapshots, but safe cross-device YAML import, full scheme portability and evidence across iOS, macOS, Windows, Linux and Android clients remain incomplete.
+- **Current mitigation:** librime handles user-dictionary snapshots; Universe keeps encrypted private settings separate and does not auto-import YAML, copy live databases or copy full scheme directories.
+- **Recommended fix:** Publish cross-platform fixtures and a compatibility matrix, add allowlisted staged custom-file import with diff/recovery, then verify representative RIME frontends and scheme installers.
+- **Owner area:** Main App data operations, RIME Platform and cross-platform compatibility tooling.
+- **Trigger to resolve:** Before claiming full RIME configuration or learned-dictionary parity across every target platform.
 
 ## Maintenance Rules
 

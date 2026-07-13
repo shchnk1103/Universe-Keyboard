@@ -5,6 +5,7 @@ struct AppOperationToastState: Equatable {
         case deployment
         case download
         case userDictionary
+        case sync
     }
 
     enum Tone: Equatable {
@@ -139,6 +140,37 @@ extension AppOperationToastState {
             tone: succeeded ? .success : .info,
             automaticallyDismisses: true
         )
+    }
+
+    init?(syncStatus: RimeSyncStatus) {
+        switch syncStatus {
+        case .syncing(let phase):
+            self.init(
+                source: .sync,
+                message: phase.progressMessage,
+                systemImage: "arrow.triangle.2.circlepath",
+                tone: .progress,
+                automaticallyDismisses: false
+            )
+        case .succeeded(_, let completion):
+            self.init(
+                source: .sync,
+                message: completion.message,
+                systemImage: "checkmark.circle.fill",
+                tone: .success,
+                automaticallyDismisses: true
+            )
+        case .failed(let message):
+            self.init(
+                source: .sync,
+                message: message,
+                systemImage: "exclamationmark.triangle.fill",
+                tone: .failure,
+                automaticallyDismisses: true
+            )
+        case .idle, .notConfigured:
+            return nil
+        }
     }
 }
 

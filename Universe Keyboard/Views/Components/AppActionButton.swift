@@ -16,19 +16,70 @@ struct AppActionButton: View {
     var prominence: Prominence = .secondary
     var role: ButtonRole?
     var minHeight: CGFloat = 38
-    let action: () -> Void
+    private let interaction: Interaction
+
+    /// 普通命令按钮。
+    init(
+        title: String,
+        systemImage: String,
+        prominence: Prominence = .secondary,
+        role: ButtonRole? = nil,
+        minHeight: CGFloat = 38,
+        action: @escaping () -> Void
+    ) {
+        self.title = title
+        self.systemImage = systemImage
+        self.prominence = prominence
+        self.role = role
+        self.minHeight = minHeight
+        interaction = .action(action)
+    }
+
+    /// 需要调用系统分享面板的文本操作，也复用和普通命令相同的视觉样式。
+    init(
+        title: String,
+        systemImage: String,
+        prominence: Prominence = .secondary,
+        minHeight: CGFloat = 38,
+        shareText: String
+    ) {
+        self.title = title
+        self.systemImage = systemImage
+        self.prominence = prominence
+        role = nil
+        self.minHeight = minHeight
+        interaction = .shareText(shareText)
+    }
 
     var body: some View {
-        Button(role: role, action: action) {
-            Label(title, systemImage: systemImage)
-                .font(.system(.subheadline, weight: .semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.85)
-                .foregroundStyle(foregroundColor)
-                .frame(maxWidth: .infinity, minHeight: minHeight)
+        switch interaction {
+        case .action(let action):
+            Button(role: role, action: action) {
+                label
+            }
+            .buttonStyle(.plain)
+            .modifier(AppActionButtonSurface(prominence: prominence))
+        case .shareText(let text):
+            ShareLink(item: text) {
+                label
+            }
+            .buttonStyle(.plain)
+            .modifier(AppActionButtonSurface(prominence: prominence))
         }
-        .buttonStyle(.plain)
-        .modifier(AppActionButtonSurface(prominence: prominence))
+    }
+
+    private var label: some View {
+        Label(title, systemImage: systemImage)
+            .font(.system(.subheadline, weight: .semibold))
+            .lineLimit(1)
+            .minimumScaleFactor(0.85)
+            .foregroundStyle(foregroundColor)
+            .frame(maxWidth: .infinity, minHeight: minHeight)
+    }
+
+    private enum Interaction {
+        case action(() -> Void)
+        case shareText(String)
     }
 
     private var foregroundColor: Color {

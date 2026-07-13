@@ -160,6 +160,8 @@ class KeyboardViewController: UIInputViewController {
     var cachedKeyClickVolume: Float = 0.8
     var cachedHapticIntensity: CGFloat = 0.5
     var deleteRepeatEffectiveFeedbackCount = 0
+    /// 不在按键路径写入：仅在键盘可见期间维持同步安全检查所需的心跳。
+    var rimeSyncActivityHeartbeatTimer: Timer?
 
     // MARK: - 布局常量
 
@@ -201,6 +203,8 @@ class KeyboardViewController: UIInputViewController {
     /// 所以不要假设 deinit 会在键盘关闭时立即调用。
     /// 但一旦调用，应该释放所有资源。
     deinit {
+        // Swift 6 的 deinit 不保证运行在 MainActor；可见性结束时已清理心跳。
+        // 若系统直接销毁扩展，最后一条心跳会在 75 秒后自然失效，宁可多跳过一次同步。
         // 提交尽力而为的后台日志刷新，不在析构路径等待共享存储。
         Logger.shared.requestFlush()
         // 连删协调器在 viewWillDisappear 中停止；闭包仅弱引用本控制器，
@@ -211,6 +215,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        startRimeSyncActivityHeartbeat()
         installKeyboardUIIfNeeded()
     }
 
@@ -224,6 +229,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        stopRimeSyncActivityHeartbeat()
         let effects = cleanupTransientKeyboardState(
             reason: "viewWillDisappear",
             abandonsComposition: true
@@ -246,6 +252,28 @@ class KeyboardViewController: UIInputViewController {
             category: .display
         )
         Logger.shared.requestFlush()
+    }
+
+    private func startRimeSyncActivityHeartbeat() {
+        guard rimeSyncActivityHeartbeatTimer == nil else { return }
+
+        let defaults = UserDefaults(suiteName: Self.appGroupID) ?? .standard
+        RimeSyncKeyboardActivity.recordVisibleKeyboard(in: defaults)
+
+        let appGroupID = Self.appGroupID
+        let timer = Timer(timeInterval: 25, repeats: true) { _ in
+            let sharedDefaults = UserDefaults(suiteName: appGroupID) ?? .standard
+            RimeSyncKeyboardActivity.recordVisibleKeyboard(in: sharedDefaults)
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        rimeSyncActivityHeartbeatTimer = timer
+    }
+
+    private func stopRimeSyncActivityHeartbeat() {
+        rimeSyncActivityHeartbeatTimer?.invalidate()
+        rimeSyncActivityHeartbeatTimer = nil
+        let defaults = UserDefaults(suiteName: Self.appGroupID) ?? .standard
+        RimeSyncKeyboardActivity.clearVisibleKeyboard(in: defaults)
     }
 
     /// viewWillLayoutSubviews 在子视图布局之前调用。

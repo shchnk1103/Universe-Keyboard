@@ -563,15 +563,13 @@ final class RimeSettingsStore {
     }
 
     func resetUserDictionary(for schemaID: String) {
-        let removed = userDictionaryBackupService.removeLearningData(for: schemaID)
         let name = displayName(forSchemaID: schemaID)
-        let reason = removed ? "\(name) 的学习记录已清空" : "\(name) 暂无可清空的学习记录"
-        presentUserDictionaryMessage(
-            removed ? "已清空 \(name) 的学习记录。" : "\(name) 现在没有可清空的学习记录。",
-            succeeded: removed
-        )
+        let result = userDictionaryBackupService.resetLearningData(schemaID: schemaID, displayName: name)
+        presentUserDictionaryMessage(result.message, succeeded: result.succeeded)
+        guard result.succeeded else { return }
+
         persistence.set(true, forKey: RimeUserDictionarySettings.pendingDeployKey)
-        markDeploymentNeeded(reason: reason)
+        markDeploymentNeeded(reason: "\(name) 的学习记录已清空")
     }
 
     func cancelDeployment() {

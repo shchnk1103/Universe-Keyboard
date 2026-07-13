@@ -3,6 +3,7 @@ import SwiftUI
 
 struct SettingsTab: View {
     @Bindable var rimeStore: RimeSettingsStore
+    @Bindable var syncModel: RimeSyncViewModel
 
     @AppStorage(
         KeyboardInputSettingsKey.pairedSymbolCompletionEnabled,
@@ -16,6 +17,7 @@ struct SettingsTab: View {
                 VStack(alignment: .leading, spacing: 16) {
                     inputBehaviorSection
                     rimeInputSection
+                    dataAndSyncSection
                     toolsSection
                     diagnosticsSection
                 }
@@ -25,6 +27,31 @@ struct SettingsTab: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle("设置")
             .onAppear { rimeStore.load() }
+        }
+    }
+
+    private var dataAndSyncSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("数据与同步")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
+
+            SettingsNavigationLink(
+                systemImage: "icloud",
+                title: "RIME 云同步",
+                subtitle: syncModel.statusText
+            ) {
+                RimeSyncSettingsView(model: syncModel)
+            }
+
+            SettingsNavigationLink(
+                systemImage: "text.badge.checkmark",
+                title: "RIME 用户词典",
+                subtitle: "候选学习、备份与安全恢复"
+            ) {
+                RimeUserDictionarySettingsView(store: rimeStore)
+            }
         }
     }
 
@@ -102,10 +129,6 @@ struct SettingsTab: View {
 
             SettingsNavigationLink(systemImage: "waveform.path", title: "模糊音设置", subtitle: "平翘舌、鼻边音") {
                 RimeFuzzyPinyinSettingsView(store: rimeStore)
-            }
-
-            SettingsNavigationLink(systemImage: "text.badge.checkmark", title: "候选学习", subtitle: "记住常选词、清空学习记录") {
-                RimeUserDictionarySettingsView(store: rimeStore)
             }
 
             VStack(spacing: 0) {

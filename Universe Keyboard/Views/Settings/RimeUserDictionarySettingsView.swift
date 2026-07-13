@@ -20,7 +20,7 @@ struct RimeUserDictionarySettingsView: View {
             } header: {
                 Text("自动备份")
             } footer: {
-                Text("开启后，主 App 会在合适的时候帮你保存一份学习记录。不会影响打字。")
+                Text("仅在主 App 中保存本机恢复副本，不影响打字；跨设备合并请使用 RIME 云同步。")
             }
 
             Section {
@@ -40,10 +40,10 @@ struct RimeUserDictionarySettingsView: View {
             } header: {
                 Text("方案")
             } footer: {
-                Text("选择一个方案，管理它的候选学习、备份恢复和清空记录。")
+                Text("学习记录遵循 RIME 官方用户词典；选择一个方案进行开关、备份、恢复或清空。")
             }
         }
-        .navigationTitle("候选学习")
+        .navigationTitle("RIME 用户词典")
         .tint(.primary)
         .onAppear {
             store.load()
@@ -107,9 +107,9 @@ private struct RimeUserDictionarySchemeDetailView: View {
                     }
                 }
             } header: {
-                Text("备份与恢复")
+                Text("本机保护")
             } footer: {
-                Text("备份会保存当前学习记录。恢复会回到最近一次备份，适合换设置前先留一份。")
+                Text("恢复或清空前会先创建并校验当前学习记录的恢复副本；失败时不会继续替换或删除。")
             }
 
             Section {
@@ -135,7 +135,7 @@ private struct RimeUserDictionarySchemeDetailView: View {
                 store.restoreLatestUserDictionaryBackup(for: scheme.id)
             }
         } message: {
-            Text("恢复后会使用最近一次备份的学习记录。当前学习记录会被替换。")
+            Text("恢复前会先创建并校验当前学习记录的本机恢复副本，再使用最近一次备份替换它。")
         }
         .alert("清空学习记录？", isPresented: $showResetAlert) {
             Button("取消", role: .cancel) {}
@@ -143,7 +143,7 @@ private struct RimeUserDictionarySchemeDetailView: View {
                 store.resetUserDictionary(for: scheme.id)
             }
         } message: {
-            Text("清空后，候选会回到默认顺序，再从你的新选择开始学习。")
+            Text("清空前会先创建并校验本机恢复副本。候选会回到默认顺序，再从你的新选择开始学习。")
         }
     }
 

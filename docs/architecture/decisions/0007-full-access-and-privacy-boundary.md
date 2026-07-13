@@ -2,7 +2,10 @@
 
 ## Status
 
-Accepted; implementation pending
+Accepted; implementation pending. The no-upload clause is partially superseded by
+[ADR 0012](0012-rime-portable-sync-and-transport-boundary.md) only for explicit,
+revocable, end-to-end encrypted RIME synchronization initiated by the main App.
+All other privacy and Full Access boundaries remain in force.
 
 ## Context
 

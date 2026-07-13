@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted; implementation pending
+Accepted; recovery backup implementation complete, concurrent-writer coordination pending
 
 ## Context
 
@@ -22,7 +22,7 @@ Before restoring a user dictionary, the main App must create a recovery backup o
 
 - Restore becomes a multi-step operation with a recoverable pre-restore snapshot.
 - More storage and failure states must be handled.
-- Current code does not yet satisfy this ADR.
+- Current code creates and verifies a recovery backup before restore or reset, then attempts rollback from that copy if replacement fails.
 
 ## Risks
 
@@ -31,9 +31,8 @@ Before restoring a user dictionary, the main App must create a recovery backup o
 
 ## Follow-up Work
 
-- Implement verified pre-restore backup and rollback-safe sequencing.
 - Define Extension/session coordination during backup and restore.
-- Add tests for backup failure, copy failure and recovery.
+- Add interruption and concurrent-writer evidence for backup, copy and recovery.
 
 ## Related Documents
 

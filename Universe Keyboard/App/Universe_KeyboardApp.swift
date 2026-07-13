@@ -11,6 +11,8 @@ import SwiftUI
 struct Universe_KeyboardApp: App {
     init() {
         AppAppearance.migrateLegacyPreferenceIfNeeded()
+        RimeSyncNotificationService.shared.configure()
+        RimeAutomaticSyncScheduler.shared.registerBackgroundTask()
     }
 
     var body: some Scene {

@@ -4,7 +4,7 @@ This document records the product and implementation boundary for RIME candidate
 
 ## Scope
 
-Candidate learning uses RIME's per-schema user dictionary behavior. In Universe Keyboard, it is managed only for the current built-in/default RIME schema and the downloaded Wusong Pinyin schema:
+Candidate learning uses RIME's per-schema user dictionary behavior. In Universe Keyboard, the settings entry is named “RIME 用户词典” and is managed only for the current built-in/default RIME schema and the downloaded Wusong Pinyin schema:
 
 - `luna_pinyin`
 - `rime_ice`
@@ -20,7 +20,7 @@ Candidate learning settings and backup/restore operations belong to the main App
 - The Keyboard Extension must not run backup, restore, file scans, manifest hashing, schema repair, or RIME deployment while typing.
 - The Keyboard Extension continues to use the last prepared RIME runtime data until the main App finishes applying changes.
 
-This keeps input hot paths free of filesystem scans, hashing, copying, and deployment work.
+This keeps input hot paths free of filesystem scans, hashing, copying, and deployment work. Cross-device learned-dictionary exchange is not performed by the local backup feature; it must use librime's standard `sync_user_data` snapshot-merge path.
 
 ## User-Facing Model
 
@@ -50,7 +50,7 @@ Scheme detail page:
 
 - Candidate learning switch for that scheme.
 - Backup and restore controls for that scheme.
-- Reset learning-record action for that scheme.
+- Reset learning-record action for that scheme. Restore and reset both create and verify a local recovery backup before replacing or removing current files.
 - Short explanatory footers for each section.
 
 This structure is intentional and should stay aligned with the main RIME scheme-management pattern in `docs/RIME_SCHEME_MANAGEMENT.md`. As more open-source schemes are added, the top-level page should grow as a list of schemes instead of repeating every scheme under separate "learning", "backup", and "reset" sections.
@@ -103,9 +103,9 @@ If manifest comparison fails, the UI should allow manual backup instead of block
 
 ## Restore Safety Decision
 
-The accepted long-term contract is defined by ADR 0005: before replacing current `{schema}.userdb*` data, the main App must create and verify a recovery backup of the current data. If current learning data exists and that safety backup fails, restore must stop. Silent overwrite is prohibited.
+Before replacing current `{schema}.userdb*` data, the main App creates a distinct recovery backup, writes its manifest, and verifies the manifest against the source before continuing. If that preparation fails, restore and reset stop without replacing or deleting current files. If replacement fails after a recovery backup exists, the service attempts to restore that protected copy and reports the result through the shared toast.
 
-This contract is **not implemented by the current restore path yet**. Until ADR 0005 is implemented and verified, restore remains tracked as High-priority technical debt in `docs/TECH_DEBT.md`; documentation and UI must not describe it as automatically rollback-safe.
+This is a local safety mechanism, not a cross-device merge algorithm. Cross-process coordination with an active Keyboard Extension/librime writer remains tracked in `docs/TECH_DEBT.md`; restore and reset must remain manual main-App operations.
 
 ## Automatic Backup
 

@@ -34,7 +34,7 @@ protocol RimeUserDictionaryBackingUp: AnyObject {
     func status(for schemaID: String) -> RimeUserDictionaryBackupStatus
     func backup(schemaID: String, displayName: String) -> RimeUserDictionaryOperationResult
     func restoreLatest(schemaID: String, displayName: String) -> RimeUserDictionaryOperationResult
-    func removeLearningData(for schemaID: String) -> Bool
+    func resetLearningData(schemaID: String, displayName: String) -> RimeUserDictionaryOperationResult
 }
 
 @MainActor
@@ -71,30 +71,15 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
         guard !items.isEmpty else {
             return .init(succeeded: false, message: "\(displayName) 还没有可备份的学习记录。")
         }
-        guard let backupRoot = backupRootURL(for: schemaID) else {
-            return .init(succeeded: false, message: "无法访问键盘数据，请确认已允许完全访问。")
-        }
         let status = status(for: schemaID)
         guard status.canBackup else {
             return .init(succeeded: false, message: "\(displayName) 的学习记录已备份，无需重复备份。")
         }
 
-        let backupURL = backupRoot.appendingPathComponent(Self.backupDirectoryName(for: Date()))
         do {
-            try fileManager.createDirectory(at: backupURL, withIntermediateDirectories: true)
-            for item in items {
-                try fileManager.copyItem(
-                    at: item,
-                    to: backupURL.appendingPathComponent(item.lastPathComponent)
-                )
-            }
-            let manifest = try Self.makeManifest(for: items)
-            let manifestData = try JSONEncoder().encode(manifest)
-            try manifestData.write(to: backupURL.appendingPathComponent(Self.manifestFileName), options: .atomic)
-            pruneOldBackups(for: schemaID)
+            _ = try createVerifiedBackup(items: items, schemaID: schemaID)
             return .init(succeeded: true, message: "已备份 \(displayName) 的学习记录。")
         } catch {
-            try? fileManager.removeItem(at: backupURL)
             return .init(succeeded: false, message: "备份失败，请稍后再试。")
         }
     }
@@ -107,35 +92,137 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
             return .init(succeeded: false, message: "无法访问键盘数据，请确认已允许完全访问。")
         }
 
+        let currentItems = learningItems(for: schemaID)
+        var recoveryBackupURL: URL?
         do {
-            _ = removeLearningData(for: schemaID)
-            let items = try fileManager.contentsOfDirectory(
-                at: latestBackup,
-                includingPropertiesForKeys: nil
-            )
-            for item in items where item.lastPathComponent != Self.manifestFileName {
-                try fileManager.copyItem(
-                    at: item,
-                    to: userDir.appendingPathComponent(item.lastPathComponent)
+            // 已有的手动备份可能早于最近学习记录，不能替代恢复前的保护副本。
+            if !currentItems.isEmpty {
+                recoveryBackupURL = try createVerifiedBackup(
+                    items: currentItems,
+                    schemaID: schemaID,
+                    preserving: [latestBackup]
                 )
             }
-            return .init(succeeded: true, message: "已恢复 \(displayName) 最近一次备份。")
+            try replaceLearningData(
+                for: schemaID,
+                withBackupAt: latestBackup,
+                userDirectoryURL: userDir
+            )
+            let recoverySuffix = recoveryBackupURL == nil ? "" : "，已自动保护当前记录"
+            return .init(succeeded: true, message: "已恢复 \(displayName) 最近一次备份\(recoverySuffix)。")
         } catch {
-            return .init(succeeded: false, message: "恢复失败，请稍后再试。")
+            return rollbackAfterFailedReplacement(
+                for: schemaID,
+                recoveryBackupURL: recoveryBackupURL,
+                userDirectoryURL: userDir,
+                failureMessage: "恢复失败"
+            )
         }
     }
 
-    func removeLearningData(for schemaID: String) -> Bool {
-        var removed = false
-        for item in learningItems(for: schemaID) {
-            do {
-                try fileManager.removeItem(at: item)
-                removed = true
-            } catch {
-                continue
-            }
+    func resetLearningData(schemaID: String, displayName: String) -> RimeUserDictionaryOperationResult {
+        let currentItems = learningItems(for: schemaID)
+        guard !currentItems.isEmpty else {
+            return .init(succeeded: false, message: "\(displayName) 现在没有可清空的学习记录。")
         }
-        return removed
+        guard let userDir = userDirectoryURL() else {
+            return .init(succeeded: false, message: "无法访问键盘数据，请确认已允许完全访问。")
+        }
+
+        var recoveryBackupURL: URL?
+        do {
+            // “清空”同样是破坏性操作，必须先留下已经校验过的恢复副本。
+            recoveryBackupURL = try createVerifiedBackup(items: currentItems, schemaID: schemaID)
+            try removeLearningData(for: schemaID)
+            return .init(succeeded: true, message: "已安全备份并清空 \(displayName) 的学习记录。")
+        } catch {
+            return rollbackAfterFailedReplacement(
+                for: schemaID,
+                recoveryBackupURL: recoveryBackupURL,
+                userDirectoryURL: userDir,
+                failureMessage: "清空未完成"
+            )
+        }
+    }
+
+    private func createVerifiedBackup(
+        items: [URL],
+        schemaID: String,
+        preserving backupURLs: [URL] = []
+    ) throws -> URL {
+        guard let backupRoot = backupRootURL(for: schemaID) else {
+            throw RimeUserDictionaryBackupError.unavailableStorage
+        }
+
+        let manifest = try Self.makeManifest(for: items)
+        let backupURL = uniqueBackupDirectoryURL(in: backupRoot, date: Date())
+        do {
+            try fileManager.createDirectory(at: backupURL, withIntermediateDirectories: true)
+            for item in items {
+                try fileManager.copyItem(
+                    at: item,
+                    to: backupURL.appendingPathComponent(item.lastPathComponent)
+                )
+            }
+            let manifestData = try JSONEncoder().encode(manifest)
+            try manifestData.write(to: backupURL.appendingPathComponent(Self.manifestFileName), options: .atomic)
+
+            guard try Self.readManifest(at: backupURL.appendingPathComponent(Self.manifestFileName)) == manifest else {
+                throw RimeUserDictionaryBackupError.verificationFailed
+            }
+
+            pruneOldBackups(for: schemaID, preserving: backupURLs)
+            return backupURL
+        } catch {
+            try? fileManager.removeItem(at: backupURL)
+            throw error
+        }
+    }
+
+    private func replaceLearningData(
+        for schemaID: String,
+        withBackupAt backupURL: URL,
+        userDirectoryURL: URL
+    ) throws {
+        try removeLearningData(for: schemaID)
+        let backupItems = try fileManager.contentsOfDirectory(
+            at: backupURL,
+            includingPropertiesForKeys: nil
+        )
+        for item in backupItems where item.lastPathComponent != Self.manifestFileName {
+            try fileManager.copyItem(
+                at: item,
+                to: userDirectoryURL.appendingPathComponent(item.lastPathComponent)
+            )
+        }
+    }
+
+    private func removeLearningData(for schemaID: String) throws {
+        for item in learningItems(for: schemaID) {
+            try fileManager.removeItem(at: item)
+        }
+    }
+
+    private func rollbackAfterFailedReplacement(
+        for schemaID: String,
+        recoveryBackupURL: URL?,
+        userDirectoryURL: URL,
+        failureMessage: String
+    ) -> RimeUserDictionaryOperationResult {
+        guard let recoveryBackupURL else {
+            return .init(succeeded: false, message: "\(failureMessage)，当前学习记录未被替换。")
+        }
+
+        do {
+            try replaceLearningData(
+                for: schemaID,
+                withBackupAt: recoveryBackupURL,
+                userDirectoryURL: userDirectoryURL
+            )
+            return .init(succeeded: false, message: "\(failureMessage)，当前学习记录已还原。")
+        } catch {
+            return .init(succeeded: false, message: "\(failureMessage)，已保留自动恢复备份，请稍后重试。")
+        }
     }
 
     private func learningItems(for schemaID: String) -> [URL] {
@@ -181,7 +268,7 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
             .max { $0.1 < $1.1 }
     }
 
-    private func pruneOldBackups(for schemaID: String) {
+    private func pruneOldBackups(for schemaID: String, preserving backupURLs: [URL]) {
         guard let backupRoot = backupRootURL(for: schemaID) else { return }
         guard let backups = try? fileManager.contentsOfDirectory(
             at: backupRoot,
@@ -195,7 +282,11 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
             }
             .sorted { $0.1 > $1.1 }
 
-        for backup in sortedBackups.dropFirst(maxBackupCount) {
+        let preservedPaths = Set(backupURLs.map(\.standardizedFileURL.path))
+        let removableBackups = sortedBackups.filter {
+            !preservedPaths.contains($0.0.standardizedFileURL.path)
+        }
+        for backup in removableBackups.dropFirst(maxBackupCount) {
             try? fileManager.removeItem(at: backup.0)
         }
     }
@@ -216,6 +307,13 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
         return fileManager.containerURL(forSecurityApplicationGroupIdentifier: appGroupID)
     }
 
+    private func uniqueBackupDirectoryURL(in backupRoot: URL, date: Date) -> URL {
+        let baseName = Self.backupDirectoryName(for: date)
+        let baseURL = backupRoot.appendingPathComponent(baseName, isDirectory: true)
+        guard fileManager.fileExists(atPath: baseURL.path) else { return baseURL }
+        return backupRoot.appendingPathComponent("\(baseName)-\(UUID().uuidString)", isDirectory: true)
+    }
+
     private static func backupDirectoryName(for date: Date) -> String {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .gregorian)
@@ -231,7 +329,7 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
         formatter.dateFormat = "yyyyMMdd-HHmmss"
-        return formatter.date(from: name)
+        return formatter.date(from: String(name.prefix(15)))
     }
 
     private static func makeManifest(for items: [URL]) throws -> RimeUserDictionaryBackupManifest {
@@ -282,6 +380,11 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
     private static func readManifest(at url: URL) throws -> RimeUserDictionaryBackupManifest {
         try JSONDecoder().decode(RimeUserDictionaryBackupManifest.self, from: Data(contentsOf: url))
     }
+}
+
+private enum RimeUserDictionaryBackupError: Error {
+    case unavailableStorage
+    case verificationFailed
 }
 
 private struct RimeUserDictionaryBackupManifest: Codable, Equatable {

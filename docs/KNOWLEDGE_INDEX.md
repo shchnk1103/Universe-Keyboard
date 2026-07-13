@@ -33,6 +33,7 @@
 - Scheme management: [`RIME_SCHEME_MANAGEMENT.md`](RIME_SCHEME_MANAGEMENT.md)
 - Fuzzy pinyin: [`RIME_FUZZY_PINYIN.md`](RIME_FUZZY_PINYIN.md)
 - User dictionary: [`RIME_USER_DICTIONARY.md`](RIME_USER_DICTIONARY.md)
+- Portable RIME settings sync: [`RIME_SYNC.md`](RIME_SYNC.md)
 - Typo correction benchmark: [`TYPO_BENCHMARK.md`](TYPO_BENCHMARK.md)
 - Typo correction Contract/Case/Performance Registry: [`TYPO_BENCHMARK_REGISTRY.md`](TYPO_BENCHMARK_REGISTRY.md)
 

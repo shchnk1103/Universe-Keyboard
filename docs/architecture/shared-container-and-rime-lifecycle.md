@@ -4,7 +4,7 @@
 
 This document defines the current runtime ownership boundary between the main App, Keyboard Extension, App Group container, and RIME. It describes current source behavior, not a future plan.
 
-The binding decisions are ADR 0001 through ADR 0004 under `docs/architecture/decisions/`. ADR 0006 records the accepted future transaction model without claiming it is implemented.
+The binding decisions are ADR 0001 through ADR 0004 and ADR 0013 under `docs/architecture/decisions/`. ADR 0006 records the accepted future transaction model without claiming it is implemented.
 
 ## Shared Container Layout
 
@@ -20,6 +20,17 @@ Both targets use App Group `group.com.DoubleShy0N.Universe-Keyboard`.
 
 `Packages/RimeBridge/Vendor/` is a repository-local build dependency, not App Group runtime data.
 
+RIME settings sync uses main-App-private state rather than the App Group:
+
+| Location | Content | Writer / Reader |
+|---|---|---|
+| Main App `UserDefaults` | provider choice, WebDAV URL/user name, security-scoped folder bookmark, device ID, last merged profile and last success date | Main App only |
+| Main App Keychain | WebDAV password and 256-bit content-encryption key | Main App only |
+| Selected folder or WebDAV root `universe-rime-sync/` | plaintext minimal `format.json` plus encrypted `profiles/default/settings.json` | Main App sync coordinator and compatible external clients |
+| User-selected local/file-provider folder | RIME standard `sync_dir`: per-device `*.userdb.txt` snapshots and YAML/TXT backup created by librime | Main App only during confirmed initial sync and safety-gated background maintenance; compatible external RIME frontends |
+
+The Keyboard Extension does not read sync credentials or sync contents and never receives WebDAV credentials or encryption keys. It never calls `sync_user_data`; while visible it only writes a content-free activity heartbeat so the main App can conservatively defer background maintenance.
+
 ## Ownership Rules
 
 ### Main App
@@ -31,6 +42,8 @@ The main App owns operations that can scan, create, replace or delete persistent
 - copy bundled RIME/OpenCC resources and invalidate build caches;
 - run `RimeDeploymentService.deploy(.fullCheck)`;
 - back up, restore or reset user-dictionary files;
+- encrypt, upload, download, merge and apply portable RIME settings;
+- after explicit user confirmation, refresh managed `.custom.yaml` and call librime standard user-data sync while the keyboard is not in use; after the first success, the main App may repeat this via the documented background safety gate;
 - update deployment status flags.
 
 These operations must not be moved into keyboard presentation or key handling.
@@ -93,6 +106,9 @@ All in-memory controller, composition, candidate paging and session state is los
 - Session loss while visible: session-owned recovery may recreate/reselect; never full deploy.
 - Corrupt or partial scheme installation: main App redownload/reinstall and redeploy path; no Extension repair.
 - User-dictionary backup/restore: perform only from the main App when the keyboard is not actively relying on an in-memory session.
+- Portable settings sync failure: keep the current local settings; authentication, key, corruption and conflict failures must remain actionable in the main App.
+- Standard RIME sync failure: keep local runtime data and show an actionable main-App error; do not copy live databases or import another device's YAML. Automatic retries wait for a later user-selected cycle rather than retrying in a tight loop.
+- Applying a merged settings profile: persist only recognized fields, preserve unknown remote fields in the sync profile, then use the normal main-App deployment path.
 
 ## Source Of Truth
 
@@ -101,7 +117,11 @@ All in-memory controller, composition, candidate paging and session state is los
 - `Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+RuntimeDirectories.swift`
 - `Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+DeploymentResources.swift`
 - `Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift`
+- `Packages/RimeBridge/Sources/RimeBridge/RimeStandardSyncService.swift`
 - `Universe Keyboard/Services/SchemaArchiveInstaller.swift`
 - `Universe Keyboard/Services/RimeUserDictionaryBackupService.swift`
+- `Universe Keyboard/Services/RimeSyncCoordinator.swift`
+- `Universe Keyboard/Services/RimeSyncTransport.swift`
+- `Universe Keyboard/Models/RimeSyncViewModel.swift`
 - `Packages/KeyboardCore/Sources/KeyboardCore/TypingStatisticsStore.swift`
 - `Universe Keyboard/Models/TypingIntelligenceViewModel.swift`

@@ -321,6 +321,24 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertNil(persistence.value(forKey: "rime_needs_deploy"))
     }
 
+    func testResetUserDictionaryDoesNotDeployWhenSafetyPreparationFails() {
+        let persistence = StubRimeSettingsPersistence()
+        let backupService = StoreUserDictionaryBackupService(
+            resetResult: .init(succeeded: false, message: "清空未完成，当前学习记录已还原。")
+        )
+        let store = RimeSettingsStore(
+            persistence: persistence,
+            userDictionaryBackupService: backupService
+        )
+
+        store.resetUserDictionary(for: "luna_pinyin")
+
+        XCTAssertEqual(backupService.resetRequests, ["luna_pinyin"])
+        XCTAssertEqual(store.userDictionaryMessage, "清空未完成，当前学习记录已还原。")
+        XCTAssertNil(persistence.value(forKey: RimeUserDictionarySettings.pendingDeployKey))
+        XCTAssertNil(persistence.value(forKey: "rime_needs_deploy"))
+    }
+
     func testUserDictionaryStatusUsesPlainTextForInstalledSchema() {
         let store = RimeSettingsStore(
             persistence: StubRimeSettingsPersistence(),
@@ -609,6 +627,64 @@ final class RimeUserDictionaryBackupServiceTests: XCTestCase {
         XCTAssertEqual(restored, "old")
     }
 
+    func testRestoreCreatesRecoveryBackupBeforeReplacingNewerLearningData() throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-user-dict-recovery-\(UUID().uuidString)")
+        let userDir = root.appendingPathComponent("Rime/user")
+        try FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let userDB = userDir.appendingPathComponent("luna_pinyin.userdb")
+        try FileManager.default.createDirectory(at: userDB, withIntermediateDirectories: true)
+        let currentFile = userDB.appendingPathComponent("CURRENT")
+        try "old".write(to: currentFile, atomically: true, encoding: .utf8)
+
+        let service = AppGroupRimeUserDictionaryBackupService(containerURL: root)
+        XCTAssertTrue(service.backup(schemaID: "luna_pinyin", displayName: "朙月拼音").succeeded)
+        try "new".write(to: currentFile, atomically: true, encoding: .utf8)
+
+        let restore = service.restoreLatest(schemaID: "luna_pinyin", displayName: "朙月拼音")
+
+        XCTAssertTrue(restore.succeeded)
+        XCTAssertEqual(try String(contentsOf: currentFile, encoding: .utf8), "old")
+        let backupRoot = root.appendingPathComponent("Rime/user_dictionary_backups/luna_pinyin")
+        let containsRecoveryCopy = try FileManager.default.contentsOfDirectory(at: backupRoot, includingPropertiesForKeys: nil)
+            .contains { backupURL in
+                let recoveryFile = backupURL.appendingPathComponent("luna_pinyin.userdb/CURRENT")
+                return (try? String(contentsOf: recoveryFile, encoding: .utf8)) == "new"
+            }
+        XCTAssertTrue(containsRecoveryCopy)
+    }
+
+    func testResetCreatesRecoveryBackupBeforeDeletingLearningData() throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-user-dict-reset-\(UUID().uuidString)")
+        let userDir = root.appendingPathComponent("Rime/user")
+        try FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let userDB = userDir.appendingPathComponent("luna_pinyin.userdb")
+        try FileManager.default.createDirectory(at: userDB, withIntermediateDirectories: true)
+        try "learned".write(
+            to: userDB.appendingPathComponent("CURRENT"),
+            atomically: true,
+            encoding: .utf8
+        )
+
+        let service = AppGroupRimeUserDictionaryBackupService(containerURL: root)
+        let result = service.resetLearningData(schemaID: "luna_pinyin", displayName: "朙月拼音")
+
+        XCTAssertTrue(result.succeeded)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: userDB.path))
+        let backupRoot = root.appendingPathComponent("Rime/user_dictionary_backups/luna_pinyin")
+        let containsRecoveryCopy = try FileManager.default.contentsOfDirectory(at: backupRoot, includingPropertiesForKeys: nil)
+            .contains { backupURL in
+                let recoveryFile = backupURL.appendingPathComponent("luna_pinyin.userdb/CURRENT")
+                return (try? String(contentsOf: recoveryFile, encoding: .utf8)) == "learned"
+            }
+        XCTAssertTrue(containsRecoveryCopy)
+    }
+
     func testBackupReportsNoLearningDataWhenUserDBIsMissing() throws {
         let root = FileManager.default.temporaryDirectory
             .appendingPathComponent("rime-user-dict-empty-\(UUID().uuidString)")
@@ -669,7 +745,8 @@ private final class StoreUserDictionaryBackupService: RimeUserDictionaryBackingU
     var status: RimeUserDictionaryBackupStatus
     var backupResult: RimeUserDictionaryOperationResult
     var restoreResult: RimeUserDictionaryOperationResult
-    var didRemoveLearningData = false
+    var resetResult: RimeUserDictionaryOperationResult
+    var resetRequests: [String] = []
     var backupRequests: [String] = []
 
     init(
@@ -679,11 +756,13 @@ private final class StoreUserDictionaryBackupService: RimeUserDictionaryBackingU
             readiness: .noLearningData
         ),
         backupResult: RimeUserDictionaryOperationResult = .init(succeeded: false, message: ""),
-        restoreResult: RimeUserDictionaryOperationResult = .init(succeeded: false, message: "")
+        restoreResult: RimeUserDictionaryOperationResult = .init(succeeded: false, message: ""),
+        resetResult: RimeUserDictionaryOperationResult = .init(succeeded: false, message: "")
     ) {
         self.status = status
         self.backupResult = backupResult
         self.restoreResult = restoreResult
+        self.resetResult = resetResult
     }
 
     func status(for schemaID: String) -> RimeUserDictionaryBackupStatus { status }
@@ -692,9 +771,9 @@ private final class StoreUserDictionaryBackupService: RimeUserDictionaryBackingU
         return backupResult
     }
     func restoreLatest(schemaID: String, displayName: String) -> RimeUserDictionaryOperationResult { restoreResult }
-    func removeLearningData(for schemaID: String) -> Bool {
-        didRemoveLearningData = true
-        return true
+    func resetLearningData(schemaID: String, displayName: String) -> RimeUserDictionaryOperationResult {
+        resetRequests.append(schemaID)
+        return resetResult
     }
 }
 
