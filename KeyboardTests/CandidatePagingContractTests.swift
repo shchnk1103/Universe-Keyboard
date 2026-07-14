@@ -164,6 +164,10 @@ private final class PagedRimeEngine: RimeEngine {
 
     func recoverSession() {}
 
+    func suspendForVisibilityChange() {}
+
+    func resumeAfterVisibilityChange() {}
+
     func isComposing() -> Bool {
         !composition.isEmpty
     }
