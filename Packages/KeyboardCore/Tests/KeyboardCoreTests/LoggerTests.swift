@@ -1,3 +1,4 @@
+import Synchronization
 import XCTest
 
 @testable import KeyboardCore
@@ -95,20 +96,20 @@ final class LoggerTests: XCTestCase {
 
     // MARK: - Ordered writer
 
-    func testFlushPersistsRecordsInSubmissionOrder() {
+    func testFlushPersistsRecordsInSubmissionOrder() async {
         let logger = makeLogger()
 
         logger.debug("BEGIN", category: .engine)
         logger.debug("END", category: .engine)
         logger.requestFlush()
 
-        let snapshot = logger.snapshotForTesting()
+        let snapshot = await logger.snapshotForTesting()
         XCTAssertEqual(snapshot.persistedLines.count, 2)
         XCTAssertTrue(snapshot.persistedLines[0].hasSuffix("BEGIN"))
         XCTAssertTrue(snapshot.persistedLines[1].hasSuffix("END"))
     }
 
-    func testWriterFiltersCategoriesAndKeepsRingBufferBounded() {
+    func testWriterFiltersCategoriesAndKeepsRingBufferBounded() async {
         let logger = makeLogger(maxEntries: 2) { category in
             category != .config
         }
@@ -119,7 +120,7 @@ final class LoggerTests: XCTestCase {
         logger.info("third", category: .engine)
         logger.requestFlush()
 
-        let snapshot = logger.snapshotForTesting()
+        let snapshot = await logger.snapshotForTesting()
         XCTAssertEqual(snapshot.persistedLines.count, 2)
         XCTAssertFalse(snapshot.persistedLines.joined().contains("hidden"))
         XCTAssertFalse(snapshot.persistedLines.joined().contains("first"))
@@ -127,7 +128,46 @@ final class LoggerTests: XCTestCase {
         XCTAssertTrue(snapshot.persistedLines[1].hasSuffix("third"))
     }
 
-    func testRequestFlushDoesNotWaitForBlockedPersistence() {
+    @available(macOS 15.0, *)
+    func testWriterCoalescesSubmittedRecordsIntoOnePersistenceCycle() async {
+        struct PersistenceState: Sendable {
+            var lines: [String] = []
+            var writeCount = 0
+        }
+
+        let state = Mutex(PersistenceState())
+        let logger = Logger(
+            configuration: LoggerWriterConfiguration(
+                persistence: LoggerPersistence(
+                    isCategoryEnabled: { _ in true },
+                    readLines: {
+                        state.withLock { $0.lines }
+                    },
+                    persist: { lines, _ in
+                        state.withLock { current in
+                            current.lines = lines
+                            current.writeCount += 1
+                        }
+                    },
+                    clear: {
+                        state.withLock { current in
+                            current = PersistenceState()
+                        }
+                    }
+                )
+            )
+        )
+
+        logger.info("first", category: .performance)
+        logger.info("second", category: .performance)
+        logger.requestFlush()
+
+        let snapshot = await logger.snapshotForTesting()
+        XCTAssertEqual(snapshot.persistedLines.count, 2)
+        XCTAssertEqual(state.withLock { $0.writeCount }, 1)
+    }
+
+    func testRequestFlushDoesNotWaitForBlockedPersistence() async {
         let persistenceStarted = DispatchSemaphore(value: 0)
         let allowPersistenceToFinish = DispatchSemaphore(value: 0)
         let suiteName = "LoggerTests.blocked.\(UUID().uuidString)"
@@ -159,8 +199,27 @@ final class LoggerTests: XCTestCase {
         XCTAssertLessThan(submitDuration, .milliseconds(50))
         XCTAssertEqual(persistenceStarted.wait(timeout: .now() + 1), .success)
         allowPersistenceToFinish.signal()
-        let snapshot = logger.snapshotForTesting()
+        let snapshot = await logger.snapshotForTesting()
         XCTAssertTrue(snapshot.persistedLines[0].hasSuffix("event"))
+    }
+
+    func testLifecycleSuspensionDiscardsPendingAndIgnoresNewRecordsUntilResume() async {
+        let logger = makeLogger()
+
+        logger.info("pending-before-suspend", category: .engine)
+        logger.suspendPersistenceForExtensionLifecycle()
+        logger.info("ignored-while-suspended", category: .engine)
+
+        var snapshot = await logger.snapshotForTesting()
+        XCTAssertTrue(snapshot.persistedLines.isEmpty)
+
+        logger.resumePersistenceForExtensionLifecycle()
+        logger.info("accepted-after-resume", category: .engine)
+        logger.requestFlush()
+
+        snapshot = await logger.snapshotForTesting()
+        XCTAssertEqual(snapshot.persistedLines.count, 1)
+        XCTAssertTrue(snapshot.persistedLines[0].hasSuffix("accepted-after-resume"))
     }
 
     private func makeLogger(

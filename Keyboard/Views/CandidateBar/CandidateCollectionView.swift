@@ -4,16 +4,15 @@ import UIKit
 @MainActor
 enum CandidateTouchDiagnostics {
     private static var cachedDisplayEnabled = false
-    private static var lastRefreshTime: CFTimeInterval = 0
 
     static var isEnabled: Bool {
-        let now = CACurrentMediaTime()
-        guard now - lastRefreshTime >= 0.25 else {
-            return cachedDisplayEnabled
-        }
-        lastRefreshTime = now
+        cachedDisplayEnabled
+    }
+
+    /// 与其他共享设置一起在键盘启动/重新显示时刷新。
+    /// 触控回调只读取内存值，避免在 `pointInside` / `hitTest` 中访问 App Group。
+    static func refreshFromSharedSettings() {
         cachedDisplayEnabled = Logger.isLiveCategoryEnabled(.display)
-        return cachedDisplayEnabled
     }
     static let minimumLogInterval: CFTimeInterval = 0.08
 

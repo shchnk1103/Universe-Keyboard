@@ -4,6 +4,12 @@
 #include "rime_api.h"
 #include <string.h>
 
+#ifdef RIME_DIAGNOSTICS
+#define RIME_DIAGNOSTIC_LOG(...) NSLog(__VA_ARGS__)
+#else
+#define RIME_DIAGNOSTIC_LOG(...) do { } while (0)
+#endif
+
 // MARK: - Dictionary keys
 
 NSString * const RimeKeyPreedit          = @"preedit";
@@ -20,6 +26,9 @@ NSString * const RimeKeyCandidateWindowStartIndex = @"startIndex";
 NSString * const RimeKeyCandidateWindowNextIndex = @"nextIndex";
 NSString * const RimeKeyCandidateWindowHasMore = @"hasMoreCandidates";
 NSString * const RimeKeyCandidateGlobalIndex = @"globalIndex";
+NSString * const RimeKeyFirstProcessKeyLibrimeDurationMs = @"firstProcessKeyLibrimeDurationMs";
+NSString * const RimeKeyFirstProcessKeyOutputDurationMs = @"firstProcessKeyOutputDurationMs";
+NSString * const RimeKeyFirstProcessKeyTotalDurationMs = @"firstProcessKeyTotalDurationMs";
 
 // MARK: - Private interface
 
@@ -27,12 +36,24 @@ NSString * const RimeKeyCandidateGlobalIndex = @"globalIndex";
 @property (nonatomic, assign) RimeSessionId sessionId;
 @property (nonatomic, assign) BOOL setupDone;
 @property (nonatomic, assign) BOOL initialized;
+/// 每个新 session 仅细分首个真实 processKey，避免把常规按键路径的观测成本放大。
+@property (nonatomic, assign) BOOL shouldMeasureFirstProcessKey;
+- (void)claimRuntimeOwnership;
+- (void)relinquishRuntimeOwnership;
 @end
 
 @implementation RimeSessionManager {
     RimeApi *_api;
 }
 
+// librime exposes one process-wide runtime through rime_get_api(). UIKit may keep an
+// old keyboard controller alive while creating a replacement controller, so treating
+// each manager as an independent runtime can leave the old instance holding database
+// locks. Keep one explicit owner and retire it before another manager calls setup or
+// initialize. All keyboard RIME calls are required to stay on the main thread.
+static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
+
+#ifdef RIME_DIAGNOSTICS
 static NSString *RimeSessionLogDirectory(NSString *userDir) {
     NSString *logDir = [userDir stringByAppendingPathComponent:@"logs"];
     [[NSFileManager defaultManager] createDirectoryAtPath:logDir
@@ -41,6 +62,7 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
                                                     error:nil];
     return logDir;
 }
+#endif
 
 - (instancetype)init {
     self = [super init];
@@ -50,6 +72,7 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
         _sessionId = 0;
         _setupDone = NO;
         _initialized = NO;
+        _shouldMeasureFirstProcessKey = NO;
     }
     return self;
 }
@@ -59,6 +82,7 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
 - (BOOL)setupWithSharedDataDir:(NSString *)sharedDataDir
                    userDataDir:(NSString *)userDataDir {
     if (_setupDone) return YES;
+    [self claimRuntimeOwnership];
     RimeEnsureLuaModuleLinked();
 
     RIME_STRUCT(RimeTraits, traits);
@@ -68,8 +92,14 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     traits.distribution_code_name = "UniverseKeyboard";
     traits.distribution_version = "1.0.0";
     traits.app_name = "rime.UniverseKeyboard";
+#ifdef RIME_DIAGNOSTICS
     traits.min_log_level = 0;
     traits.log_dir = [RimeSessionLogDirectory(userDataDir) UTF8String];
+#else
+    // Release 启动只保留 librime ERROR/FATAL，并写入 stderr，避免创建日志目录和文件。
+    traits.min_log_level = 2;
+    traits.log_dir = "";
+#endif
 
     // 加载模块：core, dict, gears 为基础模块
     // 当 librime-lua 插件已编译链接时，添加 "lua" 到列表中
@@ -80,16 +110,16 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
 #endif
     traits.modules = modules;
 
-    NSLog(@"[RIME] keyboard setup: modules=%@ luaCompiledIn=%@ luaModuleRegisteredBeforeSetup=%@",
-          [[RimeDeployer configuredModules] componentsJoinedByString:@"+"],
-          [RimeDeployer luaModuleCompiledIn] ? @"YES" : @"NO",
-          [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO");
+    RIME_DIAGNOSTIC_LOG(@"[RIME] keyboard setup: modules=%@ luaCompiledIn=%@ luaModuleRegisteredBeforeSetup=%@",
+                        [[RimeDeployer configuredModules] componentsJoinedByString:@"+"],
+                        [RimeDeployer luaModuleCompiledIn] ? @"YES" : @"NO",
+                        [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO");
 
     _api->setup(&traits);
     RimeEnsureLuaComponentsLoaded();
-    NSLog(@"[RIME] keyboard setup complete: luaModuleRegisteredAfterSetup=%@ luaComponents=%@",
-          [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO",
-          [[RimeDeployer luaComponentRegistrySummary] componentsJoinedByString:@"+"]);
+    RIME_DIAGNOSTIC_LOG(@"[RIME] keyboard setup complete: luaModuleRegisteredAfterSetup=%@ luaComponents=%@",
+                        [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO",
+                        [[RimeDeployer luaComponentRegistrySummary] componentsJoinedByString:@"+"]);
     _setupDone = YES;
     return YES;
 }
@@ -98,10 +128,12 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     if (_initialized) return YES;
     if (!_setupDone) return NO;
 
+    [self claimRuntimeOwnership];
+
     _api->initialize(NULL);
-    NSLog(@"[RIME] keyboard initialize complete: luaModuleRegisteredAfterInitialize=%@ luaComponents=%@",
-          [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO",
-          [[RimeDeployer luaComponentRegistrySummary] componentsJoinedByString:@"+"]);
+    RIME_DIAGNOSTIC_LOG(@"[RIME] keyboard initialize complete: luaModuleRegisteredAfterInitialize=%@ luaComponents=%@",
+                        [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO",
+                        [[RimeDeployer luaComponentRegistrySummary] componentsJoinedByString:@"+"]);
 
     // 部署与共享偏好写入均由主 App 完成；扩展启动只创建可输入的 session。
 
@@ -116,13 +148,14 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     if (_sessionId != 0) return YES; // already has session
 
     _sessionId = _api->create_session();
-    NSLog(@"[RIME] createSession: sessionId=%lu", (unsigned long) _sessionId);
+    _shouldMeasureFirstProcessKey = _sessionId != 0;
+    RIME_DIAGNOSTIC_LOG(@"[RIME] createSession: sessionId=%lu", (unsigned long) _sessionId);
     return _sessionId != 0;
 }
 
 - (BOOL)destroySession {
     if (_sessionId == 0) return NO;
-    NSLog(@"[RIME] destroySession: sessionId=%lu", (unsigned long) _sessionId);
+    RIME_DIAGNOSTIC_LOG(@"[RIME] destroySession: sessionId=%lu", (unsigned long) _sessionId);
     _api->destroy_session(_sessionId);
     _sessionId = 0;
     return YES;
@@ -159,7 +192,8 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
             NSLog(@"[RIME] ⚠️ processKey: session auto-recreation FAILED");
             return [self emptyOutput];
         }
-        NSLog(@"[RIME] processKey: auto-recreated session, new sessionId=%lu", (unsigned long) _sessionId);
+        _shouldMeasureFirstProcessKey = YES;
+        RIME_DIAGNOSTIC_LOG(@"[RIME] processKey: auto-recreated session, new sessionId=%lu", (unsigned long) _sessionId);
         // 重新选择上次激活的方案
         NSUserDefaults *defs = [[NSUserDefaults alloc] initWithSuiteName:@"group.com.DoubleShy0N.Universe-Keyboard"];
         NSString *schema = [defs stringForKey:@"rime_active_schema"] ?: @"luna_pinyin";
@@ -168,8 +202,24 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
         }
     }
 
+    if (!_shouldMeasureFirstProcessKey) {
+        _api->process_key(_sessionId, keycode, modifiers);
+        return [self collectOutput];
+    }
+
+    // 首键的候选引擎可能触发延迟加载。只记录阶段耗时，绝不记录按键或候选内容。
+    _shouldMeasureFirstProcessKey = NO;
+    CFAbsoluteTime totalStart = CFAbsoluteTimeGetCurrent();
     _api->process_key(_sessionId, keycode, modifiers);
-    return [self collectOutput];
+    CFAbsoluteTime outputStart = CFAbsoluteTimeGetCurrent();
+    NSDictionary *output = [self collectOutput];
+    CFAbsoluteTime outputEnd = CFAbsoluteTimeGetCurrent();
+
+    NSMutableDictionary *timedOutput = [output mutableCopy];
+    timedOutput[RimeKeyFirstProcessKeyLibrimeDurationMs] = @((outputStart - totalStart) * 1000.0);
+    timedOutput[RimeKeyFirstProcessKeyOutputDurationMs] = @((outputEnd - outputStart) * 1000.0);
+    timedOutput[RimeKeyFirstProcessKeyTotalDurationMs] = @((outputEnd - totalStart) * 1000.0);
+    return timedOutput;
 }
 
 - (NSDictionary *)selectCandidateAtIndex:(int)index {
@@ -376,14 +426,47 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
 
 // MARK: - Cleanup
 
-- (void)finalize {
+/// Makes this manager the sole owner of librime's process-global runtime.
+///
+/// A replacement keyboard controller can be constructed without the previous
+/// controller receiving viewWillDisappear. Retiring the previous owner here keeps
+/// setup/initialize calls ordered and prevents stale managers from finalizing a newer
+/// controller's runtime later from dealloc.
+- (void)claimRuntimeOwnership {
+    RIME_DIAGNOSTIC_LOG(@"[RIME] claiming process runtime on %@ thread",
+                        [NSThread isMainThread] ? @"main" : @"non-main");
+
+    RimeSessionManager *previousOwner = RimeActiveRuntimeOwner;
+    if (previousOwner == self) return;
+
+    [previousOwner relinquishRuntimeOwnership];
+    RimeActiveRuntimeOwner = self;
+}
+
+- (void)relinquishRuntimeOwnership {
     if (_sessionId != 0) {
-        [self destroySession];
+        _api->destroy_session(_sessionId);
+        _sessionId = 0;
     }
     if (_initialized) {
         _api->finalize();
         _initialized = NO;
     }
+    if (RimeActiveRuntimeOwner == self) {
+        RimeActiveRuntimeOwner = nil;
+    }
+}
+
+- (void)finalize {
+    // A stale controller must never destroy or finalize the current controller's
+    // process-global runtime. Its local flags were cleared when ownership moved.
+    if (RimeActiveRuntimeOwner != self) {
+        _sessionId = 0;
+        _initialized = NO;
+        return;
+    }
+
+    [self relinquishRuntimeOwnership];
 }
 
 - (void)dealloc {

@@ -98,6 +98,20 @@ final class RimeControllerRecoveryTests: RimeControllerTestSupport {
         XCTAssertEqual(engine.sessionResetCount, 1)
     }
 
+    func testVisibilityLifecycleReleasesAndResumesRimeEngine() {
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.abandonCompositionForVisibilityChange()
+
+        controller.suspendRimeForVisibilityChange()
+        controller.resumeRimeAfterVisibilityChange()
+
+        XCTAssertEqual(engine.visibilitySuspendCount, 1)
+        XCTAssertEqual(engine.visibilityResumeCount, 1)
+        XCTAssertFalse(engine.isComposing())
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.lastRimeOutput)
+    }
+
     func testEngineNilToNonNilTransition() {
         controller.rimeEngine = nil
         _ = controller.handle(.insertKey("h"))

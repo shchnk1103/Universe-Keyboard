@@ -43,6 +43,11 @@ Useful categories:
 - display: layout, candidate presentation and scrolling;
 - performance: initialization and key/UI durations.
 
+For a fresh RIME session, `RIME startup phases` separates setup, initialize,
+session creation and schema selection. A first-key `firstProcessKey` suffix
+separates librime `process_key` from bridge output collection; neither marker
+contains typed or candidate content.
+
 Always correlate a failure with its immediately preceding lifecycle/deployment event instead of reading isolated lines.
 
 ## Troubleshooting Flows
@@ -156,6 +161,8 @@ The repository does not yet define production budgets. Until that work exists:
 - use Xcode Memory Graph/Instruments evidence before claiming a retain cycle or leak.
 
 Absence of a documented budget is not evidence that a measured delay or memory level is acceptable.
+
+If typing on iPhone takes over AirPods from audio already playing on another device, first inspect the Keyboard target for app-owned `AVAudioSession` activation or `AVAudioPlayer` use. Keyboard clicks must use UIKit `UIInputViewAudioFeedback` / `UIDevice.playInputClick()`; pre-generated audio still requires an app-owned playback session and is not an acceptable route-ownership fix. Verify the final behavior on physical devices with silent mode and the system keyboard-feedback sound setting recorded separately.
 
 Use `docs/PERFORMANCE_BASELINE.md` for the required measurement fields and scenarios. Numeric budgets may be added only after reviewed real-device evidence exists.
 

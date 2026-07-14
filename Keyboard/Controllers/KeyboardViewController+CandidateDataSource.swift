@@ -9,18 +9,26 @@ private enum CandidateSizing {
     static let correctionHintSpacing: CGFloat = 3
 }
 
-extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    var horizontalVisibleCandidates: [CandidateItem] {
-        accumulatedCandidates.filter { $0.kind != .placeholder }
-    }
+/// 使用结构化键避免每次布局查询都拼接包含候选文本的临时字符串。
+struct CandidateCellSizeCacheKey: Hashable {
+    let isExpanded: Bool
+    let isPreferred: Bool
+    let collectionWidth: Int
+    let kindRawValue: Int
+    let title: String
+    let correctionHint: String?
+}
 
-    private var expandedVisibleCandidates: [CandidateItem] {
-        accumulatedCandidates.filter { $0.kind != .placeholder }
+extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    /// `resetCandidateSnapshotFromController()` 在唯一重建边界移除 placeholder。
+    /// 分页窗口只生成普通 RIME candidate，因此数据源回调可以直接复用同一数组。
+    var presentedCandidates: [CandidateItem] {
+        accumulatedCandidates
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView === candidateCollectionView { return horizontalVisibleCandidates.count }
-        if collectionView === expandedCandidateCollectionView { return expandedVisibleCandidates.count }
+        if collectionView === candidateCollectionView { return presentedCandidates.count }
+        if collectionView === expandedCandidateCollectionView { return presentedCandidates.count }
         return 0
     }
 
@@ -35,7 +43,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         else {
             return UICollectionViewCell()
         }
-        let items = isExpanded ? expandedVisibleCandidates : horizontalVisibleCandidates
+        let items = presentedCandidates
         guard items.indices.contains(indexPath.item) else { return cell }
         let item = items[indexPath.item]
         cell.configure(with: item, preferred: isPreferredCandidate(item, at: indexPath.item), expanded: isExpanded)
@@ -44,11 +52,11 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView === candidateCollectionView {
-            let items = horizontalVisibleCandidates
+            let items = presentedCandidates
             guard items.indices.contains(indexPath.item) else { return }
             commitCandidate(items[indexPath.item])
         } else if collectionView === expandedCandidateCollectionView {
-            let items = expandedVisibleCandidates
+            let items = presentedCandidates
             guard items.indices.contains(indexPath.item) else { return }
             commitExpandedCandidate(items[indexPath.item])
         }
@@ -59,7 +67,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        let items = collectionView === candidateCollectionView ? horizontalVisibleCandidates : expandedVisibleCandidates
+        let items = presentedCandidates
         let isExpanded = collectionView === expandedCandidateCollectionView
         let visualHeight: CGFloat = isExpanded ? 38 : 32
         let itemHeight = visualHeight + (isExpanded ? CandidateSizing.expandedVisualVerticalGap : 0)
@@ -68,8 +76,14 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         let preferred = isPreferredCandidate(item, at: indexPath.item)
         let title = item.title
         let correctionHint = correctionHint(for: item)
-        let cacheKey =
-            "\(isExpanded)|\(preferred)|\(Int(collectionView.bounds.width))|\(item.kind.rawValue)|\(title)|\(correctionHint ?? "")"
+        let cacheKey = CandidateCellSizeCacheKey(
+            isExpanded: isExpanded,
+            isPreferred: preferred,
+            collectionWidth: Int(collectionView.bounds.width),
+            kindRawValue: item.kind.rawValue,
+            title: title,
+            correctionHint: correctionHint
+        )
         if let cachedSize = candidateCellSizeCache[cacheKey] {
             return cachedSize
         }

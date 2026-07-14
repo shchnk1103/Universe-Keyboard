@@ -116,5 +116,11 @@ extern NSString * const RimeKeyCandidateWindowStartIndex;
 extern NSString * const RimeKeyCandidateWindowNextIndex;
 extern NSString * const RimeKeyCandidateWindowHasMore;
 extern NSString * const RimeKeyCandidateGlobalIndex;
+/// 新 session 的第一个按键中，librime `process_key` 的耗时（NSNumber double，毫秒）。
+extern NSString * const RimeKeyFirstProcessKeyLibrimeDurationMs;
+/// 新 session 的第一个按键中，桥接层收集输出的耗时（NSNumber double，毫秒）。
+extern NSString * const RimeKeyFirstProcessKeyOutputDurationMs;
+/// 新 session 的第一个按键从 `process_key` 到输出收集完成的总耗时（NSNumber double，毫秒）。
+extern NSString * const RimeKeyFirstProcessKeyTotalDurationMs;
 
 NS_ASSUME_NONNULL_END

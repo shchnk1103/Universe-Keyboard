@@ -8,6 +8,7 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
     var firstRowTrailingReservedWidth: CGFloat = 0
 
     private var cachedAttributes: [UICollectionViewLayoutAttributes] = []
+    private var cachedAttributesByIndexPath: [IndexPath: UICollectionViewLayoutAttributes] = [:]
     private var cachedContentSize: CGSize = .zero
 
     override var collectionViewContentSize: CGSize {
@@ -18,6 +19,7 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
         super.prepare()
         guard let collectionView else {
             cachedAttributes = []
+            cachedAttributesByIndexPath = [:]
             cachedContentSize = .zero
             return
         }
@@ -57,6 +59,14 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
         }
 
         cachedAttributes = preparedAttributes
+        // UIKit 正常情况下每个 IndexPath 只有一份属性；逐项赋值仍能在异常重复时
+        // 安全采用最后一份，而不是让仅用于性能的缓存触发崩溃。
+        var attributesByIndexPath: [IndexPath: UICollectionViewLayoutAttributes] = [:]
+        attributesByIndexPath.reserveCapacity(preparedAttributes.count)
+        for attribute in preparedAttributes {
+            attributesByIndexPath[attribute.indexPath] = attribute
+        }
+        cachedAttributesByIndexPath = attributesByIndexPath
         cachedContentSize = CGSize(
             width: collectionView.bounds.width,
             height: nextY + rowHeight + sectionInset.bottom
@@ -68,7 +78,7 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
     }
 
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        cachedAttributes.first { $0.indexPath == indexPath }
+        cachedAttributesByIndexPath[indexPath]
     }
 
     override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
@@ -298,8 +308,10 @@ extension KeyboardViewController {
             collectionView.topAnchor.constraint(equalTo: container.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
         ])
+#if DEBUG
         Logger.shared.info(
             "expandedPanel: \(candidates.count) candidates in incremental collection", category: .display)
+#endif
         return container
     }
 
@@ -317,7 +329,7 @@ extension KeyboardViewController {
         }
 
         let currentCount = collectionView.numberOfItems(inSection: 0)
-        let visibleCount = candidateItems().filter { $0.kind != .placeholder }.count
+        let visibleCount = presentedCandidates.count
         let expectedOldCount = max(0, visibleCount - insertedCount)
         guard currentCount == expectedOldCount else {
             refreshExpandedPanel()

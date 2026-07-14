@@ -13,6 +13,7 @@ extension KeyboardViewController: UIScrollViewDelegate {
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         guard scrollView === candidateScrollView || scrollView === expandedPanelScrollView else { return }
         isCandidateScrollInteracting = true
+#if DEBUG
         Logger.shared.debug(
             "candidate scroll begin: expanded=\(scrollView === expandedPanelScrollView), "
                 + "items=\(accumulatedCandidates.count), offset=(\(Int(scrollView.contentOffset.x)),\(Int(scrollView.contentOffset.y))), "
@@ -20,15 +21,18 @@ extension KeyboardViewController: UIScrollViewDelegate {
             category: .display
         )
         Logger.shared.requestFlush()
+#endif
     }
 
     public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         guard scrollView === candidateScrollView || scrollView === expandedPanelScrollView else { return }
+#if DEBUG
         Logger.shared.debug(
             "candidate scroll endDrag: decelerate=\(decelerate), offset=(\(Int(scrollView.contentOffset.x)),\(Int(scrollView.contentOffset.y)))",
             category: .display
         )
         Logger.shared.requestFlush()
+#endif
         guard !decelerate else { return }
         isCandidateScrollInteracting = false
         requestMoreCandidatesIfNeeded(after: scrollView)
@@ -37,12 +41,14 @@ extension KeyboardViewController: UIScrollViewDelegate {
 
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         guard scrollView === candidateScrollView || scrollView === expandedPanelScrollView else { return }
+#if DEBUG
         Logger.shared.debug(
             "candidate scroll settled: offset=(\(Int(scrollView.contentOffset.x)),\(Int(scrollView.contentOffset.y))), "
                 + "content=(\(Int(scrollView.contentSize.width)),\(Int(scrollView.contentSize.height)))",
             category: .display
         )
         Logger.shared.requestFlush()
+#endif
         isCandidateScrollInteracting = false
         requestMoreCandidatesIfNeeded(after: scrollView)
         runDeferredCandidatePrefetchIfNeeded()
@@ -65,7 +71,9 @@ extension KeyboardViewController: UIScrollViewDelegate {
             return
         }
         if shouldLoad {
+#if DEBUG
             Logger.shared.debug("candidate paging after scrolling settled", category: .display)
+#endif
             scheduleCandidatePrefetch(mode: scrollView === expandedPanelScrollView ? .expanded : .bar)
         }
     }
@@ -130,12 +138,14 @@ extension KeyboardViewController: UIScrollViewDelegate {
         let startIndex = nextCandidateGlobalIndex
         let generation = candidateSnapshotGeneration
         let rawInput = candidateSnapshotRawInput
+#if DEBUG
         Logger.shared.info(
             "loadMoreCandidates START: start=\(startIndex), limit=\(batchLimit), mode=\(activeMode), "
                 + "rawLength=\(rawInput?.count ?? 0), total=\(accumulatedCandidates.count)",
             category: .display
         )
         Logger.shared.requestFlush()
+#endif
         isLoadingMoreCandidates = true
         let loadStart = CACurrentMediaTime()
         let window = engine.candidateWindow(from: startIndex, limit: batchLimit)
@@ -143,7 +153,9 @@ extension KeyboardViewController: UIScrollViewDelegate {
             candidateSnapshotRawInput == rawInput
         else {
             isLoadingMoreCandidates = false
+#if DEBUG
             Logger.shared.debug("loadMoreCandidates discarded stale generation", category: .display)
+#endif
             return
         }
         let nextItems = window.candidates.enumerated().map { offset, candidate in
@@ -155,19 +167,40 @@ extension KeyboardViewController: UIScrollViewDelegate {
                 globalIndex: globalIndex
             )
         }
+#if DEBUG
         Logger.shared.info(
             "loadMoreCandidates RIME: rawNewItems=\(nextItems.count), hasMore=\(window.hasMoreCandidates)",
             category: .display
         )
+#endif
 
         var newAppended: [CandidateItem] = []
+        var loadedGlobalIndices = Set(
+            accumulatedCandidates.compactMap { $0.selectionReference?.globalIndex }
+        )
+        // 保留旧的 Optional 索引去重语义；正常 candidateWindow 会为每项补齐全局索引。
+        var hasLoadedCandidateWithoutGlobalIndex = accumulatedCandidates.contains {
+            $0.selectionReference?.globalIndex == nil
+        }
+#if DEBUG
         var duplicateCount = 0
+#endif
         for item in nextItems {
-            if !accumulatedCandidates.contains(where: { $0.selectionReference?.globalIndex == item.selectionReference?.globalIndex }) {
+            let isNewCandidate: Bool
+            if let globalIndex = item.selectionReference?.globalIndex {
+                isNewCandidate = loadedGlobalIndices.insert(globalIndex).inserted
+            } else {
+                isNewCandidate = !hasLoadedCandidateWithoutGlobalIndex
+                hasLoadedCandidateWithoutGlobalIndex = true
+            }
+
+            if isNewCandidate {
                 accumulatedCandidates.append(item)
                 newAppended.append(item)
             } else {
+#if DEBUG
                 duplicateCount += 1
+#endif
             }
         }
         nextCandidateGlobalIndex = max(nextCandidateGlobalIndex, window.nextIndex)
@@ -187,11 +220,13 @@ extension KeyboardViewController: UIScrollViewDelegate {
                 : appendToCandidateBar(insertedCount: newAppended.count)
         }
         let elapsedMs = (CACurrentMediaTime() - loadStart) * 1000
+#if DEBUG
         Logger.shared.info(
             "loadMoreCandidates DONE: +\(newAppended.count) new, \(duplicateCount) dup, total=\(accumulatedCandidates.count), "
                 + "next=\(nextCandidateGlobalIndex), hasMore=\(hasMoreCandidates), durationMs=\(String(format: "%.1f", elapsedMs))",
             category: .display
         )
+#endif
         if elapsedMs >= 30 {
             Logger.shared.warning(
                 "SLOW candidate prefetch duration=\(String(format: "%.1f", elapsedMs))ms "
@@ -199,7 +234,9 @@ extension KeyboardViewController: UIScrollViewDelegate {
                 category: .performance
             )
         }
+#if DEBUG
         Logger.shared.requestFlush()
+#endif
         if shouldContinuePrefetching(mode: activeMode, elapsedMs: elapsedMs) {
             scheduleCandidatePrefetch(mode: activeMode)
         }

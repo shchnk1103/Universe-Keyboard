@@ -38,6 +38,8 @@ Use synthetic input only. Do not record surrounding host text or private user co
 
 Measure from Extension process/presentation start to installed, visible, interactive keyboard UI. Separately record controller construction, runtime-directory resolution, RIME session creation and first stable layout. Test after terminating the Extension process, not only after hiding it.
 
+Confirm the Extension does not construct or activate an app-owned audio session during startup. System input-click delivery is device behavior and must be recorded separately from startup CPU time.
+
 ### First Key Latency
 
 Measure touch-down/action entry to committed state/UI feedback for:
@@ -85,6 +87,13 @@ Collect device logs for Extension termination under normal and memory-pressure s
 ### RIME Session Creation
 
 Measure setup/initialize/session creation/schema selection separately for cold process start and active-session recovery. Confirm no deployment or filesystem preparation appears inside this interval.
+
+The current measurement-only diagnostics emit one `RIME startup phases` record with
+`setup`, `initialize`, `session` and `schema` durations. For the first real RIME
+key in each newly created session, `firstProcessKey` separately reports the
+librime API call and bridge output collection. These fields contain only elapsed
+time; they never contain typed, candidate or host text. They are diagnostic
+markers, not an accepted performance budget.
 
 ### Lua Smoke Impact
 

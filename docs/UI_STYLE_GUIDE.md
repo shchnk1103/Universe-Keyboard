@@ -205,7 +205,7 @@ Before considering a UI change complete:
 Manual keyboard UI verification before changing the frozen baseline:
 
 - Slow typing: press and hold a letter briefly, then release. Visual, click, and haptic feedback should feel like one event at touch-down.
-- Rapid typing: type a short sequence quickly. Sounds should overlap without clipping, and the keyboard should remain responsive.
+- Rapid typing: type a short sequence quickly. System input clicks should remain natural, must not transfer Bluetooth route ownership, and the keyboard should remain responsive.
 - Repeated key presses: press Shift, 123, input mode, Return, and Delete repeatedly. Feedback should not double-fire.
 - Long-press delete: first delete should feel immediate; repeated deletes should keep a natural feedback rhythm.
 - Edge keys: first and last keys in each row should not feel too close to the screen edge.

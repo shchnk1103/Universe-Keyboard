@@ -79,6 +79,7 @@ extension KeyboardViewController {
         let refreshStart = CACurrentMediaTime()
 
         resetCandidateSnapshotFromController()
+#if DEBUG
         let preeditLength = controller.state.lastRimeOutput?.composition?.preeditText.count ?? 0
 
         Logger.shared.info(
@@ -86,12 +87,15 @@ extension KeyboardViewController {
                 + "hasMore=\(hasMoreCandidates), preeditLength=\(preeditLength)",
             category: .display
         )
+#endif
 
         fillCandidateBar()
         let refreshMs = (CACurrentMediaTime() - refreshStart) * 1000
+#if DEBUG
         Logger.shared.performance(
             "CANDIDATES refresh total=\(String(format: "%.1f", refreshMs))ms items=\(accumulatedCandidates.count)"
         )
+#endif
         if refreshMs >= 30 {
             Logger.shared.warning(
                 "SLOW CANDIDATES refresh duration=\(String(format: "%.1f", refreshMs))ms "
@@ -120,8 +124,10 @@ extension KeyboardViewController {
             Logger.shared.warning("fillCandidateBar: candidateCollectionView is nil", category: .general)
             return
         }
+#if DEBUG
         let renderStart = CACurrentMediaTime()
-        let items = horizontalVisibleCandidates
+#endif
+        let items = presentedCandidates
 
         // ── 控制展开按钮可见性 ─────────────────────────────────────
         let hasCandidates = items.contains { $0.kind == .candidate }
@@ -143,11 +149,13 @@ extension KeyboardViewController {
         }
         collectionView.alwaysBounceHorizontal = hasMoreCandidates && !items.isEmpty
 
+#if DEBUG
         Logger.shared.debug(
             "fillCandidateBar collection: items=\(items.count), "
                 + "durationMs=\(String(format: "%.1f", (CACurrentMediaTime() - renderStart) * 1000))",
             category: .display
         )
+#endif
     }
 
     func appendToCandidateBar(insertedCount: Int? = nil) {
@@ -160,7 +168,7 @@ extension KeyboardViewController {
         }
 
         let currentCount = collectionView.numberOfItems(inSection: 0)
-        let expectedOldCount = max(0, horizontalVisibleCandidates.count - insertedCount)
+        let expectedOldCount = max(0, presentedCandidates.count - insertedCount)
         guard currentCount == expectedOldCount else {
             fillCandidateBar(keepScrollPosition: true)
             return
@@ -180,7 +188,7 @@ extension KeyboardViewController {
                 else { return }
                 let maxOffset = max(0, self.candidateScrollView.contentSize.width - self.candidateScrollView.bounds.width)
                 self.candidateScrollView.contentOffset.x = min(currentOffset.x, maxOffset)
-                collectionView.alwaysBounceHorizontal = self.hasMoreCandidates && !self.horizontalVisibleCandidates.isEmpty
+                collectionView.alwaysBounceHorizontal = self.hasMoreCandidates && !self.presentedCandidates.isEmpty
             }
         }
     }
@@ -212,7 +220,11 @@ extension KeyboardViewController {
     /// When a key both commits composition and returns to letters, this prevents
     /// the newly created candidate bar from reusing stale accumulated candidates.
     func resetCandidateSnapshotFromController() {
-        accumulatedCandidates = CandidateBarDataSource.candidateItems(from: controller)
+        // Placeholder 是旧按钮式候选栏的安全哨兵，不属于当前 collection 快照。
+        // 在唯一重建边界过滤一次，避免每个数据源回调都复制并过滤数组。
+        accumulatedCandidates = CandidateBarDataSource.candidateItems(from: controller).filter {
+            $0.kind != .placeholder
+        }
         candidateSnapshotGeneration += 1
         candidateSnapshotRawInput = controller.state.lastRimeOutput?.rawInput ?? controller.state.currentComposition
         nextCandidateGlobalIndex = nextGlobalIndexAfterCurrentItems()

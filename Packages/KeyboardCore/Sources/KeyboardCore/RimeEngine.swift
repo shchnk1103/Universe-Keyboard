@@ -36,6 +36,15 @@ public protocol RimeEngine: AnyObject {
     /// 宿主切换键盘后重建可用会话，并恢复用户选择的输入方案。
     func recoverSession()
 
+    /// 键盘即将不可见时同步释放底层运行时持有的文件资源。
+    ///
+    /// 这与 `resetSession()` 不同：后者只清空输入状态，不保证释放
+    /// librime 及其数据库文件锁。
+    func suspendForVisibilityChange()
+
+    /// 键盘重新可见时重建运行时与输入会话。
+    func resumeAfterVisibilityChange()
+
     /// 当前是否正在输入中（有活跃的拼音组合）。
     func isComposing() -> Bool
 

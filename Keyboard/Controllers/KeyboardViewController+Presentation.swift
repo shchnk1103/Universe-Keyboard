@@ -191,8 +191,10 @@ extension KeyboardViewController {
     }
 
     func syncUI(with effects: KeyboardEffect) {
+#if DEBUG
         let startTime = CACurrentMediaTime()
         defer { logKeyPerformance("syncUI \(effects)", startTime: startTime) }
+#endif
         updateReturnKeyAppearance()
         if effects.contains(.pageChanged) || effects.contains(.inputModeChanged)
             || effects.contains(.keyboardTypeChanged)

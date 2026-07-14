@@ -8,8 +8,6 @@ private let feedbackSettingsDefaults = UserDefaults(suiteName: appGroupID)
 struct FeedbackSettingsView: View {
     @AppStorage(KeyboardFeedbackSettingsKey.keyClickEnabled, store: feedbackSettingsDefaults)
     private var keyClickEnabled = true
-    @AppStorage(KeyboardFeedbackSettingsKey.keyClickLevel, store: feedbackSettingsDefaults)
-    private var keyClickLevel = KeyboardFeedbackLevel.defaultLevel.rawValue
     @AppStorage(KeyboardFeedbackSettingsKey.hapticEnabled, store: feedbackSettingsDefaults)
     private var hapticEnabled = false
     @AppStorage(KeyboardFeedbackSettingsKey.hapticLevel, store: feedbackSettingsDefaults)
@@ -27,19 +25,6 @@ struct FeedbackSettingsView: View {
                 Text("按键音")
             } footer: {
                 Text(keyClickFooter)
-            }
-
-            if keyClickEnabled {
-                Section {
-                    FeedbackLevelSelectionView(selection: $keyClickLevel) { level in
-                        feedbackSettingsDefaults?.synchronize()
-                        previewCoordinator.previewClick(level: level)
-                    }
-                } header: {
-                    Text("按键音量")
-                } footer: {
-                    Text("选择档位后会自动试听一次。同一档位不会重复试听，快速连续选择时会自动节流。")
-                }
             }
 
             Section {
@@ -79,14 +64,13 @@ struct FeedbackSettingsView: View {
         }
         .onAppear {
             migrateLegacyFeedbackSettingsIfNeeded()
-            previewCoordinator.prepare()
         }
     }
 
     private var keyClickFooter: String {
         keyClickEnabled
-            ? "按键音设置会通过 App Group 同步到键盘，需要在系统键盘设置中开启「允许完全访问」。"
-            : "开启后按下按键时播放点击音。"
+            ? "真实键盘使用 iOS 系统输入点击音，不会由 Universe Keyboard 激活音频会话。App 内开关需允许完全访问同步，系统键盘反馈中的声音也需开启。"
+            : "开启后使用 iOS 系统输入点击音；声音大小、静音和音频路由由系统管理。"
     }
 
     private var hapticFooter: String {
@@ -128,10 +112,6 @@ struct FeedbackSettingsView: View {
 
         keyClickEnabled = true
         feedbackSettingsDefaults?.synchronize()
-        previewCoordinator.previewClick(
-            level: KeyboardFeedbackLevel.clamped(keyClickLevel),
-            force: true
-        )
     }
 
     private func setHapticEnabled(_ enabled: Bool) {
@@ -163,7 +143,6 @@ struct FeedbackSettingsView: View {
 
     private func migrateLegacyFeedbackSettingsIfNeeded() {
         KeyboardFeedbackSettingsMigration.migrateLegacyLevelsIfNeeded(in: feedbackSettingsDefaults)
-        keyClickLevel = KeyboardFeedbackLevel.clamped(keyClickLevel).rawValue
         hapticLevel = KeyboardFeedbackLevel.clamped(hapticLevel).rawValue
         feedbackSettingsDefaults?.synchronize()
     }

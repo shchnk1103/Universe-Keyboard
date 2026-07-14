@@ -52,7 +52,7 @@ These operations must not be moved into keyboard presentation or key handling.
 
 At startup the Extension calls `RimeConfigManager.runtimeDirectories()`. This resolver is read-only: both `Rime/shared` and `Rime/user` must already exist.
 
-- When directories exist, the Extension creates `RimeEngineImpl` and a new RIME session.
+- When directories exist, the Extension creates `RimeEngineImpl`, opens a new RIME session and confirms the requested schema can be selected. Healthy cold startup does not synthesize input or enumerate every schema; deeper functional validation remains in explicit recovery/failure paths.
 - When they do not exist, it uses the fallback adapter and logs that deployment must be completed in the main App.
 - During input it may process keys, select candidates, clear/recreate a session and reselect the active schema.
 - It must not generate YAML, install files, clear deployment caches or run full maintenance.
@@ -81,15 +81,17 @@ ADR 0006 requires a future atomic directory switch or equivalent transaction mod
 
 ### First presentation
 
-`viewDidLoad` builds controller state, resolves runtime directories, creates the RIME or fallback engine, caches settings and installs observers. The first `viewDidAppear` marks the view as presented and does not abandon composition.
+`viewDidLoad` builds controller state, resolves runtime directories and installs the in-memory fallback engine, but does not start librime. iOS can precreate a keyboard extension and suspend it without sending a view-disappearance callback; opening the RIME user dictionary in that state would leave a file lock and trigger `0xdead10cc`. The first `viewDidAppear` starts librime, creates its session and then marks the view as presented. Later visibility returns refresh the snapshot; the Extension does not rely on process-local `UserDefaults.didChangeNotification` for main-App writes.
 
 ### Disappearance
 
-`viewWillDisappear` stops delete repeat and popup/expanded-candidate interactions, clears candidate presentation caches, resets press visuals, resets the RIME session and abandons unfinished composition, Partial Commit, typo state and marked preedit.
+`viewWillDisappear` stops delete repeat and popup/expanded-candidate interactions, clears candidate presentation caches, resets press visuals, resets the RIME session and abandons unfinished composition, Partial Commit, typo state and marked preedit. It then synchronously finalizes the Extension-owned librime runtime before UIKit can suspend the process. This release is tied to visibility rather than `deinit`, because UIKit may retain hidden keyboard controllers and iOS terminates suspended extensions that still hold RIME database file locks.
+
+The diagnostic writer also enters an ordered suspended state at this boundary. Pending best-effort records are discarded and no delayed App Group write remains scheduled; input correctness and suspension safety take priority over preserving the last diagnostic batch.
 
 ### Return of an existing controller
 
-On every `viewDidAppear` after the first, the same cleanup runs again. The keyboard deliberately starts clean; unfinished composition is not restored across visibility changes.
+`viewWillAppear` first resumes diagnostic intake, then reinitializes librime, creates a fresh session and reselects the active schema before accepting input. On every `viewDidAppear` after the first, the same transient-state cleanup runs again. The keyboard deliberately starts clean; unfinished composition is not restored across visibility changes.
 
 ### Runtime session failure while still visible
 

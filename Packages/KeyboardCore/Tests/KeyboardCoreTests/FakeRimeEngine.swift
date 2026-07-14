@@ -18,6 +18,8 @@ final class FakeRimeEngine: RimeEngine {
     private var selectedSegment: FakeRimeSelectedSegment?
     var sessionResetCount = 0
     var sessionRecoveryCount = 0
+    var visibilitySuspendCount = 0
+    var visibilityResumeCount = 0
     var processKeysToDrop = 0
     var replaceInputsToDrop = 0
 
@@ -160,6 +162,15 @@ final class FakeRimeEngine: RimeEngine {
     func recoverSession() {
         sessionRecoveryCount += 1
         resetSession()
+    }
+
+    func suspendForVisibilityChange() {
+        visibilitySuspendCount += 1
+        resetSession()
+    }
+
+    func resumeAfterVisibilityChange() {
+        visibilityResumeCount += 1
     }
 
     func isComposing() -> Bool {

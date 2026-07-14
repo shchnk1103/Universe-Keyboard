@@ -5,10 +5,14 @@ extension KeyboardViewController {
     /// Records touch timing and responds synchronously so rapid typing receives immediate feedback.
     @objc func keyTouchDown(_ sender: UIButton) {
         let identifier = ObjectIdentifier(sender)
+#if DEBUG
         keyTouchDownTimes[identifier] = CACurrentMediaTime()
+#endif
         keyPressFeedbackEmittedButtonIDs.insert(identifier)
 
+#if DEBUG
         Logger.shared.performance("keyDown registered")
+#endif
 
         sender.backgroundColor = highlightedKeyColor
         sender.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)

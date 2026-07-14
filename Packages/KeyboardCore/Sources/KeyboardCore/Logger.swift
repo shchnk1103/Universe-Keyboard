@@ -120,6 +120,17 @@ public final class Logger: Sendable {
         writer.submit(.requestFlush)
     }
 
+    /// 键盘扩展即将挂起时停止并清空延迟诊断写入。
+    /// 这是生命周期屏障，不得从按键热路径调用。
+    public func suspendPersistenceForExtensionLifecycle() {
+        writer.suspendPersistence()
+    }
+
+    /// 键盘重新可见后允许新的诊断事件进入后台 writer。
+    public func resumePersistenceForExtensionLifecycle() {
+        writer.resumePersistence()
+    }
+
     /// Submits a non-blocking clear request. The diagnostics app reads the persisted store.
     public func clearAll() {
         writer.submit(.clear)
@@ -127,8 +138,8 @@ public final class Logger: Sendable {
 
     // MARK: - Test support
 
-    func snapshotForTesting() -> LoggerWriterSnapshot {
-        writer.snapshot()
+    func snapshotForTesting() async -> LoggerWriterSnapshot {
+        await writer.snapshot()
     }
 
     // MARK: - Private

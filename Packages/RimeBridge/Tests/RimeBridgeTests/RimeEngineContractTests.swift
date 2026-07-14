@@ -28,6 +28,75 @@ final class RimeEngineContractTests: XCTestCase {
         XCTAssertEqual(RimeEngineImpl.keycode(for: "ni"), 0)
     }
 
+    func testHealthyStartupSchemaSelectionDoesNotEnumerateSchemas() {
+        var attempted: [String] = []
+        var enumerationCount = 0
+
+        let result = RimeStartupSchemaSelector.select(
+            requested: "rime_ice",
+            fallback: "luna_pinyin",
+            attempt: { schemaID in
+                attempted.append(schemaID)
+                return schemaID == "rime_ice"
+            },
+            availableSchemaIDs: {
+                enumerationCount += 1
+                return ["rime_ice", "luna_pinyin"]
+            }
+        )
+
+        XCTAssertEqual(result.selectedSchemaID, "rime_ice")
+        XCTAssertFalse(result.usedSchemaEnumeration)
+        XCTAssertEqual(attempted, ["rime_ice"])
+        XCTAssertEqual(enumerationCount, 0)
+    }
+
+    func testStartupSchemaSelectionUsesConfiguredFallbackBeforeEnumeration() {
+        var attempted: [String] = []
+        var enumerationCount = 0
+
+        let result = RimeStartupSchemaSelector.select(
+            requested: "missing",
+            fallback: "luna_pinyin",
+            attempt: { schemaID in
+                attempted.append(schemaID)
+                return schemaID == "luna_pinyin"
+            },
+            availableSchemaIDs: {
+                enumerationCount += 1
+                return ["other"]
+            }
+        )
+
+        XCTAssertEqual(result.selectedSchemaID, "luna_pinyin")
+        XCTAssertFalse(result.usedSchemaEnumeration)
+        XCTAssertEqual(attempted, ["missing", "luna_pinyin"])
+        XCTAssertEqual(enumerationCount, 0)
+    }
+
+    func testStartupSchemaSelectionEnumeratesOnlyAfterRequestedAndFallbackFail() {
+        var attempted: [String] = []
+        var enumerationCount = 0
+
+        let result = RimeStartupSchemaSelector.select(
+            requested: "missing",
+            fallback: "luna_pinyin",
+            attempt: { schemaID in
+                attempted.append(schemaID)
+                return schemaID == "other"
+            },
+            availableSchemaIDs: {
+                enumerationCount += 1
+                return ["missing", "luna_pinyin", "other"]
+            }
+        )
+
+        XCTAssertEqual(result.selectedSchemaID, "other")
+        XCTAssertTrue(result.usedSchemaEnumeration)
+        XCTAssertEqual(attempted, ["missing", "luna_pinyin", "other"])
+        XCTAssertEqual(enumerationCount, 1)
+    }
+
     func testOutputParserSeparatesRawInputFromDisplayPreedit() {
         let output = RimeEngineImpl.parseOutputDictionary([
             "rawInput": "nihap",
@@ -69,6 +138,21 @@ final class RimeEngineContractTests: XCTestCase {
 
         XCTAssertNil(output.rawInput)
         XCTAssertEqual(output.candidatePageNumber, 0)
+    }
+
+    func testFirstKeyBridgeTimingRequiresAllContentFreeTimingFields() {
+        let timing = RimeFirstKeyBridgeTiming(rawOutput: [
+            "firstProcessKeyLibrimeDurationMs": NSNumber(value: 12.5),
+            "firstProcessKeyOutputDurationMs": NSNumber(value: 3.25),
+            "firstProcessKeyTotalDurationMs": NSNumber(value: 15.75),
+        ])
+
+        XCTAssertEqual(timing?.librimeProcessKeyMs, 12.5)
+        XCTAssertEqual(timing?.outputCollectionMs, 3.25)
+        XCTAssertEqual(timing?.totalMs, 15.75)
+        XCTAssertNil(RimeFirstKeyBridgeTiming(rawOutput: [
+            "firstProcessKeyLibrimeDurationMs": NSNumber(value: 12.5),
+        ]))
     }
 
     func testCandidateWindowParserPreservesGlobalIndexes() {

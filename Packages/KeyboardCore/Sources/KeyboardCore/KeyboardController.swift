@@ -77,6 +77,17 @@ public final class KeyboardController {
         return hadVisibleComposition ? .compositionChanged : []
     }
 
+    /// 在扩展进入不可见状态前释放 RIME 的进程级资源。
+    /// 必须由 UI 生命周期同步调用，不能推迟到不可预测的 `deinit`。
+    public func suspendRimeForVisibilityChange() {
+        rimeEngine?.suspendForVisibilityChange()
+    }
+
+    /// 在扩展重新可见时恢复 RIME runtime 与 session。
+    public func resumeRimeAfterVisibilityChange() {
+        rimeEngine?.resumeAfterVisibilityChange()
+    }
+
     // MARK: - Public entry point
 
     @discardableResult

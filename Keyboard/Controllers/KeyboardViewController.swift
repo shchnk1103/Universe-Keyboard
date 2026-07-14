@@ -31,6 +31,16 @@ import UIKit
 @MainActor
 class KeyboardViewController: UIInputViewController {
 
+    // MARK: - 视图加载
+
+    /// 通过标准 UIViewController 加载流程安装输入视图。
+    ///
+    /// 不要在 `init` 中直接设置 `inputView`：系统可能因此跳过 `viewDidLoad`，
+    /// 让 `viewWillAppear` 在 KeyboardCore 控制器创建前到达，最终留下空白键盘。
+    override func loadView() {
+        view = KeyboardAudioFeedbackInputView(frame: .zero, inputViewStyle: .keyboard)
+    }
+
     // MARK: - 视图引用
 
     /// Liquid Glass-inspired 外层承载面。只负责背景、圆角和轻量层次，不参与输入逻辑。
@@ -113,7 +123,7 @@ class KeyboardViewController: UIInputViewController {
     /// 预取请求序号。新的输入、展开/收起或新的预取安排会让旧延迟任务自然失效。
     var candidatePrefetchRequestSerial = 0
     /// 候选 cell 尺寸缓存。滚动布局会频繁查询 sizeForItemAt，缓存可避免重复文本测量。
-    var candidateCellSizeCache: [String: CGSize] = [:]
+    var candidateCellSizeCache: [CandidateCellSizeCacheKey: CGSize] = [:]
     /// 记录每个按钮的 touchDown 时间戳，用于性能日志
     var keyTouchDownTimes: [ObjectIdentifier: CFTimeInterval] = [:]
     /// 已在 touchDown 发出反馈的按钮，避免 touchUpInside 业务方法重复播放声音/触感。
@@ -135,6 +145,11 @@ class KeyboardViewController: UIInputViewController {
     var hasViewAppeared = false
     /// 按键内容仅在键盘即将呈现时安装，避免初始过渡容器绘制整份键盘。
     var isKeyboardUIInstalled = false
+    /// 真正的 librime 只能在键盘已经呈现后启动。
+    /// 系统有时会预创建控制器后直接挂起，若此时打开用户词典会触发 0xdead10cc。
+    var hasActivatedVisibleRimeRuntime = false
+    /// 在 viewDidLoad 仅解析只读路径；不在尚未可见的扩展中启动 librime。
+    var pendingRimeRuntimeDirectories: (sharedDataDir: String, userDataDir: String)?
 
     // MARK: - 缓存的设置值
 
@@ -147,18 +162,17 @@ class KeyboardViewController: UIInputViewController {
     /// Feedback resources and cached levels stay owned by the view controller; methods live in +Feedback.
     let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
     let modeEnterHapticGenerator = UIImpactFeedbackGenerator(style: .heavy)
-    let clickPlayer = KeyClickPlayer()
     static let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
+    lazy var sharedDefaults = UserDefaults(suiteName: Self.appGroupID)
     lazy var typoCorrectionLearningStore = TypoCorrectionLearningStore(
-        defaults: UserDefaults(suiteName: Self.appGroupID)
+        defaults: sharedDefaults
     )
     lazy var typingStatisticsWriter = TypingStatisticsWriter(appGroupID: Self.appGroupID)
     var cachedTypingIntelligenceEnabled = false
     var cachedTypingIntelligenceResetEpoch = 0
-    var cachedKeyClickLevel: KeyboardFeedbackLevel = .defaultLevel
     var cachedHapticLevel: KeyboardFeedbackLevel = .defaultLevel
-    var cachedKeyClickVolume: Float = 0.8
     var cachedHapticIntensity: CGFloat = 0.5
+    var cachedLiquidGlassMaterialEnabled = false
     var deleteRepeatEffectiveFeedbackCount = 0
     /// 不在按键路径写入：仅在键盘可见期间维持同步安全检查所需的心跳。
     var rimeSyncActivityHeartbeatTimer: Timer?
@@ -205,8 +219,6 @@ class KeyboardViewController: UIInputViewController {
     deinit {
         // Swift 6 的 deinit 不保证运行在 MainActor；可见性结束时已清理心跳。
         // 若系统直接销毁扩展，最后一条心跳会在 75 秒后自然失效，宁可多跳过一次同步。
-        // 提交尽力而为的后台日志刷新，不在析构路径等待共享存储。
-        Logger.shared.requestFlush()
         // 连删协调器在 viewWillDisappear 中停止；闭包仅弱引用本控制器，
         // 析构路径无需跨 actor 访问 UIKit/Timer 状态。
         // 移除所有通知观察者，防止野指针
@@ -215,6 +227,8 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        Logger.shared.resumePersistenceForExtensionLifecycle()
+        controller.resumeRimeAfterVisibilityChange()
         startRimeSyncActivityHeartbeat()
         installKeyboardUIIfNeeded()
     }
@@ -224,40 +238,40 @@ class KeyboardViewController: UIInputViewController {
     /// session 已失效时，控制器才会触发真正的 runtime 恢复。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        activateRimeRuntimeAfterKeyboardPresentation()
         handleKeyboardDidAppear()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        suspendKeyboardRuntime(reason: "viewWillDisappear", updateUI: true)
+    }
+
+    /// Releases every resource that could cross the extension suspension boundary.
+    /// RIME is finalized first because its database locks are the critical resource;
+    /// diagnostic persistence is disabled last so no delayed App Group write survives.
+    func suspendKeyboardRuntime(reason: String, updateUI: Bool) {
         stopRimeSyncActivityHeartbeat()
+        controller.suspendRimeForVisibilityChange()
+
         let effects = cleanupTransientKeyboardState(
-            reason: "viewWillDisappear",
+            reason: reason,
             abandonsComposition: true
         )
-        if !effects.isEmpty, isKeyboardUIInstalled {
+        if updateUI, !effects.isEmpty, isKeyboardUIInstalled {
             syncUI(with: effects)
         }
         Logger.shared.debug(
-            "viewWillDisappear: bounds=\(view.bounds)",
+            "\(reason): runtime released before extension suspension, bounds=\(view.bounds)",
             category: .display
         )
-        Logger.shared.requestFlush()
-    }
-
-    /// 切回主 App 查看诊断时，确保最后一批异步合并日志已经写入共享容器。
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        Logger.shared.debug(
-            "viewDidDisappear: bounds=\(view.bounds)",
-            category: .display
-        )
-        Logger.shared.requestFlush()
+        Logger.shared.suspendPersistenceForExtensionLifecycle()
     }
 
     private func startRimeSyncActivityHeartbeat() {
         guard rimeSyncActivityHeartbeatTimer == nil else { return }
 
-        let defaults = UserDefaults(suiteName: Self.appGroupID) ?? .standard
+        let defaults = sharedDefaults ?? .standard
         RimeSyncKeyboardActivity.recordVisibleKeyboard(in: defaults)
 
         let appGroupID = Self.appGroupID
@@ -272,8 +286,9 @@ class KeyboardViewController: UIInputViewController {
     private func stopRimeSyncActivityHeartbeat() {
         rimeSyncActivityHeartbeatTimer?.invalidate()
         rimeSyncActivityHeartbeatTimer = nil
-        let defaults = UserDefaults(suiteName: Self.appGroupID) ?? .standard
-        RimeSyncKeyboardActivity.clearVisibleKeyboard(in: defaults)
+        // Do not write UserDefaults while the extension is crossing into suspension.
+        // The heartbeat has a short expiry, so the main App conservatively delays sync
+        // instead of risking another App Group file lock at this boundary.
     }
 
     /// viewWillLayoutSubviews 在子视图布局之前调用。

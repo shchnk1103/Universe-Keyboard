@@ -8,7 +8,7 @@ This file provides durable project context for AI assistants working with code i
 
 ## Project Overview
 
-Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chinese input. It has two product targets plus three test targets (`RimeBridgeTests`, `UniverseKeyboardTests`, and `KeyboardTests`):
+Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chinese input. It has two product targets plus four test targets (`RimeBridgeTests`, `UniverseKeyboardTests`, `KeyboardTests`, and `UniverseKeyboardUITests`):
 
 - **`Universe Keyboard`** (main App) — SwiftUI app (two tabs: Guide / Settings) for keyboard setup, RIME deployment, and feedback configuration.
 - **`Keyboard`** (Keyboard Extension, `Keyboard.appex`) — the actual keyboard that appears in other apps. Built with UIKit (`UIInputViewController`). Primary language: `zh-Hans`.
@@ -75,6 +75,7 @@ Keyboard/
 │   ├── KeyboardViewController+Bootstrap.swift — 轻量会话启动
 │   └── KeyboardViewController+KeyAccessibility.swift — 无障碍语义
 ├── Views/
+│   ├── KeyboardAudioFeedbackInputView.swift  — UIKit 系统输入点击音承载视图
 │   ├── KeyPopupView.swift                    — 变体弹出面板
 │   └── CandidateBar/
 │       ├── CandidateBarView.swift             — 候选栏容器
@@ -82,7 +83,6 @@ Keyboard/
 │       ├── CandidateScrollViewStyle.swift      — 候选滚动视图外观防护
 │       └── CandidateBarDataSource.swift       — 候选数据源（RIME 优先，回退 Fake）
 ├── Services/
-│   ├── KeyClickPlayer.swift                  — actor 隔离点击音播放器
 │   └── UITextDocumentProxyAdapter.swift      — 文本代理适配器
 ├── Bridge/
 │   ├── KeyboardType+UIKit.swift              — 类型桥接
@@ -122,7 +122,14 @@ Universe Keyboard/
 └── Universe Keyboard.entitlements
 ```
 
-**Testing** (`KeyboardCore` unit test layout):
+**Testing**:
+
+- `RimeBridgeTests` — iOS Simulator Xcode tests for the iOS-only RIME bridge package.
+- `UniverseKeyboardTests` — main-App unit tests hosted by `Universe Keyboard.app`.
+- `KeyboardTests` — keyboard contract/unit tests that do not launch the extension UI.
+- `UniverseKeyboardUITests` — NE1 tooling-only XCUITest feasibility probes for Messages/system keyboard automation. These probes are run through the dedicated `UniverseKeyboardUITests` scheme and are not product or performance evidence by themselves.
+
+`KeyboardCore` unit test layout:
 
 ```
 Packages/KeyboardCore/Tests/KeyboardCoreTests/
@@ -173,7 +180,6 @@ A local Swift Package at `Packages/KeyboardCore/`. Contains:
 - **`Unzip` / `ZipArchiveReader` / `ZipBinaryReader` / `ZipInflater`** — minimal ZIP extraction boundary using system libz (raw deflate), with parsing, binary reads and inflate responsibilities split for focused tests.
 - **`RimeConfigTemplateGenerator` / template files** — pure YAML generation logic plus schema, OpenCC and fallback dictionary templates extracted from `RimeConfigManager`.
 - **`RimeConfigPostProcessor`** — canonical Lua stripping and schema repair logic used from the main App deployment preparation path; the Keyboard Extension does not repair files while opening a session.
-- **`ClickSoundGenerator`** — shared WAV click sound generator (used by `KeyClickPlayer` + `FeedbackSettingsView`).
 - **`AutoCapitalizationRules`** — pure static auto-capitalization logic, extracted from `KeyboardController`.
 - **`ZLib`** — pure Swift `@_silgen_name` declarations for zlib types (`z_stream`, `uInt`), functions (`inflateInit2_`, `inflate`, `inflateEnd`, `deflateInit2_`, `deflate`, `deflateEnd`), and constants. Eliminates the CZLib SPM C-target to avoid Xcode 26 explicit-module-build issues.
 
@@ -230,11 +236,11 @@ Keyboard Extension (UIInputViewController) → thin UI + state machine
 - **Double-space period** (within 0.45s) is enabled only in English mode with empty composition.
 - **Auto-capitalization** applies at sentence start (after `.`, `!`, `?`, `。`, `！`, `？`) and on empty/new documents. It triggers when switching input mode to English (checks current text context) and after each delete operation (defensive check in `performDeleteBackward` in addition to `textDidChange`, because `UITextDocumentProxy.documentContextBeforeInput` can be stale when `textDidChange` fires). When switching back to Chinese mode, any active shift state (singleUse or capsLock) is automatically reset to off — auto-cap is explicitly English-mode-only.
 - **Long-press letter keys** (0.3s) shows a popup with diacritic variants (e.g., a → à á â ä æ). 19 letters have variants. Selection follows finger position; releasing outside the popup cancels. Variants respect Shift state (uppercase/lowercase).
-- **Feedback settings model**: key click and haptic feedback each use an independent enabled switch plus five discrete levels (`light`, `softer`, `normal`, `stronger`, `heavy`) stored as `key_click_level` / `haptic_level` values `1...5`. Current key click curve is `0.15 / 0.24 / 0.36 / 0.48 / 0.60`; current haptic curve is `0.35 / 0.5 / 0.65 / 0.82 / 1.0`. Legacy `key_click_volume` and `haptic_intensity` are migrated to the nearest level and kept for rollback compatibility.
-- **Keyboard click sound** uses `KeyClickPlayer` — generates a native-style, low-profile click WAV in-memory via `ClickSoundGenerator`, played through `AVAudioPlayer`. Final Phase 1 generator parameters: 9ms duration, 1450Hz fundamental, 2900Hz harmonic at 0.075, noise range `±0.018`, 0.0006s attack ramp, `exp(-t / 0.0020)` decay, and 0.44 peak amplitude. Design principle: the click should be light, short, restrained, not sharp, not muffled, and should not dominate typing even at the heavy level. Dual-player architecture and async actor playback remain unchanged.
-- **Feedback event model**: `KeyboardFeedbackEvent` separates `tap`, `modeEnter`, `repeat`, `commit`, and `preview`. Standard tap feedback remains touch-down based; candidate and variant selection use `commit`; space long-press emits one stronger `modeEnter` haptic when cursor movement mode actually begins; settings preview is handled by the main-app preview coordinator with same-level suppression and throttling.
-- **Haptic feedback** uses `UIImpactFeedbackGenerator` with the five-level model above plus an independent `haptic_enabled` switch. The regular generator is pre-warmed in `viewDidLoad`; the space cursor mode-enter path uses a separate `.heavy` generator prepared at bootstrap.
-- **Delete Repeat UX Phase 1.1**: long-press delete keeps the existing 0.5s delay and 0.08s repeat tick. The first touch-down still performs one delete with normal tap feedback. Repeat feedback is emitted only after a conservatively detected effective delete, using UI-layer signals (`currentComposition`, inline preedit count, or `documentContextBeforeInput`) rather than changing the KeyboardCore delete contract. Repeat click plays on the first effective repeat and every second effective repeat at `tapVolume * 0.60`; repeat haptic plays every fourth effective repeat at `max(0.25, tapIntensity * 0.7)`. Empty-field long press is silent after the first tap feedback.
+- **Feedback settings model**: key click and haptic feedback each have an independent enabled switch. Haptic feedback retains five discrete levels (`light`, `softer`, `normal`, `stronger`, `heavy`) stored as `haptic_level` values `1...5`, with intensity curve `0.35 / 0.5 / 0.65 / 0.82 / 1.0`. Legacy `haptic_intensity` is migrated to the nearest level and kept for rollback compatibility. Key-click volume is system-owned and is not presented as an App-controlled level.
+- **Keyboard click sound** uses UIKit `UIInputViewAudioFeedback` and `UIDevice.playInputClick()`. The Extension does not create an `AVAudioSession`, generate WAV data, write a temporary audio file or own an audio player. iOS controls whether the click is audible and owns silent-mode and audio-route behavior; the App-level switch can further disable click requests.
+- **Feedback event model**: `KeyboardFeedbackEvent` separates `tap`, `modeEnter`, `repeat`, `commit`, and `preview`. Standard tap feedback remains touch-down based; candidate and variant selection use `commit`; space long-press emits one stronger `modeEnter` haptic when cursor movement mode actually begins; haptic settings preview is handled by the main-app preview coordinator with same-level suppression and throttling.
+- **Haptic feedback** uses `UIImpactFeedbackGenerator` with the five-level model above plus an independent `haptic_enabled` switch. Generators are prepared only when haptics are enabled; the space cursor mode-enter path uses a separate `.heavy` generator.
+- **Delete Repeat UX Phase 1.1**: long-press delete keeps the existing 0.5s delay and 0.08s repeat tick. The first touch-down still performs one delete with normal tap feedback. Repeat feedback is emitted only after a conservatively detected effective delete, using UI-layer signals (`currentComposition`, inline preedit count, or `documentContextBeforeInput`) rather than changing the KeyboardCore delete contract. System input click is requested on the first effective repeat and every second effective repeat; repeat haptic plays every fourth effective repeat at `max(0.25, tapIntensity * 0.7)`. Empty-field long press is silent after the first tap feedback.
 - **Future Full Access onboarding**: full onboarding is intentionally deferred. Future options include TipKit, first-launch guidance, illustrated permission instructions, and a system Settings entry point. Phase 1 keeps only simple Full Access text because the main app cannot reliably query the keyboard extension's real-time Full Access state before the keyboard has run.
 - **Candidate bar**: horizontal `UICollectionView` with infinite scroll, accumulated candidates, and expanded panel (no page buttons). Rendering rules (`UILabel`, no `UIButton.Configuration`), iOS 26 scroll edge effect guard (`CandidateScrollViewStyle`), and layout requirements: [`UI_STYLE_GUIDE.md`](UI_STYLE_GUIDE.md) §Candidate Bar.
 - **Typo correction**: conservative one-edit engine with adjacent-key substitution and repeated-final deletion. Rules, benchmark, and contract/case registry: [`TYPO_BENCHMARK.md`](TYPO_BENCHMARK.md) and [`TYPO_BENCHMARK_REGISTRY.md`](TYPO_BENCHMARK_REGISTRY.md); source-of-truth decision: ADR 0009.
@@ -243,7 +249,7 @@ Keyboard Extension (UIInputViewController) → thin UI + state machine
 - **Partial Commit**: selecting a shorter RIME candidate inside active composition may keep remaining composition active, with reversible Delete-restore semantics. Feature matrix, eligibility gates, typo-correction interaction, and checkpoint contract: [`partial-commit.md`](architecture/partial-commit.md) and [`input-pipeline-and-marked-text.md`](architecture/input-pipeline-and-marked-text.md) §Partial Commit Invariants.
 - **Inline preedit / marked text**: active composition displayed as system marked text via `UITextDocumentProxy.setMarkedText`. Full semantics, invariants, Partial Commit interaction, and finalization rules: [`input-pipeline-and-marked-text.md`](architecture/input-pipeline-and-marked-text.md).
 - **Long-press delete**: Touch-down immediately performs the first delete. After 0.5s, auto-repeat starts at 0.08s intervals (matching native iOS keyboard behavior).
-- **Key click & haptic settings are cached** at the VC level on `viewDidLoad` (not read from `UserDefaults(suiteName:)` on every keypress, which would incur XPC overhead). Cache is invalidated via `UserDefaults.didChangeNotification` observer.
+- **Key-click enablement, haptic settings, Typing Intelligence state, typo-learning snapshot and appearance settings are cached** as one VC-level snapshot on `viewDidLoad` (not read from `UserDefaults(suiteName:)` on every keypress/layout pass). The first `viewDidAppear` reuses that snapshot; later real visibility returns refresh it. Process-local `UserDefaults.didChangeNotification` is intentionally not used for cross-process main-App writes or heartbeat updates.
 - **Layout extraction**: `reloadKeyboard()` and `reloadKeyboardContent()` share keyboard row construction through `addKeyboardRows(for:)`. No duplicated layout code.
 - **iOS 26 native appearance**: key buttons use `KeyVisualStyle` enum for consistent styling (`.character`/`.function`/`.space`/`.returnKey`/`.active`). Dark/light mode custom colors for keyboard background, character keys, function keys, and highlighted state. Keys use `.continuous` corner curve with 9pt radius. The system now provides the outer rounded keyboard container; keep `view.backgroundColor` clear and avoid drawing a second large rounded surface inside the extension. Touch feedback uses instantaneous `backgroundColor` + `CGAffineTransform(scaleX: 0.96)` — no Core Animation transactions.
 - Keyboard uses programmatic UIKit layout (UIStackView-based rows, no Storyboards). Frozen baseline geometry and typography: [`UI_STYLE_GUIDE.md`](UI_STYLE_GUIDE.md) §V1 UI Freeze. Future UI changes must have a specific usability reason; avoid cosmetic tuning while the V1 UI freeze is active.

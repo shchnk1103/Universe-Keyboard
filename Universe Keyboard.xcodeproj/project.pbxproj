@@ -33,6 +33,13 @@
 			remoteGlobalIDString = 793AC8492FB0BDB000DAE835;
 			remoteInfo = "Universe Keyboard";
 		};
+		7A63000A2FD0000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 793AC8422FB0BDB000DAE835 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 793AC8492FB0BDB000DAE835;
+			remoteInfo = "Universe Keyboard";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -55,6 +62,7 @@
 		7A6100012FC0000000000001 /* RimeBridgeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RimeBridgeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A6200032FC0000000000001 /* UniverseKeyboardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UniverseKeyboardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A6200042FC0000000000001 /* KeyboardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyboardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A6300012FD0000000000001 /* UniverseKeyboardUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UniverseKeyboardUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -94,6 +102,11 @@
 		7A6200062FC0000000000001 /* KeyboardTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = KeyboardTests;
+			sourceTree = "<group>";
+		};
+		7A6300022FD0000000000001 /* UniverseKeyboardUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = UniverseKeyboardUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -142,6 +155,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7A6300032FD0000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -153,6 +173,7 @@
 				7A6100022FC0000000000001 /* Packages/RimeBridge/Tests/RimeBridgeTests */,
 				7A6200052FC0000000000001 /* UniverseKeyboardTests */,
 				7A6200062FC0000000000001 /* KeyboardTests */,
+				7A6300022FD0000000000001 /* UniverseKeyboardUITests */,
 				793AC84B2FB0BDB000DAE835 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -165,6 +186,7 @@
 				7A6100012FC0000000000001 /* RimeBridgeTests.xctest */,
 				7A6200032FC0000000000001 /* UniverseKeyboardTests.xctest */,
 				7A6200042FC0000000000001 /* KeyboardTests.xctest */,
+				7A6300012FD0000000000001 /* UniverseKeyboardUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -293,6 +315,29 @@
 			productReference = 7A6200042FC0000000000001 /* KeyboardTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		7A6300062FD0000000000001 /* UniverseKeyboardUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A6300092FD0000000000001 /* Build configuration list for PBXNativeTarget "UniverseKeyboardUITests" */;
+			buildPhases = (
+				7A6300042FD0000000000001 /* Sources */,
+				7A6300032FD0000000000001 /* Frameworks */,
+				7A6300052FD0000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7A63000B2FD0000000000001 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				7A6300022FD0000000000001 /* UniverseKeyboardUITests */,
+			);
+			name = UniverseKeyboardUITests;
+			packageProductDependencies = (
+			);
+			productName = UniverseKeyboardUITests;
+			productReference = 7A6300012FD0000000000001 /* UniverseKeyboardUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -317,6 +362,9 @@
 						CreatedOnToolsVersion = 26.4.1;
 					};
 					7A62000A2FC0000000000001 = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
+					7A6300062FD0000000000001 = {
 						CreatedOnToolsVersion = 26.4.1;
 					};
 				};
@@ -344,6 +392,7 @@
 				7A6100062FC0000000000001 /* RimeBridgeTests */,
 				7A6200092FC0000000000001 /* UniverseKeyboardTests */,
 				7A62000A2FC0000000000001 /* KeyboardTests */,
+				7A6300062FD0000000000001 /* UniverseKeyboardUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -378,6 +427,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		7A62000C2FC0000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7A6300052FD0000000000001 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -422,6 +478,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7A6300042FD0000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -434,6 +497,11 @@
 			isa = PBXTargetDependency;
 			target = 793AC8492FB0BDB000DAE835 /* Universe Keyboard */;
 			targetProxy = 7A6200152FC0000000000001 /* PBXContainerItemProxy */;
+		};
+		7A63000B2FD0000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 793AC8492FB0BDB000DAE835 /* Universe Keyboard */;
+			targetProxy = 7A63000A2FD0000000000001 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -644,7 +712,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Keyboard/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Keyboard;
+				INFOPLIST_KEY_CFBundleDisplayName = "Universe Keyboard";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -691,7 +759,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Keyboard/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Keyboard;
+				INFOPLIST_KEY_CFBundleDisplayName = "Universe Keyboard";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -896,6 +964,56 @@
 			};
 			name = Release;
 		};
+		7A6300072FD0000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.UniverseKeyboardUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "";
+				TEST_TARGET_NAME = "Universe Keyboard";
+			};
+			name = Debug;
+		};
+		7A6300082FD0000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.UniverseKeyboardUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "";
+				TEST_TARGET_NAME = "Universe Keyboard";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -949,6 +1067,15 @@
 			buildConfigurations = (
 				7A6200112FC0000000000001 /* Debug */,
 				7A6200122FC0000000000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7A6300092FD0000000000001 /* Build configuration list for PBXNativeTarget "UniverseKeyboardUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A6300072FD0000000000001 /* Debug */,
+				7A6300082FD0000000000001 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

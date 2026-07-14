@@ -15,7 +15,7 @@
 | Boundary | Owner | Rule |
 | --- | --- | --- |
 | Key presentation, document proxy, delete repeat, candidate button creation | Keyboard UI | Main actor only |
-| Key click audio players | `KeyClickPlayer` actor | No mutable player crosses isolation |
+| Key click feedback | UIKit `UIInputViewAudioFeedback` | System owns playback, silent-mode behavior and audio routing; the Extension owns no audio player/session |
 | RIME input session | `RimeBridge.RimeEngineImpl` | Called synchronously by the keyboard input path; session operations only |
 | Full schema deployment | `RimeDeploymentService` actor | Called from the main app before keyboard use, never from the extension or input path |
 | Settings and dictionary observable state | Main app Observation models | UI updates on main actor |

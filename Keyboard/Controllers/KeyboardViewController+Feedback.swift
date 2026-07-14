@@ -31,15 +31,11 @@ extension KeyboardViewController {
         }
     }
 
-    func playKeyClick(volume: Float? = nil) {
+    func playKeyClick() {
         guard cachedKeyClickEnabled else {
             return
         }
-        let volume = volume ?? cachedKeyClickVolume
-        guard volume > 0 else {
-            return
-        }
-        Task { await clickPlayer.play(volume: volume) }
+        UIDevice.current.playInputClick()
     }
 
     func playHaptic(intensity: CGFloat? = nil) {
@@ -60,7 +56,7 @@ extension KeyboardViewController {
 
     func playRepeatFeedback(effectiveDeleteCount: Int) {
         if effectiveDeleteCount == 1 || effectiveDeleteCount.isMultiple(of: 2) {
-            playKeyClick(volume: cachedKeyClickVolume * 0.60)
+            playKeyClick()
         }
 
         if effectiveDeleteCount.isMultiple(of: 4) {
@@ -69,12 +65,13 @@ extension KeyboardViewController {
     }
 
     func refreshCachedSettings(source: String = "unspecified") {
-        let defaults = UserDefaults(suiteName: Self.appGroupID)
-        KeyboardFeedbackSettingsMigration.migrateLegacyLevelsIfNeeded(in: defaults)
+        let defaults = sharedDefaults
+
+        // 诊断开关与反馈设置使用同一生命周期快照；候选触控链路不自行轮询共享偏好。
+        CandidateTouchDiagnostics.refreshFromSharedSettings()
 
         let rawSound = defaults?.object(forKey: KeyboardFeedbackSettingsKey.keyClickEnabled)
         let rawHaptic = defaults?.object(forKey: KeyboardFeedbackSettingsKey.hapticEnabled)
-        let rawClickLevel = defaults?.object(forKey: KeyboardFeedbackSettingsKey.keyClickLevel)
         let rawHapticLevel = defaults?.object(forKey: KeyboardFeedbackSettingsKey.hapticLevel)
         let rawPairedSymbolCompletion = defaults?.object(
             forKey: KeyboardInputSettingsKey.pairedSymbolCompletionEnabled
@@ -83,10 +80,11 @@ extension KeyboardViewController {
 
         cachedKeyClickEnabled = rawSound as? Bool ?? true
         cachedHapticEnabled = rawHaptic as? Bool ?? false
-        cachedKeyClickLevel = feedbackLevelValue(rawClickLevel)
         cachedHapticLevel = feedbackLevelValue(rawHapticLevel)
-        cachedKeyClickVolume = cachedKeyClickLevel.clickVolume
         cachedHapticIntensity = CGFloat(cachedHapticLevel.hapticIntensity)
+        cachedLiquidGlassMaterialEnabled = defaults?.bool(
+            forKey: KeyboardAppearanceSettingsKey.liquidGlassMaterialEnabled
+        ) ?? false
         controller.isPairedSymbolCompletionEnabled = rawPairedSymbolCompletion as? Bool ?? true
         controller.typoCorrectionExperimentalEdits = typoExperimentSettings.experimentalEdits
         controller.typoCorrectionLearningSnapshot = typoCorrectionLearningStore.snapshot()
@@ -96,6 +94,11 @@ extension KeyboardViewController {
         cachedTypingIntelligenceResetEpoch = defaults?.integer(
             forKey: TypingStatisticsStorageKey.resetEpoch
         ) ?? 0
+
+        if cachedHapticEnabled {
+            hapticGenerator.prepare()
+            modeEnterHapticGenerator.prepare()
+        }
     }
 
     func feedbackLevelValue(_ rawValue: Any?) -> KeyboardFeedbackLevel {
@@ -106,19 +109,6 @@ extension KeyboardViewController {
             return KeyboardFeedbackLevel.clamped(value.intValue)
         }
         return .defaultLevel
-    }
-
-    func observeSettingsChanges() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleSettingsChanged),
-            name: UserDefaults.didChangeNotification,
-            object: UserDefaults(suiteName: Self.appGroupID)
-        )
-    }
-
-    @objc private func handleSettingsChanged() {
-        refreshCachedSettings(source: "UserDefaults.didChangeNotification")
     }
 
     func logKeyPerformance(_ message: String, startTime: CFTimeInterval) {

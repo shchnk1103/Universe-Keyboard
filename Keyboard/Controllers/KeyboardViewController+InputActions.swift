@@ -7,6 +7,7 @@ extension KeyboardViewController {
         let startTime = CACurrentMediaTime()
         inputEventSequence += 1
         let eventID = inputEventSequence
+#if DEBUG
         let idleMs = lastInputCompletionTime.map { (startTime - $0) * 1000 }
         Logger.shared.debug(
             "KEY BEGIN #\(eventID) keyLength=\(key.count) idleMs=\(idleMs.map { String(format: "%.1f", $0) } ?? "first") "
@@ -23,28 +24,33 @@ extension KeyboardViewController {
         } else {
             Logger.shared.performance("insertKey enter without keyDown timestamp")
         }
+#endif
 
         emitKeyPressFeedbackIfNeeded(for: sender)
 
         let handleStartTime = CACurrentMediaTime()
         let effects = controller.handle(.insertKey(key))
         let handleMs = (CACurrentMediaTime() - handleStartTime) * 1000
+#if DEBUG
         Logger.shared.debug(
             "KEY ENGINE END #\(eventID) durationMs=\(String(format: "%.1f", handleMs)) "
                 + "candidates=\(controller.state.lastRimeOutput?.candidates.count ?? 0)",
             category: .performance
         )
+#endif
 
         let uiStartTime = CACurrentMediaTime()
         syncUI(with: effects)
         let endTime = CACurrentMediaTime()
         let uiMs = (endTime - uiStartTime) * 1000
         let totalMs = (endTime - startTime) * 1000
+#if DEBUG
         lastInputCompletionTime = endTime
         Logger.shared.performance(
             "KEY END #\(eventID) keyLength=\(key.count) total=\(String(format: "%.1f", totalMs))ms "
                 + "engine=\(String(format: "%.1f", handleMs))ms ui=\(String(format: "%.1f", uiMs))ms"
         )
+#endif
         if totalMs >= 50 {
             Logger.shared.warning(
                 "SLOW KEY #\(eventID) keyLength=\(key.count) total=\(String(format: "%.1f", totalMs))ms "

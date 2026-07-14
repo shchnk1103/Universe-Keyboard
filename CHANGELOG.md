@@ -6,6 +6,48 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-07-14 — 修复键盘预创建与挂起阶段的 RIME 文件锁终止
+
+- 真机高频切换验收定位到 Keyboard Extension 被 RunningBoard 以 `0xdead10cc` 终止；系统可在 `viewWillAppear` 前预创建并直接挂起扩展，因此仅在隐藏回调中 finalize 不能覆盖该路径。
+- `viewDidLoad` 现在只解析只读运行时目录并使用内存回退引擎；librime 仅在 `viewDidAppear` 确认键盘已实际呈现后才初始化、创建 session 并打开用户词典。
+- 进程内仍保持 librime 单一 owner；正常隐藏路径同步清理输入状态并 finalize runtime，重新显示时再初始化 runtime、创建 session 并恢复活动输入方案，不依赖时机不确定的 `deinit`。
+- 诊断 writer 增加可见性生命周期屏障：挂起前丢弃待写批次并阻止延迟 App Group 写入，恢复显示后再接受日志，避免诊断副作用跨入系统挂起阶段。
+- 增加 RIME 可见性生命周期与日志挂起/恢复测试；真机高频切换与 AirPods 双设备路由仍需完成最终回归。
+
+## 2026-07-14 — 完整修复系统点击音输入视图造成的空白键盘崩溃
+
+- Device Hub 复现并定位到 `KeyboardViewController+Presentation.swift:80`：点击音承载视图在控制器 `init` 中直接赋给 `inputView`，使 UIKit 可能在 `viewDidLoad` / KeyboardCore bootstrap 前进入 `viewWillAppear`；此前仅保护 `textDidChange` 不能覆盖这条生命周期路径。
+- 点击音承载视图改为通过标准 `loadView` 创建，恢复 `loadView -> viewDidLoad -> viewWillAppear` 顺序，同时继续使用 `UIInputViewAudioFeedback` / `UIDevice.playInputClick()`，没有重新引入 Extension 自有音频会话。
+- Device Hub 两次冷启动均成功；英文输入、`nihao -> 你好` 候选提交、`zhongguo` 候选展开和切走时组合清理通过，隔离冷启动 UI 测试及严格 Release Simulator 构建通过。物理 iPhone/iPad 当时不可用，AirPods 与真机持续输入仍待验收。
+
+## 2026-07-14 — 候选呈现路径剩余性能优化
+
+- 候选触控诊断开关改为随键盘设置快照刷新；`pointInside` / `hitTest` 不再轮询时间或读取 App Group 偏好。
+- collection 数据源直接复用重建边界已经清理过的候选快照，不再在计数、复用和尺寸查询时反复过滤；尺寸缓存改用结构化键，避免拼接含候选文本的临时字符串。
+- 后续候选分页使用一次全局索引集合完成去重，展开面板布局按 `IndexPath` 索引属性缓存；内存警告会释放可重建的候选尺寸缓存。
+- KeyboardCore 全量测试、99 项 Xcode 工程测试、隔离冷启动 UI 测试及严格 Debug/Release Simulator 构建通过；Device Hub 已完成 Simulator 启动、输入、候选提交与展开验证。物理 iPhone 当前不可用，因此真机持续输入、AirPods 路由与性能结论仍待验收。
+
+## 2026-07-13 — 阶段性保护启动前文本回调
+
+- 物理设备崩溃报告表明 UIKit 可能在 `viewDidLoad` 前发送 `textDidChange`；增加 bootstrap 前保护，避免该回调访问尚未创建的 KeyboardCore controller。后续 Device Hub 验证发现 `viewWillAppear` 仍存在独立的提前到达路径，完整根因与修复记录在 2026-07-14 条目。
+- bootstrap 前的文档变化回调现在会安全忽略；正式 bootstrap 仍会读取当前键盘类型与自动大写上下文，不改变正常输入语义。
+- 通过 iPhone 物理设备崩溃报告定位到 `synchronizeAfterTextChange()`，并完成 Debug 真机构建、安装及 Release 通用 iOS 构建；持续输入仍需真机人工验收。
+
+## 2026-07-13 — 键盘输入热路径优化
+
+- 键盘命中区域改为每次布局后生成一次触控单元快照；正常命中测试直接复用，不再逐次递归发现、排序按键并重设触控背景。
+- Release 构建移除逐键、逐候选的成功明细日志，保留慢输入、慢候选刷新、慢候选预取及失败告警；Debug 继续提供完整时序诊断。
+- 诊断写入器改为按顺序异步批处理，多条记录共用一次格式化和日志存储读写，同时保留条数上限、类别过滤、清空与显式刷新语义。
+- KeyboardCore 全量测试与 Debug/Release Simulator 构建通过；按键边缘、行间空隙和持续中英文输入仍需真机验收。
+
+## 2026-07-13 — 键盘冷启动与系统点击音优化
+
+- 键盘 Extension 改用 UIKit 系统输入点击音，不再创建或激活自己的音频会话，也不再生成 WAV、写临时音频文件或预热双播放器；避免键盘启动主动争抢 AirPods 音频路由。
+- 主 App 移除无法控制系统点击音的五档音量界面，保留独立开关并明确静音、音量和音频路由由 iOS 管理。
+- RIME 健康冷启动改为 schema 选择快速路径，不再枚举全部 schema 或合成 `ni` 功能自测；完整功能验证继续保留在异常恢复路径。
+- 首次显示复用同一设置快照，布局材质开关改为缓存读取，触感关闭时不再预热；Release librime 日志降为 Error/Fatal 且不再创建启动日志目录，逐键成功诊断仅保留在 Debug。
+- 自动化测试和 Debug/Release 构建用于实现验证；AirPods 双设备路由与冷/暖启动性能仍需真机验收。
+
 ## 2026-07-13 — 安全的 RIME 自动同步与同步提醒
 
 - 完成一次用户确认的 RIME 标准同步后，默认启用自动同步；用户可改为每天或每 7 天一次，并可随时关闭。

@@ -1,6 +1,80 @@
 import KeyboardCore
 
+struct RimeStartupSchemaSelectionResult: Equatable {
+    let selectedSchemaID: String?
+    let usedSchemaEnumeration: Bool
+}
+
+enum RimeStartupSchemaSelector {
+    static func select(
+        requested: String,
+        fallback: String,
+        attempt: (String) -> Bool,
+        availableSchemaIDs: () -> [String]
+    ) -> RimeStartupSchemaSelectionResult {
+        if attempt(requested) {
+            return RimeStartupSchemaSelectionResult(
+                selectedSchemaID: requested,
+                usedSchemaEnumeration: false
+            )
+        }
+
+        if fallback != requested, attempt(fallback) {
+            return RimeStartupSchemaSelectionResult(
+                selectedSchemaID: fallback,
+                usedSchemaEnumeration: false
+            )
+        }
+
+        for candidateID in availableSchemaIDs() where candidateID != requested && candidateID != fallback {
+            guard attempt(candidateID) else { continue }
+            return RimeStartupSchemaSelectionResult(
+                selectedSchemaID: candidateID,
+                usedSchemaEnumeration: true
+            )
+        }
+
+        return RimeStartupSchemaSelectionResult(
+            selectedSchemaID: nil,
+            usedSchemaEnumeration: true
+        )
+    }
+}
+
 extension RimeEngineImpl {
+    /// 冷启动快速路径：只验证 schema 选择结果，不输入测试文本。
+    /// 完整候选功能检查由主 App 部署诊断和运行时恢复路径承担。
+    func selectSchemaForStartup(_ schemaID: String, fallback: String) -> String? {
+        let result = RimeStartupSchemaSelector.select(
+            requested: schemaID,
+            fallback: fallback,
+            attempt: selectSchemaIfAvailable,
+            availableSchemaIDs: { [bridge] in
+                bridge.availableSchemas().components(separatedBy: ", ").compactMap {
+                    $0.components(separatedBy: " — ").first
+                }
+            }
+        )
+
+        guard let selectedSchemaID = result.selectedSchemaID else {
+            Logger.shared.error("No selectable schema is available for startup.", category: .engine)
+            return nil
+        }
+
+        if selectedSchemaID != schemaID {
+            Logger.shared.warning(
+                "Startup schema '\(schemaID)' could not be selected; using '\(selectedSchemaID)'"
+                    + (result.usedSchemaEnumeration ? " after fallback enumeration" : ""),
+                category: .engine
+            )
+        }
+        return selectedSchemaID
+    }
+
+    private func selectSchemaIfAvailable(_ schemaID: String) -> Bool {
+        bridge.selectSchema(schemaID) && bridge.currentSchemaID() == schemaID
+    }
+
     /// Tests a loaded schema with "ni"; a loaded schema with no candidates is unusable for typing.
     func functionalTestCandidates() -> Int {
         _ = bridge.processKey(0x006E, modifiers: 0)

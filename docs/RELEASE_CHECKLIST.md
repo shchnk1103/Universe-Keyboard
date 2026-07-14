@@ -115,6 +115,7 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 ## Keyboard Acceptance On A Physical Device
 
 - [ ] Enable the extension and Full Access; record device and OS.
+- [ ] After a fresh install or Extension process restart, select Universe Keyboard and type continuously; it must remain selected without hanging, crashing or automatically falling back to the system keyboard.
 - [ ] First presentation creates a working session without deploying.
 - [ ] Chinese and English basic input, page/mode switching, Shift/Caps Lock and Return labels work.
 - [ ] Inline preedit underline appears and clears after candidate, Space and Return commits.
@@ -148,6 +149,7 @@ OpenCC current integration ownership is defined in
 
 - [ ] No synchronous download, file scan, hash, backup or deployment occurs in key handling.
 - [ ] Engine initialization and representative key/UI performance logs show no unexplained regression against the previous accepted build.
+- [ ] With AirPods connected to iPhone and another Apple device already playing audio, presenting/typing on the keyboard does not activate a Universe Keyboard audio session or transfer route ownership; silent mode and the system keyboard-feedback sound setting are recorded.
 - [ ] No sustained memory growth is observed during typing, candidate paging and repeated app switching.
 - [ ] Missing runtime directories produce fallback plus actionable main-App recovery.
 - [ ] Failed deployment remains pending and succeeds after retry.

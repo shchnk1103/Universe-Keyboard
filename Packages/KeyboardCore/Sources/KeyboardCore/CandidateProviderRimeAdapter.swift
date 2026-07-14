@@ -87,6 +87,12 @@ final class CandidateProviderRimeAdapter: RimeEngine {
         resetSession()
     }
 
+    func suspendForVisibilityChange() {
+        resetSession()
+    }
+
+    func resumeAfterVisibilityChange() {}
+
     func isComposing() -> Bool {
         !composition.isEmpty
     }

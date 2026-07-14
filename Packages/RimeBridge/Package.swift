@@ -30,7 +30,10 @@ let package = Package(
             ],
             path: "Sources/RimeBridgeObjC",
             publicHeadersPath: "include",
-            cSettings: [.define("RIME_HAS_LUA")],
+            cSettings: [
+                .define("RIME_HAS_LUA"),
+                .define("RIME_DIAGNOSTICS", .when(configuration: .debug)),
+            ],
             linkerSettings: [.linkedLibrary("c++")]
         ),
 

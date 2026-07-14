@@ -31,7 +31,8 @@ extension KeyboardViewController {
         }
 
         Logger.shared.info("viewDidLoad, keyboardType=\(keyboardType)", category: .general)
-        prepareRimeSession()
+        prepareRimeRuntimeAvailability()
+        observeExtensionHostLifecycle()
 
         Logger.shared.performance(
             "viewDidLoad complete",
@@ -46,17 +47,15 @@ extension KeyboardViewController {
         }
 
         refreshCachedSettings(source: "viewDidLoad")
-        observeSettingsChanges()
-        hapticGenerator.prepare()
-        modeEnterHapticGenerator.prepare()
     }
 
     func handleKeyboardDidAppear() {
         let isReturningToExistingKeyboard = hasViewAppeared
         hasViewAppeared = true
-        refreshCachedSettings(source: "viewDidAppear")
 
         if isReturningToExistingKeyboard {
+            // 首次显示沿用 viewDidLoad 刚生成的快照；只有真正返回时才重新读取共享设置。
+            refreshCachedSettings(source: "viewDidAppear")
             let effects = cleanupTransientKeyboardState(
                 reason: "viewDidAppear",
                 abandonsComposition: true
@@ -113,7 +112,9 @@ extension KeyboardViewController {
         candidateCellSizeCache.removeAll(keepingCapacity: true)
     }
 
-    private func prepareRimeSession() {
+    /// `viewDidLoad` 可能只是系统的预创建阶段，而非真正展示键盘。
+    /// 此处只解析只读路径并安装内存回退引擎，绝不打开 librime 用户词典。
+    private func prepareRimeRuntimeAvailability() {
         guard let (sharedDir, userDir) = RimeConfigManager.runtimeDirectories() else {
             controller.enableDefaultRimeEngine()
             Logger.shared.warning(
@@ -123,9 +124,44 @@ extension KeyboardViewController {
             return
         }
 
-        Logger.shared.info("App Group available, creating RimeEngineImpl", category: .engine)
-        controller.rimeEngine = RimeEngineImpl(sharedDataDir: sharedDir, userDataDir: userDir)
-        Logger.shared.info("RIME session prepared for keyboard input", category: .engine)
+        pendingRimeRuntimeDirectories = (sharedDir, userDir)
+        controller.enableDefaultRimeEngine()
+        Logger.shared.info(
+            "App Group available; deferring librime startup until keyboard is visible",
+            category: .engine
+        )
+    }
+
+    /// 只有键盘已经实际呈现后，才允许 librime 打开用户词典和创建 session。
+    /// 若系统在预创建后直接挂起，前面的回退引擎不持有文件锁，因此可安全终止。
+    func activateRimeRuntimeAfterKeyboardPresentation() {
+        guard !hasActivatedVisibleRimeRuntime,
+              let directories = pendingRimeRuntimeDirectories
+        else { return }
+
+        Logger.shared.info("Keyboard visible; creating RimeEngineImpl", category: .engine)
+        controller.rimeEngine = RimeEngineImpl(
+            sharedDataDir: directories.sharedDataDir,
+            userDataDir: directories.userDataDir
+        )
+        hasActivatedVisibleRimeRuntime = true
+        Logger.shared.info("RIME session prepared for visible keyboard input", category: .engine)
+    }
+
+    /// UIKit does not guarantee viewWillDisappear when the host replaces a keyboard
+    /// controller. The extension-host notification is the last documented boundary
+    /// before the process may be suspended, so runtime locks must be released here.
+    func observeExtensionHostLifecycle() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(extensionHostWillResignActive),
+            name: .NSExtensionHostWillResignActive,
+            object: nil
+        )
+    }
+
+    @objc private func extensionHostWillResignActive() {
+        suspendKeyboardRuntime(reason: "extensionHostWillResignActive", updateUI: false)
     }
 
 }

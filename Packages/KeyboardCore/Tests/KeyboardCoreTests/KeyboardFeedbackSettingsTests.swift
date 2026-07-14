@@ -20,29 +20,23 @@ final class KeyboardFeedbackSettingsTests: XCTestCase {
         XCTAssertEqual(KeyboardFeedbackLevel.migratedLevel(from: 1.00), .heavy)
     }
 
-    func testMigrationWritesLevelsFromLegacyValuesWithoutDeletingLegacyKeys() {
+    func testMigrationWritesHapticLevelFromLegacyValueWithoutDeletingLegacyKey() {
         let defaults = makeIsolatedDefaults()
-        defaults.set(0.30, forKey: KeyboardFeedbackSettingsKey.legacyKeyClickVolume)
         defaults.set(0.80, forKey: KeyboardFeedbackSettingsKey.legacyHapticIntensity)
 
         KeyboardFeedbackSettingsMigration.migrateLegacyLevelsIfNeeded(in: defaults)
 
-        XCTAssertEqual(defaults.integer(forKey: KeyboardFeedbackSettingsKey.keyClickLevel), KeyboardFeedbackLevel.softer.rawValue)
         XCTAssertEqual(defaults.integer(forKey: KeyboardFeedbackSettingsKey.hapticLevel), KeyboardFeedbackLevel.stronger.rawValue)
-        XCTAssertEqual(defaults.double(forKey: KeyboardFeedbackSettingsKey.legacyKeyClickVolume), 0.30, accuracy: 0.0001)
         XCTAssertEqual(defaults.double(forKey: KeyboardFeedbackSettingsKey.legacyHapticIntensity), 0.80, accuracy: 0.0001)
     }
 
     func testMigrationDoesNotOverwriteExistingDiscreteLevels() {
         let defaults = makeIsolatedDefaults()
-        defaults.set(KeyboardFeedbackLevel.heavy.rawValue, forKey: KeyboardFeedbackSettingsKey.keyClickLevel)
         defaults.set(KeyboardFeedbackLevel.light.rawValue, forKey: KeyboardFeedbackSettingsKey.hapticLevel)
-        defaults.set(0.10, forKey: KeyboardFeedbackSettingsKey.legacyKeyClickVolume)
         defaults.set(1.00, forKey: KeyboardFeedbackSettingsKey.legacyHapticIntensity)
 
         KeyboardFeedbackSettingsMigration.migrateLegacyLevelsIfNeeded(in: defaults)
 
-        XCTAssertEqual(defaults.integer(forKey: KeyboardFeedbackSettingsKey.keyClickLevel), KeyboardFeedbackLevel.heavy.rawValue)
         XCTAssertEqual(defaults.integer(forKey: KeyboardFeedbackSettingsKey.hapticLevel), KeyboardFeedbackLevel.light.rawValue)
     }
 

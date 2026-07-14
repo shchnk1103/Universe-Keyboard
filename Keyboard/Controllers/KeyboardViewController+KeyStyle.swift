@@ -36,8 +36,7 @@ extension KeyboardViewController {
 
     var isExperimentalLiquidGlassMaterialEnabled: Bool {
         guard !UIAccessibility.isReduceTransparencyEnabled else { return false }
-        return UserDefaults(suiteName: Self.appGroupID)?
-            .bool(forKey: KeyboardAppearanceSettingsKey.liquidGlassMaterialEnabled) ?? false
+        return cachedLiquidGlassMaterialEnabled
     }
 
     var characterKeyColor: UIColor {

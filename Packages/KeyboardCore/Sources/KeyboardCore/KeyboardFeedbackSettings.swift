@@ -39,16 +39,6 @@ public enum KeyboardFeedbackLevel: Int, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    public var clickVolume: Float {
-        switch self {
-        case .light: return 0.15
-        case .softer: return 0.24
-        case .normal: return 0.36
-        case .stronger: return 0.48
-        case .heavy: return 0.60
-        }
-    }
-
     public var hapticIntensity: Double {
         switch self {
         case .light: return 0.35
@@ -87,8 +77,6 @@ public enum KeyboardFeedbackLevel: Int, CaseIterable, Identifiable, Sendable {
 
 public enum KeyboardFeedbackSettingsKey {
     public static let keyClickEnabled = "key_click_enabled"
-    public static let keyClickLevel = "key_click_level"
-    public static let legacyKeyClickVolume = "key_click_volume"
     public static let hapticEnabled = "haptic_enabled"
     public static let hapticLevel = "haptic_level"
     public static let legacyHapticIntensity = "haptic_intensity"
@@ -97,13 +85,6 @@ public enum KeyboardFeedbackSettingsKey {
 public enum KeyboardFeedbackSettingsMigration {
     public static func migrateLegacyLevelsIfNeeded(in defaults: UserDefaults?) {
         guard let defaults else { return }
-
-        if defaults.object(forKey: KeyboardFeedbackSettingsKey.keyClickLevel) == nil {
-            let level = KeyboardFeedbackLevel.migratedLevel(
-                from: defaults.object(forKey: KeyboardFeedbackSettingsKey.legacyKeyClickVolume)
-            )
-            defaults.set(level.rawValue, forKey: KeyboardFeedbackSettingsKey.keyClickLevel)
-        }
 
         if defaults.object(forKey: KeyboardFeedbackSettingsKey.hapticLevel) == nil {
             let level = KeyboardFeedbackLevel.migratedLevel(

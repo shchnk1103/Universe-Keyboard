@@ -10,6 +10,9 @@ final class KeyboardInputHitAreaStackView: UIStackView {
     private typealias KeyTouchCell = (button: KeyboardKeyButton, touchFrame: CGRect)
 
     private var touchCellBackingViews: [UIView] = []
+    private var cachedKeyTouchCells: [KeyTouchCell] = []
+    private var cachedKeyRegionMinY = CGFloat.greatestFiniteMagnitude
+    private var hasValidKeyTouchCellSnapshot = false
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,17 +26,21 @@ final class KeyboardInputHitAreaStackView: UIStackView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        updateKeyTouchCells()
-        updateTouchCellBackingViews()
+        rebuildKeyTouchCellSnapshot()
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        updateKeyTouchCells()
-        updateTouchCellBackingViews()
         guard isUserInteractionEnabled, !isHidden, alpha > 0.01,
             self.point(inside: point, with: event)
         else {
             return nil
+        }
+
+        // UIKit normally lays out the hierarchy before dispatching touches. Keep a
+        // one-time fallback for unusual early hit tests without recomputing the key
+        // tree on every touch event.
+        if !hasValidKeyTouchCellSnapshot {
+            rebuildKeyTouchCellSnapshot()
         }
 
         let defaultHit = super.hitTest(point, with: event)
@@ -43,24 +50,20 @@ final class KeyboardInputHitAreaStackView: UIStackView {
             return key
         }
 
-        let touchCells = keyTouchCells()
-        let keyRegionMinY = touchCells.map(\.touchFrame.minY).min() ?? .greatestFiniteMagnitude
-
         // Candidate bar owns its own bottom hit extension. Do not let key hit testing
         // steal the candidate-to-key gap or any candidate-bar gesture.
-        guard point.y >= keyRegionMinY else {
+        guard point.y >= cachedKeyRegionMinY else {
             return defaultHit
         }
 
-        return touchCells.first { $0.touchFrame.contains(point) }?.button ?? defaultHit
+        return cachedKeyTouchCells.first { $0.touchFrame.contains(point) }?.button ?? defaultHit
     }
 
     private func configureTouchBacking() {
         isUserInteractionEnabled = true
     }
 
-    private func updateTouchCellBackingViews() {
-        let touchCells = keyTouchCells()
+    private func updateTouchCellBackingViews(using touchCells: [KeyTouchCell]) {
         while touchCellBackingViews.count < touchCells.count {
             let view = UIView()
             view.isUserInteractionEnabled = false
@@ -93,8 +96,8 @@ final class KeyboardInputHitAreaStackView: UIStackView {
         view.layer.borderColor = nil
     }
 
-    private func updateKeyTouchCells() {
-        for cell in keyTouchCells() {
+    private func updateKeyTouchOutsets(using touchCells: [KeyTouchCell]) {
+        for cell in touchCells {
             let frame = cell.button.convert(cell.button.bounds, to: self)
             cell.button.expandedTouchOutsets = UIEdgeInsets(
                 top: max(0, frame.minY - cell.touchFrame.minY),
@@ -103,6 +106,18 @@ final class KeyboardInputHitAreaStackView: UIStackView {
                 right: max(0, cell.touchFrame.maxX - frame.maxX)
             )
         }
+    }
+
+    /// Rebuilds all layout-derived touch geometry once, then lets hit testing use
+    /// the immutable snapshot until UIKit performs the next layout pass.
+    private func rebuildKeyTouchCellSnapshot() {
+        let touchCells = keyTouchCells()
+        cachedKeyTouchCells = touchCells
+        cachedKeyRegionMinY = touchCells.map(\.touchFrame.minY).min() ?? .greatestFiniteMagnitude
+        hasValidKeyTouchCellSnapshot = true
+
+        updateKeyTouchOutsets(using: touchCells)
+        updateTouchCellBackingViews(using: touchCells)
     }
 
     private func keyTouchCells() -> [KeyTouchCell] {
