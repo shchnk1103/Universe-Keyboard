@@ -30,6 +30,11 @@ struct PrivacyDataView: View {
                     icon: "character.book.closed"
                 )
                 privacyRow(
+                    "上屏后联想",
+                    detail: "只在键盘进程内短暂使用本次上屏内容；不读取宿主上下文，也不保存输入历史。",
+                    icon: "text.append"
+                )
+                privacyRow(
                     "诊断日志",
                     detail: "由你控制并留在设备上；只有你主动复制时才会离开 App。",
                     icon: "waveform.path.ecg.text"

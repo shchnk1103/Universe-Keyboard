@@ -8,6 +8,7 @@ public final class KeyboardController {
     public internal(set) var state: KeyboardState
     public var textClient: TextInputClient?
     public let candidateProvider: CandidateProvider
+    public let continuationSuggestionProvider: any ContinuationSuggestionProviding
     public var rimeEngine: RimeEngine?
 
     public var currentDate: () -> Date = { Date() }
@@ -19,6 +20,7 @@ public final class KeyboardController {
     /// it to content-free aggregates before returning and must not persist it.
     public var onCommittedText: ((CommittedTextEvent) -> Void)?
     public var isPairedSymbolCompletionEnabled = true
+    public internal(set) var isPostCommitContinuationEnabled = true
     var shouldRestoreRimeComposition = false
     var shouldRebuildSessionDuringRestore = false
 
@@ -26,10 +28,12 @@ public final class KeyboardController {
 
     public init(
         state: KeyboardState = KeyboardState(),
-        candidateProvider: CandidateProvider = FakeCandidateProvider()
+        candidateProvider: CandidateProvider = FakeCandidateProvider(),
+        continuationSuggestionProvider: any ContinuationSuggestionProviding = BundledContinuationSuggestionProvider.shared
     ) {
         self.state = state
         self.candidateProvider = candidateProvider
+        self.continuationSuggestionProvider = continuationSuggestionProvider
     }
 
     /// 启用基于 CandidateProvider 的 RIME 适配器引擎。
@@ -60,6 +64,7 @@ public final class KeyboardController {
             || state.lastRimeOutput != nil
             || state.partialCommit != nil
             || state.typoCorrection != nil
+            || !state.continuation.isEmpty
             || state.insertedPreeditCount > 0
             || !state.insertedPreeditText.isEmpty
 
@@ -71,10 +76,11 @@ public final class KeyboardController {
         state.lastRimeOutput = nil
         state.partialCommit = nil
         state.typoCorrection = nil
+        state.continuation = ContinuationState()
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
 
-        return hadVisibleComposition ? .compositionChanged : []
+        return hadVisibleComposition ? [.compositionChanged, .continuationChanged] : []
     }
 
     /// 在扩展进入不可见状态前释放 RIME 的进程级资源。

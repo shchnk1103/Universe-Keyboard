@@ -10,4 +10,5 @@ public struct KeyboardEffect: OptionSet, Equatable, Sendable {
     public static let pageChanged         = KeyboardEffect(rawValue: 1 << 2)
     public static let inputModeChanged    = KeyboardEffect(rawValue: 1 << 3)
     public static let keyboardTypeChanged = KeyboardEffect(rawValue: 1 << 4)
+    public static let continuationChanged = KeyboardEffect(rawValue: 1 << 5)
 }

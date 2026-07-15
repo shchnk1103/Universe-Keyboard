@@ -6,6 +6,13 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-07-15 — 上屏后联想 V1 自动化实现
+
+- 中文内容成功上屏后，候选栏可从本地内置词表继续推荐常见续词、标点和少量 Emoji；候选可连续选择，例如 `吃了 -> 吗 -> ？`。
+- 联想状态与 RIME 组合态相互独立，活动组合始终优先；删除、换行、英文模式、键盘隐藏、进程结束或关闭设置会清理状态。
+- 最近上下文仅在当前 Keyboard Extension 进程内保留，最多 32 个 `Character`，不读取宿主上下文，不持久化、记录、同步或上传；仅保存启用开关。
+- KeyboardCore 全量测试及严格并发 Simulator 构建通过；真机候选手感、启动/按键延迟和内存对比仍是发布前门禁。
+
 ## 2026-07-14 — 修复键盘预创建与挂起阶段的 RIME 文件锁终止
 
 - 真机高频切换验收定位到 Keyboard Extension 被 RunningBoard 以 `0xdead10cc` 终止；系统可在 `viewWillAppear` 前预创建并直接挂起扩展，因此仅在隐藏回调中 finalize 不能覆盖该路径。

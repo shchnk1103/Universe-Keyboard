@@ -7,6 +7,14 @@ extension KeyboardController {
         switch kind {
         case .placeholder, .correctionCandidate:
             return []
+        case .continuationCandidate:
+            guard isPostCommitContinuationEnabled,
+                  state.continuation.suggestions.contains(candidate)
+            else {
+                return []
+            }
+            insertText(candidate, source: .candidate)
+            return .continuationChanged
         case .composition:
             finishActiveCompositionAsDisplayText()
             rimeEngine?.resetSession()

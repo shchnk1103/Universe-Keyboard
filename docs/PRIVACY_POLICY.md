@@ -24,6 +24,7 @@ Persisted statistics contain only bounded counts, daily totals, source-category 
 
 - RIME may maintain its local user dictionary inside the shared App Group container.
 - Explicit typo-correction selections may maintain bounded local correction-learning metadata used only to improve on-device correction ranking.
+- Post-commit continuation uses at most 32 recently committed `Character` values only inside the current Keyboard Extension process. It reads no surrounding host text and never persists, logs, synchronizes or uploads that context; only its enabled preference is stored.
 - Diagnostic logging is controlled in the main App and remains local unless the user explicitly copies and shares it.
 - The product must not log committed text, surrounding host text or Typing Intelligence event payloads.
 

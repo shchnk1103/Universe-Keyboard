@@ -143,7 +143,10 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     private func isPreferredCandidate(_ item: CandidateItem, at index: Int) -> Bool {
-        index == 0 && (item.kind == .candidate || item.kind == .correctionCandidate)
+        index == 0
+            && (item.kind == .candidate
+                || item.kind == .correctionCandidate
+                || item.kind == .continuationCandidate)
     }
 
     private func correctionHint(for item: CandidateItem) -> String? {

@@ -54,6 +54,9 @@ public enum CandidateKind: Int, CaseIterable, Sendable {
     /// 误触纠错候选：点击后直接提交纠错候选文本，不从当前 RIME session 选择。
     /// 例如：输入 "nihap" → 显示 "你好 p→o" → 点击后提交 "你好"。
     case correctionCandidate = 3
+
+    /// 上屏后联想候选：点击后直接提交，并基于新的短上下文继续推荐。
+    case continuationCandidate = 4
 }
 
 /// RIME 候选在候选页中的稳定位置。

@@ -1,0 +1,53 @@
+# ADR 0017: Ephemeral Post-Commit Continuation
+
+## Status
+
+Accepted
+
+## Context
+
+The existing candidate pipeline is composition-centric. Final commit clears RIME composition, so normal RIME candidates cannot represent suggestions that appear after text has already reached the host. The feature also handles sensitive text inside a resource-constrained Keyboard Extension.
+
+## Decision
+
+KeyboardCore owns a continuation state separate from RIME, typo correction and Partial Commit. A narrow provider maps a bounded in-memory suffix of text committed by this KeyboardController to a bounded suggestion list from a bundled, versioned resource.
+
+Final host commits update continuation state at the same exactly-once finalization boundary used by committed-text observation. Candidate presentation gives active composition priority, then exposes continuation items through a distinct candidate kind. Selecting a continuation performs a normal final host commit and can therefore chain another lookup.
+
+V1 retains at most 32 Swift `Character` values in process memory. It does not read host surrounding text, persist content, query RIME, learn from the user or perform file I/O in the key path. Newline, host deletion, English mode, visibility abandonment, process death and disabling the feature clear the state.
+
+The bundled resource is decoded once when the provider is created. Decode failure degrades to an empty provider. Ranking uses longest exact suffix, resource order, deduplication and a maximum of eight results.
+
+## Alternatives Considered
+
+- Keep a RIME composition alive after commit: rejected because it contaminates marked-text and session semantics.
+- Read `documentContextBeforeInput`: deferred because it expands the privacy and lifecycle contract beyond V1.
+- Persist user n-grams: rejected because it creates reconstructable input history and conflicts with the accepted Typing Intelligence boundary.
+- Add an on-device language model immediately: rejected because V1 first needs a quality and performance baseline with bounded deterministic behavior.
+
+## Consequences
+
+- KeyboardState gains an independent transient continuation state and candidate kind.
+- Candidate UI is reused without changing its frozen geometry.
+- Suggestions cannot be reconstructed after process death or arbitrary host edits that the keyboard did not commit.
+- The shipped resource can improve independently while the state-machine contract remains stable.
+
+## Risks
+
+- Curated ranking may feel generic or produce weak suggestions.
+- External cursor movement may make current-process context stale until an observable invalidation boundary occurs.
+- Resource size or decode cost may regress Extension startup if allowed to grow without measurement.
+
+## Follow-up Work
+
+- Establish curated quality fixtures and physical-device behavior evidence.
+- Review any proposal for host context, personal learning or models as a separate product/data change.
+
+## Related Documents
+
+- `docs/POST_COMMIT_CONTINUATION.md`
+- `docs/architecture/input-pipeline-and-marked-text.md`
+- `docs/architecture/decisions/0002-visibility-change-abandons-composition.md`
+- `docs/architecture/decisions/0007-full-access-and-privacy-boundary.md`
+- `docs/PERFORMANCE_BASELINE.md`
+- `docs/RELEASE_CHECKLIST.md`

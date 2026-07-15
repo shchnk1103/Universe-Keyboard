@@ -57,6 +57,14 @@ Invariants:
 
 ## Action Semantics
 
+### Post-Commit Continuation
+
+- A successful final host commit updates a separate, process-local continuation state at the same exactly-once boundary as committed-text observation.
+- The state retains at most 32 Swift `Character` values and performs only in-memory lookup after its bundled resource has been decoded once.
+- Active composition always owns candidate presentation. Starting composition hides continuation items without treating them as RIME candidates.
+- Selecting a continuation is a normal final direct-text commit, so it emits once and may produce the next bounded suggestion list.
+- Newline, host deletion, English mode, visibility abandonment and disabling the setting clear the state. It is neither reconstructed from host context nor restored after process death.
+
 ### Candidate
 
 - Normal RIME candidates must preserve their selection reference/global index.
@@ -113,6 +121,7 @@ Direct symbols/text first finalize any active composition through the appropriat
 - every final commit path emits exactly once with the approved source category;
 - marked-text updates and visibility abandonment emit no committed-text event;
 - Emoji uses the same committed-text boundary as other direct text.
+- post-commit continuation updates only after successful final commits and clears at every documented invalidation boundary.
 
 ## Source Of Truth
 
@@ -122,3 +131,4 @@ Direct symbols/text first finalize any active composition through the appropriat
 - `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+RimeRecovery.swift`
 - `Keyboard/Services/UITextDocumentProxyAdapter.swift`
 - `Packages/KeyboardCore/Sources/KeyboardCore/TypingIntelligence.swift`
+- `Packages/KeyboardCore/Sources/KeyboardCore/PostCommitContinuation.swift`

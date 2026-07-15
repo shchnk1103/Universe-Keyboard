@@ -76,6 +76,8 @@ Measure RIME output availability to candidate snapshot application for:
 - candidate selection followed by remaining composition;
 - typo-correction merge enabled only in an explicitly identified experimental run.
 
+For post-commit continuation, compare the same final-commit sequence with the setting disabled and enabled. Record one-time provider/resource initialization separately from the in-memory longest-suffix lookup and candidate snapshot application. The shipped V1 bounds are 32 retained `Character` values and eight exposed suggestions; resource decoding must never occur per key or per candidate cell.
+
 ### Memory Usage
 
 Record Extension memory after cold start, after sustained typing, after candidate paging, after repeated expand/collapse, and after repeated host switching. Inspect candidate caches, audio players, RIME sessions and retained controllers. Report resident memory and growth trend; do not infer a leak from one snapshot.
@@ -129,6 +131,7 @@ No numeric baseline or budget is accepted yet. The following remain to be collec
 - [ ] Lua smoke impact;
 - [ ] OpenCC impact.
 - [ ] Typing Intelligence disabled/enabled commit-path comparison and bounded store evidence.
+- [ ] Post-commit continuation disabled/enabled startup, final-commit, candidate-refresh and memory comparison.
 
 ## Related Documents
 

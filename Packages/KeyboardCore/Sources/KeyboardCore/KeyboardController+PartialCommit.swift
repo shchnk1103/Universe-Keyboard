@@ -290,6 +290,10 @@ extension KeyboardController {
             insertText(text, source: .directText)
         }
 
+        // Symbol-page commits can refresh or clear post-commit continuation state.
+        // Surface that state change even when the page itself remains unchanged.
+        effects.insert(.continuationChanged)
+
         effects.formUnion(consumeSingleUseShiftIfNeeded())
         if updatesEnglishAutoCap,
             state.inputMode == .english,

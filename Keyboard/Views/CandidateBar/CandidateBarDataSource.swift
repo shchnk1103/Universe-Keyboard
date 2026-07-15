@@ -11,7 +11,11 @@ import KeyboardCore
 ///          拼音已通过 inline preedit 显示在宿主 App 输入框中，
 ///          候选栏只显示候选词（不含拼音组合文本）。
 ///
-///   路径 2（回退路径 — RIME 不可用时）：
+///   路径 2（上屏后联想）：
+///     条件：中文 letters 页面、没有活跃 composition 且短上下文有匹配建议
+///     行为：显示独立的 continuationCandidate，不参与 RIME 分页。
+///
+///   路径 3（回退路径 — RIME 不可用时）：
 ///     条件：RIME 无输出 或 composition 为空
 ///     行为：使用 KeyboardController.candidateProvider（FakeCandidateProvider）
 ///           根据 state.currentComposition 查表获取候选词。
@@ -71,7 +75,19 @@ struct CandidateBarDataSource {
             )
         }
 
-        // ── 路径 2：回退（FakeCandidateProvider）──────────────
+        // 上屏后联想不是 RIME composition。只有当前没有活跃拼音时，
+        // 才把独立的短上下文建议映射到候选栏。
+        if state.currentPage == .letters,
+           state.currentComposition.isEmpty,
+           controller.isPostCommitContinuationEnabled,
+           !state.continuation.suggestions.isEmpty
+        {
+            return state.continuation.suggestions.map {
+                CandidateItem(title: $0, kind: .continuationCandidate)
+            }
+        }
+
+        // ── 路径 3：回退（FakeCandidateProvider）──────────────
         // currentComposition 存储了用户当前输入的拼音字符串
         guard !state.currentComposition.isEmpty else { return [] }
 

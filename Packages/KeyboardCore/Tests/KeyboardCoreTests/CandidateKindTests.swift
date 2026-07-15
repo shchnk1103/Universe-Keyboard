@@ -30,6 +30,7 @@ final class CandidateKindTests: XCTestCase {
         XCTAssertEqual(CandidateKind(rawValue: 1), .composition)
         XCTAssertEqual(CandidateKind(rawValue: 2), .placeholder)
         XCTAssertEqual(CandidateKind(rawValue: 3), .correctionCandidate)
+        XCTAssertEqual(CandidateKind(rawValue: 4), .continuationCandidate)
         // 非法 rawValue 返回 nil
         XCTAssertNil(CandidateKind(rawValue: 99))
         XCTAssertNil(CandidateKind(rawValue: -1))
