@@ -13,6 +13,7 @@ extension KeyboardController {
             effects.insert(.compositionChanged)
         }
         insertText(text, source: source)
+        effects.insert(.continuationChanged)
         return effects
     }
 
@@ -72,7 +73,7 @@ extension KeyboardController {
         guard state.currentPage == .letters && state.inputMode == .english else {
             state.lastSpaceTapTime = nil
             insertText(" ", source: .space)
-            return []
+            return .continuationChanged
         }
 
         let now = currentDate()
@@ -86,7 +87,7 @@ extension KeyboardController {
         } else {
             insertText(" ", source: .space)
         }
-        return []
+        return .continuationChanged
     }
 
     func handleInsertReturn() -> KeyboardEffect {
@@ -96,7 +97,7 @@ extension KeyboardController {
             return .compositionChanged
         }
         insertText("\n", source: .returnKey)
-        return []
+        return .continuationChanged
     }
 
     func handleDeleteBackward() -> KeyboardEffect {
@@ -118,7 +119,7 @@ extension KeyboardController {
             return .compositionChanged
         }
         textClient?.deleteBackward()
-        return []
+        return clearContinuation()
     }
 
     func handleNumberSuffixDeleteIfNeeded() -> KeyboardEffect? {
@@ -173,7 +174,7 @@ extension KeyboardController {
     ) {
         guard !text.isEmpty, let textClient else { return }
         textClient.insertText(text)
-        onCommittedText?(CommittedTextEvent(text: text, source: source))
+        didCommitText(text, source: source)
     }
 
     func adjustTextPosition(byCharacterOffset offset: Int) {
@@ -229,7 +230,7 @@ extension KeyboardController {
             if let textClient {
                 textClient.setMarkedText(text, selectedRange: offset..<offset)
                 textClient.unmarkText()
-                onCommittedText?(CommittedTextEvent(text: text, source: source))
+                didCommitText(text, source: source)
             }
         }
         state.insertedPreeditText = ""

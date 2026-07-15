@@ -199,7 +199,7 @@ extension KeyboardViewController {
         if effects.contains(.pageChanged) || effects.contains(.inputModeChanged)
             || effects.contains(.keyboardTypeChanged)
         {
-            if effects.contains(.compositionChanged) {
+            if effects.contains(.compositionChanged) || effects.contains(.continuationChanged) {
                 resetCandidateSnapshotFromController()
             }
             if hasViewAppeared {
@@ -209,7 +209,7 @@ extension KeyboardViewController {
             }
             return
         }
-        if effects.contains(.compositionChanged) {
+        if effects.contains(.compositionChanged) || effects.contains(.continuationChanged) {
             refreshCandidateBar()
             scheduleContextualTypoCorrectionRefresh()
         }

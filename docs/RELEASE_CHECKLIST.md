@@ -102,6 +102,7 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 - [ ] Today/7-day/30-day/all-time totals, trend, composition and streak match controlled fixtures.
 - [ ] Typing Intelligence enable/disable is explicit and clear permanently removes local aggregates.
 - [ ] Privacy & Data copy matches current behavior, bundled manifests and App Store privacy answers.
+- [ ] Post-commit continuation is default-on, can be disabled, and its privacy copy states that context is process-local and not stored.
 - [ ] RIME sync covers unconfigured, configured, syncing, success, authentication failure, wrong-key, conflict and folder-access states.
 - [ ] WebDAV setup rejects non-HTTPS remote servers except loopback test addresses and never exposes credentials in UI feedback or logs.
 - [ ] Local-folder sync survives relaunch through a valid security-scoped bookmark, or provides actionable reselection when access is revoked.
@@ -131,6 +132,11 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 - [ ] Marked-text updates, Delete and visibility abandonment do not increment statistics.
 - [ ] Full Access off keeps basic typing usable and does not claim shared statistics are active.
 - [ ] Extension process death loses at most a bounded pending batch and resumes from a valid snapshot.
+- [ ] In Chinese mode, `吃了 -> 吗 -> ？` works through the normal candidate bar and each selection inserts text exactly once.
+- [ ] Active composition hides continuation items; newline, host Delete, English mode, visibility change and disabling the setting prevent stale suggestions.
+- [ ] Unknown suffixes safely show no continuation, and continuation items do not expose RIME paging/selection-reference behavior.
+- [ ] The V1.2 synthetic quality benchmark passes, including 60 registered Top-3 cases across 15 categories, and its result is not reported as real-user coverage or acceptance-rate evidence.
+- [ ] The bundled continuation resource passes size, entry-count, length, duplicate and suggestion-count validation.
 
 ## RIME, Lua And OpenCC
 
@@ -156,6 +162,7 @@ OpenCC current integration ownership is defined in
 - [ ] Interrupted/incomplete scheme installation is recoverable by main-App reinstall/redownload.
 - [ ] Typing Intelligence classification/enqueue adds no unexplained key-path regression against the disabled baseline.
 - [ ] Typing Intelligence persistence is coalesced, bounded and absent from synchronous key handling.
+- [ ] Post-commit continuation performs no per-key file I/O; disabled/enabled startup, final-commit, candidate refresh and memory evidence show no unexplained regression.
 - [ ] Reset epoch prevents delayed writes from restoring cleared statistics.
 - [ ] Sync hashing, encryption, file access, WebDAV and merge work remain main-App-only and absent from key handling.
 - [ ] Foreground private-settings maintenance follows the selected daily or seven-day attempt cooldown, does not repeat its success Toast on every launch and does not claim guaranteed real-time/background delivery.

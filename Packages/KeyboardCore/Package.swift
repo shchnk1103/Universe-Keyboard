@@ -15,6 +15,7 @@ let package = Package(
     targets: [
         .target(
             name: "KeyboardCore",
+            resources: [.process("Resources")],
             linkerSettings: [.linkedLibrary("z")]
         ),
         .testTarget(name: "KeyboardCoreTests", dependencies: ["KeyboardCore"]),

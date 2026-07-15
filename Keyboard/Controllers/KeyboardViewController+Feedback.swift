@@ -76,6 +76,9 @@ extension KeyboardViewController {
         let rawPairedSymbolCompletion = defaults?.object(
             forKey: KeyboardInputSettingsKey.pairedSymbolCompletionEnabled
         )
+        let rawPostCommitContinuation = defaults?.object(
+            forKey: KeyboardInputSettingsKey.postCommitContinuationEnabled
+        )
         let typoExperimentSettings = TypoCorrectionExperimentalSettings.load(from: defaults)
 
         cachedKeyClickEnabled = rawSound as? Bool ?? true
@@ -86,6 +89,7 @@ extension KeyboardViewController {
             forKey: KeyboardAppearanceSettingsKey.liquidGlassMaterialEnabled
         ) ?? false
         controller.isPairedSymbolCompletionEnabled = rawPairedSymbolCompletion as? Bool ?? true
+        controller.setPostCommitContinuationEnabled(rawPostCommitContinuation as? Bool ?? true)
         controller.typoCorrectionExperimentalEdits = typoExperimentSettings.experimentalEdits
         controller.typoCorrectionLearningSnapshot = typoCorrectionLearningStore.snapshot()
         cachedTypingIntelligenceEnabled = defaults?.bool(

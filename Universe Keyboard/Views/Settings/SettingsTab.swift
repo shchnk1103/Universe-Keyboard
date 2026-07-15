@@ -12,6 +12,12 @@ struct SettingsTab: View {
     )
     private var pairedSymbolCompletionEnabled = true
 
+    @AppStorage(
+        KeyboardInputSettingsKey.postCommitContinuationEnabled,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var postCommitContinuationEnabled = true
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -115,6 +121,30 @@ struct SettingsTab: View {
             ) {
                 TypingIntelligenceView()
             }
+
+            VStack(spacing: 0) {
+                HStack(spacing: 12) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 7, style: .continuous).fill(.primary)
+                        Image(systemName: "text.append")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(Color(.systemBackground))
+                    }
+                    .frame(width: 30, height: 30)
+
+                    ToggleRow(
+                        title: "上屏后联想",
+                        description: postCommitContinuationEnabled
+                            ? "输入字词后，在候选栏显示本地常用接续建议"
+                            : "上屏后不显示接续建议",
+                        isOn: $postCommitContinuationEnabled
+                    )
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+            }
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
             VStack(spacing: 0) {
                 HStack(spacing: 12) {

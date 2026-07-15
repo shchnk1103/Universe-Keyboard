@@ -12,6 +12,7 @@ Classify the failure before changing code. Record the input, current page/mode, 
 | key tap stalls | main-thread/UI hot path, synchronous storage or RIME call |
 | raw pinyin/candidate mismatch | KeyboardCore state vs RIME output |
 | empty/stale candidates | candidate snapshot/paging vs RIME session |
+| no/stale suggestions after a commit | continuation eligibility/state vs candidate snapshot |
 | works after returning to App | deployment/shared-container state |
 | works until app switch | visibility cleanup or session lifecycle |
 | Lua feature missing | compiled capability -> files/schema -> deployment -> smoke result |
@@ -69,6 +70,16 @@ Always correlate a failure with its immediately preceding lifecycle/deployment e
 3. Check session recovery logs.
 4. Distinguish RIME output from UI accumulation: candidate snapshot generation/global index must reset when composition changes.
 5. Verify candidate selection references are present only for normal RIME candidates.
+
+### Post-Commit Suggestions Are Missing Or Stale
+
+1. Use synthetic Chinese text and confirm the keyboard is in Chinese letters mode with no active composition.
+2. Confirm `post_commit_continuation_enabled` was refreshed into the Extension settings snapshot.
+3. Check whether the committed suffix exists in the bundled V1 resource; an unknown suffix intentionally yields no suggestion.
+4. Confirm the bundled resource declares the supported format/content versions and stays within the documented current size, entry, length and suggestion-count bounds. Any validation failure intentionally degrades to an empty provider.
+5. Verify the final commit produced `.continuationChanged` and candidate presentation reset its snapshot.
+6. Confirm no intervening newline, host deletion, English-mode switch, visibility change or setting disable cleared the state.
+7. Do not log the retained context or candidate text. Inspect only eligibility flags, counts and state transitions.
 
 ### Composing Underline Remains Or Text Duplicates
 
