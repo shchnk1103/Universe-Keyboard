@@ -54,6 +54,7 @@ Arrows mean “navigate to” or “depends on”; they do not transfer Source o
 | `PERFORMANCE_BASELINE.md` | Measurement method | Performance work/release | How should performance be measured? | Invented targets or current architecture rationale |
 | `ENVIRONMENT_CAPTURE_PROCEDURE.md` | Environment evidence operating procedure | Assigned environment capture, before a Run ID is created | How are capture, tool limitations, handoff and correction handled? | Evidence-template fields, Product decisions or Quality conclusions |
 | `TYPO_BENCHMARK_REGISTRY.md` | Typo Benchmark identity Registry | Typo evidence planning, collection and review | Which Contract, Case and Performance reference is canonical? | Evidence pass status, implementation or copied domain architecture |
+| `APP_NOTIFICATIONS.md` | App notification and operation-prompt Product Contract | Notification settings, RIME sync notifications and foreground feedback changes | Which switches own system notifications and Toasts, and how do parent/child states behave? | iOS delivery guarantees or RIME synchronization mechanics |
 | `RELEASE_CHECKLIST.md` | Release gates and evidence | Release/test work | What must pass before release? | Why architecture exists |
 | `TECH_DEBT.md` | Canonical unresolved risk | Planning/review | What is intentionally incomplete and when must it be fixed? | Feature roadmap |
 | `DOCUMENTATION_GOVERNANCE.md` | Documentation rules | Doc authors/reviewers | What owns a fact and when must docs change? | Task navigation details |
@@ -93,6 +94,17 @@ User dictionary
   -> RIME_USER_DICTIONARY
   -> ADR 0003 / 0005
   -> TECH_DEBT TD-002 / TD-007
+
+Portable RIME sync
+  -> RIME_SYNC
+  -> ADR 0012 / 0013 / 0014
+  -> APP_NOTIFICATIONS / ADR 0017 (notification and Toast behavior)
+  -> DEBUGGING / RELEASE_CHECKLIST
+
+App notifications
+  -> APP_NOTIFICATIONS
+  -> ADR 0017
+  -> PRIVACY_POLICY / DEBUGGING / RELEASE_CHECKLIST
 
 Release
   -> RELEASE_CHECKLIST

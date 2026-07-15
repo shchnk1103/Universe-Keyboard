@@ -11,7 +11,7 @@ import SwiftUI
 struct Universe_KeyboardApp: App {
     init() {
         AppAppearance.migrateLegacyPreferenceIfNeeded()
-        RimeSyncNotificationService.shared.configure()
+        SystemAppNotificationClient.shared.configure()
         RimeAutomaticSyncScheduler.shared.registerBackgroundTask()
     }
 

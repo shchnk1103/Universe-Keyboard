@@ -40,6 +40,20 @@
 - 测试、性能、真机和 Release 证据判定归 🧪 Quality, Performance & Release Maintainer。
 - 状态冲突时，以对应 owner 的当前仓库记录为准，并在 Dashboard 中标记待同步。
 
+## TYPO-CORRECTION-002 — Contextual Multi-Error Pinyin Recovery
+
+- **Confirmed status:** `Active`
+- **Status owner/source:** Product Lead; [`Assignment`](assignments/typo-correction-002.md)
+- **Product source:** [`Contextual Typo Correction Product Contract`](TYPO_CORRECTION.md)
+- **Architecture source:** [ADR 0015](architecture/decisions/0015-contextual-multi-error-typo-correction.md) and [ADR 0016](architecture/decisions/0016-progressive-contextual-recall-preflight.md)
+- **Current phase:** Core/bridge, bounded progressive-recall preflight and iOS UI baseline evidence captured; semantic scoring, contextual UI and designated-simulator acceptance pending
+- **Domain Owner / Executor:** Input Intelligence Maintainer
+- **Supporting owners:** RIME Platform, Keyboard Experience, Architecture and Quality
+- **Device constraint:** environment-specific evidence may use only the designated Device Hub iOS 27 iPhone 17 Pro Max simulator.
+- **Current evidence:** KeyboardCore focused/full tests, iOS Debug/Release Simulator builds, RimeBridge contract tests, iOS UI baseline, and the isolated 60/64/8 progressive-recall preflight passed locally; real rime_ice sidecar fixture is skipped when fixture directories are unavailable.
+- **Open Gate:** the designated simulator is available, but the contextual-candidate, cancellation, real-RIME and paired-performance scenarios have not run. The progressive plan is not connected to production and supplies no semantic-ranking evidence. See the [validation record](evidence/typo-correction-002-device-hub-validation.md).
+- **Stop conditions:** live-session mutation for hypothesis queries, unbounded hot-path search, raw sentence persistence, network/telemetry, or substituting a non-designated environment for the Device Hub simulator.
+
 ## System Governance
 
 ### Active Governance Work Items

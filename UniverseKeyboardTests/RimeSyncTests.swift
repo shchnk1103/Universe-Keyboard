@@ -4,6 +4,128 @@ import XCTest
 @testable import Universe_Keyboard
 
 final class RimeSyncModelTests: XCTestCase {
+    func testSyncNotificationCopyFiltersAndCombinesSelectedScopes() throws {
+        let standardPhaseStarted = RimeSyncNotificationEvent.phaseStarted(
+            mode: .automatic,
+            scope: .standardRimeData,
+            completedScopes: [],
+            pendingScopes: [.privateSettings]
+        )
+
+        let combinedPayload = try XCTUnwrap(
+            standardPhaseStarted.payload(enabledScopes: [.standardRimeData, .privateSettings])
+        )
+        XCTAssertEqual(combinedPayload.title, "开始自动同步")
+        XCTAssertTrue(combinedPayload.body.contains("RIME 常用词、标准资料和 Universe App 设置"))
+
+        XCTAssertNil(standardPhaseStarted.payload(enabledScopes: [.privateSettings]))
+
+        let privatePhaseStarted = RimeSyncNotificationEvent.phaseStarted(
+            mode: .automatic,
+            scope: .privateSettings,
+            completedScopes: [.standardRimeData],
+            pendingScopes: []
+        )
+        let privatePayload = try XCTUnwrap(
+            privatePhaseStarted.payload(enabledScopes: [.privateSettings])
+        )
+        XCTAssertTrue(privatePayload.body.contains("Universe App 设置"))
+        XCTAssertNil(
+            privatePhaseStarted.payload(enabledScopes: [.standardRimeData, .privateSettings])
+        )
+
+        let failedStandard = RimeSyncNotificationEvent.failed(
+            mode: .manual,
+            failedScope: .standardRimeData,
+            completedScopes: [],
+            pendingScopes: [.privateSettings]
+        )
+        let failurePayload = try XCTUnwrap(
+            failedStandard.payload(enabledScopes: [.standardRimeData, .privateSettings])
+        )
+        XCTAssertEqual(failurePayload.title, "同步失败")
+        XCTAssertTrue(failurePayload.body.contains("RIME 常用词和标准资料未完成"))
+        XCTAssertTrue(failurePayload.body.contains("Universe App 设置尚未开始"))
+        XCTAssertNil(failedStandard.payload(enabledScopes: [.privateSettings]))
+
+        let failedPrivate = RimeSyncNotificationEvent.failed(
+            mode: .manual,
+            failedScope: .privateSettings,
+            completedScopes: [.standardRimeData],
+            pendingScopes: []
+        )
+        let standardOnlyPayload = try XCTUnwrap(
+            failedPrivate.payload(enabledScopes: [.standardRimeData])
+        )
+        XCTAssertEqual(standardOnlyPayload.title, "同步完成")
+        XCTAssertTrue(standardOnlyPayload.body.contains("RIME 常用词和标准资料已更新"))
+    }
+
+    @MainActor
+    func testAutomaticSyncSuboptionsDefaultOnAndPreserveExplicitChoice() {
+        let suiteName = "RimeSyncSuboptions-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let migratedModel = RimeSyncViewModel(
+            rimeStore: RimeSettingsStore(),
+            defaults: defaults
+        )
+        XCTAssertTrue(migratedModel.automaticStandardRimeDataEnabled)
+        XCTAssertTrue(migratedModel.automaticPrivateSettingsEnabled)
+
+        defaults.set(false, forKey: RimeSyncStorageKey.automaticStandardRimeDataEnabled)
+        let explicitChoiceModel = RimeSyncViewModel(
+            rimeStore: RimeSettingsStore(),
+            defaults: defaults
+        )
+        XCTAssertFalse(explicitChoiceModel.automaticStandardRimeDataEnabled)
+        XCTAssertTrue(explicitChoiceModel.automaticPrivateSettingsEnabled)
+    }
+
+    @MainActor
+    func testAutomaticSyncRequiresUserOptInAndTurnsOffWithLastScope() {
+        let suiteName = "RimeSyncOptIn-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        defaults.set(RimeSyncProvider.localFolder.rawValue, forKey: RimeSyncStorageKey.provider)
+        defaults.set(Data([0x01]), forKey: RimeSyncStorageKey.folderBookmark)
+        defaults.set(Date(), forKey: RimeSyncStorageKey.standardRimeLastSuccess)
+
+        let model = RimeSyncViewModel(
+            rimeStore: RimeSettingsStore(),
+            defaults: defaults
+        )
+        XCTAssertFalse(model.automaticSyncEnabled)
+
+        model.setAutomaticSyncEnabled(true)
+        XCTAssertTrue(model.automaticSyncEnabled)
+        XCTAssertTrue(model.automaticStandardRimeDataEnabled)
+        XCTAssertTrue(model.automaticPrivateSettingsEnabled)
+
+        model.setAutomaticStandardRimeDataEnabled(false)
+        XCTAssertTrue(model.automaticSyncEnabled)
+
+        model.setAutomaticPrivateSettingsEnabled(false)
+        XCTAssertFalse(model.automaticSyncEnabled)
+        XCTAssertFalse(defaults.bool(forKey: RimeSyncStorageKey.automaticSyncEnabled))
+
+        model.setAutomaticSyncEnabled(true)
+        XCTAssertTrue(model.automaticSyncEnabled)
+        XCTAssertTrue(model.automaticStandardRimeDataEnabled)
+        XCTAssertTrue(model.automaticPrivateSettingsEnabled)
+
+        defaults.set(true, forKey: RimeSyncStorageKey.automaticSyncEnabled)
+        defaults.set(false, forKey: RimeSyncStorageKey.automaticStandardRimeDataEnabled)
+        defaults.set(false, forKey: RimeSyncStorageKey.automaticPrivateSettingsEnabled)
+        let repairedModel = RimeSyncViewModel(
+            rimeStore: RimeSettingsStore(),
+            defaults: defaults
+        )
+        XCTAssertFalse(repairedModel.automaticSyncEnabled)
+    }
+
     func testSyncPhasesDescribeTheSingleVisibleSyncFlow() {
         XCTAssertEqual(RimeSyncPhase.standardRimeData.progressMessage, "正在同步 RIME 用户资料…")
         XCTAssertEqual(RimeSyncPhase.privateSettings.progressMessage, "正在同步 Universe 私密设置…")
@@ -11,6 +133,7 @@ final class RimeSyncModelTests: XCTestCase {
             RimeSyncCompletion.standardRimeAndPrivateSettings.message,
             "RIME 用户资料与私密设置已同步"
         )
+        XCTAssertEqual(RimeSyncCompletion.standardRimeData.message, "RIME 标准资料已同步")
     }
 
     func testProfileUpdatesOnlyChangedFieldsAndPreservesUnknownFields() {

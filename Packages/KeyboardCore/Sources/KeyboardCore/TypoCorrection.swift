@@ -295,6 +295,7 @@ public enum TypoCorrectionAssessmentReason: Equatable, Sendable {
     case repeatedFinalDeletion
     case conservativeInsertion
     case adjacentTransposition
+    case contextualMultiEdit
 }
 
 public struct TypoCorrectionAssessment: Equatable, Sendable {
@@ -367,17 +368,26 @@ public struct TypoCorrectionAssessment: Equatable, Sendable {
         edits: [TypoCorrectionEdit],
         firstNormalCandidate: String?
     ) -> TypoCorrectionAssessment {
-        guard title.count >= 2 && title.count <= 4 else {
+        guard title.count >= 2,
+            originalInput != correctedInput,
+            !edits.isEmpty
+        else {
+            return .rejected(.unsupportedEdit)
+        }
+
+        let maximumCandidateLength = edits.count > 1 ? 12 : 4
+        guard title.count <= maximumCandidateLength else {
             return .rejected(.candidateTextTooLong)
         }
         guard firstNormalCandidate != title else {
             return .rejected(.normalCandidateAlreadyMatches)
         }
-        guard edits.count == 1,
-            originalInput != correctedInput,
-            let edit = edits.first
-        else {
-            return .rejected(.unsupportedEdit)
+        guard edits.count == 1, let edit = edits.first else {
+            return multiEditAssessment(
+                title: title,
+                originalInput: originalInput,
+                edits: edits
+            )
         }
 
         switch edit.kind {
@@ -554,6 +564,30 @@ public struct TypoCorrectionAssessment: Equatable, Sendable {
             isPromotionEligible: false,
             rejectReason: nil,
             reasonSummary: .adjacentTransposition
+        )
+    }
+
+    private static func multiEditAssessment(
+        title: String,
+        originalInput: String,
+        edits: [TypoCorrectionEdit]
+    ) -> TypoCorrectionAssessment {
+        // 句子级恢复只接管足够长、可见语义明确的候选。短词多编辑仍然
+        // 过于歧义，继续保留给正常 RIME，避免把旧的低置信路径挤到前排。
+        guard edits.count == 2,
+            originalInput.count >= 8,
+            title.count >= 5
+        else {
+            return .rejected(.unsupportedEdit)
+        }
+
+        return TypoCorrectionAssessment(
+            score: 40,
+            confidence: .low,
+            isDisplayEligible: true,
+            isPromotionEligible: false,
+            rejectReason: nil,
+            reasonSummary: .contextualMultiEdit
         )
     }
 }
@@ -973,6 +1007,7 @@ private extension TypoCorrectionAssessment {
         // Experimental insertion/transposition remain non-promoting by default, but
         // must be visible near the front before explicit selection can teach ranking.
         return confidence == .high || reasonSummary.isLearnableExperimentalEdit
+            || reasonSummary == .contextualMultiEdit
     }
 }
 

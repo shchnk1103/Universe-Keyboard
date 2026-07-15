@@ -15,6 +15,7 @@ struct ContentView: View {
     private var appearanceRawValue = AppAppearance.system.rawValue
     @State private var rimeSettingsStore: RimeSettingsStore
     @State private var rimeSyncViewModel: RimeSyncViewModel
+    @State private var notificationSettingsModel: AppNotificationSettingsModel
     @State private var operationToast: AppOperationToastState?
     @State private var showOperationToast = false
     @State private var toastDismissTask: Task<Void, Never>?
@@ -26,6 +27,7 @@ struct ContentView: View {
         _rimeSyncViewModel = State(
             initialValue: RimeSyncViewModel(rimeStore: rimeSettingsStore)
         )
+        _notificationSettingsModel = State(initialValue: AppNotificationSettingsModel())
         #if DEBUG
         TypingIntelligencePreviewFixture.installIfRequested()
         #endif
@@ -41,7 +43,11 @@ struct ContentView: View {
                 .tabItem {
                     Label("引导", systemImage: "book.pages")
                 }
-            SettingsTab(rimeStore: rimeSettingsStore, syncModel: rimeSyncViewModel)
+            SettingsTab(
+                rimeStore: rimeSettingsStore,
+                syncModel: rimeSyncViewModel,
+                notificationSettings: notificationSettingsModel
+            )
                 .tabItem {
                     Label("设置", systemImage: "gearshape")
                 }
@@ -51,7 +57,9 @@ struct ContentView: View {
             AppAppearance(rawValue: appearanceRawValue)?.colorScheme
         )
         .overlay(alignment: .bottom) {
-            if showOperationToast, let operationToast {
+            if notificationSettingsModel.operationToastsEnabled,
+               showOperationToast,
+               let operationToast {
                 AppOperationToast(state: operationToast)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 74)
@@ -72,10 +80,18 @@ struct ContentView: View {
         .onChange(of: rimeSyncViewModel.statusVersion) { _, _ in
             updateSyncToast()
         }
+        .onChange(of: notificationSettingsModel.operationToastsEnabled) { _, enabled in
+            if !enabled {
+                hideToast()
+            }
+        }
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .active:
-                Task { await rimeSyncViewModel.synchronizeIfNeeded() }
+                Task {
+                    await notificationSettingsModel.refreshAuthorizationStatus()
+                    await rimeSyncViewModel.synchronizeIfNeeded()
+                }
             case .inactive, .background:
                 rimeSettingsStore.runAutomaticUserDictionaryBackupIfNeeded()
                 Task { await rimeSettingsStore.triggerPendingDeploymentIfNeeded() }
@@ -85,6 +101,7 @@ struct ContentView: View {
             }
         }
         .task {
+            await notificationSettingsModel.refreshAuthorizationStatus()
             await rimeSyncViewModel.loadSecrets()
             await rimeSyncViewModel.synchronizeIfNeeded()
             RimeAutomaticSyncScheduler.shared.refreshSchedule()
@@ -152,6 +169,7 @@ struct ContentView: View {
     }
 
     private func presentToast(_ state: AppOperationToastState) {
+        guard notificationSettingsModel.operationToastsEnabled else { return }
         toastDismissTask?.cancel()
         operationToast = state
         showOperationToast = true

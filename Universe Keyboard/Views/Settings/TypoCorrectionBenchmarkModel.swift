@@ -139,6 +139,7 @@ private extension TypoCorrectionAssessmentReason {
         case .repeatedFinalDeletion: return "末尾重复字符删除"
         case .conservativeInsertion: return "保守漏字补全"
         case .adjacentTransposition: return "相邻字符转置"
+        case .contextualMultiEdit: return "上下文双误触恢复"
         }
     }
 }

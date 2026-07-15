@@ -18,6 +18,7 @@ final class RimeSyncViewModel {
     private let secretStore: RimeSyncSecretStore
     private let coordinator: RimeSyncCoordinator
     private let standardRimeSyncService: any RimeStandardSyncing
+    private let notificationService: any AppNotificationNotifying
 
     var provider: RimeSyncProvider = .none
     var status: RimeSyncStatus = .idle
@@ -31,8 +32,9 @@ final class RimeSyncViewModel {
     var lastSuccessDate: Date?
     var standardRimeLastSuccessDate: Date?
     var automaticSyncEnabled = false
+    var automaticStandardRimeDataEnabled = true
+    var automaticPrivateSettingsEnabled = true
     var automaticSyncCadence: RimeAutomaticSyncCadence = .daily
-    var automaticSyncNotificationsEnabled = false
     var automaticSyncNotice: String?
     var statusVersion = 0
 
@@ -41,13 +43,15 @@ final class RimeSyncViewModel {
         defaults: UserDefaults = .standard,
         secretStore: RimeSyncSecretStore = RimeSyncSecretStore(),
         coordinator: RimeSyncCoordinator = RimeSyncCoordinator(),
-        standardRimeSyncService: any RimeStandardSyncing = RimeStandardSyncService()
+        standardRimeSyncService: any RimeStandardSyncing = RimeStandardSyncService(),
+        notificationService: any AppNotificationNotifying = AppNotificationService.shared
     ) {
         self.rimeStore = rimeStore
         self.defaults = defaults
         self.secretStore = secretStore
         self.coordinator = coordinator
         self.standardRimeSyncService = standardRimeSyncService
+        self.notificationService = notificationService
         provider = RimeSyncProvider(rawValue: defaults.string(forKey: StorageKey.provider) ?? "") ?? .none
         webDAVURL = defaults.string(forKey: StorageKey.webDAVURL) ?? ""
         webDAVUsername = defaults.string(forKey: StorageKey.webDAVUsername) ?? ""
@@ -56,12 +60,21 @@ final class RimeSyncViewModel {
         lastSuccessDate = defaults.object(forKey: StorageKey.lastSuccess) as? Date
         standardRimeLastSuccessDate = defaults.object(forKey: StorageKey.standardRimeLastSuccess) as? Date
         automaticSyncEnabled = defaults.bool(forKey: StorageKey.automaticSyncEnabled)
+        // 旧版本只有总开关。缺少子项键时按原有行为迁移为两项都开启。
+        automaticStandardRimeDataEnabled =
+            (defaults.object(forKey: StorageKey.automaticStandardRimeDataEnabled) as? Bool) ?? true
+        automaticPrivateSettingsEnabled =
+            (defaults.object(forKey: StorageKey.automaticPrivateSettingsEnabled) as? Bool) ?? true
+        if automaticSyncEnabled,
+           !automaticStandardRimeDataEnabled,
+           !automaticPrivateSettingsEnabled {
+            // 修复旧状态中的矛盾组合：没有任何同步内容时，总开关不能保持开启。
+            automaticSyncEnabled = false
+            defaults.set(false, forKey: StorageKey.automaticSyncEnabled)
+        }
         automaticSyncCadence = RimeAutomaticSyncCadence(
             rawValue: defaults.string(forKey: StorageKey.automaticSyncCadence) ?? ""
         ) ?? .daily
-        automaticSyncNotificationsEnabled = defaults.bool(
-            forKey: StorageKey.automaticSyncNotificationsEnabled
-        )
         status = isConfigured ? .idle : .notConfigured
     }
 
@@ -122,14 +135,27 @@ final class RimeSyncViewModel {
         canSynchronizeStandardRimeData && standardRimeLastSuccessDate != nil
     }
 
+    var hasEnabledAutomaticSyncScope: Bool {
+        automaticStandardRimeDataEnabled || automaticPrivateSettingsEnabled
+    }
+
     var automaticSyncScheduleText: String {
-        guard automaticSyncEnabled else {
-            return "关闭后，你可以随时使用“立即同步”。"
-        }
         guard canEnableAutomaticStandardSync else {
-            return "请先完成一次“立即同步”，再由系统在合适时机自动更新。"
+            return "请先完成一次“立即同步”来确认共享文件夹；完成后仍由你决定是否开启自动同步。"
         }
-        return "系统会在设备空闲且键盘未使用时，最早按“\(automaticSyncCadence.title)”安排一次同步。"
+        guard automaticSyncEnabled else {
+            return "自动同步尚未开启。手动同步不会替你开启；需要时请主动打开总开关。"
+        }
+        switch (automaticStandardRimeDataEnabled, automaticPrivateSettingsEnabled) {
+        case (true, true):
+            return "RIME 标准资料会由系统在后台空闲时更新；Universe App 设置也会在打开 App 时检查更新。两项共用“\(automaticSyncCadence.title)”冷却时间。"
+        case (true, false):
+            return "只自动同步 RIME 常用词和标准资料；系统会在后台空闲且键盘未使用时，最早按“\(automaticSyncCadence.title)”安排。"
+        case (false, true):
+            return "只自动同步 Universe App 设置；打开或回到 App 时会按“\(automaticSyncCadence.title)”检查更新。"
+        case (false, false):
+            return "当前没有选择任何自动同步内容；“立即同步”仍可完整同步两部分。"
+        }
     }
 
     func loadSecrets() async {
@@ -249,31 +275,71 @@ final class RimeSyncViewModel {
     func synchronizeAllNow() async {
         guard isConfigured, !isSynchronizing else { return }
         let includesStandardRimeData = canSynchronizeStandardRimeData
+        let isFirstStandardSync = includesStandardRimeData && standardRimeLastSuccessDate == nil
         Logger.shared.info(
             "rimeSync manual sync started standardRimeData=\(includesStandardRimeData)",
             category: .config
+        )
+        var completedNotificationScopes: Set<RimeSyncNotificationScope> = []
+        var activeNotificationScope: RimeSyncNotificationScope = includesStandardRimeData
+            ? .standardRimeData
+            : .privateSettings
+        var pendingNotificationScopes: Set<RimeSyncNotificationScope> = includesStandardRimeData
+            ? [.privateSettings]
+            : []
+        await notificationService.notify(
+            .phaseStarted(
+                mode: .manual,
+                scope: activeNotificationScope,
+                completedScopes: completedNotificationScopes,
+                pendingScopes: pendingNotificationScopes
+            )
         )
 
         do {
             if includesStandardRimeData {
                 setStatus(.syncing(.standardRimeData))
                 try await synchronizeStandardRimeData()
+                completedNotificationScopes.insert(.standardRimeData)
                 Logger.shared.info("rimeSync standard user data completed", category: .config)
+
+                activeNotificationScope = .privateSettings
+                pendingNotificationScopes = []
+                await notificationService.notify(
+                    .phaseStarted(
+                        mode: .manual,
+                        scope: activeNotificationScope,
+                        completedScopes: completedNotificationScopes,
+                        pendingScopes: pendingNotificationScopes
+                    )
+                )
             }
 
             setStatus(.syncing(.privateSettings))
             let completedAt = try await synchronizePrivateSettings()
+            completedNotificationScopes.insert(.privateSettings)
             let completion: RimeSyncCompletion = includesStandardRimeData
                 ? .standardRimeAndPrivateSettings
                 : .privateSettings
             setStatus(.succeeded(completedAt, completion))
             if includesStandardRimeData {
-                enableAutomaticStandardSyncAfterManualSuccess()
+                handleManualStandardSyncSuccess(isFirstStandardSync: isFirstStandardSync)
             }
             Logger.shared.info("rimeSync manual sync completed", category: .config)
+            await notificationService.notify(
+                .completed(mode: .manual, scopes: completedNotificationScopes)
+            )
         } catch is CancellationError {
             setStatus(.idle)
             Logger.shared.warning("rimeSync manual sync cancelled", category: .config)
+            await notificationService.notify(
+                .failed(
+                    mode: .manual,
+                    failedScope: activeNotificationScope,
+                    completedScopes: completedNotificationScopes,
+                    pendingScopes: pendingNotificationScopes
+                )
+            )
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
             setStatus(.failed(
@@ -287,21 +353,73 @@ final class RimeSyncViewModel {
                 category: .config
             )
             Logger.shared.requestFlush()
+            await notificationService.notify(
+                .failed(
+                    mode: .manual,
+                    failedScope: activeNotificationScope,
+                    completedScopes: completedNotificationScopes,
+                    pendingScopes: pendingNotificationScopes
+                )
+            )
         }
     }
 
     /// 前台自动更新只覆盖加密管理型设置；绝不自动触发会读写用户资料的
-    /// RIME 标准同步。
-    func synchronizeIfNeeded(minimumInterval: TimeInterval = 60) async {
+    /// RIME 标准同步。启用自动同步后，这条前台路径也服从用户选择的冷却时间，
+    /// 避免每次打开 App 都重复同步并展示成功 Toast。
+    func synchronizeIfNeeded(minimumInterval: TimeInterval? = nil) async {
         guard isConfigured, !isSynchronizing else { return }
-        if let lastSuccessDate, Date().timeIntervalSince(lastSuccessDate) < minimumInterval { return }
+        if provider == .localFolder {
+            guard automaticSyncEnabled, automaticPrivateSettingsEnabled else { return }
+        }
+        let effectiveInterval = minimumInterval
+            ?? (provider == .localFolder ? automaticSyncCadence.interval : 60)
+        let persistedLastSuccess = defaults.object(forKey: StorageKey.lastSuccess) as? Date
+        let lastAttempt = automaticSyncEnabled
+            ? [
+                defaults.object(forKey: StorageKey.lastForegroundPrivateAttempt) as? Date,
+                persistedLastSuccess ?? lastSuccessDate,
+            ].compactMap { $0 }.max()
+            : persistedLastSuccess ?? lastSuccessDate
+        if let lastAttempt, Date().timeIntervalSince(lastAttempt) < effectiveInterval { return }
+
+        if provider == .localFolder, automaticSyncEnabled {
+            // 失败也算一次自动尝试，防止文件提供器暂时不可用时每次打开 App 都重试。
+            defaults.set(Date(), forKey: StorageKey.lastForegroundPrivateAttempt)
+        }
 
         setStatus(.syncing(.privateSettings))
+        let notificationScope = RimeSyncNotificationScope.privateSettings
+        if provider == .localFolder {
+            await notificationService.notify(
+                .phaseStarted(
+                    mode: .automatic,
+                    scope: notificationScope,
+                    completedScopes: [],
+                    pendingScopes: []
+                )
+            )
+        }
         do {
             let completedAt = try await synchronizePrivateSettings()
             setStatus(.succeeded(completedAt, .privateSettings))
+            if provider == .localFolder {
+                await notificationService.notify(
+                    .completed(mode: .automatic, scopes: [notificationScope])
+                )
+            }
         } catch is CancellationError {
             setStatus(.idle)
+            if provider == .localFolder {
+                await notificationService.notify(
+                    .failed(
+                        mode: .automatic,
+                        failedScope: notificationScope,
+                        completedScopes: [],
+                        pendingScopes: []
+                    )
+                )
+            }
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
             setStatus(.failed(
@@ -315,6 +433,16 @@ final class RimeSyncViewModel {
                 category: .config
             )
             Logger.shared.requestFlush()
+            if provider == .localFolder {
+                await notificationService.notify(
+                    .failed(
+                        mode: .automatic,
+                        failedScope: notificationScope,
+                        completedScopes: [],
+                        pendingScopes: []
+                    )
+                )
+            }
         }
     }
 
@@ -322,6 +450,9 @@ final class RimeSyncViewModel {
     /// 它延续官方快照合并路径，但会先检查冷却时间和键盘扩展的活动心跳。
     func synchronizeAutomatically() async -> RimeAutomaticSyncResult {
         guard automaticSyncEnabled else { return .skipped(.disabled) }
+        guard automaticStandardRimeDataEnabled else {
+            return .skipped(.standardRimeDataDisabled)
+        }
         guard canSynchronizeStandardRimeData else { return .skipped(.notConfigured) }
         guard standardRimeLastSuccessDate != nil else {
             return .skipped(.waitingForFirstManualSync)
@@ -342,28 +473,64 @@ final class RimeSyncViewModel {
 
         let startedAt = Date()
         defaults.set(startedAt, forKey: StorageKey.lastAutomaticAttempt)
+        var completedNotificationScopes: Set<RimeSyncNotificationScope> = []
+        var activeNotificationScope = RimeSyncNotificationScope.standardRimeData
+        var pendingNotificationScopes: Set<RimeSyncNotificationScope> = automaticPrivateSettingsEnabled
+            ? [.privateSettings]
+            : []
         setStatus(.syncing(.standardRimeData))
         Logger.shared.info("rimeSync automatic standard sync started", category: .config)
-        if automaticSyncNotificationsEnabled {
-            await RimeSyncNotificationService.shared.notifyAutomaticSyncStarted()
-        }
+        await notificationService.notify(
+            .phaseStarted(
+                mode: .automatic,
+                scope: activeNotificationScope,
+                completedScopes: completedNotificationScopes,
+                pendingScopes: pendingNotificationScopes
+            )
+        )
 
         do {
             try Task.checkCancellation()
             try await synchronizeStandardRimeData()
+            completedNotificationScopes.insert(.standardRimeData)
             try Task.checkCancellation()
 
-            setStatus(.syncing(.privateSettings))
-            let completedAt = try await synchronizePrivateSettings()
-            setStatus(.succeeded(completedAt, .standardRimeAndPrivateSettings))
-            Logger.shared.info("rimeSync automatic standard sync completed", category: .config)
-            if automaticSyncNotificationsEnabled {
-                await RimeSyncNotificationService.shared.notifyAutomaticSyncCompleted()
+            let completedAt: Date
+            if automaticPrivateSettingsEnabled {
+                activeNotificationScope = .privateSettings
+                pendingNotificationScopes = []
+                await notificationService.notify(
+                    .phaseStarted(
+                        mode: .automatic,
+                        scope: activeNotificationScope,
+                        completedScopes: completedNotificationScopes,
+                        pendingScopes: pendingNotificationScopes
+                    )
+                )
+                setStatus(.syncing(.privateSettings))
+                completedAt = try await synchronizePrivateSettings()
+                completedNotificationScopes.insert(.privateSettings)
+                setStatus(.succeeded(completedAt, .standardRimeAndPrivateSettings))
+            } else {
+                completedAt = standardRimeLastSuccessDate ?? Date()
+                setStatus(.succeeded(completedAt, .standardRimeData))
             }
+            Logger.shared.info("rimeSync automatic standard sync completed", category: .config)
+            await notificationService.notify(
+                .completed(mode: .automatic, scopes: completedNotificationScopes)
+            )
             return .completed(completedAt)
         } catch is CancellationError {
             setStatus(.idle)
             Logger.shared.warning("rimeSync automatic standard sync cancelled", category: .config)
+            await notificationService.notify(
+                .failed(
+                    mode: .automatic,
+                    failedScope: activeNotificationScope,
+                    completedScopes: completedNotificationScopes,
+                    pendingScopes: pendingNotificationScopes
+                )
+            )
             return .skipped(.cancelled)
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
@@ -379,6 +546,14 @@ final class RimeSyncViewModel {
                 category: .config
             )
             Logger.shared.requestFlush()
+            await notificationService.notify(
+                .failed(
+                    mode: .automatic,
+                    failedScope: activeNotificationScope,
+                    completedScopes: completedNotificationScopes,
+                    pendingScopes: pendingNotificationScopes
+                )
+            )
             return .failed
         }
     }
@@ -388,9 +563,32 @@ final class RimeSyncViewModel {
             automaticSyncNotice = "请先完成一次“立即同步”，以确认共享文件夹可用。"
             return
         }
+
+        // 用户主动打开总开关、但此前已关闭全部子项时，恢复为最容易理解的默认状态。
+        // 若仍有一个子项开启，则保留用户原来的范围选择。
+        if enabled, !hasEnabledAutomaticSyncScope {
+            automaticStandardRimeDataEnabled = true
+            automaticPrivateSettingsEnabled = true
+            defaults.set(true, forKey: StorageKey.automaticStandardRimeDataEnabled)
+            defaults.set(true, forKey: StorageKey.automaticPrivateSettingsEnabled)
+        }
         automaticSyncEnabled = enabled
         defaults.set(enabled, forKey: StorageKey.automaticSyncEnabled)
         automaticSyncNotice = nil
+        RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
+    }
+
+    func setAutomaticStandardRimeDataEnabled(_ enabled: Bool) {
+        automaticStandardRimeDataEnabled = enabled
+        defaults.set(enabled, forKey: StorageKey.automaticStandardRimeDataEnabled)
+        disableAutomaticSyncWhenNoScopeRemains()
+        RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
+    }
+
+    func setAutomaticPrivateSettingsEnabled(_ enabled: Bool) {
+        automaticPrivateSettingsEnabled = enabled
+        defaults.set(enabled, forKey: StorageKey.automaticPrivateSettingsEnabled)
+        disableAutomaticSyncWhenNoScopeRemains()
         RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
     }
 
@@ -398,20 +596,6 @@ final class RimeSyncViewModel {
         automaticSyncCadence = cadence
         defaults.set(cadence.rawValue, forKey: StorageKey.automaticSyncCadence)
         RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
-    }
-
-    func setAutomaticSyncNotificationsEnabled(_ enabled: Bool) async {
-        guard enabled else {
-            automaticSyncNotificationsEnabled = false
-            defaults.set(false, forKey: StorageKey.automaticSyncNotificationsEnabled)
-            automaticSyncNotice = nil
-            return
-        }
-
-        let granted = await RimeSyncNotificationService.shared.requestPermission()
-        automaticSyncNotificationsEnabled = granted
-        defaults.set(granted, forKey: StorageKey.automaticSyncNotificationsEnabled)
-        automaticSyncNotice = granted ? nil : "没有通知权限；自动同步仍会继续。"
     }
 
     func disconnect(deleteRemoteData: Bool) async {
@@ -435,9 +619,11 @@ final class RimeSyncViewModel {
             defaults.removeObject(forKey: StorageKey.lastSuccess)
             defaults.removeObject(forKey: StorageKey.standardRimeLastSuccess)
             defaults.removeObject(forKey: StorageKey.automaticSyncEnabled)
+            defaults.removeObject(forKey: StorageKey.automaticStandardRimeDataEnabled)
+            defaults.removeObject(forKey: StorageKey.automaticPrivateSettingsEnabled)
             defaults.removeObject(forKey: StorageKey.automaticSyncCadence)
-            defaults.removeObject(forKey: StorageKey.automaticSyncNotificationsEnabled)
             defaults.removeObject(forKey: StorageKey.lastAutomaticAttempt)
+            defaults.removeObject(forKey: StorageKey.lastForegroundPrivateAttempt)
             provider = .none
             folderName = nil
             folderSelectionNeedsRepair = false
@@ -445,7 +631,8 @@ final class RimeSyncViewModel {
             lastSuccessDate = nil
             standardRimeLastSuccessDate = nil
             automaticSyncEnabled = false
-            automaticSyncNotificationsEnabled = false
+            automaticStandardRimeDataEnabled = true
+            automaticPrivateSettingsEnabled = true
             automaticSyncNotice = nil
             setStatus(.notConfigured)
             RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
@@ -503,26 +690,39 @@ final class RimeSyncViewModel {
         return completedAt
     }
 
-    private func enableAutomaticStandardSyncAfterManualSuccess() {
+    private func handleManualStandardSyncSuccess(isFirstStandardSync: Bool) {
         guard canEnableAutomaticStandardSync else { return }
 
-        automaticSyncEnabled = true
-        defaults.set(true, forKey: StorageKey.automaticSyncEnabled)
+        if isFirstStandardSync {
+            automaticSyncNotice = "共享文件夹已确认。需要自动更新时，请在下方自行开启“自动同步”。"
+        }
         // 手动同步是自动模式的安全起点；冷却时间从这次尝试开始，避免刚完成就重复执行。
         defaults.set(Date(), forKey: StorageKey.lastAutomaticAttempt)
-        automaticSyncNotice = "已开启自动同步。你可以选择每天或每 7 天同步一次。"
+        defaults.set(Date(), forKey: StorageKey.lastForegroundPrivateAttempt)
         RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
+    }
+
+    private func disableAutomaticSyncWhenNoScopeRemains() {
+        guard !hasEnabledAutomaticSyncScope else {
+            automaticSyncNotice = nil
+            return
+        }
+
+        automaticSyncEnabled = false
+        defaults.set(false, forKey: StorageKey.automaticSyncEnabled)
+        automaticSyncNotice = "两项自动同步内容都已关闭，自动同步也已关闭。"
     }
 
     /// 新文件夹意味着新的 RIME `sync_dir`；不能把旧目录的一次确认当作新目录的授权。
     private func resetAutomaticStandardSyncEligibility() {
         automaticSyncEnabled = false
-        automaticSyncNotificationsEnabled = false
         automaticSyncNotice = nil
         standardRimeLastSuccessDate = nil
         defaults.set(false, forKey: StorageKey.automaticSyncEnabled)
-        defaults.set(false, forKey: StorageKey.automaticSyncNotificationsEnabled)
+        defaults.removeObject(forKey: StorageKey.automaticStandardRimeDataEnabled)
+        defaults.removeObject(forKey: StorageKey.automaticPrivateSettingsEnabled)
         defaults.removeObject(forKey: StorageKey.lastAutomaticAttempt)
+        defaults.removeObject(forKey: StorageKey.lastForegroundPrivateAttempt)
         defaults.removeObject(forKey: StorageKey.standardRimeLastSuccess)
         RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
     }

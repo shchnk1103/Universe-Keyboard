@@ -4,6 +4,32 @@ import XCTest
 @testable import RimeBridge
 
 final class RimeLuaSmokeTests: XCTestCase {
+    func testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided() throws {
+        let directories = try luaSmokeRuntimeDirectories()
+        let engine = RimeEngineImpl(
+            sharedDataDir: directories.sharedDir,
+            userDataDir: directories.userDir
+        )
+
+        guard engine.bridge.selectSchema("rime_ice") else {
+            return XCTFail("rime_ice schema could not be selected from the provided smoke-test runtime.")
+        }
+
+        _ = engine.processKey("n")
+        let beforeLookup = engine.processKey("i")
+        XCTAssertEqual(beforeLookup.rawInput, "ni")
+
+        let correctionCandidates = engine.correctionCandidates(for: "nihao", limit: 3)
+        XCTAssertFalse(correctionCandidates.isEmpty)
+
+        let afterLookup = engine.processKey("h")
+        XCTAssertEqual(
+            afterLookup.rawInput,
+            "nih",
+            "纠错查询只能使用 sidecar session，不能改写用户正在输入的 composition。"
+        )
+    }
+
     func testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided() throws {
         let directories = try luaSmokeRuntimeDirectories()
         let engine = RimeEngineImpl(

@@ -140,10 +140,12 @@ extension KeyboardViewController {
         else { return }
 
         Logger.shared.info("Keyboard visible; creating RimeEngineImpl", category: .engine)
-        controller.rimeEngine = RimeEngineImpl(
+        let engine = RimeEngineImpl(
             sharedDataDir: directories.sharedDataDir,
             userDataDir: directories.userDataDir
         )
+        controller.rimeEngine = engine
+        controller.typoCorrectionCandidateQuery = engine
         hasActivatedVisibleRimeRuntime = true
         Logger.shared.info("RIME session prepared for visible keyboard input", category: .engine)
     }

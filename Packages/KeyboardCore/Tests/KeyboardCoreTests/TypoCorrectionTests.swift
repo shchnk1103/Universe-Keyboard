@@ -64,6 +64,110 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertLessThanOrEqual(suggestions.count, 16)
     }
 
+    func testContextualEngineBuildsBoundedTwoErrorSentenceHypotheses() {
+        let input = "wimenjintianquhongyuan"
+        let suggestions = ContextualTypoCorrectionHypothesisEngine().hypotheses(for: input)
+
+        XCTAssertLessThanOrEqual(suggestions.count, 8)
+        XCTAssertFalse(suggestions.isEmpty)
+        XCTAssertTrue(suggestions.allSatisfy {
+            $0.originalInput == input
+                && $0.correctedInput != input
+                && $0.edits.count == 2
+        })
+    }
+
+    func testContextualEngineSkipsShortAndOversizedCompositions() {
+        XCTAssertTrue(ContextualTypoCorrectionHypothesisEngine().hypotheses(for: "nihao").isEmpty)
+        XCTAssertTrue(
+            ContextualTypoCorrectionHypothesisEngine()
+                .hypotheses(for: String(repeating: "a", count: 31))
+                .isEmpty
+        )
+    }
+
+    func testProgressiveRecallPlanContainsSeparatedTwoErrorCorrection() {
+        let plan = ContextualTypoCorrectionSearchPlan(input: "wimenjintianquhongyuan")
+
+        XCTAssertTrue(
+            plan.hypotheses.contains { suggestion in
+                suggestion.correctedInput == "womenjintianqugongyuan"
+                    && suggestion.edits.count == 2
+            },
+            "渐进召回计划必须覆盖相隔较远、且包含第二近元音邻键的双误触。"
+        )
+    }
+
+    func testProgressiveRecallPlanKeepsHypothesesAndBatchesBounded() {
+        let plan = ContextualTypoCorrectionSearchPlan(input: "wimenjintianquhongyuan")
+
+        XCTAssertLessThanOrEqual(plan.hypotheses.count, 64)
+        XCTAssertFalse(plan.batches.isEmpty)
+        XCTAssertTrue(plan.batches.allSatisfy { $0.count <= 8 })
+        XCTAssertEqual(plan.batches.flatMap { $0 }, plan.hypotheses)
+    }
+
+    func testProgressiveRecallPlanPreservesInputLengthBoundary() {
+        XCTAssertTrue(ContextualTypoCorrectionSearchPlan(input: "nihao").hypotheses.isEmpty)
+        XCTAssertTrue(
+            ContextualTypoCorrectionSearchPlan(input: String(repeating: "a", count: 31))
+                .hypotheses
+                .isEmpty
+        )
+    }
+
+    func testControllerUsesDedicatedQueryForContextualRecovery() throws {
+        let input = "wimenjintianquhongyuan"
+        let expectedInput = try XCTUnwrap(
+            ContextualTypoCorrectionHypothesisEngine()
+                .hypotheses(for: input)
+                .first?
+                .correctedInput
+        )
+        let query = RecordingTypoCorrectionQuery(
+            dictionary: [expectedInput: ["我们今天去公园"]]
+        )
+        let controller = KeyboardController()
+        controller.rimeEngine = FakeRimeEngine(dictionary: [input: ["无关"]])
+        controller.typoCorrectionCandidateQuery = query
+
+        for key in input {
+            _ = controller.handle(.insertKey(String(key)))
+        }
+
+        XCTAssertFalse(
+            query.inputs.contains(expectedInput),
+            "多错误查询必须等输入停顿后由 UI 层明确触发，不能进入逐键同步路径。"
+        )
+        XCTAssertTrue(controller.refreshContextualTypoCorrectionSuggestions(for: input))
+
+        XCTAssertEqual(controller.state.currentComposition, input)
+        XCTAssertTrue(query.inputs.contains(expectedInput))
+        XCTAssertTrue(
+            controller.state.typoCorrection?.suggestions.contains { suggestion in
+                suggestion.correctedInput == expectedInput
+                    && suggestion.candidates.first?.text == "我们今天去公园"
+            } == true
+        )
+    }
+
+    func testContextualMultiEditSentenceIsDisplayOnly() {
+        let assessment = TypoCorrectionAssessment.evaluate(
+            title: "我们今天去公园",
+            originalInput: "wimenjintianquhongyuan",
+            correctedInput: "womenjintianqugongyuan",
+            edits: [
+                TypoCorrectionEdit(index: 1, original: "i", replacement: "o"),
+                TypoCorrectionEdit(index: 14, original: "h", replacement: "g"),
+            ],
+            firstNormalCandidate: "无关"
+        )
+
+        XCTAssertTrue(assessment.isDisplayEligible)
+        XCTAssertFalse(assessment.isPromotionEligible)
+        XCTAssertEqual(assessment.reasonSummary, .contextualMultiEdit)
+    }
+
     func testAssessmentMarksTrailingSubstitutionAsPromotionEligibleHighConfidence() {
         let assessment = TypoCorrectionAssessment.evaluate(
             title: "你好",
@@ -1682,5 +1786,19 @@ private final class DictionaryCandidateProvider: CandidateProvider {
 
     func candidates(for composition: String) -> [String] {
         dictionary[composition] ?? []
+    }
+}
+
+private final class RecordingTypoCorrectionQuery: TypoCorrectionCandidateQuerying {
+    private let dictionary: [String: [String]]
+    private(set) var inputs: [String] = []
+
+    init(dictionary: [String: [String]]) {
+        self.dictionary = dictionary
+    }
+
+    func correctionCandidates(for input: String, limit: Int) -> [RimeCandidate] {
+        inputs.append(input)
+        return (dictionary[input] ?? []).prefix(max(0, limit)).map { RimeCandidate(text: $0) }
     }
 }

@@ -211,6 +211,7 @@ extension KeyboardViewController {
         }
         if effects.contains(.compositionChanged) || effects.contains(.continuationChanged) {
             refreshCandidateBar()
+            scheduleContextualTypoCorrectionRefresh()
         }
         if effects.contains(.shiftStateChanged) {
             refreshLetterButtons()

@@ -132,6 +132,8 @@ class KeyboardViewController: UIInputViewController {
     var inputEventSequence = 0
     /// 前一个字母输入完成时间，用于观察快速输入中的事件排队现象
     var lastInputCompletionTime: CFTimeInterval?
+    /// 多错误纠错只在用户短暂停顿后执行；新输入会取消旧任务，避免占用按键热路径。
+    var contextualTypoCorrectionWorkItem: DispatchWorkItem?
 
     // MARK: - 光标移动状态
 

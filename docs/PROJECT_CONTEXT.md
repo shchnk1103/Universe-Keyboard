@@ -201,6 +201,8 @@ Universe Keyboard/
     └── RimeDeploymentService.swift       — main-app-side full deployment API
 ```
 
+Main-App notification authorization, category preferences and local delivery are owned by one root-level `AppNotificationSettingsModel`. The global notification page and RIME sync page reuse the same RIME notification controls; notification scopes filter reminders only and never change the underlying synchronization settings. Product and ownership contracts: [`APP_NOTIFICATIONS.md`](APP_NOTIFICATIONS.md) and ADR 0017.
+
 ### Shared infrastructure
 
 Both targets share App Group `group.com.DoubleShy0N.Universe-Keyboard` (container layout and ownership rules: ADR 0003 and [`shared-container-and-rime-lifecycle.md`](architecture/shared-container-and-rime-lifecycle.md)).

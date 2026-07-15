@@ -83,3 +83,11 @@ Typing statistics were introduced as a final-commit observation in KeyboardCore,
 SwiftData was rejected as the V1 cross-process authority; an explicit store protocol, coalesced App Group backend and reset epoch preserve Extension performance and deletion semantics while allowing a future backend migration.
 
 Decision: ADR 0011. Product source: `TYPING_INTELLIGENCE.md`. Current runtime sources: input-pipeline and shared-container architecture documents.
+
+## Portable RIME Sync And Unified Notification Ownership
+
+Portable synchronization adopted RIME's official `sync_dir` / `sync_user_data` snapshots as the cross-frontend path while keeping Universe-managed settings in a separate encrypted package. Automatic maintenance remains main-App-only, requires an initial confirmed standard sync and follows a user-selected cooldown plus keyboard-activity safety gate.
+
+System notifications and App operation Toasts later moved to one root-owned main-App model. RIME standard-data and Universe-settings notifications are independently selectable but never control the underlying sync work; both settings pages reuse the same state and delivery policy. The Keyboard Extension remains outside synchronization, permission and notification ownership.
+
+Decisions: ADR 0012, ADR 0013, ADR 0014 and ADR 0017. Current sources: `RIME_SYNC.md` and `APP_NOTIFICATIONS.md`.

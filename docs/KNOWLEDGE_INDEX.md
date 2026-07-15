@@ -36,8 +36,11 @@
 - Fuzzy pinyin: [`RIME_FUZZY_PINYIN.md`](RIME_FUZZY_PINYIN.md)
 - User dictionary: [`RIME_USER_DICTIONARY.md`](RIME_USER_DICTIONARY.md)
 - Portable RIME settings sync: [`RIME_SYNC.md`](RIME_SYNC.md)
+- App notifications and operation prompts: [`APP_NOTIFICATIONS.md`](APP_NOTIFICATIONS.md)
 - Typo correction benchmark: [`TYPO_BENCHMARK.md`](TYPO_BENCHMARK.md)
 - Typo correction Contract/Case/Performance Registry: [`TYPO_BENCHMARK_REGISTRY.md`](TYPO_BENCHMARK_REGISTRY.md)
+- Typo correction V2 incremental Registry: [`TYPO_BENCHMARK_REGISTRY_V2.md`](TYPO_BENCHMARK_REGISTRY_V2.md)
+- Contextual multi-error typo correction: [`TYPO_CORRECTION.md`](TYPO_CORRECTION.md)
 
 ## Operations And Risk
 

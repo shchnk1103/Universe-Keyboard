@@ -4,6 +4,7 @@ import SwiftUI
 struct SettingsTab: View {
     @Bindable var rimeStore: RimeSettingsStore
     @Bindable var syncModel: RimeSyncViewModel
+    @Bindable var notificationSettings: AppNotificationSettingsModel
 
     @AppStorage(
         KeyboardInputSettingsKey.pairedSymbolCompletionEnabled,
@@ -24,6 +25,7 @@ struct SettingsTab: View {
                     inputBehaviorSection
                     rimeInputSection
                     dataAndSyncSection
+                    appSettingsSection
                     toolsSection
                     diagnosticsSection
                 }
@@ -48,7 +50,10 @@ struct SettingsTab: View {
                 title: "RIME 云同步",
                 subtitle: syncModel.statusText
             ) {
-                RimeSyncSettingsView(model: syncModel)
+                RimeSyncSettingsView(
+                    model: syncModel,
+                    notificationSettings: notificationSettings
+                )
             }
 
             SettingsNavigationLink(
@@ -57,6 +62,39 @@ struct SettingsTab: View {
                 subtitle: "候选学习、备份与安全恢复"
             ) {
                 RimeUserDictionarySettingsView(store: rimeStore)
+            }
+        }
+    }
+
+    private var appSettingsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("App 设置")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
+
+            SettingsNavigationLink(
+                systemImage: "circle.lefthalf.filled",
+                title: "外观",
+                subtitle: "跟随系统、浅色或深色模式"
+            ) {
+                AppearanceSettingsView()
+            }
+
+            SettingsNavigationLink(
+                systemImage: "bell.badge",
+                title: "通知与提醒",
+                subtitle: notificationSettings.notificationsEnabled ? "管理通知和操作状态提示" : "通知已关闭，可单独保留操作状态提示"
+            ) {
+                NotificationSettingsView(model: notificationSettings)
+            }
+
+            SettingsNavigationLink(
+                systemImage: "hand.raised",
+                title: "隐私与数据",
+                subtitle: "本地处理、完全访问与数据控制"
+            ) {
+                PrivacyDataView()
             }
         }
     }
@@ -233,18 +271,6 @@ struct SettingsTab: View {
                 .font(.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 4)
-
-            SettingsNavigationLink(systemImage: "circle.lefthalf.filled", title: "外观", subtitle: "跟随系统、浅色或深色模式") {
-                AppearanceSettingsView()
-            }
-
-            SettingsNavigationLink(
-                systemImage: "hand.raised",
-                title: "隐私与数据",
-                subtitle: "本地处理、完全访问与数据控制"
-            ) {
-                PrivacyDataView()
-            }
 
             SettingsNavigationLink(systemImage: "character.book.closed", title: "本地词典", subtitle: "查看词典文件与搜索本地词条") {
                 DictionaryBrowserView()
