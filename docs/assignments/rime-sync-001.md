@@ -2,7 +2,7 @@
 
 **Policy version:** `1.0.0`
 
-**Decision source / date:** Human Product Owner authorization in the active cross-platform RIME sync objective, followed by explicit approval of RIME 标准同步主路径 / `2026-07-12 Asia/Shanghai`; manual RIME 用户词典安全恢复与设置入口调整、automatic-sync cooldown revalidated / `2026-07-13 Asia/Shanghai`; foreground cooldown consistency plus start/success/failure notifications, explicit user opt-in for automatic sync, independently selectable RIME standard / Universe settings scopes, and migration of RIME notifications into the shared App notification settings contract, revalidated by the human Product Owner / `2026-07-15 Asia/Shanghai`
+**Decision source / date:** Human Product Owner authorization in the active cross-platform RIME sync objective, followed by explicit approval of RIME 标准同步主路径 / `2026-07-12 Asia/Shanghai`; manual RIME 用户词典安全恢复与设置入口调整、automatic-sync cooldown revalidated / `2026-07-13 Asia/Shanghai`; foreground cooldown consistency plus start/success/failure notifications, explicit user opt-in for automatic sync, independently selectable RIME standard / Universe settings scopes, migration of RIME notifications into the shared App notification settings contract, and independent notification-only controls for both sync parts, revalidated by the human Product Owner / `2026-07-15 Asia/Shanghai`
 
 **Lifecycle status:** `Active`
 

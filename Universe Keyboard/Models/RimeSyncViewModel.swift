@@ -280,17 +280,44 @@ final class RimeSyncViewModel {
             "rimeSync manual sync started standardRimeData=\(includesStandardRimeData)",
             category: .config
         )
-        await notificationService.notify(.manualStarted)
+        var completedNotificationScopes: Set<RimeSyncNotificationScope> = []
+        var activeNotificationScope: RimeSyncNotificationScope = includesStandardRimeData
+            ? .standardRimeData
+            : .privateSettings
+        var pendingNotificationScopes: Set<RimeSyncNotificationScope> = includesStandardRimeData
+            ? [.privateSettings]
+            : []
+        await notificationService.notify(
+            .phaseStarted(
+                mode: .manual,
+                scope: activeNotificationScope,
+                completedScopes: completedNotificationScopes,
+                pendingScopes: pendingNotificationScopes
+            )
+        )
 
         do {
             if includesStandardRimeData {
                 setStatus(.syncing(.standardRimeData))
                 try await synchronizeStandardRimeData()
+                completedNotificationScopes.insert(.standardRimeData)
                 Logger.shared.info("rimeSync standard user data completed", category: .config)
+
+                activeNotificationScope = .privateSettings
+                pendingNotificationScopes = []
+                await notificationService.notify(
+                    .phaseStarted(
+                        mode: .manual,
+                        scope: activeNotificationScope,
+                        completedScopes: completedNotificationScopes,
+                        pendingScopes: pendingNotificationScopes
+                    )
+                )
             }
 
             setStatus(.syncing(.privateSettings))
             let completedAt = try await synchronizePrivateSettings()
+            completedNotificationScopes.insert(.privateSettings)
             let completion: RimeSyncCompletion = includesStandardRimeData
                 ? .standardRimeAndPrivateSettings
                 : .privateSettings
@@ -299,11 +326,20 @@ final class RimeSyncViewModel {
                 handleManualStandardSyncSuccess(isFirstStandardSync: isFirstStandardSync)
             }
             Logger.shared.info("rimeSync manual sync completed", category: .config)
-            await notificationService.notify(.manualCompleted)
+            await notificationService.notify(
+                .completed(mode: .manual, scopes: completedNotificationScopes)
+            )
         } catch is CancellationError {
             setStatus(.idle)
             Logger.shared.warning("rimeSync manual sync cancelled", category: .config)
-            await notificationService.notify(.manualFailed)
+            await notificationService.notify(
+                .failed(
+                    mode: .manual,
+                    failedScope: activeNotificationScope,
+                    completedScopes: completedNotificationScopes,
+                    pendingScopes: pendingNotificationScopes
+                )
+            )
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
             setStatus(.failed(
@@ -317,7 +353,14 @@ final class RimeSyncViewModel {
                 category: .config
             )
             Logger.shared.requestFlush()
-            await notificationService.notify(.manualFailed)
+            await notificationService.notify(
+                .failed(
+                    mode: .manual,
+                    failedScope: activeNotificationScope,
+                    completedScopes: completedNotificationScopes,
+                    pendingScopes: pendingNotificationScopes
+                )
+            )
         }
     }
 
@@ -346,20 +389,36 @@ final class RimeSyncViewModel {
         }
 
         setStatus(.syncing(.privateSettings))
-        let notificationScope = RimeAutomaticSyncScope.privateSettings
+        let notificationScope = RimeSyncNotificationScope.privateSettings
         if provider == .localFolder {
-            await notificationService.notify(.automaticStarted(notificationScope))
+            await notificationService.notify(
+                .phaseStarted(
+                    mode: .automatic,
+                    scope: notificationScope,
+                    completedScopes: [],
+                    pendingScopes: []
+                )
+            )
         }
         do {
             let completedAt = try await synchronizePrivateSettings()
             setStatus(.succeeded(completedAt, .privateSettings))
             if provider == .localFolder {
-                await notificationService.notify(.automaticCompleted(notificationScope))
+                await notificationService.notify(
+                    .completed(mode: .automatic, scopes: [notificationScope])
+                )
             }
         } catch is CancellationError {
             setStatus(.idle)
             if provider == .localFolder {
-                await notificationService.notify(.automaticFailed(notificationScope))
+                await notificationService.notify(
+                    .failed(
+                        mode: .automatic,
+                        failedScope: notificationScope,
+                        completedScopes: [],
+                        pendingScopes: []
+                    )
+                )
             }
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
@@ -375,7 +434,14 @@ final class RimeSyncViewModel {
             )
             Logger.shared.requestFlush()
             if provider == .localFolder {
-                await notificationService.notify(.automaticFailed(notificationScope))
+                await notificationService.notify(
+                    .failed(
+                        mode: .automatic,
+                        failedScope: notificationScope,
+                        completedScopes: [],
+                        pendingScopes: []
+                    )
+                )
             }
         }
     }
@@ -407,34 +473,64 @@ final class RimeSyncViewModel {
 
         let startedAt = Date()
         defaults.set(startedAt, forKey: StorageKey.lastAutomaticAttempt)
-        let notificationScope: RimeAutomaticSyncScope = automaticPrivateSettingsEnabled
-            ? .all
-            : .standardRimeData
+        var completedNotificationScopes: Set<RimeSyncNotificationScope> = []
+        var activeNotificationScope = RimeSyncNotificationScope.standardRimeData
+        var pendingNotificationScopes: Set<RimeSyncNotificationScope> = automaticPrivateSettingsEnabled
+            ? [.privateSettings]
+            : []
         setStatus(.syncing(.standardRimeData))
         Logger.shared.info("rimeSync automatic standard sync started", category: .config)
-        await notificationService.notify(.automaticStarted(notificationScope))
+        await notificationService.notify(
+            .phaseStarted(
+                mode: .automatic,
+                scope: activeNotificationScope,
+                completedScopes: completedNotificationScopes,
+                pendingScopes: pendingNotificationScopes
+            )
+        )
 
         do {
             try Task.checkCancellation()
             try await synchronizeStandardRimeData()
+            completedNotificationScopes.insert(.standardRimeData)
             try Task.checkCancellation()
 
             let completedAt: Date
             if automaticPrivateSettingsEnabled {
+                activeNotificationScope = .privateSettings
+                pendingNotificationScopes = []
+                await notificationService.notify(
+                    .phaseStarted(
+                        mode: .automatic,
+                        scope: activeNotificationScope,
+                        completedScopes: completedNotificationScopes,
+                        pendingScopes: pendingNotificationScopes
+                    )
+                )
                 setStatus(.syncing(.privateSettings))
                 completedAt = try await synchronizePrivateSettings()
+                completedNotificationScopes.insert(.privateSettings)
                 setStatus(.succeeded(completedAt, .standardRimeAndPrivateSettings))
             } else {
                 completedAt = standardRimeLastSuccessDate ?? Date()
                 setStatus(.succeeded(completedAt, .standardRimeData))
             }
             Logger.shared.info("rimeSync automatic standard sync completed", category: .config)
-            await notificationService.notify(.automaticCompleted(notificationScope))
+            await notificationService.notify(
+                .completed(mode: .automatic, scopes: completedNotificationScopes)
+            )
             return .completed(completedAt)
         } catch is CancellationError {
             setStatus(.idle)
             Logger.shared.warning("rimeSync automatic standard sync cancelled", category: .config)
-            await notificationService.notify(.automaticFailed(notificationScope))
+            await notificationService.notify(
+                .failed(
+                    mode: .automatic,
+                    failedScope: activeNotificationScope,
+                    completedScopes: completedNotificationScopes,
+                    pendingScopes: pendingNotificationScopes
+                )
+            )
             return .skipped(.cancelled)
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
@@ -450,7 +546,14 @@ final class RimeSyncViewModel {
                 category: .config
             )
             Logger.shared.requestFlush()
-            await notificationService.notify(.automaticFailed(notificationScope))
+            await notificationService.notify(
+                .failed(
+                    mode: .automatic,
+                    failedScope: activeNotificationScope,
+                    completedScopes: completedNotificationScopes,
+                    pendingScopes: pendingNotificationScopes
+                )
+            )
             return .failed
         }
     }

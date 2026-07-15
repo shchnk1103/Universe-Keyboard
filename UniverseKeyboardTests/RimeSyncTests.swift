@@ -4,21 +4,61 @@ import XCTest
 @testable import Universe_Keyboard
 
 final class RimeSyncModelTests: XCTestCase {
-    func testSyncNotificationCopyCoversManualAndAutomaticOutcomes() {
-        let standardStarted = RimeSyncNotificationEvent.automaticStarted(.standardRimeData)
-        let privateCompleted = RimeSyncNotificationEvent.automaticCompleted(.privateSettings)
-        let allFailed = RimeSyncNotificationEvent.automaticFailed(.all)
+    func testSyncNotificationCopyFiltersAndCombinesSelectedScopes() throws {
+        let standardPhaseStarted = RimeSyncNotificationEvent.phaseStarted(
+            mode: .automatic,
+            scope: .standardRimeData,
+            completedScopes: [],
+            pendingScopes: [.privateSettings]
+        )
 
-        XCTAssertEqual(RimeSyncNotificationEvent.manualStarted.title, "开始同步")
-        XCTAssertEqual(RimeSyncNotificationEvent.manualCompleted.title, "同步完成")
-        XCTAssertEqual(RimeSyncNotificationEvent.manualFailed.title, "同步失败")
-        XCTAssertEqual(standardStarted.title, "开始自动同步")
-        XCTAssertEqual(privateCompleted.title, "自动同步完成")
-        XCTAssertEqual(allFailed.title, "自动同步失败")
-        XCTAssertTrue(standardStarted.body.contains("RIME 常用词和标准资料"))
-        XCTAssertTrue(privateCompleted.body.contains("Universe App 设置"))
-        XCTAssertTrue(RimeSyncNotificationEvent.manualFailed.body.contains("打开 App"))
-        XCTAssertTrue(allFailed.body.contains("打开 App"))
+        let combinedPayload = try XCTUnwrap(
+            standardPhaseStarted.payload(enabledScopes: [.standardRimeData, .privateSettings])
+        )
+        XCTAssertEqual(combinedPayload.title, "开始自动同步")
+        XCTAssertTrue(combinedPayload.body.contains("RIME 常用词、标准资料和 Universe App 设置"))
+
+        XCTAssertNil(standardPhaseStarted.payload(enabledScopes: [.privateSettings]))
+
+        let privatePhaseStarted = RimeSyncNotificationEvent.phaseStarted(
+            mode: .automatic,
+            scope: .privateSettings,
+            completedScopes: [.standardRimeData],
+            pendingScopes: []
+        )
+        let privatePayload = try XCTUnwrap(
+            privatePhaseStarted.payload(enabledScopes: [.privateSettings])
+        )
+        XCTAssertTrue(privatePayload.body.contains("Universe App 设置"))
+        XCTAssertNil(
+            privatePhaseStarted.payload(enabledScopes: [.standardRimeData, .privateSettings])
+        )
+
+        let failedStandard = RimeSyncNotificationEvent.failed(
+            mode: .manual,
+            failedScope: .standardRimeData,
+            completedScopes: [],
+            pendingScopes: [.privateSettings]
+        )
+        let failurePayload = try XCTUnwrap(
+            failedStandard.payload(enabledScopes: [.standardRimeData, .privateSettings])
+        )
+        XCTAssertEqual(failurePayload.title, "同步失败")
+        XCTAssertTrue(failurePayload.body.contains("RIME 常用词和标准资料未完成"))
+        XCTAssertTrue(failurePayload.body.contains("Universe App 设置尚未开始"))
+        XCTAssertNil(failedStandard.payload(enabledScopes: [.privateSettings]))
+
+        let failedPrivate = RimeSyncNotificationEvent.failed(
+            mode: .manual,
+            failedScope: .privateSettings,
+            completedScopes: [.standardRimeData],
+            pendingScopes: []
+        )
+        let standardOnlyPayload = try XCTUnwrap(
+            failedPrivate.payload(enabledScopes: [.standardRimeData])
+        )
+        XCTAssertEqual(standardOnlyPayload.title, "同步完成")
+        XCTAssertTrue(standardOnlyPayload.body.contains("RIME 常用词和标准资料已更新"))
     }
 
     @MainActor

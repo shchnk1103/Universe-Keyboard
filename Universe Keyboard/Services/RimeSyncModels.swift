@@ -23,26 +23,6 @@ enum RimeSyncStorageKey {
     static let lastForegroundPrivateAttempt = "rime_private_sync_last_foreground_attempt"
 }
 
-/// 自动同步可以独立维护 RIME 标准资料和 Universe 私密设置。
-///
-/// 手动“立即同步”仍是完整操作，不受这些自动选项影响。
-nonisolated enum RimeAutomaticSyncScope: Equatable, Sendable {
-    case standardRimeData
-    case privateSettings
-    case all
-
-    var notificationSubject: String {
-        switch self {
-        case .standardRimeData:
-            return "RIME 常用词和标准资料"
-        case .privateSettings:
-            return "Universe App 设置"
-        case .all:
-            return "RIME 常用词、标准资料和 Universe App 设置"
-        }
-    }
-}
-
 nonisolated enum RimeAutomaticSyncCadence: String, CaseIterable, Identifiable, Sendable {
     case daily
     case weekly

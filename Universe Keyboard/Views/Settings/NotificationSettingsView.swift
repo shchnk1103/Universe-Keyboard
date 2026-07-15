@@ -34,7 +34,11 @@ struct NotificationSettingsView: View {
             )
 
             if model.notificationsEnabled {
-                notificationCategoryRow(.rimeSync)
+                RimeSyncNotificationControls(
+                    model: model,
+                    title: "RIME 云同步",
+                    detail: "选择手动或自动同步时需要提醒你的内容。"
+                )
             }
 
             if let notice = model.notice {
@@ -80,20 +84,51 @@ struct NotificationSettingsView: View {
         }
     }
 
-    private func notificationCategoryRow(_ category: AppNotificationCategory) -> some View {
+}
+
+/// 两个设置入口复用同一组控件，避免标题、子项和父子开关规则逐渐分叉。
+struct RimeSyncNotificationControls: View {
+    @Bindable var model: AppNotificationSettingsModel
+    let title: String
+    let detail: String
+
+    var body: some View {
         Toggle(
             isOn: Binding(
-                get: { model.isCategorySelected(category) },
+                get: { model.isCategoryEnabled(.rimeSync) },
                 set: { selected in
-                    Task { await model.setCategorySelected(selected, category: category) }
+                    Task { await model.setCategorySelected(selected, category: .rimeSync) }
                 }
             )
         ) {
             VStack(alignment: .leading, spacing: 3) {
-                Text(category.title)
-                Text(category.detail)
+                Text(title)
+                Text(detail)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+            }
+        }
+
+        if model.isCategoryEnabled(.rimeSync) {
+            ForEach(RimeSyncNotificationScope.allCases, id: \.self) { scope in
+                Toggle(
+                    isOn: Binding(
+                        get: { model.isRimeSyncScopeSelected(scope) },
+                        set: { selected in
+                            Task {
+                                await model.setRimeSyncScopeSelected(selected, scope: scope)
+                            }
+                        }
+                    )
+                ) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(scope.title)
+                        Text(scope.notificationDetail)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.leading, 16)
+                }
             }
         }
     }

@@ -6,6 +6,14 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ---
 
+## 2026-07-15 — 统一 App 通知与 RIME 分项提醒
+
+- 设置页新增统一的“通知与提醒”入口：App 通知总开关、RIME 云同步类别和 App 内操作状态提示均由主 App 的同一状态源管理；RIME 页面复用相同控件，两个入口不会出现状态分叉。
+- RIME 通知类别新增“RIME 标准同步”和“Universe 设置同步”两个通知子项。它们只筛选提醒，不改变自动同步总开关或实际同步范围；关闭最后一个通知子项会同时关闭 RIME 类别和 App 通知总开关。
+- 两个通知子项同时开启时，一次完整同步合并为一组开始和结果通知；只开启一项时，仅按该部分真实的开始、完成、失败或尚未执行状态提醒，避免把另一阶段的失败错误归因给已选择的部分。
+- 旧 RIME 通知偏好会迁移为两个子项的默认选择，不自动请求权限，也不改动自动同步设置。操作 Toast 仍可独立关闭；前台有 Toast 时，系统通知只保留在通知中心，避免重复横幅和声音。
+- Swift 6 严格并发构建、通知/同步聚焦测试和 `UniverseKeyboardTests` 全量模拟器测试通过；系统权限、通知中心呈现和真实后台机会仍需物理 iPhone 验收。
+
 ## 2026-07-15 — 修复 RIME 自动同步冷却与状态通知
 
 - 主 App 启动和回到前台时的 Universe 私密设置维护现在服从用户选择的每天或每 7 天冷却时间，并按尝试时间节流；同步失败或取消后也不会在每次打开 App 时立即重试并反复弹出成功状态。
@@ -13,6 +21,20 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - “同步提醒”明确为“同步通知”；用户授予权限后，手动与自动同步的开始、完成、失败或取消都会发送不含目录、词库、恢复码和输入内容的本地通知。
 - 自动通知会明确说明本次处理的是 RIME 标准资料、Universe 设置或两者，避免局部成功被误解为全部同步完成。
 - 增加通知结果文案测试并通过严格 Debug Simulator 构建及同步相关针对性测试；后台任务实际触发和通知中心呈现仍需物理 iPhone 验收。
+
+## 2026-07-15 — 有界渐进式多错误召回预检
+
+- 按 KOS 2.0 发布并完成 `TYPO-CORRECTION-003`：在不改变 V2.0 生产默认值的前提下，新增纯内存、默认关闭的 60/64/8 渐进式召回计划。
+- 规范长句双错误输入 `wimenjintianquhongyuan` 可在无生产特例表的情况下召回 `womenjintianqugongyuan`；召回计划按最多八项分批，但没有连接 RIME、候选 UI 或持久化路径。
+- 聚焦测试及 KeyboardCore 全量回归通过；语义评分、真实 RIME、配对性能和生产启用仍属于 `TYPO-CORRECTION-002` 的后续 Gate。
+- 根据 Product Owner 澄清，将指定验收环境纠正为 Device Hub iOS 27 iPhone 17 Pro Max 模拟器；已有通用 UI baseline 不等于上下文纠错场景验收。
+
+## 2026-07-14 — 有界多错误拼音纠错 V2 实现
+
+- 新增与可见 RIME composition 隔离的 sidecar session，纠错假设查询不会改写用户正在输入的拼音、marked text 或候选分页状态。
+- KeyboardCore 增加本地有界双误触假设搜索和独立 corrected-input 查询接口；多错误候选仅显式点击提交，且不会因搜索结果自动提升到首位。
+- 多错误搜索移出按键同步路径，改为 180ms 可取消输入停顿后刷新；普通 RIME 候选仍保持逐键同步更新。
+- 发布 `TYPO-CORRECTION-002` 的产品合同、Assignment、ADR 0015、实现计划和 V2 增量 Registry。KeyboardCore 全量测试、iOS Debug/Release Simulator build、RimeBridge contract tests 及 iOS UI baseline（9 通过、1 按设计跳过）通过；真实 rime_ice fixture、上下文候选停顿 UI trace、Device Hub iOS 27 iPhone 17 Pro Max 验收及性能结论仍待完成。
 
 ## 2026-07-14 — 修复键盘预创建与挂起阶段的 RIME 文件锁终止
 

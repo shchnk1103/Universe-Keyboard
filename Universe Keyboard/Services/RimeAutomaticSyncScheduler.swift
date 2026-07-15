@@ -2,40 +2,125 @@ import BackgroundTasks
 import Foundation
 import KeyboardCore
 
-/// 同步通知只表达操作状态，不携带目录、词典、恢复码或输入内容。
-nonisolated enum RimeSyncNotificationEvent: Equatable, Sendable {
-    case manualStarted
-    case manualCompleted
-    case manualFailed
-    case automaticStarted(RimeAutomaticSyncScope)
-    case automaticCompleted(RimeAutomaticSyncScope)
-    case automaticFailed(RimeAutomaticSyncScope)
+/// 用户可以分别订阅 RIME 标准资料和 Universe 设置的同步通知。
+nonisolated enum RimeSyncNotificationScope: String, CaseIterable, Hashable, Sendable {
+    case standardRimeData
+    case privateSettings
 
     var title: String {
         switch self {
-        case .manualStarted: return "开始同步"
-        case .manualCompleted: return "同步完成"
-        case .manualFailed: return "同步失败"
-        case .automaticStarted: return "开始自动同步"
-        case .automaticCompleted: return "自动同步完成"
-        case .automaticFailed: return "自动同步失败"
+        case .standardRimeData: return "RIME 标准同步"
+        case .privateSettings: return "Universe 设置同步"
         }
     }
 
-    var body: String {
+    var notificationSubject: String {
         switch self {
-        case .manualStarted:
-            return "正在同步 RIME 常用词、标准资料和 Universe App 设置。"
-        case .manualCompleted:
-            return "RIME 常用词、标准资料和 Universe App 设置已更新。"
-        case .manualFailed:
-            return "本次同步未完成，请打开 App 查看原因。"
-        case .automaticStarted(let scope):
-            return "正在同步\(scope.notificationSubject)。"
-        case .automaticCompleted(let scope):
-            return "\(scope.notificationSubject)已更新。"
-        case .automaticFailed(let scope):
-            return "\(scope.notificationSubject)未完成同步，请打开 App 查看原因。"
+        case .standardRimeData: return "RIME 常用词和标准资料"
+        case .privateSettings: return "Universe App 设置"
+        }
+    }
+
+    var notificationDetail: String {
+        switch self {
+        case .standardRimeData:
+            return "常用词、候选学习和 RIME 标准资料的同步状态。"
+        case .privateSettings:
+            return "方案、候选数量等 Universe App 设置的同步状态。"
+        }
+    }
+}
+
+nonisolated enum RimeSyncNotificationMode: Equatable, Sendable {
+    case manual
+    case automatic
+
+    var startedTitle: String { self == .manual ? "开始同步" : "开始自动同步" }
+    var completedTitle: String { self == .manual ? "同步完成" : "自动同步完成" }
+    var failedTitle: String { self == .manual ? "同步失败" : "自动同步失败" }
+}
+
+nonisolated struct RimeSyncNotificationPayload: Equatable, Sendable {
+    let title: String
+    let body: String
+}
+
+/// 同步通知只表达阶段状态，不携带目录、词典、恢复码或输入内容。
+nonisolated enum RimeSyncNotificationEvent: Equatable, Sendable {
+    case phaseStarted(
+        mode: RimeSyncNotificationMode,
+        scope: RimeSyncNotificationScope,
+        completedScopes: Set<RimeSyncNotificationScope>,
+        pendingScopes: Set<RimeSyncNotificationScope>
+    )
+    case completed(
+        mode: RimeSyncNotificationMode,
+        scopes: Set<RimeSyncNotificationScope>
+    )
+    case failed(
+        mode: RimeSyncNotificationMode,
+        failedScope: RimeSyncNotificationScope,
+        completedScopes: Set<RimeSyncNotificationScope>,
+        pendingScopes: Set<RimeSyncNotificationScope>
+    )
+
+    /// 根据用户订阅的子项生成最终文案。返回 nil 表示本事件与订阅范围无关。
+    func payload(enabledScopes: Set<RimeSyncNotificationScope>) -> RimeSyncNotificationPayload? {
+        switch self {
+        case .phaseStarted(let mode, let scope, let completedScopes, let pendingScopes):
+            guard enabledScopes.contains(scope) else { return nil }
+            // 前一阶段已被订阅时，开始通知已把后续订阅阶段合并进去，避免重复提醒。
+            guard completedScopes.isDisjoint(with: enabledScopes) else { return nil }
+            let announcedScopes = enabledScopes.intersection(pendingScopes.union([scope]))
+            return RimeSyncNotificationPayload(
+                title: mode.startedTitle,
+                body: "正在同步\(Self.subject(for: announcedScopes))。"
+            )
+
+        case .completed(let mode, let scopes):
+            let completedScopes = enabledScopes.intersection(scopes)
+            guard !completedScopes.isEmpty else { return nil }
+            return RimeSyncNotificationPayload(
+                title: mode.completedTitle,
+                body: "\(Self.subject(for: completedScopes))已更新。"
+            )
+
+        case .failed(let mode, let failedScope, let completedScopes, let pendingScopes):
+            let selectedCompleted = enabledScopes.intersection(completedScopes)
+            let selectedPending = enabledScopes.intersection(pendingScopes)
+
+            if enabledScopes.contains(failedScope) {
+                var messages: [String] = []
+                if !selectedCompleted.isEmpty {
+                    messages.append("\(Self.subject(for: selectedCompleted))已更新")
+                }
+                messages.append("\(failedScope.notificationSubject)未完成")
+                if !selectedPending.isEmpty {
+                    messages.append("\(Self.subject(for: selectedPending))尚未开始")
+                }
+                return RimeSyncNotificationPayload(
+                    title: mode.failedTitle,
+                    body: messages.joined(separator: "；") + "。请打开 App 查看原因。"
+                )
+            }
+
+            // 用户没有订阅失败阶段，但其订阅的前置阶段已经成功，仍应给出准确完成反馈。
+            guard !selectedCompleted.isEmpty else { return nil }
+            return RimeSyncNotificationPayload(
+                title: mode.completedTitle,
+                body: "\(Self.subject(for: selectedCompleted))已更新。"
+            )
+        }
+    }
+
+    private static func subject(for scopes: Set<RimeSyncNotificationScope>) -> String {
+        let hasStandard = scopes.contains(.standardRimeData)
+        let hasPrivate = scopes.contains(.privateSettings)
+        switch (hasStandard, hasPrivate) {
+        case (true, true): return "RIME 常用词、标准资料和 Universe App 设置"
+        case (true, false): return RimeSyncNotificationScope.standardRimeData.notificationSubject
+        case (false, true): return RimeSyncNotificationScope.privateSettings.notificationSubject
+        case (false, false): return "同步资料"
         }
     }
 }

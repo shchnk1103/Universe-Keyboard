@@ -13,6 +13,8 @@ final class AppNotificationSettingsTests: XCTestCase {
 
             XCTAssertFalse(model.notificationsEnabled)
             XCTAssertFalse(model.isCategorySelected(.rimeSync))
+            XCTAssertFalse(model.isRimeSyncScopeSelected(.standardRimeData))
+            XCTAssertFalse(model.isRimeSyncScopeSelected(.privateSettings))
             XCTAssertTrue(model.operationToastsEnabled)
         }
     }
@@ -29,6 +31,8 @@ final class AppNotificationSettingsTests: XCTestCase {
 
             XCTAssertTrue(model.notificationsEnabled)
             XCTAssertTrue(model.isCategoryEnabled(.rimeSync))
+            XCTAssertTrue(model.isRimeSyncScopeSelected(.standardRimeData))
+            XCTAssertTrue(model.isRimeSyncScopeSelected(.privateSettings))
         }
 
         await withDefaults { defaults in
@@ -59,6 +63,8 @@ final class AppNotificationSettingsTests: XCTestCase {
             XCTAssertEqual(client.requestCount, 1)
             XCTAssertTrue(model.notificationsEnabled)
             XCTAssertTrue(model.isCategorySelected(.rimeSync))
+            XCTAssertTrue(model.isRimeSyncScopeSelected(.standardRimeData))
+            XCTAssertTrue(model.isRimeSyncScopeSelected(.privateSettings))
         }
     }
 
@@ -103,7 +109,6 @@ final class AppNotificationSettingsTests: XCTestCase {
         await withDefaults { defaults in
             let client = NotificationClientStub(status: .authorized)
             let model = AppNotificationSettingsModel(defaults: defaults, client: client)
-
             await model.setNotificationsEnabled(true)
             await model.setNotificationsEnabled(false)
 
@@ -137,24 +142,100 @@ final class AppNotificationSettingsTests: XCTestCase {
         }
     }
 
+    func testRimeNotificationScopesAreIndependentAndLastScopeClosesParent() async {
+        await withDefaults { defaults in
+            let client = NotificationClientStub(status: .authorized)
+            let model = AppNotificationSettingsModel(defaults: defaults, client: client)
+            defaults.set(true, forKey: RimeSyncStorageKey.automaticSyncEnabled)
+            defaults.set(false, forKey: RimeSyncStorageKey.automaticStandardRimeDataEnabled)
+            defaults.set(true, forKey: RimeSyncStorageKey.automaticPrivateSettingsEnabled)
+
+            await model.setCategorySelected(true, category: .rimeSync)
+            await model.setRimeSyncScopeSelected(false, scope: .standardRimeData)
+
+            XCTAssertTrue(model.notificationsEnabled)
+            XCTAssertTrue(model.isCategoryEnabled(.rimeSync))
+            XCTAssertFalse(model.isRimeSyncScopeSelected(.standardRimeData))
+            XCTAssertTrue(model.isRimeSyncScopeSelected(.privateSettings))
+
+            await model.setRimeSyncScopeSelected(false, scope: .privateSettings)
+
+            XCTAssertFalse(model.notificationsEnabled)
+            XCTAssertFalse(model.isCategorySelected(.rimeSync))
+            XCTAssertFalse(model.isRimeSyncScopeSelected(.standardRimeData))
+            XCTAssertFalse(model.isRimeSyncScopeSelected(.privateSettings))
+            XCTAssertTrue(defaults.bool(forKey: RimeSyncStorageKey.automaticSyncEnabled))
+            XCTAssertFalse(defaults.bool(forKey: RimeSyncStorageKey.automaticStandardRimeDataEnabled))
+            XCTAssertTrue(defaults.bool(forKey: RimeSyncStorageKey.automaticPrivateSettingsEnabled))
+
+            await model.setCategorySelected(true, category: .rimeSync)
+            XCTAssertTrue(model.isRimeSyncScopeSelected(.standardRimeData))
+            XCTAssertTrue(model.isRimeSyncScopeSelected(.privateSettings))
+        }
+    }
+
     func testNotificationServiceGatesDeliveryAndUsesToastPreferenceAsMetadata() async {
         await withDefaults { defaults in
             let client = NotificationClientStub(status: .authorized)
             let service = AppNotificationService(defaults: defaults, client: client)
 
-            await service.notify(.manualStarted)
+            let startedEvent = RimeSyncNotificationEvent.phaseStarted(
+                mode: .manual,
+                scope: .standardRimeData,
+                completedScopes: [],
+                pendingScopes: [.privateSettings]
+            )
+            await service.notify(startedEvent)
             XCTAssertTrue(client.requests.isEmpty)
 
             defaults.set(true, forKey: AppNotificationSettingsStore.StorageKey.notificationsEnabled)
             defaults.set(true, forKey: AppNotificationSettingsStore.StorageKey.rimeSyncEnabled)
-            await service.notify(.manualStarted)
+            await service.notify(startedEvent)
             XCTAssertEqual(client.requests.count, 1)
             XCTAssertTrue(client.requests[0].prefersToastWhenForeground)
+            XCTAssertTrue(client.requests[0].body.contains("RIME 常用词、标准资料和 Universe App 设置"))
 
             defaults.set(false, forKey: AppNotificationSettingsStore.StorageKey.operationToastsEnabled)
-            await service.notify(.manualCompleted)
+            await service.notify(
+                .completed(
+                    mode: .manual,
+                    scopes: [.standardRimeData, .privateSettings]
+                )
+            )
             XCTAssertEqual(client.requests.count, 2)
             XCTAssertFalse(client.requests[1].prefersToastWhenForeground)
+        }
+    }
+
+    func testNotificationServiceSkipsUnselectedRimeScope() async {
+        await withDefaults { defaults in
+            let client = NotificationClientStub(status: .authorized)
+            let service = AppNotificationService(defaults: defaults, client: client)
+            defaults.set(true, forKey: AppNotificationSettingsStore.StorageKey.notificationsEnabled)
+            defaults.set(true, forKey: AppNotificationSettingsStore.StorageKey.rimeSyncEnabled)
+            defaults.set(false, forKey: AppNotificationSettingsStore.StorageKey.rimeStandardSyncEnabled)
+            defaults.set(true, forKey: AppNotificationSettingsStore.StorageKey.rimePrivateSettingsEnabled)
+
+            await service.notify(
+                .phaseStarted(
+                    mode: .automatic,
+                    scope: .standardRimeData,
+                    completedScopes: [],
+                    pendingScopes: [.privateSettings]
+                )
+            )
+            XCTAssertTrue(client.requests.isEmpty)
+
+            await service.notify(
+                .phaseStarted(
+                    mode: .automatic,
+                    scope: .privateSettings,
+                    completedScopes: [.standardRimeData],
+                    pendingScopes: []
+                )
+            )
+            XCTAssertEqual(client.requests.count, 1)
+            XCTAssertTrue(client.requests[0].body.contains("Universe App 设置"))
         }
     }
 

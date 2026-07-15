@@ -183,26 +183,11 @@ struct RimeSyncSettingsView: View {
 
     private var notificationSection: some View {
         Section {
-            Toggle(
-                isOn: Binding(
-                    get: { notificationSettings.isCategoryEnabled(.rimeSync) },
-                    set: { selected in
-                        Task {
-                            await notificationSettings.setCategorySelected(
-                                selected,
-                                category: .rimeSync
-                            )
-                        }
-                    }
-                )
-            ) {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("同步通知")
-                    Text("手动或自动同步开始、完成和失败时通知你。")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
+            RimeSyncNotificationControls(
+                model: notificationSettings,
+                title: "同步通知",
+                detail: "选择手动或自动同步时需要提醒你的内容。"
+            )
 
             NavigationLink("管理所有通知与 App 内提示") {
                 NotificationSettingsView(model: notificationSettings)

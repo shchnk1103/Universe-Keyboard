@@ -80,6 +80,8 @@ final class AppNotificationSettingsStore {
         static let operationToastsEnabled = "app_operation_toasts_enabled"
         // 保留旧键，使已开启 RIME 同步通知的用户可无损迁移。
         static let rimeSyncEnabled = "rime_standard_sync_notifications_enabled"
+        static let rimeStandardSyncEnabled = "rime_standard_data_notifications_enabled"
+        static let rimePrivateSettingsEnabled = "rime_private_settings_notifications_enabled"
     }
 
     private let defaults: UserDefaults
@@ -118,8 +120,36 @@ final class AppNotificationSettingsStore {
         }
     }
 
+    func isRimeSyncScopeSelected(_ scope: RimeSyncNotificationScope) -> Bool {
+        let key = rimeSyncScopeKey(scope)
+        // 旧版本只有 RIME 通知总开关；缺少子项时沿用总开关值完成兼容迁移。
+        return (defaults.object(forKey: key) as? Bool) ?? isCategorySelected(.rimeSync)
+    }
+
+    func setRimeSyncScopeSelected(_ selected: Bool, scope: RimeSyncNotificationScope) {
+        defaults.set(selected, forKey: rimeSyncScopeKey(scope))
+    }
+
+    var selectedRimeSyncScopes: Set<RimeSyncNotificationScope> {
+        Set(RimeSyncNotificationScope.allCases.filter(isRimeSyncScopeSelected))
+    }
+
+    func selectDefaultRimeSyncScopesIfNeeded() {
+        guard selectedRimeSyncScopes.isEmpty else { return }
+        for scope in RimeSyncNotificationScope.allCases {
+            setRimeSyncScopeSelected(true, scope: scope)
+        }
+    }
+
     var hasSelectedCategory: Bool {
         AppNotificationCategory.allCases.contains(where: isCategorySelected)
+    }
+
+    private func rimeSyncScopeKey(_ scope: RimeSyncNotificationScope) -> String {
+        switch scope {
+        case .standardRimeData: return StorageKey.rimeStandardSyncEnabled
+        case .privateSettings: return StorageKey.rimePrivateSettingsEnabled
+        }
     }
 }
 
@@ -168,6 +198,10 @@ final class AppNotificationSettingsModel {
         notificationsEnabled && authorizationStatus.canDeliver && isCategorySelected(category)
     }
 
+    func isRimeSyncScopeSelected(_ scope: RimeSyncNotificationScope) -> Bool {
+        store.isRimeSyncScopeSelected(scope)
+    }
+
     /// 首次刷新完成兼容迁移；以后系统权限被外部关闭时，只关闭总开关并保留类别选择。
     func refreshAuthorizationStatus() async {
         // 正常 UI 会共享根模型；这里仍从持久层刷新，使后台任务或未来新入口的改动可收敛。
@@ -207,6 +241,7 @@ final class AppNotificationSettingsModel {
 
         if !store.hasSelectedCategory {
             store.setCategorySelected(true, category: .rimeSync)
+            store.selectDefaultRimeSyncScopesIfNeeded()
         }
 
         let status = await resolvedAuthorizationStatusForEnabling()
@@ -229,6 +264,9 @@ final class AppNotificationSettingsModel {
 
     /// 从任意入口开启类别时会同步开启总开关；关闭最后一个类别时总开关自动关闭。
     func setCategorySelected(_ selected: Bool, category: AppNotificationCategory) async {
+        if selected, category == .rimeSync {
+            store.selectDefaultRimeSyncScopesIfNeeded()
+        }
         store.setCategorySelected(selected, category: category)
         Logger.shared.info(
             "app notification category changed category=\(category.rawValue) selected=\(selected)",
@@ -239,6 +277,25 @@ final class AppNotificationSettingsModel {
             await setNotificationsEnabled(true)
         } else if !store.hasSelectedCategory {
             setMasterState(false)
+        }
+    }
+
+    /// 通知子项只决定提醒范围，不会改动实际的自动同步总开关或同步内容开关。
+    func setRimeSyncScopeSelected(_ selected: Bool, scope: RimeSyncNotificationScope) async {
+        store.setRimeSyncScopeSelected(selected, scope: scope)
+        Logger.shared.info(
+            "app notification RIME scope changed scope=\(scope.rawValue) selected=\(selected)",
+            category: .config
+        )
+
+        if selected {
+            store.setCategorySelected(true, category: .rimeSync)
+            await setNotificationsEnabled(true)
+        } else if store.selectedRimeSyncScopes.isEmpty {
+            store.setCategorySelected(false, category: .rimeSync)
+            if !store.hasSelectedCategory {
+                setMasterState(false)
+            }
         }
     }
 
@@ -380,10 +437,18 @@ final class AppNotificationService: AppNotificationNotifying {
             return
         }
 
+        guard let payload = event.payload(enabledScopes: store.selectedRimeSyncScopes) else {
+            Logger.shared.info(
+                "rimeSync notification skipped event outside selected scopes",
+                category: .config
+            )
+            return
+        }
+
         let request = AppLocalNotificationRequest(
             identifier: "rime-standard-sync-\(UUID().uuidString)",
-            title: event.title,
-            body: event.body,
+            title: payload.title,
+            body: payload.body,
             category: .rimeSync,
             prefersToastWhenForeground: store.operationToastsEnabled
         )

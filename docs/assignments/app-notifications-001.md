@@ -2,7 +2,7 @@
 
 **Policy version:** `1.0.0`
 
-**Decision source / date:** Human Product Owner approved the notification settings plan and explicitly authorized implementation / `2026-07-15 Asia/Shanghai`
+**Decision source / date:** Human Product Owner approved the notification settings plan and explicitly authorized implementation, then revalidated independent RIME standard / Universe settings notification controls shared by both settings pages / `2026-07-15 Asia/Shanghai`
 
 **Lifecycle status:** `Active`
 
@@ -17,7 +17,7 @@
 
 ## Boundary
 
-- **Scope:** Add one main-App notification settings source of truth; expose the same RIME notification category in the global settings page and RIME sync page; centralize local-notification authorization and delivery gating; add an independent global operation-Toast switch; document and test migration, parent/child invariants, denied permission and foreground presentation.
+- **Scope:** Add one main-App notification settings source of truth; expose the same RIME notification category and its RIME standard / Universe settings notification children in the global settings page and RIME sync page; centralize local-notification authorization, scope filtering, combined delivery and failure semantics; add an independent global operation-Toast switch; document and test migration, parent/child invariants, denied permission and foreground presentation.
 - **Non-goals:** No remote push, badges, notification actions, critical/time-sensitive notifications, Keyboard Extension notification work, RIME hot-path changes or unrelated UI refactor.
 - **Required Inputs:** `docs/UI_STYLE_GUIDE.md`, `docs/RIME_SYNC.md`, ADR 0014, current RIME sync notification implementation, global operation Toast implementation and Apple local-notification authorization behavior.
 
@@ -33,7 +33,7 @@
 ## Gates
 
 - **Entry Criteria:** Product behavior is explicitly approved; notification categories, defaults, migration, denied-permission behavior and foreground Toast priority are unambiguous; worktree changes remain isolated from unrelated active work.
-- **Exit Criteria:** One durable state source drives both settings surfaces; parent/child invariants and migration pass tests; RIME delivery is centrally gated; Toast disablement immediately suppresses all global operation Toasts; Swift 6 build and focused tests pass; physical-device checks are reported truthfully.
+- **Exit Criteria:** One durable state source drives both settings surfaces; parent/category/scope invariants and migration pass tests; RIME delivery is centrally gated and accurately filtered or combined without changing actual sync settings; Toast disablement immediately suppresses all global operation Toasts; Swift 6 build and focused tests pass; physical-device checks are reported truthfully.
 - **Stop Conditions:** Implementation requires notification work in Keyboard Extension, typed content in notifications, silent permission prompting, duplicated persisted switches or overlap with unrelated dirty-worktree files.
 
 ## Handoff
