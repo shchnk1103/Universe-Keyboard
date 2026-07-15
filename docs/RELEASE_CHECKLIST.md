@@ -158,11 +158,14 @@ OpenCC current integration ownership is defined in
 - [ ] Typing Intelligence persistence is coalesced, bounded and absent from synchronous key handling.
 - [ ] Reset epoch prevents delayed writes from restoring cleared statistics.
 - [ ] Sync hashing, encryption, file access, WebDAV and merge work remain main-App-only and absent from key handling.
-- [ ] Foreground automatic sync is rate-limited and does not claim guaranteed real-time/background delivery.
+- [ ] Foreground private-settings maintenance follows the selected daily or seven-day attempt cooldown, does not repeat its success Toast on every launch and does not claim guaranteed real-time/background delivery.
 - [ ] Interrupted or conflicting sync keeps the last local settings usable and converges after a fresh conditional retry.
 - [ ] First standard RIME sync is manual, main-App-only and performed only after the user confirms the keyboard is not in use. Automatic follow-up verifies valid folder access, elapsed cooldown and inactive keyboard heartbeat; it never enters key handling or the Extension.
-- [ ] Automatic sync offers daily and seven-day cooldowns, never claims fixed timing, skips safely while the keyboard is visible, and retries only in a later system opportunity.
-- [ ] Notification permission is requested only from the in-app “同步提醒” control. Allowed notifications reveal only automatic sync start/completion; denied permission does not disable syncing.
+- [ ] The first successful manual standard sync unlocks automatic-sync eligibility and resets cooldown clocks but leaves the master switch off. Automatic work starts only after the user explicitly enables the master switch; both child scopes default on at that moment.
+- [ ] Existing users with missing child values migrate the child defaults to on without changing the master switch. An explicit retained scope survives relaunch and later manual sync.
+- [ ] Each automatic child switch gates only its documented path: standard sync uses a safe background opportunity; Universe settings may use a cadence-gated foreground opportunity or follow a standard background sync. Turning off the last child also turns off the master switch and cancels background scheduling.
+- [ ] Automatic sync offers daily and seven-day shared cooldowns, never claims fixed timing, skips standard sync safely while the keyboard is visible, and retries only in a later system opportunity. A successful manual sync resets both cooldown clocks but remains a complete two-part action regardless of child-switch choices.
+- [ ] Notification permission is requested only from the in-app “同步通知” control. Allowed notifications cover manual and automatic start/completion/failure or cancellation, accurately identify RIME standard data, Universe settings or both, and reveal no user data; denied permission does not disable syncing.
 
 The project does not yet have numeric Extension latency or memory budgets. Follow `docs/PERFORMANCE_BASELINE.md`, record real measurements and regressions, and do not mark this section passed solely because no crash was observed.
 

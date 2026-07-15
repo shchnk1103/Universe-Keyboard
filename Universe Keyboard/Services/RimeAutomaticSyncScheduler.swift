@@ -3,6 +3,44 @@ import Foundation
 import KeyboardCore
 import UserNotifications
 
+/// 同步通知只表达操作状态，不携带目录、词典、恢复码或输入内容。
+nonisolated enum RimeSyncNotificationEvent: Equatable, Sendable {
+    case manualStarted
+    case manualCompleted
+    case manualFailed
+    case automaticStarted(RimeAutomaticSyncScope)
+    case automaticCompleted(RimeAutomaticSyncScope)
+    case automaticFailed(RimeAutomaticSyncScope)
+
+    var title: String {
+        switch self {
+        case .manualStarted: return "开始同步"
+        case .manualCompleted: return "同步完成"
+        case .manualFailed: return "同步失败"
+        case .automaticStarted: return "开始自动同步"
+        case .automaticCompleted: return "自动同步完成"
+        case .automaticFailed: return "自动同步失败"
+        }
+    }
+
+    var body: String {
+        switch self {
+        case .manualStarted:
+            return "正在同步 RIME 常用词、标准资料和 Universe App 设置。"
+        case .manualCompleted:
+            return "RIME 常用词、标准资料和 Universe App 设置已更新。"
+        case .manualFailed:
+            return "本次同步未完成，请打开 App 查看原因。"
+        case .automaticStarted(let scope):
+            return "正在同步\(scope.notificationSubject)。"
+        case .automaticCompleted(let scope):
+            return "\(scope.notificationSubject)已更新。"
+        case .automaticFailed(let scope):
+            return "\(scope.notificationSubject)未完成同步，请打开 App 查看原因。"
+        }
+    }
+}
+
 /// 后台自动同步的系统接入点。
 ///
 /// `BGProcessingTask` 的执行时刻由 iOS 决定；这里仅提交最早可执行时间，并在每次
@@ -83,6 +121,8 @@ final class RimeAutomaticSyncScheduler {
 
     private func nextEligibleDate(defaults: UserDefaults) -> Date? {
         guard defaults.bool(forKey: RimeSyncStorageKey.automaticSyncEnabled),
+              (defaults.object(forKey: RimeSyncStorageKey.automaticStandardRimeDataEnabled) as? Bool)
+                ?? true,
               defaults.string(forKey: RimeSyncStorageKey.provider) == RimeSyncProvider.localFolder.rawValue,
               defaults.data(forKey: RimeSyncStorageKey.folderBookmark) != nil,
               !defaults.bool(forKey: RimeSyncStorageKey.folderSelectionNeedsRepair),
@@ -123,7 +163,12 @@ final class RimeSyncNotificationService: NSObject, UNUserNotificationCenterDeleg
 
     func requestPermission() async -> Bool {
         do {
-            return try await notificationCenter.requestAuthorization(options: [.alert, .sound])
+            let granted = try await notificationCenter.requestAuthorization(options: [.alert, .sound])
+            Logger.shared.info(
+                "rimeSync notification authorization completed granted=\(granted)",
+                category: .config
+            )
+            return granted
         } catch {
             Logger.shared.warning(
                 "rimeSync notification authorization failed "
@@ -134,18 +179,8 @@ final class RimeSyncNotificationService: NSObject, UNUserNotificationCenterDeleg
         }
     }
 
-    func notifyAutomaticSyncStarted() async {
-        await schedule(
-            title: "开始自动同步",
-            body: "正在同步常用词和键盘设置。"
-        )
-    }
-
-    func notifyAutomaticSyncCompleted() async {
-        await schedule(
-            title: "自动同步完成",
-            body: "常用词和键盘设置已更新。"
-        )
+    func notify(_ event: RimeSyncNotificationEvent) async {
+        await schedule(event)
     }
 
     nonisolated func userNotificationCenter(
@@ -156,13 +191,29 @@ final class RimeSyncNotificationService: NSObject, UNUserNotificationCenterDeleg
         completionHandler([.banner, .sound])
     }
 
-    private func schedule(title: String, body: String) async {
+    private func schedule(_ event: RimeSyncNotificationEvent) async {
         let settings = await notificationCenter.notificationSettings()
-        guard settings.authorizationStatus == .authorized else { return }
+        switch settings.authorizationStatus {
+        case .authorized, .provisional, .ephemeral:
+            break
+        case .denied, .notDetermined:
+            Logger.shared.info(
+                "rimeSync notification skipped authorizationStatus="
+                    + "\(settings.authorizationStatus.rawValue)",
+                category: .config
+            )
+            return
+        @unknown default:
+            Logger.shared.warning(
+                "rimeSync notification skipped authorizationStatus=unknown",
+                category: .config
+            )
+            return
+        }
 
         let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = body
+        content.title = event.title
+        content.body = event.body
         content.sound = .default
 
         let request = UNNotificationRequest(
@@ -173,6 +224,10 @@ final class RimeSyncNotificationService: NSObject, UNUserNotificationCenterDeleg
 
         do {
             try await notificationCenter.add(request)
+            Logger.shared.info(
+                "rimeSync notification scheduled event=\(String(describing: event))",
+                category: .config
+            )
         } catch {
             Logger.shared.warning(
                 "rimeSync notification scheduling failed "

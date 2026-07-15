@@ -2,7 +2,7 @@
 
 **Policy version:** `1.0.0`
 
-**Decision source / date:** Human Product Owner authorization in the active cross-platform RIME sync objective, followed by explicit approval of RIME 标准同步主路径 / `2026-07-12 Asia/Shanghai`; manual RIME 用户词典安全恢复与设置入口调整、默认自动标准同步、冷却时间和本地通知 revalidated by the human Product Owner / `2026-07-13 Asia/Shanghai`
+**Decision source / date:** Human Product Owner authorization in the active cross-platform RIME sync objective, followed by explicit approval of RIME 标准同步主路径 / `2026-07-12 Asia/Shanghai`; manual RIME 用户词典安全恢复与设置入口调整、automatic-sync cooldown revalidated / `2026-07-13 Asia/Shanghai`; foreground cooldown consistency plus start/success/failure notifications, followed by explicit user opt-in for the automatic-sync master switch and independently selectable RIME standard / Universe settings scopes, revalidated by the human Product Owner / `2026-07-15 Asia/Shanghai`
 
 **Lifecycle status:** `Active`
 

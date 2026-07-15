@@ -119,29 +119,58 @@ struct RimeSyncSettingsView: View {
             )
             .disabled(!model.canEnableAutomaticStandardSync)
 
-            Picker(
-                "同步间隔",
-                selection: Binding(
-                    get: { model.automaticSyncCadence },
-                    set: { model.setAutomaticSyncCadence($0) }
-                )
-            ) {
-                ForEach(RimeAutomaticSyncCadence.allCases) { cadence in
-                    Text(cadence.title).tag(cadence)
-                }
-            }
-            .disabled(!model.automaticSyncEnabled)
-
-            Toggle(
-                "同步提醒",
-                isOn: Binding(
-                    get: { model.automaticSyncNotificationsEnabled },
-                    set: { enabled in
-                        Task { await model.setAutomaticSyncNotificationsEnabled(enabled) }
+            if model.automaticSyncEnabled {
+                Toggle(
+                    isOn: Binding(
+                        get: { model.automaticStandardRimeDataEnabled },
+                        set: { model.setAutomaticStandardRimeDataEnabled($0) }
+                    )
+                ) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("RIME 标准同步")
+                        Text("合并常用词和候选学习，并按 RIME 官方规则备份每台设备的配置。")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
+                }
+
+                Toggle(
+                    isOn: Binding(
+                        get: { model.automaticPrivateSettingsEnabled },
+                        set: { model.setAutomaticPrivateSettingsEnabled($0) }
+                    )
+                ) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Universe 设置同步")
+                        Text("同步方案、候选数量、简繁、模糊音等 App 设置，并使用端到端加密。")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                Picker(
+                    "同步间隔",
+                    selection: Binding(
+                        get: { model.automaticSyncCadence },
+                        set: { model.setAutomaticSyncCadence($0) }
+                    )
+                ) {
+                    ForEach(RimeAutomaticSyncCadence.allCases) { cadence in
+                        Text(cadence.title).tag(cadence)
+                    }
+                }
+
+                Toggle(
+                    "同步通知",
+                    isOn: Binding(
+                        get: { model.automaticSyncNotificationsEnabled },
+                        set: { enabled in
+                            Task { await model.setAutomaticSyncNotificationsEnabled(enabled) }
+                        }
+                    )
                 )
-            )
-            .disabled(!model.automaticSyncEnabled)
+                .disabled(!model.hasEnabledAutomaticSyncScope)
+            }
 
             if let notice = model.automaticSyncNotice {
                 Text(notice)
@@ -151,7 +180,7 @@ struct RimeSyncSettingsView: View {
         } header: {
             Text("自动同步")
         } footer: {
-            Text("\(model.automaticSyncScheduleText) iPhone 会在合适的空闲时间运行，不能保证固定时刻；键盘正在使用时会跳过本轮。开启提醒后，开始和完成都会通知你。")
+            Text("\(model.automaticSyncScheduleText) 总开关关闭后，两项都不会自动运行；“立即同步”仍会完整同步两部分。同步间隔表示两次尝试之间至少等待多久，不保证固定时刻。RIME 标准同步会在键盘正在使用时跳过；开启通知并允许系统权限后，会明确告诉你本次同步的是哪一部分。")
         }
     }
 

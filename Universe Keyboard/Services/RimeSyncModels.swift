@@ -16,9 +16,32 @@ enum RimeSyncStorageKey {
     static let lastSuccess = "rime_sync_last_success"
     static let standardRimeLastSuccess = "rime_standard_sync_last_success"
     static let automaticSyncEnabled = "rime_standard_sync_automatic_enabled"
+    static let automaticStandardRimeDataEnabled = "rime_automatic_standard_data_enabled"
+    static let automaticPrivateSettingsEnabled = "rime_automatic_private_settings_enabled"
     static let automaticSyncCadence = "rime_standard_sync_automatic_cadence"
     static let automaticSyncNotificationsEnabled = "rime_standard_sync_notifications_enabled"
     static let lastAutomaticAttempt = "rime_standard_sync_last_automatic_attempt"
+    static let lastForegroundPrivateAttempt = "rime_private_sync_last_foreground_attempt"
+}
+
+/// 自动同步可以独立维护 RIME 标准资料和 Universe 私密设置。
+///
+/// 手动“立即同步”仍是完整操作，不受这些自动选项影响。
+nonisolated enum RimeAutomaticSyncScope: Equatable, Sendable {
+    case standardRimeData
+    case privateSettings
+    case all
+
+    var notificationSubject: String {
+        switch self {
+        case .standardRimeData:
+            return "RIME 常用词和标准资料"
+        case .privateSettings:
+            return "Universe App 设置"
+        case .all:
+            return "RIME 常用词、标准资料和 Universe App 设置"
+        }
+    }
 }
 
 nonisolated enum RimeAutomaticSyncCadence: String, CaseIterable, Identifiable, Sendable {
@@ -44,6 +67,7 @@ nonisolated enum RimeAutomaticSyncCadence: String, CaseIterable, Identifiable, S
 
 nonisolated enum RimeAutomaticSyncSkipReason: Equatable, Sendable {
     case disabled
+    case standardRimeDataDisabled
     case notConfigured
     case waitingForFirstManualSync
     case coolingDown
@@ -59,7 +83,8 @@ nonisolated enum RimeAutomaticSyncResult: Equatable, Sendable {
 
     var completedSuccessfully: Bool {
         switch self {
-        case .completed, .skipped(.disabled), .skipped(.notConfigured),
+        case .completed, .skipped(.disabled), .skipped(.standardRimeDataDisabled),
+             .skipped(.notConfigured),
              .skipped(.waitingForFirstManualSync), .skipped(.coolingDown),
              .skipped(.keyboardActive), .skipped(.alreadyRunning):
             return true
@@ -277,11 +302,14 @@ nonisolated enum RimeSyncPhase: Equatable, Sendable {
 }
 
 nonisolated enum RimeSyncCompletion: Equatable, Sendable {
+    case standardRimeData
     case privateSettings
     case standardRimeAndPrivateSettings
 
     var message: String {
         switch self {
+        case .standardRimeData:
+            return "RIME 标准资料已同步"
         case .privateSettings:
             return "Universe 私密设置已同步"
         case .standardRimeAndPrivateSettings:
