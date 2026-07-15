@@ -78,6 +78,8 @@ Measure RIME output availability to candidate snapshot application for:
 
 For post-commit continuation, compare the same final-commit sequence with the setting disabled and enabled. Record one-time provider/resource initialization separately from the in-memory longest-suffix lookup and candidate snapshot application. The shipped V1 bounds are 32 retained `Character` values and eight exposed suggestions; resource decoding must never occur per key or per candidate cell.
 
+The initial V1.1 content snapshot contains 100 contexts in an 8,721-byte JSON file. Runtime loading additionally enforces a 512-KiB file ceiling and 4,096-entry ceiling. These are safety bounds, not evidence that a resource near either ceiling is performant; any material expansion still requires same-device before/after measurements.
+
 ### Memory Usage
 
 Record Extension memory after cold start, after sustained typing, after candidate paging, after repeated expand/collapse, and after repeated host switching. Inspect candidate caches, audio players, RIME sessions and retained controllers. Report resident memory and growth trend; do not infer a leak from one snapshot.

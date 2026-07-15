@@ -3,6 +3,70 @@ import XCTest
 @testable import KeyboardCore
 
 final class ContinuationSuggestionProviderTests: XCTestCase {
+    func testStrictValidationAcceptsBoundedLexicon() throws {
+        let provider = try BundledContinuationSuggestionProvider(validating: [
+            ContinuationEntry(context: "你好", suggestions: ["呀", "！"]),
+        ])
+
+        XCTAssertEqual(provider.suggestions(for: "你好", limit: 8), ["呀", "！"])
+    }
+
+    func testStrictValidationRejectsDuplicateContextAndSuggestion() {
+        XCTAssertThrowsError(try BundledContinuationSuggestionProvider(validating: [
+            ContinuationEntry(context: "你好", suggestions: ["呀"]),
+            ContinuationEntry(context: "你好", suggestions: ["！"]),
+        ])) { error in
+            XCTAssertEqual(error as? ContinuationLexiconValidationError, .duplicateContext("你好"))
+        }
+
+        XCTAssertThrowsError(try BundledContinuationSuggestionProvider(validating: [
+            ContinuationEntry(context: "你好", suggestions: ["呀", "呀"]),
+        ])) { error in
+            XCTAssertEqual(
+                error as? ContinuationLexiconValidationError,
+                .duplicateSuggestion(context: "你好", suggestion: "呀")
+            )
+        }
+    }
+
+    func testStrictValidationRejectsUnboundedOrInvalidContent() {
+        let tooManyEntries = (0...ContinuationLexiconValidator.maximumEntryCount).map {
+            ContinuationEntry(context: "上下文\($0)", suggestions: ["好"])
+        }
+        XCTAssertThrowsError(try BundledContinuationSuggestionProvider(validating: tooManyEntries))
+
+        XCTAssertThrowsError(try BundledContinuationSuggestionProvider(validating: [
+            ContinuationEntry(context: "你好", suggestions: Array(repeating: "好", count: 9)),
+        ]))
+
+        XCTAssertThrowsError(try BundledContinuationSuggestionProvider(validating: [
+            ContinuationEntry(context: "包含\n换行", suggestions: ["好"]),
+        ]))
+    }
+
+    func testResourceLoaderRejectsWrongVersionOversizeAndInvalidEntries() {
+        let wrongVersion = Data(
+            #"{"version":2,"contentVersion":"1.1.0","entries":[]}"#.utf8
+        )
+        XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: wrongVersion))
+
+        let wrongContentVersion = Data(
+            #"{"version":1,"contentVersion":"2.0.0","entries":[]}"#.utf8
+        )
+        XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: wrongContentVersion))
+
+        let oversized = Data(
+            repeating: 0,
+            count: BundledContinuationSuggestionProvider.maximumBundledResourceBytes + 1
+        )
+        XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: oversized))
+
+        let duplicateContext = Data(
+            #"{"version":1,"contentVersion":"1.1.0","entries":[{"context":"好","suggestions":["的"]},{"context":"好","suggestions":["呀"]}]}"#.utf8
+        )
+        XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: duplicateContext))
+    }
+
     func testUsesLongestMatchingSuffix() {
         let provider = BundledContinuationSuggestionProvider(entries: [
             ContinuationEntry(context: "吃", suggestions: ["饭"]),
@@ -31,6 +95,7 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
     }
 
     func testBundledResourceContainsRepresentativeChain() {
+        XCTAssertEqual(BundledContinuationSuggestionProvider.shared.indexedEntryCount, 100)
         XCTAssertEqual(
             BundledContinuationSuggestionProvider.shared.suggestions(for: "吃了", limit: 8).first,
             "吗"

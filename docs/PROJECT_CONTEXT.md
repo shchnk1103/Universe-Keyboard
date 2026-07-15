@@ -174,7 +174,7 @@ A local Swift Package at `Packages/KeyboardCore/`. Contains:
 - **`KeyboardAction`** — enum of all possible user actions (insertKey, toggleShift, togglePage, etc.). `insertCandidate` uses `CandidateKind` enum for type-safe dispatch.
 - **`KeyboardEffect`** — OptionSet returned by `handle(_:)` to tell the UI what to refresh.
 - **`CandidateItem`** — `CandidateKind` distinguishes normal RIME, composition, placeholder, typo-correction and post-commit continuation items. `CandidateKind` uses `Int` rawValue so it maps directly to `UIButton.tag`, avoiding the misuse of `accessibilityIdentifier` for business data.
-- **`BundledContinuationSuggestionProvider`** — decodes a small versioned bundled resource once, then performs bounded longest-suffix lookup in memory. It never reads host context or persists committed text.
+- **`BundledContinuationSuggestionProvider`** — validates and decodes a small versioned bundled resource once, then performs bounded longest-suffix lookup in memory. V1.1 fails closed on invalid size/structure and protects reviewed synthetic Top-3 cases through [`POST_COMMIT_CONTINUATION_QUALITY.md`](POST_COMMIT_CONTINUATION_QUALITY.md). It never reads host context or persists committed text.
 - **`CandidateProvider`** — protocol for candidate lookup (currently `FakeCandidateProvider`; will be replaced by RIME).
 - **`TextInputClient`** — protocol abstracting `UITextDocumentProxy` insertion, deletion, cursor movement, text-presence checks, and marked text APIs (enables unit testing with `FakeTextInputClient`).
 - **`Logger`** — lightweight `Sendable` facade backed by a FIFO serial writer. Log filtering, bounded buffering and persistence run away from the keyboard input path; `requestFlush()` never synchronously blocks a key event.

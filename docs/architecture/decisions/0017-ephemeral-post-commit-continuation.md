@@ -18,6 +18,12 @@ V1 retains at most 32 Swift `Character` values in process memory. It does not re
 
 The bundled resource is decoded once when the provider is created. Decode failure degrades to an empty provider. Ranking uses longest exact suffix, resource order, deduplication and a maximum of eight results.
 
+### V1.1 Bounded Content Evolution
+
+V1.1 keeps the resource format at version 1 and introduces an explicit content version. Loading fails closed when the JSON exceeds 512 KiB, contains more than 4,096 entries, exceeds the existing 32-`Character` context bound, exposes more than eight suggestions per context, or contains empty, duplicate or line-breaking content. Increasing these ceilings requires new Extension startup and memory evidence.
+
+The V1.1 quality benchmark is test-only and synthetic. It may prove that registered, reviewed scenarios preserve their expected top-three result, but it cannot be cited as real-user coverage, acceptance rate or production telemetry. No benchmark fixture ships into the runtime resource unless it separately passes content review.
+
 ## Alternatives Considered
 
 - Keep a RIME composition alive after commit: rejected because it contaminates marked-text and session semantics.
@@ -41,6 +47,7 @@ The bundled resource is decoded once when the provider is created. Decode failur
 ## Follow-up Work
 
 - Establish curated quality fixtures and physical-device behavior evidence.
+- Obtain licensed or otherwise approved aggregate language evidence before making population-coverage claims or materially scaling beyond the curated pack.
 - Review any proposal for host context, personal learning or models as a separate product/data change.
 
 ## Related Documents

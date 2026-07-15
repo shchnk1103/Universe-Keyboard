@@ -1,8 +1,8 @@
 # Post-Commit Continuation Product Contract
 
-> **Version:** `1.0.0`
+> **Version:** `1.1.0`
 >
-> **Status:** Accepted; automated implementation complete, physical-device acceptance pending
+> **Status:** V1.0 accepted; V1.1 quality-foundation implementation active, physical-device acceptance pending
 >
 > **Product authority:** Human Product Owner authorization in the active Codex task, `2026-07-15 Asia/Shanghai`
 >
@@ -14,7 +14,7 @@
 
 Post-Commit Continuation keeps the candidate bar useful after Chinese text is committed. It offers a small ranked list of common continuations, punctuation and selected emoji without treating those items as active RIME composition candidates.
 
-## V1 Product Behavior
+## Product Behavior
 
 - The feature is enabled by default and can be disabled in the main App.
 - It operates only in Chinese mode and uses text committed by the current Keyboard Extension process.
@@ -31,10 +31,21 @@ Post-Commit Continuation keeps the candidate bar useful after Chinese text is co
 - The only persisted value is the user-facing enabled preference.
 - Resource failure disables suggestions safely and must never affect typing.
 
+## V1.1 Quality Foundation
+
+- The bundled content pack expands from 30 to 100 manually curated, synthetic common contexts without using real user input.
+- The resource format remains version 1 and declares content version `1.1.0`.
+- A strict loader rejects duplicate contexts or suggestions, empty/control-line text, more than eight suggestions per context, more than 4,096 entries, text longer than 32 `Character` values or a resource larger than 512 KiB.
+- A test-only representative benchmark covers ten conversation categories and checks that reviewed expected continuations remain within the top three.
+- Unknown synthetic suffixes must remain empty; V1.1 does not add a generic single-character or remote fallback.
+- Fixture results are regression evidence for registered scenarios only. They are not real-user coverage, acceptance-rate or population-quality evidence.
+
+Quality definitions, provenance and expansion rules are owned by [`POST_COMMIT_CONTINUATION_QUALITY.md`](POST_COMMIT_CONTINUATION_QUALITY.md).
+
 ## Ranking Contract
 
 - Matching uses the longest exact suffix present in the bundled resource.
-- The resource order is authoritative for V1 ranking.
+- The resource order is authoritative for V1/V1.1 ranking.
 - Results are deduplicated, empty values are discarded and at most eight suggestions are exposed.
 - No match produces an empty result; V1 does not fabricate or query a remote fallback.
 
