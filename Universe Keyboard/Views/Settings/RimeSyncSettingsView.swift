@@ -3,6 +3,7 @@ import UniformTypeIdentifiers
 
 struct RimeSyncSettingsView: View {
     @Bindable var model: RimeSyncViewModel
+    @Bindable var notificationSettings: AppNotificationSettingsModel
     @State private var showFolderPicker = false
     @State private var showRecoveryCodeImport = false
     @State private var showStandardRimeSyncConfirmation = false
@@ -16,6 +17,9 @@ struct RimeSyncSettingsView: View {
             if model.provider == .localFolder {
                 automaticSyncSection
             }
+            if model.provider != .none {
+                notificationSection
+            }
             contentSection
             securitySection
             if model.provider != .none {
@@ -24,7 +28,10 @@ struct RimeSyncSettingsView: View {
         }
         .navigationTitle("RIME 云同步")
         .tint(.primary)
-        .task { await model.loadSecrets() }
+        .task {
+            await notificationSettings.refreshAuthorizationStatus()
+            await model.loadSecrets()
+        }
         .fileImporter(
             isPresented: $showFolderPicker,
             allowedContentTypes: [.folder],
@@ -37,7 +44,7 @@ struct RimeSyncSettingsView: View {
                 Task { await model.synchronizeAllNow() }
             }
         } message: {
-            Text("这会先按 RIME 官方规则合并常用词快照、备份可移植 YAML/TXT，再同步 Universe 加密设置。请确认此时没有在使用键盘；标准 RIME 数据不由 Universe 端到端加密。完成后会默认开启安全的自动同步。")
+            Text("这会先按 RIME 官方规则合并常用词快照、备份可移植 YAML/TXT，再同步 Universe 加密设置。请确认此时没有在使用键盘；标准 RIME 数据不由 Universe 端到端加密。完成后不会替你开启自动同步。")
         }
         .alert("断开同步？", isPresented: $showDisconnectConfirmation) {
             Button("取消", role: .cancel) {}
@@ -160,16 +167,6 @@ struct RimeSyncSettingsView: View {
                     }
                 }
 
-                Toggle(
-                    "同步通知",
-                    isOn: Binding(
-                        get: { model.automaticSyncNotificationsEnabled },
-                        set: { enabled in
-                            Task { await model.setAutomaticSyncNotificationsEnabled(enabled) }
-                        }
-                    )
-                )
-                .disabled(!model.hasEnabledAutomaticSyncScope)
             }
 
             if let notice = model.automaticSyncNotice {
@@ -180,7 +177,42 @@ struct RimeSyncSettingsView: View {
         } header: {
             Text("自动同步")
         } footer: {
-            Text("\(model.automaticSyncScheduleText) 总开关关闭后，两项都不会自动运行；“立即同步”仍会完整同步两部分。同步间隔表示两次尝试之间至少等待多久，不保证固定时刻。RIME 标准同步会在键盘正在使用时跳过；开启通知并允许系统权限后，会明确告诉你本次同步的是哪一部分。")
+            Text("\(model.automaticSyncScheduleText) 总开关关闭后，两项都不会自动运行；“立即同步”仍会完整同步两部分。同步间隔表示两次尝试之间至少等待多久，不保证固定时刻。RIME 标准同步会在键盘正在使用时跳过。")
+        }
+    }
+
+    private var notificationSection: some View {
+        Section {
+            Toggle(
+                isOn: Binding(
+                    get: { notificationSettings.isCategoryEnabled(.rimeSync) },
+                    set: { selected in
+                        Task {
+                            await notificationSettings.setCategorySelected(
+                                selected,
+                                category: .rimeSync
+                            )
+                        }
+                    }
+                )
+            ) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("同步通知")
+                    Text("手动或自动同步开始、完成和失败时通知你。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            NavigationLink("管理所有通知与 App 内提示") {
+                NotificationSettingsView(model: notificationSettings)
+            }
+        } header: {
+            Text("通知与提醒")
+        } footer: {
+            Text(notificationSettings.notificationsEnabled
+                ? "这里与“设置 > 通知与提醒”使用同一个开关。App 在前台且操作状态提示已开启时，系统通知只进入通知中心，避免重复弹出。"
+                : "开启同步通知时会同时开启 App 通知总开关，并在需要时请求系统权限。自动同步开关与通知开关互不替代。")
         }
     }
 
@@ -457,9 +489,27 @@ private func previewSyncModel(
     return model
 }
 
+@MainActor
+private func previewNotificationSettings() -> AppNotificationSettingsModel {
+    AppNotificationSettingsModel(
+        defaults: UserDefaults(suiteName: "notification-preview-\(UUID().uuidString)") ?? .standard,
+        client: PreviewNotificationClient()
+    )
+}
+
+@MainActor
+private final class PreviewNotificationClient: AppNotificationClient {
+    func authorizationStatus() async -> AppNotificationAuthorizationStatus { .authorized }
+    func requestAuthorization() async throws -> Bool { true }
+    func schedule(_ request: AppLocalNotificationRequest) async throws {}
+}
+
 #Preview("未配置") {
     NavigationStack {
-        RimeSyncSettingsView(model: previewSyncModel())
+        RimeSyncSettingsView(
+            model: previewSyncModel(),
+            notificationSettings: previewNotificationSettings()
+        )
     }
 }
 
@@ -469,7 +519,8 @@ private func previewSyncModel(
             model: previewSyncModel(
                 provider: .webDAV,
                 status: .failed("WebDAV 认证失败，请检查账号和权限。")
-            )
+            ),
+            notificationSettings: previewNotificationSettings()
         )
     }
 }
@@ -477,7 +528,8 @@ private func previewSyncModel(
 #Preview("RIME 标准同步") {
     NavigationStack {
         RimeSyncSettingsView(
-            model: previewSyncModel(provider: .localFolder, status: .idle)
+            model: previewSyncModel(provider: .localFolder, status: .idle),
+            notificationSettings: previewNotificationSettings()
         )
     }
 }

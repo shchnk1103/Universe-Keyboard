@@ -138,8 +138,8 @@ Required review: reader/writer ownership, active-session coordination, backup-be
 
 Ownership: Primary [`Main App UI`](playbooks/main-app-ui.md) for sync orchestration, provider credentials and settings UX; secondary [`RimeBridge`](playbooks/rime-bridge.md) only when librime user-data APIs are involved and [`Test / Release`](playbooks/test-release.md) for security, interruption and compatibility evidence.
 
-1. `RIME_SYNC.md` and the current `RIME-SYNC-001` Assignment.
-2. ADR 0012, then ADR 0003, 0005 and 0007.
+1. `RIME_SYNC.md` and the current `RIME-SYNC-001` Assignment. Add `APP_NOTIFICATIONS.md` and `APP-NOTIFICATIONS-001` when notification or Toast behavior changes.
+2. ADR 0012, then ADR 0003, 0005 and 0007. Add ADR 0017 for notification ownership, permission or foreground-presentation changes.
 3. `architecture/shared-container-and-rime-lifecycle.md`.
 4. `PRIVACY_POLICY.md`, `DEBUGGING.md`, `RELEASE_CHECKLIST.md` and `TECH_DEBT.md`.
 5. `UI_STYLE_GUIDE.md` for the main-App surface.

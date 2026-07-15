@@ -18,6 +18,7 @@ final class RimeSyncViewModel {
     private let secretStore: RimeSyncSecretStore
     private let coordinator: RimeSyncCoordinator
     private let standardRimeSyncService: any RimeStandardSyncing
+    private let notificationService: any AppNotificationNotifying
 
     var provider: RimeSyncProvider = .none
     var status: RimeSyncStatus = .idle
@@ -34,7 +35,6 @@ final class RimeSyncViewModel {
     var automaticStandardRimeDataEnabled = true
     var automaticPrivateSettingsEnabled = true
     var automaticSyncCadence: RimeAutomaticSyncCadence = .daily
-    var automaticSyncNotificationsEnabled = false
     var automaticSyncNotice: String?
     var statusVersion = 0
 
@@ -43,13 +43,15 @@ final class RimeSyncViewModel {
         defaults: UserDefaults = .standard,
         secretStore: RimeSyncSecretStore = RimeSyncSecretStore(),
         coordinator: RimeSyncCoordinator = RimeSyncCoordinator(),
-        standardRimeSyncService: any RimeStandardSyncing = RimeStandardSyncService()
+        standardRimeSyncService: any RimeStandardSyncing = RimeStandardSyncService(),
+        notificationService: any AppNotificationNotifying = AppNotificationService.shared
     ) {
         self.rimeStore = rimeStore
         self.defaults = defaults
         self.secretStore = secretStore
         self.coordinator = coordinator
         self.standardRimeSyncService = standardRimeSyncService
+        self.notificationService = notificationService
         provider = RimeSyncProvider(rawValue: defaults.string(forKey: StorageKey.provider) ?? "") ?? .none
         webDAVURL = defaults.string(forKey: StorageKey.webDAVURL) ?? ""
         webDAVUsername = defaults.string(forKey: StorageKey.webDAVUsername) ?? ""
@@ -73,9 +75,6 @@ final class RimeSyncViewModel {
         automaticSyncCadence = RimeAutomaticSyncCadence(
             rawValue: defaults.string(forKey: StorageKey.automaticSyncCadence) ?? ""
         ) ?? .daily
-        automaticSyncNotificationsEnabled = defaults.bool(
-            forKey: StorageKey.automaticSyncNotificationsEnabled
-        )
         status = isConfigured ? .idle : .notConfigured
     }
 
@@ -281,9 +280,7 @@ final class RimeSyncViewModel {
             "rimeSync manual sync started standardRimeData=\(includesStandardRimeData)",
             category: .config
         )
-        if automaticSyncNotificationsEnabled {
-            await RimeSyncNotificationService.shared.notify(.manualStarted)
-        }
+        await notificationService.notify(.manualStarted)
 
         do {
             if includesStandardRimeData {
@@ -302,15 +299,11 @@ final class RimeSyncViewModel {
                 handleManualStandardSyncSuccess(isFirstStandardSync: isFirstStandardSync)
             }
             Logger.shared.info("rimeSync manual sync completed", category: .config)
-            if automaticSyncNotificationsEnabled {
-                await RimeSyncNotificationService.shared.notify(.manualCompleted)
-            }
+            await notificationService.notify(.manualCompleted)
         } catch is CancellationError {
             setStatus(.idle)
             Logger.shared.warning("rimeSync manual sync cancelled", category: .config)
-            if automaticSyncNotificationsEnabled {
-                await RimeSyncNotificationService.shared.notify(.manualFailed)
-            }
+            await notificationService.notify(.manualFailed)
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
             setStatus(.failed(
@@ -324,9 +317,7 @@ final class RimeSyncViewModel {
                 category: .config
             )
             Logger.shared.requestFlush()
-            if automaticSyncNotificationsEnabled {
-                await RimeSyncNotificationService.shared.notify(.manualFailed)
-            }
+            await notificationService.notify(.manualFailed)
         }
     }
 
@@ -356,19 +347,19 @@ final class RimeSyncViewModel {
 
         setStatus(.syncing(.privateSettings))
         let notificationScope = RimeAutomaticSyncScope.privateSettings
-        if provider == .localFolder, automaticSyncNotificationsEnabled {
-            await RimeSyncNotificationService.shared.notify(.automaticStarted(notificationScope))
+        if provider == .localFolder {
+            await notificationService.notify(.automaticStarted(notificationScope))
         }
         do {
             let completedAt = try await synchronizePrivateSettings()
             setStatus(.succeeded(completedAt, .privateSettings))
-            if provider == .localFolder, automaticSyncNotificationsEnabled {
-                await RimeSyncNotificationService.shared.notify(.automaticCompleted(notificationScope))
+            if provider == .localFolder {
+                await notificationService.notify(.automaticCompleted(notificationScope))
             }
         } catch is CancellationError {
             setStatus(.idle)
-            if provider == .localFolder, automaticSyncNotificationsEnabled {
-                await RimeSyncNotificationService.shared.notify(.automaticFailed(notificationScope))
+            if provider == .localFolder {
+                await notificationService.notify(.automaticFailed(notificationScope))
             }
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
@@ -383,8 +374,8 @@ final class RimeSyncViewModel {
                 category: .config
             )
             Logger.shared.requestFlush()
-            if provider == .localFolder, automaticSyncNotificationsEnabled {
-                await RimeSyncNotificationService.shared.notify(.automaticFailed(notificationScope))
+            if provider == .localFolder {
+                await notificationService.notify(.automaticFailed(notificationScope))
             }
         }
     }
@@ -421,9 +412,7 @@ final class RimeSyncViewModel {
             : .standardRimeData
         setStatus(.syncing(.standardRimeData))
         Logger.shared.info("rimeSync automatic standard sync started", category: .config)
-        if automaticSyncNotificationsEnabled {
-            await RimeSyncNotificationService.shared.notify(.automaticStarted(notificationScope))
-        }
+        await notificationService.notify(.automaticStarted(notificationScope))
 
         do {
             try Task.checkCancellation()
@@ -440,16 +429,12 @@ final class RimeSyncViewModel {
                 setStatus(.succeeded(completedAt, .standardRimeData))
             }
             Logger.shared.info("rimeSync automatic standard sync completed", category: .config)
-            if automaticSyncNotificationsEnabled {
-                await RimeSyncNotificationService.shared.notify(.automaticCompleted(notificationScope))
-            }
+            await notificationService.notify(.automaticCompleted(notificationScope))
             return .completed(completedAt)
         } catch is CancellationError {
             setStatus(.idle)
             Logger.shared.warning("rimeSync automatic standard sync cancelled", category: .config)
-            if automaticSyncNotificationsEnabled {
-                await RimeSyncNotificationService.shared.notify(.automaticFailed(notificationScope))
-            }
+            await notificationService.notify(.automaticFailed(notificationScope))
             return .skipped(.cancelled)
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
@@ -465,9 +450,7 @@ final class RimeSyncViewModel {
                 category: .config
             )
             Logger.shared.requestFlush()
-            if automaticSyncNotificationsEnabled {
-                await RimeSyncNotificationService.shared.notify(.automaticFailed(notificationScope))
-            }
+            await notificationService.notify(.automaticFailed(notificationScope))
             return .failed
         }
     }
@@ -512,20 +495,6 @@ final class RimeSyncViewModel {
         RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
     }
 
-    func setAutomaticSyncNotificationsEnabled(_ enabled: Bool) async {
-        guard enabled else {
-            automaticSyncNotificationsEnabled = false
-            defaults.set(false, forKey: StorageKey.automaticSyncNotificationsEnabled)
-            automaticSyncNotice = nil
-            return
-        }
-
-        let granted = await RimeSyncNotificationService.shared.requestPermission()
-        automaticSyncNotificationsEnabled = granted
-        defaults.set(granted, forKey: StorageKey.automaticSyncNotificationsEnabled)
-        automaticSyncNotice = granted ? nil : "没有通知权限；自动同步仍会继续。"
-    }
-
     func disconnect(deleteRemoteData: Bool) async {
         guard !isSynchronizing else { return }
         do {
@@ -550,7 +519,6 @@ final class RimeSyncViewModel {
             defaults.removeObject(forKey: StorageKey.automaticStandardRimeDataEnabled)
             defaults.removeObject(forKey: StorageKey.automaticPrivateSettingsEnabled)
             defaults.removeObject(forKey: StorageKey.automaticSyncCadence)
-            defaults.removeObject(forKey: StorageKey.automaticSyncNotificationsEnabled)
             defaults.removeObject(forKey: StorageKey.lastAutomaticAttempt)
             defaults.removeObject(forKey: StorageKey.lastForegroundPrivateAttempt)
             provider = .none
@@ -562,7 +530,6 @@ final class RimeSyncViewModel {
             automaticSyncEnabled = false
             automaticStandardRimeDataEnabled = true
             automaticPrivateSettingsEnabled = true
-            automaticSyncNotificationsEnabled = false
             automaticSyncNotice = nil
             setStatus(.notConfigured)
             RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
@@ -646,11 +613,9 @@ final class RimeSyncViewModel {
     /// 新文件夹意味着新的 RIME `sync_dir`；不能把旧目录的一次确认当作新目录的授权。
     private func resetAutomaticStandardSyncEligibility() {
         automaticSyncEnabled = false
-        automaticSyncNotificationsEnabled = false
         automaticSyncNotice = nil
         standardRimeLastSuccessDate = nil
         defaults.set(false, forKey: StorageKey.automaticSyncEnabled)
-        defaults.set(false, forKey: StorageKey.automaticSyncNotificationsEnabled)
         defaults.removeObject(forKey: StorageKey.automaticStandardRimeDataEnabled)
         defaults.removeObject(forKey: StorageKey.automaticPrivateSettingsEnabled)
         defaults.removeObject(forKey: StorageKey.lastAutomaticAttempt)

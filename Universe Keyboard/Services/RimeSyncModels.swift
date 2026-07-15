@@ -19,7 +19,6 @@ enum RimeSyncStorageKey {
     static let automaticStandardRimeDataEnabled = "rime_automatic_standard_data_enabled"
     static let automaticPrivateSettingsEnabled = "rime_automatic_private_settings_enabled"
     static let automaticSyncCadence = "rime_standard_sync_automatic_cadence"
-    static let automaticSyncNotificationsEnabled = "rime_standard_sync_notifications_enabled"
     static let lastAutomaticAttempt = "rime_standard_sync_last_automatic_attempt"
     static let lastForegroundPrivateAttempt = "rime_private_sync_last_foreground_attempt"
 }

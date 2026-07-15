@@ -1,7 +1,6 @@
 import BackgroundTasks
 import Foundation
 import KeyboardCore
-import UserNotifications
 
 /// 同步通知只表达操作状态，不携带目录、词典、恢复码或输入内容。
 nonisolated enum RimeSyncNotificationEvent: Equatable, Sendable {
@@ -143,97 +142,5 @@ final class RimeAutomaticSyncScheduler {
         RimeAutomaticSyncCadence(
             rawValue: defaults.string(forKey: RimeSyncStorageKey.automaticSyncCadence) ?? ""
         ) ?? .daily
-    }
-}
-
-/// 本地通知只描述同步状态，不包含目录、词典、恢复码或任何输入内容。
-@MainActor
-final class RimeSyncNotificationService: NSObject, UNUserNotificationCenterDelegate {
-    static let shared = RimeSyncNotificationService()
-
-    private let notificationCenter = UNUserNotificationCenter.current()
-
-    private override init() {
-        super.init()
-    }
-
-    func configure() {
-        notificationCenter.delegate = self
-    }
-
-    func requestPermission() async -> Bool {
-        do {
-            let granted = try await notificationCenter.requestAuthorization(options: [.alert, .sound])
-            Logger.shared.info(
-                "rimeSync notification authorization completed granted=\(granted)",
-                category: .config
-            )
-            return granted
-        } catch {
-            Logger.shared.warning(
-                "rimeSync notification authorization failed "
-                    + "code=\(RimeSyncFolderAccess.diagnosticErrorCode(for: error))",
-                category: .config
-            )
-            return false
-        }
-    }
-
-    func notify(_ event: RimeSyncNotificationEvent) async {
-        await schedule(event)
-    }
-
-    nonisolated func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
-        willPresent notification: UNNotification,
-        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
-    ) {
-        completionHandler([.banner, .sound])
-    }
-
-    private func schedule(_ event: RimeSyncNotificationEvent) async {
-        let settings = await notificationCenter.notificationSettings()
-        switch settings.authorizationStatus {
-        case .authorized, .provisional, .ephemeral:
-            break
-        case .denied, .notDetermined:
-            Logger.shared.info(
-                "rimeSync notification skipped authorizationStatus="
-                    + "\(settings.authorizationStatus.rawValue)",
-                category: .config
-            )
-            return
-        @unknown default:
-            Logger.shared.warning(
-                "rimeSync notification skipped authorizationStatus=unknown",
-                category: .config
-            )
-            return
-        }
-
-        let content = UNMutableNotificationContent()
-        content.title = event.title
-        content.body = event.body
-        content.sound = .default
-
-        let request = UNNotificationRequest(
-            identifier: "rime-standard-sync-\(UUID().uuidString)",
-            content: content,
-            trigger: nil
-        )
-
-        do {
-            try await notificationCenter.add(request)
-            Logger.shared.info(
-                "rimeSync notification scheduled event=\(String(describing: event))",
-                category: .config
-            )
-        } catch {
-            Logger.shared.warning(
-                "rimeSync notification scheduling failed "
-                    + "code=\(RimeSyncFolderAccess.diagnosticErrorCode(for: error))",
-                category: .config
-            )
-        }
     }
 }

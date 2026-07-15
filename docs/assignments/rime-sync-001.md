@@ -2,7 +2,7 @@
 
 **Policy version:** `1.0.0`
 
-**Decision source / date:** Human Product Owner authorization in the active cross-platform RIME sync objective, followed by explicit approval of RIME 标准同步主路径 / `2026-07-12 Asia/Shanghai`; manual RIME 用户词典安全恢复与设置入口调整、automatic-sync cooldown revalidated / `2026-07-13 Asia/Shanghai`; foreground cooldown consistency plus start/success/failure notifications, followed by explicit user opt-in for the automatic-sync master switch and independently selectable RIME standard / Universe settings scopes, revalidated by the human Product Owner / `2026-07-15 Asia/Shanghai`
+**Decision source / date:** Human Product Owner authorization in the active cross-platform RIME sync objective, followed by explicit approval of RIME 标准同步主路径 / `2026-07-12 Asia/Shanghai`; manual RIME 用户词典安全恢复与设置入口调整、automatic-sync cooldown revalidated / `2026-07-13 Asia/Shanghai`; foreground cooldown consistency plus start/success/failure notifications, explicit user opt-in for automatic sync, independently selectable RIME standard / Universe settings scopes, and migration of RIME notifications into the shared App notification settings contract, revalidated by the human Product Owner / `2026-07-15 Asia/Shanghai`
 
 **Lifecycle status:** `Active`
 
@@ -14,7 +14,7 @@
 - **Product Approver:** Product Lead acting under the human owner's explicit role delegation
 - **Assignment Revalidation Authority:** Product Lead
 - **Product Contract:** [`docs/RIME_SYNC.md`](../RIME_SYNC.md)
-- **Architecture Decision:** ADR 0012 and [ADR 0013](../architecture/decisions/0013-rime-standard-sync-interoperability.md)
+- **Architecture Decision:** ADR 0012, [ADR 0013](../architecture/decisions/0013-rime-standard-sync-interoperability.md), ADR 0014 and [ADR 0017](../architecture/decisions/0017-app-notification-and-toast-settings.md)
 
 ## Acknowledgement And Activation
 

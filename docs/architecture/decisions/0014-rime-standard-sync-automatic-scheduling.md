@@ -17,7 +17,7 @@ Accepted; implementation in progress
 - 开始前必须确认共享目录配置有效、首次同步已成功、冷却时间已到且 App Group 中键盘活动心跳已失效；任一条件不满足即跳过本轮；
 - 自动同步继续调用 librime 的 `sync_user_data`，禁止复制、替换或删除运行中的 `*.userdb*`，也不自动导入其他设备的 YAML；
 - 主 App 启动和回到前台时只允许自动更新 Universe 私密设置，并服从同一个每天或每 7 天冷却时间；以尝试时间节流，成功、失败和取消都不会导致下一次启动立即重试；
-- 用户可单独开启本地通知；获权后通知手动与自动同步的开始、完成和失败/取消，并准确标明本次实际运行的同步范围，不包含词典、目录、恢复码或输入内容；
+- 用户可在全 App 通知设置或 RIME 页面开启同一个 RIME 通知类别；获权后通知手动与自动同步的开始、完成和失败/取消，并准确标明本次实际运行的同步范围，不包含词典、目录、恢复码或输入内容。通知不属于自动同步开关，断开同步目录也不重置通知偏好；
 - 自动同步、通知、网络和文件维护全部留在主 App；Keyboard Extension 只在可见生命周期写入无内容的活动心跳，绝不在按键热路径读写同步状态。
 
 ## Alternatives Considered
@@ -51,3 +51,4 @@ Accepted; implementation in progress
 - [ADR 0013](0013-rime-standard-sync-interoperability.md)
 - [ADR 0005](0005-user-dictionary-restore-safety.md)
 - [`shared-container-and-rime-lifecycle.md`](../shared-container-and-rime-lifecycle.md)
+- [ADR 0017](0017-app-notification-and-toast-settings.md)
