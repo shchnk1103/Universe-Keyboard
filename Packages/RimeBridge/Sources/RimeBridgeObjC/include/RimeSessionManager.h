@@ -62,6 +62,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// @return 同 processKey 的返回格式
 - (NSDictionary *)replaceInput:(NSString *)input;
 
+/// 在独立的旁路 session 中查询指定拼音的候选，不改变主输入 session。
+/// 返回值仅包含 candidates，供有界智能纠错候选验证使用。
+- (NSDictionary *)correctionCandidatesForInput:(NSString *)input limit:(int)limit;
+
 /// 提交当前 composition（不选候选，直接上屏拼音）
 - (NSDictionary *)commitComposition;
 

@@ -8,6 +8,7 @@ public final class KeyboardController {
     public internal(set) var state: KeyboardState
     public var textClient: TextInputClient?
     public let candidateProvider: CandidateProvider
+    public var typoCorrectionCandidateQuery: TypoCorrectionCandidateQuerying
     public var rimeEngine: RimeEngine?
 
     public var currentDate: () -> Date = { Date() }
@@ -30,6 +31,9 @@ public final class KeyboardController {
     ) {
         self.state = state
         self.candidateProvider = candidateProvider
+        self.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
+            candidateProvider: candidateProvider
+        )
     }
 
     /// 启用基于 CandidateProvider 的 RIME 适配器引擎。
@@ -37,6 +41,9 @@ public final class KeyboardController {
     /// 使键盘通过新架构运行，但行为与当前完全一致。
     public func enableDefaultRimeEngine() {
         rimeEngine = CandidateProviderRimeAdapter(candidateProvider: candidateProvider)
+        typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
+            candidateProvider: candidateProvider
+        )
     }
 
     /// Reset RIME after the keyboard becomes visible again while preserving

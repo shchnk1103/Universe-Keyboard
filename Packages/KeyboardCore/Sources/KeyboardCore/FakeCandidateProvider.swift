@@ -14,7 +14,8 @@ public final class FakeCandidateProvider: CandidateProvider {
         "woaini":   ["我爱你", "我碍你", "我艾你"],
         "women":    ["我们", "我门", "沃门"],
         "jintian":  ["今天", "金天", "尽天"],
-        "xiexie":   ["谢谢", "写写", "歇歇"]
+        "xiexie":   ["谢谢", "写写", "歇歇"],
+        "womenjintianqugongyuan": ["我们今天去公园", "我们今天去公园玩"],
     ]
 
     public init() {}
