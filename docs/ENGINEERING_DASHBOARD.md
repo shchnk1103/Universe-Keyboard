@@ -14,8 +14,8 @@
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/post-commit-continuation-001.md)
 - **Product source:** [`Post-Commit Continuation Product Contract`](POST_COMMIT_CONTINUATION.md)
 - **Architecture source:** [ADR 0017](architecture/decisions/0017-ephemeral-post-commit-continuation.md)
-- **Current phase:** V1.1 quality-foundation implementation; final automated matrix and physical-device acceptance pending.
-- **Current implementation:** Bounded bundled provider, transient KeyboardCore state, distinct candidate semantics, candidate-bar integration, default-on setting, strict V1.1 resource validation, synthetic Top-3 benchmark and a 100-context curated pack are present.
+- **Current phase:** V1.2 curated quality expansion; final automated matrix, comparable performance evidence and physical-device acceptance pending.
+- **Current implementation:** Bounded bundled provider, transient KeyboardCore state, distinct candidate semantics, candidate-bar integration, default-on setting, strict resource validation, a 60-case/15-category synthetic Top-3 benchmark and a 250-context curated pack are present.
 - **Open gate:** Human-owned physical-device behavior and comparable startup/key-path/memory evidence. Assignment remains Active until Quality and Product Review close it.
 - **Stop conditions:** Host-context access, committed-text persistence/logging/network use, unbounded lookup, RIME-session prediction or unexplained performance regression.
 

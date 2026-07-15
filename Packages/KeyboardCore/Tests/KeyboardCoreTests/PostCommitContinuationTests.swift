@@ -46,12 +46,12 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
 
     func testResourceLoaderRejectsWrongVersionOversizeAndInvalidEntries() {
         let wrongVersion = Data(
-            #"{"version":2,"contentVersion":"1.1.0","entries":[]}"#.utf8
+            #"{"version":2,"contentVersion":"1.2.0","entries":[]}"#.utf8
         )
         XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: wrongVersion))
 
         let wrongContentVersion = Data(
-            #"{"version":1,"contentVersion":"2.0.0","entries":[]}"#.utf8
+            #"{"version":1,"contentVersion":"1.1.0","entries":[]}"#.utf8
         )
         XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: wrongContentVersion))
 
@@ -62,7 +62,7 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
         XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: oversized))
 
         let duplicateContext = Data(
-            #"{"version":1,"contentVersion":"1.1.0","entries":[{"context":"好","suggestions":["的"]},{"context":"好","suggestions":["呀"]}]}"#.utf8
+            #"{"version":1,"contentVersion":"1.2.0","entries":[{"context":"好","suggestions":["的"]},{"context":"好","suggestions":["呀"]}]}"#.utf8
         )
         XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: duplicateContext))
     }
@@ -95,7 +95,7 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
     }
 
     func testBundledResourceContainsRepresentativeChain() {
-        XCTAssertEqual(BundledContinuationSuggestionProvider.shared.indexedEntryCount, 100)
+        XCTAssertEqual(BundledContinuationSuggestionProvider.shared.indexedEntryCount, 250)
         XCTAssertEqual(
             BundledContinuationSuggestionProvider.shared.suggestions(for: "吃了", limit: 8).first,
             "吗"
@@ -103,6 +103,10 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
         XCTAssertEqual(
             BundledContinuationSuggestionProvider.shared.suggestions(for: "吃了吗", limit: 8).first,
             "？"
+        )
+        XCTAssertEqual(
+            BundledContinuationSuggestionProvider.shared.suggestions(for: "今天早餐", limit: 8).first,
+            "吃了吗"
         )
     }
 }

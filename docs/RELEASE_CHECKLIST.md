@@ -135,7 +135,7 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 - [ ] In Chinese mode, `吃了 -> 吗 -> ？` works through the normal candidate bar and each selection inserts text exactly once.
 - [ ] Active composition hides continuation items; newline, host Delete, English mode, visibility change and disabling the setting prevent stale suggestions.
 - [ ] Unknown suffixes safely show no continuation, and continuation items do not expose RIME paging/selection-reference behavior.
-- [ ] The V1.1 synthetic quality benchmark passes, and its result is not reported as real-user coverage or acceptance-rate evidence.
+- [ ] The V1.2 synthetic quality benchmark passes, including 60 registered Top-3 cases across 15 categories, and its result is not reported as real-user coverage or acceptance-rate evidence.
 - [ ] The bundled continuation resource passes size, entry-count, length, duplicate and suggestion-count validation.
 
 ## RIME, Lua And OpenCC

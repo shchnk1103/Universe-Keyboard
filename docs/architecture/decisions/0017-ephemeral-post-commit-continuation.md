@@ -24,6 +24,12 @@ V1.1 keeps the resource format at version 1 and introduces an explicit content v
 
 The V1.1 quality benchmark is test-only and synthetic. It may prove that registered, reviewed scenarios preserve their expected top-three result, but it cannot be cited as real-user coverage, acceptance rate or production telemetry. No benchmark fixture ships into the runtime resource unless it separately passes content review.
 
+### V1.2 Curated Quality Expansion
+
+V1.2 keeps the V1.1 runtime, privacy and fail-closed ceilings unchanged. It expands only manually authored synthetic content and its test-only Top-3 representative fixture. Specific multi-character contexts are preferred when they prevent a generic shorter suffix from controlling the result; resource order remains the sole ranking authority.
+
+The larger inventory still does not establish corpus frequency, population coverage or acceptance rate. Any downloaded corpus, runtime telemetry, host-context access, learning or model-based ranking remains outside this ADR and requires a new Product and data review.
+
 ## Alternatives Considered
 
 - Keep a RIME composition alive after commit: rejected because it contaminates marked-text and session semantics.

@@ -1,8 +1,8 @@
 # Post-Commit Continuation Product Contract
 
-> **Version:** `1.1.0`
+> **Version:** `1.2.0`
 >
-> **Status:** V1.0 accepted; V1.1 quality-foundation implementation active, physical-device acceptance pending
+> **Status:** V1.2 quality expansion active; physical-device acceptance pending
 >
 > **Product authority:** Human Product Owner authorization in the active Codex task, `2026-07-15 Asia/Shanghai`
 >
@@ -42,10 +42,18 @@ Post-Commit Continuation keeps the candidate bar useful after Chinese text is co
 
 Quality definitions, provenance and expansion rules are owned by [`POST_COMMIT_CONTINUATION_QUALITY.md`](POST_COMMIT_CONTINUATION_QUALITY.md).
 
+## V1.2 Quality Expansion
+
+- The manually authored synthetic content pack expands from 100 to 250 unique contexts while keeping the same format and safety ceilings.
+- The representative Top-3 fixture expands from 30 to 60 cases, with four cases in each of 15 declared everyday categories.
+- New contexts prioritize specific multi-character endings for meals, schedules, greetings, acknowledgement, work, travel, care, logistics, questions, emotion, family, shopping, study, entertainment and weather.
+- Ranking remains deterministic and resource-authored. V1.2 does not infer frequency, inspect host text, learn from selections or add a generic fallback.
+- Simulator behavior with the installed `rime_ice` scheme is recorded separately from physical-device, performance and population-quality evidence.
+
 ## Ranking Contract
 
 - Matching uses the longest exact suffix present in the bundled resource.
-- The resource order is authoritative for V1/V1.1 ranking.
+- The resource order is authoritative for V1–V1.2 ranking.
 - Results are deduplicated, empty values are discarded and at most eight suggestions are exposed.
 - No match produces an empty result; V1 does not fabricate or query a remote fallback.
 
