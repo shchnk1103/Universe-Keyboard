@@ -34,12 +34,15 @@ NSString * const RimeKeyFirstProcessKeyTotalDurationMs = @"firstProcessKeyTotalD
 
 @interface RimeSessionManager ()
 @property (nonatomic, assign) RimeSessionId sessionId;
+/// 旁路纠错查询与可见输入共享 librime runtime，但绝不共享 composition。
+@property (nonatomic, assign) RimeSessionId correctionSessionId;
 @property (nonatomic, assign) BOOL setupDone;
 @property (nonatomic, assign) BOOL initialized;
 /// 每个新 session 仅细分首个真实 processKey，避免把常规按键路径的观测成本放大。
 @property (nonatomic, assign) BOOL shouldMeasureFirstProcessKey;
 - (void)claimRuntimeOwnership;
 - (void)relinquishRuntimeOwnership;
+- (BOOL)ensureCorrectionSession;
 @end
 
 @implementation RimeSessionManager {
@@ -70,6 +73,7 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
         RimeEnsureLuaModuleLinked();
         _api = rime_get_api();
         _sessionId = 0;
+        _correctionSessionId = 0;
         _setupDone = NO;
         _initialized = NO;
         _shouldMeasureFirstProcessKey = NO;
@@ -166,6 +170,10 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     if (_sessionId != 0) {
         _api->destroy_session(_sessionId);
         _sessionId = 0;
+    }
+    if (_correctionSessionId != 0) {
+        _api->destroy_session(_correctionSessionId);
+        _correctionSessionId = 0;
     }
     if (_initialized) {
         _api->finalize();
@@ -307,6 +315,39 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     return [self collectOutput];
 }
 
+- (NSDictionary *)correctionCandidatesForInput:(NSString *)input limit:(int)limit {
+    int safeLimit = MAX(0, limit);
+    if (input.length == 0 || safeLimit == 0 || ![self ensureCorrectionSession]) {
+        return @{ RimeKeyCandidates: @[] };
+    }
+
+    // `set_input` 只作用于 correctionSessionId。主 session 的 composition、分页、
+    // commit 和 marked-text 状态均不参与这条旁路查询。
+    _api->set_input(_correctionSessionId, [input UTF8String]);
+
+    NSMutableArray *candidates = [NSMutableArray arrayWithCapacity:safeLimit];
+    RIME_STRUCT(RimeContext, context);
+    if (_api->get_context(_correctionSessionId, &context)) {
+        int count = MIN(context.menu.num_candidates, safeLimit);
+        for (int index = 0; index < count; index++) {
+            RimeCandidate *candidate = &context.menu.candidates[index];
+            if (!candidate->text) continue;
+
+            NSMutableDictionary *item = [NSMutableDictionary dictionary];
+            item[RimeKeyCandidateText] = [NSString stringWithUTF8String:candidate->text];
+            if (candidate->comment) {
+                item[RimeKeyCandidateComment] = [NSString stringWithUTF8String:candidate->comment];
+            }
+            item[RimeKeyCandidateGlobalIndex] = @(index);
+            [candidates addObject:item];
+        }
+        _api->free_context(&context);
+    }
+
+    _api->clear_composition(_correctionSessionId);
+    return @{ RimeKeyCandidates: candidates };
+}
+
 - (NSDictionary *)commitComposition {
     if (_sessionId == 0) return [self emptyOutput];
 
@@ -412,7 +453,11 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
 
 - (BOOL)selectSchema:(NSString *)schemaID {
     if (_sessionId == 0) return NO;
-    return _api->select_schema(_sessionId, [schemaID UTF8String]);
+    BOOL selected = _api->select_schema(_sessionId, [schemaID UTF8String]);
+    if (selected && _correctionSessionId != 0) {
+        selected = _api->select_schema(_correctionSessionId, [schemaID UTF8String]);
+    }
+    return selected;
 }
 
 - (NSString *)currentSchemaID {
@@ -443,10 +488,32 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     RimeActiveRuntimeOwner = self;
 }
 
+/// 创建旁路查询 session 时复用当前 runtime 与 schema。librime runtime 是进程级的，
+/// 因此不能通过第二个 RimeSessionManager 初始化一个独立 runtime。
+- (BOOL)ensureCorrectionSession {
+    if (!_initialized) return NO;
+    if (_correctionSessionId != 0) return YES;
+
+    _correctionSessionId = _api->create_session();
+    if (_correctionSessionId == 0) return NO;
+
+    NSString *schema = [self currentSchemaID];
+    if (schema.length > 0 && !_api->select_schema(_correctionSessionId, [schema UTF8String])) {
+        _api->destroy_session(_correctionSessionId);
+        _correctionSessionId = 0;
+        return NO;
+    }
+    return YES;
+}
+
 - (void)relinquishRuntimeOwnership {
     if (_sessionId != 0) {
         _api->destroy_session(_sessionId);
         _sessionId = 0;
+    }
+    if (_correctionSessionId != 0) {
+        _api->destroy_session(_correctionSessionId);
+        _correctionSessionId = 0;
     }
     if (_initialized) {
         _api->finalize();

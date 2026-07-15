@@ -1,5 +1,5 @@
 extension KeyboardController {
-    func refreshTypoCorrectionSuggestions() {
+    func refreshTypoCorrectionSuggestions(includingContextual: Bool = false) {
         guard state.currentPage == .letters,
             state.inputMode == .chinese,
             state.partialCommit == nil,
@@ -20,9 +20,13 @@ extension KeyboardController {
         // librime may expose segmented preedit text such as "ni h a p" or "ni hap".
         // Typo correction operates on the user's key sequence, so ignore display-only whitespace.
         let correctionInput = normalizedTypoCorrectionInput(state.currentComposition)
-        let generated = TypoCorrectionEngine(
+        let singleEditSuggestions = TypoCorrectionEngine(
             experimentalEdits: typoCorrectionExperimentalEdits
         ).suggestions(for: correctionInput)
+        let contextualSuggestions = includingContextual
+            ? ContextualTypoCorrectionHypothesisEngine().hypotheses(for: correctionInput)
+            : []
+        let generated = contextualSuggestions + singleEditSuggestions
         #if DEBUG
         TypoCorrectionDecisionTrace.record(
             .effectiveFlags(
@@ -38,10 +42,9 @@ extension KeyboardController {
         var seenCandidateTexts: Set<String> = []
 
         for suggestion in generated {
-            let candidates = candidateProvider.candidates(for: suggestion.correctedInput)
-                .filter { seenCandidateTexts.insert($0).inserted }
-                .prefix(3)
-                .map { RimeCandidate(text: $0) }
+            let candidates = typoCorrectionCandidateQuery
+                .correctionCandidates(for: suggestion.correctedInput, limit: 3)
+                .filter { seenCandidateTexts.insert($0.text).inserted }
             guard !candidates.isEmpty else { continue }
 
             resolved.append(
@@ -53,8 +56,8 @@ extension KeyboardController {
                 )
             )
 
-            // 控制候选栏密度和输入热路径开销。
-            if resolved.count >= 2 { break }
+            // 多错误恢复必须与普通按键路径共用严格查询预算。
+            if resolved.count >= 4 { break }
         }
 
         if let firstNormalCandidate = normalCandidates.first {
@@ -115,6 +118,20 @@ extension KeyboardController {
 
     func clearTypoCorrectionSuggestions() {
         state.typoCorrection = nil
+    }
+
+    /// 在 UI 层确认用户停止连续输入后调用。若输入已变化则直接丢弃，
+    /// 从而不让过期的异步工作覆盖当前 composition 的候选栏。
+    @discardableResult
+    public func refreshContextualTypoCorrectionSuggestions(
+        for expectedComposition: String
+    ) -> Bool {
+        guard normalizedTypoCorrectionInput(state.currentComposition)
+            == normalizedTypoCorrectionInput(expectedComposition)
+        else { return false }
+
+        refreshTypoCorrectionSuggestions(includingContextual: true)
+        return true
     }
 
     private func normalizedTypoCorrectionInput(_ input: String) -> String {

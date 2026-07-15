@@ -2,6 +2,14 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-15 — 有界渐进式多错误召回预检
+
+- 按 KOS 2.0 发布并完成 `TYPO-CORRECTION-003`：在不改变 V2.0 生产默认值的前提下，新增纯内存、默认关闭的 60/64/8 渐进式召回计划。
+- 规范长句双错误输入 `wimenjintianquhongyuan` 可在无生产特例表的情况下召回 `womenjintianqugongyuan`；召回计划按最多八项分批，但没有连接 RIME、候选 UI 或持久化路径。
+- 聚焦测试及 KeyboardCore 全量回归通过；语义评分、真实 RIME、配对性能和生产启用仍属于 `TYPO-CORRECTION-002` 的后续 Gate。
+- 根据 Product Owner 澄清，将指定验收环境纠正为 Device Hub iOS 27 iPhone 17 Pro Max 模拟器；已有通用 UI baseline 不等于上下文纠错场景验收。
+
+
 > **AI agents**: Load this file only when investigating historical decisions, debugging regressions, or understanding why a specific implementation approach was chosen. Do not load for routine coding tasks.
 
 ---
