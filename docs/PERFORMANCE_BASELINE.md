@@ -119,6 +119,25 @@ Preferred evidence:
 
 Instrumentation added later must avoid synchronous persistence or verbose payloads in the key hot path.
 
+## Post-Commit Continuation V1.3 Physical Snapshot
+
+The first comparable disabled/enabled V1.3 snapshot was collected on
+`2026-07-16 Asia/Shanghai` against the normally signed Release build at
+`eaa72d5207deacab1dc0b94024c67af96448ad19`. The environment was a wired
+physical iPhone 13 Pro on iOS 27.0 beta 3 (`24A5380h`), Messages draft input,
+`rime_ice`, Full Access on and `Fair` non-induced thermal state.
+
+The paired method covered explicit cold Extension process creation and six
+repeated `chile -> 吃了` final-commit/candidate-refresh cycles per setting across
+Activity Monitor and Time Profiler. Enabled/disabled one-millisecond CPU samples
+were 792/787, Activity Monitor CPU time was 751.4/719.3 ms, median physical
+footprint was 23.67/24.36 MiB and both traces contained zero potential hangs at
+or above 250 ms. Cold-process first-five-second CPU and physical footprint were
+also comparable. This supports no unexplained feature regression for this
+snapshot; it does not establish a budget or replace the repository-wide TD-003
+baseline. Exact method, limitations, local trace locations and integrity
+summaries are in the [physical-device acceptance record](evidence/post-commit-continuation-v1.3-physical-device-2026-07-16.md).
+
 ## Baseline Status
 
 No numeric baseline or budget is accepted yet. The following remain to be collected on the current primary physical device, current development iOS version and one available Simulator:
@@ -133,7 +152,7 @@ No numeric baseline or budget is accepted yet. The following remain to be collec
 - [ ] Lua smoke impact;
 - [ ] OpenCC impact.
 - [ ] Typing Intelligence disabled/enabled commit-path comparison and bounded store evidence.
-- [ ] Post-commit continuation disabled/enabled startup, final-commit, candidate-refresh and memory comparison.
+- [x] Post-commit continuation disabled/enabled startup, final-commit, candidate-refresh and memory comparison — initial V1.3 physical snapshot recorded; revalidation rules and non-claims remain in the linked evidence record.
 
 ## Related Documents
 

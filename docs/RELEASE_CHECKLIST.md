@@ -178,6 +178,13 @@ OpenCC current integration ownership is defined in
 - [ ] Allowed RIME notifications cover manual and automatic start/completion/failure or cancellation, accurately identify RIME standard data, Universe settings or both, and reveal no user data. Both child notifications combine into one operation-level start/result pair; one selected child reports only its real phase and never attributes another phase's failure to it. With the App foregrounded, enabled operation Toasts suppress the duplicate banner/sound but keep the Notification Center entry; disabled Toasts allow banner/list/sound.
 - [ ] Turning off “操作状态提示” immediately hides the current global Toast and suppresses later sync/download/deployment/dictionary Toasts without hiding detail-page state; re-enabling does not replay old events.
 
+The post-commit continuation row has a dated feature-specific V1.3 snapshot at
+[`evidence/post-commit-continuation-v1.3-physical-device-2026-07-16.md`](evidence/post-commit-continuation-v1.3-physical-device-2026-07-16.md).
+It may be checked only for the exact Release commit, device/OS, schema, access
+state and method recorded there. It does not close the broader TD-003 baseline,
+jetsam, sustained-leak, Full Access-off or compatibility gates for a future
+TestFlight/App Store release.
+
 The project does not yet have numeric Extension latency or memory budgets. Follow `docs/PERFORMANCE_BASELINE.md`, record real measurements and regressions, and do not mark this section passed solely because no crash was observed.
 
 ## Privacy And App Store Metadata
