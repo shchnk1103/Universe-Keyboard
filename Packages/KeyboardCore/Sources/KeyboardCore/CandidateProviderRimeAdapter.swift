@@ -93,6 +93,10 @@ final class CandidateProviderRimeAdapter: RimeEngine {
 
     func resumeAfterVisibilityChange() {}
 
+    var runtimeSelection: RimeRuntimeSelection? { nil }
+
+    var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)?
+
     func isComposing() -> Bool {
         !composition.isEmpty
     }

@@ -10,48 +10,72 @@ extension SchemaManager {
     /// Returns `nil` on success, or a user-visible failure message.
     @MainActor
     func enableNineKeyLayout() async -> String? {
-        guard rimeIceFilesExist() else {
-            return "需要先安装雾凇拼音才能使用九键"
-        }
-        guard let directories = try? archiveInstaller.deploymentDirectories() else {
-            // No asset mutation yet; keep previous state.
-            return "App Group 不可用"
-        }
+        let failure = await NineKeyEnableOrchestrator.enable(using: makeNineKeyEnableDependencies())
+        return failure.map(Self.userMessage(for:))
+    }
 
-        // Before any operation that can alter T9/RIME assets: observable safe 26-key + unmatched readiness.
-        beginNineKeyEnableTransaction()
-
-        do {
-            _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: directories.sharedDataURL)
-        } catch {
-            return "无法准备九键方案文件：\(error.localizedDescription)。已回退 26 键"
-        }
-
-        let deployed = await deployRimeConfig()
-        guard deployed else {
-            return "RIME 部署失败，已回退 26 键"
-        }
-
-        let verified = T9DeploymentSupport.verifyT9Smoke(
-            sharedDataDir: directories.sharedDataURL.path,
-            userDataDir: directories.userDataURL.path
+    /// Production dependency wiring for the shared orchestrator (also used by tests via injection).
+    @MainActor
+    func makeNineKeyEnableDependencies() -> NineKeyEnableOrchestrator.Dependencies {
+        NineKeyEnableOrchestrator.Dependencies(
+            iceInstalled: { [weak self] in
+                self?.rimeIceFilesExist() ?? false
+            },
+            resolveDirectories: { [weak self] in
+                guard let directories = try? self?.archiveInstaller.deploymentDirectories() else {
+                    return nil
+                }
+                return NineKeyEnableOrchestrator.Directories(
+                    sharedDataURL: directories.sharedDataURL,
+                    userDataURL: directories.userDataURL
+                )
+            },
+            beginTransaction: { [weak self] in
+                self?.beginNineKeyEnableTransaction()
+            },
+            prepare: { sharedDataURL in
+                _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: sharedDataURL)
+            },
+            deploy: { [weak self] in
+                guard let self else { return false }
+                return await self.deployRimeConfig()
+            },
+            smoke: { shared, user in
+                T9DeploymentSupport.verifyT9Smoke(sharedDataDir: shared, userDataDir: user)
+            },
+            fingerprint: { sharedDataURL in
+                T9DeploymentSupport.resourceFingerprint(sharedDataURL: sharedDataURL)
+            },
+            writeMatchedReadiness: { [weak self] fingerprint in
+                guard let self else { return }
+                T9DeploymentSupport.writeMatchedReadiness(
+                    fingerprint: fingerprint,
+                    upstreamVersion: self.installedVersion(for: "rime_ice"),
+                    settings: self.settings
+                )
+            },
+            publishNineKey: { [weak self] in
+                guard let self else { return }
+                T9DeploymentSupport.persistLayout(.nineKey, settings: self.settings)
+            }
         )
-        guard verified else {
-            // Already invalidated at transaction start; keep 26-key.
-            return "九键验证失败（无法产生候选或删除异常），已回退 26 键"
-        }
+    }
 
-        guard let fingerprint = T9DeploymentSupport.resourceFingerprint(sharedDataURL: directories.sharedDataURL) else {
+    private static func userMessage(for failure: NineKeyEnableOrchestrator.Failure) -> String {
+        switch failure {
+        case .iceNotInstalled:
+            return "需要先安装雾凇拼音才能使用九键"
+        case .directoriesUnavailable:
+            return "App Group 不可用"
+        case .prepareFailed:
+            return "无法准备九键方案文件，已回退 26 键"
+        case .deployFailed:
+            return "RIME 部署失败，已回退 26 键"
+        case .smokeFailed:
+            return "九键验证失败（无法产生候选或删除异常），已回退 26 键"
+        case .fingerprintUnavailable:
             return "无法计算九键资源指纹，已回退 26 键"
         }
-        T9DeploymentSupport.writeMatchedReadiness(
-            fingerprint: fingerprint,
-            upstreamVersion: installedVersion(for: "rime_ice"),
-            settings: settings
-        )
-        // Layout last.
-        T9DeploymentSupport.persistLayout(.nineKey, settings: settings)
-        return nil
     }
 
     /// Observable safe state before risky enable/update work (ADR 0018 fail-closed).

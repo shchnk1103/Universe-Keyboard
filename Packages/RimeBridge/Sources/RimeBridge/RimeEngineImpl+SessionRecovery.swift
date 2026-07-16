@@ -23,19 +23,21 @@ extension RimeEngineImpl {
         guard sessionReady else {
             nextRecoveryAttemptTime = now + 0.5
             Logger.shared.warning("RIME engine restart failed after keyboard return", category: .engine)
+            // Session is unusable; fail closed so chrome cannot keep T9 against a dead runtime.
+            publishFailClosedSelection(reason: "recovery-session-recreate-failed")
             return
         }
         nextRecoveryAttemptTime = 0
 
-        let selection = resolveRuntimeSelection()
-        runtimeSelection = selection
-        let schema = selection.effectiveSchemaID
-        let fallback = selection.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
+        let requested = resolveRuntimeSelection()
+        let schema = requested.effectiveSchemaID
+        let fallback = requested.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
         let actual = selectAndVerifySchema(schema, fallback: fallback)
-        activeSchemaID = actual ?? schema
+        // actual may be nil or a non-T9 fallback; applyRealizedSelection always publishes + notifies.
+        applyRealizedSelection(requested: requested, actualSchemaID: actual)
         Logger.shared.info(
-            "RIME session recreated after keyboard return; base=\(selection.baseSchemaID) "
-                + "effective=\(schema) actual=\(actual ?? "nil") t9Matched=\(selection.t9ReadinessMatched)",
+            "RIME session recreated after keyboard return; requested=\(schema) actual=\(actual ?? "nil") "
+                + "realized=\(runtimeSelection?.effectiveSchemaID ?? "nil")",
             category: .engine
         )
     }

@@ -23,6 +23,21 @@ final class FakeRimeEngine: RimeEngine {
     var processKeysToDrop = 0
     var replaceInputsToDrop = 0
 
+    /// Mirrors production realized-selection publishing for lifecycle tests.
+    private(set) var runtimeSelection: RimeRuntimeSelection?
+    var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)?
+
+    /// When true, `resumeAfterVisibilityChange` fails init/session and publishes fail-closed.
+    var resumeInitShouldFail = false
+    /// When true, resume reaches schema selection failure and publishes fail-closed.
+    var resumeSchemaSelectShouldFail = false
+    /// When true, `recoverSession` cannot recreate a session and publishes fail-closed.
+    var recoverSessionShouldFail = false
+    /// When set, recovery succeeds but reconciles against this actual schema id.
+    var recoverActualSchemaID: String?
+
+    private var isSuspendedForVisibilityChange = false
+
     private let dictionary: [String: [String]]
     private let preeditFormatter: (String) -> String
     private let selectionRemainders: [String: [Int: String]]
@@ -41,6 +56,11 @@ final class FakeRimeEngine: RimeEngine {
         self.selectionRemainders = selectionRemainders
         self.selectedSegments = selectedSegments
         self.partialSelectionEmitsCommit = partialSelectionEmitsCommit
+    }
+
+    /// Seed a realized selection as if cold-start already selected this runtime.
+    func seedRuntimeSelection(_ selection: RimeRuntimeSelection) {
+        publish(selection)
     }
 
     private static let defaultDictionary: [String: [String]] = [
@@ -161,20 +181,66 @@ final class FakeRimeEngine: RimeEngine {
 
     func recoverSession() {
         sessionRecoveryCount += 1
+        if recoverSessionShouldFail {
+            // Production: session recreate failure publishes fail-closed before return.
+            publishFailClosed()
+            resetSession()
+            return
+        }
+        if let actual = recoverActualSchemaID {
+            let requested = runtimeSelection
+                ?? RimeRuntimeSelection(
+                    baseSchemaID: "rime_ice",
+                    layoutStyle: .nineKey,
+                    t9ReadinessMatched: true
+                )
+            publish(requested.reconciled(withActualSchemaID: actual))
+        }
         resetSession()
     }
 
     func suspendForVisibilityChange() {
         visibilitySuspendCount += 1
+        isSuspendedForVisibilityChange = true
         resetSession()
     }
 
     func resumeAfterVisibilityChange() {
         visibilityResumeCount += 1
+        guard isSuspendedForVisibilityChange else { return }
+        if resumeInitShouldFail {
+            // Production: stay suspended + fail-closed (do not reapply stale T9).
+            publishFailClosed()
+            return
+        }
+        if resumeSchemaSelectShouldFail {
+            publishFailClosed()
+            return
+        }
+        // Successful resume: re-publish current selection (already realized).
+        if let current = runtimeSelection {
+            publish(current)
+        }
+        isSuspendedForVisibilityChange = false
     }
 
     func isComposing() -> Bool {
         !composition.isEmpty
+    }
+
+    private func publishFailClosed() {
+        let requested = runtimeSelection
+            ?? RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        publish(requested.reconciled(withActualSchemaID: nil))
+    }
+
+    private func publish(_ selection: RimeRuntimeSelection) {
+        runtimeSelection = selection
+        onRuntimeSelectionChanged?(selection)
     }
 
     func pageUp() -> RimeOutput { buildOutput() }

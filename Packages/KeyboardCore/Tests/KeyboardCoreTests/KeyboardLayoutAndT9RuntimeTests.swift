@@ -215,6 +215,79 @@ final class KeyboardLayoutAndT9RuntimeTests: XCTestCase {
         XCTAssertTrue(settings.isEnabled(for: "rime_ice"))
         XCTAssertFalse(settings.isEnabled(for: "luna_pinyin"))
     }
+
+    func testRequestedT9ReconcilesFailClosedWhenActualIsRimeIce() {
+        let fingerprint = "matched-fp"
+        let marker = RimeT9ReadinessMarker(
+            ready: true,
+            compatibilityVersion: RimeT9Readiness.currentCompatibilityVersion,
+            resourceFingerprint: fingerprint
+        )
+        let requested = RimeRuntimeSelection.resolve(
+            baseSchemaID: "rime_ice",
+            layoutRawValue: KeyboardLayoutStyle.nineKey.rawValue,
+            readinessMarker: marker,
+            onDiskFingerprint: fingerprint
+        )
+        XCTAssertTrue(requested.usesT9InputSemantics)
+        XCTAssertEqual(requested.effectiveSchemaID, "t9")
+        XCTAssertEqual(requested.effectiveLayoutStyle, .nineKey)
+
+        let realized = requested.reconciled(withActualSchemaID: "rime_ice")
+        XCTAssertEqual(realized.effectiveSchemaID, "rime_ice")
+        XCTAssertEqual(realized.effectiveLayoutStyle, .twentySixKey)
+        XCTAssertFalse(realized.usesT9InputSemantics)
+        XCTAssertFalse(realized.t9ReadinessMatched)
+        // Digit-shaped raw input must not receive T9 policy after fail-close.
+        XCTAssertEqual(
+            T9CompositionCommitPolicy.returnAction(
+                usesT9InputSemantics: realized.usesT9InputSemantics,
+                rawInput: "64",
+                candidates: [],
+                highlightedIndex: nil
+            ),
+            .notT9Composition
+        )
+    }
+
+    func testRequestedT9KeepsSemanticsWhenActualIsT9() {
+        let fingerprint = "matched-fp"
+        let marker = RimeT9ReadinessMarker(
+            ready: true,
+            compatibilityVersion: RimeT9Readiness.currentCompatibilityVersion,
+            resourceFingerprint: fingerprint
+        )
+        let requested = RimeRuntimeSelection.resolve(
+            baseSchemaID: "rime_ice",
+            layoutRawValue: KeyboardLayoutStyle.nineKey.rawValue,
+            readinessMarker: marker,
+            onDiskFingerprint: fingerprint
+        )
+        let realized = requested.reconciled(withActualSchemaID: "t9")
+        XCTAssertEqual(realized, requested)
+        XCTAssertTrue(realized.usesT9InputSemantics)
+        XCTAssertEqual(realized.effectiveLayoutStyle, .nineKey)
+    }
+
+    func testReconcileWithNilActualSchemaFailsClosed() {
+        let fingerprint = "matched-fp"
+        let marker = RimeT9ReadinessMarker(
+            ready: true,
+            compatibilityVersion: RimeT9Readiness.currentCompatibilityVersion,
+            resourceFingerprint: fingerprint
+        )
+        let requested = RimeRuntimeSelection.resolve(
+            baseSchemaID: "rime_ice",
+            layoutRawValue: KeyboardLayoutStyle.nineKey.rawValue,
+            readinessMarker: marker,
+            onDiskFingerprint: fingerprint
+        )
+        let realized = requested.reconciled(withActualSchemaID: nil)
+        // nil falls back to baseSchemaID as "actual", which is not t9 → fail closed.
+        XCTAssertEqual(realized.effectiveSchemaID, "rime_ice")
+        XCTAssertFalse(realized.usesT9InputSemantics)
+        XCTAssertEqual(realized.effectiveLayoutStyle, .twentySixKey)
+    }
 }
 
 @MainActor

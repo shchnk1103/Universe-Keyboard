@@ -64,4 +64,47 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
             onDiskFingerprint: onDiskFingerprint
         )
     }
+
+    /// Observable chrome + input policy derived from a realized selection.
+    /// Extension caches these three fields together; they must transition as one unit.
+    public struct Surface: Sendable, Equatable {
+        public let layoutStyle: KeyboardLayoutStyle
+        public let usesT9InputSemantics: Bool
+        /// Chrome readiness flag; fail-closed realized selection clears it with semantics.
+        public let t9ReadinessMatched: Bool
+
+        public init(from selection: RimeRuntimeSelection) {
+            self.layoutStyle = selection.effectiveLayoutStyle
+            self.usesT9InputSemantics = selection.usesT9InputSemantics
+            self.t9ReadinessMatched = selection.usesT9InputSemantics
+        }
+    }
+
+    public var surface: Surface { Surface(from: self) }
+
+    /// Reconcile the readiness-derived **request** with the schema librime actually selected.
+    ///
+    /// If T9 was requested but not actually selected, force 26-key chrome and input semantics
+    /// for this runtime lifecycle (fail closed). Does not mutate App Group preferences.
+    public func reconciled(withActualSchemaID actualSchemaID: String?) -> RimeRuntimeSelection {
+        let actual = (actualSchemaID?.isEmpty == false) ? actualSchemaID! : baseSchemaID
+        // Only keep T9 chrome/semantics when both requested and actually selected.
+        if usesT9InputSemantics, actual == "t9" {
+            return self
+        }
+        // Fail closed: never keep T9 chrome/semantics when the engine is not on t9.
+        // Prefer the schema librime actually selected for the non-T9 lifecycle.
+        let closedBase: String
+        if actual == "t9" {
+            // Unexpected: t9 selected without a matched request — still fail closed to base 26-key.
+            closedBase = baseSchemaID == "t9" ? "rime_ice" : baseSchemaID
+        } else {
+            closedBase = actual
+        }
+        return RimeRuntimeSelection(
+            baseSchemaID: closedBase,
+            layoutStyle: .twentySixKey,
+            t9ReadinessMatched: false
+        )
+    }
 }

@@ -46,6 +46,8 @@ public final class RimeEngineImpl: RimeEngine {
     var activeSchemaID = "luna_pinyin"
     /// Last resolved effective selection (schema + layout semantics).
     public internal(set) var runtimeSelection: RimeRuntimeSelection?
+    /// Propagates realized selection (including fail-closed) to extension chrome/controller.
+    public var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)?
 
     // MARK: === Init ===
 
@@ -95,27 +97,13 @@ public final class RimeEngineImpl: RimeEngine {
         // 主 App 已负责部署与完整运行时验证。健康冷启动只确认 schema 可以选中，
         // 不再合成 "ni" 输入或枚举所有 schema；深度验证保留给失败恢复路径。
         let schemaStartTime = CACurrentMediaTime()
-        let selection = resolveRuntimeSelection()
-        runtimeSelection = selection
-        let requestedSchema = selection.effectiveSchemaID
-        let fallbackSchema = selection.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
+        let requested = resolveRuntimeSelection()
+        let requestedSchema = requested.effectiveSchemaID
+        let fallbackSchema = requested.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
 
         let selected = selectSchemaForStartup(requestedSchema, fallback: fallbackSchema)
         let schemaElapsed = (CACurrentMediaTime() - schemaStartTime) * 1000
-        activeSchemaID = selected ?? requestedSchema
-        Logger.shared.info(
-            "Active schema base=\(selection.baseSchemaID) layout=\(selection.layoutStyle.rawValue) "
-                + "t9Matched=\(selection.t9ReadinessMatched) effective=\(requestedSchema) actual=\(selected ?? "nil")",
-            category: .engine
-        )
-
-        if selected != requestedSchema {
-            Logger.shared.warning(
-                "Schema mismatch: wanted '\(requestedSchema)', "
-                    + "got '\(selected ?? "none")'; repair must be performed by the main app",
-                category: .engine
-            )
-        }
+        applyRealizedSelection(requested: requested, actualSchemaID: selected)
 
         let elapsed = (CACurrentMediaTime() - startTime) * 1000
         let startupPhaseSummary = [
@@ -135,6 +123,57 @@ public final class RimeEngineImpl: RimeEngine {
         defaults: UserDefaults? = UserDefaults(suiteName: RimeRuntimeSelectionBridge.appGroupID)
     ) -> RimeRuntimeSelection {
         RimeRuntimeSelectionBridge.resolve(defaults: defaults, sharedDataDir: sharedDataDir)
+    }
+
+    /// Store the selection after librime schema selection so chrome/semantics cannot stay on T9
+    /// when the engine fell back to another schema.
+    func applyRealizedSelection(requested: RimeRuntimeSelection, actualSchemaID: String?) {
+        let realized = requested.reconciled(withActualSchemaID: actualSchemaID)
+        publishRuntimeSelection(
+            realized,
+            actualSchemaID: actualSchemaID,
+            requestedSchemaID: requested.effectiveSchemaID
+        )
+        if requested.usesT9InputSemantics, !realized.usesT9InputSemantics {
+            Logger.shared.warning(
+                "T9 requested but not selected by librime; failing closed to 26-key semantics",
+                category: .engine
+            )
+        }
+    }
+
+    /// Publish fail-closed 26-key selection for this runtime lifecycle (no App Group mutation).
+    func publishFailClosedSelection(reason: String) {
+        let requested = resolveRuntimeSelection()
+        // Prefer base as "actual" so requested T9 cannot survive without a live t9 schema.
+        let closed = requested.reconciled(withActualSchemaID: nil)
+        publishRuntimeSelection(
+            closed,
+            actualSchemaID: nil,
+            requestedSchemaID: requested.effectiveSchemaID
+        )
+        Logger.shared.warning(
+            "Published fail-closed runtime selection reason=\(reason) "
+                + "realizedSchema=\(closed.effectiveSchemaID) usesT9=\(closed.usesT9InputSemantics)",
+            category: .engine
+        )
+    }
+
+    private func publishRuntimeSelection(
+        _ realized: RimeRuntimeSelection,
+        actualSchemaID: String?,
+        requestedSchemaID: String
+    ) {
+        runtimeSelection = realized
+        activeSchemaID = actualSchemaID ?? realized.effectiveSchemaID
+        Logger.shared.info(
+            "Runtime selection requested=\(requestedSchemaID) actual=\(actualSchemaID ?? "nil") "
+                + "realizedSchema=\(realized.effectiveSchemaID) "
+                + "realizedLayout=\(realized.effectiveLayoutStyle.rawValue) "
+                + "usesT9=\(realized.usesT9InputSemantics)",
+            category: .engine
+        )
+        onRuntimeSelectionChanged?(realized)
     }
 
     deinit {
@@ -211,23 +250,25 @@ public final class RimeEngineImpl: RimeEngine {
                 "RIME runtime could not resume after keyboard visibility change",
                 category: .engine
             )
+            // Keep suspended for a later retry, but never leave stale T9 chrome/semantics.
+            publishFailClosedSelection(reason: "resume-init-or-session-failed")
             return
         }
 
-        let selection = resolveRuntimeSelection()
-        runtimeSelection = selection
-        let fallback = selection.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
-        let selected = selectSchemaForStartup(selection.effectiveSchemaID, fallback: fallback)
+        let requested = resolveRuntimeSelection()
+        let fallback = requested.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
+        let selected = selectSchemaForStartup(requested.effectiveSchemaID, fallback: fallback)
         guard let selected else {
             bridge.finalize()
             Logger.shared.error(
                 "RIME schema could not be restored after keyboard visibility change",
                 category: .engine
             )
+            publishFailClosedSelection(reason: "resume-schema-selection-failed")
             return
         }
 
-        activeSchemaID = selected
+        applyRealizedSelection(requested: requested, actualSchemaID: selected)
         isSuspendedForVisibilityChange = false
     }
 

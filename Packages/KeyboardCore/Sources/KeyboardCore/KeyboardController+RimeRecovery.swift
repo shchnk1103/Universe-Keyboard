@@ -231,6 +231,8 @@ extension KeyboardController {
     ) -> Bool {
         if rebuildSession {
             engine.recoverSession()
+            // In-place recovery may fail-close T9 → 26-key; sync controller policy immediately.
+            applyRealizedSelectionFromEngine()
         } else {
             engine.resetSession()
         }

@@ -47,29 +47,79 @@ extension RimeConfigManager {
         //
         // User dictionary learning is intentionally written for both built-in
         // pinyin schemas so switching schemes does not silently lose the user's
-        // selected learning policy.
-        syncSchemaCustomYaml(
-            schemaID: "luna_pinyin",
-            activeSchema: activeSchema,
-            defs: defs,
-            userDir: userDir
+        // selected learning policy. T9 uses the fog-song dictionary preference.
+        var simplification: Bool?
+        if defs?.object(forKey: "rime_simplification") != nil {
+            simplification = defs?.bool(forKey: "rime_simplification") ?? true
+        }
+        let userDictionarySettings = RimeUserDictionarySettings(
+            lunaPinyinEnabled: defs?.object(
+                forKey: RimeUserDictionarySettings.lunaPinyinEnabledKey
+            ) as? Bool ?? true,
+            rimeIceEnabled: defs?.object(
+                forKey: RimeUserDictionarySettings.rimeIceEnabledKey
+            ) as? Bool ?? true
         )
-        syncSchemaCustomYaml(
-            schemaID: "rime_ice",
-            activeSchema: activeSchema,
-            defs: defs,
-            userDir: userDir
+        let iceInstalled = defs?.bool(forKey: "rime_ice_installed") ?? false
+        let plan = planSchemaCustomYamlFiles(
+            rimeIceInstalled: iceInstalled,
+            simplificationEnabled: simplification,
+            userDictionarySettings: userDictionarySettings
         )
-        // T9 is the nine-key presentation of fog-song preferences, not a separate base scheme.
-        if defs?.bool(forKey: "rime_ice_installed") ?? false {
-            syncSchemaCustomYaml(
-                schemaID: "t9",
-                activeSchema: activeSchema,
-                defs: defs,
-                userDir: userDir,
-                userDictionarySchemaID: "rime_ice"
+        for file in plan {
+            try? file.content.write(
+                to: userDir.appendingPathComponent(file.filename),
+                atomically: true,
+                encoding: .utf8
+            )
+            Logger.shared.info("Synced \(file.filename) user dictionary settings", category: .config)
+        }
+    }
+
+    /// One planned `{schema}.custom.yaml` write for production sync / tests.
+    public struct SchemaCustomYamlFile: Equatable, Sendable {
+        public let schemaID: String
+        public let filename: String
+        public let content: String
+        /// Schema ID used to resolve user-dictionary preference (`rime_ice` for `t9`).
+        public let userDictionarySchemaID: String
+    }
+
+    /// Pure production plan: which custom YAML files to write and with which content.
+    ///
+    /// - `luna_pinyin` and `rime_ice` always planned.
+    /// - `t9.custom.yaml` only when fog-song is installed, using **rime_ice** user-dict preference.
+    public static func planSchemaCustomYamlFiles(
+        rimeIceInstalled: Bool,
+        simplificationEnabled: Bool?,
+        userDictionarySettings: RimeUserDictionarySettings
+    ) -> [SchemaCustomYamlFile] {
+        var targets: [(schemaID: String, dictSchemaID: String)] = [
+            ("luna_pinyin", "luna_pinyin"),
+            ("rime_ice", "rime_ice"),
+        ]
+        if rimeIceInstalled {
+            // T9 is the nine-key presentation of fog-song preferences, not a separate base scheme.
+            targets.append(("t9", "rime_ice"))
+        }
+
+        var files: [SchemaCustomYamlFile] = []
+        for target in targets {
+            let enabled = userDictionarySettings.isEnabled(for: target.dictSchemaID)
+            guard let content = makeSchemaCustomYamlContent(
+                simplificationEnabled: simplificationEnabled,
+                userDictionaryEnabled: enabled
+            ) else { continue }
+            files.append(
+                SchemaCustomYamlFile(
+                    schemaID: target.schemaID,
+                    filename: "\(target.schemaID).custom.yaml",
+                    content: content,
+                    userDictionarySchemaID: target.dictSchemaID
+                )
             )
         }
+        return files
     }
 
     /// Pure helper for tests: builds schema custom YAML from preference values.
@@ -92,38 +142,5 @@ extension RimeConfigManager {
             yaml += "  \(key): \(value)\n"
         }
         return yaml
-    }
-
-    private static func syncSchemaCustomYaml(
-        schemaID: String,
-        activeSchema: String,
-        defs: UserDefaults?,
-        userDir: URL,
-        userDictionarySchemaID: String? = nil
-    ) {
-        let dictSchemaID = userDictionarySchemaID ?? schemaID
-        var simplification: Bool?
-        if defs?.object(forKey: "rime_simplification") != nil {
-            simplification = defs?.bool(forKey: "rime_simplification") ?? true
-        }
-
-        let userDictionarySettings = RimeUserDictionarySettings(
-            lunaPinyinEnabled: defs?.object(
-                forKey: RimeUserDictionarySettings.lunaPinyinEnabledKey
-            ) as? Bool ?? true,
-            rimeIceEnabled: defs?.object(
-                forKey: RimeUserDictionarySettings.rimeIceEnabledKey
-            ) as? Bool ?? true
-        )
-        let userDictEnabled = userDictionarySettings.isEnabled(for: dictSchemaID)
-
-        guard let yaml = makeSchemaCustomYamlContent(
-            simplificationEnabled: simplification,
-            userDictionaryEnabled: userDictEnabled
-        ) else { return }
-
-        let filename = "\(schemaID).custom.yaml"
-        try? yaml.write(to: userDir.appendingPathComponent(filename), atomically: true, encoding: .utf8)
-        Logger.shared.info("Synced \(filename) user dictionary settings", category: .config)
     }
 }

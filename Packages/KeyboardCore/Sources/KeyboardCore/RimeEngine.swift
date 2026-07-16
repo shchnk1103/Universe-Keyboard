@@ -34,6 +34,10 @@ public protocol RimeEngine: AnyObject {
     func resetSession()
 
     /// 宿主切换键盘后重建可用会话，并恢复用户选择的输入方案。
+    ///
+    /// Implementations must publish a fail-closed `runtimeSelection` when recovery
+    /// cannot restore a usable session or the requested schema, and invoke
+    /// `onRuntimeSelectionChanged` so chrome/input policy stay aligned.
     func recoverSession()
 
     /// 键盘即将不可见时同步释放底层运行时持有的文件资源。
@@ -43,7 +47,18 @@ public protocol RimeEngine: AnyObject {
     func suspendForVisibilityChange()
 
     /// 键盘重新可见时重建运行时与输入会话。
+    ///
+    /// On any early failure (runtime init, session create, schema select), publish a
+    /// fail-closed realized selection before returning so callers never reapply a
+    /// stale T9 chrome/semantics snapshot.
     func resumeAfterVisibilityChange()
+
+    /// Last realized selection after cold start, resume, recovery, or fail-closed publish.
+    var runtimeSelection: RimeRuntimeSelection? { get }
+
+    /// Fired whenever `runtimeSelection` is published (success or fail-closed).
+    /// Extension UI wires this to reload chrome and controller T9 policy immediately.
+    var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)? { get set }
 
     /// 当前是否正在输入中（有活跃的拼音组合）。
     func isComposing() -> Bool

@@ -98,4 +98,75 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         XCTAssertTrue(disabled?.contains("false") == true)
         XCTAssertTrue(disabled?.contains(": 0") == true)
     }
+
+    func testProductionCustomYamlPlanIncludesT9OnlyWhenIceInstalled() {
+        let dict = RimeUserDictionarySettings(lunaPinyinEnabled: false, rimeIceEnabled: true)
+
+        let withoutIce = RimeConfigManager.planSchemaCustomYamlFiles(
+            rimeIceInstalled: false,
+            simplificationEnabled: true,
+            userDictionarySettings: dict
+        )
+        XCTAssertEqual(Set(withoutIce.map(\.schemaID)), Set(["luna_pinyin", "rime_ice"]))
+        XCTAssertFalse(withoutIce.contains { $0.filename == "t9.custom.yaml" })
+
+        let withIce = RimeConfigManager.planSchemaCustomYamlFiles(
+            rimeIceInstalled: true,
+            simplificationEnabled: false,
+            userDictionarySettings: dict
+        )
+        XCTAssertEqual(Set(withIce.map(\.schemaID)), Set(["luna_pinyin", "rime_ice", "t9"]))
+        guard let t9 = withIce.first(where: { $0.schemaID == "t9" }) else {
+            return XCTFail("expected t9.custom.yaml in plan when ice installed")
+        }
+        XCTAssertEqual(t9.filename, "t9.custom.yaml")
+        XCTAssertEqual(t9.userDictionarySchemaID, "rime_ice")
+        // Ice preference is true → t9 custom enables user dict.
+        XCTAssertTrue(t9.content.contains("enable_user_dict"))
+        XCTAssertTrue(t9.content.contains("true"))
+        XCTAssertTrue(t9.content.contains(": 0")) // simplification false
+
+        guard let luna = withIce.first(where: { $0.schemaID == "luna_pinyin" }) else {
+            return XCTFail("expected luna_pinyin.custom.yaml in plan")
+        }
+        XCTAssertTrue(luna.content.contains("false")) // luna dict disabled
+    }
+
+    func testProductionCustomYamlSyncWritesT9FileWhenIceInstalled() throws {
+        let temp = FileManager.default.temporaryDirectory
+            .appendingPathComponent("uk-custom-yaml-\(UUID().uuidString)", isDirectory: true)
+        let userDir = temp.appendingPathComponent("Rime/user", isDirectory: true)
+        try FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: temp) }
+
+        // Exercise the pure plan + same write path as production sync (filename/content).
+        let dict = RimeUserDictionarySettings(lunaPinyinEnabled: true, rimeIceEnabled: false)
+        let plan = RimeConfigManager.planSchemaCustomYamlFiles(
+            rimeIceInstalled: true,
+            simplificationEnabled: true,
+            userDictionarySettings: dict
+        )
+        for file in plan {
+            try file.content.write(
+                to: userDir.appendingPathComponent(file.filename),
+                atomically: true,
+                encoding: .utf8
+            )
+        }
+
+        let t9URL = userDir.appendingPathComponent("t9.custom.yaml")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: t9URL.path))
+        let t9Body = try String(contentsOf: t9URL, encoding: .utf8)
+        XCTAssertTrue(t9Body.contains("enable_user_dict"))
+        XCTAssertTrue(t9Body.contains("false"), "t9 must follow rime_ice dict preference (disabled)")
+        XCTAssertTrue(t9Body.contains("switches/@1/reset"))
+
+        // Without ice, plan must not include t9.
+        let noT9 = RimeConfigManager.planSchemaCustomYamlFiles(
+            rimeIceInstalled: false,
+            simplificationEnabled: true,
+            userDictionarySettings: dict
+        )
+        XCTAssertFalse(noT9.contains { $0.filename == "t9.custom.yaml" })
+    }
 }

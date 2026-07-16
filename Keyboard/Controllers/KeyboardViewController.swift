@@ -235,6 +235,10 @@ class KeyboardViewController: UIInputViewController {
         super.viewWillAppear(animated)
         Logger.shared.resumePersistenceForExtensionLifecycle()
         controller.resumeRimeAfterVisibilityChange()
+        // Resume may fail-close T9 → 26-key; apply before chrome is built/shown.
+        if let engine = controller.rimeEngine as? RimeEngineImpl {
+            applyRealizedRuntimeSelection(from: engine)
+        }
         startRimeSyncActivityHeartbeat()
         installKeyboardUIIfNeeded()
     }

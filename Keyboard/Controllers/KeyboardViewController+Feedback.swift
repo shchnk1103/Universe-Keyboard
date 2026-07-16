@@ -1,4 +1,5 @@
 import KeyboardCore
+import RimeBridge
 import UIKit
 
 extension KeyboardViewController {
@@ -120,14 +121,17 @@ extension KeyboardViewController {
             onDiskFingerprint: onDiskFingerprint
         )
         cachedT9ReadinessMatched = selection.t9ReadinessMatched
-        // Effective layout for chrome (nine-key only when matched).
+        // Provisional chrome from readiness (before/while engine is offline).
+        // Once librime has a realized selection, that wins over the marker snapshot.
         if selection.usesT9InputSemantics {
             cachedLayoutStyle = .nineKey
         } else {
             cachedLayoutStyle = .twentySixKey
         }
-        // Same selection drives controller input semantics (not digit shape alone).
         controller.usesT9InputSemantics = selection.usesT9InputSemantics
+        if let engine = controller.rimeEngine as? RimeEngineImpl {
+            applyRealizedRuntimeSelection(from: engine)
+        }
 
         if cachedHapticEnabled {
             hapticGenerator.prepare()
