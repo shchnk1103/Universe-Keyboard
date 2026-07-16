@@ -2,15 +2,15 @@
 
 > **Status:** Active
 >
-> **Current stage:** Implementation and Simulator validation complete; physical-device acceptance pending
+> **Current stage:** Executor work complete; independent review and closure synchronization pending
 >
 > **Start date:** `2026-07-15 Asia/Shanghai`
 >
 > **Authority:** Human Product Owner instruction to continue V1.3 and preserve learned Simulator setup order
 >
-> **Branch:** `codex/post-commit-continuation-v1-3`
+> **Implementation branch:** `codex/post-commit-continuation-v1-3` (merged through PR #13)
 >
-> **Baseline:** `49e4946` (`feat: post-commit continuation suggestions (V1 → V1.2)`)
+> **Integrated implementation:** `eaa72d5207deacab1dc0b94024c67af96448ad19`
 
 ## Objective
 
@@ -61,6 +61,26 @@ Recorded on `2026-07-16 Asia/Shanghai`: iPhone 17 Pro Max, iOS 27.0, UDID `06C5B
 - [x] Update product, quality, debugging, release and history documents with exact evidence and non-claims.
 - [x] Record physical-device/performance gates as open unless new comparable evidence is collected.
 - [x] Commit the bounded V1.3 stage locally without pushing.
+
+## Gate 6 — Physical Device And Paired Performance
+
+- [x] Confirm the physical device, exact OS build, wired pairing, Developer Mode, system keyboard registration and Full Access before testing.
+- [x] Install the normally signed Release build from the integrated V1.3 commit and keep the Messages draft unsent.
+- [x] Record human Product acceptance of the physical-device candidate behavior separately from automated evidence.
+- [x] Compare the same controlled `chile -> 吃了` final-commit sequence with post-commit continuation disabled and enabled.
+- [x] Capture paired Activity Monitor and Time Profiler traces for repeated final commits, candidate refresh, CPU, memory and 250-ms hang rows.
+- [x] Terminate the Extension process and capture paired disabled/enabled cold-process Activity Monitor runs followed by a real RIME commit.
+- [x] Restore the user's enabled setting and clear the Messages draft after testing.
+
+Recorded on `2026-07-16 Asia/Shanghai` against Release commit `eaa72d5` on a physical iPhone 13 Pro (`iPhone14,2`) running iOS 27.0 beta 3 (`24A5380h`). The paired steady-state runs observed 792/787 one-millisecond Time Profiler samples for enabled/disabled, 751.4/719.3 ms Activity Monitor CPU time, 23.67/24.36 MiB median physical footprint and zero 250-ms potential hangs in both states. Cold-process first-five-second CPU and memory were comparable, and both states completed a real RIME commit. Exact method, limitations, metrics and raw-bundle integrity summaries are in the [physical-device acceptance record](../evidence/post-commit-continuation-v1.3-physical-device-2026-07-16.md). These values are a dated snapshot, not a permanent budget.
+
+## Gate 7 — Independent Review And Closure
+
+- [ ] Obtain an independent Quality/Architecture review of the merged implementation and the physical-device evidence package.
+- [ ] Advance the Assignment from `Completed` to `Reviewed` only after review conclusions are recorded.
+- [ ] After Product/Quality closure and repository integration, mark the Assignment `Closed`, archive this plan with the required closure metadata and synchronize the Engineering Dashboard.
+
+PR #13 was merged and its Swift 6 Quality and GitGuardian checks passed, but GitHub reports no submitted review and no review decision. CI success and merge state do not satisfy this Gate. Until an independent review is recorded, this plan remains `Active` and remains current only for closure coordination.
 
 ## Stop Conditions
 

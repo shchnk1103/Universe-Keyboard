@@ -2,7 +2,7 @@
 
 > **Version:** `1.3.0`
 >
-> **Status:** V1.3 naturalness refinement active; physical-device acceptance pending
+> **Status:** V1.3 executor work complete; independent review and closure pending
 >
 > **Product authority:** Human Product Owner authorization in the active Codex task, `2026-07-15 Asia/Shanghai`
 >
@@ -58,6 +58,14 @@ Quality definitions, provenance and expansion rules are owned by [`POST_COMMIT_C
 - Runtime lookup, ordering and privacy behavior are unchanged. V1.3 still uses longest exact suffix plus resource order and introduces no learned or inferred ranking.
 - Simulator behavior evidence must follow the ordered environment preflight in the active V1.3 plan before any typing conclusion is recorded.
 - The ordered preflight passed on the iOS 27.0 iPhone 17 Pro Max Simulator on `2026-07-16`: normal signing and App Group access were valid, `rime_ice` was installed/current/healthy, and Universe Keyboard was selectable in Messages. `吃了 -> 吗 -> ？` and `我在地铁 -> 上` worked through real key taps and candidate selection; the single-character `我` case produced no continuation. This remains Simulator evidence only.
+
+## V1.3 Physical-Device Evidence
+
+- The human owner accepted candidate behavior on a physical iPhone 13 Pro running iOS 27.0 beta 3 and provided the unlocked wired device for paired Release measurement.
+- Disabled/enabled steady-state runs repeated the same `chile -> 吃了` flow three times in Activity Monitor and three times in Time Profiler. Enabled runs exposed the exact V1.3 resource sequence; disabled runs preserved normal RIME commit behavior and left the post-commit bar empty.
+- Paired cold-process runs began after explicit Extension termination and both completed a real RIME commit after Universe Keyboard was selected again.
+- CPU samples, physical footprint and 250-ms hang rows showed no unexplained regression attributable to the enabled feature in this bounded snapshot. The exact values, environment, local trace bundle names, integrity summaries, exclusions and non-claims are recorded in the [2026-07-16 physical-device acceptance record](evidence/post-commit-continuation-v1.3-physical-device-2026-07-16.md).
+- The snapshot does not establish a permanent performance budget, leak/jetsam proof, broad compatibility or population language-quality claim. Independent Quality/Architecture review remains required before Assignment closure.
 
 ## Ranking Contract
 

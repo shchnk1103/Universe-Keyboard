@@ -2,12 +2,12 @@
 
 **Policy version:** `1.0.0`
 
-**Lifecycle status:** `Active`
+**Lifecycle status:** `Completed`
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human Product Owner instructions authorizing V1, the cautious V1.1 start, V1.2 expansion and continuation into V1.3 with explicit Simulator preflight requirements in the active Codex task / `2026-07-15 Asia/Shanghai`
+- **Decision Source / Date:** Human Product Owner instructions authorizing V1, the cautious V1.1 start, V1.2 expansion and continuation into V1.3 with explicit Simulator preflight requirements in the active Codex task / `2026-07-15 Asia/Shanghai`; physical-device behavior acceptance and authorization to complete paired performance verification / `2026-07-16 Asia/Shanghai`
 - **Product Approver:** Product Lead acting under the human owner's explicit authorization
 
 ## Boundary
@@ -39,11 +39,21 @@
 
 ## Current Evidence Status
 
-- **Implementation:** V1.0 through V1.3 are implemented on the isolated `codex/post-commit-continuation-v1-3` branch. V1.3 implementation and Simulator validation are complete; physical-device acceptance remains open.
+- **Implementation:** V1.0 through V1.3 are integrated into `origin/main` at merge commit `eaa72d5207deacab1dc0b94024c67af96448ad19` through PR #13.
 - **Automated quality:** V1.3 resource validation, focused and complete KeyboardCore tests, app/keyboard Simulator tests and strict Swift 6 Release Simulator build passed. The unchanged RimeBridge boundary retains the passing V1.0 branch evidence.
 - **Privacy review:** No host-context read, content persistence, logging, synchronization or network path was added; only the enabled preference persists.
 - **Simulator behavior:** On `2026-07-16`, the booted iOS 27.0 iPhone 17 Pro Max Simulator (`06C5BC3E-7599-4761-A1A2-71DAEA991474`) passed the ordered V1.3 preflight: normal signing, App Group availability, installed/current/basic-check-passed `rime_ice`, system keyboard registration and globe-key switching. In Messages, `chile -> 吃了 -> 吗 -> ？` and `wozaiditie -> 我在地铁 -> 上` inserted exactly once per selection; committing the single character `我` exposed no continuation, and Delete cleared state. The draft was cleared and no message was sent. This is Simulator behavior evidence, not physical-device, performance or population-quality evidence.
-- **Open human gate:** Physical-device behavior, latency and memory comparison. This prevents Assignment closure but does not invalidate the automated or Simulator implementation evidence.
+- **Physical-device behavior:** The human owner accepted candidate behavior on a physical iPhone 13 Pro running iOS 27.0 beta 3. The instrumented Release run then reconfirmed `chile -> 吃了`, the enabled V1.3 continuation sequence, disabled-state suppression, cold-process recovery, repeated commits and draft cleanup without sending a message.
+- **Performance review package:** The paired physical-device snapshot records disabled/enabled cold start, repeated final commit, candidate refresh, CPU samples, physical footprint and 250-ms hang rows with no unexplained feature regression. Exact environment, metrics, limitations, local trace locations and integrity summaries are in the [V1.3 physical-device acceptance record](../evidence/post-commit-continuation-v1.3-physical-device-2026-07-16.md).
+- **Review state:** PR #13 is merged and its Swift 6 Quality and GitGuardian checks passed, but GitHub reports no submitted review and no review decision. Executor output is complete; independent Quality/Architecture review remains required before this Assignment can advance to `Reviewed` and `Closed`.
+
+## Completion Handoff
+
+- **Executor conclusion:** `Completed` — implementation, automated verification, Simulator behavior, physical-device behavior and paired performance evidence are delivered.
+- **Quality handoff:** Review the physical-device record, confirm the six included trace bundles match the reported tables and verify the excluded pilot captures are not used as evidence.
+- **Architecture handoff:** Confirm the final snapshot remains within ADR 0017 and does not change the accepted RIME, persistence, host-context or network boundaries.
+- **Product handoff:** The human owner has accepted physical candidate behavior; final closure follows the required independent review and repository integration of the closure record.
+- **Closure rule:** Do not mark this Assignment `Reviewed` or `Closed`, and do not archive the V1.3 plan, merely because this evidence branch is pushed or its PR exists.
 
 ## V1.1 Revalidation Record
 

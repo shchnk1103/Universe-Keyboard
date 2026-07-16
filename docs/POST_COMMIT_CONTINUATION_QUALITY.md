@@ -30,6 +30,15 @@ Synthetic fixtures do not prove:
 
 Startup, commit-path cost, candidate refresh, memory, visual behavior and actual selection usefulness require separate physical-device evidence. No runtime text, surrounding host context or selection telemetry may be collected to satisfy this contract.
 
+The initial V1.3 physical-device package was collected on `2026-07-16` against
+Release commit `eaa72d5`. It records paired disabled/enabled cold-process and
+repeated final-commit runs on an iPhone 13 Pro with `rime_ice` and Full Access.
+The bounded snapshot found no unexplained CPU, physical-footprint or 250-ms
+hang regression and reconfirmed the expected enabled/disabled candidate
+behavior. See the [physical-device acceptance record](evidence/post-commit-continuation-v1.3-physical-device-2026-07-16.md)
+for exact values and non-claims. This runtime snapshot does not expand what the
+synthetic fixtures prove and remains pending independent review.
+
 ## V1.3 Registered Baseline
 
 - Bundled content: 250 manually authored synthetic contexts in a 22,728-byte JSON resource at the initial V1.3 snapshot.
