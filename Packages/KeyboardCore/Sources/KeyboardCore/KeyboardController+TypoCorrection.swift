@@ -9,6 +9,13 @@ extension KeyboardController {
             return
         }
 
+        // T9 digit compositions must not enter letter-based typo correction.
+        let rawForTypo = state.lastRimeOutput?.rawInput ?? state.currentComposition
+        if T9CompositionCommitPolicy.isT9DigitComposition(rawInput: rawForTypo) {
+            state.typoCorrection = nil
+            return
+        }
+
         let normalCandidates: [RimeCandidate]
         if let output = state.lastRimeOutput {
             normalCandidates = output.candidates

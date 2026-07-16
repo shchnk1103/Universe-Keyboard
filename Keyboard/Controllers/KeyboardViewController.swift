@@ -159,6 +159,10 @@ class KeyboardViewController: UIInputViewController {
     /// Apple 最佳实践：自定义键盘扩展运行在独立进程中，每次 XPC 调用都有开销。
     /// 缓存这些值可以显著减少每次按键的延迟。
     var cachedKeyClickEnabled: Bool = true
+    /// Cached layout preference (read on appear/activate only).
+    var cachedLayoutStyle: KeyboardLayoutStyle = .twentySixKey
+    /// Cached T9 readiness match for Chinese nine-key chrome.
+    var cachedT9ReadinessMatched: Bool = false
     var cachedHapticEnabled: Bool = false
 
     /// Feedback resources and cached levels stay owned by the view controller; methods live in +Feedback.

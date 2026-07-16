@@ -37,10 +37,10 @@ import RimeBridgeObjC
 public final class RimeEngineImpl: RimeEngine {
 
     /// ObjC 桥接层实例（封装 librime C API）
-    let bridge: RimeSessionManager
+    public let bridge: RimeSessionManager
     var nextRecoveryAttemptTime: CFTimeInterval = 0
     private var isSuspendedForVisibilityChange = false
-    private var activeSchemaID = "luna_pinyin"
+    var activeSchemaID = "luna_pinyin"
 
     // MARK: === Init ===
 
@@ -88,22 +88,22 @@ public final class RimeEngineImpl: RimeEngine {
         // 主 App 已负责部署与完整运行时验证。健康冷启动只确认 schema 可以选中，
         // 不再合成 "ni" 输入或枚举所有 schema；深度验证保留给失败恢复路径。
         let schemaStartTime = CACurrentMediaTime()
-        let activeSchema =
-            UserDefaults(
-                suiteName: "group.com.DoubleShy0N.Universe-Keyboard"
-            )?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
+        let selection = RimeRuntimeSelectionBridge.resolve(sharedDataDir: sharedDataDir)
+        let requestedSchema = selection.effectiveSchemaID
+        let fallbackSchema = selection.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
 
-        let selected = selectSchemaForStartup(activeSchema, fallback: "luna_pinyin")
+        let selected = selectSchemaForStartup(requestedSchema, fallback: fallbackSchema)
         let schemaElapsed = (CACurrentMediaTime() - schemaStartTime) * 1000
-        activeSchemaID = selected ?? activeSchema
+        activeSchemaID = selected ?? requestedSchema
         Logger.shared.info(
-            "Active schema: \(activeSchema), actual: \(selected ?? "nil")",
+            "Active schema base=\(selection.baseSchemaID) layout=\(selection.layoutStyle.rawValue) "
+                + "t9Matched=\(selection.t9ReadinessMatched) effective=\(requestedSchema) actual=\(selected ?? "nil")",
             category: .engine
         )
 
-        if selected != activeSchema {
+        if selected != requestedSchema {
             Logger.shared.warning(
-                "Schema mismatch: wanted '\(activeSchema)', "
+                "Schema mismatch: wanted '\(requestedSchema)', "
                     + "got '\(selected ?? "none")'; repair must be performed by the main app",
                 category: .engine
             )
@@ -199,7 +199,9 @@ public final class RimeEngineImpl: RimeEngine {
             return
         }
 
-        let selected = selectSchemaForStartup(activeSchemaID, fallback: "luna_pinyin")
+        let selection = RimeRuntimeSelectionBridge.resolve()
+        let fallback = selection.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
+        let selected = selectSchemaForStartup(selection.effectiveSchemaID, fallback: fallback)
         guard let selected else {
             bridge.finalize()
             Logger.shared.error(

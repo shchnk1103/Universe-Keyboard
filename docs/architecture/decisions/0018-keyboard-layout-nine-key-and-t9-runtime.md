@@ -2,9 +2,9 @@
 
 ## Status
 
-Accepted; implementation pending
+Accepted; implementation in progress
 
-Accepted after Codex Architecture/Quality review on `2026-07-16 Asia/Shanghai` required amendments to Decision Source handling (Assignment), versioned T9 readiness, ordered lifecycle writes, and unconditional T9 raw-digit non-commit. Spike technical direction (pinned librime `1.16.1` + remove `t9_processor`) is accepted; product code must implement this accepted contract and must not treat any prior `Proposed` text as authority.
+Accepted after Codex Architecture/Quality review on `2026-07-16 Asia/Shanghai`. Final Spike gate re-review (`docs/evidence/keyboard-layout-9key-001-codex-rereview-2.md`) authorized Assignment `Ready -> Active` for plan steps 3–10. Spike technical direction (pinned librime `1.16.1` + remove `t9_processor`) remains accepted; product code must implement this contract.
 
 ## Context
 

@@ -1,6 +1,6 @@
 # Keyboard Layout
 
-Lifecycle status: Accepted contract; implementation pending (ADR 0018)
+Lifecycle status: Active implementation under KEYBOARD-LAYOUT-9KEY-001 (ADR 0018 accepted)
 Source of truth for: 26-key / Chinese nine-key layout selection, effective RIME scheme resolution and versioned T9 readiness
 Related ADR: [`architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md`](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md)
 Related plan: [`plans/keyboard-layout-9key-implementation-plan.md`](plans/keyboard-layout-9key-implementation-plan.md)

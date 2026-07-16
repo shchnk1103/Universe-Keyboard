@@ -503,6 +503,24 @@ final class RimeSettingsStore {
     func uninstallRimeIce() { uninstallSchema("rime_ice") }
     func uninstallSchema(_ schemaID: String) { schemaManager.uninstallSchema(schemaID) }
 
+    // MARK: - Keyboard layout / T9
+
+    var layoutStyle: KeyboardLayoutStyle { schemaManager.currentLayoutStyle() }
+    var t9ReadinessMatched: Bool { schemaManager.currentT9ReadinessMatched() }
+    var rimeIceInstalledFilesExist: Bool { schemaManager.rimeIceFilesExist() }
+
+    func selectTwentySixKeyLayout() {
+        schemaManager.selectTwentySixKeyLayout()
+    }
+
+    func enableNineKeyLayout() async -> String? {
+        await schemaManager.enableNineKeyLayout()
+    }
+
+    func persistNineKeyLayoutWhenReady() {
+        T9DeploymentSupport.persistLayout(.nineKey, settings: schemaManager.settings)
+    }
+
     func checkForUpdateAndDownload() async {
         await checkForUpdateAndDownload(schemaID: "rime_ice")
     }

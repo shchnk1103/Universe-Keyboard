@@ -27,13 +27,14 @@ extension RimeEngineImpl {
         }
         nextRecoveryAttemptTime = 0
 
-        let schema =
-            UserDefaults(
-                suiteName: "group.com.DoubleShy0N.Universe-Keyboard"
-            )?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
-        let actual = selectAndVerifySchema(schema, fallback: "luna_pinyin")
+        let selection = RimeRuntimeSelectionBridge.resolve()
+        let schema = selection.effectiveSchemaID
+        let fallback = selection.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
+        let actual = selectAndVerifySchema(schema, fallback: fallback)
+        activeSchemaID = actual ?? schema
         Logger.shared.info(
-            "RIME session recreated after keyboard return; requested=\(schema), actual=\(actual ?? "nil")",
+            "RIME session recreated after keyboard return; base=\(selection.baseSchemaID) "
+                + "effective=\(schema) actual=\(actual ?? "nil") t9Matched=\(selection.t9ReadinessMatched)",
             category: .engine
         )
     }

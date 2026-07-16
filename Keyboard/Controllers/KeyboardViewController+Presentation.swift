@@ -119,14 +119,34 @@ extension KeyboardViewController {
         expandedPanelScrollView = nil
         switch state.currentPage {
         case .letters:
-            rootStack.addArrangedSubview(makeLetterRow(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]))
-            rootStack.addArrangedSubview(
-                makeLetterRow(["a", "s", "d", "f", "g", "h", "j", "k", "l"], horizontalInset: 18)
-            )
-            let thirdRow = makeLetterThirdRow()
-            rootStack.addArrangedSubview(thirdRow)
-            rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)
-            rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: false))
+            let usesT9Chrome =
+                state.inputMode == .chinese
+                && cachedLayoutStyle == .nineKey
+                && cachedT9ReadinessMatched
+            if usesT9Chrome {
+                // 3×3 T9 pad + shared bottom function row.
+                rootStack.addArrangedSubview(makeT9KeyRow([
+                    ("1", ""), ("2", "ABC"), ("3", "DEF"),
+                ]))
+                rootStack.addArrangedSubview(makeT9KeyRow([
+                    ("4", "GHI"), ("5", "JKL"), ("6", "MNO"),
+                ]))
+                let thirdRow = makeT9KeyRow([
+                    ("7", "PQRS"), ("8", "TUV"), ("9", "WXYZ"),
+                ])
+                rootStack.addArrangedSubview(thirdRow)
+                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)
+                rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: true))
+            } else {
+                rootStack.addArrangedSubview(makeLetterRow(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]))
+                rootStack.addArrangedSubview(
+                    makeLetterRow(["a", "s", "d", "f", "g", "h", "j", "k", "l"], horizontalInset: 18)
+                )
+                let thirdRow = makeLetterThirdRow()
+                rootStack.addArrangedSubview(thirdRow)
+                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)
+                rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: false))
+            }
         case .numbers:
             rootStack.addArrangedSubview(makeTextRow(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]))
             if state.inputMode == .chinese {

@@ -54,6 +54,11 @@ extension SchemaManager {
     func uninstallSchema(_ schemaID: String) {
         guard let entry = downloadableEntry(for: schemaID), let plan = entry.installationPlan else { return }
 
+        // ADR 0018: layout fallback and readiness invalidation before resource removal.
+        if schemaID == "rime_ice" {
+            prepareRimeIceUninstallWithLayoutFallback()
+        }
+
         archiveInstaller.uninstallSchemaFiles(plan: plan)
 
         for key in [

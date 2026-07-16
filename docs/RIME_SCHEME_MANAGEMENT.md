@@ -11,6 +11,8 @@ RIME scheme management V1 supports a scalable settings structure for the built-i
 
 Future schemes should be added to the same list-and-detail model instead of creating separate top-level settings blocks for each scheme.
 
+Chinese nine-key is **not** a separate user-visible base scheme. When fog-song (`rime_ice`) is installed, deployment may also compile a Universe-compatible `t9` schema (ADR 0018). Layout preference and versioned T9 readiness select `t9` at runtime; do not persist `t9` into `rime_active_schema`.
+
 ## User-Facing Model
 
 普通用户只需要理解三件事：

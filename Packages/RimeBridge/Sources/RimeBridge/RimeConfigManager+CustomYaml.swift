@@ -22,7 +22,17 @@ extension RimeConfigManager {
         // default.custom.yaml — active schema and candidate page size.
         // The app writes this before full deployment so the keyboard only consumes compiled results.
         let pageSize = defs?.integer(forKey: "rime_page_size") ?? 0
+        // Keep t9 compiled and selectable when fog-song is installed/active.
+        // Layout mode selects t9 at runtime; do not store t9 as base active schema.
         var defaultYaml = "patch:\n  schema_list:\n    - schema: \(activeSchema)\n"
+        if activeSchema == "rime_ice" || (defs?.bool(forKey: "rime_ice_installed") ?? false) {
+            if activeSchema != "t9" {
+                defaultYaml += "    - schema: t9\n"
+            }
+            if activeSchema != "rime_ice" {
+                defaultYaml += "    - schema: rime_ice\n"
+            }
+        }
         if pageSize >= 5 {
             defaultYaml += "  \"menu/page_size\": \(pageSize)\n"
         }

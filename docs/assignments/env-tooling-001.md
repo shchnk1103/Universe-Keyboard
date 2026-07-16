@@ -1,8 +1,8 @@
 # Assignment: ENV-TOOLING-001 — Reproducible Environment Digest Capability
 
-**Policy version：** `1.0.0`  
-**Decision date：** `2026-07-02 Asia/Shanghai`  
-**Decision source：** Product Lead — ENV-TOOLING-001 Assignment Decision  
+**Policy version：** `1.0.0`
+**Decision date：** `2026-07-02 Asia/Shanghai`
+**Decision source：** Product Lead — ENV-TOOLING-001 Assignment Decision
 **Lifecycle status：** `Assigned / Not Ready`
 
 ---

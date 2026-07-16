@@ -2,6 +2,24 @@ import KeyboardCore
 import UIKit
 
 extension KeyboardViewController {
+    // MARK: === T9 九键行 ===
+
+    /// Builds one row of three equal-width T9 keys.
+    /// - Parameter keys: (digit, letters) pairs, e.g. ("2", "ABC")
+    func makeT9KeyRow(_ keys: [(digit: String, letters: String)]) -> UIStackView {
+        let row = UIStackView()
+        row.axis = .horizontal
+        row.spacing = keyHorizontalSpacing
+        row.distribution = .fillEqually
+
+        for key in keys {
+            row.addArrangedSubview(makeT9KeyButton(digit: key.digit, letters: key.letters))
+        }
+
+        preferredRowHeightConstraint(for: row, height: keyHeight).isActive = true
+        return row
+    }
+
     // MARK: === 字母行 ===
 
     /// 构建一排字母键按钮。

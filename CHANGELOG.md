@@ -2,6 +2,15 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-16 — 26 键 / 中文九键布局切换（KEYBOARD-LAYOUT-9KEY-001）
+
+- 新增 `KeyboardLayoutStyle`、版本化 T9 就绪标记、`RimeRuntimeSelection` 有效方案解析，以及 `T9PreeditResolver` / 无 raw 数字上屏策略（ADR 0018）。
+- 主 App「设置 → 输入体验 → 键盘布局」提供 26 键 / 9 键卡片与无字符缩略图；启用九键走安装→部署→验证→就绪→最后写布局，失败保持原布局。
+- 雾凇安装清单与卸载清理包含兼容版 `t9.schema.yaml`；卸载先回退 26 键并失效就绪再删资源；切换离开雾凇仅回退布局并在资源完整时保留就绪。
+- Keyboard Extension 在中文 + 就绪九键时显示 3×3 T9 键（数字+字母），英文与自动英文场景保持 QWERTY；设置仅在出现/激活时缓存。
+- T9 兼容性 Spike 已通过固定 librime 1.16.1（移除 `t9_processor`）；不升级 vendor。
+- KeyboardCore 布局/就绪/预编辑/提交策略单测通过；Debug 模拟器构建通过。真机验收与浅色/深色截图仍依赖 Human Dependency。
+
 ## 2026-07-15 — 有界渐进式多错误召回预检
 
 - 按 KOS 2.0 发布并完成 `TYPO-CORRECTION-003`：在不改变 V2.0 生产默认值的前提下，新增纯内存、默认关闭的 60/64/8 渐进式召回计划。

@@ -2,7 +2,7 @@
 
 **Policy version:** `1.0.0`
 
-**Lifecycle status:** `Ready`
+**Lifecycle status:** `Active`
 
 **Repository change types:** `Contract`, `Documentation`, `Evidence`; after ADR acceptance and hardened Spike archive: `Implementation`, `State`
 
@@ -23,7 +23,7 @@
   - First Assignment `Active` claim was **invalid** under Codex review and remains superseded.
   - Codex amendment re-review (`docs/evidence/keyboard-layout-9key-001-codex-rereview.md`) accepted ADR architecture and Spike technical direction, and required three evidence/authorization P1 closures before `Active`.
   - **Current lifecycle status remains `Ready`.** Product implementation steps 3–10 must not start until those P1s are closed and the Assignment validly enters `Active`.
-- **Current phase:** Close Codex re-review P1/P2 evidence and Decision Source gates. Product steps 3–10 remain gated.
+- **Current phase:** Product implementation steps 3–10 under ADR 0018 after Codex final Spike gate re-review (`docs/evidence/keyboard-layout-9key-001-codex-rereview-2.md`) authorized `Ready -> Active` on `2026-07-16 Asia/Shanghai`.
 
 ## Assignment
 
@@ -141,7 +141,7 @@ Stop, mark `Blocked`, and hand evidence to Product Lead / Codex when any of the 
 
 ## Current Evidence Status
 
-- **Lifecycle:** **`Ready`** (not Active). Product steps 3–10 not started.
+- **Lifecycle:** **`Active`** as of Codex final Spike gate re-review (`keyboard-layout-9key-001-codex-rereview-2.md`). Product implementation steps 3–10 implemented; Codex implementation review open via `docs/evidence/keyboard-layout-9key-001-implementation-handoff.md`.
 - **Governance:** Stable Product Decision Source `PD-KEYBOARD-LAYOUT-9KEY-001` at `docs/product-decisions/KEYBOARD-LAYOUT-9KEY-001-authorization.md`. Product Approver is Human Product Owner.
 - **ADR 0018:** Architecture content accepted by Codex re-review (`docs/evidence/keyboard-layout-9key-001-codex-rereview.md`).
 - **First Codex review:** restored to immutable Codex-authored content at `docs/evidence/keyboard-layout-9key-001-codex-review.md` (Executor must not rewrite reviewer records).

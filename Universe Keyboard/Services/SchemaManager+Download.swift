@@ -124,6 +124,10 @@ extension SchemaManager {
             }
             if schemaID == "rime_ice" {
                 rimeIceVersion = version
+                if let shared = archiveInstaller.sharedDataDirectoryURL() {
+                    // Prepare compatible T9 schema before full deploy so schema_list can compile it.
+                    _ = try? T9DeploymentSupport.ensureCompatibleT9Schema(in: shared)
+                }
             }
 
             activateSchema(schemaID)

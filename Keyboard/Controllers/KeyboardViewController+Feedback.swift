@@ -99,6 +99,35 @@ extension KeyboardViewController {
             forKey: TypingStatisticsStorageKey.resetEpoch
         ) ?? 0
 
+        // Layout / T9 readiness: snapshot only — never read UserDefaults on the key path.
+        cachedLayoutStyle = KeyboardLayoutStyle.resolve(
+            defaults?.string(forKey: KeyboardLayoutSettingsKey.layoutStyle)
+        )
+        let markerData = defaults?.data(forKey: RimeT9Readiness.SettingsKey.marker)
+        let marker = markerData.flatMap { try? JSONDecoder().decode(RimeT9ReadinessMarker.self, from: $0) }
+        var onDiskFingerprint: String?
+        if let container = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: Self.appGroupID
+        ) {
+            let t9URL = container
+                .appendingPathComponent("Rime/shared/t9.schema.yaml")
+            onDiskFingerprint = RimeT9Readiness.fingerprint(ofFileAt: t9URL)
+        }
+        let selection = RimeRuntimeSelection.resolve(
+            baseSchemaID: defaults?.string(forKey: "rime_active_schema"),
+            layoutRawValue: defaults?.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
+            readinessMarker: marker,
+            onDiskFingerprint: onDiskFingerprint
+        )
+        cachedT9ReadinessMatched = selection.t9ReadinessMatched
+        cachedLayoutStyle = selection.layoutStyle
+        // Effective layout for chrome (nine-key only when matched).
+        if !selection.usesT9InputSemantics {
+            cachedLayoutStyle = .twentySixKey
+        } else {
+            cachedLayoutStyle = .nineKey
+        }
+
         if cachedHapticEnabled {
             hapticGenerator.prepare()
             modeEnterHapticGenerator.prepare()
