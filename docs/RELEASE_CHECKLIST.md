@@ -93,6 +93,7 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 - [ ] Full Access explanation remains accurate.
 - [ ] Built-in schema can be prepared and deployed.
 - [ ] `rime_ice` download/install/license/deploy path succeeds when included in the release scope.
+- [ ] Simulator keyboard behavior evidence records the selected device/OS/UDID, uses a normally signed runtime installation, confirms App Group availability, confirms the intended scheme is installed/healthy/current, and confirms the extension is enabled and switchable before typing.
 - [ ] Scheme switch, redownload/update and uninstall states are coherent.
 - [ ] Candidate count, simplification, fuzzy pinyin and advanced-input changes mark/apply deployment correctly.
 - [ ] User-dictionary learning switch, backup, restore and reset behave correctly for supported schemas.
@@ -135,7 +136,7 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 - [ ] In Chinese mode, `吃了 -> 吗 -> ？` works through the normal candidate bar and each selection inserts text exactly once.
 - [ ] Active composition hides continuation items; newline, host Delete, English mode, visibility change and disabling the setting prevent stale suggestions.
 - [ ] Unknown suffixes safely show no continuation, and continuation items do not expose RIME paging/selection-reference behavior.
-- [ ] The V1.2 synthetic quality benchmark passes, including 60 registered Top-3 cases across 15 categories, and its result is not reported as real-user coverage or acceptance-rate evidence.
+- [ ] The current synthetic quality benchmark passes, including its registered Top-3, reviewed Top-1 and ambiguous-suffix suppression fixtures, and its result is not reported as real-user coverage or acceptance-rate evidence.
 - [ ] The bundled continuation resource passes size, entry-count, length, duplicate and suggestion-count validation.
 
 ## RIME, Lua And OpenCC

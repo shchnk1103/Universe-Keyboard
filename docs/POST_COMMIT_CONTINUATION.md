@@ -1,8 +1,8 @@
 # Post-Commit Continuation Product Contract
 
-> **Version:** `1.2.0`
+> **Version:** `1.3.0`
 >
-> **Status:** V1.2 quality expansion active; physical-device acceptance pending
+> **Status:** V1.3 naturalness refinement active; physical-device acceptance pending
 >
 > **Product authority:** Human Product Owner authorization in the active Codex task, `2026-07-15 Asia/Shanghai`
 >
@@ -50,10 +50,19 @@ Quality definitions, provenance and expansion rules are owned by [`POST_COMMIT_C
 - Ranking remains deterministic and resource-authored. V1.2 does not infer frequency, inspect host text, learn from selections or add a generic fallback.
 - Simulator behavior with the installed `rime_ice` scheme is recorded separately from physical-device, performance and population-quality evidence.
 
+## V1.3 Naturalness Refinement
+
+- The bundled inventory stays fixed at 250 contexts. V1.3 replaces eight high-ambiguity single-character suffixes with eight specific multi-character contexts instead of increasing resource breadth.
+- Each declared category gains one reviewed exact Top-1 naturalness guard in addition to the existing Top-3 regression baseline.
+- Synthetic suppression fixtures protect the retired one-character suffixes from producing noisy fallback recommendations in unrelated text.
+- Runtime lookup, ordering and privacy behavior are unchanged. V1.3 still uses longest exact suffix plus resource order and introduces no learned or inferred ranking.
+- Simulator behavior evidence must follow the ordered environment preflight in the active V1.3 plan before any typing conclusion is recorded.
+- The ordered preflight passed on the iOS 27.0 iPhone 17 Pro Max Simulator on `2026-07-16`: normal signing and App Group access were valid, `rime_ice` was installed/current/healthy, and Universe Keyboard was selectable in Messages. `吃了 -> 吗 -> ？` and `我在地铁 -> 上` worked through real key taps and candidate selection; the single-character `我` case produced no continuation. This remains Simulator evidence only.
+
 ## Ranking Contract
 
 - Matching uses the longest exact suffix present in the bundled resource.
-- The resource order is authoritative for V1–V1.2 ranking.
+- The resource order is authoritative for V1–V1.3 ranking.
 - Results are deduplicated, empty values are discarded and at most eight suggestions are exposed.
 - No match produces an empty result; V1 does not fabricate or query a remote fallback.
 

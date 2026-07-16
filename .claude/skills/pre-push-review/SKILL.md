@@ -71,6 +71,17 @@ When none of these documents changes, the review summary must state why document
 - Do NOT commit or push
 - Tell user what to fix
 
+## Branch Retention And Cleanup Gate
+
+`AGENTS.md` is authoritative for GitHub publication and branch cleanup. Enforce these conditions after publishing:
+
+- A pushed feature branch or an open PR is a recovery checkpoint, not permission to delete the branch.
+- Keep both local and remote feature branches while the PR is unmerged, checks are failing, or remote state cannot be verified.
+- Before cleanup, fetch the current remote state and prove the published work commit is an ancestor of the remote default branch.
+- Synchronize the local default branch before deleting the feature branch. Use safe local deletion; do not force-delete an unmerged branch.
+- Delete the remote feature branch only after rechecking that the remote default branch still contains the work commit.
+- If any reachability or synchronization check fails, stop cleanup and report the preserved recovery checkpoint.
+
 ## Project Context
 
 - **KeyboardCore**: SPM at `Packages/KeyboardCore/`, tests via `swift test`

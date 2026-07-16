@@ -1,4 +1,4 @@
-# Assignment: POST-COMMIT-CONTINUATION-001 — Ephemeral Post-Commit Continuation V1–V1.2
+# Assignment: POST-COMMIT-CONTINUATION-001 — Ephemeral Post-Commit Continuation V1–V1.3
 
 **Policy version:** `1.0.0`
 
@@ -7,12 +7,12 @@
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human Product Owner instructions authorizing V1, the cautious V1.1 start and continuation into the next V1.2 stage in the active Codex task / `2026-07-15 Asia/Shanghai`
+- **Decision Source / Date:** Human Product Owner instructions authorizing V1, the cautious V1.1 start, V1.2 expansion and continuation into V1.3 with explicit Simulator preflight requirements in the active Codex task / `2026-07-15 Asia/Shanghai`
 - **Product Approver:** Product Lead acting under the human owner's explicit authorization
 
 ## Boundary
 
-- **Scope:** Product contract, ADR, bounded bundled continuation resource, resource validation, synthetic quality benchmark, KeyboardCore state/provider/selection semantics, candidate-bar integration, default-on setting, tests and release documentation. V1.2 may expand the manually authored resource to 250 contexts and the representative benchmark to 60 cases across 15 declared categories without changing runtime or privacy boundaries.
+- **Scope:** Product contract, ADR, bounded bundled continuation resource, resource validation, synthetic quality benchmark, KeyboardCore state/provider/selection semantics, candidate-bar integration, default-on setting, tests and release documentation. V1.3 may replace ambiguous synthetic entries, strengthen reviewed Top-1 naturalness and suppression fixtures, and codify Simulator preflight without increasing the 250-context inventory or changing runtime and privacy boundaries.
 - **Non-goals:** Host context, personal learning, persistence of text, models, network, RIME deployment/session changes, English prediction and unrelated typo-correction work.
 - **Required Inputs:** Product contract, ADR 0017, candidate/input architecture, UI style guide, privacy policy, performance baseline and release checklist.
 
@@ -39,10 +39,10 @@
 
 ## Current Evidence Status
 
-- **Implementation:** V1.0, V1.1 and the bounded V1.2 content and benchmark expansion are complete on the isolated `codex/post-commit-continuation-v1-2` branch.
-- **Automated quality:** The complete KeyboardCore suite, app/keyboard Simulator tests and strict Swift 6 Release Simulator build passed for V1.2. The unchanged RimeBridge boundary retains the passing V1.0 branch evidence.
+- **Implementation:** V1.0 through V1.3 are implemented on the isolated `codex/post-commit-continuation-v1-3` branch. V1.3 implementation and Simulator validation are complete; physical-device acceptance remains open.
+- **Automated quality:** V1.3 resource validation, focused and complete KeyboardCore tests, app/keyboard Simulator tests and strict Swift 6 Release Simulator build passed. The unchanged RimeBridge boundary retains the passing V1.0 branch evidence.
 - **Privacy review:** No host-context read, content persistence, logging, synchronization or network path was added; only the enabled preference persists.
-- **Simulator behavior:** On the iOS 27.0 iPhone 17 Pro Max Simulator, the App Group was available and `rime_ice` downloaded, passed its basic check and became the active scheme. `chile -> 吃了 -> 吗 -> ？` inserted exactly once per selection; the new V1.2 contexts exposed `早餐 -> 吃了吗` and `下雨 -> 了`; host Delete cleared committed text and continuation state. This is Simulator behavior evidence, not physical-device or population-quality evidence.
+- **Simulator behavior:** On `2026-07-16`, the booted iOS 27.0 iPhone 17 Pro Max Simulator (`06C5BC3E-7599-4761-A1A2-71DAEA991474`) passed the ordered V1.3 preflight: normal signing, App Group availability, installed/current/basic-check-passed `rime_ice`, system keyboard registration and globe-key switching. In Messages, `chile -> 吃了 -> 吗 -> ？` and `wozaiditie -> 我在地铁 -> 上` inserted exactly once per selection; committing the single character `我` exposed no continuation, and Delete cleared state. The draft was cleared and no message was sent. This is Simulator behavior evidence, not physical-device, performance or population-quality evidence.
 - **Open human gate:** Physical-device behavior, latency and memory comparison. This prevents Assignment closure but does not invalidate the automated or Simulator implementation evidence.
 
 ## V1.1 Revalidation Record
@@ -60,3 +60,11 @@
 - The expanded benchmark remains regression evidence for registered cases only and must not be described as real-user coverage, acceptance rate or corpus-frequency evidence.
 - The final V1.2 snapshot contains exactly 250 unique contexts and a 60-case benchmark spanning 15 declared categories; automated suites, strict Release build and representative `rime_ice` Simulator behavior passed.
 - Any host context, telemetry, downloaded corpus, learning, persistence, model or network proposal remains a Stop Condition requiring a new Product Decision.
+
+## V1.3 Revalidation Record
+
+- The human owner explicitly authorized V1.3 on `2026-07-15 Asia/Shanghai` and required the known Simulator setup failures to become ordered preconditions rather than ad-hoc troubleshooting; no Assignment field is `UNKNOWN`.
+- V1.3 keeps the accepted state machine, candidate UI, resource ceilings, RIME boundary and privacy contract unchanged. It does not increase the 250-context inventory.
+- Quality work is limited to replacing high-ambiguity synthetic suffixes, correcting reviewed ranking naturalness and strengthening test-only Top-1 and suppression fixtures.
+- Simulator behavior testing must stop before typing unless the selected device is confirmed, a normal signed Simulator build exposes the App Group, `rime_ice` is installed/basic-check-passed/current, and Universe Keyboard is enabled and switchable in the system keyboard list.
+- `CODE_SIGNING_ALLOWED=NO` remains valid for compile/test evidence but must not be used for the app installation that supplies runtime App Group or RIME deployment evidence.

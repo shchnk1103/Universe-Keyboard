@@ -1,6 +1,6 @@
 # Post-Commit Continuation Quality Contract
 
-> **Version:** `1.2.0`
+> **Version:** `1.3.0`
 >
 > **Status:** Active synthetic regression baseline
 >
@@ -10,7 +10,7 @@
 
 ## Purpose
 
-This document defines what the V1.2 continuation benchmark can and cannot prove. Its immediate purpose is to prevent reviewed common scenarios from regressing while the bundled content pack grows.
+This document defines what the V1.3 continuation benchmark can and cannot prove. Its immediate purpose is to prevent reviewed common scenarios, first-candidate naturalness and ambiguous-suffix suppression from regressing.
 
 ## Evidence Classes
 
@@ -30,15 +30,17 @@ Synthetic fixtures do not prove:
 
 Startup, commit-path cost, candidate refresh, memory, visual behavior and actual selection usefulness require separate physical-device evidence. No runtime text, surrounding host context or selection telemetry may be collected to satisfy this contract.
 
-## V1.2 Registered Baseline
+## V1.3 Registered Baseline
 
-- Bundled content: 250 manually authored synthetic contexts in a 22,514-byte JSON resource at the initial V1.2 snapshot.
+- Bundled content: 250 manually authored synthetic contexts in a 22,728-byte JSON resource at the initial V1.3 snapshot.
 - Representative fixture: 60 cases, exactly four in each of meal, schedule, greeting, acknowledgement, work, travel, care, logistics, question, emotion, family, shopping, study, entertainment and weather.
+- Naturalness fixture: 15 reviewed exact Top-1 cases, one in each declared category.
+- Suppression fixture: eight synthetic unrelated contexts ending in retired high-ambiguity single-character suffixes must produce no continuation.
 - Positive gate: every registered case produces at least one suggestion and at least one reviewed expectation within the top three.
 - Negative gate: registered unknown synthetic suffixes produce no fabricated fallback.
 - Resource gate: strict validation rejects invalid format version/content version, oversize files, excessive entries, excessive suggestion counts, duplicate/empty/line-breaking content and text beyond the runtime context bound.
 
-These inventory values describe the initial V1.2 baseline, not a permanent performance budget or a claim that more entries are always better.
+These inventory values describe the initial V1.3 baseline, not a permanent performance budget or a claim that the fixtures prove general language quality.
 
 ## Content Review Rules
 

@@ -46,12 +46,12 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
 
     func testResourceLoaderRejectsWrongVersionOversizeAndInvalidEntries() {
         let wrongVersion = Data(
-            #"{"version":2,"contentVersion":"1.2.0","entries":[]}"#.utf8
+            #"{"version":2,"contentVersion":"1.3.0","entries":[]}"#.utf8
         )
         XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: wrongVersion))
 
         let wrongContentVersion = Data(
-            #"{"version":1,"contentVersion":"1.1.0","entries":[]}"#.utf8
+            #"{"version":1,"contentVersion":"1.2.0","entries":[]}"#.utf8
         )
         XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: wrongContentVersion))
 
@@ -62,7 +62,7 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
         XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: oversized))
 
         let duplicateContext = Data(
-            #"{"version":1,"contentVersion":"1.2.0","entries":[{"context":"好","suggestions":["的"]},{"context":"好","suggestions":["呀"]}]}"#.utf8
+            #"{"version":1,"contentVersion":"1.3.0","entries":[{"context":"好","suggestions":["的"]},{"context":"好","suggestions":["呀"]}]}"#.utf8
         )
         XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: duplicateContext))
     }
@@ -107,6 +107,13 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
         XCTAssertEqual(
             BundledContinuationSuggestionProvider.shared.suggestions(for: "今天早餐", limit: 8).first,
             "吃了吗"
+        )
+        XCTAssertEqual(
+            BundledContinuationSuggestionProvider.shared.suggestions(for: "我在地铁", limit: 8).first,
+            "上"
+        )
+        XCTAssertTrue(
+            BundledContinuationSuggestionProvider.shared.suggestions(for: "只有我", limit: 8).isEmpty
         )
     }
 }
