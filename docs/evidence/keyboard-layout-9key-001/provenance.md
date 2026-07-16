@@ -15,8 +15,11 @@
 - Destination: `platform=iOS Simulator,id=06C5BC3E-7599-4761-A1A2-71DAEA991474`
 - Pinned vendor tag (from docs/architecture/rime-artifacts.md): `rime-vendor-ios-1.16.1-lua.1`
 - Vendor verify log SHA-256: `03fd59b207427813f241bb2217f226ac161e682885d370421269bff6e51b17e4`
-- xcodebuild full log SHA-256: `784ac88f775d414cc7f181f55e9c7cdb0127b00c8d9d68a79eb59097c7ebe651`
+- xcodebuild full log SHA-256 (decompressed raw): `784ac88f775d414cc7f181f55e9c7cdb0127b00c8d9d68a79eb59097c7ebe651`
+- Transferable full log archive: `docs/evidence/keyboard-layout-9key-001/xcodebuild-t9-spike.log.gz`
+- xcodebuild full log SHA-256 (compressed `.gz`): `724303a0b3d22783766bcd9e1b1bc76290dc81d79f1c5c5afe7e363ddca8e181`
 - Vendor verify required: yes (non-zero exit fails Spike)
+- Tracked worktree cleanliness required for archival runs: yes (runner enforces `git diff-index --quiet HEAD`)
 - Vendor manifest excerpt:
 
 ```

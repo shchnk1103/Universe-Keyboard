@@ -129,19 +129,33 @@ rm -rf "$SHARED_DIR/build" "$USER_DIR/build"
 
 HARNESS_COMMIT="$(git rev-parse HEAD)"
 HARNESS_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-if [[ -n "$(git status --porcelain --untracked-files=no -- \
-  Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9CompatibilitySpikeTests.swift \
-  scripts/run_t9_compatibility_spike.sh 2>/dev/null || true)" ]]; then
-  fail "Spike harness has uncommitted modifications; commit test+runner before archival run so provenance binds to a real snapshot"
+
+# P2 / provenance: entire tracked worktree must match HEAD so the recorded
+# commit is the complete tested source snapshot. Local gitignored evidence
+# output may remain dirty/untracked.
+if ! git diff-index --quiet HEAD --; then
+  git status --porcelain --untracked-files=no >"$LOG_DIR/dirty-tracked-worktree.txt" || true
+  fail "Tracked worktree is dirty relative to HEAD; commit or stash all tracked changes before Spike archival (see $LOG_DIR/dirty-tracked-worktree.txt)"
 fi
+git status --porcelain --untracked-files=normal >"$LOG_DIR/git-status-porcelain.txt" || true
+TRACKED_STATUS_SHA="$(shasum -a 256 "$LOG_DIR/git-status-porcelain.txt" | awk '{print $1}')"
+# Also refuse untracked source under package/app trees that could affect the build.
+UNTRACKED_SOURCE="$(git ls-files --others --exclude-standard -- \
+  Packages scripts "Universe Keyboard" Keyboard UniverseKeyboardTests KeyboardTests 2>/dev/null || true)"
+if [[ -n "$UNTRACKED_SOURCE" ]]; then
+  printf '%s\n' "$UNTRACKED_SOURCE" >"$LOG_DIR/untracked-source-paths.txt"
+  fail "Untracked source paths exist under Packages/scripts/app/test trees; commit or remove them before Spike archival"
+fi
+
 if [[ ! -f "$ROOT_DIR/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9CompatibilitySpikeTests.swift" ]]; then
   fail "Spike test file missing from worktree"
 fi
 # Ensure the recorded commit actually contains the harness when history is available.
-if git cat-file -e "${HARNESS_COMMIT}:Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9CompatibilitySpikeTests.swift" 2>/dev/null; then
+if git cat-file -e "${HARNESS_COMMIT}:Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9CompatibilitySpikeTests.swift" 2>/dev/null \
+  && git cat-file -e "${HARNESS_COMMIT}:scripts/run_t9_compatibility_spike.sh" 2>/dev/null; then
   HARNESS_IN_COMMIT="yes"
 else
-  fail "HEAD commit ${HARNESS_COMMIT} does not contain RimeT9CompatibilitySpikeTests.swift; commit harness before running Spike"
+  fail "HEAD commit ${HARNESS_COMMIT} does not contain both Spike XCTest and runner; commit harness before running Spike"
 fi
 
 echo "==> Verifying pinned RIME vendor presence (failure fails Spike)"
@@ -198,6 +212,8 @@ fi
   echo "- Branch: $HARNESS_BRANCH"
   echo "- Harness commit (must contain Spike test + runner): \`$HARNESS_COMMIT\`"
   echo "- Harness present in commit: $HARNESS_IN_COMMIT"
+  echo "- Tracked worktree clean relative to HEAD: yes"
+  echo "- git status porcelain SHA-256: \`$TRACKED_STATUS_SHA\`"
   echo "- Upstream URL: $UPSTREAM_T9_URL"
   echo "- Upstream version field: ${UPSTREAM_VERSION:-unknown}"
   echo "- Upstream SHA-256: \`$UPSTREAM_SHA\`"

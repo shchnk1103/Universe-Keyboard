@@ -9,23 +9,21 @@
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:**
-  1. Human Product Owner instruction in the active Grok task session on `2026-07-16 Asia/Shanghai`: create a new branch; execute [`docs/plans/keyboard-layout-9key-implementation-plan.md`](../plans/keyboard-layout-9key-implementation-plan.md) strictly; complete Assignment and ADR first, then the T9 Spike; do not skip stop conditions; hand all Section 13 evidence to Codex review.
-  2. Codex Architecture/Quality review conclusions on `2026-07-16 Asia/Shanghai`, relayed by the same Human Product Owner: Spike technical direction is conditionally accepted (pinned librime `1.16.1` + remove `t9_processor`); Assignment must not remain `Active` until Decision Source is verifiable; ADR 0018 must be revised (versioned readiness, ordered enable/disable, unconditional no-raw-digit commit) and enter `Accepted; implementation pending` before product code; Spike assertions/provenance must be hardened and re-archived on a committed snapshot. Review body is recorded in the owner-relayed Codex review message and the amended handoff at [`docs/evidence/keyboard-layout-9key-001-codex-handoff.md`](../evidence/keyboard-layout-9key-001-codex-handoff.md).
-- **Product Approver:** Human Product Owner (repository Product authority for this work item). The virtual Product Lead role may only execute Assignment mechanics under that owner confirmation; it is not a substitute Decision Source.
+- **Decision Source / Date:** Stable repository Product Decision [`PD-KEYBOARD-LAYOUT-9KEY-001`](../product-decisions/KEYBOARD-LAYOUT-9KEY-001-authorization.md) (`docs/product-decisions/KEYBOARD-LAYOUT-9KEY-001-authorization.md`), recorded `2026-07-16 Asia/Shanghai`. That Decision captures the Human Product Owner authorization wording, named Executor (Grok), named gate reviewer (Codex), date/timezone and Active-entry gates. Supporting Architecture/Quality records (immutable first review, amendment re-review, handoff) are linked from the Decision; they are not substitutes for the Product Decision Source.
+- **Product Approver:** Human Product Owner (repository Product authority for this work item), as named in `PD-KEYBOARD-LAYOUT-9KEY-001`. The virtual Product Lead role may only execute Assignment mechanics under that Product Decision; it is not a substitute Decision Source.
 - **Product Plan (non-authority input):** [`docs/plans/keyboard-layout-9key-implementation-plan.md`](../plans/keyboard-layout-9key-implementation-plan.md) — defines scope and order; **not** itself a Product Lead authorization record.
-- **Architecture Decision:** [ADR 0018](../architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md) — must be `Accepted; implementation pending` before product implementation enters `Active`.
+- **Architecture Decision:** [ADR 0018](../architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md) — architecture content accepted by Codex re-review; product implementation enters `Active` only when Assignment evidence P1s are closed and Entry Criteria for Active are met.
 
 ## Acknowledgement And Activation
 
 - **Executor acknowledgement:** `2026-07-16 Asia/Shanghai` — Assignment, ADR, T9 Spike, stop conditions and Codex amendment requirements accepted.
 - **Architecture acknowledgement:** ADR 0018 revised for versioned readiness, ordered lifecycle writes and unconditional T9 raw-digit non-commit; status `Accepted; implementation pending` after Codex-required amendments.
 - **Product lifecycle decision:**
-  - Governance + Spike package only was authorized first.
-  - First Assignment `Active` claim was **invalid** under Codex review (unverifiable Decision Source / Proposed ADR authorizing implementation) and is superseded by this revision.
-  - Current status after amendments + hardened Spike re-archive: **`Ready`**.
-  - Product implementation may move `Ready -> Active` only when ADR 0018 is `Accepted; implementation pending`, hardened Spike evidence is bound to a committed snapshot, and no required field is `UNKNOWN`.
-- **Current phase:** Codex amendment package (Assignment, ADR, Spike assertion/provenance hardening). Product steps 3–10 remain gated.
+  - Governance + Spike package only was authorized first under `PD-KEYBOARD-LAYOUT-9KEY-001`.
+  - First Assignment `Active` claim was **invalid** under Codex review and remains superseded.
+  - Codex amendment re-review (`docs/evidence/keyboard-layout-9key-001-codex-rereview.md`) accepted ADR architecture and Spike technical direction, and required three evidence/authorization P1 closures before `Active`.
+  - **Current lifecycle status remains `Ready`.** Product implementation steps 3–10 must not start until those P1s are closed and the Assignment validly enters `Active`.
+- **Current phase:** Close Codex re-review P1/P2 evidence and Decision Source gates. Product steps 3–10 remain gated.
 
 ## Assignment
 
@@ -97,10 +95,13 @@
 
 #### Active (product implementation)
 
-- ADR 0018 status is `Accepted; implementation pending`.
-- Hardened Spike evidence is bound to a Git commit that contains the Spike test and runner.
-- Codex amendment requirements for Assignment/ADR/Spike assertions are recorded as satisfied or explicitly waived by Architecture/Quality.
+- Decision Source is the stable Product Decision `PD-KEYBOARD-LAYOUT-9KEY-001` (not conversation-only text).
+- ADR 0018 architecture content remains accepted.
+- Transferable Spike archive includes the complete raw xcodebuild log (or compressed form) with hashes, and the first Codex review remains immutable.
+- Hardened Spike evidence is bound to a Git commit that contains the Spike harness; archival runs require a clean tracked worktree.
+- Codex re-review Exit Criteria for blocking P1s are satisfied or explicitly waived by Architecture/Quality.
 - No Stop Condition is active.
+- Assignment lifecycle is explicitly transitioned `Ready -> Active` for product steps 3–10 (do not imply Active while still `Ready`).
 
 ### Exit Criteria
 
@@ -140,17 +141,17 @@ Stop, mark `Blocked`, and hand evidence to Product Lead / Codex when any of the 
 
 ## Current Evidence Status
 
-- **Governance:** Assignment Decision Source revised to cite Human Product Owner task instruction + Codex review conclusions; Product Approver is Human Product Owner; lifecycle corrected from invalid early `Active` to `Ready` pending product Active gate.
-- **ADR 0018:** Revised for versioned readiness marker, ordered enable/disable/uninstall, preserve readiness on base-scheme switch when T9 files remain intact, and unconditional no-raw-digit commit during T9 composition. Status: `Accepted; implementation pending`.
-- **Spike (initial, superseded):** technical direction passed on `2026-07-16` but assertions/provenance were insufficient for archival (OR condition; unbound commit; vendor verify `|| true`).
-- **Spike (hardened, current):** **PASSED** on harness commit `337dd30ab443ad2d2af497648910946d6beb1a35`.
+- **Lifecycle:** **`Ready`** (not Active). Product steps 3–10 not started.
+- **Governance:** Stable Product Decision Source `PD-KEYBOARD-LAYOUT-9KEY-001` at `docs/product-decisions/KEYBOARD-LAYOUT-9KEY-001-authorization.md`. Product Approver is Human Product Owner.
+- **ADR 0018:** Architecture content accepted by Codex re-review (`docs/evidence/keyboard-layout-9key-001-codex-rereview.md`).
+- **First Codex review:** restored to immutable Codex-authored content at `docs/evidence/keyboard-layout-9key-001-codex-review.md` (Executor must not rewrite reviewer records).
+- **Codex re-review:** `docs/evidence/keyboard-layout-9key-001-codex-rereview.md`.
+- **Spike (hardened):** **PASSED** on harness commit `337dd30ab443ad2d2af497648910946d6beb1a35`.
   - Tracked archive: `docs/evidence/keyboard-layout-9key-001/`
-  - Handoff: `docs/evidence/keyboard-layout-9key-001-codex-handoff.md`
-  - Local full run (gitignored): `evidence/keyboard-layout-9key-spike/20260716-195542/`
-  - Machine summary: `T9_SPIKE_RESULT passed=true librime=1.16.1 schema=t9 rawAfter64=64 preeditAfter64=64 candidateCount=9 candidateSample=你|密|米|迷|秘 firstCandidateComment=ni rawAfterDelete=6`
-  - Full log SHA-256: `784ac88f775d414cc7f181f55e9c7cdb0127b00c8d9d68a79eb59097c7ebe651`
+  - Full raw log (transferable): `docs/evidence/keyboard-layout-9key-001/xcodebuild-t9-spike.log.gz`
+  - Decompressed raw log SHA-256: `784ac88f775d414cc7f181f55e9c7cdb0127b00c8d9d68a79eb59097c7ebe651`
+  - Compressed log SHA-256: `724303a0b3d22783766bcd9e1b1bc76290dc81d79f1c5c5afe7e363ddca8e181`
   - Vendor verify log SHA-256: `03fd59b207427813f241bb2217f226ac161e682885d370421269bff6e51b17e4`
-  - Upstream schema SHA-256: `56bc593d2c846666361b3394bdc0bdb0c6f1a663f1fd810dceab2d222b5bf8f6`
-  - Patched schema SHA-256: `176a01aefcfeba856906ba6e83a9cf147fbd57d39f9923c70b36879c8bb5d57b`
-- **Product implementation:** **Not started.** May enter `Active` only after Codex re-accepts this amendment package (or Human Product Owner explicitly directs continuation under accepted ADR 0018).
+  - Machine summary: `T9_SPIKE_RESULT passed=true librime=1.16.1 schema=t9 rawAfter64=64 preeditAfter64=64 candidateCount=9 candidateSample=你|密|米|迷|秘 firstCandidateComment=ni rawAfterDelete=6`
+- **Product implementation:** **Not started.** Remains blocked until re-review Exit Criteria are satisfied and Assignment transitions to `Active`.
 - **Physical-device gate:** Open; depends on Human Product Owner after implementation.

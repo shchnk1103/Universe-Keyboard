@@ -1,15 +1,9 @@
-# KEYBOARD-LAYOUT-9KEY-001 — Codex Spike Gate Review (first review)
-
-> Historical record of the first Codex Spike-gate review.
-> **Superseded for current status by** the amendment package in
-> [`keyboard-layout-9key-001-codex-handoff.md`](keyboard-layout-9key-001-codex-handoff.md)
-> and commits `337dd30` (harness/ADR/Assignment amendments) + `ad5da19` (hardened Spike archive).
-> Do not treat the “not approved for product implementation yet” conclusion below as the current gate without re-reading the amendment package.
+# KEYBOARD-LAYOUT-9KEY-001 — Codex Spike Gate Review
 
 Reviewer: Codex (Architecture + Quality review)
 Review date: 2026-07-16 Asia/Shanghai
 Reviewed branch: `feature/keyboard-layout-9key-spike`
-Reviewed handoff: first Spike handoff (pre-amendment)
+Reviewed handoff: [`keyboard-layout-9key-001-codex-handoff.md`](keyboard-layout-9key-001-codex-handoff.md)
 Assignment: [`../assignments/keyboard-layout-9key-001.md`](../assignments/keyboard-layout-9key-001.md)
 ADR: [`../architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md`](../architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md)
 

@@ -58,6 +58,7 @@
 ## Collaboration And Governance
 
 - Task Assignment contract: [`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md)
+- Product Decision records (stable authorization sources): [`product-decisions/`](product-decisions/)
 - Permanent team ownership and bootstrap prompts: [`VIRTUAL_ENGINEERING_TEAM.md`](VIRTUAL_ENGINEERING_TEAM.md)
 - Knowledge operating model: [`KNOWLEDGE_OS.md`](KNOWLEDGE_OS.md)
 - Knowledge OS 2.0 canonical specification: [`docs/kos/`](kos/)
