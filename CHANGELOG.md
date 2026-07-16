@@ -8,6 +8,7 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - 开启状态下，重复 `chile -> 吃了` 后稳定显示 V1.3 词表中的接续候选；关闭状态下仍正常上屏，但候选栏保持为空。冷进程重启后两种状态都能恢复真实 RIME 输入，测试草稿最终清空且未发送消息。
 - Activity Monitor 与 Time Profiler 配对快照覆盖冷启动、最终提交、候选刷新、CPU、物理内存和 250ms 卡顿表；该设备/构建上未观察到无法解释的功能回归。具体数值只属于带环境与重验证条件的证据快照，不是永久性能预算或广泛兼容性结论。
 - PR #13 已合并且 CI 通过，但没有提交的独立 review；Assignment 已推进到 `Completed`，仍需独立 Quality/Architecture review 后才能正式 `Reviewed/Closed` 并归档 V1.3 计划。
+- 独立 Quality、Performance & Release 与 Architecture & Knowledge 审查已在 `2026-07-16` 通过并形成可复算的记录；Product Gate 仍待明确关闭，因此 Assignment 和 V1.3 计划尚未进入正式收口状态。
 
 ## 2026-07-15 — 有界渐进式多错误召回预检
 

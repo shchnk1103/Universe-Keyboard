@@ -14,10 +14,10 @@
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/post-commit-continuation-001.md)
 - **Product source:** [`Post-Commit Continuation Product Contract`](POST_COMMIT_CONTINUATION.md)
 - **Architecture source:** [ADR 0017](architecture/decisions/0017-ephemeral-post-commit-continuation.md)
-- **Current phase:** Executor handoff complete; independent Quality/Architecture review and closure synchronization pending.
+- **Current phase:** Independent Quality/Architecture review complete; Product Gate and closure synchronization pending.
 - **Current implementation:** Bounded bundled provider, transient KeyboardCore state, distinct candidate semantics, candidate-bar integration, default-on setting, strict resource validation, a 60-case/15-category synthetic Top-3 benchmark and a 250-context curated pack are present.
 - **Current evidence:** The human owner accepted physical-device candidate behavior. A paired Release snapshot on iPhone 13 Pro/iOS 27.0 beta 3 covers enabled/disabled cold process, repeated final commit, candidate refresh, CPU, physical footprint and 250-ms hang rows without an unexplained feature regression. See the [physical-device acceptance record](evidence/post-commit-continuation-v1.3-physical-device-2026-07-16.md).
-- **Open gate:** PR #13 merged with passing CI but no submitted review. The Assignment is `Completed`, not `Reviewed` or `Closed`, until an independent Quality/Architecture conclusion is recorded and closure is synchronized.
+- **Open gate:** The [independent review record](evidence/post-commit-continuation-v1.3-independent-review-2026-07-16.md) records passing Quality and Architecture conclusions. The Assignment remains `Completed`, not `Reviewed` or `Closed`, until the Product Gate is explicitly closed and closure is synchronized.
 - **Stop conditions:** Host-context access, committed-text persistence/logging/network use, unbounded lookup, RIME-session prediction or unexplained performance regression.
 
 ## TYPING-INTELLIGENCE-001 — Local Typing Intelligence Foundation
