@@ -1,8 +1,8 @@
-1285:2026-07-16 19:44:47.982787+0800 xctest[94305:3128392] [RIME] deploy setup: modules=core+dict+gears+lua luaCompiledIn=YES luaModuleRegisteredBeforeSetup=YES
-1286:2026-07-16 19:44:47.984703+0800 xctest[94305:3128392] [RIME] deploy setup complete: luaComponents=lua_processor=true+lua_translator=true+lua_filter=true+lua_segmentor=true
-1288:E20260716 19:44:58.486918 0x16bc97000 text_db.cc:132] Error opening db 'essay' read-only.
-1295:T9_SPIKE_RESULT passed=true librime=1.16.1 schema=t9 rawAfter64=64 preeditAfter64=64 candidateCount=9 candidateSample=你|密|米|迷|秘 rawAfterDelete=6 deploy=librime 1.16.1, luaRuntimeRegistered=true
-1296:T9_SPIKE_RESULT passed=true librime=1.16.1 schema=t9 rawAfter64=64 preeditAfter64=64 candidateCount=9 candidateSample=你|密|米|迷|秘 rawAfterDelete=6 deploy=librime 1.16.1, luaRuntimeRegistered=true
-1297:2026-07-16 19:44:59.642490+0800 xctest[94305:3128392] T9_SPIKE_RESULT passed=true librime=1.16.1 schema=t9 rawAfter64=64 preeditAfter64=64 candidateCount=9 candidateSample=你|密|米|迷|秘 rawAfterDelete=6 deploy=librime 1.16.1, luaRuntimeRegistered=true
-1298:Test Case '-[RimeBridgeTests.RimeT9CompatibilitySpikeTests testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor]' passed (11.674 seconds).
+1285:2026-07-16 19:56:07.021362+0800 xctest[14828:3168065] [RIME] deploy setup: modules=core+dict+gears+lua luaCompiledIn=YES luaModuleRegisteredBeforeSetup=YES
+1286:2026-07-16 19:56:07.023304+0800 xctest[14828:3168065] [RIME] deploy setup complete: luaComponents=lua_processor=true+lua_translator=true+lua_filter=true+lua_segmentor=true
+1288:E20260716 19:56:19.050541 0x16debf000 text_db.cc:132] Error opening db 'essay' read-only.
+1295:T9_SPIKE_RESULT passed=true librime=1.16.1 schema=t9 rawAfter64=64 preeditAfter64=64 candidateCount=9 candidateSample=你|密|米|迷|秘 firstCandidateComment=ni rawAfterDelete=6 deploy=librime 1.16.1, luaRuntimeRegistered=true
+1296:T9_SPIKE_RESULT passed=true librime=1.16.1 schema=t9 rawAfter64=64 preeditAfter64=64 candidateCount=9 candidateSample=你|密|米|迷|秘 firstCandidateComment=ni rawAfterDelete=6 deploy=librime 1.16.1, luaRuntimeRegistered=true
+1297:2026-07-16 19:56:20.467300+0800 xctest[14828:3168065] T9_SPIKE_RESULT passed=true librime=1.16.1 schema=t9 rawAfter64=64 preeditAfter64=64 candidateCount=9 candidateSample=你|密|米|迷|秘 firstCandidateComment=ni rawAfterDelete=6 deploy=librime 1.16.1, luaRuntimeRegistered=true
+1298:Test Case '-[RimeBridgeTests.RimeT9CompatibilitySpikeTests testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor]' passed (13.484 seconds).
 1312:** TEST SUCCEEDED **

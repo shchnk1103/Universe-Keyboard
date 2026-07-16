@@ -142,7 +142,15 @@ Stop, mark `Blocked`, and hand evidence to Product Lead / Codex when any of the 
 
 - **Governance:** Assignment Decision Source revised to cite Human Product Owner task instruction + Codex review conclusions; Product Approver is Human Product Owner; lifecycle corrected from invalid early `Active` to `Ready` pending product Active gate.
 - **ADR 0018:** Revised for versioned readiness marker, ordered enable/disable/uninstall, preserve readiness on base-scheme switch when T9 files remain intact, and unconditional no-raw-digit commit during T9 composition. Status: `Accepted; implementation pending`.
-- **Spike (initial):** technical direction passed on `2026-07-16` but assertions/provenance were insufficient for archival (OR condition; unbound commit; vendor verify `|| true`). Superseded by hardened re-run after commit.
-- **Spike (hardened):** see latest tracked evidence under `docs/evidence/keyboard-layout-9key-001/` and handoff `docs/evidence/keyboard-layout-9key-001-codex-handoff.md`.
-- **Product implementation:** **Not started.** May enter `Active` only after this Ready package is re-reviewed or Product Owner directs continuation under the accepted ADR.
+- **Spike (initial, superseded):** technical direction passed on `2026-07-16` but assertions/provenance were insufficient for archival (OR condition; unbound commit; vendor verify `|| true`).
+- **Spike (hardened, current):** **PASSED** on harness commit `337dd30ab443ad2d2af497648910946d6beb1a35`.
+  - Tracked archive: `docs/evidence/keyboard-layout-9key-001/`
+  - Handoff: `docs/evidence/keyboard-layout-9key-001-codex-handoff.md`
+  - Local full run (gitignored): `evidence/keyboard-layout-9key-spike/20260716-195542/`
+  - Machine summary: `T9_SPIKE_RESULT passed=true librime=1.16.1 schema=t9 rawAfter64=64 preeditAfter64=64 candidateCount=9 candidateSample=你|密|米|迷|秘 firstCandidateComment=ni rawAfterDelete=6`
+  - Full log SHA-256: `784ac88f775d414cc7f181f55e9c7cdb0127b00c8d9d68a79eb59097c7ebe651`
+  - Vendor verify log SHA-256: `03fd59b207427813f241bb2217f226ac161e682885d370421269bff6e51b17e4`
+  - Upstream schema SHA-256: `56bc593d2c846666361b3394bdc0bdb0c6f1a663f1fd810dceab2d222b5bf8f6`
+  - Patched schema SHA-256: `176a01aefcfeba856906ba6e83a9cf147fbd57d39f9923c70b36879c8bb5d57b`
+- **Product implementation:** **Not started.** May enter `Active` only after Codex re-accepts this amendment package (or Human Product Owner explicitly directs continuation under accepted ADR 0018).
 - **Physical-device gate:** Open; depends on Human Product Owner after implementation.

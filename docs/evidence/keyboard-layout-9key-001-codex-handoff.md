@@ -65,18 +65,28 @@ scripts/run_t9_compatibility_spike.sh
 
 No product KeyboardCore / Extension / main-App settings implementation files.
 
-### 3–4. Upstream / Spike results
+### 3–4. Upstream / Spike results (hardened re-run)
+
+| Field | Value |
+|---|---|
+| Status | **PASSED** |
+| Harness commit | `337dd30ab443ad2d2af497648910946d6beb1a35` |
+| Local full run | `evidence/keyboard-layout-9key-spike/20260716-195542/` |
+| Full xcodebuild log SHA-256 | `784ac88f775d414cc7f181f55e9c7cdb0127b00c8d9d68a79eb59097c7ebe651` |
+| Vendor verify log SHA-256 | `03fd59b207427813f241bb2217f226ac161e682885d370421269bff6e51b17e4` |
+| Upstream schema SHA-256 | `56bc593d2c846666361b3394bdc0bdb0c6f1a663f1fd810dceab2d222b5bf8f6` |
+| Patched schema SHA-256 | `176a01aefcfeba856906ba6e83a9cf147fbd57d39f9923c70b36879c8bb5d57b` |
+| Machine summary | `schema=t9 rawAfter64=64 preeditAfter64=64 candidateCount=9 firstCandidateComment=ni rawAfterDelete=6` |
 
 Tracked under `docs/evidence/keyboard-layout-9key-001/`:
 
 - `upstream-t9.schema.yaml`
 - `patched-t9.schema.yaml`
-- `provenance.md` — must list harness commit that contains the test/runner
+- `provenance.md`
 - `spike-result.md`
+- `archive-hashes.md`
+- `rime-vendor-verify.log`
 - `xcodebuild-t9-spike-excerpt.log`
-- vendor verify log SHA and full log SHA inside provenance/result
-
-Local full run (gitignored): `evidence/keyboard-layout-9key-spike/<stamp>/`
 
 ### 5–7. Product tests / screenshots / device
 
