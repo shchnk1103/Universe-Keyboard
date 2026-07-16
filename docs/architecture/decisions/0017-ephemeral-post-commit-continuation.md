@@ -30,6 +30,12 @@ V1.2 keeps the V1.1 runtime, privacy and fail-closed ceilings unchanged. It expa
 
 The larger inventory still does not establish corpus frequency, population coverage or acceptance rate. Any downloaded corpus, runtime telemetry, host-context access, learning or model-based ranking remains outside this ADR and requires a new Product and data review.
 
+### V1.3 Naturalness Refinement
+
+V1.3 keeps the V1.2 inventory size and every runtime, validation and privacy boundary unchanged. It replaces a bounded set of high-ambiguity single-character suffixes with specific reviewed contexts and adds test-only exact Top-1 and suppression fixtures.
+
+This is a content-quality amendment, not a new ranking architecture: longest exact suffix and resource order remain authoritative. Broader suppression heuristics, inferred frequency and learned ranking remain outside this ADR.
+
 ## Alternatives Considered
 
 - Keep a RIME composition alive after commit: rejected because it contaminates marked-text and session semantics.

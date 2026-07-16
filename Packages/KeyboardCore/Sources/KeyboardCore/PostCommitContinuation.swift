@@ -24,7 +24,7 @@ enum ContinuationLexiconValidationError: Error, Equatable {
 }
 
 enum ContinuationLexiconValidator {
-    /// V1.2 intentionally remains below a few thousand entries. Raising this
+    /// V1.3 intentionally remains below a few thousand entries. Raising this
     /// ceiling requires new Extension startup and memory evidence.
     static let maximumEntryCount = 4_096
     static let maximumTextLength = ContinuationState.maximumContextLength
@@ -131,7 +131,7 @@ public struct BundledContinuationSuggestionProvider: ContinuationSuggestionProvi
 
     private static func loadBundledResource() -> Self {
         guard let url = Bundle.module.url(
-            forResource: "post_commit_continuations_v1_2",
+            forResource: "post_commit_continuations_v1_3",
             withExtension: "json"
         ),
         let data = try? Data(contentsOf: url),
@@ -147,7 +147,7 @@ public struct BundledContinuationSuggestionProvider: ContinuationSuggestionProvi
         guard data.count <= maximumBundledResourceBytes,
         let resource = try? JSONDecoder().decode(Resource.self, from: data),
         resource.version == 1,
-        resource.contentVersion == "1.2.0",
+        resource.contentVersion == "1.3.0",
         let provider = try? Self(validating: resource.entries)
         else {
             return nil

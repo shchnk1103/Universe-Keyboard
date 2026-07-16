@@ -1,8 +1,7 @@
 {
   "version": 1,
-  "contentVersion": "1.2.0",
+  "contentVersion": "1.3.0",
   "entries": [
-    { "context": "吃", "suggestions": ["了", "饭", "东西", "什么"] },
     { "context": "吃了", "suggestions": ["吗", "饭", "什么", "东西"] },
     { "context": "吃了吗", "suggestions": ["？", "我", "你", "🍽️", "在", "亲爱的"] },
     { "context": "吃饭", "suggestions": ["了吗", "了", "吧", "去"] },
@@ -10,7 +9,6 @@
     { "context": "想吃", "suggestions": ["什么", "火锅", "饭", "点东西"] },
     { "context": "午饭", "suggestions": ["吃什么", "吃了吗", "一起吃", "时间到了"] },
     { "context": "晚饭", "suggestions": ["吃什么", "吃了吗", "一起吃", "做好了"] },
-    { "context": "喝", "suggestions": ["水", "点什么", "咖啡", "茶"] },
     { "context": "多喝", "suggestions": ["水", "热水"] },
 
     { "context": "今天", "suggestions": ["天气", "下午", "晚上", "去", "是"] },
@@ -38,19 +36,14 @@
     { "context": "晚安", "suggestions": ["啦", "，", "！", "好梦"] },
     { "context": "早上好", "suggestions": ["呀", "！", "，", "今天"] },
 
-    { "context": "我", "suggestions": ["们", "是", "想", "要", "在"] },
     { "context": "我们", "suggestions": ["一起", "今天", "可以", "去", "都"] },
     { "context": "我想", "suggestions": ["问一下", "知道", "去", "和你说"] },
     { "context": "我在", "suggestions": ["家", "路上", "公司", "这里"] },
     { "context": "我已经", "suggestions": ["到了", "收到了", "完成了", "发给你了"] },
-    { "context": "你", "suggestions": ["好", "们", "是", "在", "可以"] },
     { "context": "你们", "suggestions": ["好", "可以", "都", "在"] },
     { "context": "你可以", "suggestions": ["看一下", "试试", "告诉我", "发给我"] },
-    { "context": "他", "suggestions": ["们", "是", "在", "说"] },
-    { "context": "她", "suggestions": ["们", "是", "在", "说"] },
     { "context": "可以", "suggestions": ["的", "吗", "一起", "试试", "看看"] },
     { "context": "好的", "suggestions": ["，", "谢谢", "没问题", "👌"] },
-    { "context": "好", "suggestions": ["的", "呀", "吧", "！"] },
     { "context": "行", "suggestions": ["，", "吧", "的", "没问题"] },
     { "context": "嗯", "suggestions": ["嗯", "，", "好", "可以"] },
     { "context": "没问题", "suggestions": ["，", "的", "！", "👌"] },
@@ -74,7 +67,7 @@
     { "context": "到家", "suggestions": ["了", "吗", "告诉我", "就好"] },
     { "context": "下班", "suggestions": ["了", "吗", "回家", "一起"] },
     { "context": "我到了", "suggestions": ["，", "在门口", "你下来吧", "告诉你"] },
-    { "context": "在路上", "suggestions": ["了", "，", "马上到", "注意安全"] },
+    { "context": "在路上", "suggestions": ["，", "马上到", "注意安全", "堵车吗"] },
     { "context": "快到了", "suggestions": ["，", "等我一下", "马上", "告诉你"] },
     { "context": "出发", "suggestions": ["了", "了吗", "吧", "之前"] },
     { "context": "到了", "suggestions": ["吗", "，", "告诉我", "就好"] },
@@ -170,6 +163,7 @@
     { "context": "机场", "suggestions": ["到了吗", "见", "接你", "出发"] },
     { "context": "车站", "suggestions": ["到了吗", "见", "等你", "出发"] },
     { "context": "地铁", "suggestions": ["到了吗", "上", "站", "有点挤"] },
+    { "context": "我在地铁", "suggestions": ["上", "，马上到", "站", "里"] },
     { "context": "公交", "suggestions": ["车", "到了吗", "站", "有点慢"] },
     { "context": "打车", "suggestions": ["了吗", "过去", "回家", "吧"] },
     { "context": "堵车", "suggestions": ["了", "吗", "有点严重", "可能会迟到"] },
@@ -188,6 +182,7 @@
     { "context": "还好吗", "suggestions": ["？", "，", "哪里不舒服", "需要帮忙吗"] },
     { "context": "不舒服", "suggestions": ["吗", "就休息", "要去看看", "告诉我"] },
     { "context": "头疼", "suggestions": ["吗", "就休息一下", "好点了吗", "要不要去看看"] },
+    { "context": "今天有点头疼", "suggestions": ["，要多休息", "，就休息一下", "吗", "？"] },
 
     { "context": "包裹", "suggestions": ["到了", "收到了吗", "在门口", "已发出"] },
     { "context": "取件", "suggestions": ["了吗", "码", "通知", "时间"] },
@@ -213,6 +208,7 @@
 
     { "context": "开心", "suggestions": ["！", "就好", "吗", "😊"] },
     { "context": "难过", "suggestions": ["吗", "就说出来", "别一个人扛", "抱抱"] },
+    { "context": "不要一个人难过", "suggestions": ["，有我在", "，想说就说出来", "就说出来", "。"] },
     { "context": "生气", "suggestions": ["了吗", "吗", "就冷静一下", "别气了"] },
     { "context": "紧张", "suggestions": ["吗", "也没关系", "就深呼吸", "别担心"] },
     { "context": "放心", "suggestions": ["吧", "，", "交给我", "没问题"] },
@@ -233,7 +229,6 @@
     { "context": "姐姐", "suggestions": ["在吗", "回来了", "说", "一起"] },
     { "context": "奶奶", "suggestions": ["身体好吗", "在家", "想你了", "说"] },
 
-    { "context": "买", "suggestions": ["什么", "了", "东西", "一个"] },
     { "context": "想买", "suggestions": ["什么", "这个", "一个", "点东西"] },
     { "context": "下单", "suggestions": ["了", "了吗", "成功", "之前"] },
     { "context": "商场", "suggestions": ["见", "逛逛", "在哪里", "关门了吗"] },
@@ -249,16 +244,20 @@
     { "context": "下课", "suggestions": ["了", "吗", "见", "一起吃饭"] },
     { "context": "作业", "suggestions": ["写完了吗", "交了吗", "是什么", "有点多"] },
     { "context": "考试", "suggestions": ["加油", "结束了吗", "怎么样", "什么时候"] },
+    { "context": "准备考试", "suggestions": ["了吗", "吧", "加油", "得怎么样"] },
     { "context": "复习", "suggestions": ["了吗", "计划", "一下", "得怎么样"] },
     { "context": "老师", "suggestions": ["说", "您好", "来了", "布置了作业"] },
     { "context": "同学", "suggestions": ["你好", "们", "说", "一起"] },
     { "context": "学校", "suggestions": ["见", "门口", "放假了", "通知"] },
+    { "context": "我到学校", "suggestions": ["了", "门口", "，再联系", "见"] },
     { "context": "图书馆", "suggestions": ["见", "学习", "有位置吗", "关门了吗"] },
+    { "context": "去图书馆", "suggestions": ["学习", "吗", "吧", "有位置吗"] },
 
     { "context": "电影", "suggestions": ["好看吗", "什么时候开始", "一起看", "票"] },
     { "context": "电视剧", "suggestions": ["好看吗", "更新了", "看完了吗", "推荐"] },
     { "context": "音乐", "suggestions": ["很好听", "推荐", "听吗", "开始了"] },
     { "context": "游戏", "suggestions": ["玩吗", "开始了", "一起", "更新了"] },
+    { "context": "晚上玩游戏", "suggestions": ["吗", "一起吗", "开始了", "吧"] },
     { "context": "拍照", "suggestions": ["吗", "了", "好看", "留念"] },
     { "context": "视频", "suggestions": ["发给你了", "看了吗", "很好看", "通话"] },
     { "context": "演出", "suggestions": ["开始了", "几点开始", "门票", "很好看"] },
@@ -275,6 +274,7 @@
     { "context": "温度", "suggestions": ["多少", "有点低", "刚刚好", "升高了"] },
     { "context": "降温", "suggestions": ["了", "注意保暖", "多穿点", "很明显"] },
     { "context": "天气预报", "suggestions": ["说明天下雨", "准吗", "看了吗", "有降温"] },
+    { "context": "看看天气预报", "suggestions": ["，明天可能下雨", "准吗", "了吗", "再出门"] },
     { "context": "带伞", "suggestions": ["了吗", "吧", "，", "可能下雨"] }
   ]
 }

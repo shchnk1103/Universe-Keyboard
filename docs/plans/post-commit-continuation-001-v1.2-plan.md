@@ -1,6 +1,12 @@
 # POST-COMMIT-CONTINUATION-001 V1.2 Quality Expansion Plan
 
-> **Status:** Implementation complete; physical-device performance and final Product acceptance remain open under the Assignment
+> **Status:** Archived
+>
+> **Closure date:** `2026-07-15 Asia/Shanghai`
+>
+> **Current source of truth:** [`POST_COMMIT_CONTINUATION.md`](../POST_COMMIT_CONTINUATION.md) and the active [`V1.3 plan`](post-commit-continuation-001-v1.3-plan.md)
+>
+> **Related ADR:** [ADR 0017](../architecture/decisions/0017-ephemeral-post-commit-continuation.md); this archived plan is no longer current development guidance
 >
 > **Start date:** `2026-07-15 Asia/Shanghai`
 >

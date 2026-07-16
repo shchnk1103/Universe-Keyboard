@@ -53,6 +53,19 @@ Always correlate a failure with its immediately preceding lifecycle/deployment e
 
 ## Troubleshooting Flows
 
+### Simulator Keyboard Behavior Preflight
+
+Complete these checks in order before treating Simulator typing as feature evidence:
+
+1. Record the currently booted Simulator model, OS and UDID; do not reuse a stale device assumption.
+2. Build, install and launch the main App with normal Simulator signing. `CODE_SIGNING_ALLOWED=NO` is acceptable for compile/test evidence but not for an installation used to prove App Group or RIME runtime behavior.
+3. Confirm the main App bundle resolves the expected App Group container. A missing group container invalidates all scheme-installation conclusions until the app is reinstalled correctly.
+4. In the main App, confirm the intended scheme is installed, passes its basic check and is current. Install, deploy or select `rime_ice` before opening the host app when any state is false.
+5. Confirm Universe Keyboard is enabled in the system keyboard list. Apply the repository Simulator keyboard baseline when needed, then verify the globe key can actually select Universe Keyboard in the host.
+6. Only then type synthetic input and record candidate behavior. Never send a host message merely to prove keyboard output.
+
+If any preflight check fails, classify it as device selection, signing/App Group, deployment/schema or system keyboard enablement before investigating continuation logic.
+
 ### Keyboard Has No Real RIME Candidates
 
 1. Confirm `Rime/shared` and `Rime/user` exist by opening the main App deployment status.
