@@ -2,9 +2,9 @@
 
 ## Status
 
-Accepted; implementation in progress
+Accepted; V1 implementation complete
 
-Accepted after Codex Architecture/Quality review on `2026-07-16 Asia/Shanghai`. Final Spike gate re-review (`docs/evidence/keyboard-layout-9key-001-codex-rereview-2.md`) authorized Assignment `Ready -> Active` for plan steps 3–10. Spike technical direction (pinned librime `1.16.1` + remove `t9_processor`) remains accepted; product code must implement this contract.
+Accepted after Codex Architecture/Quality review on `2026-07-16 Asia/Shanghai`. Final Spike gate re-review (`docs/evidence/keyboard-layout-9key-001-codex-rereview-2.md`) authorized Assignment `Ready -> Active` for plan steps 3–10. Implementation code-review closed (`docs/evidence/keyboard-layout-9key-001-codex-implementation-rereview-3.md`). Product Gate **PASS** (`docs/evidence/keyboard-layout-9key-001-product-gate-decision.md`); Assignment KEYBOARD-LAYOUT-9KEY-001 is `Closed`. Spike technical direction (pinned librime `1.16.1` + remove `t9_processor`) remains the V1 contract.
 
 ## Context
 
