@@ -71,4 +71,19 @@ Only the main App installs T9 schema artifacts, runs full deployment and writes 
 
 Product implementation of nine-key required a successful isolated T9 Spike on the pinned librime artifact with strong assertions (non-empty candidates **and** composition/preedit) and commit-bound provenance.
 
-Evidence and handoff: [`evidence/keyboard-layout-9key-001-codex-handoff.md`](evidence/keyboard-layout-9key-001-codex-handoff.md) and [`evidence/keyboard-layout-9key-001/`](evidence/keyboard-layout-9key-001/).
+### Spike result (hardened, 2026-07-16)
+
+- Status: **PASSED**
+- Harness commit: `337dd30ab443ad2d2af497648910946d6beb1a35`
+- Evidence archive commit: `ad5da19a487507452f4514e5225f555256ab3f04`
+- Tracked evidence: `docs/evidence/keyboard-layout-9key-001/`
+- Local full run: `evidence/keyboard-layout-9key-spike/20260716-195542/`
+- Pinned librime: `1.16.1` (`rime-vendor-ios-1.16.1-lua.1`)
+- Compatibility patch: remove `t9_processor` only
+- Proven: select `t9`, input `64` → raw `64`, preedit `64`, 9 candidates (`你|密|米|迷|秘`), first comment `ni`, BackSpace → raw `6`
+- Vendor verify failure fails Spike
+- Runner: `scripts/run_t9_compatibility_spike.sh`
+- Test: `Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9CompatibilitySpikeTests.swift`
+
+Amendment handoff: [`evidence/keyboard-layout-9key-001-codex-handoff.md`](evidence/keyboard-layout-9key-001-codex-handoff.md).  
+First Codex review record (pre-amendment): [`evidence/keyboard-layout-9key-001-codex-review.md`](evidence/keyboard-layout-9key-001-codex-review.md).
