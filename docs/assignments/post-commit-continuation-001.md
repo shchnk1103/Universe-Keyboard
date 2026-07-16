@@ -39,10 +39,10 @@
 
 ## Current Evidence Status
 
-- **Implementation:** V1.0, V1.1 and V1.2 are complete. V1.3 quality refinement is active on the isolated `codex/post-commit-continuation-v1-3` branch.
-- **Automated quality:** The complete KeyboardCore suite, app/keyboard Simulator tests and strict Swift 6 Release Simulator build passed for V1.2. The unchanged RimeBridge boundary retains the passing V1.0 branch evidence.
+- **Implementation:** V1.0 through V1.3 are implemented on the isolated `codex/post-commit-continuation-v1-3` branch. V1.3 implementation and Simulator validation are complete; physical-device acceptance remains open.
+- **Automated quality:** V1.3 resource validation, focused and complete KeyboardCore tests, app/keyboard Simulator tests and strict Swift 6 Release Simulator build passed. The unchanged RimeBridge boundary retains the passing V1.0 branch evidence.
 - **Privacy review:** No host-context read, content persistence, logging, synchronization or network path was added; only the enabled preference persists.
-- **Simulator behavior:** On the iOS 27.0 iPhone 17 Pro Max Simulator, the App Group was available and `rime_ice` downloaded, passed its basic check and became the active scheme. `chile -> 吃了 -> 吗 -> ？` inserted exactly once per selection; the new V1.2 contexts exposed `早餐 -> 吃了吗` and `下雨 -> 了`; host Delete cleared committed text and continuation state. This is Simulator behavior evidence, not physical-device or population-quality evidence.
+- **Simulator behavior:** On `2026-07-16`, the booted iOS 27.0 iPhone 17 Pro Max Simulator (`06C5BC3E-7599-4761-A1A2-71DAEA991474`) passed the ordered V1.3 preflight: normal signing, App Group availability, installed/current/basic-check-passed `rime_ice`, system keyboard registration and globe-key switching. In Messages, `chile -> 吃了 -> 吗 -> ？` and `wozaiditie -> 我在地铁 -> 上` inserted exactly once per selection; committing the single character `我` exposed no continuation, and Delete cleared state. The draft was cleared and no message was sent. This is Simulator behavior evidence, not physical-device, performance or population-quality evidence.
 - **Open human gate:** Physical-device behavior, latency and memory comparison. This prevents Assignment closure but does not invalidate the automated or Simulator implementation evidence.
 
 ## V1.1 Revalidation Record
