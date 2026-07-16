@@ -9,7 +9,16 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - 雾凇安装清单与卸载清理包含兼容版 `t9.schema.yaml`；卸载先回退 26 键并失效就绪再删资源；切换离开雾凇仅回退布局并在资源完整时保留就绪。
 - Keyboard Extension 在中文 + 就绪九键时显示 3×3 T9 键（数字+字母），英文与自动英文场景保持 QWERTY；设置仅在出现/激活时缓存。
 - T9 兼容性 Spike 已通过固定 librime 1.16.1（移除 `t9_processor`）；不升级 vendor。
-- KeyboardCore 布局/就绪/预编辑/提交策略单测通过；Debug 模拟器构建通过。真机验收与浅色/深色截图仍依赖 Human Dependency。
+- Codex 实现复审通过；Product Gate PASS（真机证据包）；Assignment `Closed`。
+
+## 2026-07-16 — 上屏后联想 V1.3 真机与配对性能证据
+
+- 在物理 iPhone 13 Pro、iOS 27.0 beta 3、雾凇拼音和完全访问开启的环境中，重新核对系统键盘注册与权限，并用正常签名的 Release 合并提交验证上屏后联想。
+- 开启状态下，重复 `chile -> 吃了` 后稳定显示 V1.3 词表中的接续候选；关闭状态下仍正常上屏，但候选栏保持为空。冷进程重启后两种状态都能恢复真实 RIME 输入，测试草稿最终清空且未发送消息。
+- Activity Monitor 与 Time Profiler 配对快照覆盖冷启动、最终提交、候选刷新、CPU、物理内存和 250ms 卡顿表；该设备/构建上未观察到无法解释的功能回归。具体数值只属于带环境与重验证条件的证据快照，不是永久性能预算或广泛兼容性结论。
+- PR #13 已合并且 CI 通过，但没有提交的独立 review；Assignment 已推进到 `Completed`，仍需独立 Quality/Architecture review 后才能正式 `Reviewed/Closed` 并归档 V1.3 计划。
+- 独立 Quality、Performance & Release 与 Architecture & Knowledge 审查已在 `2026-07-16` 通过并形成可复算的记录；Product Gate 仍待明确关闭，因此 Assignment 和 V1.3 计划尚未进入正式收口状态。
+- 人类 Product Lead 已在 `2026-07-16` 明确关闭 V1.3，并授权 PR #14 转为 Ready、合并以及合并后的安全分支清理；Assignment 已记录为 `Closed`，V1.3 计划已归档。
 
 ## 2026-07-15 — 有界渐进式多错误召回预检
 
