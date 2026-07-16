@@ -2,7 +2,7 @@
 
 > **Version:** `1.3.0`
 >
-> **Status:** V1.3 executor work complete; independent review and closure pending
+> **Status:** V1.3 closed on `2026-07-16`; implementation, independent review and physical-device acceptance are recorded
 >
 > **Product authority:** Human Product Owner authorization in the active Codex task, `2026-07-15 Asia/Shanghai`
 >

@@ -2,12 +2,12 @@
 
 **Policy version:** `1.0.0`
 
-**Lifecycle status:** `Completed`
+**Lifecycle status:** `Closed`
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human Product Owner instructions authorizing V1, the cautious V1.1 start, V1.2 expansion and continuation into V1.3 with explicit Simulator preflight requirements in the active Codex task / `2026-07-15 Asia/Shanghai`; physical-device behavior acceptance and authorization to complete paired performance verification / `2026-07-16 Asia/Shanghai`
+- **Decision Source / Date:** Human Product Owner instructions authorizing V1, the cautious V1.1 start, V1.2 expansion and continuation into V1.3 with explicit Simulator preflight requirements in the active Codex task / `2026-07-15 Asia/Shanghai`; physical-device behavior acceptance and authorization to complete paired performance verification / `2026-07-16 Asia/Shanghai`; explicit Product Gate closure, PR #14 readiness/merge and post-merge branch cleanup authorization / `2026-07-16 Asia/Shanghai`
 - **Product Approver:** Product Lead acting under the human owner's explicit authorization
 
 ## Boundary
@@ -45,15 +45,15 @@
 - **Simulator behavior:** On `2026-07-16`, the booted iOS 27.0 iPhone 17 Pro Max Simulator (`06C5BC3E-7599-4761-A1A2-71DAEA991474`) passed the ordered V1.3 preflight: normal signing, App Group availability, installed/current/basic-check-passed `rime_ice`, system keyboard registration and globe-key switching. In Messages, `chile -> 吃了 -> 吗 -> ？` and `wozaiditie -> 我在地铁 -> 上` inserted exactly once per selection; committing the single character `我` exposed no continuation, and Delete cleared state. The draft was cleared and no message was sent. This is Simulator behavior evidence, not physical-device, performance or population-quality evidence.
 - **Physical-device behavior:** The human owner accepted candidate behavior on a physical iPhone 13 Pro running iOS 27.0 beta 3. The instrumented Release run then reconfirmed `chile -> 吃了`, the enabled V1.3 continuation sequence, disabled-state suppression, cold-process recovery, repeated commits and draft cleanup without sending a message.
 - **Performance review package:** The paired physical-device snapshot records disabled/enabled cold start, repeated final commit, candidate refresh, CPU samples, physical footprint and 250-ms hang rows with no unexplained feature regression. Exact environment, metrics, limitations, local trace locations and integrity summaries are in the [V1.3 physical-device acceptance record](../evidence/post-commit-continuation-v1.3-physical-device-2026-07-16.md).
-- **Review state:** The independent Quality, Performance & Release and Architecture & Knowledge reviews passed on `2026-07-16`; their scope, recomputed trace values, boundary findings and limitations are in the [independent review record](../evidence/post-commit-continuation-v1.3-independent-review-2026-07-16.md). The Product Gate remains pending, so this Assignment stays `Completed` rather than advancing to `Reviewed` or `Closed`.
+- **Review state:** The independent Quality, Performance & Release and Architecture & Knowledge reviews passed on `2026-07-16`; their scope, recomputed trace values, boundary findings and limitations are in the [independent review record](../evidence/post-commit-continuation-v1.3-independent-review-2026-07-16.md). The human Product Lead explicitly closed the Product Gate on the same date. Lifecycle progression was `Completed → Reviewed → Closed`.
 
 ## Completion Handoff
 
 - **Executor conclusion:** `Completed` — implementation, automated verification, Simulator behavior, physical-device behavior and paired performance evidence are delivered.
 - **Quality conclusion:** `Passed` — six retained bundles, the reported CPU/memory/sample/hang values, cold-process data, exclusions and SHA-256 summaries were independently reproduced; the conclusion remains a bounded snapshot.
 - **Architecture conclusion:** `Passed` — the implementation remains within [`0017-ephemeral-post-commit-continuation.md`](../architecture/decisions/0017-ephemeral-post-commit-continuation.md), with no host-context, persistence, network or RIME-boundary expansion.
-- **Product handoff:** The human owner has accepted physical candidate behavior. An explicit Product Gate conclusion is the remaining condition before lifecycle closure; see the independent review record.
-- **Closure rule:** Do not mark this Assignment `Reviewed` or `Closed`, and do not archive the V1.3 plan, merely because this evidence branch is pushed or its PR exists.
+- **Product conclusion:** `Closed` — the human Product Lead accepted the independent review package and explicitly authorized PR #14 readiness, merge and post-merge branch cleanup.
+- **Closure synchronization:** The V1.3 plan is archived in this commit. PR #14 must still be merged and default-branch reachability verified before branch cleanup; no push alone is treated as closure proof.
 
 ## V1.1 Revalidation Record
 

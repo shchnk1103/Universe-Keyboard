@@ -1,8 +1,14 @@
 # POST-COMMIT-CONTINUATION-001 V1.3 Naturalness Refinement Plan
 
-> **Status:** Active
+> **Status:** Archived
 >
-> **Current stage:** Independent Quality/Architecture review complete; Product Gate and closure synchronization pending
+> **Closure date:** `2026-07-16 Asia/Shanghai`
+>
+> **Current source of truth:** [`POST_COMMIT_CONTINUATION.md`](../POST_COMMIT_CONTINUATION.md), [`POST-COMMIT-CONTINUATION-001`](../assignments/post-commit-continuation-001.md) and the linked acceptance/review records
+>
+> **Related ADR:** [`0017-ephemeral-post-commit-continuation.md`](../architecture/decisions/0017-ephemeral-post-commit-continuation.md)
+>
+> **Current stage:** Closed by the Product Gate; this archived plan is no longer current development guidance
 >
 > **Start date:** `2026-07-15 Asia/Shanghai`
 >
@@ -77,10 +83,10 @@ Recorded on `2026-07-16 Asia/Shanghai` against Release commit `eaa72d5` on a phy
 ## Gate 7 — Independent Review And Closure
 
 - [x] Obtain an independent Quality/Architecture review of the merged implementation and the physical-device evidence package — both passed on `2026-07-16`; see the [independent review record](../evidence/post-commit-continuation-v1.3-independent-review-2026-07-16.md).
-- [ ] Advance the Assignment from `Completed` to `Reviewed` only after review conclusions are recorded.
-- [ ] After Product/Quality closure and repository integration, mark the Assignment `Closed`, archive this plan with the required closure metadata and synchronize the Engineering Dashboard.
+- [x] Advance the Assignment from `Completed` to `Reviewed` after independent review conclusions were recorded and the Product Gate accepted them.
+- [x] After Product/Quality closure and repository integration, mark the Assignment `Closed`, archive this plan with the required closure metadata and synchronize the Engineering Dashboard.
 
-PR #13 was merged and its Swift 6 Quality and GitGuardian checks passed. The independent Quality and Architecture conclusions are now recorded, but an explicit Product Gate remains required before this plan can advance beyond `Active`. This plan remains current only for closure coordination.
+The human Product Lead explicitly closed the Product Gate on `2026-07-16` after the independent Quality and Architecture conclusions. PR #14 carries the closure synchronization; its merge and default-branch reachability check remain the required publication and cleanup proof. This plan is archived and must not be used as current implementation guidance.
 
 ## Stop Conditions
 

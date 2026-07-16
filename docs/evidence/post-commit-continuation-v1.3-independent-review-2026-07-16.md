@@ -1,6 +1,6 @@
 # Post-Commit Continuation V1.3 Independent Review Record
 
-> **Review status:** Quality and Architecture passed; Product Gate pending
+> **Review status:** Quality and Architecture passed; Product Gate closed
 >
 > **Review date:** `2026-07-16 Asia/Shanghai`
 >
@@ -73,17 +73,14 @@ files use the label “ADR 0017”. This work links the full continuation ADR fi
 and is therefore unambiguous; the duplicate identifier is outside this PR's
 scope and requires a separate governance task.
 
-## Remaining Product Gate
+## Product Gate And Publication
 
-These conclusions satisfy the Assignment's independent Quality and Architecture
-review requirement. They do not substitute for the Product Lead's closure
-decision. Until the Product Gate is explicitly closed:
+The human Product Lead explicitly closed V1.3 on `2026-07-16` and authorized
+PR #14 to become ready, merge, and then undergo safe local/remote branch
+cleanup. This decision accepts the bounded Quality and Architecture conclusions;
+it does not expand the feature's documented performance or compatibility claims.
 
-- the Assignment remains `Completed`, not `Reviewed` or `Closed`;
-- the V1.3 plan remains `Active` and must not be archived;
-- PR #14 and its branch must remain available; and
-- no local or remote branch cleanup may occur.
-
-After a recorded Product conclusion, a separate closure synchronization may
-advance lifecycle state, archive the plan, merge the closure record and verify
-default-branch reachability before safe branch cleanup.
+The Assignment may progress from `Completed` through `Reviewed` to `Closed`,
+and the V1.3 plan is archived by the closure synchronization. PR #14 must still
+merge, and `48a33dd` plus this closure commit must be reachable from
+`origin/main`, before either local or remote feature branch is deleted.

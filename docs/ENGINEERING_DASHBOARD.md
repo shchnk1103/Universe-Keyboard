@@ -10,14 +10,14 @@
 
 ## POST-COMMIT-CONTINUATION-001 — Ephemeral Post-Commit Continuation V1
 
-- **Confirmed status:** `Completed`
+- **Confirmed status:** `Closed`
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/post-commit-continuation-001.md)
 - **Product source:** [`Post-Commit Continuation Product Contract`](POST_COMMIT_CONTINUATION.md)
 - **Architecture source:** [ADR 0017](architecture/decisions/0017-ephemeral-post-commit-continuation.md)
-- **Current phase:** Independent Quality/Architecture review complete; Product Gate and closure synchronization pending.
+- **Current phase:** Product Gate closed; PR #14 publication and safe branch cleanup authorized.
 - **Current implementation:** Bounded bundled provider, transient KeyboardCore state, distinct candidate semantics, candidate-bar integration, default-on setting, strict resource validation, a 60-case/15-category synthetic Top-3 benchmark and a 250-context curated pack are present.
 - **Current evidence:** The human owner accepted physical-device candidate behavior. A paired Release snapshot on iPhone 13 Pro/iOS 27.0 beta 3 covers enabled/disabled cold process, repeated final commit, candidate refresh, CPU, physical footprint and 250-ms hang rows without an unexplained feature regression. See the [physical-device acceptance record](evidence/post-commit-continuation-v1.3-physical-device-2026-07-16.md).
-- **Open gate:** The [independent review record](evidence/post-commit-continuation-v1.3-independent-review-2026-07-16.md) records passing Quality and Architecture conclusions. The Assignment remains `Completed`, not `Reviewed` or `Closed`, until the Product Gate is explicitly closed and closure is synchronized.
+- **Closure evidence:** The [independent review record](evidence/post-commit-continuation-v1.3-independent-review-2026-07-16.md) records passing Quality and Architecture conclusions. The human Product Lead explicitly closed V1.3 on `2026-07-16`; publication remains complete only after PR #14 merges and the feature commit is reachable from `origin/main`.
 - **Stop conditions:** Host-context access, committed-text persistence/logging/network use, unbounded lookup, RIME-session prediction or unexplained performance regression.
 
 ## TYPING-INTELLIGENCE-001 — Local Typing Intelligence Foundation
