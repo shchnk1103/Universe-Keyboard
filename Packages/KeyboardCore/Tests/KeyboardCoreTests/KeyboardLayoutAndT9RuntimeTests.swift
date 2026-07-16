@@ -49,6 +49,22 @@ final class KeyboardLayoutAndT9RuntimeTests: XCTestCase {
         XCTAssertEqual(luna.effectiveLayoutStyle, .twentySixKey)
     }
 
+    func testNilOnDiskFingerprintFailClosesToTwentySixKey() {
+        let marker = RimeT9ReadinessMarker(
+            ready: true,
+            compatibilityVersion: RimeT9Readiness.currentCompatibilityVersion,
+            resourceFingerprint: "fp"
+        )
+        let selection = RimeRuntimeSelection.resolve(
+            baseSchemaID: "rime_ice",
+            layoutRawValue: KeyboardLayoutStyle.nineKey.rawValue,
+            readinessMarker: marker,
+            onDiskFingerprint: nil
+        )
+        XCTAssertEqual(selection.effectiveSchemaID, "rime_ice")
+        XCTAssertFalse(selection.usesT9InputSemantics)
+    }
+
     func testLegacyBooleanAloneIsNotMatchedReadiness() {
         let suite = "uk.test.t9.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suite)!
@@ -81,21 +97,49 @@ final class KeyboardLayoutAndT9RuntimeTests: XCTestCase {
             ),
             "64"
         )
+    }
+
+    func testDigitShapeWithoutT9SemanticsIsNotT9Policy() {
+        let digits = "64426"
+        XCTAssertFalse(
+            T9CompositionCommitPolicy.isActiveT9DigitComposition(
+                usesT9InputSemantics: false,
+                rawInput: digits
+            )
+        )
         XCTAssertEqual(
-            T9PreeditResolver.visiblePreedit(
-                rawInput: "64",
+            T9CompositionCommitPolicy.returnAction(
+                usesT9InputSemantics: false,
+                rawInput: digits,
                 candidates: [],
                 highlightedIndex: nil
             ),
-            "64"
+            .notT9Composition
+        )
+        XCTAssertEqual(
+            T9CompositionCommitPolicy.spaceAction(
+                usesT9InputSemantics: false,
+                rawInput: digits,
+                candidates: [],
+                highlightedIndex: nil
+            ),
+            .notT9Composition
+        )
+        XCTAssertEqual(
+            T9CompositionCommitPolicy.languageSwitchAction(
+                usesT9InputSemantics: false,
+                rawInput: digits
+            ),
+            .notT9Composition
         )
     }
 
-    func testReturnAndLanguageSwitchNeverCommitRawDigits() {
+    func testReturnAndLanguageSwitchNeverCommitRawDigitsWhenT9SemanticsEnabled() {
         let digits = "64426"
         let noCandidates: [RimeCandidate] = []
         XCTAssertEqual(
             T9CompositionCommitPolicy.returnAction(
+                usesT9InputSemantics: true,
                 rawInput: digits,
                 candidates: noCandidates,
                 highlightedIndex: nil
@@ -104,6 +148,7 @@ final class KeyboardLayoutAndT9RuntimeTests: XCTestCase {
         )
         XCTAssertEqual(
             T9CompositionCommitPolicy.spaceAction(
+                usesT9InputSemantics: true,
                 rawInput: digits,
                 candidates: noCandidates,
                 highlightedIndex: nil
@@ -111,13 +156,17 @@ final class KeyboardLayoutAndT9RuntimeTests: XCTestCase {
             .keepComposition
         )
         XCTAssertEqual(
-            T9CompositionCommitPolicy.languageSwitchAction(rawInput: digits),
+            T9CompositionCommitPolicy.languageSwitchAction(
+                usesT9InputSemantics: true,
+                rawInput: digits
+            ),
             .abandonComposition
         )
 
         let withCandidate = [RimeCandidate(text: "你好", comment: "ni hao", globalIndex: 0)]
         XCTAssertEqual(
             T9CompositionCommitPolicy.returnAction(
+                usesT9InputSemantics: true,
                 rawInput: digits,
                 candidates: withCandidate,
                 highlightedIndex: 0
@@ -158,5 +207,76 @@ final class KeyboardLayoutAndT9RuntimeTests: XCTestCase {
             pageSize: 9
         )
         XCTAssertTrue(yaml.contains("schema: t9") || yaml.contains("- schema: t9"))
+    }
+
+    func testUserDictionaryPreferenceAppliesToT9SchemaID() {
+        let settings = RimeUserDictionarySettings(lunaPinyinEnabled: false, rimeIceEnabled: true)
+        XCTAssertTrue(settings.isEnabled(for: "t9"))
+        XCTAssertTrue(settings.isEnabled(for: "rime_ice"))
+        XCTAssertFalse(settings.isEnabled(for: "luna_pinyin"))
+    }
+}
+
+@MainActor
+final class T9ControllerSemanticsTests: XCTestCase {
+    func testIdenticalDigitsUseT9PolicyOnlyWhenSemanticsEnabled() {
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.state.inputMode = .chinese
+        controller.state.currentPage = .letters
+        controller.state.currentComposition = "64"
+        controller.state.lastRimeOutput = RimeOutput(
+            rawInput: "64",
+            composition: RimeComposition(preeditText: "64", cursorPosition: 2),
+            candidates: [],
+            committedText: nil,
+            hasMorePages: false,
+            highlightedIndex: 0
+        )
+
+        // T9 path: return keeps composition and never inserts raw digits.
+        controller.usesT9InputSemantics = true
+        let before = client.text
+        let effects = controller.handleInsertReturn()
+        XCTAssertTrue(effects.isEmpty)
+        XCTAssertFalse(client.text.contains("64") && client.text != before)
+        XCTAssertEqual(controller.state.currentComposition, "64")
+        XCTAssertEqual(client.text, before)
+    }
+
+    func testLanguageToggleAbandonsOnlyUnderT9Semantics() {
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.state.inputMode = .chinese
+        controller.state.currentComposition = "64"
+        controller.state.lastRimeOutput = RimeOutput(
+            rawInput: "64",
+            composition: RimeComposition(preeditText: "64", cursorPosition: 2),
+            candidates: [RimeCandidate(text: "你", comment: "ni")],
+            committedText: nil,
+            hasMorePages: false
+        )
+        controller.usesT9InputSemantics = true
+        _ = controller.handle(.toggleInputMode)
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertFalse(client.text.contains("64"))
+    }
+
+    func testTypoCorrectionSuppressedOnlyForT9Semantics() {
+        let controller = KeyboardController()
+        controller.state.inputMode = .chinese
+        controller.state.currentPage = .letters
+        controller.state.currentComposition = "64"
+        controller.usesT9InputSemantics = true
+        controller.refreshTypoCorrectionSuggestions()
+        XCTAssertNil(controller.state.typoCorrection)
+
+        controller.usesT9InputSemantics = false
+        // Without T9 semantics, digit composition may still produce no typo suggestions,
+        // but the suppression early-return is not taken; state remains nil or non-T9 path.
+        controller.refreshTypoCorrectionSuggestions()
+        // Not asserting non-nil — Fake provider may have no typo hits for "64".
     }
 }

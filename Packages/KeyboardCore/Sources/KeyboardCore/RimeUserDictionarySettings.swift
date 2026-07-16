@@ -24,7 +24,8 @@ public struct RimeUserDictionarySettings: Equatable, Sendable {
 
     public func isEnabled(for schemaID: String) -> Bool {
         switch schemaID {
-        case "rime_ice":
+        case "rime_ice", "t9":
+            // Nine-key uses the fog-song user-dictionary preference contract.
             return rimeIceEnabled
         default:
             return lunaPinyinEnabled

@@ -120,13 +120,14 @@ extension KeyboardViewController {
             onDiskFingerprint: onDiskFingerprint
         )
         cachedT9ReadinessMatched = selection.t9ReadinessMatched
-        cachedLayoutStyle = selection.layoutStyle
         // Effective layout for chrome (nine-key only when matched).
-        if !selection.usesT9InputSemantics {
-            cachedLayoutStyle = .twentySixKey
-        } else {
+        if selection.usesT9InputSemantics {
             cachedLayoutStyle = .nineKey
+        } else {
+            cachedLayoutStyle = .twentySixKey
         }
+        // Same selection drives controller input semantics (not digit shape alone).
+        controller.usesT9InputSemantics = selection.usesT9InputSemantics
 
         if cachedHapticEnabled {
             hapticGenerator.prepare()

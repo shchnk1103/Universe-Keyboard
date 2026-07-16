@@ -60,20 +60,51 @@ extension RimeConfigManager {
             defs: defs,
             userDir: userDir
         )
+        // T9 is the nine-key presentation of fog-song preferences, not a separate base scheme.
+        if defs?.bool(forKey: "rime_ice_installed") ?? false {
+            syncSchemaCustomYaml(
+                schemaID: "t9",
+                activeSchema: activeSchema,
+                defs: defs,
+                userDir: userDir,
+                userDictionarySchemaID: "rime_ice"
+            )
+        }
+    }
+
+    /// Pure helper for tests: builds schema custom YAML from preference values.
+    public static func makeSchemaCustomYamlContent(
+        simplificationEnabled: Bool?,
+        userDictionaryEnabled: Bool
+    ) -> String? {
+        var patch: [(String, String)] = []
+        if let simplificationEnabled {
+            let reset = simplificationEnabled ? 1 : 0
+            patch.append(("\"switches/@1/reset\"", "\(reset)"))
+        }
+        patch.append((
+            "\"translator/enable_user_dict\"",
+            userDictionaryEnabled ? "true" : "false"
+        ))
+        guard !patch.isEmpty else { return nil }
+        var yaml = "patch:\n"
+        for (key, value) in patch {
+            yaml += "  \(key): \(value)\n"
+        }
+        return yaml
     }
 
     private static func syncSchemaCustomYaml(
         schemaID: String,
         activeSchema: String,
         defs: UserDefaults?,
-        userDir: URL
+        userDir: URL,
+        userDictionarySchemaID: String? = nil
     ) {
-        var patch: [(String, String)] = []
-
+        let dictSchemaID = userDictionarySchemaID ?? schemaID
+        var simplification: Bool?
         if defs?.object(forKey: "rime_simplification") != nil {
-            let simplified = defs?.bool(forKey: "rime_simplification") ?? true
-            let reset = simplified ? 1 : 0
-            patch.append(("\"switches/@1/reset\"", "\(reset)"))
+            simplification = defs?.bool(forKey: "rime_simplification") ?? true
         }
 
         let userDictionarySettings = RimeUserDictionarySettings(
@@ -84,17 +115,13 @@ extension RimeConfigManager {
                 forKey: RimeUserDictionarySettings.rimeIceEnabledKey
             ) as? Bool ?? true
         )
-        patch.append((
-            "\"translator/enable_user_dict\"",
-            userDictionarySettings.isEnabled(for: schemaID) ? "true" : "false"
-        ))
+        let userDictEnabled = userDictionarySettings.isEnabled(for: dictSchemaID)
 
-        guard !patch.isEmpty else { return }
+        guard let yaml = makeSchemaCustomYamlContent(
+            simplificationEnabled: simplification,
+            userDictionaryEnabled: userDictEnabled
+        ) else { return }
 
-        var yaml = "patch:\n"
-        for (key, value) in patch {
-            yaml += "  \(key): \(value)\n"
-        }
         let filename = "\(schemaID).custom.yaml"
         try? yaml.write(to: userDir.appendingPathComponent(filename), atomically: true, encoding: .utf8)
         Logger.shared.info("Synced \(filename) user dictionary settings", category: .config)

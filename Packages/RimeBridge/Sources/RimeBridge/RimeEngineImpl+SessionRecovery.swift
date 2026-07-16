@@ -27,7 +27,8 @@ extension RimeEngineImpl {
         }
         nextRecoveryAttemptTime = 0
 
-        let selection = RimeRuntimeSelectionBridge.resolve()
+        let selection = resolveRuntimeSelection()
+        runtimeSelection = selection
         let schema = selection.effectiveSchemaID
         let fallback = selection.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
         let actual = selectAndVerifySchema(schema, fallback: fallback)

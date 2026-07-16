@@ -1,160 +1,109 @@
 # KEYBOARD-LAYOUT-9KEY-001 — Implementation Handoff for Codex Review
 
-Prepared by: Grok (Executor)
-Date: 2026-07-16 Asia/Shanghai
-Branch: `feature/keyboard-layout-9key-spike`
-Gate authorization: [`keyboard-layout-9key-001-codex-rereview-2.md`](keyboard-layout-9key-001-codex-rereview-2.md)
+Prepared by: Grok (Executor)  
+Date: 2026-07-16 Asia/Shanghai  
+Branch: `feature/keyboard-layout-9key-spike`  
+Codex implementation review addressed: `docs/evidence/keyboard-layout-9key-001-codex-implementation-review.md` (**not modified**)  
+Gate authorization: `docs/evidence/keyboard-layout-9key-001-codex-rereview-2.md`
 
-## 1. Assignment lifecycle / history
+## Assignment lifecycle
 
 | Field | Value |
 |---|---|
 | Assignment | `docs/assignments/keyboard-layout-9key-001.md` |
-| Product Decision | `docs/product-decisions/KEYBOARD-LAYOUT-9KEY-001-authorization.md` |
+| Lifecycle | **`Active`** |
+| Product Decision | `PD-KEYBOARD-LAYOUT-9KEY-001` |
 | ADR | `docs/architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md` |
-| Lifecycle | **`Active`** (transition authorized by Codex final Spike gate re-review) |
-| Prior gates | Spike + re-reviews closed; product steps 3–10 implemented in this package |
 
-## 2. Changed-file allowlist (implementation package)
+---
 
-### KeyboardCore
-- `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardLayoutStyle.swift`
-- `Packages/KeyboardCore/Sources/KeyboardCore/RimeT9Readiness.swift`
-- `Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeSelection.swift`
-- `Packages/KeyboardCore/Sources/KeyboardCore/T9PreeditResolver.swift`
-- `Packages/KeyboardCore/Sources/KeyboardCore/T9SchemaCompatibility.swift`
-- `Packages/KeyboardCore/Sources/KeyboardCore/RimeConfigTemplateGenerator.swift` (schema_list includes `t9`)
-- `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+TextEditing.swift`
-- `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+ModeAndShift.swift`
-- `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+TypoCorrection.swift`
-- `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PartialCommit.swift`
-- `Packages/KeyboardCore/Tests/KeyboardCoreTests/KeyboardLayoutAndT9RuntimeTests.swift`
+## Codex findings — closure map
 
-### RimeBridge
-- `Packages/RimeBridge/Sources/RimeBridge/RimeRuntimeSelectionBridge.swift`
-- `Packages/RimeBridge/Sources/RimeBridge/RimeT9SmokeProbe.swift`
-- `Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl.swift`
-- `Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+SessionRecovery.swift`
-- `Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Input.swift`
-- `Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+CustomYaml.swift`
+### [P1] Resume/recovery omit fingerprint — **Fixed**
 
-### Main App
-- `Universe Keyboard/Services/T9DeploymentSupport.swift`
-- `Universe Keyboard/Services/SchemaManager+T9Layout.swift`
-- `Universe Keyboard/Services/SchemaManager.swift`
-- `Universe Keyboard/Services/SchemaManager+Installation.swift`
-- `Universe Keyboard/Services/SchemaManager+Download.swift`
-- `Universe Keyboard/Services/SchemaManagerTypes.swift`
-- `Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift`
-- `Universe Keyboard/Views/Settings/SettingsTab.swift`
-- `Universe Keyboard/Views/Settings/RimeSettingsStore.swift`
-
-### Keyboard Extension
-- `Keyboard/Controllers/KeyboardViewController.swift`
-- `Keyboard/Controllers/KeyboardViewController+Presentation.swift`
-- `Keyboard/Controllers/KeyboardViewController+Rows.swift`
-- `Keyboard/Controllers/KeyboardViewController+KeyFactory.swift`
-- `Keyboard/Controllers/KeyboardViewController+Feedback.swift`
-- `Keyboard/Controllers/KeyboardViewController+InputActions.swift`
-
-### Docs
-- Assignment, ADR 0018 status, `KEYBOARD_LAYOUT.md`, `PROJECT_CONTEXT.md`, `RIME_SCHEME_MANAGEMENT.md`, `CHANGELOG.md`, this handoff, `codex-rereview-2.md` (Codex-authored)
-
-## 3. Effective-scheme / readiness / T9 semantics tests
-
-Executed:
-
-```text
-swift test --package-path Packages/KeyboardCore --filter KeyboardLayoutAndT9RuntimeTests
-# 7 tests, 0 failures
-swift test --package-path Packages/KeyboardCore --filter RimeConfigTemplateGenerationTests
-# 13 tests, 0 failures
-```
-
-Coverage includes: layout fallback, effective `t9` only when ice+nineKey+matched readiness, legacy bool not matched, preedit comment then raw, Return/language never commit raw digits, compatibility strip, schema_list includes t9.
-
-## 4. Main-App install/deploy/verify/failure/uninstall
-
-Implemented code paths (not all exercised on-device in this handoff):
-
-| Path | Implementation |
+| Item | Detail |
 |---|---|
-| Enable nine-key | `SchemaManager.enableNineKeyLayout`: ensure compatible t9 → deploy → smoke → readiness → layout last |
-| Already ready | Persist `nineKey` only when fingerprint still matches |
-| Not installed | License sheet → existing download/install → then enable |
-| Failure | No optimistic `nineKey`; readiness invalidated on verify failure |
-| Uninstall rime_ice | Layout 26-key → invalidate readiness → remove files including t9* |
-| Switch base off ice | Layout 26-key; readiness preserved if files intact |
+| Files | `Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl.swift` — store immutable `sharedDataDir` / `userDataDir`; `resolveRuntimeSelection()` always passes `sharedDataDir`. `RimeEngineImpl+SessionRecovery.swift` and `resumeAfterVisibilityChange()` call `resolveRuntimeSelection()` (not bare `resolve()`). |
+| Tests | `Packages/RimeBridge/Tests/RimeBridgeTests/RimeRuntimeSelectionBridgeTests.swift` — without sharedDataDir fail-closed; with matching fingerprint selects `t9`. |
+| Command / result | `xcodebuild test -scheme RimeBridgeTests -only-testing:RimeBridgeTests/RimeRuntimeSelectionBridgeTests` → **3 tests, 0 failures, TEST SUCCEEDED** |
 
-Automated UI path tests for license cancel / install failure matrices: **not fully automated in this package** (code present; see unrun).
+### [P1] T9 behavior inferred from digit shape — **Fixed**
 
-## 5. RimeBridge session recovery / no-raw-digit
-
-- Cold start, session recovery and visibility resume all use `RimeRuntimeSelectionBridge.resolve` (same effective schema).
-- Controller Return / space / language / auto-English use `T9CompositionCommitPolicy` (keep or abandon; never host-commit raw digits).
-- Dedicated RimeBridge XCTest for session recovery with T9 fixture: **not re-run** beyond prior Spike (see unrun).
-
-## 6. Debug / Release builds
-
-| Config | Result |
+| Item | Detail |
 |---|---|
-| Debug Simulator (`CODE_SIGNING_ALLOWED=NO`) | **BUILD SUCCEEDED** |
-| Release Simulator | pending / see build log in session if completed |
-| Vendor verify | **Passed** structural inventory (11 frameworks) |
+| Files | `T9PreeditResolver.swift` — policies require `usesT9InputSemantics`. `KeyboardController.usesT9InputSemantics` set from same `RimeRuntimeSelection` in `KeyboardViewController+Feedback.refreshCachedSettings`. Call sites: TextEditing (space/return), ModeAndShift (language/auto-English), TypoCorrection, PartialCommit. |
+| Tests | `KeyboardLayoutAndT9RuntimeTests` (digit shape without semantics → `.notT9Composition`); `T9ControllerSemanticsTests` (return keeps composition under T9; language abandon; typo suppress only when semantics on). |
+| Command / result | `swift test --package-path Packages/KeyboardCore --filter 'KeyboardLayoutAndT9RuntimeTests\|T9ControllerSemanticsTests'` → **13 tests, 0 failures** |
 
-## 7. Light/dark, compact width, Dynamic Type, accessibility
+### [P1] Enable failures leave stale readiness — **Fixed**
+
+| Item | Detail |
+|---|---|
+| Files | `Universe Keyboard/Services/SchemaManager+T9Layout.swift` — `beginNineKeyEnableTransaction()` persists **26-key** and **invalidates readiness** before any asset-mutating step; readiness + nineKey written only after prepare → deploy → smoke → fingerprint all succeed (nineKey last). |
+| Tests | `UniverseKeyboardTests/NineKeyEnableTransactionTests.swift` — transaction forces 26-key + unmatched readiness; success order readiness-before-nineKey. |
+| Command / result | `xcodebuild test -scheme 'Universe Keyboard' -only-testing:UniverseKeyboardTests/NineKeyEnableTransactionTests` → **2 tests, 0 failures, TEST SUCCEEDED** |
+
+### [P2] `t9.custom.yaml` not synced — **Fixed**
+
+| Item | Detail |
+|---|---|
+| Files | `RimeConfigManager+CustomYaml.swift` — when fog-song installed, writes `t9.custom.yaml` using **rime_ice** user-dictionary preference + simplification. `RimeUserDictionarySettings.isEnabled(for: "t9")` maps to ice preference. Public `makeSchemaCustomYamlContent` for unit tests. |
+| Tests | `RimeRuntimeSelectionBridgeTests.testT9CustomYamlUsesIceUserDictionaryPreference`; `testUserDictionaryPreferenceAppliesToT9SchemaID`. |
+| Command / result | Covered in RimeBridge selection suite (above) and KeyboardCore layout suite. |
+
+---
+
+## Automated verification summary
+
+| Suite | Command | Result |
+|---|---|---|
+| KeyboardCore full | `swift test --package-path Packages/KeyboardCore` | **586 tests, 0 failures** |
+| RimeBridge selection/custom | `xcodebuild test -scheme RimeBridgeTests -only-testing:RimeBridgeTests/RimeRuntimeSelectionBridgeTests` | **3/0, TEST SUCCEEDED** |
+| Main App enable transaction | `xcodebuild test -scheme 'Universe Keyboard' -only-testing:UniverseKeyboardTests/NineKeyEnableTransactionTests` | **2/0, TEST SUCCEEDED** |
+| Real T9 fixture Spike | `UK_RIME_T9_SPIKE_*` → existing isolated runtime `evidence/keyboard-layout-9key-spike/20260716-195542/runtime/{shared,user}` + `-only-testing:RimeBridgeTests/RimeT9CompatibilitySpikeTests` | **passed** (`schema=t9 rawAfter64=64 candidateCount=9 firstCandidateComment=ni rawAfterDelete=6`) |
+| Release Simulator build | `xcodebuild … -configuration Release CODE_SIGNING_ALLOWED=NO build` | **BUILD SUCCEEDED** |
+| Debug Simulator build | previously green; re-validated via test builds | **OK** |
+
+### Real T9 fixture note
+
+- Source: prior Spike isolated tree (gitignored local `evidence/…/20260716-195542/runtime`), not formal App Group.
+- Scripted full runner failed only because the original Simulator App Group path was gone; XCTest was run with explicit env dirs against the archived isolated fixture.
+- Result line: `T9_SPIKE_RESULT passed=true librime=1.16.1 schema=t9 …`
+
+---
+
+## Simulator / physical-device evidence
 
 | Item | Status |
 |---|---|
-| Settings cards + decorative thumbnails (no glyphs) | Implemented; VoiceOver labels on cards; thumbnails `accessibilityHidden` |
-| Simulator light/dark screenshots | **Not captured** in this handoff |
-| Compact width / Dynamic Type | Structural use of system fonts/colors; **no screenshot matrix** |
-| T9 key a11y | “数字 N，ABC” labels |
+| Interactive main-app enable UI (thumbnails, failure copy, persisted selection) | **Not re-captured** this pass (code paths updated; no new screenshot archive) |
+| Extension E2E: cold start / hide-show / recovery / CN-EN / Space-Return-Delete | **Not executed** this pass |
+| Physical device | **Not executed** — Human Dependency |
+| Light/dark compact screenshots | **Not produced** |
 
-## 8. Physical-device acceptance
+---
 
-**Not executed.** Human Dependency remains: Human Product Owner for physical-device keyboard-extension acceptance (Messages/host apps, multi-syllable `64426`, process restart).
-
-## 9. Essay read-only warning investigation
-
-Spike deploy logs recorded:
-
-```text
-Error opening db 'essay' read-only.
-```
-
-**Outcome (productization note):**
-
-- Warning originates from librime `text_db.cc` when essay/text DB open is attempted read-only during deploy/smoke.
-- Did **not** block Spike select/`64`/candidates/delete on pinned 1.16.1.
-- Product path still uses the same pinned librime; no essay packaging change was introduced by nine-key.
-- Residual risk: noisy logs / optional ranking quality if essay is expected by some schema configs. Follow-up is packaging investigation, not a Spike blocker. Recommend confirming whether fog-song deploy expects an essay file under shared data; if missing, either supply essay asset or silence via config only after measuring impact.
-
-## 10. Documentation / CHANGELOG
-
-Updated: `CHANGELOG.md`, `docs/KEYBOARD_LAYOUT.md`, ADR 0018 status line, `docs/PROJECT_CONTEXT.md`, `docs/RIME_SCHEME_MANAGEMENT.md`, Assignment lifecycle `Active`.
-
-## 11. Unrun verification / known limits / residual risks
+## Remaining skipped / UNKNOWN validation
 
 | Item | Reason |
 |---|---|
-| Full KeyboardCore suite beyond focused filters | Time; focused T9 suite green |
-| RimeBridgeTests full suite on this package | Not re-run after product code |
-| Main App XCTest for layout enable failure matrix | Not added in this pass |
-| Simulator install + end-to-end nine-key typing | Human/simulator interactive gate open |
-| Physical device | Human Dependency |
-| Light/dark screenshot archive | Not produced |
-| Essay asset packaging fix | Investigation only; no binary/schema essay add |
+| Full RimeBridgeTests scheme without filter | Not re-run entire suite after fix (focused suites + Spike green) |
+| Full UniverseKeyboardTests suite | Only NineKeyEnableTransactionTests executed |
+| Interactive simulator keyboard host lifecycle | Requires human operator time |
+| Physical-device acceptance | Human Product Owner dependency |
+| Screenshot matrix | Not produced |
+| Essay packaging productization | Prior investigation stands; no code change in this pass |
 
-### Known V1 limits (by design)
+---
 
-- English nine-key / swipe / 朙月 nine-key: out of scope
-- No live cross-process layout hot-switch while keyboard is visible
-- No librime vendor upgrade
-- Advanced 26-key features may not fully apply on nine-key
+## Residual risks (honest)
 
-### Residual risks for Quality
+1. Interactive enable path after `beginNineKeyEnableTransaction` will **briefly** force 26-key during deploy even for a re-enable of already-ready nine-key (fail-closed by design; UX may show intermediate 26-key).
+2. Session recovery still depends on App Group readiness + on-disk `t9.schema.yaml` integrity; interactive hide/show not re-observed on device.
+3. Essay read-only warning may still appear during deploy logs.
 
-- Full deploy with real ice install must still be validated interactively after enable path.
-- Session recovery functional test historically used `ni` for schema verify on recovery paths; effective schema `t9` may need digit-based recovery verification follow-up.
-- `essay` warning still appears under some deploys.
+---
+
+## Requested Codex action
+
+Re-review implementation against ADR 0018 fail-closed and single effective-selection contracts. Do not accept final Product Gate until interactive simulator/device evidence is supplied or explicitly waived by Human Product Owner.

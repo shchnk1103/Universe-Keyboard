@@ -434,7 +434,10 @@ extension KeyboardController {
     private func applyRimeOutputWithoutPartialCommit(_ output: RimeOutput) {
         state.lastRimeOutput = output
         let raw = output.rawInput ?? ""
-        if T9CompositionCommitPolicy.isT9DigitComposition(rawInput: raw) {
+        if T9CompositionCommitPolicy.isActiveT9DigitComposition(
+            usesT9InputSemantics: usesT9InputSemantics,
+            rawInput: raw
+        ) {
             // Keep composition state on raw digits for delete/recovery; show comment-preferring preedit.
             state.currentComposition = raw
             if let commit = output.committedText {

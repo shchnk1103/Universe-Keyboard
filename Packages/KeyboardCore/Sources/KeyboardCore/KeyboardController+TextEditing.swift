@@ -40,46 +40,22 @@ extension KeyboardController {
         if let engine = rimeEngine, engine.isComposing() {
             let output = state.lastRimeOutput
             let raw = output?.rawInput ?? state.currentComposition
-            if T9CompositionCommitPolicy.isT9DigitComposition(rawInput: raw) {
-                switch T9CompositionCommitPolicy.spaceAction(
-                    rawInput: raw,
-                    candidates: output?.candidates ?? [],
-                    highlightedIndex: output?.highlightedIndex
-                ) {
-                case .commitCandidate(let text):
-                    commitInlinePreedit(
-                        as: (state.partialCommit?.confirmedText ?? "") + text,
-                        source: .space
-                    )
-                    state.currentComposition = ""
-                    state.lastRimeOutput = RimeOutput(
-                        composition: nil,
-                        candidates: [],
-                        committedText: text,
-                        hasMorePages: false
-                    )
-                    state.partialCommit = nil
-                    engine.resetSession()
-                    clearTypoCorrectionSuggestions()
-                    state.lastSpaceTapTime = nil
-                    return .compositionChanged
-                case .keepComposition:
-                    state.lastSpaceTapTime = nil
-                    return []
-                default:
-                    break
-                }
-            } else if let firstCandidate = output?.candidates.first?.text {
-                // Preserve the first page selection even if later pages were prefetched for display.
+            switch T9CompositionCommitPolicy.spaceAction(
+                usesT9InputSemantics: usesT9InputSemantics,
+                rawInput: raw,
+                candidates: output?.candidates ?? [],
+                highlightedIndex: output?.highlightedIndex
+            ) {
+            case .commitCandidate(let text):
                 commitInlinePreedit(
-                    as: (state.partialCommit?.confirmedText ?? "") + firstCandidate,
+                    as: (state.partialCommit?.confirmedText ?? "") + text,
                     source: .space
                 )
                 state.currentComposition = ""
                 state.lastRimeOutput = RimeOutput(
                     composition: nil,
                     candidates: [],
-                    committedText: firstCandidate,
+                    committedText: text,
                     hasMorePages: false
                 )
                 state.partialCommit = nil
@@ -87,10 +63,38 @@ extension KeyboardController {
                 clearTypoCorrectionSuggestions()
                 state.lastSpaceTapTime = nil
                 return .compositionChanged
+            case .keepComposition:
+                state.lastSpaceTapTime = nil
+                return []
+            case .notT9Composition:
+                if let firstCandidate = output?.candidates.first?.text {
+                    // Preserve the first page selection even if later pages were prefetched for display.
+                    commitInlinePreedit(
+                        as: (state.partialCommit?.confirmedText ?? "") + firstCandidate,
+                        source: .space
+                    )
+                    state.currentComposition = ""
+                    state.lastRimeOutput = RimeOutput(
+                        composition: nil,
+                        candidates: [],
+                        committedText: firstCandidate,
+                        hasMorePages: false
+                    )
+                    state.partialCommit = nil
+                    engine.resetSession()
+                    clearTypoCorrectionSuggestions()
+                    state.lastSpaceTapTime = nil
+                    return .compositionChanged
+                }
+            default:
+                break
             }
         }
         if !state.currentComposition.isEmpty {
-            if T9CompositionCommitPolicy.isT9DigitComposition(rawInput: state.currentComposition) {
+            if T9CompositionCommitPolicy.isActiveT9DigitComposition(
+                usesT9InputSemantics: usesT9InputSemantics,
+                rawInput: state.currentComposition
+            ) {
                 // Never commit raw T9 digits via the non-engine composition path.
                 state.lastSpaceTapTime = nil
                 return []
@@ -128,25 +132,26 @@ extension KeyboardController {
 
     func handleInsertReturn() -> KeyboardEffect {
         let raw = state.lastRimeOutput?.rawInput ?? state.currentComposition
-        if T9CompositionCommitPolicy.isT9DigitComposition(rawInput: raw) {
-            switch T9CompositionCommitPolicy.returnAction(
-                rawInput: raw,
-                candidates: state.lastRimeOutput?.candidates ?? [],
-                highlightedIndex: state.lastRimeOutput?.highlightedIndex
-            ) {
-            case .commitCandidate(let text):
-                commitInlinePreedit(as: text, source: .returnKey)
-                state.currentComposition = ""
-                state.lastRimeOutput = nil
-                state.partialCommit = nil
-                rimeEngine?.resetSession()
-                clearTypoCorrectionSuggestions()
-                return .compositionChanged
-            case .keepComposition:
-                return []
-            default:
-                break
-            }
+        switch T9CompositionCommitPolicy.returnAction(
+            usesT9InputSemantics: usesT9InputSemantics,
+            rawInput: raw,
+            candidates: state.lastRimeOutput?.candidates ?? [],
+            highlightedIndex: state.lastRimeOutput?.highlightedIndex
+        ) {
+        case .commitCandidate(let text):
+            commitInlinePreedit(as: text, source: .returnKey)
+            state.currentComposition = ""
+            state.lastRimeOutput = nil
+            state.partialCommit = nil
+            rimeEngine?.resetSession()
+            clearTypoCorrectionSuggestions()
+            return .compositionChanged
+        case .keepComposition:
+            return []
+        case .notT9Composition:
+            break
+        default:
+            break
         }
         if !state.currentComposition.isEmpty {
             finishActiveCompositionAsRawInput(source: .returnKey)

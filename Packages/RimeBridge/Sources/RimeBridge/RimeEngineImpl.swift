@@ -38,9 +38,14 @@ public final class RimeEngineImpl: RimeEngine {
 
     /// ObjC 桥接层实例（封装 librime C API）
     public let bridge: RimeSessionManager
+    /// Immutable shared runtime directory; always used for readiness fingerprinting.
+    public let sharedDataDir: String
+    public let userDataDir: String
     var nextRecoveryAttemptTime: CFTimeInterval = 0
     private var isSuspendedForVisibilityChange = false
     var activeSchemaID = "luna_pinyin"
+    /// Last resolved effective selection (schema + layout semantics).
+    public internal(set) var runtimeSelection: RimeRuntimeSelection?
 
     // MARK: === Init ===
 
@@ -61,6 +66,8 @@ public final class RimeEngineImpl: RimeEngine {
         let startTime = CACurrentMediaTime()
 
         self.bridge = RimeSessionManager()
+        self.sharedDataDir = sharedDataDir
+        self.userDataDir = userDataDir
 
         // ── 1. Setup + Initialize ──────────────────────────────
         // setup: 设置 RIME 的数据目录和模块列表
@@ -88,7 +95,8 @@ public final class RimeEngineImpl: RimeEngine {
         // 主 App 已负责部署与完整运行时验证。健康冷启动只确认 schema 可以选中，
         // 不再合成 "ni" 输入或枚举所有 schema；深度验证保留给失败恢复路径。
         let schemaStartTime = CACurrentMediaTime()
-        let selection = RimeRuntimeSelectionBridge.resolve(sharedDataDir: sharedDataDir)
+        let selection = resolveRuntimeSelection()
+        runtimeSelection = selection
         let requestedSchema = selection.effectiveSchemaID
         let fallbackSchema = selection.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
 
@@ -120,6 +128,13 @@ public final class RimeEngineImpl: RimeEngine {
             "RIME startup phases \(startupPhaseSummary)"
         )
         Logger.shared.performance("Engine init complete", durationMs: elapsed)
+    }
+
+    /// Single resolution path: always fingerprints `sharedDataDir/t9.schema.yaml`.
+    func resolveRuntimeSelection(
+        defaults: UserDefaults? = UserDefaults(suiteName: RimeRuntimeSelectionBridge.appGroupID)
+    ) -> RimeRuntimeSelection {
+        RimeRuntimeSelectionBridge.resolve(defaults: defaults, sharedDataDir: sharedDataDir)
     }
 
     deinit {
@@ -199,7 +214,8 @@ public final class RimeEngineImpl: RimeEngine {
             return
         }
 
-        let selection = RimeRuntimeSelectionBridge.resolve()
+        let selection = resolveRuntimeSelection()
+        runtimeSelection = selection
         let fallback = selection.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
         let selected = selectSchemaForStartup(selection.effectiveSchemaID, fallback: fallback)
         guard let selected else {

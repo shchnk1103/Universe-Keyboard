@@ -45,26 +45,40 @@ public enum T9CompositionCommitAction: Sendable, Equatable {
     case keepComposition
     /// Abandon composition without host commit (language / auto-English switch).
     case abandonComposition
-    /// Insert newline (only when not composing).
+    /// Insert newline (only when not composing under T9 semantics).
     case insertNewline
-    /// Insert space (only when not composing T9 digits without candidates handled above).
+    /// Insert space (non-T9 or not composing).
     case insertSpace
+    /// Defer to non-T9 composition handling.
+    case notT9Composition
 }
 
 public enum T9CompositionCommitPolicy {
-    public static func isT9DigitComposition(rawInput: String?) -> Bool {
+    /// Digit-shaped raw input alone does **not** enable T9 policy.
+    /// Callers must pass `usesT9InputSemantics` from the same `RimeRuntimeSelection`
+    /// that chose the effective schema and layout.
+    public static func isActiveT9DigitComposition(
+        usesT9InputSemantics: Bool,
+        rawInput: String?
+    ) -> Bool {
+        guard usesT9InputSemantics else { return false }
+        return isDigitOnlyComposition(rawInput: rawInput)
+    }
+
+    public static func isDigitOnlyComposition(rawInput: String?) -> Bool {
         guard let rawInput, !rawInput.isEmpty else { return false }
         return rawInput.unicodeScalars.allSatisfy { CharacterSet.decimalDigits.contains($0) }
     }
 
-    /// Space while T9 composition is active.
+    /// Space while composition may be T9.
     public static func spaceAction(
+        usesT9InputSemantics: Bool,
         rawInput: String?,
         candidates: [RimeCandidate],
         highlightedIndex: Int?
     ) -> T9CompositionCommitAction {
-        guard isT9DigitComposition(rawInput: rawInput) else {
-            return .insertSpace
+        guard isActiveT9DigitComposition(usesT9InputSemantics: usesT9InputSemantics, rawInput: rawInput) else {
+            return .notT9Composition
         }
         if let text = preferredCandidateText(candidates: candidates, highlightedIndex: highlightedIndex) {
             return .commitCandidate(text)
@@ -72,26 +86,30 @@ public enum T9CompositionCommitPolicy {
         return .keepComposition
     }
 
-    /// Return while T9 composition is active.
+    /// Return while composition may be T9.
     public static func returnAction(
+        usesT9InputSemantics: Bool,
         rawInput: String?,
         candidates: [RimeCandidate],
         highlightedIndex: Int?
     ) -> T9CompositionCommitAction {
-        guard isT9DigitComposition(rawInput: rawInput) else {
-            return .insertNewline
+        guard isActiveT9DigitComposition(usesT9InputSemantics: usesT9InputSemantics, rawInput: rawInput) else {
+            return .notT9Composition
         }
         if let text = preferredCandidateText(candidates: candidates, highlightedIndex: highlightedIndex) {
             return .commitCandidate(text)
         }
-        // Unconditional: never commit raw digits.
+        // Unconditional under T9: never commit raw digits.
         return .keepComposition
     }
 
-    /// Language switch or automatic English while T9 composition is active.
-    public static func languageSwitchAction(rawInput: String?) -> T9CompositionCommitAction {
-        if isT9DigitComposition(rawInput: rawInput) {
-            return .abandonComposition
+    /// Language switch or automatic English while composition may be T9.
+    public static func languageSwitchAction(
+        usesT9InputSemantics: Bool,
+        rawInput: String?
+    ) -> T9CompositionCommitAction {
+        guard isActiveT9DigitComposition(usesT9InputSemantics: usesT9InputSemantics, rawInput: rawInput) else {
+            return .notT9Composition
         }
         return .abandonComposition
     }

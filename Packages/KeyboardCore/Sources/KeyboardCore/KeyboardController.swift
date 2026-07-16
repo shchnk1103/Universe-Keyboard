@@ -22,6 +22,9 @@ public final class KeyboardController {
     public var onCommittedText: ((CommittedTextEvent) -> Void)?
     public var isPairedSymbolCompletionEnabled = true
     public internal(set) var isPostCommitContinuationEnabled = true
+    /// Derived from the same `RimeRuntimeSelection` used for schema + layout.
+    /// Digit shape alone never enables T9 policies.
+    public var usesT9InputSemantics = false
     var shouldRestoreRimeComposition = false
     var shouldRebuildSessionDuringRestore = false
 
