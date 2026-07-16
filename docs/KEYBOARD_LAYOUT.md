@@ -85,5 +85,5 @@ Product implementation of nine-key required a successful isolated T9 Spike on th
 - Runner: `scripts/run_t9_compatibility_spike.sh`
 - Test: `Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9CompatibilitySpikeTests.swift`
 
-Amendment handoff: [`evidence/keyboard-layout-9key-001-codex-handoff.md`](evidence/keyboard-layout-9key-001-codex-handoff.md).  
+Amendment handoff: [`evidence/keyboard-layout-9key-001-codex-handoff.md`](evidence/keyboard-layout-9key-001-codex-handoff.md).
 First Codex review record (pre-amendment): [`evidence/keyboard-layout-9key-001-codex-review.md`](evidence/keyboard-layout-9key-001-codex-review.md).

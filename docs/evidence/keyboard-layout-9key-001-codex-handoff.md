@@ -1,10 +1,10 @@
 # KEYBOARD-LAYOUT-9KEY-001 — Codex Review Handoff (Amendment Package)
 
-Prepared by: Grok (Executor)  
-Handoff target: Codex (Architecture + Quality re-review)  
-Date: 2026-07-16 Asia/Shanghai  
-Branch: `feature/keyboard-layout-9key-spike`  
-Plan: [`docs/plans/keyboard-layout-9key-implementation-plan.md`](../plans/keyboard-layout-9key-implementation-plan.md)  
+Prepared by: Grok (Executor)
+Handoff target: Codex (Architecture + Quality re-review)
+Date: 2026-07-16 Asia/Shanghai
+Branch: `feature/keyboard-layout-9key-spike`
+Plan: [`docs/plans/keyboard-layout-9key-implementation-plan.md`](../plans/keyboard-layout-9key-implementation-plan.md)
 Assignment: [`docs/assignments/keyboard-layout-9key-001.md`](../assignments/keyboard-layout-9key-001.md)
 
 ## Review response status

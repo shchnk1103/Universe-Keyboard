@@ -99,6 +99,22 @@ If any step before 5 fails: leave layout at previous usable value (default/safe 
 - Do **not** auto-revert base scheme to 朙月拼音.
 - Keep readiness if T9 resources remain valid.
 
+#### Interruption recovery (every boundary)
+
+Filesystem and App Group writes are not one atomic transaction. After any crash, kill or power loss, the next main-App open must reconcile to a safe state:
+
+| Last completed step | Recovery |
+|---|---|
+| Install incomplete / partial files | Treat as not ready; layout must not be `nineKey` (or force `twentySixKey`); prompt repair/reinstall |
+| Deploy failed or interrupted | Readiness unmatched/false; keep previous layout; do not claim nine-key ready |
+| Verify failed | Do not write readiness; do not write `nineKey` |
+| Readiness written, layout not yet `nineKey` | Safe: still 26-key until user/enable path finishes; optional retry may set `nineKey` only after re-check of fingerprint |
+| Layout `nineKey` written but fingerprint later mismatches | Effective layout falls back to 26-key until re-verify succeeds |
+| Uninstall after layout fallback but before resource delete | Keyboard remains 26-key; residual files may be cleaned on next launch; readiness already unmatched |
+| Uninstall after readiness invalidation but before full delete | Same as above; never leave effective nine-key active without matched readiness |
+
+Resolver rule always wins at runtime: unmatched readiness → 26-key effective layout, even if a stale `nineKey` preference exists. Stale `nineKey` without matched readiness must be corrected to `twentySixKey` (or ignored by the resolver) on the next main-App reconciliation path.
+
 ### 5. Client compatibility layer
 
 1. Validate upstream `t9.schema.yaml` source, version and required digit algebra.
