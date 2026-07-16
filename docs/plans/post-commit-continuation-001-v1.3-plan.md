@@ -1,6 +1,8 @@
 # POST-COMMIT-CONTINUATION-001 V1.3 Naturalness Refinement Plan
 
-> **Status:** Implementation and Simulator validation complete; physical-device acceptance pending
+> **Status:** Active
+>
+> **Current stage:** Implementation and Simulator validation complete; physical-device acceptance pending
 >
 > **Start date:** `2026-07-15 Asia/Shanghai`
 >
