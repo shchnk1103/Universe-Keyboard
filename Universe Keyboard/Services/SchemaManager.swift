@@ -55,6 +55,9 @@ final class SchemaManager {
 
     func switchToSchema(_ schemaID: String) {
         guard activeSchemaID != schemaID else { return }
+        if activeSchemaID == "rime_ice", schemaID != "rime_ice" {
+            applyLayoutFallbackWhenLeavingRimeIce(newSchemaID: schemaID)
+        }
         activeSchemaID = schemaID
         settings.set(schemaID, forKey: "rime_active_schema")
         requestDeploy()

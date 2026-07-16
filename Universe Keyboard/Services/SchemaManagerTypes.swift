@@ -132,9 +132,11 @@ enum RimeSchemeCatalog {
                     "symbols_v.yaml", "symbols_caps_v.yaml",
                     "custom_phrase.txt",
                     "rime.lua",
+                    "t9.schema.yaml",
+                    "t9.custom.yaml",
                 ],
                 removableDirectories: ["cn_dicts", "en_dicts"],
-                removableBuildFileSubstrings: ["rime_ice", "melt_eng", "radical_pinyin"]
+                removableBuildFileSubstrings: ["rime_ice", "melt_eng", "radical_pinyin", "t9"]
             )
         ),
     ]

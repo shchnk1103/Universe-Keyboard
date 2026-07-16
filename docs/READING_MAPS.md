@@ -158,6 +158,18 @@ Ownership: Primary [`Main App UI`](playbooks/main-app-ui.md) for download/instal
 
 Required review: current non-atomic behavior, staging/rollback claims, download verification, interruption recovery and no Extension deployment.
 
+## Modify Keyboard Layout Or Chinese Nine-Key
+
+Ownership: Primary [`RimeBridge`](playbooks/rime-bridge.md) for T9 schema compatibility, effective-scheme selection and deploy/session boundaries; secondary [`KeyboardCore`](playbooks/keyboard-core.md) for layout/readiness settings and T9 input semantics, [`Keyboard UI`](playbooks/keyboard-ui.md) for Extension nine-key chrome, [`Main App UI`](playbooks/main-app-ui.md) for settings/install/verify orchestration and [`Test / Release`](playbooks/test-release.md) for evidence; escalate librime binary changes or deployment-boundary changes to [`Coordinator`](playbooks/coordinator.md).
+
+1. `KEYBOARD_LAYOUT.md` and the current `KEYBOARD-LAYOUT-9KEY-001` Assignment.
+2. ADR 0018, then ADR 0001, 0003, 0004 and 0006.
+3. `architecture/shared-container-and-rime-lifecycle.md` and `architecture/input-pipeline-and-marked-text.md`.
+4. `RIME_SCHEME_MANAGEMENT.md`, `UI_STYLE_GUIDE.md`, `DEBUGGING.md` and `RELEASE_CHECKLIST.md`.
+5. `architecture/rime-artifacts.md` only if the pinned librime artifact itself must change.
+
+Required review: T9 Spike evidence against the pinned librime, base scheme vs effective scheme separation, main-App-only readiness writes, failure fallback to 26-key, no raw-digit host commits, no Extension deployment, and physical-device nine-key acceptance when productizing.
+
 ## Modify KeyboardCore
 
 1. `PROJECT_CONTEXT.md` KeyboardCore boundary.

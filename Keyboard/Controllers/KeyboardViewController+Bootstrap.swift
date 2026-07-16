@@ -144,10 +144,42 @@ extension KeyboardViewController {
             sharedDataDir: directories.sharedDataDir,
             userDataDir: directories.userDataDir
         )
+        // Immediate propagation for in-place recovery / resume fail-closed (not only view lifecycle).
+        engine.onRuntimeSelectionChanged = { [weak self] selection in
+            self?.applyRealizedRuntimeSelection(selection)
+        }
         controller.rimeEngine = engine
         controller.typoCorrectionCandidateQuery = engine
+        applyRealizedRuntimeSelection(from: engine)
         hasActivatedVisibleRimeRuntime = true
         Logger.shared.info("RIME session prepared for visible keyboard input", category: .engine)
+    }
+
+    /// Align chrome + controller T9 semantics with the schema librime actually selected.
+    func applyRealizedRuntimeSelection(from engine: RimeEngineImpl) {
+        guard let realized = engine.runtimeSelection else { return }
+        applyRealizedRuntimeSelection(realized)
+    }
+
+    /// Align chrome + controller with a published realized selection.
+    /// Reloads the key grid when the realized layout diverges from provisional chrome.
+    func applyRealizedRuntimeSelection(_ realized: RimeRuntimeSelection) {
+        let previousLayout = cachedLayoutStyle
+        let previousSemantics = controller.usesT9InputSemantics
+        controller.usesT9InputSemantics = realized.usesT9InputSemantics
+        let surface = realized.surface
+        cachedT9ReadinessMatched = surface.t9ReadinessMatched
+        cachedLayoutStyle = surface.layoutStyle
+        Logger.shared.info(
+            "Applied realized selection schema=\(realized.effectiveSchemaID) "
+                + "layout=\(surface.layoutStyle.rawValue) usesT9=\(surface.usesT9InputSemantics)",
+            category: .engine
+        )
+        let layoutChanged =
+            previousLayout != cachedLayoutStyle || previousSemantics != controller.usesT9InputSemantics
+        if layoutChanged, isKeyboardUIInstalled {
+            reloadKeyboard()
+        }
     }
 
     /// UIKit does not guarantee viewWillDisappear when the host replaces a keyboard

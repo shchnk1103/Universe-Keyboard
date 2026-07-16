@@ -17,6 +17,41 @@ import UIKit
 
 extension KeyboardViewController {
 
+    /// Creates a T9 digit key with secondary letter labels (e.g. 2 / ABC).
+    func makeT9KeyButton(digit: String, letters: String) -> UIButton {
+        let button = makeKeyButton(title: digit, action: #selector(insertKey(_:)))
+        button.accessibilityIdentifier = digit
+        if letters.isEmpty {
+            button.accessibilityLabel = "数字 \(digit)"
+        } else {
+            button.accessibilityLabel = "数字 \(digit)，\(letters)"
+            // Visual secondary line via attributed title.
+            let digitFont = UIFont.systemFont(ofSize: 20, weight: .regular)
+            let lettersFont = UIFont.systemFont(ofSize: 10, weight: .medium)
+            let text = NSMutableAttributedString(
+                string: digit + "\n",
+                attributes: [
+                    .font: digitFont,
+                    .foregroundColor: UIColor.label,
+                ]
+            )
+            text.append(
+                NSAttributedString(
+                    string: letters,
+                    attributes: [
+                        .font: lettersFont,
+                        .foregroundColor: UIColor.secondaryLabel,
+                    ]
+                )
+            )
+            button.titleLabel?.numberOfLines = 2
+            button.titleLabel?.textAlignment = .center
+            button.setAttributedTitle(text, for: .normal)
+        }
+        applyKeyStyle(.character, to: button)
+        return button
+    }
+
     /// 创建标准按键按钮。
     ///
     /// 每个按钮绑定 4 个 target-action：

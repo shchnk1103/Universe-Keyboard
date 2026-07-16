@@ -38,6 +38,7 @@ The durable implementation constraints are:
 - RIME production bridge code belongs in `Packages/RimeBridge`; do not recreate bridge sources in app or extension targets.
 - Do not silence concurrency issues with `@unchecked Sendable` or unsafe isolation.
 - Full RIME deployment is owned by the main App; the Keyboard Extension runtime path is session-only.
+- Keyboard layout (26-key / Chinese nine-key) is governed by ADR 0018 and `docs/KEYBOARD_LAYOUT.md`: base scheme stays user-visible (`rime_active_schema`), effective scheme may be `t9` only when layout is nine-key, base is `rime_ice`, and versioned T9 readiness matches on-disk resources; Extension never deploys or writes readiness.
 - Lua and release-readiness validation status belongs in `CHANGELOG.md` and `docs/architecture/swift6-manual-acceptance.md`.
 
 

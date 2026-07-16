@@ -22,6 +22,9 @@ public final class KeyboardController {
     public var onCommittedText: ((CommittedTextEvent) -> Void)?
     public var isPairedSymbolCompletionEnabled = true
     public internal(set) var isPostCommitContinuationEnabled = true
+    /// Derived from the same `RimeRuntimeSelection` used for schema + layout.
+    /// Digit shape alone never enables T9 policies.
+    public var usesT9InputSemantics = false
     var shouldRestoreRimeComposition = false
     var shouldRebuildSessionDuringRestore = false
 
@@ -97,8 +100,17 @@ public final class KeyboardController {
     }
 
     /// 在扩展重新可见时恢复 RIME runtime 与 session。
+    /// Also reapplies fail-closed / realized T9 semantics from the engine selection.
     public func resumeRimeAfterVisibilityChange() {
         rimeEngine?.resumeAfterVisibilityChange()
+        applyRealizedSelectionFromEngine()
+    }
+
+    /// Align `usesT9InputSemantics` with the engine's last published realized selection.
+    /// Extension chrome still reloads via `onRuntimeSelectionChanged`.
+    public func applyRealizedSelectionFromEngine() {
+        guard let selection = rimeEngine?.runtimeSelection else { return }
+        usesT9InputSemantics = selection.usesT9InputSemantics
     }
 
     // MARK: - Public entry point

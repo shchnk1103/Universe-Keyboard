@@ -35,13 +35,29 @@ extension KeyboardController {
 
     func handleToggleInputMode() -> KeyboardEffect {
         var effects: KeyboardEffect = []
-        if let engine = rimeEngine, engine.isComposing() {
-            finishActiveCompositionAsDisplayText()
-            engine.resetSession()
+        let raw = state.lastRimeOutput?.rawInput ?? state.currentComposition
+        switch T9CompositionCommitPolicy.languageSwitchAction(
+            usesT9InputSemantics: usesT9InputSemantics,
+            rawInput: raw
+        ) {
+        case .abandonComposition:
+            // ADR 0018: never commit raw T9 digits on language switch.
+            clearInlinePreedit()
+            state.currentComposition = ""
+            state.lastRimeOutput = nil
+            state.partialCommit = nil
+            rimeEngine?.resetSession()
+            clearTypoCorrectionSuggestions()
             effects.insert(.compositionChanged)
-        } else if !state.currentComposition.isEmpty {
-            finishActiveCompositionAsDisplayText()
-            effects.insert(.compositionChanged)
+        default:
+            if let engine = rimeEngine, engine.isComposing() {
+                finishActiveCompositionAsDisplayText()
+                engine.resetSession()
+                effects.insert(.compositionChanged)
+            } else if !state.currentComposition.isEmpty {
+                finishActiveCompositionAsDisplayText()
+                effects.insert(.compositionChanged)
+            }
         }
 
         let switchingToChinese = state.inputMode == .english
@@ -68,9 +84,24 @@ extension KeyboardController {
         state.activeKeyboardType = type
         var effects: KeyboardEffect = .keyboardTypeChanged
         if type == .emailAddress || type == .URL || type == .webSearch {
-            if !state.currentComposition.isEmpty {
-                finishActiveCompositionAsDisplayText()
+            let raw = state.lastRimeOutput?.rawInput ?? state.currentComposition
+            switch T9CompositionCommitPolicy.languageSwitchAction(
+                usesT9InputSemantics: usesT9InputSemantics,
+                rawInput: raw
+            ) {
+            case .abandonComposition:
+                clearInlinePreedit()
+                state.currentComposition = ""
+                state.lastRimeOutput = nil
+                state.partialCommit = nil
+                rimeEngine?.resetSession()
+                clearTypoCorrectionSuggestions()
                 effects.insert(.compositionChanged)
+            default:
+                if !state.currentComposition.isEmpty {
+                    finishActiveCompositionAsDisplayText()
+                    effects.insert(.compositionChanged)
+                }
             }
             state.inputMode = .english
             effects.insert(.inputModeChanged)

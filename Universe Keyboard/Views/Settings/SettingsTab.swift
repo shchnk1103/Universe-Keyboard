@@ -18,6 +18,19 @@ struct SettingsTab: View {
     )
     private var postCommitContinuationEnabled = true
 
+    @AppStorage(
+        KeyboardLayoutSettingsKey.layoutStyle,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var layoutStyleRaw = KeyboardLayoutStyle.twentySixKey.rawValue
+
+    private var layoutSubtitle: String {
+        switch KeyboardLayoutStyle.resolve(layoutStyleRaw) {
+        case .twentySixKey: return "26键"
+        case .nineKey: return "9键"
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -105,7 +118,15 @@ struct SettingsTab: View {
                 .font(.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 4)
-            
+
+            SettingsNavigationLink(
+                systemImage: "keyboard",
+                title: "键盘布局",
+                subtitle: layoutSubtitle
+            ) {
+                KeyboardLayoutSettingsView(rimeStore: rimeStore)
+            }
+
             SettingsNavigationLink(systemImage: "waveform", title: "键盘反馈", subtitle: "按键音、触感震动") {
                 FeedbackSettingsView()
             }

@@ -3,7 +3,11 @@ import UIKit
 
 extension KeyboardViewController {
     @objc func insertKey(_ sender: UIButton) {
-        guard let key = sender.title(for: .normal) else { return }
+        // Prefer plain title; fall back to accessibilityIdentifier for multi-line T9 keys.
+        let key = sender.title(for: .normal)
+            ?? sender.accessibilityIdentifier
+            ?? ""
+        guard !key.isEmpty else { return }
         let startTime = CACurrentMediaTime()
         inputEventSequence += 1
         let eventID = inputEventSequence

@@ -125,6 +125,8 @@ public struct RimeConfigTemplates {
                 "\n" + """
                       - schema: rime_ice
                         name: 雾凇拼音
+                      - schema: t9
+                        name: 中文九键
                     """
         }
 

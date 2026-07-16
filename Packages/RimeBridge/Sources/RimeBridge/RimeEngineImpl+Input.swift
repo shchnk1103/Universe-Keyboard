@@ -73,7 +73,7 @@ extension RimeEngineImpl {
         return output
     }
 
-    func processDeletion() -> KeyboardCore.RimeOutput {
+    public func processDeletion() -> KeyboardCore.RimeOutput {
         parseOutput(bridge.deleteBackward())
     }
 }
