@@ -63,7 +63,7 @@ Chinese nine-key chrome aims to match the **system 九宫格** visual rhythm (se
 |---|---|
 | Letter keys | Primary labels are letter groups (`ABC`…`WXYZ`); digit payload is identity-only for RIME |
 | Left main pad | Four equal columns: `123`/`,?!`/letters, `#+=`/letters, `中`/letters |
-| Right column | Delete, re-input (clear composition, no raw-digit commit), **Return spanning the bottom two rows** |
+| Right column | Delete (SF Symbol), **颜表情** (`^_^` entry placeholder), **Return glyph** spanning the bottom two rows |
 | Bottom row | Emoji + **选拼音** (placeholder) + wide space (`拼音`), widths follow the left pad’s 4-column rhythm (1+1+2); delete/return are **not** duplicated here |
 
 Chrome is skin only: effective scheme, readiness and digit algebra remain ADR 0018.

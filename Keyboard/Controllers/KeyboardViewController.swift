@@ -207,8 +207,8 @@ class KeyboardViewController: UIInputViewController {
     let thirdRowFunctionSpacing: CGFloat = 10
     /// 主要功能键宽度（Shift、123、删除、语言切换），保持触控舒适但弱化视觉占比。
     let primaryFunctionKeyWidth: CGFloat = 46
-    /// 功能键符号字号。略大于普通功能键文字，提高 Shift/Delete/Globe 可读性。
-    let functionKeySymbolPointSize: CGFloat = 18
+    /// 功能键符号字号。Delete / Return / Globe / 表情等共用，略放大以贴近系统键盘。
+    let functionKeySymbolPointSize: CGFloat = 22
     /// 按键圆角半径（点），使用 .continuous 曲线获得 iOS 原生外观
     let keyCornerRadius: CGFloat = 9
     // MARK: === 生命周期 ===

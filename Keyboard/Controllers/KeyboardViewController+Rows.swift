@@ -22,7 +22,7 @@ extension KeyboardViewController {
     /// Layout (closer to system 九宫格):
     /// ```
     /// [123] [,?!] [ABC] [DEF] | [ ⌫ ]
-    /// [#+=] [GHI] [JKL] [MNO] | [重输]
+    /// [#+=] [GHI] [JKL] [MNO] | [^_^ 颜表情]
     /// [中]  [PQRS][TUV][WXYZ] | ┌────┐
     /// [😊] [选拼音] [ 拼音 ]  | │ret │  ← return spans bottom two rows
     ///                         | └────┘
@@ -43,12 +43,14 @@ extension KeyboardViewController {
         let symbolsButton = makeKeyButton(title: "#+=", action: #selector(switchToSymbolsPage(_:)))
         applyKeyStyle(.function, to: symbolsButton)
 
-        let reinputButton = makeKeyButton(title: "重输", action: #selector(reinputT9Composition(_:)))
-        applyKeyStyle(.function, to: reinputButton)
-        reinputButton.titleLabel?.adjustsFontSizeToFitWidth = true
-        reinputButton.titleLabel?.minimumScaleFactor = 0.6
-        reinputButton.accessibilityLabel = "重输"
-        reinputButton.accessibilityHint = "清空当前拼音组合，不提交数字。"
+        // Native-style 颜表情 entry (right middle). Product content still placeholder.
+        let kaomojiButton = makeKeyButton(title: "^_^", action: #selector(showKaomojiCandidatesPlaceholder(_:)))
+        applyKeyStyle(.function, to: kaomojiButton)
+        kaomojiButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        kaomojiButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        kaomojiButton.titleLabel?.minimumScaleFactor = 0.55
+        kaomojiButton.accessibilityLabel = "颜表情"
+        kaomojiButton.accessibilityHint = "打开颜表情入口（占位）。"
 
         let inputModeButton = makeKeyButton(
             title: inputModeButtonTitle,
@@ -59,7 +61,7 @@ extension KeyboardViewController {
         let deleteButton = makeDeleteButton()
 
         returnButton = makeKeyButton(
-            title: returnKeyTitle,
+            title: "",
             action: #selector(insertReturn(_:))
         )
         applyKeyStyle(.returnKey, to: returnButton)
@@ -92,17 +94,17 @@ extension KeyboardViewController {
         leftStack.distribution = .fill
         leftStack.setCustomSpacing(keyboardGroupSpacing, after: row3)
 
-        // Right function column: delete + reinput + tall return spanning row3+bottom.
+        // Right function column: delete + 颜表情 + tall return spanning row3+bottom.
         let returnHeight = keyHeight * 2 + keyboardGroupSpacing
         preferredRowHeightConstraint(for: deleteButton, height: keyHeight).isActive = true
-        preferredRowHeightConstraint(for: reinputButton, height: keyHeight).isActive = true
+        preferredRowHeightConstraint(for: kaomojiButton, height: keyHeight).isActive = true
         preferredRowHeightConstraint(for: returnButton, height: returnHeight).isActive = true
 
-        let rightStack = UIStackView(arrangedSubviews: [deleteButton, reinputButton, returnButton])
+        let rightStack = UIStackView(arrangedSubviews: [deleteButton, kaomojiButton, returnButton])
         rightStack.axis = .vertical
         rightStack.spacing = keySpacing
         rightStack.distribution = .fill
-        rightStack.setCustomSpacing(keySpacing, after: reinputButton)
+        rightStack.setCustomSpacing(keySpacing, after: kaomojiButton)
 
         let host = UIStackView(arrangedSubviews: [leftStack, rightStack])
         host.axis = .horizontal
@@ -144,12 +146,9 @@ extension KeyboardViewController {
             title: "",
             action: #selector(handleInputModeList(from:with:))
         )
-        nextKeyboardButton.setImage(UIImage(systemName: "globe"), for: .normal)
-        nextKeyboardButton.setPreferredSymbolConfiguration(
-            UIImage.SymbolConfiguration(pointSize: functionKeySymbolPointSize, weight: .regular),
-            forImageIn: .normal
-        )
+        applyFunctionKeySymbol("globe", to: nextKeyboardButton)
         applyKeyStyle(.function, to: nextKeyboardButton)
+        nextKeyboardButton.tintColor = .label
         // Keep in hierarchy for the system; stack collapses space while hidden.
         nextKeyboardButton.isHidden = !needsInputModeSwitchKey
 
@@ -159,6 +158,7 @@ extension KeyboardViewController {
         )
         configureEmojiSwitchButton(emojiButton)
         applyKeyStyle(.function, to: emojiButton)
+        emojiButton.tintColor = .label
 
         // Placeholder only — product behavior deferred (KEYBOARD-LAYOUT-9KEY-UI-001).
         let selectPinyinButton = makeKeyButton(

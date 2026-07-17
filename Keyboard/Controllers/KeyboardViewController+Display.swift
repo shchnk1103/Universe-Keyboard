@@ -167,7 +167,11 @@ extension KeyboardViewController {
     func updateReturnKeyAppearance() {
         guard let returnButton else { return }
 
-        returnButton.setTitle(returnKeyTitle, for: .normal)
+        // Visual: system-style return glyph (not host action text like "send").
+        // Semantic action remains insertReturn; VoiceOver uses returnKeyType labels.
+        applyFunctionKeySymbol("return", to: returnButton)
+        returnButton.accessibilityLabel = returnKeyAccessibilityLabel(for: returnKeyTitle)
+        returnButton.accessibilityHint = "执行\(returnKeyAccessibilityLabel(for: returnKeyTitle))。"
 
         let rt = textDocumentProxy.returnKeyType
 
@@ -192,9 +196,11 @@ extension KeyboardViewController {
             } else {
                 // 无文本时的灰色状态
                 applyKeyStyle(.returnKey, to: returnButton)
+                returnButton.tintColor = .label
             }
         } else {
             applyKeyStyle(.returnKey, to: returnButton)
+            returnButton.tintColor = .label
         }
     }
 }

@@ -47,7 +47,7 @@ Frozen keyboard baseline:
 - Candidate-to-key spacing: `8`.
 - Letter key height: `45`.
 - Function key width for Shift, Delete, 123, globe, and input-mode keys: `46`.
-- Function key symbol size: `18`.
+- Function key symbol size: `22` (Delete / Return / Globe / emoji SF Symbols).
 - Vertical row spacing: `8`.
 - Letter-area to bottom-row group spacing: `10`.
 - Third-row function-key to letter-group spacing: `10`.
@@ -91,7 +91,7 @@ Key rules:
 - Keep key corner radius near `9`; do not make keys pill-shaped.
 - Character keys may have a subtle 1 px downward shadow.
 - Function keys should be flatter and darker/lower-emphasis than character keys.
-- Function key symbols should remain readable at the frozen `18` point size.
+- Function key symbols should remain readable at `22` point size (shared Delete / Return / Globe / emoji).
 - Keep visual key gaps native-looking, but do not leave dead touch zones inside the key input area. Split key-area gaps at adjacent midlines into per-key touch cells through the root hit-test container instead of changing visible spacing. As with candidate cells, keep a nearly invisible backing view (`alpha` around `0.001`) for each expanded key touch cell; diagnostic visuals must not be the reason hit testing works.
 - Press feedback should use brief background highlight plus subtle scale, not full alpha fading.
 - Visual press state, key click, and haptic feedback should be emitted together from key touch-down for standard keys. Paths without a normal touch-down, such as candidate commit or long-press variant commit, should use the shared feedback helper at commit time.

@@ -93,6 +93,18 @@ extension KeyboardViewController {
         return button
     }
 
+    /// Applies a template SF Symbol used by Delete / Return / Globe-style function keys.
+    func applyFunctionKeySymbol(_ systemName: String, to button: UIButton) {
+        button.setTitle(nil, for: .normal)
+        button.setAttributedTitle(nil, for: .normal)
+        let image = UIImage(systemName: systemName)?.withRenderingMode(.alwaysTemplate)
+        button.setImage(image, for: .normal)
+        button.setPreferredSymbolConfiguration(
+            UIImage.SymbolConfiguration(pointSize: functionKeySymbolPointSize, weight: .regular),
+            forImageIn: .normal
+        )
+    }
+
     /// 创建删除键按钮（特殊处理：长按自动重复）。
     ///
     /// 与普通按键的区别：
@@ -104,9 +116,10 @@ extension KeyboardViewController {
     /// 需要先移除 makeKeyButton 添加的默认事件绑定，再重新绑定删除专用事件。
     func makeDeleteButton() -> UIButton {
         let button = makeKeyButton(
-            title: "⌫",
+            title: "",
             action: #selector(deleteKeyTouchUpInside(_:))
         )
+        applyFunctionKeySymbol("delete.left", to: button)
 
         // ── 替换事件绑定 ─────────────────────────────────────────
         // 移除 makeKeyButton 添加的默认绑定
@@ -129,6 +142,8 @@ extension KeyboardViewController {
 
         // 删除键使用功能键样式（灰色背景）
         applyKeyStyle(.function, to: button)
+        // applyKeyStyle may reset title color; keep template symbol tint on the image.
+        button.tintColor = .label
         return button
     }
 

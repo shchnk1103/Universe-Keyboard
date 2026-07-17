@@ -103,7 +103,7 @@ extension KeyboardViewController {
         }
     }
 
-    private func returnKeyAccessibilityLabel(for title: String) -> String {
+    func returnKeyAccessibilityLabel(for title: String) -> String {
         switch title {
         case "go":
             return "前往"
