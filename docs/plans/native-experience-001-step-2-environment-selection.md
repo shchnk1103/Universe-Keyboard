@@ -1,6 +1,14 @@
 # NATIVE-EXPERIENCE-001 — Step 2 Environment Selection
 
-Status: Frozen
+> **Status:** Archived
+>
+> **Closure date:** 2026-07-09 Asia/Shanghai
+>
+> **Current source of truth:** environment capture procedure and later NE evidence records.
+>
+> **Related ADRs:** ADR 0010 when provenance applies
+>
+> **Guidance:** This plan is no longer current development guidance.
 
 Closed Date: 2026-07-09
 

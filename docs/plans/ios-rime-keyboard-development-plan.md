@@ -1,7 +1,15 @@
 # iOS RIME 键盘开发方案
 
+> **Status:** Superseded
+>
+> **Closure note:** Historical early project plan (2026-05-10); not current guidance.
+>
+> **Current source of truth:** `docs/PROJECT_CONTEXT.md`, `docs/architecture/` (including ADRs), and Knowledge OS entrypoints.
+>
+> **Related ADRs:** many subsequent ADRs; this plan does not own current contracts.
+>
+> **Guidance:** This plan is no longer current development guidance.
 
-> **状态：Superseded。** 本文件是项目初期（2026-05-10）生成的开发方案，已被实际实现超越，仅供历史追溯。当前架构与设计决策以 `docs/PROJECT_CONTEXT.md`、`docs/architecture/`（含 ADR）、`CONTEXT_INDEX.md` 及 Knowledge OS 体系为准。
 生成日期：2026-05-10
 目标读者：偏新手的 iOS 开发者
 目标产品：一款接近 iOS 原生体验、支持 RIME 与雾凇拼音配置、支持滑动输入、界面简洁美观的 iOS 第三方键盘

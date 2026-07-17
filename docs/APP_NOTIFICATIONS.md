@@ -4,7 +4,7 @@
 >
 > **Assignment:** [`APP-NOTIFICATIONS-001`](assignments/app-notifications-001.md)
 >
-> **Architecture decision:** [ADR 0017](architecture/decisions/0017-app-notification-and-toast-settings.md)
+> **Architecture decision:** [ADR 0019](architecture/decisions/0019-app-notification-and-toast-settings.md)
 
 ## Product Goal
 

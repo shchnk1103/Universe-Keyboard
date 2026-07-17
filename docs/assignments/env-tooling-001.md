@@ -3,7 +3,9 @@
 **Policy version：** `1.0.0`
 **Decision date：** `2026-07-02 Asia/Shanghai`
 **Decision source：** Product Lead — ENV-TOOLING-001 Assignment Decision
-**Lifecycle status：** `Assigned / Not Ready`
+**Lifecycle status：** `Accepted / Closed`
+
+**Closure synchronization：** Product Review accepted the capability; Engineering Dashboard records `Accepted / Closed`. Header synchronized under DOC-HYGIENE-001 on `2026-07-17` without reopening scope.
 
 ---
 
@@ -235,11 +237,11 @@ Executor 必须交付：
 
 # Lifecycle Definition
 
-当前状态：
+最终状态：
 
-> `Assigned / Not Ready`
+> `Accepted / Closed`
 
-允许的正常转换：
+已执行路径：
 
 ```text
 Assigned
@@ -250,19 +252,10 @@ Assigned
   → Architecture Reviewed
   → Quality Reviewed
   → Product Reviewed
-  → Closed
+  → Accepted / Closed
 ```
 
-异常转换：
-
-```text
-Acknowledged / Ready / Active
-  → Blocked
-  → Product Revalidation
-  → Reassigned or Ready
-```
-
-Executor Acknowledgement 仅表示接受 Assignment，不授权在 Entry Criteria 未满足时开始实现。
+关闭表示 ENV digest capability 已被 Product 接受。`004C-R1` 仍需独立 Entry Criteria 与 lifecycle，不得因本关闭而自动进入 Ready。
 
 ---
 
@@ -316,16 +309,11 @@ Quality Review 后，完整 Handoff 返回 Product Lead。
 
 # Final Assignment Decision
 
-> **ENV-TOOLING-001：Assigned / Not Ready**
+> **ENV-TOOLING-001：Accepted / Closed**
 
-该记录是 ENV-TOOLING-001 的完整 Product Assignment Contract。
+该记录是 ENV-TOOLING-001 的完整 Product Assignment Contract 与关闭同步。
 
-下一步仅允许：
-
-1. RIME Platform Maintainer 执行 Assignment Acknowledgement；
-2. Architecture 与 Quality 确认 Required Inputs；
-3. Program Manager 检查 Assignment Completeness；
-4. Product Lead 决定是否进入 `Ready`。
+后续使用该 capability 的任务（例如 `004C-R1`）必须通过各自 Assignment 与 Quality handoff 路由，不得重新打开本 Work Item 的 Scope。
 
 不授权实现。
 

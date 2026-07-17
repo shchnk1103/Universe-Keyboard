@@ -1,6 +1,14 @@
 # Typo Correction V0.6-V0.9: Quality Gates Before Coverage Expansion
 
-> **Status: archived milestone plan with historical validation notes.** V0.6-V0.9 implementation work is recorded here for traceability. Production defaults and current supported behavior are defined by `docs/TYPO_BENCHMARK.md`, `CHANGELOG.md`, and tests; this file must not be treated as approval to enable experimental edits.
+> **Status:** Archived
+>
+> **Closure note:** V0.6–V0.9 milestone historical record only; not approval to enable experimental edits.
+>
+> **Current source of truth:** `docs/TYPO_BENCHMARK.md`, `CHANGELOG.md`, and tests
+>
+> **Related ADRs:** see typo ADR series as applicable
+>
+> **Guidance:** This plan is no longer current development guidance.
 
 ## Summary
 

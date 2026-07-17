@@ -54,6 +54,7 @@
 - Release: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)
 - Technical debt: [`TECH_DEBT.md`](TECH_DEBT.md)
 - Documentation health: [`DOCUMENTATION_HEALTH.md`](DOCUMENTATION_HEALTH.md)
+- Latest documentation hygiene audit: [`evidence/doc-hygiene-001-audit.md`](evidence/doc-hygiene-001-audit.md)
 
 ## Collaboration And Governance
 

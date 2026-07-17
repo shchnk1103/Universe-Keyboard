@@ -1,10 +1,14 @@
 # TYPO-CORRECTION-003 Progressive Recall Preflight Plan
 
-> **Status:** Archived — completed 2026-07-15 Asia/Shanghai
+> **Status:** Archived
 >
-> **Assignment:** [`TYPO-CORRECTION-003`](../assignments/typo-correction-003.md)
+> **Closure date:** 2026-07-15 Asia/Shanghai
 >
-> **Current source of truth:** [`Contextual Typo Correction Product Contract`](../TYPO_CORRECTION.md) V2.2 and [ADR 0016](../architecture/decisions/0016-progressive-contextual-recall-preflight.md)
+> **Current source of truth:** `docs/TYPO_CORRECTION.md` and ADR 0016
+>
+> **Related ADR:** ADR 0016
+>
+> **Guidance:** This plan is no longer current development guidance.
 
 ## Work Packages
 

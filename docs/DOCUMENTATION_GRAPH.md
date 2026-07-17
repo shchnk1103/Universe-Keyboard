@@ -100,12 +100,12 @@ User dictionary
 Portable RIME sync
   -> RIME_SYNC
   -> ADR 0012 / 0013 / 0014
-  -> APP_NOTIFICATIONS / ADR 0017 (notification and Toast behavior)
+  -> APP_NOTIFICATIONS / ADR 0019 (notification and Toast behavior)
   -> DEBUGGING / RELEASE_CHECKLIST
 
 App notifications
   -> APP_NOTIFICATIONS
-  -> ADR 0017
+  -> ADR 0019
   -> PRIVACY_POLICY / DEBUGGING / RELEASE_CHECKLIST
 
 Release

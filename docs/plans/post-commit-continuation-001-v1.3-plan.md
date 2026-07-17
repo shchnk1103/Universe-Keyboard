@@ -2,21 +2,13 @@
 
 > **Status:** Archived
 >
-> **Closure date:** `2026-07-16 Asia/Shanghai`
+> **Closure date:** 2026-07-16 Asia/Shanghai
 >
-> **Current source of truth:** [`POST_COMMIT_CONTINUATION.md`](../POST_COMMIT_CONTINUATION.md), [`POST-COMMIT-CONTINUATION-001`](../assignments/post-commit-continuation-001.md) and the linked acceptance/review records
+> **Current source of truth:** `docs/POST_COMMIT_CONTINUATION.md`, Assignment POST-COMMIT-CONTINUATION-001, acceptance/review evidence.
 >
-> **Related ADR:** [`0017-ephemeral-post-commit-continuation.md`](../architecture/decisions/0017-ephemeral-post-commit-continuation.md)
+> **Related ADR:** ADR 0017
 >
-> **Current stage:** Closed by the Product Gate; this archived plan is no longer current development guidance
->
-> **Start date:** `2026-07-15 Asia/Shanghai`
->
-> **Authority:** Human Product Owner instruction to continue V1.3 and preserve learned Simulator setup order
->
-> **Implementation branch:** `codex/post-commit-continuation-v1-3` (merged through PR #13)
->
-> **Integrated implementation:** `eaa72d5207deacab1dc0b94024c67af96448ad19`
+> **Guidance:** This plan is no longer current development guidance.
 
 ## Objective
 

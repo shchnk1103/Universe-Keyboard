@@ -14,7 +14,7 @@
 - **Product Approver:** Product Lead acting under the human owner's explicit role delegation
 - **Assignment Revalidation Authority:** Product Lead
 - **Product Contract:** [`docs/RIME_SYNC.md`](../RIME_SYNC.md)
-- **Architecture Decision:** ADR 0012, [ADR 0013](../architecture/decisions/0013-rime-standard-sync-interoperability.md), ADR 0014 and [ADR 0017](../architecture/decisions/0017-app-notification-and-toast-settings.md)
+- **Architecture Decision:** ADR 0012, [ADR 0013](../architecture/decisions/0013-rime-standard-sync-interoperability.md), ADR 0014 and [ADR 0019](../architecture/decisions/0019-app-notification-and-toast-settings.md)
 
 ## Acknowledgement And Activation
 

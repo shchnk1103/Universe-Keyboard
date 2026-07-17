@@ -1,6 +1,14 @@
 # NATIVE-EXPERIENCE-001 — Step 3 Evidence Collection
 
-Status: Accepted — Partial Closure
+> **Status:** Archived
+>
+> **Closure date:** 2026-07-11 Asia/Shanghai (partial Product Review closure)
+>
+> **Current source of truth:** step-3 interruption diagnosis record and subsequent NE assignments.
+>
+> **Related ADRs:** none required
+>
+> **Guidance:** This plan is no longer current development guidance.
 
 Record Date: 2026-07-09
 

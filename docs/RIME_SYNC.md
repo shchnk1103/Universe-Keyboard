@@ -4,7 +4,7 @@
 >
 > **Assignment:** [`RIME-SYNC-001`](assignments/rime-sync-001.md)
 >
-> **Architecture decision:** [ADR 0013](architecture/decisions/0013-rime-standard-sync-interoperability.md), ADR 0012 and [ADR 0017](architecture/decisions/0017-app-notification-and-toast-settings.md)
+> **Architecture decision:** [ADR 0013](architecture/decisions/0013-rime-standard-sync-interoperability.md), ADR 0012 and [ADR 0019](architecture/decisions/0019-app-notification-and-toast-settings.md)
 
 ## Product Goal
 

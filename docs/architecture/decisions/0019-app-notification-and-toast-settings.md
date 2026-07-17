@@ -1,8 +1,10 @@
-# ADR 0017: App Notification And Toast Settings
+# ADR 0019: App Notification And Toast Settings
 
 ## Status
 
 Accepted; implementation active
+
+> **Identity note (DOC-HYGIENE-001):** This decision was previously published under a colliding ADR number `0017`. Under Knowledge OS hygiene it was renumbered to `0019`. ADR `0017` remains the Ephemeral Post-Commit Continuation decision.
 
 ## Context
 

@@ -1,6 +1,14 @@
 # NATIVE-EXPERIENCE-001 — Step 4 Evidence Validation
 
-Status: In Progress
+> **Status:** Active
+>
+> **Entry date:** 2026-07-11 Asia/Shanghai
+>
+> **Current source of truth:** this active validation plan plus NE assignment records still open.
+>
+> **Related ADRs:** as cited by linked NE assignments
+>
+> **Note:** Status normalized from “In Progress” to the governance enum `Active`.
 
 Entry Date: 2026-07-11
 

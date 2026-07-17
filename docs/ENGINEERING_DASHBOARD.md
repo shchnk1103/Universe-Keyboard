@@ -64,6 +64,7 @@
 | `KOS-GOV-001` | Accepted / Closed | Closed | Product Review accepted the completed Knowledge OS 2.0 publication. Closure synchronization records the concluded state only; this closure did not itself authorize migration. |
 | `KOS-BOOT-001` | Accepted / Closed | Closed | Product Review accepted the Zero-Context Startup Layer publication. Closure synchronization records the concluded state only; this closure did not itself authorize migration or Knowledge OS 2.1. |
 | `KOS-MIG-001` | Accepted / Closed | Closed | Product-authorized operational migration applied Knowledge OS 2.0 as the single governance track. See [Assignment](assignments/kos-mig-001.md) and [completion record](kos/migration-001-record.md). Knowledge OS 2.1, domain tree moves, implementation and Benchmark work remain unauthorized by this closure. |
+| `DOC-HYGIENE-001` | Accepted / Closed | Closed | Documentation hygiene pass under Knowledge OS 2.0: plan lifecycle normalization, closed-Assignment header sync, ADR 0017/0019 collision fix, README reduction, health snapshot refresh. See [Assignment](assignments/doc-hygiene-001.md) and [audit](evidence/doc-hygiene-001-audit.md). Domain duplicate-fact cleanup and playbook dry-runs remain residual. |
 
 ### KOS-MIG-001 Coordination
 

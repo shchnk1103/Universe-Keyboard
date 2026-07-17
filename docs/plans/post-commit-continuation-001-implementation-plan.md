@@ -1,14 +1,14 @@
 # POST-COMMIT-CONTINUATION-001 Implementation Plan
 
-> **Status:** Active
+> **Status:** Archived
 >
-> **Start date:** `2026-07-15 Asia/Shanghai`
+> **Closure date:** 2026-07-16 Asia/Shanghai
 >
-> **Assignment:** [`POST-COMMIT-CONTINUATION-001`](../assignments/post-commit-continuation-001.md)
+> **Current source of truth:** `docs/POST_COMMIT_CONTINUATION.md`, Assignment POST-COMMIT-CONTINUATION-001, ADR 0017.
 >
-> **Current source of truth:** [`Post-Commit Continuation Product Contract`](../POST_COMMIT_CONTINUATION.md) and [ADR 0017](../architecture/decisions/0017-ephemeral-post-commit-continuation.md)
+> **Related ADR:** ADR 0017
 >
-> **Archive condition:** Archive after Product Review closes the Assignment and durable behavior moves to current architecture and release sources.
+> **Guidance:** This plan is no longer current development guidance; V1.3 closed the Product Gate.
 
 ## Gate 0 — Isolation And Contract
 

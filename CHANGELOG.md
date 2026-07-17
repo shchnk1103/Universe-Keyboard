@@ -2,6 +2,14 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-17 — 文档卫生整理（DOC-HYGIENE-001）
+
+- 规范化全部 `docs/plans/*` 生命周期头为 `Active` / `Archived` / `Superseded` / `Abandoned`。
+- 同步已关闭但头状态漂移的 Assignment：`KOS-GOV-001`、`ENV-TOOLING-001` → `Accepted / Closed`。
+- 修复双 ADR `0017`：上屏后联想保留 ADR 0017；App 通知/Toast 重编号为 ADR 0019 并更新引用。
+- 精简 `README.md` 为入口/最短构建/导航；刷新 `DOCUMENTATION_HEALTH` 快照与债务队列。
+- 未改动生产代码、测试、构建或产品运行时行为。
+
 ## 2026-07-17 — Knowledge OS 2.0 运营迁移（KOS-MIG-001）
 
 - 发布并关闭 `KOS-MIG-001`：将 Knowledge OS 2.0 从“规范已发布”推进到“仓库单轨运营”。

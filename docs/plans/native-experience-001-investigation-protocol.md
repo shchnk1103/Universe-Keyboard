@@ -15,6 +15,16 @@
 
 # NATIVE-EXPERIENCE-001 — Native Interaction Baseline Investigation Protocol
 
+> **Status:** Archived
+>
+> **Closure note:** Method frozen 2026-07-08; retained as investigation protocol history.
+>
+> **Current source of truth:** Active NE assignments and evidence under `docs/plans/` / `docs/evidence/` as applicable; product architecture remains in current domain sources.
+>
+> **Related ADRs:** none required by this hygiene pass
+>
+> **Guidance:** This plan is no longer current development guidance; do not treat Frozen method text as an open implementation backlog.
+
 ## 1. Objective
 
 Establish the first authoritative Native Interaction Baseline for Universe Keyboard.
