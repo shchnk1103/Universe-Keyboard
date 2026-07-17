@@ -37,7 +37,7 @@ The keyboard extension lives under `Keyboard/` and is UIKit-based. It should res
 
 Keyboard UI is frozen for V1. Future keyboard UI changes must state a specific usability reason, such as reducing mistouches, fixing clipping, improving accessibility, or correcting a real interaction regression. Do not make cosmetic tuning changes during the freeze.
 
-**Exception — Chinese nine-key chrome:** matching the system 九宫格 layout (5-column rhythm, letter-group primary labels, side function columns) is an authorized usability alignment under `KEYBOARD-LAYOUT-9KEY-UI-001`. It must not redesign 26-key QWERTY metrics or candidate-bar constants without a separate reason.
+**Exception — Chinese nine-key chrome:** matching the system 九宫格 layout (letter-group primary labels, left four-column pad, right delete/颜表情/tall return, bottom emoji+选拼音+拼音) is an authorized usability alignment under closed Assignment `KEYBOARD-LAYOUT-9KEY-UI-001`. Structure details live in `KEYBOARD_LAYOUT.md`. Do not redesign 26-key QWERTY metrics or candidate-bar constants without a separate reason. Shared type-scale constants (below) apply to both layouts where noted.
 
 Frozen keyboard baseline:
 
