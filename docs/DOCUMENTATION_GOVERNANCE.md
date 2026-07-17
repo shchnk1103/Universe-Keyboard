@@ -10,7 +10,11 @@ Every fact has one primary document. Other documents may provide a short summary
 
 | Knowledge type | Primary source | Boundary |
 |---|---|---|
-| Knowledge navigation and operating model | `docs/KNOWLEDGE_INDEX.md`, `docs/KNOWLEDGE_OS.md` | Routes and knowledge-system behavior only; no domain implementation |
+| Knowledge navigation | `docs/KNOWLEDGE_INDEX.md` | Routes only; no domain implementation or frozen governance rules |
+| Knowledge OS operational entry (layers, navigation protocol, evolution, self-healing) | `docs/KNOWLEDGE_OS.md` | Operational behavior only; must not copy frozen Knowledge OS 2.0 tables |
+| Knowledge OS 2.0 frozen governance contract | `docs/kos/knowledge-os-2.0-specification.md` | Principles, authority, lifecycle, task levels, change types, migration rules |
+| Zero-Context Startup procedure | `docs/kos/zero-context-startup.md` | New-session authority recovery only |
+| Knowledge OS migration execution evidence | `docs/kos/migration-001-record.md` | Completed migration validation and rollback; not frozen principles |
 | Project entry and quick start | `README.md` | Entry, minimum setup and important links only; avoid volatile implementation detail |
 | Current architecture and module boundaries | `docs/PROJECT_CONTEXT.md` | Current overview, ownership boundaries and development entry points |
 | Current OpenCC integration mechanics | `docs/architecture/opencc-integration.md` | RIME filter/config participation and cross-target responsibility boundary; operational steps remain in debugging/performance/release sources |
