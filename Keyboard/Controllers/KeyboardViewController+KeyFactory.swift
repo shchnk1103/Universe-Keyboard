@@ -33,8 +33,8 @@ extension KeyboardViewController {
         }
 
         button.accessibilityLabel = "\(letters)，数字 \(digit)"
-        // Native 九宫格: letter group is primary; digit is not shown as a large title.
-        let lettersFont = UIFont.systemFont(ofSize: 18, weight: .regular)
+        // Native 九宫格: letter group is primary; slightly smaller than prior 18pt chrome.
+        let lettersFont = UIFont.systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
         let text = NSAttributedString(
             string: letters,
             attributes: [
@@ -48,6 +48,8 @@ extension KeyboardViewController {
         button.titleLabel?.minimumScaleFactor = 0.7
         button.setAttributedTitle(text, for: .normal)
         applyKeyStyle(.character, to: button)
+        // Re-apply after style so characterKeyTitlePointSize wins over any default.
+        button.setAttributedTitle(text, for: .normal)
         return button
     }
 
@@ -74,7 +76,7 @@ extension KeyboardViewController {
         // 以获得扩展的触控区域
         let button = KeyboardKeyButton(type: .system)
         button.setTitle(title, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .regular)
+        button.titleLabel?.font = .systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
         // 默认应用字符键样式 — 调用方可以根据需要覆盖（如 applyKeyStyle(.function, to:)）
         applyKeyStyle(.character, to: button)
 

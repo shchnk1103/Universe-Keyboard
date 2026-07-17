@@ -47,7 +47,10 @@ Frozen keyboard baseline:
 - Candidate-to-key spacing: `8`.
 - Letter key height: `45`.
 - Function key width for Shift, Delete, 123, globe, and input-mode keys: `46`.
-- Function key symbol size: `22` (Delete / Return / Globe / emoji SF Symbols).
+- Function key symbol size: `22` (Delete / Return / Globe / emoji SF Symbols only).
+- Character / letter-group title size: `16`.
+- Function key text title size: `15` (中、选拼音、123 等；与符号字号分离).
+- Space key title size: `14`（含「拼音」）.
 - Vertical row spacing: `8`.
 - Letter-area to bottom-row group spacing: `10`.
 - Third-row function-key to letter-group spacing: `10`.

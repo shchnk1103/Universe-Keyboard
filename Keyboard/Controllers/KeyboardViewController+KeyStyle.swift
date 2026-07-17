@@ -82,21 +82,23 @@ extension KeyboardViewController {
         switch style {
         case .character:
             button.backgroundColor = characterKeyColor
-            button.titleLabel?.font = .systemFont(ofSize: 20, weight: .regular)
+            // Text labels only; SF Symbol keys re-apply symbol configuration separately.
+            button.titleLabel?.font = .systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
         case .function:
             button.backgroundColor = functionKeyColor
-            button.titleLabel?.font = .systemFont(ofSize: functionKeySymbolPointSize, weight: .regular)
+            // Chinese / short labels (中、选拼音、123). Symbol buttons keep 22pt via applyFunctionKeySymbol.
+            button.titleLabel?.font = .systemFont(ofSize: functionKeyTitlePointSize, weight: .regular)
         case .space:
             button.backgroundColor = characterKeyColor
-            button.titleLabel?.font = .systemFont(ofSize: 15, weight: .regular)
+            button.titleLabel?.font = .systemFont(ofSize: spaceKeyTitlePointSize, weight: .regular)
         case .returnKey:
             button.backgroundColor = functionKeyColor
-            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+            button.titleLabel?.font = .systemFont(ofSize: functionKeyTitlePointSize, weight: .regular)
         case .active:
             button.backgroundColor = .label
             button.setTitleColor(.systemBackground, for: .normal)
             button.tintColor = .systemBackground
-            button.titleLabel?.font = .systemFont(ofSize: functionKeySymbolPointSize, weight: .semibold)
+            button.titleLabel?.font = .systemFont(ofSize: characterKeyTitlePointSize, weight: .semibold)
         }
     }
 

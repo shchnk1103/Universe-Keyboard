@@ -46,7 +46,7 @@ extension KeyboardViewController {
         // Native-style 颜表情 entry (right middle). Product content still placeholder.
         let kaomojiButton = makeKeyButton(title: "^_^", action: #selector(showKaomojiCandidatesPlaceholder(_:)))
         applyKeyStyle(.function, to: kaomojiButton)
-        kaomojiButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        kaomojiButton.titleLabel?.font = .systemFont(ofSize: functionKeyTitlePointSize, weight: .medium)
         kaomojiButton.titleLabel?.adjustsFontSizeToFitWidth = true
         kaomojiButton.titleLabel?.minimumScaleFactor = 0.55
         kaomojiButton.accessibilityLabel = "颜表情"
