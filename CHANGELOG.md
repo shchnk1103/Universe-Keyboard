@@ -2,6 +2,12 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-17 — 九键 chrome 向原生九宫格靠拢（KEYBOARD-LAYOUT-9KEY-UI-001）
+
+- 中文九键字母页改为接近系统九宫格的五列节奏：字母组为主标签（ABC…WXYZ），左右功能列（123 / 符号 / 中英；删除 / 重输 / 回车），底栏为地球键 + 宽空格（拼音）。
+- RIME 仍接收数字 2–9（键的 `accessibilityIdentifier`）；重输清空组合且不提交原始数字串。
+- 本地 `photos/` 对比截图仅作参考，已 gitignore，不入库。
+
 ## 2026-07-17 — 文档卫生整理（DOC-HYGIENE-001）
 
 - 规范化全部 `docs/plans/*` 生命周期头为 `Active` / `Archived` / `Superseded` / `Abandoned`。

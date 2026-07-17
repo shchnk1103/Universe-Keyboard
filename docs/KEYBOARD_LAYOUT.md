@@ -55,6 +55,19 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
   - English / auto-English: no raw-digit host commit; abandon composition, show QWERTY.
 - Existing letter typo-correction paths must ignore T9 digit strings.
 
+## Nine-key Chrome (UI)
+
+Chinese nine-key chrome aims to match the **system 九宫格** visual rhythm (see Assignment `KEYBOARD-LAYOUT-9KEY-UI-001`), not the classic phone-pad “large digit + tiny letters” look:
+
+| Region | Content |
+|---|---|
+| Letter keys | Primary labels are letter groups (`ABC`…`WXYZ`); digit payload is identity-only for RIME |
+| Left column | `123` (numbers page), symbols entry (`#+=`), input-mode (`中`/`英`) |
+| Right column | Delete, re-input (clear composition, no raw-digit commit), Return |
+| Bottom row | Globe + wide space (`拼音`); delete/return are **not** duplicated here |
+
+Chrome is skin only: effective scheme, readiness and digit algebra remain ADR 0018.
+
 ## Deployment Boundary
 
 Only the main App installs T9 schema artifacts, runs full deployment and writes readiness. See ADR 0001 and ADR 0018.

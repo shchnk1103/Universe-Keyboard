@@ -8,6 +8,16 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## KEYBOARD-LAYOUT-9KEY-UI-001 — Native-aligned Chinese nine-key chrome
+
+- **Confirmed status:** `Active`
+- **Status owner/source:** Product Lead; [`Assignment`](assignments/keyboard-layout-9key-ui-001.md)
+- **Product / domain sources:** [`KEYBOARD_LAYOUT.md`](KEYBOARD_LAYOUT.md) (Nine-key Chrome), [`UI_STYLE_GUIDE.md`](UI_STYLE_GUIDE.md)
+- **Architecture source:** [ADR 0018](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md) (unchanged T9 digit semantics)
+- **Current phase:** Extension chrome implementation; optional human device visual confirmation pending
+- **Current implementation:** Five-column native-style letter-group pad with side functions and globe+space bottom row; digit payload via accessibility identity
+- **Stop conditions:** Raw-digit host commit, Extension deploy, live hot-switch redesign, English nine-key
+
 ## POST-COMMIT-CONTINUATION-001 — Ephemeral Post-Commit Continuation V1
 
 - **Confirmed status:** `Closed`
