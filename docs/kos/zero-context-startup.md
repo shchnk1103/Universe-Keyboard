@@ -2,17 +2,19 @@
 
 > **Version:** `2.0.0`
 >
-> **Status:** Accepted / Closed
+> **Status:** Accepted / Closed; operational track applied by KOS-MIG-001
 >
-> **Repository Change Type:** `Contract`
+> **Repository Change Type:** `Contract` (publication)
 >
-> **Assignment:** [`KOS-BOOT-001`](../assignments/kos-boot-001.md)
+> **Publication Assignment:** [`KOS-BOOT-001`](../assignments/kos-boot-001.md)
+>
+> **Migration Assignment:** [`KOS-MIG-001`](../assignments/kos-mig-001.md)
 
 ## Purpose
 
 The Zero-Context Startup Layer defines how a completely new AI session enters this repository with minimal prompt context and reconstructs current working authority from repository sources.
 
-It completes Knowledge OS 2.0 startup behavior. It does not redesign Knowledge OS 2.0, create a new governance model, migrate repository structure or replace existing Source-of-Truth documents.
+It completes Knowledge OS 2.0 startup behavior. It does not redesign Knowledge OS 2.0 or create a new governance model. Operational single-track navigation was applied by [`KOS-MIG-001`](../assignments/kos-mig-001.md); this document remains the startup Source of Truth and must not be replaced by conversation memory.
 
 ## Source-of-Truth Boundary
 
@@ -202,23 +204,26 @@ Prompt compression is valid only when repository navigation is current. If start
 
 ## Scope Compliance
 
-This startup layer has not:
+KOS-BOOT-001 publication of this startup layer did not:
 
-- reopened KOS-GOV-001;
-- changed the Knowledge OS 2.0 authority model;
-- changed the Assignment lifecycle;
-- changed task levels;
-- changed the Repository Change Policy;
-- begun Repository Migration;
-- created KOS-MIG-001;
-- changed Runtime, RIME, Benchmark, Registry, ADR, Template, Procedure, Task 7, production code, tests or build settings.
+- reopen KOS-GOV-001;
+- change the Knowledge OS 2.0 authority model;
+- change the Assignment lifecycle;
+- change task levels;
+- change the Repository Change Policy;
+- execute Repository Migration (later completed under KOS-MIG-001);
+- change Runtime, RIME, Benchmark, Registry, ADR, Template, Procedure, Task 7, production code, tests or build settings.
+
+Later operational single-track application is recorded in [`migration-001-record.md`](migration-001-record.md).
 
 ## Related Documents
 
 - [`KOS-BOOT-001 Assignment`](../assignments/kos-boot-001.md)
+- [`KOS-MIG-001 Assignment`](../assignments/kos-mig-001.md)
 - [`Knowledge OS 2.0 Specification`](knowledge-os-2.0-specification.md)
 - [`Migration Readiness Assessment`](migration-readiness.md)
-- [`Knowledge OS`](../KNOWLEDGE_OS.md)
+- [`Migration completion record`](migration-001-record.md)
+- [`Knowledge OS operational entry`](../KNOWLEDGE_OS.md)
 - [`Knowledge Index`](../KNOWLEDGE_INDEX.md)
 - [`Reading Maps`](../READING_MAPS.md)
 - [`Documentation Governance`](../DOCUMENTATION_GOVERNANCE.md)

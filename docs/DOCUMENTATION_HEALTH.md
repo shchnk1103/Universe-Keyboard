@@ -86,6 +86,7 @@ Add one row per monthly/milestone audit. Detailed findings belong in the audit a
 
 | Date | Scope | Base commit | Result location | Next trigger |
 |---|---|---|---|---|
+| 2026-07-17 | KOS-MIG-001 operational single-track migration | working tree at KOS-MIG-001 closure | `docs/kos/migration-001-record.md` | Next Knowledge Audit or further Migration Assignment |
 | 2026-06-29 | Knowledge OS v1.0 + Phase C playbook structure | `75a5e8c` + documentation working tree | `DOCUMENTATION_HEALTH.md` current snapshot | Independent playbook audit or next milestone |
 | 2026-06-29 | Virtual Engineering Team v1.0 ownership blueprint | Current documentation working tree | `VIRTUAL_ENGINEERING_TEAM.md` | Permanent-thread dry-run or ownership change |
 | 2026-06-30 | Typo Correction Benchmark Registry v1.0 publication | `3cb5a6c` + existing documentation working tree | `TYPO_BENCHMARK_REGISTRY.md`, ADR 0009 and validation output | Registry version change, evidence-reference change or `TYPO-BENCHMARK-004B` review |

@@ -34,4 +34,7 @@ Terms are defined only enough to route readers to authoritative sources. Impleme
 | ADR | Durable record of context, selected decision, alternatives and consequences | governance; ADR directory | It must explain why, not just what changed |
 | Plan | Temporary staged intent with explicit lifecycle status | governance; `plans/` | Archived plans are not current truth |
 | Source of Truth | Single document category that owns the complete version of a fact | governance | Multiple matching copies do not increase reliability |
+| Knowledge OS | Repository knowledge operating model: find authority, change safely, detect drift | `KNOWLEDGE_OS.md`; `docs/kos/` | It is not product runtime architecture |
+| Knowledge OS 2.0 | Frozen governance contract for authority, lifecycle, change types and migration | `docs/kos/knowledge-os-2.0-specification.md` | Publishing the spec is not the same as operational migration |
+| Zero-Context Startup | New AI session recovery of repository authority with minimal prompt | `docs/kos/zero-context-startup.md` | Conversation is not repository truth |
 | Playbook | Agent operating procedure linking to authoritative domain sources | governance; AI workflow | It must not duplicate architecture content |

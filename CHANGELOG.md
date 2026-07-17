@@ -2,6 +2,13 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-17 — Knowledge OS 2.0 运营迁移（KOS-MIG-001）
+
+- 发布并关闭 `KOS-MIG-001`：将 Knowledge OS 2.0 从“规范已发布”推进到“仓库单轨运营”。
+- `docs/kos/` 继续拥有冻结治理合同与 Zero-Context Startup；`docs/KNOWLEDGE_OS.md` 明确为运营入口（layers / 导航协议 / self-healing），不再与冻结原则竞争。
+- 更新 Source of Truth、导航索引、文档图与依赖路由；写入迁移计划、完成记录与回滚说明。
+- 未改动生产代码、测试、构建、Runtime/RIME、Assignment Policy，也未开启 Knowledge OS 2.1/3.0 或领域文档大搬家。
+
 ## 2026-07-16 — 26 键 / 中文九键布局切换（KEYBOARD-LAYOUT-9KEY-001）
 
 - 新增 `KeyboardLayoutStyle`、版本化 T9 就绪标记、`RimeRuntimeSelection` 有效方案解析，以及 `T9PreeditResolver` / 无 raw 数字上屏策略（ADR 0018）。
