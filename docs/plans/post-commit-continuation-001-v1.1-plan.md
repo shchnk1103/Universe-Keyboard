@@ -1,12 +1,16 @@
 # POST-COMMIT-CONTINUATION-001 V1.1 Quality Foundation Plan
 
-> **Status:** Automated implementation complete; physical-device gate open
+> **Status:** Superseded
 >
-> **Start date:** `2026-07-15 Asia/Shanghai`
+> **Superseded by:** `post-commit-continuation-001-v1.3-plan.md` (final closed V1 line)
 >
-> **Authority:** Human Product Owner instruction to cautiously begin V1.1
+> **Closure note:** Automated foundation completed; later V1.2/V1.3 superseded this plan.
 >
-> **Sources:** [`POST_COMMIT_CONTINUATION.md`](../POST_COMMIT_CONTINUATION.md), [`POST_COMMIT_CONTINUATION_QUALITY.md`](../POST_COMMIT_CONTINUATION_QUALITY.md), [ADR 0017](../architecture/decisions/0017-ephemeral-post-commit-continuation.md)
+> **Current source of truth:** `docs/POST_COMMIT_CONTINUATION.md` and ADR 0017.
+>
+> **Related ADR:** ADR 0017
+>
+> **Guidance:** This plan is no longer current development guidance.
 
 ## Gate 0 — Preserve Boundaries
 

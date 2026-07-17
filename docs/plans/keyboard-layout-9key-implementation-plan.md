@@ -1,6 +1,15 @@
 # 26 键 / 9 键布局切换实施计划
 
-Lifecycle status: Closed (V1 Product Gate PASS — PG-KEYBOARD-LAYOUT-9KEY-001)
+> **Status:** Archived
+>
+> **Closure date:** 2026-07-16 Asia/Shanghai
+>
+> **Current source of truth:** `docs/KEYBOARD_LAYOUT.md` and ADR 0018.
+>
+> **Related ADR:** ADR 0018
+>
+> **Guidance:** This plan is no longer current development guidance.
+
 Created: 2026-07-16
 Current source of truth: 本计划定义实施范围；正式实现后的长期行为以 ADR 0018 与领域文档为准
 Related ADRs: 实施前必须新增一份 ADR，记录布局选择、有效 RIME 方案、T9 兼容层与失败回退边界

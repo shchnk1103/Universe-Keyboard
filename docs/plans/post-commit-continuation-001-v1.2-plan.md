@@ -2,19 +2,13 @@
 
 > **Status:** Archived
 >
-> **Closure date:** `2026-07-15 Asia/Shanghai`
+> **Closure date:** 2026-07-15 Asia/Shanghai
 >
-> **Current source of truth:** [`POST_COMMIT_CONTINUATION.md`](../POST_COMMIT_CONTINUATION.md) and the active [`V1.3 plan`](post-commit-continuation-001-v1.3-plan.md)
+> **Current source of truth:** `docs/POST_COMMIT_CONTINUATION.md`; historical successor was V1.3 (also archived after Product Gate close).
 >
-> **Related ADR:** [ADR 0017](../architecture/decisions/0017-ephemeral-post-commit-continuation.md); this archived plan is no longer current development guidance
+> **Related ADR:** ADR 0017
 >
-> **Start date:** `2026-07-15 Asia/Shanghai`
->
-> **Authority:** Human Product Owner instruction to continue into the next stage
->
-> **Branch:** `codex/post-commit-continuation-v1-2`
->
-> **Baseline:** `b66a2f7` (`feat: establish continuation V1.1 quality baseline`)
+> **Guidance:** This plan is no longer current development guidance.
 
 ## Objective
 

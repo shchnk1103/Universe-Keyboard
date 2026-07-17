@@ -90,4 +90,4 @@ Portable synchronization adopted RIME's official `sync_dir` / `sync_user_data` s
 
 System notifications and App operation Toasts later moved to one root-owned main-App model. RIME standard-data and Universe-settings notifications are independently selectable but never control the underlying sync work; both settings pages reuse the same state and delivery policy. The Keyboard Extension remains outside synchronization, permission and notification ownership.
 
-Decisions: ADR 0012, ADR 0013, ADR 0014 and ADR 0017. Current sources: `RIME_SYNC.md` and `APP_NOTIFICATIONS.md`.
+Decisions: ADR 0012, ADR 0013, ADR 0014 and ADR 0019. Current sources: `RIME_SYNC.md` and `APP_NOTIFICATIONS.md`.

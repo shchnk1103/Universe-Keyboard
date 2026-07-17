@@ -1,6 +1,14 @@
 # Typo Correction V0.3 Coverage Plan
 
-> **Status: archived implementation plan.** V0.3 has been implemented. Current behavior and supported boundaries are defined by `docs/TYPO_BENCHMARK.md` and tests, not by this plan.
+> **Status:** Archived
+>
+> **Closure note:** V0.3 implemented; historical plan only.
+>
+> **Current source of truth:** `docs/TYPO_BENCHMARK.md` and tests
+>
+> **Related ADRs:** see typo ADR series as applicable
+>
+> **Guidance:** This plan is no longer current development guidance.
 
 ## Summary
 

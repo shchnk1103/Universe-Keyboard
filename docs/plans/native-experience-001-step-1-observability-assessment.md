@@ -1,6 +1,14 @@
 # NATIVE-EXPERIENCE-001 — Step 1 Observability Assessment
 
-Status: Closed
+> **Status:** Archived
+>
+> **Closure date:** 2026-07-09 Asia/Shanghai
+>
+> **Current source of truth:** later NE1 step records and domain debugging sources as cited by those records.
+>
+> **Related ADRs:** none required
+>
+> **Guidance:** This plan is no longer current development guidance.
 
 Closed Date: 2026-07-09
 

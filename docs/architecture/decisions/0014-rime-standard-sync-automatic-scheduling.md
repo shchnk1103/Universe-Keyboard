@@ -51,4 +51,4 @@ Accepted; implementation in progress
 - [ADR 0013](0013-rime-standard-sync-interoperability.md)
 - [ADR 0005](0005-user-dictionary-restore-safety.md)
 - [`shared-container-and-rime-lifecycle.md`](../shared-container-and-rime-lifecycle.md)
-- [ADR 0017](0017-app-notification-and-toast-settings.md)
+- [ADR 0019](0019-app-notification-and-toast-settings.md)

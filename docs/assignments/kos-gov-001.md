@@ -6,7 +6,9 @@
 
 **Decision date:** `2026-07-07 Asia/Shanghai`
 
-**Lifecycle status:** `Assigned`
+**Lifecycle status:** `Accepted / Closed`
+
+**Closure synchronization:** Product Review accepted Knowledge OS 2.0 publication; Dashboard records `Accepted / Closed`. Header synchronized under DOC-HYGIENE-001 on `2026-07-17` without reopening scope.
 
 **Assignment Authority:** 🧭 Product Lead
 
@@ -253,11 +255,11 @@ The published KOS-GOV-001 Assignment is the canonical authority for future execu
 
 ## Lifecycle
 
-Current state:
+Final state:
 
-> `Assigned`
+> `Accepted / Closed`
 
-Allowed normal transitions:
+Executed path:
 
 ```text
 Assigned
@@ -266,17 +268,10 @@ Assigned
   -> Active
   -> Completed
   -> Reviewed
-  -> Closed
+  -> Accepted / Closed
 ```
 
-Exceptional transitions:
-
-```text
-Assigned / Ready / Active
-  -> Blocked
-  -> Product Revalidation
-  -> Reassigned or Ready
-```
+Closure means Knowledge OS 2.0 specification publication is finished. It does not authorize Repository Migration (later completed under KOS-MIG-001), implementation work, or Knowledge OS 2.1.
 
 ---
 
@@ -321,11 +316,9 @@ Executor must hand off:
 
 ## Final Assignment Decision
 
-> **KOS-GOV-001：Assigned**
+> **KOS-GOV-001：Accepted / Closed**
 
-Next authorized owner:
-
-> 🏛️ Architecture & Knowledge Steward
+No further KOS-GOV-001 owner action is pending. Independent follow-on work requires a new Product Assignment.
 
 Next authorized actions:
 

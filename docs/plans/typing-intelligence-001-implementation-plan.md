@@ -4,11 +4,11 @@
 >
 > **Start date:** 2026-07-11 Asia/Shanghai
 >
-> **Assignment:** [`TYPING-INTELLIGENCE-001`](../assignments/typing-intelligence-001.md)
+> **Assignment:** `TYPING-INTELLIGENCE-001`
 >
-> **Current source of truth:** [`Typing Intelligence Product Contract`](../TYPING_INTELLIGENCE.md) and [ADR 0011](../architecture/decisions/0011-local-typing-intelligence-data-boundary.md)
+> **Current source of truth:** `docs/TYPING_INTELLIGENCE.md` and ADR 0011
 >
-> **Archive condition:** Archive after Product Review closes the Assignment and current behavior has moved into architecture, debugging, performance and release sources.
+> **Archive condition:** Archive after Product Review closes the Assignment and current behavior has moved into architecture/debugging/performance/release sources.
 
 ## Delivery Strategy
 

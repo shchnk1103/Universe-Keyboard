@@ -1,9 +1,14 @@
 # 雾凇拼音 Lua 完整能力实施计划
 
-> **状态：已完成的历史实施计划，仅供追溯。** 当前运行边界以 `docs/PROJECT_CONTEXT.md`、`docs/RIME_SCHEME_MANAGEMENT.md` 和源码为准；未完成的发布证据以 `docs/RELEASE_CHECKLIST.md` 和 `docs/architecture/swift6-manual-acceptance.md` 为准。
-
-> 日期：2026-06-18
-> 状态：实现完成；阶段 1/2/3/4/6/7 已完成。阶段 5 已完成可选自动化 smoke 骨架和部分真机验证；完整 runtime fixture 自动化、VoiceOver/Dynamic Type/外观截图仍属于发布前验收补证据，不再是当前实现阻塞项。
+> **Status:** Archived
+>
+> **Closure note:** Historical implementation plan; remaining release evidence lives in release/manual-acceptance sources.
+>
+> **Current source of truth:** `docs/PROJECT_CONTEXT.md`, `docs/RIME_SCHEME_MANAGEMENT.md`, source code; unfinished release evidence in `docs/RELEASE_CHECKLIST.md` and `docs/architecture/swift6-manual-acceptance.md`.
+>
+> **Related ADRs:** ADR 0001/0004 as applicable
+>
+> **Guidance:** This plan is no longer current development guidance.
 
 ## 目标
 
