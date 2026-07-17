@@ -17,15 +17,19 @@ extension KeyboardViewController {
         return row
     }
 
-    /// Full Chinese nine-key chrome: 3 grid rows + bottom row (globe + space).
+    /// Full Chinese nine-key chrome as one host view.
     ///
-    /// Layout (aligned to system 九宫格):
+    /// Layout (closer to system 九宫格):
     /// ```
-    /// [123] [,?!] [ABC] [DEF] [⌫]
-    /// [#+=] [GHI] [JKL] [MNO] [重输]
-    /// [中]  [PQRS][TUV][WXYZ][return]
-    /// [🌐]         [  拼音  ]
+    /// [123] [,?!] [ABC] [DEF] | [ ⌫ ]
+    /// [#+=] [GHI] [JKL] [MNO] | [^_^ 颜表情]
+    /// [中]  [PQRS][TUV][WXYZ] | ┌────┐
+    /// [😊] [选拼音] [ 拼音 ]  | │ret │  ← return spans bottom two rows
+    ///                         | └────┘
     /// ```
+    /// Bottom row uses the same 4-column width rhythm as the letter pad
+    /// (`emoji` and `选拼音` each one column; space spans two).
+    /// RIME still receives digits 2–9 via letter-key identity (ADR 0018).
     func makeT9NineKeyChrome() -> [UIView] {
         let numbersButton = makeKeyButton(title: "123", action: #selector(switchToNumbersPage(_:)))
         applyKeyStyle(.function, to: numbersButton)
@@ -39,12 +43,14 @@ extension KeyboardViewController {
         let symbolsButton = makeKeyButton(title: "#+=", action: #selector(switchToSymbolsPage(_:)))
         applyKeyStyle(.function, to: symbolsButton)
 
-        let reinputButton = makeKeyButton(title: "重输", action: #selector(reinputT9Composition(_:)))
-        applyKeyStyle(.function, to: reinputButton)
-        reinputButton.titleLabel?.adjustsFontSizeToFitWidth = true
-        reinputButton.titleLabel?.minimumScaleFactor = 0.6
-        reinputButton.accessibilityLabel = "重输"
-        reinputButton.accessibilityHint = "清空当前拼音组合，不提交数字。"
+        // Native-style 颜表情 entry (right middle). Product content still placeholder.
+        let kaomojiButton = makeKeyButton(title: "^_^", action: #selector(showKaomojiCandidatesPlaceholder(_:)))
+        applyKeyStyle(.function, to: kaomojiButton)
+        kaomojiButton.titleLabel?.font = .systemFont(ofSize: functionKeyTitlePointSize, weight: .medium)
+        kaomojiButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        kaomojiButton.titleLabel?.minimumScaleFactor = 0.55
+        kaomojiButton.accessibilityLabel = "颜表情"
+        kaomojiButton.accessibilityHint = "打开颜表情入口（占位）。"
 
         let inputModeButton = makeKeyButton(
             title: inputModeButtonTitle,
@@ -55,54 +61,115 @@ extension KeyboardViewController {
         let deleteButton = makeDeleteButton()
 
         returnButton = makeKeyButton(
-            title: returnKeyTitle,
+            title: "",
             action: #selector(insertReturn(_:))
         )
         applyKeyStyle(.returnKey, to: returnButton)
         updateReturnKeyAppearance()
 
+        // Left main pad: 4 equal columns × 3 letter rows + bottom utility row.
         let row1 = makeT9GridRow([
             numbersButton,
             punctuationButton,
             makeT9KeyButton(digit: "2", letters: "ABC"),
             makeT9KeyButton(digit: "3", letters: "DEF"),
-            deleteButton,
         ])
         let row2 = makeT9GridRow([
             symbolsButton,
             makeT9KeyButton(digit: "4", letters: "GHI"),
             makeT9KeyButton(digit: "5", letters: "JKL"),
             makeT9KeyButton(digit: "6", letters: "MNO"),
-            reinputButton,
         ])
         let row3 = makeT9GridRow([
             inputModeButton,
             makeT9KeyButton(digit: "7", letters: "PQRS"),
             makeT9KeyButton(digit: "8", letters: "TUV"),
             makeT9KeyButton(digit: "9", letters: "WXYZ"),
-            returnButton,
         ])
         let bottom = makeT9BottomRow()
-        return [row1, row2, row3, bottom]
+
+        let leftStack = UIStackView(arrangedSubviews: [row1, row2, row3, bottom])
+        leftStack.axis = .vertical
+        leftStack.spacing = keySpacing
+        leftStack.distribution = .fill
+        leftStack.setCustomSpacing(keyboardGroupSpacing, after: row3)
+
+        // Right function column: delete + 颜表情 + tall return spanning row3+bottom.
+        let returnHeight = keyHeight * 2 + keyboardGroupSpacing
+        preferredRowHeightConstraint(for: deleteButton, height: keyHeight).isActive = true
+        preferredRowHeightConstraint(for: kaomojiButton, height: keyHeight).isActive = true
+        preferredRowHeightConstraint(for: returnButton, height: returnHeight).isActive = true
+
+        let rightStack = UIStackView(arrangedSubviews: [deleteButton, kaomojiButton, returnButton])
+        rightStack.axis = .vertical
+        rightStack.spacing = keySpacing
+        rightStack.distribution = .fill
+        rightStack.setCustomSpacing(keySpacing, after: kaomojiButton)
+
+        let host = UIStackView(arrangedSubviews: [leftStack, rightStack])
+        host.axis = .horizontal
+        host.spacing = keyHorizontalSpacing
+        host.distribution = .fill
+        host.alignment = .fill
+
+        // One-of-five column width: right ≈ 1/4 of the left four-column pad.
+        rightStack.setContentHuggingPriority(.required, for: .horizontal)
+        rightStack.setContentCompressionResistancePriority(.required, for: .horizontal)
+        NSLayoutConstraint.activate([
+            rightStack.widthAnchor.constraint(equalTo: leftStack.widthAnchor, multiplier: 0.25),
+        ])
+
+        let totalHeight =
+            keyHeight * 4
+            + keySpacing * 2
+            + keyboardGroupSpacing
+        preferredRowHeightConstraint(for: host, height: totalHeight).isActive = true
+
+        return [host]
     }
 
-    /// Nine-key bottom row: required globe + wide space (拼音). Delete/return live on the grid.
+    /// Nine-key bottom row aligned to the left pad’s 4 equal columns:
+    /// `[emoji | 选拼音 | space(span 2)]`.
+    ///
+    /// Globe is still created for `needsInputModeSwitchKey` (system may hide it).
+    /// When visible it sits as an extra leading control without fixed 46pt chrome width.
+    /// Delete/return live in the right column (return is double-height).
     func makeT9BottomRow() -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
         row.spacing = keyHorizontalSpacing
         row.distribution = .fill
+        row.alignment = .fill
 
+        // Required by UIInputViewController when the system asks for a switch key.
         nextKeyboardButton = makeKeyButton(
             title: "",
             action: #selector(handleInputModeList(from:with:))
         )
-        nextKeyboardButton.setImage(UIImage(systemName: "globe"), for: .normal)
-        nextKeyboardButton.setPreferredSymbolConfiguration(
-            UIImage.SymbolConfiguration(pointSize: functionKeySymbolPointSize, weight: .regular),
-            forImageIn: .normal
-        )
+        applyFunctionKeySymbol("globe", to: nextKeyboardButton)
         applyKeyStyle(.function, to: nextKeyboardButton)
+        nextKeyboardButton.tintColor = .label
+        // Keep in hierarchy for the system; stack collapses space while hidden.
+        nextKeyboardButton.isHidden = !needsInputModeSwitchKey
+
+        let emojiButton = makeKeyButton(
+            title: "😊",
+            action: #selector(switchToEmojiPage(_:))
+        )
+        configureEmojiSwitchButton(emojiButton)
+        applyKeyStyle(.function, to: emojiButton)
+        emojiButton.tintColor = .label
+
+        // Placeholder only — product behavior deferred (KEYBOARD-LAYOUT-9KEY-UI-001).
+        let selectPinyinButton = makeKeyButton(
+            title: "选拼音",
+            action: #selector(t9SelectPinyinPlaceholder(_:))
+        )
+        applyKeyStyle(.function, to: selectPinyinButton)
+        selectPinyinButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        selectPinyinButton.titleLabel?.minimumScaleFactor = 0.45
+        selectPinyinButton.accessibilityLabel = "选拼音"
+        selectPinyinButton.accessibilityHint = "占位按钮，功能尚未实现。"
 
         let spaceButton = makeKeyButton(
             title: spaceButtonTitle,
@@ -116,11 +183,29 @@ extension KeyboardViewController {
         spaceButton.addGestureRecognizer(spaceLongPress)
 
         row.addArrangedSubview(nextKeyboardButton)
+        row.addArrangedSubview(emojiButton)
+        row.addArrangedSubview(selectPinyinButton)
         row.addArrangedSubview(spaceButton)
+
+        // Match left pad columns: emoji = 选拼音 = 1 col; space = 2 cols + inner gap.
+        // (4w + 3s = full width of the left pad when globe is hidden.)
+        emojiButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        selectPinyinButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        spaceButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        emojiButton.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        selectPinyinButton.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        spaceButton.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
         NSLayoutConstraint.activate([
             preferredRowHeightConstraint(for: row, height: keyHeight),
-            nextKeyboardButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
+            emojiButton.widthAnchor.constraint(equalTo: selectPinyinButton.widthAnchor),
+            spaceButton.widthAnchor.constraint(
+                equalTo: emojiButton.widthAnchor,
+                multiplier: 2,
+                constant: keyHorizontalSpacing
+            ),
+            // When globe is visible, keep it one column wide like emoji.
+            nextKeyboardButton.widthAnchor.constraint(equalTo: emojiButton.widthAnchor),
         ])
         return row
     }

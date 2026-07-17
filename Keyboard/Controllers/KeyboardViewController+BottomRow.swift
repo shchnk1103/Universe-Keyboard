@@ -30,11 +30,7 @@ extension KeyboardViewController {
             title: "",
             action: #selector(handleInputModeList(from:with:))
         )
-        nextKeyboardButton.setImage(UIImage(systemName: "globe"), for: .normal)
-        nextKeyboardButton.setPreferredSymbolConfiguration(
-            UIImage.SymbolConfiguration(pointSize: functionKeySymbolPointSize, weight: .regular),
-            forImageIn: .normal
-        )
+        applyFunctionKeySymbol("globe", to: nextKeyboardButton)
 
         let pageSwitchButton = makeKeyButton(
             title: pageSwitchTitle,
@@ -48,14 +44,16 @@ extension KeyboardViewController {
             action: #selector(insertSpace(_:))
         )
         returnButton = makeKeyButton(
-            title: returnKeyTitle,
+            title: "",
             action: #selector(insertReturn(_:))
         )
 
         applyKeyStyle(.function, to: nextKeyboardButton)
+        nextKeyboardButton.tintColor = .label
         applyKeyStyle(.function, to: pageSwitchButton)
         applyKeyStyle(.space, to: spaceButton)
         applyKeyStyle(.returnKey, to: returnButton)
+        updateReturnKeyAppearance()
 
         row.addArrangedSubview(nextKeyboardButton)
         row.addArrangedSubview(pageSwitchButton)
@@ -145,14 +143,16 @@ extension KeyboardViewController {
             action: #selector(insertSpace(_:))
         )
         returnButton = makeKeyButton(
-            title: returnKeyTitle,
+            title: "",
             action: #selector(insertReturn(_:))
         )
 
         applyKeyStyle(.function, to: languageButton)
         applyKeyStyle(.function, to: emojiButton)
+        emojiButton.tintColor = .label
         applyKeyStyle(.space, to: spaceButton)
         applyKeyStyle(.returnKey, to: returnButton)
+        updateReturnKeyAppearance()
         languageButton.titleLabel?.adjustsFontSizeToFitWidth = true
         languageButton.titleLabel?.minimumScaleFactor = 0.65
 
@@ -175,7 +175,7 @@ extension KeyboardViewController {
     }
 
     /// 使用模板 SF Symbol 代替彩色 emoji 字形，使表情切换键跟随功能键文字颜色。
-    private func configureEmojiSwitchButton(_ button: UIButton) {
+    func configureEmojiSwitchButton(_ button: UIButton) {
         let image = UIImage(systemName: "face.smiling")?.withRenderingMode(.alwaysTemplate)
         button.setTitle(nil, for: .normal)
         button.setImage(image, for: .normal)
@@ -183,6 +183,7 @@ extension KeyboardViewController {
             UIImage.SymbolConfiguration(pointSize: functionKeySymbolPointSize, weight: .regular),
             forImageIn: .normal
         )
+        button.tintColor = .label
         button.accessibilityLabel = "表情键盘"
         button.accessibilityHint = "切换到表情键盘。"
     }

@@ -1,17 +1,20 @@
 # Keyboard Layout
 
-Lifecycle status: Active implementation under KEYBOARD-LAYOUT-9KEY-001 (ADR 0018 accepted)
-Source of truth for: 26-key / Chinese nine-key layout selection, effective RIME scheme resolution and versioned T9 readiness
-Related ADR: [`architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md`](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md)
-Related plan: [`plans/keyboard-layout-9key-implementation-plan.md`](plans/keyboard-layout-9key-implementation-plan.md)
-Related Assignment: [`assignments/keyboard-layout-9key-001.md`](assignments/keyboard-layout-9key-001.md)
+Lifecycle status: Runtime contract accepted (ADR 0018); Chinese nine-key chrome accepted under KEYBOARD-LAYOUT-9KEY-UI-001  
+Source of truth for: 26-key / Chinese nine-key layout selection, effective RIME scheme resolution, versioned T9 readiness, and **nine-key Extension chrome**  
+Related ADR: [`architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md`](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md)  
+Related plan: [`plans/keyboard-layout-9key-implementation-plan.md`](plans/keyboard-layout-9key-implementation-plan.md) (Archived)  
+Related Assignments:
+
+- Runtime V1: [`assignments/keyboard-layout-9key-001.md`](assignments/keyboard-layout-9key-001.md) (`Closed`)
+- Chrome UI: [`assignments/keyboard-layout-9key-ui-001.md`](assignments/keyboard-layout-9key-ui-001.md)
 
 ## Product Model
 
 Users choose a keyboard layout in the main App under 设置 → 输入体验:
 
-- **26键** — standard full keyboard. Default.
-- **9键** — Chinese alphabet page uses a 3×3 digit pad; English and automatic-English contexts stay on existing QWERTY.
+- **26键** — standard full QWERTY. Default.
+- **9键** — Chinese alphabet page uses **system-style 九宫格 chrome** (letter-group labels, side functions). English and automatic-English contexts stay on existing QWERTY.
 
 Nine-key depends on fog-song / rime-ice T9 resources. If those resources are missing, the main App must explain the dependency, obtain GPL acceptance, download, install, deploy and verify T9 before persisting the nine-key preference.
 
@@ -57,14 +60,43 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 
 ## Nine-key Chrome (UI)
 
-Chinese nine-key chrome aims to match the **system 九宫格** visual rhythm (see Assignment `KEYBOARD-LAYOUT-9KEY-UI-001`), not the classic phone-pad “large digit + tiny letters” look:
+Chinese nine-key chrome matches the **system 九宫格** visual rhythm (Assignment `KEYBOARD-LAYOUT-9KEY-UI-001`), not the classic phone-pad “large digit + tiny letters” look.
+
+Reference screenshots used during design may live only under local `photos/` (gitignored). They are not repository evidence.
+
+### Structure
+
+```text
+[123]  [,?!]  [ABC]  [DEF]  | [ delete.left ]
+[#+=]  [GHI]  [JKL]  [MNO]  | [   ^_^      ]
+[中]   [PQRS] [TUV]  [WXYZ] | ┌────────────┐
+[😊]   [选拼音] [  拼音  ]  | │ return 符  │  ← spans bottom two rows
+                            | └────────────┘
+```
 
 | Region | Content |
 |---|---|
-| Letter keys | Primary labels are letter groups (`ABC`…`WXYZ`); digit payload is identity-only for RIME |
-| Left column | `123` (numbers page), symbols entry (`#+=`), input-mode (`中`/`英`) |
-| Right column | Delete, re-input (clear composition, no raw-digit commit), Return |
-| Bottom row | Globe + wide space (`拼音`); delete/return are **not** duplicated here |
+| Letter keys | Primary labels are letter groups (`ABC`…`WXYZ`); digit **2–9** payload is identity-only for RIME (`accessibilityIdentifier` + `accessibilityValue == t9Digit`) |
+| Left main pad | Four equal columns: page/punct/letters, symbols/letters, input-mode/letters |
+| Right column | Delete (SF Symbol `delete.left`), **颜表情** (`^_^`, product placeholder), **Return glyph** (`return` SF Symbol) spanning the bottom two rows |
+| Bottom row | Emoji page entry + **选拼音** (placeholder) + wide space (`拼音`); widths follow the left pad’s 4-column rhythm (**1+1+2**); delete/return are **not** duplicated here |
+| Globe | Still created for `needsInputModeSwitchKey`; system may hide it and show an external globe |
+
+### Typography (shared with style guide)
+
+| Kind | Size |
+|---|---|
+| SF Symbols (delete / return / globe / emoji) | **22** pt |
+| Letter groups / character titles | **16** pt |
+| Function text (中、选拼音、123、#+=、`^_^`) | **15** pt |
+| Space title（拼音） | **14** pt |
+
+Return **never** shows host action text such as `send`; VoiceOver still uses `returnKeyType` semantics.
+
+### Placeholders (not product-complete)
+
+- **选拼音** — chrome only; `t9SelectPinyinPlaceholder` emits key feedback only.
+- **颜表情 (`^_^`)** — chrome only; reuses `showKaomojiCandidatesPlaceholder` (same family as symbols-page `^_^` entry).
 
 Chrome is skin only: effective scheme, readiness and digit algebra remain ADR 0018.
 
@@ -75,10 +107,11 @@ Only the main App installs T9 schema artifacts, runs full deployment and writes 
 ## V1 Non-goals
 
 - English nine-key
-- Swipe-to-letter on nine-key
+- Swipe-to-letter / multi-tap letter pick on nine-key
 - 朙月 nine-key scheme
 - Live cross-process layout hot-switch while the keyboard is already shown
 - librime binary upgrade unless a later regression invalidates the Spike
+- Full product implementation of 选拼音 panel or 颜表情 candidate content (placeholders only)
 
 ## Spike Gate
 

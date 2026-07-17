@@ -4,9 +4,10 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ## 2026-07-17 — 九键 chrome 向原生九宫格靠拢（KEYBOARD-LAYOUT-9KEY-UI-001）
 
-- 中文九键字母页改为接近系统九宫格的五列节奏：字母组为主标签（ABC…WXYZ），左右功能列（123 / 符号 / 中英；删除 / 重输 / 回车），底栏为地球键 + 宽空格（拼音）。
-- RIME 仍接收数字 2–9（键的 `accessibilityIdentifier`）；重输清空组合且不提交原始数字串。
-- 本地 `photos/` 对比截图仅作参考，已 gitignore，不入库。
+- 中文九键字母页对齐系统九宫格：字母组主标签（ABC…WXYZ）；左区四列；右列删除 SF Symbol / 颜表情 `^_^` / **双行高 return 箭头**；底栏表情 + **选拼音（占位）** + 宽「拼音」（列宽 1+1+2）。
+- 类型阶梯与符号分离：SF Symbol **22**；字母 **16**；功能文字 **15**；空格/拼音 **14**。回车不再显示 `send` 等宿主文案。
+- RIME 仍接收数字 2–9（`accessibilityIdentifier` + `t9Digit`）；选拼音 / 颜表情为 chrome 占位，完整产品行为另立项。
+- 本地 `photos/` 仅作设计对照，已 gitignore；Assignment `Accepted / Closed`；领域说明见 `KEYBOARD_LAYOUT.md` / `UI_STYLE_GUIDE.md`。
 
 ## 2026-07-17 — 文档卫生整理（DOC-HYGIENE-001）
 

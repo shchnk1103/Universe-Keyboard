@@ -52,6 +52,12 @@ extension KeyboardViewController {
         syncUI(with: effects)
     }
 
+    /// Placeholder for system-style「选拼音」on the nine-key bottom row.
+    /// Visual chrome only for now; no composition/candidate behavior yet.
+    @objc func t9SelectPinyinPlaceholder(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
+    }
+
     @objc func showKaomojiCandidatesPlaceholder(_ sender: UIButton) {
         // TODO: 后续在候选栏展示颜表情列表；当前阶段只保留 UI 入口。
         emitKeyPressFeedbackIfNeeded(for: sender)

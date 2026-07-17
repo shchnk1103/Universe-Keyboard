@@ -2,9 +2,11 @@
 
 ## Status
 
-Accepted; V1 implementation complete
+Accepted; V1 runtime implementation complete
 
 Accepted after Codex Architecture/Quality review on `2026-07-16 Asia/Shanghai`. Final Spike gate re-review (`docs/evidence/keyboard-layout-9key-001-codex-rereview-2.md`) authorized Assignment `Ready -> Active` for plan steps 3–10. Implementation code-review closed (`docs/evidence/keyboard-layout-9key-001-codex-implementation-rereview-3.md`). Product Gate **PASS** (`docs/evidence/keyboard-layout-9key-001-product-gate-decision.md`); Assignment KEYBOARD-LAYOUT-9KEY-001 is `Closed`. Spike technical direction (pinned librime `1.16.1` + remove `t9_processor`) remains the V1 contract.
+
+**UI chrome (non-runtime):** System-style Chinese 九宫格 chrome (letter-group labels, side functions, type scale) was accepted under Assignment `KEYBOARD-LAYOUT-9KEY-UI-001` on `2026-07-17`. Chrome does **not** change this ADR’s digit algebra, readiness, or deployment boundary. Authoritative chrome description: `docs/KEYBOARD_LAYOUT.md` § Nine-key Chrome.
 
 ## Context
 

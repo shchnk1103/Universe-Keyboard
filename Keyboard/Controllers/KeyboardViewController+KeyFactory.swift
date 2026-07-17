@@ -33,8 +33,8 @@ extension KeyboardViewController {
         }
 
         button.accessibilityLabel = "\(letters)，数字 \(digit)"
-        // Native 九宫格: letter group is primary; digit is not shown as a large title.
-        let lettersFont = UIFont.systemFont(ofSize: 18, weight: .regular)
+        // Native 九宫格: letter group is primary; slightly smaller than prior 18pt chrome.
+        let lettersFont = UIFont.systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
         let text = NSAttributedString(
             string: letters,
             attributes: [
@@ -48,6 +48,8 @@ extension KeyboardViewController {
         button.titleLabel?.minimumScaleFactor = 0.7
         button.setAttributedTitle(text, for: .normal)
         applyKeyStyle(.character, to: button)
+        // Re-apply after style so characterKeyTitlePointSize wins over any default.
+        button.setAttributedTitle(text, for: .normal)
         return button
     }
 
@@ -74,7 +76,7 @@ extension KeyboardViewController {
         // 以获得扩展的触控区域
         let button = KeyboardKeyButton(type: .system)
         button.setTitle(title, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .regular)
+        button.titleLabel?.font = .systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
         // 默认应用字符键样式 — 调用方可以根据需要覆盖（如 applyKeyStyle(.function, to:)）
         applyKeyStyle(.character, to: button)
 
@@ -93,6 +95,18 @@ extension KeyboardViewController {
         return button
     }
 
+    /// Applies a template SF Symbol used by Delete / Return / Globe-style function keys.
+    func applyFunctionKeySymbol(_ systemName: String, to button: UIButton) {
+        button.setTitle(nil, for: .normal)
+        button.setAttributedTitle(nil, for: .normal)
+        let image = UIImage(systemName: systemName)?.withRenderingMode(.alwaysTemplate)
+        button.setImage(image, for: .normal)
+        button.setPreferredSymbolConfiguration(
+            UIImage.SymbolConfiguration(pointSize: functionKeySymbolPointSize, weight: .regular),
+            forImageIn: .normal
+        )
+    }
+
     /// 创建删除键按钮（特殊处理：长按自动重复）。
     ///
     /// 与普通按键的区别：
@@ -104,9 +118,10 @@ extension KeyboardViewController {
     /// 需要先移除 makeKeyButton 添加的默认事件绑定，再重新绑定删除专用事件。
     func makeDeleteButton() -> UIButton {
         let button = makeKeyButton(
-            title: "⌫",
+            title: "",
             action: #selector(deleteKeyTouchUpInside(_:))
         )
+        applyFunctionKeySymbol("delete.left", to: button)
 
         // ── 替换事件绑定 ─────────────────────────────────────────
         // 移除 makeKeyButton 添加的默认绑定
@@ -129,6 +144,8 @@ extension KeyboardViewController {
 
         // 删除键使用功能键样式（灰色背景）
         applyKeyStyle(.function, to: button)
+        // applyKeyStyle may reset title color; keep template symbol tint on the image.
+        button.tintColor = .label
         return button
     }
 

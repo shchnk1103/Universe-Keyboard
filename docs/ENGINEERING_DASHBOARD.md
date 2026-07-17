@@ -10,13 +10,14 @@
 
 ## KEYBOARD-LAYOUT-9KEY-UI-001 — Native-aligned Chinese nine-key chrome
 
-- **Confirmed status:** `Active`
+- **Confirmed status:** `Accepted / Closed`
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/keyboard-layout-9key-ui-001.md)
 - **Product / domain sources:** [`KEYBOARD_LAYOUT.md`](KEYBOARD_LAYOUT.md) (Nine-key Chrome), [`UI_STYLE_GUIDE.md`](UI_STYLE_GUIDE.md)
 - **Architecture source:** [ADR 0018](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md) (unchanged T9 digit semantics)
-- **Current phase:** Extension chrome implementation; optional human device visual confirmation pending
-- **Current implementation:** Five-column native-style letter-group pad with side functions and globe+space bottom row; digit payload via accessibility identity
-- **Stop conditions:** Raw-digit host commit, Extension deploy, live hot-switch redesign, English nine-key
+- **Current phase:** Closed after human visual acceptance (`2026-07-17`); publication via feature branch / PR merge
+- **Delivered chrome:** Left 4-column letter-group pad; right delete / 颜表情 `^_^` / double-height return glyph; bottom emoji + 选拼音 placeholder + wide 拼音 (1+1+2); type scale 22/16/15/14; digit payload via accessibility identity
+- **Residual product work (new Assignment):** full 选拼音 panel behavior; full 颜表情 candidate content
+- **Stop conditions (historical):** Raw-digit host commit, Extension deploy, live hot-switch redesign, English nine-key
 
 ## POST-COMMIT-CONTINUATION-001 — Ephemeral Post-Commit Continuation V1
 
