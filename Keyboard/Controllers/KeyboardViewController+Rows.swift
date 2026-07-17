@@ -17,15 +17,17 @@ extension KeyboardViewController {
         return row
     }
 
-    /// Full Chinese nine-key chrome: 3 grid rows + bottom row (globe + space).
+    /// Full Chinese nine-key chrome as one host view.
     ///
-    /// Layout (aligned to system 九宫格):
+    /// Layout (closer to system 九宫格):
     /// ```
-    /// [123] [,?!] [ABC] [DEF] [⌫]
-    /// [#+=] [GHI] [JKL] [MNO] [重输]
-    /// [中]  [PQRS][TUV][WXYZ][return]
-    /// [🌐]         [  拼音  ]
+    /// [123] [,?!] [ABC] [DEF] | [ ⌫ ]
+    /// [#+=] [GHI] [JKL] [MNO] | [重输]
+    /// [中]  [PQRS][TUV][WXYZ] | ┌────┐
+    /// [🌐]  [😊]  [  拼音  ]   | │ret │  ← return spans bottom two rows
+    ///                         | └────┘
     /// ```
+    /// RIME still receives digits 2–9 via letter-key identity (ADR 0018).
     func makeT9NineKeyChrome() -> [UIView] {
         let numbersButton = makeKeyButton(title: "123", action: #selector(switchToNumbersPage(_:)))
         applyKeyStyle(.function, to: numbersButton)
@@ -61,32 +63,69 @@ extension KeyboardViewController {
         applyKeyStyle(.returnKey, to: returnButton)
         updateReturnKeyAppearance()
 
+        // Left main pad: 4 equal columns × 3 letter rows + bottom utility row.
         let row1 = makeT9GridRow([
             numbersButton,
             punctuationButton,
             makeT9KeyButton(digit: "2", letters: "ABC"),
             makeT9KeyButton(digit: "3", letters: "DEF"),
-            deleteButton,
         ])
         let row2 = makeT9GridRow([
             symbolsButton,
             makeT9KeyButton(digit: "4", letters: "GHI"),
             makeT9KeyButton(digit: "5", letters: "JKL"),
             makeT9KeyButton(digit: "6", letters: "MNO"),
-            reinputButton,
         ])
         let row3 = makeT9GridRow([
             inputModeButton,
             makeT9KeyButton(digit: "7", letters: "PQRS"),
             makeT9KeyButton(digit: "8", letters: "TUV"),
             makeT9KeyButton(digit: "9", letters: "WXYZ"),
-            returnButton,
         ])
         let bottom = makeT9BottomRow()
-        return [row1, row2, row3, bottom]
+
+        let leftStack = UIStackView(arrangedSubviews: [row1, row2, row3, bottom])
+        leftStack.axis = .vertical
+        leftStack.spacing = keySpacing
+        leftStack.distribution = .fill
+        leftStack.setCustomSpacing(keyboardGroupSpacing, after: row3)
+
+        // Right function column: delete + reinput + tall return spanning row3+bottom.
+        let returnHeight = keyHeight * 2 + keyboardGroupSpacing
+        preferredRowHeightConstraint(for: deleteButton, height: keyHeight).isActive = true
+        preferredRowHeightConstraint(for: reinputButton, height: keyHeight).isActive = true
+        preferredRowHeightConstraint(for: returnButton, height: returnHeight).isActive = true
+
+        let rightStack = UIStackView(arrangedSubviews: [deleteButton, reinputButton, returnButton])
+        rightStack.axis = .vertical
+        rightStack.spacing = keySpacing
+        rightStack.distribution = .fill
+        rightStack.setCustomSpacing(keySpacing, after: reinputButton)
+
+        let host = UIStackView(arrangedSubviews: [leftStack, rightStack])
+        host.axis = .horizontal
+        host.spacing = keyHorizontalSpacing
+        host.distribution = .fill
+        host.alignment = .fill
+
+        // One-of-five column width: right ≈ 1/4 of the left four-column pad.
+        rightStack.setContentHuggingPriority(.required, for: .horizontal)
+        rightStack.setContentCompressionResistancePriority(.required, for: .horizontal)
+        NSLayoutConstraint.activate([
+            rightStack.widthAnchor.constraint(equalTo: leftStack.widthAnchor, multiplier: 0.25),
+        ])
+
+        let totalHeight =
+            keyHeight * 4
+            + keySpacing * 2
+            + keyboardGroupSpacing
+        preferredRowHeightConstraint(for: host, height: totalHeight).isActive = true
+
+        return [host]
     }
 
-    /// Nine-key bottom row: required globe + wide space (拼音). Delete/return live on the grid.
+    /// Nine-key bottom row: globe + emoji entry + wide space (拼音).
+    /// Delete/return live in the right column (return is double-height).
     func makeT9BottomRow() -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
@@ -104,6 +143,13 @@ extension KeyboardViewController {
         )
         applyKeyStyle(.function, to: nextKeyboardButton)
 
+        let emojiButton = makeKeyButton(
+            title: "😊",
+            action: #selector(switchToEmojiPage(_:))
+        )
+        configureEmojiSwitchButton(emojiButton)
+        applyKeyStyle(.function, to: emojiButton)
+
         let spaceButton = makeKeyButton(
             title: spaceButtonTitle,
             action: #selector(insertSpace(_:))
@@ -116,11 +162,13 @@ extension KeyboardViewController {
         spaceButton.addGestureRecognizer(spaceLongPress)
 
         row.addArrangedSubview(nextKeyboardButton)
+        row.addArrangedSubview(emojiButton)
         row.addArrangedSubview(spaceButton)
 
         NSLayoutConstraint.activate([
             preferredRowHeightConstraint(for: row, height: keyHeight),
             nextKeyboardButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
+            emojiButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
         ])
         return row
     }

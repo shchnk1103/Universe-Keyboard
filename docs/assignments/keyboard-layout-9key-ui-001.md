@@ -32,9 +32,9 @@ Update **Keyboard Extension Chinese nine-key chrome only** so visual structure a
 1. Assignment + domain note for nine-key chrome layout.
 2. Restructure Chinese nine-key rows toward native 5-column rhythm:
    - letter groups as **primary** labels (ABC/DEF/…)
-   - left function column (123 / symbols entry / 中英)
-   - right function column (delete / re-input / return)
-   - bottom row with globe + wide space (拼音), without duplicating delete/return
+   - left four-column main pad (123 / symbols entry / 中英 + letter keys)
+   - right function column (delete / re-input / **return spanning bottom two rows**)
+   - bottom row with globe + **emoji entry** + wide space (拼音), without duplicating delete/return
 3. Keep T9 input payload as digits via stable button identity (`accessibilityIdentifier`).
 4. Re-input clears composition without committing raw digits (ADR 0018).
 5. Ignore `photos/` in git.

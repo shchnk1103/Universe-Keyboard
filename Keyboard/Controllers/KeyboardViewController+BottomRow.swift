@@ -175,7 +175,7 @@ extension KeyboardViewController {
     }
 
     /// 使用模板 SF Symbol 代替彩色 emoji 字形，使表情切换键跟随功能键文字颜色。
-    private func configureEmojiSwitchButton(_ button: UIButton) {
+    func configureEmojiSwitchButton(_ button: UIButton) {
         let image = UIImage(systemName: "face.smiling")?.withRenderingMode(.alwaysTemplate)
         button.setTitle(nil, for: .normal)
         button.setImage(image, for: .normal)

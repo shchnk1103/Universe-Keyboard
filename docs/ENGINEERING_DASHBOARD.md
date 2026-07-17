@@ -14,8 +14,8 @@
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/keyboard-layout-9key-ui-001.md)
 - **Product / domain sources:** [`KEYBOARD_LAYOUT.md`](KEYBOARD_LAYOUT.md) (Nine-key Chrome), [`UI_STYLE_GUIDE.md`](UI_STYLE_GUIDE.md)
 - **Architecture source:** [ADR 0018](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md) (unchanged T9 digit semantics)
-- **Current phase:** Extension chrome implementation; optional human device visual confirmation pending
-- **Current implementation:** Five-column native-style letter-group pad with side functions and globe+space bottom row; digit payload via accessibility identity
+- **Current phase:** Extension chrome iteration (tall return + emoji bottom entry); optional human device visual confirmation pending
+- **Current implementation:** Left 4-column letter-group pad; right delete/reinput/double-height return; bottom globe + emoji + wide space; digit payload via accessibility identity
 - **Stop conditions:** Raw-digit host commit, Extension deploy, live hot-switch redesign, English nine-key
 
 ## POST-COMMIT-CONTINUATION-001 — Ephemeral Post-Commit Continuation V1
