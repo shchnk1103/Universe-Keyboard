@@ -1,6 +1,12 @@
 # NE1 UI Automation Feasibility
 
-Lifecycle status: Active
+> **Status:** Active
+>
+> **Current source of truth:** this plan for NE1 UI automation tooling feasibility only.
+>
+> **Related ADRs:** none required yet
+>
+> **Note:** Status normalized from “Lifecycle status: Active” to `Active`.
 
 ## Purpose
 

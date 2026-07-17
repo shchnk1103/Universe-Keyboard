@@ -17,9 +17,10 @@ Ownership: Architecture & Knowledge Steward owns startup routing; Product Lead o
 1. `AGENTS.md` — mandatory collaboration rules.
 2. `KNOWLEDGE_INDEX.md` — top-level navigation.
 3. `kos/zero-context-startup.md` — startup reading order, repository discovery, Work Item discovery, lifecycle discovery, role discovery, repository truth and prompt compression.
-4. The task-specific reading map selected after startup.
+4. `KNOWLEDGE_OS.md` — only when operational layers, navigation protocol or self-healing behavior are required (not for frozen governance tables).
+5. The task-specific reading map selected after startup.
 
-Required review: repository truth comes from Assignment and canonical documents, not conversation; current Work Item and lifecycle are discovered before action; missing Assignment or `UNKNOWN` fields stop formal work unless the user objective authorizes governance bootstrap.
+Required review: repository truth comes from Assignment and canonical documents, not conversation; current Work Item and lifecycle are discovered before action; missing Assignment or `UNKNOWN` fields stop formal work unless the user objective authorizes governance bootstrap. After KOS-MIG-001, frozen Knowledge OS rules live under `docs/kos/`; do not treat pre-migration dual-track language as current.
 
 ## Create, Review Or Change A Task Assignment
 
@@ -139,7 +140,7 @@ Required review: reader/writer ownership, active-session coordination, backup-be
 Ownership: Primary [`Main App UI`](playbooks/main-app-ui.md) for sync orchestration, provider credentials and settings UX; secondary [`RimeBridge`](playbooks/rime-bridge.md) only when librime user-data APIs are involved and [`Test / Release`](playbooks/test-release.md) for security, interruption and compatibility evidence.
 
 1. `RIME_SYNC.md` and the current `RIME-SYNC-001` Assignment. Add `APP_NOTIFICATIONS.md` and `APP-NOTIFICATIONS-001` when notification or Toast behavior changes.
-2. ADR 0012, then ADR 0003, 0005 and 0007. Add ADR 0017 for notification ownership, permission or foreground-presentation changes.
+2. ADR 0012, then ADR 0003, 0005 and 0007. Add ADR 0019 for notification ownership, permission or foreground-presentation changes.
 3. `architecture/shared-container-and-rime-lifecycle.md`.
 4. `PRIVACY_POLICY.md`, `DEBUGGING.md`, `RELEASE_CHECKLIST.md` and `TECH_DEBT.md`.
 5. `UI_STYLE_GUIDE.md` for the main-App surface.

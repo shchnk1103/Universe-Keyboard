@@ -28,7 +28,7 @@
 | RIME 传统模糊音 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_FUZZY_PINYIN.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
 | RIME 候选学习 / 用户词典备份 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_USER_DICTIONARY.md` | `docs/UI_STYLE_GUIDE.md`（改主 App UI 时） |
 | RIME 跨设备同步 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_SYNC.md` | `docs/APP_NOTIFICATIONS.md`（涉及同步通知时） |
-| App 通知 / 全局操作提示 | `docs/APP_NOTIFICATIONS.md` + ADR 0017 | `docs/RIME_SYNC.md`（涉及同步阶段时） |
+| App 通知 / 全局操作提示 | `docs/APP_NOTIFICATIONS.md` + ADR 0019 | `docs/RIME_SYNC.md`（涉及同步阶段时） |
 | App Group / RIME 生命周期 | `docs/architecture/shared-container-and-rime-lifecycle.md` | `docs/DEBUGGING.md` |
 | 输入管线 / marked text / Return / Space / Delete | `docs/architecture/input-pipeline-and-marked-text.md` | `docs/architecture/partial-commit.md` |
 | 调试复杂故障 | `docs/DEBUGGING.md` | 对应领域文档 |

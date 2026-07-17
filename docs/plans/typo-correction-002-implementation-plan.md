@@ -1,10 +1,12 @@
 # TYPO-CORRECTION-002 Implementation Plan
 
-> **Status:** Active — Core/bridge and iOS UI baseline evidence captured; contextual UI and Device Hub acceptance pending
+> **Status:** Active
 >
-> **Assignment:** [`TYPO-CORRECTION-002`](../assignments/typo-correction-002.md)
+> **Assignment:** `TYPO-CORRECTION-002`
 >
-> **Current source of truth:** [`Contextual Typo Correction Product Contract`](../TYPO_CORRECTION.md) and [ADR 0015](../architecture/decisions/0015-contextual-multi-error-typo-correction.md)
+> **Current source of truth:** `docs/TYPO_CORRECTION.md` and ADR 0015 (plus ADR 0016 for progressive recall preflight).
+>
+> **Note:** Keep Device Hub acceptance pending notes in body; header uses governance enum only.
 
 ## Work Packages
 

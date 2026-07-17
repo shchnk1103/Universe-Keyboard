@@ -13,7 +13,7 @@
 - **Assignment Authority:** Product Lead
 - **Product Approver:** Product Lead acting under the human owner's explicit role delegation
 - **Product Contract:** [`docs/APP_NOTIFICATIONS.md`](../APP_NOTIFICATIONS.md)
-- **Architecture Decision:** [ADR 0017](../architecture/decisions/0017-app-notification-and-toast-settings.md)
+- **Architecture Decision:** [ADR 0019](../architecture/decisions/0019-app-notification-and-toast-settings.md)
 
 ## Boundary
 

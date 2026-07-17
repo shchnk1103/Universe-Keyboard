@@ -2,34 +2,38 @@
 
 > **Version:** `2.0.0`
 >
-> **Status:** Assessment for KOS-GOV-001 Product Review
+> **Status:** Historical readiness assessment for KOS-GOV-001; migration later executed by KOS-MIG-001
 >
-> **Assignment:** [`KOS-GOV-001`](../assignments/kos-gov-001.md)
+> **Publication Assignment:** [`KOS-GOV-001`](../assignments/kos-gov-001.md)
 >
-> **Migration status:** Not started
+> **Migration status:** Executed — see [`migration-001-record.md`](migration-001-record.md) and [`KOS-MIG-001`](../assignments/kos-mig-001.md)
 
 ## Purpose
 
-This assessment records whether future repository migration work can be assigned after Knowledge OS 2.0 specification publication.
+This assessment recorded whether future repository migration work could be assigned after Knowledge OS 2.0 specification publication.
 
-It does not execute migration, move documents, rename documents, archive documents or update product/runtime behavior.
+It did not execute migration. Execution authority and evidence now live in:
 
-## Readiness Summary
+- [`KOS-MIG-001 Assignment`](../assignments/kos-mig-001.md)
+- [`Migration plan`](../plans/kos-mig-001-migration-plan.md)
+- [`Migration completion record`](migration-001-record.md)
 
-Future migration can be assigned separately after Product Review, but it is not automatically ready to execute from KOS-GOV-001 publication alone.
+## Readiness Summary (as of KOS-GOV-001 publication)
 
-| Area | Readiness | Reason |
+Future migration could be assigned separately after Product Review, but was not automatically ready to execute from KOS-GOV-001 publication alone.
+
+| Area | Readiness at publication | Reason |
 |---|---|---|
-| Canonical specification | Ready for Product Review | Knowledge OS 2.0 specification is published under `docs/kos/`. |
-| Assignment authority | Ready for separate assignment | Current Assignment authorizes publication only; migration needs a new Product Assignment. |
-| Repository structure | Partially ready | `docs/kos/` exists as specification root; existing Knowledge OS v1 navigation remains operational. |
-| Source-of-Truth mapping | Needs migration plan | Existing navigation and governance documents must be reviewed before any authoritative moves. |
-| Validation method | Partially ready | Link checks and `git diff --check` apply now; migration would need its own validation matrix. |
-| Rollback / stop conditions | Needs migration plan | KOS-GOV-001 defines stop boundaries but not migration rollback details. |
+| Canonical specification | Ready for Product Review | Knowledge OS 2.0 specification was published under `docs/kos/`. |
+| Assignment authority | Ready for separate assignment | Publication Assignment authorized publication only; migration needed a new Product Assignment. |
+| Repository structure | Partially ready | `docs/kos/` existed as specification root; existing Knowledge OS v1 navigation remained operational until migration. |
+| Source-of-Truth mapping | Needed migration plan | Existing navigation and governance documents required review before authoritative updates. |
+| Validation method | Partially ready | Link checks and `git diff --check` applied; migration needed its own validation matrix. |
+| Rollback / stop conditions | Needed migration plan | Publication defined stop boundaries but not migration rollback details. |
 
-## Migration Preconditions
+## Migration Preconditions (satisfied by KOS-MIG-001)
 
-A future migration Assignment should define:
+A migration Assignment needed to define:
 
 1. Product-approved migration scope.
 2. Source documents and destination documents.
@@ -40,34 +44,29 @@ A future migration Assignment should define:
 7. Rollback or stop conditions.
 8. Handoff and acceptance owner.
 
-## Current Blockers To Immediate Migration
+KOS-MIG-001 published these in its Assignment and migration plan before execution.
 
-- KOS-GOV-001 does not authorize migration.
-- No migration Assignment exists in this publication.
-- No migration validation matrix has been published.
-- No rollback or stop procedure has been assigned.
-- Existing Knowledge OS v1 navigation remains active and must be handled deliberately.
+## Historical Blockers To Immediate Migration Under KOS-GOV-001
 
-## Migration Recommendation
+- KOS-GOV-001 did not authorize migration.
+- No migration Assignment existed at publication time.
+- No migration validation matrix had been published at that time.
+- No rollback or stop procedure had been assigned at that time.
+- Existing Knowledge OS v1 navigation remained active and required deliberate handling.
 
-Do not begin repository migration under KOS-GOV-001.
+## Outcome
 
-If Product Lead accepts the Knowledge OS 2.0 specification, create a separate migration work item with Repository Change Type `Migration`. That work item should use this assessment as an input, not as execution authority.
+Do not use this file as current migration status. Current status is:
 
-## Publication Scope Compliance
+> **Migration executed and closed under KOS-MIG-001.**
 
-KOS-GOV-001 publication has not:
-
-- moved existing documents into a new structure;
-- deleted or archived existing documents;
-- modified production code;
-- modified tests;
-- modified Runtime, RIME, Registry, ADR, Template, Procedure or Assignment Policy;
-- started Benchmark or Task 7 work.
+For current operational entry, use [`../KNOWLEDGE_OS.md`](../KNOWLEDGE_OS.md). For frozen governance, use [`knowledge-os-2.0-specification.md`](knowledge-os-2.0-specification.md).
 
 ## Related Documents
 
 - [`Knowledge OS 2.0 Specification`](knowledge-os-2.0-specification.md)
 - [`KOS-GOV-001 Assignment`](../assignments/kos-gov-001.md)
-- [`Knowledge OS`](../KNOWLEDGE_OS.md)
+- [`KOS-MIG-001 Assignment`](../assignments/kos-mig-001.md)
+- [`Migration completion record`](migration-001-record.md)
+- [`Knowledge OS operational entry`](../KNOWLEDGE_OS.md)
 - [`Documentation Governance`](../DOCUMENTATION_GOVERNANCE.md)

@@ -29,7 +29,7 @@ rg -n '^## Status|^Accepted|^Proposed|^Superseded|^Deprecated' docs/architecture
 
 # Plans and lifecycle headers
 find docs/plans -maxdepth 1 -type f -name '*.md' -print | sort
-rg -n '^>.*(Status|状态)' docs/plans
+rg -n '^> \*\*Status:\*\*' docs/plans
 
 # Technical-debt inventory
 rg -n '^## TD-' docs/TECH_DEBT.md
@@ -47,38 +47,41 @@ Counts are derived output. Do not copy them into README, PROJECT_CONTEXT or inde
 
 Snapshot metadata:
 
-- Collected: 2026-06-29 Asia/Shanghai.
-- Base commit: `75a5e8c`; includes the current uncommitted Phase A/B/B.5/K documentation working tree.
-- Commands: inventory commands above plus `git diff --check`.
-- Evidence location: this working tree and current command output.
+- Collected: 2026-07-17 Asia/Shanghai.
+- Base: working tree for DOC-HYGIENE-001 (builds on KOS-MIG-001 single-track authority).
+- Commands: inventory commands above, local Markdown link scan, ADR identity uniqueness check, plan header enum scan, `git diff --check`.
+- Evidence location: [`evidence/doc-hygiene-001-audit.md`](evidence/doc-hygiene-001-audit.md).
 - Expiry: next monthly Knowledge Audit, important milestone, or any ADR/plan/debt/playbook lifecycle change.
 
 Observed state:
 
 | Area | Observation | Health |
 |---|---|---|
-| ADRs | Eight decision files exist and have required sections | Structurally healthy; coverage gaps remain possible |
-| Plans | Five plans are marked historical/archived, but closure metadata is not yet governance-complete | Needs work |
-| Technical debt | Seven canonical debt items exist | Healthy structure; status must be revalidated monthly |
-| Navigation | Knowledge index, maps, graph and dependencies now exist | New; requires usage validation |
-| Playbooks | Nine domain operating playbooks exist with required evidence, stop and handoff sections | Structurally healthy; independent task dry-runs remain pending |
-| Permanent ownership | Seven long-term roles are defined; short-term Typo ownership has an explicit handoff to Input Intelligence | New; validate with long-lived-thread dry-runs |
-| Volatile evidence | Manual acceptance/history still contains old counts, device/branch snapshots and temporary evidence paths | Governance debt |
-| README scope | README still carries extensive feature/architecture details | Overloaded |
-| Duplicate facts | Lifecycle, deployment, Full Access and UI constants appear in multiple long-lived documents | Requires ownership cleanup |
+| ADRs | 19 decision files; dual `0017` collision resolved (continuation stays 0017; notifications renumbered to 0019) | Structurally improved |
+| Plans | All plans declare governance lifecycle enum in header | Improved |
+| Assignment lifecycle | Closed KOS-GOV-001 and ENV-TOOLING-001 headers synchronized with Dashboard | Improved |
+| Navigation | Knowledge index, maps, graph, kos single-track, slim README entry | Healthy for entry |
+| Playbooks | Nine domain playbooks present | Structurally healthy; dry-runs still pending |
+| Permanent ownership | Virtual Engineering Team blueprint present | Needs dry-run validation |
+| Volatile evidence | Historical acceptance/history may still contain old snapshots | Residual governance debt |
+| README scope | Reduced to entry/quick-start/navigation | Improved |
+| Duplicate facts | Domain durable-fact duplication outside ADR renumber still possible | Residual |
 
 ## Documentation Debt Queue
 
 1. Run independent dry-runs of every playbook against real tasks and record routing failures.
-2. Normalize all plan closure headers.
-3. Reduce README to entry/quick-start/navigation responsibility.
-4. Convert historical acceptance records to fully qualified snapshots with expiry/evidence retention.
-5. Remove temporary branch/merge-readiness content from current architecture documents.
-6. Resolve duplicated durable facts by preserving one owner plus links.
-7. Decide whether OpenCC integration requires a rationale ADR.
-8. Remove or explicitly manage tracked `.DS_Store` files under documentation directories.
-9. Dry-run the permanent bootstrap prompts and verify that Typo transition handoffs preserve benchmark, ranking, learning and regression evidence.
-10. Keep the Typo Benchmark Registry structural checks current as new Canonical IDs, aliases or supersessions are approved.
+2. Dry-run permanent bootstrap prompts and Typo → Input Intelligence evidence handoff.
+3. Resolve remaining duplicated durable facts (lifecycle, deployment, Full Access, UI constants) by one owner + links.
+4. Convert historical acceptance records to fully qualified snapshots with expiry/evidence retention where still missing.
+5. Decide whether OpenCC integration requires a rationale ADR (if still open).
+6. Keep Typo Benchmark Registry structural checks current as new Canonical IDs, aliases or supersessions are approved.
+7. Optionally ignore or clean local untracked `.DS_Store` under `docs/` (not git-tracked).
+
+Completed in DOC-HYGIENE-001 (removed from active queue):
+
+- Normalize plan closure/lifecycle headers to governance enum.
+- Reduce README to entry/quick-start/navigation responsibility.
+- Resolve dual ADR `0017` identity collision.
 
 ## Knowledge Audit Record
 
@@ -86,7 +89,9 @@ Add one row per monthly/milestone audit. Detailed findings belong in the audit a
 
 | Date | Scope | Base commit | Result location | Next trigger |
 |---|---|---|---|---|
-| 2026-06-29 | Knowledge OS v1.0 + Phase C playbook structure | `75a5e8c` + documentation working tree | `DOCUMENTATION_HEALTH.md` current snapshot | Independent playbook audit or next milestone |
+| 2026-07-17 | DOC-HYGIENE-001 documentation hygiene | working tree at hygiene closure | `docs/evidence/doc-hygiene-001-audit.md` | Playbook dry-run or next monthly audit |
+| 2026-07-17 | KOS-MIG-001 operational single-track migration | KOS-MIG-001 commit on `docs/kos-mig-001` | `docs/kos/migration-001-record.md` | Further Migration Assignment if domain tree moves needed |
+| 2026-06-29 | Knowledge OS v1.0 + Phase C playbook structure | `75a5e8c` + documentation working tree | historical snapshot superseded by 2026-07-17 baseline | — |
 | 2026-06-29 | Virtual Engineering Team v1.0 ownership blueprint | Current documentation working tree | `VIRTUAL_ENGINEERING_TEAM.md` | Permanent-thread dry-run or ownership change |
 | 2026-06-30 | Typo Correction Benchmark Registry v1.0 publication | `3cb5a6c` + existing documentation working tree | `TYPO_BENCHMARK_REGISTRY.md`, ADR 0009 and validation output | Registry version change, evidence-reference change or `TYPO-BENCHMARK-004B` review |
 
@@ -98,22 +103,3 @@ Add one row per monthly/milestone audit. Detailed findings belong in the audit a
 - Link check: all repository-local Markdown file links resolve.
 - Formatting: `git diff --check` passed; new Registry/ADR files also passed trailing-whitespace and end-of-file checks.
 - Change boundary: documentation only; no production source, test, Runtime, algorithm, behavior or Benchmark Case changed.
-- Evidence boundary: publication does not mark any Case or Performance Scenario passed and does not authorize Task 7.
-
-## Health Gate
-
-The Knowledge OS is not healthy merely because documents exist. A milestone fails documentation health when:
-
-- a durable change has no owner/ADR;
-- a plan appears current after closure;
-- a release claim lacks reproducible evidence;
-- a playbook requires historical chat to operate;
-- a permanent thread has no single long-term owner or reusable repository-based bootstrap;
-- an index route leads to conflicting facts;
-- documentation debt is known but has no visible queue or owner area.
-## Documentation Hygiene Records
-
-### DH-2026-07-08: Archive ios-rime-keyboard-development-plan.md
-
-- **Action**：将 `ios-rime-keyboard-development-plan.md` 归档至 `docs/plans/`，添加 Superseded 生命周期头。
-- **Impact**：Plan hygiene 维度改善；路线图引用统一更新至新路径；文档体系不再包含无生命周期标记的游离 plan 文件。

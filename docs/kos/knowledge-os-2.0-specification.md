@@ -2,11 +2,13 @@
 
 > **Version:** `2.0.0`
 >
-> **Status:** Canonical specification published for KOS-GOV-001 Product Review
+> **Status:** Canonical specification accepted; operational migration applied by KOS-MIG-001
 >
-> **Repository Change Type:** `Contract`
+> **Repository Change Type:** `Contract` (publication); operational structure applied by `Migration` under [`KOS-MIG-001`](../assignments/kos-mig-001.md)
 >
-> **Assignment:** [`KOS-GOV-001`](../assignments/kos-gov-001.md)
+> **Publication Assignment:** [`KOS-GOV-001`](../assignments/kos-gov-001.md)
+>
+> **Migration Assignment:** [`KOS-MIG-001`](../assignments/kos-mig-001.md)
 
 ## Purpose
 
@@ -18,7 +20,7 @@ This specification records the frozen Knowledge OS 2.0 architecture. It does not
 
 This document is the canonical Knowledge OS 2.0 specification. Navigation documents may link to it and summarize its existence, but they must not maintain a competing copy of its substantive rules.
 
-Current Knowledge OS v1 entrypoints remain operational navigation until a separately assigned migration updates them. Publication of this specification does not migrate the repository.
+Operational migration was applied by [`KOS-MIG-001`](../assignments/kos-mig-001.md). `docs/KNOWLEDGE_OS.md` is the operational entrypoint under this specification; it must not maintain a competing copy of the frozen rules below. Publication history of this specification remains separate from migration execution evidence in [`migration-001-record.md`](migration-001-record.md).
 
 ## Frozen Principles
 
@@ -166,7 +168,7 @@ Knowledge OS 2.0 migration rules:
 
 ## Repository Structure Specification
 
-Knowledge OS 2.0 canonical specification lives under:
+Knowledge OS 2.0 canonical specification and migration evidence live under:
 
 ```text
 docs/kos/
@@ -174,25 +176,27 @@ docs/kos/
   knowledge-os-2.0-specification.md
   zero-context-startup.md
   migration-readiness.md
+  migration-001-record.md
 ```
 
-The current repository navigation remains:
+Post-migration repository navigation:
 
 ```text
 AGENTS.md
   -> docs/KNOWLEDGE_INDEX.md
+       -> docs/kos/zero-context-startup.md   (zero-context authority recovery)
+       -> docs/KNOWLEDGE_OS.md              (operational entry: layers / protocol / self-healing)
+       -> docs/kos/                         (frozen governance SoT)
        -> docs/READING_MAPS.md
-       -> docs/KNOWLEDGE_OS.md
-       -> docs/kos/
 ```
 
 Structure rules:
 
-- `docs/kos/` owns Knowledge OS 2.0 specification text and the Zero-Context Startup Layer.
-- `docs/KNOWLEDGE_OS.md` remains the operational entrypoint until separately migrated.
-- `docs/KNOWLEDGE_INDEX.md`, `docs/READING_MAPS.md`, `docs/DOCUMENTATION_GRAPH.md` and `docs/KNOWLEDGE_DEPENDENCIES.md` may link to `docs/kos/` for discoverability.
+- `docs/kos/` owns Knowledge OS 2.0 specification text, the Zero-Context Startup Layer and KOS migration execution records.
+- `docs/KNOWLEDGE_OS.md` is the operational entrypoint under Knowledge OS 2.0; it owns layers, navigation protocol, evolution and self-healing only.
+- `docs/KNOWLEDGE_INDEX.md`, `docs/READING_MAPS.md`, `docs/DOCUMENTATION_GRAPH.md` and `docs/KNOWLEDGE_DEPENDENCIES.md` link to owners for discoverability and must not duplicate frozen rules.
 - Existing domain, architecture, ADR, Registry, Template, Procedure, Assignment and Dashboard documents keep their current ownership unless a separate Assignment changes them.
-- No repository migration is implied by this directory existing.
+- Further structure moves require a new Assignment with Repository Change Type `Migration`.
 
 ## Validation Contract
 
@@ -224,8 +228,11 @@ Stop and return to Product Lead if any future Knowledge OS 2.0 work requires:
 
 - [`KOS-GOV-001 Assignment`](../assignments/kos-gov-001.md)
 - [`KOS-BOOT-001 Assignment`](../assignments/kos-boot-001.md)
+- [`KOS-MIG-001 Assignment`](../assignments/kos-mig-001.md)
 - [`Zero-Context Startup Layer`](zero-context-startup.md)
-- [`Knowledge OS`](../KNOWLEDGE_OS.md)
+- [`Migration readiness assessment`](migration-readiness.md)
+- [`Migration completion record`](migration-001-record.md)
+- [`Knowledge OS operational entry`](../KNOWLEDGE_OS.md)
 - [`Knowledge Index`](../KNOWLEDGE_INDEX.md)
 - [`Reading Maps`](../READING_MAPS.md)
 - [`Documentation Governance`](../DOCUMENTATION_GOVERNANCE.md)

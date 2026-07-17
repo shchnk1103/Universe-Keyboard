@@ -21,7 +21,9 @@ AGENTS
        -> ASSIGNMENT_POLICY
             -> task Assignment Records / handoffs
        -> kos
-            -> Knowledge OS 2.0 specification / zero-context startup / migration readiness
+            -> Knowledge OS 2.0 specification / zero-context startup / migration records
+       -> KNOWLEDGE_OS
+            -> operational layers / navigation protocol / self-healing (links to kos for frozen rules)
        -> ENGINEERING_DASHBOARD
             -> current task sources / handoffs / evidence (summary only)
 
@@ -44,8 +46,8 @@ Arrows mean “navigate to” or “depends on”; they do not transfer Source o
 | `AGENTS.md` | Repository collaboration rules | Every agent, first | What behavior is mandatory? | Architecture or task-specific procedure |
 | `README.md` | Public/project entry | First visit | What is this project and how do I enter? | Durable rationale or exhaustive status |
 | `KNOWLEDGE_INDEX.md` | Pure navigation | Every new thread after AGENTS | Where should I go? | Domain facts |
-| `KNOWLEDGE_OS.md` | Knowledge operating model | Maintainers, doc authors | How is repository knowledge organized? | Current product architecture |
-| `kos/*` | Knowledge OS 2.0 canonical specification and startup layer | Zero-context startup, system governance work, migration planning and Product review | What is the canonical Knowledge OS 2.0 contract, startup route and migration readiness? | Runtime behavior, migration execution or implementation detail |
+| `KNOWLEDGE_OS.md` | Knowledge OS operational entry under 2.0 | Maintainers, doc authors, any session needing layers/protocol | How are knowledge layers navigated and healed operationally? | Frozen governance tables, current product architecture |
+| `kos/*` | Knowledge OS 2.0 frozen governance, startup layer and migration records | Zero-context startup, system governance work, Product review | What is the canonical Knowledge OS 2.0 contract, startup route and migration status? | Runtime behavior or domain implementation detail |
 | `READING_MAPS.md` | Task-based routing | Before implementation | What must I read for this task? | The content of those sources |
 | `PROJECT_CONTEXT.md` | Current architecture overview | Any code/architecture task | What modules and boundaries exist? | Historical chronology or troubleshooting |
 | `architecture/*.md` | Current subsystem contracts | Relevant subsystem change | How does this boundary currently work? | Why every decision was selected |
@@ -98,12 +100,12 @@ User dictionary
 Portable RIME sync
   -> RIME_SYNC
   -> ADR 0012 / 0013 / 0014
-  -> APP_NOTIFICATIONS / ADR 0017 (notification and Toast behavior)
+  -> APP_NOTIFICATIONS / ADR 0019 (notification and Toast behavior)
   -> DEBUGGING / RELEASE_CHECKLIST
 
 App notifications
   -> APP_NOTIFICATIONS
-  -> ADR 0017
+  -> ADR 0019
   -> PRIVACY_POLICY / DEBUGGING / RELEASE_CHECKLIST
 
 Release

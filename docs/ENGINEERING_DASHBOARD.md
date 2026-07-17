@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-07-16 Asia/Shanghai
+> **Updated:** 2026-07-17 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -71,8 +71,29 @@
 
 | Work item | Lifecycle state | Current phase | Routing / coordination note |
 |---|---|---|---|
-| `KOS-GOV-001` | Accepted / Closed | Closed | Product Review accepted the completed Knowledge OS 2.0 publication. Closure synchronization records the concluded state only; Repository Migration, implementation, Benchmark work and Task 7 remain unauthorized by this closure. |
-| `KOS-BOOT-001` | Accepted / Closed | Closed | Product Review accepted the Zero-Context Startup Layer publication. Closure synchronization records the concluded state only; Repository Migration, Knowledge OS 2.1, implementation, Benchmark work and Task 7 remain unauthorized by this closure. |
+| `KOS-GOV-001` | Accepted / Closed | Closed | Product Review accepted the completed Knowledge OS 2.0 publication. Closure synchronization records the concluded state only; this closure did not itself authorize migration. |
+| `KOS-BOOT-001` | Accepted / Closed | Closed | Product Review accepted the Zero-Context Startup Layer publication. Closure synchronization records the concluded state only; this closure did not itself authorize migration or Knowledge OS 2.1. |
+| `KOS-MIG-001` | Accepted / Closed | Closed | Product-authorized operational migration applied Knowledge OS 2.0 as the single governance track. See [Assignment](assignments/kos-mig-001.md) and [completion record](kos/migration-001-record.md). Knowledge OS 2.1, domain tree moves, implementation and Benchmark work remain unauthorized by this closure. |
+| `DOC-HYGIENE-001` | Accepted / Closed | Closed | Documentation hygiene pass under Knowledge OS 2.0: plan lifecycle normalization, closed-Assignment header sync, ADR 0017/0019 collision fix, README reduction, health snapshot refresh. See [Assignment](assignments/doc-hygiene-001.md) and [audit](evidence/doc-hygiene-001-audit.md). Domain duplicate-fact cleanup and playbook dry-runs remain residual. |
+
+### KOS-MIG-001 Coordination
+
+- Work item: `KOS-MIG-001 — Apply Knowledge OS 2.0 Operational Migration`.
+- Classification: `Level S — System Governance`.
+- Repository Change Type: `Migration`; closure synchronization: `State`.
+- Assignment source: [KOS-MIG-001 Assignment Record](assignments/kos-mig-001.md).
+- Plan source: [Migration plan](plans/kos-mig-001-migration-plan.md).
+- Completion source: [Migration completion record](kos/migration-001-record.md).
+- Operational entry: [KNOWLEDGE_OS.md](KNOWLEDGE_OS.md).
+- Frozen governance: [docs/kos/](kos/).
+- Lifecycle state: `Accepted / Closed`.
+- Current phase: `Closure Synchronization complete`.
+- Domain Owner / Executor: 🏛️ Architecture & Knowledge Steward.
+- Product Approver: 🧭 Product Lead (Human Product Owner authorization `2026-07-17`).
+- Quality Reviewer: `Not Required` per the published Assignment.
+- Product Review: `Accepted`.
+- Routing: concluded; no further KOS-MIG-001 owner action is pending after closure synchronization.
+- Not authorized by this synchronization: Knowledge OS 2.1/3.0, domain documentation tree moves, implementation, Benchmark work or Task 7.
 
 ### KOS-BOOT-001 Coordination
 
@@ -88,7 +109,7 @@
 - Quality Reviewer: `Not Required` per the published Assignment.
 - Product Review: `Accepted`.
 - Routing: concluded; no further KOS-BOOT-001 owner action is pending after closure synchronization.
-- Not authorized by this synchronization: Repository Migration, KOS-MIG-001, Knowledge OS 2.1, implementation, Benchmark work or Task 7.
+- Historical note: this closure did not authorize migration; migration was later completed under KOS-MIG-001.
 
 ### KOS-GOV-001 Coordination
 
@@ -103,8 +124,7 @@
 - Quality Reviewer: `Not Required` per the published Assignment.
 - Product Review: `Accepted`.
 - Routing: concluded; no further KOS-GOV-001 owner action is pending after closure synchronization.
-- Next independent work item: requires a separate Product Lead Assignment before start.
-- Not authorized by this synchronization: modifying the Assignment, modifying the Specification, redesigning Knowledge OS, beginning implementation, beginning Repository Migration, Benchmark work or Task 7.
+- Historical note: this closure did not authorize migration; migration was later completed under KOS-MIG-001.
 
 ## Typo Benchmark v1.0
 

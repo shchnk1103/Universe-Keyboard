@@ -1,12 +1,14 @@
 # RIME-SYNC-001 Implementation Plan
 
-> **Lifecycle:** Active
+> **Status:** Active
 >
-> **Current phase:** RIME 标准同步主路径 implemented; automated core validation passed; physical-device and cross-front-end evidence pending
+> **Current phase:** RIME standard sync main path implemented; automated core validation passed; physical-device and cross-front-end evidence pending
 >
-> **Current Source of Truth:** [`RIME_SYNC.md`](../RIME_SYNC.md)
+> **Current source of truth:** `docs/RIME_SYNC.md`
 >
-> **Related ADR:** [ADR 0012](../architecture/decisions/0012-rime-portable-sync-and-transport-boundary.md)
+> **Related ADR:** ADR 0012, 0013, 0014; notifications ADR 0019
+>
+> **Note:** Status normalized from “Lifecycle: Active” to `Active`.
 
 ## Delivery Order
 

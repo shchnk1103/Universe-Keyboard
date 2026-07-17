@@ -1,6 +1,14 @@
 # NATIVE-EXPERIENCE-001 — Step 3 Interruption Diagnosis
 
-Status: Evidence Recorded
+> **Status:** Archived
+>
+> **Closure note:** Evidence recorded 2026-07-09 Asia/Shanghai
+>
+> **Current source of truth:** parent step-3 collection record and later NE work.
+>
+> **Related ADRs:** none required
+>
+> **Guidance:** This plan is no longer current development guidance.
 
 Record Date: 2026-07-09
 

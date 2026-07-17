@@ -8,6 +8,21 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - RIME 仍接收数字 2–9（键的 `accessibilityIdentifier`）；重输清空组合且不提交原始数字串。
 - 本地 `photos/` 对比截图仅作参考，已 gitignore，不入库。
 
+## 2026-07-17 — 文档卫生整理（DOC-HYGIENE-001）
+
+- 规范化全部 `docs/plans/*` 生命周期头为 `Active` / `Archived` / `Superseded` / `Abandoned`。
+- 同步已关闭但头状态漂移的 Assignment：`KOS-GOV-001`、`ENV-TOOLING-001` → `Accepted / Closed`。
+- 修复双 ADR `0017`：上屏后联想保留 ADR 0017；App 通知/Toast 重编号为 ADR 0019 并更新引用。
+- 精简 `README.md` 为入口/最短构建/导航；刷新 `DOCUMENTATION_HEALTH` 快照与债务队列。
+- 未改动生产代码、测试、构建或产品运行时行为。
+
+## 2026-07-17 — Knowledge OS 2.0 运营迁移（KOS-MIG-001）
+
+- 发布并关闭 `KOS-MIG-001`：将 Knowledge OS 2.0 从“规范已发布”推进到“仓库单轨运营”。
+- `docs/kos/` 继续拥有冻结治理合同与 Zero-Context Startup；`docs/KNOWLEDGE_OS.md` 明确为运营入口（layers / 导航协议 / self-healing），不再与冻结原则竞争。
+- 更新 Source of Truth、导航索引、文档图与依赖路由；写入迁移计划、完成记录与回滚说明。
+- 未改动生产代码、测试、构建、Runtime/RIME、Assignment Policy，也未开启 Knowledge OS 2.1/3.0 或领域文档大搬家。
+
 ## 2026-07-16 — 26 键 / 中文九键布局切换（KEYBOARD-LAYOUT-9KEY-001）
 
 - 新增 `KeyboardLayoutStyle`、版本化 T9 就绪标记、`RimeRuntimeSelection` 有效方案解析，以及 `T9PreeditResolver` / 无 raw 数字上屏策略（ADR 0018）。
