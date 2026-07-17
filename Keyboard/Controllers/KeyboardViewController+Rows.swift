@@ -24,9 +24,11 @@ extension KeyboardViewController {
     /// [123] [,?!] [ABC] [DEF] | [ ⌫ ]
     /// [#+=] [GHI] [JKL] [MNO] | [重输]
     /// [中]  [PQRS][TUV][WXYZ] | ┌────┐
-    /// [🌐]  [😊]  [  拼音  ]   | │ret │  ← return spans bottom two rows
+    /// [😊] [选拼音] [ 拼音 ]  | │ret │  ← return spans bottom two rows
     ///                         | └────┘
     /// ```
+    /// Bottom row uses the same 4-column width rhythm as the letter pad
+    /// (`emoji` and `选拼音` each one column; space spans two).
     /// RIME still receives digits 2–9 via letter-key identity (ADR 0018).
     func makeT9NineKeyChrome() -> [UIView] {
         let numbersButton = makeKeyButton(title: "123", action: #selector(switchToNumbersPage(_:)))
@@ -124,14 +126,20 @@ extension KeyboardViewController {
         return [host]
     }
 
-    /// Nine-key bottom row: globe + emoji entry + wide space (拼音).
+    /// Nine-key bottom row aligned to the left pad’s 4 equal columns:
+    /// `[emoji | 选拼音 | space(span 2)]`.
+    ///
+    /// Globe is still created for `needsInputModeSwitchKey` (system may hide it).
+    /// When visible it sits as an extra leading control without fixed 46pt chrome width.
     /// Delete/return live in the right column (return is double-height).
     func makeT9BottomRow() -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
         row.spacing = keyHorizontalSpacing
         row.distribution = .fill
+        row.alignment = .fill
 
+        // Required by UIInputViewController when the system asks for a switch key.
         nextKeyboardButton = makeKeyButton(
             title: "",
             action: #selector(handleInputModeList(from:with:))
@@ -142,6 +150,8 @@ extension KeyboardViewController {
             forImageIn: .normal
         )
         applyKeyStyle(.function, to: nextKeyboardButton)
+        // Keep in hierarchy for the system; stack collapses space while hidden.
+        nextKeyboardButton.isHidden = !needsInputModeSwitchKey
 
         let emojiButton = makeKeyButton(
             title: "😊",
@@ -149,6 +159,17 @@ extension KeyboardViewController {
         )
         configureEmojiSwitchButton(emojiButton)
         applyKeyStyle(.function, to: emojiButton)
+
+        // Placeholder only — product behavior deferred (KEYBOARD-LAYOUT-9KEY-UI-001).
+        let selectPinyinButton = makeKeyButton(
+            title: "选拼音",
+            action: #selector(t9SelectPinyinPlaceholder(_:))
+        )
+        applyKeyStyle(.function, to: selectPinyinButton)
+        selectPinyinButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        selectPinyinButton.titleLabel?.minimumScaleFactor = 0.45
+        selectPinyinButton.accessibilityLabel = "选拼音"
+        selectPinyinButton.accessibilityHint = "占位按钮，功能尚未实现。"
 
         let spaceButton = makeKeyButton(
             title: spaceButtonTitle,
@@ -163,12 +184,28 @@ extension KeyboardViewController {
 
         row.addArrangedSubview(nextKeyboardButton)
         row.addArrangedSubview(emojiButton)
+        row.addArrangedSubview(selectPinyinButton)
         row.addArrangedSubview(spaceButton)
+
+        // Match left pad columns: emoji = 选拼音 = 1 col; space = 2 cols + inner gap.
+        // (4w + 3s = full width of the left pad when globe is hidden.)
+        emojiButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        selectPinyinButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        spaceButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        emojiButton.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        selectPinyinButton.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        spaceButton.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
         NSLayoutConstraint.activate([
             preferredRowHeightConstraint(for: row, height: keyHeight),
-            nextKeyboardButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
-            emojiButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
+            emojiButton.widthAnchor.constraint(equalTo: selectPinyinButton.widthAnchor),
+            spaceButton.widthAnchor.constraint(
+                equalTo: emojiButton.widthAnchor,
+                multiplier: 2,
+                constant: keyHorizontalSpacing
+            ),
+            // When globe is visible, keep it one column wide like emoji.
+            nextKeyboardButton.widthAnchor.constraint(equalTo: emojiButton.widthAnchor),
         ])
         return row
     }
