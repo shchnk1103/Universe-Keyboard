@@ -124,19 +124,14 @@ extension KeyboardViewController {
                 && cachedLayoutStyle == .nineKey
                 && cachedT9ReadinessMatched
             if usesT9Chrome {
-                // 3×3 T9 pad + shared bottom function row.
-                rootStack.addArrangedSubview(makeT9KeyRow([
-                    ("1", ""), ("2", "ABC"), ("3", "DEF"),
-                ]))
-                rootStack.addArrangedSubview(makeT9KeyRow([
-                    ("4", "GHI"), ("5", "JKL"), ("6", "MNO"),
-                ]))
-                let thirdRow = makeT9KeyRow([
-                    ("7", "PQRS"), ("8", "TUV"), ("9", "WXYZ"),
-                ])
-                rootStack.addArrangedSubview(thirdRow)
-                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)
-                rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: true))
+                // Native-aligned 九宫格: 5-column letter groups + side functions + globe/space.
+                let t9Rows = makeT9NineKeyChrome()
+                for (index, row) in t9Rows.enumerated() {
+                    rootStack.addArrangedSubview(row)
+                    if index == t9Rows.count - 2 {
+                        rootStack.setCustomSpacing(keyboardGroupSpacing, after: row)
+                    }
+                }
             } else {
                 rootStack.addArrangedSubview(makeLetterRow(["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]))
                 rootStack.addArrangedSubview(

@@ -2,21 +2,126 @@ import KeyboardCore
 import UIKit
 
 extension KeyboardViewController {
-    // MARK: === T9 九键行 ===
+    // MARK: === T9 九键（原生九宫格节奏）===
 
-    /// Builds one row of three equal-width T9 keys.
-    /// - Parameter keys: (digit, letters) pairs, e.g. ("2", "ABC")
-    func makeT9KeyRow(_ keys: [(digit: String, letters: String)]) -> UIStackView {
+    /// Builds one equal-width five-column nine-key row (native 九宫格 rhythm).
+    func makeT9GridRow(_ views: [UIView]) -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
         row.spacing = keyHorizontalSpacing
         row.distribution = .fillEqually
-
-        for key in keys {
-            row.addArrangedSubview(makeT9KeyButton(digit: key.digit, letters: key.letters))
+        for view in views {
+            row.addArrangedSubview(view)
         }
-
         preferredRowHeightConstraint(for: row, height: keyHeight).isActive = true
+        return row
+    }
+
+    /// Full Chinese nine-key chrome: 3 grid rows + bottom row (globe + space).
+    ///
+    /// Layout (aligned to system 九宫格):
+    /// ```
+    /// [123] [,?!] [ABC] [DEF] [⌫]
+    /// [#+=] [GHI] [JKL] [MNO] [重输]
+    /// [中]  [PQRS][TUV][WXYZ][return]
+    /// [🌐]         [  拼音  ]
+    /// ```
+    func makeT9NineKeyChrome() -> [UIView] {
+        let numbersButton = makeKeyButton(title: "123", action: #selector(switchToNumbersPage(_:)))
+        applyKeyStyle(.function, to: numbersButton)
+
+        let punctuationButton = makeKeyButton(title: ",?!", action: #selector(insertT9CommonPunctuation(_:)))
+        applyKeyStyle(.character, to: punctuationButton)
+        punctuationButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        punctuationButton.titleLabel?.minimumScaleFactor = 0.55
+        punctuationButton.accessibilityLabel = "常用标点"
+
+        let symbolsButton = makeKeyButton(title: "#+=", action: #selector(switchToSymbolsPage(_:)))
+        applyKeyStyle(.function, to: symbolsButton)
+
+        let reinputButton = makeKeyButton(title: "重输", action: #selector(reinputT9Composition(_:)))
+        applyKeyStyle(.function, to: reinputButton)
+        reinputButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        reinputButton.titleLabel?.minimumScaleFactor = 0.6
+        reinputButton.accessibilityLabel = "重输"
+        reinputButton.accessibilityHint = "清空当前拼音组合，不提交数字。"
+
+        let inputModeButton = makeKeyButton(
+            title: inputModeButtonTitle,
+            action: #selector(toggleInputMode(_:))
+        )
+        applyKeyStyle(.function, to: inputModeButton)
+
+        let deleteButton = makeDeleteButton()
+
+        returnButton = makeKeyButton(
+            title: returnKeyTitle,
+            action: #selector(insertReturn(_:))
+        )
+        applyKeyStyle(.returnKey, to: returnButton)
+        updateReturnKeyAppearance()
+
+        let row1 = makeT9GridRow([
+            numbersButton,
+            punctuationButton,
+            makeT9KeyButton(digit: "2", letters: "ABC"),
+            makeT9KeyButton(digit: "3", letters: "DEF"),
+            deleteButton,
+        ])
+        let row2 = makeT9GridRow([
+            symbolsButton,
+            makeT9KeyButton(digit: "4", letters: "GHI"),
+            makeT9KeyButton(digit: "5", letters: "JKL"),
+            makeT9KeyButton(digit: "6", letters: "MNO"),
+            reinputButton,
+        ])
+        let row3 = makeT9GridRow([
+            inputModeButton,
+            makeT9KeyButton(digit: "7", letters: "PQRS"),
+            makeT9KeyButton(digit: "8", letters: "TUV"),
+            makeT9KeyButton(digit: "9", letters: "WXYZ"),
+            returnButton,
+        ])
+        let bottom = makeT9BottomRow()
+        return [row1, row2, row3, bottom]
+    }
+
+    /// Nine-key bottom row: required globe + wide space (拼音). Delete/return live on the grid.
+    func makeT9BottomRow() -> UIStackView {
+        let row = UIStackView()
+        row.axis = .horizontal
+        row.spacing = keyHorizontalSpacing
+        row.distribution = .fill
+
+        nextKeyboardButton = makeKeyButton(
+            title: "",
+            action: #selector(handleInputModeList(from:with:))
+        )
+        nextKeyboardButton.setImage(UIImage(systemName: "globe"), for: .normal)
+        nextKeyboardButton.setPreferredSymbolConfiguration(
+            UIImage.SymbolConfiguration(pointSize: functionKeySymbolPointSize, weight: .regular),
+            forImageIn: .normal
+        )
+        applyKeyStyle(.function, to: nextKeyboardButton)
+
+        let spaceButton = makeKeyButton(
+            title: spaceButtonTitle,
+            action: #selector(insertSpace(_:))
+        )
+        applyKeyStyle(.space, to: spaceButton)
+        let spaceLongPress = UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(handleSpaceCursorLongPress(_:))
+        )
+        spaceButton.addGestureRecognizer(spaceLongPress)
+
+        row.addArrangedSubview(nextKeyboardButton)
+        row.addArrangedSubview(spaceButton)
+
+        NSLayoutConstraint.activate([
+            preferredRowHeightConstraint(for: row, height: keyHeight),
+            nextKeyboardButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
+        ])
         return row
     }
 

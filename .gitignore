@@ -51,3 +51,6 @@ Packages/RimeBridge/TestTool/test_rime
 
 # Local evidence artifacts (environment captures, benchmarks)
 evidence/
+
+# Local comparison screenshots (not product evidence)
+photos/

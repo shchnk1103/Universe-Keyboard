@@ -17,40 +17,42 @@ import UIKit
 
 extension KeyboardViewController {
 
-    /// Creates a T9 digit key with secondary letter labels (e.g. 2 / ABC).
+    /// Creates a native-style T9 letter-group key.
+    ///
+    /// Visual primary label is the letter group (e.g. `ABC`); the RIME payload remains the
+    /// digit identity in `accessibilityIdentifier` (e.g. `2`). `insertKey` prefers that
+    /// identifier when `accessibilityValue == t9DigitAccessibilityValue`.
     func makeT9KeyButton(digit: String, letters: String) -> UIButton {
-        let button = makeKeyButton(title: digit, action: #selector(insertKey(_:)))
+        let button = makeKeyButton(title: letters.isEmpty ? digit : letters, action: #selector(insertKey(_:)))
         button.accessibilityIdentifier = digit
+        button.accessibilityValue = Self.t9DigitAccessibilityValue
         if letters.isEmpty {
             button.accessibilityLabel = "数字 \(digit)"
-        } else {
-            button.accessibilityLabel = "数字 \(digit)，\(letters)"
-            // Visual secondary line via attributed title.
-            let digitFont = UIFont.systemFont(ofSize: 20, weight: .regular)
-            let lettersFont = UIFont.systemFont(ofSize: 10, weight: .medium)
-            let text = NSMutableAttributedString(
-                string: digit + "\n",
-                attributes: [
-                    .font: digitFont,
-                    .foregroundColor: UIColor.label,
-                ]
-            )
-            text.append(
-                NSAttributedString(
-                    string: letters,
-                    attributes: [
-                        .font: lettersFont,
-                        .foregroundColor: UIColor.secondaryLabel,
-                    ]
-                )
-            )
-            button.titleLabel?.numberOfLines = 2
-            button.titleLabel?.textAlignment = .center
-            button.setAttributedTitle(text, for: .normal)
+            applyKeyStyle(.character, to: button)
+            return button
         }
+
+        button.accessibilityLabel = "\(letters)，数字 \(digit)"
+        // Native 九宫格: letter group is primary; digit is not shown as a large title.
+        let lettersFont = UIFont.systemFont(ofSize: 18, weight: .regular)
+        let text = NSAttributedString(
+            string: letters,
+            attributes: [
+                .font: lettersFont,
+                .foregroundColor: UIColor.label,
+            ]
+        )
+        button.titleLabel?.numberOfLines = 1
+        button.titleLabel?.textAlignment = .center
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.titleLabel?.minimumScaleFactor = 0.7
+        button.setAttributedTitle(text, for: .normal)
         applyKeyStyle(.character, to: button)
         return button
     }
+
+    /// Marker stored on T9 letter keys so `insertKey` sends the digit identity, not the label.
+    static let t9DigitAccessibilityValue = "t9Digit"
 
     /// 创建标准按键按钮。
     ///

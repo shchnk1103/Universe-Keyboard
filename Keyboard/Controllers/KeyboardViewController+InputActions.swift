@@ -3,10 +3,17 @@ import UIKit
 
 extension KeyboardViewController {
     @objc func insertKey(_ sender: UIButton) {
-        // Prefer plain title; fall back to accessibilityIdentifier for multi-line T9 keys.
-        let key = sender.title(for: .normal)
-            ?? sender.accessibilityIdentifier
-            ?? ""
+        // T9 letter-group keys show `ABC` etc. but must send the digit identity to RIME.
+        let key: String
+        if sender.accessibilityValue == KeyboardViewController.t9DigitAccessibilityValue,
+           let digit = sender.accessibilityIdentifier,
+           !digit.isEmpty {
+            key = digit
+        } else {
+            key = sender.title(for: .normal)
+                ?? sender.accessibilityIdentifier
+                ?? ""
+        }
         guard !key.isEmpty else { return }
         let startTime = CACurrentMediaTime()
         inputEventSequence += 1

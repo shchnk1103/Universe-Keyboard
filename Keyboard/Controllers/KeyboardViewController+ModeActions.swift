@@ -32,6 +32,26 @@ extension KeyboardViewController {
         syncUI(with: effects)
     }
 
+    @objc func switchToSymbolsPage(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
+        let effects = cycleKeyboardPage(to: .symbols)
+        syncUI(with: effects)
+    }
+
+    /// Clears active T9 composition without committing raw digits (ADR 0018).
+    @objc func reinputT9Composition(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
+        let effects = controller.abandonCompositionForVisibilityChange()
+        syncUI(with: effects)
+    }
+
+    /// Native-style punctuation entry on the nine-key grid (comma-first common mark).
+    @objc func insertT9CommonPunctuation(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
+        let effects = controller.handle(.insertDirectText("，"))
+        syncUI(with: effects)
+    }
+
     @objc func showKaomojiCandidatesPlaceholder(_ sender: UIButton) {
         // TODO: 后续在候选栏展示颜表情列表；当前阶段只保留 UI 入口。
         emitKeyPressFeedbackIfNeeded(for: sender)
