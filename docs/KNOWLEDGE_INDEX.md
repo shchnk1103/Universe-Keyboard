@@ -35,6 +35,7 @@
 - Scheme management: [`RIME_SCHEME_MANAGEMENT.md`](RIME_SCHEME_MANAGEMENT.md)
 - Keyboard layout (26-key / Chinese nine-key runtime + chrome): [`KEYBOARD_LAYOUT.md`](KEYBOARD_LAYOUT.md)
 - Nine-key chrome Assignment (closed): [`assignments/keyboard-layout-9key-ui-001.md`](assignments/keyboard-layout-9key-ui-001.md)
+- Nine-key precise pinyin selection (`Active`; Architecture + Quality automated Pass; Product Gate **PASS** `2026-07-19`; publication pending): [`assignments/keyboard-layout-9key-pinyin-001.md`](assignments/keyboard-layout-9key-pinyin-001.md), ADR [`0020`](architecture/decisions/0020-t9-precise-pinyin-path-selection.md), Product Gate [`assignments/keyboard-layout-9key-pinyin-001-product-gate-pass.md`](assignments/keyboard-layout-9key-pinyin-001-product-gate-pass.md)
 - Fuzzy pinyin: [`RIME_FUZZY_PINYIN.md`](RIME_FUZZY_PINYIN.md)
 - User dictionary: [`RIME_USER_DICTIONARY.md`](RIME_USER_DICTIONARY.md)
 - Portable RIME settings sync: [`RIME_SYNC.md`](RIME_SYNC.md)

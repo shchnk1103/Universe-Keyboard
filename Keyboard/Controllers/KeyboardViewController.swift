@@ -98,6 +98,16 @@ class KeyboardViewController: UIInputViewController {
     var candidateExpandButtonWidthConstraint: NSLayoutConstraint?
     /// 候选面板是否处于展开状态
     var isCandidateExpanded = false
+    /// Precise pinyin path expansion (mutually exclusive with candidate expansion).
+    var isPinyinPathExpanded = false
+    weak var t9PinyinPathBarView: T9PinyinPathBarView?
+    weak var t9SelectPinyinButton: UIButton?
+    var pinyinPathExpandedPanel: UIView?
+    var pinyinPathCollectionView: UICollectionView?
+    var accumulatedPinyinPaths: [T9PinyinPath] = []
+    var pinyinPathNextGlobalIndex: Int = 0
+    var pinyinPathHasMore = false
+    var pinyinPathPanelGeneration: UInt64 = 0
     /// 上次滑动翻页的时间戳（用于防抖，避免连续触发）
     var lastPageSwipeTime: CFTimeInterval = 0
     /// 累积候选词列表（无极滑动：随着用户滚动持续追加后续页的候选）
@@ -191,6 +201,8 @@ class KeyboardViewController: UIInputViewController {
     let keyboardContentBottomInset: CGFloat = 0
     /// 候选栏高度（点）。系统键盘外层容器已提供顶部承载面，候选栏保持更紧凑。
     let candidateBarHeight: CGFloat = 34
+    /// Fixed precise pinyin path bar reservation for Chinese nine-key (ADR 0020).
+    let t9PinyinPathBarHeight: CGFloat = 34
     /// 候选栏与第一行按键之间的间距。并入候选栏自身高度，保证这块区域也能接收候选手势。
     let candidateToKeySpacing: CGFloat = 14
     /// 仅用于裁切内部布局，避免透明内容超出系统外层大圆角；不绘制额外 surface。

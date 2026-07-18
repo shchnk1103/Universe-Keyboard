@@ -27,6 +27,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if collectionView === pinyinPathCollectionView { return accumulatedPinyinPaths.count }
         if collectionView === candidateCollectionView { return presentedCandidates.count }
         if collectionView === expandedCandidateCollectionView { return presentedCandidates.count }
         return 0
@@ -34,6 +35,19 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
+        if collectionView === pinyinPathCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: T9PinyinPathCell.reuseID,
+                for: indexPath
+            ) as? T9PinyinPathCell,
+                accumulatedPinyinPaths.indices.contains(indexPath.item)
+            else {
+                return UICollectionViewCell()
+            }
+            cell.configure(path: accumulatedPinyinPaths[indexPath.item])
+            return cell
+        }
+
         let isExpanded = collectionView === expandedCandidateCollectionView
         let identifier =
             isExpanded ? CandidateCollectionCell.expandedReuseIdentifier : CandidateCollectionCell.barReuseIdentifier
@@ -51,6 +65,21 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView === pinyinPathCollectionView {
+            guard accumulatedPinyinPaths.indices.contains(indexPath.item) else { return }
+            let path = accumulatedPinyinPaths[indexPath.item]
+            // Fail closed if provenance snapshot moved (not merely raw identity).
+            let provenance = controller.state.t9PinyinPathState.provenanceRevision
+            guard provenance == pinyinPathPanelGeneration else {
+                dismissPinyinPathExpandedPanel(animated: true)
+                return
+            }
+            emitFeedback(for: .commit)
+            dismissPinyinPathExpandedPanel(animated: true)
+            let effects = controller.handle(.selectT9PinyinPath(path))
+            syncUI(with: effects.union(.t9PinyinPathsChanged))
+            return
+        }
         if collectionView === candidateCollectionView {
             let items = presentedCandidates
             guard items.indices.contains(indexPath.item) else { return }
@@ -67,6 +96,15 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
+        if collectionView === pinyinPathCollectionView {
+            guard accumulatedPinyinPaths.indices.contains(indexPath.item) else {
+                return CGSize(width: 44, height: 44)
+            }
+            let title = accumulatedPinyinPaths[indexPath.item].displayText
+            let font = UIFont.systemFont(ofSize: 17, weight: .regular)
+            let width = ceil((title as NSString).size(withAttributes: [.font: font]).width + 24)
+            return CGSize(width: max(44, width), height: 44)
+        }
         let items = presentedCandidates
         let isExpanded = collectionView === expandedCandidateCollectionView
         let visualHeight: CGFloat = isExpanded ? 38 : 32

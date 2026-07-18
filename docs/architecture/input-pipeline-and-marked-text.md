@@ -30,6 +30,17 @@ The following values are related but not interchangeable:
 
 Never reconstruct raw input from display preedit.
 
+## T9 Precise Pinyin Path Selection (ADR 0020)
+
+When `usesT9InputSemantics` is true:
+
+- `KeyboardAction.selectT9PinyinPath` is composition refinement via `RimeEngine.replaceInput`. It updates marked preedit and Chinese candidates only on a valid refine; it never finalizes path letters/digits to the host.
+- Failed refine is transactional: restore previous `RimeOutput`, composition, path state and marked text.
+- Active T9 composition includes pure digits, pure letters and mixed letter/digit/`'` raw input. Space/Return without candidates and language switch must not host-commit that raw input.
+- Path strings are parsed from Rime candidate comments in KeyboardCore (`T9PinyinPathExtractor`); UIKit only displays and forwards selection.
+- Path state (`t9PinyinPathState`) clears on final candidate commit, abandon/visibility cleanup, and when T9 composition ends.
+- Never reconstruct raw input from the path bar display text.
+
 ## Marked-Text Invariants
 
 1. Active Chinese composition is represented with `setMarkedText`, not committed `insertText` calls per key.

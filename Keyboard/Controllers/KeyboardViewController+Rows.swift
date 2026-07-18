@@ -160,16 +160,17 @@ extension KeyboardViewController {
         applyKeyStyle(.function, to: emojiButton)
         emojiButton.tintColor = .label
 
-        // Placeholder only — product behavior deferred (KEYBOARD-LAYOUT-9KEY-UI-001).
         let selectPinyinButton = makeKeyButton(
             title: "选拼音",
-            action: #selector(t9SelectPinyinPlaceholder(_:))
+            action: #selector(t9SelectPinyin(_:))
         )
         applyKeyStyle(.function, to: selectPinyinButton)
         selectPinyinButton.titleLabel?.adjustsFontSizeToFitWidth = true
         selectPinyinButton.titleLabel?.minimumScaleFactor = 0.45
         selectPinyinButton.accessibilityLabel = "选拼音"
-        selectPinyinButton.accessibilityHint = "占位按钮，功能尚未实现。"
+        selectPinyinButton.accessibilityHint = "打开完整拼音路径列表"
+        t9SelectPinyinButton = selectPinyinButton
+        updateSelectPinyinButtonAvailability()
 
         let spaceButton = makeKeyButton(
             title: spaceButtonTitle,

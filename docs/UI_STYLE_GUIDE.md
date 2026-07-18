@@ -39,6 +39,8 @@ Keyboard UI is frozen for V1. Future keyboard UI changes must state a specific u
 
 **Exception — Chinese nine-key chrome:** matching the system 九宫格 layout (letter-group primary labels, left four-column pad, right delete/颜表情/tall return, bottom emoji+选拼音+拼音) is an authorized usability alignment under closed Assignment `KEYBOARD-LAYOUT-9KEY-UI-001`. Structure details live in `KEYBOARD_LAYOUT.md`. Do not redesign 26-key QWERTY metrics or candidate-bar constants without a separate reason. Shared type-scale constants (below) apply to both layouts where noted.
 
+**Exception — Precise pinyin path bar (ADR 0020 / KEYBOARD-LAYOUT-9KEY-PINYIN-001):** Chinese nine-key letters page reserves a fixed **34 pt** path bar above the Chinese candidate bar (order: path bar → candidates → keys). Paths use plain labels on a transparent background (no candidate pills). Path expansion and Chinese candidate expansion are mutually exclusive. Hit targets for compact paths should stay ≥ 44 pt where layout allows.
+
 Frozen keyboard baseline:
 
 - Keyboard content top inset: `2`.

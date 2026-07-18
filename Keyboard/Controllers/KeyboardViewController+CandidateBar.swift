@@ -50,6 +50,9 @@ extension KeyboardViewController {
     /// 切换候选面板展开/收起。展开面板覆盖在现有键盘之上，
     /// 不拆除底层按键和候选栏，因此切换动画期间没有整页重排。
     @objc func toggleCandidateExpand() {
+        if isPinyinPathExpanded {
+            dismissPinyinPathExpandedPanel(animated: false)
+        }
         isCandidateExpanded.toggle()
         candidatePrefetchRequestSerial += 1
         deferredCandidatePrefetchMode = nil

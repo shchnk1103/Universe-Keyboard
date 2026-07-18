@@ -65,8 +65,13 @@ extension KeyboardViewController {
 
     func reloadKeyboard() {
         isCandidateExpanded = false
+        isPinyinPathExpanded = false
         candidateExpandedPanel?.removeFromSuperview()
         candidateExpandedPanel = nil
+        pinyinPathExpandedPanel?.removeFromSuperview()
+        pinyinPathExpandedPanel = nil
+        pinyinPathCollectionView = nil
+        t9PinyinPathBarView = nil
         candidateCollectionView = nil
         expandedPanelScrollView = nil
         expandedCandidateCollectionView = nil
@@ -74,11 +79,18 @@ extension KeyboardViewController {
         rootStack.alpha = 1
         rootStack.isUserInteractionEnabled = true
         clearAllRows()
+        if shouldReserveT9PinyinPathBar {
+            let pathBar = makeT9PinyinPathBar()
+            rootStack.addArrangedSubview(pathBar)
+            rootStack.setCustomSpacing(0, after: pathBar)
+        }
         candidateBar = makeCandidateBar()
         rootStack.addArrangedSubview(candidateBar)
         rootStack.setCustomSpacing(0, after: candidateBar)
         addKeyboardRows(for: controller.state)
         updateReturnKeyAppearance()
+        updateSelectPinyinButtonAvailability()
+        installPreferredKeyboardHeight()
         Logger.shared.debug(
             "reloadKeyboard: candidateBar=\(candidateBar != nil ? "OK" : "nil"), rows=\(rootStack.arrangedSubviews.count)",
             category: .display
@@ -105,12 +117,30 @@ extension KeyboardViewController {
             let panel = makeExpandedCandidatePanel(with: precomputedCandidates)
             rootStack.addArrangedSubview(panel)
             candidateExpandedPanel = panel
+        } else if isPinyinPathExpanded {
+            if shouldReserveT9PinyinPathBar {
+                let pathBar = makeT9PinyinPathBar()
+                rootStack.addArrangedSubview(pathBar)
+            }
+            candidateBar = makeCandidateBar()
+            rootStack.addArrangedSubview(candidateBar)
+            rootStack.setCustomSpacing(0, after: candidateBar)
+            let panel = makePinyinPathExpandedPanel()
+            rootStack.addArrangedSubview(panel)
+            pinyinPathExpandedPanel = panel
         } else {
+            if shouldReserveT9PinyinPathBar {
+                let pathBar = makeT9PinyinPathBar()
+                rootStack.addArrangedSubview(pathBar)
+                rootStack.setCustomSpacing(0, after: pathBar)
+            }
             candidateBar = makeCandidateBar()
             rootStack.addArrangedSubview(candidateBar)
             rootStack.setCustomSpacing(0, after: candidateBar)
             addKeyboardRows(for: controller.state)
         }
+        updateSelectPinyinButtonAvailability()
+        installPreferredKeyboardHeight()
     }
 
     func addKeyboardRows(for state: KeyboardState) {
@@ -223,6 +253,22 @@ extension KeyboardViewController {
         if effects.contains(.compositionChanged) || effects.contains(.continuationChanged) {
             refreshCandidateBar()
             scheduleContextualTypoCorrectionRefresh()
+            refreshT9PinyinPathBar()
+            if isPinyinPathExpanded {
+                let stillComposing = T9CompositionCommitPolicy.isActiveT9Composition(
+                    usesT9InputSemantics: controller.usesT9InputSemantics,
+                    rawInput: controller.state.lastRimeOutput?.rawInput
+                )
+                if !stillComposing {
+                    dismissPinyinPathExpandedPanel(animated: false)
+                } else {
+                    // Provenance revision change rebuilds accumulated paths; same revision reloads.
+                    refreshPinyinPathExpandedPanel()
+                }
+            }
+        }
+        if effects.contains(.t9PinyinPathsChanged) {
+            refreshT9PinyinPathBar()
         }
         if effects.contains(.shiftStateChanged) {
             refreshLetterButtons()

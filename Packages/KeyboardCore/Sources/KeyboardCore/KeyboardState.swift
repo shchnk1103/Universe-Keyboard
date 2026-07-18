@@ -46,6 +46,8 @@ public struct KeyboardState: Equatable {
     public var insertedPreeditText: String = ""
     /// 当前已插入到文本输入框中的拼音串长度。保留长度字段，方便删除时避免重复计算。
     public var insertedPreeditCount: Int = 0
+    /// Precise T9 pinyin path bar state (ADR 0020). Empty when not composing under T9.
+    public var t9PinyinPathState: T9PinyinPathState = .empty
 
     public init(
         currentPage: KeyboardPage = .letters,
@@ -60,7 +62,8 @@ public struct KeyboardState: Equatable {
         partialCommit: PartialCommitState? = nil,
         continuation: ContinuationState = ContinuationState(),
         insertedPreeditText: String = "",
-        insertedPreeditCount: Int = 0
+        insertedPreeditCount: Int = 0,
+        t9PinyinPathState: T9PinyinPathState = .empty
     ) {
         self.currentPage = currentPage
         self.inputMode = inputMode
@@ -75,5 +78,6 @@ public struct KeyboardState: Equatable {
         self.continuation = continuation
         self.insertedPreeditText = insertedPreeditText
         self.insertedPreeditCount = insertedPreeditCount
+        self.t9PinyinPathState = t9PinyinPathState
     }
 }
