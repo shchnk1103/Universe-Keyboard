@@ -2,7 +2,7 @@
 
 **Policy version:** `1.0.0`
 
-**Lifecycle status:** `Active`
+**Lifecycle status:** `Accepted / Closed`
 
 **Repository change types:** `Contract`, `Documentation`, `Evidence`, `Implementation`, `State`
 
@@ -25,6 +25,8 @@
 - **Lifecycle:** `Assignment Required → Assigned → Acknowledged → Ready` on `2026-07-18 Asia/Shanghai`.
 - **Domain Owner activation:** `2026-07-18 Asia/Shanghai` — 🧠 Input Intelligence Maintainer acknowledged Scope/Stop Conditions and moved lifecycle **`Ready → Active`** for plan phases 1–2 (ADR + real librime Spike). UI phases remain gated.
 - **Work branch:** `feature/keyboard-layout-9key-pinyin-001`
+- **Publication:** PR [#20](https://github.com/shchnk1103/Universe-Keyboard/pull/20) merged to `main` as `fe9010f` (`2026-07-18` UTC / `2026-07-19` Asia/Shanghai local); feature commits `77d38ad` + `e5e9bd3` are ancestors of `origin/main`.
+- **Closure:** Product Lead **`Accepted / Closed`** on `2026-07-19 Asia/Shanghai` after Architecture Pass, automated Quality Pass, Product Gate PASS, and merge reachability proven.
 
 ## Assignment
 
@@ -138,15 +140,15 @@ Stop, set `Blocked`, and escalate to Product Lead / Architecture as applicable w
 
 ## Handoff
 
-### Current handoff (Product Lead → Human Product Owner publication authority)
+### Current handoff (closed)
 
-- **Status:** `Active` — Architecture **Pass**, automated Quality **Pass**, Product Gate **PASS**
-- **Architecture (Codex rereview 5):** **Pass** — [`keyboard-layout-9key-pinyin-001-codex-rereview-5.md`](keyboard-layout-9key-pinyin-001-codex-rereview-5.md)
-- **Quality automated matrix (Codex rereview 5):** **Pass**
-- **Product Gate:** **PASS** (`2026-07-19 Asia/Shanghai`) — [`keyboard-layout-9key-pinyin-001-product-gate-pass.md`](keyboard-layout-9key-pinyin-001-product-gate-pass.md); Human Product Owner device acceptance「真机基本都 OK」
-- **Authorized next action:** Human Product Owner **explicitly authorizes** commit (and optionally push / PR) of `feature/keyboard-layout-9key-pinyin-001`. After publication lands on default branch, Product Lead may move lifecycle toward `Completed` / `Reviewed` / `Closed`.
-- **Publication:** **Ready pending Human authorization** — still dirty worktree until first feature commit; no commit/push/PR without explicit authorization.
-- **Not authorized yet:** commit / push / PR (until Human Product Owner says so); lifecycle `Closed` (until publication + close decision).
+- **Status:** **`Accepted / Closed`**
+- **Architecture (Codex rereview 5):** **Pass**
+- **Quality automated matrix:** **Pass**
+- **Product Gate:** **PASS** (`2026-07-19 Asia/Shanghai`)
+- **Publication:** **Merged** — PR [#20](https://github.com/shchnk1103/Universe-Keyboard/pull/20) → `main` (`fe9010f`); commits `77d38ad`, `e5e9bd3` reachable from `origin/main`
+- **Authorized next action:** None for this Assignment. Residual optional follow-ups (hosted path-panel UI automation, formal device evidence folder) require a **new** Assignment if pursued.
+- **Branch cleanup:** Allowed after close docs land; delete local + remote feature branch only with merge reachability re-check.
 
 ### Required Handoff Content (implementation complete)
 
@@ -186,17 +188,17 @@ Stop, set `Blocked`, and escalate to Product Lead / Architecture as applicable w
 | Required Inputs | Present |
 | Entry / Exit / Stop | Present and executable |
 | Handoff Target | Present |
-| Lifecycle Status | `Active` |
+| Lifecycle Status | `Accepted / Closed` |
 | Revalidation Trigger | Present |
 | Any `UNKNOWN` | **None** |
 
 ## Current Evidence Status
 
 - **Product Decision:** Recorded.
-- **Assignment completeness:** Complete; lifecycle **`Active`** (not `Completed` / `Reviewed` / `Closed`).
-- **ADR:** [`0020-t9-precise-pinyin-path-selection.md`](../architecture/decisions/0020-t9-precise-pinyin-path-selection.md) — Accepted for implementation after Spike; dual-revision contract (`rawInputGeneration` vs `provenanceRevision`) and apply/soft boundary documented.
-- **Architecture (Codex):** **Pass** — [`keyboard-layout-9key-pinyin-001-codex-rereview-5.md`](keyboard-layout-9key-pinyin-001-codex-rereview-5.md) (`2026-07-18 Asia/Shanghai`). No open P0/P1/P2 implementation blockers.
-- **Quality automated matrix (Codex):** **Pass** — same rereview-5 record (KeyboardCore, KeyboardTests, Debug/Release strict Simulator builds, boundary scan). Does **not** close Product Gate.
+- **Assignment completeness:** Complete; lifecycle **`Accepted / Closed`** (`2026-07-19 Asia/Shanghai`).
+- **ADR:** [`0020-t9-precise-pinyin-path-selection.md`](../architecture/decisions/0020-t9-precise-pinyin-path-selection.md) — Accepted; dual-revision contract (`rawInputGeneration` vs `provenanceRevision`) and apply/soft boundary documented.
+- **Architecture (Codex):** **Pass** — [`keyboard-layout-9key-pinyin-001-codex-rereview-5.md`](keyboard-layout-9key-pinyin-001-codex-rereview-5.md) (`2026-07-18 Asia/Shanghai`).
+- **Quality automated matrix (Codex):** **Pass** — same rereview-5 record.
 - **Spike:** **PASSED** (`2026-07-18 Asia/Shanghai`). Summary: [`keyboard-layout-9key-pinyin-001-spike-summary.md`](keyboard-layout-9key-pinyin-001-spike-summary.md). Local archive: `evidence/keyboard-layout-9key-pinyin-spike/20260718-201043/` (dirty-worktree allowed run; re-archive on clean commit before publication if required).
   - librime `1.16.1`, schema `t9`
   - `replaceInput("o"|"ni")` no `committedText`; raw updated
@@ -205,7 +207,7 @@ Stop, set `Blocked`, and escalate to Product Lead / Architecture as applicable w
 - **KeyboardCore:** path models/actions/policy + dual revision + hard apply on new RimeOutput; `T9PinyinPathTests` (**21**); full package **615** tests (`swift test` in `Packages/KeyboardCore`, Codex rereview-5 independent run).
 - **UI:** path bar + 选拼音 panel; a11y no business payload; panel/window/click bind **`provenanceRevision`** (not only raw generation); empty-path button disabled when availability is none.
 - **Device / Product Gate:** **PASS** (`2026-07-19 Asia/Shanghai`) — Human Product Owner confirmed device OK; record [`keyboard-layout-9key-pinyin-001-product-gate-pass.md`](keyboard-layout-9key-pinyin-001-product-gate-pass.md).
-- **Publication:** **In review** — Human Product Owner authorized `2026-07-19`. Commit `77d38ad` on `feature/keyboard-layout-9key-pinyin-001`; PR [#20](https://github.com/shchnk1103/Universe-Keyboard/pull/20). Lifecycle remains `Active` until merge + Product Lead close.
+- **Publication:** **Merged** — PR [#20](https://github.com/shchnk1103/Universe-Keyboard/pull/20) → `main` (`fe9010f`); feature commits `77d38ad` + `e5e9bd3`.
 - **Codex handoff package:** [`keyboard-layout-9key-pinyin-001-codex-handoff.md`](keyboard-layout-9key-pinyin-001-codex-handoff.md).
 - **Codex implementation review:** [`keyboard-layout-9key-pinyin-001-codex-implementation-review.md`](keyboard-layout-9key-pinyin-001-codex-implementation-review.md) — Fail / Changes Required (historical).
 - **Executor fix handoffs 1–5:**  
@@ -222,4 +224,4 @@ Stop, set `Blocked`, and escalate to Product Lead / Architecture as applicable w
   [`r5`](keyboard-layout-9key-pinyin-001-codex-rereview-5.md) (**Architecture Pass / automated Quality Pass**).
 - **Product Gate human handoff:** [`keyboard-layout-9key-pinyin-001-product-gate-human-handoff.md`](keyboard-layout-9key-pinyin-001-product-gate-human-handoff.md) (matrix; completed by Human acceptance).
 - **Product Gate decision:** [`keyboard-layout-9key-pinyin-001-product-gate-pass.md`](keyboard-layout-9key-pinyin-001-product-gate-pass.md) — **PASS**.
-- **Recommended next (KOS):** Merge feature PR into default branch → Product Lead marks Assignment `Completed` / `Closed` → branch cleanup only after merge reachability proven.
+- **Closure:** Product Lead **`Accepted / Closed`** after merge reachability proven (`2026-07-19 Asia/Shanghai`).

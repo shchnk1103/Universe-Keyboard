@@ -1,6 +1,8 @@
 # 九宫格“精准选拼音”逐步实现计划
 
-Lifecycle status: Active
+Lifecycle status: Archived
+
+Closed by: Assignment [`keyboard-layout-9key-pinyin-001.md`](../assignments/keyboard-layout-9key-pinyin-001.md) (`Accepted / Closed` after PR #20 merge to `main` as `fe9010f`, `2026-07-19 Asia/Shanghai`).
 
 ## 总结
 
