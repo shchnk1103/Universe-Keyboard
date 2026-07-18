@@ -54,15 +54,26 @@ public enum T9CompositionCommitAction: Sendable, Equatable {
 }
 
 public enum T9CompositionCommitPolicy {
-    /// Digit-shaped raw input alone does **not** enable T9 policy.
+    /// Valid T9 raw input alone does **not** enable T9 policy without semantics.
     /// Callers must pass `usesT9InputSemantics` from the same `RimeRuntimeSelection`
     /// that chose the effective schema and layout.
-    public static func isActiveT9DigitComposition(
+    ///
+    /// After ADR 0020, “active T9 composition” includes pure digits, pure letters,
+    /// and letter/digit/separator mixes produced by precise path refinement.
+    public static func isActiveT9Composition(
         usesT9InputSemantics: Bool,
         rawInput: String?
     ) -> Bool {
         guard usesT9InputSemantics else { return false }
-        return isDigitOnlyComposition(rawInput: rawInput)
+        return T9PinyinPathExtractor.isValidT9RawInput(rawInput)
+    }
+
+    /// Historical name retained for call sites; same as `isActiveT9Composition`.
+    public static func isActiveT9DigitComposition(
+        usesT9InputSemantics: Bool,
+        rawInput: String?
+    ) -> Bool {
+        isActiveT9Composition(usesT9InputSemantics: usesT9InputSemantics, rawInput: rawInput)
     }
 
     public static func isDigitOnlyComposition(rawInput: String?) -> Bool {
@@ -77,7 +88,7 @@ public enum T9CompositionCommitPolicy {
         candidates: [RimeCandidate],
         highlightedIndex: Int?
     ) -> T9CompositionCommitAction {
-        guard isActiveT9DigitComposition(usesT9InputSemantics: usesT9InputSemantics, rawInput: rawInput) else {
+        guard isActiveT9Composition(usesT9InputSemantics: usesT9InputSemantics, rawInput: rawInput) else {
             return .notT9Composition
         }
         if let text = preferredCandidateText(candidates: candidates, highlightedIndex: highlightedIndex) {
@@ -93,13 +104,13 @@ public enum T9CompositionCommitPolicy {
         candidates: [RimeCandidate],
         highlightedIndex: Int?
     ) -> T9CompositionCommitAction {
-        guard isActiveT9DigitComposition(usesT9InputSemantics: usesT9InputSemantics, rawInput: rawInput) else {
+        guard isActiveT9Composition(usesT9InputSemantics: usesT9InputSemantics, rawInput: rawInput) else {
             return .notT9Composition
         }
         if let text = preferredCandidateText(candidates: candidates, highlightedIndex: highlightedIndex) {
             return .commitCandidate(text)
         }
-        // Unconditional under T9: never commit raw digits.
+        // Unconditional under T9: never commit raw input (digits, letters, or mixed).
         return .keepComposition
     }
 
@@ -108,7 +119,7 @@ public enum T9CompositionCommitPolicy {
         usesT9InputSemantics: Bool,
         rawInput: String?
     ) -> T9CompositionCommitAction {
-        guard isActiveT9DigitComposition(usesT9InputSemantics: usesT9InputSemantics, rawInput: rawInput) else {
+        guard isActiveT9Composition(usesT9InputSemantics: usesT9InputSemantics, rawInput: rawInput) else {
             return .notT9Composition
         }
         return .abandonComposition

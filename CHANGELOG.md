@@ -2,6 +2,14 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-19 — 九宫格精准选拼音（KEYBOARD-LAYOUT-9KEY-PINYIN-001，Product Gate PASS）
+
+- Product Decision + Assignment `Ready→Active`；ADR 0020 扩展 ADR 0018：混合 T9 raw input、composition refinement、comment 路径来源；双 revision（`rawInputGeneration` / `provenanceRevision`）与 new-output hard apply。
+- 真实 librime Spike **PASSED**（pinned 1.16.1 / `t9`）：`replaceInput` 字母 refine 无 host commit；`64→ni`；继续输入得 `ni4`；BackSpace 正常。证据：`evidence/keyboard-layout-9key-pinyin-spike/20260718-201043/`。
+- KeyboardCore：`T9PinyinPath*`、`selectT9PinyinPath`、`t9PinyinPathsChanged`、扩展 `T9CompositionCommitPolicy`；`T9PinyinPathTests`（21）+ 全包自动化矩阵（Codex rereview-5）。
+- Keyboard Extension：固定 34pt 精准拼音栏、「选拼音」完整路径面板（与候选展开互斥）；panel 绑定 provenance revision。
+- Codex Architecture + automated Quality **Pass**（rereview-5）；Human 真机 Product Gate **PASS**（`2026-07-19`）。未升级 librime；未改主 App 部署边界。发布（commit/push/PR）待 Human 授权。
+
 ## 2026-07-17 — 九键 chrome 向原生九宫格靠拢（KEYBOARD-LAYOUT-9KEY-UI-001）
 
 - 中文九键字母页对齐系统九宫格：字母组主标签（ABC…WXYZ）；左区四列；右列删除 SF Symbol / 颜表情 `^_^` / **双行高 return 箭头**；底栏表情 + **选拼音（占位）** + 宽「拼音」（列宽 1+1+2）。

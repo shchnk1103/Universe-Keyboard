@@ -50,6 +50,7 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
     private let traceHandshakeEnvironmentKey = "NE1_TRACE_HANDSHAKE"
     private let traceRunTokenEnvironmentKey = "NE1_TRACE_RUN_TOKEN"
     private let tracePreferencesDomainEnvironmentKey = "NE1_TRACE_PREFERENCES_DOMAIN"
+    private let t9CrashRegressionRunEnvironmentKey = "T9_CRASH_REGRESSION_RUN"
 
     override func setUp() {
         super.setUp()
@@ -230,6 +231,58 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         )
 
         XCTAssertTrue(messages.exists)
+    }
+
+    /// Explicit device/simulator fixture gate for the nine-key first-input crash path.
+    /// Normal CI skips this because it does not install a deployed T9 runtime or readiness marker.
+    func testNineKeyFirstInputCrashRegression() throws {
+        try XCTSkipUnless(
+            ProcessInfo.processInfo.environment[t9CrashRegressionRunEnvironmentKey] == "1",
+            "Run only after installing the reviewed T9 runtime fixture and matched readiness marker."
+        )
+
+        let messages = launchMessages()
+        let preparation = prepareMessagesConversationForKeyboard(in: messages)
+        let baseline = observeInitialKeyboardBaseline(
+            in: messages,
+            keyboardSurface: preparation.keyboardSurface
+        )
+        XCTAssertTrue(
+            baseline.isKnownNonUniverseBaseline,
+            "Nine-key crash regression requires a known Apple-keyboard baseline."
+        )
+
+        guard let switcher = keyboardSwitcherCandidates(in: messages).first(where: \.isHittable) else {
+            return XCTFail("No hittable system keyboard switcher was exposed.")
+        }
+        switcher.press(forDuration: 1.0)
+
+        guard let selection = waitForUniverseKeyboardSelection(in: messages, timeout: 5)
+            .first(where: \.isHittable)
+        else {
+            return XCTFail("Universe Keyboard was not exposed in the system keyboard menu.")
+        }
+        selection.tap()
+
+        // T9 keys keep the digit as stable UI identity while VoiceOver receives a semantic label.
+        let mnoKey = messages.keys["6"].firstMatch
+        XCTAssertTrue(mnoKey.waitForExistence(timeout: 15), "The MNO / digit-6 key did not appear.")
+        XCTAssertTrue(mnoKey.isHittable, "The MNO / digit-6 key was not hittable.")
+        XCTAssertTrue(mnoKey.label.contains("MNO"), "Digit-6 did not expose the expected MNO key label.")
+
+        mnoKey.tap()
+
+        let liveMNOKey = messages.keys["6"].firstMatch
+        XCTAssertTrue(
+            liveMNOKey.waitForExistence(timeout: 5),
+            "Keyboard Extension disappeared after the first nine-key input."
+        )
+        XCTAssertEqual(messages.state, .runningForeground)
+
+        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        attachment.name = "Nine-key first input survived"
+        attachment.lifetime = .keepAlways
+        add(attachment)
     }
 
     func testTextInputAfterKeyboardActivation() {

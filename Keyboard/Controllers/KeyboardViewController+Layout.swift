@@ -34,13 +34,17 @@ import UIKit
 
 extension KeyboardViewController {
     var preferredKeyboardHeight: CGFloat {
-        keyboardContentTopInset
+        var height = keyboardContentTopInset
             + candidateBarHeight
             + candidateToKeySpacing
             + keyHeight * 4
             + keySpacing * 2
             + keyboardGroupSpacing
             + keyboardContentBottomInset
+        if shouldReserveT9PinyinPathBar {
+            height += t9PinyinPathBarHeight
+        }
+        return height
     }
 
     /// Requests the compact visual height used by the current keyboard layout.

@@ -191,6 +191,16 @@ The repository does not yet define production budgets. Until that work exists:
 
 Absence of a documented budget is not evidence that a measured delay or memory level is acceptable.
 
+### Extension Repeatedly Crashes Before The Keyboard Appears
+
+If selecting Universe Keyboard immediately returns to another keyboard, or the extension stops appearing after one crash:
+
+1. Inspect the newest `Keyboard-*.ips` report before changing RIME state. A main-thread `EXC_BREAKPOINT` / `SIGTRAP` during `viewDidLoad` usually indicates a Swift lifecycle precondition failure, not an input-data failure.
+2. Follow the first project frame upward. Layout-derived properties can be queried while `bootstrapKeyboard()` is still installing height constraints, before `KeyboardController` exists.
+3. Any property reachable from pre-controller height or layout setup must fail closed without dereferencing the controller. The bootstrap surface is the ordinary 26-key layout until Core state has been installed.
+4. After the fix, validate both activation and the first key press. A successful app build alone does not prove that the extension survives its own launch lifecycle.
+5. Confirm that the reproduction produced no new `Keyboard-*.ips`; keep simulator automation separate from the physical-device Product Gate.
+
 If typing on iPhone takes over AirPods from audio already playing on another device, first inspect the Keyboard target for app-owned `AVAudioSession` activation or `AVAudioPlayer` use. Keyboard clicks must use UIKit `UIInputViewAudioFeedback` / `UIDevice.playInputClick()`; pre-generated audio still requires an app-owned playback session and is not an acceptable route-ownership fix. Verify the final behavior on physical devices with silent mode and the system keyboard-feedback sound setting recorded separately.
 
 Use `docs/PERFORMANCE_BASELINE.md` for the required measurement fields and scenarios. Numeric budgets may be added only after reviewed real-device evidence exists.

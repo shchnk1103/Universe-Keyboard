@@ -11,6 +11,9 @@ private final class WeakKeyboardViewControllerReference {
 
 extension KeyboardViewController: UIScrollViewDelegate {
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        if scrollView === pinyinPathCollectionView {
+            return
+        }
         guard scrollView === candidateScrollView || scrollView === expandedPanelScrollView else { return }
         isCandidateScrollInteracting = true
 #if DEBUG
@@ -25,6 +28,11 @@ extension KeyboardViewController: UIScrollViewDelegate {
     }
 
     public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if scrollView === pinyinPathCollectionView {
+            guard !decelerate else { return }
+            requestMorePinyinPathsIfNeeded(after: scrollView)
+            return
+        }
         guard scrollView === candidateScrollView || scrollView === expandedPanelScrollView else { return }
 #if DEBUG
         Logger.shared.debug(
@@ -40,6 +48,10 @@ extension KeyboardViewController: UIScrollViewDelegate {
     }
 
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        if scrollView === pinyinPathCollectionView {
+            requestMorePinyinPathsIfNeeded(after: scrollView)
+            return
+        }
         guard scrollView === candidateScrollView || scrollView === expandedPanelScrollView else { return }
 #if DEBUG
         Logger.shared.debug(
@@ -76,6 +88,17 @@ extension KeyboardViewController: UIScrollViewDelegate {
 #endif
             scheduleCandidatePrefetch(mode: scrollView === expandedPanelScrollView ? .expanded : .bar)
         }
+    }
+
+    private func requestMorePinyinPathsIfNeeded(after scrollView: UIScrollView) {
+        guard scrollView === pinyinPathCollectionView else { return }
+        guard isPinyinPathExpanded, pinyinPathHasMore else { return }
+        let maxOffset = max(0, scrollView.contentSize.height - scrollView.bounds.height)
+        let bottomOverscroll = scrollView.contentOffset.y - maxOffset
+        let nearEnd = maxOffset > 0 && maxOffset - scrollView.contentOffset.y <= scrollView.bounds.height * 0.25
+        guard nearEnd || bottomOverscroll >= 12 else { return }
+        // Path panel only — never schedule ordinary Chinese candidate prefetch.
+        loadMorePinyinPathsIfNeeded()
     }
 
     func scheduleCandidatePrefetch(mode: CandidatePrefetchMode) {

@@ -31,4 +31,6 @@ public enum KeyboardAction: Equatable {
     /// 回退路径调整候选页索引。
     case candidatePageUp
     case candidatePageDown
+    /// Refine the current T9 composition to a precise pinyin path (no host commit).
+    case selectT9PinyinPath(T9PinyinPath)
 }

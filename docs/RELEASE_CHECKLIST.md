@@ -124,6 +124,9 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 - [ ] Return commits raw input for segmented preedit; no duplicate text remains.
 - [ ] Delete edits composition first and Partial Commit restore matches its documented contract.
 - [ ] Candidate horizontal paging, near-edge fetch and expanded panel remain stable.
+- [ ] Chinese nine-key: fixed path bar (34 pt) sits above Chinese candidates without idle height jump; compact paths ≤ 4; **选拼音** opens path panel only while composing; path vs candidate expansion never co-exist.
+- [ ] Chinese nine-key precise path: select a path narrows Chinese candidates without host-committing letters; continue typing/delete/re-select works; mixed raw (e.g. after refine + digit) never leaks via Space/Return without candidates.
+- [ ] Chinese nine-key path panel and path bar degrade safely when comments are empty; basic digit T9 input still works.
 - [ ] Switching host apps discards unfinished composition and starts clean on return.
 - [ ] Killing/relaunching the Extension creates a fresh session from deployed data.
 - [ ] Session recovery does not invoke deployment or block a key event with file work.

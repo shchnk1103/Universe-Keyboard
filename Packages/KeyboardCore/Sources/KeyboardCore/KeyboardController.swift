@@ -89,8 +89,18 @@ public final class KeyboardController {
         state.continuation = ContinuationState()
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
+        let hadPinyinPaths = !state.t9PinyinPathState.compactPaths.isEmpty
+            || state.t9PinyinPathState.selectedPath != nil
+        clearT9PinyinPathState()
 
-        return hadVisibleComposition ? [.compositionChanged, .continuationChanged] : []
+        var effects: KeyboardEffect = []
+        if hadVisibleComposition {
+            effects.formUnion([.compositionChanged, .continuationChanged])
+        }
+        if hadPinyinPaths {
+            effects.insert(.t9PinyinPathsChanged)
+        }
+        return effects
     }
 
     /// 在扩展进入不可见状态前释放 RIME 的进程级资源。
@@ -146,6 +156,8 @@ public final class KeyboardController {
             return handleDeleteBackward()
         case .keyboardTypeChanged(let type):
             return handleKeyboardTypeChanged(type)
+        case .selectT9PinyinPath(let path):
+            return handleSelectT9PinyinPath(path)
         case .candidatePageUp:
             return handleCandidatePageUp()
         case .candidatePageDown:

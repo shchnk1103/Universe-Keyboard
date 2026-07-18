@@ -30,6 +30,13 @@ extension KeyboardController {
             state.currentPage = .letters
         }
         effects.insert(.pageChanged)
+        // ADR 0020: clear when leaving letters; rebuild from live Rime when returning to letters
+        // with an active T9 composition (do not wait for a future key).
+        if state.currentPage == .letters {
+            effects.formUnion(rebuildT9PinyinPathStateIfComposing())
+        } else {
+            effects.formUnion(clearT9PinyinPathStateReturningEffect())
+        }
         return effects
     }
 
@@ -49,14 +56,17 @@ extension KeyboardController {
             rimeEngine?.resetSession()
             clearTypoCorrectionSuggestions()
             effects.insert(.compositionChanged)
+            effects.formUnion(clearT9PinyinPathStateReturningEffect())
         default:
             if let engine = rimeEngine, engine.isComposing() {
                 finishActiveCompositionAsDisplayText()
                 engine.resetSession()
                 effects.insert(.compositionChanged)
+                effects.formUnion(clearT9PinyinPathStateReturningEffect())
             } else if !state.currentComposition.isEmpty {
                 finishActiveCompositionAsDisplayText()
                 effects.insert(.compositionChanged)
+                effects.formUnion(clearT9PinyinPathStateReturningEffect())
             }
         }
 
@@ -97,10 +107,12 @@ extension KeyboardController {
                 rimeEngine?.resetSession()
                 clearTypoCorrectionSuggestions()
                 effects.insert(.compositionChanged)
+                effects.formUnion(clearT9PinyinPathStateReturningEffect())
             default:
                 if !state.currentComposition.isEmpty {
                     finishActiveCompositionAsDisplayText()
                     effects.insert(.compositionChanged)
+                    effects.formUnion(clearT9PinyinPathStateReturningEffect())
                 }
             }
             state.inputMode = .english

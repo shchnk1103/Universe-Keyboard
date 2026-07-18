@@ -61,8 +61,9 @@ extension KeyboardController {
                 state.partialCommit = nil
                 engine.resetSession()
                 clearTypoCorrectionSuggestions()
+                let pathEffect = clearT9PinyinPathStateReturningEffect()
                 state.lastSpaceTapTime = nil
-                return .compositionChanged
+                return .compositionChanged.union(pathEffect)
             case .keepComposition:
                 state.lastSpaceTapTime = nil
                 return []
@@ -83,8 +84,9 @@ extension KeyboardController {
                     state.partialCommit = nil
                     engine.resetSession()
                     clearTypoCorrectionSuggestions()
+                    let pathEffect = clearT9PinyinPathStateReturningEffect()
                     state.lastSpaceTapTime = nil
-                    return .compositionChanged
+                    return .compositionChanged.union(pathEffect)
                 }
             default:
                 break
@@ -106,8 +108,9 @@ extension KeyboardController {
             state.partialCommit = nil
             rimeEngine?.resetSession()
             clearTypoCorrectionSuggestions()
+            let pathEffect = clearT9PinyinPathStateReturningEffect()
             state.lastSpaceTapTime = nil
-            return .compositionChanged
+            return .compositionChanged.union(pathEffect)
         }
 
         guard state.currentPage == .letters && state.inputMode == .english else {
@@ -145,7 +148,8 @@ extension KeyboardController {
             state.partialCommit = nil
             rimeEngine?.resetSession()
             clearTypoCorrectionSuggestions()
-            return .compositionChanged
+            let pathEffect = clearT9PinyinPathStateReturningEffect()
+            return .compositionChanged.union(pathEffect)
         case .keepComposition:
             return []
         case .notT9Composition:
@@ -156,7 +160,8 @@ extension KeyboardController {
         if !state.currentComposition.isEmpty {
             finishActiveCompositionAsRawInput(source: .returnKey)
             rimeEngine?.resetSession()
-            return .compositionChanged
+            let pathEffect = clearT9PinyinPathStateReturningEffect()
+            return .compositionChanged.union(pathEffect)
         }
         insertText("\n", source: .returnKey)
         return .continuationChanged

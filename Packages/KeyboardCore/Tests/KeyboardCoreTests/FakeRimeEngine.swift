@@ -38,20 +38,35 @@ final class FakeRimeEngine: RimeEngine {
 
     private var isSuspendedForVisibilityChange = false
 
-    private let dictionary: [String: [String]]
+    /// Candidate texts by composition key. Mutable so tests can simulate same-raw re-rank.
+    var dictionary: [String: [String]]
+    /// Parallel comments for dictionary candidates (same key, same order). Used for T9 path Spike tests.
+    var comments: [String: [String]]
     private let preeditFormatter: (String) -> String
     private let selectionRemainders: [String: [Int: String]]
     private let selectedSegments: [String: [Int: FakeRimeSelectedSegment]]
     private let partialSelectionEmitsCommit: Bool
+    /// When set, `replaceInput` returns empty composition to simulate Rime rejection.
+    var replaceInputShouldFail = false
+    /// When true, digit keys append to composition (T9 algebra) instead of selecting candidates.
+    var appendDigitsToComposition = false
+    /// Queued `replaceInput` results (consumed in order). Used for wrong-raw / rollback tests.
+    var replaceInputScript: [RimeOutput] = []
+    /// Last argument passed to `replaceInput` (session inspection).
+    private(set) var lastReplaceInputArgument: String?
+    /// Current raw composition string (session mirror for tests).
+    var sessionComposition: String { composition }
 
     init(
         dictionary: [String: [String]] = FakeRimeEngine.defaultDictionary,
+        comments: [String: [String]] = [:],
         preeditFormatter: @escaping (String) -> String = { $0 },
         selectionRemainders: [String: [Int: String]] = [:],
         selectedSegments: [String: [Int: FakeRimeSelectedSegment]] = [:],
         partialSelectionEmitsCommit: Bool = true
     ) {
         self.dictionary = dictionary
+        self.comments = comments
         self.preeditFormatter = preeditFormatter
         self.selectionRemainders = selectionRemainders
         self.selectedSegments = selectedSegments
@@ -78,7 +93,8 @@ final class FakeRimeEngine: RimeEngine {
             processKeysToDrop -= 1
             return RimeOutput()
         }
-        if let index = digitSelectionIndex(for: key),
+        if !appendDigitsToComposition,
+           let index = digitSelectionIndex(for: key),
            !(dictionary[composition] ?? []).isEmpty
         {
             return selectCandidate(at: index)
@@ -163,9 +179,24 @@ final class FakeRimeEngine: RimeEngine {
     }
 
     func replaceInput(_ input: String) -> RimeOutput {
+        lastReplaceInputArgument = input
         if replaceInputsToDrop > 0 {
             replaceInputsToDrop -= 1
             return RimeOutput()
+        }
+        if !replaceInputScript.isEmpty {
+            let scripted = replaceInputScript.removeFirst()
+            if let raw = scripted.rawInput {
+                composition = raw
+            } else if scripted.composition == nil, scripted.committedText == nil {
+                // Empty rejection without mutating session composition.
+            } else if let committed = scripted.committedText, !committed.isEmpty {
+                composition = ""
+            }
+            return scripted
+        }
+        if replaceInputShouldFail {
+            return RimeOutput(composition: nil, candidates: [], highlightedIndex: -1)
         }
         composition = input
         // Mirrors librime set_input behavior observed on-device: selected segment state
@@ -265,11 +296,16 @@ final class FakeRimeEngine: RimeEngine {
             displayComposition = preeditFormatter(composition)
         }
         let candidates = dictionary[candidateKey] ?? []
+        let commentsForKey = comments[candidateKey] ?? []
         let preeditText = displayComposition
+        let rimeCandidates: [RimeCandidate] = candidates.enumerated().map { index, text in
+            let comment = index < commentsForKey.count ? commentsForKey[index] : nil
+            return RimeCandidate(text: text, comment: comment, globalIndex: index)
+        }
         return RimeOutput(
             rawInput: composition,
             composition: RimeComposition(preeditText: preeditText, cursorPosition: preeditText.count),
-            candidates: candidates.map { RimeCandidate(text: $0) },
+            candidates: rimeCandidates,
             highlightedIndex: candidates.isEmpty ? -1 : 0
         )
     }

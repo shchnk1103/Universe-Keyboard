@@ -73,6 +73,7 @@ extension KeyboardController {
             state.lastRimeOutput = output
             state.partialCommit = nil
             clearTypoCorrectionSuggestions()
+            _ = clearT9PinyinPathStateReturningEffect()
             return
         }
 
@@ -87,6 +88,7 @@ extension KeyboardController {
             state.lastRimeOutput = output
             state.partialCommit = nil
             clearTypoCorrectionSuggestions()
+            _ = clearT9PinyinPathStateReturningEffect()
             return
         }
 
@@ -110,6 +112,15 @@ extension KeyboardController {
         )
         updateInlinePreedit(displayText)
         clearTypoCorrectionSuggestions()
+        // New RimeOutput under remaining composition: hard path provenance when T9-active.
+        if T9CompositionCommitPolicy.isActiveT9Composition(
+            usesT9InputSemantics: usesT9InputSemantics,
+            rawInput: rimeRawInput
+        ) {
+            _ = applyT9PinyinPathStateFromNewRimeOutput()
+        } else {
+            _ = clearT9PinyinPathStateReturningEffect()
+        }
     }
 
     /// Applies a high-confidence typo correction as a partial commit.
@@ -235,6 +246,7 @@ extension KeyboardController {
         state.lastRimeOutput = nil
         state.partialCommit = nil
         clearTypoCorrectionSuggestions()
+        _ = clearT9PinyinPathStateReturningEffect()
     }
 
     /// Commits Return as the user's raw input when RIME exposes a segmented
@@ -254,6 +266,7 @@ extension KeyboardController {
         state.lastRimeOutput = nil
         state.partialCommit = nil
         clearTypoCorrectionSuggestions()
+        _ = clearT9PinyinPathStateReturningEffect()
     }
 
     var hasActiveCompositionForSymbolInput: Bool {
@@ -429,21 +442,23 @@ extension KeyboardController {
         state.lastRimeOutput = result
         state.partialCommit = nil
         clearTypoCorrectionSuggestions()
+        _ = clearT9PinyinPathStateReturningEffect()
     }
 
     private func applyRimeOutputWithoutPartialCommit(_ output: RimeOutput) {
         state.lastRimeOutput = output
         let raw = output.rawInput ?? ""
-        if T9CompositionCommitPolicy.isActiveT9DigitComposition(
+        if T9CompositionCommitPolicy.isActiveT9Composition(
             usesT9InputSemantics: usesT9InputSemantics,
             rawInput: raw
         ) {
-            // Keep composition state on raw digits for delete/recovery; show comment-preferring preedit.
+            // Keep composition state on raw input for delete/recovery; show comment-preferring preedit.
             state.currentComposition = raw
             if let commit = output.committedText {
                 commitInlinePreedit(as: commit, source: .engineCommit)
                 state.currentComposition = ""
                 clearTypoCorrectionSuggestions()
+                _ = clearT9PinyinPathStateReturningEffect()
             } else {
                 let visible = T9PreeditResolver.visiblePreedit(
                     rawInput: raw,
@@ -452,6 +467,9 @@ extension KeyboardController {
                 )
                 updateInlinePreedit(visible)
                 clearTypoCorrectionSuggestions()
+                // New RimeOutput always hard-opens path provenance (same raw may still
+                // change candidates/comments). Soft refresh is only for same-snapshot re-scan.
+                _ = applyT9PinyinPathStateFromNewRimeOutput()
             }
             return
         }
@@ -461,9 +479,11 @@ extension KeyboardController {
             commitInlinePreedit(as: commit, source: .engineCommit)
             state.currentComposition = ""
             clearTypoCorrectionSuggestions()
+            _ = clearT9PinyinPathStateReturningEffect()
         } else {
             updateInlinePreedit(state.currentComposition)
             refreshTypoCorrectionSuggestions()
+            _ = clearT9PinyinPathStateReturningEffect()
         }
     }
 

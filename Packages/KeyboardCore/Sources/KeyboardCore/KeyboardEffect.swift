@@ -11,4 +11,6 @@ public struct KeyboardEffect: OptionSet, Equatable, Sendable {
     public static let inputModeChanged    = KeyboardEffect(rawValue: 1 << 3)
     public static let keyboardTypeChanged = KeyboardEffect(rawValue: 1 << 4)
     public static let continuationChanged = KeyboardEffect(rawValue: 1 << 5)
+    /// Precise T9 pinyin path compact list or selection changed (ADR 0020).
+    public static let t9PinyinPathsChanged = KeyboardEffect(rawValue: 1 << 6)
 }

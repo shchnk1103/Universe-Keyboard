@@ -21,6 +21,8 @@ extension KeyboardController {
             state.lastRimeOutput = nil
             state.partialCommit = nil
             clearTypoCorrectionSuggestions()
+            // Path state cleared inside finishActiveCompositionAsDisplayText.
+            return .compositionChanged.union(.t9PinyinPathsChanged)
         case .candidate:
             if state.partialCommit?.source == .numberSuffix {
                 commitInlinePreedit(as: candidate, source: .candidate)
@@ -34,7 +36,8 @@ extension KeyboardController {
                 state.partialCommit = nil
                 rimeEngine?.resetSession()
                 clearTypoCorrectionSuggestions()
-                return .compositionChanged
+                let pathEffect = clearT9PinyinPathStateReturningEffect()
+                return .compositionChanged.union(pathEffect)
             }
 
             if let engine = rimeEngine, let output = state.lastRimeOutput,
@@ -55,9 +58,19 @@ extension KeyboardController {
                     return .compositionChanged
                 }
                 applyNormalCandidateSelection(candidate: candidate, result: result, previousOutput: output)
+                // Final commit clears path state inside finishNormalCandidateSelection;
+                // partial selection installs a new RimeOutput — hard provenance even if raw
+                // identity is unchanged (comments/candidates may have narrowed).
+                let pathEffect: KeyboardEffect =
+                    state.lastRimeOutput?.rawInput == nil || (state.lastRimeOutput?.rawInput?.isEmpty ?? true)
+                    ? clearT9PinyinPathStateReturningEffect()
+                    : (applyT9PinyinPathStateFromNewRimeOutput() ? .t9PinyinPathsChanged : [])
+                return .compositionChanged.union(pathEffect)
             } else {
                 if rimeEngine == nil || state.lastRimeOutput == nil {
                     commitFallbackCandidate(candidate)
+                    let pathEffect = clearT9PinyinPathStateReturningEffect()
+                    return .compositionChanged.union(pathEffect)
                 } else {
                     Logger.shared.warning(
                         "candidate selection ignored: no live RIME reference candidateLength=\(candidate.count)",
@@ -83,8 +96,9 @@ extension KeyboardController {
         state.lastRimeOutput = nil
         state.partialCommit = nil
         clearTypoCorrectionSuggestions()
+        let pathEffect = clearT9PinyinPathStateReturningEffect()
         rimeEngine?.resetSession()
-        return .compositionChanged
+        return .compositionChanged.union(pathEffect)
     }
 
     func handleCandidatePageUp() -> KeyboardEffect {

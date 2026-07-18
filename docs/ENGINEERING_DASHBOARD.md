@@ -2,11 +2,31 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-07-17 Asia/Shanghai
+> **Updated:** 2026-07-18 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## KEYBOARD-LAYOUT-9KEY-PINYIN-001 — 九宫格精准选拼音
+
+- **Confirmed status:** `Active` (Architecture + automated Quality **Pass**; Product Gate **PASS** `2026-07-19`; PR open)
+- **PR:** [#20](https://github.com/shchnk1103/Universe-Keyboard/pull/20) — `feature/keyboard-layout-9key-pinyin-001` @ `77d38ad`
+- **Status owner/source:** Product Lead / Domain Owner Input Intelligence; [`Assignment`](assignments/keyboard-layout-9key-pinyin-001.md); [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-001`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-001-authorization.md)
+- **Product plan (non-authority):** [`plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md`](plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md)
+- **Architecture source:** [ADR 0020](architecture/decisions/0020-t9-precise-pinyin-path-selection.md) (extends ADR 0018; dual-revision + apply/soft contract)
+- **Domain Owner / Executor:** Input Intelligence Maintainer / Grok
+- **Supporting:** RIME Platform (Spike), Keyboard Experience (path bar + panel)
+- **Current phase:** Publication on `feature/keyboard-layout-9key-pinyin-001` (Human authorized commit + push + PR)
+- **Spike:** **PASSED** — `docs/assignments/keyboard-layout-9key-pinyin-001-spike-summary.md`; local archive `evidence/keyboard-layout-9key-pinyin-spike/20260718-201043/`
+- **Automated evidence:** KeyboardCore `T9PinyinPathTests` 21 + full package **615** tests; Debug strict Simulator build (pre-push re-verify)
+- **Architecture / Quality automated:** **Pass** — [`assignments/keyboard-layout-9key-pinyin-001-codex-rereview-5.md`](assignments/keyboard-layout-9key-pinyin-001-codex-rereview-5.md)
+- **Product Gate:** **PASS** — [`assignments/keyboard-layout-9key-pinyin-001-product-gate-pass.md`](assignments/keyboard-layout-9key-pinyin-001-product-gate-pass.md) (Human: 真机基本都 OK)
+- **Open blockers:** Merge PR into default branch; then Product Lead closes Assignment; optional path-panel UI automation residual
+- **Latest executor fix handoff:** [`assignments/keyboard-layout-9key-pinyin-001-grok-fix-handoff-5.md`](assignments/keyboard-layout-9key-pinyin-001-grok-fix-handoff-5.md)
+- **Review chain:** implementation review → rereview 1–4 (Fail) → **rereview 5 Pass** → Product Gate PASS
+- **Recommended next action:** Review/merge feature PR; close Assignment after merge; keep branch until merge reachability proven
+- **Stop conditions:** mixed `replaceInput` infeasible; unstable candidate comments; schema/vendor upgrade required; Extension deploy; raw-input host commit
 
 ## KEYBOARD-LAYOUT-9KEY-UI-001 — Native-aligned Chinese nine-key chrome
 
@@ -16,7 +36,7 @@
 - **Architecture source:** [ADR 0018](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md) (unchanged T9 digit semantics)
 - **Current phase:** Closed after human visual acceptance (`2026-07-17`); publication via feature branch / PR merge
 - **Delivered chrome:** Left 4-column letter-group pad; right delete / 颜表情 `^_^` / double-height return glyph; bottom emoji + 选拼音 placeholder + wide 拼音 (1+1+2); type scale 22/16/15/14; digit payload via accessibility identity
-- **Residual product work (new Assignment):** full 选拼音 panel behavior; full 颜表情 candidate content
+- **Residual product work:** full 选拼音 panel behavior tracked by [`KEYBOARD-LAYOUT-9KEY-PINYIN-001`](assignments/keyboard-layout-9key-pinyin-001.md) (`Active`; Product Gate PASS, publication pending); full 颜表情 candidate content still requires a **separate** future Assignment
 - **Stop conditions (historical):** Raw-digit host commit, Extension deploy, live hot-switch redesign, English nine-key
 
 ## POST-COMMIT-CONTINUATION-001 — Ephemeral Post-Commit Continuation V1
