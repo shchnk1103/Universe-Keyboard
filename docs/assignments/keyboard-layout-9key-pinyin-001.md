@@ -205,7 +205,7 @@ Stop, set `Blocked`, and escalate to Product Lead / Architecture as applicable w
 - **KeyboardCore:** path models/actions/policy + dual revision + hard apply on new RimeOutput; `T9PinyinPathTests` (**21**); full package **615** tests (`swift test` in `Packages/KeyboardCore`, Codex rereview-5 independent run).
 - **UI:** path bar + 选拼音 panel; a11y no business payload; panel/window/click bind **`provenanceRevision`** (not only raw generation); empty-path button disabled when availability is none.
 - **Device / Product Gate:** **PASS** (`2026-07-19 Asia/Shanghai`) — Human Product Owner confirmed device OK; record [`keyboard-layout-9key-pinyin-001-product-gate-pass.md`](keyboard-layout-9key-pinyin-001-product-gate-pass.md).
-- **Publication:** **Authorized** by Human Product Owner `2026-07-19` (commit + push + PR). Feature branch `feature/keyboard-layout-9key-pinyin-001`; lifecycle remains `Active` until PR merges and Product Lead closes Assignment.
+- **Publication:** **In review** — Human Product Owner authorized `2026-07-19`. Commit `77d38ad` on `feature/keyboard-layout-9key-pinyin-001`; PR [#20](https://github.com/shchnk1103/Universe-Keyboard/pull/20). Lifecycle remains `Active` until merge + Product Lead close.
 - **Codex handoff package:** [`keyboard-layout-9key-pinyin-001-codex-handoff.md`](keyboard-layout-9key-pinyin-001-codex-handoff.md).
 - **Codex implementation review:** [`keyboard-layout-9key-pinyin-001-codex-implementation-review.md`](keyboard-layout-9key-pinyin-001-codex-implementation-review.md) — Fail / Changes Required (historical).
 - **Executor fix handoffs 1–5:**  

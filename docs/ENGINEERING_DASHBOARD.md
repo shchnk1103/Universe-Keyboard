@@ -10,7 +10,8 @@
 
 ## KEYBOARD-LAYOUT-9KEY-PINYIN-001 — 九宫格精准选拼音
 
-- **Confirmed status:** `Active` (Architecture + automated Quality **Pass**; Product Gate **PASS** `2026-07-19`; publication **authorized** — commit/push/PR in progress)
+- **Confirmed status:** `Active` (Architecture + automated Quality **Pass**; Product Gate **PASS** `2026-07-19`; PR open)
+- **PR:** [#20](https://github.com/shchnk1103/Universe-Keyboard/pull/20) — `feature/keyboard-layout-9key-pinyin-001` @ `77d38ad`
 - **Status owner/source:** Product Lead / Domain Owner Input Intelligence; [`Assignment`](assignments/keyboard-layout-9key-pinyin-001.md); [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-001`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-001-authorization.md)
 - **Product plan (non-authority):** [`plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md`](plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md)
 - **Architecture source:** [ADR 0020](architecture/decisions/0020-t9-precise-pinyin-path-selection.md) (extends ADR 0018; dual-revision + apply/soft contract)
