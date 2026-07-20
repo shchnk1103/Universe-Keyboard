@@ -16,7 +16,7 @@
 | dSYM retention | `UNKNOWN` |
 | TestFlight/App Store build | `UNKNOWN` |
 | Supported devices/OS | iPhone and iPad; iOS 26.0+. Scope is frozen by [`RELEASE-2026-0801-02`](../assignments/release-2026-08-01-02-scope-freeze.md), but iPad and iOS 26.0 support are not yet implemented or evidenced. |
-| Included schemas/features | Existing baseline input; Chinese nine-key; precise-pinyin selection; post-commit continuation; kaomoji content. No schema expansion is authorized. Typing Intelligence and contextual typo correction are excluded from launch claims. |
+| Included schemas/features | Existing baseline input; Chinese nine-key; precise-pinyin selection; post-commit continuation; kaomoji content; and a local basic Home input-count display. No schema expansion is authorized. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. |
 
 ## Child Gate Status
 
