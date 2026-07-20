@@ -14,8 +14,8 @@
 
 - **Domain Owner:** ⌨️ Keyboard Experience Maintainer
 - **Executor:** Current Codex task acting as ⌨️ Keyboard Experience execution thread
-- **Environment Executor:** Current Codex task for iPad simulator operations; the Human Product Owner remains the required iPad physical-device operator and final Product Gate
-- **Human Dependency:** Human Product Owner — provides/unlocks an iPad, enables the keyboard/Full Access as needed, and performs the final iPad Product Gate
+- **Environment Executor:** Current Codex task for iPad simulator operations and Device Hub-mediated interaction with the connected iPad; the Human Product Owner remains the final iPad Product Gate
+- **Human Dependency:** Human Product Owner — provides/unlocks the iPad and enables the keyboard/Full Access as needed; performs actions that Device Hub cannot expose and the final iPad Product Gate
 - **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward when support changes keyboard geometry, lifecycle, target configuration or cross-target contracts
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer
 - **Supporting Domain:** 📱 App & Data Operations Maintainer for iPad main-App layout, settings and App Store material impact
@@ -44,4 +44,5 @@
 - **Home layout observation:** Human-provided portrait and landscape Home screenshots show the top navigation and local input-count card fully visible, with no observed clipping, overlap or unsafe-area collision. This is a static visual observation only.
 - **Keyboard observation:** In iPad Notes, the synthetic composition `ni hao` displayed a candidate bar with `你好` first. Selecting it left only committed `你好` in the host, cleared the marked-text underline and kept the floating keyboard visible. No real user content was used.
 - **Nine-key observation:** The user switched to 9-key successfully. A synthetic `ni hao` composition showed the compact segmented path `mi / ni / m / n / o`, a visible candidate bar and the 9-key chrome without clipping; the user reported that `你好` can be committed. The screenshot itself captures the in-progress composition, not a final release result.
+- **Single-key selection observation:** In iPad Notes, starting from an empty composition, one `MNO` input followed by `选拼音` selected `m`; a second `选拼音` selected `n`. Each state updated the host marked text, retained the expected `m / n / o` order and did not commit a raw letter or candidate. The Human Product Owner completed this synthetic-text check and then authorized the current Codex task to conduct subsequent Device Hub-mediated iPad interaction.
 - **Boundary:** This only establishes that a user-deployed exploratory build is present. It provides no release conclusion for layout, keyboard behavior, accessibility, Full Access, performance, crash/jetsam or App Store support, and expires when the build or device state changes.
