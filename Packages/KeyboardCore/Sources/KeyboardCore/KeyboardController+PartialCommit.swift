@@ -32,29 +32,18 @@ extension KeyboardController {
         // therefore the stable confirmed segment for a partial selection.
         let committedText = result.committedText ?? candidate
         let confirmedText = previousConfirmedText + committedText
-        let displayText = partialDisplayText(confirmedText: confirmedText, rimePreeditText: rimePreeditText)
-        let remainingPreeditText = partialRemainingPreeditText(
-            confirmedText: confirmedText,
-            displayText: displayText
-        )
         let checkpoint = PartialCommitCheckpoint(
             previousConfirmedText: previousConfirmedText,
             previousRawInput: previousRawInput,
             previousPreeditText: previousPreeditText,
             previousDisplayText: previousDisplayText
         )
-
-        state.lastRimeOutput = result
-        state.currentComposition = remainingPreeditText
-        state.partialCommit = PartialCommitState(
+        installPartialCommitPresentation(
             confirmedText: confirmedText,
-            remainingRawInput: rimeRawInput,
-            remainingPreeditText: remainingPreeditText,
-            displayText: displayText,
-            checkpoint: checkpoint
+            output: result,
+            checkpoint: checkpoint,
+            source: .rime
         )
-        updateInlinePreedit(displayText)
-        clearTypoCorrectionSuggestions()
     }
 
     /// Applies a RIME output while preserving a confirmed prefix during the active session.
@@ -92,35 +81,12 @@ extension KeyboardController {
             return
         }
 
-        let displayText = partialDisplayText(
+        installPartialCommitPresentation(
             confirmedText: partialCommit.confirmedText,
-            rimePreeditText: rimePreeditText
-        )
-        let remainingPreeditText = partialRemainingPreeditText(
-            confirmedText: partialCommit.confirmedText,
-            displayText: displayText
-        )
-        state.lastRimeOutput = output
-        state.currentComposition = remainingPreeditText
-        state.partialCommit = PartialCommitState(
-            confirmedText: partialCommit.confirmedText,
-            remainingRawInput: rimeRawInput,
-            remainingPreeditText: remainingPreeditText,
-            displayText: displayText,
+            output: output,
             checkpoint: nil,
             source: partialCommit.source
         )
-        updateInlinePreedit(displayText)
-        clearTypoCorrectionSuggestions()
-        // New RimeOutput under remaining composition: hard path provenance when T9-active.
-        if T9CompositionCommitPolicy.isActiveT9Composition(
-            usesT9InputSemantics: usesT9InputSemantics,
-            rawInput: rimeRawInput
-        ) {
-            _ = applyT9PinyinPathStateFromNewRimeOutput()
-        } else {
-            _ = clearT9PinyinPathStateReturningEffect()
-        }
     }
 
     /// Applies a high-confidence typo correction as a partial commit.
@@ -496,6 +462,95 @@ extension KeyboardController {
     private func partialRemainingPreeditText(confirmedText: String, displayText: String) -> String {
         guard displayText.hasPrefix(confirmedText) else { return displayText }
         return String(displayText.dropFirst(confirmedText.count))
+    }
+
+    /// Installs partial-commit presentation and path provenance from a live RIME output.
+    ///
+    /// Under T9, remaining **display** prefers candidate comments (`ya`), never raw
+    /// digits (`92`), while `remainingRawInput` / `currentComposition` keep the raw
+    /// identity for delete/recovery. Path bar is hard-refreshed from the remaining raw.
+    private func installPartialCommitPresentation(
+        confirmedText: String,
+        output: RimeOutput,
+        checkpoint: PartialCommitCheckpoint?,
+        source: PartialCommitSource
+    ) {
+        guard let rimeRawInput = output.rawInput, !rimeRawInput.isEmpty,
+              let rimePreeditText = output.composition?.preeditText, !rimePreeditText.isEmpty
+        else {
+            return
+        }
+
+        let isT9Remaining = T9CompositionCommitPolicy.isActiveT9Composition(
+            usesT9InputSemantics: usesT9InputSemantics,
+            rawInput: rimeRawInput
+        )
+
+        let remainingPreeditText: String
+        let displayText: String
+        let compositionTracker: String
+
+        if isT9Remaining {
+            let commentPreferred = T9PreeditResolver.visiblePreedit(
+                rawInput: rimeRawInput,
+                candidates: output.candidates,
+                highlightedIndex: output.highlightedIndex
+            )
+            if rimePreeditText.hasPrefix(confirmedText) {
+                let rimeTail = String(rimePreeditText.dropFirst(confirmedText.count))
+                // Digit-only RIME tails are not user-facing under T9 (KEYBOARD_LAYOUT).
+                if rimeTail.isEmpty || isDigitOnlyPreeditTail(rimeTail) {
+                    remainingPreeditText = commentPreferred
+                    displayText = confirmedText + commentPreferred
+                } else {
+                    remainingPreeditText = rimeTail
+                    displayText = rimePreeditText
+                }
+            } else if isDigitOnlyPreeditTail(rimePreeditText) {
+                remainingPreeditText = commentPreferred
+                displayText = confirmedText + commentPreferred
+            } else {
+                // Letter/mixed preedit (e.g. after path refine): keep RIME display tail.
+                remainingPreeditText = rimePreeditText
+                displayText = confirmedText + rimePreeditText
+            }
+            // T9 composition tracker is raw, matching non-partial T9 apply path.
+            compositionTracker = rimeRawInput
+        } else {
+            displayText = partialDisplayText(
+                confirmedText: confirmedText,
+                rimePreeditText: rimePreeditText
+            )
+            remainingPreeditText = partialRemainingPreeditText(
+                confirmedText: confirmedText,
+                displayText: displayText
+            )
+            compositionTracker = remainingPreeditText
+        }
+
+        state.lastRimeOutput = output
+        state.currentComposition = compositionTracker
+        state.partialCommit = PartialCommitState(
+            confirmedText: confirmedText,
+            remainingRawInput: rimeRawInput,
+            remainingPreeditText: remainingPreeditText,
+            displayText: displayText,
+            checkpoint: checkpoint,
+            source: source
+        )
+        updateInlinePreedit(displayText)
+        clearTypoCorrectionSuggestions()
+
+        if isT9Remaining {
+            _ = applyT9PinyinPathStateFromNewRimeOutput()
+        } else {
+            _ = clearT9PinyinPathStateReturningEffect()
+        }
+    }
+
+    private func isDigitOnlyPreeditTail(_ text: String) -> Bool {
+        !text.isEmpty
+            && text.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIIDigit)
     }
 
     private func isEligibleTypoPartialCommit(_ correction: TypoCorrectionCommit) -> Bool {

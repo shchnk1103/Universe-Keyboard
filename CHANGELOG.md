@@ -2,6 +2,12 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-20 — T9 Partial Commit 剩余显示与 path 刷新
+
+- Partial Commit 在 T9 下剩余 preedit 走 `T9PreeditResolver`（comment 优先）：选「你好」后 marked 为 `你好ya`，不再泄漏剩余 raw 数字 `92`。
+- Partial 成功后对剩余 raw **硬刷新** path bar provenance，避免仍显示原串首键的陈旧 `m/n/o`。
+- `remainingRawInput` / T9 `currentComposition` 仍保留数字 raw，供 Delete/恢复；`PartialCommitControllerTests` 增补回归。
+
 ## 2026-07-20 — 九宫格 path bar 音节级渐进（KEYBOARD-LAYOUT-9KEY-PINYIN-002 Amendment B）
 
 - 整词态 compact 栏禁止展示整句多音节路径（如 `ni xian zai` 叠字）；只保留**首音节**（`mi` / `ni`…）+ **首键字母**（`m` / `n` / `o`），上限 5。

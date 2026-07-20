@@ -123,6 +123,7 @@ Direct symbols/text first finalize any active composition through the appropriat
 - A **direct path-bar tap** selects and, when remaining digits exist, immediately confirms/advances (syllable-level next set, or letter-group fallback). **选拼音** only first/next/wraps the tentative selection and never confirms a segment by itself.
 - Appending a digit after a **tentative** (选拼音) selection preserves the focused selection until a direct path tap confirms/advances.
 - Advancing focus prefers live-comment syllables at the next segment index; single-letter key-group probes remain the fallback. Probes restore the prior ambiguous raw before publishing the new unselected focus, and never commit host text.
+- **T9 Partial Commit display:** after selecting a shorter Chinese candidate (e.g. `你好` from `nihaoya` / digits `…92`), host marked text must show comment-preferred remaining preedit (`你好ya`), never remaining raw digits (`你好92`). `remainingRawInput` stays digits for delete/recovery. Path bar hard-refreshes from the remaining raw (must not keep a stale leading-digit snapshot).
 - In active T9 composition, the `选定` space key still executes normal first/highlighted-candidate finalization. It is not a segment-confirm gesture.
 - Continued typing invalidates the single reversible checkpoint according to the current Partial Commit contract.
 - Typo correction Partial Commit remains separately gated and must preserve original typo input for restore.
