@@ -37,3 +37,9 @@
 
 - **Required Handoff Content:** before/after visuals, interaction behavior, changed files, tests, devices/orientations/accessibility states, unresolved visual differences and Product Gate questions
 - **Revalidation Trigger:** scope, supported devices/orientations, keyboard geometry, tab/navigation style, accessibility contract or affected feature behavior changes
+
+## Executor Progress
+
+- **Resolved scope leak:** The retained Home `今日输入` card is now a static local-count display. It no longer navigates to `TypingIntelligenceView` and no longer exposes the accessibility hint that promised trends, composition or data management. The card continues to show only local Chinese, letter and Emoji counts.
+- **Verification:** `bash scripts/ensure_rime_vendor.sh verify` passed after restoring the already-pinned local Vendor artifacts to this isolated worktree. `Universe Keyboard` Debug build for the iPad Pro 11-inch (M5) simulator succeeded, and the launched Home screenshot retained the card without a visible navigation affordance.
+- **Still open:** This does not close VoiceOver, Dynamic Type, appearance, toast/safe-area, settings-information-architecture, physical-device or final-archive review. Those require the remaining matrix and independent Quality conclusion.

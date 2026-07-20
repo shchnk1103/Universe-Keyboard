@@ -25,55 +25,48 @@ struct HomeTab: View {
     }
 
     private var todaySection: some View {
-        NavigationLink {
-            TypingIntelligenceView()
-        } label: {
-            VStack(alignment: .leading, spacing: 18) {
-                HStack(alignment: .top) {
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text("今日输入")
-                            .font(.title3.weight(.semibold))
-                        streakIndicator
-                    }
-                    Spacer(minLength: 12)
-                    iconTile
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text("今日输入")
+                        .font(.title3.weight(.semibold))
+                    streakIndicator
                 }
+                Spacer(minLength: 12)
+                iconTile
+            }
 
-                if isStatisticsAvailable {
-                    HStack(alignment: .lastTextBaseline, spacing: 6) {
-                        Text(model.todayCounts.committedGraphemeCount.formatted())
-                            .font(.system(.largeTitle, design: .rounded).weight(.bold))
-                            .monospacedDigit()
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                        Text("字符")
-                            .font(.body)
-                            .foregroundStyle(.secondary)
-                    }
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("今日已输入 \(model.todayCounts.committedGraphemeCount) 个字符")
-                } else {
-                    Text(todayUnavailableValue)
-                        .font(.title2.weight(.semibold))
+            if isStatisticsAvailable {
+                HStack(alignment: .lastTextBaseline, spacing: 6) {
+                    Text(model.todayCounts.committedGraphemeCount.formatted())
+                        .font(.system(.largeTitle, design: .rounded).weight(.bold))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                    Text("字符")
+                        .font(.body)
                         .foregroundStyle(.secondary)
                 }
-
-                HStack(spacing: 0) {
-                    breakdownMetric("中文", value: model.todayCounts.cjkCharacterCount)
-                    Divider().frame(height: 42)
-                    breakdownMetric("字母", value: model.todayCounts.latinLetterCount)
-                    Divider().frame(height: 42)
-                    breakdownMetric("Emoji", value: model.todayCounts.emojiCount)
-                }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("今日已输入 \(model.todayCounts.committedGraphemeCount) 个字符")
+            } else {
+                Text(todayUnavailableValue)
+                    .font(.title2.weight(.semibold))
+                    .foregroundStyle(.secondary)
             }
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-            .contentShape(Rectangle())
+
+            HStack(spacing: 0) {
+                breakdownMetric("中文", value: model.todayCounts.cjkCharacterCount)
+                Divider().frame(height: 42)
+                breakdownMetric("字母", value: model.todayCounts.latinLetterCount)
+                Divider().frame(height: 42)
+                breakdownMetric("Emoji", value: model.todayCounts.emojiCount)
+            }
         }
-        .buttonStyle(.plain)
-        .accessibilityHint("打开输入趋势、字符构成与数据管理")
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
     private var isStatisticsAvailable: Bool {
