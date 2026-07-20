@@ -98,6 +98,8 @@ extension KeyboardViewController {
             return "拼音输入"
         case "English":
             return "英文输入"
+        case "选定":
+            return "选定首个候选词"
         default:
             return nil
         }

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# KEYBOARD-LAYOUT-9KEY-PINYIN-001 — real librime precise-pinyin Spike.
+# Real librime precise-pinyin Spike. Assignment/ADR/summary destinations are
+# parameterized so a follow-up Work Item cannot overwrite a Closed task record.
 # Prepares an isolated T9 runtime (compatible schema, no t9_processor), runs
 # RimeT9PinyinSelectionSpikeTests on pinned librime, and archives evidence.
 #
@@ -26,6 +27,9 @@ UPSTREAM_T9_URL="${UK_T9_SPIKE_UPSTREAM_URL:-https://raw.githubusercontent.com/i
 DERIVED_DATA="${UK_T9_SPIKE_DERIVED_DATA:-$EVIDENCE_DIR/DerivedData}"
 DESTINATION="${UK_T9_SPIKE_DESTINATION:-platform=iOS Simulator,id=06C5BC3E-7599-4761-A1A2-71DAEA991474}"
 ALLOW_DIRTY="${UK_T9_SPIKE_ALLOW_DIRTY:-0}"
+SPIKE_ASSIGNMENT="${UK_T9_PINYIN_SPIKE_ASSIGNMENT:-KEYBOARD-LAYOUT-9KEY-PINYIN-001}"
+SPIKE_ADR="${UK_T9_PINYIN_SPIKE_ADR:-docs/architecture/decisions/0020-t9-precise-pinyin-path-selection.md}"
+TRACKED_SUMMARY="${UK_T9_PINYIN_SPIKE_TRACKED_SUMMARY:-$ROOT_DIR/docs/assignments/keyboard-layout-9key-pinyin-001-spike-summary.md}"
 
 mkdir -p "$SHARED_DIR" "$USER_DIR" "$LOG_DIR"
 
@@ -188,8 +192,8 @@ fi
   echo "- Branch: $HARNESS_BRANCH"
   echo "- HEAD commit: \`$HARNESS_COMMIT\`"
   echo "- Dirty worktree allowed: $ALLOW_DIRTY"
-  echo "- Assignment: KEYBOARD-LAYOUT-9KEY-PINYIN-001"
-  echo "- ADR draft: docs/architecture/decisions/0020-t9-precise-pinyin-path-selection.md"
+  echo "- Assignment: $SPIKE_ASSIGNMENT"
+  echo "- ADR: $SPIKE_ADR"
   echo "- Upstream URL: $UPSTREAM_T9_URL"
   echo "- Upstream version field: ${UPSTREAM_VERSION:-unknown}"
   echo "- Upstream/source schema SHA-256: \`$UPSTREAM_SHA\`"
@@ -235,10 +239,9 @@ fi
 } >"$RESULT_FILE"
 
 # Lightweight tracked summary for Domain Owner handoff (gitignored evidence stays local).
-TRACKED_SUMMARY="$ROOT_DIR/docs/assignments/keyboard-layout-9key-pinyin-001-spike-summary.md"
 mkdir -p "$(dirname "$TRACKED_SUMMARY")"
 {
-  echo "# KEYBOARD-LAYOUT-9KEY-PINYIN-001 Spike Summary"
+  echo "# $SPIKE_ASSIGNMENT Spike Summary"
   echo
   echo "- Status: **$STATUS**"
   echo "- Local evidence: \`$EVIDENCE_DIR\`"

@@ -158,6 +158,8 @@ public final class KeyboardController {
             return handleKeyboardTypeChanged(type)
         case .selectT9PinyinPath(let path):
             return handleSelectT9PinyinPath(path)
+        case .cycleT9PinyinPath:
+            return handleCycleT9PinyinPath()
         case .candidatePageUp:
             return handleCandidatePageUp()
         case .candidatePageDown:

@@ -1,14 +1,15 @@
 # Keyboard Layout
 
-Lifecycle status: Runtime contract accepted (ADR 0018); Chinese nine-key chrome accepted under KEYBOARD-LAYOUT-9KEY-UI-001; precise pinyin selection implementing under KEYBOARD-LAYOUT-9KEY-PINYIN-001 (ADR 0020)
-Source of truth for: 26-key / Chinese nine-key layout selection, effective RIME scheme resolution, versioned T9 readiness, nine-key Extension chrome, and **precise pinyin path bar/panel**
-Related ADR: [`architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md`](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md), [`architecture/decisions/0020-t9-precise-pinyin-path-selection.md`](architecture/decisions/0020-t9-precise-pinyin-path-selection.md)
+Lifecycle status: Runtime contract accepted (ADR 0018); Chinese nine-key chrome accepted under KEYBOARD-LAYOUT-9KEY-UI-001; original precise pinyin selection closed under KEYBOARD-LAYOUT-9KEY-PINYIN-001; deterministic single-key choices, segmented + progressive-syllable path bar active under KEYBOARD-LAYOUT-9KEY-PINYIN-002 (ADR 0021 Amendments A/B)
+Source of truth for: 26-key / Chinese nine-key layout selection, effective RIME scheme resolution, versioned T9 readiness, nine-key Extension chrome, and **precise pinyin path bar/cycling**
+Related ADR: [`architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md`](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md), [`architecture/decisions/0020-t9-precise-pinyin-path-selection.md`](architecture/decisions/0020-t9-precise-pinyin-path-selection.md), [`architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md`](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md)
 Related plan: [`plans/keyboard-layout-9key-implementation-plan.md`](plans/keyboard-layout-9key-implementation-plan.md) (Archived); precise pinyin [`plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md`](plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md) (Active)
 Related Assignments:
 
 - Runtime V1: [`assignments/keyboard-layout-9key-001.md`](assignments/keyboard-layout-9key-001.md) (`Closed`)
 - Chrome UI: [`assignments/keyboard-layout-9key-ui-001.md`](assignments/keyboard-layout-9key-ui-001.md) (`Closed`)
-- Precise pinyin selection: [`assignments/keyboard-layout-9key-pinyin-001.md`](assignments/keyboard-layout-9key-pinyin-001.md) (`Active`) — Product Decision [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-001`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-001-authorization.md)
+- Original precise pinyin selection: [`assignments/keyboard-layout-9key-pinyin-001.md`](assignments/keyboard-layout-9key-pinyin-001.md) (`Accepted / Closed`)
+- Deterministic choices + cycling: [`assignments/keyboard-layout-9key-pinyin-002.md`](assignments/keyboard-layout-9key-pinyin-002.md) (`Active`) — Product Decision [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-002`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md)
 
 ## Product Model
 
@@ -48,7 +49,7 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 - 9-key + rime-ice + **matched** readiness → effective `t9`, Chinese alphabet page uses nine-key chrome
 - 9-key without matched readiness / without rime-ice / with unsupported base scheme → safe 26-key behavior
 
-## T9 Input Semantics (V1 + ADR 0020)
+## T9 Input Semantics (V1 + ADR 0020 + ADR 0021)
 
 - Digits go to RIME as the raw composition.
 - Visible preedit prefers non-empty candidate comments, then raw input **for display only**.
@@ -59,15 +60,25 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
   - Space/Return without candidates: no raw host commit; keep composition.
   - English / auto-English: no raw host commit; abandon composition, show QWERTY.
 - Existing letter typo-correction paths must ignore active T9 compositions (including mixed raw input).
-- **Precise pinyin path selection** refines composition via session `replaceInput` only; it never commits path text to the host. Paths come from Rime candidate comments (ASCII-only parse/validate/dedupe in KeyboardCore; position-based compatibility with digit slots). Fail closed when comments are missing.
+- **Precise pinyin path selection** refines composition via session `replaceInput` only; it never commits path text to the host.
+  - A single unresolved digit uses the canonical ordered key identity (`2 → abc` … `6 → mno` … `9 → wxyz`), so `MNO` always exposes `m / n / o` even when RIME comments contain only `o`.
+  - **Amendment B progressive syllables:** With no segment selected, multi-digit compact choices are **first-syllable** labels from live comments plus first-key-group letters. `MNO → GHI` still displays `mi / ni / m / n / o` (compact maximum **5**). Multi-syllable whole comments such as `ni xian zai` **must not** appear as one compact cell.
+  - **Direct path-bar tap** selects and, when remaining digits exist, **immediately confirms/advances** to the next syllable set (no second tap). **选拼音** only first/next/wraps the tentative selection within the current focus and never confirms a segment by itself.
+  - After confirm, the next compact set is **syllable-level** (`xian / xiao / zhan…`) extracted from live comments at the next apostrophe-delimited index and digit-compatible with the remaining sequence. When no multi-letter syllable is authorized, fall back to single-letter key-group probes for the next digit (`g / h` style from Amendment A).
+  - Next-focus authorization requires live RIME evidence: exact syllable match in comments for multi-letter steps, or letter-prefix segment authorization for single-letter fallback. Exact raw retention and non-empty candidates alone are insufficient.
+  - The single-key identity mapping only issues bounded refinement choices; Chinese candidates and ranking still come exclusively from RIME.
+- After a successful single-key refine, KeyboardCore retains the issued choice snapshot while updating live RIME raw/preedit. This permits `m → n → o → m` cycling without authorizing stale choices after new input, Delete, final commit, page/language/visibility changes, fallback, or recovery.
+- An explicit path selection controls the host-visible marked spelling: cycling `m → n → o → m` displays exactly those values. Candidate comments may still inform path discovery/candidates, but cannot replace the selected spelling with a longer full-pinyin comment.
 - Hot-path compact refresh uses page candidates first, then a **bounded** `candidateWindow` peek (`hotPathWindowLimit`, not a full catalog walk). Full-panel lazy paging uses dual-revision-guarded windows: `rawInputGeneration` tracks raw lifecycle; `provenanceRevision` tracks comment/window authority (UIKit expanded panel and click guards bind to provenance). Applying a new RimeOutput always hard-opens provenance even if raw is unchanged; soft same-snapshot re-scan may accumulate expanded issuance without bumping provenance. Device key latency for the bounded peek remains a Product Gate measurement item (no invented threshold).
 
 ### Precise path bar geometry
 
 - Order: **path bar (34 pt, fixed reservation)** → Chinese candidate bar (34 pt) → nine-key pad.
 - Path bar is reserved whenever Chinese nine-key letters chrome is active, even with empty composition (no height jump).
-- Compact bar shows at most 4 paths; plain text, no candidate pills; optional 1px separator above the Chinese candidate bar.
-- **选拼音** opens a path-only expanded panel (mutually exclusive with Chinese candidate expansion).
+- Compact bar shows at most **5** single-line path labels (no multi-syllable wrap); plain text, no candidate pills; optional 1px separator above the Chinese candidate bar.
+- **选拼音** selects the first compact choice for the current focus when none is selected, then advances and wraps. It never confirms a segment and never opens the predecessor expanded path panel.
+- While T9 composition is active, the wide space key title changes from `拼音` to **选定**. Its action remains candidate finalization (highlighted/first Chinese candidate), not segment confirmation.
+- Before the first selection there is no path highlight. The selected path uses the same inverse-color 8 pt rounded highlight language as the preferred candidate and retains an accurate VoiceOver selected state.
 
 ## Nine-key Chrome (UI)
 
@@ -90,7 +101,7 @@ Reference screenshots used during design may live only under local `photos/` (gi
 | Letter keys | Primary labels are letter groups (`ABC`…`WXYZ`); digit **2–9** payload is identity-only for RIME (`accessibilityIdentifier` + `accessibilityValue == t9Digit`) |
 | Left main pad | Four equal columns: page/punct/letters, symbols/letters, input-mode/letters |
 | Right column | Delete (SF Symbol `delete.left`), **颜表情** (`^_^`, product placeholder), **Return glyph** (`return` SF Symbol) spanning the bottom two rows |
-| Bottom row | Emoji page entry + **选拼音** (placeholder) + wide space (`拼音`); widths follow the left pad’s 4-column rhythm (**1+1+2**); delete/return are **not** duplicated here |
+| Bottom row | Emoji page entry + **选拼音** + wide space (`拼音`, active composition: `选定`); widths follow the left pad’s 4-column rhythm (**1+1+2**); delete/return are **not** duplicated here |
 | Globe | Still created for `needsInputModeSwitchKey`; system may hide it and show an external globe |
 
 ### Typography (shared with style guide)
@@ -106,7 +117,7 @@ Return **never** shows host action text such as `send`; VoiceOver still uses `re
 
 ### Placeholders / productized controls
 
-- **选拼音** — productized under [`KEYBOARD-LAYOUT-9KEY-PINYIN-001`](assignments/keyboard-layout-9key-pinyin-001.md) / ADR 0020: opens the precise path panel when a T9 composition is active; disabled otherwise. Compact paths also appear in the fixed path bar.
+- **选拼音** — current behavior is governed by [`KEYBOARD-LAYOUT-9KEY-PINYIN-002`](assignments/keyboard-layout-9key-pinyin-002.md) / ADR 0021: enabled only when compact choices exist; first press selects the first choice, later presses select next/wrap. Compact paths remain directly tappable in the fixed bar.
 - **颜表情 (`^_^`)** — chrome only; reuses `showKaomojiCandidatesPlaceholder` (same family as symbols-page `^_^` entry). Full product content requires a **separate** future Assignment.
 
 Effective scheme, readiness and digit algebra remain ADR 0018; path refinement extends session semantics under ADR 0020 without Extension deploy.

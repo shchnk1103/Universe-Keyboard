@@ -4,7 +4,10 @@ import XCTest
 
 @testable import RimeBridge
 
-/// Real librime Spike for KEYBOARD-LAYOUT-9KEY-PINYIN-001 (precise pinyin path selection).
+/// Real librime Spike for precise T9 pinyin path selection.
+///
+/// KEYBOARD-LAYOUT-9KEY-PINYIN-002 additionally requires every deterministic
+/// single-key choice shown for digit 6 (`m`, `n`, `o`) to be a safe refinement.
 ///
 /// Preconditions (same isolated runtime as `scripts/run_t9_pinyin_selection_spike.sh`):
 /// - `UK_RIME_T9_SPIKE_SHARED_DIR` / `UK_RIME_T9_SPIKE_USER_DIR`
@@ -76,29 +79,129 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
             "Expected at least one usable path comment after 6; got \(pathPool6)"
         )
 
-        // --- replaceInput("m") or first letter path ---
-        let letterPath = singleLetterPaths.contains("m")
-            ? "m"
-            : (pathPool6.first(where: { $0.count == 1 }) ?? pathPool6[0])
-        let refinedLetter = engine.replaceInput(letterPath)
-        let refinedRaw = refinedLetter.rawInput ?? ""
-        let refinedCommitted = refinedLetter.committedText
+        // --- KEYBOARD-LAYOUT-9KEY-PINYIN-002 hard gate: all MNO refinements ---
+        var singleLetterCandidateCounts: [String: Int] = [:]
+        for letterPath in ["m", "n", "o"] {
+            // Recreate the same ambiguous source before each probe. A previous
+            // replaceInput must not influence the next letter's evidence.
+            engine.bridge.clearComposition()
+            let source = engine.processKey("6")
+            XCTAssertEqual(source.rawInput, "6")
+
+            let refinedLetter = engine.replaceInput(letterPath)
+            let refinedRaw = refinedLetter.rawInput ?? ""
+            let refinedHasComposition = !(refinedLetter.composition?.preeditText ?? "").isEmpty
+                || !refinedRaw.isEmpty
+
+            XCTAssertNil(
+                refinedLetter.committedText,
+                "STOP: replaceInput(\(letterPath)) produced committedText=\(refinedLetter.committedText ?? "nil")"
+            )
+            XCTAssertEqual(
+                refinedRaw.lowercased(),
+                letterPath,
+                "replaceInput must set raw input to \(letterPath); got '\(refinedRaw)'"
+            )
+            XCTAssertTrue(
+                refinedHasComposition,
+                "replaceInput(\(letterPath)) must keep a non-empty composition"
+            )
+            XCTAssertFalse(
+                refinedLetter.candidates.isEmpty,
+                "STOP: replaceInput(\(letterPath)) must keep Chinese candidates non-empty"
+            )
+            singleLetterCandidateCounts[letterPath] = refinedLetter.candidates.count
+        }
+
+        // --- Amendment A hard gate: retained first segment + next digit ---
+        // Native nine-key keeps the selected `n` visible after the user presses
+        // GHI. The engine must therefore support an uncommitted `n4` source and
+        // expose enough live path evidence to derive the next segment safely.
+        engine.bridge.clearComposition()
+        _ = engine.processKey("6")
+        let selectedN = engine.replaceInput("n")
+        XCTAssertEqual(selectedN.rawInput?.lowercased(), "n")
+        XCTAssertNil(selectedN.committedText)
+
+        let afterN4 = engine.processKey("4")
+        let rawN4 = afterN4.rawInput ?? ""
+        let windowN4 = engine.candidateWindow(from: 0, limit: 48)
+        let pagePathsN4 = uniquePinyinLikeComments(from: afterN4.candidates)
+        let windowPathsN4 = uniquePinyinLikeComments(from: windowN4.candidates)
+        let pathPoolN4 = pagePathsN4.isEmpty ? windowPathsN4 : pagePathsN4
 
         XCTAssertNil(
-            refinedCommitted,
-            "STOP: replaceInput(\(letterPath)) produced committedText=\(refinedCommitted ?? "nil")"
+            afterN4.committedText,
+            "STOP: n + digit 4 must remain an uncommitted composition"
         )
         XCTAssertEqual(
-            refinedRaw.lowercased(),
-            letterPath.lowercased(),
-            "replaceInput must set raw input to letter path; got '\(refinedRaw)'"
+            rawN4.lowercased(),
+            "n4",
+            "STOP: retained segment must preserve n + next ambiguous digit; got '\(rawN4)'"
         )
-        let refinedHasComposition = !(refinedLetter.composition?.preeditText ?? "").isEmpty
-            || !(refinedLetter.rawInput ?? "").isEmpty
-        XCTAssertTrue(refinedHasComposition, "replaceInput letter path must keep composition")
         XCTAssertFalse(
-            refinedLetter.candidates.isEmpty,
-            "replaceInput(\(letterPath)) must leave Chinese candidates non-empty when feasible"
+            afterN4.candidates.isEmpty,
+            "STOP: n4 must retain Chinese candidates"
+        )
+        XCTAssertFalse(
+            pathPoolN4.isEmpty,
+            "STOP: n4 must expose live pinyin path comments for segment authorization"
+        )
+
+        var segmentedCandidateCounts: [String: Int] = [:]
+        var segmentedRawInputs: [String: String] = [:]
+        var segmentedComments: [String: [String]] = [:]
+        var segmentedPreedits: [String: String] = [:]
+        var segmentedFirstCandidates: [String: String] = [:]
+        for suffix in ["g", "h", "i"] {
+            engine.bridge.clearComposition()
+            _ = engine.processKey("6")
+            _ = engine.replaceInput("n")
+            _ = engine.processKey("4")
+
+            let segmentedPath = "n'\(suffix)"
+            let refinedSegment = engine.replaceInput(segmentedPath)
+            let refinedRaw = refinedSegment.rawInput ?? ""
+            XCTAssertNil(
+                refinedSegment.committedText,
+                "STOP: replaceInput(\(segmentedPath)) must not host-commit"
+            )
+            segmentedRawInputs[suffix] = refinedRaw
+            segmentedCandidateCounts[suffix] = refinedSegment.candidates.count
+            segmentedComments[suffix] = uniquePinyinLikeComments(
+                from: refinedSegment.candidates
+            )
+            segmentedPreedits[suffix] = refinedSegment.composition?.preeditText ?? ""
+            segmentedFirstCandidates[suffix] = refinedSegment.candidates.first?.text ?? ""
+        }
+
+        // Native observation requires g/h to be selectable after confirmed n.
+        // `i` is deliberately observational: its engine viability alone must
+        // not authorize UI display if live n4 path comments omit it.
+        for requiredSuffix in ["g", "h"] {
+            XCTAssertEqual(
+                segmentedRawInputs[requiredSuffix]?.lowercased(),
+                "n'\(requiredSuffix)",
+                "STOP: segmented path n'\(requiredSuffix) was not preserved"
+            )
+            XCTAssertGreaterThan(
+                segmentedCandidateCounts[requiredSuffix] ?? 0,
+                0,
+                "STOP: segmented path n'\(requiredSuffix) must keep Chinese candidates"
+            )
+        }
+
+        let authorizedSuffixes = ["g", "h", "i"].filter { suffix in
+            (segmentedComments[suffix] ?? []).contains { path in
+                path.split(separator: "'").dropFirst().contains { segment in
+                    segment.hasPrefix(suffix)
+                }
+            }
+        }
+        XCTAssertEqual(
+            authorizedSuffixes,
+            ["g", "h"],
+            "STOP: live RIME paths must authorize g/h and reject fallback-only i"
         )
 
         // --- 64 → select ni (or first multi-letter path) ---
@@ -200,9 +303,16 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
         librime=\(engine.bridge.librimeVersion()) \
         schema=\(currentSchema) \
         comments6=\(pathPool6.joined(separator: "|")) \
-        letterPath=\(letterPath) \
-        rawAfterLetter=\(refinedRaw) \
-        letterCandidateCount=\(refinedLetter.candidates.count) \
+        deterministicChoices=m|n|o \
+        singleLetterCandidateCounts=m:\(singleLetterCandidateCounts["m"] ?? 0),n:\(singleLetterCandidateCounts["n"] ?? 0),o:\(singleLetterCandidateCounts["o"] ?? 0) \
+        rawAfterN4=\(rawN4) \
+        commentsN4=\(pathPoolN4.prefix(16).joined(separator: "|")) \
+        segmentedRaw=g:\(segmentedRawInputs["g"] ?? ""),h:\(segmentedRawInputs["h"] ?? ""),i:\(segmentedRawInputs["i"] ?? "") \
+        segmentedCandidateCounts=g:\(segmentedCandidateCounts["g"] ?? 0),h:\(segmentedCandidateCounts["h"] ?? 0),i:\(segmentedCandidateCounts["i"] ?? 0) \
+        segmentedComments=g:\((segmentedComments["g"] ?? []).prefix(8).joined(separator: "|")),h:\((segmentedComments["h"] ?? []).prefix(8).joined(separator: "|")),i:\((segmentedComments["i"] ?? []).prefix(8).joined(separator: "|")) \
+        segmentedPreedits=g:\(segmentedPreedits["g"] ?? ""),h:\(segmentedPreedits["h"] ?? ""),i:\(segmentedPreedits["i"] ?? "") \
+        segmentedFirstCandidates=g:\(segmentedFirstCandidates["g"] ?? ""),h:\(segmentedFirstCandidates["h"] ?? ""),i:\(segmentedFirstCandidates["i"] ?? "") \
+        authorizedSuffixes=\(authorizedSuffixes.joined(separator: "|")) \
         comments64=\(pathPool64.prefix(12).joined(separator: "|")) \
         niPath=\(niPath) \
         rawAfterNi=\(rawNi) \

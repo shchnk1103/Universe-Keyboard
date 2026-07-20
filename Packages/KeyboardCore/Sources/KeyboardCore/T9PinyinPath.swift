@@ -32,6 +32,17 @@ public struct T9PinyinPathState: Equatable, Sendable {
     /// `true` while later candidate windows may still contain valid paths.
     /// Must not be collapsed to "no paths" solely because a 16-item peek was empty.
     public var discoveryMayHaveMore: Bool
+    /// Original single digit that issued deterministic key-group choices (ADR 0021).
+    /// It intentionally survives a successful `6 -> m/n/o` refinement so another
+    /// cycle can select a sibling choice. All other input/lifecycle changes clear it.
+    public var retainedChoiceSourceRawInput: String?
+    /// Original digit sequence represented by the current segmented snapshot.
+    /// This is UI/state provenance only; live composition remains owned by RIME.
+    public var segmentSourceDigits: String?
+    /// Key-group index whose choices are currently shown in segmented mode.
+    public var focusedSegmentIndex: Int?
+    /// Tentatively confirmed key-group values before `focusedSegmentIndex`.
+    public var confirmedSegmentValues: [String]
 
     public init(
         compactPaths: [T9PinyinPath] = [],
@@ -41,7 +52,11 @@ public struct T9PinyinPathState: Equatable, Sendable {
         trackedRawInput: String? = nil,
         issuedReplacementKeys: Set<String> = [],
         discoveryNextIndex: Int = 0,
-        discoveryMayHaveMore: Bool = false
+        discoveryMayHaveMore: Bool = false,
+        retainedChoiceSourceRawInput: String? = nil,
+        segmentSourceDigits: String? = nil,
+        focusedSegmentIndex: Int? = nil,
+        confirmedSegmentValues: [String] = []
     ) {
         self.compactPaths = compactPaths
         self.selectedPath = selectedPath
@@ -51,6 +66,10 @@ public struct T9PinyinPathState: Equatable, Sendable {
         self.issuedReplacementKeys = issuedReplacementKeys
         self.discoveryNextIndex = discoveryNextIndex
         self.discoveryMayHaveMore = discoveryMayHaveMore
+        self.retainedChoiceSourceRawInput = retainedChoiceSourceRawInput
+        self.segmentSourceDigits = segmentSourceDigits
+        self.focusedSegmentIndex = focusedSegmentIndex
+        self.confirmedSegmentValues = confirmedSegmentValues
     }
 
     public static let empty = T9PinyinPathState()
@@ -104,20 +123,20 @@ public struct T9PinyinPathWindow: Equatable, Sendable {
 
 /// Pure parsing / validation / ranking for T9 precise pinyin paths (ADR 0020).
 public enum T9PinyinPathExtractor {
-    public static let compactLimit = 4
+    public static let compactLimit = 5
     /// Bounded sync scan on the input path when page candidates are sparse (not a full catalog walk).
     public static let hotPathWindowLimit = 16
     public static let panelWindowLimit = 48
 
-    private static let t9Groups: [Character: Set<Character>] = [
-        "2": Set("abc"),
-        "3": Set("def"),
-        "4": Set("ghi"),
-        "5": Set("jkl"),
-        "6": Set("mno"),
-        "7": Set("pqrs"),
-        "8": Set("tuv"),
-        "9": Set("wxyz"),
+    private static let t9Groups: [Character: [Character]] = [
+        "2": Array("abc"),
+        "3": Array("def"),
+        "4": Array("ghi"),
+        "5": Array("jkl"),
+        "6": Array("mno"),
+        "7": Array("pqrs"),
+        "8": Array("tuv"),
+        "9": Array("wxyz"),
     ]
 
     // MARK: - ASCII helpers (ADR 0020)
@@ -235,6 +254,173 @@ public enum T9PinyinPathExtractor {
         guard let rawInput, !rawInput.isEmpty else { return false }
         return rawInput.unicodeScalars.allSatisfy { scalar in
             isASCIILetter(scalar) || isASCIIDigit(scalar) || isASCIISeparator(scalar)
+        }
+    }
+
+    /// Complete deterministic choices for one unresolved T9 digit.
+    ///
+    /// This is key identity, not pinyin prediction: multi-digit input must still
+    /// use compatible paths issued from live RIME comments.
+    public static func deterministicSingleDigitPaths(rawInput: String?) -> [T9PinyinPath] {
+        guard let rawInput, rawInput.count == 1,
+              let digit = rawInput.first,
+              let letters = t9Groups[digit]
+        else { return [] }
+
+        return letters.map { letter in
+            let value = String(letter)
+            return T9PinyinPath(displayText: value, replacementRawInput: value)
+        }
+    }
+
+    public static func keyLetters(forDigit digit: Character) -> [Character] {
+        t9Groups[digit] ?? []
+    }
+
+    /// ASCII letter count of a syllable or raw fragment (digits/separators ignored).
+    public static func asciiLetterCount(in text: String) -> Int {
+        asciiLetters(from: text).count
+    }
+
+    /// Total ASCII letters across confirmed/focused syllable values.
+    public static func letterCount(ofSyllables syllables: [String]) -> Int {
+        syllables.reduce(0) { $0 + asciiLetterCount(in: $1) }
+    }
+
+    /// Whether confirming `selected` still leaves unresolved digits in `sourceDigits`.
+    public static func canAdvanceAfterConfirming(
+        selectedDisplay: String,
+        confirmedSyllables: [String],
+        sourceDigits: String
+    ) -> Bool {
+        let consumed = letterCount(ofSyllables: confirmedSyllables) + asciiLetterCount(in: selectedDisplay)
+        return consumed < sourceDigits.count
+    }
+
+    /// Build a full live replacement for one progressive syllable choice.
+    ///
+    /// Confirmed syllables become the apostrophe-delimited prefix; the focused
+    /// syllable's letters consume the next digit slots; any remaining digits are
+    /// appended so RIME still sees the unresolved tail.
+    public static func replacementForProgressiveSyllable(
+        displaySyllable: String,
+        confirmedSyllables: [String],
+        sourceDigits: String
+    ) -> String? {
+        let syllable = displaySyllable.lowercased()
+        guard !syllable.isEmpty,
+              syllable.unicodeScalars.allSatisfy(isASCIILetter)
+        else { return nil }
+
+        let confirmedLetters = letterCount(ofSyllables: confirmedSyllables)
+        let focusLetters = asciiLetterCount(in: syllable)
+        guard confirmedLetters + focusLetters <= sourceDigits.count else { return nil }
+
+        let digitPrefix = String(
+            sourceDigits.dropFirst(confirmedLetters).prefix(focusLetters)
+        )
+        let probe = T9PinyinPath(displayText: syllable, replacementRawInput: syllable)
+        guard isCompatible(path: probe, withRawInput: digitPrefix) else { return nil }
+
+        let suffixDigits = String(sourceDigits.dropFirst(confirmedLetters + focusLetters))
+        let prefix = confirmedSyllables.joined(separator: "'")
+        if prefix.isEmpty {
+            return syllable + suffixDigits
+        }
+        return prefix + "'" + syllable + suffixDigits
+    }
+
+    /// Progressive syllable choices for the current focus (Amendment B).
+    ///
+    /// Takes only the apostrophe-delimited segment at `confirmedSyllables.count`
+    /// from live comments. Multi-syllable whole paths never appear as one compact
+    /// label — each step exposes a single syllable (e.g. `ni`, then `xian`).
+    public static func progressiveSyllablePaths(
+        from candidates: [RimeCandidate],
+        sourceDigits: String,
+        confirmedSyllables: [String],
+        limit: Int
+    ) -> [T9PinyinPath] {
+        let safeLimit = max(0, limit)
+        guard safeLimit > 0, !sourceDigits.isEmpty else { return [] }
+        guard sourceDigits.allSatisfy({ $0.isASCII && $0.isNumber }) else { return [] }
+
+        let segmentIndex = confirmedSyllables.count
+        let confirmedLetters = letterCount(ofSyllables: confirmedSyllables)
+        guard confirmedLetters < sourceDigits.count else { return [] }
+
+        var seen = Set<String>()
+        var ordered: [T9PinyinPath] = []
+
+        for candidate in candidates {
+            guard let path = path(fromComment: candidate.comment) else { continue }
+            let segments = path.replacementRawInput
+                .split(separator: "'", omittingEmptySubsequences: true)
+                .map(String.init)
+            guard segments.indices.contains(segmentIndex) else { continue }
+            let syllable = segments[segmentIndex]
+            guard seen.insert(syllable).inserted else { continue }
+            guard let replacement = replacementForProgressiveSyllable(
+                displaySyllable: syllable,
+                confirmedSyllables: confirmedSyllables,
+                sourceDigits: sourceDigits
+            ) else { continue }
+
+            ordered.append(
+                T9PinyinPath(displayText: syllable, replacementRawInput: replacement)
+            )
+            if ordered.count >= safeLimit { break }
+        }
+        return ordered
+    }
+
+    /// First physical key-group letter choices for progressive whole composition.
+    public static func firstKeyGroupPaths(sourceDigits: String) -> [T9PinyinPath] {
+        guard let digit = sourceDigits.first,
+              sourceDigits.count > 1,
+              sourceDigits.allSatisfy({ $0.isASCII && $0.isNumber })
+        else { return [] }
+        let pending = String(sourceDigits.dropFirst())
+        return keyLetters(forDigit: digit).map { letter in
+            let value = String(letter)
+            return T9PinyinPath(displayText: value, replacementRawInput: value + pending)
+        }
+    }
+
+    /// A probe authorizes a focused choice only when a live candidate comment
+    /// actually contains that apostrophe-delimited segment. Merely retaining raw
+    /// input or fallback candidates is insufficient (`n'i` is the pinned example).
+    public static func candidateCommentsAuthorizeSegment(
+        _ candidates: [RimeCandidate],
+        segmentIndex: Int,
+        startingWith letter: Character
+    ) -> Bool {
+        guard segmentIndex > 0 else { return false }
+        let expected = String(letter).lowercased()
+        return candidates.contains { candidate in
+            guard let path = path(fromComment: candidate.comment) else { return false }
+            let segments = path.replacementRawInput.split(separator: "'", omittingEmptySubsequences: true)
+            guard segments.indices.contains(segmentIndex) else { return false }
+            return segments[segmentIndex].hasPrefix(expected)
+        }
+    }
+
+    /// Exact syllable authorization at `segmentIndex` (syllable-level advance).
+    public static func candidateCommentsAuthorizeExactSegment(
+        _ candidates: [RimeCandidate],
+        segmentIndex: Int,
+        syllable: String
+    ) -> Bool {
+        guard segmentIndex >= 0 else { return false }
+        let expected = syllable.lowercased()
+        guard !expected.isEmpty else { return false }
+        return candidates.contains { candidate in
+            guard let path = path(fromComment: candidate.comment) else { return false }
+            let segments = path.replacementRawInput
+                .split(separator: "'", omittingEmptySubsequences: true)
+                .map { $0.lowercased() }
+            guard segments.indices.contains(segmentIndex) else { return false }
+            return segments[segmentIndex] == expected
         }
     }
 

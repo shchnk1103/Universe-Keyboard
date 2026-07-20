@@ -58,6 +58,14 @@ extension KeyboardViewController {
     var spaceButtonTitle: String {
         let state = controller.state
         if state.currentPage != .letters { return "space" }
+        if controller.usesT9InputSemantics,
+           T9CompositionCommitPolicy.isActiveT9Composition(
+               usesT9InputSemantics: true,
+               rawInput: state.lastRimeOutput?.rawInput
+           )
+        {
+            return "选定"
+        }
         switch state.inputMode {
         case .chinese: return "拼音"
         case .english: return "English"

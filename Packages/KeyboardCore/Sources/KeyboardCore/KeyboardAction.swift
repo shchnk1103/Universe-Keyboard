@@ -33,4 +33,6 @@ public enum KeyboardAction: Equatable {
     case candidatePageDown
     /// Refine the current T9 composition to a precise pinyin path (no host commit).
     case selectT9PinyinPath(T9PinyinPath)
+    /// Select the first/next displayed T9 pinyin path and wrap at the end (ADR 0021).
+    case cycleT9PinyinPath
 }

@@ -27,27 +27,32 @@ extension KeyboardViewController {
         guard let bar = t9PinyinPathBarView else { return }
         let state = controller.state.t9PinyinPathState
         bar.setPaths(state.compactPaths, selected: state.selectedPath)
-        updateSelectPinyinButtonAvailability()
-        if isPinyinPathExpanded {
-            refreshPinyinPathExpandedPanel()
+        t9SpaceButton?.setTitle(spaceButtonTitle, for: .normal)
+        if let t9SpaceButton {
+            configureKeyAccessibility(
+                t9SpaceButton,
+                title: spaceButtonTitle,
+                action: #selector(insertSpace(_:))
+            )
         }
+        updateSelectPinyinButtonAvailability()
     }
 
     func updateSelectPinyinButtonAvailability() {
-        let availability = controller.t9PinyinPathAvailability()
-        let enabled = availability.allowsSelectPinyinControl
+        let state = controller.state.t9PinyinPathState
+        let enabled = !state.compactPaths.isEmpty
         t9SelectPinyinButton?.isEnabled = enabled
         t9SelectPinyinButton?.alpha = enabled ? 1 : 0.45
         t9SelectPinyinButton?.accessibilityLabel = "选拼音"
-        switch availability {
-        case .pathsAvailable:
-            t9SelectPinyinButton?.accessibilityHint = "打开完整拼音路径列表"
-        case .discoveryPending:
-            t9SelectPinyinButton?.accessibilityHint = "打开拼音路径列表并加载更多候选路径"
-        case .exhaustedNoPaths:
-            t9SelectPinyinButton?.accessibilityHint = "当前没有可选择的拼音路径"
-        case .noComposition:
-            t9SelectPinyinButton?.accessibilityHint = "请先输入九键拼音"
+
+        if let selectedPath = state.selectedPath {
+            t9SelectPinyinButton?.accessibilityValue = selectedPath.displayText
+            t9SelectPinyinButton?.accessibilityHint = "选择下一个拼音"
+        } else {
+            t9SelectPinyinButton?.accessibilityValue = nil
+            t9SelectPinyinButton?.accessibilityHint = enabled
+                ? "选择第一个拼音"
+                : "请先输入九键拼音"
         }
         if enabled {
             t9SelectPinyinButton?.accessibilityTraits = .button
@@ -70,31 +75,19 @@ extension KeyboardViewController {
             return
         }
 
-        dismissPinyinPathExpandedPanel(animated: true)
         let effects = controller.handle(.selectT9PinyinPath(path))
         syncUI(with: effects.union(.t9PinyinPathsChanged))
     }
 
     @objc func t9SelectPinyin(_ sender: UIButton) {
         emitKeyPressFeedbackIfNeeded(for: sender)
-        let availability = controller.t9PinyinPathAvailability()
-        guard availability.allowsSelectPinyinControl else {
+        guard !controller.state.t9PinyinPathState.compactPaths.isEmpty else {
             updateSelectPinyinButtonAvailability()
             return
         }
 
-        if isPinyinPathExpanded {
-            dismissPinyinPathExpandedPanel(animated: true)
-            return
-        }
-
-        if isCandidateExpanded {
-            isCandidateExpanded = false
-            dismissExpandedCandidatePanel(animated: false)
-            updateExpandButtonAppearance()
-        }
-
-        presentPinyinPathExpandedPanel()
+        let effects = controller.handle(.cycleT9PinyinPath)
+        syncUI(with: effects.union(.t9PinyinPathsChanged))
     }
 
     func presentPinyinPathExpandedPanel() {

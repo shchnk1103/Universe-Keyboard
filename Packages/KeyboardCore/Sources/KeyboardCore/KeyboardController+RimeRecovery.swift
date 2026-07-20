@@ -51,6 +51,7 @@ extension KeyboardController {
             return effectsAfterChineseCompositionKey(appendFallbackCompositionKey(rimeKey), originalKey: key)
         }
 
+        let previousT9PathState = state.t9PinyinPathState
         let output: RimeOutput
         if let replacementInput = replacementRawInputForSymbolPageContinuation(appending: rimeKey) {
             output = engine.replaceInput(replacementInput)
@@ -79,7 +80,19 @@ extension KeyboardController {
         }
 
         applyRimeOutput(augmentRimeOutputIfNeeded(output))
-        let effects = consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+        let retainedFocusedSegment: Bool
+        if rimeKey.count == 1, let digit = rimeKey.first {
+            retainedFocusedSegment = retainFocusedT9SegmentAfterAppendingDigit(
+                previous: previousT9PathState,
+                digit: digit
+            )
+        } else {
+            retainedFocusedSegment = false
+        }
+        var effects = consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+        if retainedFocusedSegment {
+            effects.insert(.t9PinyinPathsChanged)
+        }
         return effectsAfterChineseCompositionKey(effects, originalKey: key)
     }
 
