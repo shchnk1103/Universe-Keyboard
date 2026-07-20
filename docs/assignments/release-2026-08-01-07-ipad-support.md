@@ -41,4 +41,5 @@
 ## Exploratory Environment Observation
 
 - **Observed:** `2026-07-20 Asia/Shanghai`; Device Hub reports a connected iPad Pro (11-inch, 3rd generation). A read-only installed-app query reports `Universe Keyboard` version `1.0` / build `1`.
+- **Home layout observation:** Human-provided portrait and landscape Home screenshots show the top navigation and local input-count card fully visible, with no observed clipping, overlap or unsafe-area collision. This is a static visual observation only.
 - **Boundary:** This only establishes that a user-deployed exploratory build is present. It provides no release conclusion for layout, keyboard behavior, accessibility, Full Access, performance, crash/jetsam or App Store support, and expires when the build or device state changes.
