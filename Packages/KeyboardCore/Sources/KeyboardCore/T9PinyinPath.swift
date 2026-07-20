@@ -297,6 +297,54 @@ public enum T9PinyinPathExtractor {
         return consumed < sourceDigits.count
     }
 
+    /// Pure ASCII digit run, or empty when `raw` is not digit-only.
+    public static func pureDigitRaw(_ raw: String?) -> String {
+        guard let raw, !raw.isEmpty else { return "" }
+        guard raw.unicodeScalars.allSatisfy(isASCIIDigit) else { return "" }
+        return raw
+    }
+
+    /// Remaining T9 raw after a partial Chinese selection.
+    ///
+    /// Real librime often keeps the **full** digit raw while preedit becomes
+    /// `你好ya`. Path bar and recovery tracking must use only the unresolved
+    /// suffix (e.g. `92` for `ya`), never the leading confirmed slots that still
+    /// start with `6 → m/n/o`.
+    ///
+    /// Rules (fail closed to `resultRaw` when unsure):
+    /// 1. Prefer `resultRaw` when it is already a shorter pure-digit suffix of the previous digits.
+    /// 2. When result still equals the previous pure-digit run, peel `suffix(remainingLetterCount)`
+    ///    using the comment-preferred remaining display (e.g. `ya` → 2 → last two digits).
+    /// 3. Otherwise keep `resultRaw` (letter/mixed remaining is authoritative).
+    public static func remainingT9RawAfterPartialCommit(
+        previousRaw: String?,
+        resultRaw: String?,
+        remainingDisplayPreedit: String
+    ) -> String? {
+        guard let resultRaw, !resultRaw.isEmpty else { return nil }
+        let previousDigits = pureDigitRaw(previousRaw)
+        let resultDigits = pureDigitRaw(resultRaw)
+
+        if !resultDigits.isEmpty,
+           !previousDigits.isEmpty,
+           previousDigits.hasSuffix(resultDigits),
+           resultDigits.count < previousDigits.count
+        {
+            return resultDigits
+        }
+
+        if !previousDigits.isEmpty,
+           resultDigits == previousDigits || resultDigits.isEmpty
+        {
+            let remainingLetters = asciiLetterCount(in: remainingDisplayPreedit)
+            if remainingLetters > 0, remainingLetters <= previousDigits.count {
+                return String(previousDigits.suffix(remainingLetters))
+            }
+        }
+
+        return resultRaw
+    }
+
     /// Build a full live replacement for one progressive syllable choice.
     ///
     /// Confirmed syllables become the apostrophe-delimited prefix; the focused
