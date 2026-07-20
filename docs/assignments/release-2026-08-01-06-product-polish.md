@@ -1,7 +1,7 @@
 # Assignment: RELEASE-2026-0801-06 — 首发键盘与主 App 产品打磨
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Assigned — Entry Criteria pending`
+**Lifecycle status:** `In Progress`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority
@@ -29,7 +29,7 @@
 
 ## Gates
 
-- **Entry Criteria:** Executors named; scope task decides incomplete-feature treatment; affected domain boundaries are explicit; no required field is `UNKNOWN`.
+- **Entry Criteria:** **Met.** Executors are named; the scope task defines the excluded Typing Intelligence treatment; the local-count-card boundary is explicit; no required field is `UNKNOWN`.
 - **Exit Criteria:** No visible control is knowingly a no-op; Toasts do not obscure navigation/content; supported layouts and accessibility states are usable; settings expose product concepts rather than engineering-only status; visual evidence and regression tests are reviewed.
 - **Stop Conditions:** Fix requires new product semantics or major feature; accessibility regresses; layout is validated only by one cached simulator state; raw input/commit behavior changes without Input Intelligence review.
 
