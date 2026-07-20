@@ -1,0 +1,39 @@
+# Assignment: RELEASE-2026-0801-07 — iPad 首发支持与验证
+
+**Policy version:** `1.0.0`
+**Lifecycle status:** `Assignment Pending`
+**Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
+
+## Authority
+
+- **Assignment Authority:** Product Lead
+- **Decision Source / Date:** Human Product Owner decided that iPad cannot be excluded from V1.0 in the active Codex task, `2026-07-20 Asia/Shanghai`
+- **Product Approver:** Human Product Owner acting as Product Lead
+
+## Assignment
+
+- **Domain Owner:** ⌨️ Keyboard Experience Maintainer
+- **Executor:** `UNKNOWN — Product Lead must name the Keyboard Experience execution thread`
+- **Environment Executor:** `UNKNOWN — Product Lead must name the iPad simulator and physical-device operator`
+- **Human Dependency:** Human Product Owner — provides/unlocks an iPad, enables the keyboard/Full Access as needed, and performs the final iPad Product Gate
+- **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward when support changes keyboard geometry, lifecycle, target configuration or cross-target contracts
+- **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer
+- **Supporting Domain:** 📱 App & Data Operations Maintainer for iPad main-App layout, settings and App Store material impact
+- **Handoff Target:** Quality Reviewer, then Product Lead and tasks 04/05
+
+## Boundary
+
+- **Scope:** Make the containing App and Keyboard Extension usable and verifiable on supported iPad orientations and size classes; establish the supported iPad matrix, keyboard geometry, accessibility states, screenshots and final device evidence required by the release scope.
+- **Non-goals:** No unsupported “universal” claim without a physical-device matrix; no new major keyboard feature; no change to input semantics, RIME deployment ownership or Full Access privacy contract without the required review.
+- **Required Inputs:** [`RELEASE-2026-0801-02`](release-2026-08-01-02-scope-freeze.md), `UI_STYLE_GUIDE.md`, `KEYBOARD_LAYOUT.md`, `RELEASE_CHECKLIST.md`, task 04 device matrix, task 05 screenshot/material requirements and final archive.
+
+## Gates
+
+- **Entry Criteria:** Executor and iPad environment operators named; supported iPad/OS/orientation matrix proposed; final or representative release-candidate build available; no required field is `UNKNOWN`.
+- **Exit Criteria:** Main App and keyboard layouts, VoiceOver, Dynamic Type, light/dark mode and rotation are reviewed on the supported matrix; physical-device results, screenshots and known limitations are handed to tasks 04/05; Quality issues an explicit conclusion.
+- **Stop Conditions:** Required iPad geometry demands an unapproved input/lifecycle redesign; device evidence is unavailable; iPad-only defect is hidden by excluding it from evidence; final archive differs from the tested build.
+
+## Handoff
+
+- **Required Handoff Content:** supported iPad matrix, devices/OS/orientations, screenshots, changed files, test results, accessibility observations, failures/skips, residual risk and App Store screenshot requirements.
+- **Revalidation Trigger:** iPad support target, keyboard geometry, orientation policy, deployment target, release archive or accessibility contract changes.

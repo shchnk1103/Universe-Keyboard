@@ -2,11 +2,22 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-07-19 Asia/Shanghai
+> **Updated:** 2026-07-20 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## RELEASE-2026-0801 — 2026 年 8 月 1 日 App Store 发布
+
+- **Lifecycle:** `Active — release coordination and Assignment bootstrap`
+- **Authority:** [`Release umbrella Assignment`](assignments/release-2026-08-01.md)
+- **Evidence source:** [`Release evidence and acceptance record`](evidence/release-2026-08-01-acceptance.md)
+- **Current state:** Scope freeze (`RELEASE-2026-0801-02`) is Executor-completed and awaits independent Architecture/Quality review. Seven remaining bounded child Assignments are `Assignment Pending`; their Executors and required environment/device operators remain `UNKNOWN` until the Human Product Owner names them.
+- **Frozen Product scope:** iPhone + iPad, iOS 26.0+, Chinese nine-key, precise pinyin, post-commit continuation and kaomoji content. Typing Intelligence and contextual typo correction are excluded from launch claims. The iOS 26.0 project-target change, iPad support and kaomoji content remain unimplemented/unverified release blockers; see the [scope record](assignments/release-2026-08-01-02-scope-freeze.md).
+- **Current blockers:** stable-toolchain archive readiness; iOS 26.0 target-change Assignment; iPad and kaomoji child-task completion; Full Access/onboarding closure; final physical-device/performance evidence; App Store materials and visible product-polish closure.
+- **Authority boundary:** this status does not authorize upload, App Store submission, skipped-gate acceptance or manual release.
+- **Next Product action:** name the Executor/Environment Executor for the iOS 26.0 target change, stable archive readiness, iPad support and kaomoji content.
 
 ## KEYBOARD-LAYOUT-9KEY-PINYIN-002 — 确定性选项与选拼音循环
 
