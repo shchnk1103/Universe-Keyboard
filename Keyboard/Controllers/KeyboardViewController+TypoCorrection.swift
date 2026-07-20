@@ -5,6 +5,9 @@ extension KeyboardViewController {
     /// 多错误检索的价值出现在用户完成一段连续拼音后，而不是每一个按键之后。
     /// 因此保留短暂防抖窗口：输入中的主路径只刷新普通 RIME 候选，停顿后再补充旁路候选。
     func scheduleContextualTypoCorrectionRefresh() {
+        // V1.0 首发不包含上下文纠错。保留 Debug 路径供基准与研发验证，
+        // 但 Release 绝不能在用户停顿后向候选栏注入这类额外候选。
+        #if DEBUG
         contextualTypoCorrectionWorkItem?.cancel()
 
         let expectedComposition = controller.state.currentComposition
@@ -24,5 +27,6 @@ extension KeyboardViewController {
         }
         contextualTypoCorrectionWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.18, execute: workItem)
+        #endif
     }
 }
