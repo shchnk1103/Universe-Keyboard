@@ -5,8 +5,9 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 ## 2026-07-20 — T9 Partial Commit 剩余显示与 path 刷新
 
 - Partial Commit 在 T9 下剩余 preedit 走 `T9PreeditResolver`（comment 优先）：选「你好」后 marked 为 `你好ya`，不再泄漏剩余 raw 数字 `92`。
-- Partial 成功后对剩余 raw **硬刷新** path bar provenance，避免仍显示原串首键的陈旧 `m/n/o`。
-- `remainingRawInput` / T9 `currentComposition` 仍保留数字 raw，供 Delete/恢复；`PartialCommitControllerTests` 增补回归。
+- 当 librime **保留整串 digit raw** 时，Core 按剩余拼音字母数剥离未确认后缀（`6442692` + `ya` → `92`），path bar 按剩余键重建（`wa/ya/za` + `w/x/y/z`），不再误用首键 `m/n/o`。
+- 整词 compact 合并改为**先首音节、再首键字母**（上限 5），避免字母位挤掉 `ya`。
+- `PartialCommitControllerTests` 覆盖剩余剥离与 path 重建。
 
 ## 2026-07-20 — 九宫格 path bar 音节级渐进（KEYBOARD-LAYOUT-9KEY-PINYIN-002 Amendment B）
 

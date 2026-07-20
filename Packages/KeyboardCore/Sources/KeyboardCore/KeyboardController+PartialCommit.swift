@@ -490,6 +490,12 @@ extension KeyboardController {
         let displayText: String
         let compositionTracker: String
 
+        // Previous raw may still be the full pre-selection digit run (librime often
+        // retains it). Prefer remainingRaw already stored under an active partial.
+        let previousRawForRemainder =
+            state.partialCommit?.remainingRawInput ?? state.lastRimeOutput?.rawInput
+
+        let remainingRawInput: String
         if isT9Remaining {
             let commentPreferred = T9PreeditResolver.visiblePreedit(
                 rawInput: rimeRawInput,
@@ -514,8 +520,14 @@ extension KeyboardController {
                 remainingPreeditText = rimePreeditText
                 displayText = confirmedText + rimePreeditText
             }
-            // T9 composition tracker is raw, matching non-partial T9 apply path.
-            compositionTracker = rimeRawInput
+            // Peel confirmed digit slots when librime keeps the full raw (e.g. 6442692
+            // after 你好 → remaining 92 for ya). Path bar must not see leading 6 → m/n/o.
+            remainingRawInput = T9PinyinPathExtractor.remainingT9RawAfterPartialCommit(
+                previousRaw: previousRawForRemainder,
+                resultRaw: rimeRawInput,
+                remainingDisplayPreedit: remainingPreeditText
+            ) ?? rimeRawInput
+            compositionTracker = remainingRawInput
         } else {
             displayText = partialDisplayText(
                 confirmedText: confirmedText,
@@ -525,14 +537,37 @@ extension KeyboardController {
                 confirmedText: confirmedText,
                 displayText: displayText
             )
+            remainingRawInput = rimeRawInput
             compositionTracker = remainingPreeditText
         }
 
-        state.lastRimeOutput = output
+        // Path discovery uses candidates from live output, but digit identity for the
+        // path bar must be the remaining raw (may differ from librime full raw).
+        let pathAlignedOutput: RimeOutput
+        if isT9Remaining,
+           remainingRawInput != rimeRawInput
+        {
+            pathAlignedOutput = RimeOutput(
+                rawInput: remainingRawInput,
+                composition: RimeComposition(
+                    preeditText: remainingPreeditText,
+                    cursorPosition: remainingPreeditText.count
+                ),
+                candidates: output.candidates,
+                committedText: output.committedText,
+                hasMorePages: output.hasMorePages,
+                highlightedIndex: output.highlightedIndex,
+                candidatePageNumber: output.candidatePageNumber
+            )
+        } else {
+            pathAlignedOutput = output
+        }
+
+        state.lastRimeOutput = pathAlignedOutput
         state.currentComposition = compositionTracker
         state.partialCommit = PartialCommitState(
             confirmedText: confirmedText,
-            remainingRawInput: rimeRawInput,
+            remainingRawInput: remainingRawInput,
             remainingPreeditText: remainingPreeditText,
             displayText: displayText,
             checkpoint: checkpoint,

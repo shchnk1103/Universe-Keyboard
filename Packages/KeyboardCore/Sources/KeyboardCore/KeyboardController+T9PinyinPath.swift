@@ -353,11 +353,11 @@ extension KeyboardController {
             paths = deterministicPaths
             discoveryMayHaveMore = false
         } else if isWholeMultiDigit {
+            // Native-style compact order: first-syllable options first (wa/ya/za…),
+            // then fill with first-key letters (w/x/y/z) up to compactLimit.
+            // Do not reserve all letter slots first — that used to drop `ya` when
+            // only one syllable slot remained after four WXYZ letters.
             let firstGroupPaths = T9PinyinPathExtractor.firstKeyGroupPaths(sourceDigits: pureDigits)
-            let syllableLimit = max(
-                0,
-                T9PinyinPathExtractor.compactLimit - firstGroupPaths.count
-            )
             var evidence = output.candidates
             if let engine = rimeEngine {
                 let window = engine.candidateWindow(
@@ -372,7 +372,7 @@ extension KeyboardController {
                 from: evidence,
                 sourceDigits: pureDigits,
                 confirmedSyllables: [],
-                limit: syllableLimit
+                limit: T9PinyinPathExtractor.compactLimit
             )
             let rank = Dictionary(
                 uniqueKeysWithValues: firstGroupLetters.enumerated().map { index, letter in
@@ -384,10 +384,14 @@ extension KeyboardController {
                 let right = rhs.displayText.first.flatMap { rank[$0] } ?? Int.max
                 return left < right
             }
-            paths = syllablePaths + firstGroupPaths
-            if paths.count > T9PinyinPathExtractor.compactLimit {
-                paths = Array(paths.prefix(T9PinyinPathExtractor.compactLimit))
+            var merged: [T9PinyinPath] = []
+            var seenDisplays = Set<String>()
+            for path in syllablePaths + firstGroupPaths {
+                guard merged.count < T9PinyinPathExtractor.compactLimit else { break }
+                guard seenDisplays.insert(path.displayText).inserted else { continue }
+                merged.append(path)
             }
+            paths = merged
         } else {
             // Non pure multi-digit: still comment-derived, but single-syllable
             // labels only (never "ni xian zai" as one compact cell).
