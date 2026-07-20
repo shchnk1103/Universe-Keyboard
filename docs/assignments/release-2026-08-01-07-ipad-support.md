@@ -29,7 +29,7 @@
 
 ## Gates
 
-- **Entry Criteria:** Executor and iPad environment operators named; supported iPad/OS/orientation matrix proposed; final or representative release-candidate build available; no required field is `UNKNOWN`.
+- **Entry Criteria:** Executor and iPad environment operators named; supported iPad/OS/orientation matrix proposed; final or representative release-candidate build available; no required field is `UNKNOWN`. Device Hub availability was observed on `2026-07-20 Asia/Shanghai` for an iPad Pro (11-inch, 3rd generation); this does not replace final-archive device evidence.
 - **Exit Criteria:** Main App and keyboard layouts, VoiceOver, Dynamic Type, light/dark mode and rotation are reviewed on the supported matrix; physical-device results, screenshots and known limitations are handed to tasks 04/05; Quality issues an explicit conclusion.
 - **Stop Conditions:** Required iPad geometry demands an unapproved input/lifecycle redesign; device evidence is unavailable; iPad-only defect is hidden by excluding it from evidence; final archive differs from the tested build.
 

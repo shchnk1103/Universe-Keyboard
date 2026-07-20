@@ -14,7 +14,7 @@
 
 - **Domain Owner:** 🧪 Quality, Performance & Release Maintainer
 - **Executor:** `UNKNOWN — Product Lead must name an independent Quality execution thread`
-- **Environment Executor:** `UNKNOWN — Product Lead must name each physical-device operator`
+- **Environment Executor:** Human Product Owner — physical-device operator for the connected iPhone 13 Pro and iPad Pro (11-inch, 3rd generation); current Codex task coordinates capture commands and records only the observed evidence
 - **Human Dependency:** Human Product Owner — provides/unlocks devices, enables keyboard/Full Access and decides any skipped-gate risk
 - **Architecture Reviewer:** `Not Applicable — evidence collection only; route discovered architecture defects separately`
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer, independent from any domain fix being evaluated
@@ -28,7 +28,7 @@
 
 ## Gates
 
-- **Entry Criteria:** Executor/device operators named; final release candidate available; devices and hosts recorded; capture method and privacy boundary agreed; no required field is `UNKNOWN`.
+- **Entry Criteria:** Independent Quality Executor named; physical-device operator named; final release candidate available; devices and hosts recorded; capture method and privacy boundary agreed; no required field is `UNKNOWN`. Device Hub availability was observed on `2026-07-20 Asia/Shanghai` for iPhone 13 Pro and iPad Pro (11-inch, 3rd generation), but this observation is not release evidence.
 - **Exit Criteria:** Required device matrix and metrics have current evidence; crash/jetsam classification and dSYM mapping are actionable; every failure/skipped row has owner and impact; Quality issues an explicit Pass/Fail/Blocked conclusion.
 - **Stop Conditions:** Wrong commit/build; Debug evidence used for product conclusion; real user text would be captured; unexplained termination; device/support scope missing; Product owner asked to accept risk through the Quality thread.
 
