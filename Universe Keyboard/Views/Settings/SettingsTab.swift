@@ -131,18 +131,6 @@ struct SettingsTab: View {
                 FeedbackSettingsView()
             }
 
-            SettingsNavigationLink(systemImage: "wand.and.stars", title: "智能纠错", subtitle: "误触纠错、基准覆盖") {
-                TypoCorrectionBenchmarkView()
-            }
-
-            SettingsNavigationLink(
-                systemImage: "chart.xyaxis.line",
-                title: "输入洞察",
-                subtitle: "本地统计、趋势与字符构成"
-            ) {
-                TypingIntelligenceView()
-            }
-
             VStack(spacing: 0) {
                 HStack(spacing: 12) {
                     ZStack {

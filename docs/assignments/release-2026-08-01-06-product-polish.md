@@ -40,6 +40,6 @@
 
 ## Executor Progress
 
-- **Resolved scope leak:** The retained Home `今日输入` card is now a static local-count display. It no longer navigates to `TypingIntelligenceView`, exposes the accessibility hint that promised trends, composition or data management, or displays the excluded streak/history indicator. The card continues to show only local Chinese, letter and Emoji counts.
+- **Resolved scope leak:** The retained Home `今日输入` card is now a static local-count display. It no longer navigates to `TypingIntelligenceView`, exposes the accessibility hint that promised trends, composition or data management, or displays the excluded streak/history indicator. The Settings tab no longer exposes the excluded `输入洞察` or `智能纠错` entries. The card continues to show only local Chinese, letter and Emoji counts.
 - **Verification:** `bash scripts/ensure_rime_vendor.sh verify` passed after restoring the already-pinned local Vendor artifacts to this isolated worktree. `Universe Keyboard` Debug build for the iPad Pro 11-inch (M5) simulator succeeded, and the launched Home screenshot retained the card without a visible navigation affordance.
 - **Still open:** This does not close VoiceOver, Dynamic Type, appearance, toast/safe-area, settings-information-architecture, physical-device or final-archive review. Those require the remaining matrix and independent Quality conclusion.
