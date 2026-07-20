@@ -34,6 +34,16 @@ Candidate presentation evolved from simple page display to accumulated paging an
 
 Current sources: `PROJECT_CONTEXT.md`, `UI_STYLE_GUIDE.md`.
 
+## Nine-Key Precise Refinement Gains Retained Choice Identity
+
+The first precise-pinyin design treated current RIME comments as the only path source and used an expanded panel. Real pinned-runtime evidence showed that a single `MNO` digit could expose only comment `o`, while all three direct refinements remained valid. The architecture now uses a narrow, bounded canonical key-identity source for a single unresolved digit, retains that issued choice snapshot across successful refinement, and routes direct taps plus repeated **选拼音** presses through one transactional Core path. Multi-key Chinese candidates and ranking remain RIME-owned.
+
+Native iOS 27 observation then exposed a second boundary: whole-composition choices (`mi / ni`) coexist with first-key choices (`m / n / o`), and an explicitly selected first key remains focused across later digits. ADR 0021 Amendment A added a segmented state machine. Pinned librime proved that raw/candidate survival alone is not authorization (`n'i` falls back); bounded per-key probes must find the requested apostrophe-delimited segment in live comments. This produces `g / h` without a static pinyin graph, restores the ambiguous raw after probing, and keeps segment confirmation separate from candidate-finalizing **选定**.
+
+Amendment B further forbids multi-syllable whole compact labels (e.g. `ni xian zai` as one cell), exposes progressive first-syllable + first-key choices only, advances with syllable-level next sets after confirmation, and treats a **direct path tap** as immediate confirm/advance while **选拼音** remains tentative first/next/wrap only.
+
+Decisions: ADR 0020 and ADR 0021 (Amendments A/B). Current source: `KEYBOARD_LAYOUT.md` and `input-pipeline-and-marked-text.md`.
+
 ## Visibility Cleanup Becomes A Product Contract
 
 Earlier recovery thinking treated reappearance as an opportunity to restore state. The accepted model now abandons unfinished composition, marked text, Partial Commit and candidate caches because host state may no longer match the in-memory session. Active-session recovery remains separate.

@@ -102,6 +102,7 @@ class KeyboardViewController: UIInputViewController {
     var isPinyinPathExpanded = false
     weak var t9PinyinPathBarView: T9PinyinPathBarView?
     weak var t9SelectPinyinButton: UIButton?
+    weak var t9SpaceButton: UIButton?
     var pinyinPathExpandedPanel: UIView?
     var pinyinPathCollectionView: UICollectionView?
     var accumulatedPinyinPaths: [T9PinyinPath] = []

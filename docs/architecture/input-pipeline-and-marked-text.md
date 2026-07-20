@@ -30,14 +30,17 @@ The following values are related but not interchangeable:
 
 Never reconstruct raw input from display preedit.
 
-## T9 Precise Pinyin Path Selection (ADR 0020)
+## T9 Precise Pinyin Path Selection (ADR 0020 + ADR 0021)
 
 When `usesT9InputSemantics` is true:
 
-- `KeyboardAction.selectT9PinyinPath` is composition refinement via `RimeEngine.replaceInput`. It updates marked preedit and Chinese candidates only on a valid refine; it never finalizes path letters/digits to the host.
+- `KeyboardAction.selectT9PinyinPath` and `cycleT9PinyinPath` converge on the same composition-refinement transaction via `RimeEngine.replaceInput`. They update marked preedit and Chinese candidates only on a valid refine; they never finalize path letters/digits to the host.
 - Failed refine is transactional: restore previous `RimeOutput`, composition, path state and marked text.
 - Active T9 composition includes pure digits, pure letters and mixed letter/digit/`'` raw input. Space/Return without candidates and language switch must not host-commit that raw input.
-- Path strings are parsed from Rime candidate comments in KeyboardCore (`T9PinyinPathExtractor`); UIKit only displays and forwards selection.
+- A single unresolved digit obtains a constant-size ordered choice set from the canonical T9 key identity; longer digit/mixed paths are parsed from compatible Rime candidate comments. Neither source produces or ranks Chinese candidates.
+- After a successful single-key refinement, Core retains the issued choices/source and selected path while live RIME output moves from digit to letter. The next cycle validates against that retained snapshot; new input and lifecycle transitions rebuild or clear it.
+- UIKit only displays Core state and forwards direct/cycle actions. It must not own the cycle index or reopen the predecessor path panel.
+- Successful explicit refinement writes the exact selected path display to marked text after applying live RIME output. Candidate-comment preference remains the default for ordinary T9 output, but does not override explicit path intent. Failed refinement restores the exact previous marked display.
 - Path state (`t9PinyinPathState`) clears on final candidate commit, abandon/visibility cleanup, and when T9 composition ends.
 - Never reconstruct raw input from the path bar display text.
 
@@ -116,6 +119,11 @@ Direct symbols/text first finalize any active composition through the appropriat
 
 - Partial Commit may leave confirmed Chinese plus remaining composition inside one marked range.
 - A clean Delete restore uses the original raw input and may require rebuilding the RIME session; `replaceInput` alone can preserve selected segmentation.
+- T9 progressive path selection (ADR 0021 Amendment B) keeps original digit groups and focus state in KeyboardCore while RIME owns live raw/candidates. Compact paths are first-syllable + first-key letters only — never multi-syllable whole labels.
+- A **direct path-bar tap** selects and, when remaining digits exist, immediately confirms/advances (syllable-level next set, or letter-group fallback). **选拼音** only first/next/wraps the tentative selection and never confirms a segment by itself.
+- Appending a digit after a **tentative** (选拼音) selection preserves the focused selection until a direct path tap confirms/advances.
+- Advancing focus prefers live-comment syllables at the next segment index; single-letter key-group probes remain the fallback. Probes restore the prior ambiguous raw before publishing the new unselected focus, and never commit host text.
+- In active T9 composition, the `选定` space key still executes normal first/highlighted-candidate finalization. It is not a segment-confirm gesture.
 - Continued typing invalidates the single reversible checkpoint according to the current Partial Commit contract.
 - Typo correction Partial Commit remains separately gated and must preserve original typo input for restore.
 

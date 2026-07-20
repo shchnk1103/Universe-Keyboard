@@ -168,7 +168,8 @@ extension KeyboardViewController {
         selectPinyinButton.titleLabel?.adjustsFontSizeToFitWidth = true
         selectPinyinButton.titleLabel?.minimumScaleFactor = 0.45
         selectPinyinButton.accessibilityLabel = "选拼音"
-        selectPinyinButton.accessibilityHint = "打开完整拼音路径列表"
+        // The live state refresh supplies first/next wording and current value.
+        selectPinyinButton.accessibilityHint = "选择拼音"
         t9SelectPinyinButton = selectPinyinButton
         updateSelectPinyinButtonAvailability()
 
@@ -176,6 +177,7 @@ extension KeyboardViewController {
             title: spaceButtonTitle,
             action: #selector(insertSpace(_:))
         )
+        t9SpaceButton = spaceButton
         applyKeyStyle(.space, to: spaceButton)
         let spaceLongPress = UILongPressGestureRecognizer(
             target: self,

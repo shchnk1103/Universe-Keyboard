@@ -175,9 +175,15 @@ extension KeyboardController {
             return effects
         }
         if let engine = rimeEngine, engine.isComposing() {
+            let previousT9PathState = state.t9PinyinPathState
             let result = engine.deleteBackward()
             applyRimeOutputPreservingPartialCommit(augmentRimeOutputIfNeeded(result))
-            return .compositionChanged
+            let restoredFocus = restoreFocusedT9SegmentAfterDeletion(
+                previous: previousT9PathState
+            )
+            return restoredFocus
+                ? .compositionChanged.union(.t9PinyinPathsChanged)
+                : .compositionChanged
         }
         if !state.currentComposition.isEmpty {
             state.currentComposition.removeLast()

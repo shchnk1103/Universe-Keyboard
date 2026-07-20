@@ -2,6 +2,24 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-20 — 九宫格 path bar 音节级渐进（KEYBOARD-LAYOUT-9KEY-PINYIN-002 Amendment B）
+
+- 整词态 compact 栏禁止展示整句多音节路径（如 `ni xian zai` 叠字）；只保留**首音节**（`mi` / `ni`…）+ **首键字母**（`m` / `n` / `o`），上限 5。
+- 确认已选首音节后，下一段改为**音节级**选项（`xian` / `zhan`…），由 live RIME comment 在对应分段索引授权；若无多字母音节则回退到下一键字母组（`g` / `h`）。
+- **直接点击** path 选项：一次即确认并推进下一段；**选拼音**仅在当前焦点 first/next/wrap 暂选，不负责确认推进。
+- Path bar UI 强制单行截断，避免固定 34pt 行高内换行重叠。
+- 聚焦测试 `T9PinyinPathTests` 全绿；独立 Architecture/Quality 与真机 Product Gate 仍属 002 未关闭项。
+
+## 2026-07-19 — 九宫格单键精准选项与选拼音循环（KEYBOARD-LAYOUT-9KEY-PINYIN-002，Active）
+
+- `MNO` 等单个九键按键现在从 KeyboardCore 的规范键位身份生成完整有序选项；`6` 即使在 RIME comment 只有 `o` 时也显示 `m / n / o`。多键路径仍由兼容 RIME comment 决定，不新增候选引擎。
+- **选拼音** 改为首次/下一个/循环选择，并与路径直接点击共用同一事务式 `replaceInput`；成功 refine 保留单键选择快照，失败完整回滚，所有生命周期边界清除陈旧授权。
+- 选中路径现在复用首选候选的反转色圆角高亮；初始无高亮。显式选择后，宿主 marked text 严格显示当前 `m/n/o`，不再被首候选的完整拼音 comment 覆盖；失败切换恢复此前显示。
+- 固定 34 pt 路径栏、候选栏几何和 Extension session-only 边界不变；前序完整路径面板不再由产品交互入口打开。
+- pinned librime `1.16.1` Spike 已证明 `m / n / o` 均返回非空中文候选且不提交文本；KeyboardCore 全量测试、RimeBridgeTests、主工程 Simulator 测试及 Debug/Release 严格构建通过。独立 Architecture/Quality 审查、clean-commit Spike 和真机 Product Gate 仍待完成。
+- Amendment A 新增分段消歧状态机：`MNO → GHI` 的整词态显示 `mi / ni / m / n / o`；已暂选的 `n` 会跨后续数字保持焦点和选中态，点击已选 `n` 才确认并推进到无选中态的 `g / h`。**选拼音**只在当前焦点循环，活动 T9 的空格标题为 **选定**且仍提交首个/高亮中文候选。
+- 最终 pinned-librime 硬门证明 `n'g / n'h` 的 live comment 含对应第二分段，而 `n'i` 仅产生无第二分段的回退 comment；机器断言为 `authorizedSuffixes=g|h`。实现使用每个物理键至多 4 次有界 session probe，不维护静态拼音图；聚焦测试 `34/34`、KeyboardCore 全量 `628/628`、Debug/Release 严格构建通过，交互 Product Gate 仍按独立证据处理。
+
 ## 2026-07-19 — 九宫格精准选拼音（KEYBOARD-LAYOUT-9KEY-PINYIN-001，Accepted / Closed）
 
 - Product Decision + Assignment `Ready→Active→Accepted / Closed`；ADR 0020 扩展 ADR 0018：混合 T9 raw input、composition refinement、comment 路径来源；双 revision（`rawInputGeneration` / `provenanceRevision`）与 new-output hard apply。

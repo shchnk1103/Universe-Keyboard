@@ -66,6 +66,537 @@ final class T9PinyinPathTests: XCTestCase {
         XCTAssertEqual(paths.map(\.replacementRawInput), ["ni", "mi"])
     }
 
+    func testCanonicalSingleDigitChoicesCoverEveryNineKeyGroup() {
+        let expected = [
+            "2": ["a", "b", "c"],
+            "3": ["d", "e", "f"],
+            "4": ["g", "h", "i"],
+            "5": ["j", "k", "l"],
+            "6": ["m", "n", "o"],
+            "7": ["p", "q", "r", "s"],
+            "8": ["t", "u", "v"],
+            "9": ["w", "x", "y", "z"],
+        ]
+
+        for (digit, choices) in expected {
+            XCTAssertEqual(
+                T9PinyinPathExtractor.deterministicSingleDigitPaths(rawInput: digit)
+                    .map(\.replacementRawInput),
+                choices
+            )
+        }
+        XCTAssertTrue(
+            T9PinyinPathExtractor.deterministicSingleDigitPaths(rawInput: "64").isEmpty
+        )
+    }
+
+    func testSingleDigitUsesCompleteKeyChoicesWhenRimeCommentsOnlyExposeO() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+
+        _ = controller.handle(.insertKey("6"))
+
+        let state = controller.state.t9PinyinPathState
+        XCTAssertEqual(state.compactPaths.map(\.replacementRawInput), ["m", "n", "o"])
+        XCTAssertEqual(state.issuedReplacementKeys, ["m", "n", "o"])
+        XCTAssertEqual(state.retainedChoiceSourceRawInput, "6")
+        XCTAssertNil(state.selectedPath)
+    }
+
+    func testCycleSelectsMThenNThenOAndWrapsWhileRetainingChoices() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        let client = FakeTextInputClient()
+        controller.textClient = client
+        _ = controller.handle(.insertKey("6"))
+
+        for expected in ["m", "n", "o", "m"] {
+            let effects = controller.handle(.cycleT9PinyinPath)
+            XCTAssertTrue(effects.contains(.compositionChanged))
+            XCTAssertTrue(effects.contains(.t9PinyinPathsChanged))
+            XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, expected)
+            XCTAssertEqual(
+                controller.state.t9PinyinPathState.selectedPath?.replacementRawInput,
+                expected
+            )
+            XCTAssertEqual(
+                controller.state.t9PinyinPathState.compactPaths.map(\.replacementRawInput),
+                ["m", "n", "o"]
+            )
+            XCTAssertEqual(controller.state.t9PinyinPathState.retainedChoiceSourceRawInput, "6")
+            XCTAssertNil(
+                controller.state.lastRimeOutput?.committedText,
+                "precise refinement must never produce committed RIME text"
+            )
+            XCTAssertEqual(
+                client.markedText,
+                expected,
+                "explicit cycle selection must display the exact selected path"
+            )
+            XCTAssertEqual(controller.state.insertedPreeditText, expected)
+        }
+    }
+
+    func testDirectSelectionCanSwitchWithinRetainedSingleDigitSnapshot() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        _ = controller.handle(.insertKey("6"))
+
+        _ = controller.handle(
+            .selectT9PinyinPath(T9PinyinPath(displayText: "m", replacementRawInput: "m"))
+        )
+        let effects = controller.handle(
+            .selectT9PinyinPath(T9PinyinPath(displayText: "n", replacementRawInput: "n"))
+        )
+
+        XCTAssertTrue(effects.contains(.compositionChanged))
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n")
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.replacementRawInput),
+            ["m", "n", "o"]
+        )
+        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.replacementRawInput, "n")
+    }
+
+    func testNewDigitRetainsFocusedSegmentSnapshotAndSelection() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        _ = controller.handle(.insertKey("6"))
+        _ = controller.handle(.cycleT9PinyinPath) // 6 -> m
+
+        _ = controller.handle(.insertKey("4")) // m -> m4
+
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "m4")
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "64")
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 0)
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.replacementRawInput),
+            ["m4", "n4", "o4"]
+        )
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.selectedPath?.replacementRawInput,
+            "m4"
+        )
+    }
+
+    func testWholeCompositionMergesFullPathsAndFirstGroupChoicesInNativeOrder() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+
+        _ = controller.handle(.insertKey("6"))
+        _ = controller.handle(.insertKey("4"))
+
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["mi", "ni", "m", "n", "o"]
+        )
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.replacementRawInput),
+            ["mi", "ni", "m4", "n4", "o4"]
+        )
+        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
+    }
+
+    func testWholeCompositionNeverSurfacesMultiSyllableLabels() {
+        // ni/xian/zai ↔ 64 / 9426 / 924 — multi-syllable comments must collapse
+        // to first-syllable compact labels only.
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "649426": ["你先", "你站"],
+                "6": ["吗"],
+                "64": ["你"],
+            ],
+            comments: [
+                "649426": ["ni xian", "ni zhan", "mi xian"],
+                "6": ["o"],
+                "64": ["ni", "mi"],
+            ]
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+
+        for digit in ["6", "4", "9", "4", "2", "6"] {
+            _ = controller.handle(.insertKey(digit))
+        }
+
+        let displays = controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
+        XCTAssertFalse(displays.contains(where: { $0.contains(" ") }))
+        XCTAssertTrue(displays.contains("ni") || displays.contains("mi"))
+        XCTAssertTrue(displays.contains("m"))
+        XCTAssertTrue(displays.contains("n"))
+        XCTAssertTrue(displays.contains("o"))
+        XCTAssertLessThanOrEqual(displays.count, 5)
+    }
+
+    func testConfirmFirstSyllableAdvancesToNextSyllableChoices() {
+        // 你先 / 你站: ni(64) + xian|zhan(9426)
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "649426": ["你先", "你站"],
+                "ni9426": ["你先", "你站"],
+                "ni'xian": ["你先"],
+                "ni'zhan": ["你站"],
+                "6": ["吗"],
+                "64": ["你"],
+                "ni": ["你"],
+                "n": ["你"],
+                "m": ["吗"],
+                "o": ["哦"],
+            ],
+            comments: [
+                "649426": ["ni xian", "ni zhan"],
+                "ni9426": ["ni xian", "ni zhan"],
+                "ni'xian": ["ni'xian"],
+                "ni'zhan": ["ni'zhan"],
+                "6": ["o"],
+                "64": ["ni", "mi"],
+                "ni": ["ni"],
+                "n": ["ni"],
+                "m": ["ma"],
+                "o": ["ou"],
+            ]
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+
+        for digit in ["6", "4", "9", "4", "2", "6"] {
+            _ = controller.handle(.insertKey(digit))
+        }
+
+        let ni = try! XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "ni" }
+        )
+        XCTAssertEqual(ni.replacementRawInput, "ni9426")
+        // Direct path tap confirms immediately — no second tap required.
+        let effects = controller.handle(.selectT9PinyinPath(ni))
+        XCTAssertTrue(effects.contains(.t9PinyinPathsChanged))
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["ni"])
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 1)
+        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
+
+        let nextDisplays = controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
+        XCTAssertFalse(nextDisplays.contains(where: { $0.contains(" ") }))
+        XCTAssertEqual(Set(nextDisplays), Set(["xian", "zhan"]))
+        XCTAssertFalse(nextDisplays.contains("ni"))
+    }
+
+    func testSelectPinyinCyclesWithoutConfirmingSegment() {
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "649426": ["你先", "你站"],
+                "ni9426": ["你先", "你站"],
+                "mi9426": ["米线"],
+                "6": ["吗"],
+                "n": ["你"],
+                "m": ["吗"],
+                "o": ["哦"],
+            ],
+            comments: [
+                "649426": ["ni xian", "ni zhan", "mi xian"],
+                "ni9426": ["ni xian", "ni zhan"],
+                "mi9426": ["mi xian"],
+                "6": ["o"],
+                "n": ["ni"],
+                "m": ["ma"],
+                "o": ["ou"],
+            ]
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        for digit in ["6", "4", "9", "4", "2", "6"] {
+            _ = controller.handle(.insertKey(digit))
+        }
+
+        // 选拼音 only moves tentative selection; does not advance to next syllable.
+        _ = controller.handle(.cycleT9PinyinPath)
+        XCTAssertNotNil(controller.state.t9PinyinPathState.selectedPath)
+        XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 0)
+        let firstDisplays = controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
+        XCTAssertTrue(firstDisplays.contains("ni") || firstDisplays.contains("mi"))
+        XCTAssertFalse(firstDisplays.contains("xian"))
+    }
+
+    func testProgressiveSyllableExtractorTakesOnlyCurrentSegment() {
+        let candidates = [
+            RimeCandidate(text: "你现在", comment: "ni xian zai", globalIndex: 0),
+            RimeCandidate(text: "你站在", comment: "ni zhan zai", globalIndex: 1),
+            RimeCandidate(text: "米线", comment: "mi xian", globalIndex: 2),
+        ]
+        // ni(64) xian|zhan(9426) zai(924)
+        let source = "649426924"
+        let first = T9PinyinPathExtractor.progressiveSyllablePaths(
+            from: candidates,
+            sourceDigits: source,
+            confirmedSyllables: [],
+            limit: 5
+        )
+        XCTAssertEqual(first.map(\.displayText), ["ni", "mi"])
+        XCTAssertFalse(first.contains(where: { $0.displayText.contains(" ") }))
+
+        let second = T9PinyinPathExtractor.progressiveSyllablePaths(
+            from: candidates,
+            sourceDigits: source,
+            confirmedSyllables: ["ni"],
+            limit: 5
+        )
+        XCTAssertEqual(Set(second.map(\.displayText)), Set(["xian", "zhan"]))
+        XCTAssertTrue(second.allSatisfy { $0.replacementRawInput.hasPrefix("ni'") })
+    }
+
+    func testSelectedSegmentTapConfirmsAndAdvancesToLiveAuthorizedGH() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        _ = controller.handle(.insertKey("6"))
+        _ = controller.handle(.cycleT9PinyinPath) // m
+        _ = controller.handle(.cycleT9PinyinPath) // n
+        _ = controller.handle(.insertKey("4"))
+
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["m", "n", "o"]
+        )
+        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "n")
+
+        let selectedN = try! XCTUnwrap(controller.state.t9PinyinPathState.selectedPath)
+        let effects = controller.handle(.selectT9PinyinPath(selectedN))
+
+        XCTAssertTrue(effects.contains(.t9PinyinPathsChanged))
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n4")
+        XCTAssertEqual(engine.sessionComposition, "n4")
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["g", "h"]
+        )
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.replacementRawInput),
+            ["n'g", "n'h"]
+        )
+        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 1)
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["n"])
+        XCTAssertNil(controller.state.lastRimeOutput?.committedText)
+    }
+
+    func testSelectPinyinSwitchesTentativeValueWithoutAdvancingSegment() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        _ = controller.handle(.insertKey("6"))
+        _ = controller.handle(.cycleT9PinyinPath) // m
+        _ = controller.handle(.insertKey("4"))
+
+        // 选拼音 cycles m → n without confirming/advancing to g/h.
+        _ = controller.handle(.cycleT9PinyinPath) // n
+
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n4")
+        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "n")
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["m", "n", "o"]
+        )
+        XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 0)
+    }
+
+    func testDirectPathTapOnSiblingConfirmsAndAdvances() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        _ = controller.handle(.insertKey("6"))
+        _ = controller.handle(.cycleT9PinyinPath) // m
+        _ = controller.handle(.insertKey("4"))
+
+        let n = try! XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "n" }
+        )
+        // Finger tap on n is confirmation, not merely tentative switch.
+        _ = controller.handle(.selectT9PinyinPath(n))
+
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["n"])
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 1)
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["g", "h"]
+        )
+        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
+    }
+
+    func testDeletePendingDigitRestoresPriorFocusedChoice() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        let client = FakeTextInputClient()
+        controller.textClient = client
+        _ = controller.handle(.insertKey("6"))
+        _ = controller.handle(.cycleT9PinyinPath) // m
+        _ = controller.handle(.cycleT9PinyinPath) // n
+        _ = controller.handle(.insertKey("4"))
+
+        let effects = controller.handle(.deleteBackward)
+
+        XCTAssertTrue(effects.contains(.t9PinyinPathsChanged))
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n")
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "6")
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["m", "n", "o"]
+        )
+        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "n")
+        XCTAssertEqual(client.markedText, "n")
+    }
+
+    func testThreeGroupFlowRetainsMiddleFocusAndAdvancesFromLiveEvidence() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        _ = controller.handle(.insertKey("6"))
+        _ = controller.handle(.cycleT9PinyinPath) // m
+        _ = controller.handle(.cycleT9PinyinPath) // n
+        _ = controller.handle(.insertKey("4"))
+        let selectedN = try! XCTUnwrap(controller.state.t9PinyinPathState.selectedPath)
+        _ = controller.handle(.selectT9PinyinPath(selectedN)) // focus g/h
+
+        let g = try! XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "g" }
+        )
+        _ = controller.handle(.selectT9PinyinPath(g))
+        _ = controller.handle(.insertKey("5"))
+
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n'g5")
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "645")
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 1)
+        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "g")
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["g", "h"]
+        )
+
+        let selectedG = try! XCTUnwrap(controller.state.t9PinyinPathState.selectedPath)
+        _ = controller.handle(.selectT9PinyinPath(selectedG))
+
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n'g5")
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 2)
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["n", "g"])
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["j", "k"]
+        )
+        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
+    }
+
+    func testRepeatedWholePathTapDoesNotAdvanceSegmentOrCommit() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        _ = controller.handle(.insertKey("6"))
+        _ = controller.handle(.insertKey("4"))
+        let mi = try! XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "mi" }
+        )
+        _ = controller.handle(.selectT9PinyinPath(mi))
+        let selectedMi = try! XCTUnwrap(controller.state.t9PinyinPathState.selectedPath)
+
+        _ = controller.handle(.selectT9PinyinPath(selectedMi))
+
+        // Full-coverage first syllable ("mi" on "64") has no remaining digits, so a
+        // second tap must not confirm/advance or host-commit. Focus may remain at 0.
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "mi")
+        XCTAssertNil(controller.state.lastRimeOutput?.committedText)
+        XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "mi")
+        XCTAssertNotEqual(
+            controller.state.t9PinyinPathState.focusedSegmentIndex,
+            1,
+            "no remaining digits means confirm/advance must not move focus"
+        )
+    }
+
+    func testLiveSegmentAuthorizationRejectsFallbackOnlyRawRetention() {
+        let g = [RimeCandidate(text: "能够", comment: "neng'gou")]
+        let h = [RimeCandidate(text: "女孩", comment: "nv'hai")]
+        let i = [RimeCandidate(text: "那", comment: "na")]
+
+        XCTAssertTrue(
+            T9PinyinPathExtractor.candidateCommentsAuthorizeSegment(
+                g, segmentIndex: 1, startingWith: "g"
+            )
+        )
+        XCTAssertTrue(
+            T9PinyinPathExtractor.candidateCommentsAuthorizeSegment(
+                h, segmentIndex: 1, startingWith: "h"
+            )
+        )
+        XCTAssertFalse(
+            T9PinyinPathExtractor.candidateCommentsAuthorizeSegment(
+                i, segmentIndex: 1, startingWith: "i"
+            )
+        )
+    }
+
+    func testCycleFailureRollsBackRetainedChoicesAndSelection() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        let client = FakeTextInputClient()
+        controller.textClient = client
+        _ = controller.handle(.insertKey("6"))
+        _ = controller.handle(.cycleT9PinyinPath) // selected m
+
+        engine.replaceInputScript = [
+            RimeOutput(rawInput: "n", composition: nil, candidates: [], highlightedIndex: -1),
+            RimeOutput(
+                rawInput: "m",
+                composition: RimeComposition(preeditText: "m", cursorPosition: 1),
+                candidates: [RimeCandidate(text: "吗", comment: "m")],
+                highlightedIndex: 0
+            ),
+        ]
+
+        let effects = controller.handle(.cycleT9PinyinPath)
+
+        XCTAssertTrue(effects.contains(.compositionChanged))
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "m")
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.replacementRawInput),
+            ["m", "n", "o"]
+        )
+        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.replacementRawInput, "m")
+        XCTAssertEqual(controller.state.t9PinyinPathState.retainedChoiceSourceRawInput, "6")
+        XCTAssertEqual(
+            client.markedText,
+            "m",
+            "rollback must restore the marked path selected before the failed cycle"
+        )
+    }
+
     func testMixedT9CompositionPolicyNeverLeaksRaw() {
         let mixed = "ni4"
         XCTAssertTrue(
@@ -479,10 +1010,11 @@ final class T9PinyinPathTests: XCTestCase {
         controller.state.currentComposition = "64"
         _ = controller.refreshT9PinyinPathState()
 
-        XCTAssertTrue(controller.state.t9PinyinPathState.compactPaths.isEmpty)
-        XCTAssertTrue(controller.state.t9PinyinPathState.issuedReplacementKeys.isEmpty)
-        XCTAssertTrue(controller.state.t9PinyinPathState.discoveryMayHaveMore)
-        XCTAssertEqual(controller.t9PinyinPathAvailability(), .discoveryPending)
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["m", "n", "o"]
+        )
+        XCTAssertEqual(controller.t9PinyinPathAvailability(), .pathsAvailable)
         XCTAssertTrue(controller.hasSelectableT9PinyinPaths())
 
         // Panel-sized window discovers issued paths past the hot-path frontier.
@@ -753,8 +1285,11 @@ final class T9PinyinPathTests: XCTestCase {
         controller.textClient = FakeTextInputClient()
         _ = controller.handle(.insertKey("6"))
         _ = controller.handle(.insertKey("4"))
-        XCTAssertTrue(controller.state.t9PinyinPathState.compactPaths.isEmpty)
-        XCTAssertFalse(controller.hasSelectableT9PinyinPaths())
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["m", "n", "o"]
+        )
+        XCTAssertTrue(controller.hasSelectableT9PinyinPaths())
     }
 
     func testPathWindowGenerationGuardDropsStaleExtend() {
@@ -782,17 +1317,44 @@ final class T9PinyinPathTests: XCTestCase {
             dictionary: [
                 "6": ["吗", "你", "哦"],
                 "64": ["你", "密"],
+                "m": ["吗", "妈"],
+                "n": ["你", "年"],
                 "o": ["哦", "噢"],
+                "m4": ["密"],
                 "ni": ["你", "呢"],
                 "ni4": ["你"],
+                "n4": ["你", "年"],
+                "n'g": ["能够", "那个"],
+                "n'h": ["女孩", "你会"],
+                "n'i": ["那", "年"],
+                "n'g5": ["能够见", "那个家"],
+                "n'g'j": ["能够见", "那个家"],
+                "n'g'k": ["能够看", "那个口"],
+                "n'g'l": ["能够", "那个"],
                 "mi": ["密"],
             ],
             comments: [
-                "6": ["m", "n", "o"],
+                // Mirrors pinned librime evidence: only `o` is exposed by comments.
+                "6": ["o", "o", "o"],
                 "64": ["ni", "mi"],
-                "o": ["o", "o"],
+                // Deliberately longer than the selected raw path. This guards
+                // against candidate comments replacing explicit m/n/o display.
+                "m": ["ma", "ma"],
+                "n": ["ni", "nian"],
+                "o": ["ou", "ou"],
+                "m4": ["mi"],
                 "ni": ["ni", "ne"],
                 "ni4": ["ni"],
+                "n4": ["ni", "ni"],
+                "n'g": ["neng'gou", "na'ge"],
+                "n'h": ["nv'hai", "ni'hui"],
+                // Exact raw survives, but there is no second apostrophe segment.
+                "n'i": ["na", "nian"],
+                "n'g5": ["neng'gou'jian", "na'ge'jia"],
+                "n'g'j": ["neng'gou'jian", "na'ge'jia"],
+                "n'g'k": ["neng'gou'kan", "na'ge'kou"],
+                // Raw remains exact, but no third apostrophe-delimited `l` segment.
+                "n'g'l": ["neng'gou", "na'ge"],
                 "mi": ["mi"],
             ]
         )

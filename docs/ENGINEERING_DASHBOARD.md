@@ -2,11 +2,25 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-07-18 Asia/Shanghai
+> **Updated:** 2026-07-19 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## KEYBOARD-LAYOUT-9KEY-PINYIN-002 — 确定性选项与选拼音循环
+
+- **Lifecycle:** `Active — Amendment B local implementation; review/Product Gate pending`
+- **Authority:** [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-002`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md) + [`Assignment`](assignments/keyboard-layout-9key-pinyin-002.md)
+- **Current phase:** Amendment B progressive-syllable path bar implemented locally; independent review and physical-device Product Gate next (covers A+B)
+- **Completed gates:** [ADR 0021](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md) Accepted (+ Amendments A/B); pinned librime `1.16.1` Spike PASS for `m/n/o` (`9/9/4` candidates, no committed text); Core focused path tests pass after Amendment B
+- **Delivered locally:** canonical single-key choices (`6 → m/n/o`), retained selection snapshot, direct/cycle shared transaction, first/next/wrap **选拼音**, selected accessibility state
+- **Latest acceptance fix:** visible inverse-color selected-path highlight and exact `m/n/o` marked-text display implemented; focused/full Core tests, main scheme Simulator tests, and Debug/Release strict builds were refreshed and passed
+- **Amendment A delivered locally:** `64 → mi/ni/m/n/o`; retained `n` focus across later `GHI`; selected-item tap confirms/advances to live-authorized `g/h`; active T9 space title `选定` but action remains first-candidate commit. Pinned librime hard gate passed with `authorizedSuffixes=g|h` and fallback-only `i` rejected.
+- **Amendment B delivered locally (2026-07-20):** ban multi-syllable whole compact labels; first-syllable + first-key letters only; **direct path tap** confirms/advances immediately (选拼音 only cycles tentative selection); syllable-level next choices with letter-group fallback; path bar single-line UI defense. Focused `T9PinyinPathTests` `39/39` PASS.
+- **Pending:** clean-commit Spike evidence, independent Architecture/Quality reviews, and physical-device Product Gate; see [review handoff](assignments/keyboard-layout-9key-pinyin-002-review-handoff.md) and [human handoff](assignments/keyboard-layout-9key-pinyin-002-product-gate-human-handoff.md)
+- **Human dependency:** physical-device comparison against the supplied native-keyboard behavior before Product Gate
+- **Predecessor:** `KEYBOARD-LAYOUT-9KEY-PINYIN-001` remains `Accepted / Closed`; this Work Item does not rewrite its history
 
 ## KEYBOARD-LAYOUT-9KEY-PINYIN-001 — 九宫格精准选拼音
 

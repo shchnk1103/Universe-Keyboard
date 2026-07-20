@@ -10,15 +10,31 @@ final class T9PinyinPathButton: UIButton {
         self.path = path
         var config = UIButton.Configuration.plain()
         config.title = path.displayText
-        config.baseForegroundColor = .label
-        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+        // Compact path bar is a fixed 34 pt row: never wrap multi-syllable labels.
+        config.titleLineBreakMode = .byTruncatingTail
+        config.titleAlignment = .center
+        config.contentInsets = NSDirectionalEdgeInsets(
+            top: 0,
+            leading: selected ? 8 : 10,
+            bottom: 0,
+            trailing: selected ? 8 : 10
+        )
+        if selected {
+            // Reuse the preferred-candidate visual language: dynamic inverse
+            // colors and the same 8 pt continuous corner radius.
+            config.background.backgroundColor = .label
+            config.background.cornerRadius = 8
+        }
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
             outgoing.font = .systemFont(ofSize: 16, weight: .regular)
+            outgoing.foregroundColor = selected ? .systemBackground : .label
             return outgoing
         }
         configuration = config
-        backgroundColor = .clear
+        titleLabel?.numberOfLines = 1
+        titleLabel?.lineBreakMode = .byTruncatingTail
+        titleLabel?.adjustsFontSizeToFitWidth = false
         accessibilityLabel = "拼音 \(path.displayText)"
         accessibilityTraits = selected ? [.button, .selected] : .button
         // Stable UI identity only — not a business payload.
@@ -46,10 +62,12 @@ final class T9PinyinPathBarView: UIView {
         backgroundColor = .clear
 
         stack.axis = .horizontal
-        stack.alignment = .fill
+        stack.alignment = .center
         stack.distribution = .fill
         stack.spacing = 0
         stack.translatesAutoresizingMaskIntoConstraints = false
+        // Path labels must stay on one line inside the fixed-height reservation.
+        clipsToBounds = true
         addSubview(stack)
 
         separator.translatesAutoresizingMaskIntoConstraints = false
