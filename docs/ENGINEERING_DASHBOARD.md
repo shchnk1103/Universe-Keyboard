@@ -13,11 +13,21 @@
 - **Lifecycle:** `Active — release coordination and Assignment bootstrap`
 - **Authority:** [`Release umbrella Assignment`](assignments/release-2026-08-01.md)
 - **Evidence source:** [`Release evidence and acceptance record`](evidence/release-2026-08-01-acceptance.md)
-- **Current state:** Scope freeze (`RELEASE-2026-0801-02`) is Executor-completed and awaits independent Architecture/Quality review. The current Codex task is assigned to tasks 01, 05–09 in their KOS-compatible domain roles; their Entry Criteria remain pending. Task 03 remains on its separately authorized Grok path. Device Hub currently exposes a connected iPhone 13 Pro and iPad Pro (11-inch, 3rd generation), operated by the Human Product Owner. Task 04 remains `Assignment Pending` because its independent Quality Executor is not yet named.
+- **Current state:** Scope freeze (`RELEASE-2026-0801-02`) is Executor-completed and awaits independent Architecture/Quality review. Task 03 is **Closed** with a Human-confirmed Conditional Product Gate ([gate](assignments/release-2026-08-01-03-product-gate.md)). The current Codex task is assigned to tasks 01, 05–09 in their KOS-compatible domain roles; their Entry Criteria remain pending. Device Hub currently exposes a connected iPhone 13 Pro and iPad Pro (11-inch, 3rd generation), operated by the Human Product Owner. Task 04 remains `Assignment Pending` because its independent Quality Executor is not yet named.
 - **Frozen Product scope:** iPhone + iPad, iOS 26.0+, Chinese nine-key, precise pinyin, post-commit continuation, kaomoji content and the Home local basic input-count display. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. The count card must not present as an AI capability in visual or accessibility copy. The iOS 26.0 project-target change, iPad support and kaomoji content remain unimplemented/unverified release blockers; see the [scope record](assignments/release-2026-08-01-02-scope-freeze.md).
-- **Current blockers:** independent Architecture/Quality review of scope and iOS 26.0 target boundary; stable-toolchain archive readiness; iPad physical-device evidence; Product Lead catalog source/licensing/content decision; Full Access/onboarding closure; independent final physical-device/performance evidence; public URLs/contact/account access for App Store materials.
+- **Current blockers:** independent Architecture/Quality review of scope and iOS 26.0 target boundary; stable-toolchain archive readiness; iPad physical-device evidence; Product Lead catalog source/licensing/content decision; independent final physical-device/performance evidence; public URLs/contact/account access for App Store materials; TD-004 residual matrix fidelity after 03 Conditional Pass.
 - **Authority boundary:** this status does not authorize upload, App Store submission, skipped-gate acceptance or manual release.
 - **Next Product action:** name an independent Quality Executor and physical-device operators for task 04; provide the kaomoji catalog decision, public URLs/contact answers, account/signing access and physical devices when the dependent tasks reach their environment gates.
+
+## RELEASE-2026-0801-03 — 新用户启用与 Full Access 降级
+
+- **Lifecycle:** `Closed — Conditional Product Gate accepted by Human Product Owner`
+- **Authority:** [`Assignment`](assignments/release-2026-08-01-03-onboarding-full-access.md) + [`PD-RELEASE-2026-0801-03`](product-decisions/RELEASE-2026-0801-03-activation-authorization.md) + [`Product Gate`](assignments/release-2026-08-01-03-product-gate.md)
+- **Product source:** [`ONBOARDING_ACTIVATION.md`](ONBOARDING_ACTIVATION.md) (matrix updated with device observation)
+- **Device evidence:** iPhone 13 Pro / iOS 27 beta 3 — FA off still matches `nihao` candidates; haptics are the clear FA-linked gap; no degradation banner ([matrix](evidence/release-2026-08-01-03-physical-device-fa-matrix.md))
+- **Gate:** Conditional Pass **human-confirmed** `2026-07-20 Asia/Shanghai`
+- **Residual (not reopening 03):** TD-004 matrix fidelity / Extension-visible recovery — see `TECH_DEBT.md`
+- **Not claimed:** TipKit, TD-004 closed, App Store readiness
 
 ## KEYBOARD-LAYOUT-9KEY-PINYIN-002 — 确定性选项与选拼音循环
 

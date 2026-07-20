@@ -36,9 +36,9 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 ## TD-004: Implement Full Access Degradation Matrix
 
 - **Priority:** High
-- **Risk:** Shared features can fail silently or UI may claim a capability is active when App Group access is unavailable.
-- **Current mitigation:** `RequestsOpenAccess=true`, onboarding text, fallback behavior and diagnostic logging.
-- **Recommended fix:** Define capability-specific available/degraded/unavailable states, actionable copy and physical-device acceptance with access on/off.
+- **Risk:** Shared features can fail silently or UI may claim a capability is active when App Group access is unavailable; design matrix may overstate RIME-off without FA on some OS builds.
+- **Current mitigation:** `RequestsOpenAccess=true`, activation Guide + `ONBOARDING_ACTIVATION.md` under `RELEASE-2026-0801-03` (Conditional Product Gate). Device matrix on iPhone 13 Pro / iOS 27 beta 3 shows basic+RIME `nihao` still works with FA off when 雾凇 is pre-deployed; **haptics** are the clear FA-linked gap; no Extension degradation banner.
+- **Recommended fix:** (1) Architecture-verify App Group / `runtimeDirectories` under FA off after cold Extension launch; (2) rewrite user-facing matrix around **observed** dependencies (feedback first); (3) add Extension-visible degraded cue when shared feedback/settings fail; (4) re-run on/off evidence before claiming self-diagnosing setup.
 - **Owner area:** Main App onboarding/settings, Keyboard Extension bootstrap, diagnostics.
 - **Trigger to resolve:** Before broad external testing or any claim that setup failures are self-diagnosing.
 

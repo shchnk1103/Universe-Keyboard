@@ -27,7 +27,7 @@
 | iOS 26.0 target | `Assigned — Architecture review pending` | Current target is iOS 26.4; no iOS 26.0 claim until the separately reviewed change and final archive validation complete |
 | iPad support | `Assigned — Entry Criteria pending` | iPad simulator work may begin after the matrix is proposed; physical iPad evidence remains unavailable |
 | Kaomoji content | `Assigned — Entry Criteria pending` | Product catalog source/licensing/content decision and working-content evidence remain unavailable |
-| Onboarding / Full Access | `Assignment Pending` | Executor/device operator pending |
+| Onboarding / Full Access | `Closed — Conditional Product Gate accepted` | Device matrix [`release-2026-08-01-03-physical-device-fa-matrix.md`](release-2026-08-01-03-physical-device-fa-matrix.md); gate [`../assignments/release-2026-08-01-03-product-gate.md`](../assignments/release-2026-08-01-03-product-gate.md); Human confirmed `2026-07-20`; TD-004 residual in `TECH_DEBT.md` |
 | Device / performance | `Assignment Pending` | Executor/devices/final archive pending |
 | App Store materials | `Assignment Pending` | Executor/account operator/public URLs pending |
 | Product polish | `Assignment Pending` | Executor/visual operator pending |
