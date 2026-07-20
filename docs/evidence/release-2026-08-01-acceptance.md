@@ -24,8 +24,9 @@
 |---|---|---|
 | Stable archive | `Assignment Pending` | Executor/environment operator not assigned; stable toolchain evidence pending |
 | Scope freeze | `Completed — independent review pending` | Product scope record published; iPad support, kaomoji content and iOS 26.0 target-change implementation remain release blockers |
-| iPad support | `Assignment Pending` | Executor/device operator not assigned; no iPad release evidence yet |
-| Kaomoji content | `Assignment Pending` | Executor/content decision owner not assigned; no working content evidence yet |
+| iOS 26.0 target | `Assigned — Architecture review pending` | Current target is iOS 26.4; no iOS 26.0 claim until the separately reviewed change and final archive validation complete |
+| iPad support | `Assigned — Entry Criteria pending` | iPad simulator work may begin after the matrix is proposed; physical iPad evidence remains unavailable |
+| Kaomoji content | `Assigned — Entry Criteria pending` | Product catalog source/licensing/content decision and working-content evidence remain unavailable |
 | Onboarding / Full Access | `Assignment Pending` | Executor/device operator pending |
 | Device / performance | `Assignment Pending` | Executor/devices/final archive pending |
 | App Store materials | `Assignment Pending` | Executor/account operator/public URLs pending |

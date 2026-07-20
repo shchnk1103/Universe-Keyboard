@@ -1,20 +1,20 @@
 # Assignment: RELEASE-2026-0801-05 — 隐私、支持与 App Store 上架材料
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Assignment Pending`
+**Lifecycle status:** `Assigned — Entry Criteria pending`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Release-control bootstrap authorized by Human Product Owner, `2026-07-20 Asia/Shanghai`
+- **Decision Source / Date:** Human Product Owner, acting as Product Lead, authorized the current Codex task to select and perform KOS-compatible remaining release execution roles in the active Codex task, `2026-07-20 Asia/Shanghai`
 - **Product Approver:** Human Product Owner acting as Product Lead
 
 ## Assignment
 
 - **Domain Owner:** 📱 App & Data Operations Maintainer
-- **Executor:** `UNKNOWN — Product Lead must name the App/Data materials thread`
-- **Environment Executor:** `UNKNOWN — Product Lead must name the App Store Connect/account operator`
+- **Executor:** Current Codex task acting as 📱 App & Data Operations materials thread
+- **Environment Executor:** Current Codex task for local copy/material and final-binary consistency preparation; the Human Product Owner remains the required App Store Connect account operator for account-bound actions
 - **Human Dependency:** Human Product Owner — provides legal/support/contact answers, account access, metadata approval and separate submission authorization
 - **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward for privacy/data/export-compliance consistency
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer for final-binary and metadata consistency

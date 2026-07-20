@@ -1,20 +1,20 @@
 # Assignment: RELEASE-2026-0801-06 — 首发键盘与主 App 产品打磨
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Assignment Pending`
+**Lifecycle status:** `Assigned — Entry Criteria pending`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Release-control bootstrap authorized by Human Product Owner, `2026-07-20 Asia/Shanghai`
+- **Decision Source / Date:** Human Product Owner, acting as Product Lead, authorized the current Codex task to select and perform KOS-compatible remaining release execution roles in the active Codex task, `2026-07-20 Asia/Shanghai`
 - **Product Approver:** Human Product Owner acting as Product Lead
 
 ## Assignment
 
 - **Domain Owner:** ⌨️ Keyboard Experience Maintainer
-- **Executor:** `UNKNOWN — Product Lead must name the Keyboard Experience execution thread`
-- **Environment Executor:** `UNKNOWN — Product Lead must name Simulator/physical-device visual operator`
+- **Executor:** Current Codex task acting as ⌨️ Keyboard Experience execution thread
+- **Environment Executor:** Current Codex task for simulator visual/accessibility operations; the Human Product Owner remains the physical-device visual operator and final Product Gate
 - **Human Dependency:** Human Product Owner — selects the desired treatment for incomplete affordances and performs final visual Product Gate
 - **Architecture Reviewer:** `Not Applicable — unless a fix changes input semantics, lifecycle or cross-target ownership`
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer

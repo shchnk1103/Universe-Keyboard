@@ -1,20 +1,20 @@
 # Assignment: RELEASE-2026-0801-01 — 稳定工具链、Archive 与上传就绪
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Assignment Pending`
+**Lifecycle status:** `Assigned — Entry Criteria pending`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Release-control bootstrap authorized by Human Product Owner, `2026-07-20 Asia/Shanghai`
+- **Decision Source / Date:** Human Product Owner, acting as Product Lead, authorized the current Codex task to select and perform KOS-compatible remaining release execution roles in the active Codex task, `2026-07-20 Asia/Shanghai`
 - **Product Approver:** Human Product Owner acting as Product Lead
 
 ## Assignment
 
 - **Domain Owner:** 🧪 Quality, Performance & Release Maintainer
-- **Executor:** `UNKNOWN — Product Lead must name the execution thread`
-- **Environment Executor:** `UNKNOWN — Product Lead must name the Mac/signing/App Store build operator`
+- **Executor:** Current Codex task acting as 🧪 Quality, Performance & Release execution thread
+- **Environment Executor:** Current Codex task for locally available Mac/Xcode build and archive operations; the Human Product Owner supplies Apple account/team access when a signed archive is required
 - **Human Dependency:** Human Product Owner — Apple account/team access and separate authorization for upload, submission or release
 - **Architecture Reviewer:** `Not Applicable — no architecture change is authorized`
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer through a thread independent from implementation/environment repair where practical

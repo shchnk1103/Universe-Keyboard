@@ -1,20 +1,20 @@
 # Assignment: RELEASE-2026-0801-07 — iPad 首发支持与验证
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Assignment Pending`
+**Lifecycle status:** `Assigned — Entry Criteria pending`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human Product Owner decided that iPad cannot be excluded from V1.0 in the active Codex task, `2026-07-20 Asia/Shanghai`
+- **Decision Source / Date:** Human Product Owner decided that iPad cannot be excluded from V1.0 and authorized the current Codex task to select and perform KOS-compatible remaining release execution roles in the active Codex task, `2026-07-20 Asia/Shanghai`
 - **Product Approver:** Human Product Owner acting as Product Lead
 
 ## Assignment
 
 - **Domain Owner:** ⌨️ Keyboard Experience Maintainer
-- **Executor:** `UNKNOWN — Product Lead must name the Keyboard Experience execution thread`
-- **Environment Executor:** `UNKNOWN — Product Lead must name the iPad simulator and physical-device operator`
+- **Executor:** Current Codex task acting as ⌨️ Keyboard Experience execution thread
+- **Environment Executor:** Current Codex task for iPad simulator operations; the Human Product Owner remains the required iPad physical-device operator and final Product Gate
 - **Human Dependency:** Human Product Owner — provides/unlocks an iPad, enables the keyboard/Full Access as needed, and performs the final iPad Product Gate
 - **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward when support changes keyboard geometry, lifecycle, target configuration or cross-target contracts
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer

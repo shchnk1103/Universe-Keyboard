@@ -1,20 +1,20 @@
 # Assignment: RELEASE-2026-0801-08 — 首发颜表情内容
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Assignment Pending`
+**Lifecycle status:** `Assigned — Entry Criteria pending`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human Product Owner decided that kaomoji content cannot be excluded from V1.0 in the active Codex task, `2026-07-20 Asia/Shanghai`
+- **Decision Source / Date:** Human Product Owner decided that kaomoji content cannot be excluded from V1.0 and authorized the current Codex task to select and perform KOS-compatible remaining release execution roles in the active Codex task, `2026-07-20 Asia/Shanghai`
 - **Product Approver:** Human Product Owner acting as Product Lead
 
 ## Assignment
 
 - **Domain Owner:** ⌨️ Keyboard Experience Maintainer
-- **Executor:** `UNKNOWN — Product Lead must name the Keyboard Experience execution thread`
-- **Environment Executor:** `UNKNOWN — Product Lead must name the simulator/physical-device interaction operator`
+- **Executor:** Current Codex task acting as ⌨️ Keyboard Experience execution thread
+- **Environment Executor:** Current Codex task for simulator interaction operations; the Human Product Owner remains the physical-device interaction operator and final Product Gate
 - **Human Dependency:** Human Product Owner — approves the bounded launch catalog, content policy and final product behavior
 - **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward if storage, synchronization, privacy, user-data or cross-target contracts are proposed
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer
