@@ -1,0 +1,85 @@
+# RELEASE-2026-0801 Release Evidence And Acceptance Record
+
+> **Status:** Active evidence ledger; no release conclusion yet
+> **Target availability:** `2026-08-01 Asia/Shanghai`
+> **Authority:** [`RELEASE-2026-0801`](../assignments/release-2026-08-01.md)
+> **Evidence rule:** A historical or preliminary result is not final release evidence until it maps to the frozen release commit and archive.
+
+## Release Identity
+
+| Field | Current value |
+|---|---|
+| Release commit/tag | `UNKNOWN — freeze under RELEASE-2026-0801-02` |
+| Marketing version/build | `UNKNOWN — confirm under RELEASE-2026-0801-01` |
+| Stable Xcode/SDK | `UNKNOWN — verify under RELEASE-2026-0801-01` |
+| Signed archive | `UNKNOWN` |
+| dSYM retention | `UNKNOWN` |
+| TestFlight/App Store build | `UNKNOWN` |
+| Supported devices/OS | iPhone and iPad; iOS 26.0+. Scope is frozen by [`RELEASE-2026-0801-02`](../assignments/release-2026-08-01-02-scope-freeze.md), but iPad and iOS 26.0 support are not yet implemented or evidenced. |
+| Included schemas/features | Existing baseline input; Chinese nine-key; precise-pinyin selection; post-commit continuation; kaomoji content; and a local basic Home input-count display. No schema expansion is authorized. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. |
+
+## Child Gate Status
+
+| Assignment | Status | Evidence / blocker |
+|---|---|---|
+| Stable archive | `Assignment Pending` | Executor/environment operator not assigned; stable toolchain evidence pending |
+| Scope freeze | `Completed — independent review pending` | Product scope record published; iPad support, kaomoji content and iOS 26.0 target-change implementation remain release blockers |
+| iOS 26.0 target | `Assigned — Architecture review pending` | Current target is iOS 26.4; no iOS 26.0 claim until the separately reviewed change and final archive validation complete |
+| iPad support | `Assigned — Entry Criteria pending` | iPad simulator work may begin after the matrix is proposed; physical iPad evidence remains unavailable |
+| Kaomoji content | `Assigned — Entry Criteria pending` | Product catalog source/licensing/content decision and working-content evidence remain unavailable |
+| Onboarding / Full Access | `Closed — Conditional Product Gate accepted` | Device matrix [`release-2026-08-01-03-physical-device-fa-matrix.md`](release-2026-08-01-03-physical-device-fa-matrix.md); gate [`../assignments/release-2026-08-01-03-product-gate.md`](../assignments/release-2026-08-01-03-product-gate.md); Human confirmed `2026-07-20`; TD-004 residual in `TECH_DEBT.md` |
+| Device / performance | `Assignment Pending` | Executor/devices/final archive pending |
+| App Store materials | `Assignment Pending` | Executor/account operator/public URLs pending |
+| Product polish | `Assignment Pending` | Executor/visual operator pending |
+
+## Preliminary Repository Audit Snapshot
+
+This section records preparation evidence only. It expires when the release commit changes or the final archive is produced.
+
+- **Collected:** `2026-07-20 Asia/Shanghai`
+- **Base:** repository `main` at `9f5ed24`; clean against `origin/main` at collection time
+- **Observed passed preparation checks:** repository whitespace check; pinned RIME vendor structural verification; current KeyboardCore, main-App/Extension and RimeBridge automated suites; beta-toolchain Debug/Release simulator and generic-device compilation
+- **Observed limitations:** fixture-gated RimeBridge cases skipped; no stable-toolchain signed archive; no final physical-device matrix; no final performance/jetsam baseline; no App Store Connect state verification
+- **Exploratory device availability:** Device Hub observed a connected iPhone 13 Pro and iPad Pro (11-inch, 3rd generation). The iPad reports a user-deployed `Universe Keyboard` version `1.0` / build `1`; no interaction or release conclusion is recorded from this observation.
+- **Expiry:** any release-candidate commit, toolchain, artifact, feature scope or support-matrix change
+
+Do not copy preliminary test counts into current product or release claims. Preserve exact command output in the child evidence handoff when those checks are repeated for the final candidate.
+
+## Final Evidence Matrix
+
+| Area | Required environment/artifact | Result | Evidence location | Reviewer | Expiry/revalidation |
+|---|---|---|---|---|---|
+| Repository/artifact integrity | Frozen release commit | Pending | — | — | Commit change |
+| Stable signed archive/validation | Final archive | Pending | — | — | Archive/toolchain change |
+| Automated tests/builds | Frozen commit, stable toolchain | Pending | — | — | Relevant diff/toolchain change |
+| RIME/Lua/OpenCC runtime | Final deployed schemas | Pending | — | — | Artifact/schema/config change |
+| Full Access off/on | Physical device | Pending | — | — | Access/onboarding/fallback change |
+| Keyboard host/device matrix | Physical device, Release build | Pending | — | — | UI/Core/RIME/support change |
+| Performance/memory/jetsam | Physical device, Release build | Pending | — | — | Performance-sensitive change |
+| Accessibility/appearance | Supported devices/layouts | Pending | — | — | UI/support change |
+| Privacy/security/licenses | Final binary and public policy | Pending | — | — | Binary/policy/dependency change |
+| App Store metadata/screenshots | Final supported scope | Pending | — | — | Scope/copy/screenshot change |
+| TestFlight smoke | Uploaded build | Pending | — | — | Uploaded build change |
+
+## Failed Or Skipped Gates
+
+No skipped release gate is accepted by default. Add one row for every failure or skip.
+
+| Gate | Failed/skipped reason | Impact | Owner | Product decision | Expiry/follow-up |
+|---|---|---|---|---|---|
+| — | — | — | — | — | — |
+
+## External Action Log
+
+| Time | Action | Explicit authorization source | Actor/account boundary | Result/artifact |
+|---|---|---|---|---|
+| — | — | — | — | — |
+
+## Release Decision
+
+- **Quality conclusion:** Pending
+- **Architecture/privacy conclusion:** Pending where applicable
+- **Product Gate:** Pending
+- **App Store submission authorization:** Not granted by this record
+- **Manual release authorization:** Not granted by this record
+- **Residual risks:** Pending final evidence

@@ -2,6 +2,13 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-20 — 新用户启用旅程与 Full Access 文案边界（RELEASE-2026-0801-03，Conditional Pass）
+
+- Product Decision `PD-RELEASE-2026-0801-03` 与产品源 `docs/ONBOARDING_ACTIVATION.md`：定义添加键盘 → 完全访问 → 准备资源 → 首次输入清单、canonical 文案边界与 Full Access 能力矩阵。
+- 主 App「启用指南」改为可重入激活清单：诚实说明系统无法代开键盘/完全访问；诊断项收入高级折叠区。
+- 纯状态模型 `ActivationChecklistState` 与单元测试 6/6 PASS。
+- 真机矩阵（iPhone 13 Pro / iOS 27 beta 3）：FA 关仍可唤出键盘且 `nihao` 候选与 FA 开一致；可感知差异主要为按键震动；无降级提示。Product Gate **Conditional Pass**；TD-004 残留 follow-up（矩阵保真 + Extension 可见降级）。
+
 ## 2026-07-20 — T9 Partial Commit 剩余显示与 path 刷新
 
 - Partial Commit 在 T9 下剩余 preedit 走 `T9PreeditResolver`（comment 优先）：选「你好」后 marked 为 `你好ya`，不再泄漏剩余 raw 数字 `92`。
