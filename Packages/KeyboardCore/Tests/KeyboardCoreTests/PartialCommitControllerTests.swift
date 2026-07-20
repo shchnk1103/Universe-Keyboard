@@ -961,6 +961,75 @@ final class PartialCommitControllerTests: XCTestCase {
         )
     }
 
+    /// Delete after T9 partial must restore host-visible pinyin, never leak full digit raw.
+    func testT9PartialCommitDeleteRestoresPinyinNotRawDigits() {
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "6442692": ["你好呀", "你好"],
+                "92": ["呀", "哇"],
+            ],
+            comments: [
+                "6442692": ["ni hao ya", "ni hao"],
+                "92": ["ya", "wa"],
+            ],
+            selectionRemainders: [
+                "6442692": [1: "92"]
+            ],
+            partialSelectionEmitsCommit: true
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = true
+
+        for digit in ["6", "4", "4", "2", "6", "9", "2"] {
+            _ = controller.handle(.insertKey(digit))
+        }
+        // Host should already show comment-preferred preedit, not digits.
+        XCTAssertFalse(
+            client.markedText.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIIDigit),
+            "pre-partial host marked leaked digits: \(client.markedText)"
+        )
+        let prePartialMarked = client.markedText
+
+        _ = controller.handle(
+            .insertCandidate(
+                "你好",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+        XCTAssertEqual(client.markedText, "你好ya")
+
+        _ = controller.handle(.deleteBackward)
+
+        XCTAssertNil(controller.state.partialCommit)
+        XCTAssertFalse(
+            client.markedText.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIIDigit),
+            "delete restore leaked raw digits to host: \(client.markedText)"
+        )
+        XCTAssertNotEqual(client.markedText, "6442692")
+        XCTAssertFalse(client.markedText.contains("6442692"))
+        // Prefer restored pinyin-style preedit (comment or prior host snapshot).
+        XCTAssertTrue(
+            client.markedText.contains("ni")
+                || client.markedText.contains("hao")
+                || client.markedText == prePartialMarked
+                || client.markedText.rangeOfCharacter(from: .letters) != nil,
+            "expected pinyin-like restore, got \(client.markedText)"
+        )
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "6442692")
+    }
+
     private func nihapAnpaiCorrection() -> TypoCorrectionCommit {
         TypoCorrectionCommit(
             committedText: "你好",

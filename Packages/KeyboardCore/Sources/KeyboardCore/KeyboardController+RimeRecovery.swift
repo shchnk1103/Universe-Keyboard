@@ -226,6 +226,23 @@ extension KeyboardController {
             )
             updateInlinePreedit(displayText)
             clearTypoCorrectionSuggestions()
+        } else if T9CompositionCommitPolicy.isActiveT9Composition(
+            usesT9InputSemantics: usesT9InputSemantics,
+            rawInput: state.currentComposition
+        ) {
+            // Fallback composition under T9 still tracks raw digits internally.
+            let visible = T9PreeditResolver.visiblePreedit(
+                rawInput: state.currentComposition,
+                candidates: state.lastRimeOutput?.candidates ?? [],
+                highlightedIndex: state.lastRimeOutput?.highlightedIndex
+            )
+            // Prefer non-digit visible; if only digits available, keep prior host text.
+            if !visible.isEmpty,
+               !visible.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIIDigit)
+            {
+                updateInlinePreedit(visible)
+            }
+            clearTypoCorrectionSuggestions()
         } else {
             updateInlinePreedit(state.currentComposition)
             refreshTypoCorrectionSuggestions()

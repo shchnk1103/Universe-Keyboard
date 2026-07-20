@@ -1,6 +1,34 @@
 extension KeyboardController {
+    /// Host-facing composition string. Under T9, never fall back to raw digits —
+    /// those live in `currentComposition` / `rawInput` for engine recovery only.
     var activeCompositionDisplayText: String {
-        state.partialCommit?.displayText ?? state.currentComposition
+        if let partial = state.partialCommit {
+            return partial.displayText
+        }
+        if let output = state.lastRimeOutput,
+           T9CompositionCommitPolicy.isActiveT9Composition(
+            usesT9InputSemantics: usesT9InputSemantics,
+            rawInput: output.rawInput
+           )
+        {
+            return T9PreeditResolver.visiblePreedit(
+                rawInput: output.rawInput,
+                candidates: output.candidates,
+                highlightedIndex: output.highlightedIndex
+            )
+        }
+        if !state.insertedPreeditText.isEmpty {
+            return state.insertedPreeditText
+        }
+        return state.currentComposition
+    }
+
+    /// Snapshot of what the host is currently showing for checkpoint restore.
+    private var hostVisiblePreeditSnapshot: String {
+        if !state.insertedPreeditText.isEmpty {
+            return state.insertedPreeditText
+        }
+        return activeCompositionDisplayText
     }
 
     /// Applies a normal RIME candidate selection while keeping any remaining raw input active.
@@ -12,7 +40,8 @@ extension KeyboardController {
         let previousConfirmedText = state.partialCommit?.confirmedText ?? ""
         let previousRawInput = previousOutput.rawInput
         let previousPreeditText = previousOutput.composition?.preeditText
-        let previousDisplayText = activeCompositionDisplayText
+        // Prefer host marked text / T9 comment preedit — never T9 raw digits.
+        let previousDisplayText = hostVisiblePreeditSnapshot
 
         guard let rimeRawInput = result.rawInput,
             !rimeRawInput.isEmpty,
@@ -104,7 +133,7 @@ extension KeyboardController {
             return false
         }
 
-        let previousDisplayText = activeCompositionDisplayText
+        let previousDisplayText = hostVisiblePreeditSnapshot
         guard let correctedOutput = rebuildRimeOutput(for: correction.correctedInput, using: engine),
             let candidateIndex = correctedOutput.candidates.firstIndex(where: { $0.text == correction.committedText })
         else {
@@ -168,22 +197,68 @@ extension KeyboardController {
             return true
         }
 
-        state.lastRimeOutput = output
-        state.currentComposition = output.composition?.preeditText ?? checkpoint.previousPreeditText
-        updateInlinePreedit(checkpoint.previousDisplayText)
+        clearTypoCorrectionSuggestions()
+
+        // Top-level undo of the first partial: drop partial state and re-apply the
+        // rebuilt composition through the normal T9 display path (comment-preferred,
+        // never host-visible raw digits) and refresh the path bar.
         if checkpoint.previousConfirmedText.isEmpty {
             state.partialCommit = nil
-        } else {
+            applyRimeOutput(output)
+            // If rebuilt output has no usable comments, fall back to the host
+            // snapshot captured at partial time (already non-digit when captured
+            // via hostVisiblePreeditSnapshot).
+            if T9CompositionCommitPolicy.isActiveT9Composition(
+                usesT9InputSemantics: usesT9InputSemantics,
+                rawInput: output.rawInput
+            ) {
+                let visible = T9PreeditResolver.visiblePreedit(
+                    rawInput: output.rawInput,
+                    candidates: output.candidates,
+                    highlightedIndex: output.highlightedIndex
+                )
+                if isDigitOnlyPreeditTail(visible),
+                   !checkpoint.previousDisplayText.isEmpty,
+                   !isDigitOnlyPreeditTail(checkpoint.previousDisplayText)
+                {
+                    updateInlinePreedit(checkpoint.previousDisplayText)
+                }
+            }
+            return true
+        }
+
+        // Nested partial: restore outer confirmed Chinese + remaining composition.
+        installPartialCommitPresentation(
+            confirmedText: checkpoint.previousConfirmedText,
+            output: output,
+            checkpoint: nil,
+            source: partialCommit.source
+        )
+        // Prefer the pre-nested host snapshot when install could only form a digit tail.
+        let installedDisplay = state.partialCommit?.displayText ?? ""
+        let installedRemainder = partialRemainingPreeditText(
+            confirmedText: checkpoint.previousConfirmedText,
+            displayText: installedDisplay
+        )
+        if isDigitOnlyPreeditTail(installedRemainder),
+           !checkpoint.previousDisplayText.isEmpty,
+           !isDigitOnlyPreeditTail(checkpoint.previousDisplayText)
+        {
             state.partialCommit = PartialCommitState(
                 confirmedText: checkpoint.previousConfirmedText,
-                remainingRawInput: output.rawInput ?? restoreRawInput,
-                remainingPreeditText: state.currentComposition,
+                remainingRawInput: state.partialCommit?.remainingRawInput
+                    ?? output.rawInput
+                    ?? restoreRawInput,
+                remainingPreeditText: partialRemainingPreeditText(
+                    confirmedText: checkpoint.previousConfirmedText,
+                    displayText: checkpoint.previousDisplayText
+                ),
                 displayText: checkpoint.previousDisplayText,
                 checkpoint: nil,
                 source: partialCommit.source
             )
+            updateInlinePreedit(checkpoint.previousDisplayText)
         }
-        clearTypoCorrectionSuggestions()
         return true
     }
 

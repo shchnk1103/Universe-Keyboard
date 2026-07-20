@@ -187,6 +187,36 @@ extension KeyboardController {
         }
         if !state.currentComposition.isEmpty {
             state.currentComposition.removeLast()
+            // T9 tracks raw digits in currentComposition — never push them to the host.
+            if T9CompositionCommitPolicy.isActiveT9Composition(
+                usesT9InputSemantics: usesT9InputSemantics,
+                rawInput: state.currentComposition
+            ) || T9CompositionCommitPolicy.isActiveT9Composition(
+                usesT9InputSemantics: usesT9InputSemantics,
+                rawInput: state.lastRimeOutput?.rawInput
+            ) {
+                if state.currentComposition.isEmpty {
+                    clearInlinePreedit()
+                    state.lastRimeOutput = nil
+                    _ = clearT9PinyinPathStateReturningEffect()
+                } else if let engine = rimeEngine,
+                          restoreRimeComposition(
+                            state.currentComposition,
+                            using: engine,
+                            rebuildSession: true
+                          )
+                {
+                    return .compositionChanged
+                } else {
+                    // Fail closed: clear host underline rather than leak digits.
+                    clearInlinePreedit()
+                    state.lastRimeOutput = nil
+                    state.currentComposition = ""
+                    _ = clearT9PinyinPathStateReturningEffect()
+                }
+                clearTypoCorrectionSuggestions()
+                return .compositionChanged
+            }
             updateInlinePreedit(state.currentComposition)
             refreshTypoCorrectionSuggestions()
             return .compositionChanged
