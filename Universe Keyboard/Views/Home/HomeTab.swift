@@ -27,11 +27,8 @@ struct HomeTab: View {
     private var todaySection: some View {
         VStack(alignment: .leading, spacing: 18) {
             HStack(alignment: .top) {
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text("今日输入")
-                        .font(.title3.weight(.semibold))
-                    streakIndicator
-                }
+                Text("今日输入")
+                    .font(.title3.weight(.semibold))
                 Spacer(minLength: 12)
                 iconTile
             }
@@ -73,36 +70,8 @@ struct HomeTab: View {
         model.isEnabled && model.storeIssueDescription == nil
     }
 
-    private var hasInputToday: Bool {
-        isStatisticsAvailable && model.todayCounts.committedGraphemeCount > 0
-    }
-
-    private var displayedStreak: Int {
-        isStatisticsAvailable ? model.homeStreak : 0
-    }
-
     private var todayUnavailableValue: String {
         model.isEnabled ? "暂不可用" : "未开启"
-    }
-
-    private var streakIndicator: some View {
-        HStack(spacing: 3) {
-            Image(systemName: "flame.fill")
-                .symbolEffect(.bounce, value: hasInputToday)
-            Text(displayedStreak.formatted())
-                .monospacedDigit()
-                .contentTransition(.numericText())
-        }
-        .font(.subheadline.weight(.semibold))
-        .foregroundStyle(hasInputToday ? .orange : .secondary)
-        .animation(.spring(duration: 0.32, bounce: 0.25), value: hasInputToday)
-        .animation(.spring(duration: 0.32, bounce: 0.25), value: displayedStreak)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(
-            hasInputToday
-                ? "连续记录 \(displayedStreak) 天"
-                : "今天尚未输入，连续记录 \(displayedStreak) 天"
-        )
     }
 
     private var iconTile: some View {
