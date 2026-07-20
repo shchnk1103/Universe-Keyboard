@@ -52,7 +52,8 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 ## T9 Input Semantics (V1 + ADR 0020 + ADR 0021)
 
 - Digits go to RIME as the raw composition.
-- Visible preedit prefers non-empty candidate comments, then raw input **for display only**.
+- Visible preedit prefers non-empty candidate comments, then raw input **for display only**. This includes **Partial Commit remainders**: after selecting `你好` from a longer T9 composition, marked text shows `你好` + comment remainder (e.g. `ya`), never `你好` + raw digits (`92`).
+- After Partial Commit under T9, the path bar rebuilds from the **remaining** raw only (hard provenance); it must not retain choices from the pre-selection full digit sequence.
 - Delete removes one raw unit through RIME (digit, letter, or mixed after path refine).
 - **Active T9 composition** (ADR 0020): `usesT9InputSemantics` and non-empty raw input consisting only of letters, digits, spaces and `'`. Includes pure digits, pure letters after path selection, and mixed forms such as `ni4`.
 - While a valid T9 composition is active, Return, language switch and automatic English switch **never** commit raw input to the host.

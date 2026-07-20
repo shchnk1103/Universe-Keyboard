@@ -793,6 +793,85 @@ final class PartialCommitControllerTests: XCTestCase {
         XCTAssertEqual(controller.state.currentComposition, "")
     }
 
+    /// T9 partial commit must show comment-preferred remaining preedit (`ya`), never raw
+    /// digits (`92`), and must rebuild path choices from the remaining digit sequence.
+    func testT9PartialCommitShowsCommentPreferredRemainderAndRefreshesPathBar() {
+        // nihao=64426, ya=92 → nihaoya=6442692
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "6442692": ["你好呀", "你好"],
+                "92": ["呀", "哇", "牙"],
+                "6": ["吗"],
+                "9": ["呀", "我"],
+            ],
+            comments: [
+                "6442692": ["ni hao ya", "ni hao"],
+                "92": ["ya", "wa", "ya"],
+                "6": ["o"],
+                "9": ["ya", "wo"],
+            ],
+            selectionRemainders: [
+                "6442692": [1: "92"]
+            ],
+            partialSelectionEmitsCommit: true
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = true
+
+        for digit in ["6", "4", "4", "2", "6", "9", "2"] {
+            _ = controller.handle(.insertKey(digit))
+        }
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "6442692")
+
+        _ = controller.handle(
+            .insertCandidate(
+                "你好",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "你好")
+        XCTAssertEqual(controller.state.partialCommit?.remainingRawInput, "92")
+        XCTAssertEqual(controller.state.partialCommit?.remainingPreeditText, "ya")
+        XCTAssertEqual(controller.state.partialCommit?.displayText, "你好ya")
+        XCTAssertEqual(client.markedText, "你好ya")
+        XCTAssertEqual(controller.state.insertedPreeditText, "你好ya")
+        // T9 composition tracker stays on raw for recovery semantics.
+        XCTAssertEqual(controller.state.currentComposition, "92")
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "92")
+        let candidateTexts = controller.state.lastRimeOutput?.candidates.map(\.text) ?? []
+        XCTAssertEqual(Array(candidateTexts.prefix(2)), ["呀", "哇"])
+        // Path bar must rebuild from remaining `92` (WXYZ first group / first syllables),
+        // not retain a stale MNO snapshot from the original leading digit `6`.
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "92")
+        let pathDisplays = controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
+        XCTAssertFalse(pathDisplays.isEmpty)
+        XCTAssertNotEqual(pathDisplays, ["m", "n", "o"])
+        XCTAssertTrue(
+            pathDisplays.contains("y")
+                || pathDisplays.contains("ya")
+                || pathDisplays.contains("w")
+                || pathDisplays.contains("wa"),
+            "expected remaining-path choices for digit 9 / ya, got \(pathDisplays)"
+        )
+        XCTAssertFalse(
+            client.markedText.contains("92"),
+            "host marked text must not leak remaining T9 raw digits"
+        )
+    }
+
     private func nihapAnpaiCorrection() -> TypoCorrectionCommit {
         TypoCorrectionCommit(
             committedText: "你好",
