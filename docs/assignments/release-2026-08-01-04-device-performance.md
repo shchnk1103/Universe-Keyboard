@@ -13,12 +13,16 @@
 ## Assignment
 
 - **Domain Owner:** 🧪 Quality, Performance & Release Maintainer
-- **Executor:** `UNKNOWN — Product Lead must name an independent Quality execution thread`
+- **Executor:** This Codex task — independent Quality Executor, appointed by Product Lead on `2026-07-21 Asia/Shanghai`
 - **Environment Executor:** Human Product Owner — physical-device operator for the connected iPhone 13 Pro and iPad Pro (11-inch, 3rd generation); current Codex task coordinates capture commands and records only the observed evidence
 - **Human Dependency:** Human Product Owner — provides/unlocks devices, enables keyboard/Full Access and decides any skipped-gate risk
 - **Architecture Reviewer:** `Not Applicable — evidence collection only; route discovered architecture defects separately`
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer, independent from any domain fix being evaluated
 - **Handoff Target:** Owning domain for defects; Product Lead for final release decision
+
+### Executor Acknowledgement
+
+This Codex task accepts the independent Quality Executor role under the Product Lead appointment dated `2026-07-21 Asia/Shanghai`. It will collect and assess only final-candidate evidence after every Entry Criterion is met; it will not implement domain fixes, accept release risk, or make a Product Gate decision. The Assignment remains `Assignment Pending` until the final release candidate/archive, host and current device state, capture method, and privacy boundary are frozen.
 
 ## Boundary
 
