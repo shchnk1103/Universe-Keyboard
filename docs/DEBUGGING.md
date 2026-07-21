@@ -53,6 +53,27 @@ Always correlate a failure with its immediately preceding lifecycle/deployment e
 
 ## Troubleshooting Flows
 
+### T9 Path Bar Collapses After Long Segmented Input
+
+Use a synthetic digit sequence and record the confirmed segment values, focused segment index, remaining source digits, published compact paths, selected path, and live RIME raw before changing UI code.
+
+1. Verify the collapse happens in KeyboardCore path discovery, not in `T9PinyinPathBarView`: UIKit should render every Core-issued compact path and must not own selection state.
+2. Compare compatible next-segment comments in the immediate candidate output, the first 16 ranked candidates, and a bounded wider `candidateWindow`. Treat 16 as a latency-oriented sample, not proof that no later syllable exists.
+3. If only one exact syllable remains, probe only the current physical key group under the existing live-comment authorization rules. Non-empty candidates or exact raw retention without a matching segment comment do not authorize a branch.
+4. Confirm each probe restores the prior ambiguous raw, the published next focus has no selected path regardless of item count, and failed refinement rolls back composition, candidates, marked text, focus and provenance.
+5. Recheck direct tap, **选拼音**, Delete and long-input latency. Never log the user's real sentence; keep reproduction input synthetic.
+
+### T9 Partial Commit Shows Digits or Restarts From the Wrong Key
+
+1. Record synthetic previous raw, selected candidate, RIME result raw/preedit, comment-preferred remainder, `remainingRawInput`, `currentComposition` and `segmentSourceDigits` separately.
+2. Treat digit tails containing only whitespace/apostrophe separators (for example `748 53`) as internal raw. Do not conclude they are display pinyin because the string is not strictly digit-only.
+3. If RIME retains the full pre-selection raw, align the editable suffix from the normalized remaining tail or comment-preferred remaining letter count. Verify all four remaining-state fields agree before inspecting UIKit.
+4. Audit every `updateInlinePreedit` fallback: missing comments or a lost session may preserve explicit letters/last safe spelling, but must never publish internal digits.
+
+### T9 Delete Changes to Another Predicted Syllable
+
+If `tou` becomes `tong` after Delete, compare the previous visible preedit with the shorter raw-digit candidate comment. Ordinary unconfirmed Delete should refine to the exact visible prefix (`to`), while explicit segmented selection and Partial Commit checkpoint restore follow their own earlier state-machine branches. Verify the exact replacement raw, host marked spelling, fallback rollback and final empty-session cleanup.
+
 ### Simulator Keyboard Behavior Preflight
 
 Complete these checks in order before treating Simulator typing as feature evidence:
@@ -208,3 +229,12 @@ Use `docs/PERFORMANCE_BASELINE.md` for the required measurement fields and scena
 ## Verification Commands
 
 Use the canonical commands in `docs/RELEASE_CHECKLIST.md`. A named simulator is required only for actually running tests; discover an installed destination instead of copying a stale device name into permanent docs.
+
+## T9 Path Bar 与逐键显示诊断
+
+- **显示 `qiu`、候选仍是 `tian`：** 同时记录确认段、session raw、首屏 candidate comment。确认后 raw 应为 apostrophe 锚定形式（如 `qiu'53`），comment 必须继承全部确认段；不要只修 UI 文本。
+- **`53` 只有 `ke` 与单字母，没有 `le`：** 区分候选页稀疏与 RIME 不授权。检查 bounded exact probe 是否命中 `qiu'le`、是否保持 usable session 和前缀 provenance，以及每次 probe 后是否恢复锚定 raw。
+- **按一次 `TUV` 显示 `ta`：** 检查 `T9PreeditResolver` 是否按 raw 中的显式字母/数字槽位投影 comment。候选可预测 `ta`，marked text 只能显示一个字母 `t`；显式 Path Bar 选择应走独立显示路径。
+- **选择 `qiu` 后 `le` 消失或变为 `ke`：** 选择前保存用户可见 remainder；按 `segmentSourceDigits - 已消费槽位` 只继承尾部槽位。不要从锚定后的首候选 comment 重建未选择后缀。
+- **候选 Delete 后显示 `qiu5`：** 检查 checkpoint 是否复用了 `qiu'53` refined raw、是否无条件恢复安全 previousDisplayText，以及 mixed-digit preedit 是否走 fail-closed。只判断“是否纯数字”不足以阻止泄漏。
+- **第二次 Delete 应去掉最后输入的 `e`：** apostrophe 锚定的 unresolved tail 按最后输入槽 exact-refine，例如 `qiu'53 → qiu'5`、`qiule → qiul`。不要删段首 `l`（那是更早的输入）。

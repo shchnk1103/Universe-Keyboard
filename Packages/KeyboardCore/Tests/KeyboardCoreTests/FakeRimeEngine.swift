@@ -42,6 +42,10 @@ final class FakeRimeEngine: RimeEngine {
     var dictionary: [String: [String]]
     /// Parallel comments for dictionary candidates (same key, same order). Used for T9 path Spike tests.
     var comments: [String: [String]]
+    /// Optional full-window evidence keyed by live composition.
+    /// This lets tests model a paged RIME output whose first page is narrower
+    /// than `candidateWindow`, without changing the default fake behavior.
+    var candidateWindowOverrides: [String: [RimeCandidate]] = [:]
     private let preeditFormatter: (String) -> String
     private let selectionRemainders: [String: [Int: String]]
     private let selectedSegments: [String: [Int: FakeRimeSelectedSegment]]
@@ -151,10 +155,10 @@ final class FakeRimeEngine: RimeEngine {
     }
 
     func candidateWindow(from globalIndex: Int, limit: Int) -> RimeCandidateWindow {
-        let output = buildOutput()
+        let candidates = candidateWindowOverrides[composition] ?? buildOutput().candidates
         let safeStart = max(0, globalIndex)
         let safeLimit = max(0, limit)
-        guard safeStart < output.candidates.count, safeLimit > 0 else {
+        guard safeStart < candidates.count, safeLimit > 0 else {
             return RimeCandidateWindow(
                 candidates: [],
                 startIndex: safeStart,
@@ -162,12 +166,12 @@ final class FakeRimeEngine: RimeEngine {
                 hasMoreCandidates: false
             )
         }
-        let end = min(output.candidates.count, safeStart + safeLimit)
+        let end = min(candidates.count, safeStart + safeLimit)
         return RimeCandidateWindow(
-            candidates: Array(output.candidates[safeStart..<end]),
+            candidates: Array(candidates[safeStart..<end]),
             startIndex: safeStart,
             nextIndex: end,
-            hasMoreCandidates: end < output.candidates.count
+            hasMoreCandidates: end < candidates.count
         )
     }
 

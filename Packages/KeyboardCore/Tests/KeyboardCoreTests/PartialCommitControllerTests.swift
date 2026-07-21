@@ -1030,6 +1030,317 @@ final class PartialCommitControllerTests: XCTestCase {
         XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "6442692")
     }
 
+    func testT9PartialCommitTreatsSpacedDigitTailAsInternalAndAlignsQiuRemainder() {
+        let fullRaw = "86886862474853"
+        let engine = FakeRimeEngine(
+            dictionary: [
+                fullRaw: ["偷偷买球了", "偷偷买"],
+                "74853": ["球了", "熟了"],
+            ],
+            comments: [
+                fullRaw: ["tou tou mai qiu le", "tou tou mai"],
+                "74853": ["qiu le", "shu le"],
+            ],
+            preeditFormatter: { raw in
+                raw == "74853" ? "748 53" : "868 868 624 748 53"
+            },
+            selectedSegments: [
+                fullRaw: [
+                    1: FakeRimeSelectedSegment(rawPrefix: "868868624", text: "偷偷买")
+                ]
+            ],
+            partialSelectionEmitsCommit: false
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = true
+
+        for digit in fullRaw.map(String.init) {
+            _ = controller.handle(.insertKey(digit))
+        }
+        _ = controller.handle(
+            .insertCandidate(
+                "偷偷买",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "偷偷买")
+        XCTAssertEqual(controller.state.partialCommit?.remainingRawInput, "74853")
+        XCTAssertEqual(controller.state.partialCommit?.remainingPreeditText, "qiu le")
+        XCTAssertEqual(controller.state.partialCommit?.displayText, "偷偷买qiu le")
+        XCTAssertEqual(controller.state.currentComposition, "74853")
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "74853")
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "74853")
+        XCTAssertTrue(
+            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "qiu" }
+        )
+        XCTAssertFalse(
+            controller.state.t9PinyinPathState.compactPaths.contains { ["t", "u", "v"].contains($0.displayText) }
+        )
+        XCTAssertFalse(client.markedText.contains(where: \.isNumber))
+
+        // Session-loss fallback may retain the last safe spelling, but it must
+        // never append the next internal digit to host marked text.
+        controller.rimeEngine = nil
+        _ = controller.handle(.insertKey("2"))
+        XCTAssertEqual(controller.state.partialCommit?.remainingRawInput, "748532")
+        XCTAssertFalse(client.markedText.contains(where: \.isNumber))
+    }
+
+    func testT9PartialCommitSelectingQiuPreservesConfirmedPrefixWhenRimeReranks() throws {
+        let fullRaw = "86886862474853"
+        let engine = FakeRimeEngine(
+            dictionary: [
+                fullRaw: ["偷偷买球了", "偷偷买"],
+                "74853": ["球了", "熟了"],
+                // Mirrors the reported device failure: exact raw survives, but
+                // the first live comment is a different spelling branch.
+                "qiu53": ["填了", "添课"],
+                // The anchored session is on the correct qiu branch, but may
+                // rank another 53 spelling before `le` (as seen on device).
+                "qiu'53": ["球", "裘科"],
+                "qiu'ke": ["裘科"],
+                "qiu'le": ["球了"],
+                "qiu'5": ["球"],
+                "qiu'3": ["球饿"],
+                "qiu": ["球"],
+                "748": ["球", "熟"],
+                "5": ["了"],
+                // Old checkpoint restore rebuilt the visible `qiule` spelling
+                // instead of the already anchored `qiu'53` raw. Model the
+                // resulting mixed preedit that leaked an internal digit.
+                "qiule": ["球了"],
+            ],
+            comments: [
+                fullRaw: ["tou tou mai qiu le", "tou tou mai"],
+                "74853": ["qiu le", "shu le"],
+                "748": ["qiu", "shu"],
+                "qiu53": ["tian le", "tian ke"],
+                "qiu'53": ["qiu ke", "qiu ne"],
+                "qiu'ke": ["qiu ke"],
+                "qiu'le": ["qiu le"],
+                "qiu'5": ["qiu l"],
+                "qiu'3": ["qiu e"],
+                "qiu": ["qiu"],
+                "5": ["le"],
+                "qiule": ["qiu le"],
+            ],
+            preeditFormatter: { raw in
+                switch raw {
+                case "74853": "748 53"
+                case "748": "748"
+                case "qiu53": "tian le"
+                case "qiu'53": "qiu ke"
+                case "qiu'ke": "qiu ke"
+                case "qiu'le": "qiu le"
+                case "qiu'5": "qiu l"
+                case "qiu'3": "qiu e"
+                case "qiu": "qiu"
+                case "5": "5"
+                case "qiule": "qiu5"
+                default: "868 868 624 748 53"
+                }
+            },
+            selectionRemainders: [
+                "qiu'53": [0: "5"]
+            ],
+            selectedSegments: [
+                fullRaw: [
+                    1: FakeRimeSelectedSegment(rawPrefix: "868868624", text: "偷偷买")
+                ]
+            ],
+            partialSelectionEmitsCommit: false
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = true
+
+        for digit in fullRaw.map(String.init) {
+            _ = controller.handle(.insertKey(digit))
+        }
+        _ = controller.handle(
+            .insertCandidate(
+                "偷偷买",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+        let qiu = try XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "qiu" }
+        )
+
+        _ = controller.handle(.selectT9PinyinPath(qiu))
+
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "qiu'53")
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.first?.comment, "qiu ke")
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["qiu"])
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 1)
+        XCTAssertTrue(
+            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "le" }
+        )
+        XCTAssertFalse(
+            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "tian" },
+            "a comment whose first segment is not qiu must not authorize the next focus"
+        )
+        // After confirming `qiu`, the Path Bar must not collapse to a single
+        // confirmed-label option. Next focus keeps multi-choice parity with a
+        // standalone remaining digit run (syllables and/or key letters).
+        XCTAssertGreaterThan(
+            controller.state.t9PinyinPathState.compactPaths.count,
+            1,
+            "path bar must keep multiple next-focus choices after selecting qiu"
+        )
+        XCTAssertEqual(controller.state.partialCommit?.remainingPreeditText, "qiule")
+        XCTAssertEqual(controller.state.partialCommit?.displayText, "偷偷买qiule")
+        XCTAssertEqual(client.markedText, "偷偷买qiule")
+        _ = controller.handle(
+            .insertCandidate(
+                "球",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 0)
+            )
+        )
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "偷偷买球")
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "5")
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["qiu"])
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "7485")
+
+        _ = controller.handle(.deleteBackward)
+
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "qiu'53")
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "偷偷买")
+        XCTAssertEqual(controller.state.partialCommit?.remainingPreeditText, "qiule")
+        XCTAssertEqual(controller.state.partialCommit?.displayText, "偷偷买qiule")
+        XCTAssertEqual(client.markedText, "偷偷买qiule")
+        XCTAssertFalse(client.markedText.contains(where: \.isNumber))
+
+        _ = controller.handle(.deleteBackward)
+
+        // Last-entered slot: drop trailing `e` / raw `3`, not focus-head `l` / `5`.
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "qiu'5")
+        XCTAssertEqual(controller.state.partialCommit?.remainingPreeditText, "qiul")
+        XCTAssertEqual(controller.state.partialCommit?.displayText, "偷偷买qiul")
+        XCTAssertEqual(client.markedText, "偷偷买qiul")
+        XCTAssertFalse(client.markedText.contains(where: \.isNumber))
+
+        _ = controller.handle(.deleteBackward)
+
+        // Dropping the last unresolved digit leaves letter-only `qiu`. Path Bar
+        // must rebuild first-focus siblings for digit identity `748`, not ghost
+        // next-focus letters `j/k/l` for a deleted trailing `5`.
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "qiu")
+        XCTAssertEqual(controller.state.partialCommit?.remainingPreeditText, "qiu")
+        XCTAssertEqual(controller.state.partialCommit?.displayText, "偷偷买qiu")
+        XCTAssertEqual(client.markedText, "偷偷买qiu")
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "748")
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 0)
+        XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+        let pathDisplays = Set(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
+        )
+        XCTAssertTrue(pathDisplays.contains("qiu"))
+        XCTAssertTrue(
+            pathDisplays.contains("shu") || pathDisplays.contains("p"),
+            "letter-only qiu must keep multi-choice siblings, got \(pathDisplays.sorted())"
+        )
+        XCTAssertFalse(
+            pathDisplays.isSubset(of: ["j", "k", "l"]),
+            "must not show only next-focus j/k/l after trailing digits are gone"
+        )
+        XCTAssertFalse(client.markedText.contains(where: \.isNumber))
+    }
+
+    func testT9PartialCommitSelectingShuReplacesOnlyCorrespondingVisibleSegment() throws {
+        let fullRaw = "86886862474853"
+        let engine = FakeRimeEngine(
+            dictionary: [
+                fullRaw: ["偷偷买球了", "偷偷买"],
+                "74853": ["球了", "熟了"],
+                "shu53": ["熟了"],
+                "shu'53": ["熟了"],
+                "shu'le": ["熟了"],
+            ],
+            comments: [
+                fullRaw: ["tou tou mai qiu le", "tou tou mai"],
+                "74853": ["qiu le", "shu le"],
+                "shu53": ["shu le"],
+                "shu'53": ["shu le"],
+                "shu'le": ["shu le"],
+            ],
+            preeditFormatter: { raw in
+                switch raw {
+                case "74853": "748 53"
+                case "shu53", "shu'53", "shu'le": "shu le"
+                default: "868 868 624 748 53"
+                }
+            },
+            selectedSegments: [
+                fullRaw: [
+                    1: FakeRimeSelectedSegment(rawPrefix: "868868624", text: "偷偷买")
+                ]
+            ],
+            partialSelectionEmitsCommit: false
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = true
+
+        for digit in fullRaw.map(String.init) {
+            _ = controller.handle(.insertKey(digit))
+        }
+        _ = controller.handle(
+            .insertCandidate(
+                "偷偷买",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+        let shu = try XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "shu" }
+        )
+
+        _ = controller.handle(.selectT9PinyinPath(shu))
+
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "shu'53")
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["shu"])
+        XCTAssertEqual(controller.state.partialCommit?.remainingPreeditText, "shule")
+        XCTAssertEqual(controller.state.partialCommit?.displayText, "偷偷买shule")
+        XCTAssertEqual(client.markedText, "偷偷买shule")
+        XCTAssertFalse(client.markedText.contains(where: \.isNumber))
+    }
+
     private func nihapAnpaiCorrection() -> TypoCorrectionCommit {
         TypoCorrectionCommit(
             committedText: "你好",

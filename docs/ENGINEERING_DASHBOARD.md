@@ -31,15 +31,17 @@
 
 ## KEYBOARD-LAYOUT-9KEY-PINYIN-002 — 确定性选项与选拼音循环
 
-- **Lifecycle:** `Active — Amendment B local implementation; review/Product Gate pending`
+- **Lifecycle:** `Active — Amendment D local implementation and review addenda validated; clean-commit evidence/Product Gate pending`
 - **Authority:** [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-002`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md) + [`Assignment`](assignments/keyboard-layout-9key-pinyin-002.md)
-- **Current phase:** Amendment B progressive-syllable path bar implemented locally; independent review and physical-device Product Gate next (covers A+B)
-- **Completed gates:** [ADR 0021](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md) Accepted (+ Amendments A/B); pinned librime `1.16.1` Spike PASS for `m/n/o` (`9/9/4` candidates, no committed text); Core focused path tests pass after Amendment B
+- **Current phase:** Amendment D remaining-provenance/digit-display/Delete fixes implemented; automated validation and Architecture/Quality addenda complete. Clean-commit Spike and physical-device Product Gate remain (covers A+B+C+D)
+- **Completed gates:** [ADR 0021](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md) Accepted (+ Amendments A/B/C/D); pinned librime `1.16.1` Spike PASS for `m/n/o` (`9/9/4` candidates, no committed text); Core focused/full tests, RimeBridgeTests, main scheme tests and strict builds pass after Amendment D
 - **Delivered locally:** canonical single-key choices (`6 → m/n/o`), retained selection snapshot, direct/cycle shared transaction, first/next/wrap **选拼音**, selected accessibility state
 - **Latest acceptance fix:** visible inverse-color selected-path highlight and exact `m/n/o` marked-text display implemented; focused/full Core tests, main scheme Simulator tests, and Debug/Release strict builds were refreshed and passed
 - **Amendment A delivered locally:** `64 → mi/ni/m/n/o`; retained `n` focus across later `GHI`; selected-item tap confirms/advances to live-authorized `g/h`; active T9 space title `选定` but action remains first-candidate commit. Pinned librime hard gate passed with `authorizedSuffixes=g|h` and fallback-only `i` rejected.
 - **Amendment B delivered locally (2026-07-20):** ban multi-syllable whole compact labels; first-syllable + first-key letters only; **direct path tap** confirms/advances immediately (选拼音 only cycles tentative selection); syllable-level next choices with letter-group fallback; path bar single-line UI defense. Focused `T9PinyinPathTests` `39/39` PASS.
-- **Pending:** clean-commit Spike evidence, independent Architecture/Quality reviews, and physical-device Product Gate; see [review handoff](assignments/keyboard-layout-9key-pinyin-002-review-handoff.md) and [human handoff](assignments/keyboard-layout-9key-pinyin-002-product-gate-human-handoff.md)
+- **Amendment C delivered locally (2026-07-21):** bounded 48-item next-focus discovery; exact syllables may be supplemented by bounded live-authorized key branches; all probes restore raw; every new focus remains unselected, including a genuine single-choice focus. Focused `T9PinyinPathTests` `41/41` PASS.
+- **Amendment D delivered locally (2026-07-21):** spaced digit tails align to the true Partial Commit suffix (`74853 / qiu le`); internal T9 digits never become host preedit; ordinary unconfirmed Delete is exact visible-character deletion (`tou → to → t → empty`) with double-failure fail-closed. Core `642/642`, main scheme `127/127`, strict builds PASS.
+- **Pending:** clean-commit Spike evidence and physical-device Product Gate (reported long Partial Commit, zero digit leakage, Delete, latency, VoiceOver and recovery); overall Quality remains Blocked until these close. See [review handoff](assignments/keyboard-layout-9key-pinyin-002-review-handoff.md) and [human handoff](assignments/keyboard-layout-9key-pinyin-002-product-gate-human-handoff.md)
 - **Human dependency:** physical-device comparison against the supplied native-keyboard behavior before Product Gate
 - **Predecessor:** `KEYBOARD-LAYOUT-9KEY-PINYIN-001` remains `Accepted / Closed`; this Work Item does not rewrite its history
 
@@ -256,3 +258,17 @@ Update this Dashboard only after the responsible owner confirms a state, depende
 - the distinction between implementation, verification, acceptance and authorization;
 - unresolved Stop Conditions and the role required to clear them;
 - the rule that Dashboard summaries never supersede Product, Architecture, Registry or Quality sources.
+
+## KEYBOARD-LAYOUT-9KEY-PINYIN-002 — Amendment G snapshot
+
+- Amendments E/F/G implementation and local automated validation: **PASS** (`46/46`, `14/14`, KeyboardCore `647/647`).
+- E binds confirmed Path Bar prefixes to the live candidate session; F restores bounded complete-syllable choice such as `le`; G prevents predictive letters from appearing before matching key slots exist.
+- Human Product Gate: **Pending**. Final G Debug build is installed on iPhone 13 Pro / iOS 27.0 and the first `TUV → t` row passed in Notes; Device Hub focus instability prevented reliable evidence for `to → tou` and `偷偷买 → qiu → le`.
+- Authority remains the Assignment, Product Decision, ADR and evidence records; this Dashboard is only a mirror.
+
+## KEYBOARD-LAYOUT-9KEY-PINYIN-002 — Amendment H snapshot
+
+- Implementation: **written, final revalidation pending**. Path selection preserves `le`, candidate undo restores `qiule`, and focused Delete targets `l` without publishing digits.
+- Focused qiu sequence passed before the final generalized refined-raw preservation patch. The qiu/shu combined run then showed only `shu'53` state provenance failing; that final patch is present but could not be rerun because Codex execution credits were exhausted.
+- Continuation authority: `docs/assignments/keyboard-layout-9key-pinyin-002-grok-handoff-2026-07-21.md`.
+- Quality / Human Product Gate: **Pending**, not Pass.

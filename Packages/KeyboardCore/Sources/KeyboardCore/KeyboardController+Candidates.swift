@@ -57,10 +57,27 @@ extension KeyboardController {
                     )
                     return .compositionChanged
                 }
+                // Capture progressive path identity before the selection mutates raw.
+                // Nested Chinese partials (e.g. 球 leaving bare digit `5`) must not
+                // permanently forget the path-refined digit source (`74853` + `qiu`).
+                let preservedSegmentSource = state.t9PinyinPathState.segmentSourceDigits
+                let preservedPathConfirmed = state.t9PinyinPathState.confirmedSegmentValues
                 applyNormalCandidateSelection(candidate: candidate, result: result, previousOutput: output)
                 // Final commit clears path state inside finishNormalCandidateSelection;
                 // partial selection installs a new RimeOutput — hard provenance even if raw
                 // identity is unchanged (comments/candidates may have narrowed).
+                // When a progressive path identity was active, re-apply it AFTER the
+                // hard refresh so nested remainders keep undo/delete digit provenance.
+                if state.partialCommit != nil,
+                   preservedSegmentSource != nil,
+                   !preservedPathConfirmed.isEmpty
+                {
+                    restoreSegmentedPathIdentityAfterNestedPartial(
+                        preservedSegmentSource: preservedSegmentSource,
+                        preservedPathConfirmed: preservedPathConfirmed
+                    )
+                    return .compositionChanged.union(.t9PinyinPathsChanged)
+                }
                 let pathEffect: KeyboardEffect =
                     state.lastRimeOutput?.rawInput == nil || (state.lastRimeOutput?.rawInput?.isEmpty ?? true)
                     ? clearT9PinyinPathStateReturningEffect()

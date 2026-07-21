@@ -175,6 +175,12 @@ extension KeyboardController {
             return effects
         }
         if let engine = rimeEngine, engine.isComposing() {
+            if let effects = handleConfirmedT9FocusDeleteIfNeeded(using: engine) {
+                return effects
+            }
+            if let effects = handleVisibleT9PinyinDeleteIfNeeded(using: engine) {
+                return effects
+            }
             let previousT9PathState = state.t9PinyinPathState
             let result = engine.deleteBackward()
             applyRimeOutputPreservingPartialCommit(augmentRimeOutputIfNeeded(result))
@@ -223,6 +229,160 @@ extension KeyboardController {
         }
         textClient?.deleteBackward()
         return clearContinuation()
+    }
+
+    /// After a nested candidate undo, an apostrophe-anchored raw keeps the
+    /// confirmed Path Bar prefix on the left and the unresolved tail on the
+    /// right (`qiu'53` / visible `qiule`). Delete follows last-entered input:
+    /// remove the final unresolved slot (`3` / visible `e`) → `qiu'5` / `qiul`,
+    /// not an earlier focus-head slot (`5` / `l`).
+    private func handleConfirmedT9FocusDeleteIfNeeded(
+        using engine: RimeEngine
+    ) -> KeyboardEffect? {
+        guard let partialCommit = state.partialCommit,
+              partialCommit.checkpoint == nil,
+              partialCommit.source != .numberSuffix,
+              let rawInput = state.lastRimeOutput?.rawInput,
+              T9CompositionCommitPolicy.isActiveT9Composition(
+                usesT9InputSemantics: usesT9InputSemantics,
+                rawInput: rawInput
+              ),
+              let boundary = rawInput.lastIndex(of: "'"),
+              rawInput.index(after: boundary) < rawInput.endIndex
+        else { return nil }
+
+        let confirmedRaw = String(rawInput[..<boundary])
+        guard confirmedRaw.unicodeScalars.contains(
+            where: T9PinyinPathExtractor.isASCIILetter
+        ) else { return nil }
+
+        let unresolvedRaw = String(rawInput[rawInput.index(after: boundary)...])
+        guard !unresolvedRaw.isEmpty else { return nil }
+        let shortenedUnresolvedRaw = String(unresolvedRaw.dropLast())
+        let shortenedRaw = shortenedUnresolvedRaw.isEmpty
+            ? confirmedRaw
+            : confirmedRaw + "'" + shortenedUnresolvedRaw
+
+        var visibleLetters = Array(
+            partialCommit.remainingPreeditText.unicodeScalars.filter(
+                T9PinyinPathExtractor.isASCIILetter
+            )
+        )
+        guard !visibleLetters.isEmpty else { return nil }
+        // Last visible letter matches the last unresolved raw slot the user entered.
+        visibleLetters.removeLast()
+        let shortenedVisible = String(String.UnicodeScalarView(visibleLetters))
+
+        let previousRaw = rawInput
+        let output = engine.replaceInput(shortenedRaw)
+        guard output.committedText == nil,
+              output.composition?.preeditText.isEmpty == false,
+              T9PinyinPathExtractor.normalizeRawIdentity(output.rawInput)
+                == T9PinyinPathExtractor.normalizeRawIdentity(shortenedRaw)
+        else {
+            // Preserve the coherent pre-delete state when RIME rejects the
+            // exact shortened raw; never fall through to digit-leaking paths.
+            _ = engine.replaceInput(previousRaw)
+            return []
+        }
+
+        let safeOutput = augmentRimeOutputIfNeeded(output)
+        // Path rebuild uses the still-present segment digit identity plus the
+        // shortened live trailing raw (`qiu'5`), so siblings/next-focus choices
+        // are not collapsed to a single comment label.
+        applyRimeOutputPreservingPartialCommit(safeOutput)
+        state.lastRimeOutput = safeOutput
+        state.currentComposition = shortenedRaw
+        let displayText = partialCommit.confirmedText + shortenedVisible
+        state.partialCommit = PartialCommitState(
+            confirmedText: partialCommit.confirmedText,
+            remainingRawInput: shortenedRaw,
+            remainingPreeditText: shortenedVisible,
+            displayText: displayText,
+            checkpoint: nil,
+            source: partialCommit.source
+        )
+        updateInlinePreedit(displayText)
+        clearTypoCorrectionSuggestions()
+        return .compositionChanged.union(.t9PinyinPathsChanged)
+    }
+
+    /// Native-style Delete follows the spelling the user can see, not an
+    /// ambiguous shorter digit run that RIME may re-rank as another syllable.
+    /// Explicit segmented choices and Partial Commit restore are handled by
+    /// their existing state-machine paths before reaching this helper.
+    private func handleVisibleT9PinyinDeleteIfNeeded(using engine: RimeEngine) -> KeyboardEffect? {
+        guard state.partialCommit == nil,
+              state.t9PinyinPathState.selectedPath == nil,
+              state.t9PinyinPathState.confirmedSegmentValues.isEmpty,
+              T9CompositionCommitPolicy.isActiveT9Composition(
+                usesT9InputSemantics: usesT9InputSemantics,
+                rawInput: state.lastRimeOutput?.rawInput
+              ),
+              let shortened = deletingLastVisibleT9Letter(from: state.insertedPreeditText)
+        else { return nil }
+
+        if shortened.isEmpty {
+            engine.resetSession()
+            state.currentComposition = ""
+            state.lastRimeOutput = nil
+            state.partialCommit = nil
+            updateInlinePreedit("")
+            clearTypoCorrectionSuggestions()
+            return .compositionChanged.union(clearT9PinyinPathStateReturningEffect())
+        }
+
+        let previousRaw = state.lastRimeOutput?.rawInput ?? state.currentComposition
+        let output = engine.replaceInput(shortened)
+        guard output.committedText == nil,
+              output.composition?.preeditText.isEmpty == false,
+              T9PinyinPathExtractor.normalizeRawIdentity(output.rawInput)
+                == T9PinyinPathExtractor.normalizeRawIdentity(shortened)
+        else {
+            // Let the existing engine Delete/rollback path handle rejection.
+            let restored = engine.replaceInput(previousRaw)
+            if restored.composition?.preeditText.isEmpty == false,
+               T9PinyinPathExtractor.normalizeRawIdentity(restored.rawInput)
+                == T9PinyinPathExtractor.normalizeRawIdentity(previousRaw)
+            {
+                return nil
+            }
+
+            // The live session is no longer trustworthy. Clear rather than
+            // deleting from an unknown raw identity or exposing it to the host.
+            engine.resetSession()
+            state.currentComposition = ""
+            state.lastRimeOutput = nil
+            state.partialCommit = nil
+            updateInlinePreedit("")
+            clearTypoCorrectionSuggestions()
+            return .compositionChanged.union(clearT9PinyinPathStateReturningEffect())
+        }
+
+        applyRimeOutput(augmentRimeOutputIfNeeded(output))
+        // Candidate comments may advertise a longer completion; Delete owns the
+        // exact shortened spelling until the next explicit input/refinement.
+        updateInlinePreedit(shortened)
+        return .compositionChanged.union(.t9PinyinPathsChanged)
+    }
+
+    private func deletingLastVisibleT9Letter(from text: String) -> String? {
+        guard !text.isEmpty else { return nil }
+        var scalars = Array(text.unicodeScalars)
+        guard scalars.allSatisfy({
+            T9PinyinPathExtractor.isASCIILetter($0)
+                || T9PinyinPathExtractor.isASCIISeparator($0)
+        }) else { return nil }
+
+        while scalars.last.map(T9PinyinPathExtractor.isASCIISeparator) == true {
+            scalars.removeLast()
+        }
+        guard scalars.last.map(T9PinyinPathExtractor.isASCIILetter) == true else { return nil }
+        scalars.removeLast()
+        while scalars.last.map(T9PinyinPathExtractor.isASCIISeparator) == true {
+            scalars.removeLast()
+        }
+        return String(String.UnicodeScalarView(scalars))
     }
 
     func handleNumberSuffixDeleteIfNeeded() -> KeyboardEffect? {

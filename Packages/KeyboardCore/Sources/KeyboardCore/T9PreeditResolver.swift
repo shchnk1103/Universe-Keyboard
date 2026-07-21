@@ -2,8 +2,9 @@ import Foundation
 
 /// Builds the visible T9 preedit string from raw digits and candidate comments.
 ///
-/// Display may fall back to raw digits. Host commit paths must never use raw digits as commit text
-/// (see `T9CompositionCommitPolicy`).
+/// Candidate comments are the preferred user-facing spelling. When comments are
+/// unavailable, preserve only letters the user has already made explicit through
+/// path refinement; unresolved T9 digits remain internal engine identity.
 public enum T9PreeditResolver {
     public static func visiblePreedit(
         rawInput: String?,
@@ -12,11 +13,14 @@ public enum T9PreeditResolver {
     ) -> String {
         let raw = rawInput ?? ""
         if let comment = preferredComment(candidates: candidates, highlightedIndex: highlightedIndex),
-           !comment.isEmpty
+           !comment.isEmpty,
+           !comment.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
         {
-            return comment
+            return projectCommentToEnteredSlots(comment, rawInput: raw)
         }
-        return raw
+        return String(
+            raw.unicodeScalars.filter(T9PinyinPathExtractor.isASCIILetter)
+        )
     }
 
     public static func preferredComment(
@@ -34,6 +38,45 @@ public enum T9PreeditResolver {
             return first
         }
         return nil
+    }
+
+    /// RIME may predict more letters than the number of T9 slots the user has
+    /// entered (`8 -> ta`). Keep that prediction internal and reveal at most one
+    /// visible ASCII letter per explicit letter/digit slot (`8 -> t`, `86 -> to`).
+    private static func projectCommentToEnteredSlots(
+        _ comment: String,
+        rawInput: String
+    ) -> String {
+        let slotLimit = rawInput.unicodeScalars.reduce(into: 0) { count, scalar in
+            if T9PinyinPathExtractor.isASCIILetter(scalar)
+                || T9PinyinPathExtractor.isASCIIDigit(scalar)
+            {
+                count += 1
+            }
+        }
+        guard slotLimit > 0 else { return "" }
+
+        let commentLetterCount = comment.unicodeScalars.reduce(into: 0) { count, scalar in
+            if T9PinyinPathExtractor.isASCIILetter(scalar) { count += 1 }
+        }
+        guard commentLetterCount > slotLimit else { return comment }
+
+        var visibleScalars: [Unicode.Scalar] = []
+        var visibleLetterCount = 0
+        for scalar in comment.unicodeScalars {
+            if T9PinyinPathExtractor.isASCIILetter(scalar) {
+                guard visibleLetterCount < slotLimit else { break }
+                visibleScalars.append(scalar)
+                visibleLetterCount += 1
+            } else if T9PinyinPathExtractor.isASCIISeparator(scalar),
+                      visibleLetterCount > 0,
+                      visibleLetterCount < slotLimit
+            {
+                visibleScalars.append(scalar)
+            }
+        }
+        return String(String.UnicodeScalarView(visibleScalars))
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 

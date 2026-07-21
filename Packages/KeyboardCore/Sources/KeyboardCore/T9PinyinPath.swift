@@ -127,6 +127,11 @@ public enum T9PinyinPathExtractor {
     /// Bounded sync scan on the input path when page candidates are sparse (not a full catalog walk).
     public static let hotPathWindowLimit = 16
     public static let panelWindowLimit = 48
+    /// Maximum live-RIME probes used to discover complete syllables that are
+    /// absent from the current candidate window (Amendment F).
+    public static let completeSyllableProbeLimit = 48
+    /// Keeps discovery independent of an unusually long unresolved digit tail.
+    public static let completeSyllableMaximumDigits = 6
 
     private static let t9Groups: [Character: [Character]] = [
         "2": Array("abc"),
@@ -277,6 +282,39 @@ public enum T9PinyinPathExtractor {
         t9Groups[digit] ?? []
     }
 
+    /// Deterministic, strictly bounded spellings for live-RIME syllable probes.
+    /// These are never published directly: callers must prove exact raw,
+    /// usable composition and matching candidate-comment provenance first.
+    public static func boundedCompleteSyllableSpellings(
+        forDigits digits: String,
+        limit: Int = completeSyllableProbeLimit
+    ) -> [String] {
+        let safeLimit = max(0, limit)
+        guard safeLimit > 0, digits.count >= 2,
+              digits.allSatisfy({ !keyLetters(forDigit: $0).isEmpty })
+        else { return [] }
+
+        var frontier = [""]
+        var results: [String] = []
+        let boundedDigits = digits.prefix(completeSyllableMaximumDigits)
+
+        for (offset, digit) in boundedDigits.enumerated() {
+            var next: [String] = []
+            for prefix in frontier {
+                for letter in keyLetters(forDigit: digit) {
+                    let spelling = prefix + String(letter)
+                    next.append(spelling)
+                    if offset >= 1 {
+                        results.append(spelling)
+                        if results.count >= safeLimit { return results }
+                    }
+                }
+            }
+            frontier = next
+        }
+        return results
+    }
+
     /// ASCII letter count of a syllable or raw fragment (digits/separators ignored).
     public static func asciiLetterCount(in text: String) -> Int {
         asciiLetters(from: text).count
@@ -302,6 +340,52 @@ public enum T9PinyinPathExtractor {
         guard let raw, !raw.isEmpty else { return "" }
         guard raw.unicodeScalars.allSatisfy(isASCIIDigit) else { return "" }
         return raw
+    }
+
+    /// Parse an apostrophe-anchored mixed raw such as `qiu'53` or `qiu'shu'5`
+    /// into confirmed letter syllables plus the trailing unresolved digit run.
+    /// Returns `nil` when the raw is not a clean confirmed-prefix boundary.
+    public static func anchoredConfirmedSyllables(
+        fromMixedRaw raw: String
+    ) -> (confirmed: [String], trailingDigits: String)? {
+        guard let boundary = raw.lastIndex(of: "'"),
+              boundary > raw.startIndex,
+              raw.index(after: boundary) < raw.endIndex
+        else { return nil }
+
+        let trailing = String(raw[raw.index(after: boundary)...])
+        guard !trailing.isEmpty, trailing.unicodeScalars.allSatisfy(isASCIIDigit) else {
+            return nil
+        }
+
+        let prefix = String(raw[..<boundary])
+        let segments = prefix
+            .split(separator: "'", omittingEmptySubsequences: true)
+            .map(String.init)
+        guard !segments.isEmpty,
+              segments.allSatisfy({
+                  !$0.isEmpty && $0.unicodeScalars.allSatisfy(isASCIILetter)
+              })
+        else { return nil }
+
+        return (segments.map { $0.lowercased() }, trailing)
+    }
+
+    /// Extract digit identity from a RIME preedit that contains only T9 digits
+    /// and harmless segment separators. This is internal provenance, never text
+    /// that may be written to the host.
+    public static func internalDigitIdentity(fromPreedit preedit: String) -> String? {
+        guard !preedit.isEmpty else { return nil }
+        var digits: [Unicode.Scalar] = []
+        for scalar in preedit.unicodeScalars {
+            if isASCIIDigit(scalar) {
+                digits.append(scalar)
+            } else if !isASCIISeparator(scalar) {
+                return nil
+            }
+        }
+        guard !digits.isEmpty else { return nil }
+        return String(String.UnicodeScalarView(digits))
     }
 
     /// Remaining T9 raw after a partial Chinese selection.
@@ -406,6 +490,10 @@ public enum T9PinyinPathExtractor {
                 .split(separator: "'", omittingEmptySubsequences: true)
                 .map(String.init)
             guard segments.indices.contains(segmentIndex) else { continue }
+            guard matchesConfirmedPrefix(
+                segments.map { $0.lowercased() },
+                confirmedSyllables: confirmedSyllables
+            ) else { continue }
             let syllable = segments[segmentIndex]
             guard seen.insert(syllable).inserted else { continue }
             guard let replacement = replacementForProgressiveSyllable(
@@ -441,14 +529,21 @@ public enum T9PinyinPathExtractor {
     public static func candidateCommentsAuthorizeSegment(
         _ candidates: [RimeCandidate],
         segmentIndex: Int,
-        startingWith letter: Character
+        startingWith letter: Character,
+        confirmedSyllables: [String] = []
     ) -> Bool {
         guard segmentIndex > 0 else { return false }
         let expected = String(letter).lowercased()
         return candidates.contains { candidate in
             guard let path = path(fromComment: candidate.comment) else { return false }
-            let segments = path.replacementRawInput.split(separator: "'", omittingEmptySubsequences: true)
+            let segments = path.replacementRawInput
+                .split(separator: "'", omittingEmptySubsequences: true)
+                .map { $0.lowercased() }
             guard segments.indices.contains(segmentIndex) else { return false }
+            guard matchesConfirmedPrefix(
+                segments,
+                confirmedSyllables: confirmedSyllables
+            ) else { return false }
             return segments[segmentIndex].hasPrefix(expected)
         }
     }
@@ -457,7 +552,8 @@ public enum T9PinyinPathExtractor {
     public static func candidateCommentsAuthorizeExactSegment(
         _ candidates: [RimeCandidate],
         segmentIndex: Int,
-        syllable: String
+        syllable: String,
+        confirmedSyllables: [String] = []
     ) -> Bool {
         guard segmentIndex >= 0 else { return false }
         let expected = syllable.lowercased()
@@ -468,8 +564,51 @@ public enum T9PinyinPathExtractor {
                 .split(separator: "'", omittingEmptySubsequences: true)
                 .map { $0.lowercased() }
             guard segments.indices.contains(segmentIndex) else { return false }
+            guard matchesConfirmedPrefix(
+                segments,
+                confirmedSyllables: confirmedSyllables
+            ) else { return false }
             return segments[segmentIndex] == expected
         }
+    }
+
+    /// First live comment whose leading segments still match every explicit
+    /// user confirmation. Candidate ranking may change, but it cannot rewrite
+    /// an already confirmed path prefix.
+    public static func pathPreservingConfirmedPrefix(
+        from candidates: [RimeCandidate],
+        confirmedSyllables: [String]
+    ) -> T9PinyinPath? {
+        guard !confirmedSyllables.isEmpty else { return nil }
+        let expected = confirmedSyllables.map { $0.lowercased() }
+        for candidate in candidates {
+            guard let path = path(fromComment: candidate.comment) else { continue }
+            let segments = path.replacementRawInput
+                .split(separator: "'", omittingEmptySubsequences: true)
+                .map { $0.lowercased() }
+            guard segments.count >= expected.count,
+                  matchesConfirmedPrefix(
+                    segments,
+                    confirmedSyllables: expected
+                  )
+            else { continue }
+            return path
+        }
+        return nil
+    }
+
+    private static func matchesConfirmedPrefix(
+        _ segments: [String],
+        confirmedSyllables: [String]
+    ) -> Bool {
+        guard !confirmedSyllables.isEmpty else { return true }
+        guard segments.count >= confirmedSyllables.count else { return false }
+        for index in confirmedSyllables.indices {
+            guard segments[index].hasPrefix(confirmedSyllables[index].lowercased()) else {
+                return false
+            }
+        }
+        return true
     }
 
     /// Position-based compatibility: walk raw slots in order; never drop digit suffix constraints.

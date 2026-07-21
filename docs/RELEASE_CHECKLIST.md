@@ -123,10 +123,14 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 - [ ] Inline preedit underline appears and clears after candidate, Space and Return commits.
 - [ ] Return commits raw input for segmented preedit; no duplicate text remains.
 - [ ] Delete edits composition first and Partial Commit restore matches its documented contract.
+- [ ] Chinese nine-key ordinary Delete follows visible pinyin characters: `tou → to → t → empty`; it must not jump through candidate completions such as `tong → ta`. Repeat separately with an explicit segmented selection to confirm its focus-restore contract is unchanged.
 - [ ] Candidate horizontal paging, near-edge fetch and expanded panel remain stable.
 - [ ] Chinese nine-key: fixed path bar (34 pt) sits above Chinese candidates without idle height jump; compact paths ≤ 5 single-line labels; pressing `MNO` displays `m / n / o`, and fresh `MNO → GHI` displays `mi / ni / m / n / o` with no selected item. Long multi-syllable comments (e.g. `ni xian zai`) never appear as one compact cell.
 - [ ] Chinese nine-key path direct tap: tapping a first-syllable choice (e.g. `ni`) once confirms and advances to the next syllable set when remaining digits exist; no second tap required. Host text is never path-committed.
+- [ ] Chinese nine-key long segmented input: reproduce the reported `xian → zai → you` progression with a long remaining composition; the next focus searches beyond the initial ranked page and retains all bounded live-authorized branches (maximum 5). If RIME genuinely authorizes only one item, it remains unselected—no implicit selection, confirmation, or advance. Verify Delete reversibility and record key/confirm latency.
 - [ ] Chinese nine-key Partial Commit remainder: after selecting a shorter candidate (e.g. `你好` from `nihaoya`), marked text shows comment-preferred remainder (`你好ya`), not raw digits (`你好92`); path bar rebuilds from remaining digits only.
+- [ ] Chinese nine-key long Partial Commit: type `toutoumaiqiule`, choose `偷偷买`, and verify marked text contains no digits (including spaced forms such as `748 53`), remaining provenance is `qiu…`, and Path Bar includes `qiu`-authorized choices rather than `t / u / v` from an earlier key group.
+- [ ] Across first input, candidate re-rank, Partial Commit, Delete, session fallback/recovery and page/language changes, internal T9 digits never appear in host marked text. When no comment exists, blank/retained safe spelling is acceptable; guessed letters are not.
 - [ ] Chinese nine-key **选拼音**: before first press no label is highlighted; first press selects `m`, next presses select `n`, `o`, then wrap to `m`; the selected label uses the preferred-candidate inverse-color rounded highlight and VoiceOver reports the selected state/current value. The control never opens the predecessor path panel and never confirms/advances a segment by itself.
 - [ ] Chinese nine-key segmented focus: select `n`, press `GHI`, verify `m / n / o` remains and `n` stays selected; tapping an unselected sibling changes only the tentative value; tapping selected `n` advances to unselected `g / h` and never exposes fallback-only `i`.
 - [ ] Chinese nine-key **选定**: active T9 composition retitles space to `选定`; tapping it commits the highlighted/first Chinese candidate and does not advance pinyin focus. Delete from `n4` restores `m / n / o` with `n` selected.
@@ -218,3 +222,16 @@ The project does not yet have numeric Extension latency or memory budgets. Follo
 - [ ] Completed plans remain marked archived and are not presented as current truth.
 - [ ] Manual acceptance evidence is written into the repository with commit/device/OS/schema details.
 - [ ] Every skipped gate is explicit; an unexplained skip blocks release.
+
+### KEYBOARD-LAYOUT-9KEY-PINYIN-002 Amendments E/F/G
+
+- [ ] 新建空白输入，依次按 `TUV / MNO / TUV`；marked text 必须依次为 `t / to / tou`，首次不得显示 `ta`，全程不得显示数字。
+- [ ] 输入 `toutoumaiqiule`、选择「偷偷买」、在 Path Bar 选择 `qiu`；marked text 只到「偷偷买qiu」，候选必须属于 `qiu` 分支，不得仍为「填了/停了」。
+- [ ] 同一路径的下一层 Path Bar 必须包含经 RIME 授权的完整 `le`，不得仅剩 `ke` 与 `j/k/l` 单字母后备。
+- [ ] 重复执行 Delete、切换前后台和候选翻页，确认锚定 raw、marked text 与候选始终一致；记录 iPhone、iOS、构建和可感知延迟。
+
+### Amendment H manual sequence
+
+- [ ] `toutoumaiqiule → 偷偷买 → qiu` 显示 `偷偷买qiule`；改选 `shu` 显示 `偷偷买shule`，后缀 `le` 不得被截断或改成 `ke`。
+- [ ] 从 `偷偷买qiule` 选择候选「球」后，第一次 Delete 恢复 `偷偷买qiule`，第二次 Delete 删除最后输入的 `e` 后显示 `偷偷买qiul`。
+- [ ] 上述每一步输入框均不得出现 `5`、`3` 或任何其他内部数字；候选与 Path Bar 仍须匹配当前锚定分支。

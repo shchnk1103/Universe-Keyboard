@@ -36,7 +36,7 @@
 - Keyboard layout (26-key / Chinese nine-key runtime + chrome): [`KEYBOARD_LAYOUT.md`](KEYBOARD_LAYOUT.md)
 - Nine-key chrome Assignment (closed): [`assignments/keyboard-layout-9key-ui-001.md`](assignments/keyboard-layout-9key-ui-001.md)
 - Nine-key precise pinyin selection (`Accepted / Closed`; PR [#20](https://github.com/shchnk1103/Universe-Keyboard/pull/20) merged): [`assignments/keyboard-layout-9key-pinyin-001.md`](assignments/keyboard-layout-9key-pinyin-001.md), ADR [`0020`](architecture/decisions/0020-t9-precise-pinyin-path-selection.md), Product Gate [`assignments/keyboard-layout-9key-pinyin-001-product-gate-pass.md`](assignments/keyboard-layout-9key-pinyin-001-product-gate-pass.md)
-- Nine-key deterministic choices + segmented/progressive-syllable path bar (`Active — Amendment B local implementation; review/Product Gate pending`): [`assignments/keyboard-layout-9key-pinyin-002.md`](assignments/keyboard-layout-9key-pinyin-002.md), Product Decision [`PD-...-002`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md), ADR [`0021`](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md), segmented Spike [`summary`](assignments/keyboard-layout-9key-pinyin-002-segmented-spike-summary.md)
+- Nine-key deterministic choices + segmented/progressive paths + safe remaining/Delete (`Active — Amendment D local implementation validated; review/Product Gate pending`): [`assignments/keyboard-layout-9key-pinyin-002.md`](assignments/keyboard-layout-9key-pinyin-002.md), Product Decision [`PD-...-002`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md), ADR [`0021`](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md), segmented Spike [`summary`](assignments/keyboard-layout-9key-pinyin-002-segmented-spike-summary.md)
 - Fuzzy pinyin: [`RIME_FUZZY_PINYIN.md`](RIME_FUZZY_PINYIN.md)
 - User dictionary: [`RIME_USER_DICTIONARY.md`](RIME_USER_DICTIONARY.md)
 - Portable RIME settings sync: [`RIME_SYNC.md`](RIME_SYNC.md)
@@ -91,3 +91,11 @@
 - Swift 6 acceptance history: [`architecture/swift6-manual-acceptance.md`](architecture/swift6-manual-acceptance.md)
 
 Playbooks define how agents work; domain facts remain in the linked architecture, ADR and operational sources.
+
+### T9 Amendments E/F/G (2026-07-21)
+
+- Product authorization: [`product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md)
+- Architecture: [`architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md`](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md)
+- Execution / acceptance: [`assignments/keyboard-layout-9key-pinyin-002.md`](assignments/keyboard-layout-9key-pinyin-002.md), [`assignments/keyboard-layout-9key-pinyin-002-product-gate-human-handoff.md`](assignments/keyboard-layout-9key-pinyin-002-product-gate-human-handoff.md)
+- Canonical behavior: confirmed-prefix session continuity, bounded complete-syllable discovery, and one visible letter per entered T9 slot.
+- Amendment H / Grok continuation: [`assignments/keyboard-layout-9key-pinyin-002-grok-handoff-2026-07-21.md`](assignments/keyboard-layout-9key-pinyin-002-grok-handoff-2026-07-21.md)

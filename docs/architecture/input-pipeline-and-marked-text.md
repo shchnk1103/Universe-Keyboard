@@ -37,6 +37,7 @@ When `usesT9InputSemantics` is true:
 - `KeyboardAction.selectT9PinyinPath` and `cycleT9PinyinPath` converge on the same composition-refinement transaction via `RimeEngine.replaceInput`. They update marked preedit and Chinese candidates only on a valid refine; they never finalize path letters/digits to the host.
 - Failed refine is transactional: restore previous `RimeOutput`, composition, path state and marked text.
 - Active T9 composition includes pure digits, pure letters and mixed letter/digit/`'` raw input. Space/Return without candidates and language switch must not host-commit that raw input.
+- Host-facing T9 preedit never contains internal ASCII digits. Candidate comments are preferred; fallback preserves only already-explicit letters. Digit/separator-only composition tails are provenance, not display text.
 - A single unresolved digit obtains a constant-size ordered choice set from the canonical T9 key identity; longer digit/mixed paths are parsed from compatible Rime candidate comments. Neither source produces or ranks Chinese candidates.
 - After a successful single-key refinement, Core retains the issued choices/source and selected path while live RIME output moves from digit to letter. The next cycle validates against that retained snapshot; new input and lifecycle transitions rebuild or clear it.
 - UIKit only displays Core state and forwards direct/cycle actions. It must not own the cycle index or reopen the predecessor path panel.
@@ -122,10 +123,13 @@ Direct symbols/text first finalize any active composition through the appropriat
 - T9 progressive path selection (ADR 0021 Amendment B) keeps original digit groups and focus state in KeyboardCore while RIME owns live raw/candidates. Compact paths are first-syllable + first-key letters only — never multi-syllable whole labels.
 - A **direct path-bar tap** selects and, when remaining digits exist, immediately confirms/advances (syllable-level next set, or letter-group fallback). **选拼音** only first/next/wraps the tentative selection and never confirms a segment by itself.
 - Appending a digit after a **tentative** (选拼音) selection preserves the focused selection until a direct path tap confirms/advances.
-- Advancing focus prefers live-comment syllables at the next segment index; single-letter key-group probes remain the fallback. Probes restore the prior ambiguous raw before publishing the new unselected focus, and never commit host text.
+- Advancing focus prefers live-comment syllables at the next segment index from a bounded path-discovery window; the first 16 ranked candidates are not exhaustive. While compact capacity remains, live-authorized single-letter key-group probes may supplement a non-empty exact-syllable set. Probes restore the prior ambiguous raw before publishing the new focus, and never commit host text.
+- Every newly advanced focus publishes with no selected path, including a genuinely single-choice focus. Choice cardinality is display state, never user intent.
 - **T9 Partial Commit display:** after selecting a shorter Chinese candidate (e.g. `你好` from `nihaoya` / digits `…92`), host marked text must show comment-preferred remaining preedit (`你好ya`), never remaining raw digits (`你好92`).
 - **T9 Partial Commit remaining raw:** when librime keeps the **full** digit raw after partial select, Core peels the unresolved suffix for path/recovery (e.g. `6442692` + remaining display `ya` → remaining raw `92`) so the path bar shows `wa/ya/za` + `w/x/y/z` family choices, not leading-key `m/n/o`. Compact merge prefers first syllables then first-key letters (cap 5).
 - **T9 host never shows pure raw digits:** `currentComposition` may track digit raw for recovery, but `activeCompositionDisplayText`, Partial Commit checkpoints (`previousDisplayText`), Delete restore, and fallback delete/rebuild paths must use comment-preferred preedit or the prior host marked snapshot — never push `6442692`-style digit strings into `setMarkedText`.
+- **Spaced raw is still raw:** tails such as `748 53` or apostrophe-separated digit runs are normalized to internal digit identity before Partial Commit display/provenance decisions. `toutoumaiqiule → 偷偷买` must align remaining raw/path state to `74853` and expose `qiu`-authorized paths.
+- **Visible-character Delete:** without a Partial Commit checkpoint or explicit segmented selection, Delete shortens the exact visible ASCII pinyin via bounded `replaceInput` and preserves that spelling against candidate completion re-ranking (`tou → to → t → empty`).
 - In active T9 composition, the `选定` space key still executes normal first/highlighted-candidate finalization. It is not a segment-confirm gesture.
 - Continued typing invalidates the single reversible checkpoint according to the current Partial Commit contract.
 - Typo correction Partial Commit remains separately gated and must preserve original typo input for restore.
@@ -154,3 +158,9 @@ Direct symbols/text first finalize any active composition through the appropriat
 - `Keyboard/Services/UITextDocumentProxyAdapter.swift`
 - `Packages/KeyboardCore/Sources/KeyboardCore/TypingIntelligence.swift`
 - `Packages/KeyboardCore/Sources/KeyboardCore/PostCommitContinuation.swift`
+
+### T9 可见输入边界（Amendments E/F/G）
+
+- 普通九宫格按键先进入 RIME，但 host marked text 只投影用户已输入的槽位；`8 / 86 / 868` 分别显示 `t / to / tou`，预测的额外字母留在候选层。
+- Path Bar 显式选择是更高优先级的用户事实；确认 `qiu` 后显示只到 `qiu`，session raw 以 `qiu' + 剩余数字` 维持候选连续性。
+- 后续完整音节必须由有界 live-RIME probe 授权；内部数字、未确认预测和不继承确认前缀的 comment 均不得进入 marked text。

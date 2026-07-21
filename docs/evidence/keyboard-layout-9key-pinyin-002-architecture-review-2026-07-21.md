@@ -68,3 +68,34 @@ Amendment B 在已接受的 ADR 0018、ADR 0020 与 ADR 0021 边界内实现：K
 ## 重新审查触发条件
 
 Choice source、comment authorization、确认/推进手势、路径栏高度/布局、RIME session/deploy ownership、或 T9 schema/librime 行为发生变化时，必须重新进行架构审查。
+
+## Amendment C 复核附录 — 2026-07-21 Asia/Shanghai
+
+**结论：Pass（延续质量、性能与真机跟进）。** Amendment C 改变了后续焦点的有界 choice discovery，触发了上述重新审查条件，但没有改变层次所有权：Core 仍只从当前 RIME session 的 candidates/comments 签发路径，RIME 仍独占中文候选与排序，UIKit 仍只渲染状态。
+
+- 将 next-focus 读取上限从热路径样本 16 提升到既有 `panelWindowLimit` 48，仍是固定上界，不是候选全量遍历。
+- 精确音节不足 compact 上限时，只探测当前物理键组（最多 4 个字母）；分支必须通过 exact replacement、no-commit、usable composition 与 live segment-comment authorization。
+- 每个 probe 以局部 `defer` 恢复先前 raw，发布前再执行一次事务恢复；恢复失败沿用既有完整 rollback/fail-closed 路径。
+- 新焦点始终 `selectedPath == nil`，选项基数不再被解释为用户意图。没有 UIKit、RimeBridge、schema、Vendor、部署、持久化或网络变更。
+
+因此无需新增 ADR；ADR 0021 Amendment C 足以记录长期边界。必须继续由 Quality 在真机测量确认动作的同步 RIME 延迟，并覆盖长输入、单选项未选中、Delete、VoiceOver 与恢复。本附录不关闭 Assignment 或 Product Gate。
+
+## Amendment D 复核附录 — 2026-07-21 Asia/Shanghai
+
+**结论：Pass（延续 Quality/真机跟进）。** 修复保持 Core/RIME/UIKit 分层：数字仍是 Core/RIME provenance，宿主只接收安全显示投影；Delete 通过现有 session `replaceInput` 精确缩短可见拼音，不把候选排序或删除状态移到 UIKit。
+
+- 带分隔符数字尾巴规范化为纯数字 identity 后才参与 Partial Commit suffix 对齐，避免整串 raw 污染 `currentComposition`、`remainingRawInput`、`lastRimeOutput` 和 `segmentSourceDigits`。
+- 显示 fallback 不做 digit-to-letter 猜测，只保留已经显式化的 ASCII 字母；无安全 spelling 时允许空/保留旧显示。
+- visible-character Delete 仅用于无 Partial Commit、无显式 segmented selection/confirmed segment 的 T9 composition；因此不改写 Amendment A 的分段回退或既有 checkpoint 优先级。
+- 单次 Delete 至多一次 exact replacement；无 schema、Vendor、部署、网络、持久化或日志变化。
+
+ADR 0021 Amendment D 足以记录长期语义，无需新 ADR。Quality/Product Gate 仍须验证失败恢复、真机 marked-range 稳定性、Delete 延迟及所有 lifecycle fallback 无数字泄漏。
+
+## Amendments E/F/G Architecture addendum
+
+**结论：Architecture PASS；真机性能仍为 Product Gate follow-up。**
+
+- 确认的 Path Bar 音节现在同时成为显示事实、apostrophe 分隔的 RIME raw 边界和候选 provenance 约束，消除了“显示 qiu、候选仍在 tian 分支”的双状态。
+- 完整音节发现严格限制为最多 6 个剩余数字、48 次 live probe；组合本身不是输出，必须逐个通过 exact raw、usable session 与 confirmed-prefix comment 校验，并恢复锚定 raw。
+- 普通 preedit 投影按输入槽位截断预测 comment；显式选择由独立路径显示，因此不会截断用户已确认的完整音节。
+- 无 UIKit 推断、第二拼音引擎、schema/Vendor/部署、网络或同步持久化变化。需要在 iPhone 13 Pro 观察最坏 48-probe 路径的可感知延迟。
