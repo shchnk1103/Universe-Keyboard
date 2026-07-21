@@ -1,7 +1,7 @@
 # Assignment: RELEASE-2026-0801-02 — V1.0 功能与设备范围冻结
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Completed — independent Architecture and Quality review pending`
+**Lifecycle status:** `Reviewed — independent Architecture and Quality conclusions recorded; no Product Gate or release conclusion`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority
@@ -45,15 +45,15 @@ This table is the Product Lead-approved scope record. It freezes what the releas
 
 The Executor has verified that the required current sources were identified: the release control Assignment and evidence ledger, Dashboard, release checklist, technical-debt/performance/privacy sources, current active feature Assignments, and the project configuration showing an iOS 26.4 deployment target with iPhone/iPad target families. No required Assignment field remains `UNKNOWN` for this scope-record task.
 
-The scope record is complete as an Executor deliverable. It does not constitute Architecture review of the iOS target change or iPad support boundary, Quality approval of the release matrix, Product acceptance of the two new child tasks, or authorization to alter production code.
+The scope record is complete as an Executor deliverable. Independent Architecture and Quality conclusions are recorded in the [review handoff](release-2026-08-01-02-review-handoff.md); they do not constitute a Product Gate, release conclusion, or authorization to alter production code. The required iOS target, iPad, kaomoji, Full Access, final Archive and App Store follow-ups remain open under their child Assignments.
 
 ## Gates
 
 - **Entry Criteria:** **Met.** Executor named and acknowledged; Human Product Owner supplied decisions; current active/closed feature sources identified; no required field is `UNKNOWN`.
-- **Exit Criteria:** **Executor deliverable met.** The approved table names included/excluded/feature-gated work, makes iPad and iOS 26.0 explicit, creates closure paths for newly included work, and constrains App Store copy. Independent Architecture and Quality review remain required before any release conclusion.
+- **Exit Criteria:** **Reviewed.** The approved table names included/excluded/feature-gated work, makes iPad and iOS 26.0 explicit, creates closure paths for newly included work, and constrains App Store copy. Independent Architecture and Quality conclusions are recorded; they do not close any child gate or create a release conclusion.
 - **Stop Conditions:** Scope decision would contradict an Accepted Product Contract/ADR without amendment; unresolved data/privacy behavior; unsupported feature remains publicly claimed; Product owner decision is unavailable; an implementation attempts to lower the deployment target or claim iPad/kaomoji readiness without its own Assignment and review.
 
 ## Handoff
 
-- **Required Handoff Content:** included features, excluded features, defaults, supported devices/OS, open Gates, owner per gap, App Store copy constraints and required implementation follow-ups. Current required follow-ups are iPad support (07), kaomoji content (08), a separately assigned iOS 26.0 target-change implementation, and Architecture/Quality review of this scope record. The bounded review questions and required outputs are in [`RELEASE-2026-0801-02 review handoff`](release-2026-08-01-02-review-handoff.md).
+- **Required Handoff Content:** included features, excluded features, defaults, supported devices/OS, open Gates, owner per gap, App Store copy constraints and required implementation follow-ups. Current required follow-ups are iPad support (07), kaomoji content (08), a separately assigned iOS 26.0 target-change implementation, and the child-task/final-release evidence listed in the [review handoff](release-2026-08-01-02-review-handoff.md).
 - **Revalidation Trigger:** any user-visible feature/default/support target changes after freeze

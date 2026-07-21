@@ -23,7 +23,7 @@
 | Assignment | Status | Evidence / blocker |
 |---|---|---|
 | Stable archive | `Assignment Pending` | Executor/environment operator not assigned; stable toolchain evidence pending |
-| Scope freeze | `Completed — independent review pending` | Product scope record published; iPad support, kaomoji content and iOS 26.0 target-change implementation remain release blockers |
+| Scope freeze | `Reviewed — Architecture and Quality conclusions recorded; no Product Gate or release conclusion` | [Architecture review](release-2026-08-01-02-architecture-review.md) and [Quality review](release-2026-08-01-02-quality-review.md) are `Pass` with required follow-ups; iPad support, kaomoji content and iOS 26.0 target-change implementation remain release blockers |
 | iOS 26.0 target | `Assigned — Architecture review pending` | Current target is iOS 26.4; no iOS 26.0 claim until the separately reviewed change and final archive validation complete |
 | iPad support | `Assigned — Entry Criteria pending` | iPad simulator work may begin after the matrix is proposed; physical iPad evidence remains unavailable |
 | Kaomoji content | `Assigned — Entry Criteria pending` | Product catalog source/licensing/content decision and working-content evidence remain unavailable |
