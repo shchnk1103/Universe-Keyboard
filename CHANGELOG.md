@@ -2,6 +2,34 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-21 — Path Bar 局部替换与焦点 Delete（KEYBOARD-LAYOUT-9KEY-PINYIN-002 Amendment H）
+
+- Path Bar 选择只替换对应拼音片段并保留用户已输入的未选择后缀：`qiu le → qiule`，选择 `shu` 则为 `shule`；RIME 新排名出的 `ke` 不得覆盖原有 `le`。
+- 候选「球」后的第一次 Delete 精确撤销为 `qiule`，并恢复 `qiu'53` 锚定 raw；安全的删除前 marked-text 快照优先于重建产生的 `qiu5` 等混合内部串。
+- 第二次 Delete 按当前未确认焦点删除 `l`：内部 `qiu'53 → qiu'3`，可见 `qiule → qiue`。任意含 ASCII 数字的 T9 preedit 均不得进入 host。
+- focused qiu 完整序列曾通过；最后的 refined-raw 通用修正因 Codex 执行额度耗尽尚待复跑。Grok 接手说明见 `docs/assignments/keyboard-layout-9key-pinyin-002-grok-handoff-2026-07-21.md`，Product Gate 保持 Pending。
+
+## 2026-07-21 — 九宫格确认前缀、完整音节与逐键显示（KEYBOARD-LAYOUT-9KEY-PINYIN-002 Amendments E/F/G）
+
+- Path Bar 确认 `qiu` 后，RIME session 以 `qiu' + 剩余数字` 锚定；输入框只显示已确认的 `qiu`，候选与后续路径必须继承该前缀，失败则整次回滚。
+- 对剩余数字优先执行有界完整音节探测（最多 6 位、48 次 live-RIME probe），例如 `53` 可同时提供经 RIME 授权的 `ke / le`；单字母分支仅作为后备，不再让候选页稀疏度替用户缩窄选择。
+- 普通九宫格逐键输入最多显示一个字母槽位：`8 → t`、`86 → to`、`868 → tou`。RIME 可继续在内部预测 `ta / tong`，但预测不会提前进入输入框，内部数字也不会暴露。
+- 自动化验证：T9 Path `46/46`、布局与运行时 `14/14`、KeyboardCore 全量 `647/647` 通过；最终 Debug 真机包已构建并安装到 iPhone 13 Pro（iOS 27.0），空白备忘录首按 `TUV` 实测只显示 `t`。Device Hub 后续窗口焦点不稳定，`to / tou` 与 `qiu → le` 完整矩阵仍保持 Product Gate Pending。
+
+## 2026-07-21 — 九宫格剩余拼音与可见字符删除（KEYBOARD-LAYOUT-9KEY-PINYIN-002 Amendment D）
+
+- 修复 `toutoumaiqiule → 偷偷买` 后把 `748 53` 当显示文本及整串 provenance 的问题：空格/撇号分隔的数字尾巴现统一识别为内部 raw，剩余状态对齐到 `74853 / qiu le`，Path Bar 不再错误回到 `t / u / v`。
+- T9 host preedit 不再回退显示内部数字；无有效 comment 时只保留显式 refine 字母，session fallback 保留最后安全拼写。
+- 普通未确认 Delete 改为删除最后一个可见拼音字符并 exact-refine：`tou → to → t → 空`，不再因较短数字串重新排名而跳成 `tong → ta`。显式分段与 Partial Commit checkpoint Delete 合同不变。
+- 新增 spaced-tail、`qiu` provenance、digit-bearing comment/fallback、exact Delete 与双失败 fail-closed 回归。KeyboardCore `642/642`、RimeBridgeTests `28` passed + `4` fixture skips、主工程 `127/127`、Debug/Release 严格构建通过；真机交互与延迟 Product Gate 仍待复核。
+
+## 2026-07-21 — 九宫格长输入保持用户选择（KEYBOARD-LAYOUT-9KEY-PINYIN-002 Amendment C）
+
+- 修复长串分段输入确认 `xian / zai / you` 后，下一焦点因只检查前 16 个候选而收缩成单个 `yi` 的问题：音节发现改用有界 48 项窗口。
+- 精确音节不足 5 项时，继续用当前物理键组做有界 live-RIME 探测；仅发布 comment 明确授权的分支，不引入静态拼音图、笛卡尔展开或第二候选引擎。
+- 每次推进后的 path focus 都保持未选中；即使 RIME 确实只授权一个选项，也不会代替用户选择、确认或继续推进。探测逐次恢复原始 raw，失败沿用完整事务回滚。
+- 新增首屏 16 项之后仍有合法音节、单个精确音节仍需补充分支、无隐式选择与 session raw 恢复回归测试。Focused Core、KeyboardCore 全量、RimeBridgeTests、主工程 Simulator 测试及 Debug/Release 严格构建通过；真机长输入与延迟 Product Gate 仍待执行。
+
 ## 2026-07-20 — 新用户启用旅程与 Full Access 文案边界（RELEASE-2026-0801-03，Conditional Pass）
 
 - Product Decision `PD-RELEASE-2026-0801-03` 与产品源 `docs/ONBOARDING_ACTIVATION.md`：定义添加键盘 → 完全访问 → 准备资源 → 首次输入清单、canonical 文案边界与 Full Access 能力矩阵。

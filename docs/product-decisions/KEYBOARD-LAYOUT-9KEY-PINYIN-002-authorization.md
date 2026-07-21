@@ -153,3 +153,60 @@ The pinned `1.16.1` run passed with exact `n4 / n'g / n'h / n'i` evidence and `a
 ### B3. Boundaries unchanged
 
 No second candidate engine, no Cartesian expansion, no Extension deploy, no raw host commit. Independent review and physical-device Product Gate remain required before parent Assignment close.
+
+## Amendment C — Preserve User Choice After Long Segmented Input, 2026-07-21 Asia/Shanghai
+
+**Status:** Authorized by the Human Product Owner after physical-device observation that confirming `xian / zai / you` could leave only `yi` in the next path-bar focus.
+
+### C1. Product invariant
+
+1. A single displayed next-syllable path is only one RIME-ranked option. Its presence must never be interpreted as user confirmation, implicit selection, or permission to advance focus.
+2. After confirm/advance, `selectedPath` remains empty regardless of the number of published choices. Only **选拼音** or an explicit direct path tap may select a choice.
+3. A non-empty multi-letter result must not suppress other branches that the bounded live RIME session can still authorize for the same focus.
+
+### C2. Bounded choice discovery
+
+1. Next-focus discovery first gathers compatible exact syllables from a bounded live candidate window large enough for path discovery, rather than treating the first 16 ranked candidates as an exhaustive path catalog.
+2. Exact syllables retain first-seen RIME ranking and the compact bar remains capped at five items.
+3. If compact capacity remains, Core may probe the current physical key group for additional branches, but may publish only branches authorized by current live comments under the existing provenance rules. Exact raw retention or non-empty fallback candidates alone remain insufficient.
+4. Every probe restores the prior ambiguous raw before the next probe and before the new unselected focus is published. Probe failure must roll back the full RIME/composition/path snapshot.
+
+### C3. Boundaries and acceptance
+
+No static pinyin graph, Cartesian expansion, second candidate engine, Extension deployment, raw host commit, or unbounded scan is authorized. Focused tests must cover the reported long-input shape, single-option non-selection, wider-window discovery, authorized-branch supplementation, probe rollback, **选拼音**, direct tap, and Delete. Physical-device Product Gate remains required.
+
+## Amendment D — Remaining Composition and Visible-character Delete, 2026-07-21 Asia/Shanghai
+
+**Status:** Authorized by the Human Product Owner after physical-device evidence showed `偷偷买748 53`, a `t / u / v` path bar for the intended `qiu` remainder, and `tou → tong → ta → empty` under Delete.
+
+### D1. One internal source, two user-facing projections
+
+1. T9 digits remain internal raw identity for RIME, recovery and path provenance. ASCII digits from that identity must never appear in host marked text, including tails separated by spaces or apostrophes.
+2. After a partial candidate selection, Core derives the editable raw suffix from the remaining comment-preferred pinyin, not from the full pre-selection digit run. For `toutoumaiqiule → 偷偷买`, the remaining source begins at `qiu…`; the path bar must not restart from an earlier `8 → t/u/v` group.
+3. When no compatible comment exists, Core may show only already-explicit pinyin letters from mixed raw. It must not guess a letter for an unresolved digit; an empty/retained safe display is preferable to exposing digits.
+
+### D2. Delete follows visible pinyin intent
+
+1. In an unconfirmed T9 composition with no active segmented selection, Delete removes the last visible ASCII pinyin letter and refines the live session to that exact prefix. Required example: `tou → to → t → empty`.
+2. Candidate re-ranking must not replace that exact shortened display with a longer predicted comment such as `tong` or `ta`.
+3. Explicit segmented selection/confirmation and Partial Commit checkpoint restore retain their existing reversible contracts; this Amendment does not flatten those states into character deletion.
+4. Failed exact refinement falls back to the existing transactional/session-safe Delete path. Delete never commits raw letters or digits to the host.
+
+### D3. Acceptance and boundaries
+
+Focused tests must cover spaced numeric tails after Partial Commit, correct `qiu` remainder provenance, absence of host-visible T9 digits, exact visible-character Delete, segmented Delete regression and rollback. No UIKit-owned inference, static pinyin graph, schema change, deployment, persistence or logging is authorized. Physical-device latency and interaction remain Product Gate evidence.
+
+## Amendments E/F/G — 确认前缀、完整音节与逐键显示
+
+- **E：确认即绑定 session。** 用户在 Path Bar 确认 `qiu` 后，marked text 只显示 `qiu`；live RIME raw 锚定为 `qiu' + 剩余数字`，候选与后续路径必须继承全部确认前缀。锚定、session 可用性或 comment provenance 任一失败，整次状态转换回滚。
+- **F：完整音节优先。** 当前候选页不足以证明“只有一个选择”。剩余数字允许在最多 6 位、48 次的严格上限内做 exact live-RIME probe；只有 raw 精确、session 可用且 comment 继承确认前缀的完整音节可发布。`53` 应能提供经 RIME 授权的 `ke / le`，单字母仅作后备。
+- **G：一个按键槽位最多显示一个字母。** 普通输入显示为 `8 → t`、`86 → to`、`868 → tou`；更长的 RIME 预测只参与候选，不进入 host marked text。显式 Path Bar 选择继续优先，任何路径都不得显示内部数字。
+- 本授权不引入第二拼音引擎、静态词表、schema/Vendor/部署变化或热路径持久化。完整音节 probe 的真机延迟与交互正确性仍属于 Product Gate。
+
+## Amendment H — 局部可见替换与焦点 Delete
+
+- Path Bar 选择只能改写它消费的拼音槽位；用户尚未选择的可见后缀必须原样保留。`qiu le` 选择 `qiu` 后显示 `qiule`，选择 `shu` 后显示 `shule`，不得截断或被候选重排覆盖。
+- 候选撤销优先恢复删除前安全 marked-text 快照和显式锚定 raw。任何含 ASCII 数字的 T9 preedit，包括 `qiu5`，均视为内部状态并禁止发布到 host。
+- 对 apostrophe 锚定且当前焦点位于未确认后缀的 composition，候选撤销后的下一次 Delete 按**最后一次输入**删除未确认尾槽：`qiu'53 → qiu'5`、`qiule → qiul`（去掉末位 `e`，而不是段首 `l`）。这与 Amendment D 的可见末字母 Delete 一致。
+- Path Bar 在长句 Partial Commit 后选择/确认某一音节时，不得塌缩成仅剩该标签一项。混合 refined raw（如 `qiu'53`）仍须基于保留的 digit identity 重建当前焦点的多选项（完整音节与/或键位字母），与单独输入同一剩余数字串时的选择面一致。
+- 失败必须恢复完整旧 raw/session/display 或保持原状态；不得退化成数字显示或 UI 猜测。

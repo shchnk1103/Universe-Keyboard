@@ -67,12 +67,115 @@ extension KeyboardController {
             previousPreeditText: previousPreeditText,
             previousDisplayText: previousDisplayText
         )
+        // Path Bar digit identity must survive a nested Chinese partial that
+        // shortens live raw to a pure-digit suffix (e.g. qiu'53 → 5 after 球).
+        // Capture before install: hard path refresh would otherwise forget
+        // confirmed syllables and collapse source to the bare remainder digit.
+        let preservedSegmentSource = state.t9PinyinPathState.segmentSourceDigits
+        let preservedPathConfirmed = state.t9PinyinPathState.confirmedSegmentValues
         installPartialCommitPresentation(
             confirmedText: confirmedText,
             output: result,
             checkpoint: checkpoint,
             source: .rime
         )
+        restoreSegmentedPathIdentityAfterNestedPartial(
+            preservedSegmentSource: preservedSegmentSource,
+            preservedPathConfirmed: preservedPathConfirmed
+        )
+    }
+
+    /// Re-attach progressive path identity when a nested candidate leaves only a
+    /// pure-digit remainder of the still-valid composition digit source.
+    @discardableResult
+    func restoreSegmentedPathIdentityAfterNestedPartial(
+        preservedSegmentSource: String?,
+        preservedPathConfirmed: [String]
+    ) -> Bool {
+        guard usesT9InputSemantics,
+              let preserved = preservedSegmentSource,
+              !preserved.isEmpty,
+              preserved.allSatisfy(\.isNumber),
+              !preservedPathConfirmed.isEmpty,
+              let liveRaw = state.lastRimeOutput?.rawInput,
+              !liveRaw.isEmpty,
+              liveRaw.allSatisfy(\.isNumber)
+        else { return false }
+
+        let confirmedLetters = T9PinyinPathExtractor.letterCount(
+            ofSyllables: preservedPathConfirmed
+        )
+        guard confirmedLetters > 0, confirmedLetters < preserved.count else { return false }
+
+        // Unresolved tail after confirmed syllables, e.g. `qiu` on `74853` → `53`.
+        // Nested remainder after 球 is often a *prefix* of that tail (`5` of `53`),
+        // not a suffix. Whole-source hasSuffix is also wrong: `74853` ends in `3`.
+        let unresolvedTail = String(preserved.dropFirst(confirmedLetters))
+        guard !unresolvedTail.isEmpty,
+              liveRaw.count <= unresolvedTail.count,
+              (unresolvedTail == liveRaw
+                || unresolvedTail.hasPrefix(liveRaw)
+                || unresolvedTail.hasSuffix(liveRaw))
+        else { return false }
+
+        let alignedSource = String(preserved.prefix(confirmedLetters)) + liveRaw
+        let remainingDigits = liveRaw
+
+        var paths: [T9PinyinPath] = []
+        if remainingDigits.count == 1, let digit = remainingDigits.first {
+            let prefix = preservedPathConfirmed.joined(separator: "'")
+            paths = T9PinyinPathExtractor.keyLetters(forDigit: digit).map { letter in
+                let value = String(letter)
+                let replacement = prefix.isEmpty ? value : prefix + "'" + value
+                return T9PinyinPath(displayText: value, replacementRawInput: replacement)
+            }
+        } else if !remainingDigits.isEmpty {
+            var seed = state.lastRimeOutput?.candidates ?? []
+            if let engine = rimeEngine {
+                seed.append(contentsOf: engine.candidateWindow(
+                    from: 0,
+                    limit: T9PinyinPathExtractor.hotPathWindowLimit
+                ).candidates)
+            }
+            paths = T9PinyinPathExtractor.progressiveSyllablePaths(
+                from: seed,
+                sourceDigits: alignedSource,
+                confirmedSyllables: preservedPathConfirmed,
+                limit: T9PinyinPathExtractor.compactLimit
+            )
+            if paths.count < T9PinyinPathExtractor.compactLimit,
+               let digit = remainingDigits.first
+            {
+                let prefix = preservedPathConfirmed.joined(separator: "'")
+                let suffix = String(remainingDigits.dropFirst())
+                for letter in T9PinyinPathExtractor.keyLetters(forDigit: digit) {
+                    guard paths.count < T9PinyinPathExtractor.compactLimit else { break }
+                    let value = String(letter)
+                    guard !paths.contains(where: { $0.displayText.hasPrefix(value) }) else {
+                        continue
+                    }
+                    paths.append(
+                        T9PinyinPath(
+                            displayText: value,
+                            replacementRawInput: prefix + "'" + value + suffix
+                        )
+                    )
+                }
+            }
+        }
+
+        var pathState = state.t9PinyinPathState
+        pathState.segmentSourceDigits = alignedSource
+        pathState.confirmedSegmentValues = preservedPathConfirmed
+        pathState.focusedSegmentIndex = preservedPathConfirmed.count
+        pathState.selectedPath = nil
+        pathState.retainedChoiceSourceRawInput = nil
+        pathState.compactPaths = paths
+        pathState.issuedReplacementKeys = Set(paths.map(\.replacementRawInput))
+        pathState.discoveryNextIndex = 0
+        pathState.discoveryMayHaveMore = false
+        state.t9PinyinPathState = pathState
+        return true
     }
 
     /// Applies a RIME output while preserving a confirmed prefix during the active session.
@@ -234,15 +337,12 @@ extension KeyboardController {
             checkpoint: nil,
             source: partialCommit.source
         )
-        // Prefer the pre-nested host snapshot when install could only form a digit tail.
-        let installedDisplay = state.partialCommit?.displayText ?? ""
-        let installedRemainder = partialRemainingPreeditText(
-            confirmedText: checkpoint.previousConfirmedText,
-            displayText: installedDisplay
-        )
-        if isDigitOnlyPreeditTail(installedRemainder),
-           !checkpoint.previousDisplayText.isEmpty,
-           !isDigitOnlyPreeditTail(checkpoint.previousDisplayText)
+        // Delete is an undo of the nested candidate selection. Restore the exact
+        // pre-selection host snapshot whenever it is safe; do not let rebuilt
+        // RIME preedit (`qiu5`, another prediction, etc.) overwrite that user-
+        // visible fact. Raw/session identity remains the rebuilt internal state.
+        if !checkpoint.previousDisplayText.isEmpty,
+           !containsInternalT9Digit(checkpoint.previousDisplayText)
         {
             state.partialCommit = PartialCommitState(
                 confirmedText: checkpoint.previousConfirmedText,
@@ -267,9 +367,23 @@ extension KeyboardController {
             return checkpoint.previousRawInput
         }
 
-        // Real librime may keep rawInput as the whole original string after a
-        // selected segment. Once an earlier segment is already confirmed, Delete
-        // should rebuild only the editable suffix after that stable prefix.
+        // Under T9, an explicit letter/apostrophe raw such as `qiu'53` is already
+        // the authoritative branch selected by the user. Reusing it preserves the
+        // syllable boundary and avoids rebuilding from visible `qiule` as a new,
+        // ambiguously segmented composition. Do not apply this to 26-key letter
+        // raws: librime may keep the whole original string (e.g. fangzidouhuizheng)
+        // after an earlier segment is confirmed, and Delete must rebuild only the
+        // editable suffix after that stable Chinese prefix.
+        if usesT9InputSemantics,
+           checkpoint.previousRawInput.unicodeScalars.contains(
+            where: T9PinyinPathExtractor.isASCIILetter
+           )
+        {
+            return checkpoint.previousRawInput
+        }
+
+        // Pure-digit T9 identity, or any 26-key letter raw that still covers the
+        // whole pre-selection string: peel to the host-visible remaining suffix.
         let remainingDisplayText = partialRemainingPreeditText(
             confirmedText: checkpoint.previousConfirmedText,
             displayText: checkpoint.previousDisplayText
@@ -564,6 +678,7 @@ extension KeyboardController {
         let remainingPreeditText: String
         let displayText: String
         let compositionTracker: String
+        var internalRemainingRaw: String?
 
         // Previous raw may still be the full pre-selection digit run (librime often
         // retains it). Prefer remainingRaw already stored under an active partial.
@@ -579,29 +694,50 @@ extension KeyboardController {
             )
             if rimePreeditText.hasPrefix(confirmedText) {
                 let rimeTail = String(rimePreeditText.dropFirst(confirmedText.count))
-                // Digit-only RIME tails are not user-facing under T9 (KEYBOARD_LAYOUT).
-                if rimeTail.isEmpty || isDigitOnlyPreeditTail(rimeTail) {
+                internalRemainingRaw = T9PinyinPathExtractor.internalDigitIdentity(
+                    fromPreedit: rimeTail
+                )
+                // Digit/separator-only RIME tails are internal raw, not user-facing text.
+                if rimeTail.isEmpty || internalRemainingRaw != nil {
                     remainingPreeditText = commentPreferred
                     displayText = confirmedText + commentPreferred
                 } else {
                     remainingPreeditText = rimeTail
                     displayText = rimePreeditText
                 }
-            } else if isDigitOnlyPreeditTail(rimePreeditText) {
+            } else if let digitIdentity = T9PinyinPathExtractor.internalDigitIdentity(
+                fromPreedit: rimePreeditText
+            ) {
+                internalRemainingRaw = digitIdentity
+                remainingPreeditText = commentPreferred
+                displayText = confirmedText + commentPreferred
+            } else if containsInternalT9Digit(rimePreeditText) {
+                // A letter+digit mix such as `qiu5` is still internal raw. Prefer
+                // the sanitized candidate projection; if unavailable, expose no
+                // suffix rather than leaking even one digit to marked text.
                 remainingPreeditText = commentPreferred
                 displayText = confirmedText + commentPreferred
             } else {
-                // Letter/mixed preedit (e.g. after path refine): keep RIME display tail.
+                // Letter-only preedit (e.g. after path refine) is safe to show.
                 remainingPreeditText = rimePreeditText
                 displayText = confirmedText + rimePreeditText
             }
             // Peel confirmed digit slots when librime keeps the full raw (e.g. 6442692
             // after 你好 → remaining 92 for ya). Path bar must not see leading 6 → m/n/o.
-            remainingRawInput = T9PinyinPathExtractor.remainingT9RawAfterPartialCommit(
-                previousRaw: previousRawForRemainder,
-                resultRaw: rimeRawInput,
-                remainingDisplayPreedit: remainingPreeditText
-            ) ?? rimeRawInput
+            if rimeRawInput.unicodeScalars.contains(
+                where: T9PinyinPathExtractor.isASCIILetter
+            ) {
+                // A refined raw (`shu'53`, `qiu'53`) already encodes the user's
+                // Path Bar branch. Never replace it with the older pure-digit
+                // identity merely because both still cover the same slot count.
+                remainingRawInput = rimeRawInput
+            } else {
+                remainingRawInput = T9PinyinPathExtractor.remainingT9RawAfterPartialCommit(
+                    previousRaw: previousRawForRemainder,
+                    resultRaw: internalRemainingRaw ?? rimeRawInput,
+                    remainingDisplayPreedit: remainingPreeditText
+                ) ?? rimeRawInput
+            }
             compositionTracker = remainingRawInput
         } else {
             displayText = partialDisplayText(
@@ -659,8 +795,11 @@ extension KeyboardController {
     }
 
     private func isDigitOnlyPreeditTail(_ text: String) -> Bool {
-        !text.isEmpty
-            && text.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIIDigit)
+        T9PinyinPathExtractor.internalDigitIdentity(fromPreedit: text) != nil
+    }
+
+    private func containsInternalT9Digit(_ text: String) -> Bool {
+        text.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
     }
 
     private func isEligibleTypoPartialCommit(_ correction: TypoCorrectionCommit) -> Bool {

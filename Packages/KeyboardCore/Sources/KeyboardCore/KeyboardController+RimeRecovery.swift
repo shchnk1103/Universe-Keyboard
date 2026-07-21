@@ -215,11 +215,30 @@ extension KeyboardController {
     func appendFallbackCompositionKey(_ key: String) -> KeyboardEffect {
         state.currentComposition += fallbackInputText(for: key)
         if let partialCommit = state.partialCommit {
-            let displayText = partialCommit.confirmedText + state.currentComposition
+            let remainingDisplayText: String
+            if T9CompositionCommitPolicy.isActiveT9Composition(
+                usesT9InputSemantics: usesT9InputSemantics,
+                rawInput: state.currentComposition
+            ) {
+                // A missing/rejected session must not turn internal T9 digits into
+                // host text. Preserve the last safe remainder until RIME recovers;
+                // explicit refined letters may still remain visible.
+                let explicitLetters = T9PreeditResolver.visiblePreedit(
+                    rawInput: state.currentComposition,
+                    candidates: [],
+                    highlightedIndex: nil
+                )
+                remainingDisplayText = explicitLetters.isEmpty
+                    ? partialCommit.remainingPreeditText
+                    : explicitLetters
+            } else {
+                remainingDisplayText = state.currentComposition
+            }
+            let displayText = partialCommit.confirmedText + remainingDisplayText
             state.partialCommit = PartialCommitState(
                 confirmedText: partialCommit.confirmedText,
                 remainingRawInput: partialCommit.remainingRawInput + fallbackInputText(for: key),
-                remainingPreeditText: state.currentComposition,
+                remainingPreeditText: remainingDisplayText,
                 displayText: displayText,
                 checkpoint: nil,
                 source: partialCommit.source

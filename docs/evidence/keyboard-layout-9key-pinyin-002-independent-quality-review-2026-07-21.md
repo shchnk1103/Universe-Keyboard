@@ -58,3 +58,76 @@ RimeBridge suite 的严格 Simulator 命令退出为 0，且 Vendor 校验通过
 ## 复核卫生
 
 审查开始和结束均仅观察到与本任务无关的未暂存文件：`docs/assignments/release-2026-08-01-04-device-performance.md`。本审查未读取其内容作为本任务结论，也未暂存或修改它。`git diff --check` 在审查结束时通过。
+
+## Amendment C 复核附录 — 2026-07-21 Asia/Shanghai
+
+**结论：自动化范围 Pass；Assignment 质量总门仍为 Blocked。** 本次新增的长输入 choice-discovery 行为在当前本地树上可复核通过，但 clean-commit Spike、真实设备交互/延迟、VoiceOver 与 Product Gate 仍未完成，原阻塞结论不变。
+
+| 复核项 | 当前结果 |
+|---|---|
+| 先写失败测试 | 新增“合法音节位于候选 16 之后”与“一个精确音节仍补充 live-authorized 分支”；修复前 2 项失败，其余 39 项通过 |
+| Focused Core | `T9PinyinPathTests` **41/41 PASS** |
+| KeyboardCore 全量 | **639/639 PASS** |
+| Vendor | `ensure_rime_vendor.sh verify` PASS；11 个 framework 结构完整 |
+| RimeBridgeTests | iPhone 17 Pro Simulator / iOS 26.5：**28 passed，4 fixture-gated skipped，0 failed**；xcresult `/tmp/codex-t9-amendment-c-rime-tests/Logs/Test/Test-RimeBridgeTests-2026.07.21_17-59-39-+0800.xcresult` |
+| 主工程 tests | **127/127 PASS**；xcresult `/tmp/codex-t9-amendment-c-main-tests/Logs/Test/Test-Universe Keyboard-2026.07.21_17-59-51-+0800.xcresult` |
+| 严格构建 | Debug / Release generic iOS Simulator 均 exit 0；Swift 6 strict concurrency 与 warnings-as-errors 开启。既有 Boost x86_64 slice 提示仍存在 |
+| 格式卫生 | `git diff --check` PASS |
+
+静态复核确认扫描最多 48 个候选，额外 probe 最多覆盖一个物理键组并在 compact 5 项时停止；没有日志、宿主文本持久化、网络、部署或无界工作。测试同时断言新焦点未选中、候选 16 之后的音节可发现、单个精确音节不会压制另一条 live-authorized 分支，以及 probe 后 session raw 恢复。
+
+剩余必测：在提供问题截图的真实设备路径上重放 `xian → zai → you`，确认后续分支、单选项无高亮、直接点按、**选拼音**、Delete、深浅色、VoiceOver，并记录 48 项窗口读取加最多 4 次 probe 的确认延迟。未取得这些证据前不得把本附录解释为 Product Gate、性能 Pass、风险接受或发布 Go。
+
+## Amendment D 复核附录 — 2026-07-21 Asia/Shanghai
+
+**结论：自动化范围 Pass；质量总门继续 Blocked。** 新增测试在修复前稳定复现三类失败，修复后与既有回归共同通过：
+
+| 范围 | 结果 |
+|---|---|
+| Focused T9 / Partial Commit / display | **90/90 PASS**；含 `偷偷买748 53`、错误 `t/u/v` provenance、digit-bearing comment/session fallback、`tou → tong → ta` 失败形状与 refine/restore 双失败 fail-closed |
+| KeyboardCore 全量 | **642/642 PASS** |
+| Vendor | 11 个 RIME framework 结构验证 PASS |
+| RimeBridgeTests | iPhone 17 Pro Simulator / iOS 26.5：**28 passed，4 fixture-gated skipped，0 failed**；xcresult `/tmp/codex-t9-amendment-d-rime-tests.xcresult` |
+| 主工程 tests（最终源码） | **127/127 PASS**；xcresult `/tmp/codex-t9-amendment-d-main-tests-final2.xcresult` |
+| 严格构建（最终源码） | Debug / Release generic iOS Simulator 均 exit 0；既有 Boost x86_64 slice 提示不变 |
+
+静态检查确认普通 Delete 仅在无 Partial Commit、无 selected/confirmed segment 时介入；非空目标进行一次 exact `replaceInput`，空目标清 session；候选 comment 不能覆盖缩短后的显示。剩余阻塞是用户截图路径的真机重放、无 comment/session-loss、Delete flicker/延迟、VoiceOver、深浅色和 lifecycle 恢复。未完成前不作 Product Gate、性能 Pass 或发布 Go。
+
+## Amendments E/F/G independent quality addendum
+
+**自动化 Quality PASS；整体发布状态仍因真机 Product Gate 未完成而 Blocked。**
+
+| Evidence | Result |
+|---|---|
+| Confirmed-prefix rerank regression | RED 时 `qiu53` 仍返回「填了」分支；锚定 `qiu'53` 后候选进入 `qiu` 分支，marked text 仅显示 `qiu` |
+| Complete-syllable regression | 移除候选页中的 `le` 后测试先因缺少 `le` 失败；有界 exact live probe 后 `qiu'le` 被授权并恢复 |
+| One-slot display regression | RED 时 `8` 显示 `ta`、`86` 显示 `tou`；投影修复后为 `t / to / tou` |
+| Focused T9 Path | `46/46 PASS` |
+| Layout and runtime | `14/14 PASS` |
+| KeyboardCore full suite | `647/647 PASS` |
+
+静态复核确认 probe 上限为 48、长度上限为 6，输出仍须 live-RIME provenance；普通投影不覆盖显式 Path Bar display，数字 comment 继续 fail closed。最终 G 源码需重新构建并安装到 iPhone 13 Pro，再完成 `t → to → tou` 与 `偷偷买 → qiu → le` 矩阵，方可改变 Product Gate 状态。
+
+### Final device-build checkpoint
+
+- 最终 Amendment G 源码面向 iPhone 13 Pro / iOS 27.0 的 Debug 构建成功，并通过 `devicectl` 安装。
+- 备忘录空白输入首按 `TUV`：host marked text 实测为 `t`，未出现旧行为 `ta`，该单项 **PASS**。
+- Device Hub 随后发生镜像窗口焦点/坐标漂移，继续点击可能落到设备列表；为避免误操作已停止。`to / tou` 与完整 `偷偷买 → qiu → le` 仍无可靠最终截图，因此 Product Gate 继续 **Pending**。
+
+## Amendment H checkpoint — suffix replacement and Delete ordering
+
+Status: **implementation present; final Quality rerun blocked by Codex execution-credit limit**.
+
+Observed RED evidence:
+
+- Path Bar `qiu` produced `偷偷买qiu` instead of preserving `le`.
+- nested candidate Delete failed to restore `qiu'53` / `偷偷买qiule` safely.
+- the next Delete targeted the raw tail rather than the first slot of the current unresolved focus.
+
+Evidence obtained during implementation:
+
+- After visible-suffix, checkpoint and focused-Delete fixes, the qiu test covering `qiule → 球 → Delete → qiule → Delete → qiue` passed `1/1`.
+- A combined qiu/shu run then passed qiu and all shu display assertions, but exposed one remaining provenance defect: `shu` display was correct while state raw remained `74853` rather than `shu'53`.
+- The final patch makes all letter-bearing refined raw authoritative in `installPartialCommitPresentation`. `git diff --check` passes after it, but the test command was rejected before execution because the Codex usage limit was reached.
+
+Required next evidence is listed in `docs/assignments/keyboard-layout-9key-pinyin-002-grok-handoff-2026-07-21.md`. Do not upgrade this checkpoint to Quality PASS until focused qiu/shu, T9 Path, layout/runtime and KeyboardCore full suite all pass on the final source.

@@ -76,7 +76,7 @@ final class KeyboardLayoutAndT9RuntimeTests: XCTestCase {
         )
     }
 
-    func testT9PreeditPrefersCommentThenRawDigits() {
+    func testT9PreeditPrefersCommentAndNeverExposesInternalDigits() {
         let candidates = [
             RimeCandidate(text: "你", comment: "ni", globalIndex: 0),
             RimeCandidate(text: "密", comment: "mi", globalIndex: 1),
@@ -95,7 +95,52 @@ final class KeyboardLayoutAndT9RuntimeTests: XCTestCase {
                 candidates: [RimeCandidate(text: "你", comment: "", globalIndex: 0)],
                 highlightedIndex: 0
             ),
-            "64"
+            ""
+        )
+        XCTAssertEqual(
+            T9PreeditResolver.visiblePreedit(
+                rawInput: "n4",
+                candidates: [],
+                highlightedIndex: nil
+            ),
+            "n",
+            "mixed T9 raw may expose explicit letters, never unresolved digits"
+        )
+        XCTAssertEqual(
+            T9PreeditResolver.visiblePreedit(
+                rawInput: "74853",
+                candidates: [RimeCandidate(text: "球了", comment: "748 53", globalIndex: 0)],
+                highlightedIndex: 0
+            ),
+            "",
+            "digit-bearing comments must not bypass the host-display safety boundary"
+        )
+    }
+
+    func testT9PreeditRevealsAtMostOneLetterPerInputSlot() {
+        XCTAssertEqual(
+            T9PreeditResolver.visiblePreedit(
+                rawInput: "8",
+                candidates: [RimeCandidate(text: "他", comment: "ta", globalIndex: 0)],
+                highlightedIndex: 0
+            ),
+            "t"
+        )
+        XCTAssertEqual(
+            T9PreeditResolver.visiblePreedit(
+                rawInput: "86",
+                candidates: [RimeCandidate(text: "偷", comment: "tou", globalIndex: 0)],
+                highlightedIndex: 0
+            ),
+            "to"
+        )
+        XCTAssertEqual(
+            T9PreeditResolver.visiblePreedit(
+                rawInput: "868",
+                candidates: [RimeCandidate(text: "偷", comment: "tou", globalIndex: 0)],
+                highlightedIndex: 0
+            ),
+            "tou"
         )
     }
 

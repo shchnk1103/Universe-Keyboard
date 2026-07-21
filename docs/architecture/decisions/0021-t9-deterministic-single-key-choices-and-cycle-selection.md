@@ -136,6 +136,47 @@ Pinned librime `1.16.1` proved `n4` remains uncommitted and usable. Exact probes
 
 Focused KeyboardCore tests cover: no multi-syllable compact labels on long digit sequences; first-syllable confirm advances to syllable-level next choices; two-key `mi / ni / m / n / o` regression; letter-group fallback after single-letter confirm (`g / h`). Physical-device Product Gate remains part of the parent Assignment.
 
+## Amendment C — Non-collapsing Long-input Choice Discovery
+
+**Status:** Accepted under Active Assignment `KEYBOARD-LAYOUT-9KEY-PINYIN-002` on `2026-07-21 Asia/Shanghai` after the Human Product Owner rejected a single RIME-ranked next syllable as an implicit user decision.
+
+### Decision
+
+1. Next-focus discovery uses a bounded path-discovery window up to `panelWindowLimit`; the 16-item hot-path window is an initial candidate sample, not proof that no alternative syllable exists.
+2. Compatible exact syllables are deduplicated in first-seen RIME order and remain the preferred compact choices.
+3. A non-empty exact-syllable set no longer disables bounded current-key-group probing when compact capacity remains. Supplementary branches must pass the existing exact replacement, no-commit, usable-composition, and live-comment provenance checks.
+4. Confirm/advance always publishes the next focus with `selectedPath == nil`. Choice cardinality never selects, confirms, or advances on the user's behalf.
+5. All scans and probes remain bounded; the previous raw input is restored after every probe and before publication. Failure restores the prior RIME output, marked text, candidates, focus, issued keys, and provenance or fails closed by resetting the session.
+
+### Consequences and risks
+
+- Long ranked candidate runs that share one next syllable no longer make the first 16 candidates look exhaustive.
+- Additional live probing increases bounded synchronous RIME work on a confirm action; it must stop once the five-item compact limit is filled and remains subject to simulator/device latency review.
+- Core still cannot invent a branch that the current RIME session does not authorize. A genuinely single valid branch remains visibly unselected and Delete remains the reversible escape path.
+
+### Acceptance evidence required
+
+Focused tests cover the reported long-input state, alternatives found beyond candidate 16, supplementary authorized branches when one exact syllable exists, rejection of fallback-only branches, no implicit selection, transactional rollback, cycling, direct confirmation, and Delete. Current automated results and physical-device evidence must be recorded separately.
+
+## Amendment D — Safe Remaining Projection and Visible-character Delete
+
+**Status:** Accepted under Active Assignment `KEYBOARD-LAYOUT-9KEY-PINYIN-002` on `2026-07-21 Asia/Shanghai` from Human Product Owner device evidence.
+
+### Decision
+
+1. Core classifies a T9 preedit tail containing only ASCII digits plus RIME separators (whitespace/apostrophe) as internal raw display. Such a tail cannot be written to host marked text.
+2. Partial Commit uses the comment-preferred remaining pinyin to count unresolved letter slots and peel the corresponding suffix from the original pure-digit source. The aligned output, `currentComposition`, `remainingRawInput` and `segmentSourceDigits` all use that suffix.
+3. T9 display fallback removes unresolved ASCII digits and separators from raw, preserving only explicit ASCII letters. It never maps digits to guessed letters.
+4. Before ordinary engine deletion, an unconfirmed/non-segmented T9 composition may shorten its exact visible pinyin by one ASCII letter through bounded `replaceInput`. On success Core publishes that exact shortened display even if the new candidate ranking advertises a longer completion. Empty target resets the session and clears composition.
+5. Partial Commit checkpoint restore and explicit segmented Delete run before or outside this path and remain unchanged.
+
+### Consequences
+
+- `偷偷买748 53` becomes a Chinese prefix plus comment-derived pinyin remainder, and path provenance begins at the remaining `qiu…` digits.
+- `tou` deletes as `to → t → empty` instead of reinterpreting shorter digit runs as `tong → ta`.
+- An unresolved digit with no usable comment may temporarily have no host-visible preedit; the path bar and candidates remain the choice surface. This fail-closed presentation is preferable to exposing implementation raw.
+- No UIKit, RimeBridge, schema, deployment or candidate-ranking ownership changes.
+
 ## Related Documents
 
 - [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-002`](../../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md)
@@ -143,3 +184,17 @@ Focused KeyboardCore tests cover: no multi-syllable compact labels on long digit
 - [ADR 0020](0020-t9-precise-pinyin-path-selection.md)
 - [ADR 0018](0018-keyboard-layout-nine-key-and-t9-runtime.md)
 - [`KEYBOARD_LAYOUT.md`](../../KEYBOARD_LAYOUT.md)
+
+## Amendment E/F/G architecture addendum
+
+1. 显式确认的音节同时约束可见 preedit、RIME raw 与候选 provenance；剩余 raw 使用 apostrophe 边界，例如 `qiu'53`。
+2. 后续 Path Bar 先从 live RIME 候选提取完整音节，再对最多 6 位剩余数字执行最多 48 次 exact probe；probe 结果不能直接发布，必须通过 exact raw、usable session 与确认前缀 comment 校验。
+3. 普通 T9 preedit 是“已输入槽位”的投影，而不是 RIME 预测全文：每个 ASCII 字母/数字槽位最多贡献一个可见字母。显式选择显示不受该截断影响。
+4. 任一临时 probe 后恢复锚定 raw；确认流程中的锚定或恢复失败沿用事务回滚，禁止混合旧候选与新显示。
+
+## Amendment H architecture addendum
+
+1. marked text 是用户输入槽位的可见投影。Path Bar 选择只覆盖所消费的槽位；未确认尾部从选择前的安全投影继承，不从选择后的候选排名重新推导。
+2. 含 ASCII 字母的 refined raw（如 `qiu'53`、`shu'53`）优先级高于旧的纯数字 provenance；apostrophe 是用户确认边界，不得在 Partial Commit 安装或 Delete 恢复时丢失。
+3. 嵌套候选 Delete 分两级：第一次恢复候选前 checkpoint；随后 Delete 在当前 unresolved tail 删除最后输入槽（`qiu'53 → qiu'5` / `qiule → qiul`）。两级都以 exact raw replacement 和 host-safe display 为事务边界。
+4. 任何带 ASCII 数字的 preedit 都不是合法 host display，即使它同时包含字母；失败时保持旧状态或清除 marked text，不回退发布 raw。

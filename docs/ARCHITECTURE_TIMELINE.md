@@ -42,7 +42,11 @@ Native iOS 27 observation then exposed a second boundary: whole-composition choi
 
 Amendment B further forbids multi-syllable whole compact labels (e.g. `ni xian zai` as one cell), exposes progressive first-syllable + first-key choices only, advances with syllable-level next sets after confirmation, and treats a **direct path tap** as immediate confirm/advance while **选拼音** remains tentative first/next/wrap only.
 
-Decisions: ADR 0020 and ADR 0021 (Amendments A/B). Current source: `KEYBOARD_LAYOUT.md` and `input-pipeline-and-marked-text.md`.
+Amendment C closes a long-input discovery gap: the first 16 ranked candidates are not treated as an exhaustive next-syllable catalog, and a non-empty exact result no longer suppresses bounded live-authorized branches. Discovery remains capped at 48 candidates plus one physical key group, restores raw after every probe, and always publishes a newly advanced focus without selecting for the user.
+
+Amendment D separates internal raw identity from user-visible spelling across every fallback. Spaced digit tails now align Partial Commit to the true remaining suffix, and ordinary unconfirmed Delete refines the exact visible prefix rather than exposing a newly ranked completion.
+
+Decisions: ADR 0020 and ADR 0021 (Amendments A/B/C/D). Current source: `KEYBOARD_LAYOUT.md` and `input-pipeline-and-marked-text.md`.
 
 ## Visibility Cleanup Becomes A Product Contract
 
@@ -101,3 +105,7 @@ Portable synchronization adopted RIME's official `sync_dir` / `sync_user_data` s
 System notifications and App operation Toasts later moved to one root-owned main-App model. RIME standard-data and Universe-settings notifications are independently selectable but never control the underlying sync work; both settings pages reuse the same state and delivery policy. The Keyboard Extension remains outside synchronization, permission and notification ownership.
 
 Decisions: ADR 0012, ADR 0013, ADR 0014 and ADR 0019. Current sources: `RIME_SYNC.md` and `APP_NOTIFICATIONS.md`.
+
+## 2026-07-21 — T9 Path Bar Amendments E/F/G
+
+`KEYBOARD-LAYOUT-9KEY-PINYIN-002` 进一步把用户确认的音节绑定到 marked text、apostrophe 锚定的 live RIME session 与候选 provenance；后续完整音节采用最多 6 位、48 次的有界 live probe。普通逐键 preedit 改为每个输入槽位最多显示一个字母，RIME 的超前预测保留在候选层。长期规则收录于 ADR 0021。

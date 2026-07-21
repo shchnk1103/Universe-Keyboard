@@ -1,6 +1,6 @@
 # Keyboard Layout
 
-Lifecycle status: Runtime contract accepted (ADR 0018); Chinese nine-key chrome accepted under KEYBOARD-LAYOUT-9KEY-UI-001; original precise pinyin selection closed under KEYBOARD-LAYOUT-9KEY-PINYIN-001; deterministic single-key choices, segmented + progressive-syllable path bar active under KEYBOARD-LAYOUT-9KEY-PINYIN-002 (ADR 0021 Amendments A/B)
+Lifecycle status: Runtime contract accepted (ADR 0018); Chinese nine-key chrome accepted under KEYBOARD-LAYOUT-9KEY-UI-001; original precise pinyin selection closed under KEYBOARD-LAYOUT-9KEY-PINYIN-001; deterministic choices, segmented/progressive path bar, safe remaining projection and visible-character Delete active under KEYBOARD-LAYOUT-9KEY-PINYIN-002 (ADR 0021 Amendments A/B/C/D)
 Source of truth for: 26-key / Chinese nine-key layout selection, effective RIME scheme resolution, versioned T9 readiness, nine-key Extension chrome, and **precise pinyin path bar/cycling**
 Related ADR: [`architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md`](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md), [`architecture/decisions/0020-t9-precise-pinyin-path-selection.md`](architecture/decisions/0020-t9-precise-pinyin-path-selection.md), [`architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md`](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md)
 Related plan: [`plans/keyboard-layout-9key-implementation-plan.md`](plans/keyboard-layout-9key-implementation-plan.md) (Archived); precise pinyin [`plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md`](plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md) (Active)
@@ -52,9 +52,9 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 ## T9 Input Semantics (V1 + ADR 0020 + ADR 0021)
 
 - Digits go to RIME as the raw composition.
-- Visible preedit prefers non-empty candidate comments, then raw input **for display only**. This includes **Partial Commit remainders**: after selecting `你好` from a longer T9 composition, marked text shows `你好` + comment remainder (e.g. `ya`), never `你好` + raw digits (`92`).
-- After Partial Commit under T9, the path bar rebuilds from the **remaining** raw only (hard provenance); it must not retain choices from the pre-selection full digit sequence.
-- Delete removes one raw unit through RIME (digit, letter, or mixed after path refine).
+- Visible preedit prefers non-empty candidate comments. Without a usable comment it may preserve only explicit ASCII letters from refined raw; unresolved digits and digit-bearing comments remain internal and are never host-visible. This includes spaced/apostrophe-separated raw tails.
+- After Partial Commit under T9, the path bar rebuilds from the **remaining** raw only (hard provenance); e.g. `toutoumaiqiule → 偷偷买` aligns to remaining `74853 / qiu le`, not the earlier `8 → t/u/v` group.
+- In ordinary unconfirmed T9 composition, Delete removes one **visible pinyin character** through exact `replaceInput` (`tou → to → t → empty`) so shorter digit runs cannot re-rank the display as `tong → ta`. Explicit segmented Delete and Partial Commit checkpoint restore keep their existing reversible contracts.
 - **Active T9 composition** (ADR 0020): `usesT9InputSemantics` and non-empty raw input consisting only of letters, digits, spaces and `'`. Includes pure digits, pure letters after path selection, and mixed forms such as `ni4`.
 - While a valid T9 composition is active, Return, language switch and automatic English switch **never** commit raw input to the host.
   - Space with candidates: commit highlighted/first Chinese candidate.
@@ -65,7 +65,8 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
   - A single unresolved digit uses the canonical ordered key identity (`2 → abc` … `6 → mno` … `9 → wxyz`), so `MNO` always exposes `m / n / o` even when RIME comments contain only `o`.
   - **Amendment B progressive syllables:** With no segment selected, multi-digit compact choices are **first-syllable** labels from live comments plus first-key-group letters. `MNO → GHI` still displays `mi / ni / m / n / o` (compact maximum **5**). Multi-syllable whole comments such as `ni xian zai` **must not** appear as one compact cell.
   - **Direct path-bar tap** selects and, when remaining digits exist, **immediately confirms/advances** to the next syllable set (no second tap). **选拼音** only first/next/wraps the tentative selection within the current focus and never confirms a segment by itself.
-  - After confirm, the next compact set is **syllable-level** (`xian / xiao / zhan…`) extracted from live comments at the next apostrophe-delimited index and digit-compatible with the remaining sequence. When no multi-letter syllable is authorized, fall back to single-letter key-group probes for the next digit (`g / h` style from Amendment A).
+  - After confirm, the next compact set is **syllable-level** (`xian / xiao / zhan…`) extracted from a bounded path-discovery window at the next apostrophe-delimited index and digit-compatible with the remaining sequence. The initial 16 ranked candidates are not an exhaustive path catalog. While compact capacity remains, bounded single-letter key-group probes may supplement exact syllables only when live comments authorize the branch.
+  - A next focus containing only one valid choice remains visibly **unselected**. Choice count never selects or confirms on the user's behalf; only **选拼音** or a direct path tap may do so.
   - Next-focus authorization requires live RIME evidence: exact syllable match in comments for multi-letter steps, or letter-prefix segment authorization for single-letter fallback. Exact raw retention and non-empty candidates alone are insufficient.
   - The single-key identity mapping only issues bounded refinement choices; Chinese candidates and ranking still come exclusively from RIME.
 - After a successful single-key refine, KeyboardCore retains the issued choice snapshot while updating live RIME raw/preedit. This permits `m → n → o → m` cycling without authorizing stale choices after new input, Delete, final commit, page/language/visibility changes, fallback, or recovery.
@@ -157,3 +158,9 @@ Product implementation of nine-key required a successful isolated T9 Spike on th
 
 Amendment handoff: [`evidence/keyboard-layout-9key-001-codex-handoff.md`](evidence/keyboard-layout-9key-001-codex-handoff.md).
 First Codex review record (pre-amendment): [`evidence/keyboard-layout-9key-001-codex-review.md`](evidence/keyboard-layout-9key-001-codex-review.md).
+
+## 九宫格逐键显示与 Path Bar 连续性
+
+- 普通按键每次最多新增一个可见拼音字母：`TUV → t`，随后 `MNO → to`，再按 `TUV → tou`；候选仍可使用 RIME 的完整预测。
+- Path Bar 确认的音节不会自动带出下一音节。确认 `qiu` 后输入框只显示 `qiu`，候选必须来自 `qiu` 分支。
+- 剩余数字对应的完整音节优先展示；例如 `53` 若 live RIME 授权 `le`，Path Bar 必须提供完整 `le`，不能只显示 `ke` 加单字母 `j/k/l`。

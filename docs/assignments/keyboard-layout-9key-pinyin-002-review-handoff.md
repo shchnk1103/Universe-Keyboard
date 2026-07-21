@@ -77,3 +77,26 @@ No implementation Stop Condition was observed. No vendor/schema/deployment chang
 - Local delta validation: focused path tests `34/34`; KeyboardCore `628/628`; Debug and Release generic iOS Simulator strict builds PASS. Existing Boost x86_64 slice notes remain unchanged.
 - Independent review focus: synchronous bounded-probe latency in the Extension, complete rollback after partial probe failure, three-or-more groups, Delete across focus boundaries, and UIKit `选定` title/accessibility refresh.
 - This amendment has not received a new independent Architecture or Quality conclusion; prior baseline conclusions do not automatically accept it.
+
+## Amendment C — Long-input Choice Preservation Delta
+
+- The first 16 ranked candidates are no longer treated as an exhaustive next-syllable catalog; confirm/advance reads a bounded window up to 48 candidates.
+- When exact syllables do not fill the five-item compact limit, Core probes at most the current physical key group and publishes only branches with matching live segment comments. Exact raw retention and non-empty candidates alone remain insufficient.
+- Every probe restores the prior ambiguous raw, and every newly published focus has no selected path regardless of choice count. No UIKit or RimeBridge production code changed.
+- Local delta validation: focused path tests `41/41`; KeyboardCore `639/639`; RimeBridgeTests `28` passed + `4` fixture skips; main scheme `127/127`; Debug/Release strict generic-Simulator builds PASS.
+- Refreshed independent review should inspect bounded synchronous latency, per-probe restoration, later-window ranking order, rejection of fallback-only branches, direct/cycle/Delete behavior, and the supplied long-input physical-device reproduction.
+
+## Amendment D — Remaining Projection and Delete Delta
+
+- `internalDigitIdentity(fromPreedit:)` recognizes digits separated only by spaces/apostrophes as internal raw. Partial Commit uses that suffix before falling back to comment letter-count peeling.
+- T9 display fallback exposes only explicit ASCII letters; pure/mixed unresolved digits and digit-bearing comments cannot be written to host marked text. Partial Commit session-loss fallback retains the last safe remainder.
+- Ordinary unconfirmed Delete exact-refines the visible pinyin minus its last letter and then reapplies that exact display. Partial checkpoints and explicit segmented selection bypass this path and keep their established rollback behavior.
+- No UIKit/RimeBridge/schema/Vendor/deployment/persistence/logging change. Review the exact-refine failure restore, no-candidate output, session cleanup, and whether any other `updateInlinePreedit` path can publish T9 internal raw.
+- Local delta evidence: focused T9/Partial/display matrix `90/90`; KeyboardCore `642/642`; RimeBridgeTests `28` passed + `4` fixture skips; main scheme `127/127`; Debug/Release strict generic-Simulator builds PASS.
+
+## Amendment E/F/G review delta
+
+- Confirmed segments now constrain both display and RIME session identity. Review `qiu'53` anchoring, exact raw comparison, usable-session guard, all-confirmed-prefix comment matching and whole-transition rollback.
+- Complete-syllable discovery enumerates only a bounded probe set (maximum 6 digits / 48 probes), publishes only live-RIME-authorized comments, and restores anchored raw after each probe. It is not a second candidate engine.
+- `T9PreeditResolver` caps ordinary comment display to one ASCII letter per explicit input slot. Review separator trimming, digit rejection and the explicit Path Bar display override.
+- Final local evidence: T9 Path `46/46`, layout/runtime `14/14`, KeyboardCore `647/647`. Physical interaction and latency remain Product Gate, not Quality-owned evidence.

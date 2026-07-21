@@ -4,6 +4,32 @@ import XCTest
 
 @MainActor
 final class T9PinyinPathTests: XCTestCase {
+    func testBoundedCompleteSyllableSpellingsFor53AreDeterministic() {
+        XCTAssertEqual(
+            T9PinyinPathExtractor.boundedCompleteSyllableSpellings(forDigits: "53"),
+            ["jd", "je", "jf", "kd", "ke", "kf", "ld", "le", "lf"]
+        )
+    }
+
+    func testBoundedCompleteSyllableSpellingsHonorHardLimit() {
+        let spellings = T9PinyinPathExtractor.boundedCompleteSyllableSpellings(
+            forDigits: "74264",
+            limit: 7
+        )
+
+        XCTAssertEqual(spellings.count, 7)
+        XCTAssertEqual(spellings, ["pg", "ph", "pi", "qg", "qh", "qi", "rg"])
+    }
+
+    func testBoundedCompleteSyllableSpellingsRejectSingleOrInvalidDigits() {
+        XCTAssertTrue(
+            T9PinyinPathExtractor.boundedCompleteSyllableSpellings(forDigits: "5").isEmpty
+        )
+        XCTAssertTrue(
+            T9PinyinPathExtractor.boundedCompleteSyllableSpellings(forDigits: "50").isEmpty
+        )
+    }
+
     func testCommentNormalizationAndIllegalFilter() {
         let path = T9PinyinPathExtractor.path(fromComment: "Ni  Hao")
         XCTAssertEqual(path?.replacementRawInput, "ni'hao")
@@ -372,6 +398,99 @@ final class T9PinyinPathTests: XCTestCase {
         XCTAssertTrue(second.allSatisfy { $0.replacementRawInput.hasPrefix("ni'") })
     }
 
+    func testLongInputAdvanceDiscoversAlternativeSyllableBeyondHotPathWindow() {
+        let repeatedYiCandidates = Array(repeating: "一", count: 16)
+        let repeatedYiComments = Array(repeating: "ni yi", count: 16)
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "6494": ["你一"],
+                "ni94": repeatedYiCandidates,
+                "ni'yi": ["你一"],
+                "ni'xi": ["你系"],
+            ],
+            comments: [
+                "6494": ["ni yi"],
+                "ni94": repeatedYiComments,
+                "ni'yi": ["ni yi"],
+                "ni'xi": ["ni xi"],
+            ]
+        )
+        engine.candidateWindowOverrides["ni94"] = repeatedYiComments.enumerated().map {
+            RimeCandidate(text: "一", comment: $0.element, globalIndex: $0.offset)
+        } + [
+            RimeCandidate(text: "系", comment: "ni xi", globalIndex: 16)
+        ]
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        for digit in ["6", "4", "9", "4"] {
+            _ = controller.handle(.insertKey(digit))
+        }
+
+        let ni = try! XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "ni" }
+        )
+        _ = controller.handle(.selectT9PinyinPath(ni))
+
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["yi", "xi"],
+            "the first 16 ranked candidates must not be treated as an exhaustive path catalog"
+        )
+        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["ni"])
+    }
+
+    func testLongInputAdvanceSupplementsOneExactSyllableWithAuthorizedKeyBranch() {
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "6494": ["你一"],
+                "ni94": ["你一"],
+                "ni'yi": ["你一"],
+                "ni'x4": ["你系"],
+            ],
+            comments: [
+                "6494": ["ni yi"],
+                "ni94": ["ni yi"],
+                "ni'yi": ["ni yi"],
+                "ni'x4": ["ni xi"],
+            ]
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        for digit in ["6", "4", "9", "4"] {
+            _ = controller.handle(.insertKey(digit))
+        }
+
+        let ni = try! XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "ni" }
+        )
+        _ = controller.handle(.selectT9PinyinPath(ni))
+
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
+            ["yi", "x"],
+            "one exact syllable must not suppress another live-authorized branch"
+        )
+        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
+        XCTAssertEqual(engine.sessionComposition, "ni94", "probes must restore the live raw input")
+    }
+
     func testSelectedSegmentTapConfirmsAndAdvancesToLiveAuthorizedGH() {
         let engine = makeT9Engine()
         let controller = makeController(engine: engine)
@@ -472,6 +591,93 @@ final class T9PinyinPathTests: XCTestCase {
         )
         XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "n")
         XCTAssertEqual(client.markedText, "n")
+    }
+
+    func testUnconfirmedT9DeleteRemovesLastVisiblePinyinCharacter() {
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "8": ["他"],
+                "86": ["同"],
+                "868": ["偷"],
+                "to": ["头"],
+                "t": ["他"],
+            ],
+            comments: [
+                "8": ["ta"],
+                "86": ["tong"],
+                "868": ["tou"],
+                // Re-ranking may advertise longer completions, but Delete owns
+                // the exact shortened visible spelling.
+                "to": ["tou"],
+                "t": ["ta"],
+            ]
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let controller = makeController(engine: engine)
+        let client = FakeTextInputClient()
+        controller.textClient = client
+
+        for digit in ["8", "6", "8"] {
+            _ = controller.handle(.insertKey(digit))
+        }
+        XCTAssertEqual(client.markedText, "tou")
+
+        _ = controller.handle(.deleteBackward)
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "to")
+        XCTAssertEqual(client.markedText, "to")
+
+        _ = controller.handle(.deleteBackward)
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "t")
+        XCTAssertEqual(client.markedText, "t")
+
+        _ = controller.handle(.deleteBackward)
+        XCTAssertNil(controller.state.lastRimeOutput)
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertEqual(client.markedText, "")
+    }
+
+    func testVisibleT9DeleteFailsClosedWhenRefinementAndRestoreBothFail() {
+        let engine = FakeRimeEngine(
+            dictionary: ["8": ["他"], "86": ["同"], "868": ["偷"]],
+            comments: ["8": ["ta"], "86": ["tong"], "868": ["tou"]]
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let controller = makeController(engine: engine)
+        let client = FakeTextInputClient()
+        controller.textClient = client
+        for digit in ["8", "6", "8"] {
+            _ = controller.handle(.insertKey(digit))
+        }
+
+        engine.replaceInputScript = [
+            RimeOutput(
+                rawInput: "wrong",
+                composition: RimeComposition(preeditText: "wrong", cursorPosition: 5),
+                candidates: [RimeCandidate(text: "错", comment: "wrong")]
+            ),
+            RimeOutput(),
+        ]
+        _ = controller.handle(.deleteBackward)
+
+        XCTAssertEqual(engine.sessionComposition, "")
+        XCTAssertNil(controller.state.lastRimeOutput)
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertTrue(controller.state.t9PinyinPathState.compactPaths.isEmpty)
     }
 
     func testThreeGroupFlowRetainsMiddleFocusAndAdvancesFromLiveEvidence() {
