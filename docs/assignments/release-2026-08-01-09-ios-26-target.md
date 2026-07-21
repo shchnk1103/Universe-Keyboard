@@ -1,7 +1,7 @@
 # Assignment: RELEASE-2026-0801-09 — iOS 26.0 最低部署目标调整
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Assigned — Architecture review pending`
+**Lifecycle status:** `Assigned — Architecture No-Go; Entry Criteria blocked`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority
@@ -31,6 +31,13 @@
 - **Entry Criteria:** Architecture review confirms the allowed change boundary; Executor acknowledges the affected target matrix; stable toolchain is usable; no required Assignment field is `UNKNOWN`.
 - **Exit Criteria:** Every affected target/test target has the explicit iOS 26.0 setting required by the approved boundary; no unavailable API or configuration regression remains; Quality records supported-toolchain build/test evidence; task 01 validates the final signed archive.
 - **Stop Conditions:** An API or dependency requires iOS 26.4 without an approved compatible alternative; target change alters RIME/Extension deployment ownership; stable toolchain cannot build the target; a beta-only build is used as release proof; a signing/upload action lacks explicit authorization.
+
+## Architecture Review
+
+- **Conclusion:** `No-Go — implementation not authorized`.
+- **Evidence:** [`RELEASE-2026-0801-09 iOS 26.0 target Architecture Review`](../evidence/release-2026-0801-09-ios-26-target-architecture-review.md).
+- **Blocking Entry Criteria:** The locally observed Xcode is beta-only, and no iOS 26.0 Simulator runtime or physical device is available. The completed static preflight is explicitly non-release evidence.
+- **Product Lead direction:** Do not modify the deployment target, Package platform declarations, or code. When a stable Xcode/SDK and iOS 26.0 runtime/physical device are available, return to Product Lead for Executor revalidation before any implementation begins.
 
 ## Handoff
 
