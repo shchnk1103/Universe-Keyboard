@@ -80,3 +80,22 @@
 证据未把临时 Device Hub 截图或 VoiceOver 音频加入仓库，复核所依据的是逐行记录的实时画面观察与 Human Product Owner 当次操作/朗读复述。事后 `devicectl` 设备重新枚举超时，因此本补充不把事后设备探测写成独立佐证；设备型号和 OS 仍以当次 Device Hub 记录为准。
 
 Q-08-03、Q-08-04、Q-08-05 均保持开放，其所有者、所需证据和边界不变。本补充不更新 Assignment 生命周期，不关闭 `RELEASE-2026-0801-08`，不作风险接受、Product Gate、合并或发布授权。
+
+## 补充结论 — Q-08-04 最小自动化回归复核
+
+**复核范围：** `c9f2b34bd4b44dc528f39e6120db1af3f23c367e..1e73c163411ca92b99c50fb9e3a8e5421e3a635d`。
+
+**限定结论：** **Q-08-04 已对测试实现提交 `1e73c16` 满足本任务要求的最小自动化回归覆盖。** 这只撤销本记录对 Q-08-04“缺少回归自动化覆盖”的原有限定；不构成 UI 自动化、完整 release 测试、Q-08-03/Q-08-05 关闭、任务关闭或 Product Gate。
+
+| 复核项 | 独立核对 | 限定结论 |
+|---|---|---|
+| 差异范围 | `git diff --name-status c9f2b34..1e73c16` 只有新增 `KaomojiDirectTextRegressionTests.swift` 与 `scripts/test_kaomoji_ui_contract.sh`；没有生产源码、Xcode 配置、RIME、网络或持久化文件变化，`git diff --check` 通过。 | 测试实现没有修改生产行为或边界。 |
+| 两处入口 | 脚本直接检查九宫格右侧 `^_^` 按钮与二级符号页 `^_^` 条件分支继续汇合到 `showKaomojiCandidates(_:)`。 | 满足两处入口的可重复结构契约；它不是 UIKit 点击自动化，运行时观察仍由 Q-08-02 提供。 |
+| 分类切换与返回 | 脚本检查分类选择继续写入 `selectedKaomojiCategoryIndex` 并 reload，条目继续绑定 `insertDirectText(_:)`，“返回”继续绑定 `dismissKaomojiPanel(_:)` 且关闭面板状态。 | 满足分类切换、精确插入 wiring 与返回键盘的最小回归约束。 |
+| direct-text 精确插入 | 新增 XCTest 调用真实 `KeyboardController.handle(.insertDirectText("^_^"))`，断言精确文本、空 marked text、空 composition、单个 `.directText` 事件及既有 effect。 | 覆盖既有 direct-text 语义，没有建立替代输入路径。 |
+| composition finalization | 新增 XCTest 先通过现有 Core action 建立 `ni` marked composition，再插入 `^_^`；断言最终 `ni^_^`、marked/composition 清空、`lastRimeOutput=nil`、session reset 一次，以及 `.compositionFinalization` 后接 `.directText` 的事件顺序。 | 覆盖现有 composition finalization 语义；没有修改或替换 RIME 生命周期。 |
+| 独立复跑 | 在 detached `1e73c16` 工作树运行 `./scripts/test_kaomoji_ui_contract.sh`，结果为 `PASS`；使用隔离 `/private/tmp` 缓存运行 `swift test --disable-sandbox --package-path Packages/KeyboardCore --scratch-path /private/tmp/uk-q0804-review-keyboardcore-build --filter KaomojiDirectTextRegressionTests`，2 项、0 失败。 | 指定脚本与新增定向测试均在精确提交上独立复现。 |
+
+定向构建同时显示一条来自既有 `T9PinyinPathTests.swift` 的可选值字符串插值警告；该文件不在本次差异中，且警告未导致定向测试失败。本复核没有独立重跑 Executor 报告的完整 KeyboardCore 套件，因此不把其完整套件计数作为本补充的独立结论。
+
+Q-08-03 与 Q-08-05 保持开放，其所有者、所需证据和边界不变。本补充不更新 Assignment 生命周期，不关闭 `RELEASE-2026-0801-08`，不作风险接受、Product Gate、合并、推送或发布授权。
