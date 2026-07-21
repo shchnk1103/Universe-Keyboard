@@ -1,6 +1,6 @@
 # RELEASE-2026-0801-02 Scope Freeze — Independent Review Handoff
 
-> **Handoff status:** [Architecture conclusion recorded](../evidence/release-2026-08-01-02-architecture-review.md); independent Quality conclusion remains pending
+> **Handoff status:** [Architecture conclusion recorded](../evidence/release-2026-08-01-02-architecture-review.md); [Quality conclusion recorded](../evidence/release-2026-08-01-02-quality-review.md). Both are review records only; neither is a Product Gate or release conclusion.
 >
 > **Source Assignment:** [`RELEASE-2026-0801-02`](release-2026-08-01-02-scope-freeze.md)
 >
@@ -39,6 +39,10 @@ The Quality, Performance & Release Maintainer independently determines whether t
 4. The requirement that task 04, task 05 and the exact final archive—not current simulator or historical evidence—close release evidence.
 
 **Required output:** `Pass`, `Pass with required follow-ups`, `Fail`, or `Blocked`; required evidence rows; failed/skipped-gate owner; expiry/revalidation trigger. A passing Quality conclusion does not constitute Product Gate, submission authorization or manual-release authorization.
+
+## Quality Review Conclusion
+
+The independent Quality Reviewer recorded **Pass (with required follow-ups)** in [`RELEASE-2026-0801-02 Quality Review`](../evidence/release-2026-08-01-02-quality-review.md). The conclusion validates only that the scope record has a truthful, executable final-evidence path. It keeps iOS 26.0 implementation/runtime, iPad, kaomoji, Full Access, final Archive, performance/termination and App Store materials as independent open gates, and makes no release, Product Gate or risk-acceptance conclusion.
 
 ## Handoff Boundaries
 
