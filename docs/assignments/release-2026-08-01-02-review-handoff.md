@@ -1,6 +1,6 @@
 # RELEASE-2026-0801-02 Scope Freeze — Independent Review Handoff
 
-> **Handoff status:** Awaiting independent Architecture and Quality conclusions
+> **Handoff status:** [Architecture conclusion recorded](../evidence/release-2026-08-01-02-architecture-review.md); independent Quality conclusion remains pending
 >
 > **Source Assignment:** [`RELEASE-2026-0801-02`](release-2026-08-01-02-scope-freeze.md)
 >
@@ -24,6 +24,10 @@ The Architecture & Knowledge Steward independently determines whether the scope 
 4. Ensuring excluded Typing Intelligence and contextual typo correction cannot be accidentally represented as V1.0 product scope.
 
 **Required output:** `Pass`, `Pass with required follow-ups`, `Fail`, or `Blocked`; source links; conflicts/required amendments; named owner for every required follow-up. A passing Architecture conclusion does not authorize implementation, archive creation or release.
+
+## Architecture Review Conclusion
+
+The independent Architecture Reviewer recorded **Pass (with required follow-ups)** in [`RELEASE-2026-0801-02 Architecture Review`](../evidence/release-2026-08-01-02-architecture-review.md). The record preserves the required iOS 26.0, iPad, kaomoji, Full Access/privacy and excluded-capability boundaries, names ADR triggers, and makes no Quality, Product Gate, archive or release conclusion.
 
 ## Quality Review Request
 
