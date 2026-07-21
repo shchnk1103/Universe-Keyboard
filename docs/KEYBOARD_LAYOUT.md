@@ -119,7 +119,7 @@ Return **never** shows host action text such as `send`; VoiceOver still uses `re
 ### Placeholders / productized controls
 
 - **选拼音** — current behavior is governed by [`KEYBOARD-LAYOUT-9KEY-PINYIN-002`](assignments/keyboard-layout-9key-pinyin-002.md) / ADR 0021: enabled only when compact choices exist; first press selects the first choice, later presses select next/wrap. Compact paths remain directly tappable in the fixed bar.
-- **颜表情 (`^_^`)** — chrome only; reuses `showKaomojiCandidatesPlaceholder` (same family as symbols-page `^_^` entry). Full product content requires a **separate** future Assignment.
+- **颜表情 (`^_^`)** — opens the bundled offline kaomoji catalog. Selection inserts the exact text through the normal direct-text final-commit path. The catalog contract, provenance and limits are owned by [`RELEASE-2026-0801-08`](assignments/release-2026-08-01-08-kaomoji-content.md) and [`PD-RELEASE-2026-0801-08`](product-decisions/RELEASE-2026-0801-08-kaomoji-authorization.md).
 
 Effective scheme, readiness and digit algebra remain ADR 0018; path refinement extends session semantics under ADR 0020 without Extension deploy.
 
@@ -134,7 +134,7 @@ Only the main App installs T9 schema artifacts, runs full deployment and writes 
 - 朙月 nine-key scheme
 - Live cross-process layout hot-switch while the keyboard is already shown
 - librime binary upgrade unless a later regression invalidates the Spike
-- Full 颜表情 candidate content (placeholders only; separate future Assignment)
+- User-created, synchronized, network-delivered or personalized 颜表情 content
 - English nine-key multi-tap / swipe letter pick (still non-goals for precise pinyin work)
 
 ## Spike Gate

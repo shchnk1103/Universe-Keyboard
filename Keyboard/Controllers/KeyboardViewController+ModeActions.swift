@@ -57,9 +57,24 @@ extension KeyboardViewController {
         t9SelectPinyin(sender)
     }
 
-    @objc func showKaomojiCandidatesPlaceholder(_ sender: UIButton) {
-        // TODO: 后续在候选栏展示颜表情列表；当前阶段只保留 UI 入口。
+    @objc func showKaomojiCandidates(_ sender: UIButton) {
         emitKeyPressFeedbackIfNeeded(for: sender)
+        guard !isKaomojiPanelVisible else { return }
+
+        // 仅切换 UIKit 呈现；不改变 RIME session 或当前 marked text。
+        // 真正点选时由 insertDirectText 统一处理 composition 收尾与最终提交。
+        isCandidateExpanded = false
+        isPinyinPathExpanded = false
+        selectedKaomojiCategoryIndex = 0
+        isKaomojiPanelVisible = true
+        reloadKeyboardContent()
+    }
+
+    @objc func dismissKaomojiPanel(_ sender: UIButton) {
+        emitKeyPressFeedbackIfNeeded(for: sender)
+        guard isKaomojiPanelVisible else { return }
+        isKaomojiPanelVisible = false
+        reloadKeyboardContent()
     }
 
     private func cycleKeyboardPage(to targetPage: KeyboardPage) -> KeyboardEffect {

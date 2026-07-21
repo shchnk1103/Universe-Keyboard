@@ -98,6 +98,9 @@ class KeyboardViewController: UIInputViewController {
     var candidateExpandButtonWidthConstraint: NSLayoutConstraint?
     /// 候选面板是否处于展开状态
     var isCandidateExpanded = false
+    /// 颜表情面板只属于当前可见键盘，不保存分类或选项到用户数据。
+    var isKaomojiPanelVisible = false
+    var selectedKaomojiCategoryIndex = 0
     /// Precise pinyin path expansion (mutually exclusive with candidate expansion).
     var isPinyinPathExpanded = false
     weak var t9PinyinPathBarView: T9PinyinPathBarView?

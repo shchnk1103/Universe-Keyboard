@@ -66,6 +66,7 @@ extension KeyboardViewController {
     func reloadKeyboard() {
         isCandidateExpanded = false
         isPinyinPathExpanded = false
+        isKaomojiPanelVisible = false
         candidateExpandedPanel?.removeFromSuperview()
         candidateExpandedPanel = nil
         pinyinPathExpandedPanel?.removeFromSuperview()
@@ -113,7 +114,17 @@ extension KeyboardViewController {
     func reloadKeyboardContent(with precomputedCandidates: [CandidateItem]? = nil) {
         candidateCellSizeCache.removeAll(keepingCapacity: true)
         clearAllRows()
-        if isCandidateExpanded {
+        if isKaomojiPanelVisible {
+            if shouldReserveT9PinyinPathBar {
+                let pathBar = makeT9PinyinPathBar()
+                rootStack.addArrangedSubview(pathBar)
+                rootStack.setCustomSpacing(0, after: pathBar)
+            }
+            candidateBar = makeCandidateBar()
+            rootStack.addArrangedSubview(candidateBar)
+            rootStack.setCustomSpacing(0, after: candidateBar)
+            rootStack.addArrangedSubview(makeKaomojiPanel())
+        } else if isCandidateExpanded {
             let panel = makeExpandedCandidatePanel(with: precomputedCandidates)
             rootStack.addArrangedSubview(panel)
             candidateExpandedPanel = panel

@@ -1,13 +1,13 @@
 # Assignment: RELEASE-2026-0801-08 — 首发颜表情内容
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Assigned — Entry Criteria pending`
+**Lifecycle status:** `Completed — Executor handoff; independent Quality and Product review pending`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human Product Owner decided that kaomoji content cannot be excluded from V1.0 and authorized the current Codex task to select and perform KOS-compatible remaining release execution roles in the active Codex task, `2026-07-20 Asia/Shanghai`
+- **Decision Source / Date:** [`PD-RELEASE-2026-0801-08`](../product-decisions/RELEASE-2026-0801-08-kaomoji-authorization.md), recorded from the Human Product Owner's explicit self-built offline-catalog approval, `2026-07-21 Asia/Shanghai`
 - **Product Approver:** Human Product Owner acting as Product Lead
 
 ## Assignment
@@ -15,7 +15,7 @@
 - **Domain Owner:** ⌨️ Keyboard Experience Maintainer
 - **Executor:** Current Codex task acting as ⌨️ Keyboard Experience execution thread
 - **Environment Executor:** Current Codex task for simulator interaction operations; the Human Product Owner remains the physical-device interaction operator and final Product Gate
-- **Human Dependency:** Human Product Owner — approves the bounded launch catalog, content policy and final product behavior
+- **Human Dependency:** Human Product Owner — approved the bounded launch catalog source, licensing and content boundary on `2026-07-21`; retains physical-device interaction and final Product Gate decisions
 - **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward if storage, synchronization, privacy, user-data or cross-target contracts are proposed
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer
 - **Supporting Domain:** 📱 App & Data Operations Maintainer only if a main-App content/settings surface is explicitly approved
@@ -29,7 +29,7 @@
 
 ## Gates
 
-- **Entry Criteria:** Executor and interaction operator named; Product Lead approves catalog source/licensing/content boundaries; insertion behavior and storage boundary are explicit; no required field is `UNKNOWN`.
+- **Entry Criteria:** **Met.** Executor and interaction operator are named; Product Lead approved the self-built offline catalog and prohibited third-party copyright-restricted content; insertion uses the existing final-commit boundary; the catalog has no storage, network, synchronization or user-data behavior; no required field is `UNKNOWN`.
 - **Exit Criteria:** The control is no longer a no-op; catalog and insertion behavior pass accessibility/device checks; license/privacy/copy implications are handed to task 05; Quality records an explicit conclusion.
 - **Stop Conditions:** Catalog provenance or license is unclear; a network, persistence, sync or user-data requirement appears; input commit semantics regress; final behavior would require an unapproved major UI or architecture change.
 
@@ -37,3 +37,10 @@
 
 - **Required Handoff Content:** approved catalog/provenance, interaction and insertion contract, changed files, tests, accessibility/device evidence, privacy/license assessment, screenshots, known limits and App Store copy constraints.
 - **Revalidation Trigger:** catalog source, insertion behavior, persistence/network boundary, keyboard geometry, supported devices or release archive changes.
+
+## Executor Completion Record
+
+- **Date / timezone:** `2026-07-21 Asia/Shanghai`
+- **Delivered:** self-built 48-entry offline catalog, both `^_^` entry points, final-commit insertion wiring and product/layout documentation.
+- **Evidence:** [`2026-07-21 executor handoff`](../evidence/release-2026-08-01-08-kaomoji-executor-handoff-2026-07-21.md).
+- **Unresolved Quality input:** the full physical-device test run reported five RIME settings test failures. They are handed to the independent Quality Reviewer without an Executor root-cause, waiver or release conclusion.

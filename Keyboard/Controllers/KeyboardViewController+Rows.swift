@@ -43,14 +43,14 @@ extension KeyboardViewController {
         let symbolsButton = makeKeyButton(title: "#+=", action: #selector(switchToSymbolsPage(_:)))
         applyKeyStyle(.function, to: symbolsButton)
 
-        // Native-style 颜表情 entry (right middle). Product content still placeholder.
-        let kaomojiButton = makeKeyButton(title: "^_^", action: #selector(showKaomojiCandidatesPlaceholder(_:)))
+        // Native-style 颜表情 entry (right middle). Opens the bundled offline catalog.
+        let kaomojiButton = makeKeyButton(title: "^_^", action: #selector(showKaomojiCandidates(_:)))
         applyKeyStyle(.function, to: kaomojiButton)
         kaomojiButton.titleLabel?.font = .systemFont(ofSize: functionKeyTitlePointSize, weight: .medium)
         kaomojiButton.titleLabel?.adjustsFontSizeToFitWidth = true
         kaomojiButton.titleLabel?.minimumScaleFactor = 0.55
         kaomojiButton.accessibilityLabel = "颜表情"
-        kaomojiButton.accessibilityHint = "打开颜表情入口（占位）。"
+        kaomojiButton.accessibilityHint = "打开离线颜表情目录。"
 
         let inputModeButton = makeKeyButton(
             title: inputModeButtonTitle,
@@ -384,7 +384,7 @@ extension KeyboardViewController {
 
     /// 中文二级符号页中间字符区。
     ///
-    /// `^_^` 是未来颜表情候选入口；当前只展示入口，不提交文本或展开候选。
+    /// `^_^` 与九键入口共用同一个离线颜表情目录。
     private func makeChineseSymbolsPunctuationRow() -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
@@ -393,7 +393,7 @@ extension KeyboardViewController {
 
         for key in ["…", "，", "^_^", "？", "！", "‘"] {
             let action: Selector = key == "^_^"
-                ? #selector(showKaomojiCandidatesPlaceholder(_:))
+                ? #selector(showKaomojiCandidates(_:))
                 : #selector(insertKey(_:))
             row.addArrangedSubview(makeKeyButton(title: key, action: action))
         }
