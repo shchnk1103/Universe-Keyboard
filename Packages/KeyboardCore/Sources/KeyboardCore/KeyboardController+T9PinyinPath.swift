@@ -471,7 +471,8 @@ extension KeyboardController {
         // (e.g. "ni xian zai") must never occupy a single compact label.
         var paths: [T9PinyinPath] = []
         var discoveryNext = 0
-        var discoveryMayHaveMore = false
+        // ADR 0023: Path completeness is local-catalog only; newState always
+        // publishes discoveryMayHaveMore=false (no unused local write under -Werror).
         var segmentSourceDigits: String? = pureDigits.isEmpty ? nil : pureDigits
         var focusedSegmentIndex: Int? = pureDigits.isEmpty ? nil : 0
         var confirmedSegmentValues: [String] = []
@@ -512,7 +513,6 @@ extension KeyboardController {
             )
             paths = built.paths
             discoveryNext = built.discoveryNext
-            discoveryMayHaveMore = built.discoveryMayHaveMore
             segmentSourceDigits = nestedSource
             focusedSegmentIndex = previousConfirmed.count
             confirmedSegmentValues = previousConfirmed
@@ -528,7 +528,6 @@ extension KeyboardController {
                 lockedLetterPrefix: lockedLetterPrefix
             )
             paths = built.paths.isEmpty ? deterministicPaths : built.paths
-            discoveryMayHaveMore = false
             selectedPath = previousSelected.flatMap { selected in
                 paths.first { $0.displayText == selected.displayText }
             }
@@ -563,7 +562,6 @@ extension KeyboardController {
             )
             paths = built.paths
             discoveryNext = built.discoveryNext
-            discoveryMayHaveMore = built.discoveryMayHaveMore
             segmentSourceDigits = ledger
             focusedSegmentIndex = previousConfirmed.count
             confirmedSegmentValues = previousConfirmed
@@ -580,7 +578,6 @@ extension KeyboardController {
             )
             paths = built.paths
             discoveryNext = built.discoveryNext
-            discoveryMayHaveMore = built.discoveryMayHaveMore
             selectedPath = built.selectedPath
             // Keep locked prefix only while raw still matches the prefix constraint.
             if let locked = lockedLetterPrefix,
@@ -607,7 +604,6 @@ extension KeyboardController {
             // that still owns the progressive focus (e.g. 74853 after 偷偷买).
             paths = preserved.paths
             discoveryNext = preserved.discoveryNext
-            discoveryMayHaveMore = preserved.discoveryMayHaveMore
             segmentSourceDigits = preserved.segmentSourceDigits
             focusedSegmentIndex = preserved.focusedSegmentIndex
             confirmedSegmentValues = preserved.confirmedSegmentValues
@@ -630,14 +626,12 @@ extension KeyboardController {
                 )
                 paths = built.paths
                 discoveryNext = 0
-                discoveryMayHaveMore = false
                 segmentSourceDigits = previousSegmentSource ?? focusDigits
                 focusedSegmentIndex = confirmed.count
                 confirmedSegmentValues = confirmed
                 selectedPath = built.selectedPath
             } else {
                 paths = []
-                discoveryMayHaveMore = false
                 selectedPath = nil
                 lockedLetterPrefix = nil
             }
