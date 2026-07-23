@@ -1920,9 +1920,9 @@ final class PartialCommitControllerTests: XCTestCase {
     /// Device-calibrated Path B morphology (iPhone 13 Pro, 2026-07-23):
     /// selecting single-character 请 leaves RIME raw **unchanged**.
     ///
-    /// Phase 1 **β-limited** (PD-…-PHASE1-BETA): without engine-native coverage,
-    /// this branch is **fail-closed** — must not invent qing slot consumption.
-    /// Full B contract remains product text but is **not** claimed deliverable here.
+    /// Residual-B (PD residual-B Path-ledger peel): Path-confirmed syllables are
+    /// authority — peel leading `qing` only; keep `wei/fan/dao` and focus `wo`.
+    /// Still forbidden: invent slots from 汉字数 / comment / sel_* / caret.
     func testGate5BDeviceUnchangedRawStillConsumesQingAndPreservesRemainingIdentity() throws {
         let qingWeiFanDaoRaw = "qing'wei'fan'dao'9698454"
         let engine = makeGate5Engine(
@@ -1952,26 +1952,33 @@ final class PartialCommitControllerTests: XCTestCase {
         )
         let windowAfter = engine.candidateWindowCallCount
 
-        XCTAssertEqual(
-            controller.state.lastRimeOutput?.rawInput,
-            qingWeiFanDaoRaw,
-            "precondition: device B keeps the anchored raw unchanged"
-        )
+        // Precondition: engine left raw unchanged before Path-ledger peel resync.
+        // After residual-B peel, Core peels first Path syllable and resyncs remaining.
         XCTAssertEqual(controller.state.partialCommit?.confirmedText, "请")
-        // Fail-closed: must not invent a rebased source while raw is unchanged.
-        XCTAssertNotEqual(
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.confirmedSegmentValues,
+            ["wei", "fan", "dao"],
+            "Path-ledger peel must keep wei/fan/dao after single-char 请"
+        )
+        XCTAssertEqual(
             controller.state.t9PinyinPathState.segmentSourceDigits,
             String(sourceBefore.dropFirst(4)),
-            "β-limited must not guess qing consumption from unchanged raw"
+            "peel qing slots from Path ledger (7464), not invent via 汉字数"
         )
         XCTAssertTrue(
-            controller.state.t9PinyinPathState.segmentSourceDigits == nil
-                || controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty,
-            "fail-closed: no invented remaining Path identity on unchanged raw"
+            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "wo" },
+            "Path B must focus wo…; paths=\(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))"
         )
+        XCTAssertFalse(controller.state.t9PinyinPathState.compactPaths.isEmpty)
         XCTAssertTrue(client.markedText.hasPrefix("请"))
         XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
         XCTAssertEqual(windowAfter - windowBefore, 0)
+        // Engine was resynced off full pre-selection raw onto remaining identity.
+        XCTAssertNotEqual(
+            controller.state.lastRimeOutput?.rawInput,
+            qingWeiFanDaoRaw,
+            "resync must leave full qing'wei'fan'dao'… after Path-ledger peel"
+        )
     }
 
     /// Path B root-cause contract: after Partial consumes only `qing`, unconsumed

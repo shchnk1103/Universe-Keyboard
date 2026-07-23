@@ -275,10 +275,10 @@ Update this Dashboard only after the responsible owner confirms a state, depende
 
 ## KEYBOARD-LAYOUT-9KEY-PINYIN-004 — Gate 5 snapshot
 
-- **Authority:** Assignment [`keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md); PD-004; ADR 0023; Gate5 path / β / post-β residual PDs.
+- **Authority:** Assignment [`keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md); PD-004; ADR 0023; Gate5 path / β / post-β residual / residual-B PDs.
 - **Landed:** PR [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27) **MERGED** → `main` @ `5dfe2e2` (includes `2278125` CI `-Werror` fix).
 - **Human H5 residual:** H5-A/B/C **Pass** (device); Product-accepted via [`PD-…-GATE5-POST-BETA-RESIDUAL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md).
-- **Independent reviews:** β-limited Accept/Pass-with-findings; post-β Accept/Pass-with-findings — [`post-β review`](assignments/keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-independent-review.md).
-- **Branch cleanup:** remote feature branch gone; local `codex/t9-atomic-path-snapshot` deleted after reachability check.
-- **Next (KOS):** Product Lead — residual debt (full B; provisional-only C SKIP) or formal Assignment `Closed`.
-- **Not claimed:** full Human Product Gate Pass for 004; full B invent-slot.
+- **Residual-B (in flight):** Path-ledger peel for unchanged-raw single-CJK「请」— Core peels first Path-confirmed syllable (`qing`), keeps `wei/fan/dao`, focuses `wo`, resyncs RIME. PD: [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md). Automation: KeyboardCore **708 / 1 skip / 0 fail**. Evidence §28.
+- **Independent reviews:** β-limited + post-β Accept/Pass-with-findings. Residual-B independent review **pending** after PR.
+- **Next (KOS):** Human residual-B device retest → residual-B PR merge → optional independent review → residual C SKIP / Assignment close decision.
+- **Not claimed:** full Human Product Gate Pass for 004; residual-B device Pass (automation only so far).

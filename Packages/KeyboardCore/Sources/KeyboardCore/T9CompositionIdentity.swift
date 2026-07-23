@@ -2,14 +2,15 @@ import Foundation
 
 /// Internal pure identity for T9 digit slots + confirmed Path syllables.
 ///
-/// Gate 5 Phase 1 **β-limited** (PD-…-GATE5-PHASE1-BETA):
+/// Gate 5 identity contract:
 /// - Append/Delete operate only on `sourceDigits`.
-/// - Partial can realign only when remaining raw is a **strict unique suffix** of
-///   the pre-selection source (shortened remainder).
-/// - Unchanged / non-suffix remaining → **fail-closed** (no slot guessing).
-///
-/// Forbidden as inputs: candidate text length, comment, preedit display, ranking,
-/// `sel_*`, caret, commit-preview length.
+/// - Shortened remainder: realign only when remaining raw is a **strict unique
+///   suffix** of the pre-selection source.
+/// - Unchanged-raw **engine-only** → fail-closed (no slot guessing from raw alone).
+/// - Residual-B Path-ledger peel (`afterPathLedgerPeel`): when the user already
+///   confirmed syllables via Path select, a single-CJK partial may peel leading
+///   **Path-confirmed** syllables. Authority is the Path ledger — not 汉字数 /
+///   comment / `sel_*` / caret / rank / preedit length.
 struct T9CompositionIdentity: Equatable, Sendable {
     var sourceDigits: String
     var confirmedSyllables: [String]
@@ -142,7 +143,7 @@ struct T9CompositionIdentity: Equatable, Sendable {
     /// - Mixed/apostrophe remainder whose T9 encoding is a **unique strict suffix**
     ///   of `sourceDigits` → adopt that suffix as source and letter segments as confirmed.
     /// - Remaining encoding equals full previous source (unchanged-raw B class) → nil
-    ///   (fail-closed; caller must not invent consumption).
+    ///   (fail-closed on **engine** signals alone; see `afterPathLedgerPeel`).
     static func afterPartialCommit(
         previousSource: String,
         previousConfirmed: [String],
@@ -163,6 +164,50 @@ struct T9CompositionIdentity: Equatable, Sendable {
         return alignMixedRemainder(
             previousSource: previousSource,
             remainingRaw: remaining
+        )
+    }
+
+    /// Residual-B: peel leading **Path-confirmed** syllables when engine raw is unchanged.
+    ///
+    /// Authority is Core Path ledger (`previousConfirmed`), **not** 汉字数 / comment /
+    /// `sel_*` / caret. User already established syllable boundaries via Path select
+    /// (e.g. `qing/wei/fan/dao`). A single-character partial like「请」consumes the
+    /// first Path syllable `qing` only.
+    ///
+    /// - Parameters:
+    ///   - peelSyllableCount: number of leading Path syllables to drop (device B: 1).
+    static func afterPathLedgerPeel(
+        previousSource: String,
+        previousConfirmed: [String],
+        peelSyllableCount: Int
+    ) -> T9CompositionIdentity? {
+        guard previousSource.allSatisfy(\.isNumber), !previousSource.isEmpty else { return nil }
+        guard peelSyllableCount > 0, peelSyllableCount <= previousConfirmed.count else {
+            return nil
+        }
+        let peeled = Array(previousConfirmed.prefix(peelSyllableCount))
+        let remainingConfirmed = Array(previousConfirmed.dropFirst(peelSyllableCount))
+        // Validate each peeled syllable against its digit slice on the old source.
+        var cursor = 0
+        for syllable in peeled {
+            let n = T9PinyinPathExtractor.asciiLetterCount(in: syllable)
+            guard n > 0, cursor + n <= previousSource.count else { return nil }
+            let start = previousSource.index(previousSource.startIndex, offsetBy: cursor)
+            let end = previousSource.index(start, offsetBy: n)
+            let slice = String(previousSource[start..<end])
+            let catalog = T9PinyinSyllableCatalog.completeSyllables(matchingDigits: slice)
+            guard catalog.contains(syllable.lowercased()) || syllable.count == 1 else {
+                return nil
+            }
+            cursor += n
+        }
+        guard cursor > 0, cursor < previousSource.count else { return nil }
+        let newSource = String(previousSource.dropFirst(cursor))
+        guard !newSource.isEmpty, newSource.allSatisfy(\.isNumber) else { return nil }
+        return T9CompositionIdentity(
+            sourceDigits: newSource,
+            confirmedSyllables: remainingConfirmed,
+            focusedSegmentIndex: remainingConfirmed.count
         )
     }
 
@@ -252,6 +297,11 @@ struct T9CompositionIdentity: Equatable, Sendable {
             confirmedSyllables: confirmed,
             focusedSegmentIndex: confirmed.count
         )
+    }
+
+    /// Public probe for callers that need to detect unchanged-raw (full ledger).
+    static func digitEncoding(ofMixedRaw raw: String) -> String? {
+        encodeMixedRawToDigits(raw)
     }
 
     /// Encode apostrophe/letter/digit mixed raw into a pure digit signature.

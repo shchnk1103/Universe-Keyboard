@@ -108,7 +108,8 @@ extension KeyboardController {
         )
         let restored = restoreSegmentedPathIdentityAfterNestedPartial(
             preservedSegmentSource: preservedSegmentSource,
-            preservedPathConfirmed: preservedPathConfirmed
+            preservedPathConfirmed: preservedPathConfirmed,
+            committedCandidate: committedText
         )
         #if DEBUG
         // Phase 0 only: structural identity after partial — no host document text.
@@ -127,12 +128,14 @@ extension KeyboardController {
     /// Re-attach progressive path identity when nested partial leaves a **shortened**
     /// remainder that uniquely encodes a suffix of the pre-selection source.
     ///
-    /// β-limited: unchanged-raw (remaining encodes full previous source) → fail-closed
-    /// (`false`); no slot guessing from candidate text/comment/sel/caret.
+    /// Residual-B: when engine raw is **unchanged** but Path already has confirmed
+    /// syllables, peel the leading Path syllable for a **single-character** candidate
+    /// using Path ledger only (not 汉字数 / sel_* / comment).
     @discardableResult
     func restoreSegmentedPathIdentityAfterNestedPartial(
         preservedSegmentSource: String?,
-        preservedPathConfirmed: [String]
+        preservedPathConfirmed: [String],
+        committedCandidate: String = ""
     ) -> Bool {
         guard usesT9InputSemantics,
               let preserved = preservedSegmentSource,
@@ -148,17 +151,94 @@ extension KeyboardController {
             return false
         }
 
-        guard let identity = T9CompositionIdentity.afterPartialCommit(
+        if let identity = T9CompositionIdentity.afterPartialCommit(
             previousSource: preserved,
             previousConfirmed: preservedPathConfirmed,
             remainingRaw: liveRaw
+        ) {
+            installIdentityAsPathState(identity)
+            return true
+        }
+
+        // Unchanged-raw B: Path-ledger peel (single CJK character only).
+        guard isSingleCJKCharacter(committedCandidate),
+              !preservedPathConfirmed.isEmpty,
+              isUnchangedRawEncoding(liveRaw, previousSource: preserved)
+        else {
+            return false
+        }
+
+        guard let identity = T9CompositionIdentity.afterPathLedgerPeel(
+            previousSource: preserved,
+            previousConfirmed: preservedPathConfirmed,
+            peelSyllableCount: 1
         ) else {
-            // Fail-closed: leave path empty; do not invent qing/… slot consumption.
             return false
         }
 
         installIdentityAsPathState(identity)
+        // Drive RIME onto remaining Path form so candidates/host match Path focus.
+        _ = resyncRimeCompositionFromT9Identity()
+        refreshPartialCommitRemainingAfterPathLedgerPeel(identity: identity)
         return true
+    }
+
+    /// True when live raw still encodes the full pre-selection digit ledger.
+    private func isUnchangedRawEncoding(_ liveRaw: String, previousSource: String) -> Bool {
+        if liveRaw == previousSource { return true }
+        if liveRaw.allSatisfy(\.isNumber) { return liveRaw == previousSource }
+        guard let encoded = T9CompositionIdentity.digitEncoding(ofMixedRaw: liveRaw) else {
+            return false
+        }
+        return encoded == previousSource
+    }
+
+    private func isSingleCJKCharacter(_ text: String) -> Bool {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return false }
+        // One extended grapheme cluster; must contain a CJK unified ideograph.
+        guard trimmed.count == 1, let scalar = trimmed.unicodeScalars.first else { return false }
+        return (0x4E00...0x9FFF).contains(scalar.value)
+            || (0x3400...0x4DBF).contains(scalar.value)
+    }
+
+    /// After Path-ledger peel, keep PartialCommit remaining aligned with Core identity.
+    /// Host must never see internal T9 digits; prefer live T9 projection, else letters.
+    private func refreshPartialCommitRemainingAfterPathLedgerPeel(
+        identity: T9CompositionIdentity
+    ) {
+        guard let partial = state.partialCommit else { return }
+        let remainingRaw = state.lastRimeOutput?.rawInput ?? identity.replacementRawInput
+        let hostTail: String
+        if let output = state.lastRimeOutput {
+            let projected = t9VisiblePreedit(for: output)
+            if projected.isEmpty {
+                hostTail = identity.confirmedSyllables.joined()
+            } else if projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit) {
+                let letters = String(
+                    projected.unicodeScalars.filter(T9PinyinPathExtractor.isASCIILetter)
+                )
+                hostTail = letters.isEmpty
+                    ? identity.confirmedSyllables.joined()
+                    : letters
+            } else {
+                hostTail = projected
+            }
+        } else {
+            hostTail = identity.confirmedSyllables.joined()
+        }
+        state.partialCommit = PartialCommitState(
+            confirmedText: partial.confirmedText,
+            remainingRawInput: remainingRaw,
+            remainingPreeditText: hostTail,
+            displayText: partial.confirmedText + hostTail,
+            checkpoint: partial.checkpoint,
+            source: partial.source
+        )
+        updateInlinePreedit(
+            partial.confirmedText + hostTail,
+            source: .compositionProjection
+        )
     }
 
     /// Install pure identity into path state and rebuild catalog focus Paths.
