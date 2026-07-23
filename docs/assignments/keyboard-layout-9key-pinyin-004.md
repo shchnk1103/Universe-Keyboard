@@ -1,7 +1,7 @@
 # Assignment: KEYBOARD-LAYOUT-9KEY-PINYIN-004 — 完整 Path 目录与原子同步
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — Post-β residual accepted; commit/push authorized; full Human Gate not closed`  
+**Lifecycle status:** `Active — Landed via PR #27; H5 residual accepted; full Human Gate / full B not closed`  
 **Repository change types:** `Contract`, `State`, `Implementation`, `Evidence`, `Documentation`
 
 ## Authority
@@ -89,10 +89,10 @@ Stop and return to Product Lead when:
 
 ## Handoff
 
-- **Current phase:** Gate 5 **post-β residual Product-accepted** — commit **pushed** to `origin/codex/t9-atomic-path-snapshot`（`67ef0ad` + `2112825`）；**PR open 受会话 publish 拦截，材料已备** → Human Product Owner **创建/审 PR 并 merge**
-- **Handoff target now:** Human Product Owner（开 PR / 审 / merge）
-- **PR draft body:** [`keyboard-layout-9key-pinyin-004-pr-body.md`](keyboard-layout-9key-pinyin-004-pr-body.md)
-- **Branch URL:** https://github.com/shchnk1103/Universe-Keyboard/pull/new/codex/t9-atomic-path-snapshot
+- **Current phase:** **Landed on `main` via PR [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27)**（merge commit `5dfe2e2`；tip includes `2278125` CI `-Werror` fix）。Gate 5 **H5 residual Product-accepted**；实现与证据已入库。
+- **Handoff target now:** Product Lead / Human — residual debt 决策（full B 研究或挂账；provisional-only C SKIP；是否正式 `Closed` Assignment）
+- **PR:** https://github.com/shchnk1103/Universe-Keyboard/pull/27 — **MERGED** `2026-07-23T11:28:11Z`
+- **Branch cleanup:** remote feature branch removed；local `codex/t9-atomic-path-snapshot` deleted after proving `2278125` is ancestor of `origin/main`
 - **β-limited review (pre-hotfix):** [`…-phase1-beta-independent-review.md`](keyboard-layout-9key-pinyin-004-gate5-phase1-beta-independent-review.md)
 - **Post-β freeze handoff:** [`…-gate5-post-beta-human-residual-review-handoff.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-review-handoff.md)
 - **Post-β independent review:** [`…-gate5-post-beta-human-residual-independent-review.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-independent-review.md)
@@ -100,8 +100,9 @@ Stop and return to Product Lead when:
 - **Evidence (append-only):** [`…-gate5-remediation-evidence.md`](keyboard-layout-9key-pinyin-004-gate5-remediation-evidence.md) §21–§27
 - **Phase 0.5 / 0.6 reviews:** [`phase05`](keyboard-layout-9key-pinyin-004-gate5-phase05-independent-review.md) · [`phase06`](keyboard-layout-9key-pinyin-004-gate5-phase06-independent-review.md)
 - **Product decisions:** [`PD-…-GATE5-PATH`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-path-decision.md) · [`PD-…-GATE5-PHASE1-BETA`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-phase1-beta-authorization.md) · [`PD-…-GATE5-POST-BETA-RESIDUAL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md)
-- **Explicit non-claims:** **不**宣称完整 Human Product Gate Pass；**不**宣称 full B；**不**自动 merge PR
-- **Revalidation Trigger:** catalog source change; selection semantics change; host preedit boundary change; schema/vendor change; Product path decision change; B coverage authority found; post-β review Reject
+- **Residual debt (open):** full B unchanged-raw invent-slot；provisional-only mixed-raw C `XCTSkip`；doc wording A1（first vs unique full-cover）
+- **Explicit non-claims:** **不**宣称完整 Human Product Gate Pass；**不**宣称 full B 契约满足
+- **Revalidation Trigger:** catalog source change; selection semantics change; host preedit boundary change; schema/vendor change; Product path decision change; B coverage authority found
 
 ### Phase 0.5 Authorization (Product Lead) — **Closed**
 

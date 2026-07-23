@@ -275,12 +275,10 @@ Update this Dashboard only after the responsible owner confirms a state, depende
 
 ## KEYBOARD-LAYOUT-9KEY-PINYIN-004 — Gate 5 snapshot
 
-- **Authority:** Assignment [`keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md); PD-004; ADR 0023; Gate5 path PD; Phase1-β PD.
-- **β-limited Phase 1:** independent Architecture **Accept** + Quality **Pass-with-findings** (pre-hotfix baseline).
-- **Post-β Human residual (H5):** Human Product Owner confirmed **H5-A / H5-B / H5-C Pass** (device). Evidence freeze: remediation §21–§27 + [`post-β review handoff`](assignments/keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-review-handoff.md).
-- **Automated freeze (Executor):** directed matrix **68 tests / 1 skip / 0 fail** (`Gate5|Human*|UnconfirmedT9Delete|VisibleT9Delete|AppendDelete|WholeUnresolved|InSentenceDa|DeleteToQi|PartialCommit`).
-- **Post-β independent review:** Architecture **Accept with findings** + Quality **Pass-with-findings** — [`post-β review`](assignments/keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-independent-review.md). Independent re-run **68/1 skip/0 fail**; hashes match §27.
-- **Product disposition:** [`PD-…-GATE5-POST-BETA-RESIDUAL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md) — **H5 residual accepted**; commit/push authorized.
-- **Remote:** branch `codex/t9-atomic-path-snapshot` @ `2112825` (tracks origin). PR create was blocked in-session; draft body [`004-pr-body`](assignments/keyboard-layout-9key-pinyin-004-pr-body.md); open via https://github.com/shchnk1103/Universe-Keyboard/pull/new/codex/t9-atomic-path-snapshot
-- **Next (KOS):** Human Product Owner open/review/merge PR; then optional Assignment close.
-- **Not claimed:** full Human Product Gate Pass for 004; full B unchanged-raw; auto-merge.
+- **Authority:** Assignment [`keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md); PD-004; ADR 0023; Gate5 path / β / post-β residual PDs.
+- **Landed:** PR [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27) **MERGED** → `main` @ `5dfe2e2` (includes `2278125` CI `-Werror` fix).
+- **Human H5 residual:** H5-A/B/C **Pass** (device); Product-accepted via [`PD-…-GATE5-POST-BETA-RESIDUAL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md).
+- **Independent reviews:** β-limited Accept/Pass-with-findings; post-β Accept/Pass-with-findings — [`post-β review`](assignments/keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-independent-review.md).
+- **Branch cleanup:** remote feature branch gone; local `codex/t9-atomic-path-snapshot` deleted after reachability check.
+- **Next (KOS):** Product Lead — residual debt (full B; provisional-only C SKIP) or formal Assignment `Closed`.
+- **Not claimed:** full Human Product Gate Pass for 004; full B invent-slot.
