@@ -1337,7 +1337,40 @@ swift test  # Packages/KeyboardCore
 
 Gate5 B captures: after「请」`paths=["wei","zei","ye",…] selected=wei`.
 
-### 29.3 Non-claims
+### 29.3 Non-claims (pre-device; superseded by §30)
 
-- Not Human residual-B Pass  
-- Not PR / merge (session: wait for device OK)
+- (historical) Not Human residual-B Pass until device  
+- (historical) Not PR / merge until device OK  
+
+---
+
+## 30. Human residual-B device Pass + land PR #28
+
+**Date:** 2026-07-23 Asia/Shanghai  
+**Role:** Product Lead / Executor  
+**Authority:** Human Product Owner in-session — residual-B 真机「完全没问题」；处理后续 merge / 文档 / 分支清理。
+
+### 30.1 Human residual-B matrix
+
+| ID | Scenario | Result |
+|---|---|---|
+| RB-1 | Path `qing/wei/fan/dao` →「请」→ Path `wei…` soft-select | **Pass** |
+| RB-2 | 多字/游标推进与 `wo` 无选中 | **Pass**（Human overall） |
+| RB-3 | 无内部数字 / 既有功能未破坏 | **Pass**（Human overall） |
+
+### 30.2 Automation (pre-merge freeze)
+
+```text
+swift test  # Packages/KeyboardCore @ e3d23cd
+→ 712 tests, 1 skip, 0 fail
+CI Swift 6 Quality build-and-test: SUCCESS (PR #28)
+```
+
+### 30.3 Disposition
+
+| Item | Status |
+|---|---|
+| Residual-B product debt | **Closed** (device Pass + automation) |
+| PR #28 merge | **Authorized** |
+| Full 004 Assignment Closed | **Not automatic** — provisional-only C SKIP / formal full Gate optional Product decision |
+| Non-claim | Not invent-slot; not full App Store ship |

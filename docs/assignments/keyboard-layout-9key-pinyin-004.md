@@ -1,7 +1,7 @@
 # Assignment: KEYBOARD-LAYOUT-9KEY-PINYIN-004 — 完整 Path 目录与原子同步
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — PR #27 landed; residual-B Path-ledger peel implemented (automation green); Human residual-B retest + PR for B fix pending`  
+**Lifecycle status:** `Active — PR #27 + residual-B (#28) landed after Human residual-B Pass; provisional-only C SKIP / full Gate close optional`  
 **Repository change types:** `Contract`, `State`, `Implementation`, `Evidence`, `Documentation`
 
 ## Authority
@@ -89,21 +89,22 @@ Stop and return to Product Lead when:
 
 ## Handoff
 
-- **Current phase:** **PR [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27) on `main`**（H5 residual）。**Residual-B Path-ledger cursor**（单字/多字、soft-select 继承）已在分支 `fix/gate5-residual-b-path-ledger-peel` 实现；KeyboardCore **712/1 skip/0 fail**。**不开新 PR / 不合并直至 Human 真机复测 OK**（会话约束）。
-- **Handoff target now:** Human Product Owner — residual-B 真机复测（见 PD：请→wei 选中；请喂→fan 选中；请喂饭到→wo 无选中）。
-- **PR (landed):** https://github.com/shchnk1103/Universe-Keyboard/pull/27 — **MERGED** `2026-07-23T11:28:11Z`
-- **Branch (residual-B, no merge yet):** `fix/gate5-residual-b-path-ledger-peel`（若远端仍有历史 PR #28，以最新分支 tip 为准；Human OK 后再议 PR）
-- **Residual-B authority:** [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)
+- **Current phase:** H5 residual + **residual-B Human Pass** → land PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28). Implementation tip pre-merge `e3d23cd`（Path-ledger cursor）。
+- **Handoff target now:** merge #28 + branch cleanup；optional Product decision on provisional-only C SKIP / formal 004 `Closed`.
+- **PR (landed):** https://github.com/shchnk1103/Universe-Keyboard/pull/27 — **MERGED**  
+- **PR (residual-B):** https://github.com/shchnk1103/Universe-Keyboard/pull/28 — **merge authorized after Human residual-B Pass**
+- **Residual-B authority:** [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md) — **Accepted (Human device Pass)**
 - **β-limited review (pre-hotfix):** [`…-phase1-beta-independent-review.md`](keyboard-layout-9key-pinyin-004-gate5-phase1-beta-independent-review.md)
 - **Post-β freeze handoff:** [`…-gate5-post-beta-human-residual-review-handoff.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-review-handoff.md)
 - **Post-β independent review:** [`…-gate5-post-beta-human-residual-independent-review.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-independent-review.md)
 - **Product disposition (H5):** [`PD-…-GATE5-POST-BETA-RESIDUAL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md)
-- **Evidence (append-only):** [`…-gate5-remediation-evidence.md`](keyboard-layout-9key-pinyin-004-gate5-remediation-evidence.md) §21–§28
+- **Evidence (append-only):** [`…-gate5-remediation-evidence.md`](keyboard-layout-9key-pinyin-004-gate5-remediation-evidence.md) §21–§30
 - **Phase 0.5 / 0.6 reviews:** [`phase05`](keyboard-layout-9key-pinyin-004-gate5-phase05-independent-review.md) · [`phase06`](keyboard-layout-9key-pinyin-004-gate5-phase06-independent-review.md)
 - **Product decisions:** [`PD-…-GATE5-PATH`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-path-decision.md) · [`PD-…-GATE5-PHASE1-BETA`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-phase1-beta-authorization.md) · [`PD-…-GATE5-POST-BETA-RESIDUAL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md) · [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)
-- **Residual debt (open):** provisional-only mixed-raw C `XCTSkip`；doc wording A1；**residual-B Human retest**（自动化已绿，产品 Pass 未宣称）
-- **Explicit non-claims:** **不**宣称完整 Human Product Gate Pass；**不**宣称 residual-B 真机已过
-- **Revalidation Trigger:** catalog source change; selection semantics change; host preedit boundary change; schema/vendor change; Product path decision change; residual-B device outcome
+- **Residual debt (open):** provisional-only mixed-raw C `XCTSkip`；doc wording A1  
+- **Residual debt (closed):** residual-B unchanged-raw / Path cursor（Human Pass `2026-07-23`）
+- **Explicit non-claims:** **不**仅因 residual-B 宣称完整 004 Human Product Gate / Assignment `Closed`
+- **Revalidation Trigger:** catalog source change; selection semantics change; host preedit boundary change; schema/vendor change; Product path decision change
 
 ### Phase 0.5 Authorization (Product Lead) — **Closed**
 

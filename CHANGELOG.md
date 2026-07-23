@@ -7,7 +7,7 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - Gate 5 residual-B：**Path 游标**。用户已 Path 点选前缀后，候选确认推进 `K=min(CJK字数, 剩余用户Path栈)` 站；数字消费跟音节走（非 `dropFirst(K)`）。
 - 下一站若用户曾点选 → Path 展示该槽选项并 **soft-select**（如「请」→`wei` 选中；「请喂」→`fan` 选中）。栈耗尽（「请喂饭到」）→ `wo…` **无**伪造选中。
 - 触发：多音节用户栈 **或** unchanged-raw；保留 `qiu→球` 等单音节 pure-digit nested partial。Host 无内部数字。
-- 自动化：KeyboardCore **712 / 1 skip / 0 fail**。真机 residual-B 待 Human；**不开 PR 直至复测通过**。PD：`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`。
+- 自动化：KeyboardCore **712 / 1 skip / 0 fail**。**Human residual-B 真机 Pass**（2026-07-23）。PD：`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL` Accepted。
 
 ## 2026-07-23 — 完整 Path 目录、原子呈现与 Gate 5 residual（KEYBOARD-LAYOUT-9KEY-PINYIN-004）
 
