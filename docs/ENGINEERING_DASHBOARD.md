@@ -278,7 +278,7 @@ Update this Dashboard only after the responsible owner confirms a state, depende
 - **Authority:** Assignment [`keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md); PD-004; ADR 0023; Gate5 path / β / post-β residual / residual-B PDs.
 - **Landed:** PR [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27) **MERGED** → `main` @ `5dfe2e2` (includes `2278125` CI `-Werror` fix).
 - **Human H5 residual:** H5-A/B/C **Pass** (device); Product-accepted via [`PD-…-GATE5-POST-BETA-RESIDUAL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md).
-- **Residual-B:** Path-ledger **cursor** — Human device **Pass** `2026-07-23`. PD: [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md) Accepted. Evidence §29–§30. PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) merge authorized.
+- **Residual-B:** Path-ledger **cursor** — Human device **Pass** `2026-07-23`. PD Accepted. Evidence §29–§30. PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) **MERGED** → `main` `@f84a00d`; feature branch cleaned.
 - **Independent reviews:** β-limited + post-β Accept/Pass-with-findings.
-- **Next (KOS):** land #28 + branch cleanup; optional provisional-only C SKIP / formal 004 close.
+- **Next (KOS):** optional provisional-only C SKIP / formal 004 Assignment close.
 - **Not claimed:** full 004 Assignment `Closed` solely from residual-B; App Store ship.

@@ -1371,6 +1371,7 @@ CI Swift 6 Quality build-and-test: SUCCESS (PR #28)
 | Item | Status |
 |---|---|
 | Residual-B product debt | **Closed** (device Pass + automation) |
-| PR #28 merge | **Authorized** |
+| PR #28 merge | **MERGED** `f84a00d` (`2026-07-23T13:29:03Z`); feature branch deleted |
+| Reachability | `e3d23cd` / `ed40745` ancestors of `origin/main` |
 | Full 004 Assignment Closed | **Not automatic** — provisional-only C SKIP / formal full Gate optional Product decision |
 | Non-claim | Not invent-slot; not full App Store ship |

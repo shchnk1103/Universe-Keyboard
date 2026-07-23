@@ -89,10 +89,10 @@ Stop and return to Product Lead when:
 
 ## Handoff
 
-- **Current phase:** H5 residual + **residual-B Human Pass** → land PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28). Implementation tip pre-merge `e3d23cd`（Path-ledger cursor）。
-- **Handoff target now:** merge #28 + branch cleanup；optional Product decision on provisional-only C SKIP / formal 004 `Closed`.
+- **Current phase:** H5 residual + **residual-B Human Pass** landed via PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) → `main` merge `f84a00d`（includes `e3d23cd` cursor + `ed40745` Pass docs）。
+- **Handoff target now:** optional Product decision on provisional-only C SKIP / formal 004 `Closed`。
 - **PR (landed):** https://github.com/shchnk1103/Universe-Keyboard/pull/27 — **MERGED**  
-- **PR (residual-B):** https://github.com/shchnk1103/Universe-Keyboard/pull/28 — **merge authorized after Human residual-B Pass**
+- **PR (residual-B):** https://github.com/shchnk1103/Universe-Keyboard/pull/28 — **MERGED** `2026-07-23T13:29:03Z`；feature branch deleted after reachability check
 - **Residual-B authority:** [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md) — **Accepted (Human device Pass)**
 - **β-limited review (pre-hotfix):** [`…-phase1-beta-independent-review.md`](keyboard-layout-9key-pinyin-004-gate5-phase1-beta-independent-review.md)
 - **Post-β freeze handoff:** [`…-gate5-post-beta-human-residual-review-handoff.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-review-handoff.md)
