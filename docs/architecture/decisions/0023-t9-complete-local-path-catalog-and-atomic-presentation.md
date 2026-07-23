@@ -1,6 +1,6 @@
 # ADR 0023: T9 Complete Local Path Catalog And Atomic Presentation
 
-- **Status:** Accepted for implementation under `KEYBOARD-LAYOUT-9KEY-PINYIN-004` (device Product Gate pending)
+- **Status:** Accepted under `KEYBOARD-LAYOUT-9KEY-PINYIN-004` — catalog/atomic Path landed (PR #27); Gate 5 residual-B Path-ledger cursor landed (PR #28, Human residual-B Pass). Full Assignment `Closed` / formal full Human Product Gate remains a separate Product act.
 - **Date:** 2026-07-22
 - **Decision owners:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-004`](../../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-authorization.md)

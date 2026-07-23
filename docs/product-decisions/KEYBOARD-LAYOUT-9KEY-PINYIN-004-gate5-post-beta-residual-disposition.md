@@ -66,16 +66,16 @@
 3. Cite verification: directed matrix already re-run independently; no need to re-run full suite unless code changes after this PD.  
 4. CHANGELOG entry if not already accurate for user-visible T9 Path residual fixes.
 
-## Explicit non-claims
+## Explicit non-claims (as of this PD’s freeze)
 
 - Not full 004 Product Gate Pass  
-- Not full B coverage  
 - Not production App Store ship decision  
+
+**Superseding note (same day, later PD):** residual-B Path-ledger cursor is **Closed** with Human device Pass and PR #28 merge — see [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md). Do not treat “Not full B coverage” as current open residual-B debt.
 
 ## Human Product Owner — when we need you
 
 | When | Need |
 |---|---|
-| **Now** | Optional: veto this residual disposition within the same day |
-| **After push** | Review PR / merge when ready |
-| **Full Gate close** | Separate decision if/when full exit matrix (incl. B stance) is product-closed |
+| **After residual-B land** | Optional: provisional-only C SKIP decision / formal 004 `Closed` |
+| **Full Gate close** | Separate decision if/when remaining exit matrix is product-closed |

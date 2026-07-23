@@ -143,9 +143,22 @@ From `T9PinyinCatalogControllerTests`:
 - Update input-pipeline / ARCHITECTURE_TIMELINE after Gate
 - Independent Architecture Review + Quality Review still required before `Closed`
 
-## Explicit non-claims
+## Explicit non-claims (at this file’s original freeze)
 
-- Does **not** claim Human Product Gate pass
-- Does **not** claim Gate 5 product fix complete
-- Does **not** claim full-suite green
-- Does **not** push, commit, or open PR (per plan unless user authorizes)
+- Does **not** claim full 004 Human Product Gate pass against entire exit matrix
+- Does **not** claim Gate 5 product fix complete *(superseded for residual-B — see below)*
+- Does **not** claim full-suite green *(later residual-B freeze: KeyboardCore 712/1 skip/0 fail)*
+- Does **not** push, commit, or open PR (per plan unless user authorizes) *(historical; #27/#28 later authorized and merged)*
+
+---
+
+## Superseding append — Gate 5 residual landings (2026-07-23)
+
+| Item | Status |
+|---|---|
+| PR #27 | MERGED — catalog + H5 residual |
+| H5 residual Human | Pass (A/B/C) |
+| Residual-B Path-ledger cursor | Human device **Pass**; PD Accepted; PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) **MERGED** `f84a00d` |
+| Evidence | remediation §21–§30 |
+| Still open | provisional-only C `XCTSkip`; formal 004 Assignment `Closed` optional |
+| Full 004 Product Gate | **Not** claimed solely by residual-B |

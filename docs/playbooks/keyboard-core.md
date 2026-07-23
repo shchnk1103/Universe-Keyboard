@@ -25,9 +25,11 @@ Own testable input/state logic in `Packages/KeyboardCore` while preserving UI, R
 
 ## Optional Reading
 
-- [Partial Commit](../architecture/partial-commit.md)
+- [Partial Commit](../architecture/partial-commit.md) (includes T9 Path residual-B cursor)
+- Residual-B product SoT: [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)
+- Assignment 004: [`keyboard-layout-9key-pinyin-004.md`](../assignments/keyboard-layout-9key-pinyin-004.md)
 - [Typo Benchmark](../TYPO_BENCHMARK.md)
-- ADR [0002](../architecture/decisions/0002-visibility-change-abandons-composition.md) and [0004](../architecture/decisions/0004-rime-runtime-session-model.md)
+- ADR [0002](../architecture/decisions/0002-visibility-change-abandons-composition.md), [0004](../architecture/decisions/0004-rime-runtime-session-model.md), [0023](../architecture/decisions/0023-t9-complete-local-path-catalog-and-atomic-presentation.md)
 - `.claude/skills/keyboard-test-writer/` references.
 
 ## Allowed Files / Areas

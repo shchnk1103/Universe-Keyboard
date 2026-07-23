@@ -133,3 +133,9 @@ After independent review file is written:
 1. Link it from Assignment handoff + KNOWLEDGE_INDEX.  
 2. Product Lead decides: residual B research / deprioritize / **commit authorization** / full Human Gate re-run.  
 3. Executor does not self-close Assignment to `Closed`.
+
+---
+
+## Superseding note (2026-07-23 later same day)
+
+Residual-B Path-ledger **cursor** was Product-confirmed, implemented, Human device **Pass**, and landed via PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) (`f84a00d`). See [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md) and remediation §28–§30. Remaining parked debt: provisional-only C `XCTSkip`; doc A1.

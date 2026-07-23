@@ -23,6 +23,19 @@ This behavior is accepted for the current Chinese input flow. Do not continue op
 | Typo Partial Commit V1 | implemented behind flag | Eligible high-confidence single-character substitution corrections can reuse the Partial Commit pipeline. |
 | Phase 3 V2 Stabilization | completed | Added tests for fallback boundaries, lifecycle behavior, paging stability, final commit, and parity with normal RIME Partial Commit. |
 | Feature Flag | default off | `isTypoCorrectionPartialCommitEnabled == false` in production. Tests may enable it explicitly. |
+| T9 Path residual-B cursor (004 Gate 5) | implemented + Human Pass | After user Path-select stack + candidate partial: peel `K=min(CJK, stack)` syllables (slots follow syllables); soft-select next user-chosen Path syllable; unselected tail (`wo…`) has no forged select. PD: [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md). |
+
+## T9 Path × Partial Commit (004 residual-B)
+
+When `usesT9InputSemantics` and the user has Path-confirmed syllables:
+
+1. **Authority for advance** is the user Path stack + CJK step count `K` — not comment / `sel_*` / inventing digit cuts without a stack.
+2. **Digit consumption** follows peeled syllable letter widths on Core `sourceDigits`.
+3. **Path Bar** focuses the next remaining user-stack syllable and restores soft-select only if the user previously Path-selected it (or 选拼音). Never auto-select unselected remainder.
+4. Nested single-syllable pure-digit cases (e.g. `qiu'53` →「球」→ remaining `5`) still use shortened-remainder identity, not residual-B multi-stack cursor.
+5. Host remaining preedit must not expose internal T9 digits.
+
+Evidence: remediation §28–§30; PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) on `main`.
 
 ## Current Boundaries
 

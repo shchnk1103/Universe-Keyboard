@@ -23,7 +23,7 @@
 | Swift 并发 / 架构决策 | `docs/PROJECT_CONTEXT.md` + `docs/architecture/swift6-migration.md` | — |
 | RIME 桥接 / xcframework 管理 | `docs/PROJECT_CONTEXT.md` + `docs/architecture/rime-artifacts.md` | — |
 | RIME 多方案管理 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_SCHEME_MANAGEMENT.md` | `docs/UI_STYLE_GUIDE.md`（改主 App UI 时） |
-| Partial Commit / composition restore | `docs/PROJECT_CONTEXT.md` + `docs/architecture/partial-commit.md` | `docs/TYPO_BENCHMARK.md`（涉及 typo correction 时） |
+| Partial Commit / composition restore | `docs/PROJECT_CONTEXT.md` + `docs/architecture/partial-commit.md`（含 T9 residual-B Path cursor） | `docs/product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md`（T9 Path×Partial）；`docs/TYPO_BENCHMARK.md`（typo 时） |
 | 写测试 | `docs/PROJECT_CONTEXT.md` + `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md` | `EXAMPLES.md` |
 | RIME 传统模糊音 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_FUZZY_PINYIN.md` | `.claude/skills/keyboard-test-writer/SKILL.md` + `REFERENCE.md`（写测试时） |
 | RIME 候选学习 / 用户词典备份 | `docs/PROJECT_CONTEXT.md` + `docs/RIME_USER_DICTIONARY.md` | `docs/UI_STYLE_GUIDE.md`（改主 App UI 时） |

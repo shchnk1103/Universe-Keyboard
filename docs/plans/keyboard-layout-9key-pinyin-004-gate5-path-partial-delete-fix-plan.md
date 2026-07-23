@@ -176,8 +176,9 @@ Phase 0 先取证并写失败测试，禁止直接放宽现有 guard。
 - [x] Partial 首 Delete checkpoint 恢复（含 Path identity 字段）。
 - [x] 定向 145 tests / 1 skip / 0 fail。
 - [x] 独立 Architecture/Quality（Accept + Pass-with-findings）。
-- [ ] Product Lead 请求 Human 分项真机 A/B/C。
-- [ ] Residual：provisional-only mixed C continue（测试 SKIP）；device unchanged-raw full B。
+- [x] Human H5 residual A/B/C Pass + Product disposition（post-β）。
+- [x] Residual-B Path-ledger **cursor**（单字/多字；soft-select 继承用户 Path 点选；`wo` 不伪造选中）— Human device Pass + PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) MERGED（`f84a00d`）。权威：[`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)。
+- [ ] Residual still open：provisional-only mixed C continue（测试 `XCTSkip`）；doc wording A1（first vs unique full-cover）。
 
 ### Phase 2：Delete / Append identity（并入 Phase 1 β-limited）
 

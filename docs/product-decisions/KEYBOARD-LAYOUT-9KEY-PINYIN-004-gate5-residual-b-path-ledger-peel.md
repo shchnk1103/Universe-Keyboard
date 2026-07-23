@@ -12,7 +12,7 @@
 
 - **Product Approver:** Product Lead under Human Product Owner standing KOS 2.0 authorization for this track (session: residual-B device fail → process debt; Product confirmed Path-ledger **cursor** model including multi-CJK).  
 - **Human residual-B retest:** **Pass** — Human Product Owner `2026-07-23`（in-session: 完全没问题）.  
-- **Landing:** merge PR #28 authorized after Human Pass; does **not** alone close full 004 Assignment / full Product Gate.
+- **Landing:** PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) **MERGED** `2026-07-23T13:29:03Z` → `main` merge `f84a00d` (implementation `e3d23cd` + Pass docs `ed40745`); feature branch deleted after reachability check. Does **not** alone close full 004 Assignment / full Product Gate.
 
 ## Bound product model (SoT)
 
