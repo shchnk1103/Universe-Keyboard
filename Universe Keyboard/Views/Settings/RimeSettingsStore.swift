@@ -128,6 +128,10 @@ final class RimeSettingsStore {
     var userDictionaryMessage: String?
     var userDictionaryMessageSucceeded = true
     var userDictionaryMessageVersion = 0
+    /// One-shot layout chooser feedback for the global bottom toast (ContentView).
+    var layoutToastMessage: String?
+    var layoutToastSucceeded = true
+    var layoutToastVersion = 0
 
     init(
         schemaManager: SchemaManager = SchemaManager(),
@@ -734,6 +738,13 @@ final class RimeSettingsStore {
         userDictionaryMessage = message
         userDictionaryMessageSucceeded = succeeded
         userDictionaryMessageVersion += 1
+    }
+
+    /// Transient keyboard-layout feedback (success / cancel / failure).
+    func presentLayoutToast(_ message: String, succeeded: Bool = true) {
+        layoutToastMessage = message
+        layoutToastSucceeded = succeeded
+        layoutToastVersion += 1
     }
 
     private func displayName(forSchemaID schemaID: String) -> String {

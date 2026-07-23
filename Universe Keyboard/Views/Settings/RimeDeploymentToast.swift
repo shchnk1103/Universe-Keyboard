@@ -6,6 +6,7 @@ struct AppOperationToastState: Equatable {
         case download
         case userDictionary
         case sync
+        case layout
     }
 
     enum Tone: Equatable {
@@ -138,6 +139,16 @@ extension AppOperationToastState {
             message: message,
             systemImage: succeeded ? "checkmark.circle.fill" : "exclamationmark.circle.fill",
             tone: succeeded ? .success : .info,
+            automaticallyDismisses: true
+        )
+    }
+
+    static func layout(message: String, succeeded: Bool) -> AppOperationToastState {
+        AppOperationToastState(
+            source: .layout,
+            message: message,
+            systemImage: succeeded ? "checkmark.circle.fill" : "exclamationmark.circle.fill",
+            tone: succeeded ? .success : (message.contains("失败") ? .failure : .info),
             automaticallyDismisses: true
         )
     }

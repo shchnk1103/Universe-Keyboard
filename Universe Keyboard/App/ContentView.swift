@@ -77,6 +77,9 @@ struct ContentView: View {
         .onChange(of: rimeSettingsStore.userDictionaryMessageVersion) { _, _ in
             updateUserDictionaryToast()
         }
+        .onChange(of: rimeSettingsStore.layoutToastVersion) { _, _ in
+            updateLayoutToast()
+        }
         .onChange(of: rimeSyncViewModel.statusVersion) { _, _ in
             updateSyncToast()
         }
@@ -154,6 +157,16 @@ struct ContentView: View {
             .userDictionary(
                 message: message,
                 succeeded: rimeSettingsStore.userDictionaryMessageSucceeded
+            )
+        )
+    }
+
+    private func updateLayoutToast() {
+        guard let message = rimeSettingsStore.layoutToastMessage else { return }
+        presentToast(
+            .layout(
+                message: message,
+                succeeded: rimeSettingsStore.layoutToastSucceeded
             )
         )
     }

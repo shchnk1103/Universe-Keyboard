@@ -3,18 +3,18 @@ import SwiftUI
 
 /// Settings surface for 26-key / Chinese nine-key layout selection.
 ///
-/// Visual direction follows a WeChat-style “主键盘” chooser (side-by-side previews
-/// + radio labels), with colors and surfaces from the main-app UI style guide
-/// (system grouped backgrounds, tint selection, continuous corners).
+/// WeChat-style side-by-side “主键盘” chooser: equal-size previews, radio under each,
+/// accent selection ring. Key silhouettes mirror Extension chrome (placeholder fills only).
 struct KeyboardLayoutSettingsView: View {
     @Bindable var rimeStore: RimeSettingsStore
 
     @State private var selectedLayout: KeyboardLayoutStyle = .twentySixKey
-    @State private var t9Ready = false
     @State private var isBusy = false
-    @State private var statusMessage: String?
     @State private var showLicenseSheet = false
     @State private var pendingNineKeyAfterInstall = false
+
+    /// Shared preview frame so both boards match width & height.
+    private let previewSize = CGSize(width: 148, height: 112)
 
     var body: some View {
         Form {
@@ -24,14 +24,6 @@ struct KeyboardLayoutSettingsView: View {
                 Text("主键盘")
             } footer: {
                 Text("九键依赖雾凇拼音的 T9 方案。启用前会检查安装与部署状态；失败时保持当前布局。部分高级能力在九键模式下可能不可用，切回全键盘后恢复。英文与自动英文场景在九键偏好下仍使用 26 键。")
-            }
-
-            if let statusMessage {
-                Section("状态") {
-                    Text(statusMessage)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
             }
 
             if isBusy {
@@ -64,7 +56,7 @@ struct KeyboardLayoutSettingsView: View {
                         Button("取消", role: .cancel) {
                             showLicenseSheet = false
                             pendingNineKeyAfterInstall = false
-                            statusMessage = "已取消，保持原布局"
+                            rimeStore.presentLayoutToast("已取消，保持原布局", succeeded: false)
                         }
                     }
                 }
@@ -81,33 +73,36 @@ struct KeyboardLayoutSettingsView: View {
                 Task { await enableNineKey() }
             case .failed(let message):
                 pendingNineKeyAfterInstall = false
-                statusMessage = "安装失败：\(message)。已保持原布局。"
+                rimeStore.presentLayoutToast("安装失败：\(message)。已保持原布局。", succeeded: false)
             default:
                 break
             }
         }
     }
 
-    /// Side-by-side previews (nine-key left / full keyboard right), WeChat-like rhythm.
+    /// Full keyboard left · nine-key right (product preference); equal frames.
     private var mainKeyboardChooser: some View {
-        HStack(alignment: .top, spacing: 12) {
-            layoutOption(
-                style: .nineKey,
-                title: "九宫格拼音",
-                accessibilityHint: "中文使用九键，英文仍使用全键盘"
-            ) {
-                NineKeyThumbnail(isSelected: selectedLayout == .nineKey)
-            }
-
+        HStack(alignment: .top, spacing: 14) {
             layoutOption(
                 style: .twentySixKey,
                 title: "全键盘拼音",
                 accessibilityHint: "标准 26 键全键盘布局"
             ) {
                 TwentySixKeyThumbnail(isSelected: selectedLayout == .twentySixKey)
+                    .frame(width: previewSize.width, height: previewSize.height)
+            }
+
+            layoutOption(
+                style: .nineKey,
+                title: "九宫格拼音",
+                accessibilityHint: "中文使用九键，英文仍使用全键盘"
+            ) {
+                NineKeyThumbnail(isSelected: selectedLayout == .nineKey)
+                    .frame(width: previewSize.width, height: previewSize.height)
             }
         }
-        .padding(.vertical, 6)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
         .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
     }
 
@@ -123,7 +118,6 @@ struct KeyboardLayoutSettingsView: View {
         } label: {
             VStack(spacing: 10) {
                 thumbnail()
-                    .frame(maxWidth: .infinity)
                     .accessibilityHidden(true)
 
                 HStack(spacing: 6) {
@@ -152,17 +146,15 @@ struct KeyboardLayoutSettingsView: View {
 
     private func reload() {
         selectedLayout = rimeStore.layoutStyle
-        t9Ready = rimeStore.t9ReadinessMatched
     }
 
     @MainActor
     private func select(_ style: KeyboardLayoutStyle) async {
-        statusMessage = nil
         switch style {
         case .twentySixKey:
             rimeStore.selectTwentySixKeyLayout()
             reload()
-            statusMessage = "已切换为全键盘拼音"
+            rimeStore.presentLayoutToast("已切换为全键盘拼音", succeeded: true)
         case .nineKey:
             await enableNineKey()
         }
@@ -173,7 +165,7 @@ struct KeyboardLayoutSettingsView: View {
         if rimeStore.t9ReadinessMatched, rimeStore.rimeIceInstalledFilesExist {
             rimeStore.persistNineKeyLayoutWhenReady()
             reload()
-            statusMessage = "已启用九宫格拼音"
+            rimeStore.presentLayoutToast("已启用九宫格拼音", succeeded: true)
             return
         }
 
@@ -184,75 +176,68 @@ struct KeyboardLayoutSettingsView: View {
             }
             pendingNineKeyAfterInstall = true
             isBusy = true
-            statusMessage = "正在下载并安装雾凇拼音…"
+            // Download progress uses the existing global download toast.
             rimeStore.startDownload(schemaID: "rime_ice")
             isBusy = false
             return
         }
 
         isBusy = true
-        statusMessage = "正在部署并验证九键…"
+        // Deploy progress is covered by the global deployment toast when active.
         let failure = await rimeStore.enableNineKeyLayout()
         isBusy = false
         reload()
         if let failure {
-            statusMessage = failure
+            rimeStore.presentLayoutToast(failure, succeeded: false)
         } else {
-            statusMessage = "九宫格拼音已启用"
+            rimeStore.presentLayoutToast("九宫格拼音已启用", succeeded: true)
         }
     }
 }
 
-// MARK: - Shared preview palette (system semantic; native keyboard-like)
+// MARK: - Preview palette (system semantic ≈ Extension character/function keys)
 
 private enum LayoutPreviewPalette {
-    /// Keyboard surface inside the preview card.
-    static var board: Color { Color(.tertiarySystemFill) }
-    /// Letter / character keys (lighter).
-    static var characterKey: Color { Color(.secondarySystemFill) }
-    /// Function keys (slightly stronger fill).
-    static var functionKey: Color { Color(.systemFill) }
-    static var keyCorner: CGFloat { 4 }
+    static var board: Color { Color(.systemGray5).opacity(0.55) }
+    static var characterKey: Color { Color(.systemGray4) }
+    static var functionKey: Color { Color(.systemGray3) }
+    static var keyCorner: CGFloat { 3.5 }
     static var boardCorner: CGFloat { 10 }
     static var selectedStroke: CGFloat { 2 }
+    static var keySpacing: CGFloat { 2.5 }
+    static var rowSpacing: CGFloat { 3 }
 }
 
-// MARK: - Thumbnails (decorative placeholders only — no real glyphs)
+// MARK: - 26-key silhouette (matches QWERTY row rhythm)
 
-/// Abstract QWERTY silhouette: key blocks only, no letters/symbols.
 private struct TwentySixKeyThumbnail: View {
     var isSelected: Bool
 
     var body: some View {
-        VStack(spacing: 3) {
-            equalKeyRow(count: 10, height: 11)
-            equalKeyRow(count: 9, height: 11)
-                .padding(.horizontal, 6)
-            // Shift · letters · delete
-            HStack(spacing: 2.5) {
-                functionKey(height: 11)
-                    .frame(width: 16)
-                equalKeyRow(count: 7, height: 11)
-                functionKey(height: 11)
-                    .frame(width: 16)
+        VStack(spacing: LayoutPreviewPalette.rowSpacing) {
+            // Number/letter top row — 10 equal keys
+            equalRow(count: 10, height: 13, style: .character)
+            // Second letter row — 9 keys, inset like native QWERTY
+            equalRow(count: 9, height: 13, style: .character)
+                .padding(.horizontal, 7)
+            // Shift · 7 letters · Delete
+            HStack(spacing: LayoutPreviewPalette.keySpacing) {
+                key(.function, width: 17, height: 13)
+                equalRow(count: 7, height: 13, style: .character)
+                key(.function, width: 17, height: 13)
             }
-            // 123 · , · space · mode · return
-            HStack(spacing: 2.5) {
-                functionKey(height: 12)
-                    .frame(width: 18)
-                functionKey(height: 12)
-                    .frame(width: 12)
-                characterKey(height: 12)
+            // 123 · globe · space · 中英 · return
+            HStack(spacing: LayoutPreviewPalette.keySpacing) {
+                key(.function, width: 20, height: 14)
+                key(.function, width: 14, height: 14)
+                key(.character, height: 14)
                     .frame(maxWidth: .infinity)
-                functionKey(height: 12)
-                    .frame(width: 16)
-                functionKey(height: 12)
-                    .frame(width: 22)
+                key(.function, width: 18, height: 14)
+                key(.returnKey, width: 24, height: 14)
             }
         }
         .padding(8)
-        .frame(maxWidth: .infinity)
-        .aspectRatio(1.35, contentMode: .fit)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
             LayoutPreviewPalette.board,
             in: RoundedRectangle(cornerRadius: LayoutPreviewPalette.boardCorner, style: .continuous)
@@ -266,90 +251,101 @@ private struct TwentySixKeyThumbnail: View {
         }
     }
 
-    private func equalKeyRow(count: Int, height: CGFloat) -> some View {
-        HStack(spacing: 2.5) {
+    private enum KeyKind { case character, function, returnKey }
+
+    private func equalRow(count: Int, height: CGFloat, style: KeyKind) -> some View {
+        HStack(spacing: LayoutPreviewPalette.keySpacing) {
             ForEach(0..<count, id: \.self) { _ in
-                characterKey(height: height)
+                key(style, height: height)
                     .frame(maxWidth: .infinity)
             }
         }
     }
 
-    private func characterKey(height: CGFloat) -> some View {
-        RoundedRectangle(cornerRadius: LayoutPreviewPalette.keyCorner, style: .continuous)
-            .fill(LayoutPreviewPalette.characterKey)
-            .frame(height: height)
-    }
-
-    private func functionKey(height: CGFloat) -> some View {
-        RoundedRectangle(cornerRadius: LayoutPreviewPalette.keyCorner, style: .continuous)
-            .fill(LayoutPreviewPalette.functionKey)
-            .frame(height: height)
+    private func key(_ kind: KeyKind, width: CGFloat? = nil, height: CGFloat) -> some View {
+        let fill: Color = {
+            switch kind {
+            case .character: return LayoutPreviewPalette.characterKey
+            case .function, .returnKey: return LayoutPreviewPalette.functionKey
+            }
+        }()
+        return RoundedRectangle(cornerRadius: LayoutPreviewPalette.keyCorner, style: .continuous)
+            .fill(fill)
+            .frame(width: width, height: height)
     }
 }
 
-/// Abstract nine-key silhouette (left pad + right function column + bottom row).
-/// Placeholder blocks only — no ABC / 符号 labels.
+// MARK: - Nine-key silhouette (left 4-col pad + right function column + tall return)
+
+/// Mirrors Extension `makeT9NineKeyChrome` structure without glyphs:
+/// ```
+/// [f][c][c][c] | [del]
+/// [f][c][c][c] | [kao]
+/// [f][c][c][c] | ┌───┐
+/// [f][f][  sp ] | │ret│
+/// ```
 private struct NineKeyThumbnail: View {
     var isSelected: Bool
 
-    private let padKeyHeight: CGFloat = 16
-    private let padSpacing: CGFloat = 3
+    private let letterH: CGFloat = 15
+    private let bottomH: CGFloat = 13
+    private let gap = LayoutPreviewPalette.rowSpacing
+    private let colGap = LayoutPreviewPalette.keySpacing
 
     var body: some View {
-        VStack(spacing: padSpacing) {
-            HStack(alignment: .top, spacing: padSpacing) {
-                // Left 3×3 letter-group pad
-                VStack(spacing: padSpacing) {
+        GeometryReader { geo in
+            let rightW = max(16, (geo.size.width - 16) * 0.18)
+            let leftW = geo.size.width - 16 - rightW - colGap
+            let padH = letterH * 3 + gap * 2
+            let returnH = letterH + gap + bottomH
+
+            HStack(alignment: .top, spacing: colGap) {
+                // Left: 4×3 main pad + bottom utility
+                VStack(spacing: gap) {
                     ForEach(0..<3, id: \.self) { _ in
-                        HStack(spacing: padSpacing) {
+                        HStack(spacing: colGap) {
+                            // Col0 function (123 / #+= / 中)
+                            keyBlock(
+                                fill: LayoutPreviewPalette.functionKey,
+                                height: letterH
+                            )
+                            // Col1–3 character/letter groups
                             ForEach(0..<3, id: \.self) { _ in
-                                RoundedRectangle(
-                                    cornerRadius: LayoutPreviewPalette.keyCorner,
-                                    style: .continuous
+                                keyBlock(
+                                    fill: LayoutPreviewPalette.characterKey,
+                                    height: letterH
                                 )
-                                .fill(LayoutPreviewPalette.characterKey)
-                                .frame(height: padKeyHeight)
-                                .frame(maxWidth: .infinity)
                             }
                         }
+                        .frame(width: leftW)
                     }
+
+                    // Bottom: emoji · 选拼音 · space (1+1+2 of 4 cols)
+                    HStack(spacing: colGap) {
+                        keyBlock(fill: LayoutPreviewPalette.functionKey, height: bottomH)
+                            .frame(width: (leftW - colGap * 3) / 4)
+                        keyBlock(fill: LayoutPreviewPalette.functionKey, height: bottomH)
+                            .frame(width: (leftW - colGap * 3) / 4)
+                        keyBlock(fill: LayoutPreviewPalette.characterKey, height: bottomH)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .frame(width: leftW)
                 }
 
-                // Right function column (delete / short / tall return)
-                VStack(spacing: padSpacing) {
-                    RoundedRectangle(cornerRadius: LayoutPreviewPalette.keyCorner, style: .continuous)
-                        .fill(LayoutPreviewPalette.functionKey)
-                        .frame(width: 18, height: padKeyHeight)
-                    RoundedRectangle(cornerRadius: LayoutPreviewPalette.keyCorner, style: .continuous)
-                        .fill(LayoutPreviewPalette.functionKey)
-                        .frame(width: 18, height: padKeyHeight)
-                    RoundedRectangle(cornerRadius: LayoutPreviewPalette.keyCorner, style: .continuous)
-                        .fill(LayoutPreviewPalette.functionKey)
-                        .frame(width: 18, height: padKeyHeight)
+                // Right: delete · 颜表情 · tall return
+                VStack(spacing: gap) {
+                    keyBlock(fill: LayoutPreviewPalette.functionKey, height: letterH)
+                        .frame(width: rightW)
+                    keyBlock(fill: LayoutPreviewPalette.functionKey, height: letterH)
+                        .frame(width: rightW)
+                    keyBlock(fill: LayoutPreviewPalette.functionKey, height: returnH)
+                        .frame(width: rightW)
                 }
+                .frame(height: padH + gap + bottomH, alignment: .top)
             }
-
-            // Bottom chrome: symbol · 123 · space · mode
-            HStack(spacing: padSpacing) {
-                RoundedRectangle(cornerRadius: LayoutPreviewPalette.keyCorner, style: .continuous)
-                    .fill(LayoutPreviewPalette.functionKey)
-                    .frame(width: 18, height: 12)
-                RoundedRectangle(cornerRadius: LayoutPreviewPalette.keyCorner, style: .continuous)
-                    .fill(LayoutPreviewPalette.functionKey)
-                    .frame(width: 18, height: 12)
-                RoundedRectangle(cornerRadius: LayoutPreviewPalette.keyCorner, style: .continuous)
-                    .fill(LayoutPreviewPalette.characterKey)
-                    .frame(height: 12)
-                    .frame(maxWidth: .infinity)
-                RoundedRectangle(cornerRadius: LayoutPreviewPalette.keyCorner, style: .continuous)
-                    .fill(LayoutPreviewPalette.functionKey)
-                    .frame(width: 22, height: 12)
-            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .padding(8)
         }
-        .padding(8)
-        .frame(maxWidth: .infinity)
-        .aspectRatio(1.35, contentMode: .fit)
         .background(
             LayoutPreviewPalette.board,
             in: RoundedRectangle(cornerRadius: LayoutPreviewPalette.boardCorner, style: .continuous)
@@ -361,5 +357,12 @@ private struct NineKeyThumbnail: View {
                     lineWidth: LayoutPreviewPalette.selectedStroke
                 )
         }
+    }
+
+    private func keyBlock(fill: Color, height: CGFloat) -> some View {
+        RoundedRectangle(cornerRadius: LayoutPreviewPalette.keyCorner, style: .continuous)
+            .fill(fill)
+            .frame(maxWidth: .infinity)
+            .frame(height: height)
     }
 }
