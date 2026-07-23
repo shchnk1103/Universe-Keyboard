@@ -38,7 +38,7 @@
 
 | Debt | Product stance |
 |---|---|
-| Full B unchanged-raw “consume 请 keep wei/fan/dao focus wo” | **Still open** — fail-closed only; no invent-slot; future PD if coverage found or product narrows B |
+| Full B / residual-B Path cursor | **Closed** — [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md) Accepted; **Human residual-B device Pass** `2026-07-23` |
 | Provisional-only mixed-raw C continue (`XCTSkip`) | **Parked residual** — not greenwashed as fixed |
 | Handoff wording “unique full-cover” vs short resync first full-cover | **Doc cleanup debt** — non-blocking (Architecture A1) |
 | Same-conversation independent review optics | **Accept with note** — third-party re-review optional if Product Owner requires |

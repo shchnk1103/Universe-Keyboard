@@ -1249,3 +1249,128 @@ swift test --filter 'Gate5|HumanStandalone|HumanQingweifanda|UnconfirmedT9Delete
 | H5 residual | **Product-accepted** (narrow residual Pass) |
 | Local commit + push | **Authorized** |
 | Full 004 Human Gate / auto-merge | **Not claimed / not authorized** |
+
+---
+
+## 28. Residual-B Path-ledger peel (Executor implementation)
+
+**Date:** 2026-07-23 Asia/Shanghai  
+**Role:** Executor (Grok 4.5)  
+**Authority:** Human Product Owner in-session — residual-B still fails on device; process remaining debt under KOS 2.0.  
+**PD:** [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)
+
+### 28.1 Root cause (bound)
+
+| Observation | Authority used |
+|---|---|
+| Device B: select「请」leaves RIME raw unchanged | Phase 0.5 / device calibration |
+| Path empty after partial | β fail-closed on engine-only |
+| User already Path-selected `qing/wei/fan/dao` | Core Path ledger SoT |
+
+**Decision:** peel **first Path-confirmed syllable** when single-CJK + unchanged-raw; resync RIME to remaining identity. Forbidden signals still unused.
+
+### 28.2 Code surface
+
+| File | Change |
+|---|---|
+| `T9CompositionIdentity.swift` | `afterPathLedgerPeel` + public `digitEncoding(ofMixedRaw:)` |
+| `KeyboardController+PartialCommit.swift` | unchanged-raw branch → Path peel + resync + remaining refresh |
+| `PartialCommitControllerTests.swift` | device-B expects peel success |
+| `T9CompositionIdentityTests.swift` | pure peel / fail-closed contracts |
+
+### 28.3 Automated verification
+
+```text
+swift test --filter 'T9CompositionIdentity|Gate5B|Gate5A|Gate5Partial|QingCandidate|QingWeiFanDao'
+→ 16 tests, 0 fail
+
+swift test   # Packages/KeyboardCore
+→ 708 tests, 1 skip (provisional-only C), 0 fail
+```
+
+### 28.4 Hash inventory (residual-B implementation freeze)
+
+| SHA-256 | Path |
+|---|---|
+| `9e0d9df68e2d726d6e8e4a9a2e229031d0f6c014c1b1dc8ada38e3de2a59e4ed` | `T9CompositionIdentity.swift` |
+| `61df934feab18174bc456d12aef5ceffe68b6f12c59775fed9070f1ae6ded4b5` | `KeyboardController+PartialCommit.swift` |
+| `be77685d66e1a4f78d151caf0347485d8ee0570b2ae18f8e88b432553b7695df` | `PartialCommitControllerTests.swift` |
+| `75bf9186039e9bf72247d11f7f5de3359685fa6b57f104193d4a0d44ffbb20d6` | `T9CompositionIdentityTests.swift` |
+
+### 28.5 Non-claims
+
+- **Not** Human residual-B Pass until device retest  
+- **Not** full 004 Human Product Gate Pass  
+- **Not** multi-char peel / invent-slot from 汉字数  
+- provisional-only C `XCTSkip` still parked  
+
+### 28.6 Next KOS step
+
+1. Feature branch commit + push + open PR (merge = Human).  
+2. Human residual-B retest script (see PD).  
+3. Independent Architecture/Quality review of residual-B before claiming product Pass.
+
+---
+
+## 29. Residual-B Path-ledger **cursor** (product-confirmed model)
+
+**Date:** 2026-07-23 Asia/Shanghai  
+**Role:** Executor (Grok 4.5)  
+**Authority:** Human Product Owner confirmed Path cursor model (单字/多字同一原理；soft-select 仅用户曾点选音节；`wo` 不伪造选中). **No PR** until device retest OK.
+
+### 29.1 Model freeze
+
+| Rule | Value |
+|---|---|
+| K | `min(CJK count, remaining user Path stack)` — step only |
+| Digit peel | Sum of peeled syllables’ widths (slots follow syllables) |
+| Next focus | First remaining user-stack syllable + soft-select if user chose it |
+| Stack empty | Unselected tail (`wo…`) |
+| Trigger | Multi-syllable user stack **or** unchanged-raw (preserve `qiu→球` nested pure-digit) |
+
+### 29.2 Automated verification
+
+```text
+swift test  # Packages/KeyboardCore
+→ 712 tests, 1 skip, 0 fail
+```
+
+Gate5 B captures: after「请」`paths=["wei","zei","ye",…] selected=wei`.
+
+### 29.3 Non-claims (pre-device; superseded by §30)
+
+- (historical) Not Human residual-B Pass until device  
+- (historical) Not PR / merge until device OK  
+
+---
+
+## 30. Human residual-B device Pass + land PR #28
+
+**Date:** 2026-07-23 Asia/Shanghai  
+**Role:** Product Lead / Executor  
+**Authority:** Human Product Owner in-session — residual-B 真机「完全没问题」；处理后续 merge / 文档 / 分支清理。
+
+### 30.1 Human residual-B matrix
+
+| ID | Scenario | Result |
+|---|---|---|
+| RB-1 | Path `qing/wei/fan/dao` →「请」→ Path `wei…` soft-select | **Pass** |
+| RB-2 | 多字/游标推进与 `wo` 无选中 | **Pass**（Human overall） |
+| RB-3 | 无内部数字 / 既有功能未破坏 | **Pass**（Human overall） |
+
+### 30.2 Automation (pre-merge freeze)
+
+```text
+swift test  # Packages/KeyboardCore @ e3d23cd
+→ 712 tests, 1 skip, 0 fail
+CI Swift 6 Quality build-and-test: SUCCESS (PR #28)
+```
+
+### 30.3 Disposition
+
+| Item | Status |
+|---|---|
+| Residual-B product debt | **Closed** (device Pass + automation) |
+| PR #28 merge | **Authorized** |
+| Full 004 Assignment Closed | **Not automatic** — provisional-only C SKIP / formal full Gate optional Product decision |
+| Non-claim | Not invent-slot; not full App Store ship |

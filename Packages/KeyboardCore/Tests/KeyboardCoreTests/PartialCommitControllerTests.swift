@@ -1844,8 +1844,7 @@ final class PartialCommitControllerTests: XCTestCase {
         XCTAssertEqual(windowAfter - windowBefore, 0, "identity rebase must not open candidateWindow")
     }
 
-    /// Path B: single-char「请」must keep remaining Path identity (wei/fan/dao → focus wo).
-    /// Phase 0 RED: destructive clear + pure-digit restore guard + missing slot-rebase model.
+    /// Path B: single-char「请」peels `qing`; Path cursor on `wei` with user soft-select.
     func testGate5BSingleCharacterPartialKeepsRemainingSelectedSegmentsAndFocusesWo() throws {
         #if DEBUG
         T9Gate5CompositionTrace.reset()
@@ -1883,6 +1882,7 @@ final class PartialCommitControllerTests: XCTestCase {
                 + "srcAfter=\(controller.state.t9PinyinPathState.segmentSourceDigits ?? "nil") "
                 + "conf=\(controller.state.t9PinyinPathState.confirmedSegmentValues) "
                 + "focus=\(String(describing: controller.state.t9PinyinPathState.focusedSegmentIndex)) "
+                + "selected=\(controller.state.t9PinyinPathState.selectedPath?.displayText ?? "nil") "
                 + "paths=\(controller.state.t9PinyinPathState.compactPaths.map(\.displayText)) "
                 + "pathEmpty=\(controller.state.t9PinyinPathState.compactPaths.isEmpty) "
                 + "windowDelta=\(windowAfter - windowBefore)\n",
@@ -1890,27 +1890,28 @@ final class PartialCommitControllerTests: XCTestCase {
         )
 
         XCTAssertEqual(controller.state.partialCommit?.confirmedText, "请")
-        // Remaining must not require pure-digit raw only — mixed remaining is the B failure shape.
-        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, mixedRemaining)
-
-        // Contract: 请 only consumes `qing`; wei/fan/dao stay as confirmed path segments;
-        // focus advances to wo on remaining source suffix.
+        // Ledger cursor resyncs remaining to Path form (may replace engine mixed raw).
         XCTAssertEqual(
             controller.state.t9PinyinPathState.confirmedSegmentValues,
             ["wei", "fan", "dao"],
-            "single-char 请 must not wipe wei/fan/dao path selections"
+            "single-char 请 must keep remaining user Path stack"
         )
         XCTAssertTrue(
-            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "wo" },
-            "Path B must focus wo… after 请; paths=\(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))"
+            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "wei" },
+            "Path B must focus wei slot after 请; paths=\(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))"
         )
-        XCTAssertFalse(
-            controller.state.t9PinyinPathState.compactPaths.isEmpty,
-            "Path bar must not go empty after single-char partial"
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.selectedPath?.displayText,
+            "wei",
+            "soft-select wei because user Path-selected it earlier"
         )
         XCTAssertFalse(
             controller.state.t9PinyinPathState.compactPaths.map(\.displayText).contains("qing"),
             "qing was consumed by 请 and must not remain as a path choice"
+        )
+        XCTAssertFalse(
+            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "wo" },
+            "must not skip to wo while wei/fan/dao stack remains"
         )
         XCTAssertTrue(client.markedText.hasPrefix("请"))
         XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
@@ -1920,9 +1921,8 @@ final class PartialCommitControllerTests: XCTestCase {
     /// Device-calibrated Path B morphology (iPhone 13 Pro, 2026-07-23):
     /// selecting single-character 请 leaves RIME raw **unchanged**.
     ///
-    /// Phase 1 **β-limited** (PD-…-PHASE1-BETA): without engine-native coverage,
-    /// this branch is **fail-closed** — must not invent qing slot consumption.
-    /// Full B contract remains product text but is **not** claimed deliverable here.
+    /// Residual-B Path-ledger cursor: peel `qing`; Path focuses `wei` with soft-select;
+    /// slots follow syllables. Forbidden: invent slots without user Path stack.
     func testGate5BDeviceUnchangedRawStillConsumesQingAndPreservesRemainingIdentity() throws {
         let qingWeiFanDaoRaw = "qing'wei'fan'dao'9698454"
         let engine = makeGate5Engine(
@@ -1952,31 +1952,35 @@ final class PartialCommitControllerTests: XCTestCase {
         )
         let windowAfter = engine.candidateWindowCallCount
 
-        XCTAssertEqual(
-            controller.state.lastRimeOutput?.rawInput,
-            qingWeiFanDaoRaw,
-            "precondition: device B keeps the anchored raw unchanged"
-        )
         XCTAssertEqual(controller.state.partialCommit?.confirmedText, "请")
-        // Fail-closed: must not invent a rebased source while raw is unchanged.
-        XCTAssertNotEqual(
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.confirmedSegmentValues,
+            ["wei", "fan", "dao"],
+            "Path-ledger peel must keep wei/fan/dao after single-char 请"
+        )
+        XCTAssertEqual(
             controller.state.t9PinyinPathState.segmentSourceDigits,
             String(sourceBefore.dropFirst(4)),
-            "β-limited must not guess qing consumption from unchanged raw"
+            "peel qing slots from Path ledger (7464), not invent via 汉字数-as-digit-length"
         )
         XCTAssertTrue(
-            controller.state.t9PinyinPathState.segmentSourceDigits == nil
-                || controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty,
-            "fail-closed: no invented remaining Path identity on unchanged raw"
+            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "wei" },
+            "cursor on wei slot; paths=\(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))"
         )
+        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "wei")
+        XCTAssertFalse(controller.state.t9PinyinPathState.compactPaths.isEmpty)
         XCTAssertTrue(client.markedText.hasPrefix("请"))
         XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
         XCTAssertEqual(windowAfter - windowBefore, 0)
+        XCTAssertNotEqual(
+            controller.state.lastRimeOutput?.rawInput,
+            qingWeiFanDaoRaw,
+            "resync must leave full qing'wei'fan'dao'… after Path-ledger peel"
+        )
     }
 
-    /// Path B root-cause contract: after Partial consumes only `qing`, unconsumed
-    /// `wei/fan/dao` must be slot-rebased onto the remaining source — not merely
-    /// rejected by a pure-digit liveRaw guard. Phase 0: RED on current production.
+    /// Path B root-cause: after「请」consumes only `qing`, remaining stack rebases and
+    /// Path cursor soft-selects user-chosen `wei` (not jump to wo).
     func testGate5BPartialConsumesQingRequiresSlotRebaseOfRemainingSegments() throws {
         let qingWeiFanDaoRaw = "qing'wei'fan'dao'9698454"
         let mixedRemaining = "wei'fan'dao'9698454"
@@ -2010,20 +2014,14 @@ final class PartialCommitControllerTests: XCTestCase {
             )
         )
 
-        // Shortened mixed remainder **is** an authorized β-limited branch — expect
-        // successful slot realign (no longer RED / slotRebaseMissing).
         #if DEBUG
         let lines = T9Gate5CompositionTrace.snapshotLines()
         XCTAssertTrue(
             lines.contains { $0.contains("event=partialCommit") && $0.contains("restore=true") },
-            "shortened remainder must restore identity; lines=\(lines.suffix(3))"
+            "path-ledger cursor must restore identity; lines=\(lines.suffix(3))"
         )
         #endif
 
-        // Contract after consuming qing only:
-        // - remaining source = drop first 4 slots
-        // - confirmed rebases to wei/fan/dao on the new ledger (not empty)
-        // - focus on wo
         let expectedRemainingSource = String(sourceBefore.dropFirst(4))
         XCTAssertEqual(
             controller.state.t9PinyinPathState.segmentSourceDigits,
@@ -2032,12 +2030,87 @@ final class PartialCommitControllerTests: XCTestCase {
         )
         XCTAssertEqual(
             controller.state.t9PinyinPathState.confirmedSegmentValues,
-            ["wei", "fan", "dao"],
-            "B root cause: no slot-rebase model for unconsumed wei/fan/dao after qing partial"
+            ["wei", "fan", "dao"]
+        )
+        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "wei")
+        XCTAssertTrue(
+            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "wei" }
+        )
+    }
+
+    /// Multi-CJK「请喂」: K=2, cursor on `fan` with user soft-select.
+    func testGate5BMultiCharacterQingWeiFocusesFanWithSoftSelect() throws {
+        let qingWeiFanDaoRaw = "qing'wei'fan'dao'9698454"
+        // Index 2 → 请喂
+        let engine = makeGate5Engine(
+            finalCandidates: ["请喂饭到我嘴里", "请喂饭到", "请喂", "请"],
+            selectionRemainders: [qingWeiFanDaoRaw: [2: "fan'dao'9698454"]]
+        )
+        let (controller, client) = makeController(engine: engine)
+        controller.usesT9InputSemantics = true
+        _ = gate5TypeFullDigits(into: controller)
+        _ = try gate5SelectPaths(["qing", "wei", "fan", "dao"], controller: controller)
+        let sourceBefore = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+
+        _ = controller.handle(
+            .insertCandidate(
+                "请喂",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 2)
+            )
+        )
+
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "请喂")
+        // 7 digits = qing(4)+wei(3)
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.segmentSourceDigits,
+            String(sourceBefore.dropFirst(7))
+        )
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.confirmedSegmentValues,
+            ["fan", "dao"]
         )
         XCTAssertTrue(
-            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "wo" }
+            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "fan" },
+            "paths=\(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))"
         )
+        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "fan")
+        XCTAssertTrue(client.markedText.hasPrefix("请喂"))
+        XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
+    }
+
+    /// Multi-CJK「请喂饭到」: K=4, user stack empty → wo paths, no soft-select.
+    func testGate5BMultiCharacterQingWeiFanDaoFocusesWoWithoutSoftSelect() throws {
+        let qingWeiFanDaoRaw = "qing'wei'fan'dao'9698454"
+        let engine = makeGate5Engine(
+            finalCandidates: ["请喂饭到我嘴里", "请喂饭到", "请"],
+            selectionRemainders: [qingWeiFanDaoRaw: [1: "9698454"]]
+        )
+        let (controller, client) = makeController(engine: engine)
+        controller.usesT9InputSemantics = true
+        _ = gate5TypeFullDigits(into: controller)
+        _ = try gate5SelectPaths(["qing", "wei", "fan", "dao"], controller: controller)
+
+        _ = controller.handle(
+            .insertCandidate(
+                "请喂饭到",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "请喂饭到")
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, [])
+        XCTAssertNil(
+            controller.state.t9PinyinPathState.selectedPath,
+            "wo was never Path-selected — must not forge soft-select"
+        )
+        XCTAssertTrue(
+            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "wo" },
+            "paths=\(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))"
+        )
+        XCTAssertTrue(client.markedText.hasPrefix("请喂饭到"))
+        XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
     }
 
     /// Snapshot after Path B partial must publish non-empty Path + candidates + marked text
@@ -2079,8 +2152,10 @@ final class PartialCommitControllerTests: XCTestCase {
             controller.state.lastRimeOutput?.candidates.map(\.text)
         )
         XCTAssertTrue(
-            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "wo" }
+            controller.state.t9PinyinPathState.compactPaths.contains { $0.displayText == "wei" },
+            "coherent B revision focuses wei slot; paths=\(snapshot.paths.map(\.displayText))"
         )
+        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "wei")
         XCTAssertTrue(client.markedText.hasPrefix("请"))
     }
 

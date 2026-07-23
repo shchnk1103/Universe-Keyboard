@@ -108,7 +108,8 @@ extension KeyboardController {
         )
         let restored = restoreSegmentedPathIdentityAfterNestedPartial(
             preservedSegmentSource: preservedSegmentSource,
-            preservedPathConfirmed: preservedPathConfirmed
+            preservedPathConfirmed: preservedPathConfirmed,
+            committedCandidate: committedText
         )
         #if DEBUG
         // Phase 0 only: structural identity after partial — no host document text.
@@ -124,15 +125,21 @@ extension KeyboardController {
         #endif
     }
 
-    /// Re-attach progressive path identity when nested partial leaves a **shortened**
-    /// remainder that uniquely encodes a suffix of the pre-selection source.
+    /// Re-attach progressive path identity after nested partial.
     ///
-    /// β-limited: unchanged-raw (remaining encodes full previous source) → fail-closed
-    /// (`false`); no slot guessing from candidate text/comment/sel/caret.
+    /// Residual-B Path-ledger **cursor** (product SoT): when the user already
+    /// Path-selected syllables, peel **K** leading stack syllables where
+    /// `K = min(CJK count, stack length)`. Digit slots follow those syllables.
+    /// Path Bar then focuses the next stack syllable with **soft-select** when the
+    /// user had selected it; unselected tail (`wo…`) has no forged selection.
+    ///
+    /// Prefer ledger cursor over engine shortened-remainder realign whenever a
+    /// non-empty user Path stack and K > 0 exist (same principle for 请 / 请喂 / …).
     @discardableResult
     func restoreSegmentedPathIdentityAfterNestedPartial(
         preservedSegmentSource: String?,
-        preservedPathConfirmed: [String]
+        preservedPathConfirmed: [String],
+        committedCandidate: String = ""
     ) -> Bool {
         guard usesT9InputSemantics,
               let preserved = preservedSegmentSource,
@@ -148,17 +155,167 @@ extension KeyboardController {
             return false
         }
 
-        guard let identity = T9CompositionIdentity.afterPartialCommit(
+        // Path-ledger cursor (residual-B): peel K user-stack syllables and soft-select
+        // the next user-chosen slot. Do **not** steal nested single-syllable partials
+        // that shorten a pure-digit tail under one confirmed anchor (e.g. qiu'53 → 球 → 5
+        // must keep `qiu` via afterPartialCommit). Trigger only when:
+        // - user Path stack has 2+ syllables (progressive phrase), or
+        // - engine raw is unchanged-raw (device B morphology).
+        let peelK = T9CompositionIdentity.pathLedgerPeelCount(
+            candidateText: committedCandidate,
+            remainingUserPathSyllables: preservedPathConfirmed.count
+        )
+        let usePathLedgerCursor = peelK > 0
+            && (preservedPathConfirmed.count >= 2
+                || isUnchangedRawEncoding(liveRaw, previousSource: preserved))
+        if usePathLedgerCursor,
+           let identity = T9CompositionIdentity.afterPathLedgerPeel(
+            previousSource: preserved,
+            previousConfirmed: preservedPathConfirmed,
+            peelSyllableCount: peelK
+           )
+        {
+            installPathLedgerCursorState(identity)
+            _ = resyncRimeAfterPathLedgerCursor(identity: identity)
+            refreshPartialCommitRemainingAfterPathLedgerPeel(identity: identity)
+            return true
+        }
+
+        // Engine shortened remainder — β unique suffix / nested pure-digit peel.
+        if let identity = T9CompositionIdentity.afterPartialCommit(
             previousSource: preserved,
             previousConfirmed: preservedPathConfirmed,
             remainingRaw: liveRaw
-        ) else {
-            // Fail-closed: leave path empty; do not invent qing/… slot consumption.
-            return false
+        ) {
+            installIdentityAsPathState(identity)
+            return true
         }
 
-        installIdentityAsPathState(identity)
+        return false
+    }
+
+    /// True when live raw still encodes the full pre-selection digit ledger.
+    private func isUnchangedRawEncoding(_ liveRaw: String, previousSource: String) -> Bool {
+        if liveRaw == previousSource { return true }
+        if liveRaw.allSatisfy(\.isNumber) { return liveRaw == previousSource }
+        guard let encoded = T9CompositionIdentity.digitEncoding(ofMixedRaw: liveRaw) else {
+            return false
+        }
+        return encoded == previousSource
+    }
+
+    /// Path-ledger cursor presentation: soft-select next user-stack syllable, or
+    /// unselected tail when the user Path stack is exhausted.
+    ///
+    /// `confirmedSegmentValues` keeps the full remaining user stack for the next
+    /// peel (ledger), while Path Bar options are rebuilt for the **focus slot only**.
+    /// Soft-select is restored from a syllable the user already Path-selected —
+    /// never auto-forged for unselected tails like `wo`.
+    func installPathLedgerCursorState(_ identity: T9CompositionIdentity) {
+        let stack = identity.confirmedSyllables
+        let source = identity.sourceDigits
+        var pathState = state.t9PinyinPathState
+        pathState.segmentSourceDigits = source
+        pathState.confirmedSegmentValues = stack
+        pathState.lockedLetterPrefix = nil
+        pathState.retainedChoiceSourceRawInput = nil
+        pathState.discoveryNextIndex = 0
+        pathState.discoveryMayHaveMore = false
+
+        if let focusSyllable = stack.first {
+            let n = T9PinyinPathExtractor.asciiLetterCount(in: focusSyllable)
+            guard n > 0, n <= source.count else {
+                installIdentityAsPathState(identity)
+                return
+            }
+            let focusDigits = String(source.prefix(n))
+            let hints = T9PinyinLocalPathCatalog.commentSyllableHints(
+                from: state.lastRimeOutput?.candidates ?? [],
+                confirmedSyllables: []
+            )
+            let paths = T9PinyinLocalPathCatalog.pathsForFocus(
+                focusDigits: focusDigits,
+                lockedLetterPrefix: nil,
+                commentSyllableHints: hints,
+                confirmedSyllables: [],
+                sourceDigits: source,
+                compositionRevision: state.compositionRevision
+            )
+            pathState.focusedSegmentIndex = 0
+            pathState.compactPaths = paths
+            pathState.issuedReplacementKeys = Set(paths.map(\.replacementRawInput))
+            pathState.issuedPathIDs = Set(paths.map(\.id))
+            // Restore user soft-select only for a path they previously chose.
+            let match = paths.first {
+                $0.displayText.lowercased() == focusSyllable.lowercased()
+            }
+            pathState.selectedPath = match
+            pathState.provisionalPathID = match == nil ? paths.first?.id : nil
+            state.t9PinyinPathState = pathState
+            return
+        }
+
+        // User Path stack empty → unselected remainder (e.g. wo…); no soft-select.
+        installIdentityAsPathState(
+            T9CompositionIdentity(
+                sourceDigits: source,
+                confirmedSyllables: [],
+                focusedSegmentIndex: 0
+            )
+        )
+    }
+
+    /// Resync RIME to remaining Path-ledger identity without wiping soft-select.
+    @discardableResult
+    private func resyncRimeAfterPathLedgerCursor(identity: T9CompositionIdentity) -> Bool {
+        guard let engine = rimeEngine else { return false }
+        let raw = identity.replacementRawInput
+        guard !raw.isEmpty else { return false }
+        let output = engine.replaceInput(raw)
+        state.lastRimeOutput = output
+        state.currentComposition = raw
+        // Re-install cursor so Path Bar focus/soft-select survives replaceInput.
+        installPathLedgerCursorState(identity)
         return true
+    }
+
+    /// After Path-ledger peel, keep PartialCommit remaining aligned with Core identity.
+    /// Host must never see internal T9 digits; prefer live T9 projection, else letters.
+    private func refreshPartialCommitRemainingAfterPathLedgerPeel(
+        identity: T9CompositionIdentity
+    ) {
+        guard let partial = state.partialCommit else { return }
+        let remainingRaw = state.lastRimeOutput?.rawInput ?? identity.replacementRawInput
+        let hostTail: String
+        if let output = state.lastRimeOutput {
+            let projected = t9VisiblePreedit(for: output)
+            if projected.isEmpty {
+                hostTail = identity.confirmedSyllables.joined()
+            } else if projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit) {
+                let letters = String(
+                    projected.unicodeScalars.filter(T9PinyinPathExtractor.isASCIILetter)
+                )
+                hostTail = letters.isEmpty
+                    ? identity.confirmedSyllables.joined()
+                    : letters
+            } else {
+                hostTail = projected
+            }
+        } else {
+            hostTail = identity.confirmedSyllables.joined()
+        }
+        state.partialCommit = PartialCommitState(
+            confirmedText: partial.confirmedText,
+            remainingRawInput: remainingRaw,
+            remainingPreeditText: hostTail,
+            displayText: partial.confirmedText + hostTail,
+            checkpoint: partial.checkpoint,
+            source: partial.source
+        )
+        updateInlinePreedit(
+            partial.confirmedText + hostTail,
+            source: .compositionProjection
+        )
     }
 
     /// Install pure identity into path state and rebuild catalog focus Paths.

@@ -2,13 +2,20 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-23 — Residual-B Path-ledger cursor（单字/多字统一）
+
+- Gate 5 residual-B：**Path 游标**。用户已 Path 点选前缀后，候选确认推进 `K=min(CJK字数, 剩余用户Path栈)` 站；数字消费跟音节走（非 `dropFirst(K)`）。
+- 下一站若用户曾点选 → Path 展示该槽选项并 **soft-select**（如「请」→`wei` 选中；「请喂」→`fan` 选中）。栈耗尽（「请喂饭到」）→ `wo…` **无**伪造选中。
+- 触发：多音节用户栈 **或** unchanged-raw；保留 `qiu→球` 等单音节 pure-digit nested partial。Host 无内部数字。
+- 自动化：KeyboardCore **712 / 1 skip / 0 fail**。**Human residual-B 真机 Pass**（2026-07-23）。PD：`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL` Accepted。
+
 ## 2026-07-23 — 完整 Path 目录、原子呈现与 Gate 5 residual（KEYBOARD-LAYOUT-9KEY-PINYIN-004）
 
 - 九键 Path 改为本地完整音节目录驱动（compile-time catalog + progressive focus），Path Bar 固定高度横向列表展示当前焦点全部可选项，不再依赖扩展候选窗「刷完才有 Path」。
 - 原子 composition revision：候选与 Path 同快照发布；前缀只锁定拼写、完整音节可推进；Partial Commit / Delete 保留 Path 身份时禁止把内部数字泄漏到 host marked text。
-- Gate 5 β-limited：`T9CompositionIdentity` 处理 shortened remainder 与 typo Append/Delete；unchanged-raw B **fail-closed**（不猜槽）。
+- Gate 5 β-limited：`T9CompositionIdentity` 处理 shortened remainder 与 typo Append/Delete；engine-only unchanged-raw 仍 fail-closed（不猜槽）。
 - Human residual H5：多位 progressive 以 Core `sourceDigits` 为 SoT（消除幽灵 JKL）；Path 选择后重投影剩余拼音、不丢尾；短串 `da→JKL→删→MNO` Path 与 `dao` 候选对齐。
-- 自动化：Gate5 定向矩阵含 Human residual 回归；完整 Human Product Gate / full B 契约仍不宣称通过。权威见 Assignment 004 与 PD post-β residual。
+- 自动化：Gate5 定向矩阵含 Human residual 回归；完整 Human Product Gate 仍不宣称通过。权威见 Assignment 004 与 PD post-β residual。
 
 ## 2026-07-22 — T9 Path 原子快照与固定前台成本（KEYBOARD-LAYOUT-9KEY-PINYIN-003）
 
