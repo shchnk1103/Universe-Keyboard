@@ -1240,3 +1240,12 @@ swift test --filter 'Gate5|HumanStandalone|HumanQingweifanda|UnconfirmedT9Delete
 | Full Human Gate / B / commit | **Not authorized** |
 
 ---
+### 27.7 Product disposition (append)
+
+**PD:** [`PD-…-GATE5-POST-BETA-RESIDUAL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md)
+
+| Decision | Value |
+|---|---|
+| H5 residual | **Product-accepted** (narrow residual Pass) |
+| Local commit + push | **Authorized** |
+| Full 004 Human Gate / auto-merge | **Not claimed / not authorized** |
