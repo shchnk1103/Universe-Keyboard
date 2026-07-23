@@ -1409,4 +1409,38 @@ CI Swift 6 Quality build-and-test: SUCCESS (PR #28)
 |---|---|
 | Doc wording A1 | **Closed** |
 | Code change required | **No** (behavior already correct) |
-| Residual still open | provisional-only mixed-raw C `XCTSkip`; formal 004 Assignment close |
+| Residual still open (pre-§32) | provisional-only mixed-raw C `XCTSkip`; formal 004 Assignment close |
+
+---
+
+## 32. Provisional-only mixed-raw C continue (XCTSkip closed)
+
+**Date:** 2026-07-23 Asia/Shanghai  
+**Role:** Executor (Grok 4.5) under KOS 2.0  
+**Authority:** Human Product Owner — continue residual debt after residual-B / A1 closeout.
+
+### 32.1 Problem
+
+Device C morphology (no Path selections): progressive digits → typo JKL → Delete leaves refined mixed raw (`qing wei fan fa`); continue append could leave ledger/host stuck with ghost `5` / fan-fan. β-limited left `testGate5CDeviceMixedRawWithoutSelectionsRebasesSourceBeforeContinue` as `XCTSkip`.
+
+### 32.2 Fix
+
+| Piece | Behavior |
+|---|---|
+| Core ledger | Unchanged: Delete peels `sourceDigits`; continue appends to typo-free pure-digit SoT |
+| Resync host | After provisional-only replaceInput(pure digits) when engine raw drifted, refresh host via **progressive catalog letters without comment hints** so mixed-raw fan-fan morphology cannot stick |
+| Test | Un-skip + implement FakeRime scripted contract (ledger + no fan-fan + no host digits) |
+
+### 32.3 Verification
+
+```text
+swift test  # Packages/KeyboardCore
+→ 712 tests, 0 skip, 0 fail
+```
+
+### 32.4 Disposition
+
+| Item | Status |
+|---|---|
+| provisional-only mixed-raw C `XCTSkip` | **Closed** |
+| Residual still open | formal 004 Assignment `Closed` / full Human Gate (Product) |

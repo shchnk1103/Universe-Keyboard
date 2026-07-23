@@ -2,6 +2,12 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-23 — Gate5 provisional-only mixed-raw C continue
+
+- 无 Path 点选时：误触 JKL → Delete 若 RIME 留下 mixed raw，Core 仍以 `sourceDigits` 为账本 peel/续输，继续输入不会卡在幽灵 `…5`。
+- mixed-raw 漂移后 resync 纯数字时，host 用本地 progressive 字母投影（忽略 comment 重切分），避免 `fan fan` 形态粘在 marked text。
+- 取消 `XCTSkip`；KeyboardCore **712 / 0 skip / 0 fail**。
+
 ## 2026-07-23 — Residual-B Path-ledger cursor（单字/多字统一）
 
 - Gate 5 residual-B：**Path 游标**。用户已 Path 点选前缀后，候选确认推进 `K=min(CJK字数, 剩余用户Path栈)` 站；数字消费跟音节走（非 `dropFirst(K)`）。

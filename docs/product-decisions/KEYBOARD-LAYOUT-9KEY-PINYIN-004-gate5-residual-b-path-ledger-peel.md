@@ -48,7 +48,7 @@ After the user Path-selects a prefix stack (e.g. `qing → wei → fan → dao`)
 - Not full 004 Assignment `Closed` solely from residual-B Pass  
 - Not multi-syllable invent without user Path stack  
 - Not auto-select on unselected remainder  
-- provisional-only mixed-raw C `XCTSkip` still parked  
+- provisional-only mixed-raw C continue fixed separately (remediation §32; no longer parked SKIP) 
 
 ## Human residual-B retest — **Pass**
 

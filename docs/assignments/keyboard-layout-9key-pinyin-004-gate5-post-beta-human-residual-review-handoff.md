@@ -142,4 +142,6 @@ After independent review file is written:
 
 Residual-B Path-ledger **cursor** was Product-confirmed, implemented, Human device **Pass**, and landed via PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) (`f84a00d`). See [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md) and remediation §28–§30.
 
-**Doc A1 closed** (handoff §3.4 + remediation §31): dual full-cover policy documented — short unconfirmed = first full-cover; confirmed+remaining = unique full-cover. Remaining parked debt: provisional-only C `XCTSkip`.
+**Doc A1 closed** (handoff §3.4 + remediation §31): dual full-cover policy documented — short unconfirmed = first full-cover; confirmed+remaining = unique full-cover.
+
+**Provisional-only mixed-raw C closed** (remediation §32): XCTSkip removed; ledger peel/append + host progressive resync after mixed-raw drift.

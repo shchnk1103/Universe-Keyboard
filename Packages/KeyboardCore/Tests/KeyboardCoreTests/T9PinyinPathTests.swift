@@ -1977,21 +1977,75 @@ final class T9PinyinPathTests: XCTestCase {
         XCTAssertEqual(windowAfter - windowBefore, 0)
     }
 
-    /// Device-calibrated Gate 5 C red test (iPhone 13 Pro, iOS 27.0, 2026-07-23).
+    /// Device-calibrated Gate 5 C: provisional-only (no Path selections) mixed-raw
+    /// continue after typo JKL + Delete (iPhone 13 Pro morphology, 2026-07-23).
     ///
-    /// The real bridge does not return the pure-digit prefix after deleting the
-    /// mistouched `5`. It returns a refined mixed raw (`qing wei fan fa`). On the
-    /// device, the following append exposes the stale source ending in `5`; this
-    /// FakeRime boundary deterministically exposes the same contract violation as
-    /// a source that fails to advance past the rebased prefix. The exact device
-    /// trace remains the authority for the Phase 1 reducer design.
-    /// Provisional-only (no Path selections) mixed-raw continue remains a residual
-    /// under β-limited: full progressive focus without confirmed syllables is not
-    /// in the selected-segment identity model. Covered by selected-segment C tests.
+    /// Engine Delete leaves refined mixed raw (`qing wei fan fa`); Core must still
+    /// peel the typo from `sourceDigits` and, on continue, append to the typo-free
+    /// pure-digit ledger (not stale `…5`). Host must not show fan-fan; no invent-slot.
     func testGate5CDeviceMixedRawWithoutSelectionsRebasesSourceBeforeContinue() throws {
-        throw XCTSkip(
-            "β-limited Phase 1 prioritizes selected-segment C identity; provisional-only mixed-raw continue residual"
+        let engine = makeGate5CEngine()
+        let client = FakeTextInputClient()
+        let controller = makeController(engine: engine)
+        controller.textClient = client
+
+        // No Path selections: progressive pure-digit ledger only.
+        _ = gate5CTypeDigits(gate5CPrefixDigits, into: controller)
+        XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+        let sourceBeforeTypo = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        XCTAssertEqual(sourceBeforeTypo, gate5CPrefixDigits)
+
+        _ = controller.handle(.insertKey("5"))
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.segmentSourceDigits,
+            gate5CPrefixDigits + "5"
         )
+
+        // Device morphology: Delete leaves refined mixed raw, not pure-digit prefix.
+        engine.deleteBackwardScript = [
+            gate5CScriptedOutput(
+                raw: "qing wei fan fa",
+                preedit: "qing wei fan fa",
+                candidates: ["轻微饭饭"],
+                comment: "qing wei fan fan"
+            )
+        ]
+        _ = controller.handle(.deleteBackward)
+
+        // Core ledger must peel the typo digit even when RIME stays mixed.
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.segmentSourceDigits,
+            gate5CPrefixDigits,
+            "provisional-only Delete must peel sourceDigits; conf empty"
+        )
+        XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+
+        engine.processKeyScript = [
+            gate5CScriptedOutput(
+                raw: "qing wei fan fa6",
+                preedit: "qing wei fan fan",
+                candidates: ["轻微饭饭"],
+                comment: "qing wei fan fan"
+            )
+        ]
+        let processBefore = engine.processKeyCallCount
+        let windowBefore = engine.candidateWindowCallCount
+        _ = controller.handle(.insertKey("6"))
+
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.segmentSourceDigits,
+            gate5CPrefixDigits + "6",
+            "continue must append to typo-free provisional ledger, not stale …5"
+        )
+        XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+        XCTAssertFalse(
+            client.markedText.contains("fan fan")
+                || client.markedText.replacingOccurrences(of: " ", with: "").contains("fanfan"),
+            "host must not expose fan-fan; marked=\(client.markedText)"
+        )
+        XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
+        XCTAssertEqual(engine.processKeyCallCount - processBefore, 1)
+        XCTAssertEqual(engine.candidateWindowCallCount - windowBefore, 0)
     }
 
     /// Semantic companion to the raw device trace. Unlike the no-selection device
