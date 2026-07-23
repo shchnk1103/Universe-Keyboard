@@ -77,5 +77,5 @@
 
 | When | Need |
 |---|---|
-| **After residual-B land** | Optional: provisional-only C SKIP decision / formal 004 `Closed` |
-| **Full Gate close** | Separate decision if/when remaining exit matrix is product-closed |
+| **After residual landings** | **Done** — Product Lead closed Assignment via [`PD-…-004-ASSIGNMENT-CLOSE`](KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md) `2026-07-23` |
+| **Override** | Same-day veto of close language if Product Owner rejects |

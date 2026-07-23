@@ -1443,4 +1443,32 @@ swift test  # Packages/KeyboardCore
 | Item | Status |
 |---|---|
 | provisional-only mixed-raw C `XCTSkip` | **Closed** |
-| Residual still open | formal 004 Assignment `Closed` / full Human Gate (Product) |
+| Residual still open (pre-§33) | formal 004 Assignment `Closed` / full Human Gate (Product) |
+
+---
+
+## 33. Product Lead — Assignment Closed
+
+**Date:** 2026-07-23 Asia/Shanghai  
+**Role:** Product Lead  
+**Authority:** Human Product Owner standing KOS 2.0 authorization — complete formal close  
+**PD:** [`PD-…-004-ASSIGNMENT-CLOSE`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md)
+
+### 33.1 Residual inventory at close
+
+| Debt | Status |
+|---|---|
+| residual-B Path cursor | **Closed** (Human Pass + PR #28) |
+| Doc wording A1 | **Closed** (§31) |
+| Provisional-only mixed-raw C | **Closed** (§32 + PR #29) |
+| Formal Assignment close | **Closed** (this §) |
+
+### 33.2 Product Gate language
+
+Composite residual-track Human Pass: **H5-A/B/C** + **residual-B** accepted. Assignment lifecycle → **`Accepted / Closed`**.
+
+### 33.3 Non-claims
+
+- Not App Store ship  
+- Not engine-native `sel_*` coverage  
+- Not rewrite of first-attempt Gate 5 Fail history

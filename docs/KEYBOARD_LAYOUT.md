@@ -1,6 +1,6 @@
 # Keyboard Layout
 
-Lifecycle status: Runtime contract accepted (ADR 0018); Chinese nine-key chrome accepted under KEYBOARD-LAYOUT-9KEY-UI-001; original precise pinyin selection closed under KEYBOARD-LAYOUT-9KEY-PINYIN-001; deterministic / segmented Path under ADR 0021–0022; complete local Path catalog + atomic presentation under KEYBOARD-LAYOUT-9KEY-PINYIN-004 / ADR 0023 (PR #27); residual-B Path-ledger cursor Human Pass + PR #28
+Lifecycle status: Runtime contract accepted (ADR 0018); Chinese nine-key chrome accepted under KEYBOARD-LAYOUT-9KEY-UI-001; original precise pinyin selection closed under KEYBOARD-LAYOUT-9KEY-PINYIN-001; deterministic / segmented Path under ADR 0021–0022; complete local Path catalog + Gate 5 residual under KEYBOARD-LAYOUT-9KEY-PINYIN-004 / ADR 0023 (**Accepted / Closed** · PR #27/#28/#29)
 Source of truth for: 26-key / Chinese nine-key layout selection, effective RIME scheme resolution, versioned T9 readiness, nine-key Extension chrome, and **precise pinyin path bar/cycling** (including Partial×Path residual-B)
 Related ADR: [`0018`](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md), [`0020`](architecture/decisions/0020-t9-precise-pinyin-path-selection.md), [`0021`](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md), [`0022`](architecture/decisions/0022-t9-atomic-presentation-and-bounded-path-discovery.md), [`0023`](architecture/decisions/0023-t9-complete-local-path-catalog-and-atomic-presentation.md)
 Related plan: [`plans/keyboard-layout-9key-implementation-plan.md`](plans/keyboard-layout-9key-implementation-plan.md) (Archived); precise pinyin [`plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md`](plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md); 004 [`plans/keyboard-layout-9key-pinyin-004-complete-path-catalog-and-atomic-sync-plan.md`](plans/keyboard-layout-9key-pinyin-004-complete-path-catalog-and-atomic-sync-plan.md)
@@ -10,7 +10,7 @@ Related Assignments:
 - Chrome UI: [`assignments/keyboard-layout-9key-ui-001.md`](assignments/keyboard-layout-9key-ui-001.md) (`Closed`)
 - Original precise pinyin selection: [`assignments/keyboard-layout-9key-pinyin-001.md`](assignments/keyboard-layout-9key-pinyin-001.md) (`Accepted / Closed`)
 - Deterministic choices + cycling: [`assignments/keyboard-layout-9key-pinyin-002.md`](assignments/keyboard-layout-9key-pinyin-002.md) (`Active`) — Product Decision [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-002`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md)
-- Complete Path catalog + Gate 5 residual-B: [`assignments/keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md) (`Active` — PR #27/#28 landed; residual-B Human Pass)
+- Complete Path catalog + Gate 5 residual: [`assignments/keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md) (`Accepted / Closed` — PR #27/#28/#29; close PD)
 
 ## Product Model
 

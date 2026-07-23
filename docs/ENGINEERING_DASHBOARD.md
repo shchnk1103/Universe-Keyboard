@@ -275,12 +275,11 @@ Update this Dashboard only after the responsible owner confirms a state, depende
 
 ## KEYBOARD-LAYOUT-9KEY-PINYIN-004 — Gate 5 snapshot
 
-- **Authority:** Assignment [`keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md); PD-004; ADR 0023; Gate5 path / β / post-β residual / residual-B PDs.
-- **Landed:** PR [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27) **MERGED** → `main` @ `5dfe2e2` (includes `2278125` CI `-Werror` fix).
-- **Human H5 residual:** H5-A/B/C **Pass** (device); Product-accepted via [`PD-…-GATE5-POST-BETA-RESIDUAL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md).
-- **Residual-B:** Path-ledger **cursor** — Human device **Pass** `2026-07-23`. PD Accepted. Evidence §29–§30. PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) **MERGED** → `main` `@f84a00d`; feature branch cleaned.
-- **Independent reviews:** β-limited + post-β Accept/Pass-with-findings.
-- **Doc A1 (first vs unique full-cover):** **Closed** — dual resync policy documented (remediation §31).
-- **Provisional-only mixed-raw C:** **Closed** — PR [#29](https://github.com/shchnk1103/Universe-Keyboard/pull/29) MERGED `285f2b0`; no XCTSkip; KeyboardCore **712 / 0 skip / 0 fail** (remediation §32).
-- **Next (KOS):** optional formal 004 Assignment close / full Human Gate re-statement.
-- **Not claimed:** full 004 Assignment `Closed` solely from residual landings; App Store ship.
+- **Lifecycle:** **`Accepted / Closed`** (`2026-07-23`) — [`PD-…-004-ASSIGNMENT-CLOSE`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md)
+- **Authority:** Assignment [`keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md); PD-004; ADR 0023; Gate5 residual PDs.
+- **Landed:** PR [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27) catalog/H5 · [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) residual-B · [#29](https://github.com/shchnk1103/Universe-Keyboard/pull/29) provisional-C.
+- **Human residual track:** H5-A/B/C **Pass** + residual-B **Pass** (device) — composite Product Gate for Gate 5 residual (close PD).
+- **Independent reviews:** β-limited + post-β Accept/Pass-with-findings (historical).
+- **Functional residual:** **None** (A1 §31; provisional-C §32; Assignment close §33).
+- **Next (KOS):** None for 004. Release / App Store → separate Assignment.
+- **Not claimed:** App Store ship; engine-native `sel_*` coverage; rewrite of first-attempt Gate 5 Fail history.

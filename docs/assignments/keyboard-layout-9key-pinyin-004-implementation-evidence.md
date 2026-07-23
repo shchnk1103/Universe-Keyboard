@@ -159,6 +159,7 @@ From `T9PinyinCatalogControllerTests`:
 | PR #27 | MERGED — catalog + H5 residual |
 | H5 residual Human | Pass (A/B/C) |
 | Residual-B Path-ledger cursor | Human device **Pass**; PD Accepted; PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) **MERGED** `f84a00d` |
-| Evidence | remediation §21–§31 (A1 dual full-cover closeout in §31) |
-| Still open | provisional-only C `XCTSkip`; formal 004 Assignment `Closed` optional |
-| Full 004 Product Gate | **Not** claimed solely by residual-B |
+| Provisional-only C | PR [#29](https://github.com/shchnk1103/Universe-Keyboard/pull/29) **MERGED**; no XCTSkip |
+| Assignment close | **Accepted / Closed** — [`PD-…-004-ASSIGNMENT-CLOSE`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md) |
+| Evidence | remediation §21–§33 |
+| Full 004 residual-track Product Gate | **Accepted** as composite H5 + residual-B (close PD); App Store **not** claimed |

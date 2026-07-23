@@ -2,6 +2,12 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-23 — KEYBOARD-LAYOUT-9KEY-PINYIN-004 Assignment Closed
+
+- Product Lead 正式关闭 Assignment 004（`PD-…-004-ASSIGNMENT-CLOSE`）：目录/原子 Path、H5 residual、residual-B 真机 Pass、A1 文案、provisional-only C 均已交付。
+- 复合 Human residual-track Pass：H5-A/B/C + residual-B。功能 residual 清空。
+- **不宣称** App Store 发版、engine-native `sel_*` coverage，或抹除首次 Gate 5 Fail 历史。
+
 ## 2026-07-23 — Gate5 provisional-only mixed-raw C continue
 
 - 无 Path 点选时：误触 JKL → Delete 若 RIME 留下 mixed raw，Core 仍以 `sourceDigits` 为账本 peel/续输，继续输入不会卡在幽灵 `…5`。

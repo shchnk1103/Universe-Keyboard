@@ -1,14 +1,14 @@
 # Assignment: KEYBOARD-LAYOUT-9KEY-PINYIN-004 — 完整 Path 目录与原子同步
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — PR #27/#28 landed; residual-B Human Pass; provisional-only C continue fixed (no XCTSkip); formal full Gate / Assignment Closed optional`  
+**Lifecycle status:** `Accepted / Closed` — `2026-07-23 Asia/Shanghai` ([`PD-…-004-ASSIGNMENT-CLOSE`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md))  
 **Repository change types:** `Contract`, `State`, `Implementation`, `Evidence`, `Documentation`
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-004`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-authorization.md), `2026-07-22 Asia/Shanghai`
-- **Product Approver:** Human Product Owner under KOS 2.0
+- **Decision Source / Date:** [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-004`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-authorization.md), `2026-07-22 Asia/Shanghai`; close [`PD-…-004-ASSIGNMENT-CLOSE`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md), `2026-07-23 Asia/Shanghai`
+- **Product Approver:** Human Product Owner under KOS 2.0 (Product Lead close under standing session authorization)
 - **Plan:** [`plans/keyboard-layout-9key-pinyin-004-complete-path-catalog-and-atomic-sync-plan.md`](../plans/keyboard-layout-9key-pinyin-004-complete-path-catalog-and-atomic-sync-plan.md)
 - **Architecture:** [`ADR 0023`](../architecture/decisions/0023-t9-complete-local-path-catalog-and-atomic-presentation.md)
 
@@ -43,9 +43,9 @@
 - **Domain Owner:** 🧠 Input Intelligence Maintainer
 - **Executor:** Grok 4.5（Gate 5 **Phase 1 β-limited Ready**；Product Lead `2026-07-23` 指派）
 - **Environment Executor:** Grok 4.5 — 定向自动化；真机 Human 复测仅在独立复审后由 Product Lead 请求
-- **Human Dependency:** Human Product Owner — iPhone 13 Pro · 备忘录 · 分项 A/B/C（B 预期仍可能 Fail；**勿**代填）
-- **Architecture Reviewer:** independent Architecture & Knowledge Steward (separate from implementation claims)
-- **Quality Reviewer:** independent Quality Reviewer not implementing the change
+- **Human Dependency:** Human Product Owner — iPhone 13 Pro · 备忘录 · H5 residual + residual-B device Pass（已完成；**勿**代填历史 Fail）
+- **Architecture Reviewer:** independent Architecture & Knowledge Steward (β + post-β records retained)
+- **Quality Reviewer:** independent Quality Reviewer (β + post-β records retained)
 - **Supporting domains:** 🔧 RIME Platform Maintainer, ⌨️ Keyboard Experience Maintainer
 
 ## Gates
@@ -89,22 +89,27 @@ Stop and return to Product Lead when:
 
 ## Handoff
 
-- **Current phase:** H5 residual + **residual-B Human Pass** landed via PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) → `main` merge `f84a00d`（includes `e3d23cd` cursor + `ed40745` Pass docs）。
-- **Handoff target now:** optional Product decision on formal 004 `Closed` / full Human Gate re-statement。
-- **PR (landed):** https://github.com/shchnk1103/Universe-Keyboard/pull/27 — **MERGED**  
-- **PR (residual-B):** https://github.com/shchnk1103/Universe-Keyboard/pull/28 — **MERGED** `2026-07-23T13:29:03Z`；feature branch deleted after reachability check
+- **Current phase:** **`Accepted / Closed`**（Product Lead · [`PD-…-004-ASSIGNMENT-CLOSE`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md)）。
+- **Handoff target now:** None for this Assignment. Optional release umbrella / future regressions → **new** Assignment only.
+- **Close authority:** Product Lead under Human Product Owner standing KOS 2.0 authorization (`2026-07-23 Asia/Shanghai`)
+- **PR (landed):**
+  - [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27) — catalog + H5 residual **MERGED**
+  - [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) — residual-B Path cursor **MERGED** `f84a00d`
+  - [#29](https://github.com/shchnk1103/Universe-Keyboard/pull/29) — provisional-only C **MERGED** `285f2b0`
+- **Human Product Gate (composite residual track):** H5-A/B/C **Pass** + residual-B **Pass** — Product-accepted; see close PD.
 - **Residual-B authority:** [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md) — **Accepted (Human device Pass)**
 - **β-limited review (pre-hotfix):** [`…-phase1-beta-independent-review.md`](keyboard-layout-9key-pinyin-004-gate5-phase1-beta-independent-review.md)
 - **Post-β freeze handoff:** [`…-gate5-post-beta-human-residual-review-handoff.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-review-handoff.md)
 - **Post-β independent review:** [`…-gate5-post-beta-human-residual-independent-review.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-independent-review.md)
 - **Product disposition (H5):** [`PD-…-GATE5-POST-BETA-RESIDUAL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md)
-- **Evidence (append-only):** [`…-gate5-remediation-evidence.md`](keyboard-layout-9key-pinyin-004-gate5-remediation-evidence.md) §21–§32
+- **Product close:** [`PD-…-004-ASSIGNMENT-CLOSE`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md)
+- **Evidence (append-only):** [`…-gate5-remediation-evidence.md`](keyboard-layout-9key-pinyin-004-gate5-remediation-evidence.md) §21–§33
 - **Phase 0.5 / 0.6 reviews:** [`phase05`](keyboard-layout-9key-pinyin-004-gate5-phase05-independent-review.md) · [`phase06`](keyboard-layout-9key-pinyin-004-gate5-phase06-independent-review.md)
-- **Product decisions:** [`PD-…-GATE5-PATH`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-path-decision.md) · [`PD-…-GATE5-PHASE1-BETA`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-phase1-beta-authorization.md) · [`PD-…-GATE5-POST-BETA-RESIDUAL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md) · [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)
-- **Residual debt (open):** formal 004 Assignment `Closed` / full Human Gate（Product 另决）
-- **Residual debt (closed):** residual-B Path cursor；doc wording A1（§31）；**provisional-only mixed-raw C continue**（§32 · PR [#29](https://github.com/shchnk1103/Universe-Keyboard/pull/29) MERGED `285f2b0` · no XCTSkip）
-- **Explicit non-claims:** **不**仅因 residual-B 宣称完整 004 Human Product Gate / Assignment `Closed`
-- **Revalidation Trigger:** catalog source change; selection semantics change; host preedit boundary change; schema/vendor change; Product path decision change
+- **Product decisions:** [`PD-…-GATE5-PATH`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-path-decision.md) · [`PD-…-GATE5-PHASE1-BETA`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-phase1-beta-authorization.md) · [`PD-…-GATE5-POST-BETA-RESIDUAL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md) · [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md) · [`PD-…-004-ASSIGNMENT-CLOSE`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md)
+- **Residual debt (open):** **None** for this Assignment
+- **Residual debt (closed):** residual-B；A1；provisional-only C；formal Assignment close
+- **Explicit non-claims:** 不宣称 App Store 发版；不宣称 engine-native `sel_*` coverage；不抹除首次 Human Gate Fail 历史
+- **Revalidation Trigger:** catalog source change; selection semantics change; host preedit boundary change; schema/vendor change; Product path decision change → **new Assignment**
 
 ### Phase 0.5 Authorization (Product Lead) — **Closed**
 

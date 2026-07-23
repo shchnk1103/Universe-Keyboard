@@ -114,10 +114,12 @@ Decisions: ADR 0012, ADR 0013, ADR 0014 and ADR 0019. Current sources: `RIME_SYN
 
 物理设备复现证明 ADR 0021 的逐拼写 live probe 会把一个 Path 点击放大成大量同步 session 操作，并且候选选择后的旧 segmented snapshot 可覆盖新余段。ADR 0022 接受单次固定 48 项只读窗口、Core composition revision 和来源安全的 host preedit 边界；候选 transition 先失效旧焦点，只对真正缩短的嵌套余段执行一次受限恢复。Stage A/定向自动化通过，iPhone 13 Pro Product Gate 仍独立等待人工证据。
 
-## 2026-07-23 — T9 complete Path catalog + residual-B Path cursor
+## 2026-07-23 — T9 complete Path catalog + residual-B Path cursor + 004 close
 
 `KEYBOARD-LAYOUT-9KEY-PINYIN-004` / ADR 0023 landed via PR #27: compile-time local Path catalog, atomic composition revision, fixed-height Path Bar, Gate 5 β-limited identity, and Human H5 residual Pass.
 
 Residual-B Path-ledger **cursor** (PD residual-B) landed via PR #28 after Human device Pass: after user Path-select stack + candidate partial, peel `K=min(CJK, stack)` syllables (slots follow syllables); soft-select next user-chosen Path syllable; unselected tails have no forged selection. Nested single-syllable pure-digit partials (e.g. `qiu→球`) keep shortened-remainder behavior.
 
-Current sources: Assignment 004, ADR 0023, `partial-commit.md` §T9 Path residual-B, remediation evidence §21–§30.
+Provisional-only mixed-raw C continue closed via PR #29. Product Lead closed Assignment 004 (`PD-…-004-ASSIGNMENT-CLOSE`) the same day.
+
+Current sources: Assignment 004 (Closed), ADR 0023, close PD, `partial-commit.md` §T9 Path residual-B, remediation evidence §21–§33.

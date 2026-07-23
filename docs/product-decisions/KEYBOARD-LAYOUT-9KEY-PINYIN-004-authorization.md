@@ -1,12 +1,13 @@
 # Product Decision: KEYBOARD-LAYOUT-9KEY-PINYIN-004 Authorization
 
 **Decision ID:** `PD-KEYBOARD-LAYOUT-9KEY-PINYIN-004`  
-**Lifecycle status:** `Recorded` — implementation landings: PR #27 (catalog + H5) + PR #28 (residual-B cursor, Human Pass); Assignment remains Active until formal close  
+**Lifecycle status:** `Recorded` — Assignment **Accepted / Closed** `2026-07-23` via [`PD-…-004-ASSIGNMENT-CLOSE`](KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md); landings PR #27 / #28 / #29  
 **Date / timezone:** `2026-07-22 Asia/Shanghai`  
 **Assignment:** [`KEYBOARD-LAYOUT-9KEY-PINYIN-004`](../assignments/keyboard-layout-9key-pinyin-004.md)  
 **Predecessor:** [`KEYBOARD-LAYOUT-9KEY-PINYIN-003`](../assignments/keyboard-layout-9key-pinyin-003.md)  
 **Implementation plan:** [`plans/keyboard-layout-9key-pinyin-004-complete-path-catalog-and-atomic-sync-plan.md`](../plans/keyboard-layout-9key-pinyin-004-complete-path-catalog-and-atomic-sync-plan.md)  
-**Gate5 residual-B SoT:** [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)
+**Gate5 residual-B SoT:** [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)  
+**Close decision:** [`PD-…-004-ASSIGNMENT-CLOSE`](KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md)
 
 ## Authority
 

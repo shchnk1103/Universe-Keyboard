@@ -180,6 +180,7 @@ Phase 0 先取证并写失败测试，禁止直接放宽现有 guard。
 - [x] Residual-B Path-ledger **cursor**（单字/多字；soft-select 继承用户 Path 点选；`wo` 不伪造选中）— Human device Pass + PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) MERGED（`f84a00d`）。权威：[`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)。
 - [x] Doc wording A1 closed — dual full-cover policy（short unconfirmed = first；confirmed+remaining = unique）；见 remediation §31。
 - [x] Provisional-only mixed-raw C continue closed — ledger peel/append + host resync；`XCTSkip` removed；见 remediation §32。
+- [x] Product Lead Assignment **Accepted / Closed** — [`PD-…-004-ASSIGNMENT-CLOSE`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md)；remediation §33。
 
 ### Phase 2：Delete / Append identity（并入 Phase 1 β-limited）
 
