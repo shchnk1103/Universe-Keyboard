@@ -31,49 +31,69 @@ struct CandidateBarDataSource {
     /// - Returns: CandidateItem 数组（可能为空）
     static func candidateItems(from controller: KeyboardController) -> [CandidateItem] {
         let state = controller.state
-
-        // 英文模式下不需要候选词
         guard state.inputMode == .chinese else { return [] }
 
-        // ── 路径 1：RIME 引擎 ──────────────────────────────────
-        // RIME 输出中有 composition 表示用户正在输入拼音
-        // preeditText 已通过 inline preedit 显示在宿主 App 中
-        // 候选栏只需显示候选词
         if let rimeOutput = state.lastRimeOutput,
            let comp = rimeOutput.composition,
-           !comp.preeditText.isEmpty {
-
-            var items: [CandidateItem] = []
-            // 将 RIME 返回的每个候选文本包装为 CandidateItem
-            for (index, candidate) in rimeOutput.candidates.enumerated() {
-                items.append(
-                    CandidateItem.rimeCandidate(
-                        candidate,
-                        page: rimeOutput.candidatePageNumber,
-                        indexOnPage: index,
-                        globalIndex: candidate.globalIndex ?? (rimeOutput.candidatePageNumber == 0 ? index : nil)
-                    )
-                )
-            }
-
-            if items.isEmpty {
-                let correctionItems = correctionItems(from: state, excluding: [])
-                if !correctionItems.isEmpty {
-                    return correctionItems + [CandidateItem(title: comp.preeditText, kind: .composition)]
-                }
-
-                // 如果 RIME 返回了 composition 但无候选词，
-                // 将拼音原始文本作为 composition 类型展示
-                // 这样用户可以点击来提交原始拼音（而非中文候选）
-                return [CandidateItem(title: comp.preeditText, kind: .composition)]
-            }
-
-            return TypoCorrectionCandidateRanker.mergedCandidates(
-                normalItems: items,
-                correctionItems: correctionItems(from: state, excluding: []),
-                learningSnapshot: controller.typoCorrectionLearningSnapshot
+           !comp.preeditText.isEmpty
+        {
+            return candidateItems(
+                from: controller,
+                rimeCandidates: rimeOutput.candidates,
+                preeditText: comp.preeditText,
+                pageNumber: rimeOutput.candidatePageNumber
             )
         }
+
+        return nonCompositionCandidateItems(from: controller)
+    }
+
+    /// Build candidate items from an already-captured RIME candidate page.
+    /// Used by T9 atomic presentation so Path Bar and candidate bar share one snapshot.
+    static func candidateItems(
+        from controller: KeyboardController,
+        rimeCandidates: [RimeCandidate],
+        preeditText: String,
+        pageNumber: Int
+    ) -> [CandidateItem] {
+        let state = controller.state
+        guard state.inputMode == .chinese else { return [] }
+        guard !preeditText.isEmpty else {
+            return nonCompositionCandidateItems(from: controller)
+        }
+
+        var items: [CandidateItem] = []
+        for (index, candidate) in rimeCandidates.enumerated() {
+            items.append(
+                CandidateItem.rimeCandidate(
+                    candidate,
+                    page: pageNumber,
+                    indexOnPage: index,
+                    globalIndex: candidate.globalIndex ?? (pageNumber == 0 ? index : nil)
+                )
+            )
+        }
+
+        if items.isEmpty {
+            let correctionItems = correctionItems(from: state, excluding: [])
+            if !correctionItems.isEmpty {
+                return correctionItems + [CandidateItem(title: preeditText, kind: .composition)]
+            }
+            return [CandidateItem(title: preeditText, kind: .composition)]
+        }
+
+        return TypoCorrectionCandidateRanker.mergedCandidates(
+            normalItems: items,
+            correctionItems: correctionItems(from: state, excluding: []),
+            learningSnapshot: controller.typoCorrectionLearningSnapshot
+        )
+    }
+
+    private static func nonCompositionCandidateItems(
+        from controller: KeyboardController
+    ) -> [CandidateItem] {
+        let state = controller.state
+        guard state.inputMode == .chinese else { return [] }
 
         // 上屏后联想不是 RIME composition。只有当前没有活跃拼音时，
         // 才把独立的短上下文建议映射到候选栏。

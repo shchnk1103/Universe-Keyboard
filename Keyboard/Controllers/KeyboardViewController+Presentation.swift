@@ -251,9 +251,14 @@ extension KeyboardViewController {
             return
         }
         if effects.contains(.compositionChanged) || effects.contains(.continuationChanged) {
-            refreshCandidateBar()
+            if shouldPublishAtomicT9Presentation {
+                // One Core snapshot feeds candidates + Path + panel for this revision.
+                refreshT9PresentationFromCoreSnapshot()
+            } else {
+                refreshCandidateBar()
+                refreshT9PinyinPathBar()
+            }
             scheduleContextualTypoCorrectionRefresh()
-            refreshT9PinyinPathBar()
             if isPinyinPathExpanded {
                 let stillComposing = T9CompositionCommitPolicy.isActiveT9Composition(
                     usesT9InputSemantics: controller.usesT9InputSemantics,
@@ -261,14 +266,16 @@ extension KeyboardViewController {
                 )
                 if !stillComposing {
                     dismissPinyinPathExpandedPanel(animated: false)
-                } else {
-                    // Provenance revision change rebuilds accumulated paths; same revision reloads.
+                } else if !shouldPublishAtomicT9Presentation {
                     refreshPinyinPathExpandedPanel()
                 }
             }
-        }
-        if effects.contains(.t9PinyinPathsChanged) {
-            refreshT9PinyinPathBar()
+        } else if effects.contains(.t9PinyinPathsChanged) {
+            if shouldPublishAtomicT9Presentation {
+                refreshT9PresentationFromCoreSnapshot()
+            } else {
+                refreshT9PinyinPathBar()
+            }
         }
         if effects.contains(.shiftStateChanged) {
             refreshLetterButtons()

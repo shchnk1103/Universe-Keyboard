@@ -24,6 +24,12 @@ public struct RimeOutput: Equatable, Sendable {
     /// 当前候选页码。librime 首页为 0。
     public let candidatePageNumber: Int
 
+    /// librime `get_caret_pos`：raw input 空间光标（Phase 0.6 只读；非 T9 槽位权威，除非 Architecture 另批）。
+    public let caretPositionInRaw: Int?
+
+    /// `commit_text_preview` 的 UTF-8 字节长度（结构观测；**禁止**当汉字数→槽位映射权威）。
+    public let commitPreviewLength: Int?
+
     public init(
         rawInput: String? = nil,
         composition: RimeComposition? = nil,
@@ -31,7 +37,9 @@ public struct RimeOutput: Equatable, Sendable {
         committedText: String? = nil,
         hasMorePages: Bool = false,
         highlightedIndex: Int = -1,
-        candidatePageNumber: Int = 0
+        candidatePageNumber: Int = 0,
+        caretPositionInRaw: Int? = nil,
+        commitPreviewLength: Int? = nil
     ) {
         self.rawInput = rawInput
         self.composition = composition
@@ -40,6 +48,8 @@ public struct RimeOutput: Equatable, Sendable {
         self.hasMorePages = hasMorePages
         self.highlightedIndex = highlightedIndex
         self.candidatePageNumber = candidatePageNumber
+        self.caretPositionInRaw = caretPositionInRaw
+        self.commitPreviewLength = commitPreviewLength
     }
 }
 

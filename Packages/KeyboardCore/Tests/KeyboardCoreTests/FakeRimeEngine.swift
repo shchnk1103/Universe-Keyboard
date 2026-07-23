@@ -22,6 +22,19 @@ final class FakeRimeEngine: RimeEngine {
     var visibilityResumeCount = 0
     var processKeysToDrop = 0
     var replaceInputsToDrop = 0
+    private(set) var processKeyCallCount = 0
+    private(set) var candidateWindowCallCount = 0
+    private(set) var replaceInputCallCount = 0
+    private(set) var replaceInputArguments: [String] = []
+    private(set) var candidateWindowRequests: [(start: Int, limit: Int)] = []
+
+    func resetCallCounts() {
+        processKeyCallCount = 0
+        candidateWindowCallCount = 0
+        replaceInputCallCount = 0
+        replaceInputArguments = []
+        candidateWindowRequests = []
+    }
 
     /// Mirrors production realized-selection publishing for lifecycle tests.
     private(set) var runtimeSelection: RimeRuntimeSelection?
@@ -56,10 +69,20 @@ final class FakeRimeEngine: RimeEngine {
     var appendDigitsToComposition = false
     /// Queued `replaceInput` results (consumed in order). Used for wrong-raw / rollback tests.
     var replaceInputScript: [RimeOutput] = []
+    /// Queued `deleteBackward` results (consumed in order). When empty, default removeLast.
+    /// Gate 5 Phase 0: script device-like Delete raw morphologies for path C red tests.
+    var deleteBackwardScript: [RimeOutput] = []
+    /// Queued `processKey` results (consumed in order). When empty, default append key.
+    /// Each entry fully replaces the default processKey output (and session raw).
+    var processKeyScript: [RimeOutput] = []
     /// Last argument passed to `replaceInput` (session inspection).
     private(set) var lastReplaceInputArgument: String?
     /// Current raw composition string (session mirror for tests).
     var sessionComposition: String { composition }
+    /// Test helper: set live session composition without going through processKey.
+    func seedSessionComposition(_ raw: String) {
+        composition = raw
+    }
 
     init(
         dictionary: [String: [String]] = FakeRimeEngine.defaultDictionary,
@@ -93,9 +116,19 @@ final class FakeRimeEngine: RimeEngine {
     // MARK: - RimeEngine
 
     func processKey(_ key: String) -> RimeOutput {
+        processKeyCallCount += 1
         if processKeysToDrop > 0 {
             processKeysToDrop -= 1
             return RimeOutput()
+        }
+        if !processKeyScript.isEmpty {
+            let scripted = processKeyScript.removeFirst()
+            if let raw = scripted.rawInput {
+                composition = raw
+            } else if let committed = scripted.committedText, !committed.isEmpty {
+                composition = ""
+            }
+            return scripted
         }
         if !appendDigitsToComposition,
            let index = digitSelectionIndex(for: key),
@@ -155,6 +188,8 @@ final class FakeRimeEngine: RimeEngine {
     }
 
     func candidateWindow(from globalIndex: Int, limit: Int) -> RimeCandidateWindow {
+        candidateWindowCallCount += 1
+        candidateWindowRequests.append((globalIndex, limit))
         let candidates = candidateWindowOverrides[composition] ?? buildOutput().candidates
         let safeStart = max(0, globalIndex)
         let safeLimit = max(0, limit)
@@ -176,6 +211,19 @@ final class FakeRimeEngine: RimeEngine {
     }
 
     func deleteBackward() -> RimeOutput {
+        if !deleteBackwardScript.isEmpty {
+            let scripted = deleteBackwardScript.removeFirst()
+            if let raw = scripted.rawInput {
+                composition = raw
+            } else if scripted.composition == nil, scripted.committedText == nil {
+                // Empty rejection without mutating session composition.
+            } else if let committed = scripted.committedText, !committed.isEmpty {
+                composition = ""
+            } else if !composition.isEmpty {
+                composition.removeLast()
+            }
+            return scripted
+        }
         if !composition.isEmpty {
             composition.removeLast()
         }
@@ -183,6 +231,8 @@ final class FakeRimeEngine: RimeEngine {
     }
 
     func replaceInput(_ input: String) -> RimeOutput {
+        replaceInputCallCount += 1
+        replaceInputArguments.append(input)
         lastReplaceInputArgument = input
         if replaceInputsToDrop > 0 {
             replaceInputsToDrop -= 1

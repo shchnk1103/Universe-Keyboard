@@ -57,25 +57,14 @@ extension KeyboardController {
                     )
                     return .compositionChanged
                 }
-                // Capture progressive path identity before the selection mutates raw.
-                // Nested Chinese partials (e.g. 球 leaving bare digit `5`) must not
-                // permanently forget the path-refined digit source (`74853` + `qiu`).
-                let preservedSegmentSource = state.t9PinyinPathState.segmentSourceDigits
-                let preservedPathConfirmed = state.t9PinyinPathState.confirmedSegmentValues
                 applyNormalCandidateSelection(candidate: candidate, result: result, previousOutput: output)
                 // Final commit clears path state inside finishNormalCandidateSelection;
                 // partial selection installs a new RimeOutput — hard provenance even if raw
                 // identity is unchanged (comments/candidates may have narrowed).
-                // When a progressive path identity was active, re-apply it AFTER the
-                // hard refresh so nested remainders keep undo/delete digit provenance.
-                if state.partialCommit != nil,
-                   preservedSegmentSource != nil,
-                   !preservedPathConfirmed.isEmpty
-                {
-                    restoreSegmentedPathIdentityAfterNestedPartial(
-                        preservedSegmentSource: preservedSegmentSource,
-                        preservedPathConfirmed: preservedPathConfirmed
-                    )
+                // `applyNormalCandidateSelection` owns the one permitted nested
+                // restore. Reapplying the old snapshot here used to overwrite the
+                // freshly published remainder paths after a candidate selection.
+                if state.partialCommit != nil {
                     return .compositionChanged.union(.t9PinyinPathsChanged)
                 }
                 let pathEffect: KeyboardEffect =
@@ -120,32 +109,44 @@ extension KeyboardController {
 
     func handleCandidatePageUp() -> KeyboardEffect {
         guard let engine = rimeEngine else { return [] }
-        let output = engine.pageUp()
-        if state.partialCommit != nil {
-            state.lastRimeOutput = output
-            return .compositionChanged
-        }
-        state.lastRimeOutput = output
-        state.currentComposition = output.composition?.preeditText ?? ""
-        if let commit = output.committedText {
-            insertText(commit, source: .engineCommit)
-        }
-        return .compositionChanged
+        return applyPagedCandidateOutput(engine.pageUp())
     }
 
     func handleCandidatePageDown() -> KeyboardEffect {
         guard let engine = rimeEngine else { return [] }
-        let output = engine.pageDown()
+        return applyPagedCandidateOutput(engine.pageDown())
+    }
+
+    /// Candidate paging may advance composition revision for UI binding, but must
+    /// never clear a Partial Commit Delete checkpoint or rewrite remaining identity.
+    private func applyPagedCandidateOutput(_ output: RimeOutput) -> KeyboardEffect {
         if state.partialCommit != nil {
-            state.lastRimeOutput = output
-            return .compositionChanged
+            return applyCandidatePageWhilePartialCommit(output)
         }
-        state.lastRimeOutput = output
-        state.currentComposition = output.composition?.preeditText ?? ""
-        if let commit = output.committedText {
-            insertText(commit, source: .engineCommit)
+        applyRimeOutput(output)
+        return .compositionChanged.union(.t9PinyinPathsChanged)
+    }
+
+    private func applyCandidatePageWhilePartialCommit(_ output: RimeOutput) -> KeyboardEffect {
+        // Irreversible partial transitions (new input, nested selection) clear
+        // checkpoints elsewhere. Paging only swaps the candidate page payload.
+        advanceCompositionRevision()
+        let previous = state.lastRimeOutput
+        state.lastRimeOutput = RimeOutput(
+            rawInput: previous?.rawInput ?? output.rawInput,
+            composition: previous?.composition ?? output.composition,
+            candidates: output.candidates,
+            committedText: nil,
+            hasMorePages: output.hasMorePages,
+            highlightedIndex: output.highlightedIndex,
+            candidatePageNumber: output.candidatePageNumber
+        )
+        // Keep confirmed text, remaining preedit, display text, and checkpoint.
+        // Only re-rank T9 Path against the same remaining identity when needed.
+        if usesT9InputSemantics {
+            _ = refreshT9PinyinPathState(forceNewProvenance: true)
         }
-        return .compositionChanged
+        return .compositionChanged.union(.t9PinyinPathsChanged)
     }
 
     private func candidateIndex(

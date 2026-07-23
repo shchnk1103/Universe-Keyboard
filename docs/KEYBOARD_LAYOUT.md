@@ -1,8 +1,8 @@
 # Keyboard Layout
 
-Lifecycle status: Runtime contract accepted (ADR 0018); Chinese nine-key chrome accepted under KEYBOARD-LAYOUT-9KEY-UI-001; original precise pinyin selection closed under KEYBOARD-LAYOUT-9KEY-PINYIN-001; deterministic choices, segmented/progressive path bar, safe remaining projection and visible-character Delete active under KEYBOARD-LAYOUT-9KEY-PINYIN-002 (ADR 0021 Amendments A/B/C/D)
+Lifecycle status: Runtime contract accepted (ADR 0018); Chinese nine-key chrome accepted under KEYBOARD-LAYOUT-9KEY-UI-001; original precise pinyin selection closed under KEYBOARD-LAYOUT-9KEY-PINYIN-001; deterministic choices and segmented/progressive path bar remain under ADR 0021; atomic presentation and fixed foreground discovery are active under KEYBOARD-LAYOUT-9KEY-PINYIN-003 / ADR 0022 with device Product Gate pending
 Source of truth for: 26-key / Chinese nine-key layout selection, effective RIME scheme resolution, versioned T9 readiness, nine-key Extension chrome, and **precise pinyin path bar/cycling**
-Related ADR: [`architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md`](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md), [`architecture/decisions/0020-t9-precise-pinyin-path-selection.md`](architecture/decisions/0020-t9-precise-pinyin-path-selection.md), [`architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md`](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md)
+Related ADR: [`architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md`](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md), [`architecture/decisions/0020-t9-precise-pinyin-path-selection.md`](architecture/decisions/0020-t9-precise-pinyin-path-selection.md), [`architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md`](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md), [`architecture/decisions/0022-t9-atomic-presentation-and-bounded-path-discovery.md`](architecture/decisions/0022-t9-atomic-presentation-and-bounded-path-discovery.md)
 Related plan: [`plans/keyboard-layout-9key-implementation-plan.md`](plans/keyboard-layout-9key-implementation-plan.md) (Archived); precise pinyin [`plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md`](plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md) (Active)
 Related Assignments:
 
@@ -164,3 +164,6 @@ First Codex review record (pre-amendment): [`evidence/keyboard-layout-9key-001-c
 - 普通按键每次最多新增一个可见拼音字母：`TUV → t`，随后 `MNO → to`，再按 `TUV → tou`；候选仍可使用 RIME 的完整预测。
 - Path Bar 确认的音节不会自动带出下一音节。确认 `qiu` 后输入框只显示 `qiu`，候选必须来自 `qiu` 分支。
 - 剩余数字对应的完整音节优先展示；例如 `53` 若 live RIME 授权 `le`，Path Bar 必须提供完整 `le`，不能只显示 `ke` 加单字母 `j/k/l`。
+- 每次 Path 推进只读取一个固定 48 项 live-RIME 窗口，不再对拼写逐个改写/恢复 session；调用次数不随输入长度或拼写数量增长。
+- 候选、marked text 与 Path snapshot 携带同一 Core composition revision。候选选择必须先失效旧焦点，再从新余段发布，例如「请喂饭到」后立即进入 `wo`。
+- composition 投影的可编辑后缀禁止内部 ASCII 数字；数字页显式 suffix 与候选确认文本中的合法数字不受此限制。

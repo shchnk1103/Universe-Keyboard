@@ -46,6 +46,10 @@ public struct KeyboardState: Equatable {
     public var insertedPreeditText: String = ""
     /// 当前已插入到文本输入框中的拼音串长度。保留长度字段，方便删除时避免重复计算。
     public var insertedPreeditCount: Int = 0
+    /// Monotonic Core-owned presentation revision for composition output.
+    /// Candidates, marked text and T9 Path state installed by one transition
+    /// must be observed under the same value (ADR 0022).
+    public var compositionRevision: UInt64 = 0
     /// Precise T9 pinyin path bar state (ADR 0020). Empty when not composing under T9.
     public var t9PinyinPathState: T9PinyinPathState = .empty
 
@@ -63,6 +67,7 @@ public struct KeyboardState: Equatable {
         continuation: ContinuationState = ContinuationState(),
         insertedPreeditText: String = "",
         insertedPreeditCount: Int = 0,
+        compositionRevision: UInt64 = 0,
         t9PinyinPathState: T9PinyinPathState = .empty
     ) {
         self.currentPage = currentPage
@@ -78,6 +83,7 @@ public struct KeyboardState: Equatable {
         self.continuation = continuation
         self.insertedPreeditText = insertedPreeditText
         self.insertedPreeditCount = insertedPreeditCount
+        self.compositionRevision = compositionRevision
         self.t9PinyinPathState = t9PinyinPathState
     }
 }

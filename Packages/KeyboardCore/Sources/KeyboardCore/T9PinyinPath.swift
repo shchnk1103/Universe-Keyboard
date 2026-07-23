@@ -1,22 +1,11 @@
 import Foundation
 
-/// One precise pinyin path shown in the nine-key path bar / panel.
-public struct T9PinyinPath: Equatable, Sendable, Hashable {
-    /// UI label, e.g. `ni hao`.
-    public let displayText: String
-    /// Value passed to `RimeEngine.replaceInput`, e.g. `ni'hao`.
-    public let replacementRawInput: String
-
-    public init(displayText: String, replacementRawInput: String) {
-        self.displayText = displayText
-        self.replacementRawInput = replacementRawInput
-    }
-}
-
 /// Compact path bar state owned by KeyboardCore (not UIKit).
 public struct T9PinyinPathState: Equatable, Sendable {
     public var compactPaths: [T9PinyinPath]
     public var selectedPath: T9PinyinPath?
+    /// Composition presentation revision that produced this Path snapshot.
+    public var compositionRevision: UInt64
     /// Bumped when the tracked raw-input identity changes (stable for same raw).
     public var rawInputGeneration: UInt64
     /// Bumped when live comment/window provenance authority changes (independent of raw).
@@ -24,13 +13,15 @@ public struct T9PinyinPathState: Equatable, Sendable {
     public var provenanceRevision: UInt64
     /// Normalized raw identity used for generation stability (ASCII-oriented).
     public var trackedRawInput: String?
-    /// Replacement keys issued by Core for this provenance revision (comment provenance).
+    /// Replacement keys issued by Core for this provenance revision.
     /// Selection is authorized only when the key is in this set.
     public var issuedReplacementKeys: Set<String>
-    /// Next Rime global candidate index for path discovery (panel / availability).
+    /// Issued stable Path IDs for the current revision (preferred authorization).
+    public var issuedPathIDs: Set<String>
+    /// Next Rime global candidate index for legacy panel paging only.
+    /// ADR 0023 Path completeness does not depend on further candidate windows.
     public var discoveryNextIndex: Int
-    /// `true` while later candidate windows may still contain valid paths.
-    /// Must not be collapsed to "no paths" solely because a 16-item peek was empty.
+    /// Always false under ADR 0023 local catalog Path completeness.
     public var discoveryMayHaveMore: Bool
     /// Original single digit that issued deterministic key-group choices (ADR 0021).
     /// It intentionally survives a successful `6 -> m/n/o` refinement so another
@@ -43,38 +34,74 @@ public struct T9PinyinPathState: Equatable, Sendable {
     public var focusedSegmentIndex: Int?
     /// Tentatively confirmed key-group values before `focusedSegmentIndex`.
     public var confirmedSegmentValues: [String]
+    /// Explicit letter-prefix lock for the current focus (e.g. `b` after `28` → `b`).
+    public var lockedLetterPrefix: String?
+    /// Provisional (unselected) first Path ID for host display.
+    public var provisionalPathID: String?
 
     public init(
         compactPaths: [T9PinyinPath] = [],
         selectedPath: T9PinyinPath? = nil,
+        compositionRevision: UInt64 = 0,
         rawInputGeneration: UInt64 = 0,
         provenanceRevision: UInt64 = 0,
         trackedRawInput: String? = nil,
         issuedReplacementKeys: Set<String> = [],
+        issuedPathIDs: Set<String> = [],
         discoveryNextIndex: Int = 0,
         discoveryMayHaveMore: Bool = false,
         retainedChoiceSourceRawInput: String? = nil,
         segmentSourceDigits: String? = nil,
         focusedSegmentIndex: Int? = nil,
-        confirmedSegmentValues: [String] = []
+        confirmedSegmentValues: [String] = [],
+        lockedLetterPrefix: String? = nil,
+        provisionalPathID: String? = nil
     ) {
         self.compactPaths = compactPaths
         self.selectedPath = selectedPath
+        self.compositionRevision = compositionRevision
         self.rawInputGeneration = rawInputGeneration
         self.provenanceRevision = provenanceRevision
         self.trackedRawInput = trackedRawInput
         self.issuedReplacementKeys = issuedReplacementKeys
+        self.issuedPathIDs = issuedPathIDs
         self.discoveryNextIndex = discoveryNextIndex
         self.discoveryMayHaveMore = discoveryMayHaveMore
         self.retainedChoiceSourceRawInput = retainedChoiceSourceRawInput
         self.segmentSourceDigits = segmentSourceDigits
         self.focusedSegmentIndex = focusedSegmentIndex
         self.confirmedSegmentValues = confirmedSegmentValues
+        self.lockedLetterPrefix = lockedLetterPrefix
+        self.provisionalPathID = provisionalPathID
     }
 
     public static let empty = T9PinyinPathState()
 
-    public var hasIssuedPaths: Bool { !issuedReplacementKeys.isEmpty }
+    public var hasIssuedPaths: Bool {
+        !issuedReplacementKeys.isEmpty || !issuedPathIDs.isEmpty || !compactPaths.isEmpty
+    }
+
+    public var presentationSnapshot: T9CompositionPresentationSnapshot {
+        let source = segmentSourceDigits ?? ""
+        let confirmedLetters = T9PinyinPathExtractor.letterCount(ofSyllables: confirmedSegmentValues)
+        let focusEnd = source.isEmpty ? 0 : source.count
+        // Path-state-only snapshot (no candidates / host preedit). Prefer
+        // `KeyboardController.t9CompositionPresentationSnapshot()` for production UI.
+        return T9CompositionPresentationSnapshot(
+            revision: compositionRevision,
+            sourceDigits: source,
+            rimeRawInput: trackedRawInput,
+            focusSlotStart: confirmedLetters,
+            focusSlotEnd: focusEnd,
+            confirmedSyllables: confirmedSegmentValues,
+            lockedLetterPrefix: lockedLetterPrefix,
+            provisionalPathID: provisionalPathID,
+            selectedPathID: selectedPath?.id,
+            paths: compactPaths,
+            candidates: [],
+            visiblePreedit: ""
+        )
+    }
 }
 
 /// Availability for UI “选拼音” without collapsing sparse later windows to “none”.
@@ -103,6 +130,7 @@ public struct T9PinyinPathWindow: Equatable, Sendable {
     public var paths: [T9PinyinPath]
     public var nextGlobalIndex: Int
     public var hasMoreCandidates: Bool
+    public var compositionRevision: UInt64
     public var rawInputGeneration: UInt64
     public var provenanceRevision: UInt64
 
@@ -110,12 +138,14 @@ public struct T9PinyinPathWindow: Equatable, Sendable {
         paths: [T9PinyinPath] = [],
         nextGlobalIndex: Int = 0,
         hasMoreCandidates: Bool = false,
+        compositionRevision: UInt64 = 0,
         rawInputGeneration: UInt64 = 0,
         provenanceRevision: UInt64 = 0
     ) {
         self.paths = paths
         self.nextGlobalIndex = nextGlobalIndex
         self.hasMoreCandidates = hasMoreCandidates
+        self.compositionRevision = compositionRevision
         self.rawInputGeneration = rawInputGeneration
         self.provenanceRevision = provenanceRevision
     }
@@ -126,9 +156,13 @@ public enum T9PinyinPathExtractor {
     public static let compactLimit = 5
     /// Bounded sync scan on the input path when page candidates are sparse (not a full catalog walk).
     public static let hotPathWindowLimit = 16
+    /// One fixed read-only discovery window per atomic Path transition (ADR 0022).
+    /// Stage A covered the frozen real-RIME cases at 16; 48 additionally keeps
+    /// the existing lower-ranked-alternative contract without spelling probes.
+    public static let atomicPathDiscoveryWindowLimit = 48
     public static let panelWindowLimit = 48
-    /// Maximum live-RIME probes used to discover complete syllables that are
-    /// absent from the current candidate window (Amendment F).
+    /// Legacy/reference bound retained for pure deterministic tests.
+    /// ADR 0022 prohibits using these spellings for live-RIME foreground probes.
     public static let completeSyllableProbeLimit = 48
     /// Keeps discovery independent of an unusually long unresolved digit tail.
     public static let completeSyllableMaximumDigits = 6
@@ -282,9 +316,9 @@ public enum T9PinyinPathExtractor {
         t9Groups[digit] ?? []
     }
 
-    /// Deterministic, strictly bounded spellings for live-RIME syllable probes.
-    /// These are never published directly: callers must prove exact raw,
-    /// usable composition and matching candidate-comment provenance first.
+    /// Deterministic spellings retained for pure reference and regression tests.
+    /// Production Path discovery must use the fixed read-only candidate window;
+    /// it must not feed this list into live-RIME mutation loops (ADR 0022).
     public static func boundedCompleteSyllableSpellings(
         forDigits digits: String,
         limit: Int = completeSyllableProbeLimit
@@ -457,7 +491,17 @@ public enum T9PinyinPathExtractor {
         let suffixDigits = String(sourceDigits.dropFirst(confirmedLetters + focusLetters))
         let prefix = confirmedSyllables.joined(separator: "'")
         if prefix.isEmpty {
+            // First focus may keep letter+digit concatenation (`qing934…`).
             return syllable + suffixDigits
+        }
+        if suffixDigits.isEmpty {
+            return prefix + "'" + syllable
+        }
+        // Multi-letter syllables need an explicit apostrophe before the unresolved
+        // digit tail (`qing'wei'326…`). Single-letter progressive choices keep the
+        // compact form librime already accepts (`n'g5`).
+        if syllable.count > 1 {
+            return prefix + "'" + syllable + "'" + suffixDigits
         }
         return prefix + "'" + syllable + suffixDigits
     }
@@ -691,7 +735,9 @@ public enum T9PinyinPathExtractor {
             paths: paths,
             nextGlobalIndex: nextIndex,
             hasMoreCandidates: hasMoreCandidates,
-            rawInputGeneration: expectedGeneration
+            compositionRevision: window.compositionRevision,
+            rawInputGeneration: expectedGeneration,
+            provenanceRevision: window.provenanceRevision
         )
     }
 

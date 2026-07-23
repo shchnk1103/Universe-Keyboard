@@ -49,9 +49,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// @return 同 processKey 的返回格式；选择失败时返回当前输出
 - (NSDictionary *)selectCandidateAtGlobalIndex:(int)index;
 
+/// 高亮当前页第 index 个候选（不提交）。用于 Phase 0.6 观测 per-candidate 引擎状态。
+/// API 不可用时返回 currentOutput 且不修改 session。
+- (NSDictionary *)highlightCandidateOnCurrentPageAtIndex:(int)index
+    NS_SWIFT_NAME(highlightCandidateOnCurrentPage(at:));
+
 /// 从全局候选列表读取候选窗口，不改变当前页。
 /// 返回 @{@"startIndex": ..., @"nextIndex": ..., @"hasMoreCandidates": ..., @"candidates": ...}
 - (NSDictionary *)candidatesFromIndex:(int)index limit:(int)limit;
+
+/// 只读获取当前 session 输出，用于验证只读候选窗口不会改变 composition。
+/// 不处理按键、不选择候选，也不替换输入。
+- (NSDictionary *)currentOutput;
 
 /// 删除 composition 中最后一个字符
 /// @return 同 processKey 的返回格式
@@ -100,6 +109,16 @@ NS_ASSUME_NONNULL_BEGIN
 extern NSString * const RimeKeyPreedit;
 /// composition.cursorPos — 光标位置（NSNumber int）
 extern NSString * const RimeKeyCursorPos;
+/// composition.sel_start — librime 原生选择/高亮起点（NSNumber int；Phase 0.5 只读透传）
+extern NSString * const RimeKeySelStart;
+/// composition.sel_end — librime 原生选择/高亮终点（NSNumber int；Phase 0.5 只读透传）
+extern NSString * const RimeKeySelEnd;
+/// composition.length — librime composition 长度（NSNumber int；Phase 0.6 只读）
+extern NSString * const RimeKeyCompositionLength;
+/// get_caret_pos — raw input 空间光标（NSNumber int；Phase 0.6 只读）
+extern NSString * const RimeKeyCaretPos;
+/// commit_text_preview UTF-8 字节长度（NSNumber int；仅结构观测，禁止当汉字数→槽位权威）
+extern NSString * const RimeKeyCommitPreviewLen;
 /// 未格式化的原始输入，如 "nihao"
 extern NSString * const RimeKeyRawInput;
 /// candidates — 候选词数组，每个元素是 @{@"text": ..., @"comment": ...}

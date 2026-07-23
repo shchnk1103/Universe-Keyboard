@@ -11,9 +11,19 @@ extension RimeEngineImpl {
     static func parseOutputDictionary(_ raw: [AnyHashable: Any]) -> KeyboardCore.RimeOutput {
         let preedit = raw[RimeKey.preedit] as? String
         let cursorPosition = (raw[RimeKey.cursorPosition] as? NSNumber)?.intValue ?? 0
+        // Optional: older dictionaries may omit selStart/selEnd entirely.
+        let selectionStart = optionalInt(raw[RimeKey.selStart])
+        let selectionEnd = optionalInt(raw[RimeKey.selEnd])
+        let compositionLength = optionalInt(raw[RimeKey.compositionLength])
         let composition = preedit.flatMap { value -> KeyboardCore.RimeComposition? in
             guard !value.isEmpty else { return nil }
-            return KeyboardCore.RimeComposition(preeditText: value, cursorPosition: cursorPosition)
+            return KeyboardCore.RimeComposition(
+                preeditText: value,
+                cursorPosition: cursorPosition,
+                selectionStart: selectionStart,
+                selectionEnd: selectionEnd,
+                length: compositionLength
+            )
         }
 
         let candidates = parseCandidates(raw[RimeKey.candidates])
@@ -26,7 +36,9 @@ extension RimeEngineImpl {
             committedText: raw[RimeKey.commit] as? String,
             hasMorePages: !isLastPage,
             highlightedIndex: (raw[RimeKey.highlightedIndex] as? NSNumber)?.intValue ?? -1,
-            candidatePageNumber: (raw[RimeKey.pageNumber] as? NSNumber)?.intValue ?? 0
+            candidatePageNumber: (raw[RimeKey.pageNumber] as? NSNumber)?.intValue ?? 0,
+            caretPositionInRaw: optionalInt(raw[RimeKey.caretPos]),
+            commitPreviewLength: optionalInt(raw[RimeKey.commitPreviewLen])
         )
     }
 
@@ -87,11 +99,27 @@ extension RimeEngineImpl {
         }
         return [:]
     }
+
+    /// Accepts NSNumber / Int from ObjC or pure-Swift dictionaries; missing → nil.
+    private static func optionalInt(_ value: Any?) -> Int? {
+        if let number = value as? NSNumber {
+            return number.intValue
+        }
+        if let intValue = value as? Int {
+            return intValue
+        }
+        return nil
+    }
 }
 
 private enum RimeKey {
     static let preedit = "preedit"
     static let cursorPosition = "cursorPos"
+    static let selStart = "selStart"
+    static let selEnd = "selEnd"
+    static let compositionLength = "compositionLength"
+    static let caretPos = "caretPos"
+    static let commitPreviewLen = "commitPreviewLen"
     static let rawInput = "rawInput"
     static let candidates = "candidates"
     static let candidateText = "text"

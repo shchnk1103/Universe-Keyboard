@@ -8,6 +8,10 @@ public final class FakeTextInputClient: TextInputClient {
     }
     public internal(set) var deletedCount = 0
     public internal(set) var markedText: String = ""
+    /// Every value sent through `setMarkedText`, including transient values that
+    /// a later update may replace. Tests use this to enforce host-display safety
+    /// at the write boundary rather than checking only the final state.
+    public internal(set) var markedTextHistory: [String] = []
     public internal(set) var cursorOffset = 0
     private var isUpdatingTextInternally = false
 
@@ -44,6 +48,7 @@ public final class FakeTextInputClient: TextInputClient {
     }
 
     public func setMarkedText(_ text: String, selectedRange: Range<Int>) {
+        markedTextHistory.append(text)
         let markedStart = max(0, cursorOffset - markedText.count)
         removeMarkedSuffix()
         insert(text, at: cursorOffset)

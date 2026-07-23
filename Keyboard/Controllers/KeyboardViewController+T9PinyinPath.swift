@@ -23,10 +23,83 @@ extension KeyboardViewController {
         return bar
     }
 
+    /// True while nine-key T9 composition presentation must be atomic (ADR 0023).
+    var shouldPublishAtomicT9Presentation: Bool {
+        controller.usesT9InputSemantics
+            && controller.state.inputMode == .chinese
+            && controller.state.currentPage == .letters
+            && cachedLayoutStyle == .nineKey
+            && T9CompositionCommitPolicy.isActiveT9Composition(
+                usesT9InputSemantics: true,
+                rawInput: controller.state.lastRimeOutput?.rawInput
+                    ?? controller.state.t9PinyinPathState.trackedRawInput
+            )
+    }
+
+    /// Capture one Core snapshot and publish Path Bar + candidates together.
+    func refreshT9PresentationFromCoreSnapshot() {
+        let snapshot = controller.t9CompositionPresentationSnapshot()
+        applyT9PresentationSnapshot(snapshot)
+    }
+
+    func applyT9PresentationSnapshot(_ snapshot: T9CompositionPresentationSnapshot) {
+        // Path bar
+        if let bar = t9PinyinPathBarView {
+            let selected = snapshot.paths.first { $0.id == snapshot.selectedPathID }
+            bar.setPaths(
+                snapshot.paths,
+                selected: selected,
+                compositionRevision: snapshot.revision
+            )
+        }
+        t9SpaceButton?.setTitle(spaceButtonTitle, for: .normal)
+        if let t9SpaceButton {
+            configureKeyAccessibility(
+                t9SpaceButton,
+                title: spaceButtonTitle,
+                action: #selector(insertSpace(_:))
+            )
+        }
+        // Candidate bar from the same snapshot candidates/revision
+        if candidateCollectionView != nil {
+            resetCandidateSnapshot(from: snapshot)
+            fillCandidateBar()
+            if candidateScrollView.contentOffset.x != 0 {
+                candidateScrollView.setContentOffset(.zero, animated: false)
+            }
+            if isCandidateExpanded {
+                refreshExpandedPanel()
+            }
+            if hasMoreCandidates {
+                scheduleCandidatePrefetch(mode: candidatePrefetchMode)
+            }
+        }
+        // Expanded path panel also binds the same revision paths
+        if isPinyinPathExpanded {
+            pinyinPathPanelGeneration = snapshot.revision
+            pinyinPathPanelProvenanceRevision = controller.state.t9PinyinPathState.provenanceRevision
+            accumulatedPinyinPaths = snapshot.paths
+            pinyinPathNextGlobalIndex = snapshot.paths.count
+            pinyinPathHasMore = false
+            pinyinPathCollectionView?.reloadData()
+        }
+        updateSelectPinyinButtonAvailability()
+    }
+
     func refreshT9PinyinPathBar() {
+        // Prefer full atomic publish when T9 composition is active.
+        if shouldPublishAtomicT9Presentation {
+            refreshT9PresentationFromCoreSnapshot()
+            return
+        }
         guard let bar = t9PinyinPathBarView else { return }
-        let state = controller.state.t9PinyinPathState
-        bar.setPaths(state.compactPaths, selected: state.selectedPath)
+        let snapshot = controller.t9CompositionPresentationSnapshot()
+        let selected = snapshot.paths.first { $0.id == snapshot.selectedPathID }
+        bar.setPaths(
+            snapshot.paths,
+            selected: selected,
+            compositionRevision: snapshot.revision
+        )
         t9SpaceButton?.setTitle(spaceButtonTitle, for: .normal)
         if let t9SpaceButton {
             configureKeyAccessibility(
@@ -68,10 +141,19 @@ extension KeyboardViewController {
         else {
             return
         }
-        // Fail closed: Core must have issued this path for the current generation.
-        guard controller.state.t9PinyinPathState.issuedReplacementKeys
-            .contains(path.replacementRawInput)
-        else {
+        // Fail closed: Core must have issued this path for the current revision.
+        let pathState = controller.state.t9PinyinPathState
+        let authorized =
+            pathState.issuedPathIDs.contains(path.id)
+            || pathState.issuedReplacementKeys.contains(path.replacementRawInput)
+            || pathState.compactPaths.contains {
+                $0.displayText == path.displayText
+                    && $0.replacementRawInput == path.replacementRawInput
+            }
+        guard authorized else { return }
+        if path.compositionRevision != 0,
+           path.compositionRevision != controller.state.compositionRevision
+        {
             return
         }
 
@@ -92,30 +174,15 @@ extension KeyboardViewController {
 
     func presentPinyinPathExpandedPanel() {
         isPinyinPathExpanded = true
-        // Bind panel to provenance revision (comment/window authority), not raw-only generation.
-        pinyinPathPanelGeneration = controller.state.t9PinyinPathState.provenanceRevision
-        // First window + bounded auto-advance while empty and discovery pending
-        // (sparse comments past hot-path peek must remain reachable).
-        var window = controller.t9PinyinPathWindow(
+        // Bind the panel to the same Core composition revision as marked text,
+        // candidates and compact paths.
+        let pathState = controller.state.t9PinyinPathState
+        pinyinPathPanelGeneration = pathState.compositionRevision
+        pinyinPathPanelProvenanceRevision = pathState.provenanceRevision
+        let window = controller.t9PinyinPathWindow(
             from: 0,
             limit: T9PinyinPathExtractor.panelWindowLimit
         )
-        var guardrails = 0
-        while window.paths.isEmpty,
-              window.hasMoreCandidates,
-              guardrails < 8
-        {
-            guardrails += 1
-            let next = controller.t9PinyinPathWindow(
-                from: window.nextGlobalIndex,
-                limit: T9PinyinPathExtractor.panelWindowLimit
-            )
-            if next.nextGlobalIndex <= window.nextGlobalIndex, next.paths.isEmpty {
-                break
-            }
-            window = next
-            if !next.paths.isEmpty { break }
-        }
         accumulatedPinyinPaths = window.paths
         pinyinPathNextGlobalIndex = window.nextGlobalIndex
         pinyinPathHasMore = window.hasMoreCandidates
@@ -196,10 +263,15 @@ extension KeyboardViewController {
 
     func refreshPinyinPathExpandedPanel() {
         guard isPinyinPathExpanded else { return }
-        let provenance = controller.state.t9PinyinPathState.provenanceRevision
-        if provenance != pinyinPathPanelGeneration {
-            // Provenance snapshot changed — rebuild accumulated paths from live windows.
-            pinyinPathPanelGeneration = provenance
+        let pathState = controller.state.t9PinyinPathState
+        let compositionRevision = pathState.compositionRevision
+        let provenanceRevision = pathState.provenanceRevision
+        if compositionRevision != pinyinPathPanelGeneration
+            || provenanceRevision != pinyinPathPanelProvenanceRevision
+        {
+            // Either the composition or its live RIME provenance changed.
+            pinyinPathPanelGeneration = compositionRevision
+            pinyinPathPanelProvenanceRevision = provenanceRevision
             let window = controller.t9PinyinPathWindow(
                 from: 0,
                 limit: T9PinyinPathExtractor.panelWindowLimit
@@ -211,11 +283,15 @@ extension KeyboardViewController {
         pinyinPathCollectionView?.reloadData()
     }
 
-    /// Provenance-revision-guarded lazy paging for the full path panel.
+    /// Composition-revision-guarded lazy paging for the full path panel.
     func loadMorePinyinPathsIfNeeded() {
         guard isPinyinPathExpanded, pinyinPathHasMore else { return }
-        let provenance = controller.state.t9PinyinPathState.provenanceRevision
-        guard provenance == pinyinPathPanelGeneration else {
+        let pathState = controller.state.t9PinyinPathState
+        let compositionRevision = pathState.compositionRevision
+        let provenanceRevision = pathState.provenanceRevision
+        guard compositionRevision == pinyinPathPanelGeneration,
+              provenanceRevision == pinyinPathPanelProvenanceRevision
+        else {
             refreshPinyinPathExpandedPanel()
             return
         }
@@ -224,7 +300,9 @@ extension KeyboardViewController {
             from: startIndex,
             limit: T9PinyinPathExtractor.panelWindowLimit
         )
-        guard window.provenanceRevision == provenance else {
+        guard window.compositionRevision == compositionRevision,
+              window.provenanceRevision == provenanceRevision
+        else {
             refreshPinyinPathExpandedPanel()
             return
         }

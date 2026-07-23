@@ -1,79 +1,71 @@
 import Foundation
 
 extension KeyboardController {
-    /// Read a bounded window of precise pinyin paths from Rime candidates.
-    /// UIKit must not parse comments itself. Issued keys are registered under the
-    /// current provenance revision (same raw snapshot).
+    /// ADR 0023: expanded-panel compatibility surface that **only** re-exports the
+    /// current catalog Path snapshot. It must not call `candidateWindow`, parse
+    /// comments into new Path authority, or issue comment-only replacements.
     public func t9PinyinPathWindow(
         from globalIndex: Int = 0,
         limit: Int = T9PinyinPathExtractor.panelWindowLimit
     ) -> T9PinyinPathWindow {
         let generation = state.t9PinyinPathState.rawInputGeneration
         let provenance = state.t9PinyinPathState.provenanceRevision
-        let raw = state.lastRimeOutput?.rawInput
-        guard usesT9InputSemantics,
-              T9CompositionCommitPolicy.isActiveT9Composition(
-                usesT9InputSemantics: usesT9InputSemantics,
-                rawInput: raw
-              ),
-              let engine = rimeEngine
-        else {
-            return T9PinyinPathWindow(
-                rawInputGeneration: generation,
-                provenanceRevision: provenance
-            )
-        }
-
-        let safeLimit = max(1, limit)
-        let window = engine.candidateWindow(from: max(0, globalIndex), limit: safeLimit)
-        var accumulator = T9PinyinPathWindow(
-            paths: [],
-            nextGlobalIndex: window.startIndex,
-            hasMoreCandidates: window.hasMoreCandidates,
+        let compositionRevision = state.compositionRevision
+        let catalogPaths = state.t9PinyinPathState.compactPaths
+        let safeLimit = max(0, limit)
+        let start = max(0, globalIndex)
+        let end = min(catalogPaths.count, start + safeLimit)
+        let slice = start < end ? Array(catalogPaths[start..<end]) : []
+        // Never register additional keys — issuance already happened when the
+        // catalog snapshot was published.
+        return T9PinyinPathWindow(
+            paths: slice,
+            nextGlobalIndex: end,
+            hasMoreCandidates: false,
+            compositionRevision: compositionRevision,
             rawInputGeneration: generation,
             provenanceRevision: provenance
         )
-        if let extended = T9PinyinPathExtractor.extendWindow(
-            accumulator,
-            with: window.candidates,
-            rawInput: raw,
-            nextIndex: window.nextIndex,
-            hasMoreCandidates: window.hasMoreCandidates,
-            expectedGeneration: generation
-        ) {
-            accumulator = T9PinyinPathWindow(
-                paths: extended.paths,
-                nextGlobalIndex: extended.nextGlobalIndex,
-                hasMoreCandidates: extended.hasMoreCandidates,
-                rawInputGeneration: generation,
-                provenanceRevision: provenance
-            )
-        }
+    }
 
-        if globalIndex <= 0, let pageCandidates = state.lastRimeOutput?.candidates, !pageCandidates.isEmpty {
-            let pagePaths = T9PinyinPathExtractor.paths(from: pageCandidates, rawInput: raw)
-            var seen = Set(pagePaths.map(\.replacementRawInput))
-            var merged = pagePaths
-            for path in accumulator.paths where seen.insert(path.replacementRawInput).inserted {
-                merged.append(path)
-            }
-            accumulator = T9PinyinPathWindow(
-                paths: merged,
-                nextGlobalIndex: accumulator.nextGlobalIndex,
-                hasMoreCandidates: accumulator.hasMoreCandidates,
-                rawInputGeneration: generation,
-                provenanceRevision: provenance
-            )
-        }
-
-        registerIssuedPaths(
-            accumulator.paths,
-            generation: generation,
-            provenanceRevision: provenance,
-            discoveryNextIndex: accumulator.nextGlobalIndex,
-            discoveryMayHaveMore: accumulator.hasMoreCandidates
+    /// Coherent T9 presentation for the current composition revision.
+    public func t9CompositionPresentationSnapshot() -> T9CompositionPresentationSnapshot {
+        let pathState = state.t9PinyinPathState
+        let source = pathState.segmentSourceDigits ?? ""
+        let confirmedLetters = T9PinyinPathExtractor.letterCount(
+            ofSyllables: pathState.confirmedSegmentValues
         )
-        return accumulator
+        let visible: String
+        if let partial = state.partialCommit {
+            visible = partial.displayText
+        } else if let output = state.lastRimeOutput,
+                  T9CompositionCommitPolicy.isActiveT9Composition(
+                    usesT9InputSemantics: usesT9InputSemantics,
+                    rawInput: output.rawInput
+                  )
+        {
+            visible = t9VisiblePreedit(for: output)
+        } else {
+            visible = state.insertedPreeditText
+        }
+        let output = state.lastRimeOutput
+        return T9CompositionPresentationSnapshot(
+            revision: state.compositionRevision,
+            sourceDigits: source,
+            rimeRawInput: output?.rawInput ?? pathState.trackedRawInput,
+            focusSlotStart: confirmedLetters,
+            focusSlotEnd: source.isEmpty ? 0 : source.count,
+            confirmedSyllables: pathState.confirmedSegmentValues,
+            lockedLetterPrefix: pathState.lockedLetterPrefix,
+            provisionalPathID: pathState.provisionalPathID,
+            selectedPathID: pathState.selectedPath?.id,
+            paths: pathState.compactPaths,
+            candidates: output?.candidates ?? [],
+            visiblePreedit: visible,
+            candidatePageNumber: output?.candidatePageNumber ?? 0,
+            hasMorePages: output?.hasMorePages ?? false,
+            compositionPreedit: output?.composition?.preeditText ?? ""
+        )
     }
 
     public func t9PinyinPathAvailability() -> T9PinyinPathAvailability {
@@ -124,12 +116,23 @@ extension KeyboardController {
 
     func handleSelectT9PinyinPath(_ path: T9PinyinPath) -> KeyboardEffect {
         // Direct path-bar tap: selecting a choice is a real confirmation.
-        handleSelectT9PinyinPath(path, autoAdvance: true)
+        let previousRaw = state.lastRimeOutput?.rawInput
+        let effects = handleSelectT9PinyinPath(path, autoAdvance: true)
+        #if DEBUG
+        if !effects.isEmpty {
+            gate5TraceComposition(
+                event: .pathSelect,
+                previousRaw: previousRaw,
+                note: "selectedKind=\(path.kind) selectedLength=\(path.displayText.count)"
+            )
+        }
+        #endif
+        return effects
     }
 
     /// - Parameter autoAdvance: `true` for direct path taps (select ⇒ confirm and
-    ///   advance when remaining digits exist). `false` for **选拼音** cycling, which
-    ///   only moves the tentative selection within the current focus.
+    ///   advance when remaining digits exist for **complete** syllables).
+    ///   Letter prefixes never auto-advance. `false` for **选拼音** cycling.
     private func handleSelectT9PinyinPath(
         _ path: T9PinyinPath,
         autoAdvance: Bool
@@ -146,29 +149,42 @@ extension KeyboardController {
             return []
         }
 
-        // Already tentative (e.g. after 选拼音): a direct tap confirms/advances.
+        // Stale revision / unauthorized path — fail closed.
+        let generation = state.t9PinyinPathState.rawInputGeneration
+        let provenance = state.t9PinyinPathState.provenanceRevision
+        guard generation > 0, provenance > 0 else { return [] }
+        // Authorization is issuance-only. Compatibility alone must never accept a
+        // path Core did not publish for this revision.
+        let authorized =
+            state.t9PinyinPathState.issuedPathIDs.contains(path.id)
+            || state.t9PinyinPathState.issuedReplacementKeys.contains(path.replacementRawInput)
+        guard authorized else { return [] }
+        // Stale-revision fail-closed: UI must re-read the current snapshot after
+        // every composition revision. Zero means "legacy unstamped test path" and
+        // is accepted only when the replacement key is currently issued.
+        if path.compositionRevision != 0,
+           path.compositionRevision != state.compositionRevision
+        {
+            return []
+        }
+
+        // Already selected path: second direct tap confirms/advances when allowed.
         if autoAdvance,
            path == state.t9PinyinPathState.selectedPath,
            isFocusedSegmentChoice(path, in: state.t9PinyinPathState),
            canConfirmAndAdvance(path, in: state.t9PinyinPathState)
         {
-            return confirmFocusedT9SegmentAndAdvance()
+            return confirmFocusedT9SegmentAndAdvance(
+                selected: path,
+                from: state.t9PinyinPathState
+            )
         }
 
-        let generation = state.t9PinyinPathState.rawInputGeneration
-        let provenance = state.t9PinyinPathState.provenanceRevision
-        guard generation > 0, provenance > 0 else { return [] }
-        guard state.t9PinyinPathState.issuedReplacementKeys.contains(path.replacementRawInput) else {
-            return []
-        }
         let isCurrentFocusedChoice = isFocusedSegmentChoice(
             path,
             in: state.t9PinyinPathState
         )
         if !isCurrentFocusedChoice {
-            // Flat paths still require position compatibility. Focused choices
-            // already carry a Core-issued full replacement (`m4`, `n'g`, etc.)
-            // and are validated transactionally against exact live RIME output.
             let compatibilityRaw = state.t9PinyinPathState.retainedChoiceSourceRawInput
                 ?? previousRaw
             guard T9PinyinPathExtractor.isCompatible(
@@ -177,6 +193,18 @@ extension KeyboardController {
             ) else {
                 return []
             }
+        }
+
+        // Direct path tap advances when remaining slots exist (complete syllables,
+        // or single-digit letter choices in progressive segment mode).
+        if autoAdvance,
+           isCurrentFocusedChoice,
+           canConfirmAndAdvance(path, in: state.t9PinyinPathState)
+        {
+            return confirmFocusedT9SegmentAndAdvance(
+                selected: path,
+                from: state.t9PinyinPathState
+            )
         }
 
         let previousMarked = state.insertedPreeditText
@@ -188,34 +216,85 @@ extension KeyboardController {
         let result = engine.replaceInput(path.replacementRawInput)
 
         if isExactSuccessfulT9Refinement(result: result, requestedPath: path) {
+            // Prefix-lock only when the *current focus* still has multiple digits
+            // (e.g. `28` → `b`). A single remaining focus digit after prior
+            // confirmations (`n` + `4` → `g`) is a segment choice, not a lock.
+            let remainingFocusDigits: Int = {
+                guard let source = previousPathState.segmentSourceDigits else { return 0 }
+                let confirmedLetters = T9PinyinPathExtractor.letterCount(
+                    ofSyllables: previousPathState.confirmedSegmentValues
+                )
+                return max(0, source.count - confirmedLetters)
+            }()
+            let isMultiDigitPrefixLock =
+                path.kind == .letterPrefix && remainingFocusDigits > 1
+
+            // Multi-digit letter prefixes lock the focus spelling (e.g. `28` → `b`).
+            // Single-digit m/n/o cycling keeps the full retained sibling set.
+            if isMultiDigitPrefixLock {
+                var transition = previousPathState
+                transition.lockedLetterPrefix = path.displayText
+                transition.selectedPath = path
+                state.t9PinyinPathState = transition
+            } else {
+                var transition = previousPathState
+                transition.lockedLetterPrefix = nil
+                state.t9PinyinPathState = transition
+            }
+
             let retainsSingleDigitChoices = previousPathState.retainedChoiceSourceRawInput != nil
-                && previousPathState.compactPaths.contains(path)
+                && previousPathState.compactPaths.contains {
+                    $0.displayText == path.displayText
+                }
             let retainsSegmentFocus = isFocusedSegmentChoice(path, in: previousPathState)
-            // Raw usually changes → hard provenance rebuild via refresh.
+
             applyRimeOutput(augmentRimeOutputIfNeeded(result))
-            if retainsSegmentFocus {
-                restoreSegmentFocusSnapshot(previousPathState, selectedPath: path)
+
+            if isMultiDigitPrefixLock {
+                // Prefix selection never advances; rebuild with lock + selected prefix.
+                state.t9PinyinPathState.lockedLetterPrefix = path.displayText
+                state.t9PinyinPathState.segmentSourceDigits =
+                    previousPathState.segmentSourceDigits
+                state.t9PinyinPathState.focusedSegmentIndex =
+                    previousPathState.focusedSegmentIndex
+                state.t9PinyinPathState.confirmedSegmentValues =
+                    previousPathState.confirmedSegmentValues
+                if let source = state.t9PinyinPathState.segmentSourceDigits {
+                    let built = buildProgressiveCompactPaths(
+                        sourceDigits: source,
+                        confirmedSyllables: state.t9PinyinPathState.confirmedSegmentValues,
+                        evidence: state.lastRimeOutput?.candidates ?? [],
+                        preferredSelected: path,
+                        lockedLetterPrefix: path.displayText
+                    )
+                    state.t9PinyinPathState.compactPaths = built.paths
+                    state.t9PinyinPathState.selectedPath = built.paths.first {
+                        $0.kind == .letterPrefix && $0.displayText == path.displayText
+                    } ?? path
+                    state.t9PinyinPathState.issuedReplacementKeys = Set(
+                        built.paths.map(\.replacementRawInput)
+                    )
+                    state.t9PinyinPathState.issuedPathIDs = Set(built.paths.map(\.id))
+                    state.t9PinyinPathState.discoveryMayHaveMore = false
+                    state.t9PinyinPathState.provisionalPathID = nil
+                }
             } else if retainsSingleDigitChoices {
                 restoreRetainedChoiceSnapshot(previousPathState, selectedPath: path)
-            } else if state.t9PinyinPathState.issuedReplacementKeys.contains(path.replacementRawInput) {
+                state.t9PinyinPathState.lockedLetterPrefix = nil
+            } else if retainsSegmentFocus {
+                restoreSegmentFocusSnapshot(previousPathState, selectedPath: path)
+                state.t9PinyinPathState.lockedLetterPrefix = nil
+            } else if state.t9PinyinPathState.issuedReplacementKeys.contains(
+                path.replacementRawInput
+            ) {
                 state.t9PinyinPathState.selectedPath = path
+                state.t9PinyinPathState.lockedLetterPrefix = nil
             }
+
             applySelectedT9PinyinPathDisplay(
                 path,
                 preservingVisibleRemainder: previousVisibleRemainder
             )
-
-            // Direct tap: one press both selects and confirms when more digits remain.
-            if autoAdvance,
-               let selected = state.t9PinyinPathState.selectedPath,
-               isFocusedSegmentChoice(selected, in: state.t9PinyinPathState),
-               canConfirmAndAdvance(selected, in: state.t9PinyinPathState)
-            {
-                let advanceEffects = confirmFocusedT9SegmentAndAdvance()
-                if !advanceEffects.isEmpty {
-                    return advanceEffects
-                }
-            }
 
             return .compositionChanged.union(.t9PinyinPathsChanged)
         }
@@ -231,7 +310,12 @@ extension KeyboardController {
     }
 
     func clearT9PinyinPathState() {
-        state.t9PinyinPathState = .empty
+        state.t9PinyinPathState = T9PinyinPathState(
+            // Empty Path state still belongs to the current composition. Its
+            // zero provenance invalidates any panel issued from a live snapshot
+            // while keeping repeated clears idempotent.
+            compositionRevision: state.compositionRevision
+        )
     }
 
     @discardableResult
@@ -246,6 +330,9 @@ extension KeyboardController {
             || state.t9PinyinPathState.focusedSegmentIndex != nil
             || !state.t9PinyinPathState.confirmedSegmentValues.isEmpty
             || !state.t9PinyinPathState.issuedReplacementKeys.isEmpty
+            || !state.t9PinyinPathState.issuedPathIDs.isEmpty
+            || state.t9PinyinPathState.lockedLetterPrefix != nil
+            || state.t9PinyinPathState.provisionalPathID != nil
             || state.t9PinyinPathState.discoveryMayHaveMore
         clearT9PinyinPathState()
         return had ? .t9PinyinPathsChanged : []
@@ -310,6 +397,7 @@ extension KeyboardController {
         let previousSelected = state.t9PinyinPathState.selectedPath
         let previousCompact = state.t9PinyinPathState.compactPaths
         let previousRetained = state.t9PinyinPathState.retainedChoiceSourceRawInput
+        let previousLockedPrefix = state.t9PinyinPathState.lockedLetterPrefix
         let normalizedRaw = T9PinyinPathExtractor.normalizeRawIdentity(raw)
         let rawChanged = previousGeneration == 0 || previousTracked != normalizedRaw
         let hardProvenance = forceNewProvenance || rawChanged
@@ -371,9 +459,8 @@ extension KeyboardController {
             // nested remainder `5` after selecting 球).
             let unresolvedTail = String(prev.dropFirst(confirmedLetters))
             guard !unresolvedTail.isEmpty,
-                  pureDigits.count <= unresolvedTail.count,
-                  (unresolvedTail == pureDigits
-                    || unresolvedTail.hasPrefix(pureDigits)
+                  pureDigits.count < unresolvedTail.count,
+                  (unresolvedTail.hasPrefix(pureDigits)
                     || unresolvedTail.hasSuffix(pureDigits))
             else { return nil }
             return String(prev.prefix(confirmedLetters)) + pureDigits
@@ -390,13 +477,38 @@ extension KeyboardController {
         var confirmedSegmentValues: [String] = []
         var retainedChoiceSourceRawInput: String? = deterministicPaths.isEmpty ? nil : normalizedRaw
         var selectedPath: T9PinyinPath?
+        var lockedLetterPrefix: String? = previousLockedPrefix
+        // Drop a locked prefix when the raw identity no longer starts with it.
+        if let locked = lockedLetterPrefix {
+            let letterIdentity = normalizedRaw.filter {
+                T9PinyinPathExtractor.isASCIILetter(
+                    $0.unicodeScalars.first ?? Unicode.Scalar(0)!
+                )
+            }
+            // Safer: check first letter slot of raw.
+            let firstLetter = normalizedRaw.unicodeScalars.first {
+                T9PinyinPathExtractor.isASCIILetter($0)
+            }.map { Character(T9PinyinPathExtractor.lowercaseASCIILetter($0)) }
+            if firstLetter.map(String.init) != locked {
+                // Still allow lock when pure digits remain and user just chose prefix
+                // (raw may still be digits until replaceInput lands). Keep lock only
+                // when raw is pure digits or begins with the locked letter.
+                let pure = T9PinyinPathExtractor.pureDigitRaw(normalizedRaw)
+                if pure.isEmpty {
+                    lockedLetterPrefix = nil
+                }
+            }
+            _ = letterIdentity
+        }
 
         if let nestedSource = nestedRemainderSource {
+            lockedLetterPrefix = nil
             let built = buildProgressiveCompactPaths(
                 sourceDigits: nestedSource,
                 confirmedSyllables: previousConfirmed,
                 evidence: output.candidates,
-                preferredSelected: nil
+                preferredSelected: nil,
+                lockedLetterPrefix: nil
             )
             paths = built.paths
             discoveryNext = built.discoveryNext
@@ -407,31 +519,90 @@ extension KeyboardController {
             selectedPath = nil
             retainedChoiceSourceRawInput = previousRetained
         } else if !deterministicPaths.isEmpty {
-            paths = deterministicPaths
+            // Single-digit focus: local catalog with key-group order preserved.
+            let built = buildProgressiveCompactPaths(
+                sourceDigits: pureDigits.isEmpty ? normalizedRaw : pureDigits,
+                confirmedSyllables: [],
+                evidence: output.candidates,
+                preferredSelected: previousSelected,
+                lockedLetterPrefix: lockedLetterPrefix
+            )
+            paths = built.paths.isEmpty ? deterministicPaths : built.paths
             discoveryMayHaveMore = false
             selectedPath = previousSelected.flatMap { selected in
                 paths.first { $0.displayText == selected.displayText }
             }
+            retainedChoiceSourceRawInput = pureDigits.count == 1 ? normalizedRaw : nil
+            segmentSourceDigits = pureDigits.isEmpty ? nil : pureDigits
+            focusedSegmentIndex = pureDigits.isEmpty ? nil : 0
+        } else if isWholeMultiDigit,
+                  !previousConfirmed.isEmpty,
+                  let prev = previousSegmentSource,
+                  !prev.isEmpty
+        {
+            // Human C / device: after typo Delete, RIME may re-emit a long pure-digit
+            // re-segmentation that is *not* the Core ledger. Never wipe confirmed Path
+            // identity from that untrusted resegment. Prefer pureDigits only when it is
+            // clearly prev / prev±1 digit; otherwise keep `prev` (append is applied by
+            // retainFocused after this refresh).
+            let ledger: String
+            if pureDigits == prev
+                || (pureDigits.hasPrefix(prev) && pureDigits.count == prev.count + 1)
+                || (prev.hasPrefix(pureDigits) && prev.count == pureDigits.count + 1)
+            {
+                ledger = pureDigits
+            } else {
+                ledger = prev
+            }
+            let built = buildProgressiveCompactPaths(
+                sourceDigits: ledger,
+                confirmedSyllables: previousConfirmed,
+                evidence: output.candidates,
+                preferredSelected: nil,
+                lockedLetterPrefix: nil
+            )
+            paths = built.paths
+            discoveryNext = built.discoveryNext
+            discoveryMayHaveMore = built.discoveryMayHaveMore
+            segmentSourceDigits = ledger
+            focusedSegmentIndex = previousConfirmed.count
+            confirmedSegmentValues = previousConfirmed
+            selectedPath = nil
+            retainedChoiceSourceRawInput = previousRetained
+            lockedLetterPrefix = nil
         } else if isWholeMultiDigit {
             let built = buildProgressiveCompactPaths(
                 sourceDigits: pureDigits,
                 confirmedSyllables: [],
                 evidence: output.candidates,
-                preferredSelected: previousSelected
+                preferredSelected: previousSelected,
+                lockedLetterPrefix: lockedLetterPrefix
             )
             paths = built.paths
             discoveryNext = built.discoveryNext
             discoveryMayHaveMore = built.discoveryMayHaveMore
             selectedPath = built.selectedPath
+            // Keep locked prefix only while raw still matches the prefix constraint.
+            if let locked = lockedLetterPrefix,
+               let first = normalizedRaw.unicodeScalars.first(where: {
+                   T9PinyinPathExtractor.isASCIILetter($0)
+               })
+            {
+                let letter = Character(T9PinyinPathExtractor.lowercaseASCIILetter(first))
+                if String(letter) != locked {
+                    lockedLetterPrefix = nil
+                }
+            }
         } else if let preserved = rebuildSegmentedPathsForMixedRaw(
             raw: normalizedRaw,
             output: output,
             previousSegmentSource: previousSegmentSource,
             previousConfirmed: previousConfirmed,
             previousCompact: previousCompact,
-            previousSelected: previousSelected
+            previousSelected: previousSelected,
+            lockedLetterPrefix: lockedLetterPrefix
         ) {
-            // Mixed refined raw (`qiu'53` / `qiu53`) must not collapse the Path
+            // Mixed refined raw (`qiu'53` / `b8`) must not collapse the Path
             // Bar to a single comment-derived label. Reuse the digit identity
             // that still owns the progressive focus (e.g. 74853 after 偷偷买).
             paths = preserved.paths
@@ -442,83 +613,97 @@ extension KeyboardController {
             confirmedSegmentValues = preserved.confirmedSegmentValues
             selectedPath = preserved.selectedPath
             retainedChoiceSourceRawInput = previousRetained
+            lockedLetterPrefix = preserved.lockedLetterPrefix
         } else {
-            // Non pure multi-digit without a preserved segment source: still
-            // comment-derived, but single-syllable labels only.
-            paths = T9PinyinPathExtractor.paths(
-                from: output.candidates,
-                rawInput: raw,
-                limit: T9PinyinPathExtractor.compactLimit
-            ).filter { !$0.displayText.contains(" ") }
-            discoveryMayHaveMore = true
-            if let engine = rimeEngine {
-                let window = engine.candidateWindow(
-                    from: 0,
-                    limit: T9PinyinPathExtractor.hotPathWindowLimit
+            // Fallback: derive digit focus identity if possible; else letter-only catalog.
+            let focusDigits = pureDigits.isEmpty
+                ? T9PinyinPathExtractor.pureDigitRaw(previousSegmentSource)
+                : pureDigits
+            if !focusDigits.isEmpty {
+                let confirmed = previousConfirmed
+                let built = buildProgressiveCompactPaths(
+                    sourceDigits: previousSegmentSource ?? focusDigits,
+                    confirmedSyllables: confirmed,
+                    evidence: output.candidates,
+                    preferredSelected: previousSelected,
+                    lockedLetterPrefix: lockedLetterPrefix
                 )
-                let more = T9PinyinPathExtractor.paths(from: window.candidates, rawInput: raw)
-                    .filter { !$0.displayText.contains(" ") }
-                var seen = Set(paths.map(\.replacementRawInput))
-                for path in more {
-                    if seen.insert(path.replacementRawInput).inserted,
-                       paths.count < T9PinyinPathExtractor.compactLimit
-                    {
-                        paths.append(path)
-                    }
-                }
-                discoveryNext = window.nextIndex
-                discoveryMayHaveMore = window.hasMoreCandidates
-            }
-            selectedPath = previousSelected.flatMap { selected in
-                issued.contains(selected.replacementRawInput)
-                    ? (paths.first { $0.replacementRawInput == selected.replacementRawInput } ?? selected)
-                    : paths.first { $0.displayText == selected.displayText }
+                paths = built.paths
+                discoveryNext = 0
+                discoveryMayHaveMore = false
+                segmentSourceDigits = previousSegmentSource ?? focusDigits
+                focusedSegmentIndex = confirmed.count
+                confirmedSegmentValues = confirmed
+                selectedPath = built.selectedPath
+            } else {
+                paths = []
+                discoveryMayHaveMore = false
+                selectedPath = nil
+                lockedLetterPrefix = nil
             }
         }
 
         for path in paths {
             issued.insert(path.replacementRawInput)
         }
-        if !paths.isEmpty, discoveryMayHaveMore {
-            discoveryMayHaveMore = discoveryMayHaveMore || discoveryNext > 0
+        let issuedIDs = Set(paths.map(\.id))
+        let provisionalID = selectedPath == nil ? paths.first?.id : nil
+        if selectedPath == nil,
+           let locked = lockedLetterPrefix,
+           let lockedPath = paths.first(where: {
+               $0.kind == .letterPrefix && $0.displayText == locked
+           })
+        {
+            selectedPath = lockedPath
         }
 
         let newState = T9PinyinPathState(
             compactPaths: paths,
             selectedPath: selectedPath,
+            compositionRevision: state.compositionRevision,
             rawInputGeneration: generation,
             provenanceRevision: provenance,
             trackedRawInput: normalizedRaw,
             issuedReplacementKeys: issued,
+            issuedPathIDs: issuedIDs,
             discoveryNextIndex: discoveryNext,
-            discoveryMayHaveMore: discoveryMayHaveMore,
+            discoveryMayHaveMore: false,
             retainedChoiceSourceRawInput: retainedChoiceSourceRawInput,
             segmentSourceDigits: segmentSourceDigits,
             focusedSegmentIndex: focusedSegmentIndex,
-            confirmedSegmentValues: confirmedSegmentValues
+            confirmedSegmentValues: confirmedSegmentValues,
+            lockedLetterPrefix: lockedLetterPrefix,
+            provisionalPathID: provisionalID
         )
         let changed = newState.compactPaths != state.t9PinyinPathState.compactPaths
             || newState.selectedPath != state.t9PinyinPathState.selectedPath
+            || newState.compositionRevision
+                != state.t9PinyinPathState.compositionRevision
             || newState.rawInputGeneration != previousGeneration
             || newState.provenanceRevision != previousProvenance
             || newState.issuedReplacementKeys != state.t9PinyinPathState.issuedReplacementKeys
+            || newState.issuedPathIDs != state.t9PinyinPathState.issuedPathIDs
             || newState.discoveryMayHaveMore != state.t9PinyinPathState.discoveryMayHaveMore
             || newState.retainedChoiceSourceRawInput
                 != state.t9PinyinPathState.retainedChoiceSourceRawInput
             || newState.segmentSourceDigits != state.t9PinyinPathState.segmentSourceDigits
             || newState.focusedSegmentIndex != state.t9PinyinPathState.focusedSegmentIndex
             || newState.confirmedSegmentValues != state.t9PinyinPathState.confirmedSegmentValues
+            || newState.lockedLetterPrefix != state.t9PinyinPathState.lockedLetterPrefix
+            || newState.provisionalPathID != state.t9PinyinPathState.provisionalPathID
         state.t9PinyinPathState = newState
         return changed
     }
 
-    /// Progressive compact paths for one focus: exact syllables first, then the
-    /// current key-group letters, capped at `compactLimit`.
+    /// Progressive paths for one focus from the local syllable catalog (ADR 0023).
+    /// RIME candidates supply ranking hints only — never Path legality.
+    /// No `candidateWindow` / spelling probe on this path.
     private func buildProgressiveCompactPaths(
         sourceDigits: String,
         confirmedSyllables: [String],
         evidence seedEvidence: [RimeCandidate],
-        preferredSelected: T9PinyinPath?
+        preferredSelected: T9PinyinPath?,
+        lockedLetterPrefix: String? = nil
     ) -> (
         paths: [T9PinyinPath],
         discoveryNext: Int,
@@ -532,68 +717,27 @@ extension KeyboardController {
             return ([], 0, false, nil)
         }
 
-        var evidence = seedEvidence
-        var discoveryNext = 0
-        var discoveryMayHaveMore = false
-        if let engine = rimeEngine {
-            let window = engine.candidateWindow(
-                from: 0,
-                limit: T9PinyinPathExtractor.hotPathWindowLimit
-            )
-            evidence.append(contentsOf: window.candidates)
-            discoveryNext = window.nextIndex
-            discoveryMayHaveMore = window.hasMoreCandidates
-        }
-
-        var syllablePaths = T9PinyinPathExtractor.progressiveSyllablePaths(
-            from: evidence,
-            sourceDigits: sourceDigits,
+        let hints = T9PinyinLocalPathCatalog.commentSyllableHints(
+            from: seedEvidence,
+            confirmedSyllables: confirmedSyllables
+        )
+        let merged = T9PinyinLocalPathCatalog.pathsForFocus(
+            focusDigits: remainingDigits,
+            lockedLetterPrefix: lockedLetterPrefix,
+            commentSyllableHints: hints,
             confirmedSyllables: confirmedSyllables,
-            limit: T9PinyinPathExtractor.compactLimit
+            sourceDigits: sourceDigits,
+            compositionRevision: state.compositionRevision
         )
-        let firstGroupLetters = remainingDigits.first.map(T9PinyinPathExtractor.keyLetters(forDigit:)) ?? []
-        let rank = Dictionary(
-            uniqueKeysWithValues: firstGroupLetters.enumerated().map { index, letter in
-                (letter, index)
-            }
-        )
-        syllablePaths.sort { lhs, rhs in
-            let left = lhs.displayText.first.flatMap { rank[$0] } ?? Int.max
-            let right = rhs.displayText.first.flatMap { rank[$0] } ?? Int.max
-            return left < right
-        }
-
-        let keyGroupPaths: [T9PinyinPath]
-        if confirmedSyllables.isEmpty {
-            keyGroupPaths = T9PinyinPathExtractor.firstKeyGroupPaths(sourceDigits: sourceDigits)
-        } else if let digit = remainingDigits.first {
-            let prefix = confirmedSyllables.joined(separator: "'")
-            let suffix = String(remainingDigits.dropFirst())
-            keyGroupPaths = T9PinyinPathExtractor.keyLetters(forDigit: digit).compactMap { letter in
-                let value = String(letter)
-                // Prefer exact syllables over redundant single-letter duplicates.
-                if syllablePaths.contains(where: { $0.displayText.hasPrefix(value) }) {
-                    return nil
-                }
-                let replacement = prefix + "'" + value + suffix
-                return T9PinyinPath(displayText: value, replacementRawInput: replacement)
-            }
-        } else {
-            keyGroupPaths = []
-        }
-
-        var merged: [T9PinyinPath] = []
-        var seenDisplays = Set<String>()
-        for path in syllablePaths + keyGroupPaths {
-            guard merged.count < T9PinyinPathExtractor.compactLimit else { break }
-            guard seenDisplays.insert(path.displayText).inserted else { continue }
-            merged.append(path)
-        }
 
         let selected = preferredSelected.flatMap { selected in
-            merged.first { $0.displayText == selected.displayText }
+            merged.first {
+                $0.displayText == selected.displayText && $0.kind == selected.kind
+            } ?? merged.first { $0.displayText == selected.displayText }
         }
-        return (merged, discoveryNext, discoveryMayHaveMore, selected)
+        // Path completeness is local-catalog only; never claim later candidate pages
+        // as Path discovery authority.
+        return (merged, 0, false, selected)
     }
 
     /// When live raw is no longer pure digits (path refine / anchored confirm),
@@ -605,7 +749,8 @@ extension KeyboardController {
         previousSegmentSource: String?,
         previousConfirmed: [String],
         previousCompact: [T9PinyinPath],
-        previousSelected: T9PinyinPath?
+        previousSelected: T9PinyinPath?,
+        lockedLetterPrefix: String?
     ) -> (
         paths: [T9PinyinPath],
         discoveryNext: Int,
@@ -613,11 +758,43 @@ extension KeyboardController {
         segmentSourceDigits: String,
         focusedSegmentIndex: Int,
         confirmedSegmentValues: [String],
-        selectedPath: T9PinyinPath?
+        selectedPath: T9PinyinPath?,
+        lockedLetterPrefix: String?
     )? {
         guard let previousSource = previousSegmentSource, !previousSource.isEmpty,
               previousSource.allSatisfy({ $0.isASCII && $0.isNumber })
         else { return nil }
+
+        // Letter-prefix refine such as `b8` / `b'8`: keep focus, locked prefix.
+        if let locked = lockedLetterPrefix,
+           let first = raw.unicodeScalars.first(where: T9PinyinPathExtractor.isASCIILetter)
+        {
+            let letter = Character(T9PinyinPathExtractor.lowercaseASCIILetter(first))
+            if String(letter) == locked {
+                let confirmed = previousConfirmed
+                let built = buildProgressiveCompactPaths(
+                    sourceDigits: previousSource,
+                    confirmedSyllables: confirmed,
+                    evidence: output.candidates,
+                    preferredSelected: previousSelected,
+                    lockedLetterPrefix: locked
+                )
+                guard !built.paths.isEmpty else { return nil }
+                let selected = built.paths.first {
+                    $0.kind == .letterPrefix && $0.displayText == locked
+                } ?? built.selectedPath
+                return (
+                    built.paths,
+                    0,
+                    false,
+                    previousSource,
+                    confirmed.count,
+                    confirmed,
+                    selected,
+                    locked
+                )
+            }
+        }
 
         // Pure letter refined raw (e.g. `qiu` after deleting every trailing slot
         // from `qiu'53`). There is no unresolved next-focus digit left — the
@@ -631,6 +808,7 @@ extension KeyboardController {
                 letterRaw: raw.lowercased(),
                 previousSource: previousSource,
                 evidence: output.candidates,
+                previousCompact: previousCompact,
                 previousSelected: previousSelected
             )
         }
@@ -658,6 +836,8 @@ extension KeyboardController {
         // Confirmed syllables already consume every live digit slot (no trailing
         // unresolved digits). Rebuild sibling choices for the last complete
         // syllable instead of publishing an empty / ghost next-focus bar.
+        // Never invent a preferred selection from `lastSyllable` — that auto-
+        // highlights chips after Delete (Human: qi selected without user tap).
         if remainingDigits.isEmpty {
             guard let lastSyllable = confirmed.last, !lastSyllable.isEmpty else { return nil }
             let syllableSource = String(previousSource.prefix(confirmedLetters))
@@ -666,11 +846,8 @@ extension KeyboardController {
                 letterRaw: lastSyllable,
                 previousSource: syllableSource,
                 evidence: output.candidates,
+                previousCompact: previousCompact,
                 previousSelected: previousSelected
-                    ?? T9PinyinPath(
-                        displayText: lastSyllable,
-                        replacementRawInput: lastSyllable
-                    )
             )
         }
 
@@ -678,7 +855,7 @@ extension KeyboardController {
         // is still on the same focus (no new confirmed boundary). That keeps
         // `qiu / shu / p / q / r` after selecting `qiu` when advance has not
         // moved focus yet.
-        if confirmed == previousConfirmed, !previousCompact.isEmpty {
+        if confirmed == previousConfirmed, !previousCompact.isEmpty, lockedLetterPrefix == nil {
             let remappedSnapshot = T9PinyinPathState(
                 compactPaths: previousCompact,
                 selectedPath: previousSelected,
@@ -698,7 +875,8 @@ extension KeyboardController {
                     source,
                     confirmed.count,
                     confirmed,
-                    selected
+                    selected,
+                    nil
                 )
             }
         }
@@ -707,7 +885,8 @@ extension KeyboardController {
             sourceDigits: source,
             confirmedSyllables: confirmed,
             evidence: output.candidates,
-            preferredSelected: previousSelected
+            preferredSelected: previousSelected,
+            lockedLetterPrefix: lockedLetterPrefix
         )
         guard !built.paths.isEmpty else { return nil }
         return (
@@ -717,16 +896,22 @@ extension KeyboardController {
             source,
             confirmed.count,
             confirmed,
-            built.selectedPath
+            built.selectedPath,
+            lockedLetterPrefix
         )
     }
 
     /// First-focus progressive choices for a letter-only refined syllable whose
     /// digit identity is the leading `letterRaw.count` slots of `previousSource`.
+    ///
+    /// Selection is preserved only when the user already had an explicit
+    /// `previousSelected` that still maps onto the rebuilt set. Letter raw alone
+    /// (e.g. engine/`replaceInput("qi")` after Delete) must **not** auto-select.
     private func rebuildLetterOnlySyllableFocusPaths(
         letterRaw: String,
         previousSource: String,
         evidence seedEvidence: [RimeCandidate],
+        previousCompact: [T9PinyinPath],
         previousSelected: T9PinyinPath?
     ) -> (
         paths: [T9PinyinPath],
@@ -735,7 +920,8 @@ extension KeyboardController {
         segmentSourceDigits: String,
         focusedSegmentIndex: Int,
         confirmedSegmentValues: [String],
-        selectedPath: T9PinyinPath?
+        selectedPath: T9PinyinPath?,
+        lockedLetterPrefix: String?
     )? {
         let letterCount = T9PinyinPathExtractor.asciiLetterCount(in: letterRaw)
         guard letterCount > 0, letterCount <= previousSource.count else { return nil }
@@ -744,44 +930,45 @@ extension KeyboardController {
               source.allSatisfy({ $0.isASCII && $0.isNumber })
         else { return nil }
 
-        // Letter-only sessions often lose multi-branch comments (`shu le` is gone
-        // after refining to `qiu`). Briefly probe the pure digit identity for this
-        // syllable group so the Path Bar regains the same surface as a standalone
-        // input of those digits, then restore the letter raw.
-        var evidence = seedEvidence
-        if let engine = rimeEngine {
-            let probe = engine.replaceInput(source)
-            if probe.committedText == nil,
-               probe.composition?.preeditText.isEmpty == false
-            {
-                evidence.append(contentsOf: probe.candidates)
-                evidence.append(contentsOf: engine.candidateWindow(
-                    from: 0,
-                    limit: T9PinyinPathExtractor.hotPathWindowLimit
-                ).candidates)
-            }
-            _ = engine.replaceInput(letterRaw)
-        }
-
-        let preferred = previousSelected
-            ?? T9PinyinPath(displayText: letterRaw, replacementRawInput: letterRaw)
         let built = buildProgressiveCompactPaths(
             sourceDigits: source,
             confirmedSyllables: [],
-            evidence: evidence,
-            preferredSelected: preferred
+            evidence: seedEvidence,
+            preferredSelected: previousSelected,
+            lockedLetterPrefix: nil
         )
-        guard !built.paths.isEmpty else { return nil }
-        let selected = built.paths.first { $0.displayText == letterRaw }
-            ?? built.selectedPath
+        // The previous compact choices were already issued for this digit
+        // identity. Reuse them as transition input instead of mutating the live
+        // session back to pure digits and restoring it.
+        let previousSnapshot = T9PinyinPathState(
+            compactPaths: previousCompact,
+            selectedPath: previousSelected,
+            segmentSourceDigits: source,
+            focusedSegmentIndex: 0
+        )
+        let remapped = canonicalFocusedSegmentChoices(from: previousSnapshot)
+        var paths = built.paths
+        var seen = Set(paths.map(\.displayText))
+        for path in remapped {
+            if seen.insert(path.displayText).inserted {
+                paths.append(path)
+            }
+        }
+        guard !paths.isEmpty else { return nil }
+        // Only remap a user-owned selection. Do not treat engine letter raw as selected.
+        let selected = previousSelected.flatMap { sel in
+            paths.first { $0.displayText == sel.displayText && $0.kind == sel.kind }
+                ?? paths.first { $0.displayText == sel.displayText }
+        }
         return (
-            built.paths,
+            paths,
             built.discoveryNext,
             built.discoveryMayHaveMore,
             source,
             0,
             [],
-            selected
+            selected,
+            nil
         )
     }
 
@@ -836,11 +1023,16 @@ extension KeyboardController {
         selectedPath: T9PinyinPath?
     ) {
         guard snapshot.retainedChoiceSourceRawInput != nil else { return }
-        state.t9PinyinPathState.compactPaths = snapshot.compactPaths
-        state.t9PinyinPathState.selectedPath = selectedPath
+        let restamped = restampPaths(snapshot.compactPaths)
+        state.t9PinyinPathState.compactPaths = restamped
+        state.t9PinyinPathState.selectedPath = selectedPath.flatMap { selected in
+            restamped.first { $0.displayText == selected.displayText && $0.kind == selected.kind }
+                ?? restamped.first { $0.displayText == selected.displayText }
+        }
         state.t9PinyinPathState.issuedReplacementKeys = Set(
-            snapshot.compactPaths.map(\.replacementRawInput)
+            restamped.map(\.replacementRawInput)
         )
+        state.t9PinyinPathState.issuedPathIDs = Set(restamped.map(\.id))
         state.t9PinyinPathState.discoveryNextIndex = 0
         state.t9PinyinPathState.discoveryMayHaveMore = false
         state.t9PinyinPathState.retainedChoiceSourceRawInput =
@@ -848,6 +1040,11 @@ extension KeyboardController {
         state.t9PinyinPathState.segmentSourceDigits = snapshot.segmentSourceDigits
         state.t9PinyinPathState.focusedSegmentIndex = snapshot.focusedSegmentIndex
         state.t9PinyinPathState.confirmedSegmentValues = snapshot.confirmedSegmentValues
+        state.t9PinyinPathState.lockedLetterPrefix = snapshot.lockedLetterPrefix
+        state.t9PinyinPathState.provisionalPathID = state.t9PinyinPathState.selectedPath == nil
+            ? restamped.first?.id
+            : nil
+        state.t9PinyinPathState.compositionRevision = state.compositionRevision
     }
 
     /// Preserve the focused key group while its full replacement raw changes.
@@ -857,15 +1054,17 @@ extension KeyboardController {
         _ snapshot: T9PinyinPathState,
         selectedPath: T9PinyinPath?
     ) {
-        let choices = focusedSegmentChoices(from: snapshot)
+        let choices = restampPaths(focusedSegmentChoices(from: snapshot))
         guard !choices.isEmpty else { return }
         state.t9PinyinPathState.compactPaths = choices
         state.t9PinyinPathState.selectedPath = selectedPath.flatMap { selected in
-            choices.first { $0.displayText == selected.displayText }
+            choices.first { $0.displayText == selected.displayText && $0.kind == selected.kind }
+                ?? choices.first { $0.displayText == selected.displayText }
         }
         state.t9PinyinPathState.issuedReplacementKeys = Set(
             choices.map(\.replacementRawInput)
         )
+        state.t9PinyinPathState.issuedPathIDs = Set(choices.map(\.id))
         state.t9PinyinPathState.discoveryNextIndex = 0
         state.t9PinyinPathState.discoveryMayHaveMore = false
         state.t9PinyinPathState.retainedChoiceSourceRawInput =
@@ -873,6 +1072,28 @@ extension KeyboardController {
         state.t9PinyinPathState.segmentSourceDigits = snapshot.segmentSourceDigits
         state.t9PinyinPathState.focusedSegmentIndex = snapshot.focusedSegmentIndex
         state.t9PinyinPathState.confirmedSegmentValues = snapshot.confirmedSegmentValues
+        state.t9PinyinPathState.lockedLetterPrefix = snapshot.lockedLetterPrefix
+        state.t9PinyinPathState.provisionalPathID = state.t9PinyinPathState.selectedPath == nil
+            ? choices.first?.id
+            : nil
+        state.t9PinyinPathState.compositionRevision = state.compositionRevision
+    }
+
+    /// Restamps path compositionRevision to the live controller revision so
+    /// post-restore selections pass the Core stale-revision guard.
+    private func restampPaths(_ paths: [T9PinyinPath]) -> [T9PinyinPath] {
+        let revision = state.compositionRevision
+        return paths.map { path in
+            T9PinyinPath(
+                kind: path.kind,
+                consumedSlotCount: path.consumedSlotCount,
+                displayText: path.displayText,
+                replacementRawInput: path.replacementRawInput,
+                compositionRevision: revision,
+                focusSlotStart: path.focusSlotStart,
+                focusSlotEnd: path.focusSlotEnd
+            )
+        }
     }
 
     /// Called after a selected segment receives another nine-key digit. The live
@@ -884,90 +1105,267 @@ extension KeyboardController {
         digit: Character
     ) -> Bool {
         guard digit.isASCII, digit.isNumber,
-              let source = snapshot.segmentSourceDigits,
-              snapshot.focusedSegmentIndex != nil,
-              let selected = snapshot.selectedPath,
-              isFocusedSegmentChoice(selected, in: snapshot)
+              var identity = T9CompositionIdentity.from(pathState: snapshot),
+              let appended = identity.appendingDigit(digit)
         else { return false }
+        identity = appended
 
-        var extended = snapshot
-        extended.segmentSourceDigits = source + String(digit)
-        extended.retainedChoiceSourceRawInput = nil
-        let previouslyAuthorizedValues = Set(snapshot.compactPaths.map(\.displayText))
-        extended.compactPaths = canonicalFocusedSegmentChoices(from: extended).filter {
-            previouslyAuthorizedValues.contains($0.displayText)
+        // With a selected focused choice: keep it if still authorized on the extended source.
+        if let selected = snapshot.selectedPath,
+           isFocusedSegmentChoice(selected, in: snapshot)
+        {
+            var extended = snapshot
+            extended.segmentSourceDigits = identity.sourceDigits
+            extended.confirmedSegmentValues = identity.confirmedSyllables
+            extended.focusedSegmentIndex = identity.focusedSegmentIndex
+            extended.retainedChoiceSourceRawInput = nil
+            let previouslyAuthorizedValues = Set(snapshot.compactPaths.map(\.displayText))
+            extended.compactPaths = canonicalFocusedSegmentChoices(from: extended).filter {
+                previouslyAuthorizedValues.contains($0.displayText)
+            }
+            extended.issuedReplacementKeys = Set(extended.compactPaths.map(\.replacementRawInput))
+            guard let remappedSelection = extended.compactPaths.first(where: {
+                $0.displayText == selected.displayText
+            }) else {
+                // Selected label invalid after append — still advance source identity.
+                installIdentityAsPathState(identity)
+                _ = resyncRimeCompositionFromT9Identity()
+                return true
+            }
+            restoreSegmentFocusSnapshot(extended, selectedPath: remappedSelection)
+            return true
         }
-        extended.issuedReplacementKeys = Set(extended.compactPaths.map(\.replacementRawInput))
-        guard let remappedSelection = extended.compactPaths.first(where: {
-            $0.displayText == selected.displayText
-        }) else { return false }
 
-        restoreSegmentFocusSnapshot(extended, selectedPath: remappedSelection)
+        // Confirmed Path: advance sourceDigits and rebuild focus from Core identity.
+        if !snapshot.confirmedSegmentValues.isEmpty {
+            installIdentityAsPathState(identity)
+            _ = resyncRimeCompositionFromT9Identity()
+            return true
+        }
+
+        // Human retest #5–#6: provisional multi-digit progressive input (including
+        // short standalone `da`/`dao`) treats Core `sourceDigits` as SoT. Otherwise
+        // RIME may show `dao` while Path bar stays on a stale 2-slot focus
+        // (`da/fa/e/d/f` or similar). Single-digit first key still uses normal refresh.
+        guard identity.confirmedSyllables.isEmpty,
+              identity.sourceDigits.count > 1
+        else { return false }
+        installIdentityAsPathState(identity)
+        _ = resyncRimeCompositionFromT9Identity()
         return true
     }
 
+    /// Delete one real digit slot from Core-owned T9 identity.
+    ///
+    /// Human Gate 2026-07-23: after Path selects `qing/wei`, Delete could stick at
+    /// letter morphologies like `qingweie` when only `engine.deleteBackward` ran.
+    /// Core peels `sourceDigits` first, then resyncs RIME.
+    ///
+    /// Human retest #5–#6: peel **any unconfirmed multi-digit** progressive
+    /// composition (`sourceDigits.count > 1`), including short `da`→JKL→删→MNO,
+    /// so Path ledger matches host/`dao` candidates. Single-digit stays elsewhere.
+    func handleT9CompositionIdentityDeleteIfNeeded(
+        using engine: RimeEngine
+    ) -> KeyboardEffect? {
+        guard usesT9InputSemantics,
+              state.partialCommit == nil,
+              var identity = T9CompositionIdentity.from(pathState: state.t9PinyinPathState),
+              (!identity.confirmedSyllables.isEmpty || identity.sourceDigits.count > 1)
+        else { return nil }
+
+        let previousRaw = state.lastRimeOutput?.rawInput
+        guard let deleted = identity.deletingLastDigit() else {
+            engine.resetSession()
+            state.currentComposition = ""
+            state.lastRimeOutput = nil
+            state.partialCommit = nil
+            clearInlinePreedit()
+            clearTypoCorrectionSuggestions()
+            #if DEBUG
+            gate5TraceComposition(
+                event: .deleteBackward,
+                previousRaw: previousRaw,
+                note: "branch=identityDelete emptied=true"
+            )
+            #endif
+            return .compositionChanged.union(clearT9PinyinPathStateReturningEffect())
+        }
+
+        identity = deleted
+        // Never keep a stale selected Path chip after identity peel (Human: qing
+        // appeared selected after deleting back to a single confirmed syllable).
+        installIdentityAsPathState(identity)
+        var pathState = state.t9PinyinPathState
+        pathState.selectedPath = nil
+        state.t9PinyinPathState = pathState
+        _ = resyncRimeCompositionFromT9Identity()
+        clearTypoCorrectionSuggestions()
+        #if DEBUG
+        gate5TraceComposition(
+            event: .deleteBackward,
+            previousRaw: previousRaw,
+            note: "branch=identityDelete success=true confCount=\(identity.confirmedSyllables.count)"
+        )
+        #endif
+        return .compositionChanged.union(.t9PinyinPathsChanged)
+    }
+
     /// Reverse the most recent pending digit/focus transition after RIME has
-    /// already deleted one raw unit. This keeps the prior focused choice exact
-    /// instead of rebuilding a flat path snapshot from candidate comments.
+    /// already deleted one raw unit. Uses `T9CompositionIdentity` (β-limited)
+    /// instead of letter-budget heuristics alone.
     @discardableResult
     func restoreFocusedT9SegmentAfterDeletion(
         previous snapshot: T9PinyinPathState
     ) -> Bool {
-        guard let source = snapshot.segmentSourceDigits,
-              source.count > 1,
-              snapshot.focusedSegmentIndex != nil
+        guard var identity = T9CompositionIdentity.from(pathState: snapshot),
+              let deleted = identity.deletingLastDigit()
         else { return false }
 
+        identity = deleted
         var restored = snapshot
-        let shortenedSource = String(source.dropLast())
-        restored.segmentSourceDigits = shortenedSource
-        var confirmed = snapshot.confirmedSegmentValues
-        var selectedValue = snapshot.selectedPath?.displayText
-
-        func lettersBudget() -> Int {
-            T9PinyinPathExtractor.letterCount(ofSyllables: confirmed)
-                + (selectedValue.map { T9PinyinPathExtractor.asciiLetterCount(in: $0) } ?? 0)
-        }
-
-        // Drop trailing focus/confirmed syllables that no longer fit the shortened
-        // digit sequence (syllables may consume multiple digits).
-        while lettersBudget() > shortenedSource.count {
-            if selectedValue != nil {
-                selectedValue = nil
-                continue
-            }
-            guard let prior = confirmed.popLast() else { return false }
-            selectedValue = prior
-        }
-
-        restored.confirmedSegmentValues = confirmed
-        restored.focusedSegmentIndex = confirmed.count
+        restored.segmentSourceDigits = identity.sourceDigits
+        restored.confirmedSegmentValues = identity.confirmedSyllables
+        restored.focusedSegmentIndex = identity.focusedSegmentIndex
         restored.retainedChoiceSourceRawInput = nil
+        let selectedValue = snapshot.selectedPath?.displayText
 
         // Prefer remapping previously authorized labels; if the focus emptied,
         // fall back to first-key-group letters for multi-digit whole mode.
         var remapped = canonicalFocusedSegmentChoices(from: restored)
-        if remapped.isEmpty, confirmed.isEmpty, shortenedSource.count > 1 {
-            remapped = T9PinyinPathExtractor.firstKeyGroupPaths(sourceDigits: shortenedSource)
-        } else if remapped.isEmpty, confirmed.isEmpty, shortenedSource.count == 1 {
+        if remapped.isEmpty, identity.confirmedSyllables.isEmpty, identity.sourceDigits.count > 1 {
+            remapped = T9PinyinPathExtractor.firstKeyGroupPaths(sourceDigits: identity.sourceDigits)
+        } else if remapped.isEmpty, identity.confirmedSyllables.isEmpty, identity.sourceDigits.count == 1 {
             remapped = T9PinyinPathExtractor.deterministicSingleDigitPaths(
-                rawInput: shortenedSource
+                rawInput: identity.sourceDigits
             )
         }
         restored.compactPaths = remapped
         restored.issuedReplacementKeys = Set(remapped.map(\.replacementRawInput))
+        restored.issuedPathIDs = Set(remapped.map(\.id))
+        restored.provisionalPathID = remapped.first?.id
 
-        guard let selectedValue,
-              let selected = remapped.first(where: { $0.displayText == selectedValue })
-        else {
-            // Deletion may clear selection while keeping sibling choices visible.
-            guard !remapped.isEmpty else { return false }
+        if let selectedValue,
+           let selected = remapped.first(where: { $0.displayText == selectedValue })
+        {
+            restoreSegmentFocusSnapshot(restored, selectedPath: selected)
+            applySelectedT9PinyinPathDisplay(selected)
+            if !identity.confirmedSyllables.isEmpty {
+                _ = resyncRimeCompositionFromT9Identity()
+            }
+        } else {
+            guard !remapped.isEmpty || !identity.confirmedSyllables.isEmpty else { return false }
             restoreSegmentFocusSnapshot(restored, selectedPath: nil)
-            return true
+            // Re-sync RIME only when Path has confirmed syllables (Core is SoT).
+            // Provisional-only multi-digit stays on engine output to avoid digit host leak.
+            if !identity.confirmedSyllables.isEmpty {
+                _ = resyncRimeCompositionFromT9Identity()
+            }
         }
+        return true
+    }
 
-        restoreSegmentFocusSnapshot(restored, selectedPath: selected)
-        applySelectedT9PinyinPathDisplay(selected)
+    /// Rebuild librime composition from Core-owned digit + confirmed Path identity.
+    /// Prevents host-visible fan-fan morphology after typo Delete when the engine
+    /// returns a re-segmented pure-digit comment that disagrees with Path state.
+    ///
+    /// Human 2026-07-23: when peeling to pure digits only, prefer the provisional
+    /// catalog letter raw (e.g. `qin`) over bare `746`, otherwise candidates become
+    /// 手/瘦 (shou) while Path correctly lists qin/pin.
+    @discardableResult
+    func resyncRimeCompositionFromT9Identity() -> Bool {
+        guard usesT9InputSemantics,
+              let identity = T9CompositionIdentity.from(pathState: state.t9PinyinPathState),
+              let engine = rimeEngine
+        else { return false }
+
+        // Rebuild Path first so provisional letter paths exist for RIME raw choice.
+        installIdentityAsPathState(identity)
+        var pathState = state.t9PinyinPathState
+        pathState.selectedPath = nil
+        pathState.lockedLetterPrefix = nil
+        state.t9PinyinPathState = pathState
+
+        let plan = identity.focusPathPlan()
+        let raw: String
+        if !plan.pathConfirmedSyllables.isEmpty {
+            let rem = plan.focusDigits
+            if rem.isEmpty {
+                raw = plan.pathConfirmedSyllables.joined(separator: "'")
+            } else if let refocus = plan.refocusedSyllable,
+                      plan.focusDigits.count == T9PinyinPathExtractor.asciiLetterCount(in: refocus)
+            {
+                // Re-focusing last syllable: confirm prefix + letter form of last
+                // when we have a catalog path; else prefix + digit tail.
+                let focusLetter = state.t9PinyinPathState.compactPaths
+                    .first(where: { $0.displayText == refocus })?
+                    .displayText
+                    ?? state.t9PinyinPathState.compactPaths.first?.displayText
+                if let focusLetter,
+                   !focusLetter.isEmpty,
+                   focusLetter.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter)
+                {
+                    raw = (plan.pathConfirmedSyllables + [focusLetter]).joined(separator: "'")
+                } else {
+                    raw = plan.pathConfirmedSyllables.joined(separator: "'") + "'" + rem
+                }
+            } else {
+                // Human: remaining focus must match standalone short-composition
+                // behavior (da + typo + Delete + o → dao). Prefer a catalog-complete
+                // letter covering the whole remaining run; otherwise conf + digits.
+                raw = refinedConfirmedPlusRemainingRaw(
+                    confirmed: plan.pathConfirmedSyllables,
+                    remainingDigits: rem,
+                    focusPaths: state.t9PinyinPathState.compactPaths
+                )
+            }
+        } else if identity.sourceDigits.count <= 3 {
+            // Short unconfirmed (qi / da / dao / to):
+            // - unique complete covering all slots → letter raw (`to`, sole `da`)
+            // - ambiguous multi completes (`dao`/`dan`/`fan` on 326) → pure digits
+            //   so Path stays on the full ledger (Human H5-C: not stuck on 2-slot bar)
+            // Never use letterPrefix replacement like `t6` as the whole raw.
+            raw = shortUnconfirmedResyncRaw(
+                sourceDigits: identity.sourceDigits,
+                focusPaths: state.t9PinyinPathState.compactPaths
+            )
+        } else {
+            // Human C: after Delete, longer unconfirmed compositions return to pure
+            // digit input mode so retyping matches first-entry Path discovery.
+            // Letter-refined provisional raw (qing934…) can lock a wrong morphology
+            // and discard the unresolved tail when the user continues typing.
+            raw = identity.sourceDigits
+        }
+        guard !raw.isEmpty else { return false }
+        let output = engine.replaceInput(raw)
+        // Keep Path identity; do not let applyRimeOutput wipe conf via resegment.
+        let preserved = state.t9PinyinPathState
+        state.lastRimeOutput = output
+        state.currentComposition = raw
+        state.t9PinyinPathState = preserved
+
+        let projected = t9VisiblePreedit(for: output)
+        let hostText: String
+        if !projected.isEmpty,
+           !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+        {
+            hostText = projected
+        } else {
+            let labels = plan.pathConfirmedSyllables
+            let focusLabel = plan.refocusedSyllable
+                ?? state.t9PinyinPathState.compactPaths.first?.displayText
+            if let focusLabel, !focusLabel.isEmpty {
+                hostText = (labels + [focusLabel]).joined(separator: " ")
+            } else if !labels.isEmpty {
+                hostText = labels.joined(separator: " ")
+            } else {
+                hostText = projected
+            }
+        }
+        if !hostText.isEmpty,
+           !hostText.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+        {
+            updateInlinePreedit(hostText, source: .compositionProjection)
+        }
         return true
     }
 
@@ -975,6 +1373,10 @@ extension KeyboardController {
         _ path: T9PinyinPath,
         in snapshot: T9PinyinPathState
     ) -> Bool {
+        // PD-004 / ADR 0023: letter prefixes only lock spelling; they never
+        // confirm or advance. Only catalog-legal complete syllables advance
+        // (single-digit key groups classify via catalog membership).
+        guard path.kind == .completeSyllable else { return false }
         guard let source = snapshot.segmentSourceDigits else { return false }
         return T9PinyinPathExtractor.canAdvanceAfterConfirming(
             selectedDisplay: path.displayText,
@@ -983,21 +1385,22 @@ extension KeyboardController {
         )
     }
 
-    private func confirmFocusedT9SegmentAndAdvance() -> KeyboardEffect {
+    private func confirmFocusedT9SegmentAndAdvance(
+        selected: T9PinyinPath,
+        from previousPathState: T9PinyinPathState
+    ) -> KeyboardEffect {
         guard let engine = rimeEngine,
               let previousOutput = state.lastRimeOutput,
               let previousRaw = previousOutput.rawInput,
-              let source = state.t9PinyinPathState.segmentSourceDigits,
-              state.t9PinyinPathState.focusedSegmentIndex != nil,
-              let selected = state.t9PinyinPathState.selectedPath,
-              canConfirmAndAdvance(selected, in: state.t9PinyinPathState)
+              let source = previousPathState.segmentSourceDigits,
+              previousPathState.focusedSegmentIndex != nil,
+              canConfirmAndAdvance(selected, in: previousPathState)
         else { return [] }
 
         let previousMarked = state.insertedPreeditText
         let previousVisibleRemainder = state.partialCommit?.remainingPreeditText
             ?? previousMarked
         let previousComposition = state.currentComposition
-        let previousPathState = state.t9PinyinPathState
         var confirmed = previousPathState.confirmedSegmentValues
         confirmed.append(selected.displayText)
         let nextFocus = confirmed.count
@@ -1005,196 +1408,58 @@ extension KeyboardController {
         let remainingDigits = String(source.dropFirst(confirmedLetters))
         guard !remainingDigits.isEmpty else { return [] }
 
-        // Preserve the bounded pre-anchor window as supplementary evidence.
-        // It may contain a lower-ranked path such as `qiu le` that disappears
-        // after the confirmed-prefix boundary reranks the live candidate page.
-        // All consumers below still require confirmed-prefix inheritance, so
-        // unrelated `tian ...` comments cannot authorize a later focus.
-        var preAnchorEvidence: [RimeCandidate] = []
-        if state.partialCommit != nil {
-            preAnchorEvidence = previousOutput.candidates
-            preAnchorEvidence.append(contentsOf: engine.candidateWindow(
-                from: 0,
-                limit: T9PinyinPathExtractor.panelWindowLimit
-            ).candidates)
-        }
-
-        // Partial Commit must keep the live RIME session on the same syllable
-        // branch the user explicitly confirmed. A mixed raw such as `qiu53`
-        // can still be re-segmented by RIME as `tian le`; inserting the
-        // apostrophe boundary (`qiu'53`) makes both candidates and marked text
-        // inherit the confirmed prefix. If RIME cannot realize that boundary,
-        // the whole transition rolls back instead of publishing split state.
-        let baseRaw: String
-        let baseOutput: RimeOutput
-        if state.partialCommit != nil {
-            let anchoredRaw = confirmed.joined(separator: "'") + "'" + remainingDigits
-            let anchoredOutput = engine.replaceInput(anchoredRaw)
-            let anchoredIdentity = T9PinyinPathExtractor.normalizeRawIdentity(anchoredOutput.rawInput)
-            let requestedIdentity = T9PinyinPathExtractor.normalizeRawIdentity(anchoredRaw)
-            guard isUsableT9SessionOutput(anchoredOutput),
-                  anchoredIdentity == requestedIdentity,
-                  T9PinyinPathExtractor.pathPreservingConfirmedPrefix(
-                    from: anchoredOutput.candidates,
-                    confirmedSyllables: confirmed
-                  ) != nil
-            else {
-                return rollbackT9PinyinRefinement(
-                    engine: engine,
-                    previous: previousOutput,
-                    previousRaw: previousRaw,
-                    previousMarked: previousMarked,
-                    previousComposition: previousComposition,
-                    previousPathState: previousPathState
-                )
-            }
-            baseRaw = anchoredRaw
-            baseOutput = anchoredOutput
-        } else {
-            baseRaw = previousRaw
-            baseOutput = previousOutput
-        }
-
-        // Gather live comment evidence under the current refined raw, then
-        // restore the exact confirmed-prefix base raw after every probe.
-        var evidence = baseOutput.candidates
-        let window = engine.candidateWindow(
-            from: 0,
-            limit: T9PinyinPathExtractor.panelWindowLimit
-        )
-        evidence.append(contentsOf: window.candidates)
-        evidence.append(contentsOf: preAnchorEvidence)
-
-        var authorized = T9PinyinPathExtractor.progressiveSyllablePaths(
-            from: evidence,
-            sourceDigits: source,
+        // Confirming a segment changes the live raw at most once. A partial
+        // composition receives an explicit apostrophe boundary (`qiu'53`);
+        // otherwise the Core-issued replacement (`ni94` / `n'g5`) is already exact.
+        // Remaining focus prefers letter form when a complete path covers it
+        // (standalone da parity inside a multi-syllable sentence).
+        let needsExplicitTrailingBoundary = state.partialCommit != nil
+            || !previousPathState.confirmedSegmentValues.isEmpty
+        let focusPathsForRemaining = T9PinyinLocalPathCatalog.pathsForFocus(
+            focusDigits: remainingDigits,
+            lockedLetterPrefix: nil,
+            commentSyllableHints: T9PinyinLocalPathCatalog.commentSyllableHints(
+                from: previousOutput.candidates,
+                confirmedSyllables: confirmed
+            ),
             confirmedSyllables: confirmed,
-            limit: T9PinyinPathExtractor.compactLimit
+            sourceDigits: source,
+            compositionRevision: state.compositionRevision
         )
-
-        // Live-probe each syllable path; only exact raw + usable composition survive.
-        authorized = authorized.filter { path in
-            let probe = engine.replaceInput(path.replacementRawInput)
-            defer { _ = engine.replaceInput(baseRaw) }
-            guard isExactSuccessfulT9Refinement(result: probe, requestedPath: path) else {
-                return false
+        let boundaryRaw = refinedConfirmedPlusRemainingRaw(
+            confirmed: confirmed,
+            remainingDigits: remainingDigits,
+            focusPaths: focusPathsForRemaining
+        )
+        let requestedRaw: String
+        if needsExplicitTrailingBoundary {
+            // Prefer a Core-issued replacement only when it already contains the
+            // apostrophe boundary form (e.g. `n'g5`, `qing'wei'…`). Bare letter+digit
+            // concatenations like `qiu53` must become `qiu'53` under partial commit
+            // so the confirmed syllable stays anchored.
+            if selected.replacementRawInput.contains("'"),
+               selected.replacementRawInput.hasSuffix(remainingDigits)
+            {
+                requestedRaw = selected.replacementRawInput
+            } else {
+                requestedRaw = boundaryRaw
             }
-            // Later focuses require the exact syllable in live comments.
-            if nextFocus > 0 {
-                let probeEvidence = probe.candidates + engine.candidateWindow(
-                    from: 0,
-                    limit: T9PinyinPathExtractor.hotPathWindowLimit
-                ).candidates
-                return T9PinyinPathExtractor.candidateCommentsAuthorizeExactSegment(
-                    probeEvidence,
-                    segmentIndex: nextFocus,
-                    syllable: path.displayText,
-                    confirmedSyllables: confirmed
-                )
-                    || T9PinyinPathExtractor.candidateCommentsAuthorizeExactSegment(
-                        evidence,
-                        segmentIndex: nextFocus,
-                        syllable: path.displayText,
-                        confirmedSyllables: confirmed
-                    )
-            }
-            return true
+        } else {
+            requestedRaw = selected.replacementRawInput
         }
-
-        // Amendment F: a sparse/reranked candidate window must not reduce the
-        // Path Bar to one complete syllable plus raw key letters. Explore a
-        // strictly bounded set of spellings for the unresolved digit prefix
-        // and publish only spellings independently proven by the live session.
-        // Example: `53` can retain both `ke` and `le` even when `le` is absent
-        // from the current page, because `replaceInput("qiu'le")` and its
-        // candidate comments authorize it under the confirmed `qiu` prefix.
-        if authorized.count < T9PinyinPathExtractor.compactLimit {
-            let spellings = T9PinyinPathExtractor.boundedCompleteSyllableSpellings(
-                forDigits: remainingDigits
-            )
-            for spelling in spellings {
-                guard authorized.count < T9PinyinPathExtractor.compactLimit else { break }
-                guard !authorized.contains(where: { $0.displayText == spelling }) else { continue }
-                guard let replacement = T9PinyinPathExtractor.replacementForProgressiveSyllable(
-                    displaySyllable: spelling,
-                    confirmedSyllables: confirmed,
-                    sourceDigits: source
-                ) else { continue }
-
-                let requested = T9PinyinPath(
-                    displayText: spelling,
-                    replacementRawInput: replacement
-                )
-                let probe = engine.replaceInput(replacement)
-                defer { _ = engine.replaceInput(baseRaw) }
-                guard isExactSuccessfulT9Refinement(result: probe, requestedPath: requested)
-                else { continue }
-
-                let probeEvidence = probe.candidates + engine.candidateWindow(
-                    from: 0,
-                    limit: T9PinyinPathExtractor.hotPathWindowLimit
-                ).candidates
-                guard T9PinyinPathExtractor.candidateCommentsAuthorizeExactSegment(
-                    probeEvidence,
-                    segmentIndex: nextFocus,
-                    syllable: spelling,
-                    confirmedSyllables: confirmed
-                ) else { continue }
-                authorized.append(requested)
-            }
-        }
-
-        // Amendment C: exact syllables remain preferred, but even one exact
-        // syllable must not suppress other branches that live RIME can authorize.
-        // Fill the remaining compact capacity with current-key-group branches.
-        if authorized.count < T9PinyinPathExtractor.compactLimit,
-           let nextDigit = remainingDigits.first
-        {
-            let prefix = confirmed.joined(separator: "'")
-            let suffixDigits = String(remainingDigits.dropFirst())
-            for letter in T9PinyinPathExtractor.keyLetters(forDigit: nextDigit) {
-                let value = String(letter)
-                // An exact syllable already gives the user a more precise branch
-                // for this initial; avoid redundant `yi / y`-style choices.
-                guard !authorized.contains(where: { $0.displayText.hasPrefix(value) })
-                else { continue }
-
-                let replacement = prefix + "'" + value + suffixDigits
-                let requested = T9PinyinPath(displayText: value, replacementRawInput: replacement)
-                let probe = engine.replaceInput(replacement)
-                // Every probe is isolated. The final restore below remains the
-                // transactional gate for publishing the newly issued choices.
-                defer { _ = engine.replaceInput(baseRaw) }
-                guard isExactSuccessfulT9Refinement(result: probe, requestedPath: requested)
-                else { continue }
-                let probeEvidence = probe.candidates + engine.candidateWindow(
-                    from: 0,
-                    limit: T9PinyinPathExtractor.hotPathWindowLimit
-                ).candidates
-                let authorizedByComment =
-                    T9PinyinPathExtractor.candidateCommentsAuthorizeSegment(
-                        probeEvidence,
-                        segmentIndex: nextFocus,
-                        startingWith: letter,
-                        confirmedSyllables: confirmed
-                    )
-                    || T9PinyinPathExtractor.candidateCommentsAuthorizeSegment(
-                        evidence,
-                        segmentIndex: nextFocus,
-                        startingWith: letter,
-                        confirmedSyllables: confirmed
-                    )
-                guard authorizedByComment else { continue }
-                authorized.append(requested)
-                if authorized.count >= T9PinyinPathExtractor.compactLimit { break }
-            }
-        }
-
-        let restored = engine.replaceInput(baseRaw)
-        guard !authorized.isEmpty,
-              isUsableT9SessionOutput(restored),
-              T9PinyinPathExtractor.normalizeRawIdentity(restored.rawInput)
-                == T9PinyinPathExtractor.normalizeRawIdentity(baseRaw)
+        let requestedPath = T9PinyinPath(
+            displayText: selected.displayText,
+            replacementRawInput: requestedRaw
+        )
+        let currentIdentity = T9PinyinPathExtractor.normalizeRawIdentity(previousRaw)
+        let requestedIdentity = T9PinyinPathExtractor.normalizeRawIdentity(requestedRaw)
+        let refinedOutput = currentIdentity == requestedIdentity
+            ? previousOutput
+            : engine.replaceInput(requestedRaw)
+        guard isExactSuccessfulT9Refinement(
+            result: refinedOutput,
+            requestedPath: requestedPath
+        )
         else {
             return rollbackT9PinyinRefinement(
                 engine: engine,
@@ -1206,12 +1471,22 @@ extension KeyboardController {
             )
         }
 
-        applyRimeOutput(augmentRimeOutputIfNeeded(restored))
-        state.t9PinyinPathState.compactPaths = authorized
+        // Seed the new segment identity before installing the RIME output. The
+        // output installer performs exactly one fixed-window discovery and
+        // publishes candidates + paths from that same live revision.
+        var transitionPathState = previousPathState
+        // This action advances focus, so old sibling choices must not satisfy the
+        // same-confirmed remap shortcut during output installation.
+        transitionPathState.compactPaths = []
+        transitionPathState.selectedPath = nil
+        transitionPathState.issuedReplacementKeys = []
+        transitionPathState.segmentSourceDigits = source
+        transitionPathState.confirmedSegmentValues = confirmed
+        transitionPathState.focusedSegmentIndex = nextFocus
+        state.t9PinyinPathState = transitionPathState
+        applyRimeOutput(augmentRimeOutputIfNeeded(refinedOutput))
+
         state.t9PinyinPathState.selectedPath = nil
-        state.t9PinyinPathState.issuedReplacementKeys = Set(authorized.map(\.replacementRawInput))
-        state.t9PinyinPathState.discoveryNextIndex = 0
-        state.t9PinyinPathState.discoveryMayHaveMore = false
         state.t9PinyinPathState.retainedChoiceSourceRawInput = nil
         state.t9PinyinPathState.segmentSourceDigits = source
         state.t9PinyinPathState.focusedSegmentIndex = nextFocus
@@ -1243,6 +1518,7 @@ extension KeyboardController {
     }
 
     /// Remap displayed focus labels onto the current digit sequence after append/delete.
+    /// Preserves `kind` and restamps `compositionRevision` to the live revision.
     private func canonicalFocusedSegmentChoices(
         from snapshot: T9PinyinPathState
     ) -> [T9PinyinPath] {
@@ -1250,6 +1526,8 @@ extension KeyboardController {
               snapshot.focusedSegmentIndex != nil
         else { return [] }
         let confirmed = snapshot.confirmedSegmentValues
+        let confirmedLetters = T9PinyinPathExtractor.letterCount(ofSyllables: confirmed)
+        let revision = state.compositionRevision
         var remapped: [T9PinyinPath] = []
         var seen = Set<String>()
         for path in snapshot.compactPaths {
@@ -1261,7 +1539,15 @@ extension KeyboardController {
                 sourceDigits: source
             ) {
                 remapped.append(
-                    T9PinyinPath(displayText: display, replacementRawInput: replacement)
+                    T9PinyinPath(
+                        kind: path.kind,
+                        consumedSlotCount: path.consumedSlotCount,
+                        displayText: display,
+                        replacementRawInput: replacement,
+                        compositionRevision: revision,
+                        focusSlotStart: confirmedLetters,
+                        focusSlotEnd: confirmedLetters + path.consumedSlotCount
+                    )
                 )
                 continue
             }
@@ -1270,7 +1556,6 @@ extension KeyboardController {
                   let letter = display.first,
                   letter.isLetter
             else { continue }
-            let confirmedLetters = T9PinyinPathExtractor.letterCount(ofSyllables: confirmed)
             guard confirmedLetters < source.count else { continue }
             let remaining = String(source.dropFirst(confirmedLetters))
             guard let digit = remaining.first,
@@ -1279,7 +1564,30 @@ extension KeyboardController {
             let suffix = String(remaining.dropFirst())
             let prefix = confirmed.joined(separator: "'")
             let replacement = prefix.isEmpty ? display + suffix : prefix + "'" + display + suffix
-            remapped.append(T9PinyinPath(displayText: display, replacementRawInput: replacement))
+            // Reclassify one-slot remaps from the catalog; multi-digit letter locks
+            // keep letterPrefix. Never promote non-syllable letters to complete.
+            let kind: T9PinyinPathKind
+            if remaining.count == 1 {
+                let completeSet = Set(
+                    T9PinyinSyllableCatalog.completeSyllables(matchingDigits: String(remaining.prefix(1)))
+                )
+                kind = completeSet.contains(display) ? .completeSyllable : .letterPrefix
+            } else {
+                kind = path.kind == .completeSyllable && display.count > 1
+                    ? .completeSyllable
+                    : .letterPrefix
+            }
+            remapped.append(
+                T9PinyinPath(
+                    kind: kind,
+                    consumedSlotCount: 1,
+                    displayText: display,
+                    replacementRawInput: replacement,
+                    compositionRevision: revision,
+                    focusSlotStart: confirmedLetters,
+                    focusSlotEnd: confirmedLetters + 1
+                )
+            )
         }
         return remapped
     }
@@ -1298,7 +1606,7 @@ extension KeyboardController {
                 explicitSegments: explicitSegments,
                 previousVisibleRemainder: preservedRemainder ?? state.insertedPreeditText
             )
-            updateInlinePreedit(visible)
+            updateInlinePreedit(visible, source: .compositionProjection)
             return
         }
 
@@ -1316,7 +1624,7 @@ extension KeyboardController {
             checkpoint: partialCommit.checkpoint,
             source: partialCommit.source
         )
-        updateInlinePreedit(displayText)
+        updateInlinePreedit(displayText, source: .compositionProjection)
     }
 
     /// Replace only the confirmed segment in marked text. The still-unresolved
@@ -1332,7 +1640,7 @@ extension KeyboardController {
                 explicitSegments: confirmed,
                 previousVisibleRemainder: preservedRemainder ?? state.insertedPreeditText
             )
-            updateInlinePreedit(visible)
+            updateInlinePreedit(visible, source: .compositionProjection)
             return
         }
 
@@ -1350,12 +1658,17 @@ extension KeyboardController {
             checkpoint: partialCommit.checkpoint,
             source: partialCommit.source
         )
-        updateInlinePreedit(displayText)
+        updateInlinePreedit(displayText, source: .compositionProjection)
     }
 
     /// Projects an explicit segment replacement onto the existing visible T9
-    /// spelling. Only the unresolved trailing slots are copied; candidate
-    /// predictions never become a new visible suffix here.
+    /// spelling. Unresolved trailing slots are never silently discarded.
+    ///
+    /// Human C (2026-07-23):
+    /// - Reject corrupted preedit tails that do not T9-encode to remaining digits
+    ///   (`qingweiuil`).
+    /// - Do **not** fail closed to bare `qingwei` when remaining digits still exist;
+    ///   re-project the tail from RIME / catalog (Human retest #4).
     private func t9DisplayPreservingUnresolvedSuffix(
         explicitSegments: [String],
         previousVisibleRemainder: String
@@ -1369,16 +1682,232 @@ extension KeyboardController {
         let unresolvedSlots = max(0, sourceDigits.count - consumedSlots)
         guard unresolvedSlots > 0 else { return explicitPrefix }
 
+        let remainingDigits = String(sourceDigits.dropFirst(consumedSlots))
         let previousLetters = previousVisibleRemainder.unicodeScalars.filter(
             T9PinyinPathExtractor.isASCIILetter
         )
-        // A shorter display cannot identify which trailing slots are still
-        // user-authored. Fail closed to the explicit prefix instead of taking
-        // arbitrary letters from that prefix or exposing raw digits.
-        guard previousLetters.count >= sourceDigits.count else { return explicitPrefix }
+        // Prefer a previous visible tail only when it still encodes the ledger.
+        if previousLetters.count >= sourceDigits.count {
+            let suffixScalars = Array(previousLetters.suffix(unresolvedSlots))
+            let suffix = String(String.UnicodeScalarView(suffixScalars))
+            if let encoded = t9DigitSignature(forLetters: suffix), encoded == remainingDigits {
+                return explicitPrefix + suffix
+            }
+        }
+        // Live RIME letter preedit when it fully encodes the source ledger.
+        if let rimeLetters = state.lastRimeOutput.flatMap({ output -> String? in
+            let letters = String(
+                (output.composition?.preeditText ?? "")
+                    .unicodeScalars
+                    .filter(T9PinyinPathExtractor.isASCIILetter)
+            )
+            guard !letters.isEmpty,
+                  let enc = t9DigitSignature(forLetters: letters),
+                  enc == sourceDigits
+            else { return nil }
+            return letters
+        }) {
+            return rimeLetters
+        }
+        // RIME / comment projection for remaining slots only (drop confirmed segments).
+        if let remLetters = projectRemainingDigitsToHostLetters(
+            remainingDigits: remainingDigits,
+            confirmedSyllables: explicitSegments,
+            sourceDigits: sourceDigits
+        ), !remLetters.isEmpty {
+            return explicitPrefix + remLetters
+        }
+        // Last resort: progressive catalog letters for the remaining run (never digits,
+        // never drop the tail to bare confirmed prefix).
+        let catalogTail = progressiveCatalogLetters(
+            forRemainingDigits: remainingDigits,
+            confirmedSyllables: explicitSegments,
+            sourceDigits: sourceDigits
+        )
+        return catalogTail.isEmpty ? explicitPrefix : explicitPrefix + catalogTail
+    }
 
-        let suffixScalars = Array(previousLetters.suffix(unresolvedSlots))
-        return explicitPrefix + String(String.UnicodeScalarView(suffixScalars))
+    /// RIME raw for confirmed Path + remaining focus (standalone remaining parity).
+    ///
+    /// Only letter-refine when a complete catalog path covers the **entire**
+    /// remaining run (e.g. remaining `32` → `da`). Never partial-cover a long
+    /// tail (`9698454` → `wo`+`98454`) — that invents segmentation and breaks
+    /// multi-syllable continue (risk called out for sentence vs standalone).
+    ///
+    /// When multiple completes cover the same short run, keep pure remaining
+    /// digits so RIME/processKey can still form `dao` like a lone composition.
+    private func refinedConfirmedPlusRemainingRaw(
+        confirmed: [String],
+        remainingDigits: String,
+        focusPaths: [T9PinyinPath]
+    ) -> String {
+        let prefix = confirmed.joined(separator: "'")
+        guard !remainingDigits.isEmpty else { return prefix }
+        let fullCovers = focusPaths.filter {
+            $0.kind == .completeSyllable
+                && $0.consumedSlotCount == remainingDigits.count
+                && !$0.displayText.isEmpty
+                && $0.displayText.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter)
+        }
+        // Unique full cover → letter form (standalone short-syllable parity).
+        if fullCovers.count == 1, let only = fullCovers.first {
+            return prefix + "'" + only.displayText
+        }
+        // Ambiguous or long remaining: pure digits after confirmed boundary.
+        return prefix + "'" + remainingDigits
+    }
+
+    /// Short unconfirmed resync raw (1…3 digit ledger).
+    ///
+    /// Prefer a complete syllable that covers **all** slots (catalog/comment order).
+    /// That keeps Path bar on the full ledger (sourceDigits still 326 for dao) while
+    /// avoiding bare multi-digit raws that pollute candidates (746 → 手/瘦).
+    /// Never use letterPrefix replacements like `t6` as the whole raw.
+    private func shortUnconfirmedResyncRaw(
+        sourceDigits: String,
+        focusPaths: [T9PinyinPath]
+    ) -> String {
+        if let fullCover = focusPaths.first(where: {
+            $0.kind == .completeSyllable
+                && $0.consumedSlotCount == sourceDigits.count
+                && !$0.displayText.isEmpty
+                && $0.displayText.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter)
+        }) {
+            return fullCover.displayText
+        }
+        // No full complete (e.g. mid-syllable `32` with only prefixes): pure digits
+        // keep Path discovery on the real ledger length.
+        if sourceDigits.count > 1 {
+            return sourceDigits
+        }
+        // Single digit: prefer a pure letter label, never `t6`-style replacement.
+        if let letter = focusPaths.first(where: {
+            $0.consumedSlotCount == 1
+                && $0.displayText.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter)
+        }) {
+            return letter.displayText
+        }
+        return sourceDigits
+    }
+
+    /// Project remaining digit slots to host letters via comment segments / preedit.
+    private func projectRemainingDigitsToHostLetters(
+        remainingDigits: String,
+        confirmedSyllables: [String],
+        sourceDigits: String
+    ) -> String? {
+        guard !remainingDigits.isEmpty, let output = state.lastRimeOutput else { return nil }
+        // Full visible preedit that starts with confirmed letters and matches length.
+        let projected = t9VisiblePreedit(for: output)
+        let projectedLetters = String(
+            projected.unicodeScalars.filter(T9PinyinPathExtractor.isASCIILetter)
+        )
+        let confJoined = confirmedSyllables.joined()
+        if projectedLetters.hasPrefix(confJoined),
+           projectedLetters.count == confJoined.count + remainingDigits.count
+        {
+            return String(projectedLetters.dropFirst(confJoined.count))
+        }
+        // Comment syllables after the confirmed count, projected to remaining slots.
+        if let comment = T9PreeditResolver.preferredComment(
+            candidates: output.candidates,
+            highlightedIndex: output.highlightedIndex
+        ) {
+            let segments = comment
+                .split(whereSeparator: { $0 == " " || $0 == "'" })
+                .map { String($0).lowercased() }
+                .filter { !$0.isEmpty && $0.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter) }
+            if segments.count > confirmedSyllables.count {
+                let remComment = segments.dropFirst(confirmedSyllables.count).joined(separator: " ")
+                let remProjected = T9PreeditResolver.projectCommentLetters(
+                    remComment,
+                    slotLimit: remainingDigits.count
+                )
+                if !remProjected.isEmpty,
+                   let enc = t9DigitSignature(forLetters: remProjected),
+                   enc == remainingDigits
+                {
+                    return remProjected
+                }
+                // Length-matched projection even when encoding differs slightly from
+                // ideal (comment ranking); still better than dropping the tail.
+                if remProjected.count == remainingDigits.count {
+                    return remProjected
+                }
+            }
+        }
+        _ = sourceDigits
+        return nil
+    }
+
+    /// Progressive local-catalog letters for an unresolved digit run (host only).
+    private func progressiveCatalogLetters(
+        forRemainingDigits remainingDigits: String,
+        confirmedSyllables: [String],
+        sourceDigits: String
+    ) -> String {
+        guard !remainingDigits.isEmpty else { return "" }
+        let hints = T9PinyinLocalPathCatalog.commentSyllableHints(
+            from: state.lastRimeOutput?.candidates ?? [],
+            confirmedSyllables: confirmedSyllables
+        )
+        let paths = T9PinyinLocalPathCatalog.pathsForFocus(
+            focusDigits: remainingDigits,
+            lockedLetterPrefix: nil,
+            commentSyllableHints: hints,
+            confirmedSyllables: confirmedSyllables,
+            sourceDigits: sourceDigits,
+            compositionRevision: state.compositionRevision
+        )
+        // Prefer complete syllable covering a prefix of remaining; recurse on rest.
+        if let complete = paths.first(where: {
+            $0.kind == .completeSyllable
+                && $0.consumedSlotCount > 0
+                && $0.consumedSlotCount <= remainingDigits.count
+                && $0.displayText.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter)
+        }) {
+            let used = complete.consumedSlotCount
+            let rest = String(remainingDigits.dropFirst(used))
+            if rest.isEmpty { return complete.displayText }
+            return complete.displayText + progressiveCatalogLetters(
+                forRemainingDigits: rest,
+                confirmedSyllables: confirmedSyllables + [complete.displayText],
+                sourceDigits: sourceDigits
+            )
+        }
+        if let letter = paths.first(where: {
+            $0.consumedSlotCount == 1
+                && $0.displayText.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter)
+        }) {
+            let rest = String(remainingDigits.dropFirst(1))
+            if rest.isEmpty { return letter.displayText }
+            return letter.displayText + progressiveCatalogLetters(
+                forRemainingDigits: rest,
+                confirmedSyllables: confirmedSyllables,
+                sourceDigits: sourceDigits
+            )
+        }
+        return ""
+    }
+
+    /// T9 digit signature for pure ASCII letters (a→2 … z→9). nil if non-letter.
+    private func t9DigitSignature(forLetters letters: String) -> String? {
+        let map: [Character: Character] = [
+            "a": "2", "b": "2", "c": "2",
+            "d": "3", "e": "3", "f": "3",
+            "g": "4", "h": "4", "i": "4",
+            "j": "5", "k": "5", "l": "5",
+            "m": "6", "n": "6", "o": "6",
+            "p": "7", "q": "7", "r": "7", "s": "7",
+            "t": "8", "u": "8", "v": "8",
+            "w": "9", "x": "9", "y": "9", "z": "9",
+        ]
+        var out = ""
+        for ch in letters.lowercased() {
+            guard let d = map[ch] else { return nil }
+            out.append(d)
+        }
+        return out.isEmpty ? nil : out
     }
 
     private func isUsableT9SessionOutput(_ result: RimeOutput) -> Bool {
@@ -1423,12 +1952,13 @@ extension KeyboardController {
 
         if rawMatches, isUsableT9SessionOutput(restored) {
             // Live RIME is sole authority; force new provenance snapshot (same raw allowed).
+            advanceCompositionRevision()
             let previousSelected = previousPathState.selectedPath
             state.lastRimeOutput = restored
             state.currentComposition = previousComposition
             // Rollback restores the exact host-visible marked text from before
             // the failed refinement, not a newly preferred candidate comment.
-            updateInlinePreedit(previousMarked)
+            updateInlinePreedit(previousMarked, source: .compositionProjection)
             clearTypoCorrectionSuggestions()
             _ = refreshT9PinyinPathState(forceNewProvenance: true)
             if previousPathState.retainedChoiceSourceRawInput != nil {
@@ -1454,6 +1984,7 @@ extension KeyboardController {
         }
 
         if rawMatches, !isUsableT9SessionOutput(restored) {
+            advanceCompositionRevision()
             engine.resetSession()
             clearInlinePreedit()
             state.currentComposition = ""
@@ -1464,6 +1995,7 @@ extension KeyboardController {
             return .compositionChanged.union(pathEffect)
         }
 
+        advanceCompositionRevision()
         engine.resetSession()
         clearInlinePreedit()
         state.currentComposition = ""

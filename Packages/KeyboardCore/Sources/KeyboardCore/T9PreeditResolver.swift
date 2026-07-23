@@ -5,13 +5,34 @@ import Foundation
 /// Candidate comments are the preferred user-facing spelling. When comments are
 /// unavailable, preserve only letters the user has already made explicit through
 /// path refinement; unresolved T9 digits remain internal engine identity.
+///
+/// ADR 0023: when a provisional complete Path fully covers the current focus
+/// digit slots, prefer that Path spelling over a longer RIME comment prediction.
 public enum T9PreeditResolver {
     public static func visiblePreedit(
         rawInput: String?,
         candidates: [RimeCandidate],
-        highlightedIndex: Int?
+        highlightedIndex: Int?,
+        provisionalPathDisplay: String? = nil,
+        provisionalConsumedSlots: Int? = nil
     ) -> String {
         let raw = rawInput ?? ""
+        let slotLimit = raw.unicodeScalars.reduce(into: 0) { count, scalar in
+            if T9PinyinPathExtractor.isASCIILetter(scalar)
+                || T9PinyinPathExtractor.isASCIIDigit(scalar)
+            {
+                count += 1
+            }
+        }
+        if let provisionalPathDisplay,
+           let provisionalConsumedSlots,
+           provisionalConsumedSlots > 0,
+           provisionalConsumedSlots == slotLimit,
+           !provisionalPathDisplay.isEmpty,
+           !provisionalPathDisplay.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+        {
+            return provisionalPathDisplay
+        }
         if let comment = preferredComment(candidates: candidates, highlightedIndex: highlightedIndex),
            !comment.isEmpty,
            !comment.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
@@ -77,6 +98,22 @@ public enum T9PreeditResolver {
         }
         return String(String.UnicodeScalarView(visibleScalars))
             .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// Project comment text to at most `slotLimit` pure ASCII letters (no separators).
+    /// Used when rebuilding an unresolved Path tail after confirm.
+    public static func projectCommentLetters(
+        _ comment: String,
+        slotLimit: Int
+    ) -> String {
+        guard slotLimit > 0 else { return "" }
+        var out = ""
+        for scalar in comment.unicodeScalars {
+            guard T9PinyinPathExtractor.isASCIILetter(scalar) else { continue }
+            out.unicodeScalars.append(scalar)
+            if out.count >= slotLimit { break }
+        }
+        return out
     }
 }
 

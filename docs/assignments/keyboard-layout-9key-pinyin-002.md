@@ -1,7 +1,7 @@
 # Assignment: KEYBOARD-LAYOUT-9KEY-PINYIN-002 — 九宫格精准选项与选拼音循环
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — Amendment D local implementation and review addenda validated; clean-commit evidence/Product Gate pending`
+**Lifecycle status:** `Blocked — physical-device Product Gate failed; remediation delegated to KEYBOARD-LAYOUT-9KEY-PINYIN-003`
 **Repository change types:** `Contract`, `State`, `Implementation`, `Evidence`, `Documentation`
 
 ## Authority
@@ -124,6 +124,7 @@ Stop and return to Architecture/Product Lead when:
 
 ## Handoff
 
+- **2026-07-22 Product Gate outcome:** physical-device reports confirmed Path Bar latency, stale post-candidate paths and remaining internal-digit exposure. `002` cannot advance to `Reviewed` or `Closed`; remediation authority moved to [`KEYBOARD-LAYOUT-9KEY-PINYIN-003`](keyboard-layout-9key-pinyin-003.md). Historical A–H implementation evidence remains valid only for the runs it records.
 - **Current phase:** Amendment D local implementation, automated validation and Architecture/Quality addenda complete; clean-commit Spike and physical-device Product Gate remain for A+B+C+D
 - **Completed gate evidence:** [`keyboard-layout-9key-pinyin-002-spike-summary.md`](keyboard-layout-9key-pinyin-002-spike-summary.md) — librime `1.16.1`, deterministic `m/n/o`, candidate counts `9/9/4`, no host commit
 - **Local implementation evidence:** focused `T9PinyinPathTests` passed (`27`, zero failures); KeyboardCore full suite passed; RimeBridgeTests and main scheme Simulator tests passed; Debug/Release generic iOS Simulator builds passed with strict concurrency and warnings-as-errors. Counts describe this local run only and are not release invariants.

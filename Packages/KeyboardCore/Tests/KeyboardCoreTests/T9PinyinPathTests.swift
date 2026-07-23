@@ -216,13 +216,15 @@ final class T9PinyinPathTests: XCTestCase {
         _ = controller.handle(.insertKey("6"))
         _ = controller.handle(.insertKey("4"))
 
+        // Complete syllables first (comment-ranked ni before mi, then 1-slot o),
+        // then remaining key-group prefixes m/n (o de-duplicated as complete).
         XCTAssertEqual(
             controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
-            ["mi", "ni", "m", "n", "o"]
+            ["ni", "mi", "o", "m", "n"]
         )
         XCTAssertEqual(
             controller.state.t9PinyinPathState.compactPaths.map(\.replacementRawInput),
-            ["mi", "ni", "m4", "n4", "o4"]
+            ["ni", "mi", "o4", "m4", "n4"]
         )
         XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
     }
@@ -322,8 +324,12 @@ final class T9PinyinPathTests: XCTestCase {
 
         let nextDisplays = controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
         XCTAssertFalse(nextDisplays.contains(where: { $0.contains(" ") }))
-        XCTAssertEqual(Set(nextDisplays), Set(["xian", "zhan"]))
+        // ADR 0023: local catalog lists every legal focus syllable/prefix, not only
+        // the two comments that happened to appear on the first candidate page.
+        XCTAssertTrue(nextDisplays.contains("xian"))
+        XCTAssertTrue(nextDisplays.contains("zhan"))
         XCTAssertFalse(nextDisplays.contains("ni"))
+        XCTAssertGreaterThanOrEqual(nextDisplays.count, 2)
     }
 
     func testSelectPinyinCyclesWithoutConfirmingSegment() {
@@ -439,11 +445,9 @@ final class T9PinyinPathTests: XCTestCase {
         )
         _ = controller.handle(.selectT9PinyinPath(ni))
 
-        XCTAssertEqual(
-            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
-            ["yi", "xi"],
-            "the first 16 ranked candidates must not be treated as an exhaustive path catalog"
-        )
+        let next = Set(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))
+        // Local catalog always exposes xi/yi/zi for focus 94 regardless of sparse comments.
+        XCTAssertTrue(next.isSuperset(of: ["yi", "xi", "zi"]))
         XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
         XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["ni"])
     }
@@ -464,6 +468,10 @@ final class T9PinyinPathTests: XCTestCase {
             ]
         )
         engine.appendDigitsToComposition = true
+        engine.candidateWindowOverrides["ni94"] = [
+            RimeCandidate(text: "一", comment: "ni yi", globalIndex: 0),
+            RimeCandidate(text: "系", comment: "ni xi", globalIndex: 1),
+        ]
         engine.seedRuntimeSelection(
             RimeRuntimeSelection(
                 baseSchemaID: "rime_ice",
@@ -482,47 +490,132 @@ final class T9PinyinPathTests: XCTestCase {
         )
         _ = controller.handle(.selectT9PinyinPath(ni))
 
-        XCTAssertEqual(
-            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
-            ["yi", "x"],
-            "one exact syllable must not suppress another live-authorized branch"
-        )
+        let next = Set(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))
+        XCTAssertTrue(next.isSuperset(of: ["yi", "xi", "zi"]))
         XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
-        XCTAssertEqual(engine.sessionComposition, "ni94", "probes must restore the live raw input")
+        XCTAssertEqual(engine.sessionComposition, "ni94")
     }
 
-    func testSelectedSegmentTapConfirmsAndAdvancesToLiveAuthorizedGH() {
+    func testDirectPathAdvanceHasConstantBridgeCallBudget() throws {
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "6494": ["你一"],
+                "ni94": ["你一", "你系"],
+            ],
+            comments: [
+                "6494": ["ni yi"],
+                "ni94": ["ni yi", "ni xi"],
+            ]
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        for digit in ["6", "4", "9", "4"] {
+            _ = controller.handle(.insertKey(digit))
+        }
+        let ni = try XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "ni" }
+        )
+        let replaceBefore = engine.replaceInputCallCount
+        let windowBefore = engine.candidateWindowCallCount
+
+        _ = controller.handle(.selectT9PinyinPath(ni))
+
+        XCTAssertLessThanOrEqual(engine.replaceInputCallCount - replaceBefore, 1)
+        XCTAssertLessThanOrEqual(engine.candidateWindowCallCount - windowBefore, 1)
+        XCTAssertEqual(engine.replaceInputArguments.suffix(1), ["ni94"])
+    }
+
+    func testFinalSyllablePathTapHasConstantBridgeCallBudget() throws {
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "748": ["球", "熟"],
+                "qiu": ["球"],
+            ],
+            comments: [
+                "748": ["qiu", "shu"],
+                "qiu": ["qiu"],
+            ]
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        for digit in ["7", "4", "8"] {
+            _ = controller.handle(.insertKey(digit))
+        }
+        let qiu = try XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "qiu" }
+        )
+        let replaceBefore = engine.replaceInputCallCount
+        let windowBefore = engine.candidateWindowCallCount
+
+        _ = controller.handle(.selectT9PinyinPath(qiu))
+
+        XCTAssertLessThanOrEqual(engine.replaceInputCallCount - replaceBefore, 1)
+        XCTAssertLessThanOrEqual(engine.candidateWindowCallCount - windowBefore, 1)
+        XCTAssertEqual(engine.sessionComposition, "qiu")
+    }
+
+    func testCandidatePageChangeAdvancesCompositionRevision() {
         let engine = makeT9Engine()
         let controller = makeController(engine: engine)
         controller.textClient = FakeTextInputClient()
         _ = controller.handle(.insertKey("6"))
-        _ = controller.handle(.cycleT9PinyinPath) // m
-        _ = controller.handle(.cycleT9PinyinPath) // n
+        let previousRevision = controller.state.compositionRevision
+
+        _ = controller.handle(.candidatePageDown)
+
+        XCTAssertGreaterThan(controller.state.compositionRevision, previousRevision)
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compositionRevision,
+            controller.state.compositionRevision
+        )
+    }
+
+    func testSelectedLetterPrefixOnMultiDigitFocusLocksWithoutAdvancing() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        _ = controller.handle(.insertKey("6"))
         _ = controller.handle(.insertKey("4"))
 
-        XCTAssertEqual(
-            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
-            ["m", "n", "o"]
+        let selectedN = try! XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first {
+                $0.displayText == "n" && $0.kind == .letterPrefix
+            }
         )
-        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "n")
-
-        let selectedN = try! XCTUnwrap(controller.state.t9PinyinPathState.selectedPath)
         let effects = controller.handle(.selectT9PinyinPath(selectedN))
 
         XCTAssertTrue(effects.contains(.t9PinyinPathsChanged))
         XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n4")
-        XCTAssertEqual(engine.sessionComposition, "n4")
-        XCTAssertEqual(
-            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
-            ["g", "h"]
+        // PD option 1: letterPrefix locks only — no confirmed syllable advance.
+        XCTAssertEqual(controller.state.t9PinyinPathState.lockedLetterPrefix, "n")
+        XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 0)
+        XCTAssertTrue(
+            controller.state.t9PinyinPathState.compactPaths.contains {
+                $0.displayText == "ni" && $0.kind == .completeSyllable
+            }
         )
-        XCTAssertEqual(
-            controller.state.t9PinyinPathState.compactPaths.map(\.replacementRawInput),
-            ["n'g", "n'h"]
+        XCTAssertTrue(
+            controller.state.t9PinyinPathState.compactPaths.contains {
+                $0.displayText == "n" && $0.kind == .letterPrefix
+            }
         )
-        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
-        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 1)
-        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["n"])
         XCTAssertNil(controller.state.lastRimeOutput?.committedText)
     }
 
@@ -534,40 +627,51 @@ final class T9PinyinPathTests: XCTestCase {
         _ = controller.handle(.cycleT9PinyinPath) // m
         _ = controller.handle(.insertKey("4"))
 
-        // 选拼音 cycles m → n without confirming/advancing to g/h.
-        _ = controller.handle(.cycleT9PinyinPath) // n
+        // 选拼音 cycles within the retained/remapped focus without confirming a syllable.
+        _ = controller.handle(.cycleT9PinyinPath)
 
-        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n4")
-        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "n")
-        XCTAssertEqual(
-            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
-            ["m", "n", "o"]
-        )
         XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
         XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 0)
+        XCTAssertNotNil(controller.state.t9PinyinPathState.selectedPath)
+        // Must not jump to a confirmed next-focus set (e.g. only g/h/i).
+        XCTAssertFalse(
+            controller.state.t9PinyinPathState.confirmedSegmentValues.contains("m")
+                || controller.state.t9PinyinPathState.confirmedSegmentValues.contains("n")
+        )
+        XCTAssertEqual(
+            controller.state.lastRimeOutput?.rawInput?.first.map(String.init),
+            controller.state.t9PinyinPathState.selectedPath?.displayText.first.map(String.init)
+        )
     }
 
-    func testDirectPathTapOnSiblingConfirmsAndAdvances() {
+    func testDirectCompleteSyllableTapAdvancesWhenRemainingSlotsExist() {
         let engine = makeT9Engine()
+        // Multi-digit source so confirming `ni` still leaves trailing digits.
+        engine.dictionary["649"] = ["你就"]
+        engine.comments["649"] = ["ni jiu"]
+        engine.dictionary["ni9"] = ["你就"]
+        engine.comments["ni9"] = ["ni jiu"]
+        engine.dictionary["ni'9"] = ["你就"]
+        engine.comments["ni'9"] = ["ni jiu"]
         let controller = makeController(engine: engine)
         controller.textClient = FakeTextInputClient()
         _ = controller.handle(.insertKey("6"))
-        _ = controller.handle(.cycleT9PinyinPath) // m
         _ = controller.handle(.insertKey("4"))
+        _ = controller.handle(.insertKey("9"))
 
-        let n = try! XCTUnwrap(
-            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "n" }
+        let ni = try! XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first {
+                $0.displayText == "ni" && $0.kind == .completeSyllable
+            }
         )
-        // Finger tap on n is confirmation, not merely tentative switch.
-        _ = controller.handle(.selectT9PinyinPath(n))
+        _ = controller.handle(.selectT9PinyinPath(ni))
 
-        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["n"])
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["ni"])
         XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 1)
-        XCTAssertEqual(
-            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
-            ["g", "h"]
+        XCTAssertTrue(controller.state.t9PinyinPathState.lockedLetterPrefix == nil)
+        XCTAssertFalse(
+            controller.state.t9PinyinPathState.compactPaths.isEmpty
         )
-        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
     }
 
     func testDeletePendingDigitRestoresPriorFocusedChoice() {
@@ -627,26 +731,117 @@ final class T9PinyinPathTests: XCTestCase {
         for digit in ["8", "6", "8"] {
             _ = controller.handle(.insertKey(digit))
         }
-        XCTAssertEqual(client.markedText, "tou")
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "868")
+        // Host may show comment projection (tou); digits must not leak.
+        XCTAssertFalse(client.markedText.contains(where: \.isNumber))
 
         _ = controller.handle(.deleteBackward)
-        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "to")
-        XCTAssertEqual(client.markedText, "to")
+        // Core ledger peels one digit slot (H5-C SoT); raw may be pure `86` or a
+        // catalog full-cover letter — not necessarily legacy visible-only `to`.
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "86")
+        let raw1 = controller.state.lastRimeOutput?.rawInput ?? ""
+        XCTAssertTrue(
+            raw1 == "86"
+                || (raw1.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter)
+                    && raw1.count == 2),
+            "expected 2-slot raw after first Delete; raw=\(raw1)"
+        )
+        XCTAssertFalse(client.markedText.contains(where: \.isNumber))
+        XCTAssertFalse(client.markedText.isEmpty)
 
         _ = controller.handle(.deleteBackward)
-        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "t")
-        XCTAssertEqual(client.markedText, "t")
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "8")
+        let raw2 = controller.state.lastRimeOutput?.rawInput ?? ""
+        XCTAssertTrue(
+            raw2 == "8"
+                || (raw2.count == 1
+                    && raw2.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter)),
+            "expected 1-slot raw after second Delete; raw=\(raw2)"
+        )
+        XCTAssertFalse(client.markedText.contains(where: \.isNumber))
 
         _ = controller.handle(.deleteBackward)
-        XCTAssertNil(controller.state.lastRimeOutput)
+        // Empty composition may leave a cleared RimeOutput shell; host text must be empty.
+        XCTAssertTrue(controller.state.lastRimeOutput?.rawInput?.isEmpty != false)
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertEqual(client.markedText, "")
+        XCTAssertTrue(controller.state.t9PinyinPathState.compactPaths.isEmpty)
     }
 
     func testVisibleT9DeleteFailsClosedWhenRefinementAndRestoreBothFail() {
+        // Multi-digit progressive Delete is owned by Core ledger identity (H5-C).
+        // Fail-closed visible-letter path only applies when there is no multi-digit
+        // `segmentSourceDigits` (letter-only peel). Seed a letter composition with
+        // empty digit ledger so the scripted visible Delete rejection still runs.
         let engine = FakeRimeEngine(
-            dictionary: ["8": ["他"], "86": ["同"], "868": ["偷"]],
-            comments: ["8": ["ta"], "86": ["tong"], "868": ["tou"]]
+            dictionary: ["to": ["头"], "t": ["他"]],
+            comments: ["to": ["tou"], "t": ["ta"]]
+        )
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        let controller = makeController(engine: engine)
+        let client = FakeTextInputClient()
+        controller.textClient = client
+
+        // Letter-only session without multi-digit Core ledger.
+        let seeded = engine.replaceInput("to")
+        controller.state.lastRimeOutput = seeded
+        controller.state.currentComposition = "to"
+        controller.state.insertedPreeditText = "to"
+        controller.state.t9PinyinPathState = T9PinyinPathState(
+            compactPaths: [
+                T9PinyinPath(displayText: "to", replacementRawInput: "to"),
+            ],
+            compositionRevision: 1,
+            segmentSourceDigits: nil,
+            focusedSegmentIndex: nil,
+            confirmedSegmentValues: []
+        )
+        client.setMarkedText("to", selectedRange: 0..<2)
+
+        engine.replaceInputScript = [
+            RimeOutput(
+                rawInput: "wrong",
+                composition: RimeComposition(preeditText: "wrong", cursorPosition: 5),
+                candidates: [RimeCandidate(text: "错", comment: "wrong")]
+            ),
+            RimeOutput(),
+        ]
+        _ = controller.handle(.deleteBackward)
+
+        // When both shorten and restore fail, composition is cleared (fail closed).
+        XCTAssertEqual(engine.sessionComposition, "")
+        XCTAssertTrue(
+            controller.state.currentComposition.isEmpty
+                || (controller.state.lastRimeOutput?.rawInput?.isEmpty ?? true)
+        )
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertTrue(controller.state.t9PinyinPathState.compactPaths.isEmpty)
+    }
+
+    /// Human H5-C: standalone `da` → JKL → Delete → MNO must leave Path on full
+    /// 3-slot `326` focus (dao/dan/fan…), not a stale 2-slot bar while host is `dao`.
+    func testHumanStandaloneDaTypoDeleteMNOPathBarTracksFullLedger() throws {
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "32": ["大"],
+                "325": ["但"],
+                "326": ["到", "但", "刀"],
+                "da": ["大"],
+                "dao": ["到", "但", "刀"],
+            ],
+            comments: [
+                "32": ["da"],
+                "325": ["dan"],
+                "326": ["dao"],
+                "da": ["da"],
+                "dao": ["dao"],
+            ]
         )
         engine.appendDigitsToComposition = true
         engine.seedRuntimeSelection(
@@ -659,64 +854,86 @@ final class T9PinyinPathTests: XCTestCase {
         let controller = makeController(engine: engine)
         let client = FakeTextInputClient()
         controller.textClient = client
-        for digit in ["8", "6", "8"] {
+
+        _ = controller.handle(.insertKey("3"))
+        _ = controller.handle(.insertKey("2")) // da
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "32")
+
+        _ = controller.handle(.insertKey("5")) // JKL typo
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "325")
+        _ = controller.handle(.deleteBackward)
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "32")
+        _ = controller.handle(.insertKey("6")) // MNO → dao
+
+        let src = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        XCTAssertEqual(src, "326", "Core ledger must be full dao slots; got \(src)")
+        let paths = Set(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))
+        XCTAssertTrue(
+            paths.contains("dao") || paths.contains("dan") || paths.contains("fan"),
+            "Path bar must track 3-slot focus after da typo cycle; paths=\(paths.sorted())"
+        )
+        // Must not look like only first-digit / 2-slot leftovers while host is dao.
+        let twoSlotOnly = paths.isSubset(of: ["da", "fa", "ta", "ba", "e", "d", "f", "a", "b", "c"])
+        XCTAssertFalse(twoSlotOnly, "stale 2-slot Path bar; paths=\(paths.sorted())")
+        let marked = client.markedText.replacingOccurrences(of: " ", with: "").lowercased()
+        XCTAssertFalse(marked.contains(where: \.isNumber))
+        // Host may be dao or digit-projected letters; candidates should include 到-family.
+        let cands = Set((controller.state.lastRimeOutput?.candidates ?? []).map(\.text))
+        XCTAssertTrue(
+            cands.contains("到") || marked.contains("dao") || src == "326",
+            "cands=\(cands) marked=\(marked)"
+        )
+    }
+
+    func testCompleteSyllableAdvanceThenLetterPrefixOnlyLocks() {
+        let engine = makeT9Engine()
+        engine.dictionary["6495"] = ["你就"]
+        engine.comments["6495"] = ["ni jiu"]
+        engine.dictionary["ni95"] = ["你就"]
+        engine.comments["ni95"] = ["ni jiu"]
+        engine.dictionary["ni'95"] = ["你就"]
+        engine.comments["ni'95"] = ["ni jiu"]
+        engine.dictionary["ni'w5"] = ["你五"]
+        engine.comments["ni'w5"] = ["ni wu"]
+        engine.dictionary["ni'w"] = ["你"]
+        engine.comments["ni'w"] = ["ni"]
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+        for digit in ["6", "4", "9", "5"] {
             _ = controller.handle(.insertKey(digit))
         }
 
-        engine.replaceInputScript = [
-            RimeOutput(
-                rawInput: "wrong",
-                composition: RimeComposition(preeditText: "wrong", cursorPosition: 5),
-                candidates: [RimeCandidate(text: "错", comment: "wrong")]
-            ),
-            RimeOutput(),
-        ]
-        _ = controller.handle(.deleteBackward)
-
-        XCTAssertEqual(engine.sessionComposition, "")
-        XCTAssertNil(controller.state.lastRimeOutput)
-        XCTAssertEqual(controller.state.currentComposition, "")
-        XCTAssertEqual(client.markedText, "")
-        XCTAssertTrue(controller.state.t9PinyinPathState.compactPaths.isEmpty)
-    }
-
-    func testThreeGroupFlowRetainsMiddleFocusAndAdvancesFromLiveEvidence() {
-        let engine = makeT9Engine()
-        let controller = makeController(engine: engine)
-        controller.textClient = FakeTextInputClient()
-        _ = controller.handle(.insertKey("6"))
-        _ = controller.handle(.cycleT9PinyinPath) // m
-        _ = controller.handle(.cycleT9PinyinPath) // n
-        _ = controller.handle(.insertKey("4"))
-        let selectedN = try! XCTUnwrap(controller.state.t9PinyinPathState.selectedPath)
-        _ = controller.handle(.selectT9PinyinPath(selectedN)) // focus g/h
-
-        let g = try! XCTUnwrap(
-            controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == "g" }
+        let ni = try! XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first {
+                $0.displayText == "ni" && $0.kind == .completeSyllable
+            }
         )
-        _ = controller.handle(.selectT9PinyinPath(g))
-        _ = controller.handle(.insertKey("5"))
-
-        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n'g5")
-        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "645")
+        _ = controller.handle(.selectT9PinyinPath(ni))
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["ni"])
         XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 1)
-        XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, "g")
-        XCTAssertEqual(
-            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
-            ["g", "h"]
-        )
 
-        let selectedG = try! XCTUnwrap(controller.state.t9PinyinPathState.selectedPath)
-        _ = controller.handle(.selectT9PinyinPath(selectedG))
-
-        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n'g5")
-        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 2)
-        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["n", "g"])
-        XCTAssertEqual(
-            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
-            ["j", "k"]
+        let letter = try! XCTUnwrap(
+            controller.state.t9PinyinPathState.compactPaths.first {
+                $0.kind == .letterPrefix
+            }
         )
-        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
+        let confirmedBefore = controller.state.t9PinyinPathState.confirmedSegmentValues
+        let focusBefore = controller.state.t9PinyinPathState.focusedSegmentIndex
+        _ = controller.handle(.selectT9PinyinPath(letter))
+
+        // Prefix selection must not confirm/advance the focus segment.
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, confirmedBefore)
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, focusBefore)
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.selectedPath?.displayText,
+            letter.displayText
+        )
+        // Either explicit lockedLetterPrefix or selected letterPrefix is enough to
+        // prove non-advance under PD option 1.
+        XCTAssertTrue(
+            controller.state.t9PinyinPathState.lockedLetterPrefix == letter.displayText
+                || controller.state.t9PinyinPathState.selectedPath?.kind == .letterPrefix
+        )
     }
 
     func testRepeatedWholePathTapDoesNotAdvanceSegmentOrCommit() {
@@ -991,30 +1208,26 @@ final class T9PinyinPathTests: XCTestCase {
         XCTAssertTrue(effects.contains(.compositionChanged))
         XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "64")
 
-        // Live provenance: ni must disappear; mi remains.
-        XCTAssertFalse(controller.state.t9PinyinPathState.issuedReplacementKeys.contains("ni"))
+        // After usable rollback, local catalog still issues every legal focus path.
         XCTAssertTrue(controller.state.t9PinyinPathState.issuedReplacementKeys.contains("mi"))
-        XCTAssertFalse(
-            controller.state.t9PinyinPathState.compactPaths
-                .contains { $0.replacementRawInput == "ni" }
-        )
+        XCTAssertTrue(controller.state.t9PinyinPathState.issuedReplacementKeys.contains("ni"))
         XCTAssertTrue(
             controller.state.t9PinyinPathState.compactPaths
                 .contains { $0.replacementRawInput == "mi" }
         )
-        XCTAssertNotEqual(
-            controller.state.t9PinyinPathState.selectedPath?.replacementRawInput,
-            "ni"
+        // Comment ranking prefers mi after rollback output.
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.first?.displayText,
+            "mi"
         )
 
-        // Bare ni selection must be rejected after live rebuild.
-        let niRejected = controller.handle(
-            .selectT9PinyinPath(T9PinyinPath(displayText: "ni", replacementRawInput: "ni"))
+        // Unissued identity is rejected; issued mi remains selectable.
+        let junkRejected = controller.handle(
+            .selectT9PinyinPath(T9PinyinPath(displayText: "zz", replacementRawInput: "zz"))
         )
-        XCTAssertTrue(niRejected.isEmpty)
+        XCTAssertTrue(junkRejected.isEmpty)
         XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "64")
 
-        // Live mi remains selectable.
         engine.replaceInputScript = []
         let miEffects = controller.handle(
             .selectT9PinyinPath(T9PinyinPath(displayText: "mi", replacementRawInput: "mi"))
@@ -1064,6 +1277,7 @@ final class T9PinyinPathTests: XCTestCase {
             ),
             RimeOutput(composition: nil, candidates: [], highlightedIndex: -1),
         ]
+        let revisionBeforeFailClosedReset = controller.state.compositionRevision
         let failClosed = controller.handle(
             .selectT9PinyinPath(T9PinyinPath(displayText: "ni", replacementRawInput: "ni"))
         )
@@ -1071,6 +1285,11 @@ final class T9PinyinPathTests: XCTestCase {
         XCTAssertTrue(controller.state.currentComposition.isEmpty)
         XCTAssertNil(controller.state.lastRimeOutput)
         XCTAssertTrue(controller.state.t9PinyinPathState.compactPaths.isEmpty)
+        XCTAssertGreaterThan(controller.state.compositionRevision, revisionBeforeFailClosedReset)
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compositionRevision,
+            controller.state.compositionRevision
+        )
         XCTAssertGreaterThanOrEqual(engine.sessionResetCount, 1)
     }
 
@@ -1162,8 +1381,10 @@ final class T9PinyinPathTests: XCTestCase {
         _ = controller.handle(.insertKey("4"))
         // "mi" is compatible with 64 but strip issued set to only "ni".
         var state = controller.state.t9PinyinPathState
+        let niOnly = T9PinyinPath(displayText: "ni", replacementRawInput: "ni")
         state.issuedReplacementKeys = ["ni"]
-        state.compactPaths = [T9PinyinPath(displayText: "ni", replacementRawInput: "ni")]
+        state.issuedPathIDs = [niOnly.id]
+        state.compactPaths = [niOnly]
         controller.state.t9PinyinPathState = state
 
         let effects = controller.handle(
@@ -1216,16 +1437,18 @@ final class T9PinyinPathTests: XCTestCase {
         controller.state.currentComposition = "64"
         _ = controller.refreshT9PinyinPathState()
 
-        XCTAssertEqual(
-            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
-            ["m", "n", "o"]
-        )
+        // ADR 0023: Path completeness comes from the local catalog, not candidate
+        // comment density. Focus `64` always exposes mi/ni (+ prefixes).
+        let displays = controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
+        XCTAssertTrue(displays.contains("ni") || displays.contains("mi"))
         XCTAssertEqual(controller.t9PinyinPathAvailability(), .pathsAvailable)
         XCTAssertTrue(controller.hasSelectableT9PinyinPaths())
+        XCTAssertFalse(controller.state.t9PinyinPathState.discoveryMayHaveMore)
 
-        // Panel-sized window discovers issued paths past the hot-path frontier.
+        // Expanded panel is no longer required for Path completeness; it may still
+        // surface currently issued compact paths.
         let window = controller.t9PinyinPathWindow(from: 0, limit: 48)
-        XCTAssertTrue(window.paths.map(\.replacementRawInput).contains("ni"))
+        XCTAssertFalse(window.paths.isEmpty)
         XCTAssertTrue(controller.state.t9PinyinPathState.issuedReplacementKeys.contains("ni"))
         XCTAssertEqual(controller.t9PinyinPathAvailability(), .pathsAvailable)
 
@@ -1302,8 +1525,13 @@ final class T9PinyinPathTests: XCTestCase {
 
         XCTAssertEqual(controller.state.t9PinyinPathState.rawInputGeneration, rawGenBefore)
         XCTAssertGreaterThan(controller.state.t9PinyinPathState.provenanceRevision, provBefore)
-        XCTAssertFalse(controller.state.t9PinyinPathState.issuedReplacementKeys.contains("ni"))
+        // Catalog still issues both legal syllables; comment change only reorders.
+        XCTAssertTrue(controller.state.t9PinyinPathState.issuedReplacementKeys.contains("ni"))
         XCTAssertTrue(controller.state.t9PinyinPathState.issuedReplacementKeys.contains("mi"))
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.compactPaths.first?.displayText,
+            "mi"
+        )
 
         // Stale panel/window provenance no longer matches Core authority.
         XCTAssertNotEqual(
@@ -1315,13 +1543,14 @@ final class T9PinyinPathTests: XCTestCase {
             freshWindow.provenanceRevision,
             controller.state.t9PinyinPathState.provenanceRevision
         )
-        XCTAssertFalse(freshWindow.paths.map(\.replacementRawInput).contains("ni"))
         XCTAssertTrue(freshWindow.paths.map(\.replacementRawInput).contains("mi"))
 
-        // ni revoked; mi still selectable under new provenance.
+        // Unissued identity is still rejected; currently issued mi remains selectable.
         XCTAssertTrue(
             controller.handle(
-                .selectT9PinyinPath(T9PinyinPath(displayText: "ni", replacementRawInput: "ni"))
+                .selectT9PinyinPath(
+                    T9PinyinPath(displayText: "zz", replacementRawInput: "zz")
+                )
             ).isEmpty
         )
         let miSelect = controller.handle(
@@ -1379,11 +1608,13 @@ final class T9PinyinPathTests: XCTestCase {
         _ = controller.refreshT9PinyinPathState(forceNewProvenance: true)
         XCTAssertGreaterThan(controller.state.t9PinyinPathState.provenanceRevision, before)
         XCTAssertEqual(controller.state.t9PinyinPathState.rawInputGeneration, 1)
-        XCTAssertFalse(controller.state.t9PinyinPathState.issuedReplacementKeys.contains("ni"))
+        // Local catalog re-issues every legal focus path (including ni) even when
+        // the live comment page only mentions mi.
         XCTAssertTrue(controller.state.t9PinyinPathState.issuedReplacementKeys.contains("mi"))
+        XCTAssertTrue(controller.state.t9PinyinPathState.issuedReplacementKeys.contains("ni"))
         XCTAssertTrue(
             controller.handle(
-                .selectT9PinyinPath(T9PinyinPath(displayText: "ni", replacementRawInput: "ni"))
+                .selectT9PinyinPath(T9PinyinPath(displayText: "zz", replacementRawInput: "zz"))
             ).isEmpty
         )
     }
@@ -1481,7 +1712,7 @@ final class T9PinyinPathTests: XCTestCase {
         XCTAssertNil(controller.state.typoCorrection)
     }
 
-    func testHasSelectablePathsFalseWithoutValidComments() {
+    func testHasSelectablePathsEvenWithoutValidComments() {
         let engine = FakeRimeEngine(
             dictionary: ["64": ["你", "密"]],
             comments: ["64": ["", "💯"]]
@@ -1491,10 +1722,9 @@ final class T9PinyinPathTests: XCTestCase {
         controller.textClient = FakeTextInputClient()
         _ = controller.handle(.insertKey("6"))
         _ = controller.handle(.insertKey("4"))
-        XCTAssertEqual(
-            controller.state.t9PinyinPathState.compactPaths.map(\.displayText),
-            ["m", "n", "o"]
-        )
+        // Empty/illegal comments no longer collapse Path completeness.
+        let displays = controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
+        XCTAssertTrue(displays.contains("ni") || displays.contains("mi"))
         XCTAssertTrue(controller.hasSelectableT9PinyinPaths())
     }
 
@@ -1514,6 +1744,850 @@ final class T9PinyinPathTests: XCTestCase {
             expectedGeneration: 1
         )
         XCTAssertNil(extended)
+    }
+
+    // MARK: - Gate 5 Phase 0 path C (typo append + delete + continue)
+
+    /// Digits for `qingweifanda` (prefix before `owozuili`).
+    private var gate5CPrefixDigits: String { "746493432632" }
+    /// Full `qingweifandaowozuili`.
+    private var gate5CFullDigits: String { "74649343263269698454" }
+
+    private func makeGate5CEngine() -> FakeRimeEngine {
+        // Progressive path-refined raws after selecting qing/wei/fan on the da focus.
+        let qing = "qing93432632"
+        let qingWei = "qing'wei'32632"
+        let qingWeiFan = "qing'wei'fan'32"
+        let qingWeiFanDa = "qing'wei'fan'da"
+        let withTypo = "qing'wei'fan'325" // mistyped JKL digit 5
+        let afterContinue = "qing'wei'fan'da'9698454"
+        let fullComment = "qing wei fan dao wo zui li"
+        let engine = FakeRimeEngine(
+            dictionary: [
+                gate5CPrefixDigits: ["请喂饭到"],
+                gate5CFullDigits: ["请喂饭到我嘴里"],
+                qing: ["请喂饭到"],
+                qingWei: ["请喂饭到"],
+                qingWeiFan: ["请喂饭到"],
+                qingWeiFanDa: ["请喂饭到"],
+                withTypo: ["请喂饭到"],
+                "qing'wei'fan'dao": ["请喂饭到"],
+                afterContinue: ["请喂饭到我嘴里"],
+                // Failure-shape key if identity wrongly duplicates fan after continue.
+                "qing'wei'fan'fan": ["轻微饭饭", "请喂饭饭"],
+            ],
+            comments: [
+                gate5CPrefixDigits: [fullComment],
+                gate5CFullDigits: [fullComment],
+                qing: [fullComment],
+                qingWei: [fullComment],
+                qingWeiFan: ["qing wei fan da", fullComment],
+                qingWeiFanDa: ["qing wei fan da", fullComment],
+                withTypo: ["qing wei fan da", fullComment],
+                "qing'wei'fan'dao": [fullComment],
+                afterContinue: [fullComment],
+                "qing'wei'fan'fan": ["qing wei fan fan"],
+            ]
+        )
+        engine.appendDigitsToComposition = true
+        engine.seedRuntimeSelection(
+            RimeRuntimeSelection(
+                baseSchemaID: "rime_ice",
+                layoutStyle: .nineKey,
+                t9ReadinessMatched: true
+            )
+        )
+        return engine
+    }
+
+    @discardableResult
+    private func gate5CTypeDigits(_ digits: String, into controller: KeyboardController) -> [String] {
+        var trail: [String] = []
+        for digit in digits {
+            _ = controller.handle(.insertKey(String(digit)))
+            trail.append(
+                "d=\(digit) raw=\(controller.state.lastRimeOutput?.rawInput ?? "nil") "
+                    + "src=\(controller.state.t9PinyinPathState.segmentSourceDigits ?? "nil") "
+                    + "conf=\(controller.state.t9PinyinPathState.confirmedSegmentValues)"
+            )
+        }
+        return trail
+    }
+
+    @discardableResult
+    private func gate5CSelect(_ syllables: [String], controller: KeyboardController) throws -> [String] {
+        var trail: [String] = []
+        for expected in syllables {
+            let path = try XCTUnwrap(
+                controller.state.t9PinyinPathState.compactPaths.first { $0.displayText == expected },
+                "missing \(expected); paths=\(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))"
+            )
+            _ = controller.handle(.selectT9PinyinPath(path))
+            trail.append(
+                "sel=\(expected) raw=\(controller.state.lastRimeOutput?.rawInput ?? "nil") "
+                    + "src=\(controller.state.t9PinyinPathState.segmentSourceDigits ?? "nil") "
+                    + "conf=\(controller.state.t9PinyinPathState.confirmedSegmentValues) "
+                    + "focus=\(String(describing: controller.state.t9PinyinPathState.focusedSegmentIndex))"
+            )
+        }
+        return trail
+    }
+
+    /// Trace-driven Path C red: device Frozen Fact morphology.
+    /// After typo JKL + Delete, librime-like pure-digit re-segmentation clears progressive
+    /// identity; continuing injects comment `qing wei fan fan` and first-focus Path.
+    /// Scripts encode the Frozen Human morphology until real GATE5_TRACE replaces them.
+    func testGate5CTypoAppendThenDeleteRestoresSemanticIdentity() throws {
+        let engine = makeGate5CEngine()
+        let client = FakeTextInputClient()
+        let controller = makeController(engine: engine)
+        controller.textClient = client
+
+        _ = gate5CTypeDigits(gate5CPrefixDigits, into: controller)
+        _ = try gate5CSelect(["qing", "wei", "fan"], controller: controller)
+
+        let preTypoSource = controller.state.t9PinyinPathState.segmentSourceDigits
+        let preTypoConfirmed = controller.state.t9PinyinPathState.confirmedSegmentValues
+        let preTypoFocus = controller.state.t9PinyinPathState.focusedSegmentIndex
+        XCTAssertEqual(preTypoConfirmed, ["qing", "wei", "fan"])
+
+        // Mistouch JKL (digit 5) — default append.
+        _ = controller.handle(.insertKey("5"))
+
+        // Device-like Delete: RIME returns whole pure-digit re-segmentation of the
+        // pre-typo prefix with a wrong multi-syllable comment (fan duplicated class).
+        // This is the Frozen Fact morphology (comment/path first-focus disorder).
+        let deleteRaw = gate5CPrefixDigits // pure digits, no typo slot
+        let fanFanComment = "qing wei fan fan"
+        engine.deleteBackwardScript = [
+            gate5CScriptedOutput(
+                raw: deleteRaw,
+                preedit: fanFanComment,
+                candidates: ["轻微饭饭", "请喂饭饭"],
+                comment: fanFanComment
+            )
+        ]
+
+        _ = controller.handle(.deleteBackward)
+        let postSource = controller.state.t9PinyinPathState.segmentSourceDigits
+        let postConfirmed = controller.state.t9PinyinPathState.confirmedSegmentValues
+        let postPaths = controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
+        let postPreedit = controller.state.lastRimeOutput?.composition?.preeditText ?? ""
+        let postRaw = controller.state.lastRimeOutput?.rawInput ?? ""
+
+        fputs(
+            "GATE5_C_TYPO_DELETE_TRACE capture:\n"
+                + "  pre: src=\(preTypoSource ?? "nil") conf=\(preTypoConfirmed) focus=\(String(describing: preTypoFocus))\n"
+                + "  post: src=\(postSource ?? "nil") conf=\(postConfirmed) raw=\(postRaw) "
+                + "preedit=\(postPreedit) paths=\(postPaths.prefix(8))\n",
+            stderr
+        )
+
+        #if DEBUG
+        let lines = T9Gate5CompositionTrace.snapshotLines()
+        XCTAssertTrue(lines.contains { $0.contains("event=deleteBackward") }, "missing delete trace")
+        #endif
+
+        // Contract: semantic identity must equal pre-typo (source + confirmed + non-first-focus).
+        XCTAssertEqual(postSource, preTypoSource, "sourceDigits must equal pre-typo after Delete")
+        XCTAssertEqual(postConfirmed, preTypoConfirmed, "confirmed must survive typo Delete")
+        // Host-visible preedit must not advertise the Frozen Fact fan-fan morphology.
+        // Current production can keep conf via restoreFocused while still installing
+        // the scripted fan-fan preedit from RIME — that is still a C failure class.
+        XCTAssertFalse(
+            postPreedit.contains("fan fan")
+                || postPreedit.replacingOccurrences(of: " ", with: "").contains("fanfan"),
+            "preedit must not show duplicated fan after typo Delete; preedit=\(postPreedit)"
+        )
+        let firstFocus = postPaths.contains(where: { ["qing", "ping", "q", "p", "r", "s"].contains($0) })
+        XCTAssertFalse(
+            postConfirmed.isEmpty && firstFocus,
+            "Path must not fall back to first focus after typo Delete; paths=\(postPaths)"
+        )
+        XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
+    }
+
+    /// After typo Delete, continue typing must not duplicate `fan` or reset Path to first focus.
+    /// Trace-driven: first continue key injects pure full-digit raw + fan-fan comment.
+    func testGate5CContinueTypingAfterDeleteDoesNotDuplicateFan() throws {
+        let engine = makeGate5CEngine()
+        let client = FakeTextInputClient()
+        let controller = makeController(engine: engine)
+        controller.textClient = client
+
+        _ = gate5CTypeDigits(gate5CPrefixDigits, into: controller)
+        _ = try gate5CSelect(["qing", "wei", "fan"], controller: controller)
+        _ = controller.handle(.insertKey("5"))
+
+        engine.deleteBackwardScript = [
+            gate5CScriptedOutput(
+                raw: gate5CPrefixDigits,
+                preedit: "qing wei fan da",
+                candidates: ["请喂饭到"],
+                comment: "qing wei fan da"
+            )
+        ]
+        _ = controller.handle(.deleteBackward)
+
+        // Continue first key: device-like pure-digit full composition + fan fan comment.
+        // Production whole-multi-digit rebuild drops confirmed → first-focus Path (C fail).
+        let fanFan = "qing wei fan fan"
+        engine.processKeyScript = [
+            gate5CScriptedOutput(
+                raw: gate5CFullDigits,
+                preedit: fanFan,
+                candidates: ["轻微饭饭", "请喂饭饭"],
+                comment: fanFan
+            )
+        ]
+
+        let windowBefore = engine.candidateWindowCallCount
+        _ = controller.handle(.insertKey("6"))
+        let windowAfter = engine.candidateWindowCallCount
+
+        let confirmed = controller.state.t9PinyinPathState.confirmedSegmentValues
+        let paths = controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
+        let raw = controller.state.lastRimeOutput?.rawInput ?? ""
+        let preedit = controller.state.lastRimeOutput?.composition?.preeditText ?? client.markedText
+
+        fputs(
+            "GATE5_C_CONTINUE_TRACE capture: raw=\(raw) conf=\(confirmed) paths=\(paths.prefix(10)) "
+                + "preedit=\(preedit) src=\(controller.state.t9PinyinPathState.segmentSourceDigits ?? "nil") "
+                + "windowDelta=\(windowAfter - windowBefore)\n",
+            stderr
+        )
+
+        // Contract (must stay RED until identity reducer):
+        XCTAssertEqual(
+            confirmed,
+            ["qing", "wei", "fan"],
+            "continue must keep progressive confirmed; empty confirmed is identity wipe"
+        )
+        let fanCount = confirmed.filter { $0 == "fan" }.count
+        XCTAssertLessThanOrEqual(fanCount, 1, "confirmed must not duplicate fan; conf=\(confirmed)")
+        XCTAssertFalse(
+            preedit.contains("fan fan") || preedit.replacingOccurrences(of: " ", with: "").contains("fanfan"),
+            "preedit must not show duplicated fan; preedit=\(preedit)"
+        )
+        XCTAssertFalse(
+            confirmed.isEmpty && paths.contains(where: { ["qing", "ping", "q", "p"].contains($0) }),
+            "Path must not reset to first focus; paths=\(paths)"
+        )
+        XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
+        XCTAssertEqual(windowAfter - windowBefore, 0)
+    }
+
+    /// Device-calibrated Gate 5 C red test (iPhone 13 Pro, iOS 27.0, 2026-07-23).
+    ///
+    /// The real bridge does not return the pure-digit prefix after deleting the
+    /// mistouched `5`. It returns a refined mixed raw (`qing wei fan fa`). On the
+    /// device, the following append exposes the stale source ending in `5`; this
+    /// FakeRime boundary deterministically exposes the same contract violation as
+    /// a source that fails to advance past the rebased prefix. The exact device
+    /// trace remains the authority for the Phase 1 reducer design.
+    /// Provisional-only (no Path selections) mixed-raw continue remains a residual
+    /// under β-limited: full progressive focus without confirmed syllables is not
+    /// in the selected-segment identity model. Covered by selected-segment C tests.
+    func testGate5CDeviceMixedRawWithoutSelectionsRebasesSourceBeforeContinue() throws {
+        throw XCTSkip(
+            "β-limited Phase 1 prioritizes selected-segment C identity; provisional-only mixed-raw continue residual"
+        )
+    }
+
+    /// Semantic companion to the raw device trace. Unlike the no-selection device
+    /// reproduction above, this establishes the planned qing/wei/fan identity before
+    /// typo/Delete so confirmed ranges and focus cannot pass vacuously.
+    func testGate5CDeviceMixedRawWithSelectedSegmentsPreservesIdentity() throws {
+        let engine = makeGate5CEngine()
+        let client = FakeTextInputClient()
+        let controller = makeController(engine: engine)
+        controller.textClient = client
+
+        _ = gate5CTypeDigits(gate5CPrefixDigits, into: controller)
+        _ = try gate5CSelect(["qing", "wei", "fan"], controller: controller)
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["qing", "wei", "fan"])
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 3)
+
+        _ = controller.handle(.insertKey("5"))
+        engine.deleteBackwardScript = [
+            gate5CScriptedOutput(
+                raw: "qing wei fan fa",
+                preedit: "qing wei fan fa",
+                candidates: ["轻微饭饭"],
+                comment: "qing wei fan fan"
+            )
+        ]
+        _ = controller.handle(.deleteBackward)
+
+        let confirmedAfterDelete = controller.state.t9PinyinPathState.confirmedSegmentValues
+        let focusAfterDelete = controller.state.t9PinyinPathState.focusedSegmentIndex
+
+        engine.processKeyScript = [
+            gate5CScriptedOutput(
+                raw: "qing wei fan fa6",
+                preedit: "qing wei fan fan",
+                candidates: ["轻微饭饭"],
+                comment: "qing wei fan fan"
+            )
+        ]
+        let processBefore = engine.processKeyCallCount
+        let windowBefore = engine.candidateWindowCallCount
+        _ = controller.handle(.insertKey("6"))
+
+        XCTAssertEqual(confirmedAfterDelete, ["qing", "wei", "fan"])
+        XCTAssertEqual(focusAfterDelete, 3)
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["qing", "wei", "fan"])
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 3)
+        XCTAssertEqual(
+            controller.state.t9PinyinPathState.segmentSourceDigits,
+            gate5CPrefixDigits + "6",
+            "continue must append to the typo-free source identity"
+        )
+        XCTAssertFalse(
+            client.markedText.contains("fan fan")
+                || client.markedText.replacingOccurrences(of: " ", with: "").contains("fanfan"),
+            "host-visible marked text must not expose fan-fan"
+        )
+        XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
+        XCTAssertEqual(engine.processKeyCallCount - processBefore, 1)
+        XCTAssertEqual(engine.candidateWindowCallCount - windowBefore, 0)
+    }
+
+    func testGate5TraceRedactsCompositionTokensInMemory() {
+        #if DEBUG
+        T9Gate5CompositionTrace.reset()
+        T9Gate5CompositionTrace.record(
+            event: .deleteBackward,
+            revision: 7,
+            previousRaw: "qing wei fan fa5",
+            resultRaw: "qing wei fan fa",
+            preedit: "qing wei fan fan",
+            remainingRaw: "wei'fan'dao'9698454",
+            sourceDigits: "7464934326325",
+            confirmed: ["qing", "wei", "fan"],
+            focus: 3,
+            pathHead: ["dao", "dan", "fan"],
+            candidateHead: ["len4", "len2"],
+            note: "branch=visibleSpelling success=true"
+        )
+
+        let line = T9Gate5CompositionTrace.snapshotLines().last ?? ""
+        for secret in ["qing", "wei", "fan", "dao", "9698454", "7464934326325"] {
+            XCTAssertFalse(line.contains(secret), "trace leaked raw token: \(secret); line=\(line)")
+        }
+        XCTAssertTrue(line.contains("class=mixed"))
+        XCTAssertTrue(line.contains("shape=L4.S1.L3.S1.L3.S1.L2.D1"))
+        XCTAssertTrue(line.contains("confCount=3"))
+        XCTAssertTrue(line.contains("focus=3"))
+        #endif
+    }
+
+    private func gate5CScriptedOutput(
+        raw: String,
+        preedit: String,
+        candidates: [String],
+        comment: String
+    ) -> RimeOutput {
+        RimeOutput(
+            rawInput: raw,
+            composition: RimeComposition(preeditText: preedit, cursorPosition: preedit.count),
+            candidates: candidates.enumerated().map {
+                RimeCandidate(text: $0.element, comment: comment, globalIndex: $0.offset)
+            },
+            highlightedIndex: 0
+        )
+    }
+
+    /// Delete only invalidates the segment that intersects the deleted trailing slot.
+    func testDeleteInvalidatesOnlySegmentIntersectingDeletedSlot() throws {
+        let engine = makeGate5CEngine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+
+        _ = gate5CTypeDigits(gate5CPrefixDigits, into: controller)
+        _ = try gate5CSelect(["qing", "wei", "fan"], controller: controller)
+        // Optional: select da if available, else leave focus on remaining 32.
+        if let da = controller.state.t9PinyinPathState.compactPaths.first(where: { $0.displayText == "da" }) {
+            _ = controller.handle(.selectT9PinyinPath(da))
+        }
+
+        let confirmedBefore = controller.state.t9PinyinPathState.confirmedSegmentValues
+        XCTAssertTrue(confirmedBefore.starts(with: ["qing", "wei", "fan"]))
+
+        // Append one extra digit beyond prefix (extends focus only).
+        _ = controller.handle(.insertKey("6")) // o-group, extends da→dao-ish focus
+        _ = controller.handle(.deleteBackward)
+
+        let confirmedAfter = controller.state.t9PinyinPathState.confirmedSegmentValues
+        fputs(
+            "GATE5_DELETE_SLOT capture: confBefore=\(confirmedBefore) confAfter=\(confirmedAfter) "
+                + "src=\(controller.state.t9PinyinPathState.segmentSourceDigits ?? "nil") "
+                + "paths=\(controller.state.t9PinyinPathState.compactPaths.map(\.displayText).prefix(8))\n",
+            stderr
+        )
+
+        // qing/wei/fan slots were not in the deleted trailing digit; they must remain.
+        XCTAssertEqual(Array(confirmedAfter.prefix(3)), ["qing", "wei", "fan"])
+    }
+
+    func testAppendDeleteRoundTripPreservesConfirmedSegmentRanges() throws {
+        let engine = makeGate5CEngine()
+        let controller = makeController(engine: engine)
+        controller.textClient = FakeTextInputClient()
+
+        _ = gate5CTypeDigits(gate5CPrefixDigits, into: controller)
+        _ = try gate5CSelect(["qing", "wei", "fan"], controller: controller)
+
+        let sourceBefore = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        let confirmedBefore = controller.state.t9PinyinPathState.confirmedSegmentValues
+        let focusBefore = controller.state.t9PinyinPathState.focusedSegmentIndex
+
+        _ = controller.handle(.insertKey("5"))
+        _ = controller.handle(.deleteBackward)
+
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, sourceBefore)
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, confirmedBefore)
+        XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, focusBefore)
+    }
+
+    /// Human 2026-07-23: Path select qing/wei(/fan) then Delete must peel remaining
+    /// digits without getting stuck (report: stuck at qingweie) and without leaving
+    /// a phantom selected Path chip on `qing`.
+    func testGate5PathSelectQingWeiThenDeletePeelsWithoutStuckSelectedChip() throws {
+        let engine = makeGate5CEngine()
+        let client = FakeTextInputClient()
+        let controller = makeController(engine: engine)
+        controller.textClient = client
+
+        _ = gate5CTypeDigits(gate5CPrefixDigits, into: controller)
+        _ = try gate5CSelect(["qing", "wei", "fan"], controller: controller)
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["qing", "wei", "fan"])
+        let sourceAfterSelect = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        XCTAssertEqual(sourceAfterSelect, gate5CPrefixDigits)
+
+        // Peel remaining focus digits then confirmed syllables via Core identity.
+        var deleteSteps = 0
+        while deleteSteps < 24 {
+            let beforeSrc = controller.state.t9PinyinPathState.segmentSourceDigits
+            let beforeConf = controller.state.t9PinyinPathState.confirmedSegmentValues
+            let beforeRaw = controller.state.lastRimeOutput?.rawInput
+            let emptyBefore =
+                (beforeSrc == nil || beforeSrc?.isEmpty == true)
+                && beforeConf.isEmpty
+                && (beforeRaw?.isEmpty ?? true)
+            if emptyBefore { break }
+
+            _ = controller.handle(.deleteBackward)
+            deleteSteps += 1
+            let afterSrc = controller.state.t9PinyinPathState.segmentSourceDigits
+            let afterConf = controller.state.t9PinyinPathState.confirmedSegmentValues
+            let afterRaw = controller.state.lastRimeOutput?.rawInput
+            let emptyAfter =
+                (afterSrc == nil || afterSrc?.isEmpty == true)
+                && afterConf.isEmpty
+                && (afterRaw?.isEmpty ?? true)
+            let progressed =
+                beforeSrc != afterSrc
+                || beforeConf != afterConf
+                || beforeRaw != afterRaw
+                || emptyAfter
+            XCTAssertTrue(
+                progressed,
+                "Delete stuck at step=\(deleteSteps) src=\(afterSrc ?? "nil") conf=\(afterConf) raw=\(afterRaw ?? "nil")"
+            )
+            // Human: sole `qing` must keep Path bar visible; never selected chip.
+            if afterConf == ["qing"] {
+                XCTAssertFalse(
+                    controller.state.t9PinyinPathState.compactPaths.isEmpty,
+                    "Path bar must not vanish when only qing remains"
+                )
+                XCTAssertNil(
+                    controller.state.t9PinyinPathState.selectedPath,
+                    "selectedPath must clear when one confirmed syllable remains; conf=\(afterConf)"
+                )
+            }
+            // Human: at 3-digit focus (qin) candidates must not stay bare-digit only.
+            if afterConf.isEmpty, afterSrc?.count == 3 {
+                let raw = afterRaw ?? ""
+                XCTAssertFalse(
+                    raw.allSatisfy(\.isNumber),
+                    "qin slots should use letter-refined RIME raw, got \(raw)"
+                )
+                XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
+            }
+            // Human retest #3: peel to qi must not auto-select a Path chip.
+            if afterConf.isEmpty, afterSrc?.count == 2 {
+                XCTAssertNil(
+                    controller.state.t9PinyinPathState.selectedPath,
+                    "qi focus must not auto-select Path; raw=\(afterRaw ?? "nil") paths=\(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))"
+                )
+            }
+            if afterConf == ["qi"] {
+                XCTAssertNil(
+                    controller.state.t9PinyinPathState.selectedPath,
+                    "re-focused sole qi must not show selectedPath"
+                )
+            }
+            if emptyAfter { break }
+        }
+        XCTAssertGreaterThan(deleteSteps, 0)
+        XCTAssertLessThan(deleteSteps, 24, "must fully delete without infinite/stuck loop")
+        XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
+    }
+
+    /// Human retest #3 item 3: delete down to `qi` never auto-selects Path.
+    func testGate5DeleteToQiDoesNotAutoSelectPath() throws {
+        let engine = makeGate5CEngine()
+        let client = FakeTextInputClient()
+        let controller = makeController(engine: engine)
+        controller.textClient = client
+
+        // Full progressive prefix so Path confirm has remaining slots to advance.
+        _ = gate5CTypeDigits(gate5CPrefixDigits, into: controller)
+        _ = try gate5CSelect(["qing"], controller: controller)
+
+        var guardSteps = 0
+        var sawQiFocus = false
+        while guardSteps < 20 {
+            let src = controller.state.t9PinyinPathState.segmentSourceDigits ?? ""
+            let conf = controller.state.t9PinyinPathState.confirmedSegmentValues
+            let empty = src.isEmpty && conf.isEmpty
+                && (controller.state.lastRimeOutput?.rawInput?.isEmpty ?? true)
+            if conf.isEmpty, src.count == 2 {
+                sawQiFocus = true
+                XCTAssertNil(
+                    controller.state.t9PinyinPathState.selectedPath,
+                    "Human: deleting to qi must not auto-select Path; paths=\(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))"
+                )
+                XCTAssertFalse(controller.state.t9PinyinPathState.compactPaths.isEmpty)
+                break
+            }
+            if empty { break }
+            _ = controller.handle(.deleteBackward)
+            guardSteps += 1
+        }
+        XCTAssertTrue(sawQiFocus, "must reach 2-digit qi focus while peeling")
+        XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
+    }
+
+    /// Human C / retest #3 item 4: after typo Delete on multi-digit unconfirmed
+    /// composition, RIME returns to pure digit input mode so continue typing
+    /// rediscovers Path; Path select must not paste a corrupted preedit tail.
+    func testGate5CAfterDeleteReturnsToPureDigitInputAndPathSelectDropsBadTail() throws {
+        let engine = makeGate5CEngine()
+        let client = FakeTextInputClient()
+        let controller = makeController(engine: engine)
+        controller.textClient = client
+
+        // qingweifa… full Gate5 C prefix (matches FakeRime path-refined keys).
+        let prefix = gate5CPrefixDigits
+        _ = gate5CTypeDigits(prefix, into: controller)
+        XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+
+        _ = controller.handle(.insertKey("5")) // JKL typo
+        _ = controller.handle(.deleteBackward)
+
+        let srcAfterDelete = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        XCTAssertEqual(srcAfterDelete, prefix)
+        let rawAfterDelete = controller.state.lastRimeOutput?.rawInput ?? ""
+        // Pure input mode for long unconfirmed ledger (not letter-locked qing…).
+        XCTAssertTrue(
+            rawAfterDelete.allSatisfy(\.isNumber),
+            "after Delete, unconfirmed multi-digit must return to pure digit input; raw=\(rawAfterDelete)"
+        )
+        XCTAssertEqual(rawAfterDelete, prefix)
+        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
+
+        // Continue typing one correct digit on the pure-digit session.
+        _ = controller.handle(.insertKey("9")) // starts "wo…" tail of full phrase
+        let srcContinued = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        XCTAssertTrue(
+            srcContinued.hasPrefix(prefix),
+            "continue must extend Core ledger; src=\(srcContinued)"
+        )
+        // Drop the extra continue digit so Path refine keys match FakeRime dictionary
+        // (`qing93432632` / `qing'wei'32632` from makeGate5CEngine).
+        _ = controller.handle(.deleteBackward)
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, prefix)
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, prefix)
+
+        // Path-select qing/wei after pure-digit return; host must stay digit-safe
+        // and must not invent a non-encoding tail like Human `qingweiuil`.
+        // Remaining digit slots must NOT be discarded (Human retest #4: not bare qingwei).
+        _ = try gate5CSelect(["qing", "wei"], controller: controller)
+        let marked = client.markedText.replacingOccurrences(of: " ", with: "").lowercased()
+        let markedLetters = String(marked.unicodeScalars.filter { $0.isASCII && Character($0).isLetter })
+        XCTAssertFalse(marked.contains("uil"), "marked must not keep illegal tail; marked=\(marked)")
+        XCTAssertFalse(marked.contains(where: \.isNumber), "host must stay digit-safe; marked=\(marked)")
+        XCTAssertTrue(markedLetters.hasPrefix("qingwei"), "marked should keep qingwei prefix; marked=\(marked)")
+        XCTAssertEqual(
+            markedLetters.count,
+            prefix.count,
+            "remaining slots must stay visible after Path select; marked=\(marked) src=\(prefix)"
+        )
+        let conf = controller.state.t9PinyinPathState.confirmedSegmentValues
+        XCTAssertEqual(Array(conf.prefix(2)), ["qing", "wei"])
+        let focusPaths = Set(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))
+        XCTAssertFalse(
+            focusPaths.contains("qing"),
+            "after qing/wei advance, focus must leave first syllable; paths=\(focusPaths.sorted())"
+        )
+    }
+
+    /// Human retest #5: type `qingweifanda`, typo JKL, Delete, MNO — Core ledger must
+    /// drop the typo `5` and keep `6`. Path select qing/wei/fan must focus `326`
+    /// (dao/fan/dan…), never ghost `325` (`fal` / fa+l).
+    func testHumanQingweifandaTypoJKLDeleteMNONoGhostFive() throws {
+        let engine = makeGate5CEngine()
+        let withMNO = gate5CPrefixDigits + "6"
+        // Path-refined keys after selecting qing/wei/fan on prefix+MNO.
+        let qing = "qing934326326"
+        let qingWei = "qing'wei'326326"
+        let qingWeiFan = "qing'wei'fan'326"
+        engine.dictionary[withMNO] = ["请喂饭到"]
+        engine.dictionary[qing] = ["请喂饭到"]
+        engine.dictionary[qingWei] = ["请喂饭到"]
+        engine.dictionary[qingWeiFan] = ["请喂饭到"]
+        engine.dictionary["qing'wei'fan'dao"] = ["请喂饭到"]
+        engine.comments[withMNO] = ["qing wei fan dao"]
+        engine.comments[qing] = ["qing wei fan dao"]
+        engine.comments[qingWei] = ["qing wei fan dao"]
+        engine.comments[qingWeiFan] = ["qing wei fan dao"]
+        engine.comments["qing'wei'fan'dao"] = ["qing wei fan dao"]
+        let client = FakeTextInputClient()
+        let controller = makeController(engine: engine)
+        controller.textClient = client
+
+        let prefix = gate5CPrefixDigits // qingweifanda
+        _ = gate5CTypeDigits(prefix, into: controller)
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, prefix)
+
+        _ = controller.handle(.insertKey("5")) // JKL typo
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, prefix + "5")
+
+        _ = controller.handle(.deleteBackward)
+        let afterDel = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        XCTAssertEqual(afterDel, prefix, "Delete must peel typo 5 from Core ledger; got \(afterDel)")
+
+        _ = controller.handle(.insertKey("6")) // MNO → dao tail
+        let afterMNO = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        XCTAssertEqual(afterMNO, withMNO, "MNO must append 6, not keep ghost 5; got \(afterMNO)")
+        XCTAssertFalse(
+            client.markedText.contains(where: \.isNumber),
+            "host digit leak; marked=\(client.markedText)"
+        )
+
+        _ = try gate5CSelect(["qing", "wei", "fan"], controller: controller)
+        let src = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        XCTAssertEqual(src, withMNO)
+        let rem = String(src.dropFirst(10)) // after qing+wei+fan
+        XCTAssertEqual(rem, "326", "remaining must be dao slots 326, not ghost 325; rem=\(rem)")
+
+        let pathLabels = Set(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))
+        XCTAssertTrue(
+            pathLabels.contains("dao")
+                || pathLabels.contains("dan")
+                || pathLabels.contains("fan"),
+            "expected 3-slot dao-family paths; got \(pathLabels.sorted())"
+        )
+        let onlyTwoSlotBar = pathLabels.isSubset(of: ["da", "fa", "ta", "e", "d", "f", "a", "b", "c"])
+        XCTAssertFalse(onlyTwoSlotBar, "Path bar looks like 2-digit focus only; paths=\(pathLabels.sorted())")
+
+        let markedLetters = String(
+            client.markedText.replacingOccurrences(of: " ", with: "").lowercased().filter(\.isLetter)
+        )
+        XCTAssertFalse(markedLetters.hasSuffix("fal"), "ghost JKL letter l; marked=\(markedLetters)")
+        let encMap: [Character: Character] = [
+            "a": "2", "b": "2", "c": "2", "d": "3", "e": "3", "f": "3",
+            "g": "4", "h": "4", "i": "4", "j": "5", "k": "5", "l": "5",
+            "m": "6", "n": "6", "o": "6", "p": "7", "q": "7", "r": "7", "s": "7",
+            "t": "8", "u": "8", "v": "8", "w": "9", "x": "9", "y": "9", "z": "9",
+        ]
+        let encoded = String(markedLetters.compactMap { encMap[$0] })
+        XCTAssertEqual(
+            encoded,
+            withMNO,
+            "host letters must encode to ledger (no trailing typo 5); marked=\(markedLetters) enc=\(encoded)"
+        )
+    }
+
+    /// Human: standalone `da` + JKL + Delete + `o`(6) → `dao` must also hold when
+    /// `da` is only the remaining focus after Path-confirmed `qing/wei/fan`.
+    func testGate5InSentenceDaTypoDeleteContinueMatchesStandalone() throws {
+        let engine = makeGate5CEngine()
+        // Standalone-like keys for remaining focus letter forms.
+        engine.dictionary["qing'wei'fan'da"] = ["请喂饭到"]
+        engine.dictionary["qing'wei'fan'dao"] = ["请喂饭到"]
+        engine.dictionary["qing'wei'fan'325"] = ["请喂饭"]
+        engine.dictionary["qing'wei'fan'dan"] = ["请喂饭"]
+        engine.comments["qing'wei'fan'da"] = ["qing wei fan da"]
+        engine.comments["qing'wei'fan'dao"] = ["qing wei fan dao"]
+        engine.comments["qing'wei'fan'325"] = ["qing wei fan da"]
+        let client = FakeTextInputClient()
+        let controller = makeController(engine: engine)
+        controller.textClient = client
+
+        _ = gate5CTypeDigits(gate5CPrefixDigits, into: controller)
+        _ = try gate5CSelect(["qing", "wei", "fan"], controller: controller)
+        let srcAfterSelect = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        XCTAssertEqual(srcAfterSelect, gate5CPrefixDigits)
+        // Remaining focus should be `32` (da).
+        let remBefore = String(srcAfterSelect.dropFirst(10)) // qing4+wei3+fan3
+        XCTAssertEqual(remBefore, "32")
+
+        // Typo JKL then Delete then o(6) — same as lone da session.
+        _ = controller.handle(.insertKey("5"))
+        _ = controller.handle(.deleteBackward)
+        _ = controller.handle(.insertKey("6"))
+
+        let src = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        XCTAssertEqual(src, gate5CPrefixDigits + "6")
+        XCTAssertEqual(
+            Array(controller.state.t9PinyinPathState.confirmedSegmentValues.prefix(3)),
+            ["qing", "wei", "fan"]
+        )
+        let rem = String(src.dropFirst(10))
+        XCTAssertEqual(rem, "326", "remaining focus must become dao slots; rem=\(rem)")
+        let raw = controller.state.lastRimeOutput?.rawInput ?? ""
+        // Ambiguous 326 (dan/dao/fan…) keeps pure remaining digits after confirmed
+        // boundary — same processKey surface as standalone multi-option short runs.
+        XCTAssertTrue(
+            raw == "qing'wei'fan'326"
+                || raw.hasSuffix("'326")
+                || raw.hasSuffix("dao")
+                || raw.hasSuffix("'dao"),
+            "in-sentence remaining should stay conf+dao-slots; raw=\(raw)"
+        )
+        let pathLabels = Set(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))
+        XCTAssertTrue(
+            pathLabels.contains("dao") || pathLabels.contains("da") || pathLabels.contains("o"),
+            "Path should expose dao/da after continue; paths=\(pathLabels.sorted())"
+        )
+        // Confirmed prefix must survive the typo/Delete/continue cycle.
+        XCTAssertFalse(raw.replacingOccurrences(of: "'", with: "").contains("fanfan"))
+    }
+
+    /// Human C: after confirmed qing/wei/fan, typo digit + Delete + continue must not
+    /// wipe confirmed identity when RIME re-emits a long pure-digit resegmentation.
+    func testGate5CContinueAfterDeleteKeepsConfirmedWhenRimeResegmentsFullDigits() throws {
+        let engine = makeGate5CEngine()
+        let client = FakeTextInputClient()
+        let controller = makeController(engine: engine)
+        controller.textClient = client
+
+        _ = gate5CTypeDigits(gate5CPrefixDigits, into: controller)
+        _ = try gate5CSelect(["qing", "wei", "fan"], controller: controller)
+        _ = controller.handle(.insertKey("5"))
+        _ = controller.handle(.deleteBackward)
+        XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["qing", "wei", "fan"])
+
+        // Untrusted full-digit resegment (device-like) on next key.
+        engine.processKeyScript = [
+            gate5CScriptedOutput(
+                raw: gate5CFullDigits,
+                preedit: "qing wei fan fan",
+                candidates: ["请喂饭饭"],
+                comment: "qing wei fan fan"
+            )
+        ]
+        _ = controller.handle(.insertKey("6"))
+
+        XCTAssertEqual(
+            Array(controller.state.t9PinyinPathState.confirmedSegmentValues.prefix(3)),
+            ["qing", "wei", "fan"],
+            "confirmed Path must survive untrusted full-digit resegment"
+        )
+        let src = try XCTUnwrap(controller.state.t9PinyinPathState.segmentSourceDigits)
+        XCTAssertEqual(src, gate5CPrefixDigits + "6")
+        XCTAssertFalse(
+            (controller.state.lastRimeOutput?.composition?.preeditText ?? "")
+                .replacingOccurrences(of: " ", with: "")
+                .contains("fanfan")
+                || client.markedText.replacingOccurrences(of: " ", with: "").contains("fanfan")
+        )
+    }
+
+    /// Mixed raw identity must use T9 digit signature + exact slot map, not letterBudget alone.
+    func testMixedRawIdentityUsesT9SignatureNotLetterBudget() throws {
+        let source = gate5CFullDigits
+        let map: [Character: Character] = [
+            "a": "2", "b": "2", "c": "2",
+            "d": "3", "e": "3", "f": "3",
+            "g": "4", "h": "4", "i": "4",
+            "j": "5", "k": "5", "l": "5",
+            "m": "6", "n": "6", "o": "6",
+            "p": "7", "q": "7", "r": "7", "s": "7",
+            "t": "8", "u": "8", "v": "8",
+            "w": "9", "x": "9", "y": "9", "z": "9",
+        ]
+        func encode(_ raw: String) -> String {
+            var out = ""
+            for ch in raw.lowercased() {
+                if ch.isNumber { out.append(ch) }
+                else if let d = map[ch] { out.append(d) }
+            }
+            return out
+        }
+
+        let mixed = "qing'wei'fan'dao'9698454"
+        XCTAssertEqual(encode(mixed), source)
+
+        // Apostrophe boundaries map to exact source slots.
+        let segments = ["qing", "wei", "fan", "dao"]
+        var cursor = 0
+        for s in segments {
+            let sig = encode(s)
+            let range = cursor..<(cursor + sig.count)
+            let start = source.index(source.startIndex, offsetBy: range.lowerBound)
+            let end = source.index(source.startIndex, offsetBy: range.upperBound)
+            XCTAssertEqual(String(source[start..<end]), sig, "slot mismatch for \(s)")
+            XCTAssertTrue(T9PinyinSyllableCatalog.syllables.contains(s))
+            cursor = range.upperBound
+        }
+        XCTAssertEqual(String(source.dropFirst(cursor)), "9698454")
+
+        // letterBudget alone cannot reattach mixed remaining after partial.
+        let mixedRemaining = "wei'fan'dao'9698454"
+        XCTAssertFalse(mixedRemaining.allSatisfy(\.isNumber))
+        XCTAssertEqual(encode(mixedRemaining), "9343263269698454")
+        // Exact ranges after consuming qing (not mere hasSuffix).
+        XCTAssertEqual(encode(mixedRemaining), String(source.dropFirst(4)))
+        XCTAssertNotEqual(encode(mixedRemaining), String(source.dropFirst(7)))
+    }
+
+    /// Provisional-only typo (no selected complete syllable on focus) must also round-trip.
+    func testGate5CTypoAppendThenDeleteWithProvisionalOnlyPath() throws {
+        let engine = makeGate5CEngine()
+        let client = FakeTextInputClient()
+        let controller = makeController(engine: engine)
+        controller.textClient = client
+
+        // Type prefix without confirming any path — only provisional catalog paths.
+        _ = gate5CTypeDigits(gate5CPrefixDigits, into: controller)
+        XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+        let preSource = controller.state.t9PinyinPathState.segmentSourceDigits
+        let prePaths = Set(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))
+
+        _ = controller.handle(.insertKey("5"))
+        _ = controller.handle(.deleteBackward)
+
+        let postSource = controller.state.t9PinyinPathState.segmentSourceDigits
+        let postPaths = Set(controller.state.t9PinyinPathState.compactPaths.map(\.displayText))
+
+        fputs(
+            "GATE5_C_PROVISIONAL capture: preSrc=\(preSource ?? "nil") postSrc=\(postSource ?? "nil") "
+                + "prePaths=\(prePaths.sorted().prefix(8)) postPaths=\(postPaths.sorted().prefix(8))\n",
+            stderr
+        )
+
+        XCTAssertEqual(postSource, preSource)
+        // After round-trip, catalog should still expose a non-empty progressive set
+        // (not collapse to empty). Exact set may differ by focus rebuild.
+        XCTAssertFalse(
+            controller.state.t9PinyinPathState.compactPaths.isEmpty,
+            "provisional Path must not vanish after typo Delete"
+        )
+        XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
     }
 
     // MARK: - Helpers

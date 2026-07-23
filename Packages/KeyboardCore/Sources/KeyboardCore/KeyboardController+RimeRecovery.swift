@@ -79,6 +79,7 @@ extension KeyboardController {
             return effectsAfterChineseCompositionKey(appendFallbackCompositionKey(rimeKey), originalKey: key)
         }
 
+        let previousRawForTrace = state.lastRimeOutput?.rawInput
         applyRimeOutput(augmentRimeOutputIfNeeded(output))
         let retainedFocusedSegment: Bool
         if rimeKey.count == 1, let digit = rimeKey.first {
@@ -89,6 +90,15 @@ extension KeyboardController {
         } else {
             retainedFocusedSegment = false
         }
+        #if DEBUG
+        if usesT9InputSemantics, rimeKey.count == 1, rimeKey.first?.isNumber == true {
+            gate5TraceComposition(
+                event: .digitAppend,
+                previousRaw: previousRawForTrace,
+                note: "digitAppend=true retainFocus=\(retainedFocusedSegment)"
+            )
+        }
+        #endif
         var effects = consumeSingleUseShiftIfNeeded().union(.compositionChanged)
         if retainedFocusedSegment {
             effects.insert(.t9PinyinPathsChanged)
@@ -161,7 +171,7 @@ extension KeyboardController {
         state.partialCommit = numberSuffixPartialCommit(prefix: prefix, rawInput: rawInput)
         state.currentComposition = rawInput
         state.lastRimeOutput = numberSuffixRimeOutput(prefix: prefix, rawInput: rawInput)
-        updateInlinePreedit(rawInput)
+        updateInlinePreedit(rawInput, source: .explicitNumberSuffix)
         clearTypoCorrectionSuggestions()
     }
 
@@ -171,7 +181,7 @@ extension KeyboardController {
         state.partialCommit = numberSuffixPartialCommit(prefix: partialCommit.confirmedText, rawInput: rawInput)
         state.currentComposition = rawInput
         state.lastRimeOutput = numberSuffixRimeOutput(prefix: partialCommit.confirmedText, rawInput: rawInput)
-        updateInlinePreedit(rawInput)
+        updateInlinePreedit(rawInput, source: .explicitNumberSuffix)
         clearTypoCorrectionSuggestions()
     }
 
@@ -243,7 +253,7 @@ extension KeyboardController {
                 checkpoint: nil,
                 source: partialCommit.source
             )
-            updateInlinePreedit(displayText)
+            updateInlinePreedit(displayText, source: .compositionProjection)
             clearTypoCorrectionSuggestions()
         } else if T9CompositionCommitPolicy.isActiveT9Composition(
             usesT9InputSemantics: usesT9InputSemantics,
@@ -259,11 +269,14 @@ extension KeyboardController {
             if !visible.isEmpty,
                !visible.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIIDigit)
             {
-                updateInlinePreedit(visible)
+                updateInlinePreedit(visible, source: .compositionProjection)
             }
             clearTypoCorrectionSuggestions()
         } else {
-            updateInlinePreedit(state.currentComposition)
+            updateInlinePreedit(
+                state.currentComposition,
+                source: .compositionProjection
+            )
             refreshTypoCorrectionSuggestions()
         }
         return consumeSingleUseShiftIfNeeded().union(.compositionChanged)
