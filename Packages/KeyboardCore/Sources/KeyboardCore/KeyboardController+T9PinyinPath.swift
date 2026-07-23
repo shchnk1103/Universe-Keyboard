@@ -1143,15 +1143,35 @@ extension KeyboardController {
             return true
         }
 
-        // Human retest #5–#6: provisional multi-digit progressive input (including
-        // short standalone `da`/`dao`) treats Core `sourceDigits` as SoT. Otherwise
-        // RIME may show `dao` while Path bar stays on a stale 2-slot focus
-        // (`da/fa/e/d/f` or similar). Single-digit first key still uses normal refresh.
+        // Human retest #5–#6: provisional multi-digit progressive input treats Core
+        // `sourceDigits` as the Path ledger SoT. processKey already advanced the
+        // live pure-digit (or mixed) raw — rebuild Path only. Do **not** force a
+        // letter-form resync here (`64` → `ni`); that rewrites progressive raw and
+        // breaks exact-refine / page-round-trip contracts. Resync is reserved for
+        // confirmed Path advance and Delete peel recovery.
         guard identity.confirmedSyllables.isEmpty,
               identity.sourceDigits.count > 1
         else { return false }
         installIdentityAsPathState(identity)
-        _ = resyncRimeCompositionFromT9Identity()
+        let liveRaw = state.lastRimeOutput?.rawInput ?? ""
+        let pureLive = !liveRaw.isEmpty && liveRaw.allSatisfy(\.isNumber)
+        // Only re-drive RIME when the engine raw drifted off the Core digit ledger
+        // (ghost-typo / letter-lock recovery). Prefer pure digits, not first-path letter.
+        if !pureLive || liveRaw != identity.sourceDigits {
+            let preserved = state.t9PinyinPathState
+            if let engine = rimeEngine {
+                let output = engine.replaceInput(identity.sourceDigits)
+                state.lastRimeOutput = output
+                state.currentComposition = identity.sourceDigits
+                state.t9PinyinPathState = preserved
+                let projected = t9VisiblePreedit(for: output)
+                if !projected.isEmpty,
+                   !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+                {
+                    updateInlinePreedit(projected, source: .compositionProjection)
+                }
+            }
+        }
         return true
     }
 
@@ -1192,13 +1212,65 @@ extension KeyboardController {
         }
 
         identity = deleted
+        let previousSelectedLabel = state.t9PinyinPathState.selectedPath?.displayText
+            ?? {
+                // Letter-only refined raw (e.g. `n` after cycling on key 6).
+                guard let previousRaw,
+                      previousRaw.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter),
+                      previousRaw.count == 1
+                else { return nil as String? }
+                return previousRaw.lowercased()
+            }()
+
         // Never keep a stale selected Path chip after identity peel (Human: qing
-        // appeared selected after deleting back to a single confirmed syllable).
+        // appeared selected after deleting back to a single confirmed syllable)
+        // unless we re-map it below for single-key letter cycling.
         installIdentityAsPathState(identity)
         var pathState = state.t9PinyinPathState
         pathState.selectedPath = nil
         state.t9PinyinPathState = pathState
-        _ = resyncRimeCompositionFromT9Identity()
+
+        // Confirmed Path: full identity resync (letter-refined remaining as needed).
+        // Unconfirmed short peel (≤3): letter-aware resync so `qin`/`qi` candidates
+        // are not bare-digit 手/瘦; remap prior m/n/o selection when still issued.
+        // Unconfirmed long peel (>3): pure-digit ledger only (ghost-typo recovery).
+        if !identity.confirmedSyllables.isEmpty {
+            _ = resyncRimeCompositionFromT9Identity()
+        } else if identity.sourceDigits.count <= 3 {
+            _ = resyncRimeCompositionFromT9Identity()
+            if let label = previousSelectedLabel,
+               let remapped = state.t9PinyinPathState.compactPaths.first(where: {
+                   $0.displayText == label
+               }),
+               let engine = rimeEngine
+            {
+                var preserved = state.t9PinyinPathState
+                preserved.selectedPath = remapped
+                preserved.provisionalPathID = nil
+                state.t9PinyinPathState = preserved
+                let refined = engine.replaceInput(label)
+                if refined.composition != nil,
+                   (refined.rawInput == label || isUsableT9SessionOutput(refined))
+                {
+                    state.lastRimeOutput = refined
+                    state.currentComposition = label
+                    applySelectedT9PinyinPathDisplay(remapped)
+                }
+            }
+        } else if let engine = rimeEngine {
+            let digits = identity.sourceDigits
+            let output = engine.replaceInput(digits)
+            let preserved = state.t9PinyinPathState
+            state.lastRimeOutput = output
+            state.currentComposition = digits
+            state.t9PinyinPathState = preserved
+            let projected = t9VisiblePreedit(for: output)
+            if !projected.isEmpty,
+               !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+            {
+                updateInlinePreedit(projected, source: .compositionProjection)
+            }
+        }
         clearTypoCorrectionSuggestions()
         #if DEBUG
         gate5TraceComposition(

@@ -541,7 +541,11 @@ extension KeyboardController {
     func updateInlinePreedit(_ text: String, source: HostPreeditSource) {
         let previous = state.insertedPreeditText
         let safeText: String
+        // Internal T9 digit invariant applies only under nine-key T9 semantics.
+        // 26-key letter+digit compositions (e.g. `n20260619` on the numbers page)
+        // are legitimate host preedit and must not be rejected.
         if source == .compositionProjection,
+           usesT9InputSemantics,
            compositionProjectionContainsInternalDigit(text)
         {
             // This is the final host boundary. Preserve the prior safe spelling

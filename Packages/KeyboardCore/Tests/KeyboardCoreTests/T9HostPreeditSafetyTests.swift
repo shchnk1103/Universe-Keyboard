@@ -8,6 +8,8 @@ final class T9HostPreeditSafetyTests: XCTestCase {
         let client = FakeTextInputClient()
         let controller = KeyboardController()
         controller.textClient = client
+        // Digit rejection is a nine-key T9 host boundary (26-key may show digits).
+        controller.usesT9InputSemantics = true
 
         controller.updateInlinePreedit("qiu", source: .compositionProjection)
         controller.updateInlinePreedit("qiu5", source: .compositionProjection)
