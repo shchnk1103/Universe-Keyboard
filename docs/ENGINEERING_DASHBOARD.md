@@ -280,5 +280,6 @@ Update this Dashboard only after the responsible owner confirms a state, depende
 - **Human H5 residual:** H5-A/B/C **Pass** (device); Product-accepted via [`PD-…-GATE5-POST-BETA-RESIDUAL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md).
 - **Residual-B:** Path-ledger **cursor** — Human device **Pass** `2026-07-23`. PD Accepted. Evidence §29–§30. PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) **MERGED** → `main` `@f84a00d`; feature branch cleaned.
 - **Independent reviews:** β-limited + post-β Accept/Pass-with-findings.
+- **Doc A1 (first vs unique full-cover):** **Closed** — dual resync policy documented (remediation §31).
 - **Next (KOS):** optional provisional-only C SKIP / formal 004 Assignment close.
 - **Not claimed:** full 004 Assignment `Closed` solely from residual-B; App Store ship.

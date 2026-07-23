@@ -33,7 +33,9 @@
 1. Core digit ledger SoT for unconfirmed multi-digit append/delete (`sourceDigits.count > 1`), including short `da→dao`.  
 2. Long progressive ghost-typo peel (H5-A).  
 3. Host display: reject illegal tails; **do not** drop remaining after Path select.  
-4. `shortUnconfirmedResyncRaw` / confirmed+remaining refine (unique full-cover only; no partial long-tail letterization).  
+4. Resync letterization (**two policies** — do not collapse wording):
+   - `shortUnconfirmedResyncRaw` (ledger ≤3, no confirmed): **first** catalog/comment-order complete syllable that **full-covers** the ledger → letter raw; else pure digits. Does not invent slots / change `sourceDigits` length.
+   - `refinedConfirmedPlusRemainingRaw` (has confirmed + remaining focus): **unique** full-cover complete only → letter remaining; ambiguous/long → `confirmed' + remainingDigits`. **Never** partial long-tail letterization.  
 5. Directed automated matrix + Human H5 evidence linkage.  
 6. Non-claims integrity (no full B / no full Human Gate / no commit claim).
 
@@ -91,7 +93,7 @@ See remediation evidence **§27.3**. If any production hash differs, require Exe
 ## 6. Architecture questions (must answer)
 
 1. Is Core `segmentSourceDigits` the correct SoT for unconfirmed multi-digit Delete/append under ADR 0023 / β-limited identity?  
-2. Does `shortUnconfirmedResyncRaw` invent slots or only choose letter raw among catalog-legal full covers?  
+2. Does `shortUnconfirmedResyncRaw` invent slots, or only pick **first** catalog-legal **full-cover** letter raw (≠ unique-only rule used by `refinedConfirmedPlusRemainingRaw`)?  
 3. Does remaining-host projection after Path select still refuse illegal tails while never dropping legal remaining slots?  
 4. Are partial long-tail letterizations (`9698454` → `wo'+…`) still forbidden?  
 5. Is full B still honestly fail-closed / not claimed?
@@ -138,4 +140,6 @@ After independent review file is written:
 
 ## Superseding note (2026-07-23 later same day)
 
-Residual-B Path-ledger **cursor** was Product-confirmed, implemented, Human device **Pass**, and landed via PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) (`f84a00d`). See [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md) and remediation §28–§30. Remaining parked debt: provisional-only C `XCTSkip`; doc A1.
+Residual-B Path-ledger **cursor** was Product-confirmed, implemented, Human device **Pass**, and landed via PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) (`f84a00d`). See [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md) and remediation §28–§30.
+
+**Doc A1 closed** (handoff §3.4 + remediation §31): dual full-cover policy documented — short unconfirmed = first full-cover; confirmed+remaining = unique full-cover. Remaining parked debt: provisional-only C `XCTSkip`.

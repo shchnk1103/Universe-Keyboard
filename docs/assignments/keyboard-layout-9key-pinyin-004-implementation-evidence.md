@@ -159,6 +159,6 @@ From `T9PinyinCatalogControllerTests`:
 | PR #27 | MERGED — catalog + H5 residual |
 | H5 residual Human | Pass (A/B/C) |
 | Residual-B Path-ledger cursor | Human device **Pass**; PD Accepted; PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) **MERGED** `f84a00d` |
-| Evidence | remediation §21–§30 |
+| Evidence | remediation §21–§31 (A1 dual full-cover closeout in §31) |
 | Still open | provisional-only C `XCTSkip`; formal 004 Assignment `Closed` optional |
 | Full 004 Product Gate | **Not** claimed solely by residual-B |

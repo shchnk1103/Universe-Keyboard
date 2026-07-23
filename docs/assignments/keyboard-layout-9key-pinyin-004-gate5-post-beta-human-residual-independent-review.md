@@ -54,6 +54,7 @@
 3. **`highlightedIndex` appearances** in PartialCommit/T9Path are preedit preference only — **not** slot maps.  
 4. **Dual path residual:** provisional-only mixed-raw C continue remains `XCTSkip` — correctly **not** sold as fixed full C.  
 5. **Finding A1 (Low):** short resync “first full-cover” vs handoff “unique only” wording mismatch — recommend documentation alignment; **not** a Reject.  
+   **Superseding (2026-07-23):** **Closed** — dual policy is intentional and documented (short unconfirmed = first full-cover; confirmed+remaining = unique full-cover). Remediation §31; handoff wording fixed.  
 6. **Finding A2 (Info):** commentSyllableHints still rank Path labels after identity install — ADR 0023-allowed ranking, not consumption authority.
 
 ### 2.3 Architecture disposition
@@ -88,7 +89,7 @@
 | ID | Severity | Finding | Disposition |
 |---|---|---|---|
 | Q1 | **Info** | Same-conversation role switch weakens independence optics. | Documented; Product Lead may re-request external review |
-| Q2 | **Low** | Handoff “unique full-cover” wording ≠ short resync “first full-cover” | Align docs; code OK for residual |
+| Q2 | **Low** | Handoff “unique full-cover” wording ≠ short resync “first full-cover” | Align docs; code OK for residual — **Closed** 2026-07-23 (§31 dual policy) |
 | Q3 | **Info** | 1 SKIP provisional-only C | Residual debt; keep visible |
 | Q4 | **Info** | Full KeyboardCore suite not required for residual scope | Accept for directed freeze |
 

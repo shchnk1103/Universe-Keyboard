@@ -1043,7 +1043,7 @@ swift test --filter "Gate5|UnconfirmedT9Delete|VisibleT9Delete|AppendDelete|Whol
 | Fix | Detail |
 |---|---|
 | display after Path select | 错误 preedit 尾仍拒绝；**不再** fail-closed 到裸 `qingwei`；用 RIME/comment/catalog **重投影 remaining** |
-| `refinedConfirmedPlusRemainingRaw` | 仅 **唯一 full-cover** 完整音节 → 字母；否则 `conf'+digits`；**禁止** partial |
+| `refinedConfirmedPlusRemainingRaw` | 仅 **唯一 full-cover** 完整音节 → 字母；否则 `conf'+digits`；**禁止** partial（与 `shortUnconfirmedResyncRaw` 的 **first** full-cover 不同 API，见 §31） |
 | `T9PreeditResolver.projectCommentLetters` | 供 remaining 尾投影 |
 | Tests | 加强 #3 字母数=source；`testGate5InSentenceDaTypoDeleteContinueMatchesStandalone` |
 
@@ -1375,3 +1375,38 @@ CI Swift 6 Quality build-and-test: SUCCESS (PR #28)
 | Reachability | `e3d23cd` / `ed40745` ancestors of `origin/main` |
 | Full 004 Assignment Closed | **Not automatic** — provisional-only C SKIP / formal full Gate optional Product decision |
 | Non-claim | Not invent-slot; not full App Store ship |
+
+---
+
+## 31. Doc wording A1 closeout — dual full-cover resync policy
+
+**Date:** 2026-07-23 Asia/Shanghai  
+**Role:** Documentation Maintainer / Executor (KOS 2.0)  
+**Finding source:** post-β independent review Architecture A1 / Quality Q2  
+**Code SoT:** `KeyboardController+T9PinyinPath.swift`
+
+### 31.1 Truth (do not collapse into one phrase)
+
+| API | When | Letterization rule | Partial cover |
+|---|---|---|---|
+| `shortUnconfirmedResyncRaw` | Unconfirmed short ledger (1…3 digits) | **First** `completeSyllable` in catalog/comment order whose `consumedSlotCount == sourceDigits.count` → letter raw; else pure digits (multi) or single-letter fallback | **Forbidden** (must cover **all** slots) |
+| `refinedConfirmedPlusRemainingRaw` | Confirmed Path + remaining focus digits | **Unique** full-cover complete on remaining only (`count == 1`) → `conf' + letter`; if 0 or ≥2 covers → `conf' + remainingDigits` | **Forbidden** (no `wo'+tail` long-tail invent) |
+
+**Why different:** short unconfirmed letterization only ranks RIME raw presentation for an already-fixed ledger length (no invent-slot). Confirmed+remaining must not pick among ambiguous completes (`dan`/`dao`/`fan` on `326`) or invent long-tail cuts.
+
+### 31.2 Doc fixes
+
+| File | Change |
+|---|---|
+| post-β review handoff §3.4 / review Q2 | “unique only” mis-applied to short resync → dual-policy wording |
+| This evidence §24.3 | Cross-link to dual policy |
+| Assignment / plan / residual PD debt tables | A1 **Closed** |
+| Code comments | Restate dual policy next to both helpers |
+
+### 31.3 Disposition
+
+| Item | Status |
+|---|---|
+| Doc wording A1 | **Closed** |
+| Code change required | **No** (behavior already correct) |
+| Residual still open | provisional-only mixed-raw C `XCTSkip`; formal 004 Assignment close |

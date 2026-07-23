@@ -98,11 +98,11 @@ Stop and return to Product Lead when:
 - **Post-β freeze handoff:** [`…-gate5-post-beta-human-residual-review-handoff.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-review-handoff.md)
 - **Post-β independent review:** [`…-gate5-post-beta-human-residual-independent-review.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-independent-review.md)
 - **Product disposition (H5):** [`PD-…-GATE5-POST-BETA-RESIDUAL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md)
-- **Evidence (append-only):** [`…-gate5-remediation-evidence.md`](keyboard-layout-9key-pinyin-004-gate5-remediation-evidence.md) §21–§30
+- **Evidence (append-only):** [`…-gate5-remediation-evidence.md`](keyboard-layout-9key-pinyin-004-gate5-remediation-evidence.md) §21–§31
 - **Phase 0.5 / 0.6 reviews:** [`phase05`](keyboard-layout-9key-pinyin-004-gate5-phase05-independent-review.md) · [`phase06`](keyboard-layout-9key-pinyin-004-gate5-phase06-independent-review.md)
 - **Product decisions:** [`PD-…-GATE5-PATH`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-path-decision.md) · [`PD-…-GATE5-PHASE1-BETA`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-phase1-beta-authorization.md) · [`PD-…-GATE5-POST-BETA-RESIDUAL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md) · [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)
-- **Residual debt (open):** provisional-only mixed-raw C `XCTSkip`；doc wording A1  
-- **Residual debt (closed):** residual-B unchanged-raw / Path cursor（Human Pass `2026-07-23`）
+- **Residual debt (open):** provisional-only mixed-raw C `XCTSkip`；formal 004 Assignment `Closed` / full Human Gate（Product 另决）
+- **Residual debt (closed):** residual-B Path cursor（Human Pass + PR #28）；**doc wording A1**（dual full-cover resync policy · §31）
 - **Explicit non-claims:** **不**仅因 residual-B 宣称完整 004 Human Product Gate / Assignment `Closed`
 - **Revalidation Trigger:** catalog source change; selection semantics change; host preedit boundary change; schema/vendor change; Product path decision change
 

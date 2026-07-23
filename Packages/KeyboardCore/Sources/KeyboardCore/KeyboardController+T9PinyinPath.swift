@@ -1376,8 +1376,8 @@ extension KeyboardController {
                 }
             } else {
                 // Human: remaining focus must match standalone short-composition
-                // behavior (da + typo + Delete + o → dao). Prefer a catalog-complete
-                // letter covering the whole remaining run; otherwise conf + digits.
+                // behavior (da + typo + Delete + o → dao). Letterize remaining only
+                // when a **unique** complete covers the whole remaining run.
                 raw = refinedConfirmedPlusRemainingRaw(
                     confirmed: plan.pathConfirmedSyllables,
                     remainingDigits: rem,
@@ -1386,9 +1386,9 @@ extension KeyboardController {
             }
         } else if identity.sourceDigits.count <= 3 {
             // Short unconfirmed (qi / da / dao / to):
-            // - unique complete covering all slots → letter raw (`to`, sole `da`)
-            // - ambiguous multi completes (`dao`/`dan`/`fan` on 326) → pure digits
-            //   so Path stays on the full ledger (Human H5-C: not stuck on 2-slot bar)
+            // - **first** complete covering all slots → letter raw (`to`, sole `da`)
+            // - no full complete → pure digits (Path stays on ledger length)
+            // Ambiguous multi-complete on *confirmed+remaining* uses unique-only above.
             // Never use letterPrefix replacement like `t6` as the whole raw.
             raw = shortUnconfirmedResyncRaw(
                 sourceDigits: identity.sourceDigits,
@@ -1795,12 +1795,13 @@ extension KeyboardController {
 
     /// RIME raw for confirmed Path + remaining focus (standalone remaining parity).
     ///
-    /// Only letter-refine when a complete catalog path covers the **entire**
+    /// **Full-cover policy: UNIQUE only** (differs from `shortUnconfirmedResyncRaw`).
+    /// Letter-refine only when exactly one complete catalog path covers the **entire**
     /// remaining run (e.g. remaining `32` → `da`). Never partial-cover a long
     /// tail (`9698454` → `wo`+`98454`) — that invents segmentation and breaks
     /// multi-syllable continue (risk called out for sentence vs standalone).
     ///
-    /// When multiple completes cover the same short run, keep pure remaining
+    /// When zero or multiple completes cover the same short run, keep pure remaining
     /// digits so RIME/processKey can still form `dao` like a lone composition.
     private func refinedConfirmedPlusRemainingRaw(
         confirmed: [String],
@@ -1825,9 +1826,11 @@ extension KeyboardController {
 
     /// Short unconfirmed resync raw (1…3 digit ledger).
     ///
-    /// Prefer a complete syllable that covers **all** slots (catalog/comment order).
-    /// That keeps Path bar on the full ledger (sourceDigits still 326 for dao) while
-    /// avoiding bare multi-digit raws that pollute candidates (746 → 手/瘦).
+    /// **Full-cover policy: FIRST in catalog/comment order** (differs from
+    /// `refinedConfirmedPlusRemainingRaw`'s unique-only rule). Still requires a
+    /// complete syllable that covers **all** slots — never invents slots or
+    /// changes `sourceDigits` length. Prefer letter form to avoid bare multi-digit
+    /// raws that pollute candidates (746 → 手/瘦) while Path stays on the ledger.
     /// Never use letterPrefix replacements like `t6` as the whole raw.
     private func shortUnconfirmedResyncRaw(
         sourceDigits: String,
