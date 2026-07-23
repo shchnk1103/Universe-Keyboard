@@ -280,6 +280,7 @@ Update this Dashboard only after the responsible owner confirms a state, depende
 - **Post-β Human residual (H5):** Human Product Owner confirmed **H5-A / H5-B / H5-C Pass** (device). Evidence freeze: remediation §21–§27 + [`post-β review handoff`](assignments/keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-review-handoff.md).
 - **Automated freeze (Executor):** directed matrix **68 tests / 1 skip / 0 fail** (`Gate5|Human*|UnconfirmedT9Delete|VisibleT9Delete|AppendDelete|WholeUnresolved|InSentenceDa|DeleteToQi|PartialCommit`).
 - **Post-β independent review:** Architecture **Accept with findings** + Quality **Pass-with-findings** — [`post-β review`](assignments/keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-independent-review.md). Independent re-run **68/1 skip/0 fail**; hashes match §27.
-- **Product disposition:** [`PD-…-GATE5-POST-BETA-RESIDUAL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md) — **H5 residual accepted**; **local commit + push authorized**; merge/full Gate still open.
-- **Next (KOS):** Executor land commit/push → Human Product Owner PR review/merge.
+- **Product disposition:** [`PD-…-GATE5-POST-BETA-RESIDUAL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md) — **H5 residual accepted**; commit/push authorized.
+- **Remote:** branch `codex/t9-atomic-path-snapshot` @ `2112825` (tracks origin). PR create was blocked in-session; draft body [`004-pr-body`](assignments/keyboard-layout-9key-pinyin-004-pr-body.md); open via https://github.com/shchnk1103/Universe-Keyboard/pull/new/codex/t9-atomic-path-snapshot
+- **Next (KOS):** Human Product Owner open/review/merge PR; then optional Assignment close.
 - **Not claimed:** full Human Product Gate Pass for 004; full B unchanged-raw; auto-merge.

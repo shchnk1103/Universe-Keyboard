@@ -89,8 +89,10 @@ Stop and return to Product Lead when:
 
 ## Handoff
 
-- **Current phase:** Gate 5 **post-β residual Product-accepted** — Human H5 Pass + independent Accept/Pass-with-findings；[`PD-…-GATE5-POST-BETA-RESIDUAL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md) **授权 local commit + push**；**完整 Human Gate / merge 仍开放**
-- **Handoff target now:** Executor（落地 commit/push）→ Human Product Owner（PR review / merge）
+- **Current phase:** Gate 5 **post-β residual Product-accepted** — commit **pushed** to `origin/codex/t9-atomic-path-snapshot`（`67ef0ad` + `2112825`）；**PR open 受会话 publish 拦截，材料已备** → Human Product Owner **创建/审 PR 并 merge**
+- **Handoff target now:** Human Product Owner（开 PR / 审 / merge）
+- **PR draft body:** [`keyboard-layout-9key-pinyin-004-pr-body.md`](keyboard-layout-9key-pinyin-004-pr-body.md)
+- **Branch URL:** https://github.com/shchnk1103/Universe-Keyboard/pull/new/codex/t9-atomic-path-snapshot
 - **β-limited review (pre-hotfix):** [`…-phase1-beta-independent-review.md`](keyboard-layout-9key-pinyin-004-gate5-phase1-beta-independent-review.md)
 - **Post-β freeze handoff:** [`…-gate5-post-beta-human-residual-review-handoff.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-review-handoff.md)
 - **Post-β independent review:** [`…-gate5-post-beta-human-residual-independent-review.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-independent-review.md)
