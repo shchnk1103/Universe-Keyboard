@@ -1137,12 +1137,12 @@ extension KeyboardController {
             return true
         }
 
-        // Human retest #5–#6: provisional multi-digit progressive input treats Core
-        // `sourceDigits` as the Path ledger SoT. processKey already advanced the
-        // live pure-digit (or mixed) raw — rebuild Path only. Do **not** force a
-        // letter-form resync here (`64` → `ni`); that rewrites progressive raw and
-        // breaks exact-refine / page-round-trip contracts. Resync is reserved for
-        // confirmed Path advance and Delete peel recovery.
+        // Human retest #5–#6 / provisional-only C: Core `sourceDigits` is Path ledger
+        // SoT. processKey already advanced live raw — rebuild Path only. Do **not**
+        // force letter-form resync on pure progressive digits (`64` → `ni`); that
+        // rewrites progressive raw. When engine raw drifted to mixed/refined
+        // (device: `qing wei fan fa` after Delete), re-drive pure digits and refresh
+        // host so continue cannot leave fan-fan / ghost morphology on marked text.
         guard identity.confirmedSyllables.isEmpty,
               identity.sourceDigits.count > 1
         else { return false }
@@ -1150,23 +1150,50 @@ extension KeyboardController {
         let liveRaw = state.lastRimeOutput?.rawInput ?? ""
         let pureLive = !liveRaw.isEmpty && liveRaw.allSatisfy(\.isNumber)
         // Only re-drive RIME when the engine raw drifted off the Core digit ledger
-        // (ghost-typo / letter-lock recovery). Prefer pure digits, not first-path letter.
+        // (ghost-typo / mixed-raw recovery). Prefer pure digits, not first-path letter.
         if !pureLive || liveRaw != identity.sourceDigits {
             let preserved = state.t9PinyinPathState
             if let engine = rimeEngine {
-                let output = engine.replaceInput(identity.sourceDigits)
+                let digits = identity.sourceDigits
+                let output = engine.replaceInput(digits)
                 state.lastRimeOutput = output
-                state.currentComposition = identity.sourceDigits
+                state.currentComposition = digits
                 state.t9PinyinPathState = preserved
-                let projected = t9VisiblePreedit(for: output)
-                if !projected.isEmpty,
-                   !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
-                {
-                    updateInlinePreedit(projected, source: .compositionProjection)
-                }
+                refreshHostAfterProvisionalPureDigitLedgerResync(digits: digits, output: output)
             }
         }
         return true
+    }
+
+    /// Host preedit after provisional-only resync onto pure-digit Core ledger.
+    ///
+    /// Prefer progressive local-catalog letters (no comment resegmentation) so a
+    /// mixed-raw typo morphology (`qing wei fan fan`) cannot stick on the host
+    /// after Delete/continue. Fall back to safe t9VisiblePreedit when needed.
+    private func refreshHostAfterProvisionalPureDigitLedgerResync(
+        digits: String,
+        output: RimeOutput
+    ) {
+        // Ignore engine comment hints here — they often carry the failed mixed
+        // morphology that we just peeled off the digit ledger.
+        let progressive = progressiveCatalogLetters(
+            forRemainingDigits: digits,
+            confirmedSyllables: [],
+            sourceDigits: digits,
+            useCommentHints: false
+        )
+        if !progressive.isEmpty,
+           !progressive.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+        {
+            updateInlinePreedit(progressive, source: .compositionProjection)
+            return
+        }
+        let projected = t9VisiblePreedit(for: output)
+        if !projected.isEmpty,
+           !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+        {
+            updateInlinePreedit(projected, source: .compositionProjection)
+        }
     }
 
     /// Delete one real digit slot from Core-owned T9 identity.
@@ -1258,12 +1285,7 @@ extension KeyboardController {
             state.lastRimeOutput = output
             state.currentComposition = digits
             state.t9PinyinPathState = preserved
-            let projected = t9VisiblePreedit(for: output)
-            if !projected.isEmpty,
-               !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
-            {
-                updateInlinePreedit(projected, source: .compositionProjection)
-            }
+            refreshHostAfterProvisionalPureDigitLedgerResync(digits: digits, output: output)
         }
         clearTypoCorrectionSuggestions()
         #if DEBUG
@@ -1913,13 +1935,19 @@ extension KeyboardController {
     private func progressiveCatalogLetters(
         forRemainingDigits remainingDigits: String,
         confirmedSyllables: [String],
-        sourceDigits: String
+        sourceDigits: String,
+        useCommentHints: Bool = true
     ) -> String {
         guard !remainingDigits.isEmpty else { return "" }
-        let hints = T9PinyinLocalPathCatalog.commentSyllableHints(
-            from: state.lastRimeOutput?.candidates ?? [],
-            confirmedSyllables: confirmedSyllables
-        )
+        let hints: [String]
+        if useCommentHints {
+            hints = T9PinyinLocalPathCatalog.commentSyllableHints(
+                from: state.lastRimeOutput?.candidates ?? [],
+                confirmedSyllables: confirmedSyllables
+            )
+        } else {
+            hints = []
+        }
         let paths = T9PinyinLocalPathCatalog.pathsForFocus(
             focusDigits: remainingDigits,
             lockedLetterPrefix: nil,
@@ -1941,7 +1969,8 @@ extension KeyboardController {
             return complete.displayText + progressiveCatalogLetters(
                 forRemainingDigits: rest,
                 confirmedSyllables: confirmedSyllables + [complete.displayText],
-                sourceDigits: sourceDigits
+                sourceDigits: sourceDigits,
+                useCommentHints: useCommentHints
             )
         }
         if let letter = paths.first(where: {
@@ -1953,7 +1982,8 @@ extension KeyboardController {
             return letter.displayText + progressiveCatalogLetters(
                 forRemainingDigits: rest,
                 confirmedSyllables: confirmedSyllables,
-                sourceDigits: sourceDigits
+                sourceDigits: sourceDigits,
+                useCommentHints: useCommentHints
             )
         }
         return ""
