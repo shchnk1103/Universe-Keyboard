@@ -2,11 +2,12 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
-## 2026-07-23 — Residual-B Path-ledger peel（unchanged-raw 单字「请」）
+## 2026-07-23 — Residual-B Path-ledger cursor（单字/多字统一）
 
-- Gate 5 residual-B：当用户已 Path 确认 `qing/wei/fan/dao` 且 RIME 在选单字「请」后 **raw 不缩短** 时，Core 以 **Path 账本** 剥离首音节 `qing`（校验 digit 切片与完整音节目录），保留 `wei/fan/dao`，焦点 `wo…`，并 resync RIME / Partial remaining。
-- 权威仅为 Path-confirmed 音节，**不**使用 汉字数 / comment / `sel_*` / caret / rank。无 Path 确认、多字候选或引擎缩短 remainder 仍走原 fail-closed / unique-suffix 路径。
-- 自动化：`T9CompositionIdentity` 纯函数 + Gate5 B 设备形态 + KeyboardCore 全量 708/1 skip/0 fail。真机 residual-B 仍待 Human 复测。PD：`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`。
+- Gate 5 residual-B：**Path 游标**。用户已 Path 点选前缀后，候选确认推进 `K=min(CJK字数, 剩余用户Path栈)` 站；数字消费跟音节走（非 `dropFirst(K)`）。
+- 下一站若用户曾点选 → Path 展示该槽选项并 **soft-select**（如「请」→`wei` 选中；「请喂」→`fan` 选中）。栈耗尽（「请喂饭到」）→ `wo…` **无**伪造选中。
+- 触发：多音节用户栈 **或** unchanged-raw；保留 `qiu→球` 等单音节 pure-digit nested partial。Host 无内部数字。
+- 自动化：KeyboardCore **712 / 1 skip / 0 fail**。真机 residual-B 待 Human；**不开 PR 直至复测通过**。PD：`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`。
 
 ## 2026-07-23 — 完整 Path 目录、原子呈现与 Gate 5 residual（KEYBOARD-LAYOUT-9KEY-PINYIN-004）
 

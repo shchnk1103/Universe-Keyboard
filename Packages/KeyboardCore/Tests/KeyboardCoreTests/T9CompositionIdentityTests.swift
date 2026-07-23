@@ -25,9 +25,60 @@ final class T9CompositionIdentityTests: XCTestCase {
         )
         XCTAssertEqual(identity?.sourceDigits, "9343263269698454")
         XCTAssertEqual(identity?.confirmedSyllables, ["wei", "fan", "dao"])
-        XCTAssertEqual(identity?.focusedSegmentIndex, 3)
+        // Cursor stays on first remaining user-stack syllable (soft-select wei).
+        XCTAssertEqual(identity?.focusedSegmentIndex, 0)
         XCTAssertEqual(identity?.remainingDigits, "9698454")
         XCTAssertEqual(identity?.replacementRawInput, "wei'fan'dao'9698454")
+    }
+
+    func testPathLedgerPeelCountUsesCJKAsStepOnly() {
+        XCTAssertEqual(
+            T9CompositionIdentity.pathLedgerPeelCount(
+                candidateText: "请",
+                remainingUserPathSyllables: 4
+            ),
+            1
+        )
+        XCTAssertEqual(
+            T9CompositionIdentity.pathLedgerPeelCount(
+                candidateText: "请喂",
+                remainingUserPathSyllables: 4
+            ),
+            2
+        )
+        XCTAssertEqual(
+            T9CompositionIdentity.pathLedgerPeelCount(
+                candidateText: "请喂饭到",
+                remainingUserPathSyllables: 4
+            ),
+            4
+        )
+        XCTAssertEqual(
+            T9CompositionIdentity.pathLedgerPeelCount(
+                candidateText: "请喂饭到我嘴里",
+                remainingUserPathSyllables: 4
+            ),
+            4,
+            "K capped by remaining user Path stack"
+        )
+        XCTAssertEqual(
+            T9CompositionIdentity.pathLedgerPeelCount(
+                candidateText: "请",
+                remainingUserPathSyllables: 0
+            ),
+            0
+        )
+    }
+
+    func testAfterPathLedgerPeelFourSyllablesLeavesWoTail() {
+        let identity = T9CompositionIdentity.afterPathLedgerPeel(
+            previousSource: qingWeiFanDaoSource,
+            previousConfirmed: ["qing", "wei", "fan", "dao"],
+            peelSyllableCount: 4
+        )
+        XCTAssertEqual(identity?.sourceDigits, "9698454")
+        XCTAssertEqual(identity?.confirmedSyllables, [])
+        XCTAssertEqual(identity?.focusedSegmentIndex, 0)
     }
 
     func testAfterPathLedgerPeelRejectsEmptyConfirmed() {

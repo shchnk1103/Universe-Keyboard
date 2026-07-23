@@ -1,4 +1,4 @@
-# Product Decision: KEYBOARD-LAYOUT-9KEY-PINYIN-004 Gate 5 — Residual-B Path-Ledger Peel
+# Product Decision: KEYBOARD-LAYOUT-9KEY-PINYIN-004 Gate 5 — Residual-B Path-Ledger Cursor
 
 **Decision ID:** `PD-KEYBOARD-LAYOUT-9KEY-PINYIN-004-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`  
 **Lifecycle status:** `Recorded`  
@@ -6,72 +6,54 @@
 **Parent:** [`PD-…-004`](KEYBOARD-LAYOUT-9KEY-PINYIN-004-authorization.md)  
 **Prior:** [`PD-…-GATE5-POST-BETA-RESIDUAL`](KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md) · [`PD-…-GATE5-PHASE1-BETA`](KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-phase1-beta-authorization.md)  
 **Assignment:** [`KEYBOARD-LAYOUT-9KEY-PINYIN-004`](../assignments/keyboard-layout-9key-pinyin-004.md)  
-**Evidence:** remediation [`§28`](../assignments/keyboard-layout-9key-pinyin-004-gate5-remediation-evidence.md)
+**Evidence:** remediation [`§28–§29`](../assignments/keyboard-layout-9key-pinyin-004-gate5-remediation-evidence.md)
 
 ## Authority
 
-- **Product Approver / Decision maker:** Product Lead acting under Human Product Owner’s standing KOS 2.0 authorization for this Assignment track (in-session instruction: residual-B still fails on device — process remaining debt under KOS 2.0).  
-- **Does not replace:** Human Product Owner may override; full frozen Human Product Gate for entire 004 exit criteria remains a separate act.
+- **Product Approver:** Product Lead under Human Product Owner standing KOS 2.0 authorization for this track (session: residual-B device fail → process debt; later Product confirmed Path-ledger **cursor** model including multi-CJK).  
+- **Does not replace:** full 004 Human Product Gate; Human residual-B retest required before Pass claim.  
+- **Landing:** local commit / feature branch allowed; **open/merge PR only after Human device retest OK** (session constraint).
 
-## Problem (bound)
+## Bound product model (SoT)
 
-Device residual-B: after Path-select `qing/wei/fan/dao` and single-character partial「请」, RIME often leaves raw **unchanged**. Prior β-limited rule was **engine-only fail-closed**, which emptied Path and broke the Human contract “consume 请, keep wei/fan/dao, focus wo”.
+After the user Path-selects a prefix stack (e.g. `qing → wei → fan → dao`) and then confirms a RIME candidate of length **K** CJK characters:
 
-Phase 0.5 already proved librime `sel_*` is **not** a reliable per-candidate coverage signal. Inventing slots from 汉字数 / comment / caret / rank remains **forbidden**.
+1. **K (step count only)**  
+   `K = min(CJK ideograph count of candidate, remaining user Path stack length)`.  
+   CJK count does **not** equal digit length.
 
-## Bound Product Decision
+2. **Slots follow syllables**  
+   Consume the first **K** user Path syllables; digit peel length = sum of those syllables’ letter widths on the digit ledger.
 
-### 1. Path ledger is sufficient authority for **narrow** residual-B
+3. **Path cursor**  
+   - If remaining user stack non-empty (e.g. after「请」→ `[wei,fan,dao]`): Path Bar shows options for the **first** remaining syllable slot (`wei/zei/ye…`) and **soft-selects** that syllable because the user already Path-selected it.  
+   - Same for「请喂」→ focus `fan` soft-selected;「请喂饭」→ `dao` soft-selected.  
+   - If stack exhausted (e.g.「请喂饭到」): Path Bar shows unselected tail (`wo…`); **no** forged soft-select.
 
-When **all** of the following hold, Core **may** peel leading Path-confirmed syllables:
+4. **Soft-select iron rule**  
+   Path Bar selected state only from: (1) 选拼音, or (2) user Path Bar tap. Soft-select after partial **restores** a prior user choice — never invents selection for unselected tails.
 
-1. T9 input semantics active;  
-2. Pre-selection Path has **non-empty** `confirmedSegmentValues` established by user Path select (not provisional-only);  
-3. Live RIME raw still encodes the **full** pre-selection `sourceDigits` (unchanged-raw class);  
-4. Committed candidate is a **single CJK** character (one extended grapheme in CJK Unified Ideographs / Ext-A);  
-5. Each peeled syllable validates against its digit slice via the complete-syllable catalog (or single-letter syllable);  
-6. Peel leaves a **non-empty** remaining digit source.
+5. **Regret target**  
+   Soft-select is for changing the **current Path focus syllable**, not rewriting already partial-committed Chinese (use Delete restore for that).
 
-**Peel count for device B:** **1** (first Path-confirmed syllable, e.g. `qing`).
+## Implementation notes
 
-**Not authorized:** multi-character candidates on unchanged-raw; peel without Path confirmed; peel from 汉字数 / comment / `sel_*` / caret / rank / preedit length.
-
-### 2. Post-peel behavior
-
-1. Install remaining identity (`wei/fan/dao` + remaining digits).  
-2. Resync RIME from Core identity so host / candidates match Path focus (`wo…`).  
-3. Refresh PartialCommit remaining display without host digit leakage.
-
-### 3. What remains fail-closed
-
-| Case | Stance |
-|---|---|
-| Unchanged-raw **without** Path-confirmed syllables | Fail-closed (no invent) |
-| Unchanged-raw + multi-char candidate | Fail-closed (no multi-syllable guess) |
-| Engine shortened remainder | Existing `afterPartialCommit` unique-suffix path (unchanged) |
-| Provisional-only mixed-raw C continue (`XCTSkip`) | Still parked residual |
-
-### 4. Landing authorization
-
-| Action | Authorized? |
-|---|---|
-| Implement residual-B Path-ledger peel in KeyboardCore | **Yes** |
-| Targeted + full KeyboardCore tests | **Yes** |
-| Local commit + feature branch push + open PR | **Yes** (merge remains Human Product Owner) |
-| Claim full 004 Human Product Gate Pass solely from automation | **No** — needs device retest of residual-B |
-| Close Assignment without Human residual-B retest | **No** |
+- Prefer Path-ledger cursor whenever user stack non-empty and `K > 0`, over engine shortened-remainder realign alone.  
+- Resync RIME to remaining identity (`replacementRawInput`) without wiping soft-select.  
+- Host remaining preedit: no internal T9 digits.  
+- Without user Path stack: prior fail-closed / unique-suffix β rules unchanged.
 
 ## Explicit non-claims
 
-- Not engine-native per-candidate coverage discovery  
-- Not full 004 Product Gate Pass until Human retests residual-B  
-- Not authorization to invent multi-syllable consumption on multi-char candidates  
+- Not full 004 Human Product Gate Pass until residual-B device retest  
+- Not multi-syllable invent without user Path stack  
+- Not auto-select on unselected remainder  
 
-## Human Product Owner — residual-B retest
+## Human residual-B retest (required)
 
 | Step | Expect |
 |---|---|
-| 九键输入完整串 → Path 选 `qing/wei/fan/dao` | Path 确认四段；焦点 `wo…` |
-| 选单字候选「请」 | 上屏「请」；Path 保留 `wei/fan/dao`；焦点 `wo…`；**Path 不得清空** |
-| host marked | 前缀「请」+ 剩余拼音字母；**无内部数字** |
-| 第一次 Delete | 按现有 Partial checkpoint 语义恢复（不得破坏 26 键） |
+| 整串 + Path `qing/wei/fan/dao` → 选「请」 | 上屏「请」; Path=`wei…` 且 **wei 选中**; 无数字泄漏 |
+| 同上 → 选「请喂」 | Path=`fan…` 且 **fan 选中** |
+| 同上 → 选「请喂饭到」 | Path=`wo…` **无选中** |
+| 第一次 Delete | 按 Partial checkpoint 恢复 |

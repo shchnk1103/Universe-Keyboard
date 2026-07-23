@@ -278,7 +278,7 @@ Update this Dashboard only after the responsible owner confirms a state, depende
 - **Authority:** Assignment [`keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md); PD-004; ADR 0023; Gate5 path / β / post-β residual / residual-B PDs.
 - **Landed:** PR [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27) **MERGED** → `main` @ `5dfe2e2` (includes `2278125` CI `-Werror` fix).
 - **Human H5 residual:** H5-A/B/C **Pass** (device); Product-accepted via [`PD-…-GATE5-POST-BETA-RESIDUAL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md).
-- **Residual-B (in flight):** Path-ledger peel for unchanged-raw single-CJK「请」— Core peels first Path-confirmed syllable (`qing`), keeps `wei/fan/dao`, focuses `wo`, resyncs RIME. PD: [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md). Automation: KeyboardCore **708 / 1 skip / 0 fail**. Evidence §28. **PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28)** open (`eeb69ad`).
-- **Independent reviews:** β-limited + post-β Accept/Pass-with-findings. Residual-B independent review **pending** after PR.
-- **Next (KOS):** Human residual-B device retest → merge [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) → optional independent review → residual C SKIP / Assignment close decision.
-- **Not claimed:** full Human Product Gate Pass for 004; residual-B device Pass (automation only so far).
+- **Residual-B (in flight):** Path-ledger **cursor** — `K=min(CJK, user stack)`; slots follow syllables; soft-select next user-chosen syllable; `wo` unselected. PD: [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md). Automation: KeyboardCore **712 / 1 skip / 0 fail**. Evidence §29. Branch `fix/gate5-residual-b-path-ledger-peel` — **no PR merge until Human device OK**.
+- **Independent reviews:** β-limited + post-β Accept/Pass-with-findings. Residual-B review **after** device retest.
+- **Next (KOS):** Human residual-B device retest → then PR/merge if Pass → optional independent review.
+- **Not claimed:** full Human Product Gate Pass for 004; residual-B device Pass.

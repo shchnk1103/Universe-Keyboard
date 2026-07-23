@@ -7,10 +7,12 @@ import Foundation
 /// - Shortened remainder: realign only when remaining raw is a **strict unique
 ///   suffix** of the pre-selection source.
 /// - Unchanged-raw **engine-only** → fail-closed (no slot guessing from raw alone).
-/// - Residual-B Path-ledger peel (`afterPathLedgerPeel`): when the user already
-///   confirmed syllables via Path select, a single-CJK partial may peel leading
-///   **Path-confirmed** syllables. Authority is the Path ledger — not 汉字数 /
-///   comment / `sel_*` / caret / rank / preedit length.
+/// - Residual-B Path-ledger cursor (`afterPathLedgerPeel`): when the user already
+///   Path-selected syllables, a partial peels **K** leading Path syllables where
+///   `K = min(CJK count of candidate, remaining user Path stack)`. Digit slots
+///   follow those syllables (not `dropFirst(K)` on raw digits). Next Path focus
+///   is the following user-stack syllable (soft-select if user had selected it)
+///   or the unselected tail (`wo…`) with **no** forged selection.
 struct T9CompositionIdentity: Equatable, Sendable {
     var sourceDigits: String
     var confirmedSyllables: [String]
@@ -167,15 +169,18 @@ struct T9CompositionIdentity: Equatable, Sendable {
         )
     }
 
-    /// Residual-B: peel leading **Path-confirmed** syllables when engine raw is unchanged.
+    /// Residual-B: peel leading **Path-confirmed** syllables by stack index K.
     ///
-    /// Authority is Core Path ledger (`previousConfirmed`), **not** 汉字数 / comment /
-    /// `sel_*` / caret. User already established syllable boundaries via Path select
-    /// (e.g. `qing/wei/fan/dao`). A single-character partial like「请」consumes the
-    /// first Path syllable `qing` only.
+    /// - `peelSyllableCount` (K) is chosen by the caller as
+    ///   `min(CJK count of candidate, previousConfirmed.count)` — step count only.
+    /// - Digit consumption follows each peeled syllable's letter width on the
+    ///   ledger (slots follow syllables), never `dropFirst(K)` on raw digits.
+    /// - Forbidden as peel inputs: comment / `sel_*` / caret / rank / inventing
+    ///   slots without a user Path stack.
     ///
-    /// - Parameters:
-    ///   - peelSyllableCount: number of leading Path syllables to drop (device B: 1).
+    /// Remaining `confirmedSyllables` is the **user Path stack** still ahead of the
+    /// cursor. Presentation soft-selects `confirmedSyllables.first` when non-empty;
+    /// empty stack → unselected tail focus (`wo…`).
     static func afterPathLedgerPeel(
         previousSource: String,
         previousConfirmed: [String],
@@ -204,11 +209,34 @@ struct T9CompositionIdentity: Equatable, Sendable {
         guard cursor > 0, cursor < previousSource.count else { return nil }
         let newSource = String(previousSource.dropFirst(cursor))
         guard !newSource.isEmpty, newSource.allSatisfy(\.isNumber) else { return nil }
+        // Focus index 0 when stack remains (soft-select first); else trailing tail.
+        let focusIndex = remainingConfirmed.isEmpty ? 0 : 0
         return T9CompositionIdentity(
             sourceDigits: newSource,
             confirmedSyllables: remainingConfirmed,
-            focusedSegmentIndex: remainingConfirmed.count
+            focusedSegmentIndex: focusIndex
         )
+    }
+
+    /// CJK ideograph count used only as Path-stack **step count** K (not digit length).
+    static func cjkCharacterCount(in text: String) -> Int {
+        text.unicodeScalars.reduce(into: 0) { count, scalar in
+            let v = scalar.value
+            if (0x4E00...0x9FFF).contains(v) || (0x3400...0x4DBF).contains(v) {
+                count += 1
+            }
+        }
+    }
+
+    /// `K = min(CJK count, remaining user Path stack length)`.
+    static func pathLedgerPeelCount(
+        candidateText: String,
+        remainingUserPathSyllables: Int
+    ) -> Int {
+        guard remainingUserPathSyllables > 0 else { return 0 }
+        let k = cjkCharacterCount(in: candidateText)
+        guard k > 0 else { return 0 }
+        return min(k, remainingUserPathSyllables)
     }
 
     // MARK: - Private alignment

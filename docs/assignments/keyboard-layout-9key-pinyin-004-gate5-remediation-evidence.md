@@ -1309,3 +1309,35 @@ swift test   # Packages/KeyboardCore
 1. Feature branch commit + push + open PR (merge = Human).  
 2. Human residual-B retest script (see PD).  
 3. Independent Architecture/Quality review of residual-B before claiming product Pass.
+
+---
+
+## 29. Residual-B Path-ledger **cursor** (product-confirmed model)
+
+**Date:** 2026-07-23 Asia/Shanghai  
+**Role:** Executor (Grok 4.5)  
+**Authority:** Human Product Owner confirmed Path cursor model (单字/多字同一原理；soft-select 仅用户曾点选音节；`wo` 不伪造选中). **No PR** until device retest OK.
+
+### 29.1 Model freeze
+
+| Rule | Value |
+|---|---|
+| K | `min(CJK count, remaining user Path stack)` — step only |
+| Digit peel | Sum of peeled syllables’ widths (slots follow syllables) |
+| Next focus | First remaining user-stack syllable + soft-select if user chose it |
+| Stack empty | Unselected tail (`wo…`) |
+| Trigger | Multi-syllable user stack **or** unchanged-raw (preserve `qiu→球` nested pure-digit) |
+
+### 29.2 Automated verification
+
+```text
+swift test  # Packages/KeyboardCore
+→ 712 tests, 1 skip, 0 fail
+```
+
+Gate5 B captures: after「请」`paths=["wei","zei","ye",…] selected=wei`.
+
+### 29.3 Non-claims
+
+- Not Human residual-B Pass  
+- Not PR / merge (session: wait for device OK)

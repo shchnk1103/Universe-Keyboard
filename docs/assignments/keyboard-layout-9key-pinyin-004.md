@@ -89,10 +89,10 @@ Stop and return to Product Lead when:
 
 ## Handoff
 
-- **Current phase:** **PR [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27) on `main`**（H5 residual）。**Residual-B Path-ledger peel** 已实现并开 PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28)（`eeb69ad`）；KeyboardCore **708/1 skip/0 fail**；待真机 residual-B 复测与 merge。
-- **Handoff target now:** Human Product Owner — residual-B 真机复测（「请」单字 partial 后 Path 保留 wei/fan/dao、焦点 wo）；通过后合并 [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) / 可选独立复审。
+- **Current phase:** **PR [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27) on `main`**（H5 residual）。**Residual-B Path-ledger cursor**（单字/多字、soft-select 继承）已在分支 `fix/gate5-residual-b-path-ledger-peel` 实现；KeyboardCore **712/1 skip/0 fail**。**不开新 PR / 不合并直至 Human 真机复测 OK**（会话约束）。
+- **Handoff target now:** Human Product Owner — residual-B 真机复测（见 PD：请→wei 选中；请喂→fan 选中；请喂饭到→wo 无选中）。
 - **PR (landed):** https://github.com/shchnk1103/Universe-Keyboard/pull/27 — **MERGED** `2026-07-23T11:28:11Z`
-- **PR (residual-B open):** https://github.com/shchnk1103/Universe-Keyboard/pull/28 — branch `fix/gate5-residual-b-path-ledger-peel`
+- **Branch (residual-B, no merge yet):** `fix/gate5-residual-b-path-ledger-peel`（若远端仍有历史 PR #28，以最新分支 tip 为准；Human OK 后再议 PR）
 - **Residual-B authority:** [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)
 - **β-limited review (pre-hotfix):** [`…-phase1-beta-independent-review.md`](keyboard-layout-9key-pinyin-004-gate5-phase1-beta-independent-review.md)
 - **Post-β freeze handoff:** [`…-gate5-post-beta-human-residual-review-handoff.md`](keyboard-layout-9key-pinyin-004-gate5-post-beta-human-residual-review-handoff.md)
