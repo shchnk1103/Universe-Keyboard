@@ -1,15 +1,16 @@
 # Keyboard Layout
 
-Lifecycle status: Runtime contract accepted (ADR 0018); Chinese nine-key chrome accepted under KEYBOARD-LAYOUT-9KEY-UI-001; original precise pinyin selection closed under KEYBOARD-LAYOUT-9KEY-PINYIN-001; deterministic choices and segmented/progressive path bar remain under ADR 0021; atomic presentation and fixed foreground discovery are active under KEYBOARD-LAYOUT-9KEY-PINYIN-003 / ADR 0022 with device Product Gate pending
-Source of truth for: 26-key / Chinese nine-key layout selection, effective RIME scheme resolution, versioned T9 readiness, nine-key Extension chrome, and **precise pinyin path bar/cycling**
-Related ADR: [`architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md`](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md), [`architecture/decisions/0020-t9-precise-pinyin-path-selection.md`](architecture/decisions/0020-t9-precise-pinyin-path-selection.md), [`architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md`](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md), [`architecture/decisions/0022-t9-atomic-presentation-and-bounded-path-discovery.md`](architecture/decisions/0022-t9-atomic-presentation-and-bounded-path-discovery.md)
-Related plan: [`plans/keyboard-layout-9key-implementation-plan.md`](plans/keyboard-layout-9key-implementation-plan.md) (Archived); precise pinyin [`plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md`](plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md) (Active)
+Lifecycle status: Runtime contract accepted (ADR 0018); Chinese nine-key chrome accepted under KEYBOARD-LAYOUT-9KEY-UI-001; original precise pinyin selection closed under KEYBOARD-LAYOUT-9KEY-PINYIN-001; deterministic / segmented Path under ADR 0021–0022; complete local Path catalog + atomic presentation under KEYBOARD-LAYOUT-9KEY-PINYIN-004 / ADR 0023 (PR #27); residual-B Path-ledger cursor Human Pass + PR #28
+Source of truth for: 26-key / Chinese nine-key layout selection, effective RIME scheme resolution, versioned T9 readiness, nine-key Extension chrome, and **precise pinyin path bar/cycling** (including Partial×Path residual-B)
+Related ADR: [`0018`](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md), [`0020`](architecture/decisions/0020-t9-precise-pinyin-path-selection.md), [`0021`](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md), [`0022`](architecture/decisions/0022-t9-atomic-presentation-and-bounded-path-discovery.md), [`0023`](architecture/decisions/0023-t9-complete-local-path-catalog-and-atomic-presentation.md)
+Related plan: [`plans/keyboard-layout-9key-implementation-plan.md`](plans/keyboard-layout-9key-implementation-plan.md) (Archived); precise pinyin [`plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md`](plans/keyboard-layout-9key-pinyin-selection-implementation-plan.md); 004 [`plans/keyboard-layout-9key-pinyin-004-complete-path-catalog-and-atomic-sync-plan.md`](plans/keyboard-layout-9key-pinyin-004-complete-path-catalog-and-atomic-sync-plan.md)
 Related Assignments:
 
 - Runtime V1: [`assignments/keyboard-layout-9key-001.md`](assignments/keyboard-layout-9key-001.md) (`Closed`)
 - Chrome UI: [`assignments/keyboard-layout-9key-ui-001.md`](assignments/keyboard-layout-9key-ui-001.md) (`Closed`)
 - Original precise pinyin selection: [`assignments/keyboard-layout-9key-pinyin-001.md`](assignments/keyboard-layout-9key-pinyin-001.md) (`Accepted / Closed`)
 - Deterministic choices + cycling: [`assignments/keyboard-layout-9key-pinyin-002.md`](assignments/keyboard-layout-9key-pinyin-002.md) (`Active`) — Product Decision [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-002`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md)
+- Complete Path catalog + Gate 5 residual-B: [`assignments/keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md) (`Active` — PR #27/#28 landed; residual-B Human Pass)
 
 ## Product Model
 
@@ -53,7 +54,7 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 
 - Digits go to RIME as the raw composition.
 - Visible preedit prefers non-empty candidate comments. Without a usable comment it may preserve only explicit ASCII letters from refined raw; unresolved digits and digit-bearing comments remain internal and are never host-visible. This includes spaced/apostrophe-separated raw tails.
-- After Partial Commit under T9, the path bar rebuilds from the **remaining** raw only (hard provenance); e.g. `toutoumaiqiule → 偷偷买` aligns to remaining `74853 / qiu le`, not the earlier `8 → t/u/v` group.
+- After Partial Commit under T9, Path identity follows Core digit ledger / remaining composition (not a stale leading-key group); e.g. `toutoumaiqiule → 偷偷买` aligns to remaining `74853 / qiu le`, not the earlier `8 → t/u/v` group. When the user has Path-selected a multi-syllable stack, residual-B cursor rules apply (see §Partial × Path residual-B below).
 - In ordinary unconfirmed T9 composition, Delete removes one **visible pinyin character** through exact `replaceInput` (`tou → to → t → empty`) so shorter digit runs cannot re-rank the display as `tong → ta`. Explicit segmented Delete and Partial Commit checkpoint restore keep their existing reversible contracts.
 - **Active T9 composition** (ADR 0020): `usesT9InputSemantics` and non-empty raw input consisting only of letters, digits, spaces and `'`. Includes pure digits, pure letters after path selection, and mixed forms such as `ni4`.
 - While a valid T9 composition is active, Return, language switch and automatic English switch **never** commit raw input to the host.
@@ -165,5 +166,21 @@ First Codex review record (pre-amendment): [`evidence/keyboard-layout-9key-001-c
 - Path Bar 确认的音节不会自动带出下一音节。确认 `qiu` 后输入框只显示 `qiu`，候选必须来自 `qiu` 分支。
 - 剩余数字对应的完整音节优先展示；例如 `53` 若 live RIME 授权 `le`，Path Bar 必须提供完整 `le`，不能只显示 `ke` 加单字母 `j/k/l`。
 - 每次 Path 推进只读取一个固定 48 项 live-RIME 窗口，不再对拼写逐个改写/恢复 session；调用次数不随输入长度或拼写数量增长。
-- 候选、marked text 与 Path snapshot 携带同一 Core composition revision。候选选择必须先失效旧焦点，再从新余段发布，例如「请喂饭到」后立即进入 `wo`。
+- 候选、marked text 与 Path snapshot 携带同一 Core composition revision。候选选择必须先失效旧焦点，再按余段 / Path 游标发布。
 - composition 投影的可编辑后缀禁止内部 ASCII 数字；数字页显式 suffix 与候选确认文本中的合法数字不受此限制。
+
+### Partial × Path residual-B（004 Gate 5 · Human Pass）
+
+当用户已在 Path Bar **自己**点选过前缀音节栈（例如 `qing → wei → fan → dao`），再在候选栏做 Partial 确认时：
+
+1. **推进步数 K** = `min(候选汉字个数, 剩余用户 Path 栈长度)`（只当步数，不当数字长度）。
+2. **数字槽位跟音节走**：消费的是栈头 K 个音节对应的 digit 宽度之和（例如「请喂」消费 `qing`+`wei` 的 4+3 位，不是 `dropFirst(2)`）。
+3. **Path 游标与 soft-select**  
+   - 「请」→ Path 展示 `wei…` 组，并 **保持 wei 选中**（用户曾点选）。  
+   - 「请喂」→ 展示 `fan…` 且 **fan 选中**。  
+   - 「请喂饭到」→ 用户栈耗尽 → 展示 `wo…`，**不得**伪造选中。  
+4. **选中态铁律**：Path 选中只能来自用户 Path 点选或「选拼音」；Partial 后出现的选中是**恢复**用户曾选过的音节，不是键盘代选。  
+5. **反悔对象**是当前焦点拼音槽，不是已上屏汉字（改字走 Delete restore）。  
+6. 无用户 Path 栈时，不走上述游标；单音节 nested pure-digit（如 `qiu'53`→「球」）保持既有 shortened remainder 行为。
+
+产品 SoT：[`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)。架构：[`architecture/partial-commit.md`](architecture/partial-commit.md) §T9 Path residual-B。
