@@ -102,7 +102,7 @@ Stop and return to Product Lead when:
 - **Phase 0.5 / 0.6 reviews:** [`phase05`](keyboard-layout-9key-pinyin-004-gate5-phase05-independent-review.md) · [`phase06`](keyboard-layout-9key-pinyin-004-gate5-phase06-independent-review.md)
 - **Product decisions:** [`PD-…-GATE5-PATH`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-path-decision.md) · [`PD-…-GATE5-PHASE1-BETA`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-phase1-beta-authorization.md) · [`PD-…-GATE5-POST-BETA-RESIDUAL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-post-beta-residual-disposition.md) · [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)
 - **Residual debt (open):** formal 004 Assignment `Closed` / full Human Gate（Product 另决）
-- **Residual debt (closed):** residual-B Path cursor；doc wording A1（§31）；**provisional-only mixed-raw C continue**（§32 · no XCTSkip）
+- **Residual debt (closed):** residual-B Path cursor；doc wording A1（§31）；**provisional-only mixed-raw C continue**（§32 · PR [#29](https://github.com/shchnk1103/Universe-Keyboard/pull/29) MERGED `285f2b0` · no XCTSkip）
 - **Explicit non-claims:** **不**仅因 residual-B 宣称完整 004 Human Product Gate / Assignment `Closed`
 - **Revalidation Trigger:** catalog source change; selection semantics change; host preedit boundary change; schema/vendor change; Product path decision change
 

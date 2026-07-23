@@ -281,6 +281,6 @@ Update this Dashboard only after the responsible owner confirms a state, depende
 - **Residual-B:** Path-ledger **cursor** — Human device **Pass** `2026-07-23`. PD Accepted. Evidence §29–§30. PR [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) **MERGED** → `main` `@f84a00d`; feature branch cleaned.
 - **Independent reviews:** β-limited + post-β Accept/Pass-with-findings.
 - **Doc A1 (first vs unique full-cover):** **Closed** — dual resync policy documented (remediation §31).
-- **Provisional-only mixed-raw C:** **Closed** — no XCTSkip; KeyboardCore **712 / 0 skip / 0 fail** (remediation §32).
+- **Provisional-only mixed-raw C:** **Closed** — PR [#29](https://github.com/shchnk1103/Universe-Keyboard/pull/29) MERGED `285f2b0`; no XCTSkip; KeyboardCore **712 / 0 skip / 0 fail** (remediation §32).
 - **Next (KOS):** optional formal 004 Assignment close / full Human Gate re-statement.
 - **Not claimed:** full 004 Assignment `Closed` solely from residual landings; App Store ship.
