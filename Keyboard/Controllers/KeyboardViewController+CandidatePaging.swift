@@ -171,13 +171,19 @@ extension KeyboardViewController: UIScrollViewDelegate {
 #endif
         isLoadingMoreCandidates = true
         let loadStart = CACurrentMediaTime()
+        let expectedRevision = candidateSnapshotCompositionRevision
         let window = engine.candidateWindow(from: startIndex, limit: batchLimit)
         guard candidateSnapshotGeneration == generation,
-            candidateSnapshotRawInput == rawInput
+            candidateSnapshotRawInput == rawInput,
+            candidateSnapshotCompositionRevision == expectedRevision,
+            controller.state.compositionRevision == expectedRevision
         else {
             isLoadingMoreCandidates = false
 #if DEBUG
-            Logger.shared.debug("loadMoreCandidates discarded stale generation", category: .display)
+            Logger.shared.debug(
+                "loadMoreCandidates discarded stale generation/revision",
+                category: .display
+            )
 #endif
             return
         }

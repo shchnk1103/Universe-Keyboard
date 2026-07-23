@@ -109,3 +109,7 @@ Decisions: ADR 0012, ADR 0013, ADR 0014 and ADR 0019. Current sources: `RIME_SYN
 ## 2026-07-21 — T9 Path Bar Amendments E/F/G
 
 `KEYBOARD-LAYOUT-9KEY-PINYIN-002` 进一步把用户确认的音节绑定到 marked text、apostrophe 锚定的 live RIME session 与候选 provenance；后续完整音节采用最多 6 位、48 次的有界 live probe。普通逐键 preedit 改为每个输入槽位最多显示一个字母，RIME 的超前预测保留在候选层。长期规则收录于 ADR 0021。
+
+## 2026-07-22 — T9 原子展示与固定发现成本
+
+物理设备复现证明 ADR 0021 的逐拼写 live probe 会把一个 Path 点击放大成大量同步 session 操作，并且候选选择后的旧 segmented snapshot 可覆盖新余段。ADR 0022 接受单次固定 48 项只读窗口、Core composition revision 和来源安全的 host preedit 边界；候选 transition 先失效旧焦点，只对真正缩短的嵌套余段执行一次受限恢复。Stage A/定向自动化通过，iPhone 13 Pro Product Gate 仍独立等待人工证据。

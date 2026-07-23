@@ -113,6 +113,68 @@ final class RimeEngineContractTests: XCTestCase {
         XCTAssertEqual(output.candidatePageNumber, 2)
         XCTAssertEqual(output.candidates.map(\.text), ["你好安排"])
         XCTAssertTrue(output.hasMorePages)
+        // Missing selStart/selEnd must remain nil (backward compatible).
+        XCTAssertNil(output.composition?.selectionStart)
+        XCTAssertNil(output.composition?.selectionEnd)
+    }
+
+    /// Gate 5 Phase 0.5: parser must pass through librime sel_start/sel_end as
+    /// optional read-only metadata without inventing defaults.
+    func testOutputParserPassesThroughEngineNativeSelectionRange() {
+        let withRange = RimeEngineImpl.parseOutputDictionary([
+            "rawInput": "qingweifan",
+            "preedit": "qing wei fan",
+            "cursorPos": 12,
+            "selStart": 0,
+            "selEnd": 4,
+            "candidates": [["text": "请", "comment": "qing"]],
+        ])
+        XCTAssertEqual(withRange.composition?.selectionStart, 0)
+        XCTAssertEqual(withRange.composition?.selectionEnd, 4)
+
+        let missing = RimeEngineImpl.parseOutputDictionary([
+            "rawInput": "ni",
+            "preedit": "ni",
+            "cursorPos": 2,
+        ])
+        XCTAssertNil(missing.composition?.selectionStart)
+        XCTAssertNil(missing.composition?.selectionEnd)
+
+        let objcNumbers = RimeEngineImpl.parseOutputDictionary([
+            "rawInput": "ni",
+            "preedit": "ni",
+            "cursorPos": NSNumber(value: 2),
+            "selStart": NSNumber(value: 0),
+            "selEnd": NSNumber(value: 2),
+        ])
+        XCTAssertEqual(objcNumbers.composition?.selectionStart, 0)
+        XCTAssertEqual(objcNumbers.composition?.selectionEnd, 2)
+    }
+
+    /// Gate 5 Phase 0.6: caret / composition.length / commitPreviewLen optional passthrough.
+    func testOutputParserPassesThroughPhase06EngineNativeObservationFields() {
+        let full = RimeEngineImpl.parseOutputDictionary([
+            "rawInput": "qing'wei",
+            "preedit": "qing wei",
+            "cursorPos": 8,
+            "selStart": 0,
+            "selEnd": 8,
+            "compositionLength": 8,
+            "caretPos": 8,
+            "commitPreviewLen": 3,
+        ])
+        XCTAssertEqual(full.composition?.length, 8)
+        XCTAssertEqual(full.caretPositionInRaw, 8)
+        XCTAssertEqual(full.commitPreviewLength, 3)
+
+        let missing = RimeEngineImpl.parseOutputDictionary([
+            "rawInput": "ni",
+            "preedit": "ni",
+            "cursorPos": 2,
+        ])
+        XCTAssertNil(missing.composition?.length)
+        XCTAssertNil(missing.caretPositionInRaw)
+        XCTAssertNil(missing.commitPreviewLength)
     }
 
     func testOutputParserAcceptsObjectiveCCollections() {

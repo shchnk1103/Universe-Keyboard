@@ -2,6 +2,21 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-23 — 完整 Path 目录、原子呈现与 Gate 5 residual（KEYBOARD-LAYOUT-9KEY-PINYIN-004）
+
+- 九键 Path 改为本地完整音节目录驱动（compile-time catalog + progressive focus），Path Bar 固定高度横向列表展示当前焦点全部可选项，不再依赖扩展候选窗「刷完才有 Path」。
+- 原子 composition revision：候选与 Path 同快照发布；前缀只锁定拼写、完整音节可推进；Partial Commit / Delete 保留 Path 身份时禁止把内部数字泄漏到 host marked text。
+- Gate 5 β-limited：`T9CompositionIdentity` 处理 shortened remainder 与 typo Append/Delete；unchanged-raw B **fail-closed**（不猜槽）。
+- Human residual H5：多位 progressive 以 Core `sourceDigits` 为 SoT（消除幽灵 JKL）；Path 选择后重投影剩余拼音、不丢尾；短串 `da→JKL→删→MNO` Path 与 `dao` 候选对齐。
+- 自动化：Gate5 定向矩阵含 Human residual 回归；完整 Human Product Gate / full B 契约仍不宣称通过。权威见 Assignment 004 与 PD post-β residual。
+
+## 2026-07-22 — T9 Path 原子快照与固定前台成本（KEYBOARD-LAYOUT-9KEY-PINYIN-003）
+
+- Path 直接点击不再执行按拼写数量增长的 `replaceInput → candidateWindow → restore` 循环；一次推进最多 `1 replaceInput + 1` 个固定 48 项只读窗口。
+- KeyboardCore 新增 composition revision；候选选择先失效旧 segmented snapshot，再从新余段发布 Path。完整 `qing/wei/fan/dao → 请喂饭到` 回归会立即切到 `wo`。
+- 所有 composition marked-text 更新经过带来源边界：内部数字投影 fail closed，显式数字页 suffix 和候选确认前缀中的合法数字保留。Runtime fail-close 后 Return/符号也不再提交遗留 T9 raw。
+- `qiu → 球 → Delete` 与 `qiule → qiul` 的现行 Product Decision 语义保持。Stage A pinned-RIME 与定向 Core 测试通过；iPhone 13 Pro 可感知延迟及交互 Product Gate 仍待人工验证。
+
 ## 2026-07-21 — Path Bar 局部替换与焦点 Delete（KEYBOARD-LAYOUT-9KEY-PINYIN-002 Amendment H）
 
 - Path Bar 选择只替换对应拼音片段并保留用户已输入的未选择后缀：`qiu le → qiule`，选择 `shu` 则为 `shule`；RIME 新排名出的 `ke` 不得覆盖原有 `le`。

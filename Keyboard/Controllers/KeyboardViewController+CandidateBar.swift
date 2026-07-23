@@ -229,9 +229,43 @@ extension KeyboardViewController {
             $0.kind != .placeholder
         }
         candidateSnapshotGeneration += 1
+        candidateSnapshotCompositionRevision = controller.state.compositionRevision
         candidateSnapshotRawInput = controller.state.lastRimeOutput?.rawInput ?? controller.state.currentComposition
         nextCandidateGlobalIndex = nextGlobalIndexAfterCurrentItems()
         hasMoreCandidates = controller.state.lastRimeOutput?.hasMorePages ?? false
+        isLoadingMoreCandidates = false
+        deferredCandidatePrefetchMode = nil
+        candidatePrefetchRequestSerial += 1
+        candidateCellSizeCache.removeAll(keepingCapacity: true)
+        candidatePageDepth = 0
+        candidatePrefetchMode = isCandidateExpanded ? .expanded : .bar
+    }
+
+    /// Publish candidates from a captured T9 composition snapshot (same revision as Path Bar).
+    func resetCandidateSnapshot(from snapshot: T9CompositionPresentationSnapshot) {
+        // Prefer snapshot-owned paging fields; do not re-read live controller for
+        // page identity when the snapshot already captured them.
+        let preedit = !snapshot.compositionPreedit.isEmpty
+            ? snapshot.compositionPreedit
+            : snapshot.visiblePreedit
+        let items: [CandidateItem]
+        if !preedit.isEmpty || !snapshot.candidates.isEmpty {
+            items = CandidateBarDataSource.candidateItems(
+                from: controller,
+                rimeCandidates: snapshot.candidates,
+                preeditText: preedit.isEmpty ? " " : preedit,
+                pageNumber: snapshot.candidatePageNumber
+            )
+        } else {
+            items = CandidateBarDataSource.candidateItems(from: controller)
+        }
+        accumulatedCandidates = items.filter { $0.kind != .placeholder }
+        candidateSnapshotGeneration += 1
+        candidateSnapshotCompositionRevision = snapshot.revision
+        candidateSnapshotRawInput = snapshot.rimeRawInput
+            ?? controller.state.currentComposition
+        nextCandidateGlobalIndex = nextGlobalIndexAfterCurrentItems()
+        hasMoreCandidates = snapshot.hasMorePages
         isLoadingMoreCandidates = false
         deferredCandidatePrefetchMode = nil
         candidatePrefetchRequestSerial += 1

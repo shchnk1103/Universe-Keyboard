@@ -6,17 +6,27 @@ public struct PartialCommitCheckpoint: Equatable, Sendable {
     public let previousRawInput: String
     public let previousPreeditText: String
     public let previousDisplayText: String
+    /// Gate 5 β-limited: pre-partial T9 digit identity (optional for legacy callers).
+    public let previousSegmentSourceDigits: String?
+    public let previousConfirmedSegmentValues: [String]
+    public let previousFocusedSegmentIndex: Int?
 
     public init(
         previousConfirmedText: String = "",
         previousRawInput: String,
         previousPreeditText: String,
-        previousDisplayText: String
+        previousDisplayText: String,
+        previousSegmentSourceDigits: String? = nil,
+        previousConfirmedSegmentValues: [String] = [],
+        previousFocusedSegmentIndex: Int? = nil
     ) {
         self.previousConfirmedText = previousConfirmedText
         self.previousRawInput = previousRawInput
         self.previousPreeditText = previousPreeditText
         self.previousDisplayText = previousDisplayText
+        self.previousSegmentSourceDigits = previousSegmentSourceDigits
+        self.previousConfirmedSegmentValues = previousConfirmedSegmentValues
+        self.previousFocusedSegmentIndex = previousFocusedSegmentIndex
     }
 }
 

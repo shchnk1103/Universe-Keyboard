@@ -68,9 +68,11 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         if collectionView === pinyinPathCollectionView {
             guard accumulatedPinyinPaths.indices.contains(indexPath.item) else { return }
             let path = accumulatedPinyinPaths[indexPath.item]
-            // Fail closed if provenance snapshot moved (not merely raw identity).
-            let provenance = controller.state.t9PinyinPathState.provenanceRevision
-            guard provenance == pinyinPathPanelGeneration else {
+            // Fail closed if the coherent composition snapshot moved.
+            let pathState = controller.state.t9PinyinPathState
+            guard pathState.compositionRevision == pinyinPathPanelGeneration,
+                  pathState.provenanceRevision == pinyinPathPanelProvenanceRevision
+            else {
                 dismissPinyinPathExpandedPanel(animated: true)
                 return
             }

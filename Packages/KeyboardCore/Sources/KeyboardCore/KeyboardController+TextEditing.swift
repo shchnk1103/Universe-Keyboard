@@ -178,15 +178,63 @@ extension KeyboardController {
             if let effects = handleConfirmedT9FocusDeleteIfNeeded(using: engine) {
                 return effects
             }
+            // Core-owned digit ledger delete when Path has confirmed syllables
+            // (or multi-digit source). Must run before engine.deleteBackward so we
+            // never get stuck when RIME refuses a shortened letter raw (qingweie).
+            if let effects = handleT9CompositionIdentityDeleteIfNeeded(using: engine) {
+                return effects
+            }
             if let effects = handleVisibleT9PinyinDeleteIfNeeded(using: engine) {
                 return effects
             }
             let previousT9PathState = state.t9PinyinPathState
+            let previousRawForTrace = state.lastRimeOutput?.rawInput
             let result = engine.deleteBackward()
             applyRimeOutputPreservingPartialCommit(augmentRimeOutputIfNeeded(result))
             let restoredFocus = restoreFocusedT9SegmentAfterDeletion(
                 previous: previousT9PathState
             )
+            // Confirmed Path identity: force RIME back onto Core (anti fan-fan).
+            // restoreFocused already resyncs when confirmed non-empty.
+            if restoredFocus,
+               state.t9PinyinPathState.confirmedSegmentValues.isEmpty == false,
+               state.lastRimeOutput?.composition?.preeditText
+                   .replacingOccurrences(of: " ", with: "")
+                   .contains("fanfan") == true
+            {
+                _ = resyncRimeCompositionFromT9Identity()
+            }
+            // Human C: after Delete on a long unconfirmed composition, if RIME
+            // left a letter-locked morphology (not pure digits), return to pure
+            // digit input mode so retyping rediscovers Path like first entry.
+            // Do not override short letter peels (`to`→`t`) owned by visible delete.
+            if state.t9PinyinPathState.confirmedSegmentValues.isEmpty,
+               let digits = state.t9PinyinPathState.segmentSourceDigits,
+               digits.count > 3,
+               digits.allSatisfy(\.isNumber)
+            {
+                var pathState = state.t9PinyinPathState
+                pathState.selectedPath = nil
+                pathState.lockedLetterPrefix = nil
+                state.t9PinyinPathState = pathState
+                let liveRaw = state.lastRimeOutput?.rawInput ?? ""
+                let pureLive = !liveRaw.isEmpty && liveRaw.allSatisfy(\.isNumber)
+                if !pureLive || liveRaw != digits {
+                    _ = resyncRimeCompositionFromT9Identity()
+                }
+            } else if state.t9PinyinPathState.confirmedSegmentValues.isEmpty {
+                // Still clear phantom selection after conf-empty Delete (Human: qi).
+                var pathState = state.t9PinyinPathState
+                pathState.selectedPath = nil
+                state.t9PinyinPathState = pathState
+            }
+            #if DEBUG
+            gate5TraceComposition(
+                event: .deleteBackward,
+                previousRaw: previousRawForTrace,
+                note: "restoredFocus=\(restoredFocus)"
+            )
+            #endif
             return restoredFocus
                 ? .compositionChanged.union(.t9PinyinPathsChanged)
                 : .compositionChanged
@@ -223,7 +271,7 @@ extension KeyboardController {
                 clearTypoCorrectionSuggestions()
                 return .compositionChanged
             }
-            updateInlinePreedit(state.currentComposition)
+            updateInlinePreedit(state.currentComposition, source: .compositionProjection)
             refreshTypoCorrectionSuggestions()
             return .compositionChanged
         }
@@ -281,9 +329,10 @@ extension KeyboardController {
                 == T9PinyinPathExtractor.normalizeRawIdentity(shortenedRaw)
         else {
             // Preserve the coherent pre-delete state when RIME rejects the
-            // exact shortened raw; never fall through to digit-leaking paths.
+            // exact shortened raw. Return nil so identity/engine delete may run
+            // — never return [] (would swallow Delete with no visible effect).
             _ = engine.replaceInput(previousRaw)
-            return []
+            return nil
         }
 
         let safeOutput = augmentRimeOutputIfNeeded(output)
@@ -302,8 +351,15 @@ extension KeyboardController {
             checkpoint: nil,
             source: partialCommit.source
         )
-        updateInlinePreedit(displayText)
+        updateInlinePreedit(displayText, source: .compositionProjection)
         clearTypoCorrectionSuggestions()
+        #if DEBUG
+        gate5TraceComposition(
+            event: .deleteBackward,
+            previousRaw: previousRaw,
+            note: "branch=confirmedFocus success=true"
+        )
+        #endif
         return .compositionChanged.union(.t9PinyinPathsChanged)
     }
 
@@ -322,17 +378,24 @@ extension KeyboardController {
               let shortened = deletingLastVisibleT9Letter(from: state.insertedPreeditText)
         else { return nil }
 
+        let previousRaw = state.lastRimeOutput?.rawInput ?? state.currentComposition
         if shortened.isEmpty {
             engine.resetSession()
             state.currentComposition = ""
             state.lastRimeOutput = nil
             state.partialCommit = nil
-            updateInlinePreedit("")
+            updateInlinePreedit("", source: .compositionProjection)
             clearTypoCorrectionSuggestions()
+            #if DEBUG
+            gate5TraceComposition(
+                event: .deleteBackward,
+                previousRaw: previousRaw,
+                note: "branch=visibleSpelling emptied=true"
+            )
+            #endif
             return .compositionChanged.union(clearT9PinyinPathStateReturningEffect())
         }
 
-        let previousRaw = state.lastRimeOutput?.rawInput ?? state.currentComposition
         let output = engine.replaceInput(shortened)
         guard output.committedText == nil,
               output.composition?.preeditText.isEmpty == false,
@@ -354,15 +417,36 @@ extension KeyboardController {
             state.currentComposition = ""
             state.lastRimeOutput = nil
             state.partialCommit = nil
-            updateInlinePreedit("")
+            updateInlinePreedit("", source: .compositionProjection)
             clearTypoCorrectionSuggestions()
+            #if DEBUG
+            gate5TraceComposition(
+                event: .deleteBackward,
+                previousRaw: previousRaw,
+                note: "branch=visibleSpelling rejected=true cleared=true"
+            )
+            #endif
             return .compositionChanged.union(clearT9PinyinPathStateReturningEffect())
         }
 
         applyRimeOutput(augmentRimeOutputIfNeeded(output))
+        // Human: never leave a phantom selected chip after letter peel (qi).
+        // Keep the exact shortened spelling — do not force pure-digit resync here
+        // (would destroy `to`→`t` ownership owned by this branch).
+        var pathState = state.t9PinyinPathState
+        pathState.selectedPath = nil
+        pathState.lockedLetterPrefix = nil
+        state.t9PinyinPathState = pathState
         // Candidate comments may advertise a longer completion; Delete owns the
         // exact shortened spelling until the next explicit input/refinement.
-        updateInlinePreedit(shortened)
+        updateInlinePreedit(shortened, source: .compositionProjection)
+        #if DEBUG
+        gate5TraceComposition(
+            event: .deleteBackward,
+            previousRaw: previousRaw,
+            note: "branch=visibleSpelling success=true"
+        )
+        #endif
         return .compositionChanged.union(.t9PinyinPathsChanged)
     }
 
@@ -412,7 +496,7 @@ extension KeyboardController {
                 return .compositionChanged
             }
             state.currentComposition = rawInput
-            updateInlinePreedit(rawInput)
+            updateInlinePreedit(rawInput, source: .compositionProjection)
             refreshTypoCorrectionSuggestions()
             return .compositionChanged
         }
@@ -426,7 +510,7 @@ extension KeyboardController {
             prefix: partialCommit.confirmedText,
             rawInput: rawInput
         )
-        updateInlinePreedit(rawInput)
+        updateInlinePreedit(rawInput, source: .explicitNumberSuffix)
         clearTypoCorrectionSuggestions()
         return .compositionChanged
     }
@@ -446,18 +530,68 @@ extension KeyboardController {
 
     /// Updates inline preedit as marked text so host text fields can display
     /// the active composition with the system's composing underline.
-    func updateInlinePreedit(_ text: String) {
-        let previous = state.insertedPreeditText
-        guard previous != text else { return }
+    enum HostPreeditSource {
+        /// Composition projection derived from RIME/Core state. Internal digits
+        /// are never valid host text, even if runtime selection just failed closed.
+        case compositionProjection
+        /// Numeric suffix explicitly entered by the user on the number page.
+        case explicitNumberSuffix
+    }
 
-        if text.isEmpty {
+    func updateInlinePreedit(_ text: String, source: HostPreeditSource) {
+        let previous = state.insertedPreeditText
+        let safeText: String
+        // Internal T9 digit invariant applies only under nine-key T9 semantics.
+        // 26-key letter+digit compositions (e.g. `n20260619` on the numbers page)
+        // are legitimate host preedit and must not be rejected.
+        if source == .compositionProjection,
+           usesT9InputSemantics,
+           compositionProjectionContainsInternalDigit(text)
+        {
+            // This is the final host boundary. Preserve the prior safe spelling
+            // (or clear) instead of allowing even a transient `qiu5` / raw digit
+            // write that a later update might hide from final-state assertions.
+            safeText = compositionProjectionContainsInternalDigit(previous)
+                ? ""
+                : previous
+            Logger.shared.warning(
+                "host preedit rejected: internal digit projection length=\(text.count)",
+                category: .display
+            )
+        } else {
+            safeText = text
+        }
+        guard previous != safeText else { return }
+
+        if safeText.isEmpty {
             clearInlinePreedit()
         } else {
-            textClient?.setMarkedText(text, selectedRange: text.count..<text.count)
+            textClient?.setMarkedText(
+                safeText,
+                selectedRange: safeText.count..<safeText.count
+            )
         }
 
-        state.insertedPreeditText = text
-        state.insertedPreeditCount = text.count
+        state.insertedPreeditText = safeText
+        state.insertedPreeditCount = safeText.count
+    }
+
+    /// Candidate-confirmed text may legitimately contain numbers (for example
+    /// `3D打印`). Only the still-editable composition suffix is subject to the
+    /// internal T9 digit invariant.
+    func compositionProjectionContainsInternalDigit(_ text: String) -> Bool {
+        let editableText: Substring
+        if let confirmed = state.partialCommit?.confirmedText,
+           !confirmed.isEmpty,
+           text.hasPrefix(confirmed)
+        {
+            editableText = text.dropFirst(confirmed.count)
+        } else {
+            editableText = text[...]
+        }
+        return editableText.unicodeScalars.contains(
+            where: T9PinyinPathExtractor.isASCIIDigit
+        )
     }
 
     func deleteInlinePreedit() {

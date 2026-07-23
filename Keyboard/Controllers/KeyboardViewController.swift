@@ -109,6 +109,7 @@ class KeyboardViewController: UIInputViewController {
     var pinyinPathNextGlobalIndex: Int = 0
     var pinyinPathHasMore = false
     var pinyinPathPanelGeneration: UInt64 = 0
+    var pinyinPathPanelProvenanceRevision: UInt64 = 0
     /// 上次滑动翻页的时间戳（用于防抖，避免连续触发）
     var lastPageSwipeTime: CFTimeInterval = 0
     /// 累积候选词列表（无极滑动：随着用户滚动持续追加后续页的候选）
@@ -123,6 +124,9 @@ class KeyboardViewController: UIInputViewController {
     var nextCandidateGlobalIndex: Int = 0
     /// 当前候选快照对应的 raw input，用于丢弃旧输入的延迟预取结果。
     var candidateSnapshotRawInput: String?
+    /// Core composition revision bound to the published T9/candidate snapshot.
+    /// Delayed candidateWindow results must match this revision.
+    var candidateSnapshotCompositionRevision: UInt64 = 0
     /// 候选快照代数；每次 composition 变化递增。
     var candidateSnapshotGeneration: Int = 0
     /// 当前预取目标。展开态会加载更多候选，横向栏保持小批量。

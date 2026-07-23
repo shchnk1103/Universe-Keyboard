@@ -14,6 +14,11 @@
 
 NSString * const RimeKeyPreedit          = @"preedit";
 NSString * const RimeKeyCursorPos        = @"cursorPos";
+NSString * const RimeKeySelStart         = @"selStart";
+NSString * const RimeKeySelEnd           = @"selEnd";
+NSString * const RimeKeyCompositionLength = @"compositionLength";
+NSString * const RimeKeyCaretPos         = @"caretPos";
+NSString * const RimeKeyCommitPreviewLen = @"commitPreviewLen";
 NSString * const RimeKeyRawInput         = @"rawInput";
 NSString * const RimeKeyCandidates       = @"candidates";
 NSString * const RimeKeyCandidateText    = @"text";
@@ -251,6 +256,25 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     return [self collectOutput];
 }
 
+- (NSDictionary *)highlightCandidateOnCurrentPageAtIndex:(int)index {
+    if (_sessionId == 0) return [self emptyOutput];
+    if (index < 0) return [self collectOutput];
+
+    // Phase 0.6: highlight without commit so Spike can compare per-candidate engine state.
+    if (RIME_API_AVAILABLE(_api, highlight_candidate_on_current_page)) {
+        if (!_api->highlight_candidate_on_current_page(_sessionId, (size_t)index)) {
+            NSLog(@"[RIME] ⚠️ highlight_candidate_on_current_page(%d) failed", index);
+        }
+    } else if (RIME_API_AVAILABLE(_api, highlight_candidate)) {
+        if (!_api->highlight_candidate(_sessionId, (size_t)index)) {
+            NSLog(@"[RIME] ⚠️ highlight_candidate(%d) failed", index);
+        }
+    } else {
+        NSLog(@"[RIME] ⚠️ highlight candidate API unavailable");
+    }
+    return [self collectOutput];
+}
+
 - (NSDictionary *)candidatesFromIndex:(int)index limit:(int)limit {
     NSMutableDictionary *window = [NSMutableDictionary dictionary];
     int safeIndex = MAX(0, index);
@@ -298,6 +322,11 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     window[RimeKeyCandidateWindowNextIndex] = @(consumed > 0 ? lastGlobalIndex + 1 : safeIndex);
     window[RimeKeyCandidateWindowHasMore] = @(hasMore);
     return window;
+}
+
+- (NSDictionary *)currentOutput {
+    if (_sessionId == 0) return [self emptyOutput];
+    return [self collectOutput];
 }
 
 - (NSDictionary *)deleteBackward {
@@ -404,6 +433,11 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
         output[RimeKeyRawInput] = [NSString stringWithUTF8String:rawInput];
     }
 
+    // Phase 0.6: caret is defined in raw-input space (not preedit display).
+    if (RIME_API_AVAILABLE(_api, get_caret_pos)) {
+        output[RimeKeyCaretPos] = @((int)_api->get_caret_pos(_sessionId));
+    }
+
     // --- Commit text ---
     RIME_STRUCT(RimeCommit, commit);
     if (_api->get_commit(_sessionId, &commit)) {
@@ -416,10 +450,19 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     // --- Context (composition + candidates) ---
     RIME_STRUCT(RimeContext, ctx);
     if (_api->get_context(_sessionId, &ctx)) {
-        // Composition (preedit)
+        // Composition (preedit + engine-native selection range).
+        // Phase 0.5/0.6: read-only metadata only — not T9 slot coverage authority.
         if (ctx.composition.preedit && strlen(ctx.composition.preedit) > 0) {
             output[RimeKeyPreedit] = [NSString stringWithUTF8String:ctx.composition.preedit];
             output[RimeKeyCursorPos] = @(ctx.composition.cursor_pos);
+            output[RimeKeySelStart] = @(ctx.composition.sel_start);
+            output[RimeKeySelEnd] = @(ctx.composition.sel_end);
+            output[RimeKeyCompositionLength] = @(ctx.composition.length);
+        }
+
+        // Structural only: preview UTF-8 length. Product forbids using 汉字数 as slot map.
+        if (ctx.commit_text_preview && strlen(ctx.commit_text_preview) > 0) {
+            output[RimeKeyCommitPreviewLen] = @((int)strlen(ctx.commit_text_preview));
         }
 
         // Candidates
