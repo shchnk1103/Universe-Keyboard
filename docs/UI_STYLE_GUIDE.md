@@ -43,6 +43,8 @@ Keyboard UI is frozen for V1. Future keyboard UI changes must state a specific u
 
 Path selection visual contract: before first selection all labels remain plain. The active path reuses the preferred-candidate treatment—dynamic `.label` background, `.systemBackground` text, continuous `8 pt` corner radius, and compact `8 pt` horizontal insets. Do not encode selection through color alone: `.selected` accessibility traits and “已选中” value remain required.
 
+Path list presentation (implementation): Path cells render with plain `UILabel` plus an explicit selected-highlight background view—same anti-material rule as candidates. Avoid `UIButton.Configuration` for on-screen Path chips; on iOS 26 keyboard chrome it can wash the entire 34 pt Path strip and create a hard rectangular band under the top rounded corners. Path `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. Keep Path container/cell/contentView clear and non-opaque; do not add an opaque Path card fill to “fix” haze. Selection plumbing may still use a non-visible `T9PinyinPathButton` proxy for the existing selector contract.
+
 Frozen keyboard baseline:
 
 - Keyboard content top inset: `2`.
@@ -133,6 +135,7 @@ Keyboard layout is built from `UIStackView` rows:
 - Keep row construction in `KeyboardViewController+Layout.swift`.
 - Keep style creation in `KeyboardViewController+KeyFactory.swift`.
 - Keep candidate styling in `CandidateCell.swift` and candidate scroll-view safeguards in `CandidateScrollViewStyle.swift`.
+- Keep Path Bar presentation in `T9PinyinPathBarView.swift` (plain labels + `CandidateScrollViewStyle`); do not reintroduce Configuration-drawn Path chips.
 - Keep visual state refresh in `KeyboardViewController+Display.swift`.
 - Keep press and long-press visuals in `KeyboardViewController+Gestures.swift`.
 
@@ -195,7 +198,8 @@ Every UI change must pass this mental checklist:
 - Making the keyboard look like an app toolbar instead of a native keyboard.
 - Using brand blue for candidate text when it lowers contrast.
 - Adding card backgrounds inside the keyboard surface.
-- Reintroducing candidate scroll fade masks or leaving iOS 26 `UIScrollEdgeEffect` enabled on candidate lists.
+- Reintroducing candidate or Path scroll fade masks, or leaving iOS 26 `UIScrollEdgeEffect` enabled on candidate/Path lists.
+- Drawing Path chips with `UIButton.Configuration` or opaque cell backgrounds that reintroduce a washed Path strip / hard top rectangle.
 - Styling one button directly instead of adding or reusing a key style.
 - Adding large custom SwiftUI sections when a `Form` or existing component would be more native.
 - Changing layout constants without checking keyboard height and row stability.
