@@ -26,6 +26,25 @@ extension SchemaManager {
         }.value
         applyAdvancedInputPostProcessing(to: directories.sharedDataURL)
         applyFuzzyPinyinPostProcessing(to: directories.sharedDataURL)
+
+        // Strip T9 force_gc **before** librime compiles build/t9.schema.yaml.
+        if FileManager.default.fileExists(
+            atPath: directories.sharedDataURL.appendingPathComponent("t9.schema.yaml").path
+        ) {
+            do {
+                _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: directories.sharedDataURL)
+                Logger.shared.info(
+                    "deployRimeConfig: T9 compatibility applied before deploy",
+                    category: .deployment
+                )
+            } catch {
+                Logger.shared.warning(
+                    "deployRimeConfig: T9 compatibility before deploy failed: \(error.localizedDescription)",
+                    category: .deployment
+                )
+            }
+        }
+
         settings.set(true, forKey: "rime_deploying")
         settings.set(false, forKey: "rime_deployed")
         settings.synchronize()

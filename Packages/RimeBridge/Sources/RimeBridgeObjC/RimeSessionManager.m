@@ -34,6 +34,8 @@ NSString * const RimeKeyCandidateGlobalIndex = @"globalIndex";
 NSString * const RimeKeyFirstProcessKeyLibrimeDurationMs = @"firstProcessKeyLibrimeDurationMs";
 NSString * const RimeKeyFirstProcessKeyOutputDurationMs = @"firstProcessKeyOutputDurationMs";
 NSString * const RimeKeyFirstProcessKeyTotalDurationMs = @"firstProcessKeyTotalDurationMs";
+NSString * const RimeKeyProcessKeyLibrimeDurationMs = @"processKeyLibrimeDurationMs";
+NSString * const RimeKeyProcessKeyCollectDurationMs = @"processKeyCollectDurationMs";
 
 // MARK: - Private interface
 
@@ -215,23 +217,32 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
         }
     }
 
-    if (!_shouldMeasureFirstProcessKey) {
-        _api->process_key(_sessionId, keycode, modifiers);
-        return [self collectOutput];
+    // Always split `process_key` vs `collectOutput` wall time (cheap clocks).
+    // Never log key contents — only durations for spike attribution.
+    BOOL measureAsFirstKey = _shouldMeasureFirstProcessKey;
+    if (measureAsFirstKey) {
+        _shouldMeasureFirstProcessKey = NO;
     }
 
-    // 首键的候选引擎可能触发延迟加载。只记录阶段耗时，绝不记录按键或候选内容。
-    _shouldMeasureFirstProcessKey = NO;
     CFAbsoluteTime totalStart = CFAbsoluteTimeGetCurrent();
     _api->process_key(_sessionId, keycode, modifiers);
-    CFAbsoluteTime outputStart = CFAbsoluteTimeGetCurrent();
+    CFAbsoluteTime afterProcessKey = CFAbsoluteTimeGetCurrent();
     NSDictionary *output = [self collectOutput];
-    CFAbsoluteTime outputEnd = CFAbsoluteTimeGetCurrent();
+    CFAbsoluteTime afterCollect = CFAbsoluteTimeGetCurrent();
+
+    double librimeMs = (afterProcessKey - totalStart) * 1000.0;
+    double collectMs = (afterCollect - afterProcessKey) * 1000.0;
+    double totalMs = (afterCollect - totalStart) * 1000.0;
 
     NSMutableDictionary *timedOutput = [output mutableCopy];
-    timedOutput[RimeKeyFirstProcessKeyLibrimeDurationMs] = @((outputStart - totalStart) * 1000.0);
-    timedOutput[RimeKeyFirstProcessKeyOutputDurationMs] = @((outputEnd - outputStart) * 1000.0);
-    timedOutput[RimeKeyFirstProcessKeyTotalDurationMs] = @((outputEnd - totalStart) * 1000.0);
+    timedOutput[RimeKeyProcessKeyLibrimeDurationMs] = @(librimeMs);
+    timedOutput[RimeKeyProcessKeyCollectDurationMs] = @(collectMs);
+    if (measureAsFirstKey) {
+        // Keep legacy first-key keys for existing smoke/diagnostic consumers.
+        timedOutput[RimeKeyFirstProcessKeyLibrimeDurationMs] = @(librimeMs);
+        timedOutput[RimeKeyFirstProcessKeyOutputDurationMs] = @(collectMs);
+        timedOutput[RimeKeyFirstProcessKeyTotalDurationMs] = @(totalMs);
+    }
     return timedOutput;
 }
 

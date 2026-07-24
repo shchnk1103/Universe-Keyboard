@@ -38,6 +38,7 @@ extension SchemaManager {
             },
             deploy: { [weak self] in
                 guard let self else { return false }
+                // deployRimeConfig reapplies T9 compatibility after a successful deploy.
                 return await self.deployRimeConfig()
             },
             smoke: { shared, user in

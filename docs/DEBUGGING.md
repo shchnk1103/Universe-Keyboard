@@ -226,6 +226,47 @@ If typing on iPhone takes over AirPods from audio already playing on another dev
 
 Use `docs/PERFORMANCE_BASELINE.md` for the required measurement fields and scenarios. Numeric budgets may be added only after reviewed real-device evidence exists.
 
+### T9 continuous digit typing — DEBUG segment timing (`T9SEG`)
+
+When investigating “long unconfirmed nine-key input feels janky without Path/candidate picks”, use **Debug** builds only. Instrumentation is `#if DEBUG` and does not change product control flow.
+
+**What is measured** (one sample per T9 digit key; lengths only, never composition text):
+
+| Field | Meaning |
+|---|---|
+| `rawLen` | Unconfirmed RIME raw length after the key |
+| `rime` | `processKey` + collectOutput (bridge) |
+| `pathLocal` | Local Path rebuild + focus retain |
+| `preedit` | Visible preedit resolve + host marked-text update |
+| `pathUI` | Path Bar `setPaths` / `reloadData` |
+| `candUI` | Candidate bar snapshot fill / `reloadData` |
+| `total` / `engine` / `ui` | Existing KEY END split |
+| `unaccounted` | `total − (rime+pathLocal+preedit+pathUI+candUI)` |
+
+Log prefix: `T9SEG` (and `SLOW T9SEG` when `total ≥ 50ms`). Category: `PERF`. Enable logging + PERF category in the diagnostics app if needed.
+
+**How to collect a length curve on device**
+
+1. Install a **Debug** Keyboard Extension; open a Notes field; switch to Chinese nine-key.
+2. Without selecting Path or candidates, type a fixed synthetic digit sequence at a steady cadence (e.g. 20–40 keys). Prefer one warm session after first composition.
+3. Export or filter Console / App Group diag log for `T9SEG`.
+4. Plot or table `rawLen` vs `rime`, `pathLocal`, `preedit`, `pathUI`, `candUI`, `total` (median + worst per rawLen bucket if possible).
+5. Record device, OS, schema, Full Access, Debug build commit — do not invent budgets from a single run.
+
+Interpretation: if `pathUI`+`candUI` dominate as `rawLen` grows, presentation reload is the lever; if `rime` dominates, focus librime/collectOutput; if `pathLocal`/`preedit` dominate, local catalog/preedit work.
+
+**Spike reading (P0):** device logs showed occasional `SLOW KEY` / `SLOW T9SEG` with `rime` ≈ 160–200ms while neighboring keys stay 3–10ms. On those lines, also read `SLOW RIME` / `RIME processKey returned` for:
+
+- `processKey=(api Xms, collect Yms)` — split of librime `process_key` vs `collectOutput`/`get_context`
+- If `api` dominates → engine/table work inside librime
+- If `collect` dominates → context/candidate copy cost
+
+Continuous T9 digit bursts now **idle-gate bar-mode candidate prefetch** (≈280ms after last digit; no 12→27→42 chain while still typing). Expect fewer `loadMoreCandidates` lines mid-burst; scroll-near-end still prefetches. Expanded panel prefetch is unchanged.
+
+**Long T9 digit spikes (`api` dominates, `collect` ≈0):** primary remaining cost after hygiene. **force_gc-as-primary-fix is closed** — see case close [`evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md). Follow-on work: [`plans/t9-long-composition-process-key-latency-plan.md`](plans/t9-long-composition-process-key-latency-plan.md).
+
+**T9 force_gc hygiene (not the main latency fix):** deploy may strip force_gc **only** from `t9.schema.yaml` (not `rime_ice` / shared `lua/force_gc.lua`). Verify with main App → 设置 → 诊断日志 → **检查九键 Schema / force_gc** (source + compiled `build/t9.schema.yaml`). If source clean but compiled still lists force_gc, apply patch then **完整部署**. If **both clean** and SLOW KEY remain, do **not** reopen force_gc as primary — use the long-composition plan.
+
 ## Verification Commands
 
 Use the canonical commands in `docs/RELEASE_CHECKLIST.md`. A named simulator is required only for actually running tests; discover an installed destination instead of copying a stale device name into permanent docs.

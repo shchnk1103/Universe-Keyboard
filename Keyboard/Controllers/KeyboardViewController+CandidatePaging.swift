@@ -110,8 +110,16 @@ extension KeyboardViewController: UIScrollViewDelegate {
         case .expanded:
             delay = 0.04
         case .bar:
-            // 预取仍在主线程访问 librime；给当前按键和首屏渲染让出一小段时间。
-            delay = accumulatedCandidates.count < 36 ? 0.06 : 0.14
+            // P0 continuous-typing mitigation: bar prefetch still touches the same
+            // main-thread librime session as processKey. During rapid T9 digit
+            // entry, defer far past the key cadence so we do not re-walk candidate
+            // lists after every digit (logs showed start=12 then start=27 per key).
+            // Scroll-near-end still calls this path only after interaction pauses.
+            if isInContinuousT9DigitBurst {
+                delay = Self.barPrefetchIdleDelayDuringBurst
+            } else {
+                delay = accumulatedCandidates.count < 36 ? 0.06 : 0.14
+            }
         }
         let scheduledOwner = WeakKeyboardViewControllerReference(self)
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
@@ -127,6 +135,15 @@ extension KeyboardViewController: UIScrollViewDelegate {
             }
         }
     }
+
+    /// True while digit keys are still arriving faster than bar-prefetch idle window.
+    private var isInContinuousT9DigitBurst: Bool {
+        guard controller.usesT9InputSemantics else { return false }
+        guard let last = lastT9DigitKeyTime else { return false }
+        return (CACurrentMediaTime() - last) < Self.barPrefetchIdleDelayDuringBurst
+    }
+
+    private static let barPrefetchIdleDelayDuringBurst: TimeInterval = 0.28
 
     private func runScheduledCandidatePrefetch(
         mode: CandidatePrefetchMode,
@@ -275,7 +292,11 @@ extension KeyboardViewController: UIScrollViewDelegate {
         guard hasMoreCandidates, !isLoadingMoreCandidates, elapsedMs < 24 else { return false }
         switch mode {
         case .bar:
-            return accumulatedCandidates.count < 48
+            // Do not chain 12→27→42 after every key. One deferred window is enough for
+            // bar chrome; further pages load when the user scrolls (scroll path).
+            // Continuous T9 digit bursts skip chaining entirely.
+            if isInContinuousT9DigitBurst { return false }
+            return accumulatedCandidates.count < 28
         case .expanded:
             return isCandidateExpanded && accumulatedCandidates.count < 80
         }

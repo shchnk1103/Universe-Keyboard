@@ -45,6 +45,8 @@ Path selection visual contract: before first selection all labels remain plain. 
 
 Path list presentation (implementation): Path cells render with plain `UILabel` plus an explicit selected-highlight background view—same anti-material rule as candidates. Avoid `UIButton.Configuration` for on-screen Path chips; on iOS 26 keyboard chrome it can wash the entire 34 pt Path strip and create a hard rectangular band under the top rounded corners. Path `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. Keep Path container/cell/contentView clear and non-opaque; do not add an opaque Path card fill to “fix” haze. Selection plumbing may still use a non-visible `T9PinyinPathButton` proxy for the existing selector contract.
 
+**Idle empty-state Path hint (latency education, not a Path option):** When Chinese nine-key letters surface is reserved and there is **no** active T9 composition and **no** Path chips, Path bar may show a single secondary-label line (e.g.「点选拼音可加快输入」) at 14 pt, left-aligned, non-interactive (`.staticText`). It must not use inverted pill / button traits, must not enter Path catalog or selection plumbing, and must **hide immediately** on first digit or any non-empty composition/Path snapshot. Do not add mid-type “after N digits” banners by default.
+
 Frozen keyboard baseline:
 
 - Keyboard content top inset: `2`.

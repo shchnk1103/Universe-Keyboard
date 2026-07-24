@@ -18,11 +18,26 @@ extension KeyboardViewController {
         let startTime = CACurrentMediaTime()
         inputEventSequence += 1
         let eventID = inputEventSequence
+        let compositionLengthBefore = controller.state.currentComposition.count
 #if DEBUG
+        // Segmented sample for continuous T9 digit typing (no Path/candidate pick).
+        // Privacy: lengths only — never log the digit sequence itself.
+        let shouldSampleT9Segments =
+            controller.usesT9InputSemantics
+            && key.count == 1
+            && key.first?.isNumber == true
+        if shouldSampleT9Segments {
+            HotPathSegmentTiming.beginKey(
+                eventID: UInt64(eventID),
+                keyLength: key.count,
+                compositionLengthBefore: compositionLengthBefore
+            )
+        }
+
         let idleMs = lastInputCompletionTime.map { (startTime - $0) * 1000 }
         Logger.shared.debug(
             "KEY BEGIN #\(eventID) keyLength=\(key.count) idleMs=\(idleMs.map { String(format: "%.1f", $0) } ?? "first") "
-                + "compositionLength=\(controller.state.currentComposition.count)",
+                + "compositionLength=\(compositionLengthBefore)",
             category: .performance
         )
 
@@ -43,6 +58,14 @@ extension KeyboardViewController {
         let effects = controller.handle(.insertKey(key))
         let handleMs = (CACurrentMediaTime() - handleStartTime) * 1000
 #if DEBUG
+        if shouldSampleT9Segments {
+            HotPathSegmentTiming.noteResult(
+                rawLength: controller.state.lastRimeOutput?.rawInput?.count
+                    ?? controller.state.currentComposition.count,
+                pathCount: controller.state.t9PinyinPathState.compactPaths.count,
+                candidateCount: controller.state.lastRimeOutput?.candidates.count ?? 0
+            )
+        }
         Logger.shared.debug(
             "KEY ENGINE END #\(eventID) durationMs=\(String(format: "%.1f", handleMs)) "
                 + "candidates=\(controller.state.lastRimeOutput?.candidates.count ?? 0)",
@@ -61,7 +84,21 @@ extension KeyboardViewController {
             "KEY END #\(eventID) keyLength=\(key.count) total=\(String(format: "%.1f", totalMs))ms "
                 + "engine=\(String(format: "%.1f", handleMs))ms ui=\(String(format: "%.1f", uiMs))ms"
         )
+        if shouldSampleT9Segments {
+            HotPathSegmentTiming.endKey(
+                totalMs: totalMs,
+                engineMs: handleMs,
+                uiMs: uiMs
+            )
+        }
 #endif
+        // Track T9 digit cadence for bar-prefetch idle gating (release + debug).
+        if controller.usesT9InputSemantics,
+           key.count == 1,
+           key.first?.isNumber == true
+        {
+            lastT9DigitKeyTime = endTime
+        }
         if totalMs >= 50 {
             Logger.shared.warning(
                 "SLOW KEY #\(eventID) keyLength=\(key.count) total=\(String(format: "%.1f", totalMs))ms "

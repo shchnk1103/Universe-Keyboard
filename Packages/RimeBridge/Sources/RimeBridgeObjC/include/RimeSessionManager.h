@@ -145,5 +145,9 @@ extern NSString * const RimeKeyFirstProcessKeyLibrimeDurationMs;
 extern NSString * const RimeKeyFirstProcessKeyOutputDurationMs;
 /// 新 session 的第一个按键从 `process_key` 到输出收集完成的总耗时（NSNumber double，毫秒）。
 extern NSString * const RimeKeyFirstProcessKeyTotalDurationMs;
+/// 每次 processKey：librime `process_key` 耗时（NSNumber double，毫秒）。
+extern NSString * const RimeKeyProcessKeyLibrimeDurationMs;
+/// 每次 processKey：`collectOutput` / get_context 耗时（NSNumber double，毫秒）。
+extern NSString * const RimeKeyProcessKeyCollectDurationMs;
 
 NS_ASSUME_NONNULL_END

@@ -2,6 +2,18 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-24 — 九键长串：空闲 Path 提示（Lane A）
+
+- 产品锁定：早期 Path / 分段上屏为推荐用法；默认不做输入中「满 N 位」横幅；允许后续 T9-only 质量换速度（需 Product Gate）。
+- Path bar 空闲态（九键中文、无 composition、无 Path 芯片）显示 secondary「点选拼音可加快输入」；首键 / composition 非空立即消失。策略：`T9IdlePathHintPolicy`；UI：`T9PinyinPathBarView`；设置页布局说明补充推荐用法。
+- 非 Path 选项（无 pill、无选择 plumbing）。方案：`docs/plans/t9-long-composition-process-key-latency-plan.md`。
+
+## 2026-07-24 — 九键长串卡顿：force_gc 主因结案 + 测量/卫生项保留
+
+- **结案：** 连续九键数字（不选 Path/候选）的大量 `SLOW KEY` 在源+编译均无 force_gc 后仍存在；主因不是 force_gc，而是 librime `process_key`（`api`）随未确认 raw 变长。记录见 `docs/evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`。
+- **保留：** T9SEG 分段计时、api/collect 拆分、bar 预取 idle 限流、主 App「检查九键 Schema / force_gc」、T9-only strip + 部署前 strip/清 `build/t9.*`（卫生，不影响 26 键 `rime_ice` / 共享 force_gc.lua）。
+- **后续：** 长串 `process_key` 优化见 `docs/plans/t9-long-composition-process-key-latency-plan.md`（产品已锁；Lane A 已交付，baseline / Lane B 待定）。
+
 ## 2026-07-24 — Path Bar 去掉顶带灰蒙（对齐候选 plain 渲染）
 
 - 九键 Path Bar 有 Path 时整条 34 pt 顶带发灰、浅色模式顶圆角硬矩形：根因是 Path cell 未清底 + 用 `UIButton.Configuration` 绘制，在系统键盘 chrome 下整行合成出垫色/灰蒙（与候选栏曾遇到的 material 问题同类；红钉真机确认垫带 = cell 行）。

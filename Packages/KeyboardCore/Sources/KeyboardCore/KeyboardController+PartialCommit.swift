@@ -849,9 +849,19 @@ extension KeyboardController {
             } else {
                 // Path snapshot first so provisional Path can own host projection
                 // when it fully covers the current focus slots (ADR 0023).
+                #if DEBUG
+                _ = HotPathSegmentTiming.measure(.pathLocal) {
+                    applyT9PinyinPathStateFromNewRimeOutput()
+                }
+                HotPathSegmentTiming.measure(.preedit) {
+                    let visible = t9VisiblePreedit(for: output)
+                    updateInlinePreedit(visible, source: .compositionProjection)
+                }
+                #else
                 _ = applyT9PinyinPathStateFromNewRimeOutput()
                 let visible = t9VisiblePreedit(for: output)
                 updateInlinePreedit(visible, source: .compositionProjection)
+                #endif
                 clearTypoCorrectionSuggestions()
             }
             return

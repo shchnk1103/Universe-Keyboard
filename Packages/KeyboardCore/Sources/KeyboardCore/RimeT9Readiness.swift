@@ -23,7 +23,8 @@ public struct RimeT9ReadinessMarker: Codable, Sendable, Equatable {
 
 public enum RimeT9Readiness {
     /// Bump when compatibility patch rules or required digit algebra change.
-    public static let currentCompatibilityVersion = "1"
+    /// v2: strip T9 hot-path force_gc translator; re-apply after every full deploy.
+    public static let currentCompatibilityVersion = "2"
 
     public enum SettingsKey {
         /// JSON-encoded `RimeT9ReadinessMarker` (preferred).

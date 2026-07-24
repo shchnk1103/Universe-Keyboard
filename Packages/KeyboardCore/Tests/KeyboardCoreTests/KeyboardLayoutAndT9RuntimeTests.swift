@@ -245,6 +245,57 @@ final class KeyboardLayoutAndT9RuntimeTests: XCTestCase {
         XCTAssertTrue(compatible.contains("schema_id: t9"))
     }
 
+    func testForceGCInspectorDetectsTranslatorListEntry() {
+        let withGC = """
+            translators:
+              - script_translator
+              - lua_translator@*force_gc
+            """
+        let withoutGC = """
+            translators:
+              - script_translator
+            # force_gc comment only
+            """
+        XCTAssertTrue(T9SchemaForceGCInspector.forceGCTranslatorPresent(inYAML: withGC))
+        XCTAssertFalse(T9SchemaForceGCInspector.forceGCTranslatorPresent(inYAML: withoutGC))
+        XCTAssertTrue(T9SchemaForceGCInspector.luaCallsCollectgarbage("collectgarbage(\"step\")"))
+        XCTAssertFalse(T9SchemaForceGCInspector.luaCallsCollectgarbage("local function force_gc()\nend"))
+    }
+
+    func testCompatibilityStripRemovesForceGCTranslator() throws {
+        let upstream = """
+            schema:
+              schema_id: t9
+            engine:
+              processors:
+                - ascii_composer
+              translators:
+                - script_translator
+                - lua_translator@*force_gc           # 暴力 GC
+                - lua_translator@*date_translator
+            speller:
+              algebra:
+                - derive/[abc]/2/
+                - derive/[def]/3/
+                - derive/[hgi]/4/
+                - derive/[jkl]/5/
+                - derive/[omn]/6/
+                - derive/[pqrs]/7/
+                - derive/[tuv]/8/
+                - derive/[wxyz]/9/
+            """
+        let compatible = try T9SchemaCompatibility.makeCompatibleSchema(fromUpstreamYAML: upstream)
+        XCTAssertFalse(compatible.contains("lua_translator@*force_gc"))
+        XCTAssertFalse(
+            compatible.split(separator: "\n").contains {
+                $0.trimmingCharacters(in: .whitespaces).hasPrefix("-")
+                    && $0.contains("force_gc")
+            }
+        )
+        XCTAssertTrue(compatible.contains("script_translator"))
+        XCTAssertTrue(compatible.contains("date_translator"))
+    }
+
     func testSchemaListIncludesT9WhenIceInstalled() {
         let yaml = RimeConfigTemplates.generateDefaultYaml(
             activeSchemaID: "rime_ice",

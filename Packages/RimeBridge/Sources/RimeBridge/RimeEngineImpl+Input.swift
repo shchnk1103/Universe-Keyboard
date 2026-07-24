@@ -18,6 +18,7 @@ extension RimeEngineImpl {
 #endif
         let raw = bridge.processKey(keycode, modifiers: 0)
         let bridgeElapsed = (CACurrentMediaTime() - bridgeStartTime) * 1000
+        let processKeyTiming = RimeProcessKeyBridgeTiming(rawOutput: raw)
         let firstKeyBridgeTiming = RimeFirstKeyBridgeTiming(rawOutput: raw)
 #if DEBUG
         Logger.shared.debug(
@@ -31,20 +32,22 @@ extension RimeEngineImpl {
         // Release 不记录逐键成功日志，只保留超阈值告警，避免字符串格式化和日志队列进入热路径。
         if key != "BackSpace", key != "Delete" {
             let totalElapsed = (CACurrentMediaTime() - startTime) * 1000
+            let stageDetails =
+                processKeyTiming.map { ", \($0.diagnosticDescription)" }
+                ?? firstKeyBridgeTiming.map { ", \($0.diagnosticDescription)" }
+                ?? ""
 #if DEBUG
-            let firstKeyDetails = firstKeyBridgeTiming.map { ", \($0.diagnosticDescription)" } ?? ""
             Logger.shared.performance(
                 "RIME processKey returned (bridge \(String(format: "%.1f", bridgeElapsed))ms, "
                     + "total \(String(format: "%.1f", totalElapsed))ms, "
-                    + "candidates \(output.candidates.count)\(firstKeyDetails))"
+                    + "candidates \(output.candidates.count)\(stageDetails))"
             )
 #endif
             if bridgeElapsed >= 30 || totalElapsed >= 50 {
-                let firstKeyDetails = firstKeyBridgeTiming.map { " \($0.diagnosticDescription)" } ?? ""
                 Logger.shared.warning(
                     "SLOW RIME keyLength=\(key.count) bridge=\(String(format: "%.1f", bridgeElapsed))ms "
                         + "total=\(String(format: "%.1f", totalElapsed))ms candidates=\(output.candidates.count)"
-                        + firstKeyDetails,
+                        + stageDetails,
                     category: .performance
                 )
             }
