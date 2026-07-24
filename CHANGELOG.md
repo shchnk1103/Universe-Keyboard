@@ -2,6 +2,12 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-24 — Path Bar 去掉顶带灰蒙（对齐候选 plain 渲染）
+
+- 九键 Path Bar 有 Path 时整条 34 pt 顶带发灰、浅色模式顶圆角硬矩形：根因是 Path cell 未清底 + 用 `UIButton.Configuration` 绘制，在系统键盘 chrome 下整行合成出垫色/灰蒙（与候选栏曾遇到的 material 问题同类；红钉真机确认垫带 = cell 行）。
+- 修复：`T9PinyinPathBarView` 套用 `CandidateScrollViewStyle`；cell 改为 plain `UILabel` + 显式选中反色胶囊；容器/contentView 透明非 opaque。`T9PinyinPathButton` 仅作选择 proxy，不参与绘制。
+- 真机验证（深/浅色）：顶带灰蒙消失、文字清晰、顶角硬矩形消失、点选 Path 正常。文档：`docs/UI_STYLE_GUIDE.md` Path 列表呈现约束。
+
 ## 2026-07-23 — KEYBOARD-LAYOUT-9KEY-PINYIN-004 Assignment Closed
 
 - Product Lead 正式关闭 Assignment 004（`PD-…-004-ASSIGNMENT-CLOSE`）：目录/原子 Path、H5 residual、residual-B 真机 Pass、A1 文案、provisional-only C 均已交付。

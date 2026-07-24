@@ -3,6 +3,10 @@ import UIKit
 
 /// Fixed-height precise pinyin path bar above the Chinese candidate bar (ADR 0020/0023).
 /// Horizontal collection shows the full Core-issued focus Path set (no prefix(5) truncation).
+///
+/// Presentation mirrors the candidate bar: transparent scroll container, plain `UILabel`
+/// cells, and an explicit selected pill — avoiding `UIButton.Configuration` material
+/// compositing that washed the entire Path strip on iOS 26 keyboard chrome.
 final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     private let collectionView: UICollectionView
     private let separator = UIView()
@@ -31,10 +35,11 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .clear
+        isOpaque = false
         clipsToBounds = true
 
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .clear
+        CandidateScrollViewStyle.apply(to: collectionView)
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.alwaysBounceHorizontal = true
@@ -49,6 +54,7 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
 
         separator.translatesAutoresizingMaskIntoConstraints = false
         separator.backgroundColor = UIColor.separator.withAlphaComponent(0.45)
+        separator.isOpaque = false
         addSubview(separator)
 
         NSLayoutConstraint.activate([
@@ -138,9 +144,10 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
         let path = paths[indexPath.item]
-        let font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        let font = UIFont.systemFont(ofSize: T9PinyinPathBarCell.titlePointSize, weight: .regular)
         let textWidth = (path.displayText as NSString).size(withAttributes: [.font: font]).width
-        let width = max(44, ceil(textWidth) + 20)
+        let horizontalInset = T9PinyinPathBarCell.horizontalInset(selected: false) * 2
+        let width = max(44, ceil(textWidth) + horizontalInset)
         // Visual row stays `height` (34pt); hit-testing is expanded in `point(inside:)`.
         return CGSize(width: width, height: max(0, height - 1))
     }
@@ -149,7 +156,7 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         let path = paths[indexPath.item]
         // Reuse the existing button selector contract via a lightweight proxy button.
         let proxy = T9PinyinPathButton(type: .system)
-        proxy.configure(path: path, selected: true)
+        proxy.bind(path: path)
         // `selectAction` is a non-optional stored Selector; only `target` is weak/optional.
         if let target {
             _ = target.perform(selectAction, with: proxy)
@@ -165,37 +172,13 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     }
 }
 
-/// Compact path button retained for selector-based selection plumbing.
+/// Selection plumbing only — not used for on-screen Path rendering.
+/// `handleT9PinyinPathButton` still receives this type and reads `path`.
 final class T9PinyinPathButton: UIButton {
     private(set) var path: T9PinyinPath?
 
-    func configure(path: T9PinyinPath, selected: Bool) {
+    func bind(path: T9PinyinPath) {
         self.path = path
-        var config = UIButton.Configuration.plain()
-        config.title = path.displayText
-        config.titleLineBreakMode = .byTruncatingTail
-        config.titleAlignment = .center
-        config.contentInsets = NSDirectionalEdgeInsets(
-            top: 0,
-            leading: selected ? 8 : 10,
-            bottom: 0,
-            trailing: selected ? 8 : 10
-        )
-        if selected {
-            config.background.backgroundColor = .label
-            config.background.cornerRadius = 8
-        }
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            var outgoing = incoming
-            outgoing.font = .systemFont(ofSize: 16, weight: .regular)
-            outgoing.foregroundColor = selected ? .systemBackground : .label
-            return outgoing
-        }
-        configuration = config
-        accessibilityLabel = Self.accessibilityLabel(for: path, selected: selected)
-        accessibilityTraits = selected ? [.button, .selected] : .button
-        accessibilityIdentifier = "t9PinyinPathButton"
-        accessibilityValue = selected ? "已选中" : nil
     }
 
     static func accessibilityLabel(for path: T9PinyinPath, selected: Bool) -> String {
@@ -212,21 +195,70 @@ final class T9PinyinPathButton: UIButton {
     }
 }
 
+/// Plain-label Path chip. Selected state uses an explicit inverted pill (same language as
+/// preferred candidate), without `UIButton.Configuration` material compositing.
 final class T9PinyinPathBarCell: UICollectionViewCell {
     static let reuseID = "T9PinyinPathBarCell"
-    private let button = T9PinyinPathButton(type: .system)
+    static let titlePointSize: CGFloat = 16
+    private static let highlightCornerRadius: CGFloat = 8
+
+    private let titleLabel = UILabel()
+    private let highlightedBackgroundView = UIView()
+    private var titleLeadingConstraint: NSLayoutConstraint!
+    private var titleTrailingConstraint: NSLayoutConstraint!
     private(set) var path: T9PinyinPath?
+
+    static func horizontalInset(selected: Bool) -> CGFloat {
+        selected ? 8 : 10
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.isUserInteractionEnabled = false
-        contentView.addSubview(button)
+        backgroundColor = .clear
+        backgroundView = nil
+        selectedBackgroundView = nil
+        isOpaque = false
+        contentView.backgroundColor = .clear
+        contentView.isOpaque = false
+        contentView.layer.masksToBounds = false
+
+        highlightedBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        highlightedBackgroundView.isUserInteractionEnabled = false
+        highlightedBackgroundView.isOpaque = false
+        highlightedBackgroundView.backgroundColor = .clear
+        highlightedBackgroundView.layer.cornerRadius = Self.highlightCornerRadius
+        highlightedBackgroundView.layer.cornerCurve = .continuous
+
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.backgroundColor = .clear
+        titleLabel.isOpaque = false
+        titleLabel.numberOfLines = 1
+        titleLabel.lineBreakMode = .byTruncatingTail
+        titleLabel.textAlignment = .center
+        titleLabel.font = .systemFont(ofSize: Self.titlePointSize, weight: .regular)
+
+        contentView.addSubview(highlightedBackgroundView)
+        contentView.addSubview(titleLabel)
+
+        titleLeadingConstraint = titleLabel.leadingAnchor.constraint(
+            equalTo: contentView.leadingAnchor,
+            constant: Self.horizontalInset(selected: false)
+        )
+        titleTrailingConstraint = titleLabel.trailingAnchor.constraint(
+            equalTo: contentView.trailingAnchor,
+            constant: -Self.horizontalInset(selected: false)
+        )
+
         NSLayoutConstraint.activate([
-            button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            button.topAnchor.constraint(equalTo: contentView.topAnchor),
-            button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            highlightedBackgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            highlightedBackgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            highlightedBackgroundView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            highlightedBackgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+
+            titleLeadingConstraint,
+            titleTrailingConstraint,
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             contentView.widthAnchor.constraint(greaterThanOrEqualToConstant: 44),
             contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 32),
         ])
@@ -239,12 +271,37 @@ final class T9PinyinPathBarCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        path = nil
+        titleLabel.text = nil
+        applySelectionStyle(selected: false)
+        accessibilityLabel = nil
+        accessibilityValue = nil
+        accessibilityTraits = .button
+    }
+
     func configure(path: T9PinyinPath, selected: Bool) {
         self.path = path
-        button.configure(path: path, selected: selected)
+        titleLabel.text = path.displayText
+        applySelectionStyle(selected: selected)
         accessibilityLabel = T9PinyinPathButton.accessibilityLabel(for: path, selected: selected)
         accessibilityTraits = selected ? [.button, .selected] : .button
         accessibilityValue = selected ? "已选中" : nil
         accessibilityIdentifier = "t9PinyinPathButton"
+    }
+
+    private func applySelectionStyle(selected: Bool) {
+        let inset = Self.horizontalInset(selected: selected)
+        titleLeadingConstraint.constant = inset
+        titleTrailingConstraint.constant = -inset
+        if selected {
+            // Inverted pill: same contrast language as preferred candidate highlight.
+            highlightedBackgroundView.backgroundColor = .label
+            titleLabel.textColor = .systemBackground
+        } else {
+            highlightedBackgroundView.backgroundColor = .clear
+            titleLabel.textColor = .label
+        }
     }
 }
