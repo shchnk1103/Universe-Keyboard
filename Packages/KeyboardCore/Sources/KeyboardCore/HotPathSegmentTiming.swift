@@ -81,30 +81,39 @@ public enum HotPathSegmentTiming {
         guard isActive else { return }
         isActive = false
 
-        func fmt(_ segment: Segment) -> String {
-            String(format: "%.1f", segments[segment, default: 0])
+        // Explicit Double steps keep Swift 6 type-checking bounded (CI previously
+        // failed on a long `?? 0` + chain as "unable to type-check in reasonable time").
+        func ms(_ segment: Segment) -> Double {
+            segments[segment, default: 0]
         }
-        let accounted =
-            (segments[.rime] ?? 0)
-            + (segments[.pathLocal] ?? 0)
-            + (segments[.preedit] ?? 0)
-            + (segments[.pathUI] ?? 0)
-            + (segments[.candidateUI] ?? 0)
-        let unaccounted = max(0, totalMs - accounted)
+        func fmt(_ segment: Segment) -> String {
+            String(format: "%.1f", ms(segment))
+        }
+        let rimeMs = ms(.rime)
+        let pathLocalMs = ms(.pathLocal)
+        let preeditMs = ms(.preedit)
+        let pathUIMs = ms(.pathUI)
+        let candidateUIMs = ms(.candidateUI)
+        let accounted = rimeMs + pathLocalMs + preeditMs + pathUIMs + candidateUIMs
+        let unaccounted = max(0 as Double, totalMs - accounted)
+        let totalText = String(format: "%.1f", totalMs)
+        let engineText = String(format: "%.1f", engineMs)
+        let uiText = String(format: "%.1f", uiMs)
+        let unaccountedText = String(format: "%.1f", unaccounted)
 
         Logger.shared.performance(
             "T9SEG #\(eventID) keyLen=\(keyLength) compBefore=\(compositionLengthBefore) "
                 + "rawLen=\(rawLengthAfter) paths=\(pathCount) cands=\(candidateCount) "
-                + "total=\(String(format: "%.1f", totalMs)) "
-                + "engine=\(String(format: "%.1f", engineMs)) ui=\(String(format: "%.1f", uiMs)) "
+                + "total=\(totalText) "
+                + "engine=\(engineText) ui=\(uiText) "
                 + "rime=\(fmt(.rime)) pathLocal=\(fmt(.pathLocal)) preedit=\(fmt(.preedit)) "
                 + "pathUI=\(fmt(.pathUI)) candUI=\(fmt(.candidateUI)) "
-                + "unaccounted=\(String(format: "%.1f", unaccounted))"
+                + "unaccounted=\(unaccountedText)"
         )
 
         if totalMs >= 50 {
             Logger.shared.warning(
-                "SLOW T9SEG #\(eventID) rawLen=\(rawLengthAfter) total=\(String(format: "%.1f", totalMs)) "
+                "SLOW T9SEG #\(eventID) rawLen=\(rawLengthAfter) total=\(totalText) "
                     + "rime=\(fmt(.rime)) pathLocal=\(fmt(.pathLocal)) preedit=\(fmt(.preedit)) "
                     + "pathUI=\(fmt(.pathUI)) candUI=\(fmt(.candidateUI))",
                 category: .performance
