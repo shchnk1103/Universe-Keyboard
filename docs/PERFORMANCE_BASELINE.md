@@ -55,6 +55,12 @@ Correlate UI feedback, `KeyboardController.handle`, RIME processing and `syncUI`
 
 Use a fixed synthetic sequence at controlled cadence. Record per-key distribution, worst stalls, dropped visual/audio feedback and main-thread blocking. Run English direct input and Chinese RIME composition separately.
 
+For **Chinese nine-key continuous digits without Path/candidate selection**, Debug builds emit `T9SEG` lines that split each key into `rime` / `pathLocal` / `preedit` / `pathUI` / `candUI` (plus `rawLen`). Procedure: `docs/DEBUGGING.md` section “T9 continuous digit typing — DEBUG segment timing”. These are diagnostic only; product budgets still require reviewed Release-like device evidence.
+
+Bar-mode candidate prefetch is idle-gated during rapid T9 digit entry so librime is not re-queried for pages 2+ after every digit; measure before/after with the same synthetic sequence and count `loadMoreCandidates` mid-burst plus `SLOW RIME` spike rate.
+
+**force_gc primary-cause track (2026-07-24):** closed — not primary after source+compiled clean still showed many SLOW KEY. Case close: [`evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md). Active follow-on: [`plans/t9-long-composition-process-key-latency-plan.md`](plans/t9-long-composition-process-key-latency-plan.md).
+
 For Typing Intelligence, compare the same synthetic sequence with collection disabled and enabled. Separately record:
 
 - bounded grapheme-classification cost at final commit;

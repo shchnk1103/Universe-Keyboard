@@ -46,11 +46,24 @@ extension KeyboardViewController {
         // Path bar
         if let bar = t9PinyinPathBarView {
             let selected = snapshot.paths.first { $0.id == snapshot.selectedPathID }
+            let idleHint = t9IdlePathHintText(pathCount: snapshot.paths.count)
+            #if DEBUG
+            HotPathSegmentTiming.measure(.pathUI) {
+                bar.setPaths(
+                    snapshot.paths,
+                    selected: selected,
+                    compositionRevision: snapshot.revision,
+                    idleHintText: idleHint
+                )
+            }
+            #else
             bar.setPaths(
                 snapshot.paths,
                 selected: selected,
-                compositionRevision: snapshot.revision
+                compositionRevision: snapshot.revision,
+                idleHintText: idleHint
             )
+            #endif
         }
         t9SpaceButton?.setTitle(spaceButtonTitle, for: .normal)
         if let t9SpaceButton {
@@ -62,6 +75,21 @@ extension KeyboardViewController {
         }
         // Candidate bar from the same snapshot candidates/revision
         if candidateCollectionView != nil {
+            #if DEBUG
+            HotPathSegmentTiming.measure(.candidateUI) {
+                resetCandidateSnapshot(from: snapshot)
+                fillCandidateBar()
+                if candidateScrollView.contentOffset.x != 0 {
+                    candidateScrollView.setContentOffset(.zero, animated: false)
+                }
+                if isCandidateExpanded {
+                    refreshExpandedPanel()
+                }
+                if hasMoreCandidates {
+                    scheduleCandidatePrefetch(mode: candidatePrefetchMode)
+                }
+            }
+            #else
             resetCandidateSnapshot(from: snapshot)
             fillCandidateBar()
             if candidateScrollView.contentOffset.x != 0 {
@@ -73,6 +101,7 @@ extension KeyboardViewController {
             if hasMoreCandidates {
                 scheduleCandidatePrefetch(mode: candidatePrefetchMode)
             }
+            #endif
         }
         // Expanded path panel also binds the same revision paths
         if isPinyinPathExpanded {
@@ -98,7 +127,8 @@ extension KeyboardViewController {
         bar.setPaths(
             snapshot.paths,
             selected: selected,
-            compositionRevision: snapshot.revision
+            compositionRevision: snapshot.revision,
+            idleHintText: t9IdlePathHintText(pathCount: snapshot.paths.count)
         )
         t9SpaceButton?.setTitle(spaceButtonTitle, for: .normal)
         if let t9SpaceButton {
@@ -109,6 +139,21 @@ extension KeyboardViewController {
             )
         }
         updateSelectPinyinButtonAvailability()
+    }
+
+    /// Idle Path-bar education copy, or `nil` when composition/Path is active.
+    /// Hides on first digit because active T9 raw fails the policy gate.
+    func t9IdlePathHintText(pathCount: Int) -> String? {
+        let pathState = controller.state.t9PinyinPathState
+        let rawInput = controller.state.lastRimeOutput?.rawInput ?? pathState.trackedRawInput
+        let show = T9IdlePathHintPolicy.shouldShow(
+            isNineKeyChineseLettersSurface: shouldReserveT9PinyinPathBar,
+            usesT9InputSemantics: controller.usesT9InputSemantics,
+            rawInput: rawInput,
+            segmentSourceDigits: pathState.segmentSourceDigits,
+            pathCount: pathCount
+        )
+        return show ? T9IdlePathHintPolicy.displayText : nil
     }
 
     func updateSelectPinyinButtonAvailability() {

@@ -9,6 +9,8 @@ import UIKit
 /// compositing that washed the entire Path strip on iOS 26 keyboard chrome.
 final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     private let collectionView: UICollectionView
+    /// Non-interactive empty-state education; never a Path option (ADR 0023).
+    private let idleHintLabel = UILabel()
     private let separator = UIView()
     private let height: CGFloat
     private weak var target: AnyObject?
@@ -52,6 +54,22 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         collectionView.accessibilityIdentifier = "t9PinyinPathBar"
         addSubview(collectionView)
 
+        idleHintLabel.translatesAutoresizingMaskIntoConstraints = false
+        idleHintLabel.backgroundColor = .clear
+        idleHintLabel.isOpaque = false
+        idleHintLabel.numberOfLines = 1
+        idleHintLabel.lineBreakMode = .byTruncatingTail
+        idleHintLabel.textAlignment = .left
+        // Secondary chrome — must not look like a tappable Path chip.
+        idleHintLabel.font = .systemFont(ofSize: 14, weight: .regular)
+        idleHintLabel.textColor = .secondaryLabel
+        idleHintLabel.isUserInteractionEnabled = false
+        idleHintLabel.isHidden = true
+        idleHintLabel.isAccessibilityElement = true
+        idleHintLabel.accessibilityTraits = .staticText
+        idleHintLabel.accessibilityIdentifier = "t9PinyinPathIdleHint"
+        addSubview(idleHintLabel)
+
         separator.translatesAutoresizingMaskIntoConstraints = false
         separator.backgroundColor = UIColor.separator.withAlphaComponent(0.45)
         separator.isOpaque = false
@@ -63,6 +81,9 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -1),
+            idleHintLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            idleHintLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -12),
+            idleHintLabel.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
             separator.leadingAnchor.constraint(equalTo: leadingAnchor),
             separator.trailingAnchor.constraint(equalTo: trailingAnchor),
             separator.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -82,10 +103,13 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     /// - Parameters:
     ///   - compositionRevision: when this changes, scroll resets to the first item.
     ///   - selected: currently selected path (complete or prefix).
+    ///   - idleHintText: empty-state education only; ignored when `paths` is non-empty.
+    ///     Not a Path option — static secondary label, no selection plumbing.
     func setPaths(
         _ paths: [T9PinyinPath],
         selected: T9PinyinPath?,
-        compositionRevision: UInt64
+        compositionRevision: UInt64,
+        idleHintText: String? = nil
     ) {
         let revisionChanged = compositionRevision != boundCompositionRevision
         if revisionChanged {
@@ -98,7 +122,8 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
 
         self.paths = paths
         self.selectedPath = selected
-        separator.isHidden = paths.isEmpty
+        applyIdleHint(pathsEmpty: paths.isEmpty, text: idleHintText)
+        separator.isHidden = paths.isEmpty && idleHintText == nil
         collectionView.reloadData()
         collectionView.layoutIfNeeded()
 
@@ -116,6 +141,17 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
                 animated: true
             )
         }
+    }
+
+    private func applyIdleHint(pathsEmpty: Bool, text: String?) {
+        let show = pathsEmpty && text != nil && !(text?.isEmpty ?? true)
+        idleHintLabel.text = show ? text : nil
+        idleHintLabel.accessibilityLabel = show ? text : nil
+        idleHintLabel.isHidden = !show
+        // Hide the empty collection while the hint is up so bounce/scroll chrome
+        // does not compete with secondary education text.
+        collectionView.isHidden = show
+        collectionView.isUserInteractionEnabled = !show
     }
 
     // MARK: - UICollectionView

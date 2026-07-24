@@ -1,9 +1,12 @@
+import KeyboardCore
 import SwiftUI
 
 struct DiagnosticsSettingsView: View {
     @State private var loggingEnabled: Bool = {
         UserDefaults(suiteName: universeAppGroupID)?.bool(forKey: "logging_enabled") ?? false
     }()
+    @State private var forceGCCheckLines: [String] = []
+    @State private var forceGCCheckHeadline: String?
 
     private var keyboardDiagLog: [String] {
         let defaults = UserDefaults(suiteName: universeAppGroupID)
@@ -28,6 +31,43 @@ struct DiagnosticsSettingsView: View {
             }
 
             Section {
+                Button {
+                    runT9ForceGCCheck()
+                } label: {
+                    Label("检查九键 Schema / force_gc", systemImage: "doc.text.magnifyingglass")
+                }
+
+                Button {
+                    applyT9ForceGCPatch()
+                } label: {
+                    Label("应用九键兼容补丁并复查", systemImage: "wrench.and.screwdriver")
+                }
+
+                if let forceGCCheckHeadline {
+                    Text(forceGCCheckHeadline)
+                        .font(.subheadline)
+                        .foregroundStyle(
+                            forceGCCheckHeadline.contains("仍注册") || forceGCCheckHeadline.contains("失败")
+                                ? .orange
+                                : .secondary
+                        )
+                }
+                ForEach(forceGCCheckLines, id: \.self) { line in
+                    Text(line)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } header: {
+                Text("九键 Schema")
+            } footer: {
+                Text(
+                    "读取源文件与 build/t9.schema.yaml（运行时用编译产物）。"
+                        + "若显示「源已干净但编译产物仍含 force_gc」，请点「应用补丁」后立刻在 RIME 设置里完整部署，再杀进程重开键盘。"
+                        + "结果写入诊断日志（部署分类）。"
+                )
+            }
+
+            Section {
                 NavigationLink(destination: DiagnosticsView()) {
                     HStack {
                         Label("查看记录", systemImage: "doc.text.magnifyingglass")
@@ -40,6 +80,31 @@ struct DiagnosticsSettingsView: View {
         }
         .navigationTitle("诊断日志")
         .tint(.primary)
+    }
+
+    private func runT9ForceGCCheck() {
+        present(diagnostic: T9SchemaForceGCDiagnosticsRunner.runAndLog())
+    }
+
+    private func applyT9ForceGCPatch() {
+        present(diagnostic: T9SchemaForceGCDiagnosticsRunner.applyPatchAndLog())
+    }
+
+    private func present(diagnostic: T9SchemaForceGCDiagnostic) {
+        forceGCCheckLines = diagnostic.userFacingLines
+        if !diagnostic.appGroupAvailable {
+            forceGCCheckHeadline = "App Group 不可用"
+        } else if !diagnostic.schemaExists {
+            forceGCCheckHeadline = "未找到 t9.schema.yaml"
+        } else if diagnostic.forceGCTranslatorPresent {
+            forceGCCheckHeadline = "源文件仍注册 force_gc"
+        } else if diagnostic.compiledForceGCTranslatorPresent {
+            forceGCCheckHeadline = "源已干净，但编译产物仍含 force_gc — 请完整部署"
+        } else if diagnostic.runtimeLikelyClean {
+            forceGCCheckHeadline = "源与编译产物均无 force_gc"
+        } else {
+            forceGCCheckHeadline = "源文件未注册 force_gc"
+        }
     }
 }
 
