@@ -35,7 +35,7 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            HomeTab()
+            HomeTab(rimeStore: rimeSettingsStore)
                 .tabItem {
                     Label("首页", systemImage: "house")
                 }

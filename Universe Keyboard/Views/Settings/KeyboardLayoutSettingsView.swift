@@ -28,11 +28,7 @@ struct KeyboardLayoutSettingsView: View {
 
             if isBusy {
                 Section {
-                    HStack(spacing: 10) {
-                        ProgressView()
-                        Text("正在处理…")
-                            .foregroundStyle(.secondary)
-                    }
+                    LoadingStateView(message: "正在处理…", font: .body)
                 }
             }
         }

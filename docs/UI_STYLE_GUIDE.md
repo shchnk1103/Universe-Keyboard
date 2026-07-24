@@ -145,7 +145,7 @@ Avoid mixing business state and visual styling. Business logic belongs in `Keybo
 
 ## Main App
 
-The main app lives under `Universe Keyboard/` and is SwiftUI-based. It should feel like a small companion Settings app, not a marketing page.
+The main app lives under `Universe Keyboard/` and is SwiftUI-based. It should feel like a small **refined** companion Settings app—system-like hierarchy and density, with clearer rhythm and a little warmth in copy—not a marketing page.
 
 ### Structure
 
@@ -154,28 +154,41 @@ The main app lives under `Universe Keyboard/` and is SwiftUI-based. It should fe
 - Prefer `Form` for detailed settings screens.
 - Prefer grouped-background scroll layouts for guide/overview screens.
 - Keep custom containers close to system grouped list appearance.
+- Phase-1 polish scope: **Home** and **Settings** list chrome. Guide may later move to TipKit-style first-run; do not redesign Guide as part of list chrome polish unless separately requested.
 
 ### Components
 
 Reuse these components:
 
+- `AppTokens` (`AppRadius`, `AppSpacing`, `AppIconSize`): semantic layout constants — prefer these over raw `14` / `16` in shared chrome.
 - `AppActionButton`: main-app content actions such as download, deploy, retry, reset, and destructive management commands.
-- `InfoSection`: grouped information sections.
-- `SettingsNavigationLink`: settings-style navigation rows.
+- `AppIconTile`: neutral grayscale soft icon tiles for lists and home cards.
+- `AppCard`: secondary grouped card chrome (default continuous corner `AppRadius.card`).
+- `SettingsGroup`: settings section title + content + optional caption footer.
+- `SettingsIconRow`: leading `AppIconTile` + trailing control content.
+- `EmptyStateView`: centered SF Symbol + title + optional message (dictionary, diagnostics, insights).
+- `MetricCell`: value + label metric; optional selection/action for filter chips.
+- `KeyValueRow`: title + trailing value status/detail row.
+- `LoadingStateView`: inline `ProgressView` ± message for Form/overview busy states.
+- `InfoSection`: titled grouped information sections (Guide and detail cards; radius `AppRadius.card`).
+- `SettingsNavigationLink`: settings-style navigation rows (built on `AppCard` + `AppIconTile`).
 - `ToggleRow`: toggle plus explanatory text.
 - `BulletRow`: concise feature/checklist rows.
 - `CapsuleBadge`: small metadata badges.
+- `AppMotion` helpers: press style and card entrance (see Motion below).
 
-Do not duplicate navigation row markup when `SettingsNavigationLink` fits.
+Do not duplicate navigation row markup when `SettingsNavigationLink` fits. Do not hand-roll solid multicolor icon squares on Home/Settings when `AppIconTile` fits. Do not invent per-feature empty/metric/card chrome when the shared components above cover the pattern. Prefer `AppSpacing` / `AppRadius` over new magic numbers in main-app list chrome.
 
 ### Visual Rules
 
 - Use `Color(.systemGroupedBackground)` for screen backgrounds.
 - Use `Color(.secondarySystemGroupedBackground)` for grouped containers.
-- Use rounded rectangles with continuous corners around `10`.
-- App/settings icon tiles should be small rounded squares, around `30x30`, with white SF Symbols.
-- Keep spacing compact: roughly `14-16` horizontal screen padding and `12-16` between groups.
-- Use `.blue` as the primary tint; use other system colors only for clear semantic categories.
+- Use rounded rectangles with continuous corners via `AppRadius.card` (**14**) for home cards and settings rows via `AppCard` (detail `Form` screens may stay closer to system defaults).
+- App/settings icon tiles: `AppIconSize` + `AppRadius.control` through `AppIconTile`. Fill with tertiary system fill; symbol uses `.primary` monochrome—**not** solid brand-colored tiles.
+- Keep spacing readable via `AppSpacing`: `screen` (16), `section` / `sectionLoose` (20–22), `group` (10), `card` / `cardComfort` (14–18).
+- **Neutral palette (phase 1):** black / white / gray hierarchy (label / secondary / tertiary). Do not introduce a brand accent color yet. Global tab tint may stay `.primary`.
+- **Semantic color exceptions:** clear status only—e.g. home streak flame may use `.orange` when the user has input today. Do not repaint whole sections with category rainbows.
+- Copy tone: practical first, **slightly warm** one-liners OK on Home status captions and Settings group footers; avoid marketing slogans and long promotional blocks.
 - Use `AppActionButton` for explicit in-page commands. Do not hand-style `.bordered` / `.borderedProminent` buttons for download, deploy, retry, reset, license acceptance, or destructive management actions unless a new reusable variant is added first.
 - For dense management actions inside `Form` sections, prefer a two-column adaptive grid with stable full-width action buttons over a single horizontal button row. Button labels must remain one line at normal text sizes and avoid vertical wrapping on narrow devices.
 - RIME deployment progress, success, and failure notifications should use the main-app global bottom toast instead of one-off page-local popups. Detail pages may keep logs and retry actions, but should not duplicate transient deployment notifications.
@@ -183,6 +196,16 @@ Do not duplicate navigation row markup when `SettingsNavigationLink` fits.
 - Multi-scheme RIME settings should scale as a scheme list with per-scheme detail pages when each scheme has multiple controls. Avoid repeating every scheme across separate feature sections such as learning, backup, and reset.
 - Scheme-specific RIME actions belong on that scheme's detail page. Keep global settings, such as candidate count, simplification, and deployment status, at the top-level RIME settings page unless the setting truly belongs to one scheme.
 - Avoid oversized hero sections, gradients, decorative illustrations, and promotional copy.
+
+### Motion (main app, phase P0)
+
+Keep motion quiet and purposeful. Prefer shared helpers in `AppMotion.swift`:
+
+- **Press:** `AppPressableButtonStyle` — brief scale (~0.98) + light opacity; no scale when Reduce Motion is on.
+- **Home entrance:** staggered opacity + short rise via `appCardEntrance` (~0.32s, ~55ms stagger); play once per view lifetime; skip motion under Reduce Motion (show content immediately).
+- **Status changes:** `contentTransition` (numeric / opacity) with ~0.2s ease; flame bounce only when motion is allowed.
+- Do **not** add full-page parallax, looping springs, Lottie marketing loops, or custom Tab transitions in this phase.
+- Always honor `accessibilityReduceMotion`.
 
 ## Accessibility And Contrast
 

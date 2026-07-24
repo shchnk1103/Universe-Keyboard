@@ -54,23 +54,19 @@ private struct DiagnosticsEmptyStateView: View {
     let hasLoggedLines: Bool
 
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "text.alignleft")
-                .font(.largeTitle)
-                .foregroundStyle(.secondary.opacity(0.4))
-            Text(hasLoggedLines ? "当前筛选无匹配日志" : "暂无诊断日志")
-                .font(.body)
-                .foregroundStyle(.secondary)
-            Text(
-                hasLoggedLines
-                    ? "尝试切换统计项、分类筛选或选择「全部」。"
-                    : "在设置中开启「引擎诊断日志」开关，切换到键盘输入后返回此页面刷新。"
-            )
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, 40)
-        }
+        EmptyStateView(
+            systemImage: "text.alignleft",
+            title: hasLoggedLines ? "当前筛选无匹配日志" : "暂无诊断日志",
+            message: hasLoggedLines
+                ? "尝试切换统计项、分类筛选或选择「全部」。"
+                : "在设置中开启「引擎诊断日志」开关，切换到键盘输入后返回此页面刷新。",
+            symbolFont: .largeTitle,
+            symbolOpacity: 0.4,
+            titleFont: .body,
+            messageFont: .caption,
+            verticalPadding: 24,
+            horizontalPadding: 40
+        )
         .frame(maxHeight: .infinity)
     }
 }

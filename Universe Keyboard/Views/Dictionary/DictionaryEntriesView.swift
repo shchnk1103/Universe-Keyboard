@@ -11,10 +11,19 @@ struct DictionaryEntriesView: View {
     var body: some View {
         Section {
             if let loadingText, isLoading {
-                ProgressView(loadingText)
+                LoadingStateView(message: loadingText)
             } else if entries.isEmpty, !isLoading {
-                Text(query.isEmpty ? "暂无可预览词条" : "未找到匹配词条")
-                    .foregroundStyle(.secondary)
+                EmptyStateView(
+                    systemImage: "magnifyingglass",
+                    title: query.isEmpty ? "暂无可预览词条" : "未找到匹配词条",
+                    message: query.isEmpty
+                        ? "选择词典文件后可在这里预览词条。"
+                        : "试试更短的关键词，或清空搜索。",
+                    symbolFont: .title3,
+                    titleFont: .subheadline,
+                    messageFont: .caption,
+                    verticalPadding: 16
+                )
             } else {
                 ForEach(entries) { entry in
                     DictionaryEntryRowView(entry: entry)

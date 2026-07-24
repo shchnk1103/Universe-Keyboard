@@ -1,10 +1,11 @@
 import SwiftUI
 
-/// 可复用的设置导航行：图标 + 标题 + 副标题 + 箭头。
+/// 可复用的设置导航行：灰阶图标 + 标题 + 副标题 + 弱 chevron。
 public struct SettingsNavigationLink<Destination: View>: View {
     let systemImage: String
     let title: String
     let subtitle: String
+    /// Kept for call-site compatibility; phase-1 tiles are neutral grayscale.
     let imageColor: Color
     @ViewBuilder let destination: () -> Destination
 
@@ -24,33 +25,31 @@ public struct SettingsNavigationLink<Destination: View>: View {
 
     public var body: some View {
         NavigationLink(destination: destination) {
-            HStack(spacing: 12) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 7, style: .continuous)
-                        .fill(imageColor)
-                    Image(systemName: systemImage)
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(Color(.systemBackground))
+            AppCard {
+                HStack(spacing: 12) {
+                    AppIconTile(systemImage: systemImage)
+
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(title)
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                            .multilineTextAlignment(.leading)
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(2)
+                    }
+
+                    Spacer(minLength: 8)
+
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.tertiary)
                 }
-                .frame(width: 30, height: 30)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 12)
-            .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(AppPressableButtonStyle())
     }
 }
