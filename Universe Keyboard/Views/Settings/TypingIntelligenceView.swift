@@ -155,29 +155,35 @@ struct TypingIntelligenceView: View {
     private var activitySection: some View {
         section(title: "活动") {
             VStack(spacing: 0) {
-                detailRow("有记录的天数", value: "\(model.activeDayCount) 天")
-                Divider().padding(.leading, 14)
-                detailRow("最近更新", value: model.formattedLastUpdate ?? "—")
+                KeyValueRow(
+                    title: "有记录的天数",
+                    value: "\(model.activeDayCount) 天",
+                    horizontalPadding: AppSpacing.card,
+                    verticalPadding: AppSpacing.card
+                )
+                Divider().padding(.leading, AppSpacing.card)
+                KeyValueRow(
+                    title: "最近更新",
+                    value: model.formattedLastUpdate ?? "—",
+                    horizontalPadding: AppSpacing.card,
+                    verticalPadding: AppSpacing.card
+                )
             }
         }
     }
 
     private var emptySection: some View {
         section(title: "等待统计") {
-            VStack(spacing: 10) {
-                Image(systemName: "keyboard")
-                    .font(.system(size: 30, weight: .medium))
-                    .foregroundStyle(.secondary)
-                Text("开始使用 Universe Keyboard")
-                    .font(.headline)
-                Text("开启完全访问后，键盘会把已提交字符转换为本地聚合统计。输入内容不会被保存。")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 24)
-            .padding(.vertical, 28)
+            EmptyStateView(
+                systemImage: "keyboard",
+                title: "开始使用 Universe Keyboard",
+                message: "开启完全访问后，键盘会把已提交字符转换为本地聚合统计。输入内容不会被保存。",
+                symbolFont: .system(size: 30, weight: .medium),
+                titleFont: .headline,
+                messageFont: .subheadline,
+                verticalPadding: 28,
+                horizontalPadding: 24
+            )
         }
     }
 
@@ -235,40 +241,21 @@ struct TypingIntelligenceView: View {
 
     private func section<Content: View>(
         title: String,
-        @ViewBuilder content: () -> Content
+        @ViewBuilder content: @escaping () -> Content
     ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.footnote.weight(.medium))
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 4)
-            content()
-                .background(Color(.secondarySystemGroupedBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        SettingsGroup(title: title, contentSpacing: 8) {
+            AppCard(horizontalPadding: 0, verticalPadding: 0) {
+                content()
+            }
         }
     }
 
     private func metric(value: String, label: String) -> some View {
-        VStack(spacing: 4) {
-            Text(value)
-                .font(.title2.weight(.semibold).monospacedDigit())
-                .contentTransition(.numericText())
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    private func detailRow(_ title: String, value: String) -> some View {
-        HStack {
-            Text(title)
-            Spacer()
-            Text(value)
-                .foregroundStyle(.secondary)
-        }
-        .font(.subheadline)
-        .padding(14)
+        MetricCell(
+            value: value,
+            label: label,
+            valueFont: .title2.weight(.semibold).monospacedDigit()
+        )
     }
 
     private func privacyRow(_ title: String, icon: String) -> some View {

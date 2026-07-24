@@ -18,8 +18,7 @@ struct DictionaryOverviewView: View {
             .padding(.vertical, 4)
 
             if isLoading {
-                ProgressView("正在读取词典")
-                    .font(.footnote)
+                LoadingStateView(message: "正在读取词典")
             }
         } header: {
             Text("概览")

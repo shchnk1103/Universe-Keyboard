@@ -44,7 +44,7 @@ Own SwiftUI onboarding, settings, diagnostics and main-App orchestration surface
 
 ## Common Tasks
 
-- Settings/status/navigation and reusable components.
+- Settings/status/navigation and reusable components under `Views/Components/` (`AppTokens`, `AppCard`, `SettingsGroup`, `EmptyStateView`, `MetricCell`, `KeyValueRow`, `LoadingStateView`, `SettingsNavigationLink`, `AppIconTile`, `AppMotion`, …). Prefer these over new private chrome or raw padding/radius numbers.
 - Scheme operation feedback and duplicate-action protection.
 - Diagnostics presentation and recovery guidance.
 - Main-App user-data/deployment workflow coordination.

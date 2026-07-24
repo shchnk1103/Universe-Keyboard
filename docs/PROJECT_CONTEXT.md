@@ -193,10 +193,9 @@ Universe Keyboard/
 │   ├── Universe_KeyboardApp.swift        — @main 入口
 │   └── ContentView.swift                 — 双 Tab 布局（引导 / 设置）
 ├── Views/
-│   ├── Components/                       — shared SwiftUI components
-│   ├── Settings/                         — 3 setting views
-│   ├── Diagnostics/                      — log viewer
-│   └── License/                          — GPL-3.0 viewer
+│   ├── Components/                       — shared SwiftUI: AppTokens, AppCard, EmptyStateView, MetricCell, KeyValueRow, LoadingStateView, SettingsNavigationLink, AppMotion, …
+│   ├── Home/ · Guide/ · Settings/ · Dictionary/ · Diagnostics/ · License/
+│   └── (see UI_STYLE_GUIDE for component reuse rules)
 └── Services/
     ├── SchemaManager.swift               — schema download + deploy orchestrator
     └── RimeDeploymentService.swift       — main-app-side full deployment API

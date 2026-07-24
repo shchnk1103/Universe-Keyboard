@@ -389,13 +389,13 @@ private struct GuideStatusRow: View {
     let color: Color
 
     var body: some View {
-        HStack {
-            Text(title).foregroundStyle(.primary)
-            Spacer()
-            Text(value).font(.subheadline.weight(.medium)).foregroundStyle(color)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(title)，\(value)")
+        KeyValueRow(
+            title: title,
+            value: value,
+            valueColor: color,
+            titleFont: .body,
+            valueFont: .subheadline.weight(.medium)
+        )
     }
 }
 

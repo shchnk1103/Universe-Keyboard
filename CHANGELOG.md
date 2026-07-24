@@ -2,6 +2,32 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-25 — 主 App UI 第二刀：Tokens + KeyValue + Loading
+
+- 新增 `AppTokens`（`AppRadius` / `AppSpacing` / `AppIconSize`）；共享 chrome 默认读 token。
+- 新增 `KeyValueRow`、`LoadingStateView`；迁移引导状态行、输入洞察活动行、词典/布局加载反馈。
+- 首页/设置页边距与主卡 padding 改用 token；文档同步。
+
+## 2026-07-25 — 主 App 共享 UI 组件：EmptyState / Metric / AppCard
+
+- 新增 `EmptyStateView`、`MetricCell`、`AppCard`、`SettingsGroup`、`SettingsIconRow`。
+- 迁移：词典/诊断/词条空态；首页与诊断摘要指标；`SettingsTab` 分区 chrome；输入洞察空态与分区卡片；`SettingsNavigationLink` / `InfoSection` 对齐圆角 14。
+- 文档：`UI_STYLE_GUIDE` 组件清单、`PROJECT_CONTEXT` Components 摘要、`main-app-ui` playbook。
+
+## 2026-07-25 — 主 App P0 动效（入场 / 按压 / 状态过渡）
+
+- 新增 `AppMotion`：`AppPressableButtonStyle`、首页卡片 `appCardEntrance`；尊重「减少动态效果」。
+- 首页：两卡 staggered 淡入上移（仅一次）；数字/文案 `contentTransition`；火焰 bounce 可关。
+- 设置导航行与首页可点行统一轻按压缩放。
+
+## 2026-07-24 — 主 App 首页/设置：精致系统感（黑白灰）
+
+- 气质：精致系统 companion，暂不定品牌色；连续天数火焰保留橙色语义。
+- 首页：今日输入主卡圆角 14、灰阶 `AppIconTile`、柔和指标分隔；状态短文案（未开启 / 暂不可用 / 今日 0 / 今日有输入）。
+- 首页新增「键盘与方案」卡：布局 / 输入方案 / 资源状态分行展示；点布局进键盘选择，点方案/资源进 RIME 方案设置。
+- 设置：分组间距与 footer 说明；导航行与 Toggle 卡统一灰阶 soft 图标；圆角 14。
+- 组件：`AppIconTile`、`SettingsNavigationLink` 打磨。规范：`docs/UI_STYLE_GUIDE.md` 主 App 段小改。引导页未动（后期 TipKit 方向）。
+
 ## 2026-07-24 — 九键长串：空闲 Path 提示（Lane A）
 
 - 产品锁定：早期 Path / 分段上屏为推荐用法；默认不做输入中「满 N 位」横幅；允许后续 T9-only 质量换速度（需 Product Gate）。
