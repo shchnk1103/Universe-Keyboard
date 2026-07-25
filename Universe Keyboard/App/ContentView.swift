@@ -93,7 +93,8 @@ struct ContentView: View {
     }
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        // Phase 1 — TabView structure + sheet + activation-tip .onChange
+        let anchored = TabView(selection: $selectedTab) {
             HomeTab(rimeStore: rimeSettingsStore)
                 .tabItem {
                     Label("首页", systemImage: "house")
@@ -138,8 +139,6 @@ struct ContentView: View {
             AppAppearance(rawValue: appearanceRawValue)?.colorScheme
         )
         .sheet(isPresented: $showActivationWelcome, onDismiss: {
-            // Start, Skip, or interactive dismiss all count as "seen" so soft
-            // Welcome does not reappear on every launch.
             activationWelcomeSeen = true
         }) {
             ActivationWelcomeView(
@@ -172,59 +171,65 @@ struct ContentView: View {
         .onChange(of: sharedDataUnavailable) { _, _ in syncActivationTips() }
         .onChange(of: rimeDeployed) { _, _ in syncActivationTips() }
         .onChange(of: rimeSettingsStore.deploymentState) { _, _ in syncActivationTips() }
-        .overlay(alignment: .bottom) {
-            if notificationSettingsModel.operationToastsEnabled,
-               showOperationToast,
-               let operationToast {
-                AppOperationToast(state: operationToast)
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 74)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-            }
-        }
-        .animation(.easeInOut(duration: 0.2), value: showOperationToast)
-        .onChange(of: rimeSettingsStore.deploymentState) { _, state in
-            updateDeploymentToast(for: state)
-        }
-        .onChange(of: rimeSettingsStore.downloadState) { _, state in
-            updateDownloadToast(for: state)
-            rimeSettingsStore.handleDownloadStateChange()
-        }
-        .onChange(of: rimeSettingsStore.userDictionaryMessageVersion) { _, _ in
-            updateUserDictionaryToast()
-        }
-        .onChange(of: rimeSettingsStore.layoutToastVersion) { _, _ in
-            updateLayoutToast()
-        }
-        .onChange(of: rimeSyncViewModel.statusVersion) { _, _ in
-            updateSyncToast()
-        }
-        .onChange(of: notificationSettingsModel.operationToastsEnabled) { _, enabled in
-            if !enabled {
-                hideToast()
-            }
-        }
-        .onChange(of: scenePhase) { _, phase in
-            switch phase {
-            case .active:
-                Task {
-                    await notificationSettingsModel.refreshAuthorizationStatus()
-                    await rimeSyncViewModel.synchronizeIfNeeded()
+
+        // Phase 2 — Overlay + operation-toast .onChange
+        let withOverlay = anchored
+            .overlay(alignment: .bottom) {
+                if notificationSettingsModel.operationToastsEnabled,
+                   showOperationToast,
+                   let operationToast {
+                    AppOperationToast(state: operationToast)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 74)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
-            case .inactive, .background:
-                rimeSettingsStore.runAutomaticUserDictionaryBackupIfNeeded()
-                Task { await rimeSettingsStore.triggerPendingDeploymentIfNeeded() }
-                RimeAutomaticSyncScheduler.shared.refreshSchedule()
-            @unknown default:
-                break
             }
-        }
-        .task {
-            await notificationSettingsModel.refreshAuthorizationStatus()
-            await rimeSyncViewModel.loadSecrets()
-            await rimeSyncViewModel.synchronizeIfNeeded()
-            RimeAutomaticSyncScheduler.shared.refreshSchedule()
-        }
+            .animation(.easeInOut(duration: 0.2), value: showOperationToast)
+            .onChange(of: rimeSettingsStore.deploymentState) { _, state in
+                updateDeploymentToast(for: state)
+            }
+            .onChange(of: rimeSettingsStore.downloadState) { _, state in
+                updateDownloadToast(for: state)
+                rimeSettingsStore.handleDownloadStateChange()
+            }
+            .onChange(of: rimeSettingsStore.userDictionaryMessageVersion) { _, _ in
+                updateUserDictionaryToast()
+            }
+            .onChange(of: rimeSettingsStore.layoutToastVersion) { _, _ in
+                updateLayoutToast()
+            }
+            .onChange(of: rimeSyncViewModel.statusVersion) { _, _ in
+                updateSyncToast()
+            }
+            .onChange(of: notificationSettingsModel.operationToastsEnabled) { _, enabled in
+                if !enabled {
+                    hideToast()
+                }
+            }
+
+        // Phase 3 — Scene phase + task
+        return withOverlay
+            .onChange(of: scenePhase) { _, phase in
+                switch phase {
+                case .active:
+                    Task {
+                        await notificationSettingsModel.refreshAuthorizationStatus()
+                        await rimeSyncViewModel.synchronizeIfNeeded()
+                    }
+                case .inactive, .background:
+                    rimeSettingsStore.runAutomaticUserDictionaryBackupIfNeeded()
+                    Task { await rimeSettingsStore.triggerPendingDeploymentIfNeeded() }
+                    RimeAutomaticSyncScheduler.shared.refreshSchedule()
+                @unknown default:
+                    break
+                }
+            }
+            .task {
+                await notificationSettingsModel.refreshAuthorizationStatus()
+                await rimeSyncViewModel.loadSecrets()
+                await rimeSyncViewModel.synchronizeIfNeeded()
+                RimeAutomaticSyncScheduler.shared.refreshSchedule()
+            }
     }
 
     private func updateDeploymentToast(for state: RimeDeploymentState) {
