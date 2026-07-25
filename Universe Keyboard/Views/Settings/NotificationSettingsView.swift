@@ -144,13 +144,12 @@ struct RimeSyncNotificationControls: View {
         // Always-mounted scopes; disabled when category off or sync method unset.
         Group {
             ForEach(RimeSyncNotificationScope.allCases, id: \.self) { scope in
+                let scopeOn = isSyncMethodConfigured
+                    && model.isCategoryEnabled(.rimeSync)
+                    && model.isRimeSyncScopeSelected(scope)
                 Toggle(
                     isOn: Binding(
-                        get: {
-                            isSyncMethodConfigured
-                                && model.isCategoryEnabled(.rimeSync)
-                                && model.isRimeSyncScopeSelected(scope)
-                        },
+                        get: { scopeOn },
                         set: { selected in
                             guard isSyncMethodConfigured else { return }
                             Task {

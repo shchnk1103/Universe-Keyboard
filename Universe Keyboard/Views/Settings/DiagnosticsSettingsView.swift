@@ -48,6 +48,14 @@ struct DiagnosticsSettingsView: View {
 
     // MARK: - Status (style-only updates)
 
+    private var statusIndicator: some View {
+        let text = loggingEnabled ? "写入开启" : "写入关闭"
+        let image = loggingEnabled ? "circle.fill" : "circle"
+        let color: Color = loggingEnabled ? .primary : .secondary
+        return Label(text, systemImage: image)
+            .foregroundStyle(color)
+    }
+
     private var statusSection: some View {
         Section {
             HStack(alignment: .top, spacing: 14) {
@@ -69,11 +77,7 @@ struct DiagnosticsSettingsView: View {
                         .fixedSize(horizontal: false, vertical: true)
                     HStack(spacing: 12) {
                         Label("\(logLineCount) 条", systemImage: "doc.text")
-                        Label(
-                            loggingEnabled ? "写入开启" : "写入关闭",
-                            systemImage: loggingEnabled ? "circle.fill" : "circle"
-                        )
-                        .foregroundStyle(loggingEnabled ? Color.primary : Color.secondary)
+                        statusIndicator
                     }
                     .font(.caption2)
                     .foregroundStyle(.secondary)
@@ -229,13 +233,7 @@ struct DiagnosticsSettingsView: View {
                     if let forceGCCheckHeadline {
                         Text(forceGCCheckHeadline)
                             .font(.subheadline)
-                            .foregroundStyle(
-                                forceGCCheckHeadline.contains("仍注册")
-                                    || forceGCCheckHeadline.contains("失败")
-                                    || forceGCCheckHeadline.contains("请完整部署")
-                                    ? .orange
-                                    : .secondary
-                            )
+                            .foregroundStyle(advancedHeadlineColor(forceGCCheckHeadline))
                     }
                     ForEach(forceGCCheckLines, id: \.self) { line in
                         Text(line)
@@ -252,6 +250,15 @@ struct DiagnosticsSettingsView: View {
                 "读取源文件与 build/t9.schema.yaml。源干净但编译产物仍含 force_gc 时，应用补丁后请完整部署并重开键盘。"
             )
         }
+    }
+
+    private func advancedHeadlineColor(_ headline: String) -> Color {
+        if headline.contains("仍注册")
+            || headline.contains("失败")
+            || headline.contains("请完整部署") {
+            return .orange
+        }
+        return .secondary
     }
 
     private func present(diagnostic: T9SchemaForceGCDiagnostic) {
