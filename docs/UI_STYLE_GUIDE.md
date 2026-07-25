@@ -150,11 +150,11 @@ The main app lives under `Universe Keyboard/` and is SwiftUI-based. It should fe
 ### Structure
 
 - Use `NavigationStack` per tab.
-- Use `TabView` only for the top-level Guide and Settings tabs.
+- Use `TabView` only for top-level main-App tabs (Home, optional Help while activation/recovery requires it, Settings). Help packaging: `PD-HELP-TIPKIT-001`.
 - Prefer `Form` for detailed settings screens.
 - Prefer grouped-background scroll layouts for guide/overview screens.
 - Keep custom containers close to system grouped list appearance.
-- Phase-1 polish scope: **Home** and **Settings** list chrome. Guide may later move to TipKit-style first-run; do not redesign Guide as part of list chrome polish unless separately requested.
+- Phase-1 polish scope: **Home** and **Settings** list chrome. Help / soft first-run / TipKit packaging is a separate track (`HELP-TIPKIT-001`); do not fold that redesign into unrelated list chrome polish.
 
 ### Components
 
@@ -172,7 +172,7 @@ Reuse these components:
 - `LoadingStateView`: inline `ProgressView` ± message for Form/overview busy states.
 - `InfoSection`: titled grouped information sections (Guide and detail cards; radius `AppRadius.card`).
 - `SettingsNavigationLink`: settings-style navigation rows (built on `AppCard` + `AppIconTile`).
-- `ToggleRow`: toggle plus explanatory text.
+- `ToggleRow` + **system** `.toggleStyle(.switch)` for all main-App switches (same look as Diagnostics). Do **not** reintroduce custom-drawn `ToggleStyle` implementations in `Form` — they correlated with `SwiftUI.AsyncRenderer` / libdispatch crashes. Page-level `.tint(.primary)` keeps on-state monochrome. For gated children: always-mounted + `.disabled` + opacity dimming (no section insert/remove on master toggle).
 - `BulletRow`: concise feature/checklist rows.
 - `CapsuleBadge`: small metadata badges.
 - `AppMotion` helpers: press style and card entrance (see Motion below).

@@ -1,12 +1,14 @@
 # Onboarding Activation And Full Access Journey
 
-> **Status:** Active product source for new-user activation and Full Access degradation presentation  
-> **Decision source:** [`PD-RELEASE-2026-0801-03`](product-decisions/RELEASE-2026-0801-03-activation-authorization.md)  
-> **Assignment:** [`RELEASE-2026-0801-03`](assignments/release-2026-08-01-03-onboarding-full-access.md)  
-> **Architecture boundaries:** ADR 0007, ADR 0008, ADR 0001, ADR 0003  
+> **Status:** Active product source for new-user activation and Full Access degradation presentation
+> **Decision source (semantics):** [`PD-RELEASE-2026-0801-03`](product-decisions/RELEASE-2026-0801-03-activation-authorization.md)
+> **Decision source (Help / soft first-run / TipKit packaging):** [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authorization.md)
+> **Assignment (semantics V1):** [`RELEASE-2026-0801-03`](assignments/release-2026-08-01-03-onboarding-full-access.md) (`Closed`)
+> **Assignment (presentation):** [`HELP-TIPKIT-001`](assignments/help-tipkit-001.md)
+> **Architecture boundaries:** ADR 0007, ADR 0008, ADR 0001, ADR 0003
 > **Related debt:** TD-004
 
-This document owns the user journey, copy boundaries and capability matrix for activation. Implementation may present these semantics in Guide, Settings recovery surfaces or a future TipKit layer, but must not invent competing product meaning.
+This document owns the user journey, copy boundaries and capability matrix for activation. Implementation may present these semantics in Help, Settings recovery surfaces or TipKit, but must not invent competing product meaning. Presentation packaging (soft Welcome, Help tab visibility, Settings entry, TipKit phase) is authorized by `PD-HELP-TIPKIT-001`.
 
 ## Activation Definition
 
@@ -22,38 +24,52 @@ First-input smoke example for V1: type `nihao`, confirm candidates appear, commi
 ### J0 — Welcome
 
 - One-screen value: local RIME Chinese input; keystrokes are not uploaded.
-- Primary CTA enters the checklist. Skip is allowed; the Guide remains available.
+- Primary CTA enters the checklist (Help surface, focus next step). Skip is allowed.
+- **Presentation (`PD-HELP-TIPKIT-001`):** soft, skippable Welcome on first main-App open only; does not block Home; Welcome-seen is not activation success. Re-read after completion uses Help, not forced re-Welcome every launch.
 
 ### J1 — Add keyboard
 
-1. Open Settings  
-2. General → Keyboard → Keyboards  
-3. Add New Keyboard  
-4. Choose **Universe Keyboard**  
-5. Return to the App  
+1. Open Settings
+2. General → Keyboard → Keyboards
+3. Add New Keyboard
+4. Choose **Universe Keyboard**
+5. Return to the App
 
 App limitation copy is mandatory: the App cannot add the keyboard for the user.
 
 ### J2 — Allow Full Access
 
-1. Settings → General → Keyboard → Keyboards  
-2. Tap **Universe Keyboard**  
-3. Enable **Allow Full Access**  
-4. Confirm the system warning  
-5. Return to the App  
+1. Settings → General → Keyboard → Keyboards
+2. Tap **Universe Keyboard**
+3. Enable **Allow Full Access**
+4. Confirm the system warning
+5. Return to the App
 
 Users may defer. Deferred state must describe degraded complete capabilities, not blocked basic typing.
 
 ### J3 — Prepare input resources
 
-Main App owns deployment (ADR 0001). Guide must surface readiness and a path to deploy/retry. Extension never deploys.
+Main App owns deployment (ADR 0001). Extension never deploys.
+
+**Presentation (`PD-HELP-J3-RESOURCES-001`):** Help embeds a **slim** prepare panel (not a full RIME settings clone):
+
+1. Recommend **雾凇** (`rime_ice`); user must tap to select (no auto-download).
+2. Downloadable open-source schemes require **view + accept license** before download (same gate as Settings).
+3. Builtin **朙月** may be selected without a download license gate.
+4. User-triggered install/deploy via main-App store APIs.
+5. Full scheme management remains under Settings.
+
+**J3 complete when all hold:** active schema is installed, main-App deployment succeeded, and deploy is not failed/in-progress.
 
 ### J4 — First successful input
 
-1. Open any text field  
-2. Globe key → Universe Keyboard  
-3. Type `nihao`  
-4. Commit a candidate  
+Presentation (`PD-APP-SEARCH-001`): primary path uses the main-App **搜索** tab text field.
+
+1. Open the Search tab field (Help CTA may switch tab and focus it)
+2. Globe key → Universe Keyboard
+3. Type **any content** the user chooses (settings names or free text are both fine; `nihao` / 「你好」 remain optional examples only)
+4. Commit if using candidates as usual
+5. Return and affirm success in Help (V1 remains user affirmation)
 
 ### J5 — Complete
 
@@ -67,13 +83,14 @@ Short confirmation, links to privacy and scheme settings, advanced diagnostics c
 | Full Access | `unknown`, `userAffirmed`, `sharedDataUnavailable`, `sharedCapabilityOK` | Observation overrides affirmation |
 | RIME ready | `notReady`, `preparing`, `ready`, `failed` | Main-App deployment state |
 | First input | `no`, `userAffirmedSuccess` | User affirmation for V1 |
-| Guide dismissed | bool | User preference only; does not equal activation success |
+| Guide dismissed / Welcome seen | bool | User preference only; does not equal activation success |
+| Help tab visible | derived | See [Help information architecture](#help-information-architecture) |
 
 Rules:
 
-1. Next step is the first incomplete required item in order J1 → J2 → J3 → J4.  
-2. `sharedDataUnavailable` must reopen recovery even if the user previously affirmed Full Access.  
-3. `rimeReady=ready` must not be presented as complete success while shared data is unavailable.  
+1. Next step is the first incomplete required item in order J1 → J2 → J3 → J4.
+2. `sharedDataUnavailable` must reopen recovery even if the user previously affirmed Full Access.
+3. `rimeReady=ready` must not be presented as complete success while shared data is unavailable.
 4. The main App must not claim a live Extension Full Access flag before observation.
 
 ## Canonical Copy
@@ -130,32 +147,71 @@ Source: [`evidence/release-2026-08-01-03-physical-device-fa-matrix.md`](evidence
 
 User-facing recovery:
 
-- Off → explain C3–C6; emphasize feedback/shared reliability, not “cannot type Chinese”.  
-- On but not ready → explain C7 and offer main-App deploy/retry.  
+- Off → explain C3–C6; emphasize feedback/shared reliability, not “cannot type Chinese”.
+- On but not ready → explain C7 and offer main-App deploy/retry.
 - Fallback-like limited candidates → C8 and reopen readiness checks.
 
-## TipKit Future Mapping
+## Help information architecture
 
-TipKit may later present the same steps as contextual tips. Rules:
+Authorized by [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authorization.md).
 
-1. One tip teaches one action.  
-2. Invalidate when the corresponding checklist state completes.  
-3. Do not put the full legal privacy policy inside a tip.  
-4. Activation remains main-App-owned; do not depend on Extension TipKit for the first-run path.  
+### Surfaces
+
+| Surface | Role |
+|---|---|
+| Soft Welcome (J0) | First open only; skippable; not a progress reset |
+| Tab **帮助** | Primary activation checklist while incomplete or in recovery |
+| Settings → 使用帮助 / 启用指南 | Permanent entry to the same Help / activation content |
+| TipKit tips (optional phase) | Contextual one-action packaging of the same steps |
+
+### Help tab visibility
+
+Show the **帮助** tab when any of:
+
+1. Recommended activation incomplete (`nextStep != nil`).
+2. `fullAccess == sharedDataUnavailable`.
+3. Resources recovery is actionable (deployment failed / not ready for complete experience under existing J3 authority).
+
+When fully activated and healthy: **hide** the Help tab; users re-enter via Settings. If a recovery condition returns, **show the Help tab again**.
+
+### Re-read policy（重新走一遍）
+
+Users may re-open Help and re-read every activation step after completion. Default re-read **must not** clear checklist affirmations, observation flags, or main-App deployment readiness truth. A destructive “reset activation progress” control is **out of scope** unless a new Product Decision authorizes it.
+
+### Content scope (this presentation track)
+
+Activation steps only (J0–J5). Not a general product Tips Library (fuzzy pinyin, sync, dictionary tutorials, etc.).
+
+## TipKit mapping
+
+TipKit presents the same steps as contextual tips (main App; iOS 17+; implemented under `HELP-TIPKIT-001` P3 in `ActivationTips.swift`). Rules:
+
+1. One tip teaches one action.
+2. Invalidate when the corresponding checklist state completes (`ActivationTips.sync` → Tip `@Parameter`).
+3. Do not put the full legal privacy policy inside a tip.
+4. Activation remains main-App-owned; do not depend on Extension TipKit for the first-run path.
 5. TipKit is optional packaging, not a second product contract.
+6. **No TipKit (or equivalent tip UI) in the Keyboard Extension** under `PD-HELP-TIPKIT-001`.
+
+| Tip | Surface (P3) | Invalidate when |
+|---|---|---|
+| Add keyboard | Help next-step | `addKeyboard` complete |
+| Full Access | Help next-step | Full Access satisfied for progress |
+| Prepare resources | Help next-step; Settings → RIME 方案设置 | Resources ready |
+| First input | Help next-step; Home keyboard card when next | First input affirmed |
 
 ## Acceptance Scenarios
 
-1. Fresh install → Guide shows add-keyboard as next step; Settings limitation is visible.  
-2. User defers Full Access → basic typing path remains described as possible; complete RIME is not claimed.  
-3. User allows Full Access and deploys → readiness becomes actionable/ready.  
-4. First-input checklist can be affirmed after `nihao` smoke.  
-5. Shared-data failure copy appears when container/shared operations fail and overrides prior affirmation.  
-6. Accessibility: checklist steps and status values are readable by VoiceOver.  
+1. Fresh install → Guide shows add-keyboard as next step; Settings limitation is visible.
+2. User defers Full Access → basic typing path remains described as possible; complete RIME is not claimed.
+3. User allows Full Access and deploys → readiness becomes actionable/ready.
+4. First-input checklist can be affirmed after `nihao` smoke.
+5. Shared-data failure copy appears when container/shared operations fail and overrides prior affirmation.
+6. Accessibility: checklist steps and status values are readable by VoiceOver.
 7. Physical device: Full Access off keeps basic typing usable; Full Access on restores shared capabilities without false active claims.
 
 ## Evidence Boundary
 
-- Unit tests may prove checklist next-step logic and copy-state mapping.  
-- Simulator builds prove Guide compilation and navigation.  
+- Unit tests may prove checklist next-step logic and copy-state mapping.
+- Simulator builds prove Guide compilation and navigation.
 - Physical-device Full Access on/off remains required before Product Gate close and before claiming TD-004 resolved.

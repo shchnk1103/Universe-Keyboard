@@ -3,6 +3,9 @@ import SwiftUI
 /// 显示 GPL-3.0 许可证并获取用户同意。
 struct LicenseView: View {
     @Environment(\.dismiss) private var dismiss
+    /// Primary CTA label (Help J3 uses「接受许可证并下载」).
+    var acceptTitle: String = "我已阅读并同意"
+    var acceptSystemImage: String = "checkmark"
     let onAccept: () -> Void
 
     var body: some View {
@@ -78,8 +81,8 @@ struct LicenseView: View {
         VStack(spacing: 0) {
             Divider()
             AppActionButton(
-                title: "我已阅读并同意",
-                systemImage: "checkmark",
+                title: acceptTitle,
+                systemImage: acceptSystemImage,
                 prominence: .primary,
                 minHeight: 46
             ) {

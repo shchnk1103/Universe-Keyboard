@@ -12,7 +12,7 @@ struct RimeUserDictionarySettingsView: View {
         Form {
             Section {
                 Toggle("自动备份学习记录", isOn: $store.userDictionaryAutoBackupEnabled)
-                    .toggleStyle(MonochromeToggleStyle())
+                    .toggleStyle(.switch)
                     .onChange(of: store.userDictionaryAutoBackupEnabled) { _, _ in
                         store.saveUserDictionaryAutoBackupSetting()
                         store.runAutomaticUserDictionaryBackupIfNeeded()
@@ -65,7 +65,7 @@ private struct RimeUserDictionarySchemeDetailView: View {
         Form {
             Section {
                 Toggle(scheme.title, isOn: userDictionaryEnabledBinding)
-                    .toggleStyle(MonochromeToggleStyle())
+                    .toggleStyle(.switch)
                     .onChange(of: userDictionaryEnabledBinding.wrappedValue) { _, _ in
                         store.saveUserDictionarySettings()
                     }

@@ -140,6 +140,7 @@ struct TypoCorrectionBenchmarkView: View {
 
                 Toggle("安全漏字纠错实验", isOn: $experimentalInsertionEnabled)
                     .font(.subheadline.weight(.medium))
+                    .toggleStyle(.switch)
                 Text("用于验证 niho -> nihao 这类保守 insertion 候选的展示价值。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -148,6 +149,7 @@ struct TypoCorrectionBenchmarkView: View {
 
                 Toggle("相邻转置纠错实验", isOn: $experimentalTranspositionEnabled)
                     .font(.subheadline.weight(.medium))
+                    .toggleStyle(.switch)
                 Text("用于审计 nihoa -> nihao 这类 transposition 候选；当前不进入前排展示。")
                     .font(.caption)
                     .foregroundStyle(.secondary)

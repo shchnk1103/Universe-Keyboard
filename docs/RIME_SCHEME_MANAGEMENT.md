@@ -84,7 +84,7 @@ Recovery actions stay on the scheme detail page:
 - `设为当前方案` for inactive `rime_ice`.
 - `重新部署` for pending deployment.
 - `重新下载雾凇拼音` when the installed schema or Lua files are incomplete.
-- `查看诊断日志` for developer-readable details.
+- 设置 → 诊断 → 查看记录 for developer-readable details; force_gc schema tools under 诊断 → 高级.
 
 Deployment should derive the effective feature set as:
 

@@ -1,12 +1,16 @@
 import SwiftUI
 
 struct GuideTab: View {
+    /// When `false`, content is pushed inside an existing `NavigationStack` (Settings).
+    var embedsOwnNavigationStack: Bool = true
+    @Bindable var rimeStore: RimeSettingsStore
+    /// J4: switch to Search tab and focus the trial field (`PD-APP-SEARCH-001`).
+    var onRequestTryInput: (() -> Void)?
+
     @AppStorage("rime_active_schema", store: UserDefaults(suiteName: universeAppGroupID))
     private var activeSchemaID = "luna_pinyin"
     @AppStorage("rime_deployed", store: UserDefaults(suiteName: universeAppGroupID))
     private var rimeDeployed = false
-    @AppStorage("logging_enabled", store: UserDefaults(suiteName: universeAppGroupID))
-    private var loggingEnabled = false
 
     /// Onboarding affirmations stay in standard defaults so Guide UX does not
     /// depend on inventing a live Extension Full Access flag in the App Group.
@@ -20,15 +24,33 @@ struct GuideTab: View {
     private var sharedDataUnavailable = false
 
     @Environment(\.scenePhase) private var scenePhase
-    @State private var showAdvanced = false
+    /// Expanded step for re-read (instruction only; does not clear progress).
+    @State private var expandedReReadStep: ActivationChecklistState.Step?
+
+    private var isDeploying: Bool {
+        switch rimeStore.deploymentState {
+        case .triggered, .deploying: return true
+        default: return false
+        }
+    }
+
+    private var activeSchemaInstalled: Bool {
+        if let match = rimeStore.schemas.first(where: { $0.schemaID == activeSchemaID }) {
+            return match.installed
+        }
+        // Builtin 朙月 is always treated as installed when listed absent during load.
+        return activeSchemaID == ActivationChecklistState.builtinSchemaID
+    }
 
     private var checklist: ActivationChecklistState {
         ActivationChecklistState(
             keyboardAddedAffirmed: keyboardAddedAffirmed,
             fullAccess: fullAccessPresentation,
+            activeSchemaID: activeSchemaID,
+            activeSchemaInstalled: activeSchemaInstalled,
             rimeDeployed: rimeDeployed,
-            isDeploying: false,
-            deploymentFailed: false,
+            isDeploying: isDeploying,
+            deploymentFailed: rimeStore.deploymentState == .failed,
             firstInputAffirmed: firstInputAffirmed
         )
     }
@@ -44,28 +66,52 @@ struct GuideTab: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    headerSection
-                    nextStepSection
-                    checklistSection
-                    enableDetailSection
-                    statusSection
-                    advancedSection
+        Group {
+            if embedsOwnNavigationStack {
+                NavigationStack {
+                    guideScrollContent
                 }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 14)
+            } else {
+                guideScrollContent
             }
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle("启用指南")
-            .onChange(of: scenePhase) { _, phase in
-                guard phase == .active else { return }
-                refreshSharedContainerObservation()
+        }
+    }
+
+    private var guideScrollContent: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                headerSection
+                if checklist.isFullyActivated {
+                    reReadBannerSection
+                }
+                nextStepSection
+                checklistSection
             }
-            .onAppear {
-                refreshSharedContainerObservation()
-            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle("启用指南")
+        .navigationBarTitleDisplayMode(embedsOwnNavigationStack ? .large : .inline)
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active else { return }
+            refreshSharedContainerObservation()
+        }
+        .onAppear {
+            rimeStore.load()
+            refreshSharedContainerObservation()
+            ActivationTips.sync(from: checklist)
+        }
+        .onChange(of: keyboardAddedAffirmed) { _, _ in ActivationTips.sync(from: checklist) }
+        .onChange(of: fullAccessAffirmed) { _, _ in ActivationTips.sync(from: checklist) }
+        .onChange(of: firstInputAffirmed) { _, _ in ActivationTips.sync(from: checklist) }
+        .onChange(of: sharedDataUnavailable) { _, _ in ActivationTips.sync(from: checklist) }
+        .onChange(of: rimeDeployed) { _, _ in ActivationTips.sync(from: checklist) }
+        .onChange(of: activeSchemaID) { _, _ in ActivationTips.sync(from: checklist) }
+        .onChange(of: rimeStore.deploymentState) { _, _ in ActivationTips.sync(from: checklist) }
+        .onChange(of: rimeStore.downloadState) { _, _ in
+            rimeStore.handleDownloadStateChange()
+            ActivationTips.sync(from: checklist)
         }
     }
 
@@ -102,6 +148,18 @@ struct GuideTab: View {
         .accessibilityElement(children: .combine)
     }
 
+    private var reReadBannerSection: some View {
+        InfoSection(title: "重新走一遍", systemImage: "arrow.trianglehead.counterclockwise") {
+            Text(ActivationCopy.reReadOnlyBanner)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Text("点开下方清单步骤可重看各步说明与操作指引。")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
     @ViewBuilder
     private var nextStepSection: some View {
         if let step = checklist.nextStep {
@@ -111,6 +169,8 @@ struct GuideTab: View {
                 Text(detail(for: step))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                // Step-specific detail lives with the step (not a separate always-on block).
+                stepGuideContent(for: step)
                 if step == .addKeyboard || step == .fullAccess {
                     AppActionButton(
                         title: "打开设置",
@@ -120,17 +180,23 @@ struct GuideTab: View {
                         openSystemSettings()
                     }
                     .accessibilityHint(ActivationCopy.systemLimitation)
-                }
-                if step == .prepareResources {
-                    Text("请到「设置」页的 RIME / 部署区域准备资源。\(ActivationCopy.mainAppPreparesResources)")
-                        .font(.footnote)
+                    affirmButtons(for: step)
+                    Text(ActivationCopy.systemLimitation)
+                        .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                affirmButtons(for: step)
-                Text(ActivationCopy.systemLimitation)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                if step == .prepareResources {
+                    Text(ActivationCopy.mainAppPreparesResources)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    ActivationResourcePreparePanel(store: rimeStore)
+                }
+                if step == .firstInput {
+                    firstInputActions
+                }
             }
+            // Contextual TipKit tip for the current next step only (one tip / one action).
+            .activationPopoverTip(for: step)
         } else {
             InfoSection(title: "启用状态", systemImage: "checkmark.circle") {
                 Text("清单步骤已确认完成")
@@ -160,116 +226,119 @@ struct GuideTab: View {
     }
 
     private func checklistRow(_ step: ActivationChecklistState.Step) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: checklist.isStepComplete(step) ? "checkmark.circle.fill" : "circle")
-                .foregroundStyle(checklist.isStepComplete(step) ? Color.primary : Color.secondary)
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(ActivationCopy.title(for: step))
-                    .font(.body.weight(.medium))
-                Text(checklist.statusTitle(for: step))
-                    .font(.caption)
-                    .foregroundStyle(statusColor(for: step))
-            }
-            Spacer(minLength: 0)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(ActivationCopy.title(for: step))，\(checklist.statusTitle(for: step))")
-    }
-
-    private var enableDetailSection: some View {
-        InfoSection(title: "系统设置步骤", systemImage: "gearshape") {
-            Text("添加键盘")
-                .font(.subheadline.weight(.semibold))
-            NumberedGuideRow(number: 1, text: "打开系统设置")
-            NumberedGuideRow(number: 2, text: "进入 通用 → 键盘 → 键盘")
-            NumberedGuideRow(number: 3, text: "点 添加新键盘")
-            NumberedGuideRow(number: 4, text: "选择 \(ActivationCopy.keyboardDisplayName)")
-            NumberedGuideRow(number: 5, text: "返回本 App 继续")
-
-            Divider().padding(.vertical, 4)
-
-            Text("允许完全访问")
-                .font(.subheadline.weight(.semibold))
-            NumberedGuideRow(number: 1, text: "在键盘列表中点 \(ActivationCopy.keyboardDisplayName)")
-            NumberedGuideRow(number: 2, text: "打开「允许完全访问」")
-            NumberedGuideRow(number: 3, text: "在系统提示中确认")
-            NumberedGuideRow(number: 4, text: "返回本 App")
-
-            Text(ActivationCopy.fullAccessPurpose)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .padding(.top, 6)
-            Text(ActivationCopy.fullAccessNotUpload)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            Text(ActivationCopy.degradedBasicTyping)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private var statusSection: some View {
-        InfoSection(title: "当前状态", systemImage: "keyboard.badge.ellipsis") {
-            GuideStatusRow(
-                title: "输入方案",
-                value: activeSchemaID == "rime_ice" ? "雾凇拼音" : "朙月拼音",
-                color: .primary
-            )
-            Divider()
-            GuideStatusRow(
-                title: "词库部署",
-                value: rimeDeployed ? "已就绪" : "待部署",
-                color: rimeDeployed ? .primary : .orange
-            )
-            Divider()
-            GuideStatusRow(
-                title: "共享数据",
-                value: sharedDataUnavailable ? "不可用" : "可访问（主 App）",
-                color: sharedDataUnavailable ? .orange : .secondary
-            )
-            Divider()
-            GuideStatusRow(
-                title: "卡顿诊断",
-                value: loggingEnabled ? "记录中" : "未开启",
-                color: loggingEnabled ? .primary : .secondary
-            )
-            Text(ActivationCopy.mainAppPreparesResources)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding(.top, 4)
-            Text(ActivationCopy.fallbackNotReady)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private var advancedSection: some View {
-        InfoSection(title: "高级", systemImage: "wrench.and.screwdriver") {
+        let isExpanded = expandedReReadStep == step
+        return VStack(alignment: .leading, spacing: 8) {
             Button {
-                showAdvanced.toggle()
+                withAnimation(.easeInOut(duration: 0.15)) {
+                    expandedReReadStep = isExpanded ? nil : step
+                }
             } label: {
-                HStack {
-                    Text(showAdvanced ? "收起诊断说明" : "显示诊断与验证说明")
-                        .font(.subheadline.weight(.semibold))
-                    Spacer()
-                    Image(systemName: showAdvanced ? "chevron.up" : "chevron.down")
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: checklist.isStepComplete(step) ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(checklist.isStepComplete(step) ? Color.primary : Color.secondary)
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(ActivationCopy.title(for: step))
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(.primary)
+                        Text(checklist.statusTitle(for: step))
+                            .font(.caption)
+                            .foregroundStyle(statusColor(for: step))
+                    }
+                    Spacer(minLength: 0)
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
+                        .accessibilityHidden(true)
                 }
             }
             .buttonStyle(.plain)
-            .accessibilityHint("诊断项不是新用户必做步骤")
+            .accessibilityLabel("\(ActivationCopy.title(for: step))，\(checklist.statusTitle(for: step))")
+            .accessibilityHint(isExpanded ? "收起说明" : "展开重看说明，不会清除进度")
 
-            if showAdvanced {
-                BulletRow(text: "输入 nihao，确认候选出现且空格可选词", style: .checkmark)
-                BulletRow(text: "连续快速输入一段拼音，观察是否停顿", style: .checkmark)
-                BulletRow(text: "出现卡顿后到「设置 > 诊断日志」查看记录", style: .checkmark)
-                Text(ActivationCopy.liveStateUnknown)
-                    .font(.caption)
+            if isExpanded {
+                Text(detail(for: step))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Text(ActivationCopy.nextActionTitle(for: step))
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(.secondary)
+                // Numbered system steps / resource panel live under the matching checklist item.
+                stepGuideContent(for: step)
+                if step == .prepareResources, !checklist.isStepComplete(.prepareResources) {
+                    ActivationResourcePreparePanel(store: rimeStore)
+                } else if checklist.nextStep == step, step != .prepareResources {
+                    if step == .addKeyboard || step == .fullAccess {
+                        AppActionButton(
+                            title: "打开设置",
+                            systemImage: "gearshape",
+                            prominence: .primary
+                        ) {
+                            openSystemSettings()
+                        }
+                        affirmButtons(for: step)
+                    } else if step == .firstInput {
+                        firstInputActions
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var firstInputActions: some View {
+        Text(ActivationCopy.firstInputTryHint)
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+        Text(ActivationCopy.firstInputExample)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+        if onRequestTryInput != nil {
+            AppActionButton(
+                title: ActivationCopy.firstInputTryCTA,
+                systemImage: "magnifyingglass",
+                prominence: .primary
+            ) {
+                onRequestTryInput?()
+            }
+        }
+        affirmButtons(for: stepFirstInput)
+    }
+
+    /// Affirm path for first-input only (avoids capturing wrong step in builders).
+    private var stepFirstInput: ActivationChecklistState.Step { .firstInput }
+
+    /// Per-step instructional content (was a separate always-visible「系统设置步骤」block).
+    @ViewBuilder
+    private func stepGuideContent(for step: ActivationChecklistState.Step) -> some View {
+        switch step {
+        case .addKeyboard:
+            VStack(alignment: .leading, spacing: 8) {
+                NumberedGuideRow(number: 1, text: "打开系统设置")
+                NumberedGuideRow(number: 2, text: "进入 通用 → 键盘 → 键盘")
+                NumberedGuideRow(number: 3, text: "点 添加新键盘")
+                NumberedGuideRow(number: 4, text: "选择 \(ActivationCopy.keyboardDisplayName)")
+                NumberedGuideRow(number: 5, text: "返回本 App 继续")
+            }
+        case .fullAccess:
+            VStack(alignment: .leading, spacing: 8) {
+                NumberedGuideRow(number: 1, text: "在键盘列表中点 \(ActivationCopy.keyboardDisplayName)")
+                NumberedGuideRow(number: 2, text: "打开「允许完全访问」")
+                NumberedGuideRow(number: 3, text: "在系统提示中确认")
+                NumberedGuideRow(number: 4, text: "返回本 App")
+                Text(ActivationCopy.fullAccessPurpose)
+                    .font(.footnote)
                     .foregroundStyle(.secondary)
                     .padding(.top, 4)
+                Text(ActivationCopy.fullAccessNotUpload)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                Text(ActivationCopy.degradedBasicTyping)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
+        case .prepareResources, .firstInput:
+            EmptyView()
         }
     }
 
@@ -310,9 +379,6 @@ struct GuideTab: View {
             ) {
                 firstInputAffirmed = true
             }
-            Text("示例：打开备忘录，用地球键切换到 \(ActivationCopy.keyboardDisplayName)，输入 nihao 并上屏。")
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
     }
 
@@ -323,9 +389,9 @@ struct GuideTab: View {
         case .fullAccess:
             return "\(ActivationCopy.fullAccessPurpose) \(ActivationCopy.fullAccessNotUpload)"
         case .prepareResources:
-            return "主 App 需要准备本地 RIME 资源后，完整候选才可用。"
+            return "在下方选择输入方案并完成安装与部署后，完整候选才可用。"
         case .firstInput:
-            return "切换到本键盘并完成一次拼音上屏，确认激活成功。"
+            return "在「搜索」页输入框中切换到本键盘，输入任意内容试用即可。"
         }
     }
 
@@ -383,22 +449,8 @@ private struct NumberedGuideRow: View {
     }
 }
 
-private struct GuideStatusRow: View {
-    let title: String
-    let value: String
-    let color: Color
 
-    var body: some View {
-        KeyValueRow(
-            title: title,
-            value: value,
-            valueColor: color,
-            titleFont: .body,
-            valueFont: .subheadline.weight(.medium)
-        )
-    }
-}
 
 #Preview {
-    GuideTab()
+    GuideTab(rimeStore: RimeSettingsStore())
 }

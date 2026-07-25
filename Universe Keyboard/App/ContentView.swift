@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Universe Keyboard
 //
-//  主页面：Tab 分为「首页」、「引导」和「设置」。
+//  主页面：首页 / 帮助(条件) / 设置 / 搜索(最右，始终)。
 //
 
 import SwiftUI
@@ -10,9 +10,35 @@ import SwiftUI
 let universeAppGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 
 struct ContentView: View {
+    /// Top-level tabs. Help is conditional; Search is always last (`PD-APP-SEARCH-001`).
+    private enum MainTab: Hashable {
+        case home
+        case help
+        case settings
+        case search
+    }
+
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage(AppAppearance.storageKey, store: AppAppearance.storage)
     private var appearanceRawValue = AppAppearance.system.rawValue
+    /// Soft Welcome auto-present once (`PD-HELP-TIPKIT-001`). Not activation success.
+    @AppStorage(ActivationPresentationStorage.welcomeSeenKey)
+    private var activationWelcomeSeen = false
+    /// Activation affirmations (standard defaults; same keys as GuideTab).
+    @AppStorage("activation_keyboard_added_affirmed")
+    private var keyboardAddedAffirmed = false
+    @AppStorage("activation_full_access_affirmed")
+    private var fullAccessAffirmed = false
+    @AppStorage("activation_first_input_affirmed")
+    private var firstInputAffirmed = false
+    @AppStorage("activation_shared_data_unavailable")
+    private var sharedDataUnavailable = false
+    @AppStorage("rime_deployed", store: UserDefaults(suiteName: universeAppGroupID))
+    private var rimeDeployed = false
+    @State private var selectedTab: MainTab = .home
+    @State private var showActivationWelcome = false
+    /// Bumped when Help J4 asks Search to become first responder.
+    @State private var searchFocusRequestToken = 0
     @State private var rimeSettingsStore: RimeSettingsStore
     @State private var rimeSyncViewModel: RimeSyncViewModel
     @State private var notificationSettingsModel: AppNotificationSettingsModel
@@ -33,16 +59,59 @@ struct ContentView: View {
         #endif
     }
 
+    private var helpChecklist: ActivationChecklistState {
+        let isDeploying: Bool = {
+            switch rimeSettingsStore.deploymentState {
+            case .triggered, .deploying: return true
+            default: return false
+            }
+        }()
+        let deploymentFailed = rimeSettingsStore.deploymentState == .failed
+        let fullAccess: ActivationChecklistState.FullAccessPresentation = {
+            if sharedDataUnavailable { return .sharedDataUnavailable }
+            if fullAccessAffirmed { return .userAffirmed }
+            return .unknown
+        }()
+        let activeInstalled =
+            rimeSettingsStore.schemas.first(where: { $0.schemaID == rimeSettingsStore.activeSchemaID })?
+            .installed
+            ?? (rimeSettingsStore.activeSchemaID == ActivationChecklistState.builtinSchemaID)
+        return ActivationChecklistState(
+            keyboardAddedAffirmed: keyboardAddedAffirmed,
+            fullAccess: fullAccess,
+            activeSchemaID: rimeSettingsStore.activeSchemaID,
+            activeSchemaInstalled: activeInstalled,
+            rimeDeployed: rimeDeployed,
+            isDeploying: isDeploying,
+            deploymentFailed: deploymentFailed,
+            firstInputAffirmed: firstInputAffirmed
+        )
+    }
+
+    private var showHelpTab: Bool {
+        helpChecklist.shouldShowHelpTab
+    }
+
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             HomeTab(rimeStore: rimeSettingsStore)
                 .tabItem {
                     Label("首页", systemImage: "house")
                 }
-            GuideTab()
-                .tabItem {
-                    Label("引导", systemImage: "book.pages")
-                }
+                .tag(MainTab.home)
+            if showHelpTab {
+                GuideTab(
+                    rimeStore: rimeSettingsStore,
+                    onRequestTryInput: {
+                        selectedTab = .search
+                        searchFocusRequestToken += 1
+                    }
+                )
+                    .tabItem {
+                        Label("帮助", systemImage: "book.pages")
+                    }
+                    .tag(MainTab.help)
+            }
             SettingsTab(
                 rimeStore: rimeSettingsStore,
                 syncModel: rimeSyncViewModel,
@@ -51,11 +120,58 @@ struct ContentView: View {
                 .tabItem {
                     Label("设置", systemImage: "gearshape")
                 }
+                .tag(MainTab.settings)
+            // Always last (far right).
+            SearchTab(
+                rimeStore: rimeSettingsStore,
+                syncModel: rimeSyncViewModel,
+                notificationSettings: notificationSettingsModel,
+                focusRequestToken: searchFocusRequestToken
+            )
+                .tabItem {
+                    Label("搜索", systemImage: "magnifyingglass")
+                }
+                .tag(MainTab.search)
         }
         .tint(.primary)
         .preferredColorScheme(
             AppAppearance(rawValue: appearanceRawValue)?.colorScheme
         )
+        .sheet(isPresented: $showActivationWelcome, onDismiss: {
+            // Start, Skip, or interactive dismiss all count as "seen" so soft
+            // Welcome does not reappear on every launch.
+            activationWelcomeSeen = true
+        }) {
+            ActivationWelcomeView(
+                onStart: {
+                    if showHelpTab {
+                        selectedTab = .help
+                    } else {
+                        selectedTab = .settings
+                    }
+                    showActivationWelcome = false
+                },
+                onSkip: {
+                    showActivationWelcome = false
+                }
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+        }
+        .onAppear {
+            presentActivationWelcomeIfNeeded()
+            reconcileSelectedTabWithHelpVisibility()
+            syncActivationTips()
+        }
+        .onChange(of: showHelpTab) { _, _ in
+            reconcileSelectedTabWithHelpVisibility()
+        }
+        .onChange(of: keyboardAddedAffirmed) { _, _ in syncActivationTips() }
+        .onChange(of: fullAccessAffirmed) { _, _ in syncActivationTips() }
+        .onChange(of: firstInputAffirmed) { _, _ in syncActivationTips() }
+        .onChange(of: sharedDataUnavailable) { _, _ in syncActivationTips() }
+        .onChange(of: rimeDeployed) { _, _ in syncActivationTips() }
+        .onChange(of: rimeSettingsStore.deploymentState) { _, _ in syncActivationTips() }
         .overlay(alignment: .bottom) {
             if notificationSettingsModel.operationToastsEnabled,
                showOperationToast,
@@ -198,6 +314,27 @@ struct ContentView: View {
     private func hideToast() {
         toastDismissTask?.cancel()
         showOperationToast = false
+    }
+
+    private func presentActivationWelcomeIfNeeded() {
+        guard !activationWelcomeSeen else { return }
+        // Defer one turn so TabView is on-screen before the soft sheet.
+        DispatchQueue.main.async {
+            guard !activationWelcomeSeen else { return }
+            showActivationWelcome = true
+        }
+    }
+
+    /// If Help tab is hidden while it is selected, land on Home (Settings still has Help).
+    private func reconcileSelectedTabWithHelpVisibility() {
+        if !showHelpTab, selectedTab == .help {
+            selectedTab = .home
+        }
+    }
+
+    /// Keep TipKit `@Parameter` flags aligned with checklist (P3 invalidation).
+    private func syncActivationTips() {
+        ActivationTips.sync(from: helpChecklist)
     }
 }
 
