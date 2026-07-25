@@ -60,21 +60,28 @@ struct TypingIntelligenceView: View {
 
     private var controlSection: some View {
         section(title: "输入洞察") {
-            HStack(spacing: 12) {
+            HStack(alignment: .center, spacing: 12) {
                 icon("chart.xyaxis.line", foreground: .white, background: .black)
                 VStack(alignment: .leading, spacing: 3) {
                     Text("记录本地输入统计")
                         .font(.body)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.9)
                     Text(model.isEnabled ? "正在设备上聚合，不保存输入内容" : "关闭时不会产生新的统计")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                Spacer(minLength: 8)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .layoutPriority(1)
                 Toggle("", isOn: Binding(
                     get: { model.isEnabled },
                     set: { model.setEnabled($0) }
                 ))
                 .labelsHidden()
+                .toggleStyle(.switch)
+                .fixedSize(horizontal: true, vertical: false)
             }
             .padding(14)
         }

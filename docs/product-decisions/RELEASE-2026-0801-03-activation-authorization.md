@@ -39,7 +39,7 @@ TD-004 and ADR 0007 already require a truthful degradation matrix; scope freeze 
 ### 2. Journey and presentation
 
 1. The product source for the journey, copy boundaries and capability matrix is [`ONBOARDING_ACTIVATION.md`](../ONBOARDING_ACTIVATION.md).
-2. V1.0 presentation is **main-App Guide checklist + status cards**. TipKit is an authorized future presentation layer for the same semantics; TipKit is **not** required to close task 03.
+2. V1.0 presentation is **main-App Guide checklist + status cards**. TipKit is an authorized future presentation layer for the same semantics; TipKit is **not** required to close task 03. Post-close presentation packaging (soft Welcome, Help tab / Settings IA, TipKit phase, re-read policy) is authorized separately by [`PD-HELP-TIPKIT-001`](HELP-TIPKIT-001-authorization.md) without amending activation success or Full Access claims here.
 3. System Settings steps remain user-owned. The App may open the root Settings URL and must state that it cannot programmatically add the keyboard or enable Full Access.
 4. Main App must not invent a live Extension Full Access boolean. Allowed states are observation-based failures, deployment readiness owned by the main App, and weak user affirmations that later observation may overturn.
 

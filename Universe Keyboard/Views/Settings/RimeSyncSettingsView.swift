@@ -124,9 +124,11 @@ struct RimeSyncSettingsView: View {
                     set: { model.setAutomaticSyncEnabled($0) }
                 )
             )
+            .toggleStyle(.switch)
             .disabled(!model.canEnableAutomaticStandardSync)
 
-            if model.automaticSyncEnabled {
+            // Always mounted when parent section is shown; dim when auto-sync off.
+            Group {
                 Toggle(
                     isOn: Binding(
                         get: { model.automaticStandardRimeDataEnabled },
@@ -140,6 +142,7 @@ struct RimeSyncSettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                .toggleStyle(.switch)
 
                 Toggle(
                     isOn: Binding(
@@ -154,6 +157,7 @@ struct RimeSyncSettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                .toggleStyle(.switch)
 
                 Picker(
                     "同步间隔",
@@ -166,8 +170,9 @@ struct RimeSyncSettingsView: View {
                         Text(cadence.title).tag(cadence)
                     }
                 }
-
             }
+            .disabled(!model.automaticSyncEnabled)
+            .opacity(model.automaticSyncEnabled ? 1 : 0.48)
 
             if let notice = model.automaticSyncNotice {
                 Text(notice)
@@ -186,11 +191,15 @@ struct RimeSyncSettingsView: View {
             RimeSyncNotificationControls(
                 model: notificationSettings,
                 title: "同步通知",
-                detail: "选择手动或自动同步时需要提醒你的内容。"
+                detail: "选择手动或自动同步时需要提醒你的内容。",
+                isSyncMethodConfigured: model.provider != .none
             )
 
             NavigationLink("管理所有通知与 App 内提示") {
-                NotificationSettingsView(model: notificationSettings)
+                NotificationSettingsView(
+                    model: notificationSettings,
+                    isRimeSyncMethodConfigured: model.provider != .none
+                )
             }
         } header: {
             Text("通知与提醒")

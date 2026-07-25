@@ -36,6 +36,27 @@ Do not log surrounding host text, passwords, arbitrary user content or full priv
 
 The shared logger persists a bounded FIFO log in App Group `UserDefaults` under `rime_diag_log`; the main App diagnostics screen reads and clears it. Logging is asynchronous, but hot-path logging must remain selective.
 
+### Main App surface
+
+Path: **设置 → 诊断** (`DiagnosticsSettingsView`).
+
+| Area | Behavior |
+|---|---|
+| Status | Shows recording on/off and approximate line count; data stays on-device (App Group only). |
+| Master switch | `logging_enabled` — enables new writes. **Must not** insert/remove Form sections (categories stay mounted; disabled + dimmed when off). |
+| Categories | Always visible; grayed/`disabled` when master is off. Keys `log_category_*` (perf, disp, engine, config, deploy, gen). Stored in plain `@State` map (not `@Observable` fan-out). |
+| Review | Navigate to `DiagnosticsView` for filter/copy/clear. |
+| Advanced | Collapsed by default. Nine-key **force_gc** tools live here only. |
+| Status chips | Always-mounted labels; style/text only. |
+
+**Form crash class (`SwiftUI.AsyncRenderer` / libdispatch “Block was expected to execute on queue”):**
+
+1. Conditional `if flag { Section {…} }` remount under Toggle (historical).
+2. Custom `ToggleStyle` inside `Form` correlated with residual asserts. **All main-App toggles use system `.toggleStyle(.switch)`.**
+3. Avoid `.animation(_:value:)` on Form sections / opacity driven by the master flag.
+
+**Same Form-topology rule** for notifications detail rows, RIME automatic-sync children, haptic level: always-mounted + disabled/dimming.
+
 Useful categories:
 
 - general/lifecycle: presentation and settings refresh;
@@ -265,7 +286,7 @@ Continuous T9 digit bursts now **idle-gate bar-mode candidate prefetch** (≈280
 
 **Long T9 digit spikes (`api` dominates, `collect` ≈0):** primary remaining cost after hygiene. **force_gc-as-primary-fix is closed** — see case close [`evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md). Follow-on work: [`plans/t9-long-composition-process-key-latency-plan.md`](plans/t9-long-composition-process-key-latency-plan.md).
 
-**T9 force_gc hygiene (not the main latency fix):** deploy may strip force_gc **only** from `t9.schema.yaml` (not `rime_ice` / shared `lua/force_gc.lua`). Verify with main App → 设置 → 诊断日志 → **检查九键 Schema / force_gc** (source + compiled `build/t9.schema.yaml`). If source clean but compiled still lists force_gc, apply patch then **完整部署**. If **both clean** and SLOW KEY remain, do **not** reopen force_gc as primary — use the long-composition plan.
+**T9 force_gc hygiene (not the main latency fix):** deploy may strip force_gc **only** from `t9.schema.yaml` (not `rime_ice` / shared `lua/force_gc.lua`). Verify with main App → 设置 → 诊断 → **高级** → **检查九键 Schema / force_gc** (source + compiled `build/t9.schema.yaml`). If source clean but compiled still lists force_gc, apply patch then **完整部署**. If **both clean** and SLOW KEY remain, do **not** reopen force_gc as primary — use the long-composition plan.
 
 ## Verification Commands
 

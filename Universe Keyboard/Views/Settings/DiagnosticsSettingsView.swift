@@ -1,93 +1,264 @@
 import KeyboardCore
 import SwiftUI
 
+/// Diagnostics control surface.
+///
+/// **Crash contract (Form + AsyncRenderer / libdispatch):**
+/// - Never insert/remove Form sections when the master switch flips.
+/// - Use **system** `Toggle` (`.switch`) — project-wide default; custom
+///   monochrome styles were retired after Form + custom styles correlated with
+///   `SwiftUI.AsyncRenderer` / libdispatch asserts.
+/// - No `.animation(_:value: loggingEnabled)` on Form sections (opacity/status).
+/// - Category flags stay in a plain `@State` dictionary (no `@Observable` fan-out).
 struct DiagnosticsSettingsView: View {
     @State private var loggingEnabled: Bool = {
         UserDefaults(suiteName: universeAppGroupID)?.bool(forKey: "logging_enabled") ?? false
     }()
+    /// category id → enabled (default true when key absent).
+    @State private var categoryEnabled: [String: Bool] = DiagnosticsCategoryCatalog.loadEnabledMap()
     @State private var forceGCCheckLines: [String] = []
     @State private var forceGCCheckHeadline: String?
+    @State private var advancedExpanded = false
 
-    private var keyboardDiagLog: [String] {
-        let defaults = UserDefaults(suiteName: universeAppGroupID)
-        guard let log = defaults?.string(forKey: "rime_diag_log"), !log.isEmpty else { return [] }
-        return log.components(separatedBy: "\n")
+    private var defaults: UserDefaults? {
+        UserDefaults(suiteName: universeAppGroupID)
+    }
+
+    private var logLineCount: Int {
+        guard let log = defaults?.string(forKey: "rime_diag_log"), !log.isEmpty else { return 0 }
+        return log.components(separatedBy: "\n").filter { !$0.isEmpty }.count
     }
 
     var body: some View {
         Form {
-            Section {
-                DiagnosticsToggleRow(loggingEnabled: $loggingEnabled)
-            } footer: {
-                Text("复现卡顿时请保留「性能」与「引擎」分类开启；卡住后返回本页查看最后一条 BEGIN 记录。")
-            }
+            statusSection
+            recordingControlSection
+            categoriesSection
+            reviewSection
+            advancedSection
+        }
+        .navigationTitle("诊断")
+        .navigationBarTitleDisplayMode(.inline)
+        .tint(.primary)
+        .onAppear {
+            categoryEnabled = DiagnosticsCategoryCatalog.loadEnabledMap()
+            loggingEnabled = defaults?.bool(forKey: "logging_enabled") ?? false
+        }
+    }
 
-            if loggingEnabled {
-                Section {
-                    DiagnosticsCategoriesSection()
-                } header: {
-                    Text("记录分类")
-                }
-            }
+    // MARK: - Status (style-only updates)
 
-            Section {
-                Button {
-                    runT9ForceGCCheck()
-                } label: {
-                    Label("检查九键 Schema / force_gc", systemImage: "doc.text.magnifyingglass")
-                }
+    private var statusIndicator: some View {
+        let text = loggingEnabled ? "写入开启" : "写入关闭"
+        let image = loggingEnabled ? "circle.fill" : "circle"
+        let color: Color = loggingEnabled ? .primary : .secondary
+        return Label(text, systemImage: image)
+            .foregroundStyle(color)
+    }
 
-                Button {
-                    applyT9ForceGCPatch()
-                } label: {
-                    Label("应用九键兼容补丁并复查", systemImage: "wrench.and.screwdriver")
+    private var statusSection: some View {
+        Section {
+            HStack(alignment: .top, spacing: 14) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: AppRadius.control, style: .continuous)
+                        .fill(loggingEnabled ? Color.primary : Color(.tertiarySystemFill))
+                    Image(systemName: "waveform.path.ecg")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(loggingEnabled ? Color(.systemBackground) : Color.secondary)
                 }
+                .frame(width: 40, height: 40)
 
-                if let forceGCCheckHeadline {
-                    Text(forceGCCheckHeadline)
-                        .font(.subheadline)
-                        .foregroundStyle(
-                            forceGCCheckHeadline.contains("仍注册") || forceGCCheckHeadline.contains("失败")
-                                ? .orange
-                                : .secondary
-                        )
-                }
-                ForEach(forceGCCheckLines, id: \.self) { line in
-                    Text(line)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(loggingEnabled ? "正在记录" : "记录已暂停")
+                        .font(.body.weight(.semibold))
+                    Text("仅保存在本机 App Group，不会上传。用于排查卡顿与引擎边界。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    HStack(spacing: 12) {
+                        Label("\(logLineCount) 条", systemImage: "doc.text")
+                        statusIndicator
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 2)
                 }
-            } header: {
-                Text("九键 Schema")
-            } footer: {
-                Text(
-                    "读取源文件与 build/t9.schema.yaml（运行时用编译产物）。"
-                        + "若显示「源已干净但编译产物仍含 force_gc」，请点「应用补丁」后立刻在 RIME 设置里完整部署，再杀进程重开键盘。"
-                        + "结果写入诊断日志（部署分类）。"
-                )
+                Spacer(minLength: 0)
             }
+            .padding(.vertical, 4)
+            .accessibilityElement(children: .combine)
+        } header: {
+            Text("状态")
+        }
+    }
 
-            Section {
-                NavigationLink(destination: DiagnosticsView()) {
-                    HStack {
-                        Label("查看记录", systemImage: "doc.text.magnifyingglass")
-                        Spacer()
-                        Text(keyboardDiagLog.isEmpty ? "暂无记录" : "\(keyboardDiagLog.count) 条")
+    // MARK: - Master switch
+
+    private var recordingControlSection: some View {
+        Section {
+            Toggle(isOn: loggingEnabledBinding) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("记录诊断数据")
+                        .font(.body)
+                    Text(
+                        loggingEnabled
+                            ? "键盘与主 App 可将事件写入本机诊断缓冲"
+                            : "关闭后不再写入新记录；已有记录仍可查看"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+            }
+            // System switch: native animation + Form-safe interaction path.
+            .toggleStyle(.switch)
+        } header: {
+            Text("记录控制")
+        } footer: {
+            Text("复现卡顿时建议开启，并保留下方「性能」与「引擎」分类。")
+        }
+    }
+
+    private var loggingEnabledBinding: Binding<Bool> {
+        Binding(
+            get: { loggingEnabled },
+            set: { newValue in
+                loggingEnabled = newValue
+                defaults?.set(newValue, forKey: "logging_enabled")
+            }
+        )
+    }
+
+    // MARK: - Categories (always present)
+
+    private var categoriesSection: some View {
+        Section {
+            ForEach(DiagnosticsCategoryCatalog.items) { item in
+                categoryRow(item)
+            }
+        } header: {
+            Text("记录分类")
+        } footer: {
+            Text(
+                loggingEnabled
+                    ? "关闭某一类可减少噪音；热路径仍应保持克制。"
+                    : "总开关关闭时分类不可改，且不会写入新事件。开启上方开关后可调整。"
+            )
+        }
+        .disabled(!loggingEnabled)
+        // Instant dim — no `.animation` on Form sections (crash surface).
+        .opacity(loggingEnabled ? 1 : 0.48)
+    }
+
+    private func categoryRow(_ item: DiagnosticsCategoryCatalog.Item) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: item.icon)
+                .font(.body)
+                .foregroundStyle(loggingEnabled ? Color.primary : Color.secondary)
+                .frame(width: 28, height: 28)
+                .background(
+                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                        .fill(Color(.tertiarySystemFill))
+                )
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.name).font(.body)
+                Text(item.description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Toggle(
+                "",
+                isOn: Binding(
+                    get: { categoryEnabled[item.id] ?? true },
+                    set: { newValue in
+                        categoryEnabled[item.id] = newValue
+                        defaults?.set(newValue, forKey: "log_category_\(item.id)")
+                    }
+                )
+            )
+            .labelsHidden()
+            .toggleStyle(.switch)
+            .fixedSize(horizontal: true, vertical: false)
+        }
+        .padding(.vertical, 2)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(item.name)，\(item.description)")
+        .accessibilityValue((categoryEnabled[item.id] ?? true) ? "开启" : "关闭")
+    }
+
+    // MARK: - Review
+
+    private var reviewSection: some View {
+        Section {
+            NavigationLink {
+                DiagnosticsView()
+            } label: {
+                HStack {
+                    Label("查看记录", systemImage: "doc.text.magnifyingglass")
+                    Spacer()
+                    Text(logLineCount == 0 ? "暂无记录" : "\(logLineCount) 条")
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text("查看与管理")
+        } footer: {
+            Text("可在记录页刷新、筛选、复制或清空。请勿分享含敏感上下文的日志。")
+        }
+    }
+
+    // MARK: - Advanced
+
+    private var advancedSection: some View {
+        Section {
+            DisclosureGroup(isExpanded: $advancedExpanded) {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("以下工具面向九键 Schema 卫生与部署排查，日常使用无需打开。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Button {
+                        present(diagnostic: T9SchemaForceGCDiagnosticsRunner.runAndLog())
+                    } label: {
+                        Label("检查九键 Schema / force_gc", systemImage: "doc.text.magnifyingglass")
+                    }
+
+                    Button {
+                        present(diagnostic: T9SchemaForceGCDiagnosticsRunner.applyPatchAndLog())
+                    } label: {
+                        Label("应用九键兼容补丁并复查", systemImage: "wrench.and.screwdriver")
+                    }
+
+                    if let forceGCCheckHeadline {
+                        Text(forceGCCheckHeadline)
+                            .font(.subheadline)
+                            .foregroundStyle(advancedHeadlineColor(forceGCCheckHeadline))
+                    }
+                    ForEach(forceGCCheckLines, id: \.self) { line in
+                        Text(line)
+                            .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
+                .padding(.vertical, 4)
+            } label: {
+                Label("高级", systemImage: "wrench.and.screwdriver")
             }
+        } footer: {
+            Text(
+                "读取源文件与 build/t9.schema.yaml。源干净但编译产物仍含 force_gc 时，应用补丁后请完整部署并重开键盘。"
+            )
         }
-        .navigationTitle("诊断日志")
-        .tint(.primary)
     }
 
-    private func runT9ForceGCCheck() {
-        present(diagnostic: T9SchemaForceGCDiagnosticsRunner.runAndLog())
-    }
-
-    private func applyT9ForceGCPatch() {
-        present(diagnostic: T9SchemaForceGCDiagnosticsRunner.applyPatchAndLog())
+    private func advancedHeadlineColor(_ headline: String) -> Color {
+        if headline.contains("仍注册")
+            || headline.contains("失败")
+            || headline.contains("请完整部署") {
+            return .orange
+        }
+        return .secondary
     }
 
     private func present(diagnostic: T9SchemaForceGCDiagnostic) {
@@ -108,74 +279,37 @@ struct DiagnosticsSettingsView: View {
     }
 }
 
-private struct DiagnosticsToggleRow: View {
-    @Binding var loggingEnabled: Bool
+// MARK: - Category catalog
 
-    var body: some View {
-        Toggle(isOn: $loggingEnabled) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("记录诊断日志")
-                Text(loggingEnabled ? "正在捕获输入耗时与引擎边界" : "用于定位快速输入卡顿")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .toggleStyle(MonochromeToggleStyle())
-        .onChange(of: loggingEnabled) { _, value in
-            UserDefaults(suiteName: universeAppGroupID)?.set(value, forKey: "logging_enabled")
-        }
+enum DiagnosticsCategoryCatalog {
+    struct Item: Identifiable {
+        let id: String
+        let icon: String
+        let name: String
+        let description: String
     }
-}
 
-private struct DiagnosticsCategoriesSection: View {
-    private let categories: [(String, String, String, String)] = [
-        ("gauge.with.dots.needle.33percent", "性能", "perf", "按键延迟、渲染耗时"),
-        ("rectangle.on.rectangle", "画面", "disp", "布局尺寸、淡入动画、候选栏刷新"),
-        ("gearshape.2", "引擎", "engine", "RIME 处理、候选生成"),
-        ("doc.text", "配置", "config", "YAML 生成、OpenCC"),
-        ("arrow.down.circle", "部署", "deploy", "词库编译、配置部署"),
-        ("text.alignleft", "通用", "gen", "生命周期、状态切换"),
+    static let items: [Item] = [
+        .init(id: "perf", icon: "gauge.with.dots.needle.33percent", name: "性能", description: "按键延迟、渲染耗时"),
+        .init(id: "disp", icon: "rectangle.on.rectangle", name: "画面", description: "布局尺寸、淡入动画、候选栏刷新"),
+        .init(id: "engine", icon: "gearshape.2", name: "引擎", description: "RIME 处理、候选生成"),
+        .init(id: "config", icon: "doc.text", name: "配置", description: "YAML 生成、OpenCC"),
+        .init(id: "deploy", icon: "arrow.down.circle", name: "部署", description: "词库编译、配置部署"),
+        .init(id: "gen", icon: "text.alignleft", name: "通用", description: "生命周期、状态切换"),
     ]
 
-    var body: some View {
-        VStack(spacing: 0) {
-            ForEach(categories, id: \.2) { icon, name, key, description in
-                CategoryToggleRow(icon: icon, name: name, description: description, defaultsKey: "log_category_\(key)")
+    static func loadEnabledMap() -> [String: Bool] {
+        let defaults = UserDefaults(suiteName: universeAppGroupID)
+        var map: [String: Bool] = [:]
+        for item in items {
+            let key = "log_category_\(item.id)"
+            if defaults?.object(forKey: key) == nil {
+                map[item.id] = true
+            } else {
+                map[item.id] = defaults?.bool(forKey: key) ?? true
             }
         }
-    }
-}
-
-private struct CategoryToggleRow: View {
-    let icon: String
-    let name: String
-    let description: String
-    @AppStorage private var isOn: Bool
-
-    init(icon: String, name: String, description: String, defaultsKey: String) {
-        self.icon = icon
-        self.name = name
-        self.description = description
-        _isOn = AppStorage(wrappedValue: true, defaultsKey, store: UserDefaults(suiteName: universeAppGroupID))
-    }
-
-    var body: some View {
-        HStack(spacing: 10) {
-            Image(systemName: icon)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .frame(width: 20)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(name).font(.subheadline)
-                Text(description).font(.caption2).foregroundStyle(.secondary)
-            }
-            Spacer()
-            Toggle("", isOn: $isOn)
-                .labelsHidden()
-                .toggleStyle(MonochromeToggleStyle())
-                .scaleEffect(0.85)
-        }
-        .padding(.vertical, 6)
+        return map
     }
 }
 

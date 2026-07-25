@@ -19,6 +19,36 @@ struct HomeTab: View {
 
     @AppStorage("rime_deployed", store: UserDefaults(suiteName: universeAppGroupID))
     private var rimeDeployed = false
+    /// Used only to attach first-input TipKit tip while that step remains open.
+    @AppStorage("activation_keyboard_added_affirmed")
+    private var keyboardAddedAffirmed = false
+    @AppStorage("activation_full_access_affirmed")
+    private var fullAccessAffirmed = false
+    @AppStorage("activation_first_input_affirmed")
+    private var firstInputAffirmed = false
+    @AppStorage("activation_shared_data_unavailable")
+    private var sharedDataUnavailable = false
+
+    private var homeActivationChecklist: ActivationChecklistState {
+        let fullAccess: ActivationChecklistState.FullAccessPresentation = {
+            if sharedDataUnavailable { return .sharedDataUnavailable }
+            if fullAccessAffirmed { return .userAffirmed }
+            return .unknown
+        }()
+        let activeInstalled =
+            rimeStore.schemas.first(where: { $0.schemaID == rimeStore.activeSchemaID })?.installed
+            ?? (rimeStore.activeSchemaID == ActivationChecklistState.builtinSchemaID)
+        return ActivationChecklistState(
+            keyboardAddedAffirmed: keyboardAddedAffirmed,
+            fullAccess: fullAccess,
+            activeSchemaID: rimeStore.activeSchemaID,
+            activeSchemaInstalled: activeInstalled,
+            rimeDeployed: rimeDeployed,
+            isDeploying: false,
+            deploymentFailed: false,
+            firstInputAffirmed: firstInputAffirmed
+        )
+    }
 
     var body: some View {
         NavigationStack {
@@ -28,6 +58,10 @@ struct HomeTab: View {
                         .appCardEntrance(isVisible: todayCardVisible, reduceMotion: reduceMotion)
                     keyboardStatusSection
                         .appCardEntrance(isVisible: keyboardCardVisible, reduceMotion: reduceMotion)
+                        // First-input smoke tip on Home when that step is next (TipKit rules hide when complete).
+                        .activationPopoverTip(
+                            for: homeActivationChecklist.nextStep == .firstInput ? .firstInput : nil
+                        )
                 }
                 .padding(.horizontal, AppSpacing.screen)
                 .padding(.vertical, AppSpacing.screen)
@@ -38,11 +72,13 @@ struct HomeTab: View {
                 model.reload()
                 rimeStore.load()
                 playEntranceIfNeeded()
+                ActivationTips.sync(from: homeActivationChecklist)
             }
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
                 model.reload()
                 rimeStore.load()
+                ActivationTips.sync(from: homeActivationChecklist)
             }
         }
     }

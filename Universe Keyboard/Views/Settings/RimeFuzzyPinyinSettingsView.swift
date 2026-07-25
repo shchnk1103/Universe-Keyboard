@@ -7,7 +7,7 @@ struct RimeFuzzyPinyinSettingsView: View {
         Form {
             Section {
                 Toggle("启用模糊音", isOn: $store.fuzzyEnabled)
-                    .toggleStyle(MonochromeToggleStyle())
+                    .toggleStyle(.switch)
                     .onChange(of: store.fuzzyEnabled) { _, _ in store.saveFuzzyPinyinSettings() }
             } footer: {
                 Text("修改模糊音设置会触发 RIME 重新部署。部署完成后设置才会在键盘中生效。")
@@ -15,13 +15,13 @@ struct RimeFuzzyPinyinSettingsView: View {
 
             Section {
                 Toggle("zh / z", isOn: $store.fuzzyZhZEnabled)
-                    .toggleStyle(MonochromeToggleStyle())
+                    .toggleStyle(.switch)
                     .onChange(of: store.fuzzyZhZEnabled) { _, _ in store.saveFuzzyPinyinSettings() }
                 Toggle("ch / c", isOn: $store.fuzzyChCEnabled)
-                    .toggleStyle(MonochromeToggleStyle())
+                    .toggleStyle(.switch)
                     .onChange(of: store.fuzzyChCEnabled) { _, _ in store.saveFuzzyPinyinSettings() }
                 Toggle("sh / s", isOn: $store.fuzzyShSEnabled)
-                    .toggleStyle(MonochromeToggleStyle())
+                    .toggleStyle(.switch)
                     .onChange(of: store.fuzzyShSEnabled) { _, _ in store.saveFuzzyPinyinSettings() }
             } header: {
                 Text("平翘舌")
@@ -33,7 +33,7 @@ struct RimeFuzzyPinyinSettingsView: View {
 
             Section {
                 Toggle("n / l", isOn: $store.fuzzyNLEnabled)
-                    .toggleStyle(MonochromeToggleStyle())
+                    .toggleStyle(.switch)
                     .onChange(of: store.fuzzyNLEnabled) { _, _ in store.saveFuzzyPinyinSettings() }
             } header: {
                 Text("鼻边音")

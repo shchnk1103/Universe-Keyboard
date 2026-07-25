@@ -36,7 +36,7 @@ struct RimeAdvancedInputSettingsView: View {
         Form {
             Section {
                 Toggle("启用高级输入功能", isOn: masterBinding)
-                    .toggleStyle(MonochromeToggleStyle())
+                    .toggleStyle(.switch)
                     .disabled(!store.activeSchemaSupportsAdvancedInput)
 
                 Text(store.activeSchemaAdvancedInputStatusText)
@@ -137,7 +137,7 @@ private struct AdvancedInputFeatureToggle: View {
                 AdvancedInputExamplesView(examples: feature.examples)
             }
         }
-        .toggleStyle(MonochromeToggleStyle())
+        .toggleStyle(.switch)
         .padding(.vertical, 2)
     }
 

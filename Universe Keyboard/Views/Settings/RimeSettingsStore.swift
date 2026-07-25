@@ -146,7 +146,14 @@ final class RimeSettingsStore {
     var schemas: [SchemaMetadata] { schemaManager.schemas }
     var activeSchemaID: String { schemaManager.activeSchemaID }
     var downloadState: DownloadState { schemaManager.rimeIceDownloadState }
-    var licenseAccepted: Bool { schemaManager.rimeIceLicenseAccepted }
+    /// Observation token: license acceptance lives on SchemaManager / defaults, so
+    /// bump this whenever accept/reject changes so SwiftUI re-reads `licenseAccepted`.
+    var licenseAcceptanceEpoch: Int = 0
+
+    var licenseAccepted: Bool {
+        _ = licenseAcceptanceEpoch
+        return schemaManager.rimeIceLicenseAccepted
+    }
     var rimeIceVersion: String? { schemaManager.rimeIceVersion }
     var isRimeIceInstalled: Bool {
         schemas.contains { $0.schemaID == "rime_ice" && $0.installed }
@@ -164,7 +171,8 @@ final class RimeSettingsStore {
     }
 
     func licenseAccepted(for schemaID: String) -> Bool {
-        schemaManager.licenseAccepted(for: schemaID)
+        _ = licenseAcceptanceEpoch
+        return schemaManager.licenseAccepted(for: schemaID)
     }
 
     func load() {
@@ -495,7 +503,10 @@ final class RimeSettingsStore {
         await triggerDeployment()
     }
     func acceptLicense() { acceptLicense(for: "rime_ice") }
-    func acceptLicense(for schemaID: String) { schemaManager.acceptLicense(for: schemaID) }
+    func acceptLicense(for schemaID: String) {
+        schemaManager.acceptLicense(for: schemaID)
+        licenseAcceptanceEpoch += 1
+    }
     func startDownload() { startDownload(schemaID: "rime_ice") }
     func startDownload(schemaID: String) { schemaManager.startDownload(schemaID: schemaID) }
     func cancelDownload() { schemaManager.cancelDownload() }

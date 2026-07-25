@@ -13,6 +13,8 @@ struct Universe_KeyboardApp: App {
         AppAppearance.migrateLegacyPreferenceIfNeeded()
         SystemAppNotificationClient.shared.configure()
         RimeAutomaticSyncScheduler.shared.registerBackgroundTask()
+        // Main-App TipKit only (`PD-HELP-TIPKIT-001` P3). Never configure tips in Keyboard Extension.
+        ActivationTips.configure()
     }
 
     var body: some Scene {

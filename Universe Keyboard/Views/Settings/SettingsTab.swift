@@ -128,6 +128,8 @@ struct SettingsTab: View {
             ) {
                 RimeSettingsView(store: rimeStore)
             }
+            // Tip only eligible while prepare-resources step is incomplete (TipKit rules).
+            .activationPopoverTip(for: .prepareResources)
 
             SettingsNavigationLink(
                 systemImage: "sparkles",
@@ -218,8 +220,21 @@ struct SettingsTab: View {
     private var appSettingsSection: some View {
         SettingsGroup(
             title: "App 设置",
-            footer: "外观与通知只影响主 App；输入仍在键盘扩展里完成。"
+            footer: "外观与通知只影响主 App；输入仍在键盘扩展里完成。启用指南可随时从这里重看。"
         ) {
+            SettingsNavigationLink(
+                systemImage: "book.pages",
+                title: ActivationCopy.settingsHelpEntryTitle,
+                subtitle: ActivationCopy.settingsHelpEntrySubtitle
+            ) {
+                // Parent Settings already provides NavigationStack.
+                GuideTab(
+                    embedsOwnNavigationStack: false,
+                    rimeStore: rimeStore,
+                    onRequestTryInput: nil
+                )
+            }
+
             SettingsNavigationLink(
                 systemImage: "circle.lefthalf.filled",
                 title: "外观",
@@ -235,7 +250,10 @@ struct SettingsTab: View {
                     ? "管理通知和操作状态提示"
                     : "通知已关闭，可单独保留操作状态提示"
             ) {
-                NotificationSettingsView(model: notificationSettings)
+                NotificationSettingsView(
+                    model: notificationSettings,
+                    isRimeSyncMethodConfigured: syncModel.provider != .none
+                )
             }
 
             SettingsNavigationLink(
@@ -270,8 +288,8 @@ struct SettingsTab: View {
         ) {
             SettingsNavigationLink(
                 systemImage: "waveform.path.ecg.text",
-                title: "诊断日志",
-                subtitle: "开关、分类和日志记录"
+                title: "诊断",
+                subtitle: "本机记录、分类与高级排查"
             ) {
                 DiagnosticsSettingsView()
             }

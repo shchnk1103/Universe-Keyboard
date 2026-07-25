@@ -20,7 +20,7 @@ struct FeedbackSettingsView: View {
         Form {
             Section {
                 Toggle("按键音", isOn: keyClickBinding)
-                    .toggleStyle(MonochromeToggleStyle())
+                    .toggleStyle(.switch)
             } header: {
                 Text("按键音")
             } footer: {
@@ -29,25 +29,31 @@ struct FeedbackSettingsView: View {
 
             Section {
                 Toggle("按键震动", isOn: hapticBinding)
-                    .toggleStyle(MonochromeToggleStyle())
+                    .toggleStyle(.switch)
             } header: {
                 Text("触感反馈")
             } footer: {
                 Text(hapticFooter)
             }
 
-            if hapticEnabled {
-                Section {
-                    FeedbackLevelSelectionView(selection: $hapticLevel) { level in
-                        feedbackSettingsDefaults?.synchronize()
-                        previewCoordinator.previewHaptic(level: level)
-                    }
-                } header: {
-                    Text("震动强度")
-                } footer: {
-                    Text("选择档位后会自动感受一次。同一档位不会重复触发，快速连续选择时会自动节流。")
+            // Always mounted: avoid Form Section insert/remove when haptic toggles (AsyncRenderer).
+            Section {
+                FeedbackLevelSelectionView(selection: $hapticLevel) { level in
+                    guard hapticEnabled else { return }
+                    feedbackSettingsDefaults?.synchronize()
+                    previewCoordinator.previewHaptic(level: level)
                 }
+            } header: {
+                Text("震动强度")
+            } footer: {
+                Text(
+                    hapticEnabled
+                        ? "选择档位后会自动感受一次。同一档位不会重复触发，快速连续选择时会自动节流。"
+                        : "开启「按键震动」后可调整强度并预览。"
+                )
             }
+            .disabled(!hapticEnabled)
+            .opacity(hapticEnabled ? 1 : 0.48)
         }
         .navigationTitle("键盘反馈")
         .tint(.primary)
