@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S4 capped-two-syllable preflight authorized; implementation and evidence pending`
+**Lifecycle status:** `Active — S4 capped-two-syllable preflight accepted at immutable checkpoint; Product/Release Gate pending`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -237,6 +237,29 @@ Evidence:
 
 Independent review handoff:
 [`t9-auto-anchor-001-s5-review-handoff.md`](t9-auto-anchor-001-s5-review-handoff.md).
+
+## S4 capped-two-syllable execution evidence
+
+- Immutable implementation checkpoint:
+  `22d34ddb612dcf50e5dc0dde569ba82c226d3731`.
+- Focused controller/policy tests passed `15 / 15`; full KeyboardCore passed
+  `748 / 748`.
+- The explicit real-RIME class passed `7 / 7` with `0` failed and `0`
+  skipped, including the declared 24-case corpus and isolated S5 matrix.
+- The frozen startup-paired Simulator matrix produced `5 / 5` valid pairs and
+  `10 / 10` valid arms. Every B arm accepted exactly one seven-slot
+  (two-syllable) anchor with `5 / 5 / 5` candidate conservation and without
+  acquiring user Path ownership.
+- All five paired p95 and worst deltas improved. Local median noise and one
+  pair-5 slot-24 regression remain Product/Performance inputs, not a Product
+  SLO decision.
+- Strict Debug and Release builds passed with zero diagnostics; Release
+  behavior remains disabled. RIME vendor inventory passed `11 / 11`.
+- Independent Architecture and Quality reviews both returned `Pass` with no
+  P0–P3 findings, bound to the immutable implementation checkpoint.
+
+Evidence:
+[`../evidence/t9-auto-anchor-s4-cap2-2026-07-27.md`](../evidence/t9-auto-anchor-s4-cap2-2026-07-27.md).
 
 ## Handoff
 

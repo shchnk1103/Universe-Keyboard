@@ -1,6 +1,6 @@
 # ADR 0024: T9 Auto-Anchor Observation And Reversible Prototype Boundary
 
-- **Status:** Proposed — S4 capped-two-syllable preflight authorized; Architecture entry review pending
+- **Status:** Proposed — S4 capped-two-syllable preflight independently validated; Product/Release decision deferred
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
@@ -234,6 +234,15 @@ must include deterministic policy/controller tests, the declared 24-case and
 isolated-personalization regressions, strict Debug/Release builds and a frozen
 startup-paired Simulator A/B. Physical-device and Product Gate acceptance
 remain outside this preflight.
+
+The authorized S4 preflight is validated at immutable implementation checkpoint
+`22d34ddb612dcf50e5dc0dde569ba82c226d3731`. Deterministic tests, the explicit
+real-RIME class (`7 / 7`, zero skipped), the 24-case and isolated-personalization
+matrices, strict Debug/Release builds and five valid startup pairs all passed.
+Architecture and Quality independently returned `Pass` with no P0–P3 findings.
+This validates the bounded Debug experiment only; the ADR remains Proposed
+because Release-default behavior, product controls and physical-device Product
+Gate evidence are still deferred.
 
 ## Stage 3 read-only amendment: later opportunity after rejection
 
