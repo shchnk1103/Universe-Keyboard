@@ -21,6 +21,11 @@ extension RimeEngineImpl {
         let processKeyTiming = RimeProcessKeyBridgeTiming(rawOutput: raw)
         let firstKeyBridgeTiming = RimeFirstKeyBridgeTiming(rawOutput: raw)
 #if DEBUG
+        lastLibrimeProcessKeyDurationMs =
+            processKeyTiming?.librimeProcessKeyMs
+            ?? firstKeyBridgeTiming?.librimeProcessKeyMs
+#endif
+#if DEBUG
         Logger.shared.debug(
             "RIME BRIDGE END keyLength=\(key.count) durationMs=\(String(format: "%.1f", bridgeElapsed))",
             category: .engine

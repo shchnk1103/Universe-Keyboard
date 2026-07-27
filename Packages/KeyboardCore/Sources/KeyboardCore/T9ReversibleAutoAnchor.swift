@@ -70,6 +70,9 @@ public enum T9ReversibleAutoAnchorPolicy {
         public var minimumClosedSyllableCount: Int
         public var minimumAnchoredSlotCount: Int
         public var minimumUnresolvedSlotCount: Int
+        /// Optional cap applied after the existing S2 proposal is eligible.
+        /// `nil` preserves the uncapped policy for controlled comparisons.
+        public var maximumAnchoredSyllableCount: Int?
         /// Integer percentage in `0...100`.
         public var minimumCandidateOverlapPercent: Int
 
@@ -80,6 +83,7 @@ public enum T9ReversibleAutoAnchorPolicy {
             minimumClosedSyllableCount: Int = 2,
             minimumAnchoredSlotCount: Int = 6,
             minimumUnresolvedSlotCount: Int = 4,
+            maximumAnchoredSyllableCount: Int? = nil,
             minimumCandidateOverlapPercent: Int = 60
         ) {
             self.minimumSourceDigitCount = max(1, minimumSourceDigitCount)
@@ -91,13 +95,19 @@ public enum T9ReversibleAutoAnchorPolicy {
             self.minimumClosedSyllableCount = max(1, minimumClosedSyllableCount)
             self.minimumAnchoredSlotCount = max(1, minimumAnchoredSlotCount)
             self.minimumUnresolvedSlotCount = max(1, minimumUnresolvedSlotCount)
+            self.maximumAnchoredSyllableCount =
+                maximumAnchoredSyllableCount.map { max(1, $0) }
             self.minimumCandidateOverlapPercent = min(
                 100,
                 max(0, minimumCandidateOverlapPercent)
             )
         }
 
-        public static let experimental = Configuration()
+        /// Product-authorized S4 preflight: one eligible S2 proposal, capped
+        /// to its first two anchored syllables before the single transaction.
+        public static let experimental = Configuration(
+            maximumAnchoredSyllableCount: 2
+        )
     }
 
     public struct Proposal: Equatable, Sendable {
@@ -186,6 +196,24 @@ public enum T9ReversibleAutoAnchorPolicy {
             anchoredSlots += slotCount
         }
 
+        guard selected.count >= configuration.minimumClosedSyllableCount,
+              anchoredSlots >= configuration.minimumAnchoredSlotCount
+        else {
+            return nil
+        }
+
+        // The cap is applied only after the original S2 proposal has passed
+        // every eligibility and catalog check. It cannot make an otherwise
+        // invalid longer prefix eligible.
+        if let maximumAnchoredSyllableCount =
+            configuration.maximumAnchoredSyllableCount,
+            selected.count > maximumAnchoredSyllableCount
+        {
+            selected = Array(selected.prefix(maximumAnchoredSyllableCount))
+            anchoredSlots = selected.reduce(0) {
+                $0 + T9PinyinPathExtractor.asciiLetterCount(in: $1)
+            }
+        }
         guard selected.count >= configuration.minimumClosedSyllableCount,
               anchoredSlots >= configuration.minimumAnchoredSlotCount
         else {

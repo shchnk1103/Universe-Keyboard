@@ -13,6 +13,62 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         minimumCandidateOverlapPercent: 60
     )
 
+    func testExperimentalProposalCapsEligiblePrefixAtTwoSyllables() throws {
+        let source = digits(for: "jintianhenhaoma")
+        let baseline = output(
+            raw: source,
+            texts: ["甲", "乙", "丙", "丁", "戊"],
+            comments: Array(repeating: "jin tian hen hao ma", count: 5)
+        )
+
+        let uncapped = try XCTUnwrap(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: compactConfiguration
+            )
+        )
+        XCTAssertGreaterThan(uncapped.anchoredSyllables.count, 2)
+
+        var cappedConfiguration = compactConfiguration
+        cappedConfiguration.maximumAnchoredSyllableCount = 2
+        let capped = try XCTUnwrap(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: cappedConfiguration
+            )
+        )
+
+        XCTAssertEqual(capped.anchoredSyllables, ["jin", "tian"])
+        XCTAssertEqual(capped.anchoredSlotCount, 7)
+        XCTAssertEqual(capped.unresolvedSlotCount, source.count - 7)
+        XCTAssertEqual(
+            capped.replacementRawInput,
+            "jin'tian'" + String(source.dropFirst(7))
+        )
+    }
+
+    func testCapCannotBypassLaterCatalogInvalidity() {
+        let source = digits(for: "jintianjknhao")
+        let baseline = output(
+            raw: source,
+            texts: ["甲", "乙", "丙"],
+            comments: Array(repeating: "jin tian jkn hao", count: 3)
+        )
+        var cappedConfiguration = compactConfiguration
+        cappedConfiguration.maximumAnchoredSyllableCount = 2
+
+        XCTAssertNil(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: cappedConfiguration
+            ),
+            "cap2 must not hide a later closed syllable that fails the original S2 catalog check"
+        )
+    }
+
     func testProposalBuildsCatalogLegalClosedPrefixAndLeavesDigitTail() {
         let source = digits(for: "jintianhenhao")
         let output = output(
@@ -263,6 +319,15 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         )
         XCTAssertEqual(fixture.engine.replaceInputArguments, [fixture.anchoredRaw])
         XCTAssertEqual(fixture.engine.candidateWindowCallCount, 0)
+        XCTAssertNil(
+            fixture.controller.state.t9PinyinPathState.selectedPath,
+            "automatic anchoring must not become a user Path selection"
+        )
+        XCTAssertTrue(
+            fixture.controller.state.t9PinyinPathState
+                .confirmedSegmentValues.isEmpty,
+            "automatic syllable boundaries must not become user-confirmed Path segments"
+        )
 
         fixture.engine.dictionary[fixture.anchoredRaw + "2"] = fixture.candidates
         fixture.engine.comments[fixture.anchoredRaw + "2"] = fixture.comments
@@ -291,6 +356,46 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         XCTAssertEqual(
             fixture.controller.state.t9ReversibleAutoAnchorState.sourceDigits,
             fixture.sourceDigits + "2"
+        )
+        XCTAssertNil(
+            fixture.controller.state.t9PinyinPathState.selectedPath,
+            "continued input must preserve automatic anchoring without adopting Path ownership"
+        )
+        XCTAssertTrue(
+            fixture.controller.state.t9PinyinPathState
+                .confirmedSegmentValues.isEmpty
+        )
+    }
+
+    func testExplicitPathSelectionSupersedesAcceptedAutomaticAnchor() throws {
+        let fixture = makeControllerFixture()
+        type(fixture.sourceDigits, on: fixture.controller)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+
+        let path = try XCTUnwrap(
+            fixture.controller.state.t9PinyinPathState.compactPaths.first
+        )
+        fixture.engine.dictionary[path.replacementRawInput] =
+            fixture.candidates
+        fixture.engine.comments[path.replacementRawInput] =
+            fixture.comments
+
+        let effects = fixture.controller.handle(.selectT9PinyinPath(path))
+
+        XCTAssertFalse(effects.isEmpty)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            .empty,
+            "an explicit Path choice must supersede the automatic rollback ledger"
+        )
+        XCTAssertTrue(
+            fixture.controller.state.t9PinyinPathState.selectedPath != nil
+                || !fixture.controller.state.t9PinyinPathState
+                    .confirmedSegmentValues.isEmpty,
+            "the explicit Path action, not automation, must own the refined branch"
         )
     }
 
@@ -404,9 +509,9 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         _ = fixture.controller.handle(.deleteBackward)
 
         XCTAssertEqual(
-            fixture.engine.replaceInputArguments[callsBeforeDelete],
+            fixture.engine.sessionComposition,
             fixture.anchoredRaw,
-            "Delete should restore the user-owned partial checkpoint, not the old digit ledger"
+            "Delete should replay the user-owned partial checkpoint, not the old digit ledger"
         )
         XCTAssertEqual(
             fixture.controller.state.t9ReversibleAutoAnchorState,
@@ -480,7 +585,7 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         comments: [String]
     ) {
         let source = digits(for: "jintiandetianqihen")
-        let anchored = "jin'tian'de'tian'" + String(source.dropFirst(13))
+        let anchored = "jin'tian'" + String(source.dropFirst(7))
         let candidates = ["今天天气很好", "今天的天气很", "今日天气很好", "今天气候很好", "今天的天很好"]
         let comments = Array(repeating: "jin tian de tian qi hen", count: candidates.count)
         var dictionary = [

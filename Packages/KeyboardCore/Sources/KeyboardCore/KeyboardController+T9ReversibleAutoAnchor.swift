@@ -24,6 +24,7 @@ extension KeyboardController {
         ) else {
             return .notEligible
         }
+        let userPathSnapshot = state.t9PinyinPathState
 
         // Mark the composition before crossing the RIME boundary. Any rejection
         // still consumes its single automatic attempt.
@@ -47,6 +48,10 @@ extension KeyboardController {
 
         if validation.isAccepted {
             applyRimeOutput(augmentRimeOutputIfNeeded(refined))
+            restoreUnconfirmedT9PathSnapshotAfterAutomaticAnchor(
+                userPathSnapshot,
+                sourceDigits: proposal.sourceDigits
+            )
             state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
                 phase: .accepted,
                 sourceDigits: proposal.sourceDigits,
@@ -195,10 +200,34 @@ extension KeyboardController {
                 == expectedSourceDigits
     }
 
+    /// Mixed raw contains automatic syllable boundaries, not user-confirmed
+    /// Path choices. Restore the pre-transaction snapshot against the new
+    /// revision so the Path UI stays selectable without adopting that prefix.
+    private func restoreUnconfirmedT9PathSnapshotAfterAutomaticAnchor(
+        _ snapshot: T9PinyinPathState,
+        sourceDigits: String
+    ) {
+        var restored = snapshot
+        restored.compactPaths = restampPaths(snapshot.compactPaths)
+        restored.selectedPath = nil
+        restored.compositionRevision = state.compositionRevision
+        restored.trackedRawInput = sourceDigits
+        restored.issuedReplacementKeys = Set(
+            restored.compactPaths.map(\.replacementRawInput)
+        )
+        restored.issuedPathIDs = Set(restored.compactPaths.map(\.id))
+        restored.segmentSourceDigits = sourceDigits
+        restored.focusedSegmentIndex = sourceDigits.isEmpty ? nil : 0
+        restored.confirmedSegmentValues = []
+        restored.provisionalPathID = restored.compactPaths.first?.id
+        state.t9PinyinPathState = restored
+    }
+
     private func logReversibleT9AutoAnchor(
         _ outcome: T9ReversibleAutoAnchorOutcome
     ) {
         #if DEBUG
+        onReversibleT9AutoAnchorOutcome?(outcome)
         Logger.shared.debug(
             "T9AUTO status=\(outcome.status.rawValue) "
                 + "baseline=\(outcome.baselineCandidateCount) "

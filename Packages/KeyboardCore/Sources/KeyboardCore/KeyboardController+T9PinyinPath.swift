@@ -1085,7 +1085,7 @@ extension KeyboardController {
 
     /// Restamps path compositionRevision to the live controller revision so
     /// post-restore selections pass the Core stale-revision guard.
-    private func restampPaths(_ paths: [T9PinyinPath]) -> [T9PinyinPath] {
+    func restampPaths(_ paths: [T9PinyinPath]) -> [T9PinyinPath] {
         let revision = state.compositionRevision
         return paths.map { path in
             T9PinyinPath(
@@ -1164,6 +1164,12 @@ extension KeyboardController {
               identity.sourceDigits.count > 1
         else { return false }
         installIdentityAsPathState(identity)
+        // Automatic anchoring is deliberately invisible to user Path
+        // ownership. Its reversible ledger keeps the mixed RIME raw coherent,
+        // while this unconfirmed identity remains the Path source of truth.
+        if state.t9ReversibleAutoAnchorState.phase == .accepted {
+            return true
+        }
         let liveRaw = state.lastRimeOutput?.rawInput ?? ""
         let pureLive = !liveRaw.isEmpty && liveRaw.allSatisfy(\.isNumber)
         // Only re-drive RIME when the engine raw drifted off the Core digit ledger

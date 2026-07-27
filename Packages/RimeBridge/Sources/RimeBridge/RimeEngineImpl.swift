@@ -48,6 +48,10 @@ public final class RimeEngineImpl: RimeEngine {
     public internal(set) var runtimeSelection: RimeRuntimeSelection?
     /// Propagates realized selection (including fail-closed) to extension chrome/controller.
     public var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)?
+    #if DEBUG
+    /// Content-free timing exposed only to the controlled Simulator preflight.
+    internal var lastLibrimeProcessKeyDurationMs: Double?
+    #endif
 
     // MARK: === Init ===
 

@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import XCTest
 
@@ -11,7 +12,13 @@ import XCTest
 /// call `KeyboardController` and cannot change the production one-attempt
 /// ledger defined by ADR 0024.
 final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
+    /// Keeps the historical maximal-prefix arm available as a test-only
+    /// comparator while `.experimental` exercises the S4 two-syllable cap.
+    private let maximalPrefixConfiguration =
+        T9ReversibleAutoAnchorPolicy.Configuration()
+
     private enum FixtureSafetyError: Error {
+        case deploymentFailed
         case userRootOutsidePrivateTemporaryDirectory
     }
 
@@ -36,6 +43,28 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         let expectedLearnedRank: Int
         let expectedTwoAccepted: Bool
         let expectedTwoOverlap: Int
+    }
+
+    private struct S4PairedArmSummary {
+        let pairIndex: Int
+        let runID: String
+        let gateEnabled: Bool
+        let startupValid: Bool
+        let sessionValid: Bool
+        let cleanupSucceeded: Bool
+        let durationsMs: [Double]
+        let librimeDurationsMs: [Double]
+        let outcome: T9ReversibleAutoAnchorOutcome?
+        let invalidReasons: [String]
+
+        var isValid: Bool {
+            startupValid
+                && sessionValid
+                && cleanupSucceeded
+                && invalidReasons.isEmpty
+                && durationsMs.count == 38
+                && librimeDurationsMs.count == 38
+        }
     }
 
     func testPersonalizationFixtureUserRootSafetyPolicy() throws {
@@ -69,6 +98,120 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
             authorizedTemporaryUserRoot(
                 "/Users/example/Library/Group Containers/user"
             )
+        )
+    }
+
+    @MainActor
+    func testCappedTwoSyllableControllerFrozenPairedMatrix() async throws {
+        let environment = ProcessInfo.processInfo.environment
+        guard
+            let implementationCommit = environmentValue(
+                "UK_S4_IMPLEMENTATION_COMMIT",
+                environment: environment
+            ),
+            isLowercaseSHA1(implementationCommit)
+        else {
+            throw XCTSkip(
+                "Set the immutable 40-character lowercase S4 commit to run the paired matrix."
+            )
+        }
+
+        let directories = try spikeRuntimeDirectories()
+        try assertSpikeSchemaIsPatched(sharedDir: directories.sharedDir)
+        let fixtureFingerprint = try canonicalDirectorySHA256(
+            atPath: directories.sharedDir
+        )
+        let testBundle = Bundle(
+            for: RimeT9AutoAnchorRetryMatrixTests.self
+        )
+        guard
+            let executableURL = testBundle.executableURL,
+            let testBundleID = testBundle.bundleIdentifier,
+            let xcodeBuild = testBundle.object(
+                forInfoDictionaryKey: "DTXcodeBuild"
+            ) as? String,
+            let simulatorID = environment["SIMULATOR_UDID"],
+            let simulatorModel = environment["SIMULATOR_MODEL_IDENTIFIER"],
+            let simulatorRuntime = environment["SIMULATOR_RUNTIME_VERSION"]
+        else {
+            XCTFail("The frozen S4 Run Header is incomplete.")
+            return
+        }
+        let testExecutableSHA256 = try fileSHA256(at: executableURL)
+        let sourceDigits = t9Digits(
+            for: "jintiandetianqihenbucuowomenchuquwanba"
+        )
+        XCTAssertEqual(sourceDigits.count, 38)
+        let matrixRunID = UUID().uuidString
+
+        let gateOrders = [
+            [false, true],
+            [true, false],
+            [false, true],
+            [true, false],
+            [false, true],
+        ]
+        var summaries: [S4PairedArmSummary] = []
+
+        for (pairOffset, gateOrder) in gateOrders.enumerated() {
+            for gateEnabled in gateOrder {
+                summaries.append(
+                    await runS4PairedArm(
+                        pairIndex: pairOffset + 1,
+                        runID: "\(matrixRunID)-\(pairOffset + 1)-\(gateEnabled ? "B" : "A")",
+                        gateEnabled: gateEnabled,
+                        sourceDigits: sourceDigits,
+                        sharedDir: directories.sharedDir,
+                        userRoot: directories.userDir
+                    )
+                )
+            }
+        }
+
+        XCTAssertEqual(summaries.count, 10)
+        let rows = summaries.map(s4PairedSummaryRow).joined(separator: ";")
+        let validPairCount = (1...5).count { pairIndex in
+            let pair = summaries.filter { $0.pairIndex == pairIndex }
+            return pair.count == 2 && pair.allSatisfy(\.isValid)
+        }
+        let pairedDeltas = s4PairedDeltaRows(summaries)
+            .joined(separator: ";")
+        #if DEBUG
+        let buildConfiguration = "Debug"
+        #else
+        let buildConfiguration = "Release"
+        #endif
+        let runHeader = [
+            "runID=\(matrixRunID)",
+            "commit=\(implementationCommit)",
+            "fixture=\(fixtureFingerprint)",
+            "testExecutable=\(testExecutableSHA256)",
+            "xcodeBuild=\(xcodeBuild)",
+            "configuration=\(buildConfiguration)",
+            "testBundle=\(testBundleID)",
+            "simulator=\(simulatorID)",
+            "model=\(simulatorModel)",
+            "runtime=\(simulatorRuntime)",
+            "architecture=\(runtimeArchitecture)",
+            "schema=t9",
+            "userRootPolicy=generatedStrictPrivateTmpDescendant",
+            "cadenceMs=200",
+            "pairs=5",
+            "validPairs=\(validPairCount)",
+            "order=AB,BA,AB,BA,AB",
+            "rows=\(rows)",
+            "pairedDeltas=\(pairedDeltas)",
+        ].joined(separator: " ")
+        fputs("T9_S4_PAIRED \(runHeader)\n", stderr)
+        print("T9_S4_PAIRED \(runHeader)")
+        XCTAssertTrue(
+            summaries.allSatisfy(\.isValid),
+            "Invalid arms remain in the manifest; the paired matrix is Blocked."
+        )
+        XCTAssertEqual(
+            validPairCount,
+            5,
+            "Fewer than five valid pairs makes the paired matrix Blocked."
         )
     }
 
@@ -110,7 +253,8 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
             guard sourceSlot >= 18,
                 let proposal = T9ReversibleAutoAnchorPolicy.proposal(
                     sourceDigits: String(sourceDigits.prefix(sourceSlot)),
-                    output: baselineOutput
+                    output: baselineOutput,
+                    configuration: maximalPrefixConfiguration
                 )
             else {
                 continue
@@ -753,7 +897,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         engine: RimeEngineImpl
     ) -> Attempt? {
         guard
-            let maximalProposal =
+            let proposal =
                 T9ReversibleAutoAnchorPolicy.proposal(
                     sourceDigits: sourceDigits,
                     output: baselineOutput
@@ -767,19 +911,6 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
                     .experimental.evidenceCandidateLimit
             )
         )
-        let proposal: T9ReversibleAutoAnchorPolicy.Proposal?
-        if maximalProposal.anchoredSyllables.count == 2 {
-            proposal = maximalProposal
-        } else {
-            proposal = makeBackoffProposal(
-                from: maximalProposal,
-                syllableCount: 2,
-                baselineCandidates: baselineCandidates
-            )
-        }
-        guard let proposal else {
-            return nil
-        }
         return runTransaction(
             engine: engine,
             sourceSlot: sourceDigits.count,
@@ -970,7 +1101,8 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
                 let maximalProposal =
                     T9ReversibleAutoAnchorPolicy.proposal(
                         sourceDigits: prefixDigits,
-                        output: output
+                        output: output,
+                        configuration: maximalPrefixConfiguration
                     ),
                 let backoffProposal = makeBackoffProposal(
                     from: maximalProposal,
@@ -1055,7 +1187,8 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
                 let maximalProposal =
                     T9ReversibleAutoAnchorPolicy.proposal(
                         sourceDigits: digits,
-                        output: output
+                        output: output,
+                        configuration: maximalPrefixConfiguration
                     )
             else {
                 XCTAssertFalse(
@@ -1282,7 +1415,8 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
                             sourceDigits: String(
                                 digits.prefix(sourceSlot)
                             ),
-                            output: output
+                            output: output,
+                            configuration: maximalPrefixConfiguration
                         )
                 else {
                     continue
@@ -1324,16 +1458,11 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
                 maximalAcceptedCount += 1
             }
 
-            let twoSyllableProposal: T9ReversibleAutoAnchorPolicy.Proposal?
-            if maximalProposal.anchoredSyllables.count == 2 {
-                twoSyllableProposal = maximalProposal
-            } else {
-                twoSyllableProposal = makeBackoffProposal(
-                    from: maximalProposal,
-                    syllableCount: 2,
-                    baselineCandidates: baselineCandidates
+            let twoSyllableProposal =
+                T9ReversibleAutoAnchorPolicy.proposal(
+                    sourceDigits: String(digits.prefix(proposalSlot)),
+                    output: baselineOutput
                 )
-            }
             let twoSyllableAttempt = twoSyllableProposal.map {
                 runTransaction(
                     engine: engine,
@@ -1460,6 +1589,364 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
             "w": "9", "x": "9", "y": "9", "z": "9",
         ]
         return String(spelling.lowercased().compactMap { mapping[$0] })
+    }
+
+    @MainActor
+    private func runS4PairedArm(
+        pairIndex: Int,
+        runID: String,
+        gateEnabled: Bool,
+        sourceDigits: String,
+        sharedDir: String,
+        userRoot: String
+    ) async -> S4PairedArmSummary {
+        let armUserURL = URL(
+            fileURLWithPath: userRoot,
+            isDirectory: true
+        )
+        .appendingPathComponent(
+            "s4-pair-\(pairIndex)-\(gateEnabled ? "b" : "a")-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        var engine: RimeEngineImpl?
+        var startupValid = false
+        var sessionValid = false
+        var cleanupSucceeded = false
+        var durationsMs: [Double] = []
+        var librimeDurationsMs: [Double] = []
+        var outcome: T9ReversibleAutoAnchorOutcome?
+        var invalidReasons: [String] = []
+
+        do {
+            try FileManager.default.createDirectory(
+                at: armUserURL,
+                withIntermediateDirectories: false
+            )
+            let deployResult = try await RimeDeploymentService().deploy(
+                RimeDeploymentRequest(
+                    mode: .fullCheck,
+                    sharedDataURL: URL(
+                        fileURLWithPath: sharedDir,
+                        isDirectory: true
+                    ),
+                    userDataURL: armUserURL,
+                    runtimeSmokeSchemaID: nil
+                )
+            )
+            guard deployResult.succeeded else {
+                invalidReasons.append("deploymentFailed")
+                throw FixtureSafetyError.deploymentFailed
+            }
+
+            let liveEngine = RimeEngineImpl(
+                sharedDataDir: sharedDir,
+                userDataDir: armUserURL.path
+            )
+            engine = liveEngine
+            sessionValid = liveEngine.bridge.selectSchema("t9")
+            startupValid = sessionValid && !liveEngine.isComposing()
+            if !sessionValid {
+                invalidReasons.append("schemaSelectionFailed")
+            }
+            if !startupValid {
+                invalidReasons.append("nonEmptyStartup")
+            }
+
+            let controller = KeyboardController()
+            controller.rimeEngine = liveEngine
+            controller.textClient = FakeTextInputClient()
+            controller.usesT9InputSemantics = true
+            controller.isReversibleT9AutoAnchorEnabled = gateEnabled
+            var outcomes: [T9ReversibleAutoAnchorOutcome] = []
+            controller.onReversibleT9AutoAnchorOutcome = {
+                outcomes.append($0)
+            }
+
+            durationsMs.reserveCapacity(sourceDigits.count)
+            librimeDurationsMs.reserveCapacity(sourceDigits.count)
+            for (offset, digit) in sourceDigits.enumerated() {
+                let start = ProcessInfo.processInfo.systemUptime
+                _ = controller.handle(.insertKey(String(digit)))
+                durationsMs.append(
+                    (ProcessInfo.processInfo.systemUptime - start) * 1_000
+                )
+                if let librimeDuration =
+                    liveEngine.lastLibrimeProcessKeyDurationMs
+                {
+                    librimeDurationsMs.append(librimeDuration)
+                } else {
+                    invalidReasons.append("missingProcessKeyTiming")
+                }
+                if controller.state.lastRimeOutput?.committedText != nil {
+                    invalidReasons.append("unexpectedCommit")
+                }
+                if controller.state.lastRimeOutput?.candidates.isEmpty
+                    != false
+                {
+                    invalidReasons.append("missingCandidates")
+                }
+                if offset + 1 < sourceDigits.count {
+                    try await Task.sleep(for: .milliseconds(200))
+                }
+            }
+
+            outcome = outcomes.first
+            if controller.state.t9PinyinPathState.selectedPath != nil
+                || !controller.state.t9PinyinPathState
+                    .confirmedSegmentValues.isEmpty
+            {
+                invalidReasons.append("userPathOwnershipChanged")
+            }
+            if gateEnabled {
+                if outcomes.count != 1 {
+                    invalidReasons.append("unexpectedAttemptCount")
+                }
+                if outcome?.status != .accepted {
+                    invalidReasons.append("attemptNotAccepted")
+                }
+                if outcome?.anchoredSlotCount != 7 {
+                    invalidReasons.append("unexpectedAnchorDepth")
+                }
+                if controller.state.t9ReversibleAutoAnchorState.phase
+                    != .accepted
+                {
+                    invalidReasons.append("acceptedLedgerMissing")
+                }
+            } else {
+                if !outcomes.isEmpty {
+                    invalidReasons.append("disabledGateAttempted")
+                }
+                if controller.state.t9ReversibleAutoAnchorState != .empty {
+                    invalidReasons.append("disabledGateMutatedLedger")
+                }
+            }
+            if durationsMs.count != 38 {
+                invalidReasons.append("wrongKeyCount")
+            }
+            if librimeDurationsMs.count != 38 {
+                invalidReasons.append("incompleteProcessKeyTiming")
+            }
+            controller.onReversibleT9AutoAnchorOutcome = nil
+        } catch is CancellationError {
+            invalidReasons.append("cancelled")
+        } catch {
+            if !invalidReasons.contains("deploymentFailed") {
+                invalidReasons.append("executionError")
+            }
+        }
+
+        engine?.bridge.clearComposition()
+        engine?.bridge.finalize()
+        do {
+            if FileManager.default.fileExists(atPath: armUserURL.path) {
+                try FileManager.default.removeItem(at: armUserURL)
+            }
+            cleanupSucceeded =
+                !FileManager.default.fileExists(atPath: armUserURL.path)
+        } catch {
+            invalidReasons.append("cleanupFailed")
+        }
+
+        return S4PairedArmSummary(
+            pairIndex: pairIndex,
+            runID: runID,
+            gateEnabled: gateEnabled,
+            startupValid: startupValid,
+            sessionValid: sessionValid,
+            cleanupSucceeded: cleanupSucceeded,
+            durationsMs: durationsMs,
+            librimeDurationsMs: librimeDurationsMs,
+            outcome: outcome,
+            invalidReasons: Array(Set(invalidReasons)).sorted()
+        )
+    }
+
+    private func environmentValue(
+        _ key: String,
+        environment: [String: String]
+    ) -> String? {
+        environment[key] ?? environment["TEST_RUNNER_\(key)"]
+    }
+
+    private func s4PairedSummaryRow(
+        _ summary: S4PairedArmSummary
+    ) -> String {
+        let sorted = summary.durationsMs.sorted()
+        let slowCount = summary.durationsMs.count { $0 >= 50 }
+        let median = percentile(sorted, fraction: 0.5)
+        let p95 = percentile(sorted, fraction: 0.95)
+        let worst = sorted.last ?? 0
+        let fixedSlots = [24, 32, 34].map { slot in
+            String(
+                format: "%d:%.1f",
+                slot,
+                summary.durationsMs.indices.contains(slot - 1)
+                    ? summary.durationsMs[slot - 1]
+                    : -1
+            )
+        }
+        .joined(separator: ",")
+        let totalSlots = summary.durationsMs.enumerated().map {
+            String(format: "%d:%.1f", $0.offset + 1, $0.element)
+        }
+        .joined(separator: "|")
+        let processSlots = summary.librimeDurationsMs.enumerated().map {
+            String(format: "%d:%.1f", $0.offset + 1, $0.element)
+        }
+        .joined(separator: "|")
+        return [
+            "pair=\(summary.pairIndex)",
+            "run=\(summary.runID)",
+            "arm=\(summary.gateEnabled ? "B" : "A")",
+            "valid=\(summary.isValid)",
+            "reasons=\(summary.invalidReasons.joined(separator: "+"))",
+            "startupValid=\(summary.startupValid)",
+            "sessionValid=\(summary.sessionValid)",
+            "cleanup=\(summary.cleanupSucceeded)",
+            "keys=\(summary.durationsMs.count)",
+            "attempt=\(summary.outcome?.status.rawValue ?? "none")",
+            "anchorSlots=\(summary.outcome?.anchoredSlotCount ?? 0)",
+            "unresolvedSlots=\(summary.outcome?.unresolvedSlotCount ?? 0)",
+            "baseline=\(summary.outcome?.baselineCandidateCount ?? 0)",
+            "result=\(summary.outcome?.resultingCandidateCount ?? 0)",
+            "overlap=\(summary.outcome?.overlappingCandidateCount ?? 0)",
+            "slow50=\(slowCount)",
+            String(format: "median=%.1f", median),
+            String(format: "p95=%.1f", p95),
+            String(format: "worst=%.1f", worst),
+            "slots=\(fixedSlots)",
+            "totalBySlot=\(totalSlots)",
+            "processKeyBySlot=\(processSlots)",
+        ].joined(separator: ",")
+    }
+
+    private func s4PairedDeltaRows(
+        _ summaries: [S4PairedArmSummary]
+    ) -> [String] {
+        (1...5).map { pairIndex in
+            let pair = summaries.filter { $0.pairIndex == pairIndex }
+            guard
+                let a = pair.first(where: { !$0.gateEnabled }),
+                let b = pair.first(where: \.gateEnabled),
+                a.isValid,
+                b.isValid
+            else {
+                return "pair=\(pairIndex),valid=false"
+            }
+            let aSorted = a.durationsMs.sorted()
+            let bSorted = b.durationsMs.sorted()
+            let slotDeltas = [24, 32, 34].map { slot in
+                String(
+                    format: "%d:%.1f",
+                    slot,
+                    b.durationsMs[slot - 1] - a.durationsMs[slot - 1]
+                )
+            }
+            .joined(separator: ",")
+            return [
+                "pair=\(pairIndex)",
+                "valid=true",
+                "slow50=\(b.durationsMs.count { $0 >= 50 } - a.durationsMs.count { $0 >= 50 })",
+                String(
+                    format: "median=%.1f",
+                    percentile(bSorted, fraction: 0.5)
+                        - percentile(aSorted, fraction: 0.5)
+                ),
+                String(
+                    format: "p95=%.1f",
+                    percentile(bSorted, fraction: 0.95)
+                        - percentile(aSorted, fraction: 0.95)
+                ),
+                String(
+                    format: "worst=%.1f",
+                    (bSorted.last ?? 0) - (aSorted.last ?? 0)
+                ),
+                "slots=\(slotDeltas)",
+            ].joined(separator: ",")
+        }
+    }
+
+    private func percentile(
+        _ sortedValues: [Double],
+        fraction: Double
+    ) -> Double {
+        guard let first = sortedValues.first else { return 0 }
+        guard sortedValues.count > 1 else { return first }
+        let position = Double(sortedValues.count - 1) * fraction
+        let lowerIndex = Int(position.rounded(.down))
+        let upperIndex = Int(position.rounded(.up))
+        guard lowerIndex != upperIndex else {
+            return sortedValues[lowerIndex]
+        }
+        let weight = position - Double(lowerIndex)
+        return sortedValues[lowerIndex]
+            + (sortedValues[upperIndex] - sortedValues[lowerIndex]) * weight
+    }
+
+    private var runtimeArchitecture: String {
+        #if arch(arm64)
+        "arm64"
+        #elseif arch(x86_64)
+        "x86_64"
+        #else
+        "unknown"
+        #endif
+    }
+
+    private func isLowercaseSHA1(_ value: String) -> Bool {
+        value.count == 40
+            && value.allSatisfy { character in
+                character.isNumber || ("a"..."f").contains(character)
+            }
+    }
+
+    private func fileSHA256(at url: URL) throws -> String {
+        let data = try Data(contentsOf: url, options: .mappedIfSafe)
+        return SHA256.hash(data: data)
+            .map { String(format: "%02x", $0) }
+            .joined()
+    }
+
+    private func canonicalDirectorySHA256(atPath path: String) throws -> String {
+        let root = URL(fileURLWithPath: path, isDirectory: true)
+            .standardizedFileURL
+            .resolvingSymlinksInPath()
+        let keys: Set<URLResourceKey> = [
+            .isRegularFileKey,
+            .isSymbolicLinkKey,
+        ]
+        let enumerator = FileManager.default.enumerator(
+            at: root,
+            includingPropertiesForKeys: Array(keys),
+            options: [.skipsHiddenFiles]
+        )
+        var files: [URL] = []
+        while let url = enumerator?.nextObject() as? URL {
+            let values = try url.resourceValues(forKeys: keys)
+            if values.isRegularFile == true,
+                values.isSymbolicLink != true
+            {
+                files.append(url)
+            }
+        }
+        files.sort {
+            $0.path.replacingOccurrences(of: root.path, with: "")
+                < $1.path.replacingOccurrences(of: root.path, with: "")
+        }
+
+        var hasher = SHA256()
+        for file in files {
+            let relativePath = String(file.path.dropFirst(root.path.count))
+            hasher.update(data: Data(relativePath.utf8))
+            hasher.update(data: Data([0]))
+            hasher.update(
+                data: try Data(contentsOf: file, options: .mappedIfSafe)
+            )
+            hasher.update(data: Data([0]))
+        }
+        return hasher.finalize()
+            .map { String(format: "%02x", $0) }
+            .joined()
     }
 
     private func spikeRuntimeDirectories() throws -> (

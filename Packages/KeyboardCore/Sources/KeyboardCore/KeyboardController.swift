@@ -27,6 +27,12 @@ public final class KeyboardController {
     public var usesT9InputSemantics = false
     /// Stage 2 prototype gate. Production callers must opt in explicitly.
     public var isReversibleT9AutoAnchorEnabled = false
+    #if DEBUG
+    /// Content-free hook for controlled preflight evidence. Release builds do
+    /// not expose or execute this diagnostic callback.
+    public var onReversibleT9AutoAnchorOutcome:
+        ((T9ReversibleAutoAnchorOutcome) -> Void)?
+    #endif
     var shouldRestoreRimeComposition = false
     var shouldRebuildSessionDuringRestore = false
 
