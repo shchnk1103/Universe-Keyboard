@@ -1,6 +1,6 @@
 # ADR 0024: T9 Auto-Anchor Observation And Reversible Prototype Boundary
 
-- **Status:** Proposed — S5 reviewed at 9c4f86f; S2 review remediation Architecture Reviewed at 0173782; broader stages pending
+- **Status:** Proposed — S4 capped-two-syllable preflight authorized; Architecture entry review pending
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
@@ -205,6 +205,35 @@ Stop Stage 2 if implementation needs later-page scans, repeated automatic
 attempts, a second session, persistence, dictionary access, content-bearing
 logs, Release-default enablement or an assumption that a partial candidate set
 is complete.
+
+## S4 preflight amendment: capped proposal depth
+
+The reviewed S3 transaction matrices make a capped two-syllable proposal the
+leading bounded hypothesis: across the declared corpus it preserved every
+maximal-prefix acceptance, added one natural acceptance and did not admit the
+declared poor or threshold cases. Product has authorized a Debug-only preflight
+of that hypothesis.
+
+For an otherwise eligible S2 proposal, the policy may retain only the first two
+complete, catalog-legal syllables before appending the unresolved digit tail.
+This is a proposal-depth cap, not a second transaction or runtime backoff
+search. All other S2 authority remains unchanged:
+
+- one automatic apply attempt per composition;
+- no write to `selectedPath`, `confirmedSegmentValues` or other user-confirmed
+  Path ownership;
+- the same baseline first candidate;
+- the same original-window multiset candidate-conservation threshold;
+- the same rejection/Delete rollback and user-ownership boundaries;
+- no candidate-window query, persistence, second session or content logging;
+- no 26-key change, user-facing control or Release-default enablement.
+
+Architecture entry review must confirm that the cap remains a pure policy input
+and does not duplicate transaction ownership in the controller. Exit evidence
+must include deterministic policy/controller tests, the declared 24-case and
+isolated-personalization regressions, strict Debug/Release builds and a frozen
+startup-paired Simulator A/B. Physical-device and Product Gate acceptance
+remain outside this preflight.
 
 ## Stage 3 read-only amendment: later opportunity after rejection
 

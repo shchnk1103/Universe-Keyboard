@@ -1,7 +1,7 @@
 # Product Decision: T9-AUTO-ANCHOR-001 Authorization
 
 **Decision ID:** `PD-T9-AUTO-ANCHOR-001`
-**Lifecycle status:** `Recorded — Stage 2 prototype and isolated S5 learning test authorized`
+**Lifecycle status:** `Recorded — Stage 2 prototype, isolated S5 learning test and S4 two-syllable preflight authorized`
 **Date / timezone:** `2026-07-27 Asia/Shanghai`
 **Decision source:** Human Product Owner instructions in active Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`
@@ -96,6 +96,34 @@ The following require a later Product and Architecture amendment:
 - personalization thresholds, retention and deletion;
 - background/serial RIME execution;
 - default enablement, user controls and Release acceptance budgets.
+
+## S4 preflight authorization: capped two-syllable proposal
+
+On `2026-07-27 Asia/Shanghai`, after the S2 review remediation and durable
+Architecture/Quality verdicts at `0173782`, the Human Product Owner explicitly
+authorized the recommended S4 preflight experiment.
+
+After the existing S2 policy has produced an otherwise eligible proposal, the
+preflight may truncate that proposal's anchored-syllable prefix to its first
+two complete, catalog-legal syllables and rebuild the unresolved digit tail. It
+must not write `selectedPath`, `confirmedSegmentValues` or otherwise create
+user-confirmed Path ownership. It may:
+
+- execute the same single automatic apply attempt per composition;
+- retain the existing first-candidate identity and bounded multiset candidate
+  conservation validation;
+- retain the existing rejection and Delete rollback behavior;
+- add deterministic KeyboardCore coverage, rerun the declared 24-case
+  real-RIME corpus and isolated S5 personalization matrix, and collect a frozen
+  startup-paired Simulator A/B using the existing synthetic sequence;
+- produce content-free counts and timing evidence for independent Architecture
+  and Quality review.
+
+The authorization does not permit a second automatic attempt, a backoff loop,
+candidate-window scan, second production session, threshold reduction,
+production personalization, new persistence, 26-key changes, a user-facing
+control or Release-default enablement. Physical-device and Release-like
+acceptance remain later Product Gate dependencies.
 
 ## Isolated Stage 5 personalization-test authorization
 

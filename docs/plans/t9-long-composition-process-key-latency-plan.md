@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — S5 and two S2 review remediations durably reviewed; broader-stage review, next Product decision and physical-device validation pending** |
+| Status | **Active — S4 capped-two-syllable preflight authorized; implementation, paired Simulator evidence and independent review pending** |
 | Created | 2026-07-24 |
 | Product lock | 2026-07-24 |
 | Lane A ship | 2026-07-24 |
@@ -113,7 +113,7 @@ reference and correction surface.
 | S1 — Shadow authority observation | Debug-only analyzer over the already-returned snapshot; content-free `T9SHADOW` reason/count metrics | None | **Implemented and sampled; broader-stage independent review remains pending and Release remains behavior-neutral** |
 | S2 — Reversible bounded-preference prototype | Complete local proof rejected by catalog audit; explicit gate, one-attempt ledger, bounded first-page conservation and Delete/rejection rollback | Debug/explicit gate only | **Implemented. Two later P1 findings were closed and durably re-reviewed at `0173782`; this does not promote the whole stage, and Release remains off** |
 | S3 — Broader engine/corpus shadow | Replay proposed anchors against unchanged inputs across a synthetic corpus; compare candidates, paths and timing | Private test/runtime evidence only | **Six-case, 24-case, later-opportunity and real-RIME transaction matrices complete. A capped two-syllable proposal is the leading next hypothesis; independent stage review and production policy remain pending** |
-| S4 — Release-candidate reversible anchor | Decide default/user control and reviewed thresholds after S2/S3 evidence | Yes, separately authorized | Release-like physical-device evidence and Product/Architecture/Quality review |
+| S4 — Release-candidate reversible anchor | First preflight caps the existing single proposal at two complete syllables; default/user control remains deferred | Debug/explicit gate authorized; Release mutation not authorized | Deterministic/corpus/personalization regression, frozen startup-paired Simulator A/B and independent Architecture/Quality review |
 | S5 — Personalization shadow | Observe whether repeated user-confirmed Path history improves confidence; no duplicate phrase store by default | None until privacy decision | **First isolated matrix durably reviewed at `9c4f86f`: three independent complete-learning cases plus one partial negative; broader language review and retention/deletion/privacy amendment remain open** |
 | S6 — Productization | Default/user control decision, Release-like physical-device performance, memory/jetsam, candidate-quality and Product Gate | Yes | Product/Architecture/Quality acceptance; plan completion/archive |
 
@@ -191,7 +191,13 @@ reference and correction surface.
     decide retention/deletion/privacy before any production integration. Keep
     the current runtime policy unchanged until a new Product/Architecture
     decision.
-18. Advance S3–S6 only through the gates above; update this plan Status →
+18. Implement the Product-authorized S4 preflight as a pure two-syllable
+    proposal-depth cap under the existing one-attempt Debug gate. Revalidate
+    deterministic tests, the declared 24-case corpus, isolated S5 matrix,
+    strict builds and the Assignment-frozen five-pair, 200-ms Simulator A/B
+    before independent review. Explicit fixture classes require zero skips;
+    default-suite fixture skips remain non-coverage.
+19. Advance later S4–S6 work only through the gates above; update this plan Status →
     Completed / Abandoned and archive when the final Product Gate closes.
 
 **Lane B hold:** Quality tradeoffs are allowed by product, but not shipped without device baseline + nine-key Product Gate. Prefer measuring after Lane A behavior change first.
@@ -242,3 +248,4 @@ reference and correction surface.
 | 2026-07-27 | The authorized first reviewed S5 extension used a fresh generated directory for each of three complete-learning cases and one partial negative. Complete cases all produced restart-stable `4 → 0 → 0`; two `3/5` cases remained accepted and one `2/5` case remained rejected. The partial negative required a continuation, moved `2 → 3`, and removed the later proposal. Fixture class passed 5/5, default RimeBridge passed 31 with 14 gated skips, and all generated directories were removed. |
 | 2026-07-27 | Independent Architecture and Quality both returned `Pass with findings`. Remediation now fails closed unless the canonical user root is a strict `/private/tmp` descendant, reduces complete learning to exactly one selection, freezes the negative to one partial plus one continuation, revalidates the Assignment to S5 and completes ADR 0024's required sections. Post-remediation fixture class passed 6/6, default RimeBridge passed 32 with 14 gated skips, and an intentional non-temporary-root run failed before creating data. Checkpoint `9c4f86f` and its documentation record `878532f` later closed the immutable-snapshot finding; remaining S5 P2 limitations stay open. |
 | 2026-07-27 | A later independent branch review found two S2 P1 defects: Partial Commit could retain the old accepted rollback ledger, and duplicate candidate text could shrink the declared five-slot overlap denominator. Checkpoint `0173782` clears old ledger payload while preserving the one-attempt tombstone and counts conservation as a multiset over the original bounded slots. Focused tests passed 12/12, KeyboardCore 745/745 and strict Debug/Release builds passed; the explicit retry fixture passed 6/6, while the default RimeBridge suite recorded 32 passed / 0 failed / 14 fixture-gated skips, with those skips remaining non-coverage. Architecture and Quality bound durable `Pass` verdicts for the two P1 closures with no P0–P3 findings. Documentation checkpoint `b2a5ab1` records the closure without promoting broader stages or changing Assignment `Active`, ADR `Proposed` or Product/Release Gate authority. |
+| 2026-07-27 | Product Owner authorized the recommended S4 preflight: cap the existing Debug-only, single automatic proposal at the first two complete syllables while preserving the one-attempt ledger, first-candidate identity, original-window multiset conservation and rollback contracts. The authorization includes deterministic, 24-case, isolated-personalization, strict-build and frozen startup-paired Simulator evidence. It excludes a second transaction/backoff loop, threshold reduction, production personalization, user controls and Release-default enablement. |

@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S5 reviewed at 9c4f86f and S2 review remediation durably reviewed at 0173782; broader stages pending`
+**Lifecycle status:** `Active — S4 capped-two-syllable preflight authorized; implementation and evidence pending`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -18,7 +18,11 @@
   test using only synthetic candidate selections and mandatory fixture
   deletion, and subsequently authorized a first reviewed S5 extension of three
   independent complete-learning cases plus one partial-selection negative
-  case under the same privacy boundary.
+  case under the same privacy boundary. After the two S2 review findings were
+  closed at `0173782`, the Product Owner explicitly authorized the recommended
+  S4 preflight on `2026-07-27 Asia/Shanghai`: cap the existing single automatic
+  proposal at two complete syllables under the existing Debug gate, then run
+  the declared regression and frozen startup-paired Simulator evidence.
 - **Product Approver:** Human Product Owner acting as Product Lead
 - **Product Decision:** [`PD-T9-AUTO-ANCHOR-001`](../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
 
@@ -33,7 +37,10 @@
   changing the one-attempt ledger or calling RIME. A test target may create a
   generated `/private/tmp` user directory, learn from bounded synthetic
   candidate selections, reopen that same isolated directory to verify a rank
-  delta, and delete it after the session closes.
+  delta, and delete it after the session closes. The S4 preflight may cap the
+  existing eligible proposal at the first two complete catalog syllables and
+  compare it against the disabled baseline without changing the one-attempt,
+  conservation or rollback contracts.
 - **Non-goals:** No Release-default enablement, candidate-window scan, second
   production RIME transaction/session, candidate commit, host-text commit,
   production deployment change,
@@ -52,7 +59,8 @@
 - **Executor:** Current Codex task
   `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, limited to the authorized Stage 1–3
   implementation/evidence and Stage 5 isolated personalization
-  tests/documentation/review remediation
+  tests/documentation/review remediation plus the authorized S4 capped
+  two-syllable preflight
 - **Environment Executor:** Current Codex task on the user-opened iPhone 17 Pro
   Max iOS 27 Simulator, limited to build/test and synthetic diagnostic capture
 - **Human Dependency:** Human Product Owner for manual typing judgment,
@@ -101,6 +109,31 @@
 - Fixture-enabled, default-suite, cleanup and formatting checks pass.
 - Independent Architecture and Quality reviewers record their own conclusions.
 
+### Exit Criteria — S4 capped-two-syllable preflight
+
+- After the existing S2 policy finds an eligible proposal, the pure proposal
+  policy truncates its anchored prefix to no more than the first two complete,
+  catalog-legal syllables and rebuilds the unresolved digit tail. It does not
+  write `selectedPath`, `confirmedSegmentValues` or any user-owned Path state.
+- The controller still performs at most one automatic apply attempt in a
+  composition. There is no runtime backoff loop or second opportunity.
+- First-candidate identity, original-window multiset conservation, rejection
+  restore, Delete rollback, Partial Commit ownership and explicit Path
+  supersession remain unchanged.
+- Deterministic tests freeze the two-syllable cap, one-attempt call budget,
+  acceptance/rejection threshold and composition-boundary behavior.
+- The declared 24-case real-RIME corpus and isolated S5 matrix run with their
+  explicit isolated fixture and each report `0` failed / `0` skipped without
+  broadening fixture or privacy authority. S5 cleanup and the canonical
+  `/private/tmp` user-root boundary are revalidated.
+- The default RimeBridge suite is reported separately. Its fixture-gated skips
+  remain non-coverage and cannot substitute for either explicit fixture run.
+- The frozen startup-paired Simulator A/B satisfies the Run Header and matrix
+  contract below and reports content-free comparable timing summaries.
+- Strict Debug and Release builds pass; Release behavior remains disabled.
+- Independent Architecture and Quality reviewers bind conclusions to an
+  immutable checkpoint before Product handoff.
+
 ### Stop Conditions
 
 Stop and return to Product/Architecture review if work requires:
@@ -117,6 +150,57 @@ Stop and return to Product/Architecture review if work requires:
 - treating a bounded candidate page as complete whole-sentence authority;
 - changing Partial Commit, candidate ranking, 26-key behavior or host commit
   semantics.
+
+For the S4 preflight, also stop if the two-syllable cap requires a second
+automatic transaction, iterative runtime backoff, a lower conservation
+threshold, broader candidate authority, or any Release/user-facing enablement.
+
+### S4 frozen startup-paired Simulator Run Header
+
+The controlled comparison runs in the iOS Simulator test target and exercises
+the production `KeyboardController` with the production RIME bridge. A
+Reminders/software-keyboard smoke may supplement it, but UI automation timing
+cannot replace the controlled matrix.
+
+Before collection, freeze one Run Header containing:
+
+- exact implementation commit, Xcode/build configuration, test bundle,
+  Simulator model/UDID/runtime and architecture;
+- shared RIME fixture digest/fingerprint, schema ID and generated isolated user
+  root policy;
+- synthetic spelling `jintiandetianqihenbucuowomenchuquwanba` and its 38-key
+  T9 identity;
+- cadence `200 ms` between input actions;
+- five required valid pairs in fixed order:
+  `A→B`, `B→A`, `A→B`, `B→A`, `A→B`.
+
+Arm A uses the same binary with the reversible-auto-anchor gate off. Arm B uses
+the same binary with the gate on and the capped-two-syllable policy. Every arm
+starts with a new controller, fresh RIME session, generated empty isolated user
+directory and empty composition. It performs no Path or candidate selection.
+
+A run is valid only when all 38 actions are observed in order, the expected
+gate identity is recorded, no unexpected host/engine commit occurs, candidates
+remain available, the session starts empty, and the content-free per-key
+records are complete. A gate mismatch, missing record, non-empty startup,
+unexpected commit, wrong key count/order or fixture/session mismatch invalidates
+the run. Invalid runs are retained in the evidence manifest but excluded from
+comparison. Fewer than five valid pairs is `Blocked`, not Pass.
+
+Each valid arm records only:
+
+- pair/arm/run IDs, gate identity and startup/session validity;
+- per-key source slot, total/controller duration and available bridge
+  `process_key` duration;
+- automatic-attempt status, anchor/unresolved slot counts and
+  baseline/result/overlap counts;
+- per-run `≥50 ms` diagnostic count, median, p95 and worst duration, including
+  the values at source slots `24`, `32` and `34`.
+
+The `50 ms` threshold is an inherited diagnostic counter, not a Product SLO.
+The preflight reports paired deltas without inventing a Release acceptance
+budget. Missing Run Header fields or incomparable arms make the matrix
+`Blocked`.
 
 For the isolated S5 test, stop if work would access a non-generated user
 directory, log content, omit fixture deletion, invoke sync/backup, use host
