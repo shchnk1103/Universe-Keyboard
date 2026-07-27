@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — Stage 5 durable Architecture/Quality reviewed at 9c4f86f; broader stages pending`
+**Lifecycle status:** `Active — S5 reviewed at 9c4f86f and S2 review remediation durably reviewed at 0173782; broader stages pending`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -232,6 +232,20 @@ Independent review handoff:
   an iOS 27 cross-`UIScreen` presentation fault before key entry; the later
   manual software-keyboard run supplied the product evidence. The XCUITest
   result is therefore an environment limitation, not a pass.
+- Independent review later found and closed two S2 correctness defects:
+  Partial Commit could retain the previous automatic rollback ledger, and
+  duplicate candidate text could shrink the declared five-slot overlap
+  denominator. Checkpoint `0173782` clears old ledger data at the Partial
+  Commit boundary while retaining a data-free no-retry tombstone, and counts
+  candidate conservation as a bounded multiset over the original slot window.
+  Regression tests cover continued remainder input, Delete/undo ownership and
+  repeated candidate text at both `2/5` reject and `3/5` accept.
+- Post-remediation validation passed focused tests `12 / 12`, KeyboardCore
+  `745 / 745`, RIME vendor `11 / 11`, strict iOS 27 Simulator Debug/Release
+  builds, the explicit RIME retry fixture `6 / 6` and the default RimeBridge
+  suite `32` passed / `14` fixture-gated skips. Architecture and Quality
+  independently bound `Pass` verdicts with no P0–P3 findings to full SHA
+  `01737824ad95cdaaaf361e83b7b80d3c821aa402`.
 - Evidence record:
   [`../evidence/t9-reversible-auto-anchor-s2-2026-07-27.md`](../evidence/t9-reversible-auto-anchor-s2-2026-07-27.md).
 - S3 corpus evidence:

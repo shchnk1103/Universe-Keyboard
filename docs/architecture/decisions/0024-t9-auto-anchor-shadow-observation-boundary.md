@@ -1,6 +1,6 @@
 # ADR 0024: T9 Auto-Anchor Observation And Reversible Prototype Boundary
 
-- **Status:** Proposed — S5 boundary Architecture Reviewed at 9c4f86f; broader stages pending
+- **Status:** Proposed — S5 reviewed at 9c4f86f; S2 review remediation Architecture Reviewed at 0173782; broader stages pending
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
@@ -346,6 +346,12 @@ and would require a separate product, privacy and architecture decision.
   coverage.
 - Preserve checkpoint `9c4f86f`, which freezes the S5 harness and previously
   ignored evidence reviewed by Architecture and Quality.
+- Preserve checkpoint `0173782`, which closes the reviewed S2 Partial Commit
+  ledger-boundary and duplicate-candidate overlap findings. Partial Commit
+  owns the remainder composition, so the prior automatic ledger must retain no
+  rollback payload; the data-free rejected phase only preserves the one-attempt
+  budget. Candidate conservation counts bounded candidate slots as a
+  multiset, using the original window length as the threshold denominator.
 - Add a portable, provenance-recording S5 fixture runner only under explicit
   scope.
 - Preserve the completed independent Architecture/Quality re-review against

@@ -303,3 +303,50 @@ passes.
 S5 is now durably reviewed at the named checkpoint. The whole Assignment
 remains `Active`, ADR 0024 remains `Proposed`, and production personalization,
 Release enablement and Product Gate remain unauthorized.
+
+## S2 correctness remediation checkpoint
+
+A later independent review of the combined S2/S3/S5 branch identified two S2
+P1 correctness findings:
+
+- a successful Partial Commit could leave the previous accepted automatic
+  anchor ledger alive across the new remainder-composition boundary; and
+- candidate-overlap validation used unique text values, allowing duplicate
+  candidate text to shrink the declared five-slot `3/5` denominator.
+
+Checkpoint `01737824ad95cdaaaf361e83b7b80d3c821aa402`, whose parent is
+`878532f519942543a45f1b270e9628bd77ed790f`, closes only those findings:
+
+- the Partial Commit installer replaces any prior automatic state with a
+  data-free `rejected` tombstone after a valid remainder is established. This
+  clears source/replacement/slot ownership while preventing Partial Commit
+  undo from granting a second automatic attempt in the same composition;
+- validation counts overlap as a multiset over the original bounded candidate
+  slots. Result duplicates cannot exceed the matching baseline occurrence
+  count, and the threshold denominator remains the original baseline length;
+- three regressions freeze repeated-text `2/5` rejection and `3/5` acceptance,
+  continued remainder typing without old-ledger extension, and Delete/undo
+  without a second old-ledger rollback or automatic attempt.
+
+Validation recorded for the remediation:
+
+- focused `T9ReversibleAutoAnchorTests`: `12 / 12`;
+- KeyboardCore: `745 / 745`;
+- RIME vendor inventory: `11 / 11`;
+- strict iOS 27 Simulator Debug and Release builds: passed with zero compiler
+  warnings/errors;
+- explicit RIME retry fixture: `6 / 6`;
+- default RimeBridge suite: `32` passed, `0` failed, `14` fixture-gated skips;
+- `git show --check 0173782`: passed, with a clean worktree.
+
+Architecture and Quality independently confirmed that the checkpoint contains
+the exact three-file remediation diff they reviewed. Both durable verdicts are
+`Pass` at `01737824ad95cdaaaf361e83b7b80d3c821aa402`, with no P0–P3 findings.
+The fixture-gated skips remain non-coverage, and the existing physical-device,
+Release-like performance, portable-runner and broader-language limitations
+remain open.
+
+This closes the two S2 code-level P1 findings only. The Assignment remains
+`Active`, ADR 0024 remains `Proposed`, and neither verdict authorizes a second
+production transaction, production personalization, Release-default
+enablement, Product Gate or publication.

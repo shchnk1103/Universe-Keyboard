@@ -53,6 +53,11 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
   只选一次，反例固定一次 partial + 一次 continuation。fixture 类 `6/6`、
   默认 RimeBridge `32` 通过且 `14` 个预期跳过；故意传入非临时路径时在
   创建前失败且无残留。Assignment 已 revalidate 至 S5，ADR 格式与索引同步。
+- 后续独立复审关闭两个 S2 P1：Partial Commit 现在清空旧自动锚定账本数据，
+  同时保留无数据的“不重试”状态；候选守恒改为按原始首屏槽位做多重集合
+  计数，重复文本不再缩小 `3/5` 分母。新增三项回归后聚焦测试 `12/12`、
+  KeyboardCore `745/745`，Architecture/Quality 均以无 P0–P3 的 `Pass`
+  绑定 checkpoint `0173782`；Release 默认和 Product Gate 仍未授权。
 
 ## 2026-07-26 — 九键长串安全自动锚定：S1 影子观测
 
