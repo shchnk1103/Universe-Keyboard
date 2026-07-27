@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — engine mitigation proven; real-UI advance policy / regression automation / device validation pending** |
+| Status | **Active — S5 and two S2 review remediations durably reviewed; broader-stage review, next Product decision and physical-device validation pending** |
 | Created | 2026-07-24 |
 | Product lock | 2026-07-24 |
 | Lane A ship | 2026-07-24 |
@@ -110,11 +110,11 @@ reference and correction surface.
 
 | Stage | Deliverable | Mutation | Exit / next gate |
 |---|---|---|---|
-| S1 — Shadow authority observation | Debug-only analyzer over the already-returned snapshot; content-free `T9SHADOW` reason/count metrics | None | **Implemented; automated validation and five-run real-UI runtime sampling passed 2026-07-27. Independent Architecture/Quality review pending** |
-| S2 — Reversible bounded-preference prototype | Complete local proof rejected by catalog audit; explicit gate, one-attempt ledger, bounded first-page conservation and Delete/rejection rollback | Debug/explicit gate only | **Implemented; Fake RIME, first A/B and five-run B stability slice complete 2026-07-27. Independent review pending** |
-| S3 — Broader engine/corpus shadow | Replay proposed anchors against unchanged inputs across a synthetic corpus; compare candidates, paths and timing | Private test/runtime evidence only | **Six-case first corpus slice and rejection-afterward read-only observer complete. Three real-UI rounds found identical later opportunities and next-key spike correlation; actual later transaction and candidate conservation remain unauthorized** |
+| S1 — Shadow authority observation | Debug-only analyzer over the already-returned snapshot; content-free `T9SHADOW` reason/count metrics | None | **Implemented and sampled; broader-stage independent review remains pending and Release remains behavior-neutral** |
+| S2 — Reversible bounded-preference prototype | Complete local proof rejected by catalog audit; explicit gate, one-attempt ledger, bounded first-page conservation and Delete/rejection rollback | Debug/explicit gate only | **Implemented. Two later P1 findings were closed and durably re-reviewed at `0173782`; this does not promote the whole stage, and Release remains off** |
+| S3 — Broader engine/corpus shadow | Replay proposed anchors against unchanged inputs across a synthetic corpus; compare candidates, paths and timing | Private test/runtime evidence only | **Six-case, 24-case, later-opportunity and real-RIME transaction matrices complete. A capped two-syllable proposal is the leading next hypothesis; independent stage review and production policy remain pending** |
 | S4 — Release-candidate reversible anchor | Decide default/user control and reviewed thresholds after S2/S3 evidence | Yes, separately authorized | Release-like physical-device evidence and Product/Architecture/Quality review |
-| S5 — Personalization shadow | Observe whether repeated user-confirmed Path history improves confidence; no duplicate phrase store by default | None until privacy decision | **First reviewed matrix complete: three independent complete-learning cases plus one partial negative; broader language review and retention/deletion/privacy amendment remain open** |
+| S5 — Personalization shadow | Observe whether repeated user-confirmed Path history improves confidence; no duplicate phrase store by default | None until privacy decision | **First isolated matrix durably reviewed at `9c4f86f`: three independent complete-learning cases plus one partial negative; broader language review and retention/deletion/privacy amendment remain open** |
 | S6 — Productization | Default/user control decision, Release-like physical-device performance, memory/jetsam, candidate-quality and Product Gate | Yes | Product/Architecture/Quality acceptance; plan completion/archive |
 
 ### S1 frozen acceptance matrix
@@ -140,7 +140,7 @@ reference and correction surface.
 5. ~~Measure bounded composition/segmentation against continuous ambiguity.~~ **Done 2026-07-26: exact cumulative Path and phrase commit both removed the frozen spikes; Path did so without host commit.**
 6. ~~Authorize, implement and sample S1 read-only shadow observation.~~
    **Implementation, automated validation and five-run real-UI sampling
-   complete 2026-07-27; independent Architecture/Quality review remains.**
+   complete 2026-07-27; broader-stage independent review remains pending.**
 7. Decide whether next-digit input advances an already explicit end-Path; add
    KeyboardCore contract coverage before any implementation.
 8. Solidify the frozen matrix as layered regression coverage: deterministic
@@ -189,7 +189,8 @@ reference and correction surface.
     accepted and one `2/5` case stayed rejected. The partial negative moved
     `2 → 3` and removed the proposal.** Next expand language/shape coverage and
     decide retention/deletion/privacy before any production integration. Keep
-    the current runtime policy unchanged until review.
+    the current runtime policy unchanged until a new Product/Architecture
+    decision.
 18. Advance S3–S6 only through the gates above; update this plan Status →
     Completed / Abandoned and archive when the final Product Gate closes.
 
@@ -239,4 +240,5 @@ reference and correction surface.
 | 2026-07-27 | A declared 24-case extension covered 16 natural sentence shapes, four repeated-ambiguity inputs, two poor shapes and two threshold cases. Of 21 proposals, maximal prefixes accepted 8 and two syllables accepted 9. The cap preserved every maximal acceptance, added one natural case, rejected all poor cases and left thresholds inactive. Pinned-runtime distribution assertions now protect these counts; real userdb personalization and production authorization remain open. |
 | 2026-07-27 | Product-authorized S5 isolated personalization matrix used a generated temporary RIME user directory. One complete synthetic candidate selection moved rank 4 to rank 0 and remained rank 0 after reopening; the long-composition two-syllable transaction stayed accepted at `3/5` before and after learning. Calibration showed partial long-candidate selection can train a continuation rather than the visible segment. Fixture class passed 2/2, default RimeBridge passed 31 with 11 gated skips, and the generated directory was removed. Broader personalized corpus, retention/deletion/privacy and production authorization remain open. |
 | 2026-07-27 | The authorized first reviewed S5 extension used a fresh generated directory for each of three complete-learning cases and one partial negative. Complete cases all produced restart-stable `4 → 0 → 0`; two `3/5` cases remained accepted and one `2/5` case remained rejected. The partial negative required a continuation, moved `2 → 3`, and removed the later proposal. Fixture class passed 5/5, default RimeBridge passed 31 with 14 gated skips, and all generated directories were removed. |
-| 2026-07-27 | Independent Architecture and Quality both returned `Pass with findings`. Remediation now fails closed unless the canonical user root is a strict `/private/tmp` descendant, reduces complete learning to exactly one selection, freezes the negative to one partial plus one continuation, revalidates the Assignment to S5 and completes ADR 0024's required sections. Post-remediation fixture class passed 6/6, default RimeBridge passed 32 with 14 gated skips, and an intentional non-temporary-root run failed before creating data. Immutable checkpoint/publication remains open. |
+| 2026-07-27 | Independent Architecture and Quality both returned `Pass with findings`. Remediation now fails closed unless the canonical user root is a strict `/private/tmp` descendant, reduces complete learning to exactly one selection, freezes the negative to one partial plus one continuation, revalidates the Assignment to S5 and completes ADR 0024's required sections. Post-remediation fixture class passed 6/6, default RimeBridge passed 32 with 14 gated skips, and an intentional non-temporary-root run failed before creating data. Checkpoint `9c4f86f` and its documentation record `878532f` later closed the immutable-snapshot finding; remaining S5 P2 limitations stay open. |
+| 2026-07-27 | A later independent branch review found two S2 P1 defects: Partial Commit could retain the old accepted rollback ledger, and duplicate candidate text could shrink the declared five-slot overlap denominator. Checkpoint `0173782` clears old ledger payload while preserving the one-attempt tombstone and counts conservation as a multiset over the original bounded slots. Focused tests passed 12/12, KeyboardCore 745/745 and strict Debug/Release builds passed; the explicit retry fixture passed 6/6, while the default RimeBridge suite recorded 32 passed / 0 failed / 14 fixture-gated skips, with those skips remaining non-coverage. Architecture and Quality bound durable `Pass` verdicts for the two P1 closures with no P0–P3 findings. Documentation checkpoint `b2a5ab1` records the closure without promoting broader stages or changing Assignment `Active`, ADR `Proposed` or Product/Release Gate authority. |
