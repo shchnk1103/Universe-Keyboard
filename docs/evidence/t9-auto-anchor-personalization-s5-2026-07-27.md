@@ -112,8 +112,26 @@ that test-only deployment/session reopening does not change production
 ownership and that learned rank remains preference evidence rather than
 proposal or conservation authority.
 
-The snapshot remains dirty and uncommitted. Therefore the shared P1 finding is
-still open: these conclusions are local snapshot evidence, not durable
-publication-grade provenance. They do not advance the Assignment to
-`Reviewed`, accept ADR 0024, authorize production personalization, or satisfy
-Product Gate.
+At that time the snapshot was dirty and uncommitted, so its shared P1 finding
+remained open until the checkpoint below. Those initial conclusions did not
+advance the whole Assignment to `Reviewed`, accept ADR 0024, authorize
+production personalization, or satisfy Product Gate.
+
+## Immutable checkpoint
+
+Commit `9c4f86f8ac8189a34bffe3793986dc45cd7ca77d` freezes the
+reviewed S5 test SHA, this evidence and the linked S2/S3 evidence. Independent
+Architecture and Quality checkpoint revalidation both returned **Pass with
+findings** and closed the missing-checkpoint P1 for the S5 component.
+
+Post-checkpoint results were:
+
+- strict fixture class: `6 / 6`;
+- default RimeBridge suite: `32` passed and `14` fixture-gated skips;
+- standard KeyboardCore suite: `742 / 742`;
+- RIME vendor inventory: `11 / 11`.
+
+This makes the S5 component durably Architecture/Quality reviewed at
+`9c4f86f`. The whole Assignment remains `Active`; ADR 0024 remains `Proposed`;
+production personalization, Release enablement and Product Gate remain
+unauthorized.

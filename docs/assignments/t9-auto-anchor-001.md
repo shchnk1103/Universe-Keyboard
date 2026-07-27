@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — Stage 5 independently reviewed; immutable checkpoint pending`
+**Lifecycle status:** `Active — Stage 5 durable Architecture/Quality reviewed at 9c4f86f; broader stages pending`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -156,8 +156,8 @@ Independent review handoff:
 
 ## Handoff
 
-- **Handoff Target:** Product Lead for the immutable-checkpoint and next-stage
-  decision after independent Architecture and Quality re-review.
+- **Handoff Target:** Product Lead for the next-stage decision after the S5
+  immutable checkpoint and durable Architecture/Quality review.
 - **Required Handoff Content:** changed files, proposal/validation/rollback
   state semantics, exact RIME-call budget, tests/build results, frozen-sequence
   A/B evidence, rejected cases and remaining privacy/performance limits.

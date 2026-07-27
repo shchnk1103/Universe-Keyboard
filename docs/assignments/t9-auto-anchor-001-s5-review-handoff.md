@@ -4,7 +4,7 @@ Prepared by: Codex（Executor）
 Handoff target: Architecture & Knowledge Steward + Quality, Performance &
 Release Maintainer
 Date / timezone: `2026-07-27 Asia/Shanghai`
-Working tree: **dirty / uncommitted**
+Reviewed checkpoint: `9c4f86f8ac8189a34bffe3793986dc45cd7ca77d`
 
 > This handoff prepares independent review. It does not self-approve
 > Architecture, Quality, Product Gate, Release enablement or production
@@ -159,10 +159,10 @@ prohibited.
 
 | Priority | Finding | Effect / owner |
 |---|---|---|
-| P1 | The implementation/evidence is not frozen to a clean commit or immutable diff | Blocks publication-grade evidence and `Reviewed`; Executor/Product Lead must authorize and create a scoped checkpoint before final independent evidence |
+| Closed | The implementation/evidence was not frozen to a clean commit or immutable diff | Closed by checkpoint `9c4f86f`; S5 component review is now durable |
 | Closed | Independent Architecture and Quality conclusions were missing | Both reviewers completed remediation re-review against the snapshot identified below |
 | P2 | The S5 matrix does not yet have its own one-command fixture-preparation runner | Independent reviewer must prepare/reuse a proven isolated fixture; RimeBridge/Quality may add a runner only under explicit scope |
-| P2 | `docs/evidence/` is ignored by repository policy | The evidence exists locally but must be explicitly included by the authorized publication flow |
+| Closed | `docs/evidence/` is ignored by repository policy | The five linked S2/S3/S5 evidence files were explicitly included in checkpoint `9c4f86f` |
 | P2 | Coverage is four synthetic cases on iOS 27 Simulator | Does not prove representative language quality, physical-device latency, Release behavior or Product Gate |
 
 No P0 production-boundary or privacy defect was found in the executor
@@ -184,13 +184,14 @@ The first independent Architecture and Quality reviews both returned
 | Knowledge Index still routed as S1-only | Updated the route summary to S1–S3 plus active S5 review |
 | `essay` read-only runtime diagnostic absent from evidence | Recorded as a fixture/runtime limitation |
 
-The immutable-checkpoint, ignored-evidence publication and portable-runner
-findings remain open. Architecture and Quality independently re-reviewed the
-remediation; their conclusions are recorded below.
+The immutable-checkpoint and ignored-evidence publication findings were later
+closed by checkpoint `9c4f86f`. The portable-runner finding remains open.
+Architecture and Quality independently re-reviewed the remediation; their
+conclusions are recorded below.
 
 ## Independent remediation re-review
 
-Reviewed snapshot:
+Initial pre-checkpoint reviewed snapshot:
 
 - test file SHA-256:
   `ea75a2d8ff0e57ae42009f76727cebf8bd3d4fa2a4f7b3fff36d4804727d241f`;
@@ -209,7 +210,7 @@ close the first-review Architecture findings. Rank remains preference evidence
 and does not replace proposal or conservation authority. Test-only deployment
 and session reopening do not change production deployment/session ownership.
 
-Open findings:
+Findings at the initial dirty snapshot:
 
 - **P1:** no immutable checkpoint binds implementation, evidence and reviewer
   conclusions;
@@ -245,7 +246,7 @@ continuation; the partial negative produces `2 → 3` with exactly one partial
 selection plus one continuation. The `essay` read-only diagnostic remains a
 recorded runtime limitation rather than a hidden success signal.
 
-Open findings:
+Findings at the initial dirty snapshot:
 
 - **P1:** no immutable checkpoint, so the review cannot yet become durable
   publication-grade provenance;
@@ -263,11 +264,42 @@ authorizes production personalization, Release enablement or Product Gate.
 
 - **Architecture:** `Pass with findings` for the exact snapshot above.
 - **Quality:** `Pass with findings` for the exact snapshot above.
-- **Product Lead:** decide whether to authorize
-  a scoped commit/publication checkpoint, a portable S5 runner, broader
-  language coverage, or no further S5 work.
+- **Product Lead:** decide whether to authorize a portable S5 runner, broader
+  language coverage, production design work, or no further S5 work.
 
-The independent conclusions now exist for the exact snapshot recorded above.
-S5 is locally implemented and independently reviewed with findings, but it is
-not frozen into durable publication-grade evidence and is not
-production-authorized.
+## Immutable checkpoint revalidation
+
+Checkpoint `9c4f86f8ac8189a34bffe3793986dc45cd7ca77d` freezes the
+reviewed implementation, the S2/S3/S5 evidence and the independent reviewer
+conclusions. Its S5 test-file SHA-256 remains:
+
+`ea75a2d8ff0e57ae42009f76727cebf8bd3d4fa2a4f7b3fff36d4804727d241f`.
+
+Post-checkpoint validation:
+
+- RIME vendor inventory: `11 / 11`;
+- strict S5 fixture class: `6` passed, `0` failed, `0` skipped, with zero
+  compiler warnings/errors;
+- default RimeBridge suite: `32` passed, `0` failed, `14` fixture-gated skips;
+- standard KeyboardCore suite: `742` passed, `0` failed;
+- worktree was clean and `git show --check 9c4f86f` passed during both
+  independent checkpoint revalidations.
+
+Final component verdicts:
+
+- **Architecture:** `Durable Architecture Reviewed — Pass with findings at
+  9c4f86f`;
+- **Quality:** `Durable Quality Reviewed — Pass with findings at 9c4f86f`.
+
+The former missing-checkpoint P1 is closed. Remaining P2 findings are the
+portable provenance-recording runner, canonical fixture digest/version
+manifest, `essay` runtime diagnostic classification, representative language
+coverage and physical-device/Release-like evidence. A pre-existing Optional
+interpolation warning in `T9PinyinPathTests.swift` prevents claiming that the
+entire KeyboardCore package passes an additional warnings-as-errors command;
+the file is unchanged by this Assignment, and the standard `742 / 742` suite
+passes.
+
+S5 is now durably reviewed at the named checkpoint. The whole Assignment
+remains `Active`, ADR 0024 remains `Proposed`, and production personalization,
+Release enablement and Product Gate remain unauthorized.

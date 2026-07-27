@@ -1,6 +1,6 @@
 # ADR 0024: T9 Auto-Anchor Observation And Reversible Prototype Boundary
 
-- **Status:** Proposed — Architecture reviewed with findings; immutable checkpoint pending
+- **Status:** Proposed — S5 boundary Architecture Reviewed at 9c4f86f; broader stages pending
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
@@ -344,8 +344,8 @@ and would require a separate product, privacy and architecture decision.
 
 - Keep the `/private/tmp` allowlist and exact selection budget under regression
   coverage.
-- Freeze the S5 harness and ignored evidence into an authorized immutable
-  checkpoint before publication-grade review.
+- Preserve checkpoint `9c4f86f`, which freezes the S5 harness and previously
+  ignored evidence reviewed by Architecture and Quality.
 - Add a portable, provenance-recording S5 fixture runner only under explicit
   scope.
 - Preserve the completed independent Architecture/Quality re-review against
