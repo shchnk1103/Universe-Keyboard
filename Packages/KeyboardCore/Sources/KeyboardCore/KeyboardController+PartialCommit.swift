@@ -911,6 +911,16 @@ extension KeyboardController {
             return
         }
 
+        // A partial selection starts a user-owned remainder composition. Drop
+        // all rollback data from the previous automatic anchor, while retaining
+        // a data-free rejected phase so undoing the partial cannot grant a
+        // second automatic attempt in the original composition.
+        if state.t9ReversibleAutoAnchorState.phase != .idle {
+            state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
+                phase: .rejected
+            )
+        }
+
         let isT9Remaining = T9CompositionCommitPolicy.isActiveT9Composition(
             usesT9InputSemantics: usesT9InputSemantics,
             rawInput: rimeRawInput

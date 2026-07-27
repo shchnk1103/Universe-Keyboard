@@ -203,6 +203,51 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         )
     }
 
+    func testValidationUsesOriginalWindowForRepeatedCandidateTexts() throws {
+        let source = digits(for: "jintianhenhao")
+        let baseline = output(
+            raw: source,
+            texts: ["首选", "首选", "第二", "第二", "第三"],
+            comments: Array(repeating: "jin tian hen hao", count: 5)
+        )
+        let proposal = try XCTUnwrap(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: compactConfiguration
+            )
+        )
+
+        let onlyTwoConservedSlots = output(
+            raw: proposal.replacementRawInput,
+            texts: ["首选", "第二", "新一", "新二", "新三"],
+            comments: Array(repeating: "jin tian hen hao", count: 5)
+        )
+        let rejected = T9ReversibleAutoAnchorPolicy.validate(
+            proposal: proposal,
+            result: onlyTwoConservedSlots,
+            configuration: compactConfiguration
+        )
+        XCTAssertFalse(
+            rejected.isAccepted,
+            "duplicate baseline text must not reduce a five-slot window below the 3/5 threshold"
+        )
+        XCTAssertEqual(rejected.overlappingCandidateCount, 2)
+
+        let threeConservedSlots = output(
+            raw: proposal.replacementRawInput,
+            texts: ["首选", "首选", "第二", "新一", "新二"],
+            comments: Array(repeating: "jin tian hen hao", count: 5)
+        )
+        let accepted = T9ReversibleAutoAnchorPolicy.validate(
+            proposal: proposal,
+            result: threeConservedSlots,
+            configuration: compactConfiguration
+        )
+        XCTAssertTrue(accepted.isAccepted)
+        XCTAssertEqual(accepted.overlappingCandidateCount, 3)
+    }
+
     func testControllerAcceptsOnlyOneAnchorAndExtendsRollbackLedger() {
         let fixture = makeControllerFixture()
 
@@ -300,6 +345,87 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         )
     }
 
+    func testPartialCommitClearsAcceptedLedgerBeforeContinuedTyping() throws {
+        let fixture = makeControllerFixture(partialSelectionRemainder: "42")
+        type(fixture.sourceDigits, on: fixture.controller)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+
+        _ = fixture.controller.handle(
+            .insertCandidate(
+                fixture.candidates[1],
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+
+        let partialRemainder = try XCTUnwrap(
+            fixture.controller.state.partialCommit?.remainingRawInput
+        )
+        XCTAssertFalse(partialRemainder.isEmpty)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected)
+        )
+
+        _ = fixture.controller.handle(.insertKey("6"))
+
+        XCTAssertEqual(
+            fixture.controller.state.partialCommit?.remainingRawInput,
+            partialRemainder + "6"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected),
+            "continued remainder input must not append to the previous composition ledger"
+        )
+    }
+
+    func testPartialCommitDeleteDoesNotRestoreOldAutoAnchorLedger() {
+        let fixture = makeControllerFixture(partialSelectionRemainder: "42")
+        type(fixture.sourceDigits, on: fixture.controller)
+
+        _ = fixture.controller.handle(
+            .insertCandidate(
+                fixture.candidates[1],
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+        XCTAssertNotNil(fixture.controller.state.partialCommit)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected)
+        )
+        let callsBeforeDelete = fixture.engine.replaceInputCallCount
+
+        _ = fixture.controller.handle(.deleteBackward)
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments[callsBeforeDelete],
+            fixture.anchoredRaw,
+            "Delete should restore the user-owned partial checkpoint, not the old digit ledger"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected)
+        )
+        XCTAssertFalse(
+            fixture.engine.replaceInputArguments.dropFirst(callsBeforeDelete)
+                .contains(fixture.sourceDigits),
+            "the ended auto-anchor transaction must not run a second rollback"
+        )
+
+        _ = fixture.controller.handle(.insertKey("6"))
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected),
+            "undoing the partial must not grant a second auto-anchor attempt or restore old ledger data"
+        )
+    }
+
     func testDisabledGateNeverCallsReplaceInput() {
         let fixture = makeControllerFixture()
         fixture.controller.isReversibleT9AutoAnchorEnabled = false
@@ -343,7 +469,9 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
 
     // MARK: - Fixtures
 
-    private func makeControllerFixture() -> (
+    private func makeControllerFixture(
+        partialSelectionRemainder: String? = nil
+    ) -> (
         controller: KeyboardController,
         engine: FakeRimeEngine,
         sourceDigits: String,
@@ -355,15 +483,26 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         let anchored = "jin'tian'de'tian'" + String(source.dropFirst(13))
         let candidates = ["今天天气很好", "今天的天气很", "今日天气很好", "今天气候很好", "今天的天很好"]
         let comments = Array(repeating: "jin tian de tian qi hen", count: candidates.count)
+        var dictionary = [
+            source: candidates,
+            anchored: candidates,
+        ]
+        var candidateComments = [
+            source: comments,
+            anchored: comments,
+        ]
+        var selectionRemainders: [String: [Int: String]] = [:]
+        if let partialSelectionRemainder {
+            dictionary[partialSelectionRemainder] = ["嘎", "哈", "伽"]
+            candidateComments[partialSelectionRemainder] = ["ga", "ha", "ga"]
+            dictionary[partialSelectionRemainder + "6"] = ["干", "喊", "感"]
+            candidateComments[partialSelectionRemainder + "6"] = ["gan", "han", "gan"]
+            selectionRemainders[anchored] = [1: partialSelectionRemainder]
+        }
         let engine = FakeRimeEngine(
-            dictionary: [
-                source: candidates,
-                anchored: candidates,
-            ],
-            comments: [
-                source: comments,
-                anchored: comments,
-            ]
+            dictionary: dictionary,
+            comments: candidateComments,
+            selectionRemainders: selectionRemainders
         )
         engine.appendDigitsToComposition = true
         let controller = KeyboardController()

@@ -214,10 +214,12 @@ public enum T9ReversibleAutoAnchorPolicy {
     ) -> Validation {
         let resulting = Array(result.candidates.prefix(configuration.evidenceCandidateLimit))
         let baseline = proposal.baselineCandidateTexts
-        let baselineSet = Set(baseline)
-        let overlap = Set(resulting.map(\.text)).intersection(baselineSet).count
+        let overlap = multisetOverlapCount(
+            baseline: baseline,
+            resulting: resulting.map(\.text)
+        )
         let requiredOverlap = requiredOverlapCount(
-            baselineCount: baselineSet.count,
+            baselineCount: baseline.count,
             percent: configuration.minimumCandidateOverlapPercent
         )
         let rawMatches =
@@ -237,6 +239,31 @@ public enum T9ReversibleAutoAnchorPolicy {
             resultingCandidateCount: resulting.count,
             overlappingCandidateCount: overlap
         )
+    }
+
+    /// Counts conserved candidate slots without making their order significant.
+    /// Duplicate text still occupies distinct evidence slots, so a five-slot
+    /// baseline can never silently shrink to a smaller overlap denominator.
+    private static func multisetOverlapCount(
+        baseline: [String],
+        resulting: [String]
+    ) -> Int {
+        var remainingBaselineCounts: [String: Int] = [:]
+        for text in baseline {
+            remainingBaselineCounts[text, default: 0] += 1
+        }
+
+        var overlap = 0
+        for text in resulting {
+            guard let remaining = remainingBaselineCounts[text],
+                  remaining > 0
+            else {
+                continue
+            }
+            overlap += 1
+            remainingBaselineCounts[text] = remaining - 1
+        }
+        return overlap
     }
 
     private static func commonSyllablePrefix(of paths: [[String]]) -> [String] {
