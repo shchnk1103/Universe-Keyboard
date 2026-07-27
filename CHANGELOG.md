@@ -2,6 +2,71 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-27 — 九键长串安全自动锚定：可回滚 S2 原型
+
+- 新增 Debug/显式门控的单次自动锚定事务：首选候选必须提供兼容路径，
+  从完整音节前缀生成 `pinyin' + 数字尾部`，替换后要求首选不变且首屏
+  候选重合率达标；不满足即恢复纯数字输入。
+- 为每个 composition 保存非持久化数字账本；继续输入扩展账本，Delete
+  先恢复原数字身份再执行一次正常删除；显式 Path、commit、reset 与
+  生命周期边界清除自动所有权。回滚失败时 fail closed，不向宿主暴露数字。
+- Fake RIME 聚焦测试 9/9、KeyboardCore 738/738、iOS 27 Simulator
+  Debug/Release 构建通过。冻结长串 Debug A/B 中第 18 键接受锚定，
+  主要 RIME 峰值由约 `110/71/65ms` 降至 `77/54/41ms`；仍需多轮、
+  独立 Architecture/Quality 与真机 Release-like 证据，Release 默认关闭。
+- 同一句软件键盘 B 稳定性扩展达到 5/5 接受，全部保持 `5/5/5` 候选守恒，
+  第 24/32/34 键 RIME 中位数为 `73.9/54.6/41.1ms`。这证明事务可重复，
+  但第 24、32 键仍有明显慢调用；冻结配对 A/B、语料质量与回滚矩阵继续留在 S3。
+- S3 首组 6 条合成语料覆盖 `5/5`、`3/5` 接受，`2/5`、`1/5` 回滚，
+  以及 17 槽不触发和 Delete 后消歧；候选守恒正确 fail closed，但被拒长句
+  仍有 `71–127ms` RIME 调用。单测固化 60% 边界，并禁止本地候选重排覆盖
+  `jin/lin` 同键不同拼写分歧；KeyboardCore 仍为 738/738。
+- 新增首次回滚后的 Debug-only `T9RETRYSHADOW`：只读取后续已返回快照，
+  不调用 RIME、不改状态、不放开第二次事务。40 槽被拒长句连续 3 轮得到
+  完全相同的后续机会位置，五个主要慢键都紧跟在机会点之后。聚焦测试
+  13/13、KeyboardCore 742/742、Debug/Release 构建通过，Release Extension
+  不含 observer 标记；第二次 `replaceInput` 仍需新的候选守恒矩阵和
+  Product/Architecture/Quality 授权。
+- 新增 fixture-gated 真实 RIME 后续事务矩阵，不进入生产 Controller：
+  15 个最大前缀全部以 `2/5` 被拒；89 个逐音节回退中，只有每个位置的
+  两音节版本以 `5/5` 通过。104/104 事务恢复原 raw、composition、首选与
+  前五集合。三轮配对耗时将 `≥50ms` 调用从 15 降到 9，五个固定慢槽改善
+  约 13–17ms；单句证据尚不授权固定两音节策略或多次生产事务。
+- 六条冻结 S3 语料的深度扩展中，两音节版本覆盖已知正例、被拒长句、
+  本地排序和高歧义例，同时仍拒绝 `a × 18` 低质量路径；17 槽阈值不变。
+  两音节 cap 成为下一轮测试假设，但生产最大前缀算法和一次调用预算未改。
+- 新增 24 条声明类别的真实 RIME 语料矩阵：21 条产生提议，最大前缀接受
+  8 条，两音节接受 9 条；两音节保留全部原接受并新增一条自然句，未接受
+  poor case，未绕过阈值。分布已成为 pinned-runtime 回归断言；真实 userdb
+  个性化与生产授权仍待 S5/Architecture/Product Gate。
+- 新增经产品授权的 S5 隔离个性化矩阵：仅在生成的临时 RIME user 目录
+  选择合成候选，以实际排名变化而非文件存在证明学习。一次完整选择使目标
+  从第 5 位升至首位，关闭并重开后仍为首位；长串两音节事务在学习前后均
+  以 `3/5` 通过候选守恒。测试结束删除临时目录，不接触 App Group/真实
+  userdb，也未增加生产热路径逻辑；更广个性化语料和隐私/保留策略仍待审。
+- S5 第一批声明矩阵扩为三个独立完整学习案例和一个局部分段反例，每例使用
+  单独 UUID 临时目录。三个完整目标均稳定 `4 → 0 → 0`；两个 `3/5` 继续
+  接受，一个 `2/5` 继续拒绝。局部分段需额外续写、排名 `2 → 3`，并使后续
+  提议消失，因此不会被误当作学习证明或 Path 权威。
+- Architecture/Quality 首轮独立审查均为 `Pass with findings`。整改后 harness
+  会 canonicalize user root 并强制其为 `/private/tmp` 真后代；完整学习固定
+  只选一次，反例固定一次 partial + 一次 continuation。fixture 类 `6/6`、
+  默认 RimeBridge `32` 通过且 `14` 个预期跳过；故意传入非临时路径时在
+  创建前失败且无残留。Assignment 已 revalidate 至 S5，ADR 格式与索引同步。
+
+## 2026-07-26 — 九键长串安全自动锚定：S1 影子观测
+
+- 产品长期方向改为“不要求用户逐音节点 Path”的安全自动有界歧义；建立
+  `T9-AUTO-ANCHOR-001` Product Decision、Assignment、S1–S6 计划和 proposed
+  ADR 0024。
+- 新增 Debug-only `T9ShadowAnchorAnalyzer`：只读取当前已返回快照，输出
+  `T9SHADOW` 计数/原因码；分页、缺失 comment、路径不兼容或过期 revision
+  一律失败关闭，不调用 RIME、不修改输入、不接触用户词典、不记录内容。
+- 个性化候选排序不能覆盖 Path 分歧；聚焦测试 9/9、KeyboardCore 729/729、
+  iOS 27 Simulator 严格 Debug/Release 构建通过。Release Extension 不含
+  `T9SHADOW` 标记；真实合成序列采样与独立 Architecture/Quality review
+  仍待完成。
+
 ## 2026-07-25 — 主 App UI 第二刀：Tokens + KeyValue + Loading
 
 - 新增 `AppTokens`（`AppRadius` / `AppSpacing` / `AppIconSize`）；共享 chrome 默认读 token。

@@ -123,3 +123,16 @@ Residual-B Path-ledger **cursor** (PD residual-B) landed via PR #28 after Human 
 Provisional-only mixed-raw C continue closed via PR #29. Product Lead closed Assignment 004 (`PD-…-004-ASSIGNMENT-CLOSE`) the same day.
 
 Current sources: Assignment 004 (Closed), ADR 0023, close PD, `partial-commit.md` §T9 Path residual-B, remediation evidence §21–§33.
+
+## 2026-07-26 — T9 automatic-bounding shadow boundary proposed
+
+The long-composition investigation proved that cumulative explicit Path
+anchoring bounds librime ambiguity without host commit. `T9-AUTO-ANCHOR-001`
+selects automatic safe bounding as the long-term direction, while ADR 0024
+proposes a first measurement-only boundary: Debug code may report content-free
+common-prefix coverage and incomplete-authority reasons from an already-returned
+snapshot, but cannot mutate RIME, inspect user-dictionary storage or ship in
+Release. Production automatic anchoring remains a later ADR amendment.
+
+Current sources: `PD-T9-AUTO-ANCHOR-001`, Assignment
+`T9-AUTO-ANCHOR-001`, proposed ADR 0024 and the active long-composition plan.

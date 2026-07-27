@@ -111,17 +111,23 @@ extension KeyboardController {
         } else {
             retainedFocusedSegment = false
         }
+        recordAcceptedT9AutoAnchorDigit(
+            rimeKey,
+            liveRawInput: state.lastRimeOutput?.rawInput
+        )
+        let autoAnchorOutcome = attemptReversibleT9AutoAnchorIfNeeded(using: engine)
         #if DEBUG
         if usesT9InputSemantics, rimeKey.count == 1, rimeKey.first?.isNumber == true {
             gate5TraceComposition(
                 event: .digitAppend,
                 previousRaw: previousRawForTrace,
-                note: "digitAppend=true retainFocus=\(retainedFocusedSegment)"
+                note: "digitAppend=true retainFocus=\(retainedFocusedSegment) "
+                    + "autoAnchor=\(autoAnchorOutcome.status.rawValue)"
             )
         }
         #endif
         var effects = consumeSingleUseShiftIfNeeded().union(.compositionChanged)
-        if retainedFocusedSegment {
+        if retainedFocusedSegment || autoAnchorOutcome.status != .notEligible {
             effects.insert(.t9PinyinPathsChanged)
         }
         return effectsAfterChineseCompositionKey(effects, originalKey: key)

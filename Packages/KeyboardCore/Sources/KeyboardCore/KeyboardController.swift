@@ -25,6 +25,8 @@ public final class KeyboardController {
     /// Derived from the same `RimeRuntimeSelection` used for schema + layout.
     /// Digit shape alone never enables T9 policies.
     public var usesT9InputSemantics = false
+    /// Stage 2 prototype gate. Production callers must opt in explicitly.
+    public var isReversibleT9AutoAnchorEnabled = false
     var shouldRestoreRimeComposition = false
     var shouldRebuildSessionDuringRestore = false
 

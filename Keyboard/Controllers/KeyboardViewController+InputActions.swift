@@ -65,6 +65,34 @@ extension KeyboardViewController {
                 pathCount: controller.state.t9PinyinPathState.compactPaths.count,
                 candidateCount: controller.state.lastRimeOutput?.candidates.count ?? 0
             )
+            let shadow = controller.t9ShadowAnchorObservation()
+            Logger.shared.debug(
+                "T9SHADOW #\(eventID) status=\(shadow.status.rawValue) "
+                    + "generation=\(shadow.rawInputGeneration) "
+                    + "provenance=\(shadow.provenanceRevision) "
+                    + "candidates=\(shadow.candidateCount) "
+                    + "compatible=\(shadow.compatibleCandidateCount) "
+                    + "uniquePaths=\(shadow.uniqueCompatiblePathCount) "
+                    + "rejected=\(shadow.rejectedCandidateCount) "
+                    + "commonSyllables=\(shadow.observedCommonSyllableCount) "
+                    + "closedSyllables=\(shadow.closedCommonSyllableCount) "
+                    + "anchorSlots=\(shadow.anchorSlotCount) "
+                    + "unresolvedSlots=\(shadow.unresolvedSlotCount) "
+                    + "complete=\(shadow.evidenceComplete)",
+                category: .performance
+            )
+            if let retryShadow = controller.t9AutoAnchorRetryShadowObservation() {
+                Logger.shared.debug(
+                    "T9RETRYSHADOW #\(eventID) "
+                        + "status=\(retryShadow.status.rawValue) "
+                        + "sourceSlots=\(retryShadow.sourceDigitCount) "
+                        + "rejectedAt=\(retryShadow.rejectedAtSourceDigitCount) "
+                        + "candidates=\(retryShadow.candidateCount) "
+                        + "anchorSlots=\(retryShadow.anchoredSlotCount) "
+                        + "unresolvedSlots=\(retryShadow.unresolvedSlotCount)",
+                    category: .performance
+                )
+            }
         }
         Logger.shared.debug(
             "KEY ENGINE END #\(eventID) durationMs=\(String(format: "%.1f", handleMs)) "

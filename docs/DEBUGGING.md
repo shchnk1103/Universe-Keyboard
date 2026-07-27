@@ -266,11 +266,46 @@ When investigating “long unconfirmed nine-key input feels janky without Path/c
 
 Log prefix: `T9SEG` (and `SLOW T9SEG` when `total ≥ 50ms`). Category: `PERF`. Enable logging + PERF category in the diagnostics app if needed.
 
+The same Debug key sample emits one content-free `T9SHADOW` line for
+`T9-AUTO-ANCHOR-001` Stage 1. It does not change RIME input or candidate
+behavior. Fields:
+
+| Field | Meaning |
+|---|---|
+| `status` | `proposalReady` or a fail-closed reason such as `candidateSetIncomplete`, `incompletePathEvidence`, `noClosedCommonPrefix` |
+| `generation` / `provenance` | Core snapshot identities; zero/stale snapshots are blocked |
+| `candidates` / `compatible` / `uniquePaths` / `rejected` | Current-page structural evidence counts |
+| `commonSyllables` / `closedSyllables` | Observed common prefix and the portion followed by another segment in every observed compatible Path |
+| `anchorSlots` / `unresolvedSlots` | Hypothetical bounded-prefix slots and remaining active slots |
+| `complete` | Whether the current snapshot is page 0, has no more pages and every candidate has compatible ASCII Path evidence |
+
+`proposalReady` is an S1 observation label, not authorization to mutate input.
+If `hasMorePages` is true, a useful observed common prefix may still be reported
+while `status=candidateSetIncomplete` and `complete=false`. Do not hide that
+blocker or scan more candidates synchronously from the Extension hot path.
+
+When an explicitly gated S2 transaction has rejected and restored its pure
+digit identity, Debug may also emit `T9RETRYSHADOW`. This is a Stage 3
+read-only observation over the current already-returned output; it never
+executes another replacement.
+
+| Field | Meaning |
+|---|---|
+| `status` | `proposalReady` or `notEligible` |
+| `sourceSlots` / `rejectedAt` | Current source length and first rejection length |
+| `candidates` | Current returned candidate count |
+| `anchorSlots` / `unresolvedSlots` | Proposed bounded prefix and remaining source lengths |
+
+Absence of a line means the rejected/pure-digit/no-explicit-Path preconditions
+were not met. A `proposalReady` line is not proof that a later transaction
+would preserve candidates.
+
 **How to collect a length curve on device**
 
-1. Install a **Debug** Keyboard Extension; open a Notes field; switch to Chinese nine-key.
+1. Install a **Debug** Keyboard Extension; open a blank Reminders title field; switch to Chinese nine-key.
 2. Without selecting Path or candidates, type a fixed synthetic digit sequence at a steady cadence (e.g. 20–40 keys). Prefer one warm session after first composition.
-3. Export or filter Console / App Group diag log for `T9SEG`.
+3. Export or filter Console / App Group diag log for `T9SEG`, `T9SHADOW` and,
+   when the S2 experiment is active, `T9RETRYSHADOW`.
 4. Plot or table `rawLen` vs `rime`, `pathLocal`, `preedit`, `pathUI`, `candUI`, `total` (median + worst per rawLen bucket if possible).
 5. Record device, OS, schema, Full Access, Debug build commit — do not invent budgets from a single run.
 
@@ -284,7 +319,7 @@ Interpretation: if `pathUI`+`candUI` dominate as `rawLen` grows, presentation re
 
 Continuous T9 digit bursts now **idle-gate bar-mode candidate prefetch** (≈280ms after last digit; no 12→27→42 chain while still typing). Expect fewer `loadMoreCandidates` lines mid-burst; scroll-near-end still prefetches. Expanded panel prefetch is unchanged.
 
-**Long T9 digit spikes (`api` dominates, `collect` ≈0):** primary remaining cost after hygiene. **force_gc-as-primary-fix is closed** — see case close [`evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md). Follow-on work: [`plans/t9-long-composition-process-key-latency-plan.md`](plans/t9-long-composition-process-key-latency-plan.md).
+**Long T9 digit spikes (`api` dominates, `collect` ≈0):** primary remaining cost after hygiene. **force_gc-as-primary-fix is closed** — see case close [`evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md). The 2026-07-26 simulator matrix and symbolicated multi-thread trace isolated the first-party path to `ScriptTranslation::MakeSentence → Dictionary::Lookup → Table::Query`; Lua, completion, spelling hints, the script-translator-ineffective `enable_sentence` flag and `max_homophones: 1` did not reduce the fixed-sequence spikes. A later controlled matrix retained the full composition but cumulatively anchored exact pinyin Path at natural boundaries: slow keys dropped from 15/190 to 0/190 without host commit, proving unresolved T9 ambiguity—not raw length alone—is the dominant amplifier. The real-UI follow-up also found that selecting a Path at the current composition end does not yet advance it; after entering the next syllable, the previous Path must be tapped again. Preserve this transition explicitly in any automation instead of assuming one tap per syllable. See [`evidence/t9-long-composition-process-key-latency-2026-07-26.md`](evidence/t9-long-composition-process-key-latency-2026-07-26.md) and the active [`plans/t9-long-composition-process-key-latency-plan.md`](plans/t9-long-composition-process-key-latency-plan.md). Keep simulator/Debug attribution separate from physical-device Release acceptance.
 
 **T9 force_gc hygiene (not the main latency fix):** deploy may strip force_gc **only** from `t9.schema.yaml` (not `rime_ice` / shared `lua/force_gc.lua`). Verify with main App → 设置 → 诊断 → **高级** → **检查九键 Schema / force_gc** (source + compiled `build/t9.schema.yaml`). If source clean but compiled still lists force_gc, apply patch then **完整部署**. If **both clean** and SLOW KEY remain, do **not** reopen force_gc as primary — use the long-composition plan.
 

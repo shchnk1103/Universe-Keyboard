@@ -57,7 +57,13 @@
 - Debugging: [`DEBUGGING.md`](DEBUGGING.md)
 - Performance measurement: [`PERFORMANCE_BASELINE.md`](PERFORMANCE_BASELINE.md)
 - T9 continuous-digit latency — force_gc track case close (2026-07-24): [`evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md)
-- T9 long-composition `process_key` latency plan (Lane A idle hint shipped; baseline/Lane B pending): [`plans/t9-long-composition-process-key-latency-plan.md`](plans/t9-long-composition-process-key-latency-plan.md)
+- T9 long-composition `process_key` latency and safe auto-anchor roadmap
+  (`T9-AUTO-ANCHOR-001`, S1–S3 implementation/evidence plus S5 isolated
+  personalization review active):
+  [`plan`](plans/t9-long-composition-process-key-latency-plan.md),
+  [`Assignment`](assignments/t9-auto-anchor-001.md),
+  [`Product Decision`](product-decisions/T9-AUTO-ANCHOR-001-authorization.md),
+  [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)
 - Release procedure: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)
 - 2026-08-01 release control: [`RELEASE-2026-0801`](assignments/release-2026-08-01.md) and its [evidence ledger](evidence/release-2026-08-01-acceptance.md)
 - New-user activation / Full Access journey: [`ONBOARDING_ACTIVATION.md`](ONBOARDING_ACTIVATION.md), Product Decision [`PD-RELEASE-2026-0801-03`](product-decisions/RELEASE-2026-0801-03-activation-authorization.md)

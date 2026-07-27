@@ -174,6 +174,18 @@ extension KeyboardController {
         if let effects = handleNumberSuffixDeleteIfNeeded() {
             return effects
         }
+        if let engine = rimeEngine {
+            switch rollbackAcceptedT9AutoAnchorForDelete(using: engine) {
+            case .notNeeded:
+                break
+            case .restored:
+                // Re-enter once with automatic ownership cleared/rejected. The
+                // user still receives exactly one normal Delete.
+                return handleDeleteBackward()
+            case .failed:
+                return .compositionChanged.union(.t9PinyinPathsChanged)
+            }
+        }
         if let engine = rimeEngine, engine.isComposing() {
             if let effects = handleConfirmedT9FocusDeleteIfNeeded(using: engine) {
                 return effects

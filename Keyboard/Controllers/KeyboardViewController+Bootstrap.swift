@@ -14,6 +14,11 @@ extension KeyboardViewController {
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
         controller = KeyboardController(state: KeyboardState(activeKeyboardType: keyboardType))
+        #if DEBUG
+        // ADR 0024 Stage 2: explicit diagnostic gate. Release keeps the
+        // controller capability off until Product/Architecture/Quality review.
+        controller.isReversibleT9AutoAnchorEnabled = true
+        #endif
         controller.textClient = UITextDocumentProxyAdapter(proxy: textDocumentProxy)
         controller.onTypoCorrectionSelected = { [weak self] correction in
             guard let self else { return }
