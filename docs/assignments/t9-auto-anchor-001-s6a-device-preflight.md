@@ -198,12 +198,21 @@ The following pre-run attempts are retained and are not valid matrix arms:
    restored before this retry. One empty item remains for Human cleanup; the
    raw failure result remains isolated and its diagnostic was not opened or
    copied.
+6. `pair1-A-run3.xcresult`: failed closed with
+   `reminder-control-unavailable` before creating the arm item or beginning the
+   fixture. The Human followed an inaccurate preparation instruction to enter
+   an existing empty item and expose the keyboard, which hid the list-level
+   New Reminder control. No fixture action occurred; the isolated failure
+   diagnostic was not opened or copied.
 
 Because every arm intentionally switches from Reminders to the content-free
 evidence view before XCTest records a verdict, the Environment Executor must
 pause before **every** subsequent arm and obtain fresh Human confirmation that
-the exact list is foreground with the Universe Chinese nine-key software
-keyboard visible. A prior arm's confirmation cannot be reused.
+the exact list **overview** is foreground with no active Reminder editor.
+Universe Chinese nine-key must remain the most recently selected software
+keyboard, but it must not be made visible manually; the driver creates the new
+empty arm item and exposes the keyboard itself. A prior arm's confirmation
+cannot be reused.
 
 After remediation, signed A/B App binary SHA256 values are respectively
 `6a2f31dfdf2198a950d35de465fd58f68f6cdb741a318098b0f1614715966178`
