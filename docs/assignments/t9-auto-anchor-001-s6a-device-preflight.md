@@ -118,8 +118,11 @@ pass. No physical build or install may occur before then.
 ### Local implementation candidate evidence
 
 Immutable implementation checkpoint
-`4fd01dbf4bcf5fc23ab4825af61fcab3ebcce90c` completed the local portion of the
-Pre-installation Gate on 2026-07-28:
+`76966cbbedfe0a9f25df01a21ad2b5ce68699554` completed the local portion of the
+Pre-installation Gate on 2026-07-28. It supersedes
+`4fd01dbf4bcf5fc23ab4825af61fcab3ebcce90c` only in the UI driver: Reminders
+uses `activate()` rather than `launch()` so the Human-confirmed exact-list
+navigation state is not destroyed before validation.
 
 - UI fixture/statistics/evidence-validator contracts: `4 / 4`;
 - KeyboardCore: `751 / 751`;
@@ -133,6 +136,9 @@ Pre-installation Gate on 2026-07-28:
   disabled/enabled marker respectively;
 - third-round independent Architecture and Quality reviews both returned
   `Pass`, P0–P3 none.
+- the one-line host-lifecycle remediation passed UI contracts `4 / 4`,
+  signed Release-like A/B `build-for-testing`, and independent Architecture
+  and Quality re-review with P0–P3 none.
 
 The clean checkpoint also produced an ordinary signed device Release with
 Xcode `27.0 (27A5228h)`, iPhoneOS SDK `27.0 (24A5390e)`, Team ID
@@ -160,6 +166,34 @@ wired, connected, booted, Developer Mode enabled and unlocked.
 **Pre-installation Gate:** `Pass`. Installation of the first declared A arm is
 authorized under this Assignment. Physical-device evidence, Exit review and
 Product Gate remain open.
+
+### Physical execution manifest
+
+The following pre-run attempts are retained and are not valid matrix arms:
+
+1. `pair1-A.xcresult`: build stopped before installation because the UI Test
+   Runner profile did not yet exist. Xcode automatic provisioning was then
+   explicitly enabled; no host action occurred.
+2. `pair1-A-arm1.xcresult`: signed A installed, but the test was skipped because
+   shell environment variables did not propagate into the physical-device test
+   runner. Zero fixture actions occurred. Explicit environment values are now
+   bound through a generated `.xctestrun`.
+3. `pair1-A-arm2.xcresult`: the runner started but failed closed with
+   `disposable-list-unavailable` before creating an item. The old driver had
+   relaunched Reminders and discarded the Human-confirmed navigation state.
+   Xcode produced a potentially content-bearing diagnostic attachment after
+   failure; it was not opened, exported or copied into the repository, and the
+   raw result remains isolated at its declared temporary path.
+
+After remediation, signed A/B App binary SHA256 values are respectively
+`3ddc47f7bf3cf274871c98a882d9d5acf50767185f0494df0bdb778d0504a9f3`
+and
+`03e2c64972975fd865ba0f041359604885eee852b6b1bc1e4d03634d33343946`;
+Extension values are
+`2100bbe0969c7d8d871263db17f656aeaa9d72e5dade0dde9e8ccc0b8fe10dc6`
+and
+`a21288e81d283ae9e9752eb2b2a421004176a8bfffd4b6fd5e5babb41c32f216`.
+The valid five-pair matrix has not started.
 
 ### Pre-installation Gate
 
