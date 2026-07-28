@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — physical A/B paused; coordinate-driver checkpoint awaiting independent review`
+**Lifecycle status:** `Active — physical A/B paused; coordinate-driver Quality remediation in progress`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority
@@ -244,7 +244,12 @@ driver must instead implement the reviewed coordinate contract below:
   residue token can never resume an arm.
   Normal arm teardown removes only a matching consumed envelope, and final
   preflight cleanup requires the envelope to be absent without touching other
-  App Group or userdb state;
+  App Group or userdb state. A separate versioned registry retains at most 64
+  opaque tokens for the current matrix only. Main App writes the updated
+  registry before preparing the envelope; Extension never reads it. Missing
+  registry means an empty matrix, malformed/duplicate/over-capacity registry
+  fails closed, per-arm cleanup retains it, and explicit finalization removes
+  it only while the envelope is absent;
 - after the driver creates the new empty item, the Extension records exactly
   eight content-free slot rectangles for that token. Slot order means the
   visible groups `ABC`, `DEF`, `GHI`, `JKL`, `MNO`, `PQRS`, `TUV`, `WXYZ`;
@@ -330,6 +335,16 @@ This evidence does not reopen physical execution by itself. Architecture and
 Quality must independently review the immutable implementation checkpoint
 before a new signed arm is built or installed.
 
+Independent implementation review of `8c5aa6d` returned Architecture `Pass`
+with P0–P3 none, but Quality `Fail`: two P1 findings identified silent
+replacement of malformed envelope residue and a current-matrix token set that
+was not connected to the main-App coordinator; two P2 findings identified
+incomplete frozen negative coverage and insufficiently traceable command/
+artifact evidence. Consequently `8c5aa6d` is retained as a historical
+checkpoint but is not eligible for physical execution. Remediation is limited
+to those four findings and requires a new immutable checkpoint plus both
+independent re-reviews.
+
 ### Coordinate-driver focused contract matrix
 
 Before a new signed physical arm, deterministic UI-target contracts must prove:
@@ -341,7 +356,10 @@ Before a new signed physical arm, deterministic UI-target contracts must prove:
   Extension instance may continue using its snapshotted token after the
   envelope is consumed; a reconstructed instance must reject a consumed
   envelope. Matching cleanup removes it; non-matching cleanup must leave it
-  untouched. Every cross-record token mismatch fails;
+  untouched. A versioned bounded matrix registry round-trips and appends fresh
+  canonical tokens; duplicate token, malformed version/token/state,
+  duplicate entries and overflow fail. A malformed existing envelope cannot
+  be silently overwritten. Every cross-record token mismatch fails;
 - geometry shape: one valid eight-slot record passes; `0`, `7` or `9` slots,
   duplicate/missing indices, `NaN`/infinity, zero/negative or smaller-than-
   `30 × 30` size, overlap, screen/keyboard escape, incorrect coordinate space,
@@ -452,7 +470,8 @@ Stop and retain the current checkpoint if:
   marker;
 - the token envelope violates `absent → prepared → consumed → absent`, a crash
   residue is silently resumed, cleanup removes a non-matching value, or the
-  ordinary Release reads/writes the preflight envelope;
+  matrix registry is malformed/reused/over capacity, finalization runs while
+  an envelope exists, or ordinary Release reads/writes either preflight key;
 - any action starts more than `50 ms` late relative to the monotonic fixed
   `200 ms` schedule. This is a driver-validity budget, not a Product SLO; the
   invalid arm remains in the manifest and is not silently retried away;
@@ -530,7 +549,14 @@ Each arm must:
    recorded separately and is not drift;
 10. capture a content-free functional result and leave all test-created
    Reminders state for Human cleanup; remove only the matching consumed token
-   envelope and verify it is absent.
+   envelope and verify it is absent while the bounded matrix registry remains
+   active.
+
+After the last valid arm, the preflight main App performs the explicit
+`T9_S6A_FINALIZE_MATRIX=1` action. It may remove only the matrix registry and
+only while the run envelope is absent. Evidence must then report both
+`T9TOKEN state=absent` and `T9MATRIX state=absent` before the ordinary
+same-checkpoint Release is installed.
 
 The runner must not call `XCTFail`, `XCTAssert*` or `XCTUnwrap` while Reminders
 is visible. Driver errors are retained as content-free codes, the main App's

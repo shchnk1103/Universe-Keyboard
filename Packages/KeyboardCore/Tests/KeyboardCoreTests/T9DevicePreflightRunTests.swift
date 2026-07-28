@@ -1,4 +1,5 @@
 #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+import Foundation
 import XCTest
 @testable import KeyboardCore
 
@@ -54,13 +55,15 @@ final class T9DevicePreflightRunTests: XCTestCase {
         XCTAssertNil(T9DevicePreflightRun.makePreparedEnvelope(
             token: token,
             existingSerializedEnvelope: residue.serialized,
-            retainedEvidence: ""
+            retainedEvidence: "",
+            currentMatrixTokens: []
         ))
         let prepared = try XCTUnwrap(
             T9DevicePreflightRun.makePreparedEnvelope(
                 token: replacement,
                 existingSerializedEnvelope: residue.serialized,
-                retainedEvidence: ""
+                retainedEvidence: "",
+                currentMatrixTokens: []
             )
         )
         XCTAssertEqual(prepared.state, .prepared)
@@ -96,7 +99,8 @@ final class T9DevicePreflightRunTests: XCTestCase {
         XCTAssertNil(T9DevicePreflightRun.makePreparedEnvelope(
             token: token,
             existingSerializedEnvelope: nil,
-            retainedEvidence: "T9SEG run=\(token) action=1"
+            retainedEvidence: "T9SEG run=\(token) action=1",
+            currentMatrixTokens: []
         ))
         XCTAssertNil(T9DevicePreflightRun.makePreparedEnvelope(
             token: token,
@@ -104,8 +108,58 @@ final class T9DevicePreflightRunTests: XCTestCase {
             retainedEvidence: "",
             currentMatrixTokens: [token]
         ))
+        XCTAssertNil(T9DevicePreflightRun.makePreparedEnvelope(
+            token: token,
+            existingSerializedEnvelope: "v2|prepared|\(token)",
+            retainedEvidence: "",
+            currentMatrixTokens: []
+        ))
+        XCTAssertNil(T9DevicePreflightRun.makePreparedEnvelope(
+            token: token,
+            existingSerializedEnvelope: "v1|unknown|\(token)",
+            retainedEvidence: "",
+            currentMatrixTokens: []
+        ))
         XCTAssertNil(T9DevicePreflightRun.consumePreparedEnvelope(
             serialized: "v2|prepared|\(token)"
+        ))
+    }
+
+    func testMatrixRegistryIsBoundedVersionedAndRejectsReuse() throws {
+        let first = "S6A-0123456789ABCDEF0123456789ABCDEF"
+        let second = "S6A-FEDCBA9876543210FEDCBA9876543210"
+        let registry = try XCTUnwrap(
+            T9DevicePreflightRun.MatrixRegistry().appending(first)
+        )
+        let updated = try XCTUnwrap(registry.appending(second))
+
+        XCTAssertEqual(
+            T9DevicePreflightRun.MatrixRegistry(
+                serialized: updated.serialized
+            ),
+            updated
+        )
+        XCTAssertNil(updated.appending(first))
+        XCTAssertNil(T9DevicePreflightRun.MatrixRegistry(
+            serialized: "v2|\(first)"
+        ))
+        XCTAssertNil(T9DevicePreflightRun.MatrixRegistry(
+            serialized: "v1|\(first),\(first)"
+        ))
+        XCTAssertNil(T9DevicePreflightRun.MatrixRegistry(
+            serialized: "v1|bad"
+        ))
+
+        var fullRegistry = T9DevicePreflightRun.MatrixRegistry()
+        for index in 0..<64 {
+            let token = String(
+                format: "S6A-%032llX",
+                UInt64(index)
+            )
+            fullRegistry = try XCTUnwrap(fullRegistry.appending(token))
+        }
+        XCTAssertNil(fullRegistry.appending(
+            "S6A-FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
         ))
     }
 }

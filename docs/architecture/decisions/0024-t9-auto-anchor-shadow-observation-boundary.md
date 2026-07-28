@@ -315,7 +315,14 @@ in-memory value after consumption; a reconstructed Extension must reject a
 consumed envelope. Missing, malformed, retained-log-reused or
 current-matrix-reused tokens fail closed. Crash residue is recorded and
 replaced only by a new token, never resumed; cleanup removes only a matching
-consumed envelope.
+consumed envelope. A separate versioned, bounded, content-free registry retains
+the opaque tokens used by the current physical matrix so reuse still fails
+after older log lines roll out of retention. It is not a transfer channel:
+Main App updates it before preparing an envelope, Extension never reads it, and
+per-arm cleanup leaves it intact. Malformed registry state fails closed. After
+the final arm cleanup and before ordinary Release restoration, an explicit
+preflight-only finalize action may remove the registry only while the envelope
+is absent.
 
 The Extension binds every gate marker, geometry record, segment record, arm
 summary and transaction outcome to that token. Geometry contains only eight
@@ -356,8 +363,8 @@ screen-coordinate table, a rectangle outside the validated software-keyboard
 region, geometry drift, an incomplete token transition, or any missing/
 duplicate/mismatched record in that chain invalidates the arm. The token and
 geometry path are compiled only by `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT`; ordinary
-Release neither reads nor writes its envelope. They do not alter keyboard
-layout, product accessibility, RIME behavior or user data.
+Release neither reads nor writes its envelope or matrix registry. They do not
+alter keyboard layout, product accessibility, RIME behavior or user data.
 
 This amendment does not accept Release behavior. It only makes physical-device
 evidence possible without compiling all `DEBUG` behavior into the measured

@@ -138,46 +138,90 @@ final class T9DevicePreflightUITests: XCTestCase {
     func testContentFreeGeometryContracts() {
         let geometry = syntheticGeometry()
         XCTAssertNil(geometryError(geometry, foregroundFrame: geometry.screen))
+        func assertInvalid(_ candidate: Geometry) {
+            XCTAssertEqual(
+                geometryError(candidate, foregroundFrame: candidate.screen),
+                .geometryInvalid
+            )
+        }
 
         var slots = geometry.slots
         slots[0] = CGRect(x: slots[0].minX, y: slots[0].minY, width: 0, height: 45)
-        XCTAssertEqual(
-            geometryError(replacingSlots(in: geometry, with: slots), foregroundFrame: geometry.screen),
-            .geometryInvalid
-        )
+        assertInvalid(replacingSlots(in: geometry, with: slots))
+
+        slots = geometry.slots
+        slots[0] = CGRect(x: slots[0].minX, y: slots[0].minY, width: -1, height: 45)
+        assertInvalid(replacingSlots(in: geometry, with: slots))
+
+        slots = geometry.slots
+        slots[0] = CGRect(x: slots[0].minX, y: slots[0].minY, width: 29, height: 45)
+        assertInvalid(replacingSlots(in: geometry, with: slots))
 
         slots = geometry.slots
         slots[1] = slots[0]
-        XCTAssertEqual(
-            geometryError(replacingSlots(in: geometry, with: slots), foregroundFrame: geometry.screen),
-            .geometryInvalid
-        )
+        assertInvalid(replacingSlots(in: geometry, with: slots))
 
         slots = geometry.slots
         slots.swapAt(0, 1)
-        XCTAssertEqual(
-            geometryError(replacingSlots(in: geometry, with: slots), foregroundFrame: geometry.screen),
-            .geometryInvalid
-        )
+        assertInvalid(replacingSlots(in: geometry, with: slots))
 
-        XCTAssertEqual(
-            geometryError(
-                replacingSlots(
-                    in: geometry,
-                    with: Array(geometry.slots.dropLast())
-                ),
-                foregroundFrame: geometry.screen
-            ),
-            .geometryInvalid
+        slots = geometry.slots
+        slots[2] = CGRect(
+            x: slots[2].minX,
+            y: slots[2].minY + 5,
+            width: slots[2].width,
+            height: slots[2].height
+        )
+        assertInvalid(replacingSlots(in: geometry, with: slots))
+
+        slots = geometry.slots
+        slots[5] = CGRect(
+            x: slots[5].minX,
+            y: slots[2].minY,
+            width: slots[5].width,
+            height: slots[5].height
+        )
+        assertInvalid(replacingSlots(in: geometry, with: slots))
+
+        slots = geometry.slots
+        slots[0] = CGRect(x: -1, y: slots[0].minY, width: 70, height: 45)
+        assertInvalid(replacingSlots(in: geometry, with: slots))
+
+        slots = geometry.slots
+        slots[0] = CGRect(x: slots[0].minX, y: 530, width: 70, height: 45)
+        assertInvalid(replacingSlots(in: geometry, with: slots))
+
+        assertInvalid(replacingSlots(in: geometry, with: []))
+        assertInvalid(
+            replacingSlots(
+                in: geometry,
+                with: Array(geometry.slots.dropLast())
+            )
+        )
+        assertInvalid(
+            replacingSlots(
+                in: geometry,
+                with: geometry.slots + [geometry.slots[7]]
+            )
         )
 
         let landscapeScreen = CGRect(x: 0, y: 0, width: 844, height: 390)
-        XCTAssertEqual(
-            geometryError(
-                replacingScreen(in: geometry, with: landscapeScreen),
-                foregroundFrame: landscapeScreen
-            ),
-            .geometryInvalid
+        assertInvalid(replacingScreen(in: geometry, with: landscapeScreen))
+        assertInvalid(
+            replacingGeometry(
+                in: geometry,
+                space: "keyboard-local-points"
+            )
+        )
+        assertInvalid(
+            replacingGeometry(in: geometry, orientation: "landscape")
+        )
+        assertInvalid(replacingGeometry(in: geometry, scale: 0))
+        assertInvalid(
+            replacingGeometry(
+                in: geometry,
+                keyboard: CGRect(x: 0, y: 300, width: 390, height: 304)
+            )
         )
 
         let wrongFrame = CGRect(
@@ -190,6 +234,28 @@ final class T9DevicePreflightUITests: XCTestCase {
             geometryError(geometry, foregroundFrame: wrongFrame),
             .geometryInvalid
         )
+
+        let line = geometryLine(geometry, phase: "prepared")
+        let slotZero =
+            "s0=\(Geometry.rectForTesting(geometry.slots[0]))"
+        let slotSeven =
+            " s7=\(Geometry.rectForTesting(geometry.slots[7]))"
+        XCTAssertNil(parseGeometry(from: line + " \(slotZero)"))
+        XCTAssertNil(parseGeometry(
+            from: line.replacingOccurrences(of: slotSeven, with: "")
+        ))
+        XCTAssertNil(parseGeometry(
+            from: line + " s8=\(Geometry.rectForTesting(geometry.slots[7]))"
+        ))
+        XCTAssertNil(parseGeometry(
+            from: line.replacingOccurrences(of: "scale=3.000", with: "scale=nan")
+        ))
+        XCTAssertNil(parseGeometry(
+            from: line.replacingOccurrences(
+                of: "scale=3.000",
+                with: "scale=inf"
+            )
+        ))
     }
 
     func testContentFreeEvidenceValidatorContracts() {
@@ -227,27 +293,50 @@ final class T9DevicePreflightUITests: XCTestCase {
             token: token,
             preparedGeometry: geometry
         ))
+        XCTAssertNil(evidenceErrorCode(
+            bLines.joined(separator: "\n").replacingOccurrences(
+                of: "status=accepted",
+                with: "status=rejectedAndRestored"
+            ),
+            expectedMarker: "T9DEVICE_ENABLED",
+            token: token,
+            preparedGeometry: geometry
+        ))
     }
 
     func testContentFreeEvidenceValidatorFailsClosed() {
         let token = syntheticToken
         let geometry = syntheticGeometry(token: token)
-        let marker =
+        let markerA =
             "T9DEVICE marker=T9DEVICE_DISABLED run=\(token) gate=off measurement=on"
+        let markerB =
+            "T9DEVICE marker=T9DEVICE_ENABLED run=\(token) gate=on measurement=on"
         let prepared = geometryLine(geometry, phase: "prepared")
         let execution = geometryLine(geometry, phase: "execution")
         let segments = validSyntheticSegments(token: token)
         let summary =
             "T9ARM run=\(token) actions=38 committed=0 session=42 "
                 + "sessionStable=true sessionValid=true"
+        let outcome =
+            "T9AUTO run=\(token) action=18 event=18 status=accepted"
+        func error(
+            _ lines: [String],
+            marker: String = "T9DEVICE_DISABLED",
+            preparedGeometry: Geometry = geometry
+        ) -> EvidenceErrorCode? {
+            evidenceErrorCode(
+                lines.joined(separator: "\n"),
+                expectedMarker: marker,
+                token: token,
+                preparedGeometry: preparedGeometry
+            )
+        }
 
         XCTAssertEqual(
-            evidenceErrorCode(
-                ([marker, prepared, execution] + Array(segments.dropLast()) + [summary])
-                    .joined(separator: "\n"),
-                expectedMarker: "T9DEVICE_DISABLED",
-                token: token,
-                preparedGeometry: geometry
+            error(
+                [markerA, prepared, execution]
+                    + Array(segments.dropLast())
+                    + [summary]
             ),
             .segmentCount
         )
@@ -255,13 +344,17 @@ final class T9DevicePreflightUITests: XCTestCase {
         var outOfOrder = segments
         outOfOrder.swapAt(9, 10)
         XCTAssertEqual(
-            evidenceErrorCode(
-                ([marker, prepared, execution] + outOfOrder + [summary])
-                    .joined(separator: "\n"),
-                expectedMarker: "T9DEVICE_DISABLED",
-                token: token,
-                preparedGeometry: geometry
-            ),
+            error([markerA, prepared, execution] + outOfOrder + [summary]),
+            .segmentOrder
+        )
+
+        var duplicateEvent = segments
+        duplicateEvent[10] = duplicateEvent[10].replacingOccurrences(
+            of: "event=11",
+            with: "event=10"
+        )
+        XCTAssertEqual(
+            error([markerA, prepared, execution] + duplicateEvent + [summary]),
             .segmentOrder
         )
 
@@ -270,40 +363,74 @@ final class T9DevicePreflightUITests: XCTestCase {
             with: "S6A-FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
         )
         XCTAssertEqual(
-            evidenceErrorCode(
-                ([marker, prepared, execution] + segments + [staleSummary])
-                    .joined(separator: "\n"),
-                expectedMarker: "T9DEVICE_DISABLED",
-                token: token,
-                preparedGeometry: geometry
-            ),
+            error([markerA, prepared, execution] + segments + [staleSummary]),
             .tokenMismatch
         )
 
-        let earlyOutcome =
-            "T9AUTO run=\(token) action=18 event=18 status=accepted"
-        let enabledMarker =
-            "T9DEVICE marker=T9DEVICE_ENABLED run=\(token) gate=on measurement=on"
         XCTAssertEqual(
-            evidenceErrorCode(
-                ([enabledMarker, earlyOutcome, prepared, execution] + segments + [summary])
-                    .joined(separator: "\n"),
-                expectedMarker: "T9DEVICE_ENABLED",
-                token: token,
-                preparedGeometry: geometry
+            error(
+                [markerB, outcome, prepared, execution] + segments + [summary],
+                marker: "T9DEVICE_ENABLED"
             ),
             .evidenceOrder
         )
 
         XCTAssertEqual(
-            evidenceErrorCode(
-                ([marker, marker, prepared, execution] + segments + [summary])
-                    .joined(separator: "\n"),
-                expectedMarker: "T9DEVICE_DISABLED",
-                token: token,
-                preparedGeometry: geometry
+            error(
+                [markerA, markerA, prepared, execution] + segments + [summary]
             ),
             .markerCount
+        )
+        XCTAssertEqual(
+            error(
+                [
+                    markerA.replacingOccurrences(
+                        of: "gate=off",
+                        with: "gate=on"
+                    ),
+                    prepared,
+                    execution,
+                ] + segments + [summary]
+            ),
+            .markerMismatch
+        )
+        XCTAssertEqual(
+            error([markerA, prepared] + segments + [summary]),
+            .geometryCount
+        )
+        XCTAssertEqual(
+            error(
+                [markerA, prepared, prepared, execution]
+                    + segments
+                    + [summary]
+            ),
+            .geometryCount
+        )
+
+        let driftedGeometry = replacingGeometry(in: geometry, scale: 2)
+        XCTAssertEqual(
+            error(
+                [
+                    markerA,
+                    prepared,
+                    geometryLine(driftedGeometry, phase: "execution"),
+                ] + segments + [summary]
+            ),
+            .geometryDrift
+        )
+        XCTAssertEqual(
+            error([markerA, execution, prepared] + segments + [summary]),
+            .evidenceOrder
+        )
+
+        var committed = segments
+        committed[5] = committed[5].replacingOccurrences(
+            of: "committed=false",
+            with: "committed=true"
+        )
+        XCTAssertEqual(
+            error([markerA, prepared, execution] + committed + [summary]),
+            .commitDetected
         )
 
         var sessionDrift = segments
@@ -312,14 +439,89 @@ final class T9DevicePreflightUITests: XCTestCase {
             with: "sessionAfter=43"
         )
         XCTAssertEqual(
-            evidenceErrorCode(
-                ([marker, prepared, execution] + sessionDrift + [summary])
-                    .joined(separator: "\n"),
-                expectedMarker: "T9DEVICE_DISABLED",
-                token: token,
-                preparedGeometry: geometry
-            ),
+            error([markerA, prepared, execution] + sessionDrift + [summary]),
             .sessionInvalid
+        )
+
+        XCTAssertEqual(
+            error([markerA, prepared, execution] + segments),
+            .summaryCount
+        )
+        XCTAssertEqual(
+            error(
+                [markerA, prepared, execution]
+                    + segments
+                    + [summary, summary]
+            ),
+            .summaryCount
+        )
+        XCTAssertEqual(
+            error(
+                [markerA, prepared, execution]
+                    + segments
+                    + [
+                        summary.replacingOccurrences(
+                            of: "actions=38",
+                            with: "actions=37"
+                        ),
+                    ]
+            ),
+            .summaryInvalid
+        )
+
+        XCTAssertEqual(
+            error(
+                [markerA, prepared, execution, outcome]
+                    + segments
+                    + [summary]
+            ),
+            .outcomeCount
+        )
+        XCTAssertEqual(
+            error(
+                [markerB, prepared, execution] + segments + [summary],
+                marker: "T9DEVICE_ENABLED"
+            ),
+            .outcomeCount
+        )
+        XCTAssertEqual(
+            error(
+                [markerB, prepared, execution, outcome, outcome]
+                    + segments
+                    + [summary],
+                marker: "T9DEVICE_ENABLED"
+            ),
+            .outcomeCount
+        )
+        XCTAssertEqual(
+            error(
+                [
+                    markerB,
+                    prepared,
+                    execution,
+                    outcome.replacingOccurrences(
+                        of: "event=18",
+                        with: "event=99"
+                    ),
+                ] + segments + [summary],
+                marker: "T9DEVICE_ENABLED"
+            ),
+            .evidenceOrder
+        )
+        XCTAssertEqual(
+            error(
+                [
+                    markerB,
+                    prepared,
+                    execution,
+                    outcome.replacingOccurrences(
+                        of: "status=accepted",
+                        with: "status=ignored"
+                    ),
+                ] + segments + [summary],
+                marker: "T9DEVICE_ENABLED"
+            ),
+            .outcomeInvalid
         )
     }
 
@@ -454,7 +656,9 @@ final class T9DevicePreflightUITests: XCTestCase {
         let evidence = try loadContentFreeEvidence(
             additionalEnvironment: [prepareTokenEnvironmentKey: token]
         )
-        guard evidence.contains("T9TOKEN state=prepared run=\(token)") else {
+        guard evidence.contains("T9TOKEN state=prepared run=\(token)"),
+              evidence.contains("T9MATRIX state=active count=")
+        else {
             throw DriverError.tokenPreparationFailed
         }
     }
@@ -466,6 +670,7 @@ final class T9DevicePreflightUITests: XCTestCase {
             return false
         }
         return evidence.contains("T9TOKEN state=absent")
+            && evidence.contains("T9MATRIX state=active count=")
     }
 
     private func loadContentFreeEvidence(
@@ -677,13 +882,38 @@ final class T9DevicePreflightUITests: XCTestCase {
     }
 
     private func parseGeometry(from line: String) -> Geometry? {
-        guard let token = field("run", in: line),
+        let requiredFields = [
+            "run", "digest", "space", "orientation", "screen", "scale",
+            "keyboard",
+        ] + (0..<8).map { "s\($0)" }
+        guard requiredFields.allSatisfy({
+            fieldOccurrences($0, in: line) == 1
+        }) else {
+            return nil
+        }
+        let observedSlotFields = line.split(whereSeparator: \.isWhitespace)
+            .compactMap { component -> String? in
+                guard let separator = component.firstIndex(of: "=") else {
+                    return nil
+                }
+                let name = String(component[..<separator])
+                guard name.hasPrefix("s"),
+                      Int(name.dropFirst()) != nil
+                else {
+                    return nil
+                }
+                return name
+            }
+        guard observedSlotFields.count == 8,
+              Set(observedSlotFields) == Set((0..<8).map { "s\($0)" }),
+              let token = field("run", in: line),
               let digest = field("digest", in: line),
               let space = field("space", in: line),
               let orientation = field("orientation", in: line),
               let screenText = field("screen", in: line),
               let scaleText = field("scale", in: line),
               let scale = Double(scaleText),
+              scale.isFinite,
               let keyboardText = field("keyboard", in: line),
               let screen = parseRect(screenText),
               let keyboard = parseRect(keyboardText)
@@ -908,6 +1138,12 @@ final class T9DevicePreflightUITests: XCTestCase {
             .map { String($0.dropFirst(prefix.count)) }
     }
 
+    private func fieldOccurrences(_ name: String, in line: String) -> Int {
+        let prefix = "\(name)="
+        return line.split(whereSeparator: \.isWhitespace)
+            .count { $0.hasPrefix(prefix) }
+    }
+
     private func fieldInt(_ name: String, in line: String) -> Int? {
         field(name, in: line).flatMap(Int.init)
     }
@@ -1005,41 +1241,34 @@ final class T9DevicePreflightUITests: XCTestCase {
     }
 
     private func replacingSlots(in geometry: Geometry, with slots: [CGRect]) -> Geometry {
-        let provisional = Geometry(
-            token: geometry.token,
-            digest: "",
-            space: geometry.space,
-            orientation: geometry.orientation,
-            screen: geometry.screen,
-            scale: geometry.scale,
-            keyboard: geometry.keyboard,
-            slots: slots
-        )
-        return Geometry(
-            token: provisional.token,
-            digest: provisional.computedDigest,
-            space: provisional.space,
-            orientation: provisional.orientation,
-            screen: provisional.screen,
-            scale: provisional.scale,
-            keyboard: provisional.keyboard,
-            slots: provisional.slots
-        )
+        replacingGeometry(in: geometry, slots: slots)
     }
 
     private func replacingScreen(
         in geometry: Geometry,
         with screen: CGRect
     ) -> Geometry {
+        replacingGeometry(in: geometry, screen: screen)
+    }
+
+    private func replacingGeometry(
+        in geometry: Geometry,
+        space: String? = nil,
+        orientation: String? = nil,
+        screen: CGRect? = nil,
+        scale: CGFloat? = nil,
+        keyboard: CGRect? = nil,
+        slots: [CGRect]? = nil
+    ) -> Geometry {
         let provisional = Geometry(
             token: geometry.token,
             digest: "",
-            space: geometry.space,
-            orientation: geometry.orientation,
-            screen: screen,
-            scale: geometry.scale,
-            keyboard: geometry.keyboard,
-            slots: geometry.slots
+            space: space ?? geometry.space,
+            orientation: orientation ?? geometry.orientation,
+            screen: screen ?? geometry.screen,
+            scale: scale ?? geometry.scale,
+            keyboard: keyboard ?? geometry.keyboard,
+            slots: slots ?? geometry.slots
         )
         return Geometry(
             token: provisional.token,

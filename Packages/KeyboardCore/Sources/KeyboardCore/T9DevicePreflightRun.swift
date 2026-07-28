@@ -7,7 +7,9 @@ import Foundation
 /// App and Keyboard Extension can fail closed on unknown state.
 public enum T9DevicePreflightRun {
     public static let envelopeKey = "t9_s6a_run_envelope"
+    public static let matrixRegistryKey = "t9_s6a_matrix_tokens"
     public static let tokenPrefix = "S6A-"
+    private static let maximumMatrixTokenCount = 64
 
     public enum State: String, Sendable {
         case prepared
@@ -54,6 +56,56 @@ public enum T9DevicePreflightRun {
         }
     }
 
+    /// Bounded, content-free identity registry for the current physical matrix.
+    ///
+    /// It is not a transfer channel. Its only purpose is preventing reuse after
+    /// an older arm has rolled out of the retained diagnostic log.
+    public struct MatrixRegistry: Equatable, Sendable {
+        public let tokens: [String]
+
+        public init() {
+            tokens = []
+        }
+
+        private init(tokens: [String]) {
+            self.tokens = tokens
+        }
+
+        public init?(serialized: String) {
+            let fields = serialized.split(
+                separator: "|",
+                omittingEmptySubsequences: false
+            )
+            guard fields.count == 2, fields[0] == "v1" else {
+                return nil
+            }
+            let parsedTokens = fields[1].isEmpty
+                ? []
+                : fields[1].split(separator: ",").map(String.init)
+            guard parsedTokens.count <= maximumMatrixTokenCount,
+                  Set(parsedTokens).count == parsedTokens.count,
+                  parsedTokens.allSatisfy(T9DevicePreflightRun.isCanonicalToken)
+            else {
+                return nil
+            }
+            tokens = parsedTokens
+        }
+
+        public var serialized: String {
+            "v1|\(tokens.joined(separator: ","))"
+        }
+
+        public func appending(_ token: String) -> MatrixRegistry? {
+            guard T9DevicePreflightRun.isCanonicalToken(token),
+                  !tokens.contains(token),
+                  tokens.count < maximumMatrixTokenCount
+            else {
+                return nil
+            }
+            return MatrixRegistry(tokens: tokens + [token])
+        }
+    }
+
     public static func makeToken() -> String {
         tokenPrefix
             + UUID().uuidString
@@ -79,7 +131,7 @@ public enum T9DevicePreflightRun {
         token: String,
         existingSerializedEnvelope: String?,
         retainedEvidence: String,
-        currentMatrixTokens: Set<String> = []
+        currentMatrixTokens: Set<String>
     ) -> Envelope? {
         guard isCanonicalToken(token),
               !retainedEvidence.contains("run=\(token)"),
@@ -87,11 +139,12 @@ public enum T9DevicePreflightRun {
         else {
             return nil
         }
-        if let existingSerializedEnvelope,
-           let existing = Envelope(serialized: existingSerializedEnvelope),
-           existing.token == token
-        {
-            return nil
+        if let existingSerializedEnvelope {
+            guard let existing = Envelope(
+                serialized: existingSerializedEnvelope
+            ), existing.token != token else {
+                return nil
+            }
         }
         return Envelope(state: .prepared, token: token)
     }
