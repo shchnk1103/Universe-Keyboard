@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Ready — immutable implementation checkpoint recorded; Pre-installation Gate awaiting Human exact-list confirmation`
+**Lifecycle status:** `Active — Pre-installation Gate Pass; physical A/B evidence in progress`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority
@@ -151,9 +151,15 @@ bundle identifier and accessible App Group
 uninstall/reset/container-deletion action. This establishes the non-uninstall
 installation method; no S6-A binary has yet been installed.
 
-The remaining Pre-installation Gate item is Human confirmation of an otherwise
-empty local Reminders list named exactly `Universe Keyboard S6A 20260728`.
-Physical-device evidence, Exit review and Product Gate remain open.
+At 2026-07-28 20:20 Asia/Shanghai, the Human Product Owner explicitly
+confirmed that an otherwise empty local Reminders list named exactly
+`Universe Keyboard S6A 20260728` had been created and opened on the named
+device. A subsequent read-only query confirmed the device remained paired,
+wired, connected, booted, Developer Mode enabled and unlocked.
+
+**Pre-installation Gate:** `Pass`. Installation of the first declared A arm is
+authorized under this Assignment. Physical-device evidence, Exit review and
+Product Gate remain open.
 
 ### Pre-installation Gate
 
