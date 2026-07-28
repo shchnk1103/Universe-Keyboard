@@ -79,9 +79,19 @@ public enum T9DevicePreflightRun {
             guard fields.count == 2, fields[0] == "v1" else {
                 return nil
             }
-            let parsedTokens = fields[1].isEmpty
-                ? []
-                : fields[1].split(separator: ",").map(String.init)
+            let parsedTokens: [String]
+            if fields[1].isEmpty {
+                parsedTokens = []
+            } else {
+                let tokenFields = fields[1].split(
+                    separator: ",",
+                    omittingEmptySubsequences: false
+                )
+                guard tokenFields.allSatisfy({ !$0.isEmpty }) else {
+                    return nil
+                }
+                parsedTokens = tokenFields.map(String.init)
+            }
             guard parsedTokens.count <= maximumMatrixTokenCount,
                   Set(parsedTokens).count == parsedTokens.count,
                   parsedTokens.allSatisfy(T9DevicePreflightRun.isCanonicalToken)
@@ -106,6 +116,18 @@ public enum T9DevicePreflightRun {
         }
     }
 
+    public enum EnvelopeStorageState: Equatable, Sendable {
+        case absent
+        case invalid
+        case valid(Envelope)
+    }
+
+    public enum MatrixRegistryStorageState: Equatable, Sendable {
+        case absent
+        case invalid
+        case valid(MatrixRegistry)
+    }
+
     public static func makeToken() -> String {
         tokenPrefix
             + UUID().uuidString
@@ -121,6 +143,53 @@ public enum T9DevicePreflightRun {
         return token.dropFirst(tokenPrefix.count).allSatisfy(
             uppercaseHexCharacters.contains
         )
+    }
+
+    /// Interprets persisted storage without collapsing a present non-String or
+    /// malformed value into absence.
+    public static func inspectEnvelopeStorage(
+        objectExists: Bool,
+        serialized: String?
+    ) -> EnvelopeStorageState {
+        guard objectExists else {
+            return .absent
+        }
+        guard let serialized,
+              let envelope = Envelope(serialized: serialized)
+        else {
+            return .invalid
+        }
+        return .valid(envelope)
+    }
+
+    public static func inspectMatrixRegistryStorage(
+        objectExists: Bool,
+        serialized: String?
+    ) -> MatrixRegistryStorageState {
+        guard objectExists else {
+            return .absent
+        }
+        guard let serialized,
+              let registry = MatrixRegistry(serialized: serialized)
+        else {
+            return .invalid
+        }
+        return .valid(registry)
+    }
+
+    public static func canFinalizeMatrix(
+        envelopeStorage: EnvelopeStorageState,
+        registryStorage: MatrixRegistryStorageState
+    ) -> Bool {
+        guard envelopeStorage == .absent else {
+            return false
+        }
+        switch registryStorage {
+        case .absent, .valid:
+            return true
+        case .invalid:
+            return false
+        }
     }
 
     /// Produces a fresh prepared envelope or rejects stale/reused identity.

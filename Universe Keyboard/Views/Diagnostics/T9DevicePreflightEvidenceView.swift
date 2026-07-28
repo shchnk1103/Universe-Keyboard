@@ -94,23 +94,29 @@ enum T9DevicePreflightRunCoordinator {
     }
 
     private static func finalizeMatrix() {
-        guard let defaults = UserDefaults(suiteName: universeAppGroupID),
-              defaults.object(
-                  forKey: T9DevicePreflightRun.envelopeKey
-              ) == nil
-        else {
+        guard let defaults = UserDefaults(suiteName: universeAppGroupID) else {
             return
         }
-        if let registryObject = defaults.object(
+        let envelopeObject = defaults.object(
+            forKey: T9DevicePreflightRun.envelopeKey
+        )
+        let registryObject = defaults.object(
             forKey: T9DevicePreflightRun.matrixRegistryKey
-        ) {
-            guard let serializedRegistry = registryObject as? String,
-                  T9DevicePreflightRun.MatrixRegistry(
-                      serialized: serializedRegistry
-                  ) != nil
-            else {
-                return
-            }
+        )
+        let envelopeStorage = T9DevicePreflightRun.inspectEnvelopeStorage(
+            objectExists: envelopeObject != nil,
+            serialized: envelopeObject as? String
+        )
+        let registryStorage =
+            T9DevicePreflightRun.inspectMatrixRegistryStorage(
+                objectExists: registryObject != nil,
+                serialized: registryObject as? String
+            )
+        guard T9DevicePreflightRun.canFinalizeMatrix(
+            envelopeStorage: envelopeStorage,
+            registryStorage: registryStorage
+        ) else {
+            return
         }
         defaults.removeObject(forKey: T9DevicePreflightRun.matrixRegistryKey)
         defaults.synchronize()
@@ -137,31 +143,37 @@ struct T9DevicePreflightEvidenceView: View {
                     || line.contains("T9ARM ")
             }
             .joined(separator: "\n")
-        let envelopeEvidence: String
-        if let rawEnvelope = defaults?.string(
+        let envelopeObject = defaults?.object(
             forKey: T9DevicePreflightRun.envelopeKey
-        ), let envelope = T9DevicePreflightRun.Envelope(
-            serialized: rawEnvelope
+        )
+        let envelopeEvidence: String
+        switch T9DevicePreflightRun.inspectEnvelopeStorage(
+            objectExists: envelopeObject != nil,
+            serialized: envelopeObject as? String
         ) {
+        case .valid(let envelope):
             envelopeEvidence =
                 "T9TOKEN state=\(envelope.state.rawValue) run=\(envelope.token)"
-        } else {
+        case .absent:
             envelopeEvidence = "T9TOKEN state=absent"
+        case .invalid:
+            envelopeEvidence = "T9TOKEN state=invalid"
         }
-        let matrixEvidence: String
-        if let rawRegistry = defaults?.string(
+        let registryObject = defaults?.object(
             forKey: T9DevicePreflightRun.matrixRegistryKey
+        )
+        let matrixEvidence: String
+        switch T9DevicePreflightRun.inspectMatrixRegistryStorage(
+            objectExists: registryObject != nil,
+            serialized: registryObject as? String
         ) {
-            if let registry = T9DevicePreflightRun.MatrixRegistry(
-                serialized: rawRegistry
-            ) {
-                matrixEvidence =
-                    "T9MATRIX state=active count=\(registry.tokens.count)"
-            } else {
-                matrixEvidence = "T9MATRIX state=invalid"
-            }
-        } else {
+        case .valid(let registry):
+            matrixEvidence =
+                "T9MATRIX state=active count=\(registry.tokens.count)"
+        case .absent:
             matrixEvidence = "T9MATRIX state=absent"
+        case .invalid:
+            matrixEvidence = "T9MATRIX state=invalid"
         }
         evidence = [envelopeEvidence, matrixEvidence, logEvidence]
             .filter { !$0.isEmpty }

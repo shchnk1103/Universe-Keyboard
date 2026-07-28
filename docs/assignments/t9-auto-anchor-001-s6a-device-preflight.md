@@ -353,6 +353,16 @@ and A/B/ordinary Simulator digests are recorded in
 Physical execution remains paused until independent Architecture and Quality
 both re-review this checkpoint and return Pass.
 
+The first re-review of `13ee432` remained `Fail`. Architecture found that the
+evidence view collapsed present malformed/non-String envelope or registry
+objects into `absent`, which could falsely prove cleanup/finalization. Quality
+found that registry list parsing omitted empty comma fields and therefore
+accepted malformed values such as `v1|,`. Both are P1 fail-closed defects.
+Their remediation introduces explicit `absent / valid / invalid` storage
+inspection, uses that inspection for evidence and finalization, and permits an
+empty registry only as the exact serialization `v1|`. A further immutable
+checkpoint and both independent re-reviews remain mandatory.
+
 ### Coordinate-driver focused contract matrix
 
 Before a new signed physical arm, deterministic UI-target contracts must prove:

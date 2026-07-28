@@ -149,6 +149,16 @@ final class T9DevicePreflightRunTests: XCTestCase {
         XCTAssertNil(T9DevicePreflightRun.MatrixRegistry(
             serialized: "v1|bad"
         ))
+        XCTAssertNil(T9DevicePreflightRun.MatrixRegistry(serialized: "v1|,"))
+        XCTAssertNil(T9DevicePreflightRun.MatrixRegistry(
+            serialized: "v1|,\(first)"
+        ))
+        XCTAssertNil(T9DevicePreflightRun.MatrixRegistry(
+            serialized: "v1|\(first),"
+        ))
+        XCTAssertNil(T9DevicePreflightRun.MatrixRegistry(
+            serialized: "v1|\(first),,\(second)"
+        ))
 
         var fullRegistry = T9DevicePreflightRun.MatrixRegistry()
         for index in 0..<64 {
@@ -160,6 +170,84 @@ final class T9DevicePreflightRunTests: XCTestCase {
         }
         XCTAssertNil(fullRegistry.appending(
             "S6A-FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+        ))
+    }
+
+    func testStorageInspectionAndFinalizationFailClosed() {
+        let token = "S6A-0123456789ABCDEF0123456789ABCDEF"
+        let envelope = T9DevicePreflightRun.Envelope(
+            state: .consumed,
+            token: token
+        )
+        let registry = T9DevicePreflightRun.MatrixRegistry()
+
+        XCTAssertEqual(
+            T9DevicePreflightRun.inspectEnvelopeStorage(
+                objectExists: false,
+                serialized: nil
+            ),
+            .absent
+        )
+        XCTAssertEqual(
+            T9DevicePreflightRun.inspectEnvelopeStorage(
+                objectExists: true,
+                serialized: nil
+            ),
+            .invalid
+        )
+        XCTAssertEqual(
+            T9DevicePreflightRun.inspectEnvelopeStorage(
+                objectExists: true,
+                serialized: "malformed"
+            ),
+            .invalid
+        )
+        XCTAssertEqual(
+            T9DevicePreflightRun.inspectEnvelopeStorage(
+                objectExists: true,
+                serialized: envelope.serialized
+            ),
+            .valid(envelope)
+        )
+
+        let absentEnvelope = T9DevicePreflightRun.EnvelopeStorageState.absent
+        XCTAssertEqual(
+            T9DevicePreflightRun.inspectMatrixRegistryStorage(
+                objectExists: true,
+                serialized: nil
+            ),
+            .invalid
+        )
+        XCTAssertEqual(
+            T9DevicePreflightRun.inspectMatrixRegistryStorage(
+                objectExists: true,
+                serialized: "v1|,"
+            ),
+            .invalid
+        )
+        XCTAssertFalse(T9DevicePreflightRun.canFinalizeMatrix(
+            envelopeStorage: .invalid,
+            registryStorage: .valid(registry)
+        ))
+        XCTAssertFalse(T9DevicePreflightRun.canFinalizeMatrix(
+            envelopeStorage: absentEnvelope,
+            registryStorage: .invalid
+        ))
+        XCTAssertTrue(T9DevicePreflightRun.canFinalizeMatrix(
+            envelopeStorage: absentEnvelope,
+            registryStorage: .valid(registry)
+        ))
+        XCTAssertTrue(T9DevicePreflightRun.canFinalizeMatrix(
+            envelopeStorage: absentEnvelope,
+            registryStorage: .absent
+        ))
+        XCTAssertFalse(T9DevicePreflightRun.canRemoveConsumedEnvelope(
+            serialized: nil,
+            token: token
+        ))
+        XCTAssertFalse(T9DevicePreflightRun.canRemoveConsumedEnvelope(
+            serialized: "malformed",
+            token: token
         ))
     }
 }
