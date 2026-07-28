@@ -118,12 +118,12 @@ pass. No physical build or install may occur before then.
 ### Local implementation candidate evidence
 
 Immutable implementation checkpoint
-`33fc35f48161478e2f4f7c7f0b27495bfbae9b47` completed the local portion of the
+`6faa27727986925400ad0aa80d258bd759f6349b` completed the local portion of the
 Pre-installation Gate on 2026-07-28. It supersedes
-`76966cbbedfe0a9f25df01a21ad2b5ce68699554` only in the UI driver: readiness
-requires both the Universe-specific cross-element-type `键盘页面` identity and
-all eight tappable T9 letter groups. The prior host-lifecycle remediation
-remains: Reminders uses `activate()` rather than `launch()`.
+`33fc35f48161478e2f4f7c7f0b27495bfbae9b47` only in the UI driver: it resolves
+one coherent accessibility owner from Reminders or SpringBoard, requires that
+same owner to expose both the exact Universe identity and all eight tappable T9
+letter groups, and fixes all 38 taps plus the end check to that owner.
 
 - UI fixture/statistics/evidence-validator contracts: `4 / 4`;
 - KeyboardCore: `751 / 751`;
@@ -204,6 +204,13 @@ The following pre-run attempts are retained and are not valid matrix arms:
    an existing empty item and expose the keyboard, which hid the list-level
    New Reminder control. No fixture action occurred; the isolated failure
    diagnostic was not opened or copied.
+7. `pair1-A-run4.xcresult`: exact-list overview preparation passed and the
+   Human visually confirmed that Universe Chinese nine-key appeared, but the
+   host-only XCUI readiness query failed closed with `keyboard-unavailable`
+   before the fixture began. One empty item remains for Human cleanup. The raw
+   result remains isolated and its failure diagnostic was not opened or
+   copied. The coherent-owner remediation above addresses this observed
+   physical-iOS accessibility ownership boundary.
 
 Because every arm intentionally switches from Reminders to the content-free
 evidence view before XCTest records a verdict, the Environment Executor must
@@ -215,13 +222,13 @@ empty arm item and exposes the keyboard itself. A prior arm's confirmation
 cannot be reused.
 
 After remediation, signed A/B App binary SHA256 values are respectively
-`6a2f31dfdf2198a950d35de465fd58f68f6cdb741a318098b0f1614715966178`
+`31927952062a963d1521f3b07ac4bf28a87de8cb8781fb099bd62d66b17e4a97`
 and
-`f5389bed8bac839a59293b1ad845a2f1176c06871a97e51e73318ae3d6dd18a5`;
+`1b136f2ac3d723c4f6a072932ba502716d6da301d8745e9d8352356b6d8e653c`;
 Extension values are
-`00b051781b7c49dce5507ed173f318b1c5570908479d5cb9026a10fde7c52e80`
+`e5eab40064597b22d3e3dcbc41c8a13bdec1bc21caf89842cd2bec9afae0130b`
 and
-`8535366b93aad26077f97a28caeb4337238d2ab3ce94390594f1a4ce3b385b70`.
+`cb76378ab6354c3ba609aebc9a23e9c3ef9a29765f2c8090c7ff21602599f5d9`.
 The valid five-pair matrix has not started.
 
 ### Pre-installation Gate
