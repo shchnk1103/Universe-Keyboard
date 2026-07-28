@@ -363,6 +363,12 @@ inspection, uses that inspection for evidence and finalization, and permits an
 empty registry only as the exact serialization `v1|`. A further immutable
 checkpoint and both independent re-reviews remain mandatory.
 
+That second remediation is immutable at
+`cff226dc08502d881bb480ec59c990932a21db67`. The linked evidence snapshot now
+binds its post-checkpoint A/B test result bundles, six focused storage tests and
+updated A/B binary digests. This checkpoint is awaiting both independent
+re-reviews and is not yet eligible for physical installation.
+
 ### Coordinate-driver focused contract matrix
 
 Before a new signed physical arm, deterministic UI-target contracts must prove:

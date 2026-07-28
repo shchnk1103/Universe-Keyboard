@@ -2,9 +2,9 @@
 
 ## Scope
 
-- **Collected:** 2026-07-28 22:30–22:32 Asia/Shanghai
+- **Collected:** 2026-07-28 22:43–22:44 Asia/Shanghai
 - **Implementation checkpoint:**
-  `13ee432cefa83d2b2d9717c9675db0ed6e934404`
+  `cff226dc08502d881bb480ec59c990932a21db67`
 - **Working tree:** clean before post-checkpoint validation
 - **Host:** Xcode `27.0 (27A5228h)`, iOS Simulator SDK `27.0`
 - **Simulator:** iPhone 17 Pro Max, iOS `27.0 (24A5390f)`, arm64,
@@ -63,8 +63,8 @@ The physical Reminders test was not selected.
 
 | Arm | Result | Build log | Result bundle |
 |---|---:|---|---|
-| A | `5 / 5` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-28T14-30-25-114Z_pid60177_919378fa.log` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-28T14-30-25-114Z_pid60177_2ee498d5.xcresult` |
-| B | `5 / 5` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-28T14-30-37-774Z_pid60177_16f7f4e8.log` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-28T14-30-37-775Z_pid60177_97c2b33a.xcresult` |
+| A | `5 / 5` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-28T14-43-53-463Z_pid60177_71b1e09f.log` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-28T14-43-53-463Z_pid60177_2b9657a0.xcresult` |
+| B | `5 / 5` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-28T14-44-08-465Z_pid60177_c0004e10.log` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-28T14-44-08-465Z_pid60177_c64ddeb7.xcresult` |
 
 The geometry method exercises one valid geometry plus 23 invalid/parser
 cases, including slot count/index, finite values, dimensions, containment,
@@ -81,10 +81,12 @@ swift test --package-path Packages/KeyboardCore \
   --filter T9DevicePreflightRunTests
 ```
 
-Result: `5 / 5`. This includes malformed existing envelope rejection,
+Result: `6 / 6`. This includes malformed existing envelope rejection,
 retained-log and current-matrix reuse, prepared/consumed lifecycle, matching
 cleanup predicate, versioned registry round-trip, duplicate/malformed registry
-rejection and the 64-token bound.
+rejection, leading/trailing/consecutive empty-field rejection, the 64-token
+bound, explicit `absent / valid / invalid` storage inspection and fail-closed
+cleanup/finalization predicates.
 
 ```sh
 swift test --package-path Packages/KeyboardCore
@@ -152,10 +154,10 @@ condition requires the common preflight condition.
 
 | Product | SHA256 |
 |---|---|
-| A App | `acd8a592f520a0d72a76f880197379cdfb02ef80f9b72754cd872612f3f134ff` |
-| A Extension | `2a818c230e5f6c9515dd8abfeb5372cc7b0dc8fad41ea8a1266ade0328f1b015` |
-| B App | `3f000916d176358b905da46fed7f3a2e6e634a843ac2cf9d3ecf120fe5e3983b` |
-| B Extension | `1562d8b180461cef7228e8c53241b8b1da40dc8b59aed520458760e4c9e49288` |
+| A App | `cd0f86e18dc09fb402c2d616402c42351e7c3766eea0c447e3d6c5e8b8f95bab` |
+| A Extension | `8aaa2c1ec69e022885b970d7c41573a0bac088849601e1e1bddcdad5607383a1` |
+| B App | `5fcdbcac3cb9d941dd9b8200a8e812f20582ec8e203bbb6abcc7bde47a7dbf7d` |
+| B Extension | `b106fee3693218c853ef25518d55a67453f8d94a1f21ef55d4ec7e089248606f` |
 | Ordinary App | `c055b99a8ff7b42abc4b72c75c249eac109fea98a3835a5c2b79ee6c0b8911b8` |
 | Ordinary Extension | `1bb50c48f0d6dd9d79ccf4819c91f5daa4d1ddef01941416de7884102eb15e43` |
 
