@@ -215,7 +215,7 @@ final class T9DevicePreflightUITests: XCTestCase {
             title.tap()
             try activateUniverseKeyboardIfNeeded(in: reminders)
             result = try driveFrozenFixture(in: reminders)
-            guard reminders.buttons["键盘页面"].firstMatch.exists else {
+            guard isUniverseT9KeyboardAvailable(in: reminders) else {
                 throw DriverError.extensionDisappeared
             }
             // The 38th action requests an ordered Logger flush. Keep the host
@@ -476,8 +476,7 @@ final class T9DevicePreflightUITests: XCTestCase {
             guard let group = letterGroup(containing: letter) else {
                 throw DriverError.fixtureMappingFailed
             }
-            let key = t9Key(for: group, in: app)
-            guard key.waitForExistence(timeout: 5), key.isHittable else {
+            guard let key = t9Key(for: group, in: app) else {
                 throw DriverError.keyUnavailable
             }
 
@@ -500,7 +499,9 @@ final class T9DevicePreflightUITests: XCTestCase {
     private func activateUniverseKeyboardIfNeeded(
         in app: XCUIApplication
     ) throws {
-        if app.buttons["键盘页面"].firstMatch.waitForExistence(timeout: 3) {
+        if waitUntil(timeout: 3, condition: {
+            self.isUniverseT9KeyboardAvailable(in: app)
+        }) {
             return
         }
 
@@ -537,8 +538,9 @@ final class T9DevicePreflightUITests: XCTestCase {
             throw DriverError.keyboardSelectionUnavailable
         }
         selection.tap()
-        guard app.buttons["键盘页面"].firstMatch.waitForExistence(timeout: 10)
-        else {
+        guard waitUntil(timeout: 10, condition: {
+            self.isUniverseT9KeyboardAvailable(in: app)
+        }) else {
             throw DriverError.keyboardUnavailable
         }
     }
@@ -555,10 +557,30 @@ final class T9DevicePreflightUITests: XCTestCase {
     private func t9Key(
         for group: String,
         in app: XCUIApplication
-    ) -> XCUIElement {
-        app.keys.matching(
-            NSPredicate(format: "label BEGINSWITH[c] %@", group)
+    ) -> XCUIElement? {
+        let predicate = NSPredicate(format: "label BEGINSWITH[c] %@", group)
+        let candidates = [
+            app.keys.matching(predicate).firstMatch,
+            app.buttons.matching(predicate).firstMatch,
+        ]
+        return candidates.first { $0.exists && $0.isHittable }
+    }
+
+    /// Readiness requires both the real controls the driver will tap and a
+    /// Universe-specific identity sentinel. The sentinel is intentionally
+    /// queried across element types because physical iOS can expose the same
+    /// UIKit control as a key rather than a button.
+    private func isUniverseT9KeyboardAvailable(
+        in app: XCUIApplication
+    ) -> Bool {
+        let identity = app.descendants(matching: .any).matching(
+            NSPredicate(format: "label == %@", "键盘页面")
         ).firstMatch
+        guard identity.exists else {
+            return false
+        }
+        return ["ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ"]
+            .allSatisfy { t9Key(for: $0, in: app) != nil }
     }
 
     private func letterGroup(containing letter: Character) -> String? {
