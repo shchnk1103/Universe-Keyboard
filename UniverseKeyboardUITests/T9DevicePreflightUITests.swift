@@ -200,7 +200,10 @@ final class T9DevicePreflightUITests: XCTestCase {
         validateFrozenFixture()
 
         let reminders = XCUIApplication(bundleIdentifier: remindersBundleIdentifier)
-        reminders.launch()
+        // Preserve the Human-confirmed exact-list foreground state. `launch()`
+        // terminates and relaunches Reminders, which can discard that trusted
+        // navigation state before the driver verifies the list title.
+        reminders.activate()
         var driverFailure: DriverError?
         var result: (actionStartTimes: [TimeInterval], scheduleLags: [TimeInterval])?
         do {
