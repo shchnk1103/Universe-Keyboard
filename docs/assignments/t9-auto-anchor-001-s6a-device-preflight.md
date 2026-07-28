@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — physical A/B paused; remediated checkpoint awaiting independent re-review`
+**Lifecycle status:** `Active — coordinate driver independently reviewed; A1 awaiting fresh Human readiness`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority
@@ -366,8 +366,17 @@ checkpoint and both independent re-reviews remain mandatory.
 That second remediation is immutable at
 `cff226dc08502d881bb480ec59c990932a21db67`. The linked evidence snapshot now
 binds its post-checkpoint A/B test result bundles, six focused storage tests and
-updated A/B binary digests. This checkpoint is awaiting both independent
-re-reviews and is not yet eligible for physical installation.
+updated A/B binary digests. Third-round independent re-review returned:
+
+- **Architecture:** `Pass`, P0–P3 none;
+- **Quality:** `Pass`, P0–P3 none; the `15` RimeBridge skips remain
+  external-fixture non-coverage.
+
+The two prior storage P1 findings are closed. This permits preparation of the
+next signed A1 arm, but records no physical-device result and grants no Product
+Gate. Installation and execution still require a fresh per-arm Human
+confirmation of the exact Reminders list overview and most-recently-selected
+Universe Chinese nine-key software keyboard.
 
 ### Coordinate-driver focused contract matrix
 

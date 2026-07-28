@@ -188,14 +188,14 @@ archive identities.
 
 ## Release Decision
 
-No release or Product decision is made. This snapshot is eligible only for
-independent pre-installation re-review.
+Independent Architecture and Quality re-review of
+`cff226dc08502d881bb480ec59c990932a21db67` both returned `Pass`, P0–P3 none.
+This permits preparation of the next signed A1 arm under the Assignment, but
+records no physical-device result and makes no release or Product decision.
 
 ## Owner Handoffs
 
-- Architecture: re-review App Group ownership, malformed-state fail-closed
-  behavior and ordinary Release isolation.
-- Quality: reproduce the two prior P1 cases, inspect the expanded negative
-  matrix and verify command/artifact traceability.
-- Human Product Owner: no action until both reviewers return Pass; then prepare
-  the exact disposable Reminders list before each separately announced arm.
+- Architecture and Quality: completed independent pre-installation re-review;
+  both Pass, P0–P3 none.
+- Human Product Owner: prepare the exact disposable Reminders list before each
+  separately announced arm; the prior confirmation cannot be reused.
