@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — physical A/B paused; coordinate-driver Quality remediation in progress`
+**Lifecycle status:** `Active — physical A/B paused; remediated checkpoint awaiting independent re-review`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority
@@ -344,6 +344,14 @@ artifact evidence. Consequently `8c5aa6d` is retained as a historical
 checkpoint but is not eligible for physical execution. Remediation is limited
 to those four findings and requires a new immutable checkpoint plus both
 independent re-reviews.
+
+Remediation implementation checkpoint
+`13ee432cefa83d2b2d9717c9675db0ed6e934404` addresses only those findings.
+Its exact commands, environment, result-bundle paths, negative-case coverage
+and A/B/ordinary Simulator digests are recorded in
+[`t9-auto-anchor-s6a-coordinate-driver-2026-07-28.md`](../evidence/t9-auto-anchor-s6a-coordinate-driver-2026-07-28.md).
+Physical execution remains paused until independent Architecture and Quality
+both re-review this checkpoint and return Pass.
 
 ### Coordinate-driver focused contract matrix
 
