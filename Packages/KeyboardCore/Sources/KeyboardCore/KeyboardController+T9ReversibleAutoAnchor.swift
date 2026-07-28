@@ -236,8 +236,20 @@ extension KeyboardController {
         onReversibleT9AutoAnchorOutcome?(outcome)
         #endif
         #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        let recordPrefix: String
+        if let context = HotPathSegmentTiming.devicePreflightContext {
+            recordPrefix =
+                "T9AUTO run=\(context.token) action=\(context.action) "
+                + "event=\(context.event) "
+        } else {
+            recordPrefix = "T9AUTO run=invalid action=0 event=0 "
+        }
+        #else
+        let recordPrefix = "T9AUTO "
+        #endif
         let record =
-            "T9AUTO status=\(outcome.status.rawValue) "
+            recordPrefix + "status=\(outcome.status.rawValue) "
                 + "baseline=\(outcome.baselineCandidateCount) "
                 + "result=\(outcome.resultingCandidateCount) "
                 + "overlap=\(outcome.overlappingCandidateCount) "

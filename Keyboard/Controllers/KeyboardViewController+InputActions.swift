@@ -27,6 +27,9 @@ extension KeyboardViewController {
             && key.count == 1
             && key.first?.isNumber == true
         if shouldSampleT9Segments {
+            #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+            recordDevicePreflightExecutionGeometryBeforeFirstT9Key()
+            #endif
             HotPathSegmentTiming.beginKey(
                 eventID: UInt64(eventID),
                 keyLength: key.count,

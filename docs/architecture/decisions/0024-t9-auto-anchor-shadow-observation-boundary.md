@@ -298,6 +298,67 @@ optimization and the same bundle/App Group/signing/schema/runtime identity.
 The harness must preserve device RIME and userdb state, avoid candidate/Path
 selection and operate only visible T9 letter-group keys.
 
+Physical iOS 27 on the declared iPhone 13 Pro can render Universe Keyboard
+while exposing none of its third-party keyboard elements to the XCTest process,
+including when Reminders and SpringBoard are queried as separate coherent
+accessibility owners. Two Human-confirmed attempts reached this exact boundary
+before any fixture action. S6-A therefore permits a test-only coordinate
+executor, but not fixed or guessed coordinates.
+
+For each arm, the internal main App prepares a unique opaque token with
+canonical form `S6A-[0-9A-F]{32}` from a new 128-bit UUID. One versioned App
+Group envelope is atomically replaced through
+`absent → prepared(token) → consumed(token) → absent`; it contains no user
+content. Main App is the sole producer/cleaner and Extension the sole consumer.
+The Extension snapshots the token once for the arm and may continue with that
+in-memory value after consumption; a reconstructed Extension must reject a
+consumed envelope. Missing, malformed, retained-log-reused or
+current-matrix-reused tokens fail closed. Crash residue is recorded and
+replaced only by a new token, never resumed; cleanup removes only a matching
+consumed envelope.
+
+The Extension binds every gate marker, geometry record, segment record, arm
+summary and transaction outcome to that token. Geometry contains only eight
+ordered slot indices and rectangles for the visible T9 letter groups; it
+contains no letters, internal digits, pinyin, candidates or host text.
+
+The one canonical coordinate space is the current keyboard
+`view.window.windowScene.screen.coordinateSpace` in portrait logical points
+with top-left origin. This is the iOS 27 context-owned form of the active
+physical screen, not deprecated global screen lookup. A geometry record carries
+screen bounds, native scale, portrait orientation, keyboard-container frame and
+slot rectangles. Screen, keyboard and slots must be finite and strictly
+positive; each slot is at least `30 × 30` points, wholly inside the keyboard and
+screen, and non-overlapping. The keyboard must be wholly on-screen with
+`minY ≥ 0.5 × screenHeight`. Slots must match the frozen row-major topology
+`2 + 3 + 3`: center Y differs by at most four points within
+each row, center X strictly increases within a row, and row centers strictly
+increase. The runner also requires the recorded logical screen bounds to equal
+the foreground Reminders frame before converting slot centers to normalized
+screen offsets.
+
+The runner first reads a `phase=prepared` geometry and its canonical SHA256.
+After it returns to the same empty editor, the first real T9 key handler emits
+`phase=execution` geometry from the current view before input processing. Its
+digest must equal the prepared digest.
+
+Final acceptance uses a same-token partial order rather than a false linear
+log order. Marker precedes prepared geometry, which precedes execution
+geometry. The 38 `T9SEG` records are ordered by action and `T9ARM` follows
+action 38. A has no scoped `T9AUTO`; B has exactly one after execution geometry
+and before `T9ARM`, bound to the producing action/event. Because it is emitted
+inside `controller.handle`, it may precede that action's later `T9SEG`. Thus
+coordinates execute input, while fresh Extension-owned geometry plus the
+handler-time geometry and resulting records prove origin and layout stability.
+
+A stale/reused token, non-canonical coordinate space, invalid topology, a fixed
+screen-coordinate table, a rectangle outside the validated software-keyboard
+region, geometry drift, an incomplete token transition, or any missing/
+duplicate/mismatched record in that chain invalidates the arm. The token and
+geometry path are compiled only by `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT`; ordinary
+Release neither reads nor writes its envelope. They do not alter keyboard
+layout, product accessibility, RIME behavior or user data.
+
 This amendment does not accept Release behavior. It only makes physical-device
 evidence possible without compiling all `DEBUG` behavior into the measured
 binary. Ordinary Release must remain gate-off and contain no S6-A marker after

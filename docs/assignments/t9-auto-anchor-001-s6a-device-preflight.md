@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — Pre-installation Gate Pass; physical A/B evidence in progress`
+**Lifecycle status:** `Active — physical A/B paused; coordinate-driver remediation under review`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority
@@ -29,6 +29,10 @@
   - Install the two internal variants alternately on the connected physical
     iPhone 13 Pro, drive the visible T9 letter-group keys in a Human-created
     disposable Reminders list and collect five valid pairs.
+  - When physical iOS does not expose the third-party keyboard accessibility
+    tree, derive tap points only from a same-run, Extension-produced,
+    content-free geometry record for the eight visible letter groups. Bind the
+    geometry, binary marker and arm evidence to one opaque run token.
   - After the final B arm, reinstall the ordinary same-checkpoint gate-off
     Release without uninstall/reset and verify that the device no longer runs
     a preflight-enabled binary.
@@ -211,15 +215,85 @@ The following pre-run attempts are retained and are not valid matrix arms:
    result remains isolated and its failure diagnostic was not opened or
    copied. The coherent-owner remediation above addresses this observed
    physical-iOS accessibility ownership boundary.
+8. `pair1-A-run5.xcresult`: the coherent-owner driver still failed closed with
+   `keyboard-unavailable` before the fixture began. The Human again visually
+   confirmed that Universe Keyboard Chinese nine-key was present. This proves
+   that the keyboard was visible while neither Reminders nor SpringBoard
+   exposed its third-party controls to this XCTest process; zero fixture
+   actions occurred. The raw result remains isolated and its potentially
+   content-bearing failure diagnostic was not opened, exported or copied.
 
-Because every arm intentionally switches from Reminders to the content-free
-evidence view before XCTest records a verdict, the Environment Executor must
-pause before **every** subsequent arm and obtain fresh Human confirmation that
-the exact list **overview** is foreground with no active Reminder editor.
-Universe Chinese nine-key must remain the most recently selected software
-keyboard, but it must not be made visible manually; the driver creates the new
-empty arm item and exposes the keyboard itself. A prior arm's confirmation
-cannot be reused.
+The two independent Human-visible/XCTest-invisible observations invalidate
+further accessibility-owner guessing. Before physical execution resumes, the
+driver must instead implement the reviewed coordinate contract below:
+
+- every arm receives a new opaque run token; the preflight main App writes it
+  to the existing App Group only for the internal preflight build. Its
+  canonical form is `S6A-` followed by 32 uppercase hexadecimal characters
+  generated from a new 128-bit UUID;
+- token transfer uses one versioned App Group envelope replaced as one value:
+  `absent → prepared(token) → consumed(token) → absent`. Main App is the only
+  producer/cleaner and Extension is the only consumer. Extension snapshots the
+  prepared token before logging the marker, changes the envelope to consumed
+  once, and never changes its in-memory token during that arm. The same
+  Extension instance may continue with that snapshot after consumption; a new
+  instance must reject a consumed envelope. Missing, malformed or log-reused
+  tokens fail closed. “Reused” means the token already occurs in the retained
+  S6-A log or the current five-pair matrix manifest. A crash residue is
+  recorded, then a newly generated token atomically replaces it; the same
+  residue token can never resume an arm.
+  Normal arm teardown removes only a matching consumed envelope, and final
+  preflight cleanup requires the envelope to be absent without touching other
+  App Group or userdb state;
+- after the driver creates the new empty item, the Extension records exactly
+  eight content-free slot rectangles for that token. Slot order means the
+  visible groups `ABC`, `DEF`, `GHI`, `JKL`, `MNO`, `PQRS`, `TUV`, `WXYZ`;
+  device evidence records only slot indices and rectangles, never letters,
+  digits, pinyin, candidates or host text;
+- geometry uses the current keyboard
+  `view.window.windowScene.screen.coordinateSpace` in portrait logical points
+  with top-left origin, never pixels, Extension-local or window-local
+  coordinates.
+  The canonical record includes screen bounds, native scale, portrait
+  orientation and the keyboard container frame. The driver verifies that the
+  logical screen bounds equal the foreground Reminders frame before converting
+  each slot center to normalized screen offsets;
+- the driver obtains the geometry through the internal evidence view, returns
+  to the same Reminders editor, and taps the centers of those rectangles on the
+  fixed monotonic schedule. It never discovers, labels or operates a numeric
+  keypad;
+- geometry is accepted only when the token and marker match the arm; screen,
+  keyboard and all eight rectangles are finite with strictly positive width
+  and height; every slot is at least `30 × 30` logical points, is wholly inside
+  both the screen and keyboard frame, and does not overlap another slot. The
+  keyboard frame itself must be wholly inside the screen with
+  `minY ≥ 0.5 × screenHeight`;
+- slots must form the frozen `2 + 3 + 3` row-major topology: `0...1`, `2...4`
+  and `5...7` share rows within 4 logical points of center Y; center X strictly
+  increases within each row; and the three row-center values strictly
+  increase. There is no fixed/guessed fallback;
+- the prepared geometry has a SHA256 over its canonical token/screen/
+  orientation/scale/keyboard/slot serialization. On the first real T9 key
+  handler, before input processing, the Extension emits one `phase=execution`
+  geometry from the then-current view. Final evidence requires its digest to
+  equal the prepared digest, proving that the evidence-App round trip did not
+  change the layout actually receiving taps;
+- the full accepted provenance is a same-token partial order. Marker precedes
+  prepared geometry, which precedes execution geometry. The 38 `T9SEG` records
+  are strictly ordered by action; `T9ARM` follows action 38. A has zero scoped
+  `T9AUTO` outcomes. B has exactly one `T9AUTO` after execution geometry and
+  before `T9ARM`; it carries the action/event identity of the handler that
+  produced it and may precede that action's `T9SEG` because the transaction is
+  logged inside `controller.handle`. Every listed record carries the token;
+  missing, duplicate, stale, mismatched or partial-order-invalid records
+  invalidate the arm. A coordinate action without this closed-loop evidence
+  can never prove success.
+
+Because every arm switches from Reminders to the content-free evidence view,
+the Environment Executor must pause before **every** arm and obtain fresh Human
+confirmation that the exact list overview is foreground and Universe Chinese
+nine-key is the most recently selected software keyboard. A prior arm's
+confirmation cannot be reused.
 
 After remediation, signed A/B App binary SHA256 values are respectively
 `31927952062a963d1521f3b07ac4bf28a87de8cb8781fb099bd62d66b17e4a97`
@@ -229,7 +303,41 @@ Extension values are
 `e5eab40064597b22d3e3dcbc41c8a13bdec1bc21caf89842cd2bec9afae0130b`
 and
 `cb76378ab6354c3ba609aebc9a23e9c3ef9a29765f2c8090c7ff21602599f5d9`.
-The valid five-pair matrix has not started.
+The valid five-pair matrix has not started (`0 / 5`). Physical execution is
+paused until the coordinate driver has an immutable checkpoint, focused
+contracts/builds pass, and independent Architecture and Quality reviews return
+Pass.
+
+### Coordinate-driver focused contract matrix
+
+Before a new signed physical arm, deterministic UI-target contracts must prove:
+
+- token/envelope: the complete matching
+  `absent → prepared(token) → consumed(token) → absent` transition passes;
+  absent, empty, malformed, retained-log reuse, current-matrix reuse, unknown
+  envelope version, illegal state and crash-residue resume fail. The same
+  Extension instance may continue using its snapshotted token after the
+  envelope is consumed; a reconstructed instance must reject a consumed
+  envelope. Matching cleanup removes it; non-matching cleanup must leave it
+  untouched. Every cross-record token mismatch fails;
+- geometry shape: one valid eight-slot record passes; `0`, `7` or `9` slots,
+  duplicate/missing indices, `NaN`/infinity, zero/negative or smaller-than-
+  `30 × 30` size, overlap, screen/keyboard escape, incorrect coordinate space,
+  scale, bounds or orientation fail;
+- topology: the declared `2 + 3 + 3` row-major centers pass; swapped slots,
+  reversed columns/rows, non-monotonic centers and wrong row grouping fail;
+- lifecycle drift: equal prepared/execution canonical digests pass; any screen,
+  orientation, scale, keyboard-frame or slot change fails;
+- evidence: same-token marker and prepared/execution geometry precede input;
+  38 ordered `T9SEG` records precede one `T9ARM`; A has zero `T9AUTO`, while B
+  has one action/event-bound `T9AUTO` between execution geometry and `T9ARM`
+  and possibly before its producing action's `T9SEG`. Missing, duplicate,
+  stale, segment-order-invalid, partial-order-invalid or token-mismatched
+  records fail;
+- timing: the fixed monotonic `200 ms` schedule passes at the frozen boundary;
+  an action starting more than `50 ms` late fails;
+- privacy: every token/geometry/evidence error is converted to an XCTest
+  failure only after the internal evidence App replaces Reminders.
 
 ### Pre-installation Gate
 
@@ -247,6 +355,10 @@ remains prohibited until:
 - the opt-in UI driver compiles, its fixture/statistics contract tests pass,
   and its failure path switches away from Reminders before emitting an XCTest
   failure;
+- when accessibility cannot expose the visible third-party keys, the opt-in
+  coordinate driver proves fresh-token geometry validation, slot mapping,
+  lower-keyboard-region bounds, same-geometry final validation and stale-token
+  rejection in focused contract tests;
 - signed install is proven not to require uninstalling the app or deleting its
   App Group/container;
 - Human Product Owner creates and confirms an otherwise empty, disposable
@@ -263,10 +375,11 @@ remains prohibited until:
   `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED`.
 - Five valid pairs complete in the frozen order with 38 ordered actions per
   arm and content-free per-key records.
-- Each arm's internal evidence view returns exactly 38 scoped `T9SEG` records
-  after the latest expected marker, one `T9ARM` summary, zero commits and one
-  stable valid native session; A has zero `T9AUTO` outcomes and B has exactly
-  one accepted or rejected-and-restored outcome.
+- Each arm's internal evidence view returns one same-token marker, matching
+  prepared/execution geometry, exactly 38 same-token scoped `T9SEG` records,
+  one same-token `T9ARM` summary, zero commits and one stable valid native
+  session; A has zero `T9AUTO` outcomes in that scoped arm and B has exactly one
+  same-token accepted or rejected-and-restored outcome.
 - Every A arm records gate off and no automatic attempt. Every B arm records
   gate on and exactly one acceptable bounded outcome; any rejected/restored
   outcome is retained and assessed rather than discarded.
@@ -311,6 +424,13 @@ Stop and retain the current checkpoint if:
 - automation cannot tap the visible letter-group keys at the declared cadence.
   Manual typing may remain qualitative smoke evidence but cannot replace the
   paired performance matrix;
+- a run token is absent, reused or malformed; geometry is absent, stale,
+  content-bearing, outside the lower keyboard region, overlapping, out of slot
+  order, different after the arm, or not bound to the latest expected binary
+  marker;
+- the token envelope violates `absent → prepared → consumed → absent`, a crash
+  residue is silently resumed, cleanup removes a non-matching value, or the
+  ordinary Release reads/writes the preflight envelope;
 - any action starts more than `50 ms` late relative to the monotonic fixed
   `200 ms` schedule. This is a driver-validity budget, not a Product SLO; the
   invalid arm remains in the manifest and is not silently retried away;
@@ -348,6 +468,9 @@ Before the first arm, record:
   the literal spelling or digit identity;
 - run order `A→B`, `B→A`, `A→B`, `B→A`, `A→B`;
 - log start/end timestamps, run/pair/arm IDs and artifact locations/digests;
+- a unique opaque run token and the same-token content-free geometry digest;
+- portrait global-screen logical bounds/scale, keyboard frame and the validated
+  `2 + 3 + 3` slot-topology result;
 - exact temporary `.xcresult` location, attachment-scan result and the
   content-free subset retained after review. Raw result bundles are never
   copied into repository evidence; any content-bearing screenshot or UI
@@ -356,24 +479,36 @@ Before the first arm, record:
 Each arm must:
 
 1. install the declared internal variant without uninstall/reset;
-2. record start thermal/discrete-power/debugger/Full Access/host/orientation/
+2. prepare a unique opaque run token through the internal preflight main App;
+   require the versioned envelope to reach `prepared(token)` by one-value
+   replacement; ordinary Release must not contain this preparation path;
+3. record start thermal/discrete-power/debugger/Full Access/host/orientation/
    layout/schema/runtime plus session identity/validity and invalidate any
    unknown or mismatch;
-3. start with a newly created empty test item inside the exact disposable list
+4. start with a newly created empty test item inside the exact disposable list
    and an empty composition;
-4. launch without debugger attachment and confirm the expected gate marker;
-5. tap only visible T9 letter-group keys at `200 ms` cadence;
-6. avoid Path, candidate, space, commit and Delete during the timing arm;
-7. after the 38th action, keep the extension visible for one second while the
+5. launch without debugger attachment, consume the prepared envelope exactly
+   once and confirm the same-token expected gate marker plus exactly eight valid
+   same-token letter-group slot rectangles in the canonical portrait global
+   screen coordinate space;
+6. return to the same empty editor and tap only the centers derived from those
+   visible T9 letter-group rectangles at `200 ms` cadence. The first real T9
+   handler must emit a same-token execution-geometry digest equal to the
+   prepared digest before processing its key;
+7. avoid Path, candidate, space, commit and Delete during the timing arm;
+8. after the 38th action, keep the extension visible for one second while the
    ordered writer drains; then switch to the internal evidence view and require
    exactly 38 ordered content-free timing records, the expected marker, zero
-   commits and one stable valid native session;
-8. record the same environment fields at arm end; any drift invalidates the
+   commits, matching prepared/execution geometry, one summary, the expected A/B
+   outcome count and one stable valid native session, all carrying the same run
+   token;
+9. record the same environment fields at arm end; any drift invalidates the
    arm. The session identity must remain valid with no loss/recreation; the
    expected composition transition from empty to active after 38 actions is
    recorded separately and is not drift;
-9. capture a content-free functional result and leave all test-created
-   Reminders state for Human cleanup.
+10. capture a content-free functional result and leave all test-created
+   Reminders state for Human cleanup; remove only the matching consumed token
+   envelope and verify it is absent.
 
 The runner must not call `XCTFail`, `XCTAssert*` or `XCTUnwrap` while Reminders
 is visible. Driver errors are retained as content-free codes, the main App's

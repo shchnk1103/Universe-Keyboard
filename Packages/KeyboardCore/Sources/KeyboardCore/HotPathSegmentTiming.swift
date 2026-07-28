@@ -43,6 +43,32 @@ public enum HotPathSegmentTiming {
     private static var runSessionStayedStable = true
     private static var runSessionStayedValid = true
     private static var runCommitCount = 0
+    #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+    private static var devicePreflightRunToken: String?
+
+    /// Starts one content-free physical-device arm and resets its counters.
+    public static func beginDevicePreflightRun(token: String) {
+        devicePreflightRunToken = token
+        sampleOrdinal = 0
+        runSessionIdentity = nil
+        runSessionStayedStable = true
+        runSessionStayedValid = true
+        runCommitCount = 0
+        cancel()
+    }
+
+    /// Context for a transaction outcome emitted inside `controller.handle`.
+    public static var devicePreflightContext: (
+        token: String,
+        action: Int,
+        event: UInt64
+    )? {
+        guard let token = devicePreflightRunToken, isActive else {
+            return nil
+        }
+        return (token, sampleOrdinal, eventID)
+    }
+    #endif
 
     /// Start a sample for one digit/key event. Nested `beginKey` replaces the prior sample.
     public static func beginKey(
@@ -150,8 +176,14 @@ public enum HotPathSegmentTiming {
         let uiText = String(format: "%.1f", uiMs)
         let unaccountedText = String(format: "%.1f", unaccounted)
 
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        let recordPrefix =
+            "T9SEG run=\(devicePreflightRunToken ?? "invalid") "
+        #else
+        let recordPrefix = "T9SEG "
+        #endif
         let record =
-            "T9SEG action=\(sampleOrdinal) event=\(eventID) "
+            recordPrefix + "action=\(sampleOrdinal) event=\(eventID) "
                 + "keyLen=\(keyLength) compBefore=\(compositionLengthBefore) "
                 + "rawLen=\(rawLengthAfter) paths=\(pathCount) cands=\(candidateCount) "
                 + "committed=\(didCommit) "
@@ -183,7 +215,8 @@ public enum HotPathSegmentTiming {
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         if sampleOrdinal == 38 {
             Logger.shared.devicePreflightPerformance(
-                "T9ARM actions=38 committed=\(runCommitCount) "
+                "T9ARM run=\(devicePreflightRunToken ?? "invalid") "
+                    + "actions=38 committed=\(runCommitCount) "
                     + "session=\(runSessionIdentity ?? 0) "
                     + "sessionStable=\(runSessionStayedStable) "
                     + "sessionValid=\(runSessionStayedValid)"

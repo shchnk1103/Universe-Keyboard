@@ -69,6 +69,13 @@ class KeyboardViewController: UIInputViewController {
     var returnButton: UIButton!
     /// 所有字母键按钮的引用，用于 Shift 状态下批量刷新标题
     var letterButtons: [UIButton] = []
+    #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+    /// S6-A only: visible letter-group buttons in canonical slot order.
+    var devicePreflightT9LetterGroupButtons: [UIButton] = []
+    var devicePreflightRunToken: String?
+    var devicePreflightPreparedGeometryDigest: String?
+    var devicePreflightDidRecordExecutionGeometry = false
+    #endif
 
     // MARK: - 业务逻辑控制器
 
@@ -356,6 +363,9 @@ class KeyboardViewController: UIInputViewController {
                 category: .display
             )
         }
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        recordDevicePreflightPreparedGeometryIfPossible()
+        #endif
     }
 
     // MARK: === 文本变化回调 ===

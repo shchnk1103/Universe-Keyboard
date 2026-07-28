@@ -33,6 +33,10 @@ extension KeyboardViewController {
         }
 
         button.accessibilityLabel = "\(letters)，数字 \(digit)"
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        // Slot order follows the visible ABC…WXYZ construction order.
+        devicePreflightT9LetterGroupButtons.append(button)
+        #endif
         // Native 九宫格: letter group is primary; slightly smaller than prior 18pt chrome.
         let lettersFont = UIFont.systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
         let text = NSAttributedString(

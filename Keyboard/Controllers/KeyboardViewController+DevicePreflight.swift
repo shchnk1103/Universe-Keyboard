@@ -1,0 +1,117 @@
+#if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+import CryptoKit
+import KeyboardCore
+import UIKit
+
+extension KeyboardViewController {
+    func recordDevicePreflightPreparedGeometryIfPossible() {
+        guard devicePreflightPreparedGeometryDigest == nil,
+              let geometry = makeDevicePreflightGeometry()
+        else {
+            return
+        }
+        devicePreflightPreparedGeometryDigest = geometry.digest
+        Logger.shared.devicePreflightPerformance(
+            geometry.record(phase: "prepared")
+        )
+        Logger.shared.requestFlush()
+    }
+
+    func recordDevicePreflightExecutionGeometryBeforeFirstT9Key() {
+        guard !devicePreflightDidRecordExecutionGeometry else {
+            return
+        }
+        devicePreflightDidRecordExecutionGeometry = true
+        guard let geometry = makeDevicePreflightGeometry() else {
+            Logger.shared.devicePreflightPerformance(
+                "T9GEOM phase=execution run=\(devicePreflightRunToken ?? "invalid") "
+                    + "status=unavailable"
+            )
+            return
+        }
+        Logger.shared.devicePreflightPerformance(
+            geometry.record(phase: "execution")
+        )
+    }
+
+    private func makeDevicePreflightGeometry() -> DevicePreflightGeometry? {
+        guard let token = devicePreflightRunToken,
+              T9DevicePreflightRun.isCanonicalToken(token),
+              devicePreflightT9LetterGroupButtons.count == 8,
+              let screen = view.window?.windowScene?.screen
+        else {
+            return nil
+        }
+
+        let coordinateSpace = screen.coordinateSpace
+        let screenBounds = coordinateSpace.bounds
+        guard screenBounds.height > screenBounds.width else {
+            return nil
+        }
+        let keyboardFrame = coordinateSpace.convert(view.bounds, from: view)
+        let slots = devicePreflightT9LetterGroupButtons.map {
+            coordinateSpace.convert($0.bounds, from: $0)
+        }
+        guard slots.allSatisfy({ !$0.isEmpty }) else {
+            return nil
+        }
+        return DevicePreflightGeometry(
+            token: token,
+            screen: screenBounds,
+            nativeScale: screen.nativeScale,
+            keyboard: keyboardFrame,
+            slots: slots
+        )
+    }
+}
+
+private struct DevicePreflightGeometry {
+    let token: String
+    let screen: CGRect
+    let nativeScale: CGFloat
+    let keyboard: CGRect
+    let slots: [CGRect]
+
+    var digest: String {
+        SHA256.hash(data: Data(canonical.utf8))
+            .map { String(format: "%02x", $0) }
+            .joined()
+    }
+
+    func record(phase: String) -> String {
+        "T9GEOM phase=\(phase) run=\(token) digest=\(digest) "
+            + "space=portrait-screen-points orientation=portrait "
+            + "screen=\(Self.rect(screen)) scale=\(Self.number(nativeScale)) "
+            + "keyboard=\(Self.rect(keyboard)) "
+            + slots.enumerated()
+                .map { "s\($0.offset)=\(Self.rect($0.element))" }
+                .joined(separator: " ")
+    }
+
+    private var canonical: String {
+        "v1|run=\(token)|space=portrait-screen-points|orientation=portrait"
+            + "|screen=\(Self.rect(screen))|scale=\(Self.number(nativeScale))"
+            + "|keyboard=\(Self.rect(keyboard))|"
+            + slots.enumerated()
+                .map { "s\($0.offset)=\(Self.rect($0.element))" }
+                .joined(separator: "|")
+    }
+
+    private static func rect(_ rect: CGRect) -> String {
+        [
+            rect.origin.x,
+            rect.origin.y,
+            rect.size.width,
+            rect.size.height,
+        ].map(number).joined(separator: ",")
+    }
+
+    private static func number(_ value: CGFloat) -> String {
+        String(
+            format: "%.3f",
+            locale: Locale(identifier: "en_US_POSIX"),
+            Double(value)
+        )
+    }
+}
+#endif
