@@ -118,11 +118,12 @@ pass. No physical build or install may occur before then.
 ### Local implementation candidate evidence
 
 Immutable implementation checkpoint
-`76966cbbedfe0a9f25df01a21ad2b5ce68699554` completed the local portion of the
+`33fc35f48161478e2f4f7c7f0b27495bfbae9b47` completed the local portion of the
 Pre-installation Gate on 2026-07-28. It supersedes
-`4fd01dbf4bcf5fc23ab4825af61fcab3ebcce90c` only in the UI driver: Reminders
-uses `activate()` rather than `launch()` so the Human-confirmed exact-list
-navigation state is not destroyed before validation.
+`76966cbbedfe0a9f25df01a21ad2b5ce68699554` only in the UI driver: readiness
+requires both the Universe-specific cross-element-type `键盘页面` identity and
+all eight tappable T9 letter groups. The prior host-lifecycle remediation
+remains: Reminders uses `activate()` rather than `launch()`.
 
 - UI fixture/statistics/evidence-validator contracts: `4 / 4`;
 - KeyboardCore: `751 / 751`;
@@ -184,15 +185,21 @@ The following pre-run attempts are retained and are not valid matrix arms:
    Xcode produced a potentially content-bearing diagnostic attachment after
    failure; it was not opened, exported or copied into the repository, and the
    raw result remains isolated at its declared temporary path.
+4. `pair1-A-run1.xcresult`: after the host-lifecycle remediation, exact-list
+   validation passed and one empty test item was created, but automatic
+   keyboard selection failed closed with `keyboard-unavailable`. Zero fixture
+   actions occurred. The empty item remains for Human cleanup. Xcode again
+   produced a potentially content-bearing failure diagnostic; it remains
+   isolated and was not opened, exported or copied.
 
 After remediation, signed A/B App binary SHA256 values are respectively
-`3ddc47f7bf3cf274871c98a882d9d5acf50767185f0494df0bdb778d0504a9f3`
+`6a2f31dfdf2198a950d35de465fd58f68f6cdb741a318098b0f1614715966178`
 and
-`03e2c64972975fd865ba0f041359604885eee852b6b1bc1e4d03634d33343946`;
+`f5389bed8bac839a59293b1ad845a2f1176c06871a97e51e73318ae3d6dd18a5`;
 Extension values are
-`2100bbe0969c7d8d871263db17f656aeaa9d72e5dade0dde9e8ccc0b8fe10dc6`
+`00b051781b7c49dce5507ed173f318b1c5570908479d5cb9026a10fde7c52e80`
 and
-`a21288e81d283ae9e9752eb2b2a421004176a8bfffd4b6fd5e5babb41c32f216`.
+`8535366b93aad26077f97a28caeb4337238d2ab3ce94390594f1a4ce3b385b70`.
 The valid five-pair matrix has not started.
 
 ### Pre-installation Gate
