@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S4 capped-two-syllable preflight accepted at immutable checkpoint; Product/Release Gate pending`
+**Lifecycle status:** `Active — S4 accepted; S6-A Entry Pass and Ready; implementation/Pre-installation Gate pending`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -62,7 +62,9 @@
   tests/documentation/review remediation plus the authorized S4 capped
   two-syllable preflight
 - **Environment Executor:** Current Codex task on the user-opened iPhone 17 Pro
-  Max iOS 27 Simulator, limited to build/test and synthetic diagnostic capture
+  Max iOS 27 Simulator for the completed S1–S4 evidence; for S6-A, the current
+  task may perform the exact signed build/install/log operations on the named
+  physical iPhone only under the child Assignment
 - **Human Dependency:** Human Product Owner for manual typing judgment,
   Release-default/productization authorization and physical-device access
 - **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward
@@ -260,6 +262,9 @@ Independent review handoff:
 
 Evidence:
 [`../evidence/t9-auto-anchor-s4-cap2-2026-07-27.md`](../evidence/t9-auto-anchor-s4-cap2-2026-07-27.md).
+
+S6-A physical-device child Assignment:
+[`t9-auto-anchor-001-s6a-device-preflight.md`](t9-auto-anchor-001-s6a-device-preflight.md).
 
 ### 2026-07-28 supplementary ETTrace attribution
 

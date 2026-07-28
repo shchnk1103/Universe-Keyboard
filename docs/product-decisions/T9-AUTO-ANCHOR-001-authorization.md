@@ -1,7 +1,7 @@
 # Product Decision: T9-AUTO-ANCHOR-001 Authorization
 
 **Decision ID:** `PD-T9-AUTO-ANCHOR-001`
-**Lifecycle status:** `Recorded — Stage 2 prototype, isolated S5 learning test and S4 two-syllable preflight authorized`
+**Lifecycle status:** `Recorded — S4 validated; S6-A physical-device Release-like preflight authorized`
 **Date / timezone:** `2026-07-27 Asia/Shanghai`
 **Decision source:** Human Product Owner instructions in active Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`
@@ -96,6 +96,50 @@ The following require a later Product and Architecture amendment:
 - personalization thresholds, retention and deletion;
 - background/serial RIME execution;
 - default enablement, user controls and Release acceptance budgets.
+
+## S6-A physical-device preflight authorization
+
+On `2026-07-28 Asia/Shanghai`, after the connected device was identified as a
+physical iPhone 13 Pro on iOS 27.0, the Human Product Owner explicitly replied
+“授权S6-A 真机预检”.
+
+S6-A may:
+
+- add two source-visible, project-default-absent conditions:
+  `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT` compiles the same minimum content-free
+  measurement surface into both arms, while
+  `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED` enables the already-validated
+  capped-two-syllable gate in B only;
+- build Release-like A/B arms from the same source/optimization with the common
+  measurement condition; the enabled condition is their only declared
+  difference;
+- install the internal variants alternately on the named iPhone 13 Pro without
+  uninstalling or resetting app, App Group, RIME or userdb state;
+- automate only the visible T9 letter-group keys in Reminders using the frozen
+  synthetic sequence and retain five valid paired runs;
+- reinstall the same-checkpoint ordinary gate-off Release after the final B
+  arm and verify the device no longer runs a preflight-enabled binary;
+- use only a Human-created disposable Reminders list. Automation may create
+  test items inside it but may not delete items or lists; the Human Product
+  Owner owns deletion of that exact list after evidence closes.
+
+S6-A does not authorize:
+
+- putting either condition in project/shared-scheme/archive defaults;
+- enabling ordinary Release or exposing a user control;
+- `DEBUG` behavior wholesale, a second automatic attempt, runtime backoff,
+  candidate scanning, threshold changes or any 26-key/schema/vendor mutation;
+- candidate/Path selection, userdb reset, production personalization,
+  persistence, sync/backup access or content-bearing diagnostics;
+- a Product Gate, Release budget or external performance claim.
+
+Runtime evidence identifies the declared synthetic case only by fixture ID,
+SHA256, action count and cadence. Literal pinyin/digit identity remains in
+repository test source rather than device logs or runtime evidence.
+
+The child Assignment freezes the exact Run Header, comparability, privacy,
+cleanup and Stop Conditions:
+[`T9-AUTO-ANCHOR-001-S6A`](../assignments/t9-auto-anchor-001-s6a-device-preflight.md).
 
 ## S4 preflight authorization: capped two-syllable proposal
 

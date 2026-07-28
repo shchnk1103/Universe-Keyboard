@@ -59,9 +59,10 @@
 - T9 continuous-digit latency — force_gc track case close (2026-07-24): [`evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md)
 - T9 long-composition `process_key` latency and safe auto-anchor roadmap
   (`T9-AUTO-ANCHOR-001`, S1–S4 Debug/test evidence validated, S5 isolated
-  personalization evidence reviewed, S6 Product/Release Gate pending):
+  personalization reviewed, S6-A physical-device preflight authorized):
   [`plan`](plans/t9-long-composition-process-key-latency-plan.md),
   [`Assignment`](assignments/t9-auto-anchor-001.md),
+  [`S6-A device preflight`](assignments/t9-auto-anchor-001-s6a-device-preflight.md),
   [`Product Decision`](product-decisions/T9-AUTO-ANCHOR-001-authorization.md),
   [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)
 - Release procedure: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)

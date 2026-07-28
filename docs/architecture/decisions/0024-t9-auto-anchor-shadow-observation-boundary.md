@@ -1,6 +1,7 @@
 # ADR 0024: T9 Auto-Anchor Observation And Reversible Prototype Boundary
 
-- **Status:** Proposed — S4 capped-two-syllable preflight independently validated; Product/Release decision deferred
+- **Status:** Proposed — S4 independently validated; S6-A internal
+  physical-device preflight authorized; shipping decision deferred
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
@@ -243,6 +244,61 @@ Architecture and Quality independently returned `Pass` with no P0–P3 findings.
 This validates the bounded Debug experiment only; the ADR remains Proposed
 because Release-default behavior, product controls and physical-device Product
 Gate evidence are still deferred.
+
+## S6-A amendment: internal Release-like physical-device evidence
+
+S6-A uses two source-visible conditions. Both must be absent from
+`project.pbxproj`, shared schemes, ordinary Release settings and archive/export
+paths:
+
+- `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT` compiles the same minimum measurement
+  surface into A and B;
+- `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED` additionally enables the existing
+  S4 transaction in B only.
+
+Both arms use the common condition and Release optimization. The enabled
+condition is their only declared difference; A keeps the controller default
+off.
+
+The preflight condition may expose only the minimum content-free measurement
+surface required to identify:
+
+- gate identity and ordered event count;
+- total/controller/UI and existing segmented RIME timings;
+- automatic-attempt status plus candidate/slot counts;
+- session/startup validity and unexpected commit/termination.
+
+It must not enable unrelated Debug observers or diagnostics. In particular,
+S1 shadow/retry analyzers, typo traces and content-bearing developer logs
+remain excluded unless separately authorized. The measurement surface may
+record only lengths, counts, durations, bounded status/reason values and
+opaque run identifiers.
+
+A and B are separate signed internal binaries from one immutable source
+checkpoint. Their declared behavioral difference is only the B-only enabled
+condition; both contain the identical measurement surface. Both use Release
+optimization and the same bundle/App Group/signing/schema/runtime identity.
+The harness must preserve device RIME and userdb state, avoid candidate/Path
+selection and operate only visible T9 letter-group keys.
+
+This amendment does not accept Release behavior. It only makes physical-device
+evidence possible without compiling all `DEBUG` behavior into the measured
+binary. Ordinary Release must remain gate-off and contain no S6-A marker after
+the preflight. Because the fixed matrix ends on B, cleanup must reinstall the
+same-checkpoint ordinary gate-off Release without uninstall/reset and verify
+the installed identity plus successful keyboard switching. A failed restore
+blocks the task and must be reported before the keyboard returns to ordinary
+use.
+
+Runtime evidence identifies the synthetic fixture only by stable case ID,
+SHA256, action count and cadence. Automation is confined to a Human-created,
+otherwise-empty disposable Reminders list and never deletes host objects.
+Any project-default flag, archive path, uninstall/reset requirement, content
+logging, second transaction/backoff, undeclared A/B difference or automated
+host-object deletion is a Stop Condition.
+
+Architecture entry and exit reviews are required under:
+[`T9-AUTO-ANCHOR-001-S6A`](../../assignments/t9-auto-anchor-001-s6a-device-preflight.md).
 
 ## Stage 3 read-only amendment: later opportunity after rejection
 
