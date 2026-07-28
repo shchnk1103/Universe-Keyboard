@@ -191,6 +191,19 @@ The following pre-run attempts are retained and are not valid matrix arms:
    actions occurred. The empty item remains for Human cleanup. Xcode again
    produced a potentially content-bearing failure diagnostic; it remains
    isolated and was not opened, exported or copied.
+5. `pair1-A-run2.xcresult`: failed closed with `keyboard-unavailable` before
+   the 38-action fixture began. The Human operator then clarified that the
+   preceding failure flow had switched to the content-free evidence App and
+   the exact Reminders list plus Universe T9 keyboard had not been manually
+   restored before this retry. One empty item remains for Human cleanup; the
+   raw failure result remains isolated and its diagnostic was not opened or
+   copied.
+
+Because every arm intentionally switches from Reminders to the content-free
+evidence view before XCTest records a verdict, the Environment Executor must
+pause before **every** subsequent arm and obtain fresh Human confirmation that
+the exact list is foreground with the Universe Chinese nine-key software
+keyboard visible. A prior arm's confirmation cannot be reused.
 
 After remediation, signed A/B App binary SHA256 values are respectively
 `6a2f31dfdf2198a950d35de465fd58f68f6cdb741a318098b0f1614715966178`
