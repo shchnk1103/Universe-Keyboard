@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Ready — Product-authorized; independent Architecture/Quality Entry Pass; Pre-installation Gate pending`
+**Lifecycle status:** `Ready — immutable implementation checkpoint recorded; Pre-installation Gate awaiting Human exact-list confirmation`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority
@@ -117,7 +117,8 @@ pass. No physical build or install may occur before then.
 
 ### Local implementation candidate evidence
 
-The current same-source candidate completed the local portion of the
+Immutable implementation checkpoint
+`4fd01dbf4bcf5fc23ab4825af61fcab3ebcce90c` completed the local portion of the
 Pre-installation Gate on 2026-07-28:
 
 - UI fixture/statistics/evidence-validator contracts: `4 / 4`;
@@ -133,10 +134,26 @@ Pre-installation Gate on 2026-07-28:
 - third-round independent Architecture and Quality reviews both returned
   `Pass`, P0–P3 none.
 
-This evidence is still mutable until the implementation checkpoint is
-committed and recorded below. It does not satisfy signed non-uninstall proof,
-Human disposable-list confirmation, physical-device evidence, Exit review or
-Product Gate.
+The clean checkpoint also produced an ordinary signed device Release with
+Xcode `27.0 (27A5228h)`, iPhoneOS SDK `27.0 (24A5390e)`, Team ID
+`C33N6HTS9N`, App bundle `com.DoubleShy0N.Universe-Keyboard` and Extension
+bundle `com.DoubleShy0N.Universe-Keyboard.Keyboard`. Its App/Extension binary
+SHA256 values were respectively
+`2d82d00d9608c72c8674358ff84b25e447b45b1c48d048494dbbcc6d5fec7e24`
+and
+`f03e39f50cf0de697a894d855fafd7c63988e6ee93e01d48689773af1011c870`.
+The signed ordinary Release contained no S6-A marker.
+
+A read-only device query confirmed the existing installation has the same App
+bundle identifier and accessible App Group
+`group.com.DoubleShy0N.Universe-Keyboard`. The reviewed installation command is
+`devicectl device install app`, which accepts the signed `.app` and contains no
+uninstall/reset/container-deletion action. This establishes the non-uninstall
+installation method; no S6-A binary has yet been installed.
+
+The remaining Pre-installation Gate item is Human confirmation of an otherwise
+empty local Reminders list named exactly `Universe Keyboard S6A 20260728`.
+Physical-device evidence, Exit review and Product Gate remain open.
 
 ### Pre-installation Gate
 
