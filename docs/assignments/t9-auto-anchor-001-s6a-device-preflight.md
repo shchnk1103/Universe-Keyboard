@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — physical A/B paused; coordinate-driver remediation under review`
+**Lifecycle status:** `Active — physical A/B paused; coordinate-driver checkpoint awaiting independent review`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority
@@ -307,6 +307,28 @@ The valid five-pair matrix has not started (`0 / 5`). Physical execution is
 paused until the coordinate driver has an immutable checkpoint, focused
 contracts/builds pass, and independent Architecture and Quality reviews return
 Pass.
+
+Coordinate-driver implementation checkpoint
+`8c5aa6d90ad881716593a4dd60b71150429054fd` is now immutable and locally
+validated on Xcode `27.0 (27A5228h)` with iOS Simulator SDK `27.0`:
+
+- flagged token/envelope lifecycle contracts: `4 / 4`;
+- content-free fixture, cadence, geometry and evidence contracts: `5 / 5` in
+  both arm64 Release-like A and B products;
+- arm64 Release-like A and B `build-for-testing`: passed; the enabled-only
+  condition still fails compilation at the declared `#error`;
+- ordinary arm64 Debug and Release builds: passed; project/shared
+  scheme/xcconfig search found neither preflight condition, and ordinary App
+  plus Extension binary scans found no `T9_S6A`, `T9DEVICE`, `T9GEOM` or
+  envelope-key string;
+- KeyboardCore: `751 / 751`; RimeBridge iOS Simulator: `33` passed and `15`
+  existing external-fixture-gated skips retained as non-coverage;
+- `scripts/ensure_rime_vendor.sh verify`: all `11` structural artifacts
+  verified.
+
+This evidence does not reopen physical execution by itself. Architecture and
+Quality must independently review the immutable implementation checkpoint
+before a new signed arm is built or installed.
 
 ### Coordinate-driver focused contract matrix
 
