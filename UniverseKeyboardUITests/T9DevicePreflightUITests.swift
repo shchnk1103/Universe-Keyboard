@@ -71,13 +71,15 @@ final class T9DevicePreflightUITests: XCTestCase {
         case tokenMismatch = "token-mismatch"
     }
 
-    private enum DriverError: Error {
+    private enum DriverError: Error, Equatable {
         case hostUnavailable
+        case hostFrameUnavailable
         case disposableListUnavailable
         case reminderControlUnavailable
         case titleFieldUnavailable
         case tokenPreparationFailed
         case geometryUnavailable
+        case tokenConsumptionInvalid
         case geometryInvalid
         case hostRestoreFailed
         case fixtureMappingFailed
@@ -87,11 +89,13 @@ final class T9DevicePreflightUITests: XCTestCase {
         var code: String {
             switch self {
             case .hostUnavailable: return "host-unavailable"
+            case .hostFrameUnavailable: return "host-frame-unavailable"
             case .disposableListUnavailable: return "disposable-list-unavailable"
             case .reminderControlUnavailable: return "reminder-control-unavailable"
             case .titleFieldUnavailable: return "title-field-unavailable"
             case .tokenPreparationFailed: return "token-preparation-failed"
             case .geometryUnavailable: return "geometry-unavailable"
+            case .tokenConsumptionInvalid: return "token-consumption-invalid"
             case .geometryInvalid: return "geometry-invalid"
             case .hostRestoreFailed: return "host-restore-failed"
             case .fixtureMappingFailed: return "fixture-mapping-failed"
@@ -256,6 +260,64 @@ final class T9DevicePreflightUITests: XCTestCase {
                 with: "scale=inf"
             )
         ))
+    }
+
+    func testForegroundHostSnapshotAndPreparedGeometryContracts() {
+        let geometry = syntheticGeometry()
+        let consumedEvidence =
+            "T9TOKEN state=consumed run=\(geometry.token)"
+
+        XCTAssertEqual(
+            validatedForegroundFrame(
+                geometry.screen,
+                hostIsForeground: true
+            ),
+            geometry.screen
+        )
+        XCTAssertNil(
+            validatedForegroundFrame(
+                geometry.screen,
+                hostIsForeground: false
+            )
+        )
+        XCTAssertNil(
+            validatedForegroundFrame(
+                CGRect(x: 0, y: 0, width: 0, height: geometry.screen.height),
+                hostIsForeground: true
+            )
+        )
+
+        XCTAssertNil(
+            preparedGeometryValidationError(
+                geometry,
+                evidence: consumedEvidence,
+                token: geometry.token,
+                foregroundFrame: geometry.screen
+            )
+        )
+        XCTAssertEqual(
+            preparedGeometryValidationError(
+                geometry,
+                evidence: "",
+                token: geometry.token,
+                foregroundFrame: geometry.screen
+            ),
+            .tokenConsumptionInvalid
+        )
+        XCTAssertEqual(
+            preparedGeometryValidationError(
+                geometry,
+                evidence: consumedEvidence,
+                token: geometry.token,
+                foregroundFrame: CGRect(
+                    x: 0,
+                    y: 0,
+                    width: geometry.screen.width - 1,
+                    height: geometry.screen.height
+                )
+            ),
+            .geometryInvalid
+        )
     }
 
     func testContentFreeEvidenceValidatorContracts() {
@@ -548,12 +610,16 @@ final class T9DevicePreflightUITests: XCTestCase {
             // The visible Extension writes fresh same-token geometry. Reading
             // it happens before the monotonic timing arm begins.
             RunLoop.current.run(until: Date().addingTimeInterval(1))
+            // Freeze the host frame while Reminders is still foreground. The
+            // evidence App launch below intentionally backgrounds Reminders,
+            // after which querying its frame is not a valid screen snapshot.
+            let foregroundFrame = try captureForegroundFrame(in: reminders)
             let preparedEvidence = try loadContentFreeEvidence()
             let geometry = try preparedGeometry(
                 in: preparedEvidence,
                 expectedMarker: expectedMarker,
                 token: runToken,
-                foregroundFrame: reminders.frame
+                foregroundFrame: foregroundFrame
             )
 
             reminders.activate()
@@ -692,6 +758,26 @@ final class T9DevicePreflightUITests: XCTestCase {
         return evidence.label
     }
 
+    private func captureForegroundFrame(in app: XCUIApplication) throws -> CGRect {
+        guard let frame = validatedForegroundFrame(
+            app.frame,
+            hostIsForeground: app.state == .runningForeground
+        ) else {
+            throw DriverError.hostFrameUnavailable
+        }
+        return frame
+    }
+
+    private func validatedForegroundFrame(
+        _ frame: CGRect,
+        hostIsForeground: Bool
+    ) -> CGRect? {
+        guard hostIsForeground, finitePositive(frame) else {
+            return nil
+        }
+        return frame
+    }
+
     private func preparedGeometry(
         in evidence: String,
         expectedMarker: String,
@@ -716,12 +802,32 @@ final class T9DevicePreflightUITests: XCTestCase {
         else {
             throw DriverError.geometryUnavailable
         }
-        guard geometryError(geometry, foregroundFrame: foregroundFrame) == nil,
-              evidence.contains("T9TOKEN state=consumed run=\(token)")
-        else {
-            throw DriverError.geometryInvalid
+        if let error = preparedGeometryValidationError(
+            geometry,
+            evidence: evidence,
+            token: token,
+            foregroundFrame: foregroundFrame
+        ) {
+            throw error
         }
         return geometry
+    }
+
+    private func preparedGeometryValidationError(
+        _ geometry: Geometry,
+        evidence: String,
+        token: String,
+        foregroundFrame: CGRect
+    ) -> DriverError? {
+        guard evidence.components(separatedBy: "\n").contains(
+            "T9TOKEN state=consumed run=\(token)"
+        ) else {
+            return .tokenConsumptionInvalid
+        }
+        guard geometryError(geometry, foregroundFrame: foregroundFrame) == nil else {
+            return .geometryInvalid
+        }
+        return nil
     }
 
     private func evidenceErrorCode(

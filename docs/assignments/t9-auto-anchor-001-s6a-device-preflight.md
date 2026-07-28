@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — coordinate driver independently reviewed; A1 awaiting fresh Human readiness`
+**Lifecycle status:** `Active — A1 coordinate attempt invalid; host-frame ordering remediation under review`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority
@@ -234,6 +234,18 @@ The following pre-run attempts are retained and are not valid matrix arms:
    neither the diagnostic archive nor UI attachments were opened, exported or
    copied. Any retry requires a new Human readiness confirmation because the
    failed runner may have changed foreground state.
+10. `pair1-A-coordinate-run2.xcresult`: physical automation initialized and
+    entered the opt-in test method, then failed closed with the content-free
+    code `geometry-invalid` before any coordinate fixture action. A source
+    audit found that the driver queried `reminders.frame` only after launching
+    the evidence App, when Reminders was no longer foreground. Device Hub
+    independently showed the named iPhone connected, portrait and at the Home
+    screen after test teardown; this post-test observation explains why a new
+    Human readiness confirmation is required but is not treated as the arm's
+    pre-switch geometry. The raw result remains isolated at
+    `/private/tmp/universe-keyboard-s6a-coordinate-device-evidence/`; its
+    potentially private diagnostics and UI attachments were not opened,
+    exported or copied. The attempt is invalid and the matrix remains `0 / 5`.
 
 The two independent Human-visible/XCTest-invisible observations invalidate
 further accessibility-owner guessing. Before physical execution resumes, the

@@ -199,3 +199,43 @@ records no physical-device result and makes no release or Product decision.
   both Pass, P0–P3 none.
 - Human Product Owner: prepare the exact disposable Reminders list before each
   separately announced arm; the prior confirmation cannot be reused.
+
+## Physical A1 Invalid Attempt And Host-Frame Ordering Remediation
+
+`pair1-A-coordinate-run2.xcresult` initialized physical automation and entered
+the opt-in test method, then failed before the 38-action fixture with the
+content-free driver code `geometry-invalid`. The raw result remains isolated
+under `/private/tmp/universe-keyboard-s6a-coordinate-device-evidence/`; no
+diagnostic archive, screenshot or UI hierarchy was opened, exported or copied.
+The matrix therefore remains `0 / 5`.
+
+The driver had read `reminders.frame` after `loadContentFreeEvidence()` launched
+the main App and backgrounded Reminders. That ordering made a background-host
+frame participate in the prepared-geometry comparison. The narrow remediation
+freezes a finite, positive host frame only while Reminders is confirmed
+foreground, before launching the evidence App. It also distinguishes a missing
+same-token consumed envelope (`token-consumption-invalid`) from a true geometry
+shape/frame mismatch (`geometry-invalid`).
+
+A read-only Device Hub inspection after teardown confirmed the named physical
+iPhone remained connected and portrait but was at the Home screen. This
+post-test observation is not geometry evidence for the invalid arm. It only
+confirms that every subsequent arm still requires a new Human readiness
+confirmation. The Device Hub screenshot was not retained because it contained
+the user's Home-screen application layout.
+
+### Remediation validation
+
+Both Release-like Simulator arms compiled and passed the six selected
+content-free UI contracts, including the new foreground-host snapshot and
+prepared-geometry error-separation contract:
+
+| Arm | Result | Result bundle |
+|---|---:|---|
+| A (`T9_AUTO_ANCHOR_DEVICE_PREFLIGHT`) | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-28T15-06-35-009Z_pid60203_b64c3673.xcresult` |
+| B (common condition + `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED`) | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-28T15-08-16-267Z_pid60203_958985dd.xcresult` |
+
+Both runs reported zero failures, skips, warnings and errors. This validation
+proves the deterministic driver contracts and compilation symmetry only; a new
+signed physical A1 build plus fresh Human readiness confirmation remain
+mandatory before another physical attempt.
