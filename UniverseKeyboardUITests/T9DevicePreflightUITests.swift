@@ -213,9 +213,11 @@ final class T9DevicePreflightUITests: XCTestCase {
             try openDisposableList(in: reminders)
             let title = try createEmptyReminder(in: reminders)
             title.tap()
-            try activateUniverseKeyboardIfNeeded(in: reminders)
-            result = try driveFrozenFixture(in: reminders)
-            guard isUniverseT9KeyboardAvailable(in: reminders) else {
+            let keyboardOwner = try activateUniverseKeyboardIfNeeded(
+                in: reminders
+            )
+            result = try driveFrozenFixture(keyboardOwner: keyboardOwner)
+            guard isUniverseT9KeyboardAvailable(in: keyboardOwner) else {
                 throw DriverError.extensionDisappeared
             }
             // The 38th action requests an ordered Logger flush. Keep the host
@@ -464,7 +466,7 @@ final class T9DevicePreflightUITests: XCTestCase {
     }
 
     private func driveFrozenFixture(
-        in app: XCUIApplication
+        keyboardOwner: XCUIApplication
     ) throws -> (actionStartTimes: [TimeInterval], scheduleLags: [TimeInterval]) {
         var actionStartTimes: [TimeInterval] = []
         var scheduleLags: [TimeInterval] = []
@@ -476,7 +478,7 @@ final class T9DevicePreflightUITests: XCTestCase {
             guard let group = letterGroup(containing: letter) else {
                 throw DriverError.fixtureMappingFailed
             }
-            guard let key = t9Key(for: group, in: app) else {
+            guard let key = t9Key(for: group, in: keyboardOwner) else {
                 throw DriverError.keyUnavailable
             }
 
@@ -498,11 +500,9 @@ final class T9DevicePreflightUITests: XCTestCase {
 
     private func activateUniverseKeyboardIfNeeded(
         in app: XCUIApplication
-    ) throws {
-        if waitUntil(timeout: 3, condition: {
-            self.isUniverseT9KeyboardAvailable(in: app)
-        }) {
-            return
+    ) throws -> XCUIApplication {
+        if let owner = universeT9KeyboardOwner(for: app) {
+            return owner
         }
 
         var switcher = keyboardSwitcher(in: app)
@@ -538,11 +538,14 @@ final class T9DevicePreflightUITests: XCTestCase {
             throw DriverError.keyboardSelectionUnavailable
         }
         selection.tap()
+        var selectedOwner: XCUIApplication?
         guard waitUntil(timeout: 10, condition: {
-            self.isUniverseT9KeyboardAvailable(in: app)
-        }) else {
+            selectedOwner = self.universeT9KeyboardOwner(for: app)
+            return selectedOwner != nil
+        }), let selectedOwner else {
             throw DriverError.keyboardUnavailable
         }
+        return selectedOwner
     }
 
     private func keyboardSwitcher(in app: XCUIApplication) -> XCUIElement? {
@@ -571,16 +574,29 @@ final class T9DevicePreflightUITests: XCTestCase {
     /// queried across element types because physical iOS can expose the same
     /// UIKit control as a key rather than a button.
     private func isUniverseT9KeyboardAvailable(
-        in app: XCUIApplication
+        in owner: XCUIApplication
     ) -> Bool {
-        let identity = app.descendants(matching: .any).matching(
+        let identity = owner.descendants(matching: .any).matching(
             NSPredicate(format: "label == %@", "键盘页面")
         ).firstMatch
         guard identity.exists else {
             return false
         }
         return ["ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ"]
-            .allSatisfy { t9Key(for: $0, in: app) != nil }
+            .allSatisfy { t9Key(for: $0, in: owner) != nil }
+    }
+
+    /// Resolve one coherent accessibility owner for both identity and taps.
+    /// Never combine a Universe sentinel from one tree with keys from another.
+    private func universeT9KeyboardOwner(
+        for hostApp: XCUIApplication
+    ) -> XCUIApplication? {
+        let springboard = XCUIApplication(
+            bundleIdentifier: springboardBundleIdentifier
+        )
+        return [hostApp, springboard].first {
+            isUniverseT9KeyboardAvailable(in: $0)
+        }
     }
 
     private func letterGroup(containing letter: Character) -> String? {
