@@ -261,10 +261,31 @@ Independent review handoff:
 Evidence:
 [`../evidence/t9-auto-anchor-s4-cap2-2026-07-27.md`](../evidence/t9-auto-anchor-s4-cap2-2026-07-27.md).
 
+### 2026-07-28 supplementary ETTrace attribution
+
+- The same frozen 38-slot sequence was sampled in Reminders with the software
+  keyboard on the prepared iPhone 17 Pro Max / iOS 27 Simulator.
+- The available matrix contains two disabled arms and one enabled arm. It
+  consistently attributes the dominant key-input stack to
+  `insertKey → handleInsertKey → RimeEngine.processKey → RimeProcessKey →
+  ScriptTranslation → Dictionary/Table`; the local controller work between
+  `handleInsertKey` and RIME is comparatively small.
+- The second disabled arm was substantially faster than the first, consistent
+  with warm state and/or sampling variance. Therefore this sample is valid as
+  stack attribution only, not as a stable enabled-versus-disabled performance
+  delta.
+- Further alternating arms could not be captured because the profiling tool
+  account reached its usage limit. The incomplete matrix does not amend the
+  already frozen 5 / 5 S4 timing matrix and cannot satisfy Product Gate.
+- ETTrace linkage and the temporary disabled-gate source edit were reverted.
+  A fresh ordinary Debug build completed successfully as a local cleanup
+  check; its log was not durably archived. Binary and bundle inspection found
+  no remaining ETTrace linkage or payload.
+
 ## Handoff
 
-- **Handoff Target:** Product Lead for the next-stage decision after the S5
-  immutable checkpoint and durable Architecture/Quality review.
+- **Handoff Target:** Product Lead for the S6 decision after the immutable S4
+  checkpoint and durable S4/S5 Architecture/Quality evidence.
 - **Required Handoff Content:** changed files, proposal/validation/rollback
   state semantics, exact RIME-call budget, tests/build results, frozen-sequence
   A/B evidence, rejected cases and remaining privacy/performance limits.
@@ -416,8 +437,9 @@ Evidence:
 - Real personalized userdb ordering remains outside this isolated empty-user
   fixture and must enter through the S5 privacy/persistence gate.
 
-Stage 2 implementation, first simulator A/B and the first-sentence five-run B
-stability slice are complete. The first S3 six-case corpus slice is also
-complete. Independent Architecture/Quality review, a reviewed broader corpus,
-later-attempt policy, frozen-startup paired S3 A/B, physical-device evidence
-and any Release-default decision remain pending; the Assignment stays `Active`.
+S1–S4 implementation and evidence are complete within their authorized
+Debug/test-only boundaries. The reviewed S5 isolated matrix is also complete;
+broader language coverage and retention/deletion/privacy policy remain open.
+S6 Product Gate, physical-device/Release-like performance, any later-attempt
+policy and any Release-default decision remain pending; the Assignment stays
+`Active`.
