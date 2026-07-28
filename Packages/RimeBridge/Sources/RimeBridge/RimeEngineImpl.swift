@@ -53,6 +53,15 @@ public final class RimeEngineImpl: RimeEngine {
     internal var lastLibrimeProcessKeyDurationMs: Double?
     #endif
 
+    public var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {
+        let identity = bridge.currentSessionIdentifier()
+        guard identity != 0 else { return nil }
+        return RimeSessionDiagnosticSnapshot(
+            identity: identity,
+            isValid: bridge.isCurrentSessionValid()
+        )
+    }
+
     // MARK: === Init ===
 
     /// 初始化 RIME 引擎。

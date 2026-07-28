@@ -115,6 +115,29 @@ build.
 The Assignment may enter `Ready` only after both independent entry reviews
 pass. No physical build or install may occur before then.
 
+### Local implementation candidate evidence
+
+The current same-source candidate completed the local portion of the
+Pre-installation Gate on 2026-07-28:
+
+- UI fixture/statistics/evidence-validator contracts: `4 / 4`;
+- KeyboardCore: `751 / 751`;
+- RimeBridge: `33` passed, `15` external-fixture-gated skips retained as
+  non-coverage;
+- strict Debug, ordinary Release, Release-like A and Release-like B Simulator
+  builds: zero warnings and zero errors;
+- the invalid enabled-only condition failed at compile time as required;
+- ordinary Release contained no preflight marker or evidence surface; A/B
+  binary inspection identified the common surface and the expected
+  disabled/enabled marker respectively;
+- third-round independent Architecture and Quality reviews both returned
+  `Pass`, P0–P3 none.
+
+This evidence is still mutable until the implementation checkpoint is
+committed and recorded below. It does not satisfy signed non-uninstall proof,
+Human disposable-list confirmation, physical-device evidence, Exit review or
+Product Gate.
+
 ### Pre-installation Gate
 
 After `Ready`, implementation and local validation may begin. Physical install
@@ -126,6 +149,11 @@ remains prohibited until:
 - A/B build-setting and binary-identity inspection proves the common
   measurement condition is symmetric and only B contains the enabled
   condition;
+- the mandatory content-free preflight writer is proven to bypass disabled
+  user diagnostics preferences while remaining absent from ordinary Release;
+- the opt-in UI driver compiles, its fixture/statistics contract tests pass,
+  and its failure path switches away from Reminders before emitting an XCTest
+  failure;
 - signed install is proven not to require uninstalling the app or deleting its
   App Group/container;
 - Human Product Owner creates and confirms an otherwise empty, disposable
@@ -142,6 +170,10 @@ remains prohibited until:
   `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED`.
 - Five valid pairs complete in the frozen order with 38 ordered actions per
   arm and content-free per-key records.
+- Each arm's internal evidence view returns exactly 38 scoped `T9SEG` records
+  after the latest expected marker, one `T9ARM` summary, zero commits and one
+  stable valid native session; A has zero `T9AUTO` outcomes and B has exactly
+  one accepted or rejected-and-restored outcome.
 - Every A arm records gate off and no automatic attempt. Every B arm records
   gate on and exactly one acceptable bounded outcome; any rejected/restored
   outcome is retained and assessed rather than discarded.
@@ -186,6 +218,9 @@ Stop and retain the current checkpoint if:
 - automation cannot tap the visible letter-group keys at the declared cadence.
   Manual typing may remain qualitative smoke evidence but cannot replace the
   paired performance matrix;
+- any action starts more than `50 ms` late relative to the monotonic fixed
+  `200 ms` schedule. This is a driver-validity budget, not a Product SLO; the
+  invalid arm remains in the manifest and is not silently retried away;
 - any arm has the wrong gate marker, non-empty startup composition, missing or
   out-of-order key records, unexpected commit, content-bearing output, fewer
   than 38 actions or an unexplained crash/termination;
@@ -219,7 +254,11 @@ Before the first arm, record:
   action count `38` and cadence `200 ms`; runtime logs/evidence do not repeat
   the literal spelling or digit identity;
 - run order `A→B`, `B→A`, `A→B`, `B→A`, `A→B`;
-- log start/end timestamps, run/pair/arm IDs and artifact locations/digests.
+- log start/end timestamps, run/pair/arm IDs and artifact locations/digests;
+- exact temporary `.xcresult` location, attachment-scan result and the
+  content-free subset retained after review. Raw result bundles are never
+  copied into repository evidence; any content-bearing screenshot or UI
+  hierarchy invalidates the arm.
 
 Each arm must:
 
@@ -232,13 +271,23 @@ Each arm must:
 4. launch without debugger attachment and confirm the expected gate marker;
 5. tap only visible T9 letter-group keys at `200 ms` cadence;
 6. avoid Path, candidate, space, commit and Delete during the timing arm;
-7. collect exactly 38 content-free timing/outcome records;
+7. after the 38th action, keep the extension visible for one second while the
+   ordered writer drains; then switch to the internal evidence view and require
+   exactly 38 ordered content-free timing records, the expected marker, zero
+   commits and one stable valid native session;
 8. record the same environment fields at arm end; any drift invalidates the
    arm. The session identity must remain valid with no loss/recreation; the
    expected composition transition from empty to active after 38 actions is
    recorded separately and is not drift;
 9. capture a content-free functional result and leave all test-created
    Reminders state for Human cleanup.
+
+The runner must not call `XCTFail`, `XCTAssert*` or `XCTUnwrap` while Reminders
+is visible. Driver errors are retained as content-free codes, the main App's
+internal evidence surface first replaces Reminders, and only then may XCTest
+record a failure. Each raw `.xcresult` remains in its exact temporary arm
+directory until attachment inspection; only content-free console/manifest
+output and digests are retained in the repository.
 
 Invalid arms remain listed with a reason and are never silently retried into a
 Pass.

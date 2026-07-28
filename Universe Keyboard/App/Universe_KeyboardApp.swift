@@ -19,7 +19,15 @@ struct Universe_KeyboardApp: App {
 
     var body: some Scene {
         WindowGroup {
+            #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+            if ProcessInfo.processInfo.environment["T9_S6A_EVIDENCE_VIEW"] == "1" {
+                T9DevicePreflightEvidenceView()
+            } else {
+                ContentView()
+            }
+            #else
             ContentView()
+            #endif
         }
     }
 }

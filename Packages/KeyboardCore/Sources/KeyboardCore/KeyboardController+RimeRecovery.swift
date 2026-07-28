@@ -54,7 +54,7 @@ extension KeyboardController {
         let previousT9PathState = state.t9PinyinPathState
         let output: RimeOutput
         if let replacementInput = replacementRawInputForSymbolPageContinuation(appending: rimeKey) {
-            #if DEBUG
+            #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             output = HotPathSegmentTiming.measure(.rime) {
                 engine.replaceInput(replacementInput)
             }
@@ -62,7 +62,7 @@ extension KeyboardController {
             output = engine.replaceInput(replacementInput)
             #endif
         } else {
-            #if DEBUG
+            #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             output = HotPathSegmentTiming.measure(.rime) {
                 engine.processKey(rimeKey)
             }
@@ -70,6 +70,9 @@ extension KeyboardController {
             output = engine.processKey(rimeKey)
             #endif
         }
+        #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        HotPathSegmentTiming.noteEngineOutput(output)
+        #endif
         // A rejected printable key must remain visible and retryable rather than being lost.
         if output.composition == nil,
             output.committedText == nil,
@@ -95,7 +98,7 @@ extension KeyboardController {
         applyRimeOutput(augmentRimeOutputIfNeeded(output))
         let retainedFocusedSegment: Bool
         if rimeKey.count == 1, let digit = rimeKey.first {
-            #if DEBUG
+            #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             retainedFocusedSegment = HotPathSegmentTiming.measure(.pathLocal) {
                 retainFocusedT9SegmentAfterAppendingDigit(
                     previous: previousT9PathState,

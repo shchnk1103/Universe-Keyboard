@@ -56,7 +56,13 @@ private struct BufferedLoggerRecord: Sendable {
 }
 
 enum LoggerWriterCommand: Sendable {
-    case record(timestamp: Date, level: Logger.Level, category: Logger.Category, message: String)
+    case record(
+        timestamp: Date,
+        level: Logger.Level,
+        category: Logger.Category,
+        message: String,
+        bypassCategoryFilter: Bool
+    )
     case requestFlush
     case suspendPersistence(@Sendable () -> Void)
     case resumePersistence(@Sendable () -> Void)
@@ -83,9 +89,10 @@ private actor LoggerWriterWorker {
 
     func execute(_ command: LoggerWriterCommand) {
         switch command {
-        case let .record(timestamp, level, category, message):
+        case let .record(timestamp, level, category, message, bypassCategoryFilter):
             guard !isPersistenceSuspended else { return }
-            guard configuration.persistence.isCategoryEnabled(category) else { return }
+            guard bypassCategoryFilter || configuration.persistence.isCategoryEnabled(category)
+            else { return }
             records.append(
                 BufferedLoggerRecord(
                     timestamp: timestamp,

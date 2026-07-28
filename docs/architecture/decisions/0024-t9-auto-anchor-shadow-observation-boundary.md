@@ -274,6 +274,23 @@ remain excluded unless separately authorized. The measurement surface may
 record only lengths, counts, durations, bounded status/reason values and
 opaque run identifiers.
 
+S6-A evidence is mandatory when the common condition is compiled: its
+content-free marker, per-action records, transaction outcome and arm summary
+bypass the user-facing diagnostics preference and performance-category
+switch. The bypass is unavailable in ordinary Release. Each action records
+only whether an engine commit occurred plus the opaque native session identity
+and read-only validity before/after the call. The 38th action writes an arm
+summary and submits an ordered, non-blocking flush; the driver then keeps the
+extension visible for one second and fails the arm unless the internal
+content-free evidence view returns exactly 38 ordered records, no commit, one
+stable valid session, the expected marker and the expected A/B outcome count.
+The gate itself never depends on logging state.
+
+The driver uses a monotonic clock and a fixed 200 ms start-to-start schedule.
+Maximum lateness from that schedule is frozen at 50 ms as a driver-validity
+budget only, not a Product latency SLO. Any arm exceeding it remains in the
+manifest as invalid; it is never silently replaced.
+
 A and B are separate signed internal binaries from one immutable source
 checkpoint. Their declared behavioral difference is only the B-only enabled
 condition; both contain the identical measurement surface. Both use Release
@@ -293,6 +310,13 @@ use.
 Runtime evidence identifies the synthetic fixture only by stable case ID,
 SHA256, action count and cadence. Automation is confined to a Human-created,
 otherwise-empty disposable Reminders list and never deletes host objects.
+The UI runner does not issue XCTest failures while Reminders is visible; it
+first replaces the host with an internal content-free evidence surface.
+Physical `.xcresult` bundles stay in an exact per-arm temporary directory,
+must be scanned for attachments before extraction and are never copied into
+repository evidence. Any content-bearing screenshot or UI hierarchy makes the
+arm invalid; only reviewed content-free console/manifest output and artifact
+digests may be retained.
 Any project-default flag, archive path, uninstall/reset requirement, content
 logging, second transaction/backoff, undeclared A/B difference or automated
 host-object deletion is a Stop Condition.

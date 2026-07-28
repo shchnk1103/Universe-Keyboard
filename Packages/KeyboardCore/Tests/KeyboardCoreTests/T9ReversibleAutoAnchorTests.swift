@@ -427,6 +427,54 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         XCTAssertEqual(fixture.engine.replaceInputCallCount, 2)
     }
 
+    func testIntermediateRefinementCommitSurvivesSuccessfulRestoreInTimingEvidence() {
+        let fixture = makeControllerFixture()
+        fixture.engine.replaceInputScript = [
+            output(
+                raw: fixture.anchoredRaw,
+                texts: ["不同首选", fixture.candidates[0], fixture.candidates[1]],
+                comments: fixture.comments,
+                committedText: "中间提交"
+            ),
+            output(
+                raw: fixture.sourceDigits,
+                texts: fixture.candidates,
+                comments: fixture.comments
+            ),
+        ]
+
+        HotPathSegmentTiming.beginKey(
+            eventID: 1,
+            keyLength: 1,
+            compositionLengthBefore: 0,
+            session: RimeSessionDiagnosticSnapshot(identity: 42, isValid: true)
+        )
+        defer { HotPathSegmentTiming.cancel() }
+
+        type(fixture.sourceDigits, on: fixture.controller)
+        HotPathSegmentTiming.noteResult(
+            rawLength: fixture.sourceDigits.count,
+            pathCount: 0,
+            candidateCount: fixture.candidates.count,
+            didCommit: false,
+            session: RimeSessionDiagnosticSnapshot(identity: 42, isValid: true)
+        )
+
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .rejected
+        )
+        XCTAssertEqual(
+            fixture.controller.state.lastRimeOutput?.rawInput,
+            fixture.sourceDigits,
+            "successful rollback should leave the final output non-committing"
+        )
+        XCTAssertTrue(
+            HotPathSegmentTiming.currentKeyDidCommitForTesting,
+            "intermediate engine commit must remain visible after a non-committing restore and final snapshot"
+        )
+    }
+
     func testDeleteRestoresDigitLedgerBeforeNormalDeletion() {
         let fixture = makeControllerFixture()
         type(fixture.sourceDigits, on: fixture.controller)
@@ -628,7 +676,8 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         raw: String,
         texts: [String],
         comments: [String],
-        hasMorePages: Bool = false
+        hasMorePages: Bool = false,
+        committedText: String? = nil
     ) -> RimeOutput {
         RimeOutput(
             rawInput: raw,
@@ -640,6 +689,7 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
                     globalIndex: index
                 )
             },
+            committedText: committedText,
             hasMorePages: hasMorePages,
             highlightedIndex: texts.isEmpty ? -1 : 0
         )

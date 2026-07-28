@@ -14,10 +14,29 @@ extension KeyboardViewController {
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
         controller = KeyboardController(state: KeyboardState(activeKeyboardType: keyboardType))
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED && !T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        #error("T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED requires T9_AUTO_ANCHOR_DEVICE_PREFLIGHT")
+        #endif
         #if DEBUG
         // ADR 0024 Stage 2: explicit diagnostic gate. Release keeps the
         // controller capability off until Product/Architecture/Quality review.
         controller.isReversibleT9AutoAnchorEnabled = true
+        #elseif T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED
+        // S6-A internal B arm only. This condition is injected by the reviewed
+        // command line and must never appear in project/archive defaults.
+        controller.isReversibleT9AutoAnchorEnabled = true
+        #endif
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED
+        Logger.shared.devicePreflightPerformance(
+            "T9DEVICE marker=T9DEVICE_ENABLED gate=on measurement=on"
+        )
+        #else
+        Logger.shared.devicePreflightPerformance(
+            "T9DEVICE marker=T9DEVICE_DISABLED gate=off measurement=on"
+        )
+        #endif
+        Logger.shared.requestFlush()
         #endif
         controller.textClient = UITextDocumentProxyAdapter(proxy: textDocumentProxy)
         controller.onTypoCorrectionSelected = { [weak self] correction in

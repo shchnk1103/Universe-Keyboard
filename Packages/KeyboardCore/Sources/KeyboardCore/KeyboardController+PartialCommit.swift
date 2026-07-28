@@ -849,7 +849,7 @@ extension KeyboardController {
             } else {
                 // Path snapshot first so provisional Path can own host projection
                 // when it fully covers the current focus slots (ADR 0023).
-                #if DEBUG
+                #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
                 _ = HotPathSegmentTiming.measure(.pathLocal) {
                     applyT9PinyinPathStateFromNewRimeOutput()
                 }

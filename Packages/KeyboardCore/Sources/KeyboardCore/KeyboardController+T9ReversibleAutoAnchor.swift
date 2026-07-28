@@ -34,12 +34,15 @@ extension KeyboardController {
         )
 
         let refined: RimeOutput
-        #if DEBUG
+        #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         refined = HotPathSegmentTiming.measure(.rime) {
             engine.replaceInput(proposal.replacementRawInput)
         }
         #else
         refined = engine.replaceInput(proposal.replacementRawInput)
+        #endif
+        #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        HotPathSegmentTiming.noteEngineOutput(refined)
         #endif
         let validation = T9ReversibleAutoAnchorPolicy.validate(
             proposal: proposal,
@@ -71,12 +74,15 @@ extension KeyboardController {
         }
 
         let restored: RimeOutput
-        #if DEBUG
+        #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         restored = HotPathSegmentTiming.measure(.rime) {
             engine.replaceInput(proposal.sourceDigits)
         }
         #else
         restored = engine.replaceInput(proposal.sourceDigits)
+        #endif
+        #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        HotPathSegmentTiming.noteEngineOutput(restored)
         #endif
         if isUsableRestoredT9AutoAnchorOutput(
             restored,
@@ -228,15 +234,20 @@ extension KeyboardController {
     ) {
         #if DEBUG
         onReversibleT9AutoAnchorOutcome?(outcome)
-        Logger.shared.debug(
+        #endif
+        #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        let record =
             "T9AUTO status=\(outcome.status.rawValue) "
                 + "baseline=\(outcome.baselineCandidateCount) "
                 + "result=\(outcome.resultingCandidateCount) "
                 + "overlap=\(outcome.overlappingCandidateCount) "
                 + "anchorSlots=\(outcome.anchoredSlotCount) "
-                + "unresolvedSlots=\(outcome.unresolvedSlotCount)",
-            category: .performance
-        )
+                + "unresolvedSlots=\(outcome.unresolvedSlotCount)"
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        Logger.shared.devicePreflightPerformance(record, level: .debug)
+        #else
+        Logger.shared.debug(record, category: .performance)
+        #endif
         #endif
     }
 }

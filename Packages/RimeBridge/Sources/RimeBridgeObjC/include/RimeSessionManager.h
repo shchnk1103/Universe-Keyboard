@@ -90,6 +90,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// 当前是否有活跃的 composition
 - (BOOL)isComposing;
 
+/// 返回当前 session 的内容无关标识；0 表示没有 session。
+- (uint64_t)currentSessionIdentifier;
+
+/// 只读验证当前 session 是否仍被 librime 识别。
+- (BOOL)isCurrentSessionValid;
+
 /// 选择输入方案（schema）。
 /// @param schemaID schema 标识符，如 "luna_pinyin"、"rime_ice"
 /// @return 是否成功

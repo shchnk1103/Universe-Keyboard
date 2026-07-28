@@ -1,9 +1,17 @@
 import XCTest
 import KeyboardCore
+import RimeBridgeObjC
 
 @testable import RimeBridge
 
 final class RimeEngineContractTests: XCTestCase {
+    func testSessionDiagnosticFailsClosedBeforeSessionCreation() {
+        let manager = RimeSessionManager()
+
+        XCTAssertEqual(manager.currentSessionIdentifier(), 0)
+        XCTAssertFalse(manager.isCurrentSessionValid())
+    }
+
     func testPrintableKeycodesUseASCIIValues() {
         XCTAssertEqual(RimeEngineImpl.keycode(for: "a"), 0x0061)
         XCTAssertEqual(RimeEngineImpl.keycode(for: "Z"), 0x005A)
