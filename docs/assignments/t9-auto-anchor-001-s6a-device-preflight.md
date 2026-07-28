@@ -222,6 +222,18 @@ The following pre-run attempts are retained and are not valid matrix arms:
    exposed its third-party controls to this XCTest process; zero fixture
    actions occurred. The raw result remains isolated and its potentially
    content-bearing failure diagnostic was not opened, exported or copied.
+9. `pair1-A-coordinate-run1.xcresult`: the reviewed coordinate-driver A App was
+   installed without uninstall/reset, but `UniverseKeyboardUITests-Runner`
+   timed out while enabling physical-device automation mode and never
+   initialized the UI test method. Zero fixture actions and zero coordinate
+   taps occurred. Xcode created
+   `Staging/1_Test/Diagnostics/devicectl_diagnostics.zip`, explicitly warning
+   that it may contain personal/device/Apple Account information. The complete
+   raw result remains isolated at
+   `/private/tmp/universe-keyboard-s6a-coordinate-device-evidence/`;
+   neither the diagnostic archive nor UI attachments were opened, exported or
+   copied. Any retry requires a new Human readiness confirmation because the
+   failed runner may have changed foreground state.
 
 The two independent Human-visible/XCTest-invisible observations invalidate
 further accessibility-owner guessing. Before physical execution resumes, the
@@ -600,6 +612,66 @@ output and digests are retained in the repository.
 
 Invalid arms remain listed with a reason and are never silently retried into a
 Pass.
+
+## Zero-context physical-arm runbook
+
+This section is the executable handoff for another AI. It does not replace the
+contract, gates or Stop Conditions above.
+
+1. Read this Assignment, ADR 0024 and
+   [`t9-auto-anchor-s6a-coordinate-driver-2026-07-28.md`](../evidence/t9-auto-anchor-s6a-coordinate-driver-2026-07-28.md).
+   Confirm the current implementation checkpoint and that both independent
+   reviews are Pass. Do not infer Product Gate.
+2. Query the declared device read-only. Require the same UDID/model/OS,
+   connection, unlocked state and Developer Mode. Any drift starts a new Run
+   Header review.
+3. Build each arm from the same implementation source and Release
+   configuration. A uses only
+   `-DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT`; B uses the same condition plus
+   `-DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED`. Use separate DerivedData and
+   `build-for-testing` against the physical-device destination with
+   `-allowProvisioningUpdates`.
+4. Inspect App/Extension hashes, bundle/team identity and Extension strings.
+   A must contain only `T9DEVICE_DISABLED`; B only `T9DEVICE_ENABLED`. Both may
+   contain the common envelope/registry strings. Ordinary Release must contain
+   none. A host `CSSMERR_TP_NOT_TRUSTED` result is recorded as a host trust
+   warning, never rewritten as strict verification success.
+5. Bind the following three values inside the generated `.xctestrun` test
+   target's `EnvironmentVariables`; shell-only environment variables do not
+   reliably reach a physical-device runner:
+   `T9_S6A_DEVICE_PREFLIGHT_RUN=1`,
+   `T9_S6A_DISPOSABLE_LIST=Universe Keyboard S6A 20260728`, and the arm-specific
+   `T9_S6A_EXPECTED_MARKER=T9DEVICE_DISABLED|T9DEVICE_ENABLED`.
+   Run `plutil -lint` and read the three values back before installation.
+6. Announce the exact arm and pause. The Human must freshly confirm the exact
+   list overview is foreground, the phone is unlocked, and Universe Chinese
+   nine-key is the most recently selected software keyboard. Never reuse a
+   prior confirmation.
+7. Install with `xcrun devicectl device install app --device <UDID> <App>`.
+   Never uninstall, erase a container, reset userdb or delete Reminders state.
+8. Execute only
+   `UniverseKeyboardUITests/T9DevicePreflightUITests/testFrozenLongCompositionInDisposableRemindersList`
+   through `xcodebuild test-without-building -xctestrun ... -destination ...`.
+   Give every attempt a unique `.xcresult` path under `/private/tmp`.
+9. The runner must create its own empty title, prepare a fresh token, accept
+   only eight Extension-owned rectangles in visible group order
+   `ABC…WXYZ`, return to the same editor and tap their centers. Slot indices
+   represent visible letter groups; automation never discovers or displays a
+   numeric keypad.
+10. If the test method initializes, accept an arm only after the same-token
+    marker/geometry/38 segments/summary/session/outcome and matching cleanup
+    pass. If automation mode or the test runner fails before initialization,
+    record zero actions and classify it as an environment failure, not a
+    keyboard result.
+11. Never open/export/copy Xcode failure diagnostics or UI attachments before
+    a privacy review. `devicectl_diagnostics.zip` is always treated as
+    potentially private. Keep the raw result isolated and record only the
+    content-free failure code/path.
+12. After every success or failure, obtain another fresh Human readiness
+    confirmation before any retry or next arm. Follow the frozen pair order.
+    After the final arm, require matching envelope cleanup, explicit matrix
+    finalization, ordinary Release reinstall without uninstall/reset and a
+    successful keyboard-switch smoke check.
 
 ## Handoff
 
