@@ -229,3 +229,40 @@ Both arms kept one stable valid native session, 12 candidates and zero
 commits across all 38 records. This comparison remains sensitive to manual
 cadence and contains only one pair; the numerical deltas are diagnostic
 direction, not a performance budget or Product Gate.
+
+## Ordinary Release Restoration
+
+After Pair 1 B, an ordinary signed Release was rebuilt from clean HEAD
+`764d52c9bd10c994f58962ba65a7c235caabfd5e` without command-line Swift
+conditions or preflight flags. The held-local restore artifact identity is:
+
+- build root:
+  `/private/tmp/universe-keyboard-manual-ordinary-release-764d52c`;
+- final successful quiet-log SHA256:
+  `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`;
+- App executable SHA256:
+  `96f2fd53a365d99daa5ad1ef094c16c13063c5f1d9735e4ac16e9e2854a1ce45`;
+- embedded Extension executable SHA256:
+  `4d1b6bd3df54404c6004a53ca9e6b2309a1a047b01da9405b2fa5e72a12f34f4`;
+- App/Extension UUID:
+  `2390EE97-DCBA-3B2A-9617-59907790BB81` /
+  `3D8BAC0D-038F-3ECB-8E06-A30AEC765C0C`;
+- Team ID: `C33N6HTS9N`; App and Extension are arm64;
+- exact Extension scan for `T9DEVICE`, `T9_S6A`,
+  `t9_s6a_run_envelope` and `t9_s6a_matrix_tokens`: no matches.
+
+Architecture and Quality independently returned `Pass`, P0–P3 none, for the
+narrow replacement-restore scope. Immediately before installation, the App
+and Extension executable hashes were recomputed and matched the values above.
+The wired, unlocked physical device was read-only confirmed as iPhone 13 Pro
+(`iPhone14,2`), UDID `00008110-000A08440198801E`, iOS 27.0
+(`24A5390f`), Developer Mode enabled.
+
+The ordinary Release was then installed by replacement. No uninstall,
+container deletion, user dictionary reset, XCTest, App launch or automated
+input occurred. Post-install read-only inventory reported
+`com.DoubleShy0N.Universe-Keyboard` version `1.0` build `1`. This proves the
+ordinary package replacement completed; it does not prove container
+preservation, keyboard-switch behavior, Product Gate or release acceptance.
+A Human keyboard-display/switch smoke remains optional and must not be
+interpreted as another A/B performance arm.
