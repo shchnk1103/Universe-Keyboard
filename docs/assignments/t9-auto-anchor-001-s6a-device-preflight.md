@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — remediation reviewed; signed A1 held for wired unlocked readiness`
+**Lifecycle status:** `Active — run3 invalid; matrix 0 / 5; physical retry requires fresh Human readiness`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority

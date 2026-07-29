@@ -398,19 +398,98 @@ plus the input hot path unchanged.
 
 ### Reused-Extension remediation validation
 
-- focused `T9DevicePreflightRunTests`: `7 / 7`, including fresh-token
-  acceptance plus same-token and consumed-envelope rejection;
-- KeyboardCore ordinary suite: `751 / 751`; the existing optional
-  interpolation warning at `T9PinyinPathTests.swift:1429` remains outside this
-  delta;
-- Release-like A content-free UI contracts: `6 / 6`, result
-  `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-29T11-22-03-789Z_pid23312_32f236cf.xcresult`;
-- Release-like B content-free UI contracts: `6 / 6`, result
-  `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-29T11-25-12-644Z_pid23312_575d987d.xcresult`;
-- ordinary Release Simulator build: passed, log
-  `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/build_sim_2026-07-29T11-28-38-789Z_pid23312_bd79f5c8.log`;
-- ordinary Extension binary: none of `T9DEVICE`, `T9_S6A`,
-  `t9_s6a_run_envelope` or `t9_s6a_matrix_tokens`.
+Quality rejected the pre-commit results as insufficient provenance. The
+following replacement results were therefore generated from clean immutable
+source commit `202f08ca3726e54e41b208c3d334c1383ea3a61f`, whose parent is
+`6603ccea6edaa5da295e87b4746188c0c6a4bdaf`. Immediately before validation,
+`git status --porcelain=v1` returned no output and `git rev-parse HEAD`
+returned the implementation commit above. Only this evidence/Assignment
+follow-up changes after those runs.
+
+Focused command:
+
+```sh
+swift test --package-path Packages/KeyboardCore \
+  -Xswiftc -DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT \
+  --filter T9DevicePreflightRunTests
+```
+
+Result: `7 / 7`, including fresh-token acceptance plus same-token and
+consumed-envelope rejection. Log:
+`/private/tmp/universe-keyboard-202f08c-focused-device-preflight.log`,
+SHA256 `dce0b66683f03d485776ece8c05b4942a56b5cc254886f008dc2d2ad0c0b5d56`.
+
+Ordinary KeyboardCore command:
+
+```sh
+swift test --package-path Packages/KeyboardCore
+```
+
+Result: `751 / 751`. The existing optional interpolation warning at
+`T9PinyinPathTests.swift:1429` remains outside this delta. Log:
+`/private/tmp/universe-keyboard-202f08c-keyboardcore-full.log`, SHA256
+`79f5f78d65321ab4c94ebcbeebc9eaf7aba9869e8a340f1a2dd2afba8e34e5d0`.
+
+Release-like A and B were executed by XcodeBuildMCP `test_sim` with project
+`Universe Keyboard.xcodeproj`, scheme `UniverseKeyboardUITests`,
+configuration `Release`, iPhone 17 Pro Max iOS 27 Simulator
+`06C5BC3E-7599-4761-A1A2-71DAEA991474`, `CODE_SIGNING_ALLOWED=NO`,
+`ARCHS=arm64`, `ONLY_ACTIVE_ARCH=YES` and separate DerivedData:
+
+- A: `/private/tmp/universe-keyboard-202f08c-ui-a`, with
+  `OTHER_SWIFT_FLAGS=$(inherited) -DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT`;
+- B: `/private/tmp/universe-keyboard-202f08c-ui-b`, with the same flag plus
+  `-DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED`.
+
+Both selected exactly:
+
+```text
+-only-testing:UniverseKeyboardUITests/T9DevicePreflightUITests/testFrozenFixtureContract
+-only-testing:UniverseKeyboardUITests/T9DevicePreflightUITests/testContentFreeIntervalStatisticsContract
+-only-testing:UniverseKeyboardUITests/T9DevicePreflightUITests/testContentFreeGeometryContracts
+-only-testing:UniverseKeyboardUITests/T9DevicePreflightUITests/testForegroundHostSnapshotAndPreparedGeometryContracts
+-only-testing:UniverseKeyboardUITests/T9DevicePreflightUITests/testContentFreeEvidenceValidatorContracts
+-only-testing:UniverseKeyboardUITests/T9DevicePreflightUITests/testContentFreeEvidenceValidatorFailsClosed
+```
+
+Neither selected the physical Reminders method.
+
+| Arm | Result | Build/test log | Result bundle |
+|---|---:|---|---|
+| A | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-29T11-37-46-470Z_pid23283_ce02f070.log` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-29T11-37-46-471Z_pid23283_2aa03f9b.xcresult` |
+| B | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-29T11-40-37-650Z_pid23283_a8e260ab.log` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-29T11-40-37-650Z_pid23283_5980bff0.xcresult` |
+
+The A and B log SHA256 values are respectively
+`6757c4ad955dd374e1c873fbe63eadee038d7578b5c694d6181d419f4a42eeda`
+and
+`224eccf9414ec4434cba69709d10e29b7d3c2a3a4b1b529030c3ed3c0b777277`.
+XcodeBuildMCP reported zero failures, skips, warnings and errors for each arm.
+
+The ordinary Release Simulator build used scheme `Universe Keyboard`, the
+same simulator and architecture settings, no preflight Swift flag, and
+DerivedData
+`/private/tmp/universe-keyboard-202f08c-ordinary-release`. It passed with log:
+`~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/build_sim_2026-07-29T11-43-09-690Z_pid23283_fcfc6622.log`,
+SHA256 `9870c93f358fc2d541f4a86c15e846cb1bc181871f53a297765ba6e3164186de`.
+
+The scanned ordinary Extension binary is:
+
+```text
+/private/tmp/universe-keyboard-202f08c-ordinary-release/Build/Products/Release-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard
+```
+
+Its SHA256 is
+`df9ecc372fc409f9e1c2d51b6696da261283e9882e6b7a05db288bde629df5aa`.
+The exact inventory command was:
+
+```sh
+strings -a \
+  '/private/tmp/universe-keyboard-202f08c-ordinary-release/Build/Products/Release-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard' |
+  rg -n 'T9DEVICE|T9_S6A|t9_s6a_run_envelope|t9_s6a_matrix_tokens'
+```
+
+It returned no matches (`rg` exit `1`), confirming ordinary Release contains
+none of those preflight strings.
 
 No physical retry is authorized by these local results. An immutable
 checkpoint and independent Architecture/Quality re-review remain mandatory.
