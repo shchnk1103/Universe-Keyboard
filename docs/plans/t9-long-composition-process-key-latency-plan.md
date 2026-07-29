@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — S6-A manual pair complete; S2.1 rolling-extension design independently reviewed; implementation not authorized** |
+| Status | **Active — S2.1 implementation and automated evidence complete; independent review pending** |
 | Created | 2026-07-24 |
 | Product lock | 2026-07-24 |
 | Lane A ship | 2026-07-24 |
@@ -11,7 +11,7 @@
 | Architecture boundary | [`ADR 0024`](../architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md) |
 | Supersedes | force_gc-as-primary-fix track (closed) |
 | Close record | [`../evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](../evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md) |
-| Current evidence | [`../evidence/t9-auto-anchor-manual-device-observation-2026-07-29.md`](../evidence/t9-auto-anchor-manual-device-observation-2026-07-29.md) |
+| Current evidence | [`../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md`](../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md) |
 
 ## Problem statement
 
@@ -114,7 +114,7 @@ reference and correction surface.
 | S2 — Reversible bounded-preference prototype | Complete local proof rejected by catalog audit; explicit gate, one-attempt ledger, bounded first-page conservation and Delete/rejection rollback | Debug/explicit gate only | **Implemented. Two later P1 findings were closed and durably re-reviewed at `0173782`; this does not promote the whole stage, and Release remains off** |
 | S3 — Broader engine/corpus shadow | Replay proposed anchors against unchanged inputs across a synthetic corpus; compare candidates, paths and timing | Private test/runtime evidence only | **Six-case, 24-case, later-opportunity and real-RIME transaction matrices complete; the selected cap was revalidated through independent S4 review. A second attempt/backoff and any production policy remain unauthorized** |
 | S4 — Release-candidate reversible anchor | First preflight caps the existing single proposal at two complete syllables; default/user control remains deferred | **Validated at immutable checkpoint `22d34dd`: Debug/explicit gate only; Release mutation not authorized** | **Deterministic/corpus/personalization regression, 5/5 frozen startup pairs and independent Architecture/Quality Pass complete; Product Gate remains open** |
-| S2.1 — Rolling accepted-prefix extension | Preserve the accepted S4 prefix and, after at least one later key, allow one cumulative two-syllable extension with prior-mixed rollback | **Design only; maximum two automatic apply attempts; no retry after first rejection** | **Architecture/Quality Pass; Product implementation authorization still required** |
+| S2.1 — Rolling accepted-prefix extension | Preserve the accepted S4 prefix and, after at least one later key, allow one cumulative two-syllable extension with prior-mixed rollback | **Implementation authorized; maximum two automatic apply attempts; no retry after first rejection** | **Implement/test/review under S21; Release and physical Product Gate remain separate** |
 | S5 — Personalization shadow | Observe whether repeated user-confirmed Path history improves confidence; no duplicate phrase store by default | None until privacy decision | **First isolated matrix durably reviewed at `9c4f86f`: three independent complete-learning cases plus one partial negative; broader language review and retention/deletion/privacy amendment remain open** |
 | S6 — Productization | Default/user control decision, Release-like physical-device performance, memory/jetsam, candidate-quality and Product Gate | **S6-A coordinate route retired; one Human-input/content-free-log physical pair complete; no shipping mutation** | S2.1 design/implementation gates and later Product/Architecture/Quality acceptance still required |
 

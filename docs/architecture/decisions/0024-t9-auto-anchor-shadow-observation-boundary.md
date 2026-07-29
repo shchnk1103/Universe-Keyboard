@@ -1,8 +1,8 @@
 # ADR 0024: T9 Auto-Anchor Observation And Reversible Prototype Boundary
 
 - **Status:** Proposed — S4 independently validated; S6-A manual pair complete;
-  S2.1 rolling-extension design independently reviewed; implementation and
-  shipping decisions deferred
+  S2.1 rolling-extension design independently reviewed and implementation
+  authorized; shipping decision deferred
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
@@ -429,8 +429,9 @@ anchor lowered matched RIME peaks but left eleven unresolved slots and did not
 remove the perceived failure class. The next bounded architecture hypothesis
 is one cumulative extension of an already accepted automatic prefix.
 
-This amendment is design-reviewed only. It does not authorize implementation
-or Release behavior.
+Architecture and Quality independently passed this design. Product subsequently
+authorized implementation under the linked S2.1 Assignment. Release behavior
+remains unauthorized.
 
 ### 12. Accepted-prefix continuity
 
@@ -553,6 +554,11 @@ The experiment uses three logical arms:
 - `A0`: automatic anchor disabled;
 - `A1`: existing one-anchor S4 behavior;
 - `B2`: one cumulative S2.1 extension.
+
+The B2 artifact adds
+`T9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED` to the two existing A1 preflight
+conditions. The controller keeps a separate default-off rolling gate so
+enabling the established base prototype alone remains exactly A1.
 
 Deterministic KeyboardCore and pinned-RIME integration tests own exact call,
 state, rollback and corpus coverage. Physical-device exploration compares

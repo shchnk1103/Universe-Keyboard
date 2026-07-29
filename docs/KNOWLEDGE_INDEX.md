@@ -60,7 +60,8 @@
 - T9 long-composition `process_key` latency and safe auto-anchor roadmap
   (`T9-AUTO-ANCHOR-001`, S1–S4 Debug/test evidence validated, S5 isolated
   personalization reviewed, S6-A manual physical pair complete, S2.1 rolling
-  design independently reviewed with implementation still unauthorized):
+  implementation and automated evidence complete with independent
+  implementation review pending):
   [`plan`](plans/t9-long-composition-process-key-latency-plan.md),
   [`Assignment`](assignments/t9-auto-anchor-001.md),
   [`S2.1 design`](assignments/t9-auto-anchor-001-s21-rolling-design.md),

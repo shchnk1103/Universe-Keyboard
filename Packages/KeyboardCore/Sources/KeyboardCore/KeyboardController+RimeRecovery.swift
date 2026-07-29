@@ -21,11 +21,34 @@ extension KeyboardController {
             return effectsAfterChineseCompositionKey(effects, originalKey: key)
         }
 
+        let previousRawForTrace = state.lastRimeOutput?.rawInput
+        if rejectAcceptedT9AutoAnchorIdentityMismatchIfNeeded(
+            rimeKey,
+            liveRawInput: previousRawForTrace,
+            using: engine
+        ) {
+            var effects = consumeSingleUseShiftIfNeeded()
+                .union(.compositionChanged)
+            effects.insert(.t9PinyinPathsChanged)
+            return effectsAfterChineseCompositionKey(effects, originalKey: key)
+        }
+
         // Rebuild composition when returning from a host that reset the live RIME session.
         if shouldRestoreRimeComposition,
             !state.currentComposition.isEmpty,
             !engine.isComposing()
         {
+            if rejectMissingAcceptedT9AutoAnchorSessionIfNeeded(
+                using: engine
+            ) {
+                var effects = consumeSingleUseShiftIfNeeded()
+                    .union(.compositionChanged)
+                effects.insert(.t9PinyinPathsChanged)
+                return effectsAfterChineseCompositionKey(
+                    effects,
+                    originalKey: key
+                )
+            }
             let intendedComposition =
                 (state.partialCommit?.remainingRawInput ?? state.currentComposition)
                 + fallbackInputText(for: rimeKey)
@@ -73,6 +96,17 @@ extension KeyboardController {
         #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         HotPathSegmentTiming.noteEngineOutput(output)
         #endif
+        if rejectUnusableAcceptedT9AutoAnchorDigitIfNeeded(
+            rimeKey,
+            previousLedger: state.t9ReversibleAutoAnchorState,
+            output: output,
+            using: engine
+        ) {
+            var effects = consumeSingleUseShiftIfNeeded()
+                .union(.compositionChanged)
+            effects.insert(.t9PinyinPathsChanged)
+            return effectsAfterChineseCompositionKey(effects, originalKey: key)
+        }
         // A rejected printable key must remain visible and retryable rather than being lost.
         if output.composition == nil,
             output.committedText == nil,
@@ -94,7 +128,6 @@ extension KeyboardController {
             return effectsAfterChineseCompositionKey(appendFallbackCompositionKey(rimeKey), originalKey: key)
         }
 
-        let previousRawForTrace = state.lastRimeOutput?.rawInput
         applyRimeOutput(augmentRimeOutputIfNeeded(output))
         let retainedFocusedSegment: Bool
         if rimeKey.count == 1, let digit = rimeKey.first {
@@ -114,9 +147,10 @@ extension KeyboardController {
         } else {
             retainedFocusedSegment = false
         }
-        recordAcceptedT9AutoAnchorDigit(
+        advanceAcceptedT9AutoAnchorDigit(
             rimeKey,
-            liveRawInput: state.lastRimeOutput?.rawInput
+            previousLiveRawInput: previousRawForTrace,
+            output: output
         )
         let autoAnchorOutcome = attemptReversibleT9AutoAnchorIfNeeded(using: engine)
         #if DEBUG

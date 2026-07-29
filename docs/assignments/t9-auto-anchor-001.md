@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S6-A manual pair complete; S2.1 design independently reviewed; implementation not authorized`
+**Lifecycle status:** `Active — S2.1 implemented and automated evidence complete; independent implementation review pending`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -24,8 +24,9 @@
   proposal at two complete syllables under the existing Debug gate, then run
   the declared regression and frozen startup-paired Simulator evidence. After
   the S6-A coordinate route was paused and one Human physical-device pair
-  completed, the Product Owner authorized S2.1 rolling-anchor design only on
-  `2026-07-29 Asia/Shanghai`; no implementation authority was granted.
+  completed, the Product Owner authorized S2.1 rolling-anchor design on
+  `2026-07-29 Asia/Shanghai`, then explicitly authorized implementation after
+  Architecture and Quality passed the remediated design.
 - **Product Approver:** Human Product Owner acting as Product Lead
 - **Product Decision:** [`PD-T9-AUTO-ANCHOR-001`](../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
 
@@ -45,8 +46,8 @@
   compare it against the disabled baseline without changing the one-attempt,
   conservation or rollback contracts. The S2.1 child Assignment may design one
   cumulative extension after an accepted first transaction and update
-  governing documentation; production/test implementation remains outside the
-  current authority.
+  governing documentation and implement/test that exact contract under its
+  child Assignment. Release-default behavior remains outside current authority.
 - **Non-goals:** No Release-default enablement, candidate-window scan, second
   production RIME transaction/session, candidate commit, host-text commit,
   production deployment change,
@@ -66,7 +67,7 @@
   `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, limited to the authorized Stage 1–3
   implementation/evidence and Stage 5 isolated personalization
   tests/documentation/review remediation plus the authorized S4 capped
-  two-syllable preflight and the S2.1 documentation/design child Assignment
+  two-syllable preflight and the S2.1 design/implementation child Assignment
 - **Environment Executor:** Current Codex task on the user-opened iPhone 17 Pro
   Max iOS 27 Simulator for the completed S1–S4 evidence; for S6-A, the current
   task may perform the exact signed build/install/log operations on the named
@@ -147,8 +148,8 @@
 Stop and return to Product/Architecture review if work requires:
 
 - enabling the behavior by default in Release or adding a user-facing control;
-- implementing more than one anchor attempt per composition without a later
-  Product authorization, any full candidate scan,
+- more than the two attempts authorized by S2.1, a second attempt after first
+  rejection, any full candidate scan,
   candidate-window query, second production session or production deployment
   work;
 - accepting an anchor without baseline-first-candidate preservation and the

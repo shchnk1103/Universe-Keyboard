@@ -113,7 +113,9 @@ extension KeyboardController {
         // 选拼音: first/next/wrap only — never confirm/advance a segment.
         let effects = handleSelectT9PinyinPath(paths[nextIndex], autoAdvance: false)
         if !effects.isEmpty {
-            state.t9ReversibleAutoAnchorState = .empty
+            state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
+                phase: .rejected
+            )
         }
         return effects
     }
@@ -125,7 +127,9 @@ extension KeyboardController {
         if !effects.isEmpty {
             // The user has explicitly adopted/refined the currently visible
             // path. From this point ordinary Path/Delete contracts own it.
-            state.t9ReversibleAutoAnchorState = .empty
+            state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
+                phase: .rejected
+            )
         }
         #if DEBUG
         if !effects.isEmpty {

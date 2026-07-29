@@ -51,6 +51,8 @@ public final class RimeEngineImpl: RimeEngine {
     #if DEBUG
     /// Content-free timing exposed only to the controlled Simulator preflight.
     internal var lastLibrimeProcessKeyDurationMs: Double?
+    /// Test-target-only boundary counter for exact auto-anchor mutation budgets.
+    internal private(set) var replaceInputCallCountForTesting = 0
     #endif
 
     public var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {
@@ -234,7 +236,10 @@ public final class RimeEngineImpl: RimeEngine {
 
     /// 用未格式化输入替换当前 RIME composition。
     public func replaceInput(_ input: String) -> KeyboardCore.RimeOutput {
-        parseOutput(bridge.replaceInput(input))
+        #if DEBUG
+        replaceInputCallCountForTesting += 1
+        #endif
+        return parseOutput(bridge.replaceInput(input))
     }
 
     /// 重置当前 RIME session 的输入状态（清除拼音 composition）。

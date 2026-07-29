@@ -1,16 +1,19 @@
 # Assignment: T9-AUTO-ANCHOR-001-S21 — 滚动影子锚定设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Reviewed — Architecture and Quality Pass; Product implementation authorization pending`
+**Lifecycle status:** `Active — implementation and automated evidence complete; independent implementation review pending`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
-**Repository change types:** `Contract`, `Documentation`
+**Repository change types:** `Implementation`, `Tests`, `Documentation`,
+`Diagnostic Evidence`
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
 - **Decision Source / Date:** Human Product Owner directed the team to retain
   the manual physical-device method and continue the S2.1 rolling-shadow-anchor
-  design under KOS 2.0 on `2026-07-29 Asia/Shanghai`.
+  design under KOS 2.0 on `2026-07-29 Asia/Shanghai`, then explicitly replied
+  “授权” after the reviewed design handoff in the same Codex task, authorizing
+  implementation under this frozen contract.
 - **Product Approver:** Human Product Owner acting as Product Lead
 - **Product Decision:**
   [`PD-T9-AUTO-ANCHOR-001`](../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
@@ -18,17 +21,19 @@
 ## Boundary
 
 - **Scope:**
-  - Record one KOS-governed S2.1 design for at most one cumulative extension
+  - Implement the KOS-governed S2.1 design for at most one cumulative extension
     after the existing S4 two-syllable anchor has already been accepted.
   - Define transaction ownership, exact RIME-call budget, rollback targets,
     explicit Path/Partial Commit precedence, personalization boundary,
     content-free diagnostics and a layered acceptance matrix.
+  - Update `Packages/KeyboardCore` state/policy/controller logic and focused
+    tests, extend the pinned-RIME integration matrix, and add only the minimum
+    internal preflight identity needed to distinguish `A0`, `A1` and `B2`.
   - Make manual Human input plus content-free App performance logs the
     canonical physical-device method for third-party-keyboard performance
     evidence.
 - **Non-goals:**
-  - No production or test code, project settings, schema, Lua, RIME vendor,
-    user-facing setting or Release-default change.
+  - No schema, Lua, RIME vendor, user-facing setting or Release-default change.
   - No retry after the first transaction rejects, adaptive backoff, loop,
     candidate-window scan, later-page query, second RIME session or background
     RIME execution.
@@ -49,11 +54,12 @@
 
 - **Domain Owner:** 🧠 Input Intelligence Maintainer
 - **Executor:** Current Codex task
-  `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, documentation/design only
-- **Environment Executor:** `Not Applicable` — this Assignment performs no
-  build, install, device input or evidence capture
-- **Human Dependency:** Human Product Owner for later implementation
-  authorization, physical-device readiness and Product acceptance
+  `019f9dac-ff8d-7872-a913-d5dd3f930dc1`
+- **Environment Executor:** Current Codex task for local tests, Simulator
+  integration/build evidence and reviewed internal artifact preparation;
+  Human Product Owner remains the physical-device input operator
+- **Human Dependency:** Human Product Owner for physical-device readiness and
+  Product acceptance
 - **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer
 
@@ -67,6 +73,9 @@
 - Existing S2/S4 safety rules, user Path authority and Partial Commit ownership
   remain available as frozen inputs.
 - No Assignment field is `UNKNOWN`.
+- Architecture and Quality independently passed the frozen design with P0–P3
+  all zero.
+- Product Lead explicitly authorized implementation after that handoff.
 
 ## Design Contract
 
@@ -279,6 +288,17 @@ Use three same-source arms:
 - `A1`: existing one-anchor S4 policy;
 - `B2`: S2.1 rolling extension enabled.
 
+The source-visible gates are intentionally nested:
+
+- ordinary Release: neither gate is compiled or enabled;
+- internal `A1`: `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT` plus
+  `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED`;
+- internal `B2`: the same two conditions plus
+  `T9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED`.
+
+`KeyboardController.isRollingT9AutoAnchorEnabled` is false by default and does
+not replace the existing base gate. This preserves the A1 comparator.
+
 The arm contract is exact:
 
 | Arm | Automatic apply attempts | Accepted outcomes | Extra `replaceInput` calls in the valid frozen fixture |
@@ -356,8 +376,15 @@ allowed.
   contain no unresolved design ambiguity.
 - Architecture and Quality reviewers independently return their findings.
 - Documentation link/status and `git diff --check` validation pass.
-- Implementation remains explicitly unstarted and requires a later Product
-  Lead authorization.
+- Focused rolling-ledger/policy/controller tests and the full KeyboardCore suite
+  pass.
+- The explicit pinned-RIME `A0/A1/B2`, rollback, Delete, Path/Partial and
+  isolated-personalization matrix passes with zero unexpected skips.
+- Strict Debug and Release Simulator builds plus RIME vendor verification pass;
+  ordinary Release behavior remains disabled.
+- Architecture and Quality independently review the implementation checkpoint.
+- Physical `A1→B2` evidence remains a later Human-input gate and is not inferred
+  from automated evidence.
 
 ## Independent Design Review
 
@@ -369,9 +396,16 @@ snapshot after all remediation rounds:
 - All intermediate findings were closed in the reviewed snapshot.
 - `git diff --check -- docs` passed.
 
-The reviews cover only the S2.1 product/architecture/test contract. No product
-or test code was implemented, no build or device run was executed, and the
-reviews do not authorize Release enablement or satisfy Product Gate.
+These reviews authorized Product handoff of the design. Product subsequently
+authorized implementation; the prior reviews still do not prove implementation
+correctness, authorize Release enablement or satisfy Product Gate.
+
+## Implementation Evidence
+
+The implementation and automated evidence are recorded in
+[`t9-auto-anchor-s21-implementation-2026-07-29.md`](../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md).
+Independent Architecture and Quality implementation review remains required
+before preparing the Human physical-device `A1→B2` pair.
 
 ## Stop Conditions
 
@@ -391,9 +425,9 @@ Stop and return to Product/Architecture if implementation would require:
 
 ## Handoff
 
-- **Handoff Target:** Architecture & Knowledge Steward, then Quality,
-  Performance & Release Maintainer, then Product Lead; reviewer handoffs are
-  complete and Product Lead now owns the implementation-authorization decision
+- **Handoff Target:** Architecture & Knowledge Steward and Quality,
+  Performance & Release Maintainer for independent implementation review, then
+  Product Lead
 - **Required Handoff Content:** exact state machine, call/rollback table,
   user-authority and personalization boundaries, Layer 1–3 matrix, manual
   device method and reviewer findings

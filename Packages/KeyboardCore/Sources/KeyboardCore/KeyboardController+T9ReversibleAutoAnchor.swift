@@ -1,3 +1,5 @@
+import Foundation
+
 extension KeyboardController {
     /// Applies at most one automatic anchor transaction for the current T9
     /// composition. The caller must already have installed the key's RIME output.
@@ -6,7 +8,6 @@ extension KeyboardController {
     ) -> T9ReversibleAutoAnchorOutcome {
         guard isReversibleT9AutoAnchorEnabled,
               usesT9InputSemantics,
-              state.t9ReversibleAutoAnchorState.phase == .idle,
               state.partialCommit == nil,
               state.t9PinyinPathState.selectedPath == nil,
               state.t9PinyinPathState.confirmedSegmentValues.isEmpty,
@@ -15,24 +16,78 @@ extension KeyboardController {
             return .notEligible
         }
 
-        let sourceDigits =
-            state.t9PinyinPathState.segmentSourceDigits
-            ?? T9PinyinPathExtractor.pureDigitRaw(output.rawInput)
-        guard let proposal = T9ReversibleAutoAnchorPolicy.proposal(
-            sourceDigits: sourceDigits,
-            output: output
-        ) else {
+        let priorLedger = state.t9ReversibleAutoAnchorState
+        let attemptIndex: Int
+        let proposal: T9ReversibleAutoAnchorPolicy.Proposal
+        let rollbackRawInput: String
+        let previousAnchoredSyllableCount: Int
+        let previousAnchoredSlotCount: Int
+
+        switch priorLedger.phase {
+        case .idle:
+            let sourceDigits =
+                state.t9PinyinPathState.segmentSourceDigits
+                ?? T9PinyinPathExtractor.pureDigitRaw(output.rawInput)
+            guard let initialProposal = T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: sourceDigits,
+                output: output
+            ) else {
+                return .notEligible
+            }
+            attemptIndex = 1
+            proposal = initialProposal
+            rollbackRawInput = initialProposal.sourceDigits
+            previousAnchoredSyllableCount = 0
+            previousAnchoredSlotCount = 0
+
+        case .accepted:
+            guard isRollingT9AutoAnchorEnabled,
+                  priorLedger.automaticApplyAttemptCount == 1,
+                  priorLedger.sourceDigits.count
+                    > priorLedger.lastAttemptSourceDigitCount,
+                  output.rawInput == priorLedger.replacementRawInput,
+                  let extensionProposal =
+                    T9ReversibleAutoAnchorPolicy.cumulativeExtensionProposal(
+                        sourceDigits: priorLedger.sourceDigits,
+                        output: output,
+                        existingReplacementRawInput:
+                            priorLedger.replacementRawInput,
+                        existingAnchoredSyllableCount:
+                            priorLedger.anchoredSyllableCount,
+                        existingAnchoredSlotCount:
+                            priorLedger.anchoredSlotCount
+                    )
+            else {
+                return .notEligible
+            }
+            attemptIndex = 2
+            proposal = extensionProposal
+            rollbackRawInput = priorLedger.replacementRawInput
+            previousAnchoredSyllableCount = priorLedger.anchoredSyllableCount
+            previousAnchoredSlotCount = priorLedger.anchoredSlotCount
+
+        case .rejected:
             return .notEligible
         }
         let userPathSnapshot = state.t9PinyinPathState
 
-        // Mark the composition before crossing the RIME boundary. Any rejection
-        // still consumes its single automatic attempt.
-        state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
-            phase: .rejected,
-            sourceDigits: proposal.sourceDigits
-        )
+        // Consume the bounded attempt before crossing RIME. A rejected second
+        // proposal may restore the first accepted ledger, but never its budget.
+        if attemptIndex == 1 {
+            state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
+                phase: .rejected,
+                sourceDigits: proposal.sourceDigits,
+                automaticApplyAttemptCount: 1,
+                lastAttemptSourceDigitCount: proposal.sourceDigits.count
+            )
+        } else {
+            var consumedLedger = priorLedger
+            consumedLedger.automaticApplyAttemptCount = 2
+            consumedLedger.lastAttemptSourceDigitCount = proposal.sourceDigits.count
+            state.t9ReversibleAutoAnchorState = consumedLedger
+        }
 
+        let applyStartedAt = ProcessInfo.processInfo.systemUptime
         let refined: RimeOutput
         #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         refined = HotPathSegmentTiming.measure(.rime) {
@@ -44,6 +99,8 @@ extension KeyboardController {
         #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         HotPathSegmentTiming.noteEngineOutput(refined)
         #endif
+        let applyDurationMilliseconds =
+            (ProcessInfo.processInfo.systemUptime - applyStartedAt) * 1_000
         let validation = T9ReversibleAutoAnchorPolicy.validate(
             proposal: proposal,
             result: refined
@@ -58,48 +115,94 @@ extension KeyboardController {
             state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
                 phase: .accepted,
                 sourceDigits: proposal.sourceDigits,
-                replacementRawInput: proposal.replacementRawInput,
-                anchoredSlotCount: proposal.anchoredSlotCount
+                replacementRawInput:
+                    refined.rawInput ?? proposal.replacementRawInput,
+                anchoredSyllableCount: proposal.anchoredSyllables.count,
+                anchoredSlotCount: proposal.anchoredSlotCount,
+                automaticApplyAttemptCount: attemptIndex,
+                lastAttemptSourceDigitCount: proposal.sourceDigits.count
             )
             let outcome = T9ReversibleAutoAnchorOutcome(
                 status: .accepted,
                 baselineCandidateCount: proposal.baselineCandidateTexts.count,
                 resultingCandidateCount: validation.resultingCandidateCount,
                 overlappingCandidateCount: validation.overlappingCandidateCount,
+                attemptIndex: attemptIndex,
+                anchoredSyllableCount: proposal.anchoredSyllables.count,
+                newlyAnchoredSyllableCount:
+                    proposal.anchoredSyllables.count
+                    - previousAnchoredSyllableCount,
+                newlyAnchoredSlotCount:
+                    proposal.anchoredSlotCount - previousAnchoredSlotCount,
                 anchoredSlotCount: proposal.anchoredSlotCount,
-                unresolvedSlotCount: proposal.unresolvedSlotCount
+                unresolvedSlotCount: proposal.unresolvedSlotCount,
+                applyDurationMilliseconds: applyDurationMilliseconds,
+                restoreDurationMilliseconds: 0
             )
             logReversibleT9AutoAnchor(outcome)
             return outcome
         }
 
+        let restoreStartedAt = ProcessInfo.processInfo.systemUptime
         let restored: RimeOutput
         #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         restored = HotPathSegmentTiming.measure(.rime) {
-            engine.replaceInput(proposal.sourceDigits)
+            engine.replaceInput(rollbackRawInput)
         }
         #else
-        restored = engine.replaceInput(proposal.sourceDigits)
+        restored = engine.replaceInput(rollbackRawInput)
         #endif
         #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         HotPathSegmentTiming.noteEngineOutput(restored)
         #endif
-        if isUsableRestoredT9AutoAnchorOutput(
-            restored,
-            expectedSourceDigits: proposal.sourceDigits
-        ) {
-            applyRimeOutput(augmentRimeOutputIfNeeded(restored))
-            state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
-                phase: .rejected,
-                sourceDigits: proposal.sourceDigits
+        let restoreDurationMilliseconds =
+            (ProcessInfo.processInfo.systemUptime - restoreStartedAt) * 1_000
+        let restoreSucceeded =
+            attemptIndex == 1
+            ? isUsableRestoredT9AutoAnchorOutput(
+                restored,
+                expectedSourceDigits: proposal.sourceDigits
             )
+            : isUsableRestoredMixedT9AutoAnchorOutput(
+                restored,
+                expectedRawInput: rollbackRawInput
+            )
+        if restoreSucceeded {
+            applyRimeOutput(augmentRimeOutputIfNeeded(restored))
+            if attemptIndex == 1 {
+                state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
+                    phase: .rejected,
+                    sourceDigits: proposal.sourceDigits,
+                    automaticApplyAttemptCount: 1,
+                    lastAttemptSourceDigitCount: proposal.sourceDigits.count
+                )
+            } else {
+                var restoredLedger = priorLedger
+                restoredLedger.automaticApplyAttemptCount = 2
+                restoredLedger.lastAttemptSourceDigitCount =
+                    proposal.sourceDigits.count
+                state.t9ReversibleAutoAnchorState = restoredLedger
+                restoreUnconfirmedT9PathSnapshotAfterAutomaticAnchor(
+                    userPathSnapshot,
+                    sourceDigits: proposal.sourceDigits
+                )
+            }
             let outcome = T9ReversibleAutoAnchorOutcome(
                 status: .rejectedAndRestored,
                 baselineCandidateCount: proposal.baselineCandidateTexts.count,
                 resultingCandidateCount: validation.resultingCandidateCount,
                 overlappingCandidateCount: validation.overlappingCandidateCount,
+                attemptIndex: attemptIndex,
+                anchoredSyllableCount: proposal.anchoredSyllables.count,
+                newlyAnchoredSyllableCount:
+                    proposal.anchoredSyllables.count
+                    - previousAnchoredSyllableCount,
+                newlyAnchoredSlotCount:
+                    proposal.anchoredSlotCount - previousAnchoredSlotCount,
                 anchoredSlotCount: proposal.anchoredSlotCount,
-                unresolvedSlotCount: proposal.unresolvedSlotCount
+                unresolvedSlotCount: proposal.unresolvedSlotCount,
+                applyDurationMilliseconds: applyDurationMilliseconds,
+                restoreDurationMilliseconds: restoreDurationMilliseconds
             )
             logReversibleT9AutoAnchor(outcome)
             return outcome
@@ -117,38 +220,136 @@ extension KeyboardController {
         clearT9PinyinPathState()
         state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
             phase: .rejected,
-            sourceDigits: proposal.sourceDigits
+            automaticApplyAttemptCount: attemptIndex,
+            lastAttemptSourceDigitCount: proposal.sourceDigits.count
         )
         let outcome = T9ReversibleAutoAnchorOutcome(
             status: .restoreFailed,
             baselineCandidateCount: proposal.baselineCandidateTexts.count,
             resultingCandidateCount: validation.resultingCandidateCount,
             overlappingCandidateCount: validation.overlappingCandidateCount,
+            attemptIndex: attemptIndex,
+            anchoredSyllableCount: proposal.anchoredSyllables.count,
+            newlyAnchoredSyllableCount:
+                proposal.anchoredSyllables.count
+                - previousAnchoredSyllableCount,
+            newlyAnchoredSlotCount:
+                proposal.anchoredSlotCount - previousAnchoredSlotCount,
             anchoredSlotCount: proposal.anchoredSlotCount,
-            unresolvedSlotCount: proposal.unresolvedSlotCount
+            unresolvedSlotCount: proposal.unresolvedSlotCount,
+            applyDurationMilliseconds: applyDurationMilliseconds,
+            restoreDurationMilliseconds: restoreDurationMilliseconds
         )
         logReversibleT9AutoAnchor(outcome)
         return outcome
     }
 
-    /// Keeps the rollback ledger aligned with digits typed after an accepted
-    /// anchor. Call only after RIME accepted the appended digit.
-    func recordAcceptedT9AutoAnchorDigit(
+    /// Verifies the accepted mixed-raw identity before a new digit reaches
+    /// RIME. A mismatch is terminal for this composition and adds no replace.
+    func rejectAcceptedT9AutoAnchorIdentityMismatchIfNeeded(
         _ input: String,
-        liveRawInput: String?
-    ) {
-        guard state.t9ReversibleAutoAnchorState.phase == .accepted,
+        liveRawInput: String?,
+        using engine: RimeEngine
+    ) -> Bool {
+        let ledger = state.t9ReversibleAutoAnchorState
+        guard ledger.phase == .accepted,
               input.count == 1,
               input.first.map({ ("2"..."9").contains($0) }) == true
         else {
+            return false
+        }
+        if liveRawInput == ledger.replacementRawInput {
+            return false
+        }
+
+        abandonAcceptedT9AutoAnchorComposition(
+            ledger: ledger,
+            using: engine
+        )
+        return true
+    }
+
+    /// The generic host-interruption recovery path may replay input. An
+    /// accepted mixed ledger instead fails closed on the existing session.
+    func rejectMissingAcceptedT9AutoAnchorSessionIfNeeded(
+        using engine: RimeEngine
+    ) -> Bool {
+        let ledger = state.t9ReversibleAutoAnchorState
+        guard ledger.phase == .accepted else { return false }
+        abandonAcceptedT9AutoAnchorComposition(
+            ledger: ledger,
+            using: engine
+        )
+        return true
+    }
+
+    /// A failed/non-committing digit cannot enter the generic recovery/replay
+    /// path while an accepted mixed ledger is authoritative.
+    func rejectUnusableAcceptedT9AutoAnchorDigitIfNeeded(
+        _ input: String,
+        previousLedger: T9ReversibleAutoAnchorState,
+        output: RimeOutput,
+        using engine: RimeEngine
+    ) -> Bool {
+        guard previousLedger.phase == .accepted,
+              input.count == 1,
+              input.first.map({ ("2"..."9").contains($0) }) == true,
+              output.committedText == nil,
+              output.composition?.preeditText.isEmpty != false
+                || output.rawInput?.isEmpty != false
+        else {
+            return false
+        }
+
+        abandonAcceptedT9AutoAnchorComposition(
+            ledger: previousLedger,
+            using: engine
+        )
+        return true
+    }
+
+    /// Atomically advances both digit authority and exact mixed-raw identity
+    /// after RIME accepted a later non-committing T9 digit.
+    func advanceAcceptedT9AutoAnchorDigit(
+        _ input: String,
+        previousLiveRawInput: String?,
+        output: RimeOutput
+    ) {
+        let ledger = state.t9ReversibleAutoAnchorState
+        guard ledger.phase == .accepted,
+              input.count == 1,
+              input.first.map({ ("2"..."9").contains($0) }) == true,
+              previousLiveRawInput == ledger.replacementRawInput,
+              output.committedText == nil,
+              output.composition?.preeditText.isEmpty == false,
+              let liveRawInput = output.rawInput,
+              !liveRawInput.isEmpty
+        else {
             return
         }
-        state.t9ReversibleAutoAnchorState.sourceDigits += input
-        if let liveRawInput, !liveRawInput.isEmpty {
-            state.t9ReversibleAutoAnchorState.replacementRawInput = liveRawInput
-        } else {
-            state.t9ReversibleAutoAnchorState.replacementRawInput += input
-        }
+
+        var advancedLedger = ledger
+        advancedLedger.sourceDigits += input
+        advancedLedger.replacementRawInput = liveRawInput
+        state.t9ReversibleAutoAnchorState = advancedLedger
+    }
+
+    private func abandonAcceptedT9AutoAnchorComposition(
+        ledger: T9ReversibleAutoAnchorState,
+        using engine: RimeEngine
+    ) {
+        engine.resetSession()
+        state.currentComposition = ""
+        state.lastRimeOutput = nil
+        state.partialCommit = nil
+        updateInlinePreedit("", source: .compositionProjection)
+        clearTypoCorrectionSuggestions()
+        clearT9PinyinPathState()
+        state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
+            phase: .rejected,
+            automaticApplyAttemptCount: ledger.automaticApplyAttemptCount,
+            lastAttemptSourceDigitCount: ledger.lastAttemptSourceDigitCount
+        )
     }
 
     enum T9AutoAnchorDeleteRollback {
@@ -206,6 +407,15 @@ extension KeyboardController {
                 == expectedSourceDigits
     }
 
+    private func isUsableRestoredMixedT9AutoAnchorOutput(
+        _ output: RimeOutput,
+        expectedRawInput: String
+    ) -> Bool {
+        output.committedText == nil
+            && output.composition?.preeditText.isEmpty == false
+            && output.rawInput == expectedRawInput
+    }
+
     /// Mixed raw contains automatic syllable boundaries, not user-confirmed
     /// Path choices. Restore the pre-transaction snapshot against the new
     /// revision so the Path UI stays selectable without adopting that prefix.
@@ -253,8 +463,14 @@ extension KeyboardController {
                 + "baseline=\(outcome.baselineCandidateCount) "
                 + "result=\(outcome.resultingCandidateCount) "
                 + "overlap=\(outcome.overlappingCandidateCount) "
+                + "attempt=\(outcome.attemptIndex) "
+                + "anchorSyllables=\(outcome.anchoredSyllableCount) "
+                + "newSyllables=\(outcome.newlyAnchoredSyllableCount) "
+                + "newSlots=\(outcome.newlyAnchoredSlotCount) "
                 + "anchorSlots=\(outcome.anchoredSlotCount) "
-                + "unresolvedSlots=\(outcome.unresolvedSlotCount)"
+                + "unresolvedSlots=\(outcome.unresolvedSlotCount) "
+                + "applyMs=\(outcome.applyDurationMilliseconds) "
+                + "restoreMs=\(outcome.restoreDurationMilliseconds)"
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         Logger.shared.devicePreflightPerformance(record, level: .debug)
         #else

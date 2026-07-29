@@ -67,6 +67,144 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         }
     }
 
+    private enum S21Arm: String, CaseIterable {
+        case a0
+        case a1
+        case b2
+    }
+
+    private struct S21ArmSummary {
+        let arm: S21Arm
+        let replaceInputCount: Int
+        let outcomes: [(action: Int, outcome: T9ReversibleAutoAnchorOutcome)]
+        let completedActionCount: Int
+        let sessionIdentityCount: Int
+        let invalidReasons: [String]
+    }
+
+    /// Test-only decorator that keeps a real librime session underneath while
+    /// forcing the second automatic result to fail candidate conservation.
+    private final class SecondApplyDriftEngine: RimeEngine {
+        let base: RimeEngineImpl
+        let failPriorMixedRestore: Bool
+        private(set) var replaceInputCount = 0
+        private(set) var resetCount = 0
+        private(set) var recoverCount = 0
+
+        init(
+            base: RimeEngineImpl,
+            failPriorMixedRestore: Bool = false
+        ) {
+            self.base = base
+            self.failPriorMixedRestore = failPriorMixedRestore
+        }
+
+        var runtimeSelection: RimeRuntimeSelection? {
+            base.runtimeSelection
+        }
+
+        var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {
+            base.diagnosticSessionSnapshot
+        }
+
+        var onRuntimeSelectionChanged:
+            ((RimeRuntimeSelection) -> Void)?
+        {
+            get { base.onRuntimeSelectionChanged }
+            set { base.onRuntimeSelectionChanged = newValue }
+        }
+
+        func processKey(_ key: String) -> RimeOutput {
+            base.processKey(key)
+        }
+
+        func selectCandidate(at index: Int) -> RimeOutput {
+            base.selectCandidate(at: index)
+        }
+
+        func selectCandidate(globalIndex index: Int) -> RimeOutput {
+            base.selectCandidate(globalIndex: index)
+        }
+
+        func candidateWindow(
+            from globalIndex: Int,
+            limit: Int
+        ) -> RimeCandidateWindow {
+            base.candidateWindow(from: globalIndex, limit: limit)
+        }
+
+        func deleteBackward() -> RimeOutput {
+            base.deleteBackward()
+        }
+
+        func replaceInput(_ input: String) -> RimeOutput {
+            replaceInputCount += 1
+            let output = base.replaceInput(input)
+            if replaceInputCount == 2,
+                let first = output.candidates.first
+            {
+                var candidates = output.candidates
+                candidates[0] = RimeCandidate(
+                    text: first.text + "测试漂移",
+                    comment: first.comment,
+                    globalIndex: first.globalIndex
+                )
+                return replacingCandidates(in: output, with: candidates)
+            }
+            if replaceInputCount == 3, failPriorMixedRestore {
+                return RimeOutput()
+            }
+            return output
+        }
+
+        func resetSession() {
+            resetCount += 1
+            base.resetSession()
+        }
+
+        func recoverSession() {
+            recoverCount += 1
+            base.recoverSession()
+        }
+
+        func suspendForVisibilityChange() {
+            base.suspendForVisibilityChange()
+        }
+
+        func resumeAfterVisibilityChange() {
+            base.resumeAfterVisibilityChange()
+        }
+
+        func isComposing() -> Bool {
+            base.isComposing()
+        }
+
+        func pageUp() -> RimeOutput {
+            base.pageUp()
+        }
+
+        func pageDown() -> RimeOutput {
+            base.pageDown()
+        }
+
+        private func replacingCandidates(
+            in output: RimeOutput,
+            with candidates: [RimeCandidate]
+        ) -> RimeOutput {
+            RimeOutput(
+                rawInput: output.rawInput,
+                composition: output.composition,
+                candidates: candidates,
+                committedText: output.committedText,
+                hasMorePages: output.hasMorePages,
+                highlightedIndex: output.highlightedIndex,
+                candidatePageNumber: output.candidatePageNumber,
+                caretPositionInRaw: output.caretPositionInRaw,
+                commitPreviewLength: output.commitPreviewLength
+            )
+        }
+    }
+
     func testPersonalizationFixtureUserRootSafetyPolicy() throws {
         let fileManager = FileManager.default
         let allowedURL = URL(
@@ -99,6 +237,335 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
                 "/Users/example/Library/Group Containers/user"
             )
         )
+    }
+
+    @MainActor
+    func testRollingControllerFrozenA0A1B2Matrix() async throws {
+        let directories = try spikeRuntimeDirectories()
+        try assertSpikeSchemaIsPatched(sharedDir: directories.sharedDir)
+        let sourceDigits = t9Digits(
+            for: "jintiandetianqihenbucuowomenchuquwanba"
+        )
+        XCTAssertEqual(sourceDigits.count, 38)
+
+        var summaries: [S21ArmSummary] = []
+        for arm in S21Arm.allCases {
+            summaries.append(
+                try await runS21Arm(
+                    arm,
+                    sourceDigits: sourceDigits,
+                    sharedDir: directories.sharedDir,
+                    userRoot: directories.userDir
+                )
+            )
+        }
+
+        let a0 = try XCTUnwrap(summaries.first { $0.arm == .a0 })
+        let a1 = try XCTUnwrap(summaries.first { $0.arm == .a1 })
+        let b2 = try XCTUnwrap(summaries.first { $0.arm == .b2 })
+
+        XCTAssertEqual(a0.replaceInputCount, 0)
+        XCTAssertTrue(a0.outcomes.isEmpty)
+
+        XCTAssertEqual(a1.replaceInputCount, 1)
+        XCTAssertEqual(a1.outcomes.count, 1)
+        XCTAssertEqual(a1.outcomes.first?.outcome.status, .accepted)
+        XCTAssertEqual(a1.outcomes.first?.outcome.attemptIndex, 1)
+
+        XCTAssertEqual(b2.replaceInputCount, 2)
+        XCTAssertEqual(b2.outcomes.count, 2)
+        XCTAssertTrue(b2.outcomes.allSatisfy { $0.outcome.status == .accepted })
+        XCTAssertEqual(
+            b2.outcomes.map { $0.outcome.attemptIndex },
+            [1, 2]
+        )
+        XCTAssertLessThan(
+            b2.outcomes[0].action,
+            b2.outcomes[1].action,
+            "attempt 2 must be caused by a later physical key"
+        )
+        XCTAssertLessThanOrEqual(
+            b2.outcomes[1].action,
+            23,
+            "the rolling extension missed the frozen pre-spike deadline"
+        )
+
+        XCTAssertTrue(
+            summaries.allSatisfy {
+                $0.completedActionCount == 38
+                    && $0.sessionIdentityCount == 1
+                    && $0.invalidReasons.isEmpty
+            }
+        )
+        let rows = summaries.map { summary in
+            let outcomeRows = summary.outcomes.map {
+                "action=\($0.action):attempt=\($0.outcome.attemptIndex)"
+            }.joined(separator: "|")
+            return [
+                "arm=\(summary.arm.rawValue)",
+                "actions=\(summary.completedActionCount)",
+                "sessions=\(summary.sessionIdentityCount)",
+                "replace=\(summary.replaceInputCount)",
+                "outcomes=\(outcomeRows.isEmpty ? "none" : outcomeRows)",
+                "invalid=\(summary.invalidReasons.joined(separator: "+"))",
+            ].joined(separator: ",")
+        }
+        let record = "T9_S21_A0_A1_B2 " + rows.joined(separator: ";")
+        fputs(record + "\n", stderr)
+        print(record)
+    }
+
+    @MainActor
+    func testRollingControllerRealRimeDeletePathAndPartialOwnership() async throws {
+        let directories = try spikeRuntimeDirectories()
+        try assertSpikeSchemaIsPatched(sharedDir: directories.sharedDir)
+        let armUserURL = URL(
+            fileURLWithPath: directories.userDir,
+            isDirectory: true
+        )
+        .appendingPathComponent(
+            "s21-ownership-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        try FileManager.default.createDirectory(
+            at: armUserURL,
+            withIntermediateDirectories: false
+        )
+        defer {
+            try? FileManager.default.removeItem(at: armUserURL)
+        }
+
+        let deployResult = try await RimeDeploymentService().deploy(
+            RimeDeploymentRequest(
+                mode: .fullCheck,
+                sharedDataURL: URL(
+                    fileURLWithPath: directories.sharedDir,
+                    isDirectory: true
+                ),
+                userDataURL: armUserURL,
+                runtimeSmokeSchemaID: nil
+            )
+        )
+        XCTAssertTrue(deployResult.succeeded, deployResult.diagnosticMessage)
+
+        let engine = RimeEngineImpl(
+            sharedDataDir: directories.sharedDir,
+            userDataDir: armUserURL.path
+        )
+        defer {
+            engine.bridge.clearComposition()
+            engine.bridge.finalize()
+        }
+        XCTAssertTrue(engine.bridge.selectSchema("t9"))
+        let sourceDigits = String(
+            t9Digits(
+                for: "jintiandetianqihenbucuowomenchuquwanba"
+            ).prefix(20)
+        )
+
+        let deleteController = makeS21B2Controller(engine: engine)
+        typeOnController(sourceDigits, controller: deleteController)
+        XCTAssertEqual(
+            deleteController.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            2
+        )
+        let replaceBeforeDelete = engine.replaceInputCallCountForTesting
+        _ = deleteController.handle(.deleteBackward)
+        XCTAssertGreaterThanOrEqual(
+            engine.replaceInputCallCountForTesting,
+            replaceBeforeDelete + 1,
+            "Delete must cross the full-digit rollback boundary before its normal path work"
+        )
+        XCTAssertEqual(
+            T9PinyinPathExtractor.pureDigitRaw(
+                deleteController.state.lastRimeOutput?.rawInput
+            ),
+            String(sourceDigits.dropLast())
+        )
+        XCTAssertNotEqual(
+            deleteController.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+
+        engine.bridge.clearComposition()
+        let pathController = makeS21B2Controller(engine: engine)
+        typeOnController(sourceDigits, controller: pathController)
+        let path = try XCTUnwrap(
+            pathController.state.t9PinyinPathState.compactPaths.first
+        )
+        _ = pathController.handle(.selectT9PinyinPath(path))
+        XCTAssertEqual(
+            pathController.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected)
+        )
+        XCTAssertTrue(
+            pathController.state.t9PinyinPathState.selectedPath != nil
+                || !pathController.state.t9PinyinPathState
+                    .confirmedSegmentValues.isEmpty
+        )
+
+        engine.bridge.clearComposition()
+        let partialController = makeS21B2Controller(engine: engine)
+        let partialSourceDigits = t9Digits(
+            for: "jintiantianqihenhao"
+        )
+        typeOnController(
+            partialSourceDigits,
+            controller: partialController
+        )
+        XCTAssertEqual(
+            partialController.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+        let candidate = try XCTUnwrap(
+            partialController.state.lastRimeOutput?.candidates
+                .dropFirst(2)
+                .first
+        )
+        _ = partialController.handle(
+            .insertCandidate(
+                candidate.text,
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(
+                    page: 0,
+                    indexOnPage: 2
+                )
+            )
+        )
+        XCTAssertNotNil(
+            partialController.state.partialCommit,
+            "the frozen long fixture must exercise a real partial selection"
+        )
+        XCTAssertEqual(
+            partialController.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected)
+        )
+    }
+
+    @MainActor
+    func testRollingControllerRealRimeSecondRejectRestoreMatrix() async throws {
+        let directories = try spikeRuntimeDirectories()
+        try assertSpikeSchemaIsPatched(sharedDir: directories.sharedDir)
+        let armUserURL = URL(
+            fileURLWithPath: directories.userDir,
+            isDirectory: true
+        )
+        .appendingPathComponent(
+            "s21-second-reject-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        try FileManager.default.createDirectory(
+            at: armUserURL,
+            withIntermediateDirectories: false
+        )
+        defer {
+            try? FileManager.default.removeItem(at: armUserURL)
+        }
+
+        let deployResult = try await RimeDeploymentService().deploy(
+            RimeDeploymentRequest(
+                mode: .fullCheck,
+                sharedDataURL: URL(
+                    fileURLWithPath: directories.sharedDir,
+                    isDirectory: true
+                ),
+                userDataURL: armUserURL,
+                runtimeSmokeSchemaID: nil
+            )
+        )
+        XCTAssertTrue(deployResult.succeeded, deployResult.diagnosticMessage)
+        let sourceDigits = String(
+            t9Digits(
+                for: "jintiandetianqihenbucuowomenchuquwanba"
+            ).prefix(20)
+        )
+
+        do {
+            let base = RimeEngineImpl(
+                sharedDataDir: directories.sharedDir,
+                userDataDir: armUserURL.path
+            )
+            defer {
+                base.bridge.clearComposition()
+                base.bridge.finalize()
+            }
+            XCTAssertTrue(base.bridge.selectSchema("t9"))
+            let engine = SecondApplyDriftEngine(base: base)
+            let controller = makeS21B2Controller(engine: engine)
+            var outcomes: [T9ReversibleAutoAnchorOutcome] = []
+            controller.onReversibleT9AutoAnchorOutcome = {
+                outcomes.append($0)
+            }
+
+            typeOnController(sourceDigits, controller: controller)
+
+            XCTAssertEqual(engine.replaceInputCount, 3)
+            XCTAssertEqual(engine.resetCount, 0)
+            XCTAssertEqual(engine.recoverCount, 0)
+            XCTAssertEqual(outcomes.map(\.status), [
+                .accepted, .rejectedAndRestored,
+            ])
+            XCTAssertEqual(outcomes.map(\.attemptIndex), [1, 2])
+            XCTAssertEqual(
+                controller.state.t9ReversibleAutoAnchorState.phase,
+                .accepted
+            )
+            XCTAssertEqual(
+                controller.state.t9ReversibleAutoAnchorState
+                    .automaticApplyAttemptCount,
+                2
+            )
+            XCTAssertEqual(
+                controller.state.t9ReversibleAutoAnchorState
+                    .anchoredSyllableCount,
+                2
+            )
+            XCTAssertEqual(
+                controller.state.lastRimeOutput?.rawInput,
+                controller.state.t9ReversibleAutoAnchorState
+                    .replacementRawInput
+            )
+        }
+
+        do {
+            let base = RimeEngineImpl(
+                sharedDataDir: directories.sharedDir,
+                userDataDir: armUserURL.path
+            )
+            defer {
+                base.bridge.clearComposition()
+                base.bridge.finalize()
+            }
+            XCTAssertTrue(base.bridge.selectSchema("t9"))
+            let engine = SecondApplyDriftEngine(
+                base: base,
+                failPriorMixedRestore: true
+            )
+            let controller = makeS21B2Controller(engine: engine)
+            var outcomes: [T9ReversibleAutoAnchorOutcome] = []
+            controller.onReversibleT9AutoAnchorOutcome = {
+                outcomes.append($0)
+            }
+
+            typeOnController(sourceDigits, controller: controller)
+
+            XCTAssertEqual(engine.replaceInputCount, 3)
+            XCTAssertEqual(engine.resetCount, 1)
+            XCTAssertEqual(engine.recoverCount, 0)
+            XCTAssertEqual(outcomes.map(\.status), [
+                .accepted, .restoreFailed,
+            ])
+            XCTAssertNil(controller.state.lastRimeOutput)
+            XCTAssertEqual(
+                controller.state.t9ReversibleAutoAnchorState,
+                T9ReversibleAutoAnchorState(
+                    phase: .rejected,
+                    automaticApplyAttemptCount: 2,
+                    lastAttemptSourceDigitCount: sourceDigits.count
+                )
+            )
+        }
     }
 
     @MainActor
@@ -389,6 +856,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         print(reviewedCorpusSummary)
     }
 
+    @MainActor
     func testIsolatedPersonalizationKnownPositive() async throws {
         try await runCompletePersonalizationCase(
             CompletePersonalizationCase(
@@ -403,6 +871,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         )
     }
 
+    @MainActor
     func testIsolatedPersonalizationNaturalWeather() async throws {
         try await runCompletePersonalizationCase(
             CompletePersonalizationCase(
@@ -417,6 +886,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         )
     }
 
+    @MainActor
     func testIsolatedPersonalizationNaturalReminder() async throws {
         try await runCompletePersonalizationCase(
             CompletePersonalizationCase(
@@ -431,6 +901,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         )
     }
 
+    @MainActor
     private func runCompletePersonalizationCase(
         _ item: CompletePersonalizationCase
     ) async throws {
@@ -604,6 +1075,8 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
 
         var reopenedRank = -1
         var personalizedTwoSyllable: Attempt?
+        var personalizedRollingOutcomes:
+            [T9ReversibleAutoAnchorOutcome] = []
         do {
             let engine = RimeEngineImpl(
                 sharedDataDir: directories.sharedDir,
@@ -660,6 +1133,32 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
                 personalizedTwoSyllable?.overlappingCandidateCount,
                 item.expectedTwoOverlap
             )
+
+            if item.id == "knownPositive" {
+                engine.bridge.clearComposition()
+                let controller = makeS21B2Controller(engine: engine)
+                controller.onReversibleT9AutoAnchorOutcome = {
+                    personalizedRollingOutcomes.append($0)
+                }
+                typeOnController(sourceDigits, controller: controller)
+                XCTAssertEqual(
+                    personalizedRollingOutcomes.map(\.status),
+                    [.accepted, .accepted]
+                )
+                XCTAssertEqual(
+                    personalizedRollingOutcomes.map(\.attemptIndex),
+                    [1, 2]
+                )
+                XCTAssertEqual(
+                    controller.state.t9ReversibleAutoAnchorState
+                        .automaticApplyAttemptCount,
+                    2
+                )
+                XCTAssertNil(
+                    controller.state.t9PinyinPathState.selectedPath,
+                    "personalized rank remains preference evidence, not Path ownership"
+                )
+            }
         }
 
         // Keep the evidence content-free. Candidate text, raw pinyin and the
@@ -685,6 +1184,12 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
                     personalizedTwoSyllable?
                         .overlappingCandidateCount
                         ?? 0
+                ),
+            "rollingAccepted="
+                + String(
+                    personalizedRollingOutcomes.count {
+                        $0.status == .accepted
+                    }
                 ),
             "cleanup=deferred",
         ].joined(separator: " ")
@@ -1589,6 +2094,136 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
             "w": "9", "x": "9", "y": "9", "z": "9",
         ]
         return String(spelling.lowercased().compactMap { mapping[$0] })
+    }
+
+    @MainActor
+    private func runS21Arm(
+        _ arm: S21Arm,
+        sourceDigits: String,
+        sharedDir: String,
+        userRoot: String
+    ) async throws -> S21ArmSummary {
+        let armUserURL = URL(
+            fileURLWithPath: userRoot,
+            isDirectory: true
+        )
+        .appendingPathComponent(
+            "s21-\(arm.rawValue)-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        try FileManager.default.createDirectory(
+            at: armUserURL,
+            withIntermediateDirectories: false
+        )
+        defer {
+            try? FileManager.default.removeItem(at: armUserURL)
+        }
+
+        let deployResult = try await RimeDeploymentService().deploy(
+            RimeDeploymentRequest(
+                mode: .fullCheck,
+                sharedDataURL: URL(
+                    fileURLWithPath: sharedDir,
+                    isDirectory: true
+                ),
+                userDataURL: armUserURL,
+                runtimeSmokeSchemaID: nil
+            )
+        )
+        XCTAssertTrue(deployResult.succeeded, deployResult.diagnosticMessage)
+
+        let engine = RimeEngineImpl(
+            sharedDataDir: sharedDir,
+            userDataDir: armUserURL.path
+        )
+        defer {
+            engine.bridge.clearComposition()
+            engine.bridge.finalize()
+        }
+        var invalidReasons: [String] = []
+        guard engine.bridge.selectSchema("t9") else {
+            return S21ArmSummary(
+                arm: arm,
+                replaceInputCount: 0,
+                outcomes: [],
+                completedActionCount: 0,
+                sessionIdentityCount: 0,
+                invalidReasons: ["schemaSelectionFailed"]
+            )
+        }
+
+        let controller = KeyboardController()
+        controller.rimeEngine = engine
+        controller.textClient = FakeTextInputClient()
+        controller.usesT9InputSemantics = true
+        controller.isReversibleT9AutoAnchorEnabled = arm != .a0
+        controller.isRollingT9AutoAnchorEnabled = arm == .b2
+
+        var currentAction = 0
+        var outcomes: [
+            (action: Int, outcome: T9ReversibleAutoAnchorOutcome)
+        ] = []
+        controller.onReversibleT9AutoAnchorOutcome = {
+            outcomes.append((currentAction, $0))
+        }
+        var sessionIdentities: Set<UInt64> = []
+        for (offset, digit) in sourceDigits.enumerated() {
+            currentAction = offset + 1
+            _ = controller.handle(.insertKey(String(digit)))
+            if let snapshot = engine.diagnosticSessionSnapshot,
+                snapshot.isValid
+            {
+                sessionIdentities.insert(snapshot.identity)
+            } else {
+                invalidReasons.append("invalidSession")
+            }
+            if controller.state.lastRimeOutput?.committedText != nil {
+                invalidReasons.append("unexpectedCommit")
+            }
+            if controller.state.lastRimeOutput?.candidates.isEmpty != false {
+                invalidReasons.append("missingCandidates")
+            }
+        }
+        controller.onReversibleT9AutoAnchorOutcome = nil
+
+        if controller.state.t9PinyinPathState.selectedPath != nil
+            || !controller.state.t9PinyinPathState
+                .confirmedSegmentValues.isEmpty
+        {
+            invalidReasons.append("userPathOwnershipChanged")
+        }
+
+        return S21ArmSummary(
+            arm: arm,
+            replaceInputCount: engine.replaceInputCallCountForTesting,
+            outcomes: outcomes,
+            completedActionCount: currentAction,
+            sessionIdentityCount: sessionIdentities.count,
+            invalidReasons: Array(Set(invalidReasons)).sorted()
+        )
+    }
+
+    @MainActor
+    private func makeS21B2Controller(
+        engine: RimeEngine
+    ) -> KeyboardController {
+        let controller = KeyboardController()
+        controller.rimeEngine = engine
+        controller.textClient = FakeTextInputClient()
+        controller.usesT9InputSemantics = true
+        controller.isReversibleT9AutoAnchorEnabled = true
+        controller.isRollingT9AutoAnchorEnabled = true
+        return controller
+    }
+
+    @MainActor
+    private func typeOnController(
+        _ sourceDigits: String,
+        controller: KeyboardController
+    ) {
+        for digit in sourceDigits {
+            _ = controller.handle(.insertKey(String(digit)))
+        }
     }
 
     @MainActor

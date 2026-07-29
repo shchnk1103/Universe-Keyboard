@@ -27,6 +27,9 @@ public final class KeyboardController {
     public var usesT9InputSemantics = false
     /// Stage 2 prototype gate. Production callers must opt in explicitly.
     public var isReversibleT9AutoAnchorEnabled = false
+    /// S2.1 cumulative-extension gate. Keeping this separate preserves the
+    /// existing one-anchor A1 arm when the base prototype is enabled.
+    public var isRollingT9AutoAnchorEnabled = false
     #if DEBUG
     /// Content-free hook for controlled preflight evidence. Release builds do
     /// not expose or execute this diagnostic callback.

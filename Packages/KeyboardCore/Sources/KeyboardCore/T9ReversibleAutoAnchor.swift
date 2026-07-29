@@ -14,18 +14,27 @@ public struct T9ReversibleAutoAnchorState: Equatable, Sendable {
     public var phase: Phase
     public var sourceDigits: String
     public var replacementRawInput: String
+    public var anchoredSyllableCount: Int
     public var anchoredSlotCount: Int
+    public var automaticApplyAttemptCount: Int
+    public var lastAttemptSourceDigitCount: Int
 
     public init(
         phase: Phase = .idle,
         sourceDigits: String = "",
         replacementRawInput: String = "",
-        anchoredSlotCount: Int = 0
+        anchoredSyllableCount: Int = 0,
+        anchoredSlotCount: Int = 0,
+        automaticApplyAttemptCount: Int = 0,
+        lastAttemptSourceDigitCount: Int = 0
     ) {
         self.phase = phase
         self.sourceDigits = sourceDigits
         self.replacementRawInput = replacementRawInput
+        self.anchoredSyllableCount = anchoredSyllableCount
         self.anchoredSlotCount = anchoredSlotCount
+        self.automaticApplyAttemptCount = automaticApplyAttemptCount
+        self.lastAttemptSourceDigitCount = lastAttemptSourceDigitCount
     }
 
     public static let empty = T9ReversibleAutoAnchorState()
@@ -44,16 +53,28 @@ public struct T9ReversibleAutoAnchorOutcome: Equatable, Sendable {
     public let baselineCandidateCount: Int
     public let resultingCandidateCount: Int
     public let overlappingCandidateCount: Int
+    public let attemptIndex: Int
+    public let anchoredSyllableCount: Int
+    public let newlyAnchoredSyllableCount: Int
+    public let newlyAnchoredSlotCount: Int
     public let anchoredSlotCount: Int
     public let unresolvedSlotCount: Int
+    public let applyDurationMilliseconds: Double
+    public let restoreDurationMilliseconds: Double
 
     public static let notEligible = T9ReversibleAutoAnchorOutcome(
         status: .notEligible,
         baselineCandidateCount: 0,
         resultingCandidateCount: 0,
         overlappingCandidateCount: 0,
+        attemptIndex: 0,
+        anchoredSyllableCount: 0,
+        newlyAnchoredSyllableCount: 0,
+        newlyAnchoredSlotCount: 0,
         anchoredSlotCount: 0,
-        unresolvedSlotCount: 0
+        unresolvedSlotCount: 0,
+        applyDurationMilliseconds: 0,
+        restoreDurationMilliseconds: 0
     )
 }
 
@@ -232,6 +253,99 @@ public enum T9ReversibleAutoAnchorPolicy {
             anchoredSlotCount: anchoredSlots,
             unresolvedSlotCount: trailingDigits.count,
             baselineCandidateTexts: evidence.map(\.text)
+        )
+    }
+
+    /// Builds the single S2.1 cumulative extension. The already accepted
+    /// automatic prefix is immutable: the proposal may only append exactly two
+    /// complete, catalog-legal syllables and retain the remaining digit tail.
+    public static func cumulativeExtensionProposal(
+        sourceDigits: String,
+        output: RimeOutput,
+        existingReplacementRawInput: String,
+        existingAnchoredSyllableCount: Int,
+        existingAnchoredSlotCount: Int,
+        configuration: Configuration = .experimental
+    ) -> Proposal? {
+        guard existingAnchoredSyllableCount >= 2,
+              existingAnchoredSlotCount > 0,
+              existingAnchoredSlotCount < sourceDigits.count
+        else {
+            return nil
+        }
+
+        let existingDigitTail = String(sourceDigits.dropFirst(existingAnchoredSlotCount))
+        guard existingReplacementRawInput.hasSuffix(existingDigitTail) else {
+            return nil
+        }
+        let existingPrefixEnd = existingReplacementRawInput.index(
+            existingReplacementRawInput.endIndex,
+            offsetBy: -existingDigitTail.count
+        )
+        let existingPrefix = String(existingReplacementRawInput[..<existingPrefixEnd])
+        guard existingPrefix.hasSuffix("'") else { return nil }
+        let existingSyllables = existingPrefix
+            .dropLast()
+            .split(separator: "'", omittingEmptySubsequences: false)
+            .map(String.init)
+        guard existingSyllables.count == existingAnchoredSyllableCount,
+              existingSyllables.allSatisfy({ !$0.isEmpty })
+        else {
+            return nil
+        }
+
+        // Reuse the complete S2 evidence/catalog policy without its two-syllable
+        // transaction cap. The cap is re-applied below as an exact +2 extension.
+        var uncappedConfiguration = configuration
+        uncappedConfiguration.maximumAnchoredSyllableCount = nil
+        guard let fullProposal = proposal(
+            sourceDigits: sourceDigits,
+            output: output,
+            configuration: uncappedConfiguration
+        ) else {
+            return nil
+        }
+
+        let targetSyllableCount = existingAnchoredSyllableCount + 2
+        guard fullProposal.anchoredSyllables.count >= targetSyllableCount,
+              Array(fullProposal.anchoredSyllables.prefix(existingAnchoredSyllableCount))
+                == existingSyllables
+        else {
+            return nil
+        }
+
+        let appendedSyllables = Array(
+            fullProposal.anchoredSyllables[
+                existingAnchoredSyllableCount..<targetSyllableCount
+            ]
+        )
+        let appendedSlotCount = appendedSyllables.reduce(0) {
+            $0 + T9PinyinPathExtractor.asciiLetterCount(in: $1)
+        }
+        guard appendedSyllables.count == 2, appendedSlotCount > 0 else {
+            return nil
+        }
+
+        let cumulativeAnchoredSlotCount =
+            existingAnchoredSlotCount + appendedSlotCount
+        let trailingDigits = String(sourceDigits.dropFirst(cumulativeAnchoredSlotCount))
+        guard trailingDigits.count >= configuration.minimumUnresolvedSlotCount else {
+            return nil
+        }
+        let replacement =
+            existingPrefix
+            + appendedSyllables.joined(separator: "'")
+            + "'"
+            + trailingDigits
+        let cumulativeSyllables = existingSyllables + appendedSyllables
+
+        return Proposal(
+            sourceDigits: sourceDigits,
+            replacementRawInput: replacement,
+            anchoredSyllables: cumulativeSyllables,
+            anchoredSlotCount: cumulativeAnchoredSlotCount,
+            unresolvedSlotCount: trailingDigits.count,
+            baselineCandidateTexts: fullProposal.baselineCandidateTexts
         )
     }
 

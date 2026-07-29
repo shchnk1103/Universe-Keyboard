@@ -1,7 +1,7 @@
 # Product Decision: T9-AUTO-ANCHOR-001 Authorization
 
 **Decision ID:** `PD-T9-AUTO-ANCHOR-001`
-**Lifecycle status:** `Recorded — S4 validated; S6-A manual pair complete; S2.1 design reviewed; implementation not authorized`
+**Lifecycle status:** `Recorded — S4 validated; S6-A manual pair complete; S2.1 implementation authorized under reviewed contract`
 **Date / timezone:** `2026-07-27 Asia/Shanghai`
 **Decision source:** Human Product Owner instructions in active Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`
@@ -141,6 +141,26 @@ Reminders field plus content-free App diagnostics and exact artifact binding.
 Coordinate-driven XCTest, guessed tap positions and Computer Use typing are not
 to be retried for this workflow. Deterministic automation remains in
 unit/controller/pinned-RIME layers.
+
+## S2.1 implementation authorization
+
+On `2026-07-29 Asia/Shanghai`, after Architecture and Quality independently
+returned `Pass` with P0–P3 all zero for the remediated S2.1 design, the Human
+Product Owner explicitly replied “授权”.
+
+This authorizes implementation, tests, Simulator/pinned-RIME evidence,
+independent implementation review and internal-artifact preparation exactly
+within
+[`T9-AUTO-ANCHOR-001-S21`](../assignments/t9-auto-anchor-001-s21-rolling-design.md).
+It does not authorize ordinary Release enablement, a user-facing setting,
+physical keyboard automation, Product Gate, public performance claims or
+skipping the Human `A1→B2` exploratory pair.
+
+The implemented internal-arm identity is source visible and default-off:
+`T9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED` may be added only on top of
+`T9_AUTO_ANCHOR_DEVICE_PREFLIGHT` and
+`T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED`. It distinguishes `B2` from the
+existing `A1`; it does not authorize ordinary Release enablement.
 
 ## S6-A physical-device preflight authorization
 
