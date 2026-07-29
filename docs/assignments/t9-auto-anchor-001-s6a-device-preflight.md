@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — run3 invalid; matrix 0 / 5; physical retry requires fresh Human readiness`
+**Lifecycle status:** `Paused by Product Lead — run5 invalid; matrix 0 / 5; no further coordinate-driver retry in this iteration`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority
@@ -13,6 +13,21 @@
 - **Product Approver:** Human Product Owner acting as Product Lead
 - **Product Decision:**
   [`PD-T9-AUTO-ANCHOR-001`](../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
+
+### Current execution disposition
+
+On `2026-07-29 Asia/Shanghai`, after five invalid physical automation attempts
+and zero synthetic key actions, the Human Product Owner directed the team to
+stop further coordinate-driver retries for this iteration. This Assignment's
+automated `5 × A/B` Exit Criteria remain unmet and must not be reinterpreted as
+Pass, Skipped or Product Gate.
+
+The approved replacement is paired Human observation under
+[`t9-auto-anchor-manual-device-observation-2026-07-29.md`](../evidence/t9-auto-anchor-manual-device-observation-2026-07-29.md).
+That evidence may guide the product decision but does not satisfy this
+Assignment's fixed-cadence performance matrix. A future automation restart
+requires a new Product Lead instruction and a revised Assignment/review; fresh
+Human readiness alone is no longer sufficient.
 
 ## Boundary
 

@@ -819,3 +819,60 @@ It requires independent narrow artifact review, then a fresh read-only device
 precheck and a new Human readiness confirmation. The readiness statement made
 while this artifact was still building is deliberately not reused. The matrix
 remains `0 / 5`.
+
+## Physical A1 Coordinate Run 5 And Automation Pause
+
+Architecture and Quality independently passed the corrected signed-A artifact
+checkpoint `d4161d913364d4afa883d957bec2f8843815abb1`, with P0–P3 none. A fresh
+read-only precheck then confirmed the declared iPhone 13 Pro, iOS `27.0
+(24A5390f)`, wired connection, unlocked state, portrait orientation and
+Developer Mode. Device Hub visually confirmed the exact empty disposable
+Reminders-list overview before installation.
+
+The reviewed A artifact was installed by replacement. No app uninstall,
+container deletion, userdb reset or Reminders cleanup occurred. The App,
+Extension and final `.xctestrun` SHA256 values immediately before installation
+matched the reviewed values:
+
+- App:
+  `9925ffe442a260916d2cabb79d537e4eb8a5eac48b49362c963076757177683c`;
+- Extension:
+  `7b324c96d98b193a92fa029d488ad7fe2fbcc65c32325b6334d397d8d04fb94d`;
+- `.xctestrun`:
+  `f55e5e8b3fa42a0a429a196a6c5a1d34a2dddbb614058d71615f25031338f3cc`.
+
+Only the frozen physical method ran, with the unique result location:
+
+```text
+/private/tmp/universe-keyboard-s6a-coordinate-device-evidence/pair1-A-coordinate-run5.xcresult
+```
+
+The method reached Reminders, created one empty test item, focused its title
+field and then failed closed with `geometry-invalid` before
+`driveFrozenFixture`. Therefore:
+
+- coordinate key actions: `0`;
+- synthetic composition actions: `0 / 38`;
+- valid physical arms: `0`;
+- matrix: `0 / 5`;
+- classification: invalid automation arm, not a keyboard-performance result.
+
+No diagnostics, screenshots, UI hierarchy or attachments were opened,
+exported or copied. Xcode then stalled while finalizing the failed result. At
+the Human Product Owner's direction, the executor stopped the run; the process
+ended with `BUILD INTERRUPTED`.
+
+After two days of coordinate-driver work and five invalid attempts without one
+synthetic key action, the Human Product Owner elected to stop further physical
+coordinate automation for this iteration. This is a deliberate scope decision,
+not a successful S6-A exit and not a Product Gate. The deterministic
+content-free unit/Simulator contracts remain valuable regression coverage, but
+the physical experience decision moves to the paired manual observation
+runbook:
+
+[`t9-auto-anchor-manual-device-observation-2026-07-29.md`](t9-auto-anchor-manual-device-observation-2026-07-29.md).
+
+The device currently contains the internal signed A preflight build. Before
+ordinary use, the same-source ordinary signed Release must be installed by
+replacement; it must not be restored by uninstalling the app or deleting its
+container.
