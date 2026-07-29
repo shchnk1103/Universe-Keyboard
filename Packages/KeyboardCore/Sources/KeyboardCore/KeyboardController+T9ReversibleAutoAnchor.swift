@@ -258,7 +258,11 @@ extension KeyboardController {
         else {
             return false
         }
-        if liveRawInput == ledger.replacementRawInput {
+        // `processKey` may lazily create a native session. Verify health here
+        // so an orphan digit can never become the new accepted mixed identity.
+        if liveRawInput == ledger.replacementRawInput,
+            engine.isComposing()
+        {
             return false
         }
 

@@ -179,9 +179,14 @@ extension KeyboardController {
             case .notNeeded:
                 break
             case .restored:
-                // Re-enter once with automatic ownership cleared/rejected. The
-                // user still receives exactly one normal Delete.
-                return handleDeleteBackward()
+                // The live session is now the authoritative full-digit ledger.
+                // Delete it directly: re-entering the Core identity path would
+                // issue a second replaceInput for the shortened digits.
+                let result = engine.deleteBackward()
+                applyRimeOutputPreservingPartialCommit(
+                    augmentRimeOutputIfNeeded(result)
+                )
+                return .compositionChanged.union(.t9PinyinPathsChanged)
             case .failed:
                 return .compositionChanged.union(.t9PinyinPathsChanged)
             }

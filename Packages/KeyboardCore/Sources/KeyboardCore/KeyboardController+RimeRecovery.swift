@@ -130,7 +130,10 @@ extension KeyboardController {
 
         applyRimeOutput(augmentRimeOutputIfNeeded(output))
         let retainedFocusedSegment: Bool
-        if rimeKey.count == 1, let digit = rimeKey.first {
+        if output.committedText == nil,
+            rimeKey.count == 1,
+            let digit = rimeKey.first
+        {
             #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             retainedFocusedSegment = HotPathSegmentTiming.measure(.pathLocal) {
                 retainFocusedT9SegmentAfterAppendingDigit(

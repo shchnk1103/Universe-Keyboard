@@ -444,6 +444,110 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
     }
 
     @MainActor
+    func testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()
+        async throws
+    {
+        let directories = try spikeRuntimeDirectories()
+        try assertSpikeSchemaIsPatched(sharedDir: directories.sharedDir)
+        let armUserURL = URL(
+            fileURLWithPath: directories.userDir,
+            isDirectory: true
+        )
+        .appendingPathComponent(
+            "s21-missing-live-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        try FileManager.default.createDirectory(
+            at: armUserURL,
+            withIntermediateDirectories: false
+        )
+        defer {
+            try? FileManager.default.removeItem(at: armUserURL)
+        }
+
+        let deployResult = try await RimeDeploymentService().deploy(
+            RimeDeploymentRequest(
+                mode: .fullCheck,
+                sharedDataURL: URL(
+                    fileURLWithPath: directories.sharedDir,
+                    isDirectory: true
+                ),
+                userDataURL: armUserURL,
+                runtimeSmokeSchemaID: nil
+            )
+        )
+        XCTAssertTrue(deployResult.succeeded, deployResult.diagnosticMessage)
+
+        let engine = RimeEngineImpl(
+            sharedDataDir: directories.sharedDir,
+            userDataDir: armUserURL.path
+        )
+        defer {
+            engine.bridge.clearComposition()
+            engine.bridge.finalize()
+        }
+        XCTAssertTrue(engine.bridge.selectSchema("t9"))
+
+        let controller = makeS21B2Controller(engine: engine)
+        let sourceDigits = String(
+            t9Digits(
+                for: "jintiandetianqihenbucuowomenchuquwanba"
+            ).prefix(20)
+        )
+        typeOnController(sourceDigits, controller: controller)
+        XCTAssertEqual(
+            controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            2
+        )
+        let sessionBefore = try XCTUnwrap(engine.diagnosticSessionSnapshot)
+
+        // Preserve the controller's cached mixed raw while removing the live
+        // native composition. This is the exact flag=false P1 reproduction.
+        engine.bridge.clearComposition()
+        XCTAssertFalse(engine.isComposing())
+        XCTAssertFalse(controller.shouldRestoreRimeComposition)
+        let processCallsBeforeKey = engine.processKeyCallCountForTesting
+        let replaceCallsBeforeKey = engine.replaceInputCallCountForTesting
+        let resetCallsBeforeKey = engine.resetSessionCallCountForTesting
+        let recoveryCallsBeforeKey = engine.recoverSessionCallCountForTesting
+
+        _ = controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(
+            engine.processKeyCallCountForTesting,
+            processCallsBeforeKey
+        )
+        XCTAssertEqual(
+            engine.replaceInputCallCountForTesting,
+            replaceCallsBeforeKey
+        )
+        XCTAssertEqual(
+            engine.resetSessionCallCountForTesting,
+            resetCallsBeforeKey + 1
+        )
+        XCTAssertEqual(
+            engine.recoverSessionCallCountForTesting,
+            recoveryCallsBeforeKey
+        )
+        XCTAssertEqual(
+            engine.diagnosticSessionSnapshot,
+            sessionBefore,
+            "fail-closed must clear the same session, never create a replacement"
+        )
+        XCTAssertNil(controller.state.lastRimeOutput)
+        XCTAssertTrue(controller.state.currentComposition.isEmpty)
+        XCTAssertEqual(
+            controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(
+                phase: .rejected,
+                automaticApplyAttemptCount: 2,
+                lastAttemptSourceDigitCount: sourceDigits.count
+            )
+        )
+    }
+
+    @MainActor
     func testRollingControllerRealRimeSecondRejectRestoreMatrix() async throws {
         let directories = try spikeRuntimeDirectories()
         try assertSpikeSchemaIsPatched(sharedDir: directories.sharedDir)

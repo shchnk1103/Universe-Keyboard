@@ -416,6 +416,32 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
             fixture.controller.state.t9ReversibleAutoAnchorState.sourceDigits,
             fixture.sourceDigits + "2"
         )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .replacementRawInput,
+            fixture.anchoredRaw + "2"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .anchoredSyllableCount,
+            2
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .anchoredSlotCount,
+            7
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            1,
+            "ordinary digit advancement must not consume attempt 2"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .lastAttemptSourceDigitCount,
+            fixture.sourceDigits.count
+        )
         XCTAssertNil(
             fixture.controller.state.t9PinyinPathState.selectedPath,
             "continued input must preserve automatic anchoring without adopting Path ownership"
@@ -580,6 +606,62 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         XCTAssertTrue(fixture.controller.state.currentComposition.isEmpty)
     }
 
+    func testAttempt2AcceptedIdentityMismatchAddsNoThirdMutation() {
+        let fixture = makeAttempt2AcceptedFixture()
+        let finalSource = fixture.sourceDigits + digits(for: "hao")
+        let processCallsBeforeMismatch = fixture.engine.processKeyCallCount
+        let replaceCallsBeforeMismatch = fixture.engine.replaceInputCallCount
+        let resetsBeforeMismatch = fixture.engine.sessionResetCount
+        fixture.controller.state.lastRimeOutput = output(
+            raw: (fixture.controller.state.lastRimeOutput?.rawInput ?? "")
+                + "drift",
+            texts: fixture.candidates,
+            comments: fixture.comments
+        )
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        assertFailClosedBeforeDigit(
+            fixture,
+            expectedAttemptCount: 2,
+            expectedLastAttemptSourceDigitCount: finalSource.count,
+            processCallsBeforeKey: processCallsBeforeMismatch,
+            replaceCallsBeforeKey: replaceCallsBeforeMismatch,
+            resetsBeforeKey: resetsBeforeMismatch
+        )
+    }
+
+    func testAttempt2RestoredIdentityMismatchPreservesThreeCallBudget() {
+        let fixture = makeAttempt2RejectedAndRestoredFixture()
+        let finalSource = fixture.sourceDigits + digits(for: "hao")
+        let processCallsBeforeMismatch = fixture.engine.processKeyCallCount
+        let replaceCallsBeforeMismatch = fixture.engine.replaceInputCallCount
+        let resetsBeforeMismatch = fixture.engine.sessionResetCount
+        XCTAssertEqual(replaceCallsBeforeMismatch, 3)
+        fixture.controller.state.lastRimeOutput = output(
+            raw: (fixture.controller.state.lastRimeOutput?.rawInput ?? "")
+                + "drift",
+            texts: fixture.candidates,
+            comments: fixture.comments
+        )
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        assertFailClosedBeforeDigit(
+            fixture,
+            expectedAttemptCount: 2,
+            expectedLastAttemptSourceDigitCount: finalSource.count,
+            processCallsBeforeKey: processCallsBeforeMismatch,
+            replaceCallsBeforeKey: replaceCallsBeforeMismatch,
+            resetsBeforeKey: resetsBeforeMismatch
+        )
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            3,
+            "rejected/restored attempt 2 must not gain another mutation"
+        )
+    }
+
     func testUnusableLaterDigitFailsClosedWithoutRecoveryOrReplay() {
         let fixture = makeControllerFixture()
         type(fixture.sourceDigits, on: fixture.controller)
@@ -611,13 +693,46 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         )
     }
 
-    func testMissingAcceptedSessionCannotEnterCompositionReplay() {
+    func testCommittingLaterDigitCannotAdvanceAcceptedLedger() {
+        let fixture = makeControllerFixture()
+        type(fixture.sourceDigits, on: fixture.controller)
+        let acceptedLedger =
+            fixture.controller.state.t9ReversibleAutoAnchorState
+        let replaceCallsBeforeCommit = fixture.engine.replaceInputCallCount
+        fixture.engine.processKeyScript = [
+            RimeOutput(
+                composition: nil,
+                candidates: [],
+                committedText: "提交",
+                highlightedIndex: -1
+            ),
+        ]
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            replaceCallsBeforeCommit
+        )
+        XCTAssertEqual(fixture.engine.sessionRecoveryCount, 0)
+        XCTAssertNotEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            acceptedLedger,
+            "a committing output must end the accepted automatic ledger"
+        )
+        XCTAssertNotEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+    }
+
+    func testMissingAcceptedSessionFailsClosedBeforeKeyWhenRestoreFlagIsFalse() {
         let fixture = makeControllerFixture()
         type(fixture.sourceDigits, on: fixture.controller)
         fixture.engine.resetSession()
         let resetsBeforeKey = fixture.engine.sessionResetCount
         let processCallsBeforeKey = fixture.engine.processKeyCallCount
-        fixture.controller.shouldRestoreRimeComposition = true
+        XCTAssertFalse(fixture.controller.shouldRestoreRimeComposition)
 
         _ = fixture.controller.handle(.insertKey("2"))
 
@@ -637,6 +752,50 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
                 lastAttemptSourceDigitCount: fixture.sourceDigits.count
             )
         )
+    }
+
+    func testMissingAttempt2AcceptedSessionFailsClosedWithRestoreFlagFalse() {
+        let fixture = makeAttempt2AcceptedFixture()
+        let finalSource = fixture.sourceDigits + digits(for: "hao")
+        fixture.engine.resetSession()
+        let processCallsBeforeKey = fixture.engine.processKeyCallCount
+        let replaceCallsBeforeKey = fixture.engine.replaceInputCallCount
+        let resetsBeforeKey = fixture.engine.sessionResetCount
+        XCTAssertFalse(fixture.controller.shouldRestoreRimeComposition)
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        assertFailClosedBeforeDigit(
+            fixture,
+            expectedAttemptCount: 2,
+            expectedLastAttemptSourceDigitCount: finalSource.count,
+            processCallsBeforeKey: processCallsBeforeKey,
+            replaceCallsBeforeKey: replaceCallsBeforeKey,
+            resetsBeforeKey: resetsBeforeKey
+        )
+    }
+
+    func testMissingAttempt2RestoredSessionFailsClosedWithRestoreFlagFalse() {
+        let fixture = makeAttempt2RejectedAndRestoredFixture()
+        let finalSource = fixture.sourceDigits + digits(for: "hao")
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 3)
+        fixture.engine.resetSession()
+        let processCallsBeforeKey = fixture.engine.processKeyCallCount
+        let replaceCallsBeforeKey = fixture.engine.replaceInputCallCount
+        let resetsBeforeKey = fixture.engine.sessionResetCount
+        XCTAssertFalse(fixture.controller.shouldRestoreRimeComposition)
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        assertFailClosedBeforeDigit(
+            fixture,
+            expectedAttemptCount: 2,
+            expectedLastAttemptSourceDigitCount: finalSource.count,
+            processCallsBeforeKey: processCallsBeforeKey,
+            replaceCallsBeforeKey: replaceCallsBeforeKey,
+            resetsBeforeKey: resetsBeforeKey
+        )
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 3)
     }
 
     func testFailedSecondRestoreResetsOnceAndLeavesNoAutomaticPayload() {
@@ -684,16 +843,8 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
     }
 
     func testDeleteAfterSecondAcceptanceRestoresFullAccumulatedDigitsFirst() {
-        let fixture = makeControllerFixture()
-        fixture.controller.isRollingT9AutoAnchorEnabled = true
-        type(fixture.sourceDigits, on: fixture.controller)
-        configureRollingSuffix(
-            "hao",
-            fixture: fixture,
-            finalComment: "jin tian de tian qi hen hao"
-        )
+        let fixture = makeAttempt2AcceptedFixture()
         let suffixDigits = digits(for: "hao")
-        type(suffixDigits, on: fixture.controller)
         let fullSourceDigits = fixture.sourceDigits + suffixDigits
         let callsBeforeDelete = fixture.engine.replaceInputCallCount
 
@@ -703,10 +854,76 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
             fixture.engine.replaceInputArguments[callsBeforeDelete],
             fullSourceDigits
         )
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, callsBeforeDelete + 1)
         XCTAssertNotEqual(
             fixture.controller.state.t9ReversibleAutoAnchorState.phase,
             .accepted
         )
+    }
+
+    func testDeleteRestoreFailureResetsOnceWithoutNormalDelete() {
+        let fixture = makeControllerFixture()
+        type(fixture.sourceDigits, on: fixture.controller)
+        let replaceCallsBeforeDelete = fixture.engine.replaceInputCallCount
+        let resetsBeforeDelete = fixture.engine.sessionResetCount
+        fixture.engine.replaceInputScript = [RimeOutput()]
+
+        _ = fixture.controller.handle(.deleteBackward)
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            replaceCallsBeforeDelete + 1
+        )
+        XCTAssertEqual(
+            fixture.engine.sessionResetCount,
+            resetsBeforeDelete + 1
+        )
+        XCTAssertEqual(fixture.engine.sessionRecoveryCount, 0)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            .empty
+        )
+        XCTAssertNil(fixture.controller.state.lastRimeOutput)
+    }
+
+    func testDeleteAfterAttempt2RestoredUsesExactlyFourthReplacement() {
+        let fixture = makeAttempt2RejectedAndRestoredFixture()
+        let fullSourceDigits = fixture.sourceDigits + digits(for: "hao")
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 3)
+
+        _ = fixture.controller.handle(.deleteBackward)
+
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 4)
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments.last,
+            fullSourceDigits
+        )
+        XCTAssertEqual(fixture.engine.sessionRecoveryCount, 0)
+        XCTAssertNotEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+    }
+
+    func testDeleteFailureAfterAttempt2RestoredUsesExactlyFourthReplacement() {
+        let fixture = makeAttempt2RejectedAndRestoredFixture()
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 3)
+        let resetsBeforeDelete = fixture.engine.sessionResetCount
+        fixture.engine.replaceInputScript = [RimeOutput()]
+
+        _ = fixture.controller.handle(.deleteBackward)
+
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 4)
+        XCTAssertEqual(
+            fixture.engine.sessionResetCount,
+            resetsBeforeDelete + 1
+        )
+        XCTAssertEqual(fixture.engine.sessionRecoveryCount, 0)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            .empty
+        )
+        XCTAssertNil(fixture.controller.state.lastRimeOutput)
     }
 
     func testExplicitPathSelectionSupersedesAcceptedAutomaticAnchor() throws {
@@ -1012,6 +1229,138 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         for digit in digits {
             _ = controller.handle(.insertKey(String(digit)))
         }
+    }
+
+    private func makeAttempt2AcceptedFixture() -> (
+        controller: KeyboardController,
+        engine: FakeRimeEngine,
+        sourceDigits: String,
+        anchoredRaw: String,
+        candidates: [String],
+        comments: [String]
+    ) {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        type(digits(for: "hao"), on: fixture.controller)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            2
+        )
+        return fixture
+    }
+
+    private func makeAttempt2RejectedAndRestoredFixture() -> (
+        controller: KeyboardController,
+        engine: FakeRimeEngine,
+        sourceDigits: String,
+        anchoredRaw: String,
+        candidates: [String],
+        comments: [String]
+    ) {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        let suffixDigits = digits(for: "hao")
+        let finalSource = fixture.sourceDigits + suffixDigits
+        let secondRaw =
+            "jin'tian'de'tian'" + String(finalSource.dropFirst(13))
+        fixture.engine.dictionary[secondRaw] = [
+            "不同首选", fixture.candidates[0], fixture.candidates[1],
+        ]
+        fixture.engine.comments[secondRaw] = Array(
+            repeating: "jin tian de tian qi hen hao",
+            count: 3
+        )
+        type(suffixDigits, on: fixture.controller)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            2
+        )
+        return fixture
+    }
+
+    private func assertFailClosedBeforeDigit(
+        _ fixture: (
+            controller: KeyboardController,
+            engine: FakeRimeEngine,
+            sourceDigits: String,
+            anchoredRaw: String,
+            candidates: [String],
+            comments: [String]
+        ),
+        expectedAttemptCount: Int,
+        expectedLastAttemptSourceDigitCount: Int,
+        processCallsBeforeKey: Int,
+        replaceCallsBeforeKey: Int,
+        resetsBeforeKey: Int,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(
+            fixture.engine.processKeyCallCount,
+            processCallsBeforeKey,
+            "fail-closed must stop before processKey",
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            replaceCallsBeforeKey,
+            "fail-closed must add no replacement",
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            fixture.engine.sessionResetCount,
+            resetsBeforeKey + 1,
+            "fail-closed must perform exactly one same-session reset",
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            fixture.engine.sessionRecoveryCount,
+            0,
+            file: file,
+            line: line
+        )
+        XCTAssertNil(
+            fixture.controller.state.lastRimeOutput,
+            file: file,
+            line: line
+        )
+        XCTAssertTrue(
+            fixture.controller.state.currentComposition.isEmpty,
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(
+                phase: .rejected,
+                automaticApplyAttemptCount: expectedAttemptCount,
+                lastAttemptSourceDigitCount:
+                    expectedLastAttemptSourceDigitCount
+            ),
+            file: file,
+            line: line
+        )
     }
 
     private func configureRollingSuffix(

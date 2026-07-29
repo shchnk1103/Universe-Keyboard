@@ -53,6 +53,10 @@ public final class RimeEngineImpl: RimeEngine {
     internal var lastLibrimeProcessKeyDurationMs: Double?
     /// Test-target-only boundary counter for exact auto-anchor mutation budgets.
     internal private(set) var replaceInputCallCountForTesting = 0
+    /// Content-free counters freeze fail-closed behavior at the native boundary.
+    internal private(set) var processKeyCallCountForTesting = 0
+    internal private(set) var resetSessionCallCountForTesting = 0
+    internal private(set) var recoverSessionCallCountForTesting = 0
     #endif
 
     public var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {
@@ -211,7 +215,10 @@ public final class RimeEngineImpl: RimeEngine {
     /// - Parameter key: Swift 字符串按键（"a", "BackSpace", "space", etc.）
     /// - Returns: RimeOutput（包含 composition、candidates、committed text）
     public func processKey(_ key: String) -> KeyboardCore.RimeOutput {
-        processInputKey(key)
+        #if DEBUG
+        processKeyCallCountForTesting += 1
+        #endif
+        return processInputKey(key)
     }
 
     /// 选择指定索引的候选词。
@@ -244,12 +251,18 @@ public final class RimeEngineImpl: RimeEngine {
 
     /// 重置当前 RIME session 的输入状态（清除拼音 composition）。
     public func resetSession() {
+        #if DEBUG
+        resetSessionCallCountForTesting += 1
+        #endif
         bridge.clearComposition()
     }
 
     /// 宿主展示自己的表情/键盘后，旧 session 可能仍有 id 但已经不能处理输入。
     /// 先重建 session；若 librime 已无法创建 session，则重新初始化整个引擎。
     public func recoverSession() {
+        #if DEBUG
+        recoverSessionCallCountForTesting += 1
+        #endif
         restoreInputSession()
     }
 

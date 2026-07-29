@@ -49,18 +49,21 @@ swift test --package-path Packages/KeyboardCore \
   --filter T9ReversibleAutoAnchorTests
 ```
 
-Result after the final focused additions:
+Result after the independent-review remediation:
 
 ```text
-Executed 26 tests, with 0 failures, 0 unexpected
+Executed 34 tests, with 0 failures, 0 unexpected
 ```
 
 The cases cover A0/A1/B2 gate separation, atomic digit advancement, prefix
 rewrite rejection, exactly-two-syllable extension, one transaction per key,
 two accepted attempts, no third attempt, first-rejection terminal behavior,
 second rejection/prior-mixed restore, restore failure, pre-key mismatch,
-missing session, unusable output, Delete after one/two accepts, explicit Path,
-Partial Commit and duplicate-candidate conservation.
+missing live composition with the generic restore flag false in all three
+accepted-ledger phases, unusable and committing later output, Delete restore
+success/failure after one/two accepts and after second rejection, exact
+replacement budgets, explicit Path, Partial Commit and duplicate-candidate
+conservation.
 
 Full suite:
 
@@ -71,7 +74,7 @@ swift test --package-path Packages/KeyboardCore
 Result:
 
 ```text
-Executed 761 tests, with 0 failures, 0 unexpected
+Executed 769 tests, with 0 failures, 0 unexpected
 ```
 
 One pre-existing test-source warning about optional interpolation was emitted
@@ -90,11 +93,57 @@ Environment:
   userdb was queried or modified
 - strict Swift/Clang warnings-as-errors
 
-The final explicit S2.1 selection ran three tests with no skip:
+The independent-review remediation selection ran these four exact tests:
 
 ```text
-passed=3 failed=0 skipped=0
+RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/
+  testRollingControllerFrozenA0A1B2Matrix
+RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/
+  testRollingControllerRealRimeDeletePathAndPartialOwnership
+RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/
+  testRollingControllerRealRimeSecondRejectRestoreMatrix
+RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/
+  testRollingControllerMissingLiveCompositionFailsClosedBeforeKey
 ```
+
+The XcodeBuildMCP test invocation resolved to the following
+`test-without-building` command (line wrapping only):
+
+```text
+/Applications/Xcode-beta.app/Contents/Developer/usr/bin/xcodebuild
+  -testProductsPath /Users/doubleshy0n/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/test-products/test_sim_2026-07-29T14-50-15-939Z_pid23283_ac8cfea3.xctestproducts
+  -destination "platform=iOS Simulator,id=06C5BC3E-7599-4761-A1A2-71DAEA991474"
+  -collect-test-diagnostics never
+  SWIFT_TREAT_WARNINGS_AS_ERRORS=YES
+  GCC_TREAT_WARNINGS_AS_ERRORS=YES
+  -only-testing:<each of the four identifiers above>
+  -resultBundlePath /private/tmp/universe-keyboard-s21-rimebridge-remediation.xcresult
+  test-without-building
+```
+
+The preceding `build-for-testing` used project
+`Universe Keyboard.xcodeproj`, scheme `RimeBridgeTests`, configuration
+`Debug`, DerivedData
+`/private/tmp/universe-keyboard-s21-rimebridge-remediation`, the same four
+`only-testing` selectors, and the same strict warning settings. XcodeBuildMCP
+bound these exact test-runner values:
+
+```text
+UK_RIME_T9_SPIKE_SHARED_DIR=/private/tmp/universe-keyboard-s3-retry-matrix.0E3dQi/shared
+UK_RIME_T9_SPIKE_USER_DIR=/private/tmp/universe-keyboard-s3-retry-matrix.0E3dQi/user
+```
+
+Result:
+
+```text
+passed=4 failed=0 skipped=0
+```
+
+The new native regression clears the live composition while retaining the
+controller's cached accepted mixed raw and keeping
+`shouldRestoreRimeComposition=false`. It proves zero `processKey`, zero
+`replaceInput`, zero recovery, exactly one same-session reset, unchanged valid
+native session identity and a data-free rejected tombstone.
 
 Positive 38-action arm record:
 
@@ -142,6 +191,63 @@ errors and separate DerivedData:
 | Debug | existing Debug/A1 behavior; rolling off | Succeeded, 0 warnings |
 | Release | ordinary gate-off Release | Succeeded, 0 warnings |
 | Release | A1 conditions plus `T9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED` | Succeeded, 0 warnings |
+
+The exact common command shape was:
+
+```text
+/Applications/Xcode-beta.app/Contents/Developer/usr/bin/xcodebuild
+  -project "/Users/doubleshy0n/Dev/Universe Keyboard/Universe Keyboard.xcodeproj"
+  -scheme "Universe Keyboard"
+  -configuration <Debug|Release>
+  -skipMacroValidation
+  -destination "platform=iOS Simulator,id=06C5BC3E-7599-4761-A1A2-71DAEA991474"
+  -collect-test-diagnostics never
+  -derivedDataPath <path below>
+  SWIFT_TREAT_WARNINGS_AS_ERRORS=YES
+  GCC_TREAT_WARNINGS_AS_ERRORS=YES
+  <B2 flags below when applicable>
+  build
+```
+
+| Artifact | DerivedData | Additional flags | Log SHA-256 |
+|---|---|---|---|
+| Debug ordinary | `/private/tmp/universe-keyboard-s21-remediation-build-debug` | none | `b836bc1175afa3e31a75d43641b2da40b1741a6c74aaa9dcfb396b5b8192d559` |
+| Release ordinary | `/private/tmp/universe-keyboard-s21-remediation-build-release` | none | `043880d979658796f270d1bb1a9bb5fc7a305f11abb425216cdb55d03face13e` |
+| Release B2 | `/private/tmp/universe-keyboard-s21-remediation-build-b2` | `OTHER_SWIFT_FLAGS=$(inherited) -DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT -DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED -DT9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED` | `26b44d0cd3a3c4f49386a2a4fc11c615470b842734bf05d10e6706b802b9ebac` |
+
+The four-test integration log SHA-256 is
+`62a6bef6573d6bab76d94a124ed6a222798d81cbfdfce08e4aaf87ec5d0543b5`;
+the result bundle is
+`/private/tmp/universe-keyboard-s21-rimebridge-remediation.xcresult`.
+The log records both resolved Xcode commands, every test identifier, the
+frozen A0/A1/B2 action record and `Executed 4 tests, with 0 failures`.
+
+## Independent-review remediation
+
+The first immutable implementation review of `ed28923` returned:
+
+- Architecture: P0=0, P1=1, P2=0, P3=0;
+- Quality: P0=0, P1=1, P2=2, P3=0.
+
+The shared P1 was a real native-boundary hole: accepted cached raw could match
+while live composition was absent and the generic restore flag was false.
+Because the ObjC bridge may create a session from `processKey`, the digit had
+to be rejected before crossing RIME. The remediation independently checks live
+composition health, performs one same-session fail-closed reset and adds the
+real-RIME session-identity regression above.
+
+Quality's first P2 exposed two evidence gaps and one behavior defect. The
+Layer-1 matrix is now explicit for all accepted-ledger phases, commit/unusable,
+Delete restore failure and exact attempt-2 rollback budgets. Its new red test
+showed that recursive Delete issued a fifth replacement after a rejected and
+restored second attempt; Delete now consumes the already-restored pure-digit
+session directly, making the cumulative total exactly four. A committed later
+digit no longer re-enters retained Path resynchronization. Exact integration
+and strict-build commands, selectors, DerivedData, result bundle, logs and
+digests are recorded above.
+
+Independent re-review of the remediation commit remains required before Human
+physical-device work.
 
 Vendor verification:
 
