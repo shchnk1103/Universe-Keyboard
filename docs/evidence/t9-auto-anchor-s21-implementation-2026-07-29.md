@@ -246,8 +246,23 @@ digit no longer re-enters retained Path resynchronization. Exact integration
 and strict-build commands, selectors, DerivedData, result bundle, logs and
 digests are recorded above.
 
-Independent re-review of the remediation commit remains required before Human
-physical-device work.
+Independent re-review of immutable remediation commit
+`4c1baff5ddcbf9289ac9bf6916d3a0e242693f2f` completed:
+
+- Architecture: `Pass`; P0=0, P1=0, P2=0, P3=0. The reviewer confirmed the
+  pre-RIME live-health guard, one same-session reset, payload clearing,
+  committing-output ownership and direct Delete-after-rollback boundary.
+- Quality: `Pass`; P0=0, P1=0, P2=0, P3=0. The reviewer independently reran
+  the 34-test focused suite, 769-test full KeyboardCore suite and the four
+  explicit real-RIME Simulator tests with 0 failure and 0 skip.
+
+Quality's independent result bundle is
+`/private/tmp/universe-keyboard-s21-quality-rerun.xcresult`; its XcodeBuildMCP
+log SHA-256 is
+`a86ef1409c6bd6195fb8932d1a0a80c97334b176fed9fd56a5f057a1c9a69145`.
+Both reviewers remained read-only. Their Pass decisions close automated
+implementation review only; Human physical-device performance, Product Gate
+and Release remain separate.
 
 Vendor verification:
 
@@ -258,8 +273,8 @@ Verified structural inventory of 11 RIME framework artifacts
 
 ## Remaining gates
 
-- Independent Architecture implementation review: pending.
-- Independent Quality implementation review: pending.
+- Independent Architecture implementation review: passed on `4c1baff`.
+- Independent Quality implementation review: passed on `4c1baff`.
 - Human physical-device `A1→B2` exploratory pair: not started.
 - Ordinary Release remains gate-off.
 - No `CHANGELOG.md` entry is required before Product accepts a user-visible or

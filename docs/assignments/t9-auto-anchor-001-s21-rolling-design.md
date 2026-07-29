@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S21 — 滚动影子锚定设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — implementation and automated evidence complete; independent implementation review pending`
+**Lifecycle status:** `Active — automated implementation/review complete; Human A1→B2 pending`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
@@ -404,8 +404,15 @@ correctness, authorize Release enablement or satisfy Product Gate.
 
 The implementation and automated evidence are recorded in
 [`t9-auto-anchor-s21-implementation-2026-07-29.md`](../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md).
-Independent Architecture and Quality implementation review remains required
-before preparing the Human physical-device `A1→B2` pair.
+The immutable remediation checkpoint `4c1baff` independently passed:
+
+- **Architecture:** `Pass`; P0/P1/P2/P3 all zero;
+- **Quality:** `Pass`; P0/P1/P2/P3 all zero, with focused, full KeyboardCore
+  and four-test real-RIME reruns.
+
+This closes automated implementation review and permits preparation of the
+Human physical-device `A1→B2` pair. It does not satisfy that Human gate,
+Product Gate or Release approval.
 
 ## Stop Conditions
 
