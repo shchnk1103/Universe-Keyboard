@@ -32,6 +32,47 @@ Use synthetic input only. Do not record surrounding host text or private user co
 - Preserve Instruments traces or exported evidence with the release record when practical.
 - A future numeric budget requires reviewed real-device evidence and a separate decision/update.
 
+### Physical third-party keyboard interaction
+
+For physical-device performance evidence that requires typing through Universe
+Keyboard, the canonical method is Human input plus content-free App diagnostics.
+For this physical third-party-keyboard workflow and the currently observed iOS
+accessibility capability, do not build or retry coordinate-driven XCTest,
+UI-automation or Computer Use typing. Physical iOS may render the Extension
+without exposing its elements to the automation accessibility owner; time spent
+reconstructing tap coordinates does not improve product evidence. A future
+platform/tool capability change requires a new Product-led Assignment and
+Architecture/Quality review; it must not silently reopen the retired route.
+
+Use this division of responsibility:
+
+1. The Environment Executor freezes source, optimization, compile conditions,
+   executable hashes, signing identity, device/OS, schema, Full Access, host
+   and synthetic case identity.
+2. Internal variants are installed by replacement only. Do not uninstall,
+   delete the container, reset RIME/userdb or remove host objects.
+3. The Human opens an otherwise-empty Reminders field, selects the software
+   keyboard and Universe Chinese nine-key, then manually types the declared
+   synthetic sequence without selecting Path or candidates.
+4. The App exports only content-free event/timing/session/transaction records.
+   The retained repository evidence stores attachment hashes and aggregates,
+   not raw input, candidate text, host text or screenshots.
+5. Validate ordered event count, gate identity, stable session, no unexpected
+   commit, candidate availability and Human-reported missing/duplicate input,
+   candidate disappearance, digit leak, visible stall or keyboard exit.
+6. Compare manual arms by local event identity. Human cadence is an explicit
+   confound, so one pair is diagnostic evidence rather than a fixed-cadence
+   benchmark or Product Gate.
+7. Restore a reviewed ordinary gate-off Release by replacement after the
+   internal arm and confirm its installed bundle/version. Keyboard display and
+   switching may be confirmed manually; no additional fixture is required.
+
+Automated unit, controller and pinned-RIME integration tests remain the
+preferred deterministic regression layers. Simulator/bridge automation may
+drive protocol-level input when it does not depend on controlling the physical
+third-party keyboard UI. Computer Use may observe a setup failure, but it is
+not the input executor or performance clock.
+
 ## Required Metrics
 
 ### Extension Cold Start
@@ -56,6 +97,13 @@ Correlate UI feedback, `KeyboardController.handle`, RIME processing and `syncUI`
 Use a fixed synthetic sequence at controlled cadence. Record per-key distribution, worst stalls, dropped visual/audio feedback and main-thread blocking. Run English direct input and Chinese RIME composition separately.
 
 For **Chinese nine-key continuous digits without Path/candidate selection**, Debug builds emit `T9SEG` lines that split each key into `rime` / `pathLocal` / `preedit` / `pathUI` / `candUI` (plus `rawLen`). Procedure: `docs/DEBUGGING.md` section “T9 continuous digit typing — DEBUG segment timing”. These are diagnostic only; product budgets still require reviewed Release-like device evidence.
+
+The canonical physical-device procedure is the Human-input method above. The
+2026-07-29 one-pair S6-A observation used the frozen 38-action fixture and
+isolated the remaining stalls to librime `process_key`; see the
+[`manual device observation`](evidence/t9-auto-anchor-manual-device-observation-2026-07-29.md).
+Its single-anchor arm lowered matched peaks but did not remove the failure
+class. The pair is design evidence for S2.1, not an accepted numeric baseline.
 
 `T9-AUTO-ANCHOR-001` Stage 1 additionally emits a Debug-only, content-free
 `T9SHADOW` observation from the already-returned snapshot. It adds no RIME call

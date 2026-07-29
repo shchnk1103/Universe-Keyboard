@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S4 accepted; S6-A Entry Pass and Ready; implementation/Pre-installation Gate pending`
+**Lifecycle status:** `Active — S6-A manual pair complete; S2.1 design independently reviewed; implementation not authorized`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -22,7 +22,10 @@
   closed at `0173782`, the Product Owner explicitly authorized the recommended
   S4 preflight on `2026-07-27 Asia/Shanghai`: cap the existing single automatic
   proposal at two complete syllables under the existing Debug gate, then run
-  the declared regression and frozen startup-paired Simulator evidence.
+  the declared regression and frozen startup-paired Simulator evidence. After
+  the S6-A coordinate route was paused and one Human physical-device pair
+  completed, the Product Owner authorized S2.1 rolling-anchor design only on
+  `2026-07-29 Asia/Shanghai`; no implementation authority was granted.
 - **Product Approver:** Human Product Owner acting as Product Lead
 - **Product Decision:** [`PD-T9-AUTO-ANCHOR-001`](../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
 
@@ -40,7 +43,10 @@
   delta, and delete it after the session closes. The S4 preflight may cap the
   existing eligible proposal at the first two complete catalog syllables and
   compare it against the disabled baseline without changing the one-attempt,
-  conservation or rollback contracts.
+  conservation or rollback contracts. The S2.1 child Assignment may design one
+  cumulative extension after an accepted first transaction and update
+  governing documentation; production/test implementation remains outside the
+  current authority.
 - **Non-goals:** No Release-default enablement, candidate-window scan, second
   production RIME transaction/session, candidate commit, host-text commit,
   production deployment change,
@@ -60,7 +66,7 @@
   `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, limited to the authorized Stage 1–3
   implementation/evidence and Stage 5 isolated personalization
   tests/documentation/review remediation plus the authorized S4 capped
-  two-syllable preflight
+  two-syllable preflight and the S2.1 documentation/design child Assignment
 - **Environment Executor:** Current Codex task on the user-opened iPhone 17 Pro
   Max iOS 27 Simulator for the completed S1–S4 evidence; for S6-A, the current
   task may perform the exact signed build/install/log operations on the named
@@ -141,7 +147,8 @@
 Stop and return to Product/Architecture review if work requires:
 
 - enabling the behavior by default in Release or adding a user-facing control;
-- more than one anchor attempt per composition, any full candidate scan,
+- implementing more than one anchor attempt per composition without a later
+  Product authorization, any full candidate scan,
   candidate-window query, second production session or production deployment
   work;
 - accepting an anchor without baseline-first-candidate preservation and the
@@ -266,6 +273,32 @@ Evidence:
 S6-A physical-device child Assignment:
 [`t9-auto-anchor-001-s6a-device-preflight.md`](t9-auto-anchor-001-s6a-device-preflight.md).
 
+## S6-A manual pair and S2.1 design handoff
+
+After five coordinate-driver attempts produced zero synthetic key actions, the
+Product Owner stopped that route. One replacement-installed, Human-entered
+physical-device A/B pair then completed with content-free App performance logs.
+Both arms retained 38 ordered events, one stable valid session, zero commits
+and candidate availability.
+
+The one-anchor B arm accepted a seven-slot/two-syllable transaction with
+`5 / 5 / 5` bounded conservation. Relative to A, its matched peaks improved,
+but all three remained above `100 ms` and approximately `99%` RIME-dominated;
+the Human still perceived the failure around the same boundary. The pair is
+classified `inconclusive / insufficient for the product goal`.
+
+Future physical third-party-keyboard performance evidence follows the
+Human-input/content-free-log method in `PERFORMANCE_BASELINE.md`. Coordinate
+XCTest, guessed tap positions and Computer Use typing are not part of this
+workflow. Ordinary gate-off Release was restored by replacement after the
+pair.
+
+Evidence:
+[`../evidence/t9-auto-anchor-manual-device-observation-2026-07-29.md`](../evidence/t9-auto-anchor-manual-device-observation-2026-07-29.md).
+
+S2.1 design child Assignment:
+[`t9-auto-anchor-001-s21-rolling-design.md`](t9-auto-anchor-001-s21-rolling-design.md).
+
 ### 2026-07-28 supplementary ETTrace attribution
 
 - The same frozen 38-slot sequence was sampled in Reminders with the software
@@ -289,8 +322,8 @@ S6-A physical-device child Assignment:
 
 ## Handoff
 
-- **Handoff Target:** Product Lead for the S6 decision after the immutable S4
-  checkpoint and durable S4/S5 Architecture/Quality evidence.
+- **Handoff Target:** Architecture and Quality for the S2.1 design review, then
+  Product Lead for any implementation decision.
 - **Required Handoff Content:** changed files, proposal/validation/rollback
   state semantics, exact RIME-call budget, tests/build results, frozen-sequence
   A/B evidence, rejected cases and remaining privacy/performance limits.

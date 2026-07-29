@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — S4 validated; S6-A implementation under independent remediation review; physical Pre-installation Gate pending** |
+| Status | **Active — S6-A manual pair complete; S2.1 rolling-extension design independently reviewed; implementation not authorized** |
 | Created | 2026-07-24 |
 | Product lock | 2026-07-24 |
 | Lane A ship | 2026-07-24 |
@@ -11,7 +11,7 @@
 | Architecture boundary | [`ADR 0024`](../architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md) |
 | Supersedes | force_gc-as-primary-fix track (closed) |
 | Close record | [`../evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](../evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md) |
-| Current evidence | [`../evidence/t9-auto-anchor-s4-cap2-2026-07-27.md`](../evidence/t9-auto-anchor-s4-cap2-2026-07-27.md) |
+| Current evidence | [`../evidence/t9-auto-anchor-manual-device-observation-2026-07-29.md`](../evidence/t9-auto-anchor-manual-device-observation-2026-07-29.md) |
 
 ## Problem statement
 
@@ -114,8 +114,9 @@ reference and correction surface.
 | S2 — Reversible bounded-preference prototype | Complete local proof rejected by catalog audit; explicit gate, one-attempt ledger, bounded first-page conservation and Delete/rejection rollback | Debug/explicit gate only | **Implemented. Two later P1 findings were closed and durably re-reviewed at `0173782`; this does not promote the whole stage, and Release remains off** |
 | S3 — Broader engine/corpus shadow | Replay proposed anchors against unchanged inputs across a synthetic corpus; compare candidates, paths and timing | Private test/runtime evidence only | **Six-case, 24-case, later-opportunity and real-RIME transaction matrices complete; the selected cap was revalidated through independent S4 review. A second attempt/backoff and any production policy remain unauthorized** |
 | S4 — Release-candidate reversible anchor | First preflight caps the existing single proposal at two complete syllables; default/user control remains deferred | **Validated at immutable checkpoint `22d34dd`: Debug/explicit gate only; Release mutation not authorized** | **Deterministic/corpus/personalization regression, 5/5 frozen startup pairs and independent Architecture/Quality Pass complete; Product Gate remains open** |
+| S2.1 — Rolling accepted-prefix extension | Preserve the accepted S4 prefix and, after at least one later key, allow one cumulative two-syllable extension with prior-mixed rollback | **Design only; maximum two automatic apply attempts; no retry after first rejection** | **Architecture/Quality Pass; Product implementation authorization still required** |
 | S5 — Personalization shadow | Observe whether repeated user-confirmed Path history improves confidence; no duplicate phrase store by default | None until privacy decision | **First isolated matrix durably reviewed at `9c4f86f`: three independent complete-learning cases plus one partial negative; broader language review and retention/deletion/privacy amendment remain open** |
-| S6 — Productization | Default/user control decision, Release-like physical-device performance, memory/jetsam, candidate-quality and Product Gate | **S6-A internal physical-device preflight authorized; no shipping mutation** | S6-A entry/exit review and paired evidence first; later Product/Architecture/Quality acceptance still required |
+| S6 — Productization | Default/user control decision, Release-like physical-device performance, memory/jetsam, candidate-quality and Product Gate | **S6-A coordinate route retired; one Human-input/content-free-log physical pair complete; no shipping mutation** | S2.1 design/implementation gates and later Product/Architecture/Quality acceptance still required |
 
 ### S1 frozen acceptance matrix
 
@@ -201,6 +202,17 @@ reference and correction surface.
     remained non-coverage.
 19. Advance later S4–S6 work only through the gates above; update this plan Status →
     Completed / Abandoned and archive when the final Product Gate closes.
+20. Complete the KOS-governed S2.1 design review. The design may add one
+    cumulative extension only after the first S4 transaction accepts, with two
+    total attempts, no rejection retry, prior-mixed rollback and full-digit
+    Delete authority. Do not start implementation until Product explicitly
+    authorizes it after Architecture and Quality review.
+
+For future physical-device performance work, use Human input in a prepared
+Reminders field plus content-free App diagnostics and exact artifact binding.
+Do not retry coordinate-driven XCTest, guessed tap positions or Computer Use
+typing. Deterministic automation remains in KeyboardCore/controller and
+pinned-RIME integration layers.
 
 **Lane B hold:** Quality tradeoffs are allowed by product, but not shipped without device baseline + nine-key Product Gate. Prefer measuring after Lane A behavior change first.
 
@@ -252,6 +264,7 @@ reference and correction surface.
 | 2026-07-27 | A later independent branch review found two S2 P1 defects: Partial Commit could retain the old accepted rollback ledger, and duplicate candidate text could shrink the declared five-slot overlap denominator. Checkpoint `0173782` clears old ledger payload while preserving the one-attempt tombstone and counts conservation as a multiset over the original bounded slots. Focused tests passed 12/12, KeyboardCore 745/745 and strict Debug/Release builds passed; the explicit retry fixture passed 6/6, while the default RimeBridge suite recorded 32 passed / 0 failed / 14 fixture-gated skips, with those skips remaining non-coverage. Architecture and Quality bound durable `Pass` verdicts for the two P1 closures with no P0–P3 findings. Documentation checkpoint `b2a5ab1` records the closure without promoting broader stages or changing Assignment `Active`, ADR `Proposed` or Product/Release Gate authority. |
 | 2026-07-27 | Product Owner authorized the recommended S4 preflight: cap the existing Debug-only, single automatic proposal at the first two complete syllables while preserving the one-attempt ledger, first-candidate identity, original-window multiset conservation and rollback contracts. The authorization includes deterministic, 24-case, isolated-personalization, strict-build and frozen startup-paired Simulator evidence. It excludes a second transaction/backoff loop, threshold reduction, production personalization, user controls and Release-default enablement. |
 | 2026-07-27 | S4 implementation checkpoint `22d34dd` caps only a fully eligible S2 proposal, keeps automatic boundaries out of user Path ownership and adds explicit Path-supersession coverage. Focused tests passed 15/15, KeyboardCore 748/748, the explicit real-RIME class passed 7/7 with zero skips, and strict Debug/Release plus vendor verification passed. Five frozen startup pairs were valid; all B arms accepted one seven-slot anchor with 5/5/5 conservation, and all paired p95/worst deltas improved. Architecture and Quality independently returned Pass with no P0–P3 findings. This closes the Debug S4 preflight evidence only; physical-device, Release-default and Product Gate remain open. |
+| 2026-07-29 | Physical iOS did not expose the third-party keyboard accessibility tree; five coordinate-driver attempts produced zero synthetic key actions. Product retired coordinate/XCTest/Computer Use typing for this workflow. One Human-entered physical A/B pair completed with content-free App logs and ordinary Release restoration. The one-anchor B arm reduced matched peaks by 12–22% but retained three RIME-dominated stalls above 100 ms and the Human still perceived the failure. Product authorized S2.1 design only: one cumulative two-syllable extension after an accepted first anchor, maximum two attempts, no rejection retry, prior-mixed rollback and manual physical evidence. |
 | 2026-07-28 | Supplementary ETTrace sampling captured two disabled arms and one enabled arm for the frozen 38-slot sequence. Within the sampled synchronous key stack, all three place most inclusive duration under `RimeEngine.processKey → RimeProcessKey → ScriptTranslation → Dictionary/Table`; Simulator `libhvf` self weight and the much faster second disabled arm expose virtualization and warm-state/sampling variance. The incomplete matrix is retained only as stack attribution, not an enabled/disabled delta or Product Gate. Further alternating arms stopped at the profiling-account usage limit; temporary gate/linkage changes were reverted, a non-frozen ordinary Debug cleanup build completed, and binary/bundle inspection found no ETTrace residue. |
 | 2026-07-28 | Human Product Owner explicitly authorized S6-A after the connected USB device was identified as an iPhone 13 Pro (`iPhone14,2`) on iOS `27.0 (24A5390f)`. The authorization is limited to same-source Release-like internal A/B, project-default-absent common-measurement and B-only-enabled conditions, content-free timing, five physical-device pairs and bounded test-host cleanup. It does not authorize ordinary Release enablement, user controls, second attempts/backoff, state reset or Product Gate. |
 | 2026-07-28 | S6-A local implementation added default-absent A/B conditions, a mandatory content-free writer, per-action commit/native-session validity, a 38-action arm summary and an opt-in monotonic 200ms Reminders driver. Initial reviews found preference-filtered/incomplete evidence, raw-result privacy, cadence/governance and intermediate-commit gaps; all were remediated. UI contracts passed 4/4, KeyboardCore 751/751, RimeBridge 33 passed with 15 external-fixture skips, and strict Debug/default Release/A/B builds passed. Third-round Architecture and Quality both returned Pass with no P0–P3 findings. Immutable checkpoint, signed non-uninstall proof and Human exact-list confirmation remain required before physical install. |

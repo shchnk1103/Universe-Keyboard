@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Paused by Product Lead — run5 invalid; matrix 0 / 5; no further coordinate-driver retry in this iteration`
+**Lifecycle status:** `Blocked — coordinate-driver route retired by Product Lead; matrix 0 / 5; manual evidence recorded separately`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority
@@ -18,16 +18,19 @@
 
 On `2026-07-29 Asia/Shanghai`, after five invalid physical automation attempts
 and zero synthetic key actions, the Human Product Owner directed the team to
-stop further coordinate-driver retries for this iteration. This Assignment's
-automated `5 × A/B` Exit Criteria remain unmet and must not be reinterpreted as
-Pass, Skipped or Product Gate.
+stop coordinate-driver retries. After the replacement Human observation
+completed, the Product Owner made the manual method durable: future physical
+third-party-keyboard performance work uses Human input plus content-free App
+diagnostics and must not retry coordinate-driven XCTest, guessed tap positions
+or Computer Use typing. This Assignment's automated `5 × A/B` Exit Criteria
+remain unmet and must not be reinterpreted as Pass, Skipped or Product Gate.
 
 The approved replacement is paired Human observation under
 [`t9-auto-anchor-manual-device-observation-2026-07-29.md`](../evidence/t9-auto-anchor-manual-device-observation-2026-07-29.md).
 That evidence may guide the product decision but does not satisfy this
-Assignment's fixed-cadence performance matrix. A future automation restart
-requires a new Product Lead instruction and a revised Assignment/review; fresh
-Human readiness alone is no longer sufficient.
+Assignment's fixed-cadence performance matrix. This child Assignment remains a
+historical blocked record and is not a route for future automation restart.
+The reusable replacement method is owned by `PERFORMANCE_BASELINE.md`.
 
 ## Boundary
 

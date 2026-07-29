@@ -302,12 +302,24 @@ would preserve candidates.
 
 **How to collect a length curve on device**
 
-1. Install a **Debug** Keyboard Extension; open a blank Reminders title field; switch to Chinese nine-key.
-2. Without selecting Path or candidates, type a fixed synthetic digit sequence at a steady cadence (e.g. 20–40 keys). Prefer one warm session after first composition.
-3. Export or filter Console / App Group diag log for `T9SEG`, `T9SHADOW` and,
-   when the S2 experiment is active, `T9RETRYSHADOW`.
+Physical third-party-keyboard input follows the canonical Human method in
+`PERFORMANCE_BASELINE.md`. Do not retry coordinate-driven XCTest, Computer Use
+typing or guessed screen coordinates.
+
+1. Install the declared diagnostic or Release-like internal Keyboard
+   Extension by replacement; open a blank Reminders title field; select the
+   software keyboard and switch to Chinese nine-key.
+2. The Human types a fixed synthetic digit sequence at a steady natural
+   cadence (e.g. 20–40 keys) without selecting Path or candidates. Prefer one
+   warm session after first composition.
+3. Export or filter the App diagnostics for `T9SEG`, `T9SHADOW` and, when the
+   relevant experiment is active, its content-free transaction outcome.
 4. Plot or table `rawLen` vs `rime`, `pathLocal`, `preedit`, `pathUI`, `candUI`, `total` (median + worst per rawLen bucket if possible).
-5. Record device, OS, schema, Full Access, Debug build commit — do not invent budgets from a single run.
+5. Record executable hash, commit, optimization, device, OS, schema, Full
+   Access and manual cadence; validate ordered event count, stable session and
+   zero unexpected commits.
+6. Restore ordinary gate-off Release by replacement after an internal arm.
+   Do not invent budgets from one manual run.
 
 Interpretation: if `pathUI`+`candUI` dominate as `rawLen` grows, presentation reload is the lever; if `rime` dominates, focus librime/collectOutput; if `pathLocal`/`preedit` dominate, local catalog/preedit work.
 

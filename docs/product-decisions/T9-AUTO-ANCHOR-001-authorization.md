@@ -1,7 +1,7 @@
 # Product Decision: T9-AUTO-ANCHOR-001 Authorization
 
 **Decision ID:** `PD-T9-AUTO-ANCHOR-001`
-**Lifecycle status:** `Recorded — S4 validated; S6-A physical-device Release-like preflight authorized`
+**Lifecycle status:** `Recorded — S4 validated; S6-A manual pair complete; S2.1 design reviewed; implementation not authorized`
 **Date / timezone:** `2026-07-27 Asia/Shanghai`
 **Decision source:** Human Product Owner instructions in active Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`
@@ -97,11 +97,61 @@ The following require a later Product and Architecture amendment:
 - background/serial RIME execution;
 - default enablement, user controls and Release acceptance budgets.
 
+## S2.1 rolling-shadow-anchor design authorization
+
+On `2026-07-29 Asia/Shanghai`, after reviewing the first physical-device manual
+pair, the Human Product Owner directed the team to continue the S2.1 rolling
+shadow-anchor design under KOS 2.0.
+
+The observed B arm accepted one seven-slot/two-syllable anchor with full
+bounded candidate conservation, but left eleven unresolved slots. Its matched
+RIME-dominated peaks were lower than A yet remained visibly slow. Product
+therefore authorizes **design only** for one cumulative extension after the
+first anchor has already been accepted.
+
+The design direction is:
+
+- keep the existing first S4 transaction unchanged;
+- permit at most one later cumulative extension, for at most two total
+  automatic apply attempts per composition;
+- require at least one successfully processed later physical T9 digit and
+  fresh already-returned candidate evidence before the extension;
+- preserve the existing automatic prefix exactly and add no more than two
+  complete catalog-legal syllables;
+- retain first-candidate identity, bounded multiset conservation, explicit
+  Path precedence, Delete restoration and fail-closed behavior;
+- if the second validation rejects, restore the prior accepted mixed raw once
+  and exhaust the attempt budget;
+- keep personalization indirect: current RIME ranking may influence the first
+  candidate, but there is no userdb query, new learning event or learned-rank
+  authority;
+- keep Release default off and collect no content-bearing diagnostics.
+
+This authorization does **not** permit implementation, retry after a first
+rejection, adaptive backoff, more than one automatic transaction on one key,
+candidate-window scans, a second session, threshold weakening, production
+personalization, user controls or Release enablement. Implementation requires a
+later Product instruction after Architecture and Quality have reviewed the
+design Assignment:
+[`T9-AUTO-ANCHOR-001-S21`](../assignments/t9-auto-anchor-001-s21-rolling-design.md).
+
+The Product Owner also replaced the physical third-party-keyboard execution
+method. Future device performance evidence uses Human typing in a prepared
+Reminders field plus content-free App diagnostics and exact artifact binding.
+Coordinate-driven XCTest, guessed tap positions and Computer Use typing are not
+to be retried for this workflow. Deterministic automation remains in
+unit/controller/pinned-RIME layers.
+
 ## S6-A physical-device preflight authorization
 
 On `2026-07-28 Asia/Shanghai`, after the connected device was identified as a
 physical iPhone 13 Pro on iOS 27.0, the Human Product Owner explicitly replied
 “授权S6-A 真机预检”.
+
+This section retains the historical S6-A authorization. Its coordinate-driver
+execution route was retired by the later `2026-07-29` method decision above;
+the child Assignment is now a blocked record and must not be used to restart
+physical keyboard automation.
 
 S6-A may:
 

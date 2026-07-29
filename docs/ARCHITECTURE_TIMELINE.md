@@ -136,3 +136,25 @@ Release. Production automatic anchoring remains a later ADR amendment.
 
 Current sources: `PD-T9-AUTO-ANCHOR-001`, Assignment
 `T9-AUTO-ANCHOR-001`, proposed ADR 0024 and the active long-composition plan.
+
+## 2026-07-29 — T9 rolling accepted-prefix extension proposed
+
+The first Human-entered physical-device pair confirmed that one reversible
+two-syllable anchor reduces, but does not eliminate, long-composition
+`process_key` stalls. S2.1 proposes one cumulative two-syllable extension after
+the first anchor has accepted and at least one later key has produced fresh
+evidence. The composition remains bounded to two automatic apply attempts; a
+first rejection is terminal, second rejection restores the prior accepted
+mixed raw once, Delete restores the full digit identity, and explicit Path
+remains authoritative.
+
+The physical-device procedure also changed: Human input plus content-free App
+diagnostics is now canonical for third-party-keyboard performance evidence.
+Coordinate-driven XCTest, guessed taps and Computer Use typing are retired from
+that workflow. Architecture and Quality independently passed the S2.1 design
+contract after review remediation. Implementation and Release enablement still
+require later Product authorization and evidence.
+
+Current sources: S2.1 Assignment `T9-AUTO-ANCHOR-001-S21`, amended Product
+Decision `PD-T9-AUTO-ANCHOR-001`, proposed ADR 0024,
+`PERFORMANCE_BASELINE.md` and the active long-composition plan.

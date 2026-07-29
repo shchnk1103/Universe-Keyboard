@@ -117,6 +117,12 @@ Do not hardcode or publish test counts. Preserve the command result and failing 
 ## Keyboard Acceptance On A Physical Device
 
 - [ ] Enable the extension and Full Access; record device and OS.
+- [ ] When physical performance evidence requires typing through the
+  third-party keyboard, follow the Human-input/content-free-log procedure in
+  `PERFORMANCE_BASELINE.md`; do not substitute coordinate-driven XCTest,
+  Computer Use typing or guessed tap positions. Record manual cadence as a
+  confound and keep deterministic automation in unit/controller/RimeBridge
+  layers.
 - [ ] After a fresh install or Extension process restart, select Universe Keyboard and type continuously; it must remain selected without hanging, crashing or automatically falling back to the system keyboard.
 - [ ] First presentation creates a working session without deploying.
 - [ ] Chinese and English basic input, page/mode switching, Shift/Caps Lock and Return labels work.

@@ -1,7 +1,8 @@
 # ADR 0024: T9 Auto-Anchor Observation And Reversible Prototype Boundary
 
-- **Status:** Proposed — S4 independently validated; S6-A internal
-  physical-device preflight authorized; shipping decision deferred
+- **Status:** Proposed — S4 independently validated; S6-A manual pair complete;
+  S2.1 rolling-extension design independently reviewed; implementation and
+  shipping decisions deferred
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
@@ -394,6 +395,206 @@ host-object deletion is a Stop Condition.
 
 Architecture entry and exit reviews are required under:
 [`T9-AUTO-ANCHOR-001-S6A`](../../assignments/t9-auto-anchor-001-s6a-device-preflight.md).
+
+### S6-A execution-method amendment: Human physical input
+
+Physical iOS rendered Universe Keyboard without exposing its key elements to
+the XCTest accessibility owner. Five coordinate-driver attempts produced zero
+synthetic key actions. The Product Owner therefore retired coordinate-driven
+XCTest, guessed screen positions and Computer Use typing from this
+third-party-keyboard performance workflow.
+
+Future physical evidence uses:
+
+- exact same-source signed internal artifacts installed by replacement;
+- a Human-prepared empty Reminders field and software keyboard;
+- Human entry of the frozen synthetic sequence without Path/candidate
+  selection;
+- content-free App diagnostics bound to executable hashes and device/build
+  identity;
+- event/session/commit integrity checks plus Human-reported functional
+  anomalies and perceived stall position;
+- ordinary gate-off Release replacement restoration after internal variants.
+
+Manual cadence prevents this evidence from becoming a fixed-cadence benchmark.
+Deterministic timing and state-machine automation remain at controller and
+pinned-RIME integration boundaries. The detailed reusable procedure belongs to
+`PERFORMANCE_BASELINE.md`; the former coordinate contract remains historical
+evidence for why it was retired, not a route to retry.
+
+## S2.1 proposed amendment: one cumulative rolling extension
+
+The first physical-device Human pair showed that one accepted seven-slot
+anchor lowered matched RIME peaks but left eleven unresolved slots and did not
+remove the perceived failure class. The next bounded architecture hypothesis
+is one cumulative extension of an already accepted automatic prefix.
+
+This amendment is design-reviewed only. It does not authorize implementation
+or Release behavior.
+
+### 12. Accepted-prefix continuity
+
+The existing first S4 transaction remains unchanged. A second transaction may
+be considered only after:
+
+- the first transaction was accepted;
+- at least one later physical T9 digit was successfully processed;
+- the live raw still exactly matches the first transaction's updated mixed
+  identity;
+- there is no Partial Commit, selected Path or confirmed Path segment;
+- the already-returned snapshot produces a cumulative proposal that preserves
+  every previously automatic syllable exactly and adds exactly two new
+  complete, catalog-legal syllables.
+
+The extension is cumulative because the prior mixed prefix is reversible
+transaction state, not user Path authority. It may extend that state but may
+not rewrite or reinterpret it. Missing or divergent evidence performs no call
+and does not consume the second attempt.
+
+### 13. Two-attempt ledger
+
+The process-local ledger must retain:
+
+- the complete original digit identity, updated as new digits arrive;
+- the exact applied mixed raw;
+- cumulative anchored syllable/slot counts;
+- attempt count and source length at the preceding attempt;
+- a data-free terminal tombstone for Path, Partial Commit, rejection and
+  exhausted-budget boundaries.
+
+Candidate text remains ephemeral inside one transaction. No content is logged
+or persisted.
+
+While the ledger is accepted, a later digit advances original and mixed
+identity atomically. Before ordinary RIME processing, the previous live raw
+must exactly equal the ledger's applied mixed raw. Only a successful,
+non-committing, usable output may append that digit to the full original
+`sourceDigits` and replace the applied mixed identity with that output's exact
+raw. The updated ledger is published before attempt-2 eligibility is checked;
+anchor counts and attempt count do not change during this advancement.
+
+Ignored/failed input, commit, unusable output, Path, Partial Commit, reset,
+fallback and lifecycle abandonment do not advance the ledger. Their existing
+clear/tombstone transitions apply. A pre-key identity mismatch is an invariant
+failure: do not process the digit or rebase the ledger; clear the composition
+with exactly one same-session reset and discard automatic payload. No session
+recovery/creation or input replay is allowed.
+
+Attempt 2 is consumed before its `replaceInput` call. It is the final automatic
+attempt in the composition. Attempt 1 rejection remains terminal; S2.1 is not a
+rejection retry or adaptive backoff.
+
+### 14. Second-transaction validation and rollback
+
+The second transaction applies the cumulative extended raw once and uses the
+same exact-raw, no-commit, usable-composition, first-candidate and bounded
+multiset-conservation rules as S4.
+
+Its rollback target is the exact prior accepted mixed raw captured immediately
+before attempt 2:
+
+- acceptance publishes the cumulative output and updates the ledger;
+- rejection restores the prior mixed raw once, retains the first anchor and
+  exhausts the budget;
+- restore failure resets the session and abandons composition fail-closed;
+- no pure-digit fallback chain runs during transaction validation.
+
+Pure digits remain the user-Delete authority. Delete after either accepted
+anchor restores the accumulated original digits once and then performs the
+existing normal deletion.
+
+The exact additional RIME boundary-mutation budget counts cumulative
+auto-anchor-owned `replaceInput` and fail-closed reset mutations beyond
+ordinary successful key/Delete `processKey` work:
+
+| Composition path at endpoint | Cumulative extra `replaceInput` | Same-session clear/reset |
+|---|---:|---:|
+| first accepts; no second transaction | 1 | 0 |
+| both attempts accept | 2 | 0 |
+| first rejects and pure digits restore | 2 | 0 |
+| first restore fails | 2 | exactly 1 |
+| first accepts; second rejects and prior mixed raw restores | 3 | 0 |
+| second prior-mixed restore fails | 3 | exactly 1 |
+| accepted pre-key identity mismatch after first acceptance, second acceptance, or second rejection/prior-mixed restore | 1, 2 or 3 total; 0 new at mismatch | exactly 1 |
+| Delete succeeds/fails after first acceptance only | 2 total | 0 on success; exactly 1 on failure |
+| Delete succeeds/fails after two acceptances | 3 total | 0 on success; exactly 1 on failure |
+| second rejects/restores, then Delete succeeds/fails | 4 total | 0 on success; exactly 1 on failure |
+
+Only one automatic transaction may execute on one physical key.
+Every reset above clears the existing session composition only. S2.1 prohibits
+`recoverSession`, session creation, rebuild/replay, deployment and multi-step
+fallback.
+
+Accepted-identity advancement is one indivisible ledger publication:
+`sourceDigits` and exact returned mixed raw update together; cumulative anchor
+counts and attempt count remain unchanged; attempt 2 is not consumed.
+Eligibility may read only the fully published ledger. Commit, failed/unusable
+output, Path, Partial Commit and lifecycle abandonment allow only their
+existing clear/tombstone transition—never `recoverSession`, session creation or
+input replay.
+
+### 15. Personalization and user authority
+
+RIME's existing local learning may influence the current first-candidate rank,
+so rolling proposals naturally observe personalized ordering. S2.1 does not
+query userdb, create a learning event, persist candidate history or treat rank
+as correctness authority.
+
+Every proposal still needs compatible catalog evidence; every transaction
+still needs first-candidate preservation and bounded conservation. Explicit
+Path selection supersedes automatic and learned preference. Path/Partial
+transitions clear automatic rollback payload and retain an exhausted
+composition tombstone so later state changes cannot re-grant an attempt.
+
+### 16. Evidence boundary
+
+The experiment uses three logical arms:
+
+- `A0`: automatic anchor disabled;
+- `A1`: existing one-anchor S4 behavior;
+- `B2`: one cumulative S2.1 extension.
+
+Deterministic KeyboardCore and pinned-RIME integration tests own exact call,
+state, rollback and corpus coverage. Physical-device exploration compares
+`A1` with `B2` through the canonical Human-input method. The first pair stops
+immediately if B2 does not execute its second accepted transaction before the
+first known event-24 spike, introduces a functional anomaly, fails to reduce
+the paired `≥100 ms` event count or increases paired worst latency. These are
+experiment routing rules, not a shipping SLO.
+
+Content-free diagnostics may add attempt number, bounded status/reason,
+cumulative/new anchor counts, unresolved slots, conservation counts and
+apply/restore duration. Every transaction outcome also carries the same opaque
+run identity and one-based action ordinal as the arm's ordered key records.
+For the frozen fixture, B2 attempt 2 is valid only when its ordinal is strictly
+after attempt 1 and `<= 23`, before physical action 24. Diagnostics may not
+contain raw input, pinyin, candidates, host text or user-dictionary data.
+
+The frozen integration arm contract is exact: A0 performs zero automatic
+apply/accepted outcomes/extra replacement calls; A1 performs exactly one
+existing S4 accepted apply and no second transaction; B2 performs exactly two
+accepted cumulative applies. All other source, optimization, fixture, schema,
+isolated-user-root, session, cadence and instrumentation facts are identical;
+any undeclared difference or positive-fixture rejection invalidates the arm.
+
+For physical exploration, the first `A1→B2` pair counts as pair 1 if it passes
+the stop rule. A later counterbalanced matrix adds only `B2→A1` and `A1→B2`,
+for three total pairs rather than four.
+
+### S2.1 stop conditions
+
+Stop if the design requires:
+
+- a second attempt after first rejection, a third attempt or two automatic
+  transactions on one key;
+- adaptive prefix backoff or rewriting the existing automatic prefix;
+- weaker candidate conservation or learned-rank authority;
+- candidate-window/later-page scans, another RIME session or async RIME work;
+- multi-step validation rollback, persistence or content-bearing logs;
+- host-text, 26-key, schema/vendor, user-setting or Release-default changes.
+
+The complete design and acceptance matrix are owned by:
+[`T9-AUTO-ANCHOR-001-S21`](../../assignments/t9-auto-anchor-001-s21-rolling-design.md).
 
 ## Stage 3 read-only amendment: later opportunity after rejection
 
