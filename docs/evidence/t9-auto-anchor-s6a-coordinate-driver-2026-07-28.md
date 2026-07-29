@@ -305,3 +305,64 @@ misrepresented as newly rerun evidence.
 This validation proves the deterministic driver contracts and compilation
 symmetry only; a new signed physical A1 build plus fresh Human readiness
 confirmation remain mandatory before another physical attempt.
+
+## Signed A1 Re-preparation After Final Review
+
+Final independent Architecture and Quality reviews of implementation
+`ba98ecf`, evidence binding `fb59735` and warning correction `939b0ed` both
+returned `Pass`, P0–P3 none. The following signed A build was then prepared
+without installing or launching it:
+
+- source HEAD:
+  `939b0ed0e9772449c9194631b5c846b458b34fc7`
+- implementation checkpoint:
+  `ba98ecf73114f95436b37a1181a8386660cd6b5d`
+- configuration: `Release`
+- condition:
+  `-DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT`
+- Xcode: `27.0 (27A5228h)`
+- iPhoneOS SDK: `27.0 (24A5390e)`
+- App bundle/version/build:
+  `com.DoubleShy0N.Universe-Keyboard`, `1.0`, `1`
+- Extension bundle:
+  `com.DoubleShy0N.Universe-Keyboard.Keyboard`
+- Team ID: `C33N6HTS9N`
+- App executable SHA256:
+  `f469fecf570d9dcc996f31ea66649ba6955d43e769085cc2c54dbc3b48d1c242`
+- Extension executable SHA256:
+  `392cb0f90f0f5b3e44f2fea1fae23307a8983f0de04e826df03832f873c9f552`
+- UI-test executable SHA256:
+  `f4def5247f85f40f697e07b1fe1e47044a78b355b4dd81ac18e955684e4af33d`
+- App Mach-O UUID:
+  `6A1C136F-C36B-31C9-93AA-754EE0C21346`
+- Extension Mach-O UUID:
+  `75502BBA-199A-3927-A9B8-3A3756026F96`
+
+The Extension string inventory contains `T9DEVICE_DISABLED` and the common
+preflight envelope/registry keys; it does not contain `T9DEVICE_ENABLED`.
+`codesign -dv` reports the expected App/Extension bundle identifiers, arm64 and
+Team ID. Host `codesign --verify --deep --strict` returns the existing beta
+host trust result `CSSMERR_TP_NOT_TRUSTED`; this is retained as a host trust
+warning and is not described as strict verification success.
+
+Xcode 27 did not emit a `.xctestrun` beside this otherwise successful
+`build-for-testing` product. The executor instantiated the same reviewed
+FormatVersion 1 relative-path specification used by the prior physical arm,
+pointing only through `__TESTROOT__` to this build's App, runner and test
+bundle. `plutil -lint` passed. Its SHA256 is
+`40d6c9417b18726b7e42559648f02e65bd801fdeea849d8f16afe40e502f9a5d`,
+and its test-runner environment binds exactly:
+
+- `T9_S6A_DEVICE_PREFLIGHT_RUN=1`
+- `T9_S6A_DISPOSABLE_LIST=Universe Keyboard S6A 20260728`
+- `T9_S6A_EXPECTED_MARKER=T9DEVICE_DISABLED`
+
+The read-only device query still matched iPhone 13 Pro (`iPhone14,2`),
+iOS `27.0 (24A5390f)`, arm64e and UDID
+`00008110-000A08440198801E`, with Developer Mode enabled. It also reported
+`localNetwork` transport and `passcodeRequired=true`. These violate the frozen
+wired/unlocked preconditions, so no install or launch occurred. The signed A1
+remains held at
+`/private/tmp/universe-keyboard-s6a-coordinate-device-a-ba98ecf-939b0ed/`
+pending a new Human confirmation after USB connection, unlock, exact-list
+overview preparation and most-recent Universe Chinese nine-key selection.

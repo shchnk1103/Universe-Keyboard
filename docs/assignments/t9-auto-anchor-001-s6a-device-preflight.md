@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S6A — 真机 Release-like 配对预检
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — A1 coordinate attempt invalid; host-frame ordering remediation under review`
+**Lifecycle status:** `Active — remediation reviewed; signed A1 held for wired unlocked readiness`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 
 ## Authority
@@ -267,6 +267,16 @@ warnings, while each bound raw build log contained three
 records both layers explicitly and no longer claims that the raw logs are
 warning-free. No implementation retest is required; physical execution remains
 paused until the corrected statement is independently accepted.
+
+The warning-accuracy remediation is immutable at
+`939b0ed0e9772449c9194631b5c846b458b34fc7`. Final independent Architecture
+and Quality reviews both returned `Pass`, P0–P3 none. A new signed
+Release-like A1 was then built from the same code checkpoint, but the
+read-only device precheck reported `localNetwork` transport and
+`passcodeRequired=true`. Under the frozen Stop Conditions it was not installed
+or launched. Its identities and the held environment state are recorded in the
+linked evidence; physical execution awaits a new wired, unlocked Human
+readiness confirmation.
 
 The two independent Human-visible/XCTest-invisible observations invalidate
 further accessibility-owner guessing. Before physical execution resumes, the
