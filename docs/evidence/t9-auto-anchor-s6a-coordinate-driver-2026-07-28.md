@@ -625,3 +625,59 @@ Those frames are the driver's only coordinate targets, whereas the Extension
 root view is not a reliable visible-keyboard boundary. A content-free contract
 now accepts the hit-target envelope and explicitly rejects a full-screen root
 frame.
+
+### Hit-target envelope remediation validation
+
+The implementation is immutable at
+`af37383eecd3abb99f7e23f74bae81cee9497e10`, with parent
+`30d083190499226d9a75aa55add16f6650709e50`. Immediately before validation,
+`git status --porcelain=v1` returned no output and `git rev-parse HEAD`
+returned that implementation SHA.
+
+Release-like A and B used scheme `UniverseKeyboardUITests`, configuration
+`Release`, iPhone 17 Pro Max iOS 27 Simulator
+`06C5BC3E-7599-4761-A1A2-71DAEA991474`, `CODE_SIGNING_ALLOWED=NO`,
+`ARCHS=arm64`, `ONLY_ACTIVE_ARCH=YES`, the same exact six non-physical
+content-free methods and separate DerivedData:
+
+- A: `/private/tmp/universe-keyboard-af37383-run4-fix-a`, with
+  `OTHER_SWIFT_FLAGS=$(inherited) -DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT`;
+- B: `/private/tmp/universe-keyboard-af37383-run4-fix-b`, with the same flag
+  plus `-DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED`.
+
+| Arm | Result | Build/test log | Result bundle |
+|---|---:|---|---|
+| A | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-29T12-13-05-880Z_pid23283_ea1e8fd7.log` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-29T12-13-05-880Z_pid23283_02720d57.xcresult` |
+| B | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-29T12-16-50-726Z_pid23283_e5e0b430.log` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-29T12-16-50-726Z_pid23283_2aea0e46.xcresult` |
+
+The A and B log SHA256 values are respectively
+`63cecb9a3ce7d8436b5e8a66cdb8924acf3ece96698d1010ad95c37ab64f93bb`
+and
+`2932000b87d5c81b0ced781f28d50ff7fb76c1314b67e5f4164fabac45153fbb`.
+Structured results reported zero failures, skips, runtime warnings and errors.
+Each raw build/test log retains three identical non-blocking `AppIntents`
+metadata-extraction-skipped warnings; no zero-warning build is claimed.
+
+The ordinary Release Simulator build used scheme `Universe Keyboard`, no
+preflight flag and DerivedData
+`/private/tmp/universe-keyboard-af37383-run4-fix-ordinary`. It passed with log
+`~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/build_sim_2026-07-29T12-19-46-338Z_pid23283_d330c58a.log`,
+SHA256 `2e592eb545c705d54cc28c8e97cb7a208e699ed26b1394e62d3fb871e61dcdfc`.
+That raw build log retains two of the same non-blocking `AppIntents` warnings.
+
+The ordinary Extension binary is:
+
+```text
+/private/tmp/universe-keyboard-af37383-run4-fix-ordinary/Build/Products/Release-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard
+```
+
+Its SHA256 is
+`842a01455a56ec2b00ffacf245c6aaae16fa9d4003746c0cff4ae1a6c69cabea`.
+The exact `strings -a <binary> | rg -n` inventory for
+`T9DEVICE|T9_S6A|t9_s6a_run_envelope|t9_s6a_matrix_tokens` returned no
+matches (`rg` exit `1`).
+
+These local results do not authorize another physical retry. Independent
+Architecture and Quality review, a fresh signed A, artifact review, read-only
+device precheck and fresh Human readiness remain mandatory. The matrix remains
+`0 / 5`.
