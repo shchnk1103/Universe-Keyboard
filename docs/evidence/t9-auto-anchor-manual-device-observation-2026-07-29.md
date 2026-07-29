@@ -81,7 +81,7 @@ only the repository-declared synthetic fixture.
 | Pair | Arm | Build/marker | Order | Valid? | Stall severity 0–4 | Final settle | Key/composition/candidate notes | Integrity regression | Recording |
 |---:|---|---|---:|---|---:|---|---|---|---|
 | 1 | A | `7b324c9…b94d` / `T9DEVICE_DISABLED` | 1 | Yes | Not numerically scored; noticeable | Not reported | Stall began near `women`; candidates remained visible | None reported | Content-free performance log retained |
-| 1 | B |  | 2 |  |  |  |  |  |  |
+| 1 | B | `a0b7d0c…f1cb` / `T9DEVICE_ENABLED` | 2 | Yes | Not numerically scored; still noticeable | Not reported | Stall remained at similar fixture positions | None reported in performance records | Content-free performance log retained |
 | 2 | B |  | 1 |  |  |  |  |  |  |
 | 2 | A |  | 2 |  |  |  |  |  |  |
 | 3 | A |  | 1 |  |  |  |  |  |  |
@@ -177,3 +177,55 @@ warning and is not claimed as strict success. No XCTest or coordinate driver
 will run. Replacement installation and one Human B observation require a
 fresh device precheck and Human readiness; ordinary same-source signed Release
 restoration remains mandatory afterward.
+
+## Pair 1 B Observation And Comparison
+
+After the reviewed B was installed by replacement, the Human operator manually
+typed the same 38-action fixture once and reported that perceptible stalls
+remained at approximately the same positions. The Performance-filter export
+has SHA256
+`6c23d48ba5c948c677873ba4ee5c907d581ec1dca04c8a87a3f286c28b6b7aed`
+and contains 38 contiguous `event=1...38` `T9SEG` records.
+
+B emitted exactly one automatic outcome before the 18th key completed:
+
+```text
+status=accepted baseline=5 result=5 overlap=5 anchorSlots=7 unresolvedSlots=11
+```
+
+The accepted transaction changed the live raw length from 17 before event 18
+to 20 afterward. Subsequent comparison therefore uses local event identity,
+not equal raw lengths; the added segmentation increased B's reported raw
+length by two without changing the 38 physical action identities.
+
+| Continuous scope | A | B | Direction |
+|---|---:|---:|---:|
+| total median | 13.1 ms | 10.4 ms | `-20.6%` |
+| total p95 | 189.0 ms | 147.4 ms | lower, still visible |
+| total worst | 191.9 ms | 156.6 ms | lower, still visible |
+| total `≥50 ms` | 3 / 37 | 3 / 37 | unchanged count |
+| RIME median | 5.9 ms | 5.7 ms | `-3.4%` |
+| 37-action total | 953.0 ms | 785.2 ms | `-17.6%` |
+| 37-action RIME total | 746.4 ms | 631.3 ms | `-15.4%` |
+
+The matched continuous spike positions were:
+
+| Event / fixture boundary | A total / RIME | B total / RIME | Total change |
+|---|---:|---:|---:|
+| 24 / first `w` of `women` | 189.0 / 187.4 ms | 147.4 / 146.0 ms | `-22.0%` |
+| 32 / `...womenchuq` | 191.9 / 190.3 ms | 156.6 / 155.1 ms | `-18.4%` |
+| 34 / `...womenchuquw` | 155.9 / 154.5 ms | 137.1 / 135.9 ms | `-12.1%` |
+
+The auto-anchor direction produced a measurable one-sample reduction, but
+every matched stall remained above `100 ms` and approximately `99%`
+RIME-dominated. The Human still perceived the same failure class. Pair 1 is
+therefore classified `inconclusive / insufficient for the product goal`, not
+`promising`, `regressed` or accepted. It supports the diagnosis that one
+accepted, seven-slot anchor with eleven unresolved slots is too weak to
+eliminate long-composition search spikes. It does not yet authorize repeated
+automatic replacement or a broader anchor policy.
+
+Both arms kept one stable valid native session, 12 candidates and zero
+commits across all 38 records. This comparison remains sensitive to manual
+cadence and contains only one pair; the numerical deltas are diagnostic
+direction, not a performance budget or Product Gate.
