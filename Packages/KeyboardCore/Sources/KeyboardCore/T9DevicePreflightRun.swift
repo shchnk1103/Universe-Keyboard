@@ -232,6 +232,21 @@ public enum T9DevicePreflightRun {
         return Consumption(token: envelope.token)
     }
 
+    /// Starts only a token that is fresh for the currently retained Extension
+    /// instance. A reused keyboard may consume the next arm, but it may never
+    /// resume the token already held in memory.
+    public static func consumeFreshPreparedEnvelope(
+        serialized: String?,
+        currentToken: String?
+    ) -> Consumption? {
+        guard let consumption = consumePreparedEnvelope(
+            serialized: serialized
+        ), consumption.token != currentToken else {
+            return nil
+        }
+        return consumption
+    }
+
     /// Cleanup is intentionally narrow: only the matching consumed token may
     /// be removed from the App Group.
     public static func canRemoveConsumedEnvelope(

@@ -246,6 +246,19 @@ The following pre-run attempts are retained and are not valid matrix arms:
     `/private/tmp/universe-keyboard-s6a-coordinate-device-evidence/`; its
     potentially private diagnostics and UI attachments were not opened,
     exported or copied. The attempt is invalid and the matrix remains `0 / 5`.
+11. `pair1-A-coordinate-run3.xcresult`: the reviewed host-frame remediation
+    reached the physical test method and exact disposable list, created one
+    empty item and failed closed with `geometry-unavailable` before any
+    coordinate fixture action. The content-free evidence view showed the
+    current envelope still in `prepared` state after failure, proving that the
+    visible keyboard lifecycle had not consumed the new token. Source review
+    identified that token consumption occurred only in Extension bootstrap;
+    an Extension instance selected before token preparation could be reused on
+    return without another bootstrap. The raw result remains isolated under
+    `/private/tmp/universe-keyboard-s6a-coordinate-device-evidence/`; its
+    diagnostics and UI attachments were not opened, exported or copied. The
+    attempt is invalid, the matrix remains `0 / 5`, and another retry requires
+    fresh Human readiness after remediation review.
 
 The host-frame ordering remediation is immutable at
 `ba98ecf73114f95436b37a1181a8386660cd6b5d` with parent

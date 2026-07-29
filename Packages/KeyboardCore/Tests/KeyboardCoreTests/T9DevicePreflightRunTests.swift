@@ -93,6 +93,38 @@ final class T9DevicePreflightRunTests: XCTestCase {
         ))
     }
 
+    func testReusedExtensionConsumesOnlyFreshPreparedToken() throws {
+        let currentToken = "S6A-0123456789ABCDEF0123456789ABCDEF"
+        let nextToken = "S6A-FEDCBA9876543210FEDCBA9876543210"
+        let prepared = T9DevicePreflightRun.Envelope(
+            state: .prepared,
+            token: nextToken
+        )
+
+        XCTAssertEqual(
+            T9DevicePreflightRun.consumeFreshPreparedEnvelope(
+                serialized: prepared.serialized,
+                currentToken: currentToken
+            )?.token,
+            nextToken
+        )
+        XCTAssertNil(
+            T9DevicePreflightRun.consumeFreshPreparedEnvelope(
+                serialized: prepared.serialized,
+                currentToken: nextToken
+            )
+        )
+        XCTAssertNil(
+            T9DevicePreflightRun.consumeFreshPreparedEnvelope(
+                serialized: T9DevicePreflightRun.Envelope(
+                    state: .consumed,
+                    token: nextToken
+                ).serialized,
+                currentToken: currentToken
+            )
+        )
+    }
+
     func testPreparationRejectsEvidenceAndMatrixTokenReuse() {
         let token = "S6A-0123456789ABCDEF0123456789ABCDEF"
 

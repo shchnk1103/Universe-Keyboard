@@ -366,3 +366,51 @@ remains held at
 `/private/tmp/universe-keyboard-s6a-coordinate-device-a-ba98ecf-939b0ed/`
 pending a new Human confirmation after USB connection, unlock, exact-list
 overview preparation and most-recent Universe Chinese nine-key selection.
+
+## Physical A1 Coordinate Run 3
+
+After fresh Human readiness, the device precheck reported `wired`,
+`passcodeRequired=false`, the frozen iPhone/OS identity and the exact empty
+list overview in portrait. The signed A1 was installed by replacement without
+uninstall/reset, container deletion or userdb mutation.
+
+`pair1-A-coordinate-run3.xcresult` entered the selected physical test method,
+prepared a new token, opened the exact list and created one empty item. It
+failed closed with `geometry-unavailable` before the coordinate fixture began.
+The content-free summary reports one failed selected test on the frozen iPhone
+13 Pro / iOS 27 identity. No arm is counted and the matrix remains `0 / 5`.
+The raw result is isolated at
+`/private/tmp/universe-keyboard-s6a-coordinate-device-evidence/`; no diagnostic
+archive, screenshot or UI hierarchy attachment was opened, exported or copied.
+
+Computer Use observed only the expected foreground transitions and did not
+drive the device. The internal content-free evidence view was then launched
+explicitly. It showed the current envelope remained `prepared` rather than
+`consumed`; no token value is retained in repository evidence. That state
+proves the Extension did not execute the new-token consumption path. Code
+review found consumption only in `bootstrapKeyboard()`, while iOS may reuse the
+already-selected Extension instance when returning from the main App.
+
+The remediation adds a preflight-only visibility-boundary check for a fresh
+token different from the instance's retained token, resets only per-arm
+geometry flags, consumes before logging the marker and leaves normal Release
+plus the input hot path unchanged.
+
+### Reused-Extension remediation validation
+
+- focused `T9DevicePreflightRunTests`: `7 / 7`, including fresh-token
+  acceptance plus same-token and consumed-envelope rejection;
+- KeyboardCore ordinary suite: `751 / 751`; the existing optional
+  interpolation warning at `T9PinyinPathTests.swift:1429` remains outside this
+  delta;
+- Release-like A content-free UI contracts: `6 / 6`, result
+  `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-29T11-22-03-789Z_pid23312_32f236cf.xcresult`;
+- Release-like B content-free UI contracts: `6 / 6`, result
+  `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-29T11-25-12-644Z_pid23312_575d987d.xcresult`;
+- ordinary Release Simulator build: passed, log
+  `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/build_sim_2026-07-29T11-28-38-789Z_pid23312_bd79f5c8.log`;
+- ordinary Extension binary: none of `T9DEVICE`, `T9_S6A`,
+  `t9_s6a_run_envelope` or `t9_s6a_matrix_tokens`.
+
+No physical retry is authorized by these local results. An immutable
+checkpoint and independent Architecture/Quality re-review remain mandatory.

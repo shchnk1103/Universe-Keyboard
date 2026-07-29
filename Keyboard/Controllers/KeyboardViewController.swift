@@ -266,6 +266,12 @@ class KeyboardViewController: UIInputViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Logger.shared.resumePersistenceForExtensionLifecycle()
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        // iOS may reuse an Extension selected before the main App prepared the
+        // arm. Consume a different fresh token when visibility returns instead
+        // of requiring a new viewDidLoad or process.
+        _ = consumeFreshPreparedDevicePreflightRunIfAvailable()
+        #endif
         controller.resumeRimeAfterVisibilityChange()
         // Resume may fail-close T9 → 26-key; apply before chrome is built/shown.
         if let engine = controller.rimeEngine as? RimeEngineImpl {

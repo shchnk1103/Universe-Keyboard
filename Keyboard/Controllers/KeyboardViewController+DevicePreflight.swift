@@ -4,6 +4,46 @@ import KeyboardCore
 import UIKit
 
 extension KeyboardViewController {
+    @discardableResult
+    func consumeFreshPreparedDevicePreflightRunIfAvailable() -> Bool {
+        guard let consumption =
+            T9DevicePreflightRun.consumeFreshPreparedEnvelope(
+                serialized: sharedDefaults?.string(
+                    forKey: T9DevicePreflightRun.envelopeKey
+                ),
+                currentToken: devicePreflightRunToken
+            )
+        else {
+            return false
+        }
+
+        devicePreflightRunToken = consumption.token
+        devicePreflightPreparedGeometryDigest = nil
+        devicePreflightDidRecordExecutionGeometry = false
+        sharedDefaults?.set(
+            consumption.consumedEnvelope.serialized,
+            forKey: T9DevicePreflightRun.envelopeKey
+        )
+        // This is a pre-arm visibility boundary, never a key-handling path.
+        sharedDefaults?.synchronize()
+        HotPathSegmentTiming.beginDevicePreflightRun(token: consumption.token)
+        recordDevicePreflightMarker(runToken: consumption.token)
+        return true
+    }
+
+    func recordDevicePreflightMarker(runToken: String) {
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED
+        Logger.shared.devicePreflightPerformance(
+            "T9DEVICE marker=T9DEVICE_ENABLED run=\(runToken) gate=on measurement=on"
+        )
+        #else
+        Logger.shared.devicePreflightPerformance(
+            "T9DEVICE marker=T9DEVICE_DISABLED run=\(runToken) gate=off measurement=on"
+        )
+        #endif
+        Logger.shared.requestFlush()
+    }
+
     func recordDevicePreflightPreparedGeometryIfPossible() {
         guard devicePreflightPreparedGeometryDigest == nil,
               let geometry = makeDevicePreflightGeometry()

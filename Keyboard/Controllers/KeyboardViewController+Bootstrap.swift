@@ -27,33 +27,11 @@ extension KeyboardViewController {
         controller.isReversibleT9AutoAnchorEnabled = true
         #endif
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-        let consumption = T9DevicePreflightRun.consumePreparedEnvelope(
-            serialized: sharedDefaults?.string(
-                forKey: T9DevicePreflightRun.envelopeKey
-            )
-        )
-        if let consumption {
-            devicePreflightRunToken = consumption.token
-            sharedDefaults?.set(
-                consumption.consumedEnvelope.serialized,
-                forKey: T9DevicePreflightRun.envelopeKey
-            )
-            sharedDefaults?.synchronize()
-            HotPathSegmentTiming.beginDevicePreflightRun(
-                token: consumption.token
+        if !consumeFreshPreparedDevicePreflightRunIfAvailable() {
+            recordDevicePreflightMarker(
+                runToken: devicePreflightRunToken ?? "invalid"
             )
         }
-        let runToken = devicePreflightRunToken ?? "invalid"
-        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED
-        Logger.shared.devicePreflightPerformance(
-            "T9DEVICE marker=T9DEVICE_ENABLED run=\(runToken) gate=on measurement=on"
-        )
-        #else
-        Logger.shared.devicePreflightPerformance(
-            "T9DEVICE marker=T9DEVICE_DISABLED run=\(runToken) gate=off measurement=on"
-        )
-        #endif
-        Logger.shared.requestFlush()
         #endif
         controller.textClient = UITextDocumentProxyAdapter(proxy: textDocumentProxy)
         controller.onTypoCorrectionSelected = { [weak self] correction in
