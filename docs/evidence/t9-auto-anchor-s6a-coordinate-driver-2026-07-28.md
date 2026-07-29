@@ -789,7 +789,7 @@ success. The standalone and embedded Extension executables are byte-identical.
 The Extension string inventory contains `T9DEVICE_DISABLED` and the common
 `t9_s6a_run_envelope` / `t9_s6a_matrix_tokens` keys, and contains no
 `T9DEVICE_ENABLED`. After the final build command, only the three frozen
-test-runner values were added to `TestingEnvironmentVariables`:
+test-runner values were added to `EnvironmentVariables`:
 
 - `T9_S6A_DEVICE_PREFLIGHT_RUN=1`;
 - `T9_S6A_DISPOSABLE_LIST=Universe Keyboard S6A 20260728`;
@@ -803,8 +803,16 @@ file is:
 ```
 
 Its SHA256 is
-`2f9345e9b95eba30174e1d0da62f7cd504ad0e834df183e37bab1b6be2792d33`.
+`f55e5e8b3fa42a0a429a196a6c5a1d34a2dddbb614058d71615f25031338f3cc`.
 No build command ran after this injection.
+
+The first narrow Quality artifact review found that these three values had
+initially been placed under `TestingEnvironmentVariables`, contrary to the
+frozen Assignment and the previously exercised physical-runner placement. No
+binary was rebuilt. The values were removed from that dictionary and inserted
+only under `EnvironmentVariables`; `TestingEnvironmentVariables` now contains
+only Xcode's original scheme-name value. The lint, exact readback and final
+hash above all describe the corrected artifact.
 
 The signed A remains held locally and is not yet authorized for installation.
 It requires independent narrow artifact review, then a fresh read-only device
