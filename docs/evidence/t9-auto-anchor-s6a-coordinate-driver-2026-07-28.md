@@ -496,3 +496,86 @@ none of those preflight strings.
 
 No physical retry is authorized by these local results. An immutable
 checkpoint and independent Architecture/Quality re-review remain mandatory.
+
+## Signed A1 After Reused-Extension Remediation
+
+Independent Architecture and Quality reviews of combined checkpoint
+`188ccd0d4bcfe256366b4e555cec22bc05b4df02` both returned `Pass`, with
+P0–P3 none. The reused-Extension implementation is immutable at
+`202f08ca3726e54e41b208c3d334c1383ea3a61f`.
+
+A fresh signed A was prepared without installation, launch or device-state
+mutation:
+
+```sh
+xcodebuild -quiet -project 'Universe Keyboard.xcodeproj' \
+  -scheme UniverseKeyboardUITests -configuration Release \
+  -destination 'generic/platform=iOS' \
+  -derivedDataPath \
+  /private/tmp/universe-keyboard-s6a-coordinate-device-a-188ccd0 \
+  -allowProvisioningUpdates \
+  'OTHER_SWIFT_FLAGS=$(inherited) -DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT' \
+  build-for-testing
+```
+
+The terminal incremental invocation returned exit `0`. Its `-quiet` log is
+`/private/tmp/universe-keyboard-s6a-coordinate-device-a-188ccd0-final.log`,
+an empty successful log with SHA256
+`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`.
+An earlier verbose capture ended without an xcodebuild terminal status and is
+explicitly excluded from success evidence.
+
+Build identity:
+
+- configuration: `Release`;
+- condition: `-DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT`;
+- Xcode: `27.0 (27A5228h)`;
+- iPhoneOS SDK: `27.0 (24A5390e)`;
+- App bundle/version/build:
+  `com.DoubleShy0N.Universe-Keyboard`, `1.0`, `1`;
+- Extension bundle:
+  `com.DoubleShy0N.Universe-Keyboard.Keyboard`;
+- Team ID: `C33N6HTS9N`;
+- App executable SHA256:
+  `c098b6dd142099c4831ff0c597798510b3cf7e05e0a3d3db0e7609d6d2e58ffe`;
+- Extension executable SHA256:
+  `7d4991e087277ebd1e58dc271af3cae8efd81dbb141316793dba6d49c812d37d`;
+- UI-test executable SHA256:
+  `1718a0e332e8ff63ba2e574c4bbce867d97d2d80bceae978eb9b33574103abbf`;
+- App Mach-O UUID:
+  `0C684716-E7F8-36C4-83F6-76292746643C`;
+- Extension Mach-O UUID:
+  `07C24A5D-29E5-31AC-9265-B074CF354BE9`.
+
+The Extension string inventory contains `T9DEVICE_DISABLED` and the common
+`t9_s6a_run_envelope` / `t9_s6a_matrix_tokens` keys; it does not contain
+`T9DEVICE_ENABLED`. `codesign -dv` reports the expected App, Extension and
+runner identifiers, arm64 products and Team ID. Host
+`codesign --verify --deep --strict` returns the existing beta-host trust result
+`CSSMERR_TP_NOT_TRUSTED`; this remains an explicit trust warning and is not
+described as strict verification success.
+
+This Xcode 27 build emitted a FormatVersion 1 relative-path `.xctestrun`.
+After the build completed, the executor added only the three Assignment-bound
+test-runner values:
+
+- `T9_S6A_DEVICE_PREFLIGHT_RUN=1`;
+- `T9_S6A_DISPOSABLE_LIST=Universe Keyboard S6A 20260728`;
+- `T9_S6A_EXPECTED_MARKER=T9DEVICE_DISABLED`.
+
+`plutil -lint` passed and all three values were read back exactly. The final
+file is:
+
+```text
+/private/tmp/universe-keyboard-s6a-coordinate-device-a-188ccd0/Build/Products/UniverseKeyboardUITests_iphoneos27.0-arm64.xctestrun
+```
+
+Its SHA256 is
+`f55e5e8b3fa42a0a429a196a6c5a1d34a2dddbb614058d71615f25031338f3cc`.
+Its dependent products remain relative to `__TESTROOT__` and point to this
+build's standalone Extension, App, runner and UI-test bundle.
+
+The signed A remains held locally. It must receive independent narrow review,
+then a fresh read-only device precheck and a new Human confirmation of the
+exact list overview, unlocked state and most-recent Universe Chinese nine-key
+selection before any install or physical retry. The matrix remains `0 / 5`.
