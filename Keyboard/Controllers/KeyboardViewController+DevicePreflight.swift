@@ -88,12 +88,19 @@ extension KeyboardViewController {
         guard screenBounds.height > screenBounds.width else {
             return nil
         }
-        let keyboardFrame = coordinateSpace.convert(view.bounds, from: view)
         let slots = devicePreflightT9LetterGroupButtons.map {
             coordinateSpace.convert($0.bounds, from: $0)
         }
-        guard slots.allSatisfy({ !$0.isEmpty }) else {
+        guard let firstSlot = slots.first,
+              slots.allSatisfy({ !$0.isEmpty })
+        else {
             return nil
+        }
+        // UIInputViewController's root view can span the host screen on a
+        // physical device. The actual tappable keyboard region is the envelope
+        // of the measured T9 buttons, which are also the driver's only targets.
+        let keyboardFrame = slots.dropFirst().reduce(firstSlot) {
+            $0.union($1)
         }
         return DevicePreflightGeometry(
             token: token,

@@ -579,3 +579,49 @@ The signed A remains held locally. It must receive independent narrow review,
 then a fresh read-only device precheck and a new Human confirmation of the
 exact list overview, unlocked state and most-recent Universe Chinese nine-key
 selection before any install or physical retry. The matrix remains `0 / 5`.
+
+## Physical A1 Coordinate Run 4
+
+After fresh Human readiness, the read-only precheck matched the frozen iPhone
+13 Pro / iOS 27 identity, wired transport, unlocked state, Developer Mode and
+the empty disposable-list overview in portrait. Computer Use observed without
+clicking. The `30d0831`-bound signed A was installed by replacement without
+uninstall, container deletion or userdb mutation.
+
+`pair1-A-coordinate-run4.xcresult` entered only the frozen physical method,
+created one empty item and failed closed with `geometry-invalid` before
+`driveFrozenFixture`. No coordinate fixture action occurred, the source pinyin
+`jintiandetianqihenbucuowomenchuquwanba` was not entered, no arm is counted and
+the matrix remains `0 / 5`. The raw result remains isolated at
+`/private/tmp/universe-keyboard-s6a-coordinate-device-evidence/`; its
+diagnostics, screenshots and UI hierarchy were not opened, exported or copied.
+
+Unlike run3, the fresh token was consumed and one same-token prepared geometry
+record was present. The content-free evidence surface showed:
+
+- portrait screen: `390 x 844` points at scale `3`;
+- eight non-empty T9 button frames in the lower screen, approximately
+  `y = 600 ... 743`;
+- recorded `keyboard` frame: the full `390 x 844` screen with `minY = 0`.
+
+The validator correctly rejected that root-view frame because a keyboard
+interaction region must be in the lower half of the portrait screen. Source
+review found that the producer used
+`coordinateSpace.convert(view.bounds, from: view)`. On this physical
+`UIInputViewController`, the root view spans the host screen even though the
+actual T9 button hit targets are correctly positioned at the bottom.
+
+The public Hamster repository exposes package-level T9 and keyboard-appearance
+tests but no cross-host XCUI keyboard test target. The public fcitx5-ios tree
+likewise exposes no XCTest/UI-test suite. Apple documents host-app invocation
+of a custom keyboard and explicitly warns that hiding a keyboard does not
+necessarily terminate its Extension process. Appium's iOS driver is also
+XCTest-backed; substituting it would not correct an invalid geometry source.
+
+The narrow remediation keeps all existing portrait, screen, digest, size,
+containment, non-overlap and topology checks. It changes only the producer's
+`keyboard` field to the union of the eight measured T9 hit-target frames.
+Those frames are the driver's only coordinate targets, whereas the Extension
+root view is not a reliable visible-keyboard boundary. A content-free contract
+now accepts the hit-target envelope and explicitly rejects a full-screen root
+frame.

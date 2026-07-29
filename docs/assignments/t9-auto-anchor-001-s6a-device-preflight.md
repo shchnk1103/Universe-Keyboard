@@ -259,6 +259,19 @@ The following pre-run attempts are retained and are not valid matrix arms:
     diagnostics and UI attachments were not opened, exported or copied. The
     attempt is invalid, the matrix remains `0 / 5`, and another retry requires
     fresh Human readiness after remediation review.
+12. `pair1-A-coordinate-run4.xcresult`: the reused-Extension remediation
+    consumed the fresh token and produced one same-token prepared geometry
+    record. Validation then failed closed with `geometry-invalid` before
+    `driveFrozenFixture`; no coordinate fixture action or source-pinyin input
+    occurred. The recorded screen and eight T9 slot frames were valid portrait
+    screen coordinates, but `UIInputViewController.view.bounds` converted to
+    the full `390 x 844` host screen (`minY = 0`) instead of the visible
+    keyboard region. The raw result remains isolated under
+    `/private/tmp/universe-keyboard-s6a-coordinate-device-evidence/`; its
+    diagnostics, screenshots and UI hierarchy were not opened, exported or
+    copied. The attempt is invalid, the matrix remains `0 / 5`, and another
+    retry requires a reviewed geometry-source remediation plus fresh Human
+    readiness.
 
 The host-frame ordering remediation is immutable at
 `ba98ecf73114f95436b37a1181a8386660cd6b5d` with parent

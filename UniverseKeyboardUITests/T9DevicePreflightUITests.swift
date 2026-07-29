@@ -142,6 +142,20 @@ final class T9DevicePreflightUITests: XCTestCase {
     func testContentFreeGeometryContracts() {
         let geometry = syntheticGeometry()
         XCTAssertNil(geometryError(geometry, foregroundFrame: geometry.screen))
+        let hitTargetEnvelope = geometry.slots.dropFirst().reduce(
+            geometry.slots[0]
+        ) {
+            $0.union($1)
+        }
+        XCTAssertNil(
+            geometryError(
+                replacingGeometry(
+                    in: geometry,
+                    keyboard: hitTargetEnvelope
+                ),
+                foregroundFrame: geometry.screen
+            )
+        )
         func assertInvalid(_ candidate: Geometry) {
             XCTAssertEqual(
                 geometryError(candidate, foregroundFrame: candidate.screen),
@@ -221,6 +235,11 @@ final class T9DevicePreflightUITests: XCTestCase {
             replacingGeometry(in: geometry, orientation: "landscape")
         )
         assertInvalid(replacingGeometry(in: geometry, scale: 0))
+        // A physical UIInputViewController root view may span the entire host
+        // screen; it is not a valid keyboard interaction region.
+        assertInvalid(
+            replacingGeometry(in: geometry, keyboard: geometry.screen)
+        )
         assertInvalid(
             replacingGeometry(
                 in: geometry,
