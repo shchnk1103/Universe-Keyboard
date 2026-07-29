@@ -463,7 +463,10 @@ The A and B log SHA256 values are respectively
 `6757c4ad955dd374e1c873fbe63eadee038d7578b5c694d6181d419f4a42eeda`
 and
 `224eccf9414ec4434cba69709d10e29b7d3c2a3a4b1b529030c3ed3c0b777277`.
-XcodeBuildMCP reported zero failures, skips, warnings and errors for each arm.
+XcodeBuildMCP structured results reported zero failures, skips, runtime
+warnings and errors for each arm. The raw build/test logs each retain three
+identical non-blocking `AppIntents` metadata-extraction-skipped warnings; this
+evidence does not claim a zero-warning Release build.
 
 The ordinary Release Simulator build used scheme `Universe Keyboard`, the
 same simulator and architecture settings, no preflight Swift flag, and
