@@ -259,6 +259,15 @@ to the immutable checkpoint. The tests were therefore rerun from clean
 linked evidence delta. Physical execution remains paused until both reviewers
 accept that corrected evidence binding.
 
+Quality then returned `Pass`, P0–P3 none. Architecture confirmed the
+implementation and provenance boundaries but returned `Fail` with one P2
+documentation-accuracy finding: the structured test result reported no
+warnings, while each bound raw build log contained three
+`appintentsmetadataprocessor` metadata-skipped warnings. The evidence now
+records both layers explicitly and no longer claims that the raw logs are
+warning-free. No implementation retest is required; physical execution remains
+paused until the corrected statement is independently accepted.
+
 The two independent Human-visible/XCTest-invisible observations invalidate
 further accessibility-owner guessing. Before physical execution resumes, the
 driver must instead implement the reviewed coordinate contract below:

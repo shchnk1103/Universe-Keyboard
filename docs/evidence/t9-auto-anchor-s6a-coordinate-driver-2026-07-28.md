@@ -281,11 +281,25 @@ Build logs:
 - B:
   `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-28T15-14-50-465Z_pid60203_d980e247.log`
 
-Both runs reported zero failures, skips, warnings and errors. The prior
-KeyboardCore `751 / 751`, focused storage `6 / 6`, RimeBridge `33` pass with
-`15` external-fixture skips, vendor verification and ordinary Release negative
-scan are carried forward from the already reviewed pre-installation baseline:
-this delta changes none of their source or build inputs. They are not
+Both XcodeBuildMCP structured results reported zero failures, skips, warnings
+and errors. The bound raw logs each contain three identical
+`appintentsmetadataprocessor` warnings:
+
+```text
+warning: Metadata extraction skipped, no AppIntents.framework dependency found
+```
+
+These six raw-log warnings are retained rather than rewritten as zero. The
+message comes from metadata extraction for targets without an AppIntents
+dependency; this delta changes only a UI-test source and documentation, and
+does not change App Intents source, dependencies or build settings. It does not
+invalidate the selected UI contract results, but remains explicit build-log
+noise and is not a zero-warning Release claim.
+
+The prior KeyboardCore `751 / 751`, focused storage `6 / 6`, RimeBridge `33`
+pass with `15` external-fixture skips, vendor verification and ordinary Release
+negative scan are carried forward from the already reviewed pre-installation
+baseline: this delta changes none of their source or build inputs. They are not
 misrepresented as newly rerun evidence.
 
 This validation proves the deterministic driver contracts and compilation
