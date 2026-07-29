@@ -247,6 +247,18 @@ The following pre-run attempts are retained and are not valid matrix arms:
     potentially private diagnostics and UI attachments were not opened,
     exported or copied. The attempt is invalid and the matrix remains `0 / 5`.
 
+The host-frame ordering remediation is immutable at
+`ba98ecf73114f95436b37a1181a8386660cd6b5d` with parent
+`0a0883369001ef1b8514d9309c14b4f8e9bddb76`. From a clean checkpoint,
+Release-like A and B each passed the six selected content-free UI contracts.
+Independent Architecture returned `Pass`, P0–P3 none. Independent Quality
+found no code defect but returned `Fail` with one P2 evidence-provenance
+finding because the first `6 / 6` record did not bind its build/log artifacts
+to the immutable checkpoint. The tests were therefore rerun from clean
+`ba98ecf`, and their exact invocations and artifacts are now recorded in the
+linked evidence delta. Physical execution remains paused until both reviewers
+accept that corrected evidence binding.
+
 The two independent Human-visible/XCTest-invisible observations invalidate
 further accessibility-owner guessing. Before physical execution resumes, the
 driver must instead implement the reviewed coordinate contract below:

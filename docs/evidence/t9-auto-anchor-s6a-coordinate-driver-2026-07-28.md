@@ -226,16 +226,68 @@ the user's Home-screen application layout.
 
 ### Remediation validation
 
-Both Release-like Simulator arms compiled and passed the six selected
-content-free UI contracts, including the new foreground-host snapshot and
-prepared-geometry error-separation contract:
+#### Immutable delta scope
+
+- Implementation checkpoint:
+  `ba98ecf73114f95436b37a1181a8386660cd6b5d`
+- Parent checkpoint:
+  `0a0883369001ef1b8514d9309c14b4f8e9bddb76`
+- Pre-run state: `git status --short --branch` reported only
+  `## codex/t9-auto-anchor-s5-checkpoint`.
+- Delta: one UI-test driver plus this Assignment/evidence only; no production
+  source, package source, project build setting, scheme or configuration file.
+
+The first pre-commit A/B `6 / 6` runs are retained as development evidence but
+are not used for checkpoint provenance. After Quality reported that P2 gap,
+both Release-like Simulator arms were rebuilt and rerun from clean
+`ba98ecf`. Each passed the six selected content-free UI contracts, including
+the new foreground-host snapshot and prepared-geometry error-separation
+contract.
+
+Both runs used scheme `UniverseKeyboardUITests`, configuration `Release`,
+iPhone 17 Pro Max iOS 27 Simulator
+`06C5BC3E-7599-4761-A1A2-71DAEA991474`, `CODE_SIGNING_ALLOWED=NO`,
+`ARCHS=arm64` and `ONLY_ACTIVE_ARCH=YES`. A used:
+
+```text
+OTHER_SWIFT_FLAGS=$(inherited) -DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+```
+
+B used:
+
+```text
+OTHER_SWIFT_FLAGS=$(inherited) -DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+-DT9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED
+```
+
+Both selected exactly:
+
+- `testFrozenFixtureContract`
+- `testContentFreeIntervalStatisticsContract`
+- `testContentFreeGeometryContracts`
+- `testForegroundHostSnapshotAndPreparedGeometryContracts`
+- `testContentFreeEvidenceValidatorContracts`
+- `testContentFreeEvidenceValidatorFailsClosed`
 
 | Arm | Result | Result bundle |
 |---|---:|---|
-| A (`T9_AUTO_ANCHOR_DEVICE_PREFLIGHT`) | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-28T15-06-35-009Z_pid60203_b64c3673.xcresult` |
-| B (common condition + `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED`) | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-28T15-08-16-267Z_pid60203_958985dd.xcresult` |
+| A (`T9_AUTO_ANCHOR_DEVICE_PREFLIGHT`) | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-28T15-13-26-257Z_pid60203_ce55e7ad.xcresult` |
+| B (common condition + `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED`) | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-28T15-14-50-465Z_pid60203_9008559a.xcresult` |
 
-Both runs reported zero failures, skips, warnings and errors. This validation
-proves the deterministic driver contracts and compilation symmetry only; a new
-signed physical A1 build plus fresh Human readiness confirmation remain
-mandatory before another physical attempt.
+Build logs:
+
+- A:
+  `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-28T15-13-26-257Z_pid60203_249daf4f.log`
+- B:
+  `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-28T15-14-50-465Z_pid60203_d980e247.log`
+
+Both runs reported zero failures, skips, warnings and errors. The prior
+KeyboardCore `751 / 751`, focused storage `6 / 6`, RimeBridge `33` pass with
+`15` external-fixture skips, vendor verification and ordinary Release negative
+scan are carried forward from the already reviewed pre-installation baseline:
+this delta changes none of their source or build inputs. They are not
+misrepresented as newly rerun evidence.
+
+This validation proves the deterministic driver contracts and compilation
+symmetry only; a new signed physical A1 build plus fresh Human readiness
+confirmation remain mandatory before another physical attempt.
