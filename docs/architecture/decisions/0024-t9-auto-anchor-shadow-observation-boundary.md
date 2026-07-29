@@ -333,10 +333,13 @@ The one canonical coordinate space is the current keyboard
 `view.window.windowScene.screen.coordinateSpace` in portrait logical points
 with top-left origin. This is the iOS 27 context-owned form of the active
 physical screen, not deprecated global screen lookup. A geometry record carries
-screen bounds, native scale, portrait orientation, keyboard-container frame and
-slot rectangles. Screen, keyboard and slots must be finite and strictly
-positive; each slot is at least `30 × 30` points, wholly inside the keyboard and
-screen, and non-overlapping. The keyboard must be wholly on-screen with
+screen bounds, native scale, portrait orientation, the T9 hit-target
+interaction envelope and slot rectangles. The envelope is canonically the
+union of the eight serialized slot rectangles within the existing geometry
+tolerance; it is not the `UIInputViewController` root view, keyboard chrome or
+container frame. Screen, envelope and slots must be finite and strictly
+positive; each slot is at least `30 × 30` points, wholly inside the envelope
+and screen, and non-overlapping. The envelope must be wholly on-screen with
 `minY ≥ 0.5 × screenHeight`. Slots must match the frozen row-major topology
 `2 + 3 + 3`: center Y differs by at most four points within
 each row, center X strictly increases within a row, and row centers strictly

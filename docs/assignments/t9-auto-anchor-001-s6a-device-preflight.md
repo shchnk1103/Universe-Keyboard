@@ -341,18 +341,21 @@ driver must instead implement the reviewed coordinate contract below:
   with top-left origin, never pixels, Extension-local or window-local
   coordinates.
   The canonical record includes screen bounds, native scale, portrait
-  orientation and the keyboard container frame. The driver verifies that the
-  logical screen bounds equal the foreground Reminders frame before converting
-  each slot center to normalized screen offsets;
+  orientation and the T9 hit-target interaction envelope. That envelope must
+  equal the union of the eight serialized slot rectangles within the existing
+  geometry tolerance; it is not the `UIInputViewController` root view,
+  keyboard chrome or container frame. The driver verifies that the logical
+  screen bounds equal the foreground Reminders frame before converting each
+  slot center to normalized screen offsets;
 - the driver obtains the geometry through the internal evidence view, returns
   to the same Reminders editor, and taps the centers of those rectangles on the
   fixed monotonic schedule. It never discovers, labels or operates a numeric
   keypad;
 - geometry is accepted only when the token and marker match the arm; screen,
-  keyboard and all eight rectangles are finite with strictly positive width
-  and height; every slot is at least `30 × 30` logical points, is wholly inside
-  both the screen and keyboard frame, and does not overlap another slot. The
-  keyboard frame itself must be wholly inside the screen with
+  hit-target envelope and all eight rectangles are finite with strictly
+  positive width and height; every slot is at least `30 × 30` logical points,
+  is wholly inside both the screen and envelope, and does not overlap another
+  slot. The envelope itself must be wholly inside the screen with
   `minY ≥ 0.5 × screenHeight`;
 - slots must form the frozen `2 + 3 + 3` row-major topology: `0...1`, `2...4`
   and `5...7` share rows within 4 logical points of center Y; center X strictly

@@ -147,6 +147,12 @@ final class T9DevicePreflightUITests: XCTestCase {
         ) {
             $0.union($1)
         }
+        func assertInvalid(_ candidate: Geometry) {
+            XCTAssertEqual(
+                geometryError(candidate, foregroundFrame: candidate.screen),
+                .geometryInvalid
+            )
+        }
         XCTAssertNil(
             geometryError(
                 replacingGeometry(
@@ -156,12 +162,18 @@ final class T9DevicePreflightUITests: XCTestCase {
                 foregroundFrame: geometry.screen
             )
         )
-        func assertInvalid(_ candidate: Geometry) {
-            XCTAssertEqual(
-                geometryError(candidate, foregroundFrame: candidate.screen),
-                .geometryInvalid
+        assertInvalid(
+            replacingGeometry(
+                in: geometry,
+                keyboard: hitTargetEnvelope.insetBy(dx: -1, dy: -1)
             )
-        }
+        )
+        assertInvalid(
+            replacingGeometry(
+                in: geometry,
+                keyboard: hitTargetEnvelope.offsetBy(dx: 1, dy: 0)
+            )
+        )
 
         var slots = geometry.slots
         slots[0] = CGRect(x: slots[0].minX, y: slots[0].minY, width: 0, height: 45)
@@ -1102,6 +1114,20 @@ final class T9DevicePreflightUITests: XCTestCase {
                 return .geometryInvalid
             }
         }
+        guard let firstSlot = geometry.slots.first else {
+            return .geometryInvalid
+        }
+        let canonicalHitTargetEnvelope = geometry.slots.dropFirst().reduce(
+            firstSlot
+        ) {
+            $0.union($1)
+        }
+        guard rectApproximatelyEqual(
+            geometry.keyboard,
+            canonicalHitTargetEnvelope
+        ) else {
+            return .geometryInvalid
+        }
 
         let rowGroups = [Array(0...1), Array(2...4), Array(5...7)]
         var rowCenters: [CGFloat] = []
@@ -1332,7 +1358,6 @@ final class T9DevicePreflightUITests: XCTestCase {
     private func syntheticGeometry(token: String? = nil) -> Geometry {
         let token = token ?? syntheticToken
         let screen = CGRect(x: 0, y: 0, width: 390, height: 844)
-        let keyboard = CGRect(x: 0, y: 540, width: 390, height: 304)
         let slots = [
             CGRect(x: 180, y: 570, width: 70, height: 45),
             CGRect(x: 260, y: 570, width: 70, height: 45),
@@ -1343,6 +1368,9 @@ final class T9DevicePreflightUITests: XCTestCase {
             CGRect(x: 180, y: 676, width: 70, height: 45),
             CGRect(x: 260, y: 676, width: 70, height: 45),
         ]
+        let keyboard = slots.dropFirst().reduce(slots[0]) {
+            $0.union($1)
+        }
         let provisional = Geometry(
             token: token,
             digest: "",
