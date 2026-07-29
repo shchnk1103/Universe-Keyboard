@@ -681,3 +681,55 @@ These local results do not authorize another physical retry. Independent
 Architecture and Quality review, a fresh signed A, artifact review, read-only
 device precheck and fresh Human readiness remain mandatory. The matrix remains
 `0 / 5`.
+
+### Canonical-envelope review remediation
+
+The first Architecture review accepted the hit-target-union direction but
+failed the combined checkpoint because the ADR/Assignment still described a
+keyboard-container frame and the validator also accepted larger lower-screen
+rectangles. Checkpoint `0f52d2be2f537413e2e5e765db8030556157525a`
+closes both findings:
+
+- ADR 0024 and this Assignment define `keyboard` as the T9 hit-target
+  interaction envelope, canonically equal to the union of the eight serialized
+  slot rectangles within the existing geometry tolerance; it is explicitly
+  not the Extension root view, keyboard chrome or container;
+- validation recomputes the union from all eight parsed slots and requires the
+  recorded envelope to match it;
+- the synthetic canonical geometry now uses that union, while enlarged,
+  offset and full-screen envelopes all fail closed.
+
+The checkpoint's parent is
+`d5c1ee0b3d42f4cf9c92a7070d268b5fe7f1bdc7`. Immediately before validation,
+`git status --porcelain=v1` returned no output and `git rev-parse HEAD`
+returned `0f52d2b`.
+
+Release-like A and B reused the same Release configuration, simulator,
+architecture controls, exact six non-physical content-free methods and
+arm-specific flags documented above, with separate DerivedData:
+
+- A: `/private/tmp/universe-keyboard-0f52d2b-canonical-envelope-a`;
+- B: `/private/tmp/universe-keyboard-0f52d2b-canonical-envelope-b`.
+
+| Arm | Result | Build/test log | Result bundle |
+|---|---:|---|---|
+| A | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-29T12-26-28-122Z_pid23283_3338f896.log` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-29T12-26-28-123Z_pid23283_cd167457.xcresult` |
+| B | `6 / 6` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-07-29T12-29-31-775Z_pid23283_4def1979.log` | `~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/result-bundles/test_sim_2026-07-29T12-29-31-775Z_pid23283_961cac85.xcresult` |
+
+The A/B log SHA256 values are respectively
+`dc26db31bdf5ae96e85b8af738360ba0f1e3c80f394b6900f547d23f4464c0da`
+and
+`e1506ec49f890c67871e304a8e54e9d2dd3c36c35a0b0650c26cbeb2c2e1c365`.
+Structured results reported zero failures, skips, runtime warnings and errors;
+each raw log retains three identical non-blocking `AppIntents`
+metadata-extraction-skipped warnings.
+
+This checkpoint changes only the UI-test validator/contracts and authority
+documents after implementation `af37383`; it changes no production build
+input. The ordinary Release build, binary hash and negative strings scan bound
+to clean `af37383` above therefore remain the production-isolation evidence.
+
+These results still do not authorize a physical retry. Independent narrow
+Architecture/Quality re-review, a fresh signed A, artifact review, read-only
+device precheck and fresh Human readiness remain mandatory. The matrix remains
+`0 / 5`.
