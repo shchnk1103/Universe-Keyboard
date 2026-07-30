@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S22 — 更强控制器自动锚定设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — automated + exploratory B2→B3 direction PASS; product goal not met; review/routing pending`
+**Lifecycle status:** `Exploratory complete — B2→B3 direction PASS; product goal not met; no default attempt-N; successor S2.3 design authorized`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Predecessor:** [`T9-AUTO-ANCHOR-001-S21`](t9-auto-anchor-001-s21-rolling-design.md)
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
@@ -365,18 +365,32 @@ Evidence:
   182.0→178.8); product north star **not met** (3 residual ≥100 ms spikes)
 - Ordinary Release restored gate-off
 
-Remaining: optional independent implementation review; Product routing
-(stop / S2.3 earlier first-anchor / RIME-side).
+### Product routing (2026-07-30, closed for S2.2 expansion)
+
+Per PD “Product routing after S2.2 B2→B3 exploratory pair (2026-07-30)” and
+Human “按推荐执行”:
+
+| Decision | Status |
+|---|---|
+| S2.2 product goal | **Not met** — retain default-off base |
+| Default further attempt-N (attempt 4+) | **Forbidden** without new PD |
+| Force_gc / Lua primary | Remains closed |
+| Next knife | **S2.3 earlier first-anchor** (design only) |
+| Successor | [`T9-AUTO-ANCHOR-001-S23`](t9-auto-anchor-001-s23-earlier-first-anchor.md) |
+
+Optional independent implementation review of `459908d` may still occur; it is
+not a gate for opening S2.3 design.
 
 Remediation closed the listed P1/P2 gaps in-document and added ADR §17–20.
 
 ## Handoff
 
-- **Handoff Target:** Architecture & Knowledge Steward and Quality, Performance
-  & Release Maintainer for **re-review**; then Product Lead for implementation
-  authorization only after both Pass with P0/P1 = 0
-- **Required Handoff Content:** this Assignment, ADR 0024 §17–20, PD routing
-  section, S2.1 matrix evidence link
+- **Handoff Target:** Product/Architecture for S2.3 earlier-first-anchor design;
+  optional Architecture/Quality implementation review of S2.2 remains available
+  but is not blocking for S2.3 design start.
+- **Required Handoff Content:** this Assignment, evidence
+  [`../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md`](../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md),
+  ADR 0024 §17–20, PD routing after S2.2
 - **Revalidation Trigger:** any change to attempt cap, syllable increment,
   first-anchor depth, ordinal caps, device method, privacy boundary or Release
   gate intent

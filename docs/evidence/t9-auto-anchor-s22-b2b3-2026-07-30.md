@@ -166,9 +166,13 @@ replacement-installed:
 - Not proof that further automatic attempts alone will clear pre-anchor e16.
 - Not reopening Lua/force_gc as primary remedy.
 
-## Remaining
+## Remaining / routing (closed 2026-07-30)
 
-1. Optional Architecture/Quality implementation review of `459908d` + this
-   evidence.
-2. Product routing: stop at default-off S2.2, open S2.3 (e.g. earlier first
-   anchor for e16), or pivot to RIME-side residual work.
+Product accepted the KOS recommendation (“按推荐执行”):
+
+1. **S2.2 closed for default expansion** — no attempt 4+ without a new PD.
+2. **Next knife = S2.3 earlier first-anchor** (design only) targeting residual
+   pre-first-anchor **e16-class** spikes; see
+   [`../assignments/t9-auto-anchor-001-s23-earlier-first-anchor.md`](../assignments/t9-auto-anchor-001-s23-earlier-first-anchor.md).
+3. Optional Architecture/Quality implementation review of `459908d` remains
+   available and non-blocking for S2.3 design.

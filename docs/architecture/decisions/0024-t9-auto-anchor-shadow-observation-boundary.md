@@ -1,8 +1,9 @@
 # ADR 0024: T9 Auto-Anchor Observation And Reversible Prototype Boundary
 
-- **Status:** Proposed — S4 validated; S2.1 implemented and matrix complete
-  (product goal not met); S2.2 three-attempt design under Architecture/Quality
-  remediation; shipping decision deferred
+- **Status:** Proposed — S4 validated; S2.1/S2.2 implemented with exploratory
+  direction evidence (product goal not met); S2.2 closed for default attempt-N
+  expansion; S2.3 earlier-first-anchor design under review; shipping decision
+  deferred
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
@@ -698,6 +699,83 @@ Stop if the design requires:
 - host-text, 26-key, schema/vendor, user-setting or Release-default changes;
 - treating Path education as the primary performance fix.
 
+**S2.3 note:** Product closed default attempt-N expansion after the S2.2
+exploratory pair and authorized design-only consideration of **earlier
+first-anchor floors** under §21–24. Until S2.3 is independently reviewed and
+Product authorizes implementation, runtime attempt-1 floors remain the S4
+values (`minimumSourceDigitCount = 18`). One-syllable first-anchor remains
+out of the S2.3 primary contract.
+
+## S2.3 proposed amendment: earlier first-anchor floors
+
+After the S2.2 Human exploratory B2→B3 pair (direction PASS; product goal not
+met), residual ≥100 ms spikes still include a **pre-first-anchor e16-class**
+event while attempt 1 continues to accept near physical **18**. Product
+authorized **design only** of earlier first-anchor eligibility:
+[`T9-AUTO-ANCHOR-001-S23`](../../assignments/t9-auto-anchor-001-s23-earlier-first-anchor.md).
+
+This section is the architecture patch for that design. It does **not**
+authorize implementation, Release enablement or Product Gate until Architecture
+and Quality pass the linked Assignment and Product issues an explicit
+implementation instruction.
+
+### 21. Earlier first-anchor configuration delta
+
+When the S2.3 internal gate is enabled, attempt-1 proposal evaluation uses:
+
+| Field | Gate off (current) | Gate on (S2.3) |
+|---|---:|---:|
+| `minimumSourceDigitCount` | 18 | **12** |
+| `minimumClosedSyllableCount` | 2 | 2 |
+| `maximumAnchoredSyllableCount` | 2 (experimental) | 2 |
+| other conservation / slot floors | S4 | S4 unchanged |
+
+Attempt ceilings remain S2.1 (**2**) or S2.2 (**3**) depending on rolling/triple
+gates. S2.3 does **not** authorize a fourth automatic apply attempt.
+
+Attempt 1 still requires exactly **two** complete catalog-legal syllables from
+the already-returned page-zero snapshot. One-syllable first-anchor is not part
+of this primary contract.
+
+### 22. Mechanism ordinal for earlier first accept
+
+On the frozen 38-key fixture, physical ordinal prefers `T9SEG event` when
+`action` diverges. Under any S2.3-enabled arm, attempt 1 is mechanism-valid
+only when its physical ordinal is **≤ 15**. Failure to meet ≤15 while staying
+legal under the two-syllable contract is a **stop-fast** to Product, not a
+license to weaken conservation or open one-syllable silently.
+
+Rolling/triple ordinal caps are unchanged: attempt 2 ≤23 after attempt 1;
+attempt 3 ≤28 after attempt 2 when those gates are enabled.
+
+### 23. Evidence boundary for earlier-first arms
+
+Logical arms (default-off; names frozen):
+
+- `A0` / `A1` / `B2` / `B3`: unchanged from §16 / §20;
+- `A1e` / `B2e` / `B3e`: corresponding base arm plus
+  `T9_AUTO_ANCHOR_EARLIER_FIRST_PREFLIGHT_ENABLED`.
+
+Primary Human exploratory pair after implementation authorization is
+**B3 → B3e**. Direction scoring remains experiment routing only.
+
+Exact extra `replaceInput` endpoint budgets remain those of §19.
+
+### 24. S2.3 stop conditions
+
+Stop if the design requires:
+
+- a fourth automatic apply attempt, rejection-retry loops, or two automatic
+  transactions on one key;
+- one-syllable first-anchor as a silent default (requires separate Product
+  re-authorization after stop-fast evidence);
+- adaptive unbounded backoff or rewriting an accepted automatic prefix;
+- weaker conservation or learned-rank Path authority;
+- candidate-window/later-page scans, another session or async RIME;
+- multi-step validation rollback, persistence or content-bearing logs;
+- host-text, 26-key, schema/vendor, user-setting or Release-default changes;
+- treating Path education as the primary performance fix.
+
 ## Stage 3 read-only amendment: later opportunity after rejection
 
 After the single S2 transaction has rejected and restored pure digits, a
@@ -855,6 +933,10 @@ and would require a separate product, privacy and architecture decision.
 
 - [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
 - [`T9-AUTO-ANCHOR-001 Assignment`](../../assignments/t9-auto-anchor-001.md)
+- [`S2.1 design`](../../assignments/t9-auto-anchor-001-s21-rolling-design.md)
+- [`S2.2 design`](../../assignments/t9-auto-anchor-001-s22-stronger-controller-bounding.md)
+- [`S2.3 design`](../../assignments/t9-auto-anchor-001-s23-earlier-first-anchor.md)
+- [`S2.2 B2→B3 evidence`](../../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md)
 - [`S5 review handoff`](../../assignments/t9-auto-anchor-001-s5-review-handoff.md)
 - [`S5 evidence`](../../evidence/t9-auto-anchor-personalization-s5-2026-07-27.md)
 - [`RIME user dictionary`](../../RIME_USER_DICTIONARY.md)

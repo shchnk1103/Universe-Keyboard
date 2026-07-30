@@ -1,7 +1,7 @@
 # Product Decision: T9-AUTO-ANCHOR-001 Authorization
 
 **Decision ID:** `PD-T9-AUTO-ANCHOR-001`
-**Lifecycle status:** `Recorded — S2.1 matrix complete (not product goal); north star reaffirmed; S2.2 controller design authorized`
+**Lifecycle status:** `Recorded — S2.2 exploratory complete (direction PASS, product goal not met); no default attempt-N expansion; S2.3 earlier-first-anchor design authorized`
 **Date / timezone:** `2026-07-27 Asia/Shanghai`
 **Decision source:** Human Product Owner instructions in active Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`
@@ -244,6 +244,75 @@ Human `B2→B3` exploratory pair after automated evidence.
 Internal B3 identity is source-visible and default-off:
 `T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED` may be added only on top of
 the A1 and B2 preflight conditions.
+
+## Product routing after S2.2 B2→B3 exploratory pair (2026-07-30)
+
+On `2026-07-30 Asia/Shanghai`, after S2.2 implementation and the valid Human
+exploratory **B2→B3** pair were recorded in
+[`t9-auto-anchor-s22-b2b3-2026-07-30.md`](../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md),
+and the Human Product Owner replied “按推荐执行” to the KOS 2.0 routing
+recommendation, Product records the following.
+
+### S2.2 product positioning (closed for product goal; retained as base)
+
+S2.2 (S4 first-anchor + S2.1 rolling + one additional rolling extension under
+internal B3 gate only):
+
+- **Mechanism:** useful and contract-valid (Layer 1–2 PASS; valid B3 accepts at
+  physical events 18/21/24 on the frozen fixture).
+- **Performance direction:** exploratory **PASS** on one B2→B3 pair
+  (≥100 ms count 4→3; worst 182.0→178.8 not increased). Not a multi-pair
+  robust claim; not Product Gate.
+- **Product goal:** **not met** for “no Path, long composition still smooth”.
+  Residual ≥100 ms spikes remain at **e16** (pre-first-anchor), **e33** and
+  **e35**. The extra dose mainly compressed the mid-string **e25-class** spike.
+- **Shipping:** ordinary Release remains gate-off; no Product Gate; no public
+  performance claim.
+- **Retention:** default-off S2.1/S2.2 implementation and evidence remain the
+  safe automatic-bounding base. They are not deleted solely because the product
+  goal is unmet.
+
+### Stop default attempt-N expansion
+
+Further **attempt 4+** automatic apply attempts are **not** authorized by
+default. Opening a fourth attempt requires a new Product amendment with
+Architecture/Quality review. S2.2 does not grow by silent dose escalation.
+
+Force_gc / Lua-as-primary and T9-only schema primary tracks remain **closed**
+unless new contradictory evidence reopens them under a separate Product
+decision. Path education remains optional help, not the primary latency
+remedy.
+
+### Next knife (authorized — design only)
+
+Product prioritizes **earlier first-anchor** to attack the residual
+**pre-first-anchor e16-class** spike, while retaining the accepted two-syllable
+first-anchor product choice and the existing S2.1/S2.2 rolling stack.
+
+This section authorizes **design only** of child Assignment
+[`T9-AUTO-ANCHOR-001-S23`](../assignments/t9-auto-anchor-001-s23-earlier-first-anchor.md):
+
+- diagnose why first accept still lands at physical ~18 under the S4 floor
+  (`minimumSourceDigitCount = 18`, two closed syllables);
+- freeze one primary earlier-first-anchor contract (digit/slot floors, arm
+  identity, ordinal mechanism validity, rollback/ownership inheritance);
+- define Layer 1–3 acceptance and Human log procedure using existing content-free
+  App performance signals;
+- keep Path/Partial/Delete ownership, conservation, content-free diagnostics and
+  default-off internal gates.
+
+This section does **not** authorize:
+
+- implementation, Release enablement, user settings or Product Gate;
+- attempt 4+, rejection-retry loops, candidate-window scans, second sessions or
+  background RIME;
+- one-syllable first-anchor as the silent default (any one-syllable fork requires
+  explicit Product re-authorization after stop-fast evidence);
+- reopening force_gc/Lua as the primary latency track without new evidence;
+- treating Path education as the primary performance fix.
+
+Implementation of S2.3 requires a later explicit Product instruction after
+Architecture and Quality independently pass the frozen S2.3 design.
 
 ## S6-A physical-device preflight authorization
 

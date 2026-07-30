@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S2.2 B2→B3 exploratory direction PASS; product goal not met`
+**Lifecycle status:** `Active — S2.2 exploratory complete (goal not met); S2.3 earlier-first-anchor design authorized`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -310,6 +310,10 @@ then implementation:
 S2.2 Human B2→B3 exploratory evidence (direction PASS; goal not met):
 [`../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md`](../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md).
 
+S2.2 product goal remains unmet; Product closed default attempt-N expansion and
+authorized S2.3 earlier-first-anchor **design only**:
+[`t9-auto-anchor-001-s23-earlier-first-anchor.md`](t9-auto-anchor-001-s23-earlier-first-anchor.md).
+
 ### 2026-07-28 supplementary ETTrace attribution
 
 - The same frozen 38-slot sequence was sampled in Reminders with the software
@@ -333,8 +337,8 @@ S2.2 Human B2→B3 exploratory evidence (direction PASS; goal not met):
 
 ## Handoff
 
-- **Handoff Target:** Architecture and Quality for the S2.1 design review, then
-  Product Lead for any implementation decision.
+- **Handoff Target:** Architecture and Quality for the S2.3 earlier-first-anchor
+  design review, then Product Lead for any S2.3 implementation decision.
 - **Required Handoff Content:** changed files, proposal/validation/rollback
   state semantics, exact RIME-call budget, tests/build results, frozen-sequence
   A/B evidence, rejected cases and remaining privacy/performance limits.
