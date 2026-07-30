@@ -126,12 +126,20 @@ public final class ResponsiveRimeSessionCoordinator {
         lastAcceptReceipt = receipt
     }
 
-    /// Process one pending item and invoke the publish handler.
+    /// When true, `performOrderedNow` / `drainOneStep` skip the publish handler.
+    /// Used so nested session work during snapshot apply cannot re-enter apply
+    /// and steal processKey contexts (Arch R3 P1-2). Prefer underlying-engine
+    /// post-process; this flag is a safety net if Bridge is still hit.
+    private var publishHandlerSuppressed = false
+
+    /// Process one pending item and invoke the publish handler (unless suppressed).
     @discardableResult
     public func drainOneStep() -> Bool {
         guard owner.processNext() else { return false }
         completedPublishCount += 1
-        publishHandler?(owner.lastPublished)
+        if !publishHandlerSuppressed {
+            publishHandler?(owner.lastPublished)
+        }
         return true
     }
 
@@ -144,6 +152,14 @@ public final class ResponsiveRimeSessionCoordinator {
         _ = owner.accept(work, actionID: actionID)
         flushPending()
         return owner.lastPublished
+    }
+
+    /// Run `body` without firing the publish handler (reentrancy guard).
+    public func withPublishHandlerSuppressed<T>(_ body: () -> T) -> T {
+        let previous = publishHandlerSuppressed
+        publishHandlerSuppressed = true
+        defer { publishHandlerSuppressed = previous }
+        return body()
     }
 
     /// Drain any pending work without enqueueing (e.g. before lifecycle ops).

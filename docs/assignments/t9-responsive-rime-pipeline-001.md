@@ -197,12 +197,13 @@
 - [x] R3 implementation (Executor) — Path/auto-anchor context; chrome unwrap;
   handle key→delete tests; default-off
 - [x] Independent Architecture review of R3 — **Pass with conditions**
-  ([review](t9-responsive-pipeline-001-r3-architecture-review.md); 0 P0, 2 P1:
-  context FIFO not cleared on epoch/abandon; publish post-process reentrancy
-  steals contexts via Bridge). P1-3 off-main **still open**.
+  ([review](t9-responsive-pipeline-001-r3-architecture-review.md); 0 P0, 2 P1)
 - [x] Independent Quality review of R3 — **Pass with conditions**
-  ([review](t9-responsive-pipeline-001-r3-quality-review.md); 0 P0, 1 P1:
-  same context/epoch gap; re-ran 35/813 green). Keep gate default off.
+  ([review](t9-responsive-pipeline-001-r3-quality-review.md); 0 P0, 1 P1)
+- [x] R3 P1 remediation (2026-07-30) — abandon/epoch clears contexts; only
+  `pk-*` consumes FIFO; post-process uses underlying engine + publish suppress;
+  tests for abandon clear / multi-key / ord-not-steal. **Arch P1-3 off-main
+  still open.** Keep gate default off. Re-review optional.
 - [ ] Product Gate — **not claimed**
 - [ ] R4+ / off-main (P1-3) — **not granted**
 

@@ -256,4 +256,83 @@ final class ResponsiveRimeR2CoordinatorTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(pathEffects, 1)
         XCTAssertTrue(controller.responsiveKeyApplyContexts.isEmpty)
     }
+
+    // MARK: - R3 P1 remediation
+
+    func testAbandonClearsResponsiveKeyApplyContexts() {
+        let engine = FakeRimeEngine()
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = engine
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        XCTAssertFalse(controller.responsiveKeyApplyContexts.isEmpty)
+
+        _ = controller.abandonCompositionForVisibilityChange()
+        XCTAssertTrue(
+            controller.responsiveKeyApplyContexts.isEmpty,
+            "epoch barrier must drop deferred apply contexts"
+        )
+        // New keys after abandon must not reuse stale contexts.
+        _ = controller.handle(.insertKey("w"))
+        controller.responsiveRimeCoordinator?.flushPending()
+        XCTAssertEqual(engine.sessionComposition, "w")
+    }
+
+    func testMultiKeyDrainDoesNotStealContextsViaNestedReplace() {
+        // Two deferred keys; after first apply, Path retain may call replaceInput
+        // on underlying (not Bridge). Second key must still receive its context.
+        let engine = FakeRimeEngine()
+        engine.appendDigitsToComposition = true
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = true
+        controller.isResponsiveRimePipelineEnabled = true
+        var publishCount = 0
+        controller.onResponsivePresentationNeeded = { _ in
+            publishCount += 1
+        }
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        _ = controller.handle(.insertKey("6"))
+        _ = controller.handle(.insertKey("4"))
+        controller.responsiveRimeCoordinator?.flushPending()
+
+        XCTAssertEqual(engine.sessionComposition, "64")
+        XCTAssertTrue(controller.responsiveKeyApplyContexts.isEmpty)
+        XCTAssertGreaterThanOrEqual(publishCount, 1)
+    }
+
+    func testOrdPublishDoesNotConsumeProcessKeyContext() {
+        let engine = FakeRimeEngine(dictionary: ["ni": ["你"]])
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = engine
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        // One pending deferred key context.
+        controller.enqueueResponsiveKeyApplyContext(
+            rimeKey: "n",
+            previousT9PathState: .empty,
+            previousRawForTrace: nil
+        )
+        XCTAssertEqual(controller.responsiveKeyApplyContexts.count, 1)
+
+        // Non-pk ordered work publish must not steal the pk context.
+        let snapshot = controller.responsiveRimeCoordinator?.performOrderedNow(
+            .replaceInput("ni", boundEpoch: nil, boundRevision: nil)
+        )
+        XCTAssertNotNil(snapshot)
+        // apply may run via publishHandler; ord-* must leave pk context in place.
+        XCTAssertEqual(
+            controller.responsiveKeyApplyContexts.count,
+            1,
+            "ord-* publish must not removeFirst processKey contexts"
+        )
+    }
 }

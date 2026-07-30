@@ -170,3 +170,9 @@ R3 authorized intent（PD + Assignment + evidence）：default-off only；gate-o
 
 R3 在 **独立复跑绿测 + 源码核对** 下交付了授权范围内的主要骨架：deferred publish 的 Path/auto-anchor **context 钩子**、`handle` key→delete 顺序单测、`underlyingRimeEngine` chrome unwrap，且 **Release default-off 隔离仍成立**。  
 Verdict 为 **Pass with conditions**：条件是继续默认关闭；先修 **context FIFO 与 epoch 不同步（P1）** 并补强 Path/auto-anchor 与 multi-action 证据，再谈任何 gate-on 实验信心。本文件 **不**声称 Architecture Pass 或 Product Gate。
+
+---
+
+## Executor P1 remediation addendum (2026-07-30)
+
+Quality P1 (context/epoch) + Arch reentrancy remediated: abandon clears contexts; `pk-*` only consumes FIFO; underlying post-process + publish suppress; new tests. Not an independent Quality re-Pass. Keep gate default off.

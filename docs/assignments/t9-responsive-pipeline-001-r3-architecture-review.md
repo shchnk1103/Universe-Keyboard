@@ -293,6 +293,18 @@ public var underlyingRimeEngine: RimeEngine? {
 
 ---
 
+## Executor P1 remediation addendum (2026-07-30)
+
+| ID | Status |
+|---|---|
+| P1-1 context/epoch | **Remediated:** `clearResponsiveKeyApplyContexts` on abandon/reset; context tagged with `sessionEpoch`; apply drops mismatched epochs |
+| P1-2 reentrancy | **Remediated:** post-process uses `underlyingRimeEngine` + temporary `rimeEngine` swap; only `pk-*` consumes FIFO; `withPublishHandlerSuppressed` safety net |
+| P1-3 off-main | **Still open** |
+
+Not an independent Architecture re-Pass.
+
+---
+
 ## Summary table (handoff)
 
 | Review question | Answer |

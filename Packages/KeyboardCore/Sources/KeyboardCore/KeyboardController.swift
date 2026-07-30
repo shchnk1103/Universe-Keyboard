@@ -64,6 +64,8 @@ public final class KeyboardController {
         let rimeKey: String
         let previousT9PathState: T9PinyinPathState
         let previousRawForTrace: String?
+        /// Pipeline epoch at accept time; dropped if epoch advances without apply.
+        let sessionEpoch: UInt64
     }
 
     /// Underlying engine when a `ResponsiveRimeEngineBridge` is installed (R3 chrome).
@@ -145,76 +147,128 @@ public final class KeyboardController {
 
     /// Apply a published responsive snapshot on MainActor and run gate-off-parity
     /// Path / auto-anchor post-processing when a key context is available (R3).
+    ///
+    /// R3 P1 fixes:
+    /// - Only consume FIFO context for deferred `pk-*` processKey publishes.
+    /// - Drop contexts whose epoch no longer matches the snapshot.
+    /// - Post-process mutations use **underlying** engine (not Bridge) so
+    ///   Path/auto-anchor cannot re-enter `performOrderedNow` and steal contexts.
     func applyResponsivePublishedSnapshot(_ snapshot: ResponsiveRimeSnapshot?) {
         guard isResponsiveRimePipelineEnabled, let snapshot else { return }
-        let ctx = responsiveKeyApplyContexts.isEmpty
-            ? nil
-            : responsiveKeyApplyContexts.removeFirst()
+
+        // Drop contexts invalidated by epoch barriers (abandon / reset / recover).
+        while let head = responsiveKeyApplyContexts.first,
+              head.sessionEpoch != snapshot.sessionEpoch
+        {
+            responsiveKeyApplyContexts.removeFirst()
+        }
+
+        // Nested Bridge publishes (ord-*) must not consume processKey contexts.
+        let ctx: ResponsiveKeyApplyContext?
+        if snapshot.actionID.hasPrefix("pk-"),
+           let head = responsiveKeyApplyContexts.first,
+           head.sessionEpoch == snapshot.sessionEpoch
+        {
+            ctx = responsiveKeyApplyContexts.removeFirst()
+        } else {
+            ctx = nil
+        }
+
         let output = augmentRimeOutputIfNeeded(snapshot.output)
-        guard let engine = rimeEngine else {
+        // Prefer underlying session for post-process (already applied processKey).
+        let engineForPostProcess = underlyingRimeEngine ?? rimeEngine
+        guard let engineForPostProcess else {
             applyRimeOutput(output)
             notifyResponsivePresentation(pathChanged: usesT9InputSemantics)
             return
         }
 
-        if let ctx,
-           rejectUnusableAcceptedT9AutoAnchorDigitIfNeeded(
-               ctx.rimeKey,
-               previousLedger: state.t9ReversibleAutoAnchorState,
-               output: output,
-               using: engine
-           )
-        {
-            notifyResponsivePresentation(pathChanged: true)
-            return
-        }
+        // Temporarily expose underlying as `rimeEngine` so Path resync helpers that
+        // read `self.rimeEngine` do not re-enter the Bridge pipeline (Arch P1-2).
+        // Also suppress publish handler if any Bridge path is still hit.
+        let bridge = rimeEngine as? ResponsiveRimeEngineBridge
+        let runPostProcess = { [self] in
+            if bridge != nil {
+                rimeEngine = engineForPostProcess
+            }
+            defer {
+                if let bridge {
+                    rimeEngine = bridge
+                }
+            }
 
-        if output.composition == nil,
-           output.committedText == nil,
-           !engine.isComposing(),
-           let ctx
-        {
-            let intendedComposition = state.currentComposition + fallbackInputText(for: ctx.rimeKey)
-            if restoreRimeComposition(intendedComposition, using: engine, rebuildSession: true) {
+            if let ctx,
+               rejectUnusableAcceptedT9AutoAnchorDigitIfNeeded(
+                   ctx.rimeKey,
+                   previousLedger: state.t9ReversibleAutoAnchorState,
+                   output: output,
+                   using: engineForPostProcess
+               )
+            {
                 notifyResponsivePresentation(pathChanged: true)
                 return
             }
-            shouldRestoreRimeComposition = true
-            shouldRebuildSessionDuringRestore = true
-            state.lastRimeOutput = nil
-            notifyResponsivePresentation(pathChanged: true)
-            return
-        }
 
-        applyRimeOutput(output)
-        var pathChanged = usesT9InputSemantics
-        if let ctx {
-            var retainedFocusedSegment = false
-            if output.committedText == nil,
-               ctx.rimeKey.count == 1,
-               let digit = ctx.rimeKey.first
+            if output.composition == nil,
+               output.committedText == nil,
+               !engineForPostProcess.isComposing(),
+               let ctx
             {
-                retainedFocusedSegment = retainFocusedT9SegmentAfterAppendingDigit(
-                    previous: ctx.previousT9PathState,
-                    digit: digit
-                )
+                let intendedComposition =
+                    state.currentComposition + fallbackInputText(for: ctx.rimeKey)
+                if restoreRimeComposition(
+                    intendedComposition,
+                    using: engineForPostProcess,
+                    rebuildSession: true
+                ) {
+                    notifyResponsivePresentation(pathChanged: true)
+                    return
+                }
+                shouldRestoreRimeComposition = true
+                shouldRebuildSessionDuringRestore = true
+                state.lastRimeOutput = nil
+                notifyResponsivePresentation(pathChanged: true)
+                return
             }
-            advanceAcceptedT9AutoAnchorDigit(
-                ctx.rimeKey,
-                previousLiveRawInput: ctx.previousRawForTrace,
-                output: output
-            )
-            let autoAnchorOutcome = attemptReversibleT9AutoAnchorIfNeeded(using: engine)
-            if retainedFocusedSegment || autoAnchorOutcome.status != .notEligible {
-                pathChanged = true
+
+            applyRimeOutput(output)
+            var pathChanged = usesT9InputSemantics
+            if let ctx {
+                var retainedFocusedSegment = false
+                if output.committedText == nil,
+                   ctx.rimeKey.count == 1,
+                   let digit = ctx.rimeKey.first
+                {
+                    retainedFocusedSegment = retainFocusedT9SegmentAfterAppendingDigit(
+                        previous: ctx.previousT9PathState,
+                        digit: digit
+                    )
+                }
+                advanceAcceptedT9AutoAnchorDigit(
+                    ctx.rimeKey,
+                    previousLiveRawInput: ctx.previousRawForTrace,
+                    output: output
+                )
+                let autoAnchorOutcome = attemptReversibleT9AutoAnchorIfNeeded(
+                    using: engineForPostProcess
+                )
+                if retainedFocusedSegment || autoAnchorOutcome.status != .notEligible {
+                    pathChanged = true
+                } else if usesT9InputSemantics {
+                    _ = refreshT9PinyinPathState(forceNewProvenance: false)
+                    pathChanged = true
+                }
             } else if usesT9InputSemantics {
                 _ = refreshT9PinyinPathState(forceNewProvenance: false)
-                pathChanged = true
             }
-        } else if usesT9InputSemantics {
-            _ = refreshT9PinyinPathState(forceNewProvenance: false)
+            notifyResponsivePresentation(pathChanged: pathChanged)
         }
-        notifyResponsivePresentation(pathChanged: pathChanged)
+
+        if let coordinator = responsiveRimeCoordinator {
+            coordinator.withPublishHandlerSuppressed(runPostProcess)
+        } else {
+            runPostProcess()
+        }
     }
 
     private func notifyResponsivePresentation(pathChanged: Bool) {
@@ -225,16 +279,22 @@ public final class KeyboardController {
         onResponsivePresentationNeeded?(effects)
     }
 
+    func clearResponsiveKeyApplyContexts() {
+        responsiveKeyApplyContexts.removeAll(keepingCapacity: true)
+    }
+
     func enqueueResponsiveKeyApplyContext(
         rimeKey: String,
         previousT9PathState: T9PinyinPathState,
         previousRawForTrace: String?
     ) {
+        let epoch = responsiveRimeCoordinator?.diagnostics.sessionEpoch ?? 1
         responsiveKeyApplyContexts.append(
             ResponsiveKeyApplyContext(
                 rimeKey: rimeKey,
                 previousT9PathState: previousT9PathState,
-                previousRawForTrace: previousRawForTrace
+                previousRawForTrace: previousRawForTrace,
+                sessionEpoch: epoch
             )
         )
     }
@@ -262,6 +322,7 @@ public final class KeyboardController {
         if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
             // Ordered reset through the same owner; epoch advances via reset work.
             _ = coordinator.performOrderedNow(.resetSession)
+            clearResponsiveKeyApplyContexts()
         } else {
             rimeEngine?.resetSession()
         }
@@ -287,6 +348,8 @@ public final class KeyboardController {
 
         if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
             coordinator.bumpSessionEpoch(resetEngineSession: true)
+            // Arch R3 P1-1: epoch barrier must invalidate deferred apply contexts.
+            clearResponsiveKeyApplyContexts()
         } else {
             rimeEngine?.resetSession()
         }
