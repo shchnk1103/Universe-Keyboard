@@ -325,16 +325,20 @@ adds an idempotent explicit stop plus non-blocking deinit fallback and lifecycle
 probe tests. Explicit Extension visibility suspend/finalize remains mandatory
 for any future R4; deinit is only a safety net.
 
-The following remain R4 Architecture residuals even after the Fake lifecycle
-P1 is repaired:
+Spike lifecycle P1 is repaired. The three Architecture residual P2 items are
+frozen for closure under Product-authorized **R4-Owner** (not R4-B real
+librime, not ADR Accept):
 
-- concrete RimeBridge bootstrap from Sendable configuration rather than a
-  generic freshness convention;
+- concrete Sendable **bootstrap / config-only** construction (no live engine in
+  the recipe);
 - one ordered MainActor delivery channel with terminal acknowledgement;
-- bounded queue / stale-epoch backlog / jetsam policy without dropping input.
+- bounded work mailbox with refuse-at-bound, control-priority stop/epoch, and
+  no drop of accepted process-key FIFO items.
 
-Detailed design:
-[`../../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md`](../../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md).
+Detailed designs:
+
+- Spike: [`../../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md`](../../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md)
+- R4-Owner: [`../../assignments/t9-responsive-pipeline-001-r4-owner-design.md`](../../assignments/t9-responsive-pipeline-001-r4-owner-design.md)
 
 ## Consequences
 

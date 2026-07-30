@@ -361,6 +361,117 @@ final class ThreadAffineRimeSpikeTests: XCTestCase {
         XCTAssertNil(controller.responsiveRimeCoordinator)
     }
 
+    // MARK: - R4-Owner (D1–D3)
+
+    func testRefuseAtBoundDoesNotDropAcceptedWork() async {
+        let engineEntered = DispatchSemaphore(value: 0)
+        let releaseEngine = DispatchSemaphore(value: 0)
+        let lifecycle = SpikeEngineLifecycleRecorder()
+        let delivered = expectation(description: "accepted work delivered")
+        // max=1: after first is dequeued+blocked, second fills the bound, third refuses.
+        delivered.expectedFulfillmentCount = 2
+
+        let owner = ThreadAffineRimeSpikeOwner(
+            bootstrap: SpikeLifecycleProbeEngineFactory(
+                recorder: lifecycle,
+                processEntered: engineEntered,
+                releaseFirstProcess: releaseEngine
+            ),
+            configuration: ThreadAffineRimeOwnerConfiguration(maxPendingWorkDepth: 1),
+            resultHandler: { _ in delivered.fulfill() }
+        )
+
+        XCTAssertNotNil(owner.accept(.processKey("a"), actionID: "k0"))
+        XCTAssertEqual(engineEntered.wait(timeout: .now() + 1), .success)
+        XCTAssertNotNil(owner.accept(.processKey("b"), actionID: "k1"))
+        XCTAssertNil(owner.accept(.processKey("c"), actionID: "k2"), "third accept must refuse at bound")
+        XCTAssertEqual(owner.diagnostics().rejectedAtBoundCount, 1)
+
+        releaseEngine.signal()
+        await fulfillment(of: [delivered], timeout: 2)
+
+        let diagnostics = owner.diagnostics()
+        XCTAssertEqual(diagnostics.rejectedAtBoundCount, 1)
+        XCTAssertEqual(diagnostics.deliveredCount, 2)
+
+        owner.shutdown()
+        XCTAssertTrue(owner.waitUntilStopped())
+        XCTAssertTrue(owner.waitUntilDeliveryDrained())
+        XCTAssertTrue(owner.diagnostics().isDeliveryTerminal)
+        XCTAssertTrue(lifecycle.waitForDeinit())
+    }
+
+    func testOrderedDeliveryAndTerminalBarrierAfterStop() async {
+        let count = 8
+        var deliveryOrder: [String] = []
+        let allDelivered = expectation(description: "ordered delivery")
+        allDelivered.expectedFulfillmentCount = count
+
+        let owner = ThreadAffineRimeSpikeOwner(
+            bootstrap: SpikeFakeRimeEngineFactory(),
+            resultHandler: { result in
+                deliveryOrder.append(result.snapshot.actionID)
+                allDelivered.fulfill()
+            }
+        )
+
+        for index in 0..<count {
+            XCTAssertNotNil(owner.accept(.processKey("n"), actionID: "k\(index)"))
+        }
+        await fulfillment(of: [allDelivered], timeout: 2)
+        XCTAssertEqual(deliveryOrder, (0..<count).map { "k\($0)" })
+
+        owner.shutdown()
+        XCTAssertTrue(owner.waitUntilStopped())
+        XCTAssertTrue(owner.waitUntilDeliveryDrained())
+        XCTAssertTrue(owner.diagnostics().isDeliveryTerminal)
+        XCTAssertEqual(owner.diagnostics().deliveredCount, count)
+    }
+
+    func testControlPriorityStopIsNotBuriedBehindWorkBacklog() async {
+        let engineEntered = DispatchSemaphore(value: 0)
+        let releaseEngine = DispatchSemaphore(value: 0)
+        let lifecycle = SpikeEngineLifecycleRecorder()
+        let firstDelivered = expectation(description: "in-flight first key")
+
+        let owner = ThreadAffineRimeSpikeOwner(
+            bootstrap: SpikeLifecycleProbeEngineFactory(
+                recorder: lifecycle,
+                processEntered: engineEntered,
+                releaseFirstProcess: releaseEngine
+            ),
+            configuration: ThreadAffineRimeOwnerConfiguration(maxPendingWorkDepth: 32),
+            resultHandler: { result in
+                if result.snapshot.actionID == "k0" {
+                    firstDelivered.fulfill()
+                }
+            }
+        )
+
+        XCTAssertNotNil(owner.accept(.processKey("a"), actionID: "k0"))
+        XCTAssertEqual(engineEntered.wait(timeout: .now() + 1), .success)
+
+        for index in 1..<16 {
+            XCTAssertNotNil(owner.accept(.processKey("n"), actionID: "k\(index)"))
+        }
+
+        // Stop must be control-priority and complete without draining the whole backlog.
+        owner.shutdown()
+        releaseEngine.signal()
+
+        await fulfillment(of: [firstDelivered], timeout: 2)
+        XCTAssertTrue(
+            owner.waitUntilStopped(timeout: .now() + 1),
+            "stop must not wait to execute the entire work backlog"
+        )
+        XCTAssertTrue(owner.waitUntilDeliveryDrained())
+        let diagnostics = owner.diagnostics()
+        XCTAssertGreaterThan(diagnostics.abandonedAtStopCount, 0)
+        XCTAssertTrue(lifecycle.waitForDeinit())
+        // Only the in-flight first key should have executed processKey.
+        assertSingleOwnerThread(lifecycle.snapshot(), expectedProcessCount: 1)
+    }
+
     private func makeResult(
         epoch: UInt64,
         revision: UInt64,

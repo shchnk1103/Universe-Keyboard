@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — Spike-P1-3 lifecycle P1 Closed (Arch/Quality re-review Pass with conditions); keep gate off; ADR 0025 Proposed; Product Gate not claimed; R4 not granted`
+**Lifecycle status:** `Active — R4-Owner dual review Pass with conditions (D1–D3 Closed); keep gate off; ADR 0025 Proposed; Product Gate not claimed; R4-B not granted`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -59,6 +59,26 @@
   next Product decision.
 - **Acknowledgement:** accepted with explicit exclusions: no real librime
   wiring, R4/R5/R6, ADR Accept, Product Gate or Release default-on.
+
+### R4-Owner reassignment / acknowledgement
+
+- **Decision Source / Date:** Human Product Owner authorization in the active
+  Grok session, `2026-07-31 Asia/Shanghai` — “先进行设计，然后执行，然后审查”,
+  with KOS 2.0 role switching.
+- **Domain Owner:** 🧠 Input Intelligence Maintainer
+- **Executor:** Current Grok session for R4-Owner design handoff consumption,
+  KeyboardCore owner-contract implementation and focused/full tests only.
+- **Environment Executor:** Current Grok session for local `swift test` on
+  KeyboardCore.
+- **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward (design freeze
+  author + independent design/implementation review; implementation self-review
+  is not independent Architecture Pass).
+- **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer (independent).
+- **Handoff Target:** Independent Architecture and Quality reviewers; then Human
+  Product Owner for optional R4-B authorization.
+- **Acknowledgement exclusions:** no Extension/`RimeEngineImpl` production wire;
+  no R4-B Simulator real-librime matrix; no R5/R6; no ADR 0025 Accept; no Product
+  Gate; no Release default-on; no auto-anchor expansion.
 
 ## Acknowledgement And Activation
 
@@ -232,7 +252,14 @@
   ([arch rereview](t9-responsive-pipeline-001-spike-p1-3-architecture-rereview.md),
   [quality rereview](t9-responsive-pipeline-001-spike-p1-3-quality-rereview.md),
   [evidence](../evidence/t9-responsive-pipeline-spike-p1-3-2026-07-30.md))
-- [ ] R4+ / real librime off-main production wiring — **not granted**
+- [x] R4-Owner (Arch P2 owner contract) — **granted 2026-07-31** Human Product
+  Owner; design → implement → dual independent review; disconnected; gate off
+- [x] R4-Owner independent Architecture / Quality — **Pass with conditions**
+  (2026-07-31); focused 10/10, full 826/826; D1–D3 Closed in scope
+  ([arch](t9-responsive-pipeline-001-r4-owner-architecture-review.md),
+  [quality](t9-responsive-pipeline-001-r4-owner-quality-review.md),
+  [evidence](../evidence/t9-responsive-pipeline-r4-owner-2026-07-31.md))
+- [ ] R4-B / real librime Simulator + off-main production wiring — **not granted**
 
 ### Exit Criteria — Spike-P1-3
 
@@ -252,6 +279,17 @@
 - [x] Lifecycle P1 remediation focused/full validation — **7/7**, **823/823**.
 - [x] Independent Architecture and Quality re-reviews of the remediation —
   **Pass with conditions** (lifecycle P1 Closed; Arch P2 residuals remain).
+
+### Exit Criteria — R4-Owner
+
+- [x] Design freezes D1 bootstrap, D2 ordered delivery, D3 bounded refuse-at-bound
+  ([design](t9-responsive-pipeline-001-r4-owner-design.md)).
+- [x] Implementation + focused **10/10** and full **826/826** KeyboardCore tests
+  ([evidence](../evidence/t9-responsive-pipeline-r4-owner-2026-07-31.md)).
+- [x] Independent Architecture review of R4-Owner — **Pass with conditions**.
+- [x] Independent Quality review of R4-Owner — **Pass with conditions**.
+- [x] Gate remains default-off; no Extension/`RimeEngineImpl` production wire;
+  ADR 0025 remains Proposed; R4-B not claimed.
 
 ### Exit Criteria — R2–R6
 

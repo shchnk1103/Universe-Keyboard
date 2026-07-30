@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — R0–R3 + R3 P1 re-review done; Spike-P1-3 authorized 2026-07-30 (design + falsifiable proof only); R4 / ADR Accept / Product Gate / Release default-on not authorized`
+**Lifecycle status:** `Recorded — R4-Owner dual review Pass with conditions (D1–D3 Closed); R4-B real librime / R5 / R6 / ADR Accept / Product Gate / Release default-on not authorized`
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the
@@ -192,11 +192,57 @@ See [`t9-responsive-pipeline-001-phase-a-freeze-2026-07-30.md`](../assignments/t
 Design:
 [`t9-responsive-pipeline-001-spike-p1-3-design.md`](../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md).
 
+### R4-Owner (2026-07-31 Human Product Owner authorization) — authorized
+
+Human Product Owner instruction: design → implement → independent review,
+with KOS 2.0 role separation. Product Lead names this knife **R4-Owner**.
+
+**Product intent:** close Spike-P1-3 Architecture residual **P2** items that
+block any future off-main production owner, without claiming real-librime
+device readiness or Release enablement.
+
+**Allowed (default-off, disconnected owner only):**
+
+1. **Architecture design freeze** for the three Arch P2 residuals:
+   - concrete Sendable bootstrap / config-only engine construction;
+   - ordered MainActor delivery channel + terminal acknowledgement;
+   - bounded mailbox / backlog / refuse-at-bound policy that does **not** drop
+     already-accepted input and does **not** reorder process-key FIFO.
+2. **KeyboardCore implementation** of that owner contract on the thread-affine
+   path (Fake/probe engines allowed and preferred for focused tests).
+3. Focused + full KeyboardCore regression evidence.
+4. Independent Architecture and Quality review of design+implementation; in-scope
+   remediation + re-review only inside this boundary.
+
+**Product policy freezes for R4-Owner (binding):**
+
+| Topic | Decision |
+|---|---|
+| Input drop/merge/reorder | **Forbidden** for accepted process-key work |
+| Mailbox at capacity | **Refuse new accept** (return nil / rejected); never drop accepted FIFO items |
+| Control ops (stop / epoch) | May use a **control priority lane** that does not reorder process-key relative to process-key |
+| Stale post-epoch work | May skip execution and count as discard (not an input drop) |
+| Gate / ADR / Release | Stay **off / Proposed / unchanged** |
+| Extension / `RimeEngineImpl` production wire | **Not** in R4-Owner |
+
+**Not authorized by R4-Owner (deferred as R4-B / later):**
+
+- real `RimeEngineImpl` Simulator matrix, gate-off vs gate-on content-free
+  comparison, or Extension production path migration;
+- R5 device A/B, R6 Product Gate, ADR 0025 Accept, Release default-on;
+- full RimeEngine API surface (Delete / Path / select / page / recover) production
+  wiring — design may **name** how they enter the same owner later, but R4-Owner
+  implementation may stay processKey-first if needed to keep the knife small;
+- expanding T9 auto-anchor.
+
+Design (Architecture-owned once written):
+[`t9-responsive-pipeline-001-r4-owner-design.md`](../assignments/t9-responsive-pipeline-001-r4-owner-design.md).
+
 ## Not authorized now
 
 - Changing Release default input path or user-facing settings
-- R4–R6, ADR 0025 Accept, Product Gate
-- Off-main **real librime production migration** beyond the isolated P1-3 Spike
+- R4-B real librime Simulator integration, R5–R6, ADR 0025 Accept, Product Gate
+- Off-main **Extension production migration** of real librime
 - Expanding T9 auto-anchor
 
 ## Phased product view (summary)
@@ -207,7 +253,9 @@ Design:
 | R1 | Fake RIME delayed serial pipeline + tests | Test/Debug state machine only |
 | R2 | Dedicated serial RIME owner behind gate | Default-off production path |
 | R3 | revision / sessionEpoch / Delete / candidate contracts | Default-off |
-| R4 | Simulator + real RIME integration | Default-off |
+| Spike-P1-3 | Thread-affine Fake isolation proof | Disconnected Spike only |
+| **R4-Owner** | Close Arch P2 owner-contract residuals | Disconnected owner upgrade; default-off |
+| R4-B | Simulator + real RIME integration evidence | Default-off (later auth) |
 | R5 | Human Reminders A/B on device | Evidence only |
 | R6 | Independent Architecture, Quality, Product Gate | Shipping decision |
 

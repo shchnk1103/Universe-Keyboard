@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — Spike-P1-3 lifecycle P1 Closed (Arch/Quality re-review Pass with conditions); default-off; ADR 0025 Proposed; Product Gate not claimed; R4 not granted** |
+| Status | **Active — R4-Owner dual review Pass with conditions (D1–D3 Closed); default-off; ADR 0025 Proposed; Product Gate not claimed; R4-B real librime not granted** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
@@ -193,7 +193,17 @@ This is a proof slice between R3 and R4, not R4 real-librime integration.
 Design:
 [`../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md`](../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md).
 
-### R4 — Real RIME integration
+### R4-Owner — Arch P2 owner contract — **authorized 2026-07-31**
+
+Closes Spike-P1-3 Architecture residual P2 items before any real-librime
+production owner claim. Product policy: refuse-at-bound; never drop accepted
+FIFO process-key work; gate stays off; owner stays disconnected from Extension
+and `RimeEngineImpl` production wiring.
+
+Design:
+[`../assignments/t9-responsive-pipeline-001-r4-owner-design.md`](../assignments/t9-responsive-pipeline-001-r4-owner-design.md).
+
+### R4-B — Real RIME integration — **not granted**
 
 - Simulator bridge evidence on frozen sequence
 - Compare gate off vs on (content-free)
@@ -288,3 +298,5 @@ T9-RESPONSIVE-PIPELINE-001 的 Assignment 与 Proposed ADR 已达到实现入口
 | 2026-07-30 | Human Product Owner authorized isolated Spike-P1-3 design + falsifiable thread-affine Fake proof only; real librime/R4, device/R5, ADR Accept and Product Gate remain closed. |
 | 2026-07-30 | Independent Architecture/Quality reviews of `45c426f`: Fail on shared P1 (omitted shutdown orphans thread/engine). Remediation written; validation/re-review pending. |
 | 2026-07-31 | Lifecycle P1 remediated (`requestStop` + deinit safety net; stall inside Fake `processKey`; lifecycle tests). Re-validated Spike 7/7 and KeyboardCore 823/823. Independent Architecture/Quality re-reviews: **Pass with conditions**. Arch residual P2 (factory / delivery FIFO / unbounded mailbox) remain for R4. ADR still Proposed; gate still off; R4 / Product Gate / device not claimed. |
+| 2026-07-31 | Human Product Owner authorized **R4-Owner** (design → implement → dual review) to close Arch P2 owner residuals; R4-B real librime / R5 / R6 / ADR Accept / Product Gate remain closed. |
+| 2026-07-31 | R4-Owner implemented (bootstrap + ordered delivery + bounded refuse-at-bound). Tests 10/10 focused, 826/826 full. Independent Arch/Quality: **Pass with conditions**. D1–D3 Closed in R4-Owner scope; R4-B / ADR Accept / Product Gate still closed. |
