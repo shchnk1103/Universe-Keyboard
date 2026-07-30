@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S2.1 exploratory A1→B2 direction PASS; three-pair matrix / Product decision pending`
+**Lifecycle status:** `Active — S2.1 three-pair matrix complete (1/3 direction PASS); Product routing pending`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 

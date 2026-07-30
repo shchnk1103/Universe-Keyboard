@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S21 — 滚动影子锚定设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — exploratory A1→B2 direction PASS; three-pair matrix / Product decision pending`
+**Lifecycle status:** `Active — three-pair matrix complete (1/3 direction PASS); Product routing pending`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
@@ -429,6 +429,21 @@ The first Human pair is recorded in
 
 Quality may now schedule the optional three-pair counterbalanced Human matrix
 (reuse this pair as pair 1). Product Lead retains acceptance authority.
+
+### Three-pair matrix outcome (2026-07-30)
+
+Completed under the same freeze and recorded in the evidence file above:
+
+| Pair | Order | Direction |
+|---:|---|---|
+| 1 | A1→B2 | PASS |
+| 2 | B2→A1 | FAIL (≥100 ms count unchanged) |
+| 3 | A1→B2 | FAIL (≥100 ms count unchanged) |
+
+Synthesis: **1/3** direction PASS; B2 remains contract-valid (two accepts) with
+mild per-spike softening, but does not robustly reduce ≥100 ms event count.
+Residual stalls stay RIME-dominated. Not Product Gate. Product Lead must route
+next work (stop vs new RIME-side Assignment).
 
 ## Stop Conditions
 

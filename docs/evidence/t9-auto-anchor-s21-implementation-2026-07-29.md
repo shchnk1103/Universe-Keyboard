@@ -278,8 +278,8 @@ Verified structural inventory of 11 RIME framework artifacts
 - Human physical-device `A1→B2` exploratory pair: **completed** on
   `90642c3`; direction stop rule PASS. Evidence:
   [`t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md`](t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md).
-- Optional three-pair counterbalanced Human matrix: not started (pair 1 may be
-  reused).
-- Ordinary Release remains gate-off (restored after the exploratory pair).
+- Optional three-pair counterbalanced Human matrix: **complete** (1/3
+  direction PASS; residual RIME spikes). See exploratory evidence file.
+- Ordinary Release remains gate-off (restored after the matrix).
 - No `CHANGELOG.md` entry is required before Product accepts a user-visible or
   shipping behavior change; this checkpoint is an internal experiment.

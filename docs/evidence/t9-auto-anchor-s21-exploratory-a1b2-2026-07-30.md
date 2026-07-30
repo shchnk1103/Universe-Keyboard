@@ -17,9 +17,10 @@
 - Design base:
   `c42cec2db3296e28a7cbcbd42471a4c7b005ea5e`
 
-This is Layer-3 **exploratory** physical-device evidence for one manually entered
-`A1 → B2` pair. It is **not** Product Gate, Release enablement, a fixed-cadence
-benchmark or a public performance claim.
+This is Layer-3 **exploratory** physical-device evidence for the manually entered
+`A1`/`B2` arms, including the first exploratory pair and the optional
+three-pair counterbalanced Human matrix. It is **not** Product Gate, Release
+enablement, a fixed-cadence benchmark or a public performance claim.
 
 Coordinate/XCTest/Computer Use typing into the third-party keyboard was not
 used. The Human Product Owner typed the frozen fixture on the physical device.
@@ -213,51 +214,101 @@ replacement.
   UDID; operator should fully dismiss Reminders once so the ordinary Extension
   process reloads.
 
+## Three-pair counterbalanced Human matrix
+
+Same freeze as pair 1: device, schema `luna_pinyin`, checkpoint `90642c3`,
+Release artifacts (A1/B2 Extension SHA as above), Human method, fixture
+`jintiandetianqihenbucuowomenchuquwanba`. Pair 1 is reused; only pair 2 and
+pair 3 were newly typed. All six arms retained functional integrity (no
+missing/duplicate keys, candidates present, keyboard stayed up) per Human
+report and content-free logs. Extra keys after `T9ARM` (event 39) were excluded
+from each arm window.
+
+Direction rule (per pair, B2 relative to that pair's A1): reduce count of
+events with total ≥100 ms **and** do not increase arm worst total.
+
+| Pair | Order | A1 ≥100 / worst | B2 ≥100 / worst | B2 accepts | Direction |
+|---:|---|---:|---:|---|---|
+| 1 | A1→B2 | 4 / 175.9 ms | **3** / 142.3 ms | 2 @18,20 | **PASS** |
+| 2 | B2→A1 | 4 / 184.9 ms | 4 / 179.7 ms | 2 @18,21 | **FAIL** (count) |
+| 3 | A1→B2 | 4 / 187.7 ms | 4 / 170.8 ms | 2 @18,21 | **FAIL** (count) |
+
+### Pair 2 detail (`B2→A1`)
+
+| Arm | Session | ≥100 ms events | worst | Notes |
+|---|---|---|---:|---|
+| B2 | `5149852632` | 16,25,33,35 | 179.7 | Human: more stall than pair-1 B2 |
+| A1 | `4369065816` | 16,25,33,35 | 184.9 | Human: similar to this B2; worse than pair-1 A1 |
+
+Held-local export digests:
+
+- Pair2 B2:
+  `/private/tmp/universe-keyboard-s21-pair2-b2-perf-export-2026-07-30.txt`
+  SHA256 `87f75d826204ad71901ee00bbc385d9970741c5ef13d4e824a9e87159513b507`
+- Pair2 A1:
+  `/private/tmp/universe-keyboard-s21-pair2-a1-perf-export-2026-07-30.txt`
+  SHA256 `310f50082d22acce912f8219f3f97b1d0f234c7609f85477fda6a89e682278d4`
+
+On every ≥100 ms site B2 was slightly lower than A1, but **no** ≥100 ms event
+was eliminated, so the frozen count rule fails.
+
+### Pair 3 detail (`A1→B2`)
+
+| Arm | Session | ≥100 ms events | worst | Notes |
+|---|---|---|---:|---|
+| A1 | `4368118680` | 16,25,33,35 | 187.7 | action ordinals continued 93…; use `event` |
+| B2 | `4415122264` | 16,25,33,35 | 170.8 | attempt2 @21; T9ARM `actions=38` |
+
+Per-spike deltas (B2−A1): e16 −16.9, e25 −22.7, e33 −27.2, e35 −23.5 ms —
+consistent mild softening, still four RIME-dominated spikes.
+
+### Matrix synthesis
+
+| Metric | Result |
+|---|---|
+| Direction PASS pairs | **1 / 3** |
+| A1 ≥100 ms (all pairs) | always **4** |
+| B2 ≥100 ms | 3, 4, 4 |
+| B2 contract | always 2 accepts, attempt2 ≤23, stable session, 0 commit |
+| Residual class | librime `processKey` ~99% of every ≥100 ms event |
+| Classification | **directionally helpful at best / not robust / insufficient for product goal** |
+
+Manual cadence and session heat remain confounds. Pair 1 alone overstates
+stability; pairs 2–3 show the ≥100 ms **count** reduction does not reliably
+reproduce. Softening of individual spikes without count reduction is real but
+below the Assignment stop rule and far from a shipping claim.
+
+After pair 3 B2, ordinary gate-off Release was again replacement-installed
+from the same ordinary artifact identity recorded above
+(Ext SHA256 `99531a1fc2ce0ecf3fc1e154fcbe576559b4d9567fc895ddb6f32e706fb1251f`).
+
 ## Explicit non-claims
 
 - Not Product Gate / Release default enablement / user-facing setting change.
-- Not proof that three-pair counterbalanced matrix is complete (only pair 1).
 - Not a fixed-cadence microbenchmark; manual typing cadence remains a confound.
 - Not authorization for a third automatic apply attempt or broader policy.
+- Not proof that residual long-composition stalls are solved.
 
-## Remaining after this evidence
+## Independent review (pair-1 package)
 
-1. Independent Architecture and Quality review of this Layer-3 evidence record.
-2. Optional Quality three-pair Human matrix (reuse this pair as pair 1; add
-   pair 2 `B2→A1` and pair 3 `A1→B2`) only under Assignment direction PASS.
-3. Product Lead decision on whether residual RIME spikes justify further
-   mechanism work versus accepting the exploratory direction and stopping.
-
-## Independent review
-
-Architecture and Quality independently reviewed this Layer-3 record
-(read-only; no product-code changes). Initial findings that were documentary
-completeness items only:
+Architecture and Quality independently reviewed the initial pair-1 Layer-3
+record (read-only). Documentary P2/P3 completeness items were closed before
+matrix expansion:
 
 | Reviewer | Verdict | P0 | P1 | P2 | P3 |
 |---|---|---:|---:|---:|---:|
-| Architecture & Knowledge Steward | **Pass** | 0 | 0 | 1* | 2* |
-| Quality, Performance & Release Maintainer | **Pass** | 0 | 0 | 2* | 2* |
+| Architecture & Knowledge Steward | **Pass** | 0 | 0 | closed | closed |
+| Quality, Performance & Release Maintainer | **Pass** | 0 | 0 | closed | closed |
 
-\*P2/P3 items were closed in-document by this revision:
+That review authorized the three-pair matrix. The completed matrix is recorded
+here as Quality evidence for Product routing; it does **not** by itself re-open
+implementation review or authorize Release.
 
-- content-free export SHA256 + held-local paths for A1 and B2;
-- schema id `luna_pinyin` and Full Access operational note;
-- precise physical action ordinals 18 / 20 for B2 accepts;
-- ordinary restore bundle version/build confirmation.
+## Remaining after this evidence
 
-Reviewer conclusions retained after remediation:
-
-- Direction stop rule **PASS** (Quality recomputed ≥100 ms 4→3 and worst
-  175.9→142.3).
-- Both arms **valid** under Layer-3 contract.
-- Three-pair counterbalanced Human matrix is **permitted** (reuse this pair as
-  pair 1; next is pair 2 `B2→A1`).
-- **Product Gate: no. Release enablement: no.**
-
-## Next KOS step
-
-1. Quality may schedule pair 2 `B2→A1` under the same freeze (device, schema,
-   Full Access, checkpoint `90642c3`, Human method).
-2. Product Lead decides whether residual RIME spikes justify further mechanism
-   work after the optional three-pair matrix, or stop at exploratory direction.
+1. Product Lead decision: stop S2.1 mechanism investment at “not robust for
+   product goal”, or authorize a **new** Assignment aimed at the residual
+   RIME-dominated `processKey` class (not silent attempt-3 expansion).
+2. Optional independent Quality/Architecture skim of the matrix tables if
+   Product wants a second signature before routing.
+3. Ordinary Release remains gate-off (restored).
