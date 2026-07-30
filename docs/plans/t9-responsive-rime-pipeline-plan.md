@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — R2 implemented default-off (MainActor single-consumer owner + deferred key drain); R2 Arch/Quality review pending; ADR 0025 Proposed; Release default unchanged** |
+| Status | **Active — R2 default-off implemented; Arch/Quality Pass with conditions (keep gate off; dual-entry + UI bridge + off-main residual open); ADR 0025 Proposed; Product Gate not claimed** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
