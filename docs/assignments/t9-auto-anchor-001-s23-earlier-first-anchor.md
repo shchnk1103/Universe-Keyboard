@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S23 — 更早首锚设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Exploratory complete — B3→B3e mechanism PASS, direction FAIL; product goal not met; no default attempt-N`
+**Lifecycle status:** `Closed for next knife — exploratory complete (direction FAIL); Product Hold/harvest; default-off stack retained`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Predecessor:** [`T9-AUTO-ANCHOR-001-S22`](t9-auto-anchor-001-s22-stronger-controller-bounding.md)
 **Repository change types:** `Documentation` (design phase only)
@@ -451,15 +451,17 @@ Evidence:
 | Decision input | Status |
 |---|---|
 | S2.3 product goal | **Not met** |
-| Default attempt-N (attempt 4+) | Still **forbidden** without new PD |
+| Default attempt-N (attempt 4+) | **Forbidden** without new PD |
 | Earlier-first base | Retain default-off (mechanism useful) |
-| Next knife | Product chooses residual route (see evidence Remaining) |
+| Residual route | **Hold / harvest** (Product explicit choice) |
+| Next knife | **Not authorized** until a later PD |
 
 ## Handoff
 
-- **Handoff Target:** Product Lead for residual routing after direction FAIL
-- **Required Handoff Content:** this Assignment, Human B3→B3e evidence, S2.2
-  residual pattern, ADR 0024 stop conditions
+- **Handoff Target:** none for active controller dose work; Product may later
+  open a new Assignment for measurement prep or a residual knife
+- **Required Handoff Content:** this Assignment, Human B3→B3e evidence, PD
+  “Product residual route: Hold / harvest (2026-07-30)”
 - **Revalidation Trigger:** any change to digit floor, syllable rule for
   attempt 1, attempt cap, ordinal caps, device method, privacy boundary or
   Release gate intent

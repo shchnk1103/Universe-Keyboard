@@ -1,7 +1,7 @@
 # Product Decision: T9-AUTO-ANCHOR-001 Authorization
 
 **Decision ID:** `PD-T9-AUTO-ANCHOR-001`
-**Lifecycle status:** `Recorded — S2.3 exploratory complete (mechanism PASS, direction FAIL); product goal not met; no default attempt-N expansion`
+**Lifecycle status:** `Recorded — S2.3 exploratory complete (direction FAIL); Product chose Hold/harvest residual route; default-off S2.1–S2.3 stack retained; no next knife authorized`
 **Date / timezone:** `2026-07-27 Asia/Shanghai`
 **Decision source:** Human Product Owner instructions in active Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`
@@ -378,6 +378,30 @@ without count help). Product should choose one residual route explicitly:
    track only with a fresh design Assignment (not force_gc-as-primary).
 
 No implementation of (2) or (3) is authorized by this section alone.
+
+## Product residual route: Hold / harvest (2026-07-30)
+
+On `2026-07-30 Asia/Shanghai`, after the S2.3 B3→B3e exploratory direction
+FAIL and the residual-route options were presented, the Human Product Owner
+explicitly chose **option 1 — Hold / harvest**.
+
+This records:
+
+1. **Retain** the default-off S2.1–S2.3 automatic-bounding stack (single anchor,
+   rolling, triple rolling, earlier-first) as internal capability and evidence
+   base. Do **not** delete it solely because the product goal is unmet.
+2. **Stop** further controller dose escalation by default. Attempt **4+**, a
+   new residual-controller knife, and any RIME-side residual track require a
+   **later** explicit Product amendment with Architecture/Quality review.
+3. **Ordinary Release** remains gate-off. No user setting, Product Gate, public
+   performance claim or shipping enablement is authorized by this choice.
+4. **Optional later prep (not authorized now):** redefine north-star measurement
+   (e.g. multi-fixture baseline, magnitude-aware scoring) before reopening a
+   next knife. That prep is documentation/baseline work only unless Product
+   issues a separate Assignment.
+
+This section does **not** authorize implementation of residual routes (2) or
+(3), schema/Lua reopen, or Release productization.
 
 ## S6-A physical-device preflight authorization
 

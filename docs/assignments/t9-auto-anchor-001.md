@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S2.3 exploratory complete (direction FAIL); product goal not met; residual routing pending`
+**Lifecycle status:** `Active — Hold/harvest after S2.3 direction FAIL; default-off S2.1–S2.3 retained; no next knife authorized; product goal not met`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -317,6 +317,9 @@ S2.3 automated evidence (Layer1/2 PASS; attempt1 @12 on A1e/B3e):
 [`../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md`](../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md).
 S2.3 Human B3→B3e exploratory (mechanism PASS; direction FAIL; goal not met):
 [`../evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md`](../evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md).
+Product residual route **Hold / harvest** (retain default-off stack; no next
+knife without a later PD): see PD section
+“Product residual route: Hold / harvest (2026-07-30)”.
 
 ### 2026-07-28 supplementary ETTrace attribution
 
@@ -341,8 +344,8 @@ S2.3 Human B3→B3e exploratory (mechanism PASS; direction FAIL; goal not met):
 
 ## Handoff
 
-- **Handoff Target:** Architecture and Quality for the S2.3 earlier-first-anchor
-  design review, then Product Lead for any S2.3 implementation decision.
+- **Handoff Target:** none for active S2.x dose work under Hold/harvest; Product
+  Lead for any later residual-route or measurement Assignment.
 - **Required Handoff Content:** changed files, proposal/validation/rollback
   state semantics, exact RIME-call budget, tests/build results, frozen-sequence
   A/B evidence, rejected cases and remaining privacy/performance limits.

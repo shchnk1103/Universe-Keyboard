@@ -1,8 +1,8 @@
 # ADR 0024: T9 Auto-Anchor Observation And Reversible Prototype Boundary
 
 - **Status:** Proposed — S4 validated; S2.1–S2.3 controller bounding stack
-  implemented default-off; S2.3 Human B3→B3e mechanism PASS / direction FAIL
-  (product goal not met); no default attempt-N; shipping decision deferred
+  implemented default-off; S2.3 Human B3→B3e mechanism PASS / direction FAIL;
+  Product Hold/harvest (no next knife authorized); shipping decision deferred
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)

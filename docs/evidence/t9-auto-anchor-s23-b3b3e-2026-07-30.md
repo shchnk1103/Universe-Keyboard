@@ -137,13 +137,11 @@ replacement-installed:
 - Not proof that further floor lowering or attempt 4 will clear e16/e33/e35.
 - Not reopening Lua/force_gc as primary remedy.
 
-## Remaining / Product routing inputs
+## Remaining / Product routing
 
 1. Direction FAIL on frozen rule → **do not fish** for better cadence by retype.
-2. Optional stop-fast questions for Product (not auto-executed):
-   - accept magnitude-only improvement as soft signal and keep earlier-first as
-     default-off base;
-   - attack residual **post-early-anchor mid spikes** (e16-class after accept)
-     and/or **late 33/35** with a new knife;
-   - reopen schema/RIME residual track only with new evidence;
-   - stop controller dose escalation (no attempt 4 by default).
+2. **Product chose option 1 — Hold / harvest** (2026-07-30):
+   - retain default-off S2.1–S2.3 stack;
+   - no attempt 4+ / residual-controller / RIME-side knife without a later PD;
+   - ordinary Release stays gate-off.
+3. See PD section “Product residual route: Hold / harvest (2026-07-30)”.

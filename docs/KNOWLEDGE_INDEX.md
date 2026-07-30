@@ -65,8 +65,8 @@
   reaffirmed (no Path obligation), S2.2 B3 implemented with exploratory
   B2→B3 direction PASS on `459908d` (product goal still not met; default
   attempt-N expansion closed), S2.3 earlier-first implemented with Human
-  B3→B3e mechanism PASS / direction FAIL (product goal not met; residual
-  routing pending):
+  B3→B3e mechanism PASS / direction FAIL; Product Hold/harvest; default-off
+  S2.1–S2.3 retained; no next knife authorized; product goal not met):
   [`plan`](plans/t9-long-composition-process-key-latency-plan.md),
   [`Assignment`](assignments/t9-auto-anchor-001.md),
   [`S2.1 design`](assignments/t9-auto-anchor-001-s21-rolling-design.md),
