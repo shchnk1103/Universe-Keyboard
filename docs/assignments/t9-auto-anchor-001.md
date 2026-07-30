@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S2.2 implementation authorized; KeyboardCore B3 landed`
+**Lifecycle status:** `Active — S2.2 B2→B3 exploratory direction PASS; product goal not met`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -304,9 +304,11 @@ S2.1 exploratory physical `A1→B2` evidence (direction PASS; not Product Gate):
 [`../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md`](../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md).
 
 S2.1 three-pair matrix outcome: **1/3** direction PASS; product goal not met.
-Product reaffirmed north star (no Path obligation) and authorized **design only**
-of stronger controller bounding:
+Product reaffirmed north star (no Path obligation) and authorized S2.2 design
+then implementation:
 [`t9-auto-anchor-001-s22-stronger-controller-bounding.md`](t9-auto-anchor-001-s22-stronger-controller-bounding.md).
+S2.2 Human B2→B3 exploratory evidence (direction PASS; goal not met):
+[`../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md`](../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md).
 
 ### 2026-07-28 supplementary ETTrace attribution
 

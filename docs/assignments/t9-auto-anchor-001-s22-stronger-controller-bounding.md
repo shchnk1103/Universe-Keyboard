@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S22 — 更强控制器自动锚定设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — implementation in progress; KeyboardCore B3 + unit tests landed`
+**Lifecycle status:** `Active — automated + exploratory B2→B3 direction PASS; product goal not met; review/routing pending`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Predecessor:** [`T9-AUTO-ANCHOR-001-S21`](t9-auto-anchor-001-s21-rolling-design.md)
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
@@ -353,19 +353,20 @@ normal user deletion.
 Design Exit Criteria for Architecture/Quality independent review are met.
 Product authorized implementation on `2026-07-30` (“授权 S2.2 实现”).
 
-### Implementation progress (local)
+### Implementation and evidence progress
 
-- `KeyboardController.isTripleRollingT9AutoAnchorEnabled` (default off)
-- attempt 3 eligibility reuses cumulative +2 extension; max attempts 2 (B2)
-  or 3 (B3)
-- Bootstrap nests `T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED` on B2
-- KeyboardCore `T9ReversibleAutoAnchorTests`: 37/37 including triple accept,
-  B2 isolation, third-reject restore
-- Full KeyboardCore: 772/772
-- RimeBridge matrix extended to A0/A1/B2/B3 (Simulator evidence pending run)
+Evidence:
+[`../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md`](../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md)
 
-Remaining: run pinned real-RIME B3 matrix on Simulator; Human B2→B3; ordinary
-Release restore; independent implementation review.
+- Implementation commit `459908d`
+- KeyboardCore: 37 focused + 772 full passed
+- Simulator A0/A1/B2/B3 matrix: **passed** (B3 accepts @18/20/22)
+- Human B2→B3 exploratory pair: **direction PASS** (≥100 ms 4→3; worst
+  182.0→178.8); product north star **not met** (3 residual ≥100 ms spikes)
+- Ordinary Release restored gate-off
+
+Remaining: optional independent implementation review; Product routing
+(stop / S2.3 earlier first-anchor / RIME-side).
 
 Remediation closed the listed P1/P2 gaps in-document and added ADR §17–20.
 
