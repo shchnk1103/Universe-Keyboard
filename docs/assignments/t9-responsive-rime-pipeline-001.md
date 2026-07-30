@@ -177,13 +177,14 @@
 - [x] R2 authorization — **granted 2026-07-30**; default-off serial owner +
   deferred key path implemented
 - [x] Independent Architecture review of R2 — **Pass with conditions**
-  ([review](t9-responsive-pipeline-001-r2-architecture-review.md); 0 P0, 3 P1:
-  dual-entry vs single owner; publish→UI effect gap; MainActor residual vs §10
-  off-main target). **Do not claim full session API serialisation.**
+  ([review](t9-responsive-pipeline-001-r2-architecture-review.md); 0 P0, 3 P1)
 - [x] Independent Quality review of R2 — **Pass with conditions**
-  ([review](t9-responsive-pipeline-001-r2-quality-review.md); 0 P0, 1 P1:
-  gate-on lacks Extension effect/syncUI re-bridge; re-ran 30/808 green).
-  **Keep gate default off; no device gate-on experiments until conditions.**
+  ([review](t9-responsive-pipeline-001-r2-quality-review.md); 0 P0, 1 P1)
+- [x] R2 P1 remediation (2026-07-30) — `ResponsiveRimeEngineBridge` single-owner
+  entry; `onResponsivePresentationNeeded` → Extension `syncUI`; visibility via
+  coordinator; delete-after-pending + presentation tests
+  ([evidence](../evidence/t9-responsive-pipeline-r2-p1-remediation-2026-07-30.md)).
+  **Arch P1-3 off-main residual remains.** Keep gate default off. Re-review optional.
 - [ ] Product Gate — **not claimed**
 - [ ] R3+ authorization — **not granted**
 
