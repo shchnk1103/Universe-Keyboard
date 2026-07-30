@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S22 — 更强控制器自动锚定设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — design remediated after Arch/Quality Fail; re-review pending`
+**Lifecycle status:** `Active — design Pass (Arch+Quality); awaiting Product implementation authorization`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Predecessor:** [`T9-AUTO-ANCHOR-001-S21`](t9-auto-anchor-001-s21-rolling-design.md)
 **Repository change types:** `Documentation` (design phase only)
@@ -345,9 +345,13 @@ normal user deletion.
 
 | Round | Architecture | Quality |
 |---|---|---|
-| Initial | **Fail** (P1: ADR third-attempt patch, exact budgets, Layer3 integrity) | **Fail** (P1: physical ordinal binding, Delete budgets) |
-| After ADR/budget/ordinal remediation | **Pass** (P0–P3 = 0) | **Fail** (P1: bare Inherit-all vs B3 supersession) |
-| After Layer1 gate-fork remediation | Architecture still Pass unless regression | Re-review required |
+| Initial | **Fail** (P1: ADR, budgets, Layer3) | **Fail** (P1: ordinals, Delete budgets) |
+| After ADR/budget/ordinal remediation | **Pass** (P0–P3 = 0) | **Fail** (P1: bare Inherit-all vs B3) |
+| After Layer1 gate-fork remediation | **Pass** retained (no regression) | **Pass** (P0–P3 = 0) |
+
+Design Exit Criteria for Architecture/Quality independent review are met.
+**Implementation is not authorized** until Product issues an explicit
+implementation instruction.
 
 Remediation closed the listed P1/P2 gaps in-document and added ADR §17–20.
 
