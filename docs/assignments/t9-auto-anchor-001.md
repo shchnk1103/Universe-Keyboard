@@ -2,6 +2,10 @@
 
 **Policy version:** `1.0.0`
 **Lifecycle status:** `Active — Hold/harvest after S2.3 direction FAIL; default-off S2.1–S2.3 retained; no next knife authorized; product goal not met`
+**Successor (architecture track, not a stage of this Assignment):**
+[`T9-RESPONSIVE-PIPELINE-001`](t9-responsive-rime-pipeline-001.md) — responsive
+serial RIME pipeline. This Assignment is **not** Closed; S2.3 remains a
+direction FAIL; do not treat the successor as S2.4/S3 success continuation.
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 

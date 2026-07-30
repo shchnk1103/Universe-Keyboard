@@ -8,6 +8,10 @@
 **Assignment:** [`T9-AUTO-ANCHOR-001`](../assignments/t9-auto-anchor-001.md)
 **Plan:** [`T9 long-composition process_key latency`](../plans/t9-long-composition-process-key-latency-plan.md)
 **Architecture:** [`ADR 0024`](../architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)
+**Successor product track (2026-07-30):**
+[`PD-T9-RESPONSIVE-PIPELINE-001`](T9-RESPONSIVE-PIPELINE-001-authorization.md) —
+responsive serial RIME pipeline. Does **not** reclassify S2.3 as success and
+does **not** reuse this Decision’s stage authorizations.
 
 ## Product problem
 

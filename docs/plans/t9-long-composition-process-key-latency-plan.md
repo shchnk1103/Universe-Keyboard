@@ -9,6 +9,7 @@
 | Long-term work item | [`T9-AUTO-ANCHOR-001`](../assignments/t9-auto-anchor-001.md) |
 | Product direction | [`PD-T9-AUTO-ANCHOR-001`](../product-decisions/T9-AUTO-ANCHOR-001-authorization.md) |
 | Architecture boundary | [`ADR 0024`](../architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md) |
+| Successor architecture track | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) — responsive serial RIME pipeline (not an S2.4/S3 continuation; does **not** reclassify S2.3 as success) |
 | Supersedes | force_gc-as-primary-fix track (closed) |
 | Close record | [`../evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](../evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md) |
 | Current evidence | [`../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md`](../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md), [`../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md`](../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md), [`../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md`](../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md), [`../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md`](../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md), [`../evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md`](../evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md) |
@@ -87,14 +88,22 @@ Code: `T9IdlePathHintPolicy`, `T9PinyinPathBarView.setPaths(..., idleHintText:)`
 
 **When:** After or alongside A if freezes remain; product allows quality tradeoffs with gate.
 
-### Lane C — Architecture — **later**
+### Lane C — Architecture — **later → successor track opened 2026-07-30**
 
 | Idea | Effect | Risk |
 |---|---|---|
 | Dedicated serial queue for all librime calls | Main thread less frozen for UI chrome | Same wall wait for commit; complexity; must serialize all RIME |
 | Coalesce digit events | Fewer processKey calls | Correctness / marked-text lag |
 
-**When:** A/B insufficient; treat as separate high-cost track.
+**When:** A/B and auto-anchor knives insufficient for the product north star.
+
+**2026-07-30 Product routing:** after S2.3 direction FAIL (Hold/harvest), Product
+opened the separate work item
+[`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md)
+for a responsive serial RIME pipeline (immediate key feedback; ordered session
+work; versioned snapshot publish). That track is **not** Stage S2.4/S3 of this
+plan, does **not** convert S2.3 into a pass, and does **not** inherit auto-anchor
+authorization. Prior evidence on this plan remains valid historical input.
 
 ### Lane D — Measurement hardening (always do alongside A/B)
 
@@ -247,6 +256,7 @@ pinned-RIME integration layers.
 | Date | Note |
 |---|---|
 | 2026-07-24 | Draft opened after force_gc case close; owner invited to answer product questions before implementation. |
+| 2026-07-30 | Product Hold/harvest after S2.3 direction FAIL; successor architecture track `T9-RESPONSIVE-PIPELINE-001` opened. Auto-anchor evidence retained; no rewrite of S2.3 outcome. |
 | 2026-07-24 | Product lock: (1) early Path/partial is recommended usage — unlimited unconfirmed need not be perfectly smooth; (2) T9-only quality tradeoffs allowed with gate; (3) prioritize killing freezes over short-input averages; (4) prefer Lane A **idle-only** Path/candidate hint, hide on first input — no default mid-type N-digit prompt. Implementation still gated on explicit go. |
 | 2026-07-24 | Owner delegated implementation; shipped Lane A idle Path hint + settings footer + unit tests. Lane B deferred pending baseline/gate. |
 | 2026-07-26 | iOS 27 Simulator V0–V6 isolated matrix reproduced deterministic `rawLen` 24/32/34 `process_key` spikes. Lua, word completion, spelling hints, `enable_sentence` and `max_homophones: 1` did not reduce them. Symbolicated multi-thread ETTrace identified `ScriptTranslation::MakeSentence → Dictionary::Lookup → Table::Query` as the dominant first-party path. No production configuration was changed; physical-device/Release/Product Gate evidence remains open. |

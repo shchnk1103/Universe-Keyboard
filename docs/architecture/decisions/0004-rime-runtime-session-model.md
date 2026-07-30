@@ -33,6 +33,11 @@ The main App uses the actor-serialized deployer for full maintenance. The Extens
 
 - Collect session-creation and input latency evidence in `PERFORMANCE_BASELINE.md`.
 - Validate cross-process user-data access.
+- Proposed revision of the Extension **main-actor session threading locus**
+  (serialization remains mandatory) is under
+  [`ADR 0025`](0025-responsive-rime-serial-input-pipeline.md). Until 0025 is
+  Accepted and Product authorizes implementation, this ADR’s production rule
+  stands unchanged.
 
 ## Related Documents
 
