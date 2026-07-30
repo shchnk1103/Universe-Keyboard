@@ -9,7 +9,7 @@
 | Prior Quality Fail | [`t9-responsive-pipeline-001-spike-p1-3-quality-review.md`](t9-responsive-pipeline-001-spike-p1-3-quality-review.md) @ `45c426f` |
 | Prior Architecture Fail | [`t9-responsive-pipeline-001-spike-p1-3-architecture-review.md`](t9-responsive-pipeline-001-spike-p1-3-architecture-review.md) @ `45c426f`（仅引用，不代审） |
 | Scope | Spike-P1-3 **lifecycle / stall-proof remediation only**（相对 `45c426f` 工作区改动） |
-| Bound tip | `HEAD` = `45c426f`；remediation **尚未**形成新的 immutable commit（工作区脏） |
+| Bound tip | Remediation immutable commit **`c0e2373`**（parent Fail checkpoint `45c426f`） |
 | Verdict | **Pass with conditions** |
 
 **P0: 0**  
@@ -75,12 +75,11 @@ Prior Quality P3（50 ms 断言非 Product SLO）**保留为 residual P3**，见
 
 ## Findings
 
-### P2-1 — remediation 尚无 immutable checkpoint（条件项）
+### P2-1 — remediation immutable checkpoint（条件项 → Closed）
 
-- `HEAD` 仍为 Fail 点 `45c426f`。
-- 源码/测试/部分文档为 **未提交工作区改动**。
-- Quality 对 remediation **行为与测试** 可 Pass；正式交接、Architecture 复审绑定、后续证据引用应先落一颗可复现 SHA。
-- **不**因此重新打开 lifecycle P1；这是发布/交接条件，不是实现缺陷。
+- 复审当时 `HEAD` 仍为 Fail 点 `45c426f`，源码为工作区改动。
+- 执行侧已形成可复现 SHA **`c0e2373`**（lifecycle remediation + 双独立复审文档 + evidence 刷新）。
+- **不**重开 lifecycle P1；本条件在 checkpoint 落地后关闭。
 
 ### P3-1 — 50 ms MainActor accept 上界仍是实验 falsification，不是 Product/Release SLO
 
@@ -88,11 +87,10 @@ Prior Quality P3（50 ms 断言非 Product SLO）**保留为 residual P3**，见
 - 语义正确（semaphore 并发证明 + 宽松 wall-clock 上界），但在过载 CI 上可能噪声。
 - 保持明确标注：实验阈值，**非** Product Gate / Release 策略。
 
-### P3-2 — Spike 相关证据/设计文档状态滞后
+### P3-2 — Spike 相关证据/设计文档状态滞后（Closed at `c0e2373`）
 
-- `docs/evidence/t9-responsive-pipeline-spike-p1-3-2026-07-30.md` 仍写 Fail 点 `5 passed` / `821` 与 “validation pending”。
-- design/plan/assignment 状态仍指向 `45c426f` Fail / remediation pending。
-- 不阻断代码级 Quality Pass；提交 checkpoint 时应同步刷新独立复跑计数与 disposition。
+- evidence 已记录 remediation 独立复跑 **7/7** 与全量 **823/823**，并区分 Fail 点 `45c426f`。
+- design/plan/assignment 状态已推进为 lifecycle P1 Closed / re-review Pass with conditions。
 
 ### Residual（非本复审 Fail；留给 Architecture / R4）
 
@@ -121,9 +119,9 @@ Prior Quality P3（50 ms 断言非 Product SLO）**保留为 residual P3**，见
 
 ## Recommended next
 
-1. **Executor**：将 remediation + 本复审文档打成 **immutable commit**；刷新 evidence 中独立测试计数（Spike **7/7**，全量 **823/823**）与 status。
-2. **Architecture**：独立 re-review lifecycle P1 关闭情况；**保留** P2 residuals（factory / delivery / queue bounds），勿顺带 Accept ADR 0025。
-3. **Product Lead**：仅在 Arch + Quality 对 **新 SHA** 均有明确 disposition 后，决定是否授权下一刀（例如 R4 设计或 real-engine fixture Spike）——**本文件不授权**。
+1. ~~**Executor**：immutable commit + evidence 刷新~~ — 已落地 **`c0e2373`**（Spike **7/7**，全量 **823/823**）。
+2. **Architecture**：独立 re-review 已对 lifecycle 结构关闭；**保留** P2 residuals（factory / delivery / queue bounds），勿顺带 Accept ADR 0025。
+3. **Product Lead**：在 Arch + Quality 对 **`c0e2373`** 的 disposition 上，决定是否授权下一刀（例如 R4 设计或 real-engine fixture Spike）——**本文件不授权**。
 4. 合并前保持：`ThreadAffineRimeSpike*` 不接线；`isResponsiveRimePipelineEnabled` 默认 `false`。
 
 ---
@@ -138,4 +136,4 @@ Prior Quality P3（50 ms 断言非 Product SLO）**保留为 residual P3**，见
 | Independent Spike tests | **7 / 7 PASS** |
 | Independent KeyboardCore suite | **823 / 823 PASS** |
 | Production wiring / gate default | **Unchanged (off)** |
-| Overall | **Pass with conditions**（immutable SHA + 文档同步） |
+| Overall | **Pass with conditions**（bound to **`c0e2373`**；Arch P2 residuals remain for R4） |

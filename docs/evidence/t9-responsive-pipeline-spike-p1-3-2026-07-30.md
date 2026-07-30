@@ -4,7 +4,7 @@
 **Assignment:** [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md)
 **Spike design:** [`Spike-P1-3`](../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md)
 **Architecture:** [`ADR 0025`](../architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) (`Proposed`)
-**Baseline:** branch `codex/t9-auto-anchor-s5-checkpoint`, Fail checkpoint `45c426f`, parent tip `3273057`
+**Baseline:** branch `codex/t9-auto-anchor-s5-checkpoint`, Fail checkpoint `45c426f`, remediation **`c0e2373`**, parent tip `3273057`
 
 ## Scope
 
@@ -55,7 +55,7 @@ swift test --package-path Packages/KeyboardCore \
 Result at Fail checkpoint: **5 passed / 0 failed** (no omitted-shutdown /
 explicit lifecycle identity cases yet).
 
-### Lifecycle remediation (post-`45c426f`, re-validated 2026-07-31)
+### Lifecycle remediation (`c0e2373`, re-validated 2026-07-31)
 
 Result: **7 passed / 0 failed**.
 
@@ -87,7 +87,7 @@ swift test --package-path Packages/KeyboardCore
 
 Fail checkpoint (`45c426f`): **821 passed / 0 failed**.
 
-Lifecycle remediation re-run (2026-07-31): **823 passed / 0 failed**
+Lifecycle remediation re-run (2026-07-31) at `c0e2373`: **823 passed / 0 failed**
 (+2 lifecycle tests).
 
 Static checks:

@@ -5,7 +5,8 @@
 **Date:** 2026-07-31 Asia/Shanghai  
 **Parent Assignment:** [`T9-RESPONSIVE-PIPELINE-001`](t9-responsive-rime-pipeline-001.md)  
 **Prior Fail:** [`t9-responsive-pipeline-001-spike-p1-3-architecture-review.md`](t9-responsive-pipeline-001-spike-p1-3-architecture-review.md) @ immutable `45c426f`  
-**Scope:** 当前 working tree 相对 `45c426f` 的 lifecycle P1 remediation（源码 + 测试；不以文档自述为证据）  
+**Scope:** lifecycle P1 remediation 相对 Fail checkpoint `45c426f`（源码 + 测试；不以文档自述为证据）  
+**Bound tip:** remediation commit **`c0e2373`**（初审时为 working tree；提交后绑定）
 
 **Verdict:** **Pass with conditions**  
 **P0:** 0  
