@@ -93,7 +93,9 @@
   [`R1 Arch re-review`](assignments/t9-responsive-pipeline-001-r1-architecture-rereview.md),
   [`R1 Quality review`](assignments/t9-responsive-pipeline-001-r1-quality-review.md),
   [`R2 Arch review`](assignments/t9-responsive-pipeline-001-r2-architecture-review.md),
-  [`R2 Quality review`](assignments/t9-responsive-pipeline-001-r2-quality-review.md)
+  [`R2 Arch re-review`](assignments/t9-responsive-pipeline-001-r2-architecture-rereview.md),
+  [`R2 Quality review`](assignments/t9-responsive-pipeline-001-r2-quality-review.md),
+  [`R2 Quality re-review`](assignments/t9-responsive-pipeline-001-r2-quality-rereview.md)
 - Release procedure: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)
 - 2026-08-01 release control: [`RELEASE-2026-0801`](assignments/release-2026-08-01.md) and its [evidence ledger](evidence/release-2026-08-01-acceptance.md)
 - New-user activation / Full Access journey: [`ONBOARDING_ACTIVATION.md`](ONBOARDING_ACTIVATION.md), Product Decision [`PD-RELEASE-2026-0801-03`](product-decisions/RELEASE-2026-0801-03-activation-authorization.md)

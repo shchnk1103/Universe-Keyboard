@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R2 + P1 remediation (bridge single-owner + UI presentation); Arch P1-3 off-main residual remains; keep gate off; ADR 0025 Proposed; Product Gate not claimed; re-review optional`  
+**Lifecycle status:** `Active — R2 P1 re-review: Arch Pass with conditions (P1-1/P1-2 Closed, P1-3 open); Quality Pass with conditions (P1 Closed); keep gate off; ADR 0025 Proposed; Product Gate not claimed`  
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -180,11 +180,16 @@
   ([review](t9-responsive-pipeline-001-r2-architecture-review.md); 0 P0, 3 P1)
 - [x] Independent Quality review of R2 — **Pass with conditions**
   ([review](t9-responsive-pipeline-001-r2-quality-review.md); 0 P0, 1 P1)
-- [x] R2 P1 remediation (2026-07-30) — `ResponsiveRimeEngineBridge` single-owner
-  entry; `onResponsivePresentationNeeded` → Extension `syncUI`; visibility via
-  coordinator; delete-after-pending + presentation tests
-  ([evidence](../evidence/t9-responsive-pipeline-r2-p1-remediation-2026-07-30.md)).
-  **Arch P1-3 off-main residual remains.** Keep gate default off. Re-review optional.
+- [x] R2 P1 remediation (2026-07-30) — bridge + presentation
+  ([evidence](../evidence/t9-responsive-pipeline-r2-p1-remediation-2026-07-30.md))
+- [x] Independent Architecture **re-review** of R2 P1 — **Pass with conditions**
+  ([rereview](t9-responsive-pipeline-001-r2-architecture-rereview.md):
+  P1-1 dual-entry **Closed**, P1-2 publish→UI **Closed**, P1-3 off-main
+  **Still open**). Not ADR Accept / not full §10 final form.
+- [x] Independent Quality **re-review** of R2 P1 — **Pass with conditions**
+  ([rereview](t9-responsive-pipeline-001-r2-quality-rereview.md): Quality P1
+  presentation bridge **Closed**; re-ran 33/811 green). Keep gate default off;
+  not wide Debug/device enablement confidence.
 - [ ] Product Gate — **not claimed**
 - [ ] R3+ authorization — **not granted**
 
