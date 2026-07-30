@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — R0–R2 done + P1 re-review; Phase A freeze; R3 authorized 2026-07-30 (default-off behavior parity); R4+ / ADR Accept / Product Gate / Release default-on not authorized`  
+**Lifecycle status:** `Recorded — R0–R3 + R3 P1 re-review done; Spike-P1-3 authorized 2026-07-30 (design + falsifiable proof only); R4 / ADR Accept / Product Gate / Release default-on not authorized`
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the
@@ -164,11 +164,39 @@ See [`t9-responsive-pipeline-001-phase-a-freeze-2026-07-30.md`](../assignments/t
 - Expanding T9 auto-anchor
 - `@unchecked Sendable` isolation bypass
 
+### Spike-P1-3 (2026-07-30 Human Product Owner authorization) — authorized
+
+**Allowed:**
+
+- Proposed thread-affine single-consumer design beside ADR 0025;
+- a default-disconnected dedicated-thread owner created only for the Spike;
+- Fake/controlled-delay proof that MainActor accept continues during a 150 ms+
+  owner stall;
+- FIFO/no-drop proof, revision/sessionEpoch MainActor validation, gate-off
+  equivalence tests and content-free evidence;
+- independent Architecture and Quality review after the Executor freezes the
+  Spike evidence, followed by in-scope remediation/re-review.
+
+**Required isolation shape:**
+
+- the non-Sendable engine is created, used and released inside the owner thread;
+- only Sendable work descriptors enter and Sendable snapshots leave;
+- no `@unchecked Sendable` or unsafe isolation bypass.
+
+**Not authorized by this Spike:**
+
+- real `RimeEngineImpl` production wiring or R4 matrix;
+- R5 device A/B, R6 Product Gate, ADR 0025 acceptance or Release default-on;
+- dropping/coalescing input events or expanding auto-anchor.
+
+Design:
+[`t9-responsive-pipeline-001-spike-p1-3-design.md`](../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md).
+
 ## Not authorized now
 
 - Changing Release default input path or user-facing settings
 - R4–R6, ADR 0025 Accept, Product Gate
-- Off-main librime production migration (P1-3)
+- Off-main **real librime production migration** beyond the isolated P1-3 Spike
 - Expanding T9 auto-anchor
 
 ## Phased product view (summary)

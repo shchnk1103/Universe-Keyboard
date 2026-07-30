@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R3 P1 re-review: Arch/Quality Pass with conditions (R3 P1-1/P1-2 Closed; Arch P1-3 off-main open); keep gate off; ADR 0025 Proposed; Product Gate not claimed`  
+**Lifecycle status:** `Active — R3 P1-1/P1-2 Closed; Spike-P1-3 Executor evidence complete / independent review pending; keep gate off; ADR 0025 Proposed; Product Gate not claimed`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -45,6 +45,20 @@
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer
 - **Handoff Target (R1 exit):** Independent Architecture and Quality review of
   R1 deliverables; then Human Product Owner for optional R2 authorization
+
+### Spike-P1-3 reassignment / acknowledgement
+
+- **Decision Source / Date:** Human Product Owner / Product Lead authorization
+  in the active Codex task, `2026-07-30 Asia/Shanghai`.
+- **Executor:** Current Codex task as the Product-designated subsequent
+  Executor, limited to Spike-P1-3 design, disconnected Fake proof, tests and
+  evidence.
+- **Environment Executor:** Current Codex task for local KeyboardCore tests.
+- **Handoff Target:** Role-isolated Architecture and Quality reviewers; after
+  in-scope findings are remediated/re-reviewed, Human Product Owner for the
+  next Product decision.
+- **Acknowledgement:** accepted with explicit exclusions: no real librime
+  wiring, R4/R5/R6, ADR Accept, Product Gate or Release default-on.
 
 ## Acknowledgement And Activation
 
@@ -209,7 +223,27 @@
   ([rereview](t9-responsive-pipeline-001-r3-quality-rereview.md): Quality P1 +
   reentrancy **Closed**; re-ran 38/816 green). Keep gate default off.
 - [ ] Product Gate — **not claimed**
-- [ ] R4+ / off-main (P1-3) — **not granted**
+- [x] Spike-P1-3 design + falsifiable Fake proof — **granted 2026-07-30**
+- [ ] Spike-P1-3 independent Architecture / Quality review
+- [ ] R4+ / real librime off-main production wiring — **not granted**
+
+### Exit Criteria — Spike-P1-3
+
+- [x] Proposed Spike design records engine creation/use/destruction on one
+  dedicated thread and Sendable-only boundary payloads.
+- [x] No `@unchecked Sendable`; no live `RimeEngine` crosses isolation.
+- [x] MainActor accepts later keys while the owner is blocked for 150 ms+.
+- [x] FIFO/no-drop/no-duplicate and thread-affinity facts are proved.
+- [x] Epoch barrier resets owner state before new-epoch input; old result is
+  rejected on MainActor.
+- [x] Older revision cannot replace a newer applied snapshot.
+- [x] Spike is not wired into controller/Extension; gate-off remains
+  synchronous and equivalent to ADR 0004.
+- [x] Focused 5/5 and full KeyboardCore 821/821 tests pass.
+- [x] Real librime, device and jetsam non-evidence are explicit in
+  [`Spike evidence`](../evidence/t9-responsive-pipeline-spike-p1-3-2026-07-30.md).
+- [ ] Independent Architecture and Quality reviews complete; any authorized
+  findings are remediated and re-reviewed.
 
 ### Exit Criteria — R2–R6
 

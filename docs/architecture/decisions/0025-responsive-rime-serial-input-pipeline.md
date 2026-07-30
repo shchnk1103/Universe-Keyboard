@@ -286,6 +286,39 @@ equivalent lifecycle API) in production wiring (R2+).
 | Unordered async fire-and-forget | Loses delete/candidate causality |
 | `@unchecked Sendable` wrappers | Violates repository concurrency policy |
 
+## 12. Spike-P1-3 thread-affine owner amendment draft
+
+**Status:** Proposed Spike design only. This section does not Accept ADR 0025
+or revise ADR 0004 in production.
+
+The P1-3 Spike narrows §10's “single-consumer serial executor” option to a
+falsifiable construction:
+
+1. MainActor transfers a `Sendable` engine **factory value**, not a live
+   `RimeEngine`.
+2. One dedicated `Thread` invokes `makeEngineOnOwnerThread()`.
+3. The resulting non-Sendable engine remains a local variable in that thread's
+   consumer closure for its complete lifetime.
+4. MainActor enqueues only `Sendable` work descriptors.
+5. The owner returns only immutable `Sendable` value snapshots.
+6. Result delivery re-enters MainActor and passes epoch/revision validation
+   before any future UI mutation.
+7. No `@unchecked Sendable` or parallel MainActor engine bypass is permitted.
+
+The first Spike deliberately supports `processKey` only. This proves or
+falsifies the isolation mechanism without claiming complete session API
+coverage. R4 production wiring would still have to route Delete, selection,
+Path/`replaceInput`, paging, lifecycle, recovery, runtime-selection callbacks
+and all reads through the same owner while preserving R3 post-processing.
+
+If this construction fails under Swift 6 or real librime prerequisites later
+invalidate it, production falls back unchanged to ADR 0004. The existing
+default-off MainActor deferred R2/R3 path remains an experimental ceiling, not
+a subjective non-stutter claim.
+
+Detailed design:
+[`../../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md`](../../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md).
+
 ## Consequences
 
 ### Positive

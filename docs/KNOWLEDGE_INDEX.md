@@ -82,10 +82,13 @@
 - T9 responsive RIME input pipeline
   (`T9-RESPONSIVE-PIPELINE-001`, Phase A freeze + R3 default-off parity:
   bridge single-owner, presentation bridge, Path/auto-anchor apply context,
-  chrome unwrap; Arch P1-3 off-main still open; ADR 0025 Proposed; Product Gate
-  not claimed; auto-anchor Hold/harvest):
+  chrome unwrap; Arch P1-3 thread-affine Fake Spike implemented with independent
+  review pending; real librime/R4 not authorized; ADR 0025 Proposed; Product
+  Gate not claimed; auto-anchor Hold/harvest):
   [`Product Decision`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md),
   [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md),
+  [`Spike design`](assignments/t9-responsive-pipeline-001-spike-p1-3-design.md),
+  [`Spike evidence`](evidence/t9-responsive-pipeline-spike-p1-3-2026-07-30.md),
   [`plan`](plans/t9-responsive-rime-pipeline-plan.md),
   [`ADR 0025 Proposed`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md),
   [`R1 evidence`](evidence/t9-responsive-pipeline-r1-2026-07-30.md),

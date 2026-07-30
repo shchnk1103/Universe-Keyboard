@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — Phase A freeze + R3 implemented (default-off); P1-3 off-main open; R3 Arch/Quality pending; ADR 0025 Proposed; Product Gate not claimed** |
+| Status | **Active — R3 P1-1/P1-2 Closed; Spike-P1-3 Executor evidence complete / independent review pending; default-off; ADR 0025 Proposed; Product Gate not claimed** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
@@ -176,6 +176,23 @@ Residual for later R3 polish or R4+:
 - Symbol-page replace still sync-drains on handle
 - Queue growth / jetsam policy
 
+### Spike-P1-3 — thread-affine off-MainActor proof — **authorized 2026-07-30**
+
+This is a proof slice between R3 and R4, not R4 real-librime integration.
+
+- Dedicated `Thread` + blocking Sendable mailbox + one consumer.
+- Engine constructed, used and released only on that thread.
+- MainActor accepts only process-key descriptors and applies only validated
+  value snapshots.
+- 150 ms+ controlled stall, FIFO/no-drop, epoch/revision and gate-off isolation
+  tests.
+- No controller/Extension/real `RimeEngineImpl` wiring.
+- Stop for independent Architecture and Quality review; remediate only inside
+  the Spike boundary.
+
+Design:
+[`../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md`](../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md).
+
 ### R4 — Real RIME integration
 
 - Simulator bridge evidence on frozen sequence
@@ -268,3 +285,4 @@ T9-RESPONSIVE-PIPELINE-001 的 Assignment 与 Proposed ADR 已达到实现入口
 | 2026-07-30 | Product pivots from auto-anchor expansion to responsive serial pipeline after S2.3 direction FAIL; R0 design authored from baseline `dddbe61`. |
 | 2026-07-30 | Human Product Owner authorized R1 only. `ResponsiveRimePipeline` + 17 focused tests landed; no real session migration; independent Arch/Quality review next. |
 | 2026-07-30 | Independent Arch/Quality R1 reviews: Pass with conditions. P1-2/P1-3 freezes in ADR 0025 §§10–11; P1-1 code+tests remediated same day (applied/published split, catch-up, reset/recover epoch). Focused 23 / full 801 green. R2+ / Product Gate / ADR Accept not claimed. |
+| 2026-07-30 | Human Product Owner authorized isolated Spike-P1-3 design + falsifiable thread-affine Fake proof only; real librime/R4, device/R5, ADR Accept and Product Gate remain closed. |
