@@ -5,7 +5,8 @@
 **Design:** [`R4-B design`](../assignments/t9-responsive-pipeline-001-r4-b-design.md)  
 **Product:** R4-B authorized 2026-07-31  
 **Architecture:** [`ADR 0025`](../architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) (`Proposed` — not Accepted)  
-**Predecessor:** R4-Owner `768d680`
+**Predecessor:** R4-Owner `768d680`  
+**Immutable checkpoint:** **`cb45f1c`**
 
 ## Scope
 

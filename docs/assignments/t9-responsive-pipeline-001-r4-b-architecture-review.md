@@ -8,7 +8,8 @@
 **Design freeze:** [`t9-responsive-pipeline-001-r4-b-design.md`](t9-responsive-pipeline-001-r4-b-design.md)  
 **Predecessor:** R4-Owner Architecture review（D1–D3 Closed on Fake path；P2-later-1 deferred to R4-B）  
 **ADR:** [`0025`](../architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) — **Status remains `Proposed`（本审查不 Accept）**  
-**Sources reviewed (working tree at review time):**
+**Bound tip (post-review checkpoint):** **`cb45f1c`**  
+**Sources reviewed (working tree at review time; later bound to `cb45f1c`):**
 
 | Artifact | Role |
 |---|---|

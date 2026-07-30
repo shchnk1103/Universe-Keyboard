@@ -16,7 +16,7 @@
 **P0: 0**  
 **P1: 0**  
 **P2: 1**（owner QoS vs librime helper 优先级反转 residual，阻塞后续生产接线而非本刀 Pass）  
-**P3: 2**（essay db 只读噪声日志；worktree 尚未绑定 immutable R4-B SHA）
+**P3: 2**（essay db 只读噪声日志；immutable SHA 条件在 `cb45f1c` 关闭）
 
 ---
 
@@ -184,7 +184,7 @@ Executor already lowered owner QoS from `userInteractive` → `userInitiated` wi
 - `Error opening db 'essay' read-only` during deploy/setup under isolated fixture — does not fail tests; not product content claim.  
 - `[RIME] claiming process runtime on non-main thread` — observational under this fixture; **not** a product guarantee that production Extension runtime ownership is redesigned.
 
-### P3 — Worktree honesty（immutable SHA not yet bound）
+### P3 — Worktree honesty（immutable SHA → Closed at `cb45f1c`）
 
 At review time:
 
