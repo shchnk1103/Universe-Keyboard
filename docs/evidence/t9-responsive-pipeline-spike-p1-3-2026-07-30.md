@@ -1,10 +1,10 @@
 # T9 responsive pipeline Spike-P1-3 evidence — 2026-07-30
 
-**Status:** `Executor evidence complete — independent Architecture / Quality review pending`
+**Status:** `Lifecycle P1 remediated — independent re-reviews Pass with conditions; keep gate off; ADR 0025 Proposed`
 **Assignment:** [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md)
 **Spike design:** [`Spike-P1-3`](../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md)
 **Architecture:** [`ADR 0025`](../architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) (`Proposed`)
-**Baseline:** branch `codex/t9-auto-anchor-s5-checkpoint`, parent tip `3273057`
+**Baseline:** branch `codex/t9-auto-anchor-s5-checkpoint`, Fail checkpoint `45c426f`, parent tip `3273057`
 
 ## Scope
 
@@ -50,17 +50,26 @@ swift test --package-path Packages/KeyboardCore \
   --filter ThreadAffineRimeSpikeTests
 ```
 
-Result: **5 passed / 0 failed**.
+### Initial Fail checkpoint (`45c426f`)
+
+Result at Fail checkpoint: **5 passed / 0 failed** (no omitted-shutdown /
+explicit lifecycle identity cases yet).
+
+### Lifecycle remediation (post-`45c426f`, re-validated 2026-07-31)
+
+Result: **7 passed / 0 failed**.
 
 | Proof | Result |
 |---|---|
-| First owner engine call remains blocked at least 150 ms | PASS; test elapsed about 189 ms |
+| First owner engine call remains blocked at least 150 ms | PASS; stall inside Fake `processKey`; test elapsed about 190 ms |
 | MainActor accepts three later keys while owner is blocked | PASS; accept path stayed below its 50 ms falsification bound |
 | FIFO / no drop / no duplicate | PASS; 12 action IDs and revisions preserved |
 | Engine creation off MainActor | PASS |
 | Every tested call stays on engine creation thread | PASS |
 | Epoch barrier | PASS; old result rejected, reset precedes new-epoch key |
 | Older revision after newer revision | PASS; rejected by MainActor gate |
+| Explicit shutdown destroys engine on owner thread | PASS (`testExplicitShutdownDestroysEngineOnItsOwnerThread`) |
+| Omitted shutdown: deinit still stops thread and destroys engine on owner thread | PASS (`testOwnerDeinitStopsThreadAndDestroysEngineWhenShutdownIsOmitted`) |
 | Spike disconnected / gate off | PASS; controller remains synchronous |
 
 The 50 ms assertion is an experiment falsification threshold, not a Product
@@ -76,7 +85,10 @@ CLANG_MODULE_CACHE_PATH=/private/tmp/universe-spike-clang-module-cache \
 swift test --package-path Packages/KeyboardCore
 ```
 
-Result: **821 passed / 0 failed**.
+Fail checkpoint (`45c426f`): **821 passed / 0 failed**.
+
+Lifecycle remediation re-run (2026-07-31): **823 passed / 0 failed**
+(+2 lifecycle tests).
 
 Static checks:
 
@@ -88,10 +100,14 @@ Static checks:
 1. Swift 6 accepts a construction where a non-Sendable engine is created,
    called and released inside one dedicated thread without an unchecked
    conformance.
-2. MainActor work acceptance can continue during a 150 ms+ owner stall.
+2. MainActor work acceptance can continue during a 150 ms+ owner stall that
+   occurs inside Fake `processKey`.
 3. Process-key inputs execute FIFO without drop/duplicate in the Fake proof.
 4. Sendable snapshots can re-enter MainActor and be filtered by epoch/revision.
 5. The proof does not alter current gate-off behavior.
+6. Explicit `shutdown()` and omitted-shutdown `deinit` both stop the owner
+   thread and destroy the local engine on that same owner thread
+   (`requestStop` is idempotent).
 
 ## Not proven
 
@@ -117,3 +133,46 @@ authorize that wiring yet. Independent reviewers should focus on:
 - queue/jetsam bounds without dropping input;
 - whether a separate RimeBridge-only real-engine fixture Spike is required
   before any Extension integration.
+
+## Independent review disposition
+
+### Fail at `45c426f`
+
+Independent Architecture and Quality reviews bound to `45c426f` both returned
+**Fail** with the same P1:
+
+- omitted explicit `shutdown()` orphaned the dedicated thread and thread-local
+  engine;
+- tests proved only explicit shutdown, not destruction when the handle is
+  dropped.
+
+Quality also found that the 150 ms block lived in the pre-engine hook, so the
+evidence wording “engine call blocked” was too strong for that checkpoint.
+
+### Remediation
+
+- idempotent `requestStop()` shared by explicit `shutdown()` and non-blocking
+  owner `deinit`;
+- controlled 150 ms blocking moved into a lifecycle-probe Fake engine's
+  `processKey` (no pre-engine hook stall);
+- explicit and omitted-shutdown tests observe init/process/deinit thread
+  identity on the owner thread.
+
+### Re-validation (2026-07-31)
+
+| Suite | Result |
+|---|---|
+| `ThreadAffineRimeSpikeTests` | **7 / 0** |
+| Full `KeyboardCore` | **823 / 0** |
+| `git diff --check` | PASS (dirty tree at validation time) |
+| targeted `@unchecked Sendable` scan | no occurrence in Spike source/tests |
+
+### Re-review disposition
+
+| Review | Document | Verdict |
+|---|---|---|
+| Architecture re-review | [`architecture-rereview`](../assignments/t9-responsive-pipeline-001-spike-p1-3-architecture-rereview.md) | **Pass with conditions** — lifecycle P1 Closed; P2 residuals (factory / delivery FIFO / unbounded mailbox) remain for R4 |
+| Quality re-review | [`quality-rereview`](../assignments/t9-responsive-pipeline-001-spike-p1-3-quality-rereview.md) | **Pass with conditions** — lifecycle + stall P1/P2 Closed; residual P3 on 50 ms wording |
+
+**Still not claimed:** ADR 0025 Accept, Product Gate, R4 production wiring,
+real librime on dedicated thread, device/jetsam, Release default-on.

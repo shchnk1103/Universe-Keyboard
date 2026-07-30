@@ -1,6 +1,6 @@
 # T9-RESPONSIVE-PIPELINE-001 / Spike-P1-3 design
 
-**Status:** `Active — Product-authorized falsifiable Spike; default-off; independent review pending`
+**Status:** `Active — lifecycle P1 Closed (Arch/Quality re-review Pass with conditions); gate off; R4 not authorized`
 **Date:** `2026-07-30 Asia/Shanghai`
 **Parent Assignment:** [`T9-RESPONSIVE-PIPELINE-001`](t9-responsive-rime-pipeline-001.md)
 **Architecture:** [`ADR 0025`](../architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) (`Proposed`)
@@ -59,6 +59,16 @@ transferred to the thread and invoked there. The resulting engine is a local
 variable captured by no other closure and is destroyed when the owner thread
 stops. No `@unchecked Sendable` is used.
 
+Lifecycle contract after review remediation:
+
+- explicit `shutdown()` remains the intended lifecycle endpoint;
+- `shutdown()` and `deinit` share one idempotent, thread-safe `requestStop()`;
+- deinit fallback only enqueues stop and never blocks;
+- `runOwnerLoop` returns before the stopped signal, so its local engine is
+  destroyed on the owner thread before `waitUntilStopped()` succeeds;
+- future Extension wiring must still perform explicit visibility
+  suspend/finalize; deinit fallback is not a database-lock lifecycle policy.
+
 ## Relationship to current R1–R3 path
 
 - `ResponsiveRimePipeline` remains the pure synchronous state-machine bed.
@@ -116,6 +126,12 @@ The Spike has no production connection. Failure means:
   evidence;
 - real librime may have undocumented process/thread assumptions beyond the
   Fake proof.
+- the generic factory contract does not prove a fresh/non-escaping real bridge
+  instance; R4 needs a concrete configuration-only RimeBridge bootstrap;
+- MainActor result delivery needs a single ordered channel and terminal
+  callback barrier;
+- the current mailbox is unbounded and stop/epoch barriers queue behind old
+  work; backlog/jetsam policy remains unresolved.
 
 ## Required evidence
 

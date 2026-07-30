@@ -11,6 +11,163 @@ private struct SpikeFakeRimeEngineFactory: ThreadAffineRimeSpikeEngineFactory {
 }
 
 @available(macOS 15.0, *)
+private final class SpikeEngineLifecycleRecorder: Sendable {
+    struct Facts: Sendable {
+        var initThread: Int?
+        var processThreads: [Int] = []
+        var deinitThread: Int?
+    }
+
+    private let facts = Mutex(Facts())
+    private let destroyed = DispatchSemaphore(value: 0)
+
+    func recordInit() {
+        facts.withLock { $0.initThread = Self.currentThreadIdentity }
+    }
+
+    func recordProcess() {
+        facts.withLock { $0.processThreads.append(Self.currentThreadIdentity) }
+    }
+
+    func recordDeinit() {
+        facts.withLock { $0.deinitThread = Self.currentThreadIdentity }
+        destroyed.signal()
+    }
+
+    func snapshot() -> Facts {
+        facts.withLock { $0 }
+    }
+
+    func waitForDeinit(timeout: DispatchTime = .now() + 2) -> Bool {
+        destroyed.wait(timeout: timeout) == .success
+    }
+
+    private static var currentThreadIdentity: Int {
+        ObjectIdentifier(Thread.current).hashValue
+    }
+}
+
+@available(macOS 15.0, *)
+private final class SpikeLifecycleProbeRimeEngine: RimeEngine {
+    private let delegate = FakeRimeEngine()
+    private let recorder: SpikeEngineLifecycleRecorder
+    private let processEntered: DispatchSemaphore?
+    private let releaseFirstProcess: DispatchSemaphore?
+    private var didBlockFirstProcess = false
+
+    init(
+        recorder: SpikeEngineLifecycleRecorder,
+        processEntered: DispatchSemaphore? = nil,
+        releaseFirstProcess: DispatchSemaphore? = nil
+    ) {
+        self.recorder = recorder
+        self.processEntered = processEntered
+        self.releaseFirstProcess = releaseFirstProcess
+        recorder.recordInit()
+    }
+
+    deinit {
+        recorder.recordDeinit()
+    }
+
+    func processKey(_ key: String) -> RimeOutput {
+        recorder.recordProcess()
+        if !didBlockFirstProcess, let processEntered, let releaseFirstProcess {
+            didBlockFirstProcess = true
+            processEntered.signal()
+            releaseFirstProcess.wait()
+        }
+        return delegate.processKey(key)
+    }
+
+    func selectCandidate(at index: Int) -> RimeOutput {
+        delegate.selectCandidate(at: index)
+    }
+
+    func selectCandidate(globalIndex index: Int) -> RimeOutput {
+        delegate.selectCandidate(globalIndex: index)
+    }
+
+    func candidateWindow(from globalIndex: Int, limit: Int) -> RimeCandidateWindow {
+        delegate.candidateWindow(from: globalIndex, limit: limit)
+    }
+
+    func deleteBackward() -> RimeOutput {
+        delegate.deleteBackward()
+    }
+
+    func replaceInput(_ input: String) -> RimeOutput {
+        delegate.replaceInput(input)
+    }
+
+    func resetSession() {
+        delegate.resetSession()
+    }
+
+    func recoverSession() {
+        delegate.recoverSession()
+    }
+
+    func suspendForVisibilityChange() {
+        delegate.suspendForVisibilityChange()
+    }
+
+    func resumeAfterVisibilityChange() {
+        delegate.resumeAfterVisibilityChange()
+    }
+
+    var runtimeSelection: RimeRuntimeSelection? {
+        delegate.runtimeSelection
+    }
+
+    var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {
+        delegate.diagnosticSessionSnapshot
+    }
+
+    var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)? {
+        get { delegate.onRuntimeSelectionChanged }
+        set { delegate.onRuntimeSelectionChanged = newValue }
+    }
+
+    func isComposing() -> Bool {
+        delegate.isComposing()
+    }
+
+    func pageUp() -> RimeOutput {
+        delegate.pageUp()
+    }
+
+    func pageDown() -> RimeOutput {
+        delegate.pageDown()
+    }
+}
+
+@available(macOS 15.0, *)
+private struct SpikeLifecycleProbeEngineFactory: ThreadAffineRimeSpikeEngineFactory {
+    let recorder: SpikeEngineLifecycleRecorder
+    let processEntered: DispatchSemaphore?
+    let releaseFirstProcess: DispatchSemaphore?
+
+    init(
+        recorder: SpikeEngineLifecycleRecorder,
+        processEntered: DispatchSemaphore? = nil,
+        releaseFirstProcess: DispatchSemaphore? = nil
+    ) {
+        self.recorder = recorder
+        self.processEntered = processEntered
+        self.releaseFirstProcess = releaseFirstProcess
+    }
+
+    func makeEngineOnOwnerThread() -> any RimeEngine {
+        SpikeLifecycleProbeRimeEngine(
+            recorder: recorder,
+            processEntered: processEntered,
+            releaseFirstProcess: releaseFirstProcess
+        )
+    }
+}
+
+@available(macOS 15.0, *)
 @MainActor
 final class ThreadAffineRimeSpikeTests: XCTestCase {
 
@@ -20,20 +177,14 @@ final class ThreadAffineRimeSpikeTests: XCTestCase {
         let allResults = expectation(description: "all results")
         allResults.expectedFulfillmentCount = 4
         let gate = ThreadAffineRimeSpikeApplyGate()
-        let engineCallCount = Mutex(0)
+        let lifecycle = SpikeEngineLifecycleRecorder()
 
         let owner = ThreadAffineRimeSpikeOwner(
-            engineFactory: SpikeFakeRimeEngineFactory(),
-            beforeEngineCall: {
-                let call = engineCallCount.withLock { count -> Int in
-                    count += 1
-                    return count
-                }
-                if call == 1 {
-                    engineEntered.signal()
-                    releaseEngine.wait()
-                }
-            },
+            engineFactory: SpikeLifecycleProbeEngineFactory(
+                recorder: lifecycle,
+                processEntered: engineEntered,
+                releaseFirstProcess: releaseEngine
+            ),
             resultHandler: { result in
                 _ = gate.apply(result)
                 allResults.fulfill()
@@ -66,6 +217,8 @@ final class ThreadAffineRimeSpikeTests: XCTestCase {
         XCTAssertEqual(gate.appliedSnapshots.last?.output.rawInput, "niha")
         owner.shutdown()
         XCTAssertTrue(owner.waitUntilStopped())
+        XCTAssertTrue(lifecycle.waitForDeinit())
+        assertSingleOwnerThread(lifecycle.snapshot(), expectedProcessCount: 4)
     }
 
     func testDedicatedOwnerPreservesOrderWithoutDropOrDuplicate() async {
@@ -114,20 +267,14 @@ final class ThreadAffineRimeSpikeTests: XCTestCase {
         let deliveries = expectation(description: "old and new delivered")
         deliveries.expectedFulfillmentCount = 2
         let gate = ThreadAffineRimeSpikeApplyGate()
+        let lifecycle = SpikeEngineLifecycleRecorder()
 
-        let callCount = Mutex(0)
         let owner = ThreadAffineRimeSpikeOwner(
-            engineFactory: SpikeFakeRimeEngineFactory(),
-            beforeEngineCall: {
-                let call = callCount.withLock { count -> Int in
-                    count += 1
-                    return count
-                }
-                if call == 1 {
-                    firstEngineEntered.signal()
-                    releaseFirstEngineCall.wait()
-                }
-            },
+            engineFactory: SpikeLifecycleProbeEngineFactory(
+                recorder: lifecycle,
+                processEntered: firstEngineEntered,
+                releaseFirstProcess: releaseFirstEngineCall
+            ),
             resultHandler: { result in
                 _ = gate.apply(result)
                 deliveries.fulfill()
@@ -148,6 +295,45 @@ final class ThreadAffineRimeSpikeTests: XCTestCase {
         XCTAssertEqual(gate.appliedSnapshots.last?.output.rawInput, "w")
         owner.shutdown()
         XCTAssertTrue(owner.waitUntilStopped())
+        XCTAssertTrue(lifecycle.waitForDeinit())
+        assertSingleOwnerThread(lifecycle.snapshot(), expectedProcessCount: 2)
+    }
+
+    func testExplicitShutdownDestroysEngineOnItsOwnerThread() async {
+        let lifecycle = SpikeEngineLifecycleRecorder()
+        let delivered = expectation(description: "result delivered")
+        let owner = ThreadAffineRimeSpikeOwner(
+            engineFactory: SpikeLifecycleProbeEngineFactory(recorder: lifecycle),
+            resultHandler: { _ in delivered.fulfill() }
+        )
+
+        XCTAssertNotNil(owner.accept(.processKey("n"), actionID: "k0"))
+        await fulfillment(of: [delivered], timeout: 1)
+        owner.shutdown()
+
+        XCTAssertTrue(owner.waitUntilStopped())
+        XCTAssertTrue(lifecycle.waitForDeinit())
+        assertSingleOwnerThread(lifecycle.snapshot(), expectedProcessCount: 1)
+    }
+
+    func testOwnerDeinitStopsThreadAndDestroysEngineWhenShutdownIsOmitted() {
+        let lifecycle = SpikeEngineLifecycleRecorder()
+        var owner: ThreadAffineRimeSpikeOwner? = ThreadAffineRimeSpikeOwner(
+            engineFactory: SpikeLifecycleProbeEngineFactory(recorder: lifecycle),
+            resultHandler: { _ in }
+        )
+
+        XCTAssertNotNil(owner)
+        owner = nil
+
+        XCTAssertTrue(
+            lifecycle.waitForDeinit(),
+            "deinit fallback must stop the thread and release its local engine"
+        )
+        let facts = lifecycle.snapshot()
+        XCTAssertNotNil(facts.initThread)
+        XCTAssertEqual(facts.deinitThread, facts.initThread)
+        XCTAssertTrue(facts.processThreads.isEmpty)
     }
 
     func testApplyGateRejectsOlderRevisionDeliveredAfterNewerRevision() {
@@ -190,5 +376,21 @@ final class ThreadAffineRimeSpikeTests: XCTestCase {
             engineCreatedOffMainThread: true,
             engineCallStayedOnCreationThread: true
         )
+    }
+
+    private func assertSingleOwnerThread(
+        _ facts: SpikeEngineLifecycleRecorder.Facts,
+        expectedProcessCount: Int,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertNotNil(facts.initThread, file: file, line: line)
+        XCTAssertEqual(facts.processThreads.count, expectedProcessCount, file: file, line: line)
+        XCTAssertTrue(
+            facts.processThreads.allSatisfy { $0 == facts.initThread },
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(facts.deinitThread, facts.initThread, file: file, line: line)
     }
 }

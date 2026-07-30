@@ -224,9 +224,9 @@ escape hatch. Incomplete coverage is an architectural defect (data race risk).
 - Not permission to wire `KeyboardController` / `RimeEngineImpl` without a later
   Product-named phase
 
-### 11. `sessionEpoch` mapping table (Architecture P1-3 freeze)
+### 11. `sessionEpoch` mapping table (R1-P1-3-epoch freeze)
 
-Architecture R1 review finding **P1-3** required a frozen who-bumps-epoch table
+Architecture R1 review finding **R1-P1-3-epoch** required a frozen who-bumps-epoch table
 (even if some rows land as R1 remediation or R3 contract completion). This
 section is the **target contract** for R1 remediation / R2 design. Implementers
 align code to this table; they do not invent alternate bump sites without
@@ -315,6 +315,23 @@ If this construction fails under Swift 6 or real librime prerequisites later
 invalidate it, production falls back unchanged to ADR 0004. The existing
 default-off MainActor deferred R2/R3 path remains an experimental ceiling, not
 a subjective non-stutter claim.
+
+Stable finding name: **`P1-3-off-main`**. This is distinct from the historical
+R1 epoch-mapping finding now named `R1-P1-3-epoch`.
+
+Independent review of checkpoint `45c426f` found one lifecycle P1: omitted
+explicit shutdown orphaned the owner thread and its local engine. Remediation
+adds an idempotent explicit stop plus non-blocking deinit fallback and lifecycle
+probe tests. Explicit Extension visibility suspend/finalize remains mandatory
+for any future R4; deinit is only a safety net.
+
+The following remain R4 Architecture residuals even after the Fake lifecycle
+P1 is repaired:
+
+- concrete RimeBridge bootstrap from Sendable configuration rather than a
+  generic freshness convention;
+- one ordered MainActor delivery channel with terminal acknowledgement;
+- bounded queue / stale-epoch backlog / jetsam policy without dropping input.
 
 Detailed design:
 [`../../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md`](../../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md).

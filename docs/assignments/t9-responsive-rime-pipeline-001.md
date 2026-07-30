@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R3 P1-1/P1-2 Closed; Spike-P1-3 Executor evidence complete / independent review pending; keep gate off; ADR 0025 Proposed; Product Gate not claimed`
+**Lifecycle status:** `Active — Spike-P1-3 lifecycle P1 Closed (Arch/Quality re-review Pass with conditions); keep gate off; ADR 0025 Proposed; Product Gate not claimed; R4 not granted`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -224,7 +224,14 @@
   reentrancy **Closed**; re-ran 38/816 green). Keep gate default off.
 - [ ] Product Gate — **not claimed**
 - [x] Spike-P1-3 design + falsifiable Fake proof — **granted 2026-07-30**
-- [ ] Spike-P1-3 independent Architecture / Quality review
+- [x] Spike-P1-3 independent Architecture / Quality review at `45c426f` —
+  **Fail**, shared lifecycle P1
+- [x] Spike-P1-3 lifecycle P1 remediation + independent Architecture /
+  Quality **re-review Pass with conditions** (2026-07-31) —
+  focused 7/7, full 823/823; residual Arch P2 factory/delivery/mailbox for R4
+  ([arch rereview](t9-responsive-pipeline-001-spike-p1-3-architecture-rereview.md),
+  [quality rereview](t9-responsive-pipeline-001-spike-p1-3-quality-rereview.md),
+  [evidence](../evidence/t9-responsive-pipeline-spike-p1-3-2026-07-30.md))
 - [ ] R4+ / real librime off-main production wiring — **not granted**
 
 ### Exit Criteria — Spike-P1-3
@@ -239,11 +246,12 @@
 - [x] Older revision cannot replace a newer applied snapshot.
 - [x] Spike is not wired into controller/Extension; gate-off remains
   synchronous and equivalent to ADR 0004.
-- [x] Focused 5/5 and full KeyboardCore 821/821 tests pass.
+- [x] Initial checkpoint focused 5/5 and full KeyboardCore 821/821 passed.
 - [x] Real librime, device and jetsam non-evidence are explicit in
   [`Spike evidence`](../evidence/t9-responsive-pipeline-spike-p1-3-2026-07-30.md).
-- [ ] Independent Architecture and Quality reviews complete; any authorized
-  findings are remediated and re-reviewed.
+- [x] Lifecycle P1 remediation focused/full validation — **7/7**, **823/823**.
+- [x] Independent Architecture and Quality re-reviews of the remediation —
+  **Pass with conditions** (lifecycle P1 Closed; Arch P2 residuals remain).
 
 ### Exit Criteria — R2–R6
 

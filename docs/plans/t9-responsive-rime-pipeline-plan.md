@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — R3 P1-1/P1-2 Closed; Spike-P1-3 Executor evidence complete / independent review pending; default-off; ADR 0025 Proposed; Product Gate not claimed** |
+| Status | **Active — Spike-P1-3 lifecycle P1 Closed (Arch/Quality re-review Pass with conditions); default-off; ADR 0025 Proposed; Product Gate not claimed; R4 not granted** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
@@ -286,3 +286,5 @@ T9-RESPONSIVE-PIPELINE-001 的 Assignment 与 Proposed ADR 已达到实现入口
 | 2026-07-30 | Human Product Owner authorized R1 only. `ResponsiveRimePipeline` + 17 focused tests landed; no real session migration; independent Arch/Quality review next. |
 | 2026-07-30 | Independent Arch/Quality R1 reviews: Pass with conditions. P1-2/P1-3 freezes in ADR 0025 §§10–11; P1-1 code+tests remediated same day (applied/published split, catch-up, reset/recover epoch). Focused 23 / full 801 green. R2+ / Product Gate / ADR Accept not claimed. |
 | 2026-07-30 | Human Product Owner authorized isolated Spike-P1-3 design + falsifiable thread-affine Fake proof only; real librime/R4, device/R5, ADR Accept and Product Gate remain closed. |
+| 2026-07-30 | Independent Architecture/Quality reviews of `45c426f`: Fail on shared P1 (omitted shutdown orphans thread/engine). Remediation written; validation/re-review pending. |
+| 2026-07-31 | Lifecycle P1 remediated (`requestStop` + deinit safety net; stall inside Fake `processKey`; lifecycle tests). Re-validated Spike 7/7 and KeyboardCore 823/823. Independent Architecture/Quality re-reviews: **Pass with conditions**. Arch residual P2 (factory / delivery FIFO / unbounded mailbox) remain for R4. ADR still Proposed; gate still off; R4 / Product Gate / device not claimed. |

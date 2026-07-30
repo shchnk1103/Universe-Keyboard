@@ -157,7 +157,6 @@ private final class ThreadAffineRimeSpikeMailbox: Sendable {
 ///   defaults or real `RimeEngineImpl`.
 @available(macOS 15.0, *)
 public final class ThreadAffineRimeSpikeOwner: Sendable {
-    public typealias BeforeEngineCall = @Sendable () -> Void
     public typealias ResultHandler = @MainActor @Sendable (ThreadAffineRimeSpikeResult) -> Void
 
     private struct AcceptanceState: Sendable {
@@ -171,7 +170,6 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
 
     public init<Factory: ThreadAffineRimeSpikeEngineFactory>(
         engineFactory: Factory,
-        beforeEngineCall: @escaping BeforeEngineCall = {},
         resultHandler: @escaping ResultHandler
     ) {
         let mailbox = ThreadAffineRimeSpikeMailbox()
@@ -181,7 +179,6 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
             Self.runOwnerLoop(
                 engineFactory: engineFactory,
                 mailbox: mailbox,
-                beforeEngineCall: beforeEngineCall,
                 resultHandler: resultHandler
             )
             // `runOwnerLoop` owns the engine as a local variable. Reaching this
@@ -191,6 +188,13 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         thread.name = "com.universekeyboard.rime.p1-3-spike"
         thread.qualityOfService = .userInteractive
         thread.start()
+    }
+
+    deinit {
+        // Explicit lifecycle shutdown remains required for a future Extension
+        // integration. This non-blocking fallback prevents a forgotten Spike
+        // handle from orphaning its thread and thread-local engine forever.
+        requestStop()
     }
 
     /// MainActor hot-path entry. This method only allocates a revision and
@@ -249,6 +253,10 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
     /// Extension visibility/process-lifecycle owner before adoption.
     @MainActor
     public func shutdown() {
+        requestStop()
+    }
+
+    private func requestStop() {
         let shouldStop = acceptanceState.withLock { state in
             guard !state.stopped else { return false }
             state.stopped = true
@@ -267,7 +275,6 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
     private static func runOwnerLoop<Factory: ThreadAffineRimeSpikeEngineFactory>(
         engineFactory: Factory,
         mailbox: ThreadAffineRimeSpikeMailbox,
-        beforeEngineCall: BeforeEngineCall,
         resultHandler: @escaping ResultHandler
     ) {
         // The live engine is born here and never becomes shared state.
@@ -283,7 +290,6 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                 // executed against the reset/new owner session.
                 guard envelope.sessionEpoch == ownerEpoch else { continue }
 
-                beforeEngineCall()
                 let output = execute(envelope.work, engine: engine)
                 let result = ThreadAffineRimeSpikeResult(
                     snapshot: ResponsiveRimeSnapshot(
