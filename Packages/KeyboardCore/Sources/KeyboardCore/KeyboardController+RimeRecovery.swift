@@ -98,7 +98,13 @@ extension KeyboardController {
                     return effectsAfterChineseCompositionKey(effects, originalKey: key)
                 }
                 // Deferred processKey: accept now; drain on later MainActor turns
-                // so handle returns before librime. Publish fires presentation bridge.
+                // so handle returns before librime. Context enables R3 Path /
+                // auto-anchor parity when the snapshot is applied.
+                enqueueResponsiveKeyApplyContext(
+                    rimeKey: rimeKey,
+                    previousT9PathState: previousT9PathState,
+                    previousRawForTrace: previousRawForTrace
+                )
                 coordinator.scheduleProcessKey(rimeKey)
                 scheduleResponsivePipelineDrain(coordinator)
                 let effects = consumeSingleUseShiftIfNeeded()

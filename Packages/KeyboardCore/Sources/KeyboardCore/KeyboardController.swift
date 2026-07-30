@@ -56,6 +56,23 @@ public final class KeyboardController {
     #endif
     var shouldRestoreRimeComposition = false
     var shouldRebuildSessionDuringRestore = false
+    /// FIFO contexts for deferred processKey post-processing (R3 parity).
+    var responsiveKeyApplyContexts: [ResponsiveKeyApplyContext] = []
+
+    /// Context captured when a responsive processKey is accepted (before drain).
+    struct ResponsiveKeyApplyContext {
+        let rimeKey: String
+        let previousT9PathState: T9PinyinPathState
+        let previousRawForTrace: String?
+    }
+
+    /// Underlying engine when a `ResponsiveRimeEngineBridge` is installed (R3 chrome).
+    public var underlyingRimeEngine: RimeEngine? {
+        if let bridge = rimeEngine as? ResponsiveRimeEngineBridge {
+            return bridge.underlyingEngine
+        }
+        return rimeEngine
+    }
 
     // MARK: - Init
 
@@ -102,12 +119,15 @@ public final class KeyboardController {
                 rimeEngine = underlying
             }
             responsiveRimeCoordinator = nil
+            responsiveKeyApplyContexts.removeAll()
             return
         }
 
         let coordinator = ResponsiveRimeSessionCoordinator(
             engine: underlying,
-            publishPolicy: publishPolicy,
+            // everyResult keeps one publish callback per processNext so R3
+            // post-processing contexts stay 1:1 with drained keys.
+            publishPolicy: publishPolicy == .latestOnly ? .everyResult : publishPolicy,
             fixtureID: "T9RESP-R2",
             clock: clock
         )
@@ -115,6 +135,7 @@ public final class KeyboardController {
             self?.applyResponsivePublishedSnapshot(snapshot)
         }
         responsiveRimeCoordinator = coordinator
+        responsiveKeyApplyContexts.removeAll()
         // All session call sites go through the bridge → single serial pipeline.
         rimeEngine = ResponsiveRimeEngineBridge(
             underlyingEngine: underlying,
@@ -122,17 +143,100 @@ public final class KeyboardController {
         )
     }
 
-    /// Apply a published responsive snapshot on MainActor (R2 gate path) and
-    /// notify Extension presentation.
+    /// Apply a published responsive snapshot on MainActor and run gate-off-parity
+    /// Path / auto-anchor post-processing when a key context is available (R3).
     func applyResponsivePublishedSnapshot(_ snapshot: ResponsiveRimeSnapshot?) {
         guard isResponsiveRimePipelineEnabled, let snapshot else { return }
+        let ctx = responsiveKeyApplyContexts.isEmpty
+            ? nil
+            : responsiveKeyApplyContexts.removeFirst()
         let output = augmentRimeOutputIfNeeded(snapshot.output)
+        guard let engine = rimeEngine else {
+            applyRimeOutput(output)
+            notifyResponsivePresentation(pathChanged: usesT9InputSemantics)
+            return
+        }
+
+        if let ctx,
+           rejectUnusableAcceptedT9AutoAnchorDigitIfNeeded(
+               ctx.rimeKey,
+               previousLedger: state.t9ReversibleAutoAnchorState,
+               output: output,
+               using: engine
+           )
+        {
+            notifyResponsivePresentation(pathChanged: true)
+            return
+        }
+
+        if output.composition == nil,
+           output.committedText == nil,
+           !engine.isComposing(),
+           let ctx
+        {
+            let intendedComposition = state.currentComposition + fallbackInputText(for: ctx.rimeKey)
+            if restoreRimeComposition(intendedComposition, using: engine, rebuildSession: true) {
+                notifyResponsivePresentation(pathChanged: true)
+                return
+            }
+            shouldRestoreRimeComposition = true
+            shouldRebuildSessionDuringRestore = true
+            state.lastRimeOutput = nil
+            notifyResponsivePresentation(pathChanged: true)
+            return
+        }
+
         applyRimeOutput(output)
+        var pathChanged = usesT9InputSemantics
+        if let ctx {
+            var retainedFocusedSegment = false
+            if output.committedText == nil,
+               ctx.rimeKey.count == 1,
+               let digit = ctx.rimeKey.first
+            {
+                retainedFocusedSegment = retainFocusedT9SegmentAfterAppendingDigit(
+                    previous: ctx.previousT9PathState,
+                    digit: digit
+                )
+            }
+            advanceAcceptedT9AutoAnchorDigit(
+                ctx.rimeKey,
+                previousLiveRawInput: ctx.previousRawForTrace,
+                output: output
+            )
+            let autoAnchorOutcome = attemptReversibleT9AutoAnchorIfNeeded(using: engine)
+            if retainedFocusedSegment || autoAnchorOutcome.status != .notEligible {
+                pathChanged = true
+            } else if usesT9InputSemantics {
+                _ = refreshT9PinyinPathState(forceNewProvenance: false)
+                pathChanged = true
+            }
+        } else if usesT9InputSemantics {
+            _ = refreshT9PinyinPathState(forceNewProvenance: false)
+        }
+        notifyResponsivePresentation(pathChanged: pathChanged)
+    }
+
+    private func notifyResponsivePresentation(pathChanged: Bool) {
         var effects: KeyboardEffect = [.compositionChanged]
-        if usesT9InputSemantics {
+        if pathChanged {
             effects.insert(.t9PinyinPathsChanged)
         }
         onResponsivePresentationNeeded?(effects)
+    }
+
+    func enqueueResponsiveKeyApplyContext(
+        rimeKey: String,
+        previousT9PathState: T9PinyinPathState,
+        previousRawForTrace: String?
+    ) {
+        responsiveKeyApplyContexts.append(
+            ResponsiveKeyApplyContext(
+                rimeKey: rimeKey,
+                previousT9PathState: previousT9PathState,
+                previousRawForTrace: previousRawForTrace
+            )
+        )
     }
 
     /// Schedule deferred drain turns after `scheduleProcessKey` so `handle` can

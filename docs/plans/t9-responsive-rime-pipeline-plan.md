@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — R2 P1 re-review Pass with conditions (P1-1/P1-2 Closed; P1-3 off-main open); keep gate off; ADR 0025 Proposed; Product Gate not claimed** |
+| Status | **Active — Phase A freeze + R3 implemented (default-off); P1-3 off-main open; R3 Arch/Quality pending; ADR 0025 Proposed; Product Gate not claimed** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
@@ -157,13 +157,24 @@ librime needs a later Architecture-approved thread-confined design.
 **Exit:** focused tests green — Executor claim only; independent Arch/Quality
 for R2 **pending**.
 
-### R3 — Contract completion
+### R3 — Contract completion / gate-on parity — **implemented 2026-07-30 (default-off)**
 
-- Delete pending/running/confirmed cases
-- Stale candidate/Path fail-closed
-- Visibility / schema / recover epoch invalidation
-- Queue growth policy (measure first; hard drop only with Product decision)
-- Memory / jetsam notes for Extension
+**Authority:** Product “先 A 后 B；B 授权实现”.
+
+Delivered:
+
+- FIFO `responsiveKeyApplyContexts` so deferred `processKey` publish re-runs
+  Path retain / auto-anchor / recovery-style post-processing (gate-off parity)
+- Coordinator rebuild prefers `.everyResult` so contexts stay 1:1 with drains
+- `underlyingRimeEngine` + Extension chrome uses it (`viewWillAppear` / feedback)
+- handle-level key→delete order test; path presentation context test
+- Still **default-off**; **not** off-main (P1-3); **not** ADR Accept / Gate
+
+Residual for later R3 polish or R4+:
+
+- Full handle multi-gesture matrix beyond key→delete
+- Symbol-page replace still sync-drains on handle
+- Queue growth / jetsam policy
 
 ### R4 — Real RIME integration
 

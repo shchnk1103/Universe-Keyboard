@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R2 P1 re-review: Arch Pass with conditions (P1-1/P1-2 Closed, P1-3 open); Quality Pass with conditions (P1 Closed); keep gate off; ADR 0025 Proposed; Product Gate not claimed`  
+**Lifecycle status:** `Active — Phase A freeze done; R3 implemented (default-off parity: Path/auto-anchor context, handle order tests, chrome unwrap); Arch P1-3 open; Arch/Quality review of R3 pending; ADR 0025 Proposed; Product Gate not claimed`  
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -190,8 +190,16 @@
   ([rereview](t9-responsive-pipeline-001-r2-quality-rereview.md): Quality P1
   presentation bridge **Closed**; re-ran 33/811 green). Keep gate default off;
   not wide Debug/device enablement confidence.
+- [x] Phase A freeze (2026-07-30) —
+  ([freeze](t9-responsive-pipeline-001-phase-a-freeze-2026-07-30.md)); PR #34
+  not urgent to merge
+- [x] R3 authorization — **granted 2026-07-30** (Product: 先A后B，B授权实现)
+- [x] R3 implementation (Executor) — deferred publish Path/auto-anchor context;
+  `underlyingRimeEngine` for Extension chrome; handle key→delete + path
+  presentation tests; gate still default off
+- [ ] Independent Architecture / Quality review of R3 — **pending**
 - [ ] Product Gate — **not claimed**
-- [ ] R3+ authorization — **not granted**
+- [ ] R4+ / off-main (P1-3) — **not granted**
 
 ### Exit Criteria — R2–R6
 

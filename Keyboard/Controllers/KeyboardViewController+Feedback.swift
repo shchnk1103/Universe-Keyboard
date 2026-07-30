@@ -129,7 +129,7 @@ extension KeyboardViewController {
             cachedLayoutStyle = .twentySixKey
         }
         controller.usesT9InputSemantics = selection.usesT9InputSemantics
-        if let engine = controller.rimeEngine as? RimeEngineImpl {
+        if let engine = controller.underlyingRimeEngine as? RimeEngineImpl {
             applyRealizedRuntimeSelection(from: engine)
         }
 

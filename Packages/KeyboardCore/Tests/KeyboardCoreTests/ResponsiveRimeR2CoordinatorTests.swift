@@ -188,10 +188,72 @@ final class ResponsiveRimeR2CoordinatorTests: XCTestCase {
         controller.isResponsiveRimePipelineEnabled = true
         controller.rebuildResponsiveRimeCoordinatorIfNeeded()
         XCTAssertTrue(controller.rimeEngine is ResponsiveRimeEngineBridge)
+        XCTAssertTrue(controller.underlyingRimeEngine === engine)
 
         controller.isResponsiveRimePipelineEnabled = false
         controller.rebuildResponsiveRimeCoordinatorIfNeeded()
         XCTAssertTrue(controller.rimeEngine === engine)
         XCTAssertNil(controller.responsiveRimeCoordinator)
+    }
+
+    // MARK: - R3
+
+    func testHandleKeyThenDeleteThroughBridgePreservesOrder() {
+        let engine = FakeRimeEngine()
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = engine
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        // Delete via controller path (bridge-backed rimeEngine).
+        _ = controller.handle(.deleteBackward)
+
+        // Wait for deferred drains then any ordered delete already flushed.
+        let settle = expectation(description: "settle")
+        DispatchQueue.main.async {
+            // Drain any remaining deferred keys if delete didn't flush them all.
+            controller.responsiveRimeCoordinator?.flushPending()
+            settle.fulfill()
+        }
+        wait(for: [settle], timeout: 1)
+
+        // After n,i then delete: composition should be "n" (or empty if delete
+        // raced before drains — flushPending on delete path should force "n").
+        XCTAssertEqual(engine.sessionComposition, "n")
+    }
+
+    func testResponsiveApplyRunsPathRefreshContext() {
+        let engine = FakeRimeEngine(dictionary: [
+            "6": ["m", "n", "o"],
+            "64": ["mi", "ni"],
+        ])
+        engine.appendDigitsToComposition = true
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = true
+        controller.isResponsiveRimePipelineEnabled = true
+        var pathEffects = 0
+        controller.onResponsivePresentationNeeded = { effects in
+            if effects.contains(.t9PinyinPathsChanged) {
+                pathEffects += 1
+            }
+        }
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        _ = controller.handle(.insertKey("6"))
+        let settle = expectation(description: "drain")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            settle.fulfill()
+        }
+        wait(for: [settle], timeout: 1)
+        controller.responsiveRimeCoordinator?.flushPending()
+
+        XCTAssertEqual(engine.sessionComposition, "6")
+        XCTAssertGreaterThanOrEqual(pathEffects, 1)
+        XCTAssertTrue(controller.responsiveKeyApplyContexts.isEmpty)
     }
 }

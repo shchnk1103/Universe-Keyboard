@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — R0/R1 done; R2 authorized and implemented (default-off serial owner + deferred key path); R3+ / Release default / ADR Accept / Product Gate not authorized`  
+**Lifecycle status:** `Recorded — R0–R2 done + P1 re-review; Phase A freeze; R3 authorized 2026-07-30 (default-off behavior parity); R4+ / ADR Accept / Product Gate / Release default-on not authorized`  
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the
@@ -142,11 +142,33 @@ R2 therefore uses a single-consumer **MainActor** owner with deferred drain
 rather than a background actor holding librime. Off-main librime remains an
 Architecture residual for a later authorized design.
 
+### Phase A freeze (2026-07-30)
+
+Product chose: **stabilize docs/PR first**, then implement **R3** under explicit auth.
+See [`t9-responsive-pipeline-001-phase-a-freeze-2026-07-30.md`](../assignments/t9-responsive-pipeline-001-phase-a-freeze-2026-07-30.md).
+
+### R3 (2026-07-30 Human Product Owner authorization) — implementing
+
+**Allowed (default-off only):**
+
+- Gate-on **behavior parity** for Path / auto-anchor post-processing after deferred publish
+- `handle`-level multi-action order tests (e.g. key → delete)
+- Extension chrome resolve underlying engine through bridge (no bare `as? RimeEngineImpl` only)
+- Optional: symbol-page replace scheduling cleanup without Release default-on
+- Docs/evidence; no ADR 0025 Accept; no Product Gate self-claim
+
+**Forbidden:**
+
+- Release default-on / user settings
+- Off-main librime spike (Arch P1-3) unless later separate auth
+- Expanding T9 auto-anchor
+- `@unchecked Sendable` isolation bypass
+
 ## Not authorized now
 
 - Changing Release default input path or user-facing settings
-- R3–R6, ADR 0025 Accept, Product Gate
-- Declaring Architecture / Quality / Product Gate pass for R2
+- R4–R6, ADR 0025 Accept, Product Gate
+- Off-main librime production migration (P1-3)
 - Expanding T9 auto-anchor
 
 ## Phased product view (summary)
