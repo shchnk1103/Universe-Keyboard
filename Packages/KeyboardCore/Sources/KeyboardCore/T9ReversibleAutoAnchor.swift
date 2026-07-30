@@ -129,6 +129,15 @@ public enum T9ReversibleAutoAnchorPolicy {
         public static let experimental = Configuration(
             maximumAnchoredSyllableCount: 2
         )
+
+        /// S2.3 earlier first-anchor: same two-syllable cap with a lower source
+        /// digit floor so attempt 1 can fire before the residual e16-class window.
+        /// Used only when the earlier-first gate is enabled; attempt 2/3 paths
+        /// do not re-apply this floor as a new first-anchor opportunity.
+        public static let experimentalEarlierFirst = Configuration(
+            minimumSourceDigitCount: 12,
+            maximumAnchoredSyllableCount: 2
+        )
     }
 
     public struct Proposal: Equatable, Sendable {

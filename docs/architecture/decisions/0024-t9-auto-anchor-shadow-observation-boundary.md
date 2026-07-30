@@ -2,8 +2,8 @@
 
 - **Status:** Proposed — S4 validated; S2.1/S2.2 implemented with exploratory
   direction evidence (product goal not met); S2.2 closed for default attempt-N
-  expansion; S2.3 earlier-first-anchor design under review; shipping decision
-  deferred
+  expansion; S2.3 earlier-first implemented with Layer1/2 PASS (Human B3→B3e
+  pending); shipping decision deferred
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)

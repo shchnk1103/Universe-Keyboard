@@ -33,6 +33,9 @@ public final class KeyboardController {
     /// S2.2 third cumulative-extension gate. Requires rolling; keeps B2 as the
     /// two-attempt comparator when this flag stays off.
     public var isTripleRollingT9AutoAnchorEnabled = false
+    /// S2.3 earlier first-anchor gate. Orthogonal to rolling/triple; only lowers
+    /// the attempt-1 source-digit floor (18 → 12) while retaining two syllables.
+    public var isEarlierFirstT9AutoAnchorEnabled = false
     #if DEBUG
     /// Content-free hook for controlled preflight evidence. Release builds do
     /// not expose or execute this diagnostic callback.

@@ -1,7 +1,7 @@
 # Product Decision: T9-AUTO-ANCHOR-001 Authorization
 
 **Decision ID:** `PD-T9-AUTO-ANCHOR-001`
-**Lifecycle status:** `Recorded — S2.2 exploratory complete (direction PASS, product goal not met); no default attempt-N expansion; S2.3 earlier-first-anchor design authorized`
+**Lifecycle status:** `Recorded — S2.3 implementation authorized and automated evidence complete; Human B3→B3e exploratory pending; product goal not claimed`
 **Date / timezone:** `2026-07-27 Asia/Shanghai`
 **Decision source:** Human Product Owner instructions in active Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`
@@ -313,6 +313,25 @@ This section does **not** authorize:
 
 Implementation of S2.3 requires a later explicit Product instruction after
 Architecture and Quality independently pass the frozen S2.3 design.
+
+## S2.3 implementation authorization
+
+On `2026-07-30 Asia/Shanghai`, after Architecture and Quality independently
+returned `Pass` (P0–P3 all zero) for the S2.3 earlier-first-anchor design, the
+Human Product Owner explicitly replied “授权 S2.3 实现”.
+
+This authorizes implementation, tests, Simulator/pinned-RIME evidence,
+independent implementation review and internal-artifact preparation exactly
+within
+[`T9-AUTO-ANCHOR-001-S23`](../assignments/t9-auto-anchor-001-s23-earlier-first-anchor.md)
+and ADR 0024 §21–24. It does **not** authorize ordinary Release enablement, a
+user-facing setting, Product Gate, public performance claims, attempt 4+,
+one-syllable first-anchor as default, or skipping the Human `B3→B3e`
+exploratory pair after automated evidence.
+
+Internal earlier-first identity is source-visible and default-off:
+`T9_AUTO_ANCHOR_EARLIER_FIRST_PREFLIGHT_ENABLED` may be added only on top of
+the A1 preflight conditions. It is orthogonal to rolling/triple gates.
 
 ## S6-A physical-device preflight authorization
 

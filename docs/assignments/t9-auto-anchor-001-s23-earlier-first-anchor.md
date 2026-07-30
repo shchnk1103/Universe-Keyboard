@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S23 — 更早首锚设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — design Arch/Quality Pass; no implementation until Product 授权 S2.3 实现`
+**Lifecycle status:** `Active — implementation + Layer1/2 PASS; Human B3→B3e exploratory pending`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Predecessor:** [`T9-AUTO-ANCHOR-001-S22`](t9-auto-anchor-001-s22-stronger-controller-bounding.md)
 **Repository change types:** `Documentation` (design phase only)
@@ -428,16 +428,28 @@ prefix depth).
 - No implementation, Release enablement or Product Gate claimed.
 
 Design Exit Criteria for Architecture/Quality independent review are met for
-the **design phase**. Implementation still requires explicit Product
-instruction **“授权 S2.3 实现”**.
+the **design phase**. Product authorized implementation on `2026-07-30`
+(“授权 S2.3 实现”).
+
+### Implementation and evidence progress
+
+Evidence:
+[`../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md`](../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md)
+
+- KeyboardCore: 43 focused + 778 full passed
+- Simulator A0/A1/B2/B3/A1e/B2e/B3e matrix: **passed**
+  - A1e/B2e/B3e attempt1 @ physical **12** (≤15)
+  - B3e continues 12 → 18 → 22
+- Human B3→B3e exploratory: **pending**
+- Ordinary Release remains gate-off by default
 
 ## Handoff
 
-- **Handoff Target:** Architecture & Knowledge Steward and Quality, Performance
-  & Release Maintainer for **design review**; then Product Lead for
-  implementation authorization only after both Pass with P0/P1 = 0
-- **Required Handoff Content:** this Assignment, ADR 0024 §21–24, PD routing
-  after S2.2, S2.2 B2→B3 evidence link
+- **Handoff Target:** Human Product Owner for physical **B3 → B3e** exploratory
+  typing and Performance log export; optional Architecture/Quality
+  implementation review of the automated evidence remains available.
+- **Required Handoff Content:** this Assignment, implementation evidence,
+  ADR 0024 §21–24, PD S2.3 implementation authorization
 - **Revalidation Trigger:** any change to digit floor, syllable rule for
   attempt 1, attempt cap, ordinal caps, device method, privacy boundary or
   Release gate intent
@@ -455,5 +467,5 @@ instruction **“授权 S2.3 实现”**.
 | Attempt1 ordinal ≤15 with stop-fast | Yes |
 | Layer1/2/3 arm integrity + pair order | Yes |
 | Flag name frozen without “e.g.” | Yes |
-| Implementation not started | Yes |
-| Human device required now | No (after implementation auth) |
+| Automated implementation evidence complete | Yes |
+| Human device required now | **Yes** (B3→B3e exploratory) |

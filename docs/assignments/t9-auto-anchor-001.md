@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S2.2 exploratory complete (goal not met); S2.3 earlier-first-anchor design authorized`
+**Lifecycle status:** `Active — S2.3 earlier-first implemented (Layer1/2 PASS); Human B3→B3e pending; product goal not claimed`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -311,8 +311,11 @@ S2.2 Human B2→B3 exploratory evidence (direction PASS; goal not met):
 [`../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md`](../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md).
 
 S2.2 product goal remains unmet; Product closed default attempt-N expansion and
-authorized S2.3 earlier-first-anchor **design only**:
+authorized S2.3 earlier-first-anchor design then implementation:
 [`t9-auto-anchor-001-s23-earlier-first-anchor.md`](t9-auto-anchor-001-s23-earlier-first-anchor.md).
+S2.3 automated evidence (Layer1/2 PASS; attempt1 @12 on A1e/B3e):
+[`../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md`](../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md).
+Human B3→B3e exploratory remains pending.
 
 ### 2026-07-28 supplementary ETTrace attribution
 

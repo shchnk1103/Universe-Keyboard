@@ -73,6 +73,12 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         case b2
         /// S2.2 triple-rolling internal arm (B3).
         case b3
+        /// S2.3 earlier first-anchor on A1.
+        case a1e
+        /// S2.3 earlier first-anchor on B2.
+        case b2e
+        /// S2.3 earlier first-anchor on B3.
+        case b3e
     }
 
     private struct S21ArmSummary {
@@ -266,6 +272,9 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         let a1 = try XCTUnwrap(summaries.first { $0.arm == .a1 })
         let b2 = try XCTUnwrap(summaries.first { $0.arm == .b2 })
         let b3 = try XCTUnwrap(summaries.first { $0.arm == .b3 })
+        let a1e = try XCTUnwrap(summaries.first { $0.arm == .a1e })
+        let b2e = try XCTUnwrap(summaries.first { $0.arm == .b2e })
+        let b3e = try XCTUnwrap(summaries.first { $0.arm == .b3e })
 
         XCTAssertEqual(a0.replaceInputCount, 0)
         XCTAssertTrue(a0.outcomes.isEmpty)
@@ -320,6 +329,45 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
             "attempt 3 missed the frozen S2.2 pre-late-spike deadline"
         )
 
+        // S2.3 earlier-first arms: attempt 1 must land at physical ≤15.
+        XCTAssertEqual(a1e.replaceInputCount, 1)
+        XCTAssertEqual(a1e.outcomes.count, 1)
+        XCTAssertEqual(a1e.outcomes.first?.outcome.status, .accepted)
+        XCTAssertEqual(a1e.outcomes.first?.outcome.attemptIndex, 1)
+        XCTAssertLessThanOrEqual(
+            a1e.outcomes[0].action,
+            15,
+            "A1e attempt 1 missed the S2.3 earlier-first ordinal ceiling"
+        )
+
+        XCTAssertEqual(b2e.replaceInputCount, 2)
+        XCTAssertEqual(b2e.outcomes.count, 2)
+        XCTAssertTrue(b2e.outcomes.allSatisfy { $0.outcome.status == .accepted })
+        XCTAssertEqual(
+            b2e.outcomes.map { $0.outcome.attemptIndex },
+            [1, 2]
+        )
+        XCTAssertLessThanOrEqual(b2e.outcomes[0].action, 15)
+        XCTAssertLessThan(b2e.outcomes[0].action, b2e.outcomes[1].action)
+        XCTAssertLessThanOrEqual(b2e.outcomes[1].action, 23)
+
+        XCTAssertEqual(b3e.replaceInputCount, 3)
+        XCTAssertEqual(b3e.outcomes.count, 3)
+        XCTAssertTrue(b3e.outcomes.allSatisfy { $0.outcome.status == .accepted })
+        XCTAssertEqual(
+            b3e.outcomes.map { $0.outcome.attemptIndex },
+            [1, 2, 3]
+        )
+        XCTAssertLessThanOrEqual(
+            b3e.outcomes[0].action,
+            15,
+            "B3e attempt 1 missed the S2.3 earlier-first ordinal ceiling"
+        )
+        XCTAssertLessThan(b3e.outcomes[0].action, b3e.outcomes[1].action)
+        XCTAssertLessThan(b3e.outcomes[1].action, b3e.outcomes[2].action)
+        XCTAssertLessThanOrEqual(b3e.outcomes[1].action, 23)
+        XCTAssertLessThanOrEqual(b3e.outcomes[2].action, 28)
+
         XCTAssertTrue(
             summaries.allSatisfy {
                 $0.completedActionCount == 38
@@ -340,7 +388,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
                 "invalid=\(summary.invalidReasons.joined(separator: "+"))",
             ].joined(separator: ",")
         }
-        let record = "T9_S21_A0_A1_B2 " + rows.joined(separator: ";")
+        let record = "T9_S21_A0_A1_B2_B3_A1e_B2e_B3e " + rows.joined(separator: ";")
         fputs(record + "\n", stderr)
         print(record)
     }
@@ -2291,8 +2339,12 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         controller.textClient = FakeTextInputClient()
         controller.usesT9InputSemantics = true
         controller.isReversibleT9AutoAnchorEnabled = arm != .a0
-        controller.isRollingT9AutoAnchorEnabled = arm == .b2 || arm == .b3
-        controller.isTripleRollingT9AutoAnchorEnabled = arm == .b3
+        controller.isRollingT9AutoAnchorEnabled =
+            arm == .b2 || arm == .b3 || arm == .b2e || arm == .b3e
+        controller.isTripleRollingT9AutoAnchorEnabled =
+            arm == .b3 || arm == .b3e
+        controller.isEarlierFirstT9AutoAnchorEnabled =
+            arm == .a1e || arm == .b2e || arm == .b3e
 
         var currentAction = 0
         var outcomes: [

@@ -28,9 +28,15 @@ extension KeyboardController {
             let sourceDigits =
                 state.t9PinyinPathState.segmentSourceDigits
                 ?? T9PinyinPathExtractor.pureDigitRaw(output.rawInput)
+            // S2.3: earlier-first only changes attempt-1 configuration floors.
+            let attempt1Configuration: T9ReversibleAutoAnchorPolicy.Configuration =
+                isEarlierFirstT9AutoAnchorEnabled
+                ? .experimentalEarlierFirst
+                : .experimental
             guard let initialProposal = T9ReversibleAutoAnchorPolicy.proposal(
                 sourceDigits: sourceDigits,
-                output: output
+                output: output,
+                configuration: attempt1Configuration
             ) else {
                 return .notEligible
             }
