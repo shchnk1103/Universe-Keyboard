@@ -1,10 +1,11 @@
 # Assignment: T9-AUTO-ANCHOR-001-S22 — 更强控制器自动锚定设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — design Pass (Arch+Quality); awaiting Product implementation authorization`
+**Lifecycle status:** `Active — implementation in progress; KeyboardCore B3 + unit tests landed`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Predecessor:** [`T9-AUTO-ANCHOR-001-S21`](t9-auto-anchor-001-s21-rolling-design.md)
-**Repository change types:** `Documentation` (design phase only)
+**Repository change types:** `Implementation`, `Tests`, `Documentation`,
+`Diagnostic Evidence`
 
 ## Authority
 
@@ -350,8 +351,21 @@ normal user deletion.
 | After Layer1 gate-fork remediation | **Pass** retained (no regression) | **Pass** (P0–P3 = 0) |
 
 Design Exit Criteria for Architecture/Quality independent review are met.
-**Implementation is not authorized** until Product issues an explicit
-implementation instruction.
+Product authorized implementation on `2026-07-30` (“授权 S2.2 实现”).
+
+### Implementation progress (local)
+
+- `KeyboardController.isTripleRollingT9AutoAnchorEnabled` (default off)
+- attempt 3 eligibility reuses cumulative +2 extension; max attempts 2 (B2)
+  or 3 (B3)
+- Bootstrap nests `T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED` on B2
+- KeyboardCore `T9ReversibleAutoAnchorTests`: 37/37 including triple accept,
+  B2 isolation, third-reject restore
+- Full KeyboardCore: 772/772
+- RimeBridge matrix extended to A0/A1/B2/B3 (Simulator evidence pending run)
+
+Remaining: run pinned real-RIME B3 matrix on Simulator; Human B2→B3; ordinary
+Release restore; independent implementation review.
 
 Remediation closed the listed P1/P2 gaps in-document and added ADR §17–20.
 

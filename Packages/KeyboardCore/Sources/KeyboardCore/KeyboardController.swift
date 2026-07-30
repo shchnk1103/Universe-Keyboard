@@ -30,6 +30,9 @@ public final class KeyboardController {
     /// S2.1 cumulative-extension gate. Keeping this separate preserves the
     /// existing one-anchor A1 arm when the base prototype is enabled.
     public var isRollingT9AutoAnchorEnabled = false
+    /// S2.2 third cumulative-extension gate. Requires rolling; keeps B2 as the
+    /// two-attempt comparator when this flag stays off.
+    public var isTripleRollingT9AutoAnchorEnabled = false
     #if DEBUG
     /// Content-free hook for controlled preflight evidence. Release builds do
     /// not expose or execute this diagnostic callback.

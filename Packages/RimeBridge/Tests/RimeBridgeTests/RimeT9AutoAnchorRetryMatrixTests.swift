@@ -71,6 +71,8 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         case a0
         case a1
         case b2
+        /// S2.2 triple-rolling internal arm (B3).
+        case b3
     }
 
     private struct S21ArmSummary {
@@ -240,7 +242,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
     }
 
     @MainActor
-    func testRollingControllerFrozenA0A1B2Matrix() async throws {
+    func testRollingControllerFrozenA0A1B2B3Matrix() async throws {
         let directories = try spikeRuntimeDirectories()
         try assertSpikeSchemaIsPatched(sharedDir: directories.sharedDir)
         let sourceDigits = t9Digits(
@@ -263,6 +265,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         let a0 = try XCTUnwrap(summaries.first { $0.arm == .a0 })
         let a1 = try XCTUnwrap(summaries.first { $0.arm == .a1 })
         let b2 = try XCTUnwrap(summaries.first { $0.arm == .b2 })
+        let b3 = try XCTUnwrap(summaries.first { $0.arm == .b3 })
 
         XCTAssertEqual(a0.replaceInputCount, 0)
         XCTAssertTrue(a0.outcomes.isEmpty)
@@ -288,6 +291,33 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
             b2.outcomes[1].action,
             23,
             "the rolling extension missed the frozen pre-spike deadline"
+        )
+
+        XCTAssertEqual(b3.replaceInputCount, 3)
+        XCTAssertEqual(b3.outcomes.count, 3)
+        XCTAssertTrue(b3.outcomes.allSatisfy { $0.outcome.status == .accepted })
+        XCTAssertEqual(
+            b3.outcomes.map { $0.outcome.attemptIndex },
+            [1, 2, 3]
+        )
+        XCTAssertLessThan(
+            b3.outcomes[0].action,
+            b3.outcomes[1].action
+        )
+        XCTAssertLessThan(
+            b3.outcomes[1].action,
+            b3.outcomes[2].action,
+            "attempt 3 must be caused by a later physical key than attempt 2"
+        )
+        XCTAssertLessThanOrEqual(
+            b3.outcomes[1].action,
+            23,
+            "B3 inherits the attempt-2 pre-spike deadline"
+        )
+        XCTAssertLessThanOrEqual(
+            b3.outcomes[2].action,
+            28,
+            "attempt 3 missed the frozen S2.2 pre-late-spike deadline"
         )
 
         XCTAssertTrue(
@@ -2261,7 +2291,8 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         controller.textClient = FakeTextInputClient()
         controller.usesT9InputSemantics = true
         controller.isReversibleT9AutoAnchorEnabled = arm != .a0
-        controller.isRollingT9AutoAnchorEnabled = arm == .b2
+        controller.isRollingT9AutoAnchorEnabled = arm == .b2 || arm == .b3
+        controller.isTripleRollingT9AutoAnchorEnabled = arm == .b3
 
         var currentAction = 0
         var outcomes: [

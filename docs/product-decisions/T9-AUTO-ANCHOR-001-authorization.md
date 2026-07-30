@@ -227,6 +227,24 @@ This section does **not** authorize:
 Implementation of S2.2 requires a later explicit Product instruction after
 Architecture and Quality independently pass the frozen S2.2 design.
 
+## S2.2 implementation authorization
+
+On `2026-07-30 Asia/Shanghai`, after Architecture and Quality independently
+returned `Pass` (P0–P3 all zero) for the remediated S2.2 design, the Human
+Product Owner explicitly replied “授权 S2.2 实现”.
+
+This authorizes implementation, tests, Simulator/pinned-RIME evidence,
+independent implementation review and internal-artifact preparation exactly
+within
+[`T9-AUTO-ANCHOR-001-S22`](../assignments/t9-auto-anchor-001-s22-stronger-controller-bounding.md)
+and ADR 0024 §17–20. It does **not** authorize ordinary Release enablement, a
+user-facing setting, Product Gate, public performance claims or skipping the
+Human `B2→B3` exploratory pair after automated evidence.
+
+Internal B3 identity is source-visible and default-off:
+`T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED` may be added only on top of
+the A1 and B2 preflight conditions.
+
 ## S6-A physical-device preflight authorization
 
 On `2026-07-28 Asia/Shanghai`, after the connected device was identified as a

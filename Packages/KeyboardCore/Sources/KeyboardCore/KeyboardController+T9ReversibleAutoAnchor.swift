@@ -41,8 +41,13 @@ extension KeyboardController {
             previousAnchoredSlotCount = 0
 
         case .accepted:
+            let maxAutomaticAttempts =
+                isTripleRollingT9AutoAnchorEnabled
+                ? 3
+                : (isRollingT9AutoAnchorEnabled ? 2 : 1)
             guard isRollingT9AutoAnchorEnabled,
-                  priorLedger.automaticApplyAttemptCount == 1,
+                  priorLedger.automaticApplyAttemptCount >= 1,
+                  priorLedger.automaticApplyAttemptCount < maxAutomaticAttempts,
                   priorLedger.sourceDigits.count
                     > priorLedger.lastAttemptSourceDigitCount,
                   output.rawInput == priorLedger.replacementRawInput,
@@ -60,7 +65,8 @@ extension KeyboardController {
             else {
                 return .notEligible
             }
-            attemptIndex = 2
+            // Attempt 2 is S2.1; attempt 3 is S2.2 triple-rolling only.
+            attemptIndex = priorLedger.automaticApplyAttemptCount + 1
             proposal = extensionProposal
             rollbackRawInput = priorLedger.replacementRawInput
             previousAnchoredSyllableCount = priorLedger.anchoredSyllableCount
@@ -71,8 +77,9 @@ extension KeyboardController {
         }
         let userPathSnapshot = state.t9PinyinPathState
 
-        // Consume the bounded attempt before crossing RIME. A rejected second
-        // proposal may restore the first accepted ledger, but never its budget.
+        // Consume the bounded attempt before crossing RIME. A rejected
+        // extension may restore the prior accepted mixed raw, but never its
+        // attempt budget.
         if attemptIndex == 1 {
             state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
                 phase: .rejected,
@@ -82,7 +89,7 @@ extension KeyboardController {
             )
         } else {
             var consumedLedger = priorLedger
-            consumedLedger.automaticApplyAttemptCount = 2
+            consumedLedger.automaticApplyAttemptCount = attemptIndex
             consumedLedger.lastAttemptSourceDigitCount = proposal.sourceDigits.count
             state.t9ReversibleAutoAnchorState = consumedLedger
         }
@@ -177,8 +184,10 @@ extension KeyboardController {
                     lastAttemptSourceDigitCount: proposal.sourceDigits.count
                 )
             } else {
+                // Keep the prior accepted mixed identity; mark budget exhausted
+                // at the rejected attempt index (2 or 3).
                 var restoredLedger = priorLedger
-                restoredLedger.automaticApplyAttemptCount = 2
+                restoredLedger.automaticApplyAttemptCount = attemptIndex
                 restoredLedger.lastAttemptSourceDigitCount =
                     proposal.sourceDigits.count
                 state.t9ReversibleAutoAnchorState = restoredLedger

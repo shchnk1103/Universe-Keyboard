@@ -20,6 +20,9 @@ extension KeyboardViewController {
         #if T9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED && !T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED
         #error("T9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED requires the A1 preflight gate")
         #endif
+        #if T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED && !T9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED
+        #error("T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED requires the B2 rolling preflight gate")
+        #endif
         #if DEBUG
         // ADR 0024 Stage 2: explicit diagnostic gate. Release keeps the
         // controller capability off until Product/Architecture/Quality review.
@@ -33,6 +36,10 @@ extension KeyboardViewController {
         // S2.1 internal B2 arm only. Ordinary Debug/A1 and Release stay on the
         // established one-anchor behavior unless this explicit flag is added.
         controller.isRollingT9AutoAnchorEnabled = true
+        #endif
+        #if T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED
+        // S2.2 internal B3 arm only. Nested on B2; never a project default.
+        controller.isTripleRollingT9AutoAnchorEnabled = true
         #endif
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         if !consumeFreshPreparedDevicePreflightRunIfAvailable() {

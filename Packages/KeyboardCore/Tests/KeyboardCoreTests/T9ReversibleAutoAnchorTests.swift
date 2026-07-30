@@ -496,6 +496,200 @@ final class T9ReversibleAutoAnchorTests: XCTestCase {
         )
     }
 
+    func testTripleRollingAcceptsThirdExtensionAndNeverAttemptsFourth() {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        fixture.controller.isTripleRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        type(digits(for: "hao"), on: fixture.controller)
+
+        let afterTwo = fixture.sourceDigits + digits(for: "hao")
+        let secondRaw =
+            "jin'tian'de'tian'" + String(afterTwo.dropFirst(13))
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            2
+        )
+
+        // One later digit after attempt 2. The cumulative +2 policy on this
+        // fixture builds `jin'tian'de'tian'qi'hen'` + remaining digit tail.
+        let thirdSource = afterTwo + "2"
+        let priorMixedAfterDigit = secondRaw + "2"
+        // Six catalog syllables: jin/tian/de/tian/qi/hen = 18 digit slots.
+        let thirdRaw =
+            "jin'tian'de'tian'qi'hen'" + String(thirdSource.dropFirst(18))
+        fixture.engine.dictionary[priorMixedAfterDigit] = fixture.candidates
+        fixture.engine.comments[priorMixedAfterDigit] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+        fixture.engine.dictionary[thirdRaw] = fixture.candidates
+        fixture.engine.comments[thirdRaw] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            3,
+            "attempt 3 must perform exactly one additional replaceInput"
+        )
+        XCTAssertEqual(
+            Array(fixture.engine.replaceInputArguments.prefix(2)),
+            [fixture.anchoredRaw, secondRaw]
+        )
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments.last,
+            thirdRaw
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(
+                phase: .accepted,
+                sourceDigits: thirdSource,
+                replacementRawInput: thirdRaw,
+                anchoredSyllableCount: 6,
+                anchoredSlotCount: 18,
+                automaticApplyAttemptCount: 3,
+                lastAttemptSourceDigitCount: thirdSource.count
+            )
+        )
+
+        let afterThreeRaw =
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .replacementRawInput
+        fixture.engine.dictionary[afterThreeRaw + "2"] = fixture.candidates
+        fixture.engine.comments[afterThreeRaw + "2"] = [
+            "jin tian de tian qi hen hao a b",
+        ]
+        _ = fixture.controller.handle(.insertKey("2"))
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            3,
+            "the third accepted transaction exhausts automatic mutation budget"
+        )
+    }
+
+    func testRollingWithoutTripleNeverEvaluatesAttemptThree() {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        XCTAssertFalse(fixture.controller.isTripleRollingT9AutoAnchorEnabled)
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        type(digits(for: "hao"), on: fixture.controller)
+
+        let afterTwo = fixture.sourceDigits + digits(for: "hao")
+        let secondRaw =
+            "jin'tian'de'tian'" + String(afterTwo.dropFirst(13))
+        let thirdSource = afterTwo + "2"
+        let priorMixedAfterDigit = secondRaw + "2"
+        let thirdRaw =
+            "jin'tian'de'tian'qi'hen'" + String(thirdSource.dropFirst(18))
+        fixture.engine.dictionary[priorMixedAfterDigit] = fixture.candidates
+        fixture.engine.comments[priorMixedAfterDigit] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+        fixture.engine.dictionary[thirdRaw] = fixture.candidates
+        fixture.engine.comments[thirdRaw] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+
+        _ = fixture.controller.handle(.insertKey("2"))
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            2,
+            "B2 must not open attempt 3 even when evidence is present"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            2
+        )
+    }
+
+    func testThirdRejectRestoresAttemptTwoMixedRawAndExhaustsBudget() {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        fixture.controller.isTripleRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        type(digits(for: "hao"), on: fixture.controller)
+
+        let afterTwo = fixture.sourceDigits + digits(for: "hao")
+        let secondRaw =
+            "jin'tian'de'tian'" + String(afterTwo.dropFirst(13))
+        let thirdSource = afterTwo + "2"
+        let priorMixedAfterDigit = secondRaw + "2"
+        let thirdRaw =
+            "jin'tian'de'tian'qi'hen'" + String(thirdSource.dropFirst(18))
+        fixture.engine.dictionary[priorMixedAfterDigit] = fixture.candidates
+        fixture.engine.comments[priorMixedAfterDigit] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+        fixture.engine.dictionary[thirdRaw] = [
+            "不同首选", fixture.candidates[0], fixture.candidates[1],
+        ]
+        fixture.engine.comments[thirdRaw] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: 3
+        )
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 4)
+        XCTAssertEqual(
+            Array(fixture.engine.replaceInputArguments.prefix(2)),
+            [fixture.anchoredRaw, secondRaw]
+        )
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments.last,
+            priorMixedAfterDigit
+        )
+        XCTAssertEqual(
+            fixture.controller.state.lastRimeOutput?.rawInput,
+            priorMixedAfterDigit
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            3
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .replacementRawInput,
+            priorMixedAfterDigit
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .anchoredSyllableCount,
+            4,
+            "reject must keep the attempt-2 anchor depth"
+        )
+    }
+
     func testA1GateRemainsSingleAnchorWhenRollingEvidenceBecomesEligible() {
         let fixture = makeControllerFixture()
         type(fixture.sourceDigits, on: fixture.controller)

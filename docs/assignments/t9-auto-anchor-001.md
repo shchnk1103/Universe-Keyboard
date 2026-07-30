@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S2.1 product goal not met; S2.2 stronger controller bounding in design`
+**Lifecycle status:** `Active — S2.2 implementation authorized; KeyboardCore B3 landed`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
