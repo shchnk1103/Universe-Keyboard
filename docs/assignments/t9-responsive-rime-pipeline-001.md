@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — Phase A freeze done; R3 implemented (default-off parity: Path/auto-anchor context, handle order tests, chrome unwrap); Arch P1-3 open; Arch/Quality review of R3 pending; ADR 0025 Proposed; Product Gate not claimed`  
+**Lifecycle status:** `Active — R3 Arch/Quality Pass with conditions (context/epoch + publish reentrancy P1s open; P1-3 off-main open); keep gate off; ADR 0025 Proposed; Product Gate not claimed`  
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -194,10 +194,15 @@
   ([freeze](t9-responsive-pipeline-001-phase-a-freeze-2026-07-30.md)); PR #34
   not urgent to merge
 - [x] R3 authorization — **granted 2026-07-30** (Product: 先A后B，B授权实现)
-- [x] R3 implementation (Executor) — deferred publish Path/auto-anchor context;
-  `underlyingRimeEngine` for Extension chrome; handle key→delete + path
-  presentation tests; gate still default off
-- [ ] Independent Architecture / Quality review of R3 — **pending**
+- [x] R3 implementation (Executor) — Path/auto-anchor context; chrome unwrap;
+  handle key→delete tests; default-off
+- [x] Independent Architecture review of R3 — **Pass with conditions**
+  ([review](t9-responsive-pipeline-001-r3-architecture-review.md); 0 P0, 2 P1:
+  context FIFO not cleared on epoch/abandon; publish post-process reentrancy
+  steals contexts via Bridge). P1-3 off-main **still open**.
+- [x] Independent Quality review of R3 — **Pass with conditions**
+  ([review](t9-responsive-pipeline-001-r3-quality-review.md); 0 P0, 1 P1:
+  same context/epoch gap; re-ran 35/813 green). Keep gate default off.
 - [ ] Product Gate — **not claimed**
 - [ ] R4+ / off-main (P1-3) — **not granted**
 
