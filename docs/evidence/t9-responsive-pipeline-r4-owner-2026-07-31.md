@@ -5,7 +5,8 @@
 **Design:** [`R4-Owner design`](../assignments/t9-responsive-pipeline-001-r4-owner-design.md)  
 **Product:** R4-Owner authorized 2026-07-31 (Arch P2 owner contract only)  
 **Architecture:** [`ADR 0025`](../architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) (`Proposed` — not Accepted)  
-**Predecessor:** Spike-P1-3 remediation `c0e2373`
+**Predecessor:** Spike-P1-3 remediation `c0e2373`  
+**Immutable checkpoint:** **`768d680`**
 
 ## Scope
 

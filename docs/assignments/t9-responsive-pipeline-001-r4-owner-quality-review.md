@@ -8,7 +8,7 @@
 | Design freeze | [`t9-responsive-pipeline-001-r4-owner-design.md`](t9-responsive-pipeline-001-r4-owner-design.md) |
 | Executor evidence | [`../evidence/t9-responsive-pipeline-r4-owner-2026-07-31.md`](../evidence/t9-responsive-pipeline-r4-owner-2026-07-31.md) |
 | Scope | R4-Owner only：D1 bootstrap / D2 ordered delivery+terminal / D3 bounded mailbox+control priority |
-| Worktree tip at review | `HEAD` **`c145f86`** + **uncommitted** R4-Owner sources/tests/design/evidence |
+| Worktree tip at review | dirty tree on parent `c145f86`; **immutable R4-Owner SHA `768d680`** after Executor checkpoint |
 | Verdict | **Pass with conditions** |
 
 **P0: 0**  
@@ -155,7 +155,7 @@ Controller responsive path continues to use R2 `SerialRimeSessionOwner` / `Respo
 
 ## Findings
 
-### P2-1 — R4-Owner not bound to an immutable git SHA (condition)
+### P2-1 — R4-Owner not bound to an immutable git SHA (condition → Closed at `768d680`)
 
 At review time:
 

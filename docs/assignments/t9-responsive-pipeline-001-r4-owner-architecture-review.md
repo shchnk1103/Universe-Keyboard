@@ -8,7 +8,8 @@
 **Design freeze:** [`t9-responsive-pipeline-001-r4-owner-design.md`](t9-responsive-pipeline-001-r4-owner-design.md)  
 **ADR:** [`0025`](../architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) — **Status remains `Proposed`（本审查不 Accept）**  
 **Predecessor residuals:** Spike-P1-3 Architecture re-review P2-1 / P2-2 / P2-3  
-**Sources reviewed (working tree, not only docs):**
+**Bound tip (post-review checkpoint):** **`768d680`**  
+**Sources reviewed (working tree at review time; later bound to `768d680`):**
 
 | Artifact | Role |
 |---|---|
