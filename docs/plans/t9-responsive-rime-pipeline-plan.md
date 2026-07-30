@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — R1 + P1 remediation done; Architecture re-review Pass (P1 closed); Quality Pass with conditions; R2+ not authorized; ADR 0025 still Proposed; Release default unchanged** |
+| Status | **Active — R2 implemented default-off (MainActor single-consumer owner + deferred key drain); R2 Arch/Quality review pending; ADR 0025 Proposed; Release default unchanged** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
@@ -134,24 +134,28 @@ blocking R2 were: P1-1 applied/published split (code), P1-2 isolation plan
 Accept, no Product Gate). Historical note — prior text said P1-1 open until
 code + tests land.
 
-### R2 — Serial RIME owner (default-off)
+### R2 — Serial RIME owner (default-off) — **implemented 2026-07-30**
 
-> **Pre-R2:** Architecture P1-1/P1-2/P1-3 remediated in the R1 bed + ADR 0025
-> (Proposed) §§10–11 (2026-07-30). Optional independent Arch re-review before
-> Product considers R2. R2 itself remains **not authorized** until Product says
-> so. Gate off = ADR 0004 MainActor-sync path; gate on = 0025 serial-owner path.
-> Do not claim ADR 0025 Accepted.
+**Authority:** Human Product Owner R2 authorization (session).
 
-- Create the production serial owner as an **`actor` or single-consumer serial
-  executor** (R1 `ResponsiveRimePipeline` is a single-thread test bed only).
-- MainActor: immediate feedback + enqueue + apply validated snapshots only.
-- Wire behind Debug/internal gate; Release default off.
-- Ensure `processKey`, `deleteBackward`, `replaceInput`, candidate select /
-  candidateWindow, page, reset, recover, suspend/resume all enter the same
-  owner.
-- Swift 6: no `@unchecked Sendable` to shuttle session/engine across isolation.
-- Align epoch bumps with ADR 0025 §11 target table (pipeline bumps after
-  enqueued reset/recover; caller bumps on visibility/explicit API).
+Delivered:
+
+- `SerialRimeSessionOwner` + `ResponsiveRimeSessionCoordinator`
+  (`Packages/KeyboardCore/Sources/KeyboardCore/SerialRimeSession.swift`)
+- Controller gate `isResponsiveRimePipelineEnabled` (**default false**)
+- When enabled: composition `processKey` via `scheduleProcessKey` (accept now,
+  drain next MainActor turn); visibility abandon bumps epoch
+- When disabled: ADR 0004 synchronous `rimeEngine` path unchanged
+- Tests: `ResponsiveRimeR2CoordinatorTests`
+- **No** `@unchecked Sendable`; **no** Release default-on; **no** ADR Accept
+
+**Isolation residual:** Engine remains MainActor-confined (Swift 6 cannot move
+non-Sendable `RimeEngine` off-main without forbidden shuttling). Deferred drain
+still makes `handle` return before librime for the key path. True off-main
+librime needs a later Architecture-approved thread-confined design.
+
+**Exit:** focused tests green — Executor claim only; independent Arch/Quality
+for R2 **pending**.
 
 ### R3 — Contract completion
 

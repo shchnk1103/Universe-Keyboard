@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — R0 design accepted; R1 Fake RIME state machine authorized and implemented; R2+ / Release default not authorized`  
+**Lifecycle status:** `Recorded — R0/R1 done; R2 authorized and implemented (default-off serial owner + deferred key path); R3+ / Release default / ADR Accept / Product Gate not authorized`  
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the
@@ -126,13 +126,28 @@ later Product Decision amends them:
   epoch, coalesce publish, fail-closed selection, and default-path isolation
 - Documentation updates for R1 status
 
+### R2 (2026-07-30 Human Product Owner authorization) — implemented
+
+- Default-off `isResponsiveRimePipelineEnabled` on `KeyboardController`
+- `SerialRimeSessionOwner` + `ResponsiveRimeSessionCoordinator` (single-consumer
+  MainActor owner; deferred drain so `handle` returns before librime for keys)
+- Hot-path gate: Chinese composition `processKey` via `scheduleProcessKey` when
+  enabled; Release default remains ADR 0004 synchronous path
+- Visibility abandon bumps pipeline epoch when gate on
+- R2 coordinator tests; no Release default-on; no ADR 0025 Accept
+
+**R2 isolation note (honest):** Swift 6 region isolation cannot move non-Sendable
+`RimeEngine` off MainActor without forbidden `@unchecked Sendable` shuttling.
+R2 therefore uses a single-consumer **MainActor** owner with deferred drain
+rather than a background actor holding librime. Off-main librime remains an
+Architecture residual for a later authorized design.
+
 ## Not authorized now
 
-- Wiring the pipeline into production `KeyboardController` / Extension UI
-- Moving real librime session off MainActor (`RimeEngineImpl` migration)
-- Changing Release default input path
-- R2–R6 implementation without a later explicit Product authorization per phase
-- Declaring Architecture / Quality / Product Gate pass
+- Changing Release default input path or user-facing settings
+- R3–R6, ADR 0025 Accept, Product Gate
+- Declaring Architecture / Quality / Product Gate pass for R2
+- Expanding T9 auto-anchor
 
 ## Phased product view (summary)
 

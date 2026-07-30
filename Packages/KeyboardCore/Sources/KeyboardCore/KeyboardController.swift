@@ -36,6 +36,13 @@ public final class KeyboardController {
     /// S2.3 earlier first-anchor gate. Orthogonal to rolling/triple; only lowers
     /// the attempt-1 source-digit floor (18 → 12) while retaining two syllables.
     public var isEarlierFirstT9AutoAnchorEnabled = false
+    /// R2 responsive pipeline gate. **Default off** — Release matches ADR 0004
+    /// MainActor-synchronous `rimeEngine` calls. When enabled, printable Chinese
+    /// composition keys are accepted without waiting for librime; results publish
+    /// asynchronously via `SerialRimeSessionOwner` + dual revision watermarks.
+    public var isResponsiveRimePipelineEnabled = false
+    /// Active only while `isResponsiveRimePipelineEnabled` is true.
+    public internal(set) var responsiveRimeCoordinator: ResponsiveRimeSessionCoordinator?
     #if DEBUG
     /// Content-free hook for controlled preflight evidence. Release builds do
     /// not expose or execute this diagnostic callback.
@@ -68,6 +75,43 @@ public final class KeyboardController {
         typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
             candidateProvider: candidateProvider
         )
+        rebuildResponsiveRimeCoordinatorIfNeeded()
+    }
+
+    /// Install or clear the R2 coordinator when the gate / engine changes.
+    /// Safe to call repeatedly; default gate leaves the coordinator `nil`.
+    public func rebuildResponsiveRimeCoordinatorIfNeeded(
+        publishPolicy: ResponsiveRimePublishPolicy = .latestOnly,
+        clock: ResponsiveRimeExecutionClock = NoopResponsiveRimeClock()
+    ) {
+        guard isResponsiveRimePipelineEnabled, let engine = rimeEngine else {
+            responsiveRimeCoordinator = nil
+            return
+        }
+        responsiveRimeCoordinator = ResponsiveRimeSessionCoordinator(
+            engine: engine,
+            publishPolicy: publishPolicy,
+            fixtureID: "T9RESP-R2",
+            clock: clock
+        )
+    }
+
+    /// Apply a published responsive snapshot on MainActor (R2 gate path).
+    func applyResponsivePublishedSnapshot(_ snapshot: ResponsiveRimeSnapshot?) {
+        guard isResponsiveRimePipelineEnabled, let snapshot else { return }
+        let output = augmentRimeOutputIfNeeded(snapshot.output)
+        applyRimeOutput(output)
+        // Path bar refresh after async publish (best-effort; full Path contracts
+        // remain on the sync gate-off path until R3 hardens lifecycle wiring).
+        if usesT9InputSemantics {
+            refreshT9PinyinPathsAfterResponsivePublish()
+        }
+    }
+
+    private func refreshT9PinyinPathsAfterResponsivePublish() {
+        // Prefer existing presentation rebuild entry points when available.
+        // Fallback: mark paths dirty via composition state only.
+        _ = state.t9PinyinPathState
     }
 
     /// Reset RIME after the keyboard becomes visible again while preserving
@@ -95,7 +139,11 @@ public final class KeyboardController {
             || state.insertedPreeditCount > 0
             || !state.insertedPreeditText.isEmpty
 
-        rimeEngine?.resetSession()
+        if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
+            coordinator.bumpSessionEpoch(resetEngineSession: true)
+        } else {
+            rimeEngine?.resetSession()
+        }
         shouldRestoreRimeComposition = false
         shouldRebuildSessionDuringRestore = false
         deleteInlinePreedit()

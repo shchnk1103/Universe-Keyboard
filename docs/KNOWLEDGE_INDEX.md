@@ -80,11 +80,10 @@
   [`Product Decision`](product-decisions/T9-AUTO-ANCHOR-001-authorization.md),
   [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)
 - T9 responsive RIME input pipeline
-  (`T9-RESPONSIVE-PIPELINE-001`, R1 + Arch P1 remediation: pure
-  `ResponsiveRimePipeline` + Fake RIME tests; applied/published split;
-  isolation + epoch freezes in ADR 0025; **not** wired to production
-  controller/session; Release default unchanged; R2+ not authorized; ADR still
-  Proposed; predecessor auto-anchor remains Hold/harvest):
+  (`T9-RESPONSIVE-PIPELINE-001`, R2 default-off: `SerialRimeSessionOwner` +
+  coordinator; deferred composition processKey when gate on; Release default
+  still ADR 0004 sync; R2 Arch/Quality pending; ADR 0025 Proposed; predecessor
+  auto-anchor Hold/harvest):
   [`Product Decision`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md),
   [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md),
   [`plan`](plans/t9-responsive-rime-pipeline-plan.md),
