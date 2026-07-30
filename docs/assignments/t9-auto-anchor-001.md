@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S2.1 three-pair matrix complete (1/3 direction PASS); Product routing pending`
+**Lifecycle status:** `Active — S2.1 product goal not met; S2.2 stronger controller bounding in design`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -302,6 +302,11 @@ S2.1 design child Assignment:
 
 S2.1 exploratory physical `A1→B2` evidence (direction PASS; not Product Gate):
 [`../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md`](../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md).
+
+S2.1 three-pair matrix outcome: **1/3** direction PASS; product goal not met.
+Product reaffirmed north star (no Path obligation) and authorized **design only**
+of stronger controller bounding:
+[`t9-auto-anchor-001-s22-stronger-controller-bounding.md`](t9-auto-anchor-001-s22-stronger-controller-bounding.md).
 
 ### 2026-07-28 supplementary ETTrace attribution
 

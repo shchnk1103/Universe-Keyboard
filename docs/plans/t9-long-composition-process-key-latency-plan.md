@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — S2.1 implementation and automated evidence complete; independent review pending** |
+| Status | **Active — S2.1 matrix done (goal not met); S2.2 stronger controller bounding in design** |
 | Created | 2026-07-24 |
 | Product lock | 2026-07-24 |
 | Lane A ship | 2026-07-24 |
@@ -11,7 +11,8 @@
 | Architecture boundary | [`ADR 0024`](../architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md) |
 | Supersedes | force_gc-as-primary-fix track (closed) |
 | Close record | [`../evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](../evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md) |
-| Current evidence | [`../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md`](../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md) |
+| Current evidence | [`../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md`](../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md), [`../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md`](../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md) |
+| Next design | [`../assignments/t9-auto-anchor-001-s22-stronger-controller-bounding.md`](../assignments/t9-auto-anchor-001-s22-stronger-controller-bounding.md) |
 
 ## Problem statement
 

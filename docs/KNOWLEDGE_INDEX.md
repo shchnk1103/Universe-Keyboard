@@ -61,11 +61,13 @@
   (`T9-AUTO-ANCHOR-001`, S1–S4 Debug/test evidence validated, S5 isolated
   personalization reviewed, S6-A manual physical pair complete, S2.1 rolling
   automated implementation review passed, physical three-pair matrix complete
-  on `90642c3` with 1/3 direction PASS, Product routing pending):
+  on `90642c3` with 1/3 direction PASS (product goal not met), north star
+  reaffirmed (no Path obligation), S2.2 stronger controller bounding in design):
   [`plan`](plans/t9-long-composition-process-key-latency-plan.md),
   [`Assignment`](assignments/t9-auto-anchor-001.md),
   [`S2.1 design`](assignments/t9-auto-anchor-001-s21-rolling-design.md),
-  [`S2.1 exploratory A1→B2`](evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md),
+  [`S2.1 matrix evidence`](evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md),
+  [`S2.2 design`](assignments/t9-auto-anchor-001-s22-stronger-controller-bounding.md),
   [`S6-A device preflight`](assignments/t9-auto-anchor-001-s6a-device-preflight.md),
   [`Product Decision`](product-decisions/T9-AUTO-ANCHOR-001-authorization.md),
   [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)

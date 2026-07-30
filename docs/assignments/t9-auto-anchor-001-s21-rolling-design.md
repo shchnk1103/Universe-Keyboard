@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S21 — 滚动影子锚定设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — three-pair matrix complete (1/3 direction PASS); Product routing pending`
+**Lifecycle status:** `Active — matrix complete; product goal not met; successor S2.2 design authorized`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`

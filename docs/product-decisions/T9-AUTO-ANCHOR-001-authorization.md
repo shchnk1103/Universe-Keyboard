@@ -1,7 +1,7 @@
 # Product Decision: T9-AUTO-ANCHOR-001 Authorization
 
 **Decision ID:** `PD-T9-AUTO-ANCHOR-001`
-**Lifecycle status:** `Recorded — S4 validated; S6-A manual pair complete; S2.1 implementation authorized under reviewed contract`
+**Lifecycle status:** `Recorded — S2.1 matrix complete (not product goal); north star reaffirmed; S2.2 controller design authorized`
 **Date / timezone:** `2026-07-27 Asia/Shanghai`
 **Decision source:** Human Product Owner instructions in active Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`
@@ -161,6 +161,71 @@ The implemented internal-arm identity is source visible and default-off:
 `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT` and
 `T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED`. It distinguishes `B2` from the
 existing `A1`; it does not authorize ordinary Release enablement.
+
+## Product routing after S2.1 three-pair matrix (2026-07-30)
+
+On `2026-07-30 Asia/Shanghai`, after the Human three-pair matrix was recorded in
+[`t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md`](../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md)
+and discussed under KOS 2.0, the Human Product Owner confirmed:
+
+### North star (reaffirmed)
+
+The intended long-term experience is:
+
+> Continuous Chinese nine-key input should feel as smooth as practical **without
+> requiring** the user to tap Path or change typing habits. Path remains the
+> correctness/correction and optional acceleration surface, not a performance
+> obligation.
+
+This reaffirms the destination already stated in this Decision and in the plan
+Q1 supersession. Idle Path education may continue as optional help; it is not
+the primary latency remedy.
+
+### S2.1 product positioning (closed for product goal)
+
+S2.1 (S4 one-anchor + one rolling extension, internal gates only):
+
+- **Mechanism:** useful and contract-valid (stable sessions, exact attempt
+  budgets, fail-closed ownership).
+- **Performance direction:** weak and non-robust (direction stop rule **1/3**
+  PASS across the counterbalanced matrix).
+- **Product goal:** **not met** for “no Path, long composition still smooth”.
+- **Shipping:** ordinary Release remains gate-off; no Product Gate; no public
+  performance claim.
+- **Retention:** the default-off implementation and evidence remain valuable as
+  a safe automatic-bounding base; they are not deleted solely because the matrix
+  failed the product goal.
+
+Force_gc / Lua-as-primary and several T9-only schema knobs remain **closed** as
+primary remedies per existing case-close and plan records. Reopening them
+requires new contradictory evidence.
+
+### Next knife (authorized)
+
+Product prioritizes the **controller automatic-bounding** lane over a new
+RIME/schema primary track for the next increment.
+
+This section authorizes **design only** of child Assignment
+[`T9-AUTO-ANCHOR-001-S22`](../assignments/t9-auto-anchor-001-s22-stronger-controller-bounding.md):
+
+- strengthen automatic, reversible bounding of the unresolved T9 tail under the
+  same safety family as S4/S2.1 (Path/Partial/Delete ownership, content-free
+  diagnostics, default-off internal gates);
+- use Human typing plus App content-free performance logs (`T9SEG` / `T9AUTO` /
+  `T9ARM`) as the canonical physical evidence method;
+- freeze exact attempt budgets, syllable increments, eligibility and rollback
+  before any implementation.
+
+This section does **not** authorize:
+
+- implementation, Release enablement, user settings or Product Gate;
+- adaptive unbounded loops, candidate-window scans, second sessions or
+  background RIME;
+- reopening force_gc/Lua as the primary latency track without new evidence;
+- treating Path education as the primary performance fix.
+
+Implementation of S2.2 requires a later explicit Product instruction after
+Architecture and Quality independently pass the frozen S2.2 design.
 
 ## S6-A physical-device preflight authorization
 
