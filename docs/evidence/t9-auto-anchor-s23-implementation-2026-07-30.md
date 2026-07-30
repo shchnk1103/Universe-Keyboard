@@ -10,6 +10,8 @@
   [`PD-T9-AUTO-ANCHOR-001`](../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
 - Architecture:
   [`ADR 0024`](../architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md) §21–24
+- Implementation commit:
+  `0272a030e8a5b49112d681644dcd4aebf8263e6c`
 - Predecessor S2.2 evidence:
   [`t9-auto-anchor-s22-b2b3-2026-07-30.md`](t9-auto-anchor-s22-b2b3-2026-07-30.md)
 
