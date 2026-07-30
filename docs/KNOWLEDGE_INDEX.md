@@ -60,11 +60,12 @@
 - T9 long-composition `process_key` latency and safe auto-anchor roadmap
   (`T9-AUTO-ANCHOR-001`, S1–S4 Debug/test evidence validated, S5 isolated
   personalization reviewed, S6-A manual physical pair complete, S2.1 rolling
-  implementation and automated evidence complete with independent
-  implementation review pending):
+  automated implementation review passed, exploratory physical `A1→B2`
+  direction PASS on `90642c3`, three-pair matrix / Product decision pending):
   [`plan`](plans/t9-long-composition-process-key-latency-plan.md),
   [`Assignment`](assignments/t9-auto-anchor-001.md),
   [`S2.1 design`](assignments/t9-auto-anchor-001-s21-rolling-design.md),
+  [`S2.1 exploratory A1→B2`](evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md),
   [`S6-A device preflight`](assignments/t9-auto-anchor-001-s6a-device-preflight.md),
   [`Product Decision`](product-decisions/T9-AUTO-ANCHOR-001-authorization.md),
   [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)

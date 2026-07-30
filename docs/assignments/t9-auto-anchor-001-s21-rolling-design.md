@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S21 — 滚动影子锚定设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — automated implementation/review complete; Human A1→B2 pending`
+**Lifecycle status:** `Active — exploratory A1→B2 direction PASS; three-pair matrix / Product decision pending`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
@@ -413,6 +413,22 @@ The immutable remediation checkpoint `4c1baff` independently passed:
 This closes automated implementation review and permits preparation of the
 Human physical-device `A1→B2` pair. It does not satisfy that Human gate,
 Product Gate or Release approval.
+
+## Physical exploratory A1→B2 evidence
+
+The first Human pair is recorded in
+[`t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md`](../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md):
+
+- source checkpoint `90642c3`;
+- both arms valid (38 events, stable session, zero commits, candidates present);
+- A1 accepted exactly once; B2 accepted exactly twice with attempt 2 at action
+  ordinal 20 (≤23 and after attempt 1);
+- direction stop rule **PASS**: ≥100 ms count 4→3 and worst 175.9→142.3 ms;
+- residual stalls remain RIME-dominated; not Product Gate;
+- ordinary gate-off Release restored by replacement after the pair.
+
+Quality may now schedule the optional three-pair counterbalanced Human matrix
+(reuse this pair as pair 1). Product Lead retains acceptance authority.
 
 ## Stop Conditions
 

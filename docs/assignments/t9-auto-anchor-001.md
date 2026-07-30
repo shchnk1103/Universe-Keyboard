@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001 — 九宫格安全自动锚定
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — S2.1 implemented and automated evidence complete; independent implementation review pending`
+**Lifecycle status:** `Active — S2.1 exploratory A1→B2 direction PASS; three-pair matrix / Product decision pending`
 **Repository change types:** `Implementation`, `Tests`, `Documentation`,
 `Diagnostic Evidence`
 
@@ -299,6 +299,9 @@ Evidence:
 
 S2.1 design child Assignment:
 [`t9-auto-anchor-001-s21-rolling-design.md`](t9-auto-anchor-001-s21-rolling-design.md).
+
+S2.1 exploratory physical `A1→B2` evidence (direction PASS; not Product Gate):
+[`../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md`](../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md).
 
 ### 2026-07-28 supplementary ETTrace attribution
 
