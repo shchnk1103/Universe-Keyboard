@@ -155,6 +155,19 @@ R2 authorized intent (PD + plan + evidence): default-off gate; `SerialRimeSessio
 
 ---
 
+## Executor P1 remediation addendum (2026-07-30)
+
+| Item | Status |
+|---|---|
+| Quality P1 presentation bridge | **Remediated:** `onResponsivePresentationNeeded` → `syncUI`; test `testControllerGateEnablesDeferredProcessKeyAndPresentationBridge` |
+| Dual-entry Delete order | **Remediated:** bridge + full-queue drain; `testDeleteThroughBridgeWaitsForPendingProcessKey` |
+| Publish-handler multi-accept | **Remediated:** single shared `setPublishHandler` |
+| Arch P1-3 off-main | Unchanged residual |
+
+Not an independent Quality re-Pass; keep gate default off.
+
+---
+
 ## Verdict rationale (summary)
 
 R2 as authorized — **default-off serial owner scaffold + deferred composition key accept + honest isolation residual + green focused/full KeyboardCore** — is **Quality-acceptable with conditions**. Independent re-run confirms Executor counts. The single **P1** is gate-on presentation/order incompleteness that **must not** be read as readiness to enable the feature; Release isolation holds while the flag stays false.

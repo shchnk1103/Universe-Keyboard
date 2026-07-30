@@ -40,9 +40,14 @@ public final class KeyboardController {
     /// MainActor-synchronous `rimeEngine` calls. When enabled, printable Chinese
     /// composition keys are accepted without waiting for librime; results publish
     /// asynchronously via `SerialRimeSessionOwner` + dual revision watermarks.
+    /// All other session APIs enter the same pipeline through
+    /// `ResponsiveRimeEngineBridge` (no dual-entry).
     public var isResponsiveRimePipelineEnabled = false
     /// Active only while `isResponsiveRimePipelineEnabled` is true.
     public internal(set) var responsiveRimeCoordinator: ResponsiveRimeSessionCoordinator?
+    /// Invoked on MainActor after a deferred responsive snapshot is applied so
+    /// Extension UI can `syncUI` (Arch/Quality P1 — publish→presentation bridge).
+    public var onResponsivePresentationNeeded: ((KeyboardEffect) -> Void)?
     #if DEBUG
     /// Content-free hook for controlled preflight evidence. Release builds do
     /// not expose or execute this diagnostic callback.
@@ -78,47 +83,84 @@ public final class KeyboardController {
         rebuildResponsiveRimeCoordinatorIfNeeded()
     }
 
-    /// Install or clear the R2 coordinator when the gate / engine changes.
-    /// Safe to call repeatedly; default gate leaves the coordinator `nil`.
+    /// Install or clear the R2 coordinator + engine bridge when the gate / engine
+    /// changes. Safe to call repeatedly; default gate leaves the coordinator `nil`.
     public func rebuildResponsiveRimeCoordinatorIfNeeded(
         publishPolicy: ResponsiveRimePublishPolicy = .latestOnly,
         clock: ResponsiveRimeExecutionClock = NoopResponsiveRimeClock()
     ) {
-        guard isResponsiveRimePipelineEnabled, let engine = rimeEngine else {
+        // Unwrap any previous bridge so we never nest bridges.
+        let underlying: RimeEngine? = {
+            if let bridge = rimeEngine as? ResponsiveRimeEngineBridge {
+                return bridge.underlyingEngine
+            }
+            return rimeEngine
+        }()
+
+        guard isResponsiveRimePipelineEnabled, let underlying else {
+            if rimeEngine is ResponsiveRimeEngineBridge {
+                rimeEngine = underlying
+            }
             responsiveRimeCoordinator = nil
             return
         }
-        responsiveRimeCoordinator = ResponsiveRimeSessionCoordinator(
-            engine: engine,
+
+        let coordinator = ResponsiveRimeSessionCoordinator(
+            engine: underlying,
             publishPolicy: publishPolicy,
             fixtureID: "T9RESP-R2",
             clock: clock
         )
+        coordinator.setPublishHandler { [weak self] snapshot in
+            self?.applyResponsivePublishedSnapshot(snapshot)
+        }
+        responsiveRimeCoordinator = coordinator
+        // All session call sites go through the bridge → single serial pipeline.
+        rimeEngine = ResponsiveRimeEngineBridge(
+            underlyingEngine: underlying,
+            coordinator: coordinator
+        )
     }
 
-    /// Apply a published responsive snapshot on MainActor (R2 gate path).
+    /// Apply a published responsive snapshot on MainActor (R2 gate path) and
+    /// notify Extension presentation.
     func applyResponsivePublishedSnapshot(_ snapshot: ResponsiveRimeSnapshot?) {
         guard isResponsiveRimePipelineEnabled, let snapshot else { return }
         let output = augmentRimeOutputIfNeeded(snapshot.output)
         applyRimeOutput(output)
-        // Path bar refresh after async publish (best-effort; full Path contracts
-        // remain on the sync gate-off path until R3 hardens lifecycle wiring).
+        var effects: KeyboardEffect = [.compositionChanged]
         if usesT9InputSemantics {
-            refreshT9PinyinPathsAfterResponsivePublish()
+            effects.insert(.t9PinyinPathsChanged)
         }
+        onResponsivePresentationNeeded?(effects)
     }
 
-    private func refreshT9PinyinPathsAfterResponsivePublish() {
-        // Prefer existing presentation rebuild entry points when available.
-        // Fallback: mark paths dirty via composition state only.
-        _ = state.t9PinyinPathState
+    /// Schedule deferred drain turns after `scheduleProcessKey` so `handle` can
+    /// return before librime (MainActor cooperative yield between items).
+    func scheduleResponsivePipelineDrain(_ coordinator: ResponsiveRimeSessionCoordinator) {
+        Task { @MainActor [weak self] in
+            // Yield once so the current `handle` stack unwinds first.
+            await Task.yield()
+            guard let self, self.isResponsiveRimePipelineEnabled else { return }
+            while coordinator.drainOneStep() {
+                // Yield between keys so multi-accept stays ordered without one
+                // monolithic blocking burst when engine work is short.
+                await Task.yield()
+            }
+            _ = self
+        }
     }
 
     /// Reset RIME after the keyboard becomes visible again while preserving
     /// enough state to reconstruct an in-progress inline composition.
     public func resetRimeSessionForVisibilityChange() {
-        guard let engine = rimeEngine else { return }
-        engine.resetSession()
+        guard rimeEngine != nil else { return }
+        if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
+            // Ordered reset through the same owner; epoch advances via reset work.
+            _ = coordinator.performOrderedNow(.resetSession)
+        } else {
+            rimeEngine?.resetSession()
+        }
         shouldRestoreRimeComposition = !state.currentComposition.isEmpty
         shouldRebuildSessionDuringRestore = false
     }
@@ -171,13 +213,21 @@ public final class KeyboardController {
     /// 在扩展进入不可见状态前释放 RIME 的进程级资源。
     /// 必须由 UI 生命周期同步调用，不能推迟到不可预测的 `deinit`。
     public func suspendRimeForVisibilityChange() {
-        rimeEngine?.suspendForVisibilityChange()
+        if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
+            coordinator.suspendForVisibilityChange()
+        } else {
+            rimeEngine?.suspendForVisibilityChange()
+        }
     }
 
     /// 在扩展重新可见时恢复 RIME runtime 与 session。
     /// Also reapplies fail-closed / realized T9 semantics from the engine selection.
     public func resumeRimeAfterVisibilityChange() {
-        rimeEngine?.resumeAfterVisibilityChange()
+        if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
+            coordinator.resumeAfterVisibilityChange()
+        } else {
+            rimeEngine?.resumeAfterVisibilityChange()
+        }
         applyRealizedSelectionFromEngine()
     }
 

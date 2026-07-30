@@ -212,3 +212,15 @@ R2 实现是：**单消费者但整条链路仍 `@MainActor`**，用 `DispatchQu
 | Executor evidence | `docs/evidence/t9-responsive-pipeline-r2-2026-07-30.md` |
 
 **方法：** 对抗性源码复读 + 授权/ADR 对照；**未**复跑 `swift test`；**未**设备验证。
+
+---
+
+## Executor P1 remediation addendum (2026-07-30)
+
+| ID | Status after remediation |
+|---|---|
+| P1-1 dual-entry | **Remediated (gate on):** `ResponsiveRimeEngineBridge` installs as `rimeEngine`; `performOrderedNow`/`flushPending` drain full queue; Delete after pending keys tested |
+| P1-2 publish→UI | **Remediated:** `onResponsivePresentationNeeded` + Extension `syncUI` wiring; controller test asserts `.compositionChanged` |
+| P1-3 off-MainActor | **Still open** (Swift 6 / no `@unchecked Sendable`); deferred MainActor drain residual remains |
+
+This addendum is **not** an independent Architecture re-Pass.

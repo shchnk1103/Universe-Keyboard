@@ -14,6 +14,11 @@ extension KeyboardViewController {
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
         controller = KeyboardController(state: KeyboardState(activeKeyboardType: keyboardType))
+        // R2: when the responsive gate is on, deferred snapshot apply must re-enter UI.
+        // Gate defaults off — this bridge is inert until Product enables the gate.
+        controller.onResponsivePresentationNeeded = { [weak self] effects in
+            self?.syncUI(with: effects)
+        }
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED && !T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         #error("T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED requires T9_AUTO_ANCHOR_DEVICE_PREFLIGHT")
         #endif
@@ -192,6 +197,8 @@ extension KeyboardViewController {
         }
         controller.rimeEngine = engine
         controller.typoCorrectionCandidateQuery = engine
+        // Rebuild bridge if responsive gate is ever enabled before/after engine install.
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
         applyRealizedRuntimeSelection(from: engine)
         hasActivatedVisibleRimeRuntime = true
         Logger.shared.info("RIME session prepared for visible keyboard input", category: .engine)

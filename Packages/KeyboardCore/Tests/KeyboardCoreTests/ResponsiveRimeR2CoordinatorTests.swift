@@ -30,88 +30,111 @@ final class ResponsiveRimeR2CoordinatorTests: XCTestCase {
         )
 
         let published = expectation(description: "published")
-        let started = DispatchTime.now().uptimeNanoseconds
-        coordinator.scheduleProcessKey("n") { snapshot in
+        coordinator.setPublishHandler { snapshot in
             XCTAssertEqual(snapshot?.output.rawInput, "n")
             published.fulfill()
         }
+
+        let started = DispatchTime.now().uptimeNanoseconds
+        coordinator.scheduleProcessKey("n")
         let scheduleElapsedMS =
             Double(DispatchTime.now().uptimeNanoseconds &- started) / 1_000_000.0
 
-        // schedule must not wait for the 40ms engine clock.
         XCTAssertLessThan(scheduleElapsedMS, 20)
-        XCTAssertEqual(engine.processKeyCallCount, 0, "drain deferred to next main turn")
+        XCTAssertEqual(engine.processKeyCallCount, 0, "accept must not call engine")
         XCTAssertEqual(coordinator.lastAcceptReceipt?.executedSynchronously, false)
 
-        wait(for: [published], timeout: 2)
+        // Explicit drain (controller uses Task yield + drainOneStep).
+        XCTAssertTrue(coordinator.drainOneStep())
+        wait(for: [published], timeout: 1)
         XCTAssertEqual(engine.processKeyCallCount, 1)
         XCTAssertEqual(engine.sessionComposition, "n")
     }
 
-    func testOrderedKeysPreserveCompositionUnderGate() {
+    func testOrderedKeysShareSinglePublishHandler() {
         let engine = FakeRimeEngine()
         let coordinator = ResponsiveRimeSessionCoordinator(
             engine: engine,
             publishPolicy: .latestOnly
         )
-        let done = expectation(description: "both keys")
-        done.expectedFulfillmentCount = 2
-
-        coordinator.scheduleProcessKey("n") { _ in done.fulfill() }
-        coordinator.scheduleProcessKey("i") { snapshot in
-            XCTAssertEqual(snapshot?.output.rawInput, "ni")
-            done.fulfill()
+        var publishedRaws: [String] = []
+        coordinator.setPublishHandler { snapshot in
+            if let raw = snapshot?.output.rawInput {
+                publishedRaws.append(raw)
+            }
         }
 
-        wait(for: [done], timeout: 2)
+        coordinator.scheduleProcessKey("n")
+        coordinator.scheduleProcessKey("i")
+        coordinator.flushPending()
+
         XCTAssertEqual(engine.sessionComposition, "ni")
         XCTAssertEqual(engine.processKeyCallCount, 2)
+        XCTAssertFalse(publishedRaws.isEmpty)
+        XCTAssertEqual(publishedRaws.last, "ni")
     }
 
-    func testControllerGateEnablesDeferredProcessKey() {
+    func testControllerGateEnablesDeferredProcessKeyAndPresentationBridge() {
         let client = FakeTextInputClient()
         let engine = FakeRimeEngine(dictionary: ["ni": ["你"]])
         let controller = KeyboardController()
         controller.textClient = client
         controller.rimeEngine = engine
         controller.isResponsiveRimePipelineEnabled = true
+
+        var presentationEffects: [KeyboardEffect] = []
+        let presented = expectation(description: "presentation")
+        controller.onResponsivePresentationNeeded = { effects in
+            presentationEffects.append(effects)
+            presented.fulfill()
+        }
         controller.rebuildResponsiveRimeCoordinatorIfNeeded()
 
         XCTAssertNotNil(controller.responsiveRimeCoordinator)
+        XCTAssertTrue(controller.rimeEngine is ResponsiveRimeEngineBridge)
 
         let started = DispatchTime.now().uptimeNanoseconds
         _ = controller.handle(.insertKey("n"))
         let elapsedMS =
             Double(DispatchTime.now().uptimeNanoseconds &- started) / 1_000_000.0
 
-        // handle returns before deferred drain (no sleep clock → still async turn).
         XCTAssertEqual(engine.processKeyCallCount, 0)
         XCTAssertLessThan(elapsedMS, 50)
 
-        let exp = expectation(description: "drain")
-        DispatchQueue.main.async {
-            // After at least one drain turn composition should land.
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1)
-        // Allow nested drain async hops.
-        let settle = expectation(description: "settle")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            settle.fulfill()
-        }
-        wait(for: [settle], timeout: 1)
-
+        wait(for: [presented], timeout: 2)
         XCTAssertEqual(engine.processKeyCallCount, 1)
         XCTAssertEqual(engine.sessionComposition, "n")
+        XCTAssertTrue(presentationEffects.contains { $0.contains(.compositionChanged) })
     }
 
-    func testEpochBumpInvalidatesInFlightGeneration() {
+    func testDeleteThroughBridgeWaitsForPendingProcessKey() {
+        let engine = FakeRimeEngine()
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = engine
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        // Schedule keys (pending) then delete via bridge/rimeEngine path.
+        controller.responsiveRimeCoordinator?.scheduleProcessKey("n")
+        controller.responsiveRimeCoordinator?.scheduleProcessKey("i")
+        // Sync delete through bridge must drain pending keys first.
+        _ = controller.rimeEngine?.deleteBackward()
+
+        XCTAssertEqual(engine.sessionComposition, "n")
+        XCTAssertEqual(engine.processKeyCallCount, 2)
+    }
+
+    func testEpochBumpClearsPendingAccepts() {
         let engine = FakeRimeEngine()
         let coordinator = ResponsiveRimeSessionCoordinator(engine: engine)
-        coordinator.scheduleProcessKey("n") { _ in }
+        coordinator.scheduleProcessKey("n")
+        XCTAssertEqual(coordinator.diagnostics.pendingDepth, 1)
         coordinator.bumpSessionEpoch()
         XCTAssertEqual(coordinator.diagnostics.sessionEpoch, 2)
         XCTAssertEqual(coordinator.diagnostics.pendingDepth, 0)
+        XCTAssertFalse(coordinator.drainOneStep())
+        XCTAssertEqual(engine.processKeyCallCount, 0)
     }
 
     func testPerformOrderedDeleteAfterKeys() {
@@ -139,5 +162,36 @@ final class ResponsiveRimeR2CoordinatorTests: XCTestCase {
             boundRevision: live.revision
         )
         XCTAssertEqual(decision, .rejectedStaleSnapshot)
+    }
+
+    func testBridgeSelectBindsToLastPublished() {
+        let engine = FakeRimeEngine(dictionary: ["ni": ["你", "呢"]])
+        let coordinator = ResponsiveRimeSessionCoordinator(
+            engine: engine,
+            publishPolicy: .everyResult
+        )
+        let bridge = ResponsiveRimeEngineBridge(
+            underlyingEngine: engine,
+            coordinator: coordinator
+        )
+        _ = bridge.processKey("n")
+        _ = bridge.processKey("i")
+        let committed = bridge.selectCandidate(at: 0)
+        XCTAssertEqual(committed.committedText, "你")
+        XCTAssertEqual(engine.sessionComposition, "")
+    }
+
+    func testGateOffAfterOnRestoresUnderlyingEngine() {
+        let engine = FakeRimeEngine()
+        let controller = KeyboardController()
+        controller.rimeEngine = engine
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+        XCTAssertTrue(controller.rimeEngine is ResponsiveRimeEngineBridge)
+
+        controller.isResponsiveRimePipelineEnabled = false
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+        XCTAssertTrue(controller.rimeEngine === engine)
+        XCTAssertNil(controller.responsiveRimeCoordinator)
     }
 }

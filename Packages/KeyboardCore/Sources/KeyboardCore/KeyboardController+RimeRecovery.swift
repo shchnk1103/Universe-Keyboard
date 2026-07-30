@@ -77,27 +77,31 @@ extension KeyboardController {
         let previousT9PathState = state.t9PinyinPathState
 
         // R2 gate: accept printable composition keys without waiting for librime.
-        // Snapshot application is MainActor via coordinator callback. Gate default
-        // is off — Release keeps the synchronous path below.
+        // All other session APIs still enter the same pipeline via
+        // `ResponsiveRimeEngineBridge`. Gate default is off.
         if isResponsiveRimePipelineEnabled {
             if responsiveRimeCoordinator == nil {
                 rebuildResponsiveRimeCoordinatorIfNeeded()
             }
             if let coordinator = responsiveRimeCoordinator {
                 if let replacementInput = replacementRawInputForSymbolPageContinuation(appending: rimeKey) {
-                    // replaceInput is ordered work; still deferred one MainActor turn
-                    // via scheduleProcessKey-equivalent path.
+                    // Symbol continuation must stay ordered with pending keys;
+                    // drain the full queue (may wait) so Path/delete cannot race.
                     let snapshot = coordinator.performOrderedNow(
                         .replaceInput(replacementInput, boundEpoch: nil, boundRevision: nil)
                     )
                     applyResponsivePublishedSnapshot(snapshot)
-                } else {
-                    coordinator.scheduleProcessKey(rimeKey) { [weak self] snapshot in
-                        self?.applyResponsivePublishedSnapshot(snapshot)
+                    var effects = consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+                    if usesT9InputSemantics {
+                        effects.insert(.t9PinyinPathsChanged)
                     }
+                    return effectsAfterChineseCompositionKey(effects, originalKey: key)
                 }
+                // Deferred processKey: accept now; drain on later MainActor turns
+                // so handle returns before librime. Publish fires presentation bridge.
+                coordinator.scheduleProcessKey(rimeKey)
+                scheduleResponsivePipelineDrain(coordinator)
                 let effects = consumeSingleUseShiftIfNeeded()
-                // compositionChanged may fire again when the snapshot arrives.
                 return effectsAfterChineseCompositionKey(effects, originalKey: key)
             }
         }

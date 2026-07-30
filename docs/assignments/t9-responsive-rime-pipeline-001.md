@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R2 implemented (default-off); Arch Pass with conditions (3×P1 residual); Quality Pass with conditions (1×P1 UI bridge); keep gate off; ADR 0025 Proposed; Product Gate not claimed`  
+**Lifecycle status:** `Active — R2 + P1 remediation (bridge single-owner + UI presentation); Arch P1-3 off-main residual remains; keep gate off; ADR 0025 Proposed; Product Gate not claimed; re-review optional`  
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
