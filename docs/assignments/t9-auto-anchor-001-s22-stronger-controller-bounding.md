@@ -246,17 +246,29 @@ log raw/pinyin/candidates/host/userdb.
 
 #### Layer 1 — KeyboardCore (implementation phase)
 
-Inherit all S2.1 Layer 1 cases. **Additional required cases:**
+**Gate-fork inheritance (do not bare-inherit S2.1):**
+
+| S2.1 Layer 1 case family | When B2 only (triple flag off) | When B3 on |
+|---|---|---|
+| All S2.1 cases that do not mention “third opportunity” or “budget exhausted after second accept” | Apply unchanged | Apply unchanged unless superseded below |
+| “Third opportunity after two attempts → No call” | **Apply** (no attempt 3) | **Superseded** → third opportunity may call once when attempt-3 eligibility holds |
+| “Second validation accepted → budget exhausted” | **Apply** (ceiling 2) | **Superseded** → after attempt 2 accept, ceiling is **3**; attempt 3 still available until consumed/rejected |
+| First reject terminal; Path/Partial/Delete after 1–2 accepts; pre-key mismatch; one auto-tx per key | Apply | Apply (Delete after three accepts uses budget total **4**) |
+
+**B3-required cases (minimum):**
 
 | Case | Required result |
 |---|---|
 | B3 frozen positive path | exactly 3 accepts; no 4th attempt |
-| B2 enabled, triple flag off | attempt 3 never evaluated |
+| B2 on, triple flag off | attempt 3 never evaluated; after 2 accepts budget exhausted |
 | attempt 1 reject | terminal; no attempt 2/3 |
 | attempt 2 reject + prior mixed restore | budget exhausted; no attempt 3 |
-| attempt 3 reject | restore **attempt-2** mixed raw once |
-| attempt 3 restore fail | exactly 1 same-session reset; abandon |
+| attempt 3 reject | restore **attempt-2** mixed raw once; total extra replaceInput **4** |
+| attempt 3 restore fail | total 4 + exactly 1 same-session reset; abandon |
 | three accepts then Delete success | extra replaceInput total **4** |
+| three accepts then Delete fail | total 4 + exactly 1 reset; normal Delete stops |
+| third reject+restore then Delete success | total **5** |
+| third reject+restore then Delete fail | total 5 + exactly 1 reset |
 | three accepts then Path/Partial | clear automatic payload; tombstone |
 | pre-key mismatch after attempt 3 accept | 0 new replace at mismatch; 1 reset |
 | one physical key | at most one automatic transaction |
@@ -271,10 +283,17 @@ Same fixture/isolation as S2.1. Arm contract:
 |---|---:|---:|---|
 | A1 | 1 | 1 | S4 |
 | B2 | 2 | 2 | attempt2 physical ≤23 and after attempt1 |
-| B3 | **3** | **3** | attempt3 physical ≤28 and after attempt2 |
+| B3 | **3** | **3** | inherits attempt1/2 rules **and** attempt3 physical ≤28 and after attempt2 |
 
-Ownership/Delete/Path/Partial matrix: zero unexpected skips. Positive fixture
+Named integration rows (zero unexpected skips): Delete after 1/2/3 accepts
+(success/fail budgets), attempt2/3 reject+restore, Path/Partial tombstone,
+pre-key mismatch fail-closed, A1/B2/B3 gate separation. Positive fixture
 rejection or undeclared extra automatic call invalidates the arm.
+
+**Ordinal rationale for ≤28:** S2.1 matrix places attempt2 ~20–21 and late
+spikes at 25/33/35. Attempt3 must fire after attempt2 and **before** the late
+33-class cluster; 28 is the frozen upper bound for mechanism validity (not a
+shipping SLO). If legal eligibility cannot meet ≤28, stop-fast to Product.
 
 #### Layer 3 — Human physical (implementation phase)
 
@@ -286,9 +305,9 @@ fixture, Performance export, ordinary restore).
 - `T9ARM actions=38` (or 38 contiguous `event=1…38`);
 - one stable valid session; zero commits; candidates available throughout;
 - no missing/duplicate keys / keyboard termination (Human report);
-- **B2:** exactly 2 `T9AUTO accepted`;
-- **B3:** exactly **3** `T9AUTO accepted`, attempt physical ordinals strictly
-  increasing, attempt3 physical ordinal **≤ 28**;
+- **B2:** exactly 2 `T9AUTO accepted`; attempt2 physical ≤23 and after attempt1;
+- **B3:** exactly **3** `T9AUTO accepted`; attempt1/2 rules as B2; attempt3
+  physical ≤28 and after attempt2;
 - mechanism not triggered as contracted ⇒ **arm invalid**, do not enter
   direction comparison (same discipline as S2.1).
 
@@ -297,14 +316,21 @@ fixture, Performance export, ordinary restore).
 1. Exploratory pair 1: **B2 → B3** (same-source internal artifacts).
 2. If pair 1 direction **FAIL** (B3 does not reduce ≥100 ms count vs B2, or
    worsens worst) → **stop**; do not fish for better cadence.
-3. If pair 1 direction **PASS** → optional counterbalanced expansion only under
+3. If B3 cannot achieve attempt3 physical ≤28 on a **valid** typing of the
+   frozen fixture (legal eligibility never fires in time) → **stop-fast** to
+   Product; do not re-type to hunt ordinals.
+4. If pair 1 direction **PASS** → optional counterbalanced expansion only under
    Product instruction; single exploratory PASS is **not** robust product
    direction (S2.1 matrix taught 1/3).
-4. Direction rule: B3 vs paired B2 reduces ≥100 ms event count **and** does not
+5. Direction rule: B3 vs paired B2 reduces ≥100 ms event count **and** does not
    increase worst total. Experiment routing only — not Product Gate / SLO.
-5. North-star diagnostic (not shipping): prefer ≤1 ≥100 ms on fixture without
+6. North-star diagnostic (not shipping): prefer ≤1 ≥100 ms on fixture without
    Path; Product will not call the goal met while four late RIME spikes remain
    typical.
+
+**Delete ownership (any accepted automatic prefix, including three accepts):**
+restore complete accumulated `sourceDigits` once, then perform exactly one
+normal user deletion.
 
 ## Explicit non-claims
 
@@ -320,7 +346,8 @@ fixture, Performance export, ordinary restore).
 | Round | Architecture | Quality |
 |---|---|---|
 | Initial | **Fail** (P1: ADR third-attempt patch, exact budgets, Layer3 integrity) | **Fail** (P1: physical ordinal binding, Delete budgets) |
-| This remediation | Re-review required | Re-review required |
+| After ADR/budget/ordinal remediation | **Pass** (P0–P3 = 0) | **Fail** (P1: bare Inherit-all vs B3 supersession) |
+| After Layer1 gate-fork remediation | Architecture still Pass unless regression | Re-review required |
 
 Remediation closed the listed P1/P2 gaps in-document and added ADR §17–20.
 
