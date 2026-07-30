@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — R4-Owner dual review Pass with conditions (D1–D3 Closed); default-off; ADR 0025 Proposed; Product Gate not claimed; R4-B real librime not granted** |
+| Status | **Active — R4-B dual review Pass with conditions (real bootstrap proof); default-off; ADR 0025 Proposed; Product Gate not claimed; Extension wire not granted** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
@@ -203,11 +203,16 @@ and `RimeEngineImpl` production wiring.
 Design:
 [`../assignments/t9-responsive-pipeline-001-r4-owner-design.md`](../assignments/t9-responsive-pipeline-001-r4-owner-design.md).
 
-### R4-B — Real RIME integration — **not granted**
+### R4-B — Real RIME integration — **authorized 2026-07-31**
 
-- Simulator bridge evidence on frozen sequence
-- Compare gate off vs on (content-free)
-- Confirm 26-key unchanged when gate off
+- Config-only Sendable bootstrap for real `RimeEngineImpl` on the thread-affine
+  owner thread
+- Simulator / RimeBridge evidence on a short frozen sequence (content-free)
+- Gate-off baseline: 26-key / direct path remains when responsive gate is off
+- **Not** Extension production wiring, ADR Accept, Product Gate, or device A/B
+
+Design:
+[`../assignments/t9-responsive-pipeline-001-r4-b-design.md`](../assignments/t9-responsive-pipeline-001-r4-b-design.md).
 
 ### R5 — Human device A/B
 
@@ -300,3 +305,5 @@ T9-RESPONSIVE-PIPELINE-001 的 Assignment 与 Proposed ADR 已达到实现入口
 | 2026-07-31 | Lifecycle P1 remediated (`requestStop` + deinit safety net; stall inside Fake `processKey`; lifecycle tests). Re-validated Spike 7/7 and KeyboardCore 823/823. Independent Architecture/Quality re-reviews: **Pass with conditions**. Arch residual P2 (factory / delivery FIFO / unbounded mailbox) remain for R4. ADR still Proposed; gate still off; R4 / Product Gate / device not claimed. |
 | 2026-07-31 | Human Product Owner authorized **R4-Owner** (design → implement → dual review) to close Arch P2 owner residuals; R4-B real librime / R5 / R6 / ADR Accept / Product Gate remain closed. |
 | 2026-07-31 | R4-Owner implemented (bootstrap + ordered delivery + bounded refuse-at-bound). Tests 10/10 focused, 826/826 full. Independent Arch/Quality: **Pass with conditions**. D1–D3 Closed in R4-Owner scope; R4-B / ADR Accept / Product Gate still closed. |
+| 2026-07-31 | Human Product Owner authorized **R4-B** (real librime config-only bootstrap + Simulator/RimeBridge evidence; design→implement→dual review). Extension production wire / ADR Accept / Product Gate remain closed. |
+| 2026-07-31 | R4-B implemented: `ThreadAffineRimeEngineImplBootstrap`, Simulator tests 2/2 (`R4B_REAL_ENGINE_RESULT passed=true`), KeyboardCore 10/826 green. Independent Arch/Quality: **Pass with conditions**. Real bootstrap proof Closed; Extension wire / ADR Accept / Product Gate still closed. |

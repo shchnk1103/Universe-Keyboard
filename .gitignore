@@ -54,3 +54,6 @@ evidence/
 
 # Local comparison screenshots (not product evidence)
 photos/
+
+# Local R4-B harness DerivedData / isolated runtime (formal summary is docs/evidence/*.md)
+docs/evidence/r4b-runtime/

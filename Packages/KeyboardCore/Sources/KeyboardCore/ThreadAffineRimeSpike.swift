@@ -8,19 +8,19 @@ import Synchronization
 /// R4-Owner freezes this as a **bootstrap**: conforming values must carry only
 /// configuration / recipe data. They must not store a live non-Sendable engine.
 /// The only engine instance is returned when the owner thread invokes this method.
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 public protocol ThreadAffineRimeEngineBootstrap: Sendable {
     func makeEngineOnOwnerThread() -> any RimeEngine
 }
 
 /// Spike-era name retained as a typealias so existing tests keep compiling.
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 public typealias ThreadAffineRimeSpikeEngineFactory = ThreadAffineRimeEngineBootstrap
 
 /// Tunables for the thread-affine owner (R4-Owner D3).
 ///
 /// `maxPendingWorkDepth` is a testable bound, not a Product-locked jetsam SLO.
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 public struct ThreadAffineRimeOwnerConfiguration: Sendable, Equatable {
     public var maxPendingWorkDepth: Int
 
@@ -33,7 +33,7 @@ public struct ThreadAffineRimeOwnerConfiguration: Sendable, Equatable {
 }
 
 /// Content-free owner diagnostics (R4-Owner).
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 public struct ThreadAffineRimeOwnerDiagnostics: Sendable, Equatable {
     public var pendingWorkDepth: Int
     public var rejectedAtBoundCount: Int
@@ -64,7 +64,7 @@ public struct ThreadAffineRimeOwnerDiagnostics: Sendable, Equatable {
 /// Delete, candidate/Path selection, paging and recovery remain later production
 /// integration work. Exposing them here without the complete R3 binding and
 /// lifecycle contract would overstate what this owner proves.
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 public enum ThreadAffineRimeSpikeWork: Equatable, Sendable {
     case processKey(String)
 }
@@ -73,7 +73,7 @@ public enum ThreadAffineRimeSpikeWork: Equatable, Sendable {
 ///
 /// The diagnostic booleans are content-free. They prove only the isolation
 /// shape; they do not prove real librime compatibility.
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 public struct ThreadAffineRimeSpikeResult: Equatable, Sendable {
     public let snapshot: ResponsiveRimeSnapshot
     public let engineCreatedOffMainThread: Bool
@@ -96,7 +96,7 @@ public struct ThreadAffineRimeSpikeResult: Equatable, Sendable {
 /// future production integration would apply the accepted value snapshot to
 /// those MainActor-owned surfaces as one transaction.
 @MainActor
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 public final class ThreadAffineRimeSpikeApplyGate {
     public private(set) var sessionEpoch: UInt64
     public private(set) var lastAppliedRevision: UInt64 = 0
@@ -136,7 +136,7 @@ public final class ThreadAffineRimeSpikeApplyGate {
 
 // MARK: - Internal envelopes
 
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 private struct ThreadAffineRimeSpikeEnvelope: Sendable {
     let work: ThreadAffineRimeSpikeWork
     let actionID: String
@@ -144,13 +144,13 @@ private struct ThreadAffineRimeSpikeEnvelope: Sendable {
     let revision: UInt64
 }
 
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 private enum ThreadAffineRimeControlCommand: Sendable {
     case advanceEpoch(UInt64)
     case stop
 }
 
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 private enum ThreadAffineRimeOwnerCommand: Sendable {
     case work(ThreadAffineRimeSpikeEnvelope)
     case control(ThreadAffineRimeControlCommand)
@@ -163,7 +163,7 @@ private enum ThreadAffineRimeOwnerCommand: Sendable {
 /// Contains only Sendable descriptors. The non-Sendable `RimeEngine` is
 /// deliberately absent and exists solely as a local variable in the consumer
 /// thread closure.
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 private final class ThreadAffineRimeSpikeMailbox: Sendable {
     private struct State: Sendable {
         var work: [ThreadAffineRimeSpikeEnvelope] = []
@@ -248,7 +248,7 @@ private final class ThreadAffineRimeSpikeMailbox: Sendable {
 // MARK: - Ordered delivery channel (D2)
 
 /// Single ordered MainActor delivery channel with terminal acknowledgement.
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 private final class ThreadAffineRimeDeliveryChannel: Sendable {
     typealias Handler = @MainActor @Sendable (ThreadAffineRimeSpikeResult) -> Void
 
@@ -366,7 +366,7 @@ private final class ThreadAffineRimeDeliveryChannel: Sendable {
 /// - Work mailbox is bounded (refuse-at-bound); control lane is priority.
 /// - Not wired into `KeyboardController`, the Extension, Release defaults or
 ///   real `RimeEngineImpl` production paths.
-@available(macOS 15.0, *)
+@available(iOS 18.0, macOS 15.0, *)
 public final class ThreadAffineRimeSpikeOwner: Sendable {
     public typealias ResultHandler = @MainActor @Sendable (ThreadAffineRimeSpikeResult) -> Void
 
@@ -421,7 +421,10 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
             mailbox.signalStopped()
         }
         thread.name = "com.universekeyboard.rime.thread-affine-owner"
-        thread.qualityOfService = QualityOfService.userInteractive
+        // userInitiated (not userInteractive): owner often blocks on librime /
+        // semaphores that run at Default QoS; UI-class QoS caused Thread
+        // Performance Checker priority-inversion warnings under R4-B.
+        thread.qualityOfService = QualityOfService.userInitiated
         thread.start()
     }
 

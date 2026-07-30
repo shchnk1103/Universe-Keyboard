@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — R4-Owner dual review Pass with conditions (D1–D3 Closed); R4-B real librime / R5 / R6 / ADR Accept / Product Gate / Release default-on not authorized`
+**Lifecycle status:** `Recorded — R4-B dual review Pass with conditions (real bootstrap proof); R5 / R6 / ADR Accept / Product Gate / Release default-on / Extension wire not authorized`
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the
@@ -238,11 +238,47 @@ device readiness or Release enablement.
 Design (Architecture-owned once written):
 [`t9-responsive-pipeline-001-r4-owner-design.md`](../assignments/t9-responsive-pipeline-001-r4-owner-design.md).
 
+### R4-B (2026-07-31 Human Product Owner authorization) — authorized
+
+Human Product Owner instruction: continue under KOS 2.0 and complete **R4-B**.
+
+**Product intent:** prove that the R4-Owner thread-affine contract can host a
+**real** `RimeEngineImpl` built only from Sendable path configuration on the
+owner thread, with Simulator/RimeBridge evidence — without shipping gate-on or
+Extension production migration.
+
+**Allowed (default-off; no Product Gate):**
+
+1. Architecture design freeze for real-librime bootstrap + evidence matrix.
+2. RimeBridge (and minimal KeyboardCore availability fixes if required for iOS):
+   - Sendable config-only bootstrap (`sharedDataDir` / `userDataDir` strings);
+   - dedicated-thread create / processKey / destroy with real librime;
+   - short frozen sequence / content-free ordering proof;
+   - gate-off baseline: 26-key / direct engine path remains available when
+     responsive gate is off (no Release default change).
+3. Isolated runtime fixture harness (env-dir or scripted copy; never mutate the
+   user's formal App Group as the only runtime).
+4. Independent Architecture and Quality review; in-scope remediation only.
+
+**Forbidden / not claimed by R4-B:**
+
+- Extension / `KeyboardController` production wire of the thread-affine owner;
+- Release default-on or user-facing settings;
+- ADR 0025 Accept, Product Gate, R5 device A/B, R6;
+- Full session API production routing (Delete/Path/select/page may remain out
+  of this knife if processKey proof is the minimum real-librime claim);
+- Expanding T9 auto-anchor;
+- Claiming subjective non-stutter on device.
+
+Design (Architecture-owned once written):
+[`t9-responsive-pipeline-001-r4-b-design.md`](../assignments/t9-responsive-pipeline-001-r4-b-design.md).
+
 ## Not authorized now
 
 - Changing Release default input path or user-facing settings
-- R4-B real librime Simulator integration, R5–R6, ADR 0025 Accept, Product Gate
-- Off-main **Extension production migration** of real librime
+- R5–R6, ADR 0025 Accept, Product Gate
+- Off-main **Extension production migration** of real librime (R4-B may prove
+  bootstrap only; wiring remains a later Product knife)
 - Expanding T9 auto-anchor
 
 ## Phased product view (summary)
@@ -254,8 +290,8 @@ Design (Architecture-owned once written):
 | R2 | Dedicated serial RIME owner behind gate | Default-off production path |
 | R3 | revision / sessionEpoch / Delete / candidate contracts | Default-off |
 | Spike-P1-3 | Thread-affine Fake isolation proof | Disconnected Spike only |
-| **R4-Owner** | Close Arch P2 owner-contract residuals | Disconnected owner upgrade; default-off |
-| R4-B | Simulator + real RIME integration evidence | Default-off (later auth) |
+| R4-Owner | Close Arch P2 owner-contract residuals | Disconnected owner upgrade; default-off |
+| **R4-B** | Simulator + real RIME bootstrap evidence | Default-off; disconnected real-engine proof |
 | R5 | Human Reminders A/B on device | Evidence only |
 | R6 | Independent Architecture, Quality, Product Gate | Shipping decision |
 

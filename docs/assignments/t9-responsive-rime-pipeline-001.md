@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R4-Owner dual review Pass with conditions (D1–D3 Closed); keep gate off; ADR 0025 Proposed; Product Gate not claimed; R4-B not granted`
+**Lifecycle status:** `Active — R4-B dual review Pass with conditions (real bootstrap proof); keep gate off; ADR 0025 Proposed; Product Gate not claimed; Extension wire not granted`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -79,6 +79,26 @@
 - **Acknowledgement exclusions:** no Extension/`RimeEngineImpl` production wire;
   no R4-B Simulator real-librime matrix; no R5/R6; no ADR 0025 Accept; no Product
   Gate; no Release default-on; no auto-anchor expansion.
+
+### R4-B reassignment / acknowledgement
+
+- **Decision Source / Date:** Human Product Owner authorization in the active
+  Grok session, `2026-07-31 Asia/Shanghai` — complete R4-B under KOS 2.0.
+- **Domain Owner (primary):** 🔧 RIME Platform Maintainer (real `RimeEngineImpl`
+  bootstrap + RimeBridge tests)
+- **Secondary domain:** 🧠 Input Intelligence Maintainer (thread-affine owner
+  contract / iOS availability only as required)
+- **Executor:** Current Grok session for R4-B design consumption, RimeBridge
+  bootstrap + tests, optional harness script, KeyboardCore availability fix if
+  required for iOS Simulator, and evidence.
+- **Environment Executor:** Current Grok session for local/simulator
+  `xcodebuild test` / package tests; Human remains physical-device operator (R5).
+- **Architecture / Quality Reviewers:** independent Steward / Quality roles.
+- **Handoff Target:** Independent Arch + Quality; then Human Product Owner for
+  optional wiring / R5 authorization.
+- **Acknowledgement exclusions:** no Extension production wire of thread-affine
+  owner; no Release default-on; no ADR 0025 Accept; no Product Gate; no R5/R6;
+  no auto-anchor expansion.
 
 ## Acknowledgement And Activation
 
@@ -259,7 +279,15 @@
   ([arch](t9-responsive-pipeline-001-r4-owner-architecture-review.md),
   [quality](t9-responsive-pipeline-001-r4-owner-quality-review.md),
   [evidence](../evidence/t9-responsive-pipeline-r4-owner-2026-07-31.md))
-- [ ] R4-B / real librime Simulator + off-main production wiring — **not granted**
+- [x] R4-B real librime bootstrap + Simulator evidence — **granted 2026-07-31**
+  Human Product Owner; design → implement → dual review; default-off;
+  **no** Extension production wire / ADR Accept / Product Gate
+- [x] R4-B independent Architecture / Quality — **Pass with conditions**
+  (2026-07-31); Simulator real-engine 2/2 + machine line; KeyboardCore 10/826
+  ([arch](t9-responsive-pipeline-001-r4-b-architecture-review.md),
+  [quality](t9-responsive-pipeline-001-r4-b-quality-review.md),
+  [evidence](../evidence/t9-responsive-pipeline-r4-b-2026-07-31.md))
+- [ ] Extension production migration of thread-affine owner — **not granted**
 
 ### Exit Criteria — Spike-P1-3
 
@@ -290,6 +318,19 @@
 - [x] Independent Quality review of R4-Owner — **Pass with conditions**.
 - [x] Gate remains default-off; no Extension/`RimeEngineImpl` production wire;
   ADR 0025 remains Proposed; R4-B not claimed.
+
+### Exit Criteria — R4-B
+
+- [x] Config-only real `RimeEngineImpl` bootstrap on owner thread
+  ([design](t9-responsive-pipeline-001-r4-b-design.md)).
+- [x] Simulator RimeBridge proof: create/call off-main, FIFO delivery, shutdown
+  (`ThreadAffineRimeRealEngineTests` 2/2; machine line
+  `R4B_REAL_ENGINE_RESULT passed=true`).
+- [x] Gate-off baseline retained; KeyboardCore ThreadAffine 10/10 + full 826/826.
+- [x] Independent Architecture review of R4-B — **Pass with conditions**.
+- [x] Independent Quality review of R4-B — **Pass with conditions**.
+- [x] No Extension production wire; ADR 0025 remains Proposed; Product Gate not
+  claimed.
 
 ### Exit Criteria — R2–R6
 

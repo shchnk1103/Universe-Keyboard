@@ -339,6 +339,12 @@ Detailed designs:
 
 - Spike: [`../../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md`](../../assignments/t9-responsive-pipeline-001-spike-p1-3-design.md)
 - R4-Owner: [`../../assignments/t9-responsive-pipeline-001-r4-owner-design.md`](../../assignments/t9-responsive-pipeline-001-r4-owner-design.md)
+- R4-B real librime bootstrap:
+  [`../../assignments/t9-responsive-pipeline-001-r4-b-design.md`](../../assignments/t9-responsive-pipeline-001-r4-b-design.md)
+
+R4-B adds a **config-only** `ThreadAffineRimeEngineImplBootstrap` in RimeBridge
+and Simulator evidence that a real engine can be created/called/released on the
+owner thread. It does **not** wire Extension production paths or Accept this ADR.
 
 ## Consequences
 
