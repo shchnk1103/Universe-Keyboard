@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S22 — 更强控制器自动锚定设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — design; Architecture/Quality review pending`
+**Lifecycle status:** `Active — design remediated after Arch/Quality Fail; re-review pending`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Predecessor:** [`T9-AUTO-ANCHOR-001-S21`](t9-auto-anchor-001-s21-rolling-design.md)
 **Repository change types:** `Documentation` (design phase only)
@@ -128,7 +128,15 @@ scope):**
 > two-syllable first-anchor product choice and is **out of S2.2**. It may become
 > S2.3 only after Product re-authorization.
 
-## Design contract (frozen for Architecture/Quality review)
+## Architecture patch
+
+ADR 0024 §17–20 (S2.2 proposed amendment) owns the three-attempt ledger,
+exact `replaceInput` endpoint budget, B3 evidence boundary and S2.2 stop
+conditions. This Assignment must stay consistent with that patch. S2.1 stop
+conditions still forbid a third attempt on the **S2.1 surface**; runtime remains
+two-attempt until Product authorizes S2.2 implementation.
+
+## Design contract (remediated for Architecture/Quality re-review)
 
 ### Composition ledger
 
@@ -137,7 +145,7 @@ Retain the S2.1 process-local ledger fields:
 - full original `sourceDigits`;
 - exact applied mixed `replacementRawInput`;
 - cumulative anchored syllable and source-slot counts;
-- total automatic apply-attempt count (now max **3**);
+- total automatic apply-attempt count (max **3** when B3 enabled; else **2**);
 - source-slot count at previous attempt;
 - terminal/tombstone state for Path/Partial/rejection/Delete.
 
@@ -149,95 +157,154 @@ candidates, committed text or host context.
 | Attempt | Role | Syllable rule | Max cumulative applies |
 |---:|---|---|---:|
 | 1 | Existing S4 first anchor | exactly **2** complete catalog syllables | 1 |
-| 2 | Existing S2.1 rolling extension | preserve accepted prefix; add exactly **2** syllables | 2 |
-| 3 | **S2.2 new** second rolling extension | preserve accepted prefix after attempt 2; add exactly **2** syllables | 3 |
+| 2 | Existing S2.1 rolling extension | preserve accepted prefix; add exactly **2** | 2 |
+| 3 | **S2.2** second rolling extension | preserve prefix after attempt 2; add exactly **2** | 3 |
 
-Rules carried forward unchanged unless stated:
+### Attempt-3 eligibility (numbered; page-zero only)
 
-- At most one automatic transaction per physical key.
-- Attempt \(n+1\) requires attempt \(n\) **accepted**, at least one later
-  successful physical T9 digit, atomic accepted-identity advancement, no
-  Path/Partial ownership, page-zero snapshot only, non-empty unresolved tail.
-- First rejection of attempt 1 remains terminal (no rolling unlock).
-- Rejection of attempt 2 or 3 restores the **prior accepted mixed raw** once;
-  restore failure → one same-session fail-closed reset, no recover/replay.
-- Pre-key live/ledger mismatch → same-session reset, clear automatic payload,
-  zero new processKey/replaceInput for ordinary digit advancement.
+Attempt 3 is eligible only when **all** hold:
 
-### Extra `replaceInput` budget (S2.2 upper bound)
+1. Attempt 2 was **accepted** (attempt 1 reject remains terminal; attempt 2
+   reject exhausts budget — **no** attempt 3).
+2. Fewer than three automatic apply attempts have occurred.
+3. At least one later physical T9 digit was successfully processed after
+   attempt 2, so attempt 3 cannot run on the same physical key as attempt 2.
+4. Accepted-identity advancement after that digit completed atomically; live
+   raw exactly matches the ledger mixed identity.
+5. No Partial Commit, explicit selected Path or confirmed Path segment.
+6. Already-returned **page-zero** snapshot produces a catalog-legal cumulative
+   proposal whose existing automatic prefix is **byte-for-byte** unchanged.
+7. Proposal adds **exactly two** complete catalog-legal syllables beyond the
+   existing automatic prefix and leaves a non-empty unresolved digit tail.
+8. No extra RIME call is made to discover eligibility. Absent/divergent
+   proposal → complete the key **without** consuming attempt 3.
 
-Beyond ordinary key/Delete processKey:
+### Physical ordinal identity
 
-| Endpoint | Max extra `replaceInput` |
-|---|---:|
-| three accepts | 3 |
-| attempt 3 reject + prior mixed restore | 4 |
-| then Delete restore success | 5 |
-| any pre-key identity mismatch after accepted payload | 0 new at mismatch + exactly 1 same-session reset |
+For mechanism and direction binding on the frozen 38-key fixture:
 
-No second session, recoverSession, deploy or multi-step restore chain.
+- Prefer **`T9SEG event`** (1…38) as the one-based **physical** action ordinal
+  of that arm when `T9SEG action` diverges (S2.1 matrix already observed
+  continued `action` counters).
+- Attempt physical ordinals must be **strictly increasing**.
+- B3 attempt 3 is mechanism-valid only when its physical ordinal is **≤ 28**
+  and strictly after attempt 2. If Layer 2 cannot meet ≤28 while staying legal,
+  **stop-fast** and return to Product — do not loosen safety or raise the cap
+  silently.
 
-### Gates and arm identity (implementation phase only)
+### Exact extra `replaceInput` budget
 
-Design-phase freeze of names; not compiled until implementation is authorized:
+Identical to ADR 0024 §19 (copied for Assignment locality):
 
-| Arm | Meaning |
-|---|---|
-| A1 | existing S4 one-anchor only (current A1 preflight) |
-| B2 | S2.1 two-attempt rolling (current B2) |
-| B3 | S2.2 three-attempt rolling: B2 conditions + new internal flag e.g. `T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED` requiring B2 flags |
+| Composition path at endpoint | Cumulative extra `replaceInput` | Same-session clear/reset |
+|---|---:|---:|
+| first accepts; no second transaction | 1 | 0 |
+| two accepts; no third transaction | 2 | 0 |
+| three accepts | 3 | 0 |
+| first rejects and pure digits restore | 2 | 0 |
+| first restore fails | 2 | exactly 1 |
+| first accepts; second rejects and prior mixed restores | 3 | 0 |
+| second prior-mixed restore fails | 3 | exactly 1 |
+| two accepts; third rejects and prior mixed restores | 4 | 0 |
+| third prior-mixed restore fails | 4 | exactly 1 |
+| pre-key identity mismatch after any accepted/restored automatic payload | prior total; 0 new at mismatch | exactly 1 |
+| Delete after first acceptance only | 2 total | 0 success / 1 failure |
+| Delete after two acceptances | 3 total | 0 success / 1 failure |
+| Delete after three acceptances | **4** total | 0 success / 1 failure |
+| second rejects/restores, then Delete | 4 total | 0 success / 1 failure |
+| third rejects/restores, then Delete | **5** total | 0 success / 1 failure |
 
-Ordinary Release: all auto-anchor gates off.
+No second session, `recoverSession`, deploy or multi-step restore chain.
 
-### Diagnostics (content-free; prefer existing App PERF)
+### Gates and arm identity (frozen names)
 
-Must remain usable from the App Performance export Human already uses:
+Not compiled until implementation is authorized:
+
+| Arm | Flags | Happy-path accepts | Happy-path extra `replaceInput` |
+|---|---|---:|---:|
+| A0 | no preflight enable | 0 | 0 |
+| A1 | `DEVICE_PREFLIGHT` + `DEVICE_PREFLIGHT_ENABLED` | 1 | 1 |
+| B2 | A1 + `ROLLING_PREFLIGHT_ENABLED` | 2 | 2 |
+| B3 | B2 + **`T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED`** | 3 | 3 |
+
+Ordinary Release: all auto-anchor gates off. Any undeclared gate difference or
+positive-fixture rejection/extra automatic call **invalidates** the arm.
+
+### Diagnostics (content-free; App PERF)
 
 | Signal | Required |
 |---|---|
 | `T9DEVICE` marker / gate | arm identity |
 | `T9SEG` event/action/total/rime/ui/session/cands/committed/rawLen | timing + integrity |
-| `T9AUTO` status/attempt/anchorSlots/unresolvedSlots/applyMs | attempt outcomes |
+| `T9AUTO` status/**attempt**/anchorSlots/unresolvedSlots/applyMs | attempt outcomes; **attempt=3** on third tx |
 | `T9ARM` actions/committed/sessionStable | arm close |
 
-**Minimum new field (design intent for implementation):** when attempt 3 is
-evaluated, `T9AUTO` must carry `attempt=3` on accept/reject and must not log
-raw/pinyin/candidates. Optional content-free `reason=` codes for skip/reject
-remain allowed if already patterned in Debug.
-
-Human procedure stays: Reminders blank title, Chinese nine-key, frozen 38-key
-fixture, no Path/candidates mid-arm, export Performance filter, ordinary
-Release restore after internal arms.
+Optional content-free `reason=` skip/reject codes if already patterned. Never
+log raw/pinyin/candidates/host/userdb.
 
 ### Layered acceptance
 
 #### Layer 1 — KeyboardCore (implementation phase)
 
-- A1/B2/B3 gate separation; attempt 3 only when B3 enabled.
-- Exactly three accepts on the frozen synthetic policy path when eligible.
-- No fourth attempt; rejection restore budgets exact; Path/Partial/Delete
-  ownership; pre-key mismatch fail-closed; focused + full KeyboardCore green.
+Inherit all S2.1 Layer 1 cases. **Additional required cases:**
+
+| Case | Required result |
+|---|---|
+| B3 frozen positive path | exactly 3 accepts; no 4th attempt |
+| B2 enabled, triple flag off | attempt 3 never evaluated |
+| attempt 1 reject | terminal; no attempt 2/3 |
+| attempt 2 reject + prior mixed restore | budget exhausted; no attempt 3 |
+| attempt 3 reject | restore **attempt-2** mixed raw once |
+| attempt 3 restore fail | exactly 1 same-session reset; abandon |
+| three accepts then Delete success | extra replaceInput total **4** |
+| three accepts then Path/Partial | clear automatic payload; tombstone |
+| pre-key mismatch after attempt 3 accept | 0 new replace at mismatch; 1 reset |
+| one physical key | at most one automatic transaction |
+
+Focused suite + full KeyboardCore green.
 
 #### Layer 2 — pinned real-RIME (implementation phase)
 
-- Same fixture/isolation policy as S2.1.
-- B3 accepts exactly three times with attempt ordinals strictly increasing and
-  attempt 3 action ordinal **≤ 28** on the frozen fixture (must fire before the
-  historical e33-class late spikes; if the real-RIME matrix cannot meet ≤28
-  while staying legal, stop and return to Product rather than loosen safety).
-- Zero unexpected skips on ownership/Delete/Path/Partial matrix.
+Same fixture/isolation as S2.1. Arm contract:
+
+| Arm | Accepts | Extra replace (happy) | Mechanism ordinal rule |
+|---|---:|---:|---|
+| A1 | 1 | 1 | S4 |
+| B2 | 2 | 2 | attempt2 physical ≤23 and after attempt1 |
+| B3 | **3** | **3** | attempt3 physical ≤28 and after attempt2 |
+
+Ownership/Delete/Path/Partial matrix: zero unexpected skips. Positive fixture
+rejection or undeclared extra automatic call invalidates the arm.
 
 #### Layer 3 — Human physical (implementation phase)
 
-- Same device freeze family as S2.1 matrix (iPhone 13 Pro class, Human method).
-- Exploratory order: **B2 → B3** first (does triple help over S2.1?), then
-  optional A1 baseline if Product wants absolute comparison.
-- Direction rule for B3 vs paired B2 (same Human cadence caveats as S2.1):
-  reduce ≥100 ms event count **and** do not increase worst total.
-- Product goal bar (north star diagnostic, not shipping SLO): on the frozen
-  fixture without Path, prefer ≤1 event ≥100 ms; matrix need not hit this on
-  first exploratory pair, but Product will not call the goal met while 4 late
-  RIME spikes remain typical.
+Same device freeze family and Human method as S2.1 (Reminders, nine-key,
+fixture, Performance export, ordinary restore).
+
+**Arm validity (required before direction scoring):**
+
+- `T9ARM actions=38` (or 38 contiguous `event=1…38`);
+- one stable valid session; zero commits; candidates available throughout;
+- no missing/duplicate keys / keyboard termination (Human report);
+- **B2:** exactly 2 `T9AUTO accepted`;
+- **B3:** exactly **3** `T9AUTO accepted`, attempt physical ordinals strictly
+  increasing, attempt3 physical ordinal **≤ 28**;
+- mechanism not triggered as contracted ⇒ **arm invalid**, do not enter
+  direction comparison (same discipline as S2.1).
+
+**Order and stop rules:**
+
+1. Exploratory pair 1: **B2 → B3** (same-source internal artifacts).
+2. If pair 1 direction **FAIL** (B3 does not reduce ≥100 ms count vs B2, or
+   worsens worst) → **stop**; do not fish for better cadence.
+3. If pair 1 direction **PASS** → optional counterbalanced expansion only under
+   Product instruction; single exploratory PASS is **not** robust product
+   direction (S2.1 matrix taught 1/3).
+4. Direction rule: B3 vs paired B2 reduces ≥100 ms event count **and** does not
+   increase worst total. Experiment routing only — not Product Gate / SLO.
+5. North-star diagnostic (not shipping): prefer ≤1 ≥100 ms on fixture without
+   Path; Product will not call the goal met while four late RIME spikes remain
+   typical.
 
 ## Explicit non-claims
 
@@ -246,24 +313,38 @@ Release restore after internal arms.
 - Design does not reopen Lua/force_gc.
 - Design does not make Path optional for correctness—only non-mandatory for
   performance.
+- Design does not treat one exploratory B2→B3 PASS as Product Gate.
+
+## Independent design review status
+
+| Round | Architecture | Quality |
+|---|---|---|
+| Initial | **Fail** (P1: ADR third-attempt patch, exact budgets, Layer3 integrity) | **Fail** (P1: physical ordinal binding, Delete budgets) |
+| This remediation | Re-review required | Re-review required |
+
+Remediation closed the listed P1/P2 gaps in-document and added ADR §17–20.
 
 ## Handoff
 
 - **Handoff Target:** Architecture & Knowledge Steward and Quality, Performance
-  & Release Maintainer for independent design review; then Product Lead for
-  implementation authorization
-- **Required Handoff Content:** this Assignment, PD routing section, S2.1
-  matrix evidence link, exact attempt/syllable/rollback/diagnostic tables
+  & Release Maintainer for **re-review**; then Product Lead for implementation
+  authorization only after both Pass with P0/P1 = 0
+- **Required Handoff Content:** this Assignment, ADR 0024 §17–20, PD routing
+  section, S2.1 matrix evidence link
 - **Revalidation Trigger:** any change to attempt cap, syllable increment,
-  first-anchor depth, device method, privacy boundary or Release gate intent
+  first-anchor depth, ordinal caps, device method, privacy boundary or Release
+  gate intent
 
-## Design self-check (pre-review)
+## Design self-check (post-remediation)
 
 | Check | Status |
 |---|---|
 | Aligns with north star (no Path obligation) | Yes |
-| Extends S2.1 rather than rewriting S4 | Yes (attempt 3 only) |
-| Safety family preserved | Yes (stated) |
-| Content-free log plan uses existing App PERF | Yes |
+| ADR 0024 third-attempt patch present (§17–20) | Yes |
+| Exact replaceInput endpoint table (incl. Delete after 3) | Yes |
+| Attempt-3 eligibility numbered | Yes |
+| Physical ordinal = event-preferred; ≤28; stop-fast | Yes |
+| Layer1/2/3 arm integrity + matrix stop rules | Yes |
+| Flag name frozen without “e.g.” | Yes |
 | Implementation not started | Yes |
 | Human device required now | No (after implementation auth) |

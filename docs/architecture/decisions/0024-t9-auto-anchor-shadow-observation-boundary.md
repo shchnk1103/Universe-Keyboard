@@ -1,8 +1,8 @@
 # ADR 0024: T9 Auto-Anchor Observation And Reversible Prototype Boundary
 
-- **Status:** Proposed — S4 independently validated; S6-A manual pair complete;
-  S2.1 rolling-extension design independently reviewed and implementation
-  authorized; shipping decision deferred
+- **Status:** Proposed — S4 validated; S2.1 implemented and matrix complete
+  (product goal not met); S2.2 three-attempt design under Architecture/Quality
+  remediation; shipping decision deferred
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
@@ -601,6 +601,102 @@ Stop if the design requires:
 
 The complete design and acceptance matrix are owned by:
 [`T9-AUTO-ANCHOR-001-S21`](../../assignments/t9-auto-anchor-001-s21-rolling-design.md).
+
+**S2.2 note:** the “third attempt” prohibition above applies to the **S2.1
+contract surface**. Product later authorized design-only consideration of one
+additional cumulative extension under §17–20. Until S2.2 is independently
+reviewed and Product authorizes implementation, runtime must remain at the S2.1
+two-attempt ceiling.
+
+## S2.2 proposed amendment: second cumulative rolling extension (attempt 3)
+
+After the S2.1 three-pair Human matrix (direction rule **1/3** PASS), Product
+reaffirmed the north star (smooth long input without requiring Path) and
+authorized **design only** of a stronger controller-bounding dose:
+[`T9-AUTO-ANCHOR-001-S22`](../../assignments/t9-auto-anchor-001-s22-stronger-controller-bounding.md).
+
+This section is the architecture patch for that design. It does **not**
+authorize implementation, Release enablement or Product Gate until Architecture
+and Quality pass the linked Assignment and Product issues an explicit
+implementation instruction.
+
+### 17. Three-attempt ledger
+
+The process-local ledger retains all S2.1 fields. The automatic apply-attempt
+ceiling becomes **3** when the S2.2 internal gate is enabled; otherwise the
+S2.1 ceiling of **2** remains.
+
+| Attempt | Role | Syllable rule |
+|---:|---|---|
+| 1 | S4 first anchor | exactly 2 complete catalog syllables |
+| 2 | S2.1 cumulative extension | preserve accepted prefix; add exactly 2 |
+| 3 | S2.2 cumulative extension | preserve prefix after attempt 2; add exactly 2 |
+
+Attempt 1 rejection remains terminal. Attempt \(n+1\) requires attempt \(n\)
+accepted, at least one later successful physical T9 digit, atomic
+accepted-identity advancement, no Path/Partial ownership, page-zero snapshot
+only, byte-for-byte preserved automatic prefix, exactly two new catalog-legal
+syllables, non-empty unresolved tail, and no extra RIME probe. Missing evidence
+does not consume the next attempt. At most one automatic transaction per
+physical key.
+
+### 18. Third-transaction validation and rollback
+
+Attempt 3 consumes the budget before its single `replaceInput`. Validation and
+conservation rules match S4/S2.1. Rollback target is the exact prior accepted
+mixed raw (after attempt 2), never pure digits during validation. Restore
+failure → exactly one same-session fail-closed reset; no recover/create/replay.
+
+### 19. Exact extra `replaceInput` budget (S2.2)
+
+Counts cumulative auto-anchor-owned `replaceInput` and fail-closed resets
+beyond ordinary successful key/Delete `processKey`. S2.1 rows remain valid when
+attempt 3 never runs.
+
+| Composition path at endpoint | Cumulative extra `replaceInput` | Same-session clear/reset |
+|---|---:|---:|
+| first accepts; no second transaction | 1 | 0 |
+| two accepts; no third transaction | 2 | 0 |
+| three accepts | 3 | 0 |
+| first rejects and pure digits restore | 2 | 0 |
+| first restore fails | 2 | exactly 1 |
+| first accepts; second rejects and prior mixed restores | 3 | 0 |
+| second prior-mixed restore fails | 3 | exactly 1 |
+| two accepts; third rejects and prior mixed restores | 4 | 0 |
+| third prior-mixed restore fails | 4 | exactly 1 |
+| pre-key identity mismatch after any accepted/restored automatic payload | prior total; 0 new at mismatch | exactly 1 |
+| Delete after first acceptance only | 2 total | 0 success / 1 failure |
+| Delete after two acceptances | 3 total | 0 success / 1 failure |
+| Delete after three acceptances | 4 total | 0 success / 1 failure |
+| second rejects/restores, then Delete | 4 total | 0 success / 1 failure |
+| third rejects/restores, then Delete | 5 total | 0 success / 1 failure |
+
+### 20. Evidence boundary for B3
+
+Logical arms:
+
+- `A0` / `A1` / `B2`: unchanged from §16;
+- `B3`: S2.1 B2 conditions plus
+  `T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED`.
+
+Frozen-fixture physical ordinals use the arm’s ordered key records
+(`T9SEG event` when `action` diverges). B3 attempt 3 is mechanism-valid only
+when its physical ordinal is strictly after attempt 2 and `<= 28`. Diagnostics
+remain content-free and may report `attempt=3`.
+
+### S2.2 stop conditions
+
+Stop if the design requires:
+
+- a fourth automatic apply attempt, a second attempt after first rejection, or
+  two automatic transactions on one key;
+- one-syllable first-anchor (deferred to a future Product decision);
+- adaptive unbounded backoff or rewriting an accepted automatic prefix;
+- weaker conservation or learned-rank Path authority;
+- candidate-window/later-page scans, another session or async RIME;
+- multi-step validation rollback, persistence or content-bearing logs;
+- host-text, 26-key, schema/vendor, user-setting or Release-default changes;
+- treating Path education as the primary performance fix.
 
 ## Stage 3 read-only amendment: later opportunity after rejection
 
