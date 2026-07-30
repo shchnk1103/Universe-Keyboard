@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R3 Arch/Quality Pass with conditions (context/epoch + publish reentrancy P1s open; P1-3 off-main open); keep gate off; ADR 0025 Proposed; Product Gate not claimed`  
+**Lifecycle status:** `Active — R3 P1 re-review: Arch/Quality Pass with conditions (R3 P1-1/P1-2 Closed; Arch P1-3 off-main open); keep gate off; ADR 0025 Proposed; Product Gate not claimed`  
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -200,10 +200,14 @@
   ([review](t9-responsive-pipeline-001-r3-architecture-review.md); 0 P0, 2 P1)
 - [x] Independent Quality review of R3 — **Pass with conditions**
   ([review](t9-responsive-pipeline-001-r3-quality-review.md); 0 P0, 1 P1)
-- [x] R3 P1 remediation (2026-07-30) — abandon/epoch clears contexts; only
-  `pk-*` consumes FIFO; post-process uses underlying engine + publish suppress;
-  tests for abandon clear / multi-key / ord-not-steal. **Arch P1-3 off-main
-  still open.** Keep gate default off. Re-review optional.
+- [x] R3 P1 remediation (2026-07-30) — context/epoch + reentrancy
+  ([evidence](../evidence/t9-responsive-pipeline-r3-p1-remediation-2026-07-30.md))
+- [x] Independent Architecture **re-review** of R3 P1 — **Pass with conditions**
+  ([rereview](t9-responsive-pipeline-001-r3-architecture-rereview.md):
+  R3 P1-1/P1-2 **Closed**; Arch **P1-3 off-main Still open**). Not ADR Accept.
+- [x] Independent Quality **re-review** of R3 P1 — **Pass with conditions**
+  ([rereview](t9-responsive-pipeline-001-r3-quality-rereview.md): Quality P1 +
+  reentrancy **Closed**; re-ran 38/816 green). Keep gate default off.
 - [ ] Product Gate — **not claimed**
 - [ ] R4+ / off-main (P1-3) — **not granted**
 
