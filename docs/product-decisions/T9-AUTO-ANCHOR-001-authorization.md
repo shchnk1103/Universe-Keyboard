@@ -1,7 +1,7 @@
 # Product Decision: T9-AUTO-ANCHOR-001 Authorization
 
 **Decision ID:** `PD-T9-AUTO-ANCHOR-001`
-**Lifecycle status:** `Recorded — S2.3 implementation authorized and automated evidence complete; Human B3→B3e exploratory pending; product goal not claimed`
+**Lifecycle status:** `Recorded — S2.3 exploratory complete (mechanism PASS, direction FAIL); product goal not met; no default attempt-N expansion`
 **Date / timezone:** `2026-07-27 Asia/Shanghai`
 **Decision source:** Human Product Owner instructions in active Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`
@@ -332,6 +332,52 @@ exploratory pair after automated evidence.
 Internal earlier-first identity is source-visible and default-off:
 `T9_AUTO_ANCHOR_EARLIER_FIRST_PREFLIGHT_ENABLED` may be added only on top of
 the A1 preflight conditions. It is orthogonal to rolling/triple gates.
+
+## Product routing after S2.3 B3→B3e exploratory pair (2026-07-30)
+
+On `2026-07-30 Asia/Shanghai`, after the valid Human exploratory **B3→B3e**
+pair was recorded in
+[`t9-auto-anchor-s23-b3b3e-2026-07-30.md`](../evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md),
+Product records:
+
+### S2.3 product positioning
+
+- **Mechanism:** useful and contract-valid (B3e first accept @ physical **12**;
+  attempts 12/18/24; Layer 1–2 already PASS).
+- **Performance direction:** exploratory **FAIL** on the frozen rule
+  (≥100 ms count **3→3**; worst improved 188.1→156.7 but count is the hard bar).
+- **Product goal:** **not met**. Residual ≥100 ms spikes remain at **e16**,
+  **e33**, **e35**. Under B3e, e16 is no longer “pre-first-anchor” (anchor at
+  12) but still RIME-dominated. Subjective hitch reduced to roughly one clear
+  site, consistent with e16 remaining the outlier.
+- **Shipping:** ordinary Release restored gate-off; no Product Gate; no public
+  performance claim.
+- **Retention:** earlier-first + rolling/triple default-off stack remains a
+  valuable automatic-bounding base; not deleted solely because direction FAIL.
+
+### Stop default attempt-N expansion
+
+Attempt **4+** remains **not** authorized by default. Further controller dose
+escalation requires a new Product amendment with Architecture/Quality review.
+
+Force_gc / Lua-as-primary remains closed unless new contradictory evidence
+reopens it under a separate Product decision.
+
+### Next knife (not auto-authorized)
+
+Controller automatic-bounding has delivered diminishing returns on the frozen
+≥100 ms **count** bar (S2.1 weak → S2.2 weak count help → S2.3 magnitude help
+without count help). Product should choose one residual route explicitly:
+
+1. **Hold / harvest** — keep default-off S2.1–S2.3 stack; stop further dose
+   until a new north-star metric or multi-fixture baseline is defined;
+2. **Residual controller** — design a new knife aimed at **post-early-anchor
+   mid spikes** (e16-class after accept @12) and/or **late 33/35**, without
+   attempt 4 as the silent default;
+3. **RIME-side residual** — reopen a carefully scoped engine/schema secondary
+   track only with a fresh design Assignment (not force_gc-as-primary).
+
+No implementation of (2) or (3) is authorized by this section alone.
 
 ## S6-A physical-device preflight authorization
 

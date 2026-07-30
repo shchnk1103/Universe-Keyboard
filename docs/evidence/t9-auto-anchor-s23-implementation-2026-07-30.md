@@ -79,24 +79,25 @@ xcresult (held local):
 | Two-syllable first-anchor retained | **PASS** |
 | No attempt 4 | **PASS** |
 | Rolling/triple still stack on earlier first accept | **PASS** (B2e/B3e) |
-| Pre-first-anchor e16-class product direction on device | **Pending Human B3→B3e** |
+| Pre-first-anchor e16-class product direction on device | See Human B3→B3e record |
 
-## Layer 3 — Human B3→B3e (not yet run)
+## Layer 3 — Human B3→B3e
 
-Required next per Assignment: same device freeze family as S2.2, exploratory
-pair **B3 → B3e**, direction rule on ≥100 ms count + worst, arm validity with
-B3e attempt1 physical ≤15.
+Recorded in
+[`t9-auto-anchor-s23-b3b3e-2026-07-30.md`](t9-auto-anchor-s23-b3b3e-2026-07-30.md):
+
+- Mechanism **PASS** (B3e attempt1 @12)
+- Direction **FAIL** (≥100 ms count 3→3; worst 188.1→156.7)
+- Ordinary Release restored gate-off
 
 ## Explicit non-claims
 
 - Not Product Gate / Release default enablement / user setting.
-- Not a Human direction claim (automated only).
-- Not proof that e16/e33/e35 will clear on device.
+- Not a multi-pair robust direction claim.
+- Not product-goal met.
 - Not reopening Lua/force_gc or authorizing one-syllable first-anchor.
 
 ## Remaining
 
-1. Human exploratory **B3 → B3e** on physical device + content-free App logs.
-2. Ordinary Release gate-off restoration after the pair.
-3. Product routing after direction result (goal met / residual late spikes /
-   stop / next knife).
+1. Product residual routing after direction FAIL (hold / new residual knife /
+   scoped RIME-side — no default attempt-N).

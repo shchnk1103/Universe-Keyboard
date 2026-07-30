@@ -64,8 +64,9 @@
   on `90642c3` with 1/3 direction PASS (product goal not met), north star
   reaffirmed (no Path obligation), S2.2 B3 implemented with exploratory
   B2→B3 direction PASS on `459908d` (product goal still not met; default
-  attempt-N expansion closed), S2.3 earlier-first implemented with Layer1/2
-  PASS (A1e/B3e attempt1 @12; Human B3→B3e pending):
+  attempt-N expansion closed), S2.3 earlier-first implemented with Human
+  B3→B3e mechanism PASS / direction FAIL (product goal not met; residual
+  routing pending):
   [`plan`](plans/t9-long-composition-process-key-latency-plan.md),
   [`Assignment`](assignments/t9-auto-anchor-001.md),
   [`S2.1 design`](assignments/t9-auto-anchor-001-s21-rolling-design.md),
@@ -74,6 +75,7 @@
   [`S2.2 B2→B3 evidence`](evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md),
   [`S2.3 design`](assignments/t9-auto-anchor-001-s23-earlier-first-anchor.md),
   [`S2.3 implementation evidence`](evidence/t9-auto-anchor-s23-implementation-2026-07-30.md),
+  [`S2.3 B3→B3e evidence`](evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md),
   [`S6-A device preflight`](assignments/t9-auto-anchor-001-s6a-device-preflight.md),
   [`Product Decision`](product-decisions/T9-AUTO-ANCHOR-001-authorization.md),
   [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)

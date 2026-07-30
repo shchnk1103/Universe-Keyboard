@@ -1,9 +1,8 @@
 # ADR 0024: T9 Auto-Anchor Observation And Reversible Prototype Boundary
 
-- **Status:** Proposed — S4 validated; S2.1/S2.2 implemented with exploratory
-  direction evidence (product goal not met); S2.2 closed for default attempt-N
-  expansion; S2.3 earlier-first implemented with Layer1/2 PASS (Human B3→B3e
-  pending); shipping decision deferred
+- **Status:** Proposed — S4 validated; S2.1–S2.3 controller bounding stack
+  implemented default-off; S2.3 Human B3→B3e mechanism PASS / direction FAIL
+  (product goal not met); no default attempt-N; shipping decision deferred
 - **Date:** 2026-07-27
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-T9-AUTO-ANCHOR-001`](../../product-decisions/T9-AUTO-ANCHOR-001-authorization.md)
@@ -937,6 +936,7 @@ and would require a separate product, privacy and architecture decision.
 - [`S2.2 design`](../../assignments/t9-auto-anchor-001-s22-stronger-controller-bounding.md)
 - [`S2.3 design`](../../assignments/t9-auto-anchor-001-s23-earlier-first-anchor.md)
 - [`S2.2 B2→B3 evidence`](../../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md)
+- [`S2.3 B3→B3e evidence`](../../evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md)
 - [`S5 review handoff`](../../assignments/t9-auto-anchor-001-s5-review-handoff.md)
 - [`S5 evidence`](../../evidence/t9-auto-anchor-personalization-s5-2026-07-27.md)
 - [`RIME user dictionary`](../../RIME_USER_DICTIONARY.md)

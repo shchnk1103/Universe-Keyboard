@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — S2.3 earlier-first Layer1/2 PASS; Human B3→B3e pending; product goal not claimed** |
+| Status | **Active — S2.3 B3→B3e direction FAIL; product goal not met; residual routing pending** |
 | Created | 2026-07-24 |
 | Product lock | 2026-07-24 |
 | Lane A ship | 2026-07-24 |
@@ -11,7 +11,7 @@
 | Architecture boundary | [`ADR 0024`](../architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md) |
 | Supersedes | force_gc-as-primary-fix track (closed) |
 | Close record | [`../evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](../evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md) |
-| Current evidence | [`../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md`](../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md), [`../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md`](../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md), [`../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md`](../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md), [`../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md`](../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md) |
+| Current evidence | [`../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md`](../evidence/t9-auto-anchor-s21-implementation-2026-07-29.md), [`../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md`](../evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md), [`../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md`](../evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md), [`../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md`](../evidence/t9-auto-anchor-s23-implementation-2026-07-30.md), [`../evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md`](../evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md) |
 | S2.2 Assignment | [`../assignments/t9-auto-anchor-001-s22-stronger-controller-bounding.md`](../assignments/t9-auto-anchor-001-s22-stronger-controller-bounding.md) |
 | S2.3 Assignment | [`../assignments/t9-auto-anchor-001-s23-earlier-first-anchor.md`](../assignments/t9-auto-anchor-001-s23-earlier-first-anchor.md) |
 
@@ -118,7 +118,7 @@ reference and correction surface.
 | S4 — Release-candidate reversible anchor | First preflight caps the existing single proposal at two complete syllables; default/user control remains deferred | **Validated at immutable checkpoint `22d34dd`: Debug/explicit gate only; Release mutation not authorized** | **Deterministic/corpus/personalization regression, 5/5 frozen startup pairs and independent Architecture/Quality Pass complete; Product Gate remains open** |
 | S2.1 — Rolling accepted-prefix extension | Preserve the accepted S4 prefix and, after at least one later key, allow one cumulative two-syllable extension with prior-mixed rollback | **Implemented; maximum two automatic apply attempts; matrix 1/3 direction PASS; product goal not met** | Base retained default-off; Release/Product Gate remain separate |
 | S2.2 — Stronger controller bounding (attempt 3) | One additional cumulative two-syllable extension after accepted rolling stack | **Implemented under internal B3 gate; exploratory B2→B3 direction PASS; product goal not met** | **Closed for default attempt-N expansion**; base retained default-off |
-| S2.3 — Earlier first-anchor | Lower attempt-1 digit floor under new default-off gate; retain two-syllable first-anchor; attack pre-first-anchor e16-class | **Implemented default-off; Layer1/2 PASS (attempt1 @12 on A1e/B3e)** | Human B3→B3e exploratory, then Product routing; Release/Product Gate separate |
+| S2.3 — Earlier first-anchor | Lower attempt-1 digit floor under new default-off gate; retain two-syllable first-anchor; attack pre-first-anchor e16-class | **Implemented default-off; Human B3→B3e mechanism PASS / direction FAIL** | Product residual routing; no default attempt-N; Release/Product Gate separate |
 | S5 — Personalization shadow | Observe whether repeated user-confirmed Path history improves confidence; no duplicate phrase store by default | None until privacy decision | **First isolated matrix durably reviewed at `9c4f86f`: three independent complete-learning cases plus one partial negative; broader language review and retention/deletion/privacy amendment remain open** |
 | S6 — Productization | Default/user control decision, Release-like physical-device performance, memory/jetsam, candidate-quality and Product Gate | **S6-A coordinate route retired; one Human-input/content-free-log physical pair complete; no shipping mutation** | Controller stage gates and later Product/Architecture/Quality acceptance still required |
 

@@ -1,7 +1,7 @@
 # Assignment: T9-AUTO-ANCHOR-001-S23 — 更早首锚设计
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — implementation + Layer1/2 PASS; Human B3→B3e exploratory pending`
+**Lifecycle status:** `Exploratory complete — B3→B3e mechanism PASS, direction FAIL; product goal not met; no default attempt-N`
 **Parent:** [`T9-AUTO-ANCHOR-001`](t9-auto-anchor-001.md)
 **Predecessor:** [`T9-AUTO-ANCHOR-001-S22`](t9-auto-anchor-001-s22-stronger-controller-bounding.md)
 **Repository change types:** `Documentation` (design phase only)
@@ -440,16 +440,26 @@ Evidence:
 - Simulator A0/A1/B2/B3/A1e/B2e/B3e matrix: **passed**
   - A1e/B2e/B3e attempt1 @ physical **12** (≤15)
   - B3e continues 12 → 18 → 22
-- Human B3→B3e exploratory: **pending**
-- Ordinary Release remains gate-off by default
+- Human B3→B3e exploratory:
+  [`../evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md`](../evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md)
+  - Mechanism **PASS** (attempt1 @12 on device)
+  - Direction **FAIL** (≥100 ms 3→3; worst 188.1→156.7)
+- Ordinary Release restored gate-off
+
+### Product routing after B3→B3e (2026-07-30)
+
+| Decision input | Status |
+|---|---|
+| S2.3 product goal | **Not met** |
+| Default attempt-N (attempt 4+) | Still **forbidden** without new PD |
+| Earlier-first base | Retain default-off (mechanism useful) |
+| Next knife | Product chooses residual route (see evidence Remaining) |
 
 ## Handoff
 
-- **Handoff Target:** Human Product Owner for physical **B3 → B3e** exploratory
-  typing and Performance log export; optional Architecture/Quality
-  implementation review of the automated evidence remains available.
-- **Required Handoff Content:** this Assignment, implementation evidence,
-  ADR 0024 §21–24, PD S2.3 implementation authorization
+- **Handoff Target:** Product Lead for residual routing after direction FAIL
+- **Required Handoff Content:** this Assignment, Human B3→B3e evidence, S2.2
+  residual pattern, ADR 0024 stop conditions
 - **Revalidation Trigger:** any change to digit floor, syllable rule for
   attempt 1, attempt cap, ordinal caps, device method, privacy boundary or
   Release gate intent
@@ -459,13 +469,13 @@ Evidence:
 | Check | Status |
 |---|---|
 | Aligns with north star (no Path obligation) | Yes |
-| Attacks residual pre-first-anchor e16-class | Yes |
+| Attacks residual pre-first-anchor e16-class | Yes (moved anchor; did not clear ≥100 set) |
 | Retains two-syllable first-anchor as primary | Yes |
 | No attempt 4 / no force_gc reopen | Yes |
 | ADR 0024 earlier-first patch present (§21–24) | Yes |
 | Exact floors frozen (18→12 under gate) | Yes |
-| Attempt1 ordinal ≤15 with stop-fast | Yes |
+| Attempt1 ordinal ≤15 with stop-fast | Yes (device @12) |
 | Layer1/2/3 arm integrity + pair order | Yes |
 | Flag name frozen without “e.g.” | Yes |
-| Automated implementation evidence complete | Yes |
-| Human device required now | **Yes** (B3→B3e exploratory) |
+| Automated + Human exploratory complete | Yes |
+| Human device required now | No (pair closed; ordinary restored) |
