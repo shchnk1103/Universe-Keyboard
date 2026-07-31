@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — R5-Preflight authorized 2026-07-31 (Debug dual-gate arm + content-free logs; Release default-off); formal R5 A/B / R6 / ADR Accept / Product Gate not authorized`
+**Lifecycle status:** `Recorded — R5-Preflight Closed 2026-07-31 (Debug dual-gate arm + content-free logs + iPhone 13 Pro path on/off; Release default-off); formal R5 A/B / R6 / ADR Accept / Product Gate not authorized`
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the
@@ -302,12 +302,12 @@ librime on MainActor — while **both gates remain default-off**.
 
 Design: [`t9-responsive-pipeline-001-r4-wire-design.md`](../assignments/t9-responsive-pipeline-001-r4-wire-design.md).
 
-### R5-Preflight (2026-07-31 Human Product Owner authorization) — authorized
+### R5-Preflight (2026-07-31 Human Product Owner authorization) — Closed
 
 Human Product Owner authorized continuation after R4-Wire: prepare **device
 preflight diagnostics**, not formal R5 Product Gate.
 
-**Allowed:**
+**Allowed (completed):**
 
 1. Debug / explicit compile-flag arming of dual-gate (`responsive` +
    `threadAffine`) via App Group UserDefaults and/or
@@ -319,14 +319,101 @@ preflight diagnostics**, not formal R5 Product Gate.
    host text).
 4. KeyboardCore unit tests for default-off + arm resolution.
 5. Independent Architecture / Quality review of preflight-only scope.
+6. Optional physical on/off path verification (Human + Environment Executor) —
+   **completed 2026-07-31** on iPhone 13 Pro
+   ([evidence](../evidence/t9-responsive-pipeline-r5-preflight-2026-07-31.md)).
 
-**Forbidden / not claimed:**
+**Close decision (Product Lead, 2026-07-31):** R5-Preflight **Closed** after
+unit evidence, dual independent review Pass with conditions, and device path
+on/off matrix. Does **not** open formal R5, R6, ADR Accept, Product Gate or
+Release default-on.
+
+**Forbidden / still not claimed by this close:**
 
 - Formal R5 Human A/B conclusion or Product Gate;
 - Release default-on either gate;
 - ADR 0025 Accept;
 - User-facing settings UI for the dual-gate (Debug App Group keys / compile flags only);
 - Claiming subjective non-stutter from preflight logs alone.
+
+### Formal R5 (2026-07-31 Human Product Owner authorization) — Closed direction FAIL
+
+Human Product Owner instruction: 「根据KOS2.0设定完成R5工作吧」.
+
+**Product intent:** complete formal R5 Human device A/B for the dual-gate
+thread-affine path vs gate-off baseline, using content-free diagnostics and
+subjective non-stutter scores. **Not** Product Gate / ADR Accept / default-on.
+
+**Outcome (2026-07-31):** One stop-fast A→B pair on iPhone 13 Pro.
+Gate-off A: stall severity 2 with mid/late KEY END spikes (~175–215 ms).
+Dual-gate B: KEY END ~1 ms but Human **freeze-then-burst** mid composition
+(severity 4), worse than A. Direction gate **FAIL**.
+Evidence: [`../evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md).
+
+**Product disposition:** Formal R5 **Closed as direction FAIL**. Do not enable
+dual-gate for product use. Do not claim Product Gate / ADR Accept / default-on.
+Remediation (publish-lag / backlog / provisional composition metrics) requires
+a **new** Product authorization.
+
+**Forbidden / still not claimed:**
+
+- Product Gate, Release default-on, ADR 0025 Accept, R6;
+- Coordinate XCTest / Computer Use typing;
+- Inventing numeric SLOs;
+- Claiming Release-like Product conclusion from Debug arms alone;
+- Expanding auto-anchor.
+
+### R5-Remediation design (2026-07-31 Human Product Owner authorization) — Closed design
+
+Human Product Owner instruction: 「我更想要授权 remediation 设计」.
+
+**Product intent:** freeze Architecture design for fixing Formal R5 dual-gate
+**freeze-then-burst** without claiming Product Gate or default-on.
+
+Design freeze:
+[`r5-remediation-design`](../assignments/t9-responsive-pipeline-001-r5-remediation-design.md).
+
+### R5-Rem-1 + R5-Rem-2 implementation (2026-07-31 Human Product Owner authorization) — Executor complete; dual review pending
+
+Human Product Owner instruction (verbatim authorization): implement Rem-1 + Rem-2
+only — felt metrics + dual-gate UI latest-only / R3 context decoupling; no Rem-3;
+no default-on; no ADR Accept; no Product Gate.
+
+**Allowed:**
+
+1. O1 content-free accept→visible / publish-lag / pending / burst markers + tests.
+2. O2 dual-gate UI latest-only under lag; MainActor R2 true latestOnly; R3
+   contexts bind to applied head (not everyResult paint).
+3. Evidence package for independent Architecture / Quality review.
+
+**Not authorized:**
+
+- Rem-3 provisional L1;
+- Device formal re-pair Pass claim;
+- ADR 0025 Accept, Product Gate, Release default-on;
+- Dropping RIME input events;
+- Auto-anchor expansion;
+- Rewriting Formal R5 FAIL as success.
+
+Evidence:
+[`../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md).
+
+### R5-Rem-Device (2026-07-31 Human Product Owner authorization) — Closed direction PASS
+
+Human Product Owner: 「我给予你授权」after Arch P1-1 close — authorize
+**Rem-Device** Human A/B on iPhone 13 Pro.
+
+**Outcome:** One A→B pair. Gate-off A: stall ~2, KEY END ≥100 ×4 (worst ~211 ms).
+Dual-gate B (Rem-1+2): KEY END ~1 ms; VISIBLE lag p50 ~11 ms with residual
+spikes ~190–246 ms; Human stall ~0–1 — **clearly better key follow**, no
+freeze-then-burst (unlike Formal R5 dual-gate FAIL). Direction **PASS** for
+key-feel; **not** Product Gate / default-on / ADR Accept.
+
+Evidence:
+[`../evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md).
+
+**Not authorized still:** Rem-3 (unless later), Product Gate, ADR Accept,
+Release default-on.
 
 Design: [`t9-responsive-pipeline-001-r5-preflight-design.md`](../assignments/t9-responsive-pipeline-001-r5-preflight-design.md).
 

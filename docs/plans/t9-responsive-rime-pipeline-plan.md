@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — R5-Preflight authorized (Debug dual-gate arm + content-free logs); formal R5/R6/ADR Accept/Product Gate not claimed** |
+| Status | **Active — R5-Rem-Device direction PASS (key-feel); Formal R5 FAIL historical; Rem-3/R6/ADR Accept/Product Gate not claimed** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
@@ -214,11 +214,26 @@ Design:
 Design:
 [`../assignments/t9-responsive-pipeline-001-r4-b-design.md`](../assignments/t9-responsive-pipeline-001-r4-b-design.md).
 
-### R5 — Human device A/B
+### R5 — Human device A/B — **Closed 2026-07-31 direction FAIL**
 
-- Reminders + Human typing
-- Content-free App logs only
-- Subjective stutter comparison + metrics export
+- Design: [`../assignments/t9-responsive-pipeline-001-r5-formal-design.md`](../assignments/t9-responsive-pipeline-001-r5-formal-design.md)
+- Evidence: [`../evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md)
+- A (gate-off): stall 2; KEY END ≥100 ms ×4; worst 215 ms
+- B (dual-gate): KEY END ~1 ms but **freeze-then-burst** (stall 4); async SLOW RIME still ~160–207 ms
+- Direction **FAIL**; KEY END not valid felt-latency proxy under dual-gate
+- Product Gate / default-on / ADR Accept **not** claimed
+
+### R5-Remediation — Rem-1+2 Executor complete 2026-07-31 (dual review pending)
+
+Responds to Formal R5 dual-gate **freeze-then-burst** FAIL without rewriting it.
+
+- Design: [`../assignments/t9-responsive-pipeline-001-r5-remediation-design.md`](../assignments/t9-responsive-pipeline-001-r5-remediation-design.md)
+- Evidence: [`../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md)
+- **O1 / Rem-1** observability landed (`ACCEPT` / `VISIBLE` / `PUBLISH lagMs` / `BURST`)
+- **O2 / Rem-2** dual-gate UI coalesce + true latestOnly + last-head R3 context
+- **O3 / Rem-3** provisional L1 — **not authorized**
+- Engine FIFO no-drop retained; dual-gate default-off retained
+- Full KeyboardCore **841 / 0**
 
 ### R6 — Gates
 
@@ -308,3 +323,11 @@ T9-RESPONSIVE-PIPELINE-001 的 Assignment 与 Proposed ADR 已达到实现入口
 | 2026-07-31 | Human Product Owner authorized **R4-B** (real librime config-only bootstrap + Simulator/RimeBridge evidence; design→implement→dual review). Extension production wire / ADR Accept / Product Gate remain closed. |
 | 2026-07-31 | R4-B implemented: `ThreadAffineRimeEngineImplBootstrap`, Simulator tests 2/2 (`R4B_REAL_ENGINE_RESULT passed=true`), KeyboardCore 10/826 green. Independent Arch/Quality: **Pass with conditions**. Real bootstrap proof Closed; Extension wire / ADR Accept / Product Gate still closed. |
 | 2026-07-31 | R4-Wire dual-gate controller path (`be4c4ac`). R5-Preflight authorized: DEBUG App Group key / compile flag arms dual-gate + content-free `T9RESP` markers; Release default-off. Formal R5 A/B not claimed. |
+| 2026-07-31 | R5-Preflight implemented (`87d3e7c`); dual Arch/Quality **Pass with conditions**. Physical iPhone 13 Pro path on (`thread-affine` Active=1 + READY + PUBLISH) / off (`sync` Active=0) **Pass**. **R5-Preflight Closed**. Formal R5 A/B / ADR Accept / Product Gate / default-on still not authorized. |
+| 2026-07-31 | Human Product Owner authorized **formal R5**. Design freeze + A/B Debug packages built; Arm A installed on iPhone 13 Pro; Human A→B pair pending. |
+| 2026-07-31 | Formal R5 pair complete: **direction FAIL** (B freeze-then-burst worse than A). Teardown gate-off. Remediation not authorized. |
+| 2026-07-31 | Human authorized **R5-Remediation design only**. Freeze O1–O3 + Rem-1… phases; implementation still closed. |
+| 2026-07-31 | Human authorized **R5-Rem-1+2** implement. Felt metrics + dual-gate UI coalesce + latestOnly; tests 841/0. Dual review pending; no Rem-3/device/Gate. |
+| 2026-07-31 | Independent Arch + Quality subagents: **Pass with conditions**. Arch P1-1 presentation epoch gate after abandon; Quality re-run 48+841/0. No Gate / Rem-3 / device. |
+| 2026-07-31 | Arch **P1-1 Closed**: presentation generation + live epoch gate + abandon coalesce test. Rem-Device next (Human auth). |
+| 2026-07-31 | **R5-Rem-Device direction PASS**: dual-gate key-feel better than gate-off; no freeze-burst; VISIBLE lag spikes remain; not Product Gate. |

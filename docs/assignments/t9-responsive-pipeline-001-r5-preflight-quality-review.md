@@ -12,10 +12,11 @@
 | Scope | R5-Preflight only：Debug/compile-flag dual-gate arm、content-free `T9RESP` markers、unit arm-resolution、Release 不因 UserDefaults 单独 arm |
 | Worktree tip at review | parent tip `be4c4ac`（R4-Wire）；R5-Preflight 产物 **dirty / uncommitted**（见 § Worktree honesty） |
 | Verdict | **Pass with conditions** |
+| Device path addendum (2026-07-31) | **Accepted** for optional design §3 only — see evidence physical matrix; **not** formal R5 |
 
 **P0: 0**  
 **P1: 0**  
-**P2: 1**（immutable SHA 未绑定；语义变更会使本 Pass 失效）  
+**P2: 1**（immutable SHA 未绑定；语义变更会使本 Pass 失效 — 实现 tip 现记为 `87d3e7c`）  
 **P3: 3**（evidence gitignore；DEBUG key=false 单测缺口；sync PATH 在 Release 也打点）
 
 ---
