@@ -413,14 +413,23 @@ Evidence:
 - Feature branches deleted after `origin/main` reachability checks.
 - Dual-gate remains **Debug/preflight default-off** on Release paths.
 
-### R5-Rem-3 (2026-07-31) — Design authorized; implementation not authorized
+### R5-Rem-3 (2026-07-31) — Design freeze + dual review + Amendment A; implementation not authorized
 
 Human Product Owner authorized **documentation hygiene** then **Rem-3 design
-only** (provisional L1). Implementation, device re-pair, R6, ADR Accept, Product
-Gate and default-on remain closed until a later explicit instruction.
+only** (provisional L1). Independent Architecture + Quality design reviews on tip
+`617773e`: both **Pass with conditions**. Design **Amendment A** closed Arch
+P1-1…P1-4 (revision watermark, provisional ledger, `·`×N algorithm,
+provisionalAhead fail-closed) and Quality progressive/metric conditions.
+
+Implementation, device re-pair, R6, ADR Accept, Product Gate and default-on remain
+closed until a later explicit instruction.
 
 Design:
-[`t9-responsive-pipeline-001-r5-rem-3-design.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md).
+[`t9-responsive-pipeline-001-r5-rem-3-design.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md)  
+Arch review:
+[`t9-responsive-pipeline-001-r5-rem-3-architecture-review.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-architecture-review.md)  
+Quality review:
+[`t9-responsive-pipeline-001-r5-rem-3-quality-review.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-quality-review.md).
 
 ## Not authorized now
 

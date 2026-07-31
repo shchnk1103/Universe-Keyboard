@@ -311,8 +311,12 @@
 - [x] Publication — PR [#37](https://github.com/shchnk1103/Universe-Keyboard/pull/37)
   merged into preflight then [#36](https://github.com/shchnk1103/Universe-Keyboard/pull/36)
   into `main` @ `7665c64` (2026-07-31); feature branches deleted after reachability
-- [ ] R5-Rem-3 provisional L1 — **design authorized 2026-07-31; implementation not granted**
-  ([design](t9-responsive-pipeline-001-r5-rem-3-design.md))
+- [x] R5-Rem-3 **design freeze** — authorized 2026-07-31; dual Arch/Quality design
+  reviews **Pass with conditions** @ `617773e`; **Amendment A** closes Arch P1-1…P1-4
+  ([design](t9-responsive-pipeline-001-r5-rem-3-design.md),
+  [arch](t9-responsive-pipeline-001-r5-rem-3-architecture-review.md),
+  [quality](t9-responsive-pipeline-001-r5-rem-3-quality-review.md))
+- [ ] R5-Rem-3 **implementation** — **not granted** (await Product instruction)
 - [ ] Release default-on / Product Gate / ADR 0025 Accept / R6 — **not granted**
 
 ### Exit Criteria — R5-Remediation design
