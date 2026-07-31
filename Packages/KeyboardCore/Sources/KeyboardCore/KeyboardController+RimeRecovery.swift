@@ -102,6 +102,7 @@ extension KeyboardController {
                     previousRawForTrace: previousRawForTrace
                 )
                 affine.scheduleProcessKey(rimeKey)
+                recordResponsiveAcceptMetrics(from: affine.lastAcceptReceipt)
                 // Delivery channel publishes asynchronously — no MainActor drain loop.
                 let effects = consumeSingleUseShiftIfNeeded()
                 return effectsAfterChineseCompositionKey(effects, originalKey: key)
@@ -129,6 +130,7 @@ extension KeyboardController {
                     previousRawForTrace: previousRawForTrace
                 )
                 coordinator.scheduleProcessKey(rimeKey)
+                recordResponsiveAcceptMetrics(from: coordinator.lastAcceptReceipt)
                 scheduleResponsivePipelineDrain(coordinator)
                 let effects = consumeSingleUseShiftIfNeeded()
                 return effectsAfterChineseCompositionKey(effects, originalKey: key)

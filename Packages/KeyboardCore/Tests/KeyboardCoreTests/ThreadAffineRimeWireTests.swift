@@ -160,4 +160,98 @@ final class ThreadAffineRimeWireTests: XCTestCase {
         controller.suspendRimeForVisibilityChange()
         controller.resumeRimeAfterVisibilityChange()
     }
+
+    /// Arch P1-1: abandon during dual-gate backlog must not paint abandoned composition.
+    func testDualGateAbandonDropsDeferredCoalescedPresentation() async {
+        let entered = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
+        var paintCount = 0
+        var lastComposition = ""
+
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.isThreadAffineRimeOwnerEnabled = true
+        controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
+            FakeBootstrap(processEntered: entered, releaseFirst: release)
+        )
+        controller.onResponsivePresentationNeeded = { _ in
+            paintCount += 1
+            lastComposition = controller.state.currentComposition
+        }
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        for key in ["n", "i", "h", "a", "o"] {
+            _ = controller.handle(.insertKey(String(key)))
+        }
+        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+
+        // Visibility abandon while owner still blocked / backlog present.
+        _ = controller.abandonCompositionForVisibilityChange()
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.lastRimeOutput)
+
+        release.signal()
+        controller.threadAffineRimeCoordinator?.flushPending()
+        let settle = expectation(description: "coalesce-settle")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { settle.fulfill() }
+        await fulfillment(of: [settle], timeout: 1)
+
+        XCTAssertEqual(
+            controller.state.currentComposition,
+            "",
+            "abandoned composition must stay empty after deferred coalesce Task"
+        )
+        XCTAssertNil(controller.state.lastRimeOutput)
+        // Any paint after abandon must not restore pre-abandon composition.
+        XCTAssertFalse(lastComposition.contains("n") && lastComposition.count > 1)
+        controller.suspendRimeForVisibilityChange()
+    }
+
+    /// R5-Rem-2: blocked multi-key accept must not paint once per key while backlog exists.
+    func testDualGateCoalescesPresentationUnderOwnerBacklog() async {
+        let entered = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
+        var paintCount = 0
+        let painted = expectation(description: "at least one paint")
+        painted.assertForOverFulfill = false
+
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.isThreadAffineRimeOwnerEnabled = true
+        controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
+            FakeBootstrap(processEntered: entered, releaseFirst: release)
+        )
+        controller.onResponsivePresentationNeeded = { _ in
+            paintCount += 1
+            painted.fulfill()
+        }
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        // Burst keys while first processKey is blocked → pending depth rises.
+        for key in ["n", "i", "h", "a", "o"] {
+            _ = controller.handle(.insertKey(String(key)))
+        }
+        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+        // Allow MainActor coalesce tasks to schedule before releasing owner.
+        await Task.yield()
+        await Task.yield()
+        release.signal()
+        await fulfillment(of: [painted], timeout: 3)
+        // Drain remaining owner work.
+        controller.threadAffineRimeCoordinator?.flushPending()
+        // Give coalesce loop a moment to flush latest.
+        let settle = expectation(description: "settle")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { settle.fulfill() }
+        await fulfillment(of: [settle], timeout: 1)
+
+        XCTAssertLessThan(
+            paintCount,
+            5,
+            "UI paints must coalesce under dual-gate backlog (got \(paintCount))"
+        )
+        XCTAssertGreaterThanOrEqual(paintCount, 1)
+        controller.suspendRimeForVisibilityChange()
+    }
 }

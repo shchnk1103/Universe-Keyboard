@@ -283,8 +283,8 @@ final class ResponsiveRimeR2CoordinatorTests: XCTestCase {
     }
 
     func testMultiKeyDrainDoesNotStealContextsViaNestedReplace() {
-        // Two deferred keys; after first apply, Path retain may call replaceInput
-        // on underlying (not Bridge). Second key must still receive its context.
+        // Two deferred keys; under latestOnly UI may paint once. Final composition
+        // and context drain must still settle correctly.
         let engine = FakeRimeEngine()
         engine.appendDigitsToComposition = true
         let controller = KeyboardController()
@@ -305,6 +305,41 @@ final class ResponsiveRimeR2CoordinatorTests: XCTestCase {
         XCTAssertEqual(engine.sessionComposition, "64")
         XCTAssertTrue(controller.responsiveKeyApplyContexts.isEmpty)
         XCTAssertGreaterThanOrEqual(publishCount, 1)
+        // R5-Rem-2: latestOnly should not force one paint per key.
+        XCTAssertLessThanOrEqual(publishCount, 2)
+    }
+
+    func testLatestOnlyPublishCountIsBelowKeyCountUnderBurst() {
+        let engine = FakeRimeEngine(dictionary: [
+            "n": ["你"], "ni": ["你"], "nih": ["你"], "niha": ["你"], "nihao": ["你好"],
+        ])
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = engine
+        controller.isResponsiveRimePipelineEnabled = true
+        var paintCount = 0
+        controller.onResponsivePresentationNeeded = { _ in paintCount += 1 }
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded(
+            publishPolicy: .latestOnly,
+            clock: SleepingResponsiveRimeClock(milliseconds: 5)
+        )
+
+        for ch in ["n", "i", "h", "a", "o"] {
+            _ = controller.handle(.insertKey(ch))
+        }
+        controller.responsiveRimeCoordinator?.flushPending()
+        // Allow deferred MainActor drain turns.
+        let exp = expectation(description: "drain")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { exp.fulfill() }
+        wait(for: [exp], timeout: 1)
+
+        XCTAssertEqual(engine.sessionComposition, "nihao")
+        XCTAssertLessThan(
+            paintCount,
+            5,
+            "latestOnly must not paint once per key under burst (paints=\(paintCount))"
+        )
+        XCTAssertGreaterThanOrEqual(paintCount, 1)
     }
 
     func testOrdPublishDoesNotConsumeProcessKeyContext() {
