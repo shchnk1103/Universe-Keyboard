@@ -74,7 +74,24 @@ public final class KeyboardController {
     private var responsivePresentationGeneration: UInt64 = 0
     private var lastPresentedSessionEpoch: UInt64 = 0
     private var lastPresentedRevision: UInt64 = 0
+    /// Rem-3: dual-gate structure-only L1 ledger (MainActor).
+    private var provisionalCompositionMirror = ResponsiveProvisionalCompositionMirror()
     private let feltMetrics = ResponsiveRimeFeltMetricsTracker.shared
+
+    /// Rem-3: true while L1 progressive length is ahead of settled engine paint.
+    public var isResponsiveProvisionalAhead: Bool {
+        provisionalCompositionMirror.isProvisionalAhead
+    }
+
+    /// Rem-3 test/debug: current L1 watermark (0 when inactive).
+    public var responsiveProvisionalWatermark: UInt64 {
+        provisionalCompositionMirror.watermark
+    }
+
+    /// Rem-3 test/debug: current L1 slot count.
+    public var responsiveProvisionalSlotCount: Int {
+        provisionalCompositionMirror.slotCount
+    }
 
     /// Context captured when a responsive processKey is accepted (before drain).
     struct ResponsiveKeyApplyContext {
@@ -304,7 +321,15 @@ public final class KeyboardController {
         {
             return false
         }
-        // Never paint an older revision over a newer one in the same epoch.
+        // Rem-3: while L1 is ahead, allow L2 with revision >= watermark floor
+        // (equal OK so engine replaces structure-only L1 at the same rev).
+        if provisionalCompositionMirror.isProvisionalAhead,
+           snapshot.sessionEpoch == provisionalCompositionMirror.sessionEpoch
+        {
+            let floor = max(lastPresentedRevision, provisionalCompositionMirror.watermark)
+            return snapshot.revision >= floor
+        }
+        // Never paint an older-or-equal revision over a newer one in the same epoch.
         if snapshot.sessionEpoch == lastPresentedSessionEpoch,
            snapshot.revision <= lastPresentedRevision
         {
@@ -358,6 +383,13 @@ public final class KeyboardController {
         // Re-check after metrics (abandon can race on MainActor between awaits).
         guard isLivePresentationSnapshot(snapshot, expectedGeneration: expectedGeneration) else {
             return
+        }
+        // Rem-3: L2 atomically replaces L1 (clear ledger before composition apply).
+        if provisionalCompositionMirror.isProvisionalAhead {
+            provisionalCompositionMirror.alignToEngineApply(
+                epoch: snapshot.sessionEpoch,
+                revision: snapshot.revision
+            )
         }
         lastPresentedSessionEpoch = snapshot.sessionEpoch
         lastPresentedRevision = snapshot.revision
@@ -502,7 +534,89 @@ public final class KeyboardController {
         responsivePresentationGeneration &+= 1
         lastPresentedSessionEpoch = 0
         lastPresentedRevision = 0
+        provisionalCompositionMirror.clear()
         feltMetrics.reset()
+    }
+
+    /// Rem-3: fail closed for selection / Path / 选定 while L1 is ahead of L2.
+    func rejectIfResponsiveProvisionalAhead(
+        _ site: StaticString = #function
+    ) -> Bool {
+        guard provisionalCompositionMirror.isProvisionalAhead else { return false }
+        Logger.shared.performance(
+            "T9RESP marker=L1_FAIL_CLOSED site=\(site) "
+                + "fixture=\(ResponsiveRimeFeltMetrics.fixtureID)"
+        )
+        return true
+    }
+
+    /// Rem-3: after dual-gate processKey accept, paint structure-only L1 when eligible.
+    func applyResponsiveProvisionalL1IfEligible(rimeKey: String) {
+        // Dual-gate only (thread-affine owner + responsive gate).
+        guard isResponsiveRimePipelineEnabled, isThreadAffineRimeOwnerEnabled else {
+            logL1Skip(.noDual)
+            return
+        }
+        guard usesT9InputSemantics else {
+            logL1Skip(.nonT9)
+            return
+        }
+        guard ResponsiveProvisionalComposition.isT9DigitKey(rimeKey) else {
+            logL1Skip(.nonT9)
+            return
+        }
+        let receipt = threadAffineRimeCoordinator?.lastAcceptReceipt
+        guard let receipt else {
+            logL1Skip(.emptyLedger)
+            return
+        }
+        if let skip = provisionalCompositionMirror.appendT9DigitAccept(
+            revision: receipt.revision,
+            epoch: receipt.sessionEpoch
+        ) {
+            logL1Skip(skip)
+            return
+        }
+        guard let presentation = provisionalCompositionMirror.makePresentation() else {
+            logL1Skip(.emptyLedger)
+            return
+        }
+        // Structure-only host preedit; clear selection chrome while ahead.
+        state.currentComposition = presentation.preedit
+        state.lastRimeOutput = nil
+        state.partialCommit = nil
+        if usesT9InputSemantics {
+            clearT9PinyinPathState()
+        }
+        // Candidate chrome is derived from lastRimeOutput — already nil.
+        updateInlinePreedit(presentation.preedit, source: .compositionProjection)
+        // Raise presentation floor so older L2 cannot roll back L1.
+        if lastPresentedSessionEpoch == presentation.sessionEpoch {
+            lastPresentedRevision = max(lastPresentedRevision, presentation.watermark)
+        } else if lastPresentedSessionEpoch == 0
+            || presentation.sessionEpoch != lastPresentedSessionEpoch
+        {
+            lastPresentedSessionEpoch = presentation.sessionEpoch
+            lastPresentedRevision = presentation.watermark
+        }
+        if let visible = feltMetrics.recordVisible(
+            revision: presentation.watermark,
+            source: .provisional
+        ) {
+            Logger.shared.performance(visible)
+        }
+        notifyResponsivePresentation(pathChanged: usesT9InputSemantics)
+    }
+
+    private func logL1Skip(_ reason: ResponsiveProvisionalL1SkipReason) {
+        // Avoid spam on non-dual / non-T9 paths: only log when dual-gate is live.
+        guard isResponsiveRimePipelineEnabled, isThreadAffineRimeOwnerEnabled else {
+            return
+        }
+        if reason == .nonT9, !usesT9InputSemantics {
+            return
+        }
+        Logger.shared.performance(ResponsiveRimeFeltMetrics.l1SkipMarkerLine(reason: reason))
     }
 
     func enqueueResponsiveKeyApplyContext(

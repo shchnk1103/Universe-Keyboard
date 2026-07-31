@@ -421,15 +421,21 @@ only** (provisional L1). Independent Architecture + Quality design reviews on ti
 P1-1…P1-4 (revision watermark, provisional ledger, `·`×N algorithm,
 provisionalAhead fail-closed) and Quality progressive/metric conditions.
 
-Implementation, device re-pair, R6, ADR Accept, Product Gate and default-on remain
+**Implementation authorized 2026-07-31** (Human Product Owner option **1** after
+design + Amendment A). Executor complete — independent Arch/Quality
+**implementation** review required before any further claims.
+
+Device re-pair (Rem-3-Device), R6, ADR Accept, Product Gate and default-on remain
 closed until a later explicit instruction.
 
 Design:
 [`t9-responsive-pipeline-001-r5-rem-3-design.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md)  
-Arch review:
+Design Arch review:
 [`t9-responsive-pipeline-001-r5-rem-3-architecture-review.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-architecture-review.md)  
-Quality review:
-[`t9-responsive-pipeline-001-r5-rem-3-quality-review.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-quality-review.md).
+Design Quality review:
+[`t9-responsive-pipeline-001-r5-rem-3-quality-review.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-quality-review.md)  
+Executor evidence:
+[`../evidence/t9-responsive-pipeline-r5-rem-3-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-3-2026-07-31.md).
 
 ## Not authorized now
 

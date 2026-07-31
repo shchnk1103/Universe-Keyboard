@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R5-Rem-Device Closed direction PASS; Formal R5 FAIL historical; #36+#37 merged to main @ 7665c64 (2026-07-31); dual-gate remains default-off; Rem-3 design next / R6 / ADR Accept / Product Gate / default-on not claimed`
+**Lifecycle status:** `Active — R5-Rem-3 Executor complete (L1 ·×N; tests 850/0); awaiting independent Arch/Quality implementation review; Formal R5 FAIL historical; Rem-Device PASS historical; dual-gate default-off; R6 / ADR Accept / Product Gate / default-on not claimed`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -316,7 +316,11 @@
   ([design](t9-responsive-pipeline-001-r5-rem-3-design.md),
   [arch](t9-responsive-pipeline-001-r5-rem-3-architecture-review.md),
   [quality](t9-responsive-pipeline-001-r5-rem-3-quality-review.md))
-- [ ] R5-Rem-3 **implementation** — **not granted** (await Product instruction)
+- [x] R5-Rem-3 **implementation** — **granted 2026-07-31** (Product option 1);
+  Executor complete — dual implementation review pending
+  ([evidence](../evidence/t9-responsive-pipeline-r5-rem-3-2026-07-31.md))
+- [ ] R5-Rem-3 independent Architecture / Quality **implementation** review — pending
+- [ ] R5-Rem-3-Device — **not granted**
 - [ ] Release default-on / Product Gate / ADR 0025 Accept / R6 — **not granted**
 
 ### Exit Criteria — R5-Remediation design

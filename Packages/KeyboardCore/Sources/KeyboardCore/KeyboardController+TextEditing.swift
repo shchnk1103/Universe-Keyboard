@@ -18,6 +18,9 @@ extension KeyboardController {
     }
 
     func handleInsertSpace() -> KeyboardEffect {
+        if rejectIfResponsiveProvisionalAhead() {
+            return []
+        }
         if let partialCommit = state.partialCommit,
            partialCommit.source == .numberSuffix,
            let firstCandidate = state.lastRimeOutput?.candidates.first?.text

@@ -103,8 +103,16 @@ extension KeyboardController {
                 )
                 affine.scheduleProcessKey(rimeKey)
                 recordResponsiveAcceptMetrics(from: affine.lastAcceptReceipt)
+                // Rem-3: structure-only L1 progressive preedit while owner lags.
+                applyResponsiveProvisionalL1IfEligible(rimeKey: rimeKey)
                 // Delivery channel publishes asynchronously — no MainActor drain loop.
-                let effects = consumeSingleUseShiftIfNeeded()
+                var effects = consumeSingleUseShiftIfNeeded()
+                if isResponsiveProvisionalAhead {
+                    effects.insert(.compositionChanged)
+                    if usesT9InputSemantics {
+                        effects.insert(.t9PinyinPathsChanged)
+                    }
+                }
                 return effectsAfterChineseCompositionKey(effects, originalKey: key)
             }
             if let coordinator = responsiveRimeCoordinator {

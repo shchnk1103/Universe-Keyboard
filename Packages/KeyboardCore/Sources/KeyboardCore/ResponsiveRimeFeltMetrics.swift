@@ -53,6 +53,10 @@ public enum ResponsiveRimeFeltMetrics: Sendable {
         "T9RESP marker=BURST count=\(count) windowMs=\(windowMs) fixture=\(fixtureID)"
     }
 
+    public static func l1SkipMarkerLine(reason: ResponsiveProvisionalL1SkipReason) -> String {
+        ResponsiveProvisionalComposition.l1SkipMarkerLine(reason: reason)
+    }
+
     public enum VisibleSource: String, Sendable {
         case provisional
         case engine
@@ -79,6 +83,7 @@ public final class ResponsiveRimeFeltMetricsTracker {
     private var accepts: [UInt64: AcceptRecord] = [:]
     private var paintUptimesNs: [UInt64] = []
     private var lastVisibleRevision: UInt64 = 0
+    private var lastVisibleSource: ResponsiveRimeFeltMetrics.VisibleSource?
 
     public init() {}
 
@@ -86,6 +91,7 @@ public final class ResponsiveRimeFeltMetricsTracker {
         accepts.removeAll(keepingCapacity: true)
         paintUptimesNs.removeAll(keepingCapacity: true)
         lastVisibleRevision = 0
+        lastVisibleSource = nil
     }
 
     /// Record accept and return the content-free marker line.
@@ -108,7 +114,10 @@ public final class ResponsiveRimeFeltMetricsTracker {
         )
     }
 
-    /// First visible composition update for this revision (or newer after coalesce).
+    /// Visible composition update for this revision (or nearest accept ≤ revision).
+    ///
+    /// Rem-3: allows a second paint at the same revision when source upgrades from
+    /// provisional → engine (L2 atomic replace). Older revisions still fail closed.
     @discardableResult
     public func recordVisible(
         revision: UInt64,
@@ -119,7 +128,20 @@ public final class ResponsiveRimeFeltMetricsTracker {
         let accept = accepts[revision] ?? nearestAccept(atOrBefore: revision)
         guard let accept else { return nil }
         if revision < lastVisibleRevision { return nil }
+        // Same revision: only allow provisional → engine upgrade (or first paint).
+        if revision == lastVisibleRevision,
+           lastVisibleSource == .engine
+        {
+            return nil
+        }
+        if revision == lastVisibleRevision,
+           lastVisibleSource == .provisional,
+           source == .provisional
+        {
+            return nil
+        }
         lastVisibleRevision = revision
+        lastVisibleSource = source
         let lag = ResponsiveRimeFeltMetrics.lagMilliseconds(
             fromAcceptUptime: accept.uptimeNs,
             nowNs: uptimeNs

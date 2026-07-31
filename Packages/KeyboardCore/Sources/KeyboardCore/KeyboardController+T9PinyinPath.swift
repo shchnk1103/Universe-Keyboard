@@ -97,6 +97,9 @@ extension KeyboardController {
     }
 
     func handleCycleT9PinyinPath() -> KeyboardEffect {
+        if rejectIfResponsiveProvisionalAhead() {
+            return []
+        }
         let paths = state.t9PinyinPathState.compactPaths
         guard !paths.isEmpty else { return [] }
 
@@ -121,6 +124,9 @@ extension KeyboardController {
     }
 
     func handleSelectT9PinyinPath(_ path: T9PinyinPath) -> KeyboardEffect {
+        if rejectIfResponsiveProvisionalAhead() {
+            return []
+        }
         // Direct path-bar tap: selecting a choice is a real confirmation.
         let previousRaw = state.lastRimeOutput?.rawInput
         let effects = handleSelectT9PinyinPath(path, autoAdvance: true)

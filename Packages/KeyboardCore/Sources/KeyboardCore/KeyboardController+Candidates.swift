@@ -4,6 +4,12 @@ extension KeyboardController {
         kind: CandidateKind,
         selectionReference: CandidateSelectionReference? = nil
     ) -> KeyboardEffect {
+        // Rem-3: no selection against provisional L1 / stale L2 while ahead.
+        if kind == .candidate || kind == .composition {
+            if rejectIfResponsiveProvisionalAhead() {
+                return []
+            }
+        }
         switch kind {
         case .placeholder, .correctionCandidate:
             return []

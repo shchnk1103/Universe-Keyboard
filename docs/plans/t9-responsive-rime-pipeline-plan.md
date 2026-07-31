@@ -233,7 +233,11 @@ Responds to Formal R5 dual-gate **freeze-then-burst** FAIL without rewriting it.
 - **O1 / Rem-1** observability landed (`ACCEPT` / `VISIBLE` / `PUBLISH lagMs` / `BURST`)
 - **O2 / Rem-2** dual-gate UI coalesce + true latestOnly + last-head R3 context; Arch P1-1 Closed
 - **Rem-Device** direction **PASS** (key-feel better than gate-off; no freeze-burst; VISIBLE lag spikes remain; O2 coalesce barely exercised on that pair)
-- **O3 / Rem-3** provisional L1 — **design next** ([design](../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md)); **implementation not authorized**
+- **O3 / Rem-3** provisional L1 — design + Amendment A + dual design reviews;
+  **implementation Executor complete** 2026-07-31 (`·`×N; KeyboardCore **850/0**);
+  independent implementation dual review pending
+  ([design](../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md),
+  [evidence](../evidence/t9-responsive-pipeline-r5-rem-3-2026-07-31.md))
 - Engine FIFO no-drop retained; dual-gate default-off retained
 - Publication: PR #37 → preflight, PR #36 → `main` (`7665c64`); CI green on both heads
 
