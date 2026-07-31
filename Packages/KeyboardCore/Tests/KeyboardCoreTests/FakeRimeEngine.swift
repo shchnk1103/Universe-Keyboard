@@ -38,6 +38,7 @@ final class FakeRimeEngine: RimeEngine {
 
     /// Mirrors production realized-selection publishing for lifecycle tests.
     private(set) var runtimeSelection: RimeRuntimeSelection?
+    var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot?
     var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)?
 
     /// When true, `resumeAfterVisibilityChange` fails init/session and publishes fail-closed.

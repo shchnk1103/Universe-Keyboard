@@ -1,7 +1,7 @@
 import Foundation
 
-#if DEBUG
-/// DEBUG-only wall-time segments for one synthetic key on continuous T9 typing.
+#if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+/// Diagnostic-only wall-time segments for one synthetic key on continuous T9 typing.
 ///
 /// Purpose: attribute per-key latency by raw length into:
 /// - `rime`: bridge `processKey` / collectOutput
@@ -13,6 +13,10 @@ import Foundation
 /// and path/candidate counts. Inactive until `beginKey` for the current event.
 ///
 /// Keyboard input runs on the main actor; state is MainActor-isolated.
+///
+/// Ordinary Release does not compile this type. S6-A Release-like arms compile
+/// it only through the reviewed common measurement condition so A/B pay the
+/// same instrumentation cost.
 @MainActor
 public enum HotPathSegmentTiming {
     public enum Segment: String, CaseIterable, Sendable {
@@ -30,13 +34,48 @@ public enum HotPathSegmentTiming {
     private static var rawLengthAfter = 0
     private static var pathCount = 0
     private static var candidateCount = 0
+    private static var didCommit = false
+    private static var sessionBefore = RimeSessionDiagnosticSnapshot(identity: 0, isValid: false)
+    private static var sessionAfter = RimeSessionDiagnosticSnapshot(identity: 0, isValid: false)
     private static var segments: [Segment: Double] = [:]
+    private static var sampleOrdinal = 0
+    private static var runSessionIdentity: UInt64?
+    private static var runSessionStayedStable = true
+    private static var runSessionStayedValid = true
+    private static var runCommitCount = 0
+    #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+    private static var devicePreflightRunToken: String?
+
+    /// Starts one content-free physical-device arm and resets its counters.
+    public static func beginDevicePreflightRun(token: String) {
+        devicePreflightRunToken = token
+        sampleOrdinal = 0
+        runSessionIdentity = nil
+        runSessionStayedStable = true
+        runSessionStayedValid = true
+        runCommitCount = 0
+        cancel()
+    }
+
+    /// Context for a transaction outcome emitted inside `controller.handle`.
+    public static var devicePreflightContext: (
+        token: String,
+        action: Int,
+        event: UInt64
+    )? {
+        guard let token = devicePreflightRunToken, isActive else {
+            return nil
+        }
+        return (token, sampleOrdinal, eventID)
+    }
+    #endif
 
     /// Start a sample for one digit/key event. Nested `beginKey` replaces the prior sample.
     public static func beginKey(
         eventID: UInt64,
         keyLength: Int,
-        compositionLengthBefore: Int
+        compositionLengthBefore: Int,
+        session: RimeSessionDiagnosticSnapshot?
     ) {
         isActive = true
         self.eventID = eventID
@@ -45,16 +84,29 @@ public enum HotPathSegmentTiming {
         rawLengthAfter = 0
         pathCount = 0
         candidateCount = 0
+        didCommit = false
+        sessionBefore = session ?? RimeSessionDiagnosticSnapshot(identity: 0, isValid: false)
+        sessionAfter = sessionBefore
         segments.removeAll(keepingCapacity: true)
+
+        sampleOrdinal += 1
+        if runSessionIdentity == nil {
+            runSessionIdentity = sessionBefore.identity
+        }
+        runSessionStayedStable =
+            runSessionStayedStable
+            && sessionBefore.identity != 0
+            && sessionBefore.identity == runSessionIdentity
+        runSessionStayedValid = runSessionStayedValid && sessionBefore.isValid
     }
 
     /// Accumulate wall time for `segment` while running `body`. No-op when inactive.
     @discardableResult
     public static func measure<T>(_ segment: Segment, _ body: () throws -> T) rethrows -> T {
         guard isActive else { return try body() }
-        let start = CFAbsoluteTimeGetCurrent()
+        let start = ProcessInfo.processInfo.systemUptime
         defer {
-            let ms = (CFAbsoluteTimeGetCurrent() - start) * 1000
+            let ms = (ProcessInfo.processInfo.systemUptime - start) * 1000
             segments[segment, default: 0] += ms
         }
         return try body()
@@ -64,12 +116,32 @@ public enum HotPathSegmentTiming {
     public static func noteResult(
         rawLength: Int,
         pathCount: Int,
-        candidateCount: Int
+        candidateCount: Int,
+        didCommit: Bool,
+        session: RimeSessionDiagnosticSnapshot?
     ) {
         guard isActive else { return }
         rawLengthAfter = rawLength
         self.pathCount = pathCount
         self.candidateCount = candidateCount
+        self.didCommit = self.didCommit || didCommit
+        sessionAfter = session ?? RimeSessionDiagnosticSnapshot(identity: 0, isValid: false)
+        runSessionStayedStable =
+            runSessionStayedStable
+            && sessionAfter.identity != 0
+            && sessionAfter.identity == runSessionIdentity
+            && sessionAfter.identity == sessionBefore.identity
+        runSessionStayedValid = runSessionStayedValid && sessionAfter.isValid
+    }
+
+    /// Accumulate commit evidence from every RIME boundary crossed by this key.
+    ///
+    /// A reversible transaction may commit in an intermediate refinement and
+    /// then restore a non-committing output. The final controller state alone
+    /// therefore cannot prove that the whole key action was commit-free.
+    public static func noteEngineOutput(_ output: RimeOutput) {
+        guard isActive else { return }
+        didCommit = didCommit || output.committedText != nil
     }
 
     /// Emit one line and clear the sample. Safe if `beginKey` was never called.
@@ -80,6 +152,9 @@ public enum HotPathSegmentTiming {
     ) {
         guard isActive else { return }
         isActive = false
+        if didCommit {
+            runCommitCount += 1
+        }
 
         // Explicit Double steps keep Swift 6 type-checking bounded (CI previously
         // failed on a long `?? 0` + chain as "unable to type-check in reasonable time").
@@ -101,24 +176,56 @@ public enum HotPathSegmentTiming {
         let uiText = String(format: "%.1f", uiMs)
         let unaccountedText = String(format: "%.1f", unaccounted)
 
-        Logger.shared.performance(
-            "T9SEG #\(eventID) keyLen=\(keyLength) compBefore=\(compositionLengthBefore) "
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        let recordPrefix =
+            "T9SEG run=\(devicePreflightRunToken ?? "invalid") "
+        #else
+        let recordPrefix = "T9SEG "
+        #endif
+        let record =
+            recordPrefix + "action=\(sampleOrdinal) event=\(eventID) "
+                + "keyLen=\(keyLength) compBefore=\(compositionLengthBefore) "
                 + "rawLen=\(rawLengthAfter) paths=\(pathCount) cands=\(candidateCount) "
+                + "committed=\(didCommit) "
+                + "sessionBefore=\(sessionBefore.identity) validBefore=\(sessionBefore.isValid) "
+                + "sessionAfter=\(sessionAfter.identity) validAfter=\(sessionAfter.isValid) "
                 + "total=\(totalText) "
                 + "engine=\(engineText) ui=\(uiText) "
                 + "rime=\(fmt(.rime)) pathLocal=\(fmt(.pathLocal)) preedit=\(fmt(.preedit)) "
                 + "pathUI=\(fmt(.pathUI)) candUI=\(fmt(.candidateUI)) "
                 + "unaccounted=\(unaccountedText)"
-        )
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        Logger.shared.devicePreflightPerformance(record)
+        #else
+        Logger.shared.performance(record)
+        #endif
 
         if totalMs >= 50 {
-            Logger.shared.warning(
+            let warning =
                 "SLOW T9SEG #\(eventID) rawLen=\(rawLengthAfter) total=\(totalText) "
                     + "rime=\(fmt(.rime)) pathLocal=\(fmt(.pathLocal)) preedit=\(fmt(.preedit)) "
-                    + "pathUI=\(fmt(.pathUI)) candUI=\(fmt(.candidateUI))",
-                category: .performance
-            )
+                    + "pathUI=\(fmt(.pathUI)) candUI=\(fmt(.candidateUI))"
+            #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+            Logger.shared.devicePreflightPerformance(warning, level: .warning)
+            #else
+            Logger.shared.warning(warning, category: .performance)
+            #endif
         }
+
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        if sampleOrdinal == 38 {
+            Logger.shared.devicePreflightPerformance(
+                "T9ARM run=\(devicePreflightRunToken ?? "invalid") "
+                    + "actions=38 committed=\(runCommitCount) "
+                    + "session=\(runSessionIdentity ?? 0) "
+                    + "sessionStable=\(runSessionStayedStable) "
+                    + "sessionValid=\(runSessionStayedValid)"
+            )
+            // Ordered but non-blocking: the UI driver keeps the keyboard visible
+            // for one second after the 38th action, then verifies all 38 records.
+            Logger.shared.requestFlush()
+        }
+        #endif
 
         segments.removeAll(keepingCapacity: true)
     }
@@ -127,5 +234,12 @@ public enum HotPathSegmentTiming {
         isActive = false
         segments.removeAll(keepingCapacity: true)
     }
+
+    #if DEBUG
+    /// Narrow test seam for verifying per-key OR accumulation before emission.
+    public static var currentKeyDidCommitForTesting: Bool {
+        didCommit
+    }
+    #endif
 }
 #endif

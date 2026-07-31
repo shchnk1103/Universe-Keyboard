@@ -429,6 +429,17 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     return composing;
 }
 
+- (uint64_t)currentSessionIdentifier {
+    return (uint64_t)_sessionId;
+}
+
+- (BOOL)isCurrentSessionValid {
+    if (_sessionId == 0 || _api == NULL || _api->find_session == NULL) {
+        return NO;
+    }
+    return _api->find_session(_sessionId);
+}
+
 // MARK: - Output collection
 
 /// 收集 RIME context 和 commit，转为 NSDictionary 返回给 Swift 层。

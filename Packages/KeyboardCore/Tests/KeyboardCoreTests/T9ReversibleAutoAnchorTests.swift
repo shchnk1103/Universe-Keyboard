@@ -1,0 +1,1854 @@
+import XCTest
+@testable import KeyboardCore
+
+@MainActor
+final class T9ReversibleAutoAnchorTests: XCTestCase {
+    private let compactConfiguration = T9ReversibleAutoAnchorPolicy.Configuration(
+        minimumSourceDigitCount: 10,
+        evidenceCandidateLimit: 5,
+        minimumCompatibleCandidateCount: 1,
+        minimumClosedSyllableCount: 2,
+        minimumAnchoredSlotCount: 6,
+        minimumUnresolvedSlotCount: 3,
+        minimumCandidateOverlapPercent: 60
+    )
+
+    func testExperimentalProposalCapsEligiblePrefixAtTwoSyllables() throws {
+        let source = digits(for: "jintianhenhaoma")
+        let baseline = output(
+            raw: source,
+            texts: ["甲", "乙", "丙", "丁", "戊"],
+            comments: Array(repeating: "jin tian hen hao ma", count: 5)
+        )
+
+        let uncapped = try XCTUnwrap(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: compactConfiguration
+            )
+        )
+        XCTAssertGreaterThan(uncapped.anchoredSyllables.count, 2)
+
+        var cappedConfiguration = compactConfiguration
+        cappedConfiguration.maximumAnchoredSyllableCount = 2
+        let capped = try XCTUnwrap(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: cappedConfiguration
+            )
+        )
+
+        XCTAssertEqual(capped.anchoredSyllables, ["jin", "tian"])
+        XCTAssertEqual(capped.anchoredSlotCount, 7)
+        XCTAssertEqual(capped.unresolvedSlotCount, source.count - 7)
+        XCTAssertEqual(
+            capped.replacementRawInput,
+            "jin'tian'" + String(source.dropFirst(7))
+        )
+    }
+
+    func testCumulativeProposalPreservesAcceptedPrefixAndAddsExactlyTwoSyllables() throws {
+        let source = digits(for: "jintiandetianqihenhao")
+        let existingSlots = 7
+        let existingRaw = "jin'tian'" + String(source.dropFirst(existingSlots))
+        let baseline = output(
+            raw: existingRaw,
+            texts: ["甲", "乙", "丙", "丁", "戊"],
+            comments: Array(
+                repeating: "jin tian de tian qi hen hao",
+                count: 5
+            )
+        )
+
+        let proposal = try XCTUnwrap(
+            T9ReversibleAutoAnchorPolicy.cumulativeExtensionProposal(
+                sourceDigits: source,
+                output: baseline,
+                existingReplacementRawInput: existingRaw,
+                existingAnchoredSyllableCount: 2,
+                existingAnchoredSlotCount: existingSlots,
+                configuration: compactConfiguration
+            )
+        )
+
+        XCTAssertEqual(proposal.anchoredSyllables, ["jin", "tian", "de", "tian"])
+        XCTAssertEqual(
+            proposal.replacementRawInput,
+            "jin'tian'de'tian'" + String(source.dropFirst(13))
+        )
+        XCTAssertEqual(proposal.anchoredSlotCount, 13)
+        XCTAssertEqual(proposal.unresolvedSlotCount, source.count - 13)
+    }
+
+    func testCumulativeProposalRejectsRewriteOfAcceptedPrefix() {
+        let source = digits(for: "jintianlintianqihenhao")
+        let existingSlots = 7
+        let existingRaw = "jin'tian'" + String(source.dropFirst(existingSlots))
+        let baseline = output(
+            raw: existingRaw,
+            texts: ["甲", "乙", "丙"],
+            comments: Array(
+                repeating: "lin tian lin tian qi hen hao",
+                count: 3
+            )
+        )
+
+        XCTAssertNil(
+            T9ReversibleAutoAnchorPolicy.cumulativeExtensionProposal(
+                sourceDigits: source,
+                output: baseline,
+                existingReplacementRawInput: existingRaw,
+                existingAnchoredSyllableCount: 2,
+                existingAnchoredSlotCount: existingSlots,
+                configuration: compactConfiguration
+            ),
+            "S2.1 cannot rewrite an already accepted automatic prefix"
+        )
+    }
+
+    func testCapCannotBypassLaterCatalogInvalidity() {
+        let source = digits(for: "jintianjknhao")
+        let baseline = output(
+            raw: source,
+            texts: ["甲", "乙", "丙"],
+            comments: Array(repeating: "jin tian jkn hao", count: 3)
+        )
+        var cappedConfiguration = compactConfiguration
+        cappedConfiguration.maximumAnchoredSyllableCount = 2
+
+        XCTAssertNil(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: cappedConfiguration
+            ),
+            "cap2 must not hide a later closed syllable that fails the original S2 catalog check"
+        )
+    }
+
+    func testProposalBuildsCatalogLegalClosedPrefixAndLeavesDigitTail() {
+        let source = digits(for: "jintianhenhao")
+        let output = output(
+            raw: source,
+            texts: ["甲", "乙", "丙"],
+            comments: [
+                "jin tian hen hao",
+                "jin tian gen hao",
+                "jin tian hen gao",
+            ],
+            hasMorePages: true
+        )
+
+        let proposal = T9ReversibleAutoAnchorPolicy.proposal(
+            sourceDigits: source,
+            output: output,
+            configuration: compactConfiguration
+        )
+
+        XCTAssertEqual(proposal?.anchoredSyllables, ["jin", "tian"])
+        XCTAssertEqual(proposal?.anchoredSlotCount, 7)
+        XCTAssertEqual(proposal?.unresolvedSlotCount, source.count - 7)
+        XCTAssertEqual(
+            proposal?.replacementRawInput,
+            "jin'tian'" + String(source.dropFirst(7))
+        )
+        // Stage 2 intentionally permits bounded first-page preference even
+        // when RIME reports later candidates.
+        XCTAssertTrue(output.hasMorePages)
+    }
+
+    func testProposalRejectsCompatiblePathDivergenceRegardlessOfRanking() {
+        let source = digits(for: "jintianhenhao")
+        let jinFirst = output(
+            raw: source,
+            texts: ["甲", "乙", "丙"],
+            comments: [
+                "jin tian hen hao",
+                "lin tian gen hao",
+                "jin tian hen gao",
+            ]
+        )
+
+        XCTAssertNil(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: jinFirst,
+                configuration: compactConfiguration
+            )
+        )
+
+        // `jin` and `lin` share the same T9 identity. Reordering them can
+        // reflect local user-dictionary preference, but ranking alone must not
+        // turn a real spelling disagreement into automatic Path authority.
+        let linFirst = output(
+            raw: source,
+            texts: ["乙", "甲", "丙"],
+            comments: [
+                "lin tian gen hao",
+                "jin tian hen hao",
+                "lin tian hen gao",
+            ]
+        )
+        XCTAssertNil(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: linFirst,
+                configuration: compactConfiguration
+            )
+        )
+    }
+
+    func testProposalRequiresCompatibleFirstCandidateButIgnoresIncompatibleTail() {
+        let source = digits(for: "jintianhenhao")
+        let incompatibleTail = output(
+            raw: source,
+            texts: ["甲", "乙", "丙"],
+            comments: ["jin tian hen hao", "", "jin tian hen gao"]
+        )
+        XCTAssertNotNil(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: incompatibleTail,
+                configuration: compactConfiguration
+            )
+        )
+
+        let missingFirst = output(
+            raw: source,
+            texts: ["甲", "乙", "丙"],
+            comments: ["", "jin tian gen hao", "jin tian hen gao"]
+        )
+        XCTAssertNil(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: missingFirst,
+                configuration: compactConfiguration
+            )
+        )
+
+        // `jkn` is digit-compatible with 556, but is not a legal catalog
+        // syllable and therefore cannot authorize the first-candidate path.
+        let nonCatalogSource = digits(for: "jkntianhenhao")
+        let nonCatalog = output(
+            raw: nonCatalogSource,
+            texts: ["甲", "乙", "丙"],
+            comments: [
+                "jkn tian hen hao",
+                "jkn tian gen hao",
+                "jkn tian hen gao",
+            ]
+        )
+        XCTAssertNil(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: nonCatalogSource,
+                output: nonCatalog,
+                configuration: compactConfiguration
+            )
+        )
+    }
+
+    func testValidationRequiresFirstCandidateAndBoundedOverlap() throws {
+        let source = digits(for: "jintianhenhao")
+        let baseline = output(
+            raw: source,
+            texts: ["首选", "第二", "第三", "第四", "第五"],
+            comments: Array(repeating: "jin tian hen hao", count: 5)
+        )
+        let proposal = try XCTUnwrap(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: compactConfiguration
+            )
+        )
+
+        let accepted = output(
+            raw: proposal.replacementRawInput,
+            texts: ["首选", "第三", "第五", "新一", "新二"],
+            comments: Array(repeating: "jin tian hen hao", count: 5)
+        )
+        XCTAssertTrue(
+            T9ReversibleAutoAnchorPolicy.validate(
+                proposal: proposal,
+                result: accepted,
+                configuration: compactConfiguration
+            ).isAccepted
+        )
+
+        let changedFirst = output(
+            raw: proposal.replacementRawInput,
+            texts: ["第二", "首选", "第三", "第四", "第五"],
+            comments: Array(repeating: "jin tian hen hao", count: 5)
+        )
+        XCTAssertFalse(
+            T9ReversibleAutoAnchorPolicy.validate(
+                proposal: proposal,
+                result: changedFirst,
+                configuration: compactConfiguration
+            ).isAccepted
+        )
+
+        let exactlyTwoOfFive = output(
+            raw: proposal.replacementRawInput,
+            texts: ["首选", "第三", "新一", "新二", "新三"],
+            comments: Array(repeating: "jin tian hen hao", count: 5)
+        )
+        XCTAssertFalse(
+            T9ReversibleAutoAnchorPolicy.validate(
+                proposal: proposal,
+                result: exactlyTwoOfFive,
+                configuration: compactConfiguration
+            ).isAccepted,
+            "60% of a five-candidate evidence window requires three conserved candidates"
+        )
+
+        let insufficientOverlap = output(
+            raw: proposal.replacementRawInput,
+            texts: ["首选", "新一", "新二", "新三", "新四"],
+            comments: Array(repeating: "jin tian hen hao", count: 5)
+        )
+        XCTAssertFalse(
+            T9ReversibleAutoAnchorPolicy.validate(
+                proposal: proposal,
+                result: insufficientOverlap,
+                configuration: compactConfiguration
+            ).isAccepted
+        )
+    }
+
+    func testValidationUsesOriginalWindowForRepeatedCandidateTexts() throws {
+        let source = digits(for: "jintianhenhao")
+        let baseline = output(
+            raw: source,
+            texts: ["首选", "首选", "第二", "第二", "第三"],
+            comments: Array(repeating: "jin tian hen hao", count: 5)
+        )
+        let proposal = try XCTUnwrap(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: compactConfiguration
+            )
+        )
+
+        let onlyTwoConservedSlots = output(
+            raw: proposal.replacementRawInput,
+            texts: ["首选", "第二", "新一", "新二", "新三"],
+            comments: Array(repeating: "jin tian hen hao", count: 5)
+        )
+        let rejected = T9ReversibleAutoAnchorPolicy.validate(
+            proposal: proposal,
+            result: onlyTwoConservedSlots,
+            configuration: compactConfiguration
+        )
+        XCTAssertFalse(
+            rejected.isAccepted,
+            "duplicate baseline text must not reduce a five-slot window below the 3/5 threshold"
+        )
+        XCTAssertEqual(rejected.overlappingCandidateCount, 2)
+
+        let threeConservedSlots = output(
+            raw: proposal.replacementRawInput,
+            texts: ["首选", "首选", "第二", "新一", "新二"],
+            comments: Array(repeating: "jin tian hen hao", count: 5)
+        )
+        let accepted = T9ReversibleAutoAnchorPolicy.validate(
+            proposal: proposal,
+            result: threeConservedSlots,
+            configuration: compactConfiguration
+        )
+        XCTAssertTrue(accepted.isAccepted)
+        XCTAssertEqual(accepted.overlappingCandidateCount, 3)
+    }
+
+    func testControllerAcceptsOnlyOneAnchorAndExtendsRollbackLedger() {
+        let fixture = makeControllerFixture()
+
+        type(fixture.sourceDigits, on: fixture.controller)
+
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.sourceDigits,
+            fixture.sourceDigits
+        )
+        XCTAssertEqual(fixture.engine.replaceInputArguments, [fixture.anchoredRaw])
+        XCTAssertEqual(fixture.engine.candidateWindowCallCount, 0)
+        XCTAssertNil(
+            fixture.controller.state.t9PinyinPathState.selectedPath,
+            "automatic anchoring must not become a user Path selection"
+        )
+        XCTAssertTrue(
+            fixture.controller.state.t9PinyinPathState
+                .confirmedSegmentValues.isEmpty,
+            "automatic syllable boundaries must not become user-confirmed Path segments"
+        )
+
+        fixture.engine.dictionary[fixture.anchoredRaw + "2"] = fixture.candidates
+        fixture.engine.comments[fixture.anchoredRaw + "2"] = fixture.comments
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(
+            fixture.engine.sessionComposition,
+            fixture.anchoredRaw + "2",
+            "继续输入时不应被 Path 重同步回纯数字，从而丢失已经生效的锚定"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.lastRimeOutput?.rawInput,
+            fixture.anchoredRaw + "2"
+        )
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 1)
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments.filter {
+                $0 == fixture.anchoredRaw
+            }.count,
+            1
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.sourceDigits,
+            fixture.sourceDigits + "2"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .replacementRawInput,
+            fixture.anchoredRaw + "2"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .anchoredSyllableCount,
+            2
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .anchoredSlotCount,
+            7
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            1,
+            "ordinary digit advancement must not consume attempt 2"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .lastAttemptSourceDigitCount,
+            fixture.sourceDigits.count
+        )
+        XCTAssertNil(
+            fixture.controller.state.t9PinyinPathState.selectedPath,
+            "continued input must preserve automatic anchoring without adopting Path ownership"
+        )
+        XCTAssertTrue(
+            fixture.controller.state.t9PinyinPathState
+                .confirmedSegmentValues.isEmpty
+        )
+    }
+
+    func testEarlierFirstConfigurationAllowsProposalAtSourceLength12() throws {
+        let source = digits(for: "jintiandetia")
+        XCTAssertEqual(source.count, 12)
+        let baseline = output(
+            raw: source,
+            texts: ["甲", "乙", "丙", "丁", "戊"],
+            comments: Array(repeating: "jin tian de tia", count: 5)
+        )
+
+        XCTAssertNil(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: .experimental
+            ),
+            "S4 experimental floor 18 must block attempt 1 at length 12"
+        )
+
+        let earlier = try XCTUnwrap(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: .experimentalEarlierFirst
+            )
+        )
+        XCTAssertEqual(earlier.anchoredSyllables, ["jin", "tian"])
+        XCTAssertEqual(earlier.anchoredSlotCount, 7)
+        XCTAssertEqual(earlier.unresolvedSlotCount, 5)
+        XCTAssertEqual(
+            earlier.replacementRawInput,
+            "jin'tian'" + String(source.dropFirst(7))
+        )
+    }
+
+    func testEarlierFirstConfigurationStillBlocksSourceLength11() {
+        let source = digits(for: "jintiandeti")
+        XCTAssertEqual(source.count, 11)
+        let baseline = output(
+            raw: source,
+            texts: ["甲", "乙", "丙", "丁", "戊"],
+            comments: Array(repeating: "jin tian de ti", count: 5)
+        )
+
+        XCTAssertNil(
+            T9ReversibleAutoAnchorPolicy.proposal(
+                sourceDigits: source,
+                output: baseline,
+                configuration: .experimentalEarlierFirst
+            ),
+            "S2.3 floor 12 must still reject length 11"
+        )
+    }
+
+    func testControllerEarlierFirstAcceptsAtSourceLength12() {
+        let fixture = makeEarlierFirstControllerFixture(
+            spelling: "jintiandetia",
+            comment: "jin tian de tia"
+        )
+        fixture.controller.isEarlierFirstT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 1)
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments,
+            [fixture.anchoredRaw]
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            1
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .anchoredSyllableCount,
+            2
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.sourceDigits,
+            fixture.sourceDigits
+        )
+    }
+
+    func testControllerEarlierFirstOffDoesNotAcceptAtSourceLength12() {
+        let fixture = makeEarlierFirstControllerFixture(
+            spelling: "jintiandetia",
+            comment: "jin tian de tia"
+        )
+        XCTAssertFalse(fixture.controller.isEarlierFirstT9AutoAnchorEnabled)
+        type(fixture.sourceDigits, on: fixture.controller)
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            0,
+            "without earlier-first gate, length 12 must not open attempt 1"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .idle
+        )
+    }
+
+    func testControllerEarlierFirstDoesNotAcceptAtSourceLength11() {
+        let fixture = makeEarlierFirstControllerFixture(
+            spelling: "jintiandeti",
+            comment: "jin tian de ti"
+        )
+        fixture.controller.isEarlierFirstT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            0,
+            "earlier-first floor 12 must not fire at length 11"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .idle
+        )
+    }
+
+    func testControllerEarlierFirstWithTripleAcceptsThreeAttempts() {
+        // Base 18-digit fixture with earlier-first on still accepts attempt 1
+        // at full length when intermediate evidence is only provisioned at 18.
+        // Then rolling + triple proceed as S2.2.
+        let fixture = makeControllerFixture()
+        fixture.controller.isEarlierFirstT9AutoAnchorEnabled = true
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        fixture.controller.isTripleRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            1
+        )
+
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        type(digits(for: "hao"), on: fixture.controller)
+        let afterTwo = fixture.sourceDigits + digits(for: "hao")
+        let secondRaw =
+            "jin'tian'de'tian'" + String(afterTwo.dropFirst(13))
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            2
+        )
+
+        let thirdSource = afterTwo + "2"
+        let priorMixedAfterDigit = secondRaw + "2"
+        let thirdRaw =
+            "jin'tian'de'tian'qi'hen'" + String(thirdSource.dropFirst(18))
+        fixture.engine.dictionary[priorMixedAfterDigit] = fixture.candidates
+        fixture.engine.comments[priorMixedAfterDigit] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+        fixture.engine.dictionary[thirdRaw] = fixture.candidates
+        fixture.engine.comments[thirdRaw] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 3)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            3
+        )
+
+        let afterThreeRaw =
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .replacementRawInput
+        fixture.engine.dictionary[afterThreeRaw + "2"] = fixture.candidates
+        fixture.engine.comments[afterThreeRaw + "2"] = [
+            "jin tian de tian qi hen hao a b",
+        ]
+        _ = fixture.controller.handle(.insertKey("2"))
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            3,
+            "earlier-first must not authorize a fourth automatic attempt"
+        )
+    }
+
+    func testControllerAcceptsOneCumulativeExtensionAndNeverAttemptsThird() {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+
+        type(digits(for: "hao"), on: fixture.controller)
+
+        let finalSource = fixture.sourceDigits + digits(for: "hao")
+        let secondRaw =
+            "jin'tian'de'tian'" + String(finalSource.dropFirst(13))
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments,
+            [fixture.anchoredRaw, secondRaw]
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(
+                phase: .accepted,
+                sourceDigits: finalSource,
+                replacementRawInput: secondRaw,
+                anchoredSyllableCount: 4,
+                anchoredSlotCount: 13,
+                automaticApplyAttemptCount: 2,
+                lastAttemptSourceDigitCount: finalSource.count
+            )
+        )
+
+        fixture.engine.dictionary[secondRaw + "2"] = fixture.candidates
+        fixture.engine.comments[secondRaw + "2"] = [
+            "jin tian de tian qi hen hao a",
+        ]
+        _ = fixture.controller.handle(.insertKey("2"))
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            2,
+            "the second accepted transaction exhausts automatic mutation budget"
+        )
+    }
+
+    func testTripleRollingAcceptsThirdExtensionAndNeverAttemptsFourth() {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        fixture.controller.isTripleRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        type(digits(for: "hao"), on: fixture.controller)
+
+        let afterTwo = fixture.sourceDigits + digits(for: "hao")
+        let secondRaw =
+            "jin'tian'de'tian'" + String(afterTwo.dropFirst(13))
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            2
+        )
+
+        // One later digit after attempt 2. The cumulative +2 policy on this
+        // fixture builds `jin'tian'de'tian'qi'hen'` + remaining digit tail.
+        let thirdSource = afterTwo + "2"
+        let priorMixedAfterDigit = secondRaw + "2"
+        // Six catalog syllables: jin/tian/de/tian/qi/hen = 18 digit slots.
+        let thirdRaw =
+            "jin'tian'de'tian'qi'hen'" + String(thirdSource.dropFirst(18))
+        fixture.engine.dictionary[priorMixedAfterDigit] = fixture.candidates
+        fixture.engine.comments[priorMixedAfterDigit] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+        fixture.engine.dictionary[thirdRaw] = fixture.candidates
+        fixture.engine.comments[thirdRaw] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            3,
+            "attempt 3 must perform exactly one additional replaceInput"
+        )
+        XCTAssertEqual(
+            Array(fixture.engine.replaceInputArguments.prefix(2)),
+            [fixture.anchoredRaw, secondRaw]
+        )
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments.last,
+            thirdRaw
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(
+                phase: .accepted,
+                sourceDigits: thirdSource,
+                replacementRawInput: thirdRaw,
+                anchoredSyllableCount: 6,
+                anchoredSlotCount: 18,
+                automaticApplyAttemptCount: 3,
+                lastAttemptSourceDigitCount: thirdSource.count
+            )
+        )
+
+        let afterThreeRaw =
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .replacementRawInput
+        fixture.engine.dictionary[afterThreeRaw + "2"] = fixture.candidates
+        fixture.engine.comments[afterThreeRaw + "2"] = [
+            "jin tian de tian qi hen hao a b",
+        ]
+        _ = fixture.controller.handle(.insertKey("2"))
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            3,
+            "the third accepted transaction exhausts automatic mutation budget"
+        )
+    }
+
+    func testRollingWithoutTripleNeverEvaluatesAttemptThree() {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        XCTAssertFalse(fixture.controller.isTripleRollingT9AutoAnchorEnabled)
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        type(digits(for: "hao"), on: fixture.controller)
+
+        let afterTwo = fixture.sourceDigits + digits(for: "hao")
+        let secondRaw =
+            "jin'tian'de'tian'" + String(afterTwo.dropFirst(13))
+        let thirdSource = afterTwo + "2"
+        let priorMixedAfterDigit = secondRaw + "2"
+        let thirdRaw =
+            "jin'tian'de'tian'qi'hen'" + String(thirdSource.dropFirst(18))
+        fixture.engine.dictionary[priorMixedAfterDigit] = fixture.candidates
+        fixture.engine.comments[priorMixedAfterDigit] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+        fixture.engine.dictionary[thirdRaw] = fixture.candidates
+        fixture.engine.comments[thirdRaw] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+
+        _ = fixture.controller.handle(.insertKey("2"))
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            2,
+            "B2 must not open attempt 3 even when evidence is present"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            2
+        )
+    }
+
+    func testThirdRejectRestoresAttemptTwoMixedRawAndExhaustsBudget() {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        fixture.controller.isTripleRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        type(digits(for: "hao"), on: fixture.controller)
+
+        let afterTwo = fixture.sourceDigits + digits(for: "hao")
+        let secondRaw =
+            "jin'tian'de'tian'" + String(afterTwo.dropFirst(13))
+        let thirdSource = afterTwo + "2"
+        let priorMixedAfterDigit = secondRaw + "2"
+        let thirdRaw =
+            "jin'tian'de'tian'qi'hen'" + String(thirdSource.dropFirst(18))
+        fixture.engine.dictionary[priorMixedAfterDigit] = fixture.candidates
+        fixture.engine.comments[priorMixedAfterDigit] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: fixture.candidates.count
+        )
+        fixture.engine.dictionary[thirdRaw] = [
+            "不同首选", fixture.candidates[0], fixture.candidates[1],
+        ]
+        fixture.engine.comments[thirdRaw] = Array(
+            repeating: "jin tian de tian qi hen hao a",
+            count: 3
+        )
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 4)
+        XCTAssertEqual(
+            Array(fixture.engine.replaceInputArguments.prefix(2)),
+            [fixture.anchoredRaw, secondRaw]
+        )
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments.last,
+            priorMixedAfterDigit
+        )
+        XCTAssertEqual(
+            fixture.controller.state.lastRimeOutput?.rawInput,
+            priorMixedAfterDigit
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            3
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .replacementRawInput,
+            priorMixedAfterDigit
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .anchoredSyllableCount,
+            4,
+            "reject must keep the attempt-2 anchor depth"
+        )
+    }
+
+    func testA1GateRemainsSingleAnchorWhenRollingEvidenceBecomesEligible() {
+        let fixture = makeControllerFixture()
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+
+        type(digits(for: "hao"), on: fixture.controller)
+
+        XCTAssertFalse(fixture.controller.isRollingT9AutoAnchorEnabled)
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments,
+            [fixture.anchoredRaw]
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            1
+        )
+    }
+
+    func testSecondCandidateDriftRestoresFirstMixedRawAndExhaustsBudget() {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        let suffixDigits = digits(for: "hao")
+        let priorMixedRaw = fixture.anchoredRaw + suffixDigits
+        let finalSource = fixture.sourceDigits + suffixDigits
+        let secondRaw =
+            "jin'tian'de'tian'" + String(finalSource.dropFirst(13))
+        fixture.engine.dictionary[secondRaw] = [
+            "不同首选", fixture.candidates[0], fixture.candidates[1],
+        ]
+        fixture.engine.comments[secondRaw] = Array(
+            repeating: "jin tian de tian qi hen hao",
+            count: 3
+        )
+
+        type(suffixDigits, on: fixture.controller)
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments,
+            [fixture.anchoredRaw, secondRaw, priorMixedRaw]
+        )
+        XCTAssertEqual(
+            fixture.controller.state.lastRimeOutput?.rawInput,
+            priorMixedRaw
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(
+                phase: .accepted,
+                sourceDigits: finalSource,
+                replacementRawInput: priorMixedRaw,
+                anchoredSyllableCount: 2,
+                anchoredSlotCount: 7,
+                automaticApplyAttemptCount: 2,
+                lastAttemptSourceDigitCount: finalSource.count
+            )
+        )
+
+        fixture.engine.dictionary[priorMixedRaw + "2"] = fixture.candidates
+        fixture.engine.comments[priorMixedRaw + "2"] = fixture.comments
+        _ = fixture.controller.handle(.insertKey("2"))
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 3)
+    }
+
+    func testAcceptedLedgerIdentityMismatchResetsBeforeProcessingDigit() {
+        let fixture = makeControllerFixture()
+        type(fixture.sourceDigits, on: fixture.controller)
+        let processCallsBeforeMismatch = fixture.engine.processKeyCallCount
+        let replaceCallsBeforeMismatch = fixture.engine.replaceInputCallCount
+        fixture.controller.state.lastRimeOutput = output(
+            raw: fixture.anchoredRaw + "drift",
+            texts: fixture.candidates,
+            comments: fixture.comments
+        )
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(
+            fixture.engine.processKeyCallCount,
+            processCallsBeforeMismatch,
+            "identity failure must stop before the physical digit crosses RIME"
+        )
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            replaceCallsBeforeMismatch,
+            "identity failure adds no replaceInput"
+        )
+        XCTAssertEqual(fixture.engine.sessionResetCount, 1)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(
+                phase: .rejected,
+                automaticApplyAttemptCount: 1,
+                lastAttemptSourceDigitCount: fixture.sourceDigits.count
+            )
+        )
+        XCTAssertNil(fixture.controller.state.lastRimeOutput)
+        XCTAssertTrue(fixture.controller.state.currentComposition.isEmpty)
+    }
+
+    func testAttempt2AcceptedIdentityMismatchAddsNoThirdMutation() {
+        let fixture = makeAttempt2AcceptedFixture()
+        let finalSource = fixture.sourceDigits + digits(for: "hao")
+        let processCallsBeforeMismatch = fixture.engine.processKeyCallCount
+        let replaceCallsBeforeMismatch = fixture.engine.replaceInputCallCount
+        let resetsBeforeMismatch = fixture.engine.sessionResetCount
+        fixture.controller.state.lastRimeOutput = output(
+            raw: (fixture.controller.state.lastRimeOutput?.rawInput ?? "")
+                + "drift",
+            texts: fixture.candidates,
+            comments: fixture.comments
+        )
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        assertFailClosedBeforeDigit(
+            fixture,
+            expectedAttemptCount: 2,
+            expectedLastAttemptSourceDigitCount: finalSource.count,
+            processCallsBeforeKey: processCallsBeforeMismatch,
+            replaceCallsBeforeKey: replaceCallsBeforeMismatch,
+            resetsBeforeKey: resetsBeforeMismatch
+        )
+    }
+
+    func testAttempt2RestoredIdentityMismatchPreservesThreeCallBudget() {
+        let fixture = makeAttempt2RejectedAndRestoredFixture()
+        let finalSource = fixture.sourceDigits + digits(for: "hao")
+        let processCallsBeforeMismatch = fixture.engine.processKeyCallCount
+        let replaceCallsBeforeMismatch = fixture.engine.replaceInputCallCount
+        let resetsBeforeMismatch = fixture.engine.sessionResetCount
+        XCTAssertEqual(replaceCallsBeforeMismatch, 3)
+        fixture.controller.state.lastRimeOutput = output(
+            raw: (fixture.controller.state.lastRimeOutput?.rawInput ?? "")
+                + "drift",
+            texts: fixture.candidates,
+            comments: fixture.comments
+        )
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        assertFailClosedBeforeDigit(
+            fixture,
+            expectedAttemptCount: 2,
+            expectedLastAttemptSourceDigitCount: finalSource.count,
+            processCallsBeforeKey: processCallsBeforeMismatch,
+            replaceCallsBeforeKey: replaceCallsBeforeMismatch,
+            resetsBeforeKey: resetsBeforeMismatch
+        )
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            3,
+            "rejected/restored attempt 2 must not gain another mutation"
+        )
+    }
+
+    func testUnusableLaterDigitFailsClosedWithoutRecoveryOrReplay() {
+        let fixture = makeControllerFixture()
+        type(fixture.sourceDigits, on: fixture.controller)
+        let processCallsBeforeFailure = fixture.engine.processKeyCallCount
+        let replaceCallsBeforeFailure = fixture.engine.replaceInputCallCount
+        fixture.engine.processKeyScript = [RimeOutput()]
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(
+            fixture.engine.processKeyCallCount,
+            processCallsBeforeFailure + 1
+        )
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            replaceCallsBeforeFailure
+        )
+        XCTAssertEqual(fixture.engine.sessionResetCount, 1)
+        XCTAssertEqual(fixture.engine.sessionRecoveryCount, 0)
+        XCTAssertNil(fixture.controller.state.lastRimeOutput)
+        XCTAssertTrue(fixture.controller.state.currentComposition.isEmpty)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(
+                phase: .rejected,
+                automaticApplyAttemptCount: 1,
+                lastAttemptSourceDigitCount: fixture.sourceDigits.count
+            )
+        )
+    }
+
+    func testCommittingLaterDigitCannotAdvanceAcceptedLedger() {
+        let fixture = makeControllerFixture()
+        type(fixture.sourceDigits, on: fixture.controller)
+        let acceptedLedger =
+            fixture.controller.state.t9ReversibleAutoAnchorState
+        let replaceCallsBeforeCommit = fixture.engine.replaceInputCallCount
+        fixture.engine.processKeyScript = [
+            RimeOutput(
+                composition: nil,
+                candidates: [],
+                committedText: "提交",
+                highlightedIndex: -1
+            ),
+        ]
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            replaceCallsBeforeCommit
+        )
+        XCTAssertEqual(fixture.engine.sessionRecoveryCount, 0)
+        XCTAssertNotEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            acceptedLedger,
+            "a committing output must end the accepted automatic ledger"
+        )
+        XCTAssertNotEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+    }
+
+    func testMissingAcceptedSessionFailsClosedBeforeKeyWhenRestoreFlagIsFalse() {
+        let fixture = makeControllerFixture()
+        type(fixture.sourceDigits, on: fixture.controller)
+        fixture.engine.resetSession()
+        let resetsBeforeKey = fixture.engine.sessionResetCount
+        let processCallsBeforeKey = fixture.engine.processKeyCallCount
+        XCTAssertFalse(fixture.controller.shouldRestoreRimeComposition)
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        XCTAssertEqual(fixture.engine.sessionResetCount, resetsBeforeKey + 1)
+        XCTAssertEqual(
+            fixture.engine.processKeyCallCount,
+            processCallsBeforeKey,
+            "accepted mixed state must stop before replay or ordinary processing"
+        )
+        XCTAssertEqual(fixture.engine.sessionRecoveryCount, 0)
+        XCTAssertNil(fixture.controller.state.lastRimeOutput)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(
+                phase: .rejected,
+                automaticApplyAttemptCount: 1,
+                lastAttemptSourceDigitCount: fixture.sourceDigits.count
+            )
+        )
+    }
+
+    func testMissingAttempt2AcceptedSessionFailsClosedWithRestoreFlagFalse() {
+        let fixture = makeAttempt2AcceptedFixture()
+        let finalSource = fixture.sourceDigits + digits(for: "hao")
+        fixture.engine.resetSession()
+        let processCallsBeforeKey = fixture.engine.processKeyCallCount
+        let replaceCallsBeforeKey = fixture.engine.replaceInputCallCount
+        let resetsBeforeKey = fixture.engine.sessionResetCount
+        XCTAssertFalse(fixture.controller.shouldRestoreRimeComposition)
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        assertFailClosedBeforeDigit(
+            fixture,
+            expectedAttemptCount: 2,
+            expectedLastAttemptSourceDigitCount: finalSource.count,
+            processCallsBeforeKey: processCallsBeforeKey,
+            replaceCallsBeforeKey: replaceCallsBeforeKey,
+            resetsBeforeKey: resetsBeforeKey
+        )
+    }
+
+    func testMissingAttempt2RestoredSessionFailsClosedWithRestoreFlagFalse() {
+        let fixture = makeAttempt2RejectedAndRestoredFixture()
+        let finalSource = fixture.sourceDigits + digits(for: "hao")
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 3)
+        fixture.engine.resetSession()
+        let processCallsBeforeKey = fixture.engine.processKeyCallCount
+        let replaceCallsBeforeKey = fixture.engine.replaceInputCallCount
+        let resetsBeforeKey = fixture.engine.sessionResetCount
+        XCTAssertFalse(fixture.controller.shouldRestoreRimeComposition)
+
+        _ = fixture.controller.handle(.insertKey("2"))
+
+        assertFailClosedBeforeDigit(
+            fixture,
+            expectedAttemptCount: 2,
+            expectedLastAttemptSourceDigitCount: finalSource.count,
+            processCallsBeforeKey: processCallsBeforeKey,
+            replaceCallsBeforeKey: replaceCallsBeforeKey,
+            resetsBeforeKey: resetsBeforeKey
+        )
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 3)
+    }
+
+    func testFailedSecondRestoreResetsOnceAndLeavesNoAutomaticPayload() {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        let suffixDigits = digits(for: "hao")
+        let finalSource = fixture.sourceDigits + suffixDigits
+        let secondRaw =
+            "jin'tian'de'tian'" + String(finalSource.dropFirst(13))
+        fixture.engine.replaceInputScript = [
+            output(
+                raw: secondRaw,
+                texts: ["不同首选", fixture.candidates[0], fixture.candidates[1]],
+                comments: Array(
+                    repeating: "jin tian de tian qi hen hao",
+                    count: 3
+                )
+            ),
+            RimeOutput(),
+        ]
+
+        type(suffixDigits, on: fixture.controller)
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments,
+            [fixture.anchoredRaw, secondRaw, fixture.anchoredRaw + suffixDigits]
+        )
+        XCTAssertEqual(fixture.engine.sessionResetCount, 1)
+        XCTAssertEqual(fixture.engine.sessionRecoveryCount, 0)
+        XCTAssertNil(fixture.controller.state.lastRimeOutput)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(
+                phase: .rejected,
+                automaticApplyAttemptCount: 2,
+                lastAttemptSourceDigitCount: finalSource.count
+            )
+        )
+    }
+
+    func testDeleteAfterSecondAcceptanceRestoresFullAccumulatedDigitsFirst() {
+        let fixture = makeAttempt2AcceptedFixture()
+        let suffixDigits = digits(for: "hao")
+        let fullSourceDigits = fixture.sourceDigits + suffixDigits
+        let callsBeforeDelete = fixture.engine.replaceInputCallCount
+
+        _ = fixture.controller.handle(.deleteBackward)
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments[callsBeforeDelete],
+            fullSourceDigits
+        )
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, callsBeforeDelete + 1)
+        XCTAssertNotEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+    }
+
+    func testDeleteRestoreFailureResetsOnceWithoutNormalDelete() {
+        let fixture = makeControllerFixture()
+        type(fixture.sourceDigits, on: fixture.controller)
+        let replaceCallsBeforeDelete = fixture.engine.replaceInputCallCount
+        let resetsBeforeDelete = fixture.engine.sessionResetCount
+        fixture.engine.replaceInputScript = [RimeOutput()]
+
+        _ = fixture.controller.handle(.deleteBackward)
+
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            replaceCallsBeforeDelete + 1
+        )
+        XCTAssertEqual(
+            fixture.engine.sessionResetCount,
+            resetsBeforeDelete + 1
+        )
+        XCTAssertEqual(fixture.engine.sessionRecoveryCount, 0)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            .empty
+        )
+        XCTAssertNil(fixture.controller.state.lastRimeOutput)
+    }
+
+    func testDeleteAfterAttempt2RestoredUsesExactlyFourthReplacement() {
+        let fixture = makeAttempt2RejectedAndRestoredFixture()
+        let fullSourceDigits = fixture.sourceDigits + digits(for: "hao")
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 3)
+
+        _ = fixture.controller.handle(.deleteBackward)
+
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 4)
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments.last,
+            fullSourceDigits
+        )
+        XCTAssertEqual(fixture.engine.sessionRecoveryCount, 0)
+        XCTAssertNotEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+    }
+
+    func testDeleteFailureAfterAttempt2RestoredUsesExactlyFourthReplacement() {
+        let fixture = makeAttempt2RejectedAndRestoredFixture()
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 3)
+        let resetsBeforeDelete = fixture.engine.sessionResetCount
+        fixture.engine.replaceInputScript = [RimeOutput()]
+
+        _ = fixture.controller.handle(.deleteBackward)
+
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 4)
+        XCTAssertEqual(
+            fixture.engine.sessionResetCount,
+            resetsBeforeDelete + 1
+        )
+        XCTAssertEqual(fixture.engine.sessionRecoveryCount, 0)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            .empty
+        )
+        XCTAssertNil(fixture.controller.state.lastRimeOutput)
+    }
+
+    func testExplicitPathSelectionSupersedesAcceptedAutomaticAnchor() throws {
+        let fixture = makeControllerFixture()
+        type(fixture.sourceDigits, on: fixture.controller)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+
+        let path = try XCTUnwrap(
+            fixture.controller.state.t9PinyinPathState.compactPaths.first
+        )
+        fixture.engine.dictionary[path.replacementRawInput] =
+            fixture.candidates
+        fixture.engine.comments[path.replacementRawInput] =
+            fixture.comments
+
+        let effects = fixture.controller.handle(.selectT9PinyinPath(path))
+
+        XCTAssertFalse(effects.isEmpty)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected),
+            "an explicit Path choice must supersede the automatic rollback ledger"
+        )
+        XCTAssertTrue(
+            fixture.controller.state.t9PinyinPathState.selectedPath != nil
+                || !fixture.controller.state.t9PinyinPathState
+                    .confirmedSegmentValues.isEmpty,
+            "the explicit Path action, not automation, must own the refined branch"
+        )
+    }
+
+    func testControllerRejectsCandidateDriftRestoresDigitsAndDoesNotRetry() {
+        let fixture = makeControllerFixture()
+        fixture.engine.dictionary[fixture.anchoredRaw] = [
+            "不同首选", fixture.candidates[0], fixture.candidates[1],
+        ]
+        fixture.engine.comments[fixture.anchoredRaw] = fixture.comments
+
+        type(fixture.sourceDigits, on: fixture.controller)
+
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .rejected
+        )
+        XCTAssertEqual(
+            fixture.controller.state.lastRimeOutput?.rawInput,
+            fixture.sourceDigits
+        )
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments,
+            [fixture.anchoredRaw, fixture.sourceDigits]
+        )
+
+        fixture.engine.dictionary[fixture.sourceDigits + "2"] = fixture.candidates
+        fixture.engine.comments[fixture.sourceDigits + "2"] = fixture.comments
+        _ = fixture.controller.handle(.insertKey("2"))
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 2)
+    }
+
+    func testIntermediateRefinementCommitSurvivesSuccessfulRestoreInTimingEvidence() {
+        let fixture = makeControllerFixture()
+        fixture.engine.replaceInputScript = [
+            output(
+                raw: fixture.anchoredRaw,
+                texts: ["不同首选", fixture.candidates[0], fixture.candidates[1]],
+                comments: fixture.comments,
+                committedText: "中间提交"
+            ),
+            output(
+                raw: fixture.sourceDigits,
+                texts: fixture.candidates,
+                comments: fixture.comments
+            ),
+        ]
+
+        HotPathSegmentTiming.beginKey(
+            eventID: 1,
+            keyLength: 1,
+            compositionLengthBefore: 0,
+            session: RimeSessionDiagnosticSnapshot(identity: 42, isValid: true)
+        )
+        defer { HotPathSegmentTiming.cancel() }
+
+        type(fixture.sourceDigits, on: fixture.controller)
+        HotPathSegmentTiming.noteResult(
+            rawLength: fixture.sourceDigits.count,
+            pathCount: 0,
+            candidateCount: fixture.candidates.count,
+            didCommit: false,
+            session: RimeSessionDiagnosticSnapshot(identity: 42, isValid: true)
+        )
+
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .rejected
+        )
+        XCTAssertEqual(
+            fixture.controller.state.lastRimeOutput?.rawInput,
+            fixture.sourceDigits,
+            "successful rollback should leave the final output non-committing"
+        )
+        XCTAssertTrue(
+            HotPathSegmentTiming.currentKeyDidCommitForTesting,
+            "intermediate engine commit must remain visible after a non-committing restore and final snapshot"
+        )
+    }
+
+    func testDeleteRestoresDigitLedgerBeforeNormalDeletion() {
+        let fixture = makeControllerFixture()
+        type(fixture.sourceDigits, on: fixture.controller)
+        let callsBeforeDelete = fixture.engine.replaceInputCallCount
+
+        _ = fixture.controller.handle(.deleteBackward)
+
+        XCTAssertGreaterThan(fixture.engine.replaceInputCallCount, callsBeforeDelete)
+        XCTAssertEqual(
+            fixture.engine.replaceInputArguments[callsBeforeDelete],
+            fixture.sourceDigits
+        )
+        XCTAssertNotEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+        XCTAssertFalse(
+            fixture.controller.state.insertedPreeditText.contains {
+                $0.isNumber
+            }
+        )
+    }
+
+    func testPartialCommitClearsAcceptedLedgerBeforeContinuedTyping() throws {
+        let fixture = makeControllerFixture(partialSelectionRemainder: "42")
+        type(fixture.sourceDigits, on: fixture.controller)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+
+        _ = fixture.controller.handle(
+            .insertCandidate(
+                fixture.candidates[1],
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+
+        let partialRemainder = try XCTUnwrap(
+            fixture.controller.state.partialCommit?.remainingRawInput
+        )
+        XCTAssertFalse(partialRemainder.isEmpty)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected)
+        )
+
+        _ = fixture.controller.handle(.insertKey("6"))
+
+        XCTAssertEqual(
+            fixture.controller.state.partialCommit?.remainingRawInput,
+            partialRemainder + "6"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected),
+            "continued remainder input must not append to the previous composition ledger"
+        )
+    }
+
+    func testPartialCommitDeleteDoesNotRestoreOldAutoAnchorLedger() {
+        let fixture = makeControllerFixture(partialSelectionRemainder: "42")
+        type(fixture.sourceDigits, on: fixture.controller)
+
+        _ = fixture.controller.handle(
+            .insertCandidate(
+                fixture.candidates[1],
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 1)
+            )
+        )
+        XCTAssertNotNil(fixture.controller.state.partialCommit)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected)
+        )
+        let callsBeforeDelete = fixture.engine.replaceInputCallCount
+
+        _ = fixture.controller.handle(.deleteBackward)
+
+        XCTAssertEqual(
+            fixture.engine.sessionComposition,
+            fixture.anchoredRaw,
+            "Delete should replay the user-owned partial checkpoint, not the old digit ledger"
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected)
+        )
+        XCTAssertFalse(
+            fixture.engine.replaceInputArguments.dropFirst(callsBeforeDelete)
+                .contains(fixture.sourceDigits),
+            "the ended auto-anchor transaction must not run a second rollback"
+        )
+
+        _ = fixture.controller.handle(.insertKey("6"))
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(phase: .rejected),
+            "undoing the partial must not grant a second auto-anchor attempt or restore old ledger data"
+        )
+    }
+
+    func testDisabledGateNeverCallsReplaceInput() {
+        let fixture = makeControllerFixture()
+        fixture.controller.isReversibleT9AutoAnchorEnabled = false
+
+        type(fixture.sourceDigits, on: fixture.controller)
+
+        XCTAssertEqual(fixture.engine.replaceInputCallCount, 0)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            .empty
+        )
+    }
+
+    func testFailedRollbackClearsUntrustedCompositionWithoutLeakingDigits() {
+        let fixture = makeControllerFixture()
+        fixture.engine.replaceInputScript = [
+            output(
+                raw: fixture.anchoredRaw,
+                texts: ["不同首选", fixture.candidates[0], fixture.candidates[1]],
+                comments: fixture.comments
+            ),
+            RimeOutput(),
+        ]
+
+        type(fixture.sourceDigits, on: fixture.controller)
+
+        XCTAssertEqual(fixture.engine.sessionResetCount, 1)
+        XCTAssertNil(fixture.controller.state.lastRimeOutput)
+        XCTAssertTrue(fixture.controller.state.currentComposition.isEmpty)
+        XCTAssertTrue(fixture.controller.state.insertedPreeditText.isEmpty)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .rejected
+        )
+        XCTAssertFalse(
+            (fixture.controller.textClient as? FakeTextInputClient)?
+                .text.contains(where: \.isNumber)
+                ?? false
+        )
+    }
+
+    // MARK: - Fixtures
+
+    private func makeControllerFixture(
+        partialSelectionRemainder: String? = nil
+    ) -> (
+        controller: KeyboardController,
+        engine: FakeRimeEngine,
+        sourceDigits: String,
+        anchoredRaw: String,
+        candidates: [String],
+        comments: [String]
+    ) {
+        let source = digits(for: "jintiandetianqihen")
+        let anchored = "jin'tian'" + String(source.dropFirst(7))
+        let candidates = ["今天天气很好", "今天的天气很", "今日天气很好", "今天气候很好", "今天的天很好"]
+        let comments = Array(repeating: "jin tian de tian qi hen", count: candidates.count)
+        var dictionary = [
+            source: candidates,
+            anchored: candidates,
+        ]
+        var candidateComments = [
+            source: comments,
+            anchored: comments,
+        ]
+        var selectionRemainders: [String: [Int: String]] = [:]
+        if let partialSelectionRemainder {
+            dictionary[partialSelectionRemainder] = ["嘎", "哈", "伽"]
+            candidateComments[partialSelectionRemainder] = ["ga", "ha", "ga"]
+            dictionary[partialSelectionRemainder + "6"] = ["干", "喊", "感"]
+            candidateComments[partialSelectionRemainder + "6"] = ["gan", "han", "gan"]
+            selectionRemainders[anchored] = [1: partialSelectionRemainder]
+        }
+        let engine = FakeRimeEngine(
+            dictionary: dictionary,
+            comments: candidateComments,
+            selectionRemainders: selectionRemainders
+        )
+        engine.appendDigitsToComposition = true
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = true
+        controller.isReversibleT9AutoAnchorEnabled = true
+        return (controller, engine, source, anchored, candidates, comments)
+    }
+
+    /// Short pure-digit fixture for S2.3 earlier-first floor tests.
+    private func makeEarlierFirstControllerFixture(
+        spelling: String,
+        comment: String
+    ) -> (
+        controller: KeyboardController,
+        engine: FakeRimeEngine,
+        sourceDigits: String,
+        anchoredRaw: String,
+        candidates: [String],
+        comments: [String]
+    ) {
+        let source = digits(for: spelling)
+        let anchored = "jin'tian'" + String(source.dropFirst(7))
+        let candidates = ["今天天气很好", "今天的天气很", "今日天气很好", "今天气候很好", "今天的天很好"]
+        let comments = Array(repeating: comment, count: candidates.count)
+        let engine = FakeRimeEngine(
+            dictionary: [
+                source: candidates,
+                anchored: candidates,
+            ],
+            comments: [
+                source: comments,
+                anchored: comments,
+            ]
+        )
+        engine.appendDigitsToComposition = true
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = true
+        controller.isReversibleT9AutoAnchorEnabled = true
+        return (controller, engine, source, anchored, candidates, comments)
+    }
+
+    private func type(_ digits: String, on controller: KeyboardController) {
+        for digit in digits {
+            _ = controller.handle(.insertKey(String(digit)))
+        }
+    }
+
+    private func makeAttempt2AcceptedFixture() -> (
+        controller: KeyboardController,
+        engine: FakeRimeEngine,
+        sourceDigits: String,
+        anchoredRaw: String,
+        candidates: [String],
+        comments: [String]
+    ) {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        type(digits(for: "hao"), on: fixture.controller)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            2
+        )
+        return fixture
+    }
+
+    private func makeAttempt2RejectedAndRestoredFixture() -> (
+        controller: KeyboardController,
+        engine: FakeRimeEngine,
+        sourceDigits: String,
+        anchoredRaw: String,
+        candidates: [String],
+        comments: [String]
+    ) {
+        let fixture = makeControllerFixture()
+        fixture.controller.isRollingT9AutoAnchorEnabled = true
+        type(fixture.sourceDigits, on: fixture.controller)
+        configureRollingSuffix(
+            "hao",
+            fixture: fixture,
+            finalComment: "jin tian de tian qi hen hao"
+        )
+        let suffixDigits = digits(for: "hao")
+        let finalSource = fixture.sourceDigits + suffixDigits
+        let secondRaw =
+            "jin'tian'de'tian'" + String(finalSource.dropFirst(13))
+        fixture.engine.dictionary[secondRaw] = [
+            "不同首选", fixture.candidates[0], fixture.candidates[1],
+        ]
+        fixture.engine.comments[secondRaw] = Array(
+            repeating: "jin tian de tian qi hen hao",
+            count: 3
+        )
+        type(suffixDigits, on: fixture.controller)
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState.phase,
+            .accepted
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState
+                .automaticApplyAttemptCount,
+            2
+        )
+        return fixture
+    }
+
+    private func assertFailClosedBeforeDigit(
+        _ fixture: (
+            controller: KeyboardController,
+            engine: FakeRimeEngine,
+            sourceDigits: String,
+            anchoredRaw: String,
+            candidates: [String],
+            comments: [String]
+        ),
+        expectedAttemptCount: Int,
+        expectedLastAttemptSourceDigitCount: Int,
+        processCallsBeforeKey: Int,
+        replaceCallsBeforeKey: Int,
+        resetsBeforeKey: Int,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(
+            fixture.engine.processKeyCallCount,
+            processCallsBeforeKey,
+            "fail-closed must stop before processKey",
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            fixture.engine.replaceInputCallCount,
+            replaceCallsBeforeKey,
+            "fail-closed must add no replacement",
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            fixture.engine.sessionResetCount,
+            resetsBeforeKey + 1,
+            "fail-closed must perform exactly one same-session reset",
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            fixture.engine.sessionRecoveryCount,
+            0,
+            file: file,
+            line: line
+        )
+        XCTAssertNil(
+            fixture.controller.state.lastRimeOutput,
+            file: file,
+            line: line
+        )
+        XCTAssertTrue(
+            fixture.controller.state.currentComposition.isEmpty,
+            file: file,
+            line: line
+        )
+        XCTAssertEqual(
+            fixture.controller.state.t9ReversibleAutoAnchorState,
+            T9ReversibleAutoAnchorState(
+                phase: .rejected,
+                automaticApplyAttemptCount: expectedAttemptCount,
+                lastAttemptSourceDigitCount:
+                    expectedLastAttemptSourceDigitCount
+            ),
+            file: file,
+            line: line
+        )
+    }
+
+    private func configureRollingSuffix(
+        _ suffix: String,
+        fixture: (
+            controller: KeyboardController,
+            engine: FakeRimeEngine,
+            sourceDigits: String,
+            anchoredRaw: String,
+            candidates: [String],
+            comments: [String]
+        ),
+        finalComment: String
+    ) {
+        let suffixDigits = digits(for: suffix)
+        for index in 1...suffixDigits.count {
+            let prefix = String(suffixDigits.prefix(index))
+            let raw = fixture.anchoredRaw + prefix
+            fixture.engine.dictionary[raw] = fixture.candidates
+            fixture.engine.comments[raw] =
+                index == suffixDigits.count
+                ? Array(repeating: finalComment, count: fixture.candidates.count)
+                : Array(repeating: "", count: fixture.candidates.count)
+        }
+        let finalSource = fixture.sourceDigits + suffixDigits
+        let cumulativeRaw =
+            "jin'tian'de'tian'" + String(finalSource.dropFirst(13))
+        fixture.engine.dictionary[cumulativeRaw] = fixture.candidates
+        fixture.engine.comments[cumulativeRaw] = Array(
+            repeating: finalComment,
+            count: fixture.candidates.count
+        )
+    }
+
+    private func output(
+        raw: String,
+        texts: [String],
+        comments: [String],
+        hasMorePages: Bool = false,
+        committedText: String? = nil
+    ) -> RimeOutput {
+        RimeOutput(
+            rawInput: raw,
+            composition: RimeComposition(preeditText: raw, cursorPosition: raw.count),
+            candidates: texts.enumerated().map { index, text in
+                RimeCandidate(
+                    text: text,
+                    comment: comments.indices.contains(index) ? comments[index] : nil,
+                    globalIndex: index
+                )
+            },
+            committedText: committedText,
+            hasMorePages: hasMorePages,
+            highlightedIndex: texts.isEmpty ? -1 : 0
+        )
+    }
+
+    private func digits(for pinyin: String) -> String {
+        let groups: [(String, Character)] = [
+            ("abc", "2"), ("def", "3"), ("ghi", "4"), ("jkl", "5"),
+            ("mno", "6"), ("pqrs", "7"), ("tuv", "8"), ("wxyz", "9"),
+        ]
+        let mapping = Dictionary(
+            uniqueKeysWithValues: groups.flatMap { letters, digit in
+                letters.map { ($0, digit) }
+            }
+        )
+        return String(pinyin.map { mapping[$0]! })
+    }
+}

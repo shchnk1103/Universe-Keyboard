@@ -849,7 +849,7 @@ extension KeyboardController {
             } else {
                 // Path snapshot first so provisional Path can own host projection
                 // when it fully covers the current focus slots (ADR 0023).
-                #if DEBUG
+                #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
                 _ = HotPathSegmentTiming.measure(.pathLocal) {
                     applyT9PinyinPathStateFromNewRimeOutput()
                 }
@@ -909,6 +909,16 @@ extension KeyboardController {
               let rimePreeditText = output.composition?.preeditText, !rimePreeditText.isEmpty
         else {
             return
+        }
+
+        // A partial selection starts a user-owned remainder composition. Drop
+        // all rollback data from the previous automatic anchor, while retaining
+        // a data-free rejected phase so undoing the partial cannot grant a
+        // second automatic attempt in the original composition.
+        if state.t9ReversibleAutoAnchorState.phase != .idle {
+            state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
+                phase: .rejected
+            )
         }
 
         let isT9Remaining = T9CompositionCommitPolicy.isActiveT9Composition(

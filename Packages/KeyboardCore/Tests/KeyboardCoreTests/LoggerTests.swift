@@ -128,6 +128,20 @@ final class LoggerTests: XCTestCase {
         XCTAssertTrue(snapshot.persistedLines[1].hasSuffix("third"))
     }
 
+    #if DEBUG
+    func testDevicePreflightRecordBypassesDisabledCategory() async {
+        let logger = makeLogger { _ in false }
+
+        logger.info("filtered", category: .performance)
+        logger.devicePreflightPerformance("mandatory")
+        logger.requestFlush()
+
+        let snapshot = await logger.snapshotForTesting()
+        XCTAssertEqual(snapshot.persistedLines.count, 1)
+        XCTAssertTrue(snapshot.persistedLines[0].hasSuffix("mandatory"))
+    }
+    #endif
+
     @available(macOS 15.0, *)
     func testWriterCoalescesSubmittedRecordsIntoOnePersistenceCycle() async {
         struct PersistenceState: Sendable {

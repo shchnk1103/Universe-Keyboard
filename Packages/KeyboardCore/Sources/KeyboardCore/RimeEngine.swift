@@ -56,6 +56,9 @@ public protocol RimeEngine: AnyObject {
     /// Last realized selection after cold start, resume, recovery, or fail-closed publish.
     var runtimeSelection: RimeRuntimeSelection? { get }
 
+    /// Content-free native session identity for controlled diagnostics.
+    var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? { get }
+
     /// Fired whenever `runtimeSelection` is published (success or fail-closed).
     /// Extension UI wires this to reload chrome and controller T9 policy immediately.
     var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)? { get set }
@@ -70,4 +73,24 @@ public protocol RimeEngine: AnyObject {
     /// 候选词翻页（下一页）。RIME 发送 Page_Down 按键码。
     /// 返回更新后的候选列表和拼音状态。
     func pageDown() -> RimeOutput
+}
+
+/// Content-free identity used only to prove that one controlled input run kept
+/// the same live RIME session. The value must never be treated as product state.
+public struct RimeSessionDiagnosticSnapshot: Equatable, Sendable {
+    public let identity: UInt64
+    public let isValid: Bool
+
+    public init(identity: UInt64, isValid: Bool) {
+        self.identity = identity
+        self.isValid = isValid
+    }
+}
+
+public extension RimeEngine {
+    /// Engines without a native session return `nil`; controlled device
+    /// evidence must fail closed rather than infer validity from UI state.
+    var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {
+        nil
+    }
 }

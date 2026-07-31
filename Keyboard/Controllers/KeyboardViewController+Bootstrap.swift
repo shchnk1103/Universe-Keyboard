@@ -14,6 +14,53 @@ extension KeyboardViewController {
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
         controller = KeyboardController(state: KeyboardState(activeKeyboardType: keyboardType))
+        // R2: when the responsive gate is on, deferred snapshot apply must re-enter UI.
+        // Gate defaults off — this bridge is inert until Product enables the gate.
+        controller.onResponsivePresentationNeeded = { [weak self] effects in
+            self?.syncUI(with: effects)
+        }
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED && !T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        #error("T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED requires T9_AUTO_ANCHOR_DEVICE_PREFLIGHT")
+        #endif
+        #if T9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED && !T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED
+        #error("T9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED requires the A1 preflight gate")
+        #endif
+        #if T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED && !T9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED
+        #error("T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED requires the B2 rolling preflight gate")
+        #endif
+        #if T9_AUTO_ANCHOR_EARLIER_FIRST_PREFLIGHT_ENABLED && !T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED
+        #error("T9_AUTO_ANCHOR_EARLIER_FIRST_PREFLIGHT_ENABLED requires the A1 preflight gate")
+        #endif
+        #if DEBUG
+        // ADR 0024 Stage 2: explicit diagnostic gate. Release keeps the
+        // controller capability off until Product/Architecture/Quality review.
+        controller.isReversibleT9AutoAnchorEnabled = true
+        #elseif T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED
+        // S6-A internal B arm only. This condition is injected by the reviewed
+        // command line and must never appear in project/archive defaults.
+        controller.isReversibleT9AutoAnchorEnabled = true
+        #endif
+        #if T9_AUTO_ANCHOR_ROLLING_PREFLIGHT_ENABLED
+        // S2.1 internal B2 arm only. Ordinary Debug/A1 and Release stay on the
+        // established one-anchor behavior unless this explicit flag is added.
+        controller.isRollingT9AutoAnchorEnabled = true
+        #endif
+        #if T9_AUTO_ANCHOR_TRIPLE_ROLLING_PREFLIGHT_ENABLED
+        // S2.2 internal B3 arm only. Nested on B2; never a project default.
+        controller.isTripleRollingT9AutoAnchorEnabled = true
+        #endif
+        #if T9_AUTO_ANCHOR_EARLIER_FIRST_PREFLIGHT_ENABLED
+        // S2.3 internal earlier-first arm only. Orthogonal to rolling/triple;
+        // requires A1; never a project default.
+        controller.isEarlierFirstT9AutoAnchorEnabled = true
+        #endif
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        if !consumeFreshPreparedDevicePreflightRunIfAvailable() {
+            recordDevicePreflightMarker(
+                runToken: devicePreflightRunToken ?? "invalid"
+            )
+        }
+        #endif
         controller.textClient = UITextDocumentProxyAdapter(proxy: textDocumentProxy)
         controller.onTypoCorrectionSelected = { [weak self] correction in
             guard let self else { return }
@@ -139,6 +186,12 @@ extension KeyboardViewController {
               let directories = pendingRimeRuntimeDirectories
         else { return }
 
+        // R5-Preflight: optional dual-gate arm (DEBUG / explicit compile flag only).
+        if installResponsiveDualGatePreflightIfArmed(directories: directories) {
+            hasActivatedVisibleRimeRuntime = true
+            return
+        }
+
         Logger.shared.info("Keyboard visible; creating RimeEngineImpl", category: .engine)
         let engine = RimeEngineImpl(
             sharedDataDir: directories.sharedDataDir,
@@ -150,9 +203,104 @@ extension KeyboardViewController {
         }
         controller.rimeEngine = engine
         controller.typoCorrectionCandidateQuery = engine
+        // Rebuild bridge if responsive gate is ever enabled before/after engine install.
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
         applyRealizedRuntimeSelection(from: engine)
         hasActivatedVisibleRimeRuntime = true
+        #if DEBUG
+        // Content-free path marker only on DEBUG (R5-Preflight observability).
+        Logger.shared.info(
+            ResponsiveRimePreflight.pathMarkerLine(
+                path: controller.isResponsiveRimePipelineEnabled
+                    ? .mainActorResponsive
+                    : .sync,
+                dualGateRequested: false,
+                dualGateActive: false
+            ),
+            category: .engine
+        )
+        #endif
         Logger.shared.info("RIME session prepared for visible keyboard input", category: .engine)
+    }
+
+    /// R5-Preflight dual-gate arm. Release never arms from UserDefaults alone.
+    /// Returns `true` when dual-gate thread-affine path was installed.
+    @discardableResult
+    func installResponsiveDualGatePreflightIfArmed(
+        directories: (sharedDataDir: String, userDataDir: String)
+    ) -> Bool {
+        let compileFlagEnabled: Bool = {
+            #if T9_RESPONSIVE_DEVICE_PREFLIGHT_ENABLED
+            return true
+            #else
+            return false
+            #endif
+        }()
+        #if DEBUG
+        let isDebugBuild = true
+        #else
+        let isDebugBuild = false
+        #endif
+        let dualGateRequested = ResponsiveRimePreflight.shouldArmDualGate(
+            defaults: sharedDefaults,
+            isDebugBuild: isDebugBuild,
+            compileFlagEnabled: compileFlagEnabled
+        )
+        guard dualGateRequested else { return false }
+
+        guard !directories.sharedDataDir.isEmpty, !directories.userDataDir.isEmpty else {
+            Logger.shared.warning(
+                ResponsiveRimePreflight.fallbackMarkerLine(reason: "missing-runtime"),
+                category: .engine
+            )
+            return false
+        }
+
+        // Bootstrap-only: no MainActor live RimeEngineImpl session when dual-gate is active.
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.isThreadAffineRimeOwnerEnabled = true
+        controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
+            ThreadAffineRimeEngineImplBootstrap(
+                sharedDataDir: directories.sharedDataDir,
+                userDataDir: directories.userDataDir,
+                preferredSchemaID: nil
+            )
+        )
+        // Preflight residual: typo sidecar uses provider adapter (not live librime session).
+        controller.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
+            candidateProvider: controller.candidateProvider
+        )
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        let active = controller.threadAffineRimeCoordinator != nil
+            && controller.rimeEngine is ThreadAffineRimeEngineBridge
+        Logger.shared.info(
+            ResponsiveRimePreflight.pathMarkerLine(
+                path: active ? .threadAffine : .fallbackMissingRuntime,
+                dualGateRequested: true,
+                dualGateActive: active
+            ),
+            category: .engine
+        )
+        if active {
+            Logger.shared.info(
+                "T9RESP marker=READY fixture=\(ResponsiveRimePreflight.fixtureID) "
+                    + "bootstrap=config-only session=owner-thread",
+                category: .engine
+            )
+            Logger.shared.requestFlush()
+            return true
+        }
+
+        Logger.shared.warning(
+            ResponsiveRimePreflight.fallbackMarkerLine(reason: "rebuild-inactive"),
+            category: .engine
+        )
+        // Fail closed: clear dual-gate flags so sync install can proceed.
+        controller.isThreadAffineRimeOwnerEnabled = false
+        controller.isResponsiveRimePipelineEnabled = false
+        controller.threadAffineEngineBootstrap = nil
+        return false
     }
 
     /// Align chrome + controller T9 semantics with the schema librime actually selected.

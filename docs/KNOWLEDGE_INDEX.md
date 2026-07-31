@@ -57,7 +57,41 @@
 - Debugging: [`DEBUGGING.md`](DEBUGGING.md)
 - Performance measurement: [`PERFORMANCE_BASELINE.md`](PERFORMANCE_BASELINE.md)
 - T9 continuous-digit latency — force_gc track case close (2026-07-24): [`evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md)
-- T9 long-composition `process_key` latency plan (Lane A idle hint shipped; baseline/Lane B pending): [`plans/t9-long-composition-process-key-latency-plan.md`](plans/t9-long-composition-process-key-latency-plan.md)
+- T9 long-composition `process_key` latency and safe auto-anchor roadmap
+  (`T9-AUTO-ANCHOR-001`, S1–S4 Debug/test evidence validated, S5 isolated
+  personalization reviewed, S6-A manual physical pair complete, S2.1 rolling
+  automated implementation review passed, physical three-pair matrix complete
+  on `90642c3` with 1/3 direction PASS (product goal not met), north star
+  reaffirmed (no Path obligation), S2.2 B3 implemented with exploratory
+  B2→B3 direction PASS on `459908d` (product goal still not met; default
+  attempt-N expansion closed), S2.3 earlier-first implemented with Human
+  B3→B3e mechanism PASS / direction FAIL; Product Hold/harvest; default-off
+  S2.1–S2.3 retained; no next knife authorized; product goal not met):
+  [`plan`](plans/t9-long-composition-process-key-latency-plan.md),
+  [`Assignment`](assignments/t9-auto-anchor-001.md),
+  [`S2.1 design`](assignments/t9-auto-anchor-001-s21-rolling-design.md),
+  [`S2.1 matrix evidence`](evidence/t9-auto-anchor-s21-exploratory-a1b2-2026-07-30.md),
+  [`S2.2 design`](assignments/t9-auto-anchor-001-s22-stronger-controller-bounding.md),
+  [`S2.2 B2→B3 evidence`](evidence/t9-auto-anchor-s22-b2b3-2026-07-30.md),
+  [`S2.3 design`](assignments/t9-auto-anchor-001-s23-earlier-first-anchor.md),
+  [`S2.3 implementation evidence`](evidence/t9-auto-anchor-s23-implementation-2026-07-30.md),
+  [`S2.3 B3→B3e evidence`](evidence/t9-auto-anchor-s23-b3b3e-2026-07-30.md),
+  [`S6-A device preflight`](assignments/t9-auto-anchor-001-s6a-device-preflight.md),
+  [`Product Decision`](product-decisions/T9-AUTO-ANCHOR-001-authorization.md),
+  [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)
+- T9 responsive RIME input pipeline
+  (`T9-RESPONSIVE-PIPELINE-001`, **Active** — Formal R5 **direction FAIL** retained;
+  **R5-Rem-Device direction PASS** (dual-gate key-feel better than gate-off after
+  Rem-1+2+P1-1; Formal R5 freeze-burst FAIL historical); Rem-3 / Product Gate /
+  ADR Accept / default-on **not** claimed; auto-anchor Hold/harvest):
+  [`Product Decision`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md),
+  [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md),
+  [`plan`](plans/t9-responsive-rime-pipeline-plan.md),
+  [`ADR 0025 Proposed`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md),
+  [`R5-Rem-Device evidence`](evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md),
+  [`R5-Rem-1+2 evidence`](evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md),
+  [`R5-Remediation design`](assignments/t9-responsive-pipeline-001-r5-remediation-design.md),
+  [`Formal R5 evidence`](evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md)
 - Release procedure: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)
 - 2026-08-01 release control: [`RELEASE-2026-0801`](assignments/release-2026-08-01.md) and its [evidence ledger](evidence/release-2026-08-01-acceptance.md)
 - New-user activation / Full Access journey: [`ONBOARDING_ACTIVATION.md`](ONBOARDING_ACTIVATION.md), Product Decision [`PD-RELEASE-2026-0801-03`](product-decisions/RELEASE-2026-0801-03-activation-authorization.md)

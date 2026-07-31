@@ -111,13 +111,26 @@ extension KeyboardController {
             nextIndex = paths.startIndex
         }
         // 选拼音: first/next/wrap only — never confirm/advance a segment.
-        return handleSelectT9PinyinPath(paths[nextIndex], autoAdvance: false)
+        let effects = handleSelectT9PinyinPath(paths[nextIndex], autoAdvance: false)
+        if !effects.isEmpty {
+            state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
+                phase: .rejected
+            )
+        }
+        return effects
     }
 
     func handleSelectT9PinyinPath(_ path: T9PinyinPath) -> KeyboardEffect {
         // Direct path-bar tap: selecting a choice is a real confirmation.
         let previousRaw = state.lastRimeOutput?.rawInput
         let effects = handleSelectT9PinyinPath(path, autoAdvance: true)
+        if !effects.isEmpty {
+            // The user has explicitly adopted/refined the currently visible
+            // path. From this point ordinary Path/Delete contracts own it.
+            state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
+                phase: .rejected
+            )
+        }
         #if DEBUG
         if !effects.isEmpty {
             gate5TraceComposition(
@@ -316,6 +329,7 @@ extension KeyboardController {
             // while keeping repeated clears idempotent.
             compositionRevision: state.compositionRevision
         )
+        state.t9ReversibleAutoAnchorState = .empty
     }
 
     @discardableResult
@@ -1075,7 +1089,7 @@ extension KeyboardController {
 
     /// Restamps path compositionRevision to the live controller revision so
     /// post-restore selections pass the Core stale-revision guard.
-    private func restampPaths(_ paths: [T9PinyinPath]) -> [T9PinyinPath] {
+    func restampPaths(_ paths: [T9PinyinPath]) -> [T9PinyinPath] {
         let revision = state.compositionRevision
         return paths.map { path in
             T9PinyinPath(
@@ -1133,6 +1147,13 @@ extension KeyboardController {
         // Confirmed Path: advance sourceDigits and rebuild focus from Core identity.
         if !snapshot.confirmedSegmentValues.isEmpty {
             installIdentityAsPathState(identity)
+            // An accepted automatic anchor already keeps the live RIME raw on
+            // the mixed `syllables' + digits` form. Re-driving pure digits here
+            // would erase the optimization on the very next key. The reversible
+            // ledger, rather than a pure-digit resync, owns rollback for S2.
+            if state.t9ReversibleAutoAnchorState.phase == .accepted {
+                return true
+            }
             _ = resyncRimeCompositionFromT9Identity()
             return true
         }
@@ -1147,6 +1168,12 @@ extension KeyboardController {
               identity.sourceDigits.count > 1
         else { return false }
         installIdentityAsPathState(identity)
+        // Automatic anchoring is deliberately invisible to user Path
+        // ownership. Its reversible ledger keeps the mixed RIME raw coherent,
+        // while this unconfirmed identity remains the Path source of truth.
+        if state.t9ReversibleAutoAnchorState.phase == .accepted {
+            return true
+        }
         let liveRaw = state.lastRimeOutput?.rawInput ?? ""
         let pureLive = !liveRaw.isEmpty && liveRaw.allSatisfy(\.isNumber)
         // Only re-drive RIME when the engine raw drifted off the Core digit ledger

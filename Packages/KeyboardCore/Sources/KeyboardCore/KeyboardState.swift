@@ -52,6 +52,8 @@ public struct KeyboardState: Equatable {
     public var compositionRevision: UInt64 = 0
     /// Precise T9 pinyin path bar state (ADR 0020). Empty when not composing under T9.
     public var t9PinyinPathState: T9PinyinPathState = .empty
+    /// Experimental reversible automatic-anchor ledger (ADR 0024 Stage 2).
+    public var t9ReversibleAutoAnchorState: T9ReversibleAutoAnchorState = .empty
 
     public init(
         currentPage: KeyboardPage = .letters,
@@ -68,7 +70,8 @@ public struct KeyboardState: Equatable {
         insertedPreeditText: String = "",
         insertedPreeditCount: Int = 0,
         compositionRevision: UInt64 = 0,
-        t9PinyinPathState: T9PinyinPathState = .empty
+        t9PinyinPathState: T9PinyinPathState = .empty,
+        t9ReversibleAutoAnchorState: T9ReversibleAutoAnchorState = .empty
     ) {
         self.currentPage = currentPage
         self.inputMode = inputMode
@@ -85,5 +88,6 @@ public struct KeyboardState: Equatable {
         self.insertedPreeditCount = insertedPreeditCount
         self.compositionRevision = compositionRevision
         self.t9PinyinPathState = t9PinyinPathState
+        self.t9ReversibleAutoAnchorState = t9ReversibleAutoAnchorState
     }
 }

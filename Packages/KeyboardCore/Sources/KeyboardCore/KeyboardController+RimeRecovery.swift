@@ -21,11 +21,34 @@ extension KeyboardController {
             return effectsAfterChineseCompositionKey(effects, originalKey: key)
         }
 
+        let previousRawForTrace = state.lastRimeOutput?.rawInput
+        if rejectAcceptedT9AutoAnchorIdentityMismatchIfNeeded(
+            rimeKey,
+            liveRawInput: previousRawForTrace,
+            using: engine
+        ) {
+            var effects = consumeSingleUseShiftIfNeeded()
+                .union(.compositionChanged)
+            effects.insert(.t9PinyinPathsChanged)
+            return effectsAfterChineseCompositionKey(effects, originalKey: key)
+        }
+
         // Rebuild composition when returning from a host that reset the live RIME session.
         if shouldRestoreRimeComposition,
             !state.currentComposition.isEmpty,
             !engine.isComposing()
         {
+            if rejectMissingAcceptedT9AutoAnchorSessionIfNeeded(
+                using: engine
+            ) {
+                var effects = consumeSingleUseShiftIfNeeded()
+                    .union(.compositionChanged)
+                effects.insert(.t9PinyinPathsChanged)
+                return effectsAfterChineseCompositionKey(
+                    effects,
+                    originalKey: key
+                )
+            }
             let intendedComposition =
                 (state.partialCommit?.remainingRawInput ?? state.currentComposition)
                 + fallbackInputText(for: rimeKey)
@@ -52,9 +75,71 @@ extension KeyboardController {
         }
 
         let previousT9PathState = state.t9PinyinPathState
+
+        // R2 gate: accept printable composition keys without waiting for librime.
+        // All other session APIs still enter the same pipeline via
+        // `ResponsiveRimeEngineBridge`. Gate default is off.
+        if isResponsiveRimePipelineEnabled {
+            if responsiveRimeCoordinator == nil, threadAffineRimeCoordinator == nil {
+                rebuildResponsiveRimeCoordinatorIfNeeded()
+            }
+            // R4-Wire: thread-affine dual gate (accept without MainActor librime).
+            if let affine = threadAffineRimeCoordinator {
+                if let replacementInput = replacementRawInputForSymbolPageContinuation(appending: rimeKey) {
+                    let snapshot = affine.performOrderedNow(
+                        .replaceInput(replacementInput, boundEpoch: nil, boundRevision: nil)
+                    )
+                    applyResponsivePublishedSnapshot(snapshot)
+                    var effects = consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+                    if usesT9InputSemantics {
+                        effects.insert(.t9PinyinPathsChanged)
+                    }
+                    return effectsAfterChineseCompositionKey(effects, originalKey: key)
+                }
+                enqueueResponsiveKeyApplyContext(
+                    rimeKey: rimeKey,
+                    previousT9PathState: previousT9PathState,
+                    previousRawForTrace: previousRawForTrace
+                )
+                affine.scheduleProcessKey(rimeKey)
+                recordResponsiveAcceptMetrics(from: affine.lastAcceptReceipt)
+                // Delivery channel publishes asynchronously — no MainActor drain loop.
+                let effects = consumeSingleUseShiftIfNeeded()
+                return effectsAfterChineseCompositionKey(effects, originalKey: key)
+            }
+            if let coordinator = responsiveRimeCoordinator {
+                if let replacementInput = replacementRawInputForSymbolPageContinuation(appending: rimeKey) {
+                    // Symbol continuation must stay ordered with pending keys;
+                    // drain the full queue (may wait) so Path/delete cannot race.
+                    let snapshot = coordinator.performOrderedNow(
+                        .replaceInput(replacementInput, boundEpoch: nil, boundRevision: nil)
+                    )
+                    applyResponsivePublishedSnapshot(snapshot)
+                    var effects = consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+                    if usesT9InputSemantics {
+                        effects.insert(.t9PinyinPathsChanged)
+                    }
+                    return effectsAfterChineseCompositionKey(effects, originalKey: key)
+                }
+                // Deferred processKey: accept now; drain on later MainActor turns
+                // so handle returns before librime. Context enables R3 Path /
+                // auto-anchor parity when the snapshot is applied.
+                enqueueResponsiveKeyApplyContext(
+                    rimeKey: rimeKey,
+                    previousT9PathState: previousT9PathState,
+                    previousRawForTrace: previousRawForTrace
+                )
+                coordinator.scheduleProcessKey(rimeKey)
+                recordResponsiveAcceptMetrics(from: coordinator.lastAcceptReceipt)
+                scheduleResponsivePipelineDrain(coordinator)
+                let effects = consumeSingleUseShiftIfNeeded()
+                return effectsAfterChineseCompositionKey(effects, originalKey: key)
+            }
+        }
+
         let output: RimeOutput
         if let replacementInput = replacementRawInputForSymbolPageContinuation(appending: rimeKey) {
-            #if DEBUG
+            #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             output = HotPathSegmentTiming.measure(.rime) {
                 engine.replaceInput(replacementInput)
             }
@@ -62,13 +147,27 @@ extension KeyboardController {
             output = engine.replaceInput(replacementInput)
             #endif
         } else {
-            #if DEBUG
+            #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             output = HotPathSegmentTiming.measure(.rime) {
                 engine.processKey(rimeKey)
             }
             #else
             output = engine.processKey(rimeKey)
             #endif
+        }
+        #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        HotPathSegmentTiming.noteEngineOutput(output)
+        #endif
+        if rejectUnusableAcceptedT9AutoAnchorDigitIfNeeded(
+            rimeKey,
+            previousLedger: state.t9ReversibleAutoAnchorState,
+            output: output,
+            using: engine
+        ) {
+            var effects = consumeSingleUseShiftIfNeeded()
+                .union(.compositionChanged)
+            effects.insert(.t9PinyinPathsChanged)
+            return effectsAfterChineseCompositionKey(effects, originalKey: key)
         }
         // A rejected printable key must remain visible and retryable rather than being lost.
         if output.composition == nil,
@@ -91,11 +190,13 @@ extension KeyboardController {
             return effectsAfterChineseCompositionKey(appendFallbackCompositionKey(rimeKey), originalKey: key)
         }
 
-        let previousRawForTrace = state.lastRimeOutput?.rawInput
         applyRimeOutput(augmentRimeOutputIfNeeded(output))
         let retainedFocusedSegment: Bool
-        if rimeKey.count == 1, let digit = rimeKey.first {
-            #if DEBUG
+        if output.committedText == nil,
+            rimeKey.count == 1,
+            let digit = rimeKey.first
+        {
+            #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             retainedFocusedSegment = HotPathSegmentTiming.measure(.pathLocal) {
                 retainFocusedT9SegmentAfterAppendingDigit(
                     previous: previousT9PathState,
@@ -111,17 +212,24 @@ extension KeyboardController {
         } else {
             retainedFocusedSegment = false
         }
+        advanceAcceptedT9AutoAnchorDigit(
+            rimeKey,
+            previousLiveRawInput: previousRawForTrace,
+            output: output
+        )
+        let autoAnchorOutcome = attemptReversibleT9AutoAnchorIfNeeded(using: engine)
         #if DEBUG
         if usesT9InputSemantics, rimeKey.count == 1, rimeKey.first?.isNumber == true {
             gate5TraceComposition(
                 event: .digitAppend,
                 previousRaw: previousRawForTrace,
-                note: "digitAppend=true retainFocus=\(retainedFocusedSegment)"
+                note: "digitAppend=true retainFocus=\(retainedFocusedSegment) "
+                    + "autoAnchor=\(autoAnchorOutcome.status.rawValue)"
             )
         }
         #endif
         var effects = consumeSingleUseShiftIfNeeded().union(.compositionChanged)
-        if retainedFocusedSegment {
+        if retainedFocusedSegment || autoAnchorOutcome.status != .notEligible {
             effects.insert(.t9PinyinPathsChanged)
         }
         return effectsAfterChineseCompositionKey(effects, originalKey: key)

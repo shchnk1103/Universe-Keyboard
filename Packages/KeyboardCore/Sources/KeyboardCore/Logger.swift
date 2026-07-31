@@ -112,6 +112,25 @@ public final class Logger: Sendable {
         record(level: .info, message: message, category: .performance)
     }
 
+    #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+    /// Writes mandatory, content-free evidence for an explicitly compiled
+    /// diagnostic run even when the user-facing diagnostics preference is off.
+    ///
+    /// The API is absent from ordinary Release builds. It must never carry
+    /// composition, candidate, host-text, or user-dictionary content.
+    public func devicePreflightPerformance(
+        _ message: String,
+        level: Level = .info
+    ) {
+        record(
+            level: level,
+            message: message,
+            category: .performance,
+            bypassCategoryFilter: true
+        )
+    }
+    #endif
+
     /// Requests background persistence after all events already submitted to the writer.
     ///
     /// The method intentionally does not promise synchronous durability: keyboard UI
@@ -144,13 +163,19 @@ public final class Logger: Sendable {
 
     // MARK: - Private
 
-    private func record(level: Level, message: String, category: Category) {
+    private func record(
+        level: Level,
+        message: String,
+        category: Category,
+        bypassCategoryFilter: Bool = false
+    ) {
         writer.submit(
             .record(
                 timestamp: Date(),
                 level: level,
                 category: category,
-                message: message
+                message: message,
+                bypassCategoryFilter: bypassCategoryFilter
             )
         )
     }

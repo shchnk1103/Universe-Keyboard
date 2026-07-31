@@ -19,7 +19,7 @@ extension KeyboardViewController {
         inputEventSequence += 1
         let eventID = inputEventSequence
         let compositionLengthBefore = controller.state.currentComposition.count
-#if DEBUG
+#if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         // Segmented sample for continuous T9 digit typing (no Path/candidate pick).
         // Privacy: lengths only — never log the digit sequence itself.
         let shouldSampleT9Segments =
@@ -27,13 +27,19 @@ extension KeyboardViewController {
             && key.count == 1
             && key.first?.isNumber == true
         if shouldSampleT9Segments {
+            #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+            recordDevicePreflightExecutionGeometryBeforeFirstT9Key()
+            #endif
             HotPathSegmentTiming.beginKey(
                 eventID: UInt64(eventID),
                 keyLength: key.count,
-                compositionLengthBefore: compositionLengthBefore
+                compositionLengthBefore: compositionLengthBefore,
+                session: controller.rimeEngine?.diagnosticSessionSnapshot
             )
         }
+#endif
 
+#if DEBUG
         let idleMs = lastInputCompletionTime.map { (startTime - $0) * 1000 }
         Logger.shared.debug(
             "KEY BEGIN #\(eventID) keyLength=\(key.count) idleMs=\(idleMs.map { String(format: "%.1f", $0) } ?? "first") "
@@ -57,20 +63,54 @@ extension KeyboardViewController {
         let handleStartTime = CACurrentMediaTime()
         let effects = controller.handle(.insertKey(key))
         let handleMs = (CACurrentMediaTime() - handleStartTime) * 1000
-#if DEBUG
+#if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         if shouldSampleT9Segments {
             HotPathSegmentTiming.noteResult(
                 rawLength: controller.state.lastRimeOutput?.rawInput?.count
                     ?? controller.state.currentComposition.count,
                 pathCount: controller.state.t9PinyinPathState.compactPaths.count,
-                candidateCount: controller.state.lastRimeOutput?.candidates.count ?? 0
+                candidateCount: controller.state.lastRimeOutput?.candidates.count ?? 0,
+                didCommit: controller.state.lastRimeOutput?.committedText != nil,
+                session: controller.rimeEngine?.diagnosticSessionSnapshot
             )
+            #if DEBUG
+            let shadow = controller.t9ShadowAnchorObservation()
+            Logger.shared.debug(
+                "T9SHADOW #\(eventID) status=\(shadow.status.rawValue) "
+                    + "generation=\(shadow.rawInputGeneration) "
+                    + "provenance=\(shadow.provenanceRevision) "
+                    + "candidates=\(shadow.candidateCount) "
+                    + "compatible=\(shadow.compatibleCandidateCount) "
+                    + "uniquePaths=\(shadow.uniqueCompatiblePathCount) "
+                    + "rejected=\(shadow.rejectedCandidateCount) "
+                    + "commonSyllables=\(shadow.observedCommonSyllableCount) "
+                    + "closedSyllables=\(shadow.closedCommonSyllableCount) "
+                    + "anchorSlots=\(shadow.anchorSlotCount) "
+                    + "unresolvedSlots=\(shadow.unresolvedSlotCount) "
+                    + "complete=\(shadow.evidenceComplete)",
+                category: .performance
+            )
+            if let retryShadow = controller.t9AutoAnchorRetryShadowObservation() {
+                Logger.shared.debug(
+                    "T9RETRYSHADOW #\(eventID) "
+                        + "status=\(retryShadow.status.rawValue) "
+                        + "sourceSlots=\(retryShadow.sourceDigitCount) "
+                        + "rejectedAt=\(retryShadow.rejectedAtSourceDigitCount) "
+                        + "candidates=\(retryShadow.candidateCount) "
+                        + "anchorSlots=\(retryShadow.anchoredSlotCount) "
+                        + "unresolvedSlots=\(retryShadow.unresolvedSlotCount)",
+                    category: .performance
+                )
+            }
+            #endif
         }
+        #if DEBUG
         Logger.shared.debug(
             "KEY ENGINE END #\(eventID) durationMs=\(String(format: "%.1f", handleMs)) "
                 + "candidates=\(controller.state.lastRimeOutput?.candidates.count ?? 0)",
             category: .performance
         )
+        #endif
 #endif
 
         let uiStartTime = CACurrentMediaTime()
@@ -84,6 +124,8 @@ extension KeyboardViewController {
             "KEY END #\(eventID) keyLength=\(key.count) total=\(String(format: "%.1f", totalMs))ms "
                 + "engine=\(String(format: "%.1f", handleMs))ms ui=\(String(format: "%.1f", uiMs))ms"
         )
+#endif
+#if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         if shouldSampleT9Segments {
             HotPathSegmentTiming.endKey(
                 totalMs: totalMs,

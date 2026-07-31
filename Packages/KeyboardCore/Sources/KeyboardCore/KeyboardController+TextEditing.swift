@@ -174,6 +174,23 @@ extension KeyboardController {
         if let effects = handleNumberSuffixDeleteIfNeeded() {
             return effects
         }
+        if let engine = rimeEngine {
+            switch rollbackAcceptedT9AutoAnchorForDelete(using: engine) {
+            case .notNeeded:
+                break
+            case .restored:
+                // The live session is now the authoritative full-digit ledger.
+                // Delete it directly: re-entering the Core identity path would
+                // issue a second replaceInput for the shortened digits.
+                let result = engine.deleteBackward()
+                applyRimeOutputPreservingPartialCommit(
+                    augmentRimeOutputIfNeeded(result)
+                )
+                return .compositionChanged.union(.t9PinyinPathsChanged)
+            case .failed:
+                return .compositionChanged.union(.t9PinyinPathsChanged)
+            }
+        }
         if let engine = rimeEngine, engine.isComposing() {
             if let effects = handleConfirmedT9FocusDeleteIfNeeded(using: engine) {
                 return effects

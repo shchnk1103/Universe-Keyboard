@@ -47,7 +47,7 @@ extension KeyboardViewController {
         if let bar = t9PinyinPathBarView {
             let selected = snapshot.paths.first { $0.id == snapshot.selectedPathID }
             let idleHint = t9IdlePathHintText(pathCount: snapshot.paths.count)
-            #if DEBUG
+            #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             HotPathSegmentTiming.measure(.pathUI) {
                 bar.setPaths(
                     snapshot.paths,
@@ -75,7 +75,7 @@ extension KeyboardViewController {
         }
         // Candidate bar from the same snapshot candidates/revision
         if candidateCollectionView != nil {
-            #if DEBUG
+            #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             HotPathSegmentTiming.measure(.candidateUI) {
                 resetCandidateSnapshot(from: snapshot)
                 fillCandidateBar()

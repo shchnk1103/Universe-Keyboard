@@ -145,6 +145,11 @@ extension KeyboardViewController {
 
     func addKeyboardRows(for state: KeyboardState) {
         letterButtons.removeAll()
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        devicePreflightT9LetterGroupButtons.removeAll()
+        devicePreflightPreparedGeometryDigest = nil
+        devicePreflightDidRecordExecutionGeometry = false
+        #endif
         candidateExpandedPanel = nil
         expandedPanelScrollView = nil
         switch state.currentPage {

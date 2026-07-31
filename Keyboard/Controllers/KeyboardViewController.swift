@@ -69,6 +69,13 @@ class KeyboardViewController: UIInputViewController {
     var returnButton: UIButton!
     /// 所有字母键按钮的引用，用于 Shift 状态下批量刷新标题
     var letterButtons: [UIButton] = []
+    #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+    /// S6-A only: visible letter-group buttons in canonical slot order.
+    var devicePreflightT9LetterGroupButtons: [UIButton] = []
+    var devicePreflightRunToken: String?
+    var devicePreflightPreparedGeometryDigest: String?
+    var devicePreflightDidRecordExecutionGeometry = false
+    #endif
 
     // MARK: - 业务逻辑控制器
 
@@ -259,9 +266,16 @@ class KeyboardViewController: UIInputViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Logger.shared.resumePersistenceForExtensionLifecycle()
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        // iOS may reuse an Extension selected before the main App prepared the
+        // arm. Consume a different fresh token when visibility returns instead
+        // of requiring a new viewDidLoad or process.
+        _ = consumeFreshPreparedDevicePreflightRunIfAvailable()
+        #endif
         controller.resumeRimeAfterVisibilityChange()
         // Resume may fail-close T9 → 26-key; apply before chrome is built/shown.
-        if let engine = controller.rimeEngine as? RimeEngineImpl {
+        // Unwrap responsive bridge so chrome still sees RimeEngineImpl (R3).
+        if let engine = controller.underlyingRimeEngine as? RimeEngineImpl {
             applyRealizedRuntimeSelection(from: engine)
         }
         startRimeSyncActivityHeartbeat()
@@ -356,6 +370,9 @@ class KeyboardViewController: UIInputViewController {
                 category: .display
             )
         }
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        recordDevicePreflightPreparedGeometryIfPossible()
+        #endif
     }
 
     // MARK: === 文本变化回调 ===

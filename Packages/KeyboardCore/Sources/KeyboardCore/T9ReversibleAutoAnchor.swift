@@ -1,0 +1,446 @@
+import Foundation
+
+/// One-composition ownership for the experimental reversible T9 anchor.
+///
+/// The ledger is process-local and never persisted. `sourceDigits` remains the
+/// rollback authority after RIME starts consuming a mixed letter/digit raw.
+public struct T9ReversibleAutoAnchorState: Equatable, Sendable {
+    public enum Phase: String, Equatable, Sendable {
+        case idle
+        case accepted
+        case rejected
+    }
+
+    public var phase: Phase
+    public var sourceDigits: String
+    public var replacementRawInput: String
+    public var anchoredSyllableCount: Int
+    public var anchoredSlotCount: Int
+    public var automaticApplyAttemptCount: Int
+    public var lastAttemptSourceDigitCount: Int
+
+    public init(
+        phase: Phase = .idle,
+        sourceDigits: String = "",
+        replacementRawInput: String = "",
+        anchoredSyllableCount: Int = 0,
+        anchoredSlotCount: Int = 0,
+        automaticApplyAttemptCount: Int = 0,
+        lastAttemptSourceDigitCount: Int = 0
+    ) {
+        self.phase = phase
+        self.sourceDigits = sourceDigits
+        self.replacementRawInput = replacementRawInput
+        self.anchoredSyllableCount = anchoredSyllableCount
+        self.anchoredSlotCount = anchoredSlotCount
+        self.automaticApplyAttemptCount = automaticApplyAttemptCount
+        self.lastAttemptSourceDigitCount = lastAttemptSourceDigitCount
+    }
+
+    public static let empty = T9ReversibleAutoAnchorState()
+}
+
+/// Content-free transaction result used by Debug diagnostics and tests.
+public struct T9ReversibleAutoAnchorOutcome: Equatable, Sendable {
+    public enum Status: String, Equatable, Sendable {
+        case notEligible
+        case accepted
+        case rejectedAndRestored
+        case restoreFailed
+    }
+
+    public let status: Status
+    public let baselineCandidateCount: Int
+    public let resultingCandidateCount: Int
+    public let overlappingCandidateCount: Int
+    public let attemptIndex: Int
+    public let anchoredSyllableCount: Int
+    public let newlyAnchoredSyllableCount: Int
+    public let newlyAnchoredSlotCount: Int
+    public let anchoredSlotCount: Int
+    public let unresolvedSlotCount: Int
+    public let applyDurationMilliseconds: Double
+    public let restoreDurationMilliseconds: Double
+
+    public static let notEligible = T9ReversibleAutoAnchorOutcome(
+        status: .notEligible,
+        baselineCandidateCount: 0,
+        resultingCandidateCount: 0,
+        overlappingCandidateCount: 0,
+        attemptIndex: 0,
+        anchoredSyllableCount: 0,
+        newlyAnchoredSyllableCount: 0,
+        newlyAnchoredSlotCount: 0,
+        anchoredSlotCount: 0,
+        unresolvedSlotCount: 0,
+        applyDurationMilliseconds: 0,
+        restoreDurationMilliseconds: 0
+    )
+}
+
+/// Pure proposal and validation policy for the explicitly gated S2 prototype.
+///
+/// This policy deliberately treats first-page agreement as a reversible
+/// preference, not complete Path authority. Safety comes from preserving the
+/// original digit ledger, validating candidate conservation and rolling back.
+public enum T9ReversibleAutoAnchorPolicy {
+    public struct Configuration: Equatable, Sendable {
+        public var minimumSourceDigitCount: Int
+        public var evidenceCandidateLimit: Int
+        public var minimumCompatibleCandidateCount: Int
+        public var minimumClosedSyllableCount: Int
+        public var minimumAnchoredSlotCount: Int
+        public var minimumUnresolvedSlotCount: Int
+        /// Optional cap applied after the existing S2 proposal is eligible.
+        /// `nil` preserves the uncapped policy for controlled comparisons.
+        public var maximumAnchoredSyllableCount: Int?
+        /// Integer percentage in `0...100`.
+        public var minimumCandidateOverlapPercent: Int
+
+        public init(
+            minimumSourceDigitCount: Int = 18,
+            evidenceCandidateLimit: Int = 5,
+            minimumCompatibleCandidateCount: Int = 1,
+            minimumClosedSyllableCount: Int = 2,
+            minimumAnchoredSlotCount: Int = 6,
+            minimumUnresolvedSlotCount: Int = 4,
+            maximumAnchoredSyllableCount: Int? = nil,
+            minimumCandidateOverlapPercent: Int = 60
+        ) {
+            self.minimumSourceDigitCount = max(1, minimumSourceDigitCount)
+            self.evidenceCandidateLimit = max(1, evidenceCandidateLimit)
+            self.minimumCompatibleCandidateCount = max(
+                1,
+                minimumCompatibleCandidateCount
+            )
+            self.minimumClosedSyllableCount = max(1, minimumClosedSyllableCount)
+            self.minimumAnchoredSlotCount = max(1, minimumAnchoredSlotCount)
+            self.minimumUnresolvedSlotCount = max(1, minimumUnresolvedSlotCount)
+            self.maximumAnchoredSyllableCount =
+                maximumAnchoredSyllableCount.map { max(1, $0) }
+            self.minimumCandidateOverlapPercent = min(
+                100,
+                max(0, minimumCandidateOverlapPercent)
+            )
+        }
+
+        /// Product-authorized S4 preflight: one eligible S2 proposal, capped
+        /// to its first two anchored syllables before the single transaction.
+        public static let experimental = Configuration(
+            maximumAnchoredSyllableCount: 2
+        )
+
+        /// S2.3 earlier first-anchor: same two-syllable cap with a lower source
+        /// digit floor so attempt 1 can fire before the residual e16-class window.
+        /// Used only when the earlier-first gate is enabled; attempt 2/3 paths
+        /// do not re-apply this floor as a new first-anchor opportunity.
+        public static let experimentalEarlierFirst = Configuration(
+            minimumSourceDigitCount: 12,
+            maximumAnchoredSyllableCount: 2
+        )
+    }
+
+    public struct Proposal: Equatable, Sendable {
+        public let sourceDigits: String
+        public let replacementRawInput: String
+        public let anchoredSyllables: [String]
+        public let anchoredSlotCount: Int
+        public let unresolvedSlotCount: Int
+        /// Ephemeral same-transaction evidence. Never log or persist.
+        let baselineCandidateTexts: [String]
+    }
+
+    public struct Validation: Equatable, Sendable {
+        public let isAccepted: Bool
+        public let resultingCandidateCount: Int
+        public let overlappingCandidateCount: Int
+    }
+
+    public static func proposal(
+        sourceDigits: String,
+        output: RimeOutput,
+        configuration: Configuration = .experimental
+    ) -> Proposal? {
+        guard sourceDigits.count >= configuration.minimumSourceDigitCount,
+              sourceDigits.allSatisfy(isT9Digit),
+              output.candidatePageNumber == 0,
+              output.committedText == nil
+        else {
+            return nil
+        }
+
+        let evidence = Array(output.candidates.prefix(configuration.evidenceCandidateLimit))
+        guard evidence.count >= configuration.minimumCompatibleCandidateCount else {
+            return nil
+        }
+
+        var paths: [[String]] = []
+        paths.reserveCapacity(evidence.count)
+        for (index, candidate) in evidence.enumerated() {
+            guard let path = T9PinyinPathExtractor.path(fromComment: candidate.comment),
+                  T9PinyinPathExtractor.isCompatible(path: path, withRawInput: sourceDigits)
+            else {
+                // The visible first candidate is the preference authority for
+                // S2. Lower-ranked candidates may describe other T9 identities;
+                // they remain protected by post-replacement conservation.
+                if index == 0 { return nil }
+                continue
+            }
+            let segments = path.replacementRawInput
+                .split(separator: "'", omittingEmptySubsequences: true)
+                .map { $0.lowercased() }
+            guard !segments.isEmpty else { return nil }
+            paths.append(segments)
+        }
+        guard paths.count >= configuration.minimumCompatibleCandidateCount else {
+            return nil
+        }
+
+        let common = commonSyllablePrefix(of: paths)
+        let minimumPathLength = paths.map(\.count).min() ?? 0
+        let closed = Array(common.prefix(max(0, minimumPathLength - 1)))
+        guard closed.count >= configuration.minimumClosedSyllableCount else {
+            return nil
+        }
+
+        var selected: [String] = []
+        var anchoredSlots = 0
+        for syllable in closed {
+            let slotCount = T9PinyinPathExtractor.asciiLetterCount(in: syllable)
+            guard slotCount > 0,
+                  anchoredSlots + slotCount
+                    <= sourceDigits.count - configuration.minimumUnresolvedSlotCount
+            else {
+                break
+            }
+            let start = sourceDigits.index(sourceDigits.startIndex, offsetBy: anchoredSlots)
+            let end = sourceDigits.index(start, offsetBy: slotCount)
+            let digitSlice = String(sourceDigits[start..<end])
+            guard T9PinyinSyllableCatalog
+                .completeSyllables(matchingDigits: digitSlice)
+                .contains(syllable)
+            else {
+                return nil
+            }
+            selected.append(syllable)
+            anchoredSlots += slotCount
+        }
+
+        guard selected.count >= configuration.minimumClosedSyllableCount,
+              anchoredSlots >= configuration.minimumAnchoredSlotCount
+        else {
+            return nil
+        }
+
+        // The cap is applied only after the original S2 proposal has passed
+        // every eligibility and catalog check. It cannot make an otherwise
+        // invalid longer prefix eligible.
+        if let maximumAnchoredSyllableCount =
+            configuration.maximumAnchoredSyllableCount,
+            selected.count > maximumAnchoredSyllableCount
+        {
+            selected = Array(selected.prefix(maximumAnchoredSyllableCount))
+            anchoredSlots = selected.reduce(0) {
+                $0 + T9PinyinPathExtractor.asciiLetterCount(in: $1)
+            }
+        }
+        guard selected.count >= configuration.minimumClosedSyllableCount,
+              anchoredSlots >= configuration.minimumAnchoredSlotCount
+        else {
+            return nil
+        }
+
+        let trailingDigits = String(sourceDigits.dropFirst(anchoredSlots))
+        guard trailingDigits.count >= configuration.minimumUnresolvedSlotCount else {
+            return nil
+        }
+        let replacement = selected.joined(separator: "'") + "'" + trailingDigits
+        return Proposal(
+            sourceDigits: sourceDigits,
+            replacementRawInput: replacement,
+            anchoredSyllables: selected,
+            anchoredSlotCount: anchoredSlots,
+            unresolvedSlotCount: trailingDigits.count,
+            baselineCandidateTexts: evidence.map(\.text)
+        )
+    }
+
+    /// Builds the single S2.1 cumulative extension. The already accepted
+    /// automatic prefix is immutable: the proposal may only append exactly two
+    /// complete, catalog-legal syllables and retain the remaining digit tail.
+    public static func cumulativeExtensionProposal(
+        sourceDigits: String,
+        output: RimeOutput,
+        existingReplacementRawInput: String,
+        existingAnchoredSyllableCount: Int,
+        existingAnchoredSlotCount: Int,
+        configuration: Configuration = .experimental
+    ) -> Proposal? {
+        guard existingAnchoredSyllableCount >= 2,
+              existingAnchoredSlotCount > 0,
+              existingAnchoredSlotCount < sourceDigits.count
+        else {
+            return nil
+        }
+
+        let existingDigitTail = String(sourceDigits.dropFirst(existingAnchoredSlotCount))
+        guard existingReplacementRawInput.hasSuffix(existingDigitTail) else {
+            return nil
+        }
+        let existingPrefixEnd = existingReplacementRawInput.index(
+            existingReplacementRawInput.endIndex,
+            offsetBy: -existingDigitTail.count
+        )
+        let existingPrefix = String(existingReplacementRawInput[..<existingPrefixEnd])
+        guard existingPrefix.hasSuffix("'") else { return nil }
+        let existingSyllables = existingPrefix
+            .dropLast()
+            .split(separator: "'", omittingEmptySubsequences: false)
+            .map(String.init)
+        guard existingSyllables.count == existingAnchoredSyllableCount,
+              existingSyllables.allSatisfy({ !$0.isEmpty })
+        else {
+            return nil
+        }
+
+        // Reuse the complete S2 evidence/catalog policy without its two-syllable
+        // transaction cap. The cap is re-applied below as an exact +2 extension.
+        var uncappedConfiguration = configuration
+        uncappedConfiguration.maximumAnchoredSyllableCount = nil
+        guard let fullProposal = proposal(
+            sourceDigits: sourceDigits,
+            output: output,
+            configuration: uncappedConfiguration
+        ) else {
+            return nil
+        }
+
+        let targetSyllableCount = existingAnchoredSyllableCount + 2
+        guard fullProposal.anchoredSyllables.count >= targetSyllableCount,
+              Array(fullProposal.anchoredSyllables.prefix(existingAnchoredSyllableCount))
+                == existingSyllables
+        else {
+            return nil
+        }
+
+        let appendedSyllables = Array(
+            fullProposal.anchoredSyllables[
+                existingAnchoredSyllableCount..<targetSyllableCount
+            ]
+        )
+        let appendedSlotCount = appendedSyllables.reduce(0) {
+            $0 + T9PinyinPathExtractor.asciiLetterCount(in: $1)
+        }
+        guard appendedSyllables.count == 2, appendedSlotCount > 0 else {
+            return nil
+        }
+
+        let cumulativeAnchoredSlotCount =
+            existingAnchoredSlotCount + appendedSlotCount
+        let trailingDigits = String(sourceDigits.dropFirst(cumulativeAnchoredSlotCount))
+        guard trailingDigits.count >= configuration.minimumUnresolvedSlotCount else {
+            return nil
+        }
+        let replacement =
+            existingPrefix
+            + appendedSyllables.joined(separator: "'")
+            + "'"
+            + trailingDigits
+        let cumulativeSyllables = existingSyllables + appendedSyllables
+
+        return Proposal(
+            sourceDigits: sourceDigits,
+            replacementRawInput: replacement,
+            anchoredSyllables: cumulativeSyllables,
+            anchoredSlotCount: cumulativeAnchoredSlotCount,
+            unresolvedSlotCount: trailingDigits.count,
+            baselineCandidateTexts: fullProposal.baselineCandidateTexts
+        )
+    }
+
+    public static func validate(
+        proposal: Proposal,
+        result: RimeOutput,
+        configuration: Configuration = .experimental
+    ) -> Validation {
+        let resulting = Array(result.candidates.prefix(configuration.evidenceCandidateLimit))
+        let baseline = proposal.baselineCandidateTexts
+        let overlap = multisetOverlapCount(
+            baseline: baseline,
+            resulting: resulting.map(\.text)
+        )
+        let requiredOverlap = requiredOverlapCount(
+            baselineCount: baseline.count,
+            percent: configuration.minimumCandidateOverlapPercent
+        )
+        let rawMatches =
+            T9PinyinPathExtractor.normalizeRawIdentity(result.rawInput)
+            == T9PinyinPathExtractor.normalizeRawIdentity(proposal.replacementRawInput)
+        let firstCandidatePreserved =
+            baseline.first != nil
+            && resulting.first?.text == baseline.first
+
+        return Validation(
+            isAccepted:
+                result.committedText == nil
+                && result.composition?.preeditText.isEmpty == false
+                && rawMatches
+                && firstCandidatePreserved
+                && overlap >= requiredOverlap,
+            resultingCandidateCount: resulting.count,
+            overlappingCandidateCount: overlap
+        )
+    }
+
+    /// Counts conserved candidate slots without making their order significant.
+    /// Duplicate text still occupies distinct evidence slots, so a five-slot
+    /// baseline can never silently shrink to a smaller overlap denominator.
+    private static func multisetOverlapCount(
+        baseline: [String],
+        resulting: [String]
+    ) -> Int {
+        var remainingBaselineCounts: [String: Int] = [:]
+        for text in baseline {
+            remainingBaselineCounts[text, default: 0] += 1
+        }
+
+        var overlap = 0
+        for text in resulting {
+            guard let remaining = remainingBaselineCounts[text],
+                  remaining > 0
+            else {
+                continue
+            }
+            overlap += 1
+            remainingBaselineCounts[text] = remaining - 1
+        }
+        return overlap
+    }
+
+    private static func commonSyllablePrefix(of paths: [[String]]) -> [String] {
+        guard var prefix = paths.first else { return [] }
+        for path in paths.dropFirst() {
+            let sharedCount = zip(prefix, path).prefix { $0 == $1 }.count
+            prefix = Array(prefix.prefix(sharedCount))
+            if prefix.isEmpty { break }
+        }
+        return prefix
+    }
+
+    private static func requiredOverlapCount(
+        baselineCount: Int,
+        percent: Int
+    ) -> Int {
+        guard baselineCount > 0 else { return 1 }
+        return max(1, (baselineCount * percent + 99) / 100)
+    }
+
+    private static func isT9Digit(_ character: Character) -> Bool {
+        switch character {
+        case "2"..."9":
+            return true
+        default:
+            return false
+        }
+    }
+}
