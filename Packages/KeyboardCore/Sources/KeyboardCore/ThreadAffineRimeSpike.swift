@@ -37,6 +37,8 @@ public struct ThreadAffineRimeOwnerDiagnostics: Sendable, Equatable {
     public var abandonedAtStopCount: Int
     public var deliveredCount: Int
     public var isDeliveryTerminal: Bool
+    /// Live acceptance epoch (bumped on visibility abandon / advanceSessionEpoch).
+    public var sessionEpoch: UInt64
 
     public init(
         pendingWorkDepth: Int = 0,
@@ -44,7 +46,8 @@ public struct ThreadAffineRimeOwnerDiagnostics: Sendable, Equatable {
         skippedStaleEpochCount: Int = 0,
         abandonedAtStopCount: Int = 0,
         deliveredCount: Int = 0,
-        isDeliveryTerminal: Bool = false
+        isDeliveryTerminal: Bool = false,
+        sessionEpoch: UInt64 = 1
     ) {
         self.pendingWorkDepth = pendingWorkDepth
         self.rejectedAtBoundCount = rejectedAtBoundCount
@@ -52,6 +55,7 @@ public struct ThreadAffineRimeOwnerDiagnostics: Sendable, Equatable {
         self.abandonedAtStopCount = abandonedAtStopCount
         self.deliveredCount = deliveredCount
         self.isDeliveryTerminal = isDeliveryTerminal
+        self.sessionEpoch = sessionEpoch
     }
 }
 
@@ -469,7 +473,8 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
             skippedStaleEpochCount: snapshot.skippedStaleEpochCount,
             abandonedAtStopCount: snapshot.abandonedAtStopCount,
             deliveredCount: delivery.deliveredCount,
-            isDeliveryTerminal: delivery.isTerminal
+            isDeliveryTerminal: delivery.isTerminal,
+            sessionEpoch: snapshot.sessionEpoch
         )
     }
 

@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R5-Preflight dual review Pass with conditions (Debug dual-gate arm + content-free logs); formal R5 A/B / Product Gate not claimed`
+**Lifecycle status:** `Active — R5-Rem-Device Closed direction PASS (dual-gate key-feel better than gate-off; no freeze-burst); Formal R5 FAIL historical; Rem-3 / Product Gate / ADR Accept / default-on not claimed`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -289,7 +289,81 @@
   [evidence](../evidence/t9-responsive-pipeline-r4-b-2026-07-31.md))
 - [x] R4-Wire thread-affine controller wire — **granted 2026-07-31** Human Product
   Owner; dual gate default-off; design → implement → dual review
+- [x] R5-Preflight (Debug dual-gate arm + content-free logs) — **granted
+  2026-07-31**; dual Arch/Quality **Pass with conditions**; implementation tip
+  `87d3e7c`; optional physical path on/off **Pass** same day
+  ([design](t9-responsive-pipeline-001-r5-preflight-design.md),
+  [arch](t9-responsive-pipeline-001-r5-preflight-architecture-review.md),
+  [quality](t9-responsive-pipeline-001-r5-preflight-quality-review.md),
+  [evidence](../evidence/t9-responsive-pipeline-r5-preflight-2026-07-31.md))
+- [x] Formal R5 Human Reminders A/B — **granted 2026-07-31**; **Closed direction FAIL**
+  ([design](t9-responsive-pipeline-001-r5-formal-design.md),
+  [evidence](../evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md))
+- [x] R5-Remediation **design** — **granted 2026-07-31**
+  ([design](t9-responsive-pipeline-001-r5-remediation-design.md))
+- [x] R5-Rem-1 + R5-Rem-2 **implementation** — **granted 2026-07-31**; Executor
+  complete — dual review pending
+  ([evidence](../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md))
+- [ ] R5-Rem-3 provisional L1 — **not granted**
+- [ ] R5-Rem-Device Human re-pair — **not granted**
 - [ ] Release default-on / Product Gate / ADR 0025 Accept — **not granted**
+
+### Exit Criteria — R5-Remediation design
+
+- [x] Root-cause freeze (RC1–RC4) from Formal R5 FAIL
+- [x] L0/L1/L2 layer split; presentation vs engine-apply split
+- [x] Content-free felt metrics contract (accept→visible, publish lag, burst)
+- [x] Ranked options O1–O3 + recommended sequence
+- [x] Phase map Rem-1…Rem-Device; non-claims; Product implementation template
+- [x] Implementation authorization for Rem-1+2 (2026-07-31)
+
+### Exit Criteria — R5-Rem-1 + R5-Rem-2 (Executor)
+
+- [x] ACCEPT / VISIBLE / PUBLISH lag / BURST markers + unit tests
+- [x] Dual-gate presentation coalesce under pending threshold
+- [x] MainActor R2 true latestOnly (no force everyResult)
+- [x] R3 context last-head under coalesce
+- [x] Focused + full KeyboardCore green (841/0)
+- [x] Independent Architecture review — **Pass with conditions**
+  ([review](t9-responsive-pipeline-001-r5-rem-1-2-architecture-review.md); 0 P0, **1 P1** at review time)
+- [x] Independent Quality review — **Pass with conditions**
+  ([review](t9-responsive-pipeline-001-r5-rem-1-2-quality-review.md); re-run 48+841/0; 0 P0, 0 P1)
+- [x] Arch **P1-1 Closed** — presentation generation + live epoch gate +
+  `testDualGateAbandonDropsDeferredCoalescedPresentation` (2026-07-31)
+- [x] Device re-pair Rem-Device — **granted 2026-07-31**; **Closed direction PASS**
+  ([evidence](../evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md));
+  dual-gate key-feel better than A; no freeze-then-burst; not Product Gate
+
+### Exit Criteria — Formal R5
+
+- [x] Design freeze D1–D5 recorded
+  ([design](t9-responsive-pipeline-001-r5-formal-design.md))
+- [x] Arm A install: Debug dual-gate OFF prepared; Human Arm A metrics recorded
+- [x] Arm B install: Debug dual-gate ON prepared; Human Arm B metrics recorded
+- [x] One valid Human A→B pair on frozen fixture (stop-fast; pairs 2–3 not needed)
+- [x] Content-free metrics table + subjective scores
+  ([evidence](../evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md))
+- [x] Direction verdict per D5: **FAIL** (B freeze-then-burst worse than A)
+- [x] Architecture path-identity + KEY END metric honesty note
+- [x] Quality evidence binding to tip `87d3e7c` + arm hashes
+- [x] Teardown to gate-off; non-claims recorded
+- [x] Product disposition: Formal R5 Closed as direction FAIL (not Product Gate)
+
+### Exit Criteria — R5-Preflight
+
+- [x] Design freeze D1–D4 (arm resolution, no dual live MainActor session,
+  content-free markers, operator prep).
+- [x] Implementation tip `87d3e7c` + KeyboardCore preflight tests (5 focused /
+  836 full at dual review).
+- [x] Independent Architecture review — **Pass with conditions**.
+- [x] Independent Quality review — **Pass with conditions**.
+- [x] Physical device path ON: `path=thread-affine dualGateActive=1` + READY +
+  PUBLISH (iPhone 13 Pro, 2026-07-31).
+- [x] Physical device path OFF after teardown: `path=sync dualGateActive=0`, no
+  owner-thread READY / R5P PUBLISH.
+- [x] Device restored to gate-off Debug; dualGate key false.
+- [x] Explicit non-claims recorded (no formal R5 / ADR Accept / Product Gate /
+  default-on / subjective non-stutter).
 
 ### Exit Criteria — Spike-P1-3
 
@@ -466,6 +540,37 @@ forbidden.
 - Design report sections (Scope … Product Decisions Still Needed)
 - Confirmation: production code untouched
 - Recommended next Product instruction template for R1
+
+### Handoff after R5-Preflight Closed (2026-07-31)
+
+**Closed knife:** R5-Preflight only (arm + content-free logs + path on/off).
+
+**Parent Assignment state:** remains `Active` until formal R5 / R6 / Product Gate
+or Product Hold.
+
+**Device residual for formal R5 (not open):**
+
+- Fixed fixture / Reminders disposable list protocol (see plan acceptance matrix)
+- Paired on/off or A/B order with subjective non-stutter scores
+- Content-free counters (action→local feedback, action→publish lag, revision lag)
+- Optional diagnostics filter for `T9RESP` (product polish; not a Gate blocker)
+- Dual-gate typo sidecar residual (CandidateProvider adapter under preflight arm)
+
+**Recommended Product instruction template — formal R5 only:**
+
+```text
+我作为 Human Product Owner / Product Lead，确认
+T9-RESPONSIVE-PIPELINE-001 的 R5-Preflight 已关闭，路径 on/off 证据可读。
+
+我授权仅正式 R5：
+在同一 iPhone 上用 Reminders 可丢弃列表，按 plan 冻结拼写做 Human 手打 A/B
+（gate-off baseline vs dual-gate armed Debug），收集 content-free 指标与
+主观非卡顿评分；不打开 Release default-on；不 Accept ADR 0025；不宣布
+Product Gate。
+
+完成后停止，提交证据包，交独立 Architecture / Quality，再由我做是否进入 R6
+的 Product 决定。
+```
 
 ### Revalidation Trigger
 

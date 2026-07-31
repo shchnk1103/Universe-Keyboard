@@ -1,10 +1,12 @@
 # T9-RESPONSIVE-PIPELINE-001 / R5-Preflight design
 
-**Status:** `Active — Architecture design freeze for R5-Preflight`  
+**Status:** `Closed — R5-Preflight design + dual review + device path on/off verified`  
 **Date:** `2026-07-31 Asia/Shanghai`  
 **Role author:** 🏛️ Architecture & Knowledge Steward  
-**Product:** R5-Preflight authorized 2026-07-31  
+**Product:** R5-Preflight authorized 2026-07-31; **Closed** same day after device path matrix  
 **Predecessor:** R4-Wire `be4c4ac`  
+**Implementation tip:** `87d3e7c`  
+**Device evidence:** [`../evidence/t9-responsive-pipeline-r5-preflight-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-preflight-2026-07-31.md)  
 **ADR 0025:** remains **Proposed**
 
 ---
@@ -93,10 +95,19 @@ Disarm: set key `false` / omit compile flag. Release archives ignore the key.
 
 - Unit tests: default off; arm resolution pure function; no Release arm.
 - Code review: no project-level ENABLED flag in shared schemes by default.
-- Optional device: Human exports content-free logs after arming.
+- Optional device: Human exports content-free logs after arming — **done**
+  2026-07-31 iPhone 13 Pro on/off path matrix (see evidence file).
 
 ---
 
 ## 4. Explicit non-claims
 
 Subjective non-stutter, formal R5 Pass, ADR Accept, Product Gate, jetsam SLO.
+
+---
+
+## 5. Close note (2026-07-31)
+
+R5-Preflight is **Closed**. Formal R5 (Human Reminders A/B with product
+conclusion) requires a new Product Lead authorization and is not opened by
+this close.

@@ -80,29 +80,18 @@
   [`Product Decision`](product-decisions/T9-AUTO-ANCHOR-001-authorization.md),
   [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)
 - T9 responsive RIME input pipeline
-  (`T9-RESPONSIVE-PIPELINE-001`, Phase A freeze + R3 default-off parity:
-  bridge single-owner, presentation bridge, Path/auto-anchor apply context,
-  chrome unwrap; Arch P1-3 thread-affine Fake Spike implemented with independent
-  review pending; real librime/R4 not authorized; ADR 0025 Proposed; Product
-  Gate not claimed; auto-anchor Hold/harvest):
+  (`T9-RESPONSIVE-PIPELINE-001`, **Active** — Formal R5 **direction FAIL** retained;
+  **R5-Rem-Device direction PASS** (dual-gate key-feel better than gate-off after
+  Rem-1+2+P1-1; Formal R5 freeze-burst FAIL historical); Rem-3 / Product Gate /
+  ADR Accept / default-on **not** claimed; auto-anchor Hold/harvest):
   [`Product Decision`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md),
   [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md),
-  [`Spike design`](assignments/t9-responsive-pipeline-001-spike-p1-3-design.md),
-  [`Spike evidence`](evidence/t9-responsive-pipeline-spike-p1-3-2026-07-30.md),
   [`plan`](plans/t9-responsive-rime-pipeline-plan.md),
   [`ADR 0025 Proposed`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md),
-  [`R1 evidence`](evidence/t9-responsive-pipeline-r1-2026-07-30.md),
-  [`R1 Arch review`](assignments/t9-responsive-pipeline-001-r1-architecture-review.md),
-  [`R1 Arch re-review`](assignments/t9-responsive-pipeline-001-r1-architecture-rereview.md),
-  [`R1 Quality review`](assignments/t9-responsive-pipeline-001-r1-quality-review.md),
-  [`R2 Arch review`](assignments/t9-responsive-pipeline-001-r2-architecture-review.md),
-  [`R2 Arch re-review`](assignments/t9-responsive-pipeline-001-r2-architecture-rereview.md),
-  [`R2 Quality review`](assignments/t9-responsive-pipeline-001-r2-quality-review.md),
-  [`R2 Quality re-review`](assignments/t9-responsive-pipeline-001-r2-quality-rereview.md),
-  [`R3 Arch review`](assignments/t9-responsive-pipeline-001-r3-architecture-review.md),
-  [`R3 Arch re-review`](assignments/t9-responsive-pipeline-001-r3-architecture-rereview.md),
-  [`R3 Quality review`](assignments/t9-responsive-pipeline-001-r3-quality-review.md),
-  [`R3 Quality re-review`](assignments/t9-responsive-pipeline-001-r3-quality-rereview.md)
+  [`R5-Rem-Device evidence`](evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md),
+  [`R5-Rem-1+2 evidence`](evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md),
+  [`R5-Remediation design`](assignments/t9-responsive-pipeline-001-r5-remediation-design.md),
+  [`Formal R5 evidence`](evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md)
 - Release procedure: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)
 - 2026-08-01 release control: [`RELEASE-2026-0801`](assignments/release-2026-08-01.md) and its [evidence ledger](evidence/release-2026-08-01-acceptance.md)
 - New-user activation / Full Access journey: [`ONBOARDING_ACTIVATION.md`](ONBOARDING_ACTIVATION.md), Product Decision [`PD-RELEASE-2026-0801-03`](product-decisions/RELEASE-2026-0801-03-activation-authorization.md)

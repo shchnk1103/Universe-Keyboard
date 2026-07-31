@@ -66,6 +66,15 @@ public final class KeyboardController {
     var shouldRebuildSessionDuringRestore = false
     /// FIFO contexts for deferred processKey post-processing (R3 parity).
     var responsiveKeyApplyContexts: [ResponsiveKeyApplyContext] = []
+    /// R5-Rem-2: dual-gate latest-only presentation buffer.
+    private var dualGatePendingPresentationSnapshot: ResponsiveRimeSnapshot?
+    private var dualGatePresentationCoalesceScheduled = false
+    /// R5-Rem Arch P1-1: bumped on abandon/reset/rebuild so deferred coalesce
+    /// Tasks fail closed and cannot paint after presentation authority dies.
+    private var responsivePresentationGeneration: UInt64 = 0
+    private var lastPresentedSessionEpoch: UInt64 = 0
+    private var lastPresentedRevision: UInt64 = 0
+    private let feltMetrics = ResponsiveRimeFeltMetricsTracker.shared
 
     /// Context captured when a responsive processKey is accepted (before drain).
     struct ResponsiveKeyApplyContext {
@@ -164,6 +173,8 @@ public final class KeyboardController {
             }
             threadAffineRimeCoordinator = coordinator
             responsiveKeyApplyContexts.removeAll()
+            dualGatePendingPresentationSnapshot = nil
+            dualGatePresentationCoalesceScheduled = false
             rimeEngine = ThreadAffineRimeEngineBridge(coordinator: coordinator)
             return
         }
@@ -177,9 +188,10 @@ public final class KeyboardController {
 
         let coordinator = ResponsiveRimeSessionCoordinator(
             engine: underlying,
-            // everyResult keeps one publish callback per processNext so R3
-            // post-processing contexts stay 1:1 with drained keys.
-            publishPolicy: publishPolicy == .latestOnly ? .everyResult : publishPolicy,
+            // R5-Rem-2: honor latestOnly for UI publish coalesce. Engine still
+            // applies every enqueued action; R3 contexts bind to applied head
+            // (last matching context), not every intermediate paint.
+            publishPolicy: publishPolicy,
             fixtureID: "T9RESP-R2",
             clock: clock
         )
@@ -189,6 +201,8 @@ public final class KeyboardController {
         responsiveRimeCoordinator = coordinator
         threadAffineRimeCoordinator = nil
         responsiveKeyApplyContexts.removeAll()
+        dualGatePendingPresentationSnapshot = nil
+        dualGatePresentationCoalesceScheduled = false
         // All session call sites go through the bridge → single serial pipeline.
         rimeEngine = ResponsiveRimeEngineBridge(
             underlyingEngine: underlying,
@@ -199,15 +213,133 @@ public final class KeyboardController {
     /// Apply a published responsive snapshot on MainActor and run gate-off-parity
     /// Path / auto-anchor post-processing when a key context is available (R3).
     ///
-    /// R3 P1 fixes:
-    /// - Only consume FIFO context for deferred `pk-*` processKey publishes.
-    /// - Drop contexts whose epoch no longer matches the snapshot.
-    /// - Post-process mutations use **underlying** engine (not Bridge) so
-    ///   Path/auto-anchor cannot re-enter `performOrderedNow` and steal contexts.
-    func applyResponsivePublishedSnapshot(_ snapshot: ResponsiveRimeSnapshot?) {
+    /// R5-Rem-2:
+    /// - Dual-gate: coalesce UI paints to latest under owner backlog (O2).
+    /// - Contexts: under latestOnly, keep the **last** matching pk context so
+    ///   multi-key drain does not require `.everyResult` UI publishes.
+    /// - Engine FIFO is unchanged (all session actions still execute).
+    func applyResponsivePublishedSnapshot(
+        _ snapshot: ResponsiveRimeSnapshot?,
+        coalesced: Bool = false
+    ) {
         guard isResponsiveRimePipelineEnabled, let snapshot else { return }
 
-        // R5-Preflight: content-free publish marker (no raw input / candidates).
+        // Dual-gate: prefer latest-only presentation while owner still has work.
+        if isThreadAffineRimeOwnerEnabled, !coalesced {
+            let pendingDepth = threadAffineRimeCoordinator?.diagnostics.pendingWorkDepth ?? 0
+            if pendingDepth >= ResponsiveRimeFeltMetrics.presentationCoalescePendingThreshold
+                || dualGatePresentationCoalesceScheduled
+                || dualGatePendingPresentationSnapshot != nil
+            {
+                dualGatePendingPresentationSnapshot = snapshot
+                scheduleDualGateCoalescedPresentation()
+                return
+            }
+        }
+
+        performResponsivePresentationApply(snapshot, coalesced: coalesced)
+    }
+
+    /// Flush latest dual-gate snapshot after backlog drains (MainActor).
+    private func scheduleDualGateCoalescedPresentation() {
+        guard !dualGatePresentationCoalesceScheduled else { return }
+        dualGatePresentationCoalesceScheduled = true
+        let generationAtSchedule = responsivePresentationGeneration
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            // Yield so a burst of deliveries can collapse to one latest snapshot.
+            var spins = 0
+            while spins < 64 {
+                await Task.yield()
+                spins += 1
+                // Abandon / rebuild invalidated this presentation generation.
+                if self.responsivePresentationGeneration != generationAtSchedule {
+                    self.dualGatePresentationCoalesceScheduled = false
+                    return
+                }
+                let depth = self.threadAffineRimeCoordinator?.diagnostics.pendingWorkDepth ?? 0
+                if depth == 0 { break }
+            }
+            self.dualGatePresentationCoalesceScheduled = false
+            guard self.responsivePresentationGeneration == generationAtSchedule else { return }
+            guard let latest = self.dualGatePendingPresentationSnapshot else { return }
+            self.dualGatePendingPresentationSnapshot = nil
+            // If more work arrived, re-buffer and reschedule.
+            let depth = self.threadAffineRimeCoordinator?.diagnostics.pendingWorkDepth ?? 0
+            if depth >= ResponsiveRimeFeltMetrics.presentationCoalescePendingThreshold {
+                guard self.responsivePresentationGeneration == generationAtSchedule else { return }
+                self.dualGatePendingPresentationSnapshot = latest
+                self.scheduleDualGateCoalescedPresentation()
+                return
+            }
+            self.performResponsivePresentationApply(
+                latest,
+                coalesced: true,
+                expectedGeneration: generationAtSchedule
+            )
+        }
+    }
+
+    /// Live session epoch for responsive presentation gating (nil if gate-off).
+    private func liveResponsiveSessionEpoch() -> UInt64? {
+        if isThreadAffineRimeOwnerEnabled, let affine = threadAffineRimeCoordinator {
+            return affine.diagnostics.sessionEpoch
+        }
+        if let main = responsiveRimeCoordinator {
+            return main.diagnostics.sessionEpoch
+        }
+        return nil
+    }
+
+    /// True when this snapshot may still update visible composition authority.
+    private func isLivePresentationSnapshot(
+        _ snapshot: ResponsiveRimeSnapshot,
+        expectedGeneration: UInt64?
+    ) -> Bool {
+        if let expectedGeneration, expectedGeneration != responsivePresentationGeneration {
+            return false
+        }
+        if let liveEpoch = liveResponsiveSessionEpoch(),
+           snapshot.sessionEpoch != liveEpoch
+        {
+            return false
+        }
+        // Never paint an older revision over a newer one in the same epoch.
+        if snapshot.sessionEpoch == lastPresentedSessionEpoch,
+           snapshot.revision <= lastPresentedRevision
+        {
+            return false
+        }
+        return true
+    }
+
+    private func performResponsivePresentationApply(
+        _ snapshot: ResponsiveRimeSnapshot,
+        coalesced: Bool,
+        expectedGeneration: UInt64? = nil
+    ) {
+        // Arch P1-1: fail closed if abandon/reset superseded this paint.
+        guard isLivePresentationSnapshot(snapshot, expectedGeneration: expectedGeneration) else {
+            return
+        }
+
+        let pendingAfter: Int
+        if isThreadAffineRimeOwnerEnabled {
+            pendingAfter = threadAffineRimeCoordinator?.diagnostics.pendingWorkDepth ?? 0
+        } else {
+            pendingAfter = responsiveRimeCoordinator?.diagnostics.pendingDepth ?? 0
+        }
+
+        // Content-free felt metrics (Rem-1).
+        let metrics = feltMetrics.recordPublish(
+            revision: snapshot.revision,
+            pendingAfter: pendingAfter,
+            coalesced: coalesced
+        )
+        Logger.shared.performance(metrics.publishLine)
+        if let burst = metrics.burstLine {
+            Logger.shared.performance(burst)
+        }
         if isThreadAffineRimeOwnerEnabled {
             Logger.shared.performance(
                 ResponsiveRimePreflight.publishMarkerLine(
@@ -216,6 +348,19 @@ public final class KeyboardController {
                 )
             )
         }
+        if let visible = feltMetrics.recordVisible(
+            revision: snapshot.revision,
+            source: .engine
+        ) {
+            Logger.shared.performance(visible)
+        }
+
+        // Re-check after metrics (abandon can race on MainActor between awaits).
+        guard isLivePresentationSnapshot(snapshot, expectedGeneration: expectedGeneration) else {
+            return
+        }
+        lastPresentedSessionEpoch = snapshot.sessionEpoch
+        lastPresentedRevision = snapshot.revision
 
         // Drop contexts invalidated by epoch barriers (abandon / reset / recover).
         while let head = responsiveKeyApplyContexts.first,
@@ -225,12 +370,17 @@ public final class KeyboardController {
         }
 
         // Nested Bridge publishes (ord-*) must not consume processKey contexts.
+        // Under latestOnly / dual-gate coalesce, one paint may cover N keys —
+        // keep only the last matching pk context (applied head).
         let ctx: ResponsiveKeyApplyContext?
-        if snapshot.actionID.hasPrefix("pk-"),
-           let head = responsiveKeyApplyContexts.first,
-           head.sessionEpoch == snapshot.sessionEpoch
-        {
-            ctx = responsiveKeyApplyContexts.removeFirst()
+        if snapshot.actionID.hasPrefix("pk-") {
+            var last: ResponsiveKeyApplyContext?
+            while let head = responsiveKeyApplyContexts.first,
+                  head.sessionEpoch == snapshot.sessionEpoch
+            {
+                last = responsiveKeyApplyContexts.removeFirst()
+            }
+            ctx = last
         } else {
             ctx = nil
         }
@@ -346,6 +496,13 @@ public final class KeyboardController {
 
     func clearResponsiveKeyApplyContexts() {
         responsiveKeyApplyContexts.removeAll(keepingCapacity: true)
+        dualGatePendingPresentationSnapshot = nil
+        dualGatePresentationCoalesceScheduled = false
+        // Invalidate in-flight dual-gate coalesce Tasks and stale presentation.
+        responsivePresentationGeneration &+= 1
+        lastPresentedSessionEpoch = 0
+        lastPresentedRevision = 0
+        feltMetrics.reset()
     }
 
     func enqueueResponsiveKeyApplyContext(
@@ -358,6 +515,8 @@ public final class KeyboardController {
             epoch = main.diagnostics.sessionEpoch
         } else if let published = threadAffineRimeCoordinator?.lastPublished {
             epoch = published.sessionEpoch
+        } else if let receipt = threadAffineRimeCoordinator?.lastAcceptReceipt {
+            epoch = receipt.sessionEpoch
         } else {
             epoch = 1
         }
@@ -369,6 +528,17 @@ public final class KeyboardController {
                 sessionEpoch: epoch
             )
         )
+    }
+
+    /// Rem-1: record ACCEPT marker after responsive key accept.
+    func recordResponsiveAcceptMetrics(from receipt: ResponsiveRimeAcceptReceipt?) {
+        guard let receipt else { return }
+        let line = feltMetrics.recordAccept(
+            revision: receipt.revision,
+            epoch: receipt.sessionEpoch,
+            pending: receipt.pendingDepthAfterAccept
+        )
+        Logger.shared.performance(line)
     }
 
     /// R4-Wire helper — nil when dual-gate path is inactive or OS-unavailable.
