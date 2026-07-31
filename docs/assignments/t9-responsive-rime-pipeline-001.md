@@ -317,9 +317,11 @@
   [arch](t9-responsive-pipeline-001-r5-rem-3-architecture-review.md),
   [quality](t9-responsive-pipeline-001-r5-rem-3-quality-review.md))
 - [x] R5-Rem-3 **implementation** — **granted 2026-07-31** (Product option 1);
-  Executor complete — dual implementation review pending
-  ([evidence](../evidence/t9-responsive-pipeline-r5-rem-3-2026-07-31.md))
-- [ ] R5-Rem-3 independent Architecture / Quality **implementation** review — pending
+  Executor complete; dual review **Pass with conditions** + **P1 remediation**;
+  full KeyboardCore **852/0**
+  ([evidence](../evidence/t9-responsive-pipeline-r5-rem-3-2026-07-31.md),
+  [arch](t9-responsive-pipeline-001-r5-rem-3-implementation-architecture-review.md),
+  [quality](t9-responsive-pipeline-001-r5-rem-3-implementation-quality-review.md))
 - [ ] R5-Rem-3-Device — **not granted**
 - [ ] Release default-on / Product Gate / ADR 0025 Accept / R6 — **not granted**
 

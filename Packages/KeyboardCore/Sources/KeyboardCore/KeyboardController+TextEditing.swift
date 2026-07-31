@@ -7,7 +7,13 @@ extension KeyboardController {
             return effects
         }
         var effects: KeyboardEffect = []
-        if !state.currentComposition.isEmpty {
+        if isResponsiveProvisionalAhead
+            || state.currentComposition.contains(ResponsiveProvisionalComposition.placeholderScalar)
+        {
+            abandonResponsiveProvisionalL1WithoutHostCommit()
+            rimeEngine?.resetSession()
+            effects.insert(.compositionChanged)
+        } else if !state.currentComposition.isEmpty {
             finishActiveCompositionAsDisplayText()
             rimeEngine?.resetSession()
             effects.insert(.compositionChanged)
@@ -137,6 +143,15 @@ extension KeyboardController {
     }
 
     func handleInsertReturn() -> KeyboardEffect {
+        if isResponsiveProvisionalAhead
+            || state.currentComposition.contains(ResponsiveProvisionalComposition.placeholderScalar)
+        {
+            abandonResponsiveProvisionalL1WithoutHostCommit()
+            rimeEngine?.resetSession()
+            clearTypoCorrectionSuggestions()
+            let pathEffect = clearT9PinyinPathStateReturningEffect()
+            return .compositionChanged.union(pathEffect)
+        }
         let raw = state.lastRimeOutput?.rawInput ?? state.currentComposition
         switch T9CompositionCommitPolicy.returnAction(
             usesT9InputSemantics: usesT9InputSemantics,
@@ -171,6 +186,15 @@ extension KeyboardController {
     }
 
     func handleDeleteBackward() -> KeyboardEffect {
+        // Rem-3: Delete while L1-only (no L2 yet) — drop one provisional slot.
+        if isResponsiveProvisionalAhead,
+           isResponsiveRimePipelineEnabled,
+           isThreadAffineRimeOwnerEnabled,
+           (rimeEngine?.isComposing() != true || state.lastRimeOutput == nil)
+        {
+            // Still enqueue engine delete for FIFO; clear local L1 length immediately
+            // after ordered apply via align helper below.
+        }
         if let engine = rimeEngine, restorePartialCommitCheckpoint(using: engine) {
             return .compositionChanged
         }
@@ -211,6 +235,8 @@ extension KeyboardController {
             let previousRawForTrace = state.lastRimeOutput?.rawInput
             let result = engine.deleteBackward()
             applyRimeOutputPreservingPartialCommit(augmentRimeOutputIfNeeded(result))
+            // Rem-3 D3: ordered Delete must not leave L1 ledger sticky.
+            alignResponsiveProvisionalAfterOrderedEngineApply()
             let restoredFocus = restoreFocusedT9SegmentAfterDeletion(
                 previous: previousT9PathState
             )

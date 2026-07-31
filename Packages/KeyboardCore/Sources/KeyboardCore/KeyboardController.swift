@@ -550,6 +550,32 @@ public final class KeyboardController {
         return true
     }
 
+    /// Rem-3 Layer Rule 3: drop L1 without ever committing `·` to the host.
+    func abandonResponsiveProvisionalL1WithoutHostCommit() {
+        guard provisionalCompositionMirror.isProvisionalAhead
+            || provisionalCompositionMirror.isActive
+            || state.currentComposition.contains(ResponsiveProvisionalComposition.placeholderScalar)
+        else {
+            return
+        }
+        provisionalCompositionMirror.clear()
+        state.currentComposition = ""
+        state.lastRimeOutput = nil
+        state.partialCommit = nil
+        if usesT9InputSemantics {
+            clearT9PinyinPathState()
+        }
+        updateInlinePreedit("", source: .compositionProjection)
+    }
+
+    /// Rem-3: ordered engine apply (Delete / performOrderedNow) must clear L1 ledger.
+    func alignResponsiveProvisionalAfterOrderedEngineApply() {
+        guard isResponsiveRimePipelineEnabled, isThreadAffineRimeOwnerEnabled else {
+            return
+        }
+        provisionalCompositionMirror.clear()
+    }
+
     /// Rem-3: after dual-gate processKey accept, paint structure-only L1 when eligible.
     func applyResponsiveProvisionalL1IfEligible(rimeKey: String) {
         // Dual-gate only (thread-affine owner + responsive gate).

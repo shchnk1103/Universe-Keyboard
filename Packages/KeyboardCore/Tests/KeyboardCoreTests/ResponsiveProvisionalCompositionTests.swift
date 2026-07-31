@@ -239,4 +239,47 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         controller.threadAffineRimeCoordinator?.flushPending()
         controller.suspendRimeForVisibilityChange()
     }
+
+    func testReturnWhileAheadDoesNotCommitDots() async {
+        let entered = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
+        let client = FakeTextInputClient()
+        let controller = makeDualGateController(entered: entered, release: release)
+        controller.textClient = client
+        for _ in 0..<3 {
+            _ = controller.handle(.insertKey("2"))
+        }
+        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+        XCTAssertTrue(controller.isResponsiveProvisionalAhead)
+        _ = controller.handle(.insertReturn)
+        XCTAssertFalse(controller.isResponsiveProvisionalAhead)
+        XCTAssertFalse(client.text.contains("·"))
+        XCTAssertEqual(controller.state.currentComposition, "")
+        release.signal()
+        controller.threadAffineRimeCoordinator?.flushPending()
+        controller.suspendRimeForVisibilityChange()
+    }
+
+    func testCoalesceBacklogStillPaintsL1() async {
+        let entered = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
+        var paintCount = 0
+        let controller = makeDualGateController(entered: entered, release: release)
+        controller.onResponsivePresentationNeeded = { _ in paintCount += 1 }
+        // 5 keys while blocked → pending rises; L1 should still paint dots.
+        for _ in 0..<5 {
+            _ = controller.handle(.insertKey("2"))
+        }
+        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+        XCTAssertEqual(controller.state.currentComposition, "·····")
+        XCTAssertTrue(controller.isResponsiveProvisionalAhead)
+        XCTAssertGreaterThanOrEqual(paintCount, 1, "L1 must notify presentation under backlog")
+        release.signal()
+        controller.threadAffineRimeCoordinator?.flushPending()
+        let settle = expectation(description: "coalesce-l1-settle")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { settle.fulfill() }
+        await fulfillment(of: [settle], timeout: 2)
+        XCTAssertFalse(controller.isResponsiveProvisionalAhead)
+        controller.suspendRimeForVisibilityChange()
+    }
 }

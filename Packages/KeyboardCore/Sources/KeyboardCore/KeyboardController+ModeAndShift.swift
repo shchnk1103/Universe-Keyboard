@@ -49,6 +49,7 @@ extension KeyboardController {
         ) {
         case .abandonComposition:
             // ADR 0018: never commit raw T9 digits on language switch.
+            abandonResponsiveProvisionalL1WithoutHostCommit()
             clearInlinePreedit()
             state.currentComposition = ""
             state.lastRimeOutput = nil
@@ -58,7 +59,14 @@ extension KeyboardController {
             effects.insert(.compositionChanged)
             effects.formUnion(clearT9PinyinPathStateReturningEffect())
         default:
-            if let engine = rimeEngine, engine.isComposing() {
+            if isResponsiveProvisionalAhead
+                || state.currentComposition.contains(ResponsiveProvisionalComposition.placeholderScalar)
+            {
+                abandonResponsiveProvisionalL1WithoutHostCommit()
+                rimeEngine?.resetSession()
+                effects.insert(.compositionChanged)
+                effects.formUnion(clearT9PinyinPathStateReturningEffect())
+            } else if let engine = rimeEngine, engine.isComposing() {
                 finishActiveCompositionAsDisplayText()
                 engine.resetSession()
                 effects.insert(.compositionChanged)

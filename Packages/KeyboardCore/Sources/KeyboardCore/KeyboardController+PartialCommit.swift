@@ -366,6 +366,9 @@ extension KeyboardController {
     /// Applies a RIME output while preserving a confirmed prefix during the active session.
     func applyRimeOutputPreservingPartialCommit(_ output: RimeOutput) {
         advanceCompositionRevision()
+        // Rem-3 D3: any dual-gate engine apply into Core state clears L1 ledger
+        // (ordered Delete / L2 presentation both flow here).
+        alignResponsiveProvisionalAfterOrderedEngineApply()
         if let committedText = output.committedText,
            !engineCommitIsHostSafe(committedText)
         {
@@ -611,6 +614,14 @@ extension KeyboardController {
 
     /// Commits the complete active display without losing a previously confirmed prefix.
     func finishActiveCompositionAsDisplayText() {
+        // Rem-3: never host-commit structure-only L1 placeholders.
+        if isResponsiveProvisionalAhead
+            || state.currentComposition.contains(ResponsiveProvisionalComposition.placeholderScalar)
+        {
+            abandonResponsiveProvisionalL1WithoutHostCommit()
+            clearTypoCorrectionSuggestions()
+            return
+        }
         let preferred = activeCompositionDisplayText
         let displayText = compositionProjectionContainsInternalDigit(preferred)
             ? state.insertedPreeditText
@@ -631,6 +642,14 @@ extension KeyboardController {
     func finishActiveCompositionAsRawInput(
         source: CommittedTextSource = .compositionFinalization
     ) {
+        // Rem-3: never host-commit structure-only L1 placeholders.
+        if isResponsiveProvisionalAhead
+            || state.currentComposition.contains(ResponsiveProvisionalComposition.placeholderScalar)
+        {
+            abandonResponsiveProvisionalL1WithoutHostCommit()
+            clearTypoCorrectionSuggestions()
+            return
+        }
         let preferred = state.partialCommit?.displayText
             ?? state.lastRimeOutput?.rawInput
             ?? state.currentComposition
