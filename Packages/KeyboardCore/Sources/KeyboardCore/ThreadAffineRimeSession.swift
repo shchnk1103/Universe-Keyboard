@@ -95,6 +95,31 @@ private final class ThreadAffineDeliverySink: Sendable {
     }
 }
 
+// MARK: - MainActor publish router
+
+/// Routes owner-thread snapshot notifications to MainActor handlers without
+/// capturing non-Sendable coordinator instances inside `@Sendable` Notification
+/// closures (Swift 6 / CI `warnings-as-errors`).
+@MainActor
+private enum ThreadAffinePublishRouter {
+    private static var handlers: [ObjectIdentifier: (ResponsiveRimeSnapshot) -> Void] = [:]
+
+    static func setHandler(
+        _ id: ObjectIdentifier,
+        _ handler: ((ResponsiveRimeSnapshot) -> Void)?
+    ) {
+        if let handler {
+            handlers[id] = handler
+        } else {
+            handlers.removeValue(forKey: id)
+        }
+    }
+
+    static func deliver(_ id: ObjectIdentifier, snapshot: ResponsiveRimeSnapshot) {
+        handlers[id]?(snapshot)
+    }
+}
+
 // MARK: - Coordinator
 
 /// R4-Wire coordinator: schedule on MainActor, execute on thread-affine owner.
@@ -111,6 +136,8 @@ public final class ThreadAffineRimeSessionCoordinator {
     private var actionSequence: UInt64 = 0
     private var publishHandler: PublishHandler?
     private var observer: NSObjectProtocol?
+    /// Retained token whose `ObjectIdentifier` is Sendable and stable for routing.
+    private let routerToken = NSObject()
     public private(set) var lastAcceptReceipt: ResponsiveRimeAcceptReceipt?
     public private(set) var lastScheduledActionID: String?
     public let fixtureID: String
@@ -123,13 +150,17 @@ public final class ThreadAffineRimeSessionCoordinator {
         self.bootstrap = bootstrap
         self.configuration = configuration
         self.fixtureID = fixtureID
+        // Capture only Sendable values in the @Sendable notification body.
+        let routeID = ObjectIdentifier(routerToken)
         observer = NotificationCenter.default.addObserver(
             forName: .threadAffineRimeSnapshotPublished,
             object: nil,
             queue: .main
-        ) { [weak self] note in
+        ) { note in
             guard let snapshot = note.object as? ResponsiveRimeSnapshot else { return }
-            self?.publishHandler?(snapshot)
+            Task { @MainActor in
+                ThreadAffinePublishRouter.deliver(routeID, snapshot: snapshot)
+            }
         }
         startOwner()
     }
@@ -139,6 +170,10 @@ public final class ThreadAffineRimeSessionCoordinator {
             NotificationCenter.default.removeObserver(observer)
         }
         owner?.shutdown()
+        let routeID = ObjectIdentifier(routerToken)
+        Task { @MainActor in
+            ThreadAffinePublishRouter.setHandler(routeID, nil)
+        }
     }
 
     public var lastPublished: ResponsiveRimeSnapshot? { sink.lastPublished() }
@@ -151,8 +186,19 @@ public final class ThreadAffineRimeSessionCoordinator {
         (owner?.diagnostics().pendingWorkDepth ?? 0) > 0
     }
 
+    /// Install UI publish sink. Call from the keyboard MainActor only
+    /// (`KeyboardController.rebuildResponsiveRimeCoordinatorIfNeeded`).
+    @MainActor
     public func setPublishHandler(_ handler: PublishHandler?) {
         publishHandler = handler
+        let routeID = ObjectIdentifier(routerToken)
+        if let handler {
+            ThreadAffinePublishRouter.setHandler(routeID) { snapshot in
+                handler(snapshot)
+            }
+        } else {
+            ThreadAffinePublishRouter.setHandler(routeID, nil)
+        }
     }
 
     public func scheduleProcessKey(_ key: String) {
