@@ -43,8 +43,16 @@ public final class KeyboardController {
     /// All other session APIs enter the same pipeline through
     /// `ResponsiveRimeEngineBridge` (no dual-entry).
     public var isResponsiveRimePipelineEnabled = false
-    /// Active only while `isResponsiveRimePipelineEnabled` is true.
+    /// R4-Wire: when true **with** responsive gate and a bootstrap, session work
+    /// runs on the thread-affine owner. Default remains false.
+        public var isThreadAffineRimeOwnerEnabled = false
+    /// Sendable config-only bootstrap for thread-affine mode (required when
+    /// `isThreadAffineRimeOwnerEnabled` is true for off-main ownership).
+        public var threadAffineEngineBootstrap: AnyThreadAffineRimeEngineBootstrap?
+    /// Active only while `isResponsiveRimePipelineEnabled` is true (MainActor R2 path).
     public internal(set) var responsiveRimeCoordinator: ResponsiveRimeSessionCoordinator?
+    /// Active when dual-gate thread-affine mode is installed.
+        public internal(set) var threadAffineRimeCoordinator: ThreadAffineRimeSessionCoordinator?
     /// Invoked on MainActor after a deferred responsive snapshot is applied so
     /// Extension UI can `syncUI` (Arch/Quality P1 — publish→presentation bridge).
     public var onResponsivePresentationNeeded: ((KeyboardEffect) -> Void)?
@@ -68,10 +76,14 @@ public final class KeyboardController {
         let sessionEpoch: UInt64
     }
 
-    /// Underlying engine when a `ResponsiveRimeEngineBridge` is installed (R3 chrome).
+    /// Underlying engine when a responsive bridge is installed (R3 chrome).
+    /// Thread-affine mode has no MainActor-held live session; returns nil there.
     public var underlyingRimeEngine: RimeEngine? {
         if let bridge = rimeEngine as? ResponsiveRimeEngineBridge {
             return bridge.underlyingEngine
+        }
+        if rimeEngine is ThreadAffineRimeEngineBridge {
+            return nil
         }
         return rimeEngine
     }
@@ -102,24 +114,62 @@ public final class KeyboardController {
         rebuildResponsiveRimeCoordinatorIfNeeded()
     }
 
-    /// Install or clear the R2 coordinator + engine bridge when the gate / engine
-    /// changes. Safe to call repeatedly; default gate leaves the coordinator `nil`.
+    /// Install or clear the R2 / R4-Wire coordinator + engine bridge when gates
+    /// or engine/bootstrap change. Safe to call repeatedly; default gates leave
+    /// coordinators `nil`.
     public func rebuildResponsiveRimeCoordinatorIfNeeded(
         publishPolicy: ResponsiveRimePublishPolicy = .latestOnly,
         clock: ResponsiveRimeExecutionClock = NoopResponsiveRimeClock()
     ) {
+        // Tear down prior thread-affine owner before switching modes.
+        if let threadAffine = threadAffineRimeCoordinator {
+            threadAffine.shutdown()
+            threadAffineRimeCoordinator = nil
+        }
+
         // Unwrap any previous bridge so we never nest bridges.
         let underlying: RimeEngine? = {
             if let bridge = rimeEngine as? ResponsiveRimeEngineBridge {
                 return bridge.underlyingEngine
             }
+            if rimeEngine is ThreadAffineRimeEngineBridge {
+                return nil
+            }
             return rimeEngine
         }()
 
-        guard isResponsiveRimePipelineEnabled, let underlying else {
-            if rimeEngine is ResponsiveRimeEngineBridge {
+        guard isResponsiveRimePipelineEnabled else {
+            let wasBridge =
+                rimeEngine is ResponsiveRimeEngineBridge
+                || rimeEngine is ThreadAffineRimeEngineBridge
+            if wasBridge {
                 rimeEngine = underlying
             }
+            responsiveRimeCoordinator = nil
+            responsiveKeyApplyContexts.removeAll()
+            return
+        }
+
+        // R4-Wire dual gate: bootstrap-only off-main owner when requested.
+        if isThreadAffineRimeOwnerEnabled,
+           let bootstrap = threadAffineEngineBootstrap
+        {
+            responsiveRimeCoordinator = nil
+            let coordinator = ThreadAffineRimeSessionCoordinator(
+                bootstrap: bootstrap,
+                fixtureID: "T9RESP-R4W"
+            )
+            coordinator.setPublishHandler { [weak self] snapshot in
+                self?.applyResponsivePublishedSnapshot(snapshot)
+            }
+            threadAffineRimeCoordinator = coordinator
+            responsiveKeyApplyContexts.removeAll()
+            rimeEngine = ThreadAffineRimeEngineBridge(coordinator: coordinator)
+            return
+        }
+
+        // Fail closed for threadAffine without bootstrap: MainActor R2 path if engine exists.
+        guard let underlying else {
             responsiveRimeCoordinator = nil
             responsiveKeyApplyContexts.removeAll()
             return
@@ -137,6 +187,7 @@ public final class KeyboardController {
             self?.applyResponsivePublishedSnapshot(snapshot)
         }
         responsiveRimeCoordinator = coordinator
+        threadAffineRimeCoordinator = nil
         responsiveKeyApplyContexts.removeAll()
         // All session call sites go through the bridge → single serial pipeline.
         rimeEngine = ResponsiveRimeEngineBridge(
@@ -176,9 +227,13 @@ public final class KeyboardController {
 
         let output = augmentRimeOutputIfNeeded(snapshot.output)
         // Prefer underlying session for post-process (already applied processKey).
-        let engineForPostProcess = underlyingRimeEngine ?? rimeEngine
+        // Thread-affine mode has no MainActor live engine — presentation-only path.
+        let engineForPostProcess = underlyingRimeEngine
         guard let engineForPostProcess else {
             applyRimeOutput(output)
+            if usesT9InputSemantics {
+                _ = refreshT9PinyinPathState(forceNewProvenance: false)
+            }
             notifyResponsivePresentation(pathChanged: usesT9InputSemantics)
             return
         }
@@ -288,7 +343,14 @@ public final class KeyboardController {
         previousT9PathState: T9PinyinPathState,
         previousRawForTrace: String?
     ) {
-        let epoch = responsiveRimeCoordinator?.diagnostics.sessionEpoch ?? 1
+        let epoch: UInt64
+        if let main = responsiveRimeCoordinator {
+            epoch = main.diagnostics.sessionEpoch
+        } else if let published = threadAffineRimeCoordinator?.lastPublished {
+            epoch = published.sessionEpoch
+        } else {
+            epoch = 1
+        }
         responsiveKeyApplyContexts.append(
             ResponsiveKeyApplyContext(
                 rimeKey: rimeKey,
@@ -297,6 +359,11 @@ public final class KeyboardController {
                 sessionEpoch: epoch
             )
         )
+    }
+
+    /// R4-Wire helper — nil when dual-gate path is inactive or OS-unavailable.
+        func threadAffineCoordinatorIfAvailable() -> ThreadAffineRimeSessionCoordinator? {
+        threadAffineRimeCoordinator
     }
 
     /// Schedule deferred drain turns after `scheduleProcessKey` so `handle` can
@@ -319,7 +386,10 @@ public final class KeyboardController {
     /// enough state to reconstruct an in-progress inline composition.
     public func resetRimeSessionForVisibilityChange() {
         guard rimeEngine != nil else { return }
-        if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
+        if isResponsiveRimePipelineEnabled, let affine = threadAffineRimeCoordinator {
+            _ = affine.performOrderedNow(.resetSession)
+            clearResponsiveKeyApplyContexts()
+        } else if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
             // Ordered reset through the same owner; epoch advances via reset work.
             _ = coordinator.performOrderedNow(.resetSession)
             clearResponsiveKeyApplyContexts()
@@ -346,7 +416,10 @@ public final class KeyboardController {
             || state.insertedPreeditCount > 0
             || !state.insertedPreeditText.isEmpty
 
-        if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
+        if isResponsiveRimePipelineEnabled, let affine = threadAffineRimeCoordinator {
+            affine.bumpSessionEpoch(resetEngineSession: true)
+            clearResponsiveKeyApplyContexts()
+        } else if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
             coordinator.bumpSessionEpoch(resetEngineSession: true)
             // Arch R3 P1-1: epoch barrier must invalidate deferred apply contexts.
             clearResponsiveKeyApplyContexts()
@@ -380,7 +453,9 @@ public final class KeyboardController {
     /// 在扩展进入不可见状态前释放 RIME 的进程级资源。
     /// 必须由 UI 生命周期同步调用，不能推迟到不可预测的 `deinit`。
     public func suspendRimeForVisibilityChange() {
-        if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
+        if isResponsiveRimePipelineEnabled, let affine = threadAffineRimeCoordinator {
+            affine.suspendForVisibilityChange()
+        } else if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
             coordinator.suspendForVisibilityChange()
         } else {
             rimeEngine?.suspendForVisibilityChange()
@@ -390,7 +465,9 @@ public final class KeyboardController {
     /// 在扩展重新可见时恢复 RIME runtime 与 session。
     /// Also reapplies fail-closed / realized T9 semantics from the engine selection.
     public func resumeRimeAfterVisibilityChange() {
-        if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
+        if isResponsiveRimePipelineEnabled, let affine = threadAffineRimeCoordinator {
+            affine.resumeAfterVisibilityChange()
+        } else if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
             coordinator.resumeAfterVisibilityChange()
         } else {
             rimeEngine?.resumeAfterVisibilityChange()

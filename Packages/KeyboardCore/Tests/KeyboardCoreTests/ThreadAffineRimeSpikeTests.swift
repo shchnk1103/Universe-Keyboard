@@ -3,14 +3,12 @@ import Synchronization
 import XCTest
 @testable import KeyboardCore
 
-@available(iOS 18.0, macOS 15.0, *)
 private struct SpikeFakeRimeEngineFactory: ThreadAffineRimeSpikeEngineFactory {
     func makeEngineOnOwnerThread() -> any RimeEngine {
         FakeRimeEngine()
     }
 }
 
-@available(iOS 18.0, macOS 15.0, *)
 private final class SpikeEngineLifecycleRecorder: Sendable {
     struct Facts: Sendable {
         var initThread: Int?
@@ -47,7 +45,6 @@ private final class SpikeEngineLifecycleRecorder: Sendable {
     }
 }
 
-@available(iOS 18.0, macOS 15.0, *)
 private final class SpikeLifecycleProbeRimeEngine: RimeEngine {
     private let delegate = FakeRimeEngine()
     private let recorder: SpikeEngineLifecycleRecorder
@@ -142,7 +139,6 @@ private final class SpikeLifecycleProbeRimeEngine: RimeEngine {
     }
 }
 
-@available(iOS 18.0, macOS 15.0, *)
 private struct SpikeLifecycleProbeEngineFactory: ThreadAffineRimeSpikeEngineFactory {
     let recorder: SpikeEngineLifecycleRecorder
     let processEntered: DispatchSemaphore?
@@ -167,7 +163,6 @@ private struct SpikeLifecycleProbeEngineFactory: ThreadAffineRimeSpikeEngineFact
     }
 }
 
-@available(iOS 18.0, macOS 15.0, *)
 @MainActor
 final class ThreadAffineRimeSpikeTests: XCTestCase {
 
@@ -186,7 +181,9 @@ final class ThreadAffineRimeSpikeTests: XCTestCase {
                 releaseFirstProcess: releaseEngine
             ),
             resultHandler: { result in
-                _ = gate.apply(result)
+                DispatchQueue.main.sync {
+                    _ = gate.apply(result)
+                }
                 allResults.fulfill()
             }
         )
@@ -231,10 +228,12 @@ final class ThreadAffineRimeSpikeTests: XCTestCase {
         let owner = ThreadAffineRimeSpikeOwner(
             engineFactory: SpikeFakeRimeEngineFactory(),
             resultHandler: { result in
-                affinityFacts.append(
-                    (result.engineCreatedOffMainThread, result.engineCallStayedOnCreationThread)
-                )
-                _ = gate.apply(result)
+                DispatchQueue.main.sync {
+                    affinityFacts.append(
+                        (result.engineCreatedOffMainThread, result.engineCallStayedOnCreationThread)
+                    )
+                    _ = gate.apply(result)
+                }
                 allResults.fulfill()
             }
         )
@@ -276,7 +275,9 @@ final class ThreadAffineRimeSpikeTests: XCTestCase {
                 releaseFirstProcess: releaseFirstEngineCall
             ),
             resultHandler: { result in
-                _ = gate.apply(result)
+                DispatchQueue.main.sync {
+                    _ = gate.apply(result)
+                }
                 deliveries.fulfill()
             }
         )
@@ -410,7 +411,9 @@ final class ThreadAffineRimeSpikeTests: XCTestCase {
         let owner = ThreadAffineRimeSpikeOwner(
             bootstrap: SpikeFakeRimeEngineFactory(),
             resultHandler: { result in
-                deliveryOrder.append(result.snapshot.actionID)
+                DispatchQueue.main.sync {
+                    deliveryOrder.append(result.snapshot.actionID)
+                }
                 allDelivered.fulfill()
             }
         )

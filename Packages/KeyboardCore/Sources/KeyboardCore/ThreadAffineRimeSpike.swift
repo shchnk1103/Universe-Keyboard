@@ -8,19 +8,16 @@ import Synchronization
 /// R4-Owner freezes this as a **bootstrap**: conforming values must carry only
 /// configuration / recipe data. They must not store a live non-Sendable engine.
 /// The only engine instance is returned when the owner thread invokes this method.
-@available(iOS 18.0, macOS 15.0, *)
 public protocol ThreadAffineRimeEngineBootstrap: Sendable {
     func makeEngineOnOwnerThread() -> any RimeEngine
 }
 
 /// Spike-era name retained as a typealias so existing tests keep compiling.
-@available(iOS 18.0, macOS 15.0, *)
 public typealias ThreadAffineRimeSpikeEngineFactory = ThreadAffineRimeEngineBootstrap
 
 /// Tunables for the thread-affine owner (R4-Owner D3).
 ///
 /// `maxPendingWorkDepth` is a testable bound, not a Product-locked jetsam SLO.
-@available(iOS 18.0, macOS 15.0, *)
 public struct ThreadAffineRimeOwnerConfiguration: Sendable, Equatable {
     public var maxPendingWorkDepth: Int
 
@@ -33,7 +30,6 @@ public struct ThreadAffineRimeOwnerConfiguration: Sendable, Equatable {
 }
 
 /// Content-free owner diagnostics (R4-Owner).
-@available(iOS 18.0, macOS 15.0, *)
 public struct ThreadAffineRimeOwnerDiagnostics: Sendable, Equatable {
     public var pendingWorkDepth: Int
     public var rejectedAtBoundCount: Int
@@ -59,21 +55,17 @@ public struct ThreadAffineRimeOwnerDiagnostics: Sendable, Equatable {
     }
 }
 
-/// Intentionally narrow process-key surface for Spike / R4-Owner proofs.
+/// R4-Wire: full session work surface (same enum as the responsive pipeline).
 ///
-/// Delete, candidate/Path selection, paging and recovery remain later production
-/// integration work. Exposing them here without the complete R3 binding and
-/// lifecycle contract would overstate what this owner proves.
-@available(iOS 18.0, macOS 15.0, *)
-public enum ThreadAffineRimeSpikeWork: Equatable, Sendable {
-    case processKey(String)
-}
+/// Spike/R4-Owner historically only exercised `processKey`. R4-Wire expands the
+/// owner to the complete `ResponsiveRimeWork` set so controller bridging cannot
+/// dual-enter a MainActor-held engine.
+public typealias ThreadAffineRimeSpikeWork = ResponsiveRimeWork
 
 /// Result delivered from the dedicated RIME owner thread.
 ///
 /// The diagnostic booleans are content-free. They prove only the isolation
 /// shape; they do not prove real librime compatibility.
-@available(iOS 18.0, macOS 15.0, *)
 public struct ThreadAffineRimeSpikeResult: Equatable, Sendable {
     public let snapshot: ResponsiveRimeSnapshot
     public let engineCreatedOffMainThread: Bool
@@ -96,7 +88,6 @@ public struct ThreadAffineRimeSpikeResult: Equatable, Sendable {
 /// future production integration would apply the accepted value snapshot to
 /// those MainActor-owned surfaces as one transaction.
 @MainActor
-@available(iOS 18.0, macOS 15.0, *)
 public final class ThreadAffineRimeSpikeApplyGate {
     public private(set) var sessionEpoch: UInt64
     public private(set) var lastAppliedRevision: UInt64 = 0
@@ -136,7 +127,6 @@ public final class ThreadAffineRimeSpikeApplyGate {
 
 // MARK: - Internal envelopes
 
-@available(iOS 18.0, macOS 15.0, *)
 private struct ThreadAffineRimeSpikeEnvelope: Sendable {
     let work: ThreadAffineRimeSpikeWork
     let actionID: String
@@ -144,13 +134,11 @@ private struct ThreadAffineRimeSpikeEnvelope: Sendable {
     let revision: UInt64
 }
 
-@available(iOS 18.0, macOS 15.0, *)
 private enum ThreadAffineRimeControlCommand: Sendable {
     case advanceEpoch(UInt64)
     case stop
 }
 
-@available(iOS 18.0, macOS 15.0, *)
 private enum ThreadAffineRimeOwnerCommand: Sendable {
     case work(ThreadAffineRimeSpikeEnvelope)
     case control(ThreadAffineRimeControlCommand)
@@ -163,7 +151,6 @@ private enum ThreadAffineRimeOwnerCommand: Sendable {
 /// Contains only Sendable descriptors. The non-Sendable `RimeEngine` is
 /// deliberately absent and exists solely as a local variable in the consumer
 /// thread closure.
-@available(iOS 18.0, macOS 15.0, *)
 private final class ThreadAffineRimeSpikeMailbox: Sendable {
     private struct State: Sendable {
         var work: [ThreadAffineRimeSpikeEnvelope] = []
@@ -247,15 +234,16 @@ private final class ThreadAffineRimeSpikeMailbox: Sendable {
 
 // MARK: - Ordered delivery channel (D2)
 
-/// Single ordered MainActor delivery channel with terminal acknowledgement.
-@available(iOS 18.0, macOS 15.0, *)
+/// Ordered delivery on the **owner thread** (FIFO with the owner loop).
+///
+/// Handlers run synchronously when results are produced so `lastPublished` /
+/// waiters update without requiring a MainActor pump (avoids R4-Wire P1 deadlock
+/// when MainActor `performOrderedNow` waits for delivery). UI hops (if any) are
+/// the handler's responsibility (e.g. NotificationCenter main queue).
 private final class ThreadAffineRimeDeliveryChannel: Sendable {
-    typealias Handler = @MainActor @Sendable (ThreadAffineRimeSpikeResult) -> Void
+    typealias Handler = @Sendable (ThreadAffineRimeSpikeResult) -> Void
 
     private struct State: Sendable {
-        var queue: [ThreadAffineRimeSpikeResult] = []
-        var pumpScheduled = false
-        var ownerLoopExited = false
         var terminal = false
         var deliveredCount = 0
     }
@@ -277,39 +265,19 @@ private final class ThreadAffineRimeDeliveryChannel: Sendable {
     }
 
     func enqueue(_ result: ThreadAffineRimeSpikeResult) {
-        let shouldSchedule = state.withLock { state -> Bool in
-            state.queue.append(result)
-            guard !state.pumpScheduled else { return false }
-            state.pumpScheduled = true
-            return true
-        }
-        if shouldSchedule {
-            schedulePump()
-        }
+        // Synchronous on owner thread: preserves FIFO and unblocks waiters.
+        handler(result)
+        state.withLock { $0.deliveredCount &+= 1 }
     }
 
-    /// Owner loop finished (engine local lifetime ended). Delivery becomes
-    /// terminal after the FIFO queue drains.
+    /// Owner loop finished (engine local lifetime has ended).
     func markOwnerLoopExited() {
-        let outcome = state.withLock { state -> (schedule: Bool, signal: Bool) in
-            state.ownerLoopExited = true
-            if state.queue.isEmpty {
-                if !state.terminal {
-                    state.terminal = true
-                    return (schedule: false, signal: true)
-                }
-                return (schedule: false, signal: false)
-            }
-            if state.pumpScheduled {
-                return (schedule: false, signal: false)
-            }
-            state.pumpScheduled = true
-            return (schedule: true, signal: false)
+        let shouldSignal = state.withLock { state -> Bool in
+            if state.terminal { return false }
+            state.terminal = true
+            return true
         }
-        if outcome.schedule {
-            schedulePump()
-        }
-        if outcome.signal {
+        if shouldSignal {
             drainedSignal.signal()
         }
     }
@@ -319,38 +287,6 @@ private final class ThreadAffineRimeDeliveryChannel: Sendable {
             return true
         }
         return drainedSignal.wait(timeout: timeout) == .success
-    }
-
-    private func schedulePump() {
-        Task { @MainActor in
-            self.pump()
-        }
-    }
-
-    @MainActor
-    private func pump() {
-        while true {
-            let item: ThreadAffineRimeSpikeResult? = state.withLock { state in
-                if state.queue.isEmpty {
-                    state.pumpScheduled = false
-                    if state.ownerLoopExited && !state.terminal {
-                        state.terminal = true
-                    }
-                    return nil
-                }
-                return state.queue.removeFirst()
-            }
-
-            guard let item else {
-                if state.withLock({ $0.terminal }) {
-                    drainedSignal.signal()
-                }
-                return
-            }
-
-            handler(item)
-            state.withLock { $0.deliveredCount &+= 1 }
-        }
     }
 }
 
@@ -366,9 +302,8 @@ private final class ThreadAffineRimeDeliveryChannel: Sendable {
 /// - Work mailbox is bounded (refuse-at-bound); control lane is priority.
 /// - Not wired into `KeyboardController`, the Extension, Release defaults or
 ///   real `RimeEngineImpl` production paths.
-@available(iOS 18.0, macOS 15.0, *)
 public final class ThreadAffineRimeSpikeOwner: Sendable {
-    public typealias ResultHandler = @MainActor @Sendable (ThreadAffineRimeSpikeResult) -> Void
+    public typealias ResultHandler = @Sendable (ThreadAffineRimeSpikeResult) -> Void
 
     private struct AcceptanceState: Sendable {
         var sessionEpoch: UInt64 = 1
@@ -448,9 +383,9 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         requestStop()
     }
 
-    /// MainActor hot-path entry. Allocates a revision and enqueues a Sendable
-    /// descriptor only; never calls the engine. Refuses when work bound is full.
-    @MainActor
+    /// Hot-path entry (call from keyboard MainActor). Allocates a revision and
+    /// enqueues a Sendable descriptor only; never calls the engine. Refuses when
+    /// work bound is full.
     @discardableResult
     public func accept(
         _ work: ThreadAffineRimeSpikeWork,
@@ -503,7 +438,6 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
 
     /// Ordered epoch barrier. Stale work may be purged from the work lane;
     /// the owner resets its local engine before executing new-epoch work.
-    @MainActor
     @discardableResult
     public func advanceSessionEpoch() -> UInt64? {
         let epoch = counters.withAcceptance { state -> UInt64? in
@@ -523,7 +457,6 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
 
     /// Explicit lifecycle endpoint. Production wiring still needs Extension
     /// visibility/process ownership; deinit is only a safety net.
-    @MainActor
     public func shutdown() {
         requestStop()
     }
@@ -572,6 +505,7 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         let creationThreadIdentity = ObjectIdentifier(Thread.current)
         let engineCreatedOffMainThread = !Thread.isMainThread
         var ownerEpoch: UInt64 = 1
+        var lastAppliedRevision: UInt64 = 0
 
         while true {
             switch mailbox.next() {
@@ -581,7 +515,15 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                     continue
                 }
 
-                let output = execute(envelope.work, engine: engine)
+                guard let output = execute(
+                    envelope.work,
+                    engine: engine,
+                    lastAppliedRevision: &lastAppliedRevision
+                ) else {
+                    counters.withAcceptance { $0.skippedStaleEpochCount &+= 1 }
+                    continue
+                }
+                lastAppliedRevision = envelope.revision
                 let result = ThreadAffineRimeSpikeResult(
                     snapshot: ResponsiveRimeSnapshot(
                         sessionEpoch: envelope.sessionEpoch,
@@ -598,6 +540,7 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
             case .control(.advanceEpoch(let epoch)):
                 engine.resetSession()
                 ownerEpoch = epoch
+                lastAppliedRevision = 0
                 let purged = mailbox.purgeWork(notMatchingEpoch: epoch)
                 if purged > 0 {
                     counters.withAcceptance { $0.skippedStaleEpochCount &+= purged }
@@ -615,10 +558,47 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         }
     }
 
-    private static func execute(_ work: ThreadAffineRimeSpikeWork, engine: RimeEngine) -> RimeOutput {
+    private static func execute(
+        _ work: ThreadAffineRimeSpikeWork,
+        engine: RimeEngine,
+        lastAppliedRevision: inout UInt64
+    ) -> RimeOutput? {
         switch work {
         case .processKey(let key):
             return engine.processKey(key)
+
+        case .deleteBackward:
+            return engine.deleteBackward()
+
+        case .selectCandidate(let pageIndex, _, let boundRevision):
+            guard boundRevision == lastAppliedRevision else { return nil }
+            return engine.selectCandidate(at: pageIndex)
+
+        case .selectCandidateGlobal(let index, _, let boundRevision):
+            guard boundRevision == lastAppliedRevision else { return nil }
+            return engine.selectCandidate(globalIndex: index)
+
+        case .replaceInput(let input, _, let boundRevision):
+            if let boundRevision {
+                guard boundRevision == lastAppliedRevision else { return nil }
+            }
+            return engine.replaceInput(input)
+
+        case .resetSession:
+            engine.resetSession()
+            lastAppliedRevision = 0
+            return RimeOutput(composition: nil, candidates: [], highlightedIndex: -1)
+
+        case .recoverSession:
+            engine.recoverSession()
+            lastAppliedRevision = 0
+            return RimeOutput(composition: nil, candidates: [], highlightedIndex: -1)
+
+        case .pageUp:
+            return engine.pageUp()
+
+        case .pageDown:
+            return engine.pageDown()
         }
     }
 }

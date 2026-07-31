@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — R4-B dual review Pass with conditions (real bootstrap proof); R5 / R6 / ADR Accept / Product Gate / Release default-on / Extension wire not authorized`
+**Lifecycle status:** `Recorded — R4-Wire authorized 2026-07-31 (thread-affine controller wire; dual gate default-off); R5 / R6 / ADR Accept / Product Gate / Release default-on not authorized`
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the
@@ -273,12 +273,40 @@ Extension production migration.
 Design (Architecture-owned once written):
 [`t9-responsive-pipeline-001-r4-b-design.md`](../assignments/t9-responsive-pipeline-001-r4-b-design.md).
 
+### R4-Wire (2026-07-31 Human Product Owner authorization) — authorized
+
+Human Product Owner: complete **接线** under KOS 2.0.
+
+**Product intent:** connect the R4-Owner / R4-B thread-affine owner into the
+`KeyboardController` responsive path so gate-on processKey no longer runs
+librime on MainActor — while **both gates remain default-off**.
+
+**Allowed:**
+
+1. Architecture design freeze for dual-gate wire (`isResponsiveRimePipelineEnabled`
+   + `isThreadAffineRimeOwnerEnabled`, both default `false`).
+2. Expand thread-affine owner work surface to full `ResponsiveRimeWork`.
+3. Controller rebuild installs thread-affine coordinator + bridge when **both**
+   gates are on and a Sendable bootstrap is provided.
+4. Visibility suspend/finalize uses explicit stop/epoch (not deinit-only).
+5. KeyboardCore + optional RimeBridge tests; default-off path unchanged.
+6. Independent Architecture and Quality review.
+
+**Forbidden / not claimed:**
+
+- Release default-on or flipping either gate true by default;
+- ADR 0025 Accept, Product Gate, R5 device A/B;
+- Claiming subjective non-stutter on device;
+- Dual-entry: live MainActor engine **and** owner engine for the same session;
+- Expanding T9 auto-anchor.
+
+Design: [`t9-responsive-pipeline-001-r4-wire-design.md`](../assignments/t9-responsive-pipeline-001-r4-wire-design.md).
+
 ## Not authorized now
 
 - Changing Release default input path or user-facing settings
 - R5–R6, ADR 0025 Accept, Product Gate
-- Off-main **Extension production migration** of real librime (R4-B may prove
-  bootstrap only; wiring remains a later Product knife)
+- Shipping gate default-on
 - Expanding T9 auto-anchor
 
 ## Phased product view (summary)

@@ -80,8 +80,31 @@ extension KeyboardController {
         // All other session APIs still enter the same pipeline via
         // `ResponsiveRimeEngineBridge`. Gate default is off.
         if isResponsiveRimePipelineEnabled {
-            if responsiveRimeCoordinator == nil {
+            if responsiveRimeCoordinator == nil, threadAffineRimeCoordinator == nil {
                 rebuildResponsiveRimeCoordinatorIfNeeded()
+            }
+            // R4-Wire: thread-affine dual gate (accept without MainActor librime).
+            if let affine = threadAffineRimeCoordinator {
+                if let replacementInput = replacementRawInputForSymbolPageContinuation(appending: rimeKey) {
+                    let snapshot = affine.performOrderedNow(
+                        .replaceInput(replacementInput, boundEpoch: nil, boundRevision: nil)
+                    )
+                    applyResponsivePublishedSnapshot(snapshot)
+                    var effects = consumeSingleUseShiftIfNeeded().union(.compositionChanged)
+                    if usesT9InputSemantics {
+                        effects.insert(.t9PinyinPathsChanged)
+                    }
+                    return effectsAfterChineseCompositionKey(effects, originalKey: key)
+                }
+                enqueueResponsiveKeyApplyContext(
+                    rimeKey: rimeKey,
+                    previousT9PathState: previousT9PathState,
+                    previousRawForTrace: previousRawForTrace
+                )
+                affine.scheduleProcessKey(rimeKey)
+                // Delivery channel publishes asynchronously — no MainActor drain loop.
+                let effects = consumeSingleUseShiftIfNeeded()
+                return effectsAfterChineseCompositionKey(effects, originalKey: key)
             }
             if let coordinator = responsiveRimeCoordinator {
                 if let replacementInput = replacementRawInputForSymbolPageContinuation(appending: rimeKey) {

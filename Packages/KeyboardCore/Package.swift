@@ -5,9 +5,9 @@ let package = Package(
     name: "KeyboardCore",
     platforms: [
         .iOS("26.4"),
-        // `swift test` builds this package on macOS, and the logger writer uses
-        // Swift Concurrency APIs whose macOS availability begins at 10.15.
-        .macOS(.v10_15),
+        // Thread-affine owner requires Synchronization.Mutex (macOS 15+ / iOS 18+).
+        // Package floor matches the R4-Wire deployment target used by the app.
+        .macOS(.v15),
     ],
     products: [
         .library(name: "KeyboardCore", targets: ["KeyboardCore"])

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — R4-B dual review Pass with conditions (real bootstrap proof); default-off; ADR 0025 Proposed; Product Gate not claimed; Extension wire not granted** |
+| Status | **Active — R4-Wire dual review Pass with conditions (dual-gate controller wire default-off); ADR 0025 Proposed; Product Gate not claimed** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |

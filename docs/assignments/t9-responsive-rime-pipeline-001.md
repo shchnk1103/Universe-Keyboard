@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R4-B dual review Pass with conditions (real bootstrap proof); keep gate off; ADR 0025 Proposed; Product Gate not claimed; Extension wire not granted`
+**Lifecycle status:** `Active — R4-Wire dual review Pass with conditions (dual gate default-off wire); ADR 0025 Proposed; Product Gate not claimed`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -287,7 +287,9 @@
   ([arch](t9-responsive-pipeline-001-r4-b-architecture-review.md),
   [quality](t9-responsive-pipeline-001-r4-b-quality-review.md),
   [evidence](../evidence/t9-responsive-pipeline-r4-b-2026-07-31.md))
-- [ ] Extension production migration of thread-affine owner — **not granted**
+- [x] R4-Wire thread-affine controller wire — **granted 2026-07-31** Human Product
+  Owner; dual gate default-off; design → implement → dual review
+- [ ] Release default-on / Product Gate / ADR 0025 Accept — **not granted**
 
 ### Exit Criteria — Spike-P1-3
 
