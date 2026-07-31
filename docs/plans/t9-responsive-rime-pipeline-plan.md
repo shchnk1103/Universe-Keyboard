@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — R4-Wire dual review Pass with conditions (dual-gate controller wire default-off); ADR 0025 Proposed; Product Gate not claimed** |
+| Status | **Active — R5-Preflight authorized (Debug dual-gate arm + content-free logs); formal R5/R6/ADR Accept/Product Gate not claimed** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
@@ -307,3 +307,4 @@ T9-RESPONSIVE-PIPELINE-001 的 Assignment 与 Proposed ADR 已达到实现入口
 | 2026-07-31 | R4-Owner implemented (bootstrap + ordered delivery + bounded refuse-at-bound). Tests 10/10 focused, 826/826 full. Independent Arch/Quality: **Pass with conditions**. D1–D3 Closed in R4-Owner scope; R4-B / ADR Accept / Product Gate still closed. |
 | 2026-07-31 | Human Product Owner authorized **R4-B** (real librime config-only bootstrap + Simulator/RimeBridge evidence; design→implement→dual review). Extension production wire / ADR Accept / Product Gate remain closed. |
 | 2026-07-31 | R4-B implemented: `ThreadAffineRimeEngineImplBootstrap`, Simulator tests 2/2 (`R4B_REAL_ENGINE_RESULT passed=true`), KeyboardCore 10/826 green. Independent Arch/Quality: **Pass with conditions**. Real bootstrap proof Closed; Extension wire / ADR Accept / Product Gate still closed. |
+| 2026-07-31 | R4-Wire dual-gate controller path (`be4c4ac`). R5-Preflight authorized: DEBUG App Group key / compile flag arms dual-gate + content-free `T9RESP` markers; Release default-off. Formal R5 A/B not claimed. |

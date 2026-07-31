@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R4-Wire dual review Pass with conditions (dual gate default-off wire); ADR 0025 Proposed; Product Gate not claimed`
+**Lifecycle status:** `Active — R5-Preflight dual review Pass with conditions (Debug dual-gate arm + content-free logs); formal R5 A/B / Product Gate not claimed`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  

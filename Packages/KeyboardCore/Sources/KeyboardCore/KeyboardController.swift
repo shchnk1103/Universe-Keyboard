@@ -207,6 +207,16 @@ public final class KeyboardController {
     func applyResponsivePublishedSnapshot(_ snapshot: ResponsiveRimeSnapshot?) {
         guard isResponsiveRimePipelineEnabled, let snapshot else { return }
 
+        // R5-Preflight: content-free publish marker (no raw input / candidates).
+        if isThreadAffineRimeOwnerEnabled {
+            Logger.shared.performance(
+                ResponsiveRimePreflight.publishMarkerLine(
+                    epoch: snapshot.sessionEpoch,
+                    revision: snapshot.revision
+                )
+            )
+        }
+
         // Drop contexts invalidated by epoch barriers (abandon / reset / recover).
         while let head = responsiveKeyApplyContexts.first,
               head.sessionEpoch != snapshot.sessionEpoch

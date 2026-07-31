@@ -186,6 +186,12 @@ extension KeyboardViewController {
               let directories = pendingRimeRuntimeDirectories
         else { return }
 
+        // R5-Preflight: optional dual-gate arm (DEBUG / explicit compile flag only).
+        if installResponsiveDualGatePreflightIfArmed(directories: directories) {
+            hasActivatedVisibleRimeRuntime = true
+            return
+        }
+
         Logger.shared.info("Keyboard visible; creating RimeEngineImpl", category: .engine)
         let engine = RimeEngineImpl(
             sharedDataDir: directories.sharedDataDir,
@@ -201,7 +207,100 @@ extension KeyboardViewController {
         controller.rebuildResponsiveRimeCoordinatorIfNeeded()
         applyRealizedRuntimeSelection(from: engine)
         hasActivatedVisibleRimeRuntime = true
+        #if DEBUG
+        // Content-free path marker only on DEBUG (R5-Preflight observability).
+        Logger.shared.info(
+            ResponsiveRimePreflight.pathMarkerLine(
+                path: controller.isResponsiveRimePipelineEnabled
+                    ? .mainActorResponsive
+                    : .sync,
+                dualGateRequested: false,
+                dualGateActive: false
+            ),
+            category: .engine
+        )
+        #endif
         Logger.shared.info("RIME session prepared for visible keyboard input", category: .engine)
+    }
+
+    /// R5-Preflight dual-gate arm. Release never arms from UserDefaults alone.
+    /// Returns `true` when dual-gate thread-affine path was installed.
+    @discardableResult
+    func installResponsiveDualGatePreflightIfArmed(
+        directories: (sharedDataDir: String, userDataDir: String)
+    ) -> Bool {
+        let compileFlagEnabled: Bool = {
+            #if T9_RESPONSIVE_DEVICE_PREFLIGHT_ENABLED
+            return true
+            #else
+            return false
+            #endif
+        }()
+        #if DEBUG
+        let isDebugBuild = true
+        #else
+        let isDebugBuild = false
+        #endif
+        let dualGateRequested = ResponsiveRimePreflight.shouldArmDualGate(
+            defaults: sharedDefaults,
+            isDebugBuild: isDebugBuild,
+            compileFlagEnabled: compileFlagEnabled
+        )
+        guard dualGateRequested else { return false }
+
+        guard !directories.sharedDataDir.isEmpty, !directories.userDataDir.isEmpty else {
+            Logger.shared.warning(
+                ResponsiveRimePreflight.fallbackMarkerLine(reason: "missing-runtime"),
+                category: .engine
+            )
+            return false
+        }
+
+        // Bootstrap-only: no MainActor live RimeEngineImpl session when dual-gate is active.
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.isThreadAffineRimeOwnerEnabled = true
+        controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
+            ThreadAffineRimeEngineImplBootstrap(
+                sharedDataDir: directories.sharedDataDir,
+                userDataDir: directories.userDataDir,
+                preferredSchemaID: nil
+            )
+        )
+        // Preflight residual: typo sidecar uses provider adapter (not live librime session).
+        controller.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
+            candidateProvider: controller.candidateProvider
+        )
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        let active = controller.threadAffineRimeCoordinator != nil
+            && controller.rimeEngine is ThreadAffineRimeEngineBridge
+        Logger.shared.info(
+            ResponsiveRimePreflight.pathMarkerLine(
+                path: active ? .threadAffine : .fallbackMissingRuntime,
+                dualGateRequested: true,
+                dualGateActive: active
+            ),
+            category: .engine
+        )
+        if active {
+            Logger.shared.info(
+                "T9RESP marker=READY fixture=\(ResponsiveRimePreflight.fixtureID) "
+                    + "bootstrap=config-only session=owner-thread",
+                category: .engine
+            )
+            Logger.shared.requestFlush()
+            return true
+        }
+
+        Logger.shared.warning(
+            ResponsiveRimePreflight.fallbackMarkerLine(reason: "rebuild-inactive"),
+            category: .engine
+        )
+        // Fail closed: clear dual-gate flags so sync install can proceed.
+        controller.isThreadAffineRimeOwnerEnabled = false
+        controller.isResponsiveRimePipelineEnabled = false
+        controller.threadAffineEngineBootstrap = nil
+        return false
     }
 
     /// Align chrome + controller T9 semantics with the schema librime actually selected.

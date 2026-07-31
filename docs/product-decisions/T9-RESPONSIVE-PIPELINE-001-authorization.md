@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — R4-Wire authorized 2026-07-31 (thread-affine controller wire; dual gate default-off); R5 / R6 / ADR Accept / Product Gate / Release default-on not authorized`
+**Lifecycle status:** `Recorded — R5-Preflight authorized 2026-07-31 (Debug dual-gate arm + content-free logs; Release default-off); formal R5 A/B / R6 / ADR Accept / Product Gate not authorized`
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the
@@ -302,10 +302,38 @@ librime on MainActor — while **both gates remain default-off**.
 
 Design: [`t9-responsive-pipeline-001-r4-wire-design.md`](../assignments/t9-responsive-pipeline-001-r4-wire-design.md).
 
+### R5-Preflight (2026-07-31 Human Product Owner authorization) — authorized
+
+Human Product Owner authorized continuation after R4-Wire: prepare **device
+preflight diagnostics**, not formal R5 Product Gate.
+
+**Allowed:**
+
+1. Debug / explicit compile-flag arming of dual-gate (`responsive` +
+   `threadAffine`) via App Group UserDefaults and/or
+   `T9_RESPONSIVE_DEVICE_PREFLIGHT_ENABLED` (never project Release default).
+2. Extension install of `ThreadAffineRimeEngineImplBootstrap` from already-known
+   runtime directories when dual-gate is armed.
+3. Content-free diagnostic markers/logs (path mode, fixture ID, revision/epoch,
+   accept/publish timing counters — **no** raw input / pinyin / candidates /
+   host text).
+4. KeyboardCore unit tests for default-off + arm resolution.
+5. Independent Architecture / Quality review of preflight-only scope.
+
+**Forbidden / not claimed:**
+
+- Formal R5 Human A/B conclusion or Product Gate;
+- Release default-on either gate;
+- ADR 0025 Accept;
+- User-facing settings UI for the dual-gate (Debug App Group keys / compile flags only);
+- Claiming subjective non-stutter from preflight logs alone.
+
+Design: [`t9-responsive-pipeline-001-r5-preflight-design.md`](../assignments/t9-responsive-pipeline-001-r5-preflight-design.md).
+
 ## Not authorized now
 
 - Changing Release default input path or user-facing settings
-- R5–R6, ADR 0025 Accept, Product Gate
+- Formal R5 A/B Product conclusion, R6, ADR 0025 Accept, Product Gate
 - Shipping gate default-on
 - Expanding T9 auto-anchor
 
