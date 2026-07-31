@@ -1,14 +1,18 @@
 # T9-RESPONSIVE-PIPELINE-001 / R5-Remediation design
 
-**Status:** `Active — Architecture design freeze for R5-Remediation (design only)`  
+**Status:** `Closed as parent design — Rem-1+2 + Rem-Device executed; O3/Rem-3 carried in successor design`  
 **Date:** `2026-07-31 Asia/Shanghai`  
 **Role author:** 🏛️ Architecture & Knowledge Steward  
-**Product:** Human Product Owner authorized remediation **design**  
-  （「我更想要授权 remediation 设计」）  
+**Product:** Human Product Owner authorized remediation **design**, then Rem-1+2,
+  then Rem-Device (direction PASS); published to `main` @ `7665c64`  
 **Predecessor evidence:**  
   [`../evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md)  
   Formal R5 **direction FAIL** — dual-gate freeze-then-burst worse than gate-off  
-**Implementation tip baseline:** `87d3e7c`  
+**Follow-on:**  
+  Rem-1+2 [`../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md)  
+  Rem-Device [`../evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md)  
+  Rem-3 design [`t9-responsive-pipeline-001-r5-rem-3-design.md`](t9-responsive-pipeline-001-r5-rem-3-design.md)  
+**Implementation tip baseline (Rem-1+2):** parent of `87d3e7c` → published via #36/#37  
 **ADR 0025:** remains **Proposed** (this knife does not Accept)
 
 ---

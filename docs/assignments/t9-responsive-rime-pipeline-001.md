@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R5-Rem-Device Closed direction PASS (dual-gate key-feel better than gate-off; no freeze-burst); Formal R5 FAIL historical; Rem-3 / Product Gate / ADR Accept / default-on not claimed`
+**Lifecycle status:** `Active — R5-Rem-Device Closed direction PASS; Formal R5 FAIL historical; #36+#37 merged to main @ 7665c64 (2026-07-31); dual-gate remains default-off; Rem-3 design next / R6 / ADR Accept / Product Gate / default-on not claimed`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -302,11 +302,18 @@
 - [x] R5-Remediation **design** — **granted 2026-07-31**
   ([design](t9-responsive-pipeline-001-r5-remediation-design.md))
 - [x] R5-Rem-1 + R5-Rem-2 **implementation** — **granted 2026-07-31**; Executor
-  complete — dual review pending
-  ([evidence](../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md))
-- [ ] R5-Rem-3 provisional L1 — **not granted**
-- [ ] R5-Rem-Device Human re-pair — **not granted**
-- [ ] Release default-on / Product Gate / ADR 0025 Accept — **not granted**
+  complete; dual Arch/Quality **Pass with conditions**; Arch **P1-1 Closed**
+  ([evidence](../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md),
+  [arch](t9-responsive-pipeline-001-r5-rem-1-2-architecture-review.md),
+  [quality](t9-responsive-pipeline-001-r5-rem-1-2-quality-review.md))
+- [x] R5-Rem-Device Human re-pair — **granted 2026-07-31**; **Closed direction PASS**
+  ([evidence](../evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md))
+- [x] Publication — PR [#37](https://github.com/shchnk1103/Universe-Keyboard/pull/37)
+  merged into preflight then [#36](https://github.com/shchnk1103/Universe-Keyboard/pull/36)
+  into `main` @ `7665c64` (2026-07-31); feature branches deleted after reachability
+- [ ] R5-Rem-3 provisional L1 — **design authorized 2026-07-31; implementation not granted**
+  ([design](t9-responsive-pipeline-001-r5-rem-3-design.md))
+- [ ] Release default-on / Product Gate / ADR 0025 Accept / R6 — **not granted**
 
 ### Exit Criteria — R5-Remediation design
 

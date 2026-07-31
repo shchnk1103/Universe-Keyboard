@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — R5-Rem-Device direction PASS (key-feel); Formal R5 FAIL historical; Rem-3/R6/ADR Accept/Product Gate not claimed** |
+| Status | **Active — R5-Rem-Device direction PASS (key-feel); Formal R5 FAIL historical; #36+#37 on main @ 7665c64; Rem-3 design next; R6/ADR Accept/Product Gate/default-on not claimed** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
@@ -223,17 +223,19 @@ Design:
 - Direction **FAIL**; KEY END not valid felt-latency proxy under dual-gate
 - Product Gate / default-on / ADR Accept **not** claimed
 
-### R5-Remediation — Rem-1+2 Executor complete 2026-07-31 (dual review pending)
+### R5-Remediation — Rem-1+2 + Rem-Device Closed 2026-07-31 (published `main` @ `7665c64`)
 
 Responds to Formal R5 dual-gate **freeze-then-burst** FAIL without rewriting it.
 
 - Design: [`../assignments/t9-responsive-pipeline-001-r5-remediation-design.md`](../assignments/t9-responsive-pipeline-001-r5-remediation-design.md)
-- Evidence: [`../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md)
+- Evidence Rem-1+2: [`../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md)
+- Evidence Rem-Device: [`../evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md)
 - **O1 / Rem-1** observability landed (`ACCEPT` / `VISIBLE` / `PUBLISH lagMs` / `BURST`)
-- **O2 / Rem-2** dual-gate UI coalesce + true latestOnly + last-head R3 context
-- **O3 / Rem-3** provisional L1 — **not authorized**
+- **O2 / Rem-2** dual-gate UI coalesce + true latestOnly + last-head R3 context; Arch P1-1 Closed
+- **Rem-Device** direction **PASS** (key-feel better than gate-off; no freeze-burst; VISIBLE lag spikes remain; O2 coalesce barely exercised on that pair)
+- **O3 / Rem-3** provisional L1 — **design next** ([design](../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md)); **implementation not authorized**
 - Engine FIFO no-drop retained; dual-gate default-off retained
-- Full KeyboardCore **841 / 0**
+- Publication: PR #37 → preflight, PR #36 → `main` (`7665c64`); CI green on both heads
 
 ### R6 — Gates
 
@@ -331,3 +333,5 @@ T9-RESPONSIVE-PIPELINE-001 的 Assignment 与 Proposed ADR 已达到实现入口
 | 2026-07-31 | Independent Arch + Quality subagents: **Pass with conditions**. Arch P1-1 presentation epoch gate after abandon; Quality re-run 48+841/0. No Gate / Rem-3 / device. |
 | 2026-07-31 | Arch **P1-1 Closed**: presentation generation + live epoch gate + abandon coalesce test. Rem-Device next (Human auth). |
 | 2026-07-31 | **R5-Rem-Device direction PASS**: dual-gate key-feel better than gate-off; no freeze-burst; VISIBLE lag spikes remain; not Product Gate. |
+| 2026-07-31 | PR **#37** (rem) merge-commit into preflight `2e8c047`; PR **#36** merge into **`main` `7665c64`**. Feature branches `codex/t9-responsive-r5-preflight`, `codex/t9-responsive-r5-rem`, `codex/t9-auto-anchor-s5-checkpoint` safely deleted after reachability. |
+| 2026-07-31 | Doc hygiene: Assignment/plan/PD/dashboard/index/changelog aligned to merge + Rem-Device Closed; **Rem-3 design** authored (implementation still closed). |

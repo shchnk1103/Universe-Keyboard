@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — R5-Preflight Closed 2026-07-31 (Debug dual-gate arm + content-free logs + iPhone 13 Pro path on/off; Release default-off); formal R5 A/B / R6 / ADR Accept / Product Gate not authorized`
+**Lifecycle status:** `Recorded — R5-Rem-Device Closed direction PASS 2026-07-31; Formal R5 FAIL historical; code published to main via #36/#37 @ 7665c64 (default-off dual-gate retained); Rem-3 design next; R6 / ADR Accept / Product Gate / default-on not authorized`
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the
@@ -373,35 +373,27 @@ Human Product Owner instruction: 「我更想要授权 remediation 设计」.
 Design freeze:
 [`r5-remediation-design`](../assignments/t9-responsive-pipeline-001-r5-remediation-design.md).
 
-### R5-Rem-1 + R5-Rem-2 implementation (2026-07-31 Human Product Owner authorization) — Executor complete; dual review pending
+### R5-Rem-1 + R5-Rem-2 implementation (2026-07-31 Human Product Owner authorization) — Closed Executor + dual review + P1-1
 
-Human Product Owner instruction (verbatim authorization): implement Rem-1 + Rem-2
-only — felt metrics + dual-gate UI latest-only / R3 context decoupling; no Rem-3;
-no default-on; no ADR Accept; no Product Gate.
+Human Product Owner instruction: implement Rem-1 + Rem-2 only — felt metrics +
+dual-gate UI latest-only / R3 context decoupling; no Rem-3; no default-on; no
+ADR Accept; no Product Gate.
 
-**Allowed:**
+**Closed outcomes:**
 
 1. O1 content-free accept→visible / publish-lag / pending / burst markers + tests.
 2. O2 dual-gate UI latest-only under lag; MainActor R2 true latestOnly; R3
    contexts bind to applied head (not everyResult paint).
-3. Evidence package for independent Architecture / Quality review.
-
-**Not authorized:**
-
-- Rem-3 provisional L1;
-- Device formal re-pair Pass claim;
-- ADR 0025 Accept, Product Gate, Release default-on;
-- Dropping RIME input events;
-- Auto-anchor expansion;
-- Rewriting Formal R5 FAIL as success.
+3. Independent Architecture + Quality **Pass with conditions**; Arch **P1-1**
+   presentation generation / live epoch gate Closed.
 
 Evidence:
 [`../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md).
 
 ### R5-Rem-Device (2026-07-31 Human Product Owner authorization) — Closed direction PASS
 
-Human Product Owner: 「我给予你授权」after Arch P1-1 close — authorize
-**Rem-Device** Human A/B on iPhone 13 Pro.
+Human Product Owner authorized **Rem-Device** Human A/B on iPhone 13 Pro after
+Arch P1-1 close.
 
 **Outcome:** One A→B pair. Gate-off A: stall ~2, KEY END ≥100 ×4 (worst ~211 ms).
 Dual-gate B (Rem-1+2): KEY END ~1 ms; VISIBLE lag p50 ~11 ms with residual
@@ -412,17 +404,31 @@ key-feel; **not** Product Gate / default-on / ADR Accept.
 Evidence:
 [`../evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md).
 
-**Not authorized still:** Rem-3 (unless later), Product Gate, ADR Accept,
-Release default-on.
+### Publication (2026-07-31) — Closed on `main`
 
-Design: [`t9-responsive-pipeline-001-r5-preflight-design.md`](../assignments/t9-responsive-pipeline-001-r5-preflight-design.md).
+- PR [#37](https://github.com/shchnk1103/Universe-Keyboard/pull/37) merged into
+  `codex/t9-responsive-r5-preflight` (`2e8c047`).
+- PR [#36](https://github.com/shchnk1103/Universe-Keyboard/pull/36) merged into
+  `main` (`7665c64`) including Rem-1+2 + Rem-Device docs + Sendable fix.
+- Feature branches deleted after `origin/main` reachability checks.
+- Dual-gate remains **Debug/preflight default-off** on Release paths.
+
+### R5-Rem-3 (2026-07-31) — Design authorized; implementation not authorized
+
+Human Product Owner authorized **documentation hygiene** then **Rem-3 design
+only** (provisional L1). Implementation, device re-pair, R6, ADR Accept, Product
+Gate and default-on remain closed until a later explicit instruction.
+
+Design:
+[`t9-responsive-pipeline-001-r5-rem-3-design.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md).
 
 ## Not authorized now
 
 - Changing Release default input path or user-facing settings
-- Formal R5 A/B Product conclusion, R6, ADR 0025 Accept, Product Gate
-- Shipping gate default-on
+- R5-Rem-3 **implementation** (design only is open)
+- R6, ADR 0025 Accept, Product Gate, shipping dual-gate default-on
 - Expanding T9 auto-anchor
+- Rewriting Formal R5 FAIL as Product success
 
 ## Phased product view (summary)
 
@@ -435,7 +441,9 @@ Design: [`t9-responsive-pipeline-001-r5-preflight-design.md`](../assignments/t9-
 | Spike-P1-3 | Thread-affine Fake isolation proof | Disconnected Spike only |
 | R4-Owner | Close Arch P2 owner-contract residuals | Disconnected owner upgrade; default-off |
 | **R4-B** | Simulator + real RIME bootstrap evidence | Default-off; disconnected real-engine proof |
-| R5 | Human Reminders A/B on device | Evidence only |
+| R5 | Human Reminders A/B on device | Evidence only (Formal FAIL; historical) |
+| R5-Rem | Felt metrics + UI coalesce + Rem-Device | Closed direction PASS; default-off |
+| R5-Rem-3 | Provisional L1 composition | **Design only** open; implementation closed |
 | R6 | Independent Architecture, Quality, Product Gate | Shipping decision |
 
 Detailed Exit Criteria live on the Assignment and plan.

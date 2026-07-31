@@ -81,13 +81,14 @@
   [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)
 - T9 responsive RIME input pipeline
   (`T9-RESPONSIVE-PIPELINE-001`, **Active** — Formal R5 **direction FAIL** retained;
-  **R5-Rem-Device direction PASS** (dual-gate key-feel better than gate-off after
-  Rem-1+2+P1-1; Formal R5 freeze-burst FAIL historical); Rem-3 / Product Gate /
-  ADR Accept / default-on **not** claimed; auto-anchor Hold/harvest):
+  **R5-Rem-Device direction PASS**; code on **`main` @ `7665c64`** via #36/#37
+  (dual-gate default-off); **Rem-3 design** open / implementation not claimed;
+  Product Gate / ADR Accept / default-on **not** claimed; auto-anchor Hold/harvest):
   [`Product Decision`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md),
   [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md),
   [`plan`](plans/t9-responsive-rime-pipeline-plan.md),
   [`ADR 0025 Proposed`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md),
+  [`R5-Rem-3 design`](assignments/t9-responsive-pipeline-001-r5-rem-3-design.md),
   [`R5-Rem-Device evidence`](evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md),
   [`R5-Rem-1+2 evidence`](evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md),
   [`R5-Remediation design`](assignments/t9-responsive-pipeline-001-r5-remediation-design.md),

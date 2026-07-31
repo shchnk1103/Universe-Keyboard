@@ -2,9 +2,11 @@
 
 **Status:** `Closed — Rem-Device direction PASS (1 pair A→B, key-feel only); Formal R5 FAIL remains historical; Product Gate / ADR Accept / default-on not claimed`  
 **Product:** Rem-Device authorized after Arch P1-1 close  
-**Code tree:** dirty worktree Rem-1+2+P1-1 on tip parent `87d3e7c`  
+**Code tree (device run):** dirty worktree Rem-1+2+P1-1 on tip parent `87d3e7c`  
+**Publication:** same stack later merged to `main` via #37/#36 @ `7665c64` (2026-07-31)  
 **Predecessor Formal R5 FAIL:** [`t9-responsive-pipeline-r5-formal-2026-07-31.md`](t9-responsive-pipeline-r5-formal-2026-07-31.md)  
-**Rem-1+2 evidence:** [`t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md`](t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md)
+**Rem-1+2 evidence:** [`t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md`](t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md)  
+**Successor design (not implementation):** [`../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md)
 
 ## Device run header
 

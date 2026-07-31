@@ -2,6 +2,22 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-07-31 — T9 响应式 RIME 管线（default-off）合入 main
+
+- 将 `T9-RESPONSIVE-PIPELINE-001` 已验证栈经堆叠 PR
+  [#37](https://github.com/shchnk1103/Universe-Keyboard/pull/37) →
+  [#36](https://github.com/shchnk1103/Universe-Keyboard/pull/36) 合入 `main`
+  （merge `7665c64`）：R1–R4 Wire、R5-Preflight Debug dual-gate 臂、
+  Formal R5 失败证据保留、Rem-1 体感指标、Rem-2 UI coalesce + presentation
+  epoch 门、Rem-Device 方向 PASS 文档与测试，以及 NotificationCenter
+  `@Sendable` 观察者修复（无 `@unchecked Sendable`）。
+- **Release / 默认路径不变**：dual-gate 仍仅 Debug/preflight 可武装；不声称
+  Product Gate、ADR 0025 Accept、Rem-3 实现或 default-on。
+- 功能分支 `codex/t9-responsive-r5-preflight` / `…-rem` /
+  `codex/t9-auto-anchor-s5-checkpoint` 在确认 `origin/main` 可达后安全删除。
+- 文档卫生对齐 Assignment / plan / Product Decision / Dashboard / 索引；
+  Rem-3 仅进入设计冻结（实现仍需另授）。
+
 ## 2026-07-27 — 九键长串安全自动锚定：可回滚 S2 原型
 
 - 新增 Debug/显式门控的单次自动锚定事务：首选候选必须提供兼容路径，

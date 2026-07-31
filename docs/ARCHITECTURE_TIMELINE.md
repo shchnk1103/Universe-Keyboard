@@ -124,6 +124,22 @@ Provisional-only mixed-raw C continue closed via PR #29. Product Lead closed Ass
 
 Current sources: Assignment 004 (Closed), ADR 0023, close PD, `partial-commit.md` §T9 Path residual-B, remediation evidence §21–§33.
 
+## 2026-07-31 — Responsive serial RIME pipeline published default-off
+
+Long-composition lag was re-attacked as an **architecture decoupling** problem
+rather than further auto-anchor expansion: accept keys without waiting for
+librime; run session APIs on a dedicated serial/thread-affine owner; publish
+atomic snapshots with optional UI coalesce. Formal device A/B first **failed**
+on dual-gate freeze-then-burst; Rem-1+2 + epoch-gated presentation removed the
+storm and Rem-Device reported better key-feel than gate-off, while result lag
+and missing provisional composition authority remain open. Code and evidence
+landed on `main` via stacked PRs #37/#36 (`7665c64`) with dual-gate still
+Debug/preflight-only. ADR 0025 stays **Proposed**.
+
+Current sources: `PD-T9-RESPONSIVE-PIPELINE-001`, Assignment
+`T9-RESPONSIVE-PIPELINE-001`, proposed ADR 0025, Rem-Device evidence, Rem-3
+design (implementation not authorized).
+
 ## 2026-07-26 — T9 automatic-bounding shadow boundary proposed
 
 The long-composition investigation proved that cumulative explicit Path
