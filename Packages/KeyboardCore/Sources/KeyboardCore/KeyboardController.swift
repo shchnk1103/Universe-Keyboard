@@ -673,23 +673,17 @@ public final class KeyboardController {
         }
     }
 
-    /// Apply structure-only preedit; stabilize chrome once per ahead streak.
+    /// Apply structure-only preedit only — never touch candidate/Path chrome.
+    ///
+    /// Rem-3-Polish-2 (device feedback): do **not** call
+    /// `onResponsivePresentationNeeded` here — Extension `syncUI` would
+    /// `refreshCandidateBar` / Path on every L1 tick (empty or re-layout flash).
+    /// Host marked text is updated directly; last L2 candidate/Path stay until
+    /// engine L2 paint. Selection remains fail-closed while ahead.
     private func applyProvisionalL1Visual(_ presentation: ResponsiveProvisionalPresentation) {
         state.currentComposition = presentation.preedit
         updateInlinePreedit(presentation.preedit, source: .compositionProjection)
-
-        var pathChanged = false
-        if !provisionalChromeStabilized {
-            // First delayed paint of this streak: empty selection chrome once.
-            state.lastRimeOutput = nil
-            state.partialCommit = nil
-            if usesT9InputSemantics {
-                clearT9PinyinPathState()
-                pathChanged = true
-            }
-            provisionalChromeStabilized = true
-        }
-        // Subsequent L1 ticks only lengthen ·×N — no Path/candidate tear-down.
+        provisionalChromeStabilized = true
 
         if let visible = feltMetrics.recordVisible(
             revision: presentation.watermark,
@@ -697,7 +691,6 @@ public final class KeyboardController {
         ) {
             Logger.shared.performance(visible)
         }
-        notifyResponsivePresentation(pathChanged: pathChanged)
     }
 
     private func logL1Skip(_ reason: ResponsiveProvisionalL1SkipReason) {

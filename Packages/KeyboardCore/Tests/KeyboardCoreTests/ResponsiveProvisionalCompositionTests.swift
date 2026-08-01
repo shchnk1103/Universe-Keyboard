@@ -291,9 +291,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
     func testCoalesceBacklogStillPaintsL1() async {
         let entered = DispatchSemaphore(value: 0)
         let release = DispatchSemaphore(value: 0)
-        var paintCount = 0
         let controller = makeDualGateController(entered: entered, release: release)
-        controller.onResponsivePresentationNeeded = { _ in paintCount += 1 }
         // 5 keys while blocked → pending rises; deferred L1 should still paint dots.
         for _ in 0..<5 {
             _ = controller.handle(.insertKey("2"))
@@ -302,7 +300,6 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         XCTAssertTrue(controller.isResponsiveProvisionalAhead)
         try? await Task.sleep(nanoseconds: 35_000_000)
         XCTAssertEqual(controller.state.currentComposition, "·····")
-        XCTAssertGreaterThanOrEqual(paintCount, 1, "L1 must notify presentation under backlog")
         release.signal()
         controller.threadAffineRimeCoordinator?.flushPending()
         let settle = expectation(description: "coalesce-l1-settle")
@@ -312,28 +309,39 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         controller.suspendRimeForVisibilityChange()
     }
 
-    /// Rem-3-Polish: once chrome stabilized, further L1 ticks only lengthen dots
-    /// (pathChanged should not re-fire every key — only first delayed paint).
-    func testDeferredL1StabilizesChromeOncePerStreak() async {
+    /// Rem-3-Polish-2: deferred L1 must not notify Extension presentation
+    /// (avoids candidate/Path refresh flash). Host preedit still updates.
+    func testDeferredL1DoesNotNotifyExtensionChrome() async {
         let entered = DispatchSemaphore(value: 0)
         let release = DispatchSemaphore(value: 0)
-        var pathishPaints = 0
+        var presentationNotifies = 0
         let controller = makeDualGateController(entered: entered, release: release)
-        controller.onResponsivePresentationNeeded = { effects in
-            if effects.contains(.t9PinyinPathsChanged) {
-                pathishPaints += 1
-            }
+        controller.onResponsivePresentationNeeded = { _ in
+            presentationNotifies += 1
         }
         for _ in 0..<5 {
             _ = controller.handle(.insertKey("2"))
         }
         XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+        let notifiesBeforeVisual = presentationNotifies
         try? await Task.sleep(nanoseconds: 40_000_000)
-        // Only the first delayed visual should request Path chrome rebuild.
-        XCTAssertLessThanOrEqual(pathishPaints, 1)
-        XCTAssertEqual(controller.state.currentComposition, "·····")
+        XCTAssertEqual(
+            controller.state.currentComposition,
+            "·····",
+            "L1 dots still update Core/host preedit"
+        )
+        XCTAssertEqual(
+            presentationNotifies,
+            notifiesBeforeVisual,
+            "L1 visual must not call onResponsivePresentationNeeded"
+        )
+        // Preserve last engine chrome if any was set — L1 must not nil it.
+        // (Blocked owner may never have painted L2 yet; ensure no forced clear.)
         release.signal()
         controller.threadAffineRimeCoordinator?.flushPending()
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        // L2 may notify presentation once or more — that is expected.
+        XCTAssertGreaterThanOrEqual(presentationNotifies, notifiesBeforeVisual)
         controller.suspendRimeForVisibilityChange()
     }
 }
