@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R5-Rem-3-Device Closed direction PASS (key-follow + L1 provisional) with residual P1 chrome flicker; dual-gate default-off; R6 / ADR Accept / Product Gate not claimed`
+**Lifecycle status:** `Active — R5-Rem-3-Polish-2 device PASS (chrome stable); Rem-3-Device key-follow PASS; dual-gate default-off; R6 / ADR Accept / Product Gate not claimed`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -327,10 +327,10 @@
   ([design](t9-responsive-pipeline-001-r5-rem-3-device-design.md),
   [evidence](../evidence/t9-responsive-pipeline-r5-rem-3-device-2026-08-01.md));
   teardown gate-off done; **not** Product Gate
-- [x] R5-Rem-3-Polish — **granted 2026-08-01** (Product option 1); deferred L1
-  visual + once-per-streak chrome stabilize
+- [x] R5-Rem-3-Polish — **granted 2026-08-01** (Product option 1); Polish-2
+  host-preedit-only L1 + device re-pair **PASS** (chrome stable)
   ([evidence](../evidence/t9-responsive-pipeline-r5-rem-3-polish-2026-08-01.md));
-  optional device re-pair pending
+  teardown gate-off done
 - [ ] Release default-on / Product Gate / ADR 0025 Accept / R6 — **not granted**
 
 ### Exit Criteria — R5-Remediation design
