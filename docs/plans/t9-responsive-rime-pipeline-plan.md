@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — R5-Rem-Device direction PASS (key-feel); Formal R5 FAIL historical; #36+#37 on main @ 7665c64; Rem-3 design next; R6/ADR Accept/Product Gate/default-on not claimed** |
+| Status | **Active — R5-Rem-3-Device direction PASS (key-follow + L1) with residual chrome flicker; Formal R5 FAIL historical; dual-gate default-off; R6/ADR Accept/Product Gate not claimed** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
