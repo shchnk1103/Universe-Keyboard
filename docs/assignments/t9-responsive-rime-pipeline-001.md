@@ -327,6 +327,10 @@
   ([design](t9-responsive-pipeline-001-r5-rem-3-device-design.md),
   [evidence](../evidence/t9-responsive-pipeline-r5-rem-3-device-2026-08-01.md));
   teardown gate-off done; **not** Product Gate
+- [x] R5-Rem-3-Polish — **granted 2026-08-01** (Product option 1); deferred L1
+  visual + once-per-streak chrome stabilize
+  ([evidence](../evidence/t9-responsive-pipeline-r5-rem-3-polish-2026-08-01.md));
+  optional device re-pair pending
 - [ ] Release default-on / Product Gate / ADR 0025 Accept / R6 — **not granted**
 
 ### Exit Criteria — R5-Remediation design

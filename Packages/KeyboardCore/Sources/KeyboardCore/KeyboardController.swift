@@ -76,6 +76,13 @@ public final class KeyboardController {
     private var lastPresentedRevision: UInt64 = 0
     /// Rem-3: dual-gate structure-only L1 ledger (MainActor).
     private var provisionalCompositionMirror = ResponsiveProvisionalCompositionMirror()
+    /// Rem-3-Polish: cancels deferred L1 visual paints when L2/abandon wins first.
+    private var provisionalVisualPaintGeneration: UInt64 = 0
+    /// Rem-3-Polish: candidate/Path chrome already emptied once this ahead streak.
+    private var provisionalChromeStabilized = false
+    /// Rem-3-Polish: MainActor-owned delay; tests may lower. Default 48ms.
+    public var provisionalVisualPaintDelayNanoseconds: UInt64 =
+        ResponsiveProvisionalComposition.defaultVisualPaintDelayNanoseconds
     private let feltMetrics = ResponsiveRimeFeltMetricsTracker.shared
 
     /// Rem-3: true while L1 progressive length is ahead of settled engine paint.
@@ -384,13 +391,17 @@ public final class KeyboardController {
         guard isLivePresentationSnapshot(snapshot, expectedGeneration: expectedGeneration) else {
             return
         }
-        // Rem-3: L2 atomically replaces L1 (clear ledger before composition apply).
-        if provisionalCompositionMirror.isProvisionalAhead {
+        // Rem-3 / Polish: L2 wins — cancel deferred L1 visual and clear ledger.
+        cancelDeferredProvisionalVisualPaint()
+        if provisionalCompositionMirror.isProvisionalAhead
+            || provisionalCompositionMirror.isActive
+        {
             provisionalCompositionMirror.alignToEngineApply(
                 epoch: snapshot.sessionEpoch,
                 revision: snapshot.revision
             )
         }
+        provisionalChromeStabilized = false
         lastPresentedSessionEpoch = snapshot.sessionEpoch
         lastPresentedRevision = snapshot.revision
 
@@ -534,7 +545,9 @@ public final class KeyboardController {
         responsivePresentationGeneration &+= 1
         lastPresentedSessionEpoch = 0
         lastPresentedRevision = 0
+        cancelDeferredProvisionalVisualPaint()
         provisionalCompositionMirror.clear()
+        provisionalChromeStabilized = false
         feltMetrics.reset()
     }
 
@@ -558,7 +571,9 @@ public final class KeyboardController {
         else {
             return
         }
+        cancelDeferredProvisionalVisualPaint()
         provisionalCompositionMirror.clear()
+        provisionalChromeStabilized = false
         state.currentComposition = ""
         state.lastRimeOutput = nil
         state.partialCommit = nil
@@ -573,10 +588,19 @@ public final class KeyboardController {
         guard isResponsiveRimePipelineEnabled, isThreadAffineRimeOwnerEnabled else {
             return
         }
+        cancelDeferredProvisionalVisualPaint()
         provisionalCompositionMirror.clear()
+        provisionalChromeStabilized = false
     }
 
-    /// Rem-3: after dual-gate processKey accept, paint structure-only L1 when eligible.
+    private func cancelDeferredProvisionalVisualPaint() {
+        provisionalVisualPaintGeneration &+= 1
+    }
+
+    /// Rem-3: after dual-gate processKey accept, arm L1 ledger + deferred visual.
+    ///
+    /// Rem-3-Polish: do **not** paint dots/chrome immediately. Fast engine
+    /// results replace the streak before the delay and skip empty→full thrash.
     func applyResponsiveProvisionalL1IfEligible(rimeKey: String) {
         // Dual-gate only (thread-affine owner + responsive gate).
         guard isResponsiveRimePipelineEnabled, isThreadAffineRimeOwnerEnabled else {
@@ -607,16 +631,7 @@ public final class KeyboardController {
             logL1Skip(.emptyLedger)
             return
         }
-        // Structure-only host preedit; clear selection chrome while ahead.
-        state.currentComposition = presentation.preedit
-        state.lastRimeOutput = nil
-        state.partialCommit = nil
-        if usesT9InputSemantics {
-            clearT9PinyinPathState()
-        }
-        // Candidate chrome is derived from lastRimeOutput — already nil.
-        updateInlinePreedit(presentation.preedit, source: .compositionProjection)
-        // Raise presentation floor so older L2 cannot roll back L1.
+        // Raise presentation floor so older L2 cannot roll back L1 (ledger ahead).
         if lastPresentedSessionEpoch == presentation.sessionEpoch {
             lastPresentedRevision = max(lastPresentedRevision, presentation.watermark)
         } else if lastPresentedSessionEpoch == 0
@@ -625,13 +640,64 @@ public final class KeyboardController {
             lastPresentedSessionEpoch = presentation.sessionEpoch
             lastPresentedRevision = presentation.watermark
         }
+        scheduleDeferredProvisionalVisualPaint(presentation)
+    }
+
+    /// Delayed L1 visual: only runs if still provisionalAhead after the delay.
+    private func scheduleDeferredProvisionalVisualPaint(
+        _ presentation: ResponsiveProvisionalPresentation
+    ) {
+        provisionalVisualPaintGeneration &+= 1
+        let generation = provisionalVisualPaintGeneration
+        let delay = provisionalVisualPaintDelayNanoseconds
+        Task { @MainActor [weak self] in
+            if delay > 0 {
+                try? await Task.sleep(nanoseconds: delay)
+            } else {
+                await Task.yield()
+            }
+            guard let self else { return }
+            guard generation == self.provisionalVisualPaintGeneration else { return }
+            guard self.provisionalCompositionMirror.isProvisionalAhead else { return }
+            // Only paint if ledger still covers at least this watermark streak head.
+            guard self.provisionalCompositionMirror.sessionEpoch == presentation.sessionEpoch,
+                  self.provisionalCompositionMirror.watermark >= presentation.watermark
+            else {
+                return
+            }
+            // Re-read current presentation (more accepts may have extended ·×N).
+            guard let live = self.provisionalCompositionMirror.makePresentation() else {
+                return
+            }
+            self.applyProvisionalL1Visual(live)
+        }
+    }
+
+    /// Apply structure-only preedit; stabilize chrome once per ahead streak.
+    private func applyProvisionalL1Visual(_ presentation: ResponsiveProvisionalPresentation) {
+        state.currentComposition = presentation.preedit
+        updateInlinePreedit(presentation.preedit, source: .compositionProjection)
+
+        var pathChanged = false
+        if !provisionalChromeStabilized {
+            // First delayed paint of this streak: empty selection chrome once.
+            state.lastRimeOutput = nil
+            state.partialCommit = nil
+            if usesT9InputSemantics {
+                clearT9PinyinPathState()
+                pathChanged = true
+            }
+            provisionalChromeStabilized = true
+        }
+        // Subsequent L1 ticks only lengthen ·×N — no Path/candidate tear-down.
+
         if let visible = feltMetrics.recordVisible(
             revision: presentation.watermark,
             source: .provisional
         ) {
             Logger.shared.performance(visible)
         }
-        notifyResponsivePresentation(pathChanged: usesT9InputSemantics)
+        notifyResponsivePresentation(pathChanged: pathChanged)
     }
 
     private func logL1Skip(_ reason: ResponsiveProvisionalL1SkipReason) {

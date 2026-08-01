@@ -34,6 +34,9 @@ public enum ResponsiveProvisionalComposition: Sendable {
     /// Fixed structure-only placeholder (not a digit, not a pinyin letter).
     public static let placeholderScalar: Character = "\u{00B7}"
 
+    /// Default Rem-3-Polish delay before L1 visual paint (not a product SLO).
+    public static let defaultVisualPaintDelayNanoseconds: UInt64 = 48_000_000
+
     /// True when `rimeKey` is a single ASCII digit suitable for T9 letter-group keys.
     public static func isT9DigitKey(_ rimeKey: String) -> Bool {
         guard rimeKey.count == 1, let scalar = rimeKey.unicodeScalars.first else {

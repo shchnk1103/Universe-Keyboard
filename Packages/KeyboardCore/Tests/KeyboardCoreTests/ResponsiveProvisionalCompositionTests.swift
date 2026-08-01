@@ -150,13 +150,15 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
 
     private func makeDualGateController(
         entered: DispatchSemaphore? = nil,
-        release: DispatchSemaphore? = nil
+        release: DispatchSemaphore? = nil,
+        visualDelayNs: UInt64 = 20_000_000
     ) -> KeyboardController {
         let controller = KeyboardController()
         controller.textClient = FakeTextInputClient()
         controller.usesT9InputSemantics = true
         controller.isResponsiveRimePipelineEnabled = true
         controller.isThreadAffineRimeOwnerEnabled = true
+        controller.provisionalVisualPaintDelayNanoseconds = visualDelayNs
         controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
             DigitBootstrap(processEntered: entered, releaseFirst: release)
         )
@@ -189,9 +191,12 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         }
         XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
 
-        // Progressive L1: structure-only dots while owner blocked.
+        // Ledger ahead immediately; visual paint is deferred (Polish).
         XCTAssertTrue(controller.isResponsiveProvisionalAhead)
         XCTAssertEqual(controller.responsiveProvisionalSlotCount, n)
+        try? await Task.sleep(nanoseconds: 35_000_000)
+
+        // Progressive L1: structure-only dots while owner blocked.
         XCTAssertEqual(
             controller.state.currentComposition,
             String(repeating: "·", count: n)
@@ -220,6 +225,29 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
             controller.state.currentComposition.contains("·"),
             "L2 must atomically replace L1 dots"
         )
+        controller.suspendRimeForVisibilityChange()
+    }
+
+    /// Rem-3-Polish: fast owner completion cancels deferred L1 visual paint.
+    func testFastEngineSkipsDeferredL1VisualPaint() async {
+        let controller = makeDualGateController(visualDelayNs: 80_000_000)
+        var paints = 0
+        controller.onResponsivePresentationNeeded = { _ in paints += 1 }
+
+        for _ in 0..<4 {
+            _ = controller.handle(.insertKey("2"))
+        }
+        // Unblocked engine should publish L2 before 80ms delay.
+        controller.threadAffineRimeCoordinator?.flushPending()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+
+        XCTAssertFalse(
+            controller.state.currentComposition.contains("·"),
+            "fast L2 must cancel deferred L1 dots"
+        )
+        XCTAssertFalse(controller.isResponsiveProvisionalAhead)
+        // L2 presentations may fire; none should leave dots.
+        _ = paints
         controller.suspendRimeForVisibilityChange()
     }
 
@@ -266,13 +294,14 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         var paintCount = 0
         let controller = makeDualGateController(entered: entered, release: release)
         controller.onResponsivePresentationNeeded = { _ in paintCount += 1 }
-        // 5 keys while blocked → pending rises; L1 should still paint dots.
+        // 5 keys while blocked → pending rises; deferred L1 should still paint dots.
         for _ in 0..<5 {
             _ = controller.handle(.insertKey("2"))
         }
         XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
-        XCTAssertEqual(controller.state.currentComposition, "·····")
         XCTAssertTrue(controller.isResponsiveProvisionalAhead)
+        try? await Task.sleep(nanoseconds: 35_000_000)
+        XCTAssertEqual(controller.state.currentComposition, "·····")
         XCTAssertGreaterThanOrEqual(paintCount, 1, "L1 must notify presentation under backlog")
         release.signal()
         controller.threadAffineRimeCoordinator?.flushPending()
@@ -280,6 +309,31 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { settle.fulfill() }
         await fulfillment(of: [settle], timeout: 2)
         XCTAssertFalse(controller.isResponsiveProvisionalAhead)
+        controller.suspendRimeForVisibilityChange()
+    }
+
+    /// Rem-3-Polish: once chrome stabilized, further L1 ticks only lengthen dots
+    /// (pathChanged should not re-fire every key — only first delayed paint).
+    func testDeferredL1StabilizesChromeOncePerStreak() async {
+        let entered = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
+        var pathishPaints = 0
+        let controller = makeDualGateController(entered: entered, release: release)
+        controller.onResponsivePresentationNeeded = { effects in
+            if effects.contains(.t9PinyinPathsChanged) {
+                pathishPaints += 1
+            }
+        }
+        for _ in 0..<5 {
+            _ = controller.handle(.insertKey("2"))
+        }
+        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+        try? await Task.sleep(nanoseconds: 40_000_000)
+        // Only the first delayed visual should request Path chrome rebuild.
+        XCTAssertLessThanOrEqual(pathishPaints, 1)
+        XCTAssertEqual(controller.state.currentComposition, "·····")
+        release.signal()
+        controller.threadAffineRimeCoordinator?.flushPending()
         controller.suspendRimeForVisibilityChange()
     }
 }
