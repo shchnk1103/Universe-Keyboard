@@ -10,13 +10,13 @@
 
 ## T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
-- **Lifecycle:** `Active — R5-Rem-Device direction PASS; Formal R5 FAIL historical; published on main`
+- **Lifecycle:** `Active — R5-Rem-3 knife closed 2026-08-01 (Device + Polish-2 PASS); dual-gate default-off; Formal R5 FAIL historical`
 - **Authority:** [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md) + [`PD-T9-RESPONSIVE-PIPELINE-001`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md) + [`ADR 0025 Proposed`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md)
-- **Publication:** PR [#36](https://github.com/shchnk1103/Universe-Keyboard/pull/36) + stacked [#37](https://github.com/shchnk1103/Universe-Keyboard/pull/37) → `main` @ `7665c64` (2026-07-31); feature branches deleted after reachability
-- **Delivered (default-off):** Fake→serial→thread-affine Spike/Owner/B/Wire; R5-Preflight Debug arm; Formal R5 A/B (FAIL freeze-burst); Rem-1 felt metrics; Rem-2 UI coalesce + P1-1 epoch gate; Rem-Device key-feel PASS
-- **Explicit non-claims:** Rem-3 **implementation**, R6, ADR Accept, Product Gate, Release dual-gate default-on
-- **Residual after Rem-Device:** VISIBLE lag spikes (~190–246 ms) while keys stay ~1 ms; O2 coalesce barely exercised on the PASS pair; progressive composition authority (L1) still absent
-- **Next Product action:** review [Rem-3 design](assignments/t9-responsive-pipeline-001-r5-rem-3-design.md); authorize implementation only if Product wants provisional L1 before any Gate talk
+- **Publication tip:** `main` @ `d823273` (Polish-2 close docs); code Polish-2 `80ef54b`
+- **Delivered (default-off):** R1–R4 Wire; R5-Preflight; Formal R5 FAIL; Rem-1/2; Rem-Device; Rem-3 L1 + dual review + P1; Rem-3-Device key-follow PASS; Rem-3-Polish-2 chrome-stable PASS
+- **Evidence close:** [`r5-rem-3-device`](evidence/t9-responsive-pipeline-r5-rem-3-device-2026-08-01.md), [`r5-rem-3-polish`](evidence/t9-responsive-pipeline-r5-rem-3-polish-2026-08-01.md)
+- **Explicit non-claims:** R6, ADR Accept, Product Gate, Release dual-gate default-on
+- **Next Product action:** Hold default-off **or** authorize R6 readiness / other program (RELEASE / 9KEY-PINYIN-002); do **not** default-on without Gate
 - **Predecessor:** [`T9-AUTO-ANCHOR-001`](assignments/t9-auto-anchor-001.md) remains **Hold/harvest**
 
 ## RELEASE-2026-0801 — 2026 年 8 月 1 日 App Store 发布

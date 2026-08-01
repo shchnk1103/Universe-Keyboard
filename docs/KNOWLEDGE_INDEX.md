@@ -81,16 +81,16 @@
   [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)
 - T9 responsive RIME input pipeline
   (`T9-RESPONSIVE-PIPELINE-001`, **Active** — Formal R5 **direction FAIL** retained;
-  **R5-Rem-Device direction PASS**; code on **`main` @ `7665c64`** via #36/#37
-  (dual-gate default-off); **Rem-3 design** open / implementation not claimed;
-  Product Gate / ADR Accept / default-on **not** claimed; auto-anchor Hold/harvest):
+  **R5-Rem-3 knife closed 2026-08-01**: Device key-follow PASS + Polish-2 chrome
+  stable PASS; dual-gate **default-off**; Product Gate / ADR Accept **not** claimed;
+  auto-anchor Hold/harvest):
   [`Product Decision`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md),
   [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md),
   [`plan`](plans/t9-responsive-rime-pipeline-plan.md),
   [`ADR 0025 Proposed`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md),
+  [`R5-Rem-3-Polish evidence`](evidence/t9-responsive-pipeline-r5-rem-3-polish-2026-08-01.md),
+  [`R5-Rem-3-Device evidence`](evidence/t9-responsive-pipeline-r5-rem-3-device-2026-08-01.md),
   [`R5-Rem-3 design`](assignments/t9-responsive-pipeline-001-r5-rem-3-design.md),
-  [`R5-Rem-Device evidence`](evidence/t9-responsive-pipeline-r5-rem-device-2026-07-31.md),
-  [`R5-Rem-1+2 evidence`](evidence/t9-responsive-pipeline-r5-rem-1-2-2026-07-31.md),
   [`R5-Remediation design`](assignments/t9-responsive-pipeline-001-r5-remediation-design.md),
   [`Formal R5 evidence`](evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md)
 - Release procedure: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)

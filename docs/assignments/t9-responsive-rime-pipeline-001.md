@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R5-Rem-3-Polish-2 device PASS (chrome stable); Rem-3-Device key-follow PASS; dual-gate default-off; R6 / ADR Accept / Product Gate not claimed`
+**Lifecycle status:** `Active — R5-Rem-3 knife closed 2026-08-01 (Device + Polish-2 PASS; dual-gate default-off); next Product choice required (Hold / R6 prep / other); R6 / ADR Accept / Product Gate not claimed`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
