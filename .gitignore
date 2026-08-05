@@ -48,6 +48,8 @@ Packages/RimeBridge/TestTool/test_rime
 *.swp
 *.swo
 *~
+__pycache__/
+*.pyc
 
 # Local evidence artifacts (environment captures, benchmarks) — root-only;
 # docs/evidence/ is tracked repository evidence and must NOT be ignored.
