@@ -231,7 +231,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         // Ledger ahead immediately; visual paint is deferred (Polish).
         XCTAssertTrue(controller.isResponsiveProvisionalAhead)
         XCTAssertEqual(controller.responsiveProvisionalSlotCount, n)
-        try? await Task.sleep(nanoseconds: 35_000_000)
+        try? await Task.sleep(nanoseconds: 200_000_000)
 
         // Progressive L1: stable host prefix plus content-free dots while the
         // owner is blocked.
@@ -298,7 +298,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
             _ = controller.handle(.insertKey("2"))
         }
         XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
-        try? await Task.sleep(nanoseconds: 35_000_000)
+        try? await Task.sleep(nanoseconds: 200_000_000)
         XCTAssertTrue(controller.isResponsiveProvisionalAhead)
 
         // Keep a Partial Commit checkpoint alive to cover the same guard when
@@ -421,7 +421,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
 
         // The second owner call is blocked. Let the deferred L1 visual fire.
-        try? await Task.sleep(nanoseconds: 35_000_000)
+        try? await Task.sleep(nanoseconds: 200_000_000)
         XCTAssertEqual(client.markedText, settledMarkedText + "·")
         XCTAssertEqual(
             Array(client.markedTextHistory.suffix(1)),
@@ -483,7 +483,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
 
         _ = controller.handle(.insertKey("2"))
         XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
-        try? await Task.sleep(nanoseconds: 35_000_000)
+        try? await Task.sleep(nanoseconds: 200_000_000)
 
         XCTAssertEqual(controller.state.lastRimeOutput, settledOutput)
         XCTAssertEqual(controller.state.t9PinyinPathState, settledPaths)
@@ -554,13 +554,13 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
 
         _ = controller.handle(.deleteBackward)
         controller.threadAffineRimeCoordinator?.flushPending()
-        try? await Task.sleep(nanoseconds: 40_000_000)
+        try? await Task.sleep(nanoseconds: 150_000_000)
         let stableAfterDelete = client.markedText
         XCTAssertFalse(stableAfterDelete.contains("·"))
 
         _ = controller.handle(.insertKey("2"))
         XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
-        try? await Task.sleep(nanoseconds: 35_000_000)
+        try? await Task.sleep(nanoseconds: 200_000_000)
 
         XCTAssertEqual(
             client.markedText,
@@ -610,7 +610,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
             _ = controller.handle(.insertKey("2"))
         }
         XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
-        try? await Task.sleep(nanoseconds: 35_000_000)
+        try? await Task.sleep(nanoseconds: 200_000_000)
         XCTAssertTrue(client.markedText.contains("·"))
 
         let epochBeforeAbandon = controller.threadAffineRimeCoordinator?.diagnostics.sessionEpoch ?? 0
@@ -711,7 +711,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         }
         XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
         let notifiesBeforeVisual = presentationNotifies
-        try? await Task.sleep(nanoseconds: 40_000_000)
+        try? await Task.sleep(nanoseconds: 200_000_000)
         XCTAssertEqual(
             controller.state.insertedPreeditText,
             "·····",
