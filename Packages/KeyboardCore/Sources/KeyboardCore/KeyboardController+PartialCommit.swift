@@ -365,6 +365,11 @@ extension KeyboardController {
 
     /// Applies a RIME output while preserving a confirmed prefix during the active session.
     func applyRimeOutputPreservingPartialCommit(_ output: RimeOutput) {
+        // Every ordered engine-output branch (Delete, partial restore, Path
+        // recovery and auto-anchor rollback) shares this completion boundary.
+        // Refreshing here prevents a branch that clears L1 before applying its
+        // output from leaving the previous stable prefix behind.
+        defer { captureResponsiveStablePreeditIfReady() }
         advanceCompositionRevision()
         // Rem-3 D3: any dual-gate engine apply into Core state clears L1 ledger
         // (ordered Delete / L2 presentation both flow here).

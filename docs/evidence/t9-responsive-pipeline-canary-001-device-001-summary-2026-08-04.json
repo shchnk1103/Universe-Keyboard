@@ -1,0 +1,88 @@
+{
+  "schema": "CANARY-001-DEVICE-001-SUMMARY-v1",
+  "publishability": "content-free repository evidence",
+  "pairID": "CANARY001-D001-PAIR-20260804-002",
+  "device": "iPhone 13 Pro / iPhone14,2 / iOS 27.0 (24A5390f) Beta",
+  "udid": "00008110-000A08440198801E",
+  "completedAt": "2026-08-05T11:48:02Z",
+  "arms": {
+    "A": {
+      "status": "pass",
+      "stallScore": 2.5,
+      "segsComplete": 39,
+      "path": "sync",
+      "rimeMsMax": 228.6,
+      "totalMsMax": 229.9,
+      "slowActions": [
+        1,
+        6,
+        9,
+        19,
+        24,
+        29,
+        32
+      ]
+    },
+    "B": {
+      "status": "pass",
+      "stallScore": 0,
+      "segsComplete": 39,
+      "path": "thread-affine",
+      "acceptMsMedian": 0.3,
+      "rimeBridgeMsMax": 242.5,
+      "coalescing": 2,
+      "provisionalLagMs": [
+        50,
+        52
+      ]
+    },
+    "K": {
+      "status": "pass",
+      "killAssert": "decision=kill status=success",
+      "extensionStartupDecision": "baseline",
+      "noCanaryAccept": true,
+      "noConcurrentOwner": true,
+      "confound": "expired + kill=1 joint fail-closed"
+    },
+    "O": {
+      "status": "pass",
+      "installDbSeq": 3960,
+      "hashMatchFrozen": true,
+      "canaryStringScan": "absent",
+      "humanSmoke": "normal"
+    }
+  },
+  "fixture": {
+    "id": "CANARY-001-D001-39-V1",
+    "count": 39,
+    "canonicalSHA256": "a71ccfba971f5c3900af94f254648877a5fc2a2d89b0b88cece28576dca068ac"
+  },
+  "source": {
+    "head": "3585a540ba8389673acd49128d87040ac9619f27",
+    "compiledSourceAggregateSHA256": "a541b2267eadb4300f9c9245e5776486a438c16f3e533306b6600efb7b4b0714"
+  },
+  "artifactHashes": {
+    "A": {
+      "app": "a4c2f329f4ad426adb3bc28766e648b9d76a3e9abffbd4b6349794837f36e917",
+      "ext": "35cce1ee14286afdb8802281c5b69e7dfa8e82855b42b6c86fb92ccebc39f3b3"
+    },
+    "B": {
+      "app": "854ae17b30b3cc63cb361fac0b684497b1998e0ffe15b519d7477beeb89c322b",
+      "ext": "f1c04aa6a648ae37a9b98afd7efa0a3e9838200e8fe4f721a55f9d1106f14870"
+    },
+    "O": {
+      "app": "65d90433ccd7613b566ede6e4248535e2d11c270051b24e04ede59ebbfa7e4ea",
+      "ext": "d911e011236b9179c2f994ed2e991db3e92dc8fdbc89ddaddcab08446f13598d"
+    }
+  },
+  "notClaimed": [
+    "ADR 0025 Accept",
+    "Product Gate",
+    "Release default-on",
+    "production wiring",
+    "Full Access OFF",
+    "long-term memory/jetsam",
+    "multi-device/iOS replication"
+  ],
+  "handoff": "independent Architecture + Quality review, then Product Lead"
+}

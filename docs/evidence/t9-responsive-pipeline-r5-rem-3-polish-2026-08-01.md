@@ -3,6 +3,8 @@
 **Status:** `Closed — Polish-2 device re-pair PASS (chrome stable; key-follow retained)`  
 **Product:** option **1** after Rem-3-Device residual P1 (candidate/Path flicker)  
 **Code tip:** `80ef54b` / `b359ea9` (Polish-2)  
+**Engineering review:** `Pass with conditions` on current tip; **P1-D2 open**
+(stable stale Candidate/Path chrome versus frozen disabled/cleared contract)
 **Parent evidence:** [`t9-responsive-pipeline-r5-rem-3-device-2026-08-01.md`](t9-responsive-pipeline-r5-rem-3-device-2026-08-01.md)  
 **Non-claims:** Product Gate / ADR Accept / default-on not claimed
 
@@ -51,5 +53,7 @@ Reinstalled gate-off Arm A Debug after re-pair close.
 ## Residual / next
 
 - dual-gate still **default-off**
-- optional: further UI polish only if Product wants; not required for this residual close
+- Product/Architecture must resolve P1-D2 (affordance correction or formal
+  host-preedit-only Amendment) and complete the follow-up independent review
+- Further UI polish is optional only after that contract decision
 - Product Gate / ADR Accept still closed

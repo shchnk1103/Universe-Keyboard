@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — R5-Rem-Device Closed direction PASS 2026-07-31; Formal R5 FAIL historical; code published to main via #36/#37 @ 7665c64 (default-off dual-gate retained); Rem-3 design next; R6 / ADR Accept / Product Gate / default-on not authorized`
+**Lifecycle status:** `Recorded — P1-D2 Amendment B bounded Pass with conditions 2026-08-01; P2 Core subset Pass with conditions; P3-D1-T02/T03 bounded implementation/review complete but Product-held at host block; UIKit/real-device residuals remain; dual-gate default-off; R6 / ADR Accept / Product Gate / default-on not authorized`
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the
@@ -17,8 +17,9 @@ active Grok session on `2026-07-30 Asia/Shanghai`
 - **Product Approver / Decision maker:** Human Product Owner acting as Product Lead
 - **Assignment Authority:** Product Lead under [`ASSIGNMENT_POLICY.md`](../ASSIGNMENT_POLICY.md)
 - **Domain Owner:** 🧠 Input Intelligence Maintainer
-- **Executor (this design phase):** Current Grok session, limited to KOS
-  governance, read-only architecture audit and implementable design documents
+- **Executor (initial design phase):** Current Grok session, limited at that phase to
+  KOS governance, read-only architecture audit and implementable design documents;
+  later implementation/device work required and received separate phase authority
 - **Architecture / Quality review:** Required before any R1+ production-facing
   implementation; self-review by the Executor is not independent Architecture
   or Quality authority
@@ -413,7 +414,7 @@ Evidence:
 - Feature branches deleted after `origin/main` reachability checks.
 - Dual-gate remains **Debug/preflight default-off** on Release paths.
 
-### R5-Rem-3 (2026-07-31) — Design freeze + dual review + Amendment A; implementation not authorized
+### R5-Rem-3 (2026-07-31) — Design freeze record; later implementation authorized
 
 Human Product Owner authorized **documentation hygiene** then **Rem-3 design
 only** (provisional L1). Independent Architecture + Quality design reviews on tip
@@ -425,8 +426,10 @@ provisionalAhead fail-closed) and Quality progressive/metric conditions.
 design + Amendment A). Executor complete — independent Arch/Quality
 **implementation** review required before any further claims.
 
-Device re-pair (Rem-3-Device), R6, ADR Accept, Product Gate and default-on remain
-closed until a later explicit instruction.
+At the time of this design record, device re-pair, R6, ADR Accept, Product Gate and
+default-on remained closed. Later Rem-3 implementation, device direction evidence and
+Polish-2 review are recorded in the current-tip section below; those later steps do
+not grant ADR Accept, Product Gate or default-on.
 
 Design:
 [`t9-responsive-pipeline-001-r5-rem-3-design.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md)  
@@ -437,10 +440,127 @@ Design Quality review:
 Executor evidence:
 [`../evidence/t9-responsive-pipeline-r5-rem-3-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-rem-3-2026-07-31.md).
 
+### R5-Rem-3-Polish-2 current-tip review (2026-08-01) — Pass with conditions; P1-D2 open (historical trigger)
+
+The Polish-2 device re-pair directionally reduced Candidate/Path chrome flicker while
+retaining host-preedit-only L1. Independent current-tip reviews on code tip
+`80ef54b` / documentation tip `3585a54` recorded the following:
+
+- Architecture: **Pass with conditions**, P1-D2 — stale Candidate/Path chrome remains
+  visible during `provisionalAhead`, while frozen Rem-3 D2 requires disabled or
+  cleared affordances.
+- Quality: **Pass with conditions**, independently executed focused **22/0** and
+  KeyboardCore full **854/0**; the same P1-D2 contract/coverage gap remains.
+
+This is a device-direction and engineering-review result, not Product Gate evidence.
+Product and Architecture must choose either disabled/cleared affordances or a formal
+Amendment accepting stable stale chrome with fail-closed actions. Until then, the
+current tip is **not unconditionally engineering closed**.
+
+This paragraph records the **pre-Amendment-B trigger state**. The later Product
+selection and bounded disposition below supersede its open-contract wording; the
+historical test counts and device-direction result remain unchanged.
+
+Reviews:
+[`R5-Rem-3-Polish Architecture`](../assignments/t9-responsive-pipeline-001-r5-rem-3-polish-architecture-review.md),
+[`R5-Rem-3-Polish Quality`](../assignments/t9-responsive-pipeline-001-r5-rem-3-polish-quality-review.md),
+[`Polish device evidence`](../evidence/t9-responsive-pipeline-r5-rem-3-polish-2026-08-01.md).
+
+### P1-D2 Amendment B (2026-08-01) — Product selected; implementation authorized
+
+Human Product Owner / Product Lead selected **option B** after the independent
+Architecture and Quality reviews identified the mismatch between the frozen D2
+affordance contract and the Polish-2 device behavior.
+
+This Amendment is intentionally narrower than a Product Gate or an ADR Accept:
+
+1. **Visual shadow anchor:** while `provisionalAhead`, L1 presents the latest
+   host-visible stable marked text followed by one `·` per accepted T9 slot not
+   yet covered by a live L2 engine snapshot. If no stable L2 text exists, the
+   presentation is `·`×N. This is a presentation snapshot only; it does not
+   alter RIME raw input, session state, Path ownership or host committed text.
+2. **Stable stale chrome:** Candidate and Path chrome may remain visually stable
+   during `provisionalAhead` to avoid extension redraw flicker. The visible
+   chrome is not authoritative and is not considered current composition state.
+3. **Fail-closed interaction:** candidate selection, correction-candidate
+   selection, candidate paging, Path selection/cycling, Space selection and
+   Partial Commit actions must return without mutating state while
+   `provisionalAhead` is true. Normal actions resume only after a live L2
+   snapshot or an explicit reset/epoch barrier.
+4. **Atomic handoff:** a live L2 snapshot replaces the complete visual shadow
+   string atomically. L1 must never call `replaceInput`, `insertText` or commit
+   the placeholder to the host.
+
+The Executor is authorized only to update the Proposed Amendment/design,
+KeyboardCore implementation and focused regression tests needed for this
+contract, followed by independent Architecture and Quality re-review. The
+dual-gate remains default-off; real Release wiring, ADR 0025 acceptance, R6,
+Product Gate, auto-anchor expansion and Release default-on remain out of scope.
+
+### P1-D2 Amendment B disposition (2026-08-01) — bounded Pass with conditions
+
+The authorized slice is complete. KeyboardCore focused **16/0** and full
+**858/0** tests pass; RIME vendor structural verification and `git diff --check`
+also pass. Final independent Architecture and Quality reviews both report
+**Pass with conditions** for the bounded Amendment B slice, with P0/P1 = 0/0.
+Architecture confirms P1-1 candidate-prefetch bypass and P1-2 ordered
+Delete/restore stable-shadow residual closed. Four P2 evidence debts remain:
+prefetch UI no-op coverage, the broader stale-action/chrome matrix,
+epoch/abandon marked-text-history proof, and real-device/Release performance
+evidence.
+
+This disposition closes only the bounded P1-D2 implementation/review slice. It
+does not accept ADR 0025, authorize R6, create Product Gate evidence, enable
+Release default-on or claim subjective non-stutter behavior.
+
+Final records:
+[`evidence`](../evidence/t9-responsive-pipeline-p1-d2-amendment-b-2026-08-01.md),
+[`Architecture re-review`](../assignments/t9-responsive-pipeline-001-p1-d2-amendment-b-architecture-rereview-2.md),
+[`Quality re-review`](../assignments/t9-responsive-pipeline-001-p1-d2-amendment-b-quality-rereview-2.md).
+
+### P2-Regression-Matrix-001 follow-up (2026-08-01)
+
+在本次 Product 方向的继续指示下，另开一个**测试与证据限定**子件，补齐
+P1-D2 复审留下的 Core action/stale-chrome 与 epoch/abandon host-history
+矩阵。当前结果为 focused **19/0**、KeyboardCore full **861/0**，修复后三测试
+重跑 **3/0**；独立 Architecture/Quality re-review 为 **Pass with conditions**，
+P2-EPC 在 bounded Core/Fake-host 层关闭。这仍只是 bounded Core evidence。
+UIKit Extension candidate-prefetch no-op、真实
+librime/真机主观延迟、队列/内存/jetsam、Release、R6 和 Product Gate 仍未
+授权或验证。
+
+子件记录：
+[`Assignment`](../assignments/t9-responsive-pipeline-001-p2-regression-matrix.md)、
+[`Evidence`](../evidence/t9-responsive-pipeline-p2-regression-matrix-2026-08-01.md)、
+[`Architecture re-review`](../assignments/t9-responsive-pipeline-001-p2-regression-matrix-architecture-rereview.md)、
+[`Quality re-review`](../assignments/t9-responsive-pipeline-001-p2-regression-matrix-quality-rereview.md)。
+
+### P3-D1-T02/T03 Product Hold (2026-08-03)
+
+Human Product Owner selected **Option 1: hold the bounded slice** after the T02/T03 implementation
+and independent Architecture/Quality re-review. The actual Extension harness compiles and the
+KeyboardCore evidence is recorded, but the Simulator host did not expose a provable system-keyboard
+activation boundary; T02/T03 therefore remain `Blocked (host accessibility)`.
+
+This Product Hold means:
+
+- keep the current code, tests and content-free evidence unchanged;
+- do not start another target/device run or marker-remediation implementation under the existing
+  Assignment;
+- do not infer ADR 0025 acceptance, Release default-on, Product Gate, real-RIME readiness or
+  physical-device lifecycle proof;
+- reopen only through a new Product Assignment with an explicit scope, owner, environment and
+  revalidation conditions.
+
+Records:
+[`P3-D1/T02/T03 Assignment`](../assignments/t9-responsive-pipeline-001-p3-d1-t02-t03-lifecycle-harness.md)、
+[`Runtime matrix`](../assignments/t9-responsive-pipeline-001-p3-d1-runtime-lifecycle-matrix.md)、
+[`Architecture re-review`](../assignments/t9-responsive-pipeline-001-p3-d1-t02-t03-architecture-rereview.md)、
+[`Quality re-review`](../assignments/t9-responsive-pipeline-001-p3-d1-t02-t03-quality-rereview.md)。
+
 ## Not authorized now
 
 - Changing Release default input path or user-facing settings
-- R5-Rem-3 **implementation** (design only is open)
 - R6, ADR 0025 Accept, Product Gate, shipping dual-gate default-on
 - Expanding T9 auto-anchor
 - Rewriting Formal R5 FAIL as Product success
@@ -458,7 +578,7 @@ Executor evidence:
 | **R4-B** | Simulator + real RIME bootstrap evidence | Default-off; disconnected real-engine proof |
 | R5 | Human Reminders A/B on device | Evidence only (Formal FAIL; historical) |
 | R5-Rem | Felt metrics + UI coalesce + Rem-Device | Closed direction PASS; default-off |
-| R5-Rem-3 | Provisional L1 composition | **Design only** open; implementation closed |
+| R5-Rem-3 | Provisional L1 + Polish-2 host-preedit-only direction | **Amendment B bounded Pass with conditions**; four P2 evidence debts; default-off |
 | R6 | Independent Architecture, Quality, Product Gate | Shipping decision |
 
 Detailed Exit Criteria live on the Assignment and plan.
@@ -468,7 +588,8 @@ Detailed Exit Criteria live on the Assignment and plan.
 Require later Product (and often Architecture) amendment:
 
 - Formal latency / queue-depth SLO numbers
-- Whether provisional local T9 display may show before RIME returns
+- Formal Product Gate / device budget for the provisional visual shadow; the
+  Amendment B display and stale-chrome contract is selected but not a Gate result
 - Interaction with default-off auto-anchor if both are ever considered together
 - User-visible “engine busy” affordance (default: none for v1)
 - Any Release default-on policy
@@ -481,4 +602,8 @@ Human Product Owner confirmed (session chain ending 2026-07-30):
 2. Auto-anchor expansion stops after S2.3 direction FAIL (Hold/harvest).
 3. Next primary track is responsive / serial RIME pipeline, not more anchor knives.
 4. Grok may run design-only R0; implementation requires a later explicit
-   authorization (recommended first implementation slice: R1 Fake RIME only).
+  authorization (recommended first implementation slice: R1 Fake RIME only).
+5. Human Product Owner selected P1-D2 Amendment B on `2026-08-01 Asia/Shanghai`:
+   stable L2 marked text plus pending `·` slots, stable stale chrome and
+   fail-closed related actions; only the bounded KeyboardCore slice and reviews
+   are authorized.

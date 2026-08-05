@@ -17,8 +17,35 @@ extension KeyboardViewController {
         // R2: when the responsive gate is on, deferred snapshot apply must re-enter UI.
         // Gate defaults off — this bridge is inert until Product enables the gate.
         controller.onResponsivePresentationNeeded = { [weak self] effects in
-            self?.syncUI(with: effects)
+            guard let self else { return }
+            self.syncUI(with: effects)
+            #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+            self.p3d1LifecycleAppliedCount &+= 1
+            self.p3d1RecordLifecycleMarker("PUBLISH", reason: "ownerApply")
+            #endif
         }
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+        controller.onResponsiveCanaryPresentationNeeded = { [weak self] effects in
+            guard let self else { return false }
+            self.syncUI(with: effects)
+            return true
+        }
+        controller.onResponsiveCanaryPresentationTerminal = { [weak self] terminal in
+            guard let self else { return }
+            if !self.responsiveCanaryModeCoordinator.recordPresentationTerminal(terminal) {
+                if case .visibilityEnding = self.responsiveCanaryModeCoordinator.state {
+                    // Do not mutate the mode state until the visibility path has
+                    // unconditionally destroyed the still-live owner.
+                    self.responsiveCanaryVisibilityContractFailure = true
+                } else {
+                    self.terminateActiveCanary(reason: "presentationContractFailure")
+                }
+            }
+        }
+        controller.onResponsiveCanaryRuntimeSelection = { [weak self] selection in
+            self?.applyRealizedRuntimeSelection(selection)
+        }
+        #endif
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED && !T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         #error("T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED requires T9_AUTO_ANCHOR_DEVICE_PREFLIGHT")
         #endif
@@ -54,6 +81,14 @@ extension KeyboardViewController {
         // requires A1; never a project default.
         controller.isEarlierFirstT9AutoAnchorEnabled = true
         #endif
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+        // CANARY-001 v1 excludes reversible auto-anchor before any live RIME
+        // access, even when the internal artifact also uses a Debug configuration.
+        controller.isReversibleT9AutoAnchorEnabled = false
+        controller.isRollingT9AutoAnchorEnabled = false
+        controller.isTripleRollingT9AutoAnchorEnabled = false
+        controller.isEarlierFirstT9AutoAnchorEnabled = false
+        #endif
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         if !consumeFreshPreparedDevicePreflightRunIfAvailable() {
             recordDevicePreflightMarker(
@@ -80,6 +115,9 @@ extension KeyboardViewController {
         Logger.shared.info("viewDidLoad, keyboardType=\(keyboardType)", category: .general)
         prepareRimeRuntimeAvailability()
         observeExtensionHostLifecycle()
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+        observeResponsiveCanaryKillSwitch()
+        #endif
 
         Logger.shared.performance(
             "viewDidLoad complete",
@@ -94,6 +132,10 @@ extension KeyboardViewController {
         }
 
         refreshCachedSettings(source: "viewDidLoad")
+
+        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+        p3d1RecordLifecycleMarker("LOAD")
+        #endif
     }
 
     func handleKeyboardDidAppear() {
@@ -114,6 +156,14 @@ extension KeyboardViewController {
                 "viewDidAppear: stale input and press state cleared after keyboard return",
                 category: .engine
             )
+
+            #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+            p3d1RecordLifecycleMarker(
+                "RETURN_CLEAN",
+                reason: "viewDidAppear",
+                cleared: true
+            )
+            #endif
         }
 
         Logger.shared.debug("viewDidAppear: bounds=\(view.bounds)", category: .display)
@@ -141,6 +191,14 @@ extension KeyboardViewController {
             "\(reason): transient keyboard state cleared, abandonComposition=\(abandonsComposition)",
             category: .display
         )
+
+        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+        p3d1RecordLifecycleMarker(
+            "CLEAR",
+            reason: reason,
+            cleared: abandonsComposition
+        )
+        #endif
         return effects
     }
 
@@ -182,6 +240,13 @@ extension KeyboardViewController {
     /// 只有键盘已经实际呈现后，才允许 librime 打开用户词典和创建 session。
     /// 若系统在预创建后直接挂起，前面的回退引擎不持有文件锁，因此可安全终止。
     func activateRimeRuntimeAfterKeyboardPresentation() {
+        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+        if installP3D1LifecycleHarnessIfArmed() {
+            hasActivatedVisibleRimeRuntime = true
+            return
+        }
+        #endif
+
         guard !hasActivatedVisibleRimeRuntime,
               let directories = pendingRimeRuntimeDirectories
         else { return }
@@ -207,17 +272,18 @@ extension KeyboardViewController {
         controller.rebuildResponsiveRimeCoordinatorIfNeeded()
         applyRealizedRuntimeSelection(from: engine)
         hasActivatedVisibleRimeRuntime = true
-        #if DEBUG
-        // Content-free path marker only on DEBUG (R5-Preflight observability).
-        Logger.shared.info(
+        #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        // Content-free path marker. Explicit device preflight uses the
+        // mandatory channel; ordinary Debug keeps the existing engine logger.
+        recordResponsivePreflightMarker(
             ResponsiveRimePreflight.pathMarkerLine(
                 path: controller.isResponsiveRimePipelineEnabled
                     ? .mainActorResponsive
                     : .sync,
                 dualGateRequested: false,
-                dualGateActive: false
-            ),
-            category: .engine
+                dualGateActive: false,
+                runToken: responsivePreflightRunToken
+            )
         )
         #endif
         Logger.shared.info("RIME session prepared for visible keyboard input", category: .engine)
@@ -229,6 +295,9 @@ extension KeyboardViewController {
     func installResponsiveDualGatePreflightIfArmed(
         directories: (sharedDataDir: String, userDataDir: String)
     ) -> Bool {
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+        return installProductionShapedCanaryIfArmed(directories: directories)
+        #else
         let compileFlagEnabled: Bool = {
             #if T9_RESPONSIVE_DEVICE_PREFLIGHT_ENABLED
             return true
@@ -249,9 +318,12 @@ extension KeyboardViewController {
         guard dualGateRequested else { return false }
 
         guard !directories.sharedDataDir.isEmpty, !directories.userDataDir.isEmpty else {
-            Logger.shared.warning(
-                ResponsiveRimePreflight.fallbackMarkerLine(reason: "missing-runtime"),
-                category: .engine
+            recordResponsivePreflightMarker(
+                ResponsiveRimePreflight.fallbackMarkerLine(
+                    reason: "missing-runtime",
+                    runToken: responsivePreflightRunToken
+                ),
+                level: .warning
             )
             return false
         }
@@ -274,33 +346,315 @@ extension KeyboardViewController {
 
         let active = controller.threadAffineRimeCoordinator != nil
             && controller.rimeEngine is ThreadAffineRimeEngineBridge
-        Logger.shared.info(
+        let ownerReady = controller.threadAffineRimeCoordinator?.isOwnerReady == true
+        recordResponsivePreflightMarker(
             ResponsiveRimePreflight.pathMarkerLine(
                 path: active ? .threadAffine : .fallbackMissingRuntime,
                 dualGateRequested: true,
-                dualGateActive: active
-            ),
-            category: .engine
-        )
-        if active {
-            Logger.shared.info(
-                "T9RESP marker=READY fixture=\(ResponsiveRimePreflight.fixtureID) "
-                    + "bootstrap=config-only session=owner-thread",
-                category: .engine
+                dualGateActive: active,
+                runToken: responsivePreflightRunToken
             )
-            Logger.shared.requestFlush()
+        )
+        if active && ownerReady {
+            recordResponsivePreflightMarker(
+                ResponsiveRimePreflight.ownerReadinessMarkerLine(
+                    runToken: responsivePreflightRunToken ?? "invalid",
+                    isReady: true
+                )
+            )
             return true
         }
-
-        Logger.shared.warning(
-            ResponsiveRimePreflight.fallbackMarkerLine(reason: "rebuild-inactive"),
-            category: .engine
-        )
+        if active {
+            recordResponsivePreflightMarker(
+                ResponsiveRimePreflight.ownerReadinessMarkerLine(
+                    runToken: responsivePreflightRunToken ?? "invalid",
+                    isReady: false,
+                    reason: "owner-timeout"
+                ),
+                level: .warning
+            )
+        } else {
+            recordResponsivePreflightMarker(
+                ResponsiveRimePreflight.fallbackMarkerLine(
+                    reason: "rebuild-inactive",
+                    runToken: responsivePreflightRunToken
+                ),
+                level: .warning
+            )
+        }
         // Fail closed: clear dual-gate flags so sync install can proceed.
         controller.isThreadAffineRimeOwnerEnabled = false
         controller.isResponsiveRimePipelineEnabled = false
         controller.threadAffineEngineBootstrap = nil
         return false
+        #endif
+    }
+
+    #if T9_RESPONSIVE_CANARY_INTERNAL
+    /// Installs the real thread-affine owner only after the unique mode
+    /// coordinator accepts one atomically parsed configuration snapshot.
+    private func installProductionShapedCanaryIfArmed(
+        directories: (sharedDataDir: String, userDataDir: String)
+    ) -> Bool {
+        let configuration = ResponsiveRimePreflight.canaryConfiguration(
+            defaults: sharedDefaults,
+            bootstrapAvailable:
+                !directories.sharedDataDir.isEmpty && !directories.userDataDir.isEmpty
+        )
+        let nowUnixSeconds = Date().timeIntervalSince1970
+        let decision = responsiveCanaryModeCoordinator.evaluateStartup(
+            configuration,
+            nowUnixSeconds: nowUnixSeconds
+        )
+        let receiptDecision: ResponsiveRimePreflight.CanaryConfigDecision = {
+            switch decision {
+            case .startCanary:
+                return .startCanary
+            case .useBaseline:
+                return .baseline
+            }
+        }()
+        recordResponsivePreflightMarker(
+            ResponsiveRimePreflight.extensionConfigReceipt(
+                phase: .startup,
+                configuration: configuration,
+                nowUnixSeconds: nowUnixSeconds,
+                decision: receiptDecision
+            ).markerLine
+        )
+        guard case .startCanary = decision else {
+            responsiveCanaryExpiryTimer?.invalidate()
+            responsiveCanaryExpiryTimer = nil
+            responsiveCanaryConfigurationMonitor?.invalidate()
+            responsiveCanaryConfigurationMonitor = nil
+            responsiveCanaryRunID = ""
+            return false
+        }
+
+        responsiveCanaryRunID = configuration.runID
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.isThreadAffineRimeOwnerEnabled = true
+        controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
+            ThreadAffineRimeEngineImplBootstrap(
+                sharedDataDir: directories.sharedDataDir,
+                userDataDir: directories.userDataDir,
+                preferredSchemaID: nil
+            )
+        )
+        // CANARY-001 v1 forbids a second live typo-correction session.
+        controller.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
+            candidateProvider: controller.candidateProvider
+        )
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        guard let affine = controller.threadAffineRimeCoordinator,
+              affine.isOwnerReady
+        else {
+            return closeFailedCanaryStartup(permitBaselineAfterTeardown: true)
+        }
+        guard let sessionInstance = responsiveCanaryModeCoordinator.markCanaryReady() else {
+            return closeFailedCanaryStartup(permitBaselineAfterTeardown: false)
+        }
+        controller.markResponsiveCanaryOwnerInstalled(
+            runID: configuration.runID,
+            modeGeneration: responsiveCanaryModeCoordinator.modeGeneration,
+            sessionInstance: sessionInstance
+        )
+        controller.applyRealizedSelectionFromEngine()
+        if let selection = controller.rimeEngine?.runtimeSelection {
+            applyRealizedRuntimeSelection(selection)
+        }
+        scheduleResponsiveCanaryExpiry(at: configuration.expiresAtUnixSeconds)
+        startResponsiveCanaryConfigurationMonitor()
+        return true
+    }
+
+    /// Returns false only after positive teardown proves that baseline creation
+    /// is safe. A non-positive result consumes the activation attempt and leaves
+    /// the Extension fenced without creating a second live session.
+    private func closeFailedCanaryStartup(
+        permitBaselineAfterTeardown: Bool
+    ) -> Bool {
+        guard let affine = controller.threadAffineRimeCoordinator,
+              let fence = affine.issueActiveKillFence(),
+              let result = affine.drainActiveKillAndShutdown(after: fence),
+              result.isPositive
+        else {
+            responsiveCanaryModeCoordinator.failClosed("startupTeardownIncomplete")
+            return true
+        }
+
+        controller.clearResponsiveCanaryAfterPositiveShutdown()
+        if permitBaselineAfterTeardown {
+            responsiveCanaryModeCoordinator.markFailedStartupTeardownComplete()
+        } else {
+            responsiveCanaryModeCoordinator.failClosed("ownerReadyRejected")
+        }
+        responsiveCanaryRunID = ""
+        responsiveCanaryExpiryTimer?.invalidate()
+        responsiveCanaryExpiryTimer = nil
+        responsiveCanaryConfigurationMonitor?.invalidate()
+        responsiveCanaryConfigurationMonitor = nil
+        return !permitBaselineAfterTeardown
+    }
+
+    func observeResponsiveCanaryKillSwitch() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(responsiveCanaryConfigurationDidChange),
+            name: UserDefaults.didChangeNotification,
+            object: sharedDefaults
+        )
+    }
+
+    @objc private func responsiveCanaryConfigurationDidChange() {
+        applyResponsiveCanaryKillSwitchIfNeeded()
+    }
+
+    private func scheduleResponsiveCanaryExpiry(at unixSeconds: TimeInterval) {
+        responsiveCanaryExpiryTimer?.invalidate()
+        let delay = max(0, unixSeconds - Date().timeIntervalSince1970)
+        responsiveCanaryExpiryTimer = Timer.scheduledTimer(
+            withTimeInterval: delay,
+            repeats: false
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.applyResponsiveCanaryKillSwitchIfNeeded()
+            }
+        }
+    }
+
+    /// App Group defaults notifications are process-local. This bounded
+    /// internal-artifact timer observes an external kill without adding shared
+    /// defaults I/O to the input hot path.
+    func startResponsiveCanaryConfigurationMonitor() {
+        responsiveCanaryConfigurationMonitor?.invalidate()
+        responsiveCanaryConfigurationMonitor = Timer.scheduledTimer(
+            withTimeInterval: 1,
+            repeats: true
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.applyResponsiveCanaryKillSwitchIfNeeded()
+            }
+        }
+    }
+
+    /// Re-evaluates a complete snapshot on configuration notification. Disable,
+    /// expiry or malformed configuration is treated as an asserted kill while
+    /// active; no caller reads one flag and chooses a mode independently.
+    func applyResponsiveCanaryKillSwitchIfNeeded() {
+        guard case .canaryActive = responsiveCanaryModeCoordinator.state,
+              let directories = pendingRimeRuntimeDirectories
+        else { return }
+
+        let configuration = ResponsiveRimePreflight.canaryConfiguration(
+            defaults: sharedDefaults,
+            bootstrapAvailable:
+                !directories.sharedDataDir.isEmpty && !directories.userDataDir.isEmpty
+        )
+        let nowUnixSeconds = Date().timeIntervalSince1970
+        let shouldKill = ResponsiveRimePreflight.shouldTerminateActiveCanary(
+            configuration: configuration,
+            currentRunID: responsiveCanaryRunID,
+            nowUnixSeconds: nowUnixSeconds
+        )
+        guard shouldKill else { return }
+        recordResponsivePreflightMarker(
+            ResponsiveRimePreflight.extensionConfigReceipt(
+                phase: .kill,
+                configuration: configuration,
+                nowUnixSeconds: nowUnixSeconds,
+                decision: .kill
+            ).markerLine
+        )
+        terminateActiveCanary(reason: "configurationKill")
+    }
+
+    private func terminateActiveCanary(reason: String) {
+        guard case .canaryActive = responsiveCanaryModeCoordinator.state,
+              let affine = controller.threadAffineRimeCoordinator,
+              let ownerFence = affine.issueActiveKillFence(),
+              let transitionKey = responsiveCanaryModeCoordinator.beginActiveKill(
+                  runID: responsiveCanaryRunID,
+                  acceptedThroughRevision: ownerFence.acceptedThroughRevision
+              )
+        else {
+            responsiveCanaryModeCoordinator.failClosed("\(reason)FenceUnavailable")
+            return
+        }
+
+        controller.beginResponsiveCanaryPresentationFence()
+
+        guard let result = affine.drainActiveKillAndShutdown(after: ownerFence),
+              result.acceptedBacklogDrained
+        else {
+            responsiveCanaryModeCoordinator.failClosed("\(reason)DrainIncomplete")
+            return
+        }
+        controller.finalizeResponsiveCanaryFencedPresentations()
+        guard result.ownerDestroyed,
+              !responsiveCanaryModeCoordinator.recordPositiveTerminal(
+                  .ownerDestroyed,
+                  key: transitionKey
+              ),
+              result.mailboxTerminal,
+              !responsiveCanaryModeCoordinator.recordPositiveTerminal(
+                  .mailboxTerminal,
+                  key: transitionKey
+              ),
+              result.deliveryDrained,
+              responsiveCanaryModeCoordinator.recordPositiveTerminal(
+                  .deliveryDrained,
+                  key: transitionKey
+              ),
+              responsiveCanaryModeCoordinator.permitsBaselineCreation
+        else {
+            responsiveCanaryModeCoordinator.failClosed("\(reason)TerminalIncomplete")
+            return
+        }
+
+        controller.clearResponsiveCanaryAfterPositiveShutdown()
+        responsiveCanaryRunID = ""
+        responsiveCanaryExpiryTimer?.invalidate()
+        responsiveCanaryExpiryTimer = nil
+        responsiveCanaryConfigurationMonitor?.invalidate()
+        responsiveCanaryConfigurationMonitor = nil
+        hasActivatedVisibleRimeRuntime = false
+        activateRimeRuntimeAfterKeyboardPresentation()
+    }
+    #endif
+
+    /// Content-free PATH/READY/FALLBACK markers are mandatory only for an
+    /// explicitly compiled device-preflight build. Ordinary Debug retains the
+    /// existing engine-category logger and therefore no new default persistence
+    /// side effect is introduced for users.
+    private func recordResponsivePreflightMarker(
+        _ message: String,
+        level: Logger.Level = .info
+    ) {
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        Logger.shared.devicePreflightPerformance(message, level: level)
+        Logger.shared.requestFlush()
+        #else
+        switch level {
+        case .debug:
+            Logger.shared.debug(message, category: .engine)
+        case .info:
+            Logger.shared.info(message, category: .engine)
+        case .warning:
+            Logger.shared.warning(message, category: .engine)
+        case .error:
+            Logger.shared.error(message, category: .engine)
+        }
+        #endif
+    }
+
+    private var responsivePreflightRunToken: String? {
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        return devicePreflightRunToken ?? "invalid"
+        #else
+        return nil
+        #endif
     }
 
     /// Align chrome + controller T9 semantics with the schema librime actually selected.
@@ -343,7 +697,257 @@ extension KeyboardViewController {
     }
 
     @objc private func extensionHostWillResignActive() {
+        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+        p3d1RecordLifecycleMarker("HOST_RESIGN_BEGIN", reason: "extensionHost")
+        #endif
         suspendKeyboardRuntime(reason: "extensionHostWillResignActive", updateUI: false)
     }
 
 }
+
+#if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+
+// MARK: - P3-D1 T02/T03 controlled lifecycle seam
+
+private nonisolated struct P3D1LifecycleHarnessBootstrap: ThreadAffineRimeEngineBootstrap, Sendable {
+    let delayNanoseconds: UInt64
+    let runID: String
+
+    func makeEngineOnOwnerThread() -> any RimeEngine {
+        P3D1LifecycleHarnessRimeEngine(
+            delayNanoseconds: delayNanoseconds,
+            runID: runID
+        )
+    }
+}
+
+/// A content-free engine used only by the host-driven lifecycle proof.
+///
+/// The fake intentionally has no candidate dictionary and never stores the key
+/// text. It only keeps a slot count so the owner can be delayed and still return
+/// a valid composition-shaped snapshot. This type is compiled only when the
+/// explicit harness flag is supplied to xcodebuild.
+private nonisolated final class P3D1LifecycleHarnessRimeEngine: RimeEngine {
+    private let delayNanoseconds: UInt64
+    private let runID: String
+    private var compositionLength = 0
+
+    init(delayNanoseconds: UInt64, runID: String) {
+        self.delayNanoseconds = delayNanoseconds
+        self.runID = runID
+        Logger.shared.devicePreflightPerformance(
+            "P3LIFE schema=v1 marker=OWNER_READY run=\(runID) "
+                + "ownerThread=background engine=fake delayMs=150"
+        )
+        Logger.shared.requestFlush()
+    }
+
+    var runtimeSelection: RimeRuntimeSelection? { nil }
+
+    var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)?
+
+    var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {
+        // Fixed, content-free identity: it proves that one owner instance was
+        // used without exposing a real session pointer or user input.
+        RimeSessionDiagnosticSnapshot(identity: 0x5033_D031, isValid: true)
+    }
+
+    func processKey(_ key: String) -> RimeOutput {
+        _ = key
+        Logger.shared.devicePreflightPerformance(
+            "P3LIFE schema=v1 marker=OWNER_BEGIN run=\(runID) "
+                + "ownerThread=background delayMs=150"
+        )
+        Logger.shared.requestFlush()
+        Thread.sleep(forTimeInterval: TimeInterval(delayNanoseconds) / 1_000_000_000)
+        compositionLength += 1
+        let output = outputSnapshot()
+        Logger.shared.devicePreflightPerformance(
+            "P3LIFE schema=v1 marker=OWNER_END run=\(runID) "
+                + "ownerThread=background delayMs=150 slots=\(compositionLength)"
+        )
+        Logger.shared.requestFlush()
+        return output
+    }
+
+    func selectCandidate(at index: Int) -> RimeOutput {
+        _ = index
+        return outputSnapshot()
+    }
+
+    func selectCandidate(globalIndex index: Int) -> RimeOutput {
+        _ = index
+        return outputSnapshot()
+    }
+
+    func candidateWindow(from globalIndex: Int, limit: Int) -> RimeCandidateWindow {
+        _ = limit
+        return RimeCandidateWindow(
+            candidates: [],
+            startIndex: globalIndex,
+            nextIndex: globalIndex,
+            hasMoreCandidates: false
+        )
+    }
+
+    func deleteBackward() -> RimeOutput {
+        compositionLength = max(0, compositionLength - 1)
+        return outputSnapshot()
+    }
+
+    func replaceInput(_ input: String) -> RimeOutput {
+        compositionLength = input.isEmpty ? 0 : max(1, input.count)
+        return outputSnapshot()
+    }
+
+    func resetSession() {
+        compositionLength = 0
+    }
+
+    func recoverSession() {
+        compositionLength = 0
+    }
+
+    func suspendForVisibilityChange() {
+        compositionLength = 0
+    }
+
+    func resumeAfterVisibilityChange() {
+        compositionLength = 0
+    }
+
+    func isComposing() -> Bool {
+        compositionLength > 0
+    }
+
+    func pageUp() -> RimeOutput {
+        outputSnapshot()
+    }
+
+    func pageDown() -> RimeOutput {
+        outputSnapshot()
+    }
+
+    private func outputSnapshot() -> RimeOutput {
+        guard compositionLength > 0 else {
+            return RimeOutput(composition: nil, candidates: [], highlightedIndex: -1)
+        }
+
+        let placeholder = String(repeating: "·", count: compositionLength)
+        return RimeOutput(
+            rawInput: nil,
+            composition: RimeComposition(
+                preeditText: placeholder,
+                cursorPosition: placeholder.utf8.count,
+                length: placeholder.utf8.count
+            ),
+            candidates: [],
+            highlightedIndex: -1
+        )
+    }
+}
+
+extension KeyboardViewController {
+    /// Installs the controlled owner without requiring deployed App Group RIME
+    /// data. The explicit compile flag is the only arm; no UserDefaults or
+    /// Release setting can activate this seam.
+    @discardableResult
+    func installP3D1LifecycleHarnessIfArmed() -> Bool {
+        if let coordinator = controller.threadAffineRimeCoordinator {
+            let ownerReady = coordinator.isOwnerReady
+            p3d1RecordLifecycleMarker(
+                ownerReady ? "VISIBLE_REUSE" : "VISIBLE_NOT_READY",
+                reason: ownerReady ? "ownerAlreadyInstalled" : "ownerResumeFailed"
+            )
+            return ownerReady
+        }
+
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.isThreadAffineRimeOwnerEnabled = true
+        controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
+            P3D1LifecycleHarnessBootstrap(
+                delayNanoseconds: 150_000_000,
+                runID: p3d1LifecycleRunID
+            )
+        )
+        controller.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
+            candidateProvider: controller.candidateProvider
+        )
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        let active = controller.threadAffineRimeCoordinator != nil
+            && controller.rimeEngine is ThreadAffineRimeEngineBridge
+        let ownerReady = controller.threadAffineRimeCoordinator?.isOwnerReady == true
+        p3d1RecordLifecycleMarker(
+            active && ownerReady ? "VISIBLE_READY" : "VISIBLE_NOT_READY",
+            reason: active ? "fakeOwner" : "rebuildInactive"
+        )
+        return active && ownerReady
+    }
+
+    /// Emits only lifecycle counters and owner watermarks. It deliberately does
+    /// not read composition, candidate, marked-text, or host-document content.
+    func p3d1RecordLifecycleMarker(
+        _ marker: String,
+        reason: String = "none",
+        cleared: Bool = false
+    ) {
+        p3d1LifecycleLastCleared = p3d1LifecycleLastCleared || cleared
+        p3d1LifecycleLastReturnClean =
+            p3d1LifecycleLastReturnClean || marker == "RETURN_CLEAN"
+        let diagnostics = controller?.threadAffineRimeCoordinator?.diagnostics
+        let coordinator = controller?.threadAffineRimeCoordinator
+        let gate = controller?.isResponsiveRimePipelineEnabled == true
+            && controller?.isThreadAffineRimeOwnerEnabled == true
+        let revision = coordinator?.lastPublished?.revision
+            ?? coordinator?.lastAcceptReceipt?.revision
+            ?? 0
+        let sanitizedReason = reason
+            .replacingOccurrences(of: " ", with: "_")
+            .replacingOccurrences(of: "=", with: "-")
+        let line =
+            "P3LIFE schema=v1 marker=\(marker) run=\(p3d1LifecycleRunID) "
+            + "gate=\(gate ? 1 : 0) epoch=\(diagnostics?.sessionEpoch ?? 0) "
+            + "rev=\(revision) pending=\(diagnostics?.pendingWorkDepth ?? 0) "
+            + "accepted=\(coordinator?.lastAcceptReceipt?.revision ?? 0) "
+            + "applied=\(p3d1LifecycleAppliedCount) "
+            + "stale=\(diagnostics?.skippedStaleEpochCount ?? 0) "
+            + "discard=\(diagnostics?.rejectedAtBoundCount ?? 0) "
+            + "terminal=\(diagnostics?.isDeliveryTerminal == true ? 1 : 0) "
+            + "ownerReady=\(coordinator?.isOwnerReady == true ? 1 : 0) "
+            + "cleared=\(p3d1LifecycleLastCleared ? 1 : 0) "
+            + "returnClean=\(p3d1LifecycleLastReturnClean ? 1 : 0) "
+            + "reason=\(sanitizedReason)"
+        p3d1LifecycleDiagnosticElement?.accessibilityValue = line
+        Logger.shared.devicePreflightPerformance(line)
+        Logger.shared.requestFlush()
+    }
+
+    /// A content-free accessibility handshake lets the host UI test validate
+    /// that the installed appex really contains this harness. It is compiled
+    /// only for the explicit DEBUG target flag and is never a Release surface.
+    func p3d1InstallLifecycleAccessibilityElementIfNeeded() {
+        guard p3d1LifecycleDiagnosticElement == nil,
+              let keyboardSurfaceView
+        else { return }
+
+        let element = UIView(frame: .zero)
+        element.translatesAutoresizingMaskIntoConstraints = false
+        element.isAccessibilityElement = true
+        element.accessibilityIdentifier = "P3D1LifecycleHarness"
+        element.accessibilityLabel = "P3D1 lifecycle harness"
+        element.isUserInteractionEnabled = false
+        element.alpha = 0.01
+        keyboardSurfaceView.addSubview(element)
+        NSLayoutConstraint.activate([
+            element.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor),
+            element.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor),
+            element.widthAnchor.constraint(equalToConstant: 1),
+            element.heightAnchor.constraint(equalToConstant: 1),
+        ])
+        p3d1LifecycleDiagnosticElement = element
+        p3d1RecordLifecycleMarker("SURFACE_READY", reason: "accessibilityHandshake")
+    }
+}
+
+#endif

@@ -1,0 +1,189 @@
+{
+  "pairID": "P2P03-REPLICATED-AB-20260803-001",
+  "assignmentID": "T9-RESPONSIVE-PIPELINE-001/P2-PERF-03",
+  "status": "reviewed-bounded-evidence-overall-partial",
+  "pairs": {
+    "AB": {"purpose": "repeat original order", "order": "A->B", "arms": ["A1", "B1"]},
+    "BA": {"purpose": "reverse order", "order": "B->A", "arms": ["B2", "A2"]}
+  },
+  "validator": {
+    "source": "Packages/KeyboardCore/Sources/KeyboardCore/T9ResponsiveEvidenceValidator.swift",
+    "markerSchema": "v1",
+    "runBinding": "current-token-only filtered subset",
+    "reasons": []
+  },
+  "canonicalFixture": {
+    "id": "T9-RESP-PERF-39-V1",
+    "digest": "772b4bb30cb831d04550e8311a2f64e66aad4ab55c4597544f0cc9364f9d7286",
+    "actionCount": 39,
+    "runtimeMarkerID": "T9RESP-R5P",
+    "bindingStatus": "protocol-declared-runtime-39-actions-no-raw-reconstruction"
+  },
+  "sourceDevice": {
+    "head": "3585a540ba8389673acd49128d87040ac9619f27",
+    "device": "iPhone 13 Pro",
+    "modelIdentifier": "iPhone14,2",
+    "udid": "00008110-000A08440198801E",
+    "coreDeviceID": "DE65EBE1-463E-5EB4-9694-F6DCBFC04028",
+    "os": "iOS 27.0 (24A5390f)",
+    "xcode": "27.0 (27A5228h)",
+    "sdk": "iPhoneOS27.0",
+    "swift": "6.4",
+    "fullAccess": "not-observed"
+  },
+  "arms": {
+    "A1": {
+      "order": "AB",
+      "runID": "P2P03-AB-A1-20260803-001",
+      "token": "S6A-4F6E59D5C301D8A7969C551CA12F6ABB",
+      "compileConditions": ["T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"],
+      "path": "sync",
+      "dualGateRequested": 0,
+      "dualGateActive": 0,
+      "appExecutableSha256": "da19ce2ffbb4d6abbc95c806001fa412b3826f1e75ff4a919f0362a7b74f9be3",
+      "keyboardExecutableSha256": "5a9a47f8c40313c23119e5397140cb382a05b16b117a24d6c80794242b209542",
+      "installDatabaseSequence": 3776,
+      "sourceAttachment": {
+        "id": "d188d784-790a-4d49-b3c0-f7faa2e4fb47",
+        "lines": 170,
+        "bytes": 36675,
+        "sha256": "f44d4e247f1942280283eb6c9ad79432f799313a4a1857ac38feb4023f0d9a38"
+      },
+      "filteredEvidence": {
+        "lines": 44,
+        "bytes": 15056,
+        "sha256": "b3577c568fa4640d24e24ade231d94b67656909d3d37fa2721ca0b813158baab",
+        "privacyAllowList": "pass"
+      },
+      "geometry": {
+        "prepared": true,
+        "execution": true,
+        "tokenizedDigest": "4062c2337dfe6ad349e43a882b193f915c3a85828364b107be72513bf7bbbf04",
+        "digestMatch": true,
+        "tokenlessShapeDigestDerived": "114c78b9a5b97896b1ec3f50ec09387017a01b05b2e97200a2a2ac37795ed4d0"
+      },
+      "segments": {
+        "count": 39,
+        "actionRange": "1..39",
+        "eventRange": "1..39",
+        "ordered": true,
+        "committed": false
+      },
+      "session": {"identity": 4384574040, "valid": true, "stable": true},
+      "latencyMs": {
+        "t9segTotalMedian": 14.4,
+        "t9segTotalMax": 242.3,
+        "t9segEngineMax": 241.3,
+        "t9segRimeMedian": 8.1,
+        "t9segRimeMax": 241.0,
+        "t9segUIMax": 7.5
+      },
+      "humanReport": {
+        "missingKeys": "no",
+        "duplicateKeys": "no",
+        "candidateDisappeared": "no",
+        "keyboardExited": "no",
+        "stallScore": 2.5,
+        "protocolAdherence": "not-observed",
+        "inputMethod": "manual-software-keyboard"
+      },
+      "validator": "complete"
+    },
+    "B1": {
+      "order": "AB",
+      "runID": "P2P03-AB-B1-20260803-001",
+      "token": "S6A-04E2D1B82EE1853B687E3E34198C5232",
+      "compileConditions": ["T9_AUTO_ANCHOR_DEVICE_PREFLIGHT", "T9_RESPONSIVE_DEVICE_PREFLIGHT_ENABLED"],
+      "path": "thread-affine",
+      "dualGateRequested": 1,
+      "dualGateActive": 1,
+      "ready": true,
+      "appExecutableSha256": "05d6b706be06c09b7460c64c0a1c4ff028ae1535fc85477d8d76f9beb1114b51",
+      "keyboardExecutableSha256": "009e426b41cfccbc067d8b9d69a69695306c8a853f1ae67f2ff8a725525bb787",
+      "installDatabaseSequence": 3784,
+      "sourceAttachment": {
+        "id": "2cb67c7f-4507-40c8-889a-d795500c82cd",
+        "lines": 208,
+        "bytes": 39560,
+        "sha256": "ed0d47b52afdb2c783c8503e86b02f417d3747c865c15c36a2cba8bea792796e"
+      },
+      "filteredEvidence": {
+        "lines": 200,
+        "bytes": 38444,
+        "sha256": "d015b7cd6a0b67134e31300375470d24569ebab104c15c36a2cba8bea792796e",
+        "privacyAllowList": "pass"
+      },
+      "geometry": {
+        "prepared": true,
+        "execution": true,
+        "tokenizedDigest": "1711cedab38135c4bedbdfe3fc2876b3d9febd8724ca688f9e618fc2b5f191ef",
+        "digestMatch": true,
+        "tokenlessShapeDigestDerived": "114c78b9a5b97896b1ec3f50ec09387017a01b05b2e97200a2a2ac37795ed4d0"
+      },
+      "segments": {"count": 39, "actionRange": "1..39", "eventRange": "1..39", "ordered": true, "committed": false},
+      "responsiveRevisions": {"accepted": 39, "published": 39, "epoch": 1, "visible": 42, "visibleEngine": 35, "visibleProvisional": 7, "paint": 35, "paintCoalescedZero": 35, "paintMissingReasons": "not-provided"},
+      "session": {"identity": 4386175000, "valid": true, "stable": true},
+      "latencyMs": {"t9segTotalMedian": 0.4, "t9segTotalMax": 0.8, "t9segEngineMax": 0.4, "visibleLagMax": 125.0},
+      "humanReport": {"missingKeys": "no", "duplicateKeys": "no", "candidateDisappeared": "no", "keyboardExited": "no", "stallScore": 1.0, "protocolAdherence": "not-observed", "inputMethod": "manual-software-keyboard"},
+      "validator": "complete"
+    },
+    "B2": {
+      "order": "BA",
+      "runID": "P2P03-BA-B2-20260803-001",
+      "token": "S6A-01EFFFC8FAC49CE6091A05196C14E9C7",
+      "compileConditions": ["T9_AUTO_ANCHOR_DEVICE_PREFLIGHT", "T9_RESPONSIVE_DEVICE_PREFLIGHT_ENABLED"],
+      "path": "thread-affine",
+      "dualGateRequested": 1,
+      "dualGateActive": 1,
+      "ready": true,
+      "packageReuse": "B1 binary",
+      "packageBinding": {"appExecutableSha256": "05d6b706be06c09b7460c64c0a1c4ff028ae1535fc85477d8d76f9beb1114b51", "keyboardExecutableSha256": "009e426b41cfccbc067d8b9d69a69695306c8a853f1ae67f2ff8a725525bb787", "installDatabaseSequence": 3784, "sourceArm": "B1"},
+      "sourceAttachment": {"id": "5bded313-f9cc-41e7-bc58-7b5c3ab710dc", "lines": 449, "bytes": 81936, "sha256": "dd9a6b96c694d749fd299006b8f073ad17b56ad9abc6c4b78e2fee956d598345"},
+      "filteredEvidence": {"lines": 200, "bytes": 38442, "sha256": "70c06ed719c923c6dfe26749949a250a310fec11578edb5a8a60b4830119f305", "privacyAllowList": "pass"},
+      "geometry": {"prepared": true, "execution": true, "tokenizedDigest": "bdb562925a44e611e5eae168c6663edf34ef83e8bd44c835ccc35ed404f19d5d", "digestMatch": true, "tokenlessShapeDigestDerived": "114c78b9a5b97896b1ec3f50ec09387017a01b05b2e97200a2a2ac37795ed4d0"},
+      "segments": {"count": 39, "actionRange": "1..39", "eventRange": "1..39", "ordered": true, "committed": false},
+      "responsiveRevisions": {"accepted": 39, "published": 39, "epoch": 1, "visible": 42, "visibleEngine": 35, "visibleProvisional": 7, "paint": 35, "paintCoalescedZero": 35, "paintMissingReasons": "not-provided"},
+      "session": {"identity": 4424090840, "valid": true, "stable": true},
+      "latencyMs": {"t9segTotalMedian": 0.3, "t9segTotalMax": 0.7, "t9segEngineMax": 0.2, "visibleLagMax": 128.0},
+      "humanReport": {"missingKeys": "no", "duplicateKeys": "no", "candidateDisappeared": "no", "keyboardExited": "no", "stallScore": 1.0, "protocolAdherence": "not-observed", "inputMethod": "manual-software-keyboard"},
+      "validator": "complete"
+    },
+    "A2": {
+      "order": "BA",
+      "runID": "P2P03-BA-A2-20260803-001",
+      "token": "S6A-E576AA10440DFA38964EA535AD89A1B1",
+      "compileConditions": ["T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"],
+      "path": "sync",
+      "dualGateRequested": 0,
+      "dualGateActive": 0,
+      "packageReuse": "A1 binary",
+      "packageBinding": {"appExecutableSha256": "da19ce2ffbb4d6abbc95c806001fa412b3826f1e75ff4a919f0362a7b74f9be3", "keyboardExecutableSha256": "5a9a47f8c40313c23119e5397140cb382a05b16b117a24d6c80794242b209542", "installDatabaseSequence": 3776, "sourceArm": "A1"},
+      "sourceAttachment": {"id": "6e8c48bf-e17d-4a22-9b1f-825f55005bef", "lines": 499, "bytes": 96298, "sha256": "f3c6ead78a0e4a1695cb06ad17fea9d0cfb3866861343445dcd3064b6c6eae10"},
+      "filteredEvidence": {"lines": 44, "bytes": 15056, "sha256": "223f08a8f00a612679f4a6859ace625f6a369687bf7090eb01625bb6a26d2fb", "privacyAllowList": "pass"},
+      "geometry": {"prepared": true, "execution": true, "tokenizedDigest": "7cbc0aa70079f37edfdef793c94f834220d881cdaafabafea9cbbd03e530a490", "digestMatch": true, "tokenlessShapeDigestDerived": "114c78b9a5b97896b1ec3f50ec09387017a01b05b2e97200a2a2ac37795ed4d0"},
+      "segments": {"count": 39, "actionRange": "1..39", "eventRange": "1..39", "ordered": true, "committed": false},
+      "session": {"identity": 4577961560, "valid": true, "stable": true},
+      "latencyMs": {"t9segTotalMedian": 15.8, "t9segTotalMax": 246.5, "t9segEngineMax": 245.4, "t9segRimeMedian": 8.5, "t9segRimeMax": 245.1, "t9segUIMax": 8.4},
+      "humanReport": {"missingKeys": "no", "duplicateKeys": "no", "candidateDisappeared": "no", "keyboardExited": "no", "stallScore": 3.0, "protocolAdherence": "not-observed", "inputMethod": "manual-software-keyboard"},
+      "validator": "complete"
+    }
+  },
+  "orderComparison": {"AB": {"A": 2.5, "B": 1.0, "BMinusA": -1.5}, "BA": {"B": 1.0, "A": 3.0, "BMinusA": -2.0}, "direction": "B lower stall score in both orders"},
+  "restore": {
+    "configuration": "Release",
+    "injectedCompilationConditions": [],
+    "appExecutableSha256": "3b518196d8e89f47288b102c05494904f1576712de112ab54e8f4ed077e3ee7c",
+    "keyboardExecutableSha256": "c7c319039c50e8f92cbcb121d5fa0b8efb5682d080d94b47cac74361cd804df8",
+    "installDatabaseSequence": 3800,
+    "status": "installed-one-key-human-smoke-passed",
+    "humanSmoke": {"keyboardAppeared": true, "keyboardRemainedVisible": true, "inputPerformed": false}
+  },
+  "invalidAttempts": [{"arm": "A1", "reason": "invalid-run-token", "attachmentID": "aff40276-035d-4590-b4a1-1a113f522e12", "attachmentSha256": "723b2f6c3d8b7fa5ebe268b3c5e762af6a2bb31a9061b617a7243e339e071f21"}],
+  "independentReviews": {
+    "architecture": {"document": "docs/assignments/t9-responsive-pipeline-001-p2-perf-03-architecture-review.md", "verdict": "pass-with-conditions", "p0_p1_p2_p3": "0/0/4/2"},
+    "quality": {"document": "docs/assignments/t9-responsive-pipeline-001-p2-perf-03-quality-review.md", "verdict": "bounded-condition-pass-overall-partial", "p0_p1_p2_p3": "0/0/4/3"}
+  },
+  "productGate": "not-authorized",
+  "adr0025": "proposed-not-accepted",
+  "productionChanges": false
+}

@@ -1,6 +1,6 @@
 # T9 responsive pipeline R5-Rem-3 — Executor evidence — 2026-07-31
 
-**Status:** `Executor complete + P1 remediation — awaiting re-review disposition`  
+**Status:** `Historical executor evidence — P1 remediation recorded; current-tip Polish-2 review is separate and remains conditional`
 **Product authorization:** Human Product Owner selected implement option **1** after
 Rem-3 design freeze + Amendment A (dual design reviews @ `617773e` / `7524f34`)  
 **Implementation tip (initial):** `9b9bbeb`  
@@ -10,6 +10,10 @@ Rem-3 design freeze + Amendment A (dual design reviews @ `617773e` / `7524f34`)
   Quality [`../assignments/t9-responsive-pipeline-001-r5-rem-3-implementation-quality-review.md`](../assignments/t9-responsive-pipeline-001-r5-rem-3-implementation-quality-review.md) — Pass with conditions (**P1=2**; suite re-run blocked in that subagent)  
 **Non-claims:** no Product Gate / ADR Accept / default-on / Rem-Device rewrite /
 Formal R5 FAIL rewrite / device Rem-3-Device knife
+
+**Tip limitation:** this evidence is bound to the initial Rem-3 implementation tip
+`9b9bbeb` and its same-day P1 remediation. It does not independently review the
+later Polish-1/Polish-2 presentation semantics on `80ef54b`.
 
 ## Scope delivered
 

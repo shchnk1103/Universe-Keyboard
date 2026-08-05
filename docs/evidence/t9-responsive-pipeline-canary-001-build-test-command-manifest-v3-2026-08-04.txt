@@ -1,0 +1,34 @@
+T9-RESPONSIVE-PIPELINE-001/CANARY-001/BUILD-TEST-MANIFEST-v3
+supersedesForFutureCommands=BUILD-TEST-MANIFEST-v2
+v2Result=not executed after source fingerprint drift; retained in evidence history
+frozenAt=2026-08-04T00:10:00+08:00
+workdir=/Users/doubleshy0n/Dev/Universe Keyboard
+environmentExecutor=/root
+headSHA=3585a540ba8389673acd49128d87040ac9619f27
+statusFingerprintSHA256=391bc790166edfb38b364982aee66e55db4b64281a79e98926fa345e5796433a
+trackedDiffSHA256=44d4c4e78416628841af96d1663d4a07e3bac820acedba0a9d102b0c83839a43
+selectedSourceTreeSHA256=2123b2d8606645596a7385b16ab392af01c2a8d3ec67a53a081ded9eeb96251a
+threadAffineRimeSessionSHA256=63a280ad840fbd85ae7dbf7791120c3f9c6544848bd40b69dd932400c95c4684
+threadAffineRimeSpikeSHA256=5426632f53928c956ca8a916e2a0307e709a2d62ed94f89f105c06b115471092
+threadAffineRimeWireTestsSHA256=691fb15ae01e580d17557e1ae0217d8955837ec2778993f0d786ff2779a42973
+projectPbxprojSHA256=1664fae56c8e8cb0e1d8f3844697438ce4d60b36d80deeafca295876bf82fce4
+rimeVendorManifestSHA256=3550d290db1439f1ce037a5d18a4805aa7dff8863bf96ddb69472a3a2565bb77
+xcode=27.0 (27A5228h)
+swift=6.4
+simulatorName=iPhone 17 Pro Max
+simulatorUDID=06C5BC3E-7599-4761-A1A2-71DAEA991474
+simulatorRuntime=iOS 27.0
+simulatorStateAtFreeze=Shutdown; no Simulator test may run until Human boots a destination
+ordinaryConditions=no T9_RESPONSIVE_CANARY_INTERNAL injection
+internalConditions=SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) T9_RESPONSIVE_CANARY_INTERNAL
+restoreBoundary=no physical-device install; no App Group/userdb mutation; temporary build artifacts only
+
+C02R3 swift test --package-path Packages/KeyboardCore --scratch-path /private/tmp/canary-001-spm-default-v3
+C03V3 swift test --package-path Packages/KeyboardCore --scratch-path /private/tmp/canary-001-spm-internal-v3 -Xswiftc -DT9_RESPONSIVE_CANARY_INTERNAL --filter ResponsiveRimeCanaryContractTests
+C04V3 swift test --package-path Packages/KeyboardCore --scratch-path /private/tmp/canary-001-spm-internal-v3 -Xswiftc -DT9_RESPONSIVE_CANARY_INTERNAL --filter ThreadAffineRimeWireTests
+C05V3 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination "generic/platform=iOS Simulator" -derivedDataPath /private/tmp/canary-001-default-debug-v3 CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
+C06V3 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Release -destination "generic/platform=iOS Simulator" -derivedDataPath /private/tmp/canary-001-default-release-v3 CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
+C07V3 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination "generic/platform=iOS Simulator" -derivedDataPath /private/tmp/canary-001-internal-debug-v3 CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES "SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) T9_RESPONSIVE_CANARY_INTERNAL" build
+C08V3 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination "platform=iOS Simulator,id=06C5BC3E-7599-4761-A1A2-71DAEA991474" -derivedDataPath /private/tmp/canary-001-sim-default-v3 -resultBundlePath /private/tmp/canary-001-sim-default-v3.xcresult CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test
+C09V3 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination "platform=iOS Simulator,id=06C5BC3E-7599-4761-A1A2-71DAEA991474" -derivedDataPath /private/tmp/canary-001-sim-internal-v3 -resultBundlePath /private/tmp/canary-001-sim-internal-v3.xcresult CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES "SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) T9_RESPONSIVE_CANARY_INTERNAL" -only-testing:KeyboardTests/ResponsiveRimeCanaryLifecycleTests test
+C10V3 xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "RimeBridgeTests" -configuration Debug -destination "platform=iOS Simulator,id=06C5BC3E-7599-4761-A1A2-71DAEA991474" -derivedDataPath /private/tmp/canary-001-rimebridge-v3 -resultBundlePath /private/tmp/canary-001-rimebridge-v3.xcresult CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test

@@ -1,0 +1,170 @@
+{
+  "claimBoundary": "automated build/test and Simulator only",
+  "commandID": "P03V9",
+  "commands": [
+    {
+      "commandID": "C02V9",
+      "endTime": "2026-08-04T21:48:41+08:00",
+      "exitCode": 0,
+      "receiptSHA256": "31c2f1b9e612ac5f8ab6bf10abfe2e7bfed7baaf7d82cdc9208f991e05488616",
+      "startTime": "2026-08-04T21:48:09+08:00"
+    },
+    {
+      "commandID": "C03V9",
+      "endTime": "2026-08-04T21:49:49+08:00",
+      "exitCode": 0,
+      "receiptSHA256": "a691d6edda7837e84dd09af70c919914e0b454fb6c90bae865bcc722e8f1f79e",
+      "startTime": "2026-08-04T21:49:31+08:00"
+    },
+    {
+      "commandID": "C04V9",
+      "endTime": "2026-08-04T21:50:17+08:00",
+      "exitCode": 0,
+      "receiptSHA256": "0e97975fc24c3ad9aa8a42c95bce4a0fc56ef0dfa2e7a78b205f09a9f2e3bfb3",
+      "startTime": "2026-08-04T21:50:14+08:00"
+    },
+    {
+      "commandID": "C05V9",
+      "endTime": "2026-08-04T21:51:32+08:00",
+      "exitCode": 0,
+      "receiptSHA256": "c6f1374f8ba381c7759aa0d453215e67bdfce0e61f792734ab342705f0386c8c",
+      "startTime": "2026-08-04T21:50:46+08:00"
+    },
+    {
+      "commandID": "C06V9",
+      "endTime": "2026-08-04T21:52:57+08:00",
+      "exitCode": 0,
+      "receiptSHA256": "75d49f4d21aae33cea3559557840e324b2db6bf25e95d8d1a811bb60eb0fa44d",
+      "startTime": "2026-08-04T21:51:47+08:00"
+    },
+    {
+      "commandID": "C07V9",
+      "endTime": "2026-08-04T21:53:57+08:00",
+      "exitCode": 0,
+      "receiptSHA256": "94c663847baf674f264851d3169109551cdf55b373958e701aa9d86f3329c368",
+      "startTime": "2026-08-04T21:53:14+08:00"
+    },
+    {
+      "commandID": "C08V9",
+      "endTime": "2026-08-04T21:55:33+08:00",
+      "exitCode": 0,
+      "receiptSHA256": "bd9963d09a31b26f4ccafef4c8caf81917990d94e239efd40576bfbace0f29de",
+      "startTime": "2026-08-04T21:54:22+08:00"
+    },
+    {
+      "commandID": "C09V9",
+      "endTime": "2026-08-04T21:56:38+08:00",
+      "exitCode": 0,
+      "receiptSHA256": "5e72486d1f73099ff24186bcc9d1b6b3ccc2b2242731ccbe69a93690900af3fa",
+      "startTime": "2026-08-04T21:56:01+08:00"
+    },
+    {
+      "commandID": "C10V9",
+      "endTime": "2026-08-04T21:57:23+08:00",
+      "exitCode": 0,
+      "receiptSHA256": "7d5982a13a440769e0234b6cdc7c0d42dd7c89b510f3ea709cf4f54c2486e8a9",
+      "startTime": "2026-08-04T21:57:03+08:00"
+    },
+    {
+      "commandID": "C11V9",
+      "endTime": "2026-08-04T21:58:14+08:00",
+      "exitCode": 0,
+      "receiptSHA256": "76449d9f475d2177925d49e29f379e82b81255fb322bf6860aa5d41720cabdc8",
+      "startTime": "2026-08-04T21:57:47+08:00"
+    }
+  ],
+  "endTime": "2026-08-04T21:59:13+08:00",
+  "executionGate": {
+    "approvalSHA256": "050dcc45c7304dad0f3514fb7b0180ea4d7c71e26fa0fb9ddbb105e99b4fdd58",
+    "bindingSHA256": "b11e318a8f9f55df2bde38dd28ea449d87dda38be7a92b5f9fc448a1d062d72d",
+    "commandID": "P03V9",
+    "expectedArtifactManifestSHA256": "520a3546675a64314a7f4dbcf5cb100cfa3e49673e13b5859562858306d9d404",
+    "invocationSHA256": "9db5ee3f725dbc39061a431bd2de28597a7678f3a580a06bde528421a085af8f",
+    "manifestSHA256": "5f39593c5641266f38e810ab316d6533bd3bb852e15934a4a78b2c07318c8ae2",
+    "verdict": "pass"
+  },
+  "exitCode": 0,
+  "restore": {
+    "internalConditionAbsent": true,
+    "launchSmoke": "not-run(boundary-preserving install identity proof only)",
+    "sha256": "d365aa86d2632bed72f103e587f7fbbe5a3a60dc049e7688736965243b68bda5",
+    "verdict": "pass"
+  },
+  "schema": "CANARY-001-QEF-RESULT-RECORD-v9",
+  "skipReconciliation": {
+    "sha256": "8930ada85ddf2a678083e8e10086562813971f5fea225e0b728980fe229bf8e7",
+    "totalSkipped": 20,
+    "unknownSkipped": 0,
+    "verdict": "pass"
+  },
+  "startTime": "2026-08-04T21:59:13+08:00",
+  "tests": [
+    {
+      "aggregateSuite": "All tests",
+      "failed": 0,
+      "label": "C02V9",
+      "passed": 906,
+      "result": "Passed",
+      "schema": "CANARY-001-SWIFT-XCTEST-COUNTS-v9",
+      "skipped": 0,
+      "total": 906,
+      "unexpected": 0
+    },
+    {
+      "aggregateSuite": "Selected tests",
+      "failed": 0,
+      "label": "C03V9",
+      "passed": 9,
+      "result": "Passed",
+      "schema": "CANARY-001-SWIFT-XCTEST-COUNTS-v9",
+      "skipped": 0,
+      "total": 9,
+      "unexpected": 0
+    },
+    {
+      "aggregateSuite": "Selected tests",
+      "failed": 0,
+      "label": "C04V9",
+      "passed": 18,
+      "result": "Passed",
+      "schema": "CANARY-001-SWIFT-XCTEST-COUNTS-v9",
+      "skipped": 0,
+      "total": 18,
+      "unexpected": 0
+    },
+    {
+      "failed": 0,
+      "finishTime": 1785851733.057,
+      "label": "C08V9",
+      "passed": 139,
+      "result": "Passed",
+      "schema": "CANARY-001-XCRESULT-COUNTS-v9",
+      "skipped": 0,
+      "startTime": 1785851666.418,
+      "total": 139
+    },
+    {
+      "failed": 0,
+      "finishTime": 1785851797.835,
+      "label": "C09V9",
+      "passed": 1,
+      "result": "Passed",
+      "schema": "CANARY-001-XCRESULT-COUNTS-v9",
+      "skipped": 0,
+      "startTime": 1785851766.204,
+      "total": 1
+    },
+    {
+      "failed": 0,
+      "finishTime": 1785851843.759,
+      "label": "C10V9",
+      "passed": 34,
+      "result": "Passed",
+      "schema": "CANARY-001-XCRESULT-COUNTS-v9",
+      "skipped": 20,
+      "startTime": 1785851826.201,
+      "total": 54
+    }
+  ],
+  "verdict": "pass"
+}

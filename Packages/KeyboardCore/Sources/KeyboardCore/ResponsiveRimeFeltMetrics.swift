@@ -2,7 +2,7 @@ import Foundation
 
 /// R5-Rem-1: content-free felt-latency markers for responsive / dual-gate paths.
 ///
-/// Measures accept → first visible composition update and accept → engine publish,
+/// Measures accept → owner completion and accept → UI presentation,
 /// plus pending depth / coalesce / burst signals. Never logs raw keys, pinyin,
 /// candidates, or host text.
 public enum ResponsiveRimeFeltMetrics: Sendable {
@@ -23,34 +23,45 @@ public enum ResponsiveRimeFeltMetrics: Sendable {
     public static func acceptMarkerLine(
         revision: UInt64,
         epoch: UInt64,
-        pending: Int
+        pending: Int,
+        runToken: String? = nil
     ) -> String {
-        "T9RESP marker=ACCEPT action=k rev=\(revision) pending=\(pending) "
+        let runField = runToken.map { "run=\($0) " } ?? ""
+        return "T9RESP marker=ACCEPT schema=\(ResponsiveRimePreflight.markerSchemaVersion) \(runField)action=k rev=\(revision) pending=\(pending) "
             + "epoch=\(epoch) fixture=\(fixtureID)"
     }
 
     public static func visibleMarkerLine(
         lagMs: UInt64,
         revision: UInt64,
-        source: VisibleSource
+        source: VisibleSource,
+        runToken: String? = nil
     ) -> String {
-        "T9RESP marker=VISIBLE lagMs=\(lagMs) rev=\(revision) "
+        let runField = runToken.map { "run=\($0) " } ?? ""
+        return "T9RESP marker=VISIBLE schema=\(ResponsiveRimePreflight.markerSchemaVersion) \(runField)lagMs=\(lagMs) rev=\(revision) "
             + "source=\(source.rawValue) fixture=\(fixtureID)"
     }
 
-    public static func publishLagMarkerLine(
+    public static func presentationLagMarkerLine(
         lagMs: UInt64,
         revision: UInt64,
         pendingAfter: Int,
-        coalesced: Bool
+        coalesced: Bool,
+        runToken: String? = nil
     ) -> String {
-        "T9RESP marker=PUBLISH lagMs=\(lagMs) rev=\(revision) "
+        let runField = runToken.map { "run=\($0) " } ?? ""
+        return "T9RESP marker=PAINT schema=\(ResponsiveRimePreflight.markerSchemaVersion) \(runField)lagMs=\(lagMs) rev=\(revision) "
             + "pendingAfter=\(pendingAfter) coalesced=\(coalesced ? "1" : "0") "
             + "fixture=\(fixtureID)"
     }
 
-    public static func burstMarkerLine(count: Int, windowMs: UInt64) -> String {
-        "T9RESP marker=BURST count=\(count) windowMs=\(windowMs) fixture=\(fixtureID)"
+    public static func burstMarkerLine(
+        count: Int,
+        windowMs: UInt64,
+        runToken: String? = nil
+    ) -> String {
+        let runField = runToken.map { "run=\($0) " } ?? ""
+        return "T9RESP marker=BURST schema=\(ResponsiveRimePreflight.markerSchemaVersion) \(runField)count=\(count) windowMs=\(windowMs) fixture=\(fixtureID)"
     }
 
     public static func l1SkipMarkerLine(reason: ResponsiveProvisionalL1SkipReason) -> String {
@@ -78,9 +89,18 @@ public final class ResponsiveRimeFeltMetricsTracker {
         var uptimeNs: UInt64
         var epoch: UInt64
         var pendingAtAccept: Int
+        var runToken: String?
     }
 
     private var accepts: [UInt64: AcceptRecord] = [:]
+    /// A snapshot can arrive through both the synchronous ordered path and the
+    /// notification bridge. Keep owner completion evidence one-per-revision
+    /// within the current engine epoch.
+    private var completedOwnerRevisions: Set<UInt64> = []
+    /// Revision numbers are only unique within an engine epoch. Clear the
+    /// de-duplication window when a new session epoch starts so a reused
+    /// revision can still produce valid owner-completion evidence.
+    private var activeEpoch: UInt64?
     private var paintUptimesNs: [UInt64] = []
     private var lastVisibleRevision: UInt64 = 0
     private var lastVisibleSource: ResponsiveRimeFeltMetrics.VisibleSource?
@@ -89,6 +109,8 @@ public final class ResponsiveRimeFeltMetricsTracker {
 
     public func reset() {
         accepts.removeAll(keepingCapacity: true)
+        completedOwnerRevisions.removeAll(keepingCapacity: true)
+        activeEpoch = nil
         paintUptimesNs.removeAll(keepingCapacity: true)
         lastVisibleRevision = 0
         lastVisibleSource = nil
@@ -102,15 +124,33 @@ public final class ResponsiveRimeFeltMetricsTracker {
         pending: Int,
         uptimeNs: UInt64 = DispatchTime.now().uptimeNanoseconds
     ) -> String {
+        if activeEpoch != nil, activeEpoch != epoch {
+            // A new session epoch invalidates every older timing/presentation
+            // record. This also prevents a late snapshot from the old owner
+            // thread from producing a misleading PUBLISH marker.
+            accepts.removeAll(keepingCapacity: true)
+            completedOwnerRevisions.removeAll(keepingCapacity: true)
+            paintUptimesNs.removeAll(keepingCapacity: true)
+            lastVisibleRevision = 0
+            lastVisibleSource = nil
+        }
+        activeEpoch = epoch
+        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+        let runToken = HotPathSegmentTiming.devicePreflightContext?.token
+        #else
+        let runToken: String? = nil
+        #endif
         accepts[revision] = AcceptRecord(
             uptimeNs: uptimeNs,
             epoch: epoch,
-            pendingAtAccept: pending
+            pendingAtAccept: pending,
+            runToken: runToken
         )
         return ResponsiveRimeFeltMetrics.acceptMarkerLine(
             revision: revision,
             epoch: epoch,
-            pending: pending
+            pending: pending,
+            runToken: runToken
         )
     }
 
@@ -149,19 +189,47 @@ public final class ResponsiveRimeFeltMetricsTracker {
         return ResponsiveRimeFeltMetrics.visibleMarkerLine(
             lagMs: lag,
             revision: revision,
-            source: source
+            source: source,
+            runToken: accept.runToken
         )
     }
 
-    /// Engine/UI publish completion for a revision.
+    /// Owner completion for a revision.
+    ///
+    /// This marker is intentionally separate from UI presentation. It is emitted
+    /// when a snapshot produced by the serial owner reaches the controller, even
+    /// if the MainActor later coalesces that snapshot and does not paint it.
     @discardableResult
-    public func recordPublish(
+    public func recordOwnerCompletion(
+        epoch: UInt64,
+        revision: UInt64
+    ) -> String? {
+        guard let accept = accepts[revision], accept.epoch == epoch else {
+            return nil
+        }
+        guard completedOwnerRevisions.insert(revision).inserted else {
+            return nil
+        }
+        return ResponsiveRimePreflight.publishMarkerLine(
+            epoch: epoch,
+            revision: revision,
+            runToken: accept.runToken
+        )
+    }
+
+    /// UI presentation timing for a revision.
+    ///
+    /// The returned `PAINT` marker is supplementary evidence. It may be
+    /// coalesced and must never stand in for the owner-completion `PUBLISH`.
+    @discardableResult
+    public func recordPresentation(
         revision: UInt64,
         pendingAfter: Int,
         coalesced: Bool,
         uptimeNs: UInt64 = DispatchTime.now().uptimeNanoseconds
-    ) -> (publishLine: String, burstLine: String?) {
+    ) -> (presentationLine: String, burstLine: String?, runToken: String?) {
         let accept = accepts[revision] ?? nearestAccept(atOrBefore: revision)
+        let runToken = accept?.runToken
         let lag: UInt64
         if let accept {
             lag = ResponsiveRimeFeltMetrics.lagMilliseconds(
@@ -173,11 +241,12 @@ public final class ResponsiveRimeFeltMetricsTracker {
         }
         // Drop older accepts that are no longer needed.
         accepts = accepts.filter { $0.key >= revision }
-        let publishLine = ResponsiveRimeFeltMetrics.publishLagMarkerLine(
+        let presentationLine = ResponsiveRimeFeltMetrics.presentationLagMarkerLine(
             lagMs: lag,
             revision: revision,
             pendingAfter: pendingAfter,
-            coalesced: coalesced
+            coalesced: coalesced,
+            runToken: runToken
         )
         paintUptimesNs.append(uptimeNs)
         let window = ResponsiveRimeFeltMetrics.burstWindowNanoseconds
@@ -187,10 +256,11 @@ public final class ResponsiveRimeFeltMetricsTracker {
             let windowMs = window / 1_000_000
             burstLine = ResponsiveRimeFeltMetrics.burstMarkerLine(
                 count: paintUptimesNs.count,
-                windowMs: windowMs
+                windowMs: windowMs,
+                runToken: runToken
             )
         }
-        return (publishLine, burstLine)
+        return (presentationLine, burstLine, runToken)
     }
 
     private func nearestAccept(atOrBefore revision: UInt64) -> AcceptRecord? {

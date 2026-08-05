@@ -1,0 +1,40 @@
+{
+  "approvalReceipt": {
+    "path": "docs/evidence/t9-responsive-pipeline-canary-001-pre-run-approval-v9-2026-08-04.json",
+    "state": "pending-independent-pre-run-review"
+  },
+  "bindingID": "CANARY001V9-20260804-003",
+  "claimBoundary": "automated build/test and Simulator only",
+  "discovery": {
+    "simctlSHA256": "43a0e2e9a8f3d7f75e52a0a9ecc13ea38ec39361dccdccff92ec468d73abad2c",
+    "xcodeDestinationsSHA256": "dc5783beb56d64a62d0e1d83a7a862f6dd384174358471e286ea982801f6216c"
+  },
+  "expectedArtifactManifest": {
+    "path": "docs/evidence/t9-responsive-pipeline-canary-001-expected-artifacts-v9-2026-08-04.json",
+    "sha256": "520a3546675a64314a7f4dbcf5cb100cfa3e49673e13b5859562858306d9d404"
+  },
+  "manifest": {
+    "path": "docs/evidence/t9-responsive-pipeline-canary-001-build-test-command-manifest-v9-2026-08-04.txt",
+    "sha256": "7e609158de46b2592fcd548ca8ee273bdcaa190f0da02416ff8b4383fa1b0bac"
+  },
+  "prohibited": [
+    "physical-device",
+    "physical-device-install",
+    "production-rime-wiring",
+    "default-gate-change",
+    "app-group-or-userdb-cleanup",
+    "commit",
+    "push"
+  ],
+  "runHeader": {
+    "path": "docs/evidence/t9-responsive-pipeline-canary-001-run-header-base-v9-2026-08-04.json",
+    "sha256": "959a64e73924105e21128d0e3056a14d82085916fcffbf2229dc76c94137b000"
+  },
+  "schema": "CANARY-001-QEF-RUN-HEADER-BINDING-v9",
+  "selectedSourceTreeSHA256": "62dafb77c7a2a9619bdd735393536f569894f38fd87e369e17c12f33ed92febb",
+  "state": "frozen-awaiting-independent-pre-run-review",
+  "tool": {
+    "path": "docs/evidence/t9-responsive-pipeline-canary-001-qef-tool-v9.py",
+    "sha256": "1bbb4bb68e4246a550a2d38f064e6f048bdc4527cfa551cdd15e541840d8af04"
+  }
+}

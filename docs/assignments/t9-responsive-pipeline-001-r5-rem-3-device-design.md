@@ -1,6 +1,7 @@
 # T9-RESPONSIVE-PIPELINE-001 / R5-Rem-3-Device design
 
-**Status:** `Closed — direction PASS (key-follow + L1) with residual P1 chrome flicker`  
+**Status:** `Historical device-knife close — direction PASS (key-follow + L1) with
+residual P1 chrome flicker before Polish-2; Polish-2 is tracked separately`
 **Date:** `2026-08-01 Asia/Shanghai`  
 **Product:** Human Product Owner authorized Rem-3-Device progressive A/B  
 **Code tip:** `8169f64` (Rem-3 L1 + P1 remediation on main)  

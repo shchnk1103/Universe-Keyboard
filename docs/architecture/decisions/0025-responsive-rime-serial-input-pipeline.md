@@ -90,6 +90,31 @@ One MainActor publish transaction must update together:
 
 Cross-revision Path vs candidate mixes are architectural defects.
 
+### 5.1 Proposed amendment: content-free completion and presentation markers
+
+**Status: Proposed — P2-D1 diagnostic contract, not ADR acceptance**
+
+For explicit diagnostic/preflight evidence, the observable stages are kept
+separate:
+
+```text
+ACCEPT → owner completion / delivery → PUBLISH → MainActor apply → VISIBLE
+                                               └→ PAINT (timing/coalescing)
+```
+
+- `ACCEPT` records MainActor enqueue of an ordered revision;
+- `PUBLISH` records serial-owner completion/delivery for that revision and is
+  epoch-bound; it must not carry UI timing fields;
+- `VISIBLE` records the MainActor composition snapshot application;
+- `PAINT` is supplementary timing/coalescing evidence and may be latest-only.
+
+This amendment resolves the ambiguity where a coalesced UI snapshot was
+previously reported as a missing owner publish. It does not require every
+accepted revision to be painted, does not permit dropping or reordering input,
+and does not change the Release-default gate. The alternative of using
+`PUBLISH` for UI apply was rejected because it cannot distinguish owner
+completion from a deliberately coalesced presentation.
+
 ### 6. Relationship to ADR 0004
 
 Until this ADR is **Accepted** and a Product-authorized implementation phase
@@ -345,6 +370,57 @@ Detailed designs:
 R4-B adds a **config-only** `ThreadAffineRimeEngineImplBootstrap` in RimeBridge
 and Simulator evidence that a real engine can be created/called/released on the
 owner thread. It does **not** wire Extension production paths or Accept this ADR.
+
+## 13. Proposed Amendment B — P1-D2 visual shadow anchor and stable stale chrome
+
+**Status:** Proposed; Product-selected implementation slice (`2026-08-01
+Asia/Shanghai`). This Amendment does not Accept ADR 0025, revise ADR 0004's
+production rule, enable either gate by default or create Product Gate evidence.
+
+The Polish-2 device direction reduced candidate/Path redraw flicker but left a
+contract mismatch: the frozen Rem-3 D2 text required disabled/cleared affordances,
+while the current presentation kept the last engine chrome visible. Product chose
+the stable-chrome alternative with explicit fail-closed input semantics.
+
+### 13.1 Presentation contract
+
+- L0 still accepts T9 keys without waiting for librime.
+- L1 retains the latest host-visible marked text from a live L2 snapshot and
+  appends one U+00B7 MIDDLE DOT (`·`) for each accepted T9 slot not yet covered by
+  L2. With no stable L2 text, L1 is `·`×N.
+- The retained prefix is a presentation snapshot only. It is never RIME raw
+  input, a user Path choice, a candidate authority or host committed text.
+- L1 does not call any RIME API, `replaceInput` or `insertText`. A live L2
+  snapshot atomically replaces the complete marked text and clears the pending
+  L1 ledger. An epoch/reset barrier clears both pending slots and the retained
+  prefix.
+
+### 13.2 Stable stale chrome and interaction safety
+
+- Candidate and Path chrome may remain visually stable during `provisionalAhead`
+  so the Extension does not redraw for every delayed L1 paint.
+- This chrome is explicitly stale and non-authoritative.
+- Candidate selection, correction-candidate selection, candidate page up/down,
+  Path selection/cycling, Space selection and Partial Commit must fail closed
+  before any Core state or RIME session mutation while `provisionalAhead` is true.
+- After a live L2 publish or explicit reset/epoch barrier, the existing
+  revision-bound candidate/Path contracts resume.
+
+### 13.3 Scope and non-claims
+
+The implementation slice is limited to the Proposed Amendment/design, pure
+KeyboardCore presentation/guards and focused regression tests, followed by
+independent Architecture and Quality review. It does not include real-librime
+Extension wiring, R4/R5/R6, auto-anchor expansion, ADR Accept, Product Gate,
+Release default-on or a subjective non-stutter claim.
+
+**Amendment B review disposition (2026-08-01):** the bounded slice has final
+independent Architecture and Quality **Pass with conditions** reviews. Focused
+KeyboardCore is **16/0** and full KeyboardCore is **858/0**; P1-1 candidate
+prefetch bypass and P1-2 ordered Delete/restore stable-shadow residual are
+closed. Four P2 evidence debts remain (UI prefetch no-op, broader stale-action/
+chrome matrix, epoch/abandon host-history proof, and real-device/Release
+performance). This is not an ADR 0025 acceptance or a Product Gate.
 
 ## Consequences
 

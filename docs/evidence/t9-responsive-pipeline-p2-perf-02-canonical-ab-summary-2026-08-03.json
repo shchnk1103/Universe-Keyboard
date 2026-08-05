@@ -1,0 +1,192 @@
+{
+  "pairID": "P2P02-CANONICAL-AB-20260803-001",
+  "contractID": "T9-RESPONSIVE-PIPELINE-001/P2-PERF-02/EVIDENCE-01",
+  "canonicalFixture": {
+    "id": "T9-RESP-PERF-39-V1",
+    "digest": "772b4bb30cb831d04550e8311a2f64e66aad4ab55c4597544f0cc9364f9d7286",
+    "actionCount": 39,
+    "runtimeMarkerID": "T9RESP-R5P",
+    "bindingStatus": "protocol-declared-runtime-39-actions-no-raw-reconstruction"
+  },
+  "arms": {
+    "A": {
+      "runID": "P2P02-CANONICAL-A-20260803-001",
+      "token": "S6A-3E1F0F062F414CBFA571CEEA8E92F281",
+      "runtimeArtifact": {
+        "sourceAttachmentSha256": "a8e587fcd3d6997a77598a9324605dd4b7a897465ac0d18fc348fad22b8d97a8",
+        "sourceAttachmentBytes": 74747,
+        "sourceAttachmentLines": 499,
+        "filteredLines": 44,
+        "filteredBytes": 15051,
+        "filteredSha256": "e2c11130ab3522062ae636e19c707b8f32bd26414382fb18d715d34f889f12fc",
+        "privacyAllowList": "pass",
+        "markerCounts": {
+          "T9DEVICE": 1,
+          "T9GEOM": 2,
+          "T9RESP_PATH": 1,
+          "T9SEG": 39,
+          "T9ARM": 1
+        },
+        "deviceMarker": "T9DEVICE_DISABLED gate=off measurement=on",
+        "path": "sync",
+        "dualGateRequested": 0,
+        "dualGateActive": 0,
+        "geometry": {
+          "prepared": true,
+          "execution": true,
+          "digest": "0fe7271efa9c61e1c56e543a64b482d5435b81456bbad5fe1fd3054f90cbc032",
+          "digestMatch": true
+        },
+        "segments": {
+          "count": 39,
+          "actionRange": "1..39",
+          "eventRange": "1..39",
+          "ordered": true,
+          "committed": false
+        },
+        "session": {
+          "identity": 5686340504,
+          "valid": true,
+          "stable": true
+        },
+        "latencyMs": {
+          "totalMedian": 14.5,
+          "totalMax": 181.8,
+          "rimeMedian": 7.3,
+          "rimeMax": 180.4,
+          "uiMedian": 5.3,
+          "uiMax": 8.1,
+          "rimeAtLeast50Count": 5
+        },
+        "responsiveMarkers": "not-required-sync-arm"
+      },
+      "humanReport": {
+        "inputMethod": "manual-software-keyboard",
+        "missingKeys": "no",
+        "duplicateKeys": "no",
+        "candidateDisappeared": "no",
+        "keyboardExited": "no",
+        "orderedOutcome": "reported-complete",
+        "stallScore": 2,
+        "stallNote": "Human confirmed 2/4; intermittent subjective stalls",
+        "privacy": "content-free"
+      },
+      "status": "runtime-complete"
+    },
+    "B": {
+      "runID": "P2P02-CANONICAL-B-20260803-001",
+      "token": "S6A-0644586F078C44AAA8DAA4E45F882E43",
+      "build": {
+        "configuration": "Release",
+        "conditions": [
+          "T9_AUTO_ANCHOR_DEVICE_PREFLIGHT",
+          "T9_RESPONSIVE_DEVICE_PREFLIGHT_ENABLED"
+        ],
+        "appExecutableSha256": "4049cec026b36e389cf160c52d053edd0fed160cc1d298f35282ed60005dd89a",
+        "keyboardExecutableSha256": "ebdda088e809c14b629d23d76df89860fc3ce391686cc907ee5e9d27c4a2da39",
+        "installDatabaseSequence": 3760
+      },
+      "runtimeArtifact": {
+        "sourceAttachmentSha256": "4a31dbd9bb0402cbc989cef9dee792303bf6d764a55da8fa44e342602864a5db",
+        "sourceAttachmentBytes": 90343,
+        "sourceAttachmentLines": 499,
+        "filteredLines": 202,
+        "filteredBytes": 38739,
+        "filteredSha256": "4a30a074376c2e84020c184a1feacae5720dbdf0e3c6ca625070463e95403b13",
+        "privacyAllowList": "pass",
+        "markerCounts": {
+          "T9DEVICE": 1,
+          "T9GEOM": 2,
+          "T9RESP_PATH": 1,
+          "T9RESP_READY": 1,
+          "T9RESP_ACCEPT": 39,
+          "T9RESP_PUBLISH": 39,
+          "T9RESP_VISIBLE": 42,
+          "T9RESP_PAINT": 37,
+          "T9SEG": 39,
+          "T9ARM": 1
+        },
+        "deviceMarker": "T9DEVICE_DISABLED gate=off measurement=on",
+        "path": "thread-affine",
+        "dualGateRequested": 1,
+        "dualGateActive": 1,
+        "ready": true,
+        "geometry": {
+          "prepared": true,
+          "execution": true,
+          "digest": "826fc9d3ca8586b1826b2b7b69625d62dd9ffe0dbfb5898cd3e538ee2b11acfc",
+          "digestMatch": true,
+          "crossArmTokenlessShapeMatch": true
+        },
+        "segments": {
+          "count": 39,
+          "actionRange": "1..39",
+          "eventRange": "1..39",
+          "ordered": true,
+          "committed": false
+        },
+        "responsiveRevisions": {
+          "accepted": 39,
+          "published": 39,
+          "acceptedRange": "1..39",
+          "publishedRange": "1..39",
+          "epoch": 1,
+          "ownerCompletionCoverage": "39/39",
+          "visibleTotal": 42,
+          "visibleEngine": 37,
+          "visibleProvisional": 5,
+          "paint": 37,
+          "paintMissingRevisions": [16, 33],
+          "paintCoalescedFieldObserved": 0
+        },
+        "session": {
+          "identity": 4381352920,
+          "valid": true,
+          "stable": true
+        },
+        "latencyMs": {
+          "t9segTotalMedian": 0.3,
+          "t9segTotalMax": 0.7,
+          "t9segEngineMedian": 0.1,
+          "t9segEngineMax": 0.4,
+          "engineVisibleLagMedian": 8.0,
+          "engineVisibleLagMax": 160.0,
+          "provisionalVisibleLagMedian": 52.0,
+          "provisionalVisibleLagMax": 58.0,
+          "paintLagMedian": 8.0,
+          "paintLagMax": 160.0
+        }
+      },
+      "humanReport": {
+        "inputMethod": "manual-software-keyboard",
+        "missingKeys": "no",
+        "duplicateKeys": "no",
+        "candidateDisappeared": "no",
+        "keyboardExited": "no",
+        "orderedOutcome": "reported-complete",
+        "stallScore": 0.5,
+        "stallNote": "Human noticed a very small residual pause and was unsure whether all stalls were gone",
+        "privacy": "content-free"
+      },
+      "status": "runtime-complete"
+    }
+  },
+  "restore": {
+    "configuration": "Release",
+    "sameSourceSnapshot": true,
+    "injectedCompilationConditions": [],
+    "appExecutableSha256": "fde6743792f4441f58130ff689b255a547d21eb9b1e3b1d9b238a20f835654f1",
+    "keyboardExecutableSha256": "612b4e0792ce4245ddb074c59148ec1a20c8ad10a1cee465fab3034db4c67845",
+    "installDatabaseSequence": 3768,
+    "installArtifact": "/private/tmp/P2P02-CANONICAL-RESTORE-install.json",
+    "status": "installed-one-key-human-smoke-passed",
+    "humanSmoke": {
+      "keyEffective": true,
+      "keyboardRemainedVisible": true,
+      "keyboardExited": false,
+      "report": "Human confirmed restore smoke complete"
+    }
+  },
+  "productGate": "not-authorized",
+  "adr0025": "proposed-not-accepted"
+}

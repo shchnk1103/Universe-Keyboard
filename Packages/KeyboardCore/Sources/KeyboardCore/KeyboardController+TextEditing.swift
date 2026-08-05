@@ -620,6 +620,7 @@ extension KeyboardController {
 
         state.insertedPreeditText = safeText
         state.insertedPreeditCount = safeText.count
+        captureResponsiveStablePreeditIfReady()
     }
 
     /// Candidate-confirmed text may legitimately contain numbers (for example
@@ -645,6 +646,7 @@ extension KeyboardController {
         clearInlinePreedit()
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
+        captureResponsiveStablePreeditIfReady()
     }
 
     func commitInlinePreedit(
@@ -660,6 +662,7 @@ extension KeyboardController {
             insertText(text, source: source)
             state.insertedPreeditText = ""
             state.insertedPreeditCount = 0
+            captureResponsiveStablePreeditIfReady()
             return
         }
         guard state.insertedPreeditCount > 0 else {
@@ -678,9 +681,13 @@ extension KeyboardController {
         }
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
+        captureResponsiveStablePreeditIfReady()
     }
 
     func clearInlinePreedit() {
         textClient?.setMarkedText("", selectedRange: 0..<0)
+        state.insertedPreeditText = ""
+        state.insertedPreeditCount = 0
+        captureResponsiveStablePreeditIfReady()
     }
 }

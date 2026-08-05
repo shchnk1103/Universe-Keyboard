@@ -166,6 +166,11 @@ extension KeyboardViewController: UIScrollViewDelegate {
 
     /// Reads later candidates by global index without changing the current RIME page.
     func loadMoreCandidates(mode: CandidatePrefetchMode? = nil) {
+        // P1-D2 Amendment B: the scrolling/prefetch UI is another candidate
+        // affordance. It must not bypass Core's fail-closed contract while the
+        // visual shadow is ahead of the engine snapshot; otherwise this direct
+        // candidateWindow call can flush the thread-affine owner on MainActor.
+        guard !controller.isResponsiveProvisionalAhead else { return }
         guard let engine = controller.rimeEngine else { return }
         guard !isCandidateScrollInteracting else {
             deferredCandidatePrefetchMode = mode ?? candidatePrefetchMode
