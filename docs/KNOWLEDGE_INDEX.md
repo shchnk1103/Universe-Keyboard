@@ -112,6 +112,7 @@
   [`CANARY-001 Quality review`](assignments/t9-responsive-pipeline-001-canary-001-quality-review.md),
   [`CANARY-001/DEVICE-001 device evidence`](evidence/t9-responsive-pipeline-canary-001-device-001-2026-08-04.md),
   [`CANARY-001 Stop/Retain disposition`](product-decisions/T9-RESPONSIVE-PIPELINE-001-CANARY-001-disposition.md),
+  [`CANARY-001 session handoff`](assignments/t9-responsive-pipeline-001-canary-001-handoff-2026-08-05.md),
   [`R5-Rem-3-Polish evidence`](evidence/t9-responsive-pipeline-r5-rem-3-polish-2026-08-01.md),
   [`R5-Rem-3-Polish Architecture review`](assignments/t9-responsive-pipeline-001-r5-rem-3-polish-architecture-review.md),
   [`R5-Rem-3-Polish Quality review`](assignments/t9-responsive-pipeline-001-r5-rem-3-polish-quality-review.md),
