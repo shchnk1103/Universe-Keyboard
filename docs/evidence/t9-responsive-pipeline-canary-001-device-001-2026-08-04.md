@@ -65,12 +65,20 @@ Product-authorized、content-free 的生产形态 canary 方向证据，不是 A
   单 session，无并发 owner。
 - 混杂因素：canary 配置当时已过期（`expiryState=expired`），扩展 fail-closed 是
   `kill=1` 与过期共同作用；`phase=kill decision=kill` 断言本身独立证明 kill 写入生效。
+- 证据链说明（P3）：`CANARY_CONFIG … decision=kill status=success` 这条 marker 是
+  **Human-mediated**——kill launch（`K-kill-launch.json`，机器验证 `outcome=success`）
+  → 写入/读回 → evidence view 显示 → Human 从设备屏幕读取记录。机器 launch 已机器验证，
+  marker 文本为人工转录；这不是机器解析的 CANARY_CONFIG 文本，属物理设备限制。
 
 ### O 臂（恢复普通 Release）
 
 - 替换安装成功（databaseSequence `3960`，晚于 B 的 `3952`）；安装后容器
   `A5AAD9BA-…`；App/Extension 可执行 hash 与冻结 O 一致（`65d90433…` / `d911e011…`）。
-- 已安装普通 Release 二进制字符串扫描：canary marker/环境键/偏好键 **absent**。
+- 已安装 O 产物二进制字符串扫描：canary marker/环境键/偏好键 **absent**（0 hits）；
+  B canary 对照产物 **present**（6 hits）。机器可读收据：
+  `evidence/CANARY-001-DEVICE-001/raw/O-binary-scan-2026-08-05.json`（隔离）。
+  该扫描针对**构建产物**（与安装身份通过冻结 hash `65d90433…` 绑定），不是从设备
+  已安装二进制直接读出——安装后独立机器扫描仍为残余。
 - Human O smoke（2026-08-05）：键盘切换 + 候选 + Delete + 空格 + 基本输入**正常无异常**。
 
 ## 证据绑定与隐私
@@ -86,6 +94,7 @@ hash、status 与 Human 完整性/主观报告。不保存 raw 输入、拼音�
 | pair-002 run header（pre-input 快照） | `t9-responsive-pipeline-canary-001-device-001-run-header-pair-002-2026-08-04.json` |
 | 机器 summary | `t9-responsive-pipeline-canary-001-device-001-summary-2026-08-04.json` |
 | 本地隔离收据（A/B post-input、K、O） | `evidence/CANARY-001-DEVICE-001/raw/`（gitignored） |
+| O 二进制字符串扫描收据 | `evidence/CANARY-001-DEVICE-001/raw/O-binary-scan-2026-08-05.json`（gitignored） |
 
 ## 结论与停止点
 
@@ -97,9 +106,23 @@ hash、status 与 Human 完整性/主观报告。不保存 raw 输入、拼音�
    ACCEPT，无并发 owner。
 3. O 普通 Release 可安全恢复，安装身份匹配、无 canary 痕迹、人工冒烟正常。
 
+**样本强度声明（重要）**：本结论基于**单对 A/B（n=1）**、同一 Human、自然 cadence
+（显式标注为 confound，非受控速率）。因此这是**方向性证据，不是 benchmark，不构成
+任何性能 SLO，不能外推为统计结论**。B 优于 A 的方向与 P2-PERF-03 的四臂一致，但
+两对样本都不足以做定量声明。任何声称 R5P "直接证明" 或 "实现" 响应性目标均不成立。
+
+**B 臂补充聚合**：`accept_ms` 范围 `0.1–0.9ms`（中位 `0.3`）。`t9arm` checkpoint
+报 `actions=38` 而 `segCount=39` 的差异是 checkpoint 计数（38 条 T9SEG 完成行 +
+最终 checkpoint 行）与 segment 计数（39 个输入 segment）的口径差异，不表示丢键；
+`actions_1_to_39=true` 与 `rawLen 1..39` 确认 39 键完整。
+
 未证明（保持关闭）：ADR 0025 Accept、Product Gate、Release default-on、生产接线、
 Full Access OFF 行为、长期内存/jetsam、多设备/iOS 版本复现、App Group/userdb 清理
-（按 assignment 明确不执行）。
+（按 assignment 明确不执行）。此外以下项**不属于** DEVICE-001 覆盖范围且未声称：
+- run004 自动化/Simulator 层的 20 个 `NotObserved` fixture/provenance 行为（设备层
+  未重新证明它们）；
+- Main App 前台 lifecycle/launch smoke（非 canary 控制入口；O smoke 仅覆盖键盘输入）；
+- 单对 A/B 作为 benchmark 或性能 SLO。
 
 设备层 DEVICE-001 至此**执行完毕**，本记录交给独立 Architecture 与 Quality 复审；
 复审完成后停止，不自行宣布 canary Pass、生产可用或 Release 许可。Product Lead 将

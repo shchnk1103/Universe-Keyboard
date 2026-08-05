@@ -82,7 +82,10 @@
     "production wiring",
     "Full Access OFF",
     "long-term memory/jetsam",
-    "multi-device/iOS replication"
+    "multi-device/iOS replication",
+    "run004 automated/Simulator 20 NotObserved fixture/provenance behaviors",
+    "Main App foreground lifecycle/launch smoke (non-canary control entry)",
+    "single A/B pair as benchmark or performance SLO"
   ],
   "handoff": "independent Architecture + Quality review, then Product Lead"
 }

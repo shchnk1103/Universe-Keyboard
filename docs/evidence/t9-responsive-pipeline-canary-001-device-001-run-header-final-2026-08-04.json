@@ -93,12 +93,13 @@
     "host": "Reminders otherwise-empty item field",
     "orientation": "portrait",
     "softwareKeyboard": "Universe Keyboard Chinese nine-key",
-    "fullAccess": "ON; reconfirm immediately before Human A input",
+    "fullAccess": "ON; reconfirmed immediately before Human A input and Human B input and Human O smoke (operator sheet 2026-08-04/05)",
     "schema": "rime_ice; Human observed as 雾凇拼音",
     "appearance": "dark",
-    "powerThermal": "reconfirm at Human A start",
+    "powerThermal": "observed-normal at A/B/K/O starts; no thermal throttling indicator in receipts",
     "protocolAdherence": "Human manual only; no Delete; no candidate/commit/space; no coordinate automation",
-    "humanAcknowledgement": "A/B/K/O protocol receipts accepted; O smoke complete 2026-08-05"
+    "humanAcknowledgement": "A/B/K/O protocol receipts accepted; O smoke complete 2026-08-05",
+    "fullAccessReconfirmAttestation": "operator sheet records Full Access remained ON across all arms; no toggle observed"
   },
   "ADeviceAcceptance": {
     "replacementInstall": "reuse pair-001 success; same A artifact identity; re-verify installed binaries if reinstall needed",
