@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — R5-Rem-3 knife closed 2026-08-01 (Device + Polish-2 PASS; dual-gate default-off); next Product choice required (Hold / R6 prep / other); R6 / ADR Accept / Product Gate not claimed`
+**Lifecycle status:** `Active — P1-D2 Amendment B bounded Pass with conditions; P2-Regression-Matrix-001 Core subset Pass with conditions; UIKit/real-device residuals remain; dual-gate default-off; R6 / ADR Accept / Product Gate not claimed`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -99,6 +99,28 @@
 - **Acknowledgement exclusions:** no Extension production wire of thread-affine
   owner; no Release default-on; no ADR 0025 Accept; no Product Gate; no R5/R6;
   no auto-anchor expansion.
+
+### P1-D2 Amendment B reassignment / acknowledgement
+
+- **Decision Source / Date:** Human Product Owner / Product Lead selected option B
+  in the active Codex task, `2026-08-01 Asia/Shanghai`.
+- **Domain Owner:** 🧠 Input Intelligence Maintainer.
+- **Executor:** Current Codex task, limited to the Proposed Amendment/design,
+  KeyboardCore visual-shadow presentation, fail-closed guards and focused
+  regression tests.
+- **Environment Executor:** Current Codex task for local KeyboardCore focused
+  and full package tests.
+- **Human Dependency:** Human Product Owner is not required for local tests;
+  any device, Release, Product Gate or risk-acceptance step remains a separate
+  dependency and is out of this Assignment slice.
+- **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward, independent
+  of the Executor implementation.
+- **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer,
+  independent of the Executor implementation.
+- **Handoff Target:** Independent Architecture and Quality re-review, then
+  Human Product Owner for disposition; no automatic R6 or Release promotion.
+- **Acknowledgement exclusions:** no real RIME/Extension wiring, no default-on,
+  no ADR 0025 Accept, no Product Gate, no R6, no auto-anchor expansion.
 
 ## Acknowledgement And Activation
 
@@ -323,14 +345,35 @@
   [arch](t9-responsive-pipeline-001-r5-rem-3-implementation-architecture-review.md),
   [quality](t9-responsive-pipeline-001-r5-rem-3-implementation-quality-review.md))
 - [x] R5-Rem-3-Device — **granted 2026-08-01**; **Closed direction PASS**
-  (key-follow + L1 provisional markers) **with residual P1 chrome flicker**
+  (key-follow + L1 provisional markers) **with residual P1 chrome flicker at the
+  pre-Polish-2 checkpoint**
   ([design](t9-responsive-pipeline-001-r5-rem-3-device-design.md),
   [evidence](../evidence/t9-responsive-pipeline-r5-rem-3-device-2026-08-01.md));
   teardown gate-off done; **not** Product Gate
 - [x] R5-Rem-3-Polish — **granted 2026-08-01** (Product option 1); Polish-2
   host-preedit-only L1 + device re-pair **PASS** (chrome stable)
   ([evidence](../evidence/t9-responsive-pipeline-r5-rem-3-polish-2026-08-01.md));
-  teardown gate-off done
+  teardown gate-off done; current-tip independent Arch/Quality **Pass with
+  conditions** triggered P1-D2 Amendment B (the stale-chrome contract is now
+  product-selected and bounded-implemented)
+  ([arch](t9-responsive-pipeline-001-r5-rem-3-polish-architecture-review.md),
+  [quality](t9-responsive-pipeline-001-r5-rem-3-polish-quality-review.md))
+- [x] P1-D2 Amendment B — Product-selected stable shadow anchor, stable stale
+  chrome and fail-closed actions; Executor focused **16/0**, full **858/0**;
+  final independent Architecture and Quality **Pass with conditions**; P1-1/P1-2
+  closed; follow-up P2 regression matrix opened
+  ([evidence](../evidence/t9-responsive-pipeline-p1-d2-amendment-b-2026-08-01.md),
+  [Architecture](t9-responsive-pipeline-001-p1-d2-amendment-b-architecture-rereview-2.md),
+  [Quality](t9-responsive-pipeline-001-p1-d2-amendment-b-quality-rereview-2.md))
+- [x] P2-Regression-Matrix-001 — **bounded Core subset Pass with conditions**:
+  stale action matrix, settled stale-chrome snapshot and epoch/abandon
+  marked-text history contracts; focused **19/0**, full **861/0**; P2-EPC closed
+  at bounded Core/Fake-host layer; Extension prefetch, owner-call/UI observation
+  and real-device/performance evidence remain open
+  ([assignment](t9-responsive-pipeline-001-p2-regression-matrix.md),
+  [evidence](../evidence/t9-responsive-pipeline-p2-regression-matrix-2026-08-01.md),
+  [Architecture](t9-responsive-pipeline-001-p2-regression-matrix-architecture-rereview.md),
+  [Quality](t9-responsive-pipeline-001-p2-regression-matrix-quality-rereview.md))
 - [ ] Release default-on / Product Gate / ADR 0025 Accept / R6 — **not granted**
 
 ### Exit Criteria — R5-Remediation design
@@ -432,6 +475,43 @@
 - [x] Independent Quality review of R4-B — **Pass with conditions**.
 - [x] No Extension production wire; ADR 0025 remains Proposed; Product Gate not
   claimed.
+
+### Exit Criteria — P1-D2 Amendment B
+
+- [x] Product Decision records option B and the stable-shadow/fail-closed
+  contract.
+- [x] Proposed ADR/design Amendment explicitly supersedes the old D2 display
+  and chrome wording without changing ADR 0025 status from Proposed.
+- [x] L1 presents last stable host marked text plus pending `·` slots; no stable
+  snapshot falls back to `·`×N; no internal T9 digits are written to the host.
+- [x] Candidate, correction-candidate, candidate paging, Path, Space and
+  Partial Commit actions fail closed while `provisionalAhead`.
+- [x] Focused **16/0** and full **858/0** KeyboardCore tests pass; no
+  Release/default gate change.
+- [x] Independent Architecture and Quality final re-review records bounded
+  Pass-with-conditions evidence; P1-1/P1-2 closed and four P2 residuals linked
+  in the evidence record.
+
+### Exit Criteria — P2-Regression-Matrix-001 (current bounded slice)
+
+- [x] Core fail-closed action matrix covers candidate kinds, correction, page up/down,
+  direct Path, Path cycle, Space and a live Partial Commit checkpoint.
+- [x] Core stale-chrome test proves L1 does not mutate the settled RIME/Path/partial
+  snapshot or notify Extension presentation before L2.
+- [x] Epoch/abandon test checks owner epoch increase, zero post-abandon host-history
+  writes and stale-work discard accounting; P2-EPC is closed at bounded Core/Fake-host
+  scope.
+- [x] Focused **19/0** and full **861/0** KeyboardCore tests, vendor verify and
+  `git diff --check` passed.
+- [ ] Extension candidate prefetch no-op has a UIKit-target test; current
+  `KeyboardTests` target is Core-only, so this remains open.
+- [ ] Real librime/device subjective latency, queue/memory/jetsam and Release
+  evidence remain outside this test-only slice.
+- [x] Independent Architecture and Quality review/re-review — **Pass with
+  conditions**; P2-EPC bounded Core closed, UI/owner-call/real-performance
+  residuals remain
+  ([Architecture re-review](t9-responsive-pipeline-001-p2-regression-matrix-architecture-rereview.md),
+  [Quality re-review](t9-responsive-pipeline-001-p2-regression-matrix-quality-rereview.md)).
 
 ### Exit Criteria — R2–R6
 

@@ -136,9 +136,71 @@ and missing provisional composition authority remain open. Code and evidence
 landed on `main` via stacked PRs #37/#36 (`7665c64`) with dual-gate still
 Debug/preflight-only. ADR 0025 stays **Proposed**.
 
-Current sources: `PD-T9-RESPONSIVE-PIPELINE-001`, Assignment
-`T9-RESPONSIVE-PIPELINE-001`, proposed ADR 0025, Rem-Device evidence, Rem-3
-design (implementation not authorized).
+Current sources for this historical entry: `PD-T9-RESPONSIVE-PIPELINE-001`,
+Assignment `T9-RESPONSIVE-PIPELINE-001`, proposed ADR 0025, Rem-Device evidence,
+and the Rem-3 design (implementation was not authorized **at that point**).
+
+## 2026-08-01 — R5-Rem-3 Polish-2 direction evidence and current-tip review
+
+Rem-3-Device and Polish-2 device re-pair directionally passed on the iPhone 13 Pro
+with dual-gate still default-off. The current Polish-2 code tip `80ef54b` received
+independent Architecture and Quality read-only review; Quality ran focused 22/0 and
+KeyboardCore full 854/0. Both reviews are **Pass with conditions** and record P1-D2:
+Polish-2 keeps stale Candidate/Path chrome stable to avoid flicker, while the frozen
+Rem-3 D2 contract says those affordances must be disabled or cleared during
+`provisionalAhead`. Product + Architecture must amend the contract or correct the
+affordance implementation before calling the current tip unconditionally closed.
+
+ADR 0025 remains **Proposed**; Formal R5 **direction FAIL** remains historical;
+Product Gate, Release default-on and R6 remain unclaimed.
+
+## 2026-08-01 — P1-D2 Amendment B bounded implementation and independent re-review
+
+Product selected the stable-shadow alternative: the latest host-visible L2 marked
+text remains as the visual prefix, pending accepted T9 slots render as `·`, stale
+Candidate/Path chrome remains stable, and all related interactions fail closed while
+the shadow is ahead. The KeyboardCore/UI slice added the stable-prefix mirror,
+candidate-prefetch guard, unified ordered-output stable capture and regressions.
+
+The final focused suite passed **16/0** and KeyboardCore passed **858/0**; RIME
+vendor structural verification and `git diff --check` passed. Independent final
+Architecture and Quality reviews both returned **Pass with conditions** for the
+bounded Amendment B slice (P0/P1 = 0/0); P1-1 candidate-prefetch bypass and P1-2
+ordered Delete/restore stable-shadow residual are closed. Four P2 evidence debts
+remain: UI prefetch no-op coverage, the broader stale-action/chrome matrix,
+epoch/abandon marked-text-history proof, and real-device/Release performance.
+
+ADR 0025 remains **Proposed**; dual-gate remains default-off. This record is not
+Product Gate, Release evidence, ADR acceptance, R6 readiness or a subjective
+“不卡顿” claim.
+
+Current sources: [P1-D2 evidence](evidence/t9-responsive-pipeline-p1-d2-amendment-b-2026-08-01.md),
+[Architecture final re-review](assignments/t9-responsive-pipeline-001-p1-d2-amendment-b-architecture-rereview-2.md),
+[Quality final re-review](assignments/t9-responsive-pipeline-001-p1-d2-amendment-b-quality-rereview-2.md),
+[Assignment](assignments/t9-responsive-rime-pipeline-001.md),
+[Product Decision](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md).
+
+## 2026-08-01 — P2 Core regression matrix opened
+
+The follow-up test-only slice adds three bounded contracts: stale candidate/
+correction/page/Path/Space actions fail closed without mutating Core or host
+history; L1 leaves the settled RIME/Path/partial snapshot and Extension
+presentation callback stable until L2; and epoch/visibility abandon prevents old
+L1/L2 work from writing a dot after abandon. Focused ResponsiveProvisional passed
+**19/0** and KeyboardCore full passed **861/0**; vendor verification and diff check
+also passed.
+
+The UIKit Extension candidate-prefetch no-op entry point and real-librime/device
+performance evidence remain open. The action matrix is a Core guard/behavior
+proof rather than a per-method engine-call spy; this is a bounded Core evidence slice only;
+ADR 0025 remains Proposed, the dual gate remains default-off, and no R6,
+Product Gate, Release or subjective non-stutter claim follows from these tests.
+
+Current sources: [P2 Assignment](assignments/t9-responsive-pipeline-001-p2-regression-matrix.md),
+[P2 evidence](evidence/t9-responsive-pipeline-p2-regression-matrix-2026-08-01.md),
+[P2 Architecture re-review](assignments/t9-responsive-pipeline-001-p2-regression-matrix-architecture-rereview.md),
+[P2 Quality re-review](assignments/t9-responsive-pipeline-001-p2-regression-matrix-quality-rereview.md),
+[P1-D2 evidence](evidence/t9-responsive-pipeline-p1-d2-amendment-b-2026-08-01.md).
 
 ## 2026-07-26 — T9 automatic-bounding shadow boundary proposed
 

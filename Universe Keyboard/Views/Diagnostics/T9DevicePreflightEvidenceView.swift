@@ -6,6 +6,14 @@ enum T9DevicePreflightRunCoordinator {
     private static let prepareEnvironmentKey = "T9_S6A_PREPARE_RUN_TOKEN"
     private static let cleanupEnvironmentKey = "T9_S6A_CLEANUP_RUN_TOKEN"
     private static let finalizeMatrixEnvironmentKey = "T9_S6A_FINALIZE_MATRIX"
+    #if T9_RESPONSIVE_CANARY_INTERNAL
+    private static let canaryPrepareRunIDEnvironmentKey =
+        "T9_CANARY_PREPARE_RUN_ID"
+    private static let canaryExpiryEnvironmentKey =
+        "T9_CANARY_EXPIRY_UNIX_SECONDS"
+    private static let canaryKillRunIDEnvironmentKey =
+        "T9_CANARY_ASSERT_KILL_RUN_ID"
+    #endif
 
     static func handleLaunchEnvironment() {
         let environment = ProcessInfo.processInfo.environment
@@ -16,7 +24,42 @@ enum T9DevicePreflightRunCoordinator {
         } else if environment[finalizeMatrixEnvironmentKey] == "1" {
             finalizeMatrix()
         }
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+        handleCanaryLaunchEnvironment(environment)
+        #endif
     }
+
+    #if T9_RESPONSIVE_CANARY_INTERNAL
+    /// Internal-only control entry for DEVICE-001. Ordinary Release compiles
+    /// neither these environment keys nor the App Group writer.
+    private static func handleCanaryLaunchEnvironment(
+        _ environment: [String: String]
+    ) {
+        let now = Date().timeIntervalSince1970
+        let receipt: ResponsiveRimePreflight.CanaryConfigReceipt?
+        if let runID = environment[canaryPrepareRunIDEnvironmentKey],
+           let expiryText = environment[canaryExpiryEnvironmentKey]
+        {
+            receipt = ResponsiveRimePreflight.prepareCanaryConfiguration(
+                defaults: UserDefaults(suiteName: universeAppGroupID),
+                runID: runID,
+                expiryUnixSeconds: TimeInterval(expiryText) ?? 0,
+                nowUnixSeconds: now
+            )
+        } else if let runID = environment[canaryKillRunIDEnvironmentKey] {
+            receipt = ResponsiveRimePreflight.assertCanaryKill(
+                defaults: UserDefaults(suiteName: universeAppGroupID),
+                runID: runID,
+                nowUnixSeconds: now
+            )
+        } else {
+            receipt = nil
+        }
+        guard let receipt else { return }
+        Logger.shared.devicePreflightPerformance(receipt.markerLine)
+        Logger.shared.requestFlush()
+    }
+    #endif
 
     private static func prepare(token: String) {
         guard let defaults = UserDefaults(suiteName: universeAppGroupID)
@@ -135,13 +178,7 @@ struct T9DevicePreflightEvidenceView: View {
         let raw = defaults?.string(forKey: "rime_diag_log") ?? ""
         let logEvidence = raw
             .components(separatedBy: "\n")
-            .filter { line in
-                line.contains("T9DEVICE ")
-                    || line.contains("T9GEOM ")
-                    || line.contains("T9SEG ")
-                    || line.contains("T9AUTO ")
-                    || line.contains("T9ARM ")
-            }
+            .filter(T9DevicePreflightEvidenceLineFilter.retains)
             .joined(separator: "\n")
         let envelopeObject = defaults?.object(
             forKey: T9DevicePreflightRun.envelopeKey

@@ -306,6 +306,144 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         XCTAssertTrue(messages.exists)
     }
 
+    /// T02 is an explicit Simulator-only lifecycle harness invocation. The
+    /// Keyboard Extension must be built with `T9_P3_D1_LIFECYCLE_HARNESS`; the
+    /// test itself remains skipped for ordinary CI and Release-like runs.
+    func testP3D1T02ControlledOwnerKeepsKeyboardResponsive() throws {
+        try XCTSkipUnless(
+            ProcessInfo.processInfo.environment["P3_D1_T02_T03_RUN"] == "1",
+            "Run only with the explicitly compiled P3-D1 lifecycle harness."
+        )
+
+        let messages = launchMessages()
+        let preparation = prepareMessagesConversationForKeyboard(in: messages)
+        guard preparation.keyboardSurface.isVisible else {
+            throw XCTSkip(
+                "T02 blocked: Messages did not expose a keyboard surface; host accessibility precondition was unavailable."
+            )
+        }
+
+        let activation = activateUniverseKeyboard(in: messages)
+        guard activation.activated else {
+            print("P3D1 T02 blocked by host keyboard activation boundary: \(activation.failureBoundary)")
+            throw XCTSkip(
+                "T02 blocked: the host did not expose a fully proven Universe Keyboard activation boundary; no product conclusion."
+            )
+        }
+
+        let keys = ["n", "m", "o"].map { keyboardEvidenceKey(named: $0, in: messages) }
+        XCTAssertTrue(
+            keys.allSatisfy { $0.waitForExistence(timeout: 5) && $0.isHittable },
+            "T02 requires three product-owned keys to remain hittable before the delayed owner work."
+        )
+
+        // These taps are deliberately issued back-to-back. The fake owner
+        // sleeps for 150 ms per processKey; a successful run proves the host
+        // surface remains present while ordered work is still pending. The
+        // persisted P3LIFE owner markers provide the thread/delay evidence.
+        keys.forEach { $0.tap() }
+
+        let surface = waitForUniverseKeyboardSurface(in: messages, timeout: 5)
+        XCTAssertTrue(
+            requiredUniverseKeyboardSurfaceTerms.allSatisfy { term in
+                surface.contains { element in
+                    element.label.caseInsensitiveCompare(term) == .orderedSame
+                        || element.identifier.caseInsensitiveCompare(term) == .orderedSame
+                }
+            },
+            "T02 keyboard surface disappeared while delayed owner work was pending."
+        )
+        XCTAssertEqual(messages.state, .runningForeground)
+        let diagnostic = waitForP3D1LifecycleDiagnostic(
+            in: messages,
+            containing: "marker=PUBLISH",
+            timeout: 5
+        )
+        XCTAssertNotNil(
+            diagnostic,
+            "T02 requires the installed appex lifecycle handshake to report a publish after delayed owner work."
+        )
+        if let diagnostic {
+            XCTAssertTrue(diagnostic.contains("gate=1"), "T02 lifecycle gate was not armed: \(diagnostic)")
+            XCTAssertTrue(diagnostic.contains("ownerReady=1"), "T02 owner was not ready: \(diagnostic)")
+            XCTAssertTrue(diagnostic.contains("accepted="), "T02 accepted revision was not reported: \(diagnostic)")
+            XCTAssertTrue(diagnostic.contains("applied="), "T02 applied counter was not reported: \(diagnostic)")
+            XCTAssertTrue(diagnostic.contains("terminal=0"), "T02 owner delivery unexpectedly terminated: \(diagnostic)")
+        }
+        print("P3D1 T02 observed: product-owned surface remained foreground after three ordered taps; input content not recorded.")
+    }
+
+    /// T03 exercises the real host-driven disappearance/return boundary. It
+    /// does not claim process death, jetsam, or durable App Group restoration.
+    func testP3D1T03VisibilityReturnClearsLifecycle() throws {
+        try XCTSkipUnless(
+            ProcessInfo.processInfo.environment["P3_D1_T02_T03_RUN"] == "1",
+            "Run only with the explicitly compiled P3-D1 lifecycle harness."
+        )
+
+        let messages = launchMessages()
+        let firstPreparation = prepareMessagesConversationForKeyboard(in: messages)
+        guard firstPreparation.keyboardSurface.isVisible else {
+            throw XCTSkip(
+                "T03 blocked: Messages did not expose a keyboard surface; host accessibility precondition was unavailable."
+            )
+        }
+
+        let activation = activateUniverseKeyboard(in: messages)
+        guard activation.activated else {
+            print("P3D1 T03 blocked by host keyboard activation boundary: \(activation.failureBoundary)")
+            throw XCTSkip(
+                "T03 blocked: the host did not expose a fully proven Universe Keyboard activation boundary; no product conclusion."
+            )
+        }
+
+        let firstKey = keyboardEvidenceKey(named: "n", in: messages)
+        XCTAssertTrue(firstKey.waitForExistence(timeout: 5) && firstKey.isHittable)
+        firstKey.tap()
+
+        let backButton = messages.buttons["BackButton"]
+        guard backButton.waitForExistence(timeout: 5), backButton.isHittable else {
+            throw XCTSkip(
+                "T03 blocked: Messages did not expose the conversation exit boundary; no lifecycle conclusion."
+            )
+        }
+        backButton.tap()
+
+        let returnedPreparation = prepareMessagesConversationForKeyboard(in: messages)
+        guard returnedPreparation.keyboardSurface.isVisible else {
+            throw XCTSkip(
+                "T03 blocked: the host conversation reopened without an accessible keyboard surface; no lifecycle conclusion."
+            )
+        }
+        let returnedSurface = waitForUniverseKeyboardSurface(in: messages, timeout: 5)
+        guard requiredUniverseKeyboardSurfaceTerms.allSatisfy({ term in
+            returnedSurface.contains { element in
+                element.label.caseInsensitiveCompare(term) == .orderedSame
+                    || element.identifier.caseInsensitiveCompare(term) == .orderedSame
+            }
+        }) else {
+            throw XCTSkip(
+                "T03 blocked: the returned host surface did not expose the product-owned accessibility controls; no lifecycle conclusion."
+            )
+        }
+        XCTAssertEqual(messages.state, .runningForeground)
+        let diagnostic = waitForP3D1LifecycleDiagnostic(
+            in: messages,
+            containing: "returnClean=1",
+            timeout: 5
+        )
+        XCTAssertNotNil(
+            diagnostic,
+            "T03 requires the lifecycle handshake to retain a cleared RETURN_CLEAN marker."
+        )
+        if let diagnostic {
+            XCTAssertTrue(diagnostic.contains("cleared=1"), "T03 return marker was not cleared: \(diagnostic)")
+            XCTAssertTrue(diagnostic.contains("epoch="), "T03 lifecycle epoch was not reported: \(diagnostic)")
+            XCTAssertTrue(diagnostic.contains("terminal=0"), "T03 owner delivery unexpectedly terminated: \(diagnostic)")
+        }
+        print("P3D1 T03 observed: host disappearance/return restored a clean product-owned surface; input content not recorded.")
+    }
+
     func testNE1ColdActivationAndFirstInput() throws {
         let environment = ProcessInfo.processInfo.environment
         try XCTSkipUnless(
@@ -782,6 +920,32 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
                 label
             ))
             .firstMatch
+    }
+
+    /// Reads the explicit P3-D1 handshake exposed by the harness-only appex
+    /// element. The value contains counters and lifecycle watermarks only;
+    /// it must never contain document text or candidate content.
+    private func waitForP3D1LifecycleDiagnostic(
+        in app: XCUIApplication,
+        containing token: String,
+        timeout: TimeInterval
+    ) -> String? {
+        let element = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "identifier == %@", "P3D1LifecycleHarness"))
+            .firstMatch
+        let deadline = Date().addingTimeInterval(timeout)
+        repeat {
+            if element.exists,
+               let value = element.value as? String,
+               value.contains(token)
+            {
+                return value
+            }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        } while Date() < deadline
+        // Never return a stale value after timeout: the caller must prove the
+        // requested marker was observed during this invocation.
+        return nil
     }
 
     private func attemptBaselineKeyboardNormalization(

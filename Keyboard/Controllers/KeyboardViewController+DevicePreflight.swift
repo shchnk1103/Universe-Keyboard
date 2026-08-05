@@ -34,11 +34,11 @@ extension KeyboardViewController {
     func recordDevicePreflightMarker(runToken: String) {
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT_ENABLED
         Logger.shared.devicePreflightPerformance(
-            "T9DEVICE marker=T9DEVICE_ENABLED run=\(runToken) gate=on measurement=on"
+            "T9DEVICE schema=v1 marker=T9DEVICE_ENABLED run=\(runToken) gate=on measurement=on"
         )
         #else
         Logger.shared.devicePreflightPerformance(
-            "T9DEVICE marker=T9DEVICE_DISABLED run=\(runToken) gate=off measurement=on"
+            "T9DEVICE schema=v1 marker=T9DEVICE_DISABLED run=\(runToken) gate=off measurement=on"
         )
         #endif
         Logger.shared.requestFlush()
@@ -61,14 +61,18 @@ extension KeyboardViewController {
         guard !devicePreflightDidRecordExecutionGeometry else {
             return
         }
-        devicePreflightDidRecordExecutionGeometry = true
         guard let geometry = makeDevicePreflightGeometry() else {
             Logger.shared.devicePreflightPerformance(
-                "T9GEOM phase=execution run=\(devicePreflightRunToken ?? "invalid") "
+                "T9GEOM schema=v1 phase=execution run=\(devicePreflightRunToken ?? "invalid") "
                     + "status=unavailable"
             )
             return
         }
+        // Mark only after a complete geometry snapshot is available. A layout
+        // pass can run before the T9 buttons/window are ready; leaving the flag
+        // false lets the next lifecycle pass retry instead of freezing an
+        // unavailable result for the entire arm.
+        devicePreflightDidRecordExecutionGeometry = true
         Logger.shared.devicePreflightPerformance(
             geometry.record(phase: "execution")
         )
@@ -126,7 +130,7 @@ private struct DevicePreflightGeometry {
     }
 
     func record(phase: String) -> String {
-        "T9GEOM phase=\(phase) run=\(token) digest=\(digest) "
+        "T9GEOM schema=v1 phase=\(phase) run=\(token) digest=\(digest) "
             + "space=portrait-screen-points orientation=portrait "
             + "screen=\(Self.rect(screen)) scale=\(Self.number(nativeScale)) "
             + "keyboard=\(Self.rect(keyboard)) "

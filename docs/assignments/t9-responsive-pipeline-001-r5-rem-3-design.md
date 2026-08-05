@@ -1,11 +1,12 @@
 # T9-RESPONSIVE-PIPELINE-001 / R5-Rem-3 design — provisional L1 composition
 
-**Status:** `Active — design freeze + Amendment A after dual design review; implementation still not authorized`  
+**Status:** `Design freeze artifact — Amendment B bounded implementation/review Pass with conditions 2026-08-01; four P2 evidence debts remain`
 **Date:** `2026-07-31 Asia/Shanghai`  
 **Role author:** 🏛️ Architecture & Knowledge Steward  
-**Product authorization:** Human Product Owner authorized **documentation hygiene**
-then **Rem-3 design only** (this document). No implementation, device re-pair,
-R6, ADR Accept, Product Gate or default-on.  
+**Product authorization at authoring time:** Human Product Owner authorized
+**documentation hygiene** then **Rem-3 design only** (this document). Later
+implementation and device/Polish authorizations are recorded in the Product
+Decision and Assignment; they do not silently amend the D2 contract below.
 **Independent design reviews (tip `617773e`):**  
   Arch [`t9-responsive-pipeline-001-r5-rem-3-architecture-review.md`](t9-responsive-pipeline-001-r5-rem-3-architecture-review.md)
   — **Pass with conditions** (4× P1 blocked implement-auth recommendation)  
@@ -20,7 +21,7 @@ R6, ADR Accept, Product Gate or default-on.
 [`../evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md`](../evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md)
 — Formal R5 **direction FAIL** (historical freeze-then-burst)  
 **Publication baseline:** design authored on `main` @ `617773e` (after #36/#37 @ `7665c64`)  
-**ADR 0025:** remains **Proposed**
+**ADR 0025:** remains **Proposed**; Amendment B does not Accept it
 
 ---
 
@@ -146,6 +147,11 @@ L2; **forbidden** in v1.
   the user cannot tap stale L2 chrome against newer L1 length (closes Arch P1-4).
 - No ranked “fake” engine list.
 
+**Current-tip review note:** Polish-2 intentionally keeps stale Candidate/Path chrome
+stable to avoid Extension redraw flicker. The Product-selected Amendment B below
+formalizes that behavior with fail-closed Core actions; it does not make stale chrome
+authoritative.
+
 **Skip:** If builder cannot produce the v1 string (non-T9, empty ledger after
 clear, etc.), emit `L1_SKIP` and wait for L2 — never digit flash.
 
@@ -251,16 +257,45 @@ Preferred shape (guidance, not a free refactor license):
 Quality design P2 bindings absorbed into D5 dual VISIBLE, D7 progressive bar +
 coalesce case, D3 Delete path A.
 
+### D10 — Amendment B (2026-08-01) — visual shadow anchor and stable stale chrome
+
+Product selected option B after the Polish-2 current-tip Architecture and Quality
+reviews. This Amendment supersedes only the D2 host-string rule and the D2/D9
+Candidate/Path chrome sentence; all other L0/L2 ordering, epoch, watermark,
+Delete and default-off rules remain unchanged.
+
+1. **Stable presentation snapshot:** the controller retains the latest
+   host-visible marked text produced by a live L2 snapshot. A delayed L1 paint is
+   `stablePreedit + (· × pendingAcceptedT9Slots)`. When no stable L2 text exists,
+   the stable prefix is empty and the result is `·`×N.
+2. **Presentation-only authority:** the stable prefix and dots never become RIME
+   raw input, a Path selection, a candidate ranking or committed host text. L1
+   never calls `replaceInput`, `insertText` or any RIME API.
+3. **Stable stale chrome:** Candidate and Path chrome may remain visually stable
+   during `provisionalAhead` so the Extension does not redraw on every L1 tick.
+   It is a stale visual snapshot, not an interaction authority.
+4. **Fail-closed actions:** normal candidate selection, correction-candidate
+   selection, candidate page up/down, Path selection/cycling, Space selection and
+   Partial Commit must return without state or engine mutation while
+   `provisionalAhead` is true. The existing bound-revision rules resume only
+   after a live L2 publish or an explicit reset/epoch barrier.
+5. **Atomic handoff:** a live L2 snapshot cancels the pending L1 paint, clears
+   pending slots and atomically replaces the complete host marked text. Epoch
+   abandon/reset clears both the pending ledger and the retained stable prefix.
+
+This is a Proposed Amendment implementation slice, not an ADR 0025 acceptance,
+Release policy, Product Gate or subjective device-performance claim.
+
 ---
 
 ## 5. Risks
 
 | Risk | Mitigation |
 |---|---|
-| `·`×N feels “wrong” vs Chinese preedit | Atomic L2 replace; Product may Hold if subjective reject |
+| Stable text + `·` feels “wrong” vs Chinese preedit | Atomic L2 replace; Product may Hold if subjective reject |
 | L1 flickers against L2 Chinese preedit | Structure-only L1; atomic replace |
 | Digit leak to host | Builder never emits digits; unit matrix |
-| Users try to select on stale L2 while ahead | provisionalAhead fail-closed + chrome disable |
+| Users try to select on stale L2 while ahead | provisionalAhead fail-closed; stale chrome is explicitly non-authoritative |
 | Scope creep into Delete async redesign | D3 path A freezes v1 |
 | Double-apply races with coalesce | L2 presentation generation + revision floor |
 | False confidence for Product Gate | Design forbids Gate/default-on claims |
@@ -269,8 +304,11 @@ coalesce case, D3 Delete path A.
 
 ## 6. Explicit non-claims
 
-- Implementation is **not** authorized by acceptance of this design alone.
-- Independent design reviews **do not** authorize implementation.
+- The original Amendment-A design acceptance alone did not authorize implementation;
+  Amendment B implementation is separately authorized by the 2026-08-01 Product
+  Decision and remains bounded by this document.
+- Independent implementation reviews remain required and do not authorize
+  default-on or Product Gate.
 - Rem-Device PASS is not upgraded to Product Gate.
 - ADR 0025 remains Proposed (L1 is an explicit dual-gate presentation exception
   relative to “only engine snapshot paints composition”, documented here).
@@ -291,9 +329,10 @@ coalesce case, D3 Delete path A.
 - [x] Product implementation authorization template (updated)
 - [x] Linked from Assignment / plan / PD / Knowledge Index / Dashboard
 
-**Remaining before implement-auth recommendation:** optional Arch **re-review**
-of Amendment A (Product may still authorize implement if they accept Amendment A
-text as sufficient close without re-review).
+**Amendment B disposition:** focused/full evidence and final independent
+Architecture/Quality reviews are recorded as bounded **Pass with conditions**;
+P1-1/P1-2 are closed and four P2 evidence debts remain. This does not close
+Release, R6, ADR 0025 or Product Gate work.
 
 ---
 
@@ -301,13 +340,13 @@ text as sufficient close without re-review).
 
 **Handoff target:** 🧭 Human Product Owner / Product Lead.
 
-**After Amendment A, optional next Product moves (pick one):**
+**After Amendment A, the historical Product moves were:**
 
 1. **Authorize Rem-3 implementation** (template below) — dual-gate L1 only.
 2. **Hold L1** — keep dual-gate default-off; Rem-Device PASS stands.
 3. **Switch program priority** to RELEASE-2026-0801 or 9KEY-PINYIN-002 Gate.
 
-### Suggested Product instruction (implementation — not yet granted)
+### Historical Product instruction (Amendment A implementation)
 
 ```text
 我作为 Human Product Owner / Product Lead，确认

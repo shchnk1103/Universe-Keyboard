@@ -1,0 +1,215 @@
+{
+  "schema": "CANARY-001-DEVICE-001-RUN-HEADER-v2",
+  "status": "pair-002-complete: A/B/K/O all executed; device layer evidence closed",
+  "pairID": "CANARY001-D001-PAIR-20260804-002",
+  "source": {
+    "head": "3585a540ba8389673acd49128d87040ac9619f27",
+    "compiledSourceAggregateSHA256": "a541b2267eadb4300f9c9245e5776486a438c16f3e533306b6600efb7b4b0714",
+    "projectFileSHA256": "1664fae56c8e8cb0e1d8f3844697438ce4d60b36d80deeafca295876bf82fce4",
+    "preAndPostBuildFingerprintEqual": true,
+    "receiptSourceSHA256": "33760d0a66eabb666c8889794a1e562b3c5894e4ebb74667925987dbf0797831",
+    "evidenceFilterSHA256": "e1372b7b21997bb76cad95469ab0ec9d21cc363403ebb89ea6cd976c8b38b20b",
+    "receiptTestsSHA256": "d7afc2040b1151f7298dbef8f1b96967b42d6c557f812eb67b0a80faacc82204",
+    "mainAppControlSHA256": "768410d0c89c5aef0171d69e355b178a843ce66c8bc6ed24066034814a4c3fc5",
+    "extensionBootstrapSHA256": "6b1b19dff3124a0506db3373e719aa8e9402f112025716e4cffb57c7765ca17d"
+  },
+  "toolchain": {
+    "xcode": "27.0 (27A5228h)",
+    "swift": "Apple Swift 6.4 (swift-driver 1.168.5)",
+    "sdk": "iPhoneOS 27.0",
+    "configuration": "Release",
+    "strictConcurrency": "complete",
+    "warningsAsErrors": true
+  },
+  "device": {
+    "opaqueIdentitySHA256": "f5d2508e95eff580f683c9669f1f89e606978159019735c4b77fcd6624c4dc9b",
+    "model": "iPhone 13 Pro",
+    "productType": "iPhone14,2",
+    "reality": "physical",
+    "os": "iOS 27.0 (24A5390f) Beta",
+    "connection": "wired-paired-connected",
+    "developerMode": "enabled",
+    "passcodeRequiredAtFreeze": false,
+    "rawIdentityLocation": "local quarantined manifest only"
+  },
+  "artifacts": {
+    "A": {
+      "conditions": [
+        "T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"
+      ],
+      "appExecutableSHA256": "a4c2f329f4ad426adb3bc28766e648b9d76a3e9abffbd4b6349794837f36e917",
+      "extensionExecutableSHA256": "35cce1ee14286afdb8802281c5b69e7dfa8e82855b42b6c86fb92ccebc39f3b3",
+      "appCDHash": "fdb12b276cc9cb42cefe6402e83ad97eb4fa355a",
+      "extensionCDHash": "95724c333d66caaf64977fbb5b1dfa89b11f5755",
+      "internalCanaryStringScan": "absent"
+    },
+    "B": {
+      "conditions": [
+        "T9_AUTO_ANCHOR_DEVICE_PREFLIGHT",
+        "T9_RESPONSIVE_CANARY_INTERNAL"
+      ],
+      "appExecutableSHA256": "854ae17b30b3cc63cb361fac0b684497b1998e0ffe15b519d7477beeb89c322b",
+      "extensionExecutableSHA256": "f1c04aa6a648ae37a9b98afd7efa0a3e9838200e8fe4f721a55f9d1106f14870",
+      "appCDHash": "9031f67053f1fec51d73036ad4389f53c9698d7a",
+      "extensionCDHash": "16338169f1e137ae290afff8c88c68720b2764e0",
+      "internalCanaryStringScan": "expected marker, environment key and four preference keys present",
+      "rebuildNote": {
+        "reason": "canary prepare readbackMismatch fix: synchronize best-effort + integer expiry write",
+        "rebuiltAt": "2026-08-04T15:42:33Z",
+        "previousAppSHA256": "fdfaa1cd2b74adae4f6c519ece5ca3d5203fc92eed584558cce019be2d946051",
+        "previousExtSHA256": "c3dbaf02ac88596615ce55b5a3ac5cd57fac01a247d51396db4aa511eafc3cc7"
+      }
+    },
+    "O": {
+      "conditions": [],
+      "builtBeforeAnyBInstall": true,
+      "appExecutableSHA256": "65d90433ccd7613b566ede6e4248535e2d11c270051b24e04ede59ebbfa7e4ea",
+      "extensionExecutableSHA256": "d911e011236b9179c2f994ed2e991db3e92dc8fdbc89ddaddcab08446f13598d",
+      "appCDHash": "3d03d7eb22ac5b7fedafef8a9d3ac58b04f90350",
+      "extensionCDHash": "b701593baafd4dd4f949b2af442e8abf46f45d6d",
+      "internalCanaryStringScan": "absent"
+    },
+    "signing": {
+      "teamIdentifier": "C33N6HTS9N",
+      "xcodeCodeSignAndEmbeddedValidation": "succeeded for A, B and O",
+      "localIndependentCodesignVerify": "blocked-identically-for-all-arms: CSSMERR_TP_NOT_TRUSTED",
+      "deviceInstallPolicy": "A replacement install is stop-fast signing acceptance; no B install after any A install/signature mismatch"
+    }
+  },
+  "identity": {
+    "canaryRunID": "CANARY001-D001-5C6D32C8-75D5-4EFE-9B2C-E33BEE662B71",
+    "expiryUnixSeconds": 1785869219,
+    "ADevicePreflightToken": "S6A-AB32B2DCE0614075BB2DC00524A9403A",
+    "BDevicePreflightToken": "S6A-1F37EAF8409045DBA38CCAA6FA64D423"
+  },
+  "fixture": {
+    "id": "CANARY-001-D001-39-V1",
+    "count": 39,
+    "canonicalSHA256": "a71ccfba971f5c3900af94f254648877a5fc2a2d89b0b88cece28576dca068ac",
+    "rawSequence": "quarantined-local-only",
+    "cadence": "natural Human cadence; confound, not benchmark"
+  },
+  "runtimeEnvelope": {
+    "host": "Reminders otherwise-empty item field",
+    "orientation": "portrait",
+    "softwareKeyboard": "Universe Keyboard Chinese nine-key",
+    "fullAccess": "ON; reconfirmed immediately before Human A input and Human B input and Human O smoke (operator sheet 2026-08-04/05)",
+    "schema": "rime_ice; Human observed as 雾凇拼音",
+    "appearance": "dark",
+    "powerThermal": "observed-normal at A/B/K/O starts; no thermal throttling indicator in receipts",
+    "protocolAdherence": "Human manual only; no Delete; no candidate/commit/space; no coordinate automation",
+    "humanAcknowledgement": "A/B/K/O protocol receipts accepted; O smoke complete 2026-08-05",
+    "fullAccessReconfirmAttestation": "operator sheet records Full Access remained ON across all arms; no toggle observed"
+  },
+  "ADeviceAcceptance": {
+    "replacementInstall": "reuse pair-001 success; same A artifact identity; re-verify installed binaries if reinstall needed",
+    "installDatabaseSequence": 3936,
+    "installedBundleID": "com.DoubleShy0N.Universe-Keyboard",
+    "installedVersion": "1.0 (1)",
+    "builtByDeveloper": true,
+    "prepareLaunch": "success with pair-002 A token",
+    "contentFreeReceipt": "post-input pass: 39 segs rawLen 1..39; T9DEVICE_DISABLED path=sync",
+    "humanA": "complete integrity-clean stall=2.5; machine-check pass",
+    "postInput": {
+      "status": "pass",
+      "segCount": 39,
+      "geomDigest": "f6826c8a21252b96a79eb8b8db166e03f08bf5de835887a07480de2f664e5f02"
+    }
+  },
+  "order": [
+    "A cleanup old envelope (optional)",
+    "A prepare pair-002",
+    "A pre-input evidence",
+    "Human A clean 39",
+    "A post-input evidence",
+    "B replacement",
+    "B prepare",
+    "B pre-input evidence",
+    "Human B",
+    "B post-input evidence",
+    "K assert/readback",
+    "Human K",
+    "O replacement",
+    "Human O smoke"
+  ],
+  "safetyFinally": "After any failure, stop input; best-effort K assert/readback; replacement-install frozen O; compare identities; request bounded keyboard-switch/basic-input smoke.",
+  "forbidden": [
+    "uninstall",
+    "device erase",
+    "App Group cleanup",
+    "userdb cleanup",
+    "RIME deployment",
+    "production rollout",
+    "automated third-party keyboard taps",
+    "commit",
+    "push"
+  ],
+  "pairGeneration": 2,
+  "supersedes": {
+    "pairID": "CANARY001-D001-PAIR-20260804-001",
+    "reason": "Human A protocol-invalid: Delete+retype on formal arm; token consumed and run=invalid contamination",
+    "oldAToken": "S6A-A4FC6D3FF79A4587A8E8BE4B20CD11C6",
+    "oldBToken": "S6A-6BFA2238C3834ECFA61EA1DE5E0BC09C",
+    "oldCanaryRunID": "CANARY001-D001-80223C00-CEDA-4354-A85F-1991BB5F919E"
+  },
+  "artifactsNote": "A/B/O signed executable hashes unchanged from pair-001 freeze; verified present on disk 2026-08-04",
+  "pair002ArtifactRecheck": {
+    "checkedAt": "2026-08-04T15:18:11Z",
+    "allMatch": true,
+    "details": {
+      "A.appExecutableSHA256": {
+        "ok": true,
+        "pathExists": true
+      },
+      "A.extensionExecutableSHA256": {
+        "ok": true,
+        "pathExists": true
+      },
+      "B.appExecutableSHA256": {
+        "ok": true,
+        "pathExists": true
+      },
+      "B.extensionExecutableSHA256": {
+        "ok": true,
+        "pathExists": true
+      },
+      "O.appExecutableSHA256": {
+        "ok": true,
+        "pathExists": true
+      },
+      "O.extensionExecutableSHA256": {
+        "ok": true,
+        "pathExists": true
+      }
+    }
+  },
+  "BDeviceAcceptance": {
+    "replacementInstall": "success after prepare-fix rebuild",
+    "installDatabaseSequence": 3952,
+    "installedBundleID": "com.DoubleShy0N.Universe-Keyboard",
+    "prepareLaunch": "success after prepare-fix rebuild",
+    "contentFreeReceipt": "attempt3 success: prepared token + CANARY_CONFIG enable=1 kill=0 prepared/success",
+    "humanB": "complete clean-39 pass; stallScore=0",
+    "fixRebuildAt": "2026-08-04T15:43:56Z"
+  },
+  "KDeviceAcceptance": {
+    "killAssertLaunch": "success 2026-08-05 19:33",
+    "canaryConfigAfterKill": "actor=app phase=kill kill=1 decision=kill status=success",
+    "extensionStartupAfterKill": "actor=extension phase=startup enable=1 kill=1 expiryState=expired decision=baseline status=success",
+    "failClosedEvidence": "extension startup decision=baseline; no canary owner started",
+    "inputAfterKill": "run=invalid path=sync; no marker=ACCEPT observed",
+    "sessionStable": "true; no concurrent owner",
+    "confoundNote": "canary config already expired (expiryState=expired); fail-closed to baseline is kill=1 + expiry jointly; phase=kill decision=kill assertion independent of expiry"
+  },
+  "ODeviceAcceptance": {
+    "replacementInstall": "success 2026-08-05",
+    "installDatabaseSequence": 3960,
+    "installedBundleID": "com.DoubleShy0N.Universe-Keyboard",
+    "installedVersion": "1.0 (1)",
+    "containerUUID": "A5AAD9BA-698B-4AEA-97E4-C2E956D8CE46",
+    "artifactHashMatch": "app 65d90433... / ext d911e011... = frozen O",
+    "internalCanaryStringScan": "absent in installed O product",
+    "humanSmoke": "normal; keyboard/candidates/delete/space basic input no anomaly 2026-08-05"
+  },
+  "completedAt": "2026-08-05T11:48:02Z"
+}

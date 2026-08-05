@@ -1,0 +1,69 @@
+T9-RESPONSIVE-PIPELINE-001/CANARY-001/QEF-RUN-HEADER-BASE-v8
+
+contractID=CANARY-001-QEF-01
+contractVersionSHA256=cb9ef11d49a44b3433feafb87034635267138faf4ba8afd3b36df44cf7571fae
+runID=CANARY001V8-20260804-001
+freshToken=72E3CD0E-4E88-4FFE-BEF3-5EB72FEACE7B
+phase=bounded-build-test-provenance-repair
+fixtureID=T9RESP-R5P
+fixtureVersion=selected-source-tree-v8
+fixtureDigestSHA256=62dafb77c7a2a9619bdd735393536f569894f38fd87e369e17c12f33ed92febb
+markerSchema=T9RESP-CANARY-MARKERS-v1
+markerSchemaSourceSHA256=002c11eada10d7a8d6f4dc6336259b6a638ee1810f0423084af8c8b37bd8226e
+runtimeMarkerCapture=not-applicable(no production-shaped manual runtime and no retained ACCEPT markers)
+
+headSHA=3585a540ba8389673acd49128d87040ac9619f27
+selectedSourceTreeSHA256=62dafb77c7a2a9619bdd735393536f569894f38fd87e369e17c12f33ed92febb
+scopedStatusSHA256=f3e5ba8149dbef535e458f6c56994683db6d81ea42adceddc50aa4941b36f121
+scopedTrackedDiffSHA256=d012c1322b2dc7212b2abb235aa6a9b10f68e57c3b828609c7fcec29ab472a4b
+worktreeState=ambient-dirty-preserved
+ordinaryConfiguration=Debug and Release; T9_RESPONSIVE_CANARY_INTERNAL absent
+internalConfiguration=Debug; T9_RESPONSIVE_CANARY_INTERNAL explicitly injected
+ordinaryEnableValue=not-applicable(internal capability absent)
+ordinaryKillValue=not-applicable(internal capability absent)
+internalEnableValue=not-observed(no App Group configuration or manual runtime)
+internalKillValue=not-observed(no App Group configuration or manual runtime)
+appExtensionExecutableSHA256=pending-declared-output(command receipts and final inventory)
+
+targetType=iOS Simulator automated build/test
+simulatorName=iPhone 17 Pro Max
+simulatorUDID=06C5BC3E-7599-4761-A1A2-71DAEA991474
+simulatorRuntime=iOS 27.0
+simulatorArchitecture=arm64
+hostOS=macOS 27.0
+xcodeVersion=27.0
+xcodeBuild=27A5228h
+simulatorSDKVersion=27.0
+simulatorSDKBuild=24A5390e
+swiftVersion=6.4
+rimeVendorManifestSHA256=3550d290db1439f1ce037a5d18a4805aa7dff8863bf96ddb69472a3a2565bb77
+rimeSchemaIdentity=unavailable(external RIME fixture directories intentionally not supplied)
+rimeDeploymentHealth=not-observed(no production RIME deployment or manual runtime)
+mainAppDeploymentState=not-applicable(no Main-App maintenance or production deployment action)
+runStartEndRule=each command receipt records startTime,endTime,timezone and exitCode; final inventory time closes the aggregate log window
+timezone=Asia/Shanghai
+
+fullAccess=unavailable(automated Simulator build/test layer)
+hostContainerIdentity=unavailable(no keyboard host/manual runtime)
+geometry=not-applicable(no coordinate or manual input)
+protocolAdherence=not-observed(no production-shaped manual runtime)
+
+validatorID=T9ResponsiveCanaryEvidenceValidator
+validatorSourceSHA256=1a722eb59611fd3e49bff2c9fc29e03dcb827df619e8da1de025f434f4c09c92
+validatorSchema=T9RESP-CANARY-MARKERS-v1
+privacyScannerID=T9RESP-CANARY-PRIVACY-v1/scanner-v8
+privacyScannerSHA256=c6e54821baa89289341a86bfd1209f07d42619de98d391d054dff8d1f3ac9c78
+privacyAllowListVersion=T9RESP-CANARY-PRIVACY-v1
+privacyScope=command logs,xunit,xcresult contents,command receipts,xcresult summaries,skip classification,final inventory
+privacyQuarantineRoot=/Users/doubleshy0n/Dev/Universe Keyboard/evidence/CANARY-001-v8
+privacyPublicationRule=only content-free summaries and hashes enter docs/evidence; raw local artifacts remain ignored
+ordinaryRestoreIdentity=pending C11V8 ordinary restore command receipt and binary hashes
+archiveRoot=/Users/doubleshy0n/Dev/Universe Keyboard/evidence/CANARY-001-v8
+archiveRetention=persistent local ignored evidence; retain until Product Lead disposition; no cleanup in this phase
+commandManifestPath=docs/evidence/t9-responsive-pipeline-canary-001-build-test-command-manifest-v8-2026-08-04.txt
+manifestBindingPath=docs/evidence/t9-responsive-pipeline-canary-001-run-header-binding-v8-2026-08-04.txt
+artifactInventoryPath=evidence/CANARY-001-v8/CANARY-001-v8-artifact-inventory.txt
+restoreBoundary=no physical device; no App Group/userdb mutation; C11V8 restores ordinary Simulator build/test package
+
+claimBoundary=automated build/test and Simulator only
+notProved=physical device,Full Access,host provenance,manual presentation,real external RIME fixture runtime,performance SLO,Product Gate,Release,ADR 0025 acceptance

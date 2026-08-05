@@ -1,0 +1,152 @@
+T9-RESPONSIVE-PIPELINE-001/CANARY-001/BUILD-TEST-MANIFEST-v8
+purpose=QEF-01 provenance repair and formal bounded rerun
+supersedesForFutureCommands=BUILD-TEST-MANIFEST-v7
+v7Disposition=pre-run rejected and never executed
+authorization=Product Lead 2026-08-04 Asia/Shanghai: repair the evidence chain
+frozenAt=2026-08-04T20:20:52+08:00
+workdir=/Users/doubleshy0n/Dev/Universe Keyboard
+environmentExecutor=/root
+headSHA=3585a540ba8389673acd49128d87040ac9619f27
+xcode=27.0 (27A5228h)
+swift=6.4
+simulatorSDK=27.0 (24A5390e)
+
+executionBoundary=local build, automated tests and Simulator only
+prohibited=physical device; physical-device install; production wiring; default gate change; App Group/userdb cleanup; commit; push
+stopRule=run C02V8 through C11V8 then P01V8 and P02V8 in order; each runner seals partial artifacts before returning; stop at first non-zero
+sourceDriftRule=any listed build-affecting source/test/project or evidence-tool drift after freeze invalidates all future v8 commands
+manifestMutationRule=immutable after SHA-256 is recorded; run-header binding records that hash before execution
+
+runHeaderBasePath=docs/evidence/t9-responsive-pipeline-canary-001-run-header-base-v8-2026-08-04.txt
+runHeaderBaseSHA256=e8a668f2408349b8c5c80bc2e033674fbc702a7b75b4f1ccbd8fc1081042311b
+runHeaderBindingPath=docs/evidence/t9-responsive-pipeline-canary-001-run-header-binding-v8-2026-08-04.txt
+runHeaderRule=no production-shaped runtime ACCEPT is captured; unavailable/not-applicable fields remain explicit and block any runtime/device claim
+
+destinationDiscoveryCommand1=xcrun simctl list devices available
+destinationDiscoveryArtifact1=evidence/CANARY-001-v8/D01-simctl-destinations.log
+destinationDiscoveryArtifact1SHA256=43a0e2e9a8f3d7f75e52a0a9ecc13ea38ec39361dccdccff92ec468d73abad2c
+destinationDiscoveryArtifact1Bytes=2119
+destinationDiscoveryCommand2=xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -showdestinations
+destinationDiscoveryArtifact2=evidence/CANARY-001-v8/D02-xcode-destinations.log
+destinationDiscoveryArtifact2SHA256=ddaf52de5e0ae8f9a47f98437012db2cfb4cc5d2f2f066fc975b57b32948063a
+destinationDiscoveryArtifact2Bytes=7436
+destinationSelectionReason=only Booted compatible iOS Simulator in both frozen discovery outputs
+simulatorName=iPhone 17 Pro Max
+simulatorUDID=06C5BC3E-7599-4761-A1A2-71DAEA991474
+simulatorRuntime=iOS 27.0
+simulatorArchitecture=arm64
+simulatorStateAtFreeze=Booted
+
+scopedStatusArtifact=evidence/CANARY-001-v8/D03-scoped-status.log
+scopedStatusArtifactSHA256=f3e5ba8149dbef535e458f6c56994683db6d81ea42adceddc50aa4941b36f121
+scopedStatusArtifactBytes=873
+scopedTrackedDiffArtifact=evidence/CANARY-001-v8/D04-scoped-tracked-diff.patch
+scopedTrackedDiffArtifactSHA256=d012c1322b2dc7212b2abb235aa6a9b10f68e57c3b828609c7fcec29ab472a4b
+scopedTrackedDiffArtifactBytes=167400
+selectedSourceTreeSHA256=62dafb77c7a2a9619bdd735393536f569894f38fd87e369e17c12f33ed92febb
+
+threadAffineRimeSpikeSHA256=e5ceb4fbc6d6facddbf7976d7cb68fa71456c6989d4a2f303b10bc857a82fb46
+threadAffineRimeSessionSHA256=df66446dd911a8b520ddf0af8d079579a2b2b13fd8c643de318e4aa967f7de27
+keyboardControllerSHA256=12d427e2dab0ee549dade98089c76cea4003ac1c8a2b679e19d8ef8639606047
+responsiveRimePreflightSHA256=002c11eada10d7a8d6f4dc6336259b6a638ee1810f0423084af8c8b37bd8226e
+responsiveRimeCanaryModeSHA256=2bcb4684cbb0b3afee5616a3d73045f7f4f4233834f2539c9b9e6b594f22e235
+keyboardBootstrapSHA256=a1e23e34122ed5b0039200d46ed5d02ed4e3b13c42f3bbc2731bd92c923970c8
+keyboardViewControllerSHA256=b92c55760bf04ebf84eca8798b5efa674c8190b3303b27fe2dc506c5b6309f4e
+rimeBootstrapSHA256=165790d758fd8a1b6f29a8e4a24e17607dbe32c0bf919f5d26a0d7d861700325
+threadAffineRimeWireTestsSHA256=4b6cd66813e4c3da1ff98052b8b9146dc55569d0e6b4ce62dd376d855c2b2394
+responsiveRimeCanaryContractTestsSHA256=f74b629d5c0e952dbe6029440aad250075b208e87b3524af41f32ae39482f8fe
+t9ResponsiveEvidenceValidatorTestsSHA256=352c40a9d5c1477b511b51e415071efd5343a20f33778f344f1640e49e7ee588
+responsiveRimeCanaryLifecycleTestsSHA256=b59051ed993d9bab95047375ec160bd24692364fbb72726c0d396b4416f93584
+threadAffineRimeRealEngineTestsSHA256=88724fd80f7cebbaae60fdf8e4eea77de6f956834e34b58fd7cfebdc99be26c8
+projectPbxprojSHA256=1664fae56c8e8cb0e1d8f3844697438ce4d60b36d80deeafca295876bf82fce4
+rimeVendorManifestSHA256=3550d290db1439f1ce037a5d18a4805aa7dff8863bf96ddb69472a3a2565bb77
+
+commandRunnerPath=docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh
+commandRunnerSHA256=01ce55725bbea5cab21496a2f461445f1b3846d7973705c2a4884aa9d32977bb
+privacyScannerPath=docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh
+privacyScannerSHA256=c6e54821baa89289341a86bfd1209f07d42619de98d391d054dff8d1f3ac9c78
+privacyScannerVersion=T9RESP-CANARY-PRIVACY-v1/scanner-v8
+skipClassifierPath=docs/evidence/t9-responsive-pipeline-canary-001-qef-skip-classifier-v8.sh
+skipClassifierSHA256=e86f569cbcf0a4931a28d1311b44033a96b56744c1ee4e82250b3648a8fc3541
+inventoryToolPath=docs/evidence/t9-responsive-pipeline-canary-001-qef-inventory-v8.sh
+inventoryToolSHA256=b17b91925e4cc6942ffebb498e08499b6b9e67f4571d45a11fc55f38742d00ae
+
+ordinaryConditions=no T9_RESPONSIVE_CANARY_INTERNAL injection
+internalConditions=literal Xcode setting 'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) T9_RESPONSIVE_CANARY_INTERNAL'
+archiveRoot=/Users/doubleshy0n/Dev/Universe Keyboard/evidence/CANARY-001-v8
+archiveRetention=persistent local ignored evidence; retain until Product Lead disposition; no cleanup in this phase
+quarantineRule=raw logs,xunit,xcresult and binaries remain under ignored archiveRoot; only content-free hashes/summaries may enter docs/evidence
+commandReceiptRule=each runner invocation records exact child argv,start/end/timezone,exit code,artifact presence,hash/bytes or archive hash,privacy result
+failureRule=runner archives and hashes available partial artifacts before returning child/capture/privacy failure
+xcresultArchiveRule=ditto -c -k --sequesterRsrc --keepParent source archive.zip
+xcresultSummaryRule=xcrun xcresulttool get test-results summary --path source --compact
+skipRule=every skip is NotObserved; classifier separates environmentFixture,provenanceCommit,other; other is blocking
+artifactInventoryPath=evidence/CANARY-001-v8/CANARY-001-v8-artifact-inventory.txt
+resultRecordPath=docs/evidence/t9-responsive-pipeline-canary-001-build-test-2026-08-03.md
+restoreBoundary=no physical device or App Group/userdb mutation; C11V8 restores and retests ordinary Simulator package
+
+C02V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh C02V8 evidence/CANARY-001-v8/C02-keyboardcore-full.log evidence/CANARY-001-v8/receipts/C02V8.receipt.txt evidence/CANARY-001-v8/privacy/C02V8.privacy.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh --file evidence/CANARY-001-v8/C02-keyboardcore-full.log --file evidence/CANARY-001-v8/C02-keyboardcore-full.xunit.xml --privacy evidence/CANARY-001-v8/C02-keyboardcore-full.log --privacy evidence/CANARY-001-v8/C02-keyboardcore-full.xunit.xml -- swift test --package-path Packages/KeyboardCore --scratch-path /private/tmp/canary-001-spm-default-v8 --xunit-output evidence/CANARY-001-v8/C02-keyboardcore-full.xunit.xml
+C02V8Configuration=SwiftPM ordinary Debug
+C02V8Scheme=KeyboardCore package
+C02V8Destination=host SwiftPM test runner; no RimeBridge runtime
+C02V8Expected=log;xunit;receipt;privacy summary;SwiftPM scratch
+
+C03V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh C03V8 evidence/CANARY-001-v8/C03-canary-contract.log evidence/CANARY-001-v8/receipts/C03V8.receipt.txt evidence/CANARY-001-v8/privacy/C03V8.privacy.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh --file evidence/CANARY-001-v8/C03-canary-contract.log --file evidence/CANARY-001-v8/C03-canary-contract.xunit.xml --privacy evidence/CANARY-001-v8/C03-canary-contract.log --privacy evidence/CANARY-001-v8/C03-canary-contract.xunit.xml -- swift test --package-path Packages/KeyboardCore --scratch-path /private/tmp/canary-001-spm-internal-v8 -Xswiftc -DT9_RESPONSIVE_CANARY_INTERNAL --filter ResponsiveRimeCanaryContractTests --xunit-output evidence/CANARY-001-v8/C03-canary-contract.xunit.xml
+C03V8Configuration=SwiftPM Debug plus T9_RESPONSIVE_CANARY_INTERNAL
+C03V8Scheme=KeyboardCore package filtered ResponsiveRimeCanaryContractTests
+C03V8Destination=host SwiftPM test runner; fake/in-memory canary contract
+C03V8Expected=log;xunit;receipt;privacy summary;SwiftPM scratch
+
+C04V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh C04V8 evidence/CANARY-001-v8/C04-thread-affine.log evidence/CANARY-001-v8/receipts/C04V8.receipt.txt evidence/CANARY-001-v8/privacy/C04V8.privacy.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh --file evidence/CANARY-001-v8/C04-thread-affine.log --file evidence/CANARY-001-v8/C04-thread-affine.xunit.xml --privacy evidence/CANARY-001-v8/C04-thread-affine.log --privacy evidence/CANARY-001-v8/C04-thread-affine.xunit.xml -- swift test --package-path Packages/KeyboardCore --scratch-path /private/tmp/canary-001-spm-internal-v8 -Xswiftc -DT9_RESPONSIVE_CANARY_INTERNAL --filter ThreadAffineRimeWireTests --xunit-output evidence/CANARY-001-v8/C04-thread-affine.xunit.xml
+C04V8Configuration=SwiftPM Debug plus T9_RESPONSIVE_CANARY_INTERNAL
+C04V8Scheme=KeyboardCore package filtered ThreadAffineRimeWireTests
+C04V8Destination=host SwiftPM test runner; fake owner/wire contract
+C04V8Expected=log;xunit;receipt;privacy summary;SwiftPM scratch
+
+C05V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh C05V8 evidence/CANARY-001-v8/C05-ordinary-debug-build.log evidence/CANARY-001-v8/receipts/C05V8.receipt.txt evidence/CANARY-001-v8/privacy/C05V8.privacy.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh --file evidence/CANARY-001-v8/C05-ordinary-debug-build.log --bundle evidence/CANARY-001-v8/C05-ordinary-debug-build.xcresult evidence/CANARY-001-v8/archives/C05-ordinary-debug-build.xcresult.zip --binary "/private/tmp/canary-001-default-debug-v8/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard" --binary "/private/tmp/canary-001-default-debug-v8/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard" --privacy evidence/CANARY-001-v8/C05-ordinary-debug-build.log --privacy evidence/CANARY-001-v8/C05-ordinary-debug-build.xcresult -- xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination "generic/platform=iOS Simulator" -derivedDataPath /private/tmp/canary-001-default-debug-v8 -resultBundlePath evidence/CANARY-001-v8/C05-ordinary-debug-build.xcresult CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
+C05V8Configuration=ordinary Debug strict concurrency warnings-as-errors
+C05V8Scheme=Universe Keyboard
+C05V8Destination=generic/platform=iOS Simulator
+C05V8Expected=log;xcresult;xcresult zip;App binary hash;Extension binary hash;receipt;privacy summary
+
+C06V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh C06V8 evidence/CANARY-001-v8/C06-ordinary-release-build.log evidence/CANARY-001-v8/receipts/C06V8.receipt.txt evidence/CANARY-001-v8/privacy/C06V8.privacy.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh --file evidence/CANARY-001-v8/C06-ordinary-release-build.log --bundle evidence/CANARY-001-v8/C06-ordinary-release-build.xcresult evidence/CANARY-001-v8/archives/C06-ordinary-release-build.xcresult.zip --binary "/private/tmp/canary-001-default-release-v8/Build/Products/Release-iphonesimulator/Universe Keyboard.app/Universe Keyboard" --binary "/private/tmp/canary-001-default-release-v8/Build/Products/Release-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard" --privacy evidence/CANARY-001-v8/C06-ordinary-release-build.log --privacy evidence/CANARY-001-v8/C06-ordinary-release-build.xcresult -- xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Release -destination "generic/platform=iOS Simulator" -derivedDataPath /private/tmp/canary-001-default-release-v8 -resultBundlePath evidence/CANARY-001-v8/C06-ordinary-release-build.xcresult CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
+C06V8Configuration=ordinary Release strict concurrency warnings-as-errors
+C06V8Scheme=Universe Keyboard
+C06V8Destination=generic/platform=iOS Simulator
+C06V8Expected=log;xcresult;xcresult zip;App binary hash;Extension binary hash;receipt;privacy summary
+
+C07V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh C07V8 evidence/CANARY-001-v8/C07-internal-debug-build.log evidence/CANARY-001-v8/receipts/C07V8.receipt.txt evidence/CANARY-001-v8/privacy/C07V8.privacy.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh --file evidence/CANARY-001-v8/C07-internal-debug-build.log --bundle evidence/CANARY-001-v8/C07-internal-debug-build.xcresult evidence/CANARY-001-v8/archives/C07-internal-debug-build.xcresult.zip --binary "/private/tmp/canary-001-internal-debug-v8/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard" --binary "/private/tmp/canary-001-internal-debug-v8/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard" --privacy evidence/CANARY-001-v8/C07-internal-debug-build.log --privacy evidence/CANARY-001-v8/C07-internal-debug-build.xcresult -- xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination "generic/platform=iOS Simulator" -derivedDataPath /private/tmp/canary-001-internal-debug-v8 -resultBundlePath evidence/CANARY-001-v8/C07-internal-debug-build.xcresult CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES 'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) T9_RESPONSIVE_CANARY_INTERNAL' build
+C07V8Configuration=internal Debug strict concurrency warnings-as-errors
+C07V8Scheme=Universe Keyboard
+C07V8Destination=generic/platform=iOS Simulator
+C07V8Expected=log;xcresult;xcresult zip;App binary hash;Extension binary hash;receipt;privacy summary
+
+C08V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh C08V8 evidence/CANARY-001-v8/C08-ordinary-simulator-tests.log evidence/CANARY-001-v8/receipts/C08V8.receipt.txt evidence/CANARY-001-v8/privacy/C08V8.privacy.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh --file evidence/CANARY-001-v8/C08-ordinary-simulator-tests.log --xcresult evidence/CANARY-001-v8/C08-ordinary-simulator-tests.xcresult evidence/CANARY-001-v8/archives/C08-ordinary-simulator-tests.xcresult.zip evidence/CANARY-001-v8/summaries/C08-ordinary-simulator-tests.json --binary "/private/tmp/canary-001-sim-default-v8/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard" --binary "/private/tmp/canary-001-sim-default-v8/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard" --privacy evidence/CANARY-001-v8/C08-ordinary-simulator-tests.log --privacy evidence/CANARY-001-v8/C08-ordinary-simulator-tests.xcresult --privacy evidence/CANARY-001-v8/summaries/C08-ordinary-simulator-tests.json -- xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination "platform=iOS Simulator,id=06C5BC3E-7599-4761-A1A2-71DAEA991474" -derivedDataPath /private/tmp/canary-001-sim-default-v8 -resultBundlePath evidence/CANARY-001-v8/C08-ordinary-simulator-tests.xcresult CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test
+C08V8Configuration=ordinary Debug Simulator tests
+C08V8Scheme=Universe Keyboard
+C08V8Destination=iPhone 17 Pro Max iOS 27.0 arm64 UDID 06C5BC3E-7599-4761-A1A2-71DAEA991474
+C08V8Expected=log;xcresult;xcresult zip;test summary;App binary hash;Extension binary hash;receipt;privacy summary
+
+C09V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh C09V8 evidence/CANARY-001-v8/C09-canary-lifecycle-tests.log evidence/CANARY-001-v8/receipts/C09V8.receipt.txt evidence/CANARY-001-v8/privacy/C09V8.privacy.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh --file evidence/CANARY-001-v8/C09-canary-lifecycle-tests.log --xcresult evidence/CANARY-001-v8/C09-canary-lifecycle-tests.xcresult evidence/CANARY-001-v8/archives/C09-canary-lifecycle-tests.xcresult.zip evidence/CANARY-001-v8/summaries/C09-canary-lifecycle-tests.json --binary "/private/tmp/canary-001-sim-internal-v8/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard" --binary "/private/tmp/canary-001-sim-internal-v8/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard" --privacy evidence/CANARY-001-v8/C09-canary-lifecycle-tests.log --privacy evidence/CANARY-001-v8/C09-canary-lifecycle-tests.xcresult --privacy evidence/CANARY-001-v8/summaries/C09-canary-lifecycle-tests.json -- xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination "platform=iOS Simulator,id=06C5BC3E-7599-4761-A1A2-71DAEA991474" -derivedDataPath /private/tmp/canary-001-sim-internal-v8 -resultBundlePath evidence/CANARY-001-v8/C09-canary-lifecycle-tests.xcresult CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES 'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) T9_RESPONSIVE_CANARY_INTERNAL' -only-testing:KeyboardTests/ResponsiveRimeCanaryLifecycleTests test
+C09V8Configuration=internal Debug Simulator lifecycle test
+C09V8Scheme=Universe Keyboard
+C09V8Destination=iPhone 17 Pro Max iOS 27.0 arm64 UDID 06C5BC3E-7599-4761-A1A2-71DAEA991474
+C09V8Expected=log;xcresult;xcresult zip;test summary;App binary hash;Extension binary hash;receipt;privacy summary
+
+C10V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh C10V8 evidence/CANARY-001-v8/C10-rimebridge-tests.log evidence/CANARY-001-v8/receipts/C10V8.receipt.txt evidence/CANARY-001-v8/privacy/C10V8.privacy.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh --file evidence/CANARY-001-v8/C10-rimebridge-tests.log --xcresult evidence/CANARY-001-v8/C10-rimebridge-tests.xcresult evidence/CANARY-001-v8/archives/C10-rimebridge-tests.xcresult.zip evidence/CANARY-001-v8/summaries/C10-rimebridge-tests.json --binary /private/tmp/canary-001-rimebridge-v8/Build/Products/Debug-iphonesimulator/RimeBridgeTests.xctest/RimeBridgeTests --privacy evidence/CANARY-001-v8/C10-rimebridge-tests.log --privacy evidence/CANARY-001-v8/C10-rimebridge-tests.xcresult --privacy evidence/CANARY-001-v8/summaries/C10-rimebridge-tests.json -- xcodebuild -project "Universe Keyboard.xcodeproj" -scheme RimeBridgeTests -configuration Debug -destination "platform=iOS Simulator,id=06C5BC3E-7599-4761-A1A2-71DAEA991474" -derivedDataPath /private/tmp/canary-001-rimebridge-v8 -resultBundlePath evidence/CANARY-001-v8/C10-rimebridge-tests.xcresult CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test
+C10V8Configuration=RimeBridge Debug Simulator tests
+C10V8Scheme=RimeBridgeTests
+C10V8Destination=iPhone 17 Pro Max iOS 27.0 arm64 UDID 06C5BC3E-7599-4761-A1A2-71DAEA991474
+C10V8Expected=log;xcresult;xcresult zip;test summary;test binary hash;receipt;privacy summary
+
+C11V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh C11V8 evidence/CANARY-001-v8/C11-ordinary-restore-tests.log evidence/CANARY-001-v8/receipts/C11V8.receipt.txt evidence/CANARY-001-v8/privacy/C11V8.privacy.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh --file evidence/CANARY-001-v8/C11-ordinary-restore-tests.log --xcresult evidence/CANARY-001-v8/C11-ordinary-restore-tests.xcresult evidence/CANARY-001-v8/archives/C11-ordinary-restore-tests.xcresult.zip evidence/CANARY-001-v8/summaries/C11-ordinary-restore-tests.json --binary "/private/tmp/canary-001-sim-restore-v8/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard" --binary "/private/tmp/canary-001-sim-restore-v8/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard" --privacy evidence/CANARY-001-v8/C11-ordinary-restore-tests.log --privacy evidence/CANARY-001-v8/C11-ordinary-restore-tests.xcresult --privacy evidence/CANARY-001-v8/summaries/C11-ordinary-restore-tests.json -- xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination "platform=iOS Simulator,id=06C5BC3E-7599-4761-A1A2-71DAEA991474" -derivedDataPath /private/tmp/canary-001-sim-restore-v8 -resultBundlePath evidence/CANARY-001-v8/C11-ordinary-restore-tests.xcresult CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test
+C11V8Configuration=ordinary Debug Simulator restore and bounded automated smoke
+C11V8Scheme=Universe Keyboard
+C11V8Destination=iPhone 17 Pro Max iOS 27.0 arm64 UDID 06C5BC3E-7599-4761-A1A2-71DAEA991474
+C11V8Expected=log;xcresult;xcresult zip;test summary;ordinary App binary hash;ordinary Extension binary hash;receipt;privacy summary
+
+P01V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-command-runner-v8.sh P01V8 evidence/CANARY-001-v8/P01-skip-classification.log evidence/CANARY-001-v8/receipts/P01V8.receipt.txt evidence/CANARY-001-v8/privacy/P01V8.privacy.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh --file evidence/CANARY-001-v8/P01-skip-classification.log --file evidence/CANARY-001-v8/C10-skip-classification.txt --privacy evidence/CANARY-001-v8/P01-skip-classification.log --privacy evidence/CANARY-001-v8/C10-skip-classification.txt -- docs/evidence/t9-responsive-pipeline-canary-001-qef-skip-classifier-v8.sh evidence/CANARY-001-v8/C10-rimebridge-tests.log evidence/CANARY-001-v8/C10-skip-classification.txt
+P01V8Expected=classifier log;per-test content-free skip classification;receipt;privacy summary;unknown skip blocks
+
+P02V8 docs/evidence/t9-responsive-pipeline-canary-001-qef-inventory-v8.sh evidence/CANARY-001-v8 evidence/CANARY-001-v8/CANARY-001-v8-artifact-inventory.txt docs/evidence/t9-responsive-pipeline-canary-001-build-test-command-manifest-v8-2026-08-04.txt docs/evidence/t9-responsive-pipeline-canary-001-run-header-binding-v8-2026-08-04.txt docs/evidence/t9-responsive-pipeline-canary-001-qef-privacy-scan-v8.sh
+P02V8Expected=final content-free inventory;inventory SHA-256 sidecar;self-verification output;inventory privacy summary

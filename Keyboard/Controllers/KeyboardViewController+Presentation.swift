@@ -56,6 +56,9 @@ extension KeyboardViewController {
             rootStack.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor, constant: keyboardContentTopInset),
             rootStack.bottomAnchor.constraint(equalTo: keyboardSurfaceView.bottomAnchor, constant: -keyboardContentBottomInset),
         ])
+        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+        p3d1InstallLifecycleAccessibilityElementIfNeeded()
+        #endif
         Logger.shared.debug(
             "setupRootStack: transparent surface, content top+\(keyboardContentTopInset), "
                 + "bottom-\(keyboardContentBottomInset), hMargin=7",

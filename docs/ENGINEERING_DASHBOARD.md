@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-07-31 Asia/Shanghai
+> **Updated:** 2026-08-03 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -10,13 +10,15 @@
 
 ## T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
-- **Lifecycle:** `Active — R5-Rem-3 knife closed 2026-08-01 (Device + Polish-2 PASS); dual-gate default-off; Formal R5 FAIL historical`
-- **Authority:** [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md) + [`PD-T9-RESPONSIVE-PIPELINE-001`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md) + [`ADR 0025 Proposed`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md)
-- **Publication tip:** `main` @ `d823273` (Polish-2 close docs); code Polish-2 `80ef54b`
-- **Delivered (default-off):** R1–R4 Wire; R5-Preflight; Formal R5 FAIL; Rem-1/2; Rem-Device; Rem-3 L1 + dual review + P1; Rem-3-Device key-follow PASS; Rem-3-Polish-2 chrome-stable PASS
-- **Evidence close:** [`r5-rem-3-device`](evidence/t9-responsive-pipeline-r5-rem-3-device-2026-08-01.md), [`r5-rem-3-polish`](evidence/t9-responsive-pipeline-r5-rem-3-polish-2026-08-01.md)
+- **Lifecycle:** `Active — P1-D2 Amendment B bounded Pass with conditions; P2 Core subset Pass with conditions; P3-D1-T02/T03 Product Hold after host accessibility block; CANARY-001/DEVICE-001 pair-002 four-arm device execution COMPLETE (A 2.5 / B 0 / K pass / O clean); independent canary review pending; UIKit/long-term memory residuals remain; dual-gate default-off; Formal R5 FAIL historical`
+- **Authority:** [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md) + [`PD-T9-RESPONSIVE-PIPELINE-001`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md) + [`ADR 0025 Proposed`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) + [`CANARY-001`](assignments/t9-responsive-pipeline-001-production-shaped-canary-001.md)
+- **Publication tip:** `main` @ `acb8ec5` (canary implementation + evidence snapshot published 2026-08-05)
+- **Delivered (default-off):** R1–R4 Wire; R5-Preflight; Formal R5 FAIL; Rem-1/2; Rem-Device; Rem-3 L1 + P1 remediation; Rem-3-Device key-follow PASS; Rem-3-Polish-2 device direction PASS; P1-D2 Amendment B bounded slice; P2 Core regression subset (19/0 focused, 861/0 full); P3-D1-T02/T03 lifecycle harness with Wire 10/0, validator 6/0 and KeyboardCore 901/0; CANARY-001/DEVICE-001 pair-002 four-arm A/B/K/O (B R5P stallScore 0 vs A sync 2.5 at same slow-RIME positions; K kill-switch assert + fail-closed; O clean restore). Final Architecture/Quality for canary review pending; T02/T03 target runtime remains held/blocked.
+- **Evidence/reviews:** [`P1-D2 evidence`](evidence/t9-responsive-pipeline-p1-d2-amendment-b-2026-08-01.md), [`Architecture final review`](assignments/t9-responsive-pipeline-001-p1-d2-amendment-b-architecture-rereview-2.md), [`Quality final review`](assignments/t9-responsive-pipeline-001-p1-d2-amendment-b-quality-rereview-2.md), [`P3-D1/T02/T03 Assignment`](assignments/t9-responsive-pipeline-001-p3-d1-t02-t03-lifecycle-harness.md), [`P3-D1 Architecture re-review`](assignments/t9-responsive-pipeline-001-p3-d1-t02-t03-architecture-rereview.md), [`P3-D1 Quality re-review`](assignments/t9-responsive-pipeline-001-p3-d1-t02-t03-quality-rereview.md), [`r5-rem-3-device`](evidence/t9-responsive-pipeline-r5-rem-3-device-2026-08-01.md), [`r5-rem-3-polish`](evidence/t9-responsive-pipeline-r5-rem-3-polish-2026-08-01.md), [`CANARY-001 DEVICE-001 evidence`](evidence/t9-responsive-pipeline-canary-001-device-001-2026-08-04.md), [`CANARY-001 DEVICE-001 summary`](evidence/t9-responsive-pipeline-canary-001-device-001-summary-2026-08-04.json)
 - **Explicit non-claims:** R6, ADR Accept, Product Gate, Release dual-gate default-on
-- **Next Product action:** Hold default-off **or** authorize R6 readiness / other program (RELEASE / 9KEY-PINYIN-002); do **not** default-on without Gate
+- **Next Product action:** CANARY-001 disposition **Stop/Retain** recorded (2026-08-05): device evidence archived under default-off, no further device evidence phase; independent Arch/Quality both Pass with conditions. ADR 0025 acceptance / Product Gate / default-on remain closed and require fresh authorization. No further T02/T03 work under the current hold.
+- **P2 follow-up:** [`P2-Regression-Matrix-001`](assignments/t9-responsive-pipeline-001-p2-regression-matrix.md) · [`evidence`](evidence/t9-responsive-pipeline-p2-regression-matrix-2026-08-01.md)
+- **P2 reviews:** [`Architecture re-review`](assignments/t9-responsive-pipeline-001-p2-regression-matrix-architecture-rereview.md) · [`Quality re-review`](assignments/t9-responsive-pipeline-001-p2-regression-matrix-quality-rereview.md)
 - **Predecessor:** [`T9-AUTO-ANCHOR-001`](assignments/t9-auto-anchor-001.md) remains **Hold/harvest**
 
 ## RELEASE-2026-0801 — 2026 年 8 月 1 日 App Store 发布

@@ -1,0 +1,96 @@
+{
+  "archive": {
+    "approvalReceipt": "docs/evidence/t9-responsive-pipeline-canary-001-pre-run-approval-v9-2026-08-04.json",
+    "inventory": "evidence/CANARY-001-v9/CANARY-001-v9-artifact-inventory.json",
+    "manifest": "docs/evidence/t9-responsive-pipeline-canary-001-build-test-command-manifest-v9-2026-08-04.txt",
+    "quarantineRoot": "/Users/doubleshy0n/Dev/Universe Keyboard/evidence/CANARY-001-v9",
+    "retention": "persistent local ignored evidence retained until Product Lead disposition; no cleanup in this phase",
+    "runHeaderBinding": "docs/evidence/t9-responsive-pipeline-canary-001-run-header-binding-v9-2026-08-04.json",
+    "postRunLocalOnly": "P04 publication attestation and P05 inventory/sidecars are local-only-not-publishable"
+  },
+  "approvalContract": {
+    "requiredHashes": ["manifestSHA256", "bindingSHA256", "runHeaderSHA256", "expectedArtifactManifestSHA256", "toolSHA256"],
+    "requiredIdentity": ["runID", "freshToken"],
+    "requiredReviews": "exactly Architecture and Quality; each verdict=approve,P0=0,P1=0",
+    "schema": "CANARY-001-QEF-PRE-RUN-APPROVAL-v9",
+    "state": "approved"
+  },
+  "claimBoundary": {
+    "notProved": [
+      "physical device",
+      "Full Access",
+      "host provenance",
+      "manual keyboard presentation",
+      "real external RIME fixture runtime",
+      "performance SLO",
+      "Product Gate",
+      "Release",
+      "ADR 0025 acceptance"
+    ],
+    "provedLayer": "automated build/test and Simulator only"
+  },
+  "contract": {
+    "contractID": "CANARY-001-QEF-01",
+    "contractVersionSHA256": "cb9ef11d49a44b3433feafb87034635267138faf4ba8afd3b36df44cf7571fae",
+    "fixtureDigestSHA256": "62dafb77c7a2a9619bdd735393536f569894f38fd87e369e17c12f33ed92febb",
+    "fixtureID": "T9RESP-R5P",
+    "fixtureVersion": "selected-source-tree-v9",
+    "freshToken": "47B6E7EB-BAD3-4952-ACC7-4105C00EA753",
+    "markerSchema": "T9RESP-CANARY-MARKERS-v1",
+    "markerSchemaSourceSHA256": "002c11eada10d7a8d6f4dc6336259b6a638ee1810f0423084af8c8b37bd8226e",
+    "phase": "bounded-build-test-provenance-repair",
+    "runID": "CANARY001V9-20260804-001",
+    "runtimeMarkerCapture": "not-applicable(no production-shaped manual runtime or ACCEPT marker capture)"
+  },
+  "environment": {
+    "fullAccess": "unavailable(automated Simulator build/test layer)",
+    "geometry": "not-applicable(no coordinate or manual input)",
+    "hostContainerIdentity": "unavailable(no keyboard host/manual runtime)",
+    "mainAppDeploymentState": "not-applicable(no production deployment or maintenance action)",
+    "protocolAdherence": "not-observed(no production-shaped manual runtime)",
+    "rimeDeploymentHealth": "not-observed(no production RIME deployment)",
+    "rimeSchemaIdentity": "unavailable(external RIME fixture directories intentionally not supplied)",
+    "rimeVendorManifestSHA256": "3550d290db1439f1ce037a5d18a4805aa7dff8863bf96ddb69472a3a2565bb77",
+    "simulatorArchitecture": "arm64",
+    "simulatorName": "iPhone 17 Pro Max",
+    "simulatorRuntime": "iOS 27.0",
+    "simulatorSDK": "27.0 (24A5390e)",
+    "simulatorUDID": "06C5BC3E-7599-4761-A1A2-71DAEA991474",
+    "swiftVersion": "6.4",
+    "targetType": "iOS Simulator automated build/test",
+    "timezone": "Asia/Shanghai",
+    "xcode": "27.0 (27A5228h)"
+  },
+  "privacy": {
+    "allowListVersion": "T9RESP-CANARY-PRIVACY-v1",
+    "publicationRule": "only v9 tool-generated structured JSON may pass publication scan; raw logs,xunit,xcresult and build products remain quarantined-not-publishable",
+    "scannerID": "T9RESP-CANARY-PRIVACY-v1/publication-scan-v9",
+    "toolSHA256": "596f873f23d43705e3e00184783378ff08eeb1908c4be4108df3663a4309c7ee"
+  },
+  "restore": {
+    "ordinaryIdentity": "pending C11V9 ordinary build and P02V9 installed-package hash comparison",
+    "order": "ordinary build -> simctl install replacement -> installed App/Extension hash comparison -> ordinary condition assertion; Main App is not launched",
+    "prohibited": "no uninstall, erase, App Group cleanup or userdb mutation"
+  },
+  "source": {
+    "appExtensionExecutableSHA256": "pending command receipts and final inventory",
+    "headSHA": "3585a540ba8389673acd49128d87040ac9619f27",
+    "internalConditions": "literal SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) T9_RESPONSIVE_CANARY_INTERNAL",
+    "internalEnableKill": "not-observed(no App Group configuration/manual runtime)",
+    "ordinaryConditions": "T9_RESPONSIVE_CANARY_INTERNAL absent",
+    "ordinaryEnableKill": "not-applicable(internal capability absent)",
+    "scopedStatusSHA256": "f3e5ba8149dbef535e458f6c56994683db6d81ea42adceddc50aa4941b36f121",
+    "scopedTrackedDiffSHA256": "d012c1322b2dc7212b2abb235aa6a9b10f68e57c3b828609c7fcec29ab472a4b",
+    "selectedSourceTreeSHA256": "62dafb77c7a2a9619bdd735393536f569894f38fd87e369e17c12f33ed92febb",
+    "worktreeState": "ambient-dirty-preserved"
+  },
+  "timeWindowRule": "every command revalidates the frozen gate and records start/end/exit; result record and local-only inventory close the aggregate window",
+  "tools": {
+    "evidenceToolPath": "docs/evidence/t9-responsive-pipeline-canary-001-qef-tool-v9.py",
+    "evidenceToolSHA256": "596f873f23d43705e3e00184783378ff08eeb1908c4be4108df3663a4309c7ee",
+    "resultRecord": "docs/evidence/t9-responsive-pipeline-canary-001-build-test-result-v9-2026-08-04.json",
+    "validatorID": "T9ResponsiveCanaryEvidenceValidator",
+    "validatorSchema": "T9RESP-CANARY-MARKERS-v1",
+    "validatorSourceSHA256": "1a722eb59611fd3e49bff2c9fc29e03dcb827df619e8da1de025f434f4c09c92"
+  }
+}

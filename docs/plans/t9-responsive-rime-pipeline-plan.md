@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — R5-Rem-3-Polish-2 device PASS (chrome stable); Formal R5 FAIL historical; dual-gate default-off; R6/ADR Accept/Product Gate not claimed** |
+| Status | **Active — P1-D2 Amendment B bounded Pass with conditions; P2 Core subset Pass with conditions; P3-D1-T02/T03 Product Hold after host block; UIKit/real-device residuals remain; dual-gate default-off; Formal R5 FAIL historical; R6/ADR Accept/Product Gate not claimed** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); phase implementation locks later |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
@@ -233,13 +233,106 @@ Responds to Formal R5 dual-gate **freeze-then-burst** FAIL without rewriting it.
 - **O1 / Rem-1** observability landed (`ACCEPT` / `VISIBLE` / `PUBLISH lagMs` / `BURST`)
 - **O2 / Rem-2** dual-gate UI coalesce + true latestOnly + last-head R3 context; Arch P1-1 Closed
 - **Rem-Device** direction **PASS** (key-feel better than gate-off; no freeze-burst; VISIBLE lag spikes remain; O2 coalesce barely exercised on that pair)
-- **O3 / Rem-3** provisional L1 — design + Amendment A + dual design reviews;
-  **implementation Executor complete** 2026-07-31 (`·`×N; KeyboardCore **850/0**);
-  independent implementation dual review pending
+- **O3 / Rem-3** provisional L1 — design + Amendment A + implementation + Polish-2
+  device direction evidence complete; P1-D2 Amendment B bounded implementation and
+  final independent Architecture/Quality **Pass with conditions**. Current final
+  slice is focused **16/0**, full **858/0**; P1-1/P1-2 are closed. The follow-up
+  P2 Core regression subset is tracked separately; the earlier P1-D2 contract
+  conflict is historical.
   ([design](../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md),
-  [evidence](../evidence/t9-responsive-pipeline-r5-rem-3-2026-07-31.md))
+  [Polish Arch](../assignments/t9-responsive-pipeline-001-r5-rem-3-polish-architecture-review.md),
+  [Polish Quality](../assignments/t9-responsive-pipeline-001-r5-rem-3-polish-quality-review.md),
+  [evidence](../evidence/t9-responsive-pipeline-r5-rem-3-polish-2026-08-01.md))
 - Engine FIFO no-drop retained; dual-gate default-off retained
 - Publication: PR #37 → preflight, PR #36 → `main` (`7665c64`); CI green on both heads
+
+### P1-D2 Amendment B — Product-selected implementation slice (2026-08-01)
+
+Product selected the stable-chrome alternative: retain the latest host-visible L2
+marked text and append pending `·` slots for L1, while Candidate/Path chrome stays
+visually stable and all related Core actions fail closed during `provisionalAhead`.
+This slice is limited to the Proposed Amendment/design, KeyboardCore pure logic and
+focused regression tests, followed by independent Architecture and Quality review.
+It does not change the default-off gates, RIME/Extension wiring, ADR 0025 status,
+Product Gate or Release policy.
+
+Design authority: [`P1-D2 Amendment B`](../architecture/decisions/0025-responsive-rime-serial-input-pipeline.md#13-proposed-amendment-b--p1-d2-visual-shadow-anchor-and-stable-stale-chrome)
+and [`Rem-3 design Amendment B`](../assignments/t9-responsive-pipeline-001-r5-rem-3-design.md#d10--amendment-b-2026-08-01--visual-shadow-anchor-and-stable-stale-chrome).
+
+Disposition: bounded **Pass with conditions** after final independent Architecture
+and Quality re-review; focused **16/0**, full **858/0**; P1-1/P1-2 closed and
+P2 follow-up matrix opened. No R6, ADR Accept, Product Gate or default-on.
+
+### P2-Regression-Matrix-001 — Core subset Pass with conditions (2026-08-01)
+
+This follow-up is test/evidence-only and does not change production behavior or
+either default-off gate. It covers the stale-action matrix, settled stale-chrome
+snapshot, and epoch/abandon `markedTextHistory` contracts.
+
+- Assignment: [`P2-Regression-Matrix-001`](../assignments/t9-responsive-pipeline-001-p2-regression-matrix.md)
+- Evidence: [`P2 regression matrix evidence`](../evidence/t9-responsive-pipeline-p2-regression-matrix-2026-08-01.md)
+- Current result: focused **19/0**, full **861/0**; three-test repair rerun **3/0**;
+  vendor verify and diff-check pass.
+- Independent Architecture and Quality re-reviews: **Pass with conditions**;
+  P2-EPC host-history count/empty assertion is closed at bounded Core/Fake-host
+  scope.
+- Still open: UIKit Extension candidate-prefetch no-op and real stale-chrome/owner-call
+  observation; real librime/device subjective latency, queue/memory/jetsam and
+  Release/Product Gate evidence.
+- Stop point: no R6, ADR Accept or default-on claim; any UI/real-device matrix needs
+  a separate Product authorization.
+
+### P2-PERF-02 Canonical A/B — bounded device handoff (2026-08-03)
+
+The Product-authorized canonical-fixture A/B was completed on the iPhone 13 Pro
+and handed to independent Architecture and Quality review. This is a bounded
+diagnostic observation, not a Product Gate or Release decision:
+
+- Assignment: [`P2-PERF-02 canonical A/B`](../assignments/t9-responsive-pipeline-001-p2-perf-02-canonical-ab-20260803.md)
+- Evidence: [`canonical A/B evidence`](../evidence/t9-responsive-pipeline-p2-perf-02-canonical-ab-2026-08-03.md)
+- A sync: T9SEG total max `181.8ms`, RIME max `180.4ms`, Human `2/4`.
+- B thread-affine: T9SEG immediate-path max `0.7ms`, owner `PUBLISH 39/39`,
+  engine VISIBLE lag max `160ms`, Human `0.5/4`.
+- Ordinary Release restore and one-key smoke passed; default gates remain false.
+- Architecture: `Pass with conditions`; Quality: `Partial / bounded pass`;
+  Pair remains `Partial` because Full Access/host provenance, normalized geometry,
+  PAINT coalescing reason and repeated order-controlled samples remain open.
+
+### P2-PERF-03 — replicated/reverse-order canonical A/B (reviewed, overall Partial)
+
+Before any production-facing wiring or default decision, the recommended next
+slice is two order-controlled pairs (`A→B` and `B→A`) on the same device, with a
+content-free run manifest, normalized geometry digest, explicit PAINT coalescing
+reason and protocol-adherence field. The Assignment is now **reviewed** as
+evidence-only; it does not authorize production code or default-gate changes.
+
+- Assignment: [`P2-PERF-03 replicated A/B`](../assignments/t9-responsive-pipeline-001-p2-perf-03-replicated-ab-proposal.md)
+- Evidence: [`P2-PERF-03 replicated A/B evidence`](../evidence/t9-responsive-pipeline-p2-perf-03-replicated-ab-2026-08-03.md)
+  and [content-free summary JSON](../evidence/t9-responsive-pipeline-p2-perf-03-replicated-ab-summary-2026-08-03.json)
+- Independent reviews: [`Architecture`](../assignments/t9-responsive-pipeline-001-p2-perf-03-architecture-review.md)
+  and [`Quality`](../assignments/t9-responsive-pipeline-001-p2-perf-03-quality-review.md)
+- Four valid arms completed on the same iPhone 13 Pro: A1 `2.5/4`, B1 `1/4`,
+  B2 `1/4`, A2 `3/4`; B lower stall score in both A→B and B→A orders. A sync
+  T9SEG max `242.3/246.5ms`; B immediate T9SEG max `0.8/0.7ms`; B ACCEPT/PUBLISH
+  `39/39` in both arms. B PAINT missing-reason and runtime tokenless geometry
+  remain residual evidence debt.
+- Ordinary Release restore and Human keyboard-switch smoke passed. Keep both gates
+  default-off, ADR 0025 Proposed, and no Product Gate or Release claim pending
+  a separate Product decision. Architecture review is `Pass with conditions`
+  (`0/0/4/2`); Quality review is bounded condition pass but overall `Partial`
+  (`0/0/4/3`).
+
+### P3-D1-T02/T03 — Target lifecycle harness Product Hold (2026-08-03)
+
+- Assignment: [`P3-D1-T02/T03 Lifecycle Harness`](../assignments/t9-responsive-pipeline-001-p3-d1-t02-t03-lifecycle-harness.md)
+- Matrix: [`P3-D1 Runtime Lifecycle Evidence Matrix`](../assignments/t9-responsive-pipeline-001-p3-d1-runtime-lifecycle-matrix.md)
+- Bounded result: harness-on/gate-off builds passed; Wire **10/0**, validator **6/0**,
+  KeyboardCore full **901/0**; Architecture and Quality both **Pass with conditions**.
+- Host result: T02/T03 **Blocked (host accessibility)** because the Simulator Messages host
+  did not expose a provable system-keyboard activation boundary.
+- Product disposition: Human Product Owner selected **Option 1 Hold**. No further code,
+  test or device execution is authorized under this slice; reopening requires a new Product
+  Assignment and fresh acknowledgement.
 
 ### R6 — Gates
 
@@ -338,4 +431,14 @@ T9-RESPONSIVE-PIPELINE-001 的 Assignment 与 Proposed ADR 已达到实现入口
 | 2026-07-31 | Arch **P1-1 Closed**: presentation generation + live epoch gate + abandon coalesce test. Rem-Device next (Human auth). |
 | 2026-07-31 | **R5-Rem-Device direction PASS**: dual-gate key-feel better than gate-off; no freeze-burst; VISIBLE lag spikes remain; not Product Gate. |
 | 2026-07-31 | PR **#37** (rem) merge-commit into preflight `2e8c047`; PR **#36** merge into **`main` `7665c64`**. Feature branches `codex/t9-responsive-r5-preflight`, `codex/t9-responsive-r5-rem`, `codex/t9-auto-anchor-s5-checkpoint` safely deleted after reachability. |
-| 2026-07-31 | Doc hygiene: Assignment/plan/PD/dashboard/index/changelog aligned to merge + Rem-Device Closed; **Rem-3 design** authored (implementation still closed). |
+| 2026-07-31 | Doc hygiene: Assignment/plan/PD/dashboard/index/changelog aligned to merge + Rem-Device Closed; **Rem-3 design** authored (implementation was still closed **at that point**). |
+| 2026-08-01 | Rem-3-Device and Polish-2 device direction PASS; current-tip independent Arch/Quality review ran on `80ef54b` (focused 22/0, full 854/0) and found P1-D2: stable stale Candidate/Path chrome conflicts with frozen disabled/cleared affordance contract. Product/Architecture Amendment or implementation correction is required; dual-gate remains default-off. |
+| 2026-08-01 | Product selected **P1-D2 Amendment B**: stable L2 marked text + pending `·` visual shadow, stable stale chrome, and fail-closed Candidate/Path/Space/paging/correction actions. Final bounded implementation/review is **Pass with conditions** (16/0 focused, 858/0 full); P1-1/P1-2 closed, four P2 evidence debts remain; gates remain default-off. |
+| 2026-08-01 | **P2-Regression-Matrix-001** Core subset received independent Architecture/Quality re-review **Pass with conditions**; P2-EPC host-history count/empty assertion is closed at bounded Core/Fake-host scope. Focused 19/0, full 861/0, repair rerun 3/0; UIKit prefetch/real UI owner observation and real-device/performance evidence remain open. |
+| 2026-08-03 | **P2-PERF-02 canonical A/B** completed on iPhone 13 Pro: A sync total max 181.8ms / Human 2/4; B thread-affine immediate T9SEG max 0.7ms, PUBLISH 39/39 / Human 0.5/4; ordinary restore smoke passed. Independent Architecture/Quality retained bounded `Partial`; no default-on, ADR Accept or Product Gate. |
+| 2026-08-03 | **P2-PERF-03 replicated/reverse-order A/B** authorized and activated. It covers A→B and B→A evidence-only arms for order effects, normalized geometry and PAINT coalescing receipts; production code and default gates remain unchanged. |
+| 2026-08-03 | **P2-PERF-03 four-arm execution complete** on the same iPhone 13 Pro: A1/B1/B2/A2 valid and token-bound, B lower subjective stall score in both orders, ordinary Release restored and smoke confirmed. Evidence is handed to independent Architecture / Quality; B PAINT missing-reason and runtime tokenless geometry remain open, with no ADR/Product Gate/default-on claim. |
+| 2026-08-03 | **P2-PERF-03 independent reviews complete**: Architecture `Pass with conditions` (P0/P1/P2/P3 `0/0/4/2`), Quality bounded condition pass but overall `Partial` (`0/0/4/3`). Handoff stops at Product Lead; any production-shaped canary needs a new Assignment and explicit authorization. |
+| 2026-08-04 | **CANARY-001 authorized** by Human Product Owner (`我授权你，接下来就在我的iPhone 13 Pro上进行测试吧！`); production-shaped default-off canary design freeze + implementation + run004 automated matrix complete. |
+| 2026-08-04→05 | **CANARY-001 / DEVICE-001 pair-002 four-arm (A/B/K/O) execution complete** on iPhone 13 Pro: A sync stallScore `2.5`; B R5P provisional stallScore `0` at same slow-RIME positions (208–242ms); K kill-switch assert written/readback (`decision=kill`) with extension fail-closed to baseline and no canary ACCEPT after; O ordinary Release restored with matching hashes and clean Human smoke. Device evidence closed; independent Arch/Quality review pending. Not ADR 0025 acceptance, not Product Gate, not default-on. |
+| 2026-08-05 | **CANARY-001 disposition = Stop/Retain** (Human Product Lead): device evidence archived under default-off; no further device evidence phase. Independent Arch (`Pass with conditions` 0/0/1/0) and Quality (`Pass with conditions` 0/0/5/3) recorded; most P2/P3 residuals closed, P2-04/P3-01/P3-02 stay open with honest attestation. ADR 0025 remains Proposed; Product Gate / default-on closed to any claim. |

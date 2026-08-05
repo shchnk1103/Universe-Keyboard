@@ -30,6 +30,18 @@ final class ResponsiveProvisionalCompositionTests: XCTestCase {
         XCTAssertFalse(p!.preedit.contains { $0.isNumber })
     }
 
+    func testPresentationAppendsPendingDotsToStablePreedit() {
+        let p = ResponsiveProvisionalComposition.presentation(
+            slotCount: 2,
+            sessionEpoch: 3,
+            watermark: 8,
+            stablePreedit: "今天"
+        )
+        XCTAssertEqual(p?.stablePreedit, "今天")
+        XCTAssertEqual(p?.preedit, "今天··")
+        XCTAssertEqual(p?.slotCount, 2)
+    }
+
     func testMirrorAppendAndClear() {
         var mirror = ResponsiveProvisionalCompositionMirror()
         XCTAssertFalse(mirror.isProvisionalAhead)
@@ -39,9 +51,14 @@ final class ResponsiveProvisionalCompositionTests: XCTestCase {
         XCTAssertEqual(mirror.watermark, 2)
         XCTAssertTrue(mirror.isProvisionalAhead)
         XCTAssertEqual(mirror.makePresentation()?.preedit, "··")
+        mirror.setStablePreedit("今天")
+        XCTAssertEqual(mirror.makePresentation()?.preedit, "今天··")
         mirror.alignToEngineApply(epoch: 2, revision: 2)
         XCTAssertFalse(mirror.isProvisionalAhead)
         XCTAssertEqual(mirror.slotCount, 0)
+        XCTAssertEqual(mirror.stablePreedit, "今天")
+        mirror.clear()
+        XCTAssertEqual(mirror.stablePreedit, "")
     }
 
     func testL1SkipMarkerIsContentFree() {
@@ -85,12 +102,14 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
     private struct DigitBootstrap: ThreadAffineRimeEngineBootstrap {
         let processEntered: DispatchSemaphore?
         let releaseFirst: DispatchSemaphore?
+        let blockOnProcessCall: Int
 
         func makeEngineOnOwnerThread() -> any RimeEngine {
             if let processEntered, let releaseFirst {
                 return BlockingDigitEngine(
                     processEntered: processEntered,
-                    releaseFirst: releaseFirst
+                    releaseFirst: releaseFirst,
+                    blockOnProcessCall: blockOnProcessCall
                 )
             }
             let engine = FakeRimeEngine(dictionary: ["222": ["啊"], "2": ["阿"]])
@@ -103,19 +122,32 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         private let delegate: FakeRimeEngine
         private let processEntered: DispatchSemaphore
         private let releaseFirst: DispatchSemaphore
-        private var blocked = false
+        private let blockOnProcessCall: Int
+        private var processCallCount = 0
 
-        init(processEntered: DispatchSemaphore, releaseFirst: DispatchSemaphore) {
-            let engine = FakeRimeEngine(dictionary: ["22222222": ["测"], "2": ["阿"]])
+        init(
+            processEntered: DispatchSemaphore,
+            releaseFirst: DispatchSemaphore,
+            blockOnProcessCall: Int = 1
+        ) {
+            let engine = FakeRimeEngine(
+                dictionary: [
+                    "a": ["阿"],
+                    "aa": ["啊"],
+                    "aaa": ["啊"],
+                    "aaaaaaaa": ["测"],
+                ]
+            )
             engine.appendDigitsToComposition = true
             self.delegate = engine
             self.processEntered = processEntered
             self.releaseFirst = releaseFirst
+            self.blockOnProcessCall = blockOnProcessCall
         }
 
         func processKey(_ key: String) -> RimeOutput {
-            if !blocked {
-                blocked = true
+            processCallCount += 1
+            if processCallCount == blockOnProcessCall {
                 processEntered.signal()
                 releaseFirst.wait()
             }
@@ -151,6 +183,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
     private func makeDualGateController(
         entered: DispatchSemaphore? = nil,
         release: DispatchSemaphore? = nil,
+        blockOnProcessCall: Int = 1,
         visualDelayNs: UInt64 = 20_000_000
     ) -> KeyboardController {
         let controller = KeyboardController()
@@ -160,7 +193,11 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         controller.isThreadAffineRimeOwnerEnabled = true
         controller.provisionalVisualPaintDelayNanoseconds = visualDelayNs
         controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
-            DigitBootstrap(processEntered: entered, releaseFirst: release)
+            DigitBootstrap(
+                processEntered: entered,
+                releaseFirst: release,
+                blockOnProcessCall: blockOnProcessCall
+            )
         )
         controller.rebuildResponsiveRimeCoordinatorIfNeeded()
         return controller
@@ -196,9 +233,10 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         XCTAssertEqual(controller.responsiveProvisionalSlotCount, n)
         try? await Task.sleep(nanoseconds: 35_000_000)
 
-        // Progressive L1: structure-only dots while owner blocked.
+        // Progressive L1: stable host prefix plus content-free dots while the
+        // owner is blocked.
         XCTAssertEqual(
-            controller.state.currentComposition,
+            controller.state.insertedPreeditText,
             String(repeating: "·", count: n)
         )
         XCTAssertGreaterThanOrEqual(
@@ -212,6 +250,21 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
             .insertCandidate("阿", kind: .candidate, selectionReference: nil)
         )
         XCTAssertTrue(selectEffects.isEmpty)
+        XCTAssertTrue(controller.handle(.candidatePageDown).isEmpty)
+        XCTAssertTrue(controller.handle(.cycleT9PinyinPath).isEmpty)
+        XCTAssertTrue(controller.handle(.insertSpace).isEmpty)
+        XCTAssertTrue(
+            controller.handle(
+                .insertCorrectionCandidate(
+                    TypoCorrectionCommit(
+                        committedText: "阿",
+                        originalInput: "2",
+                        correctedInput: "2",
+                        edits: []
+                    )
+                )
+            ).isEmpty
+        )
         XCTAssertTrue(controller.isResponsiveProvisionalAhead)
 
         release.signal()
@@ -225,6 +278,80 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
             controller.state.currentComposition.contains("·"),
             "L2 must atomically replace L1 dots"
         )
+        controller.suspendRimeForVisibilityChange()
+    }
+
+    /// P2 回归矩阵：L1 领先时，所有绑定候选/Path 快照的入口都必须
+    /// fail closed；它们不能调用 RIME、改变 Core 状态，或重绘宿主文本。
+    func testDualGateStaleActionMatrixFailsClosedWithoutStateMutation() async {
+        let entered = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
+        let client = FakeTextInputClient()
+        let controller = makeDualGateController(
+            entered: entered,
+            release: release,
+            visualDelayNs: 20_000_000
+        )
+        controller.textClient = client
+
+        for _ in 0..<4 {
+            _ = controller.handle(.insertKey("2"))
+        }
+        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+        try? await Task.sleep(nanoseconds: 35_000_000)
+        XCTAssertTrue(controller.isResponsiveProvisionalAhead)
+
+        // Keep a Partial Commit checkpoint alive to cover the same guard when
+        // candidate taps would otherwise enter the restore/selection branch.
+        controller.state.partialCommit = PartialCommitState(
+            confirmedText: "已",
+            remainingRawInput: "2",
+            remainingPreeditText: "a",
+            displayText: "已a"
+        )
+        let stateBeforeActions = controller.state
+        let historyBeforeActions = client.markedTextHistory
+        let path = T9PinyinPath(
+            displayText: "ni",
+            replacementRawInput: "ni"
+        )
+        let correction = TypoCorrectionCommit(
+            committedText: "你",
+            originalInput: "22",
+            correctedInput: "22",
+            edits: []
+        )
+        let staleActions: [KeyboardAction] = [
+            .insertCandidate("你", kind: .candidate),
+            .insertCandidate("ni", kind: .composition),
+            .insertCandidate("输入拼音", kind: .placeholder),
+            .insertCandidate("你", kind: .correctionCandidate),
+            .insertCandidate("你", kind: .continuationCandidate),
+            .insertCorrectionCandidate(correction),
+            .candidatePageUp,
+            .candidatePageDown,
+            .selectT9PinyinPath(path),
+            .cycleT9PinyinPath,
+            .insertSpace,
+        ]
+
+        for action in staleActions {
+            XCTAssertTrue(
+                controller.handle(action).isEmpty,
+                "stale action must be rejected: \(action)"
+            )
+        }
+
+        XCTAssertEqual(controller.state, stateBeforeActions)
+        XCTAssertEqual(
+            client.markedTextHistory,
+            historyBeforeActions,
+            "stale actions must not cause another host marked-text write"
+        )
+
+        release.signal()
+        controller.threadAffineRimeCoordinator?.flushPending()
+        try? await Task.sleep(nanoseconds: 100_000_000)
         controller.suspendRimeForVisibilityChange()
     }
 
@@ -251,6 +378,203 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         controller.suspendRimeForVisibilityChange()
     }
 
+    /// Amendment B regression: after a settled engine result, a slow next key
+    /// appends only its pending slot dots to the stable host marked text.
+    func testSettledEngineThenBlockedKeyAppendsDotsToStablePreedit() async {
+        let entered = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
+        let client = FakeTextInputClient()
+        let controller = makeDualGateController(
+            entered: entered,
+            release: release,
+            blockOnProcessCall: 2
+        )
+        controller.textClient = client
+
+        let firstL2 = expectation(description: "first-l2")
+        controller.onResponsivePresentationNeeded = { [weak controller] _ in
+            guard let controller else { return }
+            if controller.threadAffineRimeCoordinator?.lastPublished?.revision == 1,
+               !controller.isResponsiveProvisionalAhead
+            {
+                firstL2.fulfill()
+            }
+        }
+        _ = controller.handle(.insertKey("2"))
+        await fulfillment(of: [firstL2], timeout: 2)
+        let settledMarkedText = client.markedText
+        XCTAssertFalse(settledMarkedText.isEmpty)
+
+        let historyBeforeSlowKey = client.markedTextHistory
+        XCTAssertEqual(historyBeforeSlowKey, [settledMarkedText])
+
+        let finalL2 = expectation(description: "second-l2")
+        controller.onResponsivePresentationNeeded = { [weak controller] _ in
+            guard let controller else { return }
+            if controller.threadAffineRimeCoordinator?.lastPublished?.revision == 2,
+               !controller.isResponsiveProvisionalAhead
+            {
+                finalL2.fulfill()
+            }
+        }
+        _ = controller.handle(.insertKey("2"))
+        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+
+        // The second owner call is blocked. Let the deferred L1 visual fire.
+        try? await Task.sleep(nanoseconds: 35_000_000)
+        XCTAssertEqual(client.markedText, settledMarkedText + "·")
+        XCTAssertEqual(
+            Array(client.markedTextHistory.suffix(1)),
+            [settledMarkedText + "·"],
+            "L1 appends pending dots to the stable host marked text"
+        )
+        XCTAssertFalse(client.markedText.contains(where: \.isNumber))
+
+        release.signal()
+        controller.threadAffineRimeCoordinator?.flushPending()
+        await fulfillment(of: [finalL2], timeout: 2)
+
+        let finalMarkedText = client.markedText
+        XCTAssertFalse(finalMarkedText.isEmpty)
+        XCTAssertNotEqual(finalMarkedText, "·")
+        XCTAssertEqual(client.markedTextHistory.count, 3)
+        XCTAssertEqual(client.markedTextHistory[0], settledMarkedText)
+        XCTAssertEqual(client.markedTextHistory[1], settledMarkedText + "·")
+        XCTAssertEqual(client.markedTextHistory[2], finalMarkedText)
+        XCTAssertFalse(client.markedText.contains("·"))
+        XCTAssertFalse(finalMarkedText.contains(where: \.isNumber))
+        controller.onResponsivePresentationNeeded = nil
+        controller.suspendRimeForVisibilityChange()
+    }
+
+    /// P2 回归矩阵：L1 只更新 host preedit 的视觉影子；已发布的候选、Path
+    /// 和 RIME 输出快照必须保持稳定，避免候选栏在等待期间闪回旧状态。
+    func testDeferredL1LeavesSettledChromeSnapshotUntouched() async {
+        let entered = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
+        let client = FakeTextInputClient()
+        let controller = makeDualGateController(
+            entered: entered,
+            release: release,
+            blockOnProcessCall: 2
+        )
+        controller.textClient = client
+
+        let firstL2 = expectation(description: "chrome-first-l2")
+        var presentationCount = 0
+        controller.onResponsivePresentationNeeded = { [weak controller] _ in
+            presentationCount += 1
+            guard let controller else { return }
+            if controller.threadAffineRimeCoordinator?.lastPublished?.revision == 1,
+               !controller.isResponsiveProvisionalAhead
+            {
+                firstL2.fulfill()
+            }
+        }
+        _ = controller.handle(.insertKey("2"))
+        await fulfillment(of: [firstL2], timeout: 2)
+
+        let settledOutput = controller.state.lastRimeOutput
+        let settledPaths = controller.state.t9PinyinPathState
+        let settledPartialCommit = controller.state.partialCommit
+        let settledTypoCorrection = controller.state.typoCorrection
+        let settledMarkedText = client.markedText
+        let presentationCountBeforeSecondKey = presentationCount
+
+        _ = controller.handle(.insertKey("2"))
+        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+        try? await Task.sleep(nanoseconds: 35_000_000)
+
+        XCTAssertEqual(controller.state.lastRimeOutput, settledOutput)
+        XCTAssertEqual(controller.state.t9PinyinPathState, settledPaths)
+        XCTAssertEqual(controller.state.partialCommit, settledPartialCommit)
+        XCTAssertEqual(controller.state.typoCorrection, settledTypoCorrection)
+        XCTAssertEqual(
+            presentationCount,
+            presentationCountBeforeSecondKey,
+            "L1 must not notify Extension chrome"
+        )
+        XCTAssertEqual(client.markedText, settledMarkedText + "·")
+
+        release.signal()
+        controller.threadAffineRimeCoordinator?.flushPending()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        controller.onResponsivePresentationNeeded = nil
+        controller.suspendRimeForVisibilityChange()
+    }
+
+    /// The fast-owner path must not leave a transient placeholder in the host
+    /// history, not merely remove it from the final state.
+    func testFastEngineDoesNotWriteTransientProvisionalMarkedText() async {
+        let client = FakeTextInputClient()
+        let controller = makeDualGateController(visualDelayNs: 80_000_000)
+        controller.textClient = client
+
+        for _ in 0..<4 {
+            _ = controller.handle(.insertKey("2"))
+        }
+        controller.threadAffineRimeCoordinator?.flushPending()
+        try? await Task.sleep(nanoseconds: 100_000_000)
+
+        XCTAssertFalse(
+            client.markedTextHistory.contains("·"),
+            "a fast L2 result must cancel L1 before it writes host marked text"
+        )
+        XCTAssertTrue(
+            client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) },
+            "the host history must never contain internal T9 digits"
+        )
+        controller.suspendRimeForVisibilityChange()
+    }
+
+    /// P1-D2 regression: an ordered Delete updates the stable shadow before
+    /// the bridge's asynchronous publish callback reaches MainActor.
+    func testOrderedDeleteRefreshesStableShadowBeforeNextPendingKey() async {
+        let entered = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
+        let client = FakeTextInputClient()
+        let controller = makeDualGateController(
+            entered: entered,
+            release: release,
+            blockOnProcessCall: 2
+        )
+        controller.textClient = client
+
+        let firstL2 = expectation(description: "first-l2-before-delete")
+        controller.onResponsivePresentationNeeded = { [weak controller] _ in
+            guard let controller else { return }
+            if controller.threadAffineRimeCoordinator?.lastPublished?.revision == 1,
+               !controller.isResponsiveProvisionalAhead
+            {
+                firstL2.fulfill()
+            }
+        }
+        _ = controller.handle(.insertKey("2"))
+        await fulfillment(of: [firstL2], timeout: 2)
+
+        _ = controller.handle(.deleteBackward)
+        controller.threadAffineRimeCoordinator?.flushPending()
+        try? await Task.sleep(nanoseconds: 40_000_000)
+        let stableAfterDelete = client.markedText
+        XCTAssertFalse(stableAfterDelete.contains("·"))
+
+        _ = controller.handle(.insertKey("2"))
+        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+        try? await Task.sleep(nanoseconds: 35_000_000)
+
+        XCTAssertEqual(
+            client.markedText,
+            stableAfterDelete + "·",
+            "next L1 must use the ordered Delete snapshot, not the old prefix"
+        )
+
+        release.signal()
+        controller.threadAffineRimeCoordinator?.flushPending()
+        try? await Task.sleep(nanoseconds: 80_000_000)
+        controller.onResponsivePresentationNeeded = nil
+        controller.suspendRimeForVisibilityChange()
+    }
+
     func testAbandonClearsL1() async {
         let entered = DispatchSemaphore(value: 0)
         let release = DispatchSemaphore(value: 0)
@@ -265,6 +589,60 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         XCTAssertEqual(controller.state.currentComposition, "")
         release.signal()
         controller.threadAffineRimeCoordinator?.flushPending()
+        controller.suspendRimeForVisibilityChange()
+    }
+
+    /// P2 回归矩阵：visibility abandon 提升 epoch 后，任何已排队的旧 L1/L2
+    /// 结果都不能再次写回宿主 marked text。这里同时检查最终状态和写入历史，
+    /// 防止“最后状态看起来正确、但中途曾把旧占位符写回宿主”的回归。
+    func testAbandonEpochDropsDeferredHostWritesAndStaleResult() async {
+        let entered = DispatchSemaphore(value: 0)
+        let release = DispatchSemaphore(value: 0)
+        let client = FakeTextInputClient()
+        let controller = makeDualGateController(
+            entered: entered,
+            release: release,
+            visualDelayNs: 20_000_000
+        )
+        controller.textClient = client
+
+        for _ in 0..<4 {
+            _ = controller.handle(.insertKey("2"))
+        }
+        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+        try? await Task.sleep(nanoseconds: 35_000_000)
+        XCTAssertTrue(client.markedText.contains("·"))
+
+        let epochBeforeAbandon = controller.threadAffineRimeCoordinator?.diagnostics.sessionEpoch ?? 0
+        _ = controller.abandonCompositionForVisibilityChange()
+        let epochAfterAbandon = controller.threadAffineRimeCoordinator?.diagnostics.sessionEpoch ?? 0
+        XCTAssertGreaterThan(epochAfterAbandon, epochBeforeAbandon)
+        XCTAssertFalse(controller.isResponsiveProvisionalAhead)
+        XCTAssertEqual(controller.state.insertedPreeditText, "")
+        XCTAssertFalse(client.markedText.contains("·"))
+
+        let historyStartAfterAbandon = client.markedTextHistory.count
+        release.signal()
+        controller.threadAffineRimeCoordinator?.flushPending()
+        try? await Task.sleep(nanoseconds: 150_000_000)
+
+        let postAbandonHistory = client.markedTextHistory.dropFirst(historyStartAfterAbandon)
+        XCTAssertEqual(
+            client.markedTextHistory.count,
+            historyStartAfterAbandon,
+            "old epoch must not perform any host marked-text write after abandon"
+        )
+        XCTAssertTrue(
+            postAbandonHistory.isEmpty,
+            "the post-abandon history slice must remain empty"
+        )
+        XCTAssertFalse(client.markedText.contains("·"))
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertGreaterThanOrEqual(
+            controller.threadAffineRimeCoordinator?.diagnostics.skippedStaleEpochCount ?? 0,
+            1,
+            "the blocked old-epoch work must be discarded or purged"
+        )
         controller.suspendRimeForVisibilityChange()
     }
 
@@ -298,8 +676,17 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         }
         XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
         XCTAssertTrue(controller.isResponsiveProvisionalAhead)
-        try? await Task.sleep(nanoseconds: 35_000_000)
-        XCTAssertEqual(controller.state.currentComposition, "·····")
+        // The visual task is MainActor-bound. Under the full suite, unrelated
+        // MainActor work can delay it beyond the nominal 20 ms test delay;
+        // poll with a bounded timeout instead of turning scheduler jitter into
+        // a false failure.
+        let deadline = DispatchTime.now().uptimeNanoseconds + 2_000_000_000
+        while controller.state.insertedPreeditText != "·····",
+              DispatchTime.now().uptimeNanoseconds < deadline
+        {
+            try? await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertEqual(controller.state.insertedPreeditText, "·····")
         release.signal()
         controller.threadAffineRimeCoordinator?.flushPending()
         let settle = expectation(description: "coalesce-l1-settle")
@@ -326,7 +713,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         let notifiesBeforeVisual = presentationNotifies
         try? await Task.sleep(nanoseconds: 40_000_000)
         XCTAssertEqual(
-            controller.state.currentComposition,
+            controller.state.insertedPreeditText,
             "·····",
             "L1 dots still update Core/host preedit"
         )

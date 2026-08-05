@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - Rem-3 provisional L1 (structure-only)
+// MARK: - Rem-3 provisional L1 (visual shadow anchor)
 
 /// Content-free skip reasons for dual-gate provisional composition (closed set).
 public enum ResponsiveProvisionalL1SkipReason: String, Sendable, Equatable {
@@ -14,24 +14,35 @@ public enum ResponsiveProvisionalL1SkipReason: String, Sendable, Equatable {
 /// Host-visible provisional presentation (never digits / Chinese / pinyin).
 public struct ResponsiveProvisionalPresentation: Sendable, Equatable {
     public let preedit: String
+    /// The last host-visible L2 marked text retained as the visual shadow prefix.
+    /// This is presentation-only and never becomes RIME input authority.
+    public let stablePreedit: String
     public let slotCount: Int
     public let sessionEpoch: UInt64
     /// Highest accept revision covered by the ledger (watermark floor for L2).
     public let watermark: UInt64
 
-    public init(preedit: String, slotCount: Int, sessionEpoch: UInt64, watermark: UInt64) {
+    public init(
+        preedit: String,
+        slotCount: Int,
+        sessionEpoch: UInt64,
+        watermark: UInt64,
+        stablePreedit: String = ""
+    ) {
         self.preedit = preedit
+        self.stablePreedit = stablePreedit
         self.slotCount = slotCount
         self.sessionEpoch = sessionEpoch
         self.watermark = watermark
     }
 }
 
-/// Pure builder + MainActor-owned mirror for dual-gate L1 (design Amendment A).
+/// Pure builder + MainActor-owned mirror for dual-gate L1 (Amendment B).
 ///
-/// v1 host string is U+00B7 MIDDLE DOT repeated per accepted T9 digit slot.
+/// The host string is the last stable L2 marked text followed by U+00B7 MIDDLE
+/// DOT repeated per accepted T9 digit slot still pending at L1.
 public enum ResponsiveProvisionalComposition: Sendable {
-    /// Fixed structure-only placeholder (not a digit, not a pinyin letter).
+    /// Fixed content-free placeholder (not a digit, not a pinyin letter).
     public static let placeholderScalar: Character = "\u{00B7}"
 
     /// Default Rem-3-Polish delay before L1 visual paint (not a product SLO).
@@ -45,19 +56,21 @@ public enum ResponsiveProvisionalComposition: Sendable {
         return scalar.value >= 48 && scalar.value <= 57
     }
 
-    /// Build `·`×N or nil when N == 0.
+    /// Build `stablePreedit + (·×N)` or nil when N == 0.
     public static func presentation(
         slotCount: Int,
         sessionEpoch: UInt64,
-        watermark: UInt64
+        watermark: UInt64,
+        stablePreedit: String = ""
     ) -> ResponsiveProvisionalPresentation? {
         guard slotCount > 0 else { return nil }
-        let preedit = String(repeating: String(placeholderScalar), count: slotCount)
+        let pendingDots = String(repeating: String(placeholderScalar), count: slotCount)
         return ResponsiveProvisionalPresentation(
-            preedit: preedit,
+            preedit: stablePreedit + pendingDots,
             slotCount: slotCount,
             sessionEpoch: sessionEpoch,
-            watermark: watermark
+            watermark: watermark,
+            stablePreedit: stablePreedit
         )
     }
 
@@ -72,6 +85,8 @@ public struct ResponsiveProvisionalCompositionMirror: Sendable, Equatable {
     public private(set) var sessionEpoch: UInt64 = 0
     public private(set) var slotCount: Int = 0
     public private(set) var watermark: UInt64 = 0
+    /// Last host-visible L2 marked text. Cleared only by an epoch/reset barrier.
+    public private(set) var stablePreedit: String = ""
     public private(set) var isActive: Bool = false
 
     public init() {}
@@ -85,7 +100,25 @@ public struct ResponsiveProvisionalCompositionMirror: Sendable, Equatable {
         sessionEpoch = 0
         slotCount = 0
         watermark = 0
+        stablePreedit = ""
         isActive = false
+    }
+
+    /// Clear pending L1 slots while retaining the last stable L2 display.
+    /// Called when a live engine snapshot is about to replace the shadow.
+    public mutating func clearPending() {
+        sessionEpoch = 0
+        slotCount = 0
+        watermark = 0
+        isActive = false
+    }
+
+    /// Record the latest host-visible L2 marked text. A placeholder is never a
+    /// stable anchor; fail closed rather than stacking provisional dots.
+    public mutating func setStablePreedit(_ preedit: String) {
+        stablePreedit = preedit.contains(ResponsiveProvisionalComposition.placeholderScalar)
+            ? ""
+            : preedit
     }
 
     /// Append one T9 digit accept. Returns skip reason if not applicable.
@@ -105,11 +138,12 @@ public struct ResponsiveProvisionalCompositionMirror: Sendable, Equatable {
         return nil
     }
 
-    /// Clear L1 after a live L2 apply (atomic replace).
+    /// Clear pending L1 after a live L2 apply (atomic replace), retaining the
+    /// stable prefix until the controller records the new host snapshot.
     public mutating func alignToEngineApply(epoch: UInt64, revision: UInt64) {
         _ = epoch
         _ = revision
-        clear()
+        clearPending()
     }
 
     public func makePresentation() -> ResponsiveProvisionalPresentation? {
@@ -117,7 +151,8 @@ public struct ResponsiveProvisionalCompositionMirror: Sendable, Equatable {
         return ResponsiveProvisionalComposition.presentation(
             slotCount: slotCount,
             sessionEpoch: sessionEpoch,
-            watermark: watermark
+            watermark: watermark,
+            stablePreedit: stablePreedit
         )
     }
 }

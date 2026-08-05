@@ -1,0 +1,29 @@
+{
+  "bindingSHA256": "834dea5422e305c9a5a48f1667207b06eda897c723994b10faacae63d572dade",
+  "expectedArtifactManifestSHA256": "a963adae8a622632c601439261988189e9158fe270dfaac79340a76efcc83e64",
+  "freshToken": "81F307E9-B63C-4AAE-B0F5-B4366E997BBC",
+  "manifestSHA256": "3413e323a9656231c0fabcf8ae873cbbaa730cdb0baff2d61b035a1ad92fce98",
+  "reviews": [
+    {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0,
+      "reviewer": "/root/canary_arch_review",
+      "role": "Architecture",
+      "verdict": "approve"
+    },
+    {
+      "P0": 0,
+      "P1": 0,
+      "P2": 2,
+      "reviewer": "/root/canary_quality_review",
+      "role": "Quality",
+      "verdict": "approve"
+    }
+  ],
+  "runHeaderSHA256": "310d1d329a44fdedaf2bb08270ae33434d831520eb9e4858dec430b3d5899f58",
+  "runID": "CANARY001V9-20260804-002",
+  "schema": "CANARY-001-QEF-PRE-RUN-APPROVAL-v9",
+  "state": "approved",
+  "toolSHA256": "596f873f23d43705e3e00184783378ff08eeb1908c4be4108df3663a4309c7ee"
+}

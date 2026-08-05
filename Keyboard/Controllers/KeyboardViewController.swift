@@ -82,6 +82,39 @@ class KeyboardViewController: UIInputViewController {
     /// 状态机核心，处理所有按键逻辑（纯逻辑，无 UI 依赖）
     var controller: KeyboardController!
 
+    #if T9_RESPONSIVE_CANARY_INTERNAL
+    /// Unique MainActor mode authority for the internal CANARY-001 artifact.
+    /// Ordinary Release does not compile this storage or its call sites.
+    let responsiveCanaryModeCoordinator = ResponsiveRimeCanaryModeCoordinator()
+    var responsiveCanaryRunID = ""
+    var responsiveCanaryExpiryTimer: Timer?
+    var responsiveCanaryConfigurationMonitor: Timer?
+    /// Defers fail-closed state mutation until visibility teardown has had an
+    /// unconditional chance to destroy the live owner.
+    var responsiveCanaryVisibilityContractFailure = false
+    #endif
+
+    #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+    /// Host-driven P3-D1 evidence identity. The runner may provide a short
+    /// token; otherwise each controller process receives a unique fallback.
+    /// It is diagnostic metadata only and never contains document content.
+    var p3d1LifecycleRunID: String = {
+        let raw = ProcessInfo.processInfo.environment["P3_D1_T02_T03_RUN_ID"]
+            ?? "P3D1-T02-T03-\(UUID().uuidString)"
+        let sanitized = raw.unicodeScalars.filter {
+            CharacterSet.alphanumerics.contains($0)
+                || $0 == "-"
+                || $0 == "_"
+        }
+        let value = String(String.UnicodeScalarView(sanitized))
+        return String(value.prefix(96))
+    }()
+    var p3d1LifecycleLastCleared = false
+    var p3d1LifecycleLastReturnClean = false
+    var p3d1LifecycleAppliedCount = 0
+    var p3d1LifecycleDiagnosticElement: UIView?
+    #endif
+
     // MARK: - 删除自动重复
 
     /// 长按删除的计时器生命周期由专用协调器单独持有。
@@ -266,13 +299,37 @@ class KeyboardViewController: UIInputViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         Logger.shared.resumePersistenceForExtensionLifecycle()
+        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+        p3d1RecordLifecycleMarker("APPEAR_BEGIN", reason: "viewWillAppear")
+        #endif
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         // iOS may reuse an Extension selected before the main App prepared the
         // arm. Consume a different fresh token when visibility returns instead
         // of requiring a new viewDidLoad or process.
         _ = consumeFreshPreparedDevicePreflightRunIfAvailable()
         #endif
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+        let canaryResumeRequested = responsiveCanaryModeCoordinator.beginVisibilityResume()
+        #endif
         controller.resumeRimeAfterVisibilityChange()
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+        if canaryResumeRequested {
+            if controller.threadAffineRimeCoordinator?.isOwnerReady == true,
+                let sessionInstance = responsiveCanaryModeCoordinator.markCanaryReady()
+            {
+                controller.activateResponsiveCanarySessionInstance(
+                    runID: responsiveCanaryRunID,
+                    modeGeneration: responsiveCanaryModeCoordinator.modeGeneration,
+                    sessionInstance: sessionInstance
+                )
+                controller.resumeResponsiveCanaryPresentationAfterOwnerReady()
+                startResponsiveCanaryConfigurationMonitor()
+            } else {
+                responsiveCanaryModeCoordinator.failClosed("visibilityResumeNotReady")
+            }
+        }
+        applyResponsiveCanaryKillSwitchIfNeeded()
+        #endif
         // Resume may fail-close T9 → 26-key; apply before chrome is built/shown.
         // Unwrap responsive bridge so chrome still sees RimeEngineImpl (R3).
         if let engine = controller.underlyingRimeEngine as? RimeEngineImpl {
@@ -280,6 +337,9 @@ class KeyboardViewController: UIInputViewController {
         }
         startRimeSyncActivityHeartbeat()
         installKeyboardUIIfNeeded()
+        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+        p3d1RecordLifecycleMarker("APPEAR", reason: "viewWillAppear")
+        #endif
     }
 
     /// viewDidAppear 在键盘视图对用户可见时调用。
@@ -289,11 +349,20 @@ class KeyboardViewController: UIInputViewController {
         super.viewDidAppear(animated)
         activateRimeRuntimeAfterKeyboardPresentation()
         handleKeyboardDidAppear()
+        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+        p3d1RecordLifecycleMarker("APPEAR_VISIBLE", reason: "viewDidAppear")
+        #endif
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+        p3d1RecordLifecycleMarker("DISAPPEAR_BEGIN", reason: "viewWillDisappear")
+        #endif
         suspendKeyboardRuntime(reason: "viewWillDisappear", updateUI: true)
+        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+        p3d1RecordLifecycleMarker("DISAPPEAR", reason: "viewWillDisappear", cleared: true)
+        #endif
     }
 
     /// Releases every resource that could cross the extension suspension boundary.
@@ -301,7 +370,51 @@ class KeyboardViewController: UIInputViewController {
     /// diagnostic persistence is disabled last so no delayed App Group write survives.
     func suspendKeyboardRuntime(reason: String, updateUI: Bool) {
         stopRimeSyncActivityHeartbeat()
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+        responsiveCanaryConfigurationMonitor?.invalidate()
+        responsiveCanaryConfigurationMonitor = nil
+        let canaryVisibilityExit = responsiveCanaryModeCoordinator.beginVisibilityExit()
+        if canaryVisibilityExit {
+            responsiveCanaryVisibilityContractFailure = false
+            controller.beginResponsiveCanaryPresentationFence()
+        }
+        let mustKeepFencedOwner = {
+            switch responsiveCanaryModeCoordinator.state {
+            case .fenceIssued:
+                return controller.threadAffineRimeCoordinator != nil
+            default:
+                return false
+            }
+        }()
+        #endif
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+        if !mustKeepFencedOwner {
+            controller.suspendRimeForVisibilityChange()
+            if canaryVisibilityExit {
+                controller.finalizeResponsiveCanaryFencedPresentations()
+            }
+        }
+        #else
         controller.suspendRimeForVisibilityChange()
+        #endif
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+        if canaryVisibilityExit {
+            let teardown = controller.lastResponsiveCanaryVisibilityTeardown
+            let receiptsValid = teardown.map {
+                responsiveCanaryModeCoordinator.recordVisibilityAbandonments(
+                    $0.abandonedReceipts
+                )
+            } ?? false
+            responsiveCanaryModeCoordinator.completeVisibilityExit(
+                teardownPositive: receiptsValid && teardown?.isPositive == true
+            )
+            if responsiveCanaryVisibilityContractFailure {
+                responsiveCanaryModeCoordinator.failClosed(
+                    "visibilityPresentationContractFailure"
+                )
+            }
+        }
+        #endif
 
         let effects = cleanupTransientKeyboardState(
             reason: reason,
@@ -314,6 +427,9 @@ class KeyboardViewController: UIInputViewController {
             "\(reason): runtime released before extension suspension, bounds=\(view.bounds)",
             category: .display
         )
+        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
+        p3d1RecordLifecycleMarker("SUSPEND_RELEASE", reason: reason, cleared: true)
+        #endif
         Logger.shared.suspendPersistenceForExtensionLifecycle()
     }
 
@@ -372,6 +488,12 @@ class KeyboardViewController: UIInputViewController {
         }
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         recordDevicePreflightPreparedGeometryIfPossible()
+        // Capture execution geometry from the first complete visible T9 layout
+        // when UIKit finishes a reload. This is still before the first key and
+        // avoids treating a transient pre-layout pass as a permanent failure.
+        if devicePreflightPreparedGeometryDigest != nil {
+            recordDevicePreflightExecutionGeometryBeforeFirstT9Key()
+        }
         #endif
     }
 

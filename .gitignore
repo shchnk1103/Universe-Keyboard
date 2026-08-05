@@ -48,9 +48,15 @@ Packages/RimeBridge/TestTool/test_rime
 *.swp
 *.swo
 *~
+__pycache__/
+*.pyc
 
-# Local evidence artifacts (environment captures, benchmarks)
-evidence/
+# Local evidence artifacts (environment captures, benchmarks) — root-only;
+# docs/evidence/ is tracked repository evidence and must NOT be ignored.
+/evidence/
+
+# Local XcodeBuild MCP session config (machine-specific paths)
+.xcodebuildmcp/
 
 # Local comparison screenshots (not product evidence)
 photos/

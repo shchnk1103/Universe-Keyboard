@@ -2,6 +2,58 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-03 — P3-D1-T02/T03 Product Hold（default-off）
+
+- T02/T03 lifecycle harness implementation and independent Architecture/Quality
+  re-reviews are recorded; Wire 10/0、evidence validator 6/0、KeyboardCore
+  full 901/0。
+- Simulator host 未提供可证明的系统键盘激活边界，T02/T03 保持
+  `Blocked (host accessibility)`；Human Product Owner 选择 Option 1 暂缓，
+  不追加代码、测试或设备运行。
+- 该 Hold 不代表 ADR 0025 Accept、Release default-on、Product Gate、真实
+  RIME 或真机生命周期通过；重新打开需要新的 Product Assignment。
+
+## 2026-08-01 — P2 Core 回归矩阵（default-off）
+
+- 新增 L1 `provisionalAhead` 下候选/纠错/翻页/Path/Space 的 fail-closed 矩阵，
+  同时覆盖 Partial Commit checkpoint 不被 stale action 改写。
+- 新增 settled stale-chrome 快照和 epoch/abandon `markedTextHistory` 回归，
+  证明旧 L1/L2 结果不会在 abandon 后再次写入宿主。
+- Focused ResponsiveProvisional **19/0**，KeyboardCore 全量 **861/0**；RIME
+  vendor verify 与 `git diff --check` 通过。
+- Independent Architecture/Quality re-reviews are **Pass with conditions**; P2-EPC
+  history-count/empty assertion is closed only at bounded Core/Fake-host scope.
+- UIKit Extension prefetch、真实 librime/真机主观延迟、jetsam、Release 与
+  Product Gate 仍未验证；dual-gate 继续 default-off。
+
+## 2026-08-01 — T9 P1-D2 Amendment B bounded slice（default-off）
+
+- Product-selected stable shadow now presents the latest host-visible L2 marked
+  text plus pending `·` slots; stale Candidate/Path chrome remains stable while
+  candidate, correction, paging, Path and Space interactions fail closed.
+- Candidate prefetch no longer reaches the thread-affine `candidateWindow` while
+  the visual shadow is ahead. Ordered Delete/restore and all shared engine-output
+  host exits refresh the stable prefix at one MainActor completion boundary.
+- Final focused KeyboardCore tests **16/0**, full **858/0**; vendor structural
+  verification and `git diff --check` pass.
+- Independent Architecture and Quality final reviews are **Pass with conditions**
+  for this bounded slice (P0/P1 = 0/0; four P2 evidence debts remain). This does
+  not authorize ADR 0025 Accept, R6, Product Gate, Release default-on, or a
+  subjective non-stutter claim.
+
+## 2026-08-01 — T9 Rem-3 Polish-2 direction evidence（default-off）
+
+- Polish-2 device re-pair on iPhone 13 Pro directionally retained key-follow and
+  reduced Candidate/Path chrome flicker; the evidence is not Product Gate or
+  Release evidence.
+- Current-tip independent Architecture/Quality review on `80ef54b` is **Pass with
+  conditions**; Quality ran focused 22/0 and full KeyboardCore 854/0.
+- P1-D2 remains open: stable stale Candidate/Path chrome differs from the frozen
+  disabled/cleared affordance contract. Product/Architecture Amendment or a narrow
+  implementation correction is required before engineering close.
+- Dual-gate remains default-off; Formal R5 FAIL, ADR 0025 Proposed and all
+  Product Gate/default-on non-claims remain unchanged.
+
 ## 2026-07-31 — T9 响应式 RIME 管线（default-off）合入 main
 
 - 将 `T9-RESPONSIVE-PIPELINE-001` 已验证栈经堆叠 PR

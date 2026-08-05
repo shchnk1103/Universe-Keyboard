@@ -4,11 +4,10 @@ extension KeyboardController {
         kind: CandidateKind,
         selectionReference: CandidateSelectionReference? = nil
     ) -> KeyboardEffect {
-        // Rem-3: no selection against provisional L1 / stale L2 while ahead.
-        if kind == .candidate || kind == .composition {
-            if rejectIfResponsiveProvisionalAhead() {
-                return []
-            }
+        // Amendment B: every candidate-like affordance is stale while the
+        // visual shadow is ahead, including continuation items.
+        if rejectIfResponsiveProvisionalAhead() {
+            return []
         }
         switch kind {
         case .placeholder, .correctionCandidate:
@@ -95,6 +94,11 @@ extension KeyboardController {
     }
 
     func handleInsertCorrectionCandidate(_ correction: TypoCorrectionCommit) -> KeyboardEffect {
+        // Amendment B: stale correction UI is visible but never authoritative
+        // while the visual shadow is ahead of the engine snapshot.
+        if rejectIfResponsiveProvisionalAhead() {
+            return []
+        }
         if TypoCorrectionLearningKey(correction: correction) != nil {
             onTypoCorrectionSelected?(correction)
         }
@@ -114,11 +118,17 @@ extension KeyboardController {
     }
 
     func handleCandidatePageUp() -> KeyboardEffect {
+        if rejectIfResponsiveProvisionalAhead() {
+            return []
+        }
         guard let engine = rimeEngine else { return [] }
         return applyPagedCandidateOutput(engine.pageUp())
     }
 
     func handleCandidatePageDown() -> KeyboardEffect {
+        if rejectIfResponsiveProvisionalAhead() {
+            return []
+        }
         guard let engine = rimeEngine else { return [] }
         return applyPagedCandidateOutput(engine.pageDown())
     }
