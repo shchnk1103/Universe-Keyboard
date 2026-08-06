@@ -3,13 +3,26 @@
 Policy version: 1.0.0
 
 **Task ID:** `KOS-2.1-OPS-001`  
-**Lifecycle status:** `Active — design draft published; Architecture Pass with conditions; Product Review disposition pending`  
+## Current Status
+
+| Field | Value |
+|---|---|
+| **Lifecycle** | `Closed` — design Accepted (Must); IMPL published ops package |
+| **Phase** | Complete |
+| **Non-claims** | Not 2.1 frozen replacement of 2.0; not Migration |
+| **Next** | None — use [`KOS-2.1-OPS-IMPL-001`](kos-2.1-ops-impl-001.md) / ops package |
+| **Residuals** | S-01 deferred (`accept` for design scope); Arch conditions satisfied in IMPL |
+
+---
+
+**Lifecycle status:** `Reviewed — Product Accept Must; IMPL in progress`  
 **Date / timezone:** `2026-08-06 Asia/Shanghai`  
 **Classification:** `Level S — System Governance`  
 **Repository Change Type (this phase):** `Contract` (design publication only) +
 `Documentation` + `State` (navigation)  
 **Product Decision:**
-[`PD-KOS-2.1-OPS-001`](../product-decisions/KOS-2.1-OPS-001-authorization.md)  
+[`PD-KOS-2.1-OPS-001`](../product-decisions/KOS-2.1-OPS-001-authorization.md) ·
+[`disposition`](../product-decisions/KOS-2.1-OPS-001-design-disposition.md)  
 **Frozen SoT (unchanged by this phase):**
 [`docs/kos/knowledge-os-2.0-specification.md`](../kos/knowledge-os-2.0-specification.md)  
 **Predecessor (closed):** [`KOS-MIG-001`](kos-mig-001.md), [`DOC-HYGIENE-001`](doc-hygiene-001.md)
@@ -92,7 +105,9 @@ repository migration in this Assignment.
 - [x] Architecture review of design package recorded:
       [`kos-2.1-ops-001-architecture-review.md`](kos-2.1-ops-001-architecture-review.md)
       — **Pass with conditions** (0 P0 / 2 P1 / 3 P2 / 2 P3)  
-- [ ] Product Review disposition recorded (Accept design / Hold / Reject)  
+- [x] Product Review disposition recorded:
+      [`KOS-2.1-OPS-001-design-disposition.md`](../product-decisions/KOS-2.1-OPS-001-design-disposition.md)
+      — **Accept Must** (+ S-02/S-03 in IMPL; S-01 deferred)  
 - [x] Navigation State synced (bootstrap + Arch review link)  
 - [x] Explicit statement that 2.0 remains binding until a later Accept  
 
@@ -119,9 +134,6 @@ repository migration in this Assignment.
 
 ## Current phase
 
-**Active — Architecture review complete; awaiting Product Review disposition**  
-(2026-08-06).  
-
-Architecture recommendation: Accept design → implement **Must only** (bind
-A-P1-02, A-P2-01…03); defer **S-01** lightweight dual-review skip; no Migration;
-2.0 remains binding.  
+**Reviewed — Product Accept Must** (2026-08-06). Implementation continues under
+[`KOS-2.1-OPS-IMPL-001`](kos-2.1-ops-impl-001.md). This design Assignment may
+**Close** when IMPL Exit Criteria are met and Active Work is updated.  

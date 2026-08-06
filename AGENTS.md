@@ -17,8 +17,10 @@
 
 1. `AGENTS.md`
 2. `docs/KNOWLEDGE_INDEX.md`
-3. 按 `docs/READING_MAPS.md` 中的任务类型加载对应文档
-4. 涉及代码改动时再阅读 `docs/PROJECT_CONTEXT.md`
+3. `docs/ACTIVE_WORK.md`（当前 Active 工作项 ≤10；生命周期以 Assignment 为准）
+4. 按 `docs/READING_MAPS.md` 中的任务类型加载对应文档
+5. 涉及代码改动时再阅读 `docs/PROJECT_CONTEXT.md`
+6. 运营卫生规则见 `docs/kos/kos-2.1-operational-maturity.md`（不替代 KOS 2.0 冻结原则）
 
 `CONTEXT_INDEX.md` 保留为详细文档注册表，不再是新会话的第一导航入口。
 需要确定长期团队所有权、跨线程协作或永久线程 bootstrap 时，阅读 `docs/VIRTUAL_ENGINEERING_TEAM.md`。

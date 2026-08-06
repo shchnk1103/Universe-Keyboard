@@ -52,6 +52,31 @@ Start at [`KNOWLEDGE_INDEX.md`](KNOWLEDGE_INDEX.md). For zero-context AI entry, 
 
 If no reading map matches, use the glossary to identify the owning subsystem, then follow the documentation graph. A missing route is a Knowledge OS defect and should be added without copying domain content.
 
+## KOS 2.1 Operational Maturity
+
+Operational hygiene rules (Current Status, state sync, residual close, evidence
+grades, Active Work, stacked PRs) live in
+[`kos/kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md).
+They do **not** replace frozen Knowledge OS 2.0 principles.
+
+### State Sync Checklist (M-02)
+
+After Product Gate, ADR Accept, Assignment Close, or tip-PR merge that changes
+lifecycle language, confirm:
+
+1. Owning Assignment **Current Status**  
+2. Parent Assignment Current Status / material checkboxes  
+3. `ENGINEERING_DASHBOARD.md` Work Item row  
+4. `KNOWLEDGE_INDEX.md` if it embeds status language  
+5. Active plan Status line (if any)  
+6. [`ACTIVE_WORK.md`](ACTIVE_WORK.md) add / update / remove  
+
+### Active Work Summary (M-05)
+
+[`ACTIVE_WORK.md`](ACTIVE_WORK.md) lists at most **10** Active/Ready formal Work
+Items with links and Current Status fields only. Lifecycle SoT remains the
+Assignment Record.
+
 ## One Fact, One Owner
 
 Knowledge is linked, not mirrored. The owning document contains the full fact; upstream navigation documents name and link it. ADRs own rationale, architecture documents own current mechanics, operational documents own procedures, and the changelog owns dated events.

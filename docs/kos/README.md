@@ -38,15 +38,18 @@ If this directory conflicts with an applicable open Assignment, return to Produc
 
 Closed publication Assignments remain historical authority for their own deliverables; they do not authorize new redesign or domain migration by themselves.
 
-## Knowledge OS 2.1 (design only — not Accepted)
+## Knowledge OS 2.1 Operational Maturity (ops under 2.0)
 
 | Artifact | Role |
 |---|---|
-| [`PD-KOS-2.1-OPS-001`](../product-decisions/KOS-2.1-OPS-001-authorization.md) | Product authorization for design/review only |
-| [`KOS-2.1-OPS-001 Assignment`](../assignments/kos-2.1-ops-001.md) | Level S design Work Item |
-| [`kos-2.1-ops-design-draft.md`](kos-2.1-ops-design-draft.md) | Pain inventory + Must/Should/Could proposal (**draft**) |
+| [`kos-2.1-operational-maturity.md`](kos-2.1-operational-maturity.md) | **Published ops package** (M-01…M-05, S-02/S-03) |
+| [`ACTIVE_WORK.md`](../ACTIVE_WORK.md) | Active Work Summary (≤10); Assignment remains lifecycle SoT |
+| [`PD-KOS-2.1-OPS-IMPL-001`](../product-decisions/KOS-2.1-OPS-IMPL-001-authorization.md) | Implementation authorization |
+| [`kos-2.1-ops-design-draft.md`](kos-2.1-ops-design-draft.md) | Historical design draft |
+| [`Architecture review`](../assignments/kos-2.1-ops-001-architecture-review.md) | Design Pass with conditions |
 
-**2.0 remains the sole operational governance track** until Product Review accepts a 2.1 package and any later implementation/migration Assignments complete.
+**2.0 remains the frozen constitution.** The 2.1 ops package does not replace it
+and does not authorize dual-track or Migration by itself.
 
 ## Non-goals
 

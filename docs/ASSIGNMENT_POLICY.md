@@ -145,13 +145,53 @@ Every formal Assignment Record must contain:
 | Lifecycle Status | One state from the lifecycle below. |
 | Revalidation Trigger | Scope, owner, environment, dependency or time condition that invalidates the Assignment. |
 
+## Current Status Block (KOS 2.1 ops)
+
+Operational maturity under Knowledge OS 2.0
+([`kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md) M-01).
+
+Every **Active** or **Ready** Assignment must place a **Current Status** section
+near the top (after title / policy version is fine) containing only:
+
+- Lifecycle state  
+- Current phase  
+- Material non-claims  
+- Next handoff or decision  
+- Residual table link if any  
+
+Keep the block short (about fifteen lines or one small table). Put historical
+checklists and phase logs **below** a clear separator. Do not leave historical
+“not claimed” rows readable as current truth without a supersession note.
+
+## Residual Disposition Before Close (KOS 2.1 ops)
+
+When Architecture or Quality returns **Pass with conditions** (or Conditional
+Accept), residuals must be listed with ID, owner, disposition, and pointer.
+
+Allowed dispositions: `fix` | `accept` | `tech_debt:<ID>`.
+
+**Close is blocked** while any residual lacks a disposition. Open residuals
+with `tech_debt:<ID>` require a matching `TECH_DEBT.md` entry. See M-03 in the
+ops package.
+
 ## Unified Assignment Contract Template
 
 ```md
 # Assignment: <Task ID — Title>
 
 Policy version: 1.0.0
-Lifecycle status: Assignment Pending
+
+## Current Status
+
+| Field | Value |
+|---|---|
+| **Lifecycle** | Assignment Pending |
+| **Phase** | |
+| **Non-claims** | |
+| **Next** | |
+| **Residuals** | None / link |
+
+---
 
 ## Authority
 
@@ -185,6 +225,10 @@ Lifecycle status: Assignment Pending
 - Handoff Target: UNKNOWN
 - Required Handoff Content:
 - Revalidation Trigger:
+
+## History
+
+(optional phase logs and closed checklists)
 ```
 
 Template values must be replaced by an explicit Assignment, justified `Not Applicable`, or retained as `UNKNOWN`. Removing a field does not make the Assignment complete.

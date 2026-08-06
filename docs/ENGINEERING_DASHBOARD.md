@@ -8,14 +8,14 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
-## KOS-2.1-OPS-001 — Knowledge OS 2.1 Operational Maturity（设计/复盘）
+## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 
-- **Lifecycle:** `Active — Architecture Pass with conditions; Product Review disposition pending; 2.0 remains binding`
-- **Authority:** [`Assignment`](assignments/kos-2.1-ops-001.md) + [`PD-KOS-2.1-OPS-001`](product-decisions/KOS-2.1-OPS-001-authorization.md)
-- **Draft:** [`kos/kos-2.1-ops-design-draft.md`](kos/kos-2.1-ops-design-draft.md)
-- **Architecture review:** [`kos-2.1-ops-001-architecture-review.md`](assignments/kos-2.1-ops-001-architecture-review.md) — Pass with conditions (0/2/3/2); recommend Accept → Must-only IMPL; defer S-01; no Migration
-- **Explicit non-claims:** not 2.1 Accepted; not Migration; not 3.0; no runtime change
-- **Next:** Product disposition — Accept design (Must / Must+Should) / Hold / Reject
+- **Lifecycle:** `Published — Must + S-02/S-03 live; design Closed; IMPL Completed; 2.0 frozen constitution unchanged`
+- **Ops package:** [`kos/kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md)
+- **Active Work:** [`ACTIVE_WORK.md`](ACTIVE_WORK.md) (≤10; Assignment remains SoT)
+- **Authority:** [`IMPL Assignment`](assignments/kos-2.1-ops-impl-001.md) + [`PD-IMPL`](product-decisions/KOS-2.1-OPS-IMPL-001-authorization.md) + [`design disposition`](product-decisions/KOS-2.1-OPS-001-design-disposition.md)
+- **Explicit non-claims:** not frozen 2.1 replacement of 2.0; not Migration; not S-01; no runtime
+- **Next:** Optional Product formal close stamps; use State sync checklist on future Gates
 
 ## RESPONSIVE-DEFAULT-ON-001 — Product Gate / dual-gate Release default-on
 
