@@ -4,16 +4,15 @@
   Decision for the responsive serial RIME input pipeline design (single serial
   session owner; MainActor UI/proxy; ordered enqueue; versioned publish;
   fail-closed stale interaction; Swift 6 isolation without `@unchecked
-  Sendable` shortcuts). Production enablement remains behind the explicit
-  dual-gate contract in §8. **Release default remains the ADR 0004
-  MainActor-synchronous session path** until a future Product Gate Decision.
-  Architecture acceptance authority:
+  Sendable` shortcuts). **Product Gate**
+  [`PD-RESPONSIVE-DEFAULT-ON-001`](../../product-decisions/RESPONSIVE-DEFAULT-ON-001-authorization.md)
+  (`2026-08-06`) authorizes ordinary Release to **request dual-gate** by
+  default; install failure **fail-closes** to ADR 0004 MainActor-synchronous
+  path (see §8). Architecture acceptance authority:
   [`ADR-0025-ACCEPT-001`](../../assignments/adr-0025-accept-001.md)
-  independent Architecture review (**Conditional Accept** with named residuals)
-  + Quality evidence-stack **Pass with conditions**. Does **not** authorize:
-  Release default-on, Product Gate, performance SLO, or erasure of Formal R5
-  FAIL history. Residuals: readiness dossier R-01…R-09;
-  Architecture findings A-P2-03…A-P2-05 / A-P3-\*; Quality Q-P3-01…Q-P3-04.
+  (**Conditional Accept** with named residuals) + Quality evidence-stack
+  **Pass with conditions**. Does **not** authorize: performance SLO, App Store
+  submission by itself, or erasure of Formal R5 FAIL history.
 - **Date:** 2026-07-30 (proposed); Accepted 2026-08-06
 - **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:**
@@ -75,8 +74,9 @@ nine-key long composition; that does **not** restrict the owner contract to T9.
 | L1 provisional host shadow (e.g. T9 dual-gate `·` dots) | **T9-only** unless a later Product Decision authorizes another layout’s L1 |
 | English / symbol / emoji non-RIME heavy paths | Out of this ADR’s enablement claims |
 
-Release default remains **off** until a Product Gate Decision. This amendment
-does not authorize default-on.
+This §0 amendment (ALL-LAYOUTS) made L0 layout-universal; it did **not** itself
+authorize default-on. Release dual-gate **request** default was authorized later
+by [`PD-RESPONSIVE-DEFAULT-ON-001`](../../product-decisions/RESPONSIVE-DEFAULT-ON-001-authorization.md).
 
 ### 1. Single serial RIME session owner
 
@@ -181,11 +181,12 @@ ADR 0004 as written (session ops on main actor/thread) for ordinary traffic.
 - The revision of ADR 0004’s Extension main-actor/thread **placement** applies
   only when the responsive path is **enabled** under §8 (gate-on / Product-
   authorized diagnostic or future Product Gate enablement).
-- Gate-off / Release default continues to follow ADR 0004 as written for
-  session threading locus (MainActor-synchronous session ops).
+- After Product Gate `PD-RESPONSIVE-DEFAULT-ON-001`, ordinary Release **requests**
+  the gate-on dual-gate path; **fail-closed** installs still follow ADR 0004
+  MainActor-synchronous session ops.
 - Serialization of librime remains mandatory on both paths.
-- Accept of this ADR is **not** permission to change Release defaults, arm
-  gates in ordinary Release builds, or claim Product Gate.
+- Accept of this ADR alone did not flip Release defaults; Product Gate did
+  (2026-08-06).
 
 ### 7. Swift 6 isolation
 
@@ -200,22 +201,21 @@ owner shape required before any production concurrent wiring.
 
 ### 8. Feature gating
 
-Production enablement of the responsive path remains behind an explicit gate
-until Product Gate. Release default stays behavior-equivalent to the
-pre-feature baseline until Product decides otherwise.
+**Product Gate (2026-08-06):**
+[`PD-RESPONSIVE-DEFAULT-ON-001`](../../product-decisions/RESPONSIVE-DEFAULT-ON-001-authorization.md)
+authorizes **Release dual-gate default-on** for ordinary Chinese RIME sessions
+when runtime data is available. Install failure **fail-closes** to ADR 0004 sync.
 
-**Gate contract (frozen for implementers):**
+**Gate contract (current):**
 
 | Gate | Production path |
 |---|---|
-| **Off** (Release default until Product Gate) | Today’s ADR **0004** MainActor-synchronous session path — no responsive owner required |
-| **On** (Debug/internal only until Product Gate) | This ADR’s serial-owner path (enqueue on MainActor; execute on RIME owner; apply validated snapshots on MainActor) |
+| **On** (Release default after Product Gate) | Dual-gate serial-owner path: enqueue on MainActor; execute on dedicated RIME serial owner (thread-affine); apply versioned snapshots on MainActor |
+| **Off** (fail-closed / install failure / explicit non-arm) | ADR **0004** MainActor-synchronous session path |
 
-This table remains a binding gate contract. **This ADR is Status: Accepted** as
-architecture Decision for the gated design. Gate-on **shipping / Release
-default-on** still requires a separate Product Gate Decision plus independent
-Quality evidence appropriate to that Decision. Do **not** treat R1 Fake RIME
-work, canary evidence, or this Accept record as Product Gate or default-on.
+Historical note: before Product Gate, On was Debug/internal-only and Release
+default was Off. Accept of this ADR alone did not flip defaults; the Product
+Gate Decision did.
 
 ### 9. Diagnostics
 
@@ -507,9 +507,9 @@ performance). This is not an ADR 0025 acceptance or a Product Gate.
 5. Independent Architecture **re-review** of P1 remediation (optional before
    Product considers R2) — superseded by later phase reviews where Product
    requested them; not an open Accept gate.
-6. R2 serial owner behind default-off gate — **done / superseded** by later
-   Product-authorized gated phases (R4/R5 remediations, dual-gate, canary);
-   Release default remains **off**.
+6. R2 serial owner behind default-off gate — **done / superseded**; Product Gate
+   `PD-RESPONSIVE-DEFAULT-ON-001` (2026-08-06) makes ordinary Release **request**
+   dual-gate by default (fail-closed still Off/sync).
 7. R3 full contract matrix (Delete, selection, recover, visibility) on wired
    path — **open residual** (not an Accept gate): remaining contract-matrix /
    evidence-debt rows under default-off maturity; see dossier R-05/R-09.

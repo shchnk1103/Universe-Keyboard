@@ -1,12 +1,18 @@
 import Foundation
 import CoreFoundation
 
-/// R5-Preflight: Debug/internal arming for dual-gate thread-affine path.
+/// Dual-gate thread-affine path arming (R5-Preflight + Product Gate).
 ///
-/// Release builds never arm from UserDefaults. DEBUG (or an explicit compile
-/// flag) may arm via App Group key or `T9_RESPONSIVE_DEVICE_PREFLIGHT_ENABLED`.
+/// After `PD-RESPONSIVE-DEFAULT-ON-001`, ordinary builds request dual-gate by
+/// default (`productGateReleaseDefaultOn`). Install remains fail-closed in the
+/// Extension bootstrap. Legacy Debug/UserDefaults and compile-flag arms remain
+/// for preflight tooling when Product Gate default-on is tested as `false`.
 public enum ResponsiveRimePreflight: Sendable {
-    /// App Group UserDefaults key. `true` requests dual-gate on DEBUG/preflight arms only.
+    /// Product Gate: ordinary builds request dual-gate without Debug-only opt-in.
+    public static let productGateReleaseDefaultOn = true
+
+    /// App Group UserDefaults key. Used for DEBUG/preflight arms when Product
+    /// Gate default-on is not applied (tests may pass `productDefaultOn: false`).
     public static let dualGateKey = "uk.t9resp.preflight.dualGate"
     public static let fixtureID = "T9RESP-R5P"
     public static let markerSchemaVersion = "v1"
@@ -449,11 +455,17 @@ public enum ResponsiveRimePreflight: Sendable {
     }
 
     /// Pure resolution for tests and call sites.
+    ///
+    /// - Parameters:
+    ///   - productDefaultOn: When `true` (Product Gate Release default), always
+    ///     request dual-gate. Install failure still fail-closes to ADR 0004 sync.
     public static func shouldArmDualGate(
         defaults: UserDefaults?,
         isDebugBuild: Bool,
-        compileFlagEnabled: Bool
+        compileFlagEnabled: Bool,
+        productDefaultOn: Bool = productGateReleaseDefaultOn
     ) -> Bool {
+        if productDefaultOn { return true }
         if compileFlagEnabled { return true }
         guard isDebugBuild else { return false }
         return defaults?.bool(forKey: dualGateKey) == true

@@ -81,9 +81,9 @@
   [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)
 - T9 responsive RIME input pipeline
   (`T9-RESPONSIVE-PIPELINE-001`, **Active** — Formal R5 **direction FAIL** retained;
-  dual-gate **default-off**; CANARY-001 **Stop/Retain** 2026-08-05; Product Gate
-  **not** claimed; **ADR 0025 Accepted** 2026-08-06 via
-  **ADR-0025-ACCEPT-001** Conditional Accept with residuals):
+  CANARY-001 **Stop/Retain** 2026-08-05; **ADR 0025 Accepted** 2026-08-06;
+  **RESPONSIVE-ALL-LAYOUTS-001** L0 universal; **RESPONSIVE-DEFAULT-ON-001**
+  Product Gate dual-gate Release default-on **Active** 2026-08-06):
   [`Product Decision`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md),
   [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md),
   [`plan`](plans/t9-responsive-rime-pipeline-plan.md),
@@ -97,6 +97,9 @@
   [`POST-ACCEPT-001 R3 residual inventory`](evidence/t9-responsive-pipeline-post-accept-001-r3-residual-inventory-2026-08-06.md),
   [`RESPONSIVE-ALL-LAYOUTS-001 Assignment`](assignments/responsive-all-layouts-001.md),
   [`RESPONSIVE-ALL-LAYOUTS-001 evidence`](evidence/responsive-all-layouts-001-2026-08-06.md),
+  [`RESPONSIVE-DEFAULT-ON-001 Assignment`](assignments/responsive-default-on-001.md),
+  [`RESPONSIVE-DEFAULT-ON-001 Product Decision`](product-decisions/RESPONSIVE-DEFAULT-ON-001-authorization.md),
+  [`RESPONSIVE-DEFAULT-ON-001 evidence`](evidence/responsive-default-on-001-2026-08-06.md),
   [`CANARY-001 Stop/Retain disposition`](product-decisions/T9-RESPONSIVE-PIPELINE-001-CANARY-001-disposition.md),
   [`CANARY-001/DEVICE-001 device evidence`](evidence/t9-responsive-pipeline-canary-001-device-001-2026-08-04.md),
   [`P2-PERF-03 replicated A/B evidence`](evidence/t9-responsive-pipeline-p2-perf-03-replicated-ab-2026-08-03.md),

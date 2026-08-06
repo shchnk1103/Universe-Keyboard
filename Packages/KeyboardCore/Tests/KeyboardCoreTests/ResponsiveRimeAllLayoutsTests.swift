@@ -2,7 +2,7 @@ import XCTest
 @testable import KeyboardCore
 
 /// RESPONSIVE-ALL-LAYOUTS-001: L0 serial owner is layout-universal for Chinese
-/// RIME; L1 provisional dots remain T9-only. Gate remains default-off.
+/// RIME; L1 provisional dots remain T9-only. Tests arm the gate explicitly.
 @MainActor
 final class ResponsiveRimeAllLayoutsTests: XCTestCase {
 

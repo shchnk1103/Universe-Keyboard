@@ -2,7 +2,7 @@ import XCTest
 @testable import KeyboardCore
 
 final class ResponsiveRimePreflightTests: XCTestCase {
-    func testReleaseNeverArmsFromUserDefaultsAlone() {
+    func testReleaseNeverArmsFromUserDefaultsAloneWithoutProductGate() {
         let suite = "ResponsiveRimePreflightTests.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suite)!
         defer { defaults.removePersistentDomain(forName: suite) }
@@ -11,6 +11,27 @@ final class ResponsiveRimePreflightTests: XCTestCase {
         XCTAssertFalse(
             ResponsiveRimePreflight.shouldArmDualGate(
                 defaults: defaults,
+                isDebugBuild: false,
+                compileFlagEnabled: false,
+                productDefaultOn: false
+            )
+        )
+    }
+
+    func testProductGateDefaultOnArmsReleaseWithoutUserDefaults() {
+        XCTAssertTrue(ResponsiveRimePreflight.productGateReleaseDefaultOn)
+        XCTAssertTrue(
+            ResponsiveRimePreflight.shouldArmDualGate(
+                defaults: nil,
+                isDebugBuild: false,
+                compileFlagEnabled: false,
+                productDefaultOn: true
+            )
+        )
+        // Default parameter follows Product Gate constant.
+        XCTAssertTrue(
+            ResponsiveRimePreflight.shouldArmDualGate(
+                defaults: nil,
                 isDebugBuild: false,
                 compileFlagEnabled: false
             )
@@ -27,7 +48,8 @@ final class ResponsiveRimePreflightTests: XCTestCase {
             ResponsiveRimePreflight.shouldArmDualGate(
                 defaults: defaults,
                 isDebugBuild: true,
-                compileFlagEnabled: false
+                compileFlagEnabled: false,
+                productDefaultOn: false
             )
         )
     }
@@ -37,7 +59,8 @@ final class ResponsiveRimePreflightTests: XCTestCase {
             ResponsiveRimePreflight.shouldArmDualGate(
                 defaults: nil,
                 isDebugBuild: false,
-                compileFlagEnabled: true
+                compileFlagEnabled: true,
+                productDefaultOn: false
             )
         )
     }

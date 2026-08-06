@@ -36,8 +36,10 @@ public final class KeyboardController {
     /// S2.3 earlier first-anchor gate. Orthogonal to rolling/triple; only lowers
     /// the attempt-1 source-digit floor (18 → 12) while retaining two syllables.
     public var isEarlierFirstT9AutoAnchorEnabled = false
-    /// Responsive serial RIME pipeline gate (ADR 0025 L0). **Default off** —
-    /// Release matches ADR 0004 MainActor-synchronous `rimeEngine` calls.
+    /// Responsive serial RIME pipeline gate (ADR 0025 L0). Core property defaults
+    /// to `false` until Extension bootstrap arms dual-gate. After Product Gate
+    /// `PD-RESPONSIVE-DEFAULT-ON-001`, ordinary presentation installs dual-gate
+    /// (sets this true) with fail-closed fallback to ADR 0004 sync.
     /// Layout-universal for Chinese RIME (26-key and T9): when enabled, printable
     /// Chinese composition keys are accepted without waiting for librime; results
     /// publish asynchronously via serial session owner + dual revision watermarks.
@@ -46,15 +48,16 @@ public final class KeyboardController {
     /// through `ResponsiveRimeEngineBridge` (no dual-entry).
     public var isResponsiveRimePipelineEnabled = false
     /// R4-Wire: when true **with** responsive gate and a bootstrap, session work
-    /// runs on the thread-affine owner. Default remains false.
-        public var isThreadAffineRimeOwnerEnabled = false
+    /// runs on the thread-affine owner. Ordinary Product Gate installs set this
+    /// true with the responsive gate; Core default remains false until arm.
+    public var isThreadAffineRimeOwnerEnabled = false
     /// Sendable config-only bootstrap for thread-affine mode (required when
     /// `isThreadAffineRimeOwnerEnabled` is true for off-main ownership).
-        public var threadAffineEngineBootstrap: AnyThreadAffineRimeEngineBootstrap?
+    public var threadAffineEngineBootstrap: AnyThreadAffineRimeEngineBootstrap?
     /// Active only while `isResponsiveRimePipelineEnabled` is true (MainActor R2 path).
     public internal(set) var responsiveRimeCoordinator: ResponsiveRimeSessionCoordinator?
     /// Active when dual-gate thread-affine mode is installed.
-        public internal(set) var threadAffineRimeCoordinator: ThreadAffineRimeSessionCoordinator?
+    public internal(set) var threadAffineRimeCoordinator: ThreadAffineRimeSessionCoordinator?
     /// Invoked on MainActor after a deferred responsive snapshot is applied so
     /// Extension UI can `syncUI` (Arch/Quality P1 — publish→presentation bridge).
     public var onResponsivePresentationNeeded: ((KeyboardEffect) -> Void)?

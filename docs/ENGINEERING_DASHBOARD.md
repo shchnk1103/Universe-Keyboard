@@ -8,9 +8,19 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
-## RESPONSIVE-ALL-LAYOUTS-001 — 全中文布局响应式 L0（default-off）
+## RESPONSIVE-DEFAULT-ON-001 — Product Gate / dual-gate Release default-on
 
-- **Lifecycle:** `Completed — L0 layout-universal (26-key + T9); L1 provisional T9-only; ResponsiveRimeAllLayoutsTests 8/0; KeyboardCore 914/0; Product Gate / default-on not claimed`
+- **Lifecycle:** `Reviewed — Product Gate dual-gate Release default-on; Arch/Quality Pass with conditions; fail-closed teardown remediated; residuals visible`
+- **Authority:** [`Assignment`](assignments/responsive-default-on-001.md) + [`PD-RESPONSIVE-DEFAULT-ON-001`](product-decisions/RESPONSIVE-DEFAULT-ON-001-authorization.md)
+- **Change:** `productGateReleaseDefaultOn = true`; fail-closed install + owner teardown before sync fallback; ADR 0025 §8 updated
+- **Evidence:** [`evidence`](evidence/responsive-default-on-001-2026-08-06.md) · [`Architecture`](assignments/responsive-default-on-001-architecture-review.md) · [`Quality`](assignments/responsive-default-on-001-quality-review.md)
+- **Validation:** KeyboardCore **915/0** (Executor-recorded)
+- **Explicit non-claims:** no SLO; no App Store submission by this Gate alone
+- **Next:** optional Product close of Assignment; App Store still separate RELEASE work
+
+## RESPONSIVE-ALL-LAYOUTS-001 — 全中文布局响应式 L0
+
+- **Lifecycle:** `Completed — L0 layout-universal (26-key + T9); L1 provisional T9-only; superseded for defaults by RESPONSIVE-DEFAULT-ON-001`
 - **Authority:** [`Assignment`](assignments/responsive-all-layouts-001.md) + [`PD-RESPONSIVE-ALL-LAYOUTS-001`](product-decisions/RESPONSIVE-ALL-LAYOUTS-001-authorization.md)
 - **Evidence:** [`evidence`](evidence/responsive-all-layouts-001-2026-08-06.md)
 - **ADR:** §0 layout-universal amendment on [`0025`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md)
