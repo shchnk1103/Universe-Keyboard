@@ -123,6 +123,7 @@
 - Knowledge OS 2.0 frozen governance + startup + migration records: [`docs/kos/`](kos/)
 - Zero-Context Startup for new AI sessions: [`kos/zero-context-startup.md`](kos/zero-context-startup.md)
 - Knowledge OS operational migration (closed): [`assignments/kos-mig-001.md`](assignments/kos-mig-001.md), [`kos/migration-001-record.md`](kos/migration-001-record.md)
+- Knowledge OS 2.1 operational maturity **design only** (2.0 still binding): [`PD-KOS-2.1-OPS-001`](product-decisions/KOS-2.1-OPS-001-authorization.md), [`Assignment`](assignments/kos-2.1-ops-001.md), [`design draft`](kos/kos-2.1-ops-design-draft.md)
 - Documentation graph: [`DOCUMENTATION_GRAPH.md`](DOCUMENTATION_GRAPH.md)
 - Governance: [`DOCUMENTATION_GOVERNANCE.md`](DOCUMENTATION_GOVERNANCE.md)
 - Multi-agent workflow: [`AI_WORKFLOW.md`](AI_WORKFLOW.md)

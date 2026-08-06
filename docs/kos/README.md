@@ -6,7 +6,7 @@
 >
 > **Source of Truth:** this directory for frozen governance and startup; [`../KNOWLEDGE_OS.md`](../KNOWLEDGE_OS.md) for operational entry
 >
-> **Assignments:** [`KOS-GOV-001`](../assignments/kos-gov-001.md), [`KOS-BOOT-001`](../assignments/kos-boot-001.md), [`KOS-MIG-001`](../assignments/kos-mig-001.md)
+> **Assignments:** [`KOS-GOV-001`](../assignments/kos-gov-001.md), [`KOS-BOOT-001`](../assignments/kos-boot-001.md), [`KOS-MIG-001`](../assignments/kos-mig-001.md); design-only **[`KOS-2.1-OPS-001`](../assignments/kos-2.1-ops-001.md)** (2.0 remains binding)
 
 This directory is the canonical repository-backed specification for Knowledge OS 2.0.
 
@@ -36,7 +36,17 @@ Navigation is single-track. Do not treat pre-migration “v1 remains operational
 
 If this directory conflicts with an applicable open Assignment, return to Product Lead for revalidation. Do not resolve the conflict by redesigning Knowledge OS.
 
-Closed publication Assignments remain historical authority for their own deliverables; they do not authorize new redesign, Knowledge OS 2.1 or domain migration.
+Closed publication Assignments remain historical authority for their own deliverables; they do not authorize new redesign or domain migration by themselves.
+
+## Knowledge OS 2.1 (design only — not Accepted)
+
+| Artifact | Role |
+|---|---|
+| [`PD-KOS-2.1-OPS-001`](../product-decisions/KOS-2.1-OPS-001-authorization.md) | Product authorization for design/review only |
+| [`KOS-2.1-OPS-001 Assignment`](../assignments/kos-2.1-ops-001.md) | Level S design Work Item |
+| [`kos-2.1-ops-design-draft.md`](kos-2.1-ops-design-draft.md) | Pain inventory + Must/Should/Could proposal (**draft**) |
+
+**2.0 remains the sole operational governance track** until Product Review accepts a 2.1 package and any later implementation/migration Assignments complete.
 
 ## Non-goals
 
