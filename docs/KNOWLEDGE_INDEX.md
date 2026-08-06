@@ -81,44 +81,28 @@
   [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)
 - T9 responsive RIME input pipeline
   (`T9-RESPONSIVE-PIPELINE-001`, **Active** — Formal R5 **direction FAIL** retained;
-  R5-Rem-3 device/Polish-2 direction PASS; P1-D2 Amendment B bounded
-  Architecture/Quality **Pass with conditions**, P1-1/P1-2 closed; P2 Core
-  regression subset **Pass with conditions** (19/0 focused, 861/0 full),
-  P2-EPC closed at bounded Core/Fake-host scope; dual-gate
-  **default-off**; Product Gate / ADR Accept
-  **not** claimed; auto-anchor Hold/harvest):
+  CANARY-001 **Stop/Retain** 2026-08-05; **ADR 0025 Accepted** 2026-08-06;
+  **RESPONSIVE-ALL-LAYOUTS-001** L0 universal; **RESPONSIVE-DEFAULT-ON-001**
+  Product Gate dual-gate Release default-on **Active** 2026-08-06):
   [`Product Decision`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md),
   [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md),
   [`plan`](plans/t9-responsive-rime-pipeline-plan.md),
-  [`ADR 0025 Proposed`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md),
-  [`P1-D2 evidence`](evidence/t9-responsive-pipeline-p1-d2-amendment-b-2026-08-01.md),
-  [`P1-D2 Architecture final review`](assignments/t9-responsive-pipeline-001-p1-d2-amendment-b-architecture-rereview-2.md),
-  [`P1-D2 Quality final review`](assignments/t9-responsive-pipeline-001-p1-d2-amendment-b-quality-rereview-2.md),
-  [`P2 regression assignment`](assignments/t9-responsive-pipeline-001-p2-regression-matrix.md),
-  [`P2 regression evidence`](evidence/t9-responsive-pipeline-p2-regression-matrix-2026-08-01.md),
-  [`P2 Architecture re-review`](assignments/t9-responsive-pipeline-001-p2-regression-matrix-architecture-rereview.md),
-  [`P2 Quality re-review`](assignments/t9-responsive-pipeline-001-p2-regression-matrix-quality-rereview.md),
-  [`P2-PERF-02 canonical A/B assignment`](assignments/t9-responsive-pipeline-001-p2-perf-02-canonical-ab-20260803.md),
-  [`P2-PERF-02 canonical A/B evidence`](evidence/t9-responsive-pipeline-p2-perf-02-canonical-ab-2026-08-03.md),
-  [`P2-PERF-03 replicated A/B proposal`](assignments/t9-responsive-pipeline-001-p2-perf-03-replicated-ab-proposal.md),
-  [`P2-PERF-03 replicated A/B evidence`](evidence/t9-responsive-pipeline-p2-perf-03-replicated-ab-2026-08-03.md),
-  [`P2-PERF-03 Architecture review`](assignments/t9-responsive-pipeline-001-p2-perf-03-architecture-review.md),
-  [`P2-PERF-03 Quality review`](assignments/t9-responsive-pipeline-001-p2-perf-03-quality-review.md),
-  [`CANARY-001 production-shaped canary (device evidence complete; disposition Stop/Retain 2026-08-05)`](assignments/t9-responsive-pipeline-001-production-shaped-canary-001.md),
-  [`CANARY-001 Architecture design freeze`](assignments/t9-responsive-pipeline-001-canary-001-architecture-design-freeze.md),
-  [`CANARY-001 Quality evidence freeze`](assignments/t9-responsive-pipeline-001-canary-001-quality-evidence-freeze.md),
-  [`CANARY-001 live-session API inventory`](assignments/t9-responsive-pipeline-001-canary-001-live-session-api-inventory.md),
-  [`CANARY-001 Architecture review`](assignments/t9-responsive-pipeline-001-canary-001-architecture-review.md),
-  [`CANARY-001 Quality review`](assignments/t9-responsive-pipeline-001-canary-001-quality-review.md),
-  [`CANARY-001/DEVICE-001 device evidence`](evidence/t9-responsive-pipeline-canary-001-device-001-2026-08-04.md),
+  [`ADR 0025 Accepted`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md),
+  [`ADR-0025-ACCEPT-001 Assignment`](assignments/adr-0025-accept-001.md),
+  [`ADR-0025-ACCEPT Product Decision`](product-decisions/T9-RESPONSIVE-PIPELINE-001-ADR-0025-ACCEPT-authorization.md),
+  [`ADR-0025-ACCEPT readiness dossier`](assignments/adr-0025-accept-001-readiness-dossier.md),
+  [`ADR-0025-ACCEPT Architecture review`](assignments/adr-0025-accept-001-architecture-review.md),
+  [`ADR-0025-ACCEPT Quality review`](assignments/adr-0025-accept-001-quality-review.md),
+  [`POST-ACCEPT-001 Assignment`](assignments/t9-responsive-pipeline-001-post-accept-001.md),
+  [`POST-ACCEPT-001 R3 residual inventory`](evidence/t9-responsive-pipeline-post-accept-001-r3-residual-inventory-2026-08-06.md),
+  [`RESPONSIVE-ALL-LAYOUTS-001 Assignment`](assignments/responsive-all-layouts-001.md),
+  [`RESPONSIVE-ALL-LAYOUTS-001 evidence`](evidence/responsive-all-layouts-001-2026-08-06.md),
+  [`RESPONSIVE-DEFAULT-ON-001 Assignment`](assignments/responsive-default-on-001.md),
+  [`RESPONSIVE-DEFAULT-ON-001 Product Decision`](product-decisions/RESPONSIVE-DEFAULT-ON-001-authorization.md),
+  [`RESPONSIVE-DEFAULT-ON-001 evidence`](evidence/responsive-default-on-001-2026-08-06.md),
   [`CANARY-001 Stop/Retain disposition`](product-decisions/T9-RESPONSIVE-PIPELINE-001-CANARY-001-disposition.md),
-  [`CANARY-001 session handoff`](assignments/t9-responsive-pipeline-001-canary-001-handoff-2026-08-05.md),
-  [`R5-Rem-3-Polish evidence`](evidence/t9-responsive-pipeline-r5-rem-3-polish-2026-08-01.md),
-  [`R5-Rem-3-Polish Architecture review`](assignments/t9-responsive-pipeline-001-r5-rem-3-polish-architecture-review.md),
-  [`R5-Rem-3-Polish Quality review`](assignments/t9-responsive-pipeline-001-r5-rem-3-polish-quality-review.md),
-  [`R5-Rem-3-Device evidence`](evidence/t9-responsive-pipeline-r5-rem-3-device-2026-08-01.md),
-  [`R5-Rem-3 design`](assignments/t9-responsive-pipeline-001-r5-rem-3-design.md),
-  [`R5-Remediation design`](assignments/t9-responsive-pipeline-001-r5-remediation-design.md),
+  [`CANARY-001/DEVICE-001 device evidence`](evidence/t9-responsive-pipeline-canary-001-device-001-2026-08-04.md),
+  [`P2-PERF-03 replicated A/B evidence`](evidence/t9-responsive-pipeline-p2-perf-03-replicated-ab-2026-08-03.md),
   [`Formal R5 evidence`](evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md)
 - Release procedure: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)
 - 2026-08-01 release control: [`RELEASE-2026-0801`](assignments/release-2026-08-01.md) and its [evidence ledger](evidence/release-2026-08-01-acceptance.md)

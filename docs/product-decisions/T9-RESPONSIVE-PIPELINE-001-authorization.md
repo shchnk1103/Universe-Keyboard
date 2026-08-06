@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — P1-D2 Amendment B bounded Pass with conditions 2026-08-01; P2 Core subset Pass with conditions; P3-D1-T02/T03 bounded implementation/review complete but Product-held at host block; UIKit/real-device residuals remain; dual-gate default-off; R6 / ADR Accept / Product Gate / default-on not authorized`
+**Lifecycle status:** `Recorded — ADR 0025 Accepted; ALL-LAYOUTS-001 Completed; RESPONSIVE-DEFAULT-ON-001 Product Gate dual-gate Release default-on authorized 2026-08-06; CANARY Stop/Retain history retained; no performance SLO`
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the
@@ -87,7 +87,9 @@ already mean other things).
 The following remain binding and are non-negotiable for this work item unless a
 later Product Decision amends them:
 
-- 26-key / `rime_ice` behavior unchanged unless separately authorized
+- 26-key / `rime_ice` gate-off behavior unchanged; gate-on L0 is authorized for
+  26-key under [`PD-RESPONSIVE-ALL-LAYOUTS-001`](RESPONSIVE-ALL-LAYOUTS-001-authorization.md)
+  without Release default-on
 - Host-facing T9 marked text never shows internal digits
 - Path authorization and ADR 0020–0023 contracts
 - Partial Commit ownership and Delete composition-first rules

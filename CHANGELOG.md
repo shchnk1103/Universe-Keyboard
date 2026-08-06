@@ -2,6 +2,20 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-06 — RESPONSIVE-DEFAULT-ON-001 Product Gate（dual-gate Release default-on）
+
+- Product Gate authorizes ordinary Release to **request dual-gate** responsive
+  RIME (thread-affine serial owner) by default for Chinese layouts.
+- `ResponsiveRimePreflight.productGateReleaseDefaultOn = true`; install remains
+  **fail-closed** to ADR 0004 MainActor-synchronous path on failure.
+- ADR 0025 §8 / ADR 0004 follow-up updated; CANARY_INTERNAL path unchanged.
+- Automated Preflight arming tests updated; KeyboardCore suite green on this tip.
+
+## 2026-08-06 — RESPONSIVE-ALL-LAYOUTS-001（L0 全中文布局，当时仍 default-off）
+
+- Product scope: responsive L0 for 26-key + T9; T9-only L1 provisional dots.
+- `ResponsiveRimeAllLayoutsTests` 8/0; ADR 0025 §0 layout-universal amendment.
+
 ## 2026-08-03 — P3-D1-T02/T03 Product Hold（default-off）
 
 - T02/T03 lifecycle harness implementation and independent Architecture/Quality

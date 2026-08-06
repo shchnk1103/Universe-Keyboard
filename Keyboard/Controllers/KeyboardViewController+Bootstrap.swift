@@ -251,7 +251,8 @@ extension KeyboardViewController {
               let directories = pendingRimeRuntimeDirectories
         else { return }
 
-        // R5-Preflight: optional dual-gate arm (DEBUG / explicit compile flag only).
+        // Product Gate default-on (dual-gate) with fail-closed fallback to sync.
+        // Canary-internal builds keep their own arming path.
         if installResponsiveDualGatePreflightIfArmed(directories: directories) {
             hasActivatedVisibleRimeRuntime = true
             return
@@ -289,8 +290,9 @@ extension KeyboardViewController {
         Logger.shared.info("RIME session prepared for visible keyboard input", category: .engine)
     }
 
-    /// R5-Preflight dual-gate arm. Release never arms from UserDefaults alone.
-    /// Returns `true` when dual-gate thread-affine path was installed.
+    /// Dual-gate arm for ordinary builds (Product Gate default-on) and legacy
+    /// Debug/preflight arms. Returns `true` when dual-gate was installed.
+    /// Fail-closed: install errors clear flags so the sync path can proceed.
     @discardableResult
     func installResponsiveDualGatePreflightIfArmed(
         directories: (sharedDataDir: String, userDataDir: String)
@@ -313,7 +315,8 @@ extension KeyboardViewController {
         let dualGateRequested = ResponsiveRimePreflight.shouldArmDualGate(
             defaults: sharedDefaults,
             isDebugBuild: isDebugBuild,
-            compileFlagEnabled: compileFlagEnabled
+            compileFlagEnabled: compileFlagEnabled,
+            productDefaultOn: ResponsiveRimePreflight.productGateReleaseDefaultOn
         )
         guard dualGateRequested else { return false }
 
@@ -382,10 +385,13 @@ extension KeyboardViewController {
                 level: .warning
             )
         }
-        // Fail closed: clear dual-gate flags so sync install can proceed.
+        // Fail closed: tear down any partial dual-gate owner *before* the
+        // caller creates a MainActor RimeEngineImpl (A-P1-01: at most one
+        // live librime session entry in use).
         controller.isThreadAffineRimeOwnerEnabled = false
         controller.isResponsiveRimePipelineEnabled = false
         controller.threadAffineEngineBootstrap = nil
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
         return false
         #endif
     }

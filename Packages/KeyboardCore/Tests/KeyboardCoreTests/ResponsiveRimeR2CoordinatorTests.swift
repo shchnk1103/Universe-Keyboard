@@ -1,7 +1,8 @@
 import XCTest
 @testable import KeyboardCore
 
-/// R2 gate + serial owner coordinator tests (default-off Release path untouched).
+/// R2 gate + serial owner coordinator tests (Core property defaults remain off
+/// until Extension bootstrap arms Product Gate dual-gate).
 @MainActor
 final class ResponsiveRimeR2CoordinatorTests: XCTestCase {
 

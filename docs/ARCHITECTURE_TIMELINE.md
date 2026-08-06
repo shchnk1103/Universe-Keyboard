@@ -124,6 +124,24 @@ Provisional-only mixed-raw C continue closed via PR #29. Product Lead closed Ass
 
 Current sources: Assignment 004 (Closed), ADR 0023, close PD, `partial-commit.md` §T9 Path residual-B, remediation evidence §21–§33.
 
+## 2026-08-06 — ADR 0025 Accepted (gated design; Release default-off)
+
+Independent Architecture **Conditional Accept** and Quality evidence-stack
+**Pass with conditions** under `ADR-0025-ACCEPT-001` made ADR 0025 a binding
+architecture Decision for the responsive serial RIME input pipeline. The
+Accept revises ADR 0004’s Extension **threading locus only on the gate-on
+path**; gate-off / Release default remains ADR 0004 MainActor-synchronous
+session ops. Product Gate, default-on, and performance SLO remain non-claims.
+Named residuals (canary process gaps, n=1 directional evidence, Formal R5 FAIL
+history, incomplete R3 matrix rows) stay visible.
+
+Current sources:
+[ADR 0025](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md),
+[ADR-0025-ACCEPT-001](assignments/adr-0025-accept-001.md),
+[Architecture review](assignments/adr-0025-accept-001-architecture-review.md),
+[Quality review](assignments/adr-0025-accept-001-quality-review.md),
+[ADR 0004](architecture/decisions/0004-rime-runtime-session-model.md).
+
 ## 2026-07-31 — Responsive serial RIME pipeline published default-off
 
 Long-composition lag was re-attacked as an **architecture decoupling** problem

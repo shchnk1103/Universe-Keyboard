@@ -76,9 +76,12 @@ extension KeyboardController {
 
         let previousT9PathState = state.t9PinyinPathState
 
-        // R2 gate: accept printable composition keys without waiting for librime.
+        // R2 gate (layout-universal for Chinese RIME): accept printable
+        // composition keys without waiting for librime. Applies to 26-key and
+        // T9 when the gate is on. T9-only L1 provisional dots are armed later
+        // only under `usesT9InputSemantics` + dual-gate. Gate default is off.
         // All other session APIs still enter the same pipeline via
-        // `ResponsiveRimeEngineBridge`. Gate default is off.
+        // `ResponsiveRimeEngineBridge`.
         if isResponsiveRimePipelineEnabled {
             if responsiveRimeCoordinator == nil, threadAffineRimeCoordinator == nil {
                 rebuildResponsiveRimeCoordinatorIfNeeded()

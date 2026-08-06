@@ -16,13 +16,24 @@
 | --- | --- | --- |
 | Key presentation, document proxy, delete repeat, candidate button creation | Keyboard UI | Main actor only |
 | Key click feedback | UIKit `UIInputViewAudioFeedback` | System owns playback, silent-mode behavior and audio routing; the Extension owns no audio player/session |
-| RIME input session | `RimeBridge.RimeEngineImpl` | Called synchronously by the keyboard input path; session operations only |
+| RIME input session (**gate-off / Release default**) | `RimeBridge.RimeEngineImpl` via MainActor-synchronous keyboard path | ADR **0004** production rule: session ops on the main actor/thread; serialization mandatory |
+| RIME input session (**gate-on responsive path**) | Dedicated RIME serial owner (`ResponsiveRimeSessionCoordinator` / engine bridge) | ADR **0025 Accepted**: enqueue on MainActor; execute all session APIs on the single serial owner; apply versioned snapshots on MainActor. Release default remains **off** until a Product Gate Decision |
 | Full schema deployment | `RimeDeploymentService` actor | Called from the main app before keyboard use, never from the extension or input path |
 | Settings and dictionary observable state | Main app Observation models | UI updates on main actor |
 
 `KeyboardCore.KeyboardController` keeps state ownership and its public action entry point in one small type. Text
 editing, mode/shift handling, candidate operations and RIME recovery live in dedicated extension files so changes to
 latency-sensitive recovery code can be reviewed separately from ordinary text semantics.
+
+### Responsive dual-path isolation (ADR 0025)
+
+- Gate flags (`isResponsiveRimePipelineEnabled`, thread-affine owner enablement) default **false**.
+- When the responsive path is enabled, **all** process-local session APIs enter the same serial owner; no parallel
+  MainActor escape hatch into the live session is allowed.
+- Snapshots that cross isolation boundaries must be value-typed / Sendable by construction.
+- **`@unchecked Sendable` is forbidden** as a shortcut around the live session or engine handle.
+- Content-free diagnostics only (ADR 0010); no raw input / pinyin / candidate / host text in logs.
+- Accept of ADR 0025 is **not** Release default-on. See ADR 0025 §6 operational note and §8 gate contract.
 
 ## RIME Consolidation
 

@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — P1-D2 Amendment B bounded Pass with conditions; P2 Core subset Pass with conditions; P3-D1-T02/T03 Product Hold after host block; UIKit/real-device residuals remain; dual-gate default-off; Formal R5 FAIL historical; R6/ADR Accept/Product Gate not claimed** |
+| Status | **Active — ADR 0025 Accepted; ALL-LAYOUTS L0 universal; Product Gate dual-gate Release request default-on (RESPONSIVE-DEFAULT-ON-001, 2026-08-06); Formal R5 FAIL historical; no performance SLO; App Store separate** |
 | Created | 2026-07-30 |
-| Product lock | 2026-07-30 (direction); phase implementation locks later |
+| Product lock | 2026-07-30 (direction); Product Gate default-on 2026-08-06 |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |
-| Product direction | [`PD-T9-RESPONSIVE-PIPELINE-001`](../product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md) |
-| Architecture | [`ADR 0025`](../architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) (**Proposed**) |
+| Product direction | [`PD-T9-RESPONSIVE-PIPELINE-001`](../product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md) · [`PD-RESPONSIVE-DEFAULT-ON-001`](../product-decisions/RESPONSIVE-DEFAULT-ON-001-authorization.md) |
+| Architecture | [`ADR 0025`](../architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) (**Accepted**; §8 Product Gate default request) |
 | Predecessor | [`t9-long-composition-process-key-latency-plan.md`](t9-long-composition-process-key-latency-plan.md) (**Hold/harvest** after S2.3 direction FAIL) |
 | Design baseline | branch `codex/t9-auto-anchor-s5-checkpoint` @ `dddbe61` |
 
@@ -441,4 +441,5 @@ T9-RESPONSIVE-PIPELINE-001 的 Assignment 与 Proposed ADR 已达到实现入口
 | 2026-08-03 | **P2-PERF-03 independent reviews complete**: Architecture `Pass with conditions` (P0/P1/P2/P3 `0/0/4/2`), Quality bounded condition pass but overall `Partial` (`0/0/4/3`). Handoff stops at Product Lead; any production-shaped canary needs a new Assignment and explicit authorization. |
 | 2026-08-04 | **CANARY-001 authorized** by Human Product Owner (`我授权你，接下来就在我的iPhone 13 Pro上进行测试吧！`); production-shaped default-off canary design freeze + implementation + run004 automated matrix complete. |
 | 2026-08-04→05 | **CANARY-001 / DEVICE-001 pair-002 four-arm (A/B/K/O) execution complete** on iPhone 13 Pro: A sync stallScore `2.5`; B R5P provisional stallScore `0` at same slow-RIME positions (208–242ms); K kill-switch assert written/readback (`decision=kill`) with extension fail-closed to baseline and no canary ACCEPT after; O ordinary Release restored with matching hashes and clean Human smoke. Device evidence closed; independent Arch/Quality review pending. Not ADR 0025 acceptance, not Product Gate, not default-on. |
-| 2026-08-05 | **CANARY-001 disposition = Stop/Retain** (Human Product Lead): device evidence archived under default-off; no further device evidence phase. Independent Arch (`Pass with conditions` 0/0/1/0) and Quality (`Pass with conditions` 0/0/5/3) recorded; most P2/P3 residuals closed, P2-04/P3-01/P3-02 stay open with honest attestation. ADR 0025 remains Proposed; Product Gate / default-on closed to any claim. |
+| 2026-08-05 | **CANARY-001 disposition = Stop/Retain** (Human Product Lead): device evidence archived under default-off; no further device evidence phase. Independent Arch (`Pass with conditions` 0/0/1/0) and Quality (`Pass with conditions` 0/0/5/3) recorded; most P2/P3 residuals closed, P2-04/P3-01/P3-02 stay open with honest attestation. ADR 0025 remains Proposed *at that time*; Product Gate / default-on then still closed. |
+| 2026-08-06 | **ADR 0025 Accepted** (`ADR-0025-ACCEPT-001`); POST-ACCEPT hygiene; **ALL-LAYOUTS-001** L0 universal for Chinese 26-key + T9; **RESPONSIVE-DEFAULT-ON-001 Product Gate** — ordinary Release **requests dual-gate** by default with fail-closed ADR 0004 sync; Arch/Quality Pass with conditions; no SLO / no App Store claim by Gate alone. |
