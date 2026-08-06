@@ -224,6 +224,10 @@ public final class ResponsiveRimeEngineBridge: RimeEngine {
     }
 
     public func selectCandidate(at index: Int) -> RimeOutput {
+        // RESPONSIVE-DELETE-ANOMALY-001: drain deferred processKey *before*
+        // capturing publish binding, else pending keys advance revision and the
+        // bound select is skipped as stale (no-op / wrong fail-closed).
+        coordinator.flushPending()
         let bound = bindingIdentity()
         return output(
             from: coordinator.performOrderedNow(
@@ -237,6 +241,7 @@ public final class ResponsiveRimeEngineBridge: RimeEngine {
     }
 
     public func selectCandidate(globalIndex index: Int) -> RimeOutput {
+        coordinator.flushPending()
         let bound = bindingIdentity()
         return output(
             from: coordinator.performOrderedNow(
@@ -256,13 +261,20 @@ public final class ResponsiveRimeEngineBridge: RimeEngine {
     }
 
     public func deleteBackward() -> RimeOutput {
-        output(from: coordinator.performOrderedNow(.deleteBackward))
+        // Drain deferred keys first so each Delete removes one unit from the
+        // live head (not "apply backlog + delete" only inside one ordered item
+        // while Core still holds a pre-backlog snapshot for host spelling).
+        coordinator.flushPending()
+        return output(from: coordinator.performOrderedNow(.deleteBackward))
     }
 
     public func replaceInput(_ input: String) -> RimeOutput {
-        // Path refine without explicit binding uses unbound replace (pipeline
-        // allows optional bounds). Callers that need fail-closed should pass
-        // bound work via coordinator; bridge uses last published when present.
+        // Path refine / visible-spelling Delete bind to last published revision.
+        // Must flush deferred processKey *before* reading that binding; otherwise
+        // performOrderedNow drains the backlog first, advances revision, and the
+        // replace is discarded as stale — Core then fail-closes by wiping composition
+        // (RESPONSIVE-DELETE-ANOMALY-001: delete no-op or wipe-all).
+        coordinator.flushPending()
         if let published = coordinator.sessionOwner.lastPublished {
             return output(
                 from: coordinator.performOrderedNow(

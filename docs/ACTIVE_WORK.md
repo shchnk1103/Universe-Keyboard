@@ -5,11 +5,12 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).  
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-06 Asia/Shanghai` (KOS-2.1-OPS-IMPL-001 complete).
+Last synced: `2026-08-06 Asia/Shanghai` (delete anomaly fix pending PR).
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | T9-RESPONSIVE-PIPELINE-001 | Active | Dual-gate request default-on; no SLO; optional residuals only | [`assignments/t9-responsive-rime-pipeline-001.md`](assignments/t9-responsive-rime-pipeline-001.md) |
+| 1 | RESPONSIVE-DELETE-ANOMALY-001 | Completed (device smoke optional) | Flush-before-bind fix; Human smoke welcome | [`assignments/responsive-delete-anomaly-001.md`](assignments/responsive-delete-anomaly-001.md) |
+| 2 | T9-RESPONSIVE-PIPELINE-001 | Active | Dual-gate request default-on; delete anomaly fix in flight | [`assignments/t9-responsive-rime-pipeline-001.md`](assignments/t9-responsive-rime-pipeline-001.md) |
 | 2 | RELEASE-2026-0801 | Active | Release coordination; Entry Criteria pending | [`assignments/release-2026-08-01.md`](assignments/release-2026-08-01.md) |
 | 3 | HELP-TIPKIT-001 | Active | P1–P3 done; Product Gate pending | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |
 | 4 | HELP-J3-RESOURCES-001 | Active | Slim resource prepare | [`assignments/help-j3-resources-001.md`](assignments/help-j3-resources-001.md) |

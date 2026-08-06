@@ -2,6 +2,13 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-06 — RESPONSIVE-DELETE-ANOMALY-001 flush-before-bind Delete fix
+
+- Dual-gate bridges flush deferred `processKey` before capturing publish binding
+  for `replaceInput` / select / Delete, preventing stale-bind skip that caused
+  Delete no-op or fail-closed full wipe after burst typing.
+- Regression: `ResponsiveDeleteAnomalyTests` 3/0; KeyboardCore 918/0 (Executor-recorded).
+
 ## 2026-08-06 — KOS 2.1 Operational Maturity package (under 2.0)
 
 - Published ops package: Current Status blocks, State sync checklist, residual

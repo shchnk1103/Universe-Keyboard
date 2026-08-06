@@ -611,6 +611,7 @@ public final class ThreadAffineRimeEngineBridge: RimeEngine {
     }
 
     public func selectCandidate(at index: Int) -> RimeOutput {
+        coordinator.flushPending()
         let bound = bindingIdentity()
         return output(
             from: coordinator.performOrderedNow(
@@ -624,6 +625,7 @@ public final class ThreadAffineRimeEngineBridge: RimeEngine {
     }
 
     public func selectCandidate(globalIndex index: Int) -> RimeOutput {
+        coordinator.flushPending()
         let bound = bindingIdentity()
         return output(
             from: coordinator.performOrderedNow(
@@ -655,10 +657,16 @@ public final class ThreadAffineRimeEngineBridge: RimeEngine {
     }
 
     public func deleteBackward() -> RimeOutput {
-        output(from: coordinator.performOrderedNow(.deleteBackward))
+        // Match MainActor bridge: drain deferred processKey before Delete so
+        // binding-sensitive follow-on work and host spelling stay aligned.
+        coordinator.flushPending()
+        return output(from: coordinator.performOrderedNow(.deleteBackward))
     }
 
     public func replaceInput(_ input: String) -> RimeOutput {
+        // RESPONSIVE-DELETE-ANOMALY-001: capture publish binding only after
+        // draining deferred keys (see ResponsiveRimeEngineBridge.replaceInput).
+        coordinator.flushPending()
         if let published = coordinator.lastPublished {
             return output(
                 from: coordinator.performOrderedNow(

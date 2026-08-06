@@ -154,6 +154,16 @@ If any preflight check fails, classify it as device selection, signing/App Group
 
 If behavior differs, start in `KeyboardController+TextEditing.swift` and `KeyboardController+PartialCommit.swift`, not the key-button handler.
 
+### Responsive dual-gate: Delete stuck or wipes whole composition
+
+After dual-gate default-on, keys enqueue as deferred `processKey`. If
+`replaceInput` / select capture `lastPublished` **before** draining that
+backlog, the bound revision goes stale when the queue drains; the mutation is
+skipped. Visible-spelling Delete may then **fail-closed wipe** the whole
+composition, or appear as a **no-op** (stuck) while new keys still type. Fix:
+bridge `flushPending()` before binding (`RESPONSIVE-DELETE-ANOMALY-001`). Use
+synthetic burst input for repro; never log real user text.
+
 ### Works Until App Switch
 
 Visibility changes intentionally abandon unfinished composition. If old input reappears, the cleanup contract is broken. If completed text disappears, investigate host marked-range finalization before visibility cleanup. Do not implement composition restoration without a new product/architecture decision.
