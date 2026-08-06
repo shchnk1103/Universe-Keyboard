@@ -284,7 +284,11 @@
 - [x] Independent Quality **re-review** of R3 P1 — **Pass with conditions**
   ([rereview](t9-responsive-pipeline-001-r3-quality-rereview.md): Quality P1 +
   reentrancy **Closed**; re-ran 38/816 green). Keep gate default off.
-- [ ] Product Gate — **not claimed**
+- [x] Product Gate / Release dual-gate **request** default-on —
+  **granted 2026-08-06** via
+  [`RESPONSIVE-DEFAULT-ON-001`](responsive-default-on-001.md) /
+  [`PD-RESPONSIVE-DEFAULT-ON-001`](../product-decisions/RESPONSIVE-DEFAULT-ON-001-authorization.md)
+  (fail-closed sync retained; no SLO / no App Store claim by this Gate alone)
 - [x] Spike-P1-3 design + falsifiable Fake proof — **granted 2026-07-30**
 - [x] Spike-P1-3 independent Architecture / Quality review at `45c426f` —
   **Fail**, shared lifecycle P1
@@ -374,7 +378,11 @@
   [evidence](../evidence/t9-responsive-pipeline-p2-regression-matrix-2026-08-01.md),
   [Architecture](t9-responsive-pipeline-001-p2-regression-matrix-architecture-rereview.md),
   [Quality](t9-responsive-pipeline-001-p2-regression-matrix-quality-rereview.md))
-- [ ] Release default-on / Product Gate / ADR 0025 Accept / R6 — **not granted**
+- [x] ADR 0025 Accept — **done** (`ADR-0025-ACCEPT-001`, 2026-08-06)
+- [x] Product Gate / dual-gate Release **request** default-on — **done**
+  (`RESPONSIVE-DEFAULT-ON-001`, 2026-08-06); fail-closed Off path retained
+- [ ] R6 umbrella residual checklist items outside Product Gate (if any) —
+  **track only**; no separate R6 claim required for Gate
 
 ### Exit Criteria — R5-Remediation design
 

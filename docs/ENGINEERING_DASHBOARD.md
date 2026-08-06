@@ -24,34 +24,34 @@
 - **Authority:** [`Assignment`](assignments/responsive-all-layouts-001.md) + [`PD-RESPONSIVE-ALL-LAYOUTS-001`](product-decisions/RESPONSIVE-ALL-LAYOUTS-001-authorization.md)
 - **Evidence:** [`evidence`](evidence/responsive-all-layouts-001-2026-08-06.md)
 - **ADR:** §0 layout-universal amendment on [`0025`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md)
-- **Next:** Product Gate / default-on only under a **new** Decision; optional 26-key device directional matrix later
+- **Next:** Defaults superseded by RESPONSIVE-DEFAULT-ON-001; optional 26-key device directional matrix later
 
 ## POST-ACCEPT-001 — ADR 0025 绑定文档 hygiene + R3 残差盘点
 
-- **Lifecycle:** `Completed — Follow-up #9/#10 done; R3 Core rows Covered/Partial; Responsive 98/0, KeyboardCore 906/0; Product Gate / default-on not claimed`
+- **Lifecycle:** `Completed — Follow-up #9/#10 done; R3 Core inventory recorded; superseded for defaults by RESPONSIVE-DEFAULT-ON-001`
 - **Authority:** [`Assignment`](assignments/t9-responsive-pipeline-001-post-accept-001.md) + [`PD-…-POST-ACCEPT-001`](product-decisions/T9-RESPONSIVE-PIPELINE-001-POST-ACCEPT-001-authorization.md)
 - **Evidence:** [`R3 residual inventory`](evidence/t9-responsive-pipeline-post-accept-001-r3-residual-inventory-2026-08-06.md)
 - **Docs:** `swift6-migration.md` dual-path ownership; `input-pipeline-and-marked-text.md` dual pipeline diagrams
-- **Next:** Product Gate / default-on only under a **new** Product Decision; optional independent review of hygiene-only docs
+- **Next:** None for this slice; defaults handled by RESPONSIVE-DEFAULT-ON-001
 
 ## ADR-0025-ACCEPT-001 — ADR 0025 正式接受评审
 
-- **Lifecycle:** `Reviewed — Architecture Conditional Accept; Quality Pass with conditions; ADR 0025 Status Accepted (2026-08-06) with residuals; Product Gate / default-on not claimed`
+- **Lifecycle:** `Reviewed / effectively closed by follow-on Gates — ADR 0025 Accepted; Product Gate later via RESPONSIVE-DEFAULT-ON-001`
 - **Authority:** [`Assignment`](assignments/adr-0025-accept-001.md) + [`PD-…-ADR-0025-ACCEPT`](product-decisions/T9-RESPONSIVE-PIPELINE-001-ADR-0025-ACCEPT-authorization.md)
 - **Reviews:** [`Architecture`](assignments/adr-0025-accept-001-architecture-review.md) · [`Quality`](assignments/adr-0025-accept-001-quality-review.md) · [`dossier`](assignments/adr-0025-accept-001-readiness-dossier.md)
-- **ADR:** [`0025 Accepted`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) — binding design SoT; gate-off Release default retained via §6/§8
-- **Explicit non-claims:** no Product Gate; no default-on; no SLO; Formal R5 FAIL retained
-- **Next:** Product may close this Assignment as Closed after handoff; any default-on / Product Gate needs a **new** Product Decision
+- **ADR:** [`0025 Accepted`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) — binding design SoT; ordinary Release **requests dual-gate** after Product Gate (fail-closed → 0004)
+- **Explicit non-claims (Accept slice):** Accept alone did not flip defaults (historical); no SLO
+- **Next:** None for Accept slice
 
-## T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
+## T9-RESPONSIVE-PIPELINE-001 — 九宫格 / 全中文响应式 RIME 输入管线
 
-- **Lifecycle:** `Active — ADR 0025 Accepted (2026-08-06, Conditional Accept residuals); CANARY-001 Stop/Retain; dual-gate default-off; Formal R5 FAIL historical; Product Gate / default-on not claimed`
-- **Authority:** [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md) + [`PD-T9-RESPONSIVE-PIPELINE-001`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md) + [`ADR 0025 Accepted`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) + [`CANARY-001`](assignments/t9-responsive-pipeline-001-production-shaped-canary-001.md) + [`ADR-0025-ACCEPT-001`](assignments/adr-0025-accept-001.md)
-- **Publication tip:** acceptance-review docs on working tree 2026-08-06; prior canary publication via PR #38
-- **Delivered (default-off):** R1–R4 Wire; R5 lineage; P1-D2; P2 matrix/PERF; CANARY A/B/K/O Stop/Retain; ADR 0025 Accepted as gated design SoT.
-- **Evidence/reviews:** [`CANARY disposition`](product-decisions/T9-RESPONSIVE-PIPELINE-001-CANARY-001-disposition.md), [`ADR-0025-ACCEPT Architecture`](assignments/adr-0025-accept-001-architecture-review.md), [`ADR-0025-ACCEPT Quality`](assignments/adr-0025-accept-001-quality-review.md)
-- **Explicit non-claims:** R6, Product Gate, Release dual-gate default-on, performance SLO
-- **Next Product action:** Optional close of ADR-0025-ACCEPT-001 Assignment; Product Gate / default-on remain closed unless newly authorized.
+- **Lifecycle:** `Active — ADR 0025 Accepted; ALL-LAYOUTS L0 universal; RESPONSIVE-DEFAULT-ON-001 Product Gate dual-gate Release request default-on; CANARY Stop/Retain history; Formal R5 FAIL historical; no SLO`
+- **Authority:** [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md) + [`PD-T9-RESPONSIVE-PIPELINE-001`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md) + [`ADR 0025 Accepted`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) + [`CANARY-001`](assignments/t9-responsive-pipeline-001-production-shaped-canary-001.md) + [`ADR-0025-ACCEPT-001`](assignments/adr-0025-accept-001.md) + [`RESPONSIVE-DEFAULT-ON-001`](assignments/responsive-default-on-001.md)
+- **Publication tip:** stack on PR #42 / branch `codex/responsive-default-on-001`
+- **Delivered:** R1–R5 lineage; P1-D2; P2 matrix/PERF; CANARY A/B/K/O Stop/Retain; ADR Accept; ALL-LAYOUTS; Product Gate dual-gate **request** default-on (fail-closed sync)
+- **Evidence/reviews:** [`CANARY disposition`](product-decisions/T9-RESPONSIVE-PIPELINE-001-CANARY-001-disposition.md), [`DEFAULT-ON evidence`](evidence/responsive-default-on-001-2026-08-06.md), Accept + ALL-LAYOUTS reviews
+- **Explicit non-claims:** performance SLO; App Store submission by Gate alone
+- **Next Product action:** optional physical smoke; App Store remains `RELEASE-2026-0801`
 - **P2 follow-up:** [`P2-Regression-Matrix-001`](assignments/t9-responsive-pipeline-001-p2-regression-matrix.md) · [`evidence`](evidence/t9-responsive-pipeline-p2-regression-matrix-2026-08-01.md)
 - **P2 reviews:** [`Architecture re-review`](assignments/t9-responsive-pipeline-001-p2-regression-matrix-architecture-rereview.md) · [`Quality re-review`](assignments/t9-responsive-pipeline-001-p2-regression-matrix-quality-rereview.md)
 - **Predecessor:** [`T9-AUTO-ANCHOR-001`](assignments/t9-auto-anchor-001.md) remains **Hold/harvest**
