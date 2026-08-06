@@ -6,15 +6,39 @@ This document defines the current input, marked-text and finalization invariants
 
 ## Pipeline
 
+### Gate-off path (Release default — ADR 0004)
+
 ```text
 touch / gesture
   -> KeyboardViewController action
   -> KeyboardController.handle(KeyboardAction)
-  -> optional RimeEngine operation
+  -> optional RimeEngine operation (MainActor-synchronous session)
   -> KeyboardState mutation + KeyboardEffect
   -> syncUI(with:)
   -> candidate/layout refresh
 ```
+
+### Gate-on responsive path (default-off until Product Gate — ADR 0025)
+
+```text
+touch / gesture
+  -> KeyboardViewController action
+  -> immediate chrome / haptics / click (MainActor; never waits on librime)
+  -> enqueue ordered session work (revision++, capture sessionEpoch)
+  -> RIME serial owner drains FIFO (processKey / delete / replace / select / reset / recover / …)
+  -> versioned snapshot publish (latest-wins for UI; never older over newer)
+  -> MainActor atomic apply: composition + Path + candidates + published revision
+  -> syncUI(with:)
+  -> candidate/layout refresh
+```
+
+Invariants on the gate-on path (see ADR 0025):
+
+1. Session actions are never dropped, merged, or reordered to “catch up.”
+2. UI may coalesce **presentation** to the latest valid snapshot under burst typing.
+3. Stale candidate / Path / Space / paging actions **fail closed** when their bound revision/epoch is no longer eligible.
+4. While provisional L1 presentation is ahead of engine L2, selection-like actions fail closed without Core/RIME mutation.
+5. `sessionEpoch` bumps (visibility abandon, reset/recover barriers, etc.) invalidate in-flight results.
 
 Business state belongs in `KeyboardState`; UIKit owns presentation state such as accumulated candidate cells, expanded-panel state and press visuals.
 

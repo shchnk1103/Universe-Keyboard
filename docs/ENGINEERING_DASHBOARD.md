@@ -8,6 +8,14 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## POST-ACCEPT-001 — ADR 0025 绑定文档 hygiene + R3 残差盘点
+
+- **Lifecycle:** `Completed — Follow-up #9/#10 done; R3 Core rows Covered/Partial; Responsive 98/0, KeyboardCore 906/0; Product Gate / default-on not claimed`
+- **Authority:** [`Assignment`](assignments/t9-responsive-pipeline-001-post-accept-001.md) + [`PD-…-POST-ACCEPT-001`](product-decisions/T9-RESPONSIVE-PIPELINE-001-POST-ACCEPT-001-authorization.md)
+- **Evidence:** [`R3 residual inventory`](evidence/t9-responsive-pipeline-post-accept-001-r3-residual-inventory-2026-08-06.md)
+- **Docs:** `swift6-migration.md` dual-path ownership; `input-pipeline-and-marked-text.md` dual pipeline diagrams
+- **Next:** Product Gate / default-on only under a **new** Product Decision; optional independent review of hygiene-only docs
+
 ## ADR-0025-ACCEPT-001 — ADR 0025 正式接受评审
 
 - **Lifecycle:** `Reviewed — Architecture Conditional Accept; Quality Pass with conditions; ADR 0025 Status Accepted (2026-08-06) with residuals; Product Gate / default-on not claimed`

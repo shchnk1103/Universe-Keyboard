@@ -496,10 +496,11 @@ performance). This is not an ADR 0025 acceptance or a Product Gate.
    (Conditional Accept, 2026-08-06)** under
    [`ADR-0025-ACCEPT-001`](../../assignments/adr-0025-accept-001.md) with named
    residuals; not “still waiting.”
-9. Update `swift6-migration.md` ownership table — **post-Accept hygiene** when
-   gate-on path docs need refresh.
-10. Update `input-pipeline-and-marked-text.md` pipeline diagram — **post-Accept
-    hygiene** when the enabled path is documented for ordinary readers.
+9. Update `swift6-migration.md` ownership table — **done** under
+   [`POST-ACCEPT-001`](../../assignments/t9-responsive-pipeline-001-post-accept-001.md)
+   (2026-08-06): dual-path ownership + isolation notes.
+10. Update `input-pipeline-and-marked-text.md` pipeline diagram — **done** under
+    POST-ACCEPT-001 (2026-08-06): gate-off ADR 0004 vs gate-on ADR 0025 diagrams.
 
 ## Related documents
 
