@@ -1,7 +1,7 @@
 # Product Decision: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Decision ID:** `PD-T9-RESPONSIVE-PIPELINE-001`  
-**Lifecycle status:** `Recorded — P1-D2 Amendment B bounded Pass with conditions 2026-08-01; P2 Core subset Pass with conditions; P3-D1-T02/T03 bounded implementation/review complete but Product-held at host block; UIKit/real-device residuals remain; dual-gate default-off; R6 / ADR Accept / Product Gate / default-on not authorized`
+**Lifecycle status:** `Recorded — ADR 0025 Accepted 2026-08-06 (Conditional Accept residuals via ADR-0025-ACCEPT-001); dual-gate default-off retained; CANARY Stop/Retain; R6 / Product Gate / default-on not authorized`
 **Date / timezone:** `2026-07-30 Asia/Shanghai`  
 **Decision source:** Human Product Owner direction in Codex task
 `019f9dac-ff8d-7872-a913-d5dd3f930dc1`, resumed and design-phase-started in the

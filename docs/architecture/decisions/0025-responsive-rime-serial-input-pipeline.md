@@ -1,18 +1,41 @@
 # ADR 0025: Responsive Serial RIME Input Pipeline
 
-- **Status:** Proposed
-- **Date:** 2026-07-30
-- **Decision owner:** 🏛️ Architecture & Knowledge Steward (acceptance pending)
+- **Status:** **Accepted** (`2026-08-06 Asia/Shanghai`) — binding architecture
+  Decision for the responsive serial RIME input pipeline design (single serial
+  session owner; MainActor UI/proxy; ordered enqueue; versioned publish;
+  fail-closed stale interaction; Swift 6 isolation without `@unchecked
+  Sendable` shortcuts). Production enablement remains behind the explicit
+  dual-gate contract in §8. **Release default remains the ADR 0004
+  MainActor-synchronous session path** until a future Product Gate Decision.
+  Architecture acceptance authority:
+  [`ADR-0025-ACCEPT-001`](../../assignments/adr-0025-accept-001.md)
+  independent Architecture review (**Conditional Accept** with named residuals)
+  + Quality evidence-stack **Pass with conditions**. Does **not** authorize:
+  Release default-on, Product Gate, performance SLO, or erasure of Formal R5
+  FAIL history. Residuals: readiness dossier R-01…R-09;
+  Architecture findings A-P2-03…A-P2-05 / A-P3-\*; Quality Q-P3-01…Q-P3-04.
+- **Date:** 2026-07-30 (proposed); Accepted 2026-08-06
+- **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:**
   [`PD-T9-RESPONSIVE-PIPELINE-001`](../../product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md)
+  + acceptance-review phase
+  [`PD-…-ADR-0025-ACCEPT`](../../product-decisions/T9-RESPONSIVE-PIPELINE-001-ADR-0025-ACCEPT-authorization.md)
 - **Assignment:**
-  [`T9-RESPONSIVE-PIPELINE-001`](../../assignments/t9-responsive-rime-pipeline-001.md)
+  [`T9-RESPONSIVE-PIPELINE-001`](../../assignments/t9-responsive-rime-pipeline-001.md);
+  acceptance record
+  [`ADR-0025-ACCEPT-001`](../../assignments/adr-0025-accept-001.md)
 - **Plan:**
   [`t9-responsive-rime-pipeline-plan.md`](../../plans/t9-responsive-rime-pipeline-plan.md)
-- **Supersedes / revises (when Accepted):** the Extension **threading locus**
-  clause of [`ADR 0004`](0004-rime-runtime-session-model.md) only
+- **Acceptance reviews:**
+  [`Architecture`](../../assignments/adr-0025-accept-001-architecture-review.md) ·
+  [`Quality`](../../assignments/adr-0025-accept-001-quality-review.md) ·
+  [`readiness dossier`](../../assignments/adr-0025-accept-001-readiness-dossier.md)
+- **Supersedes / revises (gate-on path only):** the Extension **threading locus**
+  clause of [`ADR 0004`](0004-rime-runtime-session-model.md) when the responsive
+  path is **enabled** under §8
 - **Does not supersede:** process-local session, Main App deploy ownership,
-  no Extension full deploy, recovery-without-deploy rules of ADR 0001–0004
+  no Extension full deploy, recovery-without-deploy rules of ADR 0001–0004;
+  **does not** change ADR 0004 gate-off / Release-default MainActor placement
 
 ## Context
 
@@ -117,24 +140,31 @@ completion from a deliberately coalesced presentation.
 
 ### 6. Relationship to ADR 0004
 
-Until this ADR is **Accepted** and a Product-authorized implementation phase
-lands:
+**Historical (while Proposed):** until Architecture acceptance and
+Product-authorized implementation phases, production code continued to follow
+ADR 0004 as written (session ops on main actor/thread) for ordinary traffic.
 
-- Production code continues to follow ADR 0004 as written (session ops on
-  main actor/thread).
+**When this ADR is Accepted (current):**
 
-When this ADR is **Accepted**:
-
-- ADR 0004’s requirement that librime calls be **serialized** remains binding.
+- ADR 0004’s requirement that librime calls be **serialized** remains binding
+  on **both** gate-off and gate-on paths.
 - ADR 0004’s placement of Extension session operations specifically on the
-  **main actor/thread** is revised: serialization may be provided by the
-  dedicated RIME serial owner instead of MainActor.
+  **main actor/thread** is revised **only for the responsive path when it is
+  enabled** under §8: serialization may be provided by the dedicated RIME
+  serial owner instead of MainActor.
 - All other ADR 0004 decisions (process-local session, recovery limits,
   no durable in-memory composition across process death) remain.
 
-This ADR must not be treated as Accepted by implementers until Architecture
-records acceptance. Product authorization of R1 Fake RIME tests does not by
-itself Accept this ADR.
+**Operational note (Accepted — mandatory interpretation):**
+
+- The revision of ADR 0004’s Extension main-actor/thread **placement** applies
+  only when the responsive path is **enabled** under §8 (gate-on / Product-
+  authorized diagnostic or future Product Gate enablement).
+- Gate-off / Release default continues to follow ADR 0004 as written for
+  session threading locus (MainActor-synchronous session ops).
+- Serialization of librime remains mandatory on both paths.
+- Accept of this ADR is **not** permission to change Release defaults, arm
+  gates in ordinary Release builds, or claim Product Gate.
 
 ### 7. Swift 6 isolation
 
@@ -160,10 +190,11 @@ pre-feature baseline until Product decides otherwise.
 | **Off** (Release default until Product Gate) | Today’s ADR **0004** MainActor-synchronous session path — no responsive owner required |
 | **On** (Debug/internal only until Product Gate) | This ADR’s serial-owner path (enqueue on MainActor; execute on RIME owner; apply validated snapshots on MainActor) |
 
-This table is a design freeze only. **This ADR remains Status: Proposed.** Gate-on
-shipping still requires Architecture acceptance of this ADR, authorized
-implementation phases, independent Quality evidence and Product Gate. Do **not**
-treat R1 Fake RIME work or this document amendment as ADR Accept.
+This table remains a binding gate contract. **This ADR is Status: Accepted** as
+architecture Decision for the gated design. Gate-on **shipping / Release
+default-on** still requires a separate Product Gate Decision plus independent
+Quality evidence appropriate to that Decision. Do **not** treat R1 Fake RIME
+work, canary evidence, or this Accept record as Product Gate or default-on.
 
 ### 9. Diagnostics
 
@@ -448,18 +479,27 @@ performance). This is not an ADR 0025 acceptance or a Product Gate.
 
 1. R1 Fake RIME state machine and regression tests — **done** (Product-authorized).
 2. Architecture P1-2 / P1-3 written freezes — **done** in §§10–11 of this ADR
-   (Status still **Proposed**; not Accept).
+   (historical freezes while Proposed; Decision now **Accepted**).
 3. Architecture P1-1 applied vs published split + interleaving tests — **done**
    in `ResponsiveRimePipeline` R1 bed (2026-07-30 remediation).
 4. Enqueued reset/recover epoch bumps aligned with §11 — **done** in R1 bed.
 5. Independent Architecture **re-review** of P1 remediation (optional before
-   Product considers R2) — pending if Product requests.
-6. R2 serial owner behind default-off gate — **not authorized** until Product.
-7. R3 full contract matrix (Delete, selection, recover, visibility) on wired path.
-8. Independent Architecture **acceptance** of this ADR after R2/R3 evidence.
-9. Update `swift6-migration.md` ownership table when Accepted and implemented.
-10. Update `input-pipeline-and-marked-text.md` pipeline diagram when the
-    enabled path lands.
+   Product considers R2) — superseded by later phase reviews where Product
+   requested them; not an open Accept gate.
+6. R2 serial owner behind default-off gate — **done / superseded** by later
+   Product-authorized gated phases (R4/R5 remediations, dual-gate, canary);
+   Release default remains **off**.
+7. R3 full contract matrix (Delete, selection, recover, visibility) on wired
+   path — **open residual** (not an Accept gate): remaining contract-matrix /
+   evidence-debt rows under default-off maturity; see dossier R-05/R-09.
+8. Independent Architecture **acceptance** after R2/R3 evidence — **done
+   (Conditional Accept, 2026-08-06)** under
+   [`ADR-0025-ACCEPT-001`](../../assignments/adr-0025-accept-001.md) with named
+   residuals; not “still waiting.”
+9. Update `swift6-migration.md` ownership table — **post-Accept hygiene** when
+   gate-on path docs need refresh.
+10. Update `input-pipeline-and-marked-text.md` pipeline diagram — **post-Accept
+    hygiene** when the enabled path is documented for ordinary readers.
 
 ## Related documents
 
