@@ -3,7 +3,7 @@
 Policy version: 1.0.0
 
 **Task ID:** `KOS-2.1-OPS-001`  
-**Lifecycle status:** `Assigned — Active design/bootstrap`  
+**Lifecycle status:** `Active — design draft published; Architecture Pass with conditions; Product Review disposition pending`  
 **Date / timezone:** `2026-08-06 Asia/Shanghai`  
 **Classification:** `Level S — System Governance`  
 **Repository Change Type (this phase):** `Contract` (design publication only) +
@@ -89,9 +89,11 @@ repository migration in this Assignment.
       [`docs/kos/kos-2.1-ops-design-draft.md`](../kos/kos-2.1-ops-design-draft.md) §2  
 - [x] KOS 2.1 proposal draft published (Must/Should/Could + non-goals) — same draft  
 - [x] Migration readiness recommendation recorded — draft §6  
-- [ ] Architecture review of design package recorded  
+- [x] Architecture review of design package recorded:
+      [`kos-2.1-ops-001-architecture-review.md`](kos-2.1-ops-001-architecture-review.md)
+      — **Pass with conditions** (0 P0 / 2 P1 / 3 P2 / 2 P3)  
 - [ ] Product Review disposition recorded (Accept design / Hold / Reject)  
-- [x] Navigation State synced (bootstrap)  
+- [x] Navigation State synced (bootstrap + Arch review link)  
 - [x] Explicit statement that 2.0 remains binding until a later Accept  
 
 ### Stop Conditions
@@ -117,5 +119,9 @@ repository migration in this Assignment.
 
 ## Current phase
 
-**Active — bootstrap PD/Assignment + first pain inventory & proposal draft**  
+**Active — Architecture review complete; awaiting Product Review disposition**  
 (2026-08-06).  
+
+Architecture recommendation: Accept design → implement **Must only** (bind
+A-P1-02, A-P2-01…03); defer **S-01** lightweight dual-review skip; no Migration;
+2.0 remains binding.  

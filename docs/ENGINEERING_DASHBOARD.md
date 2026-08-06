@@ -10,11 +10,12 @@
 
 ## KOS-2.1-OPS-001 — Knowledge OS 2.1 Operational Maturity（设计/复盘）
 
-- **Lifecycle:** `Active — design draft + pain inventory published; Architecture review + Product Review pending; 2.0 remains binding`
+- **Lifecycle:** `Active — Architecture Pass with conditions; Product Review disposition pending; 2.0 remains binding`
 - **Authority:** [`Assignment`](assignments/kos-2.1-ops-001.md) + [`PD-KOS-2.1-OPS-001`](product-decisions/KOS-2.1-OPS-001-authorization.md)
 - **Draft:** [`kos/kos-2.1-ops-design-draft.md`](kos/kos-2.1-ops-design-draft.md)
+- **Architecture review:** [`kos-2.1-ops-001-architecture-review.md`](assignments/kos-2.1-ops-001-architecture-review.md) — Pass with conditions (0/2/3/2); recommend Accept → Must-only IMPL; defer S-01; no Migration
 - **Explicit non-claims:** not 2.1 Accepted; not Migration; not 3.0; no runtime change
-- **Next:** Architecture review of design package → Product disposition (Accept design / Hold / Reject)
+- **Next:** Product disposition — Accept design (Must / Must+Should) / Hold / Reject
 
 ## RESPONSIVE-DEFAULT-ON-001 — Product Gate / dual-gate Release default-on
 
