@@ -57,6 +57,27 @@ Swift 6 strict concurrency is in force. Isolation bypass via
 
 ## Decision
 
+### 0. Layout scope (Amendment — RESPONSIVE-ALL-LAYOUTS-001)
+
+**Status:** Accepted with ADR (2026-08-06) under
+[`PD-RESPONSIVE-ALL-LAYOUTS-001`](../../product-decisions/RESPONSIVE-ALL-LAYOUTS-001-authorization.md).
+
+The **L0 serial-owner pipeline** (this Decision §§1–9) is **layout-universal for
+Chinese RIME** input: at least 中文 26 键 (`rime_ice` / non-T9 semantics) and
+中文九宫格 (`t9`). Product authorization and early evidence may emphasize
+nine-key long composition; that does **not** restrict the owner contract to T9.
+
+**Presentation is layout-specific:**
+
+| Layer | Scope |
+|---|---|
+| L0 owner + ordered session + versioned publish + fail-closed selection | All Chinese RIME layouts under the enable gate |
+| L1 provisional host shadow (e.g. T9 dual-gate `·` dots) | **T9-only** unless a later Product Decision authorizes another layout’s L1 |
+| English / symbol / emoji non-RIME heavy paths | Out of this ADR’s enablement claims |
+
+Release default remains **off** until a Product Gate Decision. This amendment
+does not authorize default-on.
+
 ### 1. Single serial RIME session owner
 
 All librime session APIs used by the keyboard runtime — including at least
@@ -67,7 +88,7 @@ must enter **one** serial owner (dedicated actor or equivalent serial executor
 with a single consumer).
 
 No second concurrent session is introduced for ordinary typing. No background
-queue may call librime except through that owner.
+queue may call librime except through that owner. The owner is **not** T9-only.
 
 ### 2. MainActor remains the UI and document-proxy owner
 

@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — ADR 0025 Accepted; POST-ACCEPT-001 hygiene + R3 inventory Completed (2026-08-06); dual-gate default-off retained; CANARY Stop/Retain; R6 / Product Gate / default-on not claimed`
+**Lifecycle status:** `Active — ADR 0025 Accepted; POST-ACCEPT-001 Completed; RESPONSIVE-ALL-LAYOUTS-001 Completed (26-key + T9 L0 universal, default-off); CANARY Stop/Retain; R6 / Product Gate / default-on not claimed`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  

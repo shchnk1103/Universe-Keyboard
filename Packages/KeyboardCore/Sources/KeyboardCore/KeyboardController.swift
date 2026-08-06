@@ -36,12 +36,14 @@ public final class KeyboardController {
     /// S2.3 earlier first-anchor gate. Orthogonal to rolling/triple; only lowers
     /// the attempt-1 source-digit floor (18 → 12) while retaining two syllables.
     public var isEarlierFirstT9AutoAnchorEnabled = false
-    /// R2 responsive pipeline gate. **Default off** — Release matches ADR 0004
-    /// MainActor-synchronous `rimeEngine` calls. When enabled, printable Chinese
-    /// composition keys are accepted without waiting for librime; results publish
-    /// asynchronously via `SerialRimeSessionOwner` + dual revision watermarks.
-    /// All other session APIs enter the same pipeline through
-    /// `ResponsiveRimeEngineBridge` (no dual-entry).
+    /// Responsive serial RIME pipeline gate (ADR 0025 L0). **Default off** —
+    /// Release matches ADR 0004 MainActor-synchronous `rimeEngine` calls.
+    /// Layout-universal for Chinese RIME (26-key and T9): when enabled, printable
+    /// Chinese composition keys are accepted without waiting for librime; results
+    /// publish asynchronously via serial session owner + dual revision watermarks.
+    /// T9-only L1 provisional presentation remains behind dual-gate +
+    /// `usesT9InputSemantics`. All other session APIs enter the same pipeline
+    /// through `ResponsiveRimeEngineBridge` (no dual-entry).
     public var isResponsiveRimePipelineEnabled = false
     /// R4-Wire: when true **with** responsive gate and a bootstrap, session work
     /// runs on the thread-affine owner. Default remains false.

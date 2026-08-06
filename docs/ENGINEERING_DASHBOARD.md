@@ -8,6 +8,14 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## RESPONSIVE-ALL-LAYOUTS-001 — 全中文布局响应式 L0（default-off）
+
+- **Lifecycle:** `Completed — L0 layout-universal (26-key + T9); L1 provisional T9-only; ResponsiveRimeAllLayoutsTests 8/0; KeyboardCore 914/0; Product Gate / default-on not claimed`
+- **Authority:** [`Assignment`](assignments/responsive-all-layouts-001.md) + [`PD-RESPONSIVE-ALL-LAYOUTS-001`](product-decisions/RESPONSIVE-ALL-LAYOUTS-001-authorization.md)
+- **Evidence:** [`evidence`](evidence/responsive-all-layouts-001-2026-08-06.md)
+- **ADR:** §0 layout-universal amendment on [`0025`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md)
+- **Next:** Product Gate / default-on only under a **new** Decision; optional 26-key device directional matrix later
+
 ## POST-ACCEPT-001 — ADR 0025 绑定文档 hygiene + R3 残差盘点
 
 - **Lifecycle:** `Completed — Follow-up #9/#10 done; R3 Core rows Covered/Partial; Responsive 98/0, KeyboardCore 906/0; Product Gate / default-on not claimed`

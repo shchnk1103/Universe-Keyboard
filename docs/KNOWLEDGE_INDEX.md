@@ -95,6 +95,8 @@
   [`ADR-0025-ACCEPT Quality review`](assignments/adr-0025-accept-001-quality-review.md),
   [`POST-ACCEPT-001 Assignment`](assignments/t9-responsive-pipeline-001-post-accept-001.md),
   [`POST-ACCEPT-001 R3 residual inventory`](evidence/t9-responsive-pipeline-post-accept-001-r3-residual-inventory-2026-08-06.md),
+  [`RESPONSIVE-ALL-LAYOUTS-001 Assignment`](assignments/responsive-all-layouts-001.md),
+  [`RESPONSIVE-ALL-LAYOUTS-001 evidence`](evidence/responsive-all-layouts-001-2026-08-06.md),
   [`CANARY-001 Stop/Retain disposition`](product-decisions/T9-RESPONSIVE-PIPELINE-001-CANARY-001-disposition.md),
   [`CANARY-001/DEVICE-001 device evidence`](evidence/t9-responsive-pipeline-canary-001-device-001-2026-08-04.md),
   [`P2-PERF-03 replicated A/B evidence`](evidence/t9-responsive-pipeline-p2-perf-03-replicated-ab-2026-08-03.md),
