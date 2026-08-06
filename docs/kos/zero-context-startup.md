@@ -51,10 +51,12 @@ Then execute:
 
 1. Read [`AGENTS.md`](../../AGENTS.md) for mandatory collaboration rules.
 2. Read [`docs/KNOWLEDGE_INDEX.md`](../KNOWLEDGE_INDEX.md) for top-level navigation.
-3. Read this startup layer when the session must recover repository authority with little or no historical prompt context.
-4. Read [`docs/READING_MAPS.md`](../READING_MAPS.md) for the closest task route.
-5. Read only the authority sources required by that route.
-6. Before changing repository state, identify the Assignment, role owner, lifecycle state, Source of Truth and validation path.
+3. Read [`docs/ACTIVE_WORK.md`](../ACTIVE_WORK.md) for current formal Work Items (≤10 links; Assignment remains lifecycle SoT).
+4. Read this startup layer when the session must recover repository authority with little or no historical prompt context.
+5. Read [`docs/READING_MAPS.md`](../READING_MAPS.md) for the closest task route.
+6. Read only the authority sources required by that route.
+7. Before changing repository state, identify the Assignment, role owner, lifecycle state, Source of Truth and validation path.
+8. For status hygiene after Gates/merges, use [`kos-2.1-operational-maturity.md`](kos-2.1-operational-maturity.md) under frozen Knowledge OS 2.0.
 
 Stop if the repository does not identify the required authority and the user objective would require guessing.
 

@@ -6,7 +6,7 @@
 >
 > **Source of Truth:** this directory for frozen governance and startup; [`../KNOWLEDGE_OS.md`](../KNOWLEDGE_OS.md) for operational entry
 >
-> **Assignments:** [`KOS-GOV-001`](../assignments/kos-gov-001.md), [`KOS-BOOT-001`](../assignments/kos-boot-001.md), [`KOS-MIG-001`](../assignments/kos-mig-001.md)
+> **Assignments:** [`KOS-GOV-001`](../assignments/kos-gov-001.md), [`KOS-BOOT-001`](../assignments/kos-boot-001.md), [`KOS-MIG-001`](../assignments/kos-mig-001.md); design-only **[`KOS-2.1-OPS-001`](../assignments/kos-2.1-ops-001.md)** (2.0 remains binding)
 
 This directory is the canonical repository-backed specification for Knowledge OS 2.0.
 
@@ -36,7 +36,20 @@ Navigation is single-track. Do not treat pre-migration “v1 remains operational
 
 If this directory conflicts with an applicable open Assignment, return to Product Lead for revalidation. Do not resolve the conflict by redesigning Knowledge OS.
 
-Closed publication Assignments remain historical authority for their own deliverables; they do not authorize new redesign, Knowledge OS 2.1 or domain migration.
+Closed publication Assignments remain historical authority for their own deliverables; they do not authorize new redesign or domain migration by themselves.
+
+## Knowledge OS 2.1 Operational Maturity (ops under 2.0)
+
+| Artifact | Role |
+|---|---|
+| [`kos-2.1-operational-maturity.md`](kos-2.1-operational-maturity.md) | **Published ops package** (M-01…M-05, S-02/S-03) |
+| [`ACTIVE_WORK.md`](../ACTIVE_WORK.md) | Active Work Summary (≤10); Assignment remains lifecycle SoT |
+| [`PD-KOS-2.1-OPS-IMPL-001`](../product-decisions/KOS-2.1-OPS-IMPL-001-authorization.md) | Implementation authorization |
+| [`kos-2.1-ops-design-draft.md`](kos-2.1-ops-design-draft.md) | Historical design draft |
+| [`Architecture review`](../assignments/kos-2.1-ops-001-architecture-review.md) | Design Pass with conditions |
+
+**2.0 remains the frozen constitution.** The 2.1 ops package does not replace it
+and does not authorize dual-track or Migration by itself.
 
 ## Non-goals
 

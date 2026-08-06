@@ -2,6 +2,15 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-06 — KOS 2.1 Operational Maturity package (under 2.0)
+
+- Published ops package: Current Status blocks, State sync checklist, residual
+  hard-close dispositions, evidence grades, Active Work Summary (≤10), stacked
+  PR convention, supersession banners.
+- Frozen Knowledge OS **2.0** principles unchanged; S-01 lightweight dual-review
+  skip deferred; no Migration.
+- Entry: `docs/kos/kos-2.1-operational-maturity.md`, `docs/ACTIVE_WORK.md`.
+
 ## 2026-08-06 — RESPONSIVE-DEFAULT-ON-001 Product Gate（dual-gate Release default-on）
 
 - Product Gate authorizes ordinary Release to **request dual-gate** responsive

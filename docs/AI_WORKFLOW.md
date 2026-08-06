@@ -11,6 +11,17 @@
 - 并行适合调查，不适合无协调地并行写代码。
 - 先确认问题属于哪个系统边界，再决定是否写代码。
 - 正式任务先按 [`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md) 核对 Assignment；`UNKNOWN` 阻止进入 `Ready`，Coordinator/Program Manager 不得自行指派。
+- 运营卫生（Current Status、State sync、证据档位、Active Work）见
+  [`docs/kos/kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md)。
+
+## Stacked PR 约定（KOS 2.1 ops · S-02）
+
+当多个 PR 形成提交栈（前缀 PR 的 commits 是 tip 的子集）时：
+
+1. PR 正文声明：`Stack: base=<branch-or-main> tip=<tip-branch>`，并列出前缀 PR 编号。  
+2. **优先合并 tip**（含全部 commits）；前缀 PR 在 tip 合入后标记 superseded 或由 GitHub 识别为已合并。  
+3. tip 合并后执行 State sync 清单（Dashboard / Index / Assignment Current Status / `ACTIVE_WORK.md`）。  
+4. 不要对同一栈做互相冲突的 squash 重写，除非 Product 明确授权并重开 PR。
 
 ## 推荐角色
 

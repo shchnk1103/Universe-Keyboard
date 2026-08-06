@@ -4,12 +4,14 @@
 
 ## Start By Intent
 
+- **Active formal work (≤10):** [`ACTIVE_WORK.md`](ACTIVE_WORK.md) — links only; Assignment is lifecycle SoT
 - Task-specific implementation or investigation: [`READING_MAPS.md`](READING_MAPS.md)
 - New contributor learning: [`ONBOARDING.md`](ONBOARDING.md)
 - Unfamiliar term: [`GLOSSARY.md`](GLOSSARY.md)
 - Documentation change: [`DOCUMENTATION_GOVERNANCE.md`](DOCUMENTATION_GOVERNANCE.md)
 - Change impact: [`KNOWLEDGE_DEPENDENCIES.md`](KNOWLEDGE_DEPENDENCIES.md)
 - Change classification: [`DECISION_TREES.md`](DECISION_TREES.md)
+- KOS 2.1 ops hygiene (under 2.0): [`kos/kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md)
 
 ## Current System
 
@@ -123,6 +125,7 @@
 - Knowledge OS 2.0 frozen governance + startup + migration records: [`docs/kos/`](kos/)
 - Zero-Context Startup for new AI sessions: [`kos/zero-context-startup.md`](kos/zero-context-startup.md)
 - Knowledge OS operational migration (closed): [`assignments/kos-mig-001.md`](assignments/kos-mig-001.md), [`kos/migration-001-record.md`](kos/migration-001-record.md)
+- Knowledge OS 2.1 operational maturity **published under 2.0** (frozen 2.0 unchanged): [`ops package`](kos/kos-2.1-operational-maturity.md), [`ACTIVE_WORK.md`](ACTIVE_WORK.md), [`IMPL Assignment`](assignments/kos-2.1-ops-impl-001.md), [`design disposition`](product-decisions/KOS-2.1-OPS-001-design-disposition.md)
 - Documentation graph: [`DOCUMENTATION_GRAPH.md`](DOCUMENTATION_GRAPH.md)
 - Governance: [`DOCUMENTATION_GOVERNANCE.md`](DOCUMENTATION_GOVERNANCE.md)
 - Multi-agent workflow: [`AI_WORKFLOW.md`](AI_WORKFLOW.md)

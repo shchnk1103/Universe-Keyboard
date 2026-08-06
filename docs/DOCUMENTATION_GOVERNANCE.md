@@ -112,6 +112,27 @@ Prefer commands, discovery steps, stable constraints or links to current evidenc
 
 Historical values must be labelled as snapshots and must not be copied into current architecture or quick-start claims.
 
+## Evidence Grades (KOS 2.1 ops)
+
+When recording validation results in evidence documents, label each result with
+exactly one grade ([`kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md) M-04):
+
+| Grade | Meaning |
+|---|---|
+| `Executor-recorded` | Executor ran the command; Quality did not independently re-run it |
+| `Quality-reverified` | Quality independently re-ran or re-checked the claim |
+| `Device-attested` | Physical-device / Human operator attestation per Assignment |
+
+Do not present `Executor-recorded` results as Quality-verified. Volatile
+snapshot metadata (date, commit, method, evidence path) still applies.
+
+## Supersession Banners (KOS 2.1 ops)
+
+When a later Product Decision or Assignment supersedes earlier “not authorized /
+not claimed / default-off” narrative that remains in-tree, put a short banner at
+the top of the stale section pointing to the current authority (S-03). Historical
+text may remain for audit; it must not read as current status.
+
 ## Plan Lifecycle
 
 Every file under `docs/plans/` must declare exactly one lifecycle state near the top:
