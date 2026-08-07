@@ -23,7 +23,45 @@ struct KeyboardLayoutSettingsView: View {
             } header: {
                 Text("主键盘")
             } footer: {
-                Text("九键依赖雾凇拼音的 T9 方案。启用前会检查安装与部署状态；失败时保持当前布局。部分高级能力在九键模式下可能不可用，切回全键盘后恢复。英文与自动英文场景在九键偏好下仍使用 26 键。长句建议尽早点选拼音路径或分段上屏，可减少未确认数字串变长时的卡顿。")
+                Text("九键依赖已就绪的九键方案（当前为雾凇 T9）。启用前会检查安装与部署状态；失败时保持当前布局。英文与自动英文场景在九键偏好下仍使用 26 键。长句建议尽早点选拼音路径或分段上屏，可减少未确认数字串变长时的卡顿。")
+            }
+
+            Section {
+                ForEach(rimeStore.twentySixKeySchemeChoices) { schema in
+                    schemeRow(
+                        title: schema.name,
+                        subtitle: schema.schemaID,
+                        isSelected: rimeStore.schemeBinding26 == schema.schemaID
+                    ) {
+                        Task { await rimeStore.setSchemeBinding26(schema.schemaID) }
+                    }
+                }
+            } header: {
+                Text("全键盘使用的方案")
+            } footer: {
+                Text("仅影响 26 键中文布局。与九宫格方案互相独立。")
+            }
+
+            Section {
+                if rimeStore.nineKeySchemeChoices.isEmpty {
+                    Text("尚未就绪。请先安装雾凇并启用九宫格以完成 T9 验证。")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(rimeStore.nineKeySchemeChoices, id: \.id) { row in
+                        schemeRow(
+                            title: row.name,
+                            subtitle: row.id,
+                            isSelected: rimeStore.schemeBinding9 == row.id
+                        ) {
+                            rimeStore.setSchemeBinding9(row.id)
+                        }
+                    }
+                }
+            } header: {
+                Text("九宫格使用的方案")
+            } footer: {
+                Text("只列出支持九键数字输入的方案。未就绪时切到九宫格会自动回退全键盘。")
             }
 
             if isBusy {
@@ -140,7 +178,35 @@ struct KeyboardLayoutSettingsView: View {
         .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
     }
 
+    private func schemeRow(
+        title: String,
+        subtitle: String,
+        isSelected: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .foregroundStyle(.primary)
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(Color.accentColor)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityValue(isSelected ? "已选择" : "未选择")
+    }
+
     private func reload() {
+        rimeStore.ensureLayoutSchemeBindingsMigrated()
         selectedLayout = rimeStore.layoutStyle
     }
 

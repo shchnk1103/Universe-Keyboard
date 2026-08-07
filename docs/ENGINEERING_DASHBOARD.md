@@ -27,12 +27,12 @@
 
 ## RIME-SCHEME-WANXIANG-001 — 万象拼音 + 布局绑定方案
 
-- **Lifecycle:** `Proposed / Assignment Pending` — product freezes in; not Ready
-- **Authority:** [`PD`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) · [`Assignment`](assignments/rime-scheme-wanxiang-001.md)
-- **Freezes:** 万象 V1 = **全拼**; large package **acceptable in principle**; **layout settings page chooses scheme per layout** (26 键 / 九宫格各自可选) — **not** permanent fog-song-only nine-key
-- **Architecture draft:** [`ADR 0026`](architecture/decisions/0026-layout-bound-rime-scheme-selection.md) (**Proposed**) amends 0018 layout×scheme; **not Accepted** — current `RimeRuntimeSelection` still SoT
-- **Still open:** ADR 0026 Accept; exact 万象 release asset / schema IDs; advanced-input matrix; hard size budget number
-- **Next:** Architecture review of ADR 0026; pin 万象全拼 upstream; then Ready
+- **Lifecycle:** `Active` — layout-bound foundation landed; 万象 download pending
+- **Authority:** [`PD`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) · [`Assignment`](assignments/rime-scheme-wanxiang-001.md) · [`ADR-0026-ACCEPT`](assignments/adr-0026-accept-001.md)
+- **ADR 0026:** **Accepted** — layout×scheme resolver + settings pickers + migration
+- **Evidence:** `LayoutBoundRimeRuntimeSelectionTests` **7/0** (Executor-recorded)
+- **Still open:** 万象 release asset / schema IDs; catalog install; advanced-input matrix
+- **Next:** Pin 万象全拼 upstream and implement catalog entry
 
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 

@@ -2,14 +2,14 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
-## 2026-08-07 — Product direction: close mixed candidates; propose 万象拼音 scheme
+## 2026-08-07 — ADR 0026 layout-bound schemes + product direction
 
-- `PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001` **Closed — Won’t do** (accept rime-ice
-  `t9` sparse raw-digit menus; no Apple-like first-key union work).
-- `PD-RIME-SCHEME-WANXIANG-001` **Proposed**: downloadable **万象拼音（全拼 V1）**;
-  large package acceptable in principle; **layout settings choose scheme per
-  layout** (26-key / nine-key) — requires ADR 0018 amendment before implement.
-  Implementation not Ready.
+- `ADR 0026` **Accepted**: per-layout RIME scheme slots; `RimeRuntimeSelection`
+  layout-bound resolve + migration; layout settings pickers for 26-key / nine-key.
+- Tests: `LayoutBoundRimeRuntimeSelectionTests` 7/0 (Executor-recorded).
+- `PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001` **Closed — Won’t do**.
+- `PD-RIME-SCHEME-WANXIANG-001` **Proposed/Active**: 万象全拼 V1 catalog install
+  still next; layout-bound foundation landed first.
 
 ## 2026-08-07 — RESPONSIVE-CANDIDATE-ANOMALY-001 select double-commit + paging window
 

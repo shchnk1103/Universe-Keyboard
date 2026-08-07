@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Assignment Pending` |
-| **Phase** | Product freezes in; Architecture (ADR 0018) + Q1/Q2/Q4 still block Ready |
+| **Lifecycle** | `Active` — layout-bound slice landing; 万象 download still pending |
+| **Phase** | ADR 0026 Accepted; resolver + layout UI shipped; catalog 万象 next |
 | **Parent PD** | [`PD-RIME-SCHEME-WANXIANG-001`](../product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) |
-| **Non-claims** | Implementation not authorized until Ready |
-| **Next** | Architecture Accept [`ADR 0026`](../architecture/decisions/0026-layout-bound-rime-scheme-selection.md); freeze 万象 upstream asset |
+| **Non-claims** | 万象 zip install not shipped yet |
+| **Next** | Freeze 万象 upstream asset (Q1/Q2); catalog install slice |
 | **Residuals** | None |
 
 ---

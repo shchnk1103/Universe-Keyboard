@@ -4,12 +4,12 @@
 
 Accepted; V1 runtime implementation complete
 
-> **Amendment pending (not in force until Accepted):** Product requires
-> **layout-bound scheme selection** (26 键 / 九宫格 each pick an installed
-> scheme). Proposed draft:
-> [`ADR 0026`](0026-layout-bound-rime-scheme-selection.md). Until 0026 is
-> Accepted, **this ADR’s §2 resolver table and current `RimeRuntimeSelection`
-> behavior remain the runtime Source of Truth.**
+> **Amended by [`ADR 0026`](0026-layout-bound-rime-scheme-selection.md)
+> (Accepted 2026-08-07):** effective schema is **layout-bound** (per-layout
+> scheme slots + capability filter + fail-closed). This ADR remains SoT for
+> T9 **input semantics**, readiness/deploy ownership, compatible `t9` patch,
+> and nine-key chrome constraints. §2 single-base → auto-`t9` table is
+> **migration default only** when per-layout bindings are absent.
 
 Accepted after Codex Architecture/Quality review on `2026-07-16 Asia/Shanghai`. Final Spike gate re-review (`docs/evidence/keyboard-layout-9key-001-codex-rereview-2.md`) authorized Assignment `Ready -> Active` for plan steps 3–10. Implementation code-review closed (`docs/evidence/keyboard-layout-9key-001-codex-implementation-rereview-3.md`). Product Gate **PASS** (`docs/evidence/keyboard-layout-9key-001-product-gate-decision.md`); Assignment KEYBOARD-LAYOUT-9KEY-001 is `Closed`. Spike technical direction (pinned librime `1.16.1` + remove `t9_processor`) remains the V1 contract.
 

@@ -20,4 +20,8 @@ public enum KeyboardLayoutStyle: String, Codable, Sendable, Equatable, CaseItera
 public enum KeyboardLayoutSettingsKey {
     /// Stable App Group key for `KeyboardLayoutStyle.rawValue`.
     public static let layoutStyle = "keyboard_layout_style"
+    /// ADR 0026: RIME schema ID for the 26-key Chinese layout slot.
+    public static let schemeBinding26 = "keyboard_layout_scheme_26"
+    /// ADR 0026: RIME schema ID for the nine-key slot (V1: `t9` when ready).
+    public static let schemeBinding9 = "keyboard_layout_scheme_9"
 }

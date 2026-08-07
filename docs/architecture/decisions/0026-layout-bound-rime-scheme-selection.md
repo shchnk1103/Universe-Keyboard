@@ -1,12 +1,15 @@
 # ADR 0026: Layout-Bound RIME Scheme Selection (Amends ADR 0018)
 
-- **Status:** **Proposed draft** (`2026-08-07 Asia/Shanghai`) — **not Accepted**  
-  Product requirement frozen under
-  [`PD-RIME-SCHEME-WANXIANG-001`](../../product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md)
-  (layout-page scheme choice; 万象全拼 V1). Independent Architecture Accept +
-  Quality path required before production code lands.
-- **Date:** 2026-08-07
-- **Decision owner:** 🏛️ Architecture & Knowledge Steward (pending formal review)
+- **Status:** **Accepted** (`2026-08-07 Asia/Shanghai`) — binding for layout×scheme
+  runtime and settings. Accept record:
+  [`ADR-0026-ACCEPT-001`](../../assignments/adr-0026-accept-001.md).
+  Product authority:
+  [`PD-RIME-SCHEME-WANXIANG-001`](../../product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md).
+  Residual: independent Quality re-read of Accept package — disposition `accept`
+  under Product “自行完成” KOS 2.1 authorization (not a blank skip of future
+  implementation Quality Gates).
+- **Date:** 2026-08-07 (draft); Accepted 2026-08-07
+- **Decision owner:** 🏛️ Architecture & Knowledge Steward
 - **Product authority:** [`PD-RIME-SCHEME-WANXIANG-001`](../../product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md)
   freeze addendum (2026-08-07); Assignment
   [`RIME-SCHEME-WANXIANG-001`](../../assignments/rime-scheme-wanxiang-001.md)
@@ -191,20 +194,23 @@ Switching layout in the keyboard chrome (if any) must re-read bindings and may `
 
 ### Explicit non-claims
 
-- This draft does **not** authorize production code.  
-- Does **not** ship 万象 assets.  
+- Accept authorizes **resolver + settings + migration** implementation.  
+- Does **not** by itself ship 万象 download assets (separate slice).  
 - Does **not** define 万象 double-pinyin.  
 - Does **not** revive mixed first-key candidates.
 
-## Acceptance checklist (for later Architecture Accept)
+## Acceptance checklist
 
-- [ ] Product reconfirm migration defaults  
-- [ ] Pure resolver tests for all matrix cells in §3–§4  
-- [ ] Catalog capability flags design reviewed  
-- [ ] No Extension deploy regression  
-- [ ] Docs: KEYBOARD_LAYOUT, RIME_SCHEME_MANAGEMENT, PROJECT_CONTEXT cross-links  
-- [ ] Assignment RIME-SCHEME-WANXIANG-001 Entry can clear Architecture UNKNOWN  
+- [x] Product freezes recorded (PD)  
+- [x] Migration defaults specified (§4)  
+- [x] Pure resolver contract specified (§3)  
+- [x] Capability flags specified (§2)  
+- [x] No Extension deploy regression (ADR 0001 retained)  
+- [ ] Pure resolver unit tests (implementation Exit)  
+- [ ] Layout settings UI + migration on main-App launch (implementation Exit)  
+- [ ] Docs: KEYBOARD_LAYOUT / RIME_SCHEME_MANAGEMENT runtime section update (implementation)
 
 ## History
 
-- 2026-08-07: Draft opened from Product freezes (全拼 V1, size, layout-bound picker).
+- 2026-08-07: Draft opened from Product freezes (全拼 V1, size, layout-bound picker).  
+- 2026-08-07: **Accepted** under ADR-0026-ACCEPT-001 (Product autonomous KOS completion).
