@@ -278,9 +278,40 @@ private struct ThreadAffineRimeSpikeEnvelope: Sendable {
     let revision: UInt64
 }
 
+/// Sync reply for owner-thread read-only candidate window queries.
+///
+/// Read path must not advance session revision or publish a composition snapshot.
+private final class ThreadAffineCandidateWindowReply: Sendable {
+    private struct State: Sendable {
+        var window: RimeCandidateWindow?
+        var fulfilled = false
+    }
+
+    private let state = Mutex(State())
+    private let signal = DispatchSemaphore(value: 0)
+
+    func fulfill(_ window: RimeCandidateWindow) {
+        state.withLock {
+            $0.window = window
+            $0.fulfilled = true
+        }
+        signal.signal()
+    }
+
+    func wait(timeout: DispatchTime) -> RimeCandidateWindow? {
+        if let ready = state.withLock({ $0.fulfilled ? $0.window : nil }) {
+            return ready
+        }
+        _ = signal.wait(timeout: timeout)
+        return state.withLock { $0.window }
+    }
+}
+
 private enum ThreadAffineRimeControlCommand: Sendable {
     case advanceEpoch(UInt64)
     case stop
+    /// Read-only; does not mutate composition or revision.
+    case candidateWindow(from: Int, limit: Int, reply: ThreadAffineCandidateWindowReply)
 }
 
 private enum ThreadAffineRimeOwnerCommand: Sendable {
@@ -580,6 +611,26 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         requestStop()
     }
 
+    /// Read-only candidate window on the owner thread after mutations are drained.
+    /// Does not allocate a revision or publish a composition snapshot.
+    public func candidateWindow(
+        from globalIndex: Int,
+        limit: Int,
+        timeout: DispatchTime = .now() + 5
+    ) -> RimeCandidateWindow {
+        let reply = ThreadAffineCandidateWindowReply()
+        mailbox.enqueueControl(
+            .candidateWindow(from: globalIndex, limit: limit, reply: reply)
+        )
+        return reply.wait(timeout: timeout)
+            ?? RimeCandidateWindow(
+                candidates: [],
+                startIndex: max(0, globalIndex),
+                nextIndex: max(0, globalIndex),
+                hasMoreCandidates: false
+            )
+    }
+
     /// Hot-path entry (call from keyboard MainActor). Allocates a revision and
     /// enqueues a Sendable descriptor only; never calls the engine. Refuses when
     /// work bound is full.
@@ -876,6 +927,10 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                 if purged > 0 {
                     counters.withAcceptance { $0.skippedStaleEpochCount &+= purged }
                 }
+
+            case .control(.candidateWindow(let from, let limit, let reply)):
+                // Read-only: no revision bump, no snapshot delivery.
+                reply.fulfill(engine.candidateWindow(from: from, limit: limit))
 
             case .control(.stop):
                 // Control priority: stop is not buried behind work. Remaining

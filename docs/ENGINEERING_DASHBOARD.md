@@ -2,11 +2,30 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-06 Asia/Shanghai
+> **Updated:** 2026-08-07 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## RESPONSIVE-CANDIDATE-ANOMALY-001 — dual-gate 候选双写 / 分页卡死
+
+- **Lifecycle:** `Completed` — A1 select publish ownership + B owner-thread `candidateWindow`
+- **Authority:** [`Assignment`](assignments/responsive-candidate-anomaly-001.md) (Human Product Lead in-session under KOS 2.1)
+- **Parent:** T9-RESPONSIVE-PIPELINE-001 / RESPONSIVE-DEFAULT-ON-001
+- **Evidence:** `ResponsiveCandidateAnomalyTests` **4/0** (Executor-recorded); related filtered suite **38/0**
+- **Explicit non-claims:** not Quality-reverified; not device Product Gate
+- **Residual:** R-01 optional Human device smoke — disposition `accept`
+- **Next:** none required for automated Close path
+
+## T9-SINGLE-KEY-MIXED-CANDIDATES-001 — 单键混合中文候选（苹果式首键）
+
+- **Lifecycle:** `Proposed / Assignment Pending` — product goal recorded only
+- **Authority:** [`PD`](product-decisions/T9-SINGLE-KEY-MIXED-CANDIDATES-001-authorization.md) · [`Assignment`](assignments/t9-single-key-mixed-candidates-001.md)
+- **Problem:** Apple system nine-key shows rich m/n/o-mixed Chinese after one MNO press; rime-ice `t9` raw `6` menu is thin (~4, o-biased). Path `m|n|o` alone does not match first-key intuition.
+- **Separation:** **Not** the same class as dual-gate select double-commit or `candidateWindow` paging stall
+- **Explicit non-claims:** implementation not authorized; ADR 0021 amendment path required before code
+- **Next:** Product approach Gate (bands A–D in PD); then Architecture; then Ready Assignment
 
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 
