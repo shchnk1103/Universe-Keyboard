@@ -30,9 +30,9 @@
 - **Lifecycle:** `Proposed / Assignment Pending` — product freezes in; not Ready
 - **Authority:** [`PD`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) · [`Assignment`](assignments/rime-scheme-wanxiang-001.md)
 - **Freezes:** 万象 V1 = **全拼**; large package **acceptable in principle**; **layout settings page chooses scheme per layout** (26 键 / 九宫格各自可选) — **not** permanent fog-song-only nine-key
-- **Architecture block:** ADR **0018** must be amended for layout×scheme runtime (current auto `rime_ice`→`t9` is insufficient)
-- **Still open:** exact 万象 release asset / schema IDs; advanced-input matrix; hard size budget number
-- **Next:** Architecture ADR 0018 amendment draft; pin 万象全拼 upstream; then Ready
+- **Architecture draft:** [`ADR 0026`](architecture/decisions/0026-layout-bound-rime-scheme-selection.md) (**Proposed**) amends 0018 layout×scheme; **not Accepted** — current `RimeRuntimeSelection` still SoT
+- **Still open:** ADR 0026 Accept; exact 万象 release asset / schema IDs; advanced-input matrix; hard size budget number
+- **Next:** Architecture review of ADR 0026; pin 万象全拼 upstream; then Ready
 
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 

@@ -4,7 +4,7 @@
 **Lifecycle status:** `Proposed — Product freezes recorded; implementation not Ready`  
 **Date / timezone:** `2026-08-07 Asia/Shanghai`  
 **Parent domain:** RIME multi-scheme management ([`RIME_SCHEME_MANAGEMENT.md`](../RIME_SCHEME_MANAGEMENT.md)); keyboard layout ([`KEYBOARD_LAYOUT.md`](../KEYBOARD_LAYOUT.md))  
-**Related:** ADR 0001 (main App deploy only); catalog/install model for `rime_ice`; **ADR 0018 must be amended** for layout-bound scheme choice (see §3)  
+**Related:** ADR 0001 (main App deploy only); catalog/install model for `rime_ice`; **ADR 0018 amend draft** [`ADR 0026`](../architecture/decisions/0026-layout-bound-rime-scheme-selection.md) (**Proposed**, not Accepted)  
 **Assignment:** [`rime-scheme-wanxiang-001.md`](../assignments/rime-scheme-wanxiang-001.md)  
 **Replaces investment focus:** [`PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001`](T9-SINGLE-KEY-MIXED-CANDIDATES-001-authorization.md) (`Closed — Won’t do`)
 
@@ -13,9 +13,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Proposed` |
-| **Phase** | Partial freeze (全拼首版 / 体积可接受 / **布局可选方案**); upstream asset + Architecture still open |
-| **Non-claims** | Not App Store marketing; not dual-gate work; not mixed-candidate work |
-| **Next** | Architecture review of layout-bound scheme selection vs ADR 0018; freeze upstream package/schema IDs; then Ready |
+| **Phase** | Product freezes in; **ADR 0026 draft** for layout×scheme; 万象 asset pin still open |
+| **Non-claims** | Not App Store marketing; not dual-gate work; not mixed-candidate work; ADR 0026 not yet Accepted |
+| **Next** | Architecture Accept of ADR 0026 (or revise); freeze 万象 upstream package/schema IDs; then Ready |
 | **Residuals** | Q1 (exact release asset), Q2 (schema IDs), Q4 (advanced-input matrix) still open |
 
 ---

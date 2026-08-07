@@ -10,7 +10,7 @@ Policy version: 1.0.0
 | **Phase** | Product freezes in; Architecture (ADR 0018) + Q1/Q2/Q4 still block Ready |
 | **Parent PD** | [`PD-RIME-SCHEME-WANXIANG-001`](../product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) |
 | **Non-claims** | Implementation not authorized until Ready |
-| **Next** | Architecture amend ADR 0018 for layout×scheme; freeze 万象 upstream asset |
+| **Next** | Architecture Accept [`ADR 0026`](../architecture/decisions/0026-layout-bound-rime-scheme-selection.md); freeze 万象 upstream asset |
 | **Residuals** | None |
 
 ---
@@ -70,7 +70,7 @@ Policy version: 1.0.0
 ### Entry Criteria (Ready)
 
 - [x] Product: 全拼 V1 / size / layout-bound picker freezes recorded  
-- [ ] Architecture: ADR 0018 amendment (or superseding ADR) Accepted or Conditional Accept for layout×scheme  
+- [ ] Architecture: [`ADR 0026`](../architecture/decisions/0026-layout-bound-rime-scheme-selection.md) Accepted or Conditional Accept  
 - [ ] Q1–Q2 frozen (upstream asset + schema ID for 万象全拼)  
 - [ ] Executor + reviewers named (no blocking UNKNOWN)  
 - [ ] Active Work capacity if activated  
