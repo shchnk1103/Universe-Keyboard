@@ -2,6 +2,25 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-07 — Layout UI + nine-key with 万象 26-key binding
+
+- Keyboard layout page shows **one** scheme picker for the selected 主键盘 only
+  (no simultaneous “全键盘方案 / 九宫格方案” blocks that mislead 万象 users).
+- Extension provisional layout resolve now passes ADR 0026 scheme bindings;
+  nine-key chrome works when 26-key slot is `wanxiang` and fog T9 is ready.
+- Layout-bound resolve defaults missing `binding9` to `t9` when readiness matches.
+- Fuzzy pinyin deploy patches **all installed letter schemas**, not only active.
+- Tests: `LayoutBoundRimeRuntimeSelectionTests` 10/0; fuzzy multi-schema deploy
+  test renamed/updated.
+
+## 2026-08-07 — Select publish fail-closed: multi-segment double host commit
+
+- Tag dual-gate `selectCandidate` pipeline actions as `sel-*` and strip
+  `committedText` on presentation apply so Core remains the only host-commit
+  owner (covers partial → final long 全拼 selections such as 今天… + 我们…).
+- Regression: `ResponsiveCandidateAnomalyTests` 6/0 (`swift test --filter
+  ResponsiveCandidateAnomalyTests`, Executor-recorded).
+
 ## 2026-08-07 — 万象拼音 catalog + ADR 0026 layout-bound schemes
 
 - Catalog: downloadable **万象拼音** (`wanxiang`) from `amzxyz/rime-wanxiang`

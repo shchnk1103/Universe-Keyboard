@@ -40,6 +40,45 @@ final class LayoutBoundRimeRuntimeSelectionTests: XCTestCase {
         XCTAssertFalse(selection.usesT9InputSemantics)
     }
 
+    /// 26-key slot may be 万象 while layout preference is nine-key → fog T9 chrome.
+    func testWanxiang26BindingDoesNotBlockNineKeyLayoutWhenT9Ready() {
+        let selection = RimeRuntimeSelection(
+            baseSchemaID: "wanxiang",
+            layoutStyle: .nineKey,
+            t9ReadinessMatched: true,
+            schemeBinding26: "wanxiang",
+            schemeBinding9: "t9"
+        )
+        XCTAssertEqual(selection.effectiveSchemaID, "t9")
+        XCTAssertEqual(selection.effectiveLayoutStyle, .nineKey)
+        XCTAssertTrue(selection.usesT9InputSemantics)
+    }
+
+    /// Missing binding9 still defaults to t9 when readiness matches (heal incomplete migration).
+    func testNineKeyDefaultsBinding9ToT9WhenOmittedButReady() {
+        let selection = RimeRuntimeSelection(
+            baseSchemaID: "wanxiang",
+            layoutStyle: .nineKey,
+            t9ReadinessMatched: true,
+            schemeBinding26: "wanxiang",
+            schemeBinding9: nil
+        )
+        XCTAssertEqual(selection.effectiveSchemaID, "t9")
+        XCTAssertTrue(selection.usesT9InputSemantics)
+    }
+
+    /// Legacy resolve path (no bindings): wanxiang base cannot drive T9 — documents why Extension must pass bindings.
+    func testLegacyPathWithWanxiangBaseFailsClosedOnNineKey() {
+        let selection = RimeRuntimeSelection(
+            baseSchemaID: "wanxiang",
+            layoutStyle: .nineKey,
+            t9ReadinessMatched: true
+        )
+        XCTAssertEqual(selection.effectiveLayoutStyle, .twentySixKey)
+        XCTAssertFalse(selection.usesT9InputSemantics)
+        XCTAssertEqual(selection.effectiveSchemaID, "wanxiang")
+    }
+
     func testNineKeyFailsClosedWithoutReadiness() {
         let selection = RimeRuntimeSelection(
             baseSchemaID: "rime_ice",

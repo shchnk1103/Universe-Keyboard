@@ -711,7 +711,14 @@ public final class KeyboardController {
             ctx = nil
         }
 
-        let output = augmentRimeOutputIfNeeded(snapshot.output)
+        // Select host apply is owned by Core (`handleInsertCandidate`). If a
+        // `sel-*` snapshot still reaches presentation (suppress race / late
+        // MainActor hop), strip committedText so partial/final segments are not
+        // inserted twice (e.g. long multi-segment 全拼: 今天… + 我们…我们…).
+        let output = presentationOutputStrippingSelectOwnedCommit(
+            from: augmentRimeOutputIfNeeded(snapshot.output),
+            actionID: snapshot.actionID
+        )
         // Prefer underlying session for post-process (already applied processKey).
         // Thread-affine mode has no MainActor live engine — presentation-only path.
         let engineForPostProcess = underlyingRimeEngine
@@ -810,6 +817,33 @@ public final class KeyboardController {
         } else {
             runPostProcess()
         }
+    }
+
+    /// Drops host commit from select-owned pipeline snapshots.
+    ///
+    /// `sel-*` actions return into Core select handling which already calls
+    /// `commitInlinePreedit`. Re-applying `committedText` here doubles the last
+    /// segment on multi-step partial commits (and any single select under race).
+    private func presentationOutputStrippingSelectOwnedCommit(
+        from output: RimeOutput,
+        actionID: String
+    ) -> RimeOutput {
+        guard actionID.hasPrefix("sel-"),
+              output.committedText != nil
+        else {
+            return output
+        }
+        return RimeOutput(
+            rawInput: output.rawInput,
+            composition: output.composition,
+            candidates: output.candidates,
+            committedText: nil,
+            hasMorePages: output.hasMorePages,
+            highlightedIndex: output.highlightedIndex,
+            candidatePageNumber: output.candidatePageNumber,
+            caretPositionInRaw: output.caretPositionInRaw,
+            commitPreviewLength: output.commitPreviewLength
+        )
     }
 
     private func notifyResponsivePresentation(pathChanged: Bool) {

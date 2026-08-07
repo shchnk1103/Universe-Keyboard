@@ -72,7 +72,7 @@ extension SchemaManager {
                 settings.set(false, forKey: RimeUserDictionarySettings.pendingDeployKey)
                 settings.set(false, forKey: RimeAdvancedInputSettings.pendingDeployKey)
                 settings.set(
-                    currentFuzzyPinyinSettings().deploymentSignature(activeSchemaID: activeSchemaIDForDeployment),
+                    currentFuzzyPinyinSettings().deploymentSignature(activeSchemaID: "all"),
                     forKey: RimeFuzzyPinyinSettings.deployedSignatureKey
                 )
                 settings.set(
@@ -149,39 +149,78 @@ extension SchemaManager {
     }
 
     private func applyFuzzyPinyinPostProcessing(to sharedDataURL: URL) {
-        let activeSchema = activeSchemaIDForDeployment
-        let schemaURL = sharedDataURL.appendingPathComponent("\(activeSchema).schema.yaml")
-        guard let originalYaml = try? String(contentsOf: schemaURL, encoding: .utf8) else {
-            Logger.shared.warning(
-                "deployRimeConfig: fuzzy pinyin skipped, schema file missing: \(activeSchema)",
-                category: .deployment
-            )
-            return
-        }
-
+        // Multi-scheme: patch every installed 26-key schema file present in shared,
+        // not only `rime_active_schema`. Otherwise toggling fuzzy while 万象 is active
+        // leaves 雾凇 without the managed block (and the reverse).
         let fuzzySettings = currentFuzzyPinyinSettings()
-
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: fuzzySettings, to: originalYaml)
-        guard result.yaml != originalYaml else {
-            Logger.shared.info(
-                "deployRimeConfig: fuzzy pinyin unchanged (\(activeSchema), status=\(result.status))",
+        let schemaIDs = fuzzyTargetSchemaIDs(sharedDataURL: sharedDataURL)
+        guard !schemaIDs.isEmpty else {
+            Logger.shared.warning(
+                "deployRimeConfig: fuzzy pinyin skipped, no target schema files",
                 category: .deployment
             )
             return
         }
 
-        do {
-            try result.yaml.write(to: schemaURL, atomically: true, encoding: .utf8)
-            Logger.shared.info(
-                "deployRimeConfig: fuzzy pinyin \(result.status) for \(activeSchema)",
-                category: .deployment
-            )
-        } catch {
-            Logger.shared.warning(
-                "deployRimeConfig: fuzzy pinyin write failed for \(activeSchema): \(error.localizedDescription)",
-                category: .deployment
-            )
+        for schemaID in schemaIDs {
+            let schemaURL = sharedDataURL.appendingPathComponent("\(schemaID).schema.yaml")
+            guard let originalYaml = try? String(contentsOf: schemaURL, encoding: .utf8) else {
+                Logger.shared.warning(
+                    "deployRimeConfig: fuzzy pinyin skipped, schema file missing: \(schemaID)",
+                    category: .deployment
+                )
+                continue
+            }
+
+            let result = RimeFuzzyPinyinPostProcessor.apply(settings: fuzzySettings, to: originalYaml)
+            guard result.yaml != originalYaml else {
+                Logger.shared.info(
+                    "deployRimeConfig: fuzzy pinyin unchanged (\(schemaID), status=\(result.status))",
+                    category: .deployment
+                )
+                continue
+            }
+
+            do {
+                try result.yaml.write(to: schemaURL, atomically: true, encoding: .utf8)
+                Logger.shared.info(
+                    "deployRimeConfig: fuzzy pinyin \(result.status) for \(schemaID)",
+                    category: .deployment
+                )
+            } catch {
+                Logger.shared.warning(
+                    "deployRimeConfig: fuzzy pinyin write failed for \(schemaID): \(error.localizedDescription)",
+                    category: .deployment
+                )
+            }
         }
+    }
+
+    /// Schemas that should receive the managed fuzzy algebra block on deploy.
+    private func fuzzyTargetSchemaIDs(sharedDataURL: URL) -> [String] {
+        var ids = Set<String>()
+        ids.insert(activeSchemaIDForDeployment)
+        if let binding26 = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26),
+           !binding26.isEmpty
+        {
+            ids.insert(binding26 == "t9" ? "rime_ice" : binding26)
+        }
+        // Always include installed downloadable letter schemes when their schema file exists.
+        for entry in RimeSchemeCatalog.downloadableEntries {
+            let id = entry.schemaID
+            let url = sharedDataURL.appendingPathComponent("\(id).schema.yaml")
+            if FileManager.default.fileExists(atPath: url.path) {
+                ids.insert(id)
+            }
+        }
+        let luna = sharedDataURL.appendingPathComponent("luna_pinyin.schema.yaml")
+        if FileManager.default.fileExists(atPath: luna.path) {
+            ids.insert("luna_pinyin")
+        }
+        return ids
+            .map { $0 == "t9" ? "rime_ice" : $0 }
+            .filter { RimeRuntimeSelection.isTwentySixKeyCapable($0) }
+            .sorted()
     }
 
     private var activeSchemaIDForDeployment: String {

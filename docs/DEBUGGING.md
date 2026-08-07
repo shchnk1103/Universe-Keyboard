@@ -177,6 +177,7 @@ synthetic burst input for repro; never log real user text.
 2. Space vs tap: Space never calls `selectCandidate`; tap does.
 3. Prefetch logs: `loadMoreCandidates start=12` then empty window / `hasMore=false` while dictionary still has more.
 4. Fix ownership (`RESPONSIVE-CANDIDATE-ANOMALY-001`): suppress UI publish on bridge select (Core owns host apply); owner-thread live `candidateWindow` after `flushPending`.
+5. Multi-segment partial then final (e.g. long 全拼: first phrase then second): if only the **last** segment doubles, suspect a late `sel-*` presentation re-apply of `committedText`. Defense: select actions use `sel-` action IDs and presentation strips host commit (Core already applied).
 
 ### Works Until App Switch
 

@@ -30,8 +30,10 @@ The rules take effect after the main App runs full deployment:
 
 1. Main App prepares the RIME shared and user directories.
 2. Main App writes `default.custom.yaml` and schema custom YAML.
-3. Main App post-processes the current active schema file:
-   - `Rime/shared/{activeSchema}.schema.yaml`
+3. Main App post-processes **installed letter schema files** (active schema,
+   layout 26-key binding, and other present catalog schemes such as `rime_ice` /
+   `wanxiang` / `luna_pinyin`):
+   - `Rime/shared/{schemaID}.schema.yaml`
 4. Main App runs full librime deployment.
 5. Keyboard Extension only reads the compiled result during runtime.
 
@@ -80,7 +82,9 @@ Phase 1 does not implement:
 
 ## Validation Matrix
 
-Manual validation should cover both `luna_pinyin` and `rime_ice` as active schemas:
+**Known product gap (2026-08-07):** Human smoke found fuzzy **effective on 雾凇 only**; 万象 not claimed. UX honesty (disable + “当前方案暂不支持”) is deferred as [`TD-010`](TECH_DEBT.md#td-010-per-scheme-capability-gates-in-settings-ux) / Assignment residual R-05 — not a silent install failure.
+
+Manual validation should cover `luna_pinyin` and `rime_ice` first. Leave the fuzzy settings page (or background the app) so pending deploy runs before testing keyboard:
 
 - With `zh / z` enabled, `zongguo` can produce `中国` or related candidates.
 - With `sh / s` enabled, `sijie` can produce `世界` or related candidates.

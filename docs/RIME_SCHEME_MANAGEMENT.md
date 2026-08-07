@@ -62,10 +62,11 @@ Scheme detail pages may show a compact advanced-input status, but should not dup
 Do not duplicate the full switch list on every scheme detail page.
 When adding multiple actions inside a scheme detail status section, keep them as separate Form rows so each row owns a stable tap target.
 
-Current scheme support:
+Current scheme support (productized in Universe today):
 
-- `rime_ice`: supports the advanced-input feature set.
+- `rime_ice`: supports the advanced-input feature set (fog module names + triggers such as `rq`).
 - `luna_pinyin`: does not support these advanced-input features.
+- `wanxiang`: **upstream ships its own Lua suite** (e.g. `wanxiang.shijian` with `/rq`·`orq`, `V` calculator) but Universe **does not yet** map product toggles or diagnostics to those modules. Research and phased work: [`TD-011`](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象). Until then do not claim fog-parity advanced input on 万象.
 
 The main App may inspect already-installed files and shared deployment flags to show:
 
@@ -114,21 +115,25 @@ Downloadable open-source schemes use the generic catalog, distribution, storage,
 
 **万象 V1 pin:** GitHub `amzxyz/rime-wanxiang` asset `rime-wanxiang-base.zip`, schema_id `wanxiang`, license CC BY 4.0. Optional grammar `.gram` is **not** auto-installed.
 
+**Grammar model (research only):** “万象语法模型” is the RIME **`.gram`** file from [RIME-LMDG](https://github.com/amzxyz/RIME-LMDG) (e.g. `wanxiang-lts-zh-hans.gram`), loaded via schema `grammar.language`. It can be referenced by **other pinyin schemes** (community: 雾凇/白霜 + same gram) with param tuning; best with 万象词库. Large optional download; needs librime grammar/octagram support + memory budget. Phased plan: [`TD-012`](TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration).
+
 The user-facing UI should read from `SchemaMetadata`. It should not duplicate package size, license, version, Lua capability, or support flags in the view layer.
 
 ## Toast Feedback
 
 Transient scheme operations should use the shared global bottom toast pattern.
 
-Examples:
+**Target copy** should use the **active scheme display name** from the catalog (雾凇 / 万象 / …), not a single hard-coded brand:
 
-- "正在下载雾凇拼音..."
-- "正在解压雾凇拼音..."
-- "正在部署雾凇拼音..."
-- "雾凇拼音已下载并部署。"
+- "正在下载{方案名}… {progress}%" (or indeterminate while progress is unavailable)
+- "正在解压{方案名}…"
+- "正在部署{方案名}…"
+- "{方案名}已下载并部署。"
 - "正在应用 RIME 设置..."
 - "RIME 设置已应用。"
 - "下载失败，请稍后再试。"
+
+**Known gap (do not treat as install-path failure):** as of 2026-08-07, `AppOperationToastState(downloadState:)` still hardcodes 雾凇 strings and download progress is only set to `0` once (`URLSession` one-shot download). Tracked as [`TD-009`](TECH_DEBT.md#td-009-multi-scheme-download-toast-name-and-progress); deferred relative to 万象 catalog install correctness (`RIME-SCHEME-WANXIANG-001` residual R-02).
 
 Scheme rows should show stable status only. Do not add permanent rows for the latest transient operation result.
 The top-level app shell owns the toast trigger so feedback is not lost when the user leaves a scheme detail page.

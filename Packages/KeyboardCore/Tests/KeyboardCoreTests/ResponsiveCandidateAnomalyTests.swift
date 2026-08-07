@@ -126,6 +126,126 @@ final class ResponsiveCandidateAnomalyTests: XCTestCase {
         controller.suspendRimeForVisibilityChange()
     }
 
+    /// Multi-segment partial then final select must not double-insert the last segment.
+    /// (Human report: 今天的天气真好啊 + 我们出去玩吧 → 我们出去玩吧 twice under dual-gate.)
+    func testMainActorResponsivePartialThenFinalSelectCommitsLastSegmentOnce() {
+        let engine = FakeRimeEngine(
+            dictionary: [
+                "jintiandetianqizhenhaoawomenchuquwanba": [
+                    "今天的天气真好啊我们出去玩吧",
+                    "今天的天气真好啊",
+                ],
+                "womenchuquwanba": ["我们出去玩吧"],
+            ],
+            selectionRemainders: [
+                "jintiandetianqizhenhaoawomenchuquwanba": [1: "womenchuquwanba"]
+            ]
+        )
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = false
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        for character in "jintiandetianqizhenhaoawomenchuquwanba" {
+            _ = controller.handle(.insertKey(String(character)))
+        }
+        controller.responsiveRimeCoordinator?.flushPending()
+        XCTAssertEqual(controller.state.partialCommit, nil)
+
+        _ = controller.handle(
+            .insertCandidate(
+                "今天的天气真好啊",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(
+                    page: 0,
+                    indexOnPage: 1,
+                    globalIndex: 1
+                )
+            )
+        )
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "今天的天气真好啊")
+
+        _ = controller.handle(
+            .insertCandidate(
+                "我们出去玩吧",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(
+                    page: 0,
+                    indexOnPage: 0,
+                    globalIndex: 0
+                )
+            )
+        )
+
+        let settle = expectation(description: "settle multi-segment")
+        DispatchQueue.main.async { settle.fulfill() }
+        wait(for: [settle], timeout: 1)
+        // Extra turns: late publish must not re-insert the final segment.
+        let settle2 = expectation(description: "settle2")
+        DispatchQueue.main.async { settle2.fulfill() }
+        wait(for: [settle2], timeout: 1)
+
+        XCTAssertEqual(
+            client.text,
+            "今天的天气真好啊我们出去玩吧",
+            "final segment must appear exactly once"
+        )
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertNil(controller.state.partialCommit)
+    }
+
+    /// If a select-owned `sel-*` snapshot still reaches presentation apply with
+    /// committedText, host must not insert again (defense behind A1 suppress).
+    func testSelectOwnedPresentationSnapshotDoesNotRecommitHostText() {
+        let engine = FakeRimeEngine(dictionary: [
+            "n": ["你"],
+            "ni": ["你", "呢"],
+        ])
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = false
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.insertKey("i"))
+        controller.responsiveRimeCoordinator?.flushPending()
+
+        _ = controller.handle(
+            .insertCandidate(
+                "你",
+                kind: .candidate,
+                selectionReference: CandidateSelectionReference(
+                    page: 0,
+                    indexOnPage: 0,
+                    globalIndex: 0
+                )
+            )
+        )
+        XCTAssertEqual(client.text, "你")
+
+        // Simulate a late select publish that still carries committedText.
+        controller.applyResponsivePublishedSnapshot(
+            ResponsiveRimeSnapshot(
+                sessionEpoch: controller.responsiveRimeCoordinator?.diagnostics.sessionEpoch ?? 1,
+                revision: (controller.responsiveRimeCoordinator?.diagnostics.lastPublishedRevision ?? 0) &+ 1,
+                actionID: "sel-late",
+                output: RimeOutput(
+                    composition: nil,
+                    candidates: [],
+                    committedText: "你"
+                )
+            )
+        )
+
+        XCTAssertEqual(client.text, "你", "late sel-* publish must not double-insert")
+    }
+
     // MARK: - B: candidateWindow beyond first page
 
     func testThreadAffineCandidateWindowReadsPastFirstPage() {

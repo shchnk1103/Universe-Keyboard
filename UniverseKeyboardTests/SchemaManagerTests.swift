@@ -476,7 +476,7 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertFalse(settings.bool(forKey: RimeAdvancedInputSettings.pendingDeployKey))
         XCTAssertEqual(
             settings.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey),
-            RimeFuzzyPinyinSettings().deploymentSignature(activeSchemaID: "luna_pinyin")
+            RimeFuzzyPinyinSettings().deploymentSignature(activeSchemaID: "all")
         )
         XCTAssertEqual(
             settings.string(forKey: RimeUserDictionarySettings.deployedSignatureKey),
@@ -488,7 +488,7 @@ final class SchemaManagerTests: XCTestCase {
         )
     }
 
-    func testDeploymentAppliesFuzzyPinyinOnlyToActiveSchema() async throws {
+    func testDeploymentAppliesFuzzyPinyinToAllInstalledLetterSchemas() async throws {
         let tempRoot = FileManager.default.temporaryDirectory
             .appendingPathComponent("schema-manager-fuzzy-\(UUID().uuidString)")
         let sharedURL = tempRoot.appendingPathComponent("shared")
@@ -524,11 +524,13 @@ final class SchemaManagerTests: XCTestCase {
         await manager.deployRimeConfig()
 
         let activeSchema = try String(contentsOf: sharedURL.appendingPathComponent("rime_ice.schema.yaml"), encoding: .utf8)
-        let inactiveSchema = try String(contentsOf: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"), encoding: .utf8)
+        let otherSchema = try String(contentsOf: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"), encoding: .utf8)
         XCTAssertTrue(activeSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
         XCTAssertTrue(activeSchema.contains("- derive/^zh/z/"))
         XCTAssertFalse(activeSchema.contains("- derive/^ch/c/"))
-        XCTAssertFalse(inactiveSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        // Multi-scheme: installed letter schemas all receive the managed block.
+        XCTAssertTrue(otherSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        XCTAssertTrue(otherSchema.contains("- derive/^zh/z/"))
         XCTAssertEqual(
             settings.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey),
             RimeFuzzyPinyinSettings(
@@ -537,7 +539,7 @@ final class SchemaManagerTests: XCTestCase {
                 chCEnabled: false,
                 shSEnabled: false,
                 nLEnabled: false
-            ).deploymentSignature(activeSchemaID: "rime_ice")
+            ).deploymentSignature(activeSchemaID: "all")
         )
     }
 

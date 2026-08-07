@@ -114,11 +114,17 @@ extension KeyboardViewController {
                 .appendingPathComponent("Rime/shared/t9.schema.yaml")
             onDiskFingerprint = RimeT9Readiness.fingerprint(ofFileAt: t9URL)
         }
+        // ADR 0026: must pass per-layout bindings. Omitting them falls back to
+        // legacy "base must be rime_ice for T9", which keeps 26-key chrome when
+        // the 26-key slot is 万象 (`wanxiang`) even if layout preference is nine-key
+        // and fog T9 readiness is matched.
         let selection = RimeRuntimeSelection.resolve(
             baseSchemaID: defaults?.string(forKey: "rime_active_schema"),
             layoutRawValue: defaults?.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
             readinessMarker: marker,
-            onDiskFingerprint: onDiskFingerprint
+            onDiskFingerprint: onDiskFingerprint,
+            schemeBinding26: defaults?.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26),
+            schemeBinding9: defaults?.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
         )
         cachedT9ReadinessMatched = selection.t9ReadinessMatched
         // Provisional chrome from readiness (before/while engine is offline).

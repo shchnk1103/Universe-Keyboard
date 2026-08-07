@@ -27,12 +27,14 @@
 
 ## RIME-SCHEME-WANXIANG-001 — 万象拼音 + 布局绑定方案
 
-- **Lifecycle:** `Active` — layout-bound + **万象 catalog install path landed**
+- **Lifecycle:** `Active` — **path ready for formal close** (2026-08-07 EOD handoff)
 - **Authority:** [`PD`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) · [`Assignment`](assignments/rime-scheme-wanxiang-001.md) · [`ADR-0026-ACCEPT`](assignments/adr-0026-accept-001.md)
 - **Pin:** `amzxyz/rime-wanxiang` · asset `rime-wanxiang-base.zip` · schema `wanxiang` · CC BY 4.0
-- **Evidence:** `LayoutBoundRimeRuntimeSelectionTests` **7/0**; `testWanxiangCatalogEntry…` **2/0** SchemaManager (Executor-recorded)
-- **Still open:** optional device download smoke; LMDG `.gram` optional; 双拼 packs later
-- **Next:** Human install smoke welcome; then optional formal close of catalog slice
+- **Evidence:** layout-bound + catalog unit tests; Human smoke 2026-08-07 (install/use/layout/sync/isolation)
+- **Human smoke:** nine-key OK with 万象 on 26-key slot; fuzzy **雾凇 only**; bare `rq` not 万象 (use `/rq`·`orq` upstream)
+- **Roadmap (agreed):** 0 formal close → **1 TD-010 then TD-009** → 2a TD-011 Lua → 2b TD-012 `.gram`
+- **Deferred:** [`TD-009`](TECH_DEBT.md#td-009-multi-scheme-download-toast-name-and-progress) · [`TD-010`](TECH_DEBT.md#td-010-per-scheme-capability-gates-in-settings-ux) · [`TD-011`](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) · [`TD-012`](TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration)
+- **Next new session:** Read Assignment handoff; prefer TD-010 WI — do **not** implement 011/012 unless Product opens
 
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 
