@@ -5,7 +5,8 @@
 **Date / timezone:** `2026-08-07 Asia/Shanghai`  
 **Parent domain:** Chinese nine-key Path + RIME candidates (ADR 0020–0023)  
 **Related:** ADR [`0021`](../architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md) (Path identity vs Chinese candidates); dual-gate responsive pipeline is **out of scope** for this goal  
-**Assignment:** Pending formal Assignment after Product Gate on approach
+**Assignment:** Pending formal Assignment after Product Gate on approach  
+**Discussion draft (plain language):** [`t9-single-key-mixed-candidates-001-discussion.md`](../plans/t9-single-key-mixed-candidates-001-discussion.md)
 
 ## Current Status (KOS 2.1 M-01)
 

@@ -106,6 +106,7 @@
   [`RESPONSIVE-DELETE-ANOMALY-001`](assignments/responsive-delete-anomaly-001.md) (Completed — flush-before-bind Delete),
   [`PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001`](product-decisions/T9-SINGLE-KEY-MIXED-CANDIDATES-001-authorization.md) (**Proposed** — Apple-like first-key mixed Chinese candidates; **not** dual-gate bug class; implementation blocked),
   [`T9-SINGLE-KEY-MIXED-CANDIDATES-001 Assignment`](assignments/t9-single-key-mixed-candidates-001.md) (`Assignment Pending`),
+  [`discussion draft`](plans/t9-single-key-mixed-candidates-001-discussion.md) (plain-language),
   [`CANARY-001 Stop/Retain disposition`](product-decisions/T9-RESPONSIVE-PIPELINE-001-CANARY-001-disposition.md),
   [`CANARY-001/DEVICE-001 device evidence`](evidence/t9-responsive-pipeline-canary-001-device-001-2026-08-04.md),
   [`P2-PERF-03 replicated A/B evidence`](evidence/t9-responsive-pipeline-p2-perf-03-replicated-ab-2026-08-03.md),
