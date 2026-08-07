@@ -20,12 +20,19 @@
 
 ## T9-SINGLE-KEY-MIXED-CANDIDATES-001 — 单键混合中文候选（苹果式首键）
 
-- **Lifecycle:** `Proposed / Assignment Pending` — product goal recorded only
+- **Lifecycle:** `Closed — Won’t do` (2026-08-07)
 - **Authority:** [`PD`](product-decisions/T9-SINGLE-KEY-MIXED-CANDIDATES-001-authorization.md) · [`Assignment`](assignments/t9-single-key-mixed-candidates-001.md)
-- **Problem:** Apple system nine-key shows rich m/n/o-mixed Chinese after one MNO press; rime-ice `t9` raw `6` menu is thin (~4, o-biased). Path `m|n|o` alone does not match first-key intuition.
-- **Separation:** **Not** the same class as dual-gate select double-commit or `candidateWindow` paging stall
-- **Explicit non-claims:** implementation not authorized; ADR 0021 amendment path required before code
-- **Next:** Product approach Gate (bands A–D in PD); then Architecture; then Ready Assignment
+- **Disposition:** Accept rime-ice `t9` sparse raw-digit menus as scheme default; do not implement Apple-like first-key union
+- **Next:** None — product investment pivots to multi-scheme support
+
+## RIME-SCHEME-WANXIANG-001 — 万象拼音 + 布局绑定方案
+
+- **Lifecycle:** `Active` — layout-bound foundation landed; 万象 download pending
+- **Authority:** [`PD`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) · [`Assignment`](assignments/rime-scheme-wanxiang-001.md) · [`ADR-0026-ACCEPT`](assignments/adr-0026-accept-001.md)
+- **ADR 0026:** **Accepted** — layout×scheme resolver + settings pickers + migration
+- **Evidence:** `LayoutBoundRimeRuntimeSelectionTests` **7/0** (Executor-recorded)
+- **Still open:** 万象 release asset / schema IDs; catalog install; advanced-input matrix
+- **Next:** Pin 万象全拼 upstream and implement catalog entry
 
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 

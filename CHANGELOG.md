@@ -2,6 +2,15 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-07 — ADR 0026 layout-bound schemes + product direction
+
+- `ADR 0026` **Accepted**: per-layout RIME scheme slots; `RimeRuntimeSelection`
+  layout-bound resolve + migration; layout settings pickers for 26-key / nine-key.
+- Tests: `LayoutBoundRimeRuntimeSelectionTests` 7/0 (Executor-recorded).
+- `PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001` **Closed — Won’t do**.
+- `PD-RIME-SCHEME-WANXIANG-001` **Proposed/Active**: 万象全拼 V1 catalog install
+  still next; layout-bound foundation landed first.
+
 ## 2026-08-07 — RESPONSIVE-CANDIDATE-ANOMALY-001 select double-commit + paging window
 
 - Dual-gate / responsive bridges suppress UI publish during `selectCandidate` so
@@ -11,8 +20,6 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
   engine after `flushPending`, instead of slicing first-page `lastPublished`
   candidates (fixes loadMore stall at page size ~12).
 - Regression: `ResponsiveCandidateAnomalyTests` 4/0 (Executor-recorded).
-- Product goal (separate class): `PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001` Proposed —
-  Apple-like first-key mixed Chinese candidates; implementation not authorized.
 
 ## 2026-08-06 — RESPONSIVE-DELETE-ANOMALY-001 flush-before-bind Delete fix
 

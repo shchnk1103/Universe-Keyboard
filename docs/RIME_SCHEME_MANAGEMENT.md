@@ -109,7 +109,9 @@ Each scheme is described by a catalog entry in the main App code. The catalog is
 - Storage keys: installed flag, version, license acceptance, ETag, and checksum keys.
 - Installation plan: required schema file, files/directories to skip while installing, files/directories to remove while uninstalling, and build-cache filename fragments to clean.
 
-V1.1 intentionally keeps `rime_ice` as the only downloadable open-source scheme, but its management path now goes through the generic catalog, distribution, storage, and installation-plan model.
+V1.1 ships `rime_ice` as the only downloadable open-source scheme, with management through the generic catalog, distribution, storage, and installation-plan model.
+
+**Product direction (2026-08-07):** expand downloadable schemes next; first planned target is **万象拼音** under [`PD-RIME-SCHEME-WANXIANG-001`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) (`Proposed` — implementation not Ready). Do not treat that PD as live catalog support until Assignment Exit is met.
 
 The user-facing UI should read from `SchemaMetadata`. It should not duplicate package size, license, version, Lua capability, or support flags in the view layer.
 

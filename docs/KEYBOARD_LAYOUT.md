@@ -24,7 +24,7 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 ## Runtime Rules
 
 1. Layout preference and base scheme are separate settings.
-2. Effective scheme is derived, never stored as a second user-facing scheme row for `t9`.
+2. Effective scheme is **layout-bound** (ADR 0026): each Chinese layout slot stores an installed scheme ID; nine-key only accepts nine-key-capable schemes (V1: `t9`). Absent bindings migrate from the legacy single-base + auto-`t9` table (ADR 0018 §2 as migration default).
 3. T9 readiness is a **versioned marker** (ready flag + compatibility version + resource fingerprint), written only by the main App after successful smoke verification.
 4. Extension reads cached layout/readiness on appear/activate; it does not deploy or rewrite RIME resources.
 5. Missing, corrupt, mismatched or unknown layout/readiness values fall back to 26-key.
@@ -46,8 +46,9 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 
 ## Effective Selection Summary
 
-- 26-key + rime-ice → effective `rime_ice`
-- 9-key + rime-ice + **matched** readiness → effective `t9`, Chinese alphabet page uses nine-key chrome
+- 26-key + binding e.g. `rime_ice` / future 万象 → effective that schema
+- 9-key + binding `t9` + **matched** readiness → effective `t9`, Chinese alphabet page uses nine-key chrome
+- Settings → 键盘布局 exposes pickers for “全键盘使用的方案” and “九宫格使用的方案”
 - 9-key without matched readiness / without rime-ice / with unsupported base scheme → safe 26-key behavior
 
 ## T9 Input Semantics (V1 + ADR 0020 + ADR 0021)

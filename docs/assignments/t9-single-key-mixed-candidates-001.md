@@ -6,75 +6,54 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Assignment Pending` — goal recorded; Entry not met for Ready |
-| **Phase** | Product approach Gate; no implementation |
+| **Lifecycle** | `Closed — Won’t do` |
+| **Phase** | Product declined; no implementation |
 | **Parent PD** | [`PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001`](../product-decisions/T9-SINGLE-KEY-MIXED-CANDIDATES-001-authorization.md) |
-| **Non-claims** | Not dual-gate bugfix; not authorized to change ADR 0021 yet |
-| **Next** | Product Lead pick approach band A–D; Architecture review of ownership |
+| **Non-claims** | Not dual-gate work; sparse t9 raw-digit menu accepted |
+| **Next** | None — see multi-scheme / [`PD-RIME-SCHEME-WANXIANG-001`](../product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) |
 | **Residuals** | None |
 
 ---
 
 **Task ID:** `T9-SINGLE-KEY-MIXED-CANDIDATES-001`  
 **Date / timezone:** `2026-08-07 Asia/Shanghai`  
-**Repository Change Type:** `Product` (goal only); `Implementation` blocked  
-**Product Decision source:** [`PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001`](../product-decisions/T9-SINGLE-KEY-MIXED-CANDIDATES-001-authorization.md)  
-**Architecture:** Requires ADR 0021 amendment or superseding ADR before production code  
+**Repository Change Type:** `Product` (closed without implementation)  
+**Product Decision source:** PD above (Won’t do)  
 
 ## Authority
 
 - Assignment Authority: Product Lead  
-- Decision Source / Date: PD above; 2026-08-07 Asia/Shanghai  
-- Product Approver: Human Product Lead  
+- Close source: Human Product Lead 2026-08-07 Asia/Shanghai  
 
 ## Boundary
 
-### Scope (when later Ready)
+### Scope (cancelled)
 
-1. Deliver north star in PD: unresolved single T9 digit → mixed Chinese candidates for that key’s letter group (Apple-like first-key spirit).  
-2. Tests + device comparison evidence as Gate requires.  
-3. ADR / docs sync.
+Apple-like mixed Chinese candidates on unresolved single T9 digit — **not to be implemented**.
 
-### Non-goals
+### Non-goals (confirmed)
 
-- Bundling with `RESPONSIVE-CANDIDATE-ANOMALY-001`  
-- Full Apple multi-key LM parity  
-- Speculative production merge without Product Gate  
+- No letter-probe merge production code  
+- No ADR 0021 amendment for this goal  
 
 ## Assignment
 
-- Domain Owner: 🧠 Input Intelligence (T9 presentation + RIME Chinese candidates)  
-- Executor: UNKNOWN until Ready  
-- Environment Executor: UNKNOWN (device compare later)  
-- Human Dependency: Product Lead approach choice; optional Apple vs UK screenshots  
-- Architecture Reviewer: Required before implementation  
-- Quality Reviewer: Required before acceptance  
+- Domain Owner: 🧠 Input Intelligence (historical)  
+- Executor: Not Applicable — closed without execution  
+- Environment Executor: Not Applicable  
+- Human Dependency: Not Applicable  
+- Architecture Reviewer: Not Applicable (no design delivered)  
+- Quality Reviewer: Not Applicable  
 
 ## Gates
 
-### Entry Criteria (for Ready)
+### Exit Criteria (close)
 
-- [ ] Product selects approach band (or revised north star)  
-- [ ] Architecture path for ADR 0021 conflict is named  
-- [ ] No UNKNOWN fields that block Ready  
-- [ ] Active Work capacity if activated  
-
-### Exit Criteria
-
-- TBD after approach freeze  
-
-### Stop Conditions
-
-- Implementing under dual-gate anomaly Assignment  
-- Shipping letter probes without session restore / dual-gate FIFO analysis  
-- Claiming Apple full parity without evidence  
-
-## Handoff
-
-- Handoff Target: Product Lead → Architecture → Executor  
-- Required Handoff Content: chosen band, non-claims, ADR plan  
-- Revalidation Trigger: dictionary/schema major change; dual-gate owner contract change  
+- [x] Product explicit Won’t do  
+- [x] PD + Assignment + Index/Dashboard sync (M-02)  
+- [x] No production code landed for this goal  
 
 ## History
 
-- 2026-08-07: Opened Assignment Pending after PD goal record; anomaly fix shipped separately.
+- 2026-08-07: Opened Assignment Pending after PD goal record.  
+- 2026-08-07: **Closed — Won’t do** per Product Lead; pivot to more RIME schemes.

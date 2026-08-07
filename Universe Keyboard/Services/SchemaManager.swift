@@ -60,6 +60,10 @@ final class SchemaManager {
         }
         activeSchemaID = schemaID
         settings.set(schemaID, forKey: "rime_active_schema")
+        // ADR 0026: detail-page "设为当前" updates the 26-key layout slot.
+        if RimeRuntimeSelection.isTwentySixKeyCapable(schemaID) {
+            settings.set(schemaID, forKey: KeyboardLayoutSettingsKey.schemeBinding26)
+        }
         requestDeploy()
         refreshSchemaList()
     }

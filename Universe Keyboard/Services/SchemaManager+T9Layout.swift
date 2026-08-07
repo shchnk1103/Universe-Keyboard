@@ -58,6 +58,7 @@ extension SchemaManager {
             publishNineKey: { [weak self] in
                 guard let self else { return }
                 T9DeploymentSupport.persistLayout(.nineKey, settings: self.settings)
+                self.settings.set("t9", forKey: KeyboardLayoutSettingsKey.schemeBinding9)
             }
         )
     }
@@ -89,6 +90,7 @@ extension SchemaManager {
     /// Persist 26-key immediately without touching readiness when resources remain.
     @MainActor
     func selectTwentySixKeyLayout() {
+        ensureLayoutSchemeBindingsMigrated()
         T9DeploymentSupport.persistLayout(.twentySixKey, settings: settings)
     }
 
@@ -99,10 +101,12 @@ extension SchemaManager {
         T9DeploymentSupport.invalidateReadiness(settings: settings)
     }
 
-    /// When switching base scheme away from rime_ice, fall layout back but keep readiness if fingerprint still matches.
+    /// When switching base scheme away from rime_ice, fall layout back only if nine-key is not ready.
+    /// ADR 0026: 26-key scheme and nine-key binding are independent once T9 readiness matches.
     @MainActor
     func applyLayoutFallbackWhenLeavingRimeIce(newSchemaID: String) {
         guard newSchemaID != "rime_ice" else { return }
+        if currentT9ReadinessMatched() { return }
         T9DeploymentSupport.persistLayout(.twentySixKey, settings: settings)
     }
 
@@ -117,5 +121,59 @@ extension SchemaManager {
             marker: T9DeploymentSupport.loadMarker(settings: settings),
             onDiskFingerprint: fingerprint
         )
+    }
+
+    /// ADR 0026 migration + read helpers for layout settings.
+    @MainActor
+    func ensureLayoutSchemeBindingsMigrated() {
+        guard let dirs = try? archiveInstaller.deploymentDirectories() else {
+            migrateBindings(onDiskFingerprint: nil)
+            return
+        }
+        let fingerprint = T9DeploymentSupport.resourceFingerprint(sharedDataURL: dirs.sharedDataURL)
+        migrateBindings(onDiskFingerprint: fingerprint)
+    }
+
+    private func migrateBindings(onDiskFingerprint: String?) {
+        _ = onDiskFingerprint
+        let existing26 = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26)
+        let existing9 = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+        if (existing26?.isEmpty == false) || (existing9?.isEmpty == false) { return }
+        let base = settings.string(forKey: "rime_active_schema") ?? "luna_pinyin"
+        let normalized = base == "t9" ? "rime_ice" : base
+        settings.set(normalized, forKey: KeyboardLayoutSettingsKey.schemeBinding26)
+        if currentT9ReadinessMatched() {
+            settings.set("t9", forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+        }
+    }
+
+    func schemeBinding26() -> String {
+        ensureLayoutSchemeBindingsMigrated()
+        let raw = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26)
+            ?? settings.string(forKey: "rime_active_schema")
+            ?? "luna_pinyin"
+        return raw == "t9" ? "rime_ice" : raw
+    }
+
+    func schemeBinding9() -> String? {
+        ensureLayoutSchemeBindingsMigrated()
+        let raw = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+        return (raw?.isEmpty == false) ? raw : nil
+    }
+
+    @MainActor
+    func setSchemeBinding26(_ schemaID: String) {
+        guard RimeRuntimeSelection.isTwentySixKeyCapable(schemaID) else { return }
+        settings.set(schemaID, forKey: KeyboardLayoutSettingsKey.schemeBinding26)
+        settings.set(schemaID, forKey: "rime_active_schema")
+        activeSchemaID = schemaID
+        requestDeploy()
+        refreshSchemaList()
+    }
+
+    @MainActor
+    func setSchemeBinding9(_ schemaID: String) {
+        guard RimeRuntimeSelection.isNineKeyCapable(schemaID) else { return }
+        settings.set(schemaID, forKey: KeyboardLayoutSettingsKey.schemeBinding9)
     }
 }

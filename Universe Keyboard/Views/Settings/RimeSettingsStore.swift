@@ -523,6 +523,24 @@ final class RimeSettingsStore {
     var layoutStyle: KeyboardLayoutStyle { schemaManager.currentLayoutStyle() }
     var t9ReadinessMatched: Bool { schemaManager.currentT9ReadinessMatched() }
     var rimeIceInstalledFilesExist: Bool { schemaManager.rimeIceFilesExist() }
+    var schemeBinding26: String { schemaManager.schemeBinding26() }
+    var schemeBinding9: String? { schemaManager.schemeBinding9() }
+
+    /// Installed schemes usable for the 26-key slot (ADR 0026).
+    var twentySixKeySchemeChoices: [SchemaMetadata] {
+        schemas.filter {
+            $0.installed && RimeRuntimeSelection.isTwentySixKeyCapable($0.schemaID)
+        }
+    }
+
+    /// Installed schemes usable for the nine-key slot (V1: fog T9 when ready).
+    var nineKeySchemeChoices: [(id: String, name: String)] {
+        var rows: [(String, String)] = []
+        if t9ReadinessMatched || rimeIceInstalledFilesExist {
+            rows.append(("t9", "雾凇九键 (T9)"))
+        }
+        return rows
+    }
 
     func selectTwentySixKeyLayout() {
         schemaManager.selectTwentySixKeyLayout()
@@ -534,6 +552,20 @@ final class RimeSettingsStore {
 
     func persistNineKeyLayoutWhenReady() {
         T9DeploymentSupport.persistLayout(.nineKey, settings: schemaManager.settings)
+        schemaManager.settings.set("t9", forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+    }
+
+    func setSchemeBinding26(_ schemaID: String) async {
+        schemaManager.setSchemeBinding26(schemaID)
+        await triggerDeployment()
+    }
+
+    func setSchemeBinding9(_ schemaID: String) {
+        schemaManager.setSchemeBinding9(schemaID)
+    }
+
+    func ensureLayoutSchemeBindingsMigrated() {
+        schemaManager.ensureLayoutSchemeBindingsMigrated()
     }
 
     func checkForUpdateAndDownload() async {
