@@ -14,6 +14,7 @@ final class SchemaManagerTests: XCTestCase {
         let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
         let manager = makeManager(settings: settings, installer: installer)
 
+        XCTAssertNotNil(manager.schemas.first { $0.schemaID == "wanxiang" })
         let rimeIce = manager.schemas.first { $0.schemaID == "rime_ice" }
 
         XCTAssertEqual(rimeIce?.version, "2026.05.01")
@@ -21,6 +22,22 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(rimeIce?.licenseName, "GPL-3.0")
         XCTAssertTrue(rimeIce?.isDownloadable == true)
         XCTAssertTrue(rimeIce?.supportsUserDictionary == true)
+    }
+
+    func testWanxiangCatalogEntryIsDownloadableFullPinyin() {
+        let entry = RimeSchemeCatalog.entry(for: "wanxiang")
+        XCTAssertNotNil(entry)
+        XCTAssertEqual(entry?.schemaID, "wanxiang")
+        XCTAssertEqual(entry?.name, "万象拼音")
+        XCTAssertEqual(entry?.distribution?.githubOwner, "amzxyz")
+        XCTAssertEqual(entry?.distribution?.githubRepository, "rime-wanxiang")
+        XCTAssertEqual(entry?.distribution?.assetName, "rime-wanxiang-base.zip")
+        XCTAssertEqual(entry?.installationPlan?.schemaFileName, "wanxiang.schema.yaml")
+        XCTAssertEqual(entry?.licenseName, "CC BY 4.0")
+        XCTAssertTrue(entry?.requiresLua == true)
+        XCTAssertTrue(RimeRuntimeSelection.isTwentySixKeyCapable("wanxiang"))
+        XCTAssertFalse(RimeRuntimeSelection.isNineKeyCapable("wanxiang"))
+        XCTAssertNotNil(RimeSchemeCatalog.downloadableEntries.first { $0.schemaID == "wanxiang" })
     }
 
     func testSchemaSwitchAndLicenseAcceptancePersistIntentFlags() {
@@ -459,7 +476,7 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertFalse(settings.bool(forKey: RimeAdvancedInputSettings.pendingDeployKey))
         XCTAssertEqual(
             settings.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey),
-            RimeFuzzyPinyinSettings().deploymentSignature(activeSchemaID: "luna_pinyin")
+            RimeFuzzyPinyinSettings().deploymentSignature(activeSchemaID: "all")
         )
         XCTAssertEqual(
             settings.string(forKey: RimeUserDictionarySettings.deployedSignatureKey),
@@ -471,7 +488,7 @@ final class SchemaManagerTests: XCTestCase {
         )
     }
 
-    func testDeploymentAppliesFuzzyPinyinOnlyToActiveSchema() async throws {
+    func testDeploymentAppliesFuzzyPinyinToAllInstalledLetterSchemas() async throws {
         let tempRoot = FileManager.default.temporaryDirectory
             .appendingPathComponent("schema-manager-fuzzy-\(UUID().uuidString)")
         let sharedURL = tempRoot.appendingPathComponent("shared")
@@ -507,11 +524,13 @@ final class SchemaManagerTests: XCTestCase {
         await manager.deployRimeConfig()
 
         let activeSchema = try String(contentsOf: sharedURL.appendingPathComponent("rime_ice.schema.yaml"), encoding: .utf8)
-        let inactiveSchema = try String(contentsOf: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"), encoding: .utf8)
+        let otherSchema = try String(contentsOf: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"), encoding: .utf8)
         XCTAssertTrue(activeSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
         XCTAssertTrue(activeSchema.contains("- derive/^zh/z/"))
         XCTAssertFalse(activeSchema.contains("- derive/^ch/c/"))
-        XCTAssertFalse(inactiveSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        // Multi-scheme: installed letter schemas all receive the managed block.
+        XCTAssertTrue(otherSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        XCTAssertTrue(otherSchema.contains("- derive/^zh/z/"))
         XCTAssertEqual(
             settings.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey),
             RimeFuzzyPinyinSettings(
@@ -520,7 +539,7 @@ final class SchemaManagerTests: XCTestCase {
                 chCEnabled: false,
                 shSEnabled: false,
                 nLEnabled: false
-            ).deploymentSignature(activeSchemaID: "rime_ice")
+            ).deploymentSignature(activeSchemaID: "all")
         )
     }
 

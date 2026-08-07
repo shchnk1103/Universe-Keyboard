@@ -25,13 +25,20 @@ extension RimeConfigManager {
         // Keep t9 compiled and selectable when fog-song is installed/active.
         // Layout mode selects t9 at runtime; do not store t9 as base active schema.
         var defaultYaml = "patch:\n  schema_list:\n    - schema: \(activeSchema)\n"
+        var listed = Set([activeSchema])
+        func appendSchema(_ id: String) {
+            guard !listed.contains(id) else { return }
+            defaultYaml += "    - schema: \(id)\n"
+            listed.insert(id)
+        }
+        // Fog-song family: keep t9 + rime_ice compiled when installed (layout-bound select).
         if activeSchema == "rime_ice" || (defs?.bool(forKey: "rime_ice_installed") ?? false) {
-            if activeSchema != "t9" {
-                defaultYaml += "    - schema: t9\n"
-            }
-            if activeSchema != "rime_ice" {
-                defaultYaml += "    - schema: rime_ice\n"
-            }
+            appendSchema("t9")
+            appendSchema("rime_ice")
+        }
+        // 万象拼音（全拼）when installed — ADR 0026 / PD-RIME-SCHEME-WANXIANG-001.
+        if activeSchema == "wanxiang" || (defs?.bool(forKey: "wanxiang_installed") ?? false) {
+            appendSchema("wanxiang")
         }
         if pageSize >= 5 {
             defaultYaml += "  \"menu/page_size\": \(pageSize)\n"
@@ -61,8 +68,10 @@ extension RimeConfigManager {
             ) as? Bool ?? true
         )
         let iceInstalled = defs?.bool(forKey: "rime_ice_installed") ?? false
+        let wanxiangInstalled = defs?.bool(forKey: "wanxiang_installed") ?? false
         let plan = planSchemaCustomYamlFiles(
             rimeIceInstalled: iceInstalled,
+            wanxiangInstalled: wanxiangInstalled,
             simplificationEnabled: simplification,
             userDictionarySettings: userDictionarySettings
         )
@@ -89,8 +98,10 @@ extension RimeConfigManager {
     ///
     /// - `luna_pinyin` and `rime_ice` always planned.
     /// - `t9.custom.yaml` only when fog-song is installed, using **rime_ice** user-dict preference.
+    /// - `wanxiang.custom.yaml` when 万象 is installed (uses rime_ice learning toggle as conservative default).
     public static func planSchemaCustomYamlFiles(
         rimeIceInstalled: Bool,
+        wanxiangInstalled: Bool = false,
         simplificationEnabled: Bool?,
         userDictionarySettings: RimeUserDictionarySettings
     ) -> [SchemaCustomYamlFile] {
@@ -98,6 +109,9 @@ extension RimeConfigManager {
             ("luna_pinyin", "luna_pinyin"),
             ("rime_ice", "rime_ice"),
         ]
+        if wanxiangInstalled {
+            targets.append(("wanxiang", "rime_ice"))
+        }
         if rimeIceInstalled {
             // T9 is the nine-key presentation of fog-song preferences, not a separate base scheme.
             targets.append(("t9", "rime_ice"))

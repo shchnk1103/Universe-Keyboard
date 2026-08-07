@@ -145,10 +145,17 @@ public final class ResponsiveRimeSessionCoordinator {
 
     /// Ordered work: enqueue then **drain the entire queue** so later mutations
     /// cannot race ahead of pending processKey items (Arch P1-1).
+    ///
+    /// - Parameter actionIDPrefix: Content-free ID family. Use `sel` for
+    ///   `selectCandidate` so presentation apply can strip host `committedText`
+    ///   (Core owns select host apply; RESPONSIVE-CANDIDATE-ANOMALY-001 A1).
     @discardableResult
-    public func performOrderedNow(_ work: ResponsiveRimeWork) -> ResponsiveRimeSnapshot? {
+    public func performOrderedNow(
+        _ work: ResponsiveRimeWork,
+        actionIDPrefix: String = "ord"
+    ) -> ResponsiveRimeSnapshot? {
         actionSequence &+= 1
-        let actionID = "ord-\(actionSequence)"
+        let actionID = "\(actionIDPrefix)-\(actionSequence)"
         _ = owner.accept(work, actionID: actionID)
         flushPending()
         return owner.lastPublished
@@ -238,7 +245,8 @@ public final class ResponsiveRimeEngineBridge: RimeEngine {
                         pageIndex: index,
                         boundEpoch: bound.epoch,
                         boundRevision: bound.revision
-                    )
+                    ),
+                    actionIDPrefix: "sel"
                 )
             )
         }
@@ -254,7 +262,8 @@ public final class ResponsiveRimeEngineBridge: RimeEngine {
                         index: index,
                         boundEpoch: bound.epoch,
                         boundRevision: bound.revision
-                    )
+                    ),
+                    actionIDPrefix: "sel"
                 )
             )
         }

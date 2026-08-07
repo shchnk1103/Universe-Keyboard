@@ -6,8 +6,9 @@ This document records the product and implementation boundary for RIME multi-sch
 
 RIME scheme management V1 supports a scalable settings structure for the built-in/default scheme and downloaded open-source schemes:
 
-- `luna_pinyin`
-- `rime_ice`
+- `luna_pinyin` (built-in)
+- `rime_ice` (downloadable)
+- `wanxiang` (downloadable 万象拼音全拼 — [`PD-RIME-SCHEME-WANXIANG-001`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md))
 
 Future schemes should be added to the same list-and-detail model instead of creating separate top-level settings blocks for each scheme.
 
@@ -61,10 +62,11 @@ Scheme detail pages may show a compact advanced-input status, but should not dup
 Do not duplicate the full switch list on every scheme detail page.
 When adding multiple actions inside a scheme detail status section, keep them as separate Form rows so each row owns a stable tap target.
 
-Current scheme support:
+Current scheme support (productized in Universe today):
 
-- `rime_ice`: supports the advanced-input feature set.
+- `rime_ice`: supports the advanced-input feature set (fog module names + triggers such as `rq`).
 - `luna_pinyin`: does not support these advanced-input features.
+- `wanxiang`: **upstream ships its own Lua suite** (e.g. `wanxiang.shijian` with `/rq`·`orq`, `V` calculator) but Universe **does not yet** map product toggles or diagnostics to those modules. Research and phased work: [`TD-011`](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象). Until then do not claim fog-parity advanced input on 万象.
 
 The main App may inspect already-installed files and shared deployment flags to show:
 
@@ -109,9 +111,11 @@ Each scheme is described by a catalog entry in the main App code. The catalog is
 - Storage keys: installed flag, version, license acceptance, ETag, and checksum keys.
 - Installation plan: required schema file, files/directories to skip while installing, files/directories to remove while uninstalling, and build-cache filename fragments to clean.
 
-V1.1 ships `rime_ice` as the only downloadable open-source scheme, with management through the generic catalog, distribution, storage, and installation-plan model.
+Downloadable open-source schemes use the generic catalog, distribution, storage, and installation-plan model (`rime_ice`, `wanxiang`, …).
 
-**Product direction (2026-08-07):** expand downloadable schemes next; first planned target is **万象拼音** under [`PD-RIME-SCHEME-WANXIANG-001`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) (`Proposed` — implementation not Ready). Do not treat that PD as live catalog support until Assignment Exit is met.
+**万象 V1 pin:** GitHub `amzxyz/rime-wanxiang` asset `rime-wanxiang-base.zip`, schema_id `wanxiang`, license CC BY 4.0. Optional grammar `.gram` is **not** auto-installed.
+
+**Grammar model (research only):** “万象语法模型” is the RIME **`.gram`** file from [RIME-LMDG](https://github.com/amzxyz/RIME-LMDG) (e.g. `wanxiang-lts-zh-hans.gram`), loaded via schema `grammar.language`. It can be referenced by **other pinyin schemes** (community: 雾凇/白霜 + same gram) with param tuning; best with 万象词库. Large optional download; needs librime grammar/octagram support + memory budget. Phased plan: [`TD-012`](TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration).
 
 The user-facing UI should read from `SchemaMetadata`. It should not duplicate package size, license, version, Lua capability, or support flags in the view layer.
 
@@ -119,15 +123,17 @@ The user-facing UI should read from `SchemaMetadata`. It should not duplicate pa
 
 Transient scheme operations should use the shared global bottom toast pattern.
 
-Examples:
+**Target copy** should use the **active scheme display name** from the catalog (雾凇 / 万象 / …), not a single hard-coded brand:
 
-- "正在下载雾凇拼音..."
-- "正在解压雾凇拼音..."
-- "正在部署雾凇拼音..."
-- "雾凇拼音已下载并部署。"
+- "正在下载{方案名}… {progress}%" (or indeterminate while progress is unavailable)
+- "正在解压{方案名}…"
+- "正在部署{方案名}…"
+- "{方案名}已下载并部署。"
 - "正在应用 RIME 设置..."
 - "RIME 设置已应用。"
 - "下载失败，请稍后再试。"
+
+**Known gap (do not treat as install-path failure):** as of 2026-08-07, `AppOperationToastState(downloadState:)` still hardcodes 雾凇 strings and download progress is only set to `0` once (`URLSession` one-shot download). Tracked as [`TD-009`](TECH_DEBT.md#td-009-multi-scheme-download-toast-name-and-progress); deferred relative to 万象 catalog install correctness (`RIME-SCHEME-WANXIANG-001` residual R-02).
 
 Scheme rows should show stable status only. Do not add permanent rows for the latest transient operation result.
 The top-level app shell owns the toast trigger so feedback is not lost when the user leaves a scheme detail page.

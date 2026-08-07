@@ -252,9 +252,12 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
         fallbackBase: String
     ) -> (schemaID: String, layout: KeyboardLayoutStyle, usesT9: Bool) {
         if preferredLayout == .nineKey {
-            if let binding9,
-               isNineKeyCapable(binding9),
-               binding9 == "t9",
+            // V1: nine-key chrome uses fog-compatible `t9` when readiness matches.
+            // If binding9 was never written (only 26-key slot set, e.g. 万象), still
+            // default the nine-key slot to `t9` rather than fail-closing to 26-key.
+            let nineKeyID = binding9 ?? "t9"
+            if isNineKeyCapable(nineKeyID),
+               nineKeyID == "t9",
                t9ReadinessMatched
             {
                 return ("t9", .nineKey, true)

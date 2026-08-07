@@ -433,10 +433,15 @@ public final class ThreadAffineRimeSessionCoordinator {
         return result
     }
 
+    /// - Parameter actionIDPrefix: Use `sel` for candidate select so MainActor
+    ///   presentation can fail-closed on host `committedText` (Core owns apply).
     @discardableResult
-    public func performOrderedNow(_ work: ResponsiveRimeWork) -> ResponsiveRimeSnapshot? {
+    public func performOrderedNow(
+        _ work: ResponsiveRimeWork,
+        actionIDPrefix: String = "ord"
+    ) -> ResponsiveRimeSnapshot? {
         actionSequence &+= 1
-        let actionID = "ord-\(actionSequence)"
+        let actionID = "\(actionIDPrefix)-\(actionSequence)"
         guard let receipt = owner?.accept(work, actionID: actionID) else {
             return nil
         }
@@ -639,7 +644,8 @@ public final class ThreadAffineRimeEngineBridge: RimeEngine {
                         pageIndex: index,
                         boundEpoch: bound.epoch,
                         boundRevision: bound.revision
-                    )
+                    ),
+                    actionIDPrefix: "sel"
                 )
             )
         }
@@ -655,7 +661,8 @@ public final class ThreadAffineRimeEngineBridge: RimeEngine {
                         index: index,
                         boundEpoch: bound.epoch,
                         boundRevision: bound.revision
-                    )
+                    ),
+                    actionIDPrefix: "sel"
                 )
             )
         }

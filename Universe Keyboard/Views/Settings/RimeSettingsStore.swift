@@ -700,7 +700,11 @@ final class RimeSettingsStore {
     }
 
     private func updateFuzzyDeploymentIntent() {
-        let signature = currentFuzzySettings.deploymentSignature(activeSchemaID: activeSchemaID)
+        // Signature is preference-only for multi-scheme deploy (all installed letter
+        // schemas receive the same managed block). Still include active schema so
+        // older tests that pin schema=… keep a stable shape; any preference flip
+        // invalidates regardless of which scheme is selected.
+        let signature = currentFuzzySettings.deploymentSignature(activeSchemaID: "all")
         let deployedSignature = persistence.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey)
         if signature == deployedSignature {
             let wasFuzzyPending = persistence.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey)

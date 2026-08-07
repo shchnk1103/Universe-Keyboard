@@ -2,14 +2,34 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
-## 2026-08-07 — ADR 0026 layout-bound schemes + product direction
+## 2026-08-07 — Layout UI + nine-key with 万象 26-key binding
 
-- `ADR 0026` **Accepted**: per-layout RIME scheme slots; `RimeRuntimeSelection`
-  layout-bound resolve + migration; layout settings pickers for 26-key / nine-key.
-- Tests: `LayoutBoundRimeRuntimeSelectionTests` 7/0 (Executor-recorded).
-- `PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001` **Closed — Won’t do**.
-- `PD-RIME-SCHEME-WANXIANG-001` **Proposed/Active**: 万象全拼 V1 catalog install
-  still next; layout-bound foundation landed first.
+- Keyboard layout page shows **one** scheme picker for the selected 主键盘 only
+  (no simultaneous “全键盘方案 / 九宫格方案” blocks that mislead 万象 users).
+- Extension provisional layout resolve now passes ADR 0026 scheme bindings;
+  nine-key chrome works when 26-key slot is `wanxiang` and fog T9 is ready.
+- Layout-bound resolve defaults missing `binding9` to `t9` when readiness matches.
+- Fuzzy pinyin deploy patches **all installed letter schemas**, not only active.
+- Tests: `LayoutBoundRimeRuntimeSelectionTests` 10/0; fuzzy multi-schema deploy
+  test renamed/updated.
+
+## 2026-08-07 — Select publish fail-closed: multi-segment double host commit
+
+- Tag dual-gate `selectCandidate` pipeline actions as `sel-*` and strip
+  `committedText` on presentation apply so Core remains the only host-commit
+  owner (covers partial → final long 全拼 selections such as 今天… + 我们…).
+- Regression: `ResponsiveCandidateAnomalyTests` 6/0 (`swift test --filter
+  ResponsiveCandidateAnomalyTests`, Executor-recorded).
+
+## 2026-08-07 — 万象拼音 catalog + ADR 0026 layout-bound schemes
+
+- Catalog: downloadable **万象拼音** (`wanxiang`) from `amzxyz/rime-wanxiang`
+  **`rime-wanxiang-base.zip`** (CC BY 4.0); install/uninstall plan; schema_list
+  when installed. Grammar `.gram` not bundled.
+- `ADR 0026` **Accepted**: per-layout scheme slots + settings pickers.
+- Tests: `LayoutBoundRimeRuntimeSelectionTests` 7/0; `testWanxiangCatalogEntry…`
+  (Executor-recorded).
+- Mixed-candidates PD **Won’t do**.
 
 ## 2026-08-07 — RESPONSIVE-CANDIDATE-ANOMALY-001 select double-commit + paging window
 

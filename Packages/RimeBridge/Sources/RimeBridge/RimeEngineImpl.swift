@@ -118,7 +118,13 @@ public final class RimeEngineImpl: RimeEngine {
         let schemaStartTime = CACurrentMediaTime()
         let requested = resolveRuntimeSelection()
         let requestedSchema = requested.effectiveSchemaID
-        let fallbackSchema = requested.baseSchemaID == "rime_ice" ? "rime_ice" : "luna_pinyin"
+        // Prefer the 26-key layout binding (may be 万象) over a hard-coded fog/luna pair
+        // when T9 select fails closed.
+        let fallbackCandidate =
+            requested.schemeBinding26
+            ?? (requested.baseSchemaID == "t9" ? "rime_ice" : requested.baseSchemaID)
+        let fallbackSchema =
+            fallbackCandidate == "t9" ? "rime_ice" : fallbackCandidate
 
         let selected = selectSchemaForStartup(requestedSchema, fallback: fallbackSchema)
         let schemaElapsed = (CACurrentMediaTime() - schemaStartTime) * 1000

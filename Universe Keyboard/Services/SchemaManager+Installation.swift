@@ -1,4 +1,5 @@
 import Foundation
+import KeyboardCore
 
 extension SchemaManager {
     func findFile(named name: String, in dir: URL) -> URL? {
@@ -44,6 +45,10 @@ extension SchemaManager {
     func activateSchema(_ schemaID: String) {
         settings.set(schemaID, forKey: "rime_active_schema")
         activeSchemaID = schemaID
+        // ADR 0026: activating a 26-key-capable scheme updates the 26-key layout slot.
+        if RimeRuntimeSelection.isTwentySixKeyCapable(schemaID) {
+            settings.set(schemaID, forKey: KeyboardLayoutSettingsKey.schemeBinding26)
+        }
         requestDeploy()
     }
 

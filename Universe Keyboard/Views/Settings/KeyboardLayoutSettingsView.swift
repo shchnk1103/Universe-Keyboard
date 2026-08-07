@@ -23,45 +23,50 @@ struct KeyboardLayoutSettingsView: View {
             } header: {
                 Text("主键盘")
             } footer: {
-                Text("九键依赖已就绪的九键方案（当前为雾凇 T9）。启用前会检查安装与部署状态；失败时保持当前布局。英文与自动英文场景在九键偏好下仍使用 26 键。长句建议尽早点选拼音路径或分段上屏，可减少未确认数字串变长时的卡顿。")
+                Text("选择主键盘外形后，下方只显示该布局使用的输入方案。九宫格依赖已就绪的雾凇 T9；启用前会检查安装与部署。全键盘可选用万象等方案，不影响九宫格。英文与自动英文在九键偏好下仍用 26 键。")
             }
 
-            Section {
-                ForEach(rimeStore.twentySixKeySchemeChoices) { schema in
-                    schemeRow(
-                        title: schema.name,
-                        subtitle: schema.schemaID,
-                        isSelected: rimeStore.schemeBinding26 == schema.schemaID
-                    ) {
-                        Task { await rimeStore.setSchemeBinding26(schema.schemaID) }
-                    }
-                }
-            } header: {
-                Text("全键盘使用的方案")
-            } footer: {
-                Text("仅影响 26 键中文布局。与九宫格方案互相独立。")
-            }
-
-            Section {
-                if rimeStore.nineKeySchemeChoices.isEmpty {
-                    Text("尚未就绪。请先安装雾凇并启用九宫格以完成 T9 验证。")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(rimeStore.nineKeySchemeChoices, id: \.id) { row in
+            // Only show the scheme picker for the layout currently selected as 主键盘.
+            // Showing both slots at once misleads when 26-key is 万象 (no nine-key pack)
+            // while nine-key still uses fog T9 independently.
+            if selectedLayout == .twentySixKey {
+                Section {
+                    ForEach(rimeStore.twentySixKeySchemeChoices) { schema in
                         schemeRow(
-                            title: row.name,
-                            subtitle: row.id,
-                            isSelected: rimeStore.schemeBinding9 == row.id
+                            title: schema.name,
+                            subtitle: schema.schemaID,
+                            isSelected: rimeStore.schemeBinding26 == schema.schemaID
                         ) {
-                            rimeStore.setSchemeBinding9(row.id)
+                            Task { await rimeStore.setSchemeBinding26(schema.schemaID) }
                         }
                     }
+                } header: {
+                    Text("输入方案")
+                } footer: {
+                    Text("仅作用于全键盘中文。切换到九宫格时会使用九键专用方案（当前为雾凇 T9），与这里选择的全键盘方案互相独立。")
                 }
-            } header: {
-                Text("九宫格使用的方案")
-            } footer: {
-                Text("只列出支持九键数字输入的方案。未就绪时切到九宫格会自动回退全键盘。")
+            } else {
+                Section {
+                    if rimeStore.nineKeySchemeChoices.isEmpty {
+                        Text("九键方案尚未就绪。请先安装雾凇拼音并完成 T9 验证；启用九宫格时会自动准备。")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(rimeStore.nineKeySchemeChoices, id: \.id) { row in
+                            schemeRow(
+                                title: row.name,
+                                subtitle: row.id,
+                                isSelected: (rimeStore.schemeBinding9 ?? "t9") == row.id
+                            ) {
+                                rimeStore.setSchemeBinding9(row.id)
+                            }
+                        }
+                    }
+                } header: {
+                    Text("输入方案")
+                } footer: {
+                    Text("九宫格中文使用九键方案（当前为雾凇 T9）。即使全键盘选用万象等无九键包的方案，只要雾凇 T9 已就绪，仍可正常使用九宫格。未就绪时会保持全键盘。")
+                }
             }
 
             if isBusy {
