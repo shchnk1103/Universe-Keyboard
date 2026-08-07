@@ -1,10 +1,10 @@
 # Product Decision: RIME-SCHEME-WANXIANG-001 — Support 万象拼音 as a downloadable RIME scheme
 
 **Decision ID:** `PD-RIME-SCHEME-WANXIANG-001`  
-**Lifecycle status:** `Proposed — Product direction recorded; implementation not yet Ready`  
+**Lifecycle status:** `Proposed — Product freezes recorded; implementation not Ready`  
 **Date / timezone:** `2026-08-07 Asia/Shanghai`  
-**Parent domain:** RIME multi-scheme management ([`RIME_SCHEME_MANAGEMENT.md`](../RIME_SCHEME_MANAGEMENT.md))  
-**Related:** ADR 0001 (main App deploy only); catalog/install model for `rime_ice`; T9 remains fog-song / ADR 0018  
+**Parent domain:** RIME multi-scheme management ([`RIME_SCHEME_MANAGEMENT.md`](../RIME_SCHEME_MANAGEMENT.md)); keyboard layout ([`KEYBOARD_LAYOUT.md`](../KEYBOARD_LAYOUT.md))  
+**Related:** ADR 0001 (main App deploy only); catalog/install model for `rime_ice`; **ADR 0018 must be amended** for layout-bound scheme choice (see §3)  
 **Assignment:** [`rime-scheme-wanxiang-001.md`](../assignments/rime-scheme-wanxiang-001.md)  
 **Replaces investment focus:** [`PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001`](T9-SINGLE-KEY-MIXED-CANDIDATES-001-authorization.md) (`Closed — Won’t do`)
 
@@ -13,57 +13,87 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Proposed` |
-| **Phase** | Direction: expand downloadable schemes; first new target = 万象拼音 |
-| **Non-claims** | Not App Store marketing; not T9 first-key redesign; not dual-gate work |
-| **Next** | Scope freeze (which upstream package / schema IDs / Lua / size); then Assignment Ready |
-| **Residuals** | None until Gate |
+| **Phase** | Partial freeze (全拼首版 / 体积可接受 / **布局可选方案**); upstream asset + Architecture still open |
+| **Non-claims** | Not App Store marketing; not dual-gate work; not mixed-candidate work |
+| **Next** | Architecture review of layout-bound scheme selection vs ADR 0018; freeze upstream package/schema IDs; then Ready |
+| **Residuals** | Q1 (exact release asset), Q2 (schema IDs), Q4 (advanced-input matrix) still open |
 
 ---
 
 ## Authority
 
 - **Product Approver:** Human Product Lead  
-- **Decision source:** In-session 2026-08-07 — decline mixed-candidate goal; prefer supporting more schemes; **next: 万象拼音**
+- **Decision source:** In-session 2026-08-07 — decline mixed-candidate goal; prefer multi-scheme; next 万象拼音  
+- **Freeze addendum:** In-session 2026-08-07 answers to open product questions (全拼优先、接受体积、布局页自选方案)
 
 ## Product problem
 
-Users want richer choice of open-source RIME bases beyond `luna_pinyin` (built-in) and `rime_ice` (downloadable). Investing in Apple-like t9 first-key union is low leverage versus **catalog + install + switch** for popular schemes such as **万象拼音** ([amzxyz/rime-wanxiang](https://github.com/amzxyz/rime-wanxiang) and ecosystem).
+Users want richer choice of open-source RIME bases beyond `luna_pinyin` and `rime_ice`. Scheme catalog infrastructure exists; fog-song is still the only downloadable open-source scheme in V1.1.
 
-Scheme management V1 already has a list-and-detail + catalog infrastructure; V1.1 text still says fog-song is the only downloadable open-source scheme — this PD authorizes **planning** the next catalog entry.
+Separately, **one global “当前方案” + 九键自动切 `t9`（ADR 0018）** no longer matches Product intent: users should pick **which scheme this layout uses** on the keyboard layout surface (e.g. nine-key may use fog-song `t9`, or another nine-key-capable scheme when available — not hard-locked to “only rime_ice implies t9”).
 
-## Bound Product Direction (not full implementation Gate)
+## Bound Product Direction
 
-1. **Product direction:** Expand multi-scheme support using the existing main-App catalog / deploy / Extension-session-only boundary.  
-2. **First new scheme target:** **万象拼音** (upstream identity and exact release asset **to be frozen** before Ready).  
-3. **26-key / nine-key / English:** Keep ADR 0018 model — user-visible **base scheme** + layout-derived **effective** scheme for T9 when base is fog-song and ready; English remains non-Chinese path. **万象 is a base scheme candidate**, not a replacement for `t9` unless a later PD says otherwise.  
-4. **Do not** treat 万象 as requiring T9 first-key mixed-candidate work.
+### 1. Multi-scheme expansion
 
-### Explicit non-goals (until later PDs)
+Expand downloadable schemes via main-App catalog / deploy / Extension-session-only (ADR 0001).  
+**First new scheme target:** **万象拼音**.
 
-- Shipping every 万象 sub-variant (全拼/双拼/辅助码矩阵) in V1 of this work  
-- Network download inside Keyboard Extension  
-- Claiming 万象 grammar-model quality or “大厂级” marketing  
-- Automatic migration of user dictionaries across unrelated schemas  
+### 2. 万象 V1 product freezes (2026-08-07)
 
-### Open questions before Ready (Product + Architecture)
-
-| # | Question |
+| Topic | Product freeze |
 |---|---|
-| Q1 | Exact upstream: full `rime-wanxiang` release vs slim fork; license and redistributable asset |
-| Q2 | Primary schema ID(s) to surface as one user-facing “万象拼音” row |
-| Q3 | Lua / OpenCC / grammar model binary size and Extension memory budget |
-| Q4 | Advanced-input (date/calc/…) capability matrix vs fog-song |
-| Q5 | Whether nine-key stays fog-song-only or ever maps 万象+layout (default: **fog-song-only T9** until PD) |
+| Input style | **全拼为主** for first shippable slice; **双拼 / 辅助码变体 out of V1** (later work) |
+| Package size | **Accept** packages larger than fog-song (grammar model / big dict OK in principle); Architecture still sets a **hard memory/install budget** and may require slim asset choice within that budget |
+| Layout × scheme | **User-selectable scheme per keyboard layout** on the **keyboard layout settings page** — not “one global base scheme only.” When using **九宫格**, the user may **choose** the scheme used for that layout (among installed schemes that support that layout). When using **26 键**, likewise choose the 26-key scheme. **English** remains a separate input mode/path unless a later PD says otherwise. |
+
+### 3. Layout-bound scheme selection (binding; amends ADR 0018 intent)
+
+**Product requires:**
+
+1. Settings **键盘布局** (or equivalent layout management UI) exposes, for each Chinese layout the product supports (at least **26 键** and **九宫格**):  
+   - layout preference, and  
+   - **scheme used when this layout is active** (picker over installed, layout-capable schemes).  
+2. Runtime effective scheme = **layout’s selected scheme** (plus readiness/install checks), **not** solely “global base + automatic t9 rewrite.”  
+3. Automatic fog-song → `t9` rewrite (current ADR 0018 table) is **no longer the sole product model**; it may remain a **default/migration** when the user has not set a per-layout scheme, until Architecture freezes migration.  
+4. Schemes that **cannot** run on nine-key must be **unavailable or fail-closed** in the nine-key scheme picker (never silent wrong algebra).
+
+**Architecture obligation:** ADR 0018 (and resolver/`RimeRuntimeSelection`) **must be amended or superseded** before production of layout-bound pickers. This PD **authorizes the product requirement**; it does **not** by itself ship the ADR text.
+
+**Implication for 万象 + 九键:**  
+Product **disagrees** with “万象 only on 26-key / nine-key forever fog-song-only.”  
+Whether **万象 V1** itself exposes a nine-key-capable schema is a **capability fact** (upstream may only be 全拼 26-key). If 万象 V1 has **no** nine-key algebra, it appears only in the **26-key** picker; nine-key picker still offers fog-song `t9` (and later other nine-key schemes). Product still wants the **picker architecture**, not a hard product ban on 万象-on-nine-key forever.
+
+### 4. Explicit non-goals (until later PDs)
+
+- 万象 V1 双拼 / 全辅助码矩阵  
+- Apple-like T9 first-key mixed candidates  
+- Extension-side download  
+- Cross-schema user-dictionary auto-merge  
+- English layout as a third RIME Chinese scheme row (unless later PD)
+
+### 5. Open questions (remaining)
+
+| # | Status | Note |
+|---|---|---|
+| Q1 | **Open** | Exact upstream release asset (full vs slim), license, checksum |
+| Q2 | **Open** | Primary schema ID(s) for user-facing “万象拼音（全拼）” |
+| Q3 | **Partially frozen** | Large size **accepted in principle**; Architecture names install/jetsam budget and may force slim build |
+| Q4 | **Open** | Advanced-input matrix vs fog-song |
+| Q5 | **Frozen (product)** | Layout-bound scheme selection **required**; not fog-song-only T9 forever; ADR 0018 amendment required |
+| Q6 | **Open (Architecture)** | Default/migration when per-layout scheme unset; readiness markers per layout×scheme |
 
 ## Implementation follow-through
 
 | Action | Authorized now? |
 |---|---|
-| Record direction + Assignment Pending | **Yes** |
-| Spike: catalog entry, download size, install plan, selectSchema smoke | **Yes** after Executor named and Entry met |
-| Production catalog + UI + deploy | **Only** when Assignment reaches Ready with Q1–Q5 frozen enough to exit UNKNOWN |
-| Architecture review of deploy/Lua/size | **Required** before production install path |
+| Record freezes + layout-bound requirement | **Yes** |
+| ADR 0018 amendment draft | **Yes** (Architecture) before layout-picker production |
+| Spike: 万象 catalog + full-pinyin install + selectSchema smoke | After Executor named; Q1–Q2 frozen enough |
+| Layout settings UI: per-layout scheme picker | After ADR path accepted; may ship with fog-song/`t9` first, then 万象 on 26-key |
+| Production catalog + deploy for 万象 | Only when Assignment Ready |
 
 ## History
 
-- 2026-08-07: Proposed after Product declined T9 single-key mixed candidates.
+- 2026-08-07: Proposed after Product declined T9 single-key mixed candidates.  
+- 2026-08-07: Freeze addendum — 全拼 V1; accept large size; **layout-page scheme choice (incl. nine-key)** supersedes fog-song-only T9 product default.

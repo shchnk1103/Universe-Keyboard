@@ -6,9 +6,10 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 - `PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001` **Closed — Won’t do** (accept rime-ice
   `t9` sparse raw-digit menus; no Apple-like first-key union work).
-- `PD-RIME-SCHEME-WANXIANG-001` **Proposed**: next multi-scheme investment is
-  downloadable **万象拼音** via existing catalog/deploy path (implementation
-  not Ready; Q1–Q5 open).
+- `PD-RIME-SCHEME-WANXIANG-001` **Proposed**: downloadable **万象拼音（全拼 V1）**;
+  large package acceptable in principle; **layout settings choose scheme per
+  layout** (26-key / nine-key) — requires ADR 0018 amendment before implement.
+  Implementation not Ready.
 
 ## 2026-08-07 — RESPONSIVE-CANDIDATE-ANOMALY-001 select double-commit + paging window
 

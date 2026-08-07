@@ -25,13 +25,14 @@
 - **Disposition:** Accept rime-ice `t9` sparse raw-digit menus as scheme default; do not implement Apple-like first-key union
 - **Next:** None — product investment pivots to multi-scheme support
 
-## RIME-SCHEME-WANXIANG-001 — 万象拼音方案支持
+## RIME-SCHEME-WANXIANG-001 — 万象拼音 + 布局绑定方案
 
-- **Lifecycle:** `Proposed / Assignment Pending` — direction only
+- **Lifecycle:** `Proposed / Assignment Pending` — product freezes in; not Ready
 - **Authority:** [`PD`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) · [`Assignment`](assignments/rime-scheme-wanxiang-001.md)
-- **Direction:** Expand downloadable RIME schemes via existing catalog/deploy model; **first new target = 万象拼音**
-- **Explicit non-claims:** implementation not Ready; Q1–Q5 (upstream package, schema IDs, Lua/size, advanced-input, T9 mapping) still open
-- **Next:** Freeze upstream asset + schema surface; Architecture size/deploy review; then Ready
+- **Freezes:** 万象 V1 = **全拼**; large package **acceptable in principle**; **layout settings page chooses scheme per layout** (26 键 / 九宫格各自可选) — **not** permanent fog-song-only nine-key
+- **Architecture block:** ADR **0018** must be amended for layout×scheme runtime (current auto `rime_ice`→`t9` is insufficient)
+- **Still open:** exact 万象 release asset / schema IDs; advanced-input matrix; hard size budget number
+- **Next:** Architecture ADR 0018 amendment draft; pin 万象全拼 upstream; then Ready
 
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 

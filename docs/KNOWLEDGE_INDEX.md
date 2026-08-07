@@ -107,7 +107,7 @@
   [`PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001`](product-decisions/T9-SINGLE-KEY-MIXED-CANDIDATES-001-authorization.md) (**Closed — Won’t do** — accept rime-ice `t9` sparse raw-digit menus; not dual-gate bug class),
   [`T9-SINGLE-KEY-MIXED-CANDIDATES-001 Assignment`](assignments/t9-single-key-mixed-candidates-001.md) (`Closed — Won’t do`),
   [`discussion draft`](plans/t9-single-key-mixed-candidates-001-discussion.md) (historical plain-language),
-  [`PD-RIME-SCHEME-WANXIANG-001`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) (**Proposed** — next downloadable scheme: 万象拼音),
+  [`PD-RIME-SCHEME-WANXIANG-001`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) (**Proposed** — 万象全拼 V1 + **layout-bound scheme picker**; ADR 0018 amend required),
   [`RIME-SCHEME-WANXIANG-001 Assignment`](assignments/rime-scheme-wanxiang-001.md) (`Assignment Pending`),
   [`CANARY-001 Stop/Retain disposition`](product-decisions/T9-RESPONSIVE-PIPELINE-001-CANARY-001-disposition.md),
   [`CANARY-001/DEVICE-001 device evidence`](evidence/t9-responsive-pipeline-canary-001-device-001-2026-08-04.md),
