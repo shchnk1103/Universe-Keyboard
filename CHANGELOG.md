@@ -2,14 +2,15 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
-## 2026-08-07 — ADR 0026 layout-bound schemes + product direction
+## 2026-08-07 — 万象拼音 catalog + ADR 0026 layout-bound schemes
 
-- `ADR 0026` **Accepted**: per-layout RIME scheme slots; `RimeRuntimeSelection`
-  layout-bound resolve + migration; layout settings pickers for 26-key / nine-key.
-- Tests: `LayoutBoundRimeRuntimeSelectionTests` 7/0 (Executor-recorded).
-- `PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001` **Closed — Won’t do**.
-- `PD-RIME-SCHEME-WANXIANG-001` **Proposed/Active**: 万象全拼 V1 catalog install
-  still next; layout-bound foundation landed first.
+- Catalog: downloadable **万象拼音** (`wanxiang`) from `amzxyz/rime-wanxiang`
+  **`rime-wanxiang-base.zip`** (CC BY 4.0); install/uninstall plan; schema_list
+  when installed. Grammar `.gram` not bundled.
+- `ADR 0026` **Accepted**: per-layout scheme slots + settings pickers.
+- Tests: `LayoutBoundRimeRuntimeSelectionTests` 7/0; `testWanxiangCatalogEntry…`
+  (Executor-recorded).
+- Mixed-candidates PD **Won’t do**.
 
 ## 2026-08-07 — RESPONSIVE-CANDIDATE-ANOMALY-001 select double-commit + paging window
 

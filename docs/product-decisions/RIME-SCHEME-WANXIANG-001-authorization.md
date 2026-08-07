@@ -4,7 +4,7 @@
 **Lifecycle status:** `Proposed — Product freezes recorded; implementation not Ready`  
 **Date / timezone:** `2026-08-07 Asia/Shanghai`  
 **Parent domain:** RIME multi-scheme management ([`RIME_SCHEME_MANAGEMENT.md`](../RIME_SCHEME_MANAGEMENT.md)); keyboard layout ([`KEYBOARD_LAYOUT.md`](../KEYBOARD_LAYOUT.md))  
-**Related:** ADR 0001 (main App deploy only); catalog/install model for `rime_ice`; **ADR 0018 amend draft** [`ADR 0026`](../architecture/decisions/0026-layout-bound-rime-scheme-selection.md) (**Proposed**, not Accepted)  
+**Related:** ADR 0001; catalog/install model; [`ADR 0026`](../architecture/decisions/0026-layout-bound-rime-scheme-selection.md) (**Accepted**)  
 **Assignment:** [`rime-scheme-wanxiang-001.md`](../assignments/rime-scheme-wanxiang-001.md)  
 **Replaces investment focus:** [`PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001`](T9-SINGLE-KEY-MIXED-CANDIDATES-001-authorization.md) (`Closed — Won’t do`)
 
@@ -12,11 +12,11 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Proposed` |
-| **Phase** | Product freezes in; **ADR 0026 draft** for layout×scheme; 万象 asset pin still open |
-| **Non-claims** | Not App Store marketing; not dual-gate work; not mixed-candidate work; ADR 0026 not yet Accepted |
-| **Next** | Architecture Accept of ADR 0026 (or revise); freeze 万象 upstream package/schema IDs; then Ready |
-| **Residuals** | Q1 (exact release asset), Q2 (schema IDs), Q4 (advanced-input matrix) still open |
+| **Lifecycle** | `Active` — catalog slice in progress under KOS 2.1 autonomous execution |
+| **Phase** | Q1/Q2 frozen; catalog entry + install path landing |
+| **Non-claims** | Not App Store marketing; grammar `.gram` optional not in V1 zip; not dual-spell |
+| **Next** | Ship catalog install; device smoke optional |
+| **Residuals** | Q4 advanced-input matrix deferred; LMDG `.gram` optional follow-up |
 
 ---
 
@@ -72,16 +72,27 @@ Whether **万象 V1** itself exposes a nine-key-capable schema is a **capability
 - Cross-schema user-dictionary auto-merge  
 - English layout as a third RIME Chinese scheme row (unless later PD)
 
-### 5. Open questions (remaining)
+### 5. Asset pin (Q1/Q2 frozen 2026-08-07, Executor under Product autonomy)
+
+| Field | Freeze |
+|---|---|
+| Upstream | [amzxyz/rime-wanxiang](https://github.com/amzxyz/rime-wanxiang) |
+| Release asset (V1 全拼) | **`rime-wanxiang-base.zip`** (latest GitHub release; e.g. v17.2.4 ~34 MB) — not dual-spell fuzhu packs |
+| User-facing schema | **`wanxiang`** (`wanxiang.schema.yaml`); display name **万象拼音** |
+| License | **CC BY 4.0** (upstream LICENSE) |
+| Nine-key | Package may include `wanxiang_t9*`; **V1 picker still treats 万象 as 26-key only** until a later readiness path for 万象九键 |
+| Grammar model | Optional separate `wanxiang-lts-zh-hans.gram` (RIME-LMDG) — **not** bundled in V1 install zip |
+
+### 6. Open questions (remaining)
 
 | # | Status | Note |
 |---|---|---|
-| Q1 | **Open** | Exact upstream release asset (full vs slim), license, checksum |
-| Q2 | **Open** | Primary schema ID(s) for user-facing “万象拼音（全拼）” |
-| Q3 | **Partially frozen** | Large size **accepted in principle**; Architecture names install/jetsam budget and may force slim build |
-| Q4 | **Open** | Advanced-input matrix vs fog-song |
-| Q5 | **Frozen (product)** | Layout-bound scheme selection **required**; not fog-song-only T9 forever; ADR 0018 amendment required |
-| Q6 | **Open (Architecture)** | Default/migration when per-layout scheme unset; readiness markers per layout×scheme |
+| Q1 | **Frozen** | base.zip from amzxyz/rime-wanxiang |
+| Q2 | **Frozen** | schema_id `wanxiang` |
+| Q3 | **Partially frozen** | ~34 MB zip accepted; jetsam residual optional device note |
+| Q4 | **Deferred** | Advanced-input not claimed for 万象 V1 |
+| Q5 | **Frozen** | Layout-bound picker (ADR 0026 Accepted) |
+| Q6 | **Frozen (ADR 0026)** | Migration when bindings absent |
 
 ## Implementation follow-through
 
@@ -96,4 +107,5 @@ Whether **万象 V1** itself exposes a nine-key-capable schema is a **capability
 ## History
 
 - 2026-08-07: Proposed after Product declined T9 single-key mixed candidates.  
-- 2026-08-07: Freeze addendum — 全拼 V1; accept large size; **layout-page scheme choice (incl. nine-key)** supersedes fog-song-only T9 product default.
+- 2026-08-07: Freeze addendum — 全拼 V1; accept large size; **layout-page scheme choice (incl. nine-key)** supersedes fog-song-only T9 product default.  
+- 2026-08-07: Q1/Q2 freeze — `rime-wanxiang-base.zip`, schema `wanxiang`, CC BY 4.0; catalog install authorized under Product KOS autonomy.

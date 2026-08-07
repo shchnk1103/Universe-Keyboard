@@ -139,6 +139,71 @@ enum RimeSchemeCatalog {
                 removableBuildFileSubstrings: ["rime_ice", "melt_eng", "radical_pinyin", "t9"]
             )
         ),
+        // PD-RIME-SCHEME-WANXIANG-001 V1 全拼：官方 base 包（非双拼辅助码包）。
+        // schema_id = wanxiang；语法模型 .gram 为可选后续切片（未钉进本包）。
+        RimeSchemeCatalogEntry(
+            schemaID: "wanxiang",
+            name: "万象拼音",
+            description: "社区万象拼音（全拼）。词库与体验较强；体积大于雾凇。语法模型可另装以增强整句（本版先装方案本体）。",
+            source: .downloaded,
+            requiresLua: true,
+            supportsUserDictionary: true,
+            downloadSize: "约 34 MB",
+            installedSize: "约 80–120 MB",
+            licenseName: "CC BY 4.0",
+            distribution: RimeSchemeDistribution(
+                githubOwner: "amzxyz",
+                githubRepository: "rime-wanxiang",
+                assetName: "rime-wanxiang-base.zip",
+                cachedArchiveFileName: "rime_wanxiang_base.zip",
+                extractionDirectoryName: "rime_wanxiang_extract"
+            ),
+            storage: .downloaded(prefix: "wanxiang"),
+            installationPlan: RimeSchemeInstallationPlan(
+                schemaFileName: "wanxiang.schema.yaml",
+                luaDirectoryPrefix: "lua/",
+                skippedPrefixes: [
+                    "docs/",
+                    ".github/",
+                    "custom/",
+                ],
+                skippedFiles: [
+                    "weasel.yaml",
+                    "default.yaml",
+                    "README.md",
+                    "CHANGELOG.md",
+                    "LICENSE",
+                    "mkdocs.yml",
+                    "version.txt",
+                    "custom_phrase.txt",
+                    ".gitattributes",
+                    ".gitignore",
+                    ".yamlfmt",
+                    "release-please-config.json",
+                    ".release-please-manifest.json",
+                ],
+                removableFiles: [
+                    "wanxiang.schema.yaml",
+                    "wanxiang.dict.yaml",
+                    "wanxiang_algebra.yaml",
+                    "wanxiang_symbols.yaml",
+                    "wanxiang_english.schema.yaml",
+                    "wanxiang_english.dict.yaml",
+                    "wanxiang_mixedcode.schema.yaml",
+                    "wanxiang_mixedcode.dict.yaml",
+                    "wanxiang_reverse.schema.yaml",
+                    "wanxiang_reverse.dict.yaml",
+                    "wanxiang_t9.schema.yaml",
+                    "wanxiang_t9i.schema.yaml",
+                ],
+                removableDirectories: [
+                    "dicts",
+                ],
+                removableBuildFileSubstrings: [
+                    "wanxiang",
+                ]
+            )
+        ),
     ]
 
     static func entry(for schemaID: String) -> RimeSchemeCatalogEntry? {

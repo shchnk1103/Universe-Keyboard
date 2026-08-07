@@ -27,12 +27,12 @@
 
 ## RIME-SCHEME-WANXIANG-001 — 万象拼音 + 布局绑定方案
 
-- **Lifecycle:** `Active` — layout-bound foundation landed; 万象 download pending
+- **Lifecycle:** `Active` — layout-bound + **万象 catalog install path landed**
 - **Authority:** [`PD`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) · [`Assignment`](assignments/rime-scheme-wanxiang-001.md) · [`ADR-0026-ACCEPT`](assignments/adr-0026-accept-001.md)
-- **ADR 0026:** **Accepted** — layout×scheme resolver + settings pickers + migration
-- **Evidence:** `LayoutBoundRimeRuntimeSelectionTests` **7/0** (Executor-recorded)
-- **Still open:** 万象 release asset / schema IDs; catalog install; advanced-input matrix
-- **Next:** Pin 万象全拼 upstream and implement catalog entry
+- **Pin:** `amzxyz/rime-wanxiang` · asset `rime-wanxiang-base.zip` · schema `wanxiang` · CC BY 4.0
+- **Evidence:** `LayoutBoundRimeRuntimeSelectionTests` **7/0**; `testWanxiangCatalogEntry…` **2/0** SchemaManager (Executor-recorded)
+- **Still open:** optional device download smoke; LMDG `.gram` optional; 双拼 packs later
+- **Next:** Human install smoke welcome; then optional formal close of catalog slice
 
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 

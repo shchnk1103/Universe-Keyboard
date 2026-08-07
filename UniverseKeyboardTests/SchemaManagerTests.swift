@@ -14,6 +14,7 @@ final class SchemaManagerTests: XCTestCase {
         let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
         let manager = makeManager(settings: settings, installer: installer)
 
+        XCTAssertNotNil(manager.schemas.first { $0.schemaID == "wanxiang" })
         let rimeIce = manager.schemas.first { $0.schemaID == "rime_ice" }
 
         XCTAssertEqual(rimeIce?.version, "2026.05.01")
@@ -21,6 +22,22 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(rimeIce?.licenseName, "GPL-3.0")
         XCTAssertTrue(rimeIce?.isDownloadable == true)
         XCTAssertTrue(rimeIce?.supportsUserDictionary == true)
+    }
+
+    func testWanxiangCatalogEntryIsDownloadableFullPinyin() {
+        let entry = RimeSchemeCatalog.entry(for: "wanxiang")
+        XCTAssertNotNil(entry)
+        XCTAssertEqual(entry?.schemaID, "wanxiang")
+        XCTAssertEqual(entry?.name, "万象拼音")
+        XCTAssertEqual(entry?.distribution?.githubOwner, "amzxyz")
+        XCTAssertEqual(entry?.distribution?.githubRepository, "rime-wanxiang")
+        XCTAssertEqual(entry?.distribution?.assetName, "rime-wanxiang-base.zip")
+        XCTAssertEqual(entry?.installationPlan?.schemaFileName, "wanxiang.schema.yaml")
+        XCTAssertEqual(entry?.licenseName, "CC BY 4.0")
+        XCTAssertTrue(entry?.requiresLua == true)
+        XCTAssertTrue(RimeRuntimeSelection.isTwentySixKeyCapable("wanxiang"))
+        XCTAssertFalse(RimeRuntimeSelection.isNineKeyCapable("wanxiang"))
+        XCTAssertNotNil(RimeSchemeCatalog.downloadableEntries.first { $0.schemaID == "wanxiang" })
     }
 
     func testSchemaSwitchAndLicenseAcceptancePersistIntentFlags() {

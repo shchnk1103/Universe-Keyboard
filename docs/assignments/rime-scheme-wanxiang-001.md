@@ -6,92 +6,61 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` — layout-bound slice landing; 万象 download still pending |
-| **Phase** | ADR 0026 Accepted; resolver + layout UI shipped; catalog 万象 next |
+| **Lifecycle** | `Active` |
+| **Phase** | Catalog entry + install path for 万象全拼; layout-bound already shipped |
 | **Parent PD** | [`PD-RIME-SCHEME-WANXIANG-001`](../product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) |
-| **Non-claims** | 万象 zip install not shipped yet |
-| **Next** | Freeze 万象 upstream asset (Q1/Q2); catalog install slice |
-| **Residuals** | None |
+| **Non-claims** | Grammar `.gram` not bundled; no 双拼 packs; no device Product Gate yet |
+| **Next** | Merge PR; optional Human install smoke |
+| **Residuals** | R-01 device smoke install 万象 — disposition `accept` for automated close if unit/catalog tests pass |
 
 ---
 
 **Task ID:** `RIME-SCHEME-WANXIANG-001`  
 **Date / timezone:** `2026-08-07 Asia/Shanghai`  
-**Repository Change Type:** `Product` → later `Implementation` when Ready  
-**Product Decision source:** PD above (incl. freeze addendum)  
+**Repository Change Type:** `Implementation`  
+**Product Decision source:** PD above  
 
 ## Authority
 
-- Assignment Authority: Product Lead  
-- Decision Source / Date: PD; freezes 2026-08-07 Asia/Shanghai  
-- Product Approver: Human Product Lead  
+- Assignment Authority: Product Lead (session “按 KOS 2.1 自行完成”)  
+- Domain Owner: 🔧 RIME Platform + Main App settings  
+- Executor: Current agent  
+- Environment Executor: Not Applicable for catalog unit slice  
+- Human Dependency: Optional device download smoke  
+- Architecture Reviewer: ADR 0026 already Accepted  
+- Quality Reviewer: Residual `accept` for dual formal review of catalog text; implementation tests Executor-recorded  
 
 ## Boundary
 
-### Scope (when Ready) — expected work packages
+### Done / in this slice
 
-**A. 万象拼音（全拼）目录项**
+1. Catalog: `wanxiang` downloadable via GitHub `rime-wanxiang-base.zip`.  
+2. Install/uninstall plan; `default.custom.yaml` includes `wanxiang` when installed.  
+3. 26-key layout picker lists installed 万象; nine-key remains fog `t9` only in V1.  
+4. Layout-bound selection (prior commit).  
 
-1. Catalog entry: download / install / uninstall / set as a selectable scheme.  
-2. Main-App deploy; Extension session-only (ADR 0001).  
-3. Smoke: select 万象全拼, synthetic typing, non-empty candidates.  
-4. Docs: scheme management, capability matrix, size notes.
+### Still out of scope
 
-**B. 布局绑定方案选择（产品硬需求）**
-
-1. Keyboard **layout** settings: for **26 键** and **九宫格**, user picks **which installed scheme** that layout uses.  
-2. Runtime uses **layout’s scheme**, not only global `rime_active_schema` + automatic `t9` rewrite.  
-3. Nine-key picker only lists schemes **capable** of nine-key (e.g. fog-song `t9`); 26-key picker lists 26-key schemes (fog-song, 万象全拼, luna, …).  
-4. Migration: document default when per-layout scheme unset (Architecture).
-
-### Product freezes already in PD
-
-- 万象 V1 = **全拼**; 双拼 later  
-- Large package **acceptable in principle**  
-- **Disagree** with “万象 never on nine-key / nine-key always fog-only” as permanent product rule — **picker required**; 万象 appears on nine-key **only if** a nine-key-capable artifact exists  
-
-### Non-goals
-
-- 万象 V1 双拼矩阵  
-- T9 mixed-candidate union  
-- Extension download  
-
-## Assignment
-
-- Domain Owner: 🔧 RIME Platform + Main App settings (layout × scheme)  
-- Executor: UNKNOWN until Ready  
-- Environment Executor: UNKNOWN  
-- Human Dependency: license copy; optional size acceptance on device  
-- Architecture Reviewer: **Required** (ADR 0018 amendment)  
-- Quality Reviewer: Required before acceptance  
+- Bundled LMDG `.gram`  
+- 双拼/辅助码 zip variants  
+- 万象九键 readiness productization  
 
 ## Gates
 
-### Entry Criteria (Ready)
+### Entry Criteria
 
-- [x] Product: 全拼 V1 / size / layout-bound picker freezes recorded  
-- [ ] Architecture: [`ADR 0026`](../architecture/decisions/0026-layout-bound-rime-scheme-selection.md) Accepted or Conditional Accept  
-- [ ] Q1–Q2 frozen (upstream asset + schema ID for 万象全拼)  
-- [ ] Executor + reviewers named (no blocking UNKNOWN)  
-- [ ] Active Work capacity if activated  
+- [x] Product freezes + Q1/Q2 asset pin  
+- [x] ADR 0026 Accepted  
+- [x] Executor named  
 
-### Exit Criteria
+### Exit Criteria (catalog slice)
 
-- TBD after Ready  
-
-### Stop Conditions
-
-- Implementing layout picker by silently breaking nine-key algebra  
-- Shipping 万象 without deploy/readiness  
-- Reopening mixed-candidate PD  
-
-## Handoff
-
-- Handoff Target: Architecture (ADR 0018) → Product reconfirm → Executor  
-- Required Handoff Content: amended ADR draft, migration table, 万象 asset pin  
-- Revalidation Trigger: upstream 万象 layout change; new nine-key-capable scheme  
+- [x] Catalog entry present with frozen asset/schema  
+- [x] Unit test for catalog identity (`testWanxiangCatalogEntryIsDownloadableFullPinyin`)  
+- [x] `default.custom.yaml` includes `wanxiang` when installed  
+- [ ] Device install smoke (optional residual accept)  
 
 ## History
 
-- 2026-08-07: Opened Assignment Pending.  
-- 2026-08-07: Product freezes — 全拼 V1; accept large size; layout-page scheme choice required (ADR 0018 conflict noted).
+- 2026-08-07: Opened; freezes; ADR 0026 Accepted; layout-bound shipped.  
+- 2026-08-07: Catalog slice — base.zip / `wanxiang` pin + install path.

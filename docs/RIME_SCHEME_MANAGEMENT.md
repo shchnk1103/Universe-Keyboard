@@ -6,8 +6,9 @@ This document records the product and implementation boundary for RIME multi-sch
 
 RIME scheme management V1 supports a scalable settings structure for the built-in/default scheme and downloaded open-source schemes:
 
-- `luna_pinyin`
-- `rime_ice`
+- `luna_pinyin` (built-in)
+- `rime_ice` (downloadable)
+- `wanxiang` (downloadable 万象拼音全拼 — [`PD-RIME-SCHEME-WANXIANG-001`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md))
 
 Future schemes should be added to the same list-and-detail model instead of creating separate top-level settings blocks for each scheme.
 
@@ -109,9 +110,9 @@ Each scheme is described by a catalog entry in the main App code. The catalog is
 - Storage keys: installed flag, version, license acceptance, ETag, and checksum keys.
 - Installation plan: required schema file, files/directories to skip while installing, files/directories to remove while uninstalling, and build-cache filename fragments to clean.
 
-V1.1 ships `rime_ice` as the only downloadable open-source scheme, with management through the generic catalog, distribution, storage, and installation-plan model.
+Downloadable open-source schemes use the generic catalog, distribution, storage, and installation-plan model (`rime_ice`, `wanxiang`, …).
 
-**Product direction (2026-08-07):** expand downloadable schemes next; first planned target is **万象拼音** under [`PD-RIME-SCHEME-WANXIANG-001`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) (`Proposed` — implementation not Ready). Do not treat that PD as live catalog support until Assignment Exit is met.
+**万象 V1 pin:** GitHub `amzxyz/rime-wanxiang` asset `rime-wanxiang-base.zip`, schema_id `wanxiang`, license CC BY 4.0. Optional grammar `.gram` is **not** auto-installed.
 
 The user-facing UI should read from `SchemaMetadata`. It should not duplicate package size, license, version, Lua capability, or support flags in the view layer.
 
