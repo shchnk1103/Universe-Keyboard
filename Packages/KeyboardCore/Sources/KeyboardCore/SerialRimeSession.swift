@@ -229,29 +229,35 @@ public final class ResponsiveRimeEngineBridge: RimeEngine {
         // bound select is skipped as stale (no-op / wrong fail-closed).
         coordinator.flushPending()
         let bound = bindingIdentity()
-        return output(
-            from: coordinator.performOrderedNow(
-                .selectCandidate(
-                    pageIndex: index,
-                    boundEpoch: bound.epoch,
-                    boundRevision: bound.revision
+        // RESPONSIVE-CANDIDATE-ANOMALY-001 A1: Core `handleInsertCandidate` owns
+        // host apply. Suppress publish so applyRimeOutput does not commit again.
+        return coordinator.withPublishHandlerSuppressed {
+            output(
+                from: coordinator.performOrderedNow(
+                    .selectCandidate(
+                        pageIndex: index,
+                        boundEpoch: bound.epoch,
+                        boundRevision: bound.revision
+                    )
                 )
             )
-        )
+        }
     }
 
     public func selectCandidate(globalIndex index: Int) -> RimeOutput {
         coordinator.flushPending()
         let bound = bindingIdentity()
-        return output(
-            from: coordinator.performOrderedNow(
-                .selectCandidateGlobal(
-                    index: index,
-                    boundEpoch: bound.epoch,
-                    boundRevision: bound.revision
+        return coordinator.withPublishHandlerSuppressed {
+            output(
+                from: coordinator.performOrderedNow(
+                    .selectCandidateGlobal(
+                        index: index,
+                        boundEpoch: bound.epoch,
+                        boundRevision: bound.revision
+                    )
                 )
             )
-        )
+        }
     }
 
     public func candidateWindow(from globalIndex: Int, limit: Int) -> RimeCandidateWindow {

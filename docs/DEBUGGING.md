@@ -164,6 +164,20 @@ composition, or appear as a **no-op** (stuck) while new keys still type. Fix:
 bridge `flushPending()` before binding (`RESPONSIVE-DELETE-ANOMALY-001`). Use
 synthetic burst input for repro; never log real user text.
 
+### Responsive dual-gate: candidate tap doubles host text; bar stuck at page size
+
+| Symptom | Boundary |
+|---|---|
+| Tap candidate → host shows the word twice; Space is fine | Select **double host apply**: Core `finishNormalCandidateSelection` **and** publish `applyRimeOutput(committedText)` |
+| Candidate bar stops around page size (often 9 or 12); loadMore dead | ThreadAffine `candidateWindow` must not slice `lastPublished` first page only |
+
+**Checks (synthetic only):**
+
+1. Confirm dual-gate / responsive bridge is active (not gate-off ADR 0004).
+2. Space vs tap: Space never calls `selectCandidate`; tap does.
+3. Prefetch logs: `loadMoreCandidates start=12` then empty window / `hasMore=false` while dictionary still has more.
+4. Fix ownership (`RESPONSIVE-CANDIDATE-ANOMALY-001`): suppress UI publish on bridge select (Core owns host apply); owner-thread live `candidateWindow` after `flushPending`.
+
 ### Works Until App Switch
 
 Visibility changes intentionally abandon unfinished composition. If old input reappears, the cleanup contract is broken. If completed text disappears, investigate host marked-range finalization before visibility cleanup. Do not implement composition restoration without a new product/architecture decision.

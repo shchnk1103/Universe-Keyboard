@@ -452,6 +452,24 @@ public final class ThreadAffineRimeSessionCoordinator {
         }
     }
 
+    /// Owner-thread live `candidateWindow` (RESPONSIVE-CANDIDATE-ANOMALY-001 B).
+    /// Call after `flushPending` so the window matches applied composition.
+    public func candidateWindow(
+        from globalIndex: Int,
+        limit: Int,
+        timeout: DispatchTime = .now() + 5
+    ) -> RimeCandidateWindow {
+        guard let owner else {
+            return RimeCandidateWindow(
+                candidates: [],
+                startIndex: max(0, globalIndex),
+                nextIndex: max(0, globalIndex),
+                hasMoreCandidates: false
+            )
+        }
+        return owner.candidateWindow(from: globalIndex, limit: limit, timeout: timeout)
+    }
+
     public func bumpSessionEpoch(resetEngineSession: Bool = true) {
         _ = resetEngineSession
         if let epoch = owner?.advanceSessionEpoch() {
@@ -613,47 +631,42 @@ public final class ThreadAffineRimeEngineBridge: RimeEngine {
     public func selectCandidate(at index: Int) -> RimeOutput {
         coordinator.flushPending()
         let bound = bindingIdentity()
-        return output(
-            from: coordinator.performOrderedNow(
-                .selectCandidate(
-                    pageIndex: index,
-                    boundEpoch: bound.epoch,
-                    boundRevision: bound.revision
+        // RESPONSIVE-CANDIDATE-ANOMALY-001 A1: Core owns host apply after select.
+        return coordinator.withPublishHandlerSuppressed {
+            output(
+                from: coordinator.performOrderedNow(
+                    .selectCandidate(
+                        pageIndex: index,
+                        boundEpoch: bound.epoch,
+                        boundRevision: bound.revision
+                    )
                 )
             )
-        )
+        }
     }
 
     public func selectCandidate(globalIndex index: Int) -> RimeOutput {
         coordinator.flushPending()
         let bound = bindingIdentity()
-        return output(
-            from: coordinator.performOrderedNow(
-                .selectCandidateGlobal(
-                    index: index,
-                    boundEpoch: bound.epoch,
-                    boundRevision: bound.revision
+        return coordinator.withPublishHandlerSuppressed {
+            output(
+                from: coordinator.performOrderedNow(
+                    .selectCandidateGlobal(
+                        index: index,
+                        boundEpoch: bound.epoch,
+                        boundRevision: bound.revision
+                    )
                 )
             )
-        )
+        }
     }
 
     public func candidateWindow(from globalIndex: Int, limit: Int) -> RimeCandidateWindow {
+        // RESPONSIVE-CANDIDATE-ANOMALY-001 B: read on the live owner engine after
+        // draining mutations. Never slice first-page lastPublished candidates
+        // (that caps the bar at page_size and kills loadMore).
         coordinator.flushPending()
-        #if !T9_RESPONSIVE_CANARY_INTERNAL
-        if let chromeEngineHint {
-            return chromeEngineHint.candidateWindow(from: globalIndex, limit: limit)
-        }
-        #endif
-        let candidates = coordinator.lastPublished?.output.candidates ?? []
-        let slice = Array(candidates.dropFirst(globalIndex).prefix(limit))
-        let next = globalIndex + slice.count
-        return RimeCandidateWindow(
-            candidates: slice,
-            startIndex: globalIndex,
-            nextIndex: next,
-            hasMoreCandidates: candidates.count > next
-        )
+        return coordinator.candidateWindow(from: globalIndex, limit: limit)
     }
 
     public func deleteBackward() -> RimeOutput {

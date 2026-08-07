@@ -2,6 +2,18 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-07 — RESPONSIVE-CANDIDATE-ANOMALY-001 select double-commit + paging window
+
+- Dual-gate / responsive bridges suppress UI publish during `selectCandidate` so
+  Core owns the single host commit (tap no longer inserts the word twice; Space
+  was already single-path).
+- `ThreadAffineRimeEngineBridge.candidateWindow` runs on the owner-thread live
+  engine after `flushPending`, instead of slicing first-page `lastPublished`
+  candidates (fixes loadMore stall at page size ~12).
+- Regression: `ResponsiveCandidateAnomalyTests` 4/0 (Executor-recorded).
+- Product goal (separate class): `PD-T9-SINGLE-KEY-MIXED-CANDIDATES-001` Proposed —
+  Apple-like first-key mixed Chinese candidates; implementation not authorized.
+
 ## 2026-08-06 — RESPONSIVE-DELETE-ANOMALY-001 flush-before-bind Delete fix
 
 - Dual-gate bridges flush deferred `processKey` before capturing publish binding
