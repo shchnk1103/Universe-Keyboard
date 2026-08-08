@@ -36,9 +36,17 @@ struct RimeAdvancedInputSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("启用高级输入功能", isOn: masterBinding)
-                    .toggleStyle(.switch)
-                    .disabled(!store.supportsProductAdvancedInput)
+                // Unsupported: constant off binding so SwiftUI cannot clobber stored prefs.
+                if store.supportsProductAdvancedInput {
+                    Toggle("启用高级输入功能", isOn: liveMasterBinding)
+                        .toggleStyle(.switch)
+                } else {
+                    Toggle("启用高级输入功能", isOn: .constant(false))
+                        .toggleStyle(.switch)
+                        .disabled(true)
+                        .contentShape(Rectangle())
+                        .onTapGesture { showUnsupportedAlert = true }
+                }
 
                 Text(store.activeSchemaAdvancedInputStatusText)
                     .font(.footnote)
@@ -47,9 +55,9 @@ struct RimeAdvancedInputSettingsView: View {
                 Text("当前方案")
             } footer: {
                 if store.supportsProductAdvancedInput {
-                    Text("这些是你的偏好设置。只有当前布局使用的方案支持时，开关才可以调整并在重新部署后生效。")
+                    Text("这些是你的偏好设置。只有当前布局使用的方案支持时，开关才可以调整并在重新部署后生效。切换方案不会清空你已保存的选择。")
                 } else {
-                    Text("当前布局绑定的方案不支持这些高级输入功能。偏好已保留，不会在此页写入或部署。")
+                    Text("当前布局绑定的方案不支持这些高级输入功能。已保存的偏好会保留，切回雾凇等支持方案后自动恢复，无需重新选择。")
                 }
             }
 
@@ -81,7 +89,9 @@ struct RimeAdvancedInputSettingsView: View {
                     ForEach(group.features) { feature in
                         AdvancedInputFeatureToggle(
                             feature: feature,
-                            isOn: featureBinding(for: feature),
+                            isOn: store.supportsProductAdvancedInput
+                                ? liveFeatureBinding(for: feature)
+                                : .constant(false),
                             isSupported: store.advancedInputFeatureIsSupported(feature),
                             masterEnabled: store.advancedInputMasterEnabled
                         )
@@ -114,29 +124,21 @@ struct RimeAdvancedInputSettingsView: View {
         }
     }
 
-    private var masterBinding: Binding<Bool> {
+    private var liveMasterBinding: Binding<Bool> {
         Binding {
-            store.supportsProductAdvancedInput ? store.advancedInputMasterEnabled : false
+            store.advancedInputMasterEnabled
         } set: { newValue in
-            guard store.supportsProductAdvancedInput else {
-                if newValue { showUnsupportedAlert = true }
-                return
-            }
+            guard store.supportsProductAdvancedInput else { return }
             store.advancedInputMasterEnabled = newValue
             store.saveAdvancedInputSettings()
         }
     }
 
-    private func featureBinding(for feature: RimeAdvancedInputFeature) -> Binding<Bool> {
+    private func liveFeatureBinding(for feature: RimeAdvancedInputFeature) -> Binding<Bool> {
         Binding {
-            store.supportsProductAdvancedInput
-                ? store.isAdvancedInputFeatureEnabled(feature)
-                : false
+            store.isAdvancedInputFeatureEnabled(feature)
         } set: { newValue in
-            guard store.supportsProductAdvancedInput else {
-                if newValue { showUnsupportedAlert = true }
-                return
-            }
+            guard store.supportsProductAdvancedInput else { return }
             store.setAdvancedInputFeature(feature, enabled: newValue)
         }
     }

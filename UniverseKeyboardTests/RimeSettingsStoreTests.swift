@@ -270,6 +270,14 @@ final class RimeSettingsStoreTests: XCTestCase {
             "unsupported scheme must not write fuzzy prefs or mark deploy"
         )
         XCTAssertNil(persistence.value(forKey: "rime_needs_deploy"))
+
+        // Switch back to 雾凇: stored preference must still be on without re-picking.
+        settings.set("rime_ice", forKey: "rime_active_schema")
+        settings.set("rime_ice", forKey: KeyboardLayoutSettingsKey.schemeBinding26)
+        store.load()
+        XCTAssertTrue(store.supportsManagedFuzzyPinyin)
+        XCTAssertTrue(store.fuzzyEnabled)
+        XCTAssertTrue(store.advancedInputMasterEnabled)
     }
 
     func testNineKeyLayoutUsesFogCapabilityWhileTwentySixKeyIsWanxiang() {

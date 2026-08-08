@@ -7,9 +7,18 @@ struct RimeFuzzyPinyinSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("启用模糊音", isOn: masterBinding)
-                    .toggleStyle(.switch)
-                    .disabled(!store.supportsManagedFuzzyPinyin)
+                // When unsupported, use a constant binding so SwiftUI never writes
+                // "display off" into stored preferences (TD-010 preference preserve).
+                if store.supportsManagedFuzzyPinyin {
+                    Toggle("启用模糊音", isOn: liveMasterBinding)
+                        .toggleStyle(.switch)
+                } else {
+                    Toggle("启用模糊音", isOn: .constant(false))
+                        .toggleStyle(.switch)
+                        .disabled(true)
+                        .contentShape(Rectangle())
+                        .onTapGesture { showUnsupportedAlert = true }
+                }
 
                 Text(store.fuzzyPinyinCapabilityStatusText)
                     .font(.footnote)
@@ -18,19 +27,25 @@ struct RimeFuzzyPinyinSettingsView: View {
                 Text("当前方案")
             } footer: {
                 if store.supportsManagedFuzzyPinyin {
-                    Text("这些是你的偏好设置。只有当前布局使用的方案支持时，开关才可以调整并在重新部署后生效。")
+                    Text("这些是你的偏好设置。只有当前布局使用的方案支持时，开关才可以调整并在重新部署后生效。切换方案不会清空你已保存的选择。")
                 } else {
-                    Text("当前布局绑定的方案不支持 Universe 管理的模糊音。偏好已保留，不会在此页写入或部署。")
+                    Text("当前布局绑定的方案不支持 Universe 管理的模糊音。已保存的偏好会保留，切回雾凇等支持方案后自动恢复，无需重新选择。")
                 }
             }
 
             Section {
-                Toggle("zh / z", isOn: groupBinding(\.fuzzyZhZEnabled))
-                    .toggleStyle(.switch)
-                Toggle("ch / c", isOn: groupBinding(\.fuzzyChCEnabled))
-                    .toggleStyle(.switch)
-                Toggle("sh / s", isOn: groupBinding(\.fuzzyShSEnabled))
-                    .toggleStyle(.switch)
+                if store.supportsManagedFuzzyPinyin {
+                    Toggle("zh / z", isOn: liveGroupBinding(\.fuzzyZhZEnabled))
+                        .toggleStyle(.switch)
+                    Toggle("ch / c", isOn: liveGroupBinding(\.fuzzyChCEnabled))
+                        .toggleStyle(.switch)
+                    Toggle("sh / s", isOn: liveGroupBinding(\.fuzzyShSEnabled))
+                        .toggleStyle(.switch)
+                } else {
+                    Toggle("zh / z", isOn: .constant(false)).toggleStyle(.switch).disabled(true)
+                    Toggle("ch / c", isOn: .constant(false)).toggleStyle(.switch).disabled(true)
+                    Toggle("sh / s", isOn: .constant(false)).toggleStyle(.switch).disabled(true)
+                }
             } header: {
                 Text("平翘舌")
             } footer: {
@@ -42,8 +57,12 @@ struct RimeFuzzyPinyinSettingsView: View {
             )
 
             Section {
-                Toggle("n / l", isOn: groupBinding(\.fuzzyNLEnabled))
-                    .toggleStyle(.switch)
+                if store.supportsManagedFuzzyPinyin {
+                    Toggle("n / l", isOn: liveGroupBinding(\.fuzzyNLEnabled))
+                        .toggleStyle(.switch)
+                } else {
+                    Toggle("n / l", isOn: .constant(false)).toggleStyle(.switch).disabled(true)
+                }
             } header: {
                 Text("鼻边音")
             } footer: {
@@ -64,38 +83,30 @@ struct RimeFuzzyPinyinSettingsView: View {
             Button("好", role: .cancel) {}
         } message: {
             Text(
-                "当前方案（\(store.settingsCapabilitySchemeDisplayName)）暂不支持该功能。请切换到支持的方案（如雾凇拼音）后再试。"
+                "当前方案（\(store.settingsCapabilitySchemeDisplayName)）暂不支持该功能。已保存的选择会在支持的方案下恢复。请切换到支持的方案（如雾凇拼音）后再试。"
             )
         }
     }
 
-    /// When unsupported, UI shows off while stored preference is preserved.
-    private var masterBinding: Binding<Bool> {
+    /// Live binding only while the current scheme productizes managed fuzzy.
+    private var liveMasterBinding: Binding<Bool> {
         Binding(
-            get: {
-                store.supportsManagedFuzzyPinyin ? store.fuzzyEnabled : false
-            },
+            get: { store.fuzzyEnabled },
             set: { newValue in
-                guard store.supportsManagedFuzzyPinyin else {
-                    if newValue { showUnsupportedAlert = true }
-                    return
-                }
+                guard store.supportsManagedFuzzyPinyin else { return }
                 store.fuzzyEnabled = newValue
                 store.saveFuzzyPinyinSettings()
             }
         )
     }
 
-    private func groupBinding(_ keyPath: ReferenceWritableKeyPath<RimeSettingsStore, Bool>) -> Binding<Bool> {
+    private func liveGroupBinding(
+        _ keyPath: ReferenceWritableKeyPath<RimeSettingsStore, Bool>
+    ) -> Binding<Bool> {
         Binding(
-            get: {
-                store.supportsManagedFuzzyPinyin ? store[keyPath: keyPath] : false
-            },
+            get: { store[keyPath: keyPath] },
             set: { newValue in
-                guard store.supportsManagedFuzzyPinyin else {
-                    if newValue { showUnsupportedAlert = true }
-                    return
-                }
+                guard store.supportsManagedFuzzyPinyin else { return }
                 store[keyPath: keyPath] = newValue
                 store.saveFuzzyPinyinSettings()
             }
