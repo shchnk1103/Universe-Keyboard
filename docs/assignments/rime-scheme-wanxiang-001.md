@@ -6,22 +6,22 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` — **catalog / layout / install path ready for formal close** (Product may stamp Completed when PR merged) |
-| **Phase** | **Session close-out 2026-08-07** — V1 path Human-verified; polish debts deferred |
+| **Lifecycle** | `Active` — **catalog / layout / install path ready for formal close** (Product may stamp Completed anytime) |
+| **Phase** | **EOD 2026-08-08** — V1 path + TD-009/010/011A on `main`; remaining debts optional |
 | **Parent PD** | [`PD-RIME-SCHEME-WANXIANG-001`](../product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) |
-| **Non-claims** | Grammar `.gram` not bundled; no 双拼; no device Product Gate; toast (TD-009); capability UX (TD-010); Lua multi-scheme (TD-011); LMDG `.gram` (TD-012) research-only |
-| **Next** | **(1)** Formal close / merge hygiene when Product ready. **(2)** Next engineering WI preferred: **TD-010** settings honesty (not TD-011/012). Do not expand scope in ad-hoc sessions. |
-| **Residuals** | R-01 **accept**; R-02…R-07 **defer** — see table + roadmap |
+| **Non-claims** | Grammar `.gram` not bundled; no 双拼; no formal device Product Gate stamp; 万象 product advanced **toggles** not 1:1 with fog (freeze A copy only); TD-012 not implemented |
+| **Next** | **(1)** Default eng: **TD-012** optional `.gram`. **(2)** TD-011 B–D only if Product productizes 万象 advanced controls. **(3)** Optional formal Completed stamp. |
+| **Residuals** | R-01 **accept**; R-02/R-05 **done**; R-03 **accept**; R-04 mitigated; R-06 **partial** (A); R-07 **defer** (TD-012) |
 
 ### Session handoff (KOS 2.1 — for a cold new session)
 
 New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`):
 
 1. `AGENTS.md` → `docs/KNOWLEDGE_INDEX.md` → **`docs/ACTIVE_WORK.md`** → **this Assignment**.
-2. Roadmap: phase 0 = this WI close; phase 1 = TD-010 → TD-009; phase 2 = TD-011 then TD-012 (research done, **no code yet**).
-3. Human-verified this session: 万象 install/use, cold start, userdb isolation, uninstall, sync (`wanxiang.userdb.txt`), **layout nine-key while 26-key slot = 万象**, fog `rq` regression.
-4. Code landed this arc (may be on `feat/wanxiang-catalog-001` or stacked commits): catalog+install, ADR 0026 layout-bound, layout UI single scheme picker, Extension bindings resolve, `sel-*` double-commit defense, fuzzy multi-schema deploy patch (effectiveness still fog-primary for Human).
-5. **Do not** implement TD-010/011/012 unless the user opens that WI or marks urgent.
+2. Roadmap progress: phase 0 path ready; phase 1 **TD-010 → TD-009 done**; phase 2a **TD-011 freeze A (copy) landed** (PR #54); phase 2b **TD-012 still open**.
+3. Human-verified earlier: 万象 install/use, cold start, userdb isolation, uninstall, sync (`wanxiang.userdb.txt`), **layout nine-key while 26-key slot = 万象**, fog `rq` regression.
+4. Code on `main` this arc: catalog+install, ADR 0026, layout UI, Extension bindings, `sel-*`, fuzzy multi-schema deploy, TD-009 toast, TD-010 gates + prefs preserve, TD-011 `RimeSchemeNativeUsageGuide`.
+5. **Do not** unify fog `rq` ↔ 万象 `/rq`. **Do not** start TD-011 B–D or TD-012 unless Product opens that WI.
 
 ---
 
@@ -52,15 +52,14 @@ New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`)
 6. Human smoke path above (handoff §3).
 7. Research-only debts: TD-009…012 linked from residuals (no implementation required for this slice exit).
 
-### Still out of scope
+### Still out of scope (or follow-on)
 
-- Bundled LMDG `.gram`
+- Bundled LMDG `.gram` / optional download (**R-07** / **TD-012**) — research recorded; **default next eng**
 - 双拼/辅助码 zip variants
 - 万象九键 readiness productization
-- Global download toast scheme name + real byte progress (**R-02** / **TD-009**)
-- Per-scheme settings capability gates (**R-05** / **TD-010**)
-- 万象 Lua 与雾凇高级输入对齐 / 多方案 Lua 兼容（**R-06** / **TD-011**）
-- 万象语法模型 LMDG `.gram` 可选接入（**R-07** / **TD-012**）— research recorded; implement later
+- 万象 advanced-input **product toggles** / multi-schema deploy diagnose (**R-06** remaining **TD-011 B–D**) — freeze A copy only
+- ~~Global download toast~~ → **Done** TD-009
+- ~~Per-scheme settings gates~~ → **Done** TD-010
 
 ## Residuals (detail)
 
@@ -92,15 +91,16 @@ New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`)
 
 ### Follow-on roadmap (not this WI)
 
-| Phase | Work | Debt |
-|---|---|---|
-| 0 | Formal close this Assignment when branch merged | — |
-| 1 | Settings honesty (unsupported → off + 提示) then download toast | TD-010 → TD-009 |
-| 2a | Multi-scheme Lua matrix + deploy (if Product reopens Q4) | TD-011 |
-| 2b | Optional LMDG `.gram` (engine gate first) | TD-012 |
+| Phase | Work | Debt | Status |
+|---|---|---|---|
+| 0 | Formal close this Assignment | — | Optional Product stamp |
+| 1 | Settings honesty then download toast | TD-010 → TD-009 | **Done** 2026-08-08 |
+| 2a | Multi-scheme Lua — freeze A native copy | TD-011 A | **Done** PR #54; B–D open |
+| 2b | Optional LMDG `.gram` (engine gate first) | TD-012 | **Open** (default next) |
 
 ## History
 
+- 2026-08-08: TD-009/010 repaid; TD-011 freeze A usage guide PR #54 on `main`; EOD backlog → TD-012 default, 011 B–D optional.
 - 2026-08-07: Opened; freezes; ADR 0026 Accepted; layout-bound shipped.
 - 2026-08-07: Catalog slice — base.zip / `wanxiang` pin + install path.
 - 2026-08-07: Human reported download toast hardcodes 雾凇 + 0% progress while installing 万象; recorded as residual R-02 / TD-009 and **deferred** so WI stays on install correctness.

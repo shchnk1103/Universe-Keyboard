@@ -12,11 +12,11 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` — path ready for formal close (2026-08-07 EOD) |
-| **Phase** | Q1/Q2 frozen; base.zip + layout-bound + Human smoke done |
-| **Non-claims** | Not App Store marketing; grammar `.gram` optional not in V1 zip; not dual-spell; fog-parity advanced input / fuzzy not claimed for 万象 |
-| **Next** | Formal close when merged; follow-on: TD-010 honesty → TD-009 toast → later TD-011/012 |
-| **Residuals** | Q4 advanced-input + multi-scheme Lua → TD-011; LMDG → TD-012; settings gates → TD-010 |
+| **Lifecycle** | `Active` — path ready for formal close (2026-08-08 EOD) |
+| **Phase** | Q1/Q2 frozen; base.zip + layout-bound + Human smoke; TD-009/010/011A on `main` |
+| **Non-claims** | Not App Store marketing; grammar `.gram` optional not in V1 zip; not dual-spell; 万象 advanced **toggles** not fog-parity (freeze A: native triggers + usage copy only) |
+| **Next** | Optional formal close; default follow-on **TD-012**; TD-011 B–D only if Product productizes 万象 controls |
+| **Residuals** | TD-011 remaining B–D (optional); LMDG → TD-012; settings gates **TD-010 repaid**; toast **TD-009 repaid** |
 
 ---
 
