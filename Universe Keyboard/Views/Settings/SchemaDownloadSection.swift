@@ -14,7 +14,7 @@ struct SchemaDownloadSection: View {
             }
         }
 
-        if case .failed(let message) = store.downloadState {
+        if case .failed(_, let message) = store.downloadState {
             Section {
                 RimeDownloadErrorContent(message: message, onRetry: { store.startDownload() })
             } header: {

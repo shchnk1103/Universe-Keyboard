@@ -67,7 +67,7 @@ New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`)
 | ID | Description | Disposition |
 |---|---|---|
 | R-01 | Device install smoke for 万象 | **`accept` (2026-08-07)** — Human verified install/use/layout/sync isolation; formal Product close optional |
-| R-02 | Toast always “雾凇拼音…”; download % stays 0 until extract/deploy | **Defer** — [`TD-009`](../TECH_DEBT.md#td-009-multi-scheme-download-toast-name-and-progress) |
+| R-02 | Toast always “雾凇拼音…”; download % stays 0 until extract/deploy | **Done 2026-08-08** — TD-009 scheme-named toast + real/indeterminate progress |
 | R-03 | 万象下裸 `rq` 等雾凇触发不生效 | **Accept / deferred** — 万象上游用 `/rq`·`orq` 等（见 TD-011），非装失败；UX → R-05/R-06 |
 | R-04 | 分段选词末段双插（长句） | **Mitigated** 2026-08-07 — `sel-*` strip; Human re-smoke optional |
 | R-05 | 方案不支持的设置项仍可打开（模糊音在万象无效等） | **Done 2026-08-08** — TD-010 matrix + fuzzy/advanced gates |

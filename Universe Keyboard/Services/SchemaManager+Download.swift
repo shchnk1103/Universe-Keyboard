@@ -24,7 +24,8 @@ extension SchemaManager {
         if let key = entry.storage.version {
             settings.removeObject(forKey: key)
         }
-        rimeIceDownloadState = .fetchingReleaseInfo
+        let schemeName = downloadSchemeDisplayName(for: schemaID)
+        rimeIceDownloadState = .fetchingReleaseInfo(schemeName: schemeName)
         currentDownloadTask = Task { [weak self] in
             await self?.fetchAndDownload(schemaID: schemaID)
         }
@@ -35,6 +36,7 @@ extension SchemaManager {
     }
 
     func fetchAndDownload(schemaID: String) async {
+        let schemeName = downloadSchemeDisplayName(for: schemaID)
         do {
             guard
                 let entry = downloadableEntry(for: schemaID),
@@ -44,15 +46,30 @@ extension SchemaManager {
                 throw DownloadError.networkError("暂不支持下载这个方案")
             }
 
+            if case .fetchingReleaseInfo = rimeIceDownloadState {
+                // already set by startDownload / forceRedownload
+            } else {
+                rimeIceDownloadState = .fetchingReleaseInfo(schemeName: schemeName)
+            }
+
             let releaseURL = try await fetchLatestReleaseURL(for: entry)
             guard let url = releaseURL else {
                 throw DownloadError.networkError("无法获取最新版本信息")
             }
             let version = releaseVersionIdentifier(from: url)
 
-            rimeIceDownloadState = .downloading(progress: 0)
+            // Indeterminate until the first byte-progress callback (or complete).
+            rimeIceDownloadState = .downloading(schemeName: schemeName, progress: nil)
 
-            let archive = try await downloadZip(from: url)
+            let archive = try await downloadZip(from: url, for: entry) { [weak self] fraction in
+                Task { @MainActor in
+                    guard let self else { return }
+                    // Ignore late callbacks after leaving the downloading phase.
+                    guard case .downloading(let name, _) = self.rimeIceDownloadState, name == schemeName
+                    else { return }
+                    self.rimeIceDownloadState = .downloading(schemeName: schemeName, progress: fraction)
+                }
+            }
             let tempURL = archive.localURL
             let expectedSize = archive.expectedContentLength
             guard expectedSize > 0 || expectedSize == -1 else {
@@ -61,7 +78,7 @@ extension SchemaManager {
             let diskNeeded = expectedSize > 0 ? expectedSize * 3 + 100_000_000 : 200_000_000
             try checkDiskSpace(needed: diskNeeded)
 
-            rimeIceDownloadState = .extracting
+            rimeIceDownloadState = .extracting(schemeName: schemeName)
 
             let extractDir = try archiveInstaller.prepareExtractionDirectory(for: distribution)
 
@@ -96,7 +113,7 @@ extension SchemaManager {
                 throw DownloadError.corruptArchive
             }
 
-            rimeIceDownloadState = .postProcessing
+            rimeIceDownloadState = .postProcessing(schemeName: schemeName)
             try await Task.sleep(nanoseconds: 200_000_000)
 
             let luaAvailable = settings.object(forKey: "rime_lua_available") as? Bool
@@ -131,18 +148,18 @@ extension SchemaManager {
             }
 
             activateSchema(schemaID)
-            rimeIceDownloadState = .deploying
+            rimeIceDownloadState = .deploying(schemeName: schemeName)
             let deployed = await deployRimeConfig()
             guard deployed else {
                 throw DownloadError.postProcessingFailed("部署失败，请稍后重试")
             }
 
-            rimeIceDownloadState = .completed
+            rimeIceDownloadState = .completed(schemeName: schemeName)
             refreshSchemaList()
         } catch let error as DownloadError {
-            rimeIceDownloadState = .failed(error.localizedDescription)
+            rimeIceDownloadState = .failed(schemeName: schemeName, message: error.localizedDescription)
         } catch {
-            rimeIceDownloadState = .failed(error.localizedDescription)
+            rimeIceDownloadState = .failed(schemeName: schemeName, message: error.localizedDescription)
         }
     }
 
@@ -160,17 +177,22 @@ extension SchemaManager {
         guard let entry = downloadableEntry(for: "rime_ice") else {
             throw DownloadError.networkError("暂不支持下载这个方案")
         }
-        return try await downloadZip(from: url, for: entry)
+        return try await downloadZip(from: url, for: entry, onProgress: nil)
     }
 
-    func downloadZip(from url: URL, for entry: RimeSchemeCatalogEntry) async throws -> DownloadedSchemaArchive {
+    func downloadZip(
+        from url: URL,
+        for entry: RimeSchemeCatalogEntry,
+        onProgress: (@Sendable (Double?) -> Void)? = nil
+    ) async throws -> DownloadedSchemaArchive {
         guard let distribution = entry.distribution else {
             throw DownloadError.networkError("暂不支持下载这个方案")
         }
         let archive = try await archiveDownloader.downloadArchive(
             from: url,
             existingETag: entry.storage.eTag.flatMap { settings.string(forKey: $0) },
-            cachedArchiveURL: archiveInstaller.cachedArchiveURL(for: distribution)
+            cachedArchiveURL: archiveInstaller.cachedArchiveURL(for: distribution),
+            onProgress: onProgress
         )
         if let eTag = archive.eTag, let key = entry.storage.eTag {
             settings.set(eTag, forKey: key)

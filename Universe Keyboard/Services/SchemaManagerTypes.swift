@@ -215,15 +215,35 @@ enum RimeSchemeCatalog {
     }
 }
 
+/// Main-App scheme download pipeline state (toast + download UI).
+///
+/// Active phases carry `schemeName` for multi-scheme honesty (TD-009).
+/// `downloading.progress` is `nil` when total size is unknown (indeterminate UI);
+/// otherwise a fraction in `0...1`.
 enum DownloadState: Equatable {
     case idle
-    case fetchingReleaseInfo
-    case downloading(progress: Double)
-    case extracting
-    case postProcessing
-    case deploying
-    case completed
-    case failed(String)
+    case fetchingReleaseInfo(schemeName: String)
+    case downloading(schemeName: String, progress: Double?)
+    case extracting(schemeName: String)
+    case postProcessing(schemeName: String)
+    case deploying(schemeName: String)
+    case completed(schemeName: String)
+    case failed(schemeName: String, message: String)
+
+    var schemeName: String? {
+        switch self {
+        case .idle:
+            return nil
+        case .fetchingReleaseInfo(let name),
+            .downloading(let name, _),
+            .extracting(let name),
+            .postProcessing(let name),
+            .deploying(let name),
+            .completed(let name),
+            .failed(let name, _):
+            return name
+        }
+    }
 }
 
 struct RimeLuaCapabilityDiagnostic: Equatable, Sendable {
