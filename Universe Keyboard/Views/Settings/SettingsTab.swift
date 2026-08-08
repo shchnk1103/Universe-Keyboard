@@ -134,7 +134,7 @@ struct SettingsTab: View {
             SettingsNavigationLink(
                 systemImage: "sparkles",
                 title: "高级输入功能",
-                subtitle: rimeStore.activeSchemaSupportsAdvancedInput
+                subtitle: rimeStore.supportsProductAdvancedInput
                     ? "日期、计算器、数字转换"
                     : "当前方案暂不支持"
             ) {
@@ -144,7 +144,9 @@ struct SettingsTab: View {
             SettingsNavigationLink(
                 systemImage: "waveform.path",
                 title: "模糊音设置",
-                subtitle: "平翘舌、鼻边音"
+                subtitle: rimeStore.supportsManagedFuzzyPinyin
+                    ? "平翘舌、鼻边音"
+                    : "当前方案暂不支持"
             ) {
                 RimeFuzzyPinyinSettingsView(store: rimeStore)
             }

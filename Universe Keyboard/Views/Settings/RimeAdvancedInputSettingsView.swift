@@ -3,6 +3,7 @@ import SwiftUI
 
 struct RimeAdvancedInputSettingsView: View {
     @Bindable var store: RimeSettingsStore
+    @State private var showUnsupportedAlert = false
 
     private let groups: [AdvancedInputFeatureGroup] = [
         .init(
@@ -37,7 +38,7 @@ struct RimeAdvancedInputSettingsView: View {
             Section {
                 Toggle("启用高级输入功能", isOn: masterBinding)
                     .toggleStyle(.switch)
-                    .disabled(!store.activeSchemaSupportsAdvancedInput)
+                    .disabled(!store.supportsProductAdvancedInput)
 
                 Text(store.activeSchemaAdvancedInputStatusText)
                     .font(.footnote)
@@ -45,7 +46,11 @@ struct RimeAdvancedInputSettingsView: View {
             } header: {
                 Text("当前方案")
             } footer: {
-                Text("这些是你的偏好设置。只有当前输入方案支持时，开关才可以调整并在重新部署后生效。")
+                if store.supportsProductAdvancedInput {
+                    Text("这些是你的偏好设置。只有当前布局使用的方案支持时，开关才可以调整并在重新部署后生效。")
+                } else {
+                    Text("当前布局绑定的方案不支持这些高级输入功能。偏好已保留，不会在此页写入或部署。")
+                }
             }
 
             Section {
@@ -86,9 +91,9 @@ struct RimeAdvancedInputSettingsView: View {
                 } footer: {
                     Text(group.footer)
                 }
-                .disabled(!store.activeSchemaSupportsAdvancedInput || !store.advancedInputMasterEnabled)
+                .disabled(!store.supportsProductAdvancedInput || !store.advancedInputMasterEnabled)
                 .foregroundStyle(
-                    store.activeSchemaSupportsAdvancedInput && store.advancedInputMasterEnabled
+                    store.supportsProductAdvancedInput && store.advancedInputMasterEnabled
                         ? .primary
                         : .secondary
                 )
@@ -100,12 +105,23 @@ struct RimeAdvancedInputSettingsView: View {
         .onDisappear {
             Task { await store.triggerPendingDeploymentIfNeeded() }
         }
+        .alert("无法开启", isPresented: $showUnsupportedAlert) {
+            Button("好", role: .cancel) {}
+        } message: {
+            Text(
+                "当前方案（\(store.settingsCapabilitySchemeDisplayName)）暂不支持该功能。请切换到支持的方案（如雾凇拼音）后再试。"
+            )
+        }
     }
 
     private var masterBinding: Binding<Bool> {
         Binding {
-            store.advancedInputMasterEnabled
+            store.supportsProductAdvancedInput ? store.advancedInputMasterEnabled : false
         } set: { newValue in
+            guard store.supportsProductAdvancedInput else {
+                if newValue { showUnsupportedAlert = true }
+                return
+            }
             store.advancedInputMasterEnabled = newValue
             store.saveAdvancedInputSettings()
         }
@@ -113,8 +129,14 @@ struct RimeAdvancedInputSettingsView: View {
 
     private func featureBinding(for feature: RimeAdvancedInputFeature) -> Binding<Bool> {
         Binding {
-            store.isAdvancedInputFeatureEnabled(feature)
+            store.supportsProductAdvancedInput
+                ? store.isAdvancedInputFeatureEnabled(feature)
+                : false
         } set: { newValue in
+            guard store.supportsProductAdvancedInput else {
+                if newValue { showUnsupportedAlert = true }
+                return
+            }
             store.setAdvancedInputFeature(feature, enabled: newValue)
         }
     }

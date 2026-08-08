@@ -225,6 +225,9 @@ final class RimeSettingsStore {
     }
 
     func saveFuzzyPinyinSettings() {
+        // TD-010: never schedule deploy from an unsupported scheme's settings UI.
+        // Preferences may still be written only when capability allows (callers gate toggles).
+        guard supportsManagedFuzzyPinyin else { return }
         persistence.set(fuzzyEnabled, forKey: RimeFuzzyPinyinSettings.enabledKey)
         persistence.set(fuzzyZhZEnabled, forKey: RimeFuzzyPinyinSettings.zhZKey)
         persistence.set(fuzzyChCEnabled, forKey: RimeFuzzyPinyinSettings.chCKey)
@@ -234,6 +237,7 @@ final class RimeSettingsStore {
     }
 
     func saveAdvancedInputSettings() {
+        guard supportsProductAdvancedInput else { return }
         persistence.set(advancedInputMasterEnabled, forKey: RimeAdvancedInputSettings.masterEnabledKey)
         for feature in RimeAdvancedInputFeature.allCases {
             persistence.set(
@@ -355,26 +359,63 @@ final class RimeSettingsStore {
     }
 
     func setAdvancedInputFeature(_ feature: RimeAdvancedInputFeature, enabled: Bool) {
+        guard supportsProductAdvancedInput else { return }
         advancedInputFeatureEnabled[feature] = enabled
         saveAdvancedInputSettings()
     }
 
+    /// Layout-bound scheme id used to gate settings honesty (TD-010).
+    var settingsCapabilitySchemaID: String {
+        RimeSchemeCapabilityMatrix.settingsCapabilitySchemaID(
+            layoutStyle: layoutStyle,
+            schemeBinding26: schemeBinding26,
+            schemeBinding9: schemeBinding9,
+            activeSchemaID: activeSchemaID
+        )
+    }
+
+    var settingsCapabilityProfile: RimeSchemeCapabilityProfile {
+        RimeSchemeCapabilityMatrix.profile(for: settingsCapabilitySchemaID)
+    }
+
+    var supportsManagedFuzzyPinyin: Bool {
+        settingsCapabilityProfile.supportsManagedFuzzyPinyin
+    }
+
+    var supportsProductAdvancedInput: Bool {
+        settingsCapabilityProfile.supportsProductAdvancedInput
+    }
+
+    /// Display name for the scheme that currently gates fuzzy / advanced-input UI.
+    var settingsCapabilitySchemeDisplayName: String {
+        displayName(forSchemaID: settingsCapabilitySchemaID)
+    }
+
+    var fuzzyPinyinCapabilityStatusText: String {
+        let schemaName = settingsCapabilitySchemeDisplayName
+        guard supportsManagedFuzzyPinyin else {
+            return "当前方案（\(schemaName)）暂不支持该功能。你的选择会保留，切换到支持的方案（如雾凇拼音）后可再开启。"
+        }
+        return "修改模糊音设置会触发 RIME 重新部署。部署完成后设置才会在键盘中生效。"
+    }
+
     func supportedAdvancedInputFeatures(for schemaID: String) -> Set<RimeAdvancedInputFeature> {
-        schemaID == "rime_ice" ? Set(RimeAdvancedInputFeature.allCases) : []
+        let profile = RimeSchemeCapabilityMatrix.profile(for: schemaID)
+        return profile.supportsProductAdvancedInput ? Set(RimeAdvancedInputFeature.allCases) : []
     }
 
     func advancedInputFeatureIsSupported(_ feature: RimeAdvancedInputFeature) -> Bool {
-        supportedAdvancedInputFeatures(for: activeSchemaID).contains(feature)
+        supportedAdvancedInputFeatures(for: settingsCapabilitySchemaID).contains(feature)
     }
 
     var activeSchemaSupportsAdvancedInput: Bool {
-        !supportedAdvancedInputFeatures(for: activeSchemaID).isEmpty
+        supportsProductAdvancedInput
     }
 
     var activeSchemaAdvancedInputStatusText: String {
-        let schemaName = displayName(forSchemaID: activeSchemaID)
-        guard activeSchemaSupportsAdvancedInput else {
-            return "\(schemaName) 暂不支持这些高级输入功能。你的选择会保留，切换到支持的方案后可用。"
+        let schemaName = settingsCapabilitySchemeDisplayName
+        guard supportsProductAdvancedInput else {
+            return "当前方案（\(schemaName)）暂不支持该功能。你的选择会保留，切换到支持的方案后可用。"
         }
 
         if !advancedInputMasterEnabled {
@@ -795,8 +836,16 @@ final class RimeSettingsStore {
     }
 
     private func displayName(forSchemaID schemaID: String) -> String {
-        schemas.first(where: { $0.schemaID == schemaID })?.name
-            ?? (schemaID == "rime_ice" ? "雾凇拼音" : "朙月拼音")
+        let id = RimeSchemeCapabilityMatrix.normalizeSchemaID(schemaID)
+        if let named = schemas.first(where: { $0.schemaID == id })?.name {
+            return named
+        }
+        switch id {
+        case "rime_ice": return "雾凇拼音"
+        case "wanxiang": return "万象拼音"
+        case "luna_pinyin": return "朙月拼音"
+        default: return id
+        }
     }
 
     private func markDeploymentNeeded(reason: String) {

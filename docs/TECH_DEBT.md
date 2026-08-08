@@ -89,21 +89,16 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 ## TD-010: Per-Scheme Capability Gates In Settings UX
 
 - **Priority:** Medium (product honesty; not install-path blocking)
-- **Risk:** Settings expose switches that **look global** (模糊音、高级输入/Lua、未来其它壳能力) while runtime only works for some schemes (Human 2026-08-07: **模糊音 currently effective only on 雾凇**; 万象下无效；`rq` 等高级输入亦未对万象声称). Users toggle on 万象 and conclude the feature is broken or that install failed.
-- **Evidence:** Human device smoke under RIME-SCHEME-WANXIANG-001 — fuzzy zh/z only works with 雾凇; layout nine-key + 万象 26-key binding fixed separately (not this debt).
-- **Product direction (frozen for follow-up WI):** When the **current layout’s effective scheme** does not support a feature:
-  1. Keep the control **off / disabled** (not silently “on but no-op”).
-  2. On attempt to enable, show a clear message: **当前方案暂不支持该功能** (name the scheme when helpful).
-  3. Prefer a single **scheme capability matrix** (catalog / metadata) driving UI + deploy targets, instead of hardcoding `rime_ice` in each settings page.
-- **Current mitigation:** Docs/non-claims only (PD Q4 advanced-input deferred; fuzzy deploy may patch multiple YAML files but **effectiveness on 万象 is unproven / not product-claimed**). Layout page already scopes scheme pickers per layout.
-- **Recommended fix (later WI, not 万象 catalog focus):**
-  1. Define capability flags per `schemaID` (e.g. `supportsFuzzyPinyin`, `supportsAdvancedInputLua`, …).
-  2. Settings pages bind enablement to **layout-bound effective scheme** (26-key vs nine-key slot as applicable).
-  3. Disable + toast/alert on unsupported enable; do not write pending-deploy that implies support.
-  4. Optionally reverse: when user switches **to** an unsupported scheme, force-disable or grey out with explanation (without destroying preferences for when they return to a supported scheme — same pattern as advanced-input “preserve choices”).
-- **Owner area:** Main App settings (`RimeFuzzyPinyinSettingsView`, advanced input, catalog metadata), deploy post-processors, docs `RIME_SCHEME_MANAGEMENT.md` / `RIME_FUZZY_PINYIN.md`.
-- **Trigger to resolve:** After 万象 V1 install/layout path is closed; before claiming multi-scheme settings parity. **Do not block** current 万象 catalog/install work.
-- **Related:** Assignment residuals R-03 / **R-05**; PD-RIME-SCHEME-WANXIANG-001 Q4; research companion **TD-011**.
+- **Status:** **Repaid 2026-08-08** (V1 settings honesty for 模糊音 + 高级输入).
+- **Risk (historical):** Settings looked global while only some schemes productize features.
+- **Fix landed:**
+  1. `RimeSchemeCapabilityMatrix` (KeyboardCore): per-schema flags; layout-bound `settingsCapabilitySchemaID` (26-key binding / nine-key → fog).
+  2. V1 matrix: `rime_ice` fuzzy+advanced; `luna_pinyin` fuzzy only; `wanxiang` neither (TD-011 later for real 万象 Lua).
+  3. Fuzzy + advanced settings: disabled toggles, status copy, alert on enable attempt; **no** preference wipe; **no** deploy write when unsupported.
+  4. Settings tab subtitles show “当前方案暂不支持” when gated.
+- **Remaining:** extend matrix to future features; productize 万象 advanced/fuzzy when TD-011/fuzzy evidence reopens claims.
+- **Owner area:** Main App settings + KeyboardCore matrix.
+- **Related:** R-05; TD-011.
 
 ## TD-011: Multi-Scheme Lua / Advanced-Input Compatibility (雾凇 ↔ 万象)
 

@@ -2,6 +2,15 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-08 — TD-010 per-scheme settings capability gates
+
+- `RimeSchemeCapabilityMatrix`: layout-bound scheme gates for productized fuzzy and
+  advanced-input settings (雾凇 full; 朙月 fuzzy-only; 万象 neither in V1).
+- Fuzzy / advanced settings UI: disable controls, status + alert when unsupported;
+  preserve stored preferences; do not mark deploy from unsupported pages.
+- Tests: matrix unit tests; RimeSettingsStore wanxiang / nine-key binding cases.
+
+
 ## 2026-08-07 — Layout UI + nine-key with 万象 26-key binding
 
 - Keyboard layout page shows **one** scheme picker for the selected 主键盘 only

@@ -67,6 +67,7 @@ Current scheme support (productized in Universe today):
 - `rime_ice`: supports the advanced-input feature set (fog module names + triggers such as `rq`).
 - `luna_pinyin`: does not support these advanced-input features.
 - `wanxiang`: **upstream ships its own Lua suite** (e.g. `wanxiang.shijian` with `/rq`·`orq`, `V` calculator) but Universe **does not yet** map product toggles or diagnostics to those modules. Research and phased work: [`TD-011`](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象). Until then do not claim fog-parity advanced input on 万象.
+- **Settings honesty (TD-010):** main-App fuzzy / advanced-input pages gate on layout-bound capability matrix (`RimeSchemeCapabilityMatrix`); unsupported schemes show off/disabled + status copy, preferences preserved.
 
 The main App may inspect already-installed files and shared deployment flags to show:
 
