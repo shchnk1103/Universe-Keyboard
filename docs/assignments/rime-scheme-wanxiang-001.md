@@ -71,7 +71,7 @@ New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`)
 | R-03 | 万象下裸 `rq` 等雾凇触发不生效 | **Accept / deferred** — 万象上游用 `/rq`·`orq` 等（见 TD-011），非装失败；UX → R-05/R-06 |
 | R-04 | 分段选词末段双插（长句） | **Mitigated** 2026-08-07 — `sel-*` strip; Human re-smoke optional |
 | R-05 | 方案不支持的设置项仍可打开（模糊音在万象无效等） | **Done 2026-08-08** — TD-010 matrix + fuzzy/advanced gates |
-| R-06 | 万象也有 Lua，但与雾凇模块/触发/产品开关不兼容；切换方案时的 deploy/诊断/共享 lua 目录 | **Defer research complete** — [`TD-011`](../TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象); phases A–F; **no code in this WI** |
+| R-06 | 万象也有 Lua，但与雾凇模块/触发/产品开关不兼容 | **Partial 2026-08-08** — Product freeze **A** (native triggers + copy); usage guide landed; full deploy/diagnose (B–D) still deferred — [`TD-011`](../TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) |
 | R-07 | 万象「语法模型」`.gram`（LMDG）是什么、能否给雾凇等用、如何可选下载接入 | **Defer research complete** — [`TD-012`](../TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration); phases G0–G6; **no code in this WI** |
 
 ## Gates

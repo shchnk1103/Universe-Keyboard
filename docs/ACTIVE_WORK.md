@@ -5,11 +5,11 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-08 Asia/Shanghai` — TD-009/010 done; next polish = TD-011/012 when Product opens.
+Last synced: `2026-08-08 Asia/Shanghai` — TD-009/010 done; TD-011 freeze A (native+copy) landing; TD-012 later.
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | RIME-SCHEME-WANXIANG-001 | Active | Path + TD-009/010; next **TD-011/012** optional | [`assignments/rime-scheme-wanxiang-001.md`](assignments/rime-scheme-wanxiang-001.md) |
+| 1 | RIME-SCHEME-WANXIANG-001 | Active | Path + 009/010; **TD-011 A copy**; next **012** or 011 B–D | [`assignments/rime-scheme-wanxiang-001.md`](assignments/rime-scheme-wanxiang-001.md) |
 | 2 | T9-RESPONSIVE-PIPELINE-001 | Active | Dual-gate request default-on; residual hygiene | [`assignments/t9-responsive-rime-pipeline-001.md`](assignments/t9-responsive-rime-pipeline-001.md) |
 | 3 | RELEASE-2026-0801 | Active | Release coordination; Entry Criteria pending | [`assignments/release-2026-08-01.md`](assignments/release-2026-08-01.md) |
 | 4 | HELP-TIPKIT-001 | Active | P1–P3 done; Product Gate pending | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |
@@ -24,8 +24,8 @@ Closed this session (removed from Active): `RESPONSIVE-CANDIDATE-ANOMALY-001` (C
 ## Cold-session resume (万象 arc · 2026-08-07)
 
 New session: `AGENTS.md` → `KNOWLEDGE_INDEX` → **this file** → Assignment row #1 → full handoff block inside the Assignment.
-**Do next (product order):** later **TD-011** Lua / **TD-012** `.gram` when Product opens. TD-009 toast + TD-010 gates **done** 2026-08-08.
-Debts: [`TECH_DEBT.md`](TECH_DEBT.md) TD-009…012 (009/010 repaid).
+**Do next (product order):** TD-011 remaining B–D only if productizing 万象 toggles; else **TD-012** `.gram` optional. TD-009/010 done; TD-011 **freeze A + usage copy** in progress/landed this session.
+Debts: [`TECH_DEBT.md`](TECH_DEBT.md) TD-009…012.
 
 ## Rules
 
