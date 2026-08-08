@@ -99,6 +99,7 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 ## TD-011: Multi-Scheme Lua / Advanced-Input Compatibility (雾凇 ↔ 万象)
 
 - **Priority:** Medium–High for product parity later; **not** blocking 万象 V1 catalog/install (PD Q4 still deferred).
+- **Status:** **Partial** — freeze A + usage copy **repaid 2026-08-08** (PR #54); B–D still open.
 - **Product freeze (2026-08-08, option A):** **Keep native triggers per scheme** (fog bare `rq` vs 万象 `/rq`·`orq`). **Do not** unify or silently remap triggers. Ordinary users learn via **per-scheme settings copy** (`RimeSchemeNativeUsageGuide`). Compatibility mapping / single-prefix unification is **out of scope** unless Product reopens.
 - **Slice landed (A — copy only):** scheme-specific「怎么使用」tips + status notes on advanced-input settings; fog product toggles still only for `rime_ice` (TD-010).
 - **Context (research 2026-08-07):** Upstream [amzxyz/rime-wanxiang](https://github.com/amzxyz/rime-wanxiang) **does** ship rich Lua (“魔法扩展”), but it is **not** the same module set or trigger contract as 雾凇 `rime-ice`.
@@ -123,7 +124,7 @@ Grammar block references `wanxiang-lts-zh-hans` — **`.gram` still not in V1 in
 2. **`applyAdvancedInputPostProcessing`**: early-return unless `activeSchema == "rime_ice"`.
 3. **Component map** (`RimeAdvancedInputFeature.componentNames`): 雾凇 module names only — **cannot** strip/restore `wanxiang.shijian` / `super_calculator` by flipping the same switches.
 4. **Diagnostics** (`rimeIceLuaCapabilityDiagnostic`): schema file hard-coded `rime_ice.schema.yaml`; smoke keys `rime_ice_lua_smoke_*`; `date_translator.lua` existence check.
-5. **Settings UX / copy**: examples and recovery paths assume fog triggers (`rq`, etc.).
+5. **Settings UX / copy**: **partially fixed** — `RimeSchemeNativeUsageGuide` + advanced status notes teach fog vs 万象 native triggers; product **toggles/deploy** still fog-only (`rime_ice`).
 6. **Shared `Rime/shared/lua/`**: both catalogs use `luaDirectoryPrefix: "lua/"`. 万象 is mostly under `lua/wanxiang/` (good isolation), but **shared `lua/data/`** and any root scripts risk **install/uninstall clobber** if both schemes coexist — needs install-plan audit (atomic install TD-001 adjacent).
 7. **Strip Lua when `rime_lua_available == false`**: path is generic strip of lua_* lines; OK in principle, but must be validated per-schema so 万象 is not left half-broken.
 
@@ -135,12 +136,12 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 
 | Phase | Work | Notes |
 |---|---|---|
-| A | **Capability matrix per schemaID** | Extends TD-010: `supportsAdvancedInput`, feature list, **trigger cheatsheet** (fog `rq` vs 万象 `/rq`), component name map (fog names vs `wanxiang.*` paths). |
-| B | **Diagnose + smoke per active/layout-bound scheme** | Generalize Lua diagnostic off `rime_ice`; smoke key per schema or shared with schema tag; verify `lua/wanxiang/shijian.lua` etc. |
-| C | **Deploy post-process multi-schema** | Apply enable/disable by **per-scheme component names** on `rime_ice.schema.yaml` **and** `wanxiang.schema.yaml` (and only when that scheme is installed). |
-| D | **Install isolation** | Ensure install/uninstall of one scheme does not delete the other’s `lua/` subtree; pin allowlists for `lua/data` merge policy. |
-| E | **UX** | Settings: when effective scheme is 万象, either (1) scheme-specific feature list + correct examples, or (2) TD-010 disable + “暂不支持/触发不同” until matrix ships. Prefer (1) for date/calc if we claim 万象 advanced input. |
-| F | **Device evidence** | Matrix: fog `rq`/`sj`; 万象 `/rq`/`orq`, `V1+1`, `R12`, `U62fc`; after toggle off → redeploy → triggers gone; switch scheme without cross-clobber. |
+| A | **Capability matrix + trigger cheatsheet** | **Partial done:** TD-010 matrix + freeze A `RimeSchemeNativeUsageGuide` (fog `rq` vs 万象 `/rq`). Full fog↔万象 **component name map** still open with B–C. |
+| B | **Diagnose + smoke per active/layout-bound scheme** | **Open** — generalize Lua diagnostic off `rime_ice`; smoke key per schema; verify `lua/wanxiang/shijian.lua` etc. |
+| C | **Deploy post-process multi-schema** | **Open** — enable/disable by **per-scheme component names** on `rime_ice` **and** `wanxiang` when installed. |
+| D | **Install isolation** | **Open** — one scheme must not delete the other’s `lua/` subtree; `lua/data` merge policy. |
+| E | **UX** | **Partial done:** (2) TD-010 disable + native tips under freeze A. Full (1) 万象 feature toggles still open with B–C. |
+| F | **Device evidence** | **Open optional** — fog `rq`/`sj`; 万象 `/rq`/`orq`, `V1+1`, `R12`, `U62fc`; toggle/redeploy when B–C ship. |
 
 ### Explicit non-goals (freeze A + until Product reopens)
 

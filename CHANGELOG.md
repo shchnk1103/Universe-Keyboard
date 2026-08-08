@@ -2,6 +2,11 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-08 — EOD handoff docs (万象 arc)
+
+- Active Work backlog: next default **TD-012**; TD-011 B–D optional; freeze A hold.
+- Assignment / Dashboard / KNOWLEDGE_INDEX / PD status synced after PR #51–#54.
+
 ## 2026-08-08 — TD-011 freeze A: native Lua triggers + per-scheme usage copy
 
 - Product: keep fog vs 万象 native triggers (e.g. `rq` vs `/rq`); no silent remap.

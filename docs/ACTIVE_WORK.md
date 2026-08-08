@@ -5,11 +5,11 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-08 Asia/Shanghai` — TD-009/010 done; TD-011 freeze A (native+copy) landing; TD-012 later.
+Last synced: `2026-08-08 Asia/Shanghai` — TD-009/010 **repaid**; TD-011 freeze **A** landed (PR #54); next default **TD-012** or optional 011 B–D.
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | RIME-SCHEME-WANXIANG-001 | Active | Path + 009/010; **TD-011 A copy**; next **012** or 011 B–D | [`assignments/rime-scheme-wanxiang-001.md`](assignments/rime-scheme-wanxiang-001.md) |
+| 1 | RIME-SCHEME-WANXIANG-001 | Active | 009/010/011A done; **next TD-012** (or 011 B–D if Product opens) | [`assignments/rime-scheme-wanxiang-001.md`](assignments/rime-scheme-wanxiang-001.md) |
 | 2 | T9-RESPONSIVE-PIPELINE-001 | Active | Dual-gate request default-on; residual hygiene | [`assignments/t9-responsive-rime-pipeline-001.md`](assignments/t9-responsive-rime-pipeline-001.md) |
 | 3 | RELEASE-2026-0801 | Active | Release coordination; Entry Criteria pending | [`assignments/release-2026-08-01.md`](assignments/release-2026-08-01.md) |
 | 4 | HELP-TIPKIT-001 | Active | P1–P3 done; Product Gate pending | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |
@@ -21,11 +21,24 @@ Last synced: `2026-08-08 Asia/Shanghai` — TD-009/010 done; TD-011 freeze A (na
 
 Closed this session (removed from Active): `RESPONSIVE-CANDIDATE-ANOMALY-001` (Completed; R-01 device smoke `accept`), `RESPONSIVE-DELETE-ANOMALY-001`, `KOS-2.1-OPS-001`, `KOS-2.1-OPS-IMPL-001`, `RESPONSIVE-DEFAULT-ON-001` (Reviewed; optional formal close).
 
-## Cold-session resume (万象 arc · 2026-08-07)
+## Cold-session resume (万象 arc · 2026-08-08 EOD)
 
 New session: `AGENTS.md` → `KNOWLEDGE_INDEX` → **this file** → Assignment row #1 → full handoff block inside the Assignment.
-**Do next (product order):** TD-011 remaining B–D only if productizing 万象 toggles; else **TD-012** `.gram` optional. TD-009/010 done; TD-011 **freeze A + usage copy** in progress/landed this session.
-Debts: [`TECH_DEBT.md`](TECH_DEBT.md) TD-009…012.
+
+### 待办 / Backlog（未做 · 下次会话）
+
+| Priority | Item | Notes |
+|---|---|---|
+| **P0 next eng** | **[TD-012](TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration)** optional LMDG `.gram` | Default next if Product does not reopen 万象 advanced **controls** |
+| P1 optional | **[TD-011](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) B–D** | Diagnose / multi-schema deploy / install isolation — only if Product productizes 万象 toggles |
+| P2 optional | Device smoke TD-011 A | 高级输入 + 万象：tips 显示 `/rq`·`orq`/`V`/`R`/`U`；裸 `rq` 仍属雾凇 |
+| P2 optional | Formal **Completed** stamp on RIME-SCHEME-WANXIANG-001 | Product may stamp when ready; path already merge-ready |
+| P3 residual | R-04 re-smoke | 长句分段选词末段双插（`sel-*` 已缓解） |
+| — | Freeze A hold | **Do not** unify fog `rq` ↔ 万象 `/rq` unless Product supersedes |
+
+**Done this arc (do not re-open as WIP):** TD-009 toast name+progress (PR #53); TD-010 capability gates + prefs preserve (#51/#52); TD-011 freeze A native usage copy (#54).
+
+Debts index: [`TECH_DEBT.md`](TECH_DEBT.md) TD-009…012.
 
 ## Rules
 
