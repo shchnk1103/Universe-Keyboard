@@ -17,30 +17,30 @@ Reviews all code changes, confirms there is valid test/build evidence, and if th
 - search changed/staged/untracked files for blocked patterns and obvious hazards
 
 ### 2. Test evidence policy
-Push requires valid verification evidence, but it does **not** always require rerunning tests at push time.
+Push requires valid verification evidence. **When the user asks to merge, ship, fix CI, or open a PR expected to land on `main`, treat this as a merge gate:** run (or re-confirm green) the **local CI parity suite** from `AGENTS.md` §「本地 CI 门禁」, not only a filtered subset of KeyboardCore tests.
 
 Reuse recent test/build results when all of these are true:
 
-- The exact final code diff was already tested in the current conversation.
+- The exact final code diff was already tested in the current conversation **with coverage matching the change surface** (App tests if App/tests changed).
 - No code, package, project, or test files changed after that verification.
-- The user explicitly asks to avoid extra testing, or the push request immediately follows the verified implementation.
+- The user explicitly asks for a draft/feature-only push without merge, **or** the prior evidence already matches full CI parity for that surface.
 - The prior evidence is reported in the final push summary with command names and results.
 
 Rerun relevant tests/builds when any of these are true:
 
 - Code changed after the last successful verification.
 - The branch was rebased, merged, pulled, or otherwise changed since verification.
-- The previous verification failed, was incomplete, or did not cover the changed area.
+- The previous verification failed, was incomplete, or did not cover the changed area (e.g. only KeyboardCore while `UniverseKeyboardTests` changed).
 - The request is separated from the prior verification enough that the evidence may be stale.
-- The user asks for a full pre-push check.
+- The user asks for a full pre-push check or merge.
 
-Default verification commands by change area:
+Default verification (prefer CI parity from `AGENTS.md` when merging):
 
-- `Packages/KeyboardCore/**`: `swift test --package-path Packages/KeyboardCore`
-- `Keyboard/**`, `Universe Keyboard/**`, project/package wiring, or cross-target changes: also run the iOS Simulator build when practical:
-  `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -destination 'generic/platform=iOS Simulator' build`
+- **Merge-bound / main-bound:** full local CI door in `AGENTS.md` (format + KeyboardCore + RimeBridgeTests + Universe Keyboard scheme test + Debug/Release build).
+- **Narrow WIP push only:** `Packages/KeyboardCore/**` → `swift test --package-path Packages/KeyboardCore`; App/Extension/tests → scheme `Universe Keyboard` `test` on simulator.
+- Destination default: `platform=iOS Simulator,name=iPhone 17 Pro` (match workflow when possible).
 
-If the user says "不用过多测试", "直接推", or equivalent, reuse valid recent evidence and only run lightweight checks unless the diff changed after verification.
+If the user says "不用过多测试", "直接推", or equivalent: still refuse to **merge** without green CI-parity when Swift/tests/project changed; for draft push only, reuse recent evidence and state the gap explicitly.
 
 ### 3. Review gate
 Check each item before allowing a push:

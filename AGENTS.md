@@ -51,10 +51,30 @@
 ## GitHub 发布与分支清理
 
 - 完成的独立工作应先通过发布前检查，创建边界清晰的本地提交，再推送功能分支并创建 Pull Request。
+- **合并 / 视为可合并之前，必须先在本地跑通与 CI 等价的质量门**（见下「本地 CI 门禁」）。禁止在相关套件未绿时推送并请求合并到默认分支；若用户明确说「只推不合并 / 草稿 PR」，可推功能分支但必须在报告中写明本地未跑或未绿的步骤。
 - “已推送功能分支”不等于“可以清理分支”。PR 未合并、检查失败或远端状态无法确认时，必须同时保留本地和远端功能分支。
 - 只有在拉取最新远端状态后，确认该工作的提交已经可从 `origin` 的默认分支到达，才允许清理功能分支。
 - 清理时先同步默认分支，再使用安全删除方式删除本地分支；确认远端默认分支仍包含对应提交后，才删除远端功能分支。禁止用强制删除掩盖未合并状态。
 - 发布与清理过程必须报告提交、远端分支、PR、合并可达性检查和实际删除结果；任一步失败都停止清理并保留可恢复检查点。
+
+## 本地 CI 门禁（与 `.github/workflows/swift6-quality.yml` 对齐）
+
+在 **push 后预期合并**、或用户要求「上传并合并 / 修 CI / ship」时，在推送前（至少在 merge 前）于本地执行与 CI 同序的检查。默认模拟器名与 CI 一致：`iPhone 17 Pro`（本机无该机型时可用等价 iOS Simulator，并在报告中写明）。
+
+1. **（若改了 RIME 二进制依赖）** `bash scripts/ensure_rime_vendor.sh fetch`
+2. **（若有 Swift 改动）** 对相对默认分支的变更 `.swift` 跑  
+   `xcrun swift-format lint --strict --configuration .swift-format <file>`
+3. **KeyboardCore：** `swift test --package-path Packages/KeyboardCore`
+4. **RimeBridgeTests：**  
+   `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme RimeBridgeTests -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test`
+5. **App + Keyboard 测试（含 UniverseKeyboardTests / KeyboardTests）：**  
+   `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test`
+6. **Debug / Release build：** 同上 destination，分别 `-configuration Debug|Release` 的 `build`（参数与 CI 一致）
+
+**范围收窄（仅当改动极小时）：** 纯文档且无 Swift / 工程 / 测试文件改动时，可跳过 3–6，但须在完成报告中写明「docs-only，跳过 xcodebuild」。只改 `Packages/KeyboardCore` 时至少跑步骤 3；改主 App / Extension / 测试 target 时 **不得** 只跑 KeyboardCore 就声称可合并。
+
+**改完测试或部署意图后：** 必须跑到会执行该用例的 target（例如改了 `UniverseKeyboardTests` 就必须跑步骤 5，不能只跑 KeyboardCore）。  
+历史教训：#48 合并后 CI 红在 `RimeSettingsStoreTests`（签名 `schema=all` 与测试种子不一致）——本地若只跑 KeyboardCore 过滤套件会漏掉。
 
 ## 完成标准
 
