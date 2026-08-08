@@ -104,7 +104,9 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testSaveFuzzyPinyinSettingsSkipsDeployWhenSignatureAlreadyMatches() {
-        let signature = RimeFuzzyPinyinSettings().deploymentSignature(activeSchemaID: "luna_pinyin")
+        // Multi-scheme deploy uses preference-only signature (`schema=all`), not
+        // the active letter schema id (see RimeSettingsStore.updateFuzzyDeploymentIntent).
+        let signature = RimeFuzzyPinyinSettings().deploymentSignature(activeSchemaID: "all")
         let persistence = StubRimeSettingsPersistence(
             values: [RimeFuzzyPinyinSettings.deployedSignatureKey: signature]
         )
