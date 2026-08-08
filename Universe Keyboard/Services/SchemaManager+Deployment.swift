@@ -265,6 +265,8 @@ extension SchemaManager {
     }
 
     private func supportedAdvancedInputFeatures(for schemaID: String) -> Set<RimeAdvancedInputFeature> {
-        schemaID == "rime_ice" ? Set(RimeAdvancedInputFeature.allCases) : []
+        RimeSchemeCapabilityMatrix.profile(for: schemaID).supportsProductAdvancedInput
+            ? Set(RimeAdvancedInputFeature.allCases)
+            : []
     }
 }

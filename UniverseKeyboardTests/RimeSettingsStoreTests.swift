@@ -194,12 +194,17 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testAdvancedInputUnsupportedSchemeKeepsSettingsButDisablesCapability() {
-        let settings = StoreSharedSettingsStore(values: ["rime_active_schema": "luna_pinyin"])
+        let settings = StoreSharedSettingsStore(values: [
+            "rime_active_schema": "luna_pinyin",
+            KeyboardLayoutSettingsKey.schemeBinding26: "luna_pinyin",
+            KeyboardLayoutSettingsKey.layoutStyle: KeyboardLayoutStyle.twentySixKey.rawValue,
+        ])
         let store = RimeSettingsStore(
             schemaManager: SchemaManager(settings: settings, archiveInstaller: StoreArchiveInstaller())
         )
 
         XCTAssertFalse(store.activeSchemaSupportsAdvancedInput)
+        XCTAssertFalse(store.supportsProductAdvancedInput)
         XCTAssertFalse(store.advancedInputFeatureIsSupported(.dateTime))
         XCTAssertTrue(store.activeSchemaAdvancedInputStatusText.contains("暂不支持"))
         XCTAssertTrue(store.activeSchemaAdvancedInputStatusText.contains("选择会保留"))
@@ -210,6 +215,8 @@ final class RimeSettingsStoreTests: XCTestCase {
             values: [
                 "rime_active_schema": "rime_ice",
                 "rime_ice_installed": true,
+                KeyboardLayoutSettingsKey.schemeBinding26: "rime_ice",
+                KeyboardLayoutSettingsKey.layoutStyle: KeyboardLayoutStyle.twentySixKey.rawValue,
             ]
         )
         let store = RimeSettingsStore(
@@ -220,8 +227,66 @@ final class RimeSettingsStoreTests: XCTestCase {
         )
 
         XCTAssertTrue(store.activeSchemaSupportsAdvancedInput)
+        XCTAssertTrue(store.supportsProductAdvancedInput)
         XCTAssertTrue(store.advancedInputFeatureIsSupported(RimeAdvancedInputFeature.calculator))
         XCTAssertTrue(store.activeSchemaAdvancedInputStatusText.contains("支持这些高级输入功能"))
+    }
+
+    func testWanxiangLayoutBindingGatesFuzzyAndAdvancedWithoutClearingPreferences() {
+        let settings = StoreSharedSettingsStore(
+            values: [
+                "rime_active_schema": "wanxiang",
+                KeyboardLayoutSettingsKey.schemeBinding26: "wanxiang",
+                KeyboardLayoutSettingsKey.layoutStyle: KeyboardLayoutStyle.twentySixKey.rawValue,
+                RimeFuzzyPinyinSettings.enabledKey: true,
+                RimeAdvancedInputSettings.masterEnabledKey: true,
+            ]
+        )
+        let persistence = StubRimeSettingsPersistence(
+            values: [
+                RimeFuzzyPinyinSettings.enabledKey: true,
+                RimeAdvancedInputSettings.masterEnabledKey: true,
+            ]
+        )
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(settings: settings, archiveInstaller: StoreArchiveInstaller()),
+            persistence: persistence
+        )
+        store.load()
+
+        XCTAssertEqual(store.settingsCapabilitySchemaID, "wanxiang")
+        XCTAssertFalse(store.supportsManagedFuzzyPinyin)
+        XCTAssertFalse(store.supportsProductAdvancedInput)
+        XCTAssertTrue(store.fuzzyEnabled, "stored preference must remain")
+        XCTAssertTrue(store.advancedInputMasterEnabled, "stored preference must remain")
+        XCTAssertTrue(store.fuzzyPinyinCapabilityStatusText.contains("万象"))
+        XCTAssertTrue(store.fuzzyPinyinCapabilityStatusText.contains("暂不支持"))
+
+        store.fuzzyEnabled = false
+        store.saveFuzzyPinyinSettings()
+        XCTAssertEqual(
+            persistence.value(forKey: RimeFuzzyPinyinSettings.enabledKey) as? Bool,
+            true,
+            "unsupported scheme must not write fuzzy prefs or mark deploy"
+        )
+        XCTAssertNil(persistence.value(forKey: "rime_needs_deploy"))
+    }
+
+    func testNineKeyLayoutUsesFogCapabilityWhileTwentySixKeyIsWanxiang() {
+        let settings = StoreSharedSettingsStore(
+            values: [
+                "rime_active_schema": "wanxiang",
+                KeyboardLayoutSettingsKey.schemeBinding26: "wanxiang",
+                KeyboardLayoutSettingsKey.schemeBinding9: "t9",
+                KeyboardLayoutSettingsKey.layoutStyle: KeyboardLayoutStyle.nineKey.rawValue,
+            ]
+        )
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(settings: settings, archiveInstaller: StoreArchiveInstaller())
+        )
+        XCTAssertEqual(store.settingsCapabilitySchemaID, "rime_ice")
+        XCTAssertTrue(store.supportsManagedFuzzyPinyin)
+        XCTAssertTrue(store.supportsProductAdvancedInput)
     }
 
     func testTriggerFuzzyDeploymentIfNeededOnlyRunsWhenPending() async {

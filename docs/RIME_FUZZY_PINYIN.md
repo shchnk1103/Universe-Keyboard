@@ -82,7 +82,7 @@ Phase 1 does not implement:
 
 ## Validation Matrix
 
-**Known product gap (2026-08-07):** Human smoke found fuzzy **effective on 雾凇 only**; 万象 not claimed. UX honesty (disable + “当前方案暂不支持”) is deferred as [`TD-010`](TECH_DEBT.md#td-010-per-scheme-capability-gates-in-settings-ux) / Assignment residual R-05 — not a silent install failure.
+**Product claim (TD-010, 2026-08-08):** Universe-managed fuzzy settings are gated by `RimeSchemeCapabilityMatrix` (layout-bound scheme). **雾凇 / 朙月** can control managed fuzzy; **万象** settings page disables toggles with “暂不支持” and preserves preferences (real 万象 algebra productization not claimed).
 
 Manual validation should cover `luna_pinyin` and `rime_ice` first. Leave the fuzzy settings page (or background the app) so pending deploy runs before testing keyboard:
 
