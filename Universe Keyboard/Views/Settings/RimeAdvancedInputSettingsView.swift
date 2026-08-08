@@ -62,26 +62,21 @@ struct RimeAdvancedInputSettingsView: View {
             }
 
             Section {
-                AdvancedInputHelpRow(
-                    title: "输入日期和时间",
-                    examples: "试试 rq、sj、xq、dt，可显示日期、时间、星期或完整日期时间。"
-                )
-                AdvancedInputHelpRow(
-                    title: "输入计算结果",
-                    examples: "输入简单算式时，候选里会出现计算结果。"
-                )
-                AdvancedInputHelpRow(
-                    title: "输入数字格式",
-                    examples: "输入数字时，可出现中文大写、金额等格式候选。"
-                )
-                AdvancedInputHelpRow(
-                    title: "输入特殊内容",
-                    examples: "可快速输入随机编号、特殊字符或更多符号内容。"
-                )
+                ForEach(
+                    RimeSchemeNativeUsageGuide.advancedInputTips(
+                        for: store.settingsCapabilitySchemaID
+                    )
+                ) { tip in
+                    AdvancedInputHelpRow(title: tip.title, examples: tip.examples)
+                }
             } header: {
-                Text("怎么使用")
+                Text("怎么使用（\(store.settingsCapabilitySchemeDisplayName)）")
             } footer: {
-                Text("高级输入会出现在候选栏里；不需要切换键盘页面。关闭某项后，重新部署完成才会在键盘中生效。")
+                Text(
+                    RimeSchemeNativeUsageGuide.advancedInputHelpFooter(
+                        for: store.settingsCapabilitySchemaID
+                    )
+                )
             }
 
             ForEach(groups) { group in

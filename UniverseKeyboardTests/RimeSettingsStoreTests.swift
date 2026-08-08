@@ -206,7 +206,8 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertFalse(store.activeSchemaSupportsAdvancedInput)
         XCTAssertFalse(store.supportsProductAdvancedInput)
         XCTAssertFalse(store.advancedInputFeatureIsSupported(.dateTime))
-        XCTAssertTrue(store.activeSchemaAdvancedInputStatusText.contains("暂不支持"))
+        // TD-011 A: luna uses native status note (not the generic「暂不支持」line).
+        XCTAssertTrue(store.activeSchemaAdvancedInputStatusText.contains("朙月"))
         XCTAssertTrue(store.activeSchemaAdvancedInputStatusText.contains("选择会保留"))
     }
 
@@ -261,6 +262,11 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertTrue(store.advancedInputMasterEnabled, "stored preference must remain")
         XCTAssertTrue(store.fuzzyPinyinCapabilityStatusText.contains("万象"))
         XCTAssertTrue(store.fuzzyPinyinCapabilityStatusText.contains("暂不支持"))
+        XCTAssertTrue(
+            store.activeSchemaAdvancedInputStatusText.contains("/rq")
+                || store.activeSchemaAdvancedInputStatusText.contains("orq"),
+            "万象 advanced status should teach native triggers (TD-011 A)"
+        )
 
         store.fuzzyEnabled = false
         store.saveFuzzyPinyinSettings()

@@ -2,6 +2,12 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-08 — TD-011 freeze A: native Lua triggers + per-scheme usage copy
+
+- Product: keep fog vs 万象 native triggers (e.g. `rq` vs `/rq`); no silent remap.
+- `RimeSchemeNativeUsageGuide` drives advanced-input「怎么使用」by layout-bound scheme.
+- 万象 status notes document `/rq`·`orq` / `V` / `R` / `U` instead of fog-only examples.
+
 ## 2026-08-08 — TD-009 multi-scheme download toast name + progress
 
 - `DownloadState` carries scheme display names; global toast no longer hardcodes 雾凇.

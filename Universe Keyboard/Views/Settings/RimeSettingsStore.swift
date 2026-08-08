@@ -414,7 +414,11 @@ final class RimeSettingsStore {
 
     var activeSchemaAdvancedInputStatusText: String {
         let schemaName = settingsCapabilitySchemeDisplayName
+        let schemaID = settingsCapabilitySchemaID
         guard supportsProductAdvancedInput else {
+            if let nativeNote = RimeSchemeNativeUsageGuide.advancedInputStatusNote(for: schemaID) {
+                return nativeNote + " 雾凇产品化开关的选择会保留，切回支持的方案后仍可用。"
+            }
             return "当前方案（\(schemaName)）暂不支持该功能。你的选择会保留，切换到支持的方案后可用。"
         }
 
@@ -430,7 +434,7 @@ final class RimeSettingsStore {
         case .failed:
             return "设置应用失败，请重新部署后再试。"
         case .idle, .deployed:
-            return "\(schemaName) 支持这些高级输入功能。"
+            return "\(schemaName) 支持这些高级输入功能（触发以本页「怎么使用」为准）。"
         }
     }
 

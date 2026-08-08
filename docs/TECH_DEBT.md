@@ -99,7 +99,9 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 ## TD-011: Multi-Scheme Lua / Advanced-Input Compatibility (雾凇 ↔ 万象)
 
 - **Priority:** Medium–High for product parity later; **not** blocking 万象 V1 catalog/install (PD Q4 still deferred).
-- **Context (research 2026-08-07, no code change):** Upstream [amzxyz/rime-wanxiang](https://github.com/amzxyz/rime-wanxiang) **does** ship rich Lua (“魔法扩展”), but it is **not** the same module set or trigger contract as 雾凇 `rime-ice`.
+- **Product freeze (2026-08-08, option A):** **Keep native triggers per scheme** (fog bare `rq` vs 万象 `/rq`·`orq`). **Do not** unify or silently remap triggers. Ordinary users learn via **per-scheme settings copy** (`RimeSchemeNativeUsageGuide`). Compatibility mapping / single-prefix unification is **out of scope** unless Product reopens.
+- **Slice landed (A — copy only):** scheme-specific「怎么使用」tips + status notes on advanced-input settings; fog product toggles still only for `rime_ice` (TD-010).
+- **Context (research 2026-08-07):** Upstream [amzxyz/rime-wanxiang](https://github.com/amzxyz/rime-wanxiang) **does** ship rich Lua (“魔法扩展”), but it is **not** the same module set or trigger contract as 雾凇 `rime-ice`.
 
 ### Upstream 万象 (schema `wanxiang`) — facts
 
@@ -140,15 +142,17 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 | E | **UX** | Settings: when effective scheme is 万象, either (1) scheme-specific feature list + correct examples, or (2) TD-010 disable + “暂不支持/触发不同” until matrix ships. Prefer (1) for date/calc if we claim 万象 advanced input. |
 | F | **Device evidence** | Matrix: fog `rq`/`sj`; 万象 `/rq`/`orq`, `V1+1`, `R12`, `U62fc`; after toggle off → redeploy → triggers gone; switch scheme without cross-clobber. |
 
-### Explicit non-goals until Product reopens Q4
+### Explicit non-goals (freeze A + until Product reopens)
 
 - Claiming “万象高级输入与雾凇开关 1:1 对齐”
 - Porting fog `date_translator` into 万象 or rewriting 万象 triggers to bare `rq`
+- **Unifying triggers** or silent `rq`↔`/rq` compatibility layer (rejected for V1; option A)
 - Bundling LMDG `.gram` as part of Lua work
 
+- **Remaining phases:** B–D (diagnose/deploy/install isolation) if Product later productizes 万象 toggles; F device evidence.
 - **Owner area:** RIME Platform + Main App settings; catalog; deploy post-processors; RimeBridge smoke.
-- **Trigger to resolve:** Product reopens advanced-input for multi-scheme / after 万象 V1 path closed; coordinate with **TD-010** (honesty gates) so UI never shows fog-only examples while 万象 is active without labeling.
-- **Related:** RIME-SCHEME-WANXIANG-001 residual **R-06**; PD Q4; TD-010; `docs/RIME_SCHEME_MANAGEMENT.md` Advanced Input; rime-ice Lua plan historical.
+- **Trigger to resolve remaining:** Product reopens 万象 advanced-input **controls** (not just copy); keep freeze A unless explicit supersession.
+- **Related:** RIME-SCHEME-WANXIANG-001 residual **R-06**; PD Q4; TD-010; `docs/RIME_SCHEME_MANAGEMENT.md` Advanced Input.
 
 ## TD-012: Optional RIME Grammar Model (万象 LMDG / `.gram`) Integration
 
