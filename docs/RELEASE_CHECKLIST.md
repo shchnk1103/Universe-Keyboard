@@ -51,41 +51,45 @@ An unexplained omission is neither a scoped skip nor an accepted risk and blocks
 
 ## Automated Verification
 
+**Pre-merge / ship gate:** Agent and Human release owners should run the **local CI door** in [`AGENTS.md`](../AGENTS.md) §「本地 CI 门禁」 before treating a PR as merge-ready. That suite mirrors `.github/workflows/swift6-quality.yml` (format + KeyboardCore + RimeBridgeTests + full app scheme test + Debug/Release build). Prefer destination `iPhone 17 Pro` when available.
+
+Minimal command set (same intent as CI; fill destination if the default simulator is missing):
+
 ```bash
 swift test --package-path Packages/KeyboardCore
 
-xcodebuild -project "Universe Keyboard.xcodeproj" \
-  -scheme "Universe Keyboard" \
-  -configuration Debug \
-  -destination 'generic/platform=iOS Simulator' \
-  CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete \
-  SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
+DEST='platform=iOS Simulator,name=iPhone 17 Pro'
 
 xcodebuild -project "Universe Keyboard.xcodeproj" \
-  -scheme "Universe Keyboard" \
-  -configuration Release \
-  -destination 'generic/platform=iOS Simulator' \
-  CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete \
-  SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
-```
-
-Tests require a concrete installed simulator. Discover one with `xcrun simctl list devices available`, then run both schemes against the same destination:
-
-```bash
-xcodebuild -project "Universe Keyboard.xcodeproj" \
-  -scheme "RimeBridgeTests" \
-  -destination 'platform=iOS Simulator,name=<installed device>' \
-  CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete \
+  -scheme "RimeBridgeTests" -configuration Debug \
+  -destination "$DEST" \
+  CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 \
+  SWIFT_STRICT_CONCURRENCY=complete \
   SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test
 
 xcodebuild -project "Universe Keyboard.xcodeproj" \
-  -scheme "Universe Keyboard" \
-  -destination 'platform=iOS Simulator,name=<installed device>' \
-  CODE_SIGNING_ALLOWED=NO SWIFT_STRICT_CONCURRENCY=complete \
+  -scheme "Universe Keyboard" -configuration Debug \
+  -destination "$DEST" \
+  CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 \
+  SWIFT_STRICT_CONCURRENCY=complete \
   SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test
+
+xcodebuild -project "Universe Keyboard.xcodeproj" \
+  -scheme "Universe Keyboard" -configuration Debug \
+  -destination "$DEST" \
+  CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 \
+  SWIFT_STRICT_CONCURRENCY=complete \
+  SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
+
+xcodebuild -project "Universe Keyboard.xcodeproj" \
+  -scheme "Universe Keyboard" -configuration Release \
+  -destination "$DEST" \
+  CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 \
+  SWIFT_STRICT_CONCURRENCY=complete \
+  SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
 ```
 
-Do not hardcode or publish test counts. Preserve the command result and failing test names as evidence.
+Discover simulators with `xcrun simctl list devices available` if `iPhone 17 Pro` is not installed. Do not hardcode or publish test counts. Preserve the command result and failing test names as evidence.
 
 ## Main App Acceptance
 
