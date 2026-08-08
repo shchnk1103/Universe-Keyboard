@@ -2,6 +2,13 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-08 — TD-009 multi-scheme download toast name + progress
+
+- `DownloadState` carries scheme display names; global toast no longer hardcodes 雾凇.
+- Download progress is real when Content-Length is known (throttled); otherwise
+  indeterminate (no fake 0%).
+- Tests: catalog display names; toast message strings for 万象/雾凇.
+
 ## 2026-08-08 — TD-010 per-scheme settings capability gates
 
 - `RimeSchemeCapabilityMatrix`: layout-bound scheme gates for productized fuzzy and

@@ -110,7 +110,7 @@ struct KeyboardLayoutSettingsView: View {
             case .completed:
                 pendingNineKeyAfterInstall = false
                 Task { await enableNineKey() }
-            case .failed(let message):
+            case .failed(_, let message):
                 pendingNineKeyAfterInstall = false
                 rimeStore.presentLayoutToast("安装失败：\(message)。已保持原布局。", succeeded: false)
             default:

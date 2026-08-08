@@ -82,7 +82,8 @@ final class SchemaManager {
         case .idle, .completed, .failed: break
         default: return
         }
-        rimeIceDownloadState = .fetchingReleaseInfo
+        let schemeName = downloadSchemeDisplayName(for: schemaID)
+        rimeIceDownloadState = .fetchingReleaseInfo(schemeName: schemeName)
         currentDownloadTask = Task { [weak self] in
             await self?.fetchAndDownload(schemaID: schemaID)
         }
@@ -92,6 +93,11 @@ final class SchemaManager {
         currentDownloadTask?.cancel()
         currentDownloadTask = nil
         rimeIceDownloadState = .idle
+    }
+
+    /// User-facing name for download toast / progress (TD-009).
+    func downloadSchemeDisplayName(for schemaID: String) -> String {
+        catalogEntry(for: schemaID)?.name ?? schemaID
     }
 
     func catalogEntry(for schemaID: String) -> RimeSchemeCatalogEntry? {

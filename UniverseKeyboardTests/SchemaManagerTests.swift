@@ -115,11 +115,14 @@ final class SchemaManagerTests: XCTestCase {
 
     func testStartDownloadAllowsCompletedStateForInstalledSchemaUpdates() {
         let manager = makeManager()
-        manager.rimeIceDownloadState = .completed
+        manager.rimeIceDownloadState = .completed(schemeName: "雾凇拼音")
 
         manager.startDownload()
 
-        XCTAssertEqual(manager.rimeIceDownloadState, .fetchingReleaseInfo)
+        XCTAssertEqual(
+            manager.rimeIceDownloadState,
+            .fetchingReleaseInfo(schemeName: "雾凇拼音")
+        )
     }
 
     func testForceRedownloadAllowsCompletedStateAndClearsCachedMetadata() {
@@ -131,14 +134,41 @@ final class SchemaManagerTests: XCTestCase {
         )
         let installer = StubSchemaArchiveInstaller()
         let manager = makeManager(settings: settings, installer: installer)
-        manager.rimeIceDownloadState = .completed
+        manager.rimeIceDownloadState = .completed(schemeName: "雾凇拼音")
 
         manager.forceRedownload()
 
-        XCTAssertEqual(manager.rimeIceDownloadState, .fetchingReleaseInfo)
+        XCTAssertEqual(
+            manager.rimeIceDownloadState,
+            .fetchingReleaseInfo(schemeName: "雾凇拼音")
+        )
         XCTAssertNil(settings.string(forKey: "rime_ice_etag"))
         XCTAssertNil(settings.string(forKey: "rime_ice_version"))
         XCTAssertTrue(installer.didClearBuildCache)
+    }
+
+    func testDownloadSchemeDisplayNameUsesCatalogName() {
+        let manager = makeManager()
+        XCTAssertEqual(manager.downloadSchemeDisplayName(for: "rime_ice"), "雾凇拼音")
+        XCTAssertEqual(manager.downloadSchemeDisplayName(for: "wanxiang"), "万象拼音")
+    }
+
+    func testDownloadToastMessagesUseSchemeNameAndIndeterminateProgress() {
+        let wanxiangDownloading = AppOperationToastState(
+            downloadState: .downloading(schemeName: "万象拼音", progress: nil)
+        )
+        XCTAssertEqual(wanxiangDownloading?.message, "正在下载万象拼音…")
+        XCTAssertFalse(wanxiangDownloading?.message.contains("0%") == true)
+
+        let fogProgress = AppOperationToastState(
+            downloadState: .downloading(schemeName: "雾凇拼音", progress: 0.42)
+        )
+        XCTAssertEqual(fogProgress?.message, "正在下载雾凇拼音 42%")
+
+        let completed = AppOperationToastState(
+            downloadState: .completed(schemeName: "万象拼音")
+        )
+        XCTAssertEqual(completed?.message, "万象拼音已下载并部署")
     }
 
     func testInstallationPassesSharedLuaCapabilityToInstaller() throws {
@@ -757,11 +787,13 @@ private final class StubSchemaArchiveDownloader: SchemaArchiveDownloading {
     func downloadArchive(
         from url: URL,
         existingETag: String?,
-        cachedArchiveURL: URL
+        cachedArchiveURL: URL,
+        onProgress: (@Sendable (Double?) -> Void)?
     ) async throws -> DownloadedSchemaArchive {
         requests.append(
             Request(sourceURL: url, existingETag: existingETag, cachedArchiveURL: cachedArchiveURL)
         )
+        onProgress?(1)
         return DownloadedSchemaArchive(
             localURL: cachedArchiveURL,
             expectedContentLength: 42,

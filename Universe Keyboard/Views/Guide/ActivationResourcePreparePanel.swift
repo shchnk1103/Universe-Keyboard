@@ -222,17 +222,17 @@ struct ActivationResourcePreparePanel: View {
             EmptyView()
         case .fetchingReleaseInfo:
             statusLine(systemImage: "arrow.down.circle", text: "正在获取版本信息…", color: .secondary)
-        case .downloading(let progress):
+        case .downloading(_, let progress):
             statusLine(
                 systemImage: "arrow.down.circle",
-                text: "正在下载… \(Int(progress * 100))%",
+                text: downloadProgressText(progress),
                 color: .secondary
             )
         case .extracting, .postProcessing:
             statusLine(systemImage: "archivebox", text: "正在安装…", color: .secondary)
         case .deploying:
             statusLine(systemImage: "arrow.triangle.2.circlepath", text: "下载后正在部署…", color: .secondary)
-        case .failed(let message):
+        case .failed(_, let message):
             VStack(alignment: .leading, spacing: 8) {
                 statusLine(systemImage: "exclamationmark.triangle.fill", text: message, color: .orange)
                 AppActionButton(
@@ -273,6 +273,13 @@ struct ActivationResourcePreparePanel: View {
                 }
             }
         }
+    }
+
+    private func downloadProgressText(_ progress: Double?) -> String {
+        if let progress {
+            return "正在下载… \(Int((progress * 100).rounded()))%"
+        }
+        return "正在下载…"
     }
 
     private func statusLine(systemImage: String, text: String, color: Color) -> some View {

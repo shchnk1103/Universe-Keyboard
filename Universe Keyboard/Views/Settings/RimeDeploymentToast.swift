@@ -72,58 +72,65 @@ extension AppOperationToastState {
 
     init?(downloadState: DownloadState) {
         switch downloadState {
-        case .fetchingReleaseInfo:
+        case .fetchingReleaseInfo(let schemeName):
             self.init(
                 source: .download,
-                message: "正在检查雾凇拼音更新…",
+                message: "正在检查\(schemeName)更新…",
                 systemImage: "arrow.triangle.2.circlepath",
                 tone: .progress,
                 automaticallyDismisses: false
             )
-        case .downloading(let progress):
+        case .downloading(let schemeName, let progress):
+            let progressSuffix: String
+            if let progress {
+                progressSuffix = " \(Int((progress * 100).rounded()))%"
+            } else {
+                // Unknown total size: do not show a misleading 0%.
+                progressSuffix = "…"
+            }
             self.init(
                 source: .download,
-                message: "正在下载雾凇拼音… \(Int(progress * 100))%",
+                message: "正在下载\(schemeName)\(progressSuffix)",
                 systemImage: "arrow.down.circle",
                 tone: .progress,
                 automaticallyDismisses: false
             )
-        case .extracting:
+        case .extracting(let schemeName):
             self.init(
                 source: .download,
-                message: "正在解压雾凇拼音…",
+                message: "正在解压\(schemeName)…",
                 systemImage: "archivebox",
                 tone: .progress,
                 automaticallyDismisses: false
             )
-        case .postProcessing:
+        case .postProcessing(let schemeName):
             self.init(
                 source: .download,
-                message: "正在处理雾凇拼音配置…",
+                message: "正在处理\(schemeName)配置…",
                 systemImage: "doc.text",
                 tone: .progress,
                 automaticallyDismisses: false
             )
-        case .deploying:
+        case .deploying(let schemeName):
             self.init(
                 source: .download,
-                message: "正在部署雾凇拼音…",
+                message: "正在部署\(schemeName)…",
                 systemImage: "arrow.triangle.2.circlepath",
                 tone: .progress,
                 automaticallyDismisses: false
             )
-        case .completed:
+        case .completed(let schemeName):
             self.init(
                 source: .download,
-                message: "雾凇拼音已下载并部署",
+                message: "\(schemeName)已下载并部署",
                 systemImage: "checkmark.circle.fill",
                 tone: .success,
                 automaticallyDismisses: true
             )
-        case .failed:
+        case .failed(let schemeName, _):
             self.init(
                 source: .download,
-                message: "雾凇拼音下载或部署失败",
+                message: "\(schemeName)下载或部署失败",
                 systemImage: "xmark.circle.fill",
                 tone: .failure,
                 automaticallyDismisses: true

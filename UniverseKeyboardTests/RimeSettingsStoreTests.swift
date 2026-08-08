@@ -882,9 +882,15 @@ private struct StoreArchiveDownloader: SchemaArchiveDownloading {
     func downloadArchive(
         from url: URL,
         existingETag: String?,
-        cachedArchiveURL: URL
+        cachedArchiveURL: URL,
+        onProgress: (@Sendable (Double?) -> Void)?
     ) async throws -> DownloadedSchemaArchive {
-        DownloadedSchemaArchive(localURL: cachedArchiveURL, expectedContentLength: 1, eTag: existingETag)
+        onProgress?(1)
+        return DownloadedSchemaArchive(
+            localURL: cachedArchiveURL,
+            expectedContentLength: 1,
+            eTag: existingETag
+        )
     }
 }
 

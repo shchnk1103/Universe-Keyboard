@@ -72,19 +72,15 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 ## TD-009: Multi-Scheme Download Toast Name And Progress
 
 - **Priority:** Medium
-- **Risk:** Global download toast always shows **雾凇拼音** regardless of which catalog scheme is downloading (e.g. 万象 `wanxiang`). Progress stays at **0%** for the whole transfer, then jumps to extract/deploy—users may think the wrong package is downloading or that the download is stuck.
-- **Evidence (2026-08-07):** Human device screenshot while installing 万象全拼: toast “正在下载雾凇拼音… 0%”; download completed then entered deploy flow.
-- **Root cause (code):**
-  1. `AppOperationToastState(downloadState:)` hardcodes 雾凇 strings; `DownloadState` has no `schemaID` / display name; only `SchemaManager.rimeIceDownloadState` is observed.
-  2. `fetchAndDownload` sets `downloading(progress: 0)` once; `URLSessionSchemaArchiveDownloader` uses one-shot `URLSession.shared.download(for:)` with no byte progress callback.
-- **Current mitigation:** None for UX. Install path itself is scheme-ID-aware (`fetchAndDownload(schemaID:)`); incorrect toast does not change which archive is installed.
-- **Recommended fix:**
-  1. Track active download scheme (e.g. `currentDownloadSchemaID` or enrich `DownloadState`) and resolve display name from `RimeSchemeCatalog`.
-  2. Either report real progress via `URLSessionDownloadDelegate` (throttled), or stop showing a fake `0%` and use indeterminate copy during transfer.
-  3. Optionally rename `rimeIceDownloadState` → scheme-generic download state when touching this area.
-- **Owner area:** Main App shell toast (`ContentView` / `RimeDeploymentToast`), `SchemaManager+Download`, `SchemaArchiveDownloading`.
-- **Trigger to resolve:** Separate follow-up after 万象 install correctness is closed; do **not** block RIME-SCHEME-WANXIANG-001 catalog/install verification on this polish. Resolve before claiming multi-scheme download UX is production-ready or before shipping many concurrent downloadable schemes.
-- **Related:** `docs/RIME_SCHEME_MANAGEMENT.md` (Toast Feedback); Assignment `RIME-SCHEME-WANXIANG-001` residual R-02.
+- **Status:** **Repaid 2026-08-08**
+- **Risk (historical):** Toast always said 雾凇; progress stuck at 0%.
+- **Fix landed:**
+  1. `DownloadState` carries `schemeName` on all active phases; toast messages use catalog display names.
+  2. `downloading.progress` is `Double?` — `nil` = indeterminate (no fake `0%`); byte progress via `URLSessionDownloadDelegate` (throttled ~1%).
+  3. `SchemaArchiveDownloading` takes optional `onProgress` callback.
+- **Remaining:** rename `rimeIceDownloadState` → generic name (optional); further progress UX polish.
+- **Owner area:** Main App toast + `SchemaManager+Download`.
+- **Related:** R-02; `docs/RIME_SCHEME_MANAGEMENT.md`.
 
 ## TD-010: Per-Scheme Capability Gates In Settings UX
 

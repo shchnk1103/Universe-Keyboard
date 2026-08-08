@@ -134,7 +134,7 @@ Transient scheme operations should use the shared global bottom toast pattern.
 - "RIME 设置已应用。"
 - "下载失败，请稍后再试。"
 
-**Known gap (do not treat as install-path failure):** as of 2026-08-07, `AppOperationToastState(downloadState:)` still hardcodes 雾凇 strings and download progress is only set to `0` once (`URLSession` one-shot download). Tracked as [`TD-009`](TECH_DEBT.md#td-009-multi-scheme-download-toast-name-and-progress); deferred relative to 万象 catalog install correctness (`RIME-SCHEME-WANXIANG-001` residual R-02).
+**Toast (TD-009, 2026-08-08):** download phases use catalog scheme display names; progress fraction when known, otherwise indeterminate (no fake 0%).
 
 Scheme rows should show stable status only. Do not add permanent rows for the latest transient operation result.
 The top-level app shell owns the toast trigger so feedback is not lost when the user leaves a scheme detail page.

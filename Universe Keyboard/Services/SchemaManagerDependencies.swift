@@ -71,10 +71,13 @@ struct DownloadedSchemaArchive: Sendable {
 }
 
 protocol SchemaArchiveDownloading: Sendable {
+    /// - Parameter onProgress: Optional fraction `0...1` when total size is known;
+    ///   `nil` means indeterminate (unknown total). Called from a background queue.
     func downloadArchive(
         from url: URL,
         existingETag: String?,
-        cachedArchiveURL: URL
+        cachedArchiveURL: URL,
+        onProgress: (@Sendable (Double?) -> Void)?
     ) async throws -> DownloadedSchemaArchive
 }
 
@@ -82,7 +85,8 @@ struct URLSessionSchemaArchiveDownloader: SchemaArchiveDownloading {
     func downloadArchive(
         from url: URL,
         existingETag: String?,
-        cachedArchiveURL: URL
+        cachedArchiveURL: URL,
+        onProgress: (@Sendable (Double?) -> Void)? = nil
     ) async throws -> DownloadedSchemaArchive {
         var request = URLRequest(url: url)
         request.timeoutInterval = 300
@@ -90,20 +94,29 @@ struct URLSessionSchemaArchiveDownloader: SchemaArchiveDownloading {
             request.setValue(existingETag, forHTTPHeaderField: "If-None-Match")
         }
 
-        let (temporaryURL, response) = try await URLSession.shared.download(for: request)
+        let (temporaryURL, response) = try await ProgressReportingURLSession.download(
+            for: request,
+            onProgress: onProgress
+        )
         guard let httpResponse = response as? HTTPURLResponse else {
             throw DownloadError.networkError("无效的 HTTP 响应")
         }
 
         if httpResponse.statusCode == 304 {
             if FileManager.default.fileExists(atPath: cachedArchiveURL.path) {
+                onProgress?(1)
                 return DownloadedSchemaArchive(
                     localURL: cachedArchiveURL,
                     expectedContentLength: response.expectedContentLength,
                     eTag: existingETag
                 )
             }
-            return try await downloadArchive(from: url, existingETag: nil, cachedArchiveURL: cachedArchiveURL)
+            return try await downloadArchive(
+                from: url,
+                existingETag: nil,
+                cachedArchiveURL: cachedArchiveURL,
+                onProgress: onProgress
+            )
         }
 
         guard httpResponse.statusCode == 200 else {
@@ -117,10 +130,116 @@ struct URLSessionSchemaArchiveDownloader: SchemaArchiveDownloading {
 
         try? FileManager.default.removeItem(at: cachedArchiveURL)
         try FileManager.default.moveItem(at: temporaryURL, to: cachedArchiveURL)
+        onProgress?(expectedSize > 0 ? 1 : nil)
         return DownloadedSchemaArchive(
             localURL: cachedArchiveURL,
             expectedContentLength: expectedSize,
             eTag: httpResponse.value(forHTTPHeaderField: "Etag")
         )
+    }
+}
+
+// MARK: - Progress-capable download
+
+/// URLSession download with optional byte progress (TD-009).
+private enum ProgressReportingURLSession {
+    static func download(
+        for request: URLRequest,
+        onProgress: (@Sendable (Double?) -> Void)?
+    ) async throws -> (URL, URLResponse) {
+        try await withCheckedThrowingContinuation { continuation in
+            let delegate = DownloadDelegate(onProgress: onProgress, continuation: continuation)
+            let session = URLSession(
+                configuration: .default,
+                delegate: delegate,
+                delegateQueue: nil
+            )
+            delegate.retainSession(session)
+            session.downloadTask(with: request).resume()
+        }
+    }
+
+    private final class DownloadDelegate: NSObject, URLSessionDownloadDelegate, @unchecked Sendable {
+        private let onProgress: (@Sendable (Double?) -> Void)?
+        private var continuation: CheckedContinuation<(URL, URLResponse), Error>?
+        private var session: URLSession?
+        private var lastEmittedProgress: Double = -1
+        private let lock = NSLock()
+
+        init(
+            onProgress: (@Sendable (Double?) -> Void)?,
+            continuation: CheckedContinuation<(URL, URLResponse), Error>
+        ) {
+            self.onProgress = onProgress
+            self.continuation = continuation
+        }
+
+        func retainSession(_ session: URLSession) {
+            self.session = session
+        }
+
+        func urlSession(
+            _ session: URLSession,
+            downloadTask: URLSessionDownloadTask,
+            didWriteData bytesWritten: Int64,
+            totalBytesWritten: Int64,
+            totalBytesExpectedToWrite: Int64
+        ) {
+            guard let onProgress else { return }
+            if totalBytesExpectedToWrite > 0 {
+                let fraction = min(1, Double(totalBytesWritten) / Double(totalBytesExpectedToWrite))
+                // Throttle UI-facing updates (~1% or first/last).
+                lock.lock()
+                let previous = lastEmittedProgress
+                let shouldEmit = previous < 0 || fraction - previous >= 0.01 || fraction >= 0.999
+                if shouldEmit { lastEmittedProgress = fraction }
+                lock.unlock()
+                if shouldEmit { onProgress(fraction) }
+            } else {
+                onProgress(nil)
+            }
+        }
+
+        func urlSession(
+            _ session: URLSession,
+            downloadTask: URLSessionDownloadTask,
+            didFinishDownloadingTo location: URL
+        ) {
+            let tempDirectory = FileManager.default.temporaryDirectory
+            let destination = tempDirectory.appendingPathComponent(
+                "schema-dl-\(UUID().uuidString).zip"
+            )
+            do {
+                try? FileManager.default.removeItem(at: destination)
+                try FileManager.default.copyItem(at: location, to: destination)
+                guard let response = downloadTask.response else {
+                    finish(.failure(DownloadError.networkError("无效的 HTTP 响应")))
+                    return
+                }
+                finish(.success((destination, response)))
+            } catch {
+                finish(.failure(error))
+            }
+        }
+
+        func urlSession(
+            _ session: URLSession,
+            task: URLSessionTask,
+            didCompleteWithError error: Error?
+        ) {
+            if let error {
+                finish(.failure(error))
+            }
+        }
+
+        private func finish(_ result: Result<(URL, URLResponse), Error>) {
+            lock.lock()
+            let cont = continuation
+            continuation = nil
+            lock.unlock()
+            session?.finishTasksAndInvalidate()
+            session = nil
+            cont?.resume(with: result)
+        }
     }
 }
