@@ -1,4 +1,5 @@
 import Foundation
+import KeyboardCore
 import UserNotifications
 import XCTest
 
