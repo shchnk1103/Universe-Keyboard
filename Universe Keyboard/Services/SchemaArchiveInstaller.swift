@@ -20,6 +20,11 @@ protocol SchemaArchiveInstalling: AnyObject {
     func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan)
     func clearBuildCache(plan: RimeSchemeInstallationPlan)
     func sharedDataDirectoryURL() -> URL?
+    /// Resolves an already-deployed runtime tree without preparing resources.
+    /// Safe for settings/readiness queries.
+    func runtimeDirectories() throws -> SchemaDeploymentDirectories
+    /// Prepares writable deployment resources. Only explicit main-App deploy
+    /// transactions may call this method.
     func deploymentDirectories() throws -> SchemaDeploymentDirectories
 }
 
@@ -121,6 +126,23 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
 
     func sharedDataDirectoryURL() -> URL? {
         sharedDirectory()
+    }
+
+    func runtimeDirectories() throws -> SchemaDeploymentDirectories {
+        guard let containerURL = containerURL() else {
+            throw DownloadError.networkError("App Group 不可用")
+        }
+
+        let sharedDataURL = containerURL.appendingPathComponent("Rime/shared")
+        let userDataURL = containerURL.appendingPathComponent("Rime/user")
+        guard
+            fileManager.fileExists(atPath: sharedDataURL.path),
+            fileManager.fileExists(atPath: userDataURL.path)
+        else {
+            throw DownloadError.networkError("键盘运行时资源不可用")
+        }
+
+        return SchemaDeploymentDirectories(sharedDataURL: sharedDataURL, userDataURL: userDataURL)
     }
 
     func deploymentDirectories() throws -> SchemaDeploymentDirectories {

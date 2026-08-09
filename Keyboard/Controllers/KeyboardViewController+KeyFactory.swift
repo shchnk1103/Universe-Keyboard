@@ -81,6 +81,11 @@ extension KeyboardViewController {
         let button = KeyboardKeyButton(type: .system)
         button.setTitle(title, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
+        #if DEBUG
+        button.trackingEventHandler = { [weak self] button, phase in
+            self?.recordKeyboardTrackingDiagnostic(button: button, phase: phase)
+        }
+        #endif
         // 默认应用字符键样式 — 调用方可以根据需要覆盖（如 applyKeyStyle(.function, to:)）
         applyKeyStyle(.character, to: button)
 

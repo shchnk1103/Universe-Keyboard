@@ -498,6 +498,7 @@ final class SchemaManagerTests: XCTestCase {
             XCTFail("Main app deployments must use fullCheck mode")
         }
         XCTAssertEqual(request.sharedDataURL, installer.directories.sharedDataURL)
+        XCTAssertEqual(installer.deploymentDirectoriesCallCount, 1)
         XCTAssertTrue(settings.bool(forKey: "rime_deployed"))
         XCTAssertFalse(settings.bool(forKey: "rime_needs_deploy"))
         XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
@@ -516,6 +517,19 @@ final class SchemaManagerTests: XCTestCase {
             settings.string(forKey: RimeAdvancedInputSettings.deployedSignatureKey),
             RimeAdvancedInputSettings().deploymentSignature(activeSchemaID: "luna_pinyin", supportedFeatures: [])
         )
+    }
+
+    func testLayoutReadPathsNeverPrepareDeploymentResources() {
+        let settings = StubSharedSettingsStore()
+        let installer = StubSchemaArchiveInstaller()
+        let manager = makeManager(settings: settings, installer: installer)
+
+        _ = manager.currentT9ReadinessMatched()
+        _ = manager.schemeBinding26()
+        _ = manager.schemeBinding9()
+
+        XCTAssertEqual(installer.deploymentDirectoriesCallCount, 0)
+        XCTAssertGreaterThan(installer.runtimeDirectoriesCallCount, 0)
     }
 
     func testDeploymentAppliesFuzzyPinyinToAllInstalledLetterSchemas() async throws {
@@ -809,6 +823,8 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     private(set) var installedLuaAvailability: Bool?
     private(set) var didUninstall = false
     private(set) var didClearBuildCache = false
+    private(set) var runtimeDirectoriesCallCount = 0
+    private(set) var deploymentDirectoriesCallCount = 0
 
     init(
         containsInstalledSchema: Bool = false,
@@ -836,7 +852,14 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) { didUninstall = true }
     func clearBuildCache(plan: RimeSchemeInstallationPlan) { didClearBuildCache = true }
     func sharedDataDirectoryURL() -> URL? { directories.sharedDataURL }
-    func deploymentDirectories() throws -> SchemaDeploymentDirectories { directories }
+    func runtimeDirectories() throws -> SchemaDeploymentDirectories {
+        runtimeDirectoriesCallCount += 1
+        return directories
+    }
+    func deploymentDirectories() throws -> SchemaDeploymentDirectories {
+        deploymentDirectoriesCallCount += 1
+        return directories
+    }
 }
 
 private actor StubDeploymentService: RimeDeploymentServicing {

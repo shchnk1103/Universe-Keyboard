@@ -155,6 +155,36 @@ final class ThreadAffineRimeWireTests: XCTestCase {
         XCTAssertEqual(controller.threadAffineRimeCoordinator?.diagnostics.pendingWorkDepth ?? -1, 0)
     }
 
+    func testThreadAffineWireDoesNotWaitForStartupBeforeAcceptingFirstKey() async {
+        let presented = expectation(description: "startup-delayed presentation")
+        let controller = KeyboardController()
+        controller.textClient = FakeTextInputClient()
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.isThreadAffineRimeOwnerEnabled = true
+        controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
+            FakeBootstrap(startupDelayNanoseconds: 250_000_000)
+        )
+        observePresentation(on: controller) { _ in
+            presented.fulfill()
+        }
+
+        let start = DispatchTime.now().uptimeNanoseconds
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+        let bootstrapElapsedMS =
+            Double(DispatchTime.now().uptimeNanoseconds &- start) / 1_000_000
+
+        XCTAssertLessThan(
+            bootstrapElapsedMS,
+            100,
+            "MainActor bootstrap must not wait for the delayed owner session"
+        )
+        _ = controller.handle(.insertKey("n"))
+
+        await fulfillment(of: [presented], timeout: 2)
+        XCTAssertEqual(controller.threadAffineRimeCoordinator?.lastPublished?.output.rawInput, "n")
+        controller.suspendRimeForVisibilityChange()
+    }
+
     func testPublicationKeepsOwnerCompletionBacklogDepth() async {
         let entered = DispatchSemaphore(value: 0)
         let release = DispatchSemaphore(value: 0)
@@ -324,26 +354,20 @@ final class ThreadAffineRimeWireTests: XCTestCase {
         )
 
         controller.rebuildResponsiveRimeCoordinatorIfNeeded()
-
+        _ = controller.handle(.insertKey("n"))
+        controller.threadAffineRimeCoordinator?.flushPending()
         XCTAssertEqual(controller.rimeEngine?.diagnosticSessionSnapshot, expected)
         XCTAssertEqual(
             controller.threadAffineRimeCoordinator?.diagnostics.diagnosticSessionSnapshot,
             expected
         )
-
-        _ = controller.handle(.insertKey("n"))
-        controller.threadAffineRimeCoordinator?.flushPending()
-        XCTAssertEqual(controller.rimeEngine?.diagnosticSessionSnapshot, expected)
         controller.suspendRimeForVisibilityChange()
     }
 
-    func testThreadAffineOwnerTimeoutIsNotReportedReady() {
+    func testThreadAffineOwnerIsNotReadyUntilDelayedStartupCompletes() {
         let coordinator = ThreadAffineRimeSessionCoordinator(
             bootstrap: AnyThreadAffineRimeEngineBootstrap(
-                FakeBootstrap(startupDelayNanoseconds: 50_000_000)
-            ),
-            configuration: ThreadAffineRimeOwnerConfiguration(
-                ownerReadyTimeoutNanoseconds: 1_000_000
+                FakeBootstrap(startupDelayNanoseconds: 250_000_000)
             )
         )
         defer { coordinator.shutdown() }

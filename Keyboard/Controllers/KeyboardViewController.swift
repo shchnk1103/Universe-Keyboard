@@ -28,6 +28,25 @@ import KeyboardCore
 import RimeBridge
 import UIKit
 
+/// `CADisplayLink` 会强引用 target；用弱代理避免系统跳过可见性回调时，
+/// 尚未触发的首帧门控反过来保活整个键盘控制器。
+@MainActor
+final class KeyboardFirstFrameDisplayLinkTarget: NSObject {
+    weak var controller: KeyboardViewController?
+
+    init(controller: KeyboardViewController) {
+        self.controller = controller
+    }
+
+    @objc func displayLinkDidFire(_ displayLink: CADisplayLink) {
+        guard let controller else {
+            displayLink.invalidate()
+            return
+        }
+        controller.handleRimeFirstFrameDisplayLinkTick()
+    }
+}
+
 @MainActor
 class KeyboardViewController: UIInputViewController {
 
@@ -209,6 +228,12 @@ class KeyboardViewController: UIInputViewController {
     var hasActivatedVisibleRimeRuntime = false
     /// 在 viewDidLoad 仅解析只读路径；不在尚未可见的扩展中启动 librime。
     var pendingRimeRuntimeDirectories: (sharedDataDir: String, userDataDir: String)?
+    /// 首帧门控将 RIME 的重 I/O 推迟到键盘已跨过两个显示节拍之后。
+    /// 它只影响创建时机，不改变 session、候选或按键的语义。
+    var rimeFirstFrameDisplayLink: CADisplayLink?
+    var rimeFirstFrameDisplayLinkTarget: KeyboardFirstFrameDisplayLinkTarget?
+    var rimeFirstFrameGateStartTime: CFTimeInterval = 0
+    var rimeFirstFrameGateTickCount = 0
 
     // MARK: - 缓存的设置值
 
@@ -347,8 +372,14 @@ class KeyboardViewController: UIInputViewController {
     /// session 已失效时，控制器才会触发真正的 runtime 恢复。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("DID_APPEAR_BEFORE")
+        #endif
         activateRimeRuntimeAfterKeyboardPresentation()
         handleKeyboardDidAppear()
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("DID_APPEAR_AFTER")
+        #endif
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
         p3d1RecordLifecycleMarker("APPEAR_VISIBLE", reason: "viewDidAppear")
         #endif
@@ -356,10 +387,16 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("WILL_DISAPPEAR_BEFORE")
+        #endif
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
         p3d1RecordLifecycleMarker("DISAPPEAR_BEGIN", reason: "viewWillDisappear")
         #endif
         suspendKeyboardRuntime(reason: "viewWillDisappear", updateUI: true)
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("WILL_DISAPPEAR_AFTER")
+        #endif
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
         p3d1RecordLifecycleMarker("DISAPPEAR", reason: "viewWillDisappear", cleared: true)
         #endif
@@ -369,6 +406,10 @@ class KeyboardViewController: UIInputViewController {
     /// RIME is finalized first because its database locks are the critical resource;
     /// diagnostic persistence is disabled last so no delayed App Group write survives.
     func suspendKeyboardRuntime(reason: String, updateUI: Bool) {
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("SUSPEND_BEGIN_\(reason)")
+        #endif
+        cancelRimeFirstFrameGate()
         stopRimeSyncActivityHeartbeat()
         #if T9_RESPONSIVE_CANARY_INTERNAL
         responsiveCanaryConfigurationMonitor?.invalidate()
@@ -423,6 +464,9 @@ class KeyboardViewController: UIInputViewController {
         if updateUI, !effects.isEmpty, isKeyboardUIInstalled {
             syncUI(with: effects)
         }
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("SUSPEND_END_\(reason)", effects: effects)
+        #endif
         Logger.shared.debug(
             "\(reason): runtime released before extension suspension, bounds=\(view.bounds)",
             category: .display

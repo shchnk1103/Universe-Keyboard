@@ -228,7 +228,6 @@ public final class ThreadAffineRimeSessionCoordinator {
     private var publishHandler: PublishHandler?
     private var publicationHandler: PublicationHandler?
     private var observer: NSObjectProtocol?
-    private(set) var ownerReady = false
     /// Non-nil only after an explicit active-canary kill fenced new acceptance.
     /// A timeout deliberately retains this fence and the owner reference.
     private var activeKillFence: ThreadAffineRimeActiveKillFence?
@@ -323,9 +322,9 @@ public final class ThreadAffineRimeSessionCoordinator {
     }
 
     /// Lifecycle readiness captured after owner-thread engine construction.
-    /// This is not a key-path wait and is deliberately separate from the
-    /// native session snapshot, which may be unavailable for a fake engine.
-    public var isOwnerReady: Bool { ownerReady }
+    /// This is deliberately a non-blocking observation: first-frame UIKit
+    /// presentation must not wait for librime session creation.
+    public var isOwnerReady: Bool { owner?.isReady == true }
 
     public var hasPendingWork: Bool {
         (owner?.diagnostics().pendingWorkDepth ?? 0) > 0
@@ -428,7 +427,6 @@ public final class ThreadAffineRimeSessionCoordinator {
         guard result.isPositive else { return result }
 
         self.owner = nil
-        ownerReady = false
         activeKillFence = nil
         return result
     }
@@ -522,7 +520,6 @@ public final class ThreadAffineRimeSessionCoordinator {
         guard result.isPositive else { return result }
 
         self.owner = nil
-        ownerReady = false
         activeKillFence = nil
         return result
     }
@@ -538,7 +535,6 @@ public final class ThreadAffineRimeSessionCoordinator {
         _ = owner?.waitUntilStopped(timeout: .now() + 2)
         _ = owner?.waitUntilDeliveryDrained(timeout: .now() + 2)
         owner = nil
-        ownerReady = false
         activeKillFence = nil
     }
 
@@ -551,26 +547,16 @@ public final class ThreadAffineRimeSessionCoordinator {
                 sink.handle(result)
             }
         )
-        owner = newOwner
-        // Owner construction is a lifecycle boundary. Waiting here ensures the
-        // first key's diagnostic sample can read a native session snapshot while
-        // keeping all engine access on the owner thread.
-        let timeoutNanoseconds = min(
-            configuration.ownerReadyTimeoutNanoseconds,
-            UInt64(Int.max)
-        )
-        ownerReady = newOwner.waitUntilReady(
-            timeout: .now() + .nanoseconds(Int(timeoutNanoseconds))
-        )
-
-        // A fresh owner starts its local epoch at 1. Replay the coordinator's
-        // lifecycle barrier before accepting new work so queued notifications
-        // from the previous owner cannot pass the MainActor epoch check.
+        // A fresh owner starts at epoch 1. Advance its acceptance counter
+        // before publishing the owner reference, so a first key accepted while
+        // librime is still booting is stamped with the current lifecycle epoch.
+        // The control-lane resets then run before queued work on the owner.
         if lifecycleEpoch > 1 {
             for _ in 1..<lifecycleEpoch {
                 _ = newOwner.advanceSessionEpoch()
             }
         }
+        owner = newOwner
     }
 }
 

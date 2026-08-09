@@ -921,6 +921,12 @@ private final class StoreArchiveInstaller: SchemaArchiveInstalling {
     func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) {}
     func clearBuildCache(plan: RimeSchemeInstallationPlan) {}
     func sharedDataDirectoryURL() -> URL? { URL(fileURLWithPath: "/tmp/shared") }
+    func runtimeDirectories() throws -> SchemaDeploymentDirectories {
+        SchemaDeploymentDirectories(
+            sharedDataURL: URL(fileURLWithPath: "/tmp/shared"),
+            userDataURL: URL(fileURLWithPath: "/tmp/user")
+        )
+    }
     func deploymentDirectories() throws -> SchemaDeploymentDirectories {
         SchemaDeploymentDirectories(
             sharedDataURL: URL(fileURLWithPath: "/tmp/shared"),
