@@ -161,6 +161,7 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Context (research 2026-08-07, no code change):** “万象模型”在社区语境里主要指 **RIME 语法模型（Grammar / Gram）**，仓库 **[amzxyz/RIME-LMDG](https://github.com/amzxyz/RIME-LMDG)**（Language / Model / Dictionary / Grammar）。它 **不是** 在线大模型 API，也 **不是** 我们 App 内的另一套候选引擎。
 - **G0 result (2026-08-09):** **No-Go for current vendor.** 已验证的 `rime-vendor-ios-1.16.1-lua.1` 虽含核心 `Grammar` 接口与 `ContextualTranslation`，但 11-framework inventory、`librime.a` archive 成员和强制注册符号均没有 octagram；运行时仅配置 `core + dict + gears + lua`。因此当前 pin 不能把 `.gram` 作为可用能力，详见 [G0 artifact audit](evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md)。
 - **G1 preparation (2026-08-09):** [iOS octagram vendor 准备计划](plans/td-012-octagram-vendor-readiness-plan.md) 已把可复现 artifact、模块注册与许可证来源列为进入实现前的硬门槛。该计划不授权 artifact 构建或模型下载，TD-012 仍保持当前 No-Go。
+- **许可证来源审计 (2026-08-09):** 上游在 PR #8 公开收集三名记录贡献者同意后，将根 LICENSE 改为 BSD-3-Clause；但 `grammar_module.cc` 的 GPL 文件头仍未同步。详见 [provenance audit](evidence/td-012-octagram-license-provenance-audit-2026-08-09.md)。这移除了上游意图未知项，但不能替代本项目对分发阈值和 notice 的决定。
 
 ### What the model is
 
