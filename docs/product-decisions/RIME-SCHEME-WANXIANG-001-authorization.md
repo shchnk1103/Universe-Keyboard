@@ -13,9 +13,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` — path ready for formal close (2026-08-08 EOD) |
-| **Phase** | Q1/Q2 frozen; base.zip + layout-bound + Human smoke; TD-009/010/011A on `main`; TD-012 G0 为当前 iOS vendor No-Go |
+| **Phase** | Q1/Q2 frozen; base.zip + layout-bound + Human smoke; TD-009/010/011A on `main`; TD-012 当前 vendor 仍为 G0 No-Go，但其上游来源依据已获 Product 接受 |
 | **Non-claims** | Not App Store marketing; grammar `.gram` optional but当前 artifact 不支持，不能下载/部署；not dual-spell; 万象 advanced **toggles** not fog-parity (freeze A: native triggers + usage copy only) |
-| **Next** | Optional formal close；只有新的 Artifact + Architecture/Product Gate 才能重开 TD-012；TD-011 B–D only if Product productizes 万象 controls |
+| **Next** | Optional formal close；TD-012 仍须新的 G1 Assignment + Architecture/Product Gate 才能重开；TD-011 B–D only if Product productizes 万象 controls |
 | **Residuals** | TD-011 remaining B–D (optional); LMDG → TD-012; settings gates **TD-010 repaid**; toast **TD-009 repaid** |
 
 ---
@@ -111,3 +111,4 @@ Whether **万象 V1** itself exposes a nine-key-capable schema is a **capability
 - 2026-08-07: Q1/Q2 freeze — `rime-wanxiang-base.zip`, schema `wanxiang`, CC BY 4.0; catalog install authorized under Product KOS autonomy.
 - 2026-08-07 EOD: Human verified V1 path; roadmap agreed (close → TD-010/009 → TD-011/012); status synced for zero-context resume.
 - 2026-08-09: Human Product Owner 开启 TD-012 G0 只读审计；G0 evidence 确认当前 `rime-vendor-ios-1.16.1-lua.1` 不含 octagram，故不授权 G1–G6 的模型下载或接入，等待新的 Artifact + Architecture/Product Gate。
+- 2026-08-09: Human Product Owner 接受 [librime-octagram 上游 relicense 来源审计](../evidence/td-012-octagram-license-provenance-audit-2026-08-09.md) 作为未来 **G1 vendor artifact** 的来源依据：分发时保留 BSD-3-Clause notice，并记录 PR #8、merge commit 和未同步的 GPL 文件头。此决定不是法律意见；不授权 artifact 构建、`.gram` 下载、部署或用户功能，G1 仍需独立 Assignment 与 Architecture/Product Gate。

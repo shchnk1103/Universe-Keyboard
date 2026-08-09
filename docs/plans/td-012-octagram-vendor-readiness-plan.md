@@ -35,7 +35,7 @@ TD-012 的 G0 已证明当前 `rime-vendor-ios-1.16.1-lua.1` 不含 octagram，�
 | Lua 插件需同时保留静态对象并运行时载入模块 | `RimeLuaModuleShim.mm`、Xcode `-force_load`、`RimeSessionManager.m` | octagram 也必须有对应的链接与注册证据。 |
 | 仓库旧构建脚本含手动/待实现步骤，且下载未固定上游 HEAD | `Packages/RimeBridge/scripts/` | 不能满足可复现和审计要求。 |
 | upstream 将 octagram 作为单独 librime 插件 | [librime-octagram](https://github.com/lotem/librime-octagram) | 需与 pinned librime 版本/ABI 一起构建和验证。 |
-| 上游许可证信号不一致 | [根 LICENSE](https://raw.githubusercontent.com/lotem/librime-octagram/master/LICENSE) 与 [模块源文件](https://raw.githubusercontent.com/lotem/librime-octagram/master/src/grammar_module.cc) | 在来源与许可证状态被负责方明确前，禁止分发含该代码的 artifact。 |
+| 上游 relicense 有公开同意记录，但文件头未同步 | [许可证与来源审计](../evidence/td-012-octagram-license-provenance-audit-2026-08-09.md) | G1 source 必须 pin 在 relicense merge 之后；项目仍须明确其分发阈值与 notice。 |
 
 ## 3. 第一性原理：能力链
 
@@ -71,7 +71,7 @@ G1 只覆盖前四环；模型文件和用户可见设置属于后续的 G2–G6
 新的 Assignment 需要显式列出下列条目；任一项为 `UNKNOWN` 即不得进入 `Ready`：
 
 1. **Product scope：** G1 仅创建和验证 vendor 能力，还是同时允许 G2 的模型下载；默认必须是前者。
-2. **许可证与来源负责人：** 对仓库元数据、根 LICENSE 与源码文件头不一致作出书面、可追溯的分发结论；不能由 Executor 代替。
+2. **许可证与来源负责人：** 审核 [公开 relicense 记录](../evidence/td-012-octagram-license-provenance-audit-2026-08-09.md)，并对仍未同步的文件头作出本项目的书面分发/notice 结论；不能由 Executor 代替。
 3. **构建来源：** `librime`、octagram、每个依赖的精确 commit/tag、获取校验和、补丁（若有）。
 4. **构建环境：** 固定 Xcode/SDK、CMake/toolchain 版本与 device/simulator slice 规则；不接受“当前 GitHub HEAD”。
 5. **架构合同：** 保持“主 App 部署、Extension 只创建 session”的既有边界；确认静态模块注册不会引入第二套 bridge 或跨线程调用。
