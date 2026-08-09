@@ -100,5 +100,6 @@ Policy version: 1.0.0
 - 2026-08-09: v1 Main-App 默认查询水位从 500 条 / 512 KiB 提升为与复制安全上限一致的 10,000 条 / 5 MiB；这不限制文件保留，超出水位的历史记录等待 offset pagination 实现后按页读取。
 - 2026-08-09: writer 在跨小时、容量或 clear generation 的批次边界封存自己的关闭段。仅 Main App 的 utility coordinator 会枚举目录：它对过期 lease 取得同一 identity 的非阻塞 lock，锁内复核 control、generation、lease/fence 与 tombstone 后，按 tombstone → recovered/sealed → revoke lease 顺序回收；普通 retention 只删除 sealed 段，执行最先触发的 7 天或 100 MiB 策略。锁忙、格式异常和任何 I/O 失败都会保守跳过并计入 report。自动化覆盖过期回收、旧 writer 拒绝、时间/容量保留及锁忙跳过；尚未完成完整竞争/故障矩阵或 Quality Gate。
 - 2026-08-09: Product Owner 追加授权默认关闭的 Debug-only 高保真到期提醒。它属于主 App 统一通知模型，采用固定 pending identifier 与绝对过期时间；诊断页、通知与提醒页、采样窗口关闭和全局通知关闭均同步安排或取消，不将通知职责带入 Keyboard Extension。
+- 2026-08-09: Human Product Owner 在真机确认手动关闭首屏高保真采样后，先前排队的到期提醒不会继续投递。该 Device-attested 结果仅覆盖取消语义；通知授权与自然到期投递仍不作为已完成的 Product Gate。
 - 2026-08-09: Product Owner 决定在 P0 实现范围收口；严格全局分页、周期性 retention、完整 health/竞争矩阵与 legacy producer 迁移不再作为本轮实施范围，统一移入 [TD-013](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)。Assignment 保持 Active，直至质量、发布和人类 Product Gate 完成。
 - 2026-08-09: PR #57 已以 squash 合并至 `main`（`01e37b9`）；GitHub `build-and-test` 与 GitGuardian Security Checks 通过。本地 CI 修复以 `2b65da5` 补齐测试 target 的显式 `KeyboardCore` import，并在干净 DerivedData 下复验。仍不将 CI 或既有 Device-attested 观察宣称为人类 Product Gate。

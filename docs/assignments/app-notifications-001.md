@@ -7,10 +7,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | 统一 Main-App 通知模型与 Debug-only 高保真到期提醒已由 PR #57 合并，CI 已通过；等待人类 Product Gate |
+| **Phase** | 统一 Main-App 通知模型与 Debug-only 高保真到期提醒已由 PR #57 合并，CI 已通过；真机已确认手动关闭采样会取消旧到期提醒，仍等待其余人类 Product Gate |
 | **Non-claims** | 不包含 Keyboard Extension、远程推送、角标、操作、关键/时效性通知或诊断日志内容 |
-| **Next** | 由 Human Product Owner 在需要时完成物理设备的授权、到期投递与取消验证；不扩大为 Keyboard Extension 通知工作 |
-| **Residuals** | 物理设备的授权/到期投递/取消证据尚未取得；不阻塞本地实现交付 |
+| **Next** | 由 Human Product Owner 在需要时完成物理设备的授权与自然到期投递验证；不扩大为 Keyboard Extension 通知工作 |
+| **Residuals** | 物理设备的授权与自然到期投递证据尚未取得；手动关闭采样后的取消证据已于真机取得，不阻塞本地实现交付 |
 
 ---
 
@@ -53,3 +53,7 @@
 - **Handoff Target:** Product Lead for product review, then Quality Reviewer for physical-device evidence
 - **Required Handoff Content:** implementation diff, automated test results, unexecuted device checks, migration behavior and residual iOS scheduling limits
 - **Revalidation Trigger:** new notification category, remote push, badges/actions, changed defaults, new data in notification copy, Keyboard Extension participation or foreground presentation-policy changes
+
+## History
+
+- `2026-08-09`: Human Product Owner 在真机开启首屏高保真诊断并手动关闭后，确认旧的到期提醒没有继续投递。该证据仅验证 Main App 对固定 pending request 的取消语义；它不宣称通知权限、30 分钟自然到期投递或完整 Product Gate 已通过。
