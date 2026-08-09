@@ -6,12 +6,12 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` — **catalog / layout / install path ready for formal close** (Product may stamp Completed anytime) |
-| **Phase** | **2026-08-09** — TD-012 G0 已完成：当前 iOS vendor 缺少 octagram，`.gram` 接入 No-Go；V1 path + TD-009/010/011A 仍在 `main` |
+| **Lifecycle** | `Completed` — catalog / layout / install path delivered; independent review/`Closed` handoff remains separate governance work |
+| **Phase** | `2026-08-09` — V1 path + TD-009/010/011A delivered; TD-012 now continues only in dedicated G1 Assignment |
 | **Parent PD** | [`PD-RIME-SCHEME-WANXIANG-001`](../product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) |
 | **Non-claims** | Grammar `.gram` 不 bundled、不下载、不部署；无双拼；无 formal device Product Gate stamp；万象 product advanced **toggles** 不与 fog 1:1（freeze A copy only） |
-| **Next** | **(1)** 仅在新的 Artifact + Architecture/Product Gate 后重开 TD-012。**(2)** TD-011 B–D 仅在 Product 产品化万象高级控制时处理。**(3)** Optional formal Completed stamp。 |
-| **Residuals** | R-01 **accept**; R-02/R-05 **done**; R-03 **accept**; R-04 mitigated; R-06 **partial** (A); R-07 **G0 No-Go** (TD-012) |
+| **Next** | TD-011 B–D remains optional debt; TD-012 G1 is now owned by [`TD-012-OCTAGRAM-VENDOR-G1`](td-012-octagram-vendor-g1.md); hand off this completed record for independent review/close when scheduled |
+| **Residuals** | R-01/R-03/R-04 **accept**; R-02/R-05 **fix**; R-06 `tech_debt:TD-011`; R-07 `tech_debt:TD-012` |
 
 ### Session handoff (KOS 2.1 — for a cold new session)
 
@@ -68,10 +68,10 @@ New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`)
 | R-01 | Device install smoke for 万象 | **`accept` (2026-08-07)** — Human verified install/use/layout/sync isolation; formal Product close optional |
 | R-02 | Toast always “雾凇拼音…”; download % stays 0 until extract/deploy | **Done 2026-08-08** — TD-009 scheme-named toast + real/indeterminate progress |
 | R-03 | 万象下裸 `rq` 等雾凇触发不生效 | **Accept / deferred** — 万象上游用 `/rq`·`orq` 等（见 TD-011），非装失败；UX → R-05/R-06 |
-| R-04 | 分段选词末段双插（长句） | **Mitigated** 2026-08-07 — `sel-*` strip; Human re-smoke optional |
+| R-04 | 分段选词末段双插（长句） | **`accept`** — `sel-*` mitigation delivered; Product accepts this residual for this completed Assignment. A future re-smoke must be a separate task. |
 | R-05 | 方案不支持的设置项仍可打开（模糊音在万象无效等） | **Done 2026-08-08** — TD-010 matrix + fuzzy/advanced gates |
-| R-06 | 万象也有 Lua，但与雾凇模块/触发/产品开关不兼容 | **Partial 2026-08-08** — Product freeze **A** (native triggers + copy); usage guide landed; full deploy/diagnose (B–D) still deferred — [`TD-011`](../TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) |
-| R-07 | 万象「语法模型」`.gram`（LMDG）是什么、能否给雾凇等用、如何可选下载接入 | **G0 No-Go** — 当前 iOS vendor 缺少 octagram，详见 [artifact audit](../evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md)；G1–G6 需要新的 Artifact + Architecture/Product Gate |
+| R-06 | 万象也有 Lua，但与雾凇模块/触发/产品开关不兼容 | **`tech_debt:TD-011`** — Product freeze A (native triggers + copy) delivered; B–D remain deferred in [TD-011](../TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象). |
+| R-07 | 万象「语法模型」`.gram`（LMDG）是什么、能否给雾凇等用、如何可选下载接入 | **`tech_debt:TD-012`** — G1 is separately assigned; G2–G6 remain prohibited until their own gates. |
 
 ## Gates
 
@@ -87,7 +87,7 @@ New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`)
 - [x] Unit test for catalog identity (`testWanxiangCatalogEntryIsDownloadableFullPinyin`)
 - [x] `default.custom.yaml` includes `wanxiang` when installed
 - [x] Device / Human install smoke — residual R-01 **accept** (2026-08-07)
-- [ ] Product formal **Lifecycle → Completed** after merge/PR hygiene (optional stamp)
+- [x] Product formal **Lifecycle → Completed** — `2026-08-09`; residuals disposed or handed off to TD-011/TD-012
 
 ### Follow-on roadmap (not this WI)
 
@@ -110,3 +110,4 @@ New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`)
 - 2026-08-07: Research — 万象「模型」= RIME-LMDG **grammar `.gram`** (not cloud LLM); optional heavy download; reusable by other pinyin schemes via `grammar.language`; needs librime/octagram + memory gates. Recorded **R-07** / **TD-012** (G0–G6); **no implementation**.
 - 2026-08-09: Human Product Owner 正式开启 TD-012 G0 的只读 artifact capability audit。当前固定 iOS artifact 通过 11-framework inventory 校验，但无 octagram archive/member/强制模块注册，runtime 仅配置 `core + dict + gears + lua`；G0 判定 No-Go，未下载模型、未改代码、未改变部署边界。详见 [artifact audit](../evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md)。
 - 2026-08-07 **EOD close-out:** Product agreed roadmap (phase 0 close → phase 1 TD-010/009 → phase 2 TD-011/012). Assignment handoff block written for zero-context resume; R-01 accept; formal Completed stamp deferred to merge.
+- 2026-08-09: Product marked this Assignment `Completed`, accepted R-04 for this scope, and moved R-06/R-07 to TD-011/TD-012. `TD-012-OCTAGRAM-VENDOR-G1` replaces this record in Active Work. This Assignment may not claim `Reviewed` or `Closed` until its independent governance handoff occurs.

@@ -160,7 +160,7 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Priority:** Medium for long-sentence quality; **High risk** for Extension memory/jetsam if bundled naively. **Not** blocking 万象 V1 base.zip path (PD already defers `.gram`).
 - **Context (research 2026-08-07, no code change):** “万象模型”在社区语境里主要指 **RIME 语法模型（Grammar / Gram）**，仓库 **[amzxyz/RIME-LMDG](https://github.com/amzxyz/RIME-LMDG)**（Language / Model / Dictionary / Grammar）。它 **不是** 在线大模型 API，也 **不是** 我们 App 内的另一套候选引擎。
 - **G0 result (2026-08-09):** **No-Go for current vendor.** 已验证的 `rime-vendor-ios-1.16.1-lua.1` 虽含核心 `Grammar` 接口与 `ContextualTranslation`，但 11-framework inventory、`librime.a` archive 成员和强制注册符号均没有 octagram；运行时仅配置 `core + dict + gears + lua`。因此当前 pin 不能把 `.gram` 作为可用能力，详见 [G0 artifact audit](evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md)。
-- **G1 preparation (2026-08-09):** [iOS octagram vendor 准备计划](plans/td-012-octagram-vendor-readiness-plan.md) 已把可复现 artifact、模块注册与许可证来源列为进入实现前的硬门槛。该计划不授权 artifact 构建或模型下载，TD-012 仍保持当前 No-Go。
+- **G1 authorization (2026-08-09):** [TD-012-OCTAGRAM-VENDOR-G1 Assignment](assignments/td-012-octagram-vendor-g1.md) is `Ready` for reproducible vendor/module capability only. It does not authorize model download, deployment, schema or user feature work.
 - **许可证来源审计 (2026-08-09):** 上游在 PR #8 公开收集三名记录贡献者同意后，将根 LICENSE 改为 BSD-3-Clause；但 `grammar_module.cc` 的 GPL 文件头仍未同步。详见 [provenance audit](evidence/td-012-octagram-license-provenance-audit-2026-08-09.md)。Product 已接受该来源作为未来 G1 vendor artifact 的依据，条件是保留 BSD-3-Clause notice 和完整 provenance；它不替代法律意见，也不授权 G1 实现或模型下载。
 
 ### What the model is
@@ -213,8 +213,8 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - Treating missing gram as install failure of base 万象
 
 - **Owner area:** RIME Platform, RimeBridge artifacts, Main App catalog/download, Test/Release performance.
-- **Trigger to resolve:** Product 与 Architecture 明确授权新的 iOS vendor artifact 可行性/集成工作，并先取得带 octagram 的可复现 artifact、模块注册和设备内存预算证据；在此之前不得下载、部署或宣传 `.gram`。
-- **Related:** PD-RIME-SCHEME-WANXIANG-001 non-claim on `.gram`; Assignment residual **R-07**; TD-009 (download UX); TD-001 (atomic install); `docs/RIME_SCHEME_MANAGEMENT.md`.
+- **Trigger to resolve:** G1 may establish vendor capability. G2–G6 still require a new Product/Architecture decision, a pinned model asset, deployment contract and device memory evidence; until then no `.gram` may be downloaded, deployed or advertised.
+- **Related:** [`PD-TD-012-OCTAGRAM-VENDOR-G1`](product-decisions/TD-012-OCTAGRAM-VENDOR-G1-authorization.md); TD-009 (download UX); TD-001 (atomic install); `docs/RIME_SCHEME_MANAGEMENT.md`.
 
 ## TD-013: Diagnostics v1 P1 查询、生命周期与迁移硬化
 
