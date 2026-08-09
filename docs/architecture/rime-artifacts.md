@@ -68,6 +68,19 @@ its directory names are structurally valid.
 - SHA-256: `c299f36eae4966a8c22f83046c7015a04b3f047abcc4bab9355ca19ac840436c`
 - Release URL: <https://github.com/shchnk1103/Universe-Keyboard/releases/tag/rime-vendor-ios-1.16.1-lua.1>
 
+### Grammar / octagram Capability Limit
+
+The current pin is **not** a grammar-model-capable artifact. Its `librime.a`
+contains the core `Grammar` interface and `ContextualTranslation` bridge, but
+the required 11-framework inventory has no octagram framework; the iOS archive
+has no octagram member or `rime_require_module_octagram` symbol. The App and
+Keyboard currently load only `core`, `dict`, `gears`, and `lua`.
+
+Accordingly, a downloaded `*.gram` file would not be evidence of a working
+grammar model. Do not add, deploy, or advertise `.gram` support until a new,
+reproducibly pinned vendor artifact has passed the TD-012 G0 successor gates.
+The supporting read-only evidence is [TD-012 G0 octagram artifact audit](../evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md).
+
 ## Commands
 
 ```bash
