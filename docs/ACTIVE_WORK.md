@@ -5,11 +5,11 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-09 Asia/Shanghai` — `DIAGNOSTICS-OBSERVABILITY-001` 的 P0 已由 PR #57 合并且 CI 通过，现等待人类 Product Gate；后续 P1 已转入 TD-013，原 `KEYBOARD-STARTUP-PERF-001` 保持 Completed，作为该工作项的真机异常证据来源。
+Last synced: `2026-08-09 Asia/Shanghai` — `RIME-SCHEME-WANXIANG-001` 已 Completed 并由 `TD-012-OCTAGRAM-VENDOR-G1` 接替其 Active Work 名额；`DIAGNOSTICS-OBSERVABILITY-001` 的 P0 已由 PR #57 合并且 CI 通过，现等待人类 Product Gate。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | RIME-SCHEME-WANXIANG-001 | Active | 009/010/011A done; TD-012 G0 No-Go，等待新的 Artifact + Gate | [`assignments/rime-scheme-wanxiang-001.md`](assignments/rime-scheme-wanxiang-001.md) |
+| 1 | TD-012-OCTAGRAM-VENDOR-G1 | Ready | Reproducible octagram vendor capability only; no `.gram` / user feature | [`assignments/td-012-octagram-vendor-g1.md`](assignments/td-012-octagram-vendor-g1.md) |
 | 2 | T9-RESPONSIVE-PIPELINE-001 | Active | Dual-gate request default-on; residual hygiene | [`assignments/t9-responsive-rime-pipeline-001.md`](assignments/t9-responsive-rime-pipeline-001.md) |
 | 3 | RELEASE-2026-0801 | Active | Release coordination; Entry Criteria pending | [`assignments/release-2026-08-01.md`](assignments/release-2026-08-01.md) |
 | 4 | HELP-TIPKIT-001 | Active | P1–P3 done; Product Gate pending | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |
@@ -36,15 +36,12 @@ New session: `AGENTS.md` → `KNOWLEDGE_INDEX` → **this file** → Assignment 
 
 | Priority | Item | Notes |
 |---|---|---|
-| P0 blocked by G0 | **[TD-012](TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration)** optional LMDG `.gram` | 当前 iOS vendor 缺少 octagram；不得下载/接入，需新的 Artifact + Architecture/Product Gate |
 | P1 optional | **[TD-011](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) B–D** | Diagnose / multi-schema deploy / install isolation — only if Product productizes 万象 toggles |
 | P2 optional | Device smoke TD-011 A | 高级输入 + 万象：tips 显示 `/rq`·`orq`/`V`/`R`/`U`；裸 `rq` 仍属雾凇 |
-| P2 optional | Formal **Completed** stamp on RIME-SCHEME-WANXIANG-001 | Product may stamp when ready; path already merge-ready |
-| P3 residual | R-04 re-smoke | 长句分段选词末段双插（`sel-*` 已缓解） |
 | P1 deferred | **[TD-013](TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)** diagnostics v1 hardening | 严格分页、周期性 retention、完整 health/竞争矩阵、legacy migration；需新授权 |
 | — | Freeze A hold | **Do not** unify fog `rq` ↔ 万象 `/rq` unless Product supersedes |
 
-**Done this arc (do not re-open as WIP):** TD-009 toast name+progress (PR #53); TD-010 capability gates + prefs preserve (#51/#52); TD-011 freeze A native usage copy (#54).
+**Done this arc (do not re-open as WIP):** `RIME-SCHEME-WANXIANG-001` V1 catalog/layout path; TD-009 toast name+progress (PR #53); TD-010 capability gates + prefs preserve (#51/#52); TD-011 freeze A native usage copy (#54).
 
 Debts index: [`TECH_DEBT.md`](TECH_DEBT.md) TD-009…013.
 

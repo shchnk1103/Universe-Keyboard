@@ -27,15 +27,24 @@
 
 ## RIME-SCHEME-WANXIANG-001 — 万象拼音 + 布局绑定方案
 
-- **Lifecycle:** `Active` — **path ready for formal close** (2026-08-08 EOD)
+- **Lifecycle:** `Completed` — V1 catalog/layout path delivered; independent governance review/close handoff remains
 - **Authority:** [`PD`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) · [`Assignment`](assignments/rime-scheme-wanxiang-001.md) · [`ADR-0026-ACCEPT`](assignments/adr-0026-accept-001.md)
 - **Pin:** `amzxyz/rime-wanxiang` · asset `rime-wanxiang-base.zip` · schema `wanxiang` · CC BY 4.0
 - **Evidence:** layout-bound + catalog unit tests; Human smoke 2026-08-07 (install/use/layout/sync/isolation); polish PRs #51–#54
 - **Human smoke:** nine-key OK with 万象 on 26-key slot; fuzzy **雾凇 only**; bare `rq` not 万象 (use `/rq`·`orq`; settings copy via `RimeSchemeNativeUsageGuide`)
-- **Roadmap:** 0 formal close (optional) · **1 TD-010 + TD-009 done** · **2a TD-011 freeze A done** · **2b TD-012 open**
+- **Roadmap:** **TD-009 + TD-010 done** · **TD-011 freeze A done** · TD-012 continues in its dedicated G1 Assignment
 - **Repaid:** [`TD-009`](TECH_DEBT.md#td-009-multi-scheme-download-toast-name-and-progress) · [`TD-010`](TECH_DEBT.md#td-010-per-scheme-capability-gates-in-settings-ux) · TD-011 **A** (copy)
 - **Still open:** [`TD-011`](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) B–D (optional) · [`TD-012`](TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration)
-- **Next new session:** See [`ACTIVE_WORK.md`](ACTIVE_WORK.md) backlog — default **TD-012**; freeze A hold (no `rq` remap)
+- **Handoff:** [`TD-012-OCTAGRAM-VENDOR-G1`](assignments/td-012-octagram-vendor-g1.md) owns vendor capability only; freeze A hold (no `rq` remap) remains
+
+## TD-012-OCTAGRAM-VENDOR-G1 — 可复现 iOS octagram Vendor 能力
+
+- **Lifecycle:** `Ready` — implementation starts after this Assignment enters `main`
+- **Authority:** [`PD`](product-decisions/TD-012-OCTAGRAM-VENDOR-G1-authorization.md) · [`Assignment`](assignments/td-012-octagram-vendor-g1.md)
+- **Scope:** new immutable vendor artifact, static link/registration and content-free module verification only
+- **Non-claims:** no `.gram` model, schema/UI/download, device-memory conclusion or product release
+- **Inputs:** G0 artifact audit + upstream license provenance audit + KOS 2.1 G-01
+- **Next:** RIME Platform implementation evidence, then independent Architecture and Quality review
 
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 
