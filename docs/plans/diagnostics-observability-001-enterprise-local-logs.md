@@ -2,7 +2,7 @@
 
 > **Lifecycle:** Archived
 >
-> **Closure:** `2026-08-09 Asia/Shanghai` — P0 实现范围已冻结并进入质量门/PR。本计划不再是当前开发指引；P1 follow-up 见 [TD-013](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)。
+> **Closure:** `2026-08-09 Asia/Shanghai` — P0 已由 PR #57 合并并通过 CI。本计划不再是当前开发指引；人类 Product Gate 仍待完成，P1 follow-up 见 [TD-013](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)。
 >
 > **Current source of truth:** `docs/assignments/diagnostics-observability-001.md`；持久化与跨目标边界由 ADR 0027 决定。本文保留为已完成 P0 的阶段历史。
 
