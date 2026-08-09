@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted; implementation in progress
+Accepted; P0 implemented, P1 deferred to TD-013
 
 ## Context
 

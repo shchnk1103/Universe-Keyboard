@@ -7,9 +7,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | 统一 Main-App 通知模型已实现；本轮追加 Debug-only 高保真到期提醒，并进入质量门/PR |
+| **Phase** | 统一 Main-App 通知模型与 Debug-only 高保真到期提醒已由 PR #57 合并，CI 已通过；等待人类 Product Gate |
 | **Non-claims** | 不包含 Keyboard Extension、远程推送、角标、操作、关键/时效性通知或诊断日志内容 |
-| **Next** | 完成本轮本地 CI/PR；物理设备验证由 Human Product Owner 在需要时执行 |
+| **Next** | 由 Human Product Owner 在需要时完成物理设备的授权、到期投递与取消验证；不扩大为 Keyboard Extension 通知工作 |
 | **Residuals** | 物理设备的授权/到期投递/取消证据尚未取得；不阻塞本地实现交付 |
 
 ---

@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | P0 实现冻结：v1 journal、查询/分页 UI、安全回收、Extension lifecycle health、Debug 高保真时窗与默认关闭的到期提醒已交付；本轮进入本地质量门与 PR |
+| **Phase** | P0 已由 PR #57 合并：v1 journal、查询/分页 UI、安全回收、Extension lifecycle health、Debug 高保真时窗与默认关闭的到期提醒均已交付；CI 已通过，等待人类 Product Gate |
 | **Non-claims** | 不宣称 P1 的严格全局分页、周期性 retention、完整失败矩阵或 legacy producer 完整迁移；不宣称 Release 性能、全部真机异常已捕获或 Product Gate 已通过 |
-| **Next** | 完成本地 CI 等价质量门、独立复核与 PR；P1 仅在新授权下按 [TD-013](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) 处理 |
+| **Next** | 取得已声明的真机 Product Gate；P1 仅在新授权下按 [TD-013](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) 处理 |
 | **Residuals** | P1 技术债：[TD-013](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)；本轮真机仅为 Device-attested P0 行为证据，不构成 Release/Product Gate |
 
 ---
@@ -34,7 +34,7 @@ Policy version: 1.0.0
   - 不改变 KeyboardCore 输入语义、RIME 方案、部署所有权或普通键盘视觉行为。
   - 不承诺日志百分之百耐久；Extension 终止时未刷新的 best-effort 尾批可以丢失。
   - 不把无限保留、同步磁盘写入或全量内存加载作为实现手段。
-- Required Inputs: `docs/architecture/decisions/0003-shared-container-ownership.md`、ADR 0007、ADR 0027（Accepted; P0 implementation frozen）、`DEBUGGING.md`、`PERFORMANCE_BASELINE.md`、`RELEASE_CHECKLIST.md`、`PRIVACY_POLICY.md`、共享容器生命周期文档，以及 `KEYBOARD-STARTUP-PERF-001` 的内容无关真机日志。
+- Required Inputs: `docs/architecture/decisions/0003-shared-container-ownership.md`、ADR 0007、ADR 0027（Accepted; P0 implemented, P1 deferred）、`DEBUGGING.md`、`PERFORMANCE_BASELINE.md`、`RELEASE_CHECKLIST.md`、`PRIVACY_POLICY.md`、共享容器生命周期文档，以及 `KEYBOARD-STARTUP-PERF-001` 的内容无关真机日志。
 
 ## Assignment
 
@@ -101,3 +101,4 @@ Policy version: 1.0.0
 - 2026-08-09: writer 在跨小时、容量或 clear generation 的批次边界封存自己的关闭段。仅 Main App 的 utility coordinator 会枚举目录：它对过期 lease 取得同一 identity 的非阻塞 lock，锁内复核 control、generation、lease/fence 与 tombstone 后，按 tombstone → recovered/sealed → revoke lease 顺序回收；普通 retention 只删除 sealed 段，执行最先触发的 7 天或 100 MiB 策略。锁忙、格式异常和任何 I/O 失败都会保守跳过并计入 report。自动化覆盖过期回收、旧 writer 拒绝、时间/容量保留及锁忙跳过；尚未完成完整竞争/故障矩阵或 Quality Gate。
 - 2026-08-09: Product Owner 追加授权默认关闭的 Debug-only 高保真到期提醒。它属于主 App 统一通知模型，采用固定 pending identifier 与绝对过期时间；诊断页、通知与提醒页、采样窗口关闭和全局通知关闭均同步安排或取消，不将通知职责带入 Keyboard Extension。
 - 2026-08-09: Product Owner 决定在 P0 实现范围收口；严格全局分页、周期性 retention、完整 health/竞争矩阵与 legacy producer 迁移不再作为本轮实施范围，统一移入 [TD-013](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)。Assignment 保持 Active，直至质量、发布和人类 Product Gate 完成。
+- 2026-08-09: PR #57 已以 squash 合并至 `main`（`01e37b9`）；GitHub `build-and-test` 与 GitGuardian Security Checks 通过。本地 CI 修复以 `2b65da5` 补齐测试 target 的显式 `KeyboardCore` import，并在干净 DerivedData 下复验。仍不将 CI 或既有 Device-attested 观察宣称为人类 Product Gate。

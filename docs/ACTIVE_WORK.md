@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-09 Asia/Shanghai` — `DIAGNOSTICS-OBSERVABILITY-001` 的 P0 实现已冻结并进入质量门/PR；后续 P1 已转入 TD-013，原 `KEYBOARD-STARTUP-PERF-001` 保持 Completed，作为该工作项的真机异常证据来源。
+Last synced: `2026-08-09 Asia/Shanghai` — `DIAGNOSTICS-OBSERVABILITY-001` 的 P0 已由 PR #57 合并且 CI 通过，现等待人类 Product Gate；后续 P1 已转入 TD-013，原 `KEYBOARD-STARTUP-PERF-001` 保持 Completed，作为该工作项的真机异常证据来源。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -18,7 +18,7 @@ Last synced: `2026-08-09 Asia/Shanghai` — `DIAGNOSTICS-OBSERVABILITY-001` 的 
 | 7 | TYPING-INTELLIGENCE-001 | Active | Implementation; Quality pending | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 8 | TYPO-CORRECTION-002 | Active | Contextual recovery; sim scenarios pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 9 | KEYBOARD-LAYOUT-9KEY-PINYIN-002 | Active | Amendment D done; clean-commit / Product Gate pending | [`assignments/keyboard-layout-9key-pinyin-002.md`](assignments/keyboard-layout-9key-pinyin-002.md) |
-| 10 | DIAGNOSTICS-OBSERVABILITY-001 | Active | P0 实现冻结；本轮质量门/PR，P1 后续见 TD-013 | [`assignments/diagnostics-observability-001.md`](assignments/diagnostics-observability-001.md) |
+| 10 | DIAGNOSTICS-OBSERVABILITY-001 | Active | P0 已合并；等待 Product Gate，P1 后续见 TD-013 | [`assignments/diagnostics-observability-001.md`](assignments/diagnostics-observability-001.md) |
 
 ## Completed (not Active)
 
