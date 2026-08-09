@@ -9,7 +9,7 @@ public final class Logger: Sendable {
 
     // MARK: - Nested types
 
-    public enum Level: String, Comparable, CaseIterable, Sendable {
+    public enum Level: String, Codable, Comparable, CaseIterable, Sendable {
         case debug = "DEBUG"
         case info = "INFO"
         case warning = "WARN"
@@ -27,7 +27,7 @@ public final class Logger: Sendable {
         }
     }
 
-    public enum Category: String, CaseIterable, Sendable {
+    public enum Category: String, Codable, CaseIterable, Sendable {
         case general = "GEN"
         case engine = "ENGINE"
         case config = "CONFIG"
@@ -113,22 +113,22 @@ public final class Logger: Sendable {
     }
 
     #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-    /// Writes mandatory, content-free evidence for an explicitly compiled
-    /// diagnostic run even when the user-facing diagnostics preference is off.
-    ///
-    /// The API is absent from ordinary Release builds. It must never carry
-    /// composition, candidate, host-text, or user-dictionary content.
-    public func devicePreflightPerformance(
-        _ message: String,
-        level: Level = .info
-    ) {
-        record(
-            level: level,
-            message: message,
-            category: .performance,
-            bypassCategoryFilter: true
-        )
-    }
+        /// Writes mandatory, content-free evidence for an explicitly compiled
+        /// diagnostic run even when the user-facing diagnostics preference is off.
+        ///
+        /// The API is absent from ordinary Release builds. It must never carry
+        /// composition, candidate, host-text, or user-dictionary content.
+        public func devicePreflightPerformance(
+            _ message: String,
+            level: Level = .info
+        ) {
+            record(
+                level: level,
+                message: message,
+                category: .performance,
+                bypassCategoryFilter: true
+            )
+        }
     #endif
 
     /// Requests background persistence after all events already submitted to the writer.

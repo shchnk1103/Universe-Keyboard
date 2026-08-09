@@ -6,7 +6,11 @@ struct DiagnosticsLogContentView: View {
     let filteredCount: Int
     let totalCount: Int
     let displayedLines: [String]
+    let exportLimitMessage: String?
+    let hasMorePages: Bool
+    let isLoadingMore: Bool
     let colorTokenForLine: (String) -> String
+    let onLoadMore: () -> Void
 
     var body: some View {
         if displayedLines.isEmpty {
@@ -23,11 +27,30 @@ struct DiagnosticsLogContentView: View {
                     .foregroundStyle(.secondary)
                     .padding(.bottom, 4)
 
+                    if let exportLimitMessage {
+                        Text(exportLimitMessage)
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
+
                     ForEach(Array(displayedLines.enumerated()), id: \.offset) { _, line in
                         Text(line)
                             .font(.system(.caption, design: .monospaced))
                             .foregroundStyle(color(for: colorTokenForLine(line)))
                             .textSelection(.enabled)
+                    }
+
+                    if hasMorePages {
+                        Button(action: onLoadMore) {
+                            if isLoadingMore {
+                                ProgressView()
+                            } else {
+                                Label("加载更早记录", systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90")
+                            }
+                        }
+                        .buttonStyle(.bordered)
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 8)
                     }
                 }
                 .padding(12)

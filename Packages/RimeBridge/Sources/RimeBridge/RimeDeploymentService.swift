@@ -60,9 +60,9 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
         let deployer = RimeDeployer()
         let version = deployer.librimeVersion()
         let luaRegisteredBeforeDeploy = RimeBridgeCapabilities.luaModuleRegistered
-        let luaComponentsBeforeDeploy = RimeBridgeCapabilities.luaComponentRegistrySummary.joined(separator: "+")
         Logger.shared.info(
-            "deployRimeConfig: lua runtime before deploy registered=\(luaRegisteredBeforeDeploy);componentSnapshot=\(luaComponentsBeforeDeploy)",
+            "deployRimeConfig: lua runtime before deploy registered=\(luaRegisteredBeforeDeploy) "
+                + "componentCount=\(RimeBridgeCapabilities.luaComponentRegistrySummary.count)",
             category: .deployment
         )
         let succeeded = deployer.deploy(
@@ -70,9 +70,9 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
             userDataDir: request.userDataURL.path
         )
         let luaRegisteredAfterDeploy = RimeBridgeCapabilities.luaModuleRegistered
-        let luaComponentsAfterDeploy = RimeBridgeCapabilities.luaComponentRegistrySummary.joined(separator: "+")
         Logger.shared.info(
-            "deployRimeConfig: lua runtime after deploy registered=\(luaRegisteredAfterDeploy);postFinalizeComponentSnapshot=\(luaComponentsAfterDeploy)",
+            "deployRimeConfig: lua runtime after deploy registered=\(luaRegisteredAfterDeploy) "
+                + "componentCount=\(RimeBridgeCapabilities.luaComponentRegistrySummary.count)",
             category: .deployment
         )
         var runtimeSmokePassed: Bool?
@@ -84,18 +84,12 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
             )
             runtimeSmokePassed = smokeResult.passed
             Logger.shared.info(
-                "deployRimeConfig: \(smokeResult.developerSummary)",
+                "deployRimeConfig: lua smoke completed passed=\(smokeResult.passed) "
+                    + "registered=\(smokeResult.luaModuleRegistered) "
+                    + "caseCount=\(smokeResult.caseResults.count) "
+                    + "dynamicCaseCount=\(smokeResult.caseResults.filter(\.dynamicCandidateFound).count)",
                 category: .deployment
             )
-            let runtimeLogLines = RimeRuntimeLogSnapshot.relevantLines(in: request.userDataURL)
-            if runtimeLogLines.isEmpty {
-                Logger.shared.info("deployRimeConfig: rime runtime log snapshot empty", category: .deployment)
-            } else {
-                Logger.shared.info(
-                    "deployRimeConfig: rime runtime log snapshot: \(runtimeLogLines.joined(separator: " || "))",
-                    category: .deployment
-                )
-            }
         }
         return RimeDeploymentResult(
             succeeded: succeeded,

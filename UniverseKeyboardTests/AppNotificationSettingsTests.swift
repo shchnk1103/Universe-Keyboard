@@ -13,6 +13,7 @@ final class AppNotificationSettingsTests: XCTestCase {
 
             XCTAssertFalse(model.notificationsEnabled)
             XCTAssertFalse(model.isCategorySelected(.rimeSync))
+            XCTAssertFalse(model.isCategorySelected(.diagnosticsHighFidelityExpiry))
             XCTAssertFalse(model.isRimeSyncScopeSelected(.standardRimeData))
             XCTAssertFalse(model.isRimeSyncScopeSelected(.privateSettings))
             XCTAssertTrue(model.operationToastsEnabled)
@@ -279,6 +280,62 @@ final class AppNotificationSettingsTests: XCTestCase {
         XCTAssertTrue(futureCategoryOptions.contains(.sound))
     }
 
+    func testDiagnosticsExpiryReminderIsDefaultOffAndUsesOnePendingRequest() async {
+        await withDefaults { defaults in
+            let client = NotificationClientStub(status: .authorized)
+            let expiry = Date().addingTimeInterval(600)
+            defaults.set(expiry, forKey: DiagnosticsHighFidelityConfiguration.expirationKey)
+            let model = AppNotificationSettingsModel(
+                defaults: defaults,
+                diagnosticsDefaults: defaults,
+                client: client
+            )
+
+            await model.refreshAuthorizationStatus()
+            XCTAssertTrue(client.requests.isEmpty)
+
+            await model.setCategorySelected(true, category: .diagnosticsHighFidelityExpiry)
+
+            XCTAssertTrue(model.notificationsEnabled)
+            XCTAssertTrue(model.isCategoryEnabled(.diagnosticsHighFidelityExpiry))
+            XCTAssertEqual(client.requests.count, 1)
+            XCTAssertEqual(
+                client.requests[0].identifier,
+                AppNotificationSettingsModel.diagnosticsHighFidelityExpiryIdentifier
+            )
+            XCTAssertEqual(client.requests[0].category, .diagnosticsHighFidelityExpiry)
+            guard case let .after(interval) = client.requests[0].delivery else {
+                return XCTFail("诊断结束提醒必须使用延迟投递")
+            }
+            XCTAssertEqual(interval, 600, accuracy: 1)
+            XCTAssertFalse(client.requests[0].prefersToastWhenForeground)
+        }
+    }
+
+    func testDisablingDiagnosticsExpiryReminderCancelsPendingRequest() async {
+        await withDefaults { defaults in
+            let client = NotificationClientStub(status: .authorized)
+            defaults.set(
+                Date().addingTimeInterval(600),
+                forKey: DiagnosticsHighFidelityConfiguration.expirationKey
+            )
+            let model = AppNotificationSettingsModel(
+                defaults: defaults,
+                diagnosticsDefaults: defaults,
+                client: client
+            )
+
+            await model.setCategorySelected(true, category: .diagnosticsHighFidelityExpiry)
+            await model.setCategorySelected(false, category: .diagnosticsHighFidelityExpiry)
+
+            XCTAssertEqual(
+                client.cancelledIdentifiers.last,
+                AppNotificationSettingsModel.diagnosticsHighFidelityExpiryIdentifier
+            )
+            XCTAssertFalse(model.notificationsEnabled)
+        }
+    }
+
     private func withDefaults(_ body: (UserDefaults) throws -> Void) rethrows {
         let suiteName = "AppNotificationSettingsTests-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!
@@ -304,6 +361,7 @@ private final class NotificationClientStub: AppNotificationClient {
 
     private(set) var requestCount = 0
     private(set) var requests: [AppLocalNotificationRequest] = []
+    private(set) var cancelledIdentifiers: [String] = []
 
     init(
         status: AppNotificationAuthorizationStatus,
@@ -327,5 +385,9 @@ private final class NotificationClientStub: AppNotificationClient {
 
     func schedule(_ request: AppLocalNotificationRequest) async throws {
         requests.append(request)
+    }
+
+    func cancelPendingNotification(identifier: String) async {
+        cancelledIdentifiers.append(identifier)
     }
 }

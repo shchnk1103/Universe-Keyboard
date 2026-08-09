@@ -36,10 +36,11 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
     {
         if collectionView === pinyinPathCollectionView {
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: T9PinyinPathCell.reuseID,
-                for: indexPath
-            ) as? T9PinyinPathCell,
+            guard
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: T9PinyinPathCell.reuseID,
+                    for: indexPath
+                ) as? T9PinyinPathCell,
                 accumulatedPinyinPaths.indices.contains(indexPath.item)
             else {
                 return UICollectionViewCell()
@@ -71,7 +72,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
             // Fail closed if the coherent composition snapshot moved.
             let pathState = controller.state.t9PinyinPathState
             guard pathState.compositionRevision == pinyinPathPanelGeneration,
-                  pathState.provenanceRevision == pinyinPathPanelProvenanceRevision
+                pathState.provenanceRevision == pinyinPathPanelProvenanceRevision
             else {
                 dismissPinyinPathExpandedPanel(animated: true)
                 return
@@ -91,6 +92,54 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
             guard items.indices.contains(indexPath.item) else { return }
             commitExpandedCandidate(items[indexPath.item])
         }
+    }
+
+    /// UIKit 的 cell 可见性是候选栏“真实画面”而非 Core 快照的证据。
+    /// 高保真事件只携带数量、revision 和终端方向，不记录候选索引或文字。
+    func collectionView(
+        _ collectionView: UICollectionView,
+        willDisplay _: UICollectionViewCell,
+        forItemAt _: IndexPath
+    ) {
+        guard collectionView === candidateCollectionView || collectionView === expandedCandidateCollectionView
+        else { return }
+        #if DEBUG
+            guard isHighFidelityDiagnosticsActive else { return }
+            diagnosticsJournal.record(
+                code: .candidateVisibilityChanged,
+                category: .display,
+                appearanceID: diagnosticsAppearanceID,
+                fields: [
+                    .count(.candidateCount, presentedCandidates.count),
+                    .count(.visibleCandidateCellCount, collectionView.visibleCells.count + 1),
+                    .count(.revision, Int(clamping: controller.state.compositionRevision)),
+                    .flag(.isCandidateBarVisible, true),
+                ]
+            )
+        #endif
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didEndDisplaying _: UICollectionViewCell,
+        forItemAt _: IndexPath
+    ) {
+        guard collectionView === candidateCollectionView || collectionView === expandedCandidateCollectionView
+        else { return }
+        #if DEBUG
+            guard isHighFidelityDiagnosticsActive else { return }
+            diagnosticsJournal.record(
+                code: .candidateVisibilityChanged,
+                category: .display,
+                appearanceID: diagnosticsAppearanceID,
+                fields: [
+                    .count(.candidateCount, presentedCandidates.count),
+                    .count(.visibleCandidateCellCount, collectionView.visibleCells.count),
+                    .count(.revision, Int(clamping: controller.state.compositionRevision)),
+                    .flag(.isCandidateBarVisible, !collectionView.visibleCells.isEmpty),
+                ]
+            )
+        #endif
     }
 
     func collectionView(
@@ -142,7 +191,8 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
                 for: .systemFont(ofSize: 13, weight: .semibold),
                 maximumPointSize: 18
             )
-            hintWidth = CandidateSizing.correctionHintSpacing
+            hintWidth =
+                CandidateSizing.correctionHintSpacing
                 + ceil((correctionHint as NSString).size(withAttributes: [.font: hintFont]).width)
         } else {
             hintWidth = 0

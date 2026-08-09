@@ -34,7 +34,9 @@ Do not log surrounding host text, passwords, arbitrary user content or full priv
 
 ## Diagnostic Logs
 
-The shared logger persists a bounded FIFO log in App Group `UserDefaults` under `rime_diag_log`; the main App diagnostics screen reads and clears it. Logging is asynchronous, but hot-path logging must remain selective.
+诊断正在从旧的 `rime_diag_log` 迁移至 App Group `Diagnostics/v1/` 的结构化 JSONL journal。v1 按 writer process 独占段并使用 generation 清空；Main App 默认读取当前 generation 的最新 10,000 条或 5 MiB（水位而非保留上限）。旧 `UserDefaults` 文本仅在 v1 为空时作为只读兼容回退，绝不能把自由文本重新写入 v1。
+
+键盘热路径只能向有界 typed ingress 投递内容无关 event；不得读取 App Group、格式化日期、编码 JSON、枚举目录、获取文件锁或等待持久化。Extension 消失时，未开始的尾批允许丢弃；若同一 process 恢复，v1 会尽力以 `journal.resumed` 和 `dropped_event_count` 记录该类损失。日志关闭时，这些 event 也会在后台过滤。
 
 ### Main App surface
 
@@ -42,9 +44,10 @@ Path: **设置 → 诊断** (`DiagnosticsSettingsView`).
 
 | Area | Behavior |
 |---|---|
-| Status | Shows recording on/off and approximate line count; data stays on-device (App Group only). |
+| Status | Shows recording on/off and local-only storage state; it does not synchronously load the full legacy log just to display a count. |
 | Master switch | `logging_enabled` — enables new writes. **Must not** insert/remove Form sections (categories stay mounted; disabled + dimmed when off). |
 | Categories | Always visible; grayed/`disabled` when master is off. Keys `log_category_*` (perf, disp, engine, config, deploy, gen). Stored in plain `@State` map (not `@Observable` fan-out). |
+| Debug 高保真 | 手动开启的 30 分钟绝对时窗记录内容无关的首屏溯源。“结束时通知我”默认关闭，与 **设置 → 通知与提醒** 共用同一类别；仅 Main App 安排或取消唯一的本地提醒。 |
 | Review | Navigate to `DiagnosticsView` for filter/copy/clear. |
 | Advanced | Collapsed by default. Nine-key **force_gc** tools live here only. |
 | Status chips | Always-mounted labels; style/text only. |

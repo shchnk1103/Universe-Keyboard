@@ -213,6 +213,21 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Trigger to resolve:** Product reopens optional grammar slice after 万象 base path is stable; Architecture confirms librime/octagram support and memory budget.
 - **Related:** PD-RIME-SCHEME-WANXIANG-001 non-claim on `.gram`; Assignment residual **R-07**; TD-009 (download UX); TD-001 (atomic install); `docs/RIME_SCHEME_MANAGEMENT.md`.
 
+## TD-013: Diagnostics v1 P1 查询、生命周期与迁移硬化
+
+- **Priority:** Medium. 不阻塞已交付的本地诊断 P0，也不改变键盘输入或 RIME 运行语义。
+- **Risk:** 现有 v1 已能以有界、内容无关的事件支持启动与候选异常排查，但长期大量日志、复杂 suspend/reclaim 竞争、旧自由文本收敛和细粒度故障归因仍有可维护性与证据缺口。
+- **Current mitigation:** 当前 generation 使用有界 tail、查询快照和分页 UI；writer 使用 stable lock、lease/fence、tombstone 和保守 reclaim；Main App 启动时执行 retention；legacy 仅只读回退而不写入 v1；Debug 首屏高保真窗口会自动到期。
+- **Recommended fix:**
+  1. 让分页成为严格全局 newest-first 的 segment k-way merge，并在 cursor 所指段被清理时向 UI 报告受控失效，而非静默截断。
+  2. 记录受控 `journal.identity_rotated` / lifecycle health，使 reclaim 后的新 writer identity 和关键恢复路径可被直接审计。
+  3. 将 retention 从仅 App 启动扩展为受控 cadence；补齐 admission → suspend → writer 竞争、主动 seal/revoke 策略和失败重试矩阵。
+  4. 将 `journalUnavailable`、锁忙、I/O、磁盘空间和 ingress overload 统一接入内容无关 health/drop 摘要，并补故障注入测试。
+  5. 按 cohort 审计和迁移其余 legacy `Logger(String)` producer，最终移除 `rime_diag_log` 的兼容读取；任何新字段继续经过 typed allowlist/隐私审查。
+- **Owner area:** KeyboardCore diagnostics journal、Main App diagnostics repository/settings、Quality/Release evidence。
+- **Trigger to resolve:** 日志量/导出需求增长、再次出现无法从现有高保真链路归因的视觉异常，或 Product 决定将 v1 诊断作为长期运维能力。
+- **Related:** ADR 0027、`DIAGNOSTICS-OBSERVABILITY-001`、`docs/DEBUGGING.md`。
+
 ## Maintenance Rules
 
 - Update an item when priority, mitigation, owner area or trigger changes.

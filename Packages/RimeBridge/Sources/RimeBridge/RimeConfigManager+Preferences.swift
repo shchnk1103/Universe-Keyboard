@@ -79,6 +79,9 @@ extension RimeConfigManager {
 
         let fileURL = userDir.appendingPathComponent(filename)
         try? yaml.write(to: fileURL, atomically: true, encoding: .utf8)
-        Logger.shared.info("Wrote \(filename): \(yaml.replacingOccurrences(of: "\n", with: " "))", category: .config)
+        Logger.shared.info(
+            "Wrote custom YAML patch keyCount=\(patch.count) byteCount=\(yaml.utf8.count)",
+            category: .config
+        )
     }
 }
