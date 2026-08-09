@@ -44,7 +44,9 @@ struct RimeSyncSettingsView: View {
                 Task { await model.synchronizeAllNow() }
             }
         } message: {
-            Text("这会先按 RIME 官方规则合并常用词快照、备份可移植 YAML/TXT，再同步 Universe 加密设置。请确认此时没有在使用键盘；标准 RIME 数据不由 Universe 端到端加密。完成后不会替你开启自动同步。")
+            Text(
+                "这会先按 RIME 官方规则合并常用词快照、备份可移植 YAML/TXT，再同步 Universe 加密设置。请确认此时没有在使用键盘；标准 RIME 数据不由 Universe 端到端加密。完成后不会替你开启自动同步。"
+            )
         }
         .alert("断开同步？", isPresented: $showDisconnectConfirmation) {
             Button("取消", role: .cancel) {}
@@ -182,7 +184,9 @@ struct RimeSyncSettingsView: View {
         } header: {
             Text("自动同步")
         } footer: {
-            Text("\(model.automaticSyncScheduleText) 总开关关闭后，两项都不会自动运行；“立即同步”仍会完整同步两部分。同步间隔表示两次尝试之间至少等待多久，不保证固定时刻。RIME 标准同步会在键盘正在使用时跳过。")
+            Text(
+                "\(model.automaticSyncScheduleText) 总开关关闭后，两项都不会自动运行；“立即同步”仍会完整同步两部分。同步间隔表示两次尝试之间至少等待多久，不保证固定时刻。RIME 标准同步会在键盘正在使用时跳过。"
+            )
         }
     }
 
@@ -204,9 +208,10 @@ struct RimeSyncSettingsView: View {
         } header: {
             Text("通知与提醒")
         } footer: {
-            Text(notificationSettings.notificationsEnabled
-                ? "这里与“设置 > 通知与提醒”使用同一个开关。App 在前台且操作状态提示已开启时，系统通知只进入通知中心，避免重复弹出。"
-                : "开启同步通知时会同时开启 App 通知总开关，并在需要时请求系统权限。自动同步开关与通知开关互不替代。")
+            Text(
+                notificationSettings.notificationsEnabled
+                    ? "这里与“设置 > 通知与提醒”使用同一个开关。App 在前台且操作状态提示已开启时，系统通知只进入通知中心，避免重复弹出。"
+                    : "开启同步通知时会同时开启 App 通知总开关，并在需要时请求系统权限。自动同步开关与通知开关互不替代。")
         }
     }
 
@@ -262,11 +267,13 @@ struct RimeSyncSettingsView: View {
             Label {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(model.canSynchronizeStandardRimeData ? "RIME 标准资料" : "Universe RIME 设置")
-                    Text(model.canSynchronizeStandardRimeData
-                        ? "常用词快照、custom YAML/TXT 和方案选择"
-                        : "方案、候选数量、简繁、模糊音和高级输入")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text(
+                        model.canSynchronizeStandardRimeData
+                            ? "常用词快照、custom YAML/TXT 和方案选择"
+                            : "方案、候选数量、简繁、模糊音和高级输入"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 }
             } icon: {
                 Image(systemName: "checkmark.circle.fill")
@@ -276,11 +283,13 @@ struct RimeSyncSettingsView: View {
             Label {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("自定义配置文件")
-                    Text(model.canSynchronizeStandardRimeData
-                        ? "按 RIME 官方规则备份到每台设备的目录"
-                        : "需要选择 RIME 标准文件夹后才会同步")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text(
+                        model.canSynchronizeStandardRimeData
+                            ? "按 RIME 官方规则备份到每台设备的目录"
+                            : "需要选择 RIME 标准文件夹后才会同步"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 }
             } icon: {
                 Image(systemName: "clock")
@@ -290,11 +299,13 @@ struct RimeSyncSettingsView: View {
             Label {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("候选学习记录")
-                    Text(model.canSynchronizeStandardRimeData
-                        ? "通过官方常用词快照合并，不复制运行数据库"
-                        : "当前不会上传你的输入习惯")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text(
+                        model.canSynchronizeStandardRimeData
+                            ? "通过官方常用词快照合并，不复制运行数据库"
+                            : "当前不会上传你的输入习惯"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 }
             } icon: {
                 Image(systemName: "lock.fill")
@@ -303,9 +314,10 @@ struct RimeSyncSettingsView: View {
         } header: {
             Text("同步内容")
         } footer: {
-            Text(model.canSynchronizeStandardRimeData
-                ? "共享文件夹中的资料可被兼容的 RIME 输入法读取。输入洞察、诊断日志、运行数据库和下载资源不会同步。"
-                : "私密设置同步不包含用户词典、输入洞察、诊断日志或键盘输入。")
+            Text(
+                model.canSynchronizeStandardRimeData
+                    ? "共享文件夹中的资料可被兼容的 RIME 输入法读取。输入洞察、诊断日志、运行数据库和下载资源不会同步。"
+                    : "私密设置同步不包含用户词典、输入洞察、诊断日志或键盘输入。")
         }
     }
 
@@ -496,6 +508,7 @@ private final class PreviewNotificationClient: AppNotificationClient {
     func authorizationStatus() async -> AppNotificationAuthorizationStatus { .authorized }
     func requestAuthorization() async throws -> Bool { true }
     func schedule(_ request: AppLocalNotificationRequest) async throws {}
+    func cancelPendingNotification(identifier: String) async {}
 }
 
 #Preview("未配置") {

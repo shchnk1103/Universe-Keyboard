@@ -5,6 +5,9 @@ import Observation
 @MainActor
 @Observable
 final class DiagnosticsStore {
+    private static let exportMaximumRecordCount = 10_000
+    private static let exportMaximumByteCount = 5 * 1_024 * 1_024
+
     enum SummaryFilter {
         case all
         case slowEvents
@@ -22,14 +25,20 @@ final class DiagnosticsStore {
     ]
 
     var lines: [String] = []
+    var searchQuery = ""
     var isRefreshing = false
     var isClearing = false
+    var isLoadingMore = false
+    var hasMorePages = false
+    private var hasLoadedOlderPages = false
     var selectedSummaryFilter: SummaryFilter = .all
     var selectedCategory: Logger.Category?
 
     private let logSource: any DiagnosticsLogSource
 
-    init(logSource: any DiagnosticsLogSource = SharedDefaultsDiagnosticsLogSource(appGroupID: universeAppGroupID)) {
+    private var liveRefreshTask: Task<Void, Never>?
+
+    init(logSource: any DiagnosticsLogSource = CompositeDiagnosticsLogSource(appGroupID: universeAppGroupID)) {
         self.logSource = logSource
     }
 
@@ -44,13 +53,23 @@ final class DiagnosticsStore {
             scopedLines = lines.filter(isWarning)
         }
 
-        guard let category = selectedCategory else { return scopedLines }
-        let tag = "[\(category.rawValue)]"
-        return scopedLines.filter { $0.contains(tag) }
+        let categoryScopedLines: [String]
+        if let category = selectedCategory {
+            let tag = "[\(category.rawValue)]"
+            categoryScopedLines = scopedLines.filter { $0.contains(tag) }
+        } else {
+            categoryScopedLines = scopedLines
+        }
+
+        let normalizedQuery = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalizedQuery.isEmpty else { return categoryScopedLines }
+        return categoryScopedLines.filter {
+            $0.localizedCaseInsensitiveContains(normalizedQuery)
+        }
     }
 
     var displayedLines: [String] {
-        Array(filteredLines.reversed())
+        filteredLines
     }
 
     var slowEventCount: Int {
@@ -79,13 +98,48 @@ final class DiagnosticsStore {
     }
 
     var exportText: String {
-        filteredLines.joined(separator: "\n")
+        guard canExportCurrentSelection else { return "" }
+        return filteredLines.joined(separator: "\n")
+    }
+
+    var canExportCurrentSelection: Bool {
+        exportLimitMessage == nil && !filteredLines.isEmpty
+    }
+
+    var exportLimitMessage: String? {
+        let records = filteredLines
+        guard records.count <= Self.exportMaximumRecordCount else {
+            return "当前结果超过 10,000 条，请缩小筛选范围后复制。"
+        }
+        let byteCount = records.reduce(into: 0) { $0 += $1.utf8.count + 1 }
+        guard byteCount <= Self.exportMaximumByteCount else {
+            return "当前结果超过 5 MiB，请缩小筛选范围后复制。"
+        }
+        return nil
     }
 
     func loadLog() {
         Task {
-            lines = await currentLines()
+            await replaceWithLatestPage()
         }
+    }
+
+    func startLiveRefresh() {
+        guard liveRefreshTask == nil else { return }
+        liveRefreshTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(1))
+                guard let self, !Task.isCancelled else { return }
+                // 已展开更早历史时不重置冻结分页查询；用户可手动刷新以开始新快照。
+                guard !self.hasLoadedOlderPages else { continue }
+                await self.replaceWithLatestPage()
+            }
+        }
+    }
+
+    func stopLiveRefresh() {
+        liveRefreshTask?.cancel()
+        liveRefreshTask = nil
     }
 
     func refresh() {
@@ -94,7 +148,7 @@ final class DiagnosticsStore {
 
         Task {
             try? await Task.sleep(for: .milliseconds(400))
-            lines = await currentLines()
+            await replaceWithLatestPage()
             isRefreshing = false
         }
     }
@@ -107,7 +161,29 @@ final class DiagnosticsStore {
             try? await Task.sleep(for: .milliseconds(300))
             await logSource.clearLog()
             lines = []
+            hasMorePages = false
+            hasLoadedOlderPages = false
             isClearing = false
+        }
+    }
+
+    func loadMore() {
+        guard hasMorePages, !isLoadingMore, lines.count < Self.exportMaximumRecordCount else { return }
+        guard let pagingSource = logSource as? any DiagnosticsLogPagingSource else {
+            hasMorePages = false
+            return
+        }
+        isLoadingMore = true
+        Task {
+            if let text = await pagingSource.loadMoreLogText() {
+                let remainingCapacity = Self.exportMaximumRecordCount - lines.count
+                lines.append(contentsOf: Self.lines(from: text).prefix(remainingCapacity))
+                hasLoadedOlderPages = true
+            }
+            hasMorePages =
+                await pagingSource.hasMoreLogPages()
+                && lines.count < Self.exportMaximumRecordCount
+            isLoadingMore = false
         }
     }
 
@@ -129,9 +205,19 @@ final class DiagnosticsStore {
         return "secondary"
     }
 
-    private func currentLines() async -> [String] {
-        guard let log = await logSource.loadLogText() else { return [] }
-        return log.components(separatedBy: "\n")
+    private func replaceWithLatestPage() async {
+        lines = Self.lines(from: await logSource.loadLogText())
+        hasLoadedOlderPages = false
+        if let pagingSource = logSource as? any DiagnosticsLogPagingSource {
+            hasMorePages = await pagingSource.hasMoreLogPages()
+        } else {
+            hasMorePages = false
+        }
+    }
+
+    private static func lines(from text: String?) -> [String] {
+        guard let text else { return [] }
+        return text.split(separator: "\n", omittingEmptySubsequences: true).map(String.init)
     }
 
     private func isSlowEvent(_ line: String) -> Bool {

@@ -52,6 +52,12 @@ struct NotificationSettingsView: View {
             .disabled(!rimeSyncNotificationsAvailable)
             .opacity(rimeSyncNotificationsAvailable ? 1 : 0.48)
 
+            #if DEBUG
+                DiagnosticsHighFidelityExpiryNotificationControls(model: model)
+                    .disabled(!model.notificationsEnabled)
+                    .opacity(model.notificationsEnabled ? 1 : 0.48)
+            #endif
+
             // Notice / system-settings deep link are rare, slow-changing states — safe to
             // mount only when needed (avoids empty Form rows from opacity-0 placeholders).
             if let notice = model.notice, !notice.isEmpty {
@@ -109,6 +115,41 @@ struct NotificationSettingsView: View {
 
 }
 
+#if DEBUG
+    /// Debug 短时采样仍是统一通知类别，而非第二套权限模型；选择与诊断页共用。
+    struct DiagnosticsHighFidelityExpiryNotificationControls: View {
+        @Bindable var model: AppNotificationSettingsModel
+
+        private var categoryOn: Bool {
+            model.isCategoryEnabled(.diagnosticsHighFidelityExpiry)
+        }
+
+        var body: some View {
+            Toggle(
+                isOn: Binding(
+                    get: { categoryOn },
+                    set: { selected in
+                        Task {
+                            await model.setCategorySelected(
+                                selected,
+                                category: .diagnosticsHighFidelityExpiry
+                            )
+                        }
+                    }
+                )
+            ) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("首屏高保真诊断结束")
+                    Text("仅 Debug；30 分钟短时采样结束后提醒你。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .toggleStyle(.switch)
+        }
+    }
+#endif
+
 /// 两个设置入口复用同一组控件，避免标题、子项和父子开关规则逐渐分叉。
 struct RimeSyncNotificationControls: View {
     @Bindable var model: AppNotificationSettingsModel
@@ -144,7 +185,8 @@ struct RimeSyncNotificationControls: View {
         // Always-mounted scopes; disabled when category off or sync method unset.
         Group {
             ForEach(RimeSyncNotificationScope.allCases, id: \.self) { scope in
-                let scopeOn = isSyncMethodConfigured
+                let scopeOn =
+                    isSyncMethodConfigured
                     && model.isCategoryEnabled(.rimeSync)
                     && model.isRimeSyncScopeSelected(scope)
                 Toggle(

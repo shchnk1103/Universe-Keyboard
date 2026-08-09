@@ -11,11 +11,15 @@ nonisolated private enum AppNotificationMetadataKey {
 /// App 内可独立管理的本地通知类别。新增类别时必须同时补充产品文案与迁移测试。
 nonisolated enum AppNotificationCategory: String, CaseIterable, Sendable {
     case rimeSync
+    /// Debug-only UI 仍使用统一模型，避免到期提醒绕过其他通知的授权和取消规则。
+    case diagnosticsHighFidelityExpiry
 
     var title: String {
         switch self {
         case .rimeSync:
             return "RIME 云同步"
+        case .diagnosticsHighFidelityExpiry:
+            return "首屏高保真诊断"
         }
     }
 
@@ -23,8 +27,15 @@ nonisolated enum AppNotificationCategory: String, CaseIterable, Sendable {
         switch self {
         case .rimeSync:
             return "在手动或自动同步开始、完成和失败时通知你。"
+        case .diagnosticsHighFidelityExpiry:
+            return "在短时高保真采样自动结束后提醒你。"
         }
     }
+}
+
+nonisolated enum AppLocalNotificationDelivery: Equatable, Sendable {
+    case immediate
+    case after(TimeInterval)
 }
 
 nonisolated enum AppNotificationAuthorizationStatus: Equatable, Sendable {
@@ -51,6 +62,7 @@ nonisolated struct AppLocalNotificationRequest: Equatable, Sendable {
     let body: String
     let category: AppNotificationCategory
     let prefersToastWhenForeground: Bool
+    let delivery: AppLocalNotificationDelivery
 }
 
 nonisolated enum AppNotificationForegroundPresentationPolicy {
@@ -70,6 +82,7 @@ protocol AppNotificationClient: AnyObject {
     func authorizationStatus() async -> AppNotificationAuthorizationStatus
     func requestAuthorization() async throws -> Bool
     func schedule(_ request: AppLocalNotificationRequest) async throws
+    func cancelPendingNotification(identifier: String) async
 }
 
 /// 持久化键只有这一处定义，避免 RIME 页面和全局设置各自维护一份状态。
@@ -82,6 +95,8 @@ final class AppNotificationSettingsStore {
         static let rimeSyncEnabled = "rime_standard_sync_notifications_enabled"
         static let rimeStandardSyncEnabled = "rime_standard_data_notifications_enabled"
         static let rimePrivateSettingsEnabled = "rime_private_settings_notifications_enabled"
+        static let diagnosticsHighFidelityExpiryEnabled =
+            "diagnostics_high_fidelity_expiry_notifications_enabled"
     }
 
     private let defaults: UserDefaults
@@ -110,6 +125,8 @@ final class AppNotificationSettingsStore {
         switch category {
         case .rimeSync:
             return defaults.bool(forKey: StorageKey.rimeSyncEnabled)
+        case .diagnosticsHighFidelityExpiry:
+            return defaults.bool(forKey: StorageKey.diagnosticsHighFidelityExpiryEnabled)
         }
     }
 
@@ -117,6 +134,8 @@ final class AppNotificationSettingsStore {
         switch category {
         case .rimeSync:
             defaults.set(selected, forKey: StorageKey.rimeSyncEnabled)
+        case .diagnosticsHighFidelityExpiry:
+            defaults.set(selected, forKey: StorageKey.diagnosticsHighFidelityExpiryEnabled)
         }
     }
 
@@ -158,6 +177,10 @@ final class AppNotificationSettingsStore {
 final class AppNotificationSettingsModel {
     private let store: AppNotificationSettingsStore
     private let client: any AppNotificationClient
+    private let diagnosticsDefaults: UserDefaults?
+
+    static let diagnosticsHighFidelityExpiryIdentifier =
+        "diagnostics-high-fidelity-expiry"
 
     var notificationsEnabled: Bool
     var operationToastsEnabled: Bool
@@ -166,10 +189,12 @@ final class AppNotificationSettingsModel {
 
     init(
         defaults: UserDefaults = .standard,
+        diagnosticsDefaults: UserDefaults? = UserDefaults(suiteName: universeAppGroupID),
         client: any AppNotificationClient = SystemAppNotificationClient.shared
     ) {
         let store = AppNotificationSettingsStore(defaults: defaults)
         self.store = store
+        self.diagnosticsDefaults = diagnosticsDefaults
         self.client = client
         notificationsEnabled = store.notificationsEnabled
         operationToastsEnabled = store.operationToastsEnabled
@@ -229,12 +254,14 @@ final class AppNotificationSettingsModel {
         } else if status != .denied {
             notice = nil
         }
+        await synchronizeDiagnosticsHighFidelityExpiryNotification()
     }
 
     func setNotificationsEnabled(_ enabled: Bool) async {
         guard enabled else {
             setMasterState(false)
             notice = nil
+            await synchronizeDiagnosticsHighFidelityExpiryNotification()
             Logger.shared.info("app notification master changed enabled=false", category: .config)
             return
         }
@@ -248,7 +275,9 @@ final class AppNotificationSettingsModel {
         authorizationStatus = status
         guard status.canDeliver else {
             setMasterState(false)
-            notice = status == .denied
+            await synchronizeDiagnosticsHighFidelityExpiryNotification()
+            notice =
+                status == .denied
                 ? "系统没有允许通知。你可以前往系统设置重新开启。"
                 : "暂时无法开启通知，请稍后再试。"
             return
@@ -256,6 +285,7 @@ final class AppNotificationSettingsModel {
 
         setMasterState(true)
         notice = nil
+        await synchronizeDiagnosticsHighFidelityExpiryNotification()
         Logger.shared.info(
             "app notification master changed enabled=true authorization=\(status)",
             category: .config
@@ -277,6 +307,9 @@ final class AppNotificationSettingsModel {
             await setNotificationsEnabled(true)
         } else if !store.hasSelectedCategory {
             setMasterState(false)
+            await synchronizeDiagnosticsHighFidelityExpiryNotification()
+        } else {
+            await synchronizeDiagnosticsHighFidelityExpiryNotification()
         }
     }
 
@@ -303,6 +336,59 @@ final class AppNotificationSettingsModel {
         operationToastsEnabled = enabled
         store.operationToastsEnabled = enabled
         Logger.shared.info("app operation toast changed enabled=\(enabled)", category: .config)
+    }
+
+    /// 让唯一的待发送到期提醒与 App Group 的绝对过期时间保持一致。
+    /// 仅 Main App 可调用；Keyboard Extension 永不请求或安排通知。窗口缺失或过期时
+    /// 主动取消旧请求，避免下一次测试收到过时提醒。
+    func synchronizeDiagnosticsHighFidelityExpiryNotification() async {
+        guard
+            notificationsEnabled,
+            store.isCategorySelected(.diagnosticsHighFidelityExpiry),
+            let expiration = DiagnosticsHighFidelityConfiguration.expiration(in: diagnosticsDefaults)
+        else {
+            await client.cancelPendingNotification(
+                identifier: Self.diagnosticsHighFidelityExpiryIdentifier
+            )
+            return
+        }
+
+        let remaining = expiration.timeIntervalSinceNow
+        guard remaining > 0 else {
+            await client.cancelPendingNotification(
+                identifier: Self.diagnosticsHighFidelityExpiryIdentifier
+            )
+            return
+        }
+
+        let status = await client.authorizationStatus()
+        authorizationStatus = status
+        guard status.canDeliver else {
+            await client.cancelPendingNotification(
+                identifier: Self.diagnosticsHighFidelityExpiryIdentifier
+            )
+            return
+        }
+
+        let request = AppLocalNotificationRequest(
+            identifier: Self.diagnosticsHighFidelityExpiryIdentifier,
+            title: "首屏高保真诊断已结束",
+            body: "30 分钟的短时采样已自动关闭。",
+            category: .diagnosticsHighFidelityExpiry,
+            // 它没有对应的 App 内 Toast，前台也应保留横幅和声音提示。
+            prefersToastWhenForeground: false,
+            delivery: .after(remaining)
+        )
+
+        do {
+            try await client.schedule(request)
+        } catch {
+            Logger.shared.warning(
+                "diagnostics expiry notification scheduling failed "
+                    + "code=\(RimeSyncFolderAccess.diagnosticErrorCode(for: error))",
+                category: .config
+            )
+        }
     }
 
     private func setMasterState(_ enabled: Bool) {
@@ -374,13 +460,28 @@ final class SystemAppNotificationClient: NSObject, AppNotificationClient, UNUser
             AppNotificationMetadataKey.appCategory: request.category.rawValue,
         ]
 
+        let trigger: UNNotificationTrigger?
+        switch request.delivery {
+        case .immediate:
+            trigger = nil
+        case let .after(interval):
+            trigger = UNTimeIntervalNotificationTrigger(
+                timeInterval: max(interval, 1),
+                repeats: false
+            )
+        }
+
         try await center.add(
             UNNotificationRequest(
                 identifier: request.identifier,
                 content: content,
-                trigger: nil
+                trigger: trigger
             )
         )
+    }
+
+    func cancelPendingNotification(identifier: String) async {
+        center.removePendingNotificationRequests(withIdentifiers: [identifier])
     }
 
     nonisolated func userNotificationCenter(
@@ -426,8 +527,8 @@ final class AppNotificationService: AppNotificationNotifying {
     func notify(_ event: RimeSyncNotificationEvent) async {
         let status = await client.authorizationStatus()
         guard store.notificationsEnabled,
-              store.isCategorySelected(.rimeSync),
-              status.canDeliver
+            store.isCategorySelected(.rimeSync),
+            status.canDeliver
         else {
             Logger.shared.info(
                 "rimeSync notification skipped master=\(store.notificationsEnabled) "
@@ -450,7 +551,8 @@ final class AppNotificationService: AppNotificationNotifying {
             title: payload.title,
             body: payload.body,
             category: .rimeSync,
-            prefersToastWhenForeground: store.operationToastsEnabled
+            prefersToastWhenForeground: store.operationToastsEnabled,
+            delivery: .immediate
         )
 
         do {

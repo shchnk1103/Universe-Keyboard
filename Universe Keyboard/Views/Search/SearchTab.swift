@@ -188,7 +188,7 @@ struct SearchTab: View {
         case .localDictionary:
             DictionaryBrowserView()
         case .diagnostics:
-            DiagnosticsSettingsView()
+            DiagnosticsSettingsView(notificationSettings: notificationSettings)
         case .activationHelp:
             GuideTab(embedsOwnNavigationStack: false, rimeStore: rimeStore)
         }

@@ -11,6 +11,7 @@ import SwiftUI
 /// - No `.animation(_:value: loggingEnabled)` on Form sections (opacity/status).
 /// - Category flags stay in a plain `@State` dictionary (no `@Observable` fan-out).
 struct DiagnosticsSettingsView: View {
+    @Bindable var notificationSettings: AppNotificationSettingsModel
     @State private var loggingEnabled: Bool = {
         UserDefaults(suiteName: universeAppGroupID)?.bool(forKey: "logging_enabled") ?? false
     }()
@@ -19,14 +20,12 @@ struct DiagnosticsSettingsView: View {
     @State private var forceGCCheckLines: [String] = []
     @State private var forceGCCheckHeadline: String?
     @State private var advancedExpanded = false
+    #if DEBUG
+        @State private var highFidelityEnabled = false
+    #endif
 
     private var defaults: UserDefaults? {
         UserDefaults(suiteName: universeAppGroupID)
-    }
-
-    private var logLineCount: Int {
-        guard let log = defaults?.string(forKey: "rime_diag_log"), !log.isEmpty else { return 0 }
-        return log.components(separatedBy: "\n").filter { !$0.isEmpty }.count
     }
 
     var body: some View {
@@ -34,6 +33,9 @@ struct DiagnosticsSettingsView: View {
             statusSection
             recordingControlSection
             categoriesSection
+            #if DEBUG
+                highFidelitySection
+            #endif
             reviewSection
             advancedSection
         }
@@ -43,6 +45,10 @@ struct DiagnosticsSettingsView: View {
         .onAppear {
             categoryEnabled = DiagnosticsCategoryCatalog.loadEnabledMap()
             loggingEnabled = defaults?.bool(forKey: "logging_enabled") ?? false
+            #if DEBUG
+                highFidelityEnabled = DiagnosticsHighFidelityConfiguration.isEnabled(in: defaults)
+                Task { await notificationSettings.synchronizeDiagnosticsHighFidelityExpiryNotification() }
+            #endif
         }
     }
 
@@ -76,7 +82,7 @@ struct DiagnosticsSettingsView: View {
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                     HStack(spacing: 12) {
-                        Label("\(logLineCount) 条", systemImage: "doc.text")
+                        Label("本机存储", systemImage: "doc.text")
                         statusIndicator
                     }
                     .font(.caption2)
@@ -186,6 +192,84 @@ struct DiagnosticsSettingsView: View {
         .accessibilityValue((categoryEnabled[item.id] ?? true) ? "开启" : "关闭")
     }
 
+    #if DEBUG
+        private var highFidelitySection: some View {
+            Section {
+                Toggle(isOn: highFidelityBinding) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("首屏高保真诊断")
+                        Text(
+                            highFidelityEnabled
+                                ? highFidelityExpiryDescription
+                                : "仅 Debug；记录触摸终端、候选可见状态与生命周期计数"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    }
+                }
+                .toggleStyle(.switch)
+                .disabled(!loggingEnabled)
+
+                Toggle(isOn: diagnosticsExpiryNotificationBinding) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("结束时通知我")
+                        Text("默认关闭；短时采样自动结束后发送一次本地提醒。")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .toggleStyle(.switch)
+                .disabled(!loggingEnabled)
+            } header: {
+                Text("短时采样")
+            } footer: {
+                Text("不记录键值、候选文字、拼音、宿主文字或 App 身份。结束提醒受「通知与提醒 > 允许 App 通知」控制。")
+            }
+            .opacity(loggingEnabled ? 1 : 0.48)
+        }
+
+        private var highFidelityBinding: Binding<Bool> {
+            Binding(
+                get: { highFidelityEnabled },
+                set: { newValue in
+                    highFidelityEnabled = newValue
+                    if newValue {
+                        defaults?.set(
+                            Date().addingTimeInterval(DiagnosticsHighFidelityConfiguration.duration),
+                            forKey: DiagnosticsHighFidelityConfiguration.expirationKey
+                        )
+                    } else {
+                        defaults?.removeObject(forKey: DiagnosticsHighFidelityConfiguration.expirationKey)
+                    }
+                    Task { await notificationSettings.synchronizeDiagnosticsHighFidelityExpiryNotification() }
+                }
+            )
+        }
+
+        private var diagnosticsExpiryNotificationBinding: Binding<Bool> {
+            Binding(
+                get: {
+                    notificationSettings.isCategoryEnabled(.diagnosticsHighFidelityExpiry)
+                },
+                set: { enabled in
+                    Task {
+                        await notificationSettings.setCategorySelected(
+                            enabled,
+                            category: .diagnosticsHighFidelityExpiry
+                        )
+                    }
+                }
+            )
+        }
+
+        private var highFidelityExpiryDescription: String {
+            guard let expiration = DiagnosticsHighFidelityConfiguration.expiration(in: defaults) else {
+                return "已开启；将在 30 分钟内自动到期"
+            }
+            return "已开启；将于 \(expiration.formatted(date: .omitted, time: .shortened)) 自动关闭"
+        }
+    #endif
+
     // MARK: - Review
 
     private var reviewSection: some View {
@@ -196,7 +280,7 @@ struct DiagnosticsSettingsView: View {
                 HStack {
                     Label("查看记录", systemImage: "doc.text.magnifyingglass")
                     Spacer()
-                    Text(logLineCount == 0 ? "暂无记录" : "\(logLineCount) 条")
+                    Text("实时预览")
                         .foregroundStyle(.secondary)
                 }
             }
@@ -255,7 +339,8 @@ struct DiagnosticsSettingsView: View {
     private func advancedHeadlineColor(_ headline: String) -> Color {
         if headline.contains("仍注册")
             || headline.contains("失败")
-            || headline.contains("请完整部署") {
+            || headline.contains("请完整部署")
+        {
             return .orange
         }
         return .secondary
@@ -315,6 +400,26 @@ enum DiagnosticsCategoryCatalog {
 
 #Preview {
     NavigationStack {
-        DiagnosticsSettingsView()
+        DiagnosticsSettingsView(notificationSettings: previewNotificationSettings())
     }
+}
+
+@MainActor
+private func previewNotificationSettings() -> AppNotificationSettingsModel {
+    let defaults =
+        UserDefaults(suiteName: "diagnostics-notification-preview-\(UUID().uuidString)")
+        ?? .standard
+    return AppNotificationSettingsModel(
+        defaults: defaults,
+        diagnosticsDefaults: defaults,
+        client: DiagnosticsNotificationPreviewClient()
+    )
+}
+
+@MainActor
+private final class DiagnosticsNotificationPreviewClient: AppNotificationClient {
+    func authorizationStatus() async -> AppNotificationAuthorizationStatus { .authorized }
+    func requestAuthorization() async throws -> Bool { true }
+    func schedule(_ request: AppLocalNotificationRequest) async throws {}
+    func cancelPendingNotification(identifier: String) async {}
 }

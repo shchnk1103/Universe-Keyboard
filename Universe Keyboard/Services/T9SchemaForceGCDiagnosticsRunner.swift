@@ -29,7 +29,8 @@ enum T9SchemaForceGCDiagnosticsRunner {
         )
 
         guard
-            let sharedURL = fileManager
+            let sharedURL =
+                fileManager
                 .containerURL(forSecurityApplicationGroupIdentifier: appGroupID)?
                 .appendingPathComponent("Rime/shared", isDirectory: true)
         else {
@@ -41,7 +42,8 @@ enum T9SchemaForceGCDiagnosticsRunner {
         do {
             _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: sharedURL)
             // Also clear user/build if present (librime often compiles there).
-            let userURL = fileManager
+            let userURL =
+                fileManager
                 .containerURL(forSecurityApplicationGroupIdentifier: appGroupID)?
                 .appendingPathComponent("Rime/user", isDirectory: true)
             let removed = T9DeploymentSupport.invalidateT9BuildProducts(
@@ -58,10 +60,7 @@ enum T9SchemaForceGCDiagnosticsRunner {
             UserDefaults(suiteName: appGroupID)?.set(true, forKey: "rime_needs_deploy")
             UserDefaults(suiteName: appGroupID)?.synchronize()
         } catch {
-            Logger.shared.warning(
-                "t9Schema force_gc applyPatch failed: \(error.localizedDescription)",
-                category: .deployment
-            )
+            Logger.shared.warning("t9Schema force_gc applyPatch failed", category: .deployment)
         }
 
         let after = inspectOnly(appGroupID: appGroupID, fileManager: fileManager)

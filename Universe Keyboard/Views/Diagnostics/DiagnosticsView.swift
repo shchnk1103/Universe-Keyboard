@@ -31,15 +31,20 @@ struct DiagnosticsView: View {
                 filteredCount: store.filteredLines.count,
                 totalCount: store.lines.count,
                 displayedLines: store.displayedLines,
-                colorTokenForLine: store.colorForLine
+                exportLimitMessage: store.exportLimitMessage,
+                hasMorePages: store.hasMorePages,
+                isLoadingMore: store.isLoadingMore,
+                colorTokenForLine: store.colorForLine,
+                onLoadMore: store.loadMore
             )
         }
         .navigationTitle("键盘诊断")
         .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $store.searchQuery, prompt: "搜索事件、分类或状态")
         .toolbar {
             DiagnosticsToolbar(
                 isRefreshing: store.isRefreshing,
-                canCopy: !store.filteredLines.isEmpty,
+                canCopy: store.canExportCurrentSelection,
                 canClear: !store.lines.isEmpty && !store.isClearing,
                 onRefresh: store.refresh,
                 onCopy: copyLog,
@@ -52,7 +57,11 @@ struct DiagnosticsView: View {
         } message: {
             Text("清空后诊断日志将永久删除，无法恢复。")
         }
-        .onAppear(perform: store.loadLog)
+        .onAppear {
+            store.loadLog()
+            store.startLiveRefresh()
+        }
+        .onDisappear(perform: store.stopLiveRefresh)
     }
 
     private func selectSummaryFilter(_ filter: DiagnosticsStore.SummaryFilter) {

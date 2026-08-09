@@ -293,7 +293,7 @@ struct SettingsTab: View {
                 title: "诊断",
                 subtitle: "本机记录、分类与高级排查"
             ) {
-                DiagnosticsSettingsView()
+                DiagnosticsSettingsView(notificationSettings: notificationSettings)
             }
         }
     }

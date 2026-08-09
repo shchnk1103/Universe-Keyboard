@@ -38,10 +38,7 @@ extension SchemaManager {
                     category: .deployment
                 )
             } catch {
-                Logger.shared.warning(
-                    "deployRimeConfig: T9 compatibility before deploy failed: \(error.localizedDescription)",
-                    category: .deployment
-                )
+                Logger.shared.warning("deployRimeConfig: T9 compatibility before deploy failed", category: .deployment)
             }
         }
 
@@ -58,7 +55,11 @@ extension SchemaManager {
                     runtimeSmokeSchemaID: activeSchemaIDForDeployment
                 )
             )
-            Logger.shared.info("deployRimeConfig: \(result.diagnosticMessage)", category: .deployment)
+            Logger.shared.info(
+                "deployRimeConfig: deployment service completed "
+                    + "succeeded=\(result.succeeded) runtimeSmokeReported=\(result.runtimeSmokePassed != nil)",
+                category: .deployment
+            )
             if let runtimeSmokePassed = result.runtimeSmokePassed {
                 settings.set(runtimeSmokePassed, forKey: "rime_ice_lua_smoke_passed")
                 settings.set(Int(Date().timeIntervalSince1970), forKey: "rime_ice_lua_smoke_timestamp")
@@ -95,10 +96,7 @@ extension SchemaManager {
                 settings.set(false, forKey: "rime_deploying")
             }
         } catch {
-            Logger.shared.error(
-                "deployRimeConfig: deployment service failed: \(error.localizedDescription)",
-                category: .deployment
-            )
+            Logger.shared.error("deployRimeConfig: deployment service failed", category: .deployment)
             settings.set(false, forKey: "rime_deployed")
             settings.set(true, forKey: "rime_needs_deploy")
             settings.set(false, forKey: "rime_deploying")
@@ -188,10 +186,7 @@ extension SchemaManager {
                     category: .deployment
                 )
             } catch {
-                Logger.shared.warning(
-                    "deployRimeConfig: fuzzy pinyin write failed for \(schemaID): \(error.localizedDescription)",
-                    category: .deployment
-                )
+                Logger.shared.warning("deployRimeConfig: fuzzy pinyin write failed", category: .deployment)
             }
         }
     }
@@ -201,7 +196,7 @@ extension SchemaManager {
         var ids = Set<String>()
         ids.insert(activeSchemaIDForDeployment)
         if let binding26 = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26),
-           !binding26.isEmpty
+            !binding26.isEmpty
         {
             ids.insert(binding26 == "t9" ? "rime_ice" : binding26)
         }
@@ -217,7 +212,8 @@ extension SchemaManager {
         if FileManager.default.fileExists(atPath: luna.path) {
             ids.insert("luna_pinyin")
         }
-        return ids
+        return
+            ids
             .map { $0 == "t9" ? "rime_ice" : $0 }
             .filter { RimeRuntimeSelection.isTwentySixKeyCapable($0) }
             .sorted()

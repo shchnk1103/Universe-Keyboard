@@ -2,6 +2,13 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-09 — 本地企业级诊断 P0 与高保真到期提醒
+
+- `Diagnostics/v1` 以每 process 独占 JSONL、typed allowlist、有界 ingress、generation clear、lease/tombstone reclaim 和 7 天/100 MiB 保留替代旧 500 条写入模型；Main App 提供实时查询、搜索、分页、复制与清空。
+- Debug 首屏高保真链路关联 presentation、触摸终端、RIME owner 发布、UI apply 与候选真实可见性，不记录用户输入内容。
+- 高保真到期提醒默认关闭；诊断页与「通知与提醒」共用类别，Main App 在采样窗口关闭或通知关闭时取消待发送本地提醒。
+- 后续诊断平台 P1（严格全局分页、周期性 retention、完整 health/竞争矩阵、legacy migration）已记录为 TD-013，不属于本轮 P0 实现范围。
+
 ## 2026-08-08 — EOD handoff docs (万象 arc)
 
 - Active Work backlog: next default **TD-012**; TD-011 B–D optional; freeze A hold.
