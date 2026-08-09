@@ -13,9 +13,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` — path ready for formal close (2026-08-08 EOD) |
-| **Phase** | Q1/Q2 frozen; base.zip + layout-bound + Human smoke; TD-009/010/011A on `main` |
-| **Non-claims** | Not App Store marketing; grammar `.gram` optional not in V1 zip; not dual-spell; 万象 advanced **toggles** not fog-parity (freeze A: native triggers + usage copy only) |
-| **Next** | Optional formal close; default follow-on **TD-012**; TD-011 B–D only if Product productizes 万象 controls |
+| **Phase** | Q1/Q2 frozen; base.zip + layout-bound + Human smoke; TD-009/010/011A on `main`; TD-012 G0 为当前 iOS vendor No-Go |
+| **Non-claims** | Not App Store marketing; grammar `.gram` optional but当前 artifact 不支持，不能下载/部署；not dual-spell; 万象 advanced **toggles** not fog-parity (freeze A: native triggers + usage copy only) |
+| **Next** | Optional formal close；只有新的 Artifact + Architecture/Product Gate 才能重开 TD-012；TD-011 B–D only if Product productizes 万象 controls |
 | **Residuals** | TD-011 remaining B–D (optional); LMDG → TD-012; settings gates **TD-010 repaid**; toast **TD-009 repaid** |
 
 ---
@@ -110,3 +110,4 @@ Whether **万象 V1** itself exposes a nine-key-capable schema is a **capability
 - 2026-08-07: Freeze addendum — 全拼 V1; accept large size; **layout-page scheme choice (incl. nine-key)** supersedes fog-song-only T9 product default.
 - 2026-08-07: Q1/Q2 freeze — `rime-wanxiang-base.zip`, schema `wanxiang`, CC BY 4.0; catalog install authorized under Product KOS autonomy.
 - 2026-08-07 EOD: Human verified V1 path; roadmap agreed (close → TD-010/009 → TD-011/012); status synced for zero-context resume.
+- 2026-08-09: Human Product Owner 开启 TD-012 G0 只读审计；G0 evidence 确认当前 `rime-vendor-ios-1.16.1-lua.1` 不含 octagram，故不授权 G1–G6 的模型下载或接入，等待新的 Artifact + Architecture/Product Gate。

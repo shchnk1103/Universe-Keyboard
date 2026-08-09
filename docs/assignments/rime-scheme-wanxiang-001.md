@@ -7,21 +7,21 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` — **catalog / layout / install path ready for formal close** (Product may stamp Completed anytime) |
-| **Phase** | **EOD 2026-08-08** — V1 path + TD-009/010/011A on `main`; remaining debts optional |
+| **Phase** | **2026-08-09** — TD-012 G0 已完成：当前 iOS vendor 缺少 octagram，`.gram` 接入 No-Go；V1 path + TD-009/010/011A 仍在 `main` |
 | **Parent PD** | [`PD-RIME-SCHEME-WANXIANG-001`](../product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) |
-| **Non-claims** | Grammar `.gram` not bundled; no 双拼; no formal device Product Gate stamp; 万象 product advanced **toggles** not 1:1 with fog (freeze A copy only); TD-012 not implemented |
-| **Next** | **(1)** Default eng: **TD-012** optional `.gram`. **(2)** TD-011 B–D only if Product productizes 万象 advanced controls. **(3)** Optional formal Completed stamp. |
-| **Residuals** | R-01 **accept**; R-02/R-05 **done**; R-03 **accept**; R-04 mitigated; R-06 **partial** (A); R-07 **defer** (TD-012) |
+| **Non-claims** | Grammar `.gram` 不 bundled、不下载、不部署；无双拼；无 formal device Product Gate stamp；万象 product advanced **toggles** 不与 fog 1:1（freeze A copy only） |
+| **Next** | **(1)** 仅在新的 Artifact + Architecture/Product Gate 后重开 TD-012。**(2)** TD-011 B–D 仅在 Product 产品化万象高级控制时处理。**(3)** Optional formal Completed stamp。 |
+| **Residuals** | R-01 **accept**; R-02/R-05 **done**; R-03 **accept**; R-04 mitigated; R-06 **partial** (A); R-07 **G0 No-Go** (TD-012) |
 
 ### Session handoff (KOS 2.1 — for a cold new session)
 
 New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`):
 
 1. `AGENTS.md` → `docs/KNOWLEDGE_INDEX.md` → **`docs/ACTIVE_WORK.md`** → **this Assignment**.
-2. Roadmap progress: phase 0 path ready; phase 1 **TD-010 → TD-009 done**; phase 2a **TD-011 freeze A (copy) landed** (PR #54); phase 2b **TD-012 still open**.
+2. Roadmap progress: phase 0 path ready; phase 1 **TD-010 → TD-009 done**; phase 2a **TD-011 freeze A (copy) landed** (PR #54); phase 2b **TD-012 G0 No-Go**.
 3. Human-verified earlier: 万象 install/use, cold start, userdb isolation, uninstall, sync (`wanxiang.userdb.txt`), **layout nine-key while 26-key slot = 万象**, fog `rq` regression.
 4. Code on `main` this arc: catalog+install, ADR 0026, layout UI, Extension bindings, `sel-*`, fuzzy multi-schema deploy, TD-009 toast, TD-010 gates + prefs preserve, TD-011 `RimeSchemeNativeUsageGuide`.
-5. **Do not** unify fog `rq` ↔ 万象 `/rq`. **Do not** start TD-011 B–D or TD-012 unless Product opens that WI.
+5. **Do not** unify fog `rq` ↔ 万象 `/rq`. TD-012 G0 已由 Product 开启并得出当前 artifact No-Go；不得进行 G1–G6，除非新的 Artifact + Architecture/Product Gate 明确授权。
 
 ---
 
@@ -54,7 +54,7 @@ New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`)
 
 ### Still out of scope (or follow-on)
 
-- Bundled LMDG `.gram` / optional download (**R-07** / **TD-012**) — research recorded; **default next eng**
+- Bundled LMDG `.gram` / optional download (**R-07** / **TD-012**) — **G0 No-Go**；新的 Artifact + Architecture/Product Gate 前不得继续
 - 双拼/辅助码 zip variants
 - 万象九键 readiness productization
 - 万象 advanced-input **product toggles** / multi-schema deploy diagnose (**R-06** remaining **TD-011 B–D**) — freeze A copy only
@@ -71,7 +71,7 @@ New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`)
 | R-04 | 分段选词末段双插（长句） | **Mitigated** 2026-08-07 — `sel-*` strip; Human re-smoke optional |
 | R-05 | 方案不支持的设置项仍可打开（模糊音在万象无效等） | **Done 2026-08-08** — TD-010 matrix + fuzzy/advanced gates |
 | R-06 | 万象也有 Lua，但与雾凇模块/触发/产品开关不兼容 | **Partial 2026-08-08** — Product freeze **A** (native triggers + copy); usage guide landed; full deploy/diagnose (B–D) still deferred — [`TD-011`](../TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) |
-| R-07 | 万象「语法模型」`.gram`（LMDG）是什么、能否给雾凇等用、如何可选下载接入 | **Defer research complete** — [`TD-012`](../TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration); phases G0–G6; **no code in this WI** |
+| R-07 | 万象「语法模型」`.gram`（LMDG）是什么、能否给雾凇等用、如何可选下载接入 | **G0 No-Go** — 当前 iOS vendor 缺少 octagram，详见 [artifact audit](../evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md)；G1–G6 需要新的 Artifact + Architecture/Product Gate |
 
 ## Gates
 
@@ -96,7 +96,7 @@ New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`)
 | 0 | Formal close this Assignment | — | Optional Product stamp |
 | 1 | Settings honesty then download toast | TD-010 → TD-009 | **Done** 2026-08-08 |
 | 2a | Multi-scheme Lua — freeze A native copy | TD-011 A | **Done** PR #54; B–D open |
-| 2b | Optional LMDG `.gram` (engine gate first) | TD-012 | **Open** (default next) |
+| 2b | Optional LMDG `.gram` (engine gate first) | TD-012 | **G0 No-Go**；等待新的 Artifact + Architecture/Product Gate |
 
 ## History
 
@@ -108,4 +108,5 @@ New session bootstrap (also in `AGENTS.md` / `docs/kos/zero-context-startup.md`)
 - 2026-08-07: Human — layout nine-key + 万象 26-key binding **verified**; fuzzy **only works on 雾凇** (not 万象). Product: later gate unsupported settings (closed + “暂不支持”) → residual **R-05** / **TD-010**; stay focused on 万象 path, not implement R-05 now.
 - 2026-08-07: Research — 万象 upstream **has** Lua (shijian `/rq`·`orq`, V 计算器, …); Universe advanced-input path hard-codes `rime_ice` component names + deploy. Recorded **R-06** / **TD-011** (phases A–F); **no implementation**.
 - 2026-08-07: Research — 万象「模型」= RIME-LMDG **grammar `.gram`** (not cloud LLM); optional heavy download; reusable by other pinyin schemes via `grammar.language`; needs librime/octagram + memory gates. Recorded **R-07** / **TD-012** (G0–G6); **no implementation**.
+- 2026-08-09: Human Product Owner 正式开启 TD-012 G0 的只读 artifact capability audit。当前固定 iOS artifact 通过 11-framework inventory 校验，但无 octagram archive/member/强制模块注册，runtime 仅配置 `core + dict + gears + lua`；G0 判定 No-Go，未下载模型、未改代码、未改变部署边界。详见 [artifact audit](../evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md)。
 - 2026-08-07 **EOD close-out:** Product agreed roadmap (phase 0 close → phase 1 TD-010/009 → phase 2 TD-011/012). Assignment handoff block written for zero-context resume; R-01 accept; formal Completed stamp deferred to merge.

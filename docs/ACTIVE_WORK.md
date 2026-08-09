@@ -9,7 +9,7 @@ Last synced: `2026-08-09 Asia/Shanghai` — `DIAGNOSTICS-OBSERVABILITY-001` 的 
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | RIME-SCHEME-WANXIANG-001 | Active | 009/010/011A done; **next TD-012** (or 011 B–D if Product opens) | [`assignments/rime-scheme-wanxiang-001.md`](assignments/rime-scheme-wanxiang-001.md) |
+| 1 | RIME-SCHEME-WANXIANG-001 | Active | 009/010/011A done; TD-012 G0 No-Go，等待新的 Artifact + Gate | [`assignments/rime-scheme-wanxiang-001.md`](assignments/rime-scheme-wanxiang-001.md) |
 | 2 | T9-RESPONSIVE-PIPELINE-001 | Active | Dual-gate request default-on; residual hygiene | [`assignments/t9-responsive-rime-pipeline-001.md`](assignments/t9-responsive-rime-pipeline-001.md) |
 | 3 | RELEASE-2026-0801 | Active | Release coordination; Entry Criteria pending | [`assignments/release-2026-08-01.md`](assignments/release-2026-08-01.md) |
 | 4 | HELP-TIPKIT-001 | Active | P1–P3 done; Product Gate pending | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |
@@ -36,7 +36,7 @@ New session: `AGENTS.md` → `KNOWLEDGE_INDEX` → **this file** → Assignment 
 
 | Priority | Item | Notes |
 |---|---|---|
-| **P0 next eng** | **[TD-012](TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration)** optional LMDG `.gram` | Default next if Product does not reopen 万象 advanced **controls** |
+| P0 blocked by G0 | **[TD-012](TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration)** optional LMDG `.gram` | 当前 iOS vendor 缺少 octagram；不得下载/接入，需新的 Artifact + Architecture/Product Gate |
 | P1 optional | **[TD-011](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) B–D** | Diagnose / multi-schema deploy / install isolation — only if Product productizes 万象 toggles |
 | P2 optional | Device smoke TD-011 A | 高级输入 + 万象：tips 显示 `/rq`·`orq`/`V`/`R`/`U`；裸 `rq` 仍属雾凇 |
 | P2 optional | Formal **Completed** stamp on RIME-SCHEME-WANXIANG-001 | Product may stamp when ready; path already merge-ready |

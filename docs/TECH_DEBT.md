@@ -159,6 +159,7 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 
 - **Priority:** Medium for long-sentence quality; **High risk** for Extension memory/jetsam if bundled naively. **Not** blocking 万象 V1 base.zip path (PD already defers `.gram`).
 - **Context (research 2026-08-07, no code change):** “万象模型”在社区语境里主要指 **RIME 语法模型（Grammar / Gram）**，仓库 **[amzxyz/RIME-LMDG](https://github.com/amzxyz/RIME-LMDG)**（Language / Model / Dictionary / Grammar）。它 **不是** 在线大模型 API，也 **不是** 我们 App 内的另一套候选引擎。
+- **G0 result (2026-08-09):** **No-Go for current vendor.** 已验证的 `rime-vendor-ios-1.16.1-lua.1` 虽含核心 `Grammar` 接口与 `ContextualTranslation`，但 11-framework inventory、`librime.a` archive 成员和强制注册符号均没有 octagram；运行时仅配置 `core + dict + gears + lua`。因此当前 pin 不能把 `.gram` 作为可用能力，详见 [G0 artifact audit](evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md)。
 
 ### What the model is
 
@@ -170,7 +171,7 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 | Size class | **Large** (order of tens–hundreds of MB class historically; treat as optional heavy download — exact bytes must be re-measured at pin time) |
 | Schema wiring | `grammar: language: <stem>` must match file stem: `wanxiang-lts-zh-hans.gram` → `language: wanxiang-lts-zh-hans` |
 | Parameters | `collocation_max_length` / `min_length`, penalties, and often `translator/contextual_suggestions` (万象 upstream schema already embeds a `grammar:` block + translator knobs; desktop docs also show `__include: octagram` patterns) |
-| Runtime dependency | Desktop Linux often needs **`librime-plugin-octagram`（八股文）**. Weasel/Squirrel “direct config” assumes a build that already understands grammar. **Universe must verify** pinned `librime` xcframework **actually loads `.gram`** (module/plugins inventory) before productizing download — if octagram is missing, file on disk is a no-op or fail. |
+| Runtime dependency | Desktop Linux often needs **`librime-plugin-octagram`（八股文）**. Weasel/Squirrel “direct config” assumes a build that already understands grammar. **Universe 已验证**当前 pinned iOS artifact 缺少 octagram；文件落盘会是 no-op 或 fail，不能产品化下载。 |
 
 ### Relation to 万象拼音 scheme (already in App)
 
@@ -210,7 +211,7 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - Treating missing gram as install failure of base 万象
 
 - **Owner area:** RIME Platform, RimeBridge artifacts, Main App catalog/download, Test/Release performance.
-- **Trigger to resolve:** Product reopens optional grammar slice after 万象 base path is stable; Architecture confirms librime/octagram support and memory budget.
+- **Trigger to resolve:** Product 与 Architecture 明确授权新的 iOS vendor artifact 可行性/集成工作，并先取得带 octagram 的可复现 artifact、模块注册和设备内存预算证据；在此之前不得下载、部署或宣传 `.gram`。
 - **Related:** PD-RIME-SCHEME-WANXIANG-001 non-claim on `.gram`; Assignment residual **R-07**; TD-009 (download UX); TD-001 (atomic install); `docs/RIME_SCHEME_MANAGEMENT.md`.
 
 ## TD-013: Diagnostics v1 P1 查询、生命周期与迁移硬化
