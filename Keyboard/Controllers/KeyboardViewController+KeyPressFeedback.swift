@@ -2,6 +2,75 @@ import KeyboardCore
 import UIKit
 
 extension KeyboardViewController {
+    #if DEBUG
+    /// Correlates a UIKit pointer terminal with lifecycle/candidate state.
+    /// `role` is deliberately coarse so diagnostics never record a typed key.
+    func recordKeyboardTrackingDiagnostic(
+        button: KeyboardKeyButton,
+        phase: KeyboardKeyTrackingPhase
+    ) {
+        let role: String
+        if button === shiftButton {
+            role = "shift"
+        } else if button === returnButton {
+            role = "return"
+        } else if button === nextKeyboardButton {
+            role = "nextKeyboard"
+        } else if button === t9SpaceButton {
+            role = "space"
+        } else {
+            switch button.visualStyle {
+            case .character:
+                role = "character"
+            case .function:
+                role = "function"
+            case .space:
+                role = "space"
+            case .returnKey:
+                role = "return"
+            case .active:
+                role = "active"
+            }
+        }
+        Logger.shared.info(
+            "KBDVIS touch phase=\(phase.rawValue) role=\(role) "
+                + "pressed=\(keyPressFeedbackEmittedButtonIDs.count)",
+            category: .display
+        )
+    }
+
+    /// Snapshot only structural state needed to separate stale UIKit paint,
+    /// real key tracking, Core composition and lifecycle cleanup. No key text,
+    /// candidate text or host-document text is emitted.
+    func recordKeyboardVisualDiagnostic(
+        _ marker: String,
+        effects: KeyboardEffect? = nil
+    ) {
+        guard controller != nil else { return }
+        let output = controller.state.lastRimeOutput
+        let collectionItems = candidateCollectionView?.numberOfItems(inSection: 0) ?? 0
+        let visibleCells = candidateCollectionView?.visibleCells.count ?? 0
+        let ownerEpoch = controller.threadAffineRimeCoordinator?.diagnostics.sessionEpoch ?? 0
+        let effectsRawValue = effects.map { String($0.rawValue) } ?? "none"
+        Logger.shared.info(
+            "KBDVIS marker=\(marker) effects=\(effectsRawValue) "
+                + "appeared=\(hasViewAppeared ? 1 : 0) "
+                + "ui=\(isKeyboardUIInstalled ? 1 : 0) "
+                + "ownerReady=\(controller.threadAffineRimeCoordinator?.isOwnerReady == true ? 1 : 0) "
+                + "epoch=\(ownerEpoch) "
+                + "pressed=\(keyPressFeedbackEmittedButtonIDs.count) "
+                + "compositionLength=\(controller.state.currentComposition.count) "
+                + "rawLength=\(output?.rawInput?.count ?? 0) "
+                + "coreCandidates=\(output?.candidates.count ?? 0) "
+                + "cachedCandidates=\(accumulatedCandidates.count) "
+                + "collectionItems=\(collectionItems) visibleCells=\(visibleCells) "
+                + "generation=\(candidateSnapshotGeneration) "
+                + "revision=\(controller.state.compositionRevision)",
+            category: .display
+        )
+    }
+    #endif
+
     /// Records touch timing and responds synchronously so rapid typing receives immediate feedback.
     @objc func keyTouchDown(_ sender: UIButton) {
         let identifier = ObjectIdentifier(sender)

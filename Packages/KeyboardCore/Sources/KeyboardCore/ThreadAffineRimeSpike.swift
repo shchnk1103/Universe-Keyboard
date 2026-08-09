@@ -20,21 +20,10 @@ public typealias ThreadAffineRimeSpikeEngineFactory = ThreadAffineRimeEngineBoot
 /// `maxPendingWorkDepth` is a testable bound, not a Product-locked jetsam SLO.
 public struct ThreadAffineRimeOwnerConfiguration: Sendable, Equatable {
     public var maxPendingWorkDepth: Int
-    /// Lifecycle-only owner construction timeout. It is never used while
-    /// accepting a key; a timeout must produce an explicit not-ready result.
-    public var ownerReadyTimeoutNanoseconds: UInt64
 
-    public init(
-        maxPendingWorkDepth: Int = 64,
-        ownerReadyTimeoutNanoseconds: UInt64 = 2_000_000_000
-    ) {
+    public init(maxPendingWorkDepth: Int = 64) {
         precondition(maxPendingWorkDepth > 0, "maxPendingWorkDepth must be positive")
-        precondition(
-            ownerReadyTimeoutNanoseconds > 0,
-            "ownerReadyTimeoutNanoseconds must be positive"
-        )
         self.maxPendingWorkDepth = maxPendingWorkDepth
-        self.ownerReadyTimeoutNanoseconds = ownerReadyTimeoutNanoseconds
     }
 
     public static let `default` = ThreadAffineRimeOwnerConfiguration()
@@ -523,6 +512,10 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         var sessionEpoch: UInt64 = 1
         var nextRevision: UInt64 = 1
         var stopped = false
+        /// Set only after the owner thread has constructed its live engine.
+        /// Work may be enqueued before this flips; the mailbox preserves FIFO
+        /// until the owner enters its loop.
+        var isReady = false
         var activeKillFence: ThreadAffineRimeActiveKillFence?
         var lastSettledRevision: UInt64 = 0
         var rejectedAtBoundCount = 0
@@ -548,7 +541,6 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
     private let mailbox: ThreadAffineRimeSpikeMailbox
     private let delivery: ThreadAffineRimeDeliveryChannel
     private let configuration: ThreadAffineRimeOwnerConfiguration
-    private let readySignal = DispatchSemaphore(value: 0)
     private let settledSignal = DispatchSemaphore(value: 0)
     private let destructionSignal = ThreadAffineRimeOwnerDestructionSignal()
 
@@ -565,7 +557,6 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         self.mailbox = mailbox
         self.delivery = delivery
         let counters = self.counters
-        let readySignal = self.readySignal
         let settledSignal = self.settledSignal
         let destructionSignal = self.destructionSignal
 
@@ -575,7 +566,6 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                 mailbox: mailbox,
                 delivery: delivery,
                 counters: counters,
-                readySignal: readySignal,
                 settledSignal: settledSignal
             )
             // Local engine lifetime has ended on the owner thread.
@@ -589,6 +579,12 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         // Performance Checker priority-inversion warnings under R4-B.
         thread.qualityOfService = QualityOfService.userInitiated
         thread.start()
+    }
+
+    /// Non-blocking bootstrap state for presentation/lifecycle diagnostics.
+    /// Callers must never wait for this from the keyboard MainActor.
+    public var isReady: Bool {
+        counters.withAcceptance(\.isReady)
     }
 
     /// R4-Owner preferred entry: config-only bootstrap naming.
@@ -795,14 +791,6 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         )
     }
 
-    /// Waits for owner-thread engine construction. This is a lifecycle barrier,
-    /// never a key-input operation; it lets the first diagnostic key carry the
-    /// native session snapshot without touching the engine from MainActor.
-    @discardableResult
-    public func waitUntilReady(timeout: DispatchTime = .now() + 2) -> Bool {
-        readySignal.wait(timeout: timeout) == .success
-    }
-
     private func requestStop() {
         let shouldStop = counters.withAcceptance { state in
             guard !state.stopped else { return false }
@@ -859,7 +847,6 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         mailbox: ThreadAffineRimeSpikeMailbox,
         delivery: ThreadAffineRimeDeliveryChannel,
         counters: SharedCounters,
-        readySignal: DispatchSemaphore,
         settledSignal: DispatchSemaphore
     ) {
         // The live engine is born here and never becomes shared state.
@@ -871,8 +858,8 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         counters.withAcceptance {
             $0.diagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
             $0.runtimeSelection = engine.runtimeSelection
+            $0.isReady = true
         }
-        readySignal.signal()
 
         while true {
             switch mailbox.next() {

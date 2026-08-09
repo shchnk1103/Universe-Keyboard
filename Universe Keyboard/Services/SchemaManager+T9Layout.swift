@@ -115,7 +115,7 @@ extension SchemaManager {
     }
 
     func currentT9ReadinessMatched() -> Bool {
-        guard let directories = try? archiveInstaller.deploymentDirectories() else { return false }
+        guard let directories = try? archiveInstaller.runtimeDirectories() else { return false }
         let fingerprint = T9DeploymentSupport.resourceFingerprint(sharedDataURL: directories.sharedDataURL)
         return RimeT9Readiness.isMatched(
             marker: T9DeploymentSupport.loadMarker(settings: settings),
@@ -126,7 +126,11 @@ extension SchemaManager {
     /// ADR 0026 migration + read helpers for layout settings.
     @MainActor
     func ensureLayoutSchemeBindingsMigrated() {
-        guard let dirs = try? archiveInstaller.deploymentDirectories() else {
+        let existing26 = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26)
+        let existing9 = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+        guard (existing26?.isEmpty != false) && (existing9?.isEmpty != false) else { return }
+
+        guard let dirs = try? archiveInstaller.runtimeDirectories() else {
             migrateBindings(onDiskFingerprint: nil)
             return
         }
@@ -135,14 +139,16 @@ extension SchemaManager {
     }
 
     private func migrateBindings(onDiskFingerprint: String?) {
-        _ = onDiskFingerprint
         let existing26 = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26)
         let existing9 = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
         if (existing26?.isEmpty == false) || (existing9?.isEmpty == false) { return }
         let base = settings.string(forKey: "rime_active_schema") ?? "luna_pinyin"
         let normalized = base == "t9" ? "rime_ice" : base
         settings.set(normalized, forKey: KeyboardLayoutSettingsKey.schemeBinding26)
-        if currentT9ReadinessMatched() {
+        if RimeT9Readiness.isMatched(
+            marker: T9DeploymentSupport.loadMarker(settings: settings),
+            onDiskFingerprint: onDiskFingerprint
+        ) {
             settings.set("t9", forKey: KeyboardLayoutSettingsKey.schemeBinding9)
         }
     }

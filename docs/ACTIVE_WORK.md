@@ -18,6 +18,7 @@ Last synced: `2026-08-08 Asia/Shanghai` — TD-009/010 **repaid**; TD-011 freeze
 | 7 | TYPING-INTELLIGENCE-001 | Active | Implementation; Quality pending | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 8 | TYPO-CORRECTION-002 | Active | Contextual recovery; sim scenarios pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 9 | KEYBOARD-LAYOUT-9KEY-PINYIN-002 | Active | Amendment D done; clean-commit / Product Gate pending | [`assignments/keyboard-layout-9key-pinyin-002.md`](assignments/keyboard-layout-9key-pinyin-002.md) |
+| 10 | KEYBOARD-STARTUP-PERF-001 | Completed — device evidence pending | Debug diagnostics ready; await Human reproduction log before root-cause fix | [`assignments/keyboard-startup-perf-001.md`](assignments/keyboard-startup-perf-001.md) |
 
 Closed this session (removed from Active): `RESPONSIVE-CANDIDATE-ANOMALY-001` (Completed; R-01 device smoke `accept`), `RESPONSIVE-DELETE-ANOMALY-001`, `KOS-2.1-OPS-001`, `KOS-2.1-OPS-IMPL-001`, `RESPONSIVE-DEFAULT-ON-001` (Reviewed; optional formal close).
 

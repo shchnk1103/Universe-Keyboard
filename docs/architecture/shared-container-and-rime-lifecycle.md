@@ -81,7 +81,7 @@ ADR 0006 requires a future atomic directory switch or equivalent transaction mod
 
 ### First presentation
 
-`viewDidLoad` builds controller state, resolves runtime directories and installs the in-memory fallback engine, but does not start librime. iOS can precreate a keyboard extension and suspend it without sending a view-disappearance callback; opening the RIME user dictionary in that state would leave a file lock and trigger `0xdead10cc`. The first `viewDidAppear` starts librime, creates its session and then marks the view as presented. Later visibility returns refresh the snapshot; the Extension does not rely on process-local `UserDefaults.didChangeNotification` for main-App writes.
+`viewDidLoad` builds controller state, resolves runtime directories and installs the in-memory fallback engine, but does not start librime. iOS can precreate a keyboard extension and suspend it without sending a view-disappearance callback; opening the RIME user dictionary in that state would leave a file lock and trigger `0xdead10cc`. The first `viewDidAppear` arms a two-display-tick gate; only after UIKit has crossed that initial visible refresh does librime create its session. This keeps the heavy first session open outside the keyboard's first-frame resource window. Later visibility returns refresh the snapshot; the Extension does not rely on process-local `UserDefaults.didChangeNotification` for main-App writes.
 
 ### Disappearance
 

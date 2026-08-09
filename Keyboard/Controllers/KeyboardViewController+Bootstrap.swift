@@ -139,6 +139,9 @@ extension KeyboardViewController {
     }
 
     func handleKeyboardDidAppear() {
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("HANDLE_DID_APPEAR_BEGIN")
+        #endif
         let isReturningToExistingKeyboard = hasViewAppeared
         hasViewAppeared = true
 
@@ -152,6 +155,9 @@ extension KeyboardViewController {
             if !effects.isEmpty, isKeyboardUIInstalled {
                 syncUI(with: effects)
             }
+            #if DEBUG
+            recordKeyboardVisualDiagnostic("HANDLE_DID_APPEAR_RETURN_CLEAN", effects: effects)
+            #endif
             Logger.shared.info(
                 "viewDidAppear: stale input and press state cleared after keyboard return",
                 category: .engine
@@ -167,6 +173,9 @@ extension KeyboardViewController {
         }
 
         Logger.shared.debug("viewDidAppear: bounds=\(view.bounds)", category: .display)
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("HANDLE_DID_APPEAR_END")
+        #endif
     }
 
     @discardableResult
@@ -174,6 +183,9 @@ extension KeyboardViewController {
         reason: String,
         abandonsComposition: Bool
     ) -> KeyboardEffect {
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("CLEANUP_BEGIN_\(reason)")
+        #endif
         deleteRepeatController.stop()
         dismissVariantPopup(animated: false)
         if isCandidateExpanded {
@@ -191,6 +203,9 @@ extension KeyboardViewController {
             "\(reason): transient keyboard state cleared, abandonComposition=\(abandonsComposition)",
             category: .display
         )
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("CLEANUP_END_\(reason)", effects: effects)
+        #endif
 
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
         p3d1RecordLifecycleMarker(
@@ -237,9 +252,60 @@ extension KeyboardViewController {
         )
     }
 
-    /// 只有键盘已经实际呈现后，才允许 librime 打开用户词典和创建 session。
+    /// 只有键盘已经跨过首帧提交后，才允许 librime 打开用户词典和创建 session。
     /// 若系统在预创建后直接挂起，前面的回退引擎不持有文件锁，因此可安全终止。
     func activateRimeRuntimeAfterKeyboardPresentation() {
+        guard !hasActivatedVisibleRimeRuntime,
+              pendingRimeRuntimeDirectories != nil,
+              rimeFirstFrameDisplayLink == nil
+        else { return }
+
+        rimeFirstFrameGateTickCount = 0
+        rimeFirstFrameGateStartTime = CACurrentMediaTime()
+        let target = KeyboardFirstFrameDisplayLinkTarget(controller: self)
+        let displayLink = CADisplayLink(
+            target: target,
+            selector: #selector(KeyboardFirstFrameDisplayLinkTarget.displayLinkDidFire(_:))
+        )
+        // 两个节拍让 UIKit 先提交并跨过首个可见刷新；不使用固定延迟，
+        // 因而可随 60/120Hz 与系统节能帧率自然调整。
+        displayLink.add(to: .main, forMode: .common)
+        rimeFirstFrameDisplayLinkTarget = target
+        rimeFirstFrameDisplayLink = displayLink
+        Logger.shared.info(
+            "RIME first-frame gate armed displayTicks=2",
+            category: .performance
+        )
+    }
+
+    /// 由弱代理持有的 display link 在 MainActor 回调。
+    /// 第二个节拍才允许创建 owner，避免 librime 首次打开词典与键盘首帧竞争资源。
+    func handleRimeFirstFrameDisplayLinkTick() {
+        guard rimeFirstFrameDisplayLink != nil else { return }
+        rimeFirstFrameGateTickCount += 1
+        guard rimeFirstFrameGateTickCount >= 2 else { return }
+
+        let elapsedMilliseconds = (CACurrentMediaTime() - rimeFirstFrameGateStartTime) * 1_000
+        cancelRimeFirstFrameGate()
+        Logger.shared.info(
+            "RIME first-frame gate passed displayTicks=2 elapsedMs="
+                + String(format: "%.1f", elapsedMilliseconds),
+            category: .performance
+        )
+        startRimeRuntimeAfterFirstFrame()
+    }
+
+    /// A visibility exit can precede the next display tick. Cancelling here is
+    /// required so a hidden/precreated extension never opens the user database.
+    func cancelRimeFirstFrameGate() {
+        rimeFirstFrameDisplayLink?.invalidate()
+        rimeFirstFrameDisplayLink = nil
+        rimeFirstFrameDisplayLinkTarget = nil
+        rimeFirstFrameGateTickCount = 0
+        rimeFirstFrameGateStartTime = 0
+    }
+
+    private func startRimeRuntimeAfterFirstFrame() {
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
         if installP3D1LifecycleHarnessIfArmed() {
             hasActivatedVisibleRimeRuntime = true
@@ -358,25 +424,7 @@ extension KeyboardViewController {
                 runToken: responsivePreflightRunToken
             )
         )
-        if active && ownerReady {
-            recordResponsivePreflightMarker(
-                ResponsiveRimePreflight.ownerReadinessMarkerLine(
-                    runToken: responsivePreflightRunToken ?? "invalid",
-                    isReady: true
-                )
-            )
-            return true
-        }
-        if active {
-            recordResponsivePreflightMarker(
-                ResponsiveRimePreflight.ownerReadinessMarkerLine(
-                    runToken: responsivePreflightRunToken ?? "invalid",
-                    isReady: false,
-                    reason: "owner-timeout"
-                ),
-                level: .warning
-            )
-        } else {
+        guard active else {
             recordResponsivePreflightMarker(
                 ResponsiveRimePreflight.fallbackMarkerLine(
                     reason: "rebuild-inactive",
@@ -384,15 +432,30 @@ extension KeyboardViewController {
                 ),
                 level: .warning
             )
+            // Fail closed: tear down any partial dual-gate owner *before* the
+            // caller creates a MainActor RimeEngineImpl (A-P1-01: at most one
+            // live librime session entry in use).
+            controller.isThreadAffineRimeOwnerEnabled = false
+            controller.isResponsiveRimePipelineEnabled = false
+            controller.threadAffineEngineBootstrap = nil
+            controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+            return false
         }
-        // Fail closed: tear down any partial dual-gate owner *before* the
-        // caller creates a MainActor RimeEngineImpl (A-P1-01: at most one
-        // live librime session entry in use).
-        controller.isThreadAffineRimeOwnerEnabled = false
-        controller.isResponsiveRimePipelineEnabled = false
-        controller.threadAffineEngineBootstrap = nil
-        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
-        return false
+
+        if ownerReady {
+            recordResponsivePreflightMarker(
+                ResponsiveRimePreflight.ownerReadinessMarkerLine(
+                    runToken: responsivePreflightRunToken ?? "invalid",
+                    isReady: true
+                )
+            )
+        } else {
+            Logger.shared.info(
+                "RIME owner is bootstrapping asynchronously; keyboard presentation will not wait",
+                category: .engine
+            )
+        }
+        return true
         #endif
     }
 
@@ -703,10 +766,16 @@ extension KeyboardViewController {
     }
 
     @objc private func extensionHostWillResignActive() {
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("HOST_RESIGN_BEFORE")
+        #endif
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
         p3d1RecordLifecycleMarker("HOST_RESIGN_BEGIN", reason: "extensionHost")
         #endif
         suspendKeyboardRuntime(reason: "extensionHostWillResignActive", updateUI: false)
+        #if DEBUG
+        recordKeyboardVisualDiagnostic("HOST_RESIGN_AFTER")
+        #endif
     }
 
 }
