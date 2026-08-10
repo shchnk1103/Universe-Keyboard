@@ -9,7 +9,7 @@ Last synced: `2026-08-09 Asia/Shanghai` — `RIME-SCHEME-WANXIANG-001` 已 Compl
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | TD-012-OCTAGRAM-VENDOR-G1 | Active | Vendor pin + Bridge wiring executor-complete; Architecture/Quality review next | [`assignments/td-012-octagram-vendor-g1.md`](assignments/td-012-octagram-vendor-g1.md) |
+| 1 | TD-012-OCTAGRAM-VENDOR-G1 | Completed | Merged PR #63; Architecture → Quality review via handoff | [`assignments/td-012-octagram-vendor-g1.md`](assignments/td-012-octagram-vendor-g1.md) · [handoff](assignments/td-012-octagram-vendor-g1-review-handoff.md) |
 | 2 | T9-RESPONSIVE-PIPELINE-001 | Active | Dual-gate request default-on; residual hygiene | [`assignments/t9-responsive-rime-pipeline-001.md`](assignments/t9-responsive-rime-pipeline-001.md) |
 | 3 | RELEASE-2026-0801 | Active | Release coordination; Entry Criteria pending | [`assignments/release-2026-08-01.md`](assignments/release-2026-08-01.md) |
 | 4 | HELP-TIPKIT-001 | Active | P1–P3 done; Product Gate pending | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |

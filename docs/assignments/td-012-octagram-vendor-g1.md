@@ -6,10 +6,10 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` — executor implementation recorded; independent Architecture/Quality review required before `Reviewed`/`Closed` |
+| **Lifecycle** | `Completed` — executor implementation merged (`84250c5` / PR #63); independent Architecture/Quality review required before `Reviewed`/`Closed` |
 | **Phase** | G1 vendor artifact, link and module-registration capability only |
 | **Non-claims** | No `.gram`, schema, user setting, download, deployment, memory claim or product release |
-| **Next** | 🏛️ Architecture & Knowledge Steward review, then 🧪 Quality review of [G1 evidence](../evidence/td-012-g1-octagram-vendor-build-2026-08-10.md) + CI |
+| **Next** | 🏛️ Architecture & Knowledge Steward, then 🧪 Quality — use [review handoff](td-012-octagram-vendor-g1-review-handoff.md) |
 | **Residuals** | Source header residual retained in [provenance audit](../evidence/td-012-octagram-license-provenance-audit-2026-08-09.md); model G2–G6 remain TD-012 debt phases |
 
 ---
@@ -118,9 +118,12 @@ Policy version: 1.0.0
 
 ## History
 
+- `2026-08-10`: PR [#63](https://github.com/shchnk1103/Universe-Keyboard/pull/63) squash-merged
+  to `main` as `84250c5`; feature branch cleaned. Lifecycle → `Completed` with
+  [Architecture/Quality review handoff](td-012-octagram-vendor-g1-review-handoff.md).
 - `2026-08-10`: Executor built and published `rime-vendor-ios-1.16.1-lua.1-octagram.1`,
   wired RimeBridge force-load/shim/traits, and recorded
   [G1 build evidence](../evidence/td-012-g1-octagram-vendor-build-2026-08-10.md).
-  No `.gram` or user feature. Independent Architecture/Quality review still open.
+  No `.gram` or user feature.
 - `2026-08-09`: Product authorized this dedicated G1 after TD-012 G0 No-Go and
   accepted the public upstream relicense provenance as its bounded source basis.
