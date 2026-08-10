@@ -1,5 +1,6 @@
 #import "RimeDeployer.h"
 #import "RimeLuaModuleShim.h"
+#import "RimeOctagramModuleShim.h"
 #include "rime_api.h"
 
 @implementation RimeDeployer {
@@ -17,11 +18,14 @@ static NSString *RimeLogDirectory(NSString *userDir) {
 }
 
 + (NSArray<NSString *> *)configuredModules {
+    NSMutableArray<NSString *> *modules = [NSMutableArray arrayWithObjects:@"core", @"dict", @"gears", nil];
 #ifdef RIME_HAS_LUA
-    return @[ @"core", @"dict", @"gears", @"lua" ];
-#else
-    return @[ @"core", @"dict", @"gears" ];
+    [modules addObject:@"lua"];
 #endif
+#ifdef RIME_HAS_OCTAGRAM
+    [modules addObject:@"octagram"];
+#endif
+    return modules;
 }
 
 + (BOOL)luaModuleCompiledIn {
@@ -61,10 +65,30 @@ static NSString *RimeLogDirectory(NSString *userDir) {
     return summary;
 }
 
++ (BOOL)octagramModuleCompiledIn {
+#ifdef RIME_HAS_OCTAGRAM
+    return YES;
+#else
+    return NO;
+#endif
+}
+
++ (BOOL)octagramModuleRegistered {
+    RimeEnsureOctagramModuleLinked();
+    RimeApi *api = rime_get_api();
+    if (!api || !RIME_API_AVAILABLE(api, find_module)) return NO;
+    return api->find_module("octagram") != NULL;
+}
+
++ (BOOL)grammarComponentRegistered {
+    return RimeOctagramComponentRegistered("grammar");
+}
+
 - (instancetype)init {
     self = [super init];
     if (self) {
         RimeEnsureLuaModuleLinked();
+        RimeEnsureOctagramModuleLinked();
         _api = rime_get_api();
         _cleanedUp = NO;
     }
@@ -75,6 +99,7 @@ static NSString *RimeLogDirectory(NSString *userDir) {
                     userDataDir:(NSString *)userDir {
     if (!_api) return NO;
     RimeEnsureLuaModuleLinked();
+    RimeEnsureOctagramModuleLinked();
 
     // 1. setup traits
     RIME_STRUCT(RimeTraits, traits);
@@ -87,23 +112,31 @@ static NSString *RimeLogDirectory(NSString *userDir) {
     traits.min_log_level = 0;
     traits.log_dir = [RimeLogDirectory(userDir) UTF8String];
 
-#ifdef RIME_HAS_LUA
-    // 2. 部署阶段也要注册 lua，否则含 Lua 组件的 schema 可能无法完整编译。
+    // 2. 部署阶段注册已链接的插件模块。octagram 只证明 grammar 组件能力，不加载 .gram。
+#if defined(RIME_HAS_LUA) && defined(RIME_HAS_OCTAGRAM)
+    const char* modules[] = { "core", "dict", "gears", "lua", "octagram", NULL };
+#elif defined(RIME_HAS_LUA)
     const char* modules[] = { "core", "dict", "gears", "lua", NULL };
+#elif defined(RIME_HAS_OCTAGRAM)
+    const char* modules[] = { "core", "dict", "gears", "octagram", NULL };
 #else
     const char* modules[] = { "core", "dict", "gears", NULL };
 #endif
     traits.modules = modules;
 
-    NSLog(@"[RIME] deploy setup: modules=%@ luaCompiledIn=%@ luaModuleRegisteredBeforeSetup=%@",
+    NSLog(@"[RIME] deploy setup: modules=%@ luaCompiledIn=%@ luaModuleRegisteredBeforeSetup=%@ octagramCompiledIn=%@ octagramRegisteredBeforeSetup=%@",
           [[self.class configuredModules] componentsJoinedByString:@"+"],
           self.class.luaModuleCompiledIn ? @"YES" : @"NO",
-          self.class.luaModuleRegistered ? @"YES" : @"NO");
+          self.class.luaModuleRegistered ? @"YES" : @"NO",
+          self.class.octagramModuleCompiledIn ? @"YES" : @"NO",
+          self.class.octagramModuleRegistered ? @"YES" : @"NO");
 
     _api->setup(&traits);
     RimeEnsureLuaComponentsLoaded();
-    NSLog(@"[RIME] deploy setup complete: luaComponents=%@",
-          [self.class.luaComponentRegistrySummary componentsJoinedByString:@"+"]);
+    RimeEnsureOctagramComponentsLoaded();
+    NSLog(@"[RIME] deploy setup complete: luaComponents=%@ grammarComponent=%@",
+          [self.class.luaComponentRegistrySummary componentsJoinedByString:@"+"],
+          self.class.grammarComponentRegistered ? @"true" : @"false");
 
     // 3. 初始化引擎（不创建 session，不处理输入）
     _api->initialize(NULL);
@@ -112,9 +145,11 @@ static NSString *RimeLogDirectory(NSString *userDir) {
         && self.class.luaModuleRegistered
         && self.class.luaComponentsRegistered;
 
-    NSLog(@"[RIME] deploy initialized: luaModuleRegisteredAfterInitialize=%@ luaComponents=%@",
+    NSLog(@"[RIME] deploy initialized: luaModuleRegisteredAfterInitialize=%@ luaComponents=%@ octagramRegistered=%@ grammarComponent=%@",
           self.class.luaModuleRegistered ? @"YES" : @"NO",
-          [self.class.luaComponentRegistrySummary componentsJoinedByString:@"+"]);
+          [self.class.luaComponentRegistrySummary componentsJoinedByString:@"+"],
+          self.class.octagramModuleRegistered ? @"YES" : @"NO",
+          self.class.grammarComponentRegistered ? @"true" : @"false");
 
     // Lua 能力属于已部署运行时状态，由主 App 在交付键盘前持久化。
     // 这里必须写入运行时探测结果，而不是仅依赖编译宏，避免详情页虚报可用。

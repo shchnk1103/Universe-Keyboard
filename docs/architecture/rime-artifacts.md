@@ -2,9 +2,9 @@
 
 ## Required Inventory
 
-`Packages/RimeBridge/Vendor/` is intentionally gitignored. A complete installation contains these 11 frameworks:
+`Packages/RimeBridge/Vendor/` is intentionally gitignored. A complete installation contains these 12 frameworks:
 
-- `librime.xcframework`, `librime-lua.xcframework`, `liblua.xcframework`
+- `librime.xcframework`, `librime-lua.xcframework`, `librime-octagram.xcframework`, `liblua.xcframework`
 - `boost_atomic.xcframework`, `boost_filesystem.xcframework`, `boost_regex.xcframework`
 - `libglog.xcframework`, `libleveldb.xcframework`, `libmarisa.xcframework`
 - `libopencc.xcframework`, `libyaml-cpp.xcframework`
@@ -26,6 +26,7 @@ Every framework must contain an iOS device `arm64` static-library slice and the 
 | `libmarisa.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
 | `libopencc.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
 | `librime-lua.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
+| `librime-octagram.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
 | `librime.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
 | `libyaml-cpp.xcframework` | `ios-arm64` (`arm64`) | `ios-arm64_x86_64-simulator` (`arm64`, `x86_64`) |
 
@@ -33,7 +34,7 @@ Contract rules:
 
 - `SupportedPlatform` must be `ios`; the simulator entry must also declare `SupportedPlatformVariant=simulator`.
 - The declared architectures in each XCFramework `Info.plist` and the architectures in its static-library payload must agree with the table.
-- All 11 frameworks must satisfy the matrix as one artifact set. A partial intersection is not sufficient.
+- All 12 frameworks must satisfy the matrix as one artifact set. A partial intersection is not sufficient.
 - Non-iOS entries present in the pinned archive do not satisfy an iOS requirement and are outside the required integration surface. They may remain only as bytes already covered by the pinned archive checksum.
 - Homebrew, macOS libraries, source builds and locally substituted slices cannot satisfy this contract.
 - Version, URL, archive checksum and framework identity remain owned by `config/rime-vendor-manifest.env`; checksum verification remains mandatory in addition to slice verification.
@@ -63,23 +64,29 @@ its directory names are structurally valid.
 
 ## Current Pinned Release
 
-- Release tag: `rime-vendor-ios-1.16.1-lua.1`
-- Asset: `universe-keyboard-rime-vendor-ios-1.16.1-lua.1.zip`
-- SHA-256: `c299f36eae4966a8c22f83046c7015a04b3f047abcc4bab9355ca19ac840436c`
-- Release URL: <https://github.com/shchnk1103/Universe-Keyboard/releases/tag/rime-vendor-ios-1.16.1-lua.1>
+- Release tag: `rime-vendor-ios-1.16.1-lua.1-octagram.1`
+- Asset: `universe-keyboard-rime-vendor-ios-1.16.1-lua.1-octagram.1.zip`
+- SHA-256: `d17aab9a8b08b5901ab583c143b0a8a03994e36fe092309fd14c5bee31399dd9`
+- Release URL: <https://github.com/shchnk1103/Universe-Keyboard/releases/tag/rime-vendor-ios-1.16.1-lua.1-octagram.1>
+- Rollback baseline (no octagram): `rime-vendor-ios-1.16.1-lua.1` /
+  SHA-256 `c299f36eae4966a8c22f83046c7015a04b3f047abcc4bab9355ca19ac840436c`
 
-### Grammar / octagram Capability Limit
+### Grammar / octagram Capability (G1)
 
-The current pin is **not** a grammar-model-capable artifact. Its `librime.a`
-contains the core `Grammar` interface and `ContextualTranslation` bridge, but
-the required 11-framework inventory has no octagram framework; the iOS archive
-has no octagram member or `rime_require_module_octagram` symbol. The App and
-Keyboard currently load only `core`, `dict`, `gears`, and `lua`.
+The current pin **includes** the static `librime-octagram` plugin and the
+module-registration path used by the App and Keyboard (`core + dict + gears +
+lua + octagram`). G1 proves only that the concrete `grammar` component can be
+discovered after module load.
 
-Accordingly, a downloaded `*.gram` file would not be evidence of a working
-grammar model. Do not add, deploy, or advertise `.gram` support until a new,
-reproducibly pinned vendor artifact has passed the TD-012 G0 successor gates.
-The supporting read-only evidence is [TD-012 G0 octagram artifact audit](../evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md).
+G1 still does **not** ship, download, deploy, or advertise any `*.gram` model
+file, schema patch, or user-facing “整句增强” feature. Those remain TD-012
+G2–G6. Build pins and recipe live in
+`config/rime-octagram-vendor-build.env` and
+`scripts/build_rime_octagram_plugin.sh`. Supporting evidence:
+
+- [TD-012 G0 octagram artifact audit](../evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md) (baseline No-Go)
+- [octagram license provenance](../evidence/td-012-octagram-license-provenance-audit-2026-08-09.md)
+- [G1 vendor build evidence](../evidence/td-012-g1-octagram-vendor-build-2026-08-10.md)
 
 ## Commands
 
@@ -97,8 +104,13 @@ directory carries a receipt matching the checked-in manifest.
 
 ## Publishing Checklist
 
-1. Build the full 11-framework archive, including `liblua.xcframework` and `librime-lua.xcframework`.
+1. Build the full 12-framework archive, including `liblua.xcframework`,
+   `librime-lua.xcframework`, and `librime-octagram.xcframework` (see
+   `scripts/build_rime_octagram_plugin.sh` +
+   `scripts/assemble_rime_vendor_with_octagram.sh` for the octagram extension path).
 2. Upload it as an immutable versioned GitHub Release asset.
 3. Calculate SHA-256 from the uploaded archive bytes.
 4. Replace all `UNCONFIGURED` values in `config/rime-vendor-manifest.env` in a reviewed change.
-5. Run `bash scripts/ensure_rime_vendor.sh fetch`, the simulator bridge tests and a Lua-capable schema smoke test.
+5. Run `bash scripts/ensure_rime_vendor.sh fetch`, the simulator bridge tests, a
+   Lua-capable schema smoke test, and the octagram capability tests (module +
+   `grammar` registry, with no `.gram` file).

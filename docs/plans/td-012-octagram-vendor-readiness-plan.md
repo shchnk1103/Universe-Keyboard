@@ -1,10 +1,16 @@
 # TD-012：iOS octagram Vendor 准备计划
 
-> **Status:** Active — 当前只允许 G1 准备与证据收集；尚未授权 artifact 构建、模型下载、运行时接入或用户可见功能。
+> **Status:** Vendor G1 executor-complete (2026-08-10) — pin
+> `rime-vendor-ios-1.16.1-lua.1-octagram.1` + Bridge registration path. Independent
+> Architecture/Quality review still open. Model download / user feature remain
+> unauthorized (TD-012 model G2+).
 >
-> **Current source of truth:** [`TD-012`](../TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration) 记录风险与触发条件；[`RIME-SCHEME-WANXIANG-001`](../assignments/rime-scheme-wanxiang-001.md) 仍是唯一 Active Assignment；本计划不改变其 `G0 No-Go` 状态。
+> **Current source of truth:** [`TD-012`](../TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration);
+> Assignment [`TD-012-OCTAGRAM-VENDOR-G1`](../assignments/td-012-octagram-vendor-g1.md);
+> evidence [`G1 build`](../evidence/td-012-g1-octagram-vendor-build-2026-08-10.md).
 >
-> **Closure rule:** 若 G1 的许可证/来源或可复现 artifact 门槛未通过，本计划标记为 `Abandoned`，并保留 TD-012；只有新 Assignment 与 Architecture/Product Gate 才能让 G2 及以后阶段开始。
+> **Closure rule:** Vendor G1 may move to `Reviewed`/`Closed` only after independent
+> Architecture and Quality conclusions. G2+ still need a new Product Decision.
 
 ## 1. 目的与边界
 
