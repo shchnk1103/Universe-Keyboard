@@ -10,11 +10,11 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Recorded` |
-| **Phase** | G1 only — reproducible vendor capability and module activation |
+| **Lifecycle** | `Recorded` — G1 Assignment **Closed** under this PD (2026-08-10) |
+| **Phase** | G1 vendor capability **delivered and closed**; model G2+ still require new PD |
 | **Non-claims** | No `.gram` download/deploy; no schema/UI/product feature; no claim of model quality, memory budget or App Store readiness |
-| **Next** | Assignment enters `Ready` with this document; implementation begins only after it is merged to `main` |
-| **Residuals** | Upstream stale GPL file header retained in provenance/notice; G2–G6 remain TD-012 follow-on gates |
+| **Next** | None for G1. Optional model phases only with a new Product Decision under TD-012 |
+| **Residuals** | Upstream stale GPL file header retained in provenance/notice; Jetsam measurement + G2–G6 remain TD-012 follow-on gates |
 
 ---
 

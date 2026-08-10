@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-08 Asia/Shanghai
+> **Updated:** 2026-08-10 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -32,19 +32,20 @@
 - **Pin:** `amzxyz/rime-wanxiang` · asset `rime-wanxiang-base.zip` · schema `wanxiang` · CC BY 4.0
 - **Evidence:** layout-bound + catalog unit tests; Human smoke 2026-08-07 (install/use/layout/sync/isolation); polish PRs #51–#54
 - **Human smoke:** nine-key OK with 万象 on 26-key slot; fuzzy **雾凇 only**; bare `rq` not 万象 (use `/rq`·`orq`; settings copy via `RimeSchemeNativeUsageGuide`)
-- **Roadmap:** **TD-009 + TD-010 done** · **TD-011 freeze A done** · TD-012 continues in its dedicated G1 Assignment
-- **Repaid:** [`TD-009`](TECH_DEBT.md#td-009-multi-scheme-download-toast-name-and-progress) · [`TD-010`](TECH_DEBT.md#td-010-per-scheme-capability-gates-in-settings-ux) · TD-011 **A** (copy)
-- **Still open:** [`TD-011`](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) B–D (optional) · [`TD-012`](TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration)
-- **Handoff:** [`TD-012-OCTAGRAM-VENDOR-G1`](assignments/td-012-octagram-vendor-g1.md) owns vendor capability only; freeze A hold (no `rq` remap) remains
+- **Roadmap:** **TD-009 + TD-010 done** · **TD-011 freeze A done** · **TD-012 Vendor G1 Closed** · model G2+ still open under TD-012
+- **Repaid:** [`TD-009`](TECH_DEBT.md#td-009-multi-scheme-download-toast-name-and-progress) · [`TD-010`](TECH_DEBT.md#td-010-per-scheme-capability-gates-in-settings-ux) · TD-011 **A** (copy) · TD-012 **Vendor G1**
+- **Still open:** [`TD-011`](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) B–D (optional) · [`TD-012`](TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration) model G2+
+- **Handoff:** freeze A hold (no `rq` remap) remains; model/grammar productization needs new PD
 
 ## TD-012-OCTAGRAM-VENDOR-G1 — 可复现 iOS octagram Vendor 能力
 
-- **Lifecycle:** `Ready` — implementation starts after this Assignment enters `main`
+- **Lifecycle:** `Closed` — Arch + Quality **Conditional Accept** (2026-08-10)
 - **Authority:** [`PD`](product-decisions/TD-012-OCTAGRAM-VENDOR-G1-authorization.md) · [`Assignment`](assignments/td-012-octagram-vendor-g1.md)
-- **Scope:** new immutable vendor artifact, static link/registration and content-free module verification only
-- **Non-claims:** no `.gram` model, schema/UI/download, device-memory conclusion or product release
-- **Inputs:** G0 artifact audit + upstream license provenance audit + KOS 2.1 G-01
-- **Next:** RIME Platform implementation evidence, then independent Architecture and Quality review
+- **Delivered:** pin `rime-vendor-ios-1.16.1-lua.1-octagram.1`; Bridge shim/traits/force-load; no `.gram`
+- **Reviews:** [`Architecture`](assignments/td-012-octagram-vendor-g1-architecture-review.md) · [`Quality`](assignments/td-012-octagram-vendor-g1-quality-review.md) · [`handoff`](assignments/td-012-octagram-vendor-g1-review-handoff.md)
+- **Evidence:** [`G1 build`](evidence/td-012-g1-octagram-vendor-build-2026-08-10.md); Quality-reverified suite on `main`
+- **Non-claims:** no model quality, Jetsam budget, schema/UI, App Store
+- **Next:** none for G1; TD-012 model G2+ requires new Product Decision + memory measurement
 
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 

@@ -144,4 +144,6 @@ Do **not** start model download, schema wiring, or user-visible “整句增强�
 
 ## History
 
+- `2026-08-10`: Architecture Conditional Accept + Quality Conditional Accept filed;
+  Assignment lifecycle → `Closed`. Residuals disposed under M-03.
 - `2026-08-10`: PR #63 merged to `main` (`84250c5`); remote feature branch deleted; this handoff issued for Architecture → Quality.

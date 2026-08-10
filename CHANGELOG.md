@@ -2,7 +2,7 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
-## 2026-08-10 — TD-012 G1: iOS octagram vendor capability
+## 2026-08-10 — TD-012 G1 Closed: octagram vendor + independent review
 
 - New immutable vendor pin `rime-vendor-ios-1.16.1-lua.1-octagram.1` adds
   `librime-octagram.xcframework` (device arm64 + simulator arm64/x86_64) on top of
@@ -11,9 +11,11 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - Reproducible plugin recipe: `config/rime-octagram-vendor-build.env`,
   `scripts/build_rime_octagram_plugin.sh`, `scripts/assemble_rime_vendor_with_octagram.sh`.
 - RimeBridge: `RIME_HAS_OCTAGRAM`, module shim, traits load `octagram` with base+lua,
-  Keyboard `-force_load`, and capability probes for module/`grammar` registry
-  (no `.gram` model, schema, or user-facing feature).
-- Does not authorize TD-012 model download, memory budget, or product enablement.
+  Keyboard `-force_load` (octagram + glog), and capability probes for module/`grammar`
+  registry (no `.gram` model, schema, or user-facing feature).
+- Architecture **Conditional Accept** + Quality **Conditional Accept** (independent
+  re-verification); Assignment `TD-012-OCTAGRAM-VENDOR-G1` **Closed** with M-03
+  residual dispositions. Model G2+ and Jetsam measurement remain TD-012 debt.
 
 ## 2026-08-09 — 本地企业级诊断 P0 与高保真到期提醒
 
