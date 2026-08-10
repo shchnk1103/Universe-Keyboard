@@ -5,32 +5,33 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-09 Asia/Shanghai` — `RIME-SCHEME-WANXIANG-001` 已 Completed 并由 `TD-012-OCTAGRAM-VENDOR-G1` 接替其 Active Work 名额；`DIAGNOSTICS-OBSERVABILITY-001` 的 P0 已由 PR #57 合并且 CI 通过，现等待人类 Product Gate。
+Last synced: `2026-08-10 Asia/Shanghai` — `TD-012-OCTAGRAM-VENDOR-G1` Closed（Arch+Quality Conditional Accept）；Active 名额释放。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | TD-012-OCTAGRAM-VENDOR-G1 | Completed | Merged PR #63; Architecture → Quality review via handoff | [`assignments/td-012-octagram-vendor-g1.md`](assignments/td-012-octagram-vendor-g1.md) · [handoff](assignments/td-012-octagram-vendor-g1-review-handoff.md) |
-| 2 | T9-RESPONSIVE-PIPELINE-001 | Active | Dual-gate request default-on; residual hygiene | [`assignments/t9-responsive-rime-pipeline-001.md`](assignments/t9-responsive-rime-pipeline-001.md) |
-| 3 | RELEASE-2026-0801 | Active | Release coordination; Entry Criteria pending | [`assignments/release-2026-08-01.md`](assignments/release-2026-08-01.md) |
-| 4 | HELP-TIPKIT-001 | Active | P1–P3 done; Product Gate pending | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |
-| 5 | HELP-J3-RESOURCES-001 | Active | Slim resource prepare | [`assignments/help-j3-resources-001.md`](assignments/help-j3-resources-001.md) |
-| 6 | APP-SEARCH-001 | Active | Search tab + J4 trial field | [`assignments/app-search-001.md`](assignments/app-search-001.md) |
-| 7 | TYPING-INTELLIGENCE-001 | Active | Implementation; Quality pending | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
-| 8 | TYPO-CORRECTION-002 | Active | Contextual recovery; sim scenarios pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
-| 9 | KEYBOARD-LAYOUT-9KEY-PINYIN-002 | Active | Amendment D done; clean-commit / Product Gate pending | [`assignments/keyboard-layout-9key-pinyin-002.md`](assignments/keyboard-layout-9key-pinyin-002.md) |
-| 10 | DIAGNOSTICS-OBSERVABILITY-001 | Active | P0 已合并；等待 Product Gate，P1 后续见 TD-013 | [`assignments/diagnostics-observability-001.md`](assignments/diagnostics-observability-001.md) |
+| 1 | T9-RESPONSIVE-PIPELINE-001 | Active | Dual-gate request default-on; residual hygiene | [`assignments/t9-responsive-rime-pipeline-001.md`](assignments/t9-responsive-rime-pipeline-001.md) |
+| 2 | RELEASE-2026-0801 | Active | Release coordination; Entry Criteria pending | [`assignments/release-2026-08-01.md`](assignments/release-2026-08-01.md) |
+| 3 | HELP-TIPKIT-001 | Active | P1–P3 done; Product Gate pending | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |
+| 4 | HELP-J3-RESOURCES-001 | Active | Slim resource prepare | [`assignments/help-j3-resources-001.md`](assignments/help-j3-resources-001.md) |
+| 5 | APP-SEARCH-001 | Active | Search tab + J4 trial field | [`assignments/app-search-001.md`](assignments/app-search-001.md) |
+| 6 | TYPING-INTELLIGENCE-001 | Active | Implementation; Quality pending | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
+| 7 | TYPO-CORRECTION-002 | Active | Contextual recovery; sim scenarios pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
+| 8 | KEYBOARD-LAYOUT-9KEY-PINYIN-002 | Active | Amendment D done; clean-commit / Product Gate pending | [`assignments/keyboard-layout-9key-pinyin-002.md`](assignments/keyboard-layout-9key-pinyin-002.md) |
+| 9 | DIAGNOSTICS-OBSERVABILITY-001 | Active | P0 已合并；等待 Product Gate，P1 后续见 TD-013 | [`assignments/diagnostics-observability-001.md`](assignments/diagnostics-observability-001.md) |
 
 ## Completed (not Active)
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
+| TD-012-OCTAGRAM-VENDOR-G1 | Vendor pin + Bridge G1 **Closed**; model G2+ remain TD-012 debt | [`assignments/td-012-octagram-vendor-g1.md`](assignments/td-012-octagram-vendor-g1.md) · [Arch](assignments/td-012-octagram-vendor-g1-architecture-review.md) · [Quality](assignments/td-012-octagram-vendor-g1-quality-review.md) |
 | KEYBOARD-STARTUP-PERF-001 | 已交付首帧性能修复与最小 Debug 诊断；真机异常日志是 `DIAGNOSTICS-OBSERVABILITY-001` 的输入，而不是继续扩大旧任务 | [`assignments/keyboard-startup-perf-001.md`](assignments/keyboard-startup-perf-001.md) |
 
 Closed this session (removed from Active): `RESPONSIVE-CANDIDATE-ANOMALY-001` (Completed; R-01 device smoke `accept`), `RESPONSIVE-DELETE-ANOMALY-001`, `KOS-2.1-OPS-001`, `KOS-2.1-OPS-IMPL-001`, `RESPONSIVE-DEFAULT-ON-001` (Reviewed; optional formal close).
 
 ## Cold-session resume (万象 arc · 2026-08-08 EOD)
 
-New session: `AGENTS.md` → `KNOWLEDGE_INDEX` → **this file** → Assignment row #1 → full handoff block inside the Assignment.
+New session: `AGENTS.md` → `KNOWLEDGE_INDEX` → **this file** → pick Active row → full Assignment handoff.  
+TD-012 G1 is **Closed** (see Completed table); do not re-open vendor G1 without revalidation.
 
 ### 待办 / Backlog（未做 · 下次会话）
 

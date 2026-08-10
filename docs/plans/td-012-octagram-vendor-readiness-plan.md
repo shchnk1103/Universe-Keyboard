@@ -1,16 +1,17 @@
 # TD-012：iOS octagram Vendor 准备计划
 
-> **Status:** Vendor G1 executor-complete (2026-08-10) — pin
-> `rime-vendor-ios-1.16.1-lua.1-octagram.1` + Bridge registration path. Independent
-> Architecture/Quality review still open. Model download / user feature remain
-> unauthorized (TD-012 model G2+).
+> **Status:** **Archived** — Vendor G1 Closed (2026-08-10). Architecture + Quality
+> Conditional Accept; pin `rime-vendor-ios-1.16.1-lua.1-octagram.1` on `main`.
+> Model download / user feature remain unauthorized (TD-012 model G2+).
 >
 > **Current source of truth:** [`TD-012`](../TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration);
-> Assignment [`TD-012-OCTAGRAM-VENDOR-G1`](../assignments/td-012-octagram-vendor-g1.md);
+> Assignment [`TD-012-OCTAGRAM-VENDOR-G1`](../assignments/td-012-octagram-vendor-g1.md) (`Closed`);
+> [`Architecture`](../assignments/td-012-octagram-vendor-g1-architecture-review.md) ·
+> [`Quality`](../assignments/td-012-octagram-vendor-g1-quality-review.md);
 > evidence [`G1 build`](../evidence/td-012-g1-octagram-vendor-build-2026-08-10.md).
 >
-> **Closure rule:** Vendor G1 may move to `Reviewed`/`Closed` only after independent
-> Architecture and Quality conclusions. G2+ still need a new Product Decision.
+> **Closure rule (satisfied for G1):** Arch + Quality Conditional Accept with M-03
+> residual dispositions. G2+ still need a new Product Decision.
 
 ## 1. 目的与边界
 

@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Completed` — executor implementation merged (`84250c5` / PR #63); independent Architecture/Quality review required before `Reviewed`/`Closed` |
-| **Phase** | G1 vendor artifact, link and module-registration capability only |
-| **Non-claims** | No `.gram`, schema, user setting, download, deployment, memory claim or product release |
-| **Next** | 🏛️ Architecture & Knowledge Steward, then 🧪 Quality — use [review handoff](td-012-octagram-vendor-g1-review-handoff.md) |
-| **Residuals** | Source header residual retained in [provenance audit](../evidence/td-012-octagram-license-provenance-audit-2026-08-09.md); model G2–G6 remain TD-012 debt phases |
+| **Lifecycle** | `Closed` — Architecture **Conditional Accept** + Quality **Conditional Accept**; all residuals have M-03 disposition |
+| **Phase** | G1 vendor capability **done**; model G2+ remain unauthorized under parent TD-012 |
+| **Non-claims** | No `.gram` productization, schema/UI, Jetsam budget, legal opinion, or App Store readiness from this Assignment |
+| **Next** | None for G1. Model work requires a new Product Decision under [`TD-012`](../TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration) |
+| **Residuals** | See Architecture + Quality residual tables; dispositions `accept` / `tech_debt:TD-012` only |
 
 ---
 
@@ -81,18 +81,18 @@ Policy version: 1.0.0
 
 ### Exit Criteria
 
-- Reproducible build inputs, toolchain versions, patches, dependency identities and
+- [x] Reproducible build inputs, toolchain versions, patches, dependency identities and
   source notices are recorded in the vendor provenance Source of Truth.
-- A new immutable archive has valid device and simulator slices, a checksum, receipt
+- [x] A new immutable archive has valid device and simulator slices, a checksum, receipt
   and reviewed inventory; old artifact restoration remains possible.
-- Static link evidence proves octagram registration object retention and controlled
+- [x] Static link evidence proves octagram registration object retention and controlled
   runtime evidence proves `octagram` loads `grammar` without user content.
-- Missing/incompatible artifact or module preserves base RIME and Lua behavior.
-- `ensure_rime_vendor`, RimeBridgeTests, App/Keyboard strict tests and Debug/Release
-  builds pass at the changed pin; no `.gram` appears in the artifact, repo, App Group
-  contract or runtime configuration.
-- Executor records evidence; independent Architecture and Quality conclusions are
-  handed off before `Reviewed`/`Closed` is claimed.
+- [x] Missing/incompatible artifact path fails closed at pin/fetch; base+lua coexist when
+  pin is present; coordinated rollback to baseline pin is documented.
+- [x] `ensure_rime_vendor`, RimeBridgeTests, App/Keyboard strict tests and Debug/Release
+  builds pass at the changed pin; no `.gram` appears in the artifact, repo, or G1 runtime path.
+- [x] Executor evidence recorded; independent [Architecture](td-012-octagram-vendor-g1-architecture-review.md)
+  and [Quality](td-012-octagram-vendor-g1-quality-review.md) conclusions filed with M-03 residuals.
 
 ### Stop Conditions
 
@@ -106,21 +106,40 @@ Policy version: 1.0.0
   release/product claim without a new Product Decision.
 - Required independent review is unavailable at the `Completed` handoff boundary.
 
+## Independent review package
+
+| Role | Conclusion | Document |
+|---|---|---|
+| Architecture | Conditional Accept | [`td-012-octagram-vendor-g1-architecture-review.md`](td-012-octagram-vendor-g1-architecture-review.md) |
+| Quality | Conditional Accept | [`td-012-octagram-vendor-g1-quality-review.md`](td-012-octagram-vendor-g1-quality-review.md) |
+| Executor handoff | — | [`td-012-octagram-vendor-g1-review-handoff.md`](td-012-octagram-vendor-g1-review-handoff.md) |
+| Build evidence | Executor-recorded | [`../evidence/td-012-g1-octagram-vendor-build-2026-08-10.md`](../evidence/td-012-g1-octagram-vendor-build-2026-08-10.md) |
+
+### Residual ledger (merged Architecture + Quality, M-03)
+
+| ID | Disposition | Summary |
+|---|---|---|
+| TD012-G1-A-01 / Q-G1-01 | `accept` | Stale GPLv3 file-header residual; notice retained |
+| TD012-G1-A-02 / Q-G1-02 | `accept` | Plugin DT 15.0 vs app 26.4 |
+| TD012-G1-A-03 / Q-G1-03 | `accept` | Keyboard force-load glog + octagram |
+| TD012-G1-A-04 / Q-G1-04 | `tech_debt:TD-012` | Jetsam/size unmeasured; block model G2 until measured |
+| TD012-G1-A-05 | `accept` | Coordinated rollback (not hot-unplug) |
+| TD012-G1-A-06 / Q-G1-05 | `tech_debt:TD-012` | Model G2–G6 unauthorized |
+
 ## Handoff
 
-- **Handoff Target:** 🏛️ Architecture & Knowledge Steward, then 🧪 Quality,
-  Performance & Release Maintainer.
-- **Required Handoff Content:** source/provenance ledger; build recipe and artifact
-  checksum; inventory/slice/symbol/module evidence; failure/rollback result; complete
-  test/build receipts; unchanged-boundary statement; residuals and G2–G6 non-claims.
+- **Handoff Target:** Closed — no further G1 handoff. Parent TD-012 owns model phases.
+- **Required Handoff Content:** (satisfied) source/provenance ledger; recipe/checksum; inventory/slice/symbol/module evidence; rollback note; test/build receipts; boundary statement; residuals.
 - **Revalidation Trigger:** octagram/librime source or license change, toolchain/ABI
   change, artifact replacement, any `.gram`/schema scope request, or reviewer finding.
 
 ## History
 
+- `2026-08-10`: Architecture Conditional Accept + Quality Conditional Accept (independent
+  subagent reviews). Residuals all `accept` or `tech_debt:TD-012`. Lifecycle → **`Closed`**.
 - `2026-08-10`: PR [#63](https://github.com/shchnk1103/Universe-Keyboard/pull/63) squash-merged
-  to `main` as `84250c5`; feature branch cleaned. Lifecycle → `Completed` with
-  [Architecture/Quality review handoff](td-012-octagram-vendor-g1-review-handoff.md).
+  to `main` as `84250c5`; feature branch cleaned. Lifecycle was `Completed` with
+  [review handoff](td-012-octagram-vendor-g1-review-handoff.md).
 - `2026-08-10`: Executor built and published `rime-vendor-ios-1.16.1-lua.1-octagram.1`,
   wired RimeBridge force-load/shim/traits, and recorded
   [G1 build evidence](../evidence/td-012-g1-octagram-vendor-build-2026-08-10.md).
