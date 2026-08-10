@@ -27,11 +27,13 @@ let package = Package(
                 "libyamlCppRIME",
                 "libluaRIME",
                 "librimeLuaRIME",
+                "librimeOctagramRIME",
             ],
             path: "Sources/RimeBridgeObjC",
             publicHeadersPath: "include",
             cSettings: [
                 .define("RIME_HAS_LUA"),
+                .define("RIME_HAS_OCTAGRAM"),
                 .define("RIME_DIAGNOSTICS", .when(configuration: .debug)),
             ],
             linkerSettings: [.linkedLibrary("c++")]
@@ -59,6 +61,7 @@ let package = Package(
         .binaryTarget(name: "libyamlCppRIME", path: "Vendor/libyaml-cpp.xcframework"),
         .binaryTarget(name: "libluaRIME", path: "Vendor/liblua.xcframework"),
         .binaryTarget(name: "librimeLuaRIME", path: "Vendor/librime-lua.xcframework"),
+        .binaryTarget(name: "librimeOctagramRIME", path: "Vendor/librime-octagram.xcframework"),
 
         .testTarget(
             name: "RimeBridgeTests",

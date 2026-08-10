@@ -23,6 +23,15 @@ NS_ASSUME_NONNULL_BEGIN
 /// 返回关键 Lua 组件的 Registry 状态，便于 App 侧诊断日志记录。
 + (NSArray<NSString *> *)luaComponentRegistrySummary;
 
+/// 当前二进制是否在 ObjC 桥接层启用了 octagram 模块（G1 grammar capability）。
++ (BOOL)octagramModuleCompiledIn;
+
+/// librime 运行时是否已经注册 octagram 模块。
++ (BOOL)octagramModuleRegistered;
+
+/// Registry 是否已发现 concrete `grammar` 组件（不加载任何 `.gram` 模型文件）。
++ (BOOL)grammarComponentRegistered;
+
 /// 执行全量部署。
 /// @param sharedDir RIME shared_data_dir（App Group 中 Rime/shared）
 /// @param userDir RIME user_data_dir（App Group 中 Rime/user）

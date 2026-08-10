@@ -159,9 +159,9 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 
 - **Priority:** Medium for long-sentence quality; **High risk** for Extension memory/jetsam if bundled naively. **Not** blocking 万象 V1 base.zip path (PD already defers `.gram`).
 - **Context (research 2026-08-07, no code change):** “万象模型”在社区语境里主要指 **RIME 语法模型（Grammar / Gram）**，仓库 **[amzxyz/RIME-LMDG](https://github.com/amzxyz/RIME-LMDG)**（Language / Model / Dictionary / Grammar）。它 **不是** 在线大模型 API，也 **不是** 我们 App 内的另一套候选引擎。
-- **G0 result (2026-08-09):** **No-Go for current vendor.** 已验证的 `rime-vendor-ios-1.16.1-lua.1` 虽含核心 `Grammar` 接口与 `ContextualTranslation`，但 11-framework inventory、`librime.a` archive 成员和强制注册符号均没有 octagram；运行时仅配置 `core + dict + gears + lua`。因此当前 pin 不能把 `.gram` 作为可用能力，详见 [G0 artifact audit](evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md)。
-- **G1 authorization (2026-08-09):** [TD-012-OCTAGRAM-VENDOR-G1 Assignment](assignments/td-012-octagram-vendor-g1.md) is `Ready` for reproducible vendor/module capability only. It does not authorize model download, deployment, schema or user feature work.
-- **许可证来源审计 (2026-08-09):** 上游在 PR #8 公开收集三名记录贡献者同意后，将根 LICENSE 改为 BSD-3-Clause；但 `grammar_module.cc` 的 GPL 文件头仍未同步。详见 [provenance audit](evidence/td-012-octagram-license-provenance-audit-2026-08-09.md)。Product 已接受该来源作为未来 G1 vendor artifact 的依据，条件是保留 BSD-3-Clause notice 和完整 provenance；它不替代法律意见，也不授权 G1 实现或模型下载。
+- **G0 result (2026-08-09):** **No-Go for the pre-G1 vendor.** 旧 pin `rime-vendor-ios-1.16.1-lua.1` 虽含核心 `Grammar` 接口与 `ContextualTranslation`，但 11-framework inventory、`librime.a` archive 成员和强制注册符号均没有 octagram；运行时仅配置 `core + dict + gears + lua`。详见 [G0 artifact audit](evidence/td-012-g0-octagram-artifact-audit-2026-08-09.md)。
+- **Vendor G1 (2026-08-10, executor):** New pin `rime-vendor-ios-1.16.1-lua.1-octagram.1` adds `librime-octagram.xcframework` (device arm64 + sim arm64/x86_64), force-load/shim/traits registration, and registry discovery of the concrete `grammar` component **without** any `.gram` file. Recipe: `config/rime-octagram-vendor-build.env` + `scripts/build_rime_octagram_plugin.sh`. Evidence: [G1 build](evidence/td-012-g1-octagram-vendor-build-2026-08-10.md). Assignment still needs independent Architecture/Quality review before `Reviewed`/`Closed`. **Does not** authorize model download or user feature.
+- **许可证来源审计 (2026-08-09):** 上游在 PR #8 公开收集三名记录贡献者同意后，将根 LICENSE 改为 BSD-3-Clause；但 `grammar_module.cc` 的 GPL 文件头仍未同步。详见 [provenance audit](evidence/td-012-octagram-license-provenance-audit-2026-08-09.md)。Product 已接受该来源作为 G1 vendor artifact 依据；notice 随 artifact 保留。
 
 ### What the model is
 
@@ -173,7 +173,7 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 | Size class | **Large** (order of tens–hundreds of MB class historically; treat as optional heavy download — exact bytes must be re-measured at pin time) |
 | Schema wiring | `grammar: language: <stem>` must match file stem: `wanxiang-lts-zh-hans.gram` → `language: wanxiang-lts-zh-hans` |
 | Parameters | `collocation_max_length` / `min_length`, penalties, and often `translator/contextual_suggestions` (万象 upstream schema already embeds a `grammar:` block + translator knobs; desktop docs also show `__include: octagram` patterns) |
-| Runtime dependency | Desktop Linux often needs **`librime-plugin-octagram`（八股文）**. Weasel/Squirrel “direct config” assumes a build that already understands grammar. **Universe 已验证**当前 pinned iOS artifact 缺少 octagram；文件落盘会是 no-op 或 fail，不能产品化下载。 |
+| Runtime dependency | Desktop Linux often needs **`librime-plugin-octagram`（八股文）**. Weasel/Squirrel “direct config” assumes a build that already understands grammar. **Universe G1 pin** 已包含 iOS static octagram + registration path；**仍禁止**在未通过 G2+ 门禁前把 `.gram` 当作产品能力。 |
 
 ### Relation to 万象拼音 scheme (already in App)
 
@@ -197,13 +197,13 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 
 | Phase | Work | Risks / gates |
 |---|---|---|
-| **G0** | **Engine capability gate** | Confirm pinned librime + plugins can open/read `.gram`; document in RimeBridge artifact matrix; fail closed with user copy if unsupported |
-| **G1** | **Asset pin** | Freeze release URL + **SHA-256** of `wanxiang-lts-zh-hans.gram` (do not rely on mutable `LTS` alone); license/attribution for LMDG; size in UI |
-| **G2** | **Optional catalog / download path** | Separate from base.zip (user-initiated); App Group place under Rime **shared or user** per librime search rules; disk-space check; progress UX (TD-009 adjacent) |
-| **G3** | **Schema config** | Ensure `wanxiang` grammar block matches pinned stem; optional `rime_ice.custom.yaml` (or post-process) only if Product enables “雾凇也可用万象模型” |
-| **G4** | **Memory / jetsam** | Device budget: Extension cold start + long composition with gram mapped; PERFORMANCE_BASELINE evidence; may restrict to Main-App deploy + shared mmap semantics as upstream claims |
-| **G5** | **Deploy & verify** | After copy, full main-App deploy; smoke long sentence A/B with/without gram; uninstall removes only gram if unused by other schemes |
-| **G6** | **Product UX** | Settings: optional add-on status; if gram missing, copy “整句增强未安装” not “方案损坏”; TD-010 honesty if feature listed |
+| **G0** | **Engine capability gate** | **Done (No-Go on old pin).** See artifact audit. |
+| **Vendor G1** | **octagram static plugin + registration** | **Executor complete 2026-08-10** (new vendor pin + Bridge wiring). Independent Architecture/Quality review pending. No `.gram`. |
+| **Model G2** | **Asset pin** | Freeze release URL + **SHA-256** of `wanxiang-lts-zh-hans.gram` (do not rely on mutable `LTS` alone); license/attribution for LMDG; size in UI — needs new Product Decision |
+| **G3** | **Optional catalog / download path** | Separate from base.zip (user-initiated); App Group place under Rime **shared or user** per librime search rules; disk-space check; progress UX (TD-009 adjacent) |
+| **G4** | **Schema config** | Ensure `wanxiang` grammar block matches pinned stem; optional `rime_ice.custom.yaml` (or post-process) only if Product enables “雾凇也可用万象模型” |
+| **G5** | **Memory / jetsam** | Device budget: Extension cold start + long composition with gram mapped; PERFORMANCE_BASELINE evidence; may restrict to Main-App deploy + shared mmap semantics as upstream claims |
+| **G6** | **Deploy & verify + Product UX** | After copy, full main-App deploy; smoke long sentence A/B; uninstall/copy honesty; TD-010 gates |
 
 ### Explicit non-goals until Product opens a WI
 

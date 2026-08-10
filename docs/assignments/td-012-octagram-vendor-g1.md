@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Ready` — complete Assignment; implementation begins only after this record is on `main` |
+| **Lifecycle** | `Active` — executor implementation recorded; independent Architecture/Quality review required before `Reviewed`/`Closed` |
 | **Phase** | G1 vendor artifact, link and module-registration capability only |
 | **Non-claims** | No `.gram`, schema, user setting, download, deployment, memory claim or product release |
-| **Next** | 🔧 RIME Platform Maintainer builds the reproducible candidate artifact and records executor evidence |
-| **Residuals** | Source header residual retained in [provenance audit](../evidence/td-012-octagram-license-provenance-audit-2026-08-09.md); G2–G6 remain TD-012 debt phases |
+| **Next** | 🏛️ Architecture & Knowledge Steward review, then 🧪 Quality review of [G1 evidence](../evidence/td-012-g1-octagram-vendor-build-2026-08-10.md) + CI |
+| **Residuals** | Source header residual retained in [provenance audit](../evidence/td-012-octagram-license-provenance-audit-2026-08-09.md); model G2–G6 remain TD-012 debt phases |
 
 ---
 
@@ -118,5 +118,9 @@ Policy version: 1.0.0
 
 ## History
 
+- `2026-08-10`: Executor built and published `rime-vendor-ios-1.16.1-lua.1-octagram.1`,
+  wired RimeBridge force-load/shim/traits, and recorded
+  [G1 build evidence](../evidence/td-012-g1-octagram-vendor-build-2026-08-10.md).
+  No `.gram` or user feature. Independent Architecture/Quality review still open.
 - `2026-08-09`: Product authorized this dedicated G1 after TD-012 G0 No-Go and
   accepted the public upstream relicense provenance as its bounded source basis.

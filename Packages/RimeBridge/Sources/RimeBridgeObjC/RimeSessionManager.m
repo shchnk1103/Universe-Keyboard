@@ -1,6 +1,7 @@
 #import "RimeSessionManager.h"
 #import "RimeDeployer.h"
 #import "RimeLuaModuleShim.h"
+#import "RimeOctagramModuleShim.h"
 #include "rime_api.h"
 #include <string.h>
 
@@ -78,6 +79,7 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     self = [super init];
     if (self) {
         RimeEnsureLuaModuleLinked();
+        RimeEnsureOctagramModuleLinked();
         _api = rime_get_api();
         _sessionId = 0;
         _correctionSessionId = 0;
@@ -95,6 +97,7 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     if (_setupDone) return YES;
     [self claimRuntimeOwnership];
     RimeEnsureLuaModuleLinked();
+    RimeEnsureOctagramModuleLinked();
 
     RIME_STRUCT(RimeTraits, traits);
     traits.shared_data_dir = [sharedDataDir UTF8String];
@@ -113,24 +116,33 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
 #endif
 
     // 加载模块：core, dict, gears 为基础模块
-    // 当 librime-lua 插件已编译链接时，添加 "lua" 到列表中
-#ifdef RIME_HAS_LUA
+    // 已链接的插件（lua / octagram）一并进入 traits；octagram 不加载 .gram。
+#if defined(RIME_HAS_LUA) && defined(RIME_HAS_OCTAGRAM)
+    const char* modules[] = { "core", "dict", "gears", "lua", "octagram", NULL };
+#elif defined(RIME_HAS_LUA)
     const char* modules[] = { "core", "dict", "gears", "lua", NULL };
+#elif defined(RIME_HAS_OCTAGRAM)
+    const char* modules[] = { "core", "dict", "gears", "octagram", NULL };
 #else
     const char* modules[] = { "core", "dict", "gears", NULL };
 #endif
     traits.modules = modules;
 
-    RIME_DIAGNOSTIC_LOG(@"[RIME] keyboard setup: modules=%@ luaCompiledIn=%@ luaModuleRegisteredBeforeSetup=%@",
+    RIME_DIAGNOSTIC_LOG(@"[RIME] keyboard setup: modules=%@ luaCompiledIn=%@ luaModuleRegisteredBeforeSetup=%@ octagramCompiledIn=%@ octagramRegisteredBeforeSetup=%@",
                         [[RimeDeployer configuredModules] componentsJoinedByString:@"+"],
                         [RimeDeployer luaModuleCompiledIn] ? @"YES" : @"NO",
-                        [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO");
+                        [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO",
+                        [RimeDeployer octagramModuleCompiledIn] ? @"YES" : @"NO",
+                        [RimeDeployer octagramModuleRegistered] ? @"YES" : @"NO");
 
     _api->setup(&traits);
     RimeEnsureLuaComponentsLoaded();
-    RIME_DIAGNOSTIC_LOG(@"[RIME] keyboard setup complete: luaModuleRegisteredAfterSetup=%@ luaComponents=%@",
+    RimeEnsureOctagramComponentsLoaded();
+    RIME_DIAGNOSTIC_LOG(@"[RIME] keyboard setup complete: luaModuleRegisteredAfterSetup=%@ luaComponents=%@ octagramRegistered=%@ grammarComponent=%@",
                         [RimeDeployer luaModuleRegistered] ? @"YES" : @"NO",
-                        [[RimeDeployer luaComponentRegistrySummary] componentsJoinedByString:@"+"]);
+                        [[RimeDeployer luaComponentRegistrySummary] componentsJoinedByString:@"+"],
+                        [RimeDeployer octagramModuleRegistered] ? @"YES" : @"NO",
+                        [RimeDeployer grammarComponentRegistered] ? @"true" : @"false");
     _setupDone = YES;
     return YES;
 }

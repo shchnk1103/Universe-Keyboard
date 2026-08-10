@@ -2,6 +2,19 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-10 — TD-012 G1: iOS octagram vendor capability
+
+- New immutable vendor pin `rime-vendor-ios-1.16.1-lua.1-octagram.1` adds
+  `librime-octagram.xcframework` (device arm64 + simulator arm64/x86_64) on top of
+  the unchanged baseline 11 frameworks; baseline `rime-vendor-ios-1.16.1-lua.1`
+  remains the rollback point.
+- Reproducible plugin recipe: `config/rime-octagram-vendor-build.env`,
+  `scripts/build_rime_octagram_plugin.sh`, `scripts/assemble_rime_vendor_with_octagram.sh`.
+- RimeBridge: `RIME_HAS_OCTAGRAM`, module shim, traits load `octagram` with base+lua,
+  Keyboard `-force_load`, and capability probes for module/`grammar` registry
+  (no `.gram` model, schema, or user-facing feature).
+- Does not authorize TD-012 model download, memory budget, or product enablement.
+
 ## 2026-08-09 — 本地企业级诊断 P0 与高保真到期提醒
 
 - `Diagnostics/v1` 以每 process 独占 JSONL、typed allowlist、有界 ingress、generation clear、lease/tombstone reclaim 和 7 天/100 MiB 保留替代旧 500 条写入模型；Main App 提供实时查询、搜索、分页、复制与清空。
