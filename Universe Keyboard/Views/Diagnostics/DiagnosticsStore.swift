@@ -30,6 +30,7 @@ final class DiagnosticsStore {
     var isClearing = false
     var isLoadingMore = false
     var hasMorePages = false
+    var pagingNotice: String?
     private var hasLoadedOlderPages = false
     var selectedSummaryFilter: SummaryFilter = .all
     var selectedCategory: Logger.Category?
@@ -163,6 +164,7 @@ final class DiagnosticsStore {
             lines = []
             hasMorePages = false
             hasLoadedOlderPages = false
+            pagingNotice = nil
             isClearing = false
         }
     }
@@ -183,6 +185,7 @@ final class DiagnosticsStore {
             hasMorePages =
                 await pagingSource.hasMoreLogPages()
                 && lines.count < Self.exportMaximumRecordCount
+            pagingNotice = await pagingSource.pagingNotice()
             isLoadingMore = false
         }
     }
@@ -210,8 +213,10 @@ final class DiagnosticsStore {
         hasLoadedOlderPages = false
         if let pagingSource = logSource as? any DiagnosticsLogPagingSource {
             hasMorePages = await pagingSource.hasMoreLogPages()
+            pagingNotice = await pagingSource.pagingNotice()
         } else {
             hasMorePages = false
+            pagingNotice = nil
         }
     }
 

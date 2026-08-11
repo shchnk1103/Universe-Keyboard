@@ -33,6 +33,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case directoryUnavailable = "directory_unavailable"
         case lockBusy = "lock_busy"
         case diskFull = "disk_full"
+        case ioFailure = "io_failure"
         case generationChanged = "generation_changed"
         case writerReclaimed = "writer_reclaimed"
         case highFidelityExpired = "high_fidelity_expired"

@@ -34,7 +34,9 @@ Do not log surrounding host text, passwords, arbitrary user content or full priv
 
 ## Diagnostic Logs
 
-诊断正在从旧的 `rime_diag_log` 迁移至 App Group `Diagnostics/v1/` 的结构化 JSONL journal。v1 按 writer process 独占段并使用 generation 清空；Main App 默认读取当前 generation 的最新 10,000 条或 5 MiB（水位而非保留上限）。旧 `UserDefaults` 文本仅在 v1 为空时作为只读兼容回退，绝不能把自由文本重新写入 v1。
+诊断正在从旧的 `rime_diag_log` 迁移至 App Group `Diagnostics/v1/` 的结构化 JSONL journal。v1 按 writer process 独占段并使用 generation 清空；Main App 每次刷新会冻结当前 generation，并且仅在完整 segment 总量不超过 5 MiB 的受控读取预算时按全局 newest-first 展示。旧 `UserDefaults` 文本仅在 v1 正常为空时作为只读兼容回退，绝不能把自由文本重新写入 v1。
+
+若诊断页提示“日志已清空/分页已失效”，表示 generation 在当前分页期间推进，刷新后重新开始查询；若提示快照超过安全读取上限，表示系统拒绝返回可能乱序的部分结果。它不是键盘输入失败，也不应通过调大无界内存预算来绕过。Main App 会在启动、回到 active 和诊断页刷新时以 15 分钟 cadence 合并 retention/reclaim；Keyboard Extension 不执行目录扫描、reclaim 或锁等待。
 
 键盘热路径只能向有界 typed ingress 投递内容无关 event；不得读取 App Group、格式化日期、编码 JSON、枚举目录、获取文件锁或等待持久化。Extension 消失时，未开始的尾批允许丢弃；若同一 process 恢复，v1 会尽力以 `journal.resumed` 和 `dropped_event_count` 记录该类损失。日志关闭时，这些 event 也会在后台过滤。
 

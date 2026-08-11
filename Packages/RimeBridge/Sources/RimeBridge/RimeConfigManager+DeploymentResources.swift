@@ -26,15 +26,18 @@ extension RimeConfigManager {
             try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         }
 
-        // 列出 bundle 中所有可用的 yaml 文件
+        // Bundle 的文件名来自运行时资源。过渡期 legacy logger 只保留数量，
+        // 不把动态文件名写入 App Group 的自由文本日志。
         let bundleYamls = resourceBundle.urls(forResourcesWithExtension: "yaml", subdirectory: nil) ?? []
         let bundleRimes = resourceBundle.urls(forResourcesWithExtension: "yaml", subdirectory: "Resources") ?? []
         Logger.shared.info(
-            "Bundle yaml (root): \(bundleYamls.map { $0.lastPathComponent }.joined(separator: ", "))", category: .config
+            "Bundle yaml scan rootCount=\(bundleYamls.count)",
+            category: .config
         )
         Logger.shared.info(
-            "Bundle yaml (Resources/): \(bundleRimes.map { $0.lastPathComponent }.joined(separator: ", "))",
-            category: .config)
+            "Bundle yaml scan resourcesCount=\(bundleRimes.count)",
+            category: .config
+        )
 
         // 1. 写入小文件（字符串字面量）
         let defs = UserDefaults(suiteName: deploymentResourcesAppGroupID)
@@ -43,8 +46,9 @@ extension RimeConfigManager {
         let defaultYaml = RimeConfigTemplates.generateDefaultYaml(
             activeSchemaID: activeSchema, rimeIceInstalled: rimeIceInstalled, pageSize: currentPageSize())
         Logger.shared.info(
-            "rime_ice_installed=\(rimeIceInstalled), active=\(activeSchema), schema_list has rime_ice: \(defaultYaml.contains("rime_ice"))",
-            category: .config)
+            "rime_ice_installed=\(rimeIceInstalled), schema_list_has_rime_ice=\(defaultYaml.contains("rime_ice"))",
+            category: .config
+        )
         writeIfChanged(name: "default.yaml", content: defaultYaml, to: sharedDir)
         writeIfChanged(name: "installation.yaml", content: RimeConfigTemplates.installationYaml, to: sharedDir)
         writeIfChanged(name: "luna_pinyin.schema.yaml", content: RimeConfigTemplates.lunaPinyinSchema, to: sharedDir)
@@ -113,12 +117,19 @@ extension RimeConfigManager {
             }
         }
 
-        // 列出已部署文件
+        // 共享目录枚举可能包含任意用户/第三方文件名，只记录聚合数量和大小。
         let sharedFiles =
-            (try? FileManager.default.contentsOfDirectory(at: sharedDir, includingPropertiesForKeys: nil)) ?? []
+            (try? FileManager.default.contentsOfDirectory(
+                at: sharedDir,
+                includingPropertiesForKeys: [.fileSizeKey]
+            )) ?? []
+        let sharedByteCount = sharedFiles.reduce(into: 0) { total, file in
+            total += (try? file.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+        }
         Logger.shared.info(
-            "SharedDir: \(sharedFiles.map { "\($0.lastPathComponent)(\((try? $0.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0)/1024K)" }.joined(separator: ", "))",
-            category: .config)
+            "SharedDir scan fileCount=\(sharedFiles.count) byteCount=\(sharedByteCount)",
+            category: .config
+        )
 
         return (sharedDir.path, userDir.path)
     }
@@ -128,7 +139,7 @@ extension RimeConfigManager {
         let url = dir.appendingPathComponent(name)
         if (try? String(contentsOf: url, encoding: .utf8)) == content { return false }
         try? content.write(to: url, atomically: true, encoding: .utf8)
-        Logger.shared.info("已写入 \(name)", category: .config)
+        Logger.shared.info("config resource write completed", category: .config)
         return true
     }
 
@@ -144,7 +155,7 @@ extension RimeConfigManager {
             ?? resourceBundle.url(forResource: resourceName, withExtension: ext, subdirectory: "Resources")
 
         guard let source = sourceURL else {
-            Logger.shared.warning("Bundle 中未找到 \(name)，使用内嵌词库", category: .config)
+            Logger.shared.warning("Bundle resource missing; embedded fallback used", category: .config)
             writeIfChanged(name: name, content: RimeConfigTemplates.fallbackDict, to: dir)
             return
         }
@@ -156,9 +167,9 @@ extension RimeConfigManager {
         if sourceSize != destSize {
             try? FileManager.default.removeItem(at: dest)
             try? FileManager.default.copyItem(at: source, to: dest)
-            Logger.shared.info("已从 bundle 复制 \(name) (\(sourceSize/1024) KB)", category: .config)
+            Logger.shared.info("Bundle resource copied byteCount=\(sourceSize)", category: .config)
         } else {
-            Logger.shared.info("\(name) 已是最新 (\(sourceSize/1024) KB)", category: .config)
+            Logger.shared.info("Bundle resource already current byteCount=\(sourceSize)", category: .config)
         }
     }
 }

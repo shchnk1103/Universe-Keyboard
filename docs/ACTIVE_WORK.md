@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-10 Asia/Shanghai` — `TD-012-OCTAGRAM-VENDOR-G1` Closed（Arch+Quality Conditional Accept）；Active 名额释放。
+Last synced: `2026-08-11 Asia/Shanghai` — `TD-013-DIAGNOSTICS-V1-P1` 已通过独立复核与 Human Product Gate，并移入 Completed。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -24,6 +24,7 @@ Last synced: `2026-08-10 Asia/Shanghai` — `TD-012-OCTAGRAM-VENDOR-G1` Closed�
 | Work Item | Current handoff | Assignment |
 |---|---|---|
 | TD-012-OCTAGRAM-VENDOR-G1 | Vendor pin + Bridge G1 **Closed**; model G2+ remain TD-012 debt | [`assignments/td-012-octagram-vendor-g1.md`](assignments/td-012-octagram-vendor-g1.md) · [Arch](assignments/td-012-octagram-vendor-g1-architecture-review.md) · [Quality](assignments/td-012-octagram-vendor-g1-quality-review.md) |
+| TD-013-DIAGNOSTICS-V1-P1 | Architecture **Pass**、Quality **Pass with conditions**、Human Product Gate **Passed**；P2 residual 继续由 TD-013 追踪 | [`assignments/td-013-diagnostics-v1-p1.md`](assignments/td-013-diagnostics-v1-p1.md) · [re-review](assignments/td-013-diagnostics-v1-p1-r3-review-summary.md) |
 | KEYBOARD-STARTUP-PERF-001 | 已交付首帧性能修复与最小 Debug 诊断；真机异常日志是 `DIAGNOSTICS-OBSERVABILITY-001` 的输入，而不是继续扩大旧任务 | [`assignments/keyboard-startup-perf-001.md`](assignments/keyboard-startup-perf-001.md) |
 
 Closed this session (removed from Active): `RESPONSIVE-CANDIDATE-ANOMALY-001` (Completed; R-01 device smoke `accept`), `RESPONSIVE-DELETE-ANOMALY-001`, `KOS-2.1-OPS-001`, `KOS-2.1-OPS-IMPL-001`, `RESPONSIVE-DEFAULT-ON-001` (Reviewed; optional formal close).
@@ -39,7 +40,6 @@ TD-012 G1 is **Closed** (see Completed table); do not re-open vendor G1 without 
 |---|---|---|
 | P1 optional | **[TD-011](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) B–D** | Diagnose / multi-schema deploy / install isolation — only if Product productizes 万象 toggles |
 | P2 optional | Device smoke TD-011 A | 高级输入 + 万象：tips 显示 `/rq`·`orq`/`V`/`R`/`U`；裸 `rq` 仍属雾凇 |
-| P1 deferred | **[TD-013](TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)** diagnostics v1 hardening | 严格分页、周期性 retention、完整 health/竞争矩阵、legacy migration；需新授权 |
 | — | Freeze A hold | **Do not** unify fog `rq` ↔ 万象 `/rq` unless Product supersedes |
 
 **Done this arc (do not re-open as WIP):** `RIME-SCHEME-WANXIANG-001` V1 catalog/layout path; TD-009 toast name+progress (PR #53); TD-010 capability gates + prefs preserve (#51/#52); TD-011 freeze A native usage copy (#54).

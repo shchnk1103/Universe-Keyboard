@@ -11,6 +11,8 @@ import SwiftUI
 
 @main
 struct Universe_KeyboardApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+
     init() {
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             T9DevicePreflightRunCoordinator.handleLaunchEnvironment()
@@ -45,10 +47,10 @@ struct Universe_KeyboardApp: App {
             guard (try? await writer.prepareRootIfOwnedByMainApp()) != nil else {
                 return
             }
-            // 只在 Main App 的 utility task 执行目录维护；Extension 不会创建
-            // coordinator，也不会触碰其他 process 的段、lease 或 tombstone。
-            let coordinator = DiagnosticsJournalRetentionCoordinator(rootURL: rootURL)
-            _ = await coordinator.runReclaim()
+            // 只在 Main App 的 utility task 请求目录维护；scheduler 会合并启动、
+            // 前台恢复和诊断页刷新，Extension 不会触碰其他 process 的段、lease
+            // 或 tombstone。
+            _ = await DiagnosticsJournalRetentionScheduler.shared.requestReclaim(rootURL: rootURL)
         }
     }
 
@@ -63,6 +65,10 @@ struct Universe_KeyboardApp: App {
             #else
                 ContentView()
             #endif
+        }
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active else { return }
+            prepareDiagnosticsJournalRoot()
         }
     }
 }
