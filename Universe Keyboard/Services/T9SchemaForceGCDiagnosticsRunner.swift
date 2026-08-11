@@ -23,10 +23,7 @@ enum T9SchemaForceGCDiagnosticsRunner {
         fileManager: FileManager = .default
     ) -> T9SchemaForceGCDiagnostic {
         let before = inspectOnly(appGroupID: appGroupID, fileManager: fileManager)
-        Logger.shared.info(
-            "t9Schema force_gc applyPatch BEFORE \(before.developerSummary)",
-            category: .deployment
-        )
+        log(before, phase: "before_patch")
 
         guard
             let sharedURL =
@@ -64,11 +61,7 @@ enum T9SchemaForceGCDiagnosticsRunner {
         }
 
         let after = inspectOnly(appGroupID: appGroupID, fileManager: fileManager)
-        Logger.shared.info(
-            "t9Schema force_gc applyPatch AFTER \(after.developerSummary)",
-            category: .deployment
-        )
-        log(after)
+        log(after, phase: "after_patch")
         return after
     }
 
@@ -114,11 +107,20 @@ enum T9SchemaForceGCDiagnosticsRunner {
     }
 
     @MainActor
-    private static func log(_ diagnostic: T9SchemaForceGCDiagnostic) {
-        Logger.shared.info(diagnostic.developerSummary, category: .deployment)
-        for line in diagnostic.userFacingLines {
-            Logger.shared.info("t9Schema force_gc: \(line)", category: .deployment)
-        }
+    private static func log(_ diagnostic: T9SchemaForceGCDiagnostic, phase: String = "inspect") {
+        // `developerSummary` 和 `userFacingLines` 仅供本地 UI；持久化 legacy
+        // logger 不记录路径、fingerprint、layout 或任意将来新增的说明文本。
+        Logger.shared.info(
+            "t9Schema force_gc phase=\(phase) "
+                + "appGroupAvailable=\(diagnostic.appGroupAvailable) "
+                + "schemaExists=\(diagnostic.schemaExists) "
+                + "schemaReadable=\(diagnostic.schemaReadable) "
+                + "sourceForceGC=\(diagnostic.forceGCTranslatorPresent) "
+                + "compiledSchemaFound=\(diagnostic.compiledSchemaFound) "
+                + "compiledForceGC=\(diagnostic.compiledForceGCTranslatorPresent) "
+                + "runtimeLikelyClean=\(diagnostic.runtimeLikelyClean)",
+            category: .deployment
+        )
         Logger.shared.requestFlush()
     }
 }

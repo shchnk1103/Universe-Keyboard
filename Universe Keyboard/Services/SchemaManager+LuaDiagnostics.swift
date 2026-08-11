@@ -44,7 +44,19 @@ extension SchemaManager {
         )
 
         if logResult {
-            Logger.shared.info("rime_ice lua diagnostic: \(diagnostic.developerSummary)", category: .deployment)
+            // 这是 legacy 过渡日志：只记录固定状态、布尔值和计数，不把 schema
+            // 中解析出的组件名或依赖名重新拼成自由文本。
+            Logger.shared.info(
+                "rime_ice lua diagnostic "
+                    + "available=\(diagnostic.status == .available) "
+                    + "moduleRegistered=\(diagnostic.luaModuleRegistered) "
+                    + "schemaExists=\(diagnostic.schemaExists) "
+                    + "requiredComponentCount=\(diagnostic.requiredLuaComponentNames.count) "
+                    + "missingComponentCount=\(diagnostic.missingLuaComponentNames.count) "
+                    + "missingDependencyCount=\(diagnostic.missingLuaDependencyNames.count) "
+                    + "runtimeSmokePassed=\(diagnostic.runtimeSmokePassed)",
+                category: .deployment
+            )
         }
         return diagnostic
     }

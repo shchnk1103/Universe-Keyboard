@@ -4,6 +4,25 @@ import XCTest
 @testable import KeyboardCore
 
 final class DiagnosticsJournalIngressTests: XCTestCase {
+    func testFailureReasonsRemainContentFreeAndDoNotTreatEveryWriteFailureAsDiskFull() {
+        XCTAssertEqual(
+            DiagnosticsJournalIngress.diagnosticReason(for: DiagnosticsJournalError.lockBusy),
+            .lockBusy
+        )
+        XCTAssertEqual(
+            DiagnosticsJournalIngress.diagnosticReason(for: DiagnosticsJournalError.diskFull),
+            .diskFull
+        )
+        XCTAssertEqual(
+            DiagnosticsJournalIngress.diagnosticReason(for: DiagnosticsJournalError.ioFailure),
+            .ioFailure
+        )
+        XCTAssertEqual(
+            DiagnosticsJournalIngress.diagnosticReason(for: DiagnosticsJournalError.writeFailed),
+            .ioFailure
+        )
+    }
+
     func testIngressIsBoundedAndWritesOnUtilityFlush() async throws {
         let rootURL = makeTemporaryDirectory()
         defer { try? FileManager.default.removeItem(at: rootURL) }

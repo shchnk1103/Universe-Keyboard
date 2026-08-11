@@ -34,6 +34,7 @@ struct DiagnosticsView: View {
                 exportLimitMessage: store.exportLimitMessage,
                 hasMorePages: store.hasMorePages,
                 isLoadingMore: store.isLoadingMore,
+                pagingNotice: store.pagingNotice,
                 colorTokenForLine: store.colorForLine,
                 onLoadMore: store.loadMore
             )

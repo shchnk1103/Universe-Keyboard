@@ -33,6 +33,7 @@ Accepted; P0 implemented, P1 deferred to TD-013
 | `g<generation>/open/<origin>-<processInstanceID>-<hour>-<part>.jsonl` | 对应 origin/process instance 的 writer 独占 create/append/seal | Main App 以 offset tail，容忍最后一条半行 | 小时或大小轮转时 writer seal；Extension 不触碰 App 段，App 不触碰 Extension 段 |
 | `g<generation>/leases/<origin>-<processInstanceID>.json` | 对应 writer 在自己的 utility flush 更新 | Main App retention coordinator | lease 是活动声明；唯一 process instance、generation、fence 和 UTC 过期时刻均在其中。只有经过本节围栏确认的 expired lease 才可进入恢复/清理流程 |
 | `Diagnostics/v1/locks/<origin>-<processInstanceID>.lock` | 对应 writer 创建；双方仅在 utility/repository 队列取得非阻塞的内核 advisory exclusive lock | 对应 writer、Main App retention coordinator | 稳定 lock 跨越 generation；不得以 replace lease JSON 的方式替换它。它是 append、reclaim 和删除的唯一互斥围栏，不进入键盘热路径 |
+| `Diagnostics/v1/locks/snapshot.lock` | writer/clear/reclaim 以 nonblocking shared advisory lock 进入；Main App reader 在捕获成员集合与 segment watermark 时以 nonblocking exclusive advisory lock 进入 | writer、Main App retention coordinator、Main App reader | generation 级快照围栏。取得顺序固定为 snapshot fence → identity lock；exclusive fence busy 时 reader 返回受控“刷新”状态，shared fence busy 时 writer/reclaimer 不等待并走已有有限重试/drop 语义。 |
 | `g<generation>/reclaimed/<origin>-<processInstanceID>.json` | Main App retention coordinator | 对应 writer、Main App repository | 不可变的 reclaim tombstone，含 fence 和原因；保留到关联段删除。writer 一旦观察到它，永远不得再打开旧段 |
 | `g<generation>/sealed/` | writer 将自己已关闭段转入；Main App 可恢复被确认过期的旧 open 段 | Main App repository/export | 只有 sealed 或由过期 lease 恢复后 sealed 的段可以被 retention 删除 |
 
@@ -42,13 +43,14 @@ Main App 清空时先原子写入新的 `control.json` generation，再切换 re
 
 每个启动的 writer 创建不可复用的 128-bit `processInstanceID`；它不是 PID，路径、lease、lock、段和 tombstone 都使用这个 identity。lease 至少包含 `generation`、`processInstanceID`、单调递增 `fence`、最后成功续约的 UTC 时间和明确的 UTC `expiresAt`。UTC 仅用于决定“可尝试回收”；时钟异常宁可延后清理，不得绕过下面的围栏。writer 从不复用上一个 process 的 identity 或已经 reclaimed 的段。
 
-所有实际 append 与 lease 续约都必须遵循同一顺序，并且只在 utility writer 队列中执行：
+所有实际 append、lease 续约与回收都必须遵循同一顺序，并且只在 utility/repository 队列中执行：
 
-1. 对自己的稳定 `.lock` 取得**非阻塞** exclusive advisory lock；不能立即取得时安排后台重试，绝不等待或让按键路径参与。
-2. 持锁重读 `control.json`、自己的 lease 和 tombstone。generation 不一致、lease identity/fence 不匹配、lease 已被移除，或 tombstone 存在时，关闭旧 handle；不得对旧段再写。随后以当前 generation 创建新段/lease，或将有界待写批按 overload 规则降级。
-3. 只有确认 lease 仍属于本 instance 且 generation 相同后，才在持锁期间更新 lease、append 一个有限批并释放锁。释放锁以后任何 fd 都不得继续 append；下一批必须重新取得锁并重新验证。
+1. 先取得 `snapshot.lock` 的**非阻塞** shared advisory lock；不能立即取得时安排后台重试或按已有 overload 规则 drop，绝不等待或让按键路径参与。
+2. 对自己的稳定 `.lock` 取得**非阻塞** exclusive advisory lock；因此固定锁序永远是 snapshot fence → identity lock。
+3. 持锁重读 `control.json`、自己的 lease 和 tombstone。generation 不一致、lease identity/fence 不匹配、lease 已被移除，或 tombstone 存在时，关闭旧 handle；不得对旧段再写。随后以当前 generation 创建新段/lease，或将有界待写批按 overload 规则降级。
+4. 只有确认 lease 仍属于本 instance 且 generation 相同后，才在持锁期间更新 lease、append 一个有限批并释放锁。释放锁以后任何 fd 都不得继续 append；下一批必须重新取得锁并重新验证。
 
-Main App 回收某个 open 段也必须先以**非阻塞**方式取得同一 `.lock`。持锁后它重新读取 `control.json` 和 lease，确认 `(generation, processInstanceID, fence)` 未变化且 `expiresAt` 已过，才按以下不可逆顺序执行：原子创建 reclaim tombstone → 将 open 段转为 recovered/sealed → 删除或标记 lease 为 revoked → 释放锁。任何一步失败都保留原段、延后重试，绝不猜测成功。tombstone 存在时，即使一个慢恢复的旧 writer 尚有内存队列或旧 fd，也会在下一次锁内重检时被 fence 拒绝，不能重新写入或使已清空记录重新可见。
+Main App 回收某个 open 段也必须先以**非阻塞**方式取得 shared `snapshot.lock`，再取得同一 identity `.lock`。持锁后它重新读取 `control.json` 和 lease，确认 `(generation, processInstanceID, fence)` 未变化且 `expiresAt` 已过，才按以下不可逆顺序执行：原子创建 reclaim tombstone → 将 open 段转为 recovered/sealed → 删除或标记 lease 为 revoked → 释放锁。任何一步失败都保留原段、延后重试，绝不猜测成功。tombstone 存在时，即使一个慢恢复的旧 writer 尚有内存队列或旧 fd，也会在下一次锁内重检时被 fence 拒绝，不能重新写入或使已清空记录重新可见。
 
 因此，进程在 batch 中被 suspend 时会暂时持有短时 lock，retention 只能跳过该段并以后重试；进程终止时内核释放 lock，后续回收才可能进行。这个小窗口优先保证活动 writer 不被误删；容量策略允许有限活动段造成短暂超过 100 MiB 的余量。保留只处理 sealed 或已按上述围栏 recovered 的段，绝不删除任何未取得同一 lock 并完成复核的 open 段。容量压力时 writer 记录 drop 并停止接收低优先级事件，而不是争抢锁或阻塞输入。
 

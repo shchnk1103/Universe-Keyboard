@@ -4,34 +4,19 @@ import RimeBridgeObjC
 
 public struct RimeLuaRuntimeSmokeProbe: Sendable {
     public struct CaseResult: Equatable, Sendable {
-        public let input: String
         public let candidateCount: Int
-        public let candidateSamples: [String]
         public let dynamicCandidateFound: Bool
-        public let dynamicSamples: [String]
-        public let rawInput: String?
-        public let preedit: String?
     }
 
     public struct Result: Equatable, Sendable {
-        public let schemaID: String
-        public let selectedSchemaID: String?
+        public let selectedRequestedSchema: Bool
         public let luaModuleRegistered: Bool
         public let caseResults: [CaseResult]
 
         public var passed: Bool {
-            selectedSchemaID == schemaID
+            selectedRequestedSchema
                 && luaModuleRegistered
                 && caseResults.allSatisfy(\.dynamicCandidateFound)
-        }
-
-        public var developerSummary: String {
-            let cases = caseResults.map { result in
-                let samples = result.candidateSamples.joined(separator: "|")
-                let dynamicSamples = result.dynamicSamples.joined(separator: "|")
-                return "\(result.input):count=\(result.candidateCount),dynamic=\(result.dynamicCandidateFound),dynamicSample=\(dynamicSamples),sample=\(samples),raw=\(result.rawInput ?? "nil"),preedit=\(result.preedit ?? "nil")"
-            }.joined(separator: ";")
-            return "rime_ice lua smoke: passed=\(passed);schema=\(schemaID);selected=\(selectedSchemaID ?? "nil");luaModuleRegistered=\(luaModuleRegistered);cases=\(cases)"
         }
     }
 
@@ -54,8 +39,7 @@ public struct RimeLuaRuntimeSmokeProbe: Sendable {
         }
 
         return Result(
-            schemaID: schemaID,
-            selectedSchemaID: selectedSchemaID,
+            selectedRequestedSchema: selectedSchemaID == schemaID,
             luaModuleRegistered: RimeBridgeCapabilities.luaModuleRegistered,
             caseResults: caseResults
         )
@@ -72,18 +56,13 @@ public struct RimeLuaRuntimeSmokeProbe: Sendable {
             bridge.candidates(from: 0, limit: 80)
         )
         let allCandidates = window.candidates.isEmpty ? output.candidates : window.candidates
-        let dynamicCandidates = allCandidates
+        let dynamicCandidates =
+            allCandidates
             .map(\.text)
             .filter { isDynamicDateTimeCandidate($0, for: input) }
-        let samples = allCandidates.prefix(5).map(\.text)
         let result = CaseResult(
-            input: input,
             candidateCount: allCandidates.count,
-            candidateSamples: Array(samples),
-            dynamicCandidateFound: !dynamicCandidates.isEmpty,
-            dynamicSamples: Array(dynamicCandidates.prefix(3)),
-            rawInput: output.rawInput,
-            preedit: output.composition?.preeditText
+            dynamicCandidateFound: !dynamicCandidates.isEmpty
         )
         bridge.clearComposition()
         return result
@@ -101,7 +80,8 @@ public struct RimeLuaRuntimeSmokeProbe: Sendable {
                 options: .regularExpression
             ) != nil
         case "dt":
-            return candidate.range(of: #"20\d{2}[-/]\d{1,2}[-/]\d{1,2}[ T]\d{1,2}:\d{2}"#, options: .regularExpression) != nil
+            return candidate.range(of: #"20\d{2}[-/]\d{1,2}[-/]\d{1,2}[ T]\d{1,2}:\d{2}"#, options: .regularExpression)
+                != nil
         default:
             return false
         }

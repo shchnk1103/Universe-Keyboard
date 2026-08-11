@@ -201,7 +201,7 @@ public final class DiagnosticsJournalIngress: Sendable {
                     self.requeueAfterIdentityRotation(work.events)
                 } else {
                     self.restoreDeferredHealth(
-                        work.deferredHealth + [(self.reason(for: error), enabledEvents.count)]
+                        work.deferredHealth + [(Self.diagnosticReason(for: error), enabledEvents.count)]
                     )
                 }
             }
@@ -259,7 +259,7 @@ public final class DiagnosticsJournalIngress: Sendable {
         }
     }
 
-    private func reason(for error: Error) -> DiagnosticEvent.Reason {
+    static func diagnosticReason(for error: Error) -> DiagnosticEvent.Reason {
         switch error as? DiagnosticsJournalError {
         case .lockBusy:
             .lockBusy
@@ -267,8 +267,10 @@ public final class DiagnosticsJournalIngress: Sendable {
             .writerReclaimed
         case .rootUnavailable:
             .appGroupUnavailable
-        case .writeFailed:
+        case .diskFull:
             .diskFull
+        case .ioFailure, .writeFailed:
+            .ioFailure
         default:
             .directoryUnavailable
         }

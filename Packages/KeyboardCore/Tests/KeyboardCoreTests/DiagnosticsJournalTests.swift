@@ -84,7 +84,7 @@ final class DiagnosticsJournalTests: XCTestCase {
         XCTAssertEqual(try journalLines(in: rootURL.appendingPathComponent("g1/open")).map(\.localSequence), [2])
     }
 
-    func testPageCursorReturnsFrozenNewestFirstOffsetsWithoutLoadingWholeJournal() async throws {
+    func testPageCursorReturnsFrozenNewestFirstPages() async throws {
         let rootURL = makeTemporaryDirectory()
         defer { try? FileManager.default.removeItem(at: rootURL) }
         let processID = UUID()
@@ -116,6 +116,269 @@ final class DiagnosticsJournalTests: XCTestCase {
         XCTAssertEqual(secondPage.events.map(\.localSequence), [3, 2])
         XCTAssertEqual(thirdPage.events.map(\.localSequence), [1])
         XCTAssertNil(thirdPage.nextCursor)
+    }
+
+    func testPageCursorExcludesEventsAppendedAfterItsFrozenWatermark() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append((1...3).map { makeEvent(sequence: UInt64($0), processInstanceID: processID) })
+
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        let firstPage = try await reader.beginPage(maximumEventCount: 1)
+        try await writer.append([makeEvent(sequence: 4, processInstanceID: processID)])
+
+        let secondPage = try await reader.nextPage(
+            after: try XCTUnwrap(firstPage.nextCursor),
+            maximumEventCount: 1
+        )
+        let thirdPage = try await reader.nextPage(
+            after: try XCTUnwrap(secondPage.nextCursor),
+            maximumEventCount: 1
+        )
+
+        XCTAssertEqual(firstPage.events.map(\.localSequence), [3])
+        XCTAssertEqual(secondPage.events.map(\.localSequence), [2])
+        XCTAssertEqual(thirdPage.events.map(\.localSequence), [1])
+        XCTAssertEqual(thirdPage.status, .completed)
+    }
+
+    func testPageCursorUsesDeterministicTieBreakAcrossSameHourSegments() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let lowerID = UUID(uuidString: "00000000-0000-0000-0000-000000000010")!
+        let higherID = UUID(uuidString: "00000000-0000-0000-0000-000000000020")!
+        let lowerWriter = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: lowerID,
+            isMainAppWriter: true
+        )
+        let higherWriter = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .keyboardExtension,
+            processInstanceID: higherID,
+            isMainAppWriter: false
+        )
+        try await lowerWriter.prepareRootIfOwnedByMainApp()
+        let timestamp = Date(timeIntervalSince1970: 1_723_123_456)
+        try await lowerWriter.append([makeEvent(sequence: 7, processInstanceID: lowerID, timestamp: timestamp)])
+        try await higherWriter.append([
+            makeEvent(
+                sequence: 7,
+                processInstanceID: higherID,
+                origin: .keyboardExtension,
+                timestamp: timestamp
+            )
+        ])
+
+        let page = try await DiagnosticsJournalReader(rootURL: rootURL).beginPage()
+
+        XCTAssertEqual(page.events.map(\.processInstanceID), [higherID, lowerID])
+    }
+
+    func testPageSnapshotContinuesWhenWriterSealsSameSegmentAfterManifestCapture() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append([makeEvent(sequence: 1, processInstanceID: processID)])
+
+        let reader = DiagnosticsJournalReader(rootURL: rootURL) { [rootURL] in
+            let openDirectory = rootURL.appendingPathComponent("g1/open", isDirectory: true)
+            let sealedDirectory = rootURL.appendingPathComponent("g1/sealed", isDirectory: true)
+            guard
+                let segment = try? FileManager.default.contentsOfDirectory(
+                    at: openDirectory,
+                    includingPropertiesForKeys: nil
+                ).first
+            else { return }
+            try? FileManager.default.createDirectory(at: sealedDirectory, withIntermediateDirectories: true)
+            try? FileManager.default.moveItem(
+                at: segment,
+                to: sealedDirectory.appendingPathComponent(segment.lastPathComponent)
+            )
+        }
+
+        let page = try await reader.beginPage()
+
+        XCTAssertEqual(page.events.map(\.localSequence), [1])
+        XCTAssertEqual(page.status, .completed)
+    }
+
+    func testPageCursorReportsReclaimInvalidationWhenSnapshotSegmentDisappears() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append((1...2).map { makeEvent(sequence: UInt64($0), processInstanceID: processID) })
+
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        let firstPage = try await reader.beginPage(maximumEventCount: 1)
+        let segment = try XCTUnwrap(
+            FileManager.default.contentsOfDirectory(
+                at: rootURL.appendingPathComponent("g1/open"),
+                includingPropertiesForKeys: nil
+            ).first
+        )
+        try FileManager.default.removeItem(at: segment)
+
+        let invalidated = try await reader.nextPage(after: try XCTUnwrap(firstPage.nextCursor))
+
+        XCTAssertTrue(invalidated.events.isEmpty)
+        XCTAssertEqual(invalidated.status, .invalidatedByReclaim)
+        XCTAssertNil(invalidated.nextCursor)
+    }
+
+    func testPageSnapshotRejectsMoreThanHardEventLimitEvenWhenCallerRequestsMore() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append(
+            (1...DiagnosticsJournalReader.defaultMaximumEventCount + 1).map {
+                makeEvent(sequence: UInt64($0), processInstanceID: processID)
+            }
+        )
+
+        let page = try await DiagnosticsJournalReader(rootURL: rootURL).beginPage(
+            maximumEventCount: DiagnosticsJournalReader.defaultMaximumEventCount + 1,
+            maximumReadBytes: DiagnosticsJournalReader.defaultMaximumReadBytes * 2
+        )
+
+        XCTAssertTrue(page.events.isEmpty)
+        XCTAssertEqual(page.status, .snapshotExceedsEventBudget)
+        XCTAssertNil(page.nextCursor)
+    }
+
+    func testPageCursorGloballyMergesInterleavedWriterSegments() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let mainID = UUID(uuidString: "00000000-0000-0000-0000-000000000010")!
+        let extensionID = UUID(uuidString: "00000000-0000-0000-0000-000000000020")!
+        let mainWriter = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: mainID,
+            isMainAppWriter: true
+        )
+        let extensionWriter = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .keyboardExtension,
+            processInstanceID: extensionID,
+            isMainAppWriter: false
+        )
+        try await mainWriter.prepareRootIfOwnedByMainApp()
+
+        let base = Date(timeIntervalSince1970: 1_723_123_456)
+        try await mainWriter.append([
+            makeEvent(sequence: 1, processInstanceID: mainID, timestamp: base.addingTimeInterval(1)),
+            makeEvent(sequence: 3, processInstanceID: mainID, timestamp: base.addingTimeInterval(3)),
+        ])
+        try await extensionWriter.append([
+            makeEvent(
+                sequence: 2,
+                processInstanceID: extensionID,
+                origin: .keyboardExtension,
+                timestamp: base.addingTimeInterval(2)
+            ),
+            makeEvent(
+                sequence: 4,
+                processInstanceID: extensionID,
+                origin: .keyboardExtension,
+                timestamp: base.addingTimeInterval(4)
+            ),
+        ])
+
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        let firstPage = try await reader.beginPage(maximumEventCount: 2, maximumReadBytes: 16 * 1_024)
+        let secondPage = try await reader.nextPage(
+            after: try XCTUnwrap(firstPage.nextCursor),
+            maximumEventCount: 2,
+            maximumReadBytes: 16 * 1_024
+        )
+
+        XCTAssertEqual(firstPage.events.map(\.localSequence), [4, 3])
+        XCTAssertEqual(firstPage.status, .hasMore)
+        XCTAssertEqual(secondPage.events.map(\.localSequence), [2, 1])
+        XCTAssertEqual(secondPage.status, .completed)
+        XCTAssertNil(secondPage.nextCursor)
+    }
+
+    func testPageCursorReportsGenerationInvalidationInsteadOfEmptyCompletion() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append(
+            (1...3).map { makeEvent(sequence: UInt64($0), processInstanceID: processID) }
+        )
+
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        let firstPage = try await reader.beginPage(maximumEventCount: 1, maximumReadBytes: 16 * 1_024)
+        _ = try await writer.advanceGenerationForClear()
+        let invalidated = try await reader.nextPage(
+            after: try XCTUnwrap(firstPage.nextCursor),
+            maximumEventCount: 1,
+            maximumReadBytes: 16 * 1_024
+        )
+
+        XCTAssertEqual(invalidated.generation, 2)
+        XCTAssertTrue(invalidated.events.isEmpty)
+        XCTAssertEqual(invalidated.status, .invalidatedByGeneration)
+        XCTAssertNil(invalidated.nextCursor)
+    }
+
+    func testPageSnapshotRefusesPartialSegmentBudgetRatherThanReturningMisorderedEvents() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append([makeEvent(sequence: 1, processInstanceID: processID)])
+
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        let page = try await reader.beginPage(maximumEventCount: 1, maximumReadBytes: 1)
+
+        XCTAssertTrue(page.events.isEmpty)
+        XCTAssertEqual(page.status, .snapshotExceedsReadBudget)
+        XCTAssertNil(page.nextCursor)
     }
 
     func testReclaimedWriterRotatesIdentityAndCanAppendAgain() async throws {
@@ -267,6 +530,57 @@ final class DiagnosticsJournalTests: XCTestCase {
         let snapshot = try await reader.latest()
         XCTAssertEqual(snapshot.generation, 2)
         XCTAssertEqual(snapshot.events.map(\.localSequence), [2])
+    }
+
+    func testBeginPageIgnoresPartialTailInCurrentGeneration() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append([makeEvent(sequence: 1, processInstanceID: processID)])
+
+        let segment = try XCTUnwrap(
+            FileManager.default.contentsOfDirectory(
+                at: rootURL.appendingPathComponent("g1/open"),
+                includingPropertiesForKeys: nil
+            ).first
+        )
+        let appendHandle = try FileHandle(forWritingTo: segment)
+        try appendHandle.seekToEnd()
+        try appendHandle.write(contentsOf: Data("{\"incomplete\":".utf8))
+        try appendHandle.close()
+
+        let page = try await DiagnosticsJournalReader(rootURL: rootURL).beginPage()
+
+        XCTAssertEqual(page.events.map(\.localSequence), [1])
+        XCTAssertEqual(page.status, .completed)
+    }
+
+    func testSnapshotFenceRejectsWriterMutationWhileManifestIsCaptured() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+
+        XCTAssertThrowsError(
+            try DiagnosticsJournalIdentityLock.withExclusiveSnapshotFence(rootURL: rootURL) {
+                try DiagnosticsJournalIdentityLock.withSharedSnapshotFence(rootURL: rootURL) {}
+            }
+        ) { error in
+            XCTAssertEqual(error as? DiagnosticsJournalError, .lockBusy)
+        }
     }
 
     private func makeEvent(

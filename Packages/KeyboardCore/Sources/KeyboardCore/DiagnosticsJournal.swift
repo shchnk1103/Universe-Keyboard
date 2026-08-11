@@ -95,6 +95,9 @@ public enum DiagnosticsJournalError: Error, Equatable, Sendable {
     case lifecycleCancelled
     case lockBusy
     case lockUnavailable
+    case diskFull
+    case ioFailure
+    /// P0 写入失败的兼容错误。新代码会尽可能归类为 `diskFull` 或 `ioFailure`。
     case writeFailed
 }
 
@@ -111,9 +114,32 @@ public struct DiagnosticsJournalSnapshot: Sendable {
 }
 
 /// 一次查询的不可伪造 continuation。它只在 reader actor 的内存中索引已冻结的
-/// segment watermark，不把路径或自由文本暴露给 UI，也不会跨进程持久化。
+/// segment manifest 与已解码事件，不把路径或自由文本暴露给 UI，也不会跨进程持久化。
 public struct DiagnosticsJournalPageCursor: Hashable, Sendable {
     fileprivate let queryID: UUID
+}
+
+/// 分页查询的受控结束状态。调用方必须把失效状态与“没有更多日志”区别展示，
+/// 不能在 clear 或 reader 重建后静默把旧 cursor 当成空结果。
+public enum DiagnosticsJournalPageStatus: Sendable, Equatable {
+    /// 当前快照仍有更早记录可以读取。
+    case hasMore
+    /// 当前快照已正常读完。
+    case completed
+    /// 查询开始后 control generation 已推进；旧 cursor 不再代表当前日志视图。
+    case invalidatedByGeneration
+    /// 快照中的段在下一页前被 reclaim 或被非同一文件替换；必须刷新重新建立水位。
+    case invalidatedByReclaim
+    /// cursor 只在 reader actor 内存中有效，已被消费、失效或来自另一 reader。
+    case cursorUnavailable
+    /// 为保证严格排序，创建快照需要读取完整 segment，但超过本次受控预算。
+    case snapshotExceedsReadBudget
+    /// 为保证复制和内存边界，冻结快照超过允许的事件总数。
+    case snapshotExceedsEventBudget
+    /// 枚举、移动或读取段时无法保持同一份 segment manifest；必须刷新重试。
+    case snapshotUnavailable
+    /// control 或 journal 根目录不可用；调用方不得把它降级为 legacy 成功读取。
+    case journalUnavailable
 }
 
 /// 按“最新优先”返回的一页事件。分页起点固定在一次目录快照，后续 append
@@ -122,15 +148,18 @@ public struct DiagnosticsJournalPage: Sendable {
     public let generation: UInt64
     public let events: [DiagnosticEvent]
     public let nextCursor: DiagnosticsJournalPageCursor?
+    public let status: DiagnosticsJournalPageStatus
 
     public init(
         generation: UInt64,
         events: [DiagnosticEvent],
-        nextCursor: DiagnosticsJournalPageCursor?
+        nextCursor: DiagnosticsJournalPageCursor?,
+        status: DiagnosticsJournalPageStatus
     ) {
         self.generation = generation
         self.events = events
         self.nextCursor = nextCursor
+        self.status = status
     }
 }
 
@@ -178,16 +207,18 @@ public actor DiagnosticsJournalWriter {
     @discardableResult
     public func advanceGenerationForClear() throws -> UInt64 {
         guard isMainAppWriter else { throw DiagnosticsJournalError.rootUnavailable }
-        return try withExclusiveWriterLock { [self] in
-            let current = try readControl()
-            let next = current.currentGeneration == UInt64.max ? 1 : current.currentGeneration + 1
+        return try DiagnosticsJournalIdentityLock.withSharedSnapshotFence(rootURL: rootURL) { [self] in
+            try withExclusiveWriterLock {
+                let current = try readControl()
+                let next = current.currentGeneration == UInt64.max ? 1 : current.currentGeneration + 1
 
-            // 当前 writer 自己持有同一 identity lock，因此这里可以把已经关闭的
-            // open 段先封存，再推进 generation。这样保留策略永远不需要直接删除它。
-            try sealActiveSegment()
-            try writeControl(DiagnosticsJournalControl(currentGeneration: next))
-            resetActiveSegment()
-            return next
+                // 当前 writer 自己持有同一 identity lock，因此这里可以把已经关闭的
+                // open 段先封存，再推进 generation。这样保留策略永远不需要直接删除它。
+                try sealActiveSegment()
+                try writeControl(DiagnosticsJournalControl(currentGeneration: next))
+                resetActiveSegment()
+                return next
+            }
         }
     }
 
@@ -220,55 +251,57 @@ public actor DiagnosticsJournalWriter {
         let encodedLines = try normalizedEvents.map(Self.encodeLine)
         let byteCount = encodedLines.reduce(0) { $0 + $1.count }
 
-        try withExclusiveWriterLock { [self] in
-            // 生命周期的线性化点必须在实际取得 identity lock 之后。这样 suspend
-            // 只能二选一：阻止本批进入 I/O，或让已开始的 lock-bound 批完成。
-            guard isWritePermitted() else {
-                throw DiagnosticsJournalError.lifecycleCancelled
-            }
-            // 必须在 lock 内重读 generation：clear 可以发生在上个批次之后。
-            let control = try readControl()
-            let requiresRotation =
-                activeByteCount > 0
-                && (activeGeneration != control.currentGeneration
-                    || activeHour != hour
-                    || activeByteCount + byteCount > Self.segmentSizeLimitBytes)
-            if requiresRotation {
-                try sealActiveSegment()
-                activeByteCount = 0
-                if activeHour != hour || activeGeneration != control.currentGeneration {
+        try DiagnosticsJournalIdentityLock.withSharedSnapshotFence(rootURL: rootURL) { [self] in
+            try withExclusiveWriterLock {
+                // 生命周期的线性化点必须在实际取得 identity lock 之后。这样 suspend
+                // 只能二选一：阻止本批进入 I/O，或让已开始的 lock-bound 批完成。
+                guard isWritePermitted() else {
+                    throw DiagnosticsJournalError.lifecycleCancelled
+                }
+                // 必须在 lock 内重读 generation：clear 可以发生在上个批次之后。
+                let control = try readControl()
+                let requiresRotation =
+                    activeByteCount > 0
+                    && (activeGeneration != control.currentGeneration
+                        || activeHour != hour
+                        || activeByteCount + byteCount > Self.segmentSizeLimitBytes)
+                if requiresRotation {
+                    try sealActiveSegment()
+                    activeByteCount = 0
+                    if activeHour != hour || activeGeneration != control.currentGeneration {
+                        activeHour = hour
+                        activePart = 0
+                    } else {
+                        activePart += 1
+                    }
+                }
+                if activeByteCount == 0 {
+                    activeGeneration = control.currentGeneration
                     activeHour = hour
-                    activePart = 0
-                } else {
-                    activePart += 1
                 }
-            }
-            if activeByteCount == 0 {
-                activeGeneration = control.currentGeneration
-                activeHour = hour
-            }
-            let generationDirectory = rootURL.appendingPathComponent(
-                "g\(control.currentGeneration)",
-                isDirectory: true
-            )
-            try rejectReclaimedWriter(in: generationDirectory)
-            try renewLease(for: control, in: generationDirectory)
-            let openDirectory = generationDirectory.appendingPathComponent("open", isDirectory: true)
-            do {
-                try FileManager.default.createDirectory(at: openDirectory, withIntermediateDirectories: true)
-                let segmentURL = openDirectory.appendingPathComponent(segmentFileName(hour: hour))
-                if !FileManager.default.fileExists(atPath: segmentURL.path) {
-                    FileManager.default.createFile(atPath: segmentURL.path, contents: nil)
+                let generationDirectory = rootURL.appendingPathComponent(
+                    "g\(control.currentGeneration)",
+                    isDirectory: true
+                )
+                try rejectReclaimedWriter(in: generationDirectory)
+                try renewLease(for: control, in: generationDirectory)
+                let openDirectory = generationDirectory.appendingPathComponent("open", isDirectory: true)
+                do {
+                    try FileManager.default.createDirectory(at: openDirectory, withIntermediateDirectories: true)
+                    let segmentURL = openDirectory.appendingPathComponent(segmentFileName(hour: hour))
+                    if !FileManager.default.fileExists(atPath: segmentURL.path) {
+                        FileManager.default.createFile(atPath: segmentURL.path, contents: nil)
+                    }
+                    let handle = try FileHandle(forWritingTo: segmentURL)
+                    defer { try? handle.close() }
+                    try handle.seekToEnd()
+                    for line in encodedLines {
+                        try handle.write(contentsOf: line)
+                    }
+                    activeByteCount += byteCount
+                } catch {
+                    throw Self.writeFailure(for: error)
                 }
-                let handle = try FileHandle(forWritingTo: segmentURL)
-                defer { try? handle.close() }
-                try handle.seekToEnd()
-                for line in encodedLines {
-                    try handle.write(contentsOf: line)
-                }
-                activeByteCount += byteCount
-            } catch {
-                throw DiagnosticsJournalError.writeFailed
             }
         }
     }
@@ -303,7 +336,7 @@ public actor DiagnosticsJournalWriter {
             let data = try JSONEncoder().encode(control)
             try data.write(to: controlURL, options: .atomic)
         } catch {
-            throw DiagnosticsJournalError.writeFailed
+            throw Self.writeFailure(for: error)
         }
     }
 
@@ -342,7 +375,7 @@ public actor DiagnosticsJournalWriter {
         } catch let error as DiagnosticsJournalError {
             throw error
         } catch {
-            throw DiagnosticsJournalError.writeFailed
+            throw Self.writeFailure(for: error)
         }
     }
 
@@ -373,7 +406,7 @@ public actor DiagnosticsJournalWriter {
             encoder.dateEncodingStrategy = .iso8601
             try encoder.encode(lease).write(to: leaseURL, options: .atomic)
         } catch {
-            throw DiagnosticsJournalError.writeFailed
+            throw Self.writeFailure(for: error)
         }
     }
 
@@ -432,11 +465,36 @@ public actor DiagnosticsJournalWriter {
         formatter.formatOptions = [.withInternetDateTime, .withDashSeparatorInDate]
         return String(formatter.string(from: date).prefix(13)).replacingOccurrences(of: "-", with: "")
     }
+
+    /// 仅把系统已经提供的空间耗尽错误标记为 `diskFull`；其它文件写入、编码或
+    /// 文件协调问题统一收敛为 `ioFailure`，避免把未知错误文本写进 journal。
+    private static func writeFailure(for error: Error) -> DiagnosticsJournalError {
+        let nsError = error as NSError
+        if nsError.domain == NSCocoaErrorDomain,
+            nsError.code == CocoaError.Code.fileWriteOutOfSpace.rawValue
+        {
+            return .diskFull
+        }
+        if nsError.domain == NSPOSIXErrorDomain, nsError.code == Int(ENOSPC) {
+            return .diskFull
+        }
+        return .ioFailure
+    }
 }
 
 /// 这是跨进程的 fence，不是本进程的并发控制。每个 writer/reclaimer 仍须在
 /// 自己的 utility 串行执行器上使用它，且持锁期间不能跨 `await`。
 public enum DiagnosticsJournalIdentityLock {
+    public struct Identity: Hashable, Sendable {
+        public let origin: DiagnosticEvent.Origin
+        public let processInstanceID: UUID
+
+        public init(origin: DiagnosticEvent.Origin, processInstanceID: UUID) {
+            self.origin = origin
+            self.processInstanceID = processInstanceID
+        }
+    }
+
     public static func withExclusiveLock<T>(
         rootURL: URL,
         origin: DiagnosticEvent.Origin,
@@ -475,6 +533,118 @@ public enum DiagnosticsJournalIdentityLock {
         defer { _ = flock(descriptor, LOCK_UN) }
         return try body()
     }
+
+    /// 所有改变 generation、writer membership、lease 或 segment 的操作都先取得
+    /// shared fence；Reader 以独占 fence 捕获 manifest，因此“成员集合 + 水位”有
+    /// 一个真实的全局冻结点。两种模式都使用非阻塞 flock，绝不把等待带回输入路径。
+    public static func withSharedSnapshotFence<T>(
+        rootURL: URL,
+        _ body: () throws -> T
+    ) throws -> T {
+        try withSnapshotFence(rootURL: rootURL, lockOperation: LOCK_SH | LOCK_NB, body)
+    }
+
+    public static func withExclusiveSnapshotFence<T>(
+        rootURL: URL,
+        _ body: () throws -> T
+    ) throws -> T {
+        try withSnapshotFence(rootURL: rootURL, lockOperation: LOCK_EX | LOCK_NB, body)
+    }
+
+    /// Reader 以稳定排序同时申请当前 generation 已知 writer 的 lock。任何一个
+    /// busy 都立即放弃，避免与 writer/reclaim 形成等待环；Extension 从不调用它。
+    public static func withExclusiveLocks<T>(
+        rootURL: URL,
+        identities: [Identity],
+        _ body: () throws -> T
+    ) throws -> T {
+        guard FileManager.default.fileExists(atPath: rootURL.path) else {
+            throw DiagnosticsJournalError.rootUnavailable
+        }
+        let locksDirectory = rootURL.appendingPathComponent("locks", isDirectory: true)
+        if !FileManager.default.fileExists(atPath: locksDirectory.path) {
+            do {
+                try FileManager.default.createDirectory(
+                    at: locksDirectory,
+                    withIntermediateDirectories: false
+                )
+            } catch {
+                throw DiagnosticsJournalError.lockUnavailable
+            }
+        }
+
+        let sortedIdentities = Array(Set(identities)).sorted {
+            let lhsKey = "\($0.origin.rawValue)-\($0.processInstanceID.uuidString)"
+            let rhsKey = "\($1.origin.rawValue)-\($1.processInstanceID.uuidString)"
+            return lhsKey < rhsKey
+        }
+        var descriptors: [Int32] = []
+        do {
+            for identity in sortedIdentities {
+                let lockURL = locksDirectory.appendingPathComponent(
+                    "\(identity.origin.rawValue)-\(identity.processInstanceID.uuidString).lock"
+                )
+                let descriptor = open(lockURL.path, O_RDWR | O_CREAT | O_CLOEXEC, S_IRUSR | S_IWUSR)
+                guard descriptor >= 0 else { throw DiagnosticsJournalError.lockUnavailable }
+                descriptors.append(descriptor)
+
+                guard flock(descriptor, LOCK_EX | LOCK_NB) == 0 else {
+                    let lockError = errno
+                    if lockError == EWOULDBLOCK || lockError == EAGAIN || lockError == EACCES {
+                        throw DiagnosticsJournalError.lockBusy
+                    }
+                    throw DiagnosticsJournalError.lockUnavailable
+                }
+            }
+        } catch {
+            for descriptor in descriptors.reversed() {
+                _ = flock(descriptor, LOCK_UN)
+                _ = close(descriptor)
+            }
+            throw error
+        }
+        defer {
+            for descriptor in descriptors.reversed() {
+                _ = flock(descriptor, LOCK_UN)
+                _ = close(descriptor)
+            }
+        }
+        return try body()
+    }
+
+    private static func withSnapshotFence<T>(
+        rootURL: URL,
+        lockOperation: Int32,
+        _ body: () throws -> T
+    ) throws -> T {
+        guard FileManager.default.fileExists(atPath: rootURL.path) else {
+            throw DiagnosticsJournalError.rootUnavailable
+        }
+        let locksDirectory = rootURL.appendingPathComponent("locks", isDirectory: true)
+        if !FileManager.default.fileExists(atPath: locksDirectory.path) {
+            do {
+                try FileManager.default.createDirectory(
+                    at: locksDirectory,
+                    withIntermediateDirectories: false
+                )
+            } catch {
+                throw DiagnosticsJournalError.lockUnavailable
+            }
+        }
+        let lockURL = locksDirectory.appendingPathComponent("snapshot.lock")
+        let descriptor = open(lockURL.path, O_RDWR | O_CREAT | O_CLOEXEC, S_IRUSR | S_IWUSR)
+        guard descriptor >= 0 else { throw DiagnosticsJournalError.lockUnavailable }
+        defer { _ = close(descriptor) }
+
+        guard flock(descriptor, lockOperation) == 0 else {
+            if errno == EWOULDBLOCK || errno == EAGAIN || errno == EACCES {
+                throw DiagnosticsJournalError.lockBusy
+            }
+            throw DiagnosticsJournalError.lockUnavailable
+        }
+        defer { _ = flock(descriptor, LOCK_UN) }
+        return try body()
+    }
 }
 
 /// Main-App 专用的最新事件读取器。它只读取当前 generation，并对单个 JSONL
@@ -484,21 +654,34 @@ public actor DiagnosticsJournalReader {
     /// 历史段仍完整留在文件中，后续 offset pagination 可继续读取更早记录。
     public static let defaultMaximumEventCount = 10_000
     public static let defaultMaximumReadBytes = 5 * 1_024 * 1_024
+    public static let maximumActivePageQueries = 4
 
     private let rootURL: URL
     private var pageQueries: [UUID: PageQuery] = [:]
-
-    private struct PageSegment: Sendable {
-        let fileName: String
-        let preferredDirectory: String
-        let byteWatermark: Int
-        var readEndOffset: Int
-    }
+    private var pageQueryOrder: [UUID] = []
+    private let snapshotCaptureHook: (@Sendable () -> Void)?
 
     private struct PageQuery: Sendable {
         let generation: UInt64
-        var segments: [PageSegment]
-        var nextSegmentIndex = 0
+        let manifest: [SegmentManifest]
+        let events: [DiagnosticEvent]
+        var nextEventIndex = 0
+    }
+
+    /// 路径只保留在 reader actor 内部。`fileSystemNumber` 把“同名新文件”与
+    /// “writer seal 后移动的同一个文件”区分开，使 cursor 能在 reclaim 后失效。
+    private struct SegmentManifest: Equatable, Sendable {
+        let url: URL
+        let originalFileName: String
+        let fileSystemNumber: UInt64
+        let byteWatermark: Int
+    }
+
+    private enum PageSnapshotResult {
+        case events([DiagnosticEvent], [SegmentManifest])
+        case exceedsReadBudget
+        case exceedsEventBudget
+        case unavailable
     }
 
     private struct CompleteLine {
@@ -506,8 +689,12 @@ public actor DiagnosticsJournalReader {
         let startOffset: Int
     }
 
-    public init(rootURL: URL) {
+    public init(
+        rootURL: URL,
+        snapshotCaptureHook: (@Sendable () -> Void)? = nil
+    ) {
         self.rootURL = rootURL
+        self.snapshotCaptureHook = snapshotCaptureHook
     }
 
     public func latest(
@@ -517,6 +704,9 @@ public actor DiagnosticsJournalReader {
         guard maximumEventCount > 0, maximumReadBytes > 0 else {
             return DiagnosticsJournalSnapshot(generation: 0, events: [])
         }
+
+        let effectiveEventLimit = min(maximumEventCount, Self.defaultMaximumEventCount)
+        let effectiveReadBudget = min(maximumReadBytes, Self.defaultMaximumReadBytes)
 
         let control = try readControl()
         let generationDirectory = rootURL.appendingPathComponent(
@@ -528,12 +718,12 @@ public actor DiagnosticsJournalReader {
         var events: [DiagnosticEvent] = []
 
         for url in segmentURLs {
-            guard readBytes < maximumReadBytes else { break }
-            let remainingBytes = maximumReadBytes - readBytes
+            guard readBytes < effectiveReadBudget else { break }
+            let remainingBytes = effectiveReadBudget - readBytes
             let tail = try readTail(at: url, maximumBytes: remainingBytes)
             readBytes += tail.data.count
             events.append(contentsOf: decodeCompleteLines(from: tail))
-            if events.count >= maximumEventCount {
+            if events.count >= effectiveEventLimit {
                 break
             }
         }
@@ -541,7 +731,7 @@ public actor DiagnosticsJournalReader {
         let newestFirst = events.sorted(by: Self.isNewer)
         return DiagnosticsJournalSnapshot(
             generation: control.currentGeneration,
-            events: Array(newestFirst.prefix(maximumEventCount))
+            events: Array(newestFirst.prefix(effectiveEventLimit))
         )
     }
 
@@ -549,21 +739,64 @@ public actor DiagnosticsJournalReader {
     /// 页面只会读取有限窗口；保留目录再大也不会被一次性解码进 UI 内存。
     public func beginPage(
         maximumEventCount: Int = 500,
-        maximumReadBytes: Int = 512 * 1_024
+        maximumReadBytes: Int = defaultMaximumReadBytes
     ) throws -> DiagnosticsJournalPage {
         guard maximumEventCount > 0, maximumReadBytes > 0 else {
-            return DiagnosticsJournalPage(generation: 0, events: [], nextCursor: nil)
+            return DiagnosticsJournalPage(
+                generation: 0,
+                events: [],
+                nextCursor: nil,
+                status: .completed
+            )
         }
         let control = try readControl()
+        let effectivePageSize = min(maximumEventCount, Self.defaultMaximumEventCount)
+        let effectiveReadBudget = min(maximumReadBytes, Self.defaultMaximumReadBytes)
         let queryID = UUID()
-        pageQueries[queryID] = PageQuery(
+        let snapshot = try pageSnapshot(
             generation: control.currentGeneration,
-            segments: try pageSegments(in: generationDirectory(for: control.currentGeneration))
+            maximumReadBytes: effectiveReadBudget
+        )
+        let events: [DiagnosticEvent]
+        let manifest: [SegmentManifest]
+        switch snapshot {
+        case let .events(snapshotEvents, snapshotManifest):
+            events = snapshotEvents
+            manifest = snapshotManifest
+        case .exceedsReadBudget:
+            return DiagnosticsJournalPage(
+                generation: control.currentGeneration,
+                events: [],
+                nextCursor: nil,
+                status: .snapshotExceedsReadBudget
+            )
+        case .exceedsEventBudget:
+            return DiagnosticsJournalPage(
+                generation: control.currentGeneration,
+                events: [],
+                nextCursor: nil,
+                status: .snapshotExceedsEventBudget
+            )
+        case .unavailable:
+            return DiagnosticsJournalPage(
+                generation: control.currentGeneration,
+                events: [],
+                nextCursor: nil,
+                status: .snapshotUnavailable
+            )
+        }
+        insertPageQuery(
+            queryID,
+            query: PageQuery(
+                generation: control.currentGeneration,
+                manifest: manifest,
+                events: events.sorted(by: Self.isNewer)
+            )
         )
         return try readPage(
             queryID: queryID,
-            maximumEventCount: maximumEventCount,
-            maximumReadBytes: maximumReadBytes
+            maximumEventCount: effectivePageSize,
+            maximumReadBytes: effectiveReadBudget
         )
     }
 
@@ -572,15 +805,20 @@ public actor DiagnosticsJournalReader {
     public func nextPage(
         after cursor: DiagnosticsJournalPageCursor,
         maximumEventCount: Int = 500,
-        maximumReadBytes: Int = 512 * 1_024
+        maximumReadBytes: Int = defaultMaximumReadBytes
     ) throws -> DiagnosticsJournalPage {
         guard maximumEventCount > 0, maximumReadBytes > 0 else {
-            return DiagnosticsJournalPage(generation: 0, events: [], nextCursor: nil)
+            return DiagnosticsJournalPage(
+                generation: 0,
+                events: [],
+                nextCursor: nil,
+                status: .completed
+            )
         }
         return try readPage(
             queryID: cursor.queryID,
-            maximumEventCount: maximumEventCount,
-            maximumReadBytes: maximumReadBytes
+            maximumEventCount: min(maximumEventCount, Self.defaultMaximumEventCount),
+            maximumReadBytes: min(maximumReadBytes, Self.defaultMaximumReadBytes)
         )
     }
 
@@ -621,117 +859,258 @@ public actor DiagnosticsJournalReader {
         rootURL.appendingPathComponent("g\(generation)", isDirectory: true)
     }
 
-    private func pageSegments(in generationDirectory: URL) throws -> [PageSegment] {
-        let fileManager = FileManager.default
-        var segments: [PageSegment] = []
-        for directoryName in ["open", "sealed"] {
-            let directory = generationDirectory.appendingPathComponent(directoryName, isDirectory: true)
-            guard fileManager.fileExists(atPath: directory.path) else { continue }
-            let files = try fileManager.contentsOfDirectory(
-                at: directory,
-                includingPropertiesForKeys: [.fileSizeKey],
-                options: [.skipsHiddenFiles]
-            )
-            for file in files where file.pathExtension == "jsonl" {
-                guard let byteCount = try file.resourceValues(forKeys: [.fileSizeKey]).fileSize else {
-                    continue
-                }
-                segments.append(
-                    PageSegment(
-                        fileName: file.lastPathComponent,
-                        preferredDirectory: directoryName,
-                        byteWatermark: byteCount,
-                        readEndOffset: byteCount
-                    )
-                )
-            }
-        }
-        return segments.sorted(by: { $0.fileName > $1.fileName })
-    }
-
     private func readPage(
         queryID: UUID,
         maximumEventCount: Int,
         maximumReadBytes: Int
     ) throws -> DiagnosticsJournalPage {
         guard var query = pageQueries[queryID] else {
-            return DiagnosticsJournalPage(generation: 0, events: [], nextCursor: nil)
+            return DiagnosticsJournalPage(
+                generation: 0,
+                events: [],
+                nextCursor: nil,
+                status: .cursorUnavailable
+            )
         }
         let currentGeneration = try readControl().currentGeneration
         guard currentGeneration == query.generation else {
-            pageQueries.removeValue(forKey: queryID)
-            return DiagnosticsJournalPage(generation: currentGeneration, events: [], nextCursor: nil)
+            removePageQuery(queryID)
+            return DiagnosticsJournalPage(
+                generation: currentGeneration,
+                events: [],
+                nextCursor: nil,
+                status: .invalidatedByGeneration
+            )
         }
 
-        var remainingBytes = maximumReadBytes
-        var events: [DiagnosticEvent] = []
-        while events.count < maximumEventCount,
-            remainingBytes > 0,
-            query.nextSegmentIndex < query.segments.count
-        {
-            var segment = query.segments[query.nextSegmentIndex]
-            guard segment.readEndOffset > 0 else {
-                query.nextSegmentIndex += 1
-                continue
-            }
-            guard let url = resolve(segment: segment, generation: query.generation) else {
-                segment.readEndOffset = 0
-                query.segments[query.nextSegmentIndex] = segment
-                continue
-            }
-
-            let chunkByteCount = min(segment.readEndOffset, remainingBytes)
-            let chunkStart = segment.readEndOffset - chunkByteCount
-            let lines = try completeLines(
-                at: url,
-                startOffset: chunkStart,
-                endOffset: segment.readEndOffset
+        guard try manifestIsStillAvailable(query.manifest, in: generationDirectory(for: query.generation)) else {
+            removePageQuery(queryID)
+            return DiagnosticsJournalPage(
+                generation: query.generation,
+                events: [],
+                nextCursor: nil,
+                status: .invalidatedByReclaim
             )
-            remainingBytes -= chunkByteCount
-            guard !lines.isEmpty else {
-                segment.readEndOffset = chunkStart
-                query.segments[query.nextSegmentIndex] = segment
-                continue
-            }
-
-            let availableCount = min(maximumEventCount - events.count, lines.count)
-            let oldestSelectedIndex = lines.count - availableCount
-            let selected = lines[oldestSelectedIndex...]
-            events.append(
-                contentsOf: selected.reversed().compactMap { decodeEvent(from: $0.data) }
-            )
-            segment.readEndOffset = lines[oldestSelectedIndex].startOffset
-            query.segments[query.nextSegmentIndex] = segment
         }
 
-        let hasMore =
-            query.nextSegmentIndex < query.segments.count
-            && query.segments[query.nextSegmentIndex...].contains { $0.readEndOffset > 0 }
+        // `maximumReadBytes` 已在 beginPage 创建不可变快照时使用。这里仅对内存
+        // 快照切页，既不会读取后来 append 的数据，也不会因 segment 被封存/删除
+        // 而改变既有 query 的顺序。
+        _ = maximumReadBytes
+        let endIndex = min(query.nextEventIndex + maximumEventCount, query.events.count)
+        let events = Array(query.events[query.nextEventIndex..<endIndex])
+        query.nextEventIndex = endIndex
+        let hasMore = query.nextEventIndex < query.events.count
         if hasMore {
             pageQueries[queryID] = query
         } else {
-            pageQueries.removeValue(forKey: queryID)
+            removePageQuery(queryID)
         }
         return DiagnosticsJournalPage(
             generation: query.generation,
             events: events,
-            nextCursor: hasMore ? DiagnosticsJournalPageCursor(queryID: queryID) : nil
+            nextCursor: hasMore ? DiagnosticsJournalPageCursor(queryID: queryID) : nil,
+            status: hasMore ? .hasMore : .completed
         )
     }
 
-    private func resolve(segment: PageSegment, generation: UInt64) -> URL? {
+    /// 枚举两次得到完全一致的 identity+watermark manifest 后，第二次枚举结束
+    /// 即是逻辑冻结点：之后 append 的字节不在 watermark 内，新建段也不在
+    /// manifest 内。若 writer/retention 使两次观察不稳定，安全地要求刷新。
+    private func pageSnapshot(
+        generation: UInt64,
+        maximumReadBytes: Int
+    ) throws -> PageSnapshotResult {
         let generationDirectory = generationDirectory(for: generation)
-        let directories = [segment.preferredDirectory, "open", "sealed"]
-        for directoryName in directories {
-            let url =
-                generationDirectory
-                .appendingPathComponent(directoryName, isDirectory: true)
-                .appendingPathComponent(segment.fileName)
-            if FileManager.default.fileExists(atPath: url.path) {
-                return url
+        guard
+            let manifest = try stableSegmentManifest(
+                in: generationDirectory,
+                generation: generation
+            )
+        else {
+            return .unavailable
+        }
+        snapshotCaptureHook?()
+        var remainingBytes = maximumReadBytes
+        var events: [DiagnosticEvent] = []
+        for segment in manifest {
+            guard segment.byteWatermark <= remainingBytes else {
+                return .exceedsReadBudget
+            }
+            guard let resolvedURL = try resolve(segment, in: generationDirectory) else {
+                return .unavailable
+            }
+            let lines = try completeLines(
+                at: resolvedURL,
+                startOffset: 0,
+                endOffset: segment.byteWatermark
+            )
+            remainingBytes -= segment.byteWatermark
+            events.append(contentsOf: lines.compactMap { decodeEvent(from: $0.data) })
+            guard events.count <= Self.defaultMaximumEventCount else {
+                return .exceedsEventBudget
             }
         }
+        guard try readControl().currentGeneration == generation else {
+            return .unavailable
+        }
+        return .events(events, manifest)
+    }
+
+    private func stableSegmentManifest(
+        in generationDirectory: URL,
+        generation: UInt64
+    ) throws -> [SegmentManifest]? {
+        for _ in 0..<2 {
+            let manifest: [SegmentManifest]? = try DiagnosticsJournalIdentityLock.withExclusiveSnapshotFence(
+                rootURL: rootURL
+            ) { () throws -> [SegmentManifest]? in
+                guard try readControl().currentGeneration == generation else { return nil }
+                let observedIdentities = try writerIdentities(in: generationDirectory)
+                return try DiagnosticsJournalIdentityLock.withExclusiveLocks(
+                    rootURL: rootURL,
+                    identities: Array(observedIdentities)
+                ) {
+                    // 所有 writer/reclaimer 都持 shared snapshot fence 后才改变
+                    // membership 或段内容；持有 exclusive fence 时，这个复核和
+                    // manifest 读取之间不会有新 writer 加入或旧 writer 追加。
+                    guard try writerIdentities(in: generationDirectory) == observedIdentities else {
+                        return nil
+                    }
+                    return try segmentManifest(in: generationDirectory)
+                }
+            }
+            if let manifest { return manifest }
+        }
         return nil
+    }
+
+    private func writerIdentities(
+        in generationDirectory: URL
+    ) throws -> Set<DiagnosticsJournalIdentityLock.Identity> {
+        var identities = Set<DiagnosticsJournalIdentityLock.Identity>()
+        for segmentURL in try segmentURLs(in: generationDirectory) {
+            guard let identity = writerIdentity(for: segmentURL) else {
+                throw DiagnosticsJournalError.ioFailure
+            }
+            identities.insert(identity)
+        }
+
+        let leasesDirectory = generationDirectory.appendingPathComponent("leases", isDirectory: true)
+        guard FileManager.default.fileExists(atPath: leasesDirectory.path) else { return identities }
+        let leaseURLs = try FileManager.default.contentsOfDirectory(
+            at: leasesDirectory,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles]
+        )
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        for leaseURL in leaseURLs where leaseURL.pathExtension == "json" {
+            let lease = try decoder.decode(DiagnosticsJournalLease.self, from: Data(contentsOf: leaseURL))
+            guard
+                let generation = generationDirectoryNumber(for: generationDirectory),
+                lease.generation == generation
+            else {
+                throw DiagnosticsJournalError.writerIdentityMismatch
+            }
+            identities.insert(
+                DiagnosticsJournalIdentityLock.Identity(
+                    origin: lease.origin,
+                    processInstanceID: lease.processInstanceID
+                )
+            )
+        }
+        return identities
+    }
+
+    private func writerIdentity(
+        for segmentURL: URL
+    ) -> DiagnosticsJournalIdentityLock.Identity? {
+        var name = segmentURL.deletingPathExtension().lastPathComponent
+        if name.hasPrefix("recovered-") {
+            name.removeFirst("recovered-".count)
+        }
+        for origin in DiagnosticEvent.Origin.allCases {
+            let prefix = "\(origin.rawValue)-"
+            guard name.hasPrefix(prefix) else { continue }
+            let remaining = name.dropFirst(prefix.count)
+            guard remaining.count >= 36, let processInstanceID = UUID(uuidString: String(remaining.prefix(36)))
+            else {
+                return nil
+            }
+            return DiagnosticsJournalIdentityLock.Identity(
+                origin: origin,
+                processInstanceID: processInstanceID
+            )
+        }
+        return nil
+    }
+
+    private func generationDirectoryNumber(for directory: URL) -> UInt64? {
+        UInt64(directory.lastPathComponent.dropFirst())
+    }
+
+    private func segmentManifest(in generationDirectory: URL) throws -> [SegmentManifest] {
+        try segmentURLs(in: generationDirectory).map { url in
+            let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+            guard
+                let number = attributes[.systemFileNumber] as? NSNumber,
+                let byteCount = attributes[.size] as? NSNumber
+            else {
+                throw DiagnosticsJournalError.ioFailure
+            }
+            return SegmentManifest(
+                url: url,
+                originalFileName: url.lastPathComponent,
+                fileSystemNumber: number.uint64Value,
+                byteWatermark: byteCount.intValue
+            )
+        }
+    }
+
+    private func resolve(
+        _ manifest: SegmentManifest,
+        in generationDirectory: URL
+    ) throws -> URL? {
+        for current in try segmentManifest(in: generationDirectory)
+        where current.fileSystemNumber == manifest.fileSystemNumber {
+            // 只接受 writer 的同名 open↔sealed 移动，或 reclaim 产生的
+            // `recovered-` 前缀。inode 被文件系统复用给无关新段时，不能把它
+            // 误判为冻结快照的原段。
+            guard isAcceptedMove(from: manifest.originalFileName, to: current.originalFileName) else {
+                continue
+            }
+            guard current.byteWatermark >= manifest.byteWatermark else { return nil }
+            return current.url
+        }
+        return nil
+    }
+
+    private func isAcceptedMove(from originalFileName: String, to currentFileName: String) -> Bool {
+        currentFileName == originalFileName || currentFileName == "recovered-\(originalFileName)"
+    }
+
+    private func manifestIsStillAvailable(
+        _ manifest: [SegmentManifest],
+        in generationDirectory: URL
+    ) throws -> Bool {
+        for segment in manifest where try resolve(segment, in: generationDirectory) == nil {
+            return false
+        }
+        return true
+    }
+
+    private func insertPageQuery(_ queryID: UUID, query: PageQuery) {
+        while pageQueryOrder.count >= Self.maximumActivePageQueries {
+            removePageQuery(pageQueryOrder.removeFirst())
+        }
+        pageQueries[queryID] = query
+        pageQueryOrder.append(queryID)
+    }
+
+    private func removePageQuery(_ queryID: UUID) {
+        pageQueries.removeValue(forKey: queryID)
+        pageQueryOrder.removeAll { $0 == queryID }
     }
 
     private func completeLines(

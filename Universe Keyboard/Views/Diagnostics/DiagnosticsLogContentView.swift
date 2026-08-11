@@ -9,12 +9,22 @@ struct DiagnosticsLogContentView: View {
     let exportLimitMessage: String?
     let hasMorePages: Bool
     let isLoadingMore: Bool
+    let pagingNotice: String?
     let colorTokenForLine: (String) -> String
     let onLoadMore: () -> Void
 
     var body: some View {
         if displayedLines.isEmpty {
-            DiagnosticsEmptyStateView(hasLoggedLines: hasLoggedLines)
+            VStack(spacing: 12) {
+                if let pagingNotice {
+                    Text(pagingNotice)
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 24)
+                }
+                DiagnosticsEmptyStateView(hasLoggedLines: hasLoggedLines)
+            }
         } else {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 5) {
@@ -29,6 +39,12 @@ struct DiagnosticsLogContentView: View {
 
                     if let exportLimitMessage {
                         Text(exportLimitMessage)
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
+
+                    if let pagingNotice {
+                        Text(pagingNotice)
                             .font(.caption)
                             .foregroundStyle(.orange)
                     }

@@ -32,6 +32,12 @@ actor DiagnosticsJournalRetentionCoordinator {
         let kind: SegmentKind
         let byteCount: Int
         let modifiedAt: Date
+        let writerIdentity: WriterIdentity?
+    }
+
+    private struct WriterIdentity {
+        let origin: DiagnosticEvent.Origin
+        let processInstanceID: UUID
     }
 
     private let rootURL: URL
@@ -45,8 +51,20 @@ actor DiagnosticsJournalRetentionCoordinator {
     /// 先把确认过期的 writer 转为 sealed/recovered，再执行普通保留删除。
     /// 任一 I/O 失败均保守保留文件；容量因活动 open 段暂时超限是允许状态。
     func runReclaim(now: Date = Date()) -> Report {
+        guard FileManager.default.fileExists(atPath: rootURL.path) else { return Report() }
+        do {
+            return try DiagnosticsJournalIdentityLock.withSharedSnapshotFence(rootURL: rootURL) { [self] in
+                runReclaimWhileFenced(now: now)
+            }
+        } catch {
+            var report = Report()
+            report.deferredFailureCount = 1
+            return report
+        }
+    }
+
+    private func runReclaimWhileFenced(now: Date) -> Report {
         var report = Report()
-        guard FileManager.default.fileExists(atPath: rootURL.path) else { return report }
 
         for generationDirectory in generationDirectories() {
             recoverExpiredLeases(
@@ -210,7 +228,13 @@ actor DiagnosticsJournalRetentionCoordinator {
                             continue
                         }
                         segments.append(
-                            Segment(url: file, kind: kind, byteCount: byteCount, modifiedAt: modifiedAt)
+                            Segment(
+                                url: file,
+                                kind: kind,
+                                byteCount: byteCount,
+                                modifiedAt: modifiedAt,
+                                writerIdentity: writerIdentity(for: file)
+                            )
                         )
                     } catch {
                         report.deferredFailureCount += 1
@@ -222,14 +246,50 @@ actor DiagnosticsJournalRetentionCoordinator {
     }
 
     private func deleteSealed(_ segment: Segment, report: inout Report) -> Bool {
+        guard let writerIdentity = segment.writerIdentity else {
+            report.deferredFailureCount += 1
+            return false
+        }
         do {
-            try FileManager.default.removeItem(at: segment.url)
+            try DiagnosticsJournalIdentityLock.withExclusiveLock(
+                rootURL: rootURL,
+                origin: writerIdentity.origin,
+                processInstanceID: writerIdentity.processInstanceID
+            ) {
+                // 封存段是 writer 的终态，但仍在同一 stable identity lock 内
+                // 复核其位置；这样 retention 不会与同一 identity 的 seal/reclaim
+                // 交叉删除一个已被替换或移动的路径。
+                guard FileManager.default.fileExists(atPath: segment.url.path) else {
+                    throw DiagnosticsJournalError.ioFailure
+                }
+                try FileManager.default.removeItem(at: segment.url)
+            }
             report.deletedSealedSegmentCount += 1
             return true
+        } catch DiagnosticsJournalError.lockBusy {
+            report.skippedBusyLeaseCount += 1
+            return false
         } catch {
             report.deferredFailureCount += 1
             return false
         }
+    }
+
+    private func writerIdentity(for segmentURL: URL) -> WriterIdentity? {
+        var name = segmentURL.deletingPathExtension().lastPathComponent
+        if name.hasPrefix("recovered-") {
+            name.removeFirst("recovered-".count)
+        }
+        for origin in DiagnosticEvent.Origin.allCases {
+            let prefix = "\(origin.rawValue)-"
+            guard name.hasPrefix(prefix) else { continue }
+            let remaining = name.dropFirst(prefix.count)
+            guard remaining.count >= 36 else { return nil }
+            let uuidText = String(remaining.prefix(36))
+            guard let processInstanceID = UUID(uuidString: uuidText) else { return nil }
+            return WriterIdentity(origin: origin, processInstanceID: processInstanceID)
+        }
+        return nil
     }
 
     private func moveOpenSegmentsToRecoveredSeal(
