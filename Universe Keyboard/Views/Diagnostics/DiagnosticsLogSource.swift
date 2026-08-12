@@ -189,10 +189,9 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource {
             usedV1Result = true
             return nil
         }
-        // 诊断页刷新只投递受控 cadence；scheduler 在 utility task 内完成 reclaim，
-        // 不阻塞本次 v1 查询，更不会进入 Keyboard Extension 热路径。
-        _ = await DiagnosticsJournalRetentionScheduler.shared.requestReclaim(rootURL: rootURL)
-        guard revision == queryRevision, requestedDay == selectedLogDay else { return nil }
+        // Retention 由 Main App lifecycle 统一投递。Reader 使用非阻塞独占
+        // snapshot fence；若在这里先启动 reclaim，会让本次读取与自己竞争并
+        // 偶发降级为 journalUnavailable。
         let reader = DiagnosticsJournalReader(rootURL: rootURL)
         let page: DiagnosticsJournalPage
         do {

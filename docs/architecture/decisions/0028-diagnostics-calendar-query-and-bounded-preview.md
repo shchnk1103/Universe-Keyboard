@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed; live-root revision remediation ready for re-review
+Proposed; independent Architecture Pass, Quality re-review pending
 
 ## Context
 

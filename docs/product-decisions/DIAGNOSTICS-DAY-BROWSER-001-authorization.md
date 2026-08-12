@@ -11,9 +11,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Accepted` — Human Product Lead 已授权继续 |
-| **Phase** | live-root revision 屏障完成，等待再次独立复核 |
+| **Phase** | Architecture Pass；retention/read 争锁修复完成，等待 Quality re-review |
 | **Non-claims** | 不改变 Extension 写入热路径、7 天/100 MiB retention、隐私字段、G2 或候选栏；不宣称超预算预览是完整历史 |
-| **Next** | Architecture / Quality 复核最终 remediation；不由 Executor 自授通过 |
+| **Next** | Quality 对最终提交再次独立复核；不由 Executor 自授通过 |
 | **Residuals** | writer 跨小时 batch、完整超预算深分页与真机门仍不在本轮授权内 |
 
 ---

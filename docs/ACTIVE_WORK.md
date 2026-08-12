@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`TD-012-LMDG-MODEL-G2` Product Hold；`DIAGNOSTICS-DAY-BROWSER-001` live-root revision 屏障完成并等待再次复核；Active Work `9/10`。
+Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`TD-012-LMDG-MODEL-G2` Product Hold；`DIAGNOSTICS-DAY-BROWSER-001` Architecture Pass、retention/read 争锁修复完成，等待 Quality re-review；Active Work `9/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -17,7 +17,7 @@ Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`
 | 6 | TYPING-INTELLIGENCE-001 | Active | Implementation; Quality pending | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 7 | TYPO-CORRECTION-002 | Active | Contextual recovery; sim scenarios pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 8 | DIAGNOSTICS-OBSERVABILITY-001 | Active | P0 已合并；等待 Product Gate，P1 后续见 TD-013 | [`assignments/diagnostics-observability-001.md`](assignments/diagnostics-observability-001.md) |
-| 9 | DIAGNOSTICS-DAY-BROWSER-001 | Active | live-root revision 屏障完成；再次 re-review | [`assignments/diagnostics-day-browser-001.md`](assignments/diagnostics-day-browser-001.md) |
+| 9 | DIAGNOSTICS-DAY-BROWSER-001 | Active | Architecture Pass；等待最终 Quality re-review | [`assignments/diagnostics-day-browser-001.md`](assignments/diagnostics-day-browser-001.md) |
 
 ## Completed (not Active)
 

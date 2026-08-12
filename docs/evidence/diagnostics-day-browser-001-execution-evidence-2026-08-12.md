@@ -60,6 +60,12 @@ Architecture re-review 对提交 `2c2654c` 判定 `Fail`：冻结 watermark、ty
 
 最终 delta 验证：`DiagnosticsStoreTests` 14 项通过；完整 scheme Main App 164 项 + Keyboard 6 项通过；Debug 与 Release build 均以 exit `0` 完成。最终 full-scheme result bundle：`/Users/doubleshy0n/Library/Developer/Xcode/DerivedData/Universe_Keyboard-emxsvllcocrspwdtwulsntweaomy/Logs/Test/Test-Universe Keyboard-2026.08.12_14-14-18-+0800.xcresult`。
 
+Architecture 对 `fbc0ddf` 给出 `Pass`。Quality 随后在组合运行中稳定复现 >5 MiB 用例偶发 `journalUnavailable`：`V1DiagnosticsLogSource` 先启动 detached retention，随后立即申请 reader 的非阻塞 exclusive snapshot fence，可能与自己触发的 reclaimer 争锁。本轮将 retention ownership 收回既有 Main App lifecycle，source refresh 不再重复投递 reclaim；该结论触发再次门禁与 Quality re-review。
+
+Retention/read 修复后，19 项 `DiagnosticsLogSourceTests + DiagnosticsStoreTests` 的有效独立运行均为 19/19 通过（重复验证期间另有一个与独立审查并发造成的损坏 xcresult，不计为通过证据）；Debug 与 Release build 均以 exit `0` 完成。Quality 必须基于最终冻结提交独立复核，Executor 不据此自授 Quality Pass。
+
+无并发审查进程后的最终组合结果包为 `/Users/doubleshy0n/Library/Developer/Xcode/DerivedData/Universe_Keyboard-emxsvllcocrspwdtwulsntweaomy/Logs/Test/Test-Universe Keyboard-2026.08.12_14-23-25-+0800.xcresult`，`xcresulttool` 摘要为 `Passed`、19/19、0 failures。
+
 Targeted Main App result bundle:
 `/Users/doubleshy0n/Library/Developer/Xcode/DerivedData/Universe_Keyboard-emxsvllcocrspwdtwulsntweaomy/Logs/Test/Test-Universe Keyboard-2026.08.12_13-16-43-+0800.xcresult`
 
