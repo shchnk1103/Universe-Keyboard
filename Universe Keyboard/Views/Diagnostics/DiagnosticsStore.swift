@@ -32,6 +32,8 @@ final class DiagnosticsStore {
     var hasMorePages = false
     var pagingNotice: String?
     var clearFailureNotice: String?
+    var availableLogDays: [DiagnosticsLogDay] = []
+    var selectedLogDay: DiagnosticsLogDay?
     private var hasLoadedOlderPages = false
     var selectedSummaryFilter: SummaryFilter = .all
     var selectedCategory: Logger.Category?
@@ -39,6 +41,7 @@ final class DiagnosticsStore {
     private let logSource: any DiagnosticsLogSource
 
     private var liveRefreshTask: Task<Void, Never>?
+    private var liveRefreshCalendarDayStart: Date?
 
     init(logSource: any DiagnosticsLogSource = CompositeDiagnosticsLogSource(appGroupID: universeAppGroupID)) {
         self.logSource = logSource
@@ -130,19 +133,34 @@ final class DiagnosticsStore {
 
     func loadLog() {
         Task {
-            await replaceWithLatestPage()
+            await replaceWithLatestPage(refreshDays: true)
         }
     }
 
     func startLiveRefresh() {
         guard liveRefreshTask == nil else { return }
+        liveRefreshCalendarDayStart = Calendar.current.startOfDay(for: Date())
         liveRefreshTask = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(1))
                 guard let self, !Task.isCancelled else { return }
                 // 已展开更早历史时不重置冻结分页查询；用户可手动刷新以开始新快照。
                 guard !self.hasLoadedOlderPages, !self.isClearing else { continue }
-                await self.replaceWithLatestPage()
+                let currentDayStart = Calendar.current.startOfDay(for: Date())
+                let dayRolledOver = self.liveRefreshCalendarDayStart != currentDayStart
+                self.liveRefreshCalendarDayStart = currentDayStart
+
+                // 只有正在跟随最新日期时才在跨午夜后自动前进到新的一天；用户
+                // 主动浏览历史日期时不应被每秒刷新打断。
+                let isFollowingLatestDay = self.selectedLogDay == self.availableLogDays.first
+                if dayRolledOver, isFollowingLatestDay {
+                    self.selectedLogDay = nil
+                    await self.replaceWithLatestPage(refreshDays: true)
+                    continue
+                }
+                guard self.selectedLogDay.map({ Calendar.current.isDateInToday($0.range.start) }) ?? true
+                else { continue }
+                await self.replaceWithLatestPage(refreshDays: false)
             }
         }
     }
@@ -150,6 +168,7 @@ final class DiagnosticsStore {
     func stopLiveRefresh() {
         liveRefreshTask?.cancel()
         liveRefreshTask = nil
+        liveRefreshCalendarDayStart = nil
     }
 
     func refresh() {
@@ -159,7 +178,7 @@ final class DiagnosticsStore {
 
         Task {
             try? await Task.sleep(for: .milliseconds(400))
-            await replaceWithLatestPage()
+            await replaceWithLatestPage(refreshDays: true)
             isRefreshing = false
         }
     }
@@ -177,6 +196,8 @@ final class DiagnosticsStore {
                 hasMorePages = false
                 hasLoadedOlderPages = false
                 pagingNotice = nil
+                availableLogDays = []
+                selectedLogDay = nil
             } else {
                 clearFailureNotice = "未能完整清空诊断日志，请稍后重试。现有记录可能仍然存在。"
             }
@@ -205,6 +226,17 @@ final class DiagnosticsStore {
         }
     }
 
+    func selectLogDay(_ day: DiagnosticsLogDay) {
+        guard day != selectedLogDay, !isRefreshing, !isClearing else { return }
+        selectedLogDay = day
+        isRefreshing = true
+        clearFailureNotice = nil
+        Task {
+            await replaceWithLatestPage(refreshDays: false)
+            isRefreshing = false
+        }
+    }
+
     func selectSummaryFilter(_ filter: SummaryFilter) {
         selectedSummaryFilter = filter
         selectedCategory = nil
@@ -223,7 +255,20 @@ final class DiagnosticsStore {
         return "secondary"
     }
 
-    private func replaceWithLatestPage() async {
+    private func replaceWithLatestPage(refreshDays: Bool) async {
+        if let datedSource = logSource as? any DiagnosticsDatedLogSource {
+            if refreshDays || availableLogDays.isEmpty {
+                availableLogDays = await datedSource.availableLogDays()
+                if let selectedLogDay,
+                    availableLogDays.contains(selectedLogDay)
+                {
+                    self.selectedLogDay = selectedLogDay
+                } else {
+                    selectedLogDay = availableLogDays.first
+                }
+            }
+            await datedSource.selectLogDay(selectedLogDay)
+        }
         lines = Self.lines(from: await logSource.loadLogText())
         hasLoadedOlderPages = false
         if let pagingSource = logSource as? any DiagnosticsLogPagingSource {

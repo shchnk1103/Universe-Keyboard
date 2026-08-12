@@ -17,11 +17,8 @@ struct DiagnosticsLogContentView: View {
         if displayedLines.isEmpty {
             VStack(spacing: 12) {
                 if let pagingNotice {
-                    Text(pagingNotice)
-                        .font(.caption)
-                        .foregroundStyle(.orange)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 24)
+                    DiagnosticsNoticeView(message: pagingNotice)
+                        .padding(.horizontal, AppSpacing.screen)
                 }
                 DiagnosticsEmptyStateView(hasLoggedLines: hasLoggedLines)
             }
@@ -44,9 +41,7 @@ struct DiagnosticsLogContentView: View {
                     }
 
                     if let pagingNotice {
-                        Text(pagingNotice)
-                            .font(.caption)
-                            .foregroundStyle(.orange)
+                        DiagnosticsNoticeView(message: pagingNotice)
                     }
 
                     ForEach(Array(displayedLines.enumerated()), id: \.offset) { _, line in
@@ -86,6 +81,26 @@ struct DiagnosticsLogContentView: View {
         default:
             return .secondary
         }
+    }
+}
+
+private struct DiagnosticsNoticeView: View {
+    let message: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: "info.circle.fill")
+                .accessibilityHidden(true)
+            Text(message)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .font(.caption)
+        .foregroundStyle(.orange)
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.orange.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: AppRadius.control, style: .continuous))
+        .accessibilityElement(children: .combine)
     }
 }
 

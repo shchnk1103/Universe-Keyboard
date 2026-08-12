@@ -9,6 +9,14 @@ struct DiagnosticsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            if !store.availableLogDays.isEmpty {
+                DiagnosticsDayPicker(
+                    days: store.availableLogDays,
+                    selectedDay: store.selectedLogDay,
+                    onSelect: store.selectLogDay
+                )
+            }
+
             if !store.lines.isEmpty {
                 DiagnosticsSummaryBar(
                     recordCount: store.lines.count,
@@ -39,6 +47,7 @@ struct DiagnosticsView: View {
                 onLoadMore: store.loadMore
             )
         }
+        .background(Color(.systemGroupedBackground))
         .navigationTitle("键盘诊断")
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $store.searchQuery, prompt: "搜索事件、分类或状态")

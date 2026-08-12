@@ -103,6 +103,41 @@ final class DiagnosticsStoreTests: XCTestCase {
         XCTAssertFalse(store.canClearLog)
     }
 
+    func testDateBrowserDefaultsToNewestDayAndReloadsSelectedDay() async {
+        let oldDay = DiagnosticsLogDay(
+            range: DiagnosticsJournalDateRange(
+                start: Date(timeIntervalSince1970: 1_723_392_000),
+                end: Date(timeIntervalSince1970: 1_723_478_400)
+            )
+        )
+        let newDay = DiagnosticsLogDay(
+            range: DiagnosticsJournalDateRange(
+                start: Date(timeIntervalSince1970: 1_723_478_400),
+                end: Date(timeIntervalSince1970: 1_723_564_800)
+            )
+        )
+        let source = DatedStubLogSource(
+            days: [newDay, oldDay],
+            textByDayStart: [
+                newDay.range.start: "newest day event",
+                oldDay.range.start: "older day event",
+            ]
+        )
+        let store = DiagnosticsStore(logSource: source)
+
+        store.loadLog()
+        await waitUntil {
+            store.selectedLogDay == newDay && store.lines == ["newest day event"]
+        }
+
+        store.selectLogDay(oldDay)
+        await waitUntil {
+            !store.isRefreshing
+                && store.selectedLogDay == oldDay
+                && store.lines == ["older day event"]
+        }
+    }
+
     private func waitUntil(
         timeout: Duration = .seconds(2),
         condition: @escaping @MainActor () -> Bool
@@ -139,4 +174,32 @@ extension StubLogSource: DiagnosticsLogPagingSource {
     func loadMoreLogText() async -> String? { nil }
     func hasMoreLogPages() async -> Bool { false }
     func pagingNotice() async -> String? { notice }
+}
+
+@MainActor
+private final class DatedStubLogSource: DiagnosticsDatedLogSource {
+    let days: [DiagnosticsLogDay]
+    let textByDayStart: [Date: String]
+    var selectedDay: DiagnosticsLogDay?
+
+    init(days: [DiagnosticsLogDay], textByDayStart: [Date: String]) {
+        self.days = days
+        self.textByDayStart = textByDayStart
+    }
+
+    func availableLogDays() -> [DiagnosticsLogDay] { days }
+
+    func selectLogDay(_ day: DiagnosticsLogDay?) {
+        selectedDay = day
+    }
+
+    func loadLogText() -> String? {
+        guard let selectedDay else { return nil }
+        return textByDayStart[selectedDay.range.start]
+    }
+
+    func loadMoreLogText() -> String? { nil }
+    func hasMoreLogPages() -> Bool { false }
+    func pagingNotice() -> String? { nil }
+    func clearLog() -> DiagnosticsLogClearResult { .cleared }
 }

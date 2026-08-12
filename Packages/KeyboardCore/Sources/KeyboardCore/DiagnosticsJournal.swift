@@ -119,6 +119,22 @@ public struct DiagnosticsJournalPageCursor: Hashable, Sendable {
     fileprivate let queryID: UUID
 }
 
+/// Main App 日历查询使用的半开 UTC 范围。事件仍保存 UTC；本地日期只在
+/// reader 与 UI 映射，不改变 writer 的文件 ownership。
+public struct DiagnosticsJournalDateRange: Hashable, Sendable {
+    public let start: Date
+    public let end: Date
+
+    public init(start: Date, end: Date) {
+        self.start = start
+        self.end = end
+    }
+
+    fileprivate func contains(_ date: Date) -> Bool {
+        date >= start && date < end
+    }
+}
+
 /// 分页查询的受控结束状态。调用方必须把失效状态与“没有更多日志”区别展示，
 /// 不能在 clear 或 reader 重建后静默把旧 cursor 当成空结果。
 public enum DiagnosticsJournalPageStatus: Sendable, Equatable {
@@ -136,6 +152,8 @@ public enum DiagnosticsJournalPageStatus: Sendable, Equatable {
     case snapshotExceedsReadBudget
     /// 为保证复制和内存边界，冻结快照超过允许的事件总数。
     case snapshotExceedsEventBudget
+    /// 完整日期快照超预算后返回的有界最近窗口；内容有观察价值但不完整。
+    case partialRecentWindow
     /// 枚举、移动或读取段时无法保持同一份 segment manifest；必须刷新重试。
     case snapshotUnavailable
     /// control 或 journal 根目录不可用；调用方不得把它降级为 legacy 成功读取。
@@ -675,6 +693,7 @@ public actor DiagnosticsJournalReader {
         let originalFileName: String
         let fileSystemNumber: UInt64
         let byteWatermark: Int
+        let hourStartUTC: Date?
     }
 
     private enum PageSnapshotResult {
@@ -695,6 +714,38 @@ public actor DiagnosticsJournalReader {
     ) {
         self.rootURL = rootURL
         self.snapshotCaptureHook = snapshotCaptureHook
+    }
+
+    /// 从当前 generation 的 UTC 小时段推导本地日历范围。它只在 Main App
+    /// repository 使用，不要求 writer 创建或共享“每日文件”。
+    public func availableDateRanges(
+        timeZone: TimeZone = .current
+    ) throws -> [DiagnosticsJournalDateRange] {
+        let control = try readControl()
+        let generationDirectory = generationDirectory(for: control.currentGeneration)
+        guard
+            let manifest = try stableSegmentManifest(
+                in: generationDirectory,
+                generation: control.currentGeneration
+            )
+        else {
+            throw DiagnosticsJournalError.lockBusy
+        }
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        var dayStarts = Set<Date>()
+        for hourStart in manifest.compactMap(\.hourStartUTC) {
+            dayStarts.insert(calendar.startOfDay(for: hourStart))
+            // 某些时区的本地午夜不落在 UTC 整点（例如 UTC+05:30）。同一个
+            // UTC 小时段可能跨越两个本地日期，因此两端都必须进入日期索引。
+            let hourLastMoment = hourStart.addingTimeInterval(60 * 60 - 0.001)
+            dayStarts.insert(calendar.startOfDay(for: hourLastMoment))
+        }
+        return dayStarts.sorted(by: >).compactMap { start in
+            guard let end = calendar.date(byAdding: .day, value: 1, to: start) else { return nil }
+            return DiagnosticsJournalDateRange(start: start, end: end)
+        }
     }
 
     public func latest(
@@ -738,6 +789,7 @@ public actor DiagnosticsJournalReader {
     /// 创建一个以当前 generation 和每段字节水位冻结的“最新优先”分页查询。
     /// 页面只会读取有限窗口；保留目录再大也不会被一次性解码进 UI 内存。
     public func beginPage(
+        in dateRange: DiagnosticsJournalDateRange? = nil,
         maximumEventCount: Int = 500,
         maximumReadBytes: Int = defaultMaximumReadBytes
     ) throws -> DiagnosticsJournalPage {
@@ -755,6 +807,7 @@ public actor DiagnosticsJournalReader {
         let queryID = UUID()
         let snapshot = try pageSnapshot(
             generation: control.currentGeneration,
+            dateRange: dateRange,
             maximumReadBytes: effectiveReadBudget
         )
         let events: [DiagnosticEvent]
@@ -797,6 +850,71 @@ public actor DiagnosticsJournalReader {
             queryID: queryID,
             maximumEventCount: effectivePageSize,
             maximumReadBytes: effectiveReadBudget
+        )
+    }
+
+    /// 严格日期快照超预算时使用的有界最近窗口。每个相关段获得一份尾读预算，
+    /// 避免某个 writer 独占全部 5 MiB；调用方必须持续展示“不完整”状态。
+    public func recentPreview(
+        in dateRange: DiagnosticsJournalDateRange,
+        maximumEventCount: Int = 500,
+        maximumReadBytes: Int = defaultMaximumReadBytes
+    ) throws -> DiagnosticsJournalPage {
+        guard maximumEventCount > 0, maximumReadBytes > 0 else {
+            return DiagnosticsJournalPage(
+                generation: 0,
+                events: [],
+                nextCursor: nil,
+                status: .partialRecentWindow
+            )
+        }
+        let control = try readControl()
+        let generationDirectory = generationDirectory(for: control.currentGeneration)
+        guard
+            let manifest = try stableSegmentManifest(
+                in: generationDirectory,
+                generation: control.currentGeneration
+            )
+        else {
+            return DiagnosticsJournalPage(
+                generation: control.currentGeneration,
+                events: [],
+                nextCursor: nil,
+                status: .snapshotUnavailable
+            )
+        }
+        let scopedManifest = manifest.filter { segmentIntersects($0, dateRange: dateRange) }
+        let effectiveReadBudget = min(maximumReadBytes, Self.defaultMaximumReadBytes)
+        let effectiveEventLimit = min(maximumEventCount, Self.defaultMaximumEventCount)
+        var remainingBytes = effectiveReadBudget
+        var events: [DiagnosticEvent] = []
+
+        for (index, segment) in scopedManifest.enumerated() {
+            guard remainingBytes > 0 else { break }
+            guard let resolvedURL = try resolve(segment, in: generationDirectory) else { continue }
+            let remainingSegments = scopedManifest.count - index
+            let segmentBudget = max(1, remainingBytes / max(remainingSegments, 1))
+            let tail = try readTail(at: resolvedURL, maximumBytes: segmentBudget)
+            remainingBytes -= tail.data.count
+            events.append(
+                contentsOf: decodeCompleteLines(from: tail).filter {
+                    dateRange.contains($0.utcTimestamp)
+                }
+            )
+        }
+        guard try readControl().currentGeneration == control.currentGeneration else {
+            return DiagnosticsJournalPage(
+                generation: control.currentGeneration,
+                events: [],
+                nextCursor: nil,
+                status: .snapshotUnavailable
+            )
+        }
+        return DiagnosticsJournalPage(
+            generation: control.currentGeneration,
+            events: Array(events.sorted(by: Self.isNewer).prefix(effectiveEventLimit)),
+            nextCursor: nil,
+            status: .partialRecentWindow
         )
     }
 
@@ -919,6 +1037,7 @@ public actor DiagnosticsJournalReader {
     /// manifest 内。若 writer/retention 使两次观察不稳定，安全地要求刷新。
     private func pageSnapshot(
         generation: UInt64,
+        dateRange: DiagnosticsJournalDateRange?,
         maximumReadBytes: Int
     ) throws -> PageSnapshotResult {
         let generationDirectory = generationDirectory(for: generation)
@@ -930,10 +1049,16 @@ public actor DiagnosticsJournalReader {
         else {
             return .unavailable
         }
+        let scopedManifest: [SegmentManifest]
+        if let dateRange {
+            scopedManifest = manifest.filter { segmentIntersects($0, dateRange: dateRange) }
+        } else {
+            scopedManifest = manifest
+        }
         snapshotCaptureHook?()
         var remainingBytes = maximumReadBytes
         var events: [DiagnosticEvent] = []
-        for segment in manifest {
+        for segment in scopedManifest {
             guard segment.byteWatermark <= remainingBytes else {
                 return .exceedsReadBudget
             }
@@ -946,7 +1071,12 @@ public actor DiagnosticsJournalReader {
                 endOffset: segment.byteWatermark
             )
             remainingBytes -= segment.byteWatermark
-            events.append(contentsOf: lines.compactMap { decodeEvent(from: $0.data) })
+            let decoded = lines.compactMap { decodeEvent(from: $0.data) }
+            if let dateRange {
+                events.append(contentsOf: decoded.filter { dateRange.contains($0.utcTimestamp) })
+            } else {
+                events.append(contentsOf: decoded)
+            }
             guard events.count <= Self.defaultMaximumEventCount else {
                 return .exceedsEventBudget
             }
@@ -954,7 +1084,7 @@ public actor DiagnosticsJournalReader {
         guard try readControl().currentGeneration == generation else {
             return .unavailable
         }
-        return .events(events, manifest)
+        return .events(events, scopedManifest)
     }
 
     private func stableSegmentManifest(
@@ -1063,9 +1193,41 @@ public actor DiagnosticsJournalReader {
                 url: url,
                 originalFileName: url.lastPathComponent,
                 fileSystemNumber: number.uint64Value,
-                byteWatermark: byteCount.intValue
+                byteWatermark: byteCount.intValue,
+                hourStartUTC: segmentHourStartUTC(for: url)
             )
         }
+    }
+
+    private func segmentIntersects(
+        _ segment: SegmentManifest,
+        dateRange: DiagnosticsJournalDateRange
+    ) -> Bool {
+        guard let hourStart = segment.hourStartUTC else { return false }
+        let hourEnd = hourStart.addingTimeInterval(60 * 60)
+        return hourStart < dateRange.end && hourEnd > dateRange.start
+    }
+
+    private func segmentHourStartUTC(for url: URL) -> Date? {
+        var name = url.deletingPathExtension().lastPathComponent
+        if name.hasPrefix("recovered-") {
+            name.removeFirst("recovered-".count)
+        }
+        for origin in DiagnosticEvent.Origin.allCases {
+            let identityPrefixLength = origin.rawValue.count + 1 + 36 + 1
+            guard name.hasPrefix("\(origin.rawValue)-"), name.count > identityPrefixLength else { continue }
+            let hourStartIndex = name.index(name.startIndex, offsetBy: identityPrefixLength)
+            let remainder = name[hourStartIndex...]
+            guard let partSeparator = remainder.lastIndex(of: "-") else { return nil }
+            let stamp = String(remainder[..<partSeparator])
+            let formatter = DateFormatter()
+            formatter.calendar = Calendar(identifier: .gregorian)
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = TimeZone(secondsFromGMT: 0)
+            formatter.dateFormat = "yyyyMMdd'T'HH"
+            return formatter.date(from: stamp)
+        }
+        return nil
     }
 
     private func resolve(

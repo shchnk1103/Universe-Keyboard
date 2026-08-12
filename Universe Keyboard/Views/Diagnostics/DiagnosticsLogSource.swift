@@ -6,6 +6,12 @@ nonisolated enum DiagnosticsLogClearResult: Equatable, Sendable {
     case failed
 }
 
+nonisolated struct DiagnosticsLogDay: Identifiable, Equatable, Sendable {
+    let range: DiagnosticsJournalDateRange
+
+    var id: Date { range.start }
+}
+
 protocol DiagnosticsLogSource: Sendable {
     func loadLogText() async -> String?
     func clearLog() async -> DiagnosticsLogClearResult
@@ -17,6 +23,11 @@ protocol DiagnosticsLogPagingSource: DiagnosticsLogSource {
     func loadMoreLogText() async -> String?
     func hasMoreLogPages() async -> Bool
     func pagingNotice() async -> String?
+}
+
+protocol DiagnosticsDatedLogSource: DiagnosticsLogPagingSource {
+    func availableLogDays() async -> [DiagnosticsLogDay]
+    func selectLogDay(_ day: DiagnosticsLogDay?) async
 }
 
 struct SharedDefaultsDiagnosticsLogSource: DiagnosticsLogSource {
@@ -50,7 +61,7 @@ struct SharedDefaultsDiagnosticsLogSource: DiagnosticsLogSource {
 
 /// 迁移期间优先展示 v1 journal；尚未迁移的旧自由文本日志仅作为只读回退，
 /// 绝不重新编码或写入 v1。
-actor CompositeDiagnosticsLogSource: DiagnosticsLogPagingSource {
+actor CompositeDiagnosticsLogSource: DiagnosticsDatedLogSource {
     private enum ActiveSource {
         case v1
         case legacy
@@ -91,6 +102,14 @@ actor CompositeDiagnosticsLogSource: DiagnosticsLogPagingSource {
         return await v1Source.pagingNotice()
     }
 
+    func availableLogDays() async -> [DiagnosticsLogDay] {
+        await v1Source.availableLogDays()
+    }
+
+    func selectLogDay(_ day: DiagnosticsLogDay?) async {
+        await v1Source.selectLogDay(day)
+    }
+
     func clearLog() async -> DiagnosticsLogClearResult {
         let v1Result = await v1Source.clearLog()
         let legacyResult = await SharedDefaultsDiagnosticsLogSource(appGroupID: appGroupID).clearLog()
@@ -103,13 +122,14 @@ actor CompositeDiagnosticsLogSource: DiagnosticsLogPagingSource {
 /// Main-App-only repository adapter. File enumeration and JSONL parsing stay in
 /// `DiagnosticsJournalReader`; this type only obtains the App Group root and
 /// formats already allowlisted events for the presentation layer.
-actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
+actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource {
     let appGroupID: String
     private let rootURLProvider: @Sendable () -> URL?
     private var reader: DiagnosticsJournalReader?
     private var nextCursor: DiagnosticsJournalPageCursor?
     private var lastPageStatus: DiagnosticsJournalPageStatus = .completed
     private var usedV1Result = false
+    private var selectedLogDay: DiagnosticsLogDay?
 
     init(
         appGroupID: String,
@@ -144,7 +164,17 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
         let reader = DiagnosticsJournalReader(rootURL: rootURL)
         let page: DiagnosticsJournalPage
         do {
-            page = try await reader.beginPage()
+            let strictPage = try await reader.beginPage(in: selectedLogDay?.range)
+            switch strictPage.status {
+            case .snapshotExceedsReadBudget, .snapshotExceedsEventBudget:
+                if let selectedLogDay {
+                    page = try await reader.recentPreview(in: selectedLogDay.range)
+                } else {
+                    page = strictPage
+                }
+            default:
+                page = strictPage
+            }
         } catch {
             self.reader = nil
             nextCursor = nil
@@ -190,6 +220,24 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
         nextCursor != nil
     }
 
+    func availableLogDays() async -> [DiagnosticsLogDay] {
+        guard let rootURL = journalRootURL() else { return [] }
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        do {
+            return try await reader.availableDateRanges().map(DiagnosticsLogDay.init(range:))
+        } catch {
+            return []
+        }
+    }
+
+    func selectLogDay(_ day: DiagnosticsLogDay?) {
+        guard selectedLogDay != day else { return }
+        selectedLogDay = day
+        reader = nil
+        nextCursor = nil
+        lastPageStatus = .completed
+    }
+
     func pagingNotice() -> String? {
         switch lastPageStatus {
         case .hasMore, .completed:
@@ -204,6 +252,8 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
             "当前日志快照过大，无法在安全读取上限内严格排序；请使用右上角垃圾桶清空后重新记录。"
         case .snapshotExceedsEventBudget:
             "当前日志快照超过安全事件上限；请使用右上角垃圾桶清空后重新记录。"
+        case .partialRecentWindow:
+            "当前日期的完整日志超过安全读取上限，下面仅展示有界最近窗口；较早记录仍保留在设备上。"
         case .snapshotUnavailable:
             "日志正在轮转或回收，请刷新后查看当前记录。"
         case .journalUnavailable:
@@ -232,6 +282,7 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
         nextCursor = nil
         lastPageStatus = .completed
         usedV1Result = false
+        selectedLogDay = nil
         return .cleared
     }
 

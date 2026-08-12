@@ -381,6 +381,111 @@ final class DiagnosticsJournalTests: XCTestCase {
         XCTAssertNil(page.nextCursor)
     }
 
+    func testAvailableDateRangesMapUTCHourSegmentsIntoLocalCalendarDays() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        // Asia/Shanghai 的午夜落在 UTC 16:00；两个事件应映射到相邻本地日期。
+        let beforeLocalMidnight = Date(timeIntervalSince1970: 1_723_477_400)
+        let afterLocalMidnight = beforeLocalMidnight.addingTimeInterval(60 * 60)
+        try await writer.append([
+            makeEvent(sequence: 1, processInstanceID: processID, timestamp: beforeLocalMidnight)
+        ])
+        try await writer.append([
+            makeEvent(sequence: 2, processInstanceID: processID, timestamp: afterLocalMidnight)
+        ])
+
+        let timeZone = try XCTUnwrap(TimeZone(identifier: "Asia/Shanghai"))
+        let ranges = try await DiagnosticsJournalReader(rootURL: rootURL).availableDateRanges(
+            timeZone: timeZone
+        )
+
+        XCTAssertEqual(ranges.count, 2)
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        XCTAssertNotEqual(
+            calendar.component(.day, from: ranges[0].start),
+            calendar.component(.day, from: ranges[1].start)
+        )
+    }
+
+    func testDateRangePageExcludesEventsFromAdjacentLocalDay() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        let firstDayEvent = Date(timeIntervalSince1970: 1_723_477_400)
+        let secondDayEvent = firstDayEvent.addingTimeInterval(60 * 60)
+        try await writer.append([
+            makeEvent(sequence: 1, processInstanceID: processID, timestamp: firstDayEvent)
+        ])
+        try await writer.append([
+            makeEvent(sequence: 2, processInstanceID: processID, timestamp: secondDayEvent)
+        ])
+        let timeZone = try XCTUnwrap(TimeZone(identifier: "Asia/Shanghai"))
+        let ranges = try await DiagnosticsJournalReader(rootURL: rootURL).availableDateRanges(
+            timeZone: timeZone
+        )
+
+        let page = try await DiagnosticsJournalReader(rootURL: rootURL).beginPage(
+            in: try XCTUnwrap(ranges.first)
+        )
+
+        XCTAssertEqual(page.events.map(\.localSequence), [2])
+        XCTAssertEqual(page.status, .completed)
+    }
+
+    func testRecentPreviewIsExplicitlyPartialAndKeepsNewestSampledEvents() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        let timestamp = Date(timeIntervalSince1970: 1_723_477_400)
+        try await writer.append(
+            (1...20).map {
+                makeEvent(
+                    sequence: UInt64($0),
+                    processInstanceID: processID,
+                    timestamp: timestamp.addingTimeInterval(Double($0))
+                )
+            }
+        )
+        let timeZone = try XCTUnwrap(TimeZone(identifier: "Asia/Shanghai"))
+        let ranges = try await DiagnosticsJournalReader(rootURL: rootURL).availableDateRanges(
+            timeZone: timeZone
+        )
+        let range = try XCTUnwrap(ranges.first)
+
+        let preview = try await DiagnosticsJournalReader(rootURL: rootURL).recentPreview(
+            in: range,
+            maximumEventCount: 3,
+            maximumReadBytes: 16 * 1_024
+        )
+
+        XCTAssertEqual(preview.events.map(\.localSequence), [20, 19, 18])
+        XCTAssertEqual(preview.status, .partialRecentWindow)
+        XCTAssertNil(preview.nextCursor)
+    }
+
     func testReclaimedWriterRotatesIdentityAndCanAppendAgain() async throws {
         let rootURL = makeTemporaryDirectory()
         defer { try? FileManager.default.removeItem(at: rootURL) }
