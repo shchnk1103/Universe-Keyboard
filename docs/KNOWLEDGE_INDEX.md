@@ -111,6 +111,7 @@
   [`RIME-SCHEME-WANXIANG-001 Assignment`](assignments/rime-scheme-wanxiang-001.md) (`Completed` — independent review/close handoff pending),
   [`PD-TD-012-OCTAGRAM-VENDOR-G1`](product-decisions/TD-012-OCTAGRAM-VENDOR-G1-authorization.md) and [`TD-012-G1 Assignment`](assignments/td-012-octagram-vendor-g1.md) (**Closed** — vendor/module capability; no `.gram`),
   [`TD-012 G1 Architecture`](assignments/td-012-octagram-vendor-g1-architecture-review.md) · [`Quality`](assignments/td-012-octagram-vendor-g1-quality-review.md),
+  [`PD-TD-012-LMDG-MODEL-G2`](product-decisions/TD-012-LMDG-MODEL-G2-authorization.md) · [`G2 Assignment`](assignments/td-012-lmdg-model-g2.md) · [`G2 plan`](plans/td-012-lmdg-model-g2-plan.md) · [`G2-B evidence`](evidence/td-012-lmdg-model-g2-device-ab-2026-08-11.md) (**Active / Hold** — A/B complete; crash Stop Condition review pending),
   [`ADR 0026`](architecture/decisions/0026-layout-bound-rime-scheme-selection.md) (**Accepted** — layout-bound RIME scheme selection; amends 0018),
   [`ADR-0026-ACCEPT-001`](assignments/adr-0026-accept-001.md),
   multi-scheme debts: [`TECH_DEBT.md`](TECH_DEBT.md) **TD-009/010 repaid**; **TD-011 A done** / B–D open; **TD-012 open** (model G2+; Vendor G1 Closed),

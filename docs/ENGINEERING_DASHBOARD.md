@@ -47,6 +47,16 @@
 - **Non-claims:** no model quality, Jetsam budget, schema/UI, App Store
 - **Next:** none for G1; TD-012 model G2+ requires new Product Decision + memory measurement
 
+## TD-012-LMDG-MODEL-G2 — 万象 LMDG 模型资产固定与真机可行性门
+
+- **Lifecycle:** `Active / Hold` — G2-A **Pass**；G2-B Executor evidence complete，命中 crash Stop Condition
+- **Authority:** [`PD`](product-decisions/TD-012-LMDG-MODEL-G2-authorization.md) · [`Assignment`](assignments/td-012-lmdg-model-g2.md) · [`plan`](plans/td-012-lmdg-model-g2-plan.md)
+- **Scope:** 隔离下载并固定简体 `.gram` 字节；通过后才进入人工真机 A/B 内存/Jetsam 门
+- **Non-claims:** no product installer/App Group persistence/schema/UI/default-on/other schemes
+- **Evidence:** [`G2-A asset pin`](evidence/td-012-lmdg-model-g2-asset-pin-2026-08-11.md) · [`G2-B same-build A/B`](evidence/td-012-lmdg-model-g2-device-ab-2026-08-11.md) (`Executor-recorded` + `Device-attested`)
+- **Result:** iPhone 13 Pro / iOS 27.0；同 Extension UUID 下模型未增加 footprint peak、无 Keyboard Jetsam；两组退出均有相同 `0xdead10cc`
+- **Next:** independent Architecture/Quality review；Product Go/Hold/No-Go，禁止 Executor 自动进入 G3+
+
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 
 - **Lifecycle:** `Published — Must + S-02/S-03 live; design Closed; IMPL Completed; 2.0 frozen constitution unchanged`
