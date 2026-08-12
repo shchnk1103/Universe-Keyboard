@@ -6,6 +6,39 @@ import XCTest
 /// G1 contract: the vendor links octagram and can surface the concrete `grammar`
 /// component without any `.gram` model file, schema patch, or user text.
 final class RimeOctagramCapabilityTests: XCTestCase {
+    func testGrammarLoadReceiptRejectsUnrelatedAndMalformedMessages() {
+        let expected = "model.gram"
+
+        RimeDeployer.resetGrammarModelLoadReceipt(forModelFileName: expected)
+        RimeDeployer.consumeGrammarModelLogLine(forTesting: "loading gram db: /shared/other.gram")
+        RimeDeployer.consumeGrammarModelLogLine(forTesting: "found double array image of size 42.")
+        XCTAssertEqual(RimeDeployer.grammarModelLoadReceipt()["loadStarted"]?.boolValue, false)
+
+        RimeDeployer.resetGrammarModelLoadReceipt(forModelFileName: expected)
+        RimeDeployer.consumeGrammarModelLogLine(forTesting: "loading gram db: /shared/model.gram")
+        RimeDeployer.consumeGrammarModelLogLine(forTesting: "loading gram db: /shared/other.gram")
+        RimeDeployer.consumeGrammarModelLogLine(forTesting: "found double array image of size 42.")
+        XCTAssertEqual(RimeDeployer.grammarModelLoadReceipt()["loadStarted"]?.boolValue, false)
+
+        RimeDeployer.resetGrammarModelLoadReceipt(forModelFileName: expected)
+        RimeDeployer.consumeGrammarModelLogLine(forTesting: "loading gram db: /shared/model.gram")
+        RimeDeployer.consumeGrammarModelLogLine(forTesting: "found double array image of size 42.trailing")
+        let malformed = RimeDeployer.grammarModelLoadReceipt()
+        XCTAssertEqual(malformed["loadStarted"]?.boolValue, false)
+        XCTAssertEqual(malformed["validDoubleArrayObserved"]?.boolValue, false)
+        XCTAssertEqual(malformed["doubleArraySize"]?.uint64Value, 0)
+    }
+
+    func testGrammarLoadReceiptAcceptsOnlyExactTargetSequence() {
+        RimeDeployer.resetGrammarModelLoadReceipt(forModelFileName: "model.gram")
+        RimeDeployer.consumeGrammarModelLogLine(forTesting: "loading gram db: /shared/model.gram")
+        RimeDeployer.consumeGrammarModelLogLine(forTesting: "found double array image of size 105062912.")
+        let receipt = RimeDeployer.grammarModelLoadReceipt()
+        XCTAssertEqual(receipt["loadStarted"]?.boolValue, true)
+        XCTAssertEqual(receipt["validDoubleArrayObserved"]?.boolValue, true)
+        XCTAssertEqual(receipt["doubleArraySize"]?.uint64Value, 105_062_912)
+    }
+
     func testOctagramIsCompiledIntoBridge() {
         XCTAssertTrue(
             RimeBridgeCapabilities.octagramModuleCompiledIn,
@@ -45,6 +78,10 @@ final class RimeOctagramCapabilityTests: XCTestCase {
         XCTAssertTrue(
             manager.initializeEngine(),
             "RIME initialize must succeed without any grammar model file"
+        )
+        XCTAssertFalse(
+            FileManager.default.fileExists(atPath: user.appendingPathComponent("logs").path),
+            "Extension-style session diagnostics must not create a file-backed glog destination"
         )
 
         XCTAssertTrue(

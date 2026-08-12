@@ -84,6 +84,29 @@ static NSString *RimeLogDirectory(NSString *userDir) {
     return RimeOctagramComponentRegistered("grammar");
 }
 
+#ifdef RIME_DIAGNOSTICS
++ (void)resetGrammarModelLoadReceiptForModelFileName:(NSString *)modelFileName {
+    RimeResetGrammarModelLoadReceipt(modelFileName.UTF8String);
+}
+
++ (NSDictionary<NSString *, NSNumber *> *)grammarModelLoadReceipt {
+    RimeGrammarModelLoadReceipt receipt = RimeCopyGrammarModelLoadReceipt();
+    return @{
+        @"loadStarted": @(receipt.loadStarted),
+        @"validDoubleArrayObserved": @(receipt.validDoubleArrayObserved),
+        @"doubleArraySize": @(receipt.doubleArraySize),
+    };
+}
+
++ (BOOL)probeGrammarModelLoadForLanguage:(NSString *)language {
+    return RimeProbeGrammarModelLoad(language.UTF8String);
+}
+
++ (void)consumeGrammarModelLogLineForTesting:(NSString *)line {
+    RimeConsumeGrammarModelLogLineForTesting(line.UTF8String);
+}
+#endif
+
 - (instancetype)init {
     self = [super init];
     if (self) {
