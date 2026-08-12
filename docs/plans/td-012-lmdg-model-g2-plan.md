@@ -1,6 +1,6 @@
 # TD-012-LMDG-MODEL-G2 执行计划
 
-> **Status:** Active — Executor G2 evidence complete；Stop/Hold，等待独立复核与 Product disposition
+> **Status:** Archived / Product Hold — latest A/B invalidated；G2 closed，no G3
 > **Current source of truth:**
 > [`PD-TD-012-LMDG-MODEL-G2`](../product-decisions/TD-012-LMDG-MODEL-G2-authorization.md) ·
 > [`Assignment`](../assignments/td-012-lmdg-model-g2.md) ·
@@ -38,11 +38,12 @@ Device Operator 一次只包含当前步骤的指引。
 4. 有模型：重复同一序列，记录 RSS/增长趋势与 Jetsam/普通生命周期事实。
 5. 清理受控模型并确认基础万象仍可用。
 
-上述 1–5 已于 `2026-08-11` 完成，结果见
-[`G2-B same-build device A/B`](../evidence/td-012-lmdg-model-g2-device-ab-2026-08-11.md)。模型组未见
-physical-footprint 峰值增长或 Keyboard Jetsam，但 baseline/model 在切回系统键盘后均产生相同
-`RUNNINGBOARD / 0xdead10cc` crash report。按 Assignment Stop Condition，当前停在独立
-Architecture/Quality 与 Product handoff，不进入 G3+。
+上述 1–5 于 `2026-08-12` 尝试最终重跑，结果见
+[`G2-B invalidated A/B`](../evidence/td-012-lmdg-model-g2-device-ab-2026-08-12.md)。两臂虽未观察到
+Keyboard crash/Jetsam 或基础输入回归，但 stage test 在 baseline 后重新链接并安装了不同 Debug
+binary，违反同一二进制前提；所有差值仅作诊断，G2-B 仍 Blocked。当前不再请求 Device Operator
+重复输入。Human Product Lead 于 `2026-08-12` 决定 `Hold`；未来如重启，必须另建 Product
+Decision，并先证明预构建/`test-without-building` 流程不会改变二进制。
 
 本计划不预设内存预算。明显 crash/Jetsam/基础输入回归触发 Stop；其余数据交给独立 Quality
 和 Product 判断。

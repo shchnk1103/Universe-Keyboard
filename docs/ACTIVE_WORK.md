@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-11 Asia/Shanghai` — `TD-012-LMDG-MODEL-G2` G2-B evidence complete；Active Work `9/10`。
+Last synced: `2026-08-12 Asia/Shanghai` — `TD-012-LMDG-MODEL-G2` Product Hold；Active Work `8/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -17,12 +17,12 @@ Last synced: `2026-08-11 Asia/Shanghai` — `TD-012-LMDG-MODEL-G2` G2-B evidence
 | 6 | TYPING-INTELLIGENCE-001 | Active | Implementation; Quality pending | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 7 | TYPO-CORRECTION-002 | Active | Contextual recovery; sim scenarios pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 8 | DIAGNOSTICS-OBSERVABILITY-001 | Active | P0 已合并；等待 Product Gate，P1 后续见 TD-013 | [`assignments/diagnostics-observability-001.md`](assignments/diagnostics-observability-001.md) |
-| 9 | TD-012-LMDG-MODEL-G2 | Active | G2-A Pass；G2-B evidence complete，crash Stop/Hold 待 Arch/Quality/Product | [`assignments/td-012-lmdg-model-g2.md`](assignments/td-012-lmdg-model-g2.md) |
 
 ## Completed (not Active)
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
+| TD-012-LMDG-MODEL-G2 | `Closed`；Product Hold，G2-A Pass，G2-B invalidated，不进入 G3 | [`assignments/td-012-lmdg-model-g2.md`](assignments/td-012-lmdg-model-g2.md) |
 | TD-012-OCTAGRAM-VENDOR-G1 | Vendor pin + Bridge G1 **Closed**; model G2+ remain TD-012 debt | [`assignments/td-012-octagram-vendor-g1.md`](assignments/td-012-octagram-vendor-g1.md) · [Arch](assignments/td-012-octagram-vendor-g1-architecture-review.md) · [Quality](assignments/td-012-octagram-vendor-g1-quality-review.md) |
 | TD-013-DIAGNOSTICS-V1-P1 | Architecture **Pass**、Quality **Pass with conditions**、Human Product Gate **Passed**；P2 residual 继续由 TD-013 追踪 | [`assignments/td-013-diagnostics-v1-p1.md`](assignments/td-013-diagnostics-v1-p1.md) · [re-review](assignments/td-013-diagnostics-v1-p1-r3-review-summary.md) |
 | 九键精准拼音 `002` / `003` → `004` | `002` 已 Blocked，`003` 已被 supersede；继任 `004` 已 **Accepted / Closed**，历史记录仅供追溯 | [`004 Assignment`](assignments/keyboard-layout-9key-pinyin-004.md) · [`002`](assignments/keyboard-layout-9key-pinyin-002.md) · [`003`](assignments/keyboard-layout-9key-pinyin-003.md) |

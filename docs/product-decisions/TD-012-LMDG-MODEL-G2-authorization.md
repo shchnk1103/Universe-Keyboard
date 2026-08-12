@@ -1,7 +1,7 @@
 # Product Decision: TD-012-LMDG-MODEL-G2 — 万象 LMDG 模型资产固定与真机可行性门
 
 **Decision ID:** `PD-TD-012-LMDG-MODEL-G2`
-**Lifecycle status:** `Recorded` — 授权 G2-A 资产固定；G2-B 仅在资产验证通过后进入人工真机门
+**Lifecycle status:** `Recorded` — disposition `Hold`；G2 停止，不进入 G3
 **Date / timezone:** `2026-08-11 Asia/Shanghai`
 **Parent debt:** [`TD-012`](../TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration)
 **Assignment:** [`TD-012-LMDG-MODEL-G2`](../assignments/td-012-lmdg-model-g2.md)
@@ -10,10 +10,10 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Recorded` — G2 Assignment `Active` |
-| **Phase** | G2-A **Pass**；G2-B Executor evidence complete，Stop/Hold pending review |
+| **Lifecycle** | `Recorded` — disposition `Hold`；G2 Assignment `Closed` |
+| **Phase** | G2-A **Pass**；G2-B invalidated；停止测试，不进入 G3 |
 | **Non-claims** | 不授权产品安装器、App Group 持久化、schema/UI、默认开启、雾凇/九键或发布能力 |
-| **Next** | 独立 Architecture/Quality 复核退出信号；Product Lead 决定 Go/Hold/No-Go |
+| **Next** | 无；未来重启须建立新的 Product Decision 与严格同二进制流程 |
 | **Residuals** | `0xdead10cc` 切换退出信号、跨设备/长时预算、资源解析与部署/卸载合同仍开放 |
 
 ---
@@ -65,6 +65,12 @@ Human Product Lead，当前会话 `2026-08-11 Asia/Shanghai`：
 - 授权继续此前提出的 G2 最小范围；
 - 要求需要人工操作时停止并提供步骤；
 - 要求保持范围收敛，不扩展到无关产品化工作。
+
+`2026-08-12 Asia/Shanghai` 当前 Product 会话在 PR #68 的万象基础输入回归闭环后明确要求按建议
+继续 G2，并多次提供当次 Device Operator 配合；这构成当次 baseline、受控 App Group stage/model arm
+与 cleanup 的 revalidation 授权。事后发现 Debug binary mismatch，Executor 按用户“不希望再重复测试”
+的明确要求停止继续采集并交回 Product disposition。Human Product Lead 随后明确决定 `Hold`：保留
+G2-A 与诊断材料，停止 G2-B 测试，不进入 G3；任何后续重启都需要新的明确授权。
 
 ## Revalidation Triggers
 

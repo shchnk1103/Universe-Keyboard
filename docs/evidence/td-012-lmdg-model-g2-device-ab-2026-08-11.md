@@ -1,5 +1,9 @@
 # TD-012-LMDG-MODEL-G2 — G2-B 同构建真机 A/B
 
+> **Superseded for current status:** see the
+> [2026-08-12 invalidated A/B attempt](td-012-lmdg-model-g2-device-ab-2026-08-12.md).
+> The record below remains historical diagnostic evidence.
+
 | Field | Value |
 |---|---|
 | **Date / timezone** | `2026-08-11 Asia/Shanghai` |

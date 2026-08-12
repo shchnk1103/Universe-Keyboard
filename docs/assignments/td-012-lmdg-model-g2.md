@@ -6,10 +6,10 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | G2-A **Pass**；G2-B Executor A/B evidence complete，命中 crash Stop Condition |
+| **Lifecycle** | `Closed` |
+| **Phase** | G2-A **Pass**；G2-B evidence invalidated；Product Hold，停止测试且不进入 G3 |
 | **Non-claims** | 无产品安装器、持久 App Group 模型、schema/UI、质量收益、跨设备内存预算或发布结论 |
-| **Next** | 独立 Architecture/Quality 复核 `0xdead10cc` 生命周期信号；Product 决定 Go/Hold/No-Go |
+| **Next** | 无当前执行；未来仅在新的 Product Decision 下重新开启严格同二进制测量 |
 | **Residuals** | [`TD-012`](../TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration) |
 
 ---
@@ -87,13 +87,19 @@ G2-B preflight: [`device preflight`](../evidence/td-012-lmdg-model-g2-device-pre
 G2-B Executor evidence: [`same-build device A/B`](../evidence/td-012-lmdg-model-g2-device-ab-2026-08-11.md)
 (`Executor-recorded` + `Device-attested`).
 
+Latest revalidation attempt: [`invalidated device A/B`](../evidence/td-012-lmdg-model-g2-device-ab-2026-08-12.md)
+(`Executor-recorded` + `Device-attested`).
+
+Execution retrospective: [`G2 execution retrospective`](../evidence/td-012-lmdg-model-g2-execution-retrospective-2026-08-12.md).
+
 #### G2-B
 
-- [x] 同一 Extension UUID/device/OS/schema 下记录无模型基线与有模型结果；旧 UUID baseline 已排除。
+- [ ] 同一 Extension binary/device/OS/schema 下记录无模型基线与有模型结果；2026-08-12 attempt
+  因 Debug dylib UUID/SHA 不同而作废。
 - [x] 覆盖 cold start、长 composition、resident memory/growth 与 Jetsam 分类。
 - [x] 输入 evidence 不记录实际用户文本；两组均完成相同的基础万象输入序列。
-- [ ] Executor evidence 完成后，Architecture 与 Quality 分别给出独立结论。
-- [ ] Product Lead 根据证据决定 `Go G3+`、`Hold` 或 `No-Go`；不得由 Executor 自动推进。
+- [x] Architecture 与 Quality 分别确认 G2-B 因 Debug binary mismatch Blocked。
+- [x] Product Lead 于 `2026-08-12` 决定 `Hold`；停止测试，不进入 G3。
 
 ### Stop Conditions
 
@@ -116,4 +122,10 @@ G2-B Executor evidence: [`same-build device A/B`](../evidence/td-012-lmdg-model-
 - `2026-08-11`: G2-A actual-byte SHA-256/size/attribution receipt **Pass**；进入 G2-B 准备，人工操作前停止。
 - `2026-08-11`: G2-B 同设备/同 Extension UUID A/B 完成；模型组未增加 physical-footprint 峰值，
   未发生 Keyboard Jetsam。baseline/model 在切回系统键盘后均生成 `RUNNINGBOARD / 0xdead10cc`；
-  依 Stop Condition 停在 `Active / Hold`，不得自动进入 G3+。
+  依 Stop Condition 暂停并交回 Product disposition，不得自动进入 G3+。
+- `2026-08-12`: 修复 Extension 文件日志锁与万象基础输入回归后，以 commit `e12d32c` 重跑
+  baseline/model。两臂均未出现 Keyboard crash/Jetsam 或基础输入回归，但 post-run 校验发现 stage
+  test 重新链接并安装了不同 Debug dylib；同构建 exit criterion 未满足，记录作废并停在 G2-B
+  Blocked。尊重 Device Operator 不再重复测试的意愿，等待 Product disposition。
+- `2026-08-12`: Human Product Lead 明确决定 `Hold`。Assignment 以 `Closed` 收敛；G2-A
+  保留 Pass，G2-B 不通过，不再要求设备测试，不授权 G3。未来重启必须有新的 Product Decision。
