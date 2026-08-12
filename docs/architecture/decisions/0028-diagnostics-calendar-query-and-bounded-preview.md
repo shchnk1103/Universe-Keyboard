@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed; independent Architecture Pass, Quality re-review pending
+Proposed; independent Architecture and Quality Pass, ADR Acceptance not granted
 
 ## Context
 
@@ -41,7 +41,7 @@ ADR 0027 的 v1 writer 已按 UTC 小时与 1 MiB 体积轮转，并保持每 pr
 
 ## Follow-up Work
 
-- 修复 Architecture re-review 发现的 live-root / load-more 查询交叠后，再独立复核全部新增回归证据。
+- 独立 Architecture / Quality 已对冻结实现 `e708d28` 给出代码级 Pass；Human Architecture Authority 尚未授予 ADR Acceptance。
 - writer 同 batch 跨 UTC 小时可能使段名日期索引遗漏；修改 writer 前必须重新通过 Assignment Stop Condition。
 - 设计段级时间/offset 索引或 disk-backed external merge，实现超预算日期的完整深分页。
 - 独立 Architecture / Quality 复核后决定本 ADR 是否 `Accepted`。

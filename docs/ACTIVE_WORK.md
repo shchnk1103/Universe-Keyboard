@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`TD-012-LMDG-MODEL-G2` Product Hold；`DIAGNOSTICS-DAY-BROWSER-001` Architecture Pass、retention/read 争锁修复完成，等待 Quality re-review；Active Work `9/10`。
+Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`TD-012-LMDG-MODEL-G2` Product Hold；`DIAGNOSTICS-DAY-BROWSER-001` Executor、Architecture 与 Quality 收口并移入 Completed；Active Work `8/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -17,7 +17,6 @@ Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`
 | 6 | TYPING-INTELLIGENCE-001 | Active | Implementation; Quality pending | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 7 | TYPO-CORRECTION-002 | Active | Contextual recovery; sim scenarios pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 8 | DIAGNOSTICS-OBSERVABILITY-001 | Active | P0 已合并；等待 Product Gate，P1 后续见 TD-013 | [`assignments/diagnostics-observability-001.md`](assignments/diagnostics-observability-001.md) |
-| 9 | DIAGNOSTICS-DAY-BROWSER-001 | Active | Architecture Pass；等待最终 Quality re-review | [`assignments/diagnostics-day-browser-001.md`](assignments/diagnostics-day-browser-001.md) |
 
 ## Completed (not Active)
 
@@ -25,6 +24,7 @@ Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`
 |---|---|---|
 | KOS-2.1-OPS-001 / KOS-2.1-OPS-IMPL-001 | `Closed`；Must 设计已接受，运维包已在 KOS 2.0 轨道发布；S-01 / Migration / 2.1 frozen replacement 未授权 | [`design`](assignments/kos-2.1-ops-001.md) · [`implementation`](assignments/kos-2.1-ops-impl-001.md) |
 | TD-012-LMDG-MODEL-G2 | `Closed`；Product Hold，G2-A Pass，G2-B invalidated，不进入 G3 | [`assignments/td-012-lmdg-model-g2.md`](assignments/td-012-lmdg-model-g2.md) |
+| DIAGNOSTICS-DAY-BROWSER-001 | Simulator 代码级 Architecture / Quality Pass；等待 Human Product Review，不含真机、ADR Acceptance 或 Release 结论 | [`assignments/diagnostics-day-browser-001.md`](assignments/diagnostics-day-browser-001.md) · [independent review](assignments/diagnostics-day-browser-001-independent-review.md) · [evidence](evidence/diagnostics-day-browser-001-execution-evidence-2026-08-12.md) |
 | DIAGNOSTICS-READ-RECOVERY-001 | Executor 实现与 Simulator 质量门完成；等待独立 Quality reverify，不含真机/G2/Release 结论 | [`assignments/diagnostics-read-recovery-001.md`](assignments/diagnostics-read-recovery-001.md) · [evidence](evidence/diagnostics-read-recovery-001-execution-evidence-2026-08-12.md) |
 | TD-012-OCTAGRAM-VENDOR-G1 | Vendor pin + Bridge G1 **Closed**; model G2+ remain TD-012 debt | [`assignments/td-012-octagram-vendor-g1.md`](assignments/td-012-octagram-vendor-g1.md) · [Arch](assignments/td-012-octagram-vendor-g1-architecture-review.md) · [Quality](assignments/td-012-octagram-vendor-g1-quality-review.md) |
 | TD-013-DIAGNOSTICS-V1-P1 | Architecture **Pass**、Quality **Pass with conditions**、Human Product Gate **Passed**；P2 residual 继续由 TD-013 追踪 | [`assignments/td-013-diagnostics-v1-p1.md`](assignments/td-013-diagnostics-v1-p1.md) · [re-review](assignments/td-013-diagnostics-v1-p1-r3-review-summary.md) |

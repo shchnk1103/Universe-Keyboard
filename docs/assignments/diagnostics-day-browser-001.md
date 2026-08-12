@@ -7,10 +7,10 @@ Repository Change Type: `Contract` + `Implementation` + `Documentation`
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` — Architecture `Pass`；retention/read 争锁修复完成，等待 Quality re-review |
-| **Phase** | Quality re-review |
+| **Lifecycle** | `Completed` — Executor 门禁、独立 Architecture `Pass` 与 Quality `Pass` 已记录 |
+| **Phase** | Implementation complete；等待 Human Product Review，ADR 0028 仍为 `Proposed` |
 | **Non-claims** | 不改变 Extension 写入、retention/clear/隐私合同；不把部分预览称为完整历史；不处理 G2、候选栏或真机 |
-| **Next** | Quality 对最终提交重复运行 >5 MiB 组合测试并给出独立结论 |
+| **Next** | Human Product Lead 决定是否接受当前 Simulator/UI 非主张与后续真机验证安排 |
 | **Residuals** | 同 batch 跨 UTC 小时的 writer 分段、legacy writer 与清空的线性化屏障、完整超预算深分页与真机视觉证据仍在本次授权外 |
 
 ---
@@ -80,3 +80,4 @@ Repository Change Type: `Contract` + `Implementation` + `Documentation`
 - `2026-08-12 Asia/Shanghai`: Executor 让 live-root 推进 Store revision 并占用刷新状态，新增受控 catalog continuation 用例，定向 Store 测试通过，准备再次送审。
 - `2026-08-12 Asia/Shanghai`: Architecture 对 `fbc0ddf` 判定 `Pass`；Quality 稳定复现 source 先投递 detached retention、再读取非阻塞 snapshot fence 的自竞争，Assignment 保持 `Active` 继续读侧最小修复。
 - `2026-08-12 Asia/Shanghai`: Executor 移除 source refresh 的重复 reclaim 投递，保留 Main App lifecycle 单一 retention ownership；组合测试重复运行与 Debug/Release build 通过，等待 Quality re-review。
+- `2026-08-12 Asia/Shanghai`: 最终快照 `e708d28` 获独立 Architecture `Pass` 与 Quality `Pass`；Assignment 收口为 `Completed`，不授予 ADR Acceptance、Product Gate、真机或 Release 结论。
