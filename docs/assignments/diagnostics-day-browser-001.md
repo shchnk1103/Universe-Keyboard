@@ -7,11 +7,11 @@ Repository Change Type: `Contract` + `Implementation` + `Documentation`
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Completed` — Executor 实现与 CI 对齐 Simulator 门禁完成；独立 Architecture / Quality 复核待办 |
-| **Phase** | Main-App-only 日期查询、超预算最近窗口和现代日期导航 UI 已完成 |
+| **Lifecycle** | `Active` — 最小非-writer 修复与 CI 对齐门禁完成，等待独立复核 |
+| **Phase** | Architecture / Quality re-review |
 | **Non-claims** | 不改变 Extension 写入、retention/clear/隐私合同；不把部分预览称为完整历史；不处理 G2、候选栏或真机 |
-| **Next** | 交给 Architecture / Quality 独立复核；真机视觉与时区切换验证作为后续产品证据 |
-| **Residuals** | 完整超预算历史深分页列为后续架构工作，不在本阶段软关闭 |
+| **Next** | Architecture / Quality 根据 remediation diff 与新执行证据给出独立结论 |
+| **Residuals** | 同 batch 跨 UTC 小时的 writer 分段、完整超预算深分页与真机视觉证据仍在本次授权外 |
 
 ---
 
@@ -74,3 +74,5 @@ Repository Change Type: `Contract` + `Implementation` + `Documentation`
 
 - `2026-08-12 Asia/Shanghai`: Human Product Lead 接受日期浏览与有界查询方向并授权继续；Assignment 完成 `Assigned → Acknowledged → Ready` 后进入 `Active`。
 - `2026-08-12 Asia/Shanghai`: Executor 完成实现、自动化与 CI 对齐 Simulator 门禁，记录[执行证据](../evidence/diagnostics-day-browser-001-execution-evidence-2026-08-12.md)并将生命周期收口为 `Completed`；ADR Acceptance 与独立 Quality 结论仍未授予。
+- `2026-08-12 Asia/Shanghai`: 独立 Architecture 与 Quality 均判定 `Fail`；Human Product Lead 明确授权最小修复。Assignment 恢复为 `Active`，范围限于非-writer 阻断项；跨小时 batch 分段继续触发原 Stop Condition。
+- `2026-08-12 Asia/Shanghai`: Executor 完成冻结 watermark、typed 日期失败、请求 revision、跨午夜跟随、partial 空态及确定性回归；CI 对齐门禁全绿，进入独立 re-review。

@@ -11,10 +11,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Accepted` — Human Product Lead 已授权继续 |
-| **Phase** | 日期查询、超预算最近窗口与现代 Main App UI 实现 |
+| **Phase** | 最小非-writer 修复与门禁完成，等待独立复核 |
 | **Non-claims** | 不改变 Extension 写入热路径、7 天/100 MiB retention、隐私字段、G2 或候选栏；不宣称超预算预览是完整历史 |
-| **Next** | Executor 形成 Simulator 证据后交给 Architecture / Quality 独立复核 |
-| **Residuals** | 完整超预算历史的磁盘索引式深分页不在本阶段冒充已完成 |
+| **Next** | Architecture / Quality 根据新证据独立复核；不由 Executor 自授通过 |
+| **Residuals** | writer 跨小时 batch、完整超预算深分页与真机门仍不在本轮授权内 |
 
 ---
 
@@ -35,6 +35,8 @@ Human Product Lead 接受“按日期浏览、分段存储、有界查询、最�
 ## Authorization source
 
 Human Product Lead, in-session `2026-08-12 Asia/Shanghai`：认可按日期与有界查询建议，要求 UI 现代美观，并明确指示“继续吧”。
+
+独立 Architecture / Quality 首轮审查均为 `Fail` 后，Human Product Lead 同日明确指示“授权你先进行最小修复”。该授权绑定为冻结 watermark、typed 日期发现失败、请求 revision/旧请求失效、跨午夜跟随、partial 专用空态及确定性测试；不授权修改 writer 分段。
 
 ## Revalidation triggers
 

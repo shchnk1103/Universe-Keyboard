@@ -138,6 +138,96 @@ final class DiagnosticsStoreTests: XCTestCase {
         }
     }
 
+    func testClearInvalidatesAnOlderLoadThatFinishesLater() async {
+        let source = ControlledLogSource()
+        let store = DiagnosticsStore(logSource: source)
+
+        store.loadLog()
+        await waitUntil { source.loadContinuation != nil }
+        store.performClear()
+        await waitUntil { !store.isClearing }
+
+        source.finishLoad(with: "stale event")
+        await Task.yield()
+
+        XCTAssertTrue(store.lines.isEmpty)
+        XCTAssertNil(store.displayedNotice)
+    }
+
+    func testUnavailableDayCatalogPreservesVisibleStateAndDoesNotIssueUnboundedLoad() async {
+        let source = ControlledDatedLogSource(catalog: .unavailable)
+        let store = DiagnosticsStore(logSource: source)
+        store.lines = ["visible event"]
+
+        store.loadLog()
+        await waitUntil { !store.isRefreshing }
+
+        XCTAssertEqual(store.lines, ["visible event"])
+        XCTAssertEqual(store.pagingNotice, "日志正在轮转或回收，请刷新后查看当前记录。")
+        XCTAssertEqual(source.loadCallCount, 0)
+    }
+
+    func testLiveRefreshFollowsNewestDayWhenFirstEventArrivesAfterMidnight() async {
+        let oldDay = makeDay(start: 1_723_392_000)
+        let newDay = makeDay(start: 1_723_478_400)
+        let source = ControlledDatedLogSource(
+            catalog: .available(generation: 1, days: [oldDay]),
+            textByDayStart: [oldDay.range.start: "yesterday event"]
+        )
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["yesterday event"] }
+
+        source.catalog = .available(generation: 1, days: [newDay, oldDay])
+        source.textByDayStart[newDay.range.start] = "new day event"
+        await store.performLiveRefreshTick()
+
+        XCTAssertEqual(store.selectedLogDay, newDay)
+        XCTAssertEqual(store.lines, ["new day event"])
+    }
+
+    func testSelectingAnotherDayInvalidatesAnInFlightOlderPage() async {
+        let newestDay = makeDay(start: 1_723_478_400)
+        let olderDay = makeDay(start: 1_723_392_000)
+        let source = ControlledDatedLogSource(
+            catalog: .available(generation: 1, days: [newestDay, olderDay]),
+            textByDayStart: [
+                newestDay.range.start: "newest root",
+                olderDay.range.start: "older root",
+            ],
+            hasMorePages: true
+        )
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["newest root"] }
+
+        store.loadMore()
+        await waitUntil { source.loadMoreContinuation != nil }
+        store.selectLogDay(olderDay)
+        await waitUntil { store.lines == ["older root"] }
+        source.finishLoadMore(with: "stale newest page")
+        await Task.yield()
+
+        XCTAssertEqual(store.selectedLogDay, olderDay)
+        XCTAssertEqual(store.lines, ["older root"])
+        XCTAssertFalse(store.isLoadingMore)
+    }
+
+    func testPartialWindowCanBeEmptyWithoutLookingLikeNoLogsExist() async {
+        let day = makeDay(start: 1_723_478_400)
+        let source = ControlledDatedLogSource(
+            catalog: .available(generation: 1, days: [day]),
+            isPartialWindow: true
+        )
+        let store = DiagnosticsStore(logSource: source)
+
+        store.loadLog()
+        await waitUntil { !store.isRefreshing }
+
+        XCTAssertTrue(store.lines.isEmpty)
+        XCTAssertTrue(store.isPartialWindow)
+    }
+
     private func waitUntil(
         timeout: Duration = .seconds(2),
         condition: @escaping @MainActor () -> Bool
@@ -148,6 +238,15 @@ final class DiagnosticsStoreTests: XCTestCase {
             await Task.yield()
         }
         XCTAssertTrue(condition())
+    }
+
+    private func makeDay(start: TimeInterval) -> DiagnosticsLogDay {
+        DiagnosticsLogDay(
+            range: DiagnosticsJournalDateRange(
+                start: Date(timeIntervalSince1970: start),
+                end: Date(timeIntervalSince1970: start + 86_400)
+            )
+        )
     }
 }
 
@@ -174,6 +273,7 @@ extension StubLogSource: DiagnosticsLogPagingSource {
     func loadMoreLogText() async -> String? { nil }
     func hasMoreLogPages() async -> Bool { false }
     func pagingNotice() async -> String? { notice }
+    func isPartialLogWindow() async -> Bool { false }
 }
 
 @MainActor
@@ -187,7 +287,10 @@ private final class DatedStubLogSource: DiagnosticsDatedLogSource {
         self.textByDayStart = textByDayStart
     }
 
-    func availableLogDays() -> [DiagnosticsLogDay] { days }
+    func availableLogDayCatalog() -> DiagnosticsLogDayCatalog {
+        guard !days.isEmpty else { return .empty(generation: 1) }
+        return .available(generation: 1, days: days)
+    }
 
     func selectLogDay(_ day: DiagnosticsLogDay?) {
         selectedDay = day
@@ -201,5 +304,81 @@ private final class DatedStubLogSource: DiagnosticsDatedLogSource {
     func loadMoreLogText() -> String? { nil }
     func hasMoreLogPages() -> Bool { false }
     func pagingNotice() -> String? { nil }
+    func isPartialLogWindow() -> Bool { false }
+    func clearLog() -> DiagnosticsLogClearResult { .cleared }
+}
+
+@MainActor
+private final class ControlledLogSource: DiagnosticsLogPagingSource {
+    var loadContinuation: CheckedContinuation<String?, Never>?
+
+    func loadLogText() async -> String? {
+        await withCheckedContinuation { continuation in
+            loadContinuation = continuation
+        }
+    }
+
+    func finishLoad(with text: String?) {
+        let continuation = loadContinuation
+        loadContinuation = nil
+        continuation?.resume(returning: text)
+    }
+
+    func loadMoreLogText() -> String? { nil }
+    func hasMoreLogPages() -> Bool { false }
+    func pagingNotice() -> String? { nil }
+    func isPartialLogWindow() -> Bool { false }
+    func clearLog() -> DiagnosticsLogClearResult { .cleared }
+}
+
+@MainActor
+private final class ControlledDatedLogSource: DiagnosticsDatedLogSource {
+    var catalog: DiagnosticsLogDayCatalog
+    var textByDayStart: [Date: String]
+    var selectedDay: DiagnosticsLogDay?
+    var hasMorePages: Bool
+    var isPartialWindow: Bool
+    var loadMoreContinuation: CheckedContinuation<String?, Never>?
+    private(set) var loadCallCount = 0
+
+    init(
+        catalog: DiagnosticsLogDayCatalog,
+        textByDayStart: [Date: String] = [:],
+        hasMorePages: Bool = false,
+        isPartialWindow: Bool = false
+    ) {
+        self.catalog = catalog
+        self.textByDayStart = textByDayStart
+        self.hasMorePages = hasMorePages
+        self.isPartialWindow = isPartialWindow
+    }
+
+    func availableLogDayCatalog() -> DiagnosticsLogDayCatalog { catalog }
+
+    func selectLogDay(_ day: DiagnosticsLogDay?) {
+        selectedDay = day
+    }
+
+    func loadLogText() -> String? {
+        loadCallCount += 1
+        guard let selectedDay else { return nil }
+        return textByDayStart[selectedDay.range.start]
+    }
+
+    func loadMoreLogText() async -> String? {
+        await withCheckedContinuation { continuation in
+            loadMoreContinuation = continuation
+        }
+    }
+
+    func finishLoadMore(with text: String?) {
+        let continuation = loadMoreContinuation
+        loadMoreContinuation = nil
+        continuation?.resume(returning: text)
+    }
+
+    func hasMoreLogPages() -> Bool { hasMorePages }
+    func pagingNotice() -> String? { nil }
+    func isPartialLogWindow() -> Bool { isPartialWindow }
     func clearLog() -> DiagnosticsLogClearResult { .cleared }
 }

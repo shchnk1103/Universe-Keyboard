@@ -10,6 +10,7 @@ struct DiagnosticsLogContentView: View {
     let hasMorePages: Bool
     let isLoadingMore: Bool
     let pagingNotice: String?
+    let isPartialWindow: Bool
     let colorTokenForLine: (String) -> String
     let onLoadMore: () -> Void
 
@@ -20,7 +21,10 @@ struct DiagnosticsLogContentView: View {
                     DiagnosticsNoticeView(message: pagingNotice)
                         .padding(.horizontal, AppSpacing.screen)
                 }
-                DiagnosticsEmptyStateView(hasLoggedLines: hasLoggedLines)
+                DiagnosticsEmptyStateView(
+                    hasLoggedLines: hasLoggedLines,
+                    isPartialWindow: isPartialWindow
+                )
             }
         } else {
             ScrollView {
@@ -90,12 +94,13 @@ private struct DiagnosticsNoticeView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: "info.circle.fill")
+                .foregroundStyle(.orange)
                 .accessibilityHidden(true)
             Text(message)
+                .foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .font(.caption)
-        .foregroundStyle(.orange)
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.orange.opacity(0.1))
@@ -106,14 +111,13 @@ private struct DiagnosticsNoticeView: View {
 
 private struct DiagnosticsEmptyStateView: View {
     let hasLoggedLines: Bool
+    let isPartialWindow: Bool
 
     var body: some View {
         EmptyStateView(
             systemImage: "text.alignleft",
-            title: hasLoggedLines ? "当前筛选无匹配日志" : "暂无诊断日志",
-            message: hasLoggedLines
-                ? "尝试切换统计项、分类筛选或选择「全部」。"
-                : "在设置中开启「引擎诊断日志」开关，切换到键盘输入后返回此页面刷新。",
+            title: emptyTitle,
+            message: emptyMessage,
             symbolFont: .largeTitle,
             symbolOpacity: 0.4,
             titleFont: .body,
@@ -122,5 +126,21 @@ private struct DiagnosticsEmptyStateView: View {
             horizontalPadding: 40
         )
         .frame(maxHeight: .infinity)
+    }
+
+    private var emptyTitle: String {
+        if hasLoggedLines { return "当前筛选无匹配日志" }
+        if isPartialWindow { return "当前窗口暂无可展示记录" }
+        return "暂无诊断日志"
+    }
+
+    private var emptyMessage: String {
+        if hasLoggedLines {
+            return "尝试切换统计项、分类筛选或选择「全部」。"
+        }
+        if isPartialWindow {
+            return "完整日志仍保留在设备上，但当前安全读取窗口没有解码出完整记录。"
+        }
+        return "在设置中开启「引擎诊断日志」开关，切换到键盘输入后返回此页面刷新。"
     }
 }

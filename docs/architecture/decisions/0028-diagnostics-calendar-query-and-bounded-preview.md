@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed; Product-authorized implementation evidence pending independent Architecture review
+Proposed; first independent Architecture review failed, remediation ready for re-review
 
 ## Context
 
@@ -41,6 +41,8 @@ ADR 0027 的 v1 writer 已按 UTC 小时与 1 MiB 体积轮转，并保持每 pr
 
 ## Follow-up Work
 
+- 独立复核冻结 watermark、查询 revision、typed 日期失败、跨午夜跟随、partial 空态及新增回归证据。
+- writer 同 batch 跨 UTC 小时可能使段名日期索引遗漏；修改 writer 前必须重新通过 Assignment Stop Condition。
 - 设计段级时间/offset 索引或 disk-backed external merge，实现超预算日期的完整深分页。
 - 独立 Architecture / Quality 复核后决定本 ADR 是否 `Accepted`。
 - 真机验证时覆盖时区边界、跨午夜刷新、light/dark、Dynamic Type 与 VoiceOver。

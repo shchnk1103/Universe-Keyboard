@@ -486,6 +486,55 @@ final class DiagnosticsJournalTests: XCTestCase {
         XCTAssertNil(preview.nextCursor)
     }
 
+    func testRecentPreviewExcludesEventsAppendedAfterFrozenWatermark() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        let timestamp = Date(timeIntervalSince1970: 1_723_477_400)
+        try await writer.append([
+            makeEvent(sequence: 1, processInstanceID: processID, timestamp: timestamp)
+        ])
+        let ranges = try await DiagnosticsJournalReader(rootURL: rootURL).availableDateRanges()
+        let range = try XCTUnwrap(ranges.first)
+        let manifestCaptured = expectation(description: "preview manifest captured")
+        let allowPreviewRead = DispatchSemaphore(value: 0)
+        let reader = DiagnosticsJournalReader(
+            rootURL: rootURL,
+            snapshotCaptureHook: {
+                manifestCaptured.fulfill()
+                allowPreviewRead.wait()
+            }
+        )
+
+        let previewTask = Task {
+            try await reader.recentPreview(
+                in: range,
+                maximumEventCount: 10,
+                maximumReadBytes: 16 * 1_024
+            )
+        }
+        await fulfillment(of: [manifestCaptured], timeout: 2)
+        try await writer.append([
+            makeEvent(
+                sequence: 2,
+                processInstanceID: processID,
+                timestamp: timestamp.addingTimeInterval(1)
+            )
+        ])
+        allowPreviewRead.signal()
+
+        let preview = try await previewTask.value
+        XCTAssertEqual(preview.events.map(\.localSequence), [1])
+        XCTAssertEqual(preview.status, .partialRecentWindow)
+    }
+
     func testReclaimedWriterRotatesIdentityAndCanAppendAgain() async throws {
         let rootURL = makeTemporaryDirectory()
         defer { try? FileManager.default.removeItem(at: rootURL) }

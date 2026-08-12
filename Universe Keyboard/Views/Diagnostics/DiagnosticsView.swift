@@ -43,6 +43,7 @@ struct DiagnosticsView: View {
                 hasMorePages: store.hasMorePages,
                 isLoadingMore: store.isLoadingMore,
                 pagingNotice: store.displayedNotice,
+                isPartialWindow: store.isPartialWindow,
                 colorTokenForLine: store.colorForLine,
                 onLoadMore: store.loadMore
             )

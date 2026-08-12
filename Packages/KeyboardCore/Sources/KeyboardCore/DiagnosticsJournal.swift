@@ -135,6 +135,18 @@ public struct DiagnosticsJournalDateRange: Hashable, Sendable {
     }
 }
 
+/// 日期发现与 generation 必须来自同一次稳定 manifest，避免 Main App 把
+/// “读取失败”误判为空目录，也避免后续查询无法说明日期目录对应哪个 generation。
+public struct DiagnosticsJournalDateCatalog: Sendable {
+    public let generation: UInt64
+    public let ranges: [DiagnosticsJournalDateRange]
+
+    public init(generation: UInt64, ranges: [DiagnosticsJournalDateRange]) {
+        self.generation = generation
+        self.ranges = ranges
+    }
+}
+
 /// 分页查询的受控结束状态。调用方必须把失效状态与“没有更多日志”区别展示，
 /// 不能在 clear 或 reader 重建后静默把旧 cursor 当成空结果。
 public enum DiagnosticsJournalPageStatus: Sendable, Equatable {
@@ -718,9 +730,9 @@ public actor DiagnosticsJournalReader {
 
     /// 从当前 generation 的 UTC 小时段推导本地日历范围。它只在 Main App
     /// repository 使用，不要求 writer 创建或共享“每日文件”。
-    public func availableDateRanges(
+    public func availableDateCatalog(
         timeZone: TimeZone = .current
-    ) throws -> [DiagnosticsJournalDateRange] {
+    ) throws -> DiagnosticsJournalDateCatalog {
         let control = try readControl()
         let generationDirectory = generationDirectory(for: control.currentGeneration)
         guard
@@ -732,20 +744,35 @@ public actor DiagnosticsJournalReader {
             throw DiagnosticsJournalError.lockBusy
         }
 
+        let hourStarts = manifest.compactMap(\.hourStartUTC)
+        guard hourStarts.count == manifest.count else {
+            throw DiagnosticsJournalError.ioFailure
+        }
+
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timeZone
         var dayStarts = Set<Date>()
-        for hourStart in manifest.compactMap(\.hourStartUTC) {
+        for hourStart in hourStarts {
             dayStarts.insert(calendar.startOfDay(for: hourStart))
             // 某些时区的本地午夜不落在 UTC 整点（例如 UTC+05:30）。同一个
             // UTC 小时段可能跨越两个本地日期，因此两端都必须进入日期索引。
             let hourLastMoment = hourStart.addingTimeInterval(60 * 60 - 0.001)
             dayStarts.insert(calendar.startOfDay(for: hourLastMoment))
         }
-        return dayStarts.sorted(by: >).compactMap { start in
+        let ranges: [DiagnosticsJournalDateRange] = dayStarts.sorted(by: >).compactMap { start in
             guard let end = calendar.date(byAdding: .day, value: 1, to: start) else { return nil }
             return DiagnosticsJournalDateRange(start: start, end: end)
         }
+        return DiagnosticsJournalDateCatalog(
+            generation: control.currentGeneration,
+            ranges: ranges
+        )
+    }
+
+    public func availableDateRanges(
+        timeZone: TimeZone = .current
+    ) throws -> [DiagnosticsJournalDateRange] {
+        try availableDateCatalog(timeZone: timeZone).ranges
     }
 
     public func latest(
@@ -884,6 +911,7 @@ public actor DiagnosticsJournalReader {
             )
         }
         let scopedManifest = manifest.filter { segmentIntersects($0, dateRange: dateRange) }
+        snapshotCaptureHook?()
         let effectiveReadBudget = min(maximumReadBytes, Self.defaultMaximumReadBytes)
         let effectiveEventLimit = min(maximumEventCount, Self.defaultMaximumEventCount)
         var remainingBytes = effectiveReadBudget
@@ -894,15 +922,23 @@ public actor DiagnosticsJournalReader {
             guard let resolvedURL = try resolve(segment, in: generationDirectory) else { continue }
             let remainingSegments = scopedManifest.count - index
             let segmentBudget = max(1, remainingBytes / max(remainingSegments, 1))
-            let tail = try readTail(at: resolvedURL, maximumBytes: segmentBudget)
-            remainingBytes -= tail.data.count
+            let startOffset = max(0, segment.byteWatermark - segmentBudget)
+            let lines = try completeLines(
+                at: resolvedURL,
+                startOffset: startOffset,
+                endOffset: segment.byteWatermark
+            )
+            remainingBytes -= segment.byteWatermark - startOffset
             events.append(
-                contentsOf: decodeCompleteLines(from: tail).filter {
+                contentsOf: lines.compactMap { decodeEvent(from: $0.data) }.filter {
                     dateRange.contains($0.utcTimestamp)
                 }
             )
         }
-        guard try readControl().currentGeneration == control.currentGeneration else {
+        guard
+            try readControl().currentGeneration == control.currentGeneration,
+            try manifestIsStillAvailable(scopedManifest, in: generationDirectory)
+        else {
             return DiagnosticsJournalPage(
                 generation: control.currentGeneration,
                 events: [],
