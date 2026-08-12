@@ -12,6 +12,7 @@
 - Change impact: [`KNOWLEDGE_DEPENDENCIES.md`](KNOWLEDGE_DEPENDENCIES.md)
 - Change classification: [`DECISION_TREES.md`](DECISION_TREES.md)
 - KOS 2.1 ops hygiene (under 2.0): [`kos/kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md)
+- Human-operated iOS evidence profile: [`kos/universe-keyboard-human-operated-evidence-profile.md`](kos/universe-keyboard-human-operated-evidence-profile.md)
 
 ## Current System
 
