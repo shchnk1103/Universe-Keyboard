@@ -186,6 +186,32 @@ final class DiagnosticsStoreTests: XCTestCase {
         XCTAssertEqual(store.lines, ["new day event"])
     }
 
+    func testLiveRootRefreshPreventsOlderPageFromStartingWhileCatalogIsInFlight() async {
+        let day = makeDay(start: 1_723_478_400)
+        let source = ControlledDatedLogSource(
+            catalog: .available(generation: 1, days: [day]),
+            textByDayStart: [day.range.start: "root event"],
+            hasMorePages: true
+        )
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["root event"] }
+
+        source.shouldSuspendCatalog = true
+        let liveRefresh = Task { await store.performLiveRefreshTick() }
+        await waitUntil { source.catalogContinuation != nil }
+
+        XCTAssertTrue(store.isRefreshing)
+        store.loadMore()
+        XCTAssertNil(source.loadMoreContinuation)
+
+        source.finishCatalogDiscovery()
+        await liveRefresh.value
+
+        XCTAssertFalse(store.isRefreshing)
+        XCTAssertEqual(store.lines, ["root event"])
+    }
+
     func testSelectingAnotherDayInvalidatesAnInFlightOlderPage() async {
         let newestDay = makeDay(start: 1_723_478_400)
         let olderDay = makeDay(start: 1_723_392_000)
@@ -338,6 +364,8 @@ private final class ControlledDatedLogSource: DiagnosticsDatedLogSource {
     var selectedDay: DiagnosticsLogDay?
     var hasMorePages: Bool
     var isPartialWindow: Bool
+    var shouldSuspendCatalog = false
+    var catalogContinuation: CheckedContinuation<Void, Never>?
     var loadMoreContinuation: CheckedContinuation<String?, Never>?
     private(set) var loadCallCount = 0
 
@@ -353,7 +381,21 @@ private final class ControlledDatedLogSource: DiagnosticsDatedLogSource {
         self.isPartialWindow = isPartialWindow
     }
 
-    func availableLogDayCatalog() -> DiagnosticsLogDayCatalog { catalog }
+    func availableLogDayCatalog() async -> DiagnosticsLogDayCatalog {
+        if shouldSuspendCatalog {
+            shouldSuspendCatalog = false
+            await withCheckedContinuation { continuation in
+                catalogContinuation = continuation
+            }
+        }
+        return catalog
+    }
+
+    func finishCatalogDiscovery() {
+        let continuation = catalogContinuation
+        catalogContinuation = nil
+        continuation?.resume()
+    }
 
     func selectLogDay(_ day: DiagnosticsLogDay?) {
         selectedDay = day

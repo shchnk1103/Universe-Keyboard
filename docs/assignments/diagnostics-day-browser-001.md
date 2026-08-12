@@ -7,11 +7,11 @@ Repository Change Type: `Contract` + `Implementation` + `Documentation`
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` — 最小非-writer 修复与 CI 对齐门禁完成，等待独立复核 |
+| **Lifecycle** | `Active` — live-root revision 屏障与确定性回归完成，等待再次独立复核 |
 | **Phase** | Architecture / Quality re-review |
 | **Non-claims** | 不改变 Extension 写入、retention/clear/隐私合同；不把部分预览称为完整历史；不处理 G2、候选栏或真机 |
-| **Next** | Architecture / Quality 根据 remediation diff 与新执行证据给出独立结论 |
-| **Residuals** | 同 batch 跨 UTC 小时的 writer 分段、完整超预算深分页与真机视觉证据仍在本次授权外 |
+| **Next** | Architecture / Quality 复核最终 remediation 提交 |
+| **Residuals** | 同 batch 跨 UTC 小时的 writer 分段、legacy writer 与清空的线性化屏障、完整超预算深分页与真机视觉证据仍在本次授权外 |
 
 ---
 
@@ -76,3 +76,5 @@ Repository Change Type: `Contract` + `Implementation` + `Documentation`
 - `2026-08-12 Asia/Shanghai`: Executor 完成实现、自动化与 CI 对齐 Simulator 门禁，记录[执行证据](../evidence/diagnostics-day-browser-001-execution-evidence-2026-08-12.md)并将生命周期收口为 `Completed`；ADR Acceptance 与独立 Quality 结论仍未授予。
 - `2026-08-12 Asia/Shanghai`: 独立 Architecture 与 Quality 均判定 `Fail`；Human Product Lead 明确授权最小修复。Assignment 恢复为 `Active`，范围限于非-writer 阻断项；跨小时 batch 分段继续触发原 Stop Condition。
 - `2026-08-12 Asia/Shanghai`: Executor 完成冻结 watermark、typed 日期失败、请求 revision、跨午夜跟随、partial 空态及确定性回归；CI 对齐门禁全绿，进入独立 re-review。
+- `2026-08-12 Asia/Shanghai`: Architecture re-review 判定 live tick 未建立新 Store revision，可能与随后启动的 load-more 交叠；Assignment 保持 `Active`，继续同一最小修复授权。
+- `2026-08-12 Asia/Shanghai`: Executor 让 live-root 推进 Store revision 并占用刷新状态，新增受控 catalog continuation 用例，定向 Store 测试通过，准备再次送审。

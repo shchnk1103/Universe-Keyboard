@@ -44,7 +44,7 @@ Remediation validation (`2026-08-12 Asia/Shanghai`):
 | `Executor-recorded` | Full `KeyboardCore` suite | Pass, 977 tests / 0 failures |
 | `Executor-recorded` | Targeted `DiagnosticsLogSourceTests` + `DiagnosticsStoreTests` | Pass, 18 tests / 0 failures |
 | `Executor-recorded` | Real >5 MiB journal fixture through `V1DiagnosticsLogSource` | Pass, bounded non-empty partial preview |
-| `Executor-recorded` | Full `Universe Keyboard` scheme test | Pass, Main App 163 + Keyboard 6 / 0 failures |
+| `Executor-recorded` | Full `Universe Keyboard` scheme test | Pass, Main App 164 + Keyboard 6 / 0 failures |
 | `Executor-recorded` | `RimeBridgeTests` | Pass, 57 tests / 0 failures / 20 environment-gated skips |
 | `Executor-recorded` | Debug + Release Simulator build, Swift 6 strict concurrency, warnings-as-errors | Pass |
 
@@ -53,6 +53,12 @@ Remediation result bundles:
 - Targeted Main App: `/Users/doubleshy0n/Library/Developer/Xcode/DerivedData/Universe_Keyboard-emxsvllcocrspwdtwulsntweaomy/Logs/Test/Test-Universe Keyboard-2026.08.12_14-02-05-+0800.xcresult`
 - Full scheme: `/Users/doubleshy0n/Library/Developer/Xcode/DerivedData/Universe_Keyboard-emxsvllcocrspwdtwulsntweaomy/Logs/Test/Test-Universe Keyboard-2026.08.12_14-04-35-+0800.xcresult`
 - RimeBridge: `/Users/doubleshy0n/Library/Developer/Xcode/DerivedData/Universe_Keyboard-emxsvllcocrspwdtwulsntweaomy/Logs/Test/Test-RimeBridgeTests-2026.08.12_14-04-04-+0800.xcresult`
+
+Architecture re-review 对提交 `2c2654c` 判定 `Fail`：冻结 watermark、typed 日期失败、跨午夜跟随与 partial 空态已闭合，但 live tick 未推进 Store revision 或占用 root-query 状态，仍可与随后启动的 load-more 交叠。该结论触发同一最小授权内的后续修复与新确定性测试；上述门禁不得被解释为 Architecture Pass。
+
+后续最小修复让 live tick 在任何 source await 前推进 Store revision 并设置 `isRefreshing`，从而同时废弃旧 Store 结果并阻止新 load-more。受控 catalog continuation 回归用例验证 root refresh 在途时 load-more 不会启动；完整 `DiagnosticsStoreTests` 定向运行通过。
+
+最终 delta 验证：`DiagnosticsStoreTests` 14 项通过；完整 scheme Main App 164 项 + Keyboard 6 项通过；Debug 与 Release build 均以 exit `0` 完成。最终 full-scheme result bundle：`/Users/doubleshy0n/Library/Developer/Xcode/DerivedData/Universe_Keyboard-emxsvllcocrspwdtwulsntweaomy/Logs/Test/Test-Universe Keyboard-2026.08.12_14-14-18-+0800.xcresult`。
 
 Targeted Main App result bundle:
 `/Users/doubleshy0n/Library/Developer/Xcode/DerivedData/Universe_Keyboard-emxsvllcocrspwdtwulsntweaomy/Logs/Test/Test-Universe Keyboard-2026.08.12_13-16-43-+0800.xcresult`

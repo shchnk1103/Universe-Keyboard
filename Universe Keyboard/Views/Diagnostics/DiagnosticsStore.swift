@@ -286,8 +286,13 @@ final class DiagnosticsStore {
             !isRefreshing,
             !isLoadingMore
         else { return }
-        let revision = queryRevision
+        // 实时根刷新与手动根查询遵守同一 revision 边界。先占用刷新状态，
+        // 避免刷新在 source await 期间又启动一个旧 cursor 的 load-more。
+        let revision = advanceQueryRevision()
+        isRefreshing = true
         await replaceWithLatestPage(refreshDays: true, revision: revision)
+        guard revision == queryRevision else { return }
+        isRefreshing = false
     }
 
     private func replaceWithLatestPage(refreshDays: Bool, revision: UInt64) async {
