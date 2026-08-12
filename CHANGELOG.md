@@ -10,6 +10,12 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - Swift 6 CI 使用完整 Git 历史并在 base commit 或变更文件解析失败时关闭门禁，避免格式检查假绿。
 - TD-012 G2-A 固定模型门通过；G2-B 因 Debug 业务二进制不一致而作废，Product disposition 为 **Hold**，不授权 G3。
 
+## 2026-08-12 — 诊断超预算读取恢复闭环
+
+- v1 日志快照超过 5 MiB / 10,000 事件安全预算而显示空列表时，清空入口仍保持可用，并给出与实际恢复动作一致的提示。
+- v1 generation 与 legacy 清空现在返回显式结果；只有完整成功才清空页面状态，失败会保留记录并提示重试。
+- 清空期间暂停自动刷新写回，回归测试覆盖超预算入口、清空成功/失败与 generation 推进。
+
 ## 2026-08-10 — TD-012 G1 Closed: octagram vendor + independent review
 
 - New immutable vendor pin `rime-vendor-ios-1.16.1-lua.1-octagram.1` adds

@@ -1,9 +1,14 @@
 import Foundation
 import KeyboardCore
 
+nonisolated enum DiagnosticsLogClearResult: Equatable, Sendable {
+    case cleared
+    case failed
+}
+
 protocol DiagnosticsLogSource: Sendable {
     func loadLogText() async -> String?
-    func clearLog() async
+    func clearLog() async -> DiagnosticsLogClearResult
 }
 
 /// 只有 v1 journal 支持连续分页；legacy 文本只作为过渡期只读回退，因此不会
@@ -28,11 +33,18 @@ struct SharedDefaultsDiagnosticsLogSource: DiagnosticsLogSource {
             .joined(separator: "\n")
     }
 
-    func clearLog() async {
-        let defaults = UserDefaults(suiteName: appGroupID)
-        defaults?.removeObject(forKey: "rime_diag_log")
-        defaults?.removeObject(forKey: "rime_diag_summary")
-        defaults?.synchronize()
+    func clearLog() async -> DiagnosticsLogClearResult {
+        guard let defaults = UserDefaults(suiteName: appGroupID) else { return .failed }
+        defaults.removeObject(forKey: "rime_diag_log")
+        defaults.removeObject(forKey: "rime_diag_summary")
+        defaults.synchronize()
+        guard
+            defaults.object(forKey: "rime_diag_log") == nil,
+            defaults.object(forKey: "rime_diag_summary") == nil
+        else {
+            return .failed
+        }
+        return .cleared
     }
 }
 
@@ -79,10 +91,12 @@ actor CompositeDiagnosticsLogSource: DiagnosticsLogPagingSource {
         return await v1Source.pagingNotice()
     }
 
-    func clearLog() async {
-        await v1Source.clearLog()
-        await SharedDefaultsDiagnosticsLogSource(appGroupID: appGroupID).clearLog()
+    func clearLog() async -> DiagnosticsLogClearResult {
+        let v1Result = await v1Source.clearLog()
+        let legacyResult = await SharedDefaultsDiagnosticsLogSource(appGroupID: appGroupID).clearLog()
+        guard v1Result == .cleared, legacyResult == .cleared else { return .failed }
         activeSource = nil
+        return .cleared
     }
 }
 
@@ -187,9 +201,9 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
         case .cursorUnavailable:
             "日志分页已失效，请刷新后继续查看。"
         case .snapshotExceedsReadBudget:
-            "当前日志快照过大，无法在安全读取上限内严格排序；请清空、等待自动保留清理，或缩小日志量后刷新。"
+            "当前日志快照过大，无法在安全读取上限内严格排序；请使用右上角垃圾桶清空后重新记录。"
         case .snapshotExceedsEventBudget:
-            "当前日志快照超过安全事件上限；请清空、等待自动保留清理，或缩小日志量后刷新。"
+            "当前日志快照超过安全事件上限；请使用右上角垃圾桶清空后重新记录。"
         case .snapshotUnavailable:
             "日志正在轮转或回收，请刷新后查看当前记录。"
         case .journalUnavailable:
@@ -201,19 +215,24 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
         usedV1Result
     }
 
-    func clearLog() async {
-        guard let rootURL = journalRootURL() else { return }
+    func clearLog() async -> DiagnosticsLogClearResult {
+        guard let rootURL = journalRootURL() else { return .failed }
         let writer = DiagnosticsJournalWriter(
             rootURL: rootURL,
             origin: .mainApp,
             isMainAppWriter: true
         )
-        guard (try? await writer.prepareRootIfOwnedByMainApp()) != nil else { return }
-        _ = try? await writer.advanceGenerationForClear()
+        do {
+            try await writer.prepareRootIfOwnedByMainApp()
+            _ = try await writer.advanceGenerationForClear()
+        } catch {
+            return .failed
+        }
         reader = nil
         nextCursor = nil
         lastPageStatus = .completed
         usedV1Result = false
+        return .cleared
     }
 
     private func journalRootURL() -> URL? {

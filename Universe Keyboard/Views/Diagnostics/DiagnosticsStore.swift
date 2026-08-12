@@ -31,6 +31,7 @@ final class DiagnosticsStore {
     var isLoadingMore = false
     var hasMorePages = false
     var pagingNotice: String?
+    var clearFailureNotice: String?
     private var hasLoadedOlderPages = false
     var selectedSummaryFilter: SummaryFilter = .all
     var selectedCategory: Logger.Category?
@@ -107,6 +108,14 @@ final class DiagnosticsStore {
         exportLimitMessage == nil && !filteredLines.isEmpty
     }
 
+    var canClearLog: Bool {
+        !isClearing && (!lines.isEmpty || pagingNotice != nil || clearFailureNotice != nil)
+    }
+
+    var displayedNotice: String? {
+        clearFailureNotice ?? pagingNotice
+    }
+
     var exportLimitMessage: String? {
         let records = filteredLines
         guard records.count <= Self.exportMaximumRecordCount else {
@@ -132,7 +141,7 @@ final class DiagnosticsStore {
                 try? await Task.sleep(for: .seconds(1))
                 guard let self, !Task.isCancelled else { return }
                 // 已展开更早历史时不重置冻结分页查询；用户可手动刷新以开始新快照。
-                guard !self.hasLoadedOlderPages else { continue }
+                guard !self.hasLoadedOlderPages, !self.isClearing else { continue }
                 await self.replaceWithLatestPage()
             }
         }
@@ -144,8 +153,9 @@ final class DiagnosticsStore {
     }
 
     func refresh() {
-        guard !isRefreshing else { return }
+        guard !isRefreshing, !isClearing else { return }
         isRefreshing = true
+        clearFailureNotice = nil
 
         Task {
             try? await Task.sleep(for: .milliseconds(400))
@@ -157,14 +167,19 @@ final class DiagnosticsStore {
     func performClear() {
         guard !isClearing else { return }
         isClearing = true
+        clearFailureNotice = nil
 
         Task {
             try? await Task.sleep(for: .milliseconds(300))
-            await logSource.clearLog()
-            lines = []
-            hasMorePages = false
-            hasLoadedOlderPages = false
-            pagingNotice = nil
+            let result = await logSource.clearLog()
+            if result == .cleared {
+                lines = []
+                hasMorePages = false
+                hasLoadedOlderPages = false
+                pagingNotice = nil
+            } else {
+                clearFailureNotice = "未能完整清空诊断日志，请稍后重试。现有记录可能仍然存在。"
+            }
             isClearing = false
         }
     }

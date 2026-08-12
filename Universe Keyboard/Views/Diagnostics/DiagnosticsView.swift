@@ -34,7 +34,7 @@ struct DiagnosticsView: View {
                 exportLimitMessage: store.exportLimitMessage,
                 hasMorePages: store.hasMorePages,
                 isLoadingMore: store.isLoadingMore,
-                pagingNotice: store.pagingNotice,
+                pagingNotice: store.displayedNotice,
                 colorTokenForLine: store.colorForLine,
                 onLoadMore: store.loadMore
             )
@@ -46,7 +46,7 @@ struct DiagnosticsView: View {
             DiagnosticsToolbar(
                 isRefreshing: store.isRefreshing,
                 canCopy: store.canExportCurrentSelection,
-                canClear: !store.lines.isEmpty && !store.isClearing,
+                canClear: store.canClearLog,
                 onRefresh: store.refresh,
                 onCopy: copyLog,
                 onClear: requestClear

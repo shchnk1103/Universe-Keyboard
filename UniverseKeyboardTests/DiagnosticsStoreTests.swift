@@ -60,9 +60,83 @@ final class DiagnosticsStoreTests: XCTestCase {
         XCTAssertEqual(store.exportText, "")
         XCTAssertEqual(store.exportLimitMessage, "当前结果超过 10,000 条，请缩小筛选范围后复制。")
     }
+
+    func testOversizedSnapshotNoticeKeepsClearActionAvailable() async {
+        let source = StubLogSource(
+            notice: "当前日志快照过大，无法在安全读取上限内严格排序；请使用右上角垃圾桶清空后重新记录。"
+        )
+        let store = DiagnosticsStore(logSource: source)
+
+        store.loadLog()
+        await waitUntil { store.pagingNotice != nil }
+
+        XCTAssertTrue(store.lines.isEmpty)
+        XCTAssertTrue(store.canClearLog)
+    }
+
+    func testFailedClearKeepsRecoveryActionAndReportsFailure() async {
+        let store = DiagnosticsStore(
+            logSource: StubLogSource(notice: "日志超出读取预算", clearResult: .failed)
+        )
+        store.lines = ["existing event"]
+
+        store.performClear()
+        await waitUntil { !store.isClearing }
+
+        XCTAssertEqual(store.lines, ["existing event"])
+        XCTAssertTrue(store.canClearLog)
+        XCTAssertEqual(store.displayedNotice, "未能完整清空诊断日志，请稍后重试。现有记录可能仍然存在。")
+    }
+
+    func testSuccessfulClearResetsVisibleState() async {
+        let store = DiagnosticsStore(logSource: StubLogSource(notice: "日志超出读取预算"))
+        store.lines = ["existing event"]
+        store.pagingNotice = "日志超出读取预算"
+        store.hasMorePages = true
+
+        store.performClear()
+        await waitUntil { !store.isClearing }
+
+        XCTAssertTrue(store.lines.isEmpty)
+        XCTAssertFalse(store.hasMorePages)
+        XCTAssertNil(store.displayedNotice)
+        XCTAssertFalse(store.canClearLog)
+    }
+
+    private func waitUntil(
+        timeout: Duration = .seconds(2),
+        condition: @escaping @MainActor () -> Bool
+    ) async {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: timeout)
+        while !condition(), clock.now < deadline {
+            await Task.yield()
+        }
+        XCTAssertTrue(condition())
+    }
 }
 
 private struct StubLogSource: DiagnosticsLogSource {
-    func loadLogText() async -> String? { nil }
-    func clearLog() async {}
+    var text: String?
+    var notice: String?
+    var clearResult: DiagnosticsLogClearResult
+
+    init(
+        text: String? = nil,
+        notice: String? = nil,
+        clearResult: DiagnosticsLogClearResult = .cleared
+    ) {
+        self.text = text
+        self.notice = notice
+        self.clearResult = clearResult
+    }
+
+    func loadLogText() async -> String? { text }
+    func clearLog() async -> DiagnosticsLogClearResult { clearResult }
+}
+
+extension StubLogSource: DiagnosticsLogPagingSource {
+    func loadMoreLogText() async -> String? { nil }
+    func hasMoreLogPages() async -> Bool { false }
+    func pagingNotice() async -> String? { notice }
 }
