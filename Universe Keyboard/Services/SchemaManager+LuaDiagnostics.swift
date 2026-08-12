@@ -27,7 +27,7 @@ extension SchemaManager {
             activeSchemaID: activeSchemaID,
             rimeDeployed: settings.bool(forKey: "rime_deployed"),
             rimeNeedsDeploy: settings.bool(forKey: "rime_needs_deploy"),
-            runtimeSmokePassed: settings.bool(forKey: "rime_ice_lua_smoke_passed"),
+            runtimeSmokePassed: settings.object(forKey: "rime_ice_lua_smoke_passed") as? Bool,
             schemaExists: schemaURL.map { FileManager.default.fileExists(atPath: $0.path) } ?? false,
             schemaHasLuaComponents: schemaContent.map(Self.schemaHasLuaComponents) ?? false,
             luaDirectoryExists: luaDirectoryURL.map { url in
@@ -54,7 +54,8 @@ extension SchemaManager {
                     + "requiredComponentCount=\(diagnostic.requiredLuaComponentNames.count) "
                     + "missingComponentCount=\(diagnostic.missingLuaComponentNames.count) "
                     + "missingDependencyCount=\(diagnostic.missingLuaDependencyNames.count) "
-                    + "runtimeSmokePassed=\(diagnostic.runtimeSmokePassed)",
+                    + "runtimeSmokeReported=\(diagnostic.runtimeSmokePassed != nil) "
+                    + "runtimeSmokePassed=\(diagnostic.runtimeSmokePassed == true)",
                 category: .deployment
             )
         }

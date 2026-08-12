@@ -152,7 +152,7 @@ final class ThreadAffineRimeRealEngineTests: XCTestCase {
     private func deployIsolatedRuntime(sharedDir: String, userDir: String) async throws {
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: sharedDir),
                 userDataURL: URL(fileURLWithPath: userDir),
                 runtimeSmokeSchemaID: nil

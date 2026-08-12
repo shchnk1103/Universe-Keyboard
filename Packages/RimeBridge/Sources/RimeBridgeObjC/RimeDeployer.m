@@ -2,6 +2,35 @@
 #import "RimeLuaModuleShim.h"
 #import "RimeOctagramModuleShim.h"
 #include "rime_api.h"
+#include <string.h>
+
+@interface RimeDeploymentNotificationReceipt : NSObject
+@property(nonatomic, assign) BOOL sawStart;
+@property(nonatomic, assign) BOOL sawSuccess;
+@property(nonatomic, assign) BOOL sawFailure;
+@end
+
+@implementation RimeDeploymentNotificationReceipt
+@end
+
+static void RimeDeploymentNotificationHandler(void *contextObject,
+                                              RimeSessionId sessionId,
+                                              const char *messageType,
+                                              const char *messageValue) {
+    if (!contextObject || sessionId != 0 || !messageType || !messageValue) return;
+    if (strcmp(messageType, "deploy") != 0) return;
+
+    RimeDeploymentNotificationReceipt *receipt = (__bridge RimeDeploymentNotificationReceipt *)contextObject;
+    @synchronized(receipt) {
+        if (strcmp(messageValue, "start") == 0) {
+            receipt.sawStart = YES;
+        } else if (receipt.sawStart && strcmp(messageValue, "failure") == 0) {
+            receipt.sawFailure = YES;
+        } else if (receipt.sawStart && strcmp(messageValue, "success") == 0) {
+            receipt.sawSuccess = YES;
+        }
+    }
+}
 
 @implementation RimeDeployer {
     RimeApi *_api;
@@ -162,6 +191,9 @@ static NSString *RimeLogDirectory(NSString *userDir) {
           self.class.grammarComponentRegistered ? @"true" : @"false");
 
     // 3. 初始化引擎（不创建 session，不处理输入）
+    // start_maintenance() 只表示维护任务被接受；最终结果必须来自 deploy 通知。
+    RimeDeploymentNotificationReceipt *receipt = [[RimeDeploymentNotificationReceipt alloc] init];
+    _api->set_notification_handler(RimeDeploymentNotificationHandler, (__bridge void *)receipt);
     _api->initialize(NULL);
 
     BOOL luaRuntimeAvailable = self.class.luaModuleCompiledIn
@@ -186,10 +218,17 @@ static NSString *RimeLogDirectory(NSString *userDir) {
         _api->join_maintenance_thread();
     }
 
+    _api->set_notification_handler(NULL, NULL);
+    BOOL terminalSuccess = NO;
+    @synchronized(receipt) {
+        // Failure is monotonic and wins if librime ever emits conflicting terminal events.
+        terminalSuccess = ok && receipt.sawStart && receipt.sawSuccess && !receipt.sawFailure;
+    }
+
     // 5. 清理
     [self cleanup];
 
-    return ok;
+    return terminalSuccess;
 }
 
 - (NSString *)librimeVersion {

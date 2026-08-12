@@ -415,7 +415,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(
                     fileURLWithPath: directories.sharedDir,
                     isDirectory: true
@@ -545,7 +545,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(
                     fileURLWithPath: directories.sharedDir,
                     isDirectory: true
@@ -647,7 +647,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(
                     fileURLWithPath: directories.sharedDir,
                     isDirectory: true
@@ -870,7 +870,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir),
                 userDataURL: URL(fileURLWithPath: directories.userDir),
                 runtimeSmokeSchemaID: nil
@@ -1116,7 +1116,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir),
                 userDataURL: isolatedUserURL,
                 runtimeSmokeSchemaID: nil
@@ -1409,7 +1409,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir),
                 userDataURL: isolatedUserURL,
                 runtimeSmokeSchemaID: nil
@@ -2303,7 +2303,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(
                     fileURLWithPath: sharedDir,
                     isDirectory: true
@@ -2446,7 +2446,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
             )
             let deployResult = try await RimeDeploymentService().deploy(
                 RimeDeploymentRequest(
-                    mode: .fullCheck,
+                    mode: .testFixtureMaintenanceOnly,
                     sharedDataURL: URL(
                         fileURLWithPath: sharedDir,
                         isDirectory: true

@@ -1,6 +1,6 @@
-import XCTest
 import KeyboardCore
 import RimeBridgeObjC
+import XCTest
 
 @testable import RimeBridge
 
@@ -220,9 +220,10 @@ final class RimeEngineContractTests: XCTestCase {
         XCTAssertEqual(timing?.librimeProcessKeyMs, 12.5)
         XCTAssertEqual(timing?.outputCollectionMs, 3.25)
         XCTAssertEqual(timing?.totalMs, 15.75)
-        XCTAssertNil(RimeFirstKeyBridgeTiming(rawOutput: [
-            "firstProcessKeyLibrimeDurationMs": NSNumber(value: 12.5),
-        ]))
+        XCTAssertNil(
+            RimeFirstKeyBridgeTiming(rawOutput: [
+                "firstProcessKeyLibrimeDurationMs": NSNumber(value: 12.5)
+            ]))
     }
 
     func testCandidateWindowParserPreservesGlobalIndexes() {
@@ -287,6 +288,362 @@ final class RimeEngineContractTests: XCTestCase {
         XCTAssertFalse(result.succeeded)
         XCTAssertTrue(result.diagnosticMessage.contains("keyboard session engine"))
     }
+
+    func testDeploymentServiceFailsClosedWhenActiveSchemaSmokeFails() async throws {
+        let fixture = try makeDeploymentInputFixture(schemaID: "wanxiang")
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+        let service = RimeDeploymentService(
+            deployOperation: { _, _ in
+                RimeDeploymentService.MaintenanceResult(succeeded: true, librimeVersion: "test")
+            },
+            schemaSmokeOperation: { _, _, _ in
+                RimeSchemaRuntimeSmokeProbe.Result(
+                    selectedRequestedSchema: true,
+                    compositionPresent: true,
+                    rawInputMatched: true,
+                    candidateCount: 0,
+                    hasHanCandidate: false,
+                    unexpectedCommit: false
+                )
+            },
+            luaSmokeOperation: { _, _, _ in Self.passingLuaSmokeResult }
+        )
+
+        let result = try await service.deploy(
+            RimeDeploymentRequest(
+                mode: .fullCheck,
+                sharedDataURL: fixture.sharedURL,
+                userDataURL: fixture.userURL,
+                runtimeSmokeSchemaID: "wanxiang"
+            )
+        )
+
+        XCTAssertFalse(result.succeeded)
+        XCTAssertEqual(result.runtimeSmokePassed, false)
+        XCTAssertNil(result.luaRuntimeSmokePassed)
+    }
+
+    func testDeploymentServiceFailsClosedWhenMaintenanceHasNoSuccessReceipt() async throws {
+        let fixture = try makeDeploymentInputFixture(schemaID: "wanxiang")
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+        let service = RimeDeploymentService(
+            deployOperation: { _, _ in
+                RimeDeploymentService.MaintenanceResult(succeeded: false, librimeVersion: "test")
+            },
+            schemaSmokeOperation: { _, _, _ in
+                RimeSchemaRuntimeSmokeProbe.Result(
+                    selectedRequestedSchema: true,
+                    compositionPresent: true,
+                    rawInputMatched: true,
+                    candidateCount: 3,
+                    hasHanCandidate: true,
+                    unexpectedCommit: false
+                )
+            },
+            luaSmokeOperation: { _, _, _ in Self.passingLuaSmokeResult }
+        )
+
+        let result = try await service.deploy(
+            RimeDeploymentRequest(
+                mode: .fullCheck,
+                sharedDataURL: fixture.sharedURL,
+                userDataURL: fixture.userURL,
+                runtimeSmokeSchemaID: "wanxiang"
+            )
+        )
+
+        XCTAssertFalse(result.succeeded)
+        XCTAssertNil(result.runtimeSmokePassed)
+    }
+
+    func testDeploymentServiceAcceptsTerminalDeployAndWorkingActiveSchema() async throws {
+        let fixture = try makeDeploymentInputFixture(schemaID: "wanxiang")
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+        let service = RimeDeploymentService(
+            deployOperation: { _, _ in
+                RimeDeploymentService.MaintenanceResult(succeeded: true, librimeVersion: "test")
+            },
+            schemaSmokeOperation: { _, _, schemaID in
+                RimeSchemaRuntimeSmokeProbe.Result(
+                    selectedRequestedSchema: schemaID == "wanxiang",
+                    compositionPresent: true,
+                    rawInputMatched: true,
+                    candidateCount: 3,
+                    hasHanCandidate: true,
+                    unexpectedCommit: false
+                )
+            },
+            luaSmokeOperation: { _, _, _ in Self.passingLuaSmokeResult }
+        )
+
+        let result = try await service.deploy(
+            RimeDeploymentRequest(
+                mode: .fullCheck,
+                sharedDataURL: fixture.sharedURL,
+                userDataURL: fixture.userURL,
+                runtimeSmokeSchemaID: "wanxiang"
+            )
+        )
+
+        XCTAssertTrue(result.succeeded)
+        XCTAssertEqual(result.runtimeSmokePassed, true)
+        XCTAssertNil(result.luaRuntimeSmokePassed)
+    }
+
+    func testDeploymentServiceRejectsMissingActiveSchemaInCustomYamlBeforeMaintenance() async throws {
+        let fixture = try makeDeploymentInputFixture(schemaID: "rime_ice")
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+        let service = RimeDeploymentService(
+            deployOperation: { _, _ in
+                RimeDeploymentService.MaintenanceResult(succeeded: true, librimeVersion: "test")
+            },
+            schemaSmokeOperation: { _, _, _ in
+                RimeSchemaRuntimeSmokeProbe.Result(
+                    selectedRequestedSchema: true,
+                    compositionPresent: true,
+                    rawInputMatched: true,
+                    candidateCount: 1,
+                    hasHanCandidate: true,
+                    unexpectedCommit: false
+                )
+            },
+            luaSmokeOperation: { _, _, _ in Self.passingLuaSmokeResult }
+        )
+
+        let result = try await service.deploy(
+            RimeDeploymentRequest(
+                mode: .fullCheck,
+                sharedDataURL: fixture.sharedURL,
+                userDataURL: fixture.userURL,
+                runtimeSmokeSchemaID: "wanxiang"
+            )
+        )
+
+        XCTAssertFalse(result.succeeded)
+        XCTAssertTrue(result.diagnosticMessage.contains("deployment input is incomplete"))
+    }
+
+    func testDeploymentServiceObservesRealTerminalSuccessAndFunctionalSchema() async throws {
+        let fixture = try makeFunctionalLunaDeploymentFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        let result = try await RimeDeploymentService().deploy(
+            RimeDeploymentRequest(
+                mode: .fullCheck,
+                sharedDataURL: fixture.sharedURL,
+                userDataURL: fixture.userURL,
+                runtimeSmokeSchemaID: "luna_pinyin"
+            )
+        )
+
+        XCTAssertTrue(result.succeeded)
+        XCTAssertEqual(result.runtimeSmokePassed, true)
+    }
+
+    func testSchemaSmokeRejectsEchoCandidateWrongRawInputAndEarlierCommit() {
+        let composing = RimeComposition(preeditText: "ni", cursorPosition: 2)
+        let hanWindow = RimeCandidateWindow(
+            candidates: [RimeCandidate(text: "你")],
+            startIndex: 0,
+            nextIndex: 1,
+            hasMoreCandidates: false
+        )
+        let echoWindow = RimeCandidateWindow(
+            candidates: [RimeCandidate(text: "ni")],
+            startIndex: 0,
+            nextIndex: 1,
+            hasMoreCandidates: false
+        )
+
+        XCTAssertFalse(
+            RimeSchemaRuntimeSmokeProbe.evaluate(
+                outputs: [RimeOutput(rawInput: "ni", composition: composing)],
+                window: echoWindow,
+                selectedRequestedSchema: true
+            ).passed
+        )
+        XCTAssertFalse(
+            RimeSchemaRuntimeSmokeProbe.evaluate(
+                outputs: [RimeOutput(rawInput: "n", composition: composing)],
+                window: hanWindow,
+                selectedRequestedSchema: true
+            ).passed
+        )
+        XCTAssertFalse(
+            RimeSchemaRuntimeSmokeProbe.evaluate(
+                outputs: [
+                    RimeOutput(committedText: "unexpected"),
+                    RimeOutput(rawInput: "ni", composition: composing),
+                ],
+                window: hanWindow,
+                selectedRequestedSchema: true
+            ).passed
+        )
+        XCTAssertTrue(
+            RimeSchemaRuntimeSmokeProbe.evaluate(
+                outputs: [RimeOutput(rawInput: "ni", composition: composing)],
+                window: hanWindow,
+                selectedRequestedSchema: true
+            ).passed
+        )
+    }
+
+    func testDeploymentInputValidatorRejectsUnsafeIDAndUnrelatedSchemaList() throws {
+        let fixture = try makeDeploymentInputFixture(schemaID: "wanxiang")
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        XCTAssertTrue(
+            RimeSchemaDeploymentInputValidator.isReady(
+                sharedDataURL: fixture.sharedURL,
+                userDataURL: fixture.userURL,
+                schemaID: "wanxiang"
+            )
+        )
+        for unsafeID in ["", "../wanxiang", "wanxiang/path", "."] {
+            XCTAssertFalse(
+                RimeSchemaDeploymentInputValidator.isReady(
+                    sharedDataURL: fixture.sharedURL,
+                    userDataURL: fixture.userURL,
+                    schemaID: unsafeID
+                )
+            )
+        }
+
+        try "unrelated:\n  schema_list:\n    - schema: wanxiang\n".write(
+            to: fixture.userURL.appendingPathComponent("default.custom.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+        XCTAssertFalse(
+            RimeSchemaDeploymentInputValidator.isReady(
+                sharedDataURL: fixture.sharedURL,
+                userDataURL: fixture.userURL,
+                schemaID: "wanxiang"
+            )
+        )
+    }
+
+    func testDeploymentInputValidatorRejectsMissingEmptyAndDirectoryInputs() throws {
+        for target in ["schema", "custom"] {
+            for kind in ["missing", "empty", "directory"] {
+                let fixture = try makeDeploymentInputFixture(schemaID: "wanxiang")
+                defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+                let url =
+                    target == "schema"
+                    ? fixture.sharedURL.appendingPathComponent("wanxiang.schema.yaml")
+                    : fixture.userURL.appendingPathComponent("default.custom.yaml")
+                try FileManager.default.removeItem(at: url)
+                if kind == "empty" {
+                    try Data().write(to: url)
+                } else if kind == "directory" {
+                    try FileManager.default.createDirectory(at: url, withIntermediateDirectories: false)
+                }
+
+                XCTAssertFalse(
+                    RimeSchemaDeploymentInputValidator.isReady(
+                        sharedDataURL: fixture.sharedURL,
+                        userDataURL: fixture.userURL,
+                        schemaID: "wanxiang"
+                    ),
+                    "\(target) \(kind) must fail closed"
+                )
+            }
+        }
+    }
+
+    func testRealDeployerFailsClosedForMalformedSchema() throws {
+        let fixture = try makeFunctionalLunaDeploymentFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+        try "schema: [\n".write(
+            to: fixture.sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+
+        XCTAssertFalse(
+            RimeDeployer().deploy(
+                withSharedDataDir: fixture.sharedURL.path,
+                userDataDir: fixture.userURL.path
+            )
+        )
+    }
+
+    private func makeDeploymentInputFixture(
+        schemaID: String
+    ) throws -> (rootURL: URL, sharedURL: URL, userURL: URL) {
+        let rootURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-deployment-input-\(UUID().uuidString)")
+        let sharedURL = rootURL.appendingPathComponent("shared")
+        let userURL = rootURL.appendingPathComponent("user")
+        try FileManager.default.createDirectory(at: sharedURL, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: userURL, withIntermediateDirectories: true)
+        try "schema:\n  schema_id: \(schemaID)\n".write(
+            to: sharedURL.appendingPathComponent("\(schemaID).schema.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+        try "patch:\n  schema_list:\n    - schema: \(schemaID)\n".write(
+            to: userURL.appendingPathComponent("default.custom.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+        return (rootURL, sharedURL, userURL)
+    }
+
+    private func makeFunctionalLunaDeploymentFixture() throws -> (rootURL: URL, sharedURL: URL, userURL: URL) {
+        let fixture = try makeDeploymentInputFixture(schemaID: "luna_pinyin")
+        let schema = """
+            schema:
+              schema_id: luna_pinyin
+              name: Deployment Contract Fixture
+            engine:
+              processors:
+                - speller
+                - selector
+                - navigator
+                - express_editor
+              segmentors:
+                - abc_segmentor
+                - fallback_segmentor
+              translators:
+                - script_translator
+            speller:
+              alphabet: zyxwvutsrqponmlkjihgfedcba
+            translator:
+              dictionary: luna_pinyin
+            """
+        try RimeConfigTemplates.generateDefaultYaml(
+            activeSchemaID: "luna_pinyin",
+            rimeIceInstalled: false,
+            pageSize: 9
+        ).write(
+            to: fixture.sharedURL.appendingPathComponent("default.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+        try schema.write(
+            to: fixture.sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+        try RimeConfigTemplates.fallbackDict.write(
+            to: fixture.sharedURL.appendingPathComponent("luna_pinyin.dict.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+        try RimeConfigTemplates.installationYaml.write(
+            to: fixture.sharedURL.appendingPathComponent("installation.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+        return fixture
+    }
+
+    private static let passingLuaSmokeResult = RimeLuaRuntimeSmokeProbe.Result(
+        selectedRequestedSchema: true,
+        luaModuleRegistered: true,
+        caseResults: []
+    )
 
     func testStandardSyncInstallationKeepsUnrelatedConfiguration() throws {
         let root = FileManager.default.temporaryDirectory
@@ -373,11 +730,13 @@ final class RimeEngineContractTests: XCTestCase {
             isDirectory: true
         )
         XCTAssertTrue(FileManager.default.fileExists(atPath: deviceDirectory.path))
-        XCTAssertTrue(FileManager.default.fileExists(
-            atPath: deviceDirectory.appendingPathComponent("installation.yaml").path
-        ))
-        XCTAssertFalse(FileManager.default.fileExists(
-            atPath: userDataURL.appendingPathComponent("luna_pinyin.userdb").path
-        ))
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: deviceDirectory.appendingPathComponent("installation.yaml").path
+            ))
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: userDataURL.appendingPathComponent("luna_pinyin.userdb").path
+            ))
     }
 }

@@ -21,7 +21,7 @@ final class RimeT9CompatibilitySpikeTests: XCTestCase {
         let deployService = RimeDeploymentService()
         let deployResult = try await deployService.deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir),
                 userDataURL: URL(fileURLWithPath: directories.userDir),
                 runtimeSmokeSchemaID: nil
