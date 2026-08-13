@@ -53,10 +53,7 @@ struct DiagnosticsView: View {
         .navigationTitle("键盘诊断")
         .navigationBarTitleDisplayMode(.inline)
         .searchable(
-            text: Binding(
-                get: { store.searchQuery },
-                set: store.updateSearchQuery
-            ),
+            text: $store.searchQuery,
             isPresented: $isSearchPresented,
             placement: .navigationBarDrawer(displayMode: .always),
             prompt: "搜索事件、分类或状态"
