@@ -15,7 +15,8 @@ Policy version: 1.0.0
 
 ---
 
-**Lifecycle status:** `Reviewed — Product Accept Must; IMPL in progress`  
+**Lifecycle status:** `Closed — design accepted; implementation package published`
+
 **Date / timezone:** `2026-08-06 Asia/Shanghai`  
 **Classification:** `Level S — System Governance`  
 **Repository Change Type (this phase):** `Contract` (design publication only) +
@@ -31,7 +32,8 @@ Policy version: 1.0.0
 
 - **Assignment Authority:** Product Lead  
 - **Decision Source / Date:** PD-KOS-2.1-OPS-001; Human authorization
-  2026-08-06 Asia/Shanghai (option 2: formal design bootstrap)  
+  2026-08-06 Asia/Shanghai (option 2: formal design bootstrap); Human Product
+  Lead closure authorization 2026-08-13 Asia/Shanghai
 - **Product Approver:** Human Product Owner / Product Lead  
 
 ## Objective
@@ -80,13 +82,12 @@ repository migration in this Assignment.
 - **Domain Owner:** 🏛️ Architecture & Knowledge Steward  
 - **Executor:** Current Grok primary agent (design drafting under Steward domain)  
 - **Environment Executor:** `Not Applicable` — no device/build  
-- **Human Dependency:** Human Product Owner for Product Review of the design
-  package when drafted  
+- **Human Dependency:** None — Product review and lifecycle closure recorded
 - **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward (independent
   pass over the design package; self-draft alone is not Accept)  
 - **Quality Reviewer:** `Not Required` for design-only package unless Product
   requests evidence-process validation of residual/evidence-grade proposals  
-- **Handoff Target:** Product Lead for design disposition  
+- **Handoff Target:** None — use the published ops package for future work
 
 ## Gates
 
@@ -127,13 +128,14 @@ repository migration in this Assignment.
 
 ## Explicit non-claims
 
-- Not Knowledge OS 2.1 Accepted  
+- Not a frozen Knowledge OS 2.1 replacement for 2.0
 - Not Migration authorized  
 - Not 3.0  
 - Not change to product defaults or ADR runtime contracts  
 
 ## Current phase
 
-**Reviewed — Product Accept Must** (2026-08-06). Implementation continues under
-[`KOS-2.1-OPS-IMPL-001`](kos-2.1-ops-impl-001.md). This design Assignment may
-**Close** when IMPL Exit Criteria are met and Active Work is updated.  
+**Closed** (2026-08-13). Product accepted the Must design, and
+[`KOS-2.1-OPS-IMPL-001`](kos-2.1-ops-impl-001.md) met its Exit Criteria and
+published the operational package. No further execution remains in this
+Assignment. Knowledge OS 2.0 remains the sole frozen constitution.

@@ -6,12 +6,12 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Completed` — Must + S-02/S-03 published |
-| **Phase** | Ops package live under 2.0 track |
+| **Lifecycle** | `Closed` — Must + S-02/S-03 published; Product closure recorded |
+| **Phase** | Complete — ops package live under 2.0 track |
 | **Track** | Knowledge OS **2.0** remains sole frozen constitution |
 | **Package** | [`kos-2.1-operational-maturity.md`](../kos/kos-2.1-operational-maturity.md) |
 | **Non-claims** | Not 2.1 frozen replacement; not Migration; not S-01; no runtime |
-| **Next** | Product may Close design + IMPL Assignments; use Active Work for discovery |
+| **Next** | None — use Active Work for discovery; expansion requires a new Assignment |
 | **Residuals** | S-01 deferred (`accept` for this IMPL scope); no open blocking residuals |
 
 ---
@@ -32,7 +32,7 @@ Policy version: 1.0.0
 - **Assignment Authority:** Product Lead  
 - **Domain Owner / Executor:** 🏛️ Architecture & Knowledge Steward / current agent  
 - **Environment Executor:** Not Applicable  
-- **Human Dependency:** Not Applicable for implementation; Product close optional  
+- **Human Dependency:** None — Product closure recorded 2026-08-13 Asia/Shanghai
 - **Architecture Reviewer:** Steward (implementation self-check against conditions;
   Product may request independent pass)  
 - **Quality Reviewer:** Not Required (no runtime evidence gate)  
@@ -74,6 +74,14 @@ S-01; Migration; frozen principle rewrite; runtime code; dual-track.
 |---|---|---|
 | S-01 lightweight dual-review skip | `accept` (out of IMPL scope; deferred) | Architecture A-P1-01 |
 | Status linter / archive Migration | `accept` (Could / later Migration) | Not Must |  
+
+## Closure
+
+- Human Product Lead explicitly authorized lifecycle reconciliation on
+  2026-08-13 Asia/Shanghai, after all Exit Criteria were met.
+- The Assignment is **Closed** with no open blocking residuals.
+- Closure does not authorize S-01, Migration, a frozen 2.1 replacement, or KOS
+  3.0; any such expansion requires a new Assignment and Product Decision.
 
 ## Stop Conditions
 

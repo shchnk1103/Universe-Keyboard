@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-12 Asia/Shanghai` — `TD-012-LMDG-MODEL-G2` Product Hold；Active Work `8/10`。
+Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`TD-012-LMDG-MODEL-G2` Product Hold；Active Work `8/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -22,13 +22,14 @@ Last synced: `2026-08-12 Asia/Shanghai` — `TD-012-LMDG-MODEL-G2` Product Hold�
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
+| KOS-2.1-OPS-001 / KOS-2.1-OPS-IMPL-001 | `Closed`；Must 设计已接受，运维包已在 KOS 2.0 轨道发布；S-01 / Migration / 2.1 frozen replacement 未授权 | [`design`](assignments/kos-2.1-ops-001.md) · [`implementation`](assignments/kos-2.1-ops-impl-001.md) |
 | TD-012-LMDG-MODEL-G2 | `Closed`；Product Hold，G2-A Pass，G2-B invalidated，不进入 G3 | [`assignments/td-012-lmdg-model-g2.md`](assignments/td-012-lmdg-model-g2.md) |
 | TD-012-OCTAGRAM-VENDOR-G1 | Vendor pin + Bridge G1 **Closed**; model G2+ remain TD-012 debt | [`assignments/td-012-octagram-vendor-g1.md`](assignments/td-012-octagram-vendor-g1.md) · [Arch](assignments/td-012-octagram-vendor-g1-architecture-review.md) · [Quality](assignments/td-012-octagram-vendor-g1-quality-review.md) |
 | TD-013-DIAGNOSTICS-V1-P1 | Architecture **Pass**、Quality **Pass with conditions**、Human Product Gate **Passed**；P2 residual 继续由 TD-013 追踪 | [`assignments/td-013-diagnostics-v1-p1.md`](assignments/td-013-diagnostics-v1-p1.md) · [re-review](assignments/td-013-diagnostics-v1-p1-r3-review-summary.md) |
 | 九键精准拼音 `002` / `003` → `004` | `002` 已 Blocked，`003` 已被 supersede；继任 `004` 已 **Accepted / Closed**，历史记录仅供追溯 | [`004 Assignment`](assignments/keyboard-layout-9key-pinyin-004.md) · [`002`](assignments/keyboard-layout-9key-pinyin-002.md) · [`003`](assignments/keyboard-layout-9key-pinyin-003.md) |
 | KEYBOARD-STARTUP-PERF-001 | 已交付首帧性能修复与最小 Debug 诊断；真机异常日志是 `DIAGNOSTICS-OBSERVABILITY-001` 的输入，而不是继续扩大旧任务 | [`assignments/keyboard-startup-perf-001.md`](assignments/keyboard-startup-perf-001.md) |
 
-Closed this session (removed from Active): `RESPONSIVE-CANDIDATE-ANOMALY-001` (Completed; R-01 device smoke `accept`), `RESPONSIVE-DELETE-ANOMALY-001`, `KOS-2.1-OPS-001`, `KOS-2.1-OPS-IMPL-001`, `RESPONSIVE-DEFAULT-ON-001` (Reviewed; optional formal close).
+Earlier closures retained for context: `RESPONSIVE-CANDIDATE-ANOMALY-001` (Completed; R-01 device smoke `accept`), `RESPONSIVE-DELETE-ANOMALY-001`, `RESPONSIVE-DEFAULT-ON-001` (Reviewed; optional formal close).
 
 ## Cold-session resume (万象 arc · 2026-08-08 EOD)
 
