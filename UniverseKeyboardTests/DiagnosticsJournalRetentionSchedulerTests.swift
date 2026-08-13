@@ -74,11 +74,16 @@ final class DiagnosticsJournalRetentionSchedulerTests: XCTestCase {
         rootURL: URL,
         now: Date
     ) async -> Bool {
-        for _ in 0..<200 {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(1))
+
+        while clock.now < deadline {
             if await scheduler.requestReclaim(rootURL: rootURL, now: now) {
                 return true
             }
-            await Task.yield()
+            // 等待调度器在自己的 actor 上完成状态复位，避免用固定 yield 次数
+            // 假设执行器会在特定轮次内获得运行机会。
+            try? await Task.sleep(for: .milliseconds(1))
         }
         return false
     }
