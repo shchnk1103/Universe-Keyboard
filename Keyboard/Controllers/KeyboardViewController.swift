@@ -68,6 +68,11 @@ class KeyboardViewController: UIInputViewController {
     #if DEBUG
         var isHighFidelityDiagnosticsActive = false
         private var highFidelityExpirationTask: Task<Void, Never>?
+        var candidateTouchDiagnosticSequence: UInt64 = 0
+        var activeCandidateTouchDiagnosticSequence: UInt64?
+        var activeCandidateTouchDiagnosticBand: DiagnosticEvent.CandidateTouchBand?
+        var activeCandidateTouchDiagnosticDidHitCell = false
+        var activeCandidateTouchDiagnosticStartTime: CFTimeInterval?
     #endif
 
     // MARK: - 视图加载
@@ -351,6 +356,7 @@ class KeyboardViewController: UIInputViewController {
         diagnosticsJournal.resumeForExtensionLifecycle()
         #if DEBUG
             refreshHighFidelityDiagnosticsMode()
+            resetCandidateTouchDiagnosticCorrelation()
         #endif
         diagnosticsAppearanceID = UUID()
         diagnosticsJournal.record(
@@ -554,6 +560,7 @@ class KeyboardViewController: UIInputViewController {
                     forKey: DiagnosticsHighFidelityConfiguration.expirationKey
                 ) as? Date
             else {
+                resetCandidateTouchDiagnosticCorrelation()
                 return
             }
             let remaining = max(0, expiration.timeIntervalSinceNow)
@@ -561,6 +568,7 @@ class KeyboardViewController: UIInputViewController {
                 try? await Task.sleep(for: .seconds(remaining))
                 guard !Task.isCancelled else { return }
                 self?.isHighFidelityDiagnosticsActive = false
+                self?.resetCandidateTouchDiagnosticCorrelation()
             }
         }
     #endif

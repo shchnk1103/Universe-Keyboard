@@ -86,6 +86,9 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         if collectionView === candidateCollectionView {
             let items = presentedCandidates
             guard items.indices.contains(indexPath.item) else { return }
+            #if DEBUG
+                recordCandidateSelectionDelivered()
+            #endif
             commitCandidate(items[indexPath.item])
         } else if collectionView === expandedCandidateCollectionView {
             let items = presentedCandidates

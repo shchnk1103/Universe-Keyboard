@@ -355,13 +355,20 @@ private enum DiagnosticsEventDisplayFormatter {
         formatter.dateFormat = "HH:mm:ss.SSS"
         let timestamp = formatter.string(from: event.utcTimestamp)
         let fields = event.fields.map(fieldDescription).joined(separator: " ")
-        let suffix = fields.isEmpty ? "" : " \(fields)"
+        let action = event.actionSequence.map { "action=\($0)" }
+        let details = ([action].compactMap { $0 } + (fields.isEmpty ? [] : [fields])).joined(separator: " ")
+        let suffix = details.isEmpty ? "" : " \(details)"
         return "[\(timestamp)] [\(event.level.rawValue)] [\(event.category.rawValue)] \(event.code.rawValue)\(suffix)"
     }
 
     private nonisolated static func fieldDescription(_ field: DiagnosticEvent.Field) -> String {
         switch field {
         case let .count(name, value):
+            if name == .candidateTouchBand,
+                let band = DiagnosticEvent.CandidateTouchBand(rawValue: value)
+            {
+                return "\(name.rawValue)=\(band)"
+            }
             return "\(name.rawValue)=\(value)"
         case let .duration(name, value):
             return "\(name.rawValue)=\(value)"

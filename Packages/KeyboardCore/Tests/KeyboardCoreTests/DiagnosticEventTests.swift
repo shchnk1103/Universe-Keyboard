@@ -19,7 +19,9 @@ final class DiagnosticEventTests: XCTestCase {
             fields: [
                 .count(.candidateCount, 3),
                 .count(.visibleCandidateCellCount, 2),
+                .count(.candidateTouchBand, DiagnosticEvent.CandidateTouchBand.upper.rawValue),
                 .flag(.isCandidateBarVisible, true),
+                .flag(.didHitCandidateCell, true),
                 .reason(.generationChanged),
             ]
         )
@@ -51,5 +53,14 @@ final class DiagnosticEventTests: XCTestCase {
         XCTAssertEqual(encodedKeys, ["type", "name", "integerValue", "reason"])
         XCTAssertFalse(encodedKeys.contains("message"))
         XCTAssertFalse(encodedKeys.contains("text"))
+    }
+
+    func testCandidateTouchBandUsesOnlyCoarseVerticalBuckets() {
+        XCTAssertEqual(DiagnosticEvent.CandidateTouchBand.classify(y: 0, height: 30), .upper)
+        XCTAssertEqual(DiagnosticEvent.CandidateTouchBand.classify(y: 9, height: 30), .upper)
+        XCTAssertEqual(DiagnosticEvent.CandidateTouchBand.classify(y: 10, height: 30), .middle)
+        XCTAssertEqual(DiagnosticEvent.CandidateTouchBand.classify(y: 19, height: 30), .middle)
+        XCTAssertEqual(DiagnosticEvent.CandidateTouchBand.classify(y: 20, height: 30), .lower)
+        XCTAssertEqual(DiagnosticEvent.CandidateTouchBand.classify(y: 30, height: 30), .lower)
     }
 }

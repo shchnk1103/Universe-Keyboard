@@ -141,6 +141,6 @@ private struct DiagnosticsEmptyStateView: View {
         if isPartialWindow {
             return "完整日志仍保留在设备上，但当前安全读取窗口没有解码出完整记录。"
         }
-        return "在设置中开启「引擎诊断日志」开关，切换到键盘输入后返回此页面刷新。"
+        return "在设置中开启「记录诊断数据」开关，切换到键盘输入后返回此页面刷新。"
     }
 }

@@ -23,6 +23,17 @@ private final class CandidateBarExpandButton: UIButton {
     }
 }
 
+#if DEBUG
+    @MainActor
+    protocol CandidateTouchDiagnosticSink: AnyObject {
+        func recordCandidateTouchRouted(
+            band: DiagnosticEvent.CandidateTouchBand,
+            didHitCell: Bool
+        )
+        func recordCandidateGestureTerminal(didBegin: Bool, wasCancelled: Bool)
+    }
+#endif
+
 /// The horizontal candidate bar container.
 ///
 /// The fixed height and expand-button width are part of the keyboard presentation
@@ -37,7 +48,7 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
         static let expandButtonVerticalAlignmentOffset: CGFloat = 9
     }
 
-    let collectionView: UICollectionView
+    let collectionView: CandidateCollectionView
     let expandButton: UIButton
     let expandButtonWidthConstraint: NSLayoutConstraint
     private weak var expandActionTarget: NSObject?
@@ -52,6 +63,12 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
     private var lastPointInsideDiagnosticLogTime: CFTimeInterval = 0
     private var lastHitTestDiagnosticLogTime: CFTimeInterval = 0
     private var lastFallbackPanDiagnosticLogTime: CFTimeInterval = 0
+    #if DEBUG
+        /// Passive observation only. The callback runs after UIKit has resolved the
+        /// same hit view that would have been returned without diagnostics.
+        private weak var diagnosticSink: CandidateTouchDiagnosticSink?
+        private weak var lastStructuredTouch: UITouch?
+    #endif
 
     init(
         height: CGFloat,
@@ -78,6 +95,16 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
         expandButtonWidthConstraint = expandButton.widthAnchor.constraint(equalToConstant: Layout.expandButtonTouchSize)
 
         super.init(frame: .zero)
+
+        #if DEBUG
+            diagnosticSink = interactionTarget as? CandidateTouchDiagnosticSink
+            collectionView.onCandidateGestureTerminal = { [weak self] didBegin, wasCancelled in
+                self?.diagnosticSink?.recordCandidateGestureTerminal(
+                    didBegin: didBegin,
+                    wasCancelled: wasCancelled
+                )
+            }
+        #endif
 
         self.backgroundColor = backgroundColor
         isOpaque = false
@@ -118,7 +145,8 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
     }
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        let result = bounds.contains(point)
+        let result =
+            bounds.contains(point)
             || (!expandButton.isHidden && expandedButtonHitFrame.contains(point))
         logTouch(
             "bar pointInside",
@@ -152,8 +180,37 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
                 + "collectionFrame=\(rectDescription(collectionView.frame)) "
                 + "pan=\(CandidateTouchDiagnostics.gestureStateName(collectionView.panGestureRecognizer.state))"
         )
+        #if DEBUG
+            recordStructuredTouchIfNeeded(point: point, hitView: result, event: event)
+        #endif
         return result
     }
+
+    #if DEBUG
+        private func recordStructuredTouchIfNeeded(point: CGPoint, hitView: UIView?, event: UIEvent?) {
+            guard let touch = event?.allTouches?.first(where: { $0.phase == .began }) else { return }
+            guard touch !== lastStructuredTouch else { return }
+            lastStructuredTouch = touch
+
+            let band = DiagnosticEvent.CandidateTouchBand.classify(
+                y: Double(point.y),
+                height: Double(candidateBarHeight)
+            )
+            diagnosticSink?.recordCandidateTouchRouted(
+                band: band,
+                didHitCell: Self.hasCandidateCellAncestor(hitView)
+            )
+        }
+
+        private static func hasCandidateCellAncestor(_ view: UIView?) -> Bool {
+            var current = view
+            while let candidate = current {
+                if candidate is CandidateCollectionCell { return true }
+                current = candidate.superview
+            }
+            return false
+        }
+    #endif
 
     private var expandedButtonHitFrame: CGRect {
         guard let button = expandButton as? CandidateBarExpandButton else { return expandButton.frame }
@@ -255,7 +312,8 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
     private func logHorizontalFallbackPan(_ recognizer: UIPanGestureRecognizer, phase: String) {
         guard CandidateTouchDiagnostics.isEnabled else { return }
         let now = CACurrentMediaTime()
-        guard phase != "changed" || now - lastFallbackPanDiagnosticLogTime >= CandidateTouchDiagnostics.minimumLogInterval
+        guard
+            phase != "changed" || now - lastFallbackPanDiagnosticLogTime >= CandidateTouchDiagnostics.minimumLogInterval
         else { return }
         lastFallbackPanDiagnosticLogTime = now
         let point = recognizer.location(in: self)
@@ -393,7 +451,8 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
-        if gestureRecognizer === horizontalFallbackRecognizer || otherGestureRecognizer === horizontalFallbackRecognizer {
+        if gestureRecognizer === horizontalFallbackRecognizer || otherGestureRecognizer === horizontalFallbackRecognizer
+        {
             return false
         }
         guard gestureRecognizer === swipeDownRecognizer || otherGestureRecognizer === swipeDownRecognizer else {
