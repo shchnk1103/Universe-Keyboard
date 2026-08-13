@@ -96,6 +96,17 @@ Always correlate a failure with its immediately preceding lifecycle/deployment e
 若 cell 命中但没有 `candidate.selection_delivered`，再结合 gesture terminal 判断 UIKit 选择前链路。
 探针是观测工具，不授权扩大命中区或改变 gesture cancellation。
 
+已确认的 2026-08-13 iPhone 13 Pro 基线中，候选 collection 为 48 pt，高度 32 pt 的
+cell 居中在约 `y=8...40`；因此可见上部大多命中 collection 而非 cell，形成
+`0/5 · 5/5 · 5/5`。普通紧凑候选 cell 现应覆盖完整 48 pt 容器，同时保持 32 pt
+内容视觉居中。若该矩阵再次退化，先核对 collection/cell frame 与 `candidate_cell_hit`，
+不要先改 RIME 或候选排序。
+
+诊断页的一秒自动跟随刷新不应切换右上角手动刷新 spinner。搜索展开时根刷新暂停，
+分页由单一 owner 顺序读取；遇到首条无法完整放入 5 MiB / 10,000 条预算的记录即停止，
+不得跳过该记录继续读取更老页面。关闭搜索或搜索中切换日期时，应等待在途分页返回，
+拒绝迟到页后再启动新的根查询。
+
 ## Troubleshooting Flows
 
 ### T9 Path Bar Collapses After Long Segmented Input

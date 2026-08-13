@@ -107,18 +107,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         guard collectionView === candidateCollectionView || collectionView === expandedCandidateCollectionView
         else { return }
         #if DEBUG
-            guard isHighFidelityDiagnosticsActive else { return }
-            diagnosticsJournal.record(
-                code: .candidateVisibilityChanged,
-                category: .display,
-                appearanceID: diagnosticsAppearanceID,
-                fields: [
-                    .count(.candidateCount, presentedCandidates.count),
-                    .count(.visibleCandidateCellCount, collectionView.visibleCells.count + 1),
-                    .count(.revision, Int(clamping: controller.state.compositionRevision)),
-                    .flag(.isCandidateBarVisible, true),
-                ]
-            )
+            scheduleCandidateVisibilityDiagnostic(for: collectionView)
         #endif
     }
 
@@ -130,20 +119,42 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         guard collectionView === candidateCollectionView || collectionView === expandedCandidateCollectionView
         else { return }
         #if DEBUG
-            guard isHighFidelityDiagnosticsActive else { return }
-            diagnosticsJournal.record(
-                code: .candidateVisibilityChanged,
-                category: .display,
-                appearanceID: diagnosticsAppearanceID,
-                fields: [
-                    .count(.candidateCount, presentedCandidates.count),
-                    .count(.visibleCandidateCellCount, collectionView.visibleCells.count),
-                    .count(.revision, Int(clamping: controller.state.compositionRevision)),
-                    .flag(.isCandidateBarVisible, !collectionView.visibleCells.isEmpty),
-                ]
-            )
+            scheduleCandidateVisibilityDiagnostic(for: collectionView)
         #endif
     }
+
+    #if DEBUG
+        /// UICollectionView reports visibility once per cell. Coalesce that
+        /// layout burst and persist only the stable aggregate snapshot.
+        private func scheduleCandidateVisibilityDiagnostic(for collectionView: UICollectionView) {
+            guard isHighFidelityDiagnosticsActive else { return }
+            candidateVisibilityDiagnosticsTask?.cancel()
+            candidateVisibilityDiagnosticsTask = Task { @MainActor [weak self, weak collectionView] in
+                try? await Task.sleep(for: .milliseconds(40))
+                guard !Task.isCancelled,
+                    let self,
+                    let collectionView,
+                    self.isHighFidelityDiagnosticsActive
+                else { return }
+                self.diagnosticsJournal.record(
+                    code: .candidateVisibilityChanged,
+                    category: .display,
+                    appearanceID: self.diagnosticsAppearanceID,
+                    fields: [
+                        .count(.candidateCount, self.presentedCandidates.count),
+                        .count(.visibleCandidateCellCount, collectionView.visibleCells.count),
+                        .count(.revision, Int(clamping: self.controller.state.compositionRevision)),
+                        .flag(.isCandidateBarVisible, !collectionView.visibleCells.isEmpty),
+                    ]
+                )
+            }
+        }
+
+        func cancelCandidateVisibilityDiagnostic() {
+            candidateVisibilityDiagnosticsTask?.cancel()
+            candidateVisibilityDiagnosticsTask = nil
+        }
+    #endif
 
     func collectionView(
         _ collectionView: UICollectionView,
@@ -162,7 +173,14 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         let items = presentedCandidates
         let isExpanded = collectionView === expandedCandidateCollectionView
         let visualHeight: CGFloat = isExpanded ? 38 : 32
-        let itemHeight = visualHeight + (isExpanded ? CandidateSizing.expandedVisualVerticalGap : 0)
+        // The compact bar is 48 pt tall (34 pt visible bar + 14 pt gesture
+        // bridge). A 32 pt cell was centered at y=8, leaving most of the
+        // visible upper third outside every selectable cell. Expanding only
+        // the cell bounds preserves the label's center and visual size.
+        let itemHeight =
+            isExpanded
+            ? visualHeight + CandidateSizing.expandedVisualVerticalGap
+            : candidateBarHeight + candidateToKeySpacing
         guard items.indices.contains(indexPath.item) else { return CGSize(width: 44, height: itemHeight) }
         let item = items[indexPath.item]
         let preferred = isPreferredCandidate(item, at: indexPath.item)

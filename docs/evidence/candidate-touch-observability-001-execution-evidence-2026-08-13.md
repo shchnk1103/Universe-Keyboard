@@ -50,8 +50,13 @@ The focused tests cover coarse band boundaries, typed event round-trip and displ
 - Quality initial review found stale-action reuse as Major. Implementation then added cell-hit eligibility, freshness windows and reset on selection, recognized/cancelled/non-cell terminal, appearance change and high-fidelity close/expiry.
 - Quality re-review: `Blocker 0 / Major 0 / Minor 2`. Remaining limitations are multi-touch/accessibility identity ambiguity and lack of automated lifecycle-branch coverage. The Human Gate is therefore explicitly limited to one sequential single-finger round.
 
-## Open Human Gate
+## Completed Human Gate
 
-After the fixed commit is merged and installed once, run one sequential single-finger round on the visible candidate text area. Do not include the extra gesture-accepting strip below the visible bar in the lower third. The operator must return the three `5`-attempt counts and the content-free event lines grouped by `action`.
+The merged Debug payload (`f480dac`) was installed once on iPhone 13 Pro / iOS 27.0 build
+`24A5408d`. One sequential single-finger round returned upper/middle/lower
+`0/5 · 5/5 · 5/5`. The copied recent window contained no structured candidate-touch events;
+legacy geometry lines showed a 48 pt collection with 32 pt cells beginning near y=8.
 
-No root-cause or behavior-fix claim is authorized until that evidence is interpreted.
+This closes the observation Assignment: the result is sufficient to transfer the vertical-cell
+geometry, early `hitTest` phase assumption and diagnostics-browser interference to
+`CANDIDATE-TOUCH-HITBOX-001`. It does not itself prove the follow-up behavior fix.

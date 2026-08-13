@@ -202,6 +202,7 @@ final class DiagnosticsStoreTests: XCTestCase {
         await waitUntil { source.catalogContinuation != nil }
 
         XCTAssertTrue(store.isRefreshing)
+        XCTAssertFalse(store.isManualRefreshing)
         store.loadMore()
         XCTAssertNil(source.loadMoreContinuation)
 
@@ -210,6 +211,162 @@ final class DiagnosticsStoreTests: XCTestCase {
 
         XCTAssertFalse(store.isRefreshing)
         XCTAssertEqual(store.lines, ["root event"])
+    }
+
+    func testSearchPresentationExpandsFrozenPagesAndPausesLiveRefresh() async {
+        let source = SearchPagingLogSource(
+            rootText: "newest candidate.visibility_changed",
+            olderPages: [
+                "candidate.touch_routed action=1",
+                "candidate.selection_delivered action=1",
+            ]
+        )
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { !store.isRefreshing && store.hasMorePages }
+
+        store.setSearchPresented(true)
+        store.updateSearchQuery("candidate.")
+        await waitUntil { store.lines.count == 3 && !store.isLoadingMore }
+
+        XCTAssertEqual(store.filteredLines.count, 3)
+        XCTAssertFalse(store.hasMorePages)
+        XCTAssertEqual(source.loadMoreCallCount, 2)
+
+        let rootLoadCount = source.rootLoadCallCount
+        await store.performLiveRefreshTick()
+        XCTAssertEqual(source.rootLoadCallCount, rootLoadCount)
+        XCTAssertFalse(store.isRefreshing)
+        XCTAssertFalse(store.isManualRefreshing)
+
+        store.setSearchPresented(false)
+        await waitUntil { !store.isRefreshing && source.rootLoadCallCount == rootLoadCount + 1 }
+        XCTAssertEqual(store.lines, ["newest candidate.visibility_changed"])
+    }
+
+    func testSearchWaitsForManualPaginationBeforeOwningTheCursor() async {
+        let source = ManualThenSearchPagingLogSource()
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { !store.isRefreshing && store.hasMorePages }
+
+        store.loadMore()
+        await waitUntil { source.firstPageContinuation != nil }
+        store.setSearchPresented(true)
+        await Task.yield()
+
+        XCTAssertEqual(source.loadMoreCallCount, 1)
+        source.finishFirstPage()
+        await waitUntil { store.lines == ["root", "manual page", "search page"] }
+
+        XCTAssertEqual(source.loadMoreCallCount, 2)
+        XCTAssertFalse(store.isLoadingMore)
+        XCTAssertFalse(store.hasMorePages)
+    }
+
+    func testSearchStopsBeforeAppendingARecordBeyondTheByteBudget() async {
+        let source = SearchPagingLogSource(
+            rootText: "root",
+            olderPages: ["record beyond budget"]
+        )
+        let store = DiagnosticsStore(
+            logSource: source,
+            searchMaximumByteCount: 10
+        )
+        store.loadLog()
+        await waitUntil { !store.isRefreshing && store.hasMorePages }
+
+        store.setSearchPresented(true)
+        await waitUntil { !store.isLoadingMore && store.searchLimitNotice != nil }
+
+        XCTAssertEqual(store.lines, ["root"])
+        XCTAssertFalse(store.hasMorePages)
+        XCTAssertEqual(store.displayedNotice, "搜索已达到 5 MiB 安全上限；请缩小条件后重新搜索。")
+    }
+
+    func testSearchDoesNotSkipAnOversizedRecordAndContinueToAnOlderPage() async {
+        let source = SearchPagingLogSource(
+            rootText: "root",
+            olderPages: ["record beyond budget", "tiny"]
+        )
+        let store = DiagnosticsStore(
+            logSource: source,
+            searchMaximumByteCount: 10
+        )
+        store.loadLog()
+        await waitUntil { !store.isRefreshing && store.hasMorePages }
+
+        store.setSearchPresented(true)
+        await waitUntil { !store.isLoadingMore && store.searchLimitNotice != nil }
+
+        XCTAssertEqual(store.lines, ["root"])
+        XCTAssertEqual(source.loadMoreCallCount, 1)
+        XCTAssertFalse(store.hasMorePages)
+    }
+
+    func testSearchStopsAtTheRecordBudget() async {
+        let source = SearchPagingLogSource(
+            rootText: "root",
+            olderPages: ["older one\nolder two"]
+        )
+        let store = DiagnosticsStore(
+            logSource: source,
+            searchMaximumRecordCount: 2
+        )
+        store.loadLog()
+        await waitUntil { !store.isRefreshing && store.hasMorePages }
+
+        store.setSearchPresented(true)
+        await waitUntil { !store.isLoadingMore && store.searchLimitNotice != nil }
+
+        XCTAssertEqual(store.lines, ["root", "older one"])
+        XCTAssertFalse(store.hasMorePages)
+        XCTAssertEqual(store.displayedNotice, "搜索已达到 10,000 条安全上限；请缩小条件后重新搜索。")
+    }
+
+    func testClosingSearchRejectsAStalePageThatFinishesLater() async {
+        let source = ControlledSearchPagingLogSource()
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { !store.isRefreshing && store.hasMorePages }
+
+        store.setSearchPresented(true)
+        await waitUntil { source.pageContinuation != nil }
+        store.setSearchPresented(false)
+        source.finishPage(with: "stale search page")
+        await waitUntil { source.rootLoadCallCount == 2 && !store.isRefreshing }
+
+        XCTAssertEqual(store.lines, ["root"])
+        XCTAssertFalse(store.isLoadingMore)
+    }
+
+    func testSelectingAnotherDayWaitsForInFlightSearchAndRejectsItsStalePage() async {
+        let newestDay = makeDay(start: 1_723_478_400)
+        let olderDay = makeDay(start: 1_723_392_000)
+        let source = ControlledDatedLogSource(
+            catalog: .available(generation: 1, days: [newestDay, olderDay]),
+            textByDayStart: [
+                newestDay.range.start: "newest root",
+                olderDay.range.start: "older root",
+            ],
+            hasMorePages: true
+        )
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["newest root"] }
+
+        store.setSearchPresented(true)
+        await waitUntil { source.loadMoreContinuation != nil }
+        store.selectLogDay(olderDay)
+        source.hasMorePages = false
+        source.finishLoadMore(with: "stale newest search page")
+        await waitUntil {
+            !store.isRefreshing
+                && !store.isLoadingMore
+                && store.selectedLogDay == olderDay
+        }
+
+        XCTAssertEqual(store.lines, ["older root"])
     }
 
     func testSelectingAnotherDayInvalidatesAnInFlightOlderPage() async {
@@ -422,5 +579,91 @@ private final class ControlledDatedLogSource: DiagnosticsDatedLogSource {
     func hasMoreLogPages() -> Bool { hasMorePages }
     func pagingNotice() -> String? { nil }
     func isPartialLogWindow() -> Bool { isPartialWindow }
+    func clearLog() -> DiagnosticsLogClearResult { .cleared }
+}
+
+@MainActor
+private final class SearchPagingLogSource: DiagnosticsLogPagingSource {
+    let rootText: String
+    var olderPages: [String]
+    private(set) var rootLoadCallCount = 0
+    private(set) var loadMoreCallCount = 0
+
+    init(rootText: String, olderPages: [String]) {
+        self.rootText = rootText
+        self.olderPages = olderPages
+    }
+
+    func loadLogText() -> String? {
+        rootLoadCallCount += 1
+        return rootText
+    }
+
+    func loadMoreLogText() -> String? {
+        guard !olderPages.isEmpty else { return nil }
+        loadMoreCallCount += 1
+        return olderPages.removeFirst()
+    }
+
+    func hasMoreLogPages() -> Bool { !olderPages.isEmpty }
+    func pagingNotice() -> String? { nil }
+    func isPartialLogWindow() -> Bool { false }
+    func clearLog() -> DiagnosticsLogClearResult { .cleared }
+}
+
+@MainActor
+private final class ManualThenSearchPagingLogSource: DiagnosticsLogPagingSource {
+    var firstPageContinuation: CheckedContinuation<String?, Never>?
+    private(set) var loadMoreCallCount = 0
+
+    func loadLogText() -> String? { "root" }
+
+    func loadMoreLogText() async -> String? {
+        loadMoreCallCount += 1
+        if loadMoreCallCount == 1 {
+            return await withCheckedContinuation { continuation in
+                firstPageContinuation = continuation
+            }
+        }
+        return "search page"
+    }
+
+    func finishFirstPage() {
+        let continuation = firstPageContinuation
+        firstPageContinuation = nil
+        continuation?.resume(returning: "manual page")
+    }
+
+    func hasMoreLogPages() -> Bool { loadMoreCallCount < 2 }
+    func pagingNotice() -> String? { nil }
+    func isPartialLogWindow() -> Bool { false }
+    func clearLog() -> DiagnosticsLogClearResult { .cleared }
+}
+
+@MainActor
+private final class ControlledSearchPagingLogSource: DiagnosticsLogPagingSource {
+    var pageContinuation: CheckedContinuation<String?, Never>?
+    private(set) var rootLoadCallCount = 0
+
+    func loadLogText() -> String? {
+        rootLoadCallCount += 1
+        return "root"
+    }
+
+    func loadMoreLogText() async -> String? {
+        await withCheckedContinuation { continuation in
+            pageContinuation = continuation
+        }
+    }
+
+    func finishPage(with text: String?) {
+        let continuation = pageContinuation
+        pageContinuation = nil
+        continuation?.resume(returning: text)
+    }
+
+    func hasMoreLogPages() -> Bool { true }
+    func pagingNotice() -> String? { nil }
+    func isPartialLogWindow() -> Bool { false }
     func clearLog() -> DiagnosticsLogClearResult { .cleared }
 }

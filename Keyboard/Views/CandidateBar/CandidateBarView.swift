@@ -188,7 +188,14 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
 
     #if DEBUG
         private func recordStructuredTouchIfNeeded(point: CGPoint, hitView: UIView?, event: UIEvent?) {
-            guard let touch = event?.allTouches?.first(where: { $0.phase == .began }) else { return }
+            // Physical keyboard extensions may enter hit-testing before UIKit
+            // exposes `.began`. Identity still deduplicates repeated hit-test
+            // passes for the same single-finger operation.
+            guard let touches = event?.allTouches,
+                touches.count == 1,
+                let touch = touches.first,
+                touch.type == .direct
+            else { return }
             guard touch !== lastStructuredTouch else { return }
             lastStructuredTouch = touch
 

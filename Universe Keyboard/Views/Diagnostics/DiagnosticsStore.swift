@@ -14,6 +14,11 @@ final class DiagnosticsStore {
         case warnings
     }
 
+    private struct SearchPageAdmission {
+        let didAppend: Bool
+        let reachedBudget: Bool
+    }
+
     let filterOptions: [(String, Logger.Category?)] = [
         ("全部", nil),
         ("性能", .performance),
@@ -27,10 +32,13 @@ final class DiagnosticsStore {
     var lines: [String] = []
     var searchQuery = ""
     var isRefreshing = false
+    var isManualRefreshing = false
+    var isSearchPresented = false
     var isClearing = false
     var isLoadingMore = false
     var hasMorePages = false
     var pagingNotice: String?
+    var searchLimitNotice: String?
     var clearFailureNotice: String?
     var isPartialWindow = false
     var availableLogDays: [DiagnosticsLogDay] = []
@@ -41,12 +49,25 @@ final class DiagnosticsStore {
     var selectedCategory: Logger.Category?
 
     private let logSource: any DiagnosticsLogSource
+    private let searchMaximumRecordCount: Int
+    private let searchMaximumByteCount: Int
 
     private var liveRefreshTask: Task<Void, Never>?
+    private var searchExpansionTask: Task<Void, Never>?
+    private var searchExpansionID: UUID?
+    private var searchLoadingID: UUID?
+    private var shouldReloadAfterSearchFinishes = false
+    private var pendingLogDayAfterSearch: DiagnosticsLogDay?
     private var queryRevision: UInt64 = 0
 
-    init(logSource: any DiagnosticsLogSource = CompositeDiagnosticsLogSource(appGroupID: universeAppGroupID)) {
+    init(
+        logSource: any DiagnosticsLogSource = CompositeDiagnosticsLogSource(appGroupID: universeAppGroupID),
+        searchMaximumRecordCount: Int = DiagnosticsStore.exportMaximumRecordCount,
+        searchMaximumByteCount: Int = DiagnosticsStore.exportMaximumByteCount
+    ) {
         self.logSource = logSource
+        self.searchMaximumRecordCount = max(1, searchMaximumRecordCount)
+        self.searchMaximumByteCount = max(1, searchMaximumByteCount)
     }
 
     var filteredLines: [String] {
@@ -114,11 +135,12 @@ final class DiagnosticsStore {
     }
 
     var canClearLog: Bool {
-        !isClearing && (!lines.isEmpty || pagingNotice != nil || clearFailureNotice != nil)
+        !isClearing && !isRefreshing && !isLoadingMore && searchExpansionTask == nil
+            && (!lines.isEmpty || pagingNotice != nil || searchLimitNotice != nil || clearFailureNotice != nil)
     }
 
     var displayedNotice: String? {
-        clearFailureNotice ?? pagingNotice
+        clearFailureNotice ?? searchLimitNotice ?? pagingNotice
     }
 
     var exportLimitMessage: String? {
@@ -135,6 +157,13 @@ final class DiagnosticsStore {
 
     func loadLog() {
         guard !isClearing else { return }
+        if searchLoadingID != nil {
+            shouldReloadAfterSearchFinishes = true
+            invalidateSearchExpansion()
+            return
+        }
+        guard !isLoadingMore else { return }
+        invalidateSearchExpansion()
         let revision = advanceQueryRevision()
         isRefreshing = true
         isLoadingMore = false
@@ -142,6 +171,7 @@ final class DiagnosticsStore {
             await replaceWithLatestPage(refreshDays: true, revision: revision)
             guard revision == queryRevision else { return }
             isRefreshing = false
+            scheduleSearchExpansionIfNeeded()
         }
     }
 
@@ -159,28 +189,63 @@ final class DiagnosticsStore {
     func stopLiveRefresh() {
         liveRefreshTask?.cancel()
         liveRefreshTask = nil
+        shouldReloadAfterSearchFinishes = false
+        pendingLogDayAfterSearch = nil
+        invalidateSearchExpansion()
     }
 
     func refresh() {
-        guard !isRefreshing, !isClearing, !isLoadingMore else { return }
+        guard !isSearchPresented, !isRefreshing, !isClearing, !isLoadingMore else { return }
         let revision = advanceQueryRevision()
         isRefreshing = true
+        isManualRefreshing = true
         clearFailureNotice = nil
 
         Task {
             try? await Task.sleep(for: .milliseconds(400))
-            guard revision == queryRevision else { return }
+            guard revision == queryRevision else {
+                isManualRefreshing = false
+                return
+            }
             await replaceWithLatestPage(refreshDays: true, revision: revision)
-            guard revision == queryRevision else { return }
+            guard revision == queryRevision else {
+                isManualRefreshing = false
+                return
+            }
             isRefreshing = false
+            isManualRefreshing = false
+        }
+    }
+
+    func updateSearchQuery(_ query: String) {
+        searchQuery = query
+    }
+
+    func setSearchPresented(_ presented: Bool) {
+        guard isSearchPresented != presented else { return }
+        isSearchPresented = presented
+        if presented {
+            scheduleSearchExpansionIfNeeded()
+        } else {
+            let mustReloadRoot = hasLoadedOlderPages || searchLoadingID != nil
+            shouldReloadAfterSearchFinishes = searchLoadingID != nil
+            invalidateSearchExpansion()
+            // Search may have expanded the frozen cursor to older pages. Reset
+            // to the newest root page so the one-second live follower can
+            // resume without mixing a new root with an old snapshot.
+            if mustReloadRoot, searchLoadingID == nil {
+                loadLog()
+            }
         }
     }
 
     func performClear() {
-        guard !isClearing else { return }
+        guard !isClearing, !isLoadingMore, searchExpansionTask == nil else { return }
+        invalidateSearchExpansion()
         let revision = advanceQueryRevision()
         isClearing = true
         isRefreshing = false
+        isManualRefreshing = false
         isLoadingMore = false
         clearFailureNotice = nil
 
@@ -194,6 +259,7 @@ final class DiagnosticsStore {
                 hasMorePages = false
                 hasLoadedOlderPages = false
                 pagingNotice = nil
+                searchLimitNotice = nil
                 availableLogDays = []
                 selectedLogDay = nil
                 isPartialWindow = false
@@ -208,6 +274,7 @@ final class DiagnosticsStore {
     func loadMore() {
         guard
             hasMorePages,
+            !isSearchPresented,
             !isLoadingMore,
             !isRefreshing,
             !isClearing,
@@ -245,6 +312,12 @@ final class DiagnosticsStore {
 
     func selectLogDay(_ day: DiagnosticsLogDay) {
         guard day != selectedLogDay, !isRefreshing, !isClearing else { return }
+        if searchLoadingID != nil {
+            pendingLogDayAfterSearch = day
+            invalidateSearchExpansion()
+            return
+        }
+        invalidateSearchExpansion()
         let revision = advanceQueryRevision()
         // 日期选择是新的根查询，可以主动废弃尚未完成的旧页，而不是吞掉用户点击。
         isLoadingMore = false
@@ -256,6 +329,7 @@ final class DiagnosticsStore {
             await replaceWithLatestPage(refreshDays: false, revision: revision)
             guard revision == queryRevision else { return }
             isRefreshing = false
+            scheduleSearchExpansionIfNeeded()
         }
     }
 
@@ -282,6 +356,7 @@ final class DiagnosticsStore {
         guard
             isFollowingLatestDay,
             !hasLoadedOlderPages,
+            !isSearchPresented,
             !isClearing,
             !isRefreshing,
             !isLoadingMore
@@ -293,6 +368,79 @@ final class DiagnosticsStore {
         await replaceWithLatestPage(refreshDays: true, revision: revision)
         guard revision == queryRevision else { return }
         isRefreshing = false
+    }
+
+    private func scheduleSearchExpansionIfNeeded() {
+        guard searchExpansionTask == nil, isSearchPresented, hasMorePages else { return }
+        guard searchBudgetAllowsAnotherLine else {
+            hasMorePages = false
+            return
+        }
+        let revision = queryRevision
+        let expansionID = UUID()
+        searchExpansionID = expansionID
+        searchExpansionTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer {
+                if self.searchExpansionID == expansionID {
+                    self.searchExpansionID = nil
+                    self.searchExpansionTask = nil
+                }
+                if let pendingDay = self.pendingLogDayAfterSearch {
+                    self.pendingLogDayAfterSearch = nil
+                    self.shouldReloadAfterSearchFinishes = false
+                    self.selectLogDay(pendingDay)
+                } else if self.shouldReloadAfterSearchFinishes {
+                    self.shouldReloadAfterSearchFinishes = false
+                    self.loadLog()
+                }
+            }
+            // Manual pagination owns the same source cursor. Search waits for
+            // that request to finish instead of consuming the cursor twice.
+            while self.isRefreshing || self.isClearing || self.isLoadingMore {
+                try? await Task.sleep(for: .milliseconds(20))
+                guard self.isCurrentSearchExpansion(expansionID, revision: revision) else { return }
+            }
+            guard self.isCurrentSearchExpansion(expansionID, revision: revision) else { return }
+            await self.loadRemainingPagesForSearch(expansionID: expansionID, revision: revision)
+        }
+    }
+
+    private func loadRemainingPagesForSearch(expansionID: UUID, revision: UInt64) async {
+        guard let pagingSource = logSource as? any DiagnosticsLogPagingSource else { return }
+        searchLoadingID = expansionID
+        isLoadingMore = true
+        defer {
+            if searchLoadingID == expansionID {
+                searchLoadingID = nil
+                isLoadingMore = false
+            }
+        }
+
+        while isCurrentSearchExpansion(expansionID, revision: revision), hasMorePages,
+            searchBudgetAllowsAnotherLine
+        {
+            let previousCount = lines.count
+            let text = await pagingSource.loadMoreLogText()
+            guard isCurrentSearchExpansion(expansionID, revision: revision) else { return }
+            let sourceHasMorePages = await pagingSource.hasMoreLogPages()
+            guard isCurrentSearchExpansion(expansionID, revision: revision) else { return }
+            let notice = await pagingSource.pagingNotice()
+            guard isCurrentSearchExpansion(expansionID, revision: revision) else { return }
+            let isPartial = await pagingSource.isPartialLogWindow()
+            guard isCurrentSearchExpansion(expansionID, revision: revision) else { return }
+
+            let admission = text.map(appendSearchPageWithinBudget)
+            hasLoadedOlderPages = admission?.didAppend == true || hasLoadedOlderPages
+            hasMorePages =
+                admission?.reachedBudget != true
+                && sourceHasMorePages
+                && searchBudgetAllowsAnotherLine
+            pagingNotice = notice
+            isPartialWindow = isPartial
+            // A source that returns no data but keeps its cursor must not spin.
+            guard lines.count > previousCount else { return }
+        }
     }
 
     private func replaceWithLatestPage(refreshDays: Bool, revision: UInt64) async {
@@ -348,7 +496,60 @@ final class DiagnosticsStore {
         hasLoadedOlderPages = false
         hasMorePages = sourceHasMorePages
         pagingNotice = notice
+        searchLimitNotice = nil
         isPartialWindow = isPartial
+    }
+
+    private func invalidateSearchExpansion() {
+        searchExpansionTask?.cancel()
+    }
+
+    private func isCurrentSearchExpansion(_ expansionID: UUID, revision: UInt64) -> Bool {
+        !Task.isCancelled
+            && searchExpansionID == expansionID
+            && revision == queryRevision
+            && isSearchPresented
+    }
+
+    private var searchBudgetAllowsAnotherLine: Bool {
+        guard lines.count < searchMaximumRecordCount else {
+            searchLimitNotice = "搜索已达到 10,000 条安全上限；请缩小条件后重新搜索。"
+            return false
+        }
+        guard currentLineByteCount < searchMaximumByteCount else {
+            searchLimitNotice = "搜索已达到 5 MiB 安全上限；请缩小条件后重新搜索。"
+            return false
+        }
+        return true
+    }
+
+    private var currentLineByteCount: Int {
+        lines.reduce(into: 0) { $0 += $1.utf8.count + 1 }
+    }
+
+    /// Returns true when at least one complete record was admitted. Partial
+    /// records are never appended, so search/export always sees valid lines.
+    private func appendSearchPageWithinBudget(_ text: String) -> SearchPageAdmission {
+        var byteCount = currentLineByteCount
+        var didAppend = false
+        var reachedBudget = false
+        for line in Self.lines(from: text) {
+            guard lines.count < searchMaximumRecordCount else {
+                searchLimitNotice = "搜索已达到 10,000 条安全上限；请缩小条件后重新搜索。"
+                reachedBudget = true
+                break
+            }
+            let lineByteCount = line.utf8.count + 1
+            guard byteCount + lineByteCount <= searchMaximumByteCount else {
+                searchLimitNotice = "搜索已达到 5 MiB 安全上限；请缩小条件后重新搜索。"
+                reachedBudget = true
+                break
+            }
+            lines.append(line)
+            byteCount += lineByteCount
+            didAppend = true
+        }
+        return SearchPageAdmission(didAppend: didAppend, reachedBudget: reachedBudget)
     }
 
     @discardableResult
