@@ -85,3 +85,23 @@ RimeBridge result bundle:
 - A future combined branch containing G2 changes must run its own merge-base and integrated validation; this isolated evidence does not validate or alter G2.
 - 同一 writer batch 跨 UTC 小时仍可能只按首事件小时命名；修复该问题会改变 writer 分段，已按 Assignment Stop Condition 留待重新授权。
 - legacy `UserDefaults` writer 与清空的线性化屏障不在本次非-writer 最小授权内，仍需后续单独设计与验证。
+
+## Post-G2 Integration Revalidation — 2026-08-13
+
+诊断提交序列已 rebase 到包含 G2 PR #68 与 KOS lifecycle PR #69 的 `origin/main` `f47eeb9`。冲突仅发生在 `CHANGELOG.md` 与 `docs/ACTIVE_WORK.md`；解决时保留 2026-08-13 的 G2 Product Hold / KOS 最新状态，并合并诊断任务的 Completed 记录。没有修改 G2、RimeBridge 或候选栏源码。
+
+| Grade | Integrated check | Result |
+|---|---|---|
+| `Executor-recorded` | `git diff --check origin/main..HEAD` | Pass |
+| `Executor-recorded` | NUL-safe `swift-format lint --strict` on all changed Swift files | Pass |
+| `Executor-recorded` | Full `KeyboardCore` suite | Pass, 989 tests / 0 failures |
+| `Executor-recorded` | `RimeBridgeTests` | Pass, 68 tests / 0 failures / 20 environment-gated skips |
+| `Executor-recorded` | Full `Universe Keyboard` scheme | Pass, 184 passed / 3 environment-gated skips / 0 failures |
+| `Executor-recorded` | Debug + Release Simulator build, Swift 6 strict concurrency, warnings-as-errors | Pass |
+
+Integrated result bundles:
+
+- RimeBridge: `/Users/doubleshy0n/Library/Developer/Xcode/DerivedData/Universe_Keyboard-emxsvllcocrspwdtwulsntweaomy/Logs/Test/Test-RimeBridgeTests-2026.08.13_20-02-33-+0800.xcresult`
+- Full scheme: `/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/T/tmp.dMt1AMrYcR/UniverseKeyboard.xcresult`
+
+该集成验证只证明最新主线与诊断改动的 Simulator/build 兼容性；不改变 G2 的 Product Hold，不产生新的 G2、真机、Product Gate 或 Release 结论。
