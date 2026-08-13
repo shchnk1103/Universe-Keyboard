@@ -359,14 +359,14 @@ final class SchemaManagerTests: XCTestCase {
     func testLuaDiagnosticReportsSchemaReferencedMissingLuaComponents() throws {
         let fixture = try makeLuaDiagnosticFixture(
             schemaContent: """
-            engine:
-              translators:
-                - lua_translator@*date_translator
-              segmentors:
-                - lua_segmentor@*unicode
-              filters:
-                - lua_filter@*corrector
-            """,
+                engine:
+                  translators:
+                    - lua_translator@*date_translator
+                  segmentors:
+                    - lua_segmentor@*unicode
+                  filters:
+                    - lua_filter@*corrector
+                """,
             includeLuaDirectory: true,
             includeDateTranslator: true
         )
@@ -396,14 +396,14 @@ final class SchemaManagerTests: XCTestCase {
     func testLuaDiagnosticPassesWhenAllSchemaReferencedLuaComponentsExist() throws {
         let fixture = try makeLuaDiagnosticFixture(
             schemaContent: """
-            engine:
-              translators:
-                - lua_translator@*date_translator
-              segmentors:
-                - lua_segmentor@*unicode
-              filters:
-                - lua_filter@*corrector
-            """,
+                engine:
+                  translators:
+                    - lua_translator@*date_translator
+                  segmentors:
+                    - lua_segmentor@*unicode
+                  filters:
+                    - lua_filter@*corrector
+                """,
             includeLuaDirectory: true,
             includeDateTranslator: true,
             extraLuaComponentNames: ["corrector", "unicode"]
@@ -498,6 +498,7 @@ final class SchemaManagerTests: XCTestCase {
             XCTFail("Main app deployments must use fullCheck mode")
         }
         XCTAssertEqual(request.sharedDataURL, installer.directories.sharedDataURL)
+        XCTAssertEqual(request.runtimeSmokeSchemaID, "luna_pinyin")
         XCTAssertEqual(installer.deploymentDirectoriesCallCount, 1)
         XCTAssertTrue(settings.bool(forKey: "rime_deployed"))
         XCTAssertFalse(settings.bool(forKey: "rime_needs_deploy"))
@@ -517,6 +518,55 @@ final class SchemaManagerTests: XCTestCase {
             settings.string(forKey: RimeAdvancedInputSettings.deployedSignatureKey),
             RimeAdvancedInputSettings().deploymentSignature(activeSchemaID: "luna_pinyin", supportedFeatures: [])
         )
+    }
+
+    func testDeploymentForwardsOnlyActiveWanxiangSchemaToSmoke() async {
+        let settings = StubSharedSettingsStore(
+            values: ["rime_active_schema": "wanxiang", "rime_needs_deploy": true]
+        )
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: StubSchemaArchiveInstaller(),
+            deploymentService: deploymentService
+        )
+
+        await manager.deployRimeConfig()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(requests.first?.runtimeSmokeSchemaID, "wanxiang")
+    }
+
+    func testExplicitLuaSmokeFailureCannotBeMaskedByDeployedFlag() throws {
+        let fixture = try makeLuaDiagnosticFixture(
+            schemaContent: "engine:\n  translators:\n    - lua_translator@*date_translator\n",
+            includeLuaDirectory: true,
+            includeDateTranslator: true
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_lua_available": true,
+                "rime_deployed": true,
+                "rime_needs_deploy": false,
+                "rime_ice_lua_smoke_passed": false,
+            ]
+        )
+        let manager = makeManager(
+            settings: settings,
+            installer: StubSchemaArchiveInstaller(
+                containsInstalledSchema: true,
+                directories: SchemaDeploymentDirectories(
+                    sharedDataURL: fixture.sharedURL,
+                    userDataURL: fixture.userURL
+                )
+            )
+        )
+
+        XCTAssertEqual(manager.rimeIceLuaCapabilityDiagnostic().status, .needsDeploy)
     }
 
     func testLayoutReadPathsNeverPrepareDeploymentResources() {
@@ -542,14 +592,16 @@ final class SchemaManagerTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: tempRoot) }
 
         let schemaYaml = """
-        schema:
-          schema_id: rime_ice
-        speller:
-          algebra:
-            - erase/^xx$/
-        """
-        try schemaYaml.write(to: sharedURL.appendingPathComponent("rime_ice.schema.yaml"), atomically: true, encoding: .utf8)
-        try schemaYaml.write(to: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"), atomically: true, encoding: .utf8)
+            schema:
+              schema_id: rime_ice
+            speller:
+              algebra:
+                - erase/^xx$/
+            """
+        try schemaYaml.write(
+            to: sharedURL.appendingPathComponent("rime_ice.schema.yaml"), atomically: true, encoding: .utf8)
+        try schemaYaml.write(
+            to: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"), atomically: true, encoding: .utf8)
 
         let settings = StubSharedSettingsStore(
             values: [
@@ -567,8 +619,10 @@ final class SchemaManagerTests: XCTestCase {
 
         await manager.deployRimeConfig()
 
-        let activeSchema = try String(contentsOf: sharedURL.appendingPathComponent("rime_ice.schema.yaml"), encoding: .utf8)
-        let otherSchema = try String(contentsOf: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"), encoding: .utf8)
+        let activeSchema = try String(
+            contentsOf: sharedURL.appendingPathComponent("rime_ice.schema.yaml"), encoding: .utf8)
+        let otherSchema = try String(
+            contentsOf: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"), encoding: .utf8)
         XCTAssertTrue(activeSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
         XCTAssertTrue(activeSchema.contains("- derive/^zh/z/"))
         XCTAssertFalse(activeSchema.contains("- derive/^ch/c/"))
@@ -597,15 +651,15 @@ final class SchemaManagerTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: tempRoot) }
 
         let schemaYaml = """
-        schema:
-          schema_id: rime_ice
-        engine:
-          translators:
-            - lua_translator@*date_translator
-              date_locale: zh
-            - lua_translator@*calc_translator
-            - script_translator
-        """
+            schema:
+              schema_id: rime_ice
+            engine:
+              translators:
+                - lua_translator@*date_translator
+                  date_locale: zh
+                - lua_translator@*calc_translator
+                - script_translator
+            """
         let schemaURL = sharedURL.appendingPathComponent("rime_ice.schema.yaml")
         try schemaYaml.write(to: schemaURL, atomically: true, encoding: .utf8)
 
@@ -646,15 +700,15 @@ final class SchemaManagerTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: tempRoot) }
 
         let schemaYaml = """
-        schema:
-          schema_id: luna_pinyin
-        speller:
-          algebra:
-            - erase/^xx$/
-            # universe:fuzzy-pinyin begin
-            - derive/^zh/z/
-            # universe:fuzzy-pinyin end
-        """
+            schema:
+              schema_id: luna_pinyin
+            speller:
+              algebra:
+                - erase/^xx$/
+                # universe:fuzzy-pinyin begin
+                - derive/^zh/z/
+                # universe:fuzzy-pinyin end
+            """
         try schemaYaml.write(
             to: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"),
             atomically: true,

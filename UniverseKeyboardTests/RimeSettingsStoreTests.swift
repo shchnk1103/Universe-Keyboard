@@ -351,6 +351,125 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertEqual(store.deploymentState, .deployed)
     }
 
+    func testTriggerPendingDeploymentIfNeededRunsForGenericNeedsDeployIntent() async {
+        let settings = StoreSharedSettingsStore()
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let persistence = StubRimeSettingsPersistence(values: ["rime_needs_deploy": true])
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(
+                settings: settings,
+                catalogClient: StoreCatalogClient(),
+                archiveDownloader: StoreArchiveDownloader(),
+                archiveInstaller: StoreArchiveInstaller(),
+                deploymentService: deploymentService
+            ),
+            persistence: persistence
+        )
+
+        await store.triggerPendingDeploymentIfNeeded()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(store.deploymentState, .deployed)
+    }
+
+    func testTriggerPendingDeploymentIfNeededDoesNotLoopAfterFailure() async {
+        let settings = StoreSharedSettingsStore()
+        let deploymentService = StoreDeploymentService(succeeded: false)
+        let persistence = StubRimeSettingsPersistence(values: ["rime_needs_deploy": true])
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(
+                settings: settings,
+                catalogClient: StoreCatalogClient(),
+                archiveDownloader: StoreArchiveDownloader(),
+                archiveInstaller: StoreArchiveInstaller(),
+                deploymentService: deploymentService
+            ),
+            persistence: persistence
+        )
+
+        await store.triggerPendingDeploymentIfNeeded()
+        await store.triggerPendingDeploymentIfNeeded()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(store.deploymentState, .failed)
+    }
+
+    func testFailedAutomaticDeploymentRemainsSuppressedAfterLoadAndRelaunch() async {
+        let settings = StoreSharedSettingsStore()
+        let deploymentService = StoreDeploymentService(succeeded: false)
+        let persistence = StubRimeSettingsPersistence(values: ["rime_needs_deploy": true])
+        let schemaManager = SchemaManager(
+            settings: settings,
+            catalogClient: StoreCatalogClient(),
+            archiveDownloader: StoreArchiveDownloader(),
+            archiveInstaller: StoreArchiveInstaller(),
+            deploymentService: deploymentService
+        )
+        let store = RimeSettingsStore(schemaManager: schemaManager, persistence: persistence)
+
+        await store.triggerPendingDeploymentIfNeeded()
+        store.load()
+        await store.triggerPendingDeploymentIfNeeded()
+
+        let relaunchedStore = RimeSettingsStore(schemaManager: schemaManager, persistence: persistence)
+        // App 启动时会先 load；这里复现真实生命周期，再验证失败锁存不会被自动重试绕过。
+        relaunchedStore.load()
+        await relaunchedStore.triggerPendingDeploymentIfNeeded()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(store.deploymentState, .failed)
+        XCTAssertEqual(relaunchedStore.deploymentState, .failed)
+    }
+
+    func testManualDeploymentCanRetryAfterAutomaticFailure() async {
+        let settings = StoreSharedSettingsStore()
+        let deploymentService = StoreDeploymentService(succeeded: false)
+        let persistence = StubRimeSettingsPersistence(values: ["rime_needs_deploy": true])
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(
+                settings: settings,
+                catalogClient: StoreCatalogClient(),
+                archiveDownloader: StoreArchiveDownloader(),
+                archiveInstaller: StoreArchiveInstaller(),
+                deploymentService: deploymentService
+            ),
+            persistence: persistence
+        )
+
+        await store.triggerPendingDeploymentIfNeeded()
+        await store.triggerDeployment()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 2)
+        XCTAssertEqual(store.deploymentState, .failed)
+    }
+
+    func testNewGenericIntentAllowsOneAutomaticAttemptAfterPriorFailure() async {
+        let persistence = StoreSharedSettingsStore(values: ["rime_needs_deploy": true])
+        let deploymentService = StoreDeploymentService(succeeded: false)
+        let schemaManager = SchemaManager(
+            settings: persistence,
+            catalogClient: StoreCatalogClient(),
+            archiveDownloader: StoreArchiveDownloader(),
+            archiveInstaller: StoreArchiveInstaller(),
+            deploymentService: deploymentService
+        )
+        let store = RimeSettingsStore(schemaManager: schemaManager, persistence: persistence)
+
+        await store.triggerPendingDeploymentIfNeeded()
+        schemaManager.requestDeploy()
+        store.load()
+        await store.triggerPendingDeploymentIfNeeded()
+        await store.triggerPendingDeploymentIfNeeded()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 2)
+        XCTAssertEqual(store.deploymentState, .failed)
+    }
+
     func testBackupUserDictionaryShowsPlainUserMessage() {
         let backupService = StoreUserDictionaryBackupService(
             backupResult: .init(succeeded: true, message: "已备份 朙月拼音 的学习记录。")
@@ -597,7 +716,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertEqual(store.advancedInputRecoveryAction(for: diagnostic), .applySettings)
     }
 
-    func testAdvancedInputStatusUsesSmokePassOverStaleDeploymentFlag() {
+    func testAdvancedInputStatusRejectsSmokePassFromStaleDeployment() {
         let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
         let diagnostic = RimeLuaCapabilityDiagnostic(
             luaCompiledIn: true,
@@ -621,8 +740,8 @@ final class RimeSettingsStoreTests: XCTestCase {
             missingLuaDependencyNames: []
         )
 
-        XCTAssertEqual(diagnostic.status, .available)
-        XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "基础检查通过")
+        XCTAssertEqual(diagnostic.status, .needsDeploy)
+        XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "需要重新部署")
     }
 
     func testAdvancedInputStatusOffersRedownloadForStrippedOrMissingLuaFiles() {
@@ -662,13 +781,14 @@ final class RimeSettingsStoreTests: XCTestCase {
             luaCompiledIn: status != .engineUnavailable,
             luaModuleRegistered: status != .runtimeModuleMissing,
             luaComponentsRegistered: status != .runtimeModuleMissing,
-            deploymentModules: status == .engineUnavailable ? ["core", "dict", "gears"] : ["core", "dict", "gears", "lua"],
+            deploymentModules: status == .engineUnavailable
+                ? ["core", "dict", "gears"] : ["core", "dict", "gears", "lua"],
             persistedLuaAvailable: status == .engineUnavailable ? false : true,
             rimeIceInstalled: status != .notInstalled,
             activeSchemaID: status == .inactiveSchema ? "luna_pinyin" : "rime_ice",
             rimeDeployed: status != .needsDeploy,
             rimeNeedsDeploy: status == .needsDeploy,
-            runtimeSmokePassed: false,
+            runtimeSmokePassed: status == .available ? true : false,
             schemaExists: status != .schemaMissing,
             schemaHasLuaComponents: status != .schemaStripped && status != .schemaMissing,
             luaDirectoryExists: status != .luaFilesMissing,
@@ -729,11 +849,13 @@ final class RimeUserDictionaryBackupServiceTests: XCTestCase {
         XCTAssertTrue(restore.succeeded)
         XCTAssertEqual(try String(contentsOf: currentFile, encoding: .utf8), "old")
         let backupRoot = root.appendingPathComponent("Rime/user_dictionary_backups/luna_pinyin")
-        let containsRecoveryCopy = try FileManager.default.contentsOfDirectory(at: backupRoot, includingPropertiesForKeys: nil)
-            .contains { backupURL in
-                let recoveryFile = backupURL.appendingPathComponent("luna_pinyin.userdb/CURRENT")
-                return (try? String(contentsOf: recoveryFile, encoding: .utf8)) == "new"
-            }
+        let containsRecoveryCopy = try FileManager.default.contentsOfDirectory(
+            at: backupRoot, includingPropertiesForKeys: nil
+        )
+        .contains { backupURL in
+            let recoveryFile = backupURL.appendingPathComponent("luna_pinyin.userdb/CURRENT")
+            return (try? String(contentsOf: recoveryFile, encoding: .utf8)) == "new"
+        }
         XCTAssertTrue(containsRecoveryCopy)
     }
 
@@ -758,11 +880,13 @@ final class RimeUserDictionaryBackupServiceTests: XCTestCase {
         XCTAssertTrue(result.succeeded)
         XCTAssertFalse(FileManager.default.fileExists(atPath: userDB.path))
         let backupRoot = root.appendingPathComponent("Rime/user_dictionary_backups/luna_pinyin")
-        let containsRecoveryCopy = try FileManager.default.contentsOfDirectory(at: backupRoot, includingPropertiesForKeys: nil)
-            .contains { backupURL in
-                let recoveryFile = backupURL.appendingPathComponent("luna_pinyin.userdb/CURRENT")
-                return (try? String(contentsOf: recoveryFile, encoding: .utf8)) == "learned"
-            }
+        let containsRecoveryCopy = try FileManager.default.contentsOfDirectory(
+            at: backupRoot, includingPropertiesForKeys: nil
+        )
+        .contains { backupURL in
+            let recoveryFile = backupURL.appendingPathComponent("luna_pinyin.userdb/CURRENT")
+            return (try? String(contentsOf: recoveryFile, encoding: .utf8)) == "learned"
+        }
         XCTAssertTrue(containsRecoveryCopy)
     }
 
@@ -859,7 +983,7 @@ private final class StoreUserDictionaryBackupService: RimeUserDictionaryBackingU
 }
 
 @MainActor
-private final class StoreSharedSettingsStore: SharedSettingsStoring {
+private final class StoreSharedSettingsStore: SharedSettingsStoring, RimeSettingsPersisting {
     private var values: [String: Any]
 
     init(values: [String: Any] = [:]) {
@@ -867,7 +991,9 @@ private final class StoreSharedSettingsStore: SharedSettingsStoring {
     }
 
     func string(forKey key: String) -> String? { values[key] as? String }
+    func integer(forKey key: String) -> Int { values[key] as? Int ?? 0 }
     func bool(forKey key: String) -> Bool { values[key] as? Bool ?? false }
+    func hasValue(forKey key: String) -> Bool { values[key] != nil }
     func object(forKey key: String) -> Any? { values[key] }
     func set(_ value: Any?, forKey key: String) { values[key] = value }
     func removeObject(forKey key: String) { values.removeValue(forKey: key) }

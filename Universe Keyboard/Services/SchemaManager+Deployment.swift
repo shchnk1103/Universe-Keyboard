@@ -6,6 +6,14 @@ extension SchemaManager {
     func requestDeploy() {
         settings.set(false, forKey: "rime_deployed")
         settings.set(true, forKey: "rime_needs_deploy")
+        // Every caller represents a new deployment intent. It may receive one
+        // automatic attempt even when the previous intent failed.
+        settings.set(false, forKey: "rime_deploy_auto_retry_suppressed")
+        if activeSchemaIDForDeployment == "rime_ice" {
+            // A prior Lua receipt cannot authorize a new fog deployment intent.
+            settings.removeObject(forKey: "rime_ice_lua_smoke_passed")
+            settings.removeObject(forKey: "rime_ice_lua_smoke_timestamp")
+        }
         settings.synchronize()
     }
 
@@ -60,8 +68,8 @@ extension SchemaManager {
                     + "succeeded=\(result.succeeded) runtimeSmokeReported=\(result.runtimeSmokePassed != nil)",
                 category: .deployment
             )
-            if let runtimeSmokePassed = result.runtimeSmokePassed {
-                settings.set(runtimeSmokePassed, forKey: "rime_ice_lua_smoke_passed")
+            if let luaRuntimeSmokePassed = result.luaRuntimeSmokePassed {
+                settings.set(luaRuntimeSmokePassed, forKey: "rime_ice_lua_smoke_passed")
                 settings.set(Int(Date().timeIntervalSince1970), forKey: "rime_ice_lua_smoke_timestamp")
             }
             if result.succeeded {

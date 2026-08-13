@@ -64,17 +64,6 @@ NSString * const RimeKeyProcessKeyCollectDurationMs = @"processKeyCollectDuratio
 // initialize. All keyboard RIME calls are required to stay on the main thread.
 static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
 
-#ifdef RIME_DIAGNOSTICS
-static NSString *RimeSessionLogDirectory(NSString *userDir) {
-    NSString *logDir = [userDir stringByAppendingPathComponent:@"logs"];
-    [[NSFileManager defaultManager] createDirectoryAtPath:logDir
-                              withIntermediateDirectories:YES
-                                               attributes:nil
-                                                    error:nil];
-    return logDir;
-}
-#endif
-
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -108,7 +97,10 @@ static NSString *RimeSessionLogDirectory(NSString *userDir) {
     traits.app_name = "rime.UniverseKeyboard";
 #ifdef RIME_DIAGNOSTICS
     traits.min_log_level = 0;
-    traits.log_dir = [RimeSessionLogDirectory(userDataDir) UTF8String];
+    // glog keeps its destination file descriptor and exclusive write lock open
+    // until global shutdown. An Extension must not carry that App Group lock
+    // across suspension, so Debug diagnostics stay on stderr as well.
+    traits.log_dir = "";
 #else
     // Release 启动只保留 librime ERROR/FATAL，并写入 stderr，避免创建日志目录和文件。
     traits.min_log_level = 2;

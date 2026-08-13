@@ -21,7 +21,7 @@ final class RimeT9CompatibilitySpikeTests: XCTestCase {
         let deployService = RimeDeploymentService()
         let deployResult = try await deployService.deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir),
                 userDataURL: URL(fileURLWithPath: directories.userDir),
                 runtimeSmokeSchemaID: nil
@@ -92,17 +92,17 @@ final class RimeT9CompatibilitySpikeTests: XCTestCase {
         XCTAssertEqual(cleared, "t9")
 
         let summary = """
-        T9_SPIKE_RESULT passed=true \
-        librime=\(engine.bridge.librimeVersion()) \
-        schema=\(currentSchema) \
-        rawAfter64=\(rawAfterDigits) \
-        preeditAfter64=\(preeditAfterDigits) \
-        candidateCount=\(candidates.count) \
-        candidateSample=\(candidates.prefix(5).map(\.text).joined(separator: "|")) \
-        firstCandidateComment=\(firstComment.isEmpty ? "empty" : firstComment) \
-        rawAfterDelete=\(rawAfterDelete) \
-        deploy=\(deployResult.diagnosticMessage)
-        """
+            T9_SPIKE_RESULT passed=true \
+            librime=\(engine.bridge.librimeVersion()) \
+            schema=\(currentSchema) \
+            rawAfter64=\(rawAfterDigits) \
+            preeditAfter64=\(preeditAfterDigits) \
+            candidateCount=\(candidates.count) \
+            candidateSample=\(candidates.prefix(5).map(\.text).joined(separator: "|")) \
+            firstCandidateComment=\(firstComment.isEmpty ? "empty" : firstComment) \
+            rawAfterDelete=\(rawAfterDelete) \
+            deploy=\(deployResult.diagnosticMessage)
+            """
         fputs(summary + "\n", stderr)
         print(summary)
         NSLog("%@", summary)
@@ -124,7 +124,7 @@ final class RimeT9CompatibilitySpikeTests: XCTestCase {
             throw XCTSkip("Provided T9 Spike directories do not exist.")
         }
         guard fileManager.fileExists(atPath: "\(sharedDir)/t9.schema.yaml"),
-              fileManager.fileExists(atPath: "\(sharedDir)/rime_ice.schema.yaml")
+            fileManager.fileExists(atPath: "\(sharedDir)/rime_ice.schema.yaml")
         else {
             throw XCTSkip("T9 Spike fixture is incomplete (needs t9.schema.yaml and rime_ice.schema.yaml).")
         }

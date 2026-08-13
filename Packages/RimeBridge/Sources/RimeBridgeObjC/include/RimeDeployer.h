@@ -32,6 +32,14 @@ NS_ASSUME_NONNULL_BEGIN
 /// Registry 是否已发现 concrete `grammar` 组件（不加载任何 `.gram` 模型文件）。
 + (BOOL)grammarComponentRegistered;
 
+/// Arms and reads a test/evidence-only, content-free grammar loader receipt.
+#if DEBUG
++ (void)resetGrammarModelLoadReceiptForModelFileName:(NSString *)modelFileName;
++ (NSDictionary<NSString *, NSNumber *> *)grammarModelLoadReceipt;
++ (BOOL)probeGrammarModelLoadForLanguage:(NSString *)language;
++ (void)consumeGrammarModelLogLineForTesting:(NSString *)line;
+#endif
+
 /// 执行全量部署。
 /// @param sharedDir RIME shared_data_dir（App Group 中 Rime/shared）
 /// @param userDir RIME user_data_dir（App Group 中 Rime/user）

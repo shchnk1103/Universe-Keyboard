@@ -25,6 +25,10 @@ Use synthetic input only. Do not record surrounding host text or private user co
 
 ## Measurement Rules
 
+- Physical-device evidence that uses a Human Device Operator must follow
+  [`Universe Keyboard 人工真机证据运行 Profile`](kos/universe-keyboard-human-operated-evidence-profile.md):
+  freeze the actual installed payload, classify command side effects and pass readiness review before the first
+  human action.
 - Measure Release-like behavior for product conclusions; Debug measurements are diagnostic only.
 - Perform cold and warm runs separately.
 - Record multiple runs and report median, worst observed value and sample count; do not report one favorable run.

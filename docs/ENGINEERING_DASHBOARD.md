@@ -47,6 +47,16 @@
 - **Non-claims:** no model quality, Jetsam budget, schema/UI, App Store
 - **Next:** none for G1; TD-012 model G2+ requires new Product Decision + memory measurement
 
+## TD-012-LMDG-MODEL-G2 — 万象 LMDG 模型资产固定与真机可行性门
+
+- **Lifecycle:** `Closed` — Product Hold；G2-A **Pass**；G2-B invalidated；no G3
+- **Authority:** [`PD`](product-decisions/TD-012-LMDG-MODEL-G2-authorization.md) · [`Assignment`](assignments/td-012-lmdg-model-g2.md) · [`plan`](plans/td-012-lmdg-model-g2-plan.md)
+- **Scope:** 隔离下载并固定简体 `.gram` 字节；通过后才进入人工真机 A/B 内存/Jetsam 门
+- **Non-claims:** no product installer/App Group persistence/schema/UI/default-on/other schemes
+- **Evidence:** [`G2-A asset pin`](evidence/td-012-lmdg-model-g2-asset-pin-2026-08-11.md) · [`latest invalidated A/B`](evidence/td-012-lmdg-model-g2-device-ab-2026-08-12.md) (`Executor-recorded` + `Device-attested`)
+- **Result:** 未观察到 Keyboard crash/Jetsam 或基础输入回归，但 baseline/model Debug dylib 不同，内存差值不可归因，G2-B 未通过
+- **Next:** none；未来重启须新 Product Decision；禁止进入 G3+
+
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 
 - **Lifecycle:** `Published — Must + S-02/S-03 live; design Closed; IMPL Completed; 2.0 frozen constitution unchanged`

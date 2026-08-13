@@ -199,10 +199,11 @@ Playbook: [`playbooks/debug-investigator.md`](playbooks/debug-investigator.md), 
 ## Improve Performance
 
 1. `PERFORMANCE_BASELINE.md`.
-2. ADR 0004 for session/thread changes.
-3. Relevant architecture/domain source.
-4. `TECH_DEBT.md` TD-003.
-5. Performance and lifecycle gates in `RELEASE_CHECKLIST.md`.
+2. `kos/universe-keyboard-human-operated-evidence-profile.md` when evidence requires a Human Device Operator.
+3. ADR 0004 for session/thread changes.
+4. Relevant architecture/domain source.
+5. `TECH_DEBT.md` TD-003.
+6. Performance and lifecycle gates in `RELEASE_CHECKLIST.md`.
 
 Required review: comparable measurements, no invented thresholds, hot-path storage/logging, memory growth and whether architecture changes require an ADR.
 

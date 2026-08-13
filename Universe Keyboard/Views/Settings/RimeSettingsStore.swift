@@ -96,6 +96,12 @@ enum RimeAdvancedInputRecoveryAction: Equatable {
 @MainActor
 @Observable
 final class RimeSettingsStore {
+    private enum DeploymentRetry {
+        /// Prevents the same failed deployment intent from being retried on
+        /// every page or scene lifecycle transition.
+        static let automaticRetrySuppressedKey = "rime_deploy_auto_retry_suppressed"
+    }
+
     private enum UserDictionaryAutoBackup {
         static let enabledKey = "rime_user_dict_auto_backup_enabled"
         static let throttleInterval: TimeInterval = 12 * 60 * 60
@@ -522,7 +528,8 @@ final class RimeSettingsStore {
             let name = displayName(forSchemaID: schemaID)
             let result = userDictionaryBackupService.backup(schemaID: schemaID, displayName: name)
             guard result.succeeded else { return nil }
-            persistence.set(Int(Date().timeIntervalSince1970), forKey: UserDictionaryAutoBackup.lastRunKey(for: schemaID))
+            persistence.set(
+                Int(Date().timeIntervalSince1970), forKey: UserDictionaryAutoBackup.lastRunKey(for: schemaID))
             return name
         }
 
@@ -654,9 +661,13 @@ final class RimeSettingsStore {
         appendDeploymentLog("→ 主 App 正在编译配置和词库…")
 
         if await schemaManager.deployRimeConfig() {
+            persistence.set(false, forKey: DeploymentRetry.automaticRetrySuppressedKey)
+            persistence.synchronize()
             deploymentState = .deployed
             appendDeploymentLog("✓ 部署成功，键盘可直接使用")
         } else {
+            persistence.set(true, forKey: DeploymentRetry.automaticRetrySuppressedKey)
+            persistence.synchronize()
             deploymentState = .failed
             appendDeploymentLog("✗ 部署失败，请在主 App 中重试")
         }
@@ -664,6 +675,7 @@ final class RimeSettingsStore {
 
     func triggerPendingDeploymentIfNeeded() async {
         guard hasPendingDeploymentIntent else { return }
+        guard !persistence.bool(forKey: DeploymentRetry.automaticRetrySuppressedKey) else { return }
         guard deploymentState != .triggered, deploymentState != .deploying else { return }
         await triggerDeployment()
     }
@@ -699,7 +711,9 @@ final class RimeSettingsStore {
         } else if persistence.bool(forKey: "rime_deploying") {
             deploymentState = .deploying
         } else if persistence.bool(forKey: "rime_needs_deploy") {
-            deploymentState = .needsDeploy
+            deploymentState =
+                persistence.bool(forKey: DeploymentRetry.automaticRetrySuppressedKey)
+                ? .failed : .needsDeploy
         }
     }
 
@@ -732,7 +746,8 @@ final class RimeSettingsStore {
     }
 
     private var hasPendingDeploymentIntent: Bool {
-        persistence.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey)
+        persistence.bool(forKey: "rime_needs_deploy")
+            || persistence.bool(forKey: RimeFuzzyPinyinSettings.pendingDeployKey)
             || persistence.bool(forKey: RimeUserDictionarySettings.pendingDeployKey)
             || persistence.bool(forKey: RimeAdvancedInputSettings.pendingDeployKey)
     }
@@ -855,6 +870,9 @@ final class RimeSettingsStore {
     private func markDeploymentNeeded(reason: String) {
         persistence.set(false, forKey: "rime_deployed")
         persistence.set(true, forKey: "rime_needs_deploy")
+        // A preference change is a new deployment intent, so it may receive
+        // one automatic attempt even if the previous intent failed.
+        persistence.set(false, forKey: DeploymentRetry.automaticRetrySuppressedKey)
         persistence.synchronize()
         deploymentState = .needsDeploy
         deploymentLog = ["→ \(reason)，应用完成后生效"]

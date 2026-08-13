@@ -197,10 +197,10 @@ enum RimeSchemeCatalog {
                     "wanxiang_t9i.schema.yaml",
                 ],
                 removableDirectories: [
-                    "dicts",
+                    "dicts"
                 ],
                 removableBuildFileSubstrings: [
-                    "wanxiang",
+                    "wanxiang"
                 ]
             )
         ),
@@ -268,7 +268,8 @@ struct RimeLuaCapabilityDiagnostic: Equatable, Sendable {
     let activeSchemaID: String
     let rimeDeployed: Bool
     let rimeNeedsDeploy: Bool
-    let runtimeSmokePassed: Bool
+    /// `nil` is a legacy/no-receipt state; explicit `false` must fail closed.
+    let runtimeSmokePassed: Bool?
     let schemaExists: Bool
     let schemaHasLuaComponents: Bool
     let luaDirectoryExists: Bool
@@ -297,7 +298,7 @@ struct RimeLuaCapabilityDiagnostic: Equatable, Sendable {
         else {
             return .luaFilesMissing
         }
-        guard runtimeSmokePassed || (rimeDeployed && !rimeNeedsDeploy) else { return .needsDeploy }
+        guard rimeDeployed, !rimeNeedsDeploy, runtimeSmokePassed != false else { return .needsDeploy }
         return .available
     }
 
@@ -327,7 +328,7 @@ struct RimeLuaCapabilityDiagnostic: Equatable, Sendable {
             "missingLuaDependencies=\(missingDependenciesSummary)",
             "deployed=\(rimeDeployed)",
             "needsDeploy=\(rimeNeedsDeploy)",
-            "runtimeSmokePassed=\(runtimeSmokePassed)",
+            "runtimeSmokePassed=\(runtimeSmokePassed.map(String.init) ?? "nil")",
         ].joined(separator: ";")
     }
 }

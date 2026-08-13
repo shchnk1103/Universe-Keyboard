@@ -26,7 +26,7 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir),
                 userDataURL: URL(fileURLWithPath: directories.userDir),
                 runtimeSmokeSchemaID: nil
@@ -105,7 +105,7 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
         fputs(
             "T9_ATOMIC_PATH_STAGE_A caseCount=\(cases.count) "
                 + windowLimits.map { "limit\($0)=\(coverageByLimit[$0, default: 0])" }
-                    .joined(separator: " ")
+                .joined(separator: " ")
                 + "\n",
             stderr
         )
@@ -121,7 +121,7 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir),
                 userDataURL: URL(fileURLWithPath: directories.userDir),
                 runtimeSmokeSchemaID: nil
@@ -182,7 +182,7 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
         let deployService = RimeDeploymentService()
         let deployResult = try await deployService.deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir),
                 userDataURL: URL(fileURLWithPath: directories.userDir),
                 runtimeSmokeSchemaID: nil
@@ -247,7 +247,8 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
 
             let refinedLetter = engine.replaceInput(letterPath)
             let refinedRaw = refinedLetter.rawInput ?? ""
-            let refinedHasComposition = !(refinedLetter.composition?.preeditText ?? "").isEmpty
+            let refinedHasComposition =
+                !(refinedLetter.composition?.preeditText ?? "").isEmpty
                 || !refinedRaw.isEmpty
 
             XCTAssertNil(
@@ -382,7 +383,8 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
             """
         )
 
-        let niPath = pathPool64.first(where: { $0 == "ni" })
+        let niPath =
+            pathPool64.first(where: { $0 == "ni" })
             ?? pathPool64.first(where: { $0.hasPrefix("ni") })
             ?? pathPool64.first(where: { $0.count >= 2 })
             ?? pathPool64[0]
@@ -414,7 +416,8 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
             "Continuing digit after letter refine must not host-commit; got \(mixedCommitted ?? "")"
         )
         // Accept either mixed form (ni4 / ni'4 / etc.) or pure digits if engine rewrote.
-        let mixedIsLetterDigit = mixedRaw.rangeOfCharacter(from: .letters) != nil
+        let mixedIsLetterDigit =
+            mixedRaw.rangeOfCharacter(from: .letters) != nil
             && mixedRaw.rangeOfCharacter(from: .decimalDigits) != nil
         let mixedIsContinued = !mixedRaw.isEmpty
         XCTAssertTrue(
@@ -456,31 +459,31 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
         )
 
         let summary = """
-        T9_PINYIN_SPIKE_RESULT passed=true \
-        librime=\(engine.bridge.librimeVersion()) \
-        schema=\(currentSchema) \
-        comments6=\(pathPool6.joined(separator: "|")) \
-        deterministicChoices=m|n|o \
-        singleLetterCandidateCounts=m:\(singleLetterCandidateCounts["m"] ?? 0),n:\(singleLetterCandidateCounts["n"] ?? 0),o:\(singleLetterCandidateCounts["o"] ?? 0) \
-        rawAfterN4=\(rawN4) \
-        commentsN4=\(pathPoolN4.prefix(16).joined(separator: "|")) \
-        segmentedRaw=g:\(segmentedRawInputs["g"] ?? ""),h:\(segmentedRawInputs["h"] ?? ""),i:\(segmentedRawInputs["i"] ?? "") \
-        segmentedCandidateCounts=g:\(segmentedCandidateCounts["g"] ?? 0),h:\(segmentedCandidateCounts["h"] ?? 0),i:\(segmentedCandidateCounts["i"] ?? 0) \
-        segmentedComments=g:\((segmentedComments["g"] ?? []).prefix(8).joined(separator: "|")),h:\((segmentedComments["h"] ?? []).prefix(8).joined(separator: "|")),i:\((segmentedComments["i"] ?? []).prefix(8).joined(separator: "|")) \
-        segmentedPreedits=g:\(segmentedPreedits["g"] ?? ""),h:\(segmentedPreedits["h"] ?? ""),i:\(segmentedPreedits["i"] ?? "") \
-        segmentedFirstCandidates=g:\(segmentedFirstCandidates["g"] ?? ""),h:\(segmentedFirstCandidates["h"] ?? ""),i:\(segmentedFirstCandidates["i"] ?? "") \
-        authorizedSuffixes=\(authorizedSuffixes.joined(separator: "|")) \
-        comments64=\(pathPool64.prefix(12).joined(separator: "|")) \
-        niPath=\(niPath) \
-        rawAfterNi=\(rawNi) \
-        niCandidateCount=\(refinedNi.candidates.count) \
-        mixedRaw=\(mixedRaw) \
-        mixedIsLetterDigit=\(mixedIsLetterDigit) \
-        rawAfterDelete=\(afterDeleteRaw) \
-        window6Count=\(window6.candidates.count) \
-        window64Count=\(window64.candidates.count) \
-        deploy=\(deployResult.diagnosticMessage)
-        """
+            T9_PINYIN_SPIKE_RESULT passed=true \
+            librime=\(engine.bridge.librimeVersion()) \
+            schema=\(currentSchema) \
+            comments6=\(pathPool6.joined(separator: "|")) \
+            deterministicChoices=m|n|o \
+            singleLetterCandidateCounts=m:\(singleLetterCandidateCounts["m"] ?? 0),n:\(singleLetterCandidateCounts["n"] ?? 0),o:\(singleLetterCandidateCounts["o"] ?? 0) \
+            rawAfterN4=\(rawN4) \
+            commentsN4=\(pathPoolN4.prefix(16).joined(separator: "|")) \
+            segmentedRaw=g:\(segmentedRawInputs["g"] ?? ""),h:\(segmentedRawInputs["h"] ?? ""),i:\(segmentedRawInputs["i"] ?? "") \
+            segmentedCandidateCounts=g:\(segmentedCandidateCounts["g"] ?? 0),h:\(segmentedCandidateCounts["h"] ?? 0),i:\(segmentedCandidateCounts["i"] ?? 0) \
+            segmentedComments=g:\((segmentedComments["g"] ?? []).prefix(8).joined(separator: "|")),h:\((segmentedComments["h"] ?? []).prefix(8).joined(separator: "|")),i:\((segmentedComments["i"] ?? []).prefix(8).joined(separator: "|")) \
+            segmentedPreedits=g:\(segmentedPreedits["g"] ?? ""),h:\(segmentedPreedits["h"] ?? ""),i:\(segmentedPreedits["i"] ?? "") \
+            segmentedFirstCandidates=g:\(segmentedFirstCandidates["g"] ?? ""),h:\(segmentedFirstCandidates["h"] ?? ""),i:\(segmentedFirstCandidates["i"] ?? "") \
+            authorizedSuffixes=\(authorizedSuffixes.joined(separator: "|")) \
+            comments64=\(pathPool64.prefix(12).joined(separator: "|")) \
+            niPath=\(niPath) \
+            rawAfterNi=\(rawNi) \
+            niCandidateCount=\(refinedNi.candidates.count) \
+            mixedRaw=\(mixedRaw) \
+            mixedIsLetterDigit=\(mixedIsLetterDigit) \
+            rawAfterDelete=\(afterDeleteRaw) \
+            window6Count=\(window6.candidates.count) \
+            window64Count=\(window64.candidates.count) \
+            deploy=\(deployResult.diagnosticMessage)
+            """
         fputs(summary + "\n", stderr)
         print(summary)
         NSLog("%@", summary)
@@ -497,7 +500,7 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir),
                 userDataURL: URL(fileURLWithPath: directories.userDir),
                 runtimeSmokeSchemaID: nil
@@ -576,7 +579,8 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
                 + "commit=\(zi.committedText ?? "∅")"
         )
 
-        let summary = "T9_004_RAW_SPIKE passed=true cases=\(lines.count) "
+        let summary =
+            "T9_004_RAW_SPIKE passed=true cases=\(lines.count) "
             + lines.joined(separator: " || ")
         fputs(summary + "\n", stderr)
         print(summary)
@@ -597,7 +601,7 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir),
                 userDataURL: URL(fileURLWithPath: directories.userDir),
                 runtimeSmokeSchemaID: nil
@@ -674,13 +678,14 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
         // Build a large candidate pool: current page + read-only expanded window + page-down.
         var pool: [(source: String, globalIndex: Int?, pageIndex: Int?, text: String, comment: String?)] = []
         for (idx, candidate) in before.candidates.enumerated() {
-            pool.append((
-                source: "page",
-                globalIndex: candidate.globalIndex ?? idx,
-                pageIndex: idx,
-                text: candidate.text,
-                comment: candidate.comment
-            ))
+            pool.append(
+                (
+                    source: "page",
+                    globalIndex: candidate.globalIndex ?? idx,
+                    pageIndex: idx,
+                    text: candidate.text,
+                    comment: candidate.comment
+                ))
         }
         let window = engine.candidateWindow(from: 0, limit: 48)
         observe(
@@ -692,13 +697,14 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
             if pool.contains(where: { $0.text == text && $0.globalIndex == candidate.globalIndex }) {
                 continue
             }
-            pool.append((
-                source: "window",
-                globalIndex: candidate.globalIndex,
-                pageIndex: nil,
-                text: text,
-                comment: candidate.comment
-            ))
+            pool.append(
+                (
+                    source: "window",
+                    globalIndex: candidate.globalIndex,
+                    pageIndex: nil,
+                    text: text,
+                    comment: candidate.comment
+                ))
         }
 
         // Page-down once if available — coverage must not depend on entry surface.
@@ -706,13 +712,14 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
             let paged = engine.pageDown()
             observe("B_after_page_down", paged)
             for (idx, candidate) in paged.candidates.enumerated() {
-                pool.append((
-                    source: "page2",
-                    globalIndex: candidate.globalIndex,
-                    pageIndex: idx,
-                    text: candidate.text,
-                    comment: candidate.comment
-                ))
+                pool.append(
+                    (
+                        source: "page2",
+                        globalIndex: candidate.globalIndex,
+                        pageIndex: idx,
+                        text: candidate.text,
+                        comment: candidate.comment
+                    ))
             }
             // Restore menu to first page for local select indices.
             engine.bridge.clearComposition()
@@ -982,7 +989,7 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
 
         let deployResult = try await RimeDeploymentService().deploy(
             RimeDeploymentRequest(
-                mode: .fullCheck,
+                mode: .testFixtureMaintenanceOnly,
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir),
                 userDataURL: URL(fileURLWithPath: directories.userDir),
                 runtimeSmokeSchemaID: nil
@@ -1048,7 +1055,7 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
                 snap.caret ?? -1,
                 snap.compLen ?? -1,
                 snap.commitLen,
-                snap.candCount == 0 ? 0 : 1, // composing residual boolean as 0/1
+                snap.candCount == 0 ? 0 : 1,  // composing residual boolean as 0/1
             ]
         }
 
@@ -1059,7 +1066,7 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
         let remainingDigits = String(sourceDigits.dropFirst(consumedLetters))
         let anchoredRaw = confirmed.joined(separator: "'") + "'" + remainingDigits
         // Legal Path segment slot cuts on sourceDigits (pre-selection ledger bounds only).
-        let legalSlotCuts = [4, 7, 10, 13] // after qing / +wei / +fan / +dao
+        let legalSlotCuts = [4, 7, 10, 13]  // after qing / +wei / +fan / +dao
 
         engine.bridge.clearComposition()
         let base = engine.replaceInput(anchoredRaw)
@@ -1088,7 +1095,8 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
 
         let uniqueAllowedPreSelect = Set(highlightAllowedVectors.map { $0.description })
         let uniquePreviewPreSelect = Set(highlightPreviewLens.map { $0.map(String.init) ?? "nil" })
-        let uniqueSelPreSelect = Set(highlightSelPairs.map { "\($0.0.map(String.init) ?? "nil")..\(($0.1.map(String.init) ?? "nil"))" })
+        let uniqueSelPreSelect = Set(
+            highlightSelPairs.map { "\($0.0.map(String.init) ?? "nil")..\(($0.1.map(String.init) ?? "nil"))" })
         let allowedVariesByHighlight = uniqueAllowedPreSelect.count > 1
         let previewVariesByHighlight = uniquePreviewPreSelect.count > 1
         let selVariesByHighlight = uniqueSelPreSelect.count > 1
@@ -1363,7 +1371,8 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
         guard !trimmed.isEmpty else { return nil }
         var scalars: [UnicodeScalar] = []
         for scalar in trimmed.unicodeScalars {
-            let isLetter = CharacterSet.lowercaseLetters.contains(scalar)
+            let isLetter =
+                CharacterSet.lowercaseLetters.contains(scalar)
                 || CharacterSet.uppercaseLetters.contains(scalar)
             let isSpace = CharacterSet.whitespaces.contains(scalar)
             let isApos = scalar == "'"
@@ -1405,7 +1414,7 @@ final class RimeT9PinyinSelectionSpikeTests: XCTestCase {
             throw XCTSkip("Provided T9 Spike directories do not exist.")
         }
         guard fileManager.fileExists(atPath: "\(sharedDir)/t9.schema.yaml"),
-              fileManager.fileExists(atPath: "\(sharedDir)/rime_ice.schema.yaml")
+            fileManager.fileExists(atPath: "\(sharedDir)/rime_ice.schema.yaml")
         else {
             throw XCTSkip("T9 Spike fixture is incomplete (needs t9.schema.yaml and rime_ice.schema.yaml).")
         }
