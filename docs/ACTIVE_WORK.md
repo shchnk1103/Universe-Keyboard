@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`TD-012-LMDG-MODEL-G2` Product Hold；`CANDIDATE-TOUCH-OBSERVABILITY-001` 自动门禁与独立审查通过；Active Work `9/10`。
+Last synced: `2026-08-13 Asia/Shanghai` — `CANDIDATE-TOUCH-HITBOX-001` 本地实现、CI 等价门禁与独立复核完成，等待 Product 发布/合并决策；Active Work `9/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -17,12 +17,13 @@ Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`
 | 6 | TYPING-INTELLIGENCE-001 | Active | Implementation; Quality pending | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 7 | TYPO-CORRECTION-002 | Active | Contextual recovery; sim scenarios pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 8 | DIAGNOSTICS-OBSERVABILITY-001 | Active | P0 已合并；等待 Product Gate，P1 后续见 TD-013 | [`assignments/diagnostics-observability-001.md`](assignments/diagnostics-observability-001.md) |
-| 9 | CANDIDATE-TOUCH-OBSERVABILITY-001 | Active | 自动门禁与独立审查通过；等待 PR 合并及一次单指真机复测 | [`assignments/candidate-touch-observability-001.md`](assignments/candidate-touch-observability-001.md) |
+| 9 | CANDIDATE-TOUCH-HITBOX-001 | Active | 本地实现与独立复核完成；等待发布/合并决策 | [`assignments/candidate-touch-hitbox-001.md`](assignments/candidate-touch-hitbox-001.md) |
 
 ## Completed (not Active)
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
+| CANDIDATE-TOUCH-OBSERVABILITY-001 | PR #71 merged；固定 iPhone 13 Pro 单轮 `0/5 · 5/5 · 5/5`；几何与探针缺口转交 HITBOX-001 | [`assignment`](assignments/candidate-touch-observability-001.md) · [`evidence`](evidence/candidate-touch-observability-001-execution-evidence-2026-08-13.md) |
 | KOS-2.1-OPS-001 / KOS-2.1-OPS-IMPL-001 | `Closed`；Must 设计已接受，运维包已在 KOS 2.0 轨道发布；S-01 / Migration / 2.1 frozen replacement 未授权 | [`design`](assignments/kos-2.1-ops-001.md) · [`implementation`](assignments/kos-2.1-ops-impl-001.md) |
 | TD-012-LMDG-MODEL-G2 | `Closed`；Product Hold，G2-A Pass，G2-B invalidated，不进入 G3 | [`assignments/td-012-lmdg-model-g2.md`](assignments/td-012-lmdg-model-g2.md) |
 | DIAGNOSTICS-DAY-BROWSER-001 | Simulator 代码级 Architecture / Quality Pass；等待 Human Product Review，不含真机、ADR Acceptance 或 Release 结论 | [`assignments/diagnostics-day-browser-001.md`](assignments/diagnostics-day-browser-001.md) · [independent review](assignments/diagnostics-day-browser-001-independent-review.md) · [evidence](evidence/diagnostics-day-browser-001-execution-evidence-2026-08-12.md) |

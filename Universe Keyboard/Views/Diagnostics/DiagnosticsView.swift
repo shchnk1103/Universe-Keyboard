@@ -6,6 +6,7 @@ import UIKit
 struct DiagnosticsView: View {
     @State private var store = DiagnosticsStore()
     @State private var showClearConfirm = false
+    @State private var isSearchPresented = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -51,10 +52,18 @@ struct DiagnosticsView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("键盘诊断")
         .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $store.searchQuery, prompt: "搜索事件、分类或状态")
+        .searchable(
+            text: $store.searchQuery,
+            isPresented: $isSearchPresented,
+            placement: .navigationBarDrawer(displayMode: .always),
+            prompt: "搜索事件、分类或状态"
+        )
+        .onChange(of: isSearchPresented, initial: true) { _, presented in
+            store.setSearchPresented(presented)
+        }
         .toolbar {
             DiagnosticsToolbar(
-                isRefreshing: store.isRefreshing,
+                isRefreshing: store.isManualRefreshing,
                 canCopy: store.canExportCurrentSelection,
                 canClear: store.canClearLog,
                 onRefresh: store.refresh,

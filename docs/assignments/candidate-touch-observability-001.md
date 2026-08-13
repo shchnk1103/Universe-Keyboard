@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | 自动门禁与独立审查通过；等待 PR 合并后的一次单指三分区真机复测 |
+| **Lifecycle** | `Completed` — PR #71 merged；固定载荷单轮真机证据完成 |
+| **Phase** | 诊断探针交付并完成单轮真机取证；行为修复由 `CANDIDATE-TOUCH-HITBOX-001` 接续 |
 | **Non-claims** | 不修改候选栏命中区、布局、手势或选择语义；不宣称当前已定位 iOS 27 beta 顶部触摸丢失根因 |
-| **Next** | 固定提交并发布 PR；合并后交 Human Device Operator 做一次三分区真机复测 |
-| **Residuals** | `action` 仅是单指、短时、best-effort 关联；2 秒/5 秒生命周期分支由静态独立审查覆盖，尚无 UIKit 自动化身份测试 |
+| **Next** | 见 `CANDIDATE-TOUCH-HITBOX-001` |
+| **Residuals** | 真机证明 `.began` phase 假设使结构化 touch probe 零写入；该缺口与候选 cell 垂直命中修复转交后续 Assignment |
 
 ---
 
@@ -62,7 +62,7 @@ Policy version: 1.0.0
   - [x] KeyboardCore allowlist/编码、主 App 展示和候选 UI 接线有自动化或静态合同证据。
   - [x] Swift format、KeyboardCore、RimeBridgeTests、App + Keyboard tests、Debug/Release build 全绿。
   - [x] 独立 Architecture 与 Quality review 无未处置阻断项。
-  - [ ] Human Device Operator 在冻结安装上完成上/中/下单轮复测并回传内容无关日志。
+  - [x] Human Device Operator 在冻结安装上完成上/中/下单轮复测并回传内容无关日志。
 - Stop Conditions:
   - 需要记录坐标、候选索引/文字、拼音、按键或宿主内容。
   - 需要同步读取 App Group、等待 actor/锁、编码 JSON 或写磁盘才能完成触摸回调。
@@ -79,3 +79,4 @@ Policy version: 1.0.0
 
 - 2026-08-13: PR #70 后真机确认诊断读取/刷新稳定；候选栏同一候选上部 `0/5`、中部 `5/5`、下部 `5/5`。现有候选 `hitTest` 自由文本仍走 legacy Logger，而 v1 非空时 UI 不混入 legacy，故当前日志不能回答触摸在哪一层丢失。
 - 2026-08-13: 最小探针实现与 CI 等价本地门禁通过；Architecture `Blocker 0 / Major 0`，Quality 复核 `Blocker 0 / Major 0 / Minor 2`。Minor 已通过单指短时判读边界和人工轮次限制处置，不授权泛化为触摸身份。
+- 2026-08-13: PR #71 合并为 `f480dac`。固定 iPhone 13 Pro / iOS 27.0 build `24A5408d` / Debug 载荷完成唯一单指轮次，上/中/下为 `0/5 · 5/5 · 5/5`。legacy 几何日志证明 48 pt collection 内 cell 高 32 pt 且起点约 y=8；结构化候选事件为 0，后续转交 `CANDIDATE-TOUCH-HITBOX-001`。

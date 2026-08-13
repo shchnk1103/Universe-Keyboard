@@ -73,6 +73,7 @@ class KeyboardViewController: UIInputViewController {
         var activeCandidateTouchDiagnosticBand: DiagnosticEvent.CandidateTouchBand?
         var activeCandidateTouchDiagnosticDidHitCell = false
         var activeCandidateTouchDiagnosticStartTime: CFTimeInterval?
+        var candidateVisibilityDiagnosticsTask: Task<Void, Never>?
     #endif
 
     // MARK: - 视图加载
@@ -341,6 +342,7 @@ class KeyboardViewController: UIInputViewController {
     deinit {
         #if DEBUG
             highFidelityExpirationTask?.cancel()
+            candidateVisibilityDiagnosticsTask?.cancel()
         #endif
         // Swift 6 的 deinit 不保证运行在 MainActor；可见性结束时已清理心跳。
         // 若系统直接销毁扩展，最后一条心跳会在 75 秒后自然失效，宁可多跳过一次同步。
@@ -459,6 +461,7 @@ class KeyboardViewController: UIInputViewController {
     /// diagnostic persistence is disabled last so no delayed App Group write survives.
     func suspendKeyboardRuntime(reason: String, updateUI: Bool) {
         #if DEBUG
+            cancelCandidateVisibilityDiagnostic()
             recordKeyboardVisualDiagnostic("SUSPEND_BEGIN_\(reason)")
         #endif
         cancelRimeFirstFrameGate()
@@ -560,6 +563,7 @@ class KeyboardViewController: UIInputViewController {
                     forKey: DiagnosticsHighFidelityConfiguration.expirationKey
                 ) as? Date
             else {
+                cancelCandidateVisibilityDiagnostic()
                 resetCandidateTouchDiagnosticCorrelation()
                 return
             }
@@ -568,6 +572,7 @@ class KeyboardViewController: UIInputViewController {
                 try? await Task.sleep(for: .seconds(remaining))
                 guard !Task.isCancelled else { return }
                 self?.isHighFidelityDiagnosticsActive = false
+                self?.cancelCandidateVisibilityDiagnostic()
                 self?.resetCandidateTouchDiagnosticCorrelation()
             }
         }
