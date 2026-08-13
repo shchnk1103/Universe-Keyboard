@@ -1,9 +1,26 @@
 import Foundation
 import KeyboardCore
 
+nonisolated enum DiagnosticsLogClearResult: Equatable, Sendable {
+    case cleared
+    case failed
+}
+
+nonisolated struct DiagnosticsLogDay: Identifiable, Equatable, Sendable {
+    let range: DiagnosticsJournalDateRange
+
+    var id: Date { range.start }
+}
+
+nonisolated enum DiagnosticsLogDayCatalog: Equatable, Sendable {
+    case available(generation: UInt64, days: [DiagnosticsLogDay])
+    case empty(generation: UInt64)
+    case unavailable
+}
+
 protocol DiagnosticsLogSource: Sendable {
     func loadLogText() async -> String?
-    func clearLog() async
+    func clearLog() async -> DiagnosticsLogClearResult
 }
 
 /// 只有 v1 journal 支持连续分页；legacy 文本只作为过渡期只读回退，因此不会
@@ -12,6 +29,12 @@ protocol DiagnosticsLogPagingSource: DiagnosticsLogSource {
     func loadMoreLogText() async -> String?
     func hasMoreLogPages() async -> Bool
     func pagingNotice() async -> String?
+    func isPartialLogWindow() async -> Bool
+}
+
+protocol DiagnosticsDatedLogSource: DiagnosticsLogPagingSource {
+    func availableLogDayCatalog() async -> DiagnosticsLogDayCatalog
+    func selectLogDay(_ day: DiagnosticsLogDay?) async
 }
 
 struct SharedDefaultsDiagnosticsLogSource: DiagnosticsLogSource {
@@ -28,17 +51,24 @@ struct SharedDefaultsDiagnosticsLogSource: DiagnosticsLogSource {
             .joined(separator: "\n")
     }
 
-    func clearLog() async {
-        let defaults = UserDefaults(suiteName: appGroupID)
-        defaults?.removeObject(forKey: "rime_diag_log")
-        defaults?.removeObject(forKey: "rime_diag_summary")
-        defaults?.synchronize()
+    func clearLog() async -> DiagnosticsLogClearResult {
+        guard let defaults = UserDefaults(suiteName: appGroupID) else { return .failed }
+        defaults.removeObject(forKey: "rime_diag_log")
+        defaults.removeObject(forKey: "rime_diag_summary")
+        defaults.synchronize()
+        guard
+            defaults.object(forKey: "rime_diag_log") == nil,
+            defaults.object(forKey: "rime_diag_summary") == nil
+        else {
+            return .failed
+        }
+        return .cleared
     }
 }
 
 /// 迁移期间优先展示 v1 journal；尚未迁移的旧自由文本日志仅作为只读回退，
 /// 绝不重新编码或写入 v1。
-actor CompositeDiagnosticsLogSource: DiagnosticsLogPagingSource {
+actor CompositeDiagnosticsLogSource: DiagnosticsDatedLogSource {
     private enum ActiveSource {
         case v1
         case legacy
@@ -47,6 +77,7 @@ actor CompositeDiagnosticsLogSource: DiagnosticsLogPagingSource {
     let appGroupID: String
     private let v1Source: V1DiagnosticsLogSource
     private var activeSource: ActiveSource?
+    private var queryRevision: UInt64 = 0
 
     init(appGroupID: String) {
         self.appGroupID = appGroupID
@@ -54,8 +85,11 @@ actor CompositeDiagnosticsLogSource: DiagnosticsLogPagingSource {
     }
 
     func loadLogText() async -> String? {
+        let revision = advanceQueryRevision()
         let journalText = await v1Source.loadLogText()
+        guard revision == queryRevision else { return nil }
         let usedV1Result = await v1Source.didUseV1Result()
+        guard revision == queryRevision else { return nil }
         if journalText != nil || usedV1Result {
             activeSource = .v1
             return journalText
@@ -66,7 +100,10 @@ actor CompositeDiagnosticsLogSource: DiagnosticsLogPagingSource {
 
     func loadMoreLogText() async -> String? {
         guard case .v1? = activeSource else { return nil }
-        return await v1Source.loadMoreLogText()
+        let revision = queryRevision
+        let text = await v1Source.loadMoreLogText()
+        guard revision == queryRevision else { return nil }
+        return text
     }
 
     func hasMoreLogPages() async -> Bool {
@@ -79,23 +116,49 @@ actor CompositeDiagnosticsLogSource: DiagnosticsLogPagingSource {
         return await v1Source.pagingNotice()
     }
 
-    func clearLog() async {
-        await v1Source.clearLog()
-        await SharedDefaultsDiagnosticsLogSource(appGroupID: appGroupID).clearLog()
+    func isPartialLogWindow() async -> Bool {
+        guard case .v1? = activeSource else { return false }
+        return await v1Source.isPartialLogWindow()
+    }
+
+    func availableLogDayCatalog() async -> DiagnosticsLogDayCatalog {
+        await v1Source.availableLogDayCatalog()
+    }
+
+    func selectLogDay(_ day: DiagnosticsLogDay?) async {
+        _ = advanceQueryRevision()
+        await v1Source.selectLogDay(day)
+    }
+
+    func clearLog() async -> DiagnosticsLogClearResult {
+        let revision = advanceQueryRevision()
+        let v1Result = await v1Source.clearLog()
+        let legacyResult = await SharedDefaultsDiagnosticsLogSource(appGroupID: appGroupID).clearLog()
+        guard revision == queryRevision else { return .failed }
+        guard v1Result == .cleared, legacyResult == .cleared else { return .failed }
         activeSource = nil
+        return .cleared
+    }
+
+    @discardableResult
+    private func advanceQueryRevision() -> UInt64 {
+        queryRevision = queryRevision == UInt64.max ? 1 : queryRevision + 1
+        return queryRevision
     }
 }
 
 /// Main-App-only repository adapter. File enumeration and JSONL parsing stay in
 /// `DiagnosticsJournalReader`; this type only obtains the App Group root and
 /// formats already allowlisted events for the presentation layer.
-actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
+actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource {
     let appGroupID: String
     private let rootURLProvider: @Sendable () -> URL?
     private var reader: DiagnosticsJournalReader?
     private var nextCursor: DiagnosticsJournalPageCursor?
     private var lastPageStatus: DiagnosticsJournalPageStatus = .completed
     private var usedV1Result = false
+    private var selectedLogDay: DiagnosticsLogDay?
+    private var queryRevision: UInt64 = 0
 
     init(
         appGroupID: String,
@@ -114,6 +177,8 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
     }
 
     func loadLogText() async -> String? {
+        let revision = advanceQueryRevision()
+        let requestedDay = selectedLogDay
         usedV1Result = false
         guard let rootURL = journalRootURL() else {
             reader = nil
@@ -124,14 +189,27 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
             usedV1Result = true
             return nil
         }
-        // 诊断页刷新只投递受控 cadence；scheduler 在 utility task 内完成 reclaim，
-        // 不阻塞本次 v1 查询，更不会进入 Keyboard Extension 热路径。
-        _ = await DiagnosticsJournalRetentionScheduler.shared.requestReclaim(rootURL: rootURL)
+        // Retention 由 Main App lifecycle 统一投递。Reader 使用非阻塞独占
+        // snapshot fence；若在这里先启动 reclaim，会让本次读取与自己竞争并
+        // 偶发降级为 journalUnavailable。
         let reader = DiagnosticsJournalReader(rootURL: rootURL)
         let page: DiagnosticsJournalPage
         do {
-            page = try await reader.beginPage()
+            let strictPage = try await reader.beginPage(in: requestedDay?.range)
+            guard revision == queryRevision, requestedDay == selectedLogDay else { return nil }
+            switch strictPage.status {
+            case .snapshotExceedsReadBudget, .snapshotExceedsEventBudget:
+                if let requestedDay {
+                    page = try await reader.recentPreview(in: requestedDay.range)
+                    guard revision == queryRevision, requestedDay == self.selectedLogDay else { return nil }
+                } else {
+                    page = strictPage
+                }
+            default:
+                page = strictPage
+            }
         } catch {
+            guard revision == queryRevision, requestedDay == selectedLogDay else { return nil }
             self.reader = nil
             nextCursor = nil
             lastPageStatus = .journalUnavailable
@@ -141,7 +219,8 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
         lastPageStatus = page.status
         // 空的正常 v1 journal 仍应允许 legacy 只读回退；只有 v1 实际有事件，
         // 或它明确报告受控 failure/invalidation 时，才由 v1 占据诊断视图。
-        usedV1Result = !page.events.isEmpty || page.status != .completed
+        guard revision == queryRevision, requestedDay == selectedLogDay else { return nil }
+        usedV1Result = requestedDay != nil || !page.events.isEmpty || page.status != .completed
         guard !page.events.isEmpty else {
             self.reader = nil
             nextCursor = nil
@@ -157,15 +236,18 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
             self.nextCursor = nil
             return nil
         }
+        let revision = queryRevision
         let page: DiagnosticsJournalPage
         do {
             page = try await reader.nextPage(after: nextCursor)
         } catch {
+            guard revision == queryRevision else { return nil }
             self.nextCursor = nil
             lastPageStatus = .journalUnavailable
             usedV1Result = true
             return nil
         }
+        guard revision == queryRevision else { return nil }
         lastPageStatus = page.status
         self.nextCursor = page.nextCursor
         guard !page.events.isEmpty else { return nil }
@@ -174,6 +256,28 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
 
     func hasMoreLogPages() -> Bool {
         nextCursor != nil
+    }
+
+    func availableLogDayCatalog() async -> DiagnosticsLogDayCatalog {
+        guard let rootURL = journalRootURL() else { return .unavailable }
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        do {
+            let catalog = try await reader.availableDateCatalog()
+            let days = catalog.ranges.map(DiagnosticsLogDay.init(range:))
+            guard !days.isEmpty else { return .empty(generation: catalog.generation) }
+            return .available(generation: catalog.generation, days: days)
+        } catch {
+            return .unavailable
+        }
+    }
+
+    func selectLogDay(_ day: DiagnosticsLogDay?) {
+        guard selectedLogDay != day else { return }
+        _ = advanceQueryRevision()
+        selectedLogDay = day
+        reader = nil
+        nextCursor = nil
+        lastPageStatus = .completed
     }
 
     func pagingNotice() -> String? {
@@ -187,9 +291,11 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
         case .cursorUnavailable:
             "日志分页已失效，请刷新后继续查看。"
         case .snapshotExceedsReadBudget:
-            "当前日志快照过大，无法在安全读取上限内严格排序；请清空、等待自动保留清理，或缩小日志量后刷新。"
+            "当前日志快照过大，无法在安全读取上限内严格排序；请使用右上角垃圾桶清空后重新记录。"
         case .snapshotExceedsEventBudget:
-            "当前日志快照超过安全事件上限；请清空、等待自动保留清理，或缩小日志量后刷新。"
+            "当前日志快照超过安全事件上限；请使用右上角垃圾桶清空后重新记录。"
+        case .partialRecentWindow:
+            "当前日期的完整日志超过安全读取上限，下面仅展示有界最近窗口；较早记录仍保留在设备上。"
         case .snapshotUnavailable:
             "日志正在轮转或回收，请刷新后查看当前记录。"
         case .journalUnavailable:
@@ -197,23 +303,41 @@ actor V1DiagnosticsLogSource: DiagnosticsLogPagingSource {
         }
     }
 
+    func isPartialLogWindow() -> Bool {
+        lastPageStatus == .partialRecentWindow
+    }
+
     func didUseV1Result() -> Bool {
         usedV1Result
     }
 
-    func clearLog() async {
-        guard let rootURL = journalRootURL() else { return }
+    func clearLog() async -> DiagnosticsLogClearResult {
+        _ = advanceQueryRevision()
+        guard let rootURL = journalRootURL() else { return .failed }
         let writer = DiagnosticsJournalWriter(
             rootURL: rootURL,
             origin: .mainApp,
             isMainAppWriter: true
         )
-        guard (try? await writer.prepareRootIfOwnedByMainApp()) != nil else { return }
-        _ = try? await writer.advanceGenerationForClear()
+        do {
+            try await writer.prepareRootIfOwnedByMainApp()
+            _ = try await writer.advanceGenerationForClear()
+        } catch {
+            return .failed
+        }
+        _ = advanceQueryRevision()
         reader = nil
         nextCursor = nil
         lastPageStatus = .completed
         usedV1Result = false
+        selectedLogDay = nil
+        return .cleared
+    }
+
+    @discardableResult
+    private func advanceQueryRevision() -> UInt64 {
+        queryRevision = queryRevision == UInt64.max ? 1 : queryRevision + 1
+        return queryRevision
     }
 
     private func journalRootURL() -> URL? {

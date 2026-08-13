@@ -31,13 +31,19 @@ final class DiagnosticsStore {
     var isLoadingMore = false
     var hasMorePages = false
     var pagingNotice: String?
+    var clearFailureNotice: String?
+    var isPartialWindow = false
+    var availableLogDays: [DiagnosticsLogDay] = []
+    var selectedLogDay: DiagnosticsLogDay?
     private var hasLoadedOlderPages = false
+    private var isFollowingLatestDay = true
     var selectedSummaryFilter: SummaryFilter = .all
     var selectedCategory: Logger.Category?
 
     private let logSource: any DiagnosticsLogSource
 
     private var liveRefreshTask: Task<Void, Never>?
+    private var queryRevision: UInt64 = 0
 
     init(logSource: any DiagnosticsLogSource = CompositeDiagnosticsLogSource(appGroupID: universeAppGroupID)) {
         self.logSource = logSource
@@ -107,6 +113,14 @@ final class DiagnosticsStore {
         exportLimitMessage == nil && !filteredLines.isEmpty
     }
 
+    var canClearLog: Bool {
+        !isClearing && (!lines.isEmpty || pagingNotice != nil || clearFailureNotice != nil)
+    }
+
+    var displayedNotice: String? {
+        clearFailureNotice ?? pagingNotice
+    }
+
     var exportLimitMessage: String? {
         let records = filteredLines
         guard records.count <= Self.exportMaximumRecordCount else {
@@ -120,8 +134,14 @@ final class DiagnosticsStore {
     }
 
     func loadLog() {
+        guard !isClearing else { return }
+        let revision = advanceQueryRevision()
+        isRefreshing = true
+        isLoadingMore = false
         Task {
-            await replaceWithLatestPage()
+            await replaceWithLatestPage(refreshDays: true, revision: revision)
+            guard revision == queryRevision else { return }
+            isRefreshing = false
         }
     }
 
@@ -131,9 +151,7 @@ final class DiagnosticsStore {
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(1))
                 guard let self, !Task.isCancelled else { return }
-                // 已展开更早历史时不重置冻结分页查询；用户可手动刷新以开始新快照。
-                guard !self.hasLoadedOlderPages else { continue }
-                await self.replaceWithLatestPage()
+                await self.performLiveRefreshTick()
             }
         }
     }
@@ -144,49 +162,100 @@ final class DiagnosticsStore {
     }
 
     func refresh() {
-        guard !isRefreshing else { return }
+        guard !isRefreshing, !isClearing, !isLoadingMore else { return }
+        let revision = advanceQueryRevision()
         isRefreshing = true
+        clearFailureNotice = nil
 
         Task {
             try? await Task.sleep(for: .milliseconds(400))
-            await replaceWithLatestPage()
+            guard revision == queryRevision else { return }
+            await replaceWithLatestPage(refreshDays: true, revision: revision)
+            guard revision == queryRevision else { return }
             isRefreshing = false
         }
     }
 
     func performClear() {
         guard !isClearing else { return }
+        let revision = advanceQueryRevision()
         isClearing = true
+        isRefreshing = false
+        isLoadingMore = false
+        clearFailureNotice = nil
 
         Task {
             try? await Task.sleep(for: .milliseconds(300))
-            await logSource.clearLog()
-            lines = []
-            hasMorePages = false
-            hasLoadedOlderPages = false
-            pagingNotice = nil
+            guard revision == queryRevision else { return }
+            let result = await logSource.clearLog()
+            guard revision == queryRevision else { return }
+            if result == .cleared {
+                lines = []
+                hasMorePages = false
+                hasLoadedOlderPages = false
+                pagingNotice = nil
+                availableLogDays = []
+                selectedLogDay = nil
+                isPartialWindow = false
+                isFollowingLatestDay = true
+            } else {
+                clearFailureNotice = "未能完整清空诊断日志，请稍后重试。现有记录可能仍然存在。"
+            }
             isClearing = false
         }
     }
 
     func loadMore() {
-        guard hasMorePages, !isLoadingMore, lines.count < Self.exportMaximumRecordCount else { return }
+        guard
+            hasMorePages,
+            !isLoadingMore,
+            !isRefreshing,
+            !isClearing,
+            lines.count < Self.exportMaximumRecordCount
+        else { return }
         guard let pagingSource = logSource as? any DiagnosticsLogPagingSource else {
             hasMorePages = false
             return
         }
+        let revision = queryRevision
         isLoadingMore = true
         Task {
-            if let text = await pagingSource.loadMoreLogText() {
+            let text = await pagingSource.loadMoreLogText()
+            guard revision == queryRevision else { return }
+            let sourceHasMorePages = await pagingSource.hasMoreLogPages()
+            guard revision == queryRevision else { return }
+            let notice = await pagingSource.pagingNotice()
+            guard revision == queryRevision else { return }
+            let isPartial = await pagingSource.isPartialLogWindow()
+            guard revision == queryRevision else { return }
+
+            if let text {
                 let remainingCapacity = Self.exportMaximumRecordCount - lines.count
                 lines.append(contentsOf: Self.lines(from: text).prefix(remainingCapacity))
                 hasLoadedOlderPages = true
             }
             hasMorePages =
-                await pagingSource.hasMoreLogPages()
+                sourceHasMorePages
                 && lines.count < Self.exportMaximumRecordCount
-            pagingNotice = await pagingSource.pagingNotice()
+            pagingNotice = notice
+            isPartialWindow = isPartial
             isLoadingMore = false
+        }
+    }
+
+    func selectLogDay(_ day: DiagnosticsLogDay) {
+        guard day != selectedLogDay, !isRefreshing, !isClearing else { return }
+        let revision = advanceQueryRevision()
+        // 日期选择是新的根查询，可以主动废弃尚未完成的旧页，而不是吞掉用户点击。
+        isLoadingMore = false
+        selectedLogDay = day
+        isFollowingLatestDay = day == availableLogDays.first
+        isRefreshing = true
+        clearFailureNotice = nil
+        Task {
+            await replaceWithLatestPage(refreshDays: false, revision: revision)
+            guard revision == queryRevision else { return }
+            isRefreshing = false
         }
     }
 
@@ -208,16 +277,84 @@ final class DiagnosticsStore {
         return "secondary"
     }
 
-    private func replaceWithLatestPage() async {
-        lines = Self.lines(from: await logSource.loadLogText())
-        hasLoadedOlderPages = false
-        if let pagingSource = logSource as? any DiagnosticsLogPagingSource {
-            hasMorePages = await pagingSource.hasMoreLogPages()
-            pagingNotice = await pagingSource.pagingNotice()
-        } else {
-            hasMorePages = false
-            pagingNotice = nil
+    func performLiveRefreshTick() async {
+        // 用户正在浏览历史日期或已展开旧页时，实时刷新不得重置其上下文。
+        guard
+            isFollowingLatestDay,
+            !hasLoadedOlderPages,
+            !isClearing,
+            !isRefreshing,
+            !isLoadingMore
+        else { return }
+        // 实时根刷新与手动根查询遵守同一 revision 边界。先占用刷新状态，
+        // 避免刷新在 source await 期间又启动一个旧 cursor 的 load-more。
+        let revision = advanceQueryRevision()
+        isRefreshing = true
+        await replaceWithLatestPage(refreshDays: true, revision: revision)
+        guard revision == queryRevision else { return }
+        isRefreshing = false
+    }
+
+    private func replaceWithLatestPage(refreshDays: Bool, revision: UInt64) async {
+        if let datedSource = logSource as? any DiagnosticsDatedLogSource {
+            if refreshDays || availableLogDays.isEmpty {
+                let catalog = await datedSource.availableLogDayCatalog()
+                guard revision == queryRevision else { return }
+                switch catalog {
+                case let .available(_, days):
+                    availableLogDays = days
+                    if isFollowingLatestDay {
+                        selectedLogDay = days.first
+                    } else if let selectedLogDay, days.contains(selectedLogDay) {
+                        self.selectedLogDay = selectedLogDay
+                    } else {
+                        selectedLogDay = days.first
+                        isFollowingLatestDay = true
+                    }
+                case .empty:
+                    availableLogDays = []
+                    selectedLogDay = nil
+                    isFollowingLatestDay = true
+                case .unavailable:
+                    // 保留当前日期和可见内容；“暂不可读”绝不能变成无范围查询。
+                    hasMorePages = false
+                    isPartialWindow = false
+                    pagingNotice = "日志正在轮转或回收，请刷新后查看当前记录。"
+                    return
+                }
+            }
+            await datedSource.selectLogDay(selectedLogDay)
+            guard revision == queryRevision else { return }
         }
+        let text = await logSource.loadLogText()
+        guard revision == queryRevision else { return }
+        let sourceHasMorePages: Bool
+        let notice: String?
+        let isPartial: Bool
+        if let pagingSource = logSource as? any DiagnosticsLogPagingSource {
+            sourceHasMorePages = await pagingSource.hasMoreLogPages()
+            guard revision == queryRevision else { return }
+            notice = await pagingSource.pagingNotice()
+            guard revision == queryRevision else { return }
+            isPartial = await pagingSource.isPartialLogWindow()
+            guard revision == queryRevision else { return }
+        } else {
+            sourceHasMorePages = false
+            notice = nil
+            isPartial = false
+        }
+
+        lines = Self.lines(from: text)
+        hasLoadedOlderPages = false
+        hasMorePages = sourceHasMorePages
+        pagingNotice = notice
+        isPartialWindow = isPartial
+    }
+
+    @discardableResult
+    private func advanceQueryRevision() -> UInt64 {
+        queryRevision = queryRevision == UInt64.max ? 1 : queryRevision + 1
+        return queryRevision
     }
 
     private static func lines(from text: String?) -> [String] {
