@@ -6,6 +6,61 @@ import XCTest
 
 final class DiagnosticsLogSourceTests: XCTestCase {
     @MainActor
+    func testCandidateTouchEventsDisplayCoarseBandAndCorrelationSequence() async throws {
+        let rootURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let rootOwner = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: UUID(),
+            isMainAppWriter: true
+        )
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .keyboardExtension,
+            processInstanceID: processID,
+            isMainAppWriter: false
+        )
+        try await rootOwner.prepareRootIfOwnedByMainApp()
+        try await writer.append([
+            DiagnosticEvent(
+                utcTimestamp: Date(),
+                monotonicNanoseconds: 1,
+                origin: .keyboardExtension,
+                processInstanceID: processID,
+                localSequence: 1,
+                actionSequence: 7,
+                code: .candidateTouchRouted,
+                level: .info,
+                category: .display,
+                fields: [
+                    .count(.candidateTouchBand, DiagnosticEvent.CandidateTouchBand.upper.rawValue),
+                    .flag(.didHitCandidateCell, false),
+                ]
+            )
+        ])
+        let source = V1DiagnosticsLogSource(
+            appGroupID: "test.group",
+            rootURLProvider: { rootURL }
+        )
+        let catalog = await source.availableLogDayCatalog()
+        guard case let .available(_, days) = catalog else {
+            return XCTFail("Expected an available day catalog")
+        }
+        await source.selectLogDay(try XCTUnwrap(days.first))
+
+        let loadedText = await source.loadLogText()
+        let text = try XCTUnwrap(loadedText)
+
+        XCTAssertTrue(text.contains("candidate.touch_routed"))
+        XCTAssertTrue(text.contains("action=7"))
+        XCTAssertTrue(text.contains("candidate_touch_band=upper"))
+        XCTAssertTrue(text.contains("candidate_cell_hit=false"))
+        XCTAssertFalse(text.contains("candidate_index"))
+    }
+
+    @MainActor
     func testV1ReadFailureStaysInV1WithControlledUnavailableNotice() async {
         let missingRoot = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let source = V1DiagnosticsLogSource(

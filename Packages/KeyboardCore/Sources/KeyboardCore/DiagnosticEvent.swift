@@ -24,6 +24,9 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case rimeOwnerPublished = "rime.owner.published"
         case uiApplied = "ui.applied"
         case candidateVisibilityChanged = "candidate.visibility_changed"
+        case candidateTouchRouted = "candidate.touch_routed"
+        case candidateGestureTerminal = "candidate.gesture_terminal"
+        case candidateSelectionDelivered = "candidate.selection_delivered"
     }
 
     public enum Reason: String, Codable, CaseIterable, Sendable {
@@ -48,6 +51,9 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case revision = "revision"
         case sessionEpoch = "session_epoch"
         case generation = "generation"
+        /// 0 = upper, 1 = middle, 2 = lower. Kept coarse so diagnostics never
+        /// persist precise pointer coordinates.
+        case candidateTouchBand = "candidate_touch_band"
     }
 
     public enum DurationMetric: String, Codable, CaseIterable, Sendable {
@@ -59,6 +65,24 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case isHighFidelityEnabled = "high_fidelity_enabled"
         case isCandidateBarVisible = "candidate_bar_visible"
         case isKeyHighlighted = "key_highlighted"
+        case didHitCandidateCell = "candidate_cell_hit"
+        case didCandidatePanBegin = "candidate_pan_began"
+        case wasCandidateTouchCancelled = "candidate_touch_cancelled"
+    }
+
+    /// Content-free vertical bucket used by the Debug candidate touch probe.
+    public enum CandidateTouchBand: Int, Codable, CaseIterable, Sendable {
+        case upper = 0
+        case middle = 1
+        case lower = 2
+
+        public static func classify(y: Double, height: Double) -> Self {
+            guard height > 0 else { return .middle }
+            let normalizedY = min(max(y / height, 0), 1)
+            if normalizedY < 1.0 / 3.0 { return .upper }
+            if normalizedY < 2.0 / 3.0 { return .middle }
+            return .lower
+        }
     }
 
     /// 每个字段的 name、type 和允许值均由枚举约束，避免日志绕过隐私审查。

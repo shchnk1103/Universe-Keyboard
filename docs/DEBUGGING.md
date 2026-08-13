@@ -77,6 +77,25 @@ contains typed or candidate content.
 
 Always correlate a failure with its immediately preceding lifecycle/deployment event instead of reading isolated lines.
 
+### Candidate touch routing probe (Debug high fidelity)
+
+候选栏触摸探针只在 Debug 构建且 30 分钟高保真窗口仍有效时写入 v1。它使用同一个
+`appearance` 和 `action` 对单指、短时操作做 best-effort 关联，不记录坐标、候选索引、
+候选内容或宿主内容；多指或辅助功能路径不能把 `action` 当作触摸身份：
+
+| Event / field | Meaning |
+|---|---|
+| `candidate.touch_routed` | 该触摸已经到达 `CandidateBarView.hitTest`；`candidate_touch_band` 仅为 `upper / middle / lower`，`candidate_cell_hit` 表示 UIKit 最终命中视图是否属于候选 cell。 |
+| `candidate.gesture_terminal` | 候选列表手势结束；`candidate_pan_began` 表示 pan 是否进入 `.began`，`candidate_touch_cancelled` 只表示终态为 `.cancelled`。 |
+| `candidate.selection_delivered` | 同一 `action` 已进入候选选择回调；它不证明后续 RIME/宿主提交成功。 |
+
+对固定候选的可见文字区域依次点击上、中、下三分区，每区五次，并按 `action` 读取链路；
+不要把候选栏下方的额外手势承接区算作可见“下部”。某次没有
+`candidate.touch_routed`，只说明触摸未到达该观测点（或高保真窗口已关闭）；不要把“无事件”
+直接解释为某个手势取消。若 routed 存在但 `candidate_cell_hit=false`，问题位于 bar 内部命中；
+若 cell 命中但没有 `candidate.selection_delivered`，再结合 gesture terminal 判断 UIKit 选择前链路。
+探针是观测工具，不授权扩大命中区或改变 gesture cancellation。
+
 ## Troubleshooting Flows
 
 ### T9 Path Bar Collapses After Long Segmented Input

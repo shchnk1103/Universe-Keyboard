@@ -43,6 +43,10 @@ final class CandidateCollectionView: UICollectionView {
     private var lastHitTestDiagnosticLogTime: CFTimeInterval = 0
     private var lastPanDiagnosticLogTime: CFTimeInterval = 0
     private var lastPanDiagnosticState: UIGestureRecognizer.State = .possible
+    #if DEBUG
+        var onCandidateGestureTerminal: ((_ didBegin: Bool, _ wasCancelled: Bool) -> Void)?
+        private var didCurrentPanBegin = false
+    #endif
 
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
@@ -80,6 +84,9 @@ final class CandidateCollectionView: UICollectionView {
     }
 
     @objc private func logPanState(_ recognizer: UIPanGestureRecognizer) {
+        #if DEBUG
+            recordStructuredPanTerminalIfNeeded(recognizer.state)
+        #endif
         guard CandidateTouchDiagnostics.isEnabled else { return }
         let now = CACurrentMediaTime()
         let state = recognizer.state
@@ -100,6 +107,20 @@ final class CandidateCollectionView: UICollectionView {
             category: .display
         )
     }
+
+    #if DEBUG
+        private func recordStructuredPanTerminalIfNeeded(_ state: UIGestureRecognizer.State) {
+            switch state {
+            case .began:
+                didCurrentPanBegin = true
+            case .ended, .cancelled, .failed:
+                onCandidateGestureTerminal?(didCurrentPanBegin, state == .cancelled)
+                didCurrentPanBegin = false
+            default:
+                break
+            }
+        }
+    #endif
 
     private func logTouch(
         _ name: String,

@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`TD-012-LMDG-MODEL-G2` Product Hold；`DIAGNOSTICS-DAY-BROWSER-001` Executor、Architecture 与 Quality 收口并移入 Completed；Active Work `8/10`。
+Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`TD-012-LMDG-MODEL-G2` Product Hold；`CANDIDATE-TOUCH-OBSERVABILITY-001` 自动门禁与独立审查通过；Active Work `9/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -17,6 +17,7 @@ Last synced: `2026-08-13 Asia/Shanghai` — KOS 2.1 ops lifecycle reconciled；`
 | 6 | TYPING-INTELLIGENCE-001 | Active | Implementation; Quality pending | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 7 | TYPO-CORRECTION-002 | Active | Contextual recovery; sim scenarios pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 8 | DIAGNOSTICS-OBSERVABILITY-001 | Active | P0 已合并；等待 Product Gate，P1 后续见 TD-013 | [`assignments/diagnostics-observability-001.md`](assignments/diagnostics-observability-001.md) |
+| 9 | CANDIDATE-TOUCH-OBSERVABILITY-001 | Active | 自动门禁与独立审查通过；等待 PR 合并及一次单指真机复测 | [`assignments/candidate-touch-observability-001.md`](assignments/candidate-touch-observability-001.md) |
 
 ## Completed (not Active)
 
