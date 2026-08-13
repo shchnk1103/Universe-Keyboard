@@ -2,6 +2,14 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-13 — 万象基础输入恢复与部署成功合同收紧
+
+- 修复万象官方 `algebra.__patch` 被写入普通模糊音规则后产生无效 YAML 的问题；万象继续保持“暂不支持受管模糊音”，部署准备只清理旧的 Universe 管理块，不再改变上游候选语义。
+- RIME 完整部署只有在收到本轮终态成功通知、校验当前活动方案输入并通过内容无关的基础 smoke 后才标记成功；失败继续保留恢复意图。
+- 恢复方案切换后的待处理自动部署，并以持久失败抑制避免后台重复重试；新的部署意图或人工重试可重新发起。
+- Swift 6 CI 使用完整 Git 历史并在 base commit 或变更文件解析失败时关闭门禁，避免格式检查假绿。
+- TD-012 G2-A 固定模型门通过；G2-B 因 Debug 业务二进制不一致而作废，Product disposition 为 **Hold**，不授权 G3。
+
 ## 2026-08-10 — TD-012 G1 Closed: octagram vendor + independent review
 
 - New immutable vendor pin `rime-vendor-ios-1.16.1-lua.1-octagram.1` adds

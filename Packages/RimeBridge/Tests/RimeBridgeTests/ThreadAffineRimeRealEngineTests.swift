@@ -125,11 +125,12 @@ final class ThreadAffineRimeRealEngineTests: XCTestCase {
 
         let fileManager = FileManager.default
         guard fileManager.fileExists(atPath: sharedDir),
-              fileManager.fileExists(atPath: userDir)
+            fileManager.fileExists(atPath: userDir)
         else {
             throw XCTSkip("R4-B runtime directories do not exist.")
         }
-        guard fileManager.fileExists(atPath: "\(sharedDir)/rime_ice.schema.yaml")
+        guard
+            fileManager.fileExists(atPath: "\(sharedDir)/rime_ice.schema.yaml")
                 || fileManager.fileExists(atPath: "\(sharedDir)/t9.schema.yaml")
         else {
             throw XCTSkip("R4-B runtime lacks rime_ice.schema.yaml and t9.schema.yaml.")

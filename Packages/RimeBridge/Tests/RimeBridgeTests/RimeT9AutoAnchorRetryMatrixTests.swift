@@ -115,8 +115,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
             base.diagnosticSessionSnapshot
         }
 
-        var onRuntimeSelectionChanged:
-            ((RimeRuntimeSelection) -> Void)?
+        var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)?
         {
             get { base.onRuntimeSelectionChanged }
             set { base.onRuntimeSelectionChanged = newValue }
@@ -685,9 +684,11 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
             XCTAssertEqual(engine.replaceInputCount, 3)
             XCTAssertEqual(engine.resetCount, 0)
             XCTAssertEqual(engine.recoverCount, 0)
-            XCTAssertEqual(outcomes.map(\.status), [
-                .accepted, .rejectedAndRestored,
-            ])
+            XCTAssertEqual(
+                outcomes.map(\.status),
+                [
+                    .accepted, .rejectedAndRestored,
+                ])
             XCTAssertEqual(outcomes.map(\.attemptIndex), [1, 2])
             XCTAssertEqual(
                 controller.state.t9ReversibleAutoAnchorState.phase,
@@ -735,9 +736,11 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
             XCTAssertEqual(engine.replaceInputCount, 3)
             XCTAssertEqual(engine.resetCount, 1)
             XCTAssertEqual(engine.recoverCount, 0)
-            XCTAssertEqual(outcomes.map(\.status), [
-                .accepted, .restoreFailed,
-            ])
+            XCTAssertEqual(
+                outcomes.map(\.status),
+                [
+                    .accepted, .restoreFailed,
+                ])
             XCTAssertNil(controller.state.lastRimeOutput)
             XCTAssertEqual(
                 controller.state.t9ReversibleAutoAnchorState,
@@ -826,9 +829,9 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
         let pairedDeltas = s4PairedDeltaRows(summaries)
             .joined(separator: ";")
         #if DEBUG
-        let buildConfiguration = "Debug"
+            let buildConfiguration = "Debug"
         #else
-        let buildConfiguration = "Release"
+            let buildConfiguration = "Release"
         #endif
         let runHeader = [
             "runID=\(matrixRunID)",
@@ -1257,8 +1260,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
 
         var reopenedRank = -1
         var personalizedTwoSyllable: Attempt?
-        var personalizedRollingOutcomes:
-            [T9ReversibleAutoAnchorOutcome] = []
+        var personalizedRollingOutcomes: [T9ReversibleAutoAnchorOutcome] = []
         do {
             let engine = RimeEngineImpl(
                 sharedDataDir: directories.sharedDir,
@@ -2347,9 +2349,7 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
             arm == .a1e || arm == .b2e || arm == .b3e
 
         var currentAction = 0
-        var outcomes: [
-            (action: Int, outcome: T9ReversibleAutoAnchorOutcome)
-        ] = []
+        var outcomes: [(action: Int, outcome: T9ReversibleAutoAnchorOutcome)] = []
         controller.onReversibleT9AutoAnchorOutcome = {
             outcomes.append((currentAction, $0))
         }
@@ -2707,11 +2707,11 @@ final class RimeT9AutoAnchorRetryMatrixTests: XCTestCase {
 
     private var runtimeArchitecture: String {
         #if arch(arm64)
-        "arm64"
+            "arm64"
         #elseif arch(x86_64)
-        "x86_64"
+            "x86_64"
         #else
-        "unknown"
+            "unknown"
         #endif
     }
 

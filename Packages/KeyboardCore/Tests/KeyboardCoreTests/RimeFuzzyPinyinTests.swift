@@ -91,7 +91,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
         XCTAssertEqual(second.yaml.components(separatedBy: RimeFuzzyPinyinPostProcessor.beginMarker).count - 1, 1)
     }
 
-    func testPostProcessorNestsManagedBlockInsideWanxiangPatchSequence() {
+    func testPostProcessorLeavesOfficialWanxiangAlgebraUnchanged() {
         let yaml = """
             schema:
               schema_id: wanxiang
@@ -107,25 +107,10 @@ final class RimeFuzzyPinyinTests: XCTestCase {
 
         let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
 
-        XCTAssertEqual(result.status, .updated)
-        XCTAssertTrue(
-            result.yaml.contains(
-                """
-                  algebra:
-                    __patch:
-                      #- 模糊音
-                      - wanxiang_algebra:/base/全拼  #拼音转双拼码
-                      # universe:fuzzy-pinyin begin
-                      - wanxiang_algebra:/模糊音_z_zh
-                      - wanxiang_algebra:/模糊音_c_ch
-                      - wanxiang_algebra:/模糊音_s_sh
-                      - wanxiang_algebra:/模糊音_nl
-                """
-            )
-        )
-        XCTAssertFalse(
-            result.yaml.components(separatedBy: "\n").contains("    # universe:fuzzy-pinyin begin")
-        )
+        XCTAssertEqual(result.status, .unchanged)
+        XCTAssertEqual(result.yaml, yaml)
+        XCTAssertFalse(result.yaml.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        XCTAssertFalse(result.yaml.contains("wanxiang_algebra:/模糊音_"))
     }
 
     func testPostProcessorRepairsPreviouslyMisnestedWanxiangManagedBlock() {
@@ -145,16 +130,51 @@ final class RimeFuzzyPinyinTests: XCTestCase {
 
         let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: malformedYaml)
 
-        XCTAssertEqual(result.status, .updated)
-        XCTAssertTrue(result.yaml.contains("      # universe:fuzzy-pinyin begin"))
-        XCTAssertTrue(result.yaml.contains("      - wanxiang_algebra:/模糊音_z_zh"))
+        XCTAssertEqual(result.status, .removed)
+        XCTAssertTrue(result.yaml.contains("      - wanxiang_algebra:/base/全拼"))
         XCTAssertFalse(result.yaml.contains("      - derive/^zh/z/"))
-        XCTAssertFalse(
-            result.yaml.components(separatedBy: "\n").contains("    # universe:fuzzy-pinyin begin")
-        )
+        XCTAssertFalse(result.yaml.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        XCTAssertFalse(result.yaml.contains("wanxiang_algebra:/模糊音_"))
     }
 
-    func testPostProcessorSelectsOnlyEnabledWanxiangPatchReferences() {
+    func testPostProcessorRemovesPreviouslyGeneratedWanxiangPatchBlockIdempotently() {
+        let previousOutput = """
+            schema:
+              schema_id: wanxiang
+            speller:
+              algebra:
+                __patch:
+                  #- 模糊音
+                  - wanxiang_algebra:/base/全拼  #拼音转双拼码
+                  # universe:fuzzy-pinyin begin
+                  - wanxiang_algebra:/模糊音_z_zh
+                  - wanxiang_algebra:/模糊音_c_ch
+                  - wanxiang_algebra:/模糊音_s_sh
+                  - wanxiang_algebra:/模糊音_nl
+                  # universe:fuzzy-pinyin end
+            """
+        let expectedCleanup = """
+            schema:
+              schema_id: wanxiang
+            speller:
+              algebra:
+                __patch:
+                  #- 模糊音
+                  - wanxiang_algebra:/base/全拼  #拼音转双拼码
+            """
+
+        let first = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: previousOutput)
+        let second = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: first.yaml)
+
+        XCTAssertEqual(first.status, .removed)
+        XCTAssertEqual(first.yaml, expectedCleanup)
+        XCTAssertFalse(first.yaml.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        XCTAssertFalse(first.yaml.contains("wanxiang_algebra:/模糊音_"))
+        XCTAssertEqual(second.status, .unchanged)
+        XCTAssertEqual(second.yaml, first.yaml)
+    }
+
+    func testPostProcessorDoesNotApplyManagedFuzzySettingsToWanxiang() {
         let yaml = """
             schema:
               schema_id: wanxiang
@@ -172,10 +192,9 @@ final class RimeFuzzyPinyinTests: XCTestCase {
 
         let result = RimeFuzzyPinyinPostProcessor.apply(settings: settings, to: yaml)
 
-        XCTAssertTrue(result.yaml.contains("      - wanxiang_algebra:/模糊音_c_ch"))
-        XCTAssertTrue(result.yaml.contains("      - wanxiang_algebra:/模糊音_nl"))
-        XCTAssertFalse(result.yaml.contains("模糊音_z_zh"))
-        XCTAssertFalse(result.yaml.contains("模糊音_s_sh"))
+        XCTAssertEqual(result.status, .unchanged)
+        XCTAssertEqual(result.yaml, yaml)
+        XCTAssertFalse(result.yaml.contains("wanxiang_algebra:/模糊音_"))
     }
 
     func testPostProcessorSkipsUnknownAlgebraMappingInsteadOfProducingInvalidYaml() {
@@ -194,7 +213,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
         XCTAssertEqual(result.yaml, yaml)
     }
 
-    func testPostProcessorRejectsUnknownWanxiangPatchAnchorWithoutRemovingManagedBlock() {
+    func testPostProcessorRemovesOwnedBlockFromUnknownWanxiangPatchWithoutAddingRules() {
         let yaml = """
             schema:
               schema_id: wanxiang
@@ -209,8 +228,10 @@ final class RimeFuzzyPinyinTests: XCTestCase {
 
         let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
 
-        XCTAssertEqual(result.status, .skippedUnsupportedAlgebra)
-        XCTAssertEqual(result.yaml, yaml)
+        XCTAssertEqual(result.status, .removed)
+        XCTAssertTrue(result.yaml.contains("- wanxiang_algebra:/unknown"))
+        XCTAssertFalse(result.yaml.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
+        XCTAssertFalse(result.yaml.contains("wanxiang_algebra:/模糊音_"))
     }
 
     func testPostProcessorRejectsWanxiangAnchorInAnotherSchema() {
@@ -229,7 +250,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
         XCTAssertEqual(result.yaml, yaml)
     }
 
-    func testPostProcessorRejectsWanxiangWithoutAlgebra() {
+    func testPostProcessorLeavesWanxiangWithoutAlgebraUnchanged() {
         let yaml = """
             schema:
               schema_id: wanxiang
@@ -239,11 +260,11 @@ final class RimeFuzzyPinyinTests: XCTestCase {
 
         let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
 
-        XCTAssertEqual(result.status, .skippedUnsupportedAlgebra)
+        XCTAssertEqual(result.status, .unchanged)
         XCTAssertEqual(result.yaml, yaml)
     }
 
-    func testPostProcessorRejectsWanxiangWithListAlgebra() {
+    func testPostProcessorLeavesWanxiangListAlgebraUnchanged() {
         let yaml = """
             schema:
               schema_id: wanxiang
@@ -254,11 +275,11 @@ final class RimeFuzzyPinyinTests: XCTestCase {
 
         let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
 
-        XCTAssertEqual(result.status, .skippedUnsupportedAlgebra)
+        XCTAssertEqual(result.status, .unchanged)
         XCTAssertEqual(result.yaml, yaml)
     }
 
-    func testPostProcessorRejectsWanxiangWithEmptyAlgebra() {
+    func testPostProcessorLeavesWanxiangEmptyAlgebraUnchanged() {
         let yaml = """
             schema:
               schema_id: wanxiang
@@ -269,11 +290,11 @@ final class RimeFuzzyPinyinTests: XCTestCase {
 
         let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
 
-        XCTAssertEqual(result.status, .skippedUnsupportedAlgebra)
+        XCTAssertEqual(result.status, .unchanged)
         XCTAssertEqual(result.yaml, yaml)
     }
 
-    func testPostProcessorRejectsHashJoinedToWanxiangAnchor() {
+    func testPostProcessorLeavesWanxiangCustomAnchorUnchanged() {
         let yaml = """
             schema:
               schema_id: wanxiang
@@ -285,7 +306,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
 
         let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
 
-        XCTAssertEqual(result.status, .skippedUnsupportedAlgebra)
+        XCTAssertEqual(result.status, .unchanged)
         XCTAssertEqual(result.yaml, yaml)
     }
 

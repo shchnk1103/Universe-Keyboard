@@ -14,10 +14,12 @@ public struct RimeFuzzyPinyinPostProcessResult: Equatable, Sendable {
     public let status: Status
 }
 
-/// Inserts Universe-managed traditional fuzzy pinyin rules into a RIME schema.
+/// Inserts Universe-managed traditional fuzzy pinyin rules into a supported RIME schema.
 ///
 /// The processor only owns the marked block. Existing schema `speller/algebra`
 /// rules remain untouched so upstream schema behavior stays under RIME's control.
+/// Wanxiang does not currently expose managed fuzzy pinyin as a product capability,
+/// so its schema is cleanup-only: stale Universe blocks are removed but never replaced.
 public struct RimeFuzzyPinyinPostProcessor {
     public static let beginMarker = "# universe:fuzzy-pinyin begin"
     public static let endMarker = "# universe:fuzzy-pinyin end"
@@ -32,6 +34,13 @@ public struct RimeFuzzyPinyinPostProcessor {
         }
         let removedExistingBlock = linesWithoutManagedBlock != originalLines
 
+        if hasTopLevelSchemaID("wanxiang", in: linesWithoutManagedBlock) {
+            return RimeFuzzyPinyinPostProcessResult(
+                yaml: linesWithoutManagedBlock.joined(separator: "\n"),
+                status: removedExistingBlock ? .removed : .unchanged
+            )
+        }
+
         guard settings.hasEnabledRules else {
             let output = linesWithoutManagedBlock.joined(separator: "\n")
             return RimeFuzzyPinyinPostProcessResult(
@@ -45,15 +54,13 @@ public struct RimeFuzzyPinyinPostProcessor {
         }
 
         var lines = linesWithoutManagedBlock
-        let isWanxiangSchema = hasTopLevelSchemaID("wanxiang", in: lines)
         let spellerEnd = topLevelSectionEnd(startingAt: spellerIndex, in: lines)
         if let algebraIndex = algebraIndex(in: lines, spellerStart: spellerIndex, spellerEnd: spellerEnd) {
             guard
                 let insertionPoint = algebraInsertionPoint(
                     startingAt: algebraIndex,
                     spellerEnd: spellerEnd,
-                    in: lines,
-                    isWanxiangSchema: isWanxiangSchema
+                    in: lines
                 )
             else {
                 return RimeFuzzyPinyinPostProcessResult(
@@ -68,13 +75,8 @@ public struct RimeFuzzyPinyinPostProcessor {
                 ),
                 at: insertionPoint.index
             )
-        } else if !isWanxiangSchema {
-            lines.insert(contentsOf: algebraSectionLines(rules: settings.algebraRules), at: spellerEnd)
         } else {
-            return RimeFuzzyPinyinPostProcessResult(
-                yaml: yaml,
-                status: .skippedUnsupportedAlgebra
-            )
+            lines.insert(contentsOf: algebraSectionLines(rules: settings.algebraRules), at: spellerEnd)
         }
 
         let output = lines.joined(separator: "\n")
@@ -165,20 +167,9 @@ public struct RimeFuzzyPinyinPostProcessor {
     private struct InsertionPoint {
         enum RuleFormat {
             case algebra
-            case wanxiangPatchReferences
 
             func rules(for settings: RimeFuzzyPinyinSettings) -> [String] {
-                switch self {
-                case .algebra:
-                    return settings.algebraRules
-                case .wanxiangPatchReferences:
-                    var references: [String] = []
-                    if settings.zhZEnabled { references.append("wanxiang_algebra:/模糊音_z_zh") }
-                    if settings.chCEnabled { references.append("wanxiang_algebra:/模糊音_c_ch") }
-                    if settings.shSEnabled { references.append("wanxiang_algebra:/模糊音_s_sh") }
-                    if settings.nLEnabled { references.append("wanxiang_algebra:/模糊音_nl") }
-                    return references
-                }
+                settings.algebraRules
             }
         }
 
@@ -190,14 +181,11 @@ public struct RimeFuzzyPinyinPostProcessor {
     private static func algebraInsertionPoint(
         startingAt algebraIndex: Int,
         spellerEnd: Int,
-        in lines: [String],
-        isWanxiangSchema: Bool
+        in lines: [String]
     ) -> InsertionPoint? {
         let algebraIndent = indentation(of: lines[algebraIndex])
         guard algebraIndex + 1 < spellerEnd else {
-            return isWanxiangSchema
-                ? nil
-                : InsertionPoint(index: spellerEnd, indent: algebraIndent + 2, ruleFormat: .algebra)
+            return InsertionPoint(index: spellerEnd, indent: algebraIndent + 2, ruleFormat: .algebra)
         }
 
         let algebraEnd = nestedSectionEnd(
@@ -211,62 +199,20 @@ public struct RimeFuzzyPinyinPostProcessor {
                 after: algebraIndex,
                 upperBound: algebraEnd,
                 in: lines
-        )
+            )
         else {
-            return isWanxiangSchema
-                ? nil
-                : InsertionPoint(index: algebraEnd, indent: algebraIndent + 2, ruleFormat: .algebra)
+            return InsertionPoint(index: algebraEnd, indent: algebraIndent + 2, ruleFormat: .algebra)
         }
 
         let firstChild = lines[firstChildIndex].trimmingCharacters(in: .whitespaces)
         let firstChildIndent = indentation(of: lines[firstChildIndex])
         if firstChild.hasPrefix("-") {
-            return isWanxiangSchema
-                ? nil
-                : InsertionPoint(index: algebraEnd, indent: firstChildIndent, ruleFormat: .algebra)
+            return InsertionPoint(index: algebraEnd, indent: firstChildIndent, ruleFormat: .algebra)
         }
 
-        // Some schemas, including 万象, express algebra through a nested
-        // `__patch` sequence. Rules must be inserted inside that sequence;
-        // placing list items beside `__patch` produces invalid YAML.
-        guard isWanxiangSchema, firstChild == "__patch:" else { return nil }
-        let patchEnd = nestedSectionEnd(
-            startingAt: firstChildIndex,
-            parentIndent: firstChildIndent,
-            upperBound: algebraEnd,
-            in: lines
-        )
-        guard
-            let firstPatchItemIndex = firstContentIndex(
-                after: firstChildIndex,
-                upperBound: patchEnd,
-                in: lines
-            )
-        else {
-            return nil
-        }
-        let firstPatchItem = strippingYAMLInlineComment(from: lines[firstPatchItemIndex])
-            .trimmingCharacters(in: .whitespaces)
-        guard firstPatchItem == "- wanxiang_algebra:/base/全拼" else { return nil }
-        return InsertionPoint(
-            index: patchEnd,
-            indent: indentation(of: lines[firstPatchItemIndex]),
-            ruleFormat: .wanxiangPatchReferences
-        )
-    }
-
-    /// In plain YAML scalars, `#` starts a comment only when separated from
-    /// the value by whitespace. A glued hash remains part of the scalar.
-    private static func strippingYAMLInlineComment(from line: String) -> String {
-        guard
-            let commentIndex = line.indices.first(where: { index in
-                guard line[index] == "#", index != line.startIndex else { return false }
-                return line[line.index(before: index)].isWhitespace
-            })
-        else {
-            return line
-        }
-        return String(line[..<commentIndex])
+        // Nested mappings have schema-specific semantics. Managed list rules
+        // must not be guessed into them.
+        return nil
     }
 
     private static func firstContentIndex(after index: Int, upperBound: Int, in lines: [String]) -> Int? {
