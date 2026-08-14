@@ -1,7 +1,7 @@
 # Product Decision: DEBUG-KEY-HITBOX-001 — Debug 按键触摸范围可视化
 
 **Decision ID:** `PD-DEBUG-KEY-HITBOX-001`
-**Lifecycle status:** `Recorded` — Assignment `DEBUG-KEY-HITBOX-001` 已 `Completed`
+**Lifecycle status:** `Recorded` — Assignment `DEBUG-KEY-HITBOX-001` 已 `Closed`
 **Date / timezone:** `2026-08-14 Asia/Shanghai`
 **Assignment:** [`DEBUG-KEY-HITBOX-001`](../assignments/debug-key-hitbox-001.md)
 **Related:** [`CANDIDATE-TOUCH-HITBOX-001`](../assignments/candidate-touch-hitbox-001.md)（候选栏命中，范围外）、[`DIAGNOSTICS-OBSERVABILITY-001`](../assignments/diagnostics-observability-001.md)（日志，不替代本可视化）
@@ -11,9 +11,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Recorded` |
-| **Phase** | Assignment `Completed`；等待可选 Quality 与 Product Close |
-| **Non-claims** | 不是 Closed；不进 Release / TestFlight |
-| **Next** | Executor 交付后可选 Quality；Product Gate 另议 |
+| **Phase** | Assignment `Closed`；Human Product Gate Passed |
+| **Non-claims** | 不进 Release / TestFlight |
+| **Next** | 无 |
 | **Residuals** | 无 |
 
 ---

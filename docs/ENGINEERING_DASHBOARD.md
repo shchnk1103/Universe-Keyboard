@@ -12,7 +12,7 @@
 
 - **Authority:** Human Product Owner 当场拍板；详情以各 Assignment Current Status 为准，摘要见 [`ACTIVE_WORK.md`](ACTIVE_WORK.md)（`3/10`）。
 - **Still Active:** `RELEASE-2026-0801`（目标改至 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002`
-- **Left Active:** `DEBUG-KEY-HITBOX-001` → `Completed`（Human 确认实现；非 Quality/Product Gate / Closed）
+- **Left Active:** `DEBUG-KEY-HITBOX-001` → `Closed`（PR #73 merged；Human Product Gate Passed）
 - **Left Active (not Closed / not Product Gate):**
   - `T9-RESPONSIVE-PIPELINE-001` → `Reviewed`（父伞不再占槽）
   - `HELP-TIPKIT-001` / `HELP-J3-RESOURCES-001` / `APP-SEARCH-001` → `Completed`（等 Quality + Product Gate）

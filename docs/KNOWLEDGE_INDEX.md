@@ -127,7 +127,7 @@
 - Help / soft first-run / TipKit packaging: [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authorization.md), Assignment [`HELP-TIPKIT-001`](assignments/help-tipkit-001.md) (`Completed` — P1–P3 implemented, Product Gate pending)
 - Help J3 slim resource prepare: [`PD-HELP-J3-RESOURCES-001`](product-decisions/HELP-J3-RESOURCES-001-authorization.md), Assignment [`HELP-J3-RESOURCES-001`](assignments/help-j3-resources-001.md) (`Completed`)
 - Main-App Search tab + J4 trial field: [`PD-APP-SEARCH-001`](product-decisions/APP-SEARCH-001-authorization.md), Assignment [`APP-SEARCH-001`](assignments/app-search-001.md) (`Completed`)
-- Debug key hit-range overlay: [`PD-DEBUG-KEY-HITBOX-001`](product-decisions/DEBUG-KEY-HITBOX-001-authorization.md), Assignment [`DEBUG-KEY-HITBOX-001`](assignments/debug-key-hitbox-001.md) (`Completed` — Debug-only overlay + 九键/26 键共用中线命中；非 Closed)
+- Debug key hit-range overlay: [`PD-DEBUG-KEY-HITBOX-001`](product-decisions/DEBUG-KEY-HITBOX-001-authorization.md), Assignment [`DEBUG-KEY-HITBOX-001`](assignments/debug-key-hitbox-001.md) (`Closed` — Debug-only overlay + 九键/26 键共用中线命中)
 - Technical debt: [`TECH_DEBT.md`](TECH_DEBT.md)
 - Documentation health: [`DOCUMENTATION_HEALTH.md`](DOCUMENTATION_HEALTH.md)
 - Latest documentation hygiene audit: [`evidence/doc-hygiene-001-audit.md`](evidence/doc-hygiene-001-audit.md)

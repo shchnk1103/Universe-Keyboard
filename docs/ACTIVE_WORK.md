@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-14 Asia/Shanghai` — `DEBUG-KEY-HITBOX-001` → `Completed`，移出 Active。Active Work `3/10`。
+Last synced: `2026-08-14 Asia/Shanghai` — `DEBUG-KEY-HITBOX-001` → `Closed`。Active Work `3/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -17,7 +17,7 @@ Last synced: `2026-08-14 Asia/Shanghai` — `DEBUG-KEY-HITBOX-001` → `Complete
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
-| DEBUG-KEY-HITBOX-001 | `Completed`；PR #73 已合并；等待可选 Quality 与 Product Close | [`assignments/debug-key-hitbox-001.md`](assignments/debug-key-hitbox-001.md) |
+| DEBUG-KEY-HITBOX-001 | `Closed`；PR #73 已合并；Human Product Gate Passed | [`assignments/debug-key-hitbox-001.md`](assignments/debug-key-hitbox-001.md) |
 | T9-RESPONSIVE-PIPELINE-001 | `Reviewed`；ADR 0025 Accepted，DEFAULT-ON Product Gate 已交付；R6 仅 track；不再占 Active | [`assignment`](assignments/t9-responsive-rime-pipeline-001.md) · [`DEFAULT-ON`](assignments/responsive-default-on-001.md) |
 | HELP-TIPKIT-001 | `Completed`；P1–P3 已交付；等待 Quality + Human Product Gate | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |
 | HELP-J3-RESOURCES-001 | `Completed`；Help 内嵌 J3 slim 已交付；等待 Quality + Product Gate | [`assignments/help-j3-resources-001.md`](assignments/help-j3-resources-001.md) |
