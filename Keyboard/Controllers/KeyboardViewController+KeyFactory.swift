@@ -34,8 +34,8 @@ extension KeyboardViewController {
 
         button.accessibilityLabel = "\(letters)，数字 \(digit)"
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-        // Slot order follows the visible ABC…WXYZ construction order.
-        devicePreflightT9LetterGroupButtons.append(button)
+            // Slot order follows the visible ABC…WXYZ construction order.
+            devicePreflightT9LetterGroupButtons.append(button)
         #endif
         // Native 九宫格: letter group is primary; slightly smaller than prior 18pt chrome.
         let lettersFont = UIFont.systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
@@ -82,9 +82,9 @@ extension KeyboardViewController {
         button.setTitle(title, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
         #if DEBUG
-        button.trackingEventHandler = { [weak self] button, phase in
-            self?.recordKeyboardTrackingDiagnostic(button: button, phase: phase)
-        }
+            button.trackingEventHandler = { [weak self] button, phase in
+                self?.recordKeyboardTrackingDiagnostic(button: button, phase: phase)
+            }
         #endif
         // 默认应用字符键样式 — 调用方可以根据需要覆盖（如 applyKeyStyle(.function, to:)）
         applyKeyStyle(.character, to: button)
