@@ -9,7 +9,7 @@ Policy version: 1.0.0
 | **Lifecycle** | `Completed` |
 | **Phase** | Executor 已交付；Human 确认命中与 overlay；未做独立 Quality / Product Gate |
 | **Non-claims** | 不是 Reviewed / Closed；不进 Release / TestFlight |
-| **Next** | 可选 Quality 独立复核 → Product Lead 决定是否 Closed |
+| **Next** | PR #73 已合并到 `main`；可选 Quality 独立复核 → Product Lead 决定是否 Closed |
 | **Residuals** | Path 空闲文案已下线（同会话附带） |
 
 ---
@@ -91,3 +91,4 @@ Policy version: 1.0.0
 - 2026-08-14: Human 确认按键与空隙命中已修好。实现侧收口：Assignment 仍 Active，等待 Product 是否 Closed / 移出 Active。未开 PR、未跑 App+Extension 全量门禁。
 - 2026-08-14: KOS 收口：Lifecycle → `Completed`（Executor 交付 + Human 确认实现；非 Quality/Product Gate）。移出 Active Work。Closed 仍须 Product Lead。
 - 2026-08-14: 功能分支 `feat/debug-key-hitbox-001` 已推送；PR #73。PR 未合并，本地与远端功能分支均保留。
+- 2026-08-14: PR #73 已合并；`2817f19` 可从 `origin/main` 到达（merge `fb7b80a`）。CI `Swift 6 Quality` 绿。功能分支待安全删除。
