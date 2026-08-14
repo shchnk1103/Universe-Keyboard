@@ -90,3 +90,4 @@ Policy version: 1.0.0
 - 2026-08-14: 列顶问题仍在。改为把点击点 `convert` 进每颗键，用 stack `spacing` 的一半扩 `bounds`；不再用根 stack 坐标系里的列高快照选键。
 - 2026-08-14: Human 确认按键与空隙命中已修好。实现侧收口：Assignment 仍 Active，等待 Product 是否 Closed / 移出 Active。未开 PR、未跑 App+Extension 全量门禁。
 - 2026-08-14: KOS 收口：Lifecycle → `Completed`（Executor 交付 + Human 确认实现；非 Quality/Product Gate）。移出 Active Work。Closed 仍须 Product Lead。
+- 2026-08-14: 功能分支 `feat/debug-key-hitbox-001` 已推送；PR #73。PR 未合并，本地与远端功能分支均保留。
