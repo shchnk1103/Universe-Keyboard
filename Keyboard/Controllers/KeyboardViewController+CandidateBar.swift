@@ -44,6 +44,9 @@ extension KeyboardViewController {
         candidateExpandButton = view.expandButton
         candidateExpandButtonWidthConstraint = view.expandButtonWidthConstraint
         fillCandidateBar()
+        view.onItemTap = { [weak self] indexPath in
+            self?.commitCompactCandidate(at: indexPath)
+        }
         return view
     }
 
@@ -82,23 +85,23 @@ extension KeyboardViewController {
         let refreshStart = CACurrentMediaTime()
 
         resetCandidateSnapshotFromController()
-#if DEBUG
-        let preeditLength = controller.state.lastRimeOutput?.composition?.preeditText.count ?? 0
+        #if DEBUG
+            let preeditLength = controller.state.lastRimeOutput?.composition?.preeditText.count ?? 0
 
-        Logger.shared.info(
-            "refreshCandidateBar: page1=\(accumulatedCandidates.count), next=\(nextCandidateGlobalIndex), "
-                + "hasMore=\(hasMoreCandidates), preeditLength=\(preeditLength)",
-            category: .display
-        )
-#endif
+            Logger.shared.info(
+                "refreshCandidateBar: page1=\(accumulatedCandidates.count), next=\(nextCandidateGlobalIndex), "
+                    + "hasMore=\(hasMoreCandidates), preeditLength=\(preeditLength)",
+                category: .display
+            )
+        #endif
 
         fillCandidateBar()
         let refreshMs = (CACurrentMediaTime() - refreshStart) * 1000
-#if DEBUG
-        Logger.shared.performance(
-            "CANDIDATES refresh total=\(String(format: "%.1f", refreshMs))ms items=\(accumulatedCandidates.count)"
-        )
-#endif
+        #if DEBUG
+            Logger.shared.performance(
+                "CANDIDATES refresh total=\(String(format: "%.1f", refreshMs))ms items=\(accumulatedCandidates.count)"
+            )
+        #endif
         if refreshMs >= 30 {
             Logger.shared.warning(
                 "SLOW CANDIDATES refresh duration=\(String(format: "%.1f", refreshMs))ms "
@@ -127,9 +130,9 @@ extension KeyboardViewController {
             Logger.shared.warning("fillCandidateBar: candidateCollectionView is nil", category: .general)
             return
         }
-#if DEBUG
-        let renderStart = CACurrentMediaTime()
-#endif
+        #if DEBUG
+            let renderStart = CACurrentMediaTime()
+        #endif
         let items = presentedCandidates
 
         // ── 控制展开按钮可见性 ─────────────────────────────────────
@@ -152,13 +155,13 @@ extension KeyboardViewController {
         }
         collectionView.alwaysBounceHorizontal = hasMoreCandidates && !items.isEmpty
 
-#if DEBUG
-        Logger.shared.debug(
-            "fillCandidateBar collection: items=\(items.count), "
-                + "durationMs=\(String(format: "%.1f", (CACurrentMediaTime() - renderStart) * 1000))",
-            category: .display
-        )
-#endif
+        #if DEBUG
+            Logger.shared.debug(
+                "fillCandidateBar collection: items=\(items.count), "
+                    + "durationMs=\(String(format: "%.1f", (CACurrentMediaTime() - renderStart) * 1000))",
+                category: .display
+            )
+        #endif
     }
 
     func appendToCandidateBar(insertedCount: Int? = nil) {
@@ -189,7 +192,8 @@ extension KeyboardViewController {
                 guard self.candidateSnapshotGeneration == generation,
                     collectionView === self.candidateCollectionView
                 else { return }
-                let maxOffset = max(0, self.candidateScrollView.contentSize.width - self.candidateScrollView.bounds.width)
+                let maxOffset = max(
+                    0, self.candidateScrollView.contentSize.width - self.candidateScrollView.bounds.width)
                 self.candidateScrollView.contentOffset.x = min(currentOffset.x, maxOffset)
                 collectionView.alwaysBounceHorizontal = self.hasMoreCandidates && !self.presentedCandidates.isEmpty
             }
@@ -245,7 +249,8 @@ extension KeyboardViewController {
     func resetCandidateSnapshot(from snapshot: T9CompositionPresentationSnapshot) {
         // Prefer snapshot-owned paging fields; do not re-read live controller for
         // page identity when the snapshot already captured them.
-        let preedit = !snapshot.compositionPreedit.isEmpty
+        let preedit =
+            !snapshot.compositionPreedit.isEmpty
             ? snapshot.compositionPreedit
             : snapshot.visiblePreedit
         let items: [CandidateItem]
@@ -262,7 +267,8 @@ extension KeyboardViewController {
         accumulatedCandidates = items.filter { $0.kind != .placeholder }
         candidateSnapshotGeneration += 1
         candidateSnapshotCompositionRevision = snapshot.revision
-        candidateSnapshotRawInput = snapshot.rimeRawInput
+        candidateSnapshotRawInput =
+            snapshot.rimeRawInput
             ?? controller.state.currentComposition
         nextCandidateGlobalIndex = nextGlobalIndexAfterCurrentItems()
         hasMoreCandidates = snapshot.hasMorePages

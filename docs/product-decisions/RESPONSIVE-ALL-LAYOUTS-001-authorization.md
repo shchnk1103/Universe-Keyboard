@@ -48,6 +48,10 @@ capability** for Chinese RIME input:
 
 ### 3. Relationship to parent T9 work
 
+> **Superseded for current status:** parent `T9-RESPONSIVE-PIPELINE-001` is
+> `Reviewed` and not Active as of `2026-08-14`. Text below is historical
+> authorization narrative.
+
 - Parent `T9-RESPONSIVE-PIPELINE-001` remains Active; this Decision **extends**
   product scope rather than replacing T9 evidence.
 - Parent non-claim “26-key unchanged unless separately authorized” is **amended**

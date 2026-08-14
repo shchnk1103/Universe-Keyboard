@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Active — ADR 0025 Accepted; ALL-LAYOUTS L0 universal; Product Gate dual-gate Release request default-on (RESPONSIVE-DEFAULT-ON-001, 2026-08-06); Formal R5 FAIL historical; no performance SLO; App Store separate** |
+| Status | **Reviewed — parent no longer Active (2026-08-14); ADR 0025 Accepted; ALL-LAYOUTS L0 universal; Product Gate dual-gate Release request default-on (RESPONSIVE-DEFAULT-ON-001, 2026-08-06); Formal R5 FAIL historical; no performance SLO; App Store separate** |
 | Created | 2026-07-30 |
 | Product lock | 2026-07-30 (direction); Product Gate default-on 2026-08-06 |
 | Work item | [`T9-RESPONSIVE-PIPELINE-001`](../assignments/t9-responsive-rime-pipeline-001.md) |

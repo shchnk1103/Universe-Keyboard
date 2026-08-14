@@ -1,10 +1,21 @@
 # Assignment: HELP-J3-RESOURCES-001 — 帮助内嵌 J3 资源准备
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active`  
 **Task ID:** `HELP-J3-RESOURCES-001`  
 **Decision source / date:** [`PD-HELP-J3-RESOURCES-001`](../product-decisions/HELP-J3-RESOURCES-001-authorization.md), `2026-07-25 Asia/Shanghai`  
 **Related packaging:** [`HELP-TIPKIT-001`](help-tipkit-001.md)
+
+## Current Status
+
+| Field | Value |
+|---|---|
+| **Lifecycle** | `Completed` |
+| **Phase** | Help 内嵌 J3 slim 资源准备已交付；等待 Quality 与 Human Product Gate |
+| **Non-claims** | 不宣称真机雾凇下载、Quality 或 Product Gate 已过 |
+| **Next** | Quality Reviewer → Human Product Lead（可选真机下载 smoke） |
+| **Residuals** | 可选真机网络下载；Settings 仍拥有完整 RIME 管理 |
+
+---
 
 ## Authority
 
@@ -27,7 +38,7 @@
 - **Product Assignment Decision:** `2026-07-25 Asia/Shanghai` — J3 slim embed authorized.
 - **Executor acknowledgement:** `2026-07-25 Asia/Shanghai` — Scope/Non-goals/Stop accepted on implement instruction.
 - **Entry Criteria:** Met — PD recorded; roles named; no `UNKNOWN`.
-- **Lifecycle:** `Ready → Active` on “按此写 PD/Assignment 并实现”.
+- **Lifecycle:** `Ready → Active` on “按此写 PD/Assignment 并实现”; Product Lead authorized `Active → Completed` `2026-08-14 Asia/Shanghai` after Executor delivery.
 
 ## Boundary
 

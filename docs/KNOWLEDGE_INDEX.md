@@ -83,10 +83,11 @@
   [`Product Decision`](product-decisions/T9-AUTO-ANCHOR-001-authorization.md),
   [`ADR 0024`](architecture/decisions/0024-t9-auto-anchor-shadow-observation-boundary.md)
 - T9 responsive RIME input pipeline
-  (`T9-RESPONSIVE-PIPELINE-001`, **Active** — Formal R5 **direction FAIL** retained;
+  (`T9-RESPONSIVE-PIPELINE-001`, **Reviewed** — Formal R5 **direction FAIL** retained;
   CANARY-001 **Stop/Retain** 2026-08-05; **ADR 0025 Accepted** 2026-08-06;
   **RESPONSIVE-ALL-LAYOUTS-001** L0 universal; **RESPONSIVE-DEFAULT-ON-001**
-  Product Gate dual-gate Release default-on **Active** 2026-08-06):
+  Product Gate dual-gate Release default-on delivered 2026-08-06; parent
+  removed from Active Work `2026-08-14`):
   [`Product Decision`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md),
   [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md),
   [`plan`](plans/t9-responsive-rime-pipeline-plan.md),
@@ -121,11 +122,12 @@
   [`P2-PERF-03 replicated A/B evidence`](evidence/t9-responsive-pipeline-p2-perf-03-replicated-ab-2026-08-03.md),
   [`Formal R5 evidence`](evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md)
 - Release procedure: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)
-- 2026-08-01 release control: [`RELEASE-2026-0801`](assignments/release-2026-08-01.md) and its [evidence ledger](evidence/release-2026-08-01-acceptance.md)
+- App Store release control: [`RELEASE-2026-0801`](assignments/release-2026-08-01.md) (`Active` — 现行目标 `2026-08-26`; [redate](product-decisions/RELEASE-2026-0801-target-redate.md)) and its [evidence ledger](evidence/release-2026-08-01-acceptance.md)
 - New-user activation / Full Access journey: [`ONBOARDING_ACTIVATION.md`](ONBOARDING_ACTIVATION.md), Product Decision [`PD-RELEASE-2026-0801-03`](product-decisions/RELEASE-2026-0801-03-activation-authorization.md)
-- Help / soft first-run / TipKit packaging: [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authorization.md), Assignment [`HELP-TIPKIT-001`](assignments/help-tipkit-001.md) (`Active` — P1–P3 implemented, Product Gate pending)
-- Help J3 slim resource prepare: [`PD-HELP-J3-RESOURCES-001`](product-decisions/HELP-J3-RESOURCES-001-authorization.md), Assignment [`HELP-J3-RESOURCES-001`](assignments/help-j3-resources-001.md) (`Active`)
-- Main-App Search tab + J4 trial field: [`PD-APP-SEARCH-001`](product-decisions/APP-SEARCH-001-authorization.md), Assignment [`APP-SEARCH-001`](assignments/app-search-001.md) (`Active`)
+- Help / soft first-run / TipKit packaging: [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authorization.md), Assignment [`HELP-TIPKIT-001`](assignments/help-tipkit-001.md) (`Completed` — P1–P3 implemented, Product Gate pending)
+- Help J3 slim resource prepare: [`PD-HELP-J3-RESOURCES-001`](product-decisions/HELP-J3-RESOURCES-001-authorization.md), Assignment [`HELP-J3-RESOURCES-001`](assignments/help-j3-resources-001.md) (`Completed`)
+- Main-App Search tab + J4 trial field: [`PD-APP-SEARCH-001`](product-decisions/APP-SEARCH-001-authorization.md), Assignment [`APP-SEARCH-001`](assignments/app-search-001.md) (`Completed`)
+- Debug key hit-range overlay: [`PD-DEBUG-KEY-HITBOX-001`](product-decisions/DEBUG-KEY-HITBOX-001-authorization.md), Assignment [`DEBUG-KEY-HITBOX-001`](assignments/debug-key-hitbox-001.md) (`Completed` — Debug-only overlay + 九键/26 键共用中线命中；非 Closed)
 - Technical debt: [`TECH_DEBT.md`](TECH_DEBT.md)
 - Documentation health: [`DOCUMENTATION_HEALTH.md`](DOCUMENTATION_HEALTH.md)
 - Latest documentation hygiene audit: [`evidence/doc-hygiene-001-audit.md`](evidence/doc-hygiene-001-audit.md)

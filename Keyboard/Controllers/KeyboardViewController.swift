@@ -106,6 +106,7 @@ class KeyboardViewController: UIInputViewController {
     var candidateScrollView: UIScrollView!
     /// 横向候选集合视图，按需复用可见 cell
     var candidateCollectionView: UICollectionView?
+    var lastCompactCandidateCommitTime: CFTimeInterval = 0
     /// 地球键（输入法切换），iOS 要求所有第三方键盘必须提供
     var nextKeyboardButton: UIButton!
     /// Shift 键，位于第 3 行左侧

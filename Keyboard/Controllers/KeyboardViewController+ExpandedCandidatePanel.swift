@@ -35,8 +35,9 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
         for section in 0..<collectionView.numberOfSections {
             for item in 0..<collectionView.numberOfItems(inSection: section) {
                 let indexPath = IndexPath(item: item, section: section)
-                guard let sourceAttribute = super.layoutAttributesForItem(at: indexPath)?
-                    .copy() as? UICollectionViewLayoutAttributes
+                guard
+                    let sourceAttribute = super.layoutAttributesForItem(at: indexPath)?
+                        .copy() as? UICollectionViewLayoutAttributes
                 else { continue }
 
                 let originalSize = sourceAttribute.frame.size
@@ -110,9 +111,12 @@ private final class ExpandedCandidateCollapseButton: UIButton {
 }
 
 /// 展开面板里 collectionView 填满整个区域，右上角收起按钮需要明确的命中优先级。
-private final class ExpandedCandidatePanelContainerView: UIView {
-    weak var collapseButton: ExpandedCandidateCollapseButton?
+final class ExpandedCandidatePanelContainerView: UIView {
+    fileprivate weak var collapseButton: ExpandedCandidateCollapseButton?
     private var lastHitTestDiagnosticLogTime: CFTimeInterval = 0
+    #if DEBUG
+        private var collapseHitboxOverlay: DebugKeyTouchRangeOverlayView?
+    #endif
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -125,7 +129,37 @@ private final class ExpandedCandidatePanelContainerView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        #if DEBUG
+            refreshDebugHitboxOverlay()
+        #endif
     }
+
+    #if DEBUG
+        func refreshDebugHitboxOverlay() {
+            for case let cell as CandidateCollectionCell
+                in (subviews.compactMap { $0 as? CandidateCollectionView }.first?.visibleCells ?? [])
+            {
+                cell.refreshDebugHitboxOverlay()
+            }
+            guard DebugHitboxOverlayPresentation.isShowing, let button = collapseButton, !button.isHidden else {
+                collapseHitboxOverlay?.isHidden = true
+                return
+            }
+            let overlay = collapseHitboxOverlay ?? DebugKeyTouchRangeOverlayView()
+            if collapseHitboxOverlay == nil {
+                addSubview(overlay)
+                collapseHitboxOverlay = overlay
+            }
+            overlay.isHidden = false
+            overlay.apply(
+                touchFrame: collapseButtonHitFrame,
+                visualFrame: button.frame,
+                in: self
+            )
+            bringSubviewToFront(button)
+            bringSubviewToFront(overlay)
+        }
+    #endif
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         return super.point(inside: point, with: event) || collapseButtonHitFrame.contains(point)
@@ -300,7 +334,8 @@ extension KeyboardViewController {
         container.bringSubviewToFront(collapseButton)
         NSLayoutConstraint.activate([
             collapseButton.topAnchor.constraint(equalTo: container.topAnchor, constant: collapseButtonTopOffset),
-            collapseButton.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -collapseButtonTrailingInset),
+            collapseButton.trailingAnchor.constraint(
+                equalTo: container.trailingAnchor, constant: -collapseButtonTrailingInset),
             collapseButton.widthAnchor.constraint(equalToConstant: collapseButtonSize),
             collapseButton.heightAnchor.constraint(equalToConstant: collapseButtonSize),
             collectionView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
@@ -308,10 +343,10 @@ extension KeyboardViewController {
             collectionView.topAnchor.constraint(equalTo: container.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
         ])
-#if DEBUG
-        Logger.shared.info(
-            "expandedPanel: \(candidates.count) candidates in incremental collection", category: .display)
-#endif
+        #if DEBUG
+            Logger.shared.info(
+                "expandedPanel: \(candidates.count) candidates in incremental collection", category: .display)
+        #endif
         return container
     }
 

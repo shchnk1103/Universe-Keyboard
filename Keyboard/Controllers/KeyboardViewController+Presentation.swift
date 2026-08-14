@@ -46,18 +46,21 @@ extension KeyboardViewController {
             keyboardSurfaceFillView.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor),
             keyboardSurfaceFillView.bottomAnchor.constraint(equalTo: keyboardSurfaceView.bottomAnchor),
 
-            keyboardSurfaceHighlightView.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor, constant: 18),
-            keyboardSurfaceHighlightView.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor, constant: -18),
+            keyboardSurfaceHighlightView.leadingAnchor.constraint(
+                equalTo: keyboardSurfaceView.leadingAnchor, constant: 18),
+            keyboardSurfaceHighlightView.trailingAnchor.constraint(
+                equalTo: keyboardSurfaceView.trailingAnchor, constant: -18),
             keyboardSurfaceHighlightView.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor, constant: 1),
             keyboardSurfaceHighlightView.heightAnchor.constraint(equalToConstant: 1),
 
             rootStack.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor, constant: 7),
             rootStack.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor, constant: -7),
             rootStack.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor, constant: keyboardContentTopInset),
-            rootStack.bottomAnchor.constraint(equalTo: keyboardSurfaceView.bottomAnchor, constant: -keyboardContentBottomInset),
+            rootStack.bottomAnchor.constraint(
+                equalTo: keyboardSurfaceView.bottomAnchor, constant: -keyboardContentBottomInset),
         ])
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
-        p3d1InstallLifecycleAccessibilityElementIfNeeded()
+            p3d1InstallLifecycleAccessibilityElementIfNeeded()
         #endif
         Logger.shared.debug(
             "setupRootStack: transparent surface, content top+\(keyboardContentTopInset), "
@@ -98,6 +101,9 @@ extension KeyboardViewController {
             "reloadKeyboard: candidateBar=\(candidateBar != nil ? "OK" : "nil"), rows=\(rootStack.arrangedSubviews.count)",
             category: .display
         )
+        #if DEBUG
+            applyDebugKeyHitboxOverlaySetting()
+        #endif
     }
 
     func installKeyboardUIIfNeeded() {
@@ -149,9 +155,9 @@ extension KeyboardViewController {
     func addKeyboardRows(for state: KeyboardState) {
         letterButtons.removeAll()
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-        devicePreflightT9LetterGroupButtons.removeAll()
-        devicePreflightPreparedGeometryDigest = nil
-        devicePreflightDidRecordExecutionGeometry = false
+            devicePreflightT9LetterGroupButtons.removeAll()
+            devicePreflightPreparedGeometryDigest = nil
+            devicePreflightDidRecordExecutionGeometry = false
         #endif
         candidateExpandedPanel = nil
         expandedPanelScrollView = nil
@@ -185,9 +191,12 @@ extension KeyboardViewController {
                 rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)
                 rootStack.addArrangedSubview(makeSymbolicBottomRow(languageTitle: "拼音"))
             } else {
-                rootStack.addArrangedSubview(makeTextRow(["-", "/", ":", ";", "(", ")", "$", "&", "@", "”"], actionOverrides: [
-                    "”": #selector(insertSmartDoubleQuote(_:))
-                ]))
+                rootStack.addArrangedSubview(
+                    makeTextRow(
+                        ["-", "/", ":", ";", "(", ")", "$", "&", "@", "”"],
+                        actionOverrides: [
+                            "”": #selector(insertSmartDoubleQuote(_:))
+                        ]))
                 let thirdRow = makeEnglishNumbersThirdRow()
                 rootStack.addArrangedSubview(thirdRow)
                 rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)
@@ -240,10 +249,10 @@ extension KeyboardViewController {
     }
 
     func syncUI(with effects: KeyboardEffect) {
-#if DEBUG
-        let startTime = CACurrentMediaTime()
-        defer { logKeyPerformance("syncUI \(effects)", startTime: startTime) }
-#endif
+        #if DEBUG
+            let startTime = CACurrentMediaTime()
+            defer { logKeyPerformance("syncUI \(effects)", startTime: startTime) }
+        #endif
         updateReturnKeyAppearance()
         if effects.contains(.pageChanged) || effects.contains(.inputModeChanged)
             || effects.contains(.keyboardTypeChanged)

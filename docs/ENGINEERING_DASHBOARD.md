@@ -2,11 +2,24 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-10 Asia/Shanghai
+> **Updated:** 2026-08-14 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## Active Work 收敛 — 2026-08-14
+
+- **Authority:** Human Product Owner 当场拍板；详情以各 Assignment Current Status 为准，摘要见 [`ACTIVE_WORK.md`](ACTIVE_WORK.md)（`3/10`）。
+- **Still Active:** `RELEASE-2026-0801`（目标改至 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002`
+- **Left Active:** `DEBUG-KEY-HITBOX-001` → `Completed`（Human 确认实现；非 Quality/Product Gate / Closed）
+- **Left Active (not Closed / not Product Gate):**
+  - `T9-RESPONSIVE-PIPELINE-001` → `Reviewed`（父伞不再占槽）
+  - `HELP-TIPKIT-001` / `HELP-J3-RESOURCES-001` / `APP-SEARCH-001` → `Completed`（等 Quality + Product Gate）
+  - `DIAGNOSTICS-OBSERVABILITY-001` → `Completed`（P0 已合并；等 Human Product Gate；P1 = TD-013）
+  - `CANDIDATE-TOUCH-HITBOX-001` → `Completed`（PR #72 已合并；等授权真机残余）
+- **Redate Decision:** [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md)
+- **Explicit non-claims:** 本段不关闭任何 Gate，不授权上传/发布。
 
 ## RESPONSIVE-CANDIDATE-ANOMALY-001 — dual-gate 候选双写 / 分页卡死
 
@@ -103,25 +116,25 @@
 
 ## T9-RESPONSIVE-PIPELINE-001 — 九宫格 / 全中文响应式 RIME 输入管线
 
-- **Lifecycle:** `Active — ADR 0025 Accepted; ALL-LAYOUTS L0 universal; RESPONSIVE-DEFAULT-ON-001 Product Gate dual-gate Release request default-on; CANARY Stop/Retain history; Formal R5 FAIL historical; no SLO`
+- **Lifecycle:** `Reviewed — ADR 0025 Accepted; ALL-LAYOUTS L0 universal; RESPONSIVE-DEFAULT-ON-001 Product Gate dual-gate Release request default-on delivered; parent removed from Active Work 2026-08-14; CANARY Stop/Retain history; Formal R5 FAIL historical; no SLO`
 - **Authority:** [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md) + [`PD-T9-RESPONSIVE-PIPELINE-001`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md) + [`ADR 0025 Accepted`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) + [`CANARY-001`](assignments/t9-responsive-pipeline-001-production-shaped-canary-001.md) + [`ADR-0025-ACCEPT-001`](assignments/adr-0025-accept-001.md) + [`RESPONSIVE-DEFAULT-ON-001`](assignments/responsive-default-on-001.md)
 - **Publication tip:** stack on PR #42 / branch `codex/responsive-default-on-001`
 - **Delivered:** R1–R5 lineage; P1-D2; P2 matrix/PERF; CANARY A/B/K/O Stop/Retain; ADR Accept; ALL-LAYOUTS; Product Gate dual-gate **request** default-on (fail-closed sync)
 - **Evidence/reviews:** [`CANARY disposition`](product-decisions/T9-RESPONSIVE-PIPELINE-001-CANARY-001-disposition.md), [`DEFAULT-ON evidence`](evidence/responsive-default-on-001-2026-08-06.md), Accept + ALL-LAYOUTS reviews
 - **Explicit non-claims:** performance SLO; App Store submission by Gate alone
-- **Next Product action:** optional physical smoke; App Store remains `RELEASE-2026-0801`
+- **Next Product action:** optional physical smoke; optional formal close of parent; App Store remains `RELEASE-2026-0801`
 - **P2 follow-up:** [`P2-Regression-Matrix-001`](assignments/t9-responsive-pipeline-001-p2-regression-matrix.md) · [`evidence`](evidence/t9-responsive-pipeline-p2-regression-matrix-2026-08-01.md)
 - **P2 reviews:** [`Architecture re-review`](assignments/t9-responsive-pipeline-001-p2-regression-matrix-architecture-rereview.md) · [`Quality re-review`](assignments/t9-responsive-pipeline-001-p2-regression-matrix-quality-rereview.md)
 - **Predecessor:** [`T9-AUTO-ANCHOR-001`](assignments/t9-auto-anchor-001.md) remains **Hold/harvest**
 
-## RELEASE-2026-0801 — 2026 年 8 月 1 日 App Store 发布
+## RELEASE-2026-0801 — App Store 发布（现行目标 2026-08-26）
 
-- **Lifecycle:** `Active — release coordination and Assignment bootstrap`
-- **Authority:** [`Release umbrella Assignment`](assignments/release-2026-08-01.md)
+- **Lifecycle:** `Active — release coordination; target redated`
+- **Authority:** [`Release umbrella Assignment`](assignments/release-2026-08-01.md) + [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md)
 - **Evidence source:** [`Release evidence and acceptance record`](evidence/release-2026-08-01-acceptance.md)
-- **Current state:** Scope freeze (`RELEASE-2026-0801-02`) is Executor-completed and awaits independent Architecture/Quality review. Task 03 is **Closed** with a Human-confirmed Conditional Product Gate ([gate](assignments/release-2026-08-01-03-product-gate.md)). Task 09 has a Product Lead-confirmed Architecture **No-Go**: its static preflight passed only on beta Xcode, while stable Xcode/SDK and iOS 26.0 runtime/physical-device evidence are absent ([review record](evidence/release-2026-0801-09-ios-26-target-architecture-review.md)). The current Codex task is assigned to tasks 01 and 05–08 in their KOS-compatible domain roles; their Entry Criteria remain pending. Device Hub currently exposes a connected iPhone 13 Pro and iPad Pro (11-inch, 3rd generation), operated by the Human Product Owner. Task 04 remains `Assignment Pending` because its independent Quality Executor is not yet named.
+- **Current state:** Target date is `2026-08-26 Asia/Shanghai` (historical `2026-08-01`). Scope freeze (`RELEASE-2026-0801-02`) has independent Architecture/Quality `Pass` with required follow-ups and is **not** a Product/release Gate. Task 03 is **Closed** with a Human-confirmed Conditional Product Gate ([gate](assignments/release-2026-08-01-03-product-gate.md)). Task 09 remains Architecture **No-Go**: static preflight passed only on beta Xcode; stable Xcode/SDK and iOS 26.0 runtime/physical-device evidence are absent ([review record](evidence/release-2026-0801-09-ios-26-target-architecture-review.md)). Tasks 01 and 05–08 remain `Assigned` with Entry Criteria pending. Task 04 remains `Assignment Pending` because its independent Quality Executor is not yet named.
 - **Frozen Product scope:** iPhone + iPad, iOS 26.0+, Chinese nine-key, precise pinyin, post-commit continuation, kaomoji content and the Home local basic input-count display. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. The count card must not present as an AI capability in visual or accessibility copy. The iOS 26.0 project-target change, iPad support and kaomoji content remain unimplemented/unverified release blockers; see the [scope record](assignments/release-2026-08-01-02-scope-freeze.md).
-- **Current blockers:** independent Architecture/Quality review of scope; task 09 stable Xcode/SDK plus iOS 26.0 runtime/physical-device availability and subsequent Executor revalidation; stable-toolchain archive readiness; iPad physical-device evidence; Product Lead catalog source/licensing/content decision; independent final physical-device/performance evidence; public URLs/contact/account access for App Store materials; TD-004 residual matrix fidelity after 03 Conditional Pass.
+- **Current blockers:** task 09 stable Xcode/SDK plus iOS 26.0 runtime/physical-device availability and subsequent Executor revalidation; stable-toolchain archive readiness; iPad physical-device evidence; Product Lead catalog source/licensing/content decision; independent final physical-device/performance evidence; public URLs/contact/account access for App Store materials; TD-004 residual matrix fidelity after 03 Conditional Pass. 改期不关闭这些 blocker。
 - **Authority boundary:** this status does not authorize upload, App Store submission, skipped-gate acceptance or manual release.
 - **Next Product action:** name an independent Quality Executor and physical-device operators for task 04; provide the kaomoji catalog decision, public URLs/contact answers, account/signing access and physical devices when the dependent tasks reach their environment gates.
 
@@ -193,7 +206,7 @@
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/typing-intelligence-001.md)
 - **Product source:** [`Typing Intelligence Product Contract`](TYPING_INTELLIGENCE.md)
 - **Architecture source:** [ADR 0011](architecture/decisions/0011-local-typing-intelligence-data-boundary.md)
-- **Current phase:** Implementation; automated and physical-device validation pending
+- **Current phase:** Automated implementation validation complete; physical-device and complete accessibility/appearance release gates remain open
 - **Domain Owner / Executor:** Input Intelligence Maintainer
 - **Supporting owners:** Keyboard Experience, App & Data Operations, Architecture, Quality
 - **Dependencies:** Pre-feature baseline and privacy API inventory are Gate 0 work; physical-device Full Access evidence is required before final acceptance.

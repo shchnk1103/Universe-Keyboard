@@ -28,6 +28,9 @@ final class CandidateCollectionCell: UICollectionViewCell {
     private var usesPreferredStyle = false
     private var lastPointInsideDiagnosticLogTime: CFTimeInterval = 0
     private var lastHitTestDiagnosticLogTime: CFTimeInterval = 0
+    #if DEBUG
+        private var debugHitboxOverlay: DebugKeyTouchRangeOverlayView?
+    #endif
 
     private static let candidateTextColor = UIColor { traits in
         traits.userInterfaceStyle == .dark ? .white : .black
@@ -102,8 +105,10 @@ final class CandidateCollectionCell: UICollectionViewCell {
         visualTrailingConstraint = visualContentView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         visualTopConstraint = visualContentView.topAnchor.constraint(equalTo: contentView.topAnchor)
         visualBottomConstraint = visualContentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        titleLeadingConstraint = titleLabel.leadingAnchor.constraint(equalTo: titleContainerView.leadingAnchor, constant: 12)
-        titleTrailingConstraint = titleLabel.trailingAnchor.constraint(equalTo: titleContainerView.trailingAnchor, constant: -12)
+        titleLeadingConstraint = titleLabel.leadingAnchor.constraint(
+            equalTo: titleContainerView.leadingAnchor, constant: 12)
+        titleTrailingConstraint = titleLabel.trailingAnchor.constraint(
+            equalTo: titleContainerView.trailingAnchor, constant: -12)
 
         NSLayoutConstraint.activate([
             visualLeadingConstraint,
@@ -132,6 +137,35 @@ final class CandidateCollectionCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        #if DEBUG
+            refreshDebugHitboxOverlay()
+        #endif
+    }
+
+    #if DEBUG
+        func refreshDebugHitboxOverlay() {
+            guard DebugHitboxOverlayPresentation.isShowing else {
+                debugHitboxOverlay?.isHidden = true
+                return
+            }
+            let overlay = debugHitboxOverlay ?? DebugKeyTouchRangeOverlayView()
+            if debugHitboxOverlay == nil {
+                addSubview(overlay)
+                debugHitboxOverlay = overlay
+            }
+            overlay.isHidden = false
+            overlay.apply(
+                touchFrame: bounds,
+                visualFrame: visualContentView.convert(visualContentView.bounds, to: self),
+                contentFrame: contentView.convert(contentView.bounds, to: self),
+                in: self
+            )
+            bringSubviewToFront(overlay)
+        }
+    #endif
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         let result = super.point(inside: point, with: event)
@@ -272,12 +306,14 @@ final class CandidateCollectionCell: UICollectionViewCell {
         let baseFont = UIFont.systemFont(ofSize: fontSize, weight: weight)
         titleLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: baseFont, maximumPointSize: 28)
         titleLabel.text = title
-        titleLabel.textColor = highlighted
+        titleLabel.textColor =
+            highlighted
             ? Self.highlightedCandidateTextColor
             : (kind == .candidate ? Self.candidateTextColor : color)
 
         let hintFont = UIFont.systemFont(ofSize: 13, weight: .semibold)
-        correctionHintLabel.font = UIFontMetrics(forTextStyle: .caption1).scaledFont(for: hintFont, maximumPointSize: 18)
+        correctionHintLabel.font = UIFontMetrics(forTextStyle: .caption1).scaledFont(
+            for: hintFont, maximumPointSize: 18)
         correctionHintLabel.text = correctionHint
         correctionHintLabel.textColor = .secondaryLabel
         correctionHintLabel.isHidden = correctionHint == nil
@@ -288,7 +324,8 @@ final class CandidateCollectionCell: UICollectionViewCell {
     }
 
     private func applyHighlightStyle(_ highlighted: Bool) {
-        titleLabel.textColor = highlighted
+        titleLabel.textColor =
+            highlighted
             ? Self.highlightedCandidateTextColor
             : (currentKind == .candidate ? Self.candidateTextColor : currentBaseColor)
         highlightedBackgroundView.backgroundColor = highlighted ? Self.highlightedCandidateBackgroundColor : .clear

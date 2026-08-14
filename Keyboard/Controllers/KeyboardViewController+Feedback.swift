@@ -70,6 +70,9 @@ extension KeyboardViewController {
 
         // 诊断开关与反馈设置使用同一生命周期快照；候选触控链路不自行轮询共享偏好。
         CandidateTouchDiagnostics.refreshFromSharedSettings()
+        #if DEBUG
+            applyDebugKeyHitboxOverlaySetting()
+        #endif
 
         let rawSound = defaults?.object(forKey: KeyboardFeedbackSettingsKey.keyClickEnabled)
         let rawHaptic = defaults?.object(forKey: KeyboardFeedbackSettingsKey.hapticEnabled)
@@ -86,19 +89,22 @@ extension KeyboardViewController {
         cachedHapticEnabled = rawHaptic as? Bool ?? false
         cachedHapticLevel = feedbackLevelValue(rawHapticLevel)
         cachedHapticIntensity = CGFloat(cachedHapticLevel.hapticIntensity)
-        cachedLiquidGlassMaterialEnabled = defaults?.bool(
-            forKey: KeyboardAppearanceSettingsKey.liquidGlassMaterialEnabled
-        ) ?? false
+        cachedLiquidGlassMaterialEnabled =
+            defaults?.bool(
+                forKey: KeyboardAppearanceSettingsKey.liquidGlassMaterialEnabled
+            ) ?? false
         controller.isPairedSymbolCompletionEnabled = rawPairedSymbolCompletion as? Bool ?? true
         controller.setPostCommitContinuationEnabled(rawPostCommitContinuation as? Bool ?? true)
         controller.typoCorrectionExperimentalEdits = typoExperimentSettings.experimentalEdits
         controller.typoCorrectionLearningSnapshot = typoCorrectionLearningStore.snapshot()
-        cachedTypingIntelligenceEnabled = defaults?.bool(
-            forKey: TypingStatisticsStorageKey.enabled
-        ) ?? false
-        cachedTypingIntelligenceResetEpoch = defaults?.integer(
-            forKey: TypingStatisticsStorageKey.resetEpoch
-        ) ?? 0
+        cachedTypingIntelligenceEnabled =
+            defaults?.bool(
+                forKey: TypingStatisticsStorageKey.enabled
+            ) ?? false
+        cachedTypingIntelligenceResetEpoch =
+            defaults?.integer(
+                forKey: TypingStatisticsStorageKey.resetEpoch
+            ) ?? 0
 
         // Layout / T9 readiness: snapshot only — never read UserDefaults on the key path.
         cachedLayoutStyle = KeyboardLayoutStyle.resolve(
@@ -110,7 +116,8 @@ extension KeyboardViewController {
         if let container = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: Self.appGroupID
         ) {
-            let t9URL = container
+            let t9URL =
+                container
                 .appendingPathComponent("Rime/shared/t9.schema.yaml")
             onDiskFingerprint = RimeT9Readiness.fingerprint(ofFileAt: t9URL)
         }
@@ -159,4 +166,21 @@ extension KeyboardViewController {
         let elapsed = (CACurrentMediaTime() - startTime) * 1000
         Logger.shared.performance("\(message) (\(String(format: "%.1f", elapsed))ms)")
     }
+
+    #if DEBUG
+        /// Visibility / settings snapshot only. Never call from `hitTest`.
+        func applyDebugKeyHitboxOverlaySetting() {
+            let enabled = DebugKeyHitboxConfiguration.isEnabled(
+                in: sharedDefaults,
+                isDebugBuild: true
+            )
+            DebugHitboxOverlayPresentation.isShowing = enabled
+            (rootStack as? KeyboardInputHitAreaStackView)?
+                .setShowsRealTouchRangeOverlay(enabled)
+            (candidateBar as? CandidateBarView)?.refreshDebugHitboxOverlay()
+            t9PinyinPathBarView?.refreshDebugHitboxOverlay()
+            (candidateExpandedPanel as? ExpandedCandidatePanelContainerView)?
+                .refreshDebugHitboxOverlay()
+        }
+    #endif
 }

@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | 本地实现、CI 等价门禁与独立复核完成；等待 Product 发布/合并决策 |
-| **Non-claims** | 不修改候选排序、RIME、输入状态机、候选视觉尺寸或万象模型；不把旧探针零事件解释为 UIKit 未收到触摸 |
-| **Next** | 发布边界清晰的 PR → Product 合并决策 → 获授权后一次真机残余验证 |
-| **Residuals** | UIKit 几何仍需合并后以一次单指真机回归确认；本轮不增加人工轮次 |
+| **Lifecycle** | `Completed` |
+| **Phase** | PR [#72](https://github.com/shchnk1103/Universe-Keyboard/pull/72) 已合入 `main`（`30979ef`）；独立 Arch/Quality 无 blocker |
+| **Non-claims** | 不修改候选排序、RIME、输入状态机、候选视觉尺寸或万象模型；合并不等于真机 `5/5 · 5/5 · 5/5` 已复验 |
+| **Next** | Product 授权后一次 iPhone 13 Pro 单指上/中/下 5 次复验 |
+| **Residuals** | UIKit 几何仍需合并后一次单指真机回归；本轮不增加未授权人工轮次 |
 
 ---
 
@@ -82,3 +82,5 @@ Policy version: 1.0.0
 - 2026-08-13: 紧凑 cell 扩至既有 48 pt 容器；探针限定单个 direct touch 且移除 `.began` 假设；诊断搜索、静默自动刷新与 visibility coalesce 完成。
 - 2026-08-13: 聚焦 Store `21/21`；App `189 passed / 3 skipped`，Keyboard `6/6`；KeyboardCore `990/990`；RimeBridgeTests、严格 Debug/Release build 通过。
 - 2026-08-13: Architecture 最终 `Blocker 0 / Major 0 / Minor 0`；Quality 最终 `Blocker 0 / Major 0`，只保留 UIKit 几何真机验证这一已声明 residual。
+- 2026-08-13: PR #72 已合并至 `main`（`30979ef`）。
+- 2026-08-14: Product Lead 授权 `Active → Completed`；下一步仅是获授权的真机残余，不是新的实现刀。
