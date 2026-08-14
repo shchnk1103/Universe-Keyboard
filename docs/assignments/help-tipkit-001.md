@@ -1,10 +1,21 @@
 # Assignment: HELP-TIPKIT-001 — 软首启、帮助入口与 TipKit 展示层
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active` — P3 complete (awaiting Product Gate)  
 **Task ID:** `HELP-TIPKIT-001`  
 **Decision source / date:** [`PD-HELP-TIPKIT-001`](../product-decisions/HELP-TIPKIT-001-authorization.md), Human Product Owner product choices locked in Grok session, `2026-07-25 Asia/Shanghai`  
 **Predecessor:** [`RELEASE-2026-0801-03`](release-2026-08-01-03-onboarding-full-access.md) (`Closed` — activation checklist semantics)
+
+## Current Status
+
+| Field | Value |
+|---|---|
+| **Lifecycle** | `Completed` |
+| **Phase** | P1–P3 实现已交付；等待独立 Quality 结论与 Human Product Gate |
+| **Non-claims** | 不宣称 Product Gate、Quality 已过或 Activation 语义被改写 |
+| **Next** | Quality Reviewer → Human Product Lead 验收软首启 / Help IA / TipKit 表面 |
+| **Residuals** | 无实现残余；关单仍需 Product Gate |
+
+---
 
 ## Authority
 
@@ -29,7 +40,7 @@
 - **Executor acknowledgement:** `2026-07-25 Asia/Shanghai` — Scope, Non-goals, Stop Conditions, soft Welcome + Help rename (P1) accepted; activation semantics remain `ONBOARDING_ACTIVATION` / `PD-RELEASE-2026-0801-03`.
 - **Entry Criteria status:** **Met.** PD recorded; roles named; activation semantics predecessor closed; product source path clear; Executor acknowledged.
 - **Product lifecycle decision:** `Ready → Active` on Human instruction “开始P1”, `2026-07-25 Asia/Shanghai`.
-- **Current phase:** **Active — P1–P3 implementation complete**; Product Gate / Quality handoff pending.
+- **Current phase:** **Completed — P1–P3 implementation complete**; Product Gate / Quality handoff pending. Product Lead authorized Active-slot removal `2026-08-14 Asia/Shanghai`.
 
 ## Boundary
 

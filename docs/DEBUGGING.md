@@ -18,6 +18,7 @@ Classify the failure before changing code. Record the input, current page/mode, 
 | Lua feature missing | compiled capability -> files/schema -> deployment -> smoke result |
 | simplification wrong | setting/custom YAML -> deployment -> OpenCC assets/filter |
 | settings differ between App and keyboard | App Group access, cached settings and notification refresh |
+| key tap lands on the wrong neighbor / gap | visual key vs `KeyTouchCellLayout` touch cell; nine-key uses column stacks (`T9NineKeyChromeHost`); Debug overlay in 诊断 |
 
 ## Evidence To Capture
 
@@ -31,6 +32,18 @@ Classify the failure before changing code. Record the input, current page/mode, 
 - whether the issue reproduces after a clean main-App redeploy.
 
 Do not log surrounding host text, passwords, arbitrary user content or full private sentences. Use synthetic inputs such as `nihao` when reproducing.
+
+## Debug Key Touch Overlay
+
+In a **Debug** build, Settings → 诊断 →「显示按键触摸范围」draws the live hit-test snapshot **per key**. Orange solid = that key's `touchFrame`; teal dashed = that key's visual bounds. 26-key and nine-key share one midline-fill `hitIndex` (no separate face/gap path). Nine-key only supplies chrome rows/columns. Overlay is painted on each key button from that same snapshot.
+
+Release builds have no switch and no overlay. The Extension reads the flag at settings-snapshot / visibility boundaries, never inside `hitTest`. Do not restyle the near-invisible backing views to “see” the hit area; that historically changed the surface under test.
+
+Compact-bar commit (2026-08-14): a tap on the first candidate's upper band can hit `contentView` (`inCell`, `idx=0`, 48 pt) and still never reach `didSelect` — UICollectionView's selection tap waits for the bar's swipe-down pan to fail. `CandidateBarView` delivers an item tap that does not wait; debounce shares the commit path with `didSelect`.
+
+Expand-button overlay: the trailing orange slab was the expand hit frame flattened to `y=0…34` and allowed to extend past the bar. The live frame is now the button's outset box clipped to the bar; a point that belongs to a candidate item is not routed to the chevron first.
+
+See [`PD-DEBUG-KEY-HITBOX-001`](product-decisions/DEBUG-KEY-HITBOX-001-authorization.md) and [`DEBUG-KEY-HITBOX-001`](assignments/debug-key-hitbox-001.md).
 
 ## Diagnostic Logs
 

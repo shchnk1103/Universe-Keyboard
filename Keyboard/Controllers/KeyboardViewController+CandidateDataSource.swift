@@ -84,12 +84,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
             return
         }
         if collectionView === candidateCollectionView {
-            let items = presentedCandidates
-            guard items.indices.contains(indexPath.item) else { return }
-            #if DEBUG
-                recordCandidateSelectionDelivered()
-            #endif
-            commitCandidate(items[indexPath.item])
+            commitCompactCandidate(at: indexPath)
         } else if collectionView === expandedCandidateCollectionView {
             let items = presentedCandidates
             guard items.indices.contains(indexPath.item) else { return }
@@ -234,6 +229,23 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         }
         candidateCellSizeCache[cacheKey] = size
         return size
+    }
+
+    func commitCompactCandidate(at indexPath: IndexPath) {
+        if let bar = candidateBar as? CandidateBarView, bar.shouldSuppressCandidateSelection {
+            return
+        }
+        let items = presentedCandidates
+        guard items.indices.contains(indexPath.item) else { return }
+        let now = CFAbsoluteTimeGetCurrent()
+        if now - lastCompactCandidateCommitTime < 0.2 {
+            return
+        }
+        lastCompactCandidateCommitTime = now
+        #if DEBUG
+            recordCandidateSelectionDelivered()
+        #endif
+        commitCandidate(items[indexPath.item])
     }
 
     private func commitCandidate(_ item: CandidateItem) {

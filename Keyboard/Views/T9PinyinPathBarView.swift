@@ -21,6 +21,10 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     private var boundCompositionRevision: UInt64 = 0
     private var shouldScrollToStartOnNextReload = false
     private var selectedPathIDToReveal: String?
+    #if DEBUG
+        private var expandedHitOverlay: DebugKeyTouchRangeOverlayView?
+        private var restoresClipsToBounds = true
+    #endif
 
     init(height: CGFloat, target: AnyObject?, selectAction: Selector) {
         self.height = height
@@ -132,7 +136,7 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
             let index = IndexPath(item: 0, section: 0)
             collectionView.scrollToItem(at: index, at: .left, animated: false)
         } else if let id = selectedPathIDToReveal,
-                  let index = paths.firstIndex(where: { $0.id == id })
+            let index = paths.firstIndex(where: { $0.id == id })
         {
             selectedPathIDToReveal = nil
             collectionView.scrollToItem(
@@ -164,10 +168,11 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: T9PinyinPathBarCell.reuseID,
-            for: indexPath
-        ) as! T9PinyinPathBarCell
+        let cell =
+            collectionView.dequeueReusableCell(
+                withReuseIdentifier: T9PinyinPathBarCell.reuseID,
+                for: indexPath
+            ) as! T9PinyinPathBarCell
         let path = paths[indexPath.item]
         let selected = selectedPath.map { $0.id == path.id || $0 == path } ?? false
         cell.configure(path: path, selected: selected)
@@ -202,10 +207,51 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     /// Expand the vertical hit target toward the 44pt accessibility minimum without
     /// changing the fixed 34pt Path Bar reservation used by keyboard chrome.
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        let verticalPad = max(0, (44 - bounds.height) / 2)
-        let expanded = bounds.insetBy(dx: 0, dy: -verticalPad)
-        return expanded.contains(point)
+        ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds).contains(point)
     }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        #if DEBUG
+            refreshDebugHitboxOverlay()
+        #endif
+    }
+
+    #if DEBUG
+        func refreshDebugHitboxOverlay() {
+            for case let cell as T9PinyinPathBarCell in collectionView.visibleCells {
+                cell.refreshDebugHitboxOverlay()
+            }
+
+            let showing = DebugHitboxOverlayPresentation.isShowing
+            if showing {
+                if clipsToBounds {
+                    restoresClipsToBounds = true
+                    clipsToBounds = false
+                }
+            } else if restoresClipsToBounds {
+                clipsToBounds = true
+            }
+
+            guard showing else {
+                expandedHitOverlay?.isHidden = true
+                return
+            }
+
+            let overlay = expandedHitOverlay ?? DebugKeyTouchRangeOverlayView()
+            if expandedHitOverlay == nil {
+                addSubview(overlay)
+                expandedHitOverlay = overlay
+            }
+            overlay.isHidden = false
+            overlay.apply(
+                touchFrame: ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds),
+                visualFrame: bounds,
+                in: self
+            )
+            sendSubviewToBack(overlay)
+        }
+    #endif
 }
 
 /// Selection plumbing only — not used for on-screen Path rendering.
@@ -243,6 +289,9 @@ final class T9PinyinPathBarCell: UICollectionViewCell {
     private var titleLeadingConstraint: NSLayoutConstraint!
     private var titleTrailingConstraint: NSLayoutConstraint!
     private(set) var path: T9PinyinPath?
+    #if DEBUG
+        private var debugHitboxOverlay: DebugKeyTouchRangeOverlayView?
+    #endif
 
     static func horizontalInset(selected: Bool) -> CGFloat {
         selected ? 8 : 10
@@ -316,6 +365,37 @@ final class T9PinyinPathBarCell: UICollectionViewCell {
         accessibilityValue = nil
         accessibilityTraits = .button
     }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        #if DEBUG
+            refreshDebugHitboxOverlay()
+        #endif
+    }
+
+    #if DEBUG
+        func refreshDebugHitboxOverlay() {
+            guard DebugHitboxOverlayPresentation.isShowing else {
+                debugHitboxOverlay?.isHidden = true
+                return
+            }
+            let overlay = debugHitboxOverlay ?? DebugKeyTouchRangeOverlayView()
+            if debugHitboxOverlay == nil {
+                addSubview(overlay)
+                debugHitboxOverlay = overlay
+            }
+            overlay.isHidden = false
+            overlay.apply(
+                touchFrame: bounds,
+                visualFrame: highlightedBackgroundView.convert(
+                    highlightedBackgroundView.bounds,
+                    to: self
+                ),
+                in: self
+            )
+            bringSubviewToFront(overlay)
+        }
+    #endif
 
     func configure(path: T9PinyinPath, selected: Bool) {
         self.path = path

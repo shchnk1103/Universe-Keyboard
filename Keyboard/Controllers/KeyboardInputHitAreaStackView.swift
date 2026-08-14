@@ -1,32 +1,32 @@
+import KeyboardCore
 import UIKit
 
-/// Root stack view for the keyboard input area.
+/// Root stack for the key area.
 ///
-/// Visual key gaps are intentionally preserved by the row `UIStackView` spacing.
-/// Hit testing, however, behaves like the candidate bar fix: the invisible touch
-/// cells are continuous and split the gaps at the midpoint between neighboring keys.
+/// Hit testing is done in each key's own bounds: expand `button.bounds` by
+/// half of the parent stack spacing (the same midline rule as 26-key). That
+/// never consults a converted column-tall frame, so JKL cannot collapse onto ABC.
 final class KeyboardInputHitAreaStackView: UIStackView {
-    private typealias KeyFrame = (button: KeyboardKeyButton, frame: CGRect)
-    private typealias KeyTouchCell = (button: KeyboardKeyButton, touchFrame: CGRect)
-
-    private var touchCellBackingViews: [UIView] = []
-    private var cachedKeyTouchCells: [KeyTouchCell] = []
-    private var cachedKeyRegionMinY = CGFloat.greatestFiniteMagnitude
-    private var hasValidKeyTouchCellSnapshot = false
+    #if DEBUG
+        private var showsRealTouchRangeOverlay = false
+    #endif
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        configureTouchBacking()
+        isUserInteractionEnabled = true
     }
 
     required init(coder: NSCoder) {
         super.init(coder: coder)
-        configureTouchBacking()
+        isUserInteractionEnabled = true
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        rebuildKeyTouchCellSnapshot()
+        refreshKeyTouchOutsets()
+        #if DEBUG
+            refreshKeyTouchOverlays()
+        #endif
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
@@ -36,185 +36,159 @@ final class KeyboardInputHitAreaStackView: UIStackView {
             return nil
         }
 
-        // UIKit normally lays out the hierarchy before dispatching touches. Keep a
-        // one-time fallback for unusual early hit tests without recomputing the key
-        // tree on every touch event.
-        if !hasValidKeyTouchCellSnapshot {
-            rebuildKeyTouchCellSnapshot()
-        }
-
-        let defaultHit = super.hitTest(point, with: event)
-        if let key = defaultHit as? KeyboardKeyButton,
-            key.convert(key.bounds, to: self).contains(point)
-        {
+        if let key = keyContainingTouch(at: point) {
             return key
         }
-
-        // Candidate bar owns its own bottom hit extension. Do not let key hit testing
-        // steal the candidate-to-key gap or any candidate-bar gesture.
-        guard point.y >= cachedKeyRegionMinY else {
-            return defaultHit
-        }
-
-        return cachedKeyTouchCells.first { $0.touchFrame.contains(point) }?.button ?? defaultHit
+        return super.hitTest(point, with: event)
     }
 
-    private func configureTouchBacking() {
-        isUserInteractionEnabled = true
-    }
-
-    private func updateTouchCellBackingViews(using touchCells: [KeyTouchCell]) {
-        while touchCellBackingViews.count < touchCells.count {
-            let view = UIView()
-            view.isUserInteractionEnabled = false
-            addSubview(view)
-            touchCellBackingViews.append(view)
-        }
-
-        for index in touchCellBackingViews.indices {
-            let cellView = touchCellBackingViews[index]
-            if index < touchCells.count {
-                cellView.isHidden = false
-                cellView.frame = touchCells[index].touchFrame
-                applyBackingStyle(to: cellView)
-                bringSubviewToFront(cellView)
+    /// Point is converted into each key. The winner is the local touch box that
+    /// contains it — visual face or midline slop, same test.
+    private func keyContainingTouch(at pointInSelf: CGPoint) -> KeyboardKeyButton? {
+        let keys = allKeyboardKeys()
+        var best: (button: KeyboardKeyButton, area: CGFloat, distance: CGFloat)?
+        for button in keys {
+            let point = button.convert(pointInSelf, from: self)
+            let insets = touchInsets(for: button)
+            let box = KeyTouchCellLayout.localTouchBounds(
+                visualBounds: button.bounds,
+                insets: insets
+            )
+            guard box.contains(point) else { continue }
+            let area = box.width * box.height
+            let distance = Self.distance(from: point, to: button.bounds)
+            if let current = best {
+                if distance < current.distance - 0.5 {
+                    best = (button, area, distance)
+                } else if abs(distance - current.distance) <= 0.5, area < current.area {
+                    best = (button, area, distance)
+                }
             } else {
-                cellView.isHidden = true
-                cellView.frame = .zero
-                cellView.layer.borderWidth = 0
-                cellView.layer.borderColor = nil
+                best = (button, area, distance)
             }
         }
+        return best?.button
     }
 
-    private func applyBackingStyle(to view: UIView) {
-        // 和候选栏 cell 的修复保持一致：在 iOS Keyboard Extension 中，
-        // 完全透明的间隙有时不会稳定进入 hit-test 链路。保留极低 alpha
-        // backing 作为连续触控表面，但不改变视觉效果。
-        view.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
-        view.layer.borderWidth = 0
-        view.layer.borderColor = nil
+    private func touchInsets(
+        for button: KeyboardKeyButton
+    ) -> (top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) {
+        guard let parent = button.superview as? UIStackView else {
+            return (4, 4, 4, 4)
+        }
+
+        if parent.axis == .horizontal {
+            let peers = parent.arrangedSubviews.compactMap { $0 as? KeyboardKeyButton }
+                .sorted { $0.frame.minX < $1.frame.minX }
+            let index = peers.firstIndex(where: { $0 === button })
+            let isFirst = index == peers.startIndex
+            let isLast = index == peers.indices.last
+            let leadingGap: CGFloat
+            let trailingGap: CGFloat
+            if index != nil {
+                leadingGap =
+                    isFirst
+                    ? max(0, button.frame.minX - parent.bounds.minX)
+                    : parent.spacing
+                trailingGap =
+                    isLast
+                    ? max(0, parent.bounds.maxX - button.frame.maxX)
+                    : parent.spacing
+            } else {
+                leadingGap = parent.spacing
+                trailingGap = parent.spacing
+            }
+
+            var topGap: CGFloat = 0
+            var bottomGap: CGFloat = 0
+            if let column = parent.superview as? UIStackView, column.axis == .vertical {
+                let keyRows = column.arrangedSubviews.filter { row in
+                    !row.isHidden && containsKeyboardKey(row)
+                }
+                if let rowIndex = keyRows.firstIndex(of: parent) {
+                    if rowIndex > keyRows.startIndex {
+                        topGap = spacing(
+                            after: keyRows[keyRows.index(before: rowIndex)],
+                            in: column
+                        )
+                    }
+                    if rowIndex < keyRows.index(before: keyRows.endIndex) {
+                        bottomGap = spacing(after: parent, in: column)
+                    }
+                }
+            }
+            return KeyTouchCellLayout.localTouchInsets(
+                leadingGap: leadingGap,
+                trailingGap: trailingGap,
+                topGap: topGap,
+                bottomGap: bottomGap,
+                isFirstInRow: isFirst,
+                isLastInRow: isLast
+            )
+        }
+
+        let peers = parent.arrangedSubviews.compactMap { $0 as? KeyboardKeyButton }
+            .sorted { $0.frame.minY < $1.frame.minY }
+        let index = peers.firstIndex(where: { $0 === button })
+        let isFirst = index == peers.startIndex
+        let isLast = index == peers.indices.last
+        var topGap: CGFloat = 0
+        var bottomGap: CGFloat = 0
+        if let index {
+            if !isFirst {
+                topGap = spacing(after: peers[peers.index(before: index)], in: parent)
+            }
+            if !isLast {
+                bottomGap = spacing(after: button, in: parent)
+            }
+        }
+        return KeyTouchCellLayout.localTouchInsets(
+            leadingGap: max(0, button.frame.minX - parent.bounds.minX),
+            trailingGap: max(0, parent.bounds.maxX - button.frame.maxX),
+            topGap: topGap,
+            bottomGap: bottomGap,
+            isFirstInRow: true,
+            isLastInRow: true
+        )
     }
 
-    private func updateKeyTouchOutsets(using touchCells: [KeyTouchCell]) {
-        for cell in touchCells {
-            let frame = cell.button.convert(cell.button.bounds, to: self)
-            cell.button.expandedTouchOutsets = UIEdgeInsets(
-                top: max(0, frame.minY - cell.touchFrame.minY),
-                left: max(0, frame.minX - cell.touchFrame.minX),
-                bottom: max(0, cell.touchFrame.maxY - frame.maxY),
-                right: max(0, cell.touchFrame.maxX - frame.maxX)
+    private func spacing(after view: UIView, in stack: UIStackView) -> CGFloat {
+        let custom = stack.customSpacing(after: view)
+        if custom == UIStackView.spacingUseDefault {
+            return stack.spacing
+        }
+        return custom
+    }
+
+    private func refreshKeyTouchOutsets() {
+        for button in allKeyboardKeys() {
+            let insets = touchInsets(for: button)
+            button.expandedTouchOutsets = UIEdgeInsets(
+                top: insets.top,
+                left: insets.left,
+                bottom: insets.bottom,
+                right: insets.right
             )
         }
     }
 
-    /// Rebuilds all layout-derived touch geometry once, then lets hit testing use
-    /// the immutable snapshot until UIKit performs the next layout pass.
-    private func rebuildKeyTouchCellSnapshot() {
-        let touchCells = keyTouchCells()
-        cachedKeyTouchCells = touchCells
-        cachedKeyRegionMinY = touchCells.map(\.touchFrame.minY).min() ?? .greatestFiniteMagnitude
-        hasValidKeyTouchCellSnapshot = true
-
-        updateKeyTouchOutsets(using: touchCells)
-        updateTouchCellBackingViews(using: touchCells)
-    }
-
-    private func keyTouchCells() -> [KeyTouchCell] {
-        let rows = keyRows()
-        guard !rows.isEmpty else { return [] }
-
-        var cells: [KeyTouchCell] = []
-        for rowIndex in rows.indices {
-            let row = rows[rowIndex]
-            let rowMinY = row.map(\.frame.minY).min() ?? bounds.minY
-            let rowMaxY = row.map(\.frame.maxY).max() ?? rowMinY
-            let top: CGFloat
-            if rowIndex == rows.startIndex {
-                top = rowMinY
-            } else {
-                let previousMaxY = rows[rowIndex - 1].map(\.frame.maxY).max() ?? rowMinY
-                top = (previousMaxY + rowMinY) / 2
-            }
-
-            let bottom: CGFloat
-            if rowIndex == rows.index(before: rows.endIndex) {
-                bottom = rowMaxY
-            } else {
-                let nextMinY = rows[rowIndex + 1].map(\.frame.minY).min() ?? rowMaxY
-                bottom = (rowMaxY + nextMinY) / 2
-            }
-
-            for keyIndex in row.indices {
-                let key = row[keyIndex]
-                let left: CGFloat
-                if keyIndex == row.startIndex {
-                    left = bounds.minX
-                } else {
-                    let previous = row[keyIndex - 1]
-                    left = (previous.frame.maxX + key.frame.minX) / 2
-                }
-
-                let right: CGFloat
-                if keyIndex == row.index(before: row.endIndex) {
-                    right = bounds.maxX
-                } else {
-                    let next = row[keyIndex + 1]
-                    right = (key.frame.maxX + next.frame.minX) / 2
-                }
-
-                let touchFrame = CGRect(
-                    x: left,
-                    y: top,
-                    width: max(0, right - left),
-                    height: max(0, bottom - top)
-                )
-                cells.append((button: key.button, touchFrame: touchFrame))
-            }
+    private func containsKeyboardKey(_ view: UIView) -> Bool {
+        if view is KeyboardKeyButton { return true }
+        if let stack = view as? UIStackView {
+            return stack.arrangedSubviews.contains(where: containsKeyboardKey)
         }
-        return cells
+        return view.subviews.contains(where: containsKeyboardKey)
     }
 
-    private func keyRows() -> [[KeyFrame]] {
-        let sortedKeys = keyboardKeyFrames()
-            .sorted {
-                if abs($0.frame.midY - $1.frame.midY) > 1 {
-                    return $0.frame.midY < $1.frame.midY
-                }
-                return $0.frame.minX < $1.frame.minX
-            }
-
-        var rows: [[KeyFrame]] = []
-        for key in sortedKeys {
-            if let lastRow = rows.indices.last,
-                let rowMidY = averageMidY(for: rows[lastRow]),
-                abs(key.frame.midY - rowMidY) <= max(8, key.frame.height * 0.5)
-            {
-                rows[lastRow].append(key)
-            } else {
-                rows.append([key])
-            }
-        }
-
-        return rows.map { row in
-            row.sorted { $0.frame.minX < $1.frame.minX }
-        }
-    }
-
-    private func averageMidY(for row: [KeyFrame]) -> CGFloat? {
-        guard !row.isEmpty else { return nil }
-        return row.reduce(CGFloat(0)) { $0 + $1.frame.midY } / CGFloat(row.count)
-    }
-
-    private func keyboardKeyFrames() -> [KeyFrame] {
-        var result: [KeyFrame] = []
+    private func allKeyboardKeys() -> [KeyboardKeyButton] {
+        var result: [KeyboardKeyButton] = []
         collectKeyboardKeys(in: self, into: &result)
         return result
     }
 
     private func collectKeyboardKeys(
         in view: UIView,
-        into result: inout [KeyFrame]
+        into result: inout [KeyboardKeyButton]
     ) {
         for subview in view.subviews {
             if let button = subview as? KeyboardKeyButton,
@@ -222,10 +196,46 @@ final class KeyboardInputHitAreaStackView: UIStackView {
                 !button.isHidden,
                 button.alpha > 0.01
             {
-                result.append((button: button, frame: button.convert(button.bounds, to: self)))
+                result.append(button)
                 continue
             }
             collectKeyboardKeys(in: subview, into: &result)
         }
     }
+
+    private static func distance(from point: CGPoint, to rect: CGRect) -> CGFloat {
+        if rect.contains(point) { return 0 }
+        let dx = max(rect.minX - point.x, 0, point.x - rect.maxX)
+        let dy = max(rect.minY - point.y, 0, point.y - rect.maxY)
+        return hypot(dx, dy)
+    }
+
+    #if DEBUG
+        func setShowsRealTouchRangeOverlay(_ shows: Bool) {
+            showsRealTouchRangeOverlay = shows
+            if window != nil {
+                refreshKeyTouchOverlays()
+            } else {
+                setNeedsLayout()
+            }
+        }
+
+        private func refreshKeyTouchOverlays() {
+            viewWithTag(Self.touchRangeOverlayHostTag)?.removeFromSuperview()
+            superview?.viewWithTag(Self.touchRangeOverlayHostTag)?.removeFromSuperview()
+            for button in allKeyboardKeys() {
+                let insets = touchInsets(for: button)
+                let touch = KeyTouchCellLayout.localTouchBounds(
+                    visualBounds: button.bounds,
+                    insets: insets
+                )
+                button.applyDebugHitboxOverlay(
+                    showing: showsRealTouchRangeOverlay,
+                    touchFrameInButton: touch
+                )
+            }
+        }
+
+        private static let touchRangeOverlayHostTag = 8_260_014
+    #endif
 }

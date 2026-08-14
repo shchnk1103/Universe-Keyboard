@@ -154,7 +154,7 @@ nonisolated enum SettingsSearchCatalog {
             title: "诊断",
             subtitle: "本机记录、分类与高级排查",
             systemImage: "waveform.path.ecg.text",
-            keywords: ["诊断", "日志", "卡顿", "debug", "force_gc", "九键"],
+            keywords: ["诊断", "日志", "卡顿", "debug", "force_gc", "九键", "触摸范围", "hitbox"],
             destination: .diagnostics
         ),
         SettingsSearchItem(
@@ -164,7 +164,7 @@ nonisolated enum SettingsSearchCatalog {
             systemImage: "book.pages",
             keywords: ["帮助", "启用", "引导", "完全访问", "添加键盘"],
             destination: .activationHelp
-        )
+        ),
     ]
 
     static func matches(query: String) -> [SettingsSearchItem] {

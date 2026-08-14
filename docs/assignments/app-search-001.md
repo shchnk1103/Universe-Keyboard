@@ -1,9 +1,20 @@
 # Assignment: APP-SEARCH-001 — 搜索 Tab 与 J4 试用跳转
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active`  
 **Task ID:** `APP-SEARCH-001`  
 **Decision source / date:** [`PD-APP-SEARCH-001`](../product-decisions/APP-SEARCH-001-authorization.md), `2026-07-25 Asia/Shanghai`
+
+## Current Status
+
+| Field | Value |
+|---|---|
+| **Lifecycle** | `Completed` |
+| **Phase** | 搜索 Tab + J4 试用跳转已交付；等待 Quality 与 Human Product Gate |
+| **Non-claims** | 不宣称 Quality、真机 smoke 或 Product Gate 已过 |
+| **Next** | Quality Reviewer → Human Product Lead |
+| **Residuals** | 可选真机：在搜索页切到 Universe Keyboard |
+
+---
 
 ## Authority
 
@@ -20,7 +31,7 @@
 ## Acknowledgement
 
 - **Executor acknowledgement:** `2026-07-25 Asia/Shanghai` on implement instruction.  
-- **Lifecycle:** `Ready → Active` same day.
+- **Lifecycle:** `Ready → Active` same day; Product Lead authorized `Active → Completed` `2026-08-14 Asia/Shanghai` after Executor delivery.
 
 ## Scope
 

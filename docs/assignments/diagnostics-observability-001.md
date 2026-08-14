@@ -6,10 +6,10 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | P0 已由 PR #57 合并：v1 journal、查询/分页 UI、安全回收、Extension lifecycle health、Debug 高保真时窗与默认关闭的到期提醒均已交付；CI 已通过，等待人类 Product Gate |
+| **Lifecycle** | `Completed` |
+| **Phase** | P0 已由 PR #57 合并并移出 Active；等待人类 Product Gate。P1 仅走 [TD-013](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) |
 | **Non-claims** | 不宣称 P1 的严格全局分页、周期性 retention、完整失败矩阵或 legacy producer 完整迁移；不宣称 Release 性能、全部真机异常已捕获或 Product Gate 已通过 |
-| **Next** | 取得已声明的真机 Product Gate；P1 仅在新授权下按 [TD-013](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) 处理 |
+| **Next** | Human Product Gate（P0 行为）；P1 不在本 Assignment 继续实施 |
 | **Residuals** | P1 技术债：[TD-013](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)；本轮真机仅为 Device-attested P0 行为证据，不构成 Release/Product Gate |
 
 ---
@@ -103,3 +103,4 @@ Policy version: 1.0.0
 - 2026-08-09: Human Product Owner 在真机确认手动关闭首屏高保真采样后，先前排队的到期提醒不会继续投递。该 Device-attested 结果仅覆盖取消语义；通知授权与自然到期投递仍不作为已完成的 Product Gate。
 - 2026-08-09: Product Owner 决定在 P0 实现范围收口；严格全局分页、周期性 retention、完整 health/竞争矩阵与 legacy producer 迁移不再作为本轮实施范围，统一移入 [TD-013](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)。Assignment 保持 Active，直至质量、发布和人类 Product Gate 完成。
 - 2026-08-09: PR #57 已以 squash 合并至 `main`（`01e37b9`）；GitHub `build-and-test` 与 GitGuardian Security Checks 通过。本地 CI 修复以 `2b65da5` 补齐测试 target 的显式 `KeyboardCore` import，并在干净 DerivedData 下复验。仍不将 CI 或既有 Device-attested 观察宣称为人类 Product Gate。
+- 2026-08-14: Human Product Owner 在 Active Work 收敛中授权 `Active → Completed`，腾出 Active 槽。这不是 Product Gate，也不重新打开 P1。

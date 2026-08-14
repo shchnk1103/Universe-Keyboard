@@ -9,9 +9,9 @@
 //  1. KeyboardKeyButton（UIButton 子类）— 扩大触控区域
 //     Apple 人机界面指南（HIG）建议触控目标不小于 44×44pt。
 //     按键视觉间距仍由 UIStackView.spacing 保持；真实触控由
-//     KeyboardInputHitAreaStackView 按相邻按键中线切分为连续触控单元。
-//     KeyboardKeyButton 的 touchSlop 负责让这些转发触摸在 touch-up
-//     和长按 tracking 阶段仍被视为有效。
+//     KeyboardInputHitAreaStackView 按相邻按键中线切分（26 键与九键同一规则；
+//     九键只按左右列切网）。KeyboardKeyButton 的 expandedTouchOutsets
+//     对齐该触摸单元，使缝里转发的触摸在抬手时仍算 touchUpInside。
 //
 import UIKit
 
@@ -34,8 +34,8 @@ extension KeyboardViewController {
 
         button.accessibilityLabel = "\(letters)，数字 \(digit)"
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-        // Slot order follows the visible ABC…WXYZ construction order.
-        devicePreflightT9LetterGroupButtons.append(button)
+            // Slot order follows the visible ABC…WXYZ construction order.
+            devicePreflightT9LetterGroupButtons.append(button)
         #endif
         // Native 九宫格: letter group is primary; slightly smaller than prior 18pt chrome.
         let lettersFont = UIFont.systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
@@ -82,9 +82,9 @@ extension KeyboardViewController {
         button.setTitle(title, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
         #if DEBUG
-        button.trackingEventHandler = { [weak self] button, phase in
-            self?.recordKeyboardTrackingDiagnostic(button: button, phase: phase)
-        }
+            button.trackingEventHandler = { [weak self] button, phase in
+                self?.recordKeyboardTrackingDiagnostic(button: button, phase: phase)
+            }
         #endif
         // 默认应用字符键样式 — 调用方可以根据需要覆盖（如 applyKeyStyle(.function, to:)）
         applyKeyStyle(.character, to: button)

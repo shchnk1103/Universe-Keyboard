@@ -38,8 +38,45 @@ private final class CandidateBarExpandButton: UIButton {
 ///
 /// The fixed height and expand-button width are part of the keyboard presentation
 /// baseline: changing them can reintroduce keyboard resize/flicker regressions.
+/// Isolated from `CandidateBarView`'s `@MainActor` so optional delegate
+/// methods actually bind. Putting them on the bar only "nearly matches".
+private final class CandidateBarGestureBridge: NSObject, UIGestureRecognizerDelegate {
+    weak var itemTap: UIGestureRecognizer?
+    weak var swipeDown: UIGestureRecognizer?
+    weak var horizontalFallback: UIGestureRecognizer?
+    weak var collectionPan: UIGestureRecognizer?
+
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+    ) -> Bool {
+        if gestureRecognizer === itemTap || otherGestureRecognizer === itemTap {
+            return true
+        }
+        if gestureRecognizer === horizontalFallback || otherGestureRecognizer === horizontalFallback {
+            return false
+        }
+        guard gestureRecognizer === swipeDown || otherGestureRecognizer === swipeDown else {
+            return false
+        }
+        return gestureRecognizer === collectionPan || otherGestureRecognizer === collectionPan
+    }
+
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldRequireFailureOf otherGestureRecognizer: UIGestureRecognizer
+    ) -> Bool {
+        if gestureRecognizer === itemTap,
+            otherGestureRecognizer === swipeDown || otherGestureRecognizer === horizontalFallback
+        {
+            return false
+        }
+        return false
+    }
+}
+
 @MainActor
-final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
+final class CandidateBarView: UIView {
     private enum Layout {
         /// Keeps candidate text visually settled in the thinner bar.
         static let verticalTextInset: CGFloat = 0
@@ -53,11 +90,14 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
     let expandButtonWidthConstraint: NSLayoutConstraint
     private weak var expandActionTarget: NSObject?
     private let expandAction: Selector
+    private let itemTapRecognizer = UITapGestureRecognizer()
+    private let gestureBridge = CandidateBarGestureBridge()
     private let candidateBarHeight: CGFloat
     private let bottomHitExtension: CGFloat
     private var swipeDownRecognizer: UIPanGestureRecognizer?
     private var horizontalFallbackRecognizer: UIPanGestureRecognizer?
     private var hasTriggeredSwipeDownExpand = false
+    private var isSwipeDownTracking = false
     private var swipePreviewIndexPath: IndexPath?
     private var horizontalFallbackStartOffsetX: CGFloat = 0
     private var lastPointInsideDiagnosticLogTime: CFTimeInterval = 0
@@ -68,6 +108,8 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
         /// same hit view that would have been returned without diagnostics.
         private weak var diagnosticSink: CandidateTouchDiagnosticSink?
         private weak var lastStructuredTouch: UITouch?
+        private var expandHitboxOverlay: DebugKeyTouchRangeOverlayView?
+        private var hitProbeLabel: UILabel?
     #endif
 
     init(
@@ -114,6 +156,8 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
         configureCollectionView()
         addSubview(collectionView)
         addSubview(expandButton)
+        gestureBridge.collectionPan = collectionView.panGestureRecognizer
+        installItemTapGesture()
         installHorizontalFallbackGesture()
         installSwipeDownExpandGesture()
 
@@ -140,9 +184,98 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// True while a downward expand pan is recognized. Callers should skip
+    /// `didSelect` so a swipe-to-expand does not also commit the cell.
+    var shouldSuppressCandidateSelection: Bool {
+        isSwipeDownTracking || hasTriggeredSwipeDownExpand
+    }
+
+    /// Direct tap delivery. UICollectionView's own selection tap waits for the
+    /// bar's expand pan to fail and never fires for a stationary press.
+    var onItemTap: ((IndexPath) -> Void)?
+
     override func layoutSubviews() {
         super.layoutSubviews()
+        #if DEBUG
+            refreshDebugHitboxOverlay()
+        #endif
     }
+
+    #if DEBUG
+        func refreshDebugHitboxOverlay() {
+            for case let cell as CandidateCollectionCell in collectionView.visibleCells {
+                cell.refreshDebugHitboxOverlay()
+            }
+            guard DebugHitboxOverlayPresentation.isShowing else {
+                expandHitboxOverlay?.isHidden = true
+                hitProbeLabel?.isHidden = true
+                return
+            }
+            if !expandButton.isHidden {
+                let overlay = expandHitboxOverlay ?? DebugKeyTouchRangeOverlayView()
+                if expandHitboxOverlay == nil {
+                    addSubview(overlay)
+                    expandHitboxOverlay = overlay
+                }
+                overlay.isHidden = false
+                overlay.apply(
+                    touchFrame: expandedButtonHitFrame,
+                    visualFrame: expandButton.frame,
+                    in: self
+                )
+                bringSubviewToFront(overlay)
+            } else {
+                expandHitboxOverlay?.isHidden = true
+            }
+            refreshHitProbeLabel(text: hitProbeLabel?.text)
+        }
+
+        private func recordHitProbe(point: CGPoint, hitView: UIView?) {
+            guard DebugHitboxOverlayPresentation.isShowing else { return }
+            let collectionPoint = collectionView.convert(point, from: self)
+            let index = collectionView.indexPathForItem(at: collectionPoint)
+            let cell = index.flatMap { collectionView.cellForItem(at: $0) as? CandidateCollectionCell }
+            let contentHeight = cell.map { Int($0.contentView.bounds.height) } ?? -1
+            let cellHeight = cell.map { Int($0.bounds.height) } ?? -1
+            let hitName = CandidateTouchDiagnostics.viewPath(hitView)
+            let indexText = index.map { String($0.item) } ?? "nil"
+            let inCell: String
+            if let cell, let hitView {
+                inCell = (hitView === cell || hitView.isDescendant(of: cell)) ? "inCell" : "chrome"
+            } else {
+                inCell = "noCell"
+            }
+            refreshHitProbeLabel(
+                text:
+                    "\(hitName) idx=\(indexText) \(inCell) cellH=\(cellHeight) contentH=\(contentHeight) y=\(Int(point.y))"
+            )
+        }
+
+        private func refreshHitProbeLabel(text: String?) {
+            guard DebugHitboxOverlayPresentation.isShowing else {
+                hitProbeLabel?.isHidden = true
+                return
+            }
+            let label = hitProbeLabel ?? UILabel()
+            if hitProbeLabel == nil {
+                label.font = .monospacedDigitSystemFont(ofSize: 9, weight: .medium)
+                label.textColor = .systemYellow
+                label.backgroundColor = UIColor.black.withAlphaComponent(0.72)
+                label.numberOfLines = 1
+                label.adjustsFontSizeToFitWidth = true
+                label.minimumScaleFactor = 0.6
+                label.isUserInteractionEnabled = false
+                addSubview(label)
+                hitProbeLabel = label
+            }
+            label.isHidden = false
+            label.text = text ?? "hit=—"
+            label.sizeToFit()
+            let width = min(bounds.width - 8, max(120, label.bounds.width + 8))
+            label.frame = CGRect(x: 4, y: max(2, bounds.height - 16), width: width, height: 14)
+            bringSubviewToFront(label)
+        }
+    #endif
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         let result =
@@ -160,11 +293,14 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         let superHit = super.hitTest(point, with: event)
         let result: UIView?
-        if !expandButton.isHidden && expandedButtonHitFrame.contains(point) {
+        let collectionPoint = collectionView.convert(point, from: self)
+        let hitsCandidateItem =
+            collectionView.frame.contains(point)
+            && collectionView.indexPathForItem(at: collectionPoint) != nil
+        if !hitsCandidateItem, !expandButton.isHidden, expandedButtonHitFrame.contains(point) {
             let buttonPoint = expandButton.convert(point, from: self)
             result = expandButton.hitTest(buttonPoint, with: event) ?? expandButton
         } else if bounds.contains(point), collectionView.frame.contains(point) {
-            let collectionPoint = collectionView.convert(point, from: self)
             result = collectionView.hitTest(collectionPoint, with: event) ?? collectionView
         } else if bounds.contains(point) {
             result = self
@@ -182,6 +318,7 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
         )
         #if DEBUG
             recordStructuredTouchIfNeeded(point: point, hitView: result, event: event)
+            recordHitProbe(point: point, hitView: result)
         #endif
         return result
     }
@@ -222,19 +359,13 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
     private var expandedButtonHitFrame: CGRect {
         guard let button = expandButton as? CandidateBarExpandButton else { return expandButton.frame }
         let outsets = button.hitOutsets
-        let widenedFrame = button.frame.inset(
-            by: UIEdgeInsets(
-                top: -outsets.top,
-                left: -outsets.left,
-                bottom: -outsets.bottom,
-                right: -outsets.right
-            )
-        )
-        return CGRect(
-            x: widenedFrame.minX,
-            y: 0,
-            width: widenedFrame.width,
-            height: candidateBarHeight
+        return ChromeTouchHitGeometry.candidateExpandButtonHitFrame(
+            buttonFrame: button.frame,
+            topOutset: outsets.top,
+            leftOutset: outsets.left,
+            bottomOutset: outsets.bottom,
+            rightOutset: outsets.right,
+            barBounds: bounds
         )
     }
 
@@ -282,11 +413,27 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
         collectionView.setContentOffset(collectionView.contentOffset, animated: false)
     }
 
+    private func installItemTapGesture() {
+        itemTapRecognizer.addTarget(self, action: #selector(handleItemTap(_:)))
+        itemTapRecognizer.cancelsTouchesInView = false
+        itemTapRecognizer.delegate = gestureBridge
+        gestureBridge.itemTap = itemTapRecognizer
+        collectionView.addGestureRecognizer(itemTapRecognizer)
+    }
+
+    @objc private func handleItemTap(_ recognizer: UITapGestureRecognizer) {
+        guard recognizer.state == .ended, !shouldSuppressCandidateSelection else { return }
+        let point = recognizer.location(in: collectionView)
+        guard let indexPath = collectionView.indexPathForItem(at: point) else { return }
+        onItemTap?(indexPath)
+    }
+
     private func installHorizontalFallbackGesture() {
         let recognizer = UIPanGestureRecognizer(target: self, action: #selector(handleHorizontalFallbackPan(_:)))
         recognizer.cancelsTouchesInView = true
-        recognizer.delegate = self
+        recognizer.delegate = gestureBridge
         horizontalFallbackRecognizer = recognizer
+        gestureBridge.horizontalFallback = recognizer
         addGestureRecognizer(recognizer)
     }
 
@@ -338,9 +485,12 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
 
     private func installSwipeDownExpandGesture() {
         let recognizer = UIPanGestureRecognizer(target: self, action: #selector(handleSwipeDownExpand(_:)))
-        recognizer.cancelsTouchesInView = true
-        recognizer.delegate = self
+        // Do not cancel cell taps. A downward micro-movement used to begin this
+        // pan, kill `didSelect`, and then fail the expand threshold.
+        recognizer.cancelsTouchesInView = false
+        recognizer.delegate = gestureBridge
         swipeDownRecognizer = recognizer
+        gestureBridge.swipeDown = recognizer
         addGestureRecognizer(recognizer)
     }
 
@@ -350,6 +500,7 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
             if collectionView.isDecelerating {
                 collectionView.setContentOffset(collectionView.contentOffset, animated: false)
             }
+            isSwipeDownTracking = true
             hasTriggeredSwipeDownExpand = false
             updateSwipePreviewHighlight(for: recognizer)
         case .changed:
@@ -357,6 +508,7 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
             triggerExpandIfSwipeDownThresholdPassed(recognizer)
         default:
             clearSwipePreviewHighlight()
+            isSwipeDownTracking = false
             hasTriggeredSwipeDownExpand = false
         }
     }
@@ -452,21 +604,6 @@ final class CandidateBarView: UIView, UIGestureRecognizerDelegate {
                 + "index=\(indexPath.map { String($0.item) } ?? "nil")",
             category: .display
         )
-    }
-
-    func gestureRecognizer(
-        _ gestureRecognizer: UIGestureRecognizer,
-        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
-    ) -> Bool {
-        if gestureRecognizer === horizontalFallbackRecognizer || otherGestureRecognizer === horizontalFallbackRecognizer
-        {
-            return false
-        }
-        guard gestureRecognizer === swipeDownRecognizer || otherGestureRecognizer === swipeDownRecognizer else {
-            return false
-        }
-        return gestureRecognizer === collectionView.panGestureRecognizer
-            || otherGestureRecognizer === collectionView.panGestureRecognizer
     }
 
     private static func makeExpandButton(target: Any?, action: Selector) -> UIButton {

@@ -21,6 +21,19 @@ enum CandidateTouchDiagnostics {
         return String(describing: type(of: view))
     }
 
+    static func viewPath(_ view: UIView?, limit: Int = 4) -> String {
+        guard let view else { return "nil" }
+        var parts: [String] = []
+        var current: UIView? = view
+        var depth = 0
+        while let node = current, depth < limit {
+            parts.append(String(describing: type(of: node)))
+            current = node.superview
+            depth += 1
+        }
+        return parts.joined(separator: "<")
+    }
+
     static func gestureStateName(_ state: UIGestureRecognizer.State) -> String {
         switch state {
         case .possible: return "possible"
@@ -72,15 +85,41 @@ final class CandidateCollectionView: UICollectionView {
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         let result = super.hitTest(point, with: event)
         let indexPath = indexPathForItem(at: point)
+        let resolved = resolvedItemHitView(
+            at: point,
+            indexPath: indexPath,
+            defaultHit: result,
+            event: event
+        )
         logTouch(
             "collection hitTest",
             point: point,
             lastLogTime: &lastHitTestDiagnosticLogTime,
-            extra: "hit=\(CandidateTouchDiagnostics.viewName(result)) "
+            extra: "hit=\(CandidateTouchDiagnostics.viewName(resolved)) "
+                + "raw=\(CandidateTouchDiagnostics.viewName(result)) "
                 + "index=\(indexPath.map { String($0.item) } ?? "nil") "
                 + "pan=\(CandidateTouchDiagnostics.gestureStateName(panGestureRecognizer.state))"
         )
-        return result
+        return resolved
+    }
+
+    /// Layout already owns this point (`indexPathForItem`). If a non-item chrome
+    /// view — typically an iOS 26 scroll-edge `UIView` — sits in front of the
+    /// cell, selection never fires. Prefer the cell without changing its frame.
+    private func resolvedItemHitView(
+        at point: CGPoint,
+        indexPath: IndexPath?,
+        defaultHit: UIView?,
+        event: UIEvent?
+    ) -> UIView? {
+        guard let indexPath, let cell = cellForItem(at: indexPath) else {
+            return defaultHit
+        }
+        if let defaultHit, defaultHit === cell || defaultHit.isDescendant(of: cell) {
+            return defaultHit
+        }
+        let cellPoint = convert(point, to: cell)
+        return cell.hitTest(cellPoint, with: event) ?? cell
     }
 
     @objc private func logPanState(_ recognizer: UIPanGestureRecognizer) {

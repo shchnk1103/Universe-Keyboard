@@ -22,6 +22,7 @@ struct DiagnosticsSettingsView: View {
     @State private var advancedExpanded = false
     #if DEBUG
         @State private var highFidelityEnabled = false
+        @State private var keyHitboxOverlayEnabled = false
     #endif
 
     private var defaults: UserDefaults? {
@@ -35,6 +36,7 @@ struct DiagnosticsSettingsView: View {
             categoriesSection
             #if DEBUG
                 highFidelitySection
+                keyHitboxOverlaySection
             #endif
             reviewSection
             advancedSection
@@ -47,6 +49,10 @@ struct DiagnosticsSettingsView: View {
             loggingEnabled = defaults?.bool(forKey: "logging_enabled") ?? false
             #if DEBUG
                 highFidelityEnabled = DiagnosticsHighFidelityConfiguration.isEnabled(in: defaults)
+                keyHitboxOverlayEnabled = DebugKeyHitboxConfiguration.isEnabled(
+                    in: defaults,
+                    isDebugBuild: true
+                )
                 Task { await notificationSettings.synchronizeDiagnosticsHighFidelityExpiryNotification() }
             #endif
         }
@@ -226,6 +232,34 @@ struct DiagnosticsSettingsView: View {
                 Text("不记录键值、候选文字、拼音、宿主文字或 App 身份。结束提醒受「通知与提醒 > 允许 App 通知」控制。")
             }
             .opacity(loggingEnabled ? 1 : 0.48)
+        }
+
+        private var keyHitboxOverlaySection: some View {
+            Section {
+                Toggle(isOn: keyHitboxOverlayBinding) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("显示按键触摸范围")
+                        Text("仅 Debug。橙色实线是实际命中区（按键、候选、Path），虚线是外观，不是另画的点击区。")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .toggleStyle(.switch)
+            } header: {
+                Text("按键检查")
+            } footer: {
+                Text("打开后再唤出键盘：橙色实线是可点范围，青色虚线是按键外观，空格和回车也有。不影响输入；Release 构建没有此开关。")
+            }
+        }
+
+        private var keyHitboxOverlayBinding: Binding<Bool> {
+            Binding(
+                get: { keyHitboxOverlayEnabled },
+                set: { newValue in
+                    keyHitboxOverlayEnabled = newValue
+                    defaults?.set(newValue, forKey: DebugKeyHitboxConfiguration.enabledKey)
+                }
+            )
         }
 
         private var highFidelityBinding: Binding<Bool> {

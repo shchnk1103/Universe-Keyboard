@@ -1,7 +1,7 @@
 # Assignment: T9-RESPONSIVE-PIPELINE-001 — 九宫格响应式 RIME 输入管线
 
 **Policy version:** `1.0.0`  
-**Lifecycle status:** `Active — ADR 0025 Accepted; ALL-LAYOUTS-001 Completed; RESPONSIVE-DEFAULT-ON-001 Product Gate dual-gate Release default-on Active (2026-08-06); CANARY Stop/Retain history retained; no SLO claim`
+**Lifecycle status:** `Reviewed — ADR 0025 Accepted; ALL-LAYOUTS-001 Completed; RESPONSIVE-DEFAULT-ON-001 Product Gate dual-gate Release default-on delivered (2026-08-06); parent no longer Active (2026-08-14); CANARY Stop/Retain history retained; no SLO claim`
 **Task ID:** `T9-RESPONSIVE-PIPELINE-001`  
 **Repository change types (authorized through R1):** `Documentation`,
 `Implementation` (KeyboardCore pure pipeline only), `Tests`  
@@ -381,8 +381,9 @@
 - [x] ADR 0025 Accept — **done** (`ADR-0025-ACCEPT-001`, 2026-08-06)
 - [x] Product Gate / dual-gate Release **request** default-on — **done**
   (`RESPONSIVE-DEFAULT-ON-001`, 2026-08-06); fail-closed Off path retained
-- [ ] R6 umbrella residual checklist items outside Product Gate (if any) —
-  **track only**; no separate R6 claim required for Gate
+- [x] R6 umbrella residual checklist items outside Product Gate (if any) —
+  **track only**; Product `2026-08-14` removed parent from Active Work.
+  No separate R6 claim required for Gate.
 
 ### Exit Criteria — R5-Remediation design
 
@@ -658,8 +659,12 @@ forbidden.
 
 **Closed knife:** R5-Preflight only (arm + content-free logs + path on/off).
 
-**Parent Assignment state:** remains `Active` until formal R5 / R6 / Product Gate
-or Product Hold.
+> **Superseded for current status:** parent is `Reviewed` and not Active as of
+> `2026-08-14` (Product Lead Active Work 收敛). Text below is historical
+> R5-Preflight handoff.
+
+**Parent Assignment state (historical 2026-07-31):** remains `Active` until
+formal R5 / R6 / Product Gate or Product Hold.
 
 **Device residual for formal R5 (not open):**
 

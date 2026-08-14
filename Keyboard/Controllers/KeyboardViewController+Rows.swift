@@ -1,6 +1,10 @@
 import KeyboardCore
 import UIKit
 
+/// Marks the nine-key pad so hit-testing can split left/right columns
+/// instead of flattening every key by midY.
+final class T9NineKeyChromeHost: UIStackView {}
+
 extension KeyboardViewController {
     // MARK: === T9 九键（原生九宫格节奏）===
 
@@ -106,7 +110,7 @@ extension KeyboardViewController {
         rightStack.distribution = .fill
         rightStack.setCustomSpacing(keySpacing, after: kaomojiButton)
 
-        let host = UIStackView(arrangedSubviews: [leftStack, rightStack])
+        let host = T9NineKeyChromeHost(arrangedSubviews: [leftStack, rightStack])
         host.axis = .horizontal
         host.spacing = keyHorizontalSpacing
         host.distribution = .fill
@@ -116,7 +120,7 @@ extension KeyboardViewController {
         rightStack.setContentHuggingPriority(.required, for: .horizontal)
         rightStack.setContentCompressionResistancePriority(.required, for: .horizontal)
         NSLayoutConstraint.activate([
-            rightStack.widthAnchor.constraint(equalTo: leftStack.widthAnchor, multiplier: 0.25),
+            rightStack.widthAnchor.constraint(equalTo: leftStack.widthAnchor, multiplier: 0.25)
         ])
 
         let totalHeight =
@@ -392,7 +396,8 @@ extension KeyboardViewController {
         row.distribution = .fillEqually
 
         for key in ["…", "，", "^_^", "？", "！", "‘"] {
-            let action: Selector = key == "^_^"
+            let action: Selector =
+                key == "^_^"
                 ? #selector(showKaomojiCandidatesPlaceholder(_:))
                 : #selector(insertKey(_:))
             row.addArrangedSubview(makeKeyButton(title: key, action: action))

@@ -1,7 +1,7 @@
 # RELEASE-2026-0801 Release Evidence And Acceptance Record
 
 > **Status:** Active evidence ledger; no release conclusion yet
-> **Target availability:** `2026-08-01 Asia/Shanghai`
+> **Target availability:** `2026-08-26 Asia/Shanghai` (historical: `2026-08-01`; redate [`PD-RELEASE-2026-0801-TARGET-REDATE`](../product-decisions/RELEASE-2026-0801-target-redate.md))
 > **Authority:** [`RELEASE-2026-0801`](../assignments/release-2026-08-01.md)
 > **Evidence rule:** A historical or preliminary result is not final release evidence until it maps to the frozen release commit and archive.
 
@@ -24,7 +24,7 @@
 |---|---|---|
 | Stable archive | `Assignment Pending` | Executor/environment operator not assigned; stable toolchain evidence pending |
 | Scope freeze | `Reviewed — Architecture and Quality conclusions recorded; no Product Gate or release conclusion` | [Architecture review](release-2026-08-01-02-architecture-review.md) and [Quality review](release-2026-08-01-02-quality-review.md) are `Pass` with required follow-ups; iPad support, kaomoji content and iOS 26.0 target-change implementation remain release blockers |
-| iOS 26.0 target | `Assigned — Architecture review pending` | Current target is iOS 26.4; no iOS 26.0 claim until the separately reviewed change and final archive validation complete |
+| iOS 26.0 target | `Assigned — Architecture No-Go; Entry Criteria blocked` | Static preflight passed only on beta Xcode; stable Xcode/SDK and iOS 26.0 runtime/physical-device evidence remain absent |
 | iPad support | `Assigned — Entry Criteria pending` | iPad simulator work may begin after the matrix is proposed; physical iPad evidence remains unavailable |
 | Kaomoji content | `Assigned — Entry Criteria pending` | Product catalog source/licensing/content decision and working-content evidence remain unavailable |
 | Onboarding / Full Access | `Closed — Conditional Product Gate accepted` | Device matrix [`release-2026-08-01-03-physical-device-fa-matrix.md`](release-2026-08-01-03-physical-device-fa-matrix.md); gate [`../assignments/release-2026-08-01-03-product-gate.md`](../assignments/release-2026-08-01-03-product-gate.md); Human confirmed `2026-07-20`; TD-004 residual in `TECH_DEBT.md` |

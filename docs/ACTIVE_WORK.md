@@ -5,29 +5,30 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-13 Asia/Shanghai` — `CANDIDATE-TOUCH-HITBOX-001` 本地实现、CI 等价门禁与独立复核完成，等待 Product 发布/合并决策；Active Work `9/10`。
+Last synced: `2026-08-14 Asia/Shanghai` — `DEBUG-KEY-HITBOX-001` → `Completed`，移出 Active。Active Work `3/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | T9-RESPONSIVE-PIPELINE-001 | Active | Dual-gate request default-on; residual hygiene | [`assignments/t9-responsive-rime-pipeline-001.md`](assignments/t9-responsive-rime-pipeline-001.md) |
-| 2 | RELEASE-2026-0801 | Active | Release coordination; Entry Criteria pending | [`assignments/release-2026-08-01.md`](assignments/release-2026-08-01.md) |
-| 3 | HELP-TIPKIT-001 | Active | P1–P3 done; Product Gate pending | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |
-| 4 | HELP-J3-RESOURCES-001 | Active | Slim resource prepare | [`assignments/help-j3-resources-001.md`](assignments/help-j3-resources-001.md) |
-| 5 | APP-SEARCH-001 | Active | Search tab + J4 trial field | [`assignments/app-search-001.md`](assignments/app-search-001.md) |
-| 6 | TYPING-INTELLIGENCE-001 | Active | Implementation; Quality pending | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
-| 7 | TYPO-CORRECTION-002 | Active | Contextual recovery; sim scenarios pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
-| 8 | DIAGNOSTICS-OBSERVABILITY-001 | Active | P0 已合并；等待 Product Gate，P1 后续见 TD-013 | [`assignments/diagnostics-observability-001.md`](assignments/diagnostics-observability-001.md) |
-| 9 | CANDIDATE-TOUCH-HITBOX-001 | Active | 本地实现与独立复核完成；等待发布/合并决策 | [`assignments/candidate-touch-hitbox-001.md`](assignments/candidate-touch-hitbox-001.md) |
+| 1 | RELEASE-2026-08-01 | Active | 现行目标 `2026-08-26`；子项 Entry 仍多未满足 | [`assignments/release-2026-08-01.md`](assignments/release-2026-08-01.md) |
+| 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
+| 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 
 ## Completed (not Active)
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
+| DEBUG-KEY-HITBOX-001 | `Completed`；Human 确认 Debug overlay + 九键/26 键中线命中；等待可选 Quality 与 Product Close | [`assignments/debug-key-hitbox-001.md`](assignments/debug-key-hitbox-001.md) |
+| T9-RESPONSIVE-PIPELINE-001 | `Reviewed`；ADR 0025 Accepted，DEFAULT-ON Product Gate 已交付；R6 仅 track；不再占 Active | [`assignment`](assignments/t9-responsive-rime-pipeline-001.md) · [`DEFAULT-ON`](assignments/responsive-default-on-001.md) |
+| HELP-TIPKIT-001 | `Completed`；P1–P3 已交付；等待 Quality + Human Product Gate | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |
+| HELP-J3-RESOURCES-001 | `Completed`；Help 内嵌 J3 slim 已交付；等待 Quality + Product Gate | [`assignments/help-j3-resources-001.md`](assignments/help-j3-resources-001.md) |
+| APP-SEARCH-001 | `Completed`；搜索 Tab + J4 已交付；等待 Quality + Product Gate | [`assignments/app-search-001.md`](assignments/app-search-001.md) |
+| DIAGNOSTICS-OBSERVABILITY-001 | `Completed`；P0 PR #57 已合并；等待 Human Product Gate；P1 见 TD-013 | [`assignments/diagnostics-observability-001.md`](assignments/diagnostics-observability-001.md) |
+| CANDIDATE-TOUCH-HITBOX-001 | `Completed`；PR #72 已合并；等待 Product 授权一次真机 `5/5 · 5/5 · 5/5` | [`assignments/candidate-touch-hitbox-001.md`](assignments/candidate-touch-hitbox-001.md) |
 | CANDIDATE-TOUCH-OBSERVABILITY-001 | PR #71 merged；固定 iPhone 13 Pro 单轮 `0/5 · 5/5 · 5/5`；几何与探针缺口转交 HITBOX-001 | [`assignment`](assignments/candidate-touch-observability-001.md) · [`evidence`](evidence/candidate-touch-observability-001-execution-evidence-2026-08-13.md) |
 | KOS-2.1-OPS-001 / KOS-2.1-OPS-IMPL-001 | `Closed`；Must 设计已接受，运维包已在 KOS 2.0 轨道发布；S-01 / Migration / 2.1 frozen replacement 未授权 | [`design`](assignments/kos-2.1-ops-001.md) · [`implementation`](assignments/kos-2.1-ops-impl-001.md) |
 | TD-012-LMDG-MODEL-G2 | `Closed`；Product Hold，G2-A Pass，G2-B invalidated，不进入 G3 | [`assignments/td-012-lmdg-model-g2.md`](assignments/td-012-lmdg-model-g2.md) |
-| DIAGNOSTICS-DAY-BROWSER-001 | Simulator 代码级 Architecture / Quality Pass；等待 Human Product Review，不含真机、ADR Acceptance 或 Release 结论 | [`assignments/diagnostics-day-browser-001.md`](assignments/diagnostics-day-browser-001.md) · [independent review](assignments/diagnostics-day-browser-001-independent-review.md) · [evidence](evidence/diagnostics-day-browser-001-execution-evidence-2026-08-12.md) |
-| DIAGNOSTICS-READ-RECOVERY-001 | Executor 实现与 Simulator 质量门完成；等待独立 Quality reverify，不含真机/G2/Release 结论 | [`assignments/diagnostics-read-recovery-001.md`](assignments/diagnostics-read-recovery-001.md) · [evidence](evidence/diagnostics-read-recovery-001-execution-evidence-2026-08-12.md) |
+| DIAGNOSTICS-DAY-BROWSER-001 | Simulator 代码级 Architecture / Quality Pass（PR #70）；等待 Human Product Review，不含真机、ADR Acceptance 或 Release 结论 | [`assignments/diagnostics-day-browser-001.md`](assignments/diagnostics-day-browser-001.md) · [independent review](assignments/diagnostics-day-browser-001-independent-review.md) · [evidence](evidence/diagnostics-day-browser-001-execution-evidence-2026-08-12.md) |
+| DIAGNOSTICS-READ-RECOVERY-001 | PR #70 已合并；独立 Architecture / Quality Pass 已记录；等待 Human Product Review，不含真机/G2/Release 结论 | [`assignments/diagnostics-read-recovery-001.md`](assignments/diagnostics-read-recovery-001.md) · [evidence](evidence/diagnostics-read-recovery-001-execution-evidence-2026-08-12.md) |
 | TD-012-OCTAGRAM-VENDOR-G1 | Vendor pin + Bridge G1 **Closed**; model G2+ remain TD-012 debt | [`assignments/td-012-octagram-vendor-g1.md`](assignments/td-012-octagram-vendor-g1.md) · [Arch](assignments/td-012-octagram-vendor-g1-architecture-review.md) · [Quality](assignments/td-012-octagram-vendor-g1-quality-review.md) |
 | TD-013-DIAGNOSTICS-V1-P1 | Architecture **Pass**、Quality **Pass with conditions**、Human Product Gate **Passed**；P2 residual 继续由 TD-013 追踪 | [`assignments/td-013-diagnostics-v1-p1.md`](assignments/td-013-diagnostics-v1-p1.md) · [re-review](assignments/td-013-diagnostics-v1-p1-r3-review-summary.md) |
 | 九键精准拼音 `002` / `003` → `004` | `002` 已 Blocked，`003` 已被 supersede；继任 `004` 已 **Accepted / Closed**，历史记录仅供追溯 | [`004 Assignment`](assignments/keyboard-layout-9key-pinyin-004.md) · [`002`](assignments/keyboard-layout-9key-pinyin-002.md) · [`003`](assignments/keyboard-layout-9key-pinyin-003.md) |
