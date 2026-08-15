@@ -5,6 +5,13 @@ import UIKit
     /// `hitTest` must never read App Group to decide this.
     enum DebugHitboxOverlayPresentation {
         static var isShowing = false
+        static var probeLine = "hit=—"
+        static var refreshProbeLabel: (() -> Void)?
+
+        static func publishProbeLine(_ line: String) {
+            probeLine = line
+            refreshProbeLabel?()
+        }
     }
 
     /// Non-interactive paint of one live hit rectangle.
@@ -91,6 +98,55 @@ import UIKit
                 contentOutline.isHidden = true
                 contentOutline.path = nil
             }
+        }
+    }
+
+    /// Paints every key box on the keyboard surface. Must not live inside a
+    /// `UIStackView` (unarranged stack children get stretched into columns).
+    final class DebugKeyTouchRangeOverlayCanvas: UIView {
+        private var itemViews: [DebugKeyTouchRangeOverlayView] = []
+        private let probeLabel = UILabel()
+
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            isUserInteractionEnabled = false
+            isAccessibilityElement = false
+            backgroundColor = .clear
+            clipsToBounds = false
+            probeLabel.font = .monospacedSystemFont(ofSize: 9, weight: .medium)
+            probeLabel.textColor = .systemOrange
+            probeLabel.numberOfLines = 2
+            probeLabel.isUserInteractionEnabled = false
+            addSubview(probeLabel)
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        func render(items: [(touch: CGRect, visual: CGRect)]) {
+            while itemViews.count < items.count {
+                let view = DebugKeyTouchRangeOverlayView()
+                addSubview(view)
+                itemViews.append(view)
+            }
+            while itemViews.count > items.count {
+                itemViews.removeLast().removeFromSuperview()
+            }
+            for (index, item) in items.enumerated() {
+                itemViews[index].apply(
+                    touchFrame: item.touch,
+                    visualFrame: item.visual,
+                    in: self
+                )
+            }
+            bringSubviewToFront(probeLabel)
+        }
+
+        func setProbeDigest(_ text: String) {
+            probeLabel.text = text
+            probeLabel.sizeToFit()
+            probeLabel.frame.origin = CGPoint(x: 6, y: 2)
         }
     }
 

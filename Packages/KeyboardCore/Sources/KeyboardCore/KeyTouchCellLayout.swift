@@ -26,6 +26,28 @@ public struct KeyTouchLayoutColumn: Equatable, Sendable {
     }
 }
 
+/// A visual key plus a stable id so snapshot consumers never pair by `CGRect ==`.
+public struct KeyTouchIdentifiedVisual: Equatable, Sendable {
+    public let id: Int
+    public let frame: CGRect
+
+    public init(id: Int, frame: CGRect) {
+        self.id = id
+        self.frame = frame
+    }
+}
+
+/// Snapshot row: the same `id` that entered the builder, plus the fill cell.
+public struct KeyTouchIdentifiedCell: Equatable, Sendable {
+    public let id: Int
+    public let cell: KeyTouchCell
+
+    public init(id: Int, cell: KeyTouchCell) {
+        self.id = id
+        self.cell = cell
+    }
+}
+
 /// Shared key-touch layout for 26-key and nine-key.
 ///
 /// One rule: split every visual gap at the neighboring midline so touch cells
@@ -41,10 +63,12 @@ public enum KeyTouchCellLayout {
     }
 
     /// Nine-key: each column is filled independently so return stays in the
-    /// right column and DEF cannot inherit MNO / WXYZ / space gutters.
+    /// right column and DEF cannot inherit MNO / WXYZ / space gutters. The gap
+    /// between neighboring column containers is split at its midpoint.
     public static func makeStructuredCells(columns: [KeyTouchLayoutColumn]) -> [KeyTouchCell] {
-        columns.flatMap { column in
-            makeCells(rows: column.rows, containerBounds: column.bounds)
+        let touchBounds = midlineFilledColumnBounds(columns.map(\.bounds))
+        return columns.enumerated().flatMap { index, column in
+            makeCells(rows: column.rows, containerBounds: touchBounds[index])
         }
     }
 
@@ -55,20 +79,53 @@ public enum KeyTouchCellLayout {
         rows: [[CGRect]],
         containerBounds: CGRect
     ) -> [KeyTouchCell] {
+        makeIdentifiedCells(
+            rows: rows.map { row in row.map { KeyTouchIdentifiedVisual(id: 0, frame: $0) } },
+            containerBounds: containerBounds
+        ).map(\.cell)
+    }
+
+    /// 26-key / numbers / symbols: group by midY, keep caller ids.
+    public static func makeIdentifiedCells(
+        visuals: [KeyTouchIdentifiedVisual],
+        containerBounds: CGRect
+    ) -> [KeyTouchIdentifiedCell] {
+        makeIdentifiedCells(
+            rows: groupedIdentifiedRows(from: visuals),
+            containerBounds: containerBounds
+        )
+    }
+
+    /// Nine-key: each column is filled independently so return stays in the
+    /// right column. Caller must pass real rows, not a flattened column, and
+    /// columns in visual left-to-right order.
+    public static func makeIdentifiedStructuredCells(
+        columns: [(bounds: CGRect, rows: [[KeyTouchIdentifiedVisual]])]
+    ) -> [KeyTouchIdentifiedCell] {
+        let touchBounds = midlineFilledColumnBounds(columns.map(\.bounds))
+        return columns.enumerated().flatMap { index, column in
+            makeIdentifiedCells(rows: column.rows, containerBounds: touchBounds[index])
+        }
+    }
+
+    public static func makeIdentifiedCells(
+        rows: [[KeyTouchIdentifiedVisual]],
+        containerBounds: CGRect
+    ) -> [KeyTouchIdentifiedCell] {
         guard !rows.isEmpty else { return [] }
 
-        var cells: [KeyTouchCell] = []
+        var cells: [KeyTouchIdentifiedCell] = []
         for rowIndex in rows.indices {
             let row = rows[rowIndex]
             guard !row.isEmpty else { continue }
-            let rowMinY = row.map(\.minY).min() ?? containerBounds.minY
-            let rowMaxY = row.map(\.maxY).max() ?? rowMinY
+            let rowMinY = row.map(\.frame.minY).min() ?? containerBounds.minY
+            let rowMaxY = row.map(\.frame.maxY).max() ?? rowMinY
 
             let top: CGFloat
             if rowIndex == rows.startIndex {
                 top = rowMinY
             } else {
-                let previousMaxY = rows[rowIndex - 1].map(\.maxY).max() ?? rowMinY
+                let previousMaxY = rows[rowIndex - 1].map(\.frame.maxY).max() ?? rowMinY
                 top = (previousMaxY + rowMinY) / 2
             }
 
@@ -76,24 +133,24 @@ public enum KeyTouchCellLayout {
             if rowIndex == rows.index(before: rows.endIndex) {
                 bottom = rowMaxY
             } else {
-                let nextMinY = rows[rowIndex + 1].map(\.minY).min() ?? rowMaxY
+                let nextMinY = rows[rowIndex + 1].map(\.frame.minY).min() ?? rowMaxY
                 bottom = (rowMaxY + nextMinY) / 2
             }
 
             for keyIndex in row.indices {
-                let visual = row[keyIndex]
+                let visual = row[keyIndex].frame
                 let left: CGFloat
                 if keyIndex == row.startIndex {
                     left = containerBounds.minX
                 } else {
-                    left = (row[keyIndex - 1].maxX + visual.minX) / 2
+                    left = (row[keyIndex - 1].frame.maxX + visual.minX) / 2
                 }
 
                 let right: CGFloat
                 if keyIndex == row.index(before: row.endIndex) {
                     right = containerBounds.maxX
                 } else {
-                    right = (visual.maxX + row[keyIndex + 1].minX) / 2
+                    right = (visual.maxX + row[keyIndex + 1].frame.minX) / 2
                 }
 
                 let touchFrame = CGRect(
@@ -102,7 +159,12 @@ public enum KeyTouchCellLayout {
                     width: max(0, right - left),
                     height: max(0, bottom - top)
                 )
-                cells.append(KeyTouchCell(visualFrame: visual, touchFrame: touchFrame))
+                cells.append(
+                    KeyTouchIdentifiedCell(
+                        id: row[keyIndex].id,
+                        cell: KeyTouchCell(visualFrame: visual, touchFrame: touchFrame)
+                    )
+                )
             }
         }
         return cells
@@ -136,45 +198,34 @@ public enum KeyTouchCellLayout {
         }
     }
 
-    /// Places a key in host space using its on-screen origin and its real
-    /// local size. `convert(bounds)` can inherit a stretched ancestor frame;
-    /// this keeps ABC/JKL at key size so they do not share one column cell.
-    public static func hostFrame(localSize: CGSize, originInHost: CGPoint) -> CGRect {
-        CGRect(origin: originInHost, size: localSize)
-    }
-
-    /// Midline slop in the key's own bounds. Gaps come from stack `spacing`,
-    /// not from converted ancestor frames, so a column cannot collapse onto ABC.
-    public static func localTouchInsets(
-        leadingGap: CGFloat,
-        trailingGap: CGFloat,
-        topGap: CGFloat,
-        bottomGap: CGFloat,
-        isFirstInRow: Bool,
-        isLastInRow: Bool
+    /// Converts the published snapshot into UIControl outsets. The snapshot,
+    /// not a second gap calculation, remains the source of truth.
+    public static func insets(
+        visualBounds: CGRect,
+        touchBounds: CGRect
     ) -> (top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) {
         (
-            top: max(0, topGap / 2),
-            left: max(0, isFirstInRow ? leadingGap : leadingGap / 2),
-            bottom: max(0, bottomGap / 2),
-            right: max(0, isLastInRow ? trailingGap : trailingGap / 2)
-        )
-    }
-
-    public static func localTouchBounds(
-        visualBounds: CGRect,
-        insets: (top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat)
-    ) -> CGRect {
-        CGRect(
-            x: visualBounds.minX - insets.left,
-            y: visualBounds.minY - insets.top,
-            width: visualBounds.width + insets.left + insets.right,
-            height: visualBounds.height + insets.top + insets.bottom
+            top: max(0, visualBounds.minY - touchBounds.minY),
+            left: max(0, visualBounds.minX - touchBounds.minX),
+            bottom: max(0, touchBounds.maxY - visualBounds.maxY),
+            right: max(0, touchBounds.maxX - visualBounds.maxX)
         )
     }
 
     public static func groupedRows(from visualFrames: [CGRect]) -> [[CGRect]] {
         groupedRows(from: visualFrames, midYTolerance: nil)
+    }
+
+    public static func hitIdentifiedIndex(
+        at point: CGPoint,
+        cells: [KeyTouchIdentifiedCell],
+        defaultVisualHitIndex: Int?
+    ) -> Int? {
+        hitIndex(
+            at: point,
+            cells: cells.map(\.cell),
+            defaultVisualHitIndex: defaultVisualHitIndex
+        )
     }
 
     private static func area(_ rect: CGRect) -> CGFloat {
@@ -186,6 +237,55 @@ public enum KeyTouchCellLayout {
         let dx = max(rect.minX - point.x, 0, point.x - rect.maxX)
         let dy = max(rect.minY - point.y, 0, point.y - rect.maxY)
         return hypot(dx, dy)
+    }
+
+    /// Column containers intentionally keep their visual spacing. Touch
+    /// containers meet at the spacing midpoint so the host has no dead strip.
+    private static func midlineFilledColumnBounds(_ bounds: [CGRect]) -> [CGRect] {
+        bounds.indices.map { index in
+            let current = bounds[index]
+            let left =
+                index == bounds.startIndex
+                ? current.minX
+                : (bounds[bounds.index(before: index)].maxX + current.minX) / 2
+            let right =
+                index == bounds.index(before: bounds.endIndex)
+                ? current.maxX
+                : (current.maxX + bounds[bounds.index(after: index)].minX) / 2
+            return CGRect(
+                x: left,
+                y: current.minY,
+                width: max(0, right - left),
+                height: current.height
+            )
+        }
+    }
+
+    private static func groupedIdentifiedRows(
+        from visuals: [KeyTouchIdentifiedVisual]
+    ) -> [[KeyTouchIdentifiedVisual]] {
+        let sorted = visuals.sorted {
+            if abs($0.frame.midY - $1.frame.midY) > 1 {
+                return $0.frame.midY < $1.frame.midY
+            }
+            return $0.frame.minX < $1.frame.minX
+        }
+
+        var rows: [[KeyTouchIdentifiedVisual]] = []
+        for item in sorted {
+            if let lastRow = rows.indices.last,
+                let rowMidY = averageMidY(for: rows[lastRow].map(\.frame)),
+                abs(item.frame.midY - rowMidY) <= max(8, item.frame.height * 0.5)
+            {
+                rows[lastRow].append(item)
+            } else {
+                rows.append([item])
+            }
+        }
+
+        return rows.map { row in
+            row.sorted { $0.frame.minX < $1.frame.minX }
+        }
     }
 
     private static func groupedRows(

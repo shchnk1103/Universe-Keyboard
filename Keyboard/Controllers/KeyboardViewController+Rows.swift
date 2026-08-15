@@ -1,9 +1,23 @@
 import KeyboardCore
 import UIKit
 
-/// Marks the nine-key pad so hit-testing can split left/right columns
-/// instead of flattening every key by midY.
-final class T9NineKeyChromeHost: UIStackView {}
+/// Nine-key pad plus the semantic rows used by touch geometry.
+///
+/// The layout factory already knows which keys form each row and column. Keep
+/// that knowledge here instead of asking the hit tester to reverse-engineer a
+/// nested `UIStackView` tree from transient frames.
+final class T9NineKeyChromeHost: UIStackView {
+    struct TouchColumn {
+        let container: UIStackView
+        let rows: [[KeyboardKeyButton]]
+    }
+
+    private(set) var touchColumns: [TouchColumn] = []
+
+    func configureTouchColumns(_ columns: [TouchColumn]) {
+        touchColumns = columns
+    }
+}
 
 extension KeyboardViewController {
     // MARK: === T9 九键（原生九宫格节奏）===
@@ -121,6 +135,21 @@ extension KeyboardViewController {
         rightStack.setContentCompressionResistancePriority(.required, for: .horizontal)
         NSLayoutConstraint.activate([
             rightStack.widthAnchor.constraint(equalTo: leftStack.widthAnchor, multiplier: 0.25)
+        ])
+        host.configureTouchColumns([
+            .init(
+                container: leftStack,
+                rows: [row1, row2, row3, bottom].map { row in
+                    row.arrangedSubviews.compactMap { $0 as? KeyboardKeyButton }
+                }
+            ),
+            .init(
+                container: rightStack,
+                rows: [[deleteButton], [kaomojiButton], [returnButton]].compactMap { row in
+                    let keys = row.compactMap { $0 as? KeyboardKeyButton }
+                    return keys.isEmpty ? nil : keys
+                }
+            ),
         ])
 
         let totalHeight =

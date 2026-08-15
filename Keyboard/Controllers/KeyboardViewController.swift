@@ -609,6 +609,10 @@ class KeyboardViewController: UIInputViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
+        // Nested nine-key stacks finish layout after the root stack. Build the
+        // shared hit-test/overlay snapshot only at this stable UIKit boundary.
+        (rootStack as? KeyboardInputHitAreaStackView)?.refreshKeyTouchGeometry()
+
         // 仅在 bounds 变化时记录（避免 layout 循环时刷屏日志）
         if view.bounds != lastLoggedBounds {
             lastLoggedBounds = view.bounds

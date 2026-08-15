@@ -228,7 +228,9 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
   3. 将 retention 从仅 App 启动扩展为受控 cadence；补齐 admission → suspend → writer 竞争、主动 seal/revoke 策略和失败重试矩阵。
   4. 将 `journalUnavailable`、锁忙、I/O、磁盘空间和 ingress overload 统一接入内容无关 health/drop 摘要，并补故障注入测试。
   5. 按 cohort 审计和迁移其余 legacy `Logger(String)` producer，最终移除 `rime_diag_log` 的兼容读取；任何新字段继续经过 typed allowlist/隐私审查。
-- **Current status:** `2026-08-11 Asia/Shanghai` P1 已完成本地质量门、独立 Architecture `Pass`、Quality `Pass with conditions` 与 Human Product Gate；权威记录为 [`TD-013-DIAGNOSTICS-V1-P1`](assignments/td-013-diagnostics-v1-p1.md)。通用 fault-injection matrix、真机三模式性能与广泛 legacy cohort migration/删除保持后续技术债。
+  6. 为进入诊断页、手动刷新、日期 catalog、当日快照、分页扩展与筛选各阶段增加内容无关耗时/状态证据，定位真机长时间空白究竟来自 I/O、快照 fence、分页、MainActor 状态提交还是 UI 渲染；不得在 Extension 热路径同步计时或写额外自由文本。
+  7. 明确搜索范围、水位与完整性状态：当页面已显示有界 500 条记录而查询无匹配时，UI 必须区分“当前窗口无匹配”“仍在扩展历史”“日志源未写入该事件”与“查询失败”，避免把部分窗口的空结果呈现为全部历史无记录。
+- **Current status:** `2026-08-11 Asia/Shanghai` P1 已完成本地质量门、独立 Architecture `Pass`、Quality `Pass with conditions` 与 Human Product Gate；权威记录为 [`TD-013-DIAGNOSTICS-V1-P1`](assignments/td-013-diagnostics-v1-p1.md)。`2026-08-15 Asia/Shanghai` 新增 Human-attested 真机 residual：进入诊断页、手动刷新或等待均可能长时间才显示；当天页面最终显示 `500` 条记录后搜索 `TOUCHPROBE` 仍显示“当前筛选无匹配日志”。截图不证明 producer 未写入，也不证明搜索已覆盖完整当天历史；该缺口一度阻断 `KEY-TOUCH-FILL-001` 的日志探针取证，后者已通过 LLDB 分层证据与 Human 真机 Product Gate 独立完成。通用 fault-injection matrix、真机三模式性能、搜索完整性/阶段耗时与广泛 legacy cohort migration/删除保持后续技术债。
 - **Owner area:** KeyboardCore diagnostics journal、Main App diagnostics repository/settings、Quality/Release evidence。
 - **Trigger to resolve:** 获得明确实现授权后，按 P1 Assignment 的 phase/门禁推进；日志量/导出需求增长或再次出现无法归因的视觉异常可触发 Product revalidation。
 - **Related:** ADR 0027、`DIAGNOSTICS-OBSERVABILITY-001`、[`PD-TD-013-DIAGNOSTICS-V1-P1`](product-decisions/TD-013-DIAGNOSTICS-V1-P1-authorization.md)、`docs/DEBUGGING.md`。

@@ -112,7 +112,7 @@ final class KeyTouchCellLayoutTests: XCTestCase {
         )
         let returnCell = try XCTUnwrap(cells.first { $0.visualFrame == returnKey })
         let selectedCell = try XCTUnwrap(cells.first { $0.visualFrame == selected })
-        XCTAssertEqual(returnCell.touchFrame.minX, 246, accuracy: 0.001)
+        XCTAssertEqual(returnCell.touchFrame.minX, 243, accuracy: 0.001)
         XCTAssertEqual(returnCell.touchFrame.maxX, 306, accuracy: 0.001)
         XCTAssertLessThan(returnCell.touchFrame.width, 80)
         XCTAssertFalse(
@@ -143,8 +143,46 @@ final class KeyTouchCellLayoutTests: XCTestCase {
             structured.first { $0.visualFrame == returnKey }?.touchFrame
         )
         XCTAssertLessThan(flatReturn.minX, rightBounds.minX)
-        XCTAssertEqual(structuredReturn.minX, 246, accuracy: 0.001)
-        XCTAssertEqual(structuredReturn.width, 60, accuracy: 0.001)
+        XCTAssertEqual(structuredReturn.minX, 243, accuracy: 0.001)
+        XCTAssertEqual(structuredReturn.width, 63, accuracy: 0.001)
+    }
+
+    func testStructuredNineKeyColumnGapIsSplitAtMidpoint() throws {
+        let leftKey = KeyTouchIdentifiedVisual(
+            id: 4,
+            frame: CGRect(x: 180, y: 0, width: 55, height: 45)
+        )
+        let rightKey = KeyTouchIdentifiedVisual(
+            id: 5,
+            frame: CGRect(x: 248, y: 0, width: 56, height: 45)
+        )
+        let cells = KeyTouchCellLayout.makeIdentifiedStructuredCells(
+            columns: [
+                (bounds: CGRect(x: 0, y: 0, width: 240, height: 45), rows: [[leftKey]]),
+                (bounds: CGRect(x: 246, y: 0, width: 60, height: 45), rows: [[rightKey]]),
+            ]
+        )
+        let leftCell = try XCTUnwrap(cells.first { $0.id == 4 })
+        let rightCell = try XCTUnwrap(cells.first { $0.id == 5 })
+
+        XCTAssertEqual(leftCell.cell.touchFrame.maxX, 243, accuracy: 0.001)
+        XCTAssertEqual(rightCell.cell.touchFrame.minX, 243, accuracy: 0.001)
+        XCTAssertEqual(
+            KeyTouchCellLayout.hitIdentifiedIndex(
+                at: CGPoint(x: 242, y: 22),
+                cells: cells,
+                defaultVisualHitIndex: nil
+            ).map { cells[$0].id },
+            4
+        )
+        XCTAssertEqual(
+            KeyTouchCellLayout.hitIdentifiedIndex(
+                at: CGPoint(x: 244, y: 22),
+                cells: cells,
+                defaultVisualHitIndex: nil
+            ).map { cells[$0].id },
+            5
+        )
     }
 
     func testSmallerVisualWinsWhenAColumnTallCellAlsoContainsThePoint() {
@@ -161,36 +199,6 @@ final class KeyTouchCellLayoutTests: XCTestCase {
             KeyTouchCellLayout.hitIndex(at: point, cells: [abc, jkl], defaultVisualHitIndex: 0),
             1
         )
-    }
-
-    func testLocalTouchInsetsSplitSiblingGapsAtTheMidline() {
-        let insets = KeyTouchCellLayout.localTouchInsets(
-            leadingGap: 6,
-            trailingGap: 6,
-            topGap: 8,
-            bottomGap: 8,
-            isFirstInRow: false,
-            isLastInRow: false
-        )
-        XCTAssertEqual(insets.top, 4, accuracy: 0.001)
-        XCTAssertEqual(insets.bottom, 4, accuracy: 0.001)
-        XCTAssertEqual(insets.left, 3, accuracy: 0.001)
-        XCTAssertEqual(insets.right, 3, accuracy: 0.001)
-
-        let visual = CGRect(x: 0, y: 0, width: 55, height: 45)
-        let box = KeyTouchCellLayout.localTouchBounds(visualBounds: visual, insets: insets)
-        XCTAssertFalse(box.contains(CGPoint(x: 27, y: 80)))
-        XCTAssertTrue(box.contains(CGPoint(x: 27, y: 48)))
-        XCTAssertTrue(visual.contains(CGPoint(x: 27, y: 22)))
-    }
-
-    func testHostFrameKeepsLocalKeySize() {
-        let frame = KeyTouchCellLayout.hostFrame(
-            localSize: CGSize(width: 55, height: 45),
-            originInHost: CGPoint(x: 120, y: 53)
-        )
-        XCTAssertEqual(frame, CGRect(x: 120, y: 53, width: 55, height: 45))
-        XCTAssertLessThan(frame.height, 50)
     }
 
     func testNineKeyEachPadKeyKeepsItsOwnRowCell() throws {
@@ -311,6 +319,178 @@ final class KeyTouchCellLayoutTests: XCTestCase {
             KeyTouchCellLayout.hitIndex(at: point, cells: [far, near], defaultVisualHitIndex: nil),
             1
         )
+    }
+
+    func testTwentySixKeyInsetHomeRowFillsContainerSides() throws {
+        let container = CGRect(x: 0, y: 0, width: 360, height: 260)
+        let a = CGRect(x: 18, y: 100, width: 32, height: 40)
+        let l = CGRect(x: 310, y: 100, width: 32, height: 40)
+        let cells = KeyTouchCellLayout.makeCells(
+            visualFrames: [a, l],
+            containerBounds: container
+        )
+        let aCell = try XCTUnwrap(cells.first { $0.visualFrame == a })
+        let lCell = try XCTUnwrap(cells.first { $0.visualFrame == l })
+        XCTAssertEqual(aCell.touchFrame.minX, 0, accuracy: 0.001)
+        XCTAssertEqual(lCell.touchFrame.maxX, 360, accuracy: 0.001)
+        XCTAssertEqual(
+            KeyTouchCellLayout.hitIndex(
+                at: CGPoint(x: 8, y: 120),
+                cells: cells,
+                defaultVisualHitIndex: nil
+            ),
+            cells.firstIndex { $0.visualFrame == a }
+        )
+    }
+
+    func testTwentySixKeyNestedLetterRowGetsVerticalAndFunctionGaps() throws {
+        // Mirrors makeLetterThirdRow: Shift | nested z…m | Delete, with an
+        // inset home row above and a bottom row below. Parent-stack-only
+        // insets would give z a 0 vertical gap and no share of the 10 pt
+        // Shift/z spacing.
+        let container = CGRect(x: 0, y: 0, width: 360, height: 260)
+        let a = CGRect(x: 18, y: 50, width: 32, height: 40)
+        let shift = CGRect(x: 0, y: 100, width: 46, height: 40)
+        let z = CGRect(x: 56, y: 100, width: 30, height: 40)
+        let m = CGRect(x: 254, y: 100, width: 30, height: 40)
+        let delete = CGRect(x: 300, y: 100, width: 60, height: 40)
+        let space = CGRect(x: 80, y: 160, width: 200, height: 40)
+        let cells = KeyTouchCellLayout.makeCells(
+            visualFrames: [a, shift, z, m, delete, space],
+            containerBounds: container
+        )
+        let zCell = try XCTUnwrap(cells.first { $0.visualFrame == z })
+        let mCell = try XCTUnwrap(cells.first { $0.visualFrame == m })
+        let shiftCell = try XCTUnwrap(cells.first { $0.visualFrame == shift })
+        let deleteCell = try XCTUnwrap(cells.first { $0.visualFrame == delete })
+
+        XCTAssertEqual(zCell.touchFrame.minY, 95, accuracy: 0.001)
+        XCTAssertEqual(zCell.touchFrame.maxY, 150, accuracy: 0.001)
+        XCTAssertEqual(zCell.touchFrame.minX, 51, accuracy: 0.001)
+        XCTAssertEqual(shiftCell.touchFrame.maxX, 51, accuracy: 0.001)
+        XCTAssertEqual(mCell.touchFrame.maxX, 292, accuracy: 0.001)
+        XCTAssertEqual(deleteCell.touchFrame.minX, 292, accuracy: 0.001)
+
+        XCTAssertEqual(
+            KeyTouchCellLayout.hitIndex(
+                at: CGPoint(x: 71, y: 95),
+                cells: cells,
+                defaultVisualHitIndex: nil
+            ),
+            cells.firstIndex { $0.visualFrame == z }
+        )
+        XCTAssertEqual(
+            KeyTouchCellLayout.hitIndex(
+                at: CGPoint(x: 71, y: 148),
+                cells: cells,
+                defaultVisualHitIndex: nil
+            ),
+            cells.firstIndex { $0.visualFrame == z }
+        )
+    }
+
+    func testSnapshotInsetsMatchTouchFrameSoOverlayCannotInventASecondBox() {
+        let visual = CGRect(x: 0, y: 0, width: 32, height: 40)
+        let touch = CGRect(x: -18, y: -5, width: 53, height: 50)
+        let insets = KeyTouchCellLayout.insets(visualBounds: visual, touchBounds: touch)
+        XCTAssertEqual(insets.left, 18, accuracy: 0.001)
+        XCTAssertEqual(insets.top, 5, accuracy: 0.001)
+        XCTAssertEqual(insets.right, 3, accuracy: 0.001)
+        XCTAssertEqual(insets.bottom, 5, accuracy: 0.001)
+        XCTAssertEqual(visual.minX - insets.left, touch.minX, accuracy: 0.001)
+        XCTAssertEqual(visual.minY - insets.top, touch.minY, accuracy: 0.001)
+        XCTAssertEqual(visual.maxX + insets.right, touch.maxX, accuracy: 0.001)
+        XCTAssertEqual(visual.maxY + insets.bottom, touch.maxY, accuracy: 0.001)
+    }
+
+    func testIdentifiedSnapshotKeepsCallerIdsInsteadOfRectEquality() {
+        let abc = KeyTouchIdentifiedVisual(
+            id: 2,
+            frame: CGRect(x: 120, y: 0, width: 55, height: 45)
+        )
+        let jkl = KeyTouchIdentifiedVisual(
+            id: 5,
+            frame: CGRect(x: 120, y: 53, width: 55, height: 45)
+        )
+        let cells = KeyTouchCellLayout.makeIdentifiedStructuredCells(
+            columns: [
+                (
+                    bounds: CGRect(x: 0, y: 0, width: 240, height: 200),
+                    rows: [[abc], [jkl]]
+                )
+            ]
+        )
+        XCTAssertEqual(cells.map(\.id), [2, 5])
+        let jklPoint = CGPoint(x: 147, y: 75)
+        let hit = KeyTouchCellLayout.hitIdentifiedIndex(
+            at: jklPoint,
+            cells: cells,
+            defaultVisualHitIndex: nil
+        )
+        XCTAssertEqual(hit.flatMap { cells[$0].id }, 5)
+        XCTAssertNotEqual(hit.flatMap { cells[$0].id }, 2)
+    }
+
+    func testIdentifiedNineKeyWXYZSpaceGapDoesNotBelongToDEF() {
+        let def = KeyTouchIdentifiedVisual(
+            id: 3,
+            frame: CGRect(x: 180, y: 0, width: 55, height: 45)
+        )
+        let wxyz = KeyTouchIdentifiedVisual(
+            id: 9,
+            frame: CGRect(x: 180, y: 106, width: 55, height: 45)
+        )
+        let space = KeyTouchIdentifiedVisual(
+            id: 10,
+            frame: CGRect(x: 80, y: 161, width: 150, height: 45)
+        )
+        let cells = KeyTouchCellLayout.makeIdentifiedStructuredCells(
+            columns: [
+                (
+                    bounds: CGRect(x: 0, y: 0, width: 240, height: 200),
+                    rows: [[def], [wxyz], [space]]
+                )
+            ]
+        )
+        let gap = CGPoint(x: 207, y: 156)
+        let hit = KeyTouchCellLayout.hitIdentifiedIndex(
+            at: gap,
+            cells: cells,
+            defaultVisualHitIndex: nil
+        )
+        XCTAssertNotEqual(hit.flatMap { cells[$0].id }, 3)
+        XCTAssertTrue(hit.flatMap { cells[$0].id } == 9 || hit.flatMap { cells[$0].id } == 10)
+    }
+
+    func testIdentifiedTwentySixKeyAndNestedThirdRowShareOneGrid() {
+        let a = KeyTouchIdentifiedVisual(id: 11, frame: CGRect(x: 18, y: 50, width: 32, height: 40))
+        let shift = KeyTouchIdentifiedVisual(id: 20, frame: CGRect(x: 0, y: 100, width: 46, height: 40))
+        let z = KeyTouchIdentifiedVisual(id: 21, frame: CGRect(x: 56, y: 100, width: 30, height: 40))
+        let delete = KeyTouchIdentifiedVisual(
+            id: 22,
+            frame: CGRect(x: 300, y: 100, width: 60, height: 40)
+        )
+        let space = KeyTouchIdentifiedVisual(
+            id: 30,
+            frame: CGRect(x: 80, y: 160, width: 200, height: 40)
+        )
+        let cells = KeyTouchCellLayout.makeIdentifiedCells(
+            visuals: [a, shift, z, delete, space],
+            containerBounds: CGRect(x: 0, y: 0, width: 360, height: 260)
+        )
+        XCTAssertEqual(Set(cells.map(\.id)), [11, 20, 21, 22, 30])
+        let leftOfA = KeyTouchCellLayout.hitIdentifiedIndex(
+            at: CGPoint(x: 8, y: 70),
+            cells: cells,
+            defaultVisualHitIndex: nil
+        )
+        XCTAssertEqual(leftOfA.flatMap { cells[$0].id }, 11)
+        let aboveZ = KeyTouchCellLayout.hitIdentifiedIndex(
+            at: CGPoint(x: 71, y: 95),
+            cells: cells,
+            defaultVisualHitIndex: nil
+        )
+        XCTAssertEqual(aboveZ.flatMap { cells[$0].id }, 21)
     }
 
     func testReleaseBuildIgnoresStoredOverlayFlag() {

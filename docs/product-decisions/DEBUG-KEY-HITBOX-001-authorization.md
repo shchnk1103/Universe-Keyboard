@@ -13,8 +13,8 @@
 | **Lifecycle** | `Recorded` |
 | **Phase** | Assignment `Closed`；Human Product Gate Passed |
 | **Non-claims** | 不进 Release / TestFlight |
-| **Next** | 无 |
-| **Residuals** | 无 |
+| **Next** | 无；触摸铺满回归已由 [`KEY-TOUCH-FILL-001`](../assignments/key-touch-fill-001.md) 完成 |
+| **Residuals** | 无；26 键嵌套第三行 / overlay 开关命中漂移已通过 Human 真机 Product Gate |
 
 ---
 
@@ -51,6 +51,10 @@
 1. **九键与 26 键同一套中线填缝。** 九键只按左/右列和行切网，不把整列收成一格。
 2. **Overlay：** 每个按键（含空格、回车）画实线触摸框与虚线显示框，框等于 hit-test 快照。
 3. **分组缝不再留死区：** WXYZ–空格按中线对半分给两颗邻键。
+
+## Amendment — 2026-08-15 Human Product Owner
+
+产品规则不变。Human 报告 26 键触摸盒未铺满（`z…m` 最明显）以及关闭 overlay 后命中变小。后续修复由 [`PD-KEY-TOUCH-FILL-001`](KEY-TOUCH-FILL-001-authorization.md) 授权；本 Decision 仍禁止 overlay 成为第二条命中路径。
 
 ## Explicit non-authorization
 

@@ -128,6 +128,7 @@
 - Help J3 slim resource prepare: [`PD-HELP-J3-RESOURCES-001`](product-decisions/HELP-J3-RESOURCES-001-authorization.md), Assignment [`HELP-J3-RESOURCES-001`](assignments/help-j3-resources-001.md) (`Completed`)
 - Main-App Search tab + J4 trial field: [`PD-APP-SEARCH-001`](product-decisions/APP-SEARCH-001-authorization.md), Assignment [`APP-SEARCH-001`](assignments/app-search-001.md) (`Completed`)
 - Debug key hit-range overlay: [`PD-DEBUG-KEY-HITBOX-001`](product-decisions/DEBUG-KEY-HITBOX-001-authorization.md), Assignment [`DEBUG-KEY-HITBOX-001`](assignments/debug-key-hitbox-001.md) (`Closed` — Debug-only overlay + 九键/26 键共用中线命中)
+- 26-key touch fill / overlay-independent hits: [`PD-KEY-TOUCH-FILL-001`](product-decisions/KEY-TOUCH-FILL-001-authorization.md), Assignment [`KEY-TOUCH-FILL-001`](assignments/key-touch-fill-001.md) (`Completed` — Human Product Gate Passed)
 - Technical debt: [`TECH_DEBT.md`](TECH_DEBT.md)
 - Documentation health: [`DOCUMENTATION_HEALTH.md`](DOCUMENTATION_HEALTH.md)
 - Latest documentation hygiene audit: [`evidence/doc-hygiene-001-audit.md`](evidence/doc-hygiene-001-audit.md)

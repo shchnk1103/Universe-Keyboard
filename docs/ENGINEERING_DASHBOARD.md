@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-14 Asia/Shanghai
+> **Updated:** 2026-08-15 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -20,6 +20,16 @@
   - `CANDIDATE-TOUCH-HITBOX-001` → `Completed`（PR #72 已合并；等授权真机残余）
 - **Redate Decision:** [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md)
 - **Explicit non-claims:** 本段不关闭任何 Gate，不授权上传/发布。
+
+## KEY-TOUCH-FILL-001 — 各键盘触摸盒铺满且 overlay 不得改命中
+
+- **Lifecycle:** `Completed`（Human 真机 Product Gate Passed）
+- **Authority:** [`PD`](product-decisions/KEY-TOUCH-FILL-001-authorization.md) · [`Assignment`](assignments/key-touch-fill-001.md)
+- **Root cause:** 普通嵌套行的父栈 inset 看不到完整邻接；九键又在过早的根布局回调里靠约束与高度阈值反推深层行，最终拒绝并清空快照
+- **Non-claims:** 不改键面尺寸；九键列合同不变
+- **Evidence:** 聚焦几何 `21/0`；KeyboardCore `1006/0`；App + Keyboard `195/0`；RimeBridgeTests `68/0`；Release build 通过（Executor-recorded）
+- **Human Evidence:** 26 键与九键 overlay 关/开同点、普通键面及原生长按/切换路径全部通过
+- **Next:** 实现任务无剩余；诊断加载/搜索残余继续由 `TD-013` 独立追踪
 
 ## RESPONSIVE-CANDIDATE-ANOMALY-001 — dual-gate 候选双写 / 分页卡死
 
