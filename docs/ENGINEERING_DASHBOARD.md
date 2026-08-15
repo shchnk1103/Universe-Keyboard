@@ -21,6 +21,18 @@
 - **Redate Decision:** [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md)
 - **Explicit non-claims:** 本段不关闭任何 Gate，不授权上传/发布。
 
+## KEYBOARD-LAYOUT-9KEY-PUNCT-001 — 九键常用标点待确认与同键轮换
+
+- **Lifecycle:** `Completed`（Human 真机 Product Gate Passed）
+- **Authority:** [`PD`](product-decisions/KEYBOARD-LAYOUT-9KEY-PUNCT-001-authorization.md) · [`Assignment`](assignments/keyboard-layout-9key-punct-001.md)
+- **Frozen contract:** 键面 `，。？！`；单击待确认 `，`；候选栏替换；1.0s 同键轮换 `，。？！`；候选点选后再点该键 = 新开逗号
+- **Roles:** Domain Owner = Input Intelligence；Executor / Environment Executor = 当前 Codex 会话；Architecture / Quality = 独立 subagent；Human Dependency + Product Gate = Human Product Owner
+- **Non-claims:** 未授权合并默认分支；未跑与 CI 等价全套 xcodebuild
+- **ADR:** [`0029`](architecture/decisions/0029-t9-pending-punctuation-palette.md) `Accepted; implementation pending`
+- **R1 / R2:** [`R1`](assignments/keyboard-layout-9key-punct-001-architecture-review.md) `Pass with conditions` · [`R2`](assignments/keyboard-layout-9key-punct-001-architecture-rereview.md) `Pass`
+- **Quality:** Q2 [`Pass with conditions`](assignments/keyboard-layout-9key-punct-001-quality-rereview.md)
+- **Next:** 若合入默认分支，先跑本地 CI 门禁再推功能分支 / PR
+
 ## KEY-TOUCH-FILL-001 — 各键盘触摸盒铺满且 overlay 不得改命中
 
 - **Lifecycle:** `Completed`（Human 真机 Product Gate Passed）

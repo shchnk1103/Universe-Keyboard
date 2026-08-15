@@ -48,7 +48,7 @@ extension KeyboardViewController {
     /// Native-style punctuation entry on the nine-key grid (comma-first common mark).
     @objc func insertT9CommonPunctuation(_ sender: UIButton) {
         emitKeyPressFeedbackIfNeeded(for: sender)
-        let effects = controller.handle(.insertDirectText("，"))
+        let effects = controller.handle(.pressT9CommonPunctuation)
         syncUI(with: effects)
     }
 

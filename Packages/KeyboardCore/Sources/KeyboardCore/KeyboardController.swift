@@ -13,6 +13,15 @@ public final class KeyboardController {
     public var rimeEngine: RimeEngine?
 
     public var currentDate: () -> Date = { Date() }
+    /// 本状态机正在写 host 时为 true。UI 的 textDidChange 必须忽略这段，避免刚插入就失权。
+    public var isPerformingOwnedHostMutation: Bool { ownedHostMutationDepth > 0 }
+    public internal(set) var ownedHostMutationGeneration: UInt64 = 0
+    var ownedHostMutationDepth = 0
+
+    /// 测试钩子：把 L1 mirror 置为 ahead，供标点键 / 标点候选 fail-closed 用例使用。
+    func testingForceProvisionalAhead() {
+        _ = provisionalCompositionMirror.appendT9DigitAccept(revision: 1, epoch: 1)
+    }
     public var isTypoCorrectionPartialCommitEnabled = false
     public var typoCorrectionExperimentalEdits: TypoCorrectionExperimentalEdits = []
     public var typoCorrectionLearningSnapshot: TypoCorrectionLearningSnapshot = .empty
@@ -62,32 +71,28 @@ public final class KeyboardController {
     /// Extension UI can `syncUI` (Arch/Quality P1 — publish→presentation bridge).
     public var onResponsivePresentationNeeded: ((KeyboardEffect) -> Void)?
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    /// Content-free terminal stream for the internal canary validator.
-    public var onResponsiveCanaryPresentationTerminal:
-        ((ResponsiveRimeCanaryPresentationTerminal) -> Void)?
-    public var onResponsiveCanaryRuntimeSelection:
-        ((RimeRuntimeSelection) -> Void)?
-    /// Synchronous UI acknowledgement used only by the internal canary. `true`
-    /// means the Extension completed `syncUI` before the closure returned.
-    public var onResponsiveCanaryPresentationNeeded: ((KeyboardEffect) -> Bool)?
-    private var responsiveCanaryPresentationFenced = false
-    private var pendingResponsiveCanaryVisibleSnapshot: (
-        snapshot: ResponsiveRimeSnapshot,
-        canarySessionInstance: UInt64
-    )?
-    public private(set) var lastResponsiveCanaryVisibilityTeardown:
-        ThreadAffineRimeVisibilityTeardownResult?
-    private var isResponsiveCanaryOwnerInstalled = false
-    private var currentResponsiveCanarySessionInstance: UInt64 = 0
-    private var responsiveCanarySessionIdentities:
-        [UInt64: (runID: String, modeGeneration: UInt64)] = [:]
-    private var responsiveCanaryPreterminatedPresentations: Set<String> = []
+        /// Content-free terminal stream for the internal canary validator.
+        public var onResponsiveCanaryPresentationTerminal: ((ResponsiveRimeCanaryPresentationTerminal) -> Void)?
+        public var onResponsiveCanaryRuntimeSelection: ((RimeRuntimeSelection) -> Void)?
+        /// Synchronous UI acknowledgement used only by the internal canary. `true`
+        /// means the Extension completed `syncUI` before the closure returned.
+        public var onResponsiveCanaryPresentationNeeded: ((KeyboardEffect) -> Bool)?
+        private var responsiveCanaryPresentationFenced = false
+        private var pendingResponsiveCanaryVisibleSnapshot:
+            (
+                snapshot: ResponsiveRimeSnapshot,
+                canarySessionInstance: UInt64
+            )?
+        public private(set) var lastResponsiveCanaryVisibilityTeardown: ThreadAffineRimeVisibilityTeardownResult?
+        private var isResponsiveCanaryOwnerInstalled = false
+        private var currentResponsiveCanarySessionInstance: UInt64 = 0
+        private var responsiveCanarySessionIdentities: [UInt64: (runID: String, modeGeneration: UInt64)] = [:]
+        private var responsiveCanaryPreterminatedPresentations: Set<String> = []
     #endif
     #if DEBUG
-    /// Content-free hook for controlled preflight evidence. Release builds do
-    /// not expose or execute this diagnostic callback.
-    public var onReversibleT9AutoAnchorOutcome:
-        ((T9ReversibleAutoAnchorOutcome) -> Void)?
+        /// Content-free hook for controlled preflight evidence. Release builds do
+        /// not expose or execute this diagnostic callback.
+        public var onReversibleT9AutoAnchorOutcome: ((T9ReversibleAutoAnchorOutcome) -> Void)?
     #endif
     var shouldRestoreRimeComposition = false
     var shouldRebuildSessionDuringRestore = false
@@ -100,7 +105,7 @@ public final class KeyboardController {
     /// becoming visible merely because the mailbox is now empty.
     private var dualGatePendingPresentationHasKnownSuccessor = false
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    private var dualGatePendingCanarySessionInstance: UInt64 = 0
+        private var dualGatePendingCanarySessionInstance: UInt64 = 0
     #endif
     private var dualGatePresentationCoalesceScheduled = false
     /// R5-Rem Arch P1-1: bumped on abandon/reset/rebuild so deferred coalesce
@@ -158,7 +163,8 @@ public final class KeyboardController {
     public init(
         state: KeyboardState = KeyboardState(),
         candidateProvider: CandidateProvider = FakeCandidateProvider(),
-        continuationSuggestionProvider: any ContinuationSuggestionProviding = BundledContinuationSuggestionProvider.shared
+        continuationSuggestionProvider: any ContinuationSuggestionProviding = BundledContinuationSuggestionProvider
+            .shared
     ) {
         self.state = state
         self.candidateProvider = candidateProvider
@@ -187,10 +193,10 @@ public final class KeyboardController {
         clock: ResponsiveRimeExecutionClock = NoopResponsiveRimeClock()
     ) {
         #if T9_RESPONSIVE_CANARY_INTERNAL
-        // Once installed, only the unique canary lifecycle/kill paths may tear
-        // down the owner. Legacy flag rebuilds must not create a second mode
-        // evaluator or invoke abandonment-style shutdown during an active kill.
-        guard !isResponsiveCanaryOwnerInstalled else { return }
+            // Once installed, only the unique canary lifecycle/kill paths may tear
+            // down the owner. Legacy flag rebuilds must not create a second mode
+            // evaluator or invoke abandonment-style shutdown during an active kill.
+            guard !isResponsiveCanaryOwnerInstalled else { return }
         #endif
         // Tear down prior thread-affine owner before switching modes.
         if let threadAffine = threadAffineRimeCoordinator {
@@ -223,7 +229,7 @@ public final class KeyboardController {
 
         // R4-Wire dual gate: bootstrap-only off-main owner when requested.
         if isThreadAffineRimeOwnerEnabled,
-           let bootstrap = threadAffineEngineBootstrap
+            let bootstrap = threadAffineEngineBootstrap
         {
             responsiveRimeCoordinator = nil
             let coordinator = ThreadAffineRimeSessionCoordinator(
@@ -231,22 +237,22 @@ public final class KeyboardController {
                 fixtureID: "T9RESP-R4W"
             )
             #if T9_RESPONSIVE_CANARY_INTERNAL
-            coordinator.setCanaryPublishHandler { [weak self] publication in
-                self?.applyResponsivePublishedSnapshot(
-                    publication.snapshot,
-                    ownerPendingDepthAtPublish:
-                        publication.pendingWorkDepthAfterCompletion,
-                    canarySessionInstance: publication.canarySessionInstance
-                )
-            }
+                coordinator.setCanaryPublishHandler { [weak self] publication in
+                    self?.applyResponsivePublishedSnapshot(
+                        publication.snapshot,
+                        ownerPendingDepthAtPublish:
+                            publication.pendingWorkDepthAfterCompletion,
+                        canarySessionInstance: publication.canarySessionInstance
+                    )
+                }
             #else
-            coordinator.setPublicationHandler { [weak self] publication in
-                self?.applyResponsivePublishedSnapshot(
-                    publication.snapshot,
-                    ownerPendingDepthAtPublish:
-                        publication.pendingWorkDepthAfterCompletion
-                )
-            }
+                coordinator.setPublicationHandler { [weak self] publication in
+                    self?.applyResponsivePublishedSnapshot(
+                        publication.snapshot,
+                        ownerPendingDepthAtPublish:
+                            publication.pendingWorkDepthAfterCompletion
+                    )
+                }
             #endif
             threadAffineRimeCoordinator = coordinator
             responsiveKeyApplyContexts.removeAll()
@@ -255,10 +261,10 @@ public final class KeyboardController {
             dualGatePresentationCoalesceScheduled = false
             rimeEngine = ThreadAffineRimeEngineBridge(coordinator: coordinator)
             #if T9_RESPONSIVE_CANARY_INTERNAL
-            responsiveCanaryPresentationFenced = false
-            pendingResponsiveCanaryVisibleSnapshot = nil
-            lastResponsiveCanaryVisibilityTeardown = nil
-            responsiveCanaryPreterminatedPresentations.removeAll(keepingCapacity: true)
+                responsiveCanaryPresentationFenced = false
+                pendingResponsiveCanaryVisibleSnapshot = nil
+                lastResponsiveCanaryVisibilityTeardown = nil
+                responsiveCanaryPreterminatedPresentations.removeAll(keepingCapacity: true)
             #endif
             return
         }
@@ -296,98 +302,99 @@ public final class KeyboardController {
     }
 
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    /// Removes only an already positively terminated canary owner. This method
-    /// never creates the baseline; the unique mode coordinator must grant that
-    /// permit first and the Extension bootstrap performs the later creation.
-    public func clearResponsiveCanaryAfterPositiveShutdown() {
-        precondition(
-            threadAffineRimeCoordinator?.isOwnerReady != true,
-            "live canary owner cannot be cleared without positive shutdown"
-        )
-        threadAffineRimeCoordinator = nil
-        responsiveRimeCoordinator = nil
-        if rimeEngine is ThreadAffineRimeEngineBridge {
-            rimeEngine = nil
-        }
-        isThreadAffineRimeOwnerEnabled = false
-        isResponsiveRimePipelineEnabled = false
-        threadAffineEngineBootstrap = nil
-        responsiveKeyApplyContexts.removeAll()
-        dualGatePendingPresentationSnapshot = nil
-        dualGatePendingPresentationHasKnownSuccessor = false
-        dualGatePresentationCoalesceScheduled = false
-        responsivePresentationGeneration &+= 1
-        responsiveCanaryPresentationFenced = true
-        responsiveCanaryPreterminatedPresentations.removeAll(keepingCapacity: true)
-        pendingResponsiveCanaryVisibleSnapshot = nil
-        currentResponsiveCanarySessionInstance = 0
-        responsiveCanarySessionIdentities.removeAll(keepingCapacity: true)
-        isResponsiveCanaryOwnerInstalled = false
-    }
-
-    public func markResponsiveCanaryOwnerInstalled(
-        runID: String,
-        modeGeneration: UInt64,
-        sessionInstance: UInt64
-    ) {
-        precondition(threadAffineRimeCoordinator?.isOwnerReady == true)
-        threadAffineRimeCoordinator?.setCanarySessionInstance(sessionInstance)
-        currentResponsiveCanarySessionInstance = sessionInstance
-        responsiveCanarySessionIdentities[sessionInstance] = (runID, modeGeneration)
-        isResponsiveCanaryOwnerInstalled = true
-    }
-
-    public func activateResponsiveCanarySessionInstance(
-        runID: String,
-        modeGeneration: UInt64,
-        sessionInstance: UInt64
-    ) {
-        precondition(threadAffineRimeCoordinator?.isOwnerReady == true)
-        threadAffineRimeCoordinator?.setCanarySessionInstance(sessionInstance)
-        currentResponsiveCanarySessionInstance = sessionInstance
-        responsiveCanarySessionIdentities[sessionInstance] = (runID, modeGeneration)
-    }
-
-    /// Fences presentation before the owner drain begins. Owner completions may
-    /// still arrive, but they receive stale/fenced terminals and cannot mutate
-    /// UI or host text.
-    public func beginResponsiveCanaryPresentationFence() {
-        responsiveCanaryPresentationFenced = true
-        responsivePresentationGeneration &+= 1
-        finalizeResponsiveCanaryFencedPresentations()
-        dualGatePendingPresentationSnapshot = nil
-        dualGatePendingPresentationHasKnownSuccessor = false
-        dualGatePresentationCoalesceScheduled = false
-        pendingResponsiveCanaryVisibleSnapshot = nil
-    }
-
-    public func resumeResponsiveCanaryPresentationAfterOwnerReady() {
-        guard threadAffineRimeCoordinator?.isOwnerReady == true else { return }
-        responsiveCanaryPresentationFenced = false
-        pendingResponsiveCanaryVisibleSnapshot = nil
-        lastResponsiveCanaryVisibilityTeardown = nil
-    }
-
-    /// Converts every owner-delivered but not yet MainActor-terminal PUBLISH
-    /// into a stale terminal before an owner pointer or pipeline flag is cleared.
-    public func finalizeResponsiveCanaryFencedPresentations() {
-        guard let affine = threadAffineRimeCoordinator else { return }
-        for identity in affine.pendingPresentationIdentities {
-            let key = "\(identity.canarySessionInstance):"
-                + "\(identity.sessionEpoch):\(identity.revision)"
-            guard responsiveCanaryPreterminatedPresentations.insert(key).inserted else {
-                continue
-            }
-            emitResponsiveCanaryTerminal(
-                sessionEpoch: identity.sessionEpoch,
-                revision: identity.revision,
-                canarySessionInstance: identity.canarySessionInstance,
-                completion: .staleAfterFence,
-                visibility: .notVisibleFencedBeforeVisible,
-                paint: .failedFencedBeforeVisible
+        /// Removes only an already positively terminated canary owner. This method
+        /// never creates the baseline; the unique mode coordinator must grant that
+        /// permit first and the Extension bootstrap performs the later creation.
+        public func clearResponsiveCanaryAfterPositiveShutdown() {
+            precondition(
+                threadAffineRimeCoordinator?.isOwnerReady != true,
+                "live canary owner cannot be cleared without positive shutdown"
             )
+            threadAffineRimeCoordinator = nil
+            responsiveRimeCoordinator = nil
+            if rimeEngine is ThreadAffineRimeEngineBridge {
+                rimeEngine = nil
+            }
+            isThreadAffineRimeOwnerEnabled = false
+            isResponsiveRimePipelineEnabled = false
+            threadAffineEngineBootstrap = nil
+            responsiveKeyApplyContexts.removeAll()
+            dualGatePendingPresentationSnapshot = nil
+            dualGatePendingPresentationHasKnownSuccessor = false
+            dualGatePresentationCoalesceScheduled = false
+            responsivePresentationGeneration &+= 1
+            responsiveCanaryPresentationFenced = true
+            responsiveCanaryPreterminatedPresentations.removeAll(keepingCapacity: true)
+            pendingResponsiveCanaryVisibleSnapshot = nil
+            currentResponsiveCanarySessionInstance = 0
+            responsiveCanarySessionIdentities.removeAll(keepingCapacity: true)
+            isResponsiveCanaryOwnerInstalled = false
         }
-    }
+
+        public func markResponsiveCanaryOwnerInstalled(
+            runID: String,
+            modeGeneration: UInt64,
+            sessionInstance: UInt64
+        ) {
+            precondition(threadAffineRimeCoordinator?.isOwnerReady == true)
+            threadAffineRimeCoordinator?.setCanarySessionInstance(sessionInstance)
+            currentResponsiveCanarySessionInstance = sessionInstance
+            responsiveCanarySessionIdentities[sessionInstance] = (runID, modeGeneration)
+            isResponsiveCanaryOwnerInstalled = true
+        }
+
+        public func activateResponsiveCanarySessionInstance(
+            runID: String,
+            modeGeneration: UInt64,
+            sessionInstance: UInt64
+        ) {
+            precondition(threadAffineRimeCoordinator?.isOwnerReady == true)
+            threadAffineRimeCoordinator?.setCanarySessionInstance(sessionInstance)
+            currentResponsiveCanarySessionInstance = sessionInstance
+            responsiveCanarySessionIdentities[sessionInstance] = (runID, modeGeneration)
+        }
+
+        /// Fences presentation before the owner drain begins. Owner completions may
+        /// still arrive, but they receive stale/fenced terminals and cannot mutate
+        /// UI or host text.
+        public func beginResponsiveCanaryPresentationFence() {
+            responsiveCanaryPresentationFenced = true
+            responsivePresentationGeneration &+= 1
+            finalizeResponsiveCanaryFencedPresentations()
+            dualGatePendingPresentationSnapshot = nil
+            dualGatePendingPresentationHasKnownSuccessor = false
+            dualGatePresentationCoalesceScheduled = false
+            pendingResponsiveCanaryVisibleSnapshot = nil
+        }
+
+        public func resumeResponsiveCanaryPresentationAfterOwnerReady() {
+            guard threadAffineRimeCoordinator?.isOwnerReady == true else { return }
+            responsiveCanaryPresentationFenced = false
+            pendingResponsiveCanaryVisibleSnapshot = nil
+            lastResponsiveCanaryVisibilityTeardown = nil
+        }
+
+        /// Converts every owner-delivered but not yet MainActor-terminal PUBLISH
+        /// into a stale terminal before an owner pointer or pipeline flag is cleared.
+        public func finalizeResponsiveCanaryFencedPresentations() {
+            guard let affine = threadAffineRimeCoordinator else { return }
+            for identity in affine.pendingPresentationIdentities {
+                let key =
+                    "\(identity.canarySessionInstance):"
+                    + "\(identity.sessionEpoch):\(identity.revision)"
+                guard responsiveCanaryPreterminatedPresentations.insert(key).inserted else {
+                    continue
+                }
+                emitResponsiveCanaryTerminal(
+                    sessionEpoch: identity.sessionEpoch,
+                    revision: identity.revision,
+                    canarySessionInstance: identity.canarySessionInstance,
+                    completion: .staleAfterFence,
+                    visibility: .notVisibleFencedBeforeVisible,
+                    paint: .failedFencedBeforeVisible
+                )
+            }
+        }
     #endif
 
     /// Apply a published responsive snapshot on MainActor and run gate-off-parity
@@ -407,40 +414,41 @@ public final class KeyboardController {
         guard let snapshot else { return }
 
         #if T9_RESPONSIVE_CANARY_INTERNAL
-        let terminalKey = "\(canarySessionInstance):"
-            + "\(snapshot.sessionEpoch):\(snapshot.revision)"
-        if responsiveCanaryPreterminatedPresentations.remove(terminalKey) != nil {
-            return
-        }
+            let terminalKey =
+                "\(canarySessionInstance):"
+                + "\(snapshot.sessionEpoch):\(snapshot.revision)"
+            if responsiveCanaryPreterminatedPresentations.remove(terminalKey) != nil {
+                return
+            }
         #endif
         guard isResponsiveRimePipelineEnabled else { return }
 
         #if T9_RESPONSIVE_CANARY_INTERNAL
-        if responsiveCanaryPresentationFenced {
-            emitResponsiveCanaryTerminal(
-                for: snapshot,
-                canarySessionInstance: canarySessionInstance,
-                completion: .staleAfterFence,
-                visibility: .notVisibleFencedBeforeVisible,
-                paint: .failedFencedBeforeVisible
-            )
-            return
-        }
-        // Reads only the owner-published immutable selection snapshot.
-        applyRealizedSelectionFromEngine()
-        if let selection = rimeEngine?.runtimeSelection {
-            onResponsiveCanaryRuntimeSelection?(selection)
-        }
+            if responsiveCanaryPresentationFenced {
+                emitResponsiveCanaryTerminal(
+                    for: snapshot,
+                    canarySessionInstance: canarySessionInstance,
+                    completion: .staleAfterFence,
+                    visibility: .notVisibleFencedBeforeVisible,
+                    paint: .failedFencedBeforeVisible
+                )
+                return
+            }
+            // Reads only the owner-published immutable selection snapshot.
+            applyRealizedSelectionFromEngine()
+            if let selection = rimeEngine?.runtimeSelection {
+                onResponsiveCanaryRuntimeSelection?(selection)
+            }
         #endif
 
         // P2-D1: owner completion is recorded before any latest-only UI
         // coalescing. A missing UI paint must not be mistaken for missing
         // engine work, and the marker remains bound to the accepted revision.
         if isThreadAffineRimeOwnerEnabled,
-           let ownerCompletion = feltMetrics.recordOwnerCompletion(
-               epoch: snapshot.sessionEpoch,
-               revision: snapshot.revision
-           )
+            let ownerCompletion = feltMetrics.recordOwnerCompletion(
+                epoch: snapshot.sessionEpoch,
+                revision: snapshot.revision
+            )
         {
             recordResponsiveFeltMarker(ownerCompletion)
         }
@@ -458,28 +466,28 @@ public final class KeyboardController {
                 || dualGatePendingPresentationSnapshot != nil
             {
                 #if T9_RESPONSIVE_CANARY_INTERNAL
-                if let absorbed = dualGatePendingPresentationSnapshot,
-                   absorbed.revision != snapshot.revision
-                {
-                    emitResponsiveCanaryTerminal(
-                        for: absorbed,
-                        canarySessionInstance: dualGatePendingCanarySessionInstance,
-                        completion: .published,
-                        visibility: .notVisibleCoalesced(
-                            absorbedRevisionRange: absorbed.revision...absorbed.revision,
-                            replacementRevision: snapshot.revision
-                        ),
-                        paint: .coalesced(
-                            absorbedRevisionRange: absorbed.revision...absorbed.revision,
-                            replacementRevision: snapshot.revision
+                    if let absorbed = dualGatePendingPresentationSnapshot,
+                        absorbed.revision != snapshot.revision
+                    {
+                        emitResponsiveCanaryTerminal(
+                            for: absorbed,
+                            canarySessionInstance: dualGatePendingCanarySessionInstance,
+                            completion: .published,
+                            visibility: .notVisibleCoalesced(
+                                absorbedRevisionRange: absorbed.revision...absorbed.revision,
+                                replacementRevision: snapshot.revision
+                            ),
+                            paint: .coalesced(
+                                absorbedRevisionRange: absorbed.revision...absorbed.revision,
+                                replacementRevision: snapshot.revision
+                            )
                         )
-                    )
-                }
+                    }
                 #endif
                 dualGatePendingPresentationSnapshot = snapshot
                 dualGatePendingPresentationHasKnownSuccessor = pendingDepth > 0
                 #if T9_RESPONSIVE_CANARY_INTERNAL
-                dualGatePendingCanarySessionInstance = canarySessionInstance
+                    dualGatePendingCanarySessionInstance = canarySessionInstance
                 #endif
                 scheduleDualGateCoalescedPresentation()
                 return
@@ -517,7 +525,7 @@ public final class KeyboardController {
             guard self.responsivePresentationGeneration == generationAtSchedule else { return }
             guard let latest = self.dualGatePendingPresentationSnapshot else { return }
             #if T9_RESPONSIVE_CANARY_INTERNAL
-            let latestCanarySessionInstance = self.dualGatePendingCanarySessionInstance
+                let latestCanarySessionInstance = self.dualGatePendingCanarySessionInstance
             #endif
             let hasKnownSuccessor =
                 self.dualGatePendingPresentationHasKnownSuccessor
@@ -530,7 +538,7 @@ public final class KeyboardController {
                 self.dualGatePendingPresentationSnapshot = latest
                 self.dualGatePendingPresentationHasKnownSuccessor = true
                 #if T9_RESPONSIVE_CANARY_INTERNAL
-                self.dualGatePendingCanarySessionInstance = latestCanarySessionInstance
+                    self.dualGatePendingCanarySessionInstance = latestCanarySessionInstance
                 #endif
                 return
             }
@@ -541,24 +549,24 @@ public final class KeyboardController {
                 self.dualGatePendingPresentationSnapshot = latest
                 self.dualGatePendingPresentationHasKnownSuccessor = true
                 #if T9_RESPONSIVE_CANARY_INTERNAL
-                self.dualGatePendingCanarySessionInstance = latestCanarySessionInstance
+                    self.dualGatePendingCanarySessionInstance = latestCanarySessionInstance
                 #endif
                 self.scheduleDualGateCoalescedPresentation()
                 return
             }
             #if T9_RESPONSIVE_CANARY_INTERNAL
-            self.performResponsivePresentationApply(
-                latest,
-                coalesced: true,
-                expectedGeneration: generationAtSchedule,
-                canarySessionInstance: latestCanarySessionInstance
-            )
+                self.performResponsivePresentationApply(
+                    latest,
+                    coalesced: true,
+                    expectedGeneration: generationAtSchedule,
+                    canarySessionInstance: latestCanarySessionInstance
+                )
             #else
-            self.performResponsivePresentationApply(
-                latest,
-                coalesced: true,
-                expectedGeneration: generationAtSchedule
-            )
+                self.performResponsivePresentationApply(
+                    latest,
+                    coalesced: true,
+                    expectedGeneration: generationAtSchedule
+                )
             #endif
         }
     }
@@ -583,21 +591,21 @@ public final class KeyboardController {
             return false
         }
         if let liveEpoch = liveResponsiveSessionEpoch(),
-           snapshot.sessionEpoch != liveEpoch
+            snapshot.sessionEpoch != liveEpoch
         {
             return false
         }
         // Rem-3: while L1 is ahead, allow L2 with revision >= watermark floor
         // (equal OK so engine replaces structure-only L1 at the same rev).
         if provisionalCompositionMirror.isProvisionalAhead,
-           snapshot.sessionEpoch == provisionalCompositionMirror.sessionEpoch
+            snapshot.sessionEpoch == provisionalCompositionMirror.sessionEpoch
         {
             let floor = max(lastPresentedRevision, provisionalCompositionMirror.watermark)
             return snapshot.revision >= floor
         }
         // Never paint an older-or-equal revision over a newer one in the same epoch.
         if snapshot.sessionEpoch == lastPresentedSessionEpoch,
-           snapshot.revision <= lastPresentedRevision
+            snapshot.revision <= lastPresentedRevision
         {
             return false
         }
@@ -613,30 +621,30 @@ public final class KeyboardController {
         // Arch P1-1: fail closed if abandon/reset superseded this paint.
         guard isLivePresentationSnapshot(snapshot, expectedGeneration: expectedGeneration) else {
             #if T9_RESPONSIVE_CANARY_INTERNAL
-            if responsiveCanaryPresentationFenced {
-                emitResponsiveCanaryTerminal(
-                    for: snapshot,
-                    canarySessionInstance: canarySessionInstance,
-                    completion: .staleAfterFence,
-                    visibility: .notVisibleFencedBeforeVisible,
-                    paint: .failedFencedBeforeVisible
-                )
-            } else {
-                let replacement = max(lastPresentedRevision, snapshot.revision)
-                emitResponsiveCanaryTerminal(
-                    for: snapshot,
-                    canarySessionInstance: canarySessionInstance,
-                    completion: .published,
-                    visibility: .notVisibleCoalesced(
-                        absorbedRevisionRange: snapshot.revision...snapshot.revision,
-                        replacementRevision: replacement
-                    ),
-                    paint: .coalesced(
-                        absorbedRevisionRange: snapshot.revision...snapshot.revision,
-                        replacementRevision: replacement
+                if responsiveCanaryPresentationFenced {
+                    emitResponsiveCanaryTerminal(
+                        for: snapshot,
+                        canarySessionInstance: canarySessionInstance,
+                        completion: .staleAfterFence,
+                        visibility: .notVisibleFencedBeforeVisible,
+                        paint: .failedFencedBeforeVisible
                     )
-                )
-            }
+                } else {
+                    let replacement = max(lastPresentedRevision, snapshot.revision)
+                    emitResponsiveCanaryTerminal(
+                        for: snapshot,
+                        canarySessionInstance: canarySessionInstance,
+                        completion: .published,
+                        visibility: .notVisibleCoalesced(
+                            absorbedRevisionRange: snapshot.revision...snapshot.revision,
+                            replacementRevision: replacement
+                        ),
+                        paint: .coalesced(
+                            absorbedRevisionRange: snapshot.revision...snapshot.revision,
+                            replacementRevision: replacement
+                        )
+                    )
+                }
             #endif
             return
         }
@@ -682,15 +690,15 @@ public final class KeyboardController {
         lastPresentedSessionEpoch = snapshot.sessionEpoch
         lastPresentedRevision = snapshot.revision
         #if T9_RESPONSIVE_CANARY_INTERNAL
-        pendingResponsiveCanaryVisibleSnapshot = (
-            snapshot: snapshot,
-            canarySessionInstance: canarySessionInstance
-        )
+            pendingResponsiveCanaryVisibleSnapshot = (
+                snapshot: snapshot,
+                canarySessionInstance: canarySessionInstance
+            )
         #endif
 
         // Drop contexts invalidated by epoch barriers (abandon / reset / recover).
         while let head = responsiveKeyApplyContexts.first,
-              head.sessionEpoch != snapshot.sessionEpoch
+            head.sessionEpoch != snapshot.sessionEpoch
         {
             responsiveKeyApplyContexts.removeFirst()
         }
@@ -702,7 +710,7 @@ public final class KeyboardController {
         if snapshot.actionID.hasPrefix("pk-") {
             var last: ResponsiveKeyApplyContext?
             while let head = responsiveKeyApplyContexts.first,
-                  head.sessionEpoch == snapshot.sessionEpoch
+                head.sessionEpoch == snapshot.sessionEpoch
             {
                 last = responsiveKeyApplyContexts.removeFirst()
             }
@@ -746,21 +754,21 @@ public final class KeyboardController {
             }
 
             if let ctx,
-               rejectUnusableAcceptedT9AutoAnchorDigitIfNeeded(
-                   ctx.rimeKey,
-                   previousLedger: state.t9ReversibleAutoAnchorState,
-                   output: output,
-                   using: engineForPostProcess
-               )
+                rejectUnusableAcceptedT9AutoAnchorDigitIfNeeded(
+                    ctx.rimeKey,
+                    previousLedger: state.t9ReversibleAutoAnchorState,
+                    output: output,
+                    using: engineForPostProcess
+                )
             {
                 notifyResponsivePresentation(pathChanged: true)
                 return
             }
 
             if output.composition == nil,
-               output.committedText == nil,
-               !engineForPostProcess.isComposing(),
-               let ctx
+                output.committedText == nil,
+                !engineForPostProcess.isComposing(),
+                let ctx
             {
                 let intendedComposition =
                     state.currentComposition + fallbackInputText(for: ctx.rimeKey)
@@ -784,8 +792,8 @@ public final class KeyboardController {
             if let ctx {
                 var retainedFocusedSegment = false
                 if output.committedText == nil,
-                   ctx.rimeKey.count == 1,
-                   let digit = ctx.rimeKey.first
+                    ctx.rimeKey.count == 1,
+                    let digit = ctx.rimeKey.first
                 {
                     retainedFocusedSegment = retainFocusedT9SegmentAfterAppendingDigit(
                         previous: ctx.previousT9PathState,
@@ -829,7 +837,7 @@ public final class KeyboardController {
         actionID: String
     ) -> RimeOutput {
         guard actionID.hasPrefix("sel-"),
-              output.committedText != nil
+            output.committedText != nil
         else {
             return output
         }
@@ -856,73 +864,74 @@ public final class KeyboardController {
             effects.insert(.t9PinyinPathsChanged)
         }
         #if T9_RESPONSIVE_CANARY_INTERNAL
-        // The callback's synchronous Bool is the bounded completion point. It
-        // may return true only after the Extension completes syncUI.
-        let paintCompleted = onResponsiveCanaryPresentationNeeded?(effects) == true
-        if let pending = pendingResponsiveCanaryVisibleSnapshot {
-            pendingResponsiveCanaryVisibleSnapshot = nil
-            emitResponsiveCanaryTerminal(
-                for: pending.snapshot,
-                canarySessionInstance: pending.canarySessionInstance,
-                completion: .published,
-                visibility: .visible(presentationRevision: pending.snapshot.revision),
-                paint: paintCompleted
-                    ? .painted
-                    : .failedVisible(reason: .uiSynchronizationFailed)
-            )
-        }
+            // The callback's synchronous Bool is the bounded completion point. It
+            // may return true only after the Extension completes syncUI.
+            let paintCompleted = onResponsiveCanaryPresentationNeeded?(effects) == true
+            if let pending = pendingResponsiveCanaryVisibleSnapshot {
+                pendingResponsiveCanaryVisibleSnapshot = nil
+                emitResponsiveCanaryTerminal(
+                    for: pending.snapshot,
+                    canarySessionInstance: pending.canarySessionInstance,
+                    completion: .published,
+                    visibility: .visible(presentationRevision: pending.snapshot.revision),
+                    paint: paintCompleted
+                        ? .painted
+                        : .failedVisible(reason: .uiSynchronizationFailed)
+                )
+            }
         #else
-        onResponsivePresentationNeeded?(effects)
+            onResponsivePresentationNeeded?(effects)
         #endif
     }
 
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    private func emitResponsiveCanaryTerminal(
-        for snapshot: ResponsiveRimeSnapshot,
-        canarySessionInstance: UInt64? = nil,
-        completion: ResponsiveRimeCanaryPublishCompletion,
-        visibility: ResponsiveRimeCanaryVisibilityDisposition,
-        paint: ResponsiveRimeCanaryPaintTerminal
-    ) {
-        emitResponsiveCanaryTerminal(
-            sessionEpoch: snapshot.sessionEpoch,
-            revision: snapshot.revision,
-            canarySessionInstance: canarySessionInstance,
-            completion: completion,
-            visibility: visibility,
-            paint: paint
-        )
-    }
-
-    private func emitResponsiveCanaryTerminal(
-        sessionEpoch: UInt64,
-        revision: UInt64,
-        canarySessionInstance: UInt64? = nil,
-        completion: ResponsiveRimeCanaryPublishCompletion,
-        visibility: ResponsiveRimeCanaryVisibilityDisposition,
-        paint: ResponsiveRimeCanaryPaintTerminal
-    ) {
-        let resolvedSessionInstance = canarySessionInstance
-            ?? currentResponsiveCanarySessionInstance
-        let sessionIdentity = responsiveCanarySessionIdentities[resolvedSessionInstance]
-        onResponsiveCanaryPresentationTerminal?(
-            ResponsiveRimeCanaryPresentationTerminal(
-                runID: sessionIdentity?.runID ?? "",
-                modeGeneration: sessionIdentity?.modeGeneration ?? 0,
-                canarySessionInstance: resolvedSessionInstance,
-                sessionEpoch: sessionEpoch,
-                revision: revision,
+        private func emitResponsiveCanaryTerminal(
+            for snapshot: ResponsiveRimeSnapshot,
+            canarySessionInstance: UInt64? = nil,
+            completion: ResponsiveRimeCanaryPublishCompletion,
+            visibility: ResponsiveRimeCanaryVisibilityDisposition,
+            paint: ResponsiveRimeCanaryPaintTerminal
+        ) {
+            emitResponsiveCanaryTerminal(
+                sessionEpoch: snapshot.sessionEpoch,
+                revision: snapshot.revision,
+                canarySessionInstance: canarySessionInstance,
                 completion: completion,
                 visibility: visibility,
                 paint: paint
             )
-        )
-        threadAffineRimeCoordinator?.acknowledgePresentationTerminal(
-            canarySessionInstance: resolvedSessionInstance,
-            sessionEpoch: sessionEpoch,
-            revision: revision
-        )
-    }
+        }
+
+        private func emitResponsiveCanaryTerminal(
+            sessionEpoch: UInt64,
+            revision: UInt64,
+            canarySessionInstance: UInt64? = nil,
+            completion: ResponsiveRimeCanaryPublishCompletion,
+            visibility: ResponsiveRimeCanaryVisibilityDisposition,
+            paint: ResponsiveRimeCanaryPaintTerminal
+        ) {
+            let resolvedSessionInstance =
+                canarySessionInstance
+                ?? currentResponsiveCanarySessionInstance
+            let sessionIdentity = responsiveCanarySessionIdentities[resolvedSessionInstance]
+            onResponsiveCanaryPresentationTerminal?(
+                ResponsiveRimeCanaryPresentationTerminal(
+                    runID: sessionIdentity?.runID ?? "",
+                    modeGeneration: sessionIdentity?.modeGeneration ?? 0,
+                    canarySessionInstance: resolvedSessionInstance,
+                    sessionEpoch: sessionEpoch,
+                    revision: revision,
+                    completion: completion,
+                    visibility: visibility,
+                    paint: paint
+                )
+            )
+            threadAffineRimeCoordinator?.acknowledgePresentationTerminal(
+                canarySessionInstance: resolvedSessionInstance,
+                sessionEpoch: sessionEpoch,
+                revision: revision
+            )
+        }
     #endif
 
     /// Keep the latest safe host marked text as the L1 visual-shadow prefix.
@@ -933,8 +942,8 @@ public final class KeyboardController {
     /// leave an older prefix behind for the next provisional key.
     func captureResponsiveStablePreeditIfReady() {
         guard isResponsiveRimePipelineEnabled,
-              isThreadAffineRimeOwnerEnabled,
-              !provisionalCompositionMirror.isProvisionalAhead
+            isThreadAffineRimeOwnerEnabled,
+            !provisionalCompositionMirror.isProvisionalAhead
         else {
             return
         }
@@ -969,9 +978,10 @@ public final class KeyboardController {
 
     /// Rem-3 Layer Rule 3: drop L1 without ever committing `·` to the host.
     func abandonResponsiveProvisionalL1WithoutHostCommit() {
-        guard provisionalCompositionMirror.isProvisionalAhead
-            || provisionalCompositionMirror.isActive
-            || state.currentComposition.contains(ResponsiveProvisionalComposition.placeholderScalar)
+        guard
+            provisionalCompositionMirror.isProvisionalAhead
+                || provisionalCompositionMirror.isActive
+                || state.currentComposition.contains(ResponsiveProvisionalComposition.placeholderScalar)
         else {
             return
         }
@@ -1069,7 +1079,7 @@ public final class KeyboardController {
             guard self.provisionalCompositionMirror.isProvisionalAhead else { return }
             // Only paint if ledger still covers at least this watermark streak head.
             guard self.provisionalCompositionMirror.sessionEpoch == presentation.sessionEpoch,
-                  self.provisionalCompositionMirror.watermark >= presentation.watermark
+                self.provisionalCompositionMirror.watermark >= presentation.watermark
             else {
                 return
             }
@@ -1152,14 +1162,14 @@ public final class KeyboardController {
     /// channel. Ordinary builds retain the regular diagnostic category filter.
     private func recordResponsiveFeltMarker(_ line: String) {
         #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-        Logger.shared.devicePreflightPerformance(line)
+            Logger.shared.devicePreflightPerformance(line)
         #else
-        Logger.shared.performance(line)
+            Logger.shared.performance(line)
         #endif
     }
 
     /// R4-Wire helper — nil when dual-gate path is inactive or OS-unavailable.
-        func threadAffineCoordinatorIfAvailable() -> ThreadAffineRimeSessionCoordinator? {
+    func threadAffineCoordinatorIfAvailable() -> ThreadAffineRimeSessionCoordinator? {
         threadAffineRimeCoordinator
     }
 
@@ -1210,6 +1220,7 @@ public final class KeyboardController {
             || state.partialCommit != nil
             || state.typoCorrection != nil
             || !state.continuation.isEmpty
+            || state.pendingPunctuation != nil
             || state.insertedPreeditCount > 0
             || !state.insertedPreeditText.isEmpty
 
@@ -1231,15 +1242,18 @@ public final class KeyboardController {
         state.partialCommit = nil
         state.typoCorrection = nil
         state.continuation = ContinuationState()
+        // 已上屏的 pending 标点留在 host 上，只放弃可替换身份。
+        state.pendingPunctuation = nil
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
-        let hadPinyinPaths = !state.t9PinyinPathState.compactPaths.isEmpty
+        let hadPinyinPaths =
+            !state.t9PinyinPathState.compactPaths.isEmpty
             || state.t9PinyinPathState.selectedPath != nil
         clearT9PinyinPathState()
 
         var effects: KeyboardEffect = []
         if hadVisibleComposition {
-            effects.formUnion([.compositionChanged, .continuationChanged])
+            effects.formUnion([.compositionChanged, .continuationChanged, .pendingPunctuationChanged])
         }
         if hadPinyinPaths {
             effects.insert(.t9PinyinPathsChanged)
@@ -1252,9 +1266,9 @@ public final class KeyboardController {
     public func suspendRimeForVisibilityChange() {
         if isResponsiveRimePipelineEnabled, let affine = threadAffineRimeCoordinator {
             #if T9_RESPONSIVE_CANARY_INTERNAL
-            lastResponsiveCanaryVisibilityTeardown = affine.suspendForVisibilityChange()
+                lastResponsiveCanaryVisibilityTeardown = affine.suspendForVisibilityChange()
             #else
-            affine.suspendForVisibilityChange()
+                affine.suspendForVisibilityChange()
             #endif
         } else if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
             coordinator.suspendForVisibilityChange()
@@ -1289,7 +1303,7 @@ public final class KeyboardController {
     public func handle(_ action: KeyboardAction) -> KeyboardEffect {
         switch action {
         case .insertKey(let key):
-            return handleInsertKey(key)
+            return acceptingPendingPunctuationIfNeeded { handleInsertKey(key) }
         case .insertCandidate(let candidate, let kind, let selectionReference):
             return handleInsertCandidate(
                 candidate,
@@ -1299,20 +1313,27 @@ public final class KeyboardController {
         case .insertCorrectionCandidate(let correction):
             return handleInsertCorrectionCandidate(correction)
         case .insertDirectText(let text):
-            return handleInsertDirectText(text, source: .directText)
+            return acceptingPendingPunctuationIfNeeded {
+                handleInsertDirectText(text, source: .directText)
+            }
         case .insertEmoji(let emoji):
-            return handleInsertDirectText(emoji, source: .emoji)
+            return acceptingPendingPunctuationIfNeeded {
+                handleInsertDirectText(emoji, source: .emoji)
+            }
         case .toggleShift:
             return handleToggleShift()
         case .togglePage:
-            return handleTogglePage()
+            return acceptingPendingPunctuationIfNeeded { handleTogglePage() }
         case .toggleInputMode:
-            return handleToggleInputMode()
+            return acceptingPendingPunctuationIfNeeded { handleToggleInputMode() }
         case .insertSpace:
-            return handleInsertSpace()
+            return acceptingPendingPunctuationIfNeeded { handleInsertSpace() }
         case .insertReturn:
-            return handleInsertReturn()
+            return acceptingPendingPunctuationIfNeeded { handleInsertReturn() }
         case .deleteBackward:
+            if let pendingEffects = deleteOwnedPendingPunctuationIfNeeded() {
+                return pendingEffects
+            }
             return handleDeleteBackward()
         case .keyboardTypeChanged(let type):
             return handleKeyboardTypeChanged(type)
@@ -1320,6 +1341,8 @@ public final class KeyboardController {
             return handleSelectT9PinyinPath(path)
         case .cycleT9PinyinPath:
             return handleCycleT9PinyinPath()
+        case .pressT9CommonPunctuation:
+            return handlePressT9CommonPunctuation()
         case .candidatePageUp:
             return handleCandidatePageUp()
         case .candidatePageDown:

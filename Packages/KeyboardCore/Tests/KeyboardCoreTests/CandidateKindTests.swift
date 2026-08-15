@@ -31,6 +31,7 @@ final class CandidateKindTests: XCTestCase {
         XCTAssertEqual(CandidateKind(rawValue: 2), .placeholder)
         XCTAssertEqual(CandidateKind(rawValue: 3), .correctionCandidate)
         XCTAssertEqual(CandidateKind(rawValue: 4), .continuationCandidate)
+        XCTAssertEqual(CandidateKind(rawValue: 5), .punctuationCandidate)
         // 非法 rawValue 返回 nil
         XCTAssertNil(CandidateKind(rawValue: 99))
         XCTAssertNil(CandidateKind(rawValue: -1))
@@ -132,5 +133,12 @@ final class CandidateKindTests: XCTestCase {
         XCTAssertTrue(effects.contains(.compositionChanged))
         XCTAssertTrue(effects.contains(.shiftStateChanged))
         XCTAssertTrue(effects.contains(.pageChanged))
+    }
+
+    func testPendingPunctuationEffectUsesRemainingUInt8Bit() {
+        let effect: KeyboardEffect = .pendingPunctuationChanged
+        XCTAssertFalse(effect.contains(.continuationChanged))
+        XCTAssertFalse(effect.contains(.compositionChanged))
+        XCTAssertEqual(effect.rawValue, 1 << 7)
     }
 }

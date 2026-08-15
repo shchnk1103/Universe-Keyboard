@@ -39,7 +39,7 @@ extension KeyboardViewController {
     ///
     /// Layout (closer to system 九宫格):
     /// ```
-    /// [123] [,?!] [ABC] [DEF] | [ ⌫ ]
+    /// [123] [，。？！] [ABC] [DEF] | [ ⌫ ]
     /// [#+=] [GHI] [JKL] [MNO] | [^_^ 颜表情]
     /// [中]  [PQRS][TUV][WXYZ] | ┌────┐
     /// [😊] [选拼音] [ 拼音 ]  | │ret │  ← return spans bottom two rows
@@ -52,11 +52,12 @@ extension KeyboardViewController {
         let numbersButton = makeKeyButton(title: "123", action: #selector(switchToNumbersPage(_:)))
         applyKeyStyle(.function, to: numbersButton)
 
-        let punctuationButton = makeKeyButton(title: ",?!", action: #selector(insertT9CommonPunctuation(_:)))
+        let punctuationButton = makeKeyButton(
+            title: T9CommonPunctuationChrome.keyTitle, action: #selector(insertT9CommonPunctuation(_:)))
         applyKeyStyle(.character, to: punctuationButton)
         punctuationButton.titleLabel?.adjustsFontSizeToFitWidth = true
         punctuationButton.titleLabel?.minimumScaleFactor = 0.55
-        punctuationButton.accessibilityLabel = "常用标点"
+        punctuationButton.accessibilityLabel = T9CommonPunctuationChrome.accessibilityLabel
 
         let symbolsButton = makeKeyButton(title: "#+=", action: #selector(switchToSymbolsPage(_:)))
         applyKeyStyle(.function, to: symbolsButton)

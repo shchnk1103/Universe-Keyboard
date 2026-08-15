@@ -62,12 +62,20 @@ extension KeyboardViewController {
         updateExpandButtonAppearance()
         if isCandidateExpanded {
             candidatePrefetchMode = .expanded
+            if controller.state.pendingPunctuation != nil {
+                resetCandidateSnapshotFromController()
+                fillCandidateBar()
+            }
             presentExpandedCandidatePanel()
             if hasMoreCandidates {
                 scheduleCandidatePrefetch(mode: .expanded)
             }
         } else {
             candidatePrefetchMode = .bar
+            if controller.state.pendingPunctuation != nil {
+                resetCandidateSnapshotFromController()
+                fillCandidateBar()
+            }
             dismissExpandedCandidatePanel(animated: true)
         }
     }
@@ -135,11 +143,14 @@ extension KeyboardViewController {
         #endif
         let items = presentedCandidates
 
-        // ── 控制展开按钮可见性 ─────────────────────────────────────
-        let hasCandidates = items.contains { $0.kind == .candidate }
-        candidateExpandButton?.isHidden = !hasCandidates
+        // 普通 RIME 候选和九键待确认标点都复用同一套展开 / 下滑手势。
+        // 展开按钮隐藏时，下滑手势会直接 fail（见 CandidateBarView）。
+        let canExpand = items.contains {
+            $0.kind == .candidate || $0.kind == .punctuationCandidate
+        }
+        candidateExpandButton?.isHidden = !canExpand
 
-        let targetWidth: CGFloat = hasCandidates ? 56 : 0
+        let targetWidth: CGFloat = canExpand ? 56 : 0
         if candidateExpandButtonWidthConstraint?.constant != targetWidth {
             candidateExpandButtonWidthConstraint?.constant = targetWidth
         }
@@ -229,7 +240,11 @@ extension KeyboardViewController {
     func resetCandidateSnapshotFromController() {
         // Placeholder 是旧按钮式候选栏的安全哨兵，不属于当前 collection 快照。
         // 在唯一重建边界过滤一次，避免每个数据源回调都复制并过滤数组。
-        accumulatedCandidates = CandidateBarDataSource.candidateItems(from: controller).filter {
+        let pendingItems =
+            controller.state.pendingPunctuation == nil
+            ? nil
+            : controller.pendingPunctuationCandidateItems(expanded: isCandidateExpanded)
+        accumulatedCandidates = (pendingItems ?? CandidateBarDataSource.candidateItems(from: controller)).filter {
             $0.kind != .placeholder
         }
         candidateSnapshotGeneration += 1
