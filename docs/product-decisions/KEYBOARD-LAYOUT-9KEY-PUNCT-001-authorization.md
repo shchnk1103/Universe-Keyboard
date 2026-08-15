@@ -1,7 +1,7 @@
 # Product Decision: KEYBOARD-LAYOUT-9KEY-PUNCT-001 — 九键常用标点待确认与同键轮换
 
 **Decision ID:** `PD-KEYBOARD-LAYOUT-9KEY-PUNCT-001`
-**Lifecycle status:** `Recorded`
+**Lifecycle status:** `Recorded` — Assignment `KEYBOARD-LAYOUT-9KEY-PUNCT-001` 已 `Closed`
 **Date / timezone:** `2026-08-15 Asia/Shanghai`
 **Assignment:** [`KEYBOARD-LAYOUT-9KEY-PUNCT-001`](../assignments/keyboard-layout-9key-punct-001.md)
 **Parent contract:** [`KEYBOARD_LAYOUT.md`](../KEYBOARD_LAYOUT.md) nine-key chrome（`KEYBOARD-LAYOUT-9KEY-UI-001` Closed）
@@ -11,18 +11,18 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Recorded` |
-| **Phase** | 产品合同已冻结；Human Product Gate Passed |
+| **Phase** | 产品合同已冻结；Human Product Gate Passed；PR [#75](https://github.com/shchnk1103/Universe-Keyboard/pull/75) 已交付并合并 |
 | **Non-claims** | 不占 Active Work 槽；不改 26 键 / 数字页 / 符号页；不做系统整页标点盘 |
-| **Next** | 实现已验收；合并需另一次授权 |
-| **Residuals** | 无 |
+| **Next** | 无 |
+| **Residuals** | 产品合同无未决项。实现残余见 Assignment Q2（`A2-P2-04` / `Q2-C-03`） |
 
 ---
 
 ## Decision
 
-Human Product Owner 在 `2026-08-15 Asia/Shanghai` 以系统中文九宫格截图为参照，要求强化九键 `，。？！` 键，并当场冻结下列合同。本 Decision **只记录产品意图**，不授权改 Swift、不把 chrome 合同写成已交付。
+Human Product Owner 在 `2026-08-15 Asia/Shanghai` 以系统中文九宫格截图为参照，要求强化九键 `，。？！` 键，并当场冻结下列合同。
 
-当前实现仍是键面 ASCII `",?!"` + `insertDirectText("，")`。这与本 Decision 不符，但在 Assignment 进入 `Ready` 之前不得按本文件直接改代码。
+> **Delivery supersession（2026-08-15）：** 合同已由 PR [#75](https://github.com/shchnk1103/Universe-Keyboard/pull/75) 交付。下文「只记录产品意图 / 不授权改 Swift / 当前实现仍是 ASCII `",?!"`」是 Recorded 当时的授权边界，不是现在的代码事实。键面现为 `，。？！`，单击走 ADR 0029 pending 状态机。
 
 ## Bound Product Decisions
 
@@ -87,12 +87,14 @@ Human Product Owner，当前会话 `2026-08-15 Asia/Shanghai`：
 
 ## Explicit non-authorization
 
-- 实现、PR、改 `KEYBOARD_LAYOUT.md` 既有 chrome 图为已交付状态
+下列条目是 Recorded 当时的授权边界。实现与 chrome 更新后来已另授并随 #75 交付；其余 non-goals 仍有效。
+
+- ~~实现、PR、改 `KEYBOARD_LAYOUT.md` 既有 chrome 图为已交付状态~~ — 已由后续实现授权 + #75 覆盖
 - 系统整页标点盘、`半` 角标、半角变体表
 - 26 键、数字页、符号页现有标点行为
 - 颜表情候选、RIME `punctuator` / 方案配置
 - 九键字母 multi-tap、Path Bar / 拼音合同
-- 把本项写入 Active Work 10 槽（当前生命周期是 Assignment Pending）
+- ~~把本项写入 Active Work 10 槽（当前生命周期是 Assignment Pending）~~ — 实现期曾占槽；现已 Closed，不再占 Active
 
 ## Revalidation
 

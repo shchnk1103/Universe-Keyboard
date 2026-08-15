@@ -2,9 +2,11 @@
 
 ## Status
 
-Accepted; implementation pending
+Accepted
 
-`2026-08-15 Asia/Shanghai`：独立 Architecture R2 [`Pass`](../../assignments/keyboard-layout-9key-punct-001-architecture-rereview.md)。Product Lead 当场接受本 ADR。方向现在有约束力，**仍不授权生产 Swift**。实现必须另一次 Product 授权，并遵守本 Decision；R2 的 4 条 P2 保持 `accept`，不挡接受。
+`2026-08-15 Asia/Shanghai`：独立 Architecture R2 [`Pass`](../../assignments/keyboard-layout-9key-punct-001-architecture-rereview.md)。Product Lead 当场接受本 ADR。当时状态为 `Accepted; implementation pending`，方向有约束力，**仍不授权生产 Swift**（历史授权边界）。
+
+`2026-08-15 Asia/Shanghai`：实现已另授并随 PR [#75](https://github.com/shchnk1103/Universe-Keyboard/pull/75) 合入 `main`（`c1ee116` / merge `a69d993`）。本 ADR 现为已交付决策。R2 的 4 条 P2 保持 `accept`。
 
 产品意图以 [`PD-KEYBOARD-LAYOUT-9KEY-PUNCT-001`](../../product-decisions/KEYBOARD-LAYOUT-9KEY-PUNCT-001-authorization.md) 为准；任务生命周期以 [`KEYBOARD-LAYOUT-9KEY-PUNCT-001`](../../assignments/keyboard-layout-9key-punct-001.md) 为准。
 
@@ -12,7 +14,9 @@ Accepted; implementation pending
 
 ## Context
 
-中文九键字母页已有一颗常用标点键，但当前只是 chrome：键面仍是 ASCII `",?!"`，点击走 `insertDirectText("，")`。系统九键的合同不同：先上屏一个**可被替换**的 `，`，再给出常用标点选择面；短时间再点同一键则在 `，。？！` 之间轮换。
+（以下描述决策当时的缺口；实现已随 #75 交付。）
+
+中文九键字母页已有一颗常用标点键，但当时只是 chrome：键面仍是 ASCII `",?!"`，点击走 `insertDirectText("，")`。系统九键的合同不同：先上屏一个**可被替换**的 `，`，再给出常用标点选择面；短时间再点同一键则在 `，。？！` 之间轮换。
 
 现有候选管线不能表达这件事：
 
@@ -179,7 +183,7 @@ Extension 测试覆盖键面文案与动作接线，不在 UIKit 里复制轮换
 - 九键标点键从「直接插逗号」变成状态机入口。
 - 候选栏在无拼音时可能显示标点而不是联想；这是产品要求，不是回归。
 - ADR 0017 的刷新时序在 pending 存活期间被推迟；0017 的其余合同不变。
-- `KEYBOARD_LAYOUT.md` 的 `[,?!]` chrome 图在实现授权后必须改成 `，。？！` 并引用本 ADR；在 Accepted 之前不得假装 chrome 已交付。
+- `KEYBOARD_LAYOUT.md` 的 `[,?!]` chrome 图须改成 `，。？！` 并引用本 ADR。此项已随 #75 更新。
 - 成对补全的光标夹心成为 pending 替换的一等场景，而不是符号页私货；拆不干净时退回 opener-only。
 
 ## Risks
@@ -191,9 +195,9 @@ Extension 测试覆盖键面文案与动作接线，不在 UIKit 里复制轮换
 
 ## Follow-up Work
 
-- 独立 Architecture R2 已 Pass；Product Lead 已接受。下一缺口是 **实现授权**，不是再改 ADR。
-- R2 四条 P2（`A2-P2-01`…`04`）保持 `accept`：实现测试清单收口前三条；成对手术中途撕裂归 Quality / 真机门。
-- 实现授权后：更新 `KEYBOARD_LAYOUT.md`、`CandidateKind` 测试、`KEYBOARD-LAYOUT-9KEY-PUNCT-001` 实现与 Human Product Gate。
+- 独立 Architecture R2 已 Pass；Product Lead 已接受；实现已随 #75 交付；Assignment 已 `Closed`。
+- R2 四条 P2（`A2-P2-01`…`04`）保持 `accept`。前三条已由实现测试覆盖；`A2-P2-04` 成对手术中途撕裂仍不在破坏性矩阵里。
+- `KEYBOARD_LAYOUT.md`、`CandidateKind` 测试、Human Product Gate 已随实现完成。
 - 颜表情候选仍是独立未来 Assignment，不得搭车本 ADR。
 - 若要把同一状态机开到 26 键或符号页，另开 Product Decision。
 

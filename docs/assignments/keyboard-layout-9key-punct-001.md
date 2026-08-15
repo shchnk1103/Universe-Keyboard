@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Completed` |
-| **Phase** | Human 真机 Product Gate Passed（展开 / 组字后「你好，」/ 其余约定路径） |
-| **Non-claims** | 未授权合并默认分支；未跑与 CI 等价的全套 xcodebuild |
-| **Next** | 若要合入默认分支，先跑本地 CI 门禁再推功能分支 / PR |
-| **Residuals** | Q2 条件仍在；真机已接受展开与组字顺序。`A2-P2-04` 未单独做撕裂矩阵 |
+| **Lifecycle** | `Closed` |
+| **Phase** | PR [#75](https://github.com/shchnk1103/Universe-Keyboard/pull/75) 已合并到 `main`（`a69d993` / `c1ee116`）；功能分支已清理 |
+| **Non-claims** | 不改 26 键 / 数字页 / 符号页；不把 Q2 条件写成全套本地 CI 已跑；不成对手术中途撕裂矩阵 |
+| **Next** | 无 |
+| **Residuals** | Q2 `Pass with conditions` 仍列在下表：`A2-P2-04` 未做撕裂矩阵；`Q2-C-03` 未声称本机跑过 RimeBridge / App+Keyboard / Debug+Release |
 
 ---
 
@@ -52,7 +52,7 @@ Product Lead 于 `2026-08-15 Asia/Shanghai` 授权实现。范围：
 ### Required Inputs
 
 - [`PD-KEYBOARD-LAYOUT-9KEY-PUNCT-001`](../product-decisions/KEYBOARD-LAYOUT-9KEY-PUNCT-001-authorization.md)
-- [`KEYBOARD_LAYOUT.md`](../KEYBOARD_LAYOUT.md)（现行 chrome 仍写 `[,?!]`，以 Closed `KEYBOARD-LAYOUT-9KEY-UI-001` 为准，直到本项实现更新）
+- [`KEYBOARD_LAYOUT.md`](../KEYBOARD_LAYOUT.md)（chrome 已随本项改为 `，。？！`；九键运行时仍以 Closed `KEYBOARD-LAYOUT-9KEY-UI-001` / ADR 0018 为准）
 - [`UI_STYLE_GUIDE.md`](../UI_STYLE_GUIDE.md) 候选栏规则
 - `CandidateKind` / `CandidateBarDataSource` / `insertDirectText` 现行行为
 - [`POST_COMMIT_CONTINUATION.md`](../POST_COMMIT_CONTINUATION.md)（明确不得混用）
@@ -79,7 +79,7 @@ Product Lead 于 `2026-08-15 Asia/Shanghai` 授权实现。范围：
 
 - [x] 上表所有角色字段已由 Product Lead 授权的 Assignment Decision 指定，或写明审查过的 `Not Applicable` 理由
 - [x] Product Lead 书面授权本阶段是「只写 ADR / 计划」：角色指定同时冻结下一阶段为 ADR，实现另需授权
-- [x] 若实现会新增本地候选源或 `CandidateKind`，对应 ADR 至少进入可评审草稿，不得边写边发明合同 — [`0029`](../architecture/decisions/0029-t9-pending-punctuation-palette.md) `Accepted; implementation pending`
+- [x] 若实现会新增本地候选源或 `CandidateKind`，对应 ADR 至少进入可评审草稿，不得边写边发明合同 — [`0029`](../architecture/decisions/0029-t9-pending-punctuation-palette.md) 进入 Ready 时为 `Accepted; implementation pending`；现已 `Accepted` 并随 #75 交付
 - [x] 独立 Architecture reviewer agent 已对 ADR **初稿**给出书面结论 — R1 `Pass with conditions`
 - [x] 独立 Architecture reviewer agent 已对 ADR **修订稿**复审 — R2 `Pass`
 - [x] Product Lead 书面授权实现阶段 — `2026-08-15 Asia/Shanghai`「授权实现」
@@ -89,18 +89,18 @@ Product Lead 于 `2026-08-15 Asia/Shanghai` 授权实现。范围：
 
 实现若被授权，完成时至少交付：
 
-- [ ] 键面为 `，。？！`
-- [ ] 单击上屏待确认 `，`，候选栏出现 V1 本地标点表
-- [ ] 候选点选替换 pending；之后再点该键新开 `，`
-- [ ] 1.0 秒窗内同键按 `，。？！` 轮换并回绕；窗外同键接受并新开 `，`
-- [ ] Delete 删除整段 pending 并退出；字母 / 空格 / 回车 / 切页 / 切英文接受并退出
-- [ ] 拼音进行中先提交首选，再进入 pending
-- [ ] 不污染 continuation，不把标点送进 RIME `selectCandidate`
-- [ ] KeyboardCore 用可注入时钟覆盖：窗内轮换、窗外新开、候选替换、候选后同键新开、删除、组字中进入
-- [ ] 更新 `KEYBOARD_LAYOUT.md`（以及被触达的 ADR / CHANGELOG）
+- [x] 键面为 `，。？！` — 随 #75 交付
+- [x] 单击上屏待确认 `，`，候选栏出现 V1 本地标点表 — 随 #75 交付
+- [x] 候选点选替换 pending；之后再点该键新开 `，` — 随 #75 交付；Human Gate 复验
+- [x] 1.0 秒窗内同键按 `，。？！` 轮换并回绕；窗外同键接受并新开 `，` — 随 #75 交付
+- [x] Delete 删除整段 pending 并退出；字母 / 空格 / 回车 / 切页 / 切英文接受并退出 — 随 #75 交付
+- [x] 拼音进行中先提交首选，再进入 pending — 随 #75 交付；Human 复验「你好，」
+- [x] 不污染 continuation，不把标点送进 RIME `selectCandidate` — 随 #75 交付
+- [x] KeyboardCore 用可注入时钟覆盖：窗内轮换、窗外新开、候选替换、候选后同键新开、删除、组字中进入 — Q2 记录 `T9PendingPunctuationTests` 22/0
+- [x] 更新 `KEYBOARD_LAYOUT.md`（以及被触达的 ADR / CHANGELOG） — 随 #75 交付；本 docs-only 收口再对齐 Closed 状态
 - [x] Human Product Gate 对照系统九键语义（候选栏呈现允许与系统顶栏/整页盘不同）— Human `2026-08-15`：展开与组字顺序复验通过
 
-实现相关 Exit 当前 **全部未满足**。角色指定阶段已完成。
+Closed 注：上表实现相关 Exit 已由 PR #75 + Human Product Gate 满足。未做的只作为 Residuals 保留：`A2-P2-04` 不成对撕裂矩阵；`Q2-C-03` 不声称全套本地 CI。
 
 ### Stop Conditions
 
@@ -148,12 +148,12 @@ R1 针对修订前文本。R2 [`Pass`](keyboard-layout-9key-punct-001-architectu
 
 ## Handoff
 
-- Handoff Target: Executor 交付后交独立 Quality reviewer subagent。最终 Product Gate 交 Human Product Owner。
+- Handoff Target: None — Assignment `Closed`
 - Required Handoff Content:
   - 本 Assignment + PD 的产品合同摘要
-  - ADR 草稿路径与未决架构分叉
-  - 独立 Architecture / Quality 结论（开始 Review 后）
-  - Simulator 证据与未执行的真机门
+  - ADR 0029（`Accepted`；#75 已交付）
+  - 独立 Architecture R2 / Quality Q2 结论
+  - Human Product Gate 与 PR #75 合并记录
 - Revalidation Trigger:
   - Product 改展示面、替换语义、1.0 秒、四键轮换集或候选后同键规则
   - 发现必须改 RIME punctuator 才能交付
@@ -174,4 +174,5 @@ R1 针对修订前文本。R2 [`Pass`](keyboard-layout-9key-punct-001-architectu
 - `2026-08-15 Asia/Shanghai`：独立 Quality Q2 = `Pass with conditions`（[`rereview`](keyboard-layout-9key-punct-001-quality-rereview.md)）。P1 三条闭合。不 Completed、不 Product Gate。
 - `2026-08-15 Asia/Shanghai`：Human 反馈展开按钮缺失、组字后变成「，你好」。展开按钮复用 `.punctuationCandidate`；组字改为一次写入「词+，」。
 - `2026-08-15 Asia/Shanghai`：Human 复验「都没有问题了」。Product Gate Passed。Lifecycle → `Completed`。不授权合并。
-（[`rereview`](keyboard-layout-9key-punct-001-quality-rereview.md)）。P1 三条闭合。不 Completed、不 Product Gate。
+- `2026-08-15 Asia/Shanghai`：CI 全绿后合并 [#75](https://github.com/shchnk1103/Universe-Keyboard/pull/75)（`a69d993`）。`c1ee116` 可从 `origin/main` 到达。远端/本地 `codex/t9-pending-punctuation` 已删除。Lifecycle → `Closed`。
+- `2026-08-15 Asia/Shanghai`：docs-only 收口：Current Status / Exit / 导航文档与 ADR 0029 状态对齐为已交付；不改 Swift。

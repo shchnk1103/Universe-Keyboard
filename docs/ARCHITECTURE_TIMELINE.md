@@ -265,7 +265,13 @@ ADR 0029 proposes an ephemeral KeyboardCore pending state, a new
 `CandidateKind`, and host-text replacement that reuses pair-completion
 surgery. Independent Architecture R2 passed the revised Decision.
 Product Lead accepted the ADR as `Accepted; implementation pending`.
-Implementation is still not authorized.
 
-Current sources: `PD-KEYBOARD-LAYOUT-9KEY-PUNCT-001`, Assignment
-`KEYBOARD-LAYOUT-9KEY-PUNCT-001`, ADR 0029, R2 architecture rereview.
+## 2026-08-15 — Nine-key pending punctuation palette shipped
+
+ADR 0029 was implemented and merged as PR #75 (`c1ee116`, merge `a69d993`).
+Assignment `KEYBOARD-LAYOUT-9KEY-PUNCT-001` is `Closed`. Human Product Gate
+Passed. Q2 remains `Pass with conditions`: `A2-P2-04` pair mid-tear is not a
+destructive matrix, and `Q2-C-03` does not claim a full local CI run.
+
+Current sources: `PD-KEYBOARD-LAYOUT-9KEY-PUNCT-001`, Closed Assignment
+`KEYBOARD-LAYOUT-9KEY-PUNCT-001`, ADR 0029 (`Accepted`).

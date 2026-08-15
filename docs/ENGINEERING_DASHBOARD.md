@@ -23,15 +23,15 @@
 
 ## KEYBOARD-LAYOUT-9KEY-PUNCT-001 — 九键常用标点待确认与同键轮换
 
-- **Lifecycle:** `Completed`（Human 真机 Product Gate Passed）
+- **Lifecycle:** `Closed`（PR #75 merged · `a69d993`）
 - **Authority:** [`PD`](product-decisions/KEYBOARD-LAYOUT-9KEY-PUNCT-001-authorization.md) · [`Assignment`](assignments/keyboard-layout-9key-punct-001.md)
 - **Frozen contract:** 键面 `，。？！`；单击待确认 `，`；候选栏替换；1.0s 同键轮换 `，。？！`；候选点选后再点该键 = 新开逗号
 - **Roles:** Domain Owner = Input Intelligence；Executor / Environment Executor = 当前 Codex 会话；Architecture / Quality = 独立 subagent；Human Dependency + Product Gate = Human Product Owner
-- **Non-claims:** 未授权合并默认分支；未跑与 CI 等价全套 xcodebuild
-- **ADR:** [`0029`](architecture/decisions/0029-t9-pending-punctuation-palette.md) `Accepted; implementation pending`
+- **Non-claims:** 不声称本机跑过与 CI 等价全套 xcodebuild（Q2-C-03）；不成对手术中途撕裂矩阵（A2-P2-04）
+- **ADR:** [`0029`](architecture/decisions/0029-t9-pending-punctuation-palette.md) `Accepted`（#75 已交付）
 - **R1 / R2:** [`R1`](assignments/keyboard-layout-9key-punct-001-architecture-review.md) `Pass with conditions` · [`R2`](assignments/keyboard-layout-9key-punct-001-architecture-rereview.md) `Pass`
 - **Quality:** Q2 [`Pass with conditions`](assignments/keyboard-layout-9key-punct-001-quality-rereview.md)
-- **Next:** 若合入默认分支，先跑本地 CI 门禁再推功能分支 / PR
+- **Next:** 无
 
 ## KEY-TOUCH-FILL-001 — 各键盘触摸盒铺满且 overlay 不得改命中
 
