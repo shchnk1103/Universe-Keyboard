@@ -35,7 +35,9 @@ Do not log surrounding host text, passwords, arbitrary user content or full priv
 
 ## Debug Key Touch Overlay
 
-In a **Debug** build, Settings → 诊断 →「显示按键触摸范围」draws the live hit-test snapshot **per key**. Orange solid = that key's `touchFrame`; teal dashed = that key's visual bounds. 26-key and nine-key share one midline-fill `hitIndex` (no separate face/gap path). Nine-key only supplies chrome rows/columns. Overlay is painted on each key button from that same snapshot.
+In a **Debug** build, Settings → 诊断 →「显示按键触摸范围」draws the live hit-test snapshot. Orange solid = `touchFrame`; teal dashed = visual bounds. 26-key and nine-key must share one midline-fill snapshot. Overlay paints on the keyboard surface, not on buttons. A `TOUCHPROBE` digest (`path`, overlay state, key count, visual/touch height summary) is shown on the overlay and written to display logs; rejected geometry is content-free.
+
+The production touch surface is a persistent sibling routing canvas built from that same snapshot. Its per-key `UIControl`s accept only the gap outside each visible key, use the same nearly invisible backing precedent as candidate cells, and forward the original button's target-action lifecycle. They exist whether the Debug overlay is on or off. Over visible key faces the canvas returns no hit, preserving the original button and gesture path. A parent `hitTest` returning an out-of-bounds descendant is not enough evidence: on a physical device, also verify that `UIControl.beginTracking` and the business `touchDown` are delivered.
 
 Release builds have no switch and no overlay. The Extension reads the flag at settings-snapshot / visibility boundaries, never inside `hitTest`. Do not restyle the near-invisible backing views to “see” the hit area; that historically changed the surface under test.
 

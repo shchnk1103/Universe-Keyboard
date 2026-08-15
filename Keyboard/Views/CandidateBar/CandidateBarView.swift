@@ -227,7 +227,10 @@ final class CandidateBarView: UIView {
             } else {
                 expandHitboxOverlay?.isHidden = true
             }
-            refreshHitProbeLabel(text: hitProbeLabel?.text)
+            DebugHitboxOverlayPresentation.refreshProbeLabel = { [weak self] in
+                self?.refreshHitProbeLabel(text: DebugHitboxOverlayPresentation.probeLine)
+            }
+            refreshHitProbeLabel(text: DebugHitboxOverlayPresentation.probeLine)
         }
 
         private func recordHitProbe(point: CGPoint, hitView: UIView?) {
@@ -258,21 +261,20 @@ final class CandidateBarView: UIView {
             }
             let label = hitProbeLabel ?? UILabel()
             if hitProbeLabel == nil {
-                label.font = .monospacedDigitSystemFont(ofSize: 9, weight: .medium)
+                label.font = .monospacedDigitSystemFont(ofSize: 8, weight: .medium)
                 label.textColor = .systemYellow
                 label.backgroundColor = UIColor.black.withAlphaComponent(0.72)
-                label.numberOfLines = 1
+                label.numberOfLines = 2
                 label.adjustsFontSizeToFitWidth = true
-                label.minimumScaleFactor = 0.6
+                label.minimumScaleFactor = 0.5
                 label.isUserInteractionEnabled = false
                 addSubview(label)
                 hitProbeLabel = label
             }
             label.isHidden = false
-            label.text = text ?? "hit=—"
-            label.sizeToFit()
-            let width = min(bounds.width - 8, max(120, label.bounds.width + 8))
-            label.frame = CGRect(x: 4, y: max(2, bounds.height - 16), width: width, height: 14)
+            label.text = text ?? DebugHitboxOverlayPresentation.probeLine
+            let width = min(bounds.width - 8, max(160, bounds.width - 8))
+            label.frame = CGRect(x: 4, y: max(2, bounds.height - 30), width: width, height: 28)
             bringSubviewToFront(label)
         }
     #endif

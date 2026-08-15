@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-14 Asia/Shanghai` — `DEBUG-KEY-HITBOX-001` → `Closed`。Active Work `3/10`。
+Last synced: `2026-08-15 Asia/Shanghai` — `KEY-TOUCH-FILL-001` Human 真机 Product Gate Passed，转 Completed。Active Work `3/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -17,6 +17,7 @@ Last synced: `2026-08-14 Asia/Shanghai` — `DEBUG-KEY-HITBOX-001` → `Closed`�
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
+| KEY-TOUCH-FILL-001 | `Completed`；26 键/九键 overlay 关/开同点与键面原生操作均通过 Human 真机 Product Gate | [`assignments/key-touch-fill-001.md`](assignments/key-touch-fill-001.md) |
 | DEBUG-KEY-HITBOX-001 | `Closed`；PR #73 已合并；Human Product Gate Passed | [`assignments/debug-key-hitbox-001.md`](assignments/debug-key-hitbox-001.md) |
 | T9-RESPONSIVE-PIPELINE-001 | `Reviewed`；ADR 0025 Accepted，DEFAULT-ON Product Gate 已交付；R6 仅 track；不再占 Active | [`assignment`](assignments/t9-responsive-rime-pipeline-001.md) · [`DEFAULT-ON`](assignments/responsive-default-on-001.md) |
 | HELP-TIPKIT-001 | `Completed`；P1–P3 已交付；等待 Quality + Human Product Gate | [`assignments/help-tipkit-001.md`](assignments/help-tipkit-001.md) |

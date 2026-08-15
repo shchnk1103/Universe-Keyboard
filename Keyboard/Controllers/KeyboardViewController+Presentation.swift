@@ -226,6 +226,7 @@ extension KeyboardViewController {
 
     func clearAllRows() {
         candidateCellSizeCache.removeAll(keepingCapacity: true)
+        (rootStack as? KeyboardInputHitAreaStackView)?.invalidateKeyTouchGeometry()
         for view in rootStack.arrangedSubviews {
             rootStack.removeArrangedSubview(view)
             view.removeFromSuperview()
