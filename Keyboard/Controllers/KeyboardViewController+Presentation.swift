@@ -258,7 +258,9 @@ extension KeyboardViewController {
         if effects.contains(.pageChanged) || effects.contains(.inputModeChanged)
             || effects.contains(.keyboardTypeChanged)
         {
-            if effects.contains(.compositionChanged) || effects.contains(.continuationChanged) {
+            if effects.contains(.compositionChanged) || effects.contains(.continuationChanged)
+                || effects.contains(.pendingPunctuationChanged)
+            {
                 resetCandidateSnapshotFromController()
             }
             if hasViewAppeared {
@@ -268,7 +270,9 @@ extension KeyboardViewController {
             }
             return
         }
-        if effects.contains(.compositionChanged) || effects.contains(.continuationChanged) {
+        if effects.contains(.compositionChanged) || effects.contains(.continuationChanged)
+            || effects.contains(.pendingPunctuationChanged)
+        {
             if shouldPublishAtomicT9Presentation {
                 // One Core snapshot feeds candidates + Path + panel for this revision.
                 refreshT9PresentationFromCoreSnapshot()

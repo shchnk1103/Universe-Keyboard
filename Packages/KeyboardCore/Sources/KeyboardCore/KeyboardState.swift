@@ -54,6 +54,8 @@ public struct KeyboardState: Equatable {
     public var t9PinyinPathState: T9PinyinPathState = .empty
     /// Experimental reversible automatic-anchor ledger (ADR 0024 Stage 2).
     public var t9ReversibleAutoAnchorState: T9ReversibleAutoAnchorState = .empty
+    /// 九键待确认标点（ADR 0029）。nil 表示当前没有可替换标点。
+    public var pendingPunctuation: PendingPunctuationState? = nil
 
     public init(
         currentPage: KeyboardPage = .letters,
@@ -71,7 +73,8 @@ public struct KeyboardState: Equatable {
         insertedPreeditCount: Int = 0,
         compositionRevision: UInt64 = 0,
         t9PinyinPathState: T9PinyinPathState = .empty,
-        t9ReversibleAutoAnchorState: T9ReversibleAutoAnchorState = .empty
+        t9ReversibleAutoAnchorState: T9ReversibleAutoAnchorState = .empty,
+        pendingPunctuation: PendingPunctuationState? = nil
     ) {
         self.currentPage = currentPage
         self.inputMode = inputMode
@@ -89,5 +92,6 @@ public struct KeyboardState: Equatable {
         self.compositionRevision = compositionRevision
         self.t9PinyinPathState = t9PinyinPathState
         self.t9ReversibleAutoAnchorState = t9ReversibleAutoAnchorState
+        self.pendingPunctuation = pendingPunctuation
     }
 }

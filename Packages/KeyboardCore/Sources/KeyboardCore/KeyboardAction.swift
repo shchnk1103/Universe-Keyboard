@@ -35,4 +35,6 @@ public enum KeyboardAction: Equatable {
     case selectT9PinyinPath(T9PinyinPath)
     /// Select the first/next displayed T9 pinyin path and wrap at the end (ADR 0021).
     case cycleT9PinyinPath
+    /// 九键常用标点键：上屏待确认 `，`，或在 1.0s 窗内轮换 `，。？！`（ADR 0029）。
+    case pressT9CommonPunctuation
 }

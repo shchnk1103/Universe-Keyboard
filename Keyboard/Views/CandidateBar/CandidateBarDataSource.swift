@@ -33,9 +33,13 @@ struct CandidateBarDataSource {
         let state = controller.state
         guard state.inputMode == .chinese else { return [] }
 
+        if state.pendingPunctuation != nil {
+            return controller.pendingPunctuationCandidateItems(expanded: false)
+        }
+
         if let rimeOutput = state.lastRimeOutput,
-           let comp = rimeOutput.composition,
-           !comp.preeditText.isEmpty
+            let comp = rimeOutput.composition,
+            !comp.preeditText.isEmpty
         {
             return candidateItems(
                 from: controller,
@@ -98,9 +102,9 @@ struct CandidateBarDataSource {
         // 上屏后联想不是 RIME composition。只有当前没有活跃拼音时，
         // 才把独立的短上下文建议映射到候选栏。
         if state.currentPage == .letters,
-           state.currentComposition.isEmpty,
-           controller.isPostCommitContinuationEnabled,
-           !state.continuation.suggestions.isEmpty
+            state.currentComposition.isEmpty,
+            controller.isPostCommitContinuationEnabled,
+            !state.continuation.suggestions.isEmpty
         {
             return state.continuation.suggestions.map {
                 CandidateItem(title: $0, kind: .continuationCandidate)

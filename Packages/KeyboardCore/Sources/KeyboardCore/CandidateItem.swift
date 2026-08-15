@@ -57,6 +57,9 @@ public enum CandidateKind: Int, CaseIterable, Sendable {
 
     /// 上屏后联想候选：点击后直接提交，并基于新的短上下文继续推荐。
     case continuationCandidate = 4
+
+    /// 九键待确认标点：点击后替换当前 pending，不走 RIME，也不追加插入。
+    case punctuationCandidate = 5
 }
 
 /// RIME 候选在候选页中的稳定位置。

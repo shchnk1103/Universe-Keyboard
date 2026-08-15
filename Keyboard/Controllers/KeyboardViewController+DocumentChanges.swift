@@ -9,12 +9,12 @@ extension KeyboardViewController {
         // current keyboard type and capitalization context, so this early callback
         // can be safely ignored instead of forcing view loading from an XPC callback.
         guard isViewLoaded, controller != nil else {
-#if DEBUG
-            Logger.shared.debug(
-                "textDidChange ignored before keyboard bootstrap",
-                category: .general
-            )
-#endif
+            #if DEBUG
+                Logger.shared.debug(
+                    "textDidChange ignored before keyboard bootstrap",
+                    category: .general
+                )
+            #endif
             return
         }
 
@@ -22,6 +22,9 @@ extension KeyboardViewController {
         var effects = controller.handle(
             .keyboardTypeChanged(KeyboardType.from(uiKeyboardType: proxy.keyboardType))
         )
+        if !controller.isPerformingOwnedHostMutation {
+            effects.formUnion(controller.noteExternalDocumentChange())
+        }
         effects.formUnion(
             controller.applyAutoCapitalization(contextBeforeInput: proxy.documentContextBeforeInput)
         )

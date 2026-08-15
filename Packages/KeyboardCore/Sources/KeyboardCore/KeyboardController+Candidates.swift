@@ -14,12 +14,14 @@ extension KeyboardController {
             return []
         case .continuationCandidate:
             guard isPostCommitContinuationEnabled,
-                  state.continuation.suggestions.contains(candidate)
+                state.continuation.suggestions.contains(candidate)
             else {
                 return []
             }
             insertText(candidate, source: .candidate)
             return .continuationChanged
+        case .punctuationCandidate:
+            return handlePunctuationCandidate(candidate)
         case .composition:
             finishActiveCompositionAsDisplayText()
             rimeEngine?.resetSession()

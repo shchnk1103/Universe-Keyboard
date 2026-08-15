@@ -8,6 +8,7 @@ Related Assignments:
 
 - Runtime V1: [`assignments/keyboard-layout-9key-001.md`](assignments/keyboard-layout-9key-001.md) (`Closed`)
 - Chrome UI: [`assignments/keyboard-layout-9key-ui-001.md`](assignments/keyboard-layout-9key-ui-001.md) (`Closed`)
+- Common punctuation pending/cycle: [`assignments/keyboard-layout-9key-punct-001.md`](assignments/keyboard-layout-9key-punct-001.md) (`Completed`; Human Product Gate Passed; ADR 0029 Accepted; product contract in [`PD-KEYBOARD-LAYOUT-9KEY-PUNCT-001`](product-decisions/KEYBOARD-LAYOUT-9KEY-PUNCT-001-authorization.md); chrome diagram uses `，。？！` under ADR 0029)
 - Original precise pinyin selection: [`assignments/keyboard-layout-9key-pinyin-001.md`](assignments/keyboard-layout-9key-pinyin-001.md) (`Accepted / Closed`)
 - Deterministic choices + cycling: [`assignments/keyboard-layout-9key-pinyin-002.md`](assignments/keyboard-layout-9key-pinyin-002.md) (`Active`) — Product Decision [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-002`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md)
 - Complete Path catalog + Gate 5 residual: [`assignments/keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md) (`Accepted / Closed` — PR #27/#28/#29; close PD)
@@ -93,7 +94,7 @@ Reference screenshots used during design may live only under local `photos/` (gi
 ### Structure
 
 ```text
-[123]  [,?!]  [ABC]  [DEF]  | [ delete.left ]
+[123]  [，。？！]  [ABC]  [DEF]  | [ delete.left ]
 [#+=]  [GHI]  [JKL]  [MNO]  | [   ^_^      ]
 [中]   [PQRS] [TUV]  [WXYZ] | ┌────────────┐
 [😊]   [选拼音] [  拼音  ]  | │ return 符  │  ← spans bottom two rows
@@ -122,6 +123,7 @@ Return **never** shows host action text such as `send`; VoiceOver still uses `re
 ### Placeholders / productized controls
 
 - **选拼音** — current behavior is governed by [`KEYBOARD-LAYOUT-9KEY-PINYIN-002`](assignments/keyboard-layout-9key-pinyin-002.md) / ADR 0021: enabled only when compact choices exist; first press selects the first choice, later presses select next/wrap. Compact paths remain directly tappable in the fixed bar.
+- **常用标点 (`，。？！`)** — [`KEYBOARD-LAYOUT-9KEY-PUNCT-001`](assignments/keyboard-layout-9key-punct-001.md) / ADR 0029: 单击上屏待确认 `，`，候选栏展示本地标点；1.0s 内同键轮换 `，。？！`；候选点选替换 pending，之后再点该键新开逗号。
 - **颜表情 (`^_^`)** — chrome only; reuses `showKaomojiCandidatesPlaceholder` (same family as symbols-page `^_^` entry). Full product content requires a **separate** future Assignment.
 
 Effective scheme, readiness and digit algebra remain ADR 0018; path refinement extends session semantics under ADR 0020 without Extension deploy.

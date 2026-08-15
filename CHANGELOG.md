@@ -2,6 +2,13 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-15 — 九键常用标点待确认与同键轮换
+
+- 九键 `，。？！` 键改为 ADR 0029 状态机：单击上屏待确认逗号，候选栏展示本地标点；1.0 秒内同键轮换 `，。？！`。
+- 点候选替换 pending；之后再点该键新开逗号。Delete 只拆仍持有的 pending 跨度。
+- 组字中先提交首选再进 pending；L1-ahead 或没有首选时拒绝该键。空格接受后再插入空格。
+- 成对 opener 复用现有补全表；拆不干净则只保留 opener。不改 RIME punctuator。
+
 ## 2026-08-15 — 各键盘触摸盒铺满键区
 
 - 26 键命中改回根容器中线快照：`z…m` 与 Shift/删除、上下行共用一条缝，不再因为字母被嵌套进子 stack 而留下米色死区；第二行 `a`/`l` 外侧 18 pt 槽归首尾键。

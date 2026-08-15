@@ -254,3 +254,18 @@ require later Product authorization and evidence.
 Current sources: S2.1 Assignment `T9-AUTO-ANCHOR-001-S21`, amended Product
 Decision `PD-T9-AUTO-ANCHOR-001`, proposed ADR 0024,
 `PERFORMANCE_BASELINE.md` and the active long-composition plan.
+
+
+## 2026-08-15 — Nine-key pending punctuation palette proposed
+
+Nine-key common punctuation cannot reuse RIME candidates or ADR 0017
+continuation: the product needs a replaceable host span, a 1.0s same-key cycle
+over `，。？！`, and a local candidate list in the existing candidate bar.
+ADR 0029 proposes an ephemeral KeyboardCore pending state, a new
+`CandidateKind`, and host-text replacement that reuses pair-completion
+surgery. Independent Architecture R2 passed the revised Decision.
+Product Lead accepted the ADR as `Accepted; implementation pending`.
+Implementation is still not authorized.
+
+Current sources: `PD-KEYBOARD-LAYOUT-9KEY-PUNCT-001`, Assignment
+`KEYBOARD-LAYOUT-9KEY-PUNCT-001`, ADR 0029, R2 architecture rereview.
