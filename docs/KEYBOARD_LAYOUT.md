@@ -80,6 +80,7 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 
 - Order: **path bar (34 pt, fixed reservation)** → Chinese candidate bar (34 pt) → nine-key pad.
 - Path bar is reserved whenever Chinese nine-key letters chrome is active, even with empty composition (no height jump).
+- Path chip hit targets expand vertically to 44 pt via `ChromeTouchHitGeometry.pathBarExpandedHitBounds`. Delivery remaps item-frame chrome to the cell and uses a direct tap; `didSelect` is only a fallback. See [`PATH-BAR-TOUCH-001`](assignments/path-bar-touch-001.md).
 - Compact bar shows at most **5** single-line path labels (no multi-syllable wrap); plain text, no candidate pills; optional 1px separator above the Chinese candidate bar.
 - **选拼音** selects the first compact choice for the current focus when none is selected, then advances and wraps. It never confirms a segment and never opens the predecessor expanded path panel.
 - While T9 composition is active, the wide space key title changes from `拼音` to **选定**. Its action remains candidate finalization (highlighted/first Chinese candidate), not segment confirmation.

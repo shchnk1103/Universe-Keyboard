@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-15 Asia/Shanghai
+> **Updated:** 2026-08-17 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -20,6 +20,14 @@
   - `CANDIDATE-TOUCH-HITBOX-001` → `Completed`（PR #72 已合并；等授权真机残余）
 - **Redate Decision:** [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md)
 - **Explicit non-claims:** 本段不关闭任何 Gate，不授权上传/发布。
+
+## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
+
+- **Lifecycle:** `Completed`（Human 复验通过）
+- **Authority:** [`Assignment`](assignments/path-bar-touch-001.md)
+- **Frozen contract:** overlay 与 item 共用 `pathBarExpandedHitBounds`；直接 tap，不等 `didSelect` 先等 pan
+- **Non-claims:** 不改 Path 语义；不新增 DiagnosticEvent；未跑与 CI 等价全套 xcodebuild
+- **Next:** 开 PR；Closed 等合并
 
 ## KEYBOARD-LAYOUT-9KEY-PUNCT-001 — 九键常用标点待确认与同键轮换
 

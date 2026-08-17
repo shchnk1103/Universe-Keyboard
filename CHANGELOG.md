@@ -2,6 +2,11 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-17 — 九键 Path Bar 上半区点击投递
+
+- Path 芯片命中改走与候选栏相同的投递：item 扩高到 44 pt，系统铬层回退到 cell，直接 tap，不再只等 `didSelect`。
+- Debug 触摸框打开时，Path Bar 显示内容无关探针（hit / idx / band），不写拼音文字。
+
 ## 2026-08-15 — 九键常用标点待确认与同键轮换
 
 - 九键 `，。？！` 键改为 ADR 0029 状态机：单击上屏待确认逗号，候选栏展示本地标点；1.0 秒内同键轮换 `，。？！`。

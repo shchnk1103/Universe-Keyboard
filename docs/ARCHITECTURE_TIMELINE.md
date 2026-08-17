@@ -275,3 +275,14 @@ destructive matrix, and `Q2-C-03` does not claim a full local CI run.
 
 Current sources: `PD-KEYBOARD-LAYOUT-9KEY-PUNCT-001`, Closed Assignment
 `KEYBOARD-LAYOUT-9KEY-PUNCT-001`, ADR 0029 (`Accepted`).
+
+## 2026-08-17 — Nine-key Path Bar tap delivery
+
+Path chips already painted a 44 pt overlay, but selection still waited on
+`UICollectionView.didSelect` and did not remap item-frame chrome back to the
+cell. `PATH-BAR-TOUCH-001` reuses the candidate-bar delivery model: expanded
+item frames, chrome remap, and a direct tap. Human verified the upper Path
+region now selects. No new DiagnosticEvent fields.
+
+Current sources: Assignment `PATH-BAR-TOUCH-001`, `ChromeTouchHitGeometry`,
+`KEYBOARD_LAYOUT.md` Path geometry.

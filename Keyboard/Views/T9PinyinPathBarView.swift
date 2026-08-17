@@ -1,6 +1,26 @@
 import KeyboardCore
 import UIKit
 
+/// Horizontal Path collection that can accept the 44 pt expanded item frames
+/// and remap iOS 26 scroll-edge chrome back onto the owning cell.
+private final class T9PinyinPathBarCollectionView: UICollectionView {
+    var expandedItemIndexPath: ((CGPoint) -> IndexPath?)?
+
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        super.point(inside: point, with: event) || expandedItemIndexPath?(point) != nil
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if let indexPath = expandedItemIndexPath?(point),
+            let cell = cellForItem(at: indexPath)
+        {
+            let cellPoint = convert(point, to: cell)
+            return cell.hitTest(cellPoint, with: event) ?? cell
+        }
+        return super.hitTest(point, with: event)
+    }
+}
+
 /// Fixed-height precise pinyin path bar above the Chinese candidate bar (ADR 0020/0023).
 /// Horizontal collection shows the full Core-issued focus Path set (no prefix(5) truncation).
 ///
@@ -8,21 +28,25 @@ import UIKit
 /// cells, and an explicit selected pill — avoiding `UIButton.Configuration` material
 /// compositing that washed the entire Path strip on iOS 26 keyboard chrome.
 final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    private let collectionView: UICollectionView
+    private let collectionView: T9PinyinPathBarCollectionView
     /// Non-interactive empty-state education; never a Path option (ADR 0023).
     private let idleHintLabel = UILabel()
     private let separator = UIView()
     private let height: CGFloat
     private weak var target: AnyObject?
     private let selectAction: Selector
+    private let itemTapRecognizer = UITapGestureRecognizer()
 
     private var paths: [T9PinyinPath] = []
     private var selectedPath: T9PinyinPath?
     private var boundCompositionRevision: UInt64 = 0
     private var shouldScrollToStartOnNextReload = false
     private var selectedPathIDToReveal: String?
+    private var lastDeliveredPathID: String?
+    private var lastDeliveredAt: CFTimeInterval = 0
     #if DEBUG
         private var expandedHitOverlay: DebugKeyTouchRangeOverlayView?
+        private var hitProbeLabel: UILabel?
         private var restoresClipsToBounds = true
     #endif
 
@@ -36,7 +60,7 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         layout.sectionInset = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: 4)
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView = T9PinyinPathBarCollectionView(frame: .zero, collectionViewLayout: layout)
 
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
@@ -49,6 +73,10 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.alwaysBounceHorizontal = true
+        // Same delivery contract as the candidate bar: do not wait to see if
+        // this press is a pan before the cell can become the hit target.
+        collectionView.delaysContentTouches = false
+        collectionView.canCancelContentTouches = true
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(
@@ -56,7 +84,11 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
             forCellWithReuseIdentifier: T9PinyinPathBarCell.reuseID
         )
         collectionView.accessibilityIdentifier = "t9PinyinPathBar"
+        collectionView.expandedItemIndexPath = { [weak self] point in
+            self?.indexPathForExpandedItem(at: point)
+        }
         addSubview(collectionView)
+        installItemTapGesture()
 
         idleHintLabel.translatesAutoresizingMaskIntoConstraints = false
         idleHintLabel.backgroundColor = .clear
@@ -158,6 +190,64 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         collectionView.isUserInteractionEnabled = !show
     }
 
+    private func installItemTapGesture() {
+        itemTapRecognizer.addTarget(self, action: #selector(handleItemTap(_:)))
+        itemTapRecognizer.cancelsTouchesInView = false
+        collectionView.addGestureRecognizer(itemTapRecognizer)
+    }
+
+    @objc private func handleItemTap(_ recognizer: UITapGestureRecognizer) {
+        guard recognizer.state == .ended else { return }
+        let point = recognizer.location(in: collectionView)
+        guard let indexPath = indexPathForExpandedItem(at: point) else { return }
+        deliverSelection(at: indexPath, source: "itemTap")
+    }
+
+    private func visibleItemFrames() -> [CGRect] {
+        (0..<paths.count).map { item in
+            collectionView.layoutAttributesForItem(at: IndexPath(item: item, section: 0))?.frame
+                ?? .null
+        }
+    }
+
+    private func indexPathForExpandedItem(at collectionPoint: CGPoint) -> IndexPath? {
+        guard
+            let item = ChromeTouchHitGeometry.pathBarItemIndex(
+                at: collectionPoint,
+                itemFrames: visibleItemFrames()
+            )
+        else { return nil }
+        return IndexPath(item: item, section: 0)
+    }
+
+    private func deliverSelection(at indexPath: IndexPath, source: String) {
+        guard paths.indices.contains(indexPath.item) else { return }
+        let path = paths[indexPath.item]
+        let now = CACurrentMediaTime()
+        if lastDeliveredPathID == path.id, now - lastDeliveredAt < 0.35 {
+            return
+        }
+        lastDeliveredPathID = path.id
+        lastDeliveredAt = now
+
+        logPathTouch(source: source, index: indexPath.item, delivered: true)
+
+        let proxy = T9PinyinPathButton(type: .system)
+        proxy.bind(path: path)
+        if let target {
+            _ = target.perform(selectAction, with: proxy)
+        }
+    }
+
+    private func logPathTouch(source: String, index: Int?, delivered: Bool) {
+        guard Logger.isLiveCategoryEnabled(.display) else { return }
+        let indexText = index.map(String.init) ?? "nil"
+        Logger.shared.info(
+            "path.touch source=\(source) idx=\(indexText) delivered=\(delivered)",
+            category: .display
+        )
+    }
+
     // MARK: - UICollectionView
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -194,20 +284,33 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let path = paths[indexPath.item]
-        // Reuse the existing button selector contract via a lightweight proxy button.
-        let proxy = T9PinyinPathButton(type: .system)
-        proxy.bind(path: path)
-        // `selectAction` is a non-optional stored Selector; only `target` is weak/optional.
-        if let target {
-            _ = target.perform(selectAction, with: proxy)
-        }
+        deliverSelection(at: indexPath, source: "didSelect")
     }
 
     /// Expand the vertical hit target toward the 44pt accessibility minimum without
     /// changing the fixed 34pt Path Bar reservation used by keyboard chrome.
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds).contains(point)
+    }
+
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return nil }
+        guard ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds).contains(point)
+        else { return nil }
+
+        if !collectionView.isHidden {
+            let collectionPoint = collectionView.convert(point, from: self)
+            if let indexPath = indexPathForExpandedItem(at: collectionPoint),
+                let cell = collectionView.cellForItem(at: indexPath)
+            {
+                recordHitProbe(point: point, indexPath: indexPath, hit: "cell")
+                let cellPoint = cell.convert(point, from: self)
+                return cell.hitTest(cellPoint, with: event) ?? cell
+            }
+        }
+
+        recordHitProbe(point: point, indexPath: nil, hit: "bar")
+        return super.hitTest(point, with: event) ?? self
     }
 
     override func layoutSubviews() {
@@ -235,6 +338,7 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
 
             guard showing else {
                 expandedHitOverlay?.isHidden = true
+                hitProbeLabel?.isHidden = true
                 return
             }
 
@@ -250,6 +354,43 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
                 in: self
             )
             sendSubviewToBack(overlay)
+        }
+
+        private func recordHitProbe(point: CGPoint, indexPath: IndexPath?, hit: String) {
+            guard DebugHitboxOverlayPresentation.isShowing else { return }
+            let band = DiagnosticEvent.CandidateTouchBand.classify(
+                y: point.y,
+                height: bounds.height
+            )
+            let indexText = indexPath.map { String($0.item) } ?? "nil"
+            refreshHitProbeLabel(
+                text: "path hit=\(hit) idx=\(indexText) band=\(band.rawValue) y=\(Int(point.y))"
+            )
+        }
+
+        private func refreshHitProbeLabel(text: String) {
+            let label = hitProbeLabel ?? UILabel()
+            if hitProbeLabel == nil {
+                label.font = .monospacedDigitSystemFont(ofSize: 8, weight: .medium)
+                label.textColor = .systemYellow
+                label.backgroundColor = UIColor.black.withAlphaComponent(0.72)
+                label.numberOfLines = 1
+                label.adjustsFontSizeToFitWidth = true
+                label.minimumScaleFactor = 0.5
+                label.isUserInteractionEnabled = false
+                addSubview(label)
+                hitProbeLabel = label
+            }
+            label.isHidden = false
+            label.text = text
+            label.frame = CGRect(x: 4, y: max(2, bounds.height - 14), width: min(bounds.width - 8, 240), height: 12)
+            bringSubviewToFront(label)
+        }
+    #else
+        private func recordHitProbe(point: CGPoint, indexPath: IndexPath?, hit: String) {
+            _ = point
+            _ = indexPath
+            _ = hit
         }
     #endif
 }
@@ -306,6 +447,7 @@ final class T9PinyinPathBarCell: UICollectionViewCell {
         contentView.backgroundColor = .clear
         contentView.isOpaque = false
         contentView.layer.masksToBounds = false
+        clipsToBounds = false
 
         highlightedBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         highlightedBackgroundView.isUserInteractionEnabled = false
@@ -356,6 +498,10 @@ final class T9PinyinPathBarCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds).contains(point)
+    }
+
     override func prepareForReuse() {
         super.prepareForReuse()
         path = nil
@@ -386,7 +532,7 @@ final class T9PinyinPathBarCell: UICollectionViewCell {
             }
             overlay.isHidden = false
             overlay.apply(
-                touchFrame: bounds,
+                touchFrame: ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds),
                 visualFrame: highlightedBackgroundView.convert(
                     highlightedBackgroundView.bounds,
                     to: self
