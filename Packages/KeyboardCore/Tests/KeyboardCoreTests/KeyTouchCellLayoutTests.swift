@@ -81,6 +81,33 @@ final class KeyTouchCellLayoutTests: XCTestCase {
         XCTAssertFalse(bar.contains(CGPoint(x: 10, y: -4)))
     }
 
+    func testPathBarItemIndexUsesExpandedCellFrames() {
+        let cells = [
+            CGRect(x: 4, y: 0, width: 40, height: 33),
+            CGRect(x: 44, y: 0, width: 40, height: 33),
+        ]
+        XCTAssertEqual(
+            ChromeTouchHitGeometry.pathBarItemIndex(
+                at: CGPoint(x: 20, y: -5),
+                itemFrames: cells
+            ),
+            0
+        )
+        XCTAssertEqual(
+            ChromeTouchHitGeometry.pathBarItemIndex(
+                at: CGPoint(x: 60, y: 36),
+                itemFrames: cells
+            ),
+            1
+        )
+        XCTAssertNil(
+            ChromeTouchHitGeometry.pathBarItemIndex(
+                at: CGPoint(x: 200, y: 10),
+                itemFrames: cells
+            )
+        )
+    }
+
     func testCandidateExpandHitFrameClipsToBarAndKeepsButtonShape() {
         let button = CGRect(x: 260, y: 9, width: 56, height: 56)
         let bar = CGRect(x: 0, y: 0, width: 320, height: 48)

@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-15 Asia/Shanghai` — `KEYBOARD-LAYOUT-9KEY-PUNCT-001` Closed（PR #75 merged · `a69d993`；功能分支已清理）。Active Work `3/10`。
+Last synced: `2026-08-17 Asia/Shanghai` — `PATH-BAR-TOUCH-001` Human 复验通过，转 Completed。Active Work `3/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -17,6 +17,7 @@ Last synced: `2026-08-15 Asia/Shanghai` — `KEYBOARD-LAYOUT-9KEY-PUNCT-001` Clo
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
+| PATH-BAR-TOUCH-001 | `Completed`；Human 复验 Path 上半区可点；等 PR 合并后 Closed | [`assignments/path-bar-touch-001.md`](assignments/path-bar-touch-001.md) |
 | KEYBOARD-LAYOUT-9KEY-PUNCT-001 | `Closed`；PR #75 已合并；功能分支已清理 | [`assignments/keyboard-layout-9key-punct-001.md`](assignments/keyboard-layout-9key-punct-001.md) |
 | KEY-TOUCH-FILL-001 | `Completed`；26 键/九键 overlay 关/开同点与键面原生操作均通过 Human 真机 Product Gate | [`assignments/key-touch-fill-001.md`](assignments/key-touch-fill-001.md) |
 | DEBUG-KEY-HITBOX-001 | `Closed`；PR #73 已合并；Human Product Gate Passed | [`assignments/debug-key-hitbox-001.md`](assignments/debug-key-hitbox-001.md) |

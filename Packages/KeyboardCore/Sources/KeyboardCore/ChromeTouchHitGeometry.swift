@@ -9,10 +9,21 @@ public enum ChromeTouchHitGeometry {
     public static let pathBarMinimumHitHeight: CGFloat = 44
 
     /// Path bar `point(inside:)` expands vertically toward 44 pt without growing
-    /// the reserved 34 pt chrome.
+    /// the reserved 34 pt chrome. Use the same rect for overlay and item routing.
     public static func pathBarExpandedHitBounds(barBounds: CGRect) -> CGRect {
         let verticalPad = max(0, (pathBarMinimumHitHeight - barBounds.height) / 2)
         return barBounds.insetBy(dx: 0, dy: -verticalPad)
+    }
+
+    /// First Path item whose expanded hit rect contains `point`.
+    /// Frames are in the same coordinate space as `point` (typically the collection view).
+    public static func pathBarItemIndex(at point: CGPoint, itemFrames: [CGRect]) -> Int? {
+        for (index, frame) in itemFrames.enumerated() {
+            if pathBarExpandedHitBounds(barBounds: frame).contains(point) {
+                return index
+            }
+        }
+        return nil
     }
 
     /// Expand-button hit rect: the button's own outset box, clipped to the bar.
