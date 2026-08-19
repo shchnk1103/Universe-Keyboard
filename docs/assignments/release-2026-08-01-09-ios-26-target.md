@@ -1,7 +1,10 @@
 # Assignment: RELEASE-2026-0801-09 — iOS 26.0 最低部署目标调整
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Assigned — Architecture No-Go; Entry Criteria blocked`
+**Lifecycle status:** `Superseded by RELEASE-2026-0801-10`
+
+> **Supersession:** `2026-08-18 Asia/Shanghai` — [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md) 将最低系统改为 iOS 18.0。本任务的 26.0-only 实施目标不再有效；编译对齐改由 [`RELEASE-2026-0801-10`](release-2026-08-01-10-ios-18-target.md) 执行。下方 Architecture No-Go 保留为 26.0 路径的历史记录，不得再阻挡 iOS 18 Phase 1。
+
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority

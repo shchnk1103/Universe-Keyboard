@@ -2,6 +2,18 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-18 — iOS 18 暗色功能键对比
+
+- 仅 iOS 18 暗色重拉层次：字母/空格 `86,86,88`，功能键收回 `46,46,48`，按下高光 `110,110,114`。
+- 同范围给功能键/回车加 `0.5 pt`、白色 16% 描边勾轮廓；不用黑阴影，避免继续贴进暗色底托。
+- iOS 26+ 暗色和全版本浅色仍用原来的字母 `62,62,64`、功能键 `44,44,46`。
+
+## 2026-08-18 — V1.0 最低系统改为 iOS 18.0（先过编译）
+
+- Product Decision 将 V1.0 最低系统从 iOS 26.0 改为 iOS 18.0；工程级、App、Keyboard、测试 target 与 `KeyboardCore` / `RimeBridge` package platforms 对齐到 18.0。
+- Debug / Release 可在当前 Xcode 上编过，产物 `MinimumOSVersion` 为 18.0。这不是 iOS 18 外观、真机或上架证据。
+- 键盘 iOS 18 表面 / chrome 仍留到 Phase 2。
+
 ## 2026-08-17 — 九键 Path Bar 上半区点击投递
 
 - Path 芯片命中改走与候选栏相同的投递：item 扩高到 44 pt，系统铬层回退到 cell，直接 tap，不再只等 `didSelect`。

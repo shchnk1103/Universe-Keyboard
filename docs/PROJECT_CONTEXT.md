@@ -44,7 +44,7 @@ The durable implementation constraints are:
 
 ## Build & Run
 
-- Open `Universe Keyboard.xcodeproj` in Xcode (requires Xcode 26.4+, iOS 26.4+ deployment target).
+- Open `Universe Keyboard.xcodeproj` in Xcode. The checked-in `IPHONEOS_DEPLOYMENT_TARGET` and local package platforms are iOS 18.0 ([`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](product-decisions/RELEASE-2026-0801-minimum-os-ios18.md)). iOS 18 chrome/runtime is not claimed until Phase 2.
 - Bundle ID: `com.DoubleShy0N.Universe-Keyboard`, Keyboard extension: `com.DoubleShy0N.Universe-Keyboard.Keyboard`
 - Team: `C33N6HTS9N`, code signing is automatic.
 - To test the keyboard: run the Keyboard extension target on a simulator/device, then enable it in Settings → General → Keyboard → Keyboards → Add New Keyboard → Keyboard.

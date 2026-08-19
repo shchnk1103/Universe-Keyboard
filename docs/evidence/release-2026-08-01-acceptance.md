@@ -15,7 +15,7 @@
 | Signed archive | `UNKNOWN` |
 | dSYM retention | `UNKNOWN` |
 | TestFlight/App Store build | `UNKNOWN` |
-| Supported devices/OS | iPhone and iPad; iOS 26.0+. Scope is frozen by [`RELEASE-2026-0801-02`](../assignments/release-2026-08-01-02-scope-freeze.md), but iPad and iOS 26.0 support are not yet implemented or evidenced. |
+| Supported devices/OS | iPhone and iPad; **iOS 18.0+** by [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md). Narrowed iOS 18 Phase 2 is Human-accepted ([evidence](release-2026-0801-10-ios-18-phase2-human-evidence.md)); this is not a release device matrix. |
 | Included schemas/features | Existing baseline input; Chinese nine-key; precise-pinyin selection; post-commit continuation; kaomoji content; and a local basic Home input-count display. No schema expansion is authorized. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. |
 
 ## Child Gate Status
@@ -23,8 +23,9 @@
 | Assignment | Status | Evidence / blocker |
 |---|---|---|
 | Stable archive | `Assignment Pending` | Executor/environment operator not assigned; stable toolchain evidence pending |
-| Scope freeze | `Reviewed — Architecture and Quality conclusions recorded; no Product Gate or release conclusion` | [Architecture review](release-2026-08-01-02-architecture-review.md) and [Quality review](release-2026-08-01-02-quality-review.md) are `Pass` with required follow-ups; iPad support, kaomoji content and iOS 26.0 target-change implementation remain release blockers |
-| iOS 26.0 target | `Assigned — Architecture No-Go; Entry Criteria blocked` | Static preflight passed only on beta Xcode; stable Xcode/SDK and iOS 26.0 runtime/physical-device evidence remain absent |
+| Scope freeze | `Reviewed — Architecture and Quality conclusions recorded; no Product Gate or release conclusion` | [Architecture review](release-2026-08-01-02-architecture-review.md) and [Quality review](release-2026-08-01-02-quality-review.md) are historical `Pass` with follow-ups. Minimum OS row superseded by iOS 18.0; iPad support, kaomoji content and iOS 18 Phase 2 remain release blockers |
+| iOS 26.0 target | `Superseded by RELEASE-2026-0801-10` | 26.0-only path closed by [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md) |
+| iOS 18.0 target | `Reviewed` — Phase 1 Quality `Pass with conditions`; narrowed Phase 2 Human-accepted | [Quality](../assignments/release-2026-08-01-10-quality-review.md) · [Phase 2 Human](release-2026-0801-10-ios-18-phase2-human-evidence.md). Not Archive/release |
 | iPad support | `Assigned — Entry Criteria pending` | iPad simulator work may begin after the matrix is proposed; physical iPad evidence remains unavailable |
 | Kaomoji content | `Assigned — Entry Criteria pending` | Product catalog source/licensing/content decision and working-content evidence remain unavailable |
 | Onboarding / Full Access | `Closed — Conditional Product Gate accepted` | Device matrix [`release-2026-08-01-03-physical-device-fa-matrix.md`](release-2026-08-01-03-physical-device-fa-matrix.md); gate [`../assignments/release-2026-08-01-03-product-gate.md`](../assignments/release-2026-08-01-03-product-gate.md); Human confirmed `2026-07-20`; TD-004 residual in `TECH_DEBT.md` |

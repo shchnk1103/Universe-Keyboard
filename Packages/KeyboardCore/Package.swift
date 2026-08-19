@@ -4,9 +4,9 @@ import PackageDescription
 let package = Package(
     name: "KeyboardCore",
     platforms: [
-        .iOS("26.4"),
         // Thread-affine owner requires Synchronization.Mutex (macOS 15+ / iOS 18+).
-        // Package floor matches the R4-Wire deployment target used by the app.
+        // Package floor matches the Product-authorized app/extension minimum OS.
+        .iOS("18.0"),
         .macOS(.v15),
     ],
     products: [

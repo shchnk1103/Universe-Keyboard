@@ -1,4 +1,7 @@
-# Assignment: RELEASE-2026-0801-02 — V1.0 功能与设备范围冻结
+# Assignment: RELEASE-2026-0801-02 — V1.0 范围冻结
+
+> **Supersession (Minimum OS only):** `2026-08-18 Asia/Shanghai` — Product Decision [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md) 将 V1.0 最低系统从 iOS 26.0 改为 **iOS 18.0**。实施改由 [`RELEASE-2026-0801-10`](release-2026-08-01-10-ios-18-target.md) 执行。下方表格中的历史 iOS 26.0 行保留为审计记录，不再约束实施。本 Assignment 的 Reviewed 生命周期不因此重开。
+
 
 **Policy version:** `1.0.0`
 **Lifecycle status:** `Reviewed — independent Architecture and Quality conclusions recorded; no Product Gate or release conclusion`
@@ -33,7 +36,7 @@ This table is the Product Lead-approved scope record. It freezes what the releas
 | Area | V1.0 decision | Closure path / copy constraint |
 |---|---|---|
 | Devices and orientations | iPhone and iPad are supported. The final archive, device matrix, screenshots and accessibility review must cover both families and their supported orientations. | [`RELEASE-2026-0801-07`](release-2026-08-01-07-ipad-support.md), then tasks 04 and 05. Until evidence exists, App Store copy and screenshots must not imply verified iPad quality. |
-| Minimum OS | iOS 26.0 and later. The current project setting is 26.4, so no release may claim 26.0 support until the target change is implemented and reviewed against the final archive. | A bounded target-change implementation Assignment must be named before any project-file edit; task 01 validates the resulting archive. |
+| Minimum OS | **Current:** iOS 18.0 and later ([`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md)). **Historical freeze (2026-07-20):** iOS 26.0 and later. No release may claim iOS 18 appearance or runtime verification until Phase 2 and the final archive are reviewed. | Implementation Assignment is [`RELEASE-2026-0801-10`](release-2026-08-01-10-ios-18-target.md) (supersedes `-09`). Task 01 still validates the final archive. |
 | Included input experience | Existing baseline keyboard input, Chinese nine-key, precise-pinyin selection and post-commit continuation are in V1.0. Chinese nine-key uses the existing `rime_ice` base / `t9` effective-runtime boundary; no schema expansion is authorized here. | Nine-key chrome and precise-pinyin predecessor Assignments are closed. Post-commit continuation is closed. The still-active `KEYBOARD-LAYOUT-9KEY-PINYIN-002` is **not** a V1.0 claim until its independent review and Product Gate close. |
 | Kaomoji | Kaomoji content is a required V1.0 capability, not an excluded placeholder. | [`RELEASE-2026-0801-08`](release-2026-08-01-08-kaomoji-content.md). Until it closes, the existing control must not be presented as a working content feature. |
 | Basic input counts | Included: the Home card may show today's local Chinese, letter and Emoji counts. It is a basic on-device count display, not an AI feature or input-content analysis claim. | Product polish must ensure visual and accessibility copy do not promise an AI capability. |
@@ -55,5 +58,5 @@ The scope record is complete as an Executor deliverable. Independent Architectur
 
 ## Handoff
 
-- **Required Handoff Content:** included features, excluded features, defaults, supported devices/OS, open Gates, owner per gap, App Store copy constraints and required implementation follow-ups. Current required follow-ups are iPad support (07), kaomoji content (08), a separately assigned iOS 26.0 target-change implementation, and the child-task/final-release evidence listed in the [review handoff](release-2026-08-01-02-review-handoff.md).
+- **Required Handoff Content:** included features, excluded features, defaults, supported devices/OS, open Gates, owner per gap, App Store copy constraints and required implementation follow-ups. Current required follow-ups are iPad support (07), kaomoji content (08), the iOS 18.0 target-change implementation in `RELEASE-2026-0801-10`, and the child-task/final-release evidence listed in the [review handoff](release-2026-08-01-02-review-handoff.md).
 - **Revalidation Trigger:** any user-visible feature/default/support target changes after freeze
