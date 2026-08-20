@@ -81,7 +81,6 @@ extension KeyboardViewController {
         }
     }
 
-
     /// iOS 18 dark function keys sit too close to the tray for fill alone to read.
     /// A light hairline works; a black shadow disappears into the same dark surface.
     func applyIOS18DarkFunctionKeyEdgeIfNeeded(_ style: KeyVisualStyle, to button: UIButton) {
