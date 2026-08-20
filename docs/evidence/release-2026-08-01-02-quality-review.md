@@ -1,3 +1,5 @@
+> **Supersession (Minimum OS follow-up only):** `2026-08-18 Asia/Shanghai` — iOS 26.0 验证行改由 [`RELEASE-2026-0801-10`](../assignments/release-2026-08-01-10-ios-18-target.md) 的 iOS 18.0 Phase 1/2 取代。下文历史 Pass/Blocked 不构成 iOS 18 Quality 结论。
+
 # RELEASE-2026-0801-02 质量审查记录
 
 > **审查日期：** `2026-07-21 Asia/Shanghai`

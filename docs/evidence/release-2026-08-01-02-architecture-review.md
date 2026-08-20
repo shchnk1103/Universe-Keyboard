@@ -1,3 +1,5 @@
+> **Supersession (Minimum OS follow-up only):** `2026-08-18 Asia/Shanghai` — iOS 26.0 跟进项改由 [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md) 与 [`RELEASE-2026-0801-10`](../assignments/release-2026-08-01-10-ios-18-target.md) 接管。下文历史 Pass 不证明 iOS 18 已实现或可发布。
+
 # RELEASE-2026-0801-02 架构审查记录
 
 > **审查日期：** `2026-07-21 Asia/Shanghai`

@@ -1,3 +1,5 @@
+> **Supersession:** `2026-08-18 Asia/Shanghai` — 本审查的 26.0-only 实施 No-Go 已被 [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md) 取代。现行边界见 [`release-2026-0801-10-ios-18-target-architecture-review.md`](release-2026-0801-10-ios-18-target-architecture-review.md)。
+
 # RELEASE-2026-0801-09 — iOS 26.0 最低部署目标 Architecture Review
 
 **Status:** `No-Go — implementation not authorized`

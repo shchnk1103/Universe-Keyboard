@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "RimeBridge",
-    platforms: [.iOS("26.4")],
+    platforms: [.iOS("18.0")],
     products: [
         .library(name: "RimeBridge", targets: ["RimeBridge"])
     ],

@@ -41,26 +41,55 @@ extension KeyboardViewController {
 
     var characterKeyColor: UIColor {
         UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(red: 62 / 255, green: 62 / 255, blue: 64 / 255, alpha: 1)
-                : .white
+            guard traits.userInterfaceStyle == .dark else { return .white }
+
+            // iOS 26+ keeps the designed mid-gray letter plate.
+            // iOS 18 lifts letters so they stay brighter than recessed function keys.
+            if #available(iOS 26.0, *) {
+                return UIColor(red: 62 / 255, green: 62 / 255, blue: 64 / 255, alpha: 1)
+            }
+            return UIColor(red: 86 / 255, green: 86 / 255, blue: 88 / 255, alpha: 1)
         }
     }
 
     var functionKeyColor: UIColor {
         UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(red: 44 / 255, green: 44 / 255, blue: 46 / 255, alpha: 1)
-                : UIColor(red: 174 / 255, green: 174 / 255, blue: 178 / 255, alpha: 1)
+            guard traits.userInterfaceStyle == .dark else {
+                return UIColor(red: 174 / 255, green: 174 / 255, blue: 178 / 255, alpha: 1)
+            }
+
+            // iOS 26+ keeps the designed darker function plate against system glass.
+            // iOS 18 stays recessed versus lifted letters, just slightly above the tray.
+            if #available(iOS 26.0, *) {
+                return UIColor(red: 44 / 255, green: 44 / 255, blue: 46 / 255, alpha: 1)
+            }
+            return UIColor(red: 46 / 255, green: 46 / 255, blue: 48 / 255, alpha: 1)
         }
     }
 
     var highlightedKeyColor: UIColor {
         UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(red: 92 / 255, green: 92 / 255, blue: 96 / 255, alpha: 1)
-                : UIColor(red: 235 / 255, green: 235 / 255, blue: 237 / 255, alpha: 1)
+            guard traits.userInterfaceStyle == .dark else {
+                return UIColor(red: 235 / 255, green: 235 / 255, blue: 237 / 255, alpha: 1)
+            }
+
+            if #available(iOS 26.0, *) {
+                return UIColor(red: 92 / 255, green: 92 / 255, blue: 96 / 255, alpha: 1)
+            }
+            // Track the brighter iOS 18 letter plate so press feedback still reads.
+            return UIColor(red: 110 / 255, green: 110 / 255, blue: 114 / 255, alpha: 1)
         }
+    }
+
+    /// iOS 18 dark function keys sit too close to the tray for fill alone to read.
+    /// A light hairline works; a black shadow disappears into the same dark surface.
+    func applyIOS18DarkFunctionKeyEdgeIfNeeded(_ style: KeyVisualStyle, to button: UIButton) {
+        guard style == .function || style == .returnKey else { return }
+        guard traitCollection.userInterfaceStyle == .dark else { return }
+        if #available(iOS 26.0, *) { return }
+
+        button.layer.borderWidth = 0.5
+        button.layer.borderColor = UIColor.white.withAlphaComponent(0.16).cgColor
     }
 
     /// Records style on keyboard-owned buttons so touch feedback can restore it safely under Swift 6.
@@ -76,6 +105,7 @@ extension KeyboardViewController {
         button.layer.shadowOpacity = (style == .character || style == .space) ? 0.18 : 0
         button.layer.shadowRadius = 0
         button.layer.shadowOffset = CGSize(width: 0, height: 1)
+        applyIOS18DarkFunctionKeyEdgeIfNeeded(style, to: button)
         button.setTitleColor(.label, for: .normal)
         button.tintColor = .label
 

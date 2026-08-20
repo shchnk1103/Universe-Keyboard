@@ -103,7 +103,7 @@ Key rules:
 - Keep keyboard content horizontal margins at `7`.
 - Keep key corner radius near `9`; do not make keys pill-shaped.
 - Character keys may have a subtle 1 px downward shadow.
-- Function keys should be flatter and darker/lower-emphasis than character keys.
+- Function keys should be flatter and darker/lower-emphasis than character keys. In dark mode, iOS 26+ keeps character `62,62,64` and function `44,44,46`. iOS 18 lifts the letter/space plate to `86,86,88` and keeps function keys recessed at `46,46,48`, then adds a `0.5 pt` white 16% hairline so the plate still reads against the flatter tray. Do not copy this edge onto iOS 26+ or replace it with a black shadow.
 - Function key symbols should remain readable at `22` point size (shared Delete / Return / Globe / emoji).
 - Keep visual key gaps native-looking, but do not leave dead touch zones inside the key input area. Split key-area gaps at adjacent midlines into per-key touch cells through one root-container snapshot instead of changing visible spacing. Hit testing, button tracking bounds, and diagnostic drawing must consume that same snapshot; diagnostic visuals must not be the reason hit testing works.
 - Press feedback should use brief background highlight plus subtle scale, not full alpha fading.
