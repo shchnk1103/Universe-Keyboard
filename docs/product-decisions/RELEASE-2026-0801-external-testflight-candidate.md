@@ -52,6 +52,12 @@
 - 在其余准备未完成前开始颜表情实现
 - 接受、跳过或关闭 TD-003/004/005
 
+## Subsequent Bounded Authorization
+
+- `2026-08-21 Asia/Shanghai`：Human Product Owner 完成 Apple Developer Program 开通，并在 Codex 明示 GitHub 持久仓库访问边界后回复 `继续`，授权连接当前仓库与配置一个不含 TestFlight 分发的 Cloud pilot。
+- Xcode Cloud 已连接 GitHub，并创建 `Default` workflow；首次构建尚未启动。
+- 本授权不包含合并 `main`、冻结 RC、添加 TestFlight post-action、上传、分发、Beta Review、App Store Review 或风险接受。
+
 ## Revalidation Triggers
 
 - 目标从外部 TestFlight 候选改为内部限定构建或 App Store 正式提交

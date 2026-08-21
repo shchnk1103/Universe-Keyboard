@@ -6,7 +6,8 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 - 新增可执行的 `ci_scripts/ci_post_clone.sh`，在 Xcode Cloud clone 后复用现有 manifest 固定、SHA-256 校验和 12-framework 清单合同获取 RIME Vendor。
 - 本地已验证显式 Cloud 仓库路径、目录 fallback 与错误根目录 fail-closed；临时无 Vendor 检出能进入真实下载路径，但当前执行环境无法解析 GitHub Release 资产域名，因此实际干净下载仍需 Cloud pilot 复验。
-- 此准备不配置线上 workflow、不签名、不上传，也不冻结 RC。
+- Apple Developer Team 与 GitHub-to-Xcode-Cloud 连接已验证；`Default` workflow 使用 `Latest Release` 且无 TestFlight post-action，首次构建仍待功能分支推送后执行。
+- 此准备不签名、不上传、不分发，也不冻结 RC。
 
 ## 2026-08-18 — iOS 18 暗色功能键对比
 

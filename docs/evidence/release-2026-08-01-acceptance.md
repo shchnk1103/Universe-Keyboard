@@ -16,7 +16,7 @@
 | Signed archive | `UNKNOWN` |
 | dSYM retention | `UNKNOWN` |
 | TestFlight/App Store build | `UNKNOWN` |
-| Intended final build environment | Apple Developer Program activation is Human-attested; Xcode Cloud stable Xcode remains intended. Developer Team, App Store Connect App Record, Cloud capability and exact version remain `UNKNOWN` until account refresh/pilot. |
+| Intended final build environment | Apple Developer Program active; Xcode Developer Team `chenkai shen` verified with Admin role; Xcode Cloud connected to GitHub. Default workflow uses `Latest Release`; App Store Connect App Record identity, actual Cloud build and exact Xcode/macOS remain pending. |
 | Pre-external device matrix | Physical iPhone 13 Pro / iOS 27 for Extension lifecycle/performance/Full Access; iOS 18 iPhone + iPad Simulator for minimum-OS compatibility. Simulator is not physical-device evidence. |
 | Supported devices/OS | iPhone and iPad; **iOS 18.0+** by [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md). Narrowed iOS 18 Phase 2 is Human-accepted ([evidence](release-2026-0801-10-ios-18-phase2-human-evidence.md)); this is not a release device matrix. |
 | Included schemas/features | Existing baseline input; Chinese nine-key; precise-pinyin selection; post-commit continuation; kaomoji content; and a local basic Home input-count display. No schema expansion is authorized. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. |
@@ -25,7 +25,7 @@
 
 | Assignment | Status | Evidence / blocker |
 |---|---|---|
-| Stable archive | `Assigned — Entry Criteria pending` | Cloud post-clone RIME vendor bootstrap is locally implemented and membership activation is Human-attested; independent review, Xcode team/App Store Connect access, Cloud pilot, final fixes and frozen RC remain pending |
+| Stable archive | `Assigned — Entry Criteria pending` | Bootstrap locally implemented; membership, Developer Team and GitHub-to-Cloud connection verified. Feature-branch push, first Cloud pilot, App Record confirmation, independent review, final fixes and frozen RC remain pending. |
 | Scope freeze | `Reviewed — Architecture and Quality conclusions recorded; no Product Gate or release conclusion` | [Architecture review](release-2026-08-01-02-architecture-review.md) and [Quality review](release-2026-08-01-02-quality-review.md) are historical `Pass` with follow-ups. Minimum OS row superseded by iOS 18.0; iPad support, kaomoji content and iOS 18 Phase 2 remain release blockers |
 | iOS 26.0 target | `Superseded by RELEASE-2026-0801-10` | 26.0-only path closed by [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md) |
 | iOS 18.0 target | `Reviewed` — Phase 1 Quality `Pass with conditions`; narrowed Phase 2 Human-accepted | [Quality](../assignments/release-2026-08-01-10-quality-review.md) · [Phase 2 Human](release-2026-0801-10-ios-18-phase2-human-evidence.md). Not Archive/release |
@@ -58,8 +58,9 @@ This is an Executor-recorded, read-only repository finding, not Cloud execution 
 - **Ready in repository:** `Universe Keyboard` is a shared scheme and its Archive action uses `Release`; the App target is enabled for archiving; local package references resolve to `Packages/KeyboardCore` and `Packages/RimeBridge`
 - **Implemented repository input:** executable `ci_scripts/ci_post_clone.sh` resolves `CI_PRIMARY_REPOSITORY_PATH` and invokes `scripts/ensure_rime_vendor.sh fetch`. The existing fetch contract downloads the immutable manifest-pinned archive, verifies SHA-256, stages it and verifies the expected framework inventory.
 - **Local verification:** shell syntax passed; explicit Cloud-style repository root and local fallback both verified the installed 12-framework inventory; an invalid repository root failed closed. A temporary checkout without `Vendor` entered the real pinned download path, but the current execution environment could not resolve `release-assets.githubusercontent.com`; all retries failed nonzero and no artifact was installed. `shellcheck` was unavailable.
-- **Remaining boundary:** this implementation does not prove Cloud network access, stable toolchain, signing or artifact retention and does not authorize creating or running a Cloud workflow.
-- **Account observation (`2026-08-21`):** Human Product Owner reports Apple Developer Program activation complete. Xcode 27 beta 5 shows the signed-in Apple Account, but its Teams pane remained at `Loading teams…`; no team, certificate, App Record or Cloud permission was verified and no account state was changed by Codex.
+- **Remaining boundary:** this implementation does not prove Cloud network access, stable toolchain, signing or artifact retention. Repository connection and a no-distribution pilot are separately authorized; TestFlight/App Store distribution remains unauthorized.
+- **Account observation (`2026-08-21`):** Human Product Owner reports Apple Developer Program activation complete. Xcode 27 beta 5 verified Developer Team `chenkai shen`, Admin role, Certificates/Identifiers/Profiles access and three provisioned devices. `/Applications/Xcode.app` is Xcode 26.6 (`17F113`) but macOS 27 rejects launching it as incompatible; Xcode 27 beta is only the configuration client.
+- **Cloud connection (`2026-08-21`):** Xcode Cloud successfully connected to the GitHub source repository and created workflow `Default`. Its environment is `Latest Release`, its current action is `Build - iOS`, and it has no TestFlight post-action. Xcode created `xcshareddata/xcodecloud/manifest.json` with Cloud product/target identifiers only; no credential or secret is present. The first build was deliberately not started against remote `main`, because bootstrap commit `e835188` existed only on the local feature branch at observation time.
 - **Required pilot proof:** clean Cloud checkout, dependency bootstrap, shared scheme discovery, stable Xcode/SDK, signing, archive/dSYM retention and artifact download
 - **Expiry:** vendor manifest/script, ignore rules, package graph, scheme, Cloud workflow or release commit change
 
@@ -91,7 +92,8 @@ No skipped release gate is accepted by default. Add one row for every failure or
 
 | Time | Action | Explicit authorization source | Actor/account boundary | Result/artifact |
 |---|---|---|---|---|
-| `2026-08-21 Asia/Shanghai` | Apple Developer Program activation | Human Product Owner reported completion in active Codex task | Human Product Owner; Codex performed read-only Xcode observation only | Human-attested active membership; Xcode account visible; Developer Team/App Record/Cloud access still `UNKNOWN` |
+| `2026-08-21 Asia/Shanghai` | Apple Developer Program activation | Human Product Owner reported completion in active Codex task | Human Product Owner; Codex performed read-only Xcode observation only | Human-attested active membership; Xcode account visible; team/access were still `UNKNOWN` at this observation and were subsequently verified below |
+| `2026-08-21 Asia/Shanghai` | Connect Xcode Cloud to GitHub and create first workflow | Human Product Owner replied `继续` after Codex identified the persistent repository-access boundary | Xcode Cloud / GitHub; current repository only | Connection succeeded; Developer Team `chenkai shen` / Admin; workflow `Default` created with `Latest Release`; no build or distribution started |
 
 ## Release Decision
 
