@@ -22,13 +22,13 @@
 
 ## Boundary
 
-- **Scope:** Publish and link the privacy policy; prepare support/contact/about/license surfaces; verify App Privacy, privacy manifests, export-compliance answers, screenshots, descriptions, review notes, demo instructions, age rating, availability and required App Store Connect fields against final behavior.
+- **Scope:** First prepare the external TestFlight Beta App Description, Feedback Email, What to Test, review contact/instructions and export-compliance inputs; then publish and link the privacy policy and prepare support/contact/about/license surfaces, App Privacy, privacy manifests, screenshots, descriptions, age rating, availability and remaining App Store Connect fields against final behavior.
 - **Non-goals:** No legal guarantees by an AI, no unsupported marketing claim, no account action or submission without explicit authorization, and no collection of credentials in repository evidence.
-- **Required Inputs:** Final scope; final archive; privacy policy; Privacy manifests; dependency/license inventory; supported-device decision; App Store Connect access; current Apple submission requirements.
+- **Required Inputs:** [`PD-RELEASE-2026-0801-EXTERNAL-TESTFLIGHT-CANDIDATE`](../product-decisions/RELEASE-2026-0801-external-testflight-candidate.md); final scope; final archive for binary consistency; privacy policy; Privacy manifests; dependency/license inventory; supported-device decision; App Store Connect access for online verification; current Apple submission requirements.
 
 ## Gates
 
-- **Entry Criteria:** Executors named; final scope frozen; public URLs/contacts decided; account access available; no required field is `UNKNOWN`.
+- **Entry Criteria:** Executors named; external TestFlight metadata preparation may start from owner-approved copy/contact inputs; final online verification requires frozen scope/archive, public URLs/contacts and account access; no required field needed by the active phase is `UNKNOWN`.
 - **Exit Criteria:** Public privacy/support URLs work; in-app links and final behavior agree; screenshots cover every supported family; metadata/review notes are accurate; privacy/export/license answers are reviewed; submission-readiness checklist has no unexplained omission.
 - **Stop Conditions:** Policy and behavior conflict; unsupported claim; required legal/contact answer missing; credentials would enter logs/repo; iPad remains supported without required material; submission requested without explicit approval.
 

@@ -8,10 +8,10 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
-## Active Work 收敛 — 2026-08-14
+## Active Work 收敛 — 2026-08-21
 
 - **Authority:** Human Product Owner 当场拍板；详情以各 Assignment Current Status 为准，摘要见 [`ACTIVE_WORK.md`](ACTIVE_WORK.md)（`3/10`）。
-- **Still Active:** `RELEASE-2026-0801`（目标改至 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002`
+- **Still Active:** `RELEASE-2026-0801`（外部 TestFlight 候选；目标 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002`
 - **Left Active:** `DEBUG-KEY-HITBOX-001` → `Closed`（PR #73 merged；Human Product Gate Passed）
 - **Left Active (not Closed / not Product Gate):**
   - `T9-RESPONSIVE-PIPELINE-001` → `Reviewed`（父伞不再占槽）
@@ -19,6 +19,7 @@
   - `DIAGNOSTICS-OBSERVABILITY-001` → `Completed`（P0 已合并；等 Human Product Gate；P1 = TD-013）
   - `CANDIDATE-TOUCH-HITBOX-001` → `Completed`（PR #72 已合并；等授权真机残余）
 - **Redate Decision:** [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md)
+- **External TestFlight Decision:** [`PD-RELEASE-2026-0801-EXTERNAL-TESTFLIGHT-CANDIDATE`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md)
 - **Explicit non-claims:** 本段不关闭任何 Gate，不授权上传/发布。
 
 ## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
@@ -157,16 +158,16 @@
 - **P2 reviews:** [`Architecture re-review`](assignments/t9-responsive-pipeline-001-p2-regression-matrix-architecture-rereview.md) · [`Quality re-review`](assignments/t9-responsive-pipeline-001-p2-regression-matrix-quality-rereview.md)
 - **Predecessor:** [`T9-AUTO-ANCHOR-001`](assignments/t9-auto-anchor-001.md) remains **Hold/harvest**
 
-## RELEASE-2026-0801 — App Store 发布（现行目标 2026-08-26）
+## RELEASE-2026-0801 — 外部 TestFlight 候选 → App Store（现行目标 2026-08-26）
 
-- **Lifecycle:** `Active — release coordination; target redated`
-- **Authority:** [`Release umbrella Assignment`](assignments/release-2026-08-01.md) + [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md)
+- **Lifecycle:** `Active — external TestFlight candidate coordination`
+- **Authority:** [`Release umbrella Assignment`](assignments/release-2026-08-01.md) + [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md) + [`PD-…-EXTERNAL-TESTFLIGHT-CANDIDATE`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md)
 - **Evidence source:** [`Release evidence and acceptance record`](evidence/release-2026-08-01-acceptance.md)
-- **Current state:** Target date is `2026-08-26 Asia/Shanghai` (historical `2026-08-01`). Scope freeze (`RELEASE-2026-0801-02`) remains Reviewed; its Minimum OS row is superseded by [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](product-decisions/RELEASE-2026-0801-minimum-os-ios18.md) to **iOS 18.0**. Task 09 is superseded by [`RELEASE-2026-0801-10`](assignments/release-2026-08-01-10-ios-18-target.md); Phase 1 Quality is [`Pass with conditions`](assignments/release-2026-08-01-10-quality-review.md); narrowed Phase 2 is [Human-accepted](evidence/release-2026-0801-10-ios-18-phase2-human-evidence.md) (not Archive/release). Task 03 is **Closed** with a Human-confirmed Conditional Product Gate ([gate](assignments/release-2026-08-01-03-product-gate.md)). Tasks 01 and 05–08 remain `Assigned` with Entry Criteria pending. Task 04 remains `Assignment Pending` because its independent Quality Executor is not yet named.
+- **Current state:** Target date is `2026-08-26 Asia/Shanghai` (historical `2026-08-01`). Current intermediate channel is an external TestFlight candidate. Execution order is non-kaomoji preparation → kaomoji/remaining fixes → RC freeze → Xcode Cloud stable CI/archive → internal preflight → external TestFlight Review. Task 03 is **Closed**; task 10 Phase 1 is Quality `Pass with conditions` and narrowed Phase 2 is Human-accepted. Tasks 01 and 05–08 remain `Assigned` with Entry Criteria pending. Task 04 remains `Assignment Pending` until the final Cloud build, capture matrix and privacy boundary are frozen; its independent Quality Executor is already named in the Assignment.
 - **Frozen Product scope:** iPhone + iPad, **iOS 18.0+**, Chinese nine-key, precise pinyin, post-commit continuation, kaomoji content and the Home local basic input-count display. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. The count card must not present as an AI capability in visual or accessibility copy. iOS 18 chrome/runtime (Phase 2), iPad support and kaomoji content remain unimplemented/unverified release blockers; see the [scope record](assignments/release-2026-08-01-02-scope-freeze.md) and [PD](product-decisions/RELEASE-2026-0801-minimum-os-ios18.md).
-- **Current blockers:** Phase 1 Quality / narrowed Phase 2 do not close Archive; stable-toolchain archive readiness; iPad physical-device evidence; Product Lead catalog source/licensing/content decision; independent final physical-device/performance evidence; public URLs/contact/account access for App Store materials; TD-004 residual matrix fidelity after 03 Conditional Pass. 改期或改最低系统都不关闭这些 blocker。
+- **Current blockers:** Apple Developer/App Store Connect/Xcode Cloud access and pilot; all remaining fixes plus kaomoji before RC freeze; stable Cloud Archive/dSYM; iPhone 13 Pro / iOS 27 physical TD-003/004/005 evidence; iOS 18 iPhone/iPad Simulator compatibility; public URLs/contact/account inputs. Physical iPad/lower-OS device evidence is deferred to targeted external testing and remains open for final App Store support revalidation.
 - **Authority boundary:** this status does not authorize upload, App Store submission, skipped-gate acceptance or manual release.
-- **Next Product action:** name an independent Quality Executor and physical-device operators for task 04; provide the kaomoji catalog decision, public URLs/contact answers, account/signing access and physical devices when the dependent tasks reach their environment gates.
+- **Next Product action:** no new Product decision is required for repository-side preparation. Human gates remain Apple Developer/App Store Connect activation, later Cloud/account operations, kaomoji catalog/source decision, RC freeze, upload authorization and any skipped-risk acceptance.
 
 ## RELEASE-2026-0801-03 — 新用户启用与 Full Access 降级
 

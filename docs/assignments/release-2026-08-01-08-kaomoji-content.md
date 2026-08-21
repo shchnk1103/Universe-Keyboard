@@ -27,6 +27,10 @@
 - **Non-goals:** No network catalog, user-generated/shared catalog, account, analytics, remote sync, learning/ranking system or unrelated keyboard redesign. No persistent user content without a separate Product/privacy/architecture decision.
 - **Required Inputs:** [`RELEASE-2026-0801-02`](release-2026-08-01-02-scope-freeze.md), `UI_STYLE_GUIDE.md`, current nine-key chrome contract, `PRIVACY_POLICY.md`, `RELEASE_CHECKLIST.md`, and task 05 copy/screenshot requirements.
 
+### Sequencing Decision
+
+[`PD-RELEASE-2026-0801-EXTERNAL-TESTFLIGHT-CANDIDATE`](../product-decisions/RELEASE-2026-0801-external-testflight-candidate.md) places this implementation after the other necessary external-TestFlight preparation and before RC freeze. This is a sequencing decision only: it does not satisfy the catalog/source/license Entry Criteria and does not authorize implementation in the current governance-sync phase.
+
 ## Gates
 
 - **Entry Criteria:** Executor and interaction operator named; Product Lead approves catalog source/licensing/content boundaries; insertion behavior and storage boundary are explicit; no required field is `UNKNOWN`.

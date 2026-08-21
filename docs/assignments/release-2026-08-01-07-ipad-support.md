@@ -15,7 +15,7 @@
 - **Domain Owner:** ⌨️ Keyboard Experience Maintainer
 - **Executor:** Current Codex task acting as ⌨️ Keyboard Experience execution thread
 - **Environment Executor:** Current Codex task for iPad simulator operations; the Human Product Owner remains the required iPad physical-device operator and final Product Gate
-- **Human Dependency:** Human Product Owner — provides/unlocks an iPad, enables the keyboard/Full Access as needed, and performs the final iPad Product Gate
+- **Human Dependency:** Human Product Owner — authorizes iOS 18 iPad Simulator for the pre-external candidate, later supplies targeted physical-iPad external evidence when available, and retains the final App Store iPad Product Gate
 - **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward when support changes keyboard geometry, lifecycle, target configuration or cross-target contracts
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer
 - **Supporting Domain:** 📱 App & Data Operations Maintainer for iPad main-App layout, settings and App Store material impact
@@ -25,13 +25,13 @@
 
 - **Scope:** Make the containing App and Keyboard Extension usable and verifiable on supported iPad orientations and size classes; establish the supported iPad matrix, keyboard geometry, accessibility states, screenshots and final device evidence required by the release scope.
 - **Non-goals:** No unsupported “universal” claim without a physical-device matrix; no new major keyboard feature; no change to input semantics, RIME deployment ownership or Full Access privacy contract without the required review.
-- **Required Inputs:** [`RELEASE-2026-0801-02`](release-2026-08-01-02-scope-freeze.md), `UI_STYLE_GUIDE.md`, `KEYBOARD_LAYOUT.md`, `RELEASE_CHECKLIST.md`, task 04 device matrix, task 05 screenshot/material requirements and final archive.
+- **Required Inputs:** [`RELEASE-2026-0801-02`](release-2026-08-01-02-scope-freeze.md), [`PD-RELEASE-2026-0801-EXTERNAL-TESTFLIGHT-CANDIDATE`](../product-decisions/RELEASE-2026-0801-external-testflight-candidate.md), `UI_STYLE_GUIDE.md`, `KEYBOARD_LAYOUT.md`, `RELEASE_CHECKLIST.md`, task 04 device matrix, task 05 screenshot/material requirements and representative/final archive.
 
 ## Gates
 
-- **Entry Criteria:** Executor and iPad environment operators named; supported iPad/OS/orientation matrix proposed; final or representative release-candidate build available; no required field is `UNKNOWN`. Device Hub availability was observed on `2026-07-20 Asia/Shanghai` for an iPad Pro (11-inch, 3rd generation); this does not replace final-archive device evidence.
-- **Exit Criteria:** Main App and keyboard layouts, VoiceOver, Dynamic Type, light/dark mode and rotation are reviewed on the supported matrix; physical-device results, screenshots and known limitations are handed to tasks 04/05; Quality issues an explicit conclusion.
-- **Stop Conditions:** Required iPad geometry demands an unapproved input/lifecycle redesign; device evidence is unavailable; iPad-only defect is hidden by excluding it from evidence; final archive differs from the tested build.
+- **Entry Criteria:** Executor named; pre-external iOS 18 iPad Simulator model/OS/orientation matrix proposed; representative release-candidate build available; no required field for this phase is `UNKNOWN`. Historical physical-iPad observations do not replace later external/App Store device evidence.
+- **Exit Criteria:** For the external TestFlight candidate, Main App and keyboard layouts, VoiceOver, Dynamic Type, light/dark mode and rotation are reviewed on the iOS 18 iPad Simulator matrix and handed to tasks 04/05 with explicit Simulator grade. Targeted physical-iPad external evidence remains a post-approval residual and a blocker for a final App Store iPad compatibility claim; Quality issues an explicit bounded conclusion.
+- **Stop Conditions:** Required iPad geometry demands an unapproved input/lifecycle redesign; Simulator evidence is presented as physical-device/performance proof; iPad-only defect is hidden by excluding it from evidence; final archive differs from the tested build; App Store submission attempts to close physical-iPad evidence without Product/Quality revalidation.
 
 ## Handoff
 
