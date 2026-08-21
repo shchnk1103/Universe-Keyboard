@@ -11,8 +11,8 @@
 |---|---|
 | **Lifecycle** | `Recorded` |
 | **Phase** | 外部 TestFlight 候选准备；先完成非颜表情前置，再完成颜表情与剩余修复，最后冻结 RC |
-| **Non-claims** | 不授权开通账号、配置线上 Cloud、冻结 RC、上传、外部测试、提交审核或接受 TD-003/004/005 风险 |
-| **Next** | 同步发布 Assignment/证据矩阵；在 Apple Developer Program 可用前完成本地与仓库侧准备 |
+| **Non-claims** | 不授权冻结 RC、签名 Archive、上传、外部测试、提交审核或接受 TD-003/004/005 风险 |
+| **Next** | 继续非颜表情发布前准备；最终修复完成后再冻结 RC，并单独验证 Cloud Archive、签名与 artifact retention |
 | **Residuals** | 见 [`release-2026-08-01-acceptance.md`](../evidence/release-2026-08-01-acceptance.md) |
 
 ---
@@ -55,7 +55,8 @@
 ## Subsequent Bounded Authorization
 
 - `2026-08-21 Asia/Shanghai`：Human Product Owner 完成 Apple Developer Program 开通，并在 Codex 明示 GitHub 持久仓库访问边界后回复 `继续`，授权连接当前仓库与配置一个不含 TestFlight 分发的 Cloud pilot。
-- Xcode Cloud 已连接 GitHub，并创建 `Default` workflow；首次构建尚未启动。
+- Xcode Cloud 已连接 GitHub，并创建 `Default` workflow。手动 Build 1 已在功能分支 `codex/external-testflight-cloud-prep` / 提交 `cdc6bfe` 上通过：Xcode 26.6（17F113）、macOS Tahoe 26.6.2（25G83）、`ci_post_clone.sh` 成功、12 个 RIME framework artifacts 验证成功、`Universe Keyboard` iOS build 完成且无 Issues。
+- 该 Build action 不是 Archive，也未验证签名、dSYM/artifact retention 或上传；不得外推为可分发候选。
 - 本授权不包含合并 `main`、冻结 RC、添加 TestFlight post-action、上传、分发、Beta Review、App Store Review 或风险接受。
 
 ## Revalidation Triggers
