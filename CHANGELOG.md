@@ -2,6 +2,12 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-22 — 完全访问引导支持稍后继续
+
+- “允许完全访问”步骤新增真实的“稍后再开启”入口；点击后继续方案准备与首次输入，不再停在当前步骤。
+- 暂缓不会被记录为已开启或已完成；其他步骤完成后，帮助页会重新显示完全访问作为最后待完成项。
+- 已观测到共享数据不可用时会立即回到恢复引导，不会被暂缓状态掩盖。
+
 ## 2026-08-21 — Xcode Cloud RIME 依赖引导准备
 
 - 新增可执行的 `ci_scripts/ci_post_clone.sh`，在 Xcode Cloud clone 后复用现有 manifest 固定、SHA-256 校验和 12-framework 清单合同获取 RIME Vendor。

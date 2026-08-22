@@ -5,6 +5,9 @@ import Foundation
 nonisolated enum ActivationPresentationStorage {
     /// Soft first-run Welcome has been shown and dismissed (Start, Skip, or swipe).
     static let welcomeSeenKey = "activation_welcome_seen"
+    /// Full Access was intentionally deferred for this pass through the guide.
+    /// This changes presentation order only; it never marks Full Access complete.
+    static let fullAccessDeferredKey = "activation_full_access_deferred"
 }
 
 /// Pure activation checklist state for Guide onboarding.
@@ -36,6 +39,8 @@ nonisolated struct ActivationChecklistState: Equatable, Sendable {
 
     var keyboardAddedAffirmed: Bool
     var fullAccess: FullAccessPresentation
+    /// Lets J3/J4 remain reachable while Full Access stays visibly incomplete.
+    var fullAccessDeferred = false
     /// Active keyboard schema id (`rime_active_schema`).
     var activeSchemaID: String
     /// Whether the **active** schema is installed on device.
@@ -45,12 +50,15 @@ nonisolated struct ActivationChecklistState: Equatable, Sendable {
     var deploymentFailed: Bool
     var firstInputAffirmed: Bool
 
-    /// First incomplete step in the product-required order, if any.
+    /// Next guided step. Full Access may yield once to J3/J4, then returns as
+    /// the final incomplete step. An observed shared-data failure always wins.
     var nextStep: Step? {
         if !keyboardAddedAffirmed { return .addKeyboard }
-        if !isFullAccessSatisfiedForProgress { return .fullAccess }
+        if fullAccess == .sharedDataUnavailable { return .fullAccess }
+        if !isFullAccessSatisfiedForProgress, !fullAccessDeferred { return .fullAccess }
         if !isResourcesReadyForProgress { return .prepareResources }
         if !firstInputAffirmed { return .firstInput }
+        if !isFullAccessSatisfiedForProgress { return .fullAccess }
         return nil
     }
 
@@ -98,7 +106,7 @@ nonisolated struct ActivationChecklistState: Equatable, Sendable {
         case .fullAccess:
             switch fullAccess {
             case .unknown:
-                return "待完成"
+                return fullAccessDeferred ? "已暂缓，待完成" : "待完成"
             case .userAffirmed:
                 return "已按你的确认开启"
             case .sharedDataUnavailable:
@@ -142,6 +150,9 @@ nonisolated enum ActivationCopy {
         "系统不允许 App 代替你添加键盘或打开完全访问，需要你在「设置」中完成。"
     static let degradedBasicTyping =
         "未开启完全访问时，基本输入通常仍可用；按键震动等共享反馈及其他共享功能可能不可用或不可靠。"
+    static let fullAccessDeferTitle = "稍后再开启"
+    static let fullAccessDeferHint =
+        "不会标记为已开启；将继续准备输入方案，完成其他步骤后会再次提示。"
     static let mainAppPreparesResources =
         "输入方案由主 App 准备；键盘扩展不会在输入时自行部署。"
     static let fallbackNotReady =

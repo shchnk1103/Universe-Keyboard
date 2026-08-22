@@ -1,7 +1,7 @@
 # Assignment: RELEASE-2026-0801-06 — 首发键盘与主 App 产品打磨
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — candidate VoiceOver residual remediated; other polish residuals remain`
+**Lifecycle status:** `Active — Full Access deferral remediation verified; other polish residuals remain`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Current Status
@@ -9,17 +9,17 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | Active |
-| **Phase** | Minimal candidate VoiceOver semantics remediation verified; remaining Product Polish residuals stay open |
+| **Phase** | Full Access “稍后再开启” remediation verified; remaining Product Polish residuals stay open |
 | **Non-claims** | No visual redesign, input/RIME semantic change, RC freeze, physical-device accessibility certification or release approval |
-| **Next** | Preserve the verified candidate semantics while separately triaging the activation Full Access skip/later affordance |
-| **Residuals** | Activation Full Access skip/later residual remains separately observed in the iPad preflight evidence; complete accessibility and physical-device certification are not claimed |
+| **Next** | Preserve the verified J2 deferral semantics while continuing separately authorized Product Polish work |
+| **Residuals** | Complete accessibility and physical-device certification remain open; local Xcode 26.6 iOS execution still requires its missing platform/runtime |
 
 ---
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human Product Owner, acting as Product Lead, authorized the current Codex task to select and perform KOS-compatible remaining release execution roles, `2026-07-20 Asia/Shanghai`; explicitly authorized the minimal candidate VoiceOver remediation after the `2026-08-22 Asia/Shanghai` Simulator finding
+- **Decision Source / Date:** Human Product Owner, acting as Product Lead, authorized the current Codex task to select and perform KOS-compatible remaining release execution roles, `2026-07-20 Asia/Shanghai`; explicitly authorized the minimal candidate VoiceOver remediation and clarified/authorized the Full Access deferral semantics on `2026-08-22 Asia/Shanghai`
 - **Product Approver:** Human Product Owner acting as Product Lead
 
 ## Assignment
@@ -53,3 +53,4 @@
 ## Observed Release Residuals
 
 - `2026-08-22` iPad (10th generation) / iOS 18 Simulator / VoiceOver initially spoke only the compact Chinese candidate text (for example `呢`) and omitted its actionable role and configured hint. The Human Product Owner then explicitly authorized a minimal remediation. `CandidateCollectionCell` now declares itself as an accessibility element with the `.button` trait; the existing candidate label and “双击选择候选词” hint remain unchanged. Strict formatting, the focused source-contract test, the complete iOS 18 Main App/Keyboard suites, Debug/Release compilation/install and Human Simulator revalidation passed. The observed speech is now “呢，按钮，双击选择候选词”. This closes only the identified candidate-role residual; it does not constitute complete accessibility, physical-device or release certification. Exact local Xcode 26.6 iOS execution remains pending its missing iOS 26.5 Simulator platform/runtime. Evidence: [`release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md`](../evidence/release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md).
+- `2026-08-22` the Human Product Owner clarified J2 deferral semantics: “稍后再开启” must continue to J3/J4 rather than exit the Guide, while Full Access remains incomplete and returns after the other steps finish. The implementation stores presentation-only deferral, keeps completion/TipKit flags false, and lets observed shared-data failure override deferral. Focused state tests cover the complete J2 → J3 → J4 → J2 state path; complete iOS 18 Main App/Keyboard suites, KeyboardCore, RimeBridge, RIME Vendor verification and Debug/Release builds pass. On a separately deployed iPhone 16 Pro / iOS 18 Simulator, the Human operator tapped “稍后再开启” and confirmed the App entered resource preparation/scheme selection without navigating to Search. This closes the identified no-op/false-completion affordance residual without claiming complete accessibility, physical-device or release certification. Evidence: [`release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md`](../evidence/release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md).

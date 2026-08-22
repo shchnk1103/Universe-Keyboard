@@ -45,7 +45,9 @@ App limitation copy is mandatory: the App cannot add the keyboard for the user.
 4. Confirm the system warning
 5. Return to the App
 
-Users may defer. Deferred state must describe degraded complete capabilities, not blocked basic typing.
+Users may defer. Deferral keeps Full Access incomplete, advances the guide through J3 and J4,
+then returns J2 as the final outstanding step. Deferred state must describe degraded complete
+capabilities, not blocked basic typing.
 
 ### J3 — Prepare input resources
 
@@ -81,6 +83,7 @@ Short confirmation, links to privacy and scheme settings, advanced diagnostics c
 |---|---|---|
 | Keyboard added | `unknown`, `userAffirmed` | User affirmation only unless a future reliable signal exists |
 | Full Access | `unknown`, `userAffirmed`, `sharedDataUnavailable`, `sharedCapabilityOK` | Observation overrides affirmation |
+| Full Access deferred | bool | Presentation order only; never evidence that Full Access is enabled |
 | RIME ready | `notReady`, `preparing`, `ready`, `failed` | Main-App deployment state |
 | First input | `no`, `userAffirmedSuccess` | User affirmation for V1 |
 | Guide dismissed / Welcome seen | bool | User preference only; does not equal activation success |
@@ -88,10 +91,13 @@ Short confirmation, links to privacy and scheme settings, advanced diagnostics c
 
 Rules:
 
-1. Next step is the first incomplete required item in order J1 → J2 → J3 → J4.
-2. `sharedDataUnavailable` must reopen recovery even if the user previously affirmed Full Access.
-3. `rimeReady=ready` must not be presented as complete success while shared data is unavailable.
-4. The main App must not claim a live Extension Full Access flag before observation.
+1. Default next-step order is J1 → J2 → J3 → J4.
+2. If the user defers incomplete J2, the presentation order becomes J1 → J3 → J4 → J2;
+   J2 remains incomplete throughout and full activation cannot be claimed.
+3. `sharedDataUnavailable` overrides deferral and must reopen J2 recovery immediately, even if
+   the user previously affirmed Full Access.
+4. `rimeReady=ready` must not be presented as complete success while shared data is unavailable.
+5. The main App must not claim a live Extension Full Access flag before observation.
 
 ## Canonical Copy
 
@@ -203,7 +209,9 @@ TipKit presents the same steps as contextual tips (main App; iOS 17+; implemente
 ## Acceptance Scenarios
 
 1. Fresh install → Guide shows add-keyboard as next step; Settings limitation is visible.
-2. User defers Full Access → basic typing path remains described as possible; complete RIME is not claimed.
+2. User defers Full Access → Guide advances to resources, then first input, then returns Full Access
+   as the final incomplete step; basic typing remains described as possible and complete activation
+   is not claimed.
 3. User allows Full Access and deploys → readiness becomes actionable/ready.
 4. First-input checklist can be affirmed after `nihao` smoke.
 5. Shared-data failure copy appears when container/shared operations fail and overrides prior affirmation.
