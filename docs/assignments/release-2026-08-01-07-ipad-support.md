@@ -1,7 +1,7 @@
 # Assignment: RELEASE-2026-0801-07 — iPad 首发支持与验证
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Assigned — Entry Criteria pending`
+**Lifecycle status:** `Active — iOS 18 Simulator matrix complete; release-toolchain runtime gate pending`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority
@@ -37,6 +37,15 @@
 
 - **Required Handoff Content:** supported iPad matrix, devices/OS/orientations, screenshots, changed files, test results, accessibility observations, failures/skips, residual risk and App Store screenshot requirements.
 - **Revalidation Trigger:** iPad support target, keyboard geometry, orientation policy, deployment target, release archive or accessibility contract changes.
+
+## Active Simulator Preflight
+
+- **Authorization / acknowledgement:** `2026-08-21 Asia/Shanghai`，Human Product Owner 明示授权当前 Codex task 继续，并允许把简单的 Simulator 启动操作交回本人执行；当前 Executor / Environment Executor 接受本 Assignment 的 iOS 18 Simulator 范围与停止条件。
+- **Representative source:** `codex/external-testflight-cloud-prep` based on `c339591`, plus the explicitly authorized candidate VoiceOver semantics remediation and its regression test in the current validated working tree. It is representative Simulator preflight source, not an RC, Archive or final release artifact.
+- **Matrix:** iPad (10th generation) / iOS 18.0 为主矩阵；iPad mini (6th generation) / iOS 18.0 与 iPad Pro 13-inch (M4) / iOS 18.0 为尺寸边界。主矩阵覆盖竖/横屏、浅/深色、默认与 accessibility Dynamic Type、基础 VoiceOver；边界设备覆盖竖/横屏与关键 Main App / Keyboard surfaces。
+- **Run Header / evidence:** [`../evidence/release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md`](../evidence/release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md)
+- **Current gate result:** 三档 iPad / iOS 18 Simulator 的关键矩阵已完成；Xcode 26.6 的 `1030` 项 KeyboardCore 测试通过，Xcode 27 + iOS 18 的完整 Main App/Keyboard 测试及 Debug/Release build 通过。精确的本地 Xcode 26.6 iOS gate 因其 iOS 26.5 Simulator platform/runtime 未安装而保持 pending，不能用 Xcode 27 补充证据冒充关闭。
+- **Non-claims:** 不替代物理 iPad、性能、Jetsam、真实 Full Access、最终 archive 或 Product Gate；发现 production defect 时停止扩大范围，先记录并交回对应实现 Assignment。
 
 ## Exploratory Environment Observation
 
