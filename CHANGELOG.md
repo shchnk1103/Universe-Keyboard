@@ -2,6 +2,19 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-22 — 完全访问引导支持稍后继续
+
+- “允许完全访问”步骤新增真实的“稍后再开启”入口；点击后继续方案准备与首次输入，不再停在当前步骤。
+- 暂缓不会被记录为已开启或已完成；其他步骤完成后，帮助页会重新显示完全访问作为最后待完成项。
+- 已观测到共享数据不可用时会立即回到恢复引导，不会被暂缓状态掩盖。
+
+## 2026-08-21 — Xcode Cloud RIME 依赖引导准备
+
+- 新增可执行的 `ci_scripts/ci_post_clone.sh`，在 Xcode Cloud clone 后复用现有 manifest 固定、SHA-256 校验和 12-framework 清单合同获取 RIME Vendor。
+- 本地已验证显式 Cloud 仓库路径、目录 fallback 与错误根目录 fail-closed；功能分支 Cloud Build 1 随后在干净 checkout 中成功执行该 hook，验证 12 个 RIME framework artifacts 后完成 iOS build，且无 Issues。
+- Apple Developer Team 与 GitHub-to-Xcode-Cloud 连接已验证；`Default` workflow 使用 Xcode 26.6 / macOS Tahoe 26.6.2，Build 1 精确绑定提交 `cdc6bfe`，无 TestFlight post-action。Archive、签名与 artifact retention 仍未验证。
+- 此准备不签名、不上传、不分发，也不冻结 RC。
+
 ## 2026-08-18 — iOS 18 暗色功能键对比
 
 - 仅 iOS 18 暗色重拉层次：字母/空格 `86,86,88`，功能键收回 `46,46,48`，按下高光 `110,110,114`。

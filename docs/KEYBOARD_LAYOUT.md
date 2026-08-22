@@ -133,6 +133,15 @@ Effective scheme, readiness and digit algebra remain ADR 0018; path refinement e
 
 Only the main App installs T9 schema artifacts, runs full deployment and writes readiness. See ADR 0001 and ADR 0018.
 
+## Future iPad Input Assistant Integration Note
+
+This is a discovery note, not an authorized V1 feature or Assignment.
+
+- On iPad, the extra shortcuts bar above a software keyboard is UIKit-owned. It may contain system typing suggestions and text-management controls such as undo, redo, cut, copy and paste. It is separate from Universe Keyboard's own fixed `34 pt` candidate bar.
+- The supported configuration entry is [`UIResponder.inputAssistantItem`](https://developer.apple.com/documentation/uikit/uiresponder/inputassistantitem) / [`UITextInputAssistantItem`](https://developer.apple.com/documentation/uikit/uitextinputassistantitem). An App that owns the active responder may provide `leadingBarButtonGroups` and `trailingBarButtonGroups`; UIKit keeps the center typing-suggestion area system-managed.
+- **Ownership boundary:** a third-party keyboard extension does not own the responder chain of an arbitrary host App. Universe may customize this bar for text inputs in its own Main App, but must not assume it can add global controls to the iPad shortcuts bar in Notes, Messages or other hosts.
+- A future keyboard-wide clipboard/history feature would therefore need a separate Product Decision and Assignment. Its likely surface is Extension-owned UI, with an explicit feasibility review for pasteboard access, Full Access behavior, privacy, retention, sensitive-data handling and App Review policy. Do not treat the system shortcuts bar as authorization or proof that this is feasible.
+
 ## V1 Non-goals
 
 - English nine-key

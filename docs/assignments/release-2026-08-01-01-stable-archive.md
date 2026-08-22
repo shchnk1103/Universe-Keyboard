@@ -24,15 +24,15 @@
 
 - **Scope:** Make the stable App Store-supported Xcode installation usable; freeze the release commit; produce a signed Release archive; validate the archive, extension embedding, privacy manifests, icons, entitlements, version/build, dSYM and export-compliance answers; prepare an upload-ready artifact.
 - **Non-goals:** No production feature change, warning suppression, signing workaround, TestFlight upload, App Store submission or release without separate authorization.
-- **Required Inputs:** Parent Assignment; `RELEASE_CHECKLIST.md`; final scope decision; Apple-supported Xcode/SDK; signing account; RIME vendor manifest; final version/build decision.
+- **Required Inputs:** Parent Assignment; [`PD-RELEASE-2026-0801-EXTERNAL-TESTFLIGHT-CANDIDATE`](../product-decisions/RELEASE-2026-0801-external-testflight-candidate.md); `RELEASE_CHECKLIST.md`; final scope decision; Apple Developer Program membership; App Store Connect App Record/access; Xcode Cloud stable-toolchain pilot; signing account; RIME vendor manifest; a reviewed Cloud post-clone dependency bootstrap that reuses the pinned vendor fetch/verification contract; final version/build decision.
 
 ## Gates
 
-- **Entry Criteria:** Executor and Environment Executor named; stable toolchain usable; release commit selected; signing access available; no required field is `UNKNOWN`.
+- **Entry Criteria:** Executor and Environment Executor named; Apple Developer/App Store Connect access available; Xcode Cloud has proven a supported stable Xcode environment, repository access, the shared archive scheme, post-clone RIME vendor bootstrap, signing and artifact retention; all remaining fixes including kaomoji are reviewed; release commit selected; no required field is `UNKNOWN`.
 - **Exit Criteria:** Stable-toolchain Release build and signed archive succeed; archive validation is recorded; exact archive/dSYM locations and hashes are retained; extension and privacy assets are verified; upload result is recorded only if separately authorized.
 - **Stop Conditions:** Beta-only artifact; missing platform/signing access; archive differs from release commit; validation warning affects submission; destructive signing/account change; external upload lacks explicit approval.
 
 ## Handoff
 
 - **Required Handoff Content:** commit/tag, Xcode/SDK, archive path/hash, signing team, version/build, validation output, dSYM, skipped checks, upload authorization/result and residual risks
-- **Revalidation Trigger:** release commit, Xcode/SDK, signing identity, entitlements, bundle contents, version/build or submission policy changes
+- **Revalidation Trigger:** release commit, local/Cloud Xcode or macOS support, Cloud workflow, signing identity, entitlements, bundle contents, version/build or submission policy changes

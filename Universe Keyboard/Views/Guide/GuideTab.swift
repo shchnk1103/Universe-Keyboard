@@ -18,6 +18,8 @@ struct GuideTab: View {
     private var keyboardAddedAffirmed = false
     @AppStorage("activation_full_access_affirmed")
     private var fullAccessAffirmed = false
+    @AppStorage(ActivationPresentationStorage.fullAccessDeferredKey)
+    private var fullAccessDeferred = false
     @AppStorage("activation_first_input_affirmed")
     private var firstInputAffirmed = false
     @AppStorage("activation_shared_data_unavailable")
@@ -46,6 +48,7 @@ struct GuideTab: View {
         ActivationChecklistState(
             keyboardAddedAffirmed: keyboardAddedAffirmed,
             fullAccess: fullAccessPresentation,
+            fullAccessDeferred: fullAccessDeferred,
             activeSchemaID: activeSchemaID,
             activeSchemaInstalled: activeSchemaInstalled,
             rimeDeployed: rimeDeployed,
@@ -104,6 +107,7 @@ struct GuideTab: View {
         }
         .onChange(of: keyboardAddedAffirmed) { _, _ in ActivationTips.sync(from: checklist) }
         .onChange(of: fullAccessAffirmed) { _, _ in ActivationTips.sync(from: checklist) }
+        .onChange(of: fullAccessDeferred) { _, _ in ActivationTips.sync(from: checklist) }
         .onChange(of: firstInputAffirmed) { _, _ in ActivationTips.sync(from: checklist) }
         .onChange(of: sharedDataUnavailable) { _, _ in ActivationTips.sync(from: checklist) }
         .onChange(of: rimeDeployed) { _, _ in ActivationTips.sync(from: checklist) }
@@ -360,12 +364,22 @@ struct GuideTab: View {
                 prominence: .secondary
             ) {
                 fullAccessAffirmed = true
+                fullAccessDeferred = false
                 sharedDataUnavailable = false
                 refreshSharedContainerObservation()
             }
-            Text("可稍后再开启。未开启时按键震动等共享反馈可能不可用，完整体验不保证。")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            if !fullAccessDeferred, fullAccessPresentation != .sharedDataUnavailable {
+                AppActionButton(
+                    title: ActivationCopy.fullAccessDeferTitle,
+                    systemImage: "clock",
+                    prominence: .secondary
+                ) {
+                    // Deferral changes only the guide order. It is not evidence
+                    // that Full Access is enabled or that shared data works.
+                    fullAccessDeferred = true
+                }
+                .accessibilityHint(ActivationCopy.fullAccessDeferHint)
+            }
             Text(ActivationCopy.degradedBasicTyping)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -448,8 +462,6 @@ private struct NumberedGuideRow: View {
         .accessibilityLabel("第 \(number) 步，\(text)")
     }
 }
-
-
 
 #Preview {
     GuideTab(rimeStore: RimeSettingsStore())

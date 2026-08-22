@@ -7,6 +7,7 @@ final class ActivationChecklistStateTests: XCTestCase {
     private func baseState(
         keyboardAdded: Bool = false,
         fullAccess: ActivationChecklistState.FullAccessPresentation = .unknown,
+        fullAccessDeferred: Bool = false,
         activeSchemaID: String = ActivationChecklistState.builtinSchemaID,
         activeSchemaInstalled: Bool = false,
         rimeDeployed: Bool = false,
@@ -17,6 +18,7 @@ final class ActivationChecklistStateTests: XCTestCase {
         ActivationChecklistState(
             keyboardAddedAffirmed: keyboardAdded,
             fullAccess: fullAccess,
+            fullAccessDeferred: fullAccessDeferred,
             activeSchemaID: activeSchemaID,
             activeSchemaInstalled: activeSchemaInstalled,
             rimeDeployed: rimeDeployed,
@@ -49,6 +51,37 @@ final class ActivationChecklistStateTests: XCTestCase {
         state.firstInputAffirmed = true
         XCTAssertNil(state.nextStep)
         XCTAssertTrue(state.isFullyActivated)
+    }
+
+    func testDeferredFullAccessYieldsToResourcesAndFirstInputThenReturns() {
+        var state = baseState(
+            keyboardAdded: true,
+            fullAccessDeferred: true
+        )
+
+        XCTAssertEqual(state.nextStep, .prepareResources)
+        XCTAssertFalse(state.isStepComplete(.fullAccess))
+        XCTAssertEqual(state.statusTitle(for: .fullAccess), "已暂缓，待完成")
+
+        state.activeSchemaInstalled = true
+        state.rimeDeployed = true
+        XCTAssertEqual(state.nextStep, .firstInput)
+
+        state.firstInputAffirmed = true
+        XCTAssertEqual(state.nextStep, .fullAccess)
+        XCTAssertFalse(state.isFullyActivated)
+        XCTAssertTrue(state.shouldShowHelpTab)
+    }
+
+    func testSharedDataFailureOverridesFullAccessDeferral() {
+        let state = baseState(
+            keyboardAdded: true,
+            fullAccess: .sharedDataUnavailable,
+            fullAccessDeferred: true
+        )
+
+        XCTAssertEqual(state.nextStep, .fullAccess)
+        XCTAssertEqual(state.statusTitle(for: .fullAccess), "共享数据不可用")
     }
 
     func testResourcesRequireInstalledActiveSchemaAndDeploy() {
@@ -125,8 +158,9 @@ final class ActivationChecklistStateTests: XCTestCase {
         XCTAssertFalse(ActivationCopy.fullAccessNotUpload.isEmpty)
         XCTAssertEqual(ActivationCopy.keyboardDisplayName, "Universe Keyboard")
         XCTAssertFalse(ActivationCopy.degradedBasicTyping.contains("必须"))
-        XCTAssertTrue(ActivationCopy.degradedBasicTyping.contains("震动")
-            || ActivationCopy.degradedBasicTyping.contains("共享"))
+        XCTAssertTrue(
+            ActivationCopy.degradedBasicTyping.contains("震动")
+                || ActivationCopy.degradedBasicTyping.contains("共享"))
         XCTAssertEqual(ActivationChecklistState.recommendedSchemaID, "rime_ice")
     }
 
@@ -135,10 +169,16 @@ final class ActivationChecklistStateTests: XCTestCase {
             ActivationPresentationStorage.welcomeSeenKey,
             "activation_welcome_seen"
         )
+        XCTAssertEqual(
+            ActivationPresentationStorage.fullAccessDeferredKey,
+            "activation_full_access_deferred"
+        )
         XCTAssertFalse(ActivationCopy.welcomeStartTitle.isEmpty)
         XCTAssertFalse(ActivationCopy.welcomeSkipTitle.isEmpty)
         XCTAssertFalse(ActivationCopy.welcomeHeadline.isEmpty)
         XCTAssertFalse(ActivationCopy.systemLimitation.contains("必须开启完全访问"))
+        XCTAssertFalse(ActivationCopy.fullAccessDeferTitle.isEmpty)
+        XCTAssertTrue(ActivationCopy.fullAccessDeferHint.contains("不会标记为已开启"))
     }
 
     func testHelpTabVisibleWhileActivationIncomplete() {

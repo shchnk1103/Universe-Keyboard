@@ -102,6 +102,17 @@ The fetch command downloads to a temporary path, checks SHA-256 before extractio
 framework directories before allowing a build to proceed. It is idempotent only when the existing extracted
 directory carries a receipt matching the checked-in manifest.
 
+## Xcode Cloud Bootstrap
+
+`ci_scripts/ci_post_clone.sh` is the checked-in Xcode Cloud integration point. It resolves the primary repository
+from `CI_PRIMARY_REPOSITORY_PATH`, falls back to the directory containing the local checkout for offline validation,
+and invokes the same `scripts/ensure_rime_vendor.sh fetch` contract used by repository CI. It must remain executable
+and fail closed when the bootstrap script, manifest, archive checksum, receipt or framework inventory is invalid.
+
+This hook only makes the pinned binary dependencies available to a build. It does not configure an Xcode Cloud
+workflow, select an Xcode version, grant repository access, sign an archive, retain dSYMs or authorize TestFlight
+distribution. Those properties require a separate Cloud pilot and release evidence against the frozen candidate.
+
 ## Publishing Checklist
 
 1. Build the full 12-framework archive, including `liblua.xcframework`,

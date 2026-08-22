@@ -86,3 +86,18 @@ Any App Store public privacy URL or review-note packaging remains owned by `RELE
 ## Change Policy
 
 Changing activation success criteria, Full Access optionality, privacy claims or the capability matrix requires Product Lead amendment of this Decision and revalidation of Assignment 03.
+
+## 2026-08-22 Amendment — Full Access Deferral Order
+
+The Human Product Owner acting as Product Lead clarified and authorized the J2 defer behavior:
+
+1. “稍后再开启” does not dismiss the journey and does not mark Full Access complete.
+2. It advances the guided presentation through J3 resource preparation and J4 first-input
+   verification, then returns J2 as the final incomplete step.
+3. Full recommended activation still requires J2; the Help entry remains visible until it is
+   satisfied.
+4. An observed `sharedDataUnavailable` condition overrides deferral and reopens J2 immediately.
+
+This amendment changes presentation order only. It does not change Full Access optionality for
+basic typing, capability claims, privacy boundaries, deployment ownership, or physical-device
+evidence requirements.

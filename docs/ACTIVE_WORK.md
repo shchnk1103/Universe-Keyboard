@@ -5,11 +5,11 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-19 Asia/Shanghai` — `RELEASE-2026-0801-10` 收窄 Phase 2 Human 接受。Active Work `3/10`。
+Last synced: `2026-08-21 Asia/Shanghai` — 发布中间目标改为外部 TestFlight 候选；Cloud/设备矩阵与 RC 顺序已由 Product Lead 记录。Active Work `3/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | RELEASE-2026-08-01 | Active | 现行目标 `2026-08-26`；10 Phase 1 Quality + 收窄 Phase 2 Human 接受；01/04–08 仍未满足 | [`assignments/release-2026-08-01.md`](assignments/release-2026-08-01.md) · [`Phase 2 Human`](evidence/release-2026-0801-10-ios-18-phase2-human-evidence.md) |
+| 1 | RELEASE-2026-08-01 | Active | 外部 TestFlight 候选；非颜表情前置 → 颜表情/修复 → RC → Cloud；01/04–08 仍未满足 | [`assignment`](assignments/release-2026-08-01.md) · [`Product Decision`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md) |
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 

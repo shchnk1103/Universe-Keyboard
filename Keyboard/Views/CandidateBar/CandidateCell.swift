@@ -54,6 +54,11 @@ final class CandidateCollectionCell: UICollectionViewCell {
         contentView.isOpaque = false
         contentView.layer.masksToBounds = false
 
+        // UICollectionViewCell 不会像 UIButton 一样自动声明可操作角色。
+        // 候选由 collection selection 提交，因此需要显式告诉 VoiceOver 它是按钮。
+        isAccessibilityElement = true
+        accessibilityTraits.insert(.button)
+
         visualContentView.backgroundColor = .clear
         visualContentView.isOpaque = false
         visualContentView.isUserInteractionEnabled = false
