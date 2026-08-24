@@ -12,6 +12,7 @@ struct SchemaMetadata: Codable, Identifiable, Equatable {
     let downloadSize: String
     let installedSize: String?
     let licenseName: String?
+    let licenseDescriptor: ThirdPartyLicenseDescriptor?
     let supportsUserDictionary: Bool
     let isDownloadable: Bool
 
@@ -31,7 +32,7 @@ struct RimeSchemeCatalogEntry: Identifiable, Equatable {
     let supportsUserDictionary: Bool
     let downloadSize: String
     let installedSize: String?
-    let licenseName: String?
+    let license: ThirdPartyLicenseDescriptor?
     let distribution: RimeSchemeDistribution?
     let storage: RimeSchemeStorageKeys
     let installationPlan: RimeSchemeInstallationPlan?
@@ -49,6 +50,7 @@ struct RimeSchemeStorageKeys: Equatable, Sendable {
     let installed: String?
     let version: String?
     let licenseAccepted: String?
+    let licenseAcceptanceRevision: String?
     let eTag: String?
     let checksum: String?
 
@@ -56,6 +58,7 @@ struct RimeSchemeStorageKeys: Equatable, Sendable {
         installed: nil,
         version: nil,
         licenseAccepted: nil,
+        licenseAcceptanceRevision: nil,
         eTag: nil,
         checksum: nil
     )
@@ -65,6 +68,7 @@ struct RimeSchemeStorageKeys: Equatable, Sendable {
             installed: "\(prefix)_installed",
             version: "\(prefix)_version",
             licenseAccepted: "\(prefix)_license_accepted",
+            licenseAcceptanceRevision: "\(prefix)_license_acceptance_revision",
             eTag: "\(prefix)_etag",
             checksum: "\(prefix)_checksum"
         )
@@ -97,7 +101,7 @@ enum RimeSchemeCatalog {
             supportsUserDictionary: true,
             downloadSize: "内置",
             installedSize: nil,
-            licenseName: nil,
+            license: nil,
             distribution: nil,
             storage: .builtin,
             installationPlan: nil
@@ -111,7 +115,7 @@ enum RimeSchemeCatalog {
             supportsUserDictionary: true,
             downloadSize: "16 MB",
             installedSize: "约 60 MB",
-            licenseName: "GPL-3.0",
+            license: ThirdPartyLicenseCatalog.rimeIce,
             distribution: RimeSchemeDistribution(
                 githubOwner: "iDvel",
                 githubRepository: "rime-ice",
@@ -150,7 +154,7 @@ enum RimeSchemeCatalog {
             supportsUserDictionary: true,
             downloadSize: "约 34 MB",
             installedSize: "约 80–120 MB",
-            licenseName: "CC BY 4.0",
+            license: ThirdPartyLicenseCatalog.wanxiang,
             distribution: RimeSchemeDistribution(
                 githubOwner: "amzxyz",
                 githubRepository: "rime-wanxiang",

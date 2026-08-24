@@ -14,7 +14,7 @@ extension SchemaManager {
             return
         }
 
-        guard let entry = downloadableEntry(for: schemaID) else { return }
+        guard let entry = downloadableEntry(for: schemaID), licenseAccepted(for: schemaID) else { return }
         if let plan = entry.installationPlan {
             archiveInstaller.clearBuildCache(plan: plan)
         }
@@ -90,11 +90,12 @@ extension SchemaManager {
                 var pendingDirectories = [extractDir]
 
                 while let directory = pendingDirectories.popLast() {
-                    let children = (try? fileManager.contentsOfDirectory(
-                        at: directory,
-                        includingPropertiesForKeys: [.isDirectoryKey],
-                        options: [.skipsHiddenFiles]
-                    )) ?? []
+                    let children =
+                        (try? fileManager.contentsOfDirectory(
+                            at: directory,
+                            includingPropertiesForKeys: [.isDirectoryKey],
+                            options: [.skipsHiddenFiles]
+                        )) ?? []
 
                     for url in children {
                         if url.lastPathComponent == plan.schemaFileName {

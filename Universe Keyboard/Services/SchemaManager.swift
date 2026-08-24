@@ -42,6 +42,7 @@ final class SchemaManager {
             archiveInstaller ?? SharedContainerSchemaArchiveInstaller(appGroupID: Self.appGroupID)
         self.deploymentService = deploymentService
         self.activeSchemaID = settings.string(forKey: "rime_active_schema") ?? "luna_pinyin"
+        migrateLegacyLicenseAcceptanceIfNeeded()
         self.rimeIceLicenseAccepted = licenseAccepted(for: "rime_ice")
         self.rimeIceVersion = installedVersion(for: "rime_ice")
         refreshSchemaList()
@@ -77,7 +78,7 @@ final class SchemaManager {
     }
 
     func startDownload(schemaID: String) {
-        guard downloadableEntry(for: schemaID) != nil else { return }
+        guard downloadableEntry(for: schemaID) != nil, licenseAccepted(for: schemaID) else { return }
         switch rimeIceDownloadState {
         case .idle, .completed, .failed: break
         default: return
@@ -117,13 +118,18 @@ final class SchemaManager {
     }
 
     func licenseAccepted(for schemaID: String) -> Bool {
-        guard let key = catalogEntry(for: schemaID)?.storage.licenseAccepted else { return true }
-        return settings.bool(forKey: key)
+        guard let entry = catalogEntry(for: schemaID), let license = entry.license else { return true }
+        guard let key = entry.storage.licenseAcceptanceRevision else { return false }
+        return settings.string(forKey: key) == license.acceptanceRevision
     }
 
     func acceptLicense(for schemaID: String) {
-        guard let key = catalogEntry(for: schemaID)?.storage.licenseAccepted else { return }
-        settings.set(true, forKey: key)
+        guard let entry = catalogEntry(for: schemaID), let license = entry.license else { return }
+        guard let revisionKey = entry.storage.licenseAcceptanceRevision else { return }
+        settings.set(license.acceptanceRevision, forKey: revisionKey)
+        if let legacyKey = entry.storage.licenseAccepted {
+            settings.set(true, forKey: legacyKey)
+        }
         if schemaID == "rime_ice" {
             rimeIceLicenseAccepted = true
         }
@@ -141,7 +147,8 @@ final class SchemaManager {
             requiresLua: entry.requiresLua,
             downloadSize: entry.downloadSize,
             installedSize: entry.installedSize,
-            licenseName: entry.licenseName,
+            licenseName: entry.license?.licenseName,
+            licenseDescriptor: entry.license,
             supportsUserDictionary: entry.supportsUserDictionary,
             isDownloadable: entry.distribution != nil
         )
@@ -152,5 +159,19 @@ final class SchemaManager {
         let recordedInstalled = settings.bool(forKey: installedKey)
         guard let plan = entry.installationPlan else { return recordedInstalled }
         return recordedInstalled && archiveInstaller.containsInstalledSchema(plan: plan)
+    }
+
+    /// The historical fog-song dialog correctly showed GPL-3.0, so its old
+    /// Boolean acknowledgement can be upgraded once. Wanxiang is deliberately
+    /// excluded because the former shared dialog displayed the wrong project.
+    private func migrateLegacyLicenseAcceptanceIfNeeded() {
+        guard let entry = catalogEntry(for: "rime_ice"), let license = entry.license else { return }
+        guard
+            let legacyKey = entry.storage.licenseAccepted,
+            let revisionKey = entry.storage.licenseAcceptanceRevision,
+            settings.bool(forKey: legacyKey),
+            settings.string(forKey: revisionKey) == nil
+        else { return }
+        settings.set(license.acceptanceRevision, forKey: revisionKey)
     }
 }

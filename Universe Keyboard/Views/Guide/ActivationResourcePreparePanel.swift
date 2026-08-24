@@ -9,7 +9,7 @@ struct ActivationResourcePreparePanel: View {
 
     /// User's in-panel selection (not necessarily active yet).
     @State private var selectedSchemaID: String = ActivationChecklistState.recommendedSchemaID
-    @State private var showLicense = false
+    @State private var presentedLicense: PresentedSchemeLicense?
 
     private var orderedSchemas: [SchemaMetadata] {
         let schemas = store.schemas
@@ -107,14 +107,14 @@ struct ActivationResourcePreparePanel: View {
                 selectedSchemaID = store.activeSchemaID
             }
         }
-        .sheet(isPresented: $showLicense) {
-            LicenseView(
+        .sheet(item: $presentedLicense) { presentation in
+            SchemeLicenseView(
+                license: presentation.license,
                 acceptTitle: ActivationCopy.resourcesAcceptLicenseAndDownload,
                 acceptSystemImage: "arrow.down.to.line"
             ) {
-                let schemaID = selectedSchemaID
-                store.acceptLicense(for: schemaID)
-                store.startDownload(schemaID: schemaID)
+                store.acceptLicense(for: presentation.schemaID)
+                store.startDownload(schemaID: presentation.schemaID)
             }
         }
     }
@@ -192,7 +192,12 @@ struct ActivationResourcePreparePanel: View {
                     if alreadyAccepted {
                         store.startDownload(schemaID: schema.schemaID)
                     } else {
-                        showLicense = true
+                        if let license = schema.licenseDescriptor {
+                            presentedLicense = PresentedSchemeLicense(
+                                schemaID: schema.schemaID,
+                                license: license
+                            )
+                        }
                     }
                 }
                 .disabled(isDownloadBusy)

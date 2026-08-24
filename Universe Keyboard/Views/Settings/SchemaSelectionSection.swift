@@ -9,7 +9,7 @@ struct SchemaSelectionSection: View {
             VStack(spacing: 10) {
                 ForEach(store.schemas) { schema in
                     if schema.schemaID == "rime_ice" && !schema.installed {
-                        RimeIceDownloadCardView(
+                        SchemaDownloadCardView(
                             schema: schema,
                             isLicenseAccepted: store.licenseAccepted,
                             onShowLicense: onShowLicense,

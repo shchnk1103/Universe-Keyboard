@@ -16,8 +16,7 @@ extension SchemaManager {
 
     func releaseVersionIdentifier(from url: URL) -> String {
         let components = url.pathComponents
-        if
-            let downloadIndex = components.firstIndex(of: "download"),
+        if let downloadIndex = components.firstIndex(of: "download"),
             components.indices.contains(downloadIndex + 1)
         {
             return components[downloadIndex + 1]
@@ -70,6 +69,7 @@ extension SchemaManager {
             entry.storage.installed,
             entry.storage.version,
             entry.storage.licenseAccepted,
+            entry.storage.licenseAcceptanceRevision,
             entry.storage.eTag,
             entry.storage.checksum,
         ].compactMap({ $0 }) {

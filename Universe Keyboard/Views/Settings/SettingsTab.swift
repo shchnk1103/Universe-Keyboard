@@ -56,7 +56,7 @@ struct SettingsTab: View {
     private var inputBehaviorSection: some View {
         SettingsGroup(
             title: "输入体验",
-            footer: "布局、反馈和纠错都只影响你打字时的小习惯，可以随时改回来。"
+            footer: "布局、反馈和纠错都只影响本机打字习惯，可以随时改回来。这些不是人工智能功能。"
         ) {
             SettingsNavigationLink(
                 systemImage: "keyboard",
@@ -77,7 +77,7 @@ struct SettingsTab: View {
             SettingsNavigationLink(
                 systemImage: "wand.and.stars",
                 title: "智能纠错",
-                subtitle: "误触纠错、基准覆盖"
+                subtitle: "本地邻键旁路建议，不自动改写"
             ) {
                 TypoCorrectionBenchmarkView()
             }
@@ -85,7 +85,7 @@ struct SettingsTab: View {
             SettingsNavigationLink(
                 systemImage: "chart.xyaxis.line",
                 title: "输入洞察",
-                subtitle: "本地统计、趋势与字符构成"
+                subtitle: "本机字符计数，不是人工智能"
             ) {
                 TypingIntelligenceView()
             }
@@ -264,6 +264,14 @@ struct SettingsTab: View {
                 subtitle: "本地处理、完全访问与数据控制"
             ) {
                 PrivacyDataView()
+            }
+
+            SettingsNavigationLink(
+                systemImage: "doc.text",
+                title: "开源软件与内容",
+                subtitle: "许可证、来源与修改说明"
+            ) {
+                OpenSourceLicensesView()
             }
         }
     }

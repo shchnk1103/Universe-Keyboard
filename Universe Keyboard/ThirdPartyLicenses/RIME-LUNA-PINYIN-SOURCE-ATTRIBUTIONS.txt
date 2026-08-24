@@ -1,0 +1,25 @@
+Luna Pinyin - 明月拼音
+
+Rime Developers <rime-devel@googlegroups.com>
+
+The dictionary distributed with Universe Keyboard preserves the following
+source acknowledgements from its own file header:
+
+CC-CEDICT
+http://cc-cedict.org/
+
+Android open source project / PinyinIME
+http://android.git.kernel.org/?p=platform/packages/inputmethods/PinyinIME.git
+
+Chewing - 新酷音
+http://chewing.im/
+
+三拼簡繁詞庫 0.9
+http://www.pkucn.com/viewthread.php?tid=245448
+
+OpenCC - 開放中文轉換
+http://code.google.com/p/opencc/
+
+This attribution record reproduces the provenance header carried by
+Keyboard/Resources/luna_pinyin.dict.yaml. It does not collapse the cited
+works into a single license or replace their own notices.

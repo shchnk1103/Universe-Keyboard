@@ -10,7 +10,7 @@ struct KeyboardLayoutSettingsView: View {
 
     @State private var selectedLayout: KeyboardLayoutStyle = .twentySixKey
     @State private var isBusy = false
-    @State private var showLicenseSheet = false
+    @State private var presentedLicense: PresentedSchemeLicense?
     @State private var pendingNineKeyAfterInstall = false
 
     /// Shared preview frame so both boards match width & height.
@@ -79,30 +79,16 @@ struct KeyboardLayoutSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: reload)
         .disabled(isBusy)
-        .sheet(isPresented: $showLicenseSheet) {
-            NavigationStack {
-                Form {
-                    Section("许可") {
-                        Text("雾凇拼音使用 GPL-3.0 许可。启用九键前需要接受许可并安装雾凇拼音。")
-                    }
-                    Section {
-                        Button("接受并继续安装") {
-                            showLicenseSheet = false
-                            pendingNineKeyAfterInstall = true
-                            rimeStore.acceptLicense(for: "rime_ice")
-                            rimeStore.startDownload(schemaID: "rime_ice")
-                        }
-                        Button("取消", role: .cancel) {
-                            showLicenseSheet = false
-                            pendingNineKeyAfterInstall = false
-                            rimeStore.presentLayoutToast("已取消，保持原布局", succeeded: false)
-                        }
-                    }
-                }
-                .navigationTitle("安装雾凇拼音")
-                .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $presentedLicense) { presentation in
+            SchemeLicenseView(
+                license: presentation.license,
+                acceptTitle: "已阅读并继续安装",
+                acceptSystemImage: "arrow.down.to.line"
+            ) {
+                pendingNineKeyAfterInstall = true
+                rimeStore.acceptLicense(for: presentation.schemaID)
+                rimeStore.startDownload(schemaID: presentation.schemaID)
             }
-            .presentationDetents([.medium])
         }
         .onChange(of: rimeStore.downloadState) { _, newValue in
             guard pendingNineKeyAfterInstall else { return }
@@ -238,7 +224,11 @@ struct KeyboardLayoutSettingsView: View {
 
         if !rimeStore.rimeIceInstalledFilesExist {
             if !rimeStore.licenseAccepted {
-                showLicenseSheet = true
+                if let schema = rimeStore.schemas.first(where: { $0.schemaID == "rime_ice" }),
+                    let license = schema.licenseDescriptor
+                {
+                    presentedLicense = PresentedSchemeLicense(schemaID: schema.schemaID, license: license)
+                }
                 return
             }
             pendingNineKeyAfterInstall = true
