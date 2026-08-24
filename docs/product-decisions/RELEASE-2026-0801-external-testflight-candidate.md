@@ -10,9 +10,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Recorded` |
-| **Phase** | 外部 TestFlight 候选准备；08 已 Closed，Cloud Archive/签名/retention pilot 与主要 metadata 已完成；最终 RC 仍未冻结 |
-| **Non-claims** | Pilot 不授权冻结 RC、上传、外部测试、提交审核或接受 TD-003/004/005 风险 |
-| **Next** | 08 已 Closed，Cloud artifact/dSYM retention pilot 已通过；完成前冻点复核后单独授权冻结精确 RC；04/TD-003/004/005 使用最终 Cloud 构建关闸 |
+| **Phase** | 精确 RC `testflight-v1.0-rc1-build7` 已冻结；最终 no-distribution Cloud Build 7 artifact ledger 已获独立 Quality Pass with conditions |
+| **Non-claims** | 冻结/Archive 不授权上传、外部测试、提交审核或接受 TD-003/004/005 风险 |
+| **Next** | 04/TD-003/004/005 使用 Build 7 ad hoc 构建关闸；之后由 Human 单独决定上传 |
 | **Residuals** | 见 [`release-2026-08-01-acceptance.md`](../evidence/release-2026-08-01-acceptance.md) |
 
 ---
@@ -67,6 +67,14 @@
 - `2026-08-23 Asia/Shanghai`：Human Product Owner reported saving App Store Connect content rights as “Yes, the app contains or accesses third-party content and has the necessary rights,” primary category `工具`, and secondary category `效率`. The executor did not reopen App Store Connect to verify the fields. Upload and RC freeze remain unauthorized.
 - `2026-08-23 Asia/Shanghai`：Human Product Owner subsequently and explicitly authorized that narrow Info.plist change. `config/Info.plist` now declares `ITSAppUsesNonExemptEncryption = NO`; source-plist validation and an Xcode 27 beta Release Simulator integration build passed. This authorization did not include encryption-document upload, build upload, review submission, RC freeze or acceptance of the possible annual self-classification legal residual.
 - `2026-08-24 Asia/Shanghai`：Human Product Owner asked Codex to take over the remaining release work, logged in for read-only Cloud inspection and manually downloaded Build 3 artifacts. The retained Archive contains exact App/Keyboard dSYM UUID matches; XCResult is clean; the App Store export is Cloud Managed Apple Distribution, Store-profiled, `testFlightInternalTestingOnly = false`, and retained with symbols. This closes only the pilot retention capability gap. It does not freeze RC or authorize upload/review. Evidence: [`cloud artifact retention pilot`](../evidence/release-2026-08-01-01-cloud-artifact-retention-pilot-2026-08-24.md).
+- `2026-08-24 Asia/Shanghai`：Human Product Owner separately authorized freezing
+  the exact RC, then separately authorized one no-distribution Cloud Archive.
+  Annotated tag `testflight-v1.0-rc1-build7` was pushed at
+  `244b32df38cff7ce3d8e56d78a80d4504cc6f073`. Xcode Cloud Build 7 succeeded;
+  retained Archive/dSYMs/logs/XCResult/App Store/ad hoc artifacts map to version
+  `1.0 (7)`, and the Store export is not Internal Only. Upload, internal/external
+  distribution and review submission remain unauthorized. Evidence:
+  [`frozen RC Build 7 artifact ledger`](../evidence/release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md).
 
 ## Revalidation Triggers
 

@@ -5,11 +5,11 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-24 Asia/Shanghai` — 08 Closed；Cloud retention pilot 通过；05 商店文案 Human-reported 已保存。Active Work `3/10`。
+Last synced: `2026-08-24 Asia/Shanghai` — RC `testflight-v1.0-rc1-build7` 已冻结；Cloud Build 7 artifact 已独立 Quality Reviewed；上传未授权。Active Work `3/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | RELEASE-2026-08-01 | Active | 外部候选；08 Closed；Cloud retention pilot 通过；下一 Gate 是前冻点复核与精确 RC 选择。04/TD-003/004/005 等最终 Cloud 构建；冻 RC 未授权 | [`assignment`](assignments/release-2026-08-01.md) · [`Product Decision`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md) · [`retention pilot`](evidence/release-2026-08-01-01-cloud-artifact-retention-pilot-2026-08-24.md) · [`iPad preflight`](evidence/release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md) |
+| 1 | RELEASE-2026-08-01 | Active | 外部候选；RC `testflight-v1.0-rc1-build7` 与 Build 7 artifact 已独立 Quality Reviewed；下一 Gate 是 04/TD-003/004/005 真机矩阵；上传未授权 | [`assignment`](assignments/release-2026-08-01.md) · [`Product Decision`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md) · [`Build 7 review`](evidence/release-2026-08-01-01-frozen-rc-build7-independent-quality-review-2026-08-24.md) · [`iPad preflight`](evidence/release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md) |
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 
