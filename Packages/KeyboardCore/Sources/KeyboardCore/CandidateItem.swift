@@ -60,6 +60,9 @@ public enum CandidateKind: Int, CaseIterable, Sendable {
 
     /// 九键待确认标点：点击后替换当前 pending，不走 RIME，也不追加插入。
     case punctuationCandidate = 5
+
+    /// 待确认颜表情：点击后替换当前 pending，不走 RIME，也不追加插入。
+    case kaomojiCandidate = 6
 }
 
 /// RIME 候选在候选页中的稳定位置。

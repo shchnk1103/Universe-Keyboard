@@ -2,16 +2,17 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-17 Asia/Shanghai
+> **Updated:** 2026-08-23 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
-## Active Work 收敛 — 2026-08-21
+## Active Work 收敛 — 2026-08-23
 
-- **Authority:** Human Product Owner 当场拍板；详情以各 Assignment Current Status 为准，摘要见 [`ACTIVE_WORK.md`](ACTIVE_WORK.md)（`3/10`）。
+- **Authority:** Human Product Owner 当场拍板；详情以各 Assignment Current Status 为准，摘要见 [`ACTIVE_WORK.md`](ACTIVE_WORK.md)（`4/10`）。
 - **Still Active:** `RELEASE-2026-0801`（外部 TestFlight 候选；目标 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002`
+- **Left Active (not Closed):** `RELEASE-2026-0801-08` → `Completed`；Human Product Gate Passed（iPhone 13 Pro / iOS 27.0）；Closed 等合并；Q1-C-01 仍不可合并
 - **Left Active:** `DEBUG-KEY-HITBOX-001` → `Closed`（PR #73 merged；Human Product Gate Passed）
 - **Left Active (not Closed / not Product Gate):**
   - `T9-RESPONSIVE-PIPELINE-001` → `Reviewed`（父伞不再占槽）
@@ -162,12 +163,12 @@
 
 - **Lifecycle:** `Active — external TestFlight candidate coordination`
 - **Authority:** [`Release umbrella Assignment`](assignments/release-2026-08-01.md) + [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md) + [`PD-…-EXTERNAL-TESTFLIGHT-CANDIDATE`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md)
-- **Evidence source:** [`Release evidence and acceptance record`](evidence/release-2026-08-01-acceptance.md)
-- **Current state:** Target date is `2026-08-26 Asia/Shanghai` (historical `2026-08-01`). Current intermediate channel is an external TestFlight candidate. Execution order is non-kaomoji preparation → kaomoji/remaining fixes → RC freeze → Xcode Cloud stable CI/archive → internal preflight → external TestFlight Review. Task 03 is **Closed**; task 10 Phase 1 is Quality `Pass with conditions` and narrowed Phase 2 is Human-accepted. Tasks 01 and 05–08 remain `Assigned` with Entry Criteria pending. Task 04 remains `Assignment Pending` until the final Cloud build, capture matrix and privacy boundary are frozen; its independent Quality Executor is already named in the Assignment.
-- **Frozen Product scope:** iPhone + iPad, **iOS 18.0+**, Chinese nine-key, precise pinyin, post-commit continuation, kaomoji content and the Home local basic input-count display. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. The count card must not present as an AI capability in visual or accessibility copy. iOS 18 chrome/runtime (Phase 2), iPad support and kaomoji content remain unimplemented/unverified release blockers; see the [scope record](assignments/release-2026-08-01-02-scope-freeze.md) and [PD](product-decisions/RELEASE-2026-0801-minimum-os-ios18.md).
-- **Current blockers:** Apple Developer/App Store Connect/Xcode Cloud access and pilot; all remaining fixes plus kaomoji before RC freeze; stable Cloud Archive/dSYM; iPhone 13 Pro / iOS 27 physical TD-003/004/005 evidence; iOS 18 iPhone/iPad Simulator compatibility; public URLs/contact/account inputs. Physical iPad/lower-OS device evidence is deferred to targeted external testing and remains open for final App Store support revalidation.
+- **Evidence source:** [`Release evidence and acceptance record`](evidence/release-2026-08-01-acceptance.md) + [`2026-08-22 metadata audit`](evidence/release-2026-08-01-05-testflight-metadata-audit-2026-08-22.md)
+- **Current state:** Target date is `2026-08-26 Asia/Shanghai` (historical `2026-08-01`). Current intermediate channel is an external TestFlight candidate. App Record is verified; a no-distribution Xcode Cloud Archive/signing pilot passed on `main` / `4fd3ce7`; Beta description/review notes, TestFlight contacts, App Privacy publication, export declaration, age questionnaire, content rights and categories are complete by Human confirmation. Per-scheme license disclosure/acknowledgement, persistent open-source notices and their Human UI review are complete. Execution order remains non-kaomoji preparation → kaomoji/remaining fixes → RC freeze → final Xcode Cloud evidence → internal preflight → external TestFlight Review. Task 03 is **Closed**; task 05 is **Active**; task 06 has VoiceOver/J2 residuals closed but is not a complete polish Gate; task 07 iOS 18 iPad Simulator matrix is complete; task 10 Phase 1 is Quality `Pass with conditions` and narrowed Phase 2 is Human-accepted. Tasks 01/04/08 remain open. Task 04 remains `Assignment Pending` until the final Cloud build, capture matrix and privacy boundary are frozen.
+- **Frozen Product scope:** iPhone + iPad, **iOS 18.0+**, Chinese nine-key, precise pinyin, post-commit continuation, kaomoji content and the Home local basic input-count display. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. The count card must not present as an AI capability in visual or accessibility copy. iOS 18 iPad Simulator compatibility preflight is recorded; physical iPad, remaining polish, kaomoji content and TD-003/004/005 remain release blockers; see the [scope record](assignments/release-2026-08-01-02-scope-freeze.md) and [PD](product-decisions/RELEASE-2026-0801-minimum-os-ios18.md).
+- **Current blockers:** Per-scheme disclosure UI is Human-confirmed and offline notices are implemented. Phase A derived receipts are Product-accepted as an external-candidate residual ([`PD-RELEASE-2026-0801-05-PROVENANCE-A-ACCEPT`](product-decisions/RELEASE-2026-0801-05-provenance-a-accept.md)). Human reports content rights “Yes”, primary category `工具` and secondary category `效率` are saved in App Store Connect (executor-unverified). Remaining blockers: 08 kaomoji; final frozen-RC Cloud archive/dSYM retention; iPhone 13 Pro / iOS 27 physical TD-003/004/005 evidence (04; not skipped by the 06 TestFlight-tester deferral). iOS 18 iPad Simulator critical matrix is recorded in [`07 preflight`](evidence/release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md) and is not a remaining discovery blocker. On Xcode 27 beta, the focused offline-resource XCTest passes and `build-for-testing` passes, but the complete `SchemaManagerTests` hosted run hits a native malloc invalid-free restart loop and remains not passed. Physical iPad/lower-OS device evidence is deferred to targeted external testing and remains open for final App Store support revalidation.
 - **Authority boundary:** this status does not authorize upload, App Store submission, skipped-gate acceptance or manual release.
-- **Next Product action:** no new Product decision is required for repository-side preparation. Human gates remain Apple Developer/App Store Connect activation, later Cloud/account operations, kaomoji catalog/source decision, RC freeze, upload authorization and any skipped-risk acceptance.
+- **Next Product action:** 08 kaomoji catalog/source; leftover 05 screenshots/copy after feature-complete; RC freeze; upload authorization. 06 executable polish is delivered; R-06-08/09 visual/a11y physical certification is deferred to TestFlight testers and does not skip 04 / TD-003/004/005. 07 iOS 18 iPad Simulator preflight should not be reopened as undiscovered work.
 
 ## RELEASE-2026-0801-03 — 新用户启用与 Full Access 降级
 

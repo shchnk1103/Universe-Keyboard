@@ -109,7 +109,8 @@ Each scheme is described by a catalog entry in the main App code. The catalog is
 
 - Display metadata: name, description, source, download size, installed size, license name, Lua requirement, and whether candidate learning is supported.
 - Download distribution: GitHub owner/repository, release asset name, cached archive file name, and extraction directory name.
-- Storage keys: installed flag, version, license acceptance, ETag, and checksum keys.
+- License disclosure: project name, SPDX-style license name, attribution, local modification notice, upstream/source links and an acknowledgement revision.
+- Storage keys: installed flag, version, per-scheme license acknowledgement revision, ETag, and checksum keys.
 - Installation plan: required schema file, files/directories to skip while installing, files/directories to remove while uninstalling, and build-cache filename fragments to clean.
 
 Downloadable open-source schemes use the generic catalog, distribution, storage, and installation-plan model (`rime_ice`, `wanxiang`, …).
@@ -119,6 +120,16 @@ Downloadable open-source schemes use the generic catalog, distribution, storage,
 **Grammar model (research only):** “万象语法模型” is the RIME **`.gram`** file from [RIME-LMDG](https://github.com/amzxyz/RIME-LMDG) (e.g. `wanxiang-lts-zh-hans.gram`), loaded via schema `grammar.language`. It can be referenced by **other pinyin schemes** (community: 雾凇/白霜 + same gram) with param tuning; best with 万象词库. Large optional download; needs librime grammar/octagram support + memory budget. Phased plan: [`TD-012`](TECH_DEBT.md#td-012-optional-rime-grammar-model-万象-lmdg--gram-integration).
 
 The user-facing UI should read from `SchemaMetadata`. It should not duplicate package size, license, version, Lua capability, or support flags in the view layer.
+
+### License disclosure contract
+
+- 下载、更新和重新下载必须从所选方案的 catalog entry 取得许可证描述；任何 SwiftUI 页面都不得按方案 ID 硬编码许可证正文。
+- 许可证弹窗使用所选方案作为 `.sheet(item:)` 的唯一展示状态，确保弹窗内容、接受动作和随后启动的下载属于同一方案。
+- 接受记录绑定 `schemaID + acceptanceRevision`。许可证、来源、署名或本地修改说明发生实质变化时必须提升 revision，旧确认随即失效。
+- 旧版布尔确认只可在“旧弹窗确实展示了该方案正确许可证”时迁移。当前仅迁移雾凇；万象曾共用错误的雾凇弹窗，因此必须重新确认。
+- 服务层同样在 `startDownload` / `forceRedownload` 前 fail closed；UI 绕过不能直接发起未确认许可证的下载。
+- 设置中的“开源软件与内容”是安装后的持久查看入口，列出可选下载方案、内置输入内容和随 App 提供的 RIME 组件；完整许可证与署名资料随 App 打包并可离线阅读，外部来源链接仅作补充。链接由主 App 在用户点击时打开，Keyboard Extension 不访问网络。
+- Luna 词典按其实际文件头作为复合内容处理：除 LGPL-3.0 与其引用的 GPLv3 外，单独保留 CC-CEDICT、Android PinyinIME、Chewing、三拼简繁词库与 OpenCC 等来源署名，不把它们错误折叠成单一许可证。
 
 ## Toast Feedback
 
@@ -146,6 +157,7 @@ failure recovery rows such as retry actions.
 When adding a new open-source scheme:
 
 - Add its metadata, distribution, storage keys, and installation plan to the scheme catalog/state model.
+- Add a source-verified license descriptor and a new acknowledgement revision; do not reuse another scheme's disclosure.
 - Keep its scheme-specific actions inside the scheme detail page.
 - Reuse shared buttons and status rows instead of one-off styling.
 - Keep global preferences, such as candidate count and simplification, outside individual scheme details unless the preference is genuinely scheme-specific.

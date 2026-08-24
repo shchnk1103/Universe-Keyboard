@@ -67,18 +67,25 @@ struct TypingIntelligenceView: View {
                         .font(.body)
                         .lineLimit(1)
                         .minimumScaleFactor(0.9)
-                    Text(model.isEnabled ? "正在设备上聚合，不保存输入内容" : "关闭时不会产生新的统计")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
+                    Text(
+                        model.isEnabled
+                            ? "正在本机聚合已提交字符数，不保存输入内容，也不是人工智能分析"
+                            : "关闭时不会产生新的统计；已有计数仍是本机数据，不是人工智能分析"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .layoutPriority(1)
-                Toggle("", isOn: Binding(
-                    get: { model.isEnabled },
-                    set: { model.setEnabled($0) }
-                ))
+                Toggle(
+                    "",
+                    isOn: Binding(
+                        get: { model.isEnabled },
+                        set: { model.setEnabled($0) }
+                    )
+                )
                 .labelsHidden()
                 .toggleStyle(.switch)
                 .fixedSize(horizontal: true, vertical: false)

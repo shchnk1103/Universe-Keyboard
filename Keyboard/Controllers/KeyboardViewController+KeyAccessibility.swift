@@ -46,6 +46,10 @@ extension KeyboardViewController {
             button.accessibilityLabel = returnKeyAccessibilityLabel(for: title)
             button.accessibilityHint = "执行\(returnKeyAccessibilityLabel(for: title))。"
 
+        case #selector(insertKaomoji(_:)), #selector(showKaomojiCandidatesPlaceholder(_:)):
+            button.accessibilityLabel = KaomojiChrome.accessibilityLabel
+            button.accessibilityHint = KaomojiChrome.accessibilityHint
+
         default:
             button.accessibilityLabel = title
         }

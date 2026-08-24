@@ -71,7 +71,7 @@ struct RimeSettingsView: View {
 private struct RimeSchemaDetailView: View {
     let store: RimeSettingsStore
     let initialSchema: SchemaMetadata
-    @State private var showLicense = false
+    @State private var licensePresentation: SchemeLicensePresentation?
     @State private var showUninstallAlert = false
     @State private var schemaPendingSwitch: SchemaMetadata?
     @State private var showSchemaSwitchAlert = false
@@ -128,8 +128,15 @@ private struct RimeSchemaDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $showLicense) {
-            LicenseView { store.acceptLicense(for: schema.schemaID) }
+        .sheet(item: $licensePresentation) { presentation in
+            SchemeLicenseView(
+                license: presentation.license,
+                acceptTitle: presentation.action.buttonTitle,
+                acceptSystemImage: presentation.action.buttonSystemImage
+            ) {
+                store.acceptLicense(for: presentation.schemaID)
+                performLicenseAction(presentation.action, schemaID: presentation.schemaID)
+            }
         }
         .alert("切换输入方案？", isPresented: $showSchemaSwitchAlert) {
             Button("切换并部署") {
@@ -164,7 +171,12 @@ private struct RimeSchemaDetailView: View {
     private var schemaActionSections: some View {
         if schema.schemaID == "rime_ice" {
             Section {
-                RimeAdvancedInputStatusContent(store: store)
+                RimeAdvancedInputStatusContent(
+                    store: store,
+                    onRedownload: {
+                        performOrPresentLicense(.redownload, schema: schema)
+                    }
+                )
             } header: {
                 Text("高级输入功能")
             } footer: {
@@ -181,10 +193,10 @@ private struct RimeSchemaDetailView: View {
     private var downloadableSchemaSections: some View {
         if !schema.installed {
             Section {
-                RimeIceDownloadCardView(
+                SchemaDownloadCardView(
                     schema: schema,
                     isLicenseAccepted: store.licenseAccepted(for: schema.schemaID),
-                    onShowLicense: { showLicense = true },
+                    onShowLicense: { presentLicense(.review, schema: schema) },
                     onDownload: { store.startDownload(schemaID: schema.schemaID) }
                 )
             } header: {
@@ -202,13 +214,13 @@ private struct RimeSchemaDetailView: View {
 
         if schema.installed {
             Section {
-                RimeIceManageContent(
+                SchemaManageContent(
                     version: schema.version,
                     updateStatusMessage: store.updateStatusMessage,
-                    onCheckForUpdate: { Task { await store.checkForUpdateAndDownload(schemaID: schema.schemaID) } },
-                    onRedownload: { store.forceRedownload(schemaID: schema.schemaID) },
+                    onCheckForUpdate: { performOrPresentLicense(.checkForUpdate, schema: schema) },
+                    onRedownload: { performOrPresentLicense(.redownload, schema: schema) },
                     onUninstall: { showUninstallAlert = true },
-                    onShowLicense: { showLicense = true }
+                    onShowLicense: { presentLicense(.review, schema: schema) }
                 )
             } header: {
                 Text("管理")
@@ -231,10 +243,75 @@ private struct RimeSchemaDetailView: View {
         case .downloaded: return .orange
         }
     }
+
+    private func presentLicense(_ action: SchemeLicensePresentation.Action, schema: SchemaMetadata) {
+        guard let license = schema.licenseDescriptor else { return }
+        licensePresentation = SchemeLicensePresentation(
+            schemaID: schema.schemaID,
+            license: license,
+            action: action
+        )
+    }
+
+    private func performOrPresentLicense(
+        _ action: SchemeLicensePresentation.Action,
+        schema: SchemaMetadata
+    ) {
+        guard store.licenseAccepted(for: schema.schemaID) else {
+            presentLicense(action, schema: schema)
+            return
+        }
+        performLicenseAction(action, schemaID: schema.schemaID)
+    }
+
+    private func performLicenseAction(
+        _ action: SchemeLicensePresentation.Action,
+        schemaID: String
+    ) {
+        switch action {
+        case .review:
+            break
+        case .redownload:
+            store.forceRedownload(schemaID: schemaID)
+        case .checkForUpdate:
+            Task { await store.checkForUpdateAndDownload(schemaID: schemaID) }
+        }
+    }
+}
+
+private struct SchemeLicensePresentation: Identifiable {
+    enum Action: String {
+        case review
+        case redownload
+        case checkForUpdate
+
+        var buttonTitle: String {
+            switch self {
+            case .review: return "我已阅读"
+            case .redownload: return "已阅读并重新下载"
+            case .checkForUpdate: return "已阅读并检查更新"
+            }
+        }
+
+        var buttonSystemImage: String {
+            switch self {
+            case .review: return "checkmark"
+            case .redownload: return "arrow.down.circle"
+            case .checkForUpdate: return "arrow.triangle.2.circlepath"
+            }
+        }
+    }
+
+    let schemaID: String
+    let license: ThirdPartyLicenseDescriptor
+    let action: Action
+
+    var id: String { "\(schemaID)-\(action.rawValue)" }
 }
 
 private struct RimeAdvancedInputStatusContent: View {
     let store: RimeSettingsStore
+    let onRedownload: () -> Void
     @State private var hasLoggedDiagnostic = false
 
     private var diagnostic: RimeLuaCapabilityDiagnostic {
@@ -306,7 +383,7 @@ private struct RimeAdvancedInputStatusContent: View {
         case .applySettings:
             Task { await store.triggerDeployment() }
         case .redownloadSchema:
-            store.forceRedownload(schemaID: "rime_ice")
+            onRedownload()
         }
     }
 }

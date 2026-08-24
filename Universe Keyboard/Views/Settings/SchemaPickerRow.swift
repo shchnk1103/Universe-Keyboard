@@ -67,7 +67,8 @@ struct SchemaPickerRow: View {
                 schemaID: "luna_pinyin", name: "朙月拼音",
                 description: "RIME 官方基础拼音方案", source: .builtin,
                 version: nil, installed: true, requiresLua: false, downloadSize: "内置",
-                installedSize: nil, licenseName: nil, supportsUserDictionary: true, isDownloadable: false
+                installedSize: nil, licenseName: nil, licenseDescriptor: nil,
+                supportsUserDictionary: true, isDownloadable: false
             ),
             isActive: true,
             onSelect: {}
@@ -77,7 +78,9 @@ struct SchemaPickerRow: View {
                 schemaID: "rime_ice", name: "雾凇拼音",
                 description: "社区维护的高质量简体词库", source: .downloaded,
                 version: nil, installed: false, requiresLua: true, downloadSize: "16 MB",
-                installedSize: "约 60 MB", licenseName: "GPL-3.0", supportsUserDictionary: true, isDownloadable: true
+                installedSize: "约 60 MB", licenseName: "GPL-3.0-only",
+                licenseDescriptor: ThirdPartyLicenseCatalog.rimeIce,
+                supportsUserDictionary: true, isDownloadable: true
             ),
             isActive: false,
             onSelect: {}
@@ -87,7 +90,9 @@ struct SchemaPickerRow: View {
                 schemaID: "rime_ice", name: "雾凇拼音",
                 description: "社区维护的高质量简体词库", source: .downloaded,
                 version: "2026.03.26", installed: true, requiresLua: true, downloadSize: "16 MB",
-                installedSize: "约 60 MB", licenseName: "GPL-3.0", supportsUserDictionary: true, isDownloadable: true
+                installedSize: "约 60 MB", licenseName: "GPL-3.0-only",
+                licenseDescriptor: ThirdPartyLicenseCatalog.rimeIce,
+                supportsUserDictionary: true, isDownloadable: true
             ),
             isActive: false,
             onSelect: {}

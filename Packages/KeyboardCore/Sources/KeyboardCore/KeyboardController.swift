@@ -1221,6 +1221,7 @@ public final class KeyboardController {
             || state.typoCorrection != nil
             || !state.continuation.isEmpty
             || state.pendingPunctuation != nil
+            || state.pendingKaomoji != nil
             || state.insertedPreeditCount > 0
             || !state.insertedPreeditText.isEmpty
 
@@ -1242,8 +1243,9 @@ public final class KeyboardController {
         state.partialCommit = nil
         state.typoCorrection = nil
         state.continuation = ContinuationState()
-        // 已上屏的 pending 标点留在 host 上，只放弃可替换身份。
+        // 已上屏的 pending 标点 / 颜表情留在 host 上，只放弃可替换身份。
         state.pendingPunctuation = nil
+        state.pendingKaomoji = nil
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
         let hadPinyinPaths =
@@ -1253,7 +1255,9 @@ public final class KeyboardController {
 
         var effects: KeyboardEffect = []
         if hadVisibleComposition {
-            effects.formUnion([.compositionChanged, .continuationChanged, .pendingPunctuationChanged])
+            effects.formUnion([
+                .compositionChanged, .continuationChanged, .pendingPunctuationChanged, .pendingKaomojiChanged,
+            ])
         }
         if hadPinyinPaths {
             effects.insert(.t9PinyinPathsChanged)
@@ -1331,6 +1335,9 @@ public final class KeyboardController {
         case .insertReturn:
             return acceptingPendingPunctuationIfNeeded { handleInsertReturn() }
         case .deleteBackward:
+            if let pendingEffects = deleteOwnedPendingKaomojiIfNeeded() {
+                return pendingEffects
+            }
             if let pendingEffects = deleteOwnedPendingPunctuationIfNeeded() {
                 return pendingEffects
             }
@@ -1343,6 +1350,8 @@ public final class KeyboardController {
             return handleCycleT9PinyinPath()
         case .pressT9CommonPunctuation:
             return handlePressT9CommonPunctuation()
+        case .pressKaomoji:
+            return handlePressKaomoji()
         case .candidatePageUp:
             return handleCandidatePageUp()
         case .candidatePageDown:

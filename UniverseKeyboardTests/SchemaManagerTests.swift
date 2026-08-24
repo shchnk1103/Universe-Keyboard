@@ -19,7 +19,8 @@ final class SchemaManagerTests: XCTestCase {
 
         XCTAssertEqual(rimeIce?.version, "2026.05.01")
         XCTAssertEqual(rimeIce?.installed, true)
-        XCTAssertEqual(rimeIce?.licenseName, "GPL-3.0")
+        XCTAssertEqual(rimeIce?.licenseName, "GPL-3.0-only")
+        XCTAssertEqual(rimeIce?.licenseDescriptor, ThirdPartyLicenseCatalog.rimeIce)
         XCTAssertTrue(rimeIce?.isDownloadable == true)
         XCTAssertTrue(rimeIce?.supportsUserDictionary == true)
     }
@@ -33,7 +34,7 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(entry?.distribution?.githubRepository, "rime-wanxiang")
         XCTAssertEqual(entry?.distribution?.assetName, "rime-wanxiang-base.zip")
         XCTAssertEqual(entry?.installationPlan?.schemaFileName, "wanxiang.schema.yaml")
-        XCTAssertEqual(entry?.licenseName, "CC BY 4.0")
+        XCTAssertEqual(entry?.license, ThirdPartyLicenseCatalog.wanxiang)
         XCTAssertTrue(entry?.requiresLua == true)
         XCTAssertTrue(RimeRuntimeSelection.isTwentySixKeyCapable("wanxiang"))
         XCTAssertFalse(RimeRuntimeSelection.isNineKeyCapable("wanxiang"))
@@ -48,9 +49,119 @@ final class SchemaManagerTests: XCTestCase {
         manager.switchToSchema("rime_ice")
 
         XCTAssertTrue(settings.bool(forKey: "rime_ice_license_accepted"))
+        XCTAssertEqual(
+            settings.string(forKey: "rime_ice_license_acceptance_revision"),
+            ThirdPartyLicenseCatalog.rimeIce.acceptanceRevision
+        )
         XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "rime_ice")
         XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
         XCTAssertFalse(settings.bool(forKey: "rime_deployed"))
+    }
+
+    func testDownloadableSchemesUseTheirOwnLicenseDescriptors() {
+        XCTAssertEqual(
+            RimeSchemeCatalog.entry(for: "rime_ice")?.license,
+            ThirdPartyLicenseCatalog.rimeIce
+        )
+        XCTAssertEqual(
+            RimeSchemeCatalog.entry(for: "wanxiang")?.license,
+            ThirdPartyLicenseCatalog.wanxiang
+        )
+        XCTAssertNotEqual(
+            ThirdPartyLicenseCatalog.rimeIce.acceptanceRevision,
+            ThirdPartyLicenseCatalog.wanxiang.acceptanceRevision
+        )
+    }
+
+    func testEveryThirdPartyCatalogEntryHasBundledOfflineDocuments() {
+        let catalog =
+            ThirdPartyLicenseCatalog.downloadableSchemes
+            + ThirdPartyLicenseCatalog.bundledContent
+
+        for license in catalog {
+            XCTAssertFalse(
+                license.offlineDocuments.isEmpty,
+                "\(license.projectName) must provide at least one offline notice"
+            )
+            XCTAssertEqual(
+                Set(license.offlineDocuments.map(\.resourceName)).count,
+                license.offlineDocuments.count,
+                "\(license.projectName) must not repeat an offline notice"
+            )
+
+            for document in license.offlineDocuments {
+                let nestedURL = Bundle.main.url(
+                    forResource: document.resourceName,
+                    withExtension: "txt",
+                    subdirectory: "ThirdPartyLicenses"
+                )
+                let resourceURL =
+                    nestedURL
+                    ?? Bundle.main.url(
+                        forResource: document.resourceName,
+                        withExtension: "txt"
+                    )
+
+                guard let resourceURL else {
+                    XCTFail("Missing bundled notice: \(document.resourceName).txt")
+                    continue
+                }
+
+                let text = try? String(contentsOf: resourceURL, encoding: .utf8)
+                XCTAssertFalse(
+                    text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true,
+                    "Bundled notice must be non-empty UTF-8: \(document.resourceName).txt"
+                )
+            }
+        }
+    }
+
+    func testLicenseAcceptanceIsIsolatedPerScheme() {
+        let manager = makeManager()
+
+        manager.acceptLicense(for: "rime_ice")
+
+        XCTAssertTrue(manager.licenseAccepted(for: "rime_ice"))
+        XCTAssertFalse(manager.licenseAccepted(for: "wanxiang"))
+    }
+
+    func testStaleLicenseRevisionRequiresNewAcceptance() {
+        let settings = StubSharedSettingsStore(
+            values: ["rime_ice_license_acceptance_revision": "rime-ice-gpl-3.0-only-old"]
+        )
+        let manager = makeManager(settings: settings)
+
+        XCTAssertFalse(manager.licenseAccepted(for: "rime_ice"))
+    }
+
+    func testLegacyRimeIceAcceptanceMigratesToCurrentRevision() {
+        let settings = StubSharedSettingsStore(values: ["rime_ice_license_accepted": true])
+
+        let manager = makeManager(settings: settings)
+
+        XCTAssertTrue(manager.licenseAccepted(for: "rime_ice"))
+        XCTAssertEqual(
+            settings.string(forKey: "rime_ice_license_acceptance_revision"),
+            ThirdPartyLicenseCatalog.rimeIce.acceptanceRevision
+        )
+    }
+
+    func testLegacyWanxiangAcceptanceDoesNotMigrateFromIncorrectSharedDialog() {
+        let settings = StubSharedSettingsStore(values: ["wanxiang_license_accepted": true])
+
+        let manager = makeManager(settings: settings)
+
+        XCTAssertFalse(manager.licenseAccepted(for: "wanxiang"))
+        XCTAssertNil(settings.string(forKey: "wanxiang_license_acceptance_revision"))
+    }
+
+    func testDownloadIsBlockedUntilCurrentLicenseRevisionIsAccepted() {
+        let manager = makeManager()
+        manager.rimeIceDownloadState = .completed(schemeName: "雾凇拼音")
+
+        manager.startDownload()
+
+        XCTAssertEqual(manager.rimeIceDownloadState, .completed(schemeName: "雾凇拼音"))
     }
 
     func testCheckForUpdateUsesInjectedCatalogClient() async {
@@ -115,6 +226,7 @@ final class SchemaManagerTests: XCTestCase {
 
     func testStartDownloadAllowsCompletedStateForInstalledSchemaUpdates() {
         let manager = makeManager()
+        manager.acceptLicense()
         manager.rimeIceDownloadState = .completed(schemeName: "雾凇拼音")
 
         manager.startDownload()
@@ -134,6 +246,7 @@ final class SchemaManagerTests: XCTestCase {
         )
         let installer = StubSchemaArchiveInstaller()
         let manager = makeManager(settings: settings, installer: installer)
+        manager.acceptLicense()
         manager.rimeIceDownloadState = .completed(schemeName: "雾凇拼音")
 
         manager.forceRedownload()

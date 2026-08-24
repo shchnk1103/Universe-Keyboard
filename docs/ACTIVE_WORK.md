@@ -5,11 +5,11 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-21 Asia/Shanghai` — 发布中间目标改为外部 TestFlight 候选；Cloud/设备矩阵与 RC 顺序已由 Product Lead 记录。Active Work `3/10`。
+Last synced: `2026-08-24 Asia/Shanghai` — 08 Human Product Gate Passed；Active Work `3/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | RELEASE-2026-08-01 | Active | 外部 TestFlight 候选；非颜表情前置 → 颜表情/修复 → RC → Cloud；01/04–08 仍未满足 | [`assignment`](assignments/release-2026-08-01.md) · [`Product Decision`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md) |
+| 1 | RELEASE-2026-08-01 | Active | 外部候选；05 材料与类别 Human-reported 已保存；06 VoiceOver/J2 已修但打磨未关；07 iOS 18 iPad Simulator 矩阵已完成；08 Gate Passed 待提交；04 与 TD-003/004/005 仍开 | [`assignment`](assignments/release-2026-08-01.md) · [`Product Decision`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md) · [`receipt accept`](product-decisions/RELEASE-2026-0801-05-provenance-a-accept.md) · [`iPad preflight`](evidence/release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md) |
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 
@@ -17,6 +17,8 @@ Last synced: `2026-08-21 Asia/Shanghai` — 发布中间目标改为外部 TestF
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
+| RELEASE-2026-0801-08 | `Completed`；Human Product Gate Passed（iPhone 13 Pro / iOS 27.0，G-01…G-16）；Closed 等合并；不可用 Gate 声称可合并 | [`assignment`](assignments/release-2026-08-01-08-kaomoji-content.md) · [`Gate`](evidence/release-2026-08-01-08-product-gate-2026-08-24.md) · [`Arch`](assignments/release-2026-08-01-08-architecture-review.md) · [`Quality Q1`](assignments/release-2026-08-01-08-quality-review.md) |
+| RELEASE-2026-0801-05-PROVENANCE-A | `Completed`；Product 已接受派生收据为外部候选残留；不开 Phase B | [`assignment`](assignments/release-2026-08-01-05-provenance-recovery-phase-a.md) · [`PD`](product-decisions/RELEASE-2026-0801-05-provenance-a-accept.md) · [`evidence`](evidence/release-2026-08-01-05-provenance-recovery-phase-a-2026-08-23.md) |
 | PATH-BAR-TOUCH-001 | `Completed`；Human 复验 Path 上半区可点；等 PR 合并后 Closed | [`assignments/path-bar-touch-001.md`](assignments/path-bar-touch-001.md) |
 | KEYBOARD-LAYOUT-9KEY-PUNCT-001 | `Closed`；PR #75 已合并；功能分支已清理 | [`assignments/keyboard-layout-9key-punct-001.md`](assignments/keyboard-layout-9key-punct-001.md) |
 | KEY-TOUCH-FILL-001 | `Completed`；26 键/九键 overlay 关/开同点与键面原生操作均通过 Human 真机 Product Gate | [`assignments/key-touch-fill-001.md`](assignments/key-touch-fill-001.md) |

@@ -1,0 +1,9 @@
+librime-octagram (octagram / grammar RIME module)
+Source: https://github.com/lotem/librime-octagram.git
+Commit: bfb168ca33d8b372596fdf2007933f3da1cf360e
+Root LICENSE: BSD-3-Clause (upstream relicense PR #8 merge)
+Residual: src/grammar_module.cc still carries a stale GPLv3 file header; see
+docs/evidence/td-012-octagram-license-provenance-audit-2026-08-09.md
+Baseline ABI vendor: rime-vendor-ios-1.16.1-lua.1
+  SHA-256: c299f36eae4966a8c22f83046c7015a04b3f047abcc4bab9355ca19ac840436c
+librime peer commit: 1300e568967feeeedd72028c7cb5ef9151f7fb37

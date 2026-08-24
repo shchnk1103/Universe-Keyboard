@@ -106,7 +106,7 @@ Reference screenshots used during design may live only under local `photos/` (gi
 |---|---|
 | Letter keys | Primary labels are letter groups (`ABC`…`WXYZ`); digit **2–9** payload is identity-only for RIME (`accessibilityIdentifier` + `accessibilityValue == t9Digit`) |
 | Left main pad | Four equal columns: page/punct/letters, symbols/letters, input-mode/letters |
-| Right column | Delete (SF Symbol `delete.left`), **颜表情** (`^_^`, product placeholder), **Return glyph** (`return` SF Symbol) spanning the bottom two rows |
+| Right column | Delete (SF Symbol `delete.left`), **颜表情** (`^_^`, ADR 0030 pending palette), **Return glyph** (`return` SF Symbol) spanning the bottom two rows |
 | Bottom row | Emoji page entry + **选拼音** + wide space (`拼音`, active composition: `选定`); widths follow the left pad’s 4-column rhythm (**1+1+2**); delete/return are **not** duplicated here |
 | Globe | Still created for `needsInputModeSwitchKey`; system may hide it and show an external globe |
 
@@ -125,7 +125,7 @@ Return **never** shows host action text such as `send`; VoiceOver still uses `re
 
 - **选拼音** — current behavior is governed by [`KEYBOARD-LAYOUT-9KEY-PINYIN-002`](assignments/keyboard-layout-9key-pinyin-002.md) / ADR 0021: enabled only when compact choices exist; first press selects the first choice, later presses select next/wrap. Compact paths remain directly tappable in the fixed bar.
 - **常用标点 (`，。？！`)** — [`KEYBOARD-LAYOUT-9KEY-PUNCT-001`](assignments/keyboard-layout-9key-punct-001.md) / ADR 0029: 单击上屏待确认 `，`，候选栏展示本地标点；1.0s 内同键轮换 `，。？！`；候选点选替换 pending，之后再点该键新开逗号。
-- **颜表情 (`^_^`)** — chrome only; reuses `showKaomojiCandidatesPlaceholder` (same family as symbols-page `^_^` entry). Full product content requires a **separate** future Assignment.
+- **颜表情 (`^_^`)** — [`RELEASE-2026-0801-08`](assignments/release-2026-08-01-08-kaomoji-content.md) / ADR 0030: 九键与中文符号页共用 `.pressKaomoji`；单击上屏待确认 `^_^`，候选栏展示本地颜表情并可替换；同键不再轮换，而是接受后再新开默认 `^_^`。
 
 Effective scheme, readiness and digit algebra remain ADR 0018; path refinement extends session semantics under ADR 0020 without Extension deploy.
 
@@ -149,7 +149,6 @@ This is a discovery note, not an authorized V1 feature or Assignment.
 - 朙月 nine-key scheme
 - Live cross-process layout hot-switch while the keyboard is already shown
 - librime binary upgrade unless a later regression invalidates the Spike
-- Full 颜表情 candidate content (placeholders only; separate future Assignment)
 - English nine-key multi-tap / swipe letter pick (still non-goals for precise pinyin work)
 
 ## Spike Gate

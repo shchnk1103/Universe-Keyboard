@@ -24,7 +24,7 @@ struct SchemaDownloadSection: View {
 
         if store.isRimeIceInstalled {
             Section {
-                RimeIceManageContent(
+                SchemaManageContent(
                     version: store.rimeIceVersion,
                     updateStatusMessage: store.updateStatusMessage,
                     onCheckForUpdate: { Task { await store.checkForUpdateAndDownload() } },

@@ -64,17 +64,17 @@ nonisolated enum SettingsSearchCatalog {
         SettingsSearchItem(
             id: "typoCorrection",
             title: "智能纠错",
-            subtitle: "误触纠错、基准覆盖",
+            subtitle: "本地邻键旁路建议，不自动改写",
             systemImage: "wand.and.stars",
-            keywords: ["纠错", "typo", "误触"],
+            keywords: ["纠错", "typo", "误触", "智能", "AI"],
             destination: .typoCorrection
         ),
         SettingsSearchItem(
             id: "typingIntelligence",
             title: "输入洞察",
-            subtitle: "本地统计与趋势",
+            subtitle: "本机字符计数，不是人工智能",
             systemImage: "chart.xyaxis.line",
-            keywords: ["统计", "洞察", "今日", "字符"],
+            keywords: ["统计", "洞察", "今日", "字符", "趋势", "AI"],
             destination: .typingIntelligence
         ),
         SettingsSearchItem(

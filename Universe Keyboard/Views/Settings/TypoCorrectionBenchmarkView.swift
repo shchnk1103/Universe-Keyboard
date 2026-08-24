@@ -5,20 +5,20 @@ struct TypoCorrectionBenchmarkView: View {
     private let benchmarkModel = TypoCorrectionBenchmarkModel()
 
     #if DEBUG
-    @AppStorage(
-        TypoCorrectionExperimentalSettings.insertionEnabledKey,
-        store: UserDefaults(suiteName: universeAppGroupID)
-    )
-    private var experimentalInsertionEnabled = false
+        @AppStorage(
+            TypoCorrectionExperimentalSettings.insertionEnabledKey,
+            store: UserDefaults(suiteName: universeAppGroupID)
+        )
+        private var experimentalInsertionEnabled = false
 
-    @AppStorage(
-        TypoCorrectionExperimentalSettings.transpositionEnabledKey,
-        store: UserDefaults(suiteName: universeAppGroupID)
-    )
-    private var experimentalTranspositionEnabled = false
+        @AppStorage(
+            TypoCorrectionExperimentalSettings.transpositionEnabledKey,
+            store: UserDefaults(suiteName: universeAppGroupID)
+        )
+        private var experimentalTranspositionEnabled = false
 
-    @State private var learnedCorrectionCount = 0
-    @State private var learnedSelectionCount = 0
+        @State private var learnedCorrectionCount = 0
+        @State private var learnedSelectionCount = 0
     #endif
 
     private let supportedExamples = [
@@ -43,7 +43,7 @@ struct TypoCorrectionBenchmarkView: View {
                 localEvaluationSection
                 experimentalAuditSection
                 #if DEBUG
-                developerExperimentSection
+                    developerExperimentSection
                 #endif
                 benchmarkSection(title: "当前覆盖", examples: supportedExamples)
                 benchmarkSection(title: "已知边界", examples: unsupportedExamples)
@@ -65,7 +65,7 @@ struct TypoCorrectionBenchmarkView: View {
                     CapsuleBadge(text: "不自动替换", color: .orange)
                 }
 
-                Text("智能纠错只在候选栏中追加明确的旁路建议。用户仍然需要手动选择，系统不会自动改写输入。")
+                Text("智能纠错只在候选栏中追加明确的旁路建议。用户仍然需要手动选择，系统不会自动改写输入。这是本机邻键规则，不是人工智能，也不会联网推断。")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Text("下方样例是 benchmark 代表项，不是固定白名单。真实覆盖由邻键规则、候选验证和评分共同决定。")
@@ -131,72 +131,73 @@ struct TypoCorrectionBenchmarkView: View {
     }
 
     #if DEBUG
-    private var developerExperimentSection: some View {
-        InfoSection(title: "内部实验开关", systemImage: "switch.2") {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("仅 Debug 构建显示并生效，用于本机真机验证。Release 构建会忽略这些开关，不会影响普通用户或测试人员。")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+        private var developerExperimentSection: some View {
+            InfoSection(title: "内部实验开关", systemImage: "switch.2") {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("仅 Debug 构建显示并生效，用于本机真机验证。Release 构建会忽略这些开关，不会影响普通用户或测试人员。")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
 
-                Toggle("安全漏字纠错实验", isOn: $experimentalInsertionEnabled)
-                    .font(.subheadline.weight(.medium))
-                    .toggleStyle(.switch)
-                Text("用于验证 niho -> nihao 这类保守 insertion 候选的展示价值。")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    Toggle("安全漏字纠错实验", isOn: $experimentalInsertionEnabled)
+                        .font(.subheadline.weight(.medium))
+                        .toggleStyle(.switch)
+                    Text("用于验证 niho -> nihao 这类保守 insertion 候选的展示价值。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
-                Divider()
+                    Divider()
 
-                Toggle("相邻转置纠错实验", isOn: $experimentalTranspositionEnabled)
-                    .font(.subheadline.weight(.medium))
-                    .toggleStyle(.switch)
-                Text("用于审计 nihoa -> nihao 这类 transposition 候选；当前不进入前排展示。")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    Toggle("相邻转置纠错实验", isOn: $experimentalTranspositionEnabled)
+                        .font(.subheadline.weight(.medium))
+                        .toggleStyle(.switch)
+                    Text("用于审计 nihoa -> nihao 这类 transposition 候选；当前不进入前排展示。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
-                Divider()
+                    Divider()
 
-                HStack {
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text("本地纠错学习")
-                            .font(.subheadline.weight(.medium))
-                        Text("已记录 \(learnedCorrectionCount) 组、共 \(learnedSelectionCount) 次明确选择，用于 insertion / transposition 排序。")
+                    HStack {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("本地纠错学习")
+                                .font(.subheadline.weight(.medium))
+                            Text(
+                                "已记录 \(learnedCorrectionCount) 组、共 \(learnedSelectionCount) 次明确选择，用于 insertion / transposition 排序。"
+                            )
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                        }
+                        Spacer(minLength: 12)
                     }
-                    Spacer(minLength: 12)
-                }
 
-                AppActionButton(
-                    title: "重置实验学习记录",
-                    systemImage: "arrow.counterclockwise",
-                    prominence: .destructive,
-                    role: .destructive
-                ) {
-                    typoCorrectionLearningStore.reset()
-                    learnedCorrectionCount = 0
-                    learnedSelectionCount = 0
+                    AppActionButton(
+                        title: "重置实验学习记录",
+                        systemImage: "arrow.counterclockwise",
+                        prominence: .destructive,
+                        role: .destructive
+                    ) {
+                        typoCorrectionLearningStore.reset()
+                        learnedCorrectionCount = 0
+                        learnedSelectionCount = 0
+                    }
+                    .disabled(learnedCorrectionCount == 0)
+                    .opacity(learnedCorrectionCount == 0 ? 0.45 : 1)
                 }
-                .disabled(learnedCorrectionCount == 0)
-                .opacity(learnedCorrectionCount == 0 ? 0.45 : 1)
+                .onAppear(perform: refreshLearnedCorrectionCount)
             }
-            .onAppear(perform: refreshLearnedCorrectionCount)
         }
-    }
 
-    private var typoCorrectionLearningStore: TypoCorrectionLearningStore {
-        TypoCorrectionLearningStore(
-            defaults: UserDefaults(suiteName: universeAppGroupID)
-        )
-    }
+        private var typoCorrectionLearningStore: TypoCorrectionLearningStore {
+            TypoCorrectionLearningStore(
+                defaults: UserDefaults(suiteName: universeAppGroupID)
+            )
+        }
 
-    private func refreshLearnedCorrectionCount() {
-        let records = typoCorrectionLearningStore.snapshot().records
-        learnedCorrectionCount = records.count
-        learnedSelectionCount = records.reduce(0) { $0 + $1.selectionCount }
-    }
+        private func refreshLearnedCorrectionCount() {
+            let records = typoCorrectionLearningStore.snapshot().records
+            learnedCorrectionCount = records.count
+            learnedSelectionCount = records.reduce(0) { $0 + $1.selectionCount }
+        }
     #endif
-
 
     private func benchmarkSection(title: String, examples: [TypoCorrectionExample]) -> some View {
         InfoSection(title: title, systemImage: "tablecells") {

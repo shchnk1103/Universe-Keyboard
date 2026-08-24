@@ -16,7 +16,7 @@
 | Signed archive | `UNKNOWN` |
 | dSYM retention | `UNKNOWN` |
 | TestFlight/App Store build | `UNKNOWN` |
-| Intended final build environment | Apple Developer Program active; Xcode Developer Team `chenkai shen` verified with Admin role; Xcode Cloud connected to GitHub. Default workflow Build 1 passed on Xcode 26.6 / macOS Tahoe 26.6.2. App Store Connect App Record identity, Cloud Archive/signing and artifact retention remain pending. |
+| Intended final build environment | Apple Developer Program active; Xcode Developer Team `chenkai shen` verified with Admin role; Xcode Cloud connected to GitHub. App Record `6804236252` verified. Default Build 1 proved bootstrap/build; no-distribution Archive Pilot Build 3 on `main` / `4fd3ce7` proved Xcode 26.6 Archive and App Store distribution signing. Final frozen-RC archive, dSYM/artifact retention and upload remain pending. |
 | Pre-external device matrix | Physical iPhone 13 Pro / iOS 27 for Extension lifecycle/performance/Full Access; iOS 18 iPhone + iPad Simulator for minimum-OS compatibility. Simulator is not physical-device evidence. |
 | Supported devices/OS | iPhone and iPad; **iOS 18.0+** by [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md). Narrowed iOS 18 Phase 2 is Human-accepted ([evidence](release-2026-0801-10-ios-18-phase2-human-evidence.md)); this is not a release device matrix. |
 | Included schemas/features | Existing baseline input; Chinese nine-key; precise-pinyin selection; post-commit continuation; kaomoji content; and a local basic Home input-count display. No schema expansion is authorized. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. |
@@ -25,16 +25,16 @@
 
 | Assignment | Status | Evidence / blocker |
 |---|---|---|
-| Stable archive | `Assigned — Entry Criteria pending` | Bootstrap locally implemented and Cloud Build pilot passed on `cdc6bfe`; membership, Developer Team and GitHub-to-Cloud connection verified. App Record confirmation, Archive/signing/artifact retention, independent review, final fixes and frozen RC remain pending. |
+| Stable archive | `Assigned — Entry Criteria pending` | Bootstrap Build 1 passed on `cdc6bfe`; App Record verified; no-distribution Archive/signing Build 3 passed on `main` / `4fd3ce7`. Artifact/dSYM retention, independent review, final fixes and frozen RC remain pending. |
 | Scope freeze | `Reviewed — Architecture and Quality conclusions recorded; no Product Gate or release conclusion` | [Architecture review](release-2026-08-01-02-architecture-review.md) and [Quality review](release-2026-08-01-02-quality-review.md) are historical `Pass` with follow-ups. Minimum OS row superseded by iOS 18.0; iPad support, kaomoji content and iOS 18 Phase 2 remain release blockers |
 | iOS 26.0 target | `Superseded by RELEASE-2026-0801-10` | 26.0-only path closed by [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md) |
 | iOS 18.0 target | `Reviewed` — Phase 1 Quality `Pass with conditions`; narrowed Phase 2 Human-accepted | [Quality](../assignments/release-2026-08-01-10-quality-review.md) · [Phase 2 Human](release-2026-0801-10-ios-18-phase2-human-evidence.md). Not Archive/release |
-| iPad support | `Assigned — Entry Criteria pending` | External-candidate preflight uses iOS 18 iPad Simulator; physical iPad is deferred to targeted external evidence/App Store Gate and is not claimed complete |
+| iPad support | `Active — iOS 18 Simulator matrix complete; release-toolchain runtime gate pending` | [iOS 18 iPad Simulator preflight](release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md): mini / 10th-gen / 13-inch M4 critical matrix complete. Physical iPad remains deferred; this is not an App Store iPad compatibility claim |
 | Kaomoji content | `Assigned — Entry Criteria pending` | Sequenced after other necessary preparation but before RC freeze; catalog/source/license and working-content evidence remain pending |
 | Onboarding / Full Access | `Closed — Conditional Product Gate accepted` | Device matrix [`release-2026-08-01-03-physical-device-fa-matrix.md`](release-2026-08-01-03-physical-device-fa-matrix.md); gate [`../assignments/release-2026-08-01-03-product-gate.md`](../assignments/release-2026-08-01-03-product-gate.md); Human confirmed `2026-07-20`; TD-004 residual in `TECH_DEBT.md` |
 | Device / performance | `Assignment Pending` | Final Cloud build pending; iPhone 13 Pro / iOS 27 physical is the named primary device; TD-003/004/005 remain open |
-| App Store materials | `Assigned — Entry Criteria pending` | External TestFlight copy/contact/export inputs may be prepared locally; account/App Record/public URLs/final archive remain pending |
-| Product polish | `Assignment Pending` | Executor/visual operator pending |
+| App Store materials | `Active` | [2026-08-22/23 audit and update](release-2026-08-01-05-testflight-metadata-audit-2026-08-22.md): contacts/privacy/export/age complete; per-scheme license disclosure implemented; Phase A receipts accepted; Human-reported content-rights “Yes”, primary `工具` and secondary `效率` saved; screenshots/copy/What to Test remain pending |
+| Product polish | `Active — Full Access deferral remediation verified; other polish residuals remain` | Candidate VoiceOver role/hint and J2 “稍后再开启” are remediated; complete accessibility and physical-device visual Gate remain open. Evidence in [`iPad preflight`](release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md) |
 
 ## Preliminary Repository Audit Snapshot
 
@@ -65,6 +65,34 @@ This section combines the repository preflight with the subsequently authorized 
 - **Cloud connection (`2026-08-21`):** Xcode Cloud successfully connected to the GitHub source repository and created workflow `Default`. Its current action is `Build - iOS`, and it has no TestFlight post-action. Xcode created `xcshareddata/xcodecloud/manifest.json` with Cloud product/target identifiers only; no credential or secret is present. The feature branch was pushed before Build 1; no build was started against `main`.
 - **Remaining pilot proof:** signing, Archive, dSYM/artifact retention and artifact download against a future frozen candidate
 - **Expiry:** vendor manifest/script, ignore rules, package graph, scheme, Cloud workflow or release commit change
+
+## Xcode Cloud Archive/Signing Pilot Snapshot
+
+This section is later than the repository preflight above and supersedes only its “Archive/signing unverified” pilot statement. It does not become final release evidence.
+
+- **Collected:** `2026-08-22 Asia/Shanghai`
+- **App Record:** `Universe Keyboard`, Apple ID `6804236252`, Bundle ID `com.DoubleShy0N.Universe-Keyboard`, primary language Simplified Chinese.
+- **Workflow:** `Archive Pilot (No Distribution)`; manual `main` only; Xcode/macOS `Latest Release`; action `Archive - iOS`; Distribution Preparation `None`; no post-actions.
+- **Build:** Build 3, commit `4fd3ce70d9acfc54472923fb7d66ff0589e11f6d`, Xcode 26.6 (`17F113`), macOS Tahoe 26.6.2 (`25G83`). Queue 9 seconds; about 2 minutes duration / 3 minutes usage.
+- **Result:** `Archive - iOS` succeeded. The action reached and completed “Code signing app for app-store distribution”. [Build record](https://appstoreconnect.apple.com/teams/82c0e48e-c8bf-442c-9db9-19ed80ce4d87/apps/6804236252/ci/builds/6aec0bbf-6bbe-4cd3-81b5-8382f2d3898d/summary).
+- **Distribution check:** TestFlight still showed no build after completion; no upload/distribution was configured or performed.
+- **Evidence grade:** `Executor-recorded`.
+- **Remaining boundary:** current commit is not frozen RC; artifact and dSYM retention/download were not verified; no upload, TestFlight processing, smoke, external group or Beta Review occurred.
+- **Expiry:** release commit/build, signing entitlements, scheme, workflow, toolchain, privacy manifest, vendor/bootstrap or Apple upload requirements change.
+
+## External TestFlight Metadata Snapshot
+
+- **Collected:** `2026-08-22 Asia/Shanghai`
+- **Online write:** Beta App Description and Beta Review Notes saved; login remains not required.
+- **Open Human Input Gate:** final build-specific What to Test approval after RC freeze/upload. License-disclosure UI was Human-confirmed separately. Content rights and categories are Human-reported saved (primary `工具`, secondary `效率`).
+- **Build-specific boundary:** What to Test is prepared only as a template because no TestFlight build exists.
+- **Canonical evidence/handoff:** [`release-2026-08-01-05-testflight-metadata-audit-2026-08-22.md`](release-2026-08-01-05-testflight-metadata-audit-2026-08-22.md).
+
+### Subsequent update — 2026-08-23
+
+- Human Product Owner confirmed feedback/review contacts were saved and App Privacy `No data collected` was published with the public privacy URL; personal values are not recorded.
+- Export-compliance audit found only Apple-OS-provided CryptoKit `ChaChaPoly`, URLSession/TLS and Keychain encryption plus SHA-256 digests. After explicit authorization, `config/Info.plist` now declares `ITSAppUsesNonExemptEncryption = NO`; source validation and an Xcode 27 beta Release Simulator integration build passed, with no encryption-document upload.
+- Possible U.S. year-end self-classification remains a Human legal obligation. The age questionnaire is Human-confirmed complete. Phase A derived receipts were accepted as an external-candidate residual. Human Product Owner later reported saving content rights “Yes”, primary category `工具` and secondary category `效率`; the executor did not independently verify App Store Connect.
 
 ## Final Evidence Matrix
 
@@ -97,6 +125,9 @@ No skipped release gate is accepted by default. Add one row for every failure or
 | `2026-08-21 Asia/Shanghai` | Apple Developer Program activation | Human Product Owner reported completion in active Codex task | Human Product Owner; Codex performed read-only Xcode observation only | Human-attested active membership; Xcode account visible; team/access were still `UNKNOWN` at this observation and were subsequently verified below |
 | `2026-08-21 Asia/Shanghai` | Connect Xcode Cloud to GitHub and create first workflow | Human Product Owner replied `继续` after Codex identified the persistent repository-access boundary | Xcode Cloud / GitHub; current repository only | Connection succeeded; Developer Team `chenkai shen` / Admin; workflow `Default` created with `Latest Release`; no build or distribution started |
 | `2026-08-21 Asia/Shanghai` | Run no-distribution Cloud Build pilot | Same bounded authorization; Human Product Owner supplied a temporary proxy and asked Codex to continue | Xcode Cloud workflow `Default`; feature branch only | Build 1 on `cdc6bfe` passed with Xcode 26.6 / macOS Tahoe 26.6.2; post-clone RIME bootstrap verified 12 artifacts; iOS build completed with no Issues; no Archive or distribution |
+| `2026-08-22 Asia/Shanghai` | Create/configure no-distribution Archive pilot and run one manual `main` build | Human Product Owner separately replied `授权` after Codex stated the workflow and no-distribution boundary, then separately authorized starting one pilot | Xcode Cloud workflow `Archive Pilot (No Distribution)`; App Store Connect App `6804236252` | Build 3 on `4fd3ce7` archived and completed App Store distribution signing with Xcode 26.6 / macOS 26.6.2; TestFlight remained empty; no post-action/upload |
+| `2026-08-22 Asia/Shanghai` | Audit and partially complete external TestFlight test information | Human Product Owner requested read-only audit, metadata/compliance/test-copy completion and KOS handoff updates | App Store Connect TestFlight Test Information; current Codex task | Beta description and Review Notes saved; login off. Human/compliance fields remain open; no build/group/tester/review submission |
+| `2026-08-23 Asia/Shanghai` | Add the repository-supported exempt-encryption declaration | Human Product Owner explicitly replied `授权` after the exact `ITSAppUsesNonExemptEncryption = NO` change and validation boundary were stated | `config/Info.plist`; local Xcode 27 beta Release Simulator integration build | Source and built App plist both resolve to `false`; build passed. No document/build upload, review submission, RC freeze or legal-risk acceptance |
 
 ## Release Decision
 

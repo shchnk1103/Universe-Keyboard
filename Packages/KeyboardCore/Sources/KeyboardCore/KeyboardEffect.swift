@@ -1,7 +1,7 @@
 public struct KeyboardEffect: OptionSet, Equatable, Sendable {
-    public let rawValue: UInt8
+    public let rawValue: UInt16
 
-    public init(rawValue: UInt8) {
+    public init(rawValue: UInt16) {
         self.rawValue = rawValue
     }
 
@@ -15,4 +15,14 @@ public struct KeyboardEffect: OptionSet, Equatable, Sendable {
     public static let t9PinyinPathsChanged = KeyboardEffect(rawValue: 1 << 6)
     /// 九键待确认标点列表或载荷变化（ADR 0029）。不得复用 continuationChanged。
     public static let pendingPunctuationChanged = KeyboardEffect(rawValue: 1 << 7)
+    /// 待确认颜表情列表或载荷变化（ADR 0030）。不得复用标点或 continuation 位。
+    public static let pendingKaomojiChanged = KeyboardEffect(rawValue: 1 << 8)
+
+    /// 候选栏 / 本地 pending chrome 需要按 Core 快照重建。
+    public var refreshesCandidatePresentation: Bool {
+        contains(.compositionChanged)
+            || contains(.continuationChanged)
+            || contains(.pendingPunctuationChanged)
+            || contains(.pendingKaomojiChanged)
+    }
 }

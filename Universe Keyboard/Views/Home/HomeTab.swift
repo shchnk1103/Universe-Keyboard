@@ -189,7 +189,7 @@ struct HomeTab: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(AppPressableButtonStyle())
-        .accessibilityHint("打开输入趋势、字符构成与数据管理")
+        .accessibilityHint("打开本地输入统计、字符构成与数据管理")
     }
 
     // MARK: - Keyboard status
@@ -331,7 +331,7 @@ struct HomeTab: View {
 
     private var statusCaption: String {
         if !model.isEnabled {
-            return "本地统计未开启。需要时在输入趋势里打开即可。"
+            return "本地统计未开启。需要时在输入洞察里打开即可。"
         }
         if model.storeIssueDescription != nil {
             return "暂时读不到统计，稍后再看也没关系。"

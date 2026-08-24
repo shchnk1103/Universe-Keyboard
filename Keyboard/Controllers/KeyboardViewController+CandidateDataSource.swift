@@ -266,7 +266,10 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     private func isPreferredCandidate(_ item: CandidateItem, at index: Int) -> Bool {
-        index == 0
+        if item.kind == .kaomojiCandidate {
+            return item.title == controller.state.pendingKaomoji?.text
+        }
+        return index == 0
             && (item.kind == .candidate
                 || item.kind == .correctionCandidate
                 || item.kind == .continuationCandidate)

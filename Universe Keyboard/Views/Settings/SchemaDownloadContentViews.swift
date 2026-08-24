@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct RimeIceDownloadCardView: View {
+struct SchemaDownloadCardView: View {
     let schema: SchemaMetadata
     let isLicenseAccepted: Bool
     let onShowLicense: () -> Void
@@ -105,7 +105,7 @@ struct RimeDownloadErrorContent: View {
     }
 }
 
-struct RimeIceManageContent: View {
+struct SchemaManageContent: View {
     let version: String?
     let updateStatusMessage: String?
     let onCheckForUpdate: () -> Void
@@ -115,7 +115,7 @@ struct RimeIceManageContent: View {
 
     private let columns = [
         GridItem(.flexible(), spacing: 10),
-        GridItem(.flexible(), spacing: 10)
+        GridItem(.flexible(), spacing: 10),
     ]
 
     var body: some View {
