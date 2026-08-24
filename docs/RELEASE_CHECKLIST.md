@@ -35,10 +35,32 @@ The following unresolved contracts must be classified for the exact TestFlight s
 |---|---|---|---|
 | TD-003 Extension performance baseline | **Blocker** for broader external TestFlight because regressions cannot be evaluated without comparable evidence. | **Accepted risk** only for a limited internal build after collecting current-device cold-start, representative key-path, candidate and memory evidence with no unexplained regression. It is not `not applicable` to an Extension release. | Release acceptance record + TD-003 link + human approval + evidence location/expiry. |
 | TD-004 Full Access degradation matrix | **Blocker** for external testing that claims setup/degradation is self-diagnosing or includes Full Access off/on coverage. | **Scoped skip** only when the build is explicitly limited to testers instructed to enable Full Access and no claim is made about degraded behavior; otherwise a limited internal build requires explicit accepted-risk approval. | Release acceptance record + tested access scope + tester constraint + TD-004 link + human approval when risk is accepted. |
-| TD-005 crash/jetsam/symbolication handbook | **Blocker** for broader external TestFlight when the exact archive/dSYM cannot be retained or termination reports cannot be mapped back to the build. | **Accepted risk** only for a limited internal build when the exact archive and dSYM are retained and a named owner can collect device/Organizer reports despite the incomplete handbook. It is not `not applicable` to an Extension release. | Release acceptance record + archive/dSYM location + report owner + TD-005 link + human approval/expiry. |
+| TD-005 crash/jetsam/symbolication handbook | **Blocker** for broader external TestFlight until the exact archive/dSYM is retained **and** the current physical-device collection/classification flow has been exercised. The procedure is [`CRASH_JETSAM_SYMBOLICATION.md`](CRASH_JETSAM_SYMBOLICATION.md). | **Accepted risk** only for a limited internal build when the exact archive and dSYM are retained and a named owner can collect device/Organizer reports despite an unexercised path. It is not `not applicable` to an Extension release. | Release acceptance record + archive/dSYM location + report owner + handbook run receipt + TD-005 link + human approval/expiry when risk is accepted. |
 | TD-002 active-Extension user-dictionary access | **Blocker** when external testing includes restore/reset while the Keyboard Extension may be writing, or when the release claims that concurrent operation is safe. ADR 0005's verified pre-operation recovery backup is implemented; it does not close cross-process coordination. | **Scoped operating constraint** only for manual main-App restore/reset with the keyboard closed, explicit tester instructions, and no concurrent-safety claim. Background/automatic restore or an unbounded concurrent test scope requires TD-002 closure. | Release acceptance record + ADR 0005/TD-002 links + exact UI/test scope and tester constraint + Product Gate decision; record the user-visible limitation in `CHANGELOG.md`. |
 
 An unexplained omission is neither a scoped skip nor an accepted risk and blocks TestFlight. `Not applicable` may be used only when repository evidence proves the affected capability is absent from the release artifact; the reason and evidence must be recorded in the same acceptance record.
+
+## TestFlight Upload And Distribution Separation
+
+Uploading an exact, externally eligible build to App Store Connect is not the
+same action as assigning it to testers or submitting it for TestFlight App
+Review. A release-specific Product Decision may allow an **upload-only** action
+before external-candidate gates close, provided all of the following remain
+true:
+
+- the exact commit/tag/version/build and upload package are frozen and verified;
+- the package is eligible for external TestFlight and is not marked Internal
+  Only;
+- upload, internal preflight, external-group assignment and Beta Review are
+  separately authorized and separately recorded;
+- unresolved device/debt gates remain open and the uploaded build is not made
+  available to testers until their owning decision permits it;
+- any rebuild or build-number change creates a new candidate identity and
+  requires new artifact mapping and release revalidation.
+
+Prefer uploading the already verified App Store package when preserving the
+frozen build identity. Changing a Cloud workflow and rebuilding is not an
+identity-preserving substitute merely because it uses the same source commit.
 
 ## Repository And Artifacts
 

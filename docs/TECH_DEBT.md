@@ -29,6 +29,7 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 - **Priority:** High
 - **Risk:** Startup, input, candidate or memory regressions cannot be judged against evidence; jetsam may be mistaken for an ordinary lifecycle exit.
 - **Current mitigation:** Coarse performance logging and manual release checks.
+- **Current evidence status (`2026-08-24`):** Frozen Build 7 P4 reached an independently reviewed iPhone 13 Pro / iOS 27 cold baseline, but current Beta Time Profiler ended both allowed machine arms at about `1.3 s` with `Device disconnected` before any Human instruction. Both traces are excluded; this is an evidence-environment blocker, not a performance pass/fail. See [`P4 evidence`](evidence/release-2026-08-01-04-build7-device-run-p4-2026-08-24.md).
 - **Recommended fix:** Collect the metrics and traces defined in `docs/PERFORMANCE_BASELINE.md`, then review evidence before setting budgets.
 - **Owner area:** Keyboard Extension, KeyboardCore, RimeBridge, test/release.
 - **Trigger to resolve:** Before TestFlight expansion, App Store submission or accepting a performance-sensitive architecture change.
@@ -38,6 +39,7 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 - **Priority:** High
 - **Risk:** Shared features can fail silently or UI may claim a capability is active when App Group access is unavailable; design matrix may overstate RIME-off without FA on some OS builds.
 - **Current mitigation:** `RequestsOpenAccess=true`, activation Guide + `ONBOARDING_ACTIVATION.md` under `RELEASE-2026-0801-03` (Conditional Product Gate). Device matrix on iPhone 13 Pro / iOS 27 beta 3 shows basic+RIME `nihao` still works with FA off when 雾凇 is pre-deployed; **haptics** are the clear FA-linked gap; no Extension degradation banner.
+- **Current evidence status (`2026-08-24`):** Build 7 P4 froze Full Access off with Apple keyboard current and Universe process zero, but Time Profiler failed before the first keyboard switch. No new off/on behavior evidence was produced; TD-004 remains open and the prior conditional matrix is not upgraded.
 - **Recommended fix:** (1) Architecture-verify App Group / `runtimeDirectories` under FA off after cold Extension launch; (2) rewrite user-facing matrix around **observed** dependencies (feedback first); (3) add Extension-visible degraded cue when shared feedback/settings fail; (4) re-run on/off evidence before claiming self-diagnosing setup.
 - **Owner area:** Main App onboarding/settings, Keyboard Extension bootstrap, diagnostics.
 - **Trigger to resolve:** Before broad external testing or any claim that setup failures are self-diagnosing.
@@ -45,9 +47,19 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 ## TD-005: Complete Crash, Jetsam And Symbolication Handbook
 
 - **Priority:** High
+- **Status:** Procedure implemented; frozen Build 7 Archive/dSYM mapping retained;
+  current iPhone 13 Pro / iOS 27 collection/classification exercise remains open. P4 retained unchanged pre-run crash/Jetsam
+  lists (`11/62`), but the Time Profiler environment failed before Human input, so no post-run classification window exists.
 - **Risk:** Extension termination cannot be reliably classified or traced to an exact release build.
-- **Current mitigation:** Minimal guidance in `docs/DEBUGGING.md` and release evidence requirements.
-- **Recommended fix:** Document archive retention, dSYM mapping, device-log collection, Organizer workflow, jetsam classification and evidence storage.
+- **Current mitigation:** [`CRASH_JETSAM_SYMBOLICATION.md`](CRASH_JETSAM_SYMBOLICATION.md)
+  defines acquisition, classification, UUID/dSYM matching, Xcode/`atos`
+  symbolication, privacy-safe storage and receipts. Frozen RC Build 7 retains
+  matching App/Keyboard dSYMs and exports. The current physical-device path has
+  not yet been exercised, so this debt is not repaid.
+- **Recommended fix:** Exercise the documented collection/classification path on
+  the frozen Build 7 ad hoc package with iPhone 13 Pro / iOS 27, retain a
+  privacy-safe receipt and prove that any matching report can be bound to the
+  exact App/Keyboard UUID and dSYM.
 - **Owner area:** Test/release and Keyboard Extension operations.
 - **Trigger to resolve:** Before TestFlight or immediately after the first unexplained production/TestFlight termination.
 

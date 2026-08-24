@@ -141,12 +141,61 @@ Cloud-managed distribution chain. This is not treated as a signature failure or
 a local trust pass. Identity is corroborated by Team ID, entitlements, embedded
 profiles, Distribution Summary and successful Cloud export logs.
 
+## Upload-only preflight — 2026-08-24
+
+No upload or workflow mutation occurred during this read-only preflight.
+
+| Check | Result | Grade |
+|---|---|---|
+| Remote frozen identity | Live `git ls-remote` shows `origin/main` and annotated tag `testflight-v1.0-rc1-build7^{}` both resolve to `244b32df38cff7ce3d8e56d78a80d4504cc6f073` | `Executor-recorded` |
+| Retained artifact bytes | All five directory-manifest SHA-256 values rehash exactly to this ledger; Store IPA and the three Store sidecar hashes also match | `Executor-recorded` |
+| Store eligibility | Export remains `1.0 (7)`, method `app-store-connect`, `testFlightInternalTestingOnly = false`, `uploadSymbols = true`; App and Keyboard remain Store-profiled with `beta-reports-active = true` | `Executor-recorded` |
+| App Store Connect TestFlight state | Signed-in read-only inspection shows “无构建版本” | `Executor-recorded` |
+| Build 7 page | Build succeeded at exact commit `244b32d`; only “重建” is offered, with no existing-build distribution action | `Executor-recorded` |
+| Cloud workflow | `Archive Pilot (No Distribution)` still uses Distribution Preparation `None` and has no post-actions | `Executor-recorded` |
+| Local delivery tool | At preflight time Apple Transporter was not installed. It was subsequently installed from Apple's Mac App Store and used for the separately authorized upload below; no credentialed `altool` path was used | `Executor-recorded` |
+
+Apple documents uploading an existing app binary with Xcode, `altool` or
+[Transporter](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds/).
+Apple's Xcode Cloud distribution flow archives and uploads as part of a workflow
+build; changing the no-distribution workflow and rebuilding would therefore
+create a new Cloud build identity rather than upload the already frozen Build 7
+package. At this preflight point, preserving `1.0 (7)` required a separate Human
+authorization to upload the retained Store `Universe Keyboard.ipa` with a
+supported Apple upload tool. Installing/signing into Transporter, validating,
+uploading, waiting for processing, assigning a tester group and submitting Beta
+Review were kept as separate actions. The next section supersedes only the
+preflight's upload-pending state.
+
+## Separately authorized upload result — 2026-08-24
+
+The Human Product Owner explicitly authorized uploading only the exact retained
+Store IPA to App Store Connect App `6804236252`, version `1.0`, build `7`, then
+waiting for processing. The authorization explicitly excluded group assignment,
+internal/external distribution and Beta Review submission.
+
+| Check | Result | Grade |
+|---|---|---|
+| Final local package identity | `Universe Keyboard.ipa`, `18,680,731` bytes, SHA-256 `b9baf3620be8fedd2754ce452edbed7ada0d07b67e44514666be3c8da58984aa` | `Executor-recorded` |
+| Transporter package recognition | `Universe Keyboard`, version `1.0`, build `7`, Apple ID `6804236252` | `Executor-recorded` |
+| Delivery | Transporter `26.30.2 (173002)` displayed green `已交付` at `2026-08-24 22:46 Asia/Shanghai` | `Executor-recorded` |
+| App Store Connect processing | Upload row appeared as `1.0 (7)` / `正在处理`, then completed as TestFlight build `7` / `准备提交` with 90-day expiry | `Executor-recorded` |
+| Binary metadata | Binary status `已验证`; build string `7`; minimum iOS `18.0`; arm64; iPhone/iPad; symbols included; non-exempt encryption `否`; App/Keyboard entitlements retain `beta-reports-active`, Team ID and expected App Group | `Executor-recorded` |
+| Distribution boundary | Groups `0`; individual testers `0`; build-specific What to Test is blank; no internal/external distribution or Beta Review submission occurred | `Executor-recorded` |
+
+TestFlight build detail:
+[`Universe Keyboard 1.0 (7)`](https://appstoreconnect.apple.com/teams/82c0e48e-c8bf-442c-9db9-19ed80ce4d87/apps/6804236252/testflight/ios/ff76d44e-547a-4b2c-8241-c80ec0778de6).
+The previous online-authentication residual is now exercised successfully for
+this exact package. This does not close Task04, TD-003/004/005, TestFlight smoke
+or external-candidate release gates.
+
 ## Conclusion and residuals
 
 **Executor conclusion:** the frozen RC source, Build 7 archive, both dSYMs,
 XCResult, logs, non-Internal-Only App Store package and ad hoc package form one
-internally consistent artifact set. The package is upload-ready at the artifact
-level, but upload remains unauthorized.
+internally consistent artifact set. Under the later, exact upload-only Human
+authorization, that same Store package was delivered and processed as TestFlight
+`1.0 (7)`; no tester or review action followed.
 
 This evidence does **not** close the external-candidate Gate by itself:
 
@@ -154,8 +203,8 @@ This evidence does **not** close the external-candidate Gate by itself:
   its accepted residuals are package-level only and do not close the release;
 - `RELEASE-2026-0801-04` and TD-003/004/005 still require the named iPhone 13 Pro
   / iOS 27 physical-device matrix using this exact Build 7 ad hoc package;
-- TestFlight upload, processing, internal preflight, external group assignment
-  and Beta Review submission each remain separate Human-authorized actions;
+- internal preflight, tester-group assignment, distribution and Beta Review
+  submission remain separate Human-authorized actions;
 - any candidate-changing source change requires a new commit/tag/build and
   invalidates this artifact mapping.
 

@@ -4,7 +4,7 @@
 > **Target availability:** `2026-08-26 Asia/Shanghai` (historical: `2026-08-01`; redate [`PD-RELEASE-2026-0801-TARGET-REDATE`](../product-decisions/RELEASE-2026-0801-target-redate.md))
 > **Authority:** [`RELEASE-2026-0801`](../assignments/release-2026-08-01.md)
 > **Evidence rule:** A historical or preliminary result is not final release evidence until it maps to the frozen release commit and archive.
-> **Current channel decision:** external TestFlight candidate under [`PD-RELEASE-2026-0801-EXTERNAL-TESTFLIGHT-CANDIDATE`](../product-decisions/RELEASE-2026-0801-external-testflight-candidate.md); no upload authorization
+> **Current channel decision:** external TestFlight candidate under [`PD-RELEASE-2026-0801-EXTERNAL-TESTFLIGHT-CANDIDATE`](../product-decisions/RELEASE-2026-0801-external-testflight-candidate.md); exact Build 7 upload completed under separate authorization, with no group, distribution or review authorization
 
 ## Release Identity
 
@@ -15,8 +15,8 @@
 | Stable Xcode/SDK | Xcode `26.6 (17F113)` / iPhoneOS SDK `26.5`; Cloud host macOS Tahoe `26.6.2 (25G83)` |
 | Signed archive | Xcode Cloud `Archive Pilot (No Distribution)` Build 7 succeeded; App Store and ad hoc exports retained |
 | dSYM retention | App + Keyboard dSYMs retained; both UUIDs exactly match Archive and exported IPA binaries |
-| TestFlight/App Store build | `UNKNOWN — Build 7 has not been uploaded or processed by TestFlight` |
-| Intended final build environment | Apple Developer Program active; Xcode Developer Team `chenkai shen` verified with Admin role; Xcode Cloud connected to GitHub. App Record `6804236252` verified. Frozen RC Build 7 produced the retained final Archive/dSYM/export artifact set under Xcode 26.6. Upload remains pending separate authorization. |
+| TestFlight/App Store build | TestFlight `1.0 (7)` validated and processed to `准备提交`; groups `0`, individual testers `0`, What to Test blank; no distribution or review submission |
+| Intended final build environment | Apple Developer Program active; Xcode Developer Team `chenkai shen` verified with Admin role; Xcode Cloud connected to GitHub. App Record `6804236252` verified. Frozen RC Build 7 produced the retained final Archive/dSYM/export artifact set under Xcode 26.6, and the exact Store IPA was subsequently delivered by Transporter under separate upload-only authorization. |
 | Pre-external device matrix | Physical iPhone 13 Pro / iOS 27 for Extension lifecycle/performance/Full Access; iOS 18 iPhone + iPad Simulator for minimum-OS compatibility. Simulator is not physical-device evidence. |
 | Supported devices/OS | iPhone and iPad; **iOS 18.0+** by [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md). Narrowed iOS 18 Phase 2 is Human-accepted ([evidence](release-2026-0801-10-ios-18-phase2-human-evidence.md)); this is not a release device matrix. |
 | Included schemas/features | Existing baseline input; Chinese nine-key; precise-pinyin selection; post-commit continuation; kaomoji content; and a local basic Home input-count display. No schema expansion is authorized. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. |
@@ -25,15 +25,15 @@
 
 | Assignment | Status | Evidence / blocker |
 |---|---|---|
-| Stable archive | `Reviewed — Quality Pass with conditions` | Exact RC tag/commit, version/build, Xcode Cloud Build 7, Archive/dSYMs/logs/XCResult and both Store/ad hoc exports are retained and independently mapped. Online upload authentication is not yet validated; upload is not authorized. [Build 7 ledger](release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md) · [Quality review](release-2026-08-01-01-frozen-rc-build7-independent-quality-review-2026-08-24.md) |
+| Stable archive | `Reviewed — Quality Pass with conditions; exact upload processed` | Exact RC tag/commit, Build 7 Archive/dSYMs/exports and Store IPA are retained and independently mapped. Separately authorized Transporter upload succeeded; ASC validated and processed TestFlight `1.0 (7)` to `准备提交`. No groups/distribution/review. [Build 7 ledger](release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md) · [Quality review](release-2026-08-01-01-frozen-rc-build7-independent-quality-review-2026-08-24.md) |
 | Scope freeze | `Reviewed — Architecture and Quality conclusions recorded; no release conclusion` | Product scope is unchanged; exact release identity is now frozen by subsequent Human authorization. Minimum OS is iOS 18.0; 08 is Closed; 07 physical-iPad residual is deferred to targeted external testing |
 | iOS 26.0 target | `Superseded by RELEASE-2026-0801-10` | 26.0-only path closed by [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md) |
 | iOS 18.0 target | `Reviewed` — Phase 1 Quality `Pass with conditions`; narrowed Phase 2 Human-accepted | [Quality](../assignments/release-2026-08-01-10-quality-review.md) · [Phase 2 Human](release-2026-0801-10-ios-18-phase2-human-evidence.md). Not Archive/release |
 | iPad support | `Active — iOS 18 Simulator matrix complete; release-toolchain runtime gate pending` | [iOS 18 iPad Simulator preflight](release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md): mini / 10th-gen / 13-inch M4 critical matrix complete. Physical iPad remains deferred; this is not an App Store iPad compatibility claim |
 | Kaomoji content | `Closed` | PR [#80](https://github.com/shchnk1103/Universe-Keyboard/pull/80) merged at `54ce3bd`; Human Product Gate passed and Assignment closed. This is feature evidence, not RC/TestFlight authorization |
 | Onboarding / Full Access | `Closed — Conditional Product Gate accepted` | Device matrix [`release-2026-08-01-03-physical-device-fa-matrix.md`](release-2026-08-01-03-physical-device-fa-matrix.md); gate [`../assignments/release-2026-08-01-03-product-gate.md`](../assignments/release-2026-08-01-03-product-gate.md); Human confirmed `2026-07-20`; TD-004 residual in `TECH_DEBT.md` |
-| Device / performance | `Assignment Pending` | Final Build 7 ad hoc package is available; iPhone 13 Pro / iOS 27 physical is the named primary device; TD-003/004/005 remain open |
-| App Store materials | `Active` | Contacts/privacy/export/age and disclosure work complete; Phase A receipts accepted; content rights/categories and store copy are Human-reported saved. What to Test waits on the uploaded build; screenshots are deferred to RC. [Copy handoff](release-2026-08-01-05-store-copy-and-what-to-test-2026-08-24.md) |
+| Device / performance | `Blocked — evidence environment` | Build 7 P4 established the iPhone 13 Pro / iOS 27 cold baseline, but current Beta Time Profiler ended the initial arm and sole bounded re-arm at about `1.3 s` with `Device disconnected` before any Human instruction. Both traces are excluded; no product failure conclusion. TD-003/004/005 remain open pending a different/stable capture environment. [P4 evidence](release-2026-08-01-04-build7-device-run-p4-2026-08-24.md) |
+| App Store materials | `Active` | Contacts/privacy/export/age and disclosure work complete; Phase A receipts accepted; content rights/categories and store copy are Human-reported saved. Build 7 What to Test is now bindable but blank and requires separate write authorization; screenshots remain deferred. [Copy handoff](release-2026-08-01-05-store-copy-and-what-to-test-2026-08-24.md) |
 | Product polish | `Active — Full Access deferral remediation verified; other polish residuals remain` | Candidate VoiceOver role/hint and J2 “稍后再开启” are remediated; complete accessibility and physical-device visual Gate remain open. Evidence in [`iPad preflight`](release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md) |
 
 ## Preliminary Repository Audit Snapshot
@@ -86,7 +86,7 @@ This section is later than the repository preflight above and supersedes only it
 - **Collected:** `2026-08-22 Asia/Shanghai`
 - **Online write:** Beta App Description and Beta Review Notes saved; login remains not required.
 - **Open Human Input Gate:** final build-specific What to Test approval after RC freeze/upload. License-disclosure UI was Human-confirmed separately. Content rights and categories are Human-reported saved (primary `工具`, secondary `效率`).
-- **Build-specific boundary:** What to Test is prepared only as a template because no TestFlight build exists.
+- **Build-specific boundary (snapshot at collection time):** What to Test was prepared only as a template because no TestFlight build existed on `2026-08-22`. This state is superseded by processed Build 7; the field is now bindable but remains blank and separately unauthorized for write.
 - **Canonical evidence/handoff:** [`release-2026-08-01-05-testflight-metadata-audit-2026-08-22.md`](release-2026-08-01-05-testflight-metadata-audit-2026-08-22.md).
 
 ### Subsequent update — 2026-08-23
@@ -99,8 +99,8 @@ This section is later than the repository preflight above and supersedes only it
 
 | Area | Required environment/artifact | Result | Evidence location | Reviewer | Expiry/revalidation |
 |---|---|---|---|---|---|
-| Repository/artifact integrity | Frozen release commit | Pending | — | — | Commit change |
-| Stable signed archive/validation | Final archive | Pending | — | — | Archive/toolchain change |
+| Repository/artifact integrity | Frozen release commit | Reviewed | [Build 7 ledger](release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md) | Quality-reverified artifact review | Commit/artifact change |
+| Stable signed archive/validation | Final archive | Reviewed — Pass with conditions; uploaded package processed | [Build 7 ledger](release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md) | Quality-reverified artifact review + Executor-recorded upload | Archive/toolchain/package change |
 | Automated tests/builds | Frozen commit, stable toolchain | Pending | — | — | Relevant diff/toolchain change |
 | RIME/Lua/OpenCC runtime | Final deployed schemas | Pending | — | — | Artifact/schema/config change |
 | Full Access off/on | Physical device | Pending | — | — | Access/onboarding/fallback change |
@@ -109,6 +109,7 @@ This section is later than the repository preflight above and supersedes only it
 | Accessibility/appearance | Supported devices/layouts | Pending | — | — | UI/support change |
 | Privacy/security/licenses | Final binary and public policy | Pending | — | — | Binary/policy/dependency change |
 | App Store metadata/screenshots | Final supported scope | Pending | — | — | Scope/copy/screenshot change |
+| TestFlight upload/processing | Exact Store IPA | Passed — `1.0 (7)` ready to submit; no distribution | [Build 7 ledger](release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md) | Executor-recorded | Uploaded build change |
 | TestFlight smoke | Uploaded build | Pending | — | — | Uploaded build change |
 
 ## Failed Or Skipped Gates
@@ -117,7 +118,7 @@ No skipped release gate is accepted by default. Add one row for every failure or
 
 | Gate | Failed/skipped reason | Impact | Owner | Product decision | Expiry/follow-up |
 |---|---|---|---|---|---|
-| — | — | — | — | — | — |
+| `RELEASE-2026-0801-04` physical-device performance / memory / termination | P4 initial machine arm and sole authorized machine re-arm both ended at about `1.3 s` with `Device disconnected` before any Human instruction; both traces are permanently excluded | No product performance, input, Full Access on/off, memory trend, crash/Jetsam or termination conclusion; TD-003/004/005 and external-candidate release Gate remain open. This does not block a separately authorized upload-only action | Test/release evidence environment; Product Lead owns the next environment decision | [`PD-RELEASE-2026-0801-04-BUILD7-BOUNDED-EVIDENCE-EXCEPTION`](../product-decisions/RELEASE-2026-0801-04-build7-bounded-evidence-exception.md); no skipped-gate/risk acceptance | New Product Lead decision plus a different/stable physical-device capture environment; current P4 may not be retried |
 
 ## External Action Log
 
@@ -131,6 +132,8 @@ No skipped release gate is accepted by default. Add one row for every failure or
 | `2026-08-23 Asia/Shanghai` | Add the repository-supported exempt-encryption declaration | Human Product Owner explicitly replied `授权` after the exact `ITSAppUsesNonExemptEncryption = NO` change and validation boundary were stated | `config/Info.plist`; local Xcode 27 beta Release Simulator integration build | Source and built App plist both resolve to `false`; build passed. No document/build upload, review submission, RC freeze or legal-risk acceptance |
 | `2026-08-24 Asia/Shanghai` | Freeze exact RC tag | Human Product Owner explicitly authorized the exact freeze after the pre-freeze review and Build 6 were reported | Git tag on `origin`; no App Store Connect mutation | `testflight-v1.0-rc1-build7` → `244b32df38cff7ce3d8e56d78a80d4504cc6f073` |
 | `2026-08-24 Asia/Shanghai` | Run one no-distribution final Archive | Human Product Owner separately replied `授权` after the workflow/no-upload boundary was restated | Xcode Cloud `Archive Pilot (No Distribution)` | Build 7 Archive/export succeeded and artifacts were downloaded/mapped; no upload or distribution |
+| `2026-08-24 Asia/Shanghai` | Build 7 upload-only read-only preflight | Human Product Owner accepted separating upload from external distribution and authorized documentation repair plus preflight, but not upload | Local retained artifacts, GitHub refs and signed-in App Store Connect read-only inspection | Remote tag/main and retained artifact hashes match; Store package remains external-eligible; TestFlight still has no build; Cloud workflow remains no-distribution. Stopped at separate Human upload authorization Gate |
+| `2026-08-24 22:45–22:47 Asia/Shanghai` | Upload exact Build 7 Store IPA and wait for processing | Human Product Owner explicitly authorized exact path, App, version/build and upload-only boundary; no groups/distribution/Beta Review | Apple Transporter → App Store Connect App `6804236252`; exact SHA-256 `b9baf362…` package | Transporter `26.30.2` delivered successfully; ASC processed TestFlight `1.0 (7)` to `准备提交`, binary `已验证`, symbols included, non-exempt encryption `否`; groups/testers `0`, What to Test blank |
 
 ## Release Decision
 

@@ -1,7 +1,7 @@
 # Assignment: RELEASE-2026-0801-05 — 隐私、支持与 App Store 上架材料
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — store copy Human-reported saved; What to Test waits on build; screenshots deferred to RC`
+**Lifecycle status:** `Active — Build 7 processed; What to Test is now bindable but unsaved; screenshots deferred`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Current Status
@@ -9,10 +9,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | 联系信息、隐私、出口、年龄、内容版权与主要类别已完成；按方案许可证披露/确认已实现并通过 Human UI Gate |
-| **Non-claims** | 商店文案、内容版权与类别均为 Human-reported 在线保存，执行方未打开 App Store Connect 复核；Phase A 派生收据已接受，但不是精确来源声明；未上传 build、创建测试组、提交 Beta Review 或冻结 RC |
-| **Next** | What to Test 等上传构建后粘贴；截图等 RC。未授权冻 RC / 上传 |
-| **Residuals** | App Store 截图 0/10 与 iPad 截图推迟到 RC（不阻塞 TestFlight 上传）；What to Test 等构建；版权行 Human-reported `© 2026 DoubleShy0N` |
+| **Phase** | 联系信息、隐私、出口、年龄、内容版权与主要类别已完成；按方案许可证披露/确认通过 Human UI Gate；TestFlight `1.0 (7)` 已处理为 `准备提交` |
+| **Non-claims** | 商店文案、内容版权与类别仍为 Human-reported 在线保存；Phase A 派生收据已接受但不是精确来源声明；未创建测试组、分发或提交 Beta Review |
+| **Next** | Build 7 “测试内容 / What to Test” 当前为空；须在单独外部写入授权后粘贴并保存。截图不阻塞当前 TestFlight 元数据准备 |
+| **Residuals** | App Store 截图 0/10 与 iPad 截图推迟到正式上架材料阶段；What to Test 未保存；版权行 Human-reported `© 2026 DoubleShy0N` |
 
 ---
 

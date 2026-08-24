@@ -25,9 +25,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Reviewed — Quality Pass with conditions` |
-| **Phase** | RC tag `testflight-v1.0-rc1-build7` frozen at `244b32d`; no-distribution Cloud Build 7 Archive/export/artifact validation independently reviewed |
-| **Non-claims** | Reviewed is not Closed or a release decision; no upload, TestFlight distribution, Beta Review or TD-003/004/005 closure |
-| **Next** | Physical iPhone 13 Pro / iOS 27 TD-003/004/005 evidence and a separate upload decision |
+| **Phase** | RC tag `testflight-v1.0-rc1-build7` frozen at `244b32d`; Cloud Build 7 artifacts independently reviewed; exact Store IPA uploaded and processed as TestFlight `1.0 (7)` |
+| **Non-claims** | Reviewed is not Closed or a release decision; upload is not TestFlight distribution, Beta Review or TD-003/004/005 closure |
+| **Next** | Handoff the processed build to Task05 for separately authorized What to Test work; Task04/TD-003/004/005 still block external distribution |
 | **Residuals** | [`Build 7 Quality review`](../evidence/release-2026-08-01-01-frozen-rc-build7-independent-quality-review-2026-08-24.md#findings-and-dispositions) |
 
 ## Boundary
@@ -77,3 +77,9 @@
   UUID/dSYM/package mapping, export identity, privacy/security facts and XCResult.
   All findings have explicit dispositions; task 01 advances to `Reviewed`, not
   `Closed`. See [`Build 7 independent Quality review`](../evidence/release-2026-08-01-01-frozen-rc-build7-independent-quality-review-2026-08-24.md).
+- Human Product Owner subsequently authorized uploading only the exact Store
+  IPA. Transporter delivered it at `2026-08-24 22:46 Asia/Shanghai`; App Store
+  Connect validated and processed TestFlight `1.0 (7)` to `准备提交`. No group,
+  tester, distribution or review submission was added. The online upload path
+  is now exercised for this exact candidate; canonical receipt remains in the
+  Build 7 artifact ledger.

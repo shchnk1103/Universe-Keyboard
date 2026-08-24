@@ -62,6 +62,7 @@
 - Current engineering status: [`ENGINEERING_DASHBOARD.md`](ENGINEERING_DASHBOARD.md)
 - Debugging: [`DEBUGGING.md`](DEBUGGING.md)
 - Performance measurement: [`PERFORMANCE_BASELINE.md`](PERFORMANCE_BASELINE.md)
+- Crash/Jetsam acquisition and symbolication: [`CRASH_JETSAM_SYMBOLICATION.md`](CRASH_JETSAM_SYMBOLICATION.md)
 - T9 continuous-digit latency — force_gc track case close (2026-07-24): [`evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md)
 - T9 long-composition `process_key` latency and safe auto-anchor roadmap
   (`T9-AUTO-ANCHOR-001`, S1–S4 Debug/test evidence validated, S5 isolated
