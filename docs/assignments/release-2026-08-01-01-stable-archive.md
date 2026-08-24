@@ -36,3 +36,11 @@
 
 - **Required Handoff Content:** commit/tag, Xcode/SDK, archive path/hash, signing team, version/build, validation output, dSYM, skipped checks, upload authorization/result and residual risks
 - **Revalidation Trigger:** release commit, local/Cloud Xcode or macOS support, Cloud workflow, signing identity, entitlements, bundle contents, version/build or submission policy changes
+
+## Preliminary Cloud Evidence — 2026-08-22
+
+- Human Product Owner separately authorized configuring and running one no-distribution Archive pilot.
+- Xcode Cloud workflow `Archive Pilot (No Distribution)` is manual `main` only, uses `Latest Release`, runs `Archive - iOS`, sets Distribution Preparation to `None` and has no post-actions.
+- Build 3 archived and completed App Store distribution signing for `main` commit `4fd3ce70d9acfc54472923fb7d66ff0589e11f6d` with Xcode 26.6 (`17F113`) / macOS Tahoe 26.6.2 (`25G83`). TestFlight remained empty.
+- Evidence grade: `Executor-recorded`; [build record](https://appstoreconnect.apple.com/teams/82c0e48e-c8bf-442c-9db9-19ed80ce4d87/apps/6804236252/ci/builds/6aec0bbf-6bbe-4cd3-81b5-8382f2d3898d/summary).
+- This satisfies the preliminary Cloud Archive/signing feasibility portion only. Entry Criteria still fail because artifact/dSYM retention, final fixes/kaomoji review, final version/build, frozen RC and independent review are pending.

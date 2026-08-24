@@ -10,9 +10,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Recorded` |
-| **Phase** | 外部 TestFlight 候选准备；先完成非颜表情前置，再完成颜表情与剩余修复，最后冻结 RC |
-| **Non-claims** | 不授权冻结 RC、签名 Archive、上传、外部测试、提交审核或接受 TD-003/004/005 风险 |
-| **Next** | 继续非颜表情发布前准备；最终修复完成后再冻结 RC，并单独验证 Cloud Archive、签名与 artifact retention |
+| **Phase** | 外部 TestFlight 候选准备；Cloud Archive/签名 pilot 与部分 TestFlight test information 已完成，最终 RC 仍未冻结 |
+| **Non-claims** | Pilot 不授权冻结 RC、上传、外部测试、提交审核或接受 TD-003/004/005 风险 |
+| **Next** | 进入颜表情与剩余修复，最后冻结 RC；内容版权与主要类别已由 Human 报告在线保存 |
 | **Residuals** | 见 [`release-2026-08-01-acceptance.md`](../evidence/release-2026-08-01-acceptance.md) |
 
 ---
@@ -58,6 +58,14 @@
 - Xcode Cloud 已连接 GitHub，并创建 `Default` workflow。手动 Build 1 已在功能分支 `codex/external-testflight-cloud-prep` / 提交 `cdc6bfe` 上通过：Xcode 26.6（17F113）、macOS Tahoe 26.6.2（25G83）、`ci_post_clone.sh` 成功、12 个 RIME framework artifacts 验证成功、`Universe Keyboard` iOS build 完成且无 Issues。
 - 该 Build action 不是 Archive，也未验证签名、dSYM/artifact retention 或上传；不得外推为可分发候选。
 - 本授权不包含合并 `main`、冻结 RC、添加 TestFlight post-action、上传、分发、Beta Review、App Store Review 或风险接受。
+- `2026-08-22 Asia/Shanghai`：Human Product Owner separately authorized creating `Archive Pilot (No Distribution)` and running one manual `main` Archive. Build 3 on `4fd3ce7` succeeded with Xcode 26.6 / macOS Tahoe 26.6.2, including App Store distribution signing. Distribution Preparation remained `None`, no post-action existed, and TestFlight remained empty. Artifact/dSYM retention was not yet verified; this pilot is not final RC evidence.
+- `2026-08-22 Asia/Shanghai`：Human Product Owner then authorized a read-first App Store Connect audit, fact-supported external TestFlight metadata completion and KOS handoff updates. Beta App Description and Beta Review Notes were saved; feedback/review contacts, public privacy URL, privacy/export/content-rights/category/age decisions and build-specific What to Test remain open. Evidence: [`release-2026-08-01-05-testflight-metadata-audit-2026-08-22.md`](../evidence/release-2026-08-01-05-testflight-metadata-audit-2026-08-22.md).
+- `2026-08-23 Asia/Shanghai`：Human Product Owner confirmed TestFlight contacts were saved and the public privacy URL plus `No data collected` App Privacy answer were published, then authorized continuation of the export-compliance read-only audit and KOS handoff update. The audit recommends `ITSAppUsesNonExemptEncryption = NO` for the current Apple-OS-provided crypto path, but does not authorize the Info.plist change, upload encryption documents, upload a build or submit review. Possible annual self-classification remains a Human legal obligation.
+- `2026-08-23 Asia/Shanghai`：Human Product Owner completed the age questionnaire, confirmed `工具` as the primary-category direction, and authorized remediation of the hard-coded scheme-license UI. Per-scheme, revision-bound disclosures and a persistent open-source notice page are implemented. Account-side content-rights/category save, visual Product verification, upload and RC freeze remain unauthorized/uncompleted.
+- `2026-08-23 Asia/Shanghai`：Human Product Owner confirmed the three disclosure surfaces and authorized bounded Phase A provenance recovery. Phase A completed without changing shipped artifacts: `librime-lua@ec52e48…` plus the empty OpenCC stub reproduces 9/10 members on device arm64 and Simulator arm64/x86_64; `types.o` uses `re_detail_500` but has no official Boost.Regex tag SHA-256 match at the 1.88.0/1.89.0 header-version boundary. Luna is exactly derived from official `rime/brise` blob `728f883…` with one attribution-URL update.
+- `2026-08-23 Asia/Shanghai`：Human Product Owner explicitly accepted those Phase A derived receipts as an external TestFlight candidate residual and declined Phase B rebuild/replacement. Record: [`PD-RELEASE-2026-0801-05-PROVENANCE-A-ACCEPT`](RELEASE-2026-0801-05-provenance-a-accept.md).
+- `2026-08-23 Asia/Shanghai`：Human Product Owner reported saving App Store Connect content rights as “Yes, the app contains or accesses third-party content and has the necessary rights,” primary category `工具`, and secondary category `效率`. The executor did not reopen App Store Connect to verify the fields. Upload and RC freeze remain unauthorized.
+- `2026-08-23 Asia/Shanghai`：Human Product Owner subsequently and explicitly authorized that narrow Info.plist change. `config/Info.plist` now declares `ITSAppUsesNonExemptEncryption = NO`; source-plist validation and an Xcode 27 beta Release Simulator integration build passed. This authorization did not include encryption-document upload, build upload, review submission, RC freeze or acceptance of the possible annual self-classification legal residual.
 
 ## Revalidation Triggers
 
