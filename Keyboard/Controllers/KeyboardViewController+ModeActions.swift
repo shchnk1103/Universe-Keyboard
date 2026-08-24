@@ -57,9 +57,15 @@ extension KeyboardViewController {
         t9SelectPinyin(sender)
     }
 
-    @objc func showKaomojiCandidatesPlaceholder(_ sender: UIButton) {
-        // TODO: 后续在候选栏展示颜表情列表；当前阶段只保留 UI 入口。
+    @objc func insertKaomoji(_ sender: UIButton) {
         emitKeyPressFeedbackIfNeeded(for: sender)
+        let effects = controller.handle(.pressKaomoji)
+        syncUI(with: effects)
+    }
+
+    /// Compatibility selector retained for any stale target wiring; forwards to product path.
+    @objc func showKaomojiCandidatesPlaceholder(_ sender: UIButton) {
+        insertKaomoji(sender)
     }
 
     private func cycleKeyboardPage(to targetPage: KeyboardPage) -> KeyboardEffect {

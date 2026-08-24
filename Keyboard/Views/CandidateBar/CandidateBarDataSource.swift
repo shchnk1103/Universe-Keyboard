@@ -11,6 +11,10 @@ import KeyboardCore
 ///          拼音已通过 inline preedit 显示在宿主 App 输入框中，
 ///          候选栏只显示候选词（不含拼音组合文本）。
 ///
+///   路径 1b（本地 pending 调色板）：
+///     条件：pendingPunctuation 或 pendingKaomoji 非空
+///     行为：展示标点或颜表情本地候选，不走 RIME。
+///
 ///   路径 2（上屏后联想）：
 ///     条件：中文 letters 页面、没有活跃 composition 且短上下文有匹配建议
 ///     行为：显示独立的 continuationCandidate，不参与 RIME 分页。
@@ -35,6 +39,10 @@ struct CandidateBarDataSource {
 
         if state.pendingPunctuation != nil {
             return controller.pendingPunctuationCandidateItems(expanded: false)
+        }
+
+        if state.pendingKaomoji != nil {
+            return controller.pendingKaomojiCandidateItems(expanded: false)
         }
 
         if let rimeOutput = state.lastRimeOutput,

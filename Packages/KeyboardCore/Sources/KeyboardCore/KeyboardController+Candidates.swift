@@ -22,6 +22,8 @@ extension KeyboardController {
             return .continuationChanged
         case .punctuationCandidate:
             return handlePunctuationCandidate(candidate)
+        case .kaomojiCandidate:
+            return handleKaomojiCandidate(candidate)
         case .composition:
             finishActiveCompositionAsDisplayText()
             rimeEngine?.resetSession()

@@ -32,6 +32,7 @@ final class CandidateKindTests: XCTestCase {
         XCTAssertEqual(CandidateKind(rawValue: 3), .correctionCandidate)
         XCTAssertEqual(CandidateKind(rawValue: 4), .continuationCandidate)
         XCTAssertEqual(CandidateKind(rawValue: 5), .punctuationCandidate)
+        XCTAssertEqual(CandidateKind(rawValue: 6), .kaomojiCandidate)
         // 非法 rawValue 返回 nil
         XCTAssertNil(CandidateKind(rawValue: 99))
         XCTAssertNil(CandidateKind(rawValue: -1))
@@ -135,10 +136,18 @@ final class CandidateKindTests: XCTestCase {
         XCTAssertTrue(effects.contains(.pageChanged))
     }
 
-    func testPendingPunctuationEffectUsesRemainingUInt8Bit() {
+    func testPendingPunctuationEffectUsesBitSeven() {
         let effect: KeyboardEffect = .pendingPunctuationChanged
         XCTAssertFalse(effect.contains(.continuationChanged))
         XCTAssertFalse(effect.contains(.compositionChanged))
         XCTAssertEqual(effect.rawValue, 1 << 7)
+    }
+
+    func testPendingKaomojiEffectUsesWidenedBitEight() {
+        let effect: KeyboardEffect = .pendingKaomojiChanged
+        XCTAssertFalse(effect.contains(.pendingPunctuationChanged))
+        XCTAssertFalse(effect.contains(.continuationChanged))
+        XCTAssertEqual(effect.rawValue, 1 << 8)
+        XCTAssertTrue(effect.refreshesCandidatePresentation)
     }
 }

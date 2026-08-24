@@ -62,7 +62,7 @@ extension KeyboardViewController {
         updateExpandButtonAppearance()
         if isCandidateExpanded {
             candidatePrefetchMode = .expanded
-            if controller.state.pendingPunctuation != nil {
+            if controller.state.pendingPunctuation != nil || controller.state.pendingKaomoji != nil {
                 resetCandidateSnapshotFromController()
                 fillCandidateBar()
             }
@@ -72,7 +72,7 @@ extension KeyboardViewController {
             }
         } else {
             candidatePrefetchMode = .bar
-            if controller.state.pendingPunctuation != nil {
+            if controller.state.pendingPunctuation != nil || controller.state.pendingKaomoji != nil {
                 resetCandidateSnapshotFromController()
                 fillCandidateBar()
             }
@@ -146,7 +146,7 @@ extension KeyboardViewController {
         // 普通 RIME 候选和九键待确认标点都复用同一套展开 / 下滑手势。
         // 展开按钮隐藏时，下滑手势会直接 fail（见 CandidateBarView）。
         let canExpand = items.contains {
-            $0.kind == .candidate || $0.kind == .punctuationCandidate
+            $0.kind == .candidate || $0.kind == .punctuationCandidate || $0.kind == .kaomojiCandidate
         }
         candidateExpandButton?.isHidden = !canExpand
 
@@ -240,10 +240,14 @@ extension KeyboardViewController {
     func resetCandidateSnapshotFromController() {
         // Placeholder 是旧按钮式候选栏的安全哨兵，不属于当前 collection 快照。
         // 在唯一重建边界过滤一次，避免每个数据源回调都复制并过滤数组。
-        let pendingItems =
-            controller.state.pendingPunctuation == nil
-            ? nil
-            : controller.pendingPunctuationCandidateItems(expanded: isCandidateExpanded)
+        let pendingItems: [CandidateItem]?
+        if controller.state.pendingPunctuation != nil {
+            pendingItems = controller.pendingPunctuationCandidateItems(expanded: isCandidateExpanded)
+        } else if controller.state.pendingKaomoji != nil {
+            pendingItems = controller.pendingKaomojiCandidateItems(expanded: isCandidateExpanded)
+        } else {
+            pendingItems = nil
+        }
         accumulatedCandidates = (pendingItems ?? CandidateBarDataSource.candidateItems(from: controller)).filter {
             $0.kind != .placeholder
         }

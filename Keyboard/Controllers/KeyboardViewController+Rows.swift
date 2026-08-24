@@ -62,14 +62,14 @@ extension KeyboardViewController {
         let symbolsButton = makeKeyButton(title: "#+=", action: #selector(switchToSymbolsPage(_:)))
         applyKeyStyle(.function, to: symbolsButton)
 
-        // Native-style 颜表情 entry (right middle). Product content still placeholder.
-        let kaomojiButton = makeKeyButton(title: "^_^", action: #selector(showKaomojiCandidatesPlaceholder(_:)))
+        let kaomojiButton = makeKeyButton(
+            title: KaomojiChrome.keyTitle, action: #selector(insertKaomoji(_:)))
         applyKeyStyle(.function, to: kaomojiButton)
         kaomojiButton.titleLabel?.font = .systemFont(ofSize: functionKeyTitlePointSize, weight: .medium)
         kaomojiButton.titleLabel?.adjustsFontSizeToFitWidth = true
         kaomojiButton.titleLabel?.minimumScaleFactor = 0.55
-        kaomojiButton.accessibilityLabel = "颜表情"
-        kaomojiButton.accessibilityHint = "打开颜表情入口（占位）。"
+        kaomojiButton.accessibilityLabel = KaomojiChrome.accessibilityLabel
+        kaomojiButton.accessibilityHint = KaomojiChrome.accessibilityHint
 
         let inputModeButton = makeKeyButton(
             title: inputModeButtonTitle,
@@ -416,19 +416,17 @@ extension KeyboardViewController {
         return row
     }
 
-    /// 中文二级符号页中间字符区。
-    ///
-    /// `^_^` 是未来颜表情候选入口；当前只展示入口，不提交文本或展开候选。
+    /// 中文二级符号页中间字符区。`^_^` 与九键共用 `.pressKaomoji`。
     private func makeChineseSymbolsPunctuationRow() -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
         row.spacing = keyHorizontalSpacing
         row.distribution = .fillEqually
 
-        for key in ["…", "，", "^_^", "？", "！", "‘"] {
+        for key in ["…", "，", KaomojiChrome.keyTitle, "？", "！", "‘"] {
             let action: Selector =
-                key == "^_^"
-                ? #selector(showKaomojiCandidatesPlaceholder(_:))
+                key == KaomojiChrome.keyTitle
+                ? #selector(insertKaomoji(_:))
                 : #selector(insertKey(_:))
             row.addArrangedSubview(makeKeyButton(title: key, action: action))
         }

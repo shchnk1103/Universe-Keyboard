@@ -4,7 +4,9 @@ extension KeyboardController {
     // MARK: - ADR 0029 九键待确认标点
 
     func acceptingPendingPunctuationIfNeeded(_ body: () -> KeyboardEffect) -> KeyboardEffect {
-        acceptPendingPunctuation(refreshContinuation: true).union(body())
+        acceptPendingKaomoji(refreshContinuation: true)
+            .union(acceptPendingPunctuation(refreshContinuation: true))
+            .union(body())
     }
 
     func performOwnedHostMutation(_ body: () -> Void) {
@@ -18,12 +20,22 @@ extension KeyboardController {
     @discardableResult
     public func noteExternalDocumentChange() -> KeyboardEffect {
         guard !isPerformingOwnedHostMutation else { return [] }
-        return acceptPendingPunctuation(refreshContinuation: false)
+        return acceptPendingKaomoji(refreshContinuation: false)
+            .union(acceptPendingPunctuation(refreshContinuation: false))
     }
 
     func handlePressT9CommonPunctuation() -> KeyboardEffect {
         if rejectIfResponsiveProvisionalAhead() {
             return []
+        }
+
+        if state.pendingKaomoji != nil {
+            var effects = acceptPendingKaomoji(refreshContinuation: true)
+            if state.pendingKaomoji != nil {
+                return effects
+            }
+            effects.formUnion(insertFreshPendingComma(now: currentDate()))
+            return effects
         }
 
         let now = currentDate()
@@ -63,7 +75,7 @@ extension KeyboardController {
     }
 
     /// 组字中但没有可提交首选，或仍在 L1-ahead：不得进入 pending。
-    private var hasActiveCompositionBlockingPendingPunctuation: Bool {
+    var hasActiveCompositionBlockingPendingPunctuation: Bool {
         if isResponsiveProvisionalAhead
             || state.currentComposition.contains(ResponsiveProvisionalComposition.placeholderScalar)
         {
@@ -175,7 +187,10 @@ extension KeyboardController {
             state.pendingPunctuation = nil
             return .pendingPunctuationChanged
         }
-        let removed = removeOwnedPendingSpan(pending)
+        let removed = removeOwnedHostSpan(
+            beforeCursor: pending.beforeCursor,
+            afterCursor: pending.afterCursor
+        )
         state.pendingPunctuation = nil
         var effects: KeyboardEffect = [.pendingPunctuationChanged]
         if !removed {
@@ -194,7 +209,10 @@ extension KeyboardController {
         guard let pending = state.pendingPunctuation, pending.canMutateHost else {
             return []
         }
-        let removed = removeOwnedPendingSpan(pending)
+        let removed = removeOwnedHostSpan(
+            beforeCursor: pending.beforeCursor,
+            afterCursor: pending.afterCursor
+        )
         if !removed {
             state.pendingPunctuation = nil
             return .pendingPunctuationChanged
@@ -239,9 +257,9 @@ extension KeyboardController {
     }
 
     /// 拆下当前 pending 跨度。失败时不猜测 closer 是否还在，返回 false。
-    private func removeOwnedPendingSpan(_ pending: PendingPunctuationState) -> Bool {
-        let beforeCount = pending.beforeCursor.count
-        let afterCount = pending.afterCursor.count
+    func removeOwnedHostSpan(beforeCursor: String, afterCursor: String) -> Bool {
+        let beforeCount = beforeCursor.count
+        let afterCount = afterCursor.count
         var removed = true
         performOwnedHostMutation {
             if afterCount > 0 {

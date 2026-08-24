@@ -37,4 +37,6 @@ public enum KeyboardAction: Equatable {
     case cycleT9PinyinPath
     /// 九键常用标点键：上屏待确认 `，`，或在 1.0s 窗内轮换 `，。？！`（ADR 0029）。
     case pressT9CommonPunctuation
+    /// 九键 / 中文符号页 `^_^`：上屏待确认默认颜表情，或接受后再新开默认（ADR 0030）。
+    case pressKaomoji
 }

@@ -56,6 +56,8 @@ public struct KeyboardState: Equatable {
     public var t9ReversibleAutoAnchorState: T9ReversibleAutoAnchorState = .empty
     /// 九键待确认标点（ADR 0029）。nil 表示当前没有可替换标点。
     public var pendingPunctuation: PendingPunctuationState? = nil
+    /// 待确认颜表情（ADR 0030）。与 pendingPunctuation 互斥。
+    public var pendingKaomoji: PendingKaomojiState? = nil
 
     public init(
         currentPage: KeyboardPage = .letters,
@@ -74,7 +76,8 @@ public struct KeyboardState: Equatable {
         compositionRevision: UInt64 = 0,
         t9PinyinPathState: T9PinyinPathState = .empty,
         t9ReversibleAutoAnchorState: T9ReversibleAutoAnchorState = .empty,
-        pendingPunctuation: PendingPunctuationState? = nil
+        pendingPunctuation: PendingPunctuationState? = nil,
+        pendingKaomoji: PendingKaomojiState? = nil
     ) {
         self.currentPage = currentPage
         self.inputMode = inputMode
@@ -93,5 +96,6 @@ public struct KeyboardState: Equatable {
         self.t9PinyinPathState = t9PinyinPathState
         self.t9ReversibleAutoAnchorState = t9ReversibleAutoAnchorState
         self.pendingPunctuation = pendingPunctuation
+        self.pendingKaomoji = pendingKaomoji
     }
 }
