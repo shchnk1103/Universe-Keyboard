@@ -11,7 +11,7 @@
 | **Lifecycle** | Active |
 | **Phase** | R-06-01…07 closed at Simulator/source grade; R-06-08/09 deferred to post-upload TestFlight testers; R-06-10 is a local toolchain residual |
 | **Non-claims** | No visual redesign, input/RIME semantic change, RC freeze, complete accessibility certification, physical-device visual Gate, or skipped TD-003/004/005 |
-| **Next** | 06 可执行打磨已交付。发布顺序上的下一刀是 08 颜表情。R-06-10 不要求买真机 |
+| **Next** | 06 没有已知的前冻点代码修复；保持 R-06-08/09 到 post-upload tester Gate。R-06-10 由最终 Cloud 构建提供稳定发布工具链证据，但不把本机缺失 runtime 记成通过，也不要求买真机 |
 | **Residuals** | 见下方 Residual Inventory |
 
 ---
@@ -25,8 +25,8 @@
 ## Assignment
 
 - **Domain Owner:** ⌨️ Keyboard Experience Maintainer
-- **Executor:** Current Grok task acting as ⌨️ Keyboard Experience execution thread
-- **Environment Executor:** Current Grok task for simulator visual/accessibility operations; the Human Product Owner remains the physical-device visual operator, Simulator VoiceOver operator and final Product Gate
+- **Executor:** Current Codex task acting as ⌨️ Keyboard Experience execution thread for residual handoff and revalidation only
+- **Environment Executor:** Current Codex task for any newly authorized simulator visual/accessibility operations; the Human Product Owner remains the physical-device visual operator, Simulator VoiceOver operator and final Product Gate
 - **Human Dependency:** Human Product Owner — selects the desired treatment for incomplete affordances and performs final visual Product Gate
 - **Architecture Reviewer:** `Not Applicable — unless a fix changes input semantics, lifecycle or cross-target ownership`
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer
@@ -50,14 +50,14 @@
 - **Required Handoff Content:** before/after visuals, interaction behavior, changed files, tests, devices/orientations/accessibility states, unresolved visual differences and Product Gate questions
 - **Revalidation Trigger:** scope, supported devices/orientations, keyboard geometry, tab/navigation style, accessibility contract or affected feature behavior changes
 
-## Reassignment
+## Current Reassignment
 
-- **Previous Executor:** Codex task that closed the candidate VoiceOver role residual and J2 Full Access deferral residual
-- **New Executor:** Current Grok task
-- **Reason:** Human Product Owner authorized continuing remaining `RELEASE-2026-0801-06` residuals under KOS
-- **Effective date:** `2026-08-23 Asia/Shanghai`
-- **Decision source:** Human Product Owner acting as Product Lead, current Grok session
-- **Remaining work at reassignment:** see Residual Inventory; do not reopen closed named residuals; do not expand into 08 kaomoji or 07 physical iPad
+- **Previous Executor:** Grok task that completed the remaining executable polish audit and deferred R-06-08/09 to TestFlight testers
+- **New Executor:** Current Codex task
+- **Reason:** Human Product Owner explicitly asked Codex to take over and continue the remaining release work
+- **Effective date:** `2026-08-24 Asia/Shanghai`
+- **Decision source:** Human Product Owner acting as Product Lead, current Codex task
+- **Remaining work at reassignment:** preserve closed R-06-01…07; do not invent pre-freeze work from R-06-08/09; revalidate only if the final candidate or supported matrix changes
 
 ## Residual Inventory
 

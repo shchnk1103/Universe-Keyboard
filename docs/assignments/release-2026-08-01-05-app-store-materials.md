@@ -1,7 +1,7 @@
 # Assignment: RELEASE-2026-0801-05 — 隐私、支持与 App Store 上架材料
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — contacts/privacy/export/age/content-rights/category complete; screenshots/copy/What to Test pending`
+**Lifecycle status:** `Active — store copy Human-reported saved; What to Test waits on build; screenshots deferred to RC`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Current Status
@@ -10,9 +10,9 @@
 |---|---|
 | **Lifecycle** | `Active` |
 | **Phase** | 联系信息、隐私、出口、年龄、内容版权与主要类别已完成；按方案许可证披露/确认已实现并通过 Human UI Gate |
-| **Non-claims** | 内容版权与主要类别为 Human-reported 在线保存，执行方未打开 App Store Connect 复核；Phase A 派生收据已接受，但不是精确来源声明；模拟器 test runner 受 Xcode 27 beta 环境阻塞；未上传 build、创建测试组、提交 Beta Review 或冻结 RC |
-| **Next** | 其余 App Store 材料（截图、文案、What to Test）仍待 RC/上传后补齐；颜表情对外句子对照 [`08→05 卡`](../evidence/release-2026-08-01-08-handoff-to-05-copy-constraints.md)。08 Human Product Gate 已过，商店主文案可以使用卡上 §3，仍须带 §6 |
-| **Residuals** | [`2026-08-22 TestFlight metadata audit`](../evidence/release-2026-08-01-05-testflight-metadata-audit-2026-08-22.md) § Human Input Gate; [`2026-08-23 third-party notice provenance`](../evidence/release-2026-08-01-05-third-party-notice-provenance-2026-08-23.md) § Residuals；08 颜表情卖点在 Product Gate 前禁止 |
+| **Non-claims** | 商店文案、内容版权与类别均为 Human-reported 在线保存，执行方未打开 App Store Connect 复核；Phase A 派生收据已接受，但不是精确来源声明；未上传 build、创建测试组、提交 Beta Review 或冻结 RC |
+| **Next** | What to Test 等上传构建后粘贴；截图等 RC。未授权冻 RC / 上传 |
+| **Residuals** | App Store 截图 0/10 与 iPad 截图推迟到 RC（不阻塞 TestFlight 上传）；What to Test 等构建；版权行 Human-reported `© 2026 DoubleShy0N` |
 
 ---
 
@@ -77,4 +77,5 @@
 
 ## Execution Record — 2026-08-24
 
-- 08 Executor drafted a first-party kaomoji copy-constraint card for 05: [`release-2026-08-01-08-handoff-to-05-copy-constraints.md`](../evidence/release-2026-08-01-08-handoff-to-05-copy-constraints.md). Human Product Owner accepted the card the same day. Store/TestFlight sentences about 颜表情 must follow that card. What to Test may use §3 with §6 limits; App Store marketing/screenshot hero copy still waits on 08 Human Product Gate. Content-rights Yes remains RIME/scheme-based and must not be rewritten because of the kaomoji table. The card is not filled-in App Store Connect copy.
+- 08 Executor drafted a first-party kaomoji copy-constraint card for 05: [`release-2026-08-01-08-handoff-to-05-copy-constraints.md`](../evidence/release-2026-08-01-08-handoff-to-05-copy-constraints.md). Human Product Owner accepted the card the same day. 08 Human Product Gate later Passed. Content-rights Yes remains RIME/scheme-based.
+- Human Product Owner confirmed TestFlight 截图可后补，并授权起草商店文案与 What to Test. Draft: [`store-copy-and-what-to-test`](../evidence/release-2026-08-01-05-store-copy-and-what-to-test-2026-08-24.md). Human then confirmed the draft, authorized pasting, and reported the store-copy fields saved. The executor did not reopen App Store Connect. What to Test still waits on an uploaded build. Screenshots remain deferred to RC.
