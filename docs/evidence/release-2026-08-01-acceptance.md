@@ -25,15 +25,15 @@
 
 | Assignment | Status | Evidence / blocker |
 |---|---|---|
-| Stable archive | `Assigned — Entry Criteria pending` | Bootstrap Build 1 passed on `cdc6bfe`; App Record verified; no-distribution Archive/signing Build 3 passed on `main` / `4fd3ce7`. Artifact/dSYM retention, independent review, final fixes and frozen RC remain pending. |
-| Scope freeze | `Reviewed — Architecture and Quality conclusions recorded; no Product Gate or release conclusion` | [Architecture review](release-2026-08-01-02-architecture-review.md) and [Quality review](release-2026-08-01-02-quality-review.md) are historical `Pass` with follow-ups. Minimum OS row superseded by iOS 18.0; iPad support, kaomoji content and iOS 18 Phase 2 remain release blockers |
+| Stable archive | `Assigned — Entry Criteria pending` | Bootstrap Build 1 passed on `cdc6bfe`; App Record verified; Build 3 Archive/signing plus retained Archive/dSYM/App Store export pilot passed on `main` / `4fd3ce7`. Independent review, exact final version/build and frozen RC remain pending. [Retention evidence](release-2026-08-01-01-cloud-artifact-retention-pilot-2026-08-24.md) |
+| Scope freeze | `Reviewed — Architecture and Quality conclusions recorded; no Product Gate or release conclusion` | [Architecture review](release-2026-08-01-02-architecture-review.md) and [Quality review](release-2026-08-01-02-quality-review.md) are historical `Pass` with follow-ups. Minimum OS is now iOS 18.0; 08 is Closed; 07 physical-iPad residual is deferred to targeted external testing; exact final-RC evidence remains open |
 | iOS 26.0 target | `Superseded by RELEASE-2026-0801-10` | 26.0-only path closed by [`PD-RELEASE-2026-0801-MINIMUM-OS-IOS18`](../product-decisions/RELEASE-2026-0801-minimum-os-ios18.md) |
 | iOS 18.0 target | `Reviewed` — Phase 1 Quality `Pass with conditions`; narrowed Phase 2 Human-accepted | [Quality](../assignments/release-2026-08-01-10-quality-review.md) · [Phase 2 Human](release-2026-0801-10-ios-18-phase2-human-evidence.md). Not Archive/release |
 | iPad support | `Active — iOS 18 Simulator matrix complete; release-toolchain runtime gate pending` | [iOS 18 iPad Simulator preflight](release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md): mini / 10th-gen / 13-inch M4 critical matrix complete. Physical iPad remains deferred; this is not an App Store iPad compatibility claim |
-| Kaomoji content | `Assigned — Entry Criteria pending` | Sequenced after other necessary preparation but before RC freeze; catalog/source/license and working-content evidence remain pending |
+| Kaomoji content | `Closed` | PR [#80](https://github.com/shchnk1103/Universe-Keyboard/pull/80) merged at `54ce3bd`; Human Product Gate passed and Assignment closed. This is feature evidence, not RC/TestFlight authorization |
 | Onboarding / Full Access | `Closed — Conditional Product Gate accepted` | Device matrix [`release-2026-08-01-03-physical-device-fa-matrix.md`](release-2026-08-01-03-physical-device-fa-matrix.md); gate [`../assignments/release-2026-08-01-03-product-gate.md`](../assignments/release-2026-08-01-03-product-gate.md); Human confirmed `2026-07-20`; TD-004 residual in `TECH_DEBT.md` |
 | Device / performance | `Assignment Pending` | Final Cloud build pending; iPhone 13 Pro / iOS 27 physical is the named primary device; TD-003/004/005 remain open |
-| App Store materials | `Active` | [2026-08-22/23 audit and update](release-2026-08-01-05-testflight-metadata-audit-2026-08-22.md): contacts/privacy/export/age complete; per-scheme license disclosure implemented; Phase A receipts accepted; Human-reported content-rights “Yes”, primary `工具` and secondary `效率` saved; screenshots/copy/What to Test remain pending |
+| App Store materials | `Active` | Contacts/privacy/export/age and disclosure work complete; Phase A receipts accepted; content rights/categories and store copy are Human-reported saved. What to Test waits on the uploaded build; screenshots are deferred to RC. [Copy handoff](release-2026-08-01-05-store-copy-and-what-to-test-2026-08-24.md) |
 | Product polish | `Active — Full Access deferral remediation verified; other polish residuals remain` | Candidate VoiceOver role/hint and J2 “稍后再开启” are remediated; complete accessibility and physical-device visual Gate remain open. Evidence in [`iPad preflight`](release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md) |
 
 ## Preliminary Repository Audit Snapshot
@@ -77,7 +77,8 @@ This section is later than the repository preflight above and supersedes only it
 - **Result:** `Archive - iOS` succeeded. The action reached and completed “Code signing app for app-store distribution”. [Build record](https://appstoreconnect.apple.com/teams/82c0e48e-c8bf-442c-9db9-19ed80ce4d87/apps/6804236252/ci/builds/6aec0bbf-6bbe-4cd3-81b5-8382f2d3898d/summary).
 - **Distribution check:** TestFlight still showed no build after completion; no upload/distribution was configured or performed.
 - **Evidence grade:** `Executor-recorded`.
-- **Remaining boundary:** current commit is not frozen RC; artifact and dSYM retention/download were not verified; no upload, TestFlight processing, smoke, external group or Beta Review occurred.
+- **2026-08-24 supersession:** artifact and dSYM retention/download are now verified at pilot grade, including exact App/Keyboard UUID mapping and a non-Internal-Only App Store export. [Evidence](release-2026-08-01-01-cloud-artifact-retention-pilot-2026-08-24.md).
+- **Remaining boundary:** current commit is not frozen RC; the final candidate must repeat artifact retention and independent review. No upload, TestFlight processing, smoke, external group or Beta Review occurred.
 - **Expiry:** release commit/build, signing entitlements, scheme, workflow, toolchain, privacy manifest, vendor/bootstrap or Apple upload requirements change.
 
 ## External TestFlight Metadata Snapshot
