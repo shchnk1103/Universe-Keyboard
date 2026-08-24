@@ -9,24 +9,24 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | Active |
-| **Phase** | Full Access “稍后再开启” remediation verified; remaining Product Polish residuals stay open |
-| **Non-claims** | No visual redesign, input/RIME semantic change, RC freeze, physical-device accessibility certification or release approval |
-| **Next** | Preserve the verified J2 deferral semantics while continuing separately authorized Product Polish work |
-| **Residuals** | Complete accessibility and physical-device certification remain open; local Xcode 26.6 iOS execution still requires its missing platform/runtime |
+| **Phase** | R-06-01…07 closed at Simulator/source grade; R-06-08/09 deferred to post-upload TestFlight testers; R-06-10 is a local toolchain residual |
+| **Non-claims** | No visual redesign, input/RIME semantic change, RC freeze, complete accessibility certification, physical-device visual Gate, or skipped TD-003/004/005 |
+| **Next** | 06 可执行打磨已交付。发布顺序上的下一刀是 08 颜表情。R-06-10 不要求买真机 |
+| **Residuals** | 见下方 Residual Inventory |
 
 ---
 
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human Product Owner, acting as Product Lead, authorized the current Codex task to select and perform KOS-compatible remaining release execution roles, `2026-07-20 Asia/Shanghai`; explicitly authorized the minimal candidate VoiceOver remediation and clarified/authorized the Full Access deferral semantics on `2026-08-22 Asia/Shanghai`
+- **Decision Source / Date:** Human Product Owner, acting as Product Lead, authorized the current Codex task to select and perform KOS-compatible remaining release execution roles, `2026-07-20 Asia/Shanghai`; explicitly authorized the minimal candidate VoiceOver remediation and clarified/authorized the Full Access deferral semantics on `2026-08-22 Asia/Shanghai`; on `2026-08-23 Asia/Shanghai` authorized the current Grok task to continue remaining `RELEASE-2026-0801-06` residuals strictly under KOS; later the same day stated physical-device visual/accessibility certification must wait for TestFlight testers because the available device set is too small
 - **Product Approver:** Human Product Owner acting as Product Lead
 
 ## Assignment
 
 - **Domain Owner:** ⌨️ Keyboard Experience Maintainer
-- **Executor:** Current Codex task acting as ⌨️ Keyboard Experience execution thread
-- **Environment Executor:** Current Codex task for simulator visual/accessibility operations; the Human Product Owner remains the physical-device visual operator and final Product Gate
+- **Executor:** Current Grok task acting as ⌨️ Keyboard Experience execution thread
+- **Environment Executor:** Current Grok task for simulator visual/accessibility operations; the Human Product Owner remains the physical-device visual operator, Simulator VoiceOver operator and final Product Gate
 - **Human Dependency:** Human Product Owner — selects the desired treatment for incomplete affordances and performs final visual Product Gate
 - **Architecture Reviewer:** `Not Applicable — unless a fix changes input semantics, lifecycle or cross-target ownership`
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer
@@ -49,6 +49,30 @@
 
 - **Required Handoff Content:** before/after visuals, interaction behavior, changed files, tests, devices/orientations/accessibility states, unresolved visual differences and Product Gate questions
 - **Revalidation Trigger:** scope, supported devices/orientations, keyboard geometry, tab/navigation style, accessibility contract or affected feature behavior changes
+
+## Reassignment
+
+- **Previous Executor:** Codex task that closed the candidate VoiceOver role residual and J2 Full Access deferral residual
+- **New Executor:** Current Grok task
+- **Reason:** Human Product Owner authorized continuing remaining `RELEASE-2026-0801-06` residuals under KOS
+- **Effective date:** `2026-08-23 Asia/Shanghai`
+- **Decision source:** Human Product Owner acting as Product Lead, current Grok session
+- **Remaining work at reassignment:** see Residual Inventory; do not reopen closed named residuals; do not expand into 08 kaomoji or 07 physical iPad
+
+## Residual Inventory
+
+| ID | Item | Status | Owner | Next allowed action |
+|---|---|---|---|---|
+| R-06-01 | Compact candidate VoiceOver spoke label only | **Closed** (Simulator smoke) | Keyboard Experience | Do not reopen unless revalidation trigger |
+| R-06-02 | J2 “稍后再开启” no-op / false completion | **Closed** (Simulator smoke) | Keyboard Experience | Preserve verified deferral semantics |
+| R-06-03 | Dark-mode toolbar `吗` low contrast | **Closed — not Extension-owned** | System `UITextInputAssistantItem` | Do not “fix” iPadOS assistant bar |
+| R-06-04 | AXXXL Main App content behind keyboard | **Closed** (primary Simulator scroll) | Keyboard Experience | Do not reopen unless revalidation trigger |
+| R-06-05 | Main App Diagnostics breadth unreviewed | **Closed — source review** | App & Data Operations / 06 Environment Executor | No no-op found. iPad Simulator visual walk not repeated this slice. Evidence: [`release-2026-08-01-06-residual-review-2026-08-23.md`](../evidence/release-2026-08-01-06-residual-review-2026-08-23.md) |
+| R-06-06 | Complete VoiceOver navigation/order | **Closed — Human Simulator speech smoke** | Keyboard Experience; Human operated VoiceOver | Speech recorded 2026-08-23. Not R-06-08 complete certification |
+| R-06-07 | Settings still expose 智能纠错 / 输入洞察 | **Closed — keep + non-AI copy** | Product Lead chose keep; Executor reworded | Titles kept. Subtitles/body now state local non-AI boundary |
+| R-06-08 | Complete accessibility certification | **Deferred — TestFlight testers** | Human Product Gate | Not skipped. External testers after upload; Simulator smoke (R-06-01/06) is not this Gate |
+| R-06-09 | Physical-device visual Product Gate | **Deferred — TestFlight testers** | Human Product Owner | Same deferral. Does **not** close or skip [`RELEASE-2026-0801-04`](release-2026-08-01-04-device-performance.md) or TD-003/004/005 |
+| R-06-10 | Exact local Xcode 26.6 iOS 26.5 Simulator runtime | **Open — environment, not a phone** | Environment | This Mac has Xcode 26.6 but not the iOS 26.5 Simulator platform, so local 26.6 iOS test/build cannot run. Xcode Cloud Archive pilot already used Xcode 26.6. Do not treat Xcode 27 local runs as that gate |
 
 ## Observed Release Residuals
 
