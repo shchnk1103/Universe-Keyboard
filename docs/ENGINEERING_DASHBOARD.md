@@ -12,7 +12,7 @@
 
 - **Authority:** Human Product Owner 当场拍板；详情以各 Assignment Current Status 为准，摘要见 [`ACTIVE_WORK.md`](ACTIVE_WORK.md)（`4/10`）。
 - **Still Active:** `RELEASE-2026-0801`（外部 TestFlight 候选；目标 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002`
-- **Left Active (not Closed):** `RELEASE-2026-0801-08` → `Completed`；Human Product Gate Passed（iPhone 13 Pro / iOS 27.0）；Closed 等合并；Q1-C-01 仍不可合并
+- **Left Active:** `RELEASE-2026-0801-08` → `Closed`（PR #80 merged `54ce3bd`；功能分支已清理）
 - **Left Active:** `DEBUG-KEY-HITBOX-001` → `Closed`（PR #73 merged；Human Product Gate Passed）
 - **Left Active (not Closed / not Product Gate):**
   - `T9-RESPONSIVE-PIPELINE-001` → `Reviewed`（父伞不再占槽）

@@ -2,6 +2,10 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-24 — 08 颜表情合入 main
+
+- PR [#80](https://github.com/shchnk1103/Universe-Keyboard/pull/80) 合入 `54ce3bd`。这不是 RC 冻结，也不是 TestFlight 上传。
+
 ## 2026-08-24 — 颜表情 Human Product Gate
 
 - Human Product Owner 在 iPhone 13 Pro / iOS 27.0 上完成 08 清单 G-01…G-16，Product Gate Passed。

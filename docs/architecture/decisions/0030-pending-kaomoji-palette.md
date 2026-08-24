@@ -51,7 +51,7 @@ Reusing continuation (ADR 0017) would append instead of replace. Feeding kaomoji
 
 ## Follow-up Work
 
-- Independent Architecture review recorded [`Pass`](../../assignments/release-2026-08-01-08-architecture-review.md) `2026-08-23`. Independent Quality Q1 recorded [`Pass with conditions`](../../assignments/release-2026-08-01-08-quality-review.md) the same day. Human Product Gate [`Passed`](../../evidence/release-2026-08-01-08-product-gate-2026-08-24.md) `2026-08-24` on iPhone 13 Pro / iOS 27.0. Merge still requires the CI the merge policy names (Q1-C-01). These records do not change ADR Status and do not mark Assignment 08 Closed.
+- Independent Architecture review recorded [`Pass`](../../assignments/release-2026-08-01-08-architecture-review.md) `2026-08-23`. Independent Quality Q1 recorded [`Pass with conditions`](../../assignments/release-2026-08-01-08-quality-review.md) the same day. Human Product Gate [`Passed`](../../evidence/release-2026-08-01-08-product-gate-2026-08-24.md) `2026-08-24`. Assignment 08 **Closed** via PR [#80](https://github.com/shchnk1103/Universe-Keyboard/pull/80) merge `54ce3bd`. This does not freeze RC.
 - Hand license/copy notes to task 05: first-party literals, not a third-party kaomoji project.
 - Human may still correct near-duplicate compact/expanded glyphs in the PD table.
 
