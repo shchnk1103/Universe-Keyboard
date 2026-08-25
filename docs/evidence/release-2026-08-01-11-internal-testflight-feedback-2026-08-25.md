@@ -99,7 +99,7 @@ Capture this before diagnosis or implementation:
 |---|---|---|
 | `F-01` | Route to fresh-install onboarding triage | External-candidate severity pending reproduction |
 | `F-02` | Reproduce before diagnosing or choosing product behavior | `P1` candidate; do not broaden external testing while out-of-box multi-character input remains unexplained |
-| `F-03` | Product priority advanced; prepare a separate delivery Architecture/Assignment proposal, including localized and actionable failure presentation | Block broader external testing until fixed or explicitly decided by Product Lead |
+| `F-03` | Product priority advanced; separate [`RIME-SCHEME-DELIVERY-001`](../assignments/rime-scheme-delivery-001.md) and [`source research`](rime-scheme-delivery-source-research-2026-08-25.md) now bound multi-endpoint selection, integrity and localized recovery as a pending delivery candidate | Block broader external testing until fixed or explicitly decided by Product Lead |
 
 Canonical Assignment:
 [`RELEASE-2026-0801-11`](../assignments/release-2026-08-01-11-internal-testflight-feedback.md).
