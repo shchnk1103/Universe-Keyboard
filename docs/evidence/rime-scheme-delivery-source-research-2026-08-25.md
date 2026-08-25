@@ -6,8 +6,10 @@
 > **Method:** read-only source search plus first-party/upstream and provider
 > documentation review
 > **Evidence grade:** `Executor-recorded`
-> **Expiry:** endpoint pilot, upstream distribution-link change, provider terms
-> change or implementation Assignment Decision
+> **Superseded for endpoint behavior:** the bounded pilot is recorded in
+> [`rime-scheme-delivery-endpoint-pilot-2026-08-25.md`](rime-scheme-delivery-endpoint-pilot-2026-08-25.md).
+> Source/operator research below remains current until an upstream
+> distribution-link or provider-terms change.
 
 ## Current App Path
 
@@ -49,10 +51,10 @@ rg -n "checksum|SHA256|CryptoKit" \
   third-party App traffic. Upstream endorsement supports a pilot, not a final
   operator-permission claim.
 
-**Disposition:** use GitHub + NJU as the first 雾凇 two-endpoint pilot. Resolve a
-version-specific NJU path and verify its SHA-256 against the exact GitHub release;
-do not install from mutable `LatestRelease` without binding the resulting bytes
-to an immutable manifest.
+**Pilot update:** GitHub + the exact NJU `nightly build` path returned matching
+size and SHA-256. NJU `LatestRelease` returned different bytes and is ineligible.
+See the bounded endpoint pilot for commands and limits. Mutable `nightly` still
+requires manifest-bound size and digest verification.
 
 ### 万象拼音
 
@@ -66,10 +68,11 @@ to an immutable manifest.
   <https://docs.cnb.cool/zh/guide/role-permissions.html> and
   <https://docs.cnb.cool/zh/develops/openapi-event.html>.
 
-**Disposition:** use GitHub + the upstream-linked CNB repository as the first
-万象 two-endpoint pilot. Exact stable attachment URL/API, tag mapping, Range and
-redirect behavior still require direct verification; digest metadata does not
-replace the App's own completed-file SHA-256 check.
+**Pilot update:** the CNB stable attachment URL, anonymous redirect, Range and
+published digest were verified, but its `v17.5.9` bytes differed from GitHub's
+same-tag asset and the two Release records pointed to different commits. CNB
+therefore cannot be a transparent fallback under the GitHub digest. Its own
+digest remains valid evidence only for the separate CNB artifact.
 
 ## Platform Alternatives
 
@@ -98,10 +101,9 @@ replace the App's own completed-file SHA-256 check.
 
 ## Unresolved Evidence
 
-- Exact versioned NJU URL, lag behavior, Range/redirect response and third-party
-  App-use acceptability.
-- Exact CNB stable-asset URL/API, anonymous access, Range/redirect response and
-  digest parity with the selected GitHub asset.
+- NJU lag/mutation behavior and third-party App-use acceptability.
+- A byte-identical Mainland 万象 mirror, or a Product/Architecture decision to
+  treat the CNB artifact as a separate canonical artifact.
 - Mainland China cellular/Wi-Fi and non-Mainland first-byte/download evidence.
 - Cost and legal/operational owner for any Universe-controlled mirror.
 - Architecture decision for manifest authority/signing and rollout/rollback.

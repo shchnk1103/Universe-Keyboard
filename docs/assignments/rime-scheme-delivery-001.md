@@ -8,10 +8,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Assignment Pending` |
-| **Phase** | Read-only current-path audit and first-party source research recorded; no provider choice or implementation track has entered `Ready` |
-| **Non-claims** | No endpoint has passed an App-use permission, byte-identity, Range/redirect, Mainland China cellular or availability pilot; no CDN/object-storage provider is selected |
-| **Next** | Product Lead names Executor/reviewers and authorizes a bounded endpoint pilot; Architecture then reviews manifest trust, integrity and fallback ownership before code work |
-| **Residuals** | [`2026-08-25 source research`](../evidence/rime-scheme-delivery-source-research-2026-08-25.md) |
+| **Phase** | Product-authorized bounded endpoint pilot completed on the current Mac path: exact NJU 雾凇 bytes match GitHub; CNB 万象 bytes do not match GitHub; no implementation track has entered `Ready` |
+| **Non-claims** | Current-Mac timings are not Mainland cellular/Wi-Fi evidence; endpoint operator/App-use acceptability, Architecture/Quality review and a byte-identical Mainland 万象 source remain unresolved; no CDN/object-storage provider is selected |
+| **Next** | Product Lead names implementation Executor/reviewers and decides whether to obtain a byte-identical 万象 mirror; then Architecture reviews manifest trust, integrity and fallback ownership before code work |
+| **Residuals** | [`2026-08-25 endpoint pilot`](../evidence/rime-scheme-delivery-endpoint-pilot-2026-08-25.md) · [`source research`](../evidence/rime-scheme-delivery-source-research-2026-08-25.md) |
 
 ---
 
@@ -43,8 +43,9 @@
 - **Domain Owner:** `UNKNOWN` — Product Lead must select RIME delivery ownership.
 - **Executor:** Current Codex task for documentation/research only;
   implementation Executor is `UNKNOWN`.
-- **Environment Executor:** `UNKNOWN` — must be able to exercise Mainland China
-  cellular and Wi-Fi plus at least one non-Mainland path.
+- **Environment Executor:** Current Codex task for the bounded current-Mac pilot;
+  Mainland China cellular/Wi-Fi and independent non-Mainland Executor remain
+  `UNKNOWN`.
 - **Human Dependency:** Product Lead approves endpoint operators, recurring cost
   and any external contact or account creation.
 - **Architecture Reviewer:** `UNKNOWN` — must review manifest trust, immutable
@@ -104,9 +105,9 @@ forbidden.
 | Scheme / candidate | Current disposition | Required pilot before selection |
 |---|---|---|
 | 雾凇 GitHub Release | Existing upstream source; retain as one endpoint | Immutable version URL, SHA-256 receipt and failure classification |
-| 雾凇 NJU GitHub Release mirror | **Preferred Mainland candidate for pilot** because 雾凇 upstream links it as “大陆镜像加速” | Operator/App-use acceptability, version lag, exact-version path, Range/redirect behavior, byte identity and Mainland cellular/Wi-Fi evidence |
+| 雾凇 NJU GitHub Release mirror | **Technical pilot passed only for exact `nightly build` path**; current bytes matched GitHub SHA-256 and Range worked. `LatestRelease` returned different bytes and is ineligible | Operator/App-use acceptability, mutation/lag monitoring and Mainland cellular/Wi-Fi evidence |
 | 万象 GitHub Release | Existing upstream source; retain as one endpoint | Immutable version URL and published SHA-256 receipt |
-| 万象 CNB repository/releases | **Preferred Mainland candidate for pilot** because 万象 upstream links it as its CNB domestic mirror | Stable public asset URL/API, release/tag mapping, Range/redirect behavior, digest parity and Mainland cellular/Wi-Fi evidence |
+| 万象 CNB repository/releases | Public fixed-tag asset, redirect, Range and its own digest passed; **same-tag bytes differed from GitHub**, so it is not an equivalent fallback endpoint | Product/Architecture must choose separate canonical semantics or obtain a byte-identical Mainland mirror; then run Mainland cellular/Wi-Fi evidence |
 | Universe-controlled Mainland object storage/CDN | Managed fallback candidate, not selected | Account/cost authorization, redistribution automation, origin protection, observability, retention and ICP/custom-domain requirements |
 | GitCode or Gitee mirror owned by Universe | Reserve candidate, not selected | Automated asset sync rather than source-only mirroring, anonymous stable direct download, quotas/terms, digest parity and operational ownership |
 | Unnamed GitHub proxy | Rejected from current proposal | Not eligible without operator identity, permission, immutable provenance and independent integrity evidence |
