@@ -10,9 +10,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Recorded` |
-| **Phase** | 精确 RC `testflight-v1.0-rc1-build7` 已冻结、artifact 已独立复核；精确 Store IPA 已上传并处理为 TestFlight `1.0 (7)` / `准备提交`；Task04 因当前 Beta 采集环境 Blocked |
-| **Non-claims** | 上传/处理不授权测试组、外部测试、Beta Review 或接受 TD-003/004/005 风险 |
-| **Next** | Task05 在单独授权下填写 Build 7 What to Test；04/TD-003/004/005 仍须在外部放行前关闸，分组/分发/送审继续未授权 |
+| **Phase** | Build 7 已进入 Human-operated 内部组并邀请两名 tester；首轮三项反馈进入 Pending Task11；Task04 仍因当前 Beta 采集环境 Blocked |
+| **Non-claims** | 内部邀请不构成 smoke Pass、外部测试或 Beta Review；Task11 无根因/修复授权；TD-003/004/005 未接受或关闭 |
+| **Next** | Task11 复现并分派；F-03 跨地区下载按 Product 紧急优先级提前；外部组/送审仍须等 Gate 与单独授权 |
 | **Residuals** | 见 [`release-2026-08-01-acceptance.md`](../evidence/release-2026-08-01-acceptance.md) |
 
 ---
@@ -82,6 +82,7 @@ actions they explicitly name; all unmentioned actions remain unauthorized.
   [`frozen RC Build 7 artifact ledger`](../evidence/release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md).
 - `2026-08-24 Asia/Shanghai`：在 Task04 P4 因当前 Beta Time Profiler 环境失败关闭后，Human Product Owner 接受上传与外部分发分离的推进方式，并授权先完成文档修正及 Build 7 upload-only 只读预检。该授权不包含上传本身；执行者必须在预检后停在单独的 Human 上传授权 Gate。TD-003/004/005、测试组分配、Beta Review 和 release 仍未授权。
 - `2026-08-24 Asia/Shanghai`：Human Product Owner 随后逐字授权将 SHA-256 `b9baf362…` 的精确 Store `Universe Keyboard.ipa` 上传到 App Store Connect App `6804236252`，版本 `1.0`、构建 `7`，且只允许上传并等待处理。Transporter 于 `22:46` 显示已交付；App Store Connect 已验证并处理为 TestFlight `1.0 (7)` / `准备提交`。群组与独立测试员均为 `0`，What to Test 为空；没有分发或 Beta Review 提交。
+- `2026-08-25 Asia/Shanghai`：Human Product Owner 自行创建内部组 `Build 7 Internal Smoke`、加入一个 Build 并邀请两名内部测试员；至少一封邀请已收到。三项 tester 反馈记录于 [`RELEASE-2026-0801-11`](../assignments/release-2026-08-01-11-internal-testflight-feedback.md)，其中跨地区方案下载被 Product 明确提前为紧急工作。该 Human-operated 内部分发 supersede 先前“groups/testers 为 0”的当前状态，但不授权外部组或 Beta Review。
 
 ## Revalidation Triggers
 

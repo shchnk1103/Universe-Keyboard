@@ -5,11 +5,11 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-24 Asia/Shanghai` — RC `testflight-v1.0-rc1-build7` 已冻结；精确 Store IPA 已上传并处理为 TestFlight `1.0 (7)` / `准备提交`；Build 7 真机 04 因当前 Beta Time Profiler 连续 `Device disconnected` 而 Blocked。Active Work `3/10`。
+Last synced: `2026-08-25 Asia/Shanghai` — RC Build 7 已进入 Human-operated 内部组并产生三项首轮反馈；Task11 为 `Assignment Pending`，不计入 Active cap；Build 7 真机 04 仍因当前 Beta Time Profiler 连续 `Device disconnected` 而 Blocked。Active Work `3/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
-| 1 | RELEASE-2026-08-01 | Active | 外部候选；TestFlight `1.0 (7)` 已上传并处理，未分组/分发/送审；What to Test 待单独授权写入；04/TD-003/004/005 因当前 Beta Time Profiler 两次预启动 `Device disconnected` 保持 Hold，需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) · [`04 P4 evidence`](evidence/release-2026-08-01-04-build7-device-run-p4-2026-08-24.md) · [`04 Decision`](product-decisions/RELEASE-2026-0801-04-build7-bounded-evidence-exception.md) · [`Build 7 ledger`](evidence/release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md) |
+| 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；首轮反馈由 Pending Task11 追踪（新手 RIME 流程、builtin 多字失败、跨地区下载）；F-03 被 Product 提前为紧急 Gate。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 

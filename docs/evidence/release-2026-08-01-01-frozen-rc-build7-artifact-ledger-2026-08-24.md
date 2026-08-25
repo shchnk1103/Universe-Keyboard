@@ -169,6 +169,12 @@ preflight's upload-pending state.
 
 ## Separately authorized upload result — 2026-08-24
 
+> **Superseded for current distribution state:** on `2026-08-25`, the Human
+> Product Owner created internal group `Build 7 Internal Smoke`, attached one
+> build and invited two internal testers. The table below remains the exact
+> upload-time receipt; see [`RELEASE-2026-0801-11`](../assignments/release-2026-08-01-11-internal-testflight-feedback.md)
+> for the current internal-feedback state.
+
 The Human Product Owner explicitly authorized uploading only the exact retained
 Store IPA to App Store Connect App `6804236252`, version `1.0`, build `7`, then
 waiting for processing. The authorization explicitly excluded group assignment,
@@ -195,7 +201,8 @@ or external-candidate release gates.
 XCResult, logs, non-Internal-Only App Store package and ad hoc package form one
 internally consistent artifact set. Under the later, exact upload-only Human
 authorization, that same Store package was delivered and processed as TestFlight
-`1.0 (7)`; no tester or review action followed.
+`1.0 (7)`. No tester or review action was part of that upload-only execution;
+the later Human-operated internal group is recorded separately.
 
 This evidence does **not** close the external-candidate Gate by itself:
 
