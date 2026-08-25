@@ -8,9 +8,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Assignment Pending` |
-| **Phase** | Product-authorized bounded endpoint pilot completed on the current Mac path: exact NJU 雾凇 bytes match GitHub; CNB 万象 bytes do not match GitHub; no implementation track has entered `Ready` |
-| **Non-claims** | Current-Mac timings are not Mainland cellular/Wi-Fi evidence; endpoint operator/App-use acceptability, Architecture/Quality review and a byte-identical Mainland 万象 source remain unresolved; no CDN/object-storage provider is selected |
-| **Next** | Product Lead names implementation Executor/reviewers and decides whether to obtain a byte-identical 万象 mirror; then Architecture reviews manifest trust, integrity and fallback ownership before code work |
+| **Phase** | Product-authorized bounded endpoint pilot completed on the current Mac path: exact NJU 雾凇 bytes match GitHub; GitHub/CNB 万象 archives differ but the ordinary Wanxiang runtime files are byte-identical; no implementation track has entered `Ready` |
+| **Non-claims** | Current-Mac timings are not Mainland cellular/Wi-Fi evidence; endpoint operator/App-use acceptability and Architecture/Quality review remain unresolved; ordinary-runtime equivalence does not make the two 万象 ZIPs artifact-identical |
+| **Next** | Product Lead decides whether GitHub/CNB 万象 may be explicit source variants without new infrastructure and names implementation Executor/reviewers; Architecture then reviews manifest, installed-content identity, integrity and fallback ownership before code work |
 | **Residuals** | [`2026-08-25 endpoint pilot`](../evidence/rime-scheme-delivery-endpoint-pilot-2026-08-25.md) · [`source research`](../evidence/rime-scheme-delivery-source-research-2026-08-25.md) |
 
 ---
@@ -31,8 +31,8 @@
 - **Non-goals:** no network request from Keyboard Extension; no probe at App
   launch; no VPN prerequisite; no IP geolocation, SSID collection or carrier
   fingerprinting; no blind public GitHub proxy; no mutable unverified asset; no
-  provider purchase, mirror publication or production-code change under this
-  pending Assignment.
+  provider purchase or Universe-operated mirror/CDN; no production-code change
+  under this pending Assignment.
 - **Required Inputs:** exact immutable scheme version and asset, expected byte
   length and SHA-256, candidate endpoints, redistribution/license obligations,
   endpoint-operator permission or acceptable-use evidence, cost/egress boundary,
@@ -63,6 +63,14 @@ scheme ID, version/tag, asset name, expected byte length, SHA-256, license and
 provenance metadata, and an ordered list of endpoints known to serve the same
 bytes. A mutable `latest` URL may be used only to discover a version; installation
 must bind to an immutable version and digest.
+
+If upstream-operated sources publish non-identical archives that have been
+validated to stage the same selected runtime content, they are separate source
+variants rather than equivalent endpoints. Each variant must carry its own
+source label, tag, source commit/revision, byte length and archive SHA-256. A
+separate installed-content identity must enumerate or hash the exact files that
+are allowed to reach the shared RIME staging area. A shared visible tag alone is
+not sufficient identity.
 
 The archive SHA-256 is verified before extraction. A mismatch fails closed,
 deletes the temporary artifact and cannot proceed to installation or deployment.
@@ -107,8 +115,8 @@ forbidden.
 | 雾凇 GitHub Release | Existing upstream source; retain as one endpoint | Immutable version URL, SHA-256 receipt and failure classification |
 | 雾凇 NJU GitHub Release mirror | **Technical pilot passed only for exact `nightly build` path**; current bytes matched GitHub SHA-256 and Range worked. `LatestRelease` returned different bytes and is ineligible | Operator/App-use acceptability, mutation/lag monitoring and Mainland cellular/Wi-Fi evidence |
 | 万象 GitHub Release | Existing upstream source; retain as one endpoint | Immutable version URL and published SHA-256 receipt |
-| 万象 CNB repository/releases | Public fixed-tag asset, redirect, Range and its own digest passed; **same-tag bytes differed from GitHub**, so it is not an equivalent fallback endpoint | Product/Architecture must choose separate canonical semantics or obtain a byte-identical Mainland mirror; then run Mainland cellular/Wi-Fi evidence |
-| Universe-controlled Mainland object storage/CDN | Managed fallback candidate, not selected | Account/cost authorization, redistribution automation, origin protection, observability, retention and ICP/custom-domain requirements |
+| 万象 CNB repository/releases | Public fixed-tag asset, redirect, Range and its own digest passed. Same-tag ZIP differs from GitHub, but all shared ordinary-Wanxiang runtime files are byte-identical; CNB adds three separate `wanxiang_pure` files and has a different README | Product/Architecture must decide explicit source-variant semantics, bind both archive receipts plus one guarded installed-content identity, decide handling of Pure extras, and then run Mainland cellular/Wi-Fi evidence |
+| Universe-controlled Mainland object storage/CDN | **Rejected from this Assignment by Product Owner**; no additional server purchase or operation | Re-entry requires a new explicit Product Decision |
 | GitCode or Gitee mirror owned by Universe | Reserve candidate, not selected | Automated asset sync rather than source-only mirroring, anonymous stable direct download, quotas/terms, digest parity and operational ownership |
 | Unnamed GitHub proxy | Rejected from current proposal | Not eligible without operator identity, permission, immutable provenance and independent integrity evidence |
 
@@ -116,11 +124,13 @@ forbidden.
 
 - **Entry Criteria:** Product Lead names the implementation Executor,
   Architecture Reviewer, Quality Reviewer and authorized endpoint pilot set.
-- **Exit Criteria:** selected endpoints serve byte-identical immutable assets;
-  SHA-256 fails closed before extraction; hedged cancellation and bounded traffic
-  are tested; Simplified Chinese failure categories are verified; Mainland China
-  cellular/Wi-Fi and non-Mainland evidence pass; provider permission, cost and
-  retention responsibilities are explicit.
+- **Exit Criteria:** each selected archive has immutable source-specific
+  identity and SHA-256; equivalent endpoints serve the same archive bytes, while
+  any accepted source variants also converge on one explicitly verified guarded
+  installed-content identity; SHA-256 fails closed before extraction; hedged
+  cancellation and bounded traffic are tested; Simplified Chinese failure
+  categories are verified; Mainland China cellular/Wi-Fi and non-Mainland
+  evidence pass; endpoint permission and operational ownership are explicit.
 - **Stop Conditions:** missing digest; a mirror returns different bytes; a probe
   runs from Keyboard Extension or before user download intent; user/network
   fingerprinting expands beyond path class; provider terms/permission remain

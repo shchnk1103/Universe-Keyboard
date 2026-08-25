@@ -51,15 +51,31 @@ manifest receipt is accepted.
 Both endpoints returned HTTP `206` and exactly 65,536 bytes for the bounded
 Range probe. CNB redirects once to `asset.cnb.cool`; the final response supports
 byte ranges. However, different size and digest mean the two artifacts cannot be
-members of one equivalent-endpoint race under a single manifest digest. The
-same tag also resolves to different source commits, so allowing two endpoint-
-specific digests under one visible version would hide real version drift and is
-not an acceptable shortcut.
+members of one byte-equivalent endpoint race under a single archive digest.
 
-CNB could become a separate canonical artifact only after an Architecture and
-Product decision defines its provenance/version semantics and validates its
-installed contents. The lower-risk alternative is a Universe-controlled
-Mainland mirror that copies one selected canonical artifact byte-for-byte.
+A subsequent full extraction comparison narrowed the content drift:
+
+- GitHub contained `84` files; CNB contained `87` files.
+- All `84` shared relative paths were hashed individually. `83` were byte-
+  identical; only `README.md` differed.
+- CNB alone contained `custom/wanxiang_pure.custom.yaml`,
+  `custom/wanxiang_pure.schema.yaml` and `custom/wanxiang_pure.dict.yaml`.
+- The ordinary `wanxiang` schema, dictionaries, Lua data/scripts and all other
+  shared runtime files were byte-identical. No ordinary `wanxiang` file
+  references `wanxiang_pure`; the extra files declare a separate optional Pure
+  schema.
+- Both archives declare `17.5.9` in `version.txt`, despite their different
+  archive digests and source commits.
+
+Therefore the two assets are **ordinary-Wanxiang runtime-equivalent for this
+snapshot, but not artifact-equivalent**. This is narrower than substantive
+dictionary/Lua drift, yet it still forbids pretending that one archive digest
+identifies both. A Product/Architecture decision may instead model them as two
+source variants of one upstream version. Such a contract must expose source,
+tag, source commit/revision and archive-specific size/SHA-256; it must also
+define whether the CNB-only Pure files are retained or excluded during guarded
+staging. Transparent mid-download substitution is allowed only if the manifest
+first binds both variants to the same validated installed-content identity.
 
 ## Current-Network First-Byte Samples
 
@@ -113,6 +129,7 @@ participate.
 | HTTP Range / bounded traffic | Pass on current network for all four exact probe URLs |
 | 雾凇 GitHub ↔ NJU byte identity | Pass only for NJU `nightly build`; `LatestRelease` fails |
 | 万象 GitHub ↔ CNB byte identity | **Fail** for `v17.5.9` |
+| 万象 ordinary-schema runtime identity | Pass for all shared non-README files in this snapshot; CNB has 3 additional optional Pure-schema files |
 | Published/observed digest correctness | Pass for GitHub metadata, NJU streamed match and CNB page/streamed match |
 | App-use permission / acceptable use | `UNKNOWN` |
 | Mainland China cellular/Wi-Fi | `UNKNOWN` |
@@ -121,4 +138,6 @@ participate.
 
 This pilot does not satisfy the Assignment Exit Criteria and does not authorize
 implementation. It narrows the next decision to one byte-identical 雾凇 pair and
-a still-unresolved 万象 Mainland equivalent source.
+a no-new-server 万象 choice: either keep only GitHub, or accept GitHub/CNB as
+explicitly identified source variants with archive-specific receipts and a
+common installed-content contract.
