@@ -90,7 +90,7 @@ extension AppOperationToastState {
             }
             self.init(
                 source: .download,
-                message: "正在通过\(sourceName)下载\(schemeName)\(progressSuffix)",
+                message: "正在通过 \(sourceName) 下载\(schemeName)\(progressSuffix)",
                 systemImage: "arrow.down.circle",
                 tone: .progress,
                 automaticallyDismisses: false
