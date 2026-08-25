@@ -7,11 +7,11 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Assignment Pending` |
-| **Phase** | Product accepted a no-new-server source-variant contract: exact NJU 雾凇 bytes match GitHub; GitHub/CNB 万象 archives differ but the ordinary staged Wanxiang runtime is equivalent and CNB-only `custom/wanxiang_pure*` remains excluded; no implementation track has entered `Ready` |
-| **Non-claims** | Current-Mac timings are not Mainland cellular/Wi-Fi evidence; endpoint operator/App-use acceptability and Architecture/Quality review remain unresolved; ordinary-runtime equivalence does not make the two 万象 ZIPs artifact-identical |
-| **Next** | Product Lead names Domain Owner, implementation Executor, Environment Executor and independent Architecture/Quality reviewers; Architecture then reviews manifest, installed-content identity, integrity and fallback ownership before code work |
-| **Residuals** | [`source-variant Product Decision`](../product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) · [`2026-08-25 endpoint pilot`](../evidence/rime-scheme-delivery-endpoint-pilot-2026-08-25.md) · [`source research`](../evidence/rime-scheme-delivery-source-research-2026-08-25.md) |
+| **Lifecycle** | `Review` |
+| **Phase** | Implementation and local evidence complete; independent Architecture and Quality reviews are Pass with conditions with no open P0. Stable Xcode/CI full-App rerun plus Human Mainland network evidence remain open |
+| **Non-claims** | Current-Mac timings are not Mainland cellular/Wi-Fi evidence; endpoint operator/App-use acceptability remains unresolved; ordinary-runtime equivalence does not make the two 万象 ZIPs artifact-identical; TD-001 atomic installation remains open |
+| **Next** | Stable-toolchain complete App suite → Human Mainland cellular/Wi-Fi evidence → endpoint acceptable-use conclusion → Product Gate |
+| **Residuals** | [`implementation evidence`](../evidence/rime-scheme-delivery-implementation-2026-08-25.md) · [`source-variant Product Decision`](../product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) · [`2026-08-25 endpoint pilot`](../evidence/rime-scheme-delivery-endpoint-pilot-2026-08-25.md) · [`source research`](../evidence/rime-scheme-delivery-source-research-2026-08-25.md) |
 
 ---
 
@@ -33,8 +33,8 @@
 - **Non-goals:** no network request from Keyboard Extension; no probe at App
   launch; no VPN prerequisite; no IP geolocation, SSID collection or carrier
   fingerprinting; no blind public GitHub proxy; no mutable unverified asset; no
-  provider purchase or Universe-operated mirror/CDN; no production-code change
-  under this pending Assignment.
+  provider purchase or Universe-operated mirror/CDN; no push, merge, release
+  distribution or Beta Review submission under this execution authorization.
 - **Required Inputs:** exact immutable scheme version and asset, expected byte
   length and SHA-256, candidate endpoints, redistribution/license obligations,
   endpoint-operator permission or acceptable-use evidence, cost/egress boundary,
@@ -42,21 +42,39 @@
 
 ## Assignment
 
-- **Domain Owner:** `UNKNOWN` — Product Lead must select RIME delivery ownership.
-- **Executor:** Current Codex task for documentation/research only;
-  implementation Executor is `UNKNOWN`.
-- **Environment Executor:** Current Codex task for the bounded current-Mac pilot;
-  Mainland China cellular/Wi-Fi and independent non-Mainland Executor remain
-  `UNKNOWN`.
-- **Human Dependency:** Product Lead approves endpoint operators, recurring cost
-  and any external contact or account creation.
-- **Architecture Reviewer:** `UNKNOWN` — must review manifest trust, immutable
-  identity, fallback and main-App ownership.
-- **Quality Reviewer:** `UNKNOWN` — must independently verify byte identity,
-  cancellation, timeout, localized errors and network matrix evidence.
-- **Handoff Target:** Human Product Owner for Assignment Decision.
+- **Domain Owner:** Main App UI — download/install/deploy orchestration under the
+  permanent ownership route in `READING_MAPS.md`.
+- **Executor:** Current Codex task — production implementation, automated tests
+  and KOS evidence within the authorized scope.
+- **Environment Executor:** Current Codex task — local build, Simulator and
+  current-Mac public-endpoint evidence only.
+- **Human Dependency:** Human Product Owner — Mainland China cellular/Wi-Fi
+  evidence, any required device action and final Product Gate.
+- **Architecture Reviewer:** Independent AI subagent `architecture_review` —
+  manifest trust, installed-content identity, fallback, concurrency and main-App
+  ownership review; no implementation edits.
+- **Quality Reviewer:** Independent AI subagent `quality_review` — cancellation,
+  timeout, integrity, localized errors, tests and evidence review; no
+  implementation edits.
+- **Handoff Target:** Human Product Owner for Mainland evidence and Product Gate.
 
 ## Proposed Delivery Contract
+
+### Architecture pre-review disposition
+
+The independent `architecture_review` subagent returned **Pass with
+conditions** before implementation. P0 conditions are binding for this slice:
+an in-App immutable manifest; source-specific archive size/SHA-256 and redirect
+host policy; unique temporary downloads with real URLSession cancellation;
+variant-isolated identity (this implementation may omit ETag/cache reuse rather
+than share it); safe ZIP paths; deterministic post-processed installed-content
+allowlist identity; operation-generation checks; and success/source receipts
+persisted only after deployment succeeds.
+
+This Assignment does **not** expand into TD-001 atomic installation. Existing
+file-by-file install/rollback risk remains open and must not be described as
+resolved. The slice adds verification before the existing install commit and
+retains the current explicit recovery path.
 
 ### Immutable manifest
 
@@ -83,13 +101,14 @@ contains the expected schema filename.
 
 - Start only after the user explicitly requests a download and satisfies the
   per-scheme license acknowledgement gate.
-- Start the preferred endpoint immediately. If it has not produced an acceptable
-  response/initial bytes after a short hedge delay, start one fallback in
-  parallel; exact delay and byte threshold remain pilot-tuned values.
+- Start the preferred endpoint with a bounded header-only reachability request.
+  If it has not produced an acceptable response after a 250 ms hedge delay,
+  start one fallback in parallel. No response body is sampled during selection.
 - At most two endpoints run concurrently. A third endpoint starts only after a
   failure, preventing unnecessary cellular traffic.
-- The first task with valid HTTPS/HTTP semantics and a bounded initial byte
-  sample continues as the real download; cancel and delete losing tasks.
+- The first task with valid HTTPS/HTTP semantics, an allowed final host and a
+  compatible declared size becomes the real download source; cancel the losing
+  probe before starting the archive download.
 - Cache the successful endpoint only for the same scheme/version and broad path
   class (cellular or Wi-Fi), with bounded expiry. Do not store SSID, precise
   location, IP-derived region or carrier identity.
@@ -146,3 +165,23 @@ forbidden.
 - **Revalidation Trigger:** scheme version/asset, endpoint/operator, manifest
   origin/signing, license/provenance, redirect/Range behavior, iOS networking or
   release-channel change.
+
+## Execution Evidence
+
+The implementation, immutable artifact receipts, post-processed content
+digests, Pure-file exclusion, automated results and Xcode 27 beta Environment
+Gate are recorded in
+[`rime-scheme-delivery-implementation-2026-08-25.md`](../evidence/rime-scheme-delivery-implementation-2026-08-25.md).
+
+Architecture P0 conditions are implemented: source-specific immutable
+identity, bounded hedged selection with cancellation, unique temporary paths,
+redirect allowlists, archive size/SHA validation before extraction, safe ZIP
+paths, deterministic post-processed allowlist identity, operation-generation
+checks, and post-deployment receipts. This does not close TD-001.
+
+The independent `quality_review` subagent returned **Pass with conditions; no
+new P0 blocker**. Its P1 findings were handled before handoff: selection is
+explicitly capped at two probes, the details UI shows the complete URL,
+revision, archive size and SHA-256 receipt, and installed-source display now
+reads only the persisted post-deployment receipt rather than an active failed
+attempt. Stable full-App CI and the Human Mainland matrix remain Exit Gates.

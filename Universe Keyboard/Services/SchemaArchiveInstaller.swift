@@ -43,8 +43,10 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
     }
 
     func prepareExtractionDirectory(for distribution: RimeSchemeDistribution) throws -> URL {
-        let directory = fileManager.temporaryDirectory.appendingPathComponent(distribution.extractionDirectoryName)
-        try? fileManager.removeItem(at: directory)
+        let directory = fileManager.temporaryDirectory.appendingPathComponent(
+            "\(distribution.extractionDirectoryName)-\(UUID().uuidString)",
+            isDirectory: true
+        )
         try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         return directory
     }
@@ -82,11 +84,9 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         for case let fileURL as URL in enumerator {
             guard !fileURL.hasDirectoryPath else { continue }
 
-            let relativePath = fileURL.path.replacingOccurrences(of: extractDir.path + "/", with: "")
+            let relativePath = try plan.normalizedRelativePath(for: fileURL, under: extractDir)
             let destinationURL = sharedDirectory.appendingPathComponent(relativePath)
-            if plan.skippedFiles.contains(fileURL.lastPathComponent)
-                || plan.prefixesToSkip(luaAvailable: luaAvailable).contains(where: { relativePath.hasPrefix($0) })
-            {
+            guard plan.shouldInstall(relativePath: relativePath, luaAvailable: luaAvailable) else {
                 continue
             }
 

@@ -1,7 +1,7 @@
 # Product Decision: RIME-SCHEME-DELIVERY-001 — Upstream Source Variants Without A Universe Server
 
 **Decision ID:** `PD-RIME-SCHEME-DELIVERY-001-SOURCE-VARIANTS`
-**Lifecycle status:** `Recorded — implementation pending`
+**Lifecycle status:** `Recorded — implemented; review gates open`
 **Date / timezone:** `2026-08-25 Asia/Shanghai`
 **Assignment:** [`RIME-SCHEME-DELIVERY-001`](../assignments/rime-scheme-delivery-001.md)
 **Evidence:** [`2026-08-25 bounded endpoint pilot`](../evidence/rime-scheme-delivery-endpoint-pilot-2026-08-25.md)
@@ -10,10 +10,10 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Recorded — implementation pending` |
-| **Phase** | Product source contract is frozen; implementation Assignment remains Pending |
-| **Non-claims** | No production implementation, Mainland cellular/Wi-Fi pass, endpoint permission conclusion or Release acceptance |
-| **Next** | Product Lead completes the implementation responsibility configuration; Architecture reviews manifest and installed-content identity before code execution |
+| **Lifecycle** | `Recorded — implemented; review gates open` |
+| **Phase** | Product source contract is implemented locally; independent Architecture and Quality reviews are Pass with conditions with no open P0 |
+| **Non-claims** | No Mainland cellular/Wi-Fi pass, endpoint permission conclusion, stable-CI full-App pass or Release acceptance |
+| **Next** | Stable-toolchain complete App suite, Human Mainland network matrix, endpoint acceptable-use conclusion and Product Gate |
 | **Residuals** | Assignment Entry/Exit Criteria and endpoint pilot gates remain authoritative |
 
 ---

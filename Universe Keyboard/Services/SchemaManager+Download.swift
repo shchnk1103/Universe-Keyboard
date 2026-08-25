@@ -18,17 +18,7 @@ extension SchemaManager {
         if let plan = entry.installationPlan {
             archiveInstaller.clearBuildCache(plan: plan)
         }
-        if let key = entry.storage.eTag {
-            settings.removeObject(forKey: key)
-        }
-        if let key = entry.storage.version {
-            settings.removeObject(forKey: key)
-        }
-        let schemeName = downloadSchemeDisplayName(for: schemaID)
-        rimeIceDownloadState = .fetchingReleaseInfo(schemeName: schemeName)
-        currentDownloadTask = Task { [weak self] in
-            await self?.fetchAndDownload(schemaID: schemaID)
-        }
+        startVerifiedDownload(schemaID: schemaID)
     }
 
     func fetchAndDownload() async {
@@ -36,168 +26,280 @@ extension SchemaManager {
     }
 
     func fetchAndDownload(schemaID: String) async {
+        let operationID = activeDownloadOperationID ?? UUID()
+        activeDownloadOperationID = operationID
+        await fetchAndDownload(schemaID: schemaID, operationID: operationID)
+    }
+
+    private func fetchAndDownload(schemaID: String, operationID: UUID) async {
         let schemeName = downloadSchemeDisplayName(for: schemaID)
+        var temporaryItems: [URL] = []
+
         do {
             guard
                 let entry = downloadableEntry(for: schemaID),
                 let distribution = entry.distribution,
                 let plan = entry.installationPlan
             else {
-                throw DownloadError.networkError("暂不支持下载这个方案")
+                throw DownloadError.unsupportedScheme
             }
+            try ensureActive(operationID)
 
-            if case .fetchingReleaseInfo = rimeIceDownloadState {
-                // already set by startDownload / forceRedownload
-            } else {
-                rimeIceDownloadState = .fetchingReleaseInfo(schemeName: schemeName)
+            let manifest = distribution.manifest
+            let preferredSourceID = entry.storage.sourceVariant.flatMap {
+                settings.string(forKey: $0)
             }
+            let selectedSource = try await sourceSelector.selectSource(
+                from: manifest.sourceVariants,
+                preferredSourceID: preferredSourceID
+            )
+            try ensureActive(operationID)
 
-            let releaseURL = try await fetchLatestReleaseURL(for: entry)
-            guard let url = releaseURL else {
-                throw DownloadError.networkError("无法获取最新版本信息")
-            }
-            let version = releaseVersionIdentifier(from: url)
-
-            // Indeterminate until the first byte-progress callback (or complete).
-            rimeIceDownloadState = .downloading(schemeName: schemeName, progress: nil)
-
-            let archive = try await downloadZip(from: url, for: entry) { [weak self] fraction in
-                Task { @MainActor in
-                    guard let self else { return }
-                    // Ignore late callbacks after leaving the downloading phase.
-                    guard case .downloading(let name, _) = self.rimeIceDownloadState, name == schemeName
-                    else { return }
-                    self.rimeIceDownloadState = .downloading(schemeName: schemeName, progress: fraction)
-                }
-            }
-            let tempURL = archive.localURL
-            let expectedSize = archive.expectedContentLength
-            guard expectedSize > 0 || expectedSize == -1 else {
-                throw DownloadError.networkError("服务器未提供文件大小")
-            }
-            let diskNeeded = expectedSize > 0 ? expectedSize * 3 + 100_000_000 : 200_000_000
+            let sources = [selectedSource] + manifest.sourceVariants.filter { $0.id != selectedSource.id }
+            let archiveResult = try await downloadFirstValidArchive(
+                from: sources,
+                schemeName: schemeName,
+                operationID: operationID
+            )
+            let archive = archiveResult.archive
+            temporaryItems.append(archive.localURL)
+            let source = archiveResult.source
+            let archiveSHA256 = archiveResult.archiveSHA256
+            let diskNeeded = source.expectedByteCount * 3 + 100_000_000
             try checkDiskSpace(needed: diskNeeded)
+            try ensureActive(operationID)
 
             rimeIceDownloadState = .extracting(schemeName: schemeName)
-
             let extractDir = try archiveInstaller.prepareExtractionDirectory(for: distribution)
-
+            temporaryItems.append(extractDir)
             _ = try await Task.detached(priority: .userInitiated) {
-                try Unzip.extract(zipPath: tempURL.path, to: extractDir)
+                try Unzip.extract(zipPath: archive.localURL.path, to: extractDir)
             }.value
-            let schemaLookupTask = Task.detached(priority: .userInitiated) { () -> URL? in
-                let fileManager = FileManager.default
-                var pendingDirectories = [extractDir]
+            try ensureActive(operationID)
 
-                while let directory = pendingDirectories.popLast() {
-                    let children =
-                        (try? fileManager.contentsOfDirectory(
-                            at: directory,
-                            includingPropertiesForKeys: [.isDirectoryKey],
-                            options: [.skipsHiddenFiles]
-                        )) ?? []
-
-                    for url in children {
-                        if url.lastPathComponent == plan.schemaFileName {
-                            return url
-                        }
-                        let values = try? url.resourceValues(forKeys: [.isDirectoryKey])
-                        if values?.isDirectory == true {
-                            pendingDirectories.append(url)
-                        }
-                    }
-                }
-                return nil
-            }
-            let schemaURL = await schemaLookupTask.value
-            guard let schemaURL else {
+            guard let schemaURL = await findSchemaFile(named: plan.schemaFileName, in: extractDir) else {
                 throw DownloadError.corruptArchive
             }
 
             rimeIceDownloadState = .postProcessing(schemeName: schemeName)
-            try await Task.sleep(nanoseconds: 200_000_000)
-
-            let luaAvailable = settings.object(forKey: "rime_lua_available") as? Bool
-            if luaAvailable == false {
-                let postProcessTask = Task.detached(priority: .userInitiated) { () throws -> Void in
-                    let schemaContent = try String(contentsOf: schemaURL, encoding: .utf8)
-                    let processed = RimeConfigPostProcessor.stripLuaDependencies(from: schemaContent)
-                    guard RimeConfigPostProcessor.validateStrippedSchema(processed) else {
-                        throw DownloadError.postProcessingFailed("高级功能兼容处理后配置无效")
-                    }
-                    try processed.write(to: schemaURL, atomically: true, encoding: .utf8)
-                }
-                try await postProcessTask.value
-            }
-
-            try installSchemaFiles(from: extractDir, plan: plan)
-            archiveInstaller.removeTemporaryItem(at: extractDir)
-            archiveInstaller.removeTemporaryItem(at: tempURL)
-
-            if let key = entry.storage.version {
-                settings.set(version, forKey: key)
-            }
-            if let key = entry.storage.installed {
-                settings.set(true, forKey: key)
+            let luaAvailable = (settings.object(forKey: "rime_lua_available") as? Bool) ?? true
+            if !luaAvailable {
+                try await stripLuaIfNeeded(at: schemaURL)
             }
             if schemaID == "rime_ice" {
-                rimeIceVersion = version
-                if let shared = archiveInstaller.sharedDataDirectoryURL() {
-                    // Prepare compatible T9 schema before full deploy so schema_list can compile it.
-                    _ = try? T9DeploymentSupport.ensureCompatibleT9Schema(in: shared)
-                }
+                try await sanitizeT9SchemaIfPresent(in: extractDir)
+            }
+            try ensureActive(operationID)
+
+            let stagedContentSHA256 = try await Task.detached(priority: .userInitiated) {
+                try self.artifactVerifier.stagedContentSHA256(
+                    in: extractDir,
+                    plan: plan,
+                    luaAvailable: luaAvailable
+                )
+            }.value
+            let expectedStagedSHA256 =
+                luaAvailable
+                ? manifest.stagedContentSHA256WithLua
+                : manifest.stagedContentSHA256WithoutLua
+            guard !expectedStagedSHA256.isEmpty,
+                stagedContentSHA256 == expectedStagedSHA256
+            else {
+                throw DownloadError.integrityMismatch
+            }
+            try ensureActive(operationID)
+
+            try installSchemaFiles(from: extractDir, plan: plan, luaAvailable: luaAvailable)
+            try ensureActive(operationID)
+
+            if schemaID == "rime_ice", let shared = archiveInstaller.sharedDataDirectoryURL() {
+                // T9 compatibility rewriting must precede deployment so RIME compiles
+                // the sanitized schema instead of the upstream Lua-dependent version.
+                _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: shared)
             }
 
             activateSchema(schemaID)
             rimeIceDownloadState = .deploying(schemeName: schemeName)
             let deployed = await deployRimeConfig()
+            try ensureActive(operationID)
             guard deployed else {
-                throw DownloadError.postProcessingFailed("部署失败，请稍后重试")
+                throw DownloadError.deploymentFailed
             }
 
+            persistVerifiedInstallation(
+                entry: entry,
+                manifest: manifest,
+                source: source,
+                archiveSHA256: archiveSHA256,
+                stagedContentSHA256: stagedContentSHA256
+            )
+            if schemaID == "rime_ice" {
+                rimeIceVersion = manifest.version
+            }
+
+            cleanupTemporaryItems(temporaryItems)
+            activeDownloadOperationID = nil
+            currentDownloadTask = nil
             rimeIceDownloadState = .completed(schemeName: schemeName)
             refreshSchemaList()
-        } catch let error as DownloadError {
-            rimeIceDownloadState = .failed(schemeName: schemeName, message: error.localizedDescription)
+        } catch is CancellationError {
+            cleanupTemporaryItems(temporaryItems)
+            if activeDownloadOperationID == operationID {
+                activeDownloadOperationID = nil
+                rimeIceDownloadState = .idle
+            }
         } catch {
-            rimeIceDownloadState = .failed(schemeName: schemeName, message: error.localizedDescription)
+            cleanupTemporaryItems(temporaryItems)
+            if activeDownloadOperationID == operationID {
+                activeDownloadOperationID = nil
+                currentDownloadTask = nil
+                rimeIceDownloadState = .failed(
+                    schemeName: schemeName,
+                    message: DownloadError.userFacingDescription(for: error)
+                )
+            }
         }
     }
 
-    func fetchLatestReleaseURL() async throws -> URL? {
-        guard let entry = downloadableEntry(for: "rime_ice") else { return nil }
-        return try await fetchLatestReleaseURL(for: entry)
+    func beginVerifiedDownload(schemaID: String) {
+        startVerifiedDownload(schemaID: schemaID)
     }
 
-    func fetchLatestReleaseURL(for entry: RimeSchemeCatalogEntry) async throws -> URL? {
-        guard let distribution = entry.distribution else { return nil }
-        return try await catalogClient.latestArchiveURL(for: distribution)
+    private func startVerifiedDownload(schemaID: String) {
+        let operationID = UUID()
+        activeDownloadOperationID = operationID
+        let schemeName = downloadSchemeDisplayName(for: schemaID)
+        rimeIceDownloadState = .fetchingReleaseInfo(schemeName: schemeName)
+        currentDownloadTask = Task { [weak self] in
+            await self?.fetchAndDownload(schemaID: schemaID, operationID: operationID)
+        }
     }
 
-    func downloadZip(from url: URL) async throws -> DownloadedSchemaArchive {
-        guard let entry = downloadableEntry(for: "rime_ice") else {
-            throw DownloadError.networkError("暂不支持下载这个方案")
+    private func downloadFirstValidArchive(
+        from sources: [RimeSchemeSourceVariant],
+        schemeName: String,
+        operationID: UUID
+    ) async throws -> (
+        archive: DownloadedSchemaArchive,
+        source: RimeSchemeSourceVariant,
+        archiveSHA256: String
+    ) {
+        var lastTransportError: Error?
+        for source in sources {
+            try ensureActive(operationID)
+            rimeIceDownloadState = .downloading(
+                schemeName: schemeName,
+                sourceName: source.displayName,
+                progress: nil
+            )
+            do {
+                let archive = try await archiveDownloader.downloadArchive(from: source) { [weak self] fraction in
+                    Task { @MainActor in
+                        guard let self, self.activeDownloadOperationID == operationID else { return }
+                        guard case .downloading(let name, let sourceName, _) = self.rimeIceDownloadState,
+                            name == schemeName, sourceName == source.displayName
+                        else { return }
+                        self.rimeIceDownloadState = .downloading(
+                            schemeName: schemeName,
+                            sourceName: source.displayName,
+                            progress: fraction
+                        )
+                    }
+                }
+                let archiveSHA256: String
+                do {
+                    // Once URLSession has produced a copied temporary file, every
+                    // cancellation or verification failure must remove that file.
+                    try ensureActive(operationID)
+                    archiveSHA256 = try await Task.detached(priority: .userInitiated) {
+                        try self.artifactVerifier.verifyArchive(at: archive.localURL, source: source)
+                    }.value
+                } catch {
+                    archiveInstaller.removeTemporaryItem(at: archive.localURL)
+                    throw error
+                }
+                return (archive, source, archiveSHA256)
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch let error as DownloadError where error == .integrityMismatch {
+                throw error
+            } catch {
+                lastTransportError = error
+            }
         }
-        return try await downloadZip(from: url, for: entry, onProgress: nil)
+        throw lastTransportError ?? DownloadError.allSourcesUnavailable
     }
 
-    func downloadZip(
-        from url: URL,
-        for entry: RimeSchemeCatalogEntry,
-        onProgress: (@Sendable (Double?) -> Void)? = nil
-    ) async throws -> DownloadedSchemaArchive {
-        guard let distribution = entry.distribution else {
-            throw DownloadError.networkError("暂不支持下载这个方案")
+    private func ensureActive(_ operationID: UUID) throws {
+        try Task.checkCancellation()
+        guard activeDownloadOperationID == operationID else { throw CancellationError() }
+    }
+
+    private func findSchemaFile(named name: String, in root: URL) async -> URL? {
+        await Task.detached(priority: .userInitiated) {
+            let fileManager = FileManager.default
+            var pendingDirectories = [root]
+            while let directory = pendingDirectories.popLast() {
+                let children =
+                    (try? fileManager.contentsOfDirectory(
+                        at: directory,
+                        includingPropertiesForKeys: [.isDirectoryKey],
+                        options: [.skipsHiddenFiles]
+                    )) ?? []
+                for url in children {
+                    if url.lastPathComponent == name { return url }
+                    if (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true {
+                        pendingDirectories.append(url)
+                    }
+                }
+            }
+            return nil
+        }.value
+    }
+
+    private func stripLuaIfNeeded(at schemaURL: URL) async throws {
+        try await Task.detached(priority: .userInitiated) {
+            let schemaContent = try String(contentsOf: schemaURL, encoding: .utf8)
+            let processed = RimeConfigPostProcessor.stripLuaDependencies(from: schemaContent)
+            guard RimeConfigPostProcessor.validateStrippedSchema(processed) else {
+                throw DownloadError.postProcessingFailed("高级功能兼容处理后配置无效")
+            }
+            try processed.write(to: schemaURL, atomically: true, encoding: .utf8)
+        }.value
+    }
+
+    private func sanitizeT9SchemaIfPresent(in extractionDirectory: URL) async throws {
+        let t9URL = extractionDirectory.appendingPathComponent("t9.schema.yaml")
+        guard FileManager.default.fileExists(atPath: t9URL.path) else {
+            throw DownloadError.corruptArchive
         }
-        let archive = try await archiveDownloader.downloadArchive(
-            from: url,
-            existingETag: entry.storage.eTag.flatMap { settings.string(forKey: $0) },
-            cachedArchiveURL: archiveInstaller.cachedArchiveURL(for: distribution),
-            onProgress: onProgress
-        )
-        if let eTag = archive.eTag, let key = entry.storage.eTag {
-            settings.set(eTag, forKey: key)
+        try await Task.detached(priority: .userInitiated) {
+            let upstream = try String(contentsOf: t9URL, encoding: .utf8)
+            let compatible = try T9SchemaCompatibility.makeCompatibleSchema(fromUpstreamYAML: upstream)
+            try compatible.write(to: t9URL, atomically: true, encoding: .utf8)
+        }.value
+    }
+
+    private func persistVerifiedInstallation(
+        entry: RimeSchemeCatalogEntry,
+        manifest: RimeSchemeArtifactManifest,
+        source: RimeSchemeSourceVariant,
+        archiveSHA256: String,
+        stagedContentSHA256: String
+    ) {
+        if let key = entry.storage.version { settings.set(manifest.version, forKey: key) }
+        if let key = entry.storage.installed { settings.set(true, forKey: key) }
+        if let key = entry.storage.sourceVariant { settings.set(source.id, forKey: key) }
+        if let key = entry.storage.checksum { settings.set(archiveSHA256, forKey: key) }
+        if let key = entry.storage.stagedContentChecksum {
+            settings.set(stagedContentSHA256, forKey: key)
         }
-        return archive
+        settings.synchronize()
+    }
+
+    private func cleanupTemporaryItems(_ urls: [URL]) {
+        for url in Set(urls) {
+            archiveInstaller.removeTemporaryItem(at: url)
+        }
     }
 }

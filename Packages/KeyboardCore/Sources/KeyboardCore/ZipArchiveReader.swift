@@ -54,7 +54,8 @@ struct ZipArchiveReader {
         for _ in 0..<min(totalEntries, 50_000) {
             let signature = try reader.readUInt32()
             if signature == 0x02014b50 {
-                reader.skip(6)  // version made by (2) + version needed (2) + flags (2)
+                let versionMadeBy = try reader.readUInt16()
+                reader.skip(4)  // version needed (2) + flags (2)
                 reader.skip(2)  // compression method is verified from the local header.
                 reader.skip(8)
                 let compressedSize = Int(try reader.readUInt32())
@@ -62,7 +63,8 @@ struct ZipArchiveReader {
                 let filenameLength = Int(try reader.readUInt16())
                 let extraLength = Int(try reader.readUInt16())
                 let commentLength = Int(try reader.readUInt16())
-                reader.skip(8)
+                reader.skip(4)  // disk start (2) + internal attributes (2)
+                let externalAttributes = try reader.readUInt32()
                 let localOffset = Int(try reader.readUInt32())
 
                 guard filenameLength > 0, filenameLength < 4096,
@@ -74,6 +76,14 @@ struct ZipArchiveReader {
 
                 let filename = try reader.readString(length: filenameLength)
                 reader.skip(extraLength + commentLength)
+
+                // Unix ZIP creators encode the file type in the high 16 bits.
+                // Never reinterpret an archive entry as a link during staging.
+                let creatorSystem = UInt8(truncatingIfNeeded: versionMadeBy >> 8)
+                let unixFileType = UInt16(truncatingIfNeeded: externalAttributes >> 16) & 0xF000
+                guard creatorSystem != 3 || unixFileType != 0xA000 else {
+                    throw Unzip.Error.badFormat("不允许符号链接：\(filename)")
+                }
 
                 guard !filename.hasSuffix("/"), compressedSize > 0 else { continue }
                 references.append(LocalEntryReference(filename: filename, localOffset: localOffset))

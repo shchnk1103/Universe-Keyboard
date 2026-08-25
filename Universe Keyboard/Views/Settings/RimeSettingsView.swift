@@ -1,3 +1,4 @@
+import Foundation
 import SwiftUI
 
 struct RimeSettingsView: View {
@@ -111,6 +112,49 @@ private struct RimeSchemaDetailView: View {
                 Text("方案信息")
             }
 
+            if schema.isDownloadable {
+                Section {
+                    LabeledContent("版本", value: store.manifestVersion(for: schema.schemaID) ?? "未知")
+                    LabeledContent("下载来源", value: sourceVariant?.displayName ?? "下载时自动选择")
+                    LabeledContent("下载地址") {
+                        Text(sourceVariant?.downloadURL.absoluteString ?? "下载完成后显示")
+                            .font(.caption.monospaced())
+                            .multilineTextAlignment(.trailing)
+                            .textSelection(.enabled)
+                    }
+                    LabeledContent("上游版本") {
+                        Text(sourceVariant?.upstreamRevision ?? "下载完成后显示")
+                            .font(.caption.monospaced())
+                            .multilineTextAlignment(.trailing)
+                            .textSelection(.enabled)
+                    }
+                    LabeledContent(
+                        "归档大小",
+                        value: sourceVariant.map {
+                            ByteCountFormatter.string(
+                                fromByteCount: $0.expectedByteCount,
+                                countStyle: .file
+                            )
+                        } ?? "下载完成后显示"
+                    )
+                    LabeledContent("归档 SHA-256") {
+                        Text(sourceVariant?.archiveSHA256 ?? "下载完成后显示")
+                            .font(.caption.monospaced())
+                            .multilineTextAlignment(.trailing)
+                            .textSelection(.enabled)
+                    }
+                    LabeledContent(
+                        "完整性",
+                        value: store.hasVerifiedReceipt(for: schema.schemaID)
+                            ? "SHA-256 已验证" : "下载后验证"
+                    )
+                } header: {
+                    Text("版本与下载来源")
+                } footer: {
+                    Text("App 仅在你开始下载后轻量选择来源，并在解压和部署前校验固定版本与内容。")
+                }
+            }
+
             schemaActionSections
         }
         .navigationTitle(schema.name)
@@ -160,6 +204,10 @@ private struct RimeSchemaDetailView: View {
 
     private var schema: SchemaMetadata {
         store.schemas.first { $0.schemaID == initialSchema.schemaID } ?? initialSchema
+    }
+
+    private var sourceVariant: RimeSchemeSourceVariant? {
+        store.sourceVariant(for: schema.schemaID)
     }
 
     private var switchConfirmationMessage: String {

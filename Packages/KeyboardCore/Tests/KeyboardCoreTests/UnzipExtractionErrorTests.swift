@@ -360,4 +360,63 @@ final class UnzipExtractionErrorTests: UnzipTestSupport {
         data[10] = 1
         XCTAssertThrowsError(try Unzip.extract(data: data))
     }
+
+    func testSafeRelativePathAcceptsUnicodeAndNestedFiles() throws {
+        XCTAssertEqual(
+            try Unzip.safeRelativePath(for: "词库/基础/wanxiang.dict.yaml"),
+            "词库/基础/wanxiang.dict.yaml"
+        )
+        XCTAssertEqual(try Unzip.safeRelativePath(for: "lua/"), "lua")
+    }
+
+    func testSafeRelativePathRejectsTraversalAndAmbiguousAliases() {
+        for path in [
+            "../escape.txt",
+            "folder/../escape.txt",
+            "/absolute.txt",
+            "folder\\escape.txt",
+            "C:escape.txt",
+            "folder//file.txt",
+            "./file.txt",
+            "",
+        ] {
+            XCTAssertThrowsError(try Unzip.safeRelativePath(for: path), "应拒绝 \(path)")
+        }
+    }
+
+    func testExtractRejectsUnsafePathBeforeWritingOutsideDestination() throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("unzip-path-security-\(UUID().uuidString)")
+        let destination = root.appendingPathComponent("destination")
+        try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let archiveURL = root.appendingPathComponent("malicious.zip")
+        try makeStoreZip(filename: "../escape.txt", content: Data("blocked".utf8))
+            .write(to: archiveURL)
+
+        XCTAssertThrowsError(try Unzip.extract(zipPath: archiveURL.path, to: destination))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("escape.txt").path))
+    }
+
+    func testExtractRejectsUnixSymbolicLinkEntry() {
+        var zip = makeStoreZip(filename: "link", content: Data("../outside".utf8))
+        guard let centralOffset = zip.range(of: Data([0x50, 0x4B, 0x01, 0x02]))?.lowerBound else {
+            return XCTFail("测试 ZIP 缺少中央目录")
+        }
+
+        // version made by: Unix (3), version 2.0 (20)
+        zip[centralOffset + 4] = 20
+        zip[centralOffset + 5] = 3
+        // external attributes: Unix mode 0120777 (symbolic link)
+        let symbolicLinkAttributes = u32le(0xA1FF_0000)
+        zip.replaceSubrange(centralOffset + 38..<centralOffset + 42, with: symbolicLinkAttributes)
+
+        XCTAssertThrowsError(try Unzip.extract(data: zip)) { error in
+            guard case Unzip.Error.badFormat(let message) = error else {
+                return XCTFail("Expected badFormat, got \(error)")
+            }
+            XCTAssertTrue(message.contains("符号链接"))
+        }
+    }
 }

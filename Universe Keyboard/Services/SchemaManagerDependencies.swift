@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 
 /// Storage for schema-related App Group flags. Access remains on the main actor
 /// because these values are part of the UI-observed schema state.
@@ -28,71 +29,28 @@ final class AppGroupSharedSettingsStore: SharedSettingsStoring {
     func synchronize() { defaults.synchronize() }
 }
 
-protocol SchemaCatalogClient: Sendable {
-    func latestArchiveURL(for distribution: RimeSchemeDistribution) async throws -> URL?
-}
-
-struct GitHubSchemaCatalogClient: SchemaCatalogClient {
-    func latestArchiveURL(for distribution: RimeSchemeDistribution) async throws -> URL? {
-        let apiURL = URL(
-            string: "https://api.github.com/repos/\(distribution.githubOwner)/\(distribution.githubRepository)/releases/latest"
-        )!
-        var request = URLRequest(url: apiURL)
-        request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
-        request.setValue("UniverseKeyboard/1.0", forHTTPHeaderField: "User-Agent")
-        request.timeoutInterval = 15
-
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw DownloadError.networkError("无效的 HTTP 响应")
-        }
-        if httpResponse.statusCode == 403 {
-            throw DownloadError.gitHubRateLimit
-        }
-        guard httpResponse.statusCode == 200 else {
-            throw DownloadError.networkError("HTTP \(httpResponse.statusCode)")
-        }
-
-        guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-            let assets = json["assets"] as? [[String: Any]],
-            let fullZip = assets.first(where: { ($0["name"] as? String) == distribution.assetName }),
-            let downloadURL = fullZip["browser_download_url"] as? String
-        else {
-            return nil
-        }
-        return URL(string: downloadURL)
-    }
-}
-
 struct DownloadedSchemaArchive: Sendable {
     let localURL: URL
     let expectedContentLength: Int64
-    let eTag: String?
 }
 
 protocol SchemaArchiveDownloading: Sendable {
     /// - Parameter onProgress: Optional fraction `0...1` when total size is known;
     ///   `nil` means indeterminate (unknown total). Called from a background queue.
     func downloadArchive(
-        from url: URL,
-        existingETag: String?,
-        cachedArchiveURL: URL,
+        from source: RimeSchemeSourceVariant,
         onProgress: (@Sendable (Double?) -> Void)?
     ) async throws -> DownloadedSchemaArchive
 }
 
 struct URLSessionSchemaArchiveDownloader: SchemaArchiveDownloading {
     func downloadArchive(
-        from url: URL,
-        existingETag: String?,
-        cachedArchiveURL: URL,
+        from source: RimeSchemeSourceVariant,
         onProgress: (@Sendable (Double?) -> Void)? = nil
     ) async throws -> DownloadedSchemaArchive {
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: source.downloadURL)
         request.timeoutInterval = 300
-        if let existingETag, !existingETag.isEmpty {
-            request.setValue(existingETag, forHTTPHeaderField: "If-None-Match")
-        }
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
 
         let (temporaryURL, response) = try await ProgressReportingURLSession.download(
             for: request,
@@ -102,24 +60,11 @@ struct URLSessionSchemaArchiveDownloader: SchemaArchiveDownloading {
             throw DownloadError.networkError("无效的 HTTP 响应")
         }
 
-        if httpResponse.statusCode == 304 {
-            if FileManager.default.fileExists(atPath: cachedArchiveURL.path) {
-                onProgress?(1)
-                return DownloadedSchemaArchive(
-                    localURL: cachedArchiveURL,
-                    expectedContentLength: response.expectedContentLength,
-                    eTag: existingETag
-                )
-            }
-            return try await downloadArchive(
-                from: url,
-                existingETag: nil,
-                cachedArchiveURL: cachedArchiveURL,
-                onProgress: onProgress
-            )
-        }
-
-        guard httpResponse.statusCode == 200 else {
+        guard httpResponse.statusCode == 200,
+            let finalHost = httpResponse.url?.host?.lowercased(),
+            source.allowedRedirectHosts.contains(finalHost)
+        else {
+            try? FileManager.default.removeItem(at: temporaryURL)
             throw DownloadError.networkError("下载失败，HTTP \(httpResponse.statusCode)")
         }
 
@@ -128,13 +73,10 @@ struct URLSessionSchemaArchiveDownloader: SchemaArchiveDownloading {
             throw DownloadError.networkError("服务器未提供文件大小")
         }
 
-        try? FileManager.default.removeItem(at: cachedArchiveURL)
-        try FileManager.default.moveItem(at: temporaryURL, to: cachedArchiveURL)
         onProgress?(expectedSize > 0 ? 1 : nil)
         return DownloadedSchemaArchive(
-            localURL: cachedArchiveURL,
-            expectedContentLength: expectedSize,
-            eTag: httpResponse.value(forHTTPHeaderField: "Etag")
+            localURL: temporaryURL,
+            expectedContentLength: expectedSize
         )
     }
 }
@@ -142,20 +84,52 @@ struct URLSessionSchemaArchiveDownloader: SchemaArchiveDownloading {
 // MARK: - Progress-capable download
 
 /// URLSession download with optional byte progress (TD-009).
-private enum ProgressReportingURLSession {
+nonisolated private enum ProgressReportingURLSession {
     static func download(
         for request: URLRequest,
         onProgress: (@Sendable (Double?) -> Void)?
     ) async throws -> (URL, URLResponse) {
-        try await withCheckedThrowingContinuation { continuation in
-            let delegate = DownloadDelegate(onProgress: onProgress, continuation: continuation)
-            let session = URLSession(
-                configuration: .default,
-                delegate: delegate,
-                delegateQueue: nil
-            )
-            delegate.retainSession(session)
-            session.downloadTask(with: request).resume()
+        let cancellation = DownloadCancellationBox()
+        return try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                let delegate = DownloadDelegate(onProgress: onProgress, continuation: continuation)
+                let session = URLSession(
+                    configuration: .default,
+                    delegate: delegate,
+                    delegateQueue: nil
+                )
+                delegate.retainSession(session)
+                let task = session.downloadTask(with: request)
+                cancellation.install(task)
+                task.resume()
+            }
+        } onCancel: {
+            cancellation.cancel()
+        }
+    }
+
+    private struct DownloadCancellationState {
+        var task: URLSessionTask?
+        var isCancelled = false
+    }
+
+    private final class DownloadCancellationBox: Sendable {
+        private let state = Mutex(DownloadCancellationState())
+
+        func install(_ task: URLSessionTask) {
+            let shouldCancel = state.withLock { state in
+                state.task = task
+                return state.isCancelled
+            }
+            if shouldCancel { task.cancel() }
+        }
+
+        func cancel() {
+            let task = state.withLock { state in
+                state.isCancelled = true
+                return state.task
+            }
+            task?.cancel()
         }
     }
 

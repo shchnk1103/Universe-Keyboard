@@ -12,8 +12,9 @@ final class SchemaManager {
 
     let schemeCatalog: [RimeSchemeCatalogEntry]
     let settings: any SharedSettingsStoring
-    let catalogClient: any SchemaCatalogClient
+    let sourceSelector: any SchemaSourceSelecting
     let archiveDownloader: any SchemaArchiveDownloading
+    let artifactVerifier: any SchemaArtifactVerifying
     let archiveInstaller: any SchemaArchiveInstalling
     let deploymentService: any RimeDeploymentServicing
 
@@ -22,22 +23,24 @@ final class SchemaManager {
     var rimeIceDownloadState: DownloadState = .idle
     var rimeIceLicenseAccepted: Bool = false
     var rimeIceVersion: String?
-
     var currentDownloadTask: Task<Void, Never>?
+    var activeDownloadOperationID: UUID?
 
     init(
         schemeCatalog: [RimeSchemeCatalogEntry] = RimeSchemeCatalog.entries,
         settings: (any SharedSettingsStoring)? = nil,
-        catalogClient: any SchemaCatalogClient = GitHubSchemaCatalogClient(),
+        sourceSelector: any SchemaSourceSelecting = URLSessionSchemaSourceSelector(),
         archiveDownloader: any SchemaArchiveDownloading = URLSessionSchemaArchiveDownloader(),
+        artifactVerifier: any SchemaArtifactVerifying = SchemaArtifactVerifier(),
         archiveInstaller: (any SchemaArchiveInstalling)? = nil,
         deploymentService: any RimeDeploymentServicing = RimeDeploymentService()
     ) {
         let settings = settings ?? AppGroupSharedSettingsStore(appGroupID: Self.appGroupID)
         self.schemeCatalog = schemeCatalog
         self.settings = settings
-        self.catalogClient = catalogClient
+        self.sourceSelector = sourceSelector
         self.archiveDownloader = archiveDownloader
+        self.artifactVerifier = artifactVerifier
         self.archiveInstaller =
             archiveInstaller ?? SharedContainerSchemaArchiveInstaller(appGroupID: Self.appGroupID)
         self.deploymentService = deploymentService
@@ -83,16 +86,13 @@ final class SchemaManager {
         case .idle, .completed, .failed: break
         default: return
         }
-        let schemeName = downloadSchemeDisplayName(for: schemaID)
-        rimeIceDownloadState = .fetchingReleaseInfo(schemeName: schemeName)
-        currentDownloadTask = Task { [weak self] in
-            await self?.fetchAndDownload(schemaID: schemaID)
-        }
+        beginVerifiedDownload(schemaID: schemaID)
     }
 
     func cancelDownload() {
         currentDownloadTask?.cancel()
         currentDownloadTask = nil
+        activeDownloadOperationID = nil
         rimeIceDownloadState = .idle
     }
 
@@ -115,6 +115,33 @@ final class SchemaManager {
     func installedVersion(for schemaID: String) -> String? {
         guard let key = catalogEntry(for: schemaID)?.storage.version else { return nil }
         return settings.string(forKey: key)
+    }
+
+    func sourceVariant(for schemaID: String) -> RimeSchemeSourceVariant? {
+        guard let entry = downloadableEntry(for: schemaID),
+            let manifest = entry.distribution?.manifest
+        else { return nil }
+        guard let key = entry.storage.sourceVariant,
+            let sourceID = settings.string(forKey: key)
+        else { return nil }
+        return manifest.sourceVariants.first { $0.id == sourceID }
+    }
+
+    func manifestVersion(for schemaID: String) -> String? {
+        downloadableEntry(for: schemaID)?.distribution?.manifest.version
+    }
+
+    func hasVerifiedReceipt(for schemaID: String) -> Bool {
+        guard let entry = downloadableEntry(for: schemaID),
+            let manifest = entry.distribution?.manifest,
+            let source = sourceVariant(for: schemaID),
+            let archiveKey = entry.storage.checksum,
+            let stagedKey = entry.storage.stagedContentChecksum,
+            settings.string(forKey: archiveKey) == source.archiveSHA256,
+            let stagedDigest = settings.string(forKey: stagedKey)
+        else { return false }
+        return stagedDigest == manifest.stagedContentSHA256WithLua
+            || stagedDigest == manifest.stagedContentSHA256WithoutLua
     }
 
     func licenseAccepted(for schemaID: String) -> Bool {

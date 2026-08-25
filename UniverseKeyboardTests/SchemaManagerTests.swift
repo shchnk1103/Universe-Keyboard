@@ -30,9 +30,10 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertNotNil(entry)
         XCTAssertEqual(entry?.schemaID, "wanxiang")
         XCTAssertEqual(entry?.name, "万象拼音")
-        XCTAssertEqual(entry?.distribution?.githubOwner, "amzxyz")
-        XCTAssertEqual(entry?.distribution?.githubRepository, "rime-wanxiang")
-        XCTAssertEqual(entry?.distribution?.assetName, "rime-wanxiang-base.zip")
+        XCTAssertEqual(entry?.distribution?.manifest.schemeID, "wanxiang")
+        XCTAssertEqual(entry?.distribution?.manifest.version, "17.5.9")
+        XCTAssertEqual(entry?.distribution?.manifest.assetName, "rime-wanxiang-base.zip")
+        XCTAssertEqual(entry?.distribution?.manifest.sourceVariants.count, 2)
         XCTAssertEqual(entry?.installationPlan?.schemaFileName, "wanxiang.schema.yaml")
         XCTAssertEqual(entry?.license, ThirdPartyLicenseCatalog.wanxiang)
         XCTAssertTrue(entry?.requiresLua == true)
@@ -164,12 +165,9 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(manager.rimeIceDownloadState, .completed(schemeName: "雾凇拼音"))
     }
 
-    func testCheckForUpdateUsesInjectedCatalogClient() async {
+    func testCheckForUpdateUsesPinnedManifestVersion() async {
         let manager = makeManager(
-            settings: StubSharedSettingsStore(values: ["rime_ice_version": "full-old.zip"]),
-            catalogClient: StubSchemaCatalogClient(
-                latestURL: URL(string: "https://example.test/releases/full-new.zip")
-            )
+            settings: StubSharedSettingsStore(values: ["rime_ice_version": "old-version"])
         )
 
         let updateAvailable = await manager.checkForUpdate()
@@ -177,12 +175,9 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertTrue(updateAvailable)
     }
 
-    func testCheckForUpdateUsesGitHubReleaseTagWhenAvailable() async {
+    func testCheckForUpdateReportsCurrentPinnedVersion() async {
         let manager = makeManager(
-            settings: StubSharedSettingsStore(values: ["rime_ice_version": "2026.05.01"]),
-            catalogClient: StubSchemaCatalogClient(
-                latestURL: URL(string: "https://github.com/iDvel/rime-ice/releases/download/2026.05.01/full.zip")
-            )
+            settings: StubSharedSettingsStore(values: ["rime_ice_version": "nightly"])
         )
 
         let updateAvailable = await manager.checkForUpdate()
@@ -190,17 +185,14 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertFalse(updateAvailable)
     }
 
-    func testCheckForUpdateDetectsDifferentGitHubReleaseTag() async {
+    func testCheckForUpdateUsesWanxiangPinnedVersion() async {
         let manager = makeManager(
-            settings: StubSharedSettingsStore(values: ["rime_ice_version": "2026.05.01"]),
-            catalogClient: StubSchemaCatalogClient(
-                latestURL: URL(string: "https://github.com/iDvel/rime-ice/releases/download/2026.05.02/full.zip")
-            )
+            settings: StubSharedSettingsStore(values: ["wanxiang_version": "17.5.9"])
         )
 
-        let updateAvailable = await manager.checkForUpdate()
+        let updateAvailable = await manager.checkForUpdate(schemaID: "wanxiang")
 
-        XCTAssertTrue(updateAvailable)
+        XCTAssertFalse(updateAvailable)
     }
 
     func testReleaseVersionIdentifierFallsBackToFilenameForNonReleaseURLs() {
@@ -211,17 +203,15 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(version, "full-new.zip")
     }
 
-    func testDownloadUsesStoredETagAndPersistsReturnedETag() async throws {
-        let settings = StubSharedSettingsStore(values: ["rime_ice_etag": "old-etag"])
-        let downloader = StubSchemaArchiveDownloader(returnedETag: "new-etag")
-        let manager = makeManager(settings: settings, archiveDownloader: downloader)
-        let sourceURL = URL(string: "https://example.test/releases/full.zip")!
+    func testPinnedSourceVariantsDoNotShareArchiveReceipt() throws {
+        let manager = makeManager()
+        let variants = try XCTUnwrap(
+            manager.downloadableEntry(for: "wanxiang")?.distribution?.manifest.sourceVariants
+        )
 
-        _ = try await manager.downloadZip(from: sourceURL)
-
-        let requests = downloader.requests
-        XCTAssertEqual(requests.first?.existingETag, "old-etag")
-        XCTAssertEqual(settings.string(forKey: "rime_ice_etag"), "new-etag")
+        XCTAssertEqual(variants.count, 2)
+        XCTAssertNotEqual(variants[0].archiveSHA256, variants[1].archiveSHA256)
+        XCTAssertNotEqual(variants[0].expectedByteCount, variants[1].expectedByteCount)
     }
 
     func testStartDownloadAllowsCompletedStateForInstalledSchemaUpdates() {
@@ -237,7 +227,7 @@ final class SchemaManagerTests: XCTestCase {
         )
     }
 
-    func testForceRedownloadAllowsCompletedStateAndClearsCachedMetadata() {
+    func testForceRedownloadPreservesLastVerifiedReceiptUntilReplacementSucceeds() {
         let settings = StubSharedSettingsStore(
             values: [
                 "rime_ice_etag": "old-etag",
@@ -255,8 +245,8 @@ final class SchemaManagerTests: XCTestCase {
             manager.rimeIceDownloadState,
             .fetchingReleaseInfo(schemeName: "雾凇拼音")
         )
-        XCTAssertNil(settings.string(forKey: "rime_ice_etag"))
-        XCTAssertNil(settings.string(forKey: "rime_ice_version"))
+        XCTAssertEqual(settings.string(forKey: "rime_ice_etag"), "old-etag")
+        XCTAssertEqual(settings.string(forKey: "rime_ice_version"), "old-version")
         XCTAssertTrue(installer.didClearBuildCache)
     }
 
@@ -268,15 +258,15 @@ final class SchemaManagerTests: XCTestCase {
 
     func testDownloadToastMessagesUseSchemeNameAndIndeterminateProgress() {
         let wanxiangDownloading = AppOperationToastState(
-            downloadState: .downloading(schemeName: "万象拼音", progress: nil)
+            downloadState: .downloading(schemeName: "万象拼音", sourceName: "CNB", progress: nil)
         )
-        XCTAssertEqual(wanxiangDownloading?.message, "正在下载万象拼音…")
+        XCTAssertEqual(wanxiangDownloading?.message, "正在通过 CNB 下载万象拼音…")
         XCTAssertFalse(wanxiangDownloading?.message.contains("0%") == true)
 
         let fogProgress = AppOperationToastState(
-            downloadState: .downloading(schemeName: "雾凇拼音", progress: 0.42)
+            downloadState: .downloading(schemeName: "雾凇拼音", sourceName: "南京大学镜像", progress: 0.42)
         )
-        XCTAssertEqual(fogProgress?.message, "正在下载雾凇拼音 42%")
+        XCTAssertEqual(fogProgress?.message, "正在通过 南京大学镜像 下载雾凇拼音 42%")
 
         let completed = AppOperationToastState(
             downloadState: .completed(schemeName: "万象拼音")
@@ -862,14 +852,14 @@ final class SchemaManagerTests: XCTestCase {
 
     private func makeManager(
         settings: StubSharedSettingsStore = StubSharedSettingsStore(),
-        catalogClient: any SchemaCatalogClient = StubSchemaCatalogClient(latestURL: nil),
-        archiveDownloader: any SchemaArchiveDownloading = StubSchemaArchiveDownloader(returnedETag: nil),
+        sourceSelector: any SchemaSourceSelecting = StubSchemaSourceSelector(),
+        archiveDownloader: any SchemaArchiveDownloading = StubSchemaArchiveDownloader(),
         installer: StubSchemaArchiveInstaller = StubSchemaArchiveInstaller(),
         deploymentService: any RimeDeploymentServicing = StubDeploymentService(succeeded: true)
     ) -> SchemaManager {
         SchemaManager(
             settings: settings,
-            catalogClient: catalogClient,
+            sourceSelector: sourceSelector,
             archiveDownloader: archiveDownloader,
             archiveInstaller: installer,
             deploymentService: deploymentService
@@ -944,41 +934,36 @@ private final class StubSharedSettingsStore: SharedSettingsStoring {
     func synchronize() {}
 }
 
-private struct StubSchemaCatalogClient: SchemaCatalogClient {
-    let latestURL: URL?
-
-    func latestArchiveURL(for distribution: RimeSchemeDistribution) async throws -> URL? { latestURL }
+nonisolated private struct StubSchemaSourceSelector: SchemaSourceSelecting {
+    func selectSource(
+        from variants: [RimeSchemeSourceVariant],
+        preferredSourceID: String?
+    ) async throws -> RimeSchemeSourceVariant {
+        if let preferredSourceID, let preferred = variants.first(where: { $0.id == preferredSourceID }) {
+            return preferred
+        }
+        guard let first = variants.first else { throw DownloadError.allSourcesUnavailable }
+        return first
+    }
 }
 
 @MainActor
 private final class StubSchemaArchiveDownloader: SchemaArchiveDownloading {
     struct Request: Sendable {
-        let sourceURL: URL
-        let existingETag: String?
-        let cachedArchiveURL: URL
+        let source: RimeSchemeSourceVariant
     }
 
-    private let returnedETag: String?
     private(set) var requests: [Request] = []
 
-    init(returnedETag: String?) {
-        self.returnedETag = returnedETag
-    }
-
     func downloadArchive(
-        from url: URL,
-        existingETag: String?,
-        cachedArchiveURL: URL,
+        from source: RimeSchemeSourceVariant,
         onProgress: (@Sendable (Double?) -> Void)?
     ) async throws -> DownloadedSchemaArchive {
-        requests.append(
-            Request(sourceURL: url, existingETag: existingETag, cachedArchiveURL: cachedArchiveURL)
-        )
+        requests.append(Request(source: source))
         onProgress?(1)
         return DownloadedSchemaArchive(
-            localURL: cachedArchiveURL,
-            expectedContentLength: 42,
-            eTag: returnedETag
+            localURL: URL(fileURLWithPath: "/tmp/\(UUID().uuidString).zip"),
+            expectedContentLength: source.expectedByteCount
         )
     }
 }
