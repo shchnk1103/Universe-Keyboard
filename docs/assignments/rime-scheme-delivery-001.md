@@ -8,10 +8,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Assignment Pending` |
-| **Phase** | Product-authorized bounded endpoint pilot completed on the current Mac path: exact NJU 雾凇 bytes match GitHub; GitHub/CNB 万象 archives differ but the ordinary Wanxiang runtime files are byte-identical; no implementation track has entered `Ready` |
+| **Phase** | Product accepted a no-new-server source-variant contract: exact NJU 雾凇 bytes match GitHub; GitHub/CNB 万象 archives differ but the ordinary staged Wanxiang runtime is equivalent and CNB-only `custom/wanxiang_pure*` remains excluded; no implementation track has entered `Ready` |
 | **Non-claims** | Current-Mac timings are not Mainland cellular/Wi-Fi evidence; endpoint operator/App-use acceptability and Architecture/Quality review remain unresolved; ordinary-runtime equivalence does not make the two 万象 ZIPs artifact-identical |
-| **Next** | Product Lead decides whether GitHub/CNB 万象 may be explicit source variants without new infrastructure and names implementation Executor/reviewers; Architecture then reviews manifest, installed-content identity, integrity and fallback ownership before code work |
-| **Residuals** | [`2026-08-25 endpoint pilot`](../evidence/rime-scheme-delivery-endpoint-pilot-2026-08-25.md) · [`source research`](../evidence/rime-scheme-delivery-source-research-2026-08-25.md) |
+| **Next** | Product Lead names Domain Owner, implementation Executor, Environment Executor and independent Architecture/Quality reviewers; Architecture then reviews manifest, installed-content identity, integrity and fallback ownership before code work |
+| **Residuals** | [`source-variant Product Decision`](../product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) · [`2026-08-25 endpoint pilot`](../evidence/rime-scheme-delivery-endpoint-pilot-2026-08-25.md) · [`source research`](../evidence/rime-scheme-delivery-source-research-2026-08-25.md) |
 
 ---
 
@@ -20,7 +20,9 @@
 - **Assignment Authority:** Product Lead
 - **Decision Source / Date:** Human Product Owner in the active Codex task,
   `2026-08-25 Asia/Shanghai`, authorized KOS recording and first-party research
-  for a lightweight multi-endpoint selection design.
+  for a lightweight multi-endpoint selection design; later accepted
+  [`PD-RIME-SCHEME-DELIVERY-001-SOURCE-VARIANTS`](../product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md),
+  with no Universe-operated server or CDN.
 - **Product Approver:** Human Product Owner acting as Product Lead
 
 ## Boundary
