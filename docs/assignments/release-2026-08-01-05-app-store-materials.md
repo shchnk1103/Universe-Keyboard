@@ -1,7 +1,7 @@
 # Assignment: RELEASE-2026-0801-05 — 隐私、支持与 App Store 上架材料
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Active — store copy Human-reported saved; What to Test waits on build; screenshots deferred to RC`
+**Lifecycle status:** `Active — Build 7 internal group exists; What to Test online value needs verification; screenshots deferred`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Current Status
@@ -9,10 +9,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | 联系信息、隐私、出口、年龄、内容版权与主要类别已完成；按方案许可证披露/确认已实现并通过 Human UI Gate |
-| **Non-claims** | 商店文案、内容版权与类别均为 Human-reported 在线保存，执行方未打开 App Store Connect 复核；Phase A 派生收据已接受，但不是精确来源声明；未上传 build、创建测试组、提交 Beta Review 或冻结 RC |
-| **Next** | What to Test 等上传构建后粘贴；截图等 RC。未授权冻 RC / 上传 |
-| **Residuals** | App Store 截图 0/10 与 iPad 截图推迟到 RC（不阻塞 TestFlight 上传）；What to Test 等构建；版权行 Human-reported `© 2026 DoubleShy0N` |
+| **Phase** | Human 已创建内部组 `Build 7 Internal Smoke`、加入一个 Build 并邀请两名内部测试员；至少一封邀请已收到；初始反馈进入 Task11 |
+| **Non-claims** | 当前任务未在线复核 What to Test 内容、邀请接受/安装状态或 smoke Pass；没有外部组、Beta Review 或 App Store submission 授权 |
+| **Next** | 只读核对 Build 7 What to Test 与内部 tester 状态；反馈修复若改变候选则进入新 build，不回写 Build 7 |
+| **Residuals** | App Store 截图 0/10 与 iPad 截图推迟到正式上架材料阶段；What to Test 在线值 `UNKNOWN`；版权行 Human-reported `© 2026 DoubleShy0N` |
 
 ---
 
@@ -79,3 +79,13 @@
 
 - 08 Executor drafted a first-party kaomoji copy-constraint card for 05: [`release-2026-08-01-08-handoff-to-05-copy-constraints.md`](../evidence/release-2026-08-01-08-handoff-to-05-copy-constraints.md). Human Product Owner accepted the card the same day. 08 Human Product Gate later Passed. Content-rights Yes remains RIME/scheme-based.
 - Human Product Owner confirmed TestFlight 截图可后补，并授权起草商店文案与 What to Test. Draft: [`store-copy-and-what-to-test`](../evidence/release-2026-08-01-05-store-copy-and-what-to-test-2026-08-24.md). Human then confirmed the draft, authorized pasting, and reported the store-copy fields saved. The executor did not reopen App Store Connect. What to Test still waits on an uploaded build. Screenshots remain deferred to RC.
+
+## Execution Record — 2026-08-25
+
+- Human Product Owner created internal group `Build 7 Internal Smoke`, attached
+  one build and invited two internal testers. At least one invitation was
+  received. The current task did not inspect the saved What to Test value or
+  tester install state.
+- Three first-run/scheme findings are recorded under
+  [`RELEASE-2026-0801-11`](release-2026-08-01-11-internal-testflight-feedback.md).
+  No external group or Beta Review submission is implied.

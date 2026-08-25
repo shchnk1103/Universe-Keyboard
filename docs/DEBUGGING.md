@@ -308,6 +308,12 @@ The repository does not yet define production budgets. Until that work exists:
 
 Absence of a documented budget is not evidence that a measured delay or memory level is acceptable.
 
+For the complete operational flow—original report acquisition, ordinary-exit vs
+crash vs Jetsam classification, exact UUID/dSYM binding, Xcode/`atos`
+symbolication, privacy-safe storage and the content-free receipt—follow
+[`CRASH_JETSAM_SYMBOLICATION.md`](CRASH_JETSAM_SYMBOLICATION.md). Do not diagnose
+an Extension termination from a screenshot or Console excerpt alone.
+
 ### Extension Repeatedly Crashes Before The Keyboard Appears
 
 If selecting Universe Keyboard immediately returns to another keyboard, or the extension stops appearing after one crash:

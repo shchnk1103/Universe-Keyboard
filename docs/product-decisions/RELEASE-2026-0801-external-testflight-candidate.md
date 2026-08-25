@@ -10,9 +10,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Recorded` |
-| **Phase** | 外部 TestFlight 候选准备；08 已 Closed，Cloud Archive/签名/retention pilot 与主要 metadata 已完成；最终 RC 仍未冻结 |
-| **Non-claims** | Pilot 不授权冻结 RC、上传、外部测试、提交审核或接受 TD-003/004/005 风险 |
-| **Next** | 08 已 Closed，Cloud artifact/dSYM retention pilot 已通过；完成前冻点复核后单独授权冻结精确 RC；04/TD-003/004/005 使用最终 Cloud 构建关闸 |
+| **Phase** | Build 7 已进入 Human-operated 内部组并邀请两名 tester；首轮三项反馈进入 Pending Task11；Task04 仍因当前 Beta 采集环境 Blocked |
+| **Non-claims** | 内部邀请不构成 smoke Pass、外部测试或 Beta Review；Task11 无根因/修复授权；TD-003/004/005 未接受或关闭 |
+| **Next** | Task11 复现并分派；F-03 跨地区下载按 Product 紧急优先级提前；外部组/送审仍须等 Gate 与单独授权 |
 | **Residuals** | 见 [`release-2026-08-01-acceptance.md`](../evidence/release-2026-08-01-acceptance.md) |
 
 ---
@@ -40,9 +40,14 @@
    - Simulator 不得替代物理设备性能、Jetsam、Full Access 或硬件相关结论。物理 iPad 与较低系统真机证据可在外部 TestFlight 获批后的定向测试中补齐，并在 App Store 正式提交前重新裁决。
 5. [`TD-003`](../TECH_DEBT.md#td-003-collect-extension-performance-baseline)、[`TD-004`](../TECH_DEBT.md#td-004-implement-full-access-degradation-matrix)、[`TD-005`](../TECH_DEBT.md#td-005-complete-crash-jetsam-and-symbolication-handbook) 仍是外部测试候选 Gate；本 Decision 不接受或跳过它们。精确处置继续遵守 [`RELEASE_CHECKLIST.md`](../RELEASE_CHECKLIST.md) 的 TestFlight Debt And Risk Decision。
 6. 若需要先用同一最终构建做内部预检，上传方式必须保持该构建可进入外部 TestFlight；不得把最终候选标记为 `TestFlight Internal Only`。内部组预检、上传和后续外部 Review 仍分别需要 Human Product Owner 的明确外部动作授权。
+   在当前 Build 7 边界下，允许把“上传包进入 App Store Connect 处理”与“分配测试组/外部 Review”拆开：前者可在单独 Human 授权后先执行，后者仍被 TD-003/004/005 和 Task04 Gate 阻塞。此顺序不构成 skipped-gate 或 risk acceptance。
 7. ADR 0005 的恢复前安全备份已有源码与单测覆盖，但这不关闭 [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) 的跨进程并发边界。外部测试若保留手动 restore/reset，必须在 Product Gate 中选择并记录：关闭 Extension 后操作的明确测试约束，或完成并验证并发协调；不得因改用 Xcode Cloud 而跳过。
 
-## Explicit Non-authorization
+## Initial Explicit Non-authorization
+
+The following list records the boundary when this Decision was first accepted.
+Later entries in `Subsequent Bounded Authorization` supersede only the exact
+actions they explicitly name; all unmentioned actions remain unauthorized.
 
 - 现在冻结 `0de510d` 或任何其他提交为 RC
 - 开通或付费加入 Apple Developer Program
@@ -67,6 +72,17 @@
 - `2026-08-23 Asia/Shanghai`：Human Product Owner reported saving App Store Connect content rights as “Yes, the app contains or accesses third-party content and has the necessary rights,” primary category `工具`, and secondary category `效率`. The executor did not reopen App Store Connect to verify the fields. Upload and RC freeze remain unauthorized.
 - `2026-08-23 Asia/Shanghai`：Human Product Owner subsequently and explicitly authorized that narrow Info.plist change. `config/Info.plist` now declares `ITSAppUsesNonExemptEncryption = NO`; source-plist validation and an Xcode 27 beta Release Simulator integration build passed. This authorization did not include encryption-document upload, build upload, review submission, RC freeze or acceptance of the possible annual self-classification legal residual.
 - `2026-08-24 Asia/Shanghai`：Human Product Owner asked Codex to take over the remaining release work, logged in for read-only Cloud inspection and manually downloaded Build 3 artifacts. The retained Archive contains exact App/Keyboard dSYM UUID matches; XCResult is clean; the App Store export is Cloud Managed Apple Distribution, Store-profiled, `testFlightInternalTestingOnly = false`, and retained with symbols. This closes only the pilot retention capability gap. It does not freeze RC or authorize upload/review. Evidence: [`cloud artifact retention pilot`](../evidence/release-2026-08-01-01-cloud-artifact-retention-pilot-2026-08-24.md).
+- `2026-08-24 Asia/Shanghai`：Human Product Owner separately authorized freezing
+  the exact RC, then separately authorized one no-distribution Cloud Archive.
+  Annotated tag `testflight-v1.0-rc1-build7` was pushed at
+  `244b32df38cff7ce3d8e56d78a80d4504cc6f073`. Xcode Cloud Build 7 succeeded;
+  retained Archive/dSYMs/logs/XCResult/App Store/ad hoc artifacts map to version
+  `1.0 (7)`, and the Store export is not Internal Only. Upload, internal/external
+  distribution and review submission remain unauthorized. Evidence:
+  [`frozen RC Build 7 artifact ledger`](../evidence/release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md).
+- `2026-08-24 Asia/Shanghai`：在 Task04 P4 因当前 Beta Time Profiler 环境失败关闭后，Human Product Owner 接受上传与外部分发分离的推进方式，并授权先完成文档修正及 Build 7 upload-only 只读预检。该授权不包含上传本身；执行者必须在预检后停在单独的 Human 上传授权 Gate。TD-003/004/005、测试组分配、Beta Review 和 release 仍未授权。
+- `2026-08-24 Asia/Shanghai`：Human Product Owner 随后逐字授权将 SHA-256 `b9baf362…` 的精确 Store `Universe Keyboard.ipa` 上传到 App Store Connect App `6804236252`，版本 `1.0`、构建 `7`，且只允许上传并等待处理。Transporter 于 `22:46` 显示已交付；App Store Connect 已验证并处理为 TestFlight `1.0 (7)` / `准备提交`。群组与独立测试员均为 `0`，What to Test 为空；没有分发或 Beta Review 提交。
+- `2026-08-25 Asia/Shanghai`：Human Product Owner 自行创建内部组 `Build 7 Internal Smoke`、加入一个 Build 并邀请两名内部测试员；至少一封邀请已收到。三项 tester 反馈记录于 [`RELEASE-2026-0801-11`](../assignments/release-2026-08-01-11-internal-testflight-feedback.md)，其中跨地区方案下载被 Product 明确提前为紧急工作。该 Human-operated 内部分发 supersede 先前“groups/testers 为 0”的当前状态，但不授权外部组或 Beta Review。
 
 ## Revalidation Triggers
 

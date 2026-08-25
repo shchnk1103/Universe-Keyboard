@@ -1,7 +1,7 @@
 # Assignment: RELEASE-2026-0801-01 — 稳定工具链、Archive 与上传就绪
 
 **Policy version:** `1.0.0`
-**Lifecycle status:** `Assigned — Entry Criteria pending`
+**Lifecycle status:** `Reviewed — Quality Pass with conditions; release handoff remains open`
 **Parent:** [`RELEASE-2026-0801`](release-2026-08-01.md)
 
 ## Authority
@@ -19,6 +19,16 @@
 - **Architecture Reviewer:** `Not Applicable — no architecture change is authorized`
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer through a thread independent from implementation/environment repair where practical
 - **Handoff Target:** Product Lead for upload/submission authorization; umbrella release coordinator for status synchronization
+
+## Current Status
+
+| Field | Value |
+|---|---|
+| **Lifecycle** | `Reviewed — Quality Pass with conditions` |
+| **Phase** | RC tag `testflight-v1.0-rc1-build7` frozen at `244b32d`; Cloud Build 7 artifacts independently reviewed; exact Store IPA uploaded and processed as TestFlight `1.0 (7)` |
+| **Non-claims** | Reviewed is not Closed or a release decision; upload is not TestFlight distribution, Beta Review or TD-003/004/005 closure |
+| **Next** | Handoff the processed build to Task05 for separately authorized What to Test work; Task04/TD-003/004/005 still block external distribution |
+| **Residuals** | [`Build 7 Quality review`](../evidence/release-2026-08-01-01-frozen-rc-build7-independent-quality-review-2026-08-24.md#findings-and-dispositions) |
 
 ## Boundary
 
@@ -46,3 +56,30 @@
 - This satisfies the preliminary Cloud Archive/signing feasibility portion only. Entry Criteria still fail because final version/build, frozen RC and independent review are pending.
 - **2026-08-24 supersession:** the retained Archive, App/Keyboard dSYMs, logs, XCResult and non-Internal-Only App Store export were downloaded and inspected. UUID mapping, Cloud distribution metadata and IPA retention passed at pilot grade. See [`cloud artifact retention pilot`](../evidence/release-2026-08-01-01-cloud-artifact-retention-pilot-2026-08-24.md). This remains non-RC evidence and must be repeated for the frozen candidate.
 - An independent subagent reviewed the pre-freeze documentation/pilot boundary and issued `Pass after remediation` for a docs-only PR. See [`pre-freeze independent review`](../evidence/release-2026-08-01-prefreeze-independent-review-2026-08-24.md). This does not satisfy the future frozen RC's independent artifact review.
+
+## Frozen RC Archive Evidence — 2026-08-24
+
+- Human Product Owner separately authorized the exact RC freeze and one
+  no-distribution Archive; upload remained outside authorization.
+- Annotated tag `testflight-v1.0-rc1-build7` resolves to exact commit
+  `244b32df38cff7ce3d8e56d78a80d4504cc6f073` and is pushed to `origin`.
+- Xcode Cloud Build 7 succeeded under Xcode 26.6 / macOS 26.6.2. Its App Store
+  export is version `1.0`, build `7`, has
+  `testFlightInternalTestingOnly = false` and retains symbols.
+- Archive App/Keyboard Mach-O UUIDs match their dSYMs and both exported IPAs.
+  The retained Archive, logs, XCResult, App Store package and ad hoc package have
+  an exact integrity ledger.
+- Executor outputs are complete. Independent Quality review is the next
+  lifecycle step; physical-device TD-003/004/005 and upload authorization remain
+  outside this Assignment's completed artifact slice.
+- Canonical evidence: [`frozen RC Build 7 artifact ledger`](../evidence/release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md).
+- Independent Quality issued `Pass with conditions` after re-verifying the tag,
+  UUID/dSYM/package mapping, export identity, privacy/security facts and XCResult.
+  All findings have explicit dispositions; task 01 advances to `Reviewed`, not
+  `Closed`. See [`Build 7 independent Quality review`](../evidence/release-2026-08-01-01-frozen-rc-build7-independent-quality-review-2026-08-24.md).
+- Human Product Owner subsequently authorized uploading only the exact Store
+  IPA. Transporter delivered it at `2026-08-24 22:46 Asia/Shanghai`; App Store
+  Connect validated and processed TestFlight `1.0 (7)` to `准备提交`. No group,
+  tester, distribution or review submission was added. The online upload path
+  is now exercised for this exact candidate; canonical receipt remains in the
+  Build 7 artifact ledger.

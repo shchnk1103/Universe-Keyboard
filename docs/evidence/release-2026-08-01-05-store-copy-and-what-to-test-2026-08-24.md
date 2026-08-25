@@ -4,7 +4,7 @@
 > **Date / timezone:** `2026-08-24 Asia/Shanghai`
 > **Assignment:** [`RELEASE-2026-0801-05`](../assignments/release-2026-08-01-05-app-store-materials.md)
 > **Copy constraints:** [`02 范围冻结`](../assignments/release-2026-08-01-02-scope-freeze.md) · [`08→05 文案卡`](release-2026-08-01-08-handoff-to-05-copy-constraints.md)（Product 已接受）
-> **Authority:** Human Product Owner 确认 TestFlight 截图可后补、确认草稿并另行授权粘贴 ASC，随后报告已保存。本文件 **不** 上传、不冻 RC、不创建测试组；What to Test 仍须等待构建。
+> **Authority:** Human Product Owner 确认 TestFlight 截图可后补、确认草稿并另行授权粘贴 ASC，随后报告已保存。本文件 **不** 冻 RC。`2026-08-25` Human 已另行创建内部组并邀请 tester；What to Test 的当前在线值未被本任务复核，保持 `UNKNOWN`。
 
 ## 1. 截图可以后补（TestFlight）
 
@@ -78,12 +78,12 @@ Universe Keyboard 是一款基于 RIME 的 iOS 第三方中文输入法。输入
 首次发布。本机中文 26 键与九宫格输入，候选与拼音路径，九键/符号页颜表情，以及可选的完全访问（仅本机共享，不上传按键内容）。
 ```
 
-## 3. TestFlight What to Test（构建绑定前的定稿草稿）
+## 3. TestFlight What to Test（Build 7 草稿；当前在线值待复核）
 
-上传候选构建后粘贴。仍须把版本/build 号补进第一行。不要让测试者以为这是系统级颜文字大全。
+当前候选为 `1.0 (7)`。粘贴前把第一行固定为该版本；不要让测试者以为这是系统级颜文字大全。
 
 ```text
-构建：[上传后填写 version (build)]
+构建：1.0 (7)
 
 请重点测试：
 1. 首次启用：添加键盘、方案准备；「稍后再开启」完全访问后仍能继续选方案。
@@ -129,9 +129,9 @@ Human Product Owner 已授权粘贴（`2026-08-24`），随后报告 **已保存
 
 Human-reported 覆盖范围按当时可填字段理解：App Store 1.0 副标题 / 宣传文本 / 描述 / 关键词 / What's New，以及可选的 TestFlight Beta 描述。版权行 Human 另报已填 `© 2026 DoubleShy0N`。What to Test、截图不在本条「已保存」范围内。执行方未打开 ASC 复核。
 
-| 现在就能贴 | 必须等构建 |
+| 已保存 / 现可准备 | 仍须单独授权 |
 |---|---|
-| App Store 1.0：副标题、宣传文本、描述、关键词、What's New；可选覆盖 TestFlight Beta 描述 / 审核备注补句 | What to Test（无 TestFlight 构建时页面不可用或无法绑定 build） |
-| 版权行：填你的法定名称，不要提交 `[开发者法定名称]` 占位 | 截图：等 RC |
+| App Store 1.0 文案 Human-reported 已保存；Build 7 已进入 Human-operated 内部组 | 只读复核 Build 7 “测试内容”的当前在线值；外部组/Beta Review 仍未授权 |
+| 版权行 Human-reported 已保存；TestFlight 截图可后补 | App Store 正式上架截图仍待准备 |
 
 Human 已口头确认「已保存」。当前证据等级仍是 Human-reported；后续若在线只读复核，应另记观察时间与实际字段，不回写成当时执行方已验证。

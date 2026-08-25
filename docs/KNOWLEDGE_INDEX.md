@@ -62,6 +62,7 @@
 - Current engineering status: [`ENGINEERING_DASHBOARD.md`](ENGINEERING_DASHBOARD.md)
 - Debugging: [`DEBUGGING.md`](DEBUGGING.md)
 - Performance measurement: [`PERFORMANCE_BASELINE.md`](PERFORMANCE_BASELINE.md)
+- Crash/Jetsam acquisition and symbolication: [`CRASH_JETSAM_SYMBOLICATION.md`](CRASH_JETSAM_SYMBOLICATION.md)
 - T9 continuous-digit latency — force_gc track case close (2026-07-24): [`evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md`](evidence/t9-continuous-digit-latency-force-gc-case-close-2026-07-24.md)
 - T9 long-composition `process_key` latency and safe auto-anchor roadmap
   (`T9-AUTO-ANCHOR-001`, S1–S4 Debug/test evidence validated, S5 isolated
@@ -125,6 +126,7 @@
   [`P2-PERF-03 replicated A/B evidence`](evidence/t9-responsive-pipeline-p2-perf-03-replicated-ab-2026-08-03.md),
   [`Formal R5 evidence`](evidence/t9-responsive-pipeline-r5-formal-2026-07-31.md)
 - Release procedure: [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md)
+- Build 7 internal TestFlight first-run/scheme-delivery feedback (`Assignment Pending`; F-03 cross-region download urgent): [`RELEASE-2026-0801-11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`intake evidence`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md)
 - App Store release control: [`RELEASE-2026-0801`](assignments/release-2026-08-01.md) (`Active` — 现行目标 `2026-08-26`; Cloud Archive/签名 pilot 与部分 TestFlight 文案完成；[redate](product-decisions/RELEASE-2026-0801-target-redate.md)), [evidence ledger](evidence/release-2026-08-01-acceptance.md), [2026-08-22 metadata audit](evidence/release-2026-08-01-05-testflight-metadata-audit-2026-08-22.md), [2026-08-23 third-party notice provenance](evidence/release-2026-08-01-05-third-party-notice-provenance-2026-08-23.md), [`PROVENANCE-A`](assignments/release-2026-08-01-05-provenance-recovery-phase-a.md), and [accepted derived receipts](product-decisions/RELEASE-2026-0801-05-provenance-a-accept.md)
 - New-user activation / Full Access journey: [`ONBOARDING_ACTIVATION.md`](ONBOARDING_ACTIVATION.md), Product Decision [`PD-RELEASE-2026-0801-03`](product-decisions/RELEASE-2026-0801-03-activation-authorization.md)
 - Help / soft first-run / TipKit packaging: [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authorization.md), Assignment [`HELP-TIPKIT-001`](assignments/help-tipkit-001.md) (`Completed` — P1–P3 implemented, Product Gate pending)
