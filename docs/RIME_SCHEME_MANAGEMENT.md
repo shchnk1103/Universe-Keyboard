@@ -143,7 +143,23 @@ Transient scheme operations should use the shared global bottom toast pattern.
 - "{方案名}已下载并部署。"
 - "正在应用 RIME 设置..."
 - "RIME 设置已应用。"
-- "下载失败，请稍后再试。"
+- Download failures use a Simplified Chinese, actionable category instead of
+  presenting an untranslated raw system error as the primary message:
+  - network unavailable or unreachable: explain that the network connection is
+    unavailable and offer retry/check-network actions;
+  - timeout or server/resource temporarily unavailable: identify the temporary
+    condition and offer retry/later actions;
+  - package integrity verification failure: state that package verification
+    failed and require a clean retry; do not mislabel it as a network failure;
+  - insufficient storage, extraction or deployment failure: identify the
+    corresponding local phase and route to the relevant recovery action;
+  - unknown failure: use a localized generic fallback and retain a retry action.
+
+Sanitized diagnostics may retain the error domain/code, URL host and operation
+phase for diagnosis. They must not include credentials, private input or
+sensitive URL query values. Exact UI copy remains an implementation-Assignment
+deliverable and must be verified in Simplified Chinese before the corresponding
+release gate closes.
 
 **Toast (TD-009, 2026-08-08):** download phases use catalog scheme display names; progress fraction when known, otherwise indeterminate (no fake 0%).
 
