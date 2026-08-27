@@ -1,6 +1,8 @@
-import XCTest
-@testable import Universe_Keyboard
 import KeyboardCore
+import RimeBridge
+import XCTest
+
+@testable import Universe_Keyboard
 
 @MainActor
 final class NineKeyEnableTransactionTests: XCTestCase {
@@ -126,30 +128,168 @@ final class NineKeyEnableTransactionTests: XCTestCase {
     }
 
     func testOrchestratorPrepareFailureLeavesTwentySixKeyAndUnmatchedReadiness() async {
-        await assertFailClosed(expected: .prepareFailed, mutate: { deps in
-            deps.prepare = { _ in throw TestPrepareError() }
-        })
+        await assertFailClosed(
+            expected: .prepareFailed,
+            mutate: { deps in
+                deps.prepare = { _ in throw TestPrepareError() }
+            })
     }
 
     func testOrchestratorDeployFailureLeavesTwentySixKeyAndUnmatchedReadiness() async {
-        await assertFailClosed(expected: .deployFailed, mutate: { deps in
-            deps.deploy = { false }
-        })
+        await assertFailClosed(
+            expected: .deployFailed,
+            mutate: { deps in
+                deps.deploy = { false }
+            })
     }
 
     func testOrchestratorSmokeFailureLeavesTwentySixKeyAndUnmatchedReadiness() async {
-        await assertFailClosed(expected: .smokeFailed, mutate: { deps in
-            deps.smoke = { _, _ in false }
-        })
+        await assertFailClosed(
+            expected: .smokeFailed,
+            mutate: { deps in
+                deps.smoke = { _, _ in false }
+            })
     }
 
     func testOrchestratorFingerprintFailureLeavesTwentySixKeyAndUnmatchedReadiness() async {
-        await assertFailClosed(expected: .fingerprintUnavailable, mutate: { deps in
-            deps.fingerprint = { _ in nil }
-        })
+        await assertFailClosed(
+            expected: .fingerprintUnavailable,
+            mutate: { deps in
+                deps.fingerprint = { _ in nil }
+            })
+    }
+
+    func testProductionEntryWaitsForCommitLeaseBeforePrepareAndDeploysOnce() async throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("uk-9key-lease-\(UUID().uuidString)", isDirectory: true)
+        let shared = root.appendingPathComponent("shared", isDirectory: true)
+        let user = root.appendingPathComponent("user", isDirectory: true)
+        try FileManager.default.createDirectory(at: shared, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: user, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let t9URL = shared.appendingPathComponent("t9.schema.yaml")
+        try Self.validT9Upstream.write(to: t9URL, atomically: true, encoding: .utf8)
+
+        let settings = RecordingSettingsStore()
+        let deploymentService = NineKeyRecordingDeploymentService(succeeded: false)
+        let installer = NineKeySchemaArchiveInstaller(
+            directories: SchemaDeploymentDirectories(
+                sharedDataURL: shared,
+                userDataURL: user
+            )
+        )
+        let manager = SchemaManager(
+            settings: settings,
+            archiveInstaller: installer,
+            deploymentService: deploymentService
+        )
+        let blockingOperationID = UUID()
+        let acquired = await manager.acquireSchemeDeliveryCommitLease(
+            operationID: blockingOperationID
+        )
+        XCTAssertTrue(acquired)
+
+        let enableTask = Task { @MainActor in await manager.enableNineKeyLayout() }
+        await Task.yield()
+
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount, 1)
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseOperationID, blockingOperationID)
+        XCTAssertTrue(try String(contentsOf: t9URL, encoding: .utf8).contains("force_gc"))
+        let requestCountBeforeRelease = await deploymentService.requestCount()
+        XCTAssertEqual(requestCountBeforeRelease, 0)
+
+        manager.releaseSchemeDeliveryCommitLease(operationID: blockingOperationID)
+        let message = await enableTask.value
+
+        XCTAssertEqual(message, "RIME 部署失败，已回退 26 键")
+        XCTAssertFalse(try String(contentsOf: t9URL, encoding: .utf8).contains("force_gc"))
+        let requestCountAfterRelease = await deploymentService.requestCount()
+        XCTAssertEqual(requestCountAfterRelease, 1)
+    }
+
+    func testCancellingDownloadWaitingForNineKeyLeaseCannotCommitAfterRelease() async throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("uk-9key-cancel-\(UUID().uuidString)", isDirectory: true)
+        let shared = root.appendingPathComponent("shared", isDirectory: true)
+        let user = root.appendingPathComponent("user", isDirectory: true)
+        try FileManager.default.createDirectory(at: shared, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: user, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try Self.validT9Upstream.write(
+            to: shared.appendingPathComponent("t9.schema.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+
+        let deploymentService = BlockingNineKeyDeploymentService()
+        let manager = SchemaManager(
+            settings: RecordingSettingsStore(),
+            archiveInstaller: NineKeySchemaArchiveInstaller(
+                directories: SchemaDeploymentDirectories(
+                    sharedDataURL: shared,
+                    userDataURL: user
+                )
+            ),
+            deploymentService: deploymentService
+        )
+        let enableTask = Task { @MainActor in await manager.enableNineKeyLayout() }
+        await deploymentService.waitUntilRequested()
+        XCTAssertNotNil(manager.schemeDeliveryCommitLeaseOperationID)
+
+        let downloadOperationID = UUID()
+        let commitProbe = CommitProbe()
+        manager.activeDownloadOperationID = downloadOperationID
+        let downloadTask = Task { @MainActor in
+            let acquired = await manager.acquireSchemeDeliveryCommitLease(
+                operationID: downloadOperationID
+            )
+            guard acquired else { return }
+            if !Task.isCancelled, manager.activeDownloadOperationID == downloadOperationID {
+                commitProbe.didCommit = true
+            }
+            manager.releaseSchemeDeliveryCommitLease(operationID: downloadOperationID)
+        }
+        manager.currentDownloadTask = downloadTask
+        await Task.yield()
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount, 1)
+
+        manager.cancelDownload()
+        await Task.yield()
+        XCTAssertEqual(manager.rimeIceDownloadState, .idle)
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount, 0)
+
+        await deploymentService.finish(succeeded: false)
+        _ = await enableTask.value
+        await downloadTask.value
+
+        XCTAssertFalse(commitProbe.didCommit)
+        XCTAssertNil(manager.activeDownloadOperationID)
+        XCTAssertNil(manager.schemeDeliveryCommitLeaseOperationID)
     }
 
     // MARK: - Helpers
+
+    private static let validT9Upstream = """
+        schema:
+          schema_id: t9
+        engine:
+          processors:
+            - ascii_composer
+          translators:
+            - script_translator
+            - lua_translator@*force_gc
+        speller:
+          algebra:
+            - derive/[abc]/2/
+            - derive/[def]/3/
+            - derive/[hgi]/4/
+            - derive/[jkl]/5/
+            - derive/[omn]/6/
+            - derive/[pqrs]/7/
+            - derive/[tuv]/8/
+            - derive/[wxyz]/9/
+        """
 
     private func assertFailClosed(
         expected: NineKeyEnableOrchestrator.Failure,
@@ -243,4 +383,83 @@ final class RecordingSettingsStore: SharedSettingsStoring {
     }
     func removeObject(forKey key: String) { storage.removeValue(forKey: key) }
     func synchronize() {}
+}
+
+@MainActor
+private final class CommitProbe {
+    var didCommit = false
+}
+
+@MainActor
+private final class NineKeySchemaArchiveInstaller: SchemaArchiveInstalling {
+    let directories: SchemaDeploymentDirectories
+
+    init(directories: SchemaDeploymentDirectories) {
+        self.directories = directories
+    }
+
+    func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
+        FileManager.default.temporaryDirectory.appendingPathComponent(distribution.cachedArchiveFileName)
+    }
+    func prepareExtractionDirectory(for distribution: RimeSchemeDistribution) throws -> URL {
+        FileManager.default.temporaryDirectory.appendingPathComponent(distribution.extractionDirectoryName)
+    }
+    func removeTemporaryItem(at url: URL) {}
+    func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool { true }
+    func checkDiskSpace(needed: Int64) throws {}
+    func installSchemaFiles(
+        from extractDir: URL,
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws {}
+    func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) {}
+    func clearBuildCache(plan: RimeSchemeInstallationPlan) {}
+    func sharedDataDirectoryURL() -> URL? { directories.sharedDataURL }
+    func runtimeDirectories() throws -> SchemaDeploymentDirectories { directories }
+    func deploymentDirectories() throws -> SchemaDeploymentDirectories { directories }
+}
+
+private actor NineKeyRecordingDeploymentService: RimeDeploymentServicing {
+    private let succeeded: Bool
+    private var requests: [RimeDeploymentRequest] = []
+
+    init(succeeded: Bool) {
+        self.succeeded = succeeded
+    }
+
+    func deploy(_ request: RimeDeploymentRequest) async throws -> RimeDeploymentResult {
+        requests.append(request)
+        return RimeDeploymentResult(succeeded: succeeded, diagnosticMessage: "test")
+    }
+
+    func requestCount() -> Int { requests.count }
+}
+
+private actor BlockingNineKeyDeploymentService: RimeDeploymentServicing {
+    private var requestStarted = false
+    private var requestWaiters: [CheckedContinuation<Void, Never>] = []
+    private var resultContinuation: CheckedContinuation<Bool, Never>?
+
+    func deploy(_ request: RimeDeploymentRequest) async throws -> RimeDeploymentResult {
+        requestStarted = true
+        let waiters = requestWaiters
+        requestWaiters.removeAll()
+        waiters.forEach { $0.resume() }
+        let succeeded = await withCheckedContinuation { continuation in
+            resultContinuation = continuation
+        }
+        return RimeDeploymentResult(succeeded: succeeded, diagnosticMessage: "test")
+    }
+
+    func waitUntilRequested() async {
+        guard !requestStarted else { return }
+        await withCheckedContinuation { continuation in
+            requestWaiters.append(continuation)
+        }
+    }
+
+    func finish(succeeded: Bool) {
+        resultContinuation?.resume(returning: succeeded)
+        resultContinuation = nil
+    }
 }

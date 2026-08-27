@@ -1,4 +1,5 @@
 import Foundation
+import KeyboardCore
 import XCTest
 
 @testable import Universe_Keyboard
@@ -24,13 +25,28 @@ final class SchemaArtifactSecurityTests: XCTestCase {
                 at: archiveURL,
                 source: makeSource(expectedByteCount: 4, archiveSHA256: validSource.archiveSHA256)
             )
-        ) { XCTAssertEqual($0 as? DownloadError, .integrityMismatch) }
+        ) {
+            XCTAssertEqual(
+                $0 as? DownloadError,
+                .integrityMismatch(.archiveSize(expected: 4, actual: 5))
+            )
+        }
         XCTAssertThrowsError(
             try SchemaArtifactVerifier().verifyArchive(
                 at: archiveURL,
                 source: makeSource(expectedByteCount: 5, archiveSHA256: String(repeating: "0", count: 64))
             )
-        ) { XCTAssertEqual($0 as? DownloadError, .integrityMismatch) }
+        ) {
+            XCTAssertEqual(
+                $0 as? DownloadError,
+                .integrityMismatch(
+                    .archiveDigest(
+                        expected: String(repeating: "0", count: 64),
+                        actual: validSource.archiveSHA256
+                    )
+                )
+            )
+        }
     }
 
     func testStagedDigestIgnoresUnadmittedPurePayloadButBindsInstalledFiles() throws {
@@ -96,6 +112,404 @@ final class SchemaArtifactSecurityTests: XCTestCase {
         )
     }
 
+    func testManifestResolvesAllSourcesToOneExplicitStagedIdentity() throws {
+        for entry in RimeSchemeCatalog.downloadableEntries {
+            let manifest = try XCTUnwrap(entry.distribution?.manifest)
+            let identities = try manifest.sourceVariants.map {
+                try manifest.resolvedStagedIdentity(for: $0)
+            }
+            XCTAssertFalse(identities.isEmpty)
+            XCTAssertTrue(identities.allSatisfy { $0 == identities[0] })
+        }
+    }
+
+    func testManifestRejectsUnresolvedStagedIdentity() throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let manifest = try XCTUnwrap(entry.distribution?.manifest)
+        let source = try XCTUnwrap(manifest.sourceVariants.first)
+        let unresolved = RimeSchemeSourceVariant(
+            id: source.id,
+            displayName: source.displayName,
+            downloadURL: source.downloadURL,
+            upstreamRevision: source.upstreamRevision,
+            expectedByteCount: source.expectedByteCount,
+            archiveSHA256: source.archiveSHA256,
+            allowedRedirectHosts: source.allowedRedirectHosts,
+            stagedIdentityID: "missing"
+        )
+
+        XCTAssertThrowsError(try manifest.resolvedStagedIdentity(for: unresolved)) {
+            XCTAssertEqual($0 as? DownloadError, .invalidArtifactManifest)
+        }
+    }
+
+    func testManifestRejectsMalformedDigestAndStaleImplementationRevision() throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let manifest = try XCTUnwrap(entry.distribution?.manifest)
+        let source = try XCTUnwrap(manifest.sourceVariants.first)
+        let malformed = RimeSchemeSourceVariant(
+            id: source.id,
+            displayName: source.displayName,
+            downloadURL: source.downloadURL,
+            upstreamRevision: source.upstreamRevision,
+            expectedByteCount: source.expectedByteCount,
+            archiveSHA256: "not-a-sha256",
+            allowedRedirectHosts: source.allowedRedirectHosts,
+            stagedIdentityID: source.stagedIdentityID
+        )
+        let malformedManifest = RimeSchemeArtifactManifest(
+            schemeID: manifest.schemeID,
+            version: manifest.version,
+            assetName: manifest.assetName,
+            sourceVariants: [malformed],
+            stagedIdentities: manifest.stagedIdentities
+        )
+        XCTAssertThrowsError(try malformedManifest.resolvedStagedIdentity(for: malformed)) {
+            XCTAssertEqual($0 as? DownloadError, .invalidArtifactManifest)
+        }
+
+        let identity = try manifest.resolvedStagedIdentity(for: source)
+        XCTAssertThrowsError(
+            try manifest.validateImplementationBinding(
+                identity,
+                installationPlan: makePlan(),
+                postProcessingRevision: "stale-post-revision"
+            )
+        ) {
+            XCTAssertEqual($0 as? DownloadError, .invalidArtifactManifest)
+        }
+    }
+
+    func testStagedMismatchNeverPermitsSourceFallback() {
+        XCTAssertFalse(
+            DownloadIntegrityFailure.stagedContent(
+                expected: String(repeating: "0", count: 64),
+                actual: String(repeating: "1", count: 64)
+            ).permitsPinnedSourceFallback
+        )
+    }
+
+    func testCleanupReceiptBindsExactRegisteredArtifactAndVerifiesAbsence() async throws {
+        let root = try makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let url = root.appendingPathComponent("failed.zip")
+        try Data("failed".utf8).write(to: url)
+        let artifact = SchemaOwnedTemporaryArtifact(
+            operationID: UUID(),
+            attemptID: UUID(),
+            sourceID: "cnb",
+            artifactID: UUID(),
+            localURL: url
+        )
+        let registry = SchemaTemporaryArtifactRegistry()
+        try await registry.register(artifact)
+
+        let receipt = try await FileSystemSchemaTemporaryArtifactCleaner(registry: registry)
+            .removeAndVerifyAbsent(artifact)
+
+        XCTAssertTrue(receipt.provesRemoval(of: artifact))
+        XCTAssertEqual(receipt.outcome, .removed)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: url.path))
+        let stale = SchemaOwnedTemporaryArtifact(
+            operationID: artifact.operationID,
+            attemptID: UUID(),
+            sourceID: artifact.sourceID,
+            artifactID: artifact.artifactID,
+            localURL: artifact.localURL
+        )
+        XCTAssertFalse(receipt.provesRemoval(of: stale))
+    }
+
+    func testCleanupRejectsUnregisteredAlreadyAbsentArtifact() async throws {
+        let artifact = SchemaOwnedTemporaryArtifact(
+            operationID: UUID(),
+            attemptID: UUID(),
+            sourceID: "cnb",
+            artifactID: UUID(),
+            localURL: FileManager.default.temporaryDirectory
+                .appendingPathComponent("unregistered-\(UUID().uuidString).zip")
+        )
+
+        do {
+            _ = try await FileSystemSchemaTemporaryArtifactCleaner(
+                registry: SchemaTemporaryArtifactRegistry()
+            ).removeAndVerifyAbsent(artifact)
+            XCTFail("unregistered artifact must be rejected")
+        } catch {
+            XCTAssertEqual(error as? DownloadError, .temporaryCleanupFailed)
+        }
+    }
+
+    func testCleanupAcceptsRegisteredAlreadyAbsentArtifact() async throws {
+        let registry = SchemaTemporaryArtifactRegistry()
+        let artifact = SchemaOwnedTemporaryArtifact(
+            operationID: UUID(),
+            attemptID: UUID(),
+            sourceID: "cnb",
+            artifactID: UUID(),
+            localURL: FileManager.default.temporaryDirectory
+                .appendingPathComponent("registered-absent-\(UUID().uuidString).zip")
+        )
+        try await registry.register(artifact)
+
+        let receipt = try await FileSystemSchemaTemporaryArtifactCleaner(registry: registry)
+            .removeAndVerifyAbsent(artifact)
+
+        XCTAssertTrue(receipt.provesRemoval(of: artifact))
+        XCTAssertEqual(receipt.outcome, .alreadyAbsent)
+    }
+
+    func testCleanupFailsClosedWhenDeletionFails() async throws {
+        let root = try makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let url = root.appendingPathComponent("undeletable.zip")
+        try Data("failed".utf8).write(to: url)
+        let registry = SchemaTemporaryArtifactRegistry()
+        let artifact = SchemaOwnedTemporaryArtifact(
+            operationID: UUID(),
+            attemptID: UUID(),
+            sourceID: "cnb",
+            artifactID: UUID(),
+            localURL: url
+        )
+        try await registry.register(artifact)
+        let cleaner = FileSystemSchemaTemporaryArtifactCleaner(
+            registry: registry,
+            removeItem: { _ in throw CocoaError(.fileWriteNoPermission) }
+        )
+
+        do {
+            _ = try await cleaner.removeAndVerifyAbsent(artifact)
+            XCTFail("deletion failure must fail closed")
+        } catch {
+            XCTAssertEqual(error as? DownloadError, .temporaryCleanupFailed)
+        }
+        XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
+    }
+
+    func testStaleCleanupReceiptDoesNotProveALaterAttempt() async throws {
+        let root = try makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let firstURL = root.appendingPathComponent("first.zip")
+        let secondURL = root.appendingPathComponent("second.zip")
+        try Data("first".utf8).write(to: firstURL)
+        try Data("second".utf8).write(to: secondURL)
+        let operationID = UUID()
+        let first = SchemaOwnedTemporaryArtifact(
+            operationID: operationID,
+            attemptID: UUID(),
+            sourceID: "cnb",
+            artifactID: UUID(),
+            localURL: firstURL
+        )
+        let second = SchemaOwnedTemporaryArtifact(
+            operationID: operationID,
+            attemptID: UUID(),
+            sourceID: "cnb",
+            artifactID: UUID(),
+            localURL: secondURL
+        )
+        let registry = SchemaTemporaryArtifactRegistry()
+        try await registry.register(first)
+        try await registry.register(second)
+        let receipt = try await FileSystemSchemaTemporaryArtifactCleaner(registry: registry)
+            .removeAndVerifyAbsent(first)
+
+        XCTAssertTrue(receipt.provesRemoval(of: first))
+        XCTAssertFalse(receipt.provesRemoval(of: second))
+    }
+
+    func testDownloaderRemovesUnregisteredFileOnNonHTTPResponse() async throws {
+        let url = try makeTemporaryArchive()
+        defer { try? FileManager.default.removeItem(at: url) }
+        let source = makeSource(id: "cnb")
+        let downloader = URLSessionSchemaArchiveDownloader(
+            registry: SchemaTemporaryArtifactRegistry()
+        )
+
+        do {
+            _ = try await downloader.adoptDownloadedFile(
+                temporaryURL: url,
+                response: URLResponse(
+                    url: source.downloadURL,
+                    mimeType: "application/zip",
+                    expectedContentLength: 6,
+                    textEncodingName: nil
+                ),
+                source: source,
+                operationID: UUID(),
+                attemptID: UUID()
+            )
+            XCTFail("non-HTTP responses must be rejected")
+        } catch {
+            XCTAssertEqual(error as? DownloadError, .networkError("无效的 HTTP 响应"))
+        }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: url.path))
+    }
+
+    func testDownloaderRemovesUnregisteredFileOnDisallowedHostAndZeroLength() async throws {
+        let hostURL = try makeTemporaryArchive()
+        let lengthURL = try makeTemporaryArchive()
+        defer {
+            try? FileManager.default.removeItem(at: hostURL)
+            try? FileManager.default.removeItem(at: lengthURL)
+        }
+        let source = makeSource(id: "cnb")
+        let downloader = URLSessionSchemaArchiveDownloader(
+            registry: SchemaTemporaryArtifactRegistry()
+        )
+
+        do {
+            _ = try await downloader.adoptDownloadedFile(
+                temporaryURL: hostURL,
+                response: try XCTUnwrap(
+                    HTTPURLResponse(
+                        url: URL(string: "https://evil.example.test/artifact.zip")!,
+                        statusCode: 200,
+                        httpVersion: "HTTP/1.1",
+                        headerFields: ["Content-Length": "6"]
+                    )
+                ),
+                source: source,
+                operationID: UUID(),
+                attemptID: UUID()
+            )
+            XCTFail("disallowed host must be rejected")
+        } catch {
+            XCTAssertEqual(error as? DownloadError, .networkError("下载失败，HTTP 200"))
+        }
+
+        do {
+            _ = try await downloader.adoptDownloadedFile(
+                temporaryURL: lengthURL,
+                response: try XCTUnwrap(
+                    HTTPURLResponse(
+                        url: source.downloadURL,
+                        statusCode: 200,
+                        httpVersion: "HTTP/1.1",
+                        headerFields: ["Content-Length": "0"]
+                    )
+                ),
+                source: source,
+                operationID: UUID(),
+                attemptID: UUID()
+            )
+            XCTFail("zero-length responses must be rejected")
+        } catch {
+            XCTAssertEqual(error as? DownloadError, .networkError("服务器未提供文件大小"))
+        }
+
+        XCTAssertFalse(FileManager.default.fileExists(atPath: hostURL.path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: lengthURL.path))
+    }
+
+    func testLocalizedIntegrityErrorsDoNotExposeRawDigests() {
+        XCTAssertEqual(
+            DownloadError.userFacingDescription(
+                for: DownloadError.integrityMismatch(
+                    .archiveSize(expected: 10, actual: 4)
+                )
+            ),
+            "下载文件不完整，已停止安装，请检查网络后重试"
+        )
+        XCTAssertEqual(
+            DownloadError.userFacingDescription(
+                for: DownloadError.integrityMismatch(
+                    .archiveDigest(
+                        expected: String(repeating: "a", count: 64),
+                        actual: String(repeating: "b", count: 64)
+                    )
+                )
+            ),
+            "下载文件未通过安全校验，已停止安装，请稍后重试"
+        )
+        XCTAssertEqual(
+            DownloadError.userFacingDescription(
+                for: DownloadError.integrityMismatch(
+                    .stagedContent(
+                        expected: String(repeating: "a", count: 64),
+                        actual: String(repeating: "b", count: 64)
+                    )
+                )
+            ),
+            "方案内容未通过安装前校验，已停止安装，请稍后重试"
+        )
+        XCTAssertEqual(
+            DownloadError.userFacingDescription(
+                for: DownloadError.allSourcesFailedIntegrity(.archiveDigest)
+            ),
+            "所有下载源均未通过安全校验，已停止安装，请稍后重试"
+        )
+        XCTAssertEqual(
+            DownloadError.userFacingDescription(
+                for: DownloadError.allSourcesFailedIntegrity(.mixed)
+            ),
+            "所有下载源均未通过完整性校验，已停止安装，请稍后重试"
+        )
+    }
+
+    func testSchemeDeliveryFormatterUsesReviewedEnumsWithoutPaths() {
+        let context = DiagnosticEvent.SchemeDeliveryContext(
+            operationID: UUID(),
+            artifact: .wanxiang1759CNB9BFCGitHub73F8,
+            stagedIdentity: .wanxiang1759Plan1Post1
+        )
+        let event = DiagnosticEvent(
+            utcTimestamp: Date(timeIntervalSince1970: 0),
+            monotonicNanoseconds: 1,
+            origin: .mainApp,
+            processInstanceID: UUID(),
+            localSequence: 1,
+            code: .schemeDeliveryIntegrityFailed,
+            level: .warning,
+            category: .deployment,
+            schemeDeliveryPayload: .integrityFailed(
+                .init(
+                    context: context,
+                    attempt: DiagnosticEvent.SchemeDeliveryAttempt(1)!,
+                    source: .cnb,
+                    host: .cnbAsset,
+                    observation: .archiveDigest(
+                        expected: DiagnosticEvent.DigestPrefix16(rawValue: "0123456789abcdef")!,
+                        actual: DiagnosticEvent.DigestPrefix16(rawValue: "fedcba9876543210")!
+                    )
+                )
+            )
+        )
+        let line = DiagnosticsEventDisplayFormatter.line(event)
+        XCTAssertTrue(line.contains("artifact=wanxiang_17_5_9_cnb9bfc_github73f8"))
+        XCTAssertTrue(line.contains("source=cnb"))
+        XCTAssertTrue(line.contains("host=asset.cnb.cool"))
+        XCTAssertTrue(line.contains("integrity=archive_digest"))
+        XCTAssertFalse(line.contains("/var"))
+        XCTAssertFalse(line.contains("https://"))
+    }
+
+    func testCleanupFailsClosedWhenExistenceCheckFails() async throws {
+        let registry = SchemaTemporaryArtifactRegistry()
+        let artifact = SchemaOwnedTemporaryArtifact(
+            operationID: UUID(),
+            attemptID: UUID(),
+            sourceID: "cnb",
+            artifactID: UUID(),
+            localURL: FileManager.default.temporaryDirectory
+                .appendingPathComponent("existence-failure-\(UUID().uuidString).zip")
+        )
+        try await registry.register(artifact)
+        let cleaner = FileSystemSchemaTemporaryArtifactCleaner(
+            registry: registry,
+            removeItem: { _ in },
+            itemExists: { _ in throw CocoaError(.fileReadUnknown) }
+        )
+
+        do {
+            _ = try await cleaner.removeAndVerifyAbsent(artifact)
+            XCTFail("existence-check failure must fail closed")
+        } catch {
+            XCTAssertEqual(error as? DownloadError, .temporaryCleanupFailed)
+        }
+    }
+
     func testSourceSelectionHedgesAndCancelsSlowerPreferredProbe() async throws {
         let preferred = makeSource(id: "preferred")
         let fallback = makeSource(id: "fallback")
@@ -141,6 +555,13 @@ final class SchemaArtifactSecurityTests: XCTestCase {
         XCTAssertEqual(probedIDs, ["first", "second"])
     }
 
+    private func makeTemporaryArchive() throws -> URL {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("schema-dl-reject-\(UUID().uuidString).zip")
+        try Data("failed".utf8).write(to: url)
+        return url
+    }
+
     private func makeTemporaryDirectory() throws -> URL {
         let url = FileManager.default.temporaryDirectory
             .appendingPathComponent("schema-artifact-security-\(UUID().uuidString)")
@@ -168,12 +589,14 @@ final class SchemaArtifactSecurityTests: XCTestCase {
             upstreamRevision: "revision",
             expectedByteCount: expectedByteCount,
             archiveSHA256: archiveSHA256,
-            allowedRedirectHosts: ["\(id).example.test"]
+            allowedRedirectHosts: ["\(id).example.test"],
+            stagedIdentityID: "test-identity"
         )
     }
 
     private func makePlan() -> RimeSchemeInstallationPlan {
         RimeSchemeInstallationPlan(
+            revision: "test-plan-1",
             schemaFileName: "wanxiang.schema.yaml",
             luaDirectoryPrefix: "lua/",
             allowedFiles: ["wanxiang.schema.yaml"],

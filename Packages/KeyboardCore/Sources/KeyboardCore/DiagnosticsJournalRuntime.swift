@@ -90,6 +90,28 @@ public final class DiagnosticsJournalRuntime: Sendable {
         )
     }
 
+    /// Records one reviewed composite delivery payload. Journal availability,
+    /// filtering and backpressure remain completely outside business control.
+    public func recordSchemeDelivery(
+        _ payload: DiagnosticEvent.SchemeDeliveryPayload,
+        level: Logger.Level = .info
+    ) {
+        let sequence = nextSequence.next()
+        ingress.record(
+            DiagnosticEvent(
+                utcTimestamp: Date(),
+                monotonicNanoseconds: DispatchTime.now().uptimeNanoseconds,
+                origin: origin,
+                processInstanceID: processInstanceID,
+                localSequence: sequence,
+                code: payload.code,
+                level: level,
+                category: .deployment,
+                schemeDeliveryPayload: payload
+            )
+        )
+    }
+
     public func requestFlush() {
         ingress.requestFlush()
     }

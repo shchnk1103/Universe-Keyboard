@@ -32,6 +32,21 @@ final class AppGroupSharedSettingsStore: SharedSettingsStoring {
 struct DownloadedSchemaArchive: Sendable {
     let localURL: URL
     let expectedContentLength: Int64
+    let operationID: UUID
+    let attemptID: UUID
+    let sourceID: String
+    let artifactID: UUID
+    let finalHost: String
+
+    var ownedTemporaryArtifact: SchemaOwnedTemporaryArtifact {
+        SchemaOwnedTemporaryArtifact(
+            operationID: operationID,
+            attemptID: attemptID,
+            sourceID: sourceID,
+            artifactID: artifactID,
+            localURL: localURL
+        )
+    }
 }
 
 protocol SchemaArchiveDownloading: Sendable {
@@ -39,13 +54,23 @@ protocol SchemaArchiveDownloading: Sendable {
     ///   `nil` means indeterminate (unknown total). Called from a background queue.
     func downloadArchive(
         from source: RimeSchemeSourceVariant,
+        operationID: UUID,
+        attemptID: UUID,
         onProgress: (@Sendable (Double?) -> Void)?
     ) async throws -> DownloadedSchemaArchive
 }
 
 struct URLSessionSchemaArchiveDownloader: SchemaArchiveDownloading {
+    private let registry: SchemaTemporaryArtifactRegistry
+
+    init(registry: SchemaTemporaryArtifactRegistry = .live) {
+        self.registry = registry
+    }
+
     func downloadArchive(
         from source: RimeSchemeSourceVariant,
+        operationID: UUID,
+        attemptID: UUID,
         onProgress: (@Sendable (Double?) -> Void)? = nil
     ) async throws -> DownloadedSchemaArchive {
         var request = URLRequest(url: source.downloadURL)
@@ -56,28 +81,63 @@ struct URLSessionSchemaArchiveDownloader: SchemaArchiveDownloading {
             for: request,
             onProgress: onProgress
         )
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw DownloadError.networkError("无效的 HTTP 响应")
-        }
-
-        guard httpResponse.statusCode == 200,
-            let finalHost = httpResponse.url?.host?.lowercased(),
-            source.allowedRedirectHosts.contains(finalHost)
-        else {
-            try? FileManager.default.removeItem(at: temporaryURL)
-            throw DownloadError.networkError("下载失败，HTTP \(httpResponse.statusCode)")
-        }
-
-        let expectedSize = response.expectedContentLength
-        guard expectedSize > 0 || expectedSize == -1 else {
-            throw DownloadError.networkError("服务器未提供文件大小")
-        }
-
-        onProgress?(expectedSize > 0 ? 1 : nil)
-        return DownloadedSchemaArchive(
-            localURL: temporaryURL,
-            expectedContentLength: expectedSize
+        return try await adoptDownloadedFile(
+            temporaryURL: temporaryURL,
+            response: response,
+            source: source,
+            operationID: operationID,
+            attemptID: attemptID,
+            onProgress: onProgress
         )
+    }
+
+    /// Validates the copied URLSession file, then registers it. Any rejected
+    /// HTTP/host/length branch must delete that copy before throwing.
+    func adoptDownloadedFile(
+        temporaryURL: URL,
+        response: URLResponse,
+        source: RimeSchemeSourceVariant,
+        operationID: UUID,
+        attemptID: UUID,
+        onProgress: (@Sendable (Double?) -> Void)? = nil
+    ) async throws -> DownloadedSchemaArchive {
+        do {
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw DownloadError.networkError("无效的 HTTP 响应")
+            }
+
+            guard httpResponse.statusCode == 200,
+                let finalHost = httpResponse.url?.host?.lowercased(),
+                source.allowedRedirectHosts.contains(finalHost)
+            else {
+                throw DownloadError.networkError("下载失败，HTTP \(httpResponse.statusCode)")
+            }
+
+            let expectedSize = response.expectedContentLength
+            guard expectedSize > 0 || expectedSize == -1 else {
+                throw DownloadError.networkError("服务器未提供文件大小")
+            }
+
+            onProgress?(expectedSize > 0 ? 1 : nil)
+            let archive = DownloadedSchemaArchive(
+                localURL: temporaryURL,
+                expectedContentLength: expectedSize,
+                operationID: operationID,
+                attemptID: attemptID,
+                sourceID: source.id,
+                artifactID: UUID(),
+                finalHost: finalHost
+            )
+            try await registry.register(archive.ownedTemporaryArtifact)
+            return archive
+        } catch {
+            do {
+                try SchemaTemporaryFile.removeAndVerifyAbsent(temporaryURL)
+            } catch {
+                throw DownloadError.temporaryCleanupFailed
+            }
+            throw error
+        }
     }
 }
 
@@ -187,12 +247,15 @@ nonisolated private enum ProgressReportingURLSession {
                 try? FileManager.default.removeItem(at: destination)
                 try FileManager.default.copyItem(at: location, to: destination)
                 guard let response = downloadTask.response else {
-                    finish(.failure(DownloadError.networkError("无效的 HTTP 响应")))
+                    finishAfterFailedCopy(
+                        destination,
+                        DownloadError.networkError("无效的 HTTP 响应")
+                    )
                     return
                 }
                 finish(.success((destination, response)))
             } catch {
-                finish(.failure(error))
+                finishAfterFailedCopy(destination, error)
             }
         }
 
@@ -203,6 +266,15 @@ nonisolated private enum ProgressReportingURLSession {
         ) {
             if let error {
                 finish(.failure(error))
+            }
+        }
+
+        private func finishAfterFailedCopy(_ destination: URL, _ error: Error) {
+            do {
+                try SchemaTemporaryFile.removeAndVerifyAbsent(destination)
+                finish(.failure(error))
+            } catch {
+                finish(.failure(DownloadError.temporaryCleanupFailed))
             }
         }
 

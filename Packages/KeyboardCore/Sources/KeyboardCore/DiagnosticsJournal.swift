@@ -274,7 +274,8 @@ public actor DiagnosticsJournalWriter {
                 code: event.code,
                 level: event.level,
                 category: event.category,
-                fields: event.fields
+                fields: event.fields,
+                schemeDeliveryPayload: event.schemeDeliveryPayload
             )
         }
         let hour = Self.hourStamp(for: normalizedEvents[0].utcTimestamp)

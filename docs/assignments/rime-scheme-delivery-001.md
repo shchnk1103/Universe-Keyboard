@@ -8,10 +8,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Review` |
-| **Phase** | Implementation and local evidence complete; independent Architecture and Quality reviews are Pass with conditions with no open P0. Stable Xcode/CI full-App rerun plus Human Mainland network evidence remain open |
-| **Non-claims** | Current-Mac timings are not Mainland cellular/Wi-Fi evidence; endpoint operator/App-use acceptability remains unresolved; ordinary-runtime equivalence does not make the two 万象 ZIPs artifact-identical; TD-001 atomic installation remains open |
-| **Next** | Stable-toolchain complete App suite → Human Mainland cellular/Wi-Fi evidence → endpoint acceptable-use conclusion → Product Gate |
-| **Residuals** | [`implementation evidence`](../evidence/rime-scheme-delivery-implementation-2026-08-25.md) · [`source-variant Product Decision`](../product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) · [`2026-08-25 endpoint pilot`](../evidence/rime-scheme-delivery-endpoint-pilot-2026-08-25.md) · [`source research`](../evidence/rime-scheme-delivery-source-research-2026-08-25.md) |
+| **Phase** | Implementation and prior independent reviews are complete, but a Human physical-device Wanxiang integrity failure exposed an unclassified observability/recovery residual; stable full-App and Mainland gates remain open |
+| **Non-claims** | The failing source, integrity phase, exact device/build and root cause are unproven; current-Mac artifact matches are not Mainland cellular/Wi-Fi evidence; endpoint acceptable-use and TD-001 remain open |
+| **Next** | Child integrity remediation has completed implementation/beta local gates and independent review with P0/P1=0 → stable-toolchain complete App suite → Human Mainland matrix → endpoint acceptable-use → Product Gate |
+| **Residuals** | [`integrity-remediation Assignment`](rime-scheme-delivery-integrity-001.md) · [`2026-08-26 failure evidence`](../evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) · [`implementation evidence`](../evidence/rime-scheme-delivery-implementation-2026-08-25.md) · [`source-variant Product Decision`](../product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) |
 
 ---
 
@@ -185,3 +185,18 @@ explicitly capped at two probes, the details UI shows the complete URL,
 revision, archive size and SHA-256 receipt, and installed-source display now
 reads only the persisted post-deployment receipt rather than an active failed
 attempt. Stable full-App CI and the Human Mainland matrix remain Exit Gates.
+
+## 2026-08-26 Physical-Device Integrity Residual
+
+A subsequent Human physical-device attempt showed Wanxiang stopping with the
+generic integrity-failure message. Current endpoint artifacts still match their
+source-specific archive receipts and converge on the guarded staged-content
+receipt, so the CNB-only Pure files are not established as the cause. The
+selected source, exact build and failing integrity phase were not captured.
+
+The earlier reviews remain historical conclusions over their reviewed diff;
+they do not close this newly observed Product/Release residual. PR #83 must not
+pass the scheme-delivery Product Gate until
+[`RIME-SCHEME-DELIVERY-INTEGRITY-001`](rime-scheme-delivery-integrity-001.md)
+is reviewed and dispositioned. See the
+[`failure evidence`](../evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md).

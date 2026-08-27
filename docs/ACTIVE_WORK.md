@@ -5,14 +5,15 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-25 Asia/Shanghai` — RC Build 7 已进入 Human-operated 内部组并产生三项首轮反馈；跨地区方案下载子项 `RIME-SCHEME-DELIVERY-001` 已完成 Assignment 配置并进入 `Active`；Build 7 真机 04 仍因当前 Beta Time Profiler 连续 `Device disconnected` 而 Blocked。Active Work `4/10`。
+Last synced: `2026-08-26 Asia/Shanghai` — PR #83 的 Human 真机万象下载出现未分类完整性失败；父交付任务保持 `Review`；INTEGRITY-001 已获 Human Product 实现授权并进入 `Active`，按冻结 base/allowlist 开始实现，仍不提交、不推送、不合并。Active Work `5/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；首轮反馈由 Pending Task11 追踪（新手 RIME 流程、builtin 多字失败、跨地区下载）；F-03 被 Product 提前为紧急 Gate。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
-| 4 | RIME-SCHEME-DELIVERY-001 | Review | 实现与 Architecture / Quality 条件通过；无开放 P0；稳定工具链完整 App 套件 → Human 大陆网络矩阵 → endpoint acceptable-use → Product Gate | [`assignment`](assignments/rime-scheme-delivery-001.md) · [`evidence`](evidence/rime-scheme-delivery-implementation-2026-08-25.md) · [`PD`](product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) |
+| 4 | RIME-SCHEME-DELIVERY-001 | Review | Human 真机万象完整性失败尚未分类；先处理 INTEGRITY-001，再继续稳定套件、大陆网络、acceptable-use 与 Product Gate | [`assignment`](assignments/rime-scheme-delivery-001.md) · [`failure`](evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) · [`PD`](product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) |
+| 5 | RIME-SCHEME-DELIVERY-INTEGRITY-001 | Active | 实现、本机 beta 门禁与独立双审已完成（P0/P1=0）；待稳定 Xcode Cloud、精确候选大陆蜂窝真机与 Product Gate | [`assignment`](assignments/rime-scheme-delivery-integrity-001.md) · [`evidence`](evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md) · [`ADR 0031`](architecture/decisions/0031-verified-scheme-source-recovery-and-integrity-classification.md) |
 
 ## Completed (not Active)
 

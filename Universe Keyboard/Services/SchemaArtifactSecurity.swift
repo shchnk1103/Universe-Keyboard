@@ -99,18 +99,29 @@ nonisolated struct SchemaArtifactVerifier: Sendable {
         at archiveURL: URL,
         source: RimeSchemeSourceVariant
     ) throws -> String {
+        try verifyArchiveSize(at: archiveURL, source: source)
+        return try verifyArchiveDigest(at: archiveURL, source: source)
+    }
+
+    func verifyArchiveSize(at archiveURL: URL, source: RimeSchemeSourceVariant) throws {
         let values = try archiveURL.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey])
         guard values.isRegularFile == true else {
             throw DownloadError.corruptArchive
         }
         let actualByteCount = Int64(values.fileSize ?? -1)
         guard actualByteCount == source.expectedByteCount else {
-            throw DownloadError.integrityMismatch
+            throw DownloadError.integrityMismatch(
+                .archiveSize(expected: source.expectedByteCount, actual: actualByteCount)
+            )
         }
+    }
 
+    func verifyArchiveDigest(at archiveURL: URL, source: RimeSchemeSourceVariant) throws -> String {
         let digest = try sha256(of: archiveURL)
         guard digest == source.archiveSHA256.lowercased() else {
-            throw DownloadError.integrityMismatch
+            throw DownloadError.integrityMismatch(
+                .archiveDigest(expected: source.archiveSHA256.lowercased(), actual: digest)
+            )
         }
         return digest
     }
@@ -188,7 +199,8 @@ nonisolated struct SchemaArtifactVerifier: Sendable {
 }
 
 nonisolated protocol SchemaArtifactVerifying: Sendable {
-    func verifyArchive(at archiveURL: URL, source: RimeSchemeSourceVariant) throws -> String
+    func verifyArchiveSize(at archiveURL: URL, source: RimeSchemeSourceVariant) throws
+    func verifyArchiveDigest(at archiveURL: URL, source: RimeSchemeSourceVariant) throws -> String
     func stagedContentSHA256(
         in extractionDirectory: URL,
         plan: RimeSchemeInstallationPlan,

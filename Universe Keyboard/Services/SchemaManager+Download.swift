@@ -7,6 +7,10 @@ extension SchemaManager {
     }
 
     func forceRedownload(schemaID: String) {
+        guard schemeDeliveryCommitLeaseOperationID == nil else {
+            enqueueSchemeMutation(.startDownload(schemaID: schemaID, force: true))
+            return
+        }
         switch rimeIceDownloadState {
         case .idle, .completed, .failed:
             break
@@ -34,6 +38,10 @@ extension SchemaManager {
     private func fetchAndDownload(schemaID: String, operationID: UUID) async {
         let schemeName = downloadSchemeDisplayName(for: schemaID)
         var temporaryItems: [URL] = []
+        var diagnosticContext: DiagnosticEvent.SchemeDeliveryContext?
+        var ownsCommitLease = false
+        var installed = false
+        var deployed = false
 
         do {
             guard
@@ -46,6 +54,27 @@ extension SchemaManager {
             try ensureActive(operationID)
 
             let manifest = distribution.manifest
+            let resolvedIdentities = try manifest.sourceVariants.map {
+                try manifest.resolvedStagedIdentity(for: $0)
+            }
+            guard let stagedIdentity = resolvedIdentities.first,
+                resolvedIdentities.allSatisfy({ $0 == stagedIdentity })
+            else {
+                throw DownloadError.invalidArtifactManifest
+            }
+            guard let postProcessingRevision = postProcessingRevision(for: schemaID) else {
+                throw DownloadError.invalidArtifactManifest
+            }
+            try manifest.validateImplementationBinding(
+                stagedIdentity,
+                installationPlan: plan,
+                postProcessingRevision: postProcessingRevision
+            )
+            diagnosticContext = SchemeDeliveryDiagnosticMapper.context(
+                operationID: operationID,
+                identity: stagedIdentity
+            )
+            recordPhase(diagnosticContext, phase: .selecting, result: .started)
             let preferredSourceID = entry.storage.sourceVariant.flatMap {
                 settings.string(forKey: $0)
             }
@@ -54,12 +83,19 @@ extension SchemaManager {
                 preferredSourceID: preferredSourceID
             )
             try ensureActive(operationID)
+            recordPhase(
+                diagnosticContext,
+                source: selectedSource,
+                phase: .selecting,
+                result: .succeeded
+            )
 
             let sources = [selectedSource] + manifest.sourceVariants.filter { $0.id != selectedSource.id }
             let archiveResult = try await downloadFirstValidArchive(
                 from: sources,
                 schemeName: schemeName,
-                operationID: operationID
+                operationID: operationID,
+                diagnosticContext: diagnosticContext
             )
             let archive = archiveResult.archive
             temporaryItems.append(archive.localURL)
@@ -70,18 +106,42 @@ extension SchemaManager {
             try ensureActive(operationID)
 
             rimeIceDownloadState = .extracting(schemeName: schemeName)
+            recordPhase(
+                diagnosticContext,
+                attempt: archiveResult.attempt,
+                source: source,
+                host: archive.finalHost,
+                phase: .extracting,
+                result: .started
+            )
             let extractDir = try archiveInstaller.prepareExtractionDirectory(for: distribution)
             temporaryItems.append(extractDir)
             _ = try await Task.detached(priority: .userInitiated) {
                 try Unzip.extract(zipPath: archive.localURL.path, to: extractDir)
             }.value
             try ensureActive(operationID)
+            recordPhase(
+                diagnosticContext,
+                attempt: archiveResult.attempt,
+                source: source,
+                host: archive.finalHost,
+                phase: .extracting,
+                result: .succeeded
+            )
 
             guard let schemaURL = await findSchemaFile(named: plan.schemaFileName, in: extractDir) else {
                 throw DownloadError.corruptArchive
             }
 
             rimeIceDownloadState = .postProcessing(schemeName: schemeName)
+            recordPhase(
+                diagnosticContext,
+                attempt: archiveResult.attempt,
+                source: source,
+                host: archive.finalHost,
+                phase: .postProcessing,
+                result: .started
+            )
             let luaAvailable = (settings.object(forKey: "rime_lua_available") as? Bool) ?? true
             if !luaAvailable {
                 try await stripLuaIfNeeded(at: schemaURL)
@@ -90,9 +150,26 @@ extension SchemaManager {
                 try await sanitizeT9SchemaIfPresent(in: extractDir)
             }
             try ensureActive(operationID)
+            recordPhase(
+                diagnosticContext,
+                attempt: archiveResult.attempt,
+                source: source,
+                host: archive.finalHost,
+                phase: .postProcessing,
+                result: .succeeded
+            )
 
+            let verifier = artifactVerifier
+            recordPhase(
+                diagnosticContext,
+                attempt: archiveResult.attempt,
+                source: source,
+                host: archive.finalHost,
+                phase: .verifyingStagedContent,
+                result: .started
+            )
             let stagedContentSHA256 = try await Task.detached(priority: .userInitiated) {
-                try self.artifactVerifier.stagedContentSHA256(
+                try verifier.stagedContentSHA256(
                     in: extractDir,
                     plan: plan,
                     luaAvailable: luaAvailable
@@ -100,17 +177,55 @@ extension SchemaManager {
             }.value
             let expectedStagedSHA256 =
                 luaAvailable
-                ? manifest.stagedContentSHA256WithLua
-                : manifest.stagedContentSHA256WithoutLua
+                ? stagedIdentity.stagedContentSHA256WithLua
+                : stagedIdentity.stagedContentSHA256WithoutLua
             guard !expectedStagedSHA256.isEmpty,
                 stagedContentSHA256 == expectedStagedSHA256
             else {
-                throw DownloadError.integrityMismatch
+                let failure = DownloadIntegrityFailure.stagedContent(
+                    expected: expectedStagedSHA256,
+                    actual: stagedContentSHA256
+                )
+                recordIntegrityFailure(
+                    failure,
+                    context: diagnosticContext,
+                    attempt: archiveResult.attempt,
+                    source: source,
+                    host: archive.finalHost
+                )
+                throw DownloadError.integrityMismatch(failure)
             }
             try ensureActive(operationID)
+            recordPhase(
+                diagnosticContext,
+                attempt: archiveResult.attempt,
+                source: source,
+                host: archive.finalHost,
+                phase: .verifyingStagedContent,
+                result: .succeeded
+            )
 
+            try await acquireActiveSchemeDeliveryCommitLease(operationID: operationID)
+            ownsCommitLease = true
+            recordPhase(
+                diagnosticContext,
+                attempt: archiveResult.attempt,
+                source: source,
+                host: archive.finalHost,
+                phase: .installing,
+                result: .started
+            )
             try installSchemaFiles(from: extractDir, plan: plan, luaAvailable: luaAvailable)
+            installed = true
             try ensureActive(operationID)
+            recordPhase(
+                diagnosticContext,
+                attempt: archiveResult.attempt,
+                source: source,
+                host: archive.finalHost,
+                phase: .installing,
+                result: .succeeded
+            )
 
             if schemaID == "rime_ice", let shared = archiveInstaller.sharedDataDirectoryURL() {
                 // T9 compatibility rewriting must precede deployment so RIME compiles
@@ -118,14 +233,32 @@ extension SchemaManager {
                 _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: shared)
             }
 
-            activateSchema(schemaID)
+            activateSchema(schemaID, leaseOperationID: operationID)
             rimeIceDownloadState = .deploying(schemeName: schemeName)
-            let deployed = await deployRimeConfig()
+            recordPhase(
+                diagnosticContext,
+                attempt: archiveResult.attempt,
+                source: source,
+                host: archive.finalHost,
+                phase: .deploying,
+                result: .started
+            )
+            let deploymentSucceeded = await deployRimeConfig(leaseOperationID: operationID)
             try ensureActive(operationID)
-            guard deployed else {
+            guard deploymentSucceeded else {
                 throw DownloadError.deploymentFailed
             }
+            deployed = true
+            recordPhase(
+                diagnosticContext,
+                attempt: archiveResult.attempt,
+                source: source,
+                host: archive.finalHost,
+                phase: .deploying,
+                result: .succeeded
+            )
 
+            recordPhase(diagnosticContext, phase: .committingReceipt, result: .started)
             persistVerifiedInstallation(
                 entry: entry,
                 manifest: manifest,
@@ -136,17 +269,39 @@ extension SchemaManager {
             if schemaID == "rime_ice" {
                 rimeIceVersion = manifest.version
             }
+            recordPhase(diagnosticContext, phase: .committingReceipt, result: .succeeded)
 
             cleanupTemporaryItems(temporaryItems)
             activeDownloadOperationID = nil
             currentDownloadTask = nil
             rimeIceDownloadState = .completed(schemeName: schemeName)
             refreshSchemaList()
+            recordTerminal(
+                diagnosticContext,
+                result: .completed,
+                installed: installed,
+                deployed: deployed,
+                failure: nil
+            )
+            if ownsCommitLease {
+                releaseSchemeDeliveryCommitLease(operationID: operationID)
+                ownsCommitLease = false
+            }
         } catch is CancellationError {
             cleanupTemporaryItems(temporaryItems)
             if activeDownloadOperationID == operationID {
                 activeDownloadOperationID = nil
                 rimeIceDownloadState = .idle
+            }
+            recordTerminal(
+                diagnosticContext,
+                result: .cancelled,
+                installed: installed,
+                deployed: deployed,
+                failure: nil
+            )
+            if ownsCommitLease {
+                releaseSchemeDeliveryCommitLease(operationID: operationID)
             }
         } catch {
             cleanupTemporaryItems(temporaryItems)
@@ -158,11 +313,40 @@ extension SchemaManager {
                     message: DownloadError.userFacingDescription(for: error)
                 )
             }
+            recordTerminal(
+                diagnosticContext,
+                result: .failed,
+                installed: installed,
+                deployed: deployed,
+                failure: terminalFailure(for: error)
+            )
+            if ownsCommitLease {
+                releaseSchemeDeliveryCommitLease(operationID: operationID)
+            }
         }
     }
 
     func beginVerifiedDownload(schemaID: String) {
         startVerifiedDownload(schemaID: schemaID)
+    }
+
+    /// Acquires the shared mutation lease and rolls it back if cancellation or
+    /// operation-generation invalidation is observed immediately after the
+    /// suspension point. A caller that returns successfully owns the lease.
+    func acquireActiveSchemeDeliveryCommitLease(operationID: UUID) async throws {
+        let acquired = await acquireSchemeDeliveryCommitLease(operationID: operationID)
+        if !acquired, Task.isCancelled {
+            throw CancellationError()
+        }
+        guard acquired else {
+            throw DownloadError.deploymentFailed
+        }
+        do {
+            try ensureActive(operationID)
+        } catch {
+            releaseSchemeDeliveryCommitLease(operationID: operationID)
+            throw error
+        }
     }
 
     private func startVerifiedDownload(schemaID: String) {
@@ -175,25 +359,43 @@ extension SchemaManager {
         }
     }
 
-    private func downloadFirstValidArchive(
+    func downloadFirstValidArchive(
         from sources: [RimeSchemeSourceVariant],
         schemeName: String,
-        operationID: UUID
+        operationID: UUID, diagnosticContext: DiagnosticEvent.SchemeDeliveryContext?
     ) async throws -> (
         archive: DownloadedSchemaArchive,
         source: RimeSchemeSourceVariant,
-        archiveSHA256: String
+        archiveSHA256: String,
+        attempt: DiagnosticEvent.SchemeDeliveryAttempt
     ) {
-        var lastTransportError: Error?
-        for source in sources {
+        var lastRecoverableError: Error?
+        var archiveIntegrityFailureCount = 0
+        var sawArchiveSizeFailure = false
+        var sawArchiveDigestFailure = false
+        let verifier = artifactVerifier
+        for (index, source) in sources.enumerated() {
+            let attempt = DiagnosticEvent.SchemeDeliveryAttempt(index + 1)!
             try ensureActive(operationID)
             rimeIceDownloadState = .downloading(
                 schemeName: schemeName,
                 sourceName: source.displayName,
                 progress: nil
             )
+            recordPhase(
+                diagnosticContext,
+                attempt: attempt,
+                source: source,
+                phase: .downloading,
+                result: .started
+            )
             do {
-                let archive = try await archiveDownloader.downloadArchive(from: source) { [weak self] fraction in
+                let attemptID = UUID()
+                let archive = try await archiveDownloader.downloadArchive(
+                    from: source,
+                    operationID: operationID,
+                    attemptID: attemptID
+                ) { [weak self] fraction in
                     Task { @MainActor in
                         guard let self, self.activeDownloadOperationID == operationID else { return }
                         guard case .downloading(let name, let sourceName, _) = self.rimeIceDownloadState,
@@ -206,28 +408,317 @@ extension SchemaManager {
                         )
                     }
                 }
+                recordPhase(
+                    diagnosticContext,
+                    attempt: attempt,
+                    source: source,
+                    host: archive.finalHost,
+                    phase: .downloading,
+                    result: .succeeded
+                )
                 let archiveSHA256: String
                 do {
                     // Once URLSession has produced a copied temporary file, every
                     // cancellation or verification failure must remove that file.
                     try ensureActive(operationID)
-                    archiveSHA256 = try await Task.detached(priority: .userInitiated) {
-                        try self.artifactVerifier.verifyArchive(at: archive.localURL, source: source)
+                    recordPhase(
+                        diagnosticContext,
+                        attempt: attempt,
+                        source: source,
+                        host: archive.finalHost,
+                        phase: .verifyingArchiveSize,
+                        result: .started
+                    )
+                    try await Task.detached(priority: .userInitiated) {
+                        try verifier.verifyArchiveSize(at: archive.localURL, source: source)
                     }.value
+                    recordPhase(
+                        diagnosticContext,
+                        attempt: attempt,
+                        source: source,
+                        host: archive.finalHost,
+                        phase: .verifyingArchiveSize,
+                        result: .succeeded
+                    )
+                    recordPhase(
+                        diagnosticContext,
+                        attempt: attempt,
+                        source: source,
+                        host: archive.finalHost,
+                        phase: .verifyingArchiveDigest,
+                        result: .started
+                    )
+                    archiveSHA256 = try await Task.detached(priority: .userInitiated) {
+                        try verifier.verifyArchiveDigest(at: archive.localURL, source: source)
+                    }.value
+                    recordPhase(
+                        diagnosticContext,
+                        attempt: attempt,
+                        source: source,
+                        host: archive.finalHost,
+                        phase: .verifyingArchiveDigest,
+                        result: .succeeded
+                    )
                 } catch {
-                    archiveInstaller.removeTemporaryItem(at: archive.localURL)
+                    if case DownloadError.integrityMismatch(let failure) = error,
+                        failure.permitsPinnedSourceFallback
+                    {
+                        recordIntegrityFailure(
+                            failure,
+                            context: diagnosticContext,
+                            attempt: attempt,
+                            source: source,
+                            host: archive.finalHost
+                        )
+                        recordPhase(
+                            diagnosticContext,
+                            attempt: attempt,
+                            source: source,
+                            host: archive.finalHost,
+                            phase: .cleanup,
+                            result: .started
+                        )
+                        let receipt = try await temporaryArtifactCleaner.removeAndVerifyAbsent(
+                            archive.ownedTemporaryArtifact
+                        )
+                        try ensureActive(operationID)
+                        guard receipt.provesRemoval(of: archive.ownedTemporaryArtifact) else {
+                            throw DownloadError.temporaryCleanupFailed
+                        }
+                        recordPhase(
+                            diagnosticContext,
+                            attempt: attempt,
+                            source: source,
+                            host: archive.finalHost,
+                            phase: .cleanup,
+                            result: .succeeded
+                        )
+                        lastRecoverableError = error
+                        archiveIntegrityFailureCount += 1
+                        switch failure {
+                        case .archiveSize:
+                            sawArchiveSizeFailure = true
+                        case .archiveDigest:
+                            sawArchiveDigestFailure = true
+                        case .stagedContent:
+                            preconditionFailure("staged-content mismatch cannot enter archive fallback")
+                        }
+                        if index < sources.count - 1 {
+                            recordFallback(
+                                context: diagnosticContext,
+                                attempt: attempt,
+                                from: source,
+                                to: sources[index + 1],
+                                fromHost: archive.finalHost,
+                                reason: fallbackReason(for: failure)
+                            )
+                        }
+                        // The last integrity failure also reaches the loop
+                        // aggregate below instead of escaping as a misleading
+                        // single-source mismatch.
+                        continue
+                    } else {
+                        archiveInstaller.removeTemporaryItem(at: archive.localURL)
+                    }
                     throw error
                 }
-                return (archive, source, archiveSHA256)
+                return (archive, source, archiveSHA256, attempt)
             } catch is CancellationError {
                 throw CancellationError()
-            } catch let error as DownloadError where error == .integrityMismatch {
+            } catch let error as DownloadError where error == .temporaryCleanupFailed {
                 throw error
             } catch {
-                lastTransportError = error
+                // Only ordinary transport failures may fall through to the next
+                // pinned source here. Verifier/filesystem failures remain
+                // fail-closed unless the classified archive mismatch branch
+                // above has already crossed the exact cleanup barrier.
+                guard isTransportFailure(error) else { throw error }
+                lastRecoverableError = error
+                if index < sources.count - 1 {
+                    recordFallback(
+                        context: diagnosticContext,
+                        attempt: attempt,
+                        from: source,
+                        to: sources[index + 1],
+                        reason: .transport
+                    )
+                }
             }
         }
-        throw lastTransportError ?? DownloadError.allSourcesUnavailable
+        if archiveIntegrityFailureCount == sources.count {
+            let aggregate: DownloadIntegrityAggregate
+            switch (sawArchiveSizeFailure, sawArchiveDigestFailure) {
+            case (true, false): aggregate = .archiveSize
+            case (false, true): aggregate = .archiveDigest
+            case (true, true): aggregate = .mixed
+            case (false, false): preconditionFailure("archive failures require a classification")
+            }
+            throw DownloadError.allSourcesFailedIntegrity(aggregate)
+        }
+        throw lastRecoverableError ?? DownloadError.allSourcesUnavailable
+    }
+
+    private func recordPhase(
+        _ context: DiagnosticEvent.SchemeDeliveryContext?,
+        attempt: DiagnosticEvent.SchemeDeliveryAttempt? = nil,
+        source: RimeSchemeSourceVariant? = nil,
+        host: String? = nil,
+        phase: DiagnosticEvent.SchemeDeliveryPhase,
+        result: DiagnosticEvent.SchemeDeliveryResult
+    ) {
+        guard let context else { return }
+        deliveryDiagnostics.record(
+            .phaseChanged(
+                .init(
+                    context: context,
+                    attempt: attempt,
+                    source: source.flatMap { SchemeDeliveryDiagnosticMapper.source($0.id) },
+                    host: host.flatMap(SchemeDeliveryDiagnosticMapper.host),
+                    phase: phase,
+                    result: result
+                )
+            )
+        )
+    }
+
+    private func recordIntegrityFailure(
+        _ failure: DownloadIntegrityFailure,
+        context: DiagnosticEvent.SchemeDeliveryContext?,
+        attempt: DiagnosticEvent.SchemeDeliveryAttempt,
+        source: RimeSchemeSourceVariant,
+        host: String
+    ) {
+        guard let context,
+            let sourceID = SchemeDeliveryDiagnosticMapper.source(source.id),
+            let host = SchemeDeliveryDiagnosticMapper.host(host),
+            let observation = SchemeDeliveryDiagnosticMapper.observation(failure)
+        else { return }
+        deliveryDiagnostics.record(
+            .integrityFailed(
+                .init(
+                    context: context,
+                    attempt: attempt,
+                    source: sourceID,
+                    host: host,
+                    observation: observation
+                )
+            )
+        )
+    }
+
+    private func recordFallback(
+        context: DiagnosticEvent.SchemeDeliveryContext?,
+        attempt: DiagnosticEvent.SchemeDeliveryAttempt,
+        from: RimeSchemeSourceVariant,
+        to: RimeSchemeSourceVariant,
+        fromHost: String? = nil,
+        toHost: String? = nil,
+        reason: DiagnosticEvent.SchemeDeliveryFallbackReason?
+    ) {
+        guard let context,
+            let from = SchemeDeliveryDiagnosticMapper.source(from.id),
+            let to = SchemeDeliveryDiagnosticMapper.source(to.id),
+            let reason
+        else { return }
+        deliveryDiagnostics.record(
+            .fallback(
+                .init(
+                    context: context,
+                    fromAttempt: attempt,
+                    toAttempt: DiagnosticEvent.SchemeDeliveryAttempt(attempt.value + 1)!,
+                    from: from,
+                    to: to,
+                    fromHost: fromHost.flatMap(SchemeDeliveryDiagnosticMapper.host),
+                    toHost: toHost.flatMap(SchemeDeliveryDiagnosticMapper.host),
+                    reason: reason
+                )
+            )
+        )
+    }
+
+    private func fallbackReason(
+        for failure: DownloadIntegrityFailure
+    ) -> DiagnosticEvent.SchemeDeliveryFallbackReason? {
+        switch failure {
+        case .archiveSize: .archiveSize
+        case .archiveDigest: .archiveDigest
+        case .stagedContent: nil
+        }
+    }
+
+    private func isTransportFailure(_ error: Error) -> Bool {
+        if error is URLError { return true }
+        if case DownloadError.networkError = error { return true }
+        return false
+    }
+
+    private func recordTerminal(
+        _ context: DiagnosticEvent.SchemeDeliveryContext?,
+        result: DiagnosticEvent.SchemeDeliveryTerminalResult,
+        installed: Bool,
+        deployed: Bool,
+        failure: DiagnosticEvent.SchemeDeliveryTerminalFailure?
+    ) {
+        guard let context else { return }
+        deliveryDiagnostics.record(
+            .terminal(
+                .init(
+                    context: context,
+                    result: result,
+                    installed: installed,
+                    deployed: deployed,
+                    failure: failure
+                )
+            )
+        )
+    }
+
+    private func terminalFailure(for error: Error) -> DiagnosticEvent.SchemeDeliveryTerminalFailure {
+        if error is URLError { return .transport }
+        guard let error = error as? DownloadError else { return .localIO }
+        switch error {
+        case .networkError, .gitHubRateLimit:
+            return .transport
+        case .unsupportedScheme, .invalidArtifactManifest:
+            return .invalidManifest
+        case .allSourcesUnavailable:
+            return .allSourcesUnavailable
+        case .allSourcesFailedIntegrity(let aggregate):
+            switch aggregate {
+            case .archiveSize: return .allSourcesArchiveSize
+            case .archiveDigest: return .allSourcesArchiveDigest
+            case .mixed: return .allSourcesMixedIntegrity
+            }
+        case .integrityMismatch(let failure):
+            switch failure {
+            case .archiveSize: return .archiveSize
+            case .archiveDigest: return .archiveDigest
+            case .stagedContent: return .stagedContent
+            }
+        case .temporaryArtifactRegistrationFailed:
+            return .temporaryArtifact
+        case .temporaryCleanupFailed:
+            return .cleanup
+        case .corruptArchive, .extractionFailed:
+            return .extraction
+        case .postProcessingFailed:
+            return .postProcessing
+        case .deploymentFailed:
+            return .deployment
+        case .diskSpaceInsufficient:
+            return .localIO
+        }
+    }
+
+    /// Bump this reviewed value whenever deterministic processing for the
+    /// corresponding scheme changes. A stale manifest then fails before bytes
+    /// are downloaded or installed.
+    private func postProcessingRevision(for schemaID: String) -> String? {
+        switch schemaID {
+        case "rime_ice": "rime-ice-post-1"
+        case "wanxiang": "wanxiang-post-1"
+        default: nil
+        }
     }
 
     private func ensureActive(_ operationID: UUID) throws {

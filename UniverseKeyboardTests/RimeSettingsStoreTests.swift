@@ -1014,12 +1014,19 @@ nonisolated private struct StoreSourceSelector: SchemaSourceSelecting {
 private struct StoreArchiveDownloader: SchemaArchiveDownloading {
     func downloadArchive(
         from source: RimeSchemeSourceVariant,
+        operationID: UUID,
+        attemptID: UUID,
         onProgress: (@Sendable (Double?) -> Void)?
     ) async throws -> DownloadedSchemaArchive {
         onProgress?(1)
         return DownloadedSchemaArchive(
             localURL: URL(fileURLWithPath: "/tmp/\(UUID().uuidString).zip"),
-            expectedContentLength: source.expectedByteCount
+            expectedContentLength: source.expectedByteCount,
+            operationID: operationID,
+            attemptID: attemptID,
+            sourceID: source.id,
+            artifactID: UUID(),
+            finalHost: source.downloadURL.host ?? "github.com"
         )
     }
 }
