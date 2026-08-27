@@ -251,7 +251,8 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 
 - **Priority:** Low. 不阻塞本次 advisory pin、PR #84 Product Gate，或诊断查看实现授权。
 - **Risk:** `AUTH-KOS-UPGRADE-UK-001` 与 `AUTH-DIAGNOSTICS-VIEWER-LOAD-001` 的 `consumption_state` 仍为 `unconsumed`，而对应 bounded action（钉住 Kit advisory / 建立 Assignment）已落在 `f580613`。Kit 把 consumption 当审计观察、不提供 replay 保护；正文也否定 bearer token。若不改，后续 agent 可能把未消费收据误读成可反复执行的许可。
-- **Current mitigation:** AUTH exclusions 含 `required_mode` / `implement` / `merge` / `pr_83_merge`；独立 Architecture `A-P2-01` 与 Quality `Q-P2-01` 已记录该滞后；执行仍须回到当前人类 Decision/Assignment。
+- **Current mitigation:** AUTH exclusions 含 `required_mode` / `implement` / `merge` / `pr_83_merge`；独立 Architecture `A-P2-01` 与 Quality `Q-P2-01` 已记录该滞后。`AUTH-DIAGNOSTICS-VIEWER-LOAD-001` 已标 `consumed`（Assignment 已改绑 implement 收据）。`AUTH-KOS-UPGRADE-UK-001` 仍 `unconsumed`，因为 Assignment 仍引用它且 validator 要求 active 收据。
+- **Current status:** 部分偿还。剩余是升级 Assignment 仍绑定的 AUTH 消费语义。
 - **Recommended fix:** 在后续 Envelope 卫生中把这两条已完成 bounded action 的 AUTH 标为 `consumed`，或在收据上写明「Assignment Active ≠ AUTH unconsumed」的审计规则。不要把这次改正做成 `required` 切仓或扩大 include glob。
 - **Owner area:** KOS 2.2 records（`docs/authorizations/`）与 Architecture & Knowledge Steward。
 - **Trigger to resolve:** 下一次触及这些 AUTH 的 Envelope 卫生；切 `required` 之前必须先处理。

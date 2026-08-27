@@ -6,16 +6,16 @@
   "record_id": "DIAGNOSTICS-VIEWER-LOAD-001",
   "record_type": "assignment",
   "title": "Diagnostics viewer load state and bounded read",
-  "lifecycle": "ready",
-  "current_phase": "Product Decision and Assignment are complete; waiting for explicit implement authorization",
-  "authorization_action": "establish_assignment",
-  "updated_at": "2026-08-27T19:50:00+08:00",
+  "lifecycle": "active",
+  "current_phase": "Human authorized implementation of load versus empty states",
+  "authorization_action": "implement",
+  "updated_at": "2026-08-27T21:30:00+08:00",
   "revalidation_triggers": ["scope_changed", "implement_authorization_changed"],
-  "authorization_refs": ["AUTH-DIAGNOSTICS-VIEWER-LOAD-001"],
+  "authorization_refs": ["AUTH-DIAGNOSTICS-VIEWER-LOAD-001-IMPLEMENT"],
   "parent_refs": ["KOS-UPGRADE-UK-001"],
   "responsibilities": {
     "domain_owner": "Main App UI",
-    "executor": "Current Grok session after explicit implement authorization",
+    "executor": "Current Grok session",
     "environment_executor": "Current Grok session",
     "human_dependency": "Human Product Owner",
     "architecture_reviewer": "Independent architecture_review subagent",
@@ -33,11 +33,11 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | ready |
-| Current Phase | Product Decision and Assignment are complete; waiting for explicit implement authorization |
-| Material non-claims | Implementation not started; no PR #83 merge; no scheme-download fix |
-| Next handoff / decision | Human Product Lead replies 授权实现 before Active |
-| Residuals | None |
+| Lifecycle | active |
+| Current Phase | Human authorized implementation of load versus empty states |
+| Material non-claims | No PR #83 merge; no scheme-download fix; no raised read budget |
+| Next handoff / decision | Implement load UX, tests, then independent Architecture/Quality |
+| Residuals | AUTH establish-assignment is consumed; TD-014 remaining if KOS-UPGRADE AUTH still needs follow-up |
 
 ---
 
@@ -103,3 +103,4 @@
 ## History
 
 - `2026-08-27 Asia/Shanghai`: Human Product Lead 同意先修诊断查看再复测万象，并指示按 KOS 推进。Assignment 记为 `Ready`；实现未开始。
+- `2026-08-27 Asia/Shanghai`: Human Product Owner 授权按 KOS 2.2 开始改诊断加载空态。`AUTH-DIAGNOSTICS-VIEWER-LOAD-001-IMPLEMENT` 签发；lifecycle `active`。

@@ -59,6 +59,7 @@ final class DiagnosticsStore {
     private var shouldReloadAfterSearchFinishes = false
     private var pendingLogDayAfterSearch: DiagnosticsLogDay?
     private var queryRevision: UInt64 = 0
+    private var lastLiveRefreshIdentity: String?
 
     init(
         logSource: any DiagnosticsLogSource = CompositeDiagnosticsLogSource(appGroupID: universeAppGroupID),
@@ -264,6 +265,7 @@ final class DiagnosticsStore {
                 selectedLogDay = nil
                 isPartialWindow = false
                 isFollowingLatestDay = true
+                lastLiveRefreshIdentity = nil
             } else {
                 clearFailureNotice = "未能完整清空诊断日志，请稍后重试。现有记录可能仍然存在。"
             }
@@ -361,6 +363,9 @@ final class DiagnosticsStore {
             !isRefreshing,
             !isLoadingMore
         else { return }
+        if let identity = await liveRefreshIdentity(), identity == lastLiveRefreshIdentity {
+            return
+        }
         // 实时根刷新与手动根查询遵守同一 revision 边界。先占用刷新状态，
         // 避免刷新在 source await 期间又启动一个旧 cursor 的 load-more。
         let revision = advanceQueryRevision()
@@ -368,6 +373,7 @@ final class DiagnosticsStore {
         await replaceWithLatestPage(refreshDays: true, revision: revision)
         guard revision == queryRevision else { return }
         isRefreshing = false
+        lastLiveRefreshIdentity = await liveRefreshIdentity()
     }
 
     private func scheduleSearchExpansionIfNeeded() {
@@ -498,6 +504,14 @@ final class DiagnosticsStore {
         pagingNotice = notice
         searchLimitNotice = nil
         isPartialWindow = isPartial
+        lastLiveRefreshIdentity = await liveRefreshIdentity()
+    }
+
+    private func liveRefreshIdentity() async -> String? {
+        guard let identifying = logSource as? any DiagnosticsLiveRefreshIdentifying else {
+            return nil
+        }
+        return await identifying.liveRefreshIdentity()
     }
 
     private func invalidateSearchExpansion() {

@@ -36,6 +36,8 @@ struct DiagnosticsView: View {
 
             DiagnosticsLogContentView(
                 hasLoggedLines: !store.lines.isEmpty,
+                isRefreshing: store.isRefreshing,
+                showsInlineRefreshProgress: store.isRefreshing && !store.isManualRefreshing,
                 selectionDescription: store.selectionDescription,
                 filteredCount: store.filteredLines.count,
                 totalCount: store.lines.count,

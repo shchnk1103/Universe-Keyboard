@@ -6,8 +6,8 @@
   "record_id": "AUTH-DIAGNOSTICS-VIEWER-LOAD-001",
   "record_type": "authorization",
   "title": "Establish DIAGNOSTICS-VIEWER-LOAD-001 assignment",
-  "status": "active",
-  "updated_at": "2026-08-27T19:50:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-08-27T21:30:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked"],
   "authorization": {
     "action": "establish_assignment",
@@ -20,7 +20,7 @@
     "issued_at": "2026-08-27T19:50:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
@@ -29,7 +29,7 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
+| Status | consumed |
 
 ---
 

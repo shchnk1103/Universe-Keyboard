@@ -37,6 +37,12 @@ protocol DiagnosticsDatedLogSource: DiagnosticsLogPagingSource {
     func selectLogDay(_ day: DiagnosticsLogDay?) async
 }
 
+/// Optional cheap identity for the 1s live follower. Store skips a full
+/// JSONL root load when this token is unchanged.
+protocol DiagnosticsLiveRefreshIdentifying: DiagnosticsLogSource {
+    func liveRefreshIdentity() async -> String?
+}
+
 struct SharedDefaultsDiagnosticsLogSource: DiagnosticsLogSource {
     let appGroupID: String
 
@@ -68,7 +74,7 @@ struct SharedDefaultsDiagnosticsLogSource: DiagnosticsLogSource {
 
 /// 迁移期间优先展示 v1 journal；尚未迁移的旧自由文本日志仅作为只读回退，
 /// 绝不重新编码或写入 v1。
-actor CompositeDiagnosticsLogSource: DiagnosticsDatedLogSource {
+actor CompositeDiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshIdentifying {
     private enum ActiveSource {
         case v1
         case legacy
@@ -125,6 +131,10 @@ actor CompositeDiagnosticsLogSource: DiagnosticsDatedLogSource {
         await v1Source.availableLogDayCatalog()
     }
 
+    func liveRefreshIdentity() async -> String? {
+        await v1Source.liveRefreshIdentity()
+    }
+
     func selectLogDay(_ day: DiagnosticsLogDay?) async {
         _ = advanceQueryRevision()
         await v1Source.selectLogDay(day)
@@ -150,7 +160,7 @@ actor CompositeDiagnosticsLogSource: DiagnosticsDatedLogSource {
 /// Main-App-only repository adapter. File enumeration and JSONL parsing stay in
 /// `DiagnosticsJournalReader`; this type only obtains the App Group root and
 /// formats already allowlisted events for the presentation layer.
-actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource {
+actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshIdentifying {
     let appGroupID: String
     private let rootURLProvider: @Sendable () -> URL?
     private var reader: DiagnosticsJournalReader?
@@ -256,6 +266,18 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource {
 
     func hasMoreLogPages() -> Bool {
         nextCursor != nil
+    }
+
+    func liveRefreshIdentity() async -> String? {
+        guard let rootURL = journalRootURL() else { return nil }
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        do {
+            let identity = try await reader.liveRefreshIdentity()
+            return
+                "\(identity.generation):\(identity.segmentCount):\(identity.totalByteWatermark)"
+        } catch {
+            return nil
+        }
     }
 
     func availableLogDayCatalog() async -> DiagnosticsLogDayCatalog {

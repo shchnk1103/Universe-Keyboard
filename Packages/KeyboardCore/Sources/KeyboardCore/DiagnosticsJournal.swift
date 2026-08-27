@@ -147,6 +147,21 @@ public struct DiagnosticsJournalDateCatalog: Sendable {
     }
 }
 
+/// Cheap Main-App live-follow token. It uses generation plus segment
+/// watermarks so the diagnostics page can skip JSONL decode when nothing
+/// was appended. It is not a query snapshot and not a completeness proof.
+public struct DiagnosticsJournalLiveRefreshIdentity: Equatable, Sendable {
+    public let generation: UInt64
+    public let segmentCount: Int
+    public let totalByteWatermark: Int
+
+    public init(generation: UInt64, segmentCount: Int, totalByteWatermark: Int) {
+        self.generation = generation
+        self.segmentCount = segmentCount
+        self.totalByteWatermark = totalByteWatermark
+    }
+}
+
 /// 分页查询的受控结束状态。调用方必须把失效状态与“没有更多日志”区别展示，
 /// 不能在 clear 或 reader 重建后静默把旧 cursor 当成空结果。
 public enum DiagnosticsJournalPageStatus: Sendable, Equatable {
@@ -766,6 +781,25 @@ public actor DiagnosticsJournalReader {
         return DiagnosticsJournalDateCatalog(
             generation: control.currentGeneration,
             ranges: ranges
+        )
+    }
+
+    /// Enumerates the frozen segment membership without decoding events.
+    public func liveRefreshIdentity() throws -> DiagnosticsJournalLiveRefreshIdentity {
+        let control = try readControl()
+        let generationDirectory = generationDirectory(for: control.currentGeneration)
+        guard
+            let manifest = try stableSegmentManifest(
+                in: generationDirectory,
+                generation: control.currentGeneration
+            )
+        else {
+            throw DiagnosticsJournalError.lockBusy
+        }
+        return DiagnosticsJournalLiveRefreshIdentity(
+            generation: control.currentGeneration,
+            segmentCount: manifest.count,
+            totalByteWatermark: manifest.reduce(into: 0) { $0 += $1.byteWatermark }
         )
     }
 
