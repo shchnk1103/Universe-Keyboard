@@ -164,6 +164,7 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
     let appGroupID: String
     private let rootURLProvider: @Sendable () -> URL?
     private var reader: DiagnosticsJournalReader?
+    private var readerRootURL: URL?
     private var nextCursor: DiagnosticsJournalPageCursor?
     private var lastPageStatus: DiagnosticsJournalPageStatus = .completed
     private var usedV1Result = false
@@ -192,6 +193,7 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
         usedV1Result = false
         guard let rootURL = journalRootURL() else {
             reader = nil
+            readerRootURL = nil
             nextCursor = nil
             lastPageStatus = .journalUnavailable
             // App Group 不可用不是“v1 正常为空”。保持在 v1 视图可避免将
@@ -202,7 +204,7 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
         // Retention 由 Main App lifecycle 统一投递。Reader 使用非阻塞独占
         // snapshot fence；若在这里先启动 reclaim，会让本次读取与自己竞争并
         // 偶发降级为 journalUnavailable。
-        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        let reader = retainedReader(rootURL: rootURL)
         let page: DiagnosticsJournalPage
         do {
             let strictPage = try await reader.beginPage(in: requestedDay?.range)
@@ -221,6 +223,7 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
         } catch {
             guard revision == queryRevision, requestedDay == selectedLogDay else { return nil }
             self.reader = nil
+            readerRootURL = nil
             nextCursor = nil
             lastPageStatus = .journalUnavailable
             usedV1Result = true
@@ -232,11 +235,9 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
         guard revision == queryRevision, requestedDay == selectedLogDay else { return nil }
         usedV1Result = requestedDay != nil || !page.events.isEmpty || page.status != .completed
         guard !page.events.isEmpty else {
-            self.reader = nil
             nextCursor = nil
             return nil
         }
-        self.reader = reader
         nextCursor = page.nextCursor
         return formattedText(for: page.events)
     }
@@ -270,7 +271,7 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
 
     func liveRefreshIdentity() async -> String? {
         guard let rootURL = journalRootURL() else { return nil }
-        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        let reader = retainedReader(rootURL: rootURL)
         do {
             let identity = try await reader.liveRefreshIdentity()
             return
@@ -282,7 +283,7 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
 
     func availableLogDayCatalog() async -> DiagnosticsLogDayCatalog {
         guard let rootURL = journalRootURL() else { return .unavailable }
-        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        let reader = retainedReader(rootURL: rootURL)
         do {
             let catalog = try await reader.availableDateCatalog()
             let days = catalog.ranges.map(DiagnosticsLogDay.init(range:))
@@ -297,7 +298,6 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
         guard selectedLogDay != day else { return }
         _ = advanceQueryRevision()
         selectedLogDay = day
-        reader = nil
         nextCursor = nil
         lastPageStatus = .completed
     }
@@ -349,6 +349,7 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
         }
         _ = advanceQueryRevision()
         reader = nil
+        readerRootURL = nil
         nextCursor = nil
         lastPageStatus = .completed
         usedV1Result = false
@@ -364,6 +365,16 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
 
     private func journalRootURL() -> URL? {
         rootURLProvider()
+    }
+
+    private func retainedReader(rootURL: URL) -> DiagnosticsJournalReader {
+        if let reader, readerRootURL == rootURL {
+            return reader
+        }
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        self.reader = reader
+        readerRootURL = rootURL
+        return reader
     }
 
     private func formattedText(for events: [DiagnosticEvent]) -> String {

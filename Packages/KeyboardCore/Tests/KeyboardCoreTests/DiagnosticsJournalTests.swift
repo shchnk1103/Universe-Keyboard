@@ -108,6 +108,47 @@ final class DiagnosticsJournalTests: XCTestCase {
         XCTAssertGreaterThan(second.totalByteWatermark, first.totalByteWatermark)
     }
 
+    func testLiveRefreshIdentityAndDateCatalogDoNotTakeExclusiveFence() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append([makeEvent(sequence: 1, processInstanceID: processID)])
+
+        let releaseHold = DispatchSemaphore(value: 0)
+        await withCheckedContinuation { (started: CheckedContinuation<Void, Never>) in
+            DispatchQueue.global().async {
+                do {
+                    try DiagnosticsJournalIdentityLock.withSharedSnapshotFence(rootURL: rootURL) {
+                        started.resume()
+                        releaseHold.wait()
+                    }
+                } catch {
+                    started.resume()
+                }
+            }
+        }
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        let identity = try await reader.liveRefreshIdentity()
+        let catalog = try await reader.availableDateCatalog()
+        do {
+            _ = try await reader.beginPage()
+            XCTFail("beginPage must still take the exclusive snapshot fence")
+        } catch let error as DiagnosticsJournalError {
+            XCTAssertEqual(error, .lockBusy)
+        }
+        releaseHold.signal()
+
+        XCTAssertGreaterThan(identity.totalByteWatermark, 0)
+        XCTAssertFalse(catalog.ranges.isEmpty)
+    }
+
     func testPageCursorReturnsFrozenNewestFirstPages() async throws {
         let rootURL = makeTemporaryDirectory()
         defer { try? FileManager.default.removeItem(at: rootURL) }

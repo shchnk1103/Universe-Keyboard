@@ -66,6 +66,23 @@ KOS_AS_OF=2026-08-27T22:30:00+08:00 bash /Users/doubleshy0n/Dev/kos-agent-kit/sc
 
 Independent Architecture re-review of `ec5e8e9`: Pass（P0=0 · P1=0）。Independent Quality: Pass with conditions（P0=0 · P1=0）。
 
+## Human device follow-up (same day)
+
+High-fidelity off; ~69 visible lines; Activity Monitor showed ~1 GB working set, ~95% CPU, High energy, ~4.9 MB/s disk; leaving and re-entering restarted a long load. Screenshot numbers are evidence, not a new memory contract.
+
+Reader follow-up: `liveRefreshIdentity` / date catalog no longer take exclusive snapshot fence; `beginPage` still does. Store skips re-entry when watermark is unchanged. `resolve` is O(n) not O(n²).
+
+```bash
+swift test --package-path Packages/KeyboardCore --filter DiagnosticsJournalTests
+# 25 tests passed, including testLiveRefreshIdentityAndDateCatalogDoNotTakeExclusiveFence
+
+swift test --package-path Packages/KeyboardCore
+# passed
+
+xcodebuild ... 6 isolated DiagnosticsStoreTests
+# TEST SUCCEEDED (6/0)
+```
+
 ## Non-claims
 
-Not Human device retest. Not PR #83 merge. Not `required`. Not Assignment Close. Full `DiagnosticsStoreTests` / RimeBridgeTests / Universe Keyboard scheme tests were not re-run as a CI-parity suite.
+Not Human device retest of the reader-load fix. Not PR #83 merge. Not `required`. Not Assignment Close. Full `DiagnosticsStoreTests` / RimeBridgeTests / Universe Keyboard scheme tests were not re-run as a CI-parity suite. Previous Architecture/Quality of `ec5e8e9` do not cover this reader-load change.

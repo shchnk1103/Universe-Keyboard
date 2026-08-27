@@ -7,9 +7,9 @@
   "record_type": "assignment",
   "title": "Diagnostics viewer load state and bounded read",
   "lifecycle": "active",
-  "current_phase": "Independent Architecture Pass and Quality Pass with conditions recorded; waiting reviewable PR and Human Product Gate",
+  "current_phase": "Human device retest found GB-class reader load; reader skip no longer takes exclusive fence. Waiting independent re-review and device retest",
   "authorization_action": "implement",
-  "updated_at": "2026-08-27T22:40:00+08:00",
+  "updated_at": "2026-08-27T21:30:00+08:00",
   "revalidation_triggers": ["scope_changed", "implement_authorization_changed"],
   "authorization_refs": ["AUTH-DIAGNOSTICS-VIEWER-LOAD-001-IMPLEMENT"],
   "parent_refs": ["KOS-UPGRADE-UK-001"],
@@ -34,9 +34,9 @@
 | Field | Value |
 |---|---|
 | Lifecycle | active |
-| Current Phase | Independent Architecture Pass and Quality Pass with conditions recorded; waiting reviewable PR and Human Product Gate |
-| Material non-claims | No PR #83 merge; no scheme-download fix; no raised read budget; no merge without Human Product Gate |
-| Next handoff / decision | Reviewable PR [#85](https://github.com/shchnk1103/Universe-Keyboard/pull/85)；Human 真机复验诊断加载面后再 Product Gate。Gate 前不 merge |
+| Current Phase | Human device retest found GB-class reader load; reader skip no longer takes exclusive fence. Waiting independent re-review and device retest |
+| Material non-claims | No PR #83 merge; no scheme-download fix; no raised read budget; no merge without Human Product Gate; screenshot numbers are not a new memory contract |
+| Next handoff / decision | Independent Architecture/Quality of the reader-load fix; Human 用同一诊断页复测 CPU/内存与二次进入。Gate 前不 merge |
 | Residuals | AUTH establish-assignment is consumed; TD-014 remaining if KOS-UPGRADE AUTH still needs follow-up |
 
 ---
@@ -105,3 +105,4 @@
 - `2026-08-27 Asia/Shanghai`: Human Product Lead 同意先修诊断查看再复测万象，并指示按 KOS 推进。Assignment 记为 `Ready`；实现未开始。
 - `2026-08-27 Asia/Shanghai`: Human Product Owner 授权按 KOS 2.2 开始改诊断加载空态。`AUTH-DIAGNOSTICS-VIEWER-LOAD-001-IMPLEMENT` 签发；lifecycle `active`。
 - `2026-08-27 Asia/Shanghai`: 实现 `878b02a`；Architecture `Pass with conditions`（A-P1-01）；peek-bind 修复 `ec5e8e9`；Architecture 复审 **Pass**（P0=0 · P1=0）；Quality **Pass with conditions**（P0=0 · P1=0）。IMPLEMENT AUTH 仍 `unconsumed`（TD-014）。不授权 merge。
+- `2026-08-27 Asia/Shanghai`: Human 真机复测（高保真关，约 69 条可见）仍出现近 1 GB 工作集与满核 CPU；二次进入再次长加载。判定 1 秒 skip/日期目录仍抢 exclusive fence，与 writer shared fence 互锁后整页重扫。主 App 读取路径改为无锁目录水位 skip，并复用 Store。截图数字不是新的内存合同。

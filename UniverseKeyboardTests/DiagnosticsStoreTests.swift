@@ -181,6 +181,36 @@ final class DiagnosticsStoreTests: XCTestCase {
         XCTAssertEqual(store.lines, ["second event"])
     }
 
+    func testLoadLogSkipsWhenCachedIdentityIsUnchanged() async {
+        let source = IdentityStubLogSource(text: "visible event", identity: "g1:1:10")
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["visible event"] }
+        let loadsAfterInitial = source.loadCallCount
+
+        store.loadLog()
+        await waitUntil { !store.isRefreshing }
+
+        XCTAssertEqual(source.loadCallCount, loadsAfterInitial)
+        XCTAssertEqual(store.lines, ["visible event"])
+        XCTAssertFalse(store.isRefreshing)
+    }
+
+    func testLiveRefreshSkipsWhenIdentityPeekFailsAfterASuccessfulBind() async {
+        let source = IdentityStubLogSource(text: "visible event", identity: "g1:1:10")
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["visible event"] }
+        let loadsAfterInitial = source.loadCallCount
+
+        source.identity = nil
+        await store.performLiveRefreshTick()
+
+        XCTAssertEqual(source.loadCallCount, loadsAfterInitial)
+        XCTAssertEqual(store.lines, ["visible event"])
+        XCTAssertFalse(store.isRefreshing)
+    }
+
     func testLiveRefreshReloadsWhenIdentityAdvancesDuringLoad() async {
         let source = IdentityStubLogSource(text: "first event", identity: "g1:1:10")
         let store = DiagnosticsStore(logSource: source)
