@@ -2,11 +2,20 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-24 Asia/Shanghai
+> **Updated:** 2026-08-27 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## KOS 2.2 advisory pin — 2026-08-27
+
+- **Lifecycle:** `KOS-UPGRADE-UK-001` Active (advisory only)
+- **Authority:** [`PD`](product-decisions/KOS-UPGRADE-UK-001-authorization.md) · [`Assignment`](assignments/kos-upgrade-uk-001.md) · [`UPGRADE_STATUS`](kos/UPGRADE_STATUS.md)
+- **Pin:** `shchnk1103/kos-agent-kit@v0.5.0` (`e11cbfb`)
+- **Non-claims:** not `required`; not product-code; not PR #83 merge; validator green is not Product/Quality/Release
+- **First workflow:** `DIAGNOSTICS-VIEWER-LOAD-001` Ready, waiting 授权实现
+- **Next:** independent Architecture/Quality of the pin; then diagnostics implementation authorization
 
 ## Active Work 收敛 — 2026-08-24
 
