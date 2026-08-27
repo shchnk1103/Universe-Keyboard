@@ -237,12 +237,14 @@ final class SchemaManager {
 
     private func waitForSchemeDeliveryCommitLeaseAvailability(operationID: UUID) async -> Bool {
         let waiterID = UUID()
+        // Build the hop on MainActor first. `onCancel` is `@Sendable` and
+        // nonisolated; capturing `self` or `weak self` there is a Swift 6.0
+        // data race (Xcode 26.6 CI), even when the inner Task is MainActor.
+        let cancelWaiter: @MainActor @Sendable () -> Void = { [weak self] in
+            self?.cancelSchemeDeliveryCommitLeaseAvailabilityWaiter(id: waiterID)
+        }
         return await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
-                if Task.isCancelled {
-                    continuation.resume(returning: false)
-                    return
-                }
                 schemeDeliveryCommitLeaseAvailabilityWaiters.append(
                     CommitLeaseAvailabilityWaiter(
                         id: waiterID,
@@ -250,11 +252,15 @@ final class SchemaManager {
                         continuation: continuation
                     )
                 )
+
+                // Register first so cancellation cannot run between the
+                // preflight check and insertion, leaving a stranded waiter.
+                if Task.isCancelled {
+                    cancelWaiter()
+                }
             }
-        } onCancel: { [weak self] in
-            Task { @MainActor in
-                self?.cancelSchemeDeliveryCommitLeaseAvailabilityWaiter(id: waiterID)
-            }
+        } onCancel: {
+            Task { await cancelWaiter() }
         }
     }
 

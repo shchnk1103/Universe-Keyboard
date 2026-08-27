@@ -1323,6 +1323,30 @@ final class SchemaManagerTests: XCTestCase {
         manager.releaseSchemeDeliveryCommitLease(operationID: recoveryOperationID)
     }
 
+    func testCancelledCommitLeaseAttemptDoesNotRegisterAvailabilityWaiter() async {
+        let manager = makeManager()
+        let blockingOperationID = UUID()
+        let acquired = await manager.acquireSchemeDeliveryCommitLease(
+            operationID: blockingOperationID
+        )
+        XCTAssertTrue(acquired)
+
+        let cancelledOperationID = UUID()
+        let attempt = Task { @MainActor in
+            await manager.acquireSchemeDeliveryCommitLease(operationID: cancelledOperationID)
+        }
+        // The task has not yielded from this MainActor test yet, so this
+        // deterministically exercises cancellation before waiter registration.
+        attempt.cancel()
+
+        let cancelledAttemptAcquired = await attempt.value
+        XCTAssertFalse(cancelledAttemptAcquired)
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount, 0)
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseOperationID, blockingOperationID)
+
+        manager.releaseSchemeDeliveryCommitLease(operationID: blockingOperationID)
+    }
+
     private func makeManager(
         settings: StubSharedSettingsStore = StubSharedSettingsStore(),
         sourceSelector: any SchemaSourceSelecting = StubSchemaSourceSelector(),
