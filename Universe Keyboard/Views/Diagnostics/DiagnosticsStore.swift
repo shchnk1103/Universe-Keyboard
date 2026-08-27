@@ -169,7 +169,7 @@ final class DiagnosticsStore {
         isRefreshing = true
         isLoadingMore = false
         Task {
-            await replaceWithLatestPage(refreshDays: true, revision: revision)
+            await replaceWithLatestPagePeeking(refreshDays: true, revision: revision)
             guard revision == queryRevision else { return }
             isRefreshing = false
             scheduleSearchExpansionIfNeeded()
@@ -208,7 +208,7 @@ final class DiagnosticsStore {
                 isManualRefreshing = false
                 return
             }
-            await replaceWithLatestPage(refreshDays: true, revision: revision)
+            await replaceWithLatestPagePeeking(refreshDays: true, revision: revision)
             guard revision == queryRevision else {
                 isManualRefreshing = false
                 return
@@ -328,7 +328,7 @@ final class DiagnosticsStore {
         isRefreshing = true
         clearFailureNotice = nil
         Task {
-            await replaceWithLatestPage(refreshDays: false, revision: revision)
+            await replaceWithLatestPagePeeking(refreshDays: false, revision: revision)
             guard revision == queryRevision else { return }
             isRefreshing = false
             scheduleSearchExpansionIfNeeded()
@@ -363,17 +363,21 @@ final class DiagnosticsStore {
             !isRefreshing,
             !isLoadingMore
         else { return }
-        if let identity = await liveRefreshIdentity(), identity == lastLiveRefreshIdentity {
+        let peekedIdentity = await liveRefreshIdentity()
+        if let peekedIdentity, peekedIdentity == lastLiveRefreshIdentity {
             return
         }
         // 实时根刷新与手动根查询遵守同一 revision 边界。先占用刷新状态，
         // 避免刷新在 source await 期间又启动一个旧 cursor 的 load-more。
         let revision = advanceQueryRevision()
         isRefreshing = true
-        await replaceWithLatestPage(refreshDays: true, revision: revision)
+        await replaceWithLatestPage(
+            refreshDays: true,
+            revision: revision,
+            peekedLiveRefreshIdentity: peekedIdentity
+        )
         guard revision == queryRevision else { return }
         isRefreshing = false
-        lastLiveRefreshIdentity = await liveRefreshIdentity()
     }
 
     private func scheduleSearchExpansionIfNeeded() {
@@ -449,7 +453,20 @@ final class DiagnosticsStore {
         }
     }
 
-    private func replaceWithLatestPage(refreshDays: Bool, revision: UInt64) async {
+    private func replaceWithLatestPagePeeking(refreshDays: Bool, revision: UInt64) async {
+        let peekedIdentity = await liveRefreshIdentity()
+        await replaceWithLatestPage(
+            refreshDays: refreshDays,
+            revision: revision,
+            peekedLiveRefreshIdentity: peekedIdentity
+        )
+    }
+
+    private func replaceWithLatestPage(
+        refreshDays: Bool,
+        revision: UInt64,
+        peekedLiveRefreshIdentity: String?
+    ) async {
         if let datedSource = logSource as? any DiagnosticsDatedLogSource {
             if refreshDays || availableLogDays.isEmpty {
                 let catalog = await datedSource.availableLogDayCatalog()
@@ -504,7 +521,8 @@ final class DiagnosticsStore {
         pagingNotice = notice
         searchLimitNotice = nil
         isPartialWindow = isPartial
-        lastLiveRefreshIdentity = await liveRefreshIdentity()
+        // Skip 必须绑定触发本次解码的 peek，不能在 fence 释放后再采样盘面。
+        lastLiveRefreshIdentity = peekedLiveRefreshIdentity
     }
 
     private func liveRefreshIdentity() async -> String? {

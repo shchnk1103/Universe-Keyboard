@@ -181,6 +181,29 @@ final class DiagnosticsStoreTests: XCTestCase {
         XCTAssertEqual(store.lines, ["second event"])
     }
 
+    func testLiveRefreshReloadsWhenIdentityAdvancesDuringLoad() async {
+        let source = IdentityStubLogSource(text: "first event", identity: "g1:1:10")
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["first event"] }
+        let loadsAfterInitial = source.loadCallCount
+
+        source.text = "second event"
+        source.identity = "g1:1:20"
+        source.identityAfterReturningLoad = "g1:1:30"
+        await store.performLiveRefreshTick()
+
+        XCTAssertEqual(store.lines, ["second event"])
+        XCTAssertEqual(source.loadCallCount, loadsAfterInitial + 1)
+        XCTAssertEqual(source.identity, "g1:1:30")
+
+        source.text = "third event"
+        await store.performLiveRefreshTick()
+
+        XCTAssertEqual(store.lines, ["third event"])
+        XCTAssertEqual(source.loadCallCount, loadsAfterInitial + 2)
+    }
+
     func testClearInvalidatesAnOlderLoadThatFinishesLater() async {
         let source = ControlledLogSource()
         let store = DiagnosticsStore(logSource: source)
@@ -480,6 +503,8 @@ final class DiagnosticsStoreTests: XCTestCase {
 private final class IdentityStubLogSource: DiagnosticsLogSource, DiagnosticsLiveRefreshIdentifying {
     var text: String?
     var identity: String?
+    /// Applied after `loadLogText` returns, simulating an append past the page fence.
+    var identityAfterReturningLoad: String?
     private(set) var loadCallCount = 0
 
     init(text: String?, identity: String?) {
@@ -489,6 +514,11 @@ private final class IdentityStubLogSource: DiagnosticsLogSource, DiagnosticsLive
 
     func loadLogText() async -> String? {
         loadCallCount += 1
+        let text = self.text
+        if let identityAfterReturningLoad {
+            identity = identityAfterReturningLoad
+            self.identityAfterReturningLoad = nil
+        }
         return text
     }
 

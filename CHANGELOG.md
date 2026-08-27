@@ -6,7 +6,7 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 - 根加载在仍 `isRefreshing` 时显示「正在加载诊断日志」，不再伪装成「暂无诊断日志」。
 - 筛选无匹配、有界窗口无完整记录、真正无 journal 三种空态保持区分。
-- 1 秒跟随在 generation/段 watermark 未变时跳过 JSONL 根解码。未提高 5 MiB / 10,000 条预算。
+- 1 秒跟随在 generation/段 watermark 未变时跳过 JSONL 根解码。skip 绑定触发本次解码的 identity peek，不在加载后再采样盘面。未提高 5 MiB / 10,000 条预算。
 
 ## 2026-08-24 — 08 颜表情合入 main
 
