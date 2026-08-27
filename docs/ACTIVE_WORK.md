@@ -12,7 +12,7 @@ Last synced: `2026-08-27 Asia/Shanghai` — KOS 2.2 advisory pin Product Gate �
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；首轮反馈由 Pending Task11 追踪（新手 RIME 流程、builtin 多字失败、跨地区下载）；F-03 被 Product 提前为紧急 Gate。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
-| 4 | DIAGNOSTICS-VIEWER-LOAD-001 | Active | Arch Pass · Quality Pass with conditions；等可审查 PR 与 Human 真机复验 | [`assignment`](assignments/diagnostics-viewer-load-001.md) · [`AUTH`](authorizations/AUTH-DIAGNOSTICS-VIEWER-LOAD-001-IMPLEMENT.md) · [Arch](reviews/DIAGNOSTICS-VIEWER-LOAD-001-architecture-rereview.md) · [Quality](reviews/DIAGNOSTICS-VIEWER-LOAD-001-quality-review.md) |
+| 4 | DIAGNOSTICS-VIEWER-LOAD-001 | Active | Arch Pass · Quality Pass with conditions；可审查 PR [#85](https://github.com/shchnk1103/Universe-Keyboard/pull/85)；等 Human 真机复验 | [`assignment`](assignments/diagnostics-viewer-load-001.md) · [`AUTH`](authorizations/AUTH-DIAGNOSTICS-VIEWER-LOAD-001-IMPLEMENT.md) · [Arch](reviews/DIAGNOSTICS-VIEWER-LOAD-001-architecture-rereview.md) · [Quality](reviews/DIAGNOSTICS-VIEWER-LOAD-001-quality-review.md) |
 
 ## Completed (not Active)
 

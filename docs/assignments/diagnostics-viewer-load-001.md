@@ -36,7 +36,7 @@
 | Lifecycle | active |
 | Current Phase | Independent Architecture Pass and Quality Pass with conditions recorded; waiting reviewable PR and Human Product Gate |
 | Material non-claims | No PR #83 merge; no scheme-download fix; no raised read budget; no merge without Human Product Gate |
-| Next handoff / decision | Open a reviewable PR; Human 真机复验诊断加载面；然后 INTEGRITY-001 万象分类 |
+| Next handoff / decision | Reviewable PR [#85](https://github.com/shchnk1103/Universe-Keyboard/pull/85)；Human 真机复验诊断加载面后再 Product Gate。Gate 前不 merge |
 | Residuals | AUTH establish-assignment is consumed; TD-014 remaining if KOS-UPGRADE AUTH still needs follow-up |
 
 ---
