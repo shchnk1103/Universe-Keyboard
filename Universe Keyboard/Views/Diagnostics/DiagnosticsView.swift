@@ -4,7 +4,7 @@ import UIKit
 
 /// 键盘诊断日志子页面。业务状态和持久化边界由 `DiagnosticsStore` 管理。
 struct DiagnosticsView: View {
-    @State private var store = DiagnosticsStore()
+    @State private var store = DiagnosticsStore.shared
     @State private var showClearConfirm = false
     @State private var isSearchPresented = false
 
@@ -36,6 +36,8 @@ struct DiagnosticsView: View {
 
             DiagnosticsLogContentView(
                 hasLoggedLines: !store.lines.isEmpty,
+                isRefreshing: store.isRefreshing,
+                showsInlineRefreshProgress: store.isRefreshing && !store.isManualRefreshing,
                 selectionDescription: store.selectionDescription,
                 filteredCount: store.filteredLines.count,
                 totalCount: store.lines.count,

@@ -147,6 +147,21 @@ public struct DiagnosticsJournalDateCatalog: Sendable {
     }
 }
 
+/// Cheap Main-App live-follow token. It uses generation plus segment
+/// watermarks so the diagnostics page can skip JSONL decode when nothing
+/// was appended. It is not a query snapshot and not a completeness proof.
+public struct DiagnosticsJournalLiveRefreshIdentity: Equatable, Sendable {
+    public let generation: UInt64
+    public let segmentCount: Int
+    public let totalByteWatermark: Int
+
+    public init(generation: UInt64, segmentCount: Int, totalByteWatermark: Int) {
+        self.generation = generation
+        self.segmentCount = segmentCount
+        self.totalByteWatermark = totalByteWatermark
+    }
+}
+
 /// 分页查询的受控结束状态。调用方必须把失效状态与“没有更多日志”区别展示，
 /// 不能在 clear 或 reader 重建后静默把旧 cursor 当成空结果。
 public enum DiagnosticsJournalPageStatus: Sendable, Equatable {
@@ -690,6 +705,19 @@ public actor DiagnosticsJournalReader {
     private var pageQueries: [UUID: PageQuery] = [:]
     private var pageQueryOrder: [UUID] = []
     private let snapshotCaptureHook: (@Sendable () -> Void)?
+    private let utcHourFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyyMMdd'T'HH"
+        return formatter
+    }()
+    private let eventDecoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }()
 
     private struct PageQuery: Sendable {
         let generation: UInt64
@@ -730,23 +758,18 @@ public actor DiagnosticsJournalReader {
 
     /// 从当前 generation 的 UTC 小时段推导本地日历范围。它只在 Main App
     /// repository 使用，不要求 writer 创建或共享“每日文件”。
+    /// 日期索引只读文件名，不取 exclusive fence；事件页仍由 `beginPage` 冻结。
     public func availableDateCatalog(
         timeZone: TimeZone = .current
     ) throws -> DiagnosticsJournalDateCatalog {
         let control = try readControl()
         let generationDirectory = generationDirectory(for: control.currentGeneration)
-        guard
-            let manifest = try stableSegmentManifest(
-                in: generationDirectory,
-                generation: control.currentGeneration
-            )
-        else {
-            throw DiagnosticsJournalError.lockBusy
-        }
-
-        let hourStarts = manifest.compactMap(\.hourStartUTC)
-        guard hourStarts.count == manifest.count else {
-            throw DiagnosticsJournalError.ioFailure
+        let urls = try segmentURLs(in: generationDirectory)
+        let hourStarts: [Date] = try urls.map { url in
+            guard let hourStart = segmentHourStartUTC(for: url) else {
+                throw DiagnosticsJournalError.ioFailure
+            }
+            return hourStart
         }
 
         var calendar = Calendar(identifier: .gregorian)
@@ -766,6 +789,26 @@ public actor DiagnosticsJournalReader {
         return DiagnosticsJournalDateCatalog(
             generation: control.currentGeneration,
             ranges: ranges
+        )
+    }
+
+    /// Directory watermark for the 1s follower. This does **not** take the
+    /// exclusive snapshot fence: skip only needs “did any JSONL grow?”, and
+    /// exclusive fence here fights the writer shared fence and forces a full
+    /// reload. `beginPage` still freezes membership before decoding events.
+    public func liveRefreshIdentity() throws -> DiagnosticsJournalLiveRefreshIdentity {
+        let control = try readControl()
+        let generationDirectory = generationDirectory(for: control.currentGeneration)
+        let urls = try segmentURLs(in: generationDirectory)
+        var totalByteWatermark = 0
+        for url in urls {
+            let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+            totalByteWatermark += (attributes[.size] as? NSNumber)?.intValue ?? 0
+        }
+        return DiagnosticsJournalLiveRefreshIdentity(
+            generation: control.currentGeneration,
+            segmentCount: urls.count,
+            totalByteWatermark: totalByteWatermark
         )
     }
 
@@ -912,6 +955,7 @@ public actor DiagnosticsJournalReader {
         }
         let scopedManifest = manifest.filter { segmentIntersects($0, dateRange: dateRange) }
         snapshotCaptureHook?()
+        let currentManifest = try segmentManifest(in: generationDirectory)
         let effectiveReadBudget = min(maximumReadBytes, Self.defaultMaximumReadBytes)
         let effectiveEventLimit = min(maximumEventCount, Self.defaultMaximumEventCount)
         var remainingBytes = effectiveReadBudget
@@ -919,7 +963,7 @@ public actor DiagnosticsJournalReader {
 
         for (index, segment) in scopedManifest.enumerated() {
             guard remainingBytes > 0 else { break }
-            guard let resolvedURL = try resolve(segment, in: generationDirectory) else { continue }
+            guard let resolvedURL = resolve(segment, in: currentManifest) else { continue }
             let remainingSegments = scopedManifest.count - index
             let segmentBudget = max(1, remainingBytes / max(remainingSegments, 1))
             let startOffset = max(0, segment.byteWatermark - segmentBudget)
@@ -1092,13 +1136,14 @@ public actor DiagnosticsJournalReader {
             scopedManifest = manifest
         }
         snapshotCaptureHook?()
+        let currentManifest = try segmentManifest(in: generationDirectory)
         var remainingBytes = maximumReadBytes
         var events: [DiagnosticEvent] = []
         for segment in scopedManifest {
             guard segment.byteWatermark <= remainingBytes else {
                 return .exceedsReadBudget
             }
-            guard let resolvedURL = try resolve(segment, in: generationDirectory) else {
+            guard let resolvedURL = resolve(segment, in: currentManifest) else {
                 return .unavailable
             }
             let lines = try completeLines(
@@ -1256,22 +1301,16 @@ public actor DiagnosticsJournalReader {
             let remainder = name[hourStartIndex...]
             guard let partSeparator = remainder.lastIndex(of: "-") else { return nil }
             let stamp = String(remainder[..<partSeparator])
-            let formatter = DateFormatter()
-            formatter.calendar = Calendar(identifier: .gregorian)
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(secondsFromGMT: 0)
-            formatter.dateFormat = "yyyyMMdd'T'HH"
-            return formatter.date(from: stamp)
+            return utcHourFormatter.date(from: stamp)
         }
         return nil
     }
 
     private func resolve(
         _ manifest: SegmentManifest,
-        in generationDirectory: URL
-    ) throws -> URL? {
-        for current in try segmentManifest(in: generationDirectory)
-        where current.fileSystemNumber == manifest.fileSystemNumber {
+        in currentManifest: [SegmentManifest]
+    ) -> URL? {
+        for current in currentManifest where current.fileSystemNumber == manifest.fileSystemNumber {
             // 只接受 writer 的同名 open↔sealed 移动，或 reclaim 产生的
             // `recovered-` 前缀。inode 被文件系统复用给无关新段时，不能把它
             // 误判为冻结快照的原段。
@@ -1292,7 +1331,8 @@ public actor DiagnosticsJournalReader {
         _ manifest: [SegmentManifest],
         in generationDirectory: URL
     ) throws -> Bool {
-        for segment in manifest where try resolve(segment, in: generationDirectory) == nil {
+        let currentManifest = try segmentManifest(in: generationDirectory)
+        for segment in manifest where resolve(segment, in: currentManifest) == nil {
             return false
         }
         return true
@@ -1339,9 +1379,7 @@ public actor DiagnosticsJournalReader {
     }
 
     private func decodeEvent(from data: Data) -> DiagnosticEvent? {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try? decoder.decode(DiagnosticEvent.self, from: data)
+        try? eventDecoder.decode(DiagnosticEvent.self, from: data)
     }
 
     private func readTail(at url: URL, maximumBytes: Int) throws -> (data: Data, startsMidLine: Bool) {

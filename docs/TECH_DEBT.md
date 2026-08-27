@@ -251,11 +251,23 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 
 - **Priority:** Low. 不阻塞本次 advisory pin、PR #84 Product Gate，或诊断查看实现授权。
 - **Risk:** `AUTH-KOS-UPGRADE-UK-001` 与 `AUTH-DIAGNOSTICS-VIEWER-LOAD-001` 的 `consumption_state` 仍为 `unconsumed`，而对应 bounded action（钉住 Kit advisory / 建立 Assignment）已落在 `f580613`。Kit 把 consumption 当审计观察、不提供 replay 保护；正文也否定 bearer token。若不改，后续 agent 可能把未消费收据误读成可反复执行的许可。
-- **Current mitigation:** AUTH exclusions 含 `required_mode` / `implement` / `merge` / `pr_83_merge`；独立 Architecture `A-P2-01` 与 Quality `Q-P2-01` 已记录该滞后；执行仍须回到当前人类 Decision/Assignment。
+- **Current mitigation:** AUTH exclusions 含 `required_mode` / `implement` / `merge` / `pr_83_merge`；独立 Architecture `A-P2-01` 与 Quality `Q-P2-01` 已记录该滞后。`AUTH-DIAGNOSTICS-VIEWER-LOAD-001` 已标 `consumed`（Assignment 已改绑 implement 收据）。`AUTH-KOS-UPGRADE-UK-001` 仍 `unconsumed`，因为 Assignment 仍引用它且 validator 要求 active 收据。
+- **Current status:** 部分偿还。剩余是升级 Assignment 仍绑定的 AUTH 消费语义。
 - **Recommended fix:** 在后续 Envelope 卫生中把这两条已完成 bounded action 的 AUTH 标为 `consumed`，或在收据上写明「Assignment Active ≠ AUTH unconsumed」的审计规则。不要把这次改正做成 `required` 切仓或扩大 include glob。
 - **Owner area:** KOS 2.2 records（`docs/authorizations/`）与 Architecture & Knowledge Steward。
 - **Trigger to resolve:** 下一次触及这些 AUTH 的 Envelope 卫生；切 `required` 之前必须先处理。
 - **Related:** [`KOS-UPGRADE-UK-001`](assignments/kos-upgrade-uk-001.md)、[`A-P2-01`](reviews/KOS-UPGRADE-UK-001-architecture-review.md)、[`Q-P2-01`](reviews/KOS-UPGRADE-UK-001-quality-review.md)。
+
+## TD-015: 方案交付日志未进入诊断 v1 journal
+
+- **Priority:** High for INTEGRITY-001 / 万象失败分类。不阻塞 `DIAGNOSTICS-VIEWER-LOAD-001` Product Gate 或 PR #85 merge。
+- **Risk:** 诊断页只读 `Diagnostics/v1`。主 App `Logger.shared` 仍写入 legacy `rime_diag_log`；`DiagnosticsJournalRuntime` 明确不桥接 legacy Logger。`SchemaManager+Download` 下载/解压/安装路径没有 `Logger` 打点。结果：记录开、部署分类开、高保真关时，万象下载并部署成功也可以在 v1 里看不到「万象 / 下载 / 部署」。无法用 journal 区分网络、校验、解压、安装、部署。开高保真不能补上这条管道。
+- **Current mitigation:** UI `DownloadState` / toast 仍能显示成功或失败。部署阶段 `deployRimeConfig` 会打 `Logger` `DEPLOY`，但只落在 UserDefaults，v1 有记录后查看器不再回退 legacy。
+- **Current evidence status (`2026-08-27`):** Human 在等待 PR #85 CI 时重试万象拼音，UI 成功下载并部署；诊断分类全开、高保真关；v1 页面无万象/下载/部署行。见 [`evidence/scheme-delivery-logs-not-in-v1-2026-08-27.md`](evidence/scheme-delivery-logs-not-in-v1-2026-08-27.md)。一次 UI 成功不是 INTEGRITY 分类完成，也不授权 merge PR #83。
+- **Recommended fix:** 另立 Product Assignment（建议 id `SCHEME-DELIVERY-JOURNAL-001`）。在下载、完整性、安装、部署边界写入有界、内容无关的 v1 `DiagnosticEvent`（`DEPLOY` / Main App origin，allowlist 过的 event code）。仍只受 `logging_enabled` 与部署分类约束，不挂高保真。不要把 legacy 自由文本混进 v1。不要为了看见下载日志去改高保真规则。
+- **Owner area:** Main App scheme download/deploy、KeyboardCore diagnostics journal allowlist、诊断查看（只读）。
+- **Trigger to resolve:** Human Product Gate 通过 `DIAGNOSTICS-VIEWER-LOAD-001` 之后、再次分类万象失败之前。未授权实现前不得猜修下载或 merge PR #83。
+- **Related:** ADR 0027、TD-013 item 5（legacy Logger 迁移）、[`DIAGNOSTICS-VIEWER-LOAD-001`](assignments/diagnostics-viewer-load-001.md)、PR #83。
 
 ## Maintenance Rules
 

@@ -138,6 +138,102 @@ final class DiagnosticsStoreTests: XCTestCase {
         }
     }
 
+    func testRootLoadMarksRefreshingBeforeSourceReturns() async {
+        let source = ControlledLogSource()
+        let store = DiagnosticsStore(logSource: source)
+
+        store.loadLog()
+        await waitUntil { source.loadContinuation != nil }
+
+        XCTAssertTrue(store.isRefreshing)
+        XCTAssertTrue(store.lines.isEmpty)
+        XCTAssertFalse(store.isManualRefreshing)
+
+        source.finishLoad(with: nil)
+        await waitUntil { !store.isRefreshing }
+        XCTAssertTrue(store.lines.isEmpty)
+    }
+
+    func testLiveRefreshSkipsRootLoadWhenIdentityIsUnchanged() async {
+        let source = IdentityStubLogSource(text: "visible event", identity: "g1:1:10")
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["visible event"] }
+        let loadsAfterInitial = source.loadCallCount
+
+        await store.performLiveRefreshTick()
+
+        XCTAssertEqual(source.loadCallCount, loadsAfterInitial)
+        XCTAssertEqual(store.lines, ["visible event"])
+        XCTAssertFalse(store.isRefreshing)
+    }
+
+    func testLiveRefreshReloadsWhenIdentityChanges() async {
+        let source = IdentityStubLogSource(text: "first event", identity: "g1:1:10")
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["first event"] }
+
+        source.text = "second event"
+        source.identity = "g1:1:20"
+        await store.performLiveRefreshTick()
+
+        XCTAssertEqual(store.lines, ["second event"])
+    }
+
+    func testLoadLogSkipsWhenCachedIdentityIsUnchanged() async {
+        let source = IdentityStubLogSource(text: "visible event", identity: "g1:1:10")
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["visible event"] }
+        let loadsAfterInitial = source.loadCallCount
+
+        store.loadLog()
+        await waitUntil { !store.isRefreshing }
+
+        XCTAssertEqual(source.loadCallCount, loadsAfterInitial)
+        XCTAssertEqual(store.lines, ["visible event"])
+        XCTAssertFalse(store.isRefreshing)
+    }
+
+    func testLiveRefreshSkipsWhenIdentityPeekFailsAfterASuccessfulBind() async {
+        let source = IdentityStubLogSource(text: "visible event", identity: "g1:1:10")
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["visible event"] }
+        let loadsAfterInitial = source.loadCallCount
+
+        source.identity = nil
+        await store.performLiveRefreshTick()
+
+        XCTAssertEqual(source.loadCallCount, loadsAfterInitial)
+        XCTAssertEqual(store.lines, ["visible event"])
+        XCTAssertFalse(store.isRefreshing)
+    }
+
+    func testLiveRefreshReloadsWhenIdentityAdvancesDuringLoad() async {
+        let source = IdentityStubLogSource(text: "first event", identity: "g1:1:10")
+        let store = DiagnosticsStore(logSource: source)
+        store.loadLog()
+        await waitUntil { store.lines == ["first event"] }
+        let loadsAfterInitial = source.loadCallCount
+
+        source.text = "second event"
+        source.identity = "g1:1:20"
+        source.identityAfterReturningLoad = "g1:1:30"
+        await store.performLiveRefreshTick()
+
+        XCTAssertEqual(store.lines, ["second event"])
+        XCTAssertEqual(source.loadCallCount, loadsAfterInitial + 1)
+        XCTAssertEqual(source.identity, "g1:1:30")
+
+        source.text = "third event"
+        await store.performLiveRefreshTick()
+
+        XCTAssertEqual(store.lines, ["third event"])
+        XCTAssertEqual(source.loadCallCount, loadsAfterInitial + 2)
+    }
+
     func testClearInvalidatesAnOlderLoadThatFinishesLater() async {
         let source = ControlledLogSource()
         let store = DiagnosticsStore(logSource: source)
@@ -431,6 +527,34 @@ final class DiagnosticsStoreTests: XCTestCase {
             )
         )
     }
+}
+
+@MainActor
+private final class IdentityStubLogSource: DiagnosticsLogSource, DiagnosticsLiveRefreshIdentifying {
+    var text: String?
+    var identity: String?
+    /// Applied after `loadLogText` returns, simulating an append past the page fence.
+    var identityAfterReturningLoad: String?
+    private(set) var loadCallCount = 0
+
+    init(text: String?, identity: String?) {
+        self.text = text
+        self.identity = identity
+    }
+
+    func loadLogText() async -> String? {
+        loadCallCount += 1
+        let text = self.text
+        if let identityAfterReturningLoad {
+            identity = identityAfterReturningLoad
+            self.identityAfterReturningLoad = nil
+        }
+        return text
+    }
+
+    func liveRefreshIdentity() async -> String? { identity }
+
+    func clearLog() async -> DiagnosticsLogClearResult { .cleared }
 }
 
 private struct StubLogSource: DiagnosticsLogSource {

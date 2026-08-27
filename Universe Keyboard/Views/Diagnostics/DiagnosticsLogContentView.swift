@@ -2,6 +2,8 @@ import SwiftUI
 
 struct DiagnosticsLogContentView: View {
     let hasLoggedLines: Bool
+    let isRefreshing: Bool
+    let showsInlineRefreshProgress: Bool
     let selectionDescription: String
     let filteredCount: Int
     let totalCount: Int
@@ -15,7 +17,9 @@ struct DiagnosticsLogContentView: View {
     let onLoadMore: () -> Void
 
     var body: some View {
-        if displayedLines.isEmpty {
+        if displayedLines.isEmpty && isRefreshing {
+            DiagnosticsLoadingStateView()
+        } else if displayedLines.isEmpty {
             VStack(spacing: 12) {
                 if let pagingNotice {
                     DiagnosticsNoticeView(message: pagingNotice)
@@ -32,6 +36,11 @@ struct DiagnosticsLogContentView: View {
                     HStack {
                         Text("\(selectionDescription) · 最新记录优先")
                         Spacer()
+                        if showsInlineRefreshProgress {
+                            ProgressView()
+                                .controlSize(.small)
+                                .accessibilityLabel("正在更新诊断日志")
+                        }
                         Text("\(filteredCount)/\(totalCount) 条")
                     }
                     .font(.caption)
@@ -106,6 +115,27 @@ private struct DiagnosticsNoticeView: View {
         .background(Color.orange.opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: AppRadius.control, style: .continuous))
         .accessibilityElement(children: .combine)
+    }
+}
+
+private struct DiagnosticsLoadingStateView: View {
+    var body: some View {
+        VStack(spacing: AppSpacing.tight) {
+            ProgressView()
+            Text("正在加载诊断日志")
+                .font(.body)
+                .foregroundStyle(.primary)
+                .multilineTextAlignment(.center)
+            Text("正在读取本地记录，这不是空日志。")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 40)
+        .padding(.vertical, 24)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("正在加载诊断日志")
     }
 }
 

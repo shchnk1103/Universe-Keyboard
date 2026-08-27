@@ -5,14 +5,14 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-27 Asia/Shanghai` — KOS 2.2 advisory pin Product Gate 已接受（PR #84）；`KOS-UPGRADE-UK-001` 离开 Active。诊断查看仍为 `Ready`。Active Work `4/10`。
+Last synced: `2026-08-27 Asia/Shanghai` — PR #85 CI 绿；诊断查看等 Human Product Gate。万象 v1 打点记为 TD-015，不占 Active。Active Work `4/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；首轮反馈由 Pending Task11 追踪（新手 RIME 流程、builtin 多字失败、跨地区下载）；F-03 被 Product 提前为紧急 Gate。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
-| 4 | DIAGNOSTICS-VIEWER-LOAD-001 | Ready | 加载态/空态与有界读取；等待授权实现 | [`assignment`](assignments/diagnostics-viewer-load-001.md) · [`PD`](product-decisions/DIAGNOSTICS-VIEWER-LOAD-001-authorization.md) |
+| 4 | DIAGNOSTICS-VIEWER-LOAD-001 | Active | CI 绿；Arch/Quality Pass with conditions（`5b4a0ea`）；等 Human Product Gate 后才可 merge #85 | [`assignment`](assignments/diagnostics-viewer-load-001.md) · PR [#85](https://github.com/shchnk1103/Universe-Keyboard/pull/85) · [Arch](reviews/DIAGNOSTICS-VIEWER-LOAD-001-architecture-rereview-reader-load.md) · [Quality](reviews/DIAGNOSTICS-VIEWER-LOAD-001-quality-review-reader-load.md) |
 
 ## Completed (not Active)
 
@@ -52,13 +52,14 @@ TD-012 G1 is **Closed** (see Completed table); do not re-open vendor G1 without 
 
 | Priority | Item | Notes |
 |---|---|---|
+| P1 | **[TD-015](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) 方案交付 → v1** | 万象 UI 成功但 journal 无下载/部署行；另立 Assignment，不挂高保真，不 merge #83 |
 | P1 optional | **[TD-011](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) B–D** | Diagnose / multi-schema deploy / install isolation — only if Product productizes 万象 toggles |
 | P2 optional | Device smoke TD-011 A | 高级输入 + 万象：tips 显示 `/rq`·`orq`/`V`/`R`/`U`；裸 `rq` 仍属雾凇 |
 | — | Freeze A hold | **Do not** unify fog `rq` ↔ 万象 `/rq` unless Product supersedes |
 
 **Done this arc (do not re-open as WIP):** `RIME-SCHEME-WANXIANG-001` V1 catalog/layout path; TD-009 toast name+progress (PR #53); TD-010 capability gates + prefs preserve (#51/#52); TD-011 freeze A native usage copy (#54).
 
-Debts index: [`TECH_DEBT.md`](TECH_DEBT.md) TD-009…013.
+Debts index: [`TECH_DEBT.md`](TECH_DEBT.md) TD-009…015.
 
 ## Rules
 

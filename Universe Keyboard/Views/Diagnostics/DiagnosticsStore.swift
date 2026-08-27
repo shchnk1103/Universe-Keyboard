@@ -59,6 +59,10 @@ final class DiagnosticsStore {
     private var shouldReloadAfterSearchFinishes = false
     private var pendingLogDayAfterSearch: DiagnosticsLogDay?
     private var queryRevision: UInt64 = 0
+    private var lastLiveRefreshIdentity: String?
+
+    /// Survives popping the diagnostics page so re-entry can skip an unchanged journal.
+    static let shared = DiagnosticsStore()
 
     init(
         logSource: any DiagnosticsLogSource = CompositeDiagnosticsLogSource(appGroupID: universeAppGroupID),
@@ -164,11 +168,15 @@ final class DiagnosticsStore {
         }
         guard !isLoadingMore else { return }
         invalidateSearchExpansion()
+        if !lines.isEmpty, lastLiveRefreshIdentity != nil {
+            Task { await reloadRootIfIdentityChanged() }
+            return
+        }
         let revision = advanceQueryRevision()
         isRefreshing = true
         isLoadingMore = false
         Task {
-            await replaceWithLatestPage(refreshDays: true, revision: revision)
+            await replaceWithLatestPagePeeking(refreshDays: true, revision: revision)
             guard revision == queryRevision else { return }
             isRefreshing = false
             scheduleSearchExpansionIfNeeded()
@@ -207,7 +215,7 @@ final class DiagnosticsStore {
                 isManualRefreshing = false
                 return
             }
-            await replaceWithLatestPage(refreshDays: true, revision: revision)
+            await replaceWithLatestPagePeeking(refreshDays: true, revision: revision)
             guard revision == queryRevision else {
                 isManualRefreshing = false
                 return
@@ -264,6 +272,7 @@ final class DiagnosticsStore {
                 selectedLogDay = nil
                 isPartialWindow = false
                 isFollowingLatestDay = true
+                lastLiveRefreshIdentity = nil
             } else {
                 clearFailureNotice = "未能完整清空诊断日志，请稍后重试。现有记录可能仍然存在。"
             }
@@ -326,7 +335,7 @@ final class DiagnosticsStore {
         isRefreshing = true
         clearFailureNotice = nil
         Task {
-            await replaceWithLatestPage(refreshDays: false, revision: revision)
+            await replaceWithLatestPagePeeking(refreshDays: false, revision: revision)
             guard revision == queryRevision else { return }
             isRefreshing = false
             scheduleSearchExpansionIfNeeded()
@@ -361,13 +370,43 @@ final class DiagnosticsStore {
             !isRefreshing,
             !isLoadingMore
         else { return }
+        let peekedIdentity = await liveRefreshIdentity()
+        if let peekedIdentity, peekedIdentity == lastLiveRefreshIdentity {
+            return
+        }
+        if peekedIdentity == nil, lastLiveRefreshIdentity != nil {
+            // 已有成功水位时，瞬时 identity 失败不得触发整页重解码。
+            return
+        }
         // 实时根刷新与手动根查询遵守同一 revision 边界。先占用刷新状态，
         // 避免刷新在 source await 期间又启动一个旧 cursor 的 load-more。
         let revision = advanceQueryRevision()
         isRefreshing = true
-        await replaceWithLatestPage(refreshDays: true, revision: revision)
+        await replaceWithLatestPage(
+            refreshDays: true,
+            revision: revision,
+            peekedLiveRefreshIdentity: peekedIdentity
+        )
         guard revision == queryRevision else { return }
         isRefreshing = false
+    }
+
+    private func reloadRootIfIdentityChanged() async {
+        let peekedIdentity = await liveRefreshIdentity()
+        if peekedIdentity == nil || peekedIdentity == lastLiveRefreshIdentity {
+            return
+        }
+        guard !isRefreshing, !isClearing, !isLoadingMore else { return }
+        let revision = advanceQueryRevision()
+        isRefreshing = true
+        await replaceWithLatestPage(
+            refreshDays: true,
+            revision: revision,
+            peekedLiveRefreshIdentity: peekedIdentity
+        )
+        guard revision == queryRevision else { return }
+        isRefreshing = false
+        scheduleSearchExpansionIfNeeded()
     }
 
     private func scheduleSearchExpansionIfNeeded() {
@@ -443,7 +482,20 @@ final class DiagnosticsStore {
         }
     }
 
-    private func replaceWithLatestPage(refreshDays: Bool, revision: UInt64) async {
+    private func replaceWithLatestPagePeeking(refreshDays: Bool, revision: UInt64) async {
+        let peekedIdentity = await liveRefreshIdentity()
+        await replaceWithLatestPage(
+            refreshDays: refreshDays,
+            revision: revision,
+            peekedLiveRefreshIdentity: peekedIdentity
+        )
+    }
+
+    private func replaceWithLatestPage(
+        refreshDays: Bool,
+        revision: UInt64,
+        peekedLiveRefreshIdentity: String?
+    ) async {
         if let datedSource = logSource as? any DiagnosticsDatedLogSource {
             if refreshDays || availableLogDays.isEmpty {
                 let catalog = await datedSource.availableLogDayCatalog()
@@ -498,6 +550,28 @@ final class DiagnosticsStore {
         pagingNotice = notice
         searchLimitNotice = nil
         isPartialWindow = isPartial
+        // Skip 必须绑定触发本次解码的 peek，不能在 fence 释放后再采样盘面。
+        // 轮转/锁忙的失败页没有真正展示该 peek，下一秒还必须再试。
+        if !Self.isRetryableReadFailureNotice(notice) {
+            lastLiveRefreshIdentity = peekedLiveRefreshIdentity
+        }
+    }
+
+    private static func isRetryableReadFailureNotice(_ notice: String?) -> Bool {
+        switch notice {
+        case "日志正在轮转或回收，请刷新后查看当前记录。",
+            "诊断日志暂时不可用；旧日志不会在此状态下自动混入当前视图。":
+            return true
+        default:
+            return false
+        }
+    }
+
+    private func liveRefreshIdentity() async -> String? {
+        guard let identifying = logSource as? any DiagnosticsLiveRefreshIdentifying else {
+            return nil
+        }
+        return await identifying.liveRefreshIdentity()
     }
 
     private func invalidateSearchExpansion() {
