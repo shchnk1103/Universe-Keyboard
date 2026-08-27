@@ -15,8 +15,8 @@
 - **Pin:** `shchnk1103/kos-agent-kit@v0.5.0` (`e11cbfb`)
 - **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
 - **Non-claims:** not `required`; not diagnostics implementation; not PR #83 merge
-- **First workflow:** `DIAGNOSTICS-VIEWER-LOAD-001` Active — reader-load Arch/Quality Pass with conditions（`5b4a0ea`）。等 Human Product Gate（高保真关）。不 merge、不开 `required`、不 merge PR #83
-- **Next:** 可审查 PR → Human Product Gate（诊断加载面真机复验）→ 再回到 INTEGRITY-001 万象分类。TD-014 仍待 Envelope 卫生
+- **First workflow:** `DIAGNOSTICS-VIEWER-LOAD-001` Active — PR #85 CI 绿；Arch/Quality Pass with conditions（`5b4a0ea`）。等 Human Product Gate。CI 绿 ≠ merge。不开 `required`、不 merge PR #83
+- **Next:** Human Gate → 才可 merge #85。万象 journal 缺口 = [`TD-015`](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal)，明天另立 Assignment。TD-014 仍待 Envelope 卫生
 
 ## Active Work 收敛 — 2026-08-24
 
