@@ -45,8 +45,27 @@ xcodebuild ... -destination 'platform=iOS Simulator,id=8C2943AC-AC97-432F-ACEE-B
 # TEST SUCCEEDED (4/0)
 ```
 
-Destination is `iPhone 17 Pro` (`8C2943AC-AC97-432F-ACEE-BE3DA2B9ACB2`). Host still emits known Xcode 27 / IOHIDLib messages; they are not assertion failures.
+Destination is `iPhone 17 Pro` (`8C2943AC-AC97-432F-ACEE-BE3DA2B9ACB2`, iOS 26.0). Host still emits known Xcode 27 / IOHIDLib messages; they are not assertion failures. Destination `name=iPhone 17 Pro` without id fails because multiple OS versions exist.
+
+```bash
+xcodebuild ... -configuration Debug -destination 'platform=iOS Simulator,id=8C2943AC-AC97-432F-ACEE-BE3DA2B9ACB2' build
+# BUILD SUCCEEDED
+
+xcodebuild ... -configuration Release -destination 'platform=iOS Simulator,id=8C2943AC-AC97-432F-ACEE-BE3DA2B9ACB2' build
+# BUILD SUCCEEDED
+
+xcrun swift-format lint --strict --configuration .swift-format \
+  "Universe Keyboard/Views/Diagnostics/DiagnosticsStore.swift" \
+  UniverseKeyboardTests/DiagnosticsStoreTests.swift
+# passed
+
+KOS_AS_OF=2026-08-27T22:30:00+08:00 bash /Users/doubleshy0n/Dev/kos-agent-kit/scripts/validate-kos.sh \
+  "/Users/doubleshy0n/Dev/Universe Keyboard"
+# PASS KOS2000（advisory；不等于 Gate）
+```
+
+Independent Architecture re-review of `ec5e8e9`: Pass（P0=0 · P1=0）。Independent Quality: Pass with conditions（P0=0 · P1=0）。
 
 ## Non-claims
 
-Not Architecture/Quality Pass. Not Human device retest. Not PR #83 merge. Not `required`.
+Not Human device retest. Not PR #83 merge. Not `required`. Not Assignment Close. Full `DiagnosticsStoreTests` / RimeBridgeTests / Universe Keyboard scheme tests were not re-run as a CI-parity suite.

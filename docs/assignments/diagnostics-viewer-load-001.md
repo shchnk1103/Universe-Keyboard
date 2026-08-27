@@ -7,9 +7,9 @@
   "record_type": "assignment",
   "title": "Diagnostics viewer load state and bounded read",
   "lifecycle": "active",
-  "current_phase": "Human authorized implementation of load versus empty states",
+  "current_phase": "Independent Architecture Pass and Quality Pass with conditions recorded; waiting reviewable PR and Human Product Gate",
   "authorization_action": "implement",
-  "updated_at": "2026-08-27T21:30:00+08:00",
+  "updated_at": "2026-08-27T22:40:00+08:00",
   "revalidation_triggers": ["scope_changed", "implement_authorization_changed"],
   "authorization_refs": ["AUTH-DIAGNOSTICS-VIEWER-LOAD-001-IMPLEMENT"],
   "parent_refs": ["KOS-UPGRADE-UK-001"],
@@ -34,9 +34,9 @@
 | Field | Value |
 |---|---|
 | Lifecycle | active |
-| Current Phase | Human authorized implementation of load versus empty states |
-| Material non-claims | No PR #83 merge; no scheme-download fix; no raised read budget |
-| Next handoff / decision | Implement load UX, tests, then independent Architecture/Quality |
+| Current Phase | Independent Architecture Pass and Quality Pass with conditions recorded; waiting reviewable PR and Human Product Gate |
+| Material non-claims | No PR #83 merge; no scheme-download fix; no raised read budget; no merge without Human Product Gate |
+| Next handoff / decision | Open a reviewable PR; Human 真机复验诊断加载面；然后 INTEGRITY-001 万象分类 |
 | Residuals | AUTH establish-assignment is consumed; TD-014 remaining if KOS-UPGRADE AUTH still needs follow-up |
 
 ---
@@ -104,3 +104,4 @@
 
 - `2026-08-27 Asia/Shanghai`: Human Product Lead 同意先修诊断查看再复测万象，并指示按 KOS 推进。Assignment 记为 `Ready`；实现未开始。
 - `2026-08-27 Asia/Shanghai`: Human Product Owner 授权按 KOS 2.2 开始改诊断加载空态。`AUTH-DIAGNOSTICS-VIEWER-LOAD-001-IMPLEMENT` 签发；lifecycle `active`。
+- `2026-08-27 Asia/Shanghai`: 实现 `878b02a`；Architecture `Pass with conditions`（A-P1-01）；peek-bind 修复 `ec5e8e9`；Architecture 复审 **Pass**（P0=0 · P1=0）；Quality **Pass with conditions**（P0=0 · P1=0）。IMPLEMENT AUTH 仍 `unconsumed`（TD-014）。不授权 merge。
