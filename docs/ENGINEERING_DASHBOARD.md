@@ -2,11 +2,21 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-24 Asia/Shanghai
+> **Updated:** 2026-08-27 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## KOS 2.2 advisory pin — 2026-08-27
+
+- **Lifecycle:** `KOS-UPGRADE-UK-001` `Reviewed` — Product Gate accepted
+- **Authority:** [`PD`](product-decisions/KOS-UPGRADE-UK-001-authorization.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-001-product-gate.md) · [`Assignment`](assignments/kos-upgrade-uk-001.md)
+- **Pin:** `shchnk1103/kos-agent-kit@v0.5.0` (`e11cbfb`)
+- **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
+- **Non-claims:** not `required`; not diagnostics implementation; not PR #83 merge
+- **First workflow:** `DIAGNOSTICS-VIEWER-LOAD-001` Ready, waiting 授权实现
+- **Next:** merge PR #84; then TD-014 on a later Envelope hygiene pass
 
 ## Active Work 收敛 — 2026-08-24
 
