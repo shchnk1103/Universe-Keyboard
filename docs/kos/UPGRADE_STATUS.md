@@ -10,7 +10,7 @@
 | Last checked at | `2026-08-27T19:50:00+08:00` |
 | Upgrade owner | Human Product Owner |
 | Current disposition | Adopted — advisory only |
-| Next review | Before enabling `required`, or when a newer Kit Release appears |
+| Next review | Before enabling `required`; when fixing [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生); or when a newer Kit Release appears |
 | Latest decision record | [`KOS-UPGRADE-UK-001-v0.5.0`](upgrade-records/KOS-UPGRADE-UK-001-v0.5.0.md) |
 
 ---

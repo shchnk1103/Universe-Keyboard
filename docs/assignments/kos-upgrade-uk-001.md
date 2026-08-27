@@ -6,10 +6,10 @@
   "record_id": "KOS-UPGRADE-UK-001",
   "record_type": "assignment",
   "title": "Adopt KOS Agent Kit v0.5.0 in advisory mode",
-  "lifecycle": "active",
-  "current_phase": "Advisory Profile and first enveloped workflow recorded; required mode not authorized",
+  "lifecycle": "reviewed",
+  "current_phase": "Product Gate accepted; P2 recorded as TD-014; merge of PR 84 authorized",
   "authorization_action": "adopt_kos_2_2_advisory",
-  "updated_at": "2026-08-27T19:50:00+08:00",
+  "updated_at": "2026-08-27T20:15:00+08:00",
   "revalidation_triggers": ["kit_release_changed", "mode_changed", "scope_changed"],
   "authorization_refs": ["AUTH-KOS-UPGRADE-UK-001"],
   "responsibilities": {
@@ -28,11 +28,11 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | active |
-| Current Phase | Advisory Profile and first enveloped workflow recorded; required mode not authorized |
-| Material non-claims | Not required mode; not Universe Keyboard product-code change; not PR #83 merge |
-| Next handoff / decision | Independent review of this advisory pin; diagnostics implementation remains a separate authorization |
-| Residuals | Historical Markdown without envelopes stays outside the include glob |
+| Lifecycle | reviewed |
+| Current Phase | Product Gate accepted; P2 recorded as TD-014; merge of PR 84 authorized |
+| Material non-claims | Not required mode; not diagnostics implementation; not PR #83 merge |
+| Next handoff / decision | Merge PR #84; Envelope hygiene for AUTH consumption is TD-014 |
+| Residuals | [`residual table`](#residual-disposition) |
 
 ---
 
@@ -66,10 +66,24 @@
 
 ## Handoff
 
-- Handoff Target: Architecture Reviewer, then Quality Reviewer, then Human Product Owner.
-- Required Handoff Content: kit tag, Profile, include glob, validator command and advisory output, first workflow record IDs.
-- Revalidation Trigger: new Kit Release, mode change to `required`, or include-glob expansion.
+- Handoff Target: Human Product Owner after merge of PR #84; Envelope hygiene owner is Architecture & Knowledge Steward via TD-014.
+- Required Handoff Content: kit tag, Profile, include glob, validator command and advisory output, first workflow record IDs, residual table.
+- Revalidation Trigger: new Kit Release, mode change to `required`, include-glob expansion, or TD-014 close.
+
+## Residual Disposition
+
+| ID | Owner | Disposition | Pointer |
+|---|---|---|---|
+| A-P2-01 | Architecture & Knowledge Steward | `tech_debt:TD-014` | [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) · AUTH `consumption_state` still `unconsumed` after bounded actions landed |
+| A-P2-02 | Main App UI | `accept` | Open Gate may bind entry screenshots; closing it needs implementation evidence and an independent closure Decision |
+| A-P2-03 | Architecture & Knowledge Steward | `accept` | `parent_refs` to the upgrade Assignment is lineage only, not implement authorization |
+| A-P3-01 | Program Manager | `accept` | Dashboard 2026-08-24 `3/10` snapshot vs current Active Work; Dashboard is not SoT |
+| A-P3-02 / Q-P3-01 | Environment Executor | `accept` | Validator evidence binds Kit commit + Profile, not UK `f580613`; Quality re-ran at that checkout |
+| A-P3-03 | Architecture & Knowledge Steward | `accept` | Advisory Gate `evidence_reviewer` is the executor session; independence lives in the review files |
+| Q-P3-02 | Architecture & Knowledge Steward | `accept` | Architecture/Quality review files are not in the include glob |
 
 ## History
 
 - `2026-08-27 Asia/Shanghai`: Human Product Owner instructed completing Universe Keyboard 2.2 connection after Kit `v0.5.0`. Lifecycle `active` for advisory pin only.
+- `2026-08-27 Asia/Shanghai`: Independent Architecture **Pass with conditions** (P0=0/P1=0) and Quality **Pass with conditions** (P0=0/P1=0) of `f580613`.
+- `2026-08-27 Asia/Shanghai`: Human Product Owner accepted the advisory pin and authorized merge of PR #84, requiring P2 to be recorded first. A-P2-01 is `tech_debt:TD-014`; remaining P2/P3 are `accept`. Lifecycle `reviewed`. Merge does not enable `required` or diagnostics implementation.
