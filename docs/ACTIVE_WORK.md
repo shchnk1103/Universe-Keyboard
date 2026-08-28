@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-28 Asia/Shanghai` — #83 已并入当前 `main`；方案完整性 ADR 重编号为 0032。核心 Active Work 为 `5/10`。TD-015 journal 按 Human 授权随后另立 Assignment。
+Last synced: `2026-08-28 Asia/Shanghai` — #83 已并入当前 `main`；方案完整性 ADR 为 0032；TD-015 journal Assignment 已 Active。核心 Active Work 为 `6/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -13,7 +13,8 @@ Last synced: `2026-08-28 Asia/Shanghai` — #83 已并入当前 `main`；方案�
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 4 | RIME-SCHEME-DELIVERY-001 | Review | Human 真机万象完整性失败尚未分类；先处理 INTEGRITY-001，再继续稳定套件、大陆网络、acceptable-use 与 Product Gate | [`assignment`](assignments/rime-scheme-delivery-001.md) · [`failure`](evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) · [`PD`](product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) |
-| 5 | RIME-SCHEME-DELIVERY-INTEGRITY-001 | Active | 已并入当前 `main`；ADR 重编号为 0032；待 TD-015 journal、hosted full-path 与大陆蜂窝真机 Product Gate | [`assignment`](assignments/rime-scheme-delivery-integrity-001.md) · [`evidence`](evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md) · [`ADR 0032`](architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md) |
+| 5 | RIME-SCHEME-DELIVERY-INTEGRITY-001 | Active | 已并入当前 `main`；ADR 0032；待 hosted full-path 与大陆蜂窝真机 Product Gate | [`assignment`](assignments/rime-scheme-delivery-integrity-001.md) · [`evidence`](evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md) · [`ADR 0032`](architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md) |
+| 6 | SCHEME-DELIVERY-JOURNAL-001 | Active | 把 #83 已有 v1 `scheme_delivery.*` 收口为 TD-015；Human 复测搜索 `scheme_delivery` / `wanxiang` | [`assignment`](assignments/scheme-delivery-journal-001.md) · [`TD-015`](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) |
 
 ## Completed (not Active)
 
@@ -57,7 +58,7 @@ TD-012 G1 is **Closed** (see Completed table); do not re-open vendor G1 without 
 
 | Priority | Item | Notes |
 |---|---|---|
-| P1 | **[TD-015](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) 方案交付 → v1** | Human 已授权另立 Assignment；#83 已有 v1 打点骨架，需正式 Assignment、测试与 Human 复测 |
+| P1 | **[TD-015](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) 方案交付 → v1** | Assignment `SCHEME-DELIVERY-JOURNAL-001` Active；Human 复测前不要合 #83 |
 | P2 | **[TD-016](TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁) required-check trust root** | 实现已合入；A-P2-02 仍待另行授权，未改 required checks |
 | P1 optional | **[TD-011](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) B–D** | Diagnose / multi-schema deploy / install isolation — only if Product productizes 万象 toggles |
 | P2 optional | Device smoke TD-011 A | 高级输入 + 万象：tips 显示 `/rq`·`orq`/`V`/`R`/`U`；裸 `rq` 仍属雾凇 |

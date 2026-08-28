@@ -1073,6 +1073,12 @@ final class SchemaManagerTests: XCTestCase {
         )
 
         XCTAssertFalse(recordingDiagnostics.recordedPayloads().isEmpty)
+        XCTAssertTrue(
+            recordingDiagnostics.recordedPayloads().contains {
+                guard case .phaseChanged(let event) = $0 else { return false }
+                return event.phase == .downloading && event.result == .started
+            }
+        )
         XCTAssertEqual(recorded.source.id, dropped.source.id)
         XCTAssertEqual(
             recordingDownloader.requestedSourceIDs(),

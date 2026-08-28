@@ -483,6 +483,49 @@ final class SchemaArtifactSecurityTests: XCTestCase {
         XCTAssertTrue(line.contains("integrity=archive_digest"))
         XCTAssertFalse(line.contains("/var"))
         XCTAssertFalse(line.contains("https://"))
+        XCTAssertTrue(line.contains("scheme_delivery.integrity_failed"))
+        XCTAssertTrue(line.contains("wanxiang"))
+    }
+
+    func testSchemeDeliveryPhaseLinesAreSearchableWithoutChineseFreeText() {
+        let context = DiagnosticEvent.SchemeDeliveryContext(
+            operationID: UUID(),
+            artifact: .wanxiang1759CNB9BFCGitHub73F8,
+            stagedIdentity: .wanxiang1759Plan1Post1
+        )
+        func line(phase: DiagnosticEvent.SchemeDeliveryPhase) -> String {
+            DiagnosticsEventDisplayFormatter.line(
+                DiagnosticEvent(
+                    utcTimestamp: Date(timeIntervalSince1970: 0),
+                    monotonicNanoseconds: 1,
+                    origin: .mainApp,
+                    processInstanceID: UUID(),
+                    localSequence: 1,
+                    code: .schemeDeliveryPhaseChanged,
+                    level: .info,
+                    category: .deployment,
+                    schemeDeliveryPayload: .phaseChanged(
+                        .init(
+                            context: context,
+                            attempt: DiagnosticEvent.SchemeDeliveryAttempt(1)!,
+                            source: .github,
+                            host: .github,
+                            phase: phase,
+                            result: .started
+                        )
+                    )
+                )
+            )
+        }
+
+        let downloading = line(phase: .downloading)
+        let deploying = line(phase: .deploying)
+        XCTAssertTrue(downloading.contains("scheme_delivery.phase_changed"))
+        XCTAssertTrue(downloading.contains("phase=downloading"))
+        XCTAssertTrue(downloading.contains("wanxiang"))
+        XCTAssertTrue(deploying.contains("phase=deploying"))
+        XCTAssertFalse(downloading.contains("万象"))
+        XCTAssertFalse(deploying.contains("/tmp"))
     }
 
     func testCleanupFailsClosedWhenExistenceCheckFails() async throws {

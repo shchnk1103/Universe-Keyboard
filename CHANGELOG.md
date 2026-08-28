@@ -2,6 +2,11 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-28 — 方案交付 PR #83 并入当前 main 并重编号 ADR 0032
+
+- PR #83 分支合并当前 `main`。CI 分级保持 ADR 0031；方案完整性合同改为 ADR 0032。
+- 另立 `SCHEME-DELIVERY-JOURNAL-001`（TD-015）：v1 使用已有 `scheme_delivery.*` payload。不授权合并 #83。
+
 ## 2026-08-28 — CI 变更分级完成 full-path 托管验证
 
 - 新增 fail-closed 变更分类：仅根目录 Markdown、`docs/**` 与 `.kos/**` 可走轻量路径，任何源码、工程、测试、资源、脚本、workflow 或未知路径均运行完整 Swift 6 门禁。
