@@ -7,7 +7,7 @@
   "record_type": "decision",
   "title": "Implement fail-closed CI change classification",
   "status": "accepted",
-  "updated_at": "2026-08-28T20:15:00+08:00",
+  "updated_at": "2026-08-28T20:25:00+08:00",
   "revalidation_triggers": ["scope_changed", "workflow_contract_changed", "required_checks_changed"],
   "decision": {
     "authority_role": "Human Product Owner",
@@ -24,9 +24,9 @@
 | Field | Value |
 |---|---|
 | Status | accepted |
-| Current phase | Hosted full-path and docs-only fixture recorded; awaiting independent revalidation |
-| Material non-claims | No merge; no branch-protection/required-check mutation; no KOS required mode; no secret |
-| Next decision | Independent Architecture and Quality revalidation, then Human Product Owner for stacked PR disposition and merge |
+| Current phase | Independent revalidation recorded; awaiting Human stacked-PR and merge decision |
+| Material non-claims | No merge; no branch-protection/required-check mutation; no KOS required mode; no secret; ADR 0031 remains Proposed |
+| Next decision | Human Product Owner for stacked PR disposition and merge |
 | Residuals | [`TD-016`](../TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁) |
 
 ---

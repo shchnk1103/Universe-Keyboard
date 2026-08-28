@@ -36,4 +36,39 @@
 
 ## Revalidation
 
-Pending. 修复前的完整只读结论由本文件冻结；复核结果追加在本文件，不覆盖原 Verdict。
+首次只读结论冻结于上文 Verdict，不覆盖。复核见下方
+[`## Revalidation — 2026-08-28 (post-0623e7c)`](#revalidation--2026-08-28-post-0623e7c)。
+
+## Revalidation — 2026-08-28 (post-0623e7c)
+
+| Field | Value |
+|---|---|
+| Reviewer | `td016_arch_review` |
+| Frozen implementation | `0623e7c` |
+| Hosted full-path | [`33168928860`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33168928860) |
+| Docs-only fixture | PR [#88](https://github.com/shchnk1103/Universe-Keyboard/pull/88) / [`33169007898`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33169007898) (closed without merge) |
+| Independence | 只读核对；仅改本文件的原 Revalidation 指针并追加本段 |
+
+### Verdict
+
+**Pass with conditions** — 首次全部 `fix` 项已关闭；A-P2-02 仍为 `tech_debt:TD-016`。本复核不授权 merge、required checks、ADR Accepted 或 Product Accept。
+
+### Condition disposition
+
+| ID | previous | current | evidence |
+|---|---|---|---|
+| A-P1-01 | `fix` | `closed` | [`docs/evidence/td-016-ci-tiering-001-implementation-2026-08-28.md`](../evidence/td-016-ci-tiering-001-implementation-2026-08-28.md) 与 [`docs/evidence/td-016-docs-only-hosted-fixture-2026-08-28.md`](../evidence/td-016-docs-only-hosted-fixture-2026-08-28.md) 结果表 Grade 均为 KOS M-04 允许的 `Executor-recorded`；`td-016*` 路径已无 `CI-recorded`。 |
+| A-P1-02 | `fix` | `closed` | `0623e7c` 已把 `b000c91` / run [`33166502457`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33166502457) 写入 Evidence；卫生提交 `ef200bb` 再同步 `0623e7c`、[`33168928860`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33168928860)、#88 / [`33169007898`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33169007898)。[`CHANGELOG.md`](../../CHANGELOG.md) 现列出上述三次 full-path 与 docs-only skip；Pending 仅余独立复核、Human merge 与未授权 required-check。 |
+| A-P1-03 | `fix` | `closed` | [`docs/product-decisions/TD-016-CI-TIERING-001-authorization.md`](../product-decisions/TD-016-CI-TIERING-001-authorization.md) Current Status 含 Current phase、Material non-claims、Next decision、Residuals；`0623e7c` 已引入该表。 |
+| A-P1-04 | `fix` | `closed` | `0623e7c` 对 [`.github/workflows/swift6-quality.yml`](../../.github/workflows/swift6-quality.yml)：`workflow_dispatch.inputs.base_sha` 为 `required`；空/全零 SHA 与非 PR/push/dispatch 事件 `exit 2`；删除 classify 与 Swift format 的 `HEAD^` 回退。[`docs/CI_CHANGE_CLASSIFICATION.md`](../CI_CHANGE_CLASSIFICATION.md) 写明不得用 `HEAD^` 推断分支范围。Hosted full-path [`33168928860`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33168928860) 在 `0623e7c` 上 success（`head_sha=0623e7c`；Evidence 记 merge-ref `5ac87db`）。 |
+| A-P2-01 | `fix` | `closed` | [`scripts/ci/run_lightweight_checks.sh`](../../scripts/ci/run_lightweight_checks.sh) 的 `kos_governance_paths` 含 `docs/kos/UPGRADE_STATUS.md` 与 `docs/kos/upgrade-records`；[`scripts/ci/tests/test_kos_trigger_paths.sh`](../../scripts/ci/tests/test_kos_trigger_paths.sh) 断言这三项。目录 [`docs/kos/upgrade-records/`](../kos/upgrade-records/) 存在。 |
+| A-P2-02 | `tech_debt:TD-016` | `tech_debt:TD-016` | 仓库仍无 CODEOWNERS、无 `.github` reusable workflow、无 baseline-owned 校验器。`classify-change` / `lightweight-checks` / `final-quality-gate` 均 `actions/checkout@v4` 后执行 PR head 脚本。[`docs/CI_CHANGE_CLASSIFICATION.md`](../CI_CHANGE_CLASSIFICATION.md) 与 [`docs/TECH_DEBT.md`](../TECH_DEBT.md) TD-016 residual 仍声明此点。当前绿色不能当 required-check trust root。 |
+| A-P2-03 | `fix` | `closed` | PR [#87](https://github.com/shchnk1103/Universe-Keyboard/pull/87) 正文现含 KOS S-02 所需 `Stack: base=codex/td016-ci-classification-note tip=codex/td016-ci-tiering` 与 `Prefix PR: #86`；base SHA 为 `6bf7017`。 |
+
+### Remaining residuals
+
+- **A-P2-02 / TD-016：** 未来若把 `final-quality-gate` 设为 required，必须另行授权并增加独立 trust root（CODEOWNERS/强制审查、受保护 reusable workflow 或等价 baseline-owned guard）。
+- **KOS Kit：** 远端完整 validator 仍因私有 Kit、无 PAT 而未接入；CI 仅 JSON/链接/显式 NOTE。此残余原 ADR 已声明，不是新 `fix`。
+- **ADR 0031：** 仍为 Proposed；本复核不把它升为 Accepted。
+- **权限边界：** 不授权 merge、branch protection、required checks、Product Accept 或把 #87 并入 #86。#88 已 close without merge（`merged_at=null`），只作 docs-only 证据。
+- **本 Architecture 复核范围外：** Quality revalidation 仍待同一独立 Quality reviewer；本文件不关闭 Quality 条件。

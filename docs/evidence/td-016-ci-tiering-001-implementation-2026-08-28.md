@@ -44,7 +44,7 @@
 
 - **Evidence grade:** `Executor-recorded`
 - **Coverage:** local deterministic checks, GitHub Actions full-path execution for implementation snapshot `8f5d76e`, evidence-sync snapshot `b000c91` and remediation snapshot `0623e7c`, plus hosted docs-only fixture `bd4b6eb` on temporary PR #88
-- **Current conclusion:** hosted full-path and hosted docs-only skip paths are recorded. Independent Architecture/Quality revalidation remains required, so this evidence does not yet permit the fail-closed Claim, merge, required-check migration or Product acceptance
+- **Current conclusion:** hosted full-path and hosted docs-only skip paths are recorded. Independent Architecture revalidation is Pass with conditions; Quality revalidation is Pass. This still does not permit the fail-closed Claim, merge, required-check migration or Product acceptance
 
 ## Results So Far
 
@@ -75,9 +75,9 @@
 
 ## Pending Before Claim
 
-- Independent Architecture and Quality revalidation of the remediation commit and hosted docs-only fixture.
 - Human Product Owner decision on stacked PR disposition and merge.
-- Required-check migration remains separately unauthorized.
+- Required-check migration remains separately unauthorized (`tech_debt:TD-016` / A-P2-02).
+- The fail-closed Claim is not permitted by executor evidence or independent revalidation alone.
 
 ## Local Environment Qualification
 
