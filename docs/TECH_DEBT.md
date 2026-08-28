@@ -280,7 +280,7 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
   3. Swift、测试、Package/Xcode 工程、RIME/Lua/词典、Assets/AppIcon、构建脚本、workflow，以及任何未知路径均运行完整 Swift 6 门禁；未知分类必须 fail closed。
   4. 使用始终运行的聚合 `final-quality-gate` 处理“重任务合法 skipped”，避免 required check 因整个 workflow 被 paths-ignore 而悬空。
   5. 为同一 PR 设置 `concurrency` + `cancel-in-progress`，取消旧提交的过期运行；AI 默认推送后交回，不做高频轮询。
-- **Current status (`2026-08-28`):** Human Product Owner 已授权 [`TD-016-CI-TIERING-001`](assignments/td-016-ci-tiering-001.md) 并进入 Active。实现位于独立堆叠分支：严格 docs/KOS allowlist、始终运行的轻量检查、条件 heavy job、稳定 final Gate 与 stale-run cancellation。`main` 当前无 branch protection；未修改 required checks。私有 KOS Kit 无无密钥的远端分发路径，完整 validator 暂保持本地 merge 前门禁并作为显式残余。
+- **Current status (`2026-08-28`):** Human Product Owner 已授权 [`TD-016-CI-TIERING-001`](assignments/td-016-ci-tiering-001.md) 并进入 Active。实现位于独立堆叠 PR #87：严格 docs/KOS allowlist、始终运行的轻量检查、条件 heavy job、稳定 final Gate 与 stale-run cancellation；托管 full-path run [`33165797218`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33165797218) 已全绿。docs-only 托管 fixture 与独立 review 仍待完成。`main` 当前无 branch protection；未修改 required checks。私有 KOS Kit 无无密钥的远端分发路径，完整 validator 暂保持本地 merge 前门禁并作为显式残余。
 - **Owner area:** Quality, Performance & Release Maintainer（CI/test selection）+ Architecture & Knowledge Steward（KOS/治理分类边界）。
 - **Trigger to resolve:** 托管 full-path 运行与独立 Architecture/Quality review 完成后交回 Human；另以 docs-only 托管 fixture 验证轻量路径，之后才能单独讨论 required-check 迁移。
 - **Related:** `.github/workflows/swift6-quality.yml`、`docs/ASSIGNMENT_POLICY.md`、KOS 2.2 advisory、TD-014。

@@ -7,7 +7,7 @@
   "record_type": "evidence",
   "title": "Fail-closed CI tiering implementation evidence",
   "status": "current",
-  "updated_at": "2026-08-28T19:03:00+08:00",
+  "updated_at": "2026-08-28T19:15:00+08:00",
   "revalidation_triggers": ["implementation_changed", "hosted_run_available", "required_checks_changed", "classification_table_changed"],
   "evidence": {
     "provenance": "executor_recorded",
@@ -16,13 +16,14 @@
     "operator_ref": "Current Codex session",
     "reviewer_ref": null,
     "coverage": "focused",
-    "observed_at": "2026-08-28T19:03:00+08:00",
+    "observed_at": "2026-08-28T19:15:00+08:00",
     "valid_until": null,
     "artifact_bindings": [
       {"kind": "file", "identity": ".github/workflows/swift6-quality.yml"},
       {"kind": "file", "identity": "scripts/ci/classify_changes.py"},
       {"kind": "file", "identity": "scripts/ci/run_lightweight_checks.sh"},
-      {"kind": "file", "identity": "docs/CI_CHANGE_CLASSIFICATION.md"}
+      {"kind": "file", "identity": "docs/CI_CHANGE_CLASSIFICATION.md"},
+      {"kind": "commit", "identity": "8f5d76e"}
     ],
     "permits_claim_ids": [],
     "prohibits_claim_ids": ["CLAIM.CI.TIERING_FAIL_CLOSED"]
@@ -39,8 +40,8 @@
 ---
 
 - **Evidence grade:** `Executor-recorded`
-- **Coverage:** local classifier/checker fixtures, pinned KOS validation, package/bridge tests and Debug/Release builds
-- **Current conclusion:** implementation and deterministic local checks are complete; hosted workflow behavior and independent reviews remain required, so this evidence does not yet permit the fail-closed Claim
+- **Coverage:** local deterministic checks and GitHub Actions full-path execution for commit `8f5d76e`
+- **Current conclusion:** implementation and hosted full-path behavior are verified; docs-only hosted behavior and independent reviews remain required, so this evidence does not yet permit the fail-closed Claim
 
 ## Results So Far
 
@@ -59,12 +60,15 @@
 | App + Keyboard tests | `Executor-recorded` | Environment-blocked: KeyboardTests passed 11/11; 13 main-App tests were interrupted by repeated Xcode 27 beta simulator host crashes (`pointer being freed was not allocated`) and an incompatible IOHID simulator plug-in; xcresult: `Test-Universe Keyboard-2026.08.28_18-57-38-+0800.xcresult` |
 | Debug simulator build | `Executor-recorded` | Pass with Swift 6 strict concurrency and warnings-as-errors |
 | Release simulator build | `Executor-recorded` | Pass with Swift 6 strict concurrency and warnings-as-errors |
+| Hosted classifier | `CI-recorded` | Pass in 6s; the implementation diff selected `full` |
+| Hosted lightweight checks | `CI-recorded` | Pass in 4s |
+| Hosted full Swift gate | `CI-recorded` | Pass in 8m22s; vendor, format, KeyboardCore, RimeBridge, App/Keyboard tests, Debug and Release all green |
+| Hosted final Gate | `CI-recorded` | Pass in 5s; run [`33165797218`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33165797218) |
 
 ## Pending Before Claim
 
 - Actual TD-016 committed diff must classify `full` because it changes workflow and `scripts/ci/**`.
 - The common lightweight runner must pass against the committed diff with the pinned local KOS validator.
-- GitHub hosted run must show classifier/lightweight/full/final results on the implementation PR.
 - A docs-only hosted fixture is still required before any future required-check migration.
 - Independent Architecture and Quality review remain pending.
 
@@ -74,8 +78,9 @@ The local App test failure is not accepted as a green Gate and is not attributed
 changes no Swift, project, test or product resource file. The same run repeatedly restarted the test
 host after allocator crashes and reported that the iOS 26 simulator could not load the arm64 IOHID
 plug-in supplied by the Xcode 27 beta host. Package/bridge tests and both product builds passed.
-Therefore the local App suite remains explicitly unresolved, while the stable GitHub `macos-26`
-hosted run is the required environment evidence before review can advance.
+The stable GitHub `macos-26` run subsequently passed the complete App/Keyboard suite. This resolves
+the local environment uncertainty for commit `8f5d76e`; it does not convert the crashed local run
+into a pass or substitute for the still-pending docs-only hosted fixture.
 
 ## Explicit Residual
 

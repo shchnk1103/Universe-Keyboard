@@ -7,9 +7,9 @@
   "record_type": "assignment",
   "title": "Fail-closed CI change classification and stable final gate",
   "lifecycle": "active",
-  "current_phase": "Implementation and local validation complete; awaiting hosted run and independent reviews",
+  "current_phase": "Implementation and hosted full-path validation complete; awaiting docs-only fixture and independent reviews",
   "authorization_action": "implement_ci_tiering",
-  "updated_at": "2026-08-28T19:03:00+08:00",
+  "updated_at": "2026-08-28T19:15:00+08:00",
   "revalidation_triggers": ["scope_changed", "workflow_contract_changed", "required_checks_changed", "kos_kit_distribution_changed"],
   "authorization_refs": ["AUTH-TD-016-CI-TIERING-001"],
   "parent_refs": ["KOS-2-2-DOC-ALIGN-001"],
@@ -34,7 +34,7 @@
 | Field | Value |
 |---|---|
 | Lifecycle | active |
-| Current Phase | Implementation and local validation complete; awaiting hosted run and independent reviews |
+| Current Phase | Implementation and hosted full-path validation complete; awaiting docs-only fixture and independent reviews |
 | Material non-claims | No weakened full gate; no branch-protection/required-check mutation; no secret; no KOS required; no merge; no automatic inclusion in PR #86 |
 | Next handoff / decision | Independent Architecture and Quality review, then Human decides stacked PR disposition and merge |
 | Residuals | Private KOS Kit distribution prevents reliable remote full validator without a new distribution/credential decision; local pinned validator remains required for KOS-governance changes |
@@ -86,3 +86,4 @@
 
 - `2026-08-28 Asia/Shanghai`: Human Product Owner authorized TD-016 implementation and requested a later decision about PR #86 packaging. Branch-protection read-only audit returned no protection on `main`; KOS Kit repository visibility is private. Assignment entered `Active` on an isolated stacked branch.
 - `2026-08-28 Asia/Shanghai`: Classifier, lightweight checks, conditional heavy job and stable final Gate were implemented. Deterministic script tests, KeyboardCore, RimeBridge and Debug/Release builds passed locally. The Xcode 27 beta/iOS 26 simulator App test host crashed repeatedly with an allocator/IOHID compatibility error; hosted CI remains the decisive full-path environment.
+- `2026-08-28 Asia/Shanghai`: GitHub Actions run [`33165797218`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33165797218) passed `classify-change`, `lightweight-checks`, the complete `build-and-test` suite and `final-quality-gate`. The hosted App/Keyboard suite passed, resolving the local beta-simulator uncertainty for this commit. Docs-only hosted fixture and independent reviews remain pending.
