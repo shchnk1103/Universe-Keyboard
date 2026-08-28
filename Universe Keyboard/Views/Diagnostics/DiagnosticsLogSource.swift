@@ -382,14 +382,17 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
     }
 }
 
-private enum DiagnosticsEventDisplayFormatter {
+enum DiagnosticsEventDisplayFormatter {
     nonisolated static func line(_ event: DiagnosticEvent) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm:ss.SSS"
         let timestamp = formatter.string(from: event.utcTimestamp)
         let fields = event.fields.map(fieldDescription).joined(separator: " ")
         let action = event.actionSequence.map { "action=\($0)" }
-        let details = ([action].compactMap { $0 } + (fields.isEmpty ? [] : [fields])).joined(separator: " ")
+        let delivery = event.schemeDeliveryPayload.map(schemeDeliveryDescription)
+        let details =
+            ([action, delivery].compactMap { $0 } + (fields.isEmpty ? [] : [fields]))
+            .joined(separator: " ")
         let suffix = details.isEmpty ? "" : " \(details)"
         return "[\(timestamp)] [\(event.level.rawValue)] [\(event.category.rawValue)] \(event.code.rawValue)\(suffix)"
     }
@@ -410,5 +413,60 @@ private enum DiagnosticsEventDisplayFormatter {
         case let .reason(reason):
             return "reason=\(reason.rawValue)"
         }
+    }
+
+    private nonisolated static func schemeDeliveryDescription(
+        _ payload: DiagnosticEvent.SchemeDeliveryPayload
+    ) -> String {
+        switch payload {
+        case .phaseChanged(let event):
+            return deliveryPrefix(event.context)
+                + " phase=\(event.phase.rawValue) result=\(event.result.rawValue)"
+                + deliveryAttemptSourceHost(event.attempt, event.source, event.host)
+        case .integrityFailed(let event):
+            let observation: String
+            switch event.observation {
+            case .archiveSize(let expected, let actual):
+                observation = "integrity=archive_size expected=\(expected) actual=\(actual)"
+            case .archiveDigest(let expected, let actual):
+                observation =
+                    "integrity=archive_digest expected=\(expected.value) actual=\(actual.value)"
+            case .stagedContent(let expected, let actual):
+                observation =
+                    "integrity=staged_content expected=\(expected.value) actual=\(actual.value)"
+            }
+            return deliveryPrefix(event.context) + " phase=\(event.phase.rawValue) \(observation)"
+                + deliveryAttemptSourceHost(event.attempt, event.source, event.host)
+        case .fallback(let event):
+            return deliveryPrefix(event.context)
+                + " from_attempt=\(event.fromAttempt.value) from=\(event.from.rawValue)"
+                + " to_attempt=\(event.toAttempt.value) to=\(event.to.rawValue)"
+                + " reason=\(event.reason.rawValue)"
+        case .terminal(let event):
+            return deliveryPrefix(event.context) + " result=\(event.result.rawValue)"
+                + " installed=\(event.installed) deployed=\(event.deployed)"
+                + (event.failure.map { " failure=\($0.rawValue)" } ?? "")
+        }
+    }
+
+    private nonisolated static func deliveryPrefix(
+        _ context: DiagnosticEvent.SchemeDeliveryContext
+    ) -> String {
+        "operation=\(context.operationID.uuidString.lowercased())"
+            + " artifact=\(context.artifact.rawValue)"
+            + " staged=\(context.stagedIdentity.rawValue)"
+    }
+
+    private nonisolated static func deliveryAttemptSourceHost(
+        _ attempt: DiagnosticEvent.SchemeDeliveryAttempt?,
+        _ source: DiagnosticEvent.SchemeSource?,
+        _ host: DiagnosticEvent.SchemeHost?
+    ) -> String {
+        let values = [
+            attempt.map { "attempt=\($0.value)" },
+            source.map { "source=\($0.rawValue)" },
+            host.map { "host=\($0.rawValue)" },
+        ].compactMap { $0 }
+        return values.isEmpty ? "" : " " + values.joined(separator: " ")
     }
 }

@@ -8,9 +8,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Assignment Pending` |
-| **Phase** | Build 7 internal TestFlight Human feedback captured as three separate findings; no implementation track has entered `Ready` |
+| **Phase** | Build 7 internal TestFlight Human feedback captured as three separate findings; tester device/layout/Full Access and F-03 region/network/scheme facts are partially captured; no implementation track has entered `Ready` |
 | **Non-claims** | No root cause is established; builtin multi-character failure is not yet proven to be an intentional Luna limitation; no CDN, mirror or regional delivery architecture is selected |
-| **Next** | Capture exact reproduction data, then Product Lead names the domain Executor/reviewers or authorizes separate fix Assignments; F-03 is explicitly advanced as urgent before broader external testing |
+| **Next** | Capture F-02's non-private input/host-App behavior; for F-03, Product Lead decides [`RIME-SCHEME-DELIVERY-001`](rime-scheme-delivery-001.md) pilot roles/endpoints after source research; F-03 remains urgent before broader external testing |
 | **Residuals** | [`2026-08-25 internal TestFlight feedback`](../evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) |
 
 ---
@@ -63,8 +63,8 @@
 | ID | Human observation | Current release impact | Required next evidence |
 |---|---|---|---|
 | `F-01` | A first-time user unfamiliar with RIME found scheme selection and deployment confusing on first launch | Activation/product-language gap candidate; severity pending | Fresh-install journey, exact screen/step, expected plain-language outcome and whether the user could complete without coaching |
-| `F-02` | Before using 雾凇 or 万象, the reported builtin scheme could commit one Chinese character but failed when composing two or more characters at once | `P1` candidate because usable out-of-box sentence input may be broken; root cause remains unknown | Confirm active schema, layout, raw input, candidates/marked text, host App, Full Access, reproducibility and whether this is config/resource/runtime rather than intended vocabulary depth |
-| `F-03` | Scheme download repeatedly failed without VPN | Product Lead marked **urgent / plan advanced**; blocker for broader external testing where recommended schemes must be obtainable without private network workarounds | Exact asset URL, error/domain/status, carrier/Wi-Fi/region, retry behavior and a region/network matrix; then design a resilient verified-delivery contract |
+| `F-02` | Before using 雾凇 or 万象, the reported builtin scheme could commit one Chinese character but failed when composing two or more characters at once | `P1` candidate because usable out-of-box sentence input may be broken; root cause remains unknown | On iPhone 16 Pro / iOS 18 / 26-key / Full Access off, confirm exact OS build, active schema, non-private raw input, candidates/marked text, host App, reproducibility and whether this is config/resource/runtime rather than intended vocabulary depth |
+| `F-03` | 雾凇 download failed on Mainland China cellular without VPN; the remembered error contained “network”, but the exact text/code was not captured | Product Lead marked **urgent / plan advanced**; blocker for broader external testing where recommended schemes must be obtainable without private network workarounds | Decide and pilot [`RIME-SCHEME-DELIVERY-001`](rime-scheme-delivery-001.md): maintainer-linked Mainland candidates, immutable manifest/SHA-256, bounded endpoint selection, localized error recovery and a region/network matrix. Exact original error remains useful but is no longer a prerequisite for beginning the bounded pilot |
 
 ## Gates
 
@@ -74,7 +74,11 @@
 - **Exit Criteria:** every finding has reproducible evidence, severity, owner,
   disposition (`fix`, explicit Product acceptance, or tracked debt), regression
   coverage and an exact Build 8-or-later handoff when code changes are required;
-  broader external TestFlight has an explicit Gate decision.
+  broader external TestFlight has an explicit Gate decision. Download failures
+  are presented in Simplified Chinese with an accurate error category and a
+  relevant recovery action; sanitized diagnostics preserve enough technical
+  classification to distinguish network, server, integrity, storage and
+  deployment failures without recording credentials or private input.
 - **Stop Conditions:** a proposed shortcut requires users to use VPN; changing
   the active/default scheme contract without Product approval; silently bundling
   mutable/unverified assets; bypassing per-scheme license acknowledgement;
@@ -87,6 +91,8 @@
   screenshots or non-private diagnostics, network/error classification, selected
   owner and reviewers, solution boundary, tests, release impact and revalidation
   triggers.
+- **F-03 Delivery Handoff:** [`RIME-SCHEME-DELIVERY-001`](rime-scheme-delivery-001.md)
+  and its [`source research`](../evidence/rime-scheme-delivery-source-research-2026-08-25.md).
 - **Revalidation Trigger:** build, first-run journey, builtin resources, scheme
   catalog/source URL, checksum/license contract, region/network path, iOS/RIME
   runtime or release-channel change.

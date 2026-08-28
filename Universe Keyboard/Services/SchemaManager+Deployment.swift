@@ -3,7 +3,11 @@ import KeyboardCore
 import RimeBridge
 
 extension SchemaManager {
-    func requestDeploy() {
+    func requestDeploy(leaseOperationID: UUID? = nil) {
+        if let owner = schemeDeliveryCommitLeaseOperationID, owner != leaseOperationID {
+            enqueueSchemeMutation(.requestDeploy)
+            return
+        }
         settings.set(false, forKey: "rime_deployed")
         settings.set(true, forKey: "rime_needs_deploy")
         // Every caller represents a new deployment intent. It may receive one
@@ -18,7 +22,31 @@ extension SchemaManager {
     }
 
     @discardableResult
-    func deployRimeConfig() async -> Bool {
+    func deployRimeConfig(leaseOperationID: UUID? = nil) async -> Bool {
+        if let owner = schemeDeliveryCommitLeaseOperationID, owner != leaseOperationID {
+            return await waitForPostCommitDeployment()
+        }
+        if let activeRimeDeploymentTask {
+            return await activeRimeDeploymentTask.value
+        }
+        let deploymentID = UUID()
+        let task = Task { @MainActor [weak self] in
+            guard let self else { return false }
+            return await self.performRimeDeployment()
+        }
+        activeRimeDeploymentID = deploymentID
+        activeRimeDeploymentTask = task
+        let succeeded = await task.value
+        if activeRimeDeploymentID == deploymentID {
+            activeRimeDeploymentID = nil
+            activeRimeDeploymentTask = nil
+        }
+        return succeeded
+    }
+
+    /// The only body that mutates shared deployment files. All public callers
+    /// enter through `deployRimeConfig`, which provides process-local single-flight.
+    private func performRimeDeployment() async -> Bool {
         let directories: SchemaDeploymentDirectories
         do {
             directories = try archiveInstaller.deploymentDirectories()

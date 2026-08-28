@@ -227,7 +227,7 @@ struct ActivationResourcePreparePanel: View {
             EmptyView()
         case .fetchingReleaseInfo:
             statusLine(systemImage: "arrow.down.circle", text: "正在获取版本信息…", color: .secondary)
-        case .downloading(_, let progress):
+        case .downloading(_, _, let progress):
             statusLine(
                 systemImage: "arrow.down.circle",
                 text: downloadProgressText(progress),

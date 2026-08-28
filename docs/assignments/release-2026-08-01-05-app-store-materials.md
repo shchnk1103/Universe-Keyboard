@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Human 已创建内部组 `Build 7 Internal Smoke`、加入一个 Build 并邀请两名内部测试员；至少一封邀请已收到；初始反馈进入 Task11 |
+| **Phase** | Human 已创建内部组 `Build 7 Internal Smoke` 并取得首轮反馈；Human 后续选择的新 AppIcon 已完成规范化与本地 Release 资源校验，等待进入下一候选 PR/Build |
 | **Non-claims** | 当前任务未在线复核 What to Test 内容、邀请接受/安装状态或 smoke Pass；没有外部组、Beta Review 或 App Store submission 授权 |
-| **Next** | 只读核对 Build 7 What to Test 与内部 tester 状态；反馈修复若改变候选则进入新 build，不回写 Build 7 |
+| **Next** | 将反馈修复与新 AppIcon 进入下一候选 PR；稳定 CI 后生成新 build，不回写 Build 7 |
 | **Residuals** | App Store 截图 0/10 与 iPad 截图推迟到正式上架材料阶段；What to Test 在线值 `UNKNOWN`；版权行 Human-reported `© 2026 DoubleShy0N` |
 
 ---
@@ -89,3 +89,13 @@
 - Three first-run/scheme findings are recorded under
   [`RELEASE-2026-0801-11`](release-2026-08-01-11-internal-testflight-feedback.md).
   No external group or Beta Review submission is implied.
+- Human Product Owner supplied `/Users/doubleshy0n/Desktop/UniverseKeyboard.png`
+  as the replacement App icon. The `1254×1254` RGB/no-alpha source was preserved
+  unchanged and deterministically resampled to the Asset Catalog's single-size
+  `1024×1024` RGB/no-alpha `AppIcon`. The existing universal/default, dark and
+  tinted wells intentionally reference the same artwork.
+- Xcode 27 beta `actool` compiled the single-size icon for both iPhone and iPad;
+  the Release Simulator product contains generated `120×120` iPhone and
+  `152×152` iPad icons plus the `Assets.car` renditions. Release build and
+  `-validate-for-store` shallow validation passed without AppIcon warnings.
+  This is local asset-integrity evidence, not final RC/App Store acceptance.

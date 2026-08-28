@@ -10,13 +10,23 @@ extension SchemaManager {
     /// Returns `nil` on success, or a user-visible failure message.
     @MainActor
     func enableNineKeyLayout() async -> String? {
-        let failure = await NineKeyEnableOrchestrator.enable(using: makeNineKeyEnableDependencies())
+        let operationID = UUID()
+        guard await acquireSchemeDeliveryCommitLease(operationID: operationID) else {
+            return Self.userMessage(for: .deployFailed)
+        }
+        defer { releaseSchemeDeliveryCommitLease(operationID: operationID) }
+
+        let failure = await NineKeyEnableOrchestrator.enable(
+            using: makeNineKeyEnableDependencies(leaseOperationID: operationID)
+        )
         return failure.map(Self.userMessage(for:))
     }
 
     /// Production dependency wiring for the shared orchestrator (also used by tests via injection).
     @MainActor
-    func makeNineKeyEnableDependencies() -> NineKeyEnableOrchestrator.Dependencies {
+    func makeNineKeyEnableDependencies(
+        leaseOperationID: UUID? = nil
+    ) -> NineKeyEnableOrchestrator.Dependencies {
         NineKeyEnableOrchestrator.Dependencies(
             iceInstalled: { [weak self] in
                 self?.rimeIceFilesExist() ?? false
@@ -39,7 +49,7 @@ extension SchemaManager {
             deploy: { [weak self] in
                 guard let self else { return false }
                 // deployRimeConfig reapplies T9 compatibility after a successful deploy.
-                return await self.deployRimeConfig()
+                return await self.deployRimeConfig(leaseOperationID: leaseOperationID)
             },
             smoke: { shared, user in
                 T9DeploymentSupport.verifyT9Smoke(sharedDataDir: shared, userDataDir: user)
@@ -155,7 +165,8 @@ extension SchemaManager {
 
     func schemeBinding26() -> String {
         ensureLayoutSchemeBindingsMigrated()
-        let raw = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26)
+        let raw =
+            settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26)
             ?? settings.string(forKey: "rime_active_schema")
             ?? "luna_pinyin"
         return raw == "t9" ? "rime_ice" : raw

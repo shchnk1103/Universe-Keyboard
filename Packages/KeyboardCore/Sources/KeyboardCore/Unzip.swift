@@ -42,19 +42,49 @@ public enum Unzip {
         let data = try Data(contentsOf: URL(fileURLWithPath: zipPath), options: .mappedIfSafe)
         let entries = try extract(data: data)
         var extracted: [String] = []
+        var seenPaths = Set<String>()
         let fm = FileManager.default
 
         for entry in entries {
-            let destURL = destinationDir.appendingPathComponent(entry.filename)
+            let isDirectory = entry.filename.hasSuffix("/")
+            let relativePath = try safeRelativePath(for: entry.filename)
+            guard seenPaths.insert(relativePath).inserted else {
+                throw Error.badFormat("重复路径：\(relativePath)")
+            }
+
+            let destURL = destinationDir.appendingPathComponent(relativePath)
+            if isDirectory {
+                try fm.createDirectory(at: destURL, withIntermediateDirectories: true)
+                extracted.append(relativePath)
+                continue
+            }
             let parentDir = destURL.deletingLastPathComponent()
-            try? fm.createDirectory(at: parentDir, withIntermediateDirectories: true)
+            try fm.createDirectory(at: parentDir, withIntermediateDirectories: true)
             try entry.data.write(to: destURL)
-            extracted.append(entry.filename)
+            extracted.append(relativePath)
         }
         return extracted
     }
 
     public static func extract(data: Data) throws -> [Entry] {
         try ZipArchiveReader(data: data, maxUncompressedSize: maxUncompressedSize).extractEntries()
+    }
+
+    /// Rejects archive paths that could escape or ambiguously alias the target
+    /// directory. Backslashes are rejected instead of normalized so Windows-
+    /// style traversal cannot acquire different meaning downstream.
+    public static func safeRelativePath(for filename: String) throws -> String {
+        let trimmed = filename.hasSuffix("/") ? String(filename.dropLast()) : filename
+        let components = trimmed.split(separator: "/", omittingEmptySubsequences: false)
+        guard !trimmed.isEmpty,
+            !trimmed.hasPrefix("/"),
+            !trimmed.contains("\\"),
+            !trimmed.contains("\0"),
+            !(components.first?.contains(":") ?? false),
+            components.allSatisfy({ !$0.isEmpty && $0 != "." && $0 != ".." })
+        else {
+            throw Error.badFormat("不安全的文件路径：\(filename)")
+        }
+        return components.joined(separator: "/")
     }
 }

@@ -80,7 +80,7 @@ extension AppOperationToastState {
                 tone: .progress,
                 automaticallyDismisses: false
             )
-        case .downloading(let schemeName, let progress):
+        case .downloading(let schemeName, let sourceName, let progress):
             let progressSuffix: String
             if let progress {
                 progressSuffix = " \(Int((progress * 100).rounded()))%"
@@ -90,7 +90,7 @@ extension AppOperationToastState {
             }
             self.init(
                 source: .download,
-                message: "正在下载\(schemeName)\(progressSuffix)",
+                message: "正在通过 \(sourceName) 下载\(schemeName)\(progressSuffix)",
                 systemImage: "arrow.down.circle",
                 tone: .progress,
                 automaticallyDismisses: false
@@ -233,7 +233,9 @@ private struct RimeDeploymentToastSurface: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 26.0, *) {
             content
-                .glassEffect(.regular.tint(Color(.systemBackground).opacity(0.18)), in: .rect(cornerRadius: cornerRadius))
+                .glassEffect(
+                    .regular.tint(Color(.systemBackground).opacity(0.18)), in: .rect(cornerRadius: cornerRadius)
+                )
                 .overlay(stroke)
                 .shadow(color: .black.opacity(0.08), radius: 20, y: 8)
         } else {

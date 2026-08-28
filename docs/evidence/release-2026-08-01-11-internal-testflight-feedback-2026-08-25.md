@@ -39,27 +39,42 @@ output a single Chinese character, but attempting two or more characters in one
 composition did not work.
 
 **Known:** single-character output was available; multi-character use was not.
-**Unknown:** exact active schema (`luna_pinyin` is reported context, not
-independently captured), keyboard layout, raw input, candidate/marked-text state,
-host App, Full Access state, deployment state, frequency and failure mode.
+The tester used an iPhone 16 Pro on iOS 18, 26-key layout, with Full Access off.
+**Unknown:** exact iOS minor/build, exact active schema (`luna_pinyin` is
+reported context, not independently captured), raw input,
+candidate/marked-text state, host App, deployment state, frequency and failure
+mode.
 **Do not infer:** that the builtin dictionary is merely “too basic.” A resource,
 configuration, session, UI commit or fallback defect remains possible.
 
 ### F-03 — Scheme downloads fail without VPN
 
-The tester repeatedly encountered scheme-download errors without VPN. The Human
-Product Owner explicitly classified this as urgent and asked to advance the plan
-for scheme downloads that work across different regions.
+The tester repeatedly encountered 雾凇 scheme-download errors without VPN on a
+Mainland China cellular connection. The Human Product Owner explicitly
+classified this as urgent and asked to advance the plan for scheme downloads
+that work across different regions.
 
-**Known:** the current path was not usable on the tester's ordinary network and
-VPN changed the practical reachability boundary.
-**Unknown:** scheme/asset, exact URL and error, DNS/TLS/HTTP layer, carrier or
-Wi-Fi, country/region, retry/resume behavior and whether every catalog source is
-affected.
+**Known:** device was iPhone 16 Pro on iOS 18; Full Access was off; the requested
+scheme was 雾凇; region was Mainland China; network was cellular; and the
+remembered failure text contained “network”. The current path was not usable on
+the tester's ordinary network.
+**Unknown:** exact iOS minor/build, carrier, asset URL/host, exact user-visible
+message and underlying error domain/code, DNS/TLS/HTTP layer, retry/resume
+behavior, whether VPN was subsequently used successfully in this exact attempt,
+and whether every catalog source is affected. The remembered word “network” is
+not sufficient to classify the root cause.
 **Release impact:** broader external testing must not depend on testers finding
 or operating a VPN. A resilient delivery design must retain immutable-byte
 verification, checksum fail-closed behavior, per-scheme license acknowledgement,
 source attribution and main-App-owned atomic installation/deployment.
+
+**Product requirement:** scheme-download failures must be presented in
+Simplified Chinese and identify an actionable category and recovery step. The
+primary UI must not expose an untranslated raw `NSError` description. Sanitized
+diagnostics may retain error domain/code, URL host and operation phase, but must
+not record credentials, private input or sensitive URL query values. Network,
+timeout/server, package-integrity, storage/extraction and deployment failures
+must not collapse into a misleading single “network” explanation.
 
 ## Required Reproduction Header
 
@@ -67,16 +82,16 @@ Capture this before diagnosis or implementation:
 
 | Field | Current value |
 |---|---|
-| Device / OS full build | `UNKNOWN` |
+| Device / OS full build | iPhone 16 Pro / iOS 18; exact minor/build `UNKNOWN` |
 | Universe Keyboard build | `1.0 (7)` per intake context |
 | Host App | `UNKNOWN` |
-| Layout | `UNKNOWN` |
+| Layout | 26-key |
 | Active scheme | `UNKNOWN` |
-| Full Access | `UNKNOWN` |
+| Full Access | Off |
 | Exact non-private input | `UNKNOWN` |
 | Expected / actual | `UNKNOWN` beyond summaries above |
-| Download scheme / URL / error | `UNKNOWN` |
-| Network / region | VPN off observed; remaining facts `UNKNOWN` |
+| Download scheme / URL / error | 雾凇 / URL `UNKNOWN` / remembered “network…”; exact text and domain/code `UNKNOWN` |
+| Network / region | Cellular / Mainland China / VPN off |
 
 ## Disposition At Intake
 
@@ -84,7 +99,7 @@ Capture this before diagnosis or implementation:
 |---|---|---|
 | `F-01` | Route to fresh-install onboarding triage | External-candidate severity pending reproduction |
 | `F-02` | Reproduce before diagnosing or choosing product behavior | `P1` candidate; do not broaden external testing while out-of-box multi-character input remains unexplained |
-| `F-03` | Product priority advanced; prepare a separate delivery Architecture/Assignment proposal | Block broader external testing until fixed or explicitly decided by Product Lead |
+| `F-03` | Product priority advanced; separate [`RIME-SCHEME-DELIVERY-001`](../assignments/rime-scheme-delivery-001.md) and [`source research`](rime-scheme-delivery-source-research-2026-08-25.md) now bound multi-endpoint selection, integrity and localized recovery as a pending delivery candidate | Block broader external testing until fixed or explicitly decided by Product Lead |
 
 Canonical Assignment:
 [`RELEASE-2026-0801-11`](../assignments/release-2026-08-01-11-internal-testflight-feedback.md).

@@ -161,6 +161,15 @@ final class RimeSettingsStore {
         return schemaManager.rimeIceLicenseAccepted
     }
     var rimeIceVersion: String? { schemaManager.rimeIceVersion }
+    func sourceVariant(for schemaID: String) -> RimeSchemeSourceVariant? {
+        schemaManager.sourceVariant(for: schemaID)
+    }
+    func manifestVersion(for schemaID: String) -> String? {
+        schemaManager.manifestVersion(for: schemaID)
+    }
+    func hasVerifiedReceipt(for schemaID: String) -> Bool {
+        schemaManager.hasVerifiedReceipt(for: schemaID)
+    }
     var isRimeIceInstalled: Bool {
         schemas.contains { $0.schemaID == "rime_ice" && $0.installed }
     }

@@ -3,6 +3,23 @@ import XCTest
 @testable import KeyboardCore
 
 final class UnzipExtractionErrorTests: UnzipTestSupport {
+    func testExtractIncludesEmptyStoredFiles() throws {
+        // Store-only zip with empty lua/data/chaifen.txt plus keep.txt.
+        let hex =
+            "504b030414000000000073a81c5d000000000000000000000000140000006c75612f646174612f6368616966656e2e747874504b030414000000000073a81c5d7d0e16da0300000003000000080000006b6565702e7478746f6b0a504b0102140314000000000073a81c5d0000000000000000000000001400000000000000000000008001000000006c75612f646174612f6368616966656e2e747874504b0102140314000000000073a81c5d7d0e16da03000000030000000800000000000000000000008001320000006b6565702e747874504b05060000000002000200780000005b0000000000"
+        var bytes: [UInt8] = []
+        var index = hex.startIndex
+        while index < hex.endIndex {
+            let next = hex.index(index, offsetBy: 2)
+            bytes.append(UInt8(hex[index..<next], radix: 16)!)
+            index = next
+        }
+        let entries = try Unzip.extract(data: Data(bytes))
+        let byName = Dictionary(uniqueKeysWithValues: entries.map { ($0.filename, $0.data) })
+        XCTAssertEqual(byName["lua/data/chaifen.txt"], Data())
+        XCTAssertEqual(byName["keep.txt"], Data("ok\n".utf8))
+    }
+
     func testExtractEmptyData() {
         let data = Data()
         XCTAssertThrowsError(try Unzip.extract(data: data)) { error in
@@ -359,5 +376,64 @@ final class UnzipExtractionErrorTests: UnzipTestSupport {
         data[8] = 1
         data[10] = 1
         XCTAssertThrowsError(try Unzip.extract(data: data))
+    }
+
+    func testSafeRelativePathAcceptsUnicodeAndNestedFiles() throws {
+        XCTAssertEqual(
+            try Unzip.safeRelativePath(for: "词库/基础/wanxiang.dict.yaml"),
+            "词库/基础/wanxiang.dict.yaml"
+        )
+        XCTAssertEqual(try Unzip.safeRelativePath(for: "lua/"), "lua")
+    }
+
+    func testSafeRelativePathRejectsTraversalAndAmbiguousAliases() {
+        for path in [
+            "../escape.txt",
+            "folder/../escape.txt",
+            "/absolute.txt",
+            "folder\\escape.txt",
+            "C:escape.txt",
+            "folder//file.txt",
+            "./file.txt",
+            "",
+        ] {
+            XCTAssertThrowsError(try Unzip.safeRelativePath(for: path), "应拒绝 \(path)")
+        }
+    }
+
+    func testExtractRejectsUnsafePathBeforeWritingOutsideDestination() throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("unzip-path-security-\(UUID().uuidString)")
+        let destination = root.appendingPathComponent("destination")
+        try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let archiveURL = root.appendingPathComponent("malicious.zip")
+        try makeStoreZip(filename: "../escape.txt", content: Data("blocked".utf8))
+            .write(to: archiveURL)
+
+        XCTAssertThrowsError(try Unzip.extract(zipPath: archiveURL.path, to: destination))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("escape.txt").path))
+    }
+
+    func testExtractRejectsUnixSymbolicLinkEntry() {
+        var zip = makeStoreZip(filename: "link", content: Data("../outside".utf8))
+        guard let centralOffset = zip.range(of: Data([0x50, 0x4B, 0x01, 0x02]))?.lowerBound else {
+            return XCTFail("测试 ZIP 缺少中央目录")
+        }
+
+        // version made by: Unix (3), version 2.0 (20)
+        zip[centralOffset + 4] = 20
+        zip[centralOffset + 5] = 3
+        // external attributes: Unix mode 0120777 (symbolic link)
+        let symbolicLinkAttributes = u32le(0xA1FF_0000)
+        zip.replaceSubrange(centralOffset + 38..<centralOffset + 42, with: symbolicLinkAttributes)
+
+        XCTAssertThrowsError(try Unzip.extract(data: zip)) { error in
+            guard case Unzip.Error.badFormat(let message) = error else {
+                return XCTFail("Expected badFormat, got \(error)")
+            }
+            XCTAssertTrue(message.contains("符号链接"))
+        }
     }
 }

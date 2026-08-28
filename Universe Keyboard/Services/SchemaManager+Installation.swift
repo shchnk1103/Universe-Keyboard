@@ -34,6 +34,14 @@ extension SchemaManager {
 
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan) throws {
         let luaAvailable = (settings.object(forKey: "rime_lua_available") as? Bool) ?? true
+        try installSchemaFiles(from: extractDir, plan: plan, luaAvailable: luaAvailable)
+    }
+
+    func installSchemaFiles(
+        from extractDir: URL,
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws {
         try archiveInstaller.installSchemaFiles(from: extractDir, plan: plan, luaAvailable: luaAvailable)
     }
 
@@ -41,14 +49,14 @@ extension SchemaManager {
         activateSchema("rime_ice")
     }
 
-    func activateSchema(_ schemaID: String) {
+    func activateSchema(_ schemaID: String, leaseOperationID: UUID? = nil) {
         settings.set(schemaID, forKey: "rime_active_schema")
         activeSchemaID = schemaID
         // ADR 0026: activating a 26-key-capable scheme updates the 26-key layout slot.
         if RimeRuntimeSelection.isTwentySixKeyCapable(schemaID) {
             settings.set(schemaID, forKey: KeyboardLayoutSettingsKey.schemeBinding26)
         }
-        requestDeploy()
+        requestDeploy(leaseOperationID: leaseOperationID)
     }
 
     func uninstallRimeIce() {
@@ -56,6 +64,10 @@ extension SchemaManager {
     }
 
     func uninstallSchema(_ schemaID: String) {
+        guard schemeDeliveryCommitLeaseOperationID == nil else {
+            enqueueSchemeMutation(.uninstall(schemaID))
+            return
+        }
         guard let entry = downloadableEntry(for: schemaID), let plan = entry.installationPlan else { return }
 
         // ADR 0018: layout fallback and readiness invalidation before resource removal.
@@ -72,6 +84,8 @@ extension SchemaManager {
             entry.storage.licenseAcceptanceRevision,
             entry.storage.eTag,
             entry.storage.checksum,
+            entry.storage.sourceVariant,
+            entry.storage.stagedContentChecksum,
         ].compactMap({ $0 }) {
             settings.removeObject(forKey: key)
         }
@@ -94,16 +108,10 @@ extension SchemaManager {
     }
 
     func checkForUpdate(schemaID: String) async -> Bool {
-        do {
-            guard
-                let entry = downloadableEntry(for: schemaID),
-                let url = try await fetchLatestReleaseURL(for: entry)
-            else { return false }
-            let newVersion = releaseVersionIdentifier(from: url)
-            return newVersion != installedVersion(for: schemaID)
-        } catch {
+        guard let manifest = downloadableEntry(for: schemaID)?.distribution?.manifest else {
             return false
         }
+        return manifest.version != installedVersion(for: schemaID)
     }
 
     func rimeIceFilesExist() -> Bool {

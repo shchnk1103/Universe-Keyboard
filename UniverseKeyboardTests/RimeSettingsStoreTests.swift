@@ -312,7 +312,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let store = RimeSettingsStore(
             schemaManager: SchemaManager(
                 settings: settings,
-                catalogClient: StoreCatalogClient(),
+                sourceSelector: StoreSourceSelector(),
                 archiveDownloader: StoreArchiveDownloader(),
                 archiveInstaller: StoreArchiveInstaller(),
                 deploymentService: deploymentService
@@ -336,7 +336,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let store = RimeSettingsStore(
             schemaManager: SchemaManager(
                 settings: settings,
-                catalogClient: StoreCatalogClient(),
+                sourceSelector: StoreSourceSelector(),
                 archiveDownloader: StoreArchiveDownloader(),
                 archiveInstaller: StoreArchiveInstaller(),
                 deploymentService: deploymentService
@@ -358,7 +358,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let store = RimeSettingsStore(
             schemaManager: SchemaManager(
                 settings: settings,
-                catalogClient: StoreCatalogClient(),
+                sourceSelector: StoreSourceSelector(),
                 archiveDownloader: StoreArchiveDownloader(),
                 archiveInstaller: StoreArchiveInstaller(),
                 deploymentService: deploymentService
@@ -380,7 +380,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let store = RimeSettingsStore(
             schemaManager: SchemaManager(
                 settings: settings,
-                catalogClient: StoreCatalogClient(),
+                sourceSelector: StoreSourceSelector(),
                 archiveDownloader: StoreArchiveDownloader(),
                 archiveInstaller: StoreArchiveInstaller(),
                 deploymentService: deploymentService
@@ -402,7 +402,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let persistence = StubRimeSettingsPersistence(values: ["rime_needs_deploy": true])
         let schemaManager = SchemaManager(
             settings: settings,
-            catalogClient: StoreCatalogClient(),
+            sourceSelector: StoreSourceSelector(),
             archiveDownloader: StoreArchiveDownloader(),
             archiveInstaller: StoreArchiveInstaller(),
             deploymentService: deploymentService
@@ -431,7 +431,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let store = RimeSettingsStore(
             schemaManager: SchemaManager(
                 settings: settings,
-                catalogClient: StoreCatalogClient(),
+                sourceSelector: StoreSourceSelector(),
                 archiveDownloader: StoreArchiveDownloader(),
                 archiveInstaller: StoreArchiveInstaller(),
                 deploymentService: deploymentService
@@ -452,7 +452,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let deploymentService = StoreDeploymentService(succeeded: false)
         let schemaManager = SchemaManager(
             settings: persistence,
-            catalogClient: StoreCatalogClient(),
+            sourceSelector: StoreSourceSelector(),
             archiveDownloader: StoreArchiveDownloader(),
             archiveInstaller: StoreArchiveInstaller(),
             deploymentService: deploymentService
@@ -659,7 +659,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let store = RimeSettingsStore(
             schemaManager: SchemaManager(
                 settings: settings,
-                catalogClient: StoreCatalogClient(),
+                sourceSelector: StoreSourceSelector(),
                 archiveDownloader: StoreArchiveDownloader(),
                 archiveInstaller: StoreArchiveInstaller(),
                 deploymentService: deploymentService
@@ -679,13 +679,11 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testCheckForUpdateReportsAlreadyCurrentWithoutStartingDownload() async {
-        let settings = StoreSharedSettingsStore(values: ["rime_ice_version": "2026.05.01"])
+        let settings = StoreSharedSettingsStore(values: ["rime_ice_version": "nightly"])
         let store = RimeSettingsStore(
             schemaManager: SchemaManager(
                 settings: settings,
-                catalogClient: StoreCatalogClient(
-                    latestURL: URL(string: "https://github.com/iDvel/rime-ice/releases/download/2026.05.01/full.zip")
-                ),
+                sourceSelector: StoreSourceSelector(),
                 archiveDownloader: StoreArchiveDownloader(),
                 archiveInstaller: StoreArchiveInstaller(),
                 deploymentService: StoreDeploymentService(succeeded: true)
@@ -1000,28 +998,35 @@ private final class StoreSharedSettingsStore: SharedSettingsStoring, RimeSetting
     func synchronize() {}
 }
 
-private struct StoreCatalogClient: SchemaCatalogClient {
-    let latestURL: URL?
-
-    init(latestURL: URL? = nil) {
-        self.latestURL = latestURL
+nonisolated private struct StoreSourceSelector: SchemaSourceSelecting {
+    func selectSource(
+        from variants: [RimeSchemeSourceVariant],
+        preferredSourceID: String?
+    ) async throws -> RimeSchemeSourceVariant {
+        if let preferredSourceID, let preferred = variants.first(where: { $0.id == preferredSourceID }) {
+            return preferred
+        }
+        guard let first = variants.first else { throw DownloadError.allSourcesUnavailable }
+        return first
     }
-
-    func latestArchiveURL(for distribution: RimeSchemeDistribution) async throws -> URL? { latestURL }
 }
 
 private struct StoreArchiveDownloader: SchemaArchiveDownloading {
     func downloadArchive(
-        from url: URL,
-        existingETag: String?,
-        cachedArchiveURL: URL,
+        from source: RimeSchemeSourceVariant,
+        operationID: UUID,
+        attemptID: UUID,
         onProgress: (@Sendable (Double?) -> Void)?
     ) async throws -> DownloadedSchemaArchive {
         onProgress?(1)
         return DownloadedSchemaArchive(
-            localURL: cachedArchiveURL,
-            expectedContentLength: 1,
-            eTag: existingETag
+            localURL: URL(fileURLWithPath: "/tmp/\(UUID().uuidString).zip"),
+            expectedContentLength: source.expectedByteCount,
+            operationID: operationID,
+            attemptID: attemptID,
+            sourceID: source.id,
+            artifactID: UUID(),
+            finalHost: source.downloadURL.host ?? "github.com"
         )
     }
 }

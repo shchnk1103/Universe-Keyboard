@@ -1,6 +1,7 @@
 import Foundation
 import KeyboardCore
 import RimeBridge
+import Synchronization
 import XCTest
 
 @testable import Universe_Keyboard
@@ -30,9 +31,10 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertNotNil(entry)
         XCTAssertEqual(entry?.schemaID, "wanxiang")
         XCTAssertEqual(entry?.name, "万象拼音")
-        XCTAssertEqual(entry?.distribution?.githubOwner, "amzxyz")
-        XCTAssertEqual(entry?.distribution?.githubRepository, "rime-wanxiang")
-        XCTAssertEqual(entry?.distribution?.assetName, "rime-wanxiang-base.zip")
+        XCTAssertEqual(entry?.distribution?.manifest.schemeID, "wanxiang")
+        XCTAssertEqual(entry?.distribution?.manifest.version, "17.5.9")
+        XCTAssertEqual(entry?.distribution?.manifest.assetName, "rime-wanxiang-base.zip")
+        XCTAssertEqual(entry?.distribution?.manifest.sourceVariants.count, 2)
         XCTAssertEqual(entry?.installationPlan?.schemaFileName, "wanxiang.schema.yaml")
         XCTAssertEqual(entry?.license, ThirdPartyLicenseCatalog.wanxiang)
         XCTAssertTrue(entry?.requiresLua == true)
@@ -164,12 +166,9 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(manager.rimeIceDownloadState, .completed(schemeName: "雾凇拼音"))
     }
 
-    func testCheckForUpdateUsesInjectedCatalogClient() async {
+    func testCheckForUpdateUsesPinnedManifestVersion() async {
         let manager = makeManager(
-            settings: StubSharedSettingsStore(values: ["rime_ice_version": "full-old.zip"]),
-            catalogClient: StubSchemaCatalogClient(
-                latestURL: URL(string: "https://example.test/releases/full-new.zip")
-            )
+            settings: StubSharedSettingsStore(values: ["rime_ice_version": "old-version"])
         )
 
         let updateAvailable = await manager.checkForUpdate()
@@ -177,12 +176,9 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertTrue(updateAvailable)
     }
 
-    func testCheckForUpdateUsesGitHubReleaseTagWhenAvailable() async {
+    func testCheckForUpdateReportsCurrentPinnedVersion() async {
         let manager = makeManager(
-            settings: StubSharedSettingsStore(values: ["rime_ice_version": "2026.05.01"]),
-            catalogClient: StubSchemaCatalogClient(
-                latestURL: URL(string: "https://github.com/iDvel/rime-ice/releases/download/2026.05.01/full.zip")
-            )
+            settings: StubSharedSettingsStore(values: ["rime_ice_version": "nightly"])
         )
 
         let updateAvailable = await manager.checkForUpdate()
@@ -190,17 +186,14 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertFalse(updateAvailable)
     }
 
-    func testCheckForUpdateDetectsDifferentGitHubReleaseTag() async {
+    func testCheckForUpdateUsesWanxiangPinnedVersion() async {
         let manager = makeManager(
-            settings: StubSharedSettingsStore(values: ["rime_ice_version": "2026.05.01"]),
-            catalogClient: StubSchemaCatalogClient(
-                latestURL: URL(string: "https://github.com/iDvel/rime-ice/releases/download/2026.05.02/full.zip")
-            )
+            settings: StubSharedSettingsStore(values: ["wanxiang_version": "17.5.9"])
         )
 
-        let updateAvailable = await manager.checkForUpdate()
+        let updateAvailable = await manager.checkForUpdate(schemaID: "wanxiang")
 
-        XCTAssertTrue(updateAvailable)
+        XCTAssertFalse(updateAvailable)
     }
 
     func testReleaseVersionIdentifierFallsBackToFilenameForNonReleaseURLs() {
@@ -211,17 +204,15 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(version, "full-new.zip")
     }
 
-    func testDownloadUsesStoredETagAndPersistsReturnedETag() async throws {
-        let settings = StubSharedSettingsStore(values: ["rime_ice_etag": "old-etag"])
-        let downloader = StubSchemaArchiveDownloader(returnedETag: "new-etag")
-        let manager = makeManager(settings: settings, archiveDownloader: downloader)
-        let sourceURL = URL(string: "https://example.test/releases/full.zip")!
+    func testPinnedSourceVariantsDoNotShareArchiveReceipt() throws {
+        let manager = makeManager()
+        let variants = try XCTUnwrap(
+            manager.downloadableEntry(for: "wanxiang")?.distribution?.manifest.sourceVariants
+        )
 
-        _ = try await manager.downloadZip(from: sourceURL)
-
-        let requests = downloader.requests
-        XCTAssertEqual(requests.first?.existingETag, "old-etag")
-        XCTAssertEqual(settings.string(forKey: "rime_ice_etag"), "new-etag")
+        XCTAssertEqual(variants.count, 2)
+        XCTAssertNotEqual(variants[0].archiveSHA256, variants[1].archiveSHA256)
+        XCTAssertNotEqual(variants[0].expectedByteCount, variants[1].expectedByteCount)
     }
 
     func testStartDownloadAllowsCompletedStateForInstalledSchemaUpdates() {
@@ -237,7 +228,7 @@ final class SchemaManagerTests: XCTestCase {
         )
     }
 
-    func testForceRedownloadAllowsCompletedStateAndClearsCachedMetadata() {
+    func testForceRedownloadPreservesLastVerifiedReceiptUntilReplacementSucceeds() {
         let settings = StubSharedSettingsStore(
             values: [
                 "rime_ice_etag": "old-etag",
@@ -255,8 +246,8 @@ final class SchemaManagerTests: XCTestCase {
             manager.rimeIceDownloadState,
             .fetchingReleaseInfo(schemeName: "雾凇拼音")
         )
-        XCTAssertNil(settings.string(forKey: "rime_ice_etag"))
-        XCTAssertNil(settings.string(forKey: "rime_ice_version"))
+        XCTAssertEqual(settings.string(forKey: "rime_ice_etag"), "old-etag")
+        XCTAssertEqual(settings.string(forKey: "rime_ice_version"), "old-version")
         XCTAssertTrue(installer.didClearBuildCache)
     }
 
@@ -268,15 +259,15 @@ final class SchemaManagerTests: XCTestCase {
 
     func testDownloadToastMessagesUseSchemeNameAndIndeterminateProgress() {
         let wanxiangDownloading = AppOperationToastState(
-            downloadState: .downloading(schemeName: "万象拼音", progress: nil)
+            downloadState: .downloading(schemeName: "万象拼音", sourceName: "CNB", progress: nil)
         )
-        XCTAssertEqual(wanxiangDownloading?.message, "正在下载万象拼音…")
+        XCTAssertEqual(wanxiangDownloading?.message, "正在通过 CNB 下载万象拼音…")
         XCTAssertFalse(wanxiangDownloading?.message.contains("0%") == true)
 
         let fogProgress = AppOperationToastState(
-            downloadState: .downloading(schemeName: "雾凇拼音", progress: 0.42)
+            downloadState: .downloading(schemeName: "雾凇拼音", sourceName: "南京大学镜像", progress: 0.42)
         )
-        XCTAssertEqual(fogProgress?.message, "正在下载雾凇拼音 42%")
+        XCTAssertEqual(fogProgress?.message, "正在通过 南京大学镜像 下载雾凇拼音 42%")
 
         let completed = AppOperationToastState(
             downloadState: .completed(schemeName: "万象拼音")
@@ -860,17 +851,526 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
     }
 
+    func testArchiveDigestMismatchCleansExactArtifactBeforePinnedFallback() async throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let sources = try XCTUnwrap(entry.distribution?.manifest.sourceVariants)
+        let operationID = UUID()
+        let registry = SchemaTemporaryArtifactRegistry()
+        let downloader = ControlledArchiveDownloader(registry: registry)
+        let cleaner = RecordingTemporaryCleaner(registry: registry)
+        let diagnostics = RecordingDeliveryDiagnostics()
+        let manager = makeManager(
+            archiveDownloader: downloader,
+            artifactVerifier: SourceControlledArtifactVerifier(
+                failingDigestSourceIDs: [sources[0].id]
+            ),
+            temporaryArtifactCleaner: cleaner,
+            deliveryDiagnostics: diagnostics
+        )
+        manager.activeDownloadOperationID = operationID
+
+        let result = try await manager.downloadFirstValidArchive(
+            from: sources,
+            schemeName: entry.name,
+            operationID: operationID,
+            diagnosticContext: nil
+        )
+
+        XCTAssertEqual(result.source.id, sources[1].id)
+        let requestedSourceIDs = downloader.requestedSourceIDs()
+        XCTAssertEqual(requestedSourceIDs, sources.map(\.id))
+        let registered = downloader.registeredArtifacts()
+        XCTAssertEqual(registered.count, 2)
+        let removed = await cleaner.removedArtifacts()
+        XCTAssertEqual(removed, [registered[0]])
+        XCTAssertEqual(removed[0].sourceID, sources[0].id)
+        XCTAssertEqual(removed[0].operationID, operationID)
+        XCTAssertEqual(removed[0].artifactID, registered[0].artifactID)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: registered[0].localURL.path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: registered[1].localURL.path))
+    }
+
+    func testArchiveSizeMismatchCleansExactRegisteredArtifactBeforePinnedFallback() async throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let sources = try XCTUnwrap(entry.distribution?.manifest.sourceVariants)
+        let operationID = UUID()
+        let registry = SchemaTemporaryArtifactRegistry()
+        let downloader = ControlledArchiveDownloader(registry: registry)
+        let cleaner = RecordingTemporaryCleaner(registry: registry)
+        let manager = makeManager(
+            archiveDownloader: downloader,
+            artifactVerifier: SourceControlledArtifactVerifier(
+                failingSizeSourceIDs: [sources[0].id]
+            ),
+            temporaryArtifactCleaner: cleaner
+        )
+        manager.activeDownloadOperationID = operationID
+
+        let result = try await manager.downloadFirstValidArchive(
+            from: sources,
+            schemeName: entry.name,
+            operationID: operationID,
+            diagnosticContext: nil
+        )
+
+        XCTAssertEqual(result.source.id, sources[1].id)
+        let registered = downloader.registeredArtifacts()
+        let removed = await cleaner.removedArtifacts()
+        XCTAssertEqual(removed, [registered[0]])
+        XCTAssertEqual(downloader.requestedSourceIDs(), sources.map(\.id))
+    }
+
+    func testAllArchiveIntegrityFailuresStopAfterCleaningEachRegisteredArtifact() async throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let sources = try XCTUnwrap(entry.distribution?.manifest.sourceVariants)
+        let operationID = UUID()
+        let registry = SchemaTemporaryArtifactRegistry()
+        let downloader = ControlledArchiveDownloader(registry: registry)
+        let cleaner = RecordingTemporaryCleaner(registry: registry)
+        let manager = makeManager(
+            archiveDownloader: downloader,
+            artifactVerifier: SourceControlledArtifactVerifier(
+                failingDigestSourceIDs: Set(sources.map(\.id))
+            ),
+            temporaryArtifactCleaner: cleaner
+        )
+        manager.activeDownloadOperationID = operationID
+
+        do {
+            _ = try await manager.downloadFirstValidArchive(
+                from: sources,
+                schemeName: entry.name,
+                operationID: operationID,
+                diagnosticContext: nil
+            )
+            XCTFail("exhausted archive integrity failures must stop")
+        } catch {
+            guard
+                case DownloadError.allSourcesFailedIntegrity(.archiveDigest)? =
+                    error as? DownloadError
+            else {
+                XCTFail("unexpected error: \(error)")
+                return
+            }
+        }
+        XCTAssertEqual(downloader.requestedSourceIDs(), sources.map(\.id))
+        let removed = await cleaner.removedArtifacts()
+        XCTAssertEqual(removed, downloader.registeredArtifacts())
+    }
+
+    func testMixedArchiveIntegrityFailuresUseAggregateClassification() async throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let sources = try XCTUnwrap(entry.distribution?.manifest.sourceVariants)
+        let operationID = UUID()
+        let registry = SchemaTemporaryArtifactRegistry()
+        let downloader = ControlledArchiveDownloader(registry: registry)
+        let manager = makeManager(
+            archiveDownloader: downloader,
+            artifactVerifier: SourceControlledArtifactVerifier(
+                failingSizeSourceIDs: [sources[0].id],
+                failingDigestSourceIDs: [sources[1].id]
+            ),
+            temporaryArtifactCleaner: FileSystemSchemaTemporaryArtifactCleaner(
+                registry: registry
+            )
+        )
+        manager.activeDownloadOperationID = operationID
+
+        do {
+            _ = try await manager.downloadFirstValidArchive(
+                from: sources,
+                schemeName: entry.name,
+                operationID: operationID,
+                diagnosticContext: nil
+            )
+            XCTFail("mixed integrity failures must stop with an aggregate classification")
+        } catch {
+            XCTAssertEqual(error as? DownloadError, .allSourcesFailedIntegrity(.mixed))
+        }
+    }
+
+    func testStaleCleanupReceiptStopsFallbackWithoutRequestingNextSource() async throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let sources = try XCTUnwrap(entry.distribution?.manifest.sourceVariants)
+        let operationID = UUID()
+        let registry = SchemaTemporaryArtifactRegistry()
+        let downloader = ControlledArchiveDownloader(registry: registry)
+        let manager = makeManager(
+            archiveDownloader: downloader,
+            artifactVerifier: SourceControlledArtifactVerifier(
+                failingDigestSourceIDs: [sources[0].id]
+            ),
+            temporaryArtifactCleaner: StaleReceiptTemporaryCleaner(registry: registry)
+        )
+        manager.activeDownloadOperationID = operationID
+
+        do {
+            _ = try await manager.downloadFirstValidArchive(
+                from: sources,
+                schemeName: entry.name,
+                operationID: operationID,
+                diagnosticContext: nil
+            )
+            XCTFail("stale cleanup receipt must stop fallback")
+        } catch {
+            XCTAssertEqual(error as? DownloadError, .temporaryCleanupFailed)
+        }
+        XCTAssertEqual(downloader.requestedSourceIDs(), [sources[0].id])
+    }
+
+    func testDisabledDiagnosticsDoNotChangeArchiveFallback() async throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let manifest = try XCTUnwrap(entry.distribution?.manifest)
+        let sources = manifest.sourceVariants
+        let operationID = UUID()
+        let identity = try manifest.resolvedStagedIdentity(for: sources[0])
+        let context = try XCTUnwrap(
+            SchemeDeliveryDiagnosticMapper.context(operationID: operationID, identity: identity)
+        )
+        let recordingRegistry = SchemaTemporaryArtifactRegistry()
+        let droppingRegistry = SchemaTemporaryArtifactRegistry()
+        let recordingDownloader = ControlledArchiveDownloader(
+            registry: recordingRegistry
+        )
+        let droppingDownloader = ControlledArchiveDownloader(
+            registry: droppingRegistry
+        )
+        let recordingDiagnostics = RecordingDeliveryDiagnostics()
+        let recordingManager = makeManager(
+            archiveDownloader: recordingDownloader,
+            artifactVerifier: SourceControlledArtifactVerifier(
+                failingDigestSourceIDs: [sources[0].id]
+            ),
+            temporaryArtifactCleaner: FileSystemSchemaTemporaryArtifactCleaner(
+                registry: recordingRegistry
+            ),
+            deliveryDiagnostics: recordingDiagnostics
+        )
+        let droppingManager = makeManager(
+            archiveDownloader: droppingDownloader,
+            artifactVerifier: SourceControlledArtifactVerifier(
+                failingDigestSourceIDs: [sources[0].id]
+            ),
+            temporaryArtifactCleaner: FileSystemSchemaTemporaryArtifactCleaner(
+                registry: droppingRegistry
+            ),
+            deliveryDiagnostics: DroppingDeliveryDiagnostics()
+        )
+        recordingManager.activeDownloadOperationID = operationID
+        droppingManager.activeDownloadOperationID = operationID
+
+        let recorded = try await recordingManager.downloadFirstValidArchive(
+            from: sources,
+            schemeName: entry.name,
+            operationID: operationID,
+            diagnosticContext: context
+        )
+        let dropped = try await droppingManager.downloadFirstValidArchive(
+            from: sources,
+            schemeName: entry.name,
+            operationID: operationID,
+            diagnosticContext: context
+        )
+
+        XCTAssertFalse(recordingDiagnostics.recordedPayloads().isEmpty)
+        XCTAssertTrue(
+            recordingDiagnostics.recordedPayloads().contains {
+                guard case .phaseChanged(let event) = $0 else { return false }
+                return event.phase == .downloading && event.result == .started
+            }
+        )
+        XCTAssertEqual(recorded.source.id, dropped.source.id)
+        XCTAssertEqual(
+            recordingDownloader.requestedSourceIDs(),
+            droppingDownloader.requestedSourceIDs()
+        )
+    }
+
+    func testCleanupFailureStopsIntegrityFallback() async throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let sources = try XCTUnwrap(entry.distribution?.manifest.sourceVariants)
+        let operationID = UUID()
+        let downloader = ControlledArchiveDownloader()
+        let manager = makeManager(
+            archiveDownloader: downloader,
+            artifactVerifier: SourceControlledArtifactVerifier(
+                failingDigestSourceIDs: [sources[0].id]
+            ),
+            temporaryArtifactCleaner: FailingTemporaryCleaner()
+        )
+        manager.activeDownloadOperationID = operationID
+
+        do {
+            _ = try await manager.downloadFirstValidArchive(
+                from: sources,
+                schemeName: entry.name,
+                operationID: operationID,
+                diagnosticContext: nil
+            )
+            XCTFail("cleanup failure must stop fallback")
+        } catch {
+            XCTAssertEqual(error as? DownloadError, .temporaryCleanupFailed)
+        }
+        let requestedSourceIDs = downloader.requestedSourceIDs()
+        XCTAssertEqual(requestedSourceIDs, [sources[0].id])
+    }
+
+    func testCancellationAfterCleanupDoesNotRequestFallbackSource() async throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let sources = try XCTUnwrap(entry.distribution?.manifest.sourceVariants)
+        let operationID = UUID()
+        let registry = SchemaTemporaryArtifactRegistry()
+        let downloader = ControlledArchiveDownloader(registry: registry)
+        let manager = makeManager(
+            archiveDownloader: downloader,
+            artifactVerifier: SourceControlledArtifactVerifier(
+                failingDigestSourceIDs: [sources[0].id]
+            ),
+            temporaryArtifactCleaner: CancellingTemporaryCleaner(registry: registry)
+        )
+        manager.activeDownloadOperationID = operationID
+
+        do {
+            _ = try await manager.downloadFirstValidArchive(
+                from: sources,
+                schemeName: entry.name,
+                operationID: operationID,
+                diagnosticContext: nil
+            )
+            XCTFail("cancellation after cleanup must stop fallback")
+        } catch is CancellationError {
+        } catch {
+            XCTFail("unexpected error: \(error)")
+        }
+
+        XCTAssertEqual(downloader.requestedSourceIDs(), [sources[0].id])
+    }
+
+    func testTransportFailureRecordsFallbackToNextPinnedSource() async throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let manifest = try XCTUnwrap(entry.distribution?.manifest)
+        let sources = manifest.sourceVariants
+        let operationID = UUID()
+        let downloader = ControlledArchiveDownloader(failingSourceIDs: [sources[0].id])
+        let diagnostics = RecordingDeliveryDiagnostics()
+        let identity = try manifest.resolvedStagedIdentity(for: sources[0])
+        let context = try XCTUnwrap(
+            SchemeDeliveryDiagnosticMapper.context(operationID: operationID, identity: identity)
+        )
+        let manager = makeManager(
+            archiveDownloader: downloader,
+            artifactVerifier: SourceControlledArtifactVerifier(),
+            deliveryDiagnostics: diagnostics
+        )
+        manager.activeDownloadOperationID = operationID
+
+        let result = try await manager.downloadFirstValidArchive(
+            from: sources,
+            schemeName: entry.name,
+            operationID: operationID,
+            diagnosticContext: context
+        )
+
+        XCTAssertEqual(result.source.id, sources[1].id)
+        XCTAssertTrue(
+            diagnostics.recordedPayloads().contains {
+                guard case .fallback(let event) = $0 else { return false }
+                return event.reason == .transport
+                    && event.from.rawValue == sources[0].id
+                    && event.to.rawValue == sources[1].id
+            }
+        )
+    }
+
+    func testCommitLeaseCoalescesMutationsAndAppliesThemAfterRelease() async {
+        let settings = StubSharedSettingsStore()
+        let manager = makeManager(settings: settings)
+        let operationID = UUID()
+
+        let acquired = await manager.acquireSchemeDeliveryCommitLease(operationID: operationID)
+        XCTAssertTrue(acquired)
+        manager.switchToSchema("rime_ice")
+        manager.switchToSchema("wanxiang")
+        manager.requestDeploy()
+        manager.requestDeploy()
+
+        XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
+        XCTAssertFalse(settings.bool(forKey: "rime_needs_deploy"))
+        XCTAssertEqual(
+            manager.queuedSchemeMutationIntents,
+            [.switchSchema("wanxiang"), .requestDeploy]
+        )
+
+        manager.releaseSchemeDeliveryCommitLease(operationID: operationID)
+
+        XCTAssertEqual(manager.activeSchemaID, "wanxiang")
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+        XCTAssertTrue(manager.queuedSchemeMutationIntents.isEmpty)
+    }
+
+    func testCancellationCannotInterruptOwnedCommitLease() async {
+        let manager = makeManager()
+        let operationID = UUID()
+        manager.activeDownloadOperationID = operationID
+        manager.rimeIceDownloadState = .deploying(schemeName: "万象拼音")
+
+        let acquired = await manager.acquireSchemeDeliveryCommitLease(operationID: operationID)
+        XCTAssertTrue(acquired)
+        manager.cancelDownload()
+
+        XCTAssertEqual(manager.activeDownloadOperationID, operationID)
+        XCTAssertEqual(manager.rimeIceDownloadState, .deploying(schemeName: "万象拼音"))
+        XCTAssertTrue(manager.deferredDownloadCancellationRequested)
+
+        manager.releaseSchemeDeliveryCommitLease(operationID: operationID)
+
+        XCTAssertEqual(manager.activeDownloadOperationID, operationID)
+        XCTAssertFalse(manager.deferredDownloadCancellationRequested)
+    }
+
+    func testCommitLeaseCoalescesConcurrentDeploymentWaiters() async {
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(deploymentService: deploymentService)
+        let operationID = UUID()
+        let acquired = await manager.acquireSchemeDeliveryCommitLease(operationID: operationID)
+        XCTAssertTrue(acquired)
+
+        let first = Task { @MainActor in await manager.deployRimeConfig() }
+        let second = Task { @MainActor in await manager.deployRimeConfig() }
+        await Task.yield()
+        let requestsBeforeRelease = await deploymentService.requests
+        XCTAssertTrue(requestsBeforeRelease.isEmpty)
+
+        manager.releaseSchemeDeliveryCommitLease(operationID: operationID)
+
+        let firstResult = await first.value
+        let secondResult = await second.value
+        XCTAssertTrue(firstResult)
+        XCTAssertTrue(secondResult)
+        let requestsAfterRelease = await deploymentService.requests
+        XCTAssertEqual(requestsAfterRelease.count, 1)
+    }
+
+    func testCommitLeaseKeepsOnlyLatestDeferredDownloadIntent() async {
+        let manager = makeManager()
+        let operationID = UUID()
+        let acquired = await manager.acquireSchemeDeliveryCommitLease(operationID: operationID)
+        XCTAssertTrue(acquired)
+
+        manager.enqueueSchemeMutation(.startDownload(schemaID: "rime_ice", force: false))
+        manager.enqueueSchemeMutation(.startDownload(schemaID: "wanxiang", force: true))
+
+        XCTAssertEqual(
+            manager.queuedSchemeMutationIntents,
+            [.startDownload(schemaID: "wanxiang", force: true)]
+        )
+    }
+
+    func testInvalidDeferredDownloadDoesNotStrandDeploymentWaiter() async {
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(deploymentService: deploymentService)
+        let operationID = UUID()
+        let acquired = await manager.acquireSchemeDeliveryCommitLease(operationID: operationID)
+        XCTAssertTrue(acquired)
+
+        let waiter = Task { @MainActor in await manager.deployRimeConfig() }
+        await Task.yield()
+        manager.enqueueSchemeMutation(.startDownload(schemaID: "missing", force: false))
+        manager.releaseSchemeDeliveryCommitLease(operationID: operationID)
+
+        let waiterResult = await waiter.value
+        XCTAssertTrue(waiterResult)
+        guard case .failed(let name, _) = manager.rimeIceDownloadState else {
+            return XCTFail("invalid deferred download must publish a recoverable failure")
+        }
+        XCTAssertEqual(name, "missing")
+        let requestCount = await deploymentService.requests.count
+        XCTAssertEqual(requestCount, 1)
+    }
+
+    func testGenerationInvalidationAfterLeaseWaitRollsBackLease() async {
+        let manager = makeManager()
+        let foreignOperationID = UUID()
+        let downloadOperationID = UUID()
+        let foreignLeaseAcquired = await manager.acquireSchemeDeliveryCommitLease(
+            operationID: foreignOperationID
+        )
+        XCTAssertTrue(foreignLeaseAcquired)
+        manager.activeDownloadOperationID = downloadOperationID
+
+        let attempt = Task { @MainActor in
+            do {
+                try await manager.acquireActiveSchemeDeliveryCommitLease(
+                    operationID: downloadOperationID
+                )
+                return false
+            } catch is CancellationError {
+                return true
+            } catch {
+                return false
+            }
+        }
+        await Task.yield()
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount, 1)
+
+        manager.activeDownloadOperationID = nil
+        manager.releaseSchemeDeliveryCommitLease(operationID: foreignOperationID)
+
+        let cancelled = await attempt.value
+        XCTAssertTrue(cancelled)
+        XCTAssertNil(manager.schemeDeliveryCommitLeaseOperationID)
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount, 0)
+
+        let recoveryOperationID = UUID()
+        let recoveryLeaseAcquired = await manager.acquireSchemeDeliveryCommitLease(
+            operationID: recoveryOperationID
+        )
+        XCTAssertTrue(recoveryLeaseAcquired)
+        manager.releaseSchemeDeliveryCommitLease(operationID: recoveryOperationID)
+    }
+
+    func testCancelledCommitLeaseAttemptDoesNotRegisterAvailabilityWaiter() async {
+        let manager = makeManager()
+        let blockingOperationID = UUID()
+        let acquired = await manager.acquireSchemeDeliveryCommitLease(
+            operationID: blockingOperationID
+        )
+        XCTAssertTrue(acquired)
+
+        let cancelledOperationID = UUID()
+        let attempt = Task { @MainActor in
+            await manager.acquireSchemeDeliveryCommitLease(operationID: cancelledOperationID)
+        }
+        // The task has not yielded from this MainActor test yet, so this
+        // deterministically exercises cancellation before waiter registration.
+        attempt.cancel()
+
+        let cancelledAttemptAcquired = await attempt.value
+        XCTAssertFalse(cancelledAttemptAcquired)
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount, 0)
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseOperationID, blockingOperationID)
+
+        manager.releaseSchemeDeliveryCommitLease(operationID: blockingOperationID)
+    }
+
     private func makeManager(
         settings: StubSharedSettingsStore = StubSharedSettingsStore(),
-        catalogClient: any SchemaCatalogClient = StubSchemaCatalogClient(latestURL: nil),
-        archiveDownloader: any SchemaArchiveDownloading = StubSchemaArchiveDownloader(returnedETag: nil),
+        sourceSelector: any SchemaSourceSelecting = StubSchemaSourceSelector(),
+        archiveDownloader: any SchemaArchiveDownloading = StubSchemaArchiveDownloader(),
+        artifactVerifier: any SchemaArtifactVerifying = SchemaArtifactVerifier(),
+        temporaryArtifactCleaner: any SchemaTemporaryArtifactCleaning =
+            FileSystemSchemaTemporaryArtifactCleaner(),
+        deliveryDiagnostics: any SchemaDeliveryDiagnosing = RecordingDeliveryDiagnostics(),
         installer: StubSchemaArchiveInstaller = StubSchemaArchiveInstaller(),
         deploymentService: any RimeDeploymentServicing = StubDeploymentService(succeeded: true)
     ) -> SchemaManager {
         SchemaManager(
             settings: settings,
-            catalogClient: catalogClient,
+            sourceSelector: sourceSelector,
             archiveDownloader: archiveDownloader,
+            artifactVerifier: artifactVerifier,
+            temporaryArtifactCleaner: temporaryArtifactCleaner,
+            deliveryDiagnostics: deliveryDiagnostics,
             archiveInstaller: installer,
             deploymentService: deploymentService
         )
@@ -929,6 +1429,180 @@ final class SchemaManagerTests: XCTestCase {
 }
 
 @MainActor
+private final class ControlledArchiveDownloader: SchemaArchiveDownloading {
+    private var sourceIDs: [String] = []
+    private var registered: [SchemaOwnedTemporaryArtifact] = []
+    private let failingSourceIDs: Set<String>
+    private let registry: SchemaTemporaryArtifactRegistry?
+
+    init(
+        failingSourceIDs: Set<String> = [],
+        registry: SchemaTemporaryArtifactRegistry? = nil
+    ) {
+        self.failingSourceIDs = failingSourceIDs
+        self.registry = registry
+    }
+
+    func downloadArchive(
+        from source: RimeSchemeSourceVariant,
+        operationID: UUID,
+        attemptID: UUID,
+        onProgress: (@Sendable (Double?) -> Void)?
+    ) async throws -> DownloadedSchemaArchive {
+        sourceIDs.append(source.id)
+        if failingSourceIDs.contains(source.id) {
+            throw URLError(.notConnectedToInternet)
+        }
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("controlled-download-\(UUID().uuidString).zip")
+        try Data("fixture".utf8).write(to: url)
+        let archive = DownloadedSchemaArchive(
+            localURL: url,
+            expectedContentLength: source.expectedByteCount,
+            operationID: operationID,
+            attemptID: attemptID,
+            sourceID: source.id,
+            artifactID: UUID(),
+            finalHost: source.downloadURL.host ?? "github.com"
+        )
+        if let registry {
+            try await registry.register(archive.ownedTemporaryArtifact)
+        }
+        registered.append(archive.ownedTemporaryArtifact)
+        return archive
+    }
+
+    func requestedSourceIDs() -> [String] { sourceIDs }
+    func registeredArtifacts() -> [SchemaOwnedTemporaryArtifact] { registered }
+}
+
+nonisolated private struct SourceControlledArtifactVerifier: SchemaArtifactVerifying {
+    let failingSizeSourceIDs: Set<String>
+    let failingDigestSourceIDs: Set<String>
+
+    init(
+        failingSizeSourceIDs: Set<String> = [],
+        failingDigestSourceIDs: Set<String> = []
+    ) {
+        self.failingSizeSourceIDs = failingSizeSourceIDs
+        self.failingDigestSourceIDs = failingDigestSourceIDs
+    }
+
+    func verifyArchiveSize(at archiveURL: URL, source: RimeSchemeSourceVariant) throws {
+        if failingSizeSourceIDs.contains(source.id) {
+            throw DownloadError.integrityMismatch(
+                .archiveSize(expected: source.expectedByteCount, actual: 1)
+            )
+        }
+    }
+
+    func verifyArchiveDigest(at archiveURL: URL, source: RimeSchemeSourceVariant) throws -> String {
+        if failingDigestSourceIDs.contains(source.id) {
+            throw DownloadError.integrityMismatch(
+                .archiveDigest(
+                    expected: source.archiveSHA256,
+                    actual: String(repeating: "0", count: 64)
+                )
+            )
+        }
+        return source.archiveSHA256
+    }
+
+    func stagedContentSHA256(
+        in extractionDirectory: URL,
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws -> String { String(repeating: "0", count: 64) }
+}
+
+private actor RecordingTemporaryCleaner: SchemaTemporaryArtifactCleaning {
+    private var artifacts: [SchemaOwnedTemporaryArtifact] = []
+    private let delegate: FileSystemSchemaTemporaryArtifactCleaner
+
+    init(registry: SchemaTemporaryArtifactRegistry) {
+        delegate = FileSystemSchemaTemporaryArtifactCleaner(registry: registry)
+    }
+
+    func removeAndVerifyAbsent(_ artifact: SchemaOwnedTemporaryArtifact) async throws
+        -> SchemaTemporaryCleanupReceipt
+    {
+        artifacts.append(artifact)
+        return try await delegate.removeAndVerifyAbsent(artifact)
+    }
+
+    func removedArtifacts() -> [SchemaOwnedTemporaryArtifact] { artifacts }
+}
+
+nonisolated private struct CancellingTemporaryCleaner: SchemaTemporaryArtifactCleaning {
+    let delegate: FileSystemSchemaTemporaryArtifactCleaner
+
+    init(registry: SchemaTemporaryArtifactRegistry) {
+        delegate = FileSystemSchemaTemporaryArtifactCleaner(registry: registry)
+    }
+
+    func removeAndVerifyAbsent(_ artifact: SchemaOwnedTemporaryArtifact) async throws
+        -> SchemaTemporaryCleanupReceipt
+    {
+        let receipt = try await delegate.removeAndVerifyAbsent(artifact)
+        withUnsafeCurrentTask { $0?.cancel() }
+        return receipt
+    }
+}
+
+nonisolated private struct FailingTemporaryCleaner: SchemaTemporaryArtifactCleaning {
+    func removeAndVerifyAbsent(_ artifact: SchemaOwnedTemporaryArtifact) async throws
+        -> SchemaTemporaryCleanupReceipt
+    {
+        throw DownloadError.temporaryCleanupFailed
+    }
+}
+
+/// Cleans a different registered artifact so the returned receipt cannot prove
+/// removal of the downloader's current attempt.
+nonisolated private struct StaleReceiptTemporaryCleaner: SchemaTemporaryArtifactCleaning {
+    let registry: SchemaTemporaryArtifactRegistry
+    let delegate: FileSystemSchemaTemporaryArtifactCleaner
+
+    init(registry: SchemaTemporaryArtifactRegistry) {
+        self.registry = registry
+        delegate = FileSystemSchemaTemporaryArtifactCleaner(registry: registry)
+    }
+
+    func removeAndVerifyAbsent(_ artifact: SchemaOwnedTemporaryArtifact) async throws
+        -> SchemaTemporaryCleanupReceipt
+    {
+        let decoyURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("stale-receipt-\(UUID().uuidString).zip")
+        try Data("stale".utf8).write(to: decoyURL)
+        let decoy = SchemaOwnedTemporaryArtifact(
+            operationID: artifact.operationID,
+            attemptID: UUID(),
+            sourceID: artifact.sourceID,
+            artifactID: UUID(),
+            localURL: decoyURL
+        )
+        try await registry.register(decoy)
+        return try await delegate.removeAndVerifyAbsent(decoy)
+    }
+}
+
+nonisolated private struct DroppingDeliveryDiagnostics: SchemaDeliveryDiagnosing {
+    func record(_ payload: DiagnosticEvent.SchemeDeliveryPayload) {}
+}
+
+nonisolated private final class RecordingDeliveryDiagnostics: SchemaDeliveryDiagnosing, Sendable {
+    private let payloads = Mutex<[DiagnosticEvent.SchemeDeliveryPayload]>([])
+
+    func record(_ payload: DiagnosticEvent.SchemeDeliveryPayload) {
+        payloads.withLock { $0.append(payload) }
+    }
+
+    func recordedPayloads() -> [DiagnosticEvent.SchemeDeliveryPayload] {
+        payloads.withLock { $0 }
+    }
+}
+
+@MainActor
 private final class StubSharedSettingsStore: SharedSettingsStoring {
     private var values: [String: Any]
 
@@ -944,41 +1618,43 @@ private final class StubSharedSettingsStore: SharedSettingsStoring {
     func synchronize() {}
 }
 
-private struct StubSchemaCatalogClient: SchemaCatalogClient {
-    let latestURL: URL?
-
-    func latestArchiveURL(for distribution: RimeSchemeDistribution) async throws -> URL? { latestURL }
+nonisolated private struct StubSchemaSourceSelector: SchemaSourceSelecting {
+    func selectSource(
+        from variants: [RimeSchemeSourceVariant],
+        preferredSourceID: String?
+    ) async throws -> RimeSchemeSourceVariant {
+        if let preferredSourceID, let preferred = variants.first(where: { $0.id == preferredSourceID }) {
+            return preferred
+        }
+        guard let first = variants.first else { throw DownloadError.allSourcesUnavailable }
+        return first
+    }
 }
 
 @MainActor
 private final class StubSchemaArchiveDownloader: SchemaArchiveDownloading {
     struct Request: Sendable {
-        let sourceURL: URL
-        let existingETag: String?
-        let cachedArchiveURL: URL
+        let source: RimeSchemeSourceVariant
     }
 
-    private let returnedETag: String?
     private(set) var requests: [Request] = []
 
-    init(returnedETag: String?) {
-        self.returnedETag = returnedETag
-    }
-
     func downloadArchive(
-        from url: URL,
-        existingETag: String?,
-        cachedArchiveURL: URL,
+        from source: RimeSchemeSourceVariant,
+        operationID: UUID,
+        attemptID: UUID,
         onProgress: (@Sendable (Double?) -> Void)?
     ) async throws -> DownloadedSchemaArchive {
-        requests.append(
-            Request(sourceURL: url, existingETag: existingETag, cachedArchiveURL: cachedArchiveURL)
-        )
+        requests.append(Request(source: source))
         onProgress?(1)
         return DownloadedSchemaArchive(
-            localURL: cachedArchiveURL,
-            expectedContentLength: 42,
-            eTag: returnedETag
+            localURL: URL(fileURLWithPath: "/tmp/\(UUID().uuidString).zip"),
+            expectedContentLength: source.expectedByteCount,
+            operationID: operationID,
+            attemptID: attemptID,
+            sourceID: source.id,
+            artifactID: UUID(),
+            finalHost: source.downloadURL.host ?? "github.com"
         )
     }
 }
