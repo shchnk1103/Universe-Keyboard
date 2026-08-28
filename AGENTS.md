@@ -63,6 +63,10 @@
 
 ## 本地 CI 门禁（与 `.github/workflows/swift6-quality.yml` 对齐）
 
+远端工作流按 [`docs/CI_CHANGE_CLASSIFICATION.md`](docs/CI_CHANGE_CLASSIFICATION.md)
+分级：分类、轻量检查和 `final-quality-gate` 始终运行；只有严格的 docs/KOS allowlist
+可跳过 `build-and-test`。未知路径、workflow 或 `scripts/ci/**` 变更必须走完整门禁。
+
 在 **push 后预期合并**、或用户要求「上传并合并 / 修 CI / ship」时，在推送前（至少在 merge 前）于本地执行与 CI 同序的检查。默认模拟器名与 CI 一致：`iPhone 17 Pro`（本机无该机型时可用等价 iOS Simulator，并在报告中写明）。
 
 1. **（若改了 RIME 二进制依赖）** `bash scripts/ensure_rime_vendor.sh fetch`
@@ -76,6 +80,9 @@
 6. **Debug / Release build：** 同上 destination，分别 `-configuration Debug|Release` 的 `build`（参数与 CI 一致）
 
 **范围收窄（仅当改动极小时）：** 纯文档且无 Swift / 工程 / 测试文件改动时，可跳过 3–6，但须在完成报告中写明「docs-only，跳过 xcodebuild」。只改 `Packages/KeyboardCore` 时至少跑步骤 3；改主 App / Extension / 测试 target 时 **不得** 只跑 KeyboardCore 就声称可合并。
+
+修改 `.github/workflows/**`、`scripts/ci/**` 或分类规则本身时不得使用 docs-only
+例外；必须验证完整路径和 docs-only 路径，并在 merge 前取得 hosted run 证据。
 
 **改完测试或部署意图后：** 必须跑到会执行该用例的 target（例如改了 `UniverseKeyboardTests` 就必须跑步骤 5，不能只跑 KeyboardCore）。  
 历史教训：#48 合并后 CI 红在 `RimeSettingsStoreTests`（签名 `schema=all` 与测试种子不一致）——本地若只跑 KeyboardCore 过滤套件会漏掉。

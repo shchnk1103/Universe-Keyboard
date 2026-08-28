@@ -6,8 +6,63 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: swift6-quality-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-and-test:
+  classify_change:
+    name: classify-change
+    runs-on: ubuntu-latest
+    outputs:
+      classification: ${{ steps.classify.outputs.classification }}
+      requires_full: ${{ steps.classify.outputs.requires_full }}
+      base_sha: ${{ steps.classify.outputs.base_sha }}
+      head_sha: ${{ steps.classify.outputs.head_sha }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Classify changed paths
+        id: classify
+        env:
+          EVENT_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          base_sha="$EVENT_BASE_SHA"
+          if [[ -z "$base_sha" || "$base_sha" =~ ^0+$ ]]; then
+            base_sha="$(git rev-parse "${GITHUB_SHA}^")"
+          fi
+          python3 scripts/ci/classify_changes.py \
+            --base "$base_sha" \
+            --head "$GITHUB_SHA" \
+            --github-output "$GITHUB_OUTPUT" \
+            --summary "$GITHUB_STEP_SUMMARY"
+
+  lightweight_checks:
+    name: lightweight-checks
+    needs: classify_change
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run common lightweight checks
+        run: >-
+          bash scripts/ci/run_lightweight_checks.sh
+          '${{ needs.classify_change.outputs.base_sha }}'
+          '${{ needs.classify_change.outputs.head_sha }}'
+
+  build_and_test:
+    name: build-and-test
+    needs: [classify_change, lightweight_checks]
+    if: needs.classify_change.outputs.requires_full == 'true'
     runs-on: macos-26
     steps:
       - name: Check out source
@@ -93,3 +148,25 @@ jobs:
             SWIFT_SUPPRESS_WARNINGS=NO \
             SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
             build
+
+  final_quality_gate:
+    name: final-quality-gate
+    if: always()
+    needs: [classify_change, lightweight_checks, build_and_test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Require the classified gate results
+        env:
+          CLASSIFY_RESULT: ${{ needs.classify_change.result }}
+          LIGHTWEIGHT_RESULT: ${{ needs.lightweight_checks.result }}
+          HEAVY_RESULT: ${{ needs.build_and_test.result }}
+          REQUIRES_FULL: ${{ needs.classify_change.outputs.requires_full }}
+        run: >-
+          bash scripts/ci/verify_final_gate.sh
+          "$CLASSIFY_RESULT"
+          "$LIGHTWEIGHT_RESULT"
+          "$HEAVY_RESULT"
+          "$REQUIRES_FULL"

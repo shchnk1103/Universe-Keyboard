@@ -20,16 +20,19 @@
       "docs/assignments/diagnostics-viewer-load-001.md",
       "docs/assignments/kos-2-2-doc-align-001.md",
       "docs/assignments/codex-github-auth-diag-001.md",
+      "docs/assignments/td-016-ci-tiering-001.md",
       "docs/product-decisions/KOS-UPGRADE-UK-001-authorization.md",
       "docs/product-decisions/DIAGNOSTICS-VIEWER-LOAD-001-authorization.md",
       "docs/product-decisions/KOS-2-2-DOC-ALIGN-001-authorization.md",
       "docs/product-decisions/KOS-2-2-DOC-ALIGN-001-product-gate.md",
       "docs/product-decisions/CODEX-GITHUB-AUTH-DIAG-001-authorization.md",
+      "docs/product-decisions/TD-016-CI-TIERING-001-authorization.md",
       "docs/evidence/diagnostics-viewer-load-2026-08-27.md",
       "docs/evidence/kos-upgrade-uk-001-advisory-validate-2026-08-27.md",
       "docs/evidence/kos-2-2-doc-align-001-audit-2026-08-28.md",
       "docs/evidence/codex-github-auth-sandbox-2026-08-28.md",
       "docs/evidence/codex-github-auth-host-2026-08-28.md",
+      "docs/evidence/td-016-ci-tiering-001-implementation-2026-08-28.md",
       "docs/authorizations/*.md",
       "docs/gates/*.md"
     ],
@@ -65,6 +68,11 @@
       "id": "CLAIM.KOS.CODEX_GITHUB_AUTH_SANDBOX_FALSE_NEGATIVE",
       "description": "A sandbox-only gh authentication failure must not be classified as token expiry when the same account validates and GitHub operations succeed in the authorized host environment.",
       "owner": "Architecture and Knowledge Steward"
+    },
+    {
+      "id": "CLAIM.CI.TIERING_FAIL_CLOSED",
+      "description": "Documentation-only changes may skip the heavy Swift job only after an always-run classifier and lightweight gate succeed; sensitive and unknown paths require the full Swift 6 job and an always-run final gate.",
+      "owner": "Quality, Performance and Release Maintainer"
     }
   ],
   "environments": [
@@ -87,6 +95,11 @@
       "id": "ENV.CODEX_HOST_AUTHORIZED",
       "class": "local",
       "description": "User-authorized host execution environment with normal macOS keyring and outbound GitHub access."
+    },
+    {
+      "id": "ENV.GITHUB_ACTIONS",
+      "class": "ci",
+      "description": "GitHub Actions hosted runners executing the repository change classifier, lightweight checks and conditional Swift 6 quality job."
     }
   ],
   "gate_policies": [

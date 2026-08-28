@@ -2,6 +2,12 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-28 — CI 变更分级进入托管验证
+
+- 新增 fail-closed 变更分类：仅根目录 Markdown、`docs/**` 与 `.kos/**` 可走轻量路径，任何源码、工程、测试、资源、脚本、workflow 或未知路径均运行完整 Swift 6 门禁。
+- 分类、轻量检查和 `final-quality-gate` 始终运行；完整构建只在分类为 `full` 时执行，同一 PR 的旧运行会在新提交到达后取消。
+- 当前实现仍等待 GitHub 托管运行和独立 Architecture/Quality review；未修改 branch protection 或 required checks，也未授权合并。
+
 ## 2026-08-27 — 诊断页加载态与空态
 
 - 根加载在仍 `isRefreshing` 时显示「正在加载诊断日志」，不再伪装成「暂无诊断日志」。

@@ -15,6 +15,7 @@
   [`docs/kos/kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md)。
 - KOS 2.2 记录按 [`.kos/project.json`](../.kos/project.json) 渐进纳管；包含的工作先核对 Authorization → Assignment → Evidence/Review → Gate/Decision 引用。advisory validator 只证明结构，不替代 Coordinator 或 Human Gate。
 - GitHub CLI 在 Codex 沙箱内失败时，先按 [`kos/codex-github-cli-auth-troubleshooting.md`](kos/codex-github-cli-auth-troubleshooting.md) 做一次主机对照；沙箱文案不能单独证明 token 过期，也不能授权修改代理或重复登录。
+- GitHub Actions 变更分级以 [`CI_CHANGE_CLASSIFICATION.md`](CI_CHANGE_CLASSIFICATION.md) 为准；`final-quality-gate` 是稳定聚合结果，docs-only 的 heavy skip 必须来自已通过的 fail-closed 分类，不得靠 `paths-ignore`。
 
 ## Stacked PR 约定（KOS 2.1 ops · S-02）
 
