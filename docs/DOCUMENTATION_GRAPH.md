@@ -22,6 +22,8 @@ AGENTS
             -> task Assignment Records / handoffs
        -> kos
             -> Knowledge OS 2.0 specification / zero-context startup / migration records
+            -> KOS 2.2 UPGRADE_STATUS
+                 -> .kos/project.json / pinned Kit validator
        -> KNOWLEDGE_OS
             -> operational layers / navigation protocol / self-healing (links to kos for frozen rules)
        -> ENGINEERING_DASHBOARD
@@ -47,7 +49,8 @@ Arrows mean “navigate to” or “depends on”; they do not transfer Source o
 | `README.md` | Public/project entry | First visit | What is this project and how do I enter? | Durable rationale or exhaustive status |
 | `KNOWLEDGE_INDEX.md` | Pure navigation | Every new thread after AGENTS | Where should I go? | Domain facts |
 | `KNOWLEDGE_OS.md` | Knowledge OS operational entry under 2.0 | Maintainers, doc authors, any session needing layers/protocol | How are knowledge layers navigated and healed operationally? | Frozen governance tables, current product architecture |
-| `kos/*` | Knowledge OS 2.0 frozen governance, startup layer and migration records | Zero-context startup, system governance work, Product review | What is the canonical Knowledge OS 2.0 contract, startup route and migration status? | Runtime behavior or domain implementation detail |
+| `kos/*` | Knowledge OS 2.0 frozen governance/startup/migration plus project KOS 2.2 upgrade status | Zero-context startup, system governance work, Product review | What is the canonical 2.0 contract and which Kit version/mode has this project adopted? | Runtime behavior, domain implementation detail or validator-owned Product conclusions |
+| `.kos/project.json` | KOS 2.2 project registry | Included record author/reviewer, validator | Which records, claims, environments and Gate policies are structurally checked, and in which mode? | Human authorization, lifecycle transition or acceptance |
 | `READING_MAPS.md` | Task-based routing | Before implementation | What must I read for this task? | The content of those sources |
 | `PROJECT_CONTEXT.md` | Current architecture overview | Any code/architecture task | What modules and boundaries exist? | Historical chronology or troubleshooting |
 | `architecture/*.md` | Current subsystem contracts | Relevant subsystem change | How does this boundary currently work? | Why every decision was selected |
@@ -133,6 +136,8 @@ Program status
 - The team blueprint points to playbooks and domain sources; neither architecture facts nor playbook procedure depend on copied team prose.
 - Assignment Records depend on `ASSIGNMENT_POLICY`; the Policy references permanent roles but never creates or transfers them.
 - Knowledge OS 2.0 specification documents under `docs/kos/` own the Knowledge OS 2.0 contract and startup procedure; navigation documents link to them without copying substantive rules.
+- `docs/kos/UPGRADE_STATUS.md` owns adopted Kit version/disposition; `.kos/project.json` owns the structural registry. Neither supersedes Markdown authority or creates a Gate conclusion.
+- KOS 2.2 envelope onboarding is progressive in advisory mode. An absent envelope outside Profile include is not a defect by itself; a materially touched included record with a conflicting mirror is.
 - Dashboard may summarize Assignment completeness only after following the Product Decision source; it never assigns work.
 - The Dashboard summarizes owner-confirmed status and links to authority; no owner source depends on Dashboard conclusions.
 - ADRs may link to current architecture, but architecture summaries link back to ADR rationale.

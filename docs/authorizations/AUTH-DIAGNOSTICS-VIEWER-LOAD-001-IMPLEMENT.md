@@ -7,7 +7,7 @@
   "record_type": "authorization",
   "title": "Implement diagnostics viewer load versus empty states",
   "status": "active",
-  "updated_at": "2026-08-27T21:30:00+08:00",
+  "updated_at": "2026-08-27T22:34:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked"],
   "authorization": {
     "action": "implement",
@@ -33,4 +33,4 @@
 
 ---
 
-本收据授权实现诊断查看加载态。它不授权 merge、`required`、方案下载或 PR #83。
+本收据授权的 bounded implementation 已通过 PR #85 合并。当前 KOS 2.2 advisory validator 仍要求 Assignment 引用 `active` AUTH，因此机器状态暂保留 `active/unconsumed`；这只是 [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) 记录的审计语义限制，不构成重放许可。它不授权 merge、`required`、方案下载或 PR #83。

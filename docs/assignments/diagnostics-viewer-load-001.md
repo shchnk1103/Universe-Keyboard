@@ -6,10 +6,10 @@
   "record_id": "DIAGNOSTICS-VIEWER-LOAD-001",
   "record_type": "assignment",
   "title": "Diagnostics viewer load state and bounded read",
-  "lifecycle": "active",
-  "current_phase": "Reader-load Architecture Pass with conditions and Quality Pass with conditions on 5b4a0ea; waiting Human Product Gate",
+  "lifecycle": "closed",
+  "current_phase": "Human Product Gate passed; PR #85 merged as 420322b; residual scheme-delivery observability handed off to TD-015",
   "authorization_action": "implement",
-  "updated_at": "2026-08-27T22:00:00+08:00",
+  "updated_at": "2026-08-27T22:34:00+08:00",
   "revalidation_triggers": ["scope_changed", "implement_authorization_changed"],
   "authorization_refs": ["AUTH-DIAGNOSTICS-VIEWER-LOAD-001-IMPLEMENT"],
   "parent_refs": ["KOS-UPGRADE-UK-001"],
@@ -33,11 +33,11 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | active |
-| Current Phase | Reader-load Arch/Quality Pass with conditions; GitHub CI green on PR #85; waiting Human Product Gate |
-| Material non-claims | No PR #83 merge; no scheme-download fix; no raised read budget; CI green ≠ merge; screenshot numbers are not a new memory contract; high-fidelity is not this Gate |
-| Next handoff / decision | Human 明确 Product Gate 后再 merge #85。万象 journal 缺口见 [`TD-015`](../TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal)，明天另立 Assignment，不在本任务里修。 |
-| Residuals | AUTH establish-assignment is consumed; TD-014 remaining if KOS-UPGRADE AUTH still needs follow-up |
+| Lifecycle | closed |
+| Current Phase | Human Product Gate passed; PR #85 merged as 420322b; residual scheme-delivery observability handed off to TD-015 |
+| Material non-claims | No PR #83 merge; no scheme-download fix; no raised read budget; Human 观察的 `<100 MB` 不是新的正式内存合同；high-fidelity 未纳入本 Gate |
+| Next handoff / decision | 万象 journal 缺口见 [`TD-015`](../TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal)；再次分类万象失败前另立 Assignment，不在本任务里修。 |
+| Residuals | Architecture / Quality 的 P2 处置保持原记录；KOS 升级 AUTH 卫生仍由 [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) 追踪 |
 
 ---
 
@@ -66,6 +66,7 @@
   - [`DIAGNOSTICS-DAY-BROWSER-001`](diagnostics-day-browser-001.md) 与 [`DIAGNOSTICS-READ-RECOVERY-001`](diagnostics-read-recovery-001.md)
   - [`DEBUGGING.md`](../DEBUGGING.md) 诊断页合同
   - Human 真机证据 [`diagnostics-viewer-load-2026-08-27`](../evidence/diagnostics-viewer-load-2026-08-27.md)
+  - Human Product Gate [`PD-DIAGNOSTICS-VIEWER-LOAD-001-GATE`](../product-decisions/DIAGNOSTICS-VIEWER-LOAD-001-product-gate.md)
 
 ## Assignment
 
@@ -108,3 +109,4 @@
 - `2026-08-27 Asia/Shanghai`: Human 真机复测（高保真关，约 69 条可见）仍出现近 1 GB 工作集与满核 CPU；二次进入再次长加载。判定 1 秒 skip/日期目录仍抢 exclusive fence，与 writer shared fence 互锁后整页重扫。主 App 读取路径改为无锁目录水位 skip，并复用 Store。截图数字不是新的内存合同。
 - `2026-08-27 Asia/Shanghai`: Human 报告修复后今天/昨天日志加载内存均不超过 100 MB（高保真关）。独立 Architecture **Pass with conditions**、Quality **Pass with conditions**（`5b4a0ea`，P0=0 · P1=0）。高保真不是本 Gate。等 Human Product Gate；不 merge。
 - `2026-08-27 Asia/Shanghai`: Human 报告 PR #85 GitHub CI 已绿。CI 绿不等于可 merge。Human 同日重试万象拼音 UI 成功，但 v1 无交付日志；记为 [`TD-015`](../TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal)。不改高保真合同，不猜修下载，不 merge #83。
+- `2026-08-27 Asia/Shanghai`: Human Product Owner 接受真机复验结果并明确授权合并 PR #85。PR #85 合并为 `420322b`；head `9c837d8` 可从 `origin/main` 到达，本地与远端功能分支已安全清理。Assignment `Closed`。实现 AUTH 因 advisory validator 的 Assignment 绑定规则暂保留 `active/unconsumed`，但不构成重放许可（TD-014）。该 Gate 不授权 PR #83、方案下载修复或 Release。

@@ -55,6 +55,17 @@ Required review: no `UNKNOWN` Assignment field; frozen inputs and archive locati
 
 For `ENV-TOOLING-001` capability implementation or Quality verification, also read `ENVIRONMENT_DIGEST_TOOLING.md`. It is the authority for digest roots, include/exclude rules, user-configuration separation, canonical manifest bytes, privacy and non-shipping boundaries. Fixture results validate tooling only and cannot replace a new Environment Capture.
 
+## Publish Or Maintain A GitHub Pull Request
+
+Ownership: the current Assignment and Authorization bound the publish action; Architecture & Knowledge Steward owns the reusable authentication diagnosis procedure. Merge and Release remain separate Human authorities.
+
+1. `AGENTS.md` — GitHub publishing, branch cleanup and local CI gates.
+2. [`kos/codex-github-cli-auth-troubleshooting.md`](kos/codex-github-cli-auth-troubleshooting.md) — sandbox/host authentication and network classification.
+3. `AI_WORKFLOW.md` — PR topology and post-merge state synchronization.
+4. The current Assignment, Authorization and changed-file-specific CI requirements.
+
+Required review: confirm the exact current authorization and branch/PR state; never expose secret material; do one sandbox/host comparison before asking for reauthentication; do not reuse a historical proxy address; do not infer merge or Release authority from successful authentication.
+
 ## Modify Candidate Bar
 
 Ownership: Primary [`Keyboard UI`](playbooks/keyboard-ui.md); secondary [`KeyboardCore`](playbooks/keyboard-core.md) when selection/state semantics change and [`Debug Investigator`](playbooks/debug-investigator.md) when the boundary is unproven; escalate ownership conflicts or durable product changes to [`Coordinator`](playbooks/coordinator.md).

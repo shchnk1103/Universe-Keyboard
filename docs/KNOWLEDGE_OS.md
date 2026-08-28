@@ -19,6 +19,8 @@ This file is the **operational entrypoint** after Knowledge OS 2.0 migration. It
 | Frozen Knowledge OS 2.0 principles, authority, lifecycle, state/phase, task levels, repository change policy, migration rules | [`docs/kos/knowledge-os-2.0-specification.md`](kos/knowledge-os-2.0-specification.md) |
 | Zero-Context Startup for new AI sessions | [`docs/kos/zero-context-startup.md`](kos/zero-context-startup.md) |
 | KOS-MIG-001 migration execution evidence and rollback | [`docs/kos/migration-001-record.md`](kos/migration-001-record.md) |
+| KOS 2.2 adopted version, mode and review trigger | [`docs/kos/UPGRADE_STATUS.md`](kos/UPGRADE_STATUS.md) |
+| KOS 2.2 project registry, included records, claims, environments and Gate policies | [`.kos/project.json`](../.kos/project.json) |
 | Task Assignment contract | [`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md) |
 | Documentation SoT table and doc lifecycle | [`DOCUMENTATION_GOVERNANCE.md`](DOCUMENTATION_GOVERNANCE.md) |
 | Operational layers, navigation protocol, evolution, self-healing | **This file** |
@@ -76,6 +78,33 @@ lifecycle language, confirm:
 [`ACTIVE_WORK.md`](ACTIVE_WORK.md) lists at most **10** Active/Ready formal Work
 Items with links and Current Status fields only. Lifecycle SoT remains the
 Assignment Record.
+
+## KOS 2.2 Machine-Readable Reliability Layer
+
+Universe Keyboard adopts KOS Agent Kit `v0.5.0` in **advisory** mode. KOS 2.2
+adds machine-readable envelopes and deterministic, read-only validation; it does
+not replace the frozen KOS 2.0 authority model or KOS 2.1 operational hygiene.
+
+| Concern | Source of Truth |
+|---|---|
+| Adopted Kit version, disposition and next review | [`kos/UPGRADE_STATUS.md`](kos/UPGRADE_STATUS.md) |
+| Included record set, stable claims, environments and Gate policies | [`.kos/project.json`](../.kos/project.json) |
+| Product/Architecture/Quality/Release conclusion | Existing project Decision, Assignment, Evidence, Review and Gate owners — never validator output |
+
+Adoption is progressive:
+
+1. New formal governance workflows explicitly included by the Profile use one
+   canonical `kos-record` envelope in each owning Markdown record.
+2. Existing records remain valid legacy Markdown until materially touched,
+   deliberately onboarded, or covered by a separately authorized required-mode Migration.
+3. Migration preserves `UNKNOWN`; it must not invent old authority,
+   environment, artifact, claim, freshness or Gate conclusions.
+4. Changing `advisory` to `required`, broadening include globs, or changing
+   stable claim/environment semantics requires reviewed Upgrade work.
+
+Validator success means only that configured structure satisfies configured
+rules at the supplied evaluation time. It does not execute a state transition
+or approve merge, release, TestFlight, Product or Quality Gates.
 
 ## One Fact, One Owner
 

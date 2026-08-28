@@ -57,6 +57,7 @@ Then execute:
 6. Read only the authority sources required by that route.
 7. Before changing repository state, identify the Assignment, role owner, lifecycle state, Source of Truth and validation path.
 8. For status hygiene after Gates/merges, use [`kos-2.1-operational-maturity.md`](kos-2.1-operational-maturity.md) under frozen Knowledge OS 2.0.
+9. Read [`UPGRADE_STATUS.md`](UPGRADE_STATUS.md) and [`.kos/project.json`](../../.kos/project.json) when the task owns or consumes a KOS 2.2 envelope. Treat advisory validation as structural evidence only.
 
 Stop if the repository does not identify the required authority and the user objective would require guessing.
 
@@ -71,8 +72,9 @@ Use this procedure before acting on a non-trivial request:
 5. **Find the role.** Resolve permanent ownership through [`VIRTUAL_ENGINEERING_TEAM.md`](../VIRTUAL_ENGINEERING_TEAM.md), then task-level responsibility through the applicable Assignment Record.
 6. **Find the lifecycle state.** Use the Assignment Record for lifecycle authority; use [`ENGINEERING_DASHBOARD.md`](../ENGINEERING_DASHBOARD.md) only as a status summary that links back to owner sources.
 7. **Check stop conditions.** Stop when required Assignment fields are `UNKNOWN`, required inputs are unavailable, repository sources conflict or the request exceeds authorized scope.
-8. **Act only inside the resolved scope.** Change the owning source first, then update downstream navigation or status summaries only when their route changed.
-9. **Validate the result.** Run validation appropriate to the change type and report skipped checks with reasons.
+8. **Check the KOS 2.2 boundary.** If the owner record is included by `.kos/project.json`, verify its envelope, receipt references and same-record mirrors. If it is legacy, advisory omission does not invalidate the record.
+9. **Act only inside the resolved scope.** Change the owning source first, then update downstream navigation or status summaries only when their route changed.
+10. **Validate the result.** Run validation appropriate to the change type and report skipped checks with reasons. Validator green never closes a Gate by itself.
 
 ## Startup Reading Order
 
@@ -112,6 +114,7 @@ To discover current work:
 4. Follow Dashboard links back to owner sources before accepting any status as authoritative.
 5. If the Work Item does not exist and the user objective authorizes governance bootstrap, create and complete the Assignment lifecycle first.
 6. If no Assignment exists and the objective does not authorize governance bootstrap, stop before formal work and return the missing Assignment as a blocker.
+7. If the Work Item is included by `.kos/project.json`, resolve its Authorization receipt and canonical envelope before execution; if it is not included, continue using legacy Markdown authority unless a separate migration decision says otherwise.
 
 Dashboard text never creates a Product Assignment Decision. It only summarizes owner-confirmed state.
 
@@ -172,6 +175,7 @@ Before declaring startup complete for a new session, verify:
 - Permanent role and task-level responsibility were separated.
 - Repository truth came from the owning document, not conversation memory.
 - Stop Conditions were checked.
+- KOS 2.2 mode/include and envelope references were checked when applicable; advisory output was not treated as approval.
 - Validation appropriate to the change type was run or skipped with a reason.
 
 For this repository, minimum documentation validation for a Zero-Context Startup change is:

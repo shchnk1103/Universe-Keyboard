@@ -15,6 +15,9 @@ Every fact has one primary document. Other documents may provide a short summary
 | Knowledge OS 2.0 frozen governance contract | `docs/kos/knowledge-os-2.0-specification.md` | Principles, authority, lifecycle, task levels, change types, migration rules |
 | Zero-Context Startup procedure | `docs/kos/zero-context-startup.md` | New-session authority recovery only |
 | Knowledge OS migration execution evidence | `docs/kos/migration-001-record.md` | Completed migration validation and rollback; not frozen principles |
+| KOS Agent Kit adoption status | `docs/kos/UPGRADE_STATUS.md` | Adopted version, disposition, last check and next review only |
+| KOS 2.2 project registry | `.kos/project.json` | Mode, included records, stable claim/environment IDs and Gate policies; no Product or Quality conclusion |
+| Codex GitHub CLI auth/environment diagnosis | `docs/kos/codex-github-cli-auth-troubleshooting.md` | Privacy-safe decision flow and retry boundary only; actual account and network state require current evidence |
 | Project entry and quick start | `README.md` | Entry, minimum setup and important links only; avoid volatile implementation detail |
 | Current architecture and module boundaries | `docs/PROJECT_CONTEXT.md` | Current overview, ownership boundaries and development entry points |
 | Current OpenCC integration mechanics | `docs/architecture/opencc-integration.md` | RIME filter/config participation and cross-target responsibility boundary; operational steps remain in debugging/performance/release sources |
@@ -52,6 +55,7 @@ Every change in the following areas must include a documentation-impact review. 
 - a complex bug whose cause/invariant must survive the current thread;
 - introducing, changing priority of or resolving technical debt;
 - test, build, release or acceptance workflow.
+- KOS Profile mode/include, record envelope, claim/environment registry, Gate policy or Kit version.
 
 Documentation impact may be "no update required", but an important PR must state why. Silence is not evidence that documentation was considered.
 
@@ -126,6 +130,31 @@ exactly one grade ([`kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-m
 Do not present `Executor-recorded` results as Quality-verified. Volatile
 snapshot metadata (date, commit, method, evidence path) still applies.
 
+## KOS 2.2 Record Envelope Policy
+
+Universe Keyboard currently uses KOS 2.2 in `advisory` mode. A `kos-record`
+JSON fence is a machine-readable header owned by the same Markdown document; it
+does not create a second Source of Truth.
+
+- Each included owner record has at most one canonical envelope near the top.
+- Assignment uses `lifecycle`; other record types use their own `status` vocabulary.
+- The Markdown **Current Status** lifecycle/status/current-phase mirror matches
+  the envelope after KOS normalization.
+- Authorization receipts describe a bounded authority decision but are not
+  bearer tokens or automatic permission to merge, release, delete or mutate an
+  external system.
+- Evidence keeps provenance, environment, artifact, coverage, freshness and
+  permitted/prohibited claims separate; missing dimensions stay unknown.
+- Passed/closed Gate records require Profile-registered evidence dimensions and
+  applicable closure/risk decisions; Review alone cannot replace Evidence.
+- Validator output is structural evidence only and never changes lifecycle or
+  grants Product, Architecture, Quality, merge or Release approval.
+
+Progressive adoption is intentional. Do not bulk-backfill historical records in
+`advisory`. Migrate a legacy record when materially changed or explicitly added
+to `.kos/project.json`; a move to `required` needs a separate Upgrade Assignment,
+bounded exemptions and project-authority approval.
+
 ## Supersession Banners (KOS 2.1 ops)
 
 When a later Product Decision or Assignment supersedes earlier “not authorized /
@@ -188,6 +217,8 @@ For every important PR or substantial Codex change, check:
 - [ ] Is a plan presented as current implementation truth?
 - [ ] Did permanent ownership, handoff or bootstrap contracts change?
 - [ ] Did task Assignment authority, completeness, lifecycle or handoff change?
+- [ ] Did a KOS Profile, envelope, authorization, evidence, Gate, claim/environment registry or upgrade status change?
+- [ ] If a legacy record was materially changed, was envelope onboarding reviewed without inventing historical facts?
 - [ ] If no documentation changed, is the reason explicit and defensible?
 
 ## Monthly And Milestone Knowledge Audit
@@ -205,6 +236,7 @@ At minimum, report:
 - README details that belong in another source of truth;
 - whether subagent playbooks can still operate independently without chat history.
 - whether permanent ownership remains singular, complete and aligned with playbook routing.
+- whether the KOS 2.2 Profile, included records, mirrors, claims, environments and upgrade status remain internally consistent.
 
 Each finding must name the primary source to update, severity and recommended owner area. Do not resolve drift by copying the same fact into more files.
 

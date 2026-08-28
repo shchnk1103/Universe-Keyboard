@@ -163,6 +163,31 @@ Keep the block short (about fifteen lines or one small table). Put historical
 checklists and phase logs **below** a clear separator. Do not leave historical
 “not claimed” rows readable as current truth without a supersession note.
 
+## KOS 2.2 Assignment Envelope (advisory)
+
+When an Assignment is included by [`.kos/project.json`](../.kos/project.json),
+it places one canonical `kos-record` JSON fence near the top. The envelope owns
+machine fields only: identity/type/schema, `lifecycle`, `current_phase`,
+authorization action/references, responsibility bindings, timestamps and
+revalidation triggers. Detailed scope, rationale, Gates and history remain in Markdown.
+
+The envelope does not replace this Policy or the Product Assignment Decision:
+
+- `authorization_refs` resolve to a matching current Authorization receipt for
+  the Assignment action/target/issuer under the configured validator.
+- Receipt existence is not executable permission; current human authority and
+  all external/destructive/merge/release boundaries still apply at action time.
+- **Current Status** lifecycle and current phase are derived mirrors and match
+  the envelope exactly after documented normalization.
+- `UNKNOWN` remains honest and blocking; never fabricate fields to validate.
+- Historical Assignments outside the Profile remain valid legacy records.
+  Materially touched or newly formal work is reviewed for precise onboarding;
+  bulk migration and `required` mode need a separate Upgrade Assignment.
+
+Canonical examples are the Assignments currently included by the Profile.
+Templates and executable field rules come from the pinned Kit version recorded
+in [`kos/UPGRADE_STATUS.md`](kos/UPGRADE_STATUS.md).
+
 ## Residual Disposition Before Close (KOS 2.1 ops)
 
 When Architecture or Quality returns **Pass with conditions** (or Conditional
