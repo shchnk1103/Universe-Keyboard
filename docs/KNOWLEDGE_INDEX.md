@@ -59,6 +59,7 @@
 
 - Privacy policy: [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md)
 - Codex GitHub CLI auth/network classification: [`kos/codex-github-cli-auth-troubleshooting.md`](kos/codex-github-cli-auth-troubleshooting.md)
+- CI change classification and stable final gate: [`CI_CHANGE_CLASSIFICATION.md`](CI_CHANGE_CLASSIFICATION.md)
 - Environment evidence capture procedure: [`ENVIRONMENT_CAPTURE_PROCEDURE.md`](ENVIRONMENT_CAPTURE_PROCEDURE.md)
 - Environment digest tooling architecture: [`ENVIRONMENT_DIGEST_TOOLING.md`](ENVIRONMENT_DIGEST_TOOLING.md)
 - Current engineering status: [`ENGINEERING_DASHBOARD.md`](ENGINEERING_DASHBOARD.md)

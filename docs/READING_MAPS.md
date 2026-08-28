@@ -261,7 +261,8 @@ Playbook: [`playbooks/test-release.md`](playbooks/test-release.md).
 1. `PROJECT_CONTEXT.md` build entry.
 2. `RELEASE_CHECKLIST.md` canonical commands.
 3. `architecture/swift6-migration.md` for concurrency/build contract.
-4. [`playbooks/test-release.md`](playbooks/test-release.md).
+4. [`CI_CHANGE_CLASSIFICATION.md`](CI_CHANGE_CLASSIFICATION.md) for remote tiering and stable final-gate semantics.
+5. [`playbooks/test-release.md`](playbooks/test-release.md).
 
 Required review: installed simulator discovery, no hardcoded counts/device names, affected targets and current evidence policy.
 

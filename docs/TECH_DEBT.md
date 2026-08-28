@@ -274,15 +274,16 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Priority:** Medium。主要降低纯文档提交的反馈等待与 CI 资源消耗；不得以提速为由削弱代码、工程配置、资源或治理变更的合并门禁。
 - **Risk:** 当前 `Swift 6 Quality` 对普通文档补录也会运行 KeyboardCore、RimeBridge、完整 App 测试及 Debug/Release 构建，单次可能持续十几分钟。连续文档修订还会产生过期运行；AI 若持续轮询，会额外消耗交互时间与 token。反向风险是粗暴使用 `paths-ignore` 后误跳过必要测试，或让被完全跳过的 required workflow 永久 pending。
 - **Current mitigation:** 推送后由 Human 查看 GitHub 状态，AI 不持续轮询；现有完整 CI 保持 fail-closed，不根据文件扩展名自动降级。
-- **Recommended fix（明日再讨论/授权，不在本记录中实现）:** 设计一个可审计的变更分类器和三级门禁：
+- **Authorized implementation:** 设计并实现一个可审计的变更分类器和分级门禁：
   1. 所有 PR 始终运行轻量公共门禁（变更分类、`git diff --check`、文档/链接、KOS validator、安全扫描）。
   2. 经审查的普通文档或治理文档只运行对应文档/KOS 检查；Assignment、Authorization、ADR 仍需治理一致性验证，但不因此启动 `xcodebuild`。
   3. Swift、测试、Package/Xcode 工程、RIME/Lua/词典、Assets/AppIcon、构建脚本、workflow，以及任何未知路径均运行完整 Swift 6 门禁；未知分类必须 fail closed。
   4. 使用始终运行的聚合 `final-quality-gate` 处理“重任务合法 skipped”，避免 required check 因整个 workflow 被 paths-ignore 而悬空。
   5. 为同一 PR 设置 `concurrency` + `cancel-in-progress`，取消旧提交的过期运行；AI 默认推送后交回，不做高频轮询。
-- **Current status (`2026-08-27`):** 仅记录讨论结论。未建立 Assignment，未授权实现，未修改 `.github/workflows`、required checks、KOS 模式或任何产品代码；明日由 Human Product Owner 决定是否进入 KOS 2.2 Assignment/设计审查。
+- **Current status (`2026-08-28`):** Human Product Owner 已授权 [`TD-016-CI-TIERING-001`](assignments/td-016-ci-tiering-001.md) 并进入 Active。实现位于独立堆叠 PR #87。托管 full-path `33165797218` / `33166502457` / `0623e7c` 的 [`33168928860`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33168928860) 全绿；docs-only fixture PR #88 / [`33169007898`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33169007898) 已 close without merge。Architecture 复核 **Pass with conditions**（A-P2-02 仍为本项残余）；Quality 复核 **Pass**。`main` 当前无 branch protection；未修改 required checks。私有 KOS Kit 无无密钥的远端分发路径，完整 validator 暂保持本地 merge 前门禁并作为显式残余。
+- **Required-check migration residual:** 当前 classifier、workflow 与 final Gate 均来自 PR head，本身不是独立 trust root。未来若要把 `final-quality-gate` 设为 required，必须另行授权并增加 CODEOWNERS/强制审查、受保护 reusable workflow 或等价的 baseline-owned guard；在此之前不得把当前绿色结果当成不可绕过的强制边界。
 - **Owner area:** Quality, Performance & Release Maintainer（CI/test selection）+ Architecture & Knowledge Steward（KOS/治理分类边界）。
-- **Trigger to resolve:** Human 明确授权建立独立 Assignment；在修改 workflow 前冻结路径分类表、聚合 Gate 语义、fail-closed 测试、required-check 迁移与回滚方案。
+- **Trigger to resolve:** Human 决定堆叠 PR 处置与 merge；required-check 迁移仍需另行授权和独立 trust root（A-P2-02）。
 - **Related:** `.github/workflows/swift6-quality.yml`、`docs/ASSIGNMENT_POLICY.md`、KOS 2.2 advisory、TD-014。
 
 ## Maintenance Rules
