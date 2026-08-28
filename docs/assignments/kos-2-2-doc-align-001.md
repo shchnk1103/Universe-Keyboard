@@ -6,10 +6,10 @@
   "record_id": "KOS-2-2-DOC-ALIGN-001",
   "record_type": "assignment",
   "title": "Align current governance documents with KOS 2.2 advisory",
-  "lifecycle": "completed",
-  "current_phase": "Core sources aligned; structural and local-link validation passed; awaiting Human Product Review",
+  "lifecycle": "closed",
+  "current_phase": "Human Product Review accepted; bounded KOS 2.2 advisory documentation alignment closed",
   "authorization_action": "align_kos_2_2_documentation",
-  "updated_at": "2026-08-28T00:20:00+08:00",
+  "updated_at": "2026-08-28T18:25:00+08:00",
   "revalidation_triggers": ["scope_changed", "record_envelopes_mode_changed", "kit_release_changed"],
   "authorization_refs": ["AUTH-KOS-2-2-DOC-ALIGN-001"],
   "parent_refs": ["KOS-UPGRADE-UK-001"],
@@ -33,10 +33,10 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | completed |
-| Current Phase | Core sources aligned; structural and local-link validation passed; awaiting Human Product Review |
+| Lifecycle | closed |
+| Current Phase | Human Product Review accepted; bounded KOS 2.2 advisory documentation alignment closed |
 | Material non-claims | Advisory only; no `required`; no bulk legacy backfill; no product/Quality/Release conclusion; no PR #83 |
-| Next handoff / decision | Human Product Owner reviews the bounded docs-only result; no merge, required-mode or bulk-migration authority is inferred |
+| Next handoff / decision | Publish the reviewed documentation branch through a PR; any `required` or bulk-migration proposal needs a new Assignment |
 | Residuals | Historical records and current product Assignments migrate only when next materially touched or under a separately authorized required-mode Migration |
 
 ---
@@ -60,6 +60,7 @@
   - 不改产品代码、测试、CI workflow、RIME、PR #83 或 Release/TestFlight 状态。
 - **Required Inputs:**
   - [`KOS-UPGRADE-UK-001`](kos-upgrade-uk-001.md) 与 [`UPGRADE_STATUS`](../kos/UPGRADE_STATUS.md)
+  - Human Product Review [`PD-KOS-2-2-DOC-ALIGN-001-GATE`](../product-decisions/KOS-2-2-DOC-ALIGN-001-product-gate.md)
   - Kit `v0.5.0` adoption、operational reliability、upgrade governance 与 project adaptation 文档
   - [`DOCUMENTATION_GOVERNANCE.md`](../DOCUMENTATION_GOVERNANCE.md)、[`ASSIGNMENT_POLICY.md`](../ASSIGNMENT_POLICY.md)、[`KNOWLEDGE_OS.md`](../KNOWLEDGE_OS.md)
 
@@ -88,3 +89,4 @@
 
 - `2026-08-27 Asia/Shanghai`: Human Product Owner 授权检查并按需要更新此前文档；Assignment 进入 `Active`，仅限 docs-only advisory 渐进对齐。
 - `2026-08-28 Asia/Shanghai`: 核心文档对齐、PR #84 状态同步与里程碑审计完成；`git diff --check`、变更文件本地链接检查及 Kit `v0.5.0` advisory validator 通过。Assignment 进入 `Completed`，等待 Human Product Review；不自动 `Closed`。
+- `2026-08-28 Asia/Shanghai`: Human Product Owner 明确接受本 Assignment 的 Human Product Review，并授权状态同步、清理已合并旧 KOS worktree/分支及创建 PR（暂不合并）。Assignment `Closed`；不启用 `required`，不授权历史批量迁移。

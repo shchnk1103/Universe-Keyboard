@@ -17,7 +17,7 @@
 - **Non-claims:** not `required`; not diagnostics implementation; not PR #83 merge
 - **First workflow:** `DIAGNOSTICS-VIEWER-LOAD-001` `Closed` — Human Product Gate Passed；PR #85 merged `420322b`。Human 的 `<100 MB` 是本次真机观察，不是新内存合同；不开 `required`、不 merge PR #83
 - **Next:** 万象 journal 缺口 = [`TD-015`](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal)，再次分类万象失败前另立 Assignment。TD-014 仍待 KOS-UPGRADE AUTH 卫生；TD-016 仅记录讨论，尚未授权修改 CI
-- **Documentation alignment:** `KOS-2-2-DOC-ALIGN-001` `Completed` — 核心治理/启动/协作/健康来源已说明 advisory Envelope 与渐进纳管边界；等待 Human Product Review，不自动 `Closed`、不启用 `required`
+- **Documentation alignment:** `KOS-2-2-DOC-ALIGN-001` `Closed` — Human Product Review accepted；核心治理/启动/协作/健康来源已说明 advisory Envelope 与渐进纳管边界；不启用 `required`
 
 ## Active Work 收敛 — 2026-08-24
 

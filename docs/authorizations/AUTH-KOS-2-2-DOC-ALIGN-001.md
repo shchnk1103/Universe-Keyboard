@@ -35,4 +35,4 @@
 
 本收据只授权本次 docs-only 渐进对齐。它不授权 `required`、历史批量回填、产品/测试/发布状态改变或 PR #83。
 
-对应 bounded action 已完成并进入 Human Product Review。由于当前 advisory validator 要求 Assignment 引用 `active` AUTH，机器状态暂保留 `active/unconsumed`；这不构成重放许可，终态消费语义统一由 [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) 追踪。
+对应 bounded action 与 Human Product Review 均已完成。由于当前 advisory validator 要求 Assignment 引用 `active` AUTH，机器状态暂保留 `active/unconsumed`；这不构成重放许可，终态消费语义统一由 [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) 追踪。

@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-27 Asia/Shanghai` — DIAGNOSTICS-VIEWER-LOAD-001 Human Product Gate Passed；PR #85 已合并为 `420322b` 并关闭。万象 v1 打点仍由 TD-015 追踪，不占 Active。Active Work `3/10`。
+Last synced: `2026-08-28 Asia/Shanghai` — KOS-2-2-DOC-ALIGN-001 Human Product Review accepted and Closed；核心 Active Work 仍为 `3/10`。万象 v1 打点继续由 TD-015 追踪，不占 Active。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -17,7 +17,7 @@ Last synced: `2026-08-27 Asia/Shanghai` — DIAGNOSTICS-VIEWER-LOAD-001 Human Pr
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
-| KOS-2-2-DOC-ALIGN-001 | `Completed`；核心治理/启动文档完成 advisory 渐进对齐；结构与本地链接检查通过；等待 Human Product Review，不自动 `Closed` | [`assignment`](assignments/kos-2-2-doc-align-001.md) · [`evidence`](evidence/kos-2-2-doc-align-001-audit-2026-08-28.md) |
+| KOS-2-2-DOC-ALIGN-001 | `Closed`；Human Product Review accepted；核心治理/启动文档完成 advisory 渐进对齐；不启用 `required` | [`assignment`](assignments/kos-2-2-doc-align-001.md) · [`Gate`](product-decisions/KOS-2-2-DOC-ALIGN-001-product-gate.md) · [`evidence`](evidence/kos-2-2-doc-align-001-audit-2026-08-28.md) |
 | DIAGNOSTICS-VIEWER-LOAD-001 | `Closed`；Human Product Gate Passed；PR [#85](https://github.com/shchnk1103/Universe-Keyboard/pull/85) merged `420322b`；方案交付可观测性转交 TD-015 | [`assignment`](assignments/diagnostics-viewer-load-001.md) · [`Gate`](product-decisions/DIAGNOSTICS-VIEWER-LOAD-001-product-gate.md) · [`TD-015`](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) |
 | KOS-UPGRADE-UK-001 | `Reviewed`；Product Gate 接受 advisory pin；PR [#84](https://github.com/shchnk1103/Universe-Keyboard/pull/84) merged `e7da77e`；P2=`TD-014` | [`assignment`](assignments/kos-upgrade-uk-001.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-001-product-gate.md) · [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) |
 | RELEASE-2026-0801-08 | `Closed`；PR [#80](https://github.com/shchnk1103/Universe-Keyboard/pull/80) merged `54ce3bd`；功能分支已清理 | [`assignment`](assignments/release-2026-08-01-08-kaomoji-content.md) · [`Gate`](evidence/release-2026-08-01-08-product-gate-2026-08-24.md) |
