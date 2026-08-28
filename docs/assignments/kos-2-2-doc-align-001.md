@@ -36,7 +36,7 @@
 | Lifecycle | closed |
 | Current Phase | Human Product Review accepted; bounded KOS 2.2 advisory documentation alignment closed |
 | Material non-claims | Advisory only; no `required`; no bulk legacy backfill; no product/Quality/Release conclusion; no PR #83 |
-| Next handoff / decision | Publish the reviewed documentation branch through a PR; any `required` or bulk-migration proposal needs a new Assignment |
+| Next handoff / decision | Published via PR [#86](https://github.com/shchnk1103/Universe-Keyboard/pull/86) merged `78ed5b5`. Any `required` or bulk-migration proposal needs a new Assignment |
 | Residuals | Historical records and current product Assignments migrate only when next materially touched or under a separately authorized required-mode Migration |
 
 ---

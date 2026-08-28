@@ -6,10 +6,10 @@
   "record_id": "CODEX-GITHUB-AUTH-DIAG-001",
   "record_type": "assignment",
   "title": "Document Codex GitHub CLI sandbox false-negative diagnosis",
-  "lifecycle": "completed",
-  "current_phase": "Privacy-safe dual-environment runbook and evidence recorded; awaiting Human Product Review",
+  "lifecycle": "closed",
+  "current_phase": "Runbook published via PR #86 merge; sandbox internal mechanism remains unresolved",
   "authorization_action": "document_codex_github_auth_diagnosis",
-  "updated_at": "2026-08-28T18:45:00+08:00",
+  "updated_at": "2026-08-28T20:30:00+08:00",
   "revalidation_triggers": ["diagnostic_behavior_changed", "codex_sandbox_changed", "github_cli_changed"],
   "authorization_refs": ["AUTH-CODEX-GITHUB-AUTH-DIAG-001"],
   "parent_refs": ["KOS-2-2-DOC-ALIGN-001"],
@@ -33,10 +33,10 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | completed |
-| Current Phase | Privacy-safe dual-environment runbook and evidence recorded; awaiting Human Product Review |
-| Material non-claims | No token expiry claim from sandbox alone; no secret capture; no proxy/account mutation; no merge/Release authority |
-| Next handoff / decision | Human Product Owner reviews the runbook; future agents follow it before asking for reauthentication |
+| Lifecycle | closed |
+| Current Phase | Runbook published via PR #86 merge; sandbox internal mechanism remains unresolved |
+| Material non-claims | No token expiry claim from sandbox alone; no secret capture; no proxy/account mutation; no Release authority |
+| Next handoff / decision | Future agents follow the runbook before asking for reauthentication |
 | Residuals | Sandbox internal mechanism may be keyring visibility, network restriction, or both; no further invasive distinction is required for the safe decision path |
 
 ---

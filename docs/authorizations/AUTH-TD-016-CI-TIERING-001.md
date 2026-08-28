@@ -7,7 +7,7 @@
   "record_type": "authorization",
   "title": "Implement fail-closed CI change classification",
   "status": "active",
-  "updated_at": "2026-08-28T18:40:00+08:00",
+  "updated_at": "2026-08-28T20:30:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "required_checks_changed"],
   "authorization": {
     "action": "implement_ci_tiering",
@@ -20,7 +20,7 @@
     "issued_at": "2026-08-28T18:40:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
@@ -33,5 +33,7 @@
 
 ---
 
-本收据只授权有界 CI 实现与发布，不是 merge、Release、branch protection、required-check
-迁移或 secret 配置的 bearer token。
+本收据只授权有界 CI 实现与发布。实现已落入 `0623e7c` 并随 PR #87 合入 `11fa096`，
+因此 `consumption_state` 记为 `consumed`。合并权限来自另开的
+[`AUTH-TD-016-CI-TIERING-001-MERGE`](AUTH-TD-016-CI-TIERING-001-MERGE.md)。
+本收据仍不是 Release、branch protection、required-check 迁移或 secret 配置的 bearer token。

@@ -8,7 +8,8 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - 分类、轻量检查和 `final-quality-gate` 始终运行；完整构建只在分类为 `full` 时执行，同一 PR 的旧运行会在新提交到达后取消。
 - 实现与证据同步运行 [`33165797218`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33165797218)、[`33166502457`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33166502457) 已全绿。独立 Architecture/Quality review 返回 `Pass with conditions` 后，修复提交 `0623e7c` 的 hosted full-path [`33168928860`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33168928860) 再次全绿。
 - 临时 Draft fixture PR #88 (`bd4b6eb`) 的 hosted run [`33169007898`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33169007898) 判定 `docs_only`，`build-and-test` 为 skipped，`final-quality-gate` 成功。该 PR 只作证据，关闭且不合并。
-- 独立 Architecture 复核为 Pass with conditions（A-P2-02 仍为 required-check trust-root 残余）；Quality 复核为 Pass。未修改 branch protection 或 required checks，也未授权合并。
+- 独立 Architecture 复核为 Pass with conditions（A-P2-02 仍为 required-check trust-root 残余）；Quality 复核为 Pass。
+- Human Product Gate Passed。PR [#86](https://github.com/shchnk1103/Universe-Keyboard/pull/86) 合入 `78ed5b5`；PR [#87](https://github.com/shchnk1103/Universe-Keyboard/pull/87) 合入 `11fa096`。未修改 branch protection 或 required checks，也未授权 Release。
 
 ## 2026-08-27 — 诊断页加载态与空态
 

@@ -6,12 +6,12 @@
   "record_id": "TD-016-CI-TIERING-001",
   "record_type": "assignment",
   "title": "Fail-closed CI change classification and stable final gate",
-  "lifecycle": "active",
-  "current_phase": "Independent revalidation recorded; awaiting Human stacked-PR and merge decision",
+  "lifecycle": "closed",
+  "current_phase": "Human Product Gate passed; PRs #86 and #87 merged; residual A-P2-02 remains TD-016",
   "authorization_action": "implement_ci_tiering",
-  "updated_at": "2026-08-28T20:25:00+08:00",
+  "updated_at": "2026-08-28T20:30:00+08:00",
   "revalidation_triggers": ["scope_changed", "workflow_contract_changed", "required_checks_changed", "kos_kit_distribution_changed"],
-  "authorization_refs": ["AUTH-TD-016-CI-TIERING-001"],
+  "authorization_refs": ["AUTH-TD-016-CI-TIERING-001", "AUTH-TD-016-CI-TIERING-001-MERGE"],
   "parent_refs": ["KOS-2-2-DOC-ALIGN-001"],
   "responsibilities": {
     "domain_owner": "Quality, Performance and Release Maintainer",
@@ -33,10 +33,10 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | active |
-| Current Phase | Independent revalidation recorded; awaiting Human stacked-PR and merge decision |
-| Material non-claims | No weakened full gate; no branch-protection/required-check mutation; no secret; no KOS required; no merge; no automatic inclusion in PR #86 |
-| Next handoff / decision | Human Product Owner decides whether to keep #87 stacked on #86, retarget, or merge; required-check migration remains separately unauthorized |
+| Lifecycle | closed |
+| Current Phase | Human Product Gate passed; PRs #86 and #87 merged; residual A-P2-02 remains TD-016 |
+| Material non-claims | No weakened full gate; no branch-protection/required-check mutation; no secret; no KOS required; no automatic inclusion of workflow into PR #86; no Release |
+| Next handoff / decision | None for this Assignment. Required-check migration needs a new authorization |
 | Residuals | [`Architecture review`](../reviews/TD-016-CI-TIERING-001-architecture-review.md) · [`Quality review`](../reviews/TD-016-CI-TIERING-001-quality-review.md) · [`TD-016`](../TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁) |
 
 ---
@@ -90,3 +90,4 @@
 - `2026-08-28 Asia/Shanghai`: Independent Architecture and Quality reviews returned `Pass with conditions`. Required fixes cover explicit manual-dispatch base, KOS trigger paths, invalid-reference fixtures and evidence/status hygiene. The self-modifiable PR-head gate remains `tech_debt:TD-016` before any future required-check migration.
 - `2026-08-28 Asia/Shanghai`: Remediation commit `0623e7c` hosted full-path run [`33168928860`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33168928860) passed classify, lightweight checks, the complete `build-and-test` suite and `final-quality-gate`. Temporary Draft fixture PR #88 (`bd4b6eb`) hosted run [`33169007898`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33169007898) classified `docs_only`, skipped `build-and-test`, and passed `final-quality-gate`. #88 was closed without merge after evidence landed.
 - `2026-08-28 Asia/Shanghai`: Independent Architecture revalidation: **Pass with conditions** (all first-pass `fix` items closed; A-P2-02 remains `tech_debt:TD-016`). Independent Quality revalidation: **Pass** (Q-87-01…04 closed). Not Product Accept, not merge, not ADR Accepted, not required-check migration.
+- `2026-08-28 Asia/Shanghai`: Human Product Owner authorized merge per KOS. PR [#86](https://github.com/shchnk1103/Universe-Keyboard/pull/86) merged `78ed5b5` without absorbing #87 workflow. PR [#87](https://github.com/shchnk1103/Universe-Keyboard/pull/87) retargeted to `main` and merged `11fa096` after hosted run [`33170396230`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33170396230) passed. Product Gate passed; Assignment Closed; ADR 0031 Accepted; required-check migration remains TD-016.
