@@ -7,9 +7,9 @@
   "record_type": "assignment",
   "title": "Fail-closed CI change classification and stable final gate",
   "lifecycle": "active",
-  "current_phase": "Remediating independent Architecture and Quality review conditions",
+  "current_phase": "Awaiting independent Architecture and Quality revalidation",
   "authorization_action": "implement_ci_tiering",
-  "updated_at": "2026-08-28T19:43:00+08:00",
+  "updated_at": "2026-08-28T20:15:00+08:00",
   "revalidation_triggers": ["scope_changed", "workflow_contract_changed", "required_checks_changed", "kos_kit_distribution_changed"],
   "authorization_refs": ["AUTH-TD-016-CI-TIERING-001"],
   "parent_refs": ["KOS-2-2-DOC-ALIGN-001"],
@@ -34,9 +34,9 @@
 | Field | Value |
 |---|---|
 | Lifecycle | active |
-| Current Phase | Remediating independent Architecture and Quality review conditions |
+| Current Phase | Awaiting independent Architecture and Quality revalidation |
 | Material non-claims | No weakened full gate; no branch-protection/required-check mutation; no secret; no KOS required; no merge; no automatic inclusion in PR #86 |
-| Next handoff / decision | Reviewer revalidation after remediation and docs-only hosted fixture, then Human decides stacked PR disposition and merge |
+| Next handoff / decision | Independent reviewers revalidate `0623e7c` and the hosted docs-only fixture; then Human decides stacked PR disposition and merge |
 | Residuals | [`Architecture review`](../reviews/TD-016-CI-TIERING-001-architecture-review.md) · [`Quality review`](../reviews/TD-016-CI-TIERING-001-quality-review.md) · [`TD-016`](../TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁) |
 
 ---
@@ -88,3 +88,4 @@
 - `2026-08-28 Asia/Shanghai`: Classifier, lightweight checks, conditional heavy job and stable final Gate were implemented. Deterministic script tests, KeyboardCore, RimeBridge and Debug/Release builds passed locally. The Xcode 27 beta/iOS 26 simulator App test host crashed repeatedly with an allocator/IOHID compatibility error; hosted CI remains the decisive full-path environment.
 - `2026-08-28 Asia/Shanghai`: GitHub Actions run [`33165797218`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33165797218) passed `classify-change`, `lightweight-checks`, the complete `build-and-test` suite and `final-quality-gate`. The hosted App/Keyboard suite passed, resolving the local beta-simulator uncertainty for this commit. Docs-only hosted fixture and independent reviews remain pending.
 - `2026-08-28 Asia/Shanghai`: Independent Architecture and Quality reviews returned `Pass with conditions`. Required fixes cover explicit manual-dispatch base, KOS trigger paths, invalid-reference fixtures and evidence/status hygiene. The self-modifiable PR-head gate remains `tech_debt:TD-016` before any future required-check migration.
+- `2026-08-28 Asia/Shanghai`: Remediation commit `0623e7c` hosted full-path run [`33168928860`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33168928860) passed classify, lightweight checks, the complete `build-and-test` suite and `final-quality-gate`. Temporary Draft fixture PR #88 (`bd4b6eb`) hosted run [`33169007898`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33169007898) classified `docs_only`, skipped `build-and-test`, and passed `final-quality-gate`. #88 will be closed without merge after this evidence lands. Independent revalidation remains pending; merge and #86 packaging remain Human decisions.
