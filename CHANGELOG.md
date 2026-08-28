@@ -2,6 +2,11 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-28 — 万象 staged-content 失败分类为空 zip 条目
+
+- Human v1 日志证明 CNB 归档大小/摘要通过，失败在 `verifying_staged_content`。
+- 生产 `Unzip` 跳过 `lua/data/chaifen.txt` 空文件，导致摘要 `24227ffc…` 对不上 pin `5b182801…`。现改为解压 store 空文件；不削弱校验，不合入 #83。
+
 ## 2026-08-28 — 方案交付 PR #83 并入当前 main 并重编号 ADR 0032
 
 - PR #83 分支合并当前 `main`。CI 分级保持 ADR 0031；方案完整性合同改为 ADR 0032。

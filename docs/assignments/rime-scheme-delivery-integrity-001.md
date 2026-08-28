@@ -280,3 +280,9 @@ Entry and implementation P1 findings are closed. Final Architecture review is
   merged `origin/main` (`c44ec00`). Scheme integrity ADR was renumbered to
   **0032** because `main` already accepted CI classification as ADR 0031. Merge
   of PR #83 to `main` remains unauthorized.
+- `2026-08-28 Asia/Shanghai` — Human v1 journal classified Wanxiang download
+  `11831eec-…` as `failure=staged_content` after archive size/digest passed on
+  CNB. Executor reproduced actual prefix `24227ffc…` from production `Unzip`
+  skipping empty `lua/data/chaifen.txt`. Pin `5b182801…` remains valid. Empty
+  stored zip entries are now extracted; hashes are not weakened. Merge still
+  unauthorized.

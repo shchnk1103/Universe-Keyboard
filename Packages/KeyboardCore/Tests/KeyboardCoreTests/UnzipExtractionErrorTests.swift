@@ -3,6 +3,23 @@ import XCTest
 @testable import KeyboardCore
 
 final class UnzipExtractionErrorTests: UnzipTestSupport {
+    func testExtractIncludesEmptyStoredFiles() throws {
+        // Store-only zip with empty lua/data/chaifen.txt plus keep.txt.
+        let hex =
+            "504b030414000000000073a81c5d000000000000000000000000140000006c75612f646174612f6368616966656e2e747874504b030414000000000073a81c5d7d0e16da0300000003000000080000006b6565702e7478746f6b0a504b0102140314000000000073a81c5d0000000000000000000000001400000000000000000000008001000000006c75612f646174612f6368616966656e2e747874504b0102140314000000000073a81c5d7d0e16da03000000030000000800000000000000000000008001320000006b6565702e747874504b05060000000002000200780000005b0000000000"
+        var bytes: [UInt8] = []
+        var index = hex.startIndex
+        while index < hex.endIndex {
+            let next = hex.index(index, offsetBy: 2)
+            bytes.append(UInt8(hex[index..<next], radix: 16)!)
+            index = next
+        }
+        let entries = try Unzip.extract(data: Data(bytes))
+        let byName = Dictionary(uniqueKeysWithValues: entries.map { ($0.filename, $0.data) })
+        XCTAssertEqual(byName["lua/data/chaifen.txt"], Data())
+        XCTAssertEqual(byName["keep.txt"], Data("ok\n".utf8))
+    }
+
     func testExtractEmptyData() {
         let data = Data()
         XCTAssertThrowsError(try Unzip.extract(data: data)) { error in

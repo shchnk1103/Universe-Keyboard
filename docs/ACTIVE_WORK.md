@@ -14,7 +14,7 @@ Last synced: `2026-08-28 Asia/Shanghai` — #83 已并入当前 `main`；方案�
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 4 | RIME-SCHEME-DELIVERY-001 | Review | Human 真机万象完整性失败尚未分类；先处理 INTEGRITY-001，再继续稳定套件、大陆网络、acceptable-use 与 Product Gate | [`assignment`](assignments/rime-scheme-delivery-001.md) · [`failure`](evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) · [`PD`](product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) |
 | 5 | RIME-SCHEME-DELIVERY-INTEGRITY-001 | Active | 已并入当前 `main`；ADR 0032；待 hosted full-path 与大陆蜂窝真机 Product Gate | [`assignment`](assignments/rime-scheme-delivery-integrity-001.md) · [`evidence`](evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md) · [`ADR 0032`](architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md) |
-| 6 | SCHEME-DELIVERY-JOURNAL-001 | Active | 把 #83 已有 v1 `scheme_delivery.*` 收口为 TD-015；Human 复测搜索 `scheme_delivery` / `wanxiang` | [`assignment`](assignments/scheme-delivery-journal-001.md) · [`TD-015`](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) |
+| 6 | SCHEME-DELIVERY-JOURNAL-001 | Active | Human 复测已看到 v1 行；万象失败已分类为 staged_content（空 zip 条目被 Unzip 丢掉） | [`assignment`](assignments/scheme-delivery-journal-001.md) · [`evidence`](evidence/rime-scheme-delivery-wanxiang-staged-content-2026-08-28.md) |
 
 ## Completed (not Active)
 

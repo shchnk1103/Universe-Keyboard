@@ -58,7 +58,7 @@ struct ZipArchiveReader {
                 reader.skip(4)  // version needed (2) + flags (2)
                 reader.skip(2)  // compression method is verified from the local header.
                 reader.skip(8)
-                let compressedSize = Int(try reader.readUInt32())
+                reader.skip(4)  // compressed size is verified from the local header.
                 reader.skip(4)  // uncompressed size is verified from the local header.
                 let filenameLength = Int(try reader.readUInt16())
                 let extraLength = Int(try reader.readUInt16())
@@ -85,7 +85,10 @@ struct ZipArchiveReader {
                     throw Unzip.Error.badFormat("不允许符号链接：\(filename)")
                 }
 
-                guard !filename.hasSuffix("/"), compressedSize > 0 else { continue }
+                // Directories are skipped by trailing slash. Empty stored files
+                // have compressedSize == 0 and must still be extracted so staged
+                // content identity includes them.
+                guard !filename.hasSuffix("/") else { continue }
                 references.append(LocalEntryReference(filename: filename, localOffset: localOffset))
             } else if signature == 0x06054b50 {
                 break
@@ -127,7 +130,15 @@ struct ZipArchiveReader {
         guard method == 0 || method == 8 else {
             throw Unzip.Error.unsupportedMethod(method, reference.filename)
         }
-        guard compressedSize > 0, uncompressedSize > 0 else { return nil }
+        if compressedSize == 0, uncompressedSize == 0 {
+            guard method == 0 else {
+                throw Unzip.Error.badFormat("空文件必须使用 store：\(reference.filename)")
+            }
+            return Unzip.Entry(filename: reference.filename, data: Data())
+        }
+        guard compressedSize > 0, uncompressedSize > 0 else {
+            throw Unzip.Error.badFormat("压缩/未压缩大小不一致：\(reference.filename)")
+        }
 
         let rawData = try reader.readData(length: compressedSize)
         let extractedData =

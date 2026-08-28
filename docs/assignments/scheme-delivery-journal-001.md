@@ -7,7 +7,7 @@
   "record_type": "assignment",
   "title": "Write scheme-delivery events into diagnostics v1",
   "lifecycle": "active",
-  "current_phase": "Formalizing PR #83 v1 scheme_delivery path after main merge",
+  "current_phase": "Human retest saw v1 rows; Wanxiang classified staged_content; unzip empty-file fix pending hosted CI",
   "authorization_action": "implement_scheme_delivery_journal",
   "updated_at": "2026-08-28T21:10:00+08:00",
   "revalidation_triggers": ["diagnostic_protocol_changed", "scheme_delivery_contract_changed"],
@@ -36,7 +36,7 @@
 | Field | Value |
 |---|---|
 | Lifecycle | active |
-| Current Phase | Formalizing PR #83 v1 scheme_delivery path after main merge |
+| Current Phase | Human retest saw v1 rows; Wanxiang classified staged_content; unzip empty-file fix pending hosted CI |
 | Material non-claims | No merge of #83; no high-fidelity change; no legacy Logger bridge into v1; no integrity weakening |
 | Next handoff / decision | Local/hosted tests, then Human retest searching `scheme_delivery` / `wanxiang` |
 | Residuals | [`TD-015`](../TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) |
