@@ -11,9 +11,9 @@
 | Field | Value |
 |---|---|
 | Status | accepted |
-| Phase | Human Product Owner accepted the advisory pin and authorized merge of PR #84 after P2 recording |
+| Phase | Human Product Owner accepted the advisory pin; PR #84 merged as `e7da77e` after P2 recording |
 | Non-claims | Not `required`; not diagnostics implementation; not PR #83 merge |
-| Next | Merge #84; TD-014 remains open |
+| Next | Continue advisory use; TD-014 remains open; revalidate on new Kit or required-mode proposal |
 | Residuals | [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) |
 
 ---
@@ -21,6 +21,8 @@
 ## Decision
 
 Human Product Owner accepts KOS Agent Kit `v0.5.0` advisory adoption for Universe Keyboard and authorizes merging PR #84.
+
+> **Current outcome:** PR #84 subsequently merged as `e7da77e`. This is state synchronization, not a new Product or required-mode decision.
 
 The Architecture `A-P2-01` AUTH `consumption_state` lag must be recorded before merge so it cannot be forgotten. It is tracked as [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) (`tech_debt:TD-014`). Other P2/P3 findings retain `accept` as written in the independent reviews.
 

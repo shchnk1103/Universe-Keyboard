@@ -250,10 +250,10 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 ## TD-014: KOS 2.2 AUTH consumption_state 卫生
 
 - **Priority:** Low. 不阻塞本次 advisory pin、PR #84 Product Gate，或诊断查看实现授权。
-- **Risk:** `AUTH-KOS-UPGRADE-UK-001` 与 `AUTH-DIAGNOSTICS-VIEWER-LOAD-001` 的 `consumption_state` 仍为 `unconsumed`，而对应 bounded action（钉住 Kit advisory / 建立 Assignment）已落在 `f580613`。Kit 把 consumption 当审计观察、不提供 replay 保护；正文也否定 bearer token。若不改，后续 agent 可能把未消费收据误读成可反复执行的许可。
-- **Current mitigation:** AUTH exclusions 含 `required_mode` / `implement` / `merge` / `pr_83_merge`；独立 Architecture `A-P2-01` 与 Quality `Q-P2-01` 已记录该滞后。`AUTH-DIAGNOSTICS-VIEWER-LOAD-001` 已标 `consumed`（Assignment 已改绑 implement 收据）。`AUTH-KOS-UPGRADE-UK-001` 仍 `unconsumed`，因为 Assignment 仍引用它且 validator 要求 active 收据。
-- **Current status:** 部分偿还。剩余是升级 Assignment 仍绑定的 AUTH 消费语义。
-- **Recommended fix:** 在后续 Envelope 卫生中把这两条已完成 bounded action 的 AUTH 标为 `consumed`，或在收据上写明「Assignment Active ≠ AUTH unconsumed」的审计规则。不要把这次改正做成 `required` 切仓或扩大 include glob。
+- **Risk:** `AUTH-KOS-UPGRADE-UK-001` 与 `AUTH-DIAGNOSTICS-VIEWER-LOAD-001-IMPLEMENT` 的 `consumption_state` 仍为 `unconsumed`，而对应 bounded action（钉住 Kit advisory / 实现并合并诊断查看修复）均已完成。Kit 把 consumption 当审计观察、不提供 replay 保护；正文也否定 bearer token。若不改，后续 agent 可能把未消费收据误读成可反复执行的许可。
+- **Current mitigation:** 建立 Assignment 的 `AUTH-DIAGNOSTICS-VIEWER-LOAD-001` 已标 `consumed`；implement 收据 exclusions 含 `required_mode` / `merge` / `release` / `scheme_download_fix` / `pr_83_merge`，正文明确已完成 bounded action 且不得重放。当前 advisory validator 要求 Assignment 引用 `active` AUTH，即使 Assignment 已 `closed`；直接将 implement AUTH 标为 `consumed` 会产生 `KOS2437`，因此暂不伪造绿色状态。
+- **Current status:** 部分偿还。剩余是 KOS 升级 Assignment 与已关闭 diagnostics Assignment 的 AUTH 消费/终态绑定语义。
+- **Recommended fix:** 在后续 Envelope 卫生中明确 terminal Assignment 对 consumed AUTH 的合法绑定，升级 validator 后再把已完成 bounded action 的 AUTH 标为 `consumed`；或形成等价的不可重放规则。不要把这次改正做成 `required` 切仓或扩大 include glob。
 - **Owner area:** KOS 2.2 records（`docs/authorizations/`）与 Architecture & Knowledge Steward。
 - **Trigger to resolve:** 下一次触及这些 AUTH 的 Envelope 卫生；切 `required` 之前必须先处理。
 - **Related:** [`KOS-UPGRADE-UK-001`](assignments/kos-upgrade-uk-001.md)、[`A-P2-01`](reviews/KOS-UPGRADE-UK-001-architecture-review.md)、[`Q-P2-01`](reviews/KOS-UPGRADE-UK-001-quality-review.md)。
@@ -268,6 +268,22 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Owner area:** Main App scheme download/deploy、KeyboardCore diagnostics journal allowlist、诊断查看（只读）。
 - **Trigger to resolve:** Human Product Gate 通过 `DIAGNOSTICS-VIEWER-LOAD-001` 之后、再次分类万象失败之前。未授权实现前不得猜修下载或 merge PR #83。
 - **Related:** ADR 0027、TD-013 item 5（legacy Logger 迁移）、[`DIAGNOSTICS-VIEWER-LOAD-001`](assignments/diagnostics-viewer-load-001.md)、PR #83。
+
+## TD-016: CI 变更分级与文档提交快速门禁
+
+- **Priority:** Medium。主要降低纯文档提交的反馈等待与 CI 资源消耗；不得以提速为由削弱代码、工程配置、资源或治理变更的合并门禁。
+- **Risk:** 当前 `Swift 6 Quality` 对普通文档补录也会运行 KeyboardCore、RimeBridge、完整 App 测试及 Debug/Release 构建，单次可能持续十几分钟。连续文档修订还会产生过期运行；AI 若持续轮询，会额外消耗交互时间与 token。反向风险是粗暴使用 `paths-ignore` 后误跳过必要测试，或让被完全跳过的 required workflow 永久 pending。
+- **Current mitigation:** 推送后由 Human 查看 GitHub 状态，AI 不持续轮询；现有完整 CI 保持 fail-closed，不根据文件扩展名自动降级。
+- **Recommended fix（明日再讨论/授权，不在本记录中实现）:** 设计一个可审计的变更分类器和三级门禁：
+  1. 所有 PR 始终运行轻量公共门禁（变更分类、`git diff --check`、文档/链接、KOS validator、安全扫描）。
+  2. 经审查的普通文档或治理文档只运行对应文档/KOS 检查；Assignment、Authorization、ADR 仍需治理一致性验证，但不因此启动 `xcodebuild`。
+  3. Swift、测试、Package/Xcode 工程、RIME/Lua/词典、Assets/AppIcon、构建脚本、workflow，以及任何未知路径均运行完整 Swift 6 门禁；未知分类必须 fail closed。
+  4. 使用始终运行的聚合 `final-quality-gate` 处理“重任务合法 skipped”，避免 required check 因整个 workflow 被 paths-ignore 而悬空。
+  5. 为同一 PR 设置 `concurrency` + `cancel-in-progress`，取消旧提交的过期运行；AI 默认推送后交回，不做高频轮询。
+- **Current status (`2026-08-27`):** 仅记录讨论结论。未建立 Assignment，未授权实现，未修改 `.github/workflows`、required checks、KOS 模式或任何产品代码；明日由 Human Product Owner 决定是否进入 KOS 2.2 Assignment/设计审查。
+- **Owner area:** Quality, Performance & Release Maintainer（CI/test selection）+ Architecture & Knowledge Steward（KOS/治理分类边界）。
+- **Trigger to resolve:** Human 明确授权建立独立 Assignment；在修改 workflow 前冻结路径分类表、聚合 Gate 语义、fail-closed 测试、required-check 迁移与回滚方案。
+- **Related:** `.github/workflows/swift6-quality.yml`、`docs/ASSIGNMENT_POLICY.md`、KOS 2.2 advisory、TD-014。
 
 ## Maintenance Rules
 

@@ -83,6 +83,15 @@ xcodebuild ... 6 isolated DiagnosticsStoreTests
 # TEST SUCCEEDED (6/0)
 ```
 
-## Non-claims
+## Final Human Gate and merge
+
+- Human 在高保真关闭的条件下报告：修复后今天与昨天的日志均可加载，观察到的主 App 内存均不超过 100 MB。该数值仅是本次真机观察，不是新的性能预算或发布合同。
+- PR #85 的最新 head `9c837d8` GitHub CI 全绿；Human 随后明确通过 Product Gate 并授权合并。
+- PR #85 已合并为 `420322b`；head 可从 `origin/main` 到达，功能分支已安全清理。
+- 权威 Gate 结论见 [`PD-DIAGNOSTICS-VIEWER-LOAD-001-GATE`](../product-decisions/DIAGNOSTICS-VIEWER-LOAD-001-product-gate.md)。
+
+## Historical non-claims before Product Gate
+
+> 下列文字描述 reader-load 修复刚完成、尚未取得 Human Gate 时的证据边界；现行状态已由上节与 Product Gate 取代。
 
 Not Human device retest of the reader-load fix. Not PR #83 merge. Not `required`. Not Assignment Close. Full `DiagnosticsStoreTests` / RimeBridgeTests / Universe Keyboard scheme tests were not re-run as a CI-parity suite. Previous Architecture/Quality of `ec5e8e9` do not cover this reader-load change.

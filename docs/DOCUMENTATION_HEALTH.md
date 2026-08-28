@@ -19,6 +19,7 @@ This dashboard makes knowledge quality observable without turning manually maint
 | Ownership continuity | Every stable capability has one long-term owner and a reusable bootstrap | Review `VIRTUAL_ENGINEERING_TEAM.md` against reading maps, playbooks and recent work |
 | Navigation integrity | All index links resolve and no orphan source exists | Link/file scan plus documentation graph review |
 | Registry integrity | Canonical IDs are unique and all Contract/Case/Performance/Alias targets resolve | Registry structural scan plus downstream duplicate-authority review |
+| KOS 2.2 envelope integrity | Profile mode/include, same-record mirrors, references, claims/environments and upgrade status are consistent without invented legacy facts | Deterministic advisory validator plus focused Profile/owner-source audit |
 
 ## Reproducible Inventory Commands
 
@@ -44,6 +45,29 @@ find docs -type f -name '*.md' -print | sort
 Counts are derived output. Do not copy them into README, PROJECT_CONTEXT or indexes.
 
 ## Current Baseline Snapshot
+
+Snapshot metadata:
+
+- Collected: `2026-08-28 Asia/Shanghai`.
+- Base: `420322b7d5a45a6de7884df72046b0672ee1ae61` plus the bounded `KOS-2-2-DOC-ALIGN-001` documentation working tree.
+- Method: governance/source comparison, KOS inventory, PR #84 reachability, local link scan, `git diff --check`, and pinned Kit `v0.5.0` advisory validator.
+- Evidence: [`evidence/kos-2-2-doc-align-001-audit-2026-08-28.md`](evidence/kos-2-2-doc-align-001-audit-2026-08-28.md).
+- Expiry: next monthly audit, important governance milestone, Kit Release, or Profile mode/include change.
+
+Observed state:
+
+| Area | Observation | Health |
+|---|---|---|
+| KOS 2.2 adoption | `v0.5.0`, advisory; Profile and progressive onboarding boundary are now routed from owner sources | Healthy for advisory |
+| Envelope coverage | Current governance workflow is explicitly included; broad historical records remain legacy by decision, not omission | Intentional progressive state |
+| State synchronization | PR #84 merge state repaired; PR #85 diagnostics closure recorded in its owning Assignment/Gate summaries | Improved |
+| Core governance routing | Knowledge OS, Assignment Policy, governance, Zero-Context, graph, dependencies and AI workflow describe the 2.2 boundary | Improved |
+| AUTH terminal semantics | Active/unconsumed binding ambiguity remains tracked as TD-014 | Residual governance debt |
+| Product Active Assignments | Three current product Active Work records remain legacy until material touch or explicit onboarding | Accepted under advisory |
+
+## Previous Baseline Snapshot (superseded for current health)
+
+> Historical snapshot from `2026-07-17`; superseded by the 2026-08-28 milestone audit above.
 
 Snapshot metadata:
 
@@ -89,6 +113,7 @@ Add one row per monthly/milestone audit. Detailed findings belong in the audit a
 
 | Date | Scope | Base commit | Result location | Next trigger |
 |---|---|---|---|---|
+| 2026-08-28 | KOS 2.2 core-document alignment and progressive-envelope audit | `420322b` + bounded docs working tree | `docs/evidence/kos-2-2-doc-align-001-audit-2026-08-28.md` | Kit/Profile change, material legacy onboarding or next monthly audit |
 | 2026-07-17 | DOC-HYGIENE-001 documentation hygiene | working tree at hygiene closure | `docs/evidence/doc-hygiene-001-audit.md` | Playbook dry-run or next monthly audit |
 | 2026-07-17 | KOS-MIG-001 operational single-track migration | KOS-MIG-001 commit on `docs/kos-mig-001` | `docs/kos/migration-001-record.md` | Further Migration Assignment if domain tree moves needed |
 | 2026-06-29 | Knowledge OS v1.0 + Phase C playbook structure | `75a5e8c` + documentation working tree | historical snapshot superseded by 2026-07-17 baseline | — |

@@ -51,6 +51,27 @@ Closed publication Assignments remain historical authority for their own deliver
 **2.0 remains the frozen constitution.** The 2.1 ops package does not replace it
 and does not authorize dual-track or Migration by itself.
 
+## KOS 2.2 Advisory Reliability Layer
+
+Universe Keyboard has adopted `kos-agent-kit@v0.5.0` in `advisory` mode:
+
+| Artifact | Role |
+|---|---|
+| [`UPGRADE_STATUS.md`](UPGRADE_STATUS.md) | Adopted version, disposition and next review Source of Truth |
+| [`.kos/project.json`](../../.kos/project.json) | Included records, claims, environments, Gate policies and mode |
+| [`KOS-UPGRADE-UK-001`](../assignments/kos-upgrade-uk-001.md) | Adoption Assignment and bounded non-goals |
+
+KOS 2.2 adds machine-readable record envelopes and deterministic read-only
+validation on top of KOS 2.0/2.1. It does not replace their authority or
+lifecycle rules. Historical records are not automatically invalid because they
+lack an envelope; adoption remains progressive until a separately authorized
+Upgrade Assignment enables `required`.
+
+Structural validator success is not Product, Architecture, Quality, merge,
+TestFlight or Release approval. Do not copy the upstream Kit into this directory
+or rewrite frozen KOS 2.0 text; use the pinned upstream release for executable
+envelope semantics and keep project-specific truth in this repository.
+
 ## Non-goals
 
 This directory does not authorize by mere existence:

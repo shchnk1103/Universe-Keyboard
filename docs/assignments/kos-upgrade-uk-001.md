@@ -7,9 +7,9 @@
   "record_type": "assignment",
   "title": "Adopt KOS Agent Kit v0.5.0 in advisory mode",
   "lifecycle": "reviewed",
-  "current_phase": "Product Gate accepted; P2 recorded as TD-014; merge of PR 84 authorized",
+  "current_phase": "Product Gate accepted; PR #84 merged as e7da77e; advisory adoption operational; TD-014 remains",
   "authorization_action": "adopt_kos_2_2_advisory",
-  "updated_at": "2026-08-27T20:15:00+08:00",
+  "updated_at": "2026-08-28T00:05:00+08:00",
   "revalidation_triggers": ["kit_release_changed", "mode_changed", "scope_changed"],
   "authorization_refs": ["AUTH-KOS-UPGRADE-UK-001"],
   "responsibilities": {
@@ -29,9 +29,9 @@
 | Field | Value |
 |---|---|
 | Lifecycle | reviewed |
-| Current Phase | Product Gate accepted; P2 recorded as TD-014; merge of PR 84 authorized |
+| Current Phase | Product Gate accepted; PR #84 merged as e7da77e; advisory adoption operational; TD-014 remains |
 | Material non-claims | Not required mode; not diagnostics implementation; not PR #83 merge |
-| Next handoff / decision | Merge PR #84; Envelope hygiene for AUTH consumption is TD-014 |
+| Next handoff / decision | Continue advisory use; Envelope hygiene for AUTH consumption is TD-014; a newer Kit or required-mode proposal triggers revalidation |
 | Residuals | [`residual table`](#residual-disposition) |
 
 ---
@@ -87,3 +87,4 @@
 - `2026-08-27 Asia/Shanghai`: Human Product Owner instructed completing Universe Keyboard 2.2 connection after Kit `v0.5.0`. Lifecycle `active` for advisory pin only.
 - `2026-08-27 Asia/Shanghai`: Independent Architecture **Pass with conditions** (P0=0/P1=0) and Quality **Pass with conditions** (P0=0/P1=0) of `f580613`.
 - `2026-08-27 Asia/Shanghai`: Human Product Owner accepted the advisory pin and authorized merge of PR #84, requiring P2 to be recorded first. A-P2-01 is `tech_debt:TD-014`; remaining P2/P3 are `accept`. Lifecycle `reviewed`. Merge does not enable `required` or diagnostics implementation.
+- `2026-08-27 Asia/Shanghai`: PR #84 merged as `e7da77e`; advisory adoption became operational. Lifecycle remains `reviewed` because this record does not infer a separate formal Close decision. TD-014 remains; merge did not enable `required` or authorize product work.

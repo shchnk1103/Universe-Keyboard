@@ -18,10 +18,13 @@
     "include": [
       "docs/assignments/kos-upgrade-uk-001.md",
       "docs/assignments/diagnostics-viewer-load-001.md",
+      "docs/assignments/kos-2-2-doc-align-001.md",
       "docs/product-decisions/KOS-UPGRADE-UK-001-authorization.md",
       "docs/product-decisions/DIAGNOSTICS-VIEWER-LOAD-001-authorization.md",
+      "docs/product-decisions/KOS-2-2-DOC-ALIGN-001-authorization.md",
       "docs/evidence/diagnostics-viewer-load-2026-08-27.md",
       "docs/evidence/kos-upgrade-uk-001-advisory-validate-2026-08-27.md",
+      "docs/evidence/kos-2-2-doc-align-001-audit-2026-08-28.md",
       "docs/authorizations/*.md",
       "docs/gates/*.md"
     ],
@@ -47,6 +50,11 @@
       "id": "CLAIM.DIAGNOSTICS.VIEWER_LOAD_BLOCKING",
       "description": "Human-attested diagnostics viewer load is blocking classified scheme-download diagnosis.",
       "owner": "Main App UI"
+    },
+    {
+      "id": "CLAIM.KOS.DOC_ALIGNMENT",
+      "description": "Current governance and startup sources describe the adopted KOS 2.2 advisory boundaries without bulk legacy backfill.",
+      "owner": "Architecture and Knowledge Steward"
     }
   ],
   "environments": [

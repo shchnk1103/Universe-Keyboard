@@ -13,6 +13,7 @@
 - 正式任务先按 [`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md) 核对 Assignment；`UNKNOWN` 阻止进入 `Ready`，Coordinator/Program Manager 不得自行指派。
 - 运营卫生（Current Status、State sync、证据档位、Active Work）见
   [`docs/kos/kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md)。
+- KOS 2.2 记录按 [`.kos/project.json`](../.kos/project.json) 渐进纳管；包含的工作先核对 Authorization → Assignment → Evidence/Review → Gate/Decision 引用。advisory validator 只证明结构，不替代 Coordinator 或 Human Gate。
 
 ## Stacked PR 约定（KOS 2.1 ops · S-02）
 
@@ -146,17 +147,18 @@
 ## 标准任务流程
 
 1. 检查 Assignment：Product Decision、Domain Owner、Executor、依赖、Reviewer、Entry/Exit/Stop Conditions 和 Handoff；存在 `UNKNOWN` 时停止并升级。
-2. 归类任务：bug / UI / Core / RIME / docs / release。
-3. 读取上下文：先读 `AGENTS.md` 和 `docs/KNOWLEDGE_INDEX.md`，再按 `docs/READING_MAPS.md` 和领域 playbook 加载对应文档。
-4. 第一性原理拆解：输入、状态、副作用、输出、验证方式。
-5. 决定策略：
+2. 若 Assignment 被 `.kos/project.json` 纳管，核对 canonical envelope、Authorization receipt 和 Current Status mirror；未纳管的 legacy 记录在 advisory 下仍按 Markdown 权威执行，不擅自批量迁移。
+3. 归类任务：bug / UI / Core / RIME / docs / release。
+4. 读取上下文：先读 `AGENTS.md` 和 `docs/KNOWLEDGE_INDEX.md`，再按 `docs/READING_MAPS.md` 和领域 playbook 加载对应文档。
+5. 第一性原理拆解：输入、状态、副作用、输出、验证方式。
+6. 决定策略：
    - 根因不清楚：先加日志或复现工具。
    - 逻辑明确：先写测试，再改实现。
    - UI 问题：先确认设计约束，再改界面。
    - RIME 问题：先确认部署/session 边界。
-6. 执行修改。
-7. 验证。
-8. 汇报结果和残余风险并交给 Assignment Record 中的 Handoff Target。
+7. 执行修改。
+8. 验证；KOS validator 结果单列为结构证据，不写成 Product/Quality 通过。
+9. 汇报结果和残余风险并交给 Assignment Record 中的 Handoff Target。
 
 ## 交接格式
 
