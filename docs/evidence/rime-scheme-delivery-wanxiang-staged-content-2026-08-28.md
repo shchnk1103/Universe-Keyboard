@@ -1,7 +1,7 @@
 # Evidence: Wanxiang staged-content mismatch — 2026-08-28
 
-**Assignments:** [`SCHEME-DELIVERY-JOURNAL-001`](../assignments/scheme-delivery-journal-001.md) · [`RIME-SCHEME-DELIVERY-INTEGRITY-001`](../assignments/rime-scheme-delivery-integrity-001.md)  
-**Evidence grade:** `Device-attested` (Human log paste) + `Executor-recorded` (archive re-hash and Unzip comparison)  
+**Assignments:** [`SCHEME-DELIVERY-JOURNAL-001`](../assignments/scheme-delivery-journal-001.md) · [`RIME-SCHEME-DELIVERY-INTEGRITY-001`](../assignments/rime-scheme-delivery-integrity-001.md)
+**Evidence grade:** `Device-attested` (Human log paste) + `Executor-recorded` (archive re-hash and Unzip comparison)
 **Collection date / timezone:** `2026-08-28 Asia/Shanghai`
 
 ## Human v1 journal (TD-015)
