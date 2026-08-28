@@ -17,6 +17,7 @@ Last synced: `2026-08-28 Asia/Shanghai` — KOS-2-2-DOC-ALIGN-001 Human Product 
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
+| CODEX-GITHUB-AUTH-DIAG-001 | `Completed`；双环境认证诊断手册与隐私安全 Evidence 已记录；等待 Human Product Review；不授权 merge/Release | [`assignment`](assignments/codex-github-auth-diag-001.md) · [`runbook`](kos/codex-github-cli-auth-troubleshooting.md) · [`host evidence`](evidence/codex-github-auth-host-2026-08-28.md) |
 | KOS-2-2-DOC-ALIGN-001 | `Closed`；Human Product Review accepted；核心治理/启动文档完成 advisory 渐进对齐；不启用 `required` | [`assignment`](assignments/kos-2-2-doc-align-001.md) · [`Gate`](product-decisions/KOS-2-2-DOC-ALIGN-001-product-gate.md) · [`evidence`](evidence/kos-2-2-doc-align-001-audit-2026-08-28.md) |
 | DIAGNOSTICS-VIEWER-LOAD-001 | `Closed`；Human Product Gate Passed；PR [#85](https://github.com/shchnk1103/Universe-Keyboard/pull/85) merged `420322b`；方案交付可观测性转交 TD-015 | [`assignment`](assignments/diagnostics-viewer-load-001.md) · [`Gate`](product-decisions/DIAGNOSTICS-VIEWER-LOAD-001-product-gate.md) · [`TD-015`](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) |
 | KOS-UPGRADE-UK-001 | `Reviewed`；Product Gate 接受 advisory pin；PR [#84](https://github.com/shchnk1103/Universe-Keyboard/pull/84) merged `e7da77e`；P2=`TD-014` | [`assignment`](assignments/kos-upgrade-uk-001.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-001-product-gate.md) · [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) |

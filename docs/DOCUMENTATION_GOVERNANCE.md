@@ -17,6 +17,7 @@ Every fact has one primary document. Other documents may provide a short summary
 | Knowledge OS migration execution evidence | `docs/kos/migration-001-record.md` | Completed migration validation and rollback; not frozen principles |
 | KOS Agent Kit adoption status | `docs/kos/UPGRADE_STATUS.md` | Adopted version, disposition, last check and next review only |
 | KOS 2.2 project registry | `.kos/project.json` | Mode, included records, stable claim/environment IDs and Gate policies; no Product or Quality conclusion |
+| Codex GitHub CLI auth/environment diagnosis | `docs/kos/codex-github-cli-auth-troubleshooting.md` | Privacy-safe decision flow and retry boundary only; actual account and network state require current evidence |
 | Project entry and quick start | `README.md` | Entry, minimum setup and important links only; avoid volatile implementation detail |
 | Current architecture and module boundaries | `docs/PROJECT_CONTEXT.md` | Current overview, ownership boundaries and development entry points |
 | Current OpenCC integration mechanics | `docs/architecture/opencc-integration.md` | RIME filter/config participation and cross-target responsibility boundary; operational steps remain in debugging/performance/release sources |
