@@ -2,11 +2,24 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-24 Asia/Shanghai
+> **Updated:** 2026-08-28 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## KOS 2.2 advisory pin — 2026-08-27
+
+- **Lifecycle:** `KOS-UPGRADE-UK-001` `Reviewed` — Product Gate accepted；PR #84 merged `e7da77e`
+- **Authority:** [`PD`](product-decisions/KOS-UPGRADE-UK-001-authorization.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-001-product-gate.md) · [`Assignment`](assignments/kos-upgrade-uk-001.md)
+- **Pin:** `shchnk1103/kos-agent-kit@v0.5.0` (`e11cbfb`)
+- **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
+- **Non-claims:** not `required`; not diagnostics implementation; not PR #83 merge
+- **First workflow:** `DIAGNOSTICS-VIEWER-LOAD-001` `Closed` — Human Product Gate Passed；PR #85 merged `420322b`。Human 的 `<100 MB` 是本次真机观察，不是新内存合同；不开 `required`、不 merge PR #83
+- **Next:** 万象 journal 缺口 = [`TD-015`](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal)，再次分类万象失败前另立 Assignment。TD-014 仍待 KOS-UPGRADE AUTH 卫生
+- **CI tiering:** [`TD-016-CI-TIERING-001`](assignments/td-016-ci-tiering-001.md) `Closed` — Human Product Gate Passed；PR [#86](https://github.com/shchnk1103/Universe-Keyboard/pull/86) merged `78ed5b5`；PR [#87](https://github.com/shchnk1103/Universe-Keyboard/pull/87) merged `11fa096`。A-P2-02 required-check trust root 仍由 [`TD-016`](TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁) 追踪；不改 branch protection/required checks
+- **Documentation alignment:** `KOS-2-2-DOC-ALIGN-001` `Closed` — Human Product Review accepted；核心治理/启动/协作/健康来源已说明 advisory Envelope 与渐进纳管边界；不启用 `required`
+- **GitHub auth diagnosis:** `CODEX-GITHUB-AUTH-DIAG-001` `Closed` — 手册随 PR #86 发布；沙箱内部机制仍不确定；不授权 Release
 
 ## Active Work 收敛 — 2026-08-24
 

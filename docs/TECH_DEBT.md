@@ -247,6 +247,45 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Trigger to resolve:** 获得明确实现授权后，按 P1 Assignment 的 phase/门禁推进；日志量/导出需求增长或再次出现无法归因的视觉异常可触发 Product revalidation。
 - **Related:** ADR 0027、`DIAGNOSTICS-OBSERVABILITY-001`、[`PD-TD-013-DIAGNOSTICS-V1-P1`](product-decisions/TD-013-DIAGNOSTICS-V1-P1-authorization.md)、`docs/DEBUGGING.md`。
 
+## TD-014: KOS 2.2 AUTH consumption_state 卫生
+
+- **Priority:** Low. 不阻塞本次 advisory pin、PR #84 Product Gate，或诊断查看实现授权。
+- **Risk:** `AUTH-KOS-UPGRADE-UK-001` 与 `AUTH-DIAGNOSTICS-VIEWER-LOAD-001-IMPLEMENT` 的 `consumption_state` 仍为 `unconsumed`，而对应 bounded action（钉住 Kit advisory / 实现并合并诊断查看修复）均已完成。Kit 把 consumption 当审计观察、不提供 replay 保护；正文也否定 bearer token。若不改，后续 agent 可能把未消费收据误读成可反复执行的许可。
+- **Current mitigation:** 建立 Assignment 的 `AUTH-DIAGNOSTICS-VIEWER-LOAD-001` 已标 `consumed`；implement 收据 exclusions 含 `required_mode` / `merge` / `release` / `scheme_download_fix` / `pr_83_merge`，正文明确已完成 bounded action 且不得重放。当前 advisory validator 要求 Assignment 引用 `active` AUTH，即使 Assignment 已 `closed`；直接将 implement AUTH 标为 `consumed` 会产生 `KOS2437`，因此暂不伪造绿色状态。
+- **Current status:** 部分偿还。剩余是 KOS 升级 Assignment 与已关闭 diagnostics Assignment 的 AUTH 消费/终态绑定语义。
+- **Recommended fix:** 在后续 Envelope 卫生中明确 terminal Assignment 对 consumed AUTH 的合法绑定，升级 validator 后再把已完成 bounded action 的 AUTH 标为 `consumed`；或形成等价的不可重放规则。不要把这次改正做成 `required` 切仓或扩大 include glob。
+- **Owner area:** KOS 2.2 records（`docs/authorizations/`）与 Architecture & Knowledge Steward。
+- **Trigger to resolve:** 下一次触及这些 AUTH 的 Envelope 卫生；切 `required` 之前必须先处理。
+- **Related:** [`KOS-UPGRADE-UK-001`](assignments/kos-upgrade-uk-001.md)、[`A-P2-01`](reviews/KOS-UPGRADE-UK-001-architecture-review.md)、[`Q-P2-01`](reviews/KOS-UPGRADE-UK-001-quality-review.md)。
+
+## TD-015: 方案交付日志未进入诊断 v1 journal
+
+- **Priority:** High for INTEGRITY-001 / 万象失败分类。不阻塞 `DIAGNOSTICS-VIEWER-LOAD-001` Product Gate 或 PR #85 merge。
+- **Risk:** 诊断页只读 `Diagnostics/v1`。主 App `Logger.shared` 仍写入 legacy `rime_diag_log`；`DiagnosticsJournalRuntime` 明确不桥接 legacy Logger。`SchemaManager+Download` 下载/解压/安装路径没有 `Logger` 打点。结果：记录开、部署分类开、高保真关时，万象下载并部署成功也可以在 v1 里看不到「万象 / 下载 / 部署」。无法用 journal 区分网络、校验、解压、安装、部署。开高保真不能补上这条管道。
+- **Current mitigation:** UI `DownloadState` / toast 仍能显示成功或失败。部署阶段 `deployRimeConfig` 会打 `Logger` `DEPLOY`，但只落在 UserDefaults，v1 有记录后查看器不再回退 legacy。
+- **Current evidence status (`2026-08-27`):** Human 在等待 PR #85 CI 时重试万象拼音，UI 成功下载并部署；诊断分类全开、高保真关；v1 页面无万象/下载/部署行。见 [`evidence/scheme-delivery-logs-not-in-v1-2026-08-27.md`](evidence/scheme-delivery-logs-not-in-v1-2026-08-27.md)。一次 UI 成功不是 INTEGRITY 分类完成，也不授权 merge PR #83。
+- **Recommended fix:** 另立 Product Assignment（建议 id `SCHEME-DELIVERY-JOURNAL-001`）。在下载、完整性、安装、部署边界写入有界、内容无关的 v1 `DiagnosticEvent`（`DEPLOY` / Main App origin，allowlist 过的 event code）。仍只受 `logging_enabled` 与部署分类约束，不挂高保真。不要把 legacy 自由文本混进 v1。不要为了看见下载日志去改高保真规则。
+- **Owner area:** Main App scheme download/deploy、KeyboardCore diagnostics journal allowlist、诊断查看（只读）。
+- **Trigger to resolve:** Human Product Gate 通过 `DIAGNOSTICS-VIEWER-LOAD-001` 之后、再次分类万象失败之前。未授权实现前不得猜修下载或 merge PR #83。
+- **Related:** ADR 0027、TD-013 item 5（legacy Logger 迁移）、[`DIAGNOSTICS-VIEWER-LOAD-001`](assignments/diagnostics-viewer-load-001.md)、PR #83。
+
+## TD-016: CI 变更分级与文档提交快速门禁
+
+- **Priority:** Medium。主要降低纯文档提交的反馈等待与 CI 资源消耗；不得以提速为由削弱代码、工程配置、资源或治理变更的合并门禁。
+- **Risk:** 当前 `Swift 6 Quality` 对普通文档补录也会运行 KeyboardCore、RimeBridge、完整 App 测试及 Debug/Release 构建，单次可能持续十几分钟。连续文档修订还会产生过期运行；AI 若持续轮询，会额外消耗交互时间与 token。反向风险是粗暴使用 `paths-ignore` 后误跳过必要测试，或让被完全跳过的 required workflow 永久 pending。
+- **Current mitigation:** 推送后由 Human 查看 GitHub 状态，AI 不持续轮询；现有完整 CI 保持 fail-closed，不根据文件扩展名自动降级。
+- **Authorized implementation:** 设计并实现一个可审计的变更分类器和分级门禁：
+  1. 所有 PR 始终运行轻量公共门禁（变更分类、`git diff --check`、文档/链接、KOS validator、安全扫描）。
+  2. 经审查的普通文档或治理文档只运行对应文档/KOS 检查；Assignment、Authorization、ADR 仍需治理一致性验证，但不因此启动 `xcodebuild`。
+  3. Swift、测试、Package/Xcode 工程、RIME/Lua/词典、Assets/AppIcon、构建脚本、workflow，以及任何未知路径均运行完整 Swift 6 门禁；未知分类必须 fail closed。
+  4. 使用始终运行的聚合 `final-quality-gate` 处理“重任务合法 skipped”，避免 required check 因整个 workflow 被 paths-ignore 而悬空。
+  5. 为同一 PR 设置 `concurrency` + `cancel-in-progress`，取消旧提交的过期运行；AI 默认推送后交回，不做高频轮询。
+- **Current status (`2026-08-28`):** 实现 Assignment [`TD-016-CI-TIERING-001`](assignments/td-016-ci-tiering-001.md) 已 Closed。PR [#86](https://github.com/shchnk1103/Universe-Keyboard/pull/86) merged `78ed5b5`；PR [#87](https://github.com/shchnk1103/Universe-Keyboard/pull/87) merged `11fa096`。fail-closed 分类、轻量检查、条件 heavy job 与 `final-quality-gate` 已在 `main`。本项剩余工作是 required-check trust root（A-P2-02）：classifier/workflow/final Gate 仍来自 PR head。`main` 当前无 branch protection；未修改 required checks。私有 KOS Kit 无无密钥的远端分发路径，完整 validator 暂保持本地 merge 前门禁并作为显式残余。
+- **Required-check migration residual:** 当前 classifier、workflow 与 final Gate 均来自 PR head，本身不是独立 trust root。未来若要把 `final-quality-gate` 设为 required，必须另行授权并增加 CODEOWNERS/强制审查、受保护 reusable workflow 或等价的 baseline-owned guard；在此之前不得把当前绿色结果当成不可绕过的强制边界。
+- **Owner area:** Quality, Performance & Release Maintainer（CI/test selection）+ Architecture & Knowledge Steward（KOS/治理分类边界）。
+- **Trigger to resolve:** 仅当 Human 另行授权 required-check 迁移，并增加 CODEOWNERS/强制审查、受保护 reusable workflow 或等价 baseline-owned guard。
+- **Related:** `.github/workflows/swift6-quality.yml`、`docs/ASSIGNMENT_POLICY.md`、KOS 2.2 advisory、TD-014。
+
 ## Maintenance Rules
 
 - Update an item when priority, mitigation, owner area or trigger changes.

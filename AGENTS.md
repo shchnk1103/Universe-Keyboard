@@ -21,6 +21,7 @@
 4. 按 `docs/READING_MAPS.md` 中的任务类型加载对应文档
 5. 涉及代码改动时再阅读 `docs/PROJECT_CONTEXT.md`
 6. 运营卫生规则见 `docs/kos/kos-2.1-operational-maturity.md`（不替代 KOS 2.0 冻结原则）
+7. KOS 2.2 目前为 **advisory**：入口是 [`docs/kos/UPGRADE_STATUS.md`](docs/kos/UPGRADE_STATUS.md) 与 `.kos/project.json`。校验绿不是 Product / merge / Release。未授权 `required`。
 
 `CONTEXT_INDEX.md` 保留为详细文档注册表，不再是新会话的第一导航入口。
 需要确定长期团队所有权、跨线程协作或永久线程 bootstrap 时，阅读 `docs/VIRTUAL_ENGINEERING_TEAM.md`。
@@ -50,6 +51,9 @@
 
 ## GitHub 发布与分支清理
 
+- Codex 沙箱内的 GitHub CLI 认证失败不得单独解释为 token 过期。先按
+  [`docs/kos/codex-github-cli-auth-troubleshooting.md`](docs/kos/codex-github-cli-auth-troubleshooting.md)
+  做一次沙箱／主机对照；主机成功后停止重复登录，不猜测或复用旧代理配置。
 - 完成的独立工作应先通过发布前检查，创建边界清晰的本地提交，再推送功能分支并创建 Pull Request。
 - **合并 / 视为可合并之前，必须先在本地跑通与 CI 等价的质量门**（见下「本地 CI 门禁」）。禁止在相关套件未绿时推送并请求合并到默认分支；若用户明确说「只推不合并 / 草稿 PR」，可推功能分支但必须在报告中写明本地未跑或未绿的步骤。
 - “已推送功能分支”不等于“可以清理分支”。PR 未合并、检查失败或远端状态无法确认时，必须同时保留本地和远端功能分支。
@@ -58,6 +62,10 @@
 - 发布与清理过程必须报告提交、远端分支、PR、合并可达性检查和实际删除结果；任一步失败都停止清理并保留可恢复检查点。
 
 ## 本地 CI 门禁（与 `.github/workflows/swift6-quality.yml` 对齐）
+
+远端工作流按 [`docs/CI_CHANGE_CLASSIFICATION.md`](docs/CI_CHANGE_CLASSIFICATION.md)
+分级：分类、轻量检查和 `final-quality-gate` 始终运行；只有严格的 docs/KOS allowlist
+可跳过 `build-and-test`。未知路径、workflow 或 `scripts/ci/**` 变更必须走完整门禁。
 
 在 **push 后预期合并**、或用户要求「上传并合并 / 修 CI / ship」时，在推送前（至少在 merge 前）于本地执行与 CI 同序的检查。默认模拟器名与 CI 一致：`iPhone 17 Pro`（本机无该机型时可用等价 iOS Simulator，并在报告中写明）。
 
@@ -72,6 +80,9 @@
 6. **Debug / Release build：** 同上 destination，分别 `-configuration Debug|Release` 的 `build`（参数与 CI 一致）
 
 **范围收窄（仅当改动极小时）：** 纯文档且无 Swift / 工程 / 测试文件改动时，可跳过 3–6，但须在完成报告中写明「docs-only，跳过 xcodebuild」。只改 `Packages/KeyboardCore` 时至少跑步骤 3；改主 App / Extension / 测试 target 时 **不得** 只跑 KeyboardCore 就声称可合并。
+
+修改 `.github/workflows/**`、`scripts/ci/**` 或分类规则本身时不得使用 docs-only
+例外；必须验证完整路径和 docs-only 路径，并在 merge 前取得 hosted run 证据。
 
 **改完测试或部署意图后：** 必须跑到会执行该用例的 target（例如改了 `UniverseKeyboardTests` 就必须跑步骤 5，不能只跑 KeyboardCore）。  
 历史教训：#48 合并后 CI 红在 `RimeSettingsStoreTests`（签名 `schema=all` 与测试种子不一致）——本地若只跑 KeyboardCore 过滤套件会漏掉。

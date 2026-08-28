@@ -11,7 +11,7 @@
 | **Phase** | Implementation and beta-toolchain local gates complete; final Architecture `Pass` and Quality `Pass with conditions`, P0=0/P1=0; stable CI and Human Gates remain open |
 | **Non-claims** | The failing source, integrity phase, exact device/build and root cause remain unproven; current endpoint artifacts validate from the Executor environment; no commit, merge, stable-CI, physical-device, Product or Release decision is included |
 | **Next** | Stable Xcode Cloud CI-equivalent gates → exact candidate Mainland cellular physical-device retry → Human Product Gate; no commit/push/merge |
-| **Residuals** | [`implementation evidence`](../evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md) · [`Entry design`](rime-scheme-delivery-integrity-001-entry-design.md) · [`Architecture pre-review and ADR re-review`](rime-scheme-delivery-integrity-001-architecture-review.md) · [`accepted ADR 0031`](../architecture/decisions/0031-verified-scheme-source-recovery-and-integrity-classification.md) · [`failure evidence`](../evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) |
+| **Residuals** | [`implementation evidence`](../evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md) · [`Entry design`](rime-scheme-delivery-integrity-001-entry-design.md) · [`Architecture pre-review and ADR re-review`](rime-scheme-delivery-integrity-001-architecture-review.md) · [`accepted ADR 0032`](../architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md) · [`failure evidence`](../evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) |
 
 ---
 
@@ -24,7 +24,7 @@
   accepted the detailed internal-state taxonomy, restrained user-facing states
   and content-free structured local diagnostics. Independent Architecture
   pre-review and ADR re-review subsequently returned `Pass with conditions` and
-  authorized ADR 0031 acceptance before production implementation starts.
+  authorized ADR 0032 acceptance before production implementation starts.
 - **Product Approver:** Human Product Owner acting as Product Lead
 
 ## Boundary
@@ -69,7 +69,7 @@
 
 ## Remediation Contract To Review
 
-ADR 0031 is the durable Architecture Source of Truth. This section is only the
+ADR 0032 is the durable Architecture Source of Truth. This section is only the
 bounded execution summary for this Assignment and must not independently evolve
 the long-term contract.
 
@@ -181,7 +181,7 @@ observability but cannot change business behavior.
 | `AR-RSDI-P1-01` | Main App UI | `closed` | Truthful cleanup outcomes and injected deletion-failure evidence complete |
 | `AR-RSDI-P1-02` | Main App UI | `closed` | Manifest binding, validation and aggregate integrity evidence complete |
 | `AR-RSDI-P1-03` | Main App UI + Architecture privacy review | `closed` | Typed payload, writer preservation and noninterference evidence complete |
-| `AR-RSDI-P1-04` | Architecture & Knowledge Steward | `closed` | ADR 0031 accepted and implementation evidence linked |
+| `AR-RSDI-P1-04` | Architecture & Knowledge Steward | `closed` | ADR 0032 accepted and implementation evidence linked |
 
 The full finding text and P2 recommendations live in the
 [`Architecture pre-review`](rime-scheme-delivery-integrity-001-architecture-review.md).
@@ -193,7 +193,7 @@ Entry and implementation P1 findings are closed. Final Architecture review is
 
 ## Gates
 
-- **Entry Criteria:** Assignment responsibilities are acknowledged; ADR 0031 is
+- **Entry Criteria:** Assignment responsibilities are acknowledged; ADR 0032 is
   `Accepted; implementation pending`; the cleanup barrier, explicit staged
   identity descriptor, actor/state transition table and ADR 0027 typed
   event/field allowlist close `AR-RSDI-P1-01...04`; the implementation base
@@ -234,7 +234,7 @@ Entry and implementation P1 findings are closed. Final Architecture review is
   Executor acknowledged the Assignment; lifecycle advanced to `Acknowledged`
   for Architecture pre-review. No production implementation has started.
 - `2026-08-26 Asia/Shanghai` — independent Architecture pre-review returned
-  `Pass with conditions`, `P0=0`, with four P1 Entry blockers. Proposed ADR 0031
+  `Pass with conditions`, `P0=0`, with four P1 Entry blockers. Proposed ADR 0032
   and the residual disposition table were added; lifecycle remains
   `Acknowledged` and no production implementation has started.
 - `2026-08-26 Asia/Shanghai` — independent Architecture re-review found ADR
@@ -275,3 +275,8 @@ Entry and implementation P1 findings are closed. Final Architecture review is
   recorded in the implementation evidence. Registry retirement remains a
   non-blocking P2. Stable CI, exact-candidate Mainland device evidence and Human
   Product Gate remain open; no commit, push or merge occurred.
+- `2026-08-28 Asia/Shanghai` — Human Product Owner authorized continuing #83 by
+  merging current `main`, then TD-015 journal, then Human retest. This branch
+  merged `origin/main` (`c44ec00`). Scheme integrity ADR was renumbered to
+  **0032** because `main` already accepted CI classification as ADR 0031. Merge
+  of PR #83 to `main` remains unauthorized.

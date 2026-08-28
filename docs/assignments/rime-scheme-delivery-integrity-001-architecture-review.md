@@ -108,7 +108,7 @@ reach `Accepted; implementation pending` before this Assignment enters
 ## ADR Disposition
 
 **New ADR required.** The first pre-review proposed:
-[`ADR 0031 — Verified Scheme Source Recovery And Integrity Classification`](../architecture/decisions/0031-verified-scheme-source-recovery-and-integrity-classification.md).
+[`ADR 0032 — Verified Scheme Source Recovery And Integrity Classification`](../architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md).
 ADR 0006 and TD-001 remain unchanged and open.
 
 ## ADR Re-Review
@@ -122,7 +122,7 @@ design/Entry level, but implementation and test closure are not claimed:
 - `AR-RSDI-P1-02`: design closed; manifest implementation remains required;
 - `AR-RSDI-P1-03`: architecture direction closed; exact typed event/field
   allowlist and privacy review remain an Entry Gate;
-- `AR-RSDI-P1-04`: closed when ADR 0031 was formally marked `Accepted;
+- `AR-RSDI-P1-04`: closed when ADR 0032 was formally marked `Accepted;
   implementation pending`.
 
 Actor/state transition material, diagnostic allowlist privacy review, exact
@@ -140,7 +140,7 @@ install/uninstall/switch/reset/redeploy intent, the independent reviewer returne
 - `AR-RSDI-P1-01`: design closed; implementation/evidence pending.
 - `AR-RSDI-P1-02`: design closed; implementation/evidence pending.
 - `AR-RSDI-P1-03`: design/privacy closed; implementation/evidence pending.
-- `AR-RSDI-P1-04`: design closed; ADR 0031 accepted.
+- `AR-RSDI-P1-04`: design closed; ADR 0032 accepted.
 
 No Architecture Entry blocker remains. Expansion of state, payload, privacy or
 allowlist reopens review. The frozen base/allowlist and Human Product

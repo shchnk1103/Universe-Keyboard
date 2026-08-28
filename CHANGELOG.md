@@ -2,6 +2,22 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-28 — CI 变更分级完成 full-path 托管验证
+
+- 新增 fail-closed 变更分类：仅根目录 Markdown、`docs/**` 与 `.kos/**` 可走轻量路径，任何源码、工程、测试、资源、脚本、workflow 或未知路径均运行完整 Swift 6 门禁。
+- 分类、轻量检查和 `final-quality-gate` 始终运行；完整构建只在分类为 `full` 时执行，同一 PR 的旧运行会在新提交到达后取消。
+- 实现与证据同步运行 [`33165797218`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33165797218)、[`33166502457`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33166502457) 已全绿。独立 Architecture/Quality review 返回 `Pass with conditions` 后，修复提交 `0623e7c` 的 hosted full-path [`33168928860`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33168928860) 再次全绿。
+- 临时 Draft fixture PR #88 (`bd4b6eb`) 的 hosted run [`33169007898`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33169007898) 判定 `docs_only`，`build-and-test` 为 skipped，`final-quality-gate` 成功。该 PR 只作证据，关闭且不合并。
+- 独立 Architecture 复核为 Pass with conditions（A-P2-02 仍为 required-check trust-root 残余）；Quality 复核为 Pass。
+- Human Product Gate Passed。PR [#86](https://github.com/shchnk1103/Universe-Keyboard/pull/86) 合入 `78ed5b5`；PR [#87](https://github.com/shchnk1103/Universe-Keyboard/pull/87) 合入 `11fa096`。未修改 branch protection 或 required checks，也未授权 Release。
+
+## 2026-08-27 — 诊断页加载态与空态
+
+- 根加载在仍 `isRefreshing` 时显示「正在加载诊断日志」，不再伪装成「暂无诊断日志」。
+- 筛选无匹配、有界窗口无完整记录、真正无 journal 三种空态保持区分。
+- 1 秒跟随在 generation/段 watermark 未变时跳过 JSONL 根解码。skip 绑定触发本次解码的 identity peek，不在加载后再采样盘面。未提高 5 MiB / 10,000 条预算。
+- 诊断页 1 秒 skip 与日期目录不再抢 exclusive snapshot fence；进出页面在水位未变时复用已读结果，避免 69 条可见记录仍整页重扫历史段。
+
 ## 2026-08-24 — 08 颜表情合入 main
 
 - PR [#80](https://github.com/shchnk1103/Universe-Keyboard/pull/80) 合入 `54ce3bd`。这不是 RC 冻结，也不是 TestFlight 上传。

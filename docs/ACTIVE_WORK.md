@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-26 Asia/Shanghai` — PR #83 的 Human 真机万象下载出现未分类完整性失败；父交付任务保持 `Review`；INTEGRITY-001 已获 Human Product 实现授权并进入 `Active`，按冻结 base/allowlist 开始实现，仍不提交、不推送、不合并。Active Work `5/10`。
+Last synced: `2026-08-28 Asia/Shanghai` — #83 已并入当前 `main`；方案完整性 ADR 重编号为 0032。核心 Active Work 为 `5/10`。TD-015 journal 按 Human 授权随后另立 Assignment。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -13,12 +13,17 @@ Last synced: `2026-08-26 Asia/Shanghai` — PR #83 的 Human 真机万象下载�
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 4 | RIME-SCHEME-DELIVERY-001 | Review | Human 真机万象完整性失败尚未分类；先处理 INTEGRITY-001，再继续稳定套件、大陆网络、acceptable-use 与 Product Gate | [`assignment`](assignments/rime-scheme-delivery-001.md) · [`failure`](evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) · [`PD`](product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) |
-| 5 | RIME-SCHEME-DELIVERY-INTEGRITY-001 | Active | 实现、本机 beta 门禁与独立双审已完成（P0/P1=0）；待稳定 Xcode Cloud、精确候选大陆蜂窝真机与 Product Gate | [`assignment`](assignments/rime-scheme-delivery-integrity-001.md) · [`evidence`](evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md) · [`ADR 0031`](architecture/decisions/0031-verified-scheme-source-recovery-and-integrity-classification.md) |
+| 5 | RIME-SCHEME-DELIVERY-INTEGRITY-001 | Active | 已并入当前 `main`；ADR 重编号为 0032；待 TD-015 journal、hosted full-path 与大陆蜂窝真机 Product Gate | [`assignment`](assignments/rime-scheme-delivery-integrity-001.md) · [`evidence`](evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md) · [`ADR 0032`](architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md) |
 
 ## Completed (not Active)
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
+| TD-016-CI-TIERING-001 | `Closed`；Human Product Gate Passed；PR [#86](https://github.com/shchnk1103/Universe-Keyboard/pull/86) merged `78ed5b5`；PR [#87](https://github.com/shchnk1103/Universe-Keyboard/pull/87) merged `11fa096`；A-P2-02 仍为 TD-016 | [`assignment`](assignments/td-016-ci-tiering-001.md) · [`Gate`](product-decisions/TD-016-CI-TIERING-001-product-gate.md) |
+| CODEX-GITHUB-AUTH-DIAG-001 | `Closed`；runbook 随 PR #86 发布；sandbox 内部机制仍不确定；不授权 Release | [`assignment`](assignments/codex-github-auth-diag-001.md) · [`runbook`](kos/codex-github-cli-auth-troubleshooting.md) · [`host evidence`](evidence/codex-github-auth-host-2026-08-28.md) |
+| KOS-2-2-DOC-ALIGN-001 | `Closed`；Human Product Review accepted；核心治理/启动文档完成 advisory 渐进对齐；不启用 `required` | [`assignment`](assignments/kos-2-2-doc-align-001.md) · [`Gate`](product-decisions/KOS-2-2-DOC-ALIGN-001-product-gate.md) · [`evidence`](evidence/kos-2-2-doc-align-001-audit-2026-08-28.md) |
+| DIAGNOSTICS-VIEWER-LOAD-001 | `Closed`；Human Product Gate Passed；PR [#85](https://github.com/shchnk1103/Universe-Keyboard/pull/85) merged `420322b`；方案交付可观测性转交 TD-015 | [`assignment`](assignments/diagnostics-viewer-load-001.md) · [`Gate`](product-decisions/DIAGNOSTICS-VIEWER-LOAD-001-product-gate.md) · [`TD-015`](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) |
+| KOS-UPGRADE-UK-001 | `Reviewed`；Product Gate 接受 advisory pin；PR [#84](https://github.com/shchnk1103/Universe-Keyboard/pull/84) merged `e7da77e`；P2=`TD-014` | [`assignment`](assignments/kos-upgrade-uk-001.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-001-product-gate.md) · [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) |
 | RELEASE-2026-0801-08 | `Closed`；PR [#80](https://github.com/shchnk1103/Universe-Keyboard/pull/80) merged `54ce3bd`；功能分支已清理 | [`assignment`](assignments/release-2026-08-01-08-kaomoji-content.md) · [`Gate`](evidence/release-2026-08-01-08-product-gate-2026-08-24.md) |
 | RELEASE-2026-0801-05-PROVENANCE-A | `Completed`；Product 已接受派生收据为外部候选残留；不开 Phase B | [`assignment`](assignments/release-2026-08-01-05-provenance-recovery-phase-a.md) · [`PD`](product-decisions/RELEASE-2026-0801-05-provenance-a-accept.md) · [`evidence`](evidence/release-2026-08-01-05-provenance-recovery-phase-a-2026-08-23.md) |
 | PATH-BAR-TOUCH-001 | `Completed`；Human 复验 Path 上半区可点；等 PR 合并后 Closed | [`assignments/path-bar-touch-001.md`](assignments/path-bar-touch-001.md) |
@@ -52,13 +57,15 @@ TD-012 G1 is **Closed** (see Completed table); do not re-open vendor G1 without 
 
 | Priority | Item | Notes |
 |---|---|---|
+| P1 | **[TD-015](TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) 方案交付 → v1** | Human 已授权另立 Assignment；#83 已有 v1 打点骨架，需正式 Assignment、测试与 Human 复测 |
+| P2 | **[TD-016](TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁) required-check trust root** | 实现已合入；A-P2-02 仍待另行授权，未改 required checks |
 | P1 optional | **[TD-011](TECH_DEBT.md#td-011-multi-scheme-lua--advanced-input-compatibility-雾凇--万象) B–D** | Diagnose / multi-schema deploy / install isolation — only if Product productizes 万象 toggles |
 | P2 optional | Device smoke TD-011 A | 高级输入 + 万象：tips 显示 `/rq`·`orq`/`V`/`R`/`U`；裸 `rq` 仍属雾凇 |
 | — | Freeze A hold | **Do not** unify fog `rq` ↔ 万象 `/rq` unless Product supersedes |
 
 **Done this arc (do not re-open as WIP):** `RIME-SCHEME-WANXIANG-001` V1 catalog/layout path; TD-009 toast name+progress (PR #53); TD-010 capability gates + prefs preserve (#51/#52); TD-011 freeze A native usage copy (#54).
 
-Debts index: [`TECH_DEBT.md`](TECH_DEBT.md) TD-009…013.
+Debts index: [`TECH_DEBT.md`](TECH_DEBT.md) TD-009…016.
 
 ## Rules
 

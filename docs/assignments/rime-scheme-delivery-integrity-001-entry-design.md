@@ -7,7 +7,7 @@ and implementation evidence for review and gate status
 **Frozen implementation base:**
 `bcf6c1c46ff374cfea20ec2552ca273161cb8d76`
 **Architecture SoT:**
-[`ADR 0031`](../architecture/decisions/0031-verified-scheme-source-recovery-and-integrity-classification.md)
+[`ADR 0032`](../architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md)
 
 This document supplies the state/commit table, cleanup barrier, staged-identity
 invariants, typed diagnostic payload schema and changed-file allowlist required
@@ -252,7 +252,7 @@ Product/Architecture disposition expands the list:
 - `docs/assignments/rime-scheme-delivery-integrity-001.md`
 - `docs/assignments/rime-scheme-delivery-integrity-001-entry-design.md`
 - `docs/assignments/rime-scheme-delivery-integrity-001-architecture-review.md`
-- `docs/architecture/decisions/0031-verified-scheme-source-recovery-and-integrity-classification.md`
+- `docs/architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md`
 - `docs/evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md`
 - `docs/evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md` (new)
 - `docs/assignments/rime-scheme-delivery-001.md`
@@ -270,7 +270,7 @@ automatic update discovery and TD-001 transaction implementation.
 
 At Entry, independent Architecture final re-review accepted this design with
 `P0=0`: `AR-RSDI-P1-01/02/03` are design closed and implementation/evidence
-pending; `AR-RSDI-P1-04` is closed by accepted ADR 0031. Any field, state,
+pending; `AR-RSDI-P1-04` is closed by accepted ADR 0032. Any field, state,
 privacy or allowlist expansion reopens review. The exact implementation base and
 allowlist are now frozen above. Product implementation authorization remains the
 only open Entry Gate at that historical checkpoint.

@@ -1,0 +1,139 @@
+{
+  "version": 2,
+  "project": {
+    "name": "Universe Keyboard",
+    "repository": "shchnk1103/Universe-Keyboard"
+  },
+  "record_envelopes": {
+    "mode": "advisory",
+    "supported_schema": {"major": 1, "minor": 0},
+    "record_roots": [
+      "docs/assignments",
+      "docs/product-decisions",
+      "docs/evidence",
+      "docs/authorizations",
+      "docs/gates",
+      "docs/kos/upgrade-records"
+    ],
+    "include": [
+      "docs/assignments/kos-upgrade-uk-001.md",
+      "docs/assignments/diagnostics-viewer-load-001.md",
+      "docs/assignments/kos-2-2-doc-align-001.md",
+      "docs/assignments/codex-github-auth-diag-001.md",
+      "docs/assignments/td-016-ci-tiering-001.md",
+      "docs/product-decisions/KOS-UPGRADE-UK-001-authorization.md",
+      "docs/product-decisions/DIAGNOSTICS-VIEWER-LOAD-001-authorization.md",
+      "docs/product-decisions/KOS-2-2-DOC-ALIGN-001-authorization.md",
+      "docs/product-decisions/KOS-2-2-DOC-ALIGN-001-product-gate.md",
+      "docs/product-decisions/CODEX-GITHUB-AUTH-DIAG-001-authorization.md",
+      "docs/product-decisions/TD-016-CI-TIERING-001-authorization.md",
+      "docs/evidence/diagnostics-viewer-load-2026-08-27.md",
+      "docs/evidence/kos-upgrade-uk-001-advisory-validate-2026-08-27.md",
+      "docs/evidence/kos-2-2-doc-align-001-audit-2026-08-28.md",
+      "docs/evidence/codex-github-auth-sandbox-2026-08-28.md",
+      "docs/evidence/codex-github-auth-host-2026-08-28.md",
+      "docs/evidence/td-016-ci-tiering-001-implementation-2026-08-28.md",
+      "docs/authorizations/*.md",
+      "docs/gates/*.md"
+    ],
+    "exclude": ["**/_template.md"],
+    "legacy_yaml_policy": "absent",
+    "intra_record_mirrors": "required",
+    "cross_document_mirrors": "off",
+    "limits": {
+      "max_files": 100000,
+      "max_records": 1000,
+      "max_document_bytes": 1048576,
+      "max_envelope_bytes": 65536,
+      "max_json_depth": 24
+    }
+  },
+  "claims": [
+    {
+      "id": "CLAIM.KOS.ADVISORY_PIN",
+      "description": "Project has pinned KOS Agent Kit v0.5.0 in advisory mode without required envelopes on legacy records.",
+      "owner": "Architecture and Knowledge Steward"
+    },
+    {
+      "id": "CLAIM.DIAGNOSTICS.VIEWER_LOAD_BLOCKING",
+      "description": "Human-attested diagnostics viewer load is blocking classified scheme-download diagnosis.",
+      "owner": "Main App UI"
+    },
+    {
+      "id": "CLAIM.KOS.DOC_ALIGNMENT",
+      "description": "Current governance and startup sources describe the adopted KOS 2.2 advisory boundaries without bulk legacy backfill.",
+      "owner": "Architecture and Knowledge Steward"
+    },
+    {
+      "id": "CLAIM.KOS.CODEX_GITHUB_AUTH_SANDBOX_FALSE_NEGATIVE",
+      "description": "A sandbox-only gh authentication failure must not be classified as token expiry when the same account validates and GitHub operations succeed in the authorized host environment.",
+      "owner": "Architecture and Knowledge Steward"
+    },
+    {
+      "id": "CLAIM.CI.TIERING_FAIL_CLOSED",
+      "description": "Documentation-only changes may skip the heavy Swift job only after an always-run classifier and lightweight gate succeed; sensitive and unknown paths require the full Swift 6 job and an always-run final gate.",
+      "owner": "Quality, Performance and Release Maintainer"
+    }
+  ],
+  "environments": [
+    {
+      "id": "ENV.LOCAL_EXECUTOR",
+      "class": "local",
+      "description": "Executor workstation running read-only KOS validator against this checkout."
+    },
+    {
+      "id": "ENV.HUMAN_DEVICE",
+      "class": "human_operated",
+      "description": "Human Product Owner physical device used for diagnostics viewer screenshots."
+    },
+    {
+      "id": "ENV.CODEX_SANDBOX",
+      "class": "local",
+      "description": "Restricted Codex execution environment where network and macOS keyring visibility may differ from the host."
+    },
+    {
+      "id": "ENV.CODEX_HOST_AUTHORIZED",
+      "class": "local",
+      "description": "User-authorized host execution environment with normal macOS keyring and outbound GitHub access."
+    },
+    {
+      "id": "ENV.GITHUB_ACTIONS",
+      "class": "ci",
+      "description": "GitHub Actions hosted runners executing the repository change classifier, lightweight checks and conditional Swift 6 quality job."
+    }
+  ],
+  "gate_policies": [
+    {
+      "id": "POL.PRODUCT",
+      "class": "product",
+      "owner": "Human Product Owner",
+      "risk_acceptance": "explicit",
+      "substitution": "none"
+    },
+    {
+      "id": "POL.ARCHITECTURE",
+      "class": "architecture",
+      "owner": "Architecture and Knowledge Steward",
+      "risk_acceptance": "explicit",
+      "substitution": "none"
+    },
+    {
+      "id": "POL.QUALITY",
+      "class": "quality",
+      "owner": "Quality Performance and Release Maintainer",
+      "risk_acceptance": "explicit",
+      "substitution": "none"
+    }
+  ],
+  "legacy_exemptions": [],
+  "extensions": {
+    "universe_keyboard": {
+      "kos_kit": {
+        "upstream_repository": "shchnk1103/kos-agent-kit",
+        "adopted_version": "v0.5.0",
+        "adopted_commit": "e11cbfb1dacaadc3441b70b2362b6b96d2803385",
+        "record_envelopes_mode": "advisory"
+      }
+    }
+  }
+}

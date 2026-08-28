@@ -75,6 +75,11 @@ identity-preserving substitute merely because it uses the same source commit.
 
 **Pre-merge / ship gate:** Agent and Human release owners should run the **local CI door** in [`AGENTS.md`](../AGENTS.md) §「本地 CI 门禁」 before treating a PR as merge-ready. That suite mirrors `.github/workflows/swift6-quality.yml` (format + KeyboardCore + RimeBridgeTests + full app scheme test + Debug/Release build). Prefer destination `iPhone 17 Pro` when available.
 
+Remote selection follows [`CI_CHANGE_CLASSIFICATION.md`](CI_CHANGE_CLASSIFICATION.md):
+`classify-change`、`lightweight-checks` 与 `final-quality-gate` 始终运行；只有严格
+docs/KOS allowlist 才允许 `build-and-test` 为 `skipped`。workflow、分类脚本和未知路径
+必须 full。CI 分级不替代本清单中的真机、性能、签名、TestFlight 或 Release Gate。
+
 Minimal command set (same intent as CI; fill destination if the default simulator is missing):
 
 ```bash

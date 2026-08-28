@@ -54,6 +54,7 @@ Navigation/index files are downstream consumers. They should change only when ro
 | governance | index/graph, pre-push skill, health metrics, playbook format | domain architecture |
 | Knowledge OS 2.0 specification, startup layer or operational entry | knowledge index, reading maps, graph, dependencies, documentation governance, dashboard when state changes | runtime, tests, Registry, ADRs and Product Contracts unless separately authorized |
 | Knowledge OS migration plan or completion record | kos README, migration readiness status language, knowledge index, graph, dashboard when state changes | domain architecture, product runtime and tests |
+| KOS 2.2 Kit version, Profile mode/include, envelope schema usage, claim/environment or Gate policy | `kos/UPGRADE_STATUS`, `.kos/project.json`, Knowledge OS entry, Assignment Policy, documentation governance, zero-context startup, graph, AI workflow, health/audit; affected owner records | product runtime/tests/ADRs unless separately authorized |
 | playbook | `AI_WORKFLOW`, reading maps/index if role or route changes, documentation health | domain facts |
 | permanent team ownership/bootstrap contract | `VIRTUAL_ENGINEERING_TEAM`, `AGENTS`, knowledge index, reading maps, graph, governance, affected playbooks and documentation health | domain architecture unless the system boundary also changed |
 | Assignment Policy authority/fields/lifecycle | `AGENTS`, knowledge index, reading maps, graph, governance, coordinator workflow and task templates | permanent roles, Product Contracts, ADRs and domain implementation |
@@ -82,6 +83,8 @@ Navigation/index files are downstream consumers. They should change only when ro
 - `VIRTUAL_ENGINEERING_TEAM -> copied architecture or playbook procedure` instead of links to their owners.
 - `ENGINEERING_DASHBOARD -> new Product, Architecture or Quality decision` without confirmation from the owning role and source.
 - `Program Manager -> inferred Assignment` without an explicit Product Lead decision.
+- `validator green -> Product/Architecture/Quality/merge/Release approval` or `Authorization receipt -> bearer token`.
+- `advisory Profile omission -> historical record invalid` or bulk envelope backfill based on guessed facts.
 - `Task Assignment -> permanent role creation or ownership transfer` without a separate organization governance decision.
 
 ## Adding A New Knowledge Source

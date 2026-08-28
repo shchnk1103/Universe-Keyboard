@@ -20,7 +20,7 @@ Ownership: Architecture & Knowledge Steward owns startup routing; Product Lead o
 4. `KNOWLEDGE_OS.md` — only when operational layers, navigation protocol or self-healing behavior are required (not for frozen governance tables).
 5. The task-specific reading map selected after startup.
 
-Required review: repository truth comes from Assignment and canonical documents, not conversation; current Work Item and lifecycle are discovered before action; missing Assignment or `UNKNOWN` fields stop formal work unless the user objective authorizes governance bootstrap. After KOS-MIG-001, frozen Knowledge OS rules live under `docs/kos/`; do not treat pre-migration dual-track language as current.
+Required review: repository truth comes from Assignment and canonical documents, not conversation; current Work Item and lifecycle are discovered before action; missing Assignment or `UNKNOWN` fields stop formal work unless the user objective authorizes governance bootstrap. After KOS-MIG-001, frozen Knowledge OS rules live under `docs/kos/`; do not treat pre-migration dual-track language as current. KOS 2.2 is advisory only; see [`kos/UPGRADE_STATUS.md`](kos/UPGRADE_STATUS.md) and [`KOS-UPGRADE-UK-001`](assignments/kos-upgrade-uk-001.md). Do not treat advisory validator output as a Gate pass.
 
 ## Create, Review Or Change A Task Assignment
 
@@ -54,6 +54,17 @@ Ownership: The task Assignment names the Domain Owner and Environment Executor; 
 Required review: no `UNKNOWN` Assignment field; frozen inputs and archive location; current-run provenance; tool failures not treated as absence; actual SHA-256 values and complete manifest; immutable handoff; no Product, Runtime or Quality conclusion inferred by the Executor.
 
 For `ENV-TOOLING-001` capability implementation or Quality verification, also read `ENVIRONMENT_DIGEST_TOOLING.md`. It is the authority for digest roots, include/exclude rules, user-configuration separation, canonical manifest bytes, privacy and non-shipping boundaries. Fixture results validate tooling only and cannot replace a new Environment Capture.
+
+## Publish Or Maintain A GitHub Pull Request
+
+Ownership: the current Assignment and Authorization bound the publish action; Architecture & Knowledge Steward owns the reusable authentication diagnosis procedure. Merge and Release remain separate Human authorities.
+
+1. `AGENTS.md` — GitHub publishing, branch cleanup and local CI gates.
+2. [`kos/codex-github-cli-auth-troubleshooting.md`](kos/codex-github-cli-auth-troubleshooting.md) — sandbox/host authentication and network classification.
+3. `AI_WORKFLOW.md` — PR topology and post-merge state synchronization.
+4. The current Assignment, Authorization and changed-file-specific CI requirements.
+
+Required review: confirm the exact current authorization and branch/PR state; never expose secret material; do one sandbox/host comparison before asking for reauthentication; do not reuse a historical proxy address; do not infer merge or Release authority from successful authentication.
 
 ## Modify Candidate Bar
 
@@ -250,7 +261,8 @@ Playbook: [`playbooks/test-release.md`](playbooks/test-release.md).
 1. `PROJECT_CONTEXT.md` build entry.
 2. `RELEASE_CHECKLIST.md` canonical commands.
 3. `architecture/swift6-migration.md` for concurrency/build contract.
-4. [`playbooks/test-release.md`](playbooks/test-release.md).
+4. [`CI_CHANGE_CLASSIFICATION.md`](CI_CHANGE_CLASSIFICATION.md) for remote tiering and stable final-gate semantics.
+5. [`playbooks/test-release.md`](playbooks/test-release.md).
 
 Required review: installed simulator discovery, no hardcoded counts/device names, affected targets and current evidence policy.
 

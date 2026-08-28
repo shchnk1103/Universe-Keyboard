@@ -1,8 +1,12 @@
-# ADR 0031: Verified Scheme Source Recovery And Integrity Classification
+# ADR 0032: Verified Scheme Source Recovery And Integrity Classification
 
 ## Status
 
 Accepted
+
+**Numbering:** originally recorded as ADR 0031 on PR #83. Renumbered to ADR 0032
+on `2026-08-28` after `main` accepted fail-closed CI classification as ADR 0031.
+The contract is unchanged.
 
 **Accepted:** `2026-08-26 Asia/Shanghai` after independent Architecture
 re-review found no P0 and confirmed the archive-only recovery, cleanup,
