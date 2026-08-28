@@ -8,9 +8,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Review` |
-| **Phase** | Implementation and prior independent reviews are complete, but a Human physical-device Wanxiang integrity failure exposed an unclassified observability/recovery residual; stable full-App and Mainland gates remain open |
-| **Non-claims** | The failing source, integrity phase, exact device/build and root cause are unproven; current-Mac artifact matches are not Mainland cellular/Wi-Fi evidence; endpoint acceptable-use and TD-001 remain open |
-| **Next** | Child integrity remediation has completed implementation/beta local gates and independent review with P0/P1=0 → stable-toolchain complete App suite → Human Mainland matrix → endpoint acceptable-use → Product Gate |
+| **Phase** | Human CNB Wanxiang path completed on device after INTEGRITY-001 empty-file unzip fix; Product Gate, GitHub-source, acceptable-use and merge remain open |
+| **Non-claims** | Not Product Gate; not merge; not Release; not GitHub-source proof; TD-001 atomic install still out of scope |
+| **Next** | Hosted CI of current tip → independent review of unzip fix → Human Product Gate |
 | **Residuals** | [`integrity-remediation Assignment`](rime-scheme-delivery-integrity-001.md) · [`2026-08-26 failure evidence`](../evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) · [`implementation evidence`](../evidence/rime-scheme-delivery-implementation-2026-08-25.md) · [`source-variant Product Decision`](../product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) |
 
 ---

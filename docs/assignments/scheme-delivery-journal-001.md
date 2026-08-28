@@ -7,9 +7,9 @@
   "record_type": "assignment",
   "title": "Write scheme-delivery events into diagnostics v1",
   "lifecycle": "active",
-  "current_phase": "Human retest saw v1 rows; Wanxiang classified staged_content; unzip empty-file fix pending hosted CI",
+  "current_phase": "Human v1 retest passed; Wanxiang CNB download/deploy completed on device",
   "authorization_action": "implement_scheme_delivery_journal",
-  "updated_at": "2026-08-28T21:10:00+08:00",
+  "updated_at": "2026-08-28T21:15:00+08:00",
   "revalidation_triggers": ["diagnostic_protocol_changed", "scheme_delivery_contract_changed"],
   "authorization_refs": ["AUTH-SCHEME-DELIVERY-JOURNAL-001"],
   "parent_refs": ["RIME-SCHEME-DELIVERY-INTEGRITY-001", "DIAGNOSTICS-VIEWER-LOAD-001"],
@@ -36,9 +36,9 @@
 | Field | Value |
 |---|---|
 | Lifecycle | active |
-| Current Phase | Human retest saw v1 rows; Wanxiang classified staged_content; unzip empty-file fix pending hosted CI |
-| Material non-claims | No merge of #83; no high-fidelity change; no legacy Logger bridge into v1; no integrity weakening |
-| Next handoff / decision | Local/hosted tests, then Human retest searching `scheme_delivery` / `wanxiang` |
+| Current Phase | Human v1 retest passed; Wanxiang CNB download/deploy completed on device |
+| Material non-claims | No merge of #83; no GitHub-source claim; no Product Gate; no Release |
+| Next handoff / decision | Independent Architecture/Quality review, then Human Product Gate / merge authorization |
 | Residuals | [`TD-015`](../TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) |
 
 ---
@@ -78,3 +78,4 @@
 ## History
 
 - `2026-08-28 Asia/Shanghai`: Human authorized rebase → TD-015 journal → Human retest. This Assignment captures the existing #83 v1 payload path instead of inventing a second logger.
+- `2026-08-28 Asia/Shanghai`: Human physical-device log `38b5a8d3-…` shows full CNB success after the empty-file unzip fix: staged-content, install, deploy and terminal completed. Journal rows were present. Merge remains unauthorized.

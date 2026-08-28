@@ -8,9 +8,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Implementation and beta-toolchain local gates complete; final Architecture `Pass` and Quality `Pass with conditions`, P0=0/P1=0; stable CI and Human Gates remain open |
-| **Non-claims** | The failing source, integrity phase, exact device/build and root cause remain unproven; current endpoint artifacts validate from the Executor environment; no commit, merge, stable-CI, physical-device, Product or Release decision is included |
-| **Next** | Stable Xcode Cloud CI-equivalent gates → exact candidate Mainland cellular physical-device retry → Human Product Gate; no commit/push/merge |
+| **Phase** | Human CNB Wanxiang download/deploy succeeded after empty-file unzip fix; hosted CI of that tip and Product Gate remain open |
+| **Non-claims** | Not GitHub-source evidence; not Product Gate; not merge; not Release; endpoint acceptable-use still open |
+| **Next** | Hosted full-path of unzip-fix tip → independent review of the unzip change → Human Product Gate / merge authorization |
 | **Residuals** | [`implementation evidence`](../evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md) · [`Entry design`](rime-scheme-delivery-integrity-001-entry-design.md) · [`Architecture pre-review and ADR re-review`](rime-scheme-delivery-integrity-001-architecture-review.md) · [`accepted ADR 0032`](../architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md) · [`failure evidence`](../evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) |
 
 ---

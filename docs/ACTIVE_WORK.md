@@ -5,16 +5,16 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-28 Asia/Shanghai` — #83 已并入当前 `main`；方案完整性 ADR 为 0032；TD-015 journal Assignment 已 Active。核心 Active Work 为 `6/10`。
+Last synced: `2026-08-28 Asia/Shanghai` — Human 真机万象 CNB 下载部署成功；#83 仍待 Product Gate / merge。核心 Active Work 为 `6/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；首轮反馈由 Pending Task11 追踪（新手 RIME 流程、builtin 多字失败、跨地区下载）；F-03 被 Product 提前为紧急 Gate。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
-| 4 | RIME-SCHEME-DELIVERY-001 | Review | Human 真机万象完整性失败尚未分类；先处理 INTEGRITY-001，再继续稳定套件、大陆网络、acceptable-use 与 Product Gate | [`assignment`](assignments/rime-scheme-delivery-001.md) · [`failure`](evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) · [`PD`](product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) |
-| 5 | RIME-SCHEME-DELIVERY-INTEGRITY-001 | Active | 已并入当前 `main`；ADR 0032；待 hosted full-path 与大陆蜂窝真机 Product Gate | [`assignment`](assignments/rime-scheme-delivery-integrity-001.md) · [`evidence`](evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md) · [`ADR 0032`](architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md) |
-| 6 | SCHEME-DELIVERY-JOURNAL-001 | Active | Human 复测已看到 v1 行；万象失败已分类为 staged_content（空 zip 条目被 Unzip 丢掉） | [`assignment`](assignments/scheme-delivery-journal-001.md) · [`evidence`](evidence/rime-scheme-delivery-wanxiang-staged-content-2026-08-28.md) |
+| 4 | RIME-SCHEME-DELIVERY-001 | Review | Human 真机 CNB 万象已成功；待 hosted CI、unzip 独立审查、acceptable-use 与 Product Gate | [`assignment`](assignments/rime-scheme-delivery-001.md) · [`success`](evidence/rime-scheme-delivery-wanxiang-success-2026-08-28.md) · [`PD`](product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) |
+| 5 | RIME-SCHEME-DELIVERY-INTEGRITY-001 | Active | staged_content 已分类并修复空 zip 条目；Human CNB 成功；待 hosted CI 与 Product Gate | [`assignment`](assignments/rime-scheme-delivery-integrity-001.md) · [`ADR 0032`](architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md) |
+| 6 | SCHEME-DELIVERY-JOURNAL-001 | Active | Human v1 复测通过（失败链 + 成功链均可见） | [`assignment`](assignments/scheme-delivery-journal-001.md) · [`success`](evidence/rime-scheme-delivery-wanxiang-success-2026-08-28.md) |
 
 ## Completed (not Active)
 
