@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed — implementation authorized under `TD-016-CI-TIERING-001`; independent Architecture review and Human acceptance remain pending.
+Accepted — Human Product Gate [`PD-TD-016-CI-TIERING-001-GATE`](../../product-decisions/TD-016-CI-TIERING-001-product-gate.md); independent Architecture revalidation Pass with conditions. Required-check trust-root migration remains [`TD-016`](../../TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁).
 
 ## Context
 
