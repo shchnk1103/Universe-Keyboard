@@ -7,7 +7,7 @@
   "record_type": "decision",
   "title": "Implement fail-closed CI change classification",
   "status": "accepted",
-  "updated_at": "2026-08-28T18:40:00+08:00",
+  "updated_at": "2026-08-28T19:43:00+08:00",
   "revalidation_triggers": ["scope_changed", "workflow_contract_changed", "required_checks_changed"],
   "decision": {
     "authority_role": "Human Product Owner",
@@ -24,6 +24,10 @@
 | Field | Value |
 |---|---|
 | Status | accepted |
+| Current phase | Implementation remediation after independent Architecture and Quality review |
+| Material non-claims | No merge; no branch-protection/required-check mutation; no KOS required mode; no secret |
+| Next decision | Human Product Owner after remediation, hosted full/docs-only evidence and reviewer revalidation |
+| Residuals | [`TD-016`](../TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁) |
 
 ---
 

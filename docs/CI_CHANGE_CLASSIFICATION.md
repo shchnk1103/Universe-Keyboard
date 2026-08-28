@@ -39,6 +39,8 @@ lightweight-checks -----------+
 ```
 
 - `classify-change` always runs and emits the exact base/head and tier.
+- Manual `workflow_dispatch` requires an explicit `base_sha`; it never infers a
+  branch-wide decision from only `HEAD^`.
 - `lightweight-checks` always runs: diff whitespace, changed Markdown local links,
   `.kos/project.json` JSON syntax and classifier/link-checker unit tests.
 - `build-and-test` retains the existing artifact preparation, Swift formatting,
@@ -87,3 +89,8 @@ job. Do not use workflow-level `paths-ignore` as a shortcut.
 Revalidate this table when a new executable/build-input directory is added, files under
 `docs/**` become executable inputs, job names or branch protection change, KOS Kit
 distribution changes, or the release/local CI contract changes.
+
+The classifier and final script are checked out from the proposed change itself. This is
+acceptable while the workflow is advisory and unprotected, but it is not an independent
+trust root. Before any required-check migration, TD-016 must add protected review or an
+equivalent baseline-owned/external guard.

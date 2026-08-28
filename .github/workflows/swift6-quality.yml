@@ -5,6 +5,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      base_sha:
+        description: Exact base commit for the branch-wide comparison
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -32,10 +37,23 @@ jobs:
         id: classify
         env:
           EVENT_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          MANUAL_BASE_SHA: ${{ inputs.base_sha }}
         run: |
-          base_sha="$EVENT_BASE_SHA"
+          case "$GITHUB_EVENT_NAME" in
+            pull_request|push)
+              base_sha="$EVENT_BASE_SHA"
+              ;;
+            workflow_dispatch)
+              base_sha="$MANUAL_BASE_SHA"
+              ;;
+            *)
+              echo "Unsupported event for exact change classification: $GITHUB_EVENT_NAME" >&2
+              exit 2
+              ;;
+          esac
           if [[ -z "$base_sha" || "$base_sha" =~ ^0+$ ]]; then
-            base_sha="$(git rev-parse "${GITHUB_SHA}^")"
+            echo "Exact base commit is required; refusing a partial comparison." >&2
+            exit 2
           fi
           python3 scripts/ci/classify_changes.py \
             --base "$base_sha" \
@@ -75,11 +93,8 @@ jobs:
 
       - name: Check Swift formatting
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          BASE_SHA: ${{ needs.classify_change.outputs.base_sha }}
         run: |
-          if [ -z "${BASE_SHA}" ] || [[ "${BASE_SHA}" =~ ^0+$ ]]; then
-            BASE_SHA="$(git rev-parse "${GITHUB_SHA}^")"
-          fi
           git cat-file -e "${BASE_SHA}^{commit}"
           changed_files="$(git diff --name-only --diff-filter=ACMR "${BASE_SHA}" "${GITHUB_SHA}" -- \
             "Universe Keyboard" "Keyboard" "Packages" "UniverseKeyboardTests" "KeyboardTests")"

@@ -59,6 +59,45 @@ class ClassifyPathsTests(unittest.TestCase):
     def test_unsafe_relative_path_is_full(self) -> None:
         self.assertFalse(MODULE.is_lightweight_path("docs/../Keyboard/File.swift"))
 
+    def test_invalid_base_head_and_non_commit_references_fail_closed(self) -> None:
+        original_directory = Path.cwd()
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=repository, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "ci-test@example.invalid"],
+                cwd=repository,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "CI Test"], cwd=repository, check=True
+            )
+            source = repository / "README.md"
+            source.write_text("fixture\n", encoding="utf-8")
+            subprocess.run(["git", "add", "README.md"], cwd=repository, check=True)
+            subprocess.run(["git", "commit", "-qm", "base"], cwd=repository, check=True)
+            commit = subprocess.check_output(
+                ["git", "rev-parse", "HEAD"], cwd=repository, text=True
+            ).strip()
+            blob = subprocess.check_output(
+                ["git", "hash-object", "README.md"], cwd=repository, text=True
+            ).strip()
+
+            try:
+                os.chdir(repository)
+                invalid_pairs = [
+                    ("missing-base", commit),
+                    (commit, "missing-head"),
+                    (blob, commit),
+                    (commit, blob),
+                ]
+                for base, head in invalid_pairs:
+                    with self.subTest(base=base, head=head):
+                        with self.assertRaises(ValueError):
+                            MODULE.changed_paths(base, head)
+            finally:
+                os.chdir(original_directory)
+
     def test_source_to_docs_rename_keeps_old_sensitive_path(self) -> None:
         original_directory = Path.cwd()
         with tempfile.TemporaryDirectory() as directory:
