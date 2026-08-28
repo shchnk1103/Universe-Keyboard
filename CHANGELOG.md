@@ -2,6 +2,11 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-28 — 方案交付 PR #83 合入 main
+
+- PR [#83](https://github.com/shchnk1103/Universe-Keyboard/pull/83) 合入 `e9aea57`。Human Product Gate Passed（CNB 真机万象成功 + hosted full-path `33174305736`）。
+- GitHub 源与 endpoint acceptable-use 记为 `accept` 残留。这不是 TestFlight 上传或 App Store 提交。
+
 ## 2026-08-28 — 万象 staged-content 失败分类为空 zip 条目
 
 - Human v1 日志证明 CNB 归档大小/摘要通过，失败在 `verifying_staged_content`。

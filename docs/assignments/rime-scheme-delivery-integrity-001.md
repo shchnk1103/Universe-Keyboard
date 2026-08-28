@@ -7,10 +7,10 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | Human CNB Wanxiang download/deploy succeeded after empty-file unzip fix; hosted CI of that tip and Product Gate remain open |
-| **Non-claims** | Not GitHub-source evidence; not Product Gate; not merge; not Release; endpoint acceptable-use still open |
-| **Next** | Hosted full-path of unzip-fix tip → independent review of the unzip change → Human Product Gate / merge authorization |
+| **Lifecycle** | `Closed` |
+| **Phase** | Human Product Gate Passed；PR #83 merged `e9aea57`；empty stored zip entries extracted |
+| **Non-claims** | Not TestFlight; not GitHub-source proof |
+| **Next** | None for this Assignment |
 | **Residuals** | [`implementation evidence`](../evidence/rime-scheme-delivery-integrity-implementation-2026-08-26.md) · [`Entry design`](rime-scheme-delivery-integrity-001-entry-design.md) · [`Architecture pre-review and ADR re-review`](rime-scheme-delivery-integrity-001-architecture-review.md) · [`accepted ADR 0032`](../architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md) · [`failure evidence`](../evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) |
 
 ---
@@ -286,3 +286,8 @@ Entry and implementation P1 findings are closed. Final Architecture review is
   skipping empty `lua/data/chaifen.txt`. Pin `5b182801…` remains valid. Empty
   stored zip entries are now extracted; hashes are not weakened. Merge still
   unauthorized.
+- `2026-08-28 Asia/Shanghai` — Human CNB retry `38b5a8d3-…` completed after the
+  empty-file unzip fix: staged-content, install, deploy and terminal succeeded.
+  Hosted full-path `33174305736` on `388bfd2` was green. Human authorized merge.
+- `2026-08-28 Asia/Shanghai` — PR #83 merged `e9aea57`. Human Product Gate
+  Passed. GitHub-source remains untested (`accept`). Assignment Closed.

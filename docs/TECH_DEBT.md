@@ -263,10 +263,10 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Priority:** High for INTEGRITY-001 / 万象失败分类。不阻塞 `DIAGNOSTICS-VIEWER-LOAD-001` Product Gate 或 PR #85 merge。
 - **Risk:** 诊断页只读 `Diagnostics/v1`。主 App `Logger.shared` 仍写入 legacy `rime_diag_log`；`DiagnosticsJournalRuntime` 明确不桥接 legacy Logger。`SchemaManager+Download` 下载/解压/安装路径没有 `Logger` 打点。结果：记录开、部署分类开、高保真关时，万象下载并部署成功也可以在 v1 里看不到「万象 / 下载 / 部署」。无法用 journal 区分网络、校验、解压、安装、部署。开高保真不能补上这条管道。
 - **Current mitigation:** UI `DownloadState` / toast 仍能显示成功或失败。部署阶段 `deployRimeConfig` 会打 `Logger` `DEPLOY`，但只落在 UserDefaults，v1 有记录后查看器不再回退 legacy。
-- **Current evidence status (`2026-08-28`):** 2026-08-27 的 Human 观察针对的是 **main / #85 构建**，当时下载路径确实不写 v1。PR #83 已实现 typed `scheme_delivery.*` payload 并经 journal runtime 落盘。独立 Assignment [`SCHEME-DELIVERY-JOURNAL-001`](assignments/scheme-delivery-journal-001.md) 已 Active。显示层可搜索 `scheme_delivery` / `wanxiang`，不保证中文「万象」自由文本。一次旧 UI 成功不是 INTEGRITY 分类完成，也不授权 merge PR #83。
-- **Recommended fix:** 保持 #83 的 v1 payload 路径；补测试与 Human 复测。不要把 legacy 自由文本混进 v1。不要为了看见下载日志去改高保真规则。
+- **Current evidence status (`2026-08-28`):** [`SCHEME-DELIVERY-JOURNAL-001`](assignments/scheme-delivery-journal-001.md) Closed。PR #83 merged `e9aea57`。Human 在 v1 中看到失败链 `staged_content` 与成功链 `terminal completed`。显示层搜索 `scheme_delivery` / `wanxiang`。legacy Logger 仍不桥进 v1。
+- **Recommended fix:** 已由 #83 交付下载/完整性/安装/部署 typed events。后续若要把其余 DEPLOY 自由文本迁出 `rime_diag_log`，另立 TD-013 item 5 工作，不要改高保真规则。
 - **Owner area:** Main App scheme download/deploy、KeyboardCore diagnostics journal allowlist、诊断查看（只读）。
-- **Trigger to resolve:** `SCHEME-DELIVERY-JOURNAL-001` Human 复测通过后，才能再次分类万象失败。仍不得无单独授权 merge PR #83。
+- **Trigger to resolve:** 本项实现 Assignment 已 Closed。剩余是其它 DEPLOY 路径的 legacy Logger 迁移（TD-013），不是再开一条下载修复。
 - **Related:** ADR 0027、TD-013 item 5（legacy Logger 迁移）、[`DIAGNOSTICS-VIEWER-LOAD-001`](assignments/diagnostics-viewer-load-001.md)、PR #83。
 
 ## TD-016: CI 变更分级与文档提交快速门禁
