@@ -7,11 +7,11 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Review` |
-| **Phase** | Human CNB Wanxiang path completed on device after INTEGRITY-001 empty-file unzip fix; Product Gate, GitHub-source, acceptable-use and merge remain open |
-| **Non-claims** | Not Product Gate; not merge; not Release; not GitHub-source proof; TD-001 atomic install still out of scope |
-| **Next** | Hosted CI of current tip → independent review of unzip fix → Human Product Gate |
-| **Residuals** | [`integrity-remediation Assignment`](rime-scheme-delivery-integrity-001.md) · [`2026-08-26 failure evidence`](../evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md) · [`implementation evidence`](../evidence/rime-scheme-delivery-implementation-2026-08-25.md) · [`source-variant Product Decision`](../product-decisions/RIME-SCHEME-DELIVERY-001-source-variants.md) |
+| **Lifecycle** | `Closed` |
+| **Phase** | Human Product Gate Passed；PR #83 merged `e9aea57` |
+| **Non-claims** | Not TestFlight upload; not external Beta Review; not App Store; not GitHub-source proof |
+| **Next** | New TestFlight Build 8 requires a separate Human upload authorization |
+| **Residuals** | GitHub source untested (`accept`) · endpoint acceptable-use (`accept`) · unzip independent review skipped by merge AUTH (`accept`) · [`integrity Assignment`](rime-scheme-delivery-integrity-001.md) · [`Gate`](../product-decisions/RIME-SCHEME-DELIVERY-001-product-gate.md) · [`success evidence`](../evidence/rime-scheme-delivery-wanxiang-success-2026-08-28.md) |
 
 ---
 
@@ -200,3 +200,11 @@ pass the scheme-delivery Product Gate until
 [`RIME-SCHEME-DELIVERY-INTEGRITY-001`](rime-scheme-delivery-integrity-001.md)
 is reviewed and dispositioned. See the
 [`failure evidence`](../evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md).
+
+## History
+
+- `2026-08-28 Asia/Shanghai` — Human Product Owner authorized merge of PR #83
+  after hosted full-path `33174305736` on `388bfd2` and CNB device success
+  `38b5a8d3-…`. PR merged `e9aea57`. GitHub-source and endpoint acceptable-use
+  accepted as residuals. TestFlight upload remains unauthorized. Assignment
+  Closed.

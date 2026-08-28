@@ -9,8 +9,8 @@
 |---|---|
 | **Lifecycle** | `Assignment Pending` |
 | **Phase** | Build 7 internal TestFlight Human feedback captured as three separate findings; tester device/layout/Full Access and F-03 region/network/scheme facts are partially captured; no implementation track has entered `Ready` |
-| **Non-claims** | No root cause is established; builtin multi-character failure is not yet proven to be an intentional Luna limitation; no CDN, mirror or regional delivery architecture is selected |
-| **Next** | Capture F-02's non-private input/host-App behavior; for F-03, Product Lead decides [`RIME-SCHEME-DELIVERY-001`](rime-scheme-delivery-001.md) pilot roles/endpoints after source research; F-03 remains urgent before broader external testing |
+| **Non-claims** | No root cause is established for F-01/F-02; builtin multi-character failure is not yet proven to be an intentional Luna limitation; F-03 on TestFlight testers is still Build 7 and does not include PR #83 |
+| **Next** | Capture F-02's non-private input/host-App behavior. F-03 engineering slice is Closed on `main` via PR #83; a new TestFlight build is required before testers can use that fix |
 | **Residuals** | [`2026-08-25 internal TestFlight feedback`](../evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) |
 
 ---

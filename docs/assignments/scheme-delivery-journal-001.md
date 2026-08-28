@@ -6,10 +6,10 @@
   "record_id": "SCHEME-DELIVERY-JOURNAL-001",
   "record_type": "assignment",
   "title": "Write scheme-delivery events into diagnostics v1",
-  "lifecycle": "active",
-  "current_phase": "Human v1 retest passed; Wanxiang CNB download/deploy completed on device",
+  "lifecycle": "closed",
+  "current_phase": "Human Product Gate passed; PR #83 merged; v1 scheme_delivery rows attested",
   "authorization_action": "implement_scheme_delivery_journal",
-  "updated_at": "2026-08-28T21:15:00+08:00",
+  "updated_at": "2026-08-28T21:30:00+08:00",
   "revalidation_triggers": ["diagnostic_protocol_changed", "scheme_delivery_contract_changed"],
   "authorization_refs": ["AUTH-SCHEME-DELIVERY-JOURNAL-001"],
   "parent_refs": ["RIME-SCHEME-DELIVERY-INTEGRITY-001", "DIAGNOSTICS-VIEWER-LOAD-001"],
@@ -35,10 +35,10 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | active |
-| Current Phase | Human v1 retest passed; Wanxiang CNB download/deploy completed on device |
-| Material non-claims | No merge of #83; no GitHub-source claim; no Product Gate; no Release |
-| Next handoff / decision | Independent Architecture/Quality review, then Human Product Gate / merge authorization |
+| Lifecycle | closed |
+| Current Phase | Human Product Gate passed; PR #83 merged; v1 scheme_delivery rows attested |
+| Material non-claims | No TestFlight upload; no Release |
+| Next handoff / decision | None for this Assignment |
 | Residuals | [`TD-015`](../TECH_DEBT.md#td-015-方案交付日志未进入诊断-v1-journal) |
 
 ---
@@ -79,3 +79,4 @@
 
 - `2026-08-28 Asia/Shanghai`: Human authorized rebase → TD-015 journal → Human retest. This Assignment captures the existing #83 v1 payload path instead of inventing a second logger.
 - `2026-08-28 Asia/Shanghai`: Human physical-device log `38b5a8d3-…` shows full CNB success after the empty-file unzip fix: staged-content, install, deploy and terminal completed. Journal rows were present. Merge remains unauthorized.
+- `2026-08-28 Asia/Shanghai`: PR #83 merged `e9aea57`. Human Product Gate accepted the v1 failure and success chains. Assignment Closed. No TestFlight upload authorized.
