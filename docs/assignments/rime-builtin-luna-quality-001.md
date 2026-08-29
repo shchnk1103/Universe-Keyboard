@@ -8,10 +8,10 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Ready` |
-| **Phase** | Product scope and responsibilities are bound; ADR 0033 and exact source pins are accepted; Architecture is `Pass for Ready` and the pre-implementation Quality plan is `Pass with conditions`; implementation has not started |
+| **Lifecycle** | `Active` |
+| **Phase** | Human Product Owner explicitly authorized implementation; Executor is implementing the ADR 0033 offline closure in the isolated F-02 worktree and will produce Q-01–Q-10 evidence before completion |
 | **Non-claims** | No code/resource implementation, generated-output receipt, built/deployed manifest, runtime/Quality Exit pass, legal acceptance, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
-| **Next** | Await explicit implementation authorization before `Active`; then implement only the accepted closure and produce Q-01–Q-10 evidence for independent re-review |
+| **Next** | Materialize pinned resources and deterministic receipts, migrate main-App ownership, implement overlay/manifest/fail-closed deployment, then run focused and full gates before independent re-review |
 | **Residuals** | [`Architecture review`](rime-builtin-luna-quality-001-architecture-review.md#architecture-follow-up-addendum--adr-0033-and-lifecycle-correction) · [`Quality review`](rime-builtin-luna-quality-001-quality-review.md#lifecycle-follow-up-addendum--2026-08-29) · [`upstream pin audit`](../evidence/rime-builtin-luna-quality-f02-upstream-pin-audit-2026-08-29.md) |
 
 ---
@@ -281,3 +281,7 @@ built-in assets.
   and advanced the complete Assignment to `Ready` under the Product-approved
   scope and responsibility decisions. This transition does not infer the
   separate implementation authorization required to enter `Active`.
+- `2026-08-29 Asia/Shanghai` — Human Product Owner explicitly authorized F-02
+  to enter `Active` and begin code plus built-in resource implementation under
+  KOS. PR #91, Octagram model activation, third-party schemes, merge,
+  TestFlight and Release remain outside this authorization.

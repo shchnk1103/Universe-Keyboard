@@ -209,7 +209,8 @@ review; TD-012 is not reopened here.
    offline fresh-container, Full Access, performance/size, notice and full CI
    evidence required by the Assignment.
 7. Obtain independent Architecture and Quality re-review, then the Human
-   Product Gate. None of those gates is implied by this Proposed ADR.
+   Product Gate. None of those gates is implied by this accepted architecture
+   direction.
 
 ## Related Documents
 
