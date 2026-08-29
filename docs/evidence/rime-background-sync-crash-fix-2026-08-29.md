@@ -6,6 +6,8 @@
 |---|---|
 | Assignment | `RIME-SYNC-001` |
 | Frozen base | `7f20f3aa16ff4b20f52862918da716d6a6d0b312` |
+| Implementation commit | `e3e5d7703e7111787cea06ff2c0d3454395a5abc` |
+| Pull request / hosted run | Draft PR [#91](https://github.com/shchnk1103/Universe-Keyboard/pull/91) / GitHub Actions [`33235475162`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33235475162) |
 | Evidence date | `2026-08-29 Asia/Shanghai` |
 | Affected release evidence | TestFlight build `15`; iPhone 13 Pro; iOS 27.0; crash UUID `329644B8-49CD-38FD-B4CA-8A8BDFB7EFDD` |
 | Claim boundary | Local implementation, simulator automation and Human-attested forced-launch physical-device evidence; not natural scheduling, Product Gate, TestFlight or Release evidence |
@@ -29,25 +31,25 @@
 
 ## Automated Evidence
 
-1. Affected queue-policy and automatic-notification matrix:
+1. **`Executor-recorded`** — affected queue-policy and automatic-notification matrix:
    - `6` scheduler/model tests, `0` failures.
    - `1` notification-service delivery test, `0` failures.
-2. `bash scripts/ensure_rime_vendor.sh verify`:
+2. **`Executor-recorded`** — `bash scripts/ensure_rime_vendor.sh verify`:
    - structural inventory passed for all `12` RIME frameworks.
-3. `swift test --package-path Packages/KeyboardCore`:
+3. **`Executor-recorded`** — `swift test --package-path Packages/KeyboardCore`:
    - `1068` tests, `0` failures.
-4. `RimeBridgeTests` on `iPhone 17 Pro`, iOS 26.0:
+4. **`Executor-recorded`** — `RimeBridgeTests` on `iPhone 17 Pro`, iOS 26.0:
    - `68` tests executed, `20` fixture-gated tests skipped, `0` failures.
    - Result bundle:
      `/tmp/universe-keyboard-rime-bg-sync-rimebridge/Logs/Test/Test-RimeBridgeTests-2026.08.29_00-22-32-+0800.xcresult`.
-5. Full App and Keyboard tests on `iPhone 17 Pro Max`, iOS 27.0:
+5. **`Executor-recorded`** — full App and Keyboard tests on `iPhone 17 Pro Max`, iOS 27.0:
    - App: `244` tests, `3` device-gated tests skipped, `0` failures.
    - Keyboard: `11` tests, `0` failures.
    - Result bundle:
      `/tmp/universe-keyboard-rime-bg-sync-app-tests-ios27/Logs/Test/Test-Universe Keyboard-2026.08.29_00-25-27-+0800.xcresult`.
-6. Strict Swift 6 Debug and Release simulator builds both passed with warnings
+6. **`Executor-recorded`** — strict Swift 6 Debug and Release simulator builds both passed with warnings
    treated as errors.
-7. `swift-format lint --strict` for all changed Swift files and
+7. **`Executor-recorded`** — `swift-format lint --strict` for all changed Swift files and
    `git diff --check` passed.
 
 The first full App test attempt used the repository's named `iPhone 17 Pro`
@@ -58,9 +60,22 @@ is not counted as evidence. Re-running on the installed iOS 27.0 equivalent
 destination completed without those allocator exits and produced the passing
 matrix above.
 
+## Hosted CI Evidence
+
+- **`Executor-recorded`** — GitHub Actions run
+  [`33235475162`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33235475162)
+  was independently queried after completion and was bound to head
+  `e3e5d7703e7111787cea06ff2c0d3454395a5abc` / base `main`.
+- `classify-change`, `lightweight-checks`, `build-and-test`,
+  `final-quality-gate` and GitGuardian Security Checks all completed with
+  `SUCCESS`.
+- Hosted CI is technical-gate evidence. It is not natural scheduling, physical
+  notification presentation, Product, merge, TestFlight or Release authority.
+
 ## Physical-Device Forced-Launch Evidence
 
-Human-attested Xcode device run on `2026-08-29 Asia/Shanghai`:
+**Evidence grade: `Device-attested`.** Human-operated Xcode device run on
+`2026-08-29 Asia/Shanghai`:
 
 - A development build from `codex/rime-background-sync-crash-fix` submitted the
   standard-sync `BGProcessingTask` and was force-launched with Apple's
@@ -84,12 +99,31 @@ non-blocking unknown, not dismissed as harmless and not classified as the cause
 of the build-15 crash. Follow-up ownership and escalation triggers are tracked in
 [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure).
 
+This forced-launch run was diagnostic evidence collected before an immutable
+installed-payload manifest and content-free receipt were frozen under the
+[human-operated evidence profile](../kos/universe-keyboard-human-operated-evidence-profile.md).
+Its observed boundary remains valid, but it must not be retroactively promoted
+to a formal Product/Release device run. A future formal run must prepare those
+artifacts before the first human action.
+
+## Independent Review
+
+- **Architecture:**
+  [`Pass with conditions`](../assignments/rime-sync-001-background-sync-crash-architecture-review.md).
+  No P0; process-wide/cross-process coordination remains `TD-002`; bounded
+  keyboard-active rescheduling and once-only expiration completion remain `fix`.
+- **Quality:**
+  [`Pass with conditions`](../assignments/rime-sync-001-background-sync-crash-quality-review.md).
+  No P0/P1; evidence grading, lifecycle seam coverage and formal future device
+  manifest/receipt requirements remain explicit.
+
 ## Open Human Gates
 
 - Leave the App unused long enough for an iOS-selected natural launch window;
   record the exact build, device/OS, completion receipt and any crash report.
 - Verify phone lock-screen / Notification Center presentation independently of
   macOS iPhone notification mirroring.
-- Independent Architecture/Quality review, Human Product Gate, TestFlight upload
-  and Release decisions remain open. This implementation evidence does not
-  authorize merge or distribution.
+- Resolve or explicitly carry the Architecture/Quality `fix` residuals before
+  Assignment close. Human Product Gate, merge, TestFlight upload and Release
+  decisions remain open. This implementation evidence does not authorize merge
+  or distribution.

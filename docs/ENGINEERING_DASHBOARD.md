@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-28 Asia/Shanghai
+> **Updated:** 2026-08-29 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -23,8 +23,8 @@
 
 ## Active Work 收敛 — 2026-08-24
 
-- **Authority:** Human Product Owner 当场拍板；详情以各 Assignment Current Status 为准，摘要见 [`ACTIVE_WORK.md`](ACTIVE_WORK.md)（`3/10`）。
-- **Still Active:** `RELEASE-2026-0801`（外部 TestFlight 候选；目标 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002`
+- **Authority:** Human Product Owner 当场拍板；详情以各 Assignment Current Status 为准，摘要见 [`ACTIVE_WORK.md`](ACTIVE_WORK.md)（`4/10`）。
+- **Still Active:** `RELEASE-2026-0801`（外部 TestFlight 候选；目标 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002` · `RIME-SYNC-001`
 - **Left Active:** `RELEASE-2026-0801-08` → `Closed`（PR #80 merged `54ce3bd`；功能分支已清理）
 - **Left Active:** `DEBUG-KEY-HITBOX-001` → `Closed`（PR #73 merged；Human Product Gate Passed）
 - **Left Active (not Closed / not Product Gate):**
@@ -35,6 +35,16 @@
 - **Redate Decision:** [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md)
 - **External TestFlight Decision:** [`PD-RELEASE-2026-0801-EXTERNAL-TESTFLIGHT-CANDIDATE`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md)
 - **Explicit non-claims:** 本段不关闭任何 Gate，不授权上传/发布。
+
+## RIME-SYNC-001 — RIME 后台自动同步启动崩溃修复
+
+- **Lifecycle:** `Active`
+- **Authority:** [`Assignment`](assignments/rime-sync-001.md) · [`Contract`](RIME_SYNC.md)
+- **Current evidence:** Draft PR [#91](https://github.com/shchnk1103/Universe-Keyboard/pull/91) 提交 `e3e5d77`；hosted run [`33235475162`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33235475162) 全绿；强制真机 BGProcessingTask 启动、同步和通知生成通过
+- **Residual:** 自然 iOS 调度与手机端通知呈现未验证；`sandbox_extension_consume failed: 22` 归因见 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure)
+- **Non-claims:** 不代表 Product Gate、merge、TestFlight 或 Release 已授权
+- **Review:** [`Architecture`](assignments/rime-sync-001-background-sync-crash-architecture-review.md) / [`Quality`](assignments/rime-sync-001-background-sync-crash-quality-review.md) 均为 `Pass with conditions`；无 P0，生命周期 residual 仍为 `fix`
+- **Next:** 保留 `e3e5d77` 的自然后台观察；随后处理生命周期 residual、重新验证，再交 Human Product Gate
 
 ## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
 

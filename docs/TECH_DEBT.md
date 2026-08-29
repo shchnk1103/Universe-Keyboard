@@ -18,11 +18,11 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 ## TD-002: Validate RIME/User Concurrent Access
 
 - **Priority:** High
-- **Risk:** Main-App backup/restore/configuration can overlap with Extension/librime writes to `Rime/user`.
-- **Current mitigation:** Heavy user-dictionary operations remain in the main App and are not run from the key hot path; documentation advises avoiding active-session overlap.
-- **Recommended fix:** Establish librime-supported cross-process semantics and add file/process coordination or an explicit quiesce workflow where required.
+- **Risk:** Main-App backup/restore/configuration or automatic standard sync can overlap with another foreground/background main-App operation or with Extension/librime writes to `Rime/user`. Per-instance actor serialization does not prove process-wide or cross-process exclusion.
+- **Current mitigation:** Heavy user-dictionary operations remain in the main App and are not run from the key hot path; automatic standard sync checks the keyboard-activity heartbeat; documentation advises avoiding active-session overlap. These controls reduce opportunity but are not a mutual-exclusion proof.
+- **Recommended fix:** Establish one process-wide main-App synchronization gate, define librime-supported cross-process semantics, and add file/process coordination or an explicit quiesce workflow where required.
 - **Owner area:** RimeBridge, main-App user dictionary, Extension lifecycle.
-- **Trigger to resolve:** Before enabling background/automatic restore or claiming safe operation while the Keyboard Extension may be writing.
+- **Trigger to resolve:** Before Product acceptance of unattended standard sync, enabling background/automatic restore, or claiming safe operation while another main-App operation or the Keyboard Extension may be writing.
 
 ## TD-003: Collect Extension Performance Baseline
 

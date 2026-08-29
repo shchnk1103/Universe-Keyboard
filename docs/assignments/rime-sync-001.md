@@ -2,9 +2,19 @@
 
 **Policy version:** `1.0.0`
 
-**Decision source / date:** Human Product Owner authorization in the active cross-platform RIME sync objective, followed by explicit approval of RIME 标准同步主路径 / `2026-07-12 Asia/Shanghai`; manual RIME 用户词典安全恢复与设置入口调整、automatic-sync cooldown revalidated / `2026-07-13 Asia/Shanghai`; foreground cooldown consistency plus start/success/failure notifications, explicit user opt-in for automatic sync, independently selectable RIME standard / Universe settings scopes, migration of RIME notifications into the shared App notification settings contract, and independent notification-only controls for both sync parts, revalidated by the human Product Owner / `2026-07-15 Asia/Shanghai`
+## Current Status
 
-**Lifecycle status:** `Active`
+| Field | Value |
+|---|---|
+| **Lifecycle** | `Active` |
+| **Phase** | RIME 标准同步主路径持续验证；PR [#91](https://github.com/shchnk1103/Universe-Keyboard/pull/91) 的后台启动崩溃修复提交 `e3e5d77` 已通过 hosted CI 与强制真机启动验证 |
+| **Non-claims** | 不代表自然 iOS 后台调度、手机锁屏/通知中心呈现、跨前端兼容、Product Gate、merge、TestFlight 或 Release 已通过 |
+| **Next** | 独立 Architecture / Quality 均为 `Pass with conditions`；先保留 `e3e5d77` 的自然调度观察，再处理生命周期 `fix` residual 并重新验证，之后交 Product Lead 决策 |
+| **Residuals** | [`Architecture review`](rime-sync-001-background-sync-crash-architecture-review.md) · [`Quality review`](rime-sync-001-background-sync-crash-quality-review.md) · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) · [本次实现证据](../evidence/rime-background-sync-crash-fix-2026-08-29.md) |
+
+---
+
+**Decision source / date:** Human Product Owner authorization in the active cross-platform RIME sync objective, followed by explicit approval of RIME 标准同步主路径 / `2026-07-12 Asia/Shanghai`; manual RIME 用户词典安全恢复与设置入口调整、automatic-sync cooldown revalidated / `2026-07-13 Asia/Shanghai`; foreground cooldown consistency plus start/success/failure notifications, explicit user opt-in for automatic sync, independently selectable RIME standard / Universe settings scopes, migration of RIME notifications into the shared App notification settings contract, and independent notification-only controls for both sync parts, revalidated by the human Product Owner / `2026-07-15 Asia/Shanghai`
 
 **Repository change types:** `Contract`, `Documentation`; later `Implementation`, `Evidence`, `State`
 
@@ -22,7 +32,7 @@
 - **Architecture acknowledgement:** ADR 0012 accepted with implementation pending.
 - **Product lifecycle decision:** `Assigned -> Acknowledged -> Ready -> Active` for Contract and Architecture work only.
 - **Implementation authorization:** Human Product Owner explicitly opened code implementation on `2026-07-12 Asia/Shanghai`.
-- **Current phase:** Standard RIME sync main-path implementation, manual user-dictionary recovery safety hardening and automated validation active; physical-device, cross-front-end and configuration-import gates remain open.
+- **Current phase:** Historical activation detail; current phase is maintained in the Current Status block above.
 
 ## Assignment
 

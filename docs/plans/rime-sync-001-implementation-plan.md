@@ -2,7 +2,7 @@
 
 > **Status:** Active
 >
-> **Current phase:** RIME standard sync main path implemented; automated core validation passed; physical-device and cross-front-end evidence pending
+> **Current phase:** RIME standard sync main path implemented; PR #91 crash repair hosted CI/forced-launch passed and independent reviews are `Pass with conditions`; natural scheduling, phone notification presentation, lifecycle residual fixes and cross-front-end evidence pending
 >
 > **Current source of truth:** `docs/RIME_SYNC.md`
 >
