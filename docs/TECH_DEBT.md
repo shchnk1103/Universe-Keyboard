@@ -286,6 +286,16 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Trigger to resolve:** 仅当 Human 另行授权 required-check 迁移，并增加 CODEOWNERS/强制审查、受保护 reusable workflow 或等价 baseline-owned guard。
 - **Related:** `.github/workflows/swift6-quality.yml`、`docs/ASSIGNMENT_POLICY.md`、KOS 2.2 advisory、TD-014。
 
+## TD-017: Investigate Background Sync Sandbox Extension Consume Failure
+
+- **Priority:** Low–Medium。当前不阻塞 RIME 后台回调崩溃修复或强制真机同步通过；若与自然后台失败、目录授权失效或缺失输出同时出现则升级。
+- **Risk:** `2026-08-29` 真机强制后台同步在 librime 已报告 `3 tasks ran: 3 success, 0 failure` 且完成通知已生成后，控制台出现 `sandbox_extension_consume failed: 22 (Invalid argument)`。当前没有证据说明它来自 App、文件提供器、系统安全作用域实现或 librime，也没有证据证明它完全无害。若它代表 security-scoped resource 使用不对称，未来可能在自然后台或不同文件提供器上表现为目录访问失败。
+- **Current mitigation:** 标准同步仍由主 App 执行；文件夹 bookmark、写入预检和运行时目录访问失败会 fail closed 并暂停自动同步；本次真实 RIME 备份、完成通知及下一周期重排均成功。
+- **Recommended fix:** 在不改变同步语义的前提下先做只读归因：保留该行前后的系统日志时间窗，绑定调用阶段与文件提供器，检查 `startAccessingSecurityScopedResource()` / `stopAccessingSecurityScopedResource()` 配对及 bookmark 解析生命周期；必要时用符号断点或最小诊断点区分系统、File Provider 与 App producer。只有建立因果关系后才实现修复，不因单条系统日志猜改目录访问逻辑。
+- **Owner area:** Main App RIME sync folder access、File Provider/security-scoped bookmark、RimeBridge diagnostics。
+- **Trigger to resolve:** 自然后台运行再次出现该行；同步同时报告 access denied、目录暂停、缺少快照输出或崩溃；切换到非 iCloud 文件提供器可稳定复现；或发布前需要声明后台文件夹访问健壮性。
+- **Related:** [`RIME-SYNC-001`](assignments/rime-sync-001.md)、[`forced-launch evidence`](evidence/rime-background-sync-crash-fix-2026-08-29.md)、TD-002。
+
 ## Maintenance Rules
 
 - Update an item when priority, mitigation, owner area or trigger changes.

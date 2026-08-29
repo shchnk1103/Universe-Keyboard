@@ -2,6 +2,13 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-29 — 修复 RIME 后台自动同步回调隔离崩溃
+
+- `BGProcessingTask` 注册入口改为显式使用主队列，与 `RimeAutomaticSyncScheduler` 的 `MainActor` 隔离保持一致；实际 RIME 标准同步仍在可取消的异步任务中执行，不进入 Keyboard Extension 或按键热路径。
+- 后台标准同步成功继续复用统一 RIME 通知服务；只有用户已开启 App 通知、RIME 类别、对应通知子项且系统授权允许时，才发送“自动同步完成”。通知不包含目录、词典、恢复码或输入内容。
+- 新增注册队列不变量、自动标准同步成功文案和统一通知投递回归测试。自然后台调度与锁屏通知仍需新构建的真机证据，不由模拟器测试替代。
+- KOS 执行证据见 [`docs/evidence/rime-background-sync-crash-fix-2026-08-29.md`](docs/evidence/rime-background-sync-crash-fix-2026-08-29.md)。
+
 ## 2026-08-28 — 方案交付 PR #83 合入 main
 
 - PR [#83](https://github.com/shchnk1103/Universe-Keyboard/pull/83) 合入 `e9aea57`。Human Product Gate Passed（CNB 真机万象成功 + hosted full-path `33174305736`）。

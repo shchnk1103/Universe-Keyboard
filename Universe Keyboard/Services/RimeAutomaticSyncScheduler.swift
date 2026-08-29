@@ -1,4 +1,5 @@
 import BackgroundTasks
+import Dispatch
 import Foundation
 import KeyboardCore
 
@@ -134,6 +135,10 @@ final class RimeAutomaticSyncScheduler {
     static let shared = RimeAutomaticSyncScheduler()
     static let taskIdentifier = "com.DoubleShy0N.Universe-Keyboard.rime-standard-sync"
 
+    /// 注册闭包继承 `MainActor` 隔离，因此系统必须从主队列进入该同步边界。
+    /// 实际同步仍由 `handle(_:)` 创建的可取消异步任务执行。
+    static let launchHandlerQueue = DispatchQueue.main
+
     private var hasRegisteredTask = false
 
     private init() {}
@@ -144,15 +149,13 @@ final class RimeAutomaticSyncScheduler {
 
         BGTaskScheduler.shared.register(
             forTaskWithIdentifier: Self.taskIdentifier,
-            using: nil
+            using: Self.launchHandlerQueue
         ) { task in
             guard let processingTask = task as? BGProcessingTask else {
                 task.setTaskCompleted(success: false)
                 return
             }
-            Task { @MainActor in
-                Self.shared.handle(processingTask)
-            }
+            Self.shared.handle(processingTask)
         }
     }
 
@@ -205,14 +208,14 @@ final class RimeAutomaticSyncScheduler {
 
     private func nextEligibleDate(defaults: UserDefaults) -> Date? {
         guard defaults.bool(forKey: RimeSyncStorageKey.automaticSyncEnabled),
-              (defaults.object(forKey: RimeSyncStorageKey.automaticStandardRimeDataEnabled) as? Bool)
+            (defaults.object(forKey: RimeSyncStorageKey.automaticStandardRimeDataEnabled) as? Bool)
                 ?? true,
-              defaults.string(forKey: RimeSyncStorageKey.provider) == RimeSyncProvider.localFolder.rawValue,
-              defaults.data(forKey: RimeSyncStorageKey.folderBookmark) != nil,
-              !defaults.bool(forKey: RimeSyncStorageKey.folderSelectionNeedsRepair),
-              let lastAutomaticAttempt = defaults.object(
-                  forKey: RimeSyncStorageKey.lastAutomaticAttempt
-              ) as? Date
+            defaults.string(forKey: RimeSyncStorageKey.provider) == RimeSyncProvider.localFolder.rawValue,
+            defaults.data(forKey: RimeSyncStorageKey.folderBookmark) != nil,
+            !defaults.bool(forKey: RimeSyncStorageKey.folderSelectionNeedsRepair),
+            let lastAutomaticAttempt = defaults.object(
+                forKey: RimeSyncStorageKey.lastAutomaticAttempt
+            ) as? Date
         else {
             return nil
         }

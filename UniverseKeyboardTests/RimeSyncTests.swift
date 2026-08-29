@@ -59,6 +59,16 @@ final class RimeSyncModelTests: XCTestCase {
         )
         XCTAssertEqual(standardOnlyPayload.title, "同步完成")
         XCTAssertTrue(standardOnlyPayload.body.contains("RIME 常用词和标准资料已更新"))
+
+        let automaticStandardCompletion = RimeSyncNotificationEvent.completed(
+            mode: .automatic,
+            scopes: [.standardRimeData]
+        )
+        let automaticCompletionPayload = try XCTUnwrap(
+            automaticStandardCompletion.payload(enabledScopes: [.standardRimeData])
+        )
+        XCTAssertEqual(automaticCompletionPayload.title, "自动同步完成")
+        XCTAssertEqual(automaticCompletionPayload.body, "RIME 常用词和标准资料已更新。")
     }
 
     @MainActor
@@ -297,7 +307,8 @@ final class RimeSyncTransportTests: XCTestCase {
             XCTAssertEqual(error as? RimeSyncError, .remoteConflict)
         }
 
-        let settingsURL = root
+        let settingsURL =
+            root
             .appendingPathComponent("universe-rime-sync/profiles/default/settings.json")
         XCTAssertTrue(FileManager.default.fileExists(atPath: settingsURL.path))
     }

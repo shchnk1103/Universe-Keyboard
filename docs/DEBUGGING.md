@@ -321,6 +321,26 @@ symbolication, privacy-safe storage and the content-free receipt—follow
 [`CRASH_JETSAM_SYMBOLICATION.md`](CRASH_JETSAM_SYMBOLICATION.md). Do not diagnose
 an Extension termination from a screenshot or Console excerpt alone.
 
+### Main App Crashes When A RIME Background Task Starts
+
+An `EXC_BREAKPOINT` / `SIGTRAP` whose first project frame is
+`closure #1 in RimeAutomaticSyncScheduler.registerBackgroundTask()` and whose
+system frames include `_dispatch_assert_queue_fail` plus
+`_swift_task_checkIsolatedSwift` is an executor mismatch at the BackgroundTasks
+entry point. It occurs before folder access, librime synchronization or notification
+delivery, so do not classify it as corrupt RIME data or a file-provider failure.
+
+`RimeAutomaticSyncScheduler` is `MainActor`-isolated. Its synchronous launch
+handler must therefore be registered on `DispatchQueue.main`; the handler then
+creates the cancellable asynchronous operation that performs the actual sync.
+Do not use unsafe isolation or move synchronization into the Keyboard Extension.
+
+After a repair, verify the queue invariant and automatic-success notification
+tests, then use Apple's device-only BackgroundTasks debugger launch and expiration
+commands. A Simulator pass does not prove natural scheduling, background folder
+bookmark access, lock-screen notification delivery or the absence of a new crash
+on the affected OS. Preserve the exact TestFlight build, device/OS and report UUID.
+
 ### Extension Repeatedly Crashes Before The Keyboard Appears
 
 If selecting Universe Keyboard immediately returns to another keyboard, or the extension stops appearing after one crash:

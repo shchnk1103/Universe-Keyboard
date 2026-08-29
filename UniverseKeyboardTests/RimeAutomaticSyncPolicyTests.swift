@@ -3,6 +3,11 @@ import XCTest
 @testable import Universe_Keyboard
 
 final class RimeAutomaticSyncPolicyTests: XCTestCase {
+    @MainActor
+    func testLaunchHandlerQueueMatchesMainActorIsolation() {
+        XCTAssertIdentical(RimeAutomaticSyncScheduler.launchHandlerQueue, DispatchQueue.main)
+    }
+
     func testDailyCadenceIsDueAfterOneDay() {
         let start = Date(timeIntervalSince1970: 1_000)
 
