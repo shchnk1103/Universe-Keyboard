@@ -10,7 +10,7 @@
 | **Lifecycle** | `Assignment Pending` |
 | **Phase** | Build 7 feedback remains historical; F-02 current-development-build candidate-quality reproduction is established and split into `RIME-BUILTIN-LUNA-QUALITY-001`; F-03 engineering slice is Closed |
 | **Non-claims** | The original Build 7 / iPhone 16 Pro / iOS 18 multi-character root cause remains unknown; the later local build is not TestFlight acceptance; the F-02 fix has not entered `Ready` |
-| **Next** | Product Lead completes the F-02 repair Assignment roles and immutable offline resource pins; a new TestFlight build is still required for F-03 tester use |
+| **Next** | Product Lead completes the F-02 repair Assignment roles; the named owner pins the accepted official Luna runtime closure and submits its manifest for Architecture review; a new TestFlight build is still required for F-03 tester use |
 | **Residuals** | [`2026-08-25 internal feedback`](../evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`F-02 repair Assignment`](rime-builtin-luna-quality-001.md) · [`F-02 2026-08-29 evidence`](../evidence/rime-builtin-luna-quality-f02-2026-08-29.md) |
 
 ---
@@ -63,7 +63,7 @@
 | ID | Human observation | Current release impact | Required next evidence |
 |---|---|---|---|
 | `F-01` | A first-time user unfamiliar with RIME found scheme selection and deployment confusing on first launch | Activation/product-language gap candidate; severity pending | Fresh-install journey, exact screen/step, expected plain-language outcome and whether the user could complete without coaching |
-| `F-02` | Before using 雾凇 or 万象, the reported builtin scheme could commit one Chinese character but failed when composing two or more characters at once | `P1` candidate. A later local build on iPhone 13 Pro / iOS 27 can compose `三角形`, but stable reproduction proves the built-in full table lacks normal preset weighting and ranks rare characters before `你/你好` | Execute [`RIME-BUILTIN-LUNA-QUALITY-001`](rime-builtin-luna-quality-001.md) after roles and immutable offline resource pins are complete; preserve the original Build 7 root cause as `UNKNOWN` until separately reproduced |
+| `F-02` | Before using 雾凇 or 万象, the reported builtin scheme could commit one Chinese character but failed when composing two or more characters at once | `P1` candidate. A later local build on iPhone 13 Pro / iOS 27 can compose `三角形`, but stable reproduction proves the built-in full table lacks normal preset weighting and ranks rare characters before `你/你好` | Execute [`RIME-BUILTIN-LUNA-QUALITY-001`](rime-builtin-luna-quality-001.md) using the accepted official runtime closure after roles, immutable pins and Architecture review are complete; preserve the original Build 7 root cause as `UNKNOWN` until separately reproduced |
 | `F-03` | 雾凇 download failed on Mainland China cellular without VPN; the remembered error contained “network”, but the exact text/code was not captured | Product Lead marked **urgent / plan advanced**; blocker for broader external testing where recommended schemes must be obtainable without private network workarounds | Decide and pilot [`RIME-SCHEME-DELIVERY-001`](rime-scheme-delivery-001.md): maintainer-linked Mainland candidates, immutable manifest/SHA-256, bounded endpoint selection, localized error recovery and a region/network matrix. Exact original error remains useful but is no longer a prerequisite for beginning the bounded pilot |
 
 ## Gates

@@ -97,7 +97,7 @@ OpenCC profiles. The current App instead writes a smaller app-owned schema and
 generated `default.yaml`, so the implementation must choose one coherent
 strategy rather than mix partial files from both.
 
-Current minimal-schema mandatory closure:
+The original audit identified the following minimal-schema closure:
 
 - generated `default.yaml`, `installation.yaml` and authoritative Luna schema;
 - pinned Luna dictionary;
@@ -107,7 +107,8 @@ Current minimal-schema mandatory closure:
 - matching or deliberately omitted precompiled table/prism/reverse artifacts;
 - license, attribution and immutable source/hash receipts.
 
-Additional closure if the official full Luna schema is adopted:
+The audit also identified the additional closure required by the official Luna
+schema:
 
 - Luna `pinyin.yaml`;
 - Prelude `default.yaml`, `key_bindings.yaml`, `punctuation.yaml`, `symbols.yaml`
@@ -124,8 +125,14 @@ The official sources used for the dependency classification are:
 - <https://github.com/rime/rime-stroke>
 - <https://github.com/rime/plum>
 
-No upstream branch, tag or commit is selected by this audit. Immutable pins,
-byte lengths, SHA-256 and license review are Entry Criteria for implementation.
+Product subsequently accepted
+[`PD-RIME-BUILTIN-LUNA-QUALITY-001-CLOSURE`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-official-runtime-closure.md):
+the implementation will use the pinned official Luna runtime dependency closure
+plus a thin Universe iOS overlay, rather than retain the minimal app-owned
+schema as its Source of Truth. This does not retroactively change the observed
+evidence. No upstream branch, tag or commit is selected by this audit;
+immutable pins, byte lengths, SHA-256 and license review remain Entry Criteria
+for implementation.
 
 ## Conclusion
 

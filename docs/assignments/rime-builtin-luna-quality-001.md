@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Assignment Pending` |
-| **Phase** | F-02 current-development-build reproduction and resource-closure audit complete; implementation responsibility and immutable upstream pins remain unassigned |
+| **Phase** | Product selected the official Luna runtime closure plus a thin Universe iOS overlay; implementation responsibility and immutable upstream pins remain unassigned |
 | **Non-claims** | No production fix, upstream asset pin, license acceptance, Architecture/Quality pass, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
-| **Next** | Product Lead names the Domain Owner, implementation Executor, Environment Executor and independent reviewers; Architecture then reviews the pinned offline resource closure before implementation may enter `Ready` |
+| **Next** | Product Lead names the Domain Owner, implementation Executor, Environment Executor and independent reviewers; the named owner proposes immutable upstream pins and the exact dependency manifest for Architecture review before implementation may enter `Ready` |
 | **Residuals** | [`2026-08-29 reproduction and resource audit`](../evidence/rime-builtin-luna-quality-f02-2026-08-29.md) |
 
 ---
@@ -24,6 +24,10 @@
   and required `rime-essay` plus every other necessary built-in RIME resource to
   ship inside the App without any additional user download.
 - **Product Approver:** Human Product Owner acting as Product Lead
+- **Accepted Product Decision:**
+  [`PD-RIME-BUILTIN-LUNA-QUALITY-001-CLOSURE`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-official-runtime-closure.md)
+  selects the pinned official Luna runtime closure plus a thin Universe iOS
+  overlay. It does not authorize implementation.
 
 ## Problem Statement
 
@@ -44,10 +48,13 @@ equivalent environment.
 ### Scope
 
 1. Establish one immutable, license-complete and hash-verifiable offline
-   resource closure for the built-in `luna_pinyin` product path.
+   resource closure rooted in pinned official Luna Pinyin, Essay, Prelude and
+   Stroke revisions, following every active schema reference into required
+   OpenCC and generated RIME artifacts.
 2. Bundle the pinned official `rime-essay` preset vocabulary and every other
-   resource in that closure inside the App/Keyboard bundle. The user must not
-   download any resource needed for the built-in scheme.
+   resource in that closure inside the main App bundle for App-owned
+   deployment. The user must not download any resource needed for the built-in
+   scheme; the Keyboard Extension must not carry a second deployable copy.
 3. Keep main-App-owned deployment and Keyboard-Extension session ownership
    unchanged. The main App stages and compiles; the Extension only consumes the
    last known good deployed state.
@@ -96,36 +103,32 @@ The closure is derived from the selected schema and every referenced
 module and compiled artifact. Files are not classified as required merely
 because they appear in an upstream repository.
 
-### Required for the current app-owned minimal Luna schema
+### Accepted official runtime closure
 
-| Resource | Requirement |
+The selected Source of Truth is not the former app-owned minimal schema. The
+implementation must pin and bundle the complete active dependency closure:
+
+| Resource family | Requirement |
 |---|---|
-| App-generated `default.yaml` and `installation.yaml` | Built in as deterministic templates; schema list, menu, key bindings, punctuation and recognizer references must resolve without Prelude downloads |
-| App-owned or pinned `luna_pinyin.schema.yaml` | Exact source schema used by deployment; no checked-in compiled `__build_info` file may masquerade as the authoritative source |
-| Pinned `luna_pinyin.dict.yaml` | Immutable official/source-reviewed dictionary with commit, byte length, SHA-256, license and attribution |
-| Pinned official `essay.txt` | Mandatory bundled preset vocabulary for the current dictionary's `use_preset_vocabulary: true`; no user download |
-| `opencc/t2s.json`, `TSPhrases.ocd2`, `TSCharacters.ocd2` | Mandatory for the current simplified-output filter |
-| `opencc/s2t.json`, `STPhrases.ocd2`, `STCharacters.ocd2` | Retain as a bundled, verified pair while the product ships or claims reverse conversion/shared S2T capability; otherwise removal requires explicit capability review |
-| `luna_pinyin.table.bin`, `.prism.bin`, `.reverse.bin` | If shipped, regenerate reproducibly from the exact schema/dictionary/essay closure and verify hashes/runtime output; if intentionally not shipped, fresh-device deployment latency and failure recovery must prove source compilation is sufficient |
-| License and attribution documents | Include Luna, Essay, OpenCC and every incorporated upstream work in the in-App third-party license surface |
-| Resource manifest/receipt | Pin source repository, commit/tag, file path, byte size and SHA-256; verify bundle membership and deployed-file identity |
+| Official Luna Pinyin | Authoritative `luna_pinyin.schema.yaml`, `luna_pinyin.dict.yaml`, `pinyin.yaml` and the selected official Luna entry schema, all from one pinned revision |
+| Official Essay | Pinned `essay.txt`, mandatory for the dictionary's preset vocabulary and normal candidate weighting |
+| Official Prelude | Required `default.yaml`, `key_bindings.yaml`, `punctuation.yaml` and `symbols.yaml` definitions; the Universe overlay may replace the schema list and unsupported desktop behavior but must not copy/fork the complete upstream files |
+| Official Stroke | Pinned schema and dictionary remain bundled while Luna declares the dependency or exposes reverse lookup, even if the App does not yet expose Stroke as a separately selectable product |
+| OpenCC | Every config and data file reachable from the enabled simplified/traditional/HK/TW conversion profiles; disabling a profile and removing its data requires explicit Product capability review |
+| Universe iOS overlay | Small, reviewable patch that registers shipped schemes, selects product defaults, adapts platform bindings and controls fuzzy behavior; it may not silently fork upstream dictionary/schema content |
+| Generated RIME artifacts | Any shipped table, prism and reverse binaries are regenerated from this exact closure and carry source/generator receipts; source-only deployment is allowed only after fresh-device latency and recovery acceptance |
+| License and attribution documents | Include Luna, Essay, Prelude, Stroke, OpenCC and every incorporated upstream work in the in-App third-party license surface |
+| Resource manifest/receipt | Pin repository, commit, path, byte size and SHA-256 for source and packaged artifacts; verify bundle membership and deployed-file identity |
 
-### Conditional closure if adopting the current official full Luna schema
+The official Prelude preset catalog is not itself a product commitment. The
+Universe overlay registers only schemes whose complete runtime closure ships in
+the App. Unrelated Prelude schemes and Plum recipes must not enter the bundle
+merely because they are listed upstream.
 
-The current official Luna schema references more than the two Luna YAML files.
-If implementation adopts it rather than retaining the app-owned minimal schema,
-the same App build must additionally bundle and verify:
-
-- `pinyin.yaml` from the pinned Luna package for spelling/algebra patches;
-- the used RIME Prelude components: `default.yaml`, `key_bindings.yaml`,
-  `punctuation.yaml` and `symbols.yaml`, unless an app-owned generated equivalent
-  deliberately removes each reference and has parity tests;
-- the pinned Stroke schema and dictionary if `dependencies: [stroke]` and
-  reverse lookup remain enabled;
-- every OpenCC config and `.ocd2` dictionary actually referenced by the selected
-  simplified/traditional/HK/TW filters;
-- any grammar configuration and model only if Product separately authorizes
-  that capability and Architecture clears the existing Octagram boundary.
+The optional upstream grammar patch must be explicitly disabled or remain
+unresolved as an inactive optional patch. No `.gram` model belongs to this
+closure; adding one requires a separate Product Decision and Architecture
+clearance of the existing Octagram boundary.
 
 `custom_phrase` user data, learned user dictionaries, deployment metadata and
 third-party downloadable scheme archives are runtime/user state, not immutable
@@ -141,8 +144,9 @@ built-in assets.
 - [`RIME artifacts`](../architecture/rime-artifacts.md)
 - [`RELEASE_CHECKLIST.md`](../RELEASE_CHECKLIST.md)
 - current bundle membership, deployment preparation, schema smoke and license UI
-- pinned upstream Luna, Essay, Prelude, Stroke and OpenCC sources only to the
-  extent selected by the final dependency closure
+- [`official runtime closure Product Decision`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-official-runtime-closure.md)
+- pinned upstream Luna, Essay, Prelude, Stroke and OpenCC sources selected by
+  the accepted dependency closure
 - exact clean checkout/base commit and an isolated implementation branch that
   does not modify PR #91
 
@@ -171,8 +175,8 @@ built-in assets.
 ### Entry Criteria for `Ready`
 
 - Product Lead explicitly names every `UNKNOWN` responsibility.
-- One source-of-truth schema strategy is selected: app-owned minimal Luna or a
-  pinned official full Luna closure.
+- The accepted official runtime-closure strategy is translated into one exact
+  dependency graph and a thin, reviewable Universe iOS overlay.
 - Every required upstream resource has an immutable source revision, byte size,
   SHA-256, license and redistribution/notice disposition.
 - The resource manifest proves the entire dependency closure is inside the App
@@ -238,3 +242,6 @@ built-in assets.
   offline resource closure and authorized creation of this Assignment. Read-only
   reproduction established the current unweighted candidate-order failure; no
   implementation was authorized.
+- `2026-08-29 Asia/Shanghai` — Human Product Owner selected a pinned official
+  Luna runtime closure plus a thin Universe iOS overlay. The decision excludes
+  unrelated preset schemes, Octagram, PR #91 and implementation authorization.
