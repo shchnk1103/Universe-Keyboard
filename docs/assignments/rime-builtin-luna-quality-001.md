@@ -9,10 +9,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Assignment Pending` |
-| **Phase** | Product selected the official Luna runtime closure plus a thin Universe iOS overlay; implementation responsibility and immutable upstream pins remain unassigned |
+| **Phase** | Product selected the official Luna runtime closure and bound task responsibilities; candidate upstream pins/source manifest are audited, while generated artifacts and Architecture acceptance remain pending |
 | **Non-claims** | No production fix, upstream asset pin, license acceptance, Architecture/Quality pass, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
-| **Next** | Product Lead names the Domain Owner, implementation Executor, Environment Executor and independent reviewers; the named owner proposes immutable upstream pins and the exact dependency manifest for Architecture review before implementation may enter `Ready` |
-| **Residuals** | [`2026-08-29 reproduction and resource audit`](../evidence/rime-builtin-luna-quality-f02-2026-08-29.md) |
+| **Next** | Architecture reviews the candidate pins, main-App resource ownership, overlay strategy and generated-artifact plan; Quality then reviews the proposed fixture/evidence matrix before implementation may enter `Ready` |
+| **Residuals** | [`2026-08-29 reproduction and resource audit`](../evidence/rime-builtin-luna-quality-f02-2026-08-29.md) · [`upstream pin and manifest audit`](../evidence/rime-builtin-luna-quality-f02-upstream-pin-audit-2026-08-29.md) |
 
 ---
 
@@ -28,6 +28,10 @@
   [`PD-RIME-BUILTIN-LUNA-QUALITY-001-CLOSURE`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-official-runtime-closure.md)
   selects the pinned official Luna runtime closure plus a thin Universe iOS
   overlay. It does not authorize implementation.
+- **Accepted Assignment Decision:**
+  [`PD-RIME-BUILTIN-LUNA-QUALITY-001-ASSIGNMENT`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-assignment-bindings.md)
+  binds the task-level owner, Executor, environment operations, Human
+  Dependency and independent reviewers.
 
 ## Problem Statement
 
@@ -137,6 +141,7 @@ built-in assets.
 ## Required Inputs
 
 - [`2026-08-29 F-02 evidence`](../evidence/rime-builtin-luna-quality-f02-2026-08-29.md)
+- [`2026-08-29 upstream pin and manifest audit`](../evidence/rime-builtin-luna-quality-f02-upstream-pin-audit-2026-08-29.md)
 - [`RIME_SCHEME_MANAGEMENT.md`](../RIME_SCHEME_MANAGEMENT.md)
 - [`RIME_FUZZY_PINYIN.md`](../RIME_FUZZY_PINYIN.md)
 - [`shared-container-and-rime-lifecycle.md`](../architecture/shared-container-and-rime-lifecycle.md)
@@ -152,29 +157,35 @@ built-in assets.
 
 ## Assignment
 
-- **Domain Owner:** `UNKNOWN` — recommended primary route is RIME Platform
-  Maintainer because the defect is in schema/resource compilation and artifact
-  correctness; Product Lead must make the Assignment Decision.
-- **Executor:** Current Codex task for Assignment/evidence documentation only;
-  implementation Executor is `UNKNOWN`.
-- **Environment Executor:** `UNKNOWN` — must own isolated fixture builds,
-  Simulator and named physical-device fresh-install/deployment evidence.
+- **Domain Owner:** RIME Platform Maintainer — owns schema/resource compilation,
+  OpenCC and generated artifact correctness.
+- **Executor:** Current Codex task on
+  `codex/f02-rime-builtin-quality-assignment`, operating under the RIME Platform
+  Maintainer playbook; implementation remains gated by `Ready` and a later
+  explicit implementation authorization.
+- **Environment Executor:** Current Codex task on the isolated F-02 worktree for
+  repository fixtures, local builds and Simulator evidence only.
 - **Human Dependency:** Human Product Owner supplies Product decisions, physical
   device actions and final Product Gate; the original Build 7 tester remains a
   dependency only if the historical symptom must be separately closed.
-- **Architecture Reviewer:** `UNKNOWN` — must independently review resource
-  closure, source/binary consistency, App/Extension ownership, licensing route
-  and any decision to adopt the full official schema.
-- **Quality Reviewer:** `UNKNOWN` — must independently review candidate-order
-  fixtures, fresh-install/offline deployment and physical-device evidence.
-- **Handoff Target:** Human Product Owner for the missing Assignment Decision;
-  then the named RIME Domain Owner and reviewers.
+- **Architecture Reviewer:** Architecture & Knowledge Steward — independently
+  reviews resource closure, source/binary consistency, App/Extension ownership,
+  licensing route and compatibility with Accepted ADRs.
+- **Quality Reviewer:** Quality, Performance & Release Maintainer — independently
+  reviews candidate-order fixtures, fresh-install/offline deployment,
+  performance and physical-device evidence.
+- **Consulted Secondary:** App & Data Operations Maintainer for main-App bundle
+  membership and deployment orchestration; this does not split primary domain
+  ownership.
+- **Handoff Target:** Architecture & Knowledge Steward for closure review, then
+  Quality, Performance & Release Maintainer for the verification plan.
 
 ## Gates
 
 ### Entry Criteria for `Ready`
 
-- Product Lead explicitly names every `UNKNOWN` responsibility.
+- The accepted Assignment Decision remains current and both reviewers can
+  execute independently from the implementation Executor.
 - The accepted official runtime-closure strategy is translated into one exact
   dependency graph and a thin, reviewable Universe iOS overlay.
 - Every required upstream resource has an immutable source revision, byte size,
@@ -245,3 +256,10 @@ built-in assets.
 - `2026-08-29 Asia/Shanghai` — Human Product Owner selected a pinned official
   Luna runtime closure plus a thin Universe iOS overlay. The decision excludes
   unrelated preset schemes, Octagram, PR #91 and implementation authorization.
+- `2026-08-29 Asia/Shanghai` — Human Product Owner accepted the recommended
+  responsibility configuration. Assignment completeness is no longer blocked
+  by `UNKNOWN` roles; production pin acceptance, generated manifest and reviews
+  remain pending.
+- `2026-08-29 Asia/Shanghai` — Executor completed the read-only candidate pin,
+  source manifest and license audit. Generated output receipts, Architecture
+  acceptance and Quality plan review remain pending; no assets were changed.

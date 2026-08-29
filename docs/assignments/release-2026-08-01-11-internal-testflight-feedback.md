@@ -10,7 +10,7 @@
 | **Lifecycle** | `Assignment Pending` |
 | **Phase** | Build 7 feedback remains historical; F-02 current-development-build candidate-quality reproduction is established and split into `RIME-BUILTIN-LUNA-QUALITY-001`; F-03 engineering slice is Closed |
 | **Non-claims** | The original Build 7 / iPhone 16 Pro / iOS 18 multi-character root cause remains unknown; the later local build is not TestFlight acceptance; the F-02 fix has not entered `Ready` |
-| **Next** | Product Lead completes the F-02 repair Assignment roles; the named owner pins the accepted official Luna runtime closure and submits its manifest for Architecture review; a new TestFlight build is still required for F-03 tester use |
+| **Next** | The bound F-02 Executor pins the accepted official Luna runtime closure and submits its license/manifest for independent Architecture review; a new TestFlight build is still required for F-03 tester use |
 | **Residuals** | [`2026-08-25 internal feedback`](../evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`F-02 repair Assignment`](rime-builtin-luna-quality-001.md) · [`F-02 2026-08-29 evidence`](../evidence/rime-builtin-luna-quality-f02-2026-08-29.md) |
 
 ---
