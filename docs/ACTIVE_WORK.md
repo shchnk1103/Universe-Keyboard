@@ -5,12 +5,12 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-29 Asia/Shanghai` — F-02 已完成 Product 方向、职责绑定及候选上游 pin/source manifest 审计；generated artifacts 与独立 Architecture/Quality review 仍 Pending。核心 Active Work 为 `4/10`。
+Last synced: `2026-08-29 Asia/Shanghai` — F-02 的 Product 方向、职责、官方 source pins、ADR 0033、Architecture Ready review 与 Quality 验证计划均已闭环；Assignment 为 `Ready`，等待另行明确授权后才能进入实现。核心 Active Work 为 `4/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；Task11 F-01/F-02 仍 Pending。F-03 工程片已随 #83 合入 `main`，TestFlight tester 仍在 Build 7（不含该修复）。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
-| 2 | RIME-BUILTIN-LUNA-QUALITY-001 | Assignment Pending | P1；候选 pins/source manifest 已精确审计；等待 Architecture 审查 OpenCC 兼容 pin、主 App 资源所有权、overlay 与 generated artifact 策略，再由 Quality 审查验证矩阵 | [`assignment`](assignments/rime-builtin-luna-quality-001.md) · [`closure decision`](product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-official-runtime-closure.md) · [`assignment decision`](product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-assignment-bindings.md) · [`pin audit`](evidence/rime-builtin-luna-quality-f02-upstream-pin-audit-2026-08-29.md) |
+| 2 | RIME-BUILTIN-LUNA-QUALITY-001 | Ready | P1；ADR 0033 `Accepted; implementation pending`；Architecture `Pass for Ready`、Quality plan `Pass with conditions for Ready`，当前实现/Exit/Release 仍 `Fail`；等待明确 implementation authorization | [`assignment`](assignments/rime-builtin-luna-quality-001.md) · [`ADR 0033`](architecture/decisions/0033-main-app-owned-offline-rime-resource-closure.md) · [`Architecture`](assignments/rime-builtin-luna-quality-001-architecture-review.md) · [`Quality`](assignments/rime-builtin-luna-quality-001-quality-review.md) · [`pin audit`](evidence/rime-builtin-luna-quality-f02-upstream-pin-audit-2026-08-29.md) |
 | 3 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 4 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 

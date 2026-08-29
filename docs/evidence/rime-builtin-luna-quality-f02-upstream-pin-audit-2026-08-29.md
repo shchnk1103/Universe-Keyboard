@@ -10,31 +10,34 @@
 
 ## Scope And Non-Claims
 
-This audit proposes immutable **candidate** revisions and the exact source
-closure for Architecture review. Official repositories were shallow-cloned to
-an isolated temporary directory; no upstream bytes were copied into the
-product, no generated artifact was replaced, and no implementation or runtime
-claim is made.
+This audit originally proposed immutable **candidate** revisions and the exact
+source closure for Architecture review. ADR 0033 subsequently accepted these
+source revisions as the implementation inputs on `2026-08-29 Asia/Shanghai`.
+The independent Architecture follow-up accepted the dependency, ownership,
+overlay and generation contracts for `Ready`.
 
-The candidates are not accepted production pins until the dependency manifest,
-license disposition, fixture deployment and independent Architecture review
-pass. This audit is engineering provenance, not legal advice.
+Official repositories were shallow-cloned to an isolated temporary directory;
+no upstream bytes were copied into the product, no generated artifact was
+replaced, and no implementation or runtime claim is made. Generated-output
+pins, packaged/deployed identity, license UI completeness and runtime evidence
+remain `POST-READY EVIDENCE PENDING`. This audit is engineering provenance, not
+legal advice.
 
-## Candidate Revision Set
+## Accepted Source Revision Set
 
-| Component | Candidate immutable revision | Commit date | Disposition |
+| Component | Accepted immutable source revision | Commit date | Disposition |
 |---|---|---|---|
-| RIME Luna Pinyin | `rime/rime-luna-pinyin@56b934b099dfbeab842320f13aa8b461a6ab3e42` | `2026-07-12` | Candidate; official current schema/dictionary/pinyin source |
-| RIME Essay | `rime/rime-essay@e9b1a374a6ea015fca5bdd04318924b4483ac35a` | `2026-07-13` | Candidate; required preset vocabulary |
-| RIME Prelude | `rime/rime-prelude@082425ea0684bca36474415d4a0e8db9b016487e` | `2026-05-09` | Candidate; required default/key/punctuation/symbol presets |
-| RIME Stroke | `rime/rime-stroke@1e8fff9b9494ddec23b0cbc526bcfd8171a6fd48` | `2026-08-26` | Candidate; Luna dependency and reverse-lookup dictionary |
-| OpenCC runtime/data | `BYVoid/OpenCC@25350017e81b40aa9e3e66c18446b57f83b0607d` | `2026-05-14` | Candidate tied to the existing byte-recovered `libopencc` source receipt |
+| RIME Luna Pinyin | `rime/rime-luna-pinyin@56b934b099dfbeab842320f13aa8b461a6ab3e42` | `2026-07-12` | Accepted by ADR 0033; official schema/dictionary/pinyin source |
+| RIME Essay | `rime/rime-essay@e9b1a374a6ea015fca5bdd04318924b4483ac35a` | `2026-07-13` | Accepted by ADR 0033; required preset vocabulary |
+| RIME Prelude | `rime/rime-prelude@082425ea0684bca36474415d4a0e8db9b016487e` | `2026-05-09` | Accepted by ADR 0033; required default/key/punctuation/symbol presets |
+| RIME Stroke | `rime/rime-stroke@1e8fff9b9494ddec23b0cbc526bcfd8171a6fd48` | `2026-08-26` | Accepted by ADR 0033; Luna dependency and reverse-lookup dictionary |
+| OpenCC runtime/data | `BYVoid/OpenCC@25350017e81b40aa9e3e66c18446b57f83b0607d` | `2026-05-14` | Accepted compatibility pin by ADR 0033; tied to the byte-recovered `libopencc` source receipt |
 | librime | `rime/librime@1300e568967feeeedd72028c7cb5ef9151f7fb37` | `2026-05-09` | Existing accepted binary source pin; no change proposed |
 | iOS vendor artifact | `rime-vendor-ios-1.16.1-lua.1-octagram.1`, SHA-256 `d17aab9a8b08b5901ab583c143b0a8a03994e36fe092309fd14c5bee31399dd9` | existing | Existing accepted binary pin; no rebuild or model activation proposed |
 
 Plum `b1be1969f914cc005add4090631b855db00c2591` was used only to confirm
 official package classification. Plum is not a runtime asset and is not a
-candidate bundled dependency.
+bundled dependency.
 
 ### Why OpenCC Does Not Follow Current `master`
 
@@ -153,10 +156,11 @@ generated-output hashes.
    must fail before deployment success and preserve the last known good state;
    it must never manufacture text under a binary resource name.
 
-## Generated Artifact Closure Still Required
+## Generated Artifact Closure Still Required After `Ready`
 
-Before implementation can enter `Ready`, the plan must name the deterministic
-generation path and expected outputs for both dictionaries:
+The accepted ADR names the prebuilt strategy, deterministic generation
+contract and expected output families. During `Active`, implementation must
+materialize and receipt these outputs for both dictionaries:
 
 - `luna_pinyin.table.bin`, `luna_pinyin.prism.bin`,
   `luna_pinyin.reverse.bin`;

@@ -8,11 +8,11 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Assignment Pending` |
-| **Phase** | Product selected the official Luna runtime closure and bound task responsibilities; candidate upstream pins/source manifest are audited, while generated artifacts and Architecture acceptance remain pending |
-| **Non-claims** | No production fix, upstream asset pin, license acceptance, Architecture/Quality pass, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
-| **Next** | Architecture reviews the candidate pins, main-App resource ownership, overlay strategy and generated-artifact plan; Quality then reviews the proposed fixture/evidence matrix before implementation may enter `Ready` |
-| **Residuals** | [`2026-08-29 reproduction and resource audit`](../evidence/rime-builtin-luna-quality-f02-2026-08-29.md) · [`upstream pin and manifest audit`](../evidence/rime-builtin-luna-quality-f02-upstream-pin-audit-2026-08-29.md) |
+| **Lifecycle** | `Ready` |
+| **Phase** | Product scope and responsibilities are bound; ADR 0033 and exact source pins are accepted; Architecture is `Pass for Ready` and the pre-implementation Quality plan is `Pass with conditions`; implementation has not started |
+| **Non-claims** | No code/resource implementation, generated-output receipt, built/deployed manifest, runtime/Quality Exit pass, legal acceptance, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
+| **Next** | Await explicit implementation authorization before `Active`; then implement only the accepted closure and produce Q-01–Q-10 evidence for independent re-review |
+| **Residuals** | [`Architecture review`](rime-builtin-luna-quality-001-architecture-review.md#architecture-follow-up-addendum--adr-0033-and-lifecycle-correction) · [`Quality review`](rime-builtin-luna-quality-001-quality-review.md#lifecycle-follow-up-addendum--2026-08-29) · [`upstream pin audit`](../evidence/rime-builtin-luna-quality-f02-upstream-pin-audit-2026-08-29.md) |
 
 ---
 
@@ -147,6 +147,7 @@ built-in assets.
 - [`shared-container-and-rime-lifecycle.md`](../architecture/shared-container-and-rime-lifecycle.md)
 - ADR 0001, 0003, 0004 and 0008
 - [`RIME artifacts`](../architecture/rime-artifacts.md)
+- [`ADR 0033`](../architecture/decisions/0033-main-app-owned-offline-rime-resource-closure.md)
 - [`RELEASE_CHECKLIST.md`](../RELEASE_CHECKLIST.md)
 - current bundle membership, deployment preparation, schema smoke and license UI
 - [`official runtime closure Product Decision`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-official-runtime-closure.md)
@@ -184,18 +185,25 @@ built-in assets.
 
 ### Entry Criteria for `Ready`
 
-- The accepted Assignment Decision remains current and both reviewers can
+- [x] The accepted Assignment Decision remains current and both reviewers can
   execute independently from the implementation Executor.
-- The accepted official runtime-closure strategy is translated into one exact
-  dependency graph and a thin, reviewable Universe iOS overlay.
-- Every required upstream resource has an immutable source revision, byte size,
-  SHA-256, license and redistribution/notice disposition.
-- The resource manifest proves the entire dependency closure is inside the App
-  build; no required built-in resource has a network acquisition path.
-- Architecture Reviewer accepts the closure and confirms TD-012/Octagram is not
-  implicitly reopened.
-- Implementation uses a branch/worktree isolated from PR #91 and unrelated
-  active work.
+- [x] ADR 0033 translates the accepted official runtime closure into one exact
+  dependency graph, main-App ownership contract, prebuilt generation strategy
+  and thin, reviewable Universe iOS overlay.
+- [x] Every required upstream source has an immutable revision, byte size,
+  SHA-256, license and redistribution/notice disposition in the accepted pin
+  audit. Generated-output hashes correctly remain post-`Ready` evidence.
+- [x] The expected manifest fields and target contract enumerate the complete
+  main-App-owned closure, prohibit an Extension duplicate and provide no
+  network acquisition path. Actual `.app`/`.appex` and deployed manifests are
+  Exit evidence, not fabricated Entry evidence.
+- [x] Architecture accepted ADR 0033 as `Accepted; implementation pending`,
+  returned `Pass for Ready` and confirmed TD-012/Octagram remains G1 only.
+- [x] Quality froze Q-01–Q-10 acceptance predicates, evidence formats, owners
+  and failure boundaries and returned `Pass with conditions for Ready`; the
+  existing implementation and Release evidence remain `Fail`.
+- [x] The implementation worktree is isolated from PR #91 and unrelated active
+  work. No implementation begins without a later explicit authorization.
 
 ### Exit Criteria
 
@@ -258,8 +266,18 @@ built-in assets.
   unrelated preset schemes, Octagram, PR #91 and implementation authorization.
 - `2026-08-29 Asia/Shanghai` — Human Product Owner accepted the recommended
   responsibility configuration. Assignment completeness is no longer blocked
-  by `UNKNOWN` roles; production pin acceptance, generated manifest and reviews
-  remain pending.
+  by `UNKNOWN` roles. The named Executor acknowledged the bounded Assignment;
+  the lifecycle passed through `Assigned` and `Acknowledged` while production
+  pin acceptance, generated manifest design and reviews remained pending.
 - `2026-08-29 Asia/Shanghai` — Executor completed the read-only candidate pin,
   source manifest and license audit. Generated output receipts, Architecture
   acceptance and Quality plan review remain pending; no assets were changed.
+- `2026-08-29 Asia/Shanghai` — Independent Architecture review returned
+  `Pass for Ready` and accepted ADR 0033 as `Accepted; implementation pending`.
+  Independent Quality review returned `Pass with conditions for Ready` while
+  retaining `Fail` for the current implementation, Exit, TestFlight and
+  Release evidence.
+- `2026-08-29 Asia/Shanghai` — Coordinator reconciled Entry versus Exit gates
+  and advanced the complete Assignment to `Ready` under the Product-approved
+  scope and responsibility decisions. This transition does not infer the
+  separate implementation authorization required to enter `Active`.
