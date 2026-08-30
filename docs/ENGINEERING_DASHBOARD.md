@@ -40,11 +40,11 @@
 
 - **Lifecycle:** `Active`
 - **Authority:** [`Assignment`](assignments/rime-sync-001.md) · [`Contract`](RIME_SYNC.md)
-- **Current evidence:** Draft PR [#91](https://github.com/shchnk1103/Universe-Keyboard/pull/91) 提交 `e3e5d77`；hosted run [`33235475162`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33235475162) 全绿；强制真机 BGProcessingTask 启动、同步和通知生成通过
-- **Residual:** 自然 iOS 调度与手机端通知呈现未验证；`sandbox_extension_consume failed: 22` 归因见 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure)
+- **Current evidence:** Draft PR [#91](https://github.com/shchnk1103/Universe-Keyboard/pull/91) 的 `e3e5d77` hosted run [`33235475162`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33235475162) 全绿；自然调度诊断暴露两阶段取消/过期状态矛盾；本地修复 `0f59770` 已通过 CI 等价门禁但尚未 push
+- **Residual:** `0f59770` 待独立复核；正式自然调度与手机端通知呈现未验证；`sandbox_extension_consume failed: 22` 归因见 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure)
 - **Non-claims:** 不代表 Product Gate、merge、TestFlight 或 Release 已授权
-- **Review:** [`Architecture`](assignments/rime-sync-001-background-sync-crash-architecture-review.md) / [`Quality`](assignments/rime-sync-001-background-sync-crash-quality-review.md) 均为 `Pass with conditions`；无 P0，生命周期 residual 仍为 `fix`
-- **Next:** 保留 `e3e5d77` 的自然后台观察；随后处理生命周期 residual、重新验证，再交 Human Product Gate
+- **Review:** [`Architecture`](assignments/rime-sync-001-background-sync-crash-architecture-review.md) / [`Quality`](assignments/rime-sync-001-background-sync-crash-quality-review.md) 的 `Pass with conditions` 仅覆盖 `e3e5d77`；[`新证据`](evidence/rime-background-sync-lifecycle-remediation-2026-08-30.md) 不替代独立复核
+- **Next:** 独立复核 `0f59770`；再准备预冻结 manifest/receipt 的自然后台和手机通知正式轮次，最后交 Human Product Gate
 
 ## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
 

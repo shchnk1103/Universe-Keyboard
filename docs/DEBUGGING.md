@@ -341,6 +341,14 @@ commands. A Simulator pass does not prove natural scheduling, background folder
 bookmark access, lock-screen notification delivery or the absence of a new crash
 on the affected OS. Preserve the exact TestFlight build, device/OS and report UUID.
 
+If one result says the same RIME standard scope was both “updated” and
+“incomplete”, inspect the cancellation boundary between standard RIME data and
+private App settings. That payload means the standard completion was recorded
+while failure attribution still pointed at the old phase; it is not evidence of
+corrupt RIME data. The failure renderer must also remove the failed scope from
+completed scopes defensively. Correlate with the background-task expiration log
+before claiming expiration as a confirmed device cause.
+
 ### Extension Repeatedly Crashes Before The Keyboard Appears
 
 If selecting Universe Keyboard immediately returns to another keyboard, or the extension stops appearing after one crash:

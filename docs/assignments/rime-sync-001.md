@@ -7,10 +7,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | RIME 标准同步主路径持续验证；PR [#91](https://github.com/shchnk1103/Universe-Keyboard/pull/91) 的后台启动崩溃修复提交 `e3e5d77` 已通过 hosted CI 与强制真机启动验证 |
+| **Phase** | PR [#91](https://github.com/shchnk1103/Universe-Keyboard/pull/91) 的启动崩溃修复 `e3e5d77` 已通过 hosted CI；自然调度诊断暴露两阶段取消/过期状态矛盾，本地修复提交 `0f59770` 已完成 CI 等价验证但尚未 push / 独立复核 |
 | **Non-claims** | 不代表自然 iOS 后台调度、手机锁屏/通知中心呈现、跨前端兼容、Product Gate、merge、TestFlight 或 Release 已通过 |
-| **Next** | 独立 Architecture / Quality 均为 `Pass with conditions`；先保留 `e3e5d77` 的自然调度观察，再处理生命周期 `fix` residual 并重新验证，之后交 Product Lead 决策 |
-| **Residuals** | [`Architecture review`](rime-sync-001-background-sync-crash-architecture-review.md) · [`Quality review`](rime-sync-001-background-sync-crash-quality-review.md) · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) · [本次实现证据](../evidence/rime-background-sync-crash-fix-2026-08-29.md) |
+| **Next** | 对 `0f59770` 做独立 Architecture / Quality re-review；通过后准备带预冻结 manifest/receipt 的自然后台与手机通知正式真机轮次，再交 Product Lead 决策 |
+| **Residuals** | [`Architecture review`](rime-sync-001-background-sync-crash-architecture-review.md) · [`Quality review`](rime-sync-001-background-sync-crash-quality-review.md) · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) · [启动修复证据](../evidence/rime-background-sync-crash-fix-2026-08-29.md) · [生命周期修复证据](../evidence/rime-background-sync-lifecycle-remediation-2026-08-30.md) |
 
 ---
 

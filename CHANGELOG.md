@@ -2,6 +2,13 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-30 — 收紧 RIME 后台同步过期生命周期
+
+- 两阶段自动同步在标准 RIME 已完成后先切换到 Universe 设置语义，再观察取消；后台时间恰好在阶段间被系统收回时，不再把同一 RIME 范围同时显示为“已更新”和“未完成”。
+- `BGProcessingTask` 的正常返回与 expiration 统一经过一次性终止门：取消只请求一次，任务只完成一次，过期后不得报告成功。
+- 键盘活跃导致跳过时设置 15 分钟最早重试时间，避免向系统反复提交已经过去的执行日期；不改变用户选择的每日/每周正式冷却周期。
+- 本地 CI 等价门禁已通过；实现提交 `0f59770` 尚未 push / 独立复核，正式自然调度、手机通知、Product Gate、merge 与 Release 均未声明通过。证据见 [`docs/evidence/rime-background-sync-lifecycle-remediation-2026-08-30.md`](docs/evidence/rime-background-sync-lifecycle-remediation-2026-08-30.md)。
+
 ## 2026-08-29 — 修复 RIME 后台自动同步回调隔离崩溃
 
 - `BGProcessingTask` 注册入口改为显式使用主队列，与 `RimeAutomaticSyncScheduler` 的 `MainActor` 隔离保持一致；实际 RIME 标准同步仍在可取消的异步任务中执行，不进入 Keyboard Extension 或按键热路径。
