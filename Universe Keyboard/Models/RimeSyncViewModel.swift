@@ -497,6 +497,9 @@ final class RimeSyncViewModel {
         do {
             try Task.checkCancellation()
             try await synchronizeStandardRimeData()
+            // librime 维护调用本身不可协作取消；返回后必须重新闭合取消状态，
+            // 防止系统已宣告过期却继续发布成功结果。
+            try Task.checkCancellation()
             completedNotificationScopes.insert(.standardRimeData)
 
             let completedAt: Date
@@ -517,6 +520,7 @@ final class RimeSyncViewModel {
                 setStatus(.syncing(.privateSettings))
                 try Task.checkCancellation()
                 completedAt = try await synchronizePrivateSettings()
+                try Task.checkCancellation()
                 completedNotificationScopes.insert(.privateSettings)
                 setStatus(.succeeded(completedAt, .standardRimeAndPrivateSettings))
             } else {
@@ -524,9 +528,6 @@ final class RimeSyncViewModel {
                 setStatus(.succeeded(completedAt, .standardRimeData))
             }
             Logger.shared.info("rimeSync automatic standard sync completed", category: .config)
-            await notificationService.notify(
-                .completed(mode: .automatic, scopes: completedNotificationScopes)
-            )
             return .completed(completedAt)
         } catch is CancellationError {
             setStatus(.idle)
@@ -564,6 +565,16 @@ final class RimeSyncViewModel {
             )
             return .failed
         }
+    }
+
+    /// 只有 BGTask lifecycle 抢到成功终止权后才允许发布完成通知。
+    /// expiration 已先完成系统任务时，scheduler 不会调用这里。
+    func notifyAutomaticCompletion() async {
+        var scopes: Set<RimeSyncNotificationScope> = [.standardRimeData]
+        if automaticPrivateSettingsEnabled {
+            scopes.insert(.privateSettings)
+        }
+        await notificationService.notify(.completed(mode: .automatic, scopes: scopes))
     }
 
     func setAutomaticSyncEnabled(_ enabled: Bool) {

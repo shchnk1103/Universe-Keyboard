@@ -2,6 +2,7 @@ import BackgroundTasks
 import Dispatch
 import Foundation
 import KeyboardCore
+import Synchronization
 
 /// 用户可以分别订阅 RIME 标准资料和 Universe 设置的同步通知。
 nonisolated enum RimeSyncNotificationScope: String, CaseIterable, Hashable, Sendable {
@@ -129,40 +130,42 @@ nonisolated enum RimeSyncNotificationEvent: Equatable, Sendable {
     }
 }
 
-/// 管理一次 `BGProcessingTask` 的终止状态，确保系统过期与正常返回只完成任务一次。
+/// 管理一次 `BGProcessingTask` 的终止所有权，确保过期与正常返回只有一方完成任务。
 ///
-/// 所有状态转换都在主 actor 上发生。系统的 expiration callback 必须先 hop 到
-/// `MainActor`，不能假设 BackgroundTasks 会在注册队列上调用后续生命周期回调。
-@MainActor
-final class RimeAutomaticSyncTaskLifecycle {
-    private enum State: Equatable {
+/// expiration callback 的调用队列不受 App 控制，因此这里必须同步抢占终止权，
+/// 不能先异步 hop 到 MainActor，否则正常返回可能越过系统已经发出的过期信号。
+nonisolated final class RimeAutomaticSyncTaskLifecycle: Sendable {
+    enum CompletionClaim: Equatable, Sendable {
+        case succeeded
+        case failed
+    }
+
+    private enum State: Sendable {
         case active
-        case expirationRequested
-        case completed
+        case expirationClaimed
+        case operationClaimed
     }
 
-    private var state = State.active
+    private let state = Mutex(State.active)
 
-    /// 返回 `true` 表示本次请求首次进入过期状态并执行了取消动作。
+    /// expiration 在回调线程同步抢占终止权；返回 `true` 时调用方必须立即取消操作
+    /// 并以失败完成系统任务。
     @discardableResult
-    func requestExpiration(cancel: () -> Void) -> Bool {
-        guard state == .active else { return false }
-        state = .expirationRequested
-        cancel()
-        return true
+    func claimExpiration() -> Bool {
+        state.withLock { state in
+            guard state == .active else { return false }
+            state = .expirationClaimed
+            return true
+        }
     }
 
-    /// 只有第一次终止会调用 completion。过期后的操作即使正常返回，也必须报告失败。
-    @discardableResult
-    func finish(
-        operationSucceeded: Bool,
-        completion: (Bool) -> Void
-    ) -> Bool {
-        guard state != .completed else { return false }
-        let completedSuccessfully = state == .active && operationSucceeded
-        state = .completed
-        completion(completedSuccessfully)
-        return true
+    /// 正常返回只有在 expiration 尚未抢占时才能取得终止权。
+    func claimOperationCompletion(operationSucceeded: Bool) -> CompletionClaim? {
+        state.withLock { state in
+            guard state == .active else { return nil }
+            state = .operationClaimed
+            return operationSucceeded ? .succeeded : .failed
+        }
     }
 }
 
@@ -237,20 +240,66 @@ final class RimeAutomaticSyncScheduler {
         let operation = Task { @MainActor in
             let model = RimeSyncViewModel(rimeStore: RimeSettingsStore())
             let result = await model.synchronizeAutomatically()
-            let didFinish = lifecycle.finish(operationSucceeded: result.completedSuccessfully) { success in
-                task.setTaskCompleted(success: success)
-            }
-            if didFinish {
-                refreshSchedule()
-            }
+            await Self.finishOperation(
+                result: result,
+                lifecycle: lifecycle,
+                notifyCompletion: { await model.notifyAutomaticCompletion() },
+                reschedule: { self.refreshSchedule() },
+                completeTask: { task.setTaskCompleted(success: $0) }
+            )
         }
         task.expirationHandler = {
+            guard
+                Self.expireOperation(
+                    lifecycle: lifecycle,
+                    cancel: { operation.cancel() },
+                    completeTask: { task.setTaskCompleted(success: $0) }
+                )
+            else { return }
             Task { @MainActor in
-                guard lifecycle.requestExpiration(cancel: { operation.cancel() }) else { return }
                 Logger.shared.warning("rimeSync automatic background task expired", category: .config)
                 Logger.shared.requestFlush()
+                Self.shared.refreshSchedule()
             }
         }
+    }
+
+    /// 可控的正常返回 seam。只有取得终止权的一方可以完成 BGTask 或发布完成通知。
+    @discardableResult
+    static func finishOperation(
+        result: RimeAutomaticSyncResult,
+        lifecycle: RimeAutomaticSyncTaskLifecycle,
+        notifyCompletion: () async -> Void,
+        reschedule: () -> Void,
+        completeTask: (Bool) -> Void
+    ) async -> Bool {
+        guard
+            let claim = lifecycle.claimOperationCompletion(
+                operationSucceeded: result.completedSuccessfully
+            )
+        else {
+            return false
+        }
+        let succeeded = claim == .succeeded
+        reschedule()
+        completeTask(succeeded)
+        if succeeded, case .completed = result {
+            await notifyCompletion()
+        }
+        return true
+    }
+
+    /// expiration callback 直接使用的非隔离 seam；失败完成不等待 MainActor hop。
+    @discardableResult
+    nonisolated static func expireOperation(
+        lifecycle: RimeAutomaticSyncTaskLifecycle,
+        cancel: () -> Void,
+        completeTask: (Bool) -> Void
+    ) -> Bool {
+        guard lifecycle.claimExpiration() else { return false }
+        cancel()
+        completeTask(false)
+        return true
     }
 
     private func nextEligibleDate(defaults: UserDefaults) -> Date? {
