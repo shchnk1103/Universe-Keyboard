@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Independent Architecture and Quality re-reviews of `09659a7` both returned `Fail`; the Executor is remediating one Quality P0 and the in-scope Architecture/Quality P1 findings before re-review |
+| **Phase** | Findings remediation is frozen at `1755006`; focused gates and Debug/Release builds pass, while the current full App suite is explicitly blocked by a named pre-existing NineKey async test; exact remediation commit is pending independent Architecture and Quality re-review |
 | **Non-claims** | No Assignment Exit, hosted CI, physical-device/Full Access/lifecycle/performance pass, independent final review, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
-| **Next** | Fix receipt/manifest fail-open, deployed identity, transaction coverage, bundle extras/provenance and overlay-generation binding; extend the frozen deterministic/fault vectors, rerun affected/full local gates, then return the exact remediation commit to the same independent reviewers |
+| **Next** | Independent Architecture and Quality reviewers re-review exact commit `1755006`, including the former findings and the honest full-App aggregate blocker; if both reviews permit, prepare an exact installable build and hand the physical-device matrix to the Human Dependency |
 | **Residuals** | [`Architecture post-implementation review`](rime-builtin-luna-quality-001-architecture-review.md#post-implementation-review--09659a7--2026-08-30) · [`Quality post-implementation review`](rime-builtin-luna-quality-001-quality-review.md#post-implementation-review--09659a7--2026-08-30) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) |
 
 ---
@@ -302,3 +302,14 @@ built-in assets.
   #91: Architecture `Fail` (no P0; five P1) and Quality `Fail` (one P0; four
   P1). The earlier wait-timeout inference was corrected, reviewer availability
   is restored, and F-02 returned to `Active` for findings remediation.
+- `2026-08-30 Asia/Shanghai` — Executor froze findings remediation as commit
+  `1755006`. Manifest/receipt/deployed/overlay identity, transactional rollback,
+  deterministic provenance and the frozen candidate/OpenCC/Stroke/fault vectors
+  pass focused local gates; Debug and Release builds pass on iPhone 17 Pro Max
+  Simulator / iOS 27.0. The current full App suite is not green: after 80 tests
+  passed it blocked in the pre-existing
+  `NineKeyEnableTransactionTests.testCancellingDownloadWaitingForNineKeyLeaseCannotCommitAfterRelease`
+  following a simulator App Group entitlement failure and was interrupted after
+  852.710 seconds. Assignment remains `Active` pending independent re-review;
+  no unrelated NineKey fix, physical-device claim, hosted CI, merge or Release
+  action is inferred.
