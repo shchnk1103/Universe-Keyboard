@@ -40,11 +40,11 @@
 
 - **Lifecycle:** `Active`
 - **Authority:** [`Assignment`](assignments/rime-sync-001.md) · [`Contract`](RIME_SYNC.md)
-- **Current evidence:** `0f59770` 独立双审发现 expiration 终止竞态；第二轮本地修复 `a34c45c` 以原子终止所有权和返回后取消闭合处理，并通过 CI 等价门禁但尚未 push
-- **Residual:** `a34c45c` 待最终独立复核；正式自然调度与手机端通知呈现未验证；`sandbox_extension_consume failed: 22` 归因见 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure)
+- **Current evidence:** 最终本地实现 `a7b2b2e` 以原子终态所有权、各不可取消边界后的取消检查和 scope 事实门关闭竞态；完整 App 门禁与严格 Debug/Release build 通过，尚未 push
+- **Residual:** 正式自然调度、真实 expiration 后 retry 是否提交、手机端通知呈现和预冻结 manifest/receipt 未验证；`TD-002` 跨进程安全门与 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) 保持开放
 - **Non-claims:** 不代表 Product Gate、merge、TestFlight 或 Release 已授权
-- **Review:** [`Architecture`](assignments/rime-sync-001-background-sync-lifecycle-architecture-rereview.md) / [`Quality`](assignments/rime-sync-001-background-sync-lifecycle-quality-rereview.md) 对 `0f59770` 均为 `Pass with conditions`；不自动覆盖 `a34c45c`
-- **Next:** 最终独立复核 `a34c45c`；再准备预冻结 manifest/receipt 的自然后台和手机通知正式轮次，最后交 Human Product Gate
+- **Review:** [`Architecture`](assignments/rime-sync-001-background-sync-lifecycle-architecture-rereview.md) / [`Quality`](assignments/rime-sync-001-background-sync-lifecycle-quality-rereview.md) 对 `a7b2b2e` 均为 `Pass with conditions`；无实现级 blocker
+- **Next:** 准备预冻结 manifest/receipt 的自然后台、真实 expiration/retry 和手机通知正式轮次，最后交 Human Product Gate
 
 ## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
 

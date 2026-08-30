@@ -5,14 +5,14 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-31 Asia/Shanghai` — RIME 后台同步 `0f59770` 双审发现 expiration 终止竞态；第二轮本地修复 `a34c45c` 已通过 CI 等价门禁，待最终独立双审与正式真机轮次。核心 Active Work 为 `4/10`。
+Last synced: `2026-08-31 Asia/Shanghai` — RIME 后台同步最终本地实现 `a7b2b2e` 已通过完整 App 门禁及 Architecture / Quality `Pass with conditions`，无实现级 blocker；待正式真机轮次与 Product Gate。核心 Active Work 为 `4/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；Task11 F-01/F-02 仍 Pending。F-03 工程片已随 #83 合入 `main`，TestFlight tester 仍在 Build 7（不含该修复）。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
-| 4 | RIME-SYNC-001 | Active | `0f59770` 双审为 `Pass with conditions`；本地 `a34c45c` 已修复终止所有权并通过 CI 等价门禁，但未 push / 最终复核；正式自然调度、手机通知与 Product Gate pending | [`assignment`](assignments/rime-sync-001.md) · [`终止证据`](evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md) · [`Architecture`](assignments/rime-sync-001-background-sync-lifecycle-architecture-rereview.md) · [`Quality`](assignments/rime-sync-001-background-sync-lifecycle-quality-rereview.md) |
+| 4 | RIME-SYNC-001 | Active | 本地 `a7b2b2e` 已修复原子终态、取消闭包与通知事实，完整 App 门禁通过，Architecture / Quality 均 `Pass with conditions`；未 push，正式自然调度、expiration retry、手机通知、`TD-002` 与 Product Gate pending | [`assignment`](assignments/rime-sync-001.md) · [`终止证据`](evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md) · [`Architecture`](assignments/rime-sync-001-background-sync-lifecycle-architecture-rereview.md) · [`Quality`](assignments/rime-sync-001-background-sync-lifecycle-quality-rereview.md) |
 
 ## Completed (not Active)
 

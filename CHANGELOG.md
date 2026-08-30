@@ -5,8 +5,9 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 ## 2026-08-31 — 原子化 RIME 后台任务终止所有权
 
 - 独立双审发现 expiration 异步跳主线程仍有交错窗口；现由线程安全状态门让 expiration 与正常返回原子争夺唯一终止权，过期路径不等待 librime 返回即可立即失败完成系统任务。
-- 自动完成通知只在真实完成结果取得成功终止权后发布；安全跳过不误发完成通知。标准 RIME 与 Universe 设置阶段返回后都重新检查取消。
-- 本地 CI 等价门禁已通过；`a34c45c` 待最终独立复核。证据见 [`docs/evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md`](docs/evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md)。
+- 自动完成通知只在真实完成结果取得成功终止权后发布；安全跳过不误发完成通知。YAML、标准 RIME、私密 coordinator 与设置 apply 边界均闭合取消状态；已完成全部请求 scope 时不再补发矛盾失败通知。
+- 最终本地实现 `a7b2b2e` 的聚焦 `20/20`、完整 App + Keyboard `260 passed / 3 device-only skipped / 0 failed`、严格 Debug/Release build 均通过；独立 Architecture / Quality 均为 `Pass with conditions`，无实现级 blocker。
+- 正式自然调度、真实 expiration 后 retry、手机通知、预冻结 manifest/receipt、`TD-002`、Product Gate、push、merge 与 Release 仍保持开放。证据见 [`docs/evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md`](docs/evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md)。
 
 ## 2026-08-30 — 收紧 RIME 后台同步过期生命周期
 

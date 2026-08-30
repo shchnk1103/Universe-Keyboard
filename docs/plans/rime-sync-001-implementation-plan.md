@@ -2,7 +2,7 @@
 
 > **Status:** Active
 >
-> **Current phase:** `0f59770` independent re-reviews found expiration terminal-ownership residuals; second-round local remediation `a34c45c` passed CI-equivalent validation; final independent re-review, formal natural scheduling/phone notification and cross-front-end evidence pending
+> **Current phase:** final local implementation `a7b2b2e` passed the full App gate and independent Architecture / Quality `Pass with conditions`; no implementation-level blocker remains, while formal natural scheduling/expiration retry, phone notification, cross-process and cross-front-end evidence remain pending
 >
 > **Current source of truth:** `docs/RIME_SYNC.md`
 >
