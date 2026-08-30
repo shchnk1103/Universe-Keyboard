@@ -479,6 +479,9 @@ final class RimeSyncViewModel {
         defaults.set(startedAt, forKey: StorageKey.lastAutomaticAttempt)
         defaults.removeObject(forKey: StorageKey.automaticRetryNotBefore)
         var completedNotificationScopes: Set<RimeSyncNotificationScope> = []
+        let requestedNotificationScopes: Set<RimeSyncNotificationScope> = automaticPrivateSettingsEnabled
+            ? [.standardRimeData, .privateSettings]
+            : [.standardRimeData]
         var activeNotificationScope = RimeSyncNotificationScope.standardRimeData
         var pendingNotificationScopes: Set<RimeSyncNotificationScope> = automaticPrivateSettingsEnabled
             ? [.privateSettings]
@@ -518,9 +521,11 @@ final class RimeSyncViewModel {
                 try Task.checkCancellation()
                 completedAt = try await synchronizePrivateSettings()
                 completedNotificationScopes.insert(.privateSettings)
+                try Task.checkCancellation()
                 setStatus(.succeeded(completedAt, .standardRimeAndPrivateSettings))
             } else {
                 completedAt = standardRimeLastSuccessDate ?? Date()
+                try Task.checkCancellation()
                 setStatus(.succeeded(completedAt, .standardRimeData))
             }
             Logger.shared.info("rimeSync automatic standard sync completed", category: .config)
@@ -528,14 +533,18 @@ final class RimeSyncViewModel {
         } catch is CancellationError {
             setStatus(.idle)
             Logger.shared.warning("rimeSync automatic standard sync cancelled", category: .config)
-            await notificationService.notify(
-                .failed(
-                    mode: .automatic,
-                    failedScope: activeNotificationScope,
-                    completedScopes: completedNotificationScopes,
-                    pendingScopes: pendingNotificationScopes
+            // 最终阶段已返回时，scope 事实已记录；此时 expiration 只需由
+            // scheduler 抑制成功通知，不再发送与实际阶段相矛盾的失败通知。
+            if !requestedNotificationScopes.isSubset(of: completedNotificationScopes) {
+                await notificationService.notify(
+                    .failed(
+                        mode: .automatic,
+                        failedScope: activeNotificationScope,
+                        completedScopes: completedNotificationScopes,
+                        pendingScopes: pendingNotificationScopes
+                    )
                 )
-            )
+            }
             return .skipped(.cancelled)
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
@@ -697,8 +706,10 @@ final class RimeSyncViewModel {
             keyData: keyData,
             transport: transport
         )
+        try Task.checkCancellation()
         try saveProfile(result.profile)
         await rimeStore.applyPortableSyncValues(result.profile.scalarValues)
+        try Task.checkCancellation()
 
         let completedAt = Date()
         lastSuccessDate = completedAt
@@ -768,6 +779,7 @@ final class RimeSyncViewModel {
                 installationID: standardRimeInstallationID
             )
         )
+        try Task.checkCancellation()
 
         let completedAt = Date()
         standardRimeLastSuccessDate = completedAt
