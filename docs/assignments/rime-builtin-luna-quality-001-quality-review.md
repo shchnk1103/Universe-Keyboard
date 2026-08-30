@@ -260,3 +260,49 @@ RimeBridgeTests (75 total, 55 passed, 20 skipped) and the App suite (255 total,
 that review environment, so its recorded 1.334-second result remains
 Executor-recorded. The reviewer performed no build/network/write action and did
 not access or change PR #91.
+
+## Final implementation re-review — `fa5dbaf` / `786f4c7` — 2026-08-31
+
+**Independent verdict: `Pass with conditions`.** P0: none. P1: none. The
+reviewed implementation commit is
+`fa5dbaf1fded3e25ac39a6c0c675cddc786f01bb`; the reviewed evidence commit is
+`786f4c720949784f4f66515228778bf6a012b952`.
+
+The reviewer closed the previous fail-open smoke, base/overlay atomicity,
+full-first-page and App-aggregate conditions. The current local evidence covers
+four clean deployments, exact fuzzy-off/on first pages for every frozen vector,
+four OpenCC behavior vectors, Stroke plus same-session pinyin recovery, the
+26-point switch fault matrix, production-sequence rollback and receipt-gated
+Extension authorization.
+
+### Q-01–Q-10 final local disposition
+
+| Gate | Result | Remaining boundary |
+|---|---|---|
+| Q-01 | `PARTIAL` | Physical fresh App Group and airplane-mode first deployment remain pending. |
+| Q-02 | `PARTIAL` | Exact complete first pages pass locally; physical repeated process cold starts remain pending. |
+| Q-03 | `PASS` | Local actual-bundle s2t/t2s/t2hk/t2tw vectors pass; physical RC binding is still downstream evidence. |
+| Q-04 | `PARTIAL` | Stroke and same-session pinyin isolation pass locally; Full Access and Extension lifecycle remain pending. |
+| Q-05 | `PASS` | Local reproducibility and identity evidence pass; hosted clean-checkout repetition remains pending. |
+| Q-06 | `PARTIAL` | Synchronous rollback and receipt authorization pass; process-death and physical Extension consumption remain pending. |
+| Q-07 | `PENDING` | Release-like physical performance, IPA delta, median/worst and Product budget acceptance remain pending. |
+| Q-08 | `PENDING` | Exact-build physical install/redeploy/relaunch and Full Access matrix remain pending. |
+| Q-09 | `PARTIAL` | Engineering inventory exists; independent inventory and Human/legal sufficiency remain pending. |
+| Q-10 | `PARTIAL` | Local gates pass; hosted CI, exact archive and release provenance remain pending. |
+
+The remaining M-03 items are owned rather than silently accepted:
+`F02-Q01-PHYSICAL-001`, `F02-Q02-COLDSTART-001`, `F02-Q03-RC-001`,
+`F02-Q04-DEVICE-001`, `F02-Q05-HOSTED-001`,
+`F02-Q06-EXTENSION-001`, `F02-Q07-PERF-001`,
+`F02-Q08-LIFECYCLE-001`, `F02-Q09-LICENSE-001` and
+`F02-Q10-HOSTED-001` remain `fix`; process-death atomicity is
+`F02-Q06-PROCDEATH-001` / `tech_debt:TD-001`.
+
+Quality permits preparation of an exact installable build and physical-device
+handoff packet because Architecture independently gave the same permission.
+This does not authorize the device run itself and is not Product, Exit, merge,
+TestFlight or Release acceptance.
+
+**Independence statement:** the reviewer completed a read-only review without
+file changes or build/test/network/device actions, did not touch the main
+checkout and did not inspect or operate PR #91.

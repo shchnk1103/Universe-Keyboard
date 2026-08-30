@@ -5,12 +5,12 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-30 Asia/Shanghai` — F-02 最终 reviewer conditions 已在 `fa5dbaf` 收敛并等待独立复审；完整首屏、生产事务回滚、Extension receipt authorization 与本地 CI-equivalent 门禁均通过；真机与下游 Gate 不前移。核心 Active Work 为 `4/10`。
+Last synced: `2026-08-31 Asia/Shanghai` — F-02 最终 Architecture / Quality 独立复审均为 `Pass with conditions`、P0/P1 为零；真机 handoff 已准备但保持 HOLD，等待 exact signed candidate identity 与 Human 授权；下游 Gate 不前移。核心 Active Work 为 `4/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；Task11 F-01/F-02 仍 Pending。F-03 工程片已随 #83 合入 `main`，TestFlight tester 仍在 Build 7（不含该修复）。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
-| 2 | RIME-BUILTIN-LUNA-QUALITY-001 | Active | P1；`fa5dbaf` 已把 base + overlays 收进同一可恢复事务、增加 Extension receipt authorization，并冻结全部代表向量的完整首屏；KeyboardCore 1068、RimeBridge 87、App aggregate 255 与双构建通过；等待最终独立 Architecture/Quality 复审 | [`assignment`](assignments/rime-builtin-luna-quality-001.md) · [`evidence`](evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`Architecture`](assignments/rime-builtin-luna-quality-001-architecture-review.md#post-implementation-review--09659a7--2026-08-30) · [`Quality`](assignments/rime-builtin-luna-quality-001-quality-review.md#post-implementation-review--09659a7--2026-08-30) |
+| 2 | RIME-BUILTIN-LUNA-QUALITY-001 | Active | P1；`fa5dbaf` / `786f4c7` 最终 Architecture / Quality 复审均 `Pass with conditions`、无 P0/P1；真机 handoff 已准备但 HOLD，下一步先冻结 exact signed candidate，再由 Human 授权单次真机矩阵 | [`assignment`](assignments/rime-builtin-luna-quality-001.md) · [`evidence`](evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`handoff`](evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) · [`Architecture`](assignments/rime-builtin-luna-quality-001-architecture-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Quality`](assignments/rime-builtin-luna-quality-001-quality-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) |
 | 3 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 4 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 

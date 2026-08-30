@@ -139,3 +139,22 @@ re-review, not Assignment Exit. The next human dependency is a named
 physical-device matrix only after review findings are resolved and an exact
 installable build is prepared. No merge, TestFlight upload or release action is
 authorized by this record.
+
+## Final independent re-review and handoff — 2026-08-31
+
+Architecture and Quality independently returned `Pass with conditions` for
+implementation `fa5dbaf1fded3e25ac39a6c0c675cddc786f01bb` and evidence
+`786f4c720949784f4f66515228778bf6a012b952`; both reported no P0/P1 and permit
+preparation of an exact installable build plus physical-device matrix. Their
+full residual dispositions are recorded in the bound review documents.
+
+Architecture's lifecycle-document drift finding is closed by synchronizing the
+shared-container document with the implemented bounded resource/overlay receipt
+authorization. Complete generator provenance remains `fix`, and process-death
+whole-tree atomicity remains `tech_debt:TD-001`.
+
+The [physical-device handoff packet](rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md)
+is prepared but explicitly `HOLD`: no signed candidate, installed receipt,
+device action or physical evidence exists yet. Candidate identity and Human
+authorization are mandatory before execution. Assignment Exit, PR, merge,
+TestFlight and Release remain unauthorized.

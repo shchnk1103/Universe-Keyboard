@@ -579,3 +579,40 @@ independently re-reviewed. P0: none.
 
 The reviewer confirmed a read-only inspection, no build/network/write actions
 and no access or change to PR #91.
+
+## Final implementation re-review — `fa5dbaf` / `786f4c7` — 2026-08-31
+
+**Independent verdict: `Pass with conditions`.** P0: none. P1: none. The
+reviewed implementation commit is
+`fa5dbaf1fded3e25ac39a6c0c675cddc786f01bb`; the reviewed evidence commit is
+`786f4c720949784f4f66515228778bf6a012b952`.
+
+The reviewer confirmed that the previous base/overlay atomicity condition is
+closed: main-App deployment installs the immutable generation and runs managed
+overlay synchronization inside one recoverable production boundary, while the
+Extension only consumes a receipt-authorized generation and does not perform a
+34 MB closure hash at keyboard startup. The frozen candidate vectors now assert
+the complete first-page order, and the recorded App aggregate is
+`255 total / 252 passed / 3 physical-only skipped / 0 failed`.
+
+### Remaining Architecture residuals
+
+| ID | Severity | Owner / disposition | Remaining requirement |
+|---|---|---|---|
+| `F02-A-P2-PROVENANCE-001` | P2 | RIME Platform Maintainer / `fix` | Extend the machine-readable receipt with source repository, input SHA-256, complete toolchain identity and exact generator arguments before provenance/Exit is claimed. |
+| `F02-A-P2-TD001` | P2 | Main App/Data Ops / `tech_debt:TD-001` | Process-death or cross-process whole-tree atomicity remains governed by ADR 0006 and TD-001; F-02 only claims synchronous failure recovery. |
+| `F02-A-P2-DOCSYNC-001` | P2 | Architecture/Coordinator / `fix` | Closed by the 2026-08-31 synchronization of `shared-container-and-rime-lifecycle.md`, which now records bounded resource/overlay receipt authorization and fail-closed Extension consumption. |
+
+Physical fresh-App-Group/offline deployment, Full Access off/on, Extension
+lifecycle, iOS 18 physical evidence, performance/size, hosted CI, exact
+archive/build provenance, license/legal review and Human Product Gate remain
+pending. Simulator App Group warnings are not physical-device evidence.
+
+Architecture permits preparation of an exact installable build and a physical
+device handoff matrix because the independent Quality reviewer also permits
+that preparation. This is not device execution, Assignment Exit, merge,
+TestFlight or Release authorization.
+
+**Independence statement:** the reviewer performed a read-only review in the
+isolated F-02 worktree, did not modify files or run build/test/network/device
+actions, did not touch the main checkout and did not inspect or operate PR #91.

@@ -56,7 +56,16 @@ These operations must not be moved into keyboard presentation or key handling.
 
 At startup the Extension calls `RimeConfigManager.runtimeDirectories()`. This resolver is read-only: both `Rime/shared` and `Rime/user` must already exist.
 
-- When directories exist, the Extension creates `RimeEngineImpl`, opens a new RIME session and confirms the requested schema can be selected. Healthy cold startup does not synthesize input or enumerate every schema; deeper functional validation remains in explicit recovery/failure paths.
+- For the built-in Luna generation, the resolver also requires matching resource
+  and managed-overlay receipts. It verifies their generation identity and the
+  bounded overlay hashes before returning the runtime directories. Missing,
+  stale or mismatched authorization fails closed to the fallback path; the
+  Extension does not repair or redeploy the installation.
+- When the directories and applicable receipts are valid, the Extension creates
+  `RimeEngineImpl`, opens a new RIME session and confirms the requested schema
+  can be selected. Healthy cold startup does not hash the full immutable closure,
+  synthesize input or enumerate every schema; deeper functional validation
+  remains in explicit recovery/failure paths.
 - When they do not exist, it uses the fallback adapter and logs that deployment must be completed in the main App.
 - During input it may process keys, select candidates, clear/recreate a session and reselect the active schema.
 - It must not generate YAML, install files, clear deployment caches or run full maintenance.
@@ -82,7 +91,11 @@ Typing Intelligence does not use `Rime/shared`, `Rime/user`, candidate storage o
 5. Success requires librime's terminal `deploy/success` notification and a content-free basic-input smoke for the
    active schema. For `rime_ice`, the App also records the separate runtime Lua smoke result.
 6. On failure it keeps deployment pending and exposes retry/diagnostic state.
-7. A subsequently created keyboard process opens the prepared directories and creates a session. It does not validate or repair the installation.
+7. A subsequently created keyboard process authorizes the prepared built-in
+   generation from the resource/overlay receipts, opens the prepared directories
+   and creates a session. This bounded authorization is not a full closure scan;
+   the Extension does not validate every immutable resource or repair the
+   installation.
 
 Deployment flags are status signals, not a transaction log. The built-in
 official Luna closure has a manifest-backed staging/backup/rollback transaction,
