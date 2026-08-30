@@ -1,6 +1,6 @@
 {
-  "formatVersion": 1,
-  "generationID": "luna-official-2026-08-29-v1",
+  "formatVersion": 2,
+  "generationID": "luna-official-2026-08-30-v2",
   "sourcePins": {
     "lunaPinyin": "56b934b099dfbeab842320f13aa8b461a6ab3e42",
     "essay": "e9b1a374a6ea015fca5bdd04318924b4483ac35a",
@@ -17,6 +17,19 @@
       "version": "1.3.1+g2535001",
       "sourceRevision": "25350017e81b40aa9e3e66c18446b57f83b0607d"
     }
+  },
+  "reproducibility": {
+    "host": "macOS 27.0 arm64",
+    "command": "scripts/generate_builtin_rime_resources.sh <pinned-source-root> <output-root>",
+    "cleanOutputSHA256A": "18642376d67f9bc74b42988262a2ce7815bee59a36b51dc0388006bc01c0adeb",
+    "cleanOutputSHA256B": "18642376d67f9bc74b42988262a2ce7815bee59a36b51dc0388006bc01c0adeb"
+  },
+  "overlayPolicy": {
+    "identifier": "universe-luna-overlay-v1",
+    "requiredFiles": [
+      "default.custom.yaml",
+      "luna_pinyin.custom.yaml"
+    ]
   },
   "entries": [
     {

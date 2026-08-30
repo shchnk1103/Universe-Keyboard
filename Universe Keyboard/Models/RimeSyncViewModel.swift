@@ -66,15 +66,17 @@ final class RimeSyncViewModel {
         automaticPrivateSettingsEnabled =
             (defaults.object(forKey: StorageKey.automaticPrivateSettingsEnabled) as? Bool) ?? true
         if automaticSyncEnabled,
-           !automaticStandardRimeDataEnabled,
-           !automaticPrivateSettingsEnabled {
+            !automaticStandardRimeDataEnabled,
+            !automaticPrivateSettingsEnabled
+        {
             // 修复旧状态中的矛盾组合：没有任何同步内容时，总开关不能保持开启。
             automaticSyncEnabled = false
             defaults.set(false, forKey: StorageKey.automaticSyncEnabled)
         }
-        automaticSyncCadence = RimeAutomaticSyncCadence(
-            rawValue: defaults.string(forKey: StorageKey.automaticSyncCadence) ?? ""
-        ) ?? .daily
+        automaticSyncCadence =
+            RimeAutomaticSyncCadence(
+                rawValue: defaults.string(forKey: StorageKey.automaticSyncCadence) ?? ""
+            ) ?? .daily
         status = isConfigured ? .idle : .notConfigured
     }
 
@@ -101,7 +103,8 @@ final class RimeSyncViewModel {
         case .syncing(let phase):
             return phase.progressMessage
         case .succeeded(let date, let completion):
-            return "\(completion.message) · \(Self.relativeDateFormatter.localizedString(for: date, relativeTo: Date()))"
+            return
+                "\(completion.message) · \(Self.relativeDateFormatter.localizedString(for: date, relativeTo: Date()))"
         case .failed(let message):
             return message
         }
@@ -237,7 +240,7 @@ final class RimeSyncViewModel {
             guard let url = normalizedWebDAVURL() else { throw RimeSyncError.invalidServerURL }
             guard isSecure(url) else { throw RimeSyncError.insecureServerURL }
             guard !webDAVUsername.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                  !webDAVPassword.isEmpty
+                !webDAVPassword.isEmpty
             else {
                 throw RimeSyncError.missingCredentials
             }
@@ -281,10 +284,12 @@ final class RimeSyncViewModel {
             category: .config
         )
         var completedNotificationScopes: Set<RimeSyncNotificationScope> = []
-        var activeNotificationScope: RimeSyncNotificationScope = includesStandardRimeData
+        var activeNotificationScope: RimeSyncNotificationScope =
+            includesStandardRimeData
             ? .standardRimeData
             : .privateSettings
-        var pendingNotificationScopes: Set<RimeSyncNotificationScope> = includesStandardRimeData
+        var pendingNotificationScopes: Set<RimeSyncNotificationScope> =
+            includesStandardRimeData
             ? [.privateSettings]
             : []
         await notificationService.notify(
@@ -318,7 +323,8 @@ final class RimeSyncViewModel {
             setStatus(.syncing(.privateSettings))
             let completedAt = try await synchronizePrivateSettings()
             completedNotificationScopes.insert(.privateSettings)
-            let completion: RimeSyncCompletion = includesStandardRimeData
+            let completion: RimeSyncCompletion =
+                includesStandardRimeData
                 ? .standardRimeAndPrivateSettings
                 : .privateSettings
             setStatus(.succeeded(completedAt, completion))
@@ -342,11 +348,12 @@ final class RimeSyncViewModel {
             )
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
-            setStatus(.failed(
-                didPauseLocalFolderSync
-                    ? "无法访问或写入同步目录。同步已暂停，请重新选择一个可写文件夹。"
-                    : error.localizedDescription
-            ))
+            setStatus(
+                .failed(
+                    didPauseLocalFolderSync
+                        ? "无法访问或写入同步目录。同步已暂停，请重新选择一个可写文件夹。"
+                        : error.localizedDescription
+                ))
             Logger.shared.error(
                 "rimeSync manual sync failed code=\(RimeSyncFolderAccess.diagnosticErrorCode(for: error)) "
                     + "localSyncPaused=\(didPauseLocalFolderSync)",
@@ -372,10 +379,12 @@ final class RimeSyncViewModel {
         if provider == .localFolder {
             guard automaticSyncEnabled, automaticPrivateSettingsEnabled else { return }
         }
-        let effectiveInterval = minimumInterval
+        let effectiveInterval =
+            minimumInterval
             ?? (provider == .localFolder ? automaticSyncCadence.interval : 60)
         let persistedLastSuccess = defaults.object(forKey: StorageKey.lastSuccess) as? Date
-        let lastAttempt = automaticSyncEnabled
+        let lastAttempt =
+            automaticSyncEnabled
             ? [
                 defaults.object(forKey: StorageKey.lastForegroundPrivateAttempt) as? Date,
                 persistedLastSuccess ?? lastSuccessDate,
@@ -422,11 +431,12 @@ final class RimeSyncViewModel {
             }
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
-            setStatus(.failed(
-                didPauseLocalFolderSync
-                    ? "无法访问或写入同步目录。同步已暂停，请重新选择一个可写文件夹。"
-                    : error.localizedDescription
-            ))
+            setStatus(
+                .failed(
+                    didPauseLocalFolderSync
+                        ? "无法访问或写入同步目录。同步已暂停，请重新选择一个可写文件夹。"
+                        : error.localizedDescription
+                ))
             Logger.shared.error(
                 "rimeSync automatic private sync failed code=\(RimeSyncFolderAccess.diagnosticErrorCode(for: error)) "
                     + "localSyncPaused=\(didPauseLocalFolderSync)",
@@ -458,10 +468,12 @@ final class RimeSyncViewModel {
             return .skipped(.waitingForFirstManualSync)
         }
         guard !isSynchronizing else { return .skipped(.alreadyRunning) }
-        guard RimeAutomaticSyncPolicy.isDue(
-            lastAutomaticAttempt: defaults.object(forKey: StorageKey.lastAutomaticAttempt) as? Date,
-            cadence: automaticSyncCadence
-        ) else {
+        guard
+            RimeAutomaticSyncPolicy.isDue(
+                lastAutomaticAttempt: defaults.object(forKey: StorageKey.lastAutomaticAttempt) as? Date,
+                cadence: automaticSyncCadence
+            )
+        else {
             return .skipped(.coolingDown)
         }
 
@@ -475,7 +487,8 @@ final class RimeSyncViewModel {
         defaults.set(startedAt, forKey: StorageKey.lastAutomaticAttempt)
         var completedNotificationScopes: Set<RimeSyncNotificationScope> = []
         var activeNotificationScope = RimeSyncNotificationScope.standardRimeData
-        var pendingNotificationScopes: Set<RimeSyncNotificationScope> = automaticPrivateSettingsEnabled
+        var pendingNotificationScopes: Set<RimeSyncNotificationScope> =
+            automaticPrivateSettingsEnabled
             ? [.privateSettings]
             : []
         setStatus(.syncing(.standardRimeData))
@@ -534,11 +547,12 @@ final class RimeSyncViewModel {
             return .skipped(.cancelled)
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
-            setStatus(.failed(
-                didPauseLocalFolderSync
-                    ? "无法访问或写入同步目录。自动同步已暂停，请重新选择一个可写文件夹。"
-                    : "自动同步未完成，会在下个同步周期再试。"
-            ))
+            setStatus(
+                .failed(
+                    didPauseLocalFolderSync
+                        ? "无法访问或写入同步目录。自动同步已暂停，请重新选择一个可写文件夹。"
+                        : "自动同步未完成，会在下个同步周期再试。"
+                ))
             Logger.shared.error(
                 "rimeSync automatic standard sync failed code="
                     + "\(RimeSyncFolderAccess.diagnosticErrorCode(for: error)) "
@@ -735,9 +749,12 @@ final class RimeSyncViewModel {
 
         // 先把本 App 当前管理的选项刷新成 RIME 标准 .custom.yaml，
         // 再交给 librime 进行快照合并与 YAML/TXT 备份。
-        await Task.detached(priority: .userInitiated) {
+        let overlaysAuthorized = await Task.detached(priority: .userInitiated) {
             RimeConfigManager.syncCustomYamlFiles()
         }.value
+        guard overlaysAuthorized else {
+            throw RimeStandardSyncError.invalidInstallationConfiguration
+        }
 
         try await standardRimeSyncService.synchronize(
             RimeStandardSyncRequest(
@@ -824,7 +841,7 @@ final class RimeSyncViewModel {
 
     private func loadProfile() -> RimeSyncProfile {
         guard let data = defaults.data(forKey: StorageKey.profile),
-              let profile = try? JSONDecoder().decode(RimeSyncProfile.self, from: data)
+            let profile = try? JSONDecoder().decode(RimeSyncProfile.self, from: data)
         else {
             return RimeSyncProfile()
         }
@@ -840,16 +857,17 @@ final class RimeSyncViewModel {
     private func normalizedWebDAVURL() -> URL? {
         let trimmed = webDAVURL.trimmingCharacters(in: .whitespacesAndNewlines)
         guard var components = URLComponents(string: trimmed),
-              let scheme = components.scheme?.lowercased(),
-              scheme == "https" || scheme == "http",
-              components.host != nil,
-              components.user == nil,
-              components.password == nil
+            let scheme = components.scheme?.lowercased(),
+            scheme == "https" || scheme == "http",
+            components.host != nil,
+            components.user == nil,
+            components.password == nil
         else {
             return nil
         }
-        components.path = components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-            .isEmpty ? "" : "/" + components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        components.path =
+            components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+                .isEmpty ? "" : "/" + components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         return components.url
     }
 

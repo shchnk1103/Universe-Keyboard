@@ -6,15 +6,27 @@ private let customYamlAppGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 extension RimeConfigManager {
     /// 从 UserDefaults 读取配置并生成 .custom.yaml 文件到 user_data_dir。
     /// 在部署前调用，确保用户通过主 App 修改的配置被写入。
-    public static func syncCustomYamlFiles() {
+    @discardableResult
+    public static func syncCustomYamlFiles() -> Bool {
         guard
             let containerURL = FileManager.default.containerURL(
                 forSecurityApplicationGroupIdentifier: customYamlAppGroupID
             )
-        else { return }
+        else { return false }
 
         let userDir = containerURL.appendingPathComponent("Rime/user")
-        try? FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
+        let rimeRoot = containerURL.appendingPathComponent("Rime", isDirectory: true)
+        let overlayReceiptURL = rimeRoot.appendingPathComponent("builtin-overlay-receipt.json")
+        do {
+            try FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
+            // Never let a previous receipt authorize an interrupted rewrite.
+            if FileManager.default.fileExists(atPath: overlayReceiptURL.path) {
+                try FileManager.default.removeItem(at: overlayReceiptURL)
+            }
+        } catch {
+            Logger.shared.error("Failed to prepare RIME custom YAML directory", category: .config)
+            return false
+        }
 
         let defs = UserDefaults(suiteName: customYamlAppGroupID)
         let activeSchema = defs?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
@@ -43,8 +55,16 @@ extension RimeConfigManager {
         if pageSize >= 5 {
             defaultYaml += "  \"menu/page_size\": \(pageSize)\n"
         }
-        try? defaultYaml.write(
-            to: userDir.appendingPathComponent("default.custom.yaml"), atomically: true, encoding: .utf8)
+        do {
+            try defaultYaml.write(
+                to: userDir.appendingPathComponent("default.custom.yaml"),
+                atomically: true,
+                encoding: .utf8
+            )
+        } catch {
+            Logger.shared.error("Failed to write default.custom.yaml", category: .config)
+            return false
+        }
         Logger.shared.info(
             "Synced default.custom.yaml (activeSchema=\(activeSchema), page_size=\(pageSize))",
             category: .config
@@ -84,12 +104,27 @@ extension RimeConfigManager {
             fuzzyPinyinSettings: fuzzySettings
         )
         for file in plan {
-            try? file.content.write(
-                to: userDir.appendingPathComponent(file.filename),
-                atomically: true,
-                encoding: .utf8
-            )
+            do {
+                try file.content.write(
+                    to: userDir.appendingPathComponent(file.filename),
+                    atomically: true,
+                    encoding: .utf8
+                )
+            } catch {
+                Logger.shared.error("Failed to write schema custom YAML", category: .config)
+                return false
+            }
             Logger.shared.info("Synced \(file.filename) user dictionary settings", category: .config)
+        }
+        do {
+            try RimeBuiltinResourceInstaller().recordOverlayReceipt(
+                rimeRoot: rimeRoot,
+                userDataURL: userDir
+            )
+            return true
+        } catch {
+            Logger.shared.error("Failed to authorize RIME custom YAML generation", category: .config)
+            return false
         }
     }
 

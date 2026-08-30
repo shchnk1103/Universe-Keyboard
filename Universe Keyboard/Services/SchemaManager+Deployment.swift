@@ -62,9 +62,19 @@ extension SchemaManager {
 
         Logger.shared.info("deployRimeConfig: 开始主 App 端全量部署", category: .deployment)
 
-        await Task.detached(priority: .userInitiated) {
+        let overlaysAuthorized = await Task.detached(priority: .userInitiated) {
             RimeConfigManager.syncCustomYamlFiles()
         }.value
+        guard overlaysAuthorized else {
+            Logger.shared.error(
+                "deployRimeConfig: 动态配置写入或身份校验失败",
+                category: .deployment
+            )
+            settings.set(false, forKey: "rime_deployed")
+            settings.set(true, forKey: "rime_needs_deploy")
+            settings.synchronize()
+            return false
+        }
         applyAdvancedInputPostProcessing(to: directories.sharedDataURL)
         applyFuzzyPinyinPostProcessing(to: directories.sharedDataURL)
 

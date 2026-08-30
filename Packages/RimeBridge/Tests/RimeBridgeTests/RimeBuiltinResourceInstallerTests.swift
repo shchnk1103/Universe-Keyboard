@@ -57,6 +57,23 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: destination), lastGood)
     }
 
+    func testSameLengthCorruptionIsRejectedByChecksum() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let url = fixture.source.appendingPathComponent("essay.txt")
+        let original = try Data(contentsOf: url)
+        try Data(repeating: 0x78, count: original.count).write(to: url)
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().validateResourceTree(at: fixture.source)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .checksumMismatch
+            )
+        }
+    }
+
     func testManifestCannotOmitARequiredRuntimeResource() throws {
         let fixture = try makeFixture(omitting: "stroke.reverse.bin")
         defer { try? FileManager.default.removeItem(at: fixture.root) }
@@ -84,6 +101,164 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
             XCTAssertEqual(
                 error as? RimeBuiltinResourceInstaller.InstallationError,
                 .resourceSetMismatch
+            )
+        }
+    }
+
+    func testHiddenUnmanifestedResourceIsRejected() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        try Data("unexpected".utf8).write(
+            to: fixture.source.appendingPathComponent(".unexpected.yaml")
+        )
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().validateResourceTree(at: fixture.source)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .resourceSetMismatch
+            )
+        }
+    }
+
+    func testMissingProvenanceIsRejected() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let manifestURL = fixture.source.appendingPathComponent(
+            RimeBuiltinResourceInstaller.manifestFileName
+        )
+        var manifest = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: Data(contentsOf: manifestURL)) as? [String: Any]
+        )
+        manifest["sourcePins"] = [:]
+        try JSONSerialization.data(withJSONObject: manifest, options: [.sortedKeys]).write(
+            to: manifestURL
+        )
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().validateResourceTree(at: fixture.source)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .manifestInvalid
+            )
+        }
+    }
+
+    func testInstalledResourceTamperInvalidatesReceipt() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
+        let installer = RimeBuiltinResourceInstaller()
+        _ = try installer.install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+        let essayURL = rimeRoot.appendingPathComponent("shared/essay.txt")
+        let original = try Data(contentsOf: essayURL)
+        try Data(repeating: 0x78, count: original.count).write(to: essayURL)
+
+        XCTAssertThrowsError(try installer.validateInstalledResources(rimeRoot: rimeRoot)) {
+            error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .checksumMismatch
+            )
+        }
+    }
+
+    func testCorruptPriorReceiptFailsBeforeRuntimeMutation() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
+        let sharedRoot = rimeRoot.appendingPathComponent("shared", isDirectory: true)
+        let essayURL = sharedRoot.appendingPathComponent("essay.txt")
+        try FileManager.default.createDirectory(
+            at: essayURL.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        let lastGood = Data("last-good".utf8)
+        try lastGood.write(to: essayURL)
+        try Data("corrupt-receipt".utf8).write(
+            to: rimeRoot.appendingPathComponent("builtin-resource-receipt.json")
+        )
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().install(
+                sourceRoot: fixture.source,
+                rimeRoot: rimeRoot
+            )
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .manifestInvalid
+            )
+        }
+        XCTAssertEqual(try Data(contentsOf: essayURL), lastGood)
+    }
+
+    func testOverlayReceiptBindsRequiredRuntimeFiles() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
+        let userRoot = rimeRoot.appendingPathComponent("user", isDirectory: true)
+        try FileManager.default.createDirectory(at: userRoot, withIntermediateDirectories: true)
+        let installer = RimeBuiltinResourceInstaller()
+        _ = try installer.install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+        for path in RimeBuiltinResourceInstaller.requiredOverlayPaths {
+            try Data("overlay:\(path)".utf8).write(to: userRoot.appendingPathComponent(path))
+        }
+
+        XCTAssertThrowsError(
+            try installer.validateInstalledRuntime(rimeRoot: rimeRoot, userDataURL: userRoot)
+        )
+        try installer.recordOverlayReceipt(rimeRoot: rimeRoot, userDataURL: userRoot)
+        XCTAssertNoThrow(
+            try installer.validateInstalledRuntime(rimeRoot: rimeRoot, userDataURL: userRoot)
+        )
+        try Data("changed".utf8).write(
+            to: userRoot.appendingPathComponent("luna_pinyin.custom.yaml")
+        )
+        XCTAssertThrowsError(
+            try installer.validateInstalledRuntime(rimeRoot: rimeRoot, userDataURL: userRoot)
+        )
+    }
+
+    func testEveryFileSwitchFailureRestoresLastGoodRuntime() throws {
+        for failurePath in RimeBuiltinResourceInstaller.requiredRelativePaths.sorted() {
+            let fixture = try makeFixture()
+            defer { try? FileManager.default.removeItem(at: fixture.root) }
+            let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
+            let sharedRoot = rimeRoot.appendingPathComponent("shared", isDirectory: true)
+            try FileManager.default.createDirectory(at: sharedRoot, withIntermediateDirectories: true)
+            var lastGood: [String: Data] = [:]
+            for path in RimeBuiltinResourceInstaller.requiredRelativePaths {
+                let data = Data("last-good:\(path)".utf8)
+                let url = sharedRoot.appendingPathComponent(path)
+                try FileManager.default.createDirectory(
+                    at: url.deletingLastPathComponent(),
+                    withIntermediateDirectories: true
+                )
+                try data.write(to: url)
+                lastGood[path] = data
+            }
+
+            XCTAssertThrowsError(
+                try RimeBuiltinResourceInstaller(
+                    testFailureBeforeInstallingPath: failurePath
+                ).install(sourceRoot: fixture.source, rimeRoot: rimeRoot),
+                "failurePath=\(failurePath)"
+            )
+            for path in RimeBuiltinResourceInstaller.requiredRelativePaths {
+                XCTAssertEqual(
+                    try Data(contentsOf: sharedRoot.appendingPathComponent(path)),
+                    lastGood[path],
+                    "failurePath=\(failurePath), restoredPath=\(path)"
+                )
+            }
+            XCTAssertFalse(
+                FileManager.default.fileExists(
+                    atPath: rimeRoot.appendingPathComponent("builtin-resource-receipt.json").path
+                ),
+                "failurePath=\(failurePath)"
             )
         }
     }
@@ -125,6 +300,23 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         )
     }
 
+    func testFlattenedBundleRejectsUnmanifestedRimeResource() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let bundleRoot = fixture.root.appendingPathComponent("Extra.bundle", isDirectory: true)
+        try makeFlattenedBundle(from: fixture.source, at: bundleRoot)
+        try Data("unexpected".utf8).write(to: bundleRoot.appendingPathComponent("unexpected.yaml"))
+        let bundle = try XCTUnwrap(Bundle(url: bundleRoot))
+
+        XCTAssertThrowsError(try RimeConfigManager.stageBundledResourceClosure(from: bundle)) {
+            error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .resourceSetMismatch
+            )
+        }
+    }
+
     private func makeFixture(omitting omittedSuffix: String? = nil) throws -> (root: URL, source: URL) {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(
             "rime-builtin-installer-tests-\(UUID().uuidString)",
@@ -147,18 +339,77 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
                 "path": path,
                 "byteCount": data.count,
                 "sha256": SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined(),
-                "role": "fixture",
+                "role": expectedRole(for: path),
             ])
         }
         let manifest: [String: Any] = [
-            "formatVersion": 1,
+            "formatVersion": 2,
             "generationID": "fixture-v1",
-            "sourcePins": [:],
-            "generators": [:],
+            "sourcePins": [
+                "essay": String(repeating: "1", count: 40),
+                "lunaPinyin": String(repeating: "2", count: 40),
+                "opencc": String(repeating: "3", count: 40),
+                "prelude": String(repeating: "4", count: 40),
+                "stroke": String(repeating: "5", count: 40),
+            ],
+            "generators": [
+                "rimeDeployer": [
+                    "version": "fixture",
+                    "sha256": String(repeating: "a", count: 64),
+                ],
+                "opencc": [
+                    "version": "fixture",
+                    "sourceRevision": String(repeating: "3", count: 40),
+                ],
+            ],
+            "reproducibility": [
+                "host": "fixture-host",
+                "command": "fixture-command",
+                "cleanOutputSHA256A": String(repeating: "b", count: 64),
+                "cleanOutputSHA256B": String(repeating: "b", count: 64),
+            ],
+            "overlayPolicy": [
+                "identifier": "universe-luna-overlay-v1",
+                "requiredFiles": ["default.custom.yaml", "luna_pinyin.custom.yaml"],
+            ],
             "entries": entries,
         ]
         try JSONSerialization.data(withJSONObject: manifest, options: [.prettyPrinted, .sortedKeys])
             .write(to: source.appendingPathComponent(RimeBuiltinResourceInstaller.manifestFileName))
         return (root, source)
+    }
+
+    private func expectedRole(for path: String) -> String {
+        if path.hasSuffix(".bin") { return "generated-rime" }
+        if path.hasSuffix(".ocd2") { return "generated-opencc" }
+        if path.hasSuffix(".json") { return "opencc-config" }
+        if path == "essay.txt" { return "preset-vocabulary" }
+        return "source"
+    }
+
+    private func makeFlattenedBundle(from source: URL, at bundleRoot: URL) throws {
+        try FileManager.default.createDirectory(at: bundleRoot, withIntermediateDirectories: true)
+        try """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0"><dict>
+        <key>CFBundleIdentifier</key><string>com.example.RimeBuiltinExtraFixture</string>
+        <key>CFBundlePackageType</key><string>BNDL</string>
+        </dict></plist>
+        """.write(
+            to: bundleRoot.appendingPathComponent("Info.plist"),
+            atomically: true,
+            encoding: .utf8
+        )
+        try FileManager.default.copyItem(
+            at: source.appendingPathComponent(RimeBuiltinResourceInstaller.manifestFileName),
+            to: bundleRoot.appendingPathComponent(RimeBuiltinResourceInstaller.manifestFileName)
+        )
+        for path in RimeBuiltinResourceInstaller.requiredRelativePaths {
+            try FileManager.default.copyItem(
+                at: source.appendingPathComponent(path),
+                to: bundleRoot.appendingPathComponent((path as NSString).lastPathComponent)
+            )
+        }
     }
 }

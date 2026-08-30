@@ -129,28 +129,43 @@ for name in "${OPENCC_OUTPUTS[@]}"; do
   cmp "$WORK_ROOT/opencc-a/data/$name" "$WORK_ROOT/opencc-b/data/$name"
 done
 
-readonly STAGED_OUTPUT="$WORK_ROOT/output"
-mkdir -p "$STAGED_OUTPUT/build" "$STAGED_OUTPUT/opencc"
-cp "$WORK_ROOT/rime-a/shared/"*.yaml "$STAGED_OUTPUT/"
-cp "$WORK_ROOT/rime-a/shared/essay.txt" "$STAGED_OUTPUT/"
-for name in "${RIME_OUTPUTS[@]}"; do
-  cp "$WORK_ROOT/rime-a/staging/$name" "$STAGED_OUTPUT/build/$name"
-done
-for name in t2s.json t2hk.json t2tw.json s2t.json; do
-  cp "$SOURCE_ROOT/OpenCC/data/config/$name" "$STAGED_OUTPUT/opencc/$name"
-done
-for name in "${OPENCC_OUTPUTS[@]}"; do
-  cp "$WORK_ROOT/opencc-a/data/$name" "$STAGED_OUTPUT/opencc/$name"
-done
+stage_output() {
+  local rime_root="$1"
+  local opencc_root="$2"
+  local output_root="$3"
+  mkdir -p "$output_root/build" "$output_root/opencc"
+  cp "$rime_root/shared/"*.yaml "$output_root/"
+  cp "$rime_root/shared/essay.txt" "$output_root/"
+  for name in "${RIME_OUTPUTS[@]}"; do
+    cp "$rime_root/staging/$name" "$output_root/build/$name"
+  done
+  for name in t2s.json t2hk.json t2tw.json s2t.json; do
+    cp "$SOURCE_ROOT/OpenCC/data/config/$name" "$output_root/opencc/$name"
+  done
+  for name in "${OPENCC_OUTPUTS[@]}"; do
+    cp "$opencc_root/data/$name" "$output_root/opencc/$name"
+  done
+}
 
-python3 - "$STAGED_OUTPUT" "$actual_deployer_sha" <<'PY'
+readonly STAGED_OUTPUT="$WORK_ROOT/output-a"
+readonly SECOND_STAGED_OUTPUT="$WORK_ROOT/output-b"
+stage_output "$WORK_ROOT/rime-a" "$WORK_ROOT/opencc-a" "$STAGED_OUTPUT"
+stage_output "$WORK_ROOT/rime-b" "$WORK_ROOT/opencc-b" "$SECOND_STAGED_OUTPUT"
+
+python3 - \
+  "$STAGED_OUTPUT" \
+  "$SECOND_STAGED_OUTPUT" \
+  "$actual_deployer_sha" \
+  "macOS $(sw_vers -productVersion) $(uname -m)" <<'PY'
 import hashlib
 import json
 import pathlib
 import sys
 
 root = pathlib.Path(sys.argv[1])
-deployer_sha = sys.argv[2]
+second_root = pathlib.Path(sys.argv[2])
+deployer_sha = sys.argv[3]
+host = sys.argv[4]
 roles = {
     ".yaml": "source",
     ".txt": "preset-vocabulary",
@@ -169,9 +184,25 @@ for path in sorted(p for p in root.rglob("*") if p.is_file()):
         "role": roles[path.suffix],
     })
 
+def tree_digest(directory: pathlib.Path) -> str:
+    digest = hashlib.sha256()
+    for path in sorted(p for p in directory.rglob("*") if p.is_file()):
+        relative = path.relative_to(directory).as_posix().encode("utf-8")
+        digest.update(len(relative).to_bytes(4, "big"))
+        digest.update(relative)
+        data = path.read_bytes()
+        digest.update(len(data).to_bytes(8, "big"))
+        digest.update(data)
+    return digest.hexdigest()
+
+first_digest = tree_digest(root)
+second_digest = tree_digest(second_root)
+if first_digest != second_digest:
+    raise SystemExit("clean output trees differ")
+
 manifest = {
-    "formatVersion": 1,
-    "generationID": "luna-official-2026-08-29-v1",
+    "formatVersion": 2,
+    "generationID": "luna-official-2026-08-30-v2",
     "sourcePins": {
         "lunaPinyin": "56b934b099dfbeab842320f13aa8b461a6ab3e42",
         "essay": "e9b1a374a6ea015fca5bdd04318924b4483ac35a",
@@ -188,6 +219,16 @@ manifest = {
             "version": "1.3.1+g2535001",
             "sourceRevision": "25350017e81b40aa9e3e66c18446b57f83b0607d",
         },
+    },
+    "reproducibility": {
+        "host": host,
+        "command": "scripts/generate_builtin_rime_resources.sh <pinned-source-root> <output-root>",
+        "cleanOutputSHA256A": first_digest,
+        "cleanOutputSHA256B": second_digest,
+    },
+    "overlayPolicy": {
+        "identifier": "universe-luna-overlay-v1",
+        "requiredFiles": ["default.custom.yaml", "luna_pinyin.custom.yaml"],
     },
     "entries": entries,
 }

@@ -28,15 +28,17 @@ extension RimeConfigManager {
         let rimeRoot = containerURL.appendingPathComponent("Rime", isDirectory: true)
         let userDir = rimeRoot.appendingPathComponent("user", isDirectory: true)
         try FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
-
-        let result = try RimeBuiltinResourceInstaller().install(
-            sourceRoot: resourceRoot,
-            rimeRoot: rimeRoot
-        )
+        // Installation metadata is a prerequisite of a usable generation. Write
+        // it before replacing the last known-good shared closure so a metadata
+        // failure cannot leave a partially authorized new generation behind.
         try RimeConfigTemplates.installationYaml.write(
             to: userDir.appendingPathComponent("installation.yaml"),
             atomically: true,
             encoding: .utf8
+        )
+        let result = try RimeBuiltinResourceInstaller().install(
+            sourceRoot: resourceRoot,
+            rimeRoot: rimeRoot
         )
         Logger.shared.info(
             "Built-in RIME resources installed fileCount=\(result.fileCount) "
@@ -70,6 +72,7 @@ extension RimeConfigManager {
         else {
             throw RimeBuiltinResourceInstaller.InstallationError.manifestMissing
         }
+        try validateBundledResourceMembership(bundle: bundle, manifest: manifest)
         let filenames = manifest.entries.compactMap { $0.path.split(separator: "/").last.map(String.init) }
         guard Set(filenames).count == manifest.entries.count else {
             // Xcode flattens synchronized resources. Duplicate basenames would
@@ -116,6 +119,35 @@ extension RimeConfigManager {
         } catch {
             try? FileManager.default.removeItem(at: stagedRoot)
             throw error
+        }
+    }
+
+    /// Rejects RIME-looking files that are present in the flattened main-App
+    /// bundle but absent from the signed closure manifest. Non-RIME resources
+    /// such as license text and asset catalogs remain outside this boundary.
+    private static func validateBundledResourceMembership(
+        bundle: Bundle,
+        manifest: RimeBuiltinResourceInstaller.Manifest
+    ) throws {
+        guard let resourceURL = bundle.resourceURL else {
+            throw RimeBuiltinResourceInstaller.InstallationError.resourceSetMismatch
+        }
+        let expected = Set(
+            manifest.entries.compactMap { $0.path.split(separator: "/").last.map(String.init) }
+        ).union([RimeBuiltinResourceInstaller.manifestFileName])
+        let closureExtensions: Set<String> = ["bin", "json", "ocd2", "yaml"]
+        let rootFiles = try FileManager.default.contentsOfDirectory(
+            at: resourceURL,
+            includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey]
+        )
+        for url in rootFiles where closureExtensions.contains(url.pathExtension.lowercased()) {
+            let values = try url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
+            guard values.isRegularFile == true, values.isSymbolicLink != true else {
+                throw RimeBuiltinResourceInstaller.InstallationError.resourceNotRegularFile
+            }
+            guard expected.contains(url.lastPathComponent) else {
+                throw RimeBuiltinResourceInstaller.InstallationError.resourceSetMismatch
+            }
         }
     }
 }
