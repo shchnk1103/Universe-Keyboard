@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Findings remediation is frozen at `1755006`; focused gates and Debug/Release builds pass, while the current full App suite is explicitly blocked by a named pre-existing NineKey async test; exact remediation commit is pending independent Architecture and Quality re-review |
+| **Phase** | Reviewer conditions are remediated at `85d0249`; exact first-page order, Stroke session isolation, recursive bundle-extra rejection and recoverable overlay replacement pass focused gates; the App aggregate remains explicitly blocked by simulator App Group entitlement failures across multiple pre-existing deployment tests |
 | **Non-claims** | No Assignment Exit, hosted CI, physical-device/Full Access/lifecycle/performance pass, independent final review, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
-| **Next** | Independent Architecture and Quality reviewers re-review exact commit `1755006`, including the former findings and the honest full-App aggregate blocker; if both reviews permit, prepare an exact installable build and hand the physical-device matrix to the Human Dependency |
+| **Next** | The bound independent Architecture and Quality reviewers re-review exact commit `85d0249` plus its evidence checkpoint; only if both permit may the Coordinator prepare an exact installable build and hand the physical-device matrix to the Human Dependency |
 | **Residuals** | [`Architecture post-implementation review`](rime-builtin-luna-quality-001-architecture-review.md#post-implementation-review--09659a7--2026-08-30) · [`Quality post-implementation review`](rime-builtin-luna-quality-001-quality-review.md#post-implementation-review--09659a7--2026-08-30) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) |
 
 ---
@@ -313,3 +313,14 @@ built-in assets.
   852.710 seconds. Assignment remains `Active` pending independent re-review;
   no unrelated NineKey fix, physical-device claim, hosted CI, merge or Release
   action is inferred.
+- `2026-08-30 Asia/Shanghai` — Independent re-review of `1755006` returned
+  `Pass with conditions` from both Architecture and Quality. Executor closed
+  the in-scope bundle-extra, normal overlay rollback, exact first-page candidate
+  order and Stroke session-isolation conditions in `85d0249`. Final focused
+  actual-bundle integration, 86-test RimeBridge suite, 1,068-test KeyboardCore
+  suite and Debug/Release builds pass. A diagnostic App rerun that skipped only
+  the original hanging NineKey case still failed 15 of 254 tests after the
+  unsigned simulator host could not resolve the App Group; the aggregate stays
+  blocked and is not presented as F-02 green. Assignment remains `Active`
+  pending final independent re-review; no physical-device, hosted-CI, merge or
+  Release claim is inferred.
