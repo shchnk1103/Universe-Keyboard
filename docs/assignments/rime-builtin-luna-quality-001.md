@@ -8,11 +8,11 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | Implementation commit `09659a7` and local iOS 27 simulator gates are complete; Q-01–Q-10 are partially evidenced and the exact implementation is awaiting independent Architecture/Quality re-review before physical-device handoff |
+| **Lifecycle** | `Blocked` |
+| **Phase** | Implementation commit `09659a7` and local iOS 27 simulator gates are complete, but the bounded independent Architecture/Quality review executions returned no auditable conclusion; required reviewer availability is absent at this checkpoint |
 | **Non-claims** | No Assignment Exit, hosted CI, physical-device/Full Access/lifecycle/performance pass, independent final review, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
-| **Next** | Independently re-review commit `09659a7` plus the implementation evidence; resolve findings, then prepare one exact build for the named iPhone 13 Pro / iOS 27 offline, Full Access and lifecycle matrix |
-| **Residuals** | [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`Architecture review`](rime-builtin-luna-quality-001-architecture-review.md) · [`Quality review`](rime-builtin-luna-quality-001-quality-review.md) · [`upstream pin audit`](../evidence/rime-builtin-luna-quality-f02-upstream-pin-audit-2026-08-29.md) |
+| **Next** | Product Lead must establish an executable independent-review route without the Coordinator choosing or replacing the bound reviewers; only after both conclusions exist may findings be resolved and physical-device handoff be considered |
+| **Residuals** | [`review blocker`](../evidence/rime-builtin-luna-quality-f02-independent-review-blocker-2026-08-30.md) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`Architecture review`](rime-builtin-luna-quality-001-architecture-review.md) · [`Quality review`](rime-builtin-luna-quality-001-quality-review.md) |
 
 ---
 
@@ -291,3 +291,9 @@ built-in assets.
   passed locally. Assignment remains `Active`; independent re-reviews,
   physical-device Q-01/Q-02/Q-04/Q-07/Q-08 evidence, hosted CI, Human Product
   Gate, merge and Release remain open.
+- `2026-08-30 Asia/Shanghai` — The Coordinator issued one bounded, read-only
+  review execution for each bound independent reviewer. Neither returned an
+  auditable conclusion within the fixed window; both were interrupted, no
+  files were modified, and no replacement was inferred. Per Assignment Stop
+  Conditions, F-02 moved from `Active` to `Blocked` pending a Product Lead
+  decision on an executable independent-review route.
