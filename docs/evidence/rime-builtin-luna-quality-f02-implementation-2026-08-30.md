@@ -154,7 +154,12 @@ authorization. Complete generator provenance remains `fix`, and process-death
 whole-tree atomicity remains `tech_debt:TD-001`.
 
 The [physical-device handoff packet](rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md)
-is prepared but explicitly `HOLD`: no signed candidate, installed receipt,
-device action or physical evidence exists yet. Candidate identity and Human
-authorization are mandatory before execution. Assignment Exit, PR, merge,
-TestFlight and Release remain unauthorized.
+now freezes a signed Debug device candidate produced from clean source
+`d4572d93bb9da269cb68051c941099a1e1dec808`. Deep/strict signature validation,
+App/Extension executable stub and code-dylib UUID/hash/size, CDHash, manifest
+hash and zero Extension-resource-duplicate evidence are recorded there. The
+candidate was built only; it was not installed or launched.
+
+The handoff remains explicitly `HOLD` before installation: installed receipt,
+Human device authorization and all physical observations are absent. Assignment
+Exit, PR, merge, TestFlight and Release remain unauthorized.

@@ -1,6 +1,6 @@
 # RIME-BUILTIN-LUNA-QUALITY-001 — Physical-device handoff packet
 
-> **Packet state:** `Prepared — HOLD before build/install`
+> **Packet state:** `Exact signed candidate prepared — HOLD before install/run`
 > **Prepared:** `2026-08-31 Asia/Shanghai`
 > **Assignment:** [`RIME-BUILTIN-LUNA-QUALITY-001`](../assignments/rime-builtin-luna-quality-001.md)
 > **Run ID reserved:** `RIME-BUILTIN-LUNA-QUALITY-001-PHYSICAL-20260831-001`
@@ -26,23 +26,27 @@ identity.
 | Field | Required value | Current state |
 |---|---|---|
 | Runtime implementation | `fa5dbaf1fded3e25ac39a6c0c675cddc786f01bb` is an ancestor of the candidate | Known source boundary; not yet bound to an installed payload |
-| Candidate source commit | Exact clean-worktree HEAD after final handoff documentation | `UNKNOWN` until the documentation commit is created |
-| Product version / project build setting | `1.0 (1)` | Repository setting only; installed receipt pending |
-| Configuration | One explicitly recorded signed device configuration | `UNKNOWN` |
-| Xcode / iPhoneOS SDK / Swift | Exact output from the build host | `UNKNOWN` |
-| App bundle identifier | `com.DoubleShy0N.Universe-Keyboard` | Repository value; installed receipt pending |
-| App executable UUID / SHA-256 / bytes | Derived from the exact signed `.app` | `UNKNOWN` |
-| Keyboard executable UUID / SHA-256 / bytes | Derived from the exact signed `.appex` | `UNKNOWN` |
-| Built-in manifest SHA-256 | Derived from the exact signed `.app` | `UNKNOWN` |
+| Candidate source commit | Exact clean-worktree HEAD used by the build | `d4572d93bb9da269cb68051c941099a1e1dec808`; clean before and after build; `fa5dbaf` ancestry confirmed |
+| Product version / project build setting | `1.0 (1)` | Signed artifact reports `1.0 (1)` |
+| Configuration | One explicitly recorded signed device configuration | `Debug`, `generic/platform=iOS`, arm64, minimum iOS 18.0 |
+| Xcode / iPhoneOS SDK / Swift | Exact output from the build host | Xcode `27.0 (27A5252f)`; iPhoneOS SDK `27.0 (24A5422a)`; Apple Swift `6.4 (swiftlang-6.4.0.33.1 clang-2100.3.33.1)` |
+| Signing | Exact development identity and team | Apple Development identity `SVGPGQXU8W`; Team `C33N6HTS9N`; App CDHash `b0ae6624e6bf541e67f2e7ed730f13b2d6cf3843`; Extension CDHash `1e23256b969333e8863008463165dfc56c72059d` |
+| App bundle identifier | `com.DoubleShy0N.Universe-Keyboard` | Signed artifact matches; installed receipt pending |
+| App executable UUID / SHA-256 / bytes | Signed Debug executable stub plus code dylib | stub `1770F23D-D866-3773-B920-6EF713DB7E3B` / `b9fa5a2622d24a3dd30065f655ce81fc19c9763bc26fa561ec4cd9e2b2ed7877` / `92,128`; code dylib `4A660282-FE40-35FF-9A15-1F0E26FA12B6` / `1d252d58b59aeab1053bb716f01887ed43acdef43b332cbf03c5d83e646d8fec` / `28,417,616` |
+| Keyboard executable UUID / SHA-256 / bytes | Signed Debug executable stub plus code dylib | stub `36EBF8E3-5B05-3798-A5AC-BB6B201E1640` / `982d982270f60e08fdeff49d3ed50d113d30d0d1f9ab79d9269b0b5799119c29` / `89,504`; code dylib `6756A501-DCBD-3FC8-A4CD-A74A36CE1504` / `a55013d15ce39cef9647793deba8792959ca63f3fc22ffca17eae39e002b6ca3` / `15,852,032` |
+| Built-in manifest SHA-256 | Derived from the exact signed `.app` | `1715dc212b2f5190ac71563523ce93e953cb7bdb2ff8704a65b9956d2c47b8cf`, `6,140` bytes; Extension duplicate scan returned zero matches |
+| Candidate artifact | Exact local product | `/tmp/f02-device-candidate-d4572d9/Build/Products/Debug-iphoneos/Universe Keyboard.app`; `codesign --verify --deep --strict` passed; ephemeral until installed or deliberately retained |
 | Installation receipt | Device reports matching app/version/build | `UNKNOWN` |
 | Device | iPhone 13 Pro / iOS `27.0 (24A5424a)` | Human-reported target; must be reconfirmed at run start |
 | Full Access baseline | Off | Pending Human observation |
 | Network baseline | Airplane mode before first App launch/deployment | Pending Human observation |
 
-Any `UNKNOWN`, dirty worktree, source mismatch, bundle/receipt mismatch or
-unexpected automatic network restoration keeps the run on HOLD. The candidate
-freeze must be committed to this table or a content-free run receipt before the
-first device action is counted as evidence.
+The only remaining `UNKNOWN` identity is the installation receipt, which cannot
+exist before installation. The run remains on HOLD until Human authorization;
+after installation, a missing/mismatched receipt, dirty/rebuilt source,
+artifact disappearance, bundle mismatch or unexpected automatic network
+restoration invalidates this candidate. Rebuilding creates a new artifact
+identity and requires a new freeze rather than silently reusing these hashes.
 
 ## Privacy and observation contract
 
@@ -143,7 +147,8 @@ FAIL/HOLD pending symbolication against the frozen executable UUIDs.
 
 | Gate | Result | Evidence pointer |
 |---|---|---|
-| Candidate freeze | `HOLD` | identity fields above contain `UNKNOWN` |
+| Candidate build freeze | `PASS` | signed Debug `.app` from clean `d4572d9`; deep/strict signature, App/Extension identity, manifest and no-duplicate scan recorded |
+| Installation receipt | `HOLD` | no install action authorized or performed |
 | Q-01 fresh/offline | `NOT RUN` | — |
 | Q-02 candidate quality/cold starts | `NOT RUN` | — |
 | Q-03 OpenCC physical RC | `NOT RUN` | — |

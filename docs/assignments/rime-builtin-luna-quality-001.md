@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Final independent Architecture and Quality re-reviews both returned `Pass with conditions` for `fa5dbaf` / `786f4c7`, with no P0/P1 findings. The Extension lifecycle documentation is synchronized and the physical-device handoff packet is prepared on HOLD pending an exact signed candidate identity and Human authorization. |
-| **Non-claims** | No Assignment Exit, exact signed build, hosted CI, physical-device/Full Access/lifecycle/performance pass, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced. |
-| **Next** | Freeze a clean exact signed candidate and its App/Keyboard UUID/hash/receipt, then obtain Human Product Owner authorization for the single physical-device Run ID. Do not begin device actions while any candidate identity field is `UNKNOWN`. |
+| **Phase** | Final independent Architecture and Quality re-reviews both returned `Pass with conditions` for `fa5dbaf` / `786f4c7`, with no P0/P1 findings. A signed Debug device candidate from clean `d4572d9` is frozen with App/Keyboard UUID, hash, CDHash and manifest identity; the physical-device handoff remains HOLD before installation. |
+| **Non-claims** | No Assignment Exit, installed-device receipt, hosted CI, physical-device/Full Access/lifecycle/performance pass, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced. |
+| **Next** | Obtain Human Product Owner authorization for reserved Run ID `RIME-BUILTIN-LUNA-QUALITY-001-PHYSICAL-20260831-001`; only then install the frozen artifact, bind the device receipt and execute the one-run matrix one Human action at a time. |
 | **Residuals** | [`Architecture final re-review`](rime-builtin-luna-quality-001-architecture-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Quality final re-review`](rime-builtin-luna-quality-001-quality-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`physical-device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ---
