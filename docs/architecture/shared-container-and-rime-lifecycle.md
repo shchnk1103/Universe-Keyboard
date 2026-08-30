@@ -4,7 +4,10 @@
 
 This document defines the current runtime ownership boundary between the main App, Keyboard Extension, App Group container, and RIME. It describes current source behavior, not a future plan.
 
-The binding decisions are ADR 0001 through ADR 0004 and ADR 0013 under `docs/architecture/decisions/`. ADR 0006 records the accepted future transaction model without claiming it is implemented.
+The binding decisions are ADR 0001 through ADR 0004, ADR 0013 and ADR 0033
+under `docs/architecture/decisions/`. ADR 0006 remains the general transaction
+model; ADR 0033 implements the narrower immutable built-in-resource transaction
+without claiming every downloaded scheme install is now transactional.
 
 ## Shared Container Layout
 
@@ -39,7 +42,8 @@ The main App owns operations that can scan, create, replace or delete persistent
 
 - download, extract, install, update and uninstall schemes;
 - generate `.custom.yaml` and post-process managed schema blocks;
-- copy bundled RIME/OpenCC resources and invalidate build caches;
+- validate and transactionally install the main-App-owned built-in
+  RIME/OpenCC closure, then invalidate build caches;
 - run `RimeDeploymentService.deploy(.fullCheck)`;
 - back up, restore or reset user-dictionary files;
 - encrypt, upload, download, merge and apply portable RIME settings;
@@ -65,8 +69,14 @@ Typing Intelligence does not use `Rime/shared`, `Rime/user`, candidate storage o
 
 ## Deployment Lifecycle
 
-1. The main App prepares `Rime/shared` and `Rime/user`.
-2. It installs or updates source configuration and resources.
+1. The main App locates the built-in manifest and flattened bundle members,
+   reconstructs their logical paths in an isolated staging directory, and
+   validates the exact allowlist, byte sizes and SHA-256 values before touching
+   the App Group. The Keyboard Extension carries no second built-in closure.
+2. It prepares `Rime/shared` and `Rime/user`, then transactionally replaces the
+   immutable built-in files while preserving unrelated downloaded schemes and
+   user state. A receipt identifies the installed generation; a failed switch
+   restores the prior built-in files.
 3. It sets `rime_deployed=false`, `rime_needs_deploy=true`, then starts deployment.
 4. `RimeDeploymentService` serializes `.fullCheck` deployment in an actor and calls the ObjC deployer.
 5. Success requires librime's terminal `deploy/success` notification and a content-free basic-input smoke for the
@@ -74,9 +84,11 @@ Typing Intelligence does not use `Rime/shared`, `Rime/user`, candidate storage o
 6. On failure it keeps deployment pending and exposes retry/diagnostic state.
 7. A subsequently created keyboard process opens the prepared directories and creates a session. It does not validate or repair the installation.
 
-Deployment flags are status signals, not a transaction log. File installation is currently performed file-by-file; atomic whole-scheme replacement and rollback are not guaranteed by the current implementation.
-
-ADR 0006 requires a future atomic directory switch or equivalent transaction model. That work remains High-priority technical debt.
+Deployment flags are status signals, not a transaction log. The built-in
+official Luna closure has a manifest-backed staging/backup/rollback transaction,
+but downloaded third-party scheme installation still has its own lifecycle and
+must not be inferred to have gained an atomic whole-scheme switch. ADR 0006
+therefore remains open for the broader installation surface.
 
 ## Keyboard Lifecycle
 
@@ -119,6 +131,7 @@ All in-memory controller, composition, candidate paging and session state is los
 - `Keyboard/Controllers/KeyboardViewController.swift`
 - `Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+RuntimeDirectories.swift`
 - `Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+DeploymentResources.swift`
+- `Packages/RimeBridge/Sources/RimeBridge/RimeBuiltinResourceInstaller.swift`
 - `Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift`
 - `Packages/RimeBridge/Sources/RimeBridge/RimeStandardSyncService.swift`
 - `Universe Keyboard/Services/SchemaArchiveInstaller.swift`

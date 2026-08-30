@@ -83,7 +83,7 @@ enum ThirdPartyLicenseCatalog {
         ],
         offlineDocuments: [
             document("LGPL-3.0 许可证原文", "RIME-LUNA-PINYIN-LGPL-3.0"),
-            document("GPL-3.0 许可证原文", "RIME-ICE-GPL-3.0-only"),
+            document("上游作者文件", "RIME-LUNA-PINYIN-AUTHORS"),
             document("词典来源与署名", "RIME-LUNA-PINYIN-SOURCE-ATTRIBUTIONS"),
         ],
         acceptanceRevision: "rime-luna-pinyin-lgpl-3.0-v1"
@@ -128,6 +128,42 @@ enum ThirdPartyLicenseCatalog {
             licenseURL: "https://github.com/BYVoid/OpenCC/blob/master/LICENSE",
             usage: "简繁转换及随 App 分发的 OpenCC 数据。",
             documents: [document("Apache-2.0 许可证原文", "OPENCC-Apache-2.0")]
+        ),
+        component(
+            id: "rime-essay",
+            name: "RIME Essay（八股文预设词汇）",
+            license: "LGPL-3.0",
+            source: "https://github.com/rime/rime-essay",
+            licenseURL: "https://github.com/rime/rime-essay/blob/master/LICENSE",
+            usage: "内置朙月拼音的官方预设词汇与词频来源；不包含 Octagram 语法模型。",
+            documents: [
+                document("LGPL-3.0 许可证原文", "RIME-ESSAY-LGPL-3.0"),
+                document("上游作者文件", "RIME-ESSAY-AUTHORS"),
+            ]
+        ),
+        component(
+            id: "rime-prelude",
+            name: "RIME Prelude",
+            license: "LGPL-3.0",
+            source: "https://github.com/rime/rime-prelude",
+            licenseURL: "https://github.com/rime/rime-prelude/blob/master/LICENSE",
+            usage: "内置方案共享的官方默认设置、标点、符号和按键绑定。",
+            documents: [
+                document("LGPL-3.0 许可证原文", "RIME-PRELUDE-LGPL-3.0"),
+                document("上游作者文件", "RIME-PRELUDE-AUTHORS"),
+            ]
+        ),
+        component(
+            id: "rime-stroke",
+            name: "RIME Stroke（五笔画）",
+            license: "LGPL-3.0",
+            source: "https://github.com/rime/rime-stroke",
+            licenseURL: "https://github.com/rime/rime-stroke/blob/master/LICENSE",
+            usage: "内置朙月拼音的官方笔画反查依赖。",
+            documents: [
+                document("LGPL-3.0 许可证原文", "RIME-STROKE-LGPL-3.0"),
+                document("上游作者文件", "RIME-STROKE-AUTHORS"),
+            ]
         ),
         component(
             id: "boost",

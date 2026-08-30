@@ -686,7 +686,7 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertGreaterThan(installer.runtimeDirectoriesCallCount, 0)
     }
 
-    func testDeploymentAppliesFuzzyPinyinToAllInstalledLetterSchemas() async throws {
+    func testDeploymentAppliesFuzzyPinyinToDownloadableSchemaAndPreservesOfficialLuna() async throws {
         let tempRoot = FileManager.default.temporaryDirectory
             .appendingPathComponent("schema-manager-fuzzy-\(UUID().uuidString)")
         let sharedURL = tempRoot.appendingPathComponent("shared")
@@ -730,9 +730,9 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertTrue(activeSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
         XCTAssertTrue(activeSchema.contains("- derive/^zh/z/"))
         XCTAssertFalse(activeSchema.contains("- derive/^ch/c/"))
-        // Multi-scheme: installed letter schemas all receive the managed block.
-        XCTAssertTrue(otherSchema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
-        XCTAssertTrue(otherSchema.contains("- derive/^zh/z/"))
+        // Official Luna is immutable source material. Its managed fuzzy rules
+        // are delivered by luna_pinyin.custom.yaml, tested in RimeBridge.
+        XCTAssertEqual(otherSchema, schemaYaml)
         XCTAssertEqual(
             settings.string(forKey: RimeFuzzyPinyinSettings.deployedSignatureKey),
             RimeFuzzyPinyinSettings(
@@ -794,7 +794,7 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertTrue(restoredSchema.contains("calc_translator"))
     }
 
-    func testDeploymentRemovesFuzzyPinyinBlockWhenMasterSwitchDisabled() async throws {
+    func testDeploymentDoesNotMutateOfficialLunaWhenFuzzyPinyinIsDisabled() async throws {
         let tempRoot = FileManager.default.temporaryDirectory
             .appendingPathComponent("schema-manager-fuzzy-disabled-\(UUID().uuidString)")
         let sharedURL = tempRoot.appendingPathComponent("shared")
@@ -809,9 +809,6 @@ final class SchemaManagerTests: XCTestCase {
             speller:
               algebra:
                 - erase/^xx$/
-                # universe:fuzzy-pinyin begin
-                - derive/^zh/z/
-                # universe:fuzzy-pinyin end
             """
         try schemaYaml.write(
             to: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"),
@@ -833,8 +830,7 @@ final class SchemaManagerTests: XCTestCase {
             contentsOf: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"),
             encoding: .utf8
         )
-        XCTAssertFalse(schema.contains(RimeFuzzyPinyinPostProcessor.beginMarker))
-        XCTAssertTrue(schema.contains("- erase/^xx$/"))
+        XCTAssertEqual(schema, schemaYaml)
     }
 
     func testFailedDeploymentPreservesRecoveryIntent() async {

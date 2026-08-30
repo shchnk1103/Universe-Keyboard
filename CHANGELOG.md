@@ -2,6 +2,13 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-08-30 — F-02 内置官方朙月拼音离线闭包（Active，未完成 Product Gate）
+
+- 主 App 内置并校验固定版本的朙月拼音、Essay、Prelude、Stroke 与完整启用范围 OpenCC 资源；用户无需额外下载，Keyboard Extension 不再携带第二份可部署资源。
+- 新增确定性生成清单、SHA-256/大小/精确成员校验，以及 staging、备份、回滚和 last-good receipt；资源缺失、篡改或多余成员会在成功标记前 fail closed。
+- 朙月拼音改用官方 schema 加薄 overlay，候选质量 smoke 覆盖 `ni`、`nihao`、`sanjiaoxing`、OpenCC 与 Stroke，模糊音开关均由真实 iOS librime 集成测试验证。
+- 本条只记录 F-02 本地实现与模拟器门禁，不代表真机、Full Access、性能、hosted CI、独立复审、Human Product Gate、合并、TestFlight 或 Release 已通过；PR #91 不在本工作范围内。
+
 ## 2026-08-28 — 方案交付 PR #83 合入 main
 
 - PR [#83](https://github.com/shchnk1103/Universe-Keyboard/pull/83) 合入 `e9aea57`。Human Product Gate Passed（CNB 真机万象成功 + hosted full-path `33174305736`）。

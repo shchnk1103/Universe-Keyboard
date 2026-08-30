@@ -69,11 +69,19 @@ extension RimeConfigManager {
         )
         let iceInstalled = defs?.bool(forKey: "rime_ice_installed") ?? false
         let wanxiangInstalled = defs?.bool(forKey: "wanxiang_installed") ?? false
+        let fuzzySettings = RimeFuzzyPinyinSettings(
+            enabled: defs?.object(forKey: RimeFuzzyPinyinSettings.enabledKey) as? Bool ?? true,
+            zhZEnabled: defs?.object(forKey: RimeFuzzyPinyinSettings.zhZKey) as? Bool ?? true,
+            chCEnabled: defs?.object(forKey: RimeFuzzyPinyinSettings.chCKey) as? Bool ?? true,
+            shSEnabled: defs?.object(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool ?? true,
+            nLEnabled: defs?.object(forKey: RimeFuzzyPinyinSettings.nLKey) as? Bool ?? true
+        )
         let plan = planSchemaCustomYamlFiles(
             rimeIceInstalled: iceInstalled,
             wanxiangInstalled: wanxiangInstalled,
             simplificationEnabled: simplification,
-            userDictionarySettings: userDictionarySettings
+            userDictionarySettings: userDictionarySettings,
+            fuzzyPinyinSettings: fuzzySettings
         )
         for file in plan {
             try? file.content.write(
@@ -103,7 +111,8 @@ extension RimeConfigManager {
         rimeIceInstalled: Bool,
         wanxiangInstalled: Bool = false,
         simplificationEnabled: Bool?,
-        userDictionarySettings: RimeUserDictionarySettings
+        userDictionarySettings: RimeUserDictionarySettings,
+        fuzzyPinyinSettings: RimeFuzzyPinyinSettings = RimeFuzzyPinyinSettings(enabled: false)
     ) -> [SchemaCustomYamlFile] {
         var targets: [(schemaID: String, dictSchemaID: String)] = [
             ("luna_pinyin", "luna_pinyin"),
@@ -120,10 +129,14 @@ extension RimeConfigManager {
         var files: [SchemaCustomYamlFile] = []
         for target in targets {
             let enabled = userDictionarySettings.isEnabled(for: target.dictSchemaID)
-            guard let content = makeSchemaCustomYamlContent(
-                simplificationEnabled: simplificationEnabled,
-                userDictionaryEnabled: enabled
-            ) else { continue }
+            guard
+                let content = makeSchemaCustomYamlContent(
+                    schemaID: target.schemaID,
+                    simplificationEnabled: simplificationEnabled,
+                    userDictionaryEnabled: enabled,
+                    fuzzyPinyinSettings: fuzzyPinyinSettings
+                )
+            else { continue }
             files.append(
                 SchemaCustomYamlFile(
                     schemaID: target.schemaID,
@@ -141,19 +154,44 @@ extension RimeConfigManager {
         simplificationEnabled: Bool?,
         userDictionaryEnabled: Bool
     ) -> String? {
+        makeSchemaCustomYamlContent(
+            schemaID: "rime_ice",
+            simplificationEnabled: simplificationEnabled,
+            userDictionaryEnabled: userDictionaryEnabled,
+            fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: false)
+        )
+    }
+
+    /// Builds a schema overlay without mutating the pinned upstream schema.
+    /// Official Luna places the simplified/traditional option at switch 2;
+    /// existing downloadable product schemes use switch 1.
+    public static func makeSchemaCustomYamlContent(
+        schemaID: String,
+        simplificationEnabled: Bool?,
+        userDictionaryEnabled: Bool,
+        fuzzyPinyinSettings: RimeFuzzyPinyinSettings
+    ) -> String? {
         var patch: [(String, String)] = []
         if let simplificationEnabled {
             let reset = simplificationEnabled ? 1 : 0
-            patch.append(("\"switches/@1/reset\"", "\(reset)"))
+            let switchIndex = schemaID == "luna_pinyin" ? 2 : 1
+            patch.append(("\"switches/@\(switchIndex)/reset\"", "\(reset)"))
         }
-        patch.append((
-            "\"translator/enable_user_dict\"",
-            userDictionaryEnabled ? "true" : "false"
-        ))
+        patch.append(
+            (
+                "\"translator/enable_user_dict\"",
+                userDictionaryEnabled ? "true" : "false"
+            ))
         guard !patch.isEmpty else { return nil }
         var yaml = "patch:\n"
         for (key, value) in patch {
             yaml += "  \(key): \(value)\n"
+        }
+        if schemaID == "luna_pinyin", fuzzyPinyinSettings.hasEnabledRules {
+            yaml += "  \"speller/algebra/+\":\n"
+            for rule in fuzzyPinyinSettings.algebraRules {
+                yaml += "    - \(rule)\n"
+            }
         }
         return yaml
     }

@@ -18,12 +18,13 @@ from __future__ import annotations
 
 import hashlib
 import re
+import subprocess
 import sys
 from collections import defaultdict
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SOURCE = REPO_ROOT / "Keyboard" / "Resources" / "luna_pinyin.dict.yaml"
+SOURCE = REPO_ROOT / "Universe Keyboard" / "RimeBuiltin" / "luna_pinyin.dict.yaml"
 OUTPUT = (
     REPO_ROOT
     / "Packages"
@@ -32,9 +33,9 @@ OUTPUT = (
     / "KeyboardCore"
     / "T9PinyinSyllableCatalog.generated.swift"
 )
-GENERATOR_VERSION = "2"
-# 418 raw unique ASCII tokens minus filtered non-pinyin placeholders (`xx`).
-EXPECTED_SYLLABLE_COUNT = 417
+GENERATOR_VERSION = "3"
+# Official Luna 2024.02.10: 425 raw unique ASCII tokens minus `xx`.
+EXPECTED_SYLLABLE_COUNT = 424
 
 # Explicit RIME / dictionary placeholders that are not pronounceable syllables.
 PLACEHOLDER_TOKENS = frozenset({"xx", "xxx", "xxxx"})
@@ -132,7 +133,7 @@ def main() -> int:
         "/// Compile-time T9 syllable catalog extracted from luna_pinyin.dict.yaml (ADR 0023).",
         "public enum T9PinyinSyllableCatalog {",
         f'    public static let generatorVersion = "{GENERATOR_VERSION}"',
-        '    public static let sourceRelativePath = "Keyboard/Resources/luna_pinyin.dict.yaml"',
+        '    public static let sourceRelativePath = "Universe Keyboard/RimeBuiltin/luna_pinyin.dict.yaml"',
         f'    public static let sourceVersion = "{source_version}"',
         f'    public static let sourceSHA256 = "{sha}"',
         f"    public static let syllableCount = {len(ordered)}",
@@ -171,6 +172,18 @@ def main() -> int:
         ]
     )
     OUTPUT.write_text("\n".join(lines), encoding="utf-8")
+    subprocess.run(
+        [
+            "xcrun",
+            "swift-format",
+            "format",
+            "--in-place",
+            "--configuration",
+            str(REPO_ROOT / ".swift-format"),
+            str(OUTPUT),
+        ],
+        check=True,
+    )
     print(f"wrote {OUTPUT.relative_to(REPO_ROOT)} ({OUTPUT.stat().st_size} bytes)")
     print(f"syllables={len(ordered)} signatures={len(by_sig)} sha256={sha}")
     return 0

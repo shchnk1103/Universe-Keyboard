@@ -486,6 +486,28 @@ final class RimeEngineContractTests: XCTestCase {
                 selectedRequestedSchema: true
             ).passed
         )
+        XCTAssertFalse(
+            RimeSchemaRuntimeSmokeProbe.Result(
+                selectedRequestedSchema: true,
+                compositionPresent: true,
+                rawInputMatched: true,
+                candidateCount: 1,
+                hasHanCandidate: true,
+                unexpectedCommit: false,
+                builtinQualityPassed: false
+            ).passed
+        )
+        XCTAssertTrue(
+            RimeSchemaRuntimeSmokeProbe.Result(
+                selectedRequestedSchema: true,
+                compositionPresent: true,
+                rawInputMatched: true,
+                candidateCount: 1,
+                hasHanCandidate: true,
+                unexpectedCommit: false,
+                builtinQualityPassed: nil
+            ).passed
+        )
     }
 
     func testDeploymentInputValidatorRejectsUnsafeIDAndUnrelatedSchemaList() throws {

@@ -124,12 +124,47 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         // Ice preference is true → t9 custom enables user dict.
         XCTAssertTrue(t9.content.contains("enable_user_dict"))
         XCTAssertTrue(t9.content.contains("true"))
-        XCTAssertTrue(t9.content.contains(": 0")) // simplification false
+        XCTAssertTrue(t9.content.contains(": 0"))  // simplification false
 
         guard let luna = withIce.first(where: { $0.schemaID == "luna_pinyin" }) else {
             return XCTFail("expected luna_pinyin.custom.yaml in plan")
         }
-        XCTAssertTrue(luna.content.contains("false")) // luna dict disabled
+        XCTAssertTrue(luna.content.contains("false"))  // luna dict disabled
+        XCTAssertTrue(luna.content.contains("switches/@2/reset"))
+        XCTAssertFalse(luna.content.contains("switches/@1/reset"))
+    }
+
+    func testOfficialLunaOverlayCarriesFuzzyRulesWithoutReplacingUpstreamAlgebra() throws {
+        let content = try XCTUnwrap(
+            RimeConfigManager.makeSchemaCustomYamlContent(
+                schemaID: "luna_pinyin",
+                simplificationEnabled: true,
+                userDictionaryEnabled: true,
+                fuzzyPinyinSettings: RimeFuzzyPinyinSettings(
+                    enabled: true,
+                    zhZEnabled: true,
+                    chCEnabled: false,
+                    shSEnabled: false,
+                    nLEnabled: false
+                )
+            )
+        )
+        XCTAssertTrue(content.contains("switches/@2/reset"))
+        XCTAssertTrue(content.contains("speller/algebra/+"))
+        XCTAssertTrue(content.contains("derive/^zh/z/"))
+        XCTAssertTrue(content.contains("derive/^z/zh/"))
+    }
+
+    func testOfficialLunaOverlayOmitsFuzzyAppendWhenDisabled() throws {
+        let content = try XCTUnwrap(
+            RimeConfigManager.makeSchemaCustomYamlContent(
+                schemaID: "luna_pinyin",
+                simplificationEnabled: true,
+                userDictionaryEnabled: true,
+                fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: false)
+            )
+        )
+        XCTAssertFalse(content.contains("speller/algebra/+"))
     }
 
     func testProductionCustomYamlSyncWritesT9FileWhenIceInstalled() throws {

@@ -1,0 +1,179 @@
+{
+  "formatVersion": 1,
+  "generationID": "luna-official-2026-08-29-v1",
+  "sourcePins": {
+    "lunaPinyin": "56b934b099dfbeab842320f13aa8b461a6ab3e42",
+    "essay": "e9b1a374a6ea015fca5bdd04318924b4483ac35a",
+    "prelude": "082425ea0684bca36474415d4a0e8db9b016487e",
+    "stroke": "1e8fff9b9494ddec23b0cbc526bcfd8171a6fd48",
+    "opencc": "25350017e81b40aa9e3e66c18446b57f83b0607d"
+  },
+  "generators": {
+    "rimeDeployer": {
+      "version": "librime 1.17.0 (Homebrew 1.17.0_2)",
+      "sha256": "84c3556b804579f604c70fb55fe4fc67175bbd3e1116dc863335e4e4b229b01a"
+    },
+    "opencc": {
+      "version": "1.3.1+g2535001",
+      "sourceRevision": "25350017e81b40aa9e3e66c18446b57f83b0607d"
+    }
+  },
+  "entries": [
+    {
+      "path": "build/luna_pinyin.prism.bin",
+      "byteCount": 31728,
+      "sha256": "012d8360150c3e2f55330d21f9aa16281660e25c15db8c983090f14293da878f",
+      "role": "generated-rime"
+    },
+    {
+      "path": "build/luna_pinyin.reverse.bin",
+      "byteCount": 252760,
+      "sha256": "bd314158c00bf36c9ba8f7321d7e6ab6dfbdaa283b11c4856adfd2f58a781179",
+      "role": "generated-rime"
+    },
+    {
+      "path": "build/luna_pinyin.table.bin",
+      "byteCount": 13011464,
+      "sha256": "55a54e8e55deaade0e4d7646a7ad2b8602901f4007b60c637d993468eff64e03",
+      "role": "generated-rime"
+    },
+    {
+      "path": "build/stroke.prism.bin",
+      "byteCount": 3501372,
+      "sha256": "5acfdf5842006fb7eacf9e2c9920e917a18356b78cd55b4023ecd836665ff383",
+      "role": "generated-rime"
+    },
+    {
+      "path": "build/stroke.reverse.bin",
+      "byteCount": 1498508,
+      "sha256": "0618448a659ec3e316ef230dce808a40388a57c664cf257eab1e9b64d86909cb",
+      "role": "generated-rime"
+    },
+    {
+      "path": "build/stroke.table.bin",
+      "byteCount": 4548444,
+      "sha256": "de1a978a7d97e7ccef5f85eaaa4cc76dcbd4d75cdf750926edfc2ea3e65603d5",
+      "role": "generated-rime"
+    },
+    {
+      "path": "default.yaml",
+      "byteCount": 1593,
+      "sha256": "0628ada16651d56c4cdfcb8e45ddba23d4d585cc8be0580a62c4e077c0bcc141",
+      "role": "source"
+    },
+    {
+      "path": "essay.txt",
+      "byteCount": 5887417,
+      "sha256": "a6f8409c261e5d21bd78e6cbcde8f8e1ef7f68c07ff1c2692c07dd4ff4151cea",
+      "role": "preset-vocabulary"
+    },
+    {
+      "path": "key_bindings.yaml",
+      "byteCount": 3117,
+      "sha256": "ee2476598b4cae89068b823868196eb07b5f72007a600814fe5804b39008b3ed",
+      "role": "source"
+    },
+    {
+      "path": "luna_pinyin.dict.yaml",
+      "byteCount": 889896,
+      "sha256": "75bcf6eb3ff62b129882ed89cc22b2d80a5347aa72bcfa2ccc839bac298e7314",
+      "role": "source"
+    },
+    {
+      "path": "luna_pinyin.schema.yaml",
+      "byteCount": 2809,
+      "sha256": "668b4d4957e4cc8f9cea32ed3f08f0ecf4a7be8cdba058700507487bd96dd5c7",
+      "role": "source"
+    },
+    {
+      "path": "opencc/HKVariants.ocd2",
+      "byteCount": 4893,
+      "sha256": "62750cb79eef18a407030b05bd4abe0e102bec2254d04b2d2310792f44519321",
+      "role": "generated-opencc"
+    },
+    {
+      "path": "opencc/STCharacters.ocd2",
+      "byteCount": 45310,
+      "sha256": "1ec2298310ca5a9151a554ea57bd86a6296ce917e4cdd1dd0884f789c477641b",
+      "role": "generated-opencc"
+    },
+    {
+      "path": "opencc/STPhrases.ocd2",
+      "byteCount": 928154,
+      "sha256": "16fd5f086b2a3be7aa9679deb7f728cf447f5d5419f65b2766a2d8671e84e77d",
+      "role": "generated-opencc"
+    },
+    {
+      "path": "opencc/TSCharacters.ocd2",
+      "byteCount": 46126,
+      "sha256": "85291e0173e972bbca58c848fb90b3bb41c79674cb61a75645e01bd884ad5927",
+      "role": "generated-opencc"
+    },
+    {
+      "path": "opencc/TSPhrases.ocd2",
+      "byteCount": 9777,
+      "sha256": "83696b4a2074f2f5c1786949444281ae191ccb0b75d98cd9ac51bcb35f890cb3",
+      "role": "generated-opencc"
+    },
+    {
+      "path": "opencc/TWVariants.ocd2",
+      "byteCount": 4595,
+      "sha256": "390f07a1867ad56aa60a7af23b6e4b3acc96ea48d893c06ede3dffb1c576c2bc",
+      "role": "generated-opencc"
+    },
+    {
+      "path": "opencc/s2t.json",
+      "byteCount": 424,
+      "sha256": "0b86f3aa92c72ac5fcb11bc9df21914ed42f6847416a1d4d7f52f8b5eb861e74",
+      "role": "opencc-config"
+    },
+    {
+      "path": "opencc/t2hk.json",
+      "byteCount": 322,
+      "sha256": "3d5c1c7540992e821fef56858a001d8ea2720a394975b915fb5944fe42efc0fd",
+      "role": "opencc-config"
+    },
+    {
+      "path": "opencc/t2s.json",
+      "byteCount": 424,
+      "sha256": "18d64a23de26c39d0e247d36e12d585653f44f2e231c3397050456565581a819",
+      "role": "opencc-config"
+    },
+    {
+      "path": "opencc/t2tw.json",
+      "byteCount": 320,
+      "sha256": "7b2eb8aa8b76c1e2b1a41e8ce38a327d0aac5e49cfcefe763744b17fdeefb7b5",
+      "role": "opencc-config"
+    },
+    {
+      "path": "pinyin.yaml",
+      "byteCount": 4895,
+      "sha256": "caa220b05172bf35775db07fed6ead7719c742e6139232d9797040dbe65f746c",
+      "role": "source"
+    },
+    {
+      "path": "punctuation.yaml",
+      "byteCount": 2107,
+      "sha256": "d6f89592149098f0a2d0ed3e5c83f49adb6226cdf1d967b0bc0d293f4e5c496a",
+      "role": "source"
+    },
+    {
+      "path": "stroke.dict.yaml",
+      "byteCount": 3396330,
+      "sha256": "b3e93dce89c185f45c3d6e189b86b3a8626913352cc85e1094c786579a665791",
+      "role": "source"
+    },
+    {
+      "path": "stroke.schema.yaml",
+      "byteCount": 3056,
+      "sha256": "06f680cf7c9d9a69948681ee25e9f6aeccfde4d8d590f93e179d4c4b3caee879",
+      "role": "source"
+    },
+    {
+      "path": "symbols.yaml",
+      "byteCount": 28473,
+      "sha256": "6d08969525bd66c67abf1791c99928079356bd0e673386c49c1959d2a52fdbba",
+      "role": "source"
+    }
+  ]
+}

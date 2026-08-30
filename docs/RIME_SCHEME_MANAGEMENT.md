@@ -14,6 +14,28 @@ Future schemes should be added to the same list-and-detail model instead of crea
 
 Chinese nine-key is **not** a separate user-visible base scheme. When fog-song (`rime_ice`) is installed, deployment may also compile a Universe-compatible `t9` schema (ADR 0018). Layout preference and versioned T9 readiness select `t9` at runtime; do not persist `t9` into `rime_active_schema`.
 
+## Built-In Luna Offline Closure
+
+The built-in `luna_pinyin` product is an immutable offline resource closure,
+not a downloadable scheme. The main App bundle is the sole packaged owner of
+the pinned official Luna, Essay, Prelude, Stroke, enabled OpenCC profiles and
+their reproducible RIME artifacts. The Keyboard Extension consumes the deployed
+App Group state and must not contain or install a duplicate closure.
+
+Before App Group mutation, the main App reconstructs the flattened bundle files
+into their manifest paths and verifies the exact member set, byte counts and
+SHA-256 values. Installation stages the new generation, preserves third-party
+scheme and user files, writes a generation receipt and restores the previous
+built-in generation if the switch fails. Missing, corrupt, extra or ambiguous
+bundle members are errors; they must not trigger a network request or a minimal
+fallback dictionary.
+
+Universe-specific behavior is expressed by small `*.custom.yaml` overlays. The
+official Luna schema/dictionary content remains unchanged, and optional grammar
+or Octagram models are not part of this closure. Any pin, manifest, fuzzy
+overlay, OpenCC profile or generated-artifact change reopens ADR 0033 and F-02
+revalidation.
+
 ## User-Facing Model
 
 普通用户只需要理解三件事：

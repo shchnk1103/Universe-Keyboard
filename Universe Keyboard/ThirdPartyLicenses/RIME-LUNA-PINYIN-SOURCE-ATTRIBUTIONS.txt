@@ -21,5 +21,5 @@ OpenCC - 開放中文轉換
 http://code.google.com/p/opencc/
 
 This attribution record reproduces the provenance header carried by
-Keyboard/Resources/luna_pinyin.dict.yaml. It does not collapse the cited
+Universe Keyboard/RimeBuiltin/luna_pinyin.dict.yaml. It does not collapse the cited
 works into a single license or replace their own notices.

@@ -39,11 +39,9 @@ extension RimeConfigManager {
     /// 设置默认简繁。true = 简体（reset=1），false = 繁体（reset=0）。
     static func setSimplification(_ simplified: Bool) {
         defaults?.set(simplified, forKey: "rime_simplification")
-        writeCustomYaml(
-            filename: "luna_pinyin.custom.yaml",
-            patch: [
-                "\"switches/@1/reset\"": simplified ? 1 : 0
-            ])
+        // Rebuild the complete overlay so a one-setting update cannot erase
+        // fuzzy-pinyin or user-dictionary preferences.
+        syncCustomYamlFiles()
         requestDeploy()
     }
 
