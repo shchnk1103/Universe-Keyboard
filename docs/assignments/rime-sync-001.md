@@ -7,10 +7,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | PR [#91](https://github.com/shchnk1103/Universe-Keyboard/pull/91) 的启动崩溃修复 `e3e5d77` 已通过 hosted CI；自然调度诊断暴露两阶段取消/过期状态矛盾，本地修复提交 `0f59770` 已完成 CI 等价验证但尚未 push / 独立复核 |
+| **Phase** | `0f59770` 独立双审为 `Pass with conditions` 并发现 expiration 终止竞态；第二轮本地修复 `a34c45c` 已完成 CI 等价验证，尚未 push / 最终独立复核 |
 | **Non-claims** | 不代表自然 iOS 后台调度、手机锁屏/通知中心呈现、跨前端兼容、Product Gate、merge、TestFlight 或 Release 已通过 |
-| **Next** | 对 `0f59770` 做独立 Architecture / Quality re-review；通过后准备带预冻结 manifest/receipt 的自然后台与手机通知正式真机轮次，再交 Product Lead 决策 |
-| **Residuals** | [`Architecture review`](rime-sync-001-background-sync-crash-architecture-review.md) · [`Quality review`](rime-sync-001-background-sync-crash-quality-review.md) · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) · [启动修复证据](../evidence/rime-background-sync-crash-fix-2026-08-29.md) · [生命周期修复证据](../evidence/rime-background-sync-lifecycle-remediation-2026-08-30.md) |
+| **Next** | 对 `a34c45c` 做最终独立 Architecture / Quality re-review；通过后准备带预冻结 manifest/receipt 的自然后台与手机通知正式真机轮次，再交 Product Lead 决策 |
+| **Residuals** | [`Architecture re-review`](rime-sync-001-background-sync-lifecycle-architecture-rereview.md) · [`Quality re-review`](rime-sync-001-background-sync-lifecycle-quality-rereview.md) · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) · [终止生命周期证据](../evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md) |
 
 ---
 

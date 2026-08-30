@@ -2,7 +2,7 @@
 
 > **Status:** Active
 >
-> **Current phase:** RIME standard sync main path implemented; PR #91 launch repair `e3e5d77` passed hosted CI; natural-run diagnostic exposed lifecycle inconsistency, local remediation `0f59770` passed CI-equivalent validation; independent re-review, formal natural scheduling/phone notification and cross-front-end evidence pending
+> **Current phase:** `0f59770` independent re-reviews found expiration terminal-ownership residuals; second-round local remediation `a34c45c` passed CI-equivalent validation; final independent re-review, formal natural scheduling/phone notification and cross-front-end evidence pending
 >
 > **Current source of truth:** `docs/RIME_SYNC.md`
 >
