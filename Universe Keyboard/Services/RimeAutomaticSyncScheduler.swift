@@ -87,7 +87,10 @@ nonisolated enum RimeSyncNotificationEvent: Equatable, Sendable {
             )
 
         case .failed(let mode, let failedScope, let completedScopes, let pendingScopes):
-            let selectedCompleted = enabledScopes.intersection(completedScopes)
+            // 同一范围不能既成功又失败。调用方应保持这个不变量；这里再做一次
+            // fail-closed 归一化，避免生命周期竞态生成自相矛盾的用户通知。
+            let consistentCompletedScopes = completedScopes.subtracting([failedScope])
+            let selectedCompleted = enabledScopes.intersection(consistentCompletedScopes)
             let selectedPending = enabledScopes.intersection(pendingScopes)
 
             if enabledScopes.contains(failedScope) {
@@ -123,6 +126,43 @@ nonisolated enum RimeSyncNotificationEvent: Equatable, Sendable {
         case (false, true): return RimeSyncNotificationScope.privateSettings.notificationSubject
         case (false, false): return "同步资料"
         }
+    }
+}
+
+/// 管理一次 `BGProcessingTask` 的终止状态，确保系统过期与正常返回只完成任务一次。
+///
+/// 所有状态转换都在主 actor 上发生。系统的 expiration callback 必须先 hop 到
+/// `MainActor`，不能假设 BackgroundTasks 会在注册队列上调用后续生命周期回调。
+@MainActor
+final class RimeAutomaticSyncTaskLifecycle {
+    private enum State: Equatable {
+        case active
+        case expirationRequested
+        case completed
+    }
+
+    private var state = State.active
+
+    /// 返回 `true` 表示本次请求首次进入过期状态并执行了取消动作。
+    @discardableResult
+    func requestExpiration(cancel: () -> Void) -> Bool {
+        guard state == .active else { return false }
+        state = .expirationRequested
+        cancel()
+        return true
+    }
+
+    /// 只有第一次终止会调用 completion。过期后的操作即使正常返回，也必须报告失败。
+    @discardableResult
+    func finish(
+        operationSucceeded: Bool,
+        completion: (Bool) -> Void
+    ) -> Bool {
+        guard state != .completed else { return false }
+        let completedSuccessfully = state == .active && operationSucceeded
+        state = .completed
+        completion(completedSuccessfully)
+        return true
     }
 }
 
@@ -193,16 +233,23 @@ final class RimeAutomaticSyncScheduler {
     private func handle(_ task: BGProcessingTask) {
         Logger.shared.info("rimeSync automatic background task started", category: .config)
 
+        let lifecycle = RimeAutomaticSyncTaskLifecycle()
         let operation = Task { @MainActor in
             let model = RimeSyncViewModel(rimeStore: RimeSettingsStore())
             let result = await model.synchronizeAutomatically()
-            task.setTaskCompleted(success: result.completedSuccessfully)
-            refreshSchedule()
+            let didFinish = lifecycle.finish(operationSucceeded: result.completedSuccessfully) { success in
+                task.setTaskCompleted(success: success)
+            }
+            if didFinish {
+                refreshSchedule()
+            }
         }
         task.expirationHandler = {
-            operation.cancel()
-            Logger.shared.warning("rimeSync automatic background task expired", category: .config)
-            Logger.shared.requestFlush()
+            Task { @MainActor in
+                guard lifecycle.requestExpiration(cancel: { operation.cancel() }) else { return }
+                Logger.shared.warning("rimeSync automatic background task expired", category: .config)
+                Logger.shared.requestFlush()
+            }
         }
     }
 
@@ -222,7 +269,10 @@ final class RimeAutomaticSyncScheduler {
 
         return RimeAutomaticSyncPolicy.nextEligibleDate(
             lastAutomaticAttempt: lastAutomaticAttempt,
-            cadence: automaticCadence(defaults: defaults)
+            cadence: automaticCadence(defaults: defaults),
+            retryNotBefore: defaults.object(
+                forKey: RimeSyncStorageKey.automaticRetryNotBefore
+            ) as? Date
         )
     }
 

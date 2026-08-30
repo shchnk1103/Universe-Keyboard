@@ -467,12 +467,17 @@ final class RimeSyncViewModel {
 
         let sharedDefaults = UserDefaults(suiteName: universeAppGroupID) ?? .standard
         guard !RimeSyncKeyboardActivity.isKeyboardActive(in: sharedDefaults) else {
+            let retryNotBefore = Date().addingTimeInterval(
+                RimeAutomaticSyncPolicy.keyboardActiveRetryInterval
+            )
+            defaults.set(retryNotBefore, forKey: StorageKey.automaticRetryNotBefore)
             Logger.shared.info("rimeSync automatic standard sync skipped keyboardActive=true", category: .config)
             return .skipped(.keyboardActive)
         }
 
         let startedAt = Date()
         defaults.set(startedAt, forKey: StorageKey.lastAutomaticAttempt)
+        defaults.removeObject(forKey: StorageKey.automaticRetryNotBefore)
         var completedNotificationScopes: Set<RimeSyncNotificationScope> = []
         var activeNotificationScope = RimeSyncNotificationScope.standardRimeData
         var pendingNotificationScopes: Set<RimeSyncNotificationScope> = automaticPrivateSettingsEnabled
@@ -493,12 +498,14 @@ final class RimeSyncViewModel {
             try Task.checkCancellation()
             try await synchronizeStandardRimeData()
             completedNotificationScopes.insert(.standardRimeData)
-            try Task.checkCancellation()
 
             let completedAt: Date
             if automaticPrivateSettingsEnabled {
+                // 标准阶段完成后先切换语义状态，再观察取消。否则系统恰好在两阶段
+                // 之间收回后台时间时，通知会把已完成的标准资料再次标成失败。
                 activeNotificationScope = .privateSettings
                 pendingNotificationScopes = []
+                try Task.checkCancellation()
                 await notificationService.notify(
                     .phaseStarted(
                         mode: .automatic,
@@ -508,6 +515,7 @@ final class RimeSyncViewModel {
                     )
                 )
                 setStatus(.syncing(.privateSettings))
+                try Task.checkCancellation()
                 completedAt = try await synchronizePrivateSettings()
                 completedNotificationScopes.insert(.privateSettings)
                 setStatus(.succeeded(completedAt, .standardRimeAndPrivateSettings))
@@ -623,6 +631,7 @@ final class RimeSyncViewModel {
             defaults.removeObject(forKey: StorageKey.automaticPrivateSettingsEnabled)
             defaults.removeObject(forKey: StorageKey.automaticSyncCadence)
             defaults.removeObject(forKey: StorageKey.lastAutomaticAttempt)
+            defaults.removeObject(forKey: StorageKey.automaticRetryNotBefore)
             defaults.removeObject(forKey: StorageKey.lastForegroundPrivateAttempt)
             provider = .none
             folderName = nil
@@ -698,6 +707,7 @@ final class RimeSyncViewModel {
         }
         // 手动同步是自动模式的安全起点；冷却时间从这次尝试开始，避免刚完成就重复执行。
         defaults.set(Date(), forKey: StorageKey.lastAutomaticAttempt)
+        defaults.removeObject(forKey: StorageKey.automaticRetryNotBefore)
         defaults.set(Date(), forKey: StorageKey.lastForegroundPrivateAttempt)
         RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
     }
@@ -722,6 +732,7 @@ final class RimeSyncViewModel {
         defaults.removeObject(forKey: StorageKey.automaticStandardRimeDataEnabled)
         defaults.removeObject(forKey: StorageKey.automaticPrivateSettingsEnabled)
         defaults.removeObject(forKey: StorageKey.lastAutomaticAttempt)
+        defaults.removeObject(forKey: StorageKey.automaticRetryNotBefore)
         defaults.removeObject(forKey: StorageKey.lastForegroundPrivateAttempt)
         defaults.removeObject(forKey: StorageKey.standardRimeLastSuccess)
         RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)

@@ -69,6 +69,33 @@ final class RimeSyncModelTests: XCTestCase {
         )
         XCTAssertEqual(automaticCompletionPayload.title, "自动同步完成")
         XCTAssertEqual(automaticCompletionPayload.body, "RIME 常用词和标准资料已更新。")
+
+        let automaticExpirationBetweenPhases = RimeSyncNotificationEvent.failed(
+            mode: .automatic,
+            failedScope: .privateSettings,
+            completedScopes: [.standardRimeData],
+            pendingScopes: []
+        )
+        let expirationPayload = try XCTUnwrap(
+            automaticExpirationBetweenPhases.payload(
+                enabledScopes: [.standardRimeData, .privateSettings]
+            )
+        )
+        XCTAssertEqual(expirationPayload.title, "自动同步失败")
+        XCTAssertTrue(expirationPayload.body.contains("RIME 常用词和标准资料已更新"))
+        XCTAssertTrue(expirationPayload.body.contains("Universe App 设置未完成"))
+        XCTAssertFalse(expirationPayload.body.contains("RIME 常用词和标准资料未完成"))
+
+        let inconsistentFailure = RimeSyncNotificationEvent.failed(
+            mode: .automatic,
+            failedScope: .standardRimeData,
+            completedScopes: [.standardRimeData],
+            pendingScopes: [.privateSettings]
+        )
+        let normalizedPayload = try XCTUnwrap(
+            inconsistentFailure.payload(enabledScopes: [.standardRimeData, .privateSettings])
+        )
+        XCTAssertFalse(normalizedPayload.body.contains("已更新；RIME 常用词和标准资料未完成"))
     }
 
     @MainActor

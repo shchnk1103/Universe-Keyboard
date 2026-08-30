@@ -20,6 +20,7 @@ enum RimeSyncStorageKey {
     static let automaticPrivateSettingsEnabled = "rime_automatic_private_settings_enabled"
     static let automaticSyncCadence = "rime_standard_sync_automatic_cadence"
     static let lastAutomaticAttempt = "rime_standard_sync_last_automatic_attempt"
+    static let automaticRetryNotBefore = "rime_standard_sync_automatic_retry_not_before"
     static let lastForegroundPrivateAttempt = "rime_private_sync_last_foreground_attempt"
 }
 
@@ -74,6 +75,9 @@ nonisolated enum RimeAutomaticSyncResult: Equatable, Sendable {
 }
 
 nonisolated enum RimeAutomaticSyncPolicy {
+    /// 键盘仍在使用时只短暂退避，避免把已过期的 earliestBeginDate 反复提交给系统。
+    static let keyboardActiveRetryInterval: TimeInterval = 15 * 60
+
     static func isDue(
         lastAutomaticAttempt: Date?,
         cadence: RimeAutomaticSyncCadence,
@@ -85,9 +89,12 @@ nonisolated enum RimeAutomaticSyncPolicy {
 
     static func nextEligibleDate(
         lastAutomaticAttempt: Date,
-        cadence: RimeAutomaticSyncCadence
+        cadence: RimeAutomaticSyncCadence,
+        retryNotBefore: Date? = nil
     ) -> Date {
-        lastAutomaticAttempt.addingTimeInterval(cadence.interval)
+        let cadenceDate = lastAutomaticAttempt.addingTimeInterval(cadence.interval)
+        guard let retryNotBefore else { return cadenceDate }
+        return max(cadenceDate, retryNotBefore)
     }
 }
 
