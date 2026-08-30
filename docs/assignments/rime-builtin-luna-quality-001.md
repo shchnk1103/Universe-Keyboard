@@ -8,11 +8,11 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Blocked` |
-| **Phase** | Implementation commit `09659a7` and local iOS 27 simulator gates are complete, but the bounded independent Architecture/Quality review executions returned no auditable conclusion; required reviewer availability is absent at this checkpoint |
+| **Lifecycle** | `Active` |
+| **Phase** | Independent Architecture and Quality re-reviews of `09659a7` both returned `Fail`; the Executor is remediating one Quality P0 and the in-scope Architecture/Quality P1 findings before re-review |
 | **Non-claims** | No Assignment Exit, hosted CI, physical-device/Full Access/lifecycle/performance pass, independent final review, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
-| **Next** | Product Lead must establish an executable independent-review route without the Coordinator choosing or replacing the bound reviewers; only after both conclusions exist may findings be resolved and physical-device handoff be considered |
-| **Residuals** | [`review blocker`](../evidence/rime-builtin-luna-quality-f02-independent-review-blocker-2026-08-30.md) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`Architecture review`](rime-builtin-luna-quality-001-architecture-review.md) · [`Quality review`](rime-builtin-luna-quality-001-quality-review.md) |
+| **Next** | Fix receipt/manifest fail-open, deployed identity, transaction coverage, bundle extras/provenance and overlay-generation binding; extend the frozen deterministic/fault vectors, rerun affected/full local gates, then return the exact remediation commit to the same independent reviewers |
+| **Residuals** | [`Architecture post-implementation review`](rime-builtin-luna-quality-001-architecture-review.md#post-implementation-review--09659a7--2026-08-30) · [`Quality post-implementation review`](rime-builtin-luna-quality-001-quality-review.md#post-implementation-review--09659a7--2026-08-30) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) |
 
 ---
 
@@ -297,3 +297,8 @@ built-in assets.
   files were modified, and no replacement was inferred. Per Assignment Stop
   Conditions, F-02 moved from `Active` to `Blocked` pending a Product Lead
   decision on an executable independent-review route.
+- `2026-08-30 Asia/Shanghai` — Human Product Owner directed the same independent
+  subagents to continue. Both completed read-only reviews without touching PR
+  #91: Architecture `Fail` (no P0; five P1) and Quality `Fail` (one P0; four
+  P1). The earlier wait-timeout inference was corrected, reviewer availability
+  is restored, and F-02 returned to `Active` for findings remediation.

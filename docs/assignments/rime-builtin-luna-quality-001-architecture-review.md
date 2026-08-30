@@ -539,3 +539,43 @@ The administrative condition is now closed: ADR 0033 is recorded as
 wording has been synchronized. The Architecture `Pass for Ready` conclusion is
 effective. Implementation, Exit evidence and Release/Product acceptance remain
 outstanding and are not implied by this sync.
+
+## Post-implementation Review — `09659a7` — 2026-08-30
+
+**Independent verdict: `Fail` for implementation re-review.** This does not
+revoke ADR 0033 or the prior `Pass for Ready`; the current implementation cannot
+advance to physical-device handoff or Exit until the P1 findings are fixed and
+independently re-reviewed. P0: none.
+
+### P1 findings
+
+1. `RimeBuiltinResourceInstaller.swift:106-139` validates staging but does not
+   validate the final deployed `shared` set/hash or reject stale unexpected
+   deployed artifacts after replacement.
+2. `RimeConfigManager+DeploymentResources.swift:28-40` writes
+   `installation.yaml` after the closure transaction/receipt. A failure there
+   returns failure while leaving the new generation installed, outside the
+   claimed last-known-good boundary.
+3. `RimeConfigManager+DeploymentResources.swift:90-114` locates only declared
+   flattened bundle members and does not enumerate/reject additional bundle
+   resources, so the evidence claim “rejects extra” is not established.
+4. `RimeBuiltinResourceInstaller.swift:27-45,164-205` does not validate the
+   non-empty shape/key set of `sourcePins`, `generators`, optional provenance or
+   per-entry `role`; metadata can be emptied or altered while unchanged payload
+   bytes still install.
+5. The manifest and installer do not bind generated `default.custom.yaml` /
+   `luna_pinyin.custom.yaml` overlays to the installed generation/receipt. The
+   thin-overlay claim therefore lacks generation identity and revalidation.
+
+### P2 findings / pending evidence
+
+- Hidden extra files are skipped by resource enumeration; rollback uses
+  best-effort `try?` without reporting/revalidating rollback success.
+- The manifest/evidence lacks a complete machine-readable host/toolchain,
+  exact generator command and two clean-output receipt identity.
+- Bundle target membership, raw Extension duplicate output, actual Extension
+  consumption, iOS 18 runtime, physical-device/offline/Full Access/performance,
+  hosted CI and Human Product Gate remain pending.
+
+The reviewer confirmed a read-only inspection, no build/network/write actions
+and no access or change to PR #91.

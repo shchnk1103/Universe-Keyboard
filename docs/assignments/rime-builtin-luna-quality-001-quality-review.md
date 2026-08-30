@@ -216,3 +216,47 @@ Coordinator 已同步记录 ADR 0033 为 `Accepted`、统一 source pin 状态�
 推进为 `Ready`（implementation authorization 仍待独立授权）。Ready 前 conditions 已
 关闭，本 Quality plan 的 `Pass with conditions` 生效；当前实现、Exit、TestFlight、
 Release 仍为 `Fail`，Q-01–Q-10 继续保持 `POST-READY EVIDENCE PENDING`。
+
+## Post-implementation Review — `09659a7` — 2026-08-30
+
+**Independent verdict: `Fail` for implementation re-review.** The current
+implementation remains in Active remediation and must not advance to
+physical-device handoff or Exit.
+
+### Findings
+
+- **P0:** `RimeSchemaRuntimeSmokeProbe.swift:34-36,72-87` permits
+  `builtinQualityPassed == nil`. For `luna_pinyin`, a missing receipt skips the
+  exact quality cases and can still pass on any Han candidate; the receipt is
+  also not bound to the current deployed manifest.
+- **P1:** the five Top-1 vectors do not prove full first-page order,
+  representative sentences, fuzzy-derived discoverability or repeated cold
+  starts; installer faults do not cover same-length hash corruption, every
+  required member/staging interruption or Extension last-good consumption;
+  OpenCC covers only t2s behavior and Stroke covers only one vector; test
+  fixtures allow empty provenance metadata.
+- **P2:** no accepted before/after IPA delta, sample count, median/worst, trace
+  or Product performance budget exists; physical-device/Full Access/lifecycle,
+  hosted CI and exact archive provenance remain absent.
+
+### Q-01–Q-10 disposition
+
+| Gate | Result |
+|---|---|
+| Q-01 | `PARTIAL` |
+| Q-02 | `PARTIAL` — also blocked by the P0 fail-open smoke path |
+| Q-03 | `PARTIAL` |
+| Q-04 | `PARTIAL` |
+| Q-05 | `PARTIAL` |
+| Q-06 | `PARTIAL` |
+| Q-07 | `PENDING` |
+| Q-08 | `PENDING` |
+| Q-09 | `PENDING` |
+| Q-10 | `PARTIAL` |
+
+The reviewer independently re-read existing xcresult summaries for
+RimeBridgeTests (75 total, 55 passed, 20 skipped) and the App suite (255 total,
+252 passed, 3 skipped). The focused integration summary could not be reread in
+that review environment, so its recorded 1.334-second result remains
+Executor-recorded. The reviewer performed no build/network/write action and did
+not access or change PR #91.

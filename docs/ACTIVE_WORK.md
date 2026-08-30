@@ -5,12 +5,12 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-30 Asia/Shanghai` — F-02 实现提交 `09659a7` 与本地 iOS 27 模拟器门禁完成，但两项有界独立复审均未返回可审计结论；按 Stop Conditions 转为 `Blocked`，等待 Product Lead 确立可执行的独立复审路径。核心 `Active` 为 `3/10`，另有 `Blocked` `1/10`。
+Last synced: `2026-08-30 Asia/Shanghai` — F-02 的同一对独立 reviewer 已恢复并完成：Architecture/Quality 均为 `Fail`；Assignment 回到 `Active` 修复 1 个 P0 与 P1 findings，真机与下游 Gate 不前移。核心 Active Work 为 `4/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；Task11 F-01/F-02 仍 Pending。F-03 工程片已随 #83 合入 `main`，TestFlight tester 仍在 Build 7（不含该修复）。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
-| 2 | RIME-BUILTIN-LUNA-QUALITY-001 | Blocked | P1；`09659a7` 与本地门禁保留，但有界独立 Architecture/Quality 复审未返回结论；Coordinator 不得自行替换 reviewer，真机/hosted CI/Human Gate 不得继续 | [`assignment`](assignments/rime-builtin-luna-quality-001.md) · [`blocker`](evidence/rime-builtin-luna-quality-f02-independent-review-blocker-2026-08-30.md) · [`implementation evidence`](evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) |
+| 2 | RIME-BUILTIN-LUNA-QUALITY-001 | Active | P1；`09659a7` 的独立 Architecture/Quality 复审均为 Fail；正修复 receipt/manifest/deployed identity/transaction/overlay 及 deterministic/fault-vector findings，修复后交回同一 reviewers | [`assignment`](assignments/rime-builtin-luna-quality-001.md) · [`Architecture`](assignments/rime-builtin-luna-quality-001-architecture-review.md#post-implementation-review--09659a7--2026-08-30) · [`Quality`](assignments/rime-builtin-luna-quality-001-quality-review.md#post-implementation-review--09659a7--2026-08-30) |
 | 3 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 4 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 

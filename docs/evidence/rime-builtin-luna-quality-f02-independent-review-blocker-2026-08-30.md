@@ -39,3 +39,16 @@ Manager/Coordinator from choosing or replacing an assignee. Therefore:
 - Unblocking requires a Product Lead decision that establishes an executable
   independent-review route; it does not authorize any downstream gate by
   itself.
+
+## Resolution Addendum
+
+The original `Blocked` inference was incorrect. A Coordinator-side
+`wait_agent` timeout indicated only that no mailbox update arrived in that
+window; both reviewers were still running and were interrupted by the
+Coordinator. The Human Product Owner directed the same subagents to continue.
+They resumed under the original read-only contracts and both returned auditable
+independent `Fail` conclusions.
+
+Reviewer availability and independence are therefore restored. F-02 returns to
+`Active`, specifically implementation-findings remediation. The review failures
+do not authorize physical-device handoff, Exit, merge, TestFlight or Release.
