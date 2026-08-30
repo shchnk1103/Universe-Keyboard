@@ -9,10 +9,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Human Product Owner explicitly authorized implementation; Executor is implementing the ADR 0033 offline closure in the isolated F-02 worktree and will produce Q-01–Q-10 evidence before completion |
-| **Non-claims** | No code/resource implementation, generated-output receipt, built/deployed manifest, runtime/Quality Exit pass, legal acceptance, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
-| **Next** | Materialize pinned resources and deterministic receipts, migrate main-App ownership, implement overlay/manifest/fail-closed deployment, then run focused and full gates before independent re-review |
-| **Residuals** | [`Architecture review`](rime-builtin-luna-quality-001-architecture-review.md#architecture-follow-up-addendum--adr-0033-and-lifecycle-correction) · [`Quality review`](rime-builtin-luna-quality-001-quality-review.md#lifecycle-follow-up-addendum--2026-08-29) · [`upstream pin audit`](../evidence/rime-builtin-luna-quality-f02-upstream-pin-audit-2026-08-29.md) |
+| **Phase** | Implementation commit `09659a7` and local iOS 27 simulator gates are complete; Q-01–Q-10 are partially evidenced and the exact implementation is awaiting independent Architecture/Quality re-review before physical-device handoff |
+| **Non-claims** | No Assignment Exit, hosted CI, physical-device/Full Access/lifecycle/performance pass, independent final review, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
+| **Next** | Independently re-review commit `09659a7` plus the implementation evidence; resolve findings, then prepare one exact build for the named iPhone 13 Pro / iOS 27 offline, Full Access and lifecycle matrix |
+| **Residuals** | [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`Architecture review`](rime-builtin-luna-quality-001-architecture-review.md) · [`Quality review`](rime-builtin-luna-quality-001-quality-review.md) · [`upstream pin audit`](../evidence/rime-builtin-luna-quality-f02-upstream-pin-audit-2026-08-29.md) |
 
 ---
 
@@ -89,7 +89,7 @@ equivalent environment.
 - No change, review, merge, update or lifecycle action for PR
   [#91](https://github.com/shchnk1103/Universe-Keyboard/pull/91). Its commit is
   evidence provenance only.
-- No implementation code under the current documentation authorization.
+- No implementation outside the explicitly authorized F-02 boundary.
 - No network request or deployment from Keyboard Extension.
 - No automatic download of supposedly missing built-in resources.
 - No unrelated redesign of 雾凇、万象、T9, user sync or scheme delivery.
@@ -285,3 +285,9 @@ built-in assets.
   to enter `Active` and begin code plus built-in resource implementation under
   KOS. PR #91, Octagram model activation, third-party schemes, merge,
   TestFlight and Release remain outside this authorization.
+- `2026-08-30 Asia/Shanghai` — Executor created implementation commit `09659a7`.
+  Deterministic generation, exact manifest/bundle hashes, App-only ownership,
+  focused integration, full iOS 27 App/Keyboard tests, Debug and Release builds
+  passed locally. Assignment remains `Active`; independent re-reviews,
+  physical-device Q-01/Q-02/Q-04/Q-07/Q-08 evidence, hosted CI, Human Product
+  Gate, merge and Release remain open.
