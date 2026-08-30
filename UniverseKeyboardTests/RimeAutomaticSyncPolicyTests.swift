@@ -125,6 +125,28 @@ final class RimeAutomaticSyncPolicyTests: XCTestCase {
         XCTAssertEqual(notificationCount, 0)
     }
 
+    @MainActor
+    func testFailedOperationSeamCompletesAsFailureWithoutNotification() async {
+        let lifecycle = RimeAutomaticSyncTaskLifecycle()
+        var taskCompletions: [Bool] = []
+        var notificationCount = 0
+        var rescheduleCount = 0
+
+        let didFinish = await RimeAutomaticSyncScheduler.finishOperation(
+            result: .failed,
+            lifecycle: lifecycle,
+            notifyCompletion: { notificationCount += 1 },
+            reschedule: { rescheduleCount += 1 },
+            completeTask: { taskCompletions.append($0) }
+        )
+
+        XCTAssertTrue(didFinish)
+        XCTAssertEqual(taskCompletions, [false])
+        XCTAssertEqual(notificationCount, 0)
+        XCTAssertEqual(rescheduleCount, 1)
+        XCTAssertFalse(lifecycle.claimExpiration())
+    }
+
     func testDailyCadenceIsDueAfterOneDay() {
         let start = Date(timeIntervalSince1970: 1_000)
 

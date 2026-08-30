@@ -497,9 +497,6 @@ final class RimeSyncViewModel {
         do {
             try Task.checkCancellation()
             try await synchronizeStandardRimeData()
-            // librime 维护调用本身不可协作取消；返回后必须重新闭合取消状态，
-            // 防止系统已宣告过期却继续发布成功结果。
-            try Task.checkCancellation()
             completedNotificationScopes.insert(.standardRimeData)
 
             let completedAt: Date
@@ -520,7 +517,6 @@ final class RimeSyncViewModel {
                 setStatus(.syncing(.privateSettings))
                 try Task.checkCancellation()
                 completedAt = try await synchronizePrivateSettings()
-                try Task.checkCancellation()
                 completedNotificationScopes.insert(.privateSettings)
                 setStatus(.succeeded(completedAt, .standardRimeAndPrivateSettings))
             } else {
@@ -760,6 +756,9 @@ final class RimeSyncViewModel {
         await Task.detached(priority: .userInitiated) {
             RimeConfigManager.syncCustomYamlFiles()
         }.value
+        // YAML 刷新不可协作取消；返回后先闭合过期状态，避免再启动
+        // 同样不可取消的 librime 标准维护。最终成功发布仍由 scheduler 终态门决定。
+        try Task.checkCancellation()
 
         try await standardRimeSyncService.synchronize(
             RimeStandardSyncRequest(
