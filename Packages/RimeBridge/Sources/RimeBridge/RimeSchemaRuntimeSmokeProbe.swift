@@ -132,15 +132,19 @@ public enum RimeSchemaRuntimeSmokeProbe {
         using bridge: RimeSessionManager,
         requiresNLFuzzyDiscovery: Bool
     ) -> Bool {
-        let cases = [
-            (input: "ni", expectedTopCandidate: "你"),
-            (input: "nihao", expectedTopCandidate: "你好"),
-            (input: "sanjiaoxing", expectedTopCandidate: "三角形"),
-            (input: "jintiantianqihenhao", expectedTopCandidate: "今天天气很好"),
+        let expectedNiPage = requiresNLFuzzyDiscovery ? ["你", "里", "李", "离"] : ["你", "拟", "尼", "泥"]
+        let expectedNihaoPage =
+            requiresNLFuzzyDiscovery
+            ? ["你好", "妳好", "利好", "立好"] : ["你好", "妳好", "逆号", "拟好"]
+        let cases: [(input: String, expectedTopCandidate: String, expectedFirstPage: [String]?)] = [
+            (input: "ni", expectedTopCandidate: "你", expectedFirstPage: expectedNiPage),
+            (input: "nihao", expectedTopCandidate: "你好", expectedFirstPage: expectedNihaoPage),
+            (input: "sanjiaoxing", expectedTopCandidate: "三角形", expectedFirstPage: nil),
+            (input: "jintiantianqihenhao", expectedTopCandidate: "今天天气很好", expectedFirstPage: nil),
             // Exercises Essay ranking plus the bundled t2s OpenCC profile.
-            (input: "fanti", expectedTopCandidate: "繁体"),
+            (input: "fanti", expectedTopCandidate: "繁体", expectedFirstPage: nil),
             // Exercises the Luna schema's bundled Stroke reverse lookup.
-            (input: "`pspzzpn", expectedTopCandidate: "你"),
+            (input: "`pspzzpn", expectedTopCandidate: "你", expectedFirstPage: ["你", "您"]),
         ]
         for testCase in cases {
             bridge.clearComposition()
@@ -152,12 +156,27 @@ public enum RimeSchemaRuntimeSmokeProbe {
                 hadUnexpectedCommit = hadUnexpectedCommit || !(output.committedText?.isEmpty ?? true)
             }
             let window = RimeEngineImpl.parseCandidateWindowDictionary(
-                bridge.candidates(from: 0, limit: 20)
+                bridge.candidates(from: 0, limit: 5)
             )
-            guard !hadUnexpectedCommit, window.candidates.first?.text == testCase.expectedTopCandidate else {
+            let candidateTexts = window.candidates.map(\.text)
+            guard
+                !hadUnexpectedCommit,
+                candidateTexts.first == testCase.expectedTopCandidate,
+                testCase.expectedFirstPage == nil || candidateTexts == testCase.expectedFirstPage
+            else {
                 return false
             }
         }
+        // Reverse lookup must not leak into the ordinary pinyin session after
+        // composition is cleared.
+        bridge.clearComposition()
+        for character in "ni" {
+            _ = bridge.processKey(RimeEngineImpl.keycode(for: String(character)), modifiers: 0)
+        }
+        let pinyinAfterStroke = RimeEngineImpl.parseCandidateWindowDictionary(
+            bridge.candidates(from: 0, limit: 5)
+        )
+        guard pinyinAfterStroke.candidates.map(\.text) == expectedNiPage else { return false }
         if requiresNLFuzzyDiscovery {
             bridge.clearComposition()
             for character in "li" {

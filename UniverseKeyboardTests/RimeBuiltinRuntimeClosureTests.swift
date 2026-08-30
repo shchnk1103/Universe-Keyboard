@@ -77,6 +77,63 @@ final class RimeBuiltinRuntimeClosureTests: XCTestCase {
 
         XCTAssertTrue(result.succeeded, "fuzzyEnabled=\(fuzzyEnabled): \(result.diagnosticMessage)")
         XCTAssertEqual(result.runtimeSmokePassed, true)
+        try assertFirstPageCandidateOrder(
+            sharedURL: sharedURL,
+            userURL: userURL,
+            fuzzyEnabled: fuzzyEnabled
+        )
+    }
+
+    private func assertFirstPageCandidateOrder(
+        sharedURL: URL,
+        userURL: URL,
+        fuzzyEnabled: Bool
+    ) throws {
+        let bridge = RimeSessionManager()
+        XCTAssertTrue(bridge.setup(withSharedDataDir: sharedURL.path, userDataDir: userURL.path))
+        XCTAssertTrue(bridge.initializeEngine())
+        defer { bridge.finalize() }
+        XCTAssertTrue(bridge.createSession())
+        XCTAssertTrue(bridge.selectSchema("luna_pinyin"))
+
+        let expected: [String: [String]] =
+            fuzzyEnabled
+            ? [
+                "ni": ["你", "里", "李", "离"],
+                "nihao": ["你好", "妳好", "利好", "立好"],
+                "`pspzzpn": ["你", "您"],
+            ]
+            : [
+                "ni": ["你", "拟", "尼", "泥"],
+                "nihao": ["你好", "妳好", "逆号", "拟好"],
+                "`pspzzpn": ["你", "您"],
+            ]
+        for input in ["ni", "nihao", "`pspzzpn"] {
+            bridge.clearComposition()
+            for character in input {
+                _ = bridge.processKey(RimeEngineImpl.keycode(for: String(character)), modifiers: 0)
+            }
+            let window = RimeEngineImpl.parseCandidateWindowDictionary(
+                bridge.candidates(from: 0, limit: 5)
+            )
+            XCTAssertEqual(
+                window.candidates.map(\.text),
+                expected[input],
+                "fuzzyEnabled=\(fuzzyEnabled) input=\(input)"
+            )
+        }
+        bridge.clearComposition()
+        for character in "ni" {
+            _ = bridge.processKey(RimeEngineImpl.keycode(for: String(character)), modifiers: 0)
+        }
+        let pinyinAfterStroke = RimeEngineImpl.parseCandidateWindowDictionary(
+            bridge.candidates(from: 0, limit: 5)
+        )
+        XCTAssertEqual(
+            pinyinAfterStroke.candidates.map(\.text),
+            expected["ni"],
+            "Stroke reverse lookup leaked into ordinary pinyin session"
+        )
     }
 
     private func assertBundledOpenCCProfiles(sharedURL: URL) throws {

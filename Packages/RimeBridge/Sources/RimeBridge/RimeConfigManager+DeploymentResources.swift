@@ -135,17 +135,35 @@ extension RimeConfigManager {
         let expected = Set(
             manifest.entries.compactMap { $0.path.split(separator: "/").last.map(String.init) }
         ).union([RimeBuiltinResourceInstaller.manifestFileName])
-        let closureExtensions: Set<String> = ["bin", "json", "ocd2", "yaml"]
-        let rootFiles = try FileManager.default.contentsOfDirectory(
+        let closureExtensions: Set<String> = ["bin", "json", "ocd2", "txt", "yaml"]
+        let enumerator = FileManager.default.enumerator(
             at: resourceURL,
-            includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey]
+            includingPropertiesForKeys: [
+                .isDirectoryKey,
+                .isPackageKey,
+                .isRegularFileKey,
+                .isSymbolicLinkKey,
+            ],
+            options: [.skipsPackageDescendants]
         )
-        for url in rootFiles where closureExtensions.contains(url.pathExtension.lowercased()) {
+        while let url = enumerator?.nextObject() as? URL {
             let values = try url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
+            let ext = url.pathExtension.lowercased()
+            guard closureExtensions.contains(ext) else { continue }
+            // Third-party notices are intentionally outside the immutable
+            // RIME closure. Their checked-in names are uppercase; runtime data
+            // such as essay.txt follows RIME's lowercase resource convention.
+            if ext == "txt", url.lastPathComponent != url.lastPathComponent.lowercased() {
+                continue
+            }
             guard values.isRegularFile == true, values.isSymbolicLink != true else {
                 throw RimeBuiltinResourceInstaller.InstallationError.resourceNotRegularFile
             }
-            guard expected.contains(url.lastPathComponent) else {
+            let relativePath = url.path.replacingOccurrences(
+                of: resourceURL.path + "/",
+                with: ""
+            )
+            guard !relativePath.contains("/"), expected.contains(url.lastPathComponent) else {
                 throw RimeBuiltinResourceInstaller.InstallationError.resourceSetMismatch
             }
         }

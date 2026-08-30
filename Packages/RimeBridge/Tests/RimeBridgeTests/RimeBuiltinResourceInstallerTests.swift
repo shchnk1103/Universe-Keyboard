@@ -317,6 +317,117 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         }
     }
 
+    func testFlattenedBundleRejectsUnmanifestedLowercaseTextResource() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let bundleRoot = fixture.root.appendingPathComponent("TextExtra.bundle", isDirectory: true)
+        try makeFlattenedBundle(from: fixture.source, at: bundleRoot)
+        try Data("unexpected".utf8).write(to: bundleRoot.appendingPathComponent("unexpected.txt"))
+        let bundle = try XCTUnwrap(Bundle(url: bundleRoot))
+
+        XCTAssertThrowsError(try RimeConfigManager.stageBundledResourceClosure(from: bundle)) {
+            error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .resourceSetMismatch
+            )
+        }
+    }
+
+    func testFlattenedBundleRejectsNestedRimeResource() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let bundleRoot = fixture.root.appendingPathComponent("NestedExtra.bundle", isDirectory: true)
+        try makeFlattenedBundle(from: fixture.source, at: bundleRoot)
+        let nested = bundleRoot.appendingPathComponent("Unexpected", isDirectory: true)
+        try FileManager.default.createDirectory(at: nested, withIntermediateDirectories: true)
+        try Data("unexpected".utf8).write(to: nested.appendingPathComponent("nested.yaml"))
+        let bundle = try XCTUnwrap(Bundle(url: bundleRoot))
+
+        XCTAssertThrowsError(try RimeConfigManager.stageBundledResourceClosure(from: bundle)) {
+            error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .resourceSetMismatch
+            )
+        }
+    }
+
+    func testOverlayWriteFailureRestoresPreviousFilesAndReceipt() throws {
+        enum InjectedFailure: Error { case beforeSecondReplacement }
+
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let rimeRoot = fixture.root.appendingPathComponent("Rime", isDirectory: true)
+        _ = try RimeBuiltinResourceInstaller().install(
+            sourceRoot: fixture.source,
+            rimeRoot: rimeRoot
+        )
+        let userDir = rimeRoot.appendingPathComponent("user", isDirectory: true)
+        try FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
+        let previous = [
+            RimeConfigManager.CustomYamlArtifact(
+                filename: "default.custom.yaml",
+                content: "patch:\n  schema_list:\n    - schema: luna_pinyin\n"
+            ),
+            RimeConfigManager.CustomYamlArtifact(
+                filename: "luna_pinyin.custom.yaml",
+                content: "patch:\n  translator/enable_user_dict: false\n"
+            ),
+        ]
+        for artifact in previous {
+            try artifact.content.write(
+                to: userDir.appendingPathComponent(artifact.filename),
+                atomically: true,
+                encoding: .utf8
+            )
+        }
+        try RimeBuiltinResourceInstaller().recordOverlayReceipt(
+            rimeRoot: rimeRoot,
+            userDataURL: userDir
+        )
+        let receiptURL = rimeRoot.appendingPathComponent(
+            RimeBuiltinResourceInstaller.overlayReceiptFileName
+        )
+        let previousReceipt = try Data(contentsOf: receiptURL)
+        let replacements = previous.map {
+            RimeConfigManager.CustomYamlArtifact(
+                filename: $0.filename,
+                content: $0.content + "# replacement\n"
+            )
+        }
+
+        XCTAssertThrowsError(
+            try RimeConfigManager.replaceCustomYamlArtifacts(
+                replacements,
+                rimeRoot: rimeRoot,
+                beforeReplacing: { filename in
+                    if filename == "luna_pinyin.custom.yaml" {
+                        throw InjectedFailure.beforeSecondReplacement
+                    }
+                }
+            )
+        ) { error in
+            XCTAssertTrue(error is InjectedFailure)
+        }
+        for artifact in previous {
+            XCTAssertEqual(
+                try String(
+                    contentsOf: userDir.appendingPathComponent(artifact.filename),
+                    encoding: .utf8
+                ),
+                artifact.content
+            )
+        }
+        XCTAssertEqual(try Data(contentsOf: receiptURL), previousReceipt)
+        XCTAssertNoThrow(
+            try RimeBuiltinResourceInstaller().validateInstalledRuntime(
+                rimeRoot: rimeRoot,
+                userDataURL: userDir
+            )
+        )
+    }
+
     private func makeFixture(omitting omittedSuffix: String? = nil) throws -> (root: URL, source: URL) {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(
             "rime-builtin-installer-tests-\(UUID().uuidString)",

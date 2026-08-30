@@ -14,19 +14,7 @@ extension RimeConfigManager {
             )
         else { return false }
 
-        let userDir = containerURL.appendingPathComponent("Rime/user")
         let rimeRoot = containerURL.appendingPathComponent("Rime", isDirectory: true)
-        let overlayReceiptURL = rimeRoot.appendingPathComponent("builtin-overlay-receipt.json")
-        do {
-            try FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
-            // Never let a previous receipt authorize an interrupted rewrite.
-            if FileManager.default.fileExists(atPath: overlayReceiptURL.path) {
-                try FileManager.default.removeItem(at: overlayReceiptURL)
-            }
-        } catch {
-            Logger.shared.error("Failed to prepare RIME custom YAML directory", category: .config)
-            return false
-        }
 
         let defs = UserDefaults(suiteName: customYamlAppGroupID)
         let activeSchema = defs?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
@@ -55,20 +43,9 @@ extension RimeConfigManager {
         if pageSize >= 5 {
             defaultYaml += "  \"menu/page_size\": \(pageSize)\n"
         }
-        do {
-            try defaultYaml.write(
-                to: userDir.appendingPathComponent("default.custom.yaml"),
-                atomically: true,
-                encoding: .utf8
-            )
-        } catch {
-            Logger.shared.error("Failed to write default.custom.yaml", category: .config)
-            return false
-        }
-        Logger.shared.info(
-            "Synced default.custom.yaml (activeSchema=\(activeSchema), page_size=\(pageSize))",
-            category: .config
-        )
+        var artifacts = [
+            CustomYamlArtifact(filename: "default.custom.yaml", content: defaultYaml)
+        ]
 
         // {schema}.custom.yaml — schema-specific preferences.
         //
@@ -103,28 +80,128 @@ extension RimeConfigManager {
             userDictionarySettings: userDictionarySettings,
             fuzzyPinyinSettings: fuzzySettings
         )
-        for file in plan {
-            do {
-                try file.content.write(
-                    to: userDir.appendingPathComponent(file.filename),
-                    atomically: true,
-                    encoding: .utf8
-                )
-            } catch {
-                Logger.shared.error("Failed to write schema custom YAML", category: .config)
-                return false
-            }
-            Logger.shared.info("Synced \(file.filename) user dictionary settings", category: .config)
-        }
+        artifacts.append(
+            contentsOf: plan.map {
+                CustomYamlArtifact(filename: $0.filename, content: $0.content)
+            })
         do {
+            try replaceCustomYamlArtifacts(
+                artifacts,
+                rimeRoot: rimeRoot,
+            )
+            Logger.shared.info(
+                "Synced RIME custom YAML files count=\(artifacts.count) "
+                    + "activeSchema=\(activeSchema) pageSize=\(pageSize)",
+                category: .config
+            )
+            return true
+        } catch {
+            Logger.shared.error("Failed to commit RIME custom YAML generation", category: .config)
+            return false
+        }
+    }
+
+    struct CustomYamlArtifact: Equatable, Sendable {
+        let filename: String
+        let content: String
+    }
+
+    enum CustomYamlTransactionError: Error, Equatable {
+        case invalidArtifactSet
+        case rollbackFailed
+    }
+
+    /// Commits the overlay files and their authorization receipt as one
+    /// recoverable transaction. A normal write failure restores the previous
+    /// coherent files and receipt; process death remains governed by ADR 0006.
+    static func replaceCustomYamlArtifacts(
+        _ artifacts: [CustomYamlArtifact],
+        rimeRoot: URL,
+        beforeReplacing: ((String) throws -> Void)? = nil
+    ) throws {
+        let filenames = artifacts.map(\.filename)
+        guard
+            !artifacts.isEmpty,
+            Set(filenames).count == artifacts.count,
+            filenames.allSatisfy({ !$0.isEmpty && ($0 as NSString).lastPathComponent == $0 })
+        else {
+            throw CustomYamlTransactionError.invalidArtifactSet
+        }
+
+        let fileManager = FileManager.default
+        let userDir = rimeRoot.appendingPathComponent("user", isDirectory: true)
+        let transactionRoot = rimeRoot.appendingPathComponent(
+            ".builtin-overlay-transaction-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        let stagedDir = transactionRoot.appendingPathComponent("staged", isDirectory: true)
+        let backupDir = transactionRoot.appendingPathComponent("backup", isDirectory: true)
+        let receiptName = RimeBuiltinResourceInstaller.overlayReceiptFileName
+        let receiptURL = rimeRoot.appendingPathComponent(receiptName)
+        defer { try? fileManager.removeItem(at: transactionRoot) }
+
+        try fileManager.createDirectory(at: userDir, withIntermediateDirectories: true)
+        try fileManager.createDirectory(at: stagedDir, withIntermediateDirectories: true)
+        try fileManager.createDirectory(at: backupDir, withIntermediateDirectories: true)
+        for artifact in artifacts {
+            try artifact.content.write(
+                to: stagedDir.appendingPathComponent(artifact.filename),
+                atomically: true,
+                encoding: .utf8
+            )
+        }
+        for filename in filenames {
+            let current = userDir.appendingPathComponent(filename)
+            if fileManager.fileExists(atPath: current.path) {
+                try fileManager.copyItem(at: current, to: backupDir.appendingPathComponent(filename))
+            }
+        }
+        if fileManager.fileExists(atPath: receiptURL.path) {
+            try fileManager.copyItem(at: receiptURL, to: backupDir.appendingPathComponent(receiptName))
+        }
+
+        do {
+            if fileManager.fileExists(atPath: receiptURL.path) {
+                try fileManager.removeItem(at: receiptURL)
+            }
+            for artifact in artifacts {
+                try beforeReplacing?(artifact.filename)
+                let destination = userDir.appendingPathComponent(artifact.filename)
+                if fileManager.fileExists(atPath: destination.path) {
+                    try fileManager.removeItem(at: destination)
+                }
+                try fileManager.moveItem(
+                    at: stagedDir.appendingPathComponent(artifact.filename),
+                    to: destination
+                )
+            }
             try RimeBuiltinResourceInstaller().recordOverlayReceipt(
                 rimeRoot: rimeRoot,
                 userDataURL: userDir
             )
-            return true
         } catch {
-            Logger.shared.error("Failed to authorize RIME custom YAML generation", category: .config)
-            return false
+            do {
+                for filename in filenames {
+                    let destination = userDir.appendingPathComponent(filename)
+                    if fileManager.fileExists(atPath: destination.path) {
+                        try fileManager.removeItem(at: destination)
+                    }
+                    let backup = backupDir.appendingPathComponent(filename)
+                    if fileManager.fileExists(atPath: backup.path) {
+                        try fileManager.copyItem(at: backup, to: destination)
+                    }
+                }
+                if fileManager.fileExists(atPath: receiptURL.path) {
+                    try fileManager.removeItem(at: receiptURL)
+                }
+                let receiptBackup = backupDir.appendingPathComponent(receiptName)
+                if fileManager.fileExists(atPath: receiptBackup.path) {
+                    try fileManager.copyItem(at: receiptBackup, to: receiptURL)
+                }
+            } catch {
+                throw CustomYamlTransactionError.rollbackFailed
+            }
+            throw error
         }
     }
 
