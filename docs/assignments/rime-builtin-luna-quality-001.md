@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Reviewer conditions are remediated at `85d0249`; exact first-page order, Stroke session isolation, recursive bundle-extra rejection and recoverable overlay replacement pass focused gates; the App aggregate remains explicitly blocked by simulator App Group entitlement failures across multiple pre-existing deployment tests |
+| **Phase** | Final reviewer conditions are remediated at `fa5dbaf`: immutable resources and generation-bound overlays now commit inside one recoverable production transaction; Extension consumption fails closed on receipt identity; all frozen candidate vectors use exact full first-page order; local CI-equivalent gates are green |
 | **Non-claims** | No Assignment Exit, hosted CI, physical-device/Full Access/lifecycle/performance pass, independent final review, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced |
-| **Next** | The bound independent Architecture and Quality reviewers re-review exact commit `85d0249` plus its evidence checkpoint; only if both permit may the Coordinator prepare an exact installable build and hand the physical-device matrix to the Human Dependency |
+| **Next** | The bound independent Architecture and Quality reviewers re-review exact implementation commit `fa5dbaf` plus the synchronized evidence checkpoint; only if both permit may the Coordinator prepare an exact installable build and hand the physical-device matrix to the Human Dependency |
 | **Residuals** | [`Architecture post-implementation review`](rime-builtin-luna-quality-001-architecture-review.md#post-implementation-review--09659a7--2026-08-30) · [`Quality post-implementation review`](rime-builtin-luna-quality-001-quality-review.md#post-implementation-review--09659a7--2026-08-30) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) |
 
 ---
@@ -324,3 +324,12 @@ built-in assets.
   blocked and is not presented as F-02 green. Assignment remains `Active`
   pending final independent re-review; no physical-device, hosted-CI, merge or
   Release claim is inferred.
+- `2026-08-30 Asia/Shanghai` — Final review conditions were remediated in
+  `fa5dbaf`: the production base-resource and overlay installation paths now
+  share one recoverable boundary, Extension consumption is receipt-authorized,
+  and every frozen quality vector has exact complete first-page expectations.
+  The final local aggregate is 255 total / 252 passed / 3 physical-only skips /
+  0 failures; RimeBridge is 87 total / 67 passed / 20 existing skips, and
+  KeyboardCore 1,068/1,068 plus Debug/Release builds pass. Assignment remains
+  `Active` pending final independent Architecture/Quality review and the Human
+  physical-device gates; no hosted-CI, merge or Release claim is inferred.

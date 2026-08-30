@@ -9,6 +9,7 @@
 | Initial implementation commit | `09659a70b6afa94dad16e9d45921ba3154a9fd57` |
 | Findings-remediation commit | `1755006553037ab72fd175f65c2f9edfe62fc0a1` |
 | Review-conditions remediation commit | `85d0249d959803134a37c4a6f4442bf8d0cfe4b2` |
+| Final atomicity/quality remediation commit | `fa5dbaf1fded3e25ac39a6c0c675cddc786f01bb` |
 | Branch / worktree | `codex/f02-rime-builtin-quality-assignment` / `/tmp/universe-keyboard-f02-assignment` |
 | Base governance commit | `83626fd` |
 | Xcode / Swift | Xcode `27.0 (27A5252f)`; Apple Swift `6.4` |
@@ -50,13 +51,22 @@ Human Product Gate.
 - A separate overlay receipt binds both required Universe custom YAML files to
   the resource generation and manifest hash. Luna runtime smoke fails closed
   when either immutable-resource or overlay identity is absent or tampered.
-- Dynamic overlay replacement stages and backs up the complete new artifact
-  set plus its prior receipt. A normal write/replace/receipt failure restores
-  the coherent previous files and receipt; process-death atomicity remains the
-  existing ADR 0006 / TD-001 residual rather than an F-02 overclaim.
+- Immutable resources and dynamic overlays now commit in one production
+  recovery boundary. Overlay replacement stages and backs up the complete new
+  artifact set plus its prior receipt; if overlay replacement or receipt
+  creation fails, its rollback restores the prior overlay generation before
+  the outer installer restores the prior immutable generation and receipt.
+  Process-death atomicity remains the existing ADR 0006 / TD-001 residual
+  rather than an F-02 overclaim.
+- Keyboard Extension runtime directory resolution now requires a matching
+  immutable-resource receipt plus generation-bound overlay receipt and hashes.
+  It deliberately avoids hashing the complete 34 MB closure on keyboard
+  startup; full closure validation remains main-App owned.
 - Receipt-gated runtime quality smoke fails on wrong Top-1 results for `ni`,
-  `nihao`, `sanjiaoxing`, `jintiantianqihenhao` and `fanti`; it also verifies
-  the exact first candidate page for `ni`, `nihao` and Stroke reverse lookup.
+  `nihao`, `sanjiaoxing`, `jintiantianqihenhao` and `fanti`; it verifies the
+  exact first candidate page for every one of those vectors and Stroke reverse
+  lookup, with the configuration-specific `sanjiaoxing` order frozen
+  separately for fuzzy pinyin off and on.
   After Stroke, the same session must return to the ordinary `ni` first page.
   The actual-bundle integration repeats two clean deployments with fuzzy
   pinyin off and two with it on, and directly exercises the linked OpenCC
@@ -82,43 +92,50 @@ Human Product Gate.
 | Diff whitespace | `git diff --check` | `PASS` |
 | KeyboardCore | macOS SwiftPM | `1,068` tests, 0 failures; final run completed `2026-08-30 19:27 Asia/Shanghai` |
 | Installer fault/identity focus | iPhone 17 Pro Max Simulator, iOS 27.0 (`24A5423a`) | `1` focused suite, 0 failures; includes 26 switch-point rollback matrix; `/tmp/f02-derived-rime-focus/Logs/Test/Test-RimeBridgeTests-2026.08.30_14-45-05-+0800.xcresult` |
-| RimeBridgeTests | iPhone 17 Pro Max Simulator, iOS 27.0 (`24A5423a`) | 86 total; 66 passed, 20 existing skips, 0 failures; `/tmp/f02-derived-rime-full-final/Logs/Test/Test-RimeBridgeTests-2026.08.30_19-24-20-+0800.xcresult` |
-| Actual-bundle Luna closure integration | iPhone 17 Pro Max Simulator, iOS 27.0 (`24A5423a`) | 1 focused test, 0 failures; internally four clean deployments, exact `ni`/`nihao`/Stroke first-page order, post-Stroke pinyin isolation, representative vectors and four direct OpenCC vectors; `/tmp/f02-derived-app-final-order/Logs/Test/Test-Universe Keyboard-2026.08.30_19-23-27-+0800.xcresult` |
-| App + Keyboard aggregate | iPhone 17 Pro Max Simulator, iOS 27.0 (`24A5423a`) | `BLOCKED`, not pass. The original full run stopped after 80 passes in the named NineKey async test. A diagnostic rerun explicitly skipped only that case and still produced 254 total: 236 passed, 3 skipped, 15 failed; all listed failures followed `container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled`, and one RimeSettingsStore test crashed/restarted the runner. `/tmp/f02-derived-app-minus-known-blocker/Logs/Test/Test-Universe Keyboard-2026.08.30_19-26-50-+0800.xcresult` |
-| Debug build | iPhone 17 Pro Max Simulator, iOS 27.0 | `BUILD SUCCEEDED`; `/tmp/f02-derived-build-debug-final` |
-| Release build | iPhone 17 Pro Max Simulator, iOS 27.0 | `BUILD SUCCEEDED`; `/tmp/f02-derived-build-release-final` |
+| Production-sequence atomic rollback focus | iPhone 17 Pro Max Simulator, iOS 27.0 (`24A5423a`) | installer suite 17/17 passed, including overlay failure after a new immutable generation has been installed and complete restoration of the previous resource receipt, overlay receipt, 26 base files and overlays; `/tmp/f02-derived-rime-atomic-focus/Logs/Test/Test-RimeBridgeTests-2026.08.30_23-36-06-+0800.xcresult` |
+| RimeBridgeTests | iPhone 17 Pro Max Simulator, iOS 27.0 (`24A5423a`) | 87 total; 67 passed, 20 existing skips, 0 failures; `/tmp/f02-derived-rime-full-final/Logs/Test/` final result at `2026-08-30 23:44 Asia/Shanghai` |
+| Actual-bundle Luna closure integration | iPhone 17 Pro Max Simulator, iOS 27.0 (`24A5423a`) | 1 focused test, 0 failures; internally four clean deployments and exact complete first-page order for `ni`, `nihao`, `sanjiaoxing`, representative sentence, `fanti` and Stroke, plus post-Stroke pinyin isolation and four direct OpenCC vectors; `/tmp/f02-derived-app-strict-final/Logs/Test/Test-Universe Keyboard-2026.08.30_23-44-04-+0800.xcresult` |
+| Deployment-related App focus | iPhone 17 Pro Max Simulator, iOS 27.0 (`24A5423a`) | SchemaManager + RimeSettingsStore 93/93 passed; `/tmp/f02-derived-app-strict-final/Logs/Test/Test-Universe Keyboard-2026.08.30_23-45-31-+0800.xcresult` |
+| App + Keyboard aggregate | iPhone 17 Pro Max Simulator, iOS 27.0 (`24A5423a`) | `PASS`; 255 total, 252 passed, 3 physical-device-only skips, 0 failures; `/tmp/f02-derived-app-aggregate-final/Logs/Test/` final result at `2026-08-30 23:47 Asia/Shanghai` |
+| Debug build | iPhone 17 Pro Max Simulator, iOS 27.0 | `BUILD SUCCEEDED`; `/tmp/f02-derived-debug-build-final` |
+| Release build | iPhone 17 Pro Max Simulator, iOS 27.0 | `BUILD SUCCEEDED`; `/tmp/f02-derived-release-build-final` |
 
-The App aggregate is intentionally not reported green. The second run proves
-the blocker is broader than one NineKey case: simulator tests which expect the
-real App Group deployment path fail before their injected deployment service is
-called when the unsigned test host cannot resolve the App Group. This is a
-test-environment/dependency-seam blocker shared by NineKey, SchemaManager and
-RimeSettingsStore paths; it is not evidence that the focused Luna runtime
-closure failed. F-02 does not modify those unrelated ownership paths merely to
-manufacture a green aggregate. A separate scoped owner decision is required if
-the App aggregate infrastructure is to be repaired.
+The unsigned Simulator still emits
+`container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled`
+as an environment warning. It did not produce a failure in the final full
+aggregate and therefore is recorded separately from the 255-test green result;
+neither result is used as physical-device App Group evidence.
+
+## Reviewer-condition disposition before final re-review
+
+| Condition | Owner / disposition | Executor evidence for independent re-check |
+|---|---|---|
+| `F02-OVL-ATOMIC` | RIME Platform Maintainer / `fix` | closed in `fa5dbaf` by the nested production recovery boundary and full previous-generation rollback test |
+| `F02-QUALITY-FIRSTPAGE` / `F02-Q02-REPORDER-001` | RIME Platform Maintainer + Quality / `fix` | closed in `fa5dbaf` by exact complete first-page assertions for all frozen vectors, twice per fuzzy configuration |
+| `F02-Q10-AGG-001` | Executor + Quality / `fix` | final App aggregate is 255 total, 252 passed, 3 physical-only skips, 0 failures |
+| ADR 0006 / `TD-001` process-death recovery | Architecture owner / `track` | remains outside F-02 synchronous-failure claim; no process-death atomicity is asserted |
+| Physical-device / Full Access / lifecycle / performance / archive / hosted CI | Human Dependency + named gate owners / `fix before Exit` | still pending; no device handoff until final independent reviewers permit it |
 
 ## Q-01–Q-10 Disposition
 
 | Gate | Current disposition | Remaining closure requirement |
 |---|---|---|
 | Q-01 offline/App-only closure | `PARTIAL PASS` | bundle/Extension/isolated-container automation passed; physical fresh App Group plus airplane-mode first deployment remains Human evidence |
-| Q-02 normal candidate quality | `PARTIAL PASS` | automated exact first-page order for `ni` / `nihao`, Top-1 for the three defect vectors, representative sentence/common conversion term and fuzzy off/on passed across four clean deployments; true process cold starts and physical-device repetition remain pending |
+| Q-02 normal candidate quality | `PARTIAL PASS` | automated exact complete first-page order for all frozen defect/representative vectors and fuzzy off/on passed across four clean deployments; true process cold starts and physical-device repetition remain pending |
 | Q-03 OpenCC four outputs | `LOCAL PASS` | exact linked OpenCC passed s2t, t2s, t2hk and t2tw behavior vectors; physical release-candidate evidence remains pending |
 | Q-04 Stroke reverse lookup | `PARTIAL PASS` | pinned full first-page reverse lookup vector and same-session return to ordinary pinyin passed in simulator; physical Full Access off/on and Extension lifecycle remain pending |
 | Q-05 reproducibility | `LOCAL PASS` | two clean output-tree digests, exact generator hash/host/command and bundle/deployed identity passed; independent reviewer and hosted clean-checkout repetition remain pending |
-| Q-06 fail-closed / last-good | `LOCAL PARTIAL PASS` | corrupt prior receipt, hidden/nested/lowercase-text extras, deployed tamper, overlay identity, overlay write rollback and all 26 switch interruption points fail closed with last-good restoration; process-death atomicity and device Extension consumption remain pending |
+| Q-06 fail-closed / last-good | `LOCAL PARTIAL PASS` | corrupt prior receipt, hidden/nested/lowercase-text extras, deployed tamper, overlay identity, all 26 switch interruption points and a production-sequence overlay failure restore the complete previous generation; Extension authorization is receipt-gated; process-death atomicity and physical Extension consumption remain pending |
 | Q-07 performance / size | `PENDING` | simulator allocated sizes and one integration duration are recorded but do not satisfy release-like physical samples, delta, median/worst or Product budget acceptance |
 | Q-08 Full Access / lifecycle | `PENDING` | named physical iPhone 13 Pro / iOS 27 matrix with exact commit/build is required |
 | Q-09 license / attribution | `ENGINEERING PARTIAL PASS` | offline files and catalog entries are implemented; independent inventory review and Human/legal sufficiency decision remain pending |
-| Q-10 CI / release reproducibility | `BLOCKED` | format, KeyboardCore, full RimeBridge, focused actual-bundle integration and Debug/Release builds pass; full App aggregate is blocked by the named existing NineKey async test; hosted CI, exact archive and independent Quality sign-off remain pending |
+| Q-10 CI / release reproducibility | `LOCAL PASS` | format, KeyboardCore, full RimeBridge, full App + Keyboard aggregate and Debug/Release builds pass; hosted CI, exact archive and independent Quality sign-off remain pending |
 
 ## Stop / Handoff
 
-Commit `85d0249d959803134a37c4a6f4442bf8d0cfe4b2` is ready for independent
-Architecture and Quality re-review, not Assignment Exit. Reviewers must judge
-the explicit aggregate-test blocker rather than treating focused green evidence
-as a full gate. The next human dependency is a named physical-device matrix
-only after review findings are resolved and an exact installable build is
-prepared. No merge, TestFlight upload or release action is authorized by this
-record.
+Implementation commit `fa5dbaf1fded3e25ac39a6c0c675cddc786f01bb` plus this
+evidence checkpoint is ready for independent Architecture and Quality
+re-review, not Assignment Exit. The next human dependency is a named
+physical-device matrix only after review findings are resolved and an exact
+installable build is prepared. No merge, TestFlight upload or release action is
+authorized by this record.
