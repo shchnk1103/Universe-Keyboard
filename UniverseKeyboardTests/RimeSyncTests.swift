@@ -4,6 +4,52 @@ import XCTest
 @testable import Universe_Keyboard
 
 final class RimeSyncModelTests: XCTestCase {
+    @MainActor
+    func testCancellablePhaseRejectsLateSuccessAfterCancellation() async {
+        let gate = NonCooperativePhaseGate()
+        let task = Task { @MainActor in
+            try await RimeSyncViewModel.runCancellablePhase {
+                await gate.run()
+                return 42
+            }
+        }
+
+        await gate.waitUntilStarted()
+        task.cancel()
+        await gate.release()
+
+        do {
+            _ = try await task.value
+            XCTFail("A cancelled non-cooperative phase must not publish its late result")
+        } catch is CancellationError {
+            // Expected: the shared boundary observes cancellation after the phase returns.
+        } catch {
+            XCTFail("Expected CancellationError, got \(error)")
+        }
+    }
+
+    @MainActor
+    func testCancellablePhaseReturnsSuccessfulValueWhenStillActive() async throws {
+        let value = try await RimeSyncViewModel.runCancellablePhase { 42 }
+
+        XCTAssertEqual(value, 42)
+    }
+
+    func testAutomaticCancellationNotificationRequiresAnUnfinishedScope() {
+        XCTAssertFalse(
+            RimeSyncViewModel.shouldNotifyAutomaticCancellation(
+                requestedScopes: [.standardRimeData, .privateSettings],
+                completedScopes: [.standardRimeData, .privateSettings]
+            )
+        )
+        XCTAssertTrue(
+            RimeSyncViewModel.shouldNotifyAutomaticCancellation(
+                requestedScopes: [.standardRimeData, .privateSettings],
+                completedScopes: [.standardRimeData]
+            )
+        )
+    }
+
     func testSyncNotificationCopyFiltersAndCombinesSelectedScopes() throws {
         let standardPhaseStarted = RimeSyncNotificationEvent.phaseStarted(
             mode: .automatic,
@@ -239,6 +285,33 @@ final class RimeSyncModelTests: XCTestCase {
         XCTAssertTrue(json.contains("9"))
         XCTAssertTrue(json.contains("rime_ice"))
         XCTAssertEqual(try JSONDecoder().decode([String: RimeSyncScalar].self, from: data), values)
+    }
+}
+
+private actor NonCooperativePhaseGate {
+    private var isStarted = false
+    private var startWaiters: [CheckedContinuation<Void, Never>] = []
+    private var operationContinuation: CheckedContinuation<Void, Never>?
+
+    func run() async {
+        isStarted = true
+        startWaiters.forEach { $0.resume() }
+        startWaiters.removeAll()
+        await withCheckedContinuation { continuation in
+            operationContinuation = continuation
+        }
+    }
+
+    func waitUntilStarted() async {
+        guard !isStarted else { return }
+        await withCheckedContinuation { continuation in
+            startWaiters.append(continuation)
+        }
+    }
+
+    func release() {
+        operationContinuation?.resume()
+        operationContinuation = nil
     }
 }
 

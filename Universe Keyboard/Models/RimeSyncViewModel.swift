@@ -78,6 +78,26 @@ final class RimeSyncViewModel {
         status = isConfigured ? .idle : .notConfigured
     }
 
+    /// 将不可协作取消的阶段统一收口为“返回后再观察取消”。
+    ///
+    /// librime、文件协调或设置应用可能无法在执行中停止；调用方仍必须在它们返回后、
+    /// 写成功时间或进入下一阶段之前 fail closed。
+    @discardableResult
+    static func runCancellablePhase<Result>(
+        _ operation: () async throws -> Result
+    ) async throws -> Result {
+        let result = try await operation()
+        try Task.checkCancellation()
+        return result
+    }
+
+    nonisolated static func shouldNotifyAutomaticCancellation(
+        requestedScopes: Set<RimeSyncNotificationScope>,
+        completedScopes: Set<RimeSyncNotificationScope>
+    ) -> Bool {
+        !requestedScopes.isSubset(of: completedScopes)
+    }
+
     var isConfigured: Bool {
         switch provider {
         case .none:
@@ -535,7 +555,10 @@ final class RimeSyncViewModel {
             Logger.shared.warning("rimeSync automatic standard sync cancelled", category: .config)
             // 最终阶段已返回时，scope 事实已记录；此时 expiration 只需由
             // scheduler 抑制成功通知，不再发送与实际阶段相矛盾的失败通知。
-            if !requestedNotificationScopes.isSubset(of: completedNotificationScopes) {
+            if Self.shouldNotifyAutomaticCancellation(
+                requestedScopes: requestedNotificationScopes,
+                completedScopes: completedNotificationScopes
+            ) {
                 await notificationService.notify(
                     .failed(
                         mode: .automatic,
@@ -701,15 +724,17 @@ final class RimeSyncViewModel {
             values: rimeStore.portableSyncValues(),
             deviceID: deviceID
         )
-        let result = try await coordinator.synchronize(
-            localProfile: localProfile,
-            keyData: keyData,
-            transport: transport
-        )
-        try Task.checkCancellation()
+        let result = try await Self.runCancellablePhase {
+            try await coordinator.synchronize(
+                localProfile: localProfile,
+                keyData: keyData,
+                transport: transport
+            )
+        }
         try saveProfile(result.profile)
-        await rimeStore.applyPortableSyncValues(result.profile.scalarValues)
-        try Task.checkCancellation()
+        try await Self.runCancellablePhase {
+            await rimeStore.applyPortableSyncValues(result.profile.scalarValues)
+        }
 
         let completedAt = Date()
         lastSuccessDate = completedAt
@@ -764,22 +789,24 @@ final class RimeSyncViewModel {
 
         // 先把本 App 当前管理的选项刷新成 RIME 标准 .custom.yaml，
         // 再交给 librime 进行快照合并与 YAML/TXT 备份。
-        await Task.detached(priority: .userInitiated) {
-            RimeConfigManager.syncCustomYamlFiles()
-        }.value
+        try await Self.runCancellablePhase {
+            await Task.detached(priority: .userInitiated) {
+                RimeConfigManager.syncCustomYamlFiles()
+            }.value
+        }
         // YAML 刷新不可协作取消；返回后先闭合过期状态，避免再启动
         // 同样不可取消的 librime 标准维护。最终成功发布仍由 scheduler 终态门决定。
-        try Task.checkCancellation()
 
-        try await standardRimeSyncService.synchronize(
-            RimeStandardSyncRequest(
-                sharedDataURL: URL(fileURLWithPath: directories.sharedDir, isDirectory: true),
-                userDataURL: URL(fileURLWithPath: directories.userDir, isDirectory: true),
-                syncDirectoryURL: syncDirectoryURL,
-                installationID: standardRimeInstallationID
+        try await Self.runCancellablePhase {
+            try await standardRimeSyncService.synchronize(
+                RimeStandardSyncRequest(
+                    sharedDataURL: URL(fileURLWithPath: directories.sharedDir, isDirectory: true),
+                    userDataURL: URL(fileURLWithPath: directories.userDir, isDirectory: true),
+                    syncDirectoryURL: syncDirectoryURL,
+                    installationID: standardRimeInstallationID
+                )
             )
-        )
-        try Task.checkCancellation()
+        }
 
         let completedAt = Date()
         standardRimeLastSuccessDate = completedAt
