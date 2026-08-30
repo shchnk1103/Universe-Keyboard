@@ -214,11 +214,23 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         XCTAssertNoThrow(
             try installer.validateInstalledRuntime(rimeRoot: rimeRoot, userDataURL: userRoot)
         )
+        XCTAssertNoThrow(
+            try installer.validateInstalledRuntimeAuthorization(
+                rimeRoot: rimeRoot,
+                userDataURL: userRoot
+            )
+        )
         try Data("changed".utf8).write(
             to: userRoot.appendingPathComponent("luna_pinyin.custom.yaml")
         )
         XCTAssertThrowsError(
             try installer.validateInstalledRuntime(rimeRoot: rimeRoot, userDataURL: userRoot)
+        )
+        XCTAssertThrowsError(
+            try installer.validateInstalledRuntimeAuthorization(
+                rimeRoot: rimeRoot,
+                userDataURL: userRoot
+            )
         )
     }
 
@@ -428,7 +440,101 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         )
     }
 
-    private func makeFixture(omitting omittedSuffix: String? = nil) throws -> (root: URL, source: URL) {
+    func testOverlayFailureDuringResourceInstallRestoresCompletePreviousGeneration() throws {
+        enum InjectedFailure: Error { case beforeSecondReplacement }
+
+        let previousFixture = try makeFixture(generationID: "fixture-v1", contentPrefix: "old")
+        defer { try? FileManager.default.removeItem(at: previousFixture.root) }
+        let replacementFixture = try makeFixture(generationID: "fixture-v2", contentPrefix: "new")
+        defer { try? FileManager.default.removeItem(at: replacementFixture.root) }
+        let rimeRoot = previousFixture.root.appendingPathComponent("Rime", isDirectory: true)
+        let userDir = rimeRoot.appendingPathComponent("user", isDirectory: true)
+        let installer = RimeBuiltinResourceInstaller()
+        _ = try installer.install(sourceRoot: previousFixture.source, rimeRoot: rimeRoot)
+        try FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
+        let previousOverlays = [
+            RimeConfigManager.CustomYamlArtifact(
+                filename: "default.custom.yaml",
+                content: "patch:\n  schema_list:\n    - schema: luna_pinyin\n"
+            ),
+            RimeConfigManager.CustomYamlArtifact(
+                filename: "luna_pinyin.custom.yaml",
+                content: "patch:\n  translator/enable_user_dict: false\n"
+            ),
+        ]
+        for artifact in previousOverlays {
+            try artifact.content.write(
+                to: userDir.appendingPathComponent(artifact.filename),
+                atomically: true,
+                encoding: .utf8
+            )
+        }
+        try installer.recordOverlayReceipt(rimeRoot: rimeRoot, userDataURL: userDir)
+        let resourceReceiptURL = rimeRoot.appendingPathComponent(
+            RimeBuiltinResourceInstaller.resourceReceiptFileName
+        )
+        let overlayReceiptURL = rimeRoot.appendingPathComponent(
+            RimeBuiltinResourceInstaller.overlayReceiptFileName
+        )
+        let previousResourceReceipt = try Data(contentsOf: resourceReceiptURL)
+        let previousOverlayReceipt = try Data(contentsOf: overlayReceiptURL)
+
+        XCTAssertThrowsError(
+            try installer.install(
+                sourceRoot: replacementFixture.source,
+                rimeRoot: rimeRoot,
+                afterInstallingResources: {
+                    try RimeConfigManager.replaceCustomYamlArtifacts(
+                        previousOverlays.map {
+                            RimeConfigManager.CustomYamlArtifact(
+                                filename: $0.filename,
+                                content: $0.content + "# replacement\n"
+                            )
+                        },
+                        rimeRoot: rimeRoot,
+                        beforeReplacing: { filename in
+                            if filename == "luna_pinyin.custom.yaml" {
+                                throw InjectedFailure.beforeSecondReplacement
+                            }
+                        }
+                    )
+                }
+            )
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .fileOperationFailed
+            )
+        }
+
+        XCTAssertEqual(try Data(contentsOf: resourceReceiptURL), previousResourceReceipt)
+        XCTAssertEqual(try Data(contentsOf: overlayReceiptURL), previousOverlayReceipt)
+        for path in RimeBuiltinResourceInstaller.requiredRelativePaths {
+            XCTAssertEqual(
+                try Data(contentsOf: rimeRoot.appendingPathComponent("shared/").appendingPathComponent(path)),
+                try Data(contentsOf: previousFixture.source.appendingPathComponent(path)),
+                "restoredPath=\(path)"
+            )
+        }
+        for artifact in previousOverlays {
+            XCTAssertEqual(
+                try String(
+                    contentsOf: userDir.appendingPathComponent(artifact.filename),
+                    encoding: .utf8
+                ),
+                artifact.content
+            )
+        }
+        XCTAssertNoThrow(
+            try installer.validateInstalledRuntime(rimeRoot: rimeRoot, userDataURL: userDir)
+        )
+    }
+
+    private func makeFixture(
+        omitting omittedSuffix: String? = nil,
+        generationID: String = "fixture-v1",
+        contentPrefix: String = "fixture"
+    ) throws -> (root: URL, source: URL) {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(
             "rime-builtin-installer-tests-\(UUID().uuidString)",
             isDirectory: true
@@ -439,7 +545,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         var entries: [[String: Any]] = []
         for path in RimeBuiltinResourceInstaller.requiredRelativePaths.sorted() {
             guard omittedSuffix == nil || !path.hasSuffix(omittedSuffix!) else { continue }
-            let data = Data("fixture:\(path)".utf8)
+            let data = Data("\(contentPrefix):\(path)".utf8)
             let url = source.appendingPathComponent(path)
             try FileManager.default.createDirectory(
                 at: url.deletingLastPathComponent(),
@@ -455,7 +561,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         }
         let manifest: [String: Any] = [
             "formatVersion": 2,
-            "generationID": "fixture-v1",
+            "generationID": generationID,
             "sourcePins": [
                 "essay": String(repeating: "1", count: 40),
                 "lunaPinyin": String(repeating: "2", count: 40),

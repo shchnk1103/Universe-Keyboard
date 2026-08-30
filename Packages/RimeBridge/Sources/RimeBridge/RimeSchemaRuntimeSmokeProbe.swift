@@ -136,13 +136,25 @@ public enum RimeSchemaRuntimeSmokeProbe {
         let expectedNihaoPage =
             requiresNLFuzzyDiscovery
             ? ["你好", "妳好", "利好", "立好"] : ["你好", "妳好", "逆号", "拟好"]
+        let expectedSanjiaoxingPage =
+            requiresNLFuzzyDiscovery
+            ? ["三角形", "三角", "山脚", "三教"] : ["三角形", "三角", "三教", "三焦"]
         let cases: [(input: String, expectedTopCandidate: String, expectedFirstPage: [String]?)] = [
             (input: "ni", expectedTopCandidate: "你", expectedFirstPage: expectedNiPage),
             (input: "nihao", expectedTopCandidate: "你好", expectedFirstPage: expectedNihaoPage),
-            (input: "sanjiaoxing", expectedTopCandidate: "三角形", expectedFirstPage: nil),
-            (input: "jintiantianqihenhao", expectedTopCandidate: "今天天气很好", expectedFirstPage: nil),
+            (
+                input: "sanjiaoxing", expectedTopCandidate: "三角形",
+                expectedFirstPage: expectedSanjiaoxingPage
+            ),
+            (
+                input: "jintiantianqihenhao", expectedTopCandidate: "今天天气很好",
+                expectedFirstPage: ["今天天气很好", "今天天气", "今天", "金田"]
+            ),
             // Exercises Essay ranking plus the bundled t2s OpenCC profile.
-            (input: "fanti", expectedTopCandidate: "繁体", expectedFirstPage: nil),
+            (
+                input: "fanti", expectedTopCandidate: "繁体",
+                expectedFirstPage: ["繁体", "反踢", "反提", "饭"]
+            ),
             // Exercises the Luna schema's bundled Stroke reverse lookup.
             (input: "`pspzzpn", expectedTopCandidate: "你", expectedFirstPage: ["你", "您"]),
         ]

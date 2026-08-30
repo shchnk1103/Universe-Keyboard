@@ -38,7 +38,12 @@ extension RimeConfigManager {
         )
         let result = try RimeBuiltinResourceInstaller().install(
             sourceRoot: resourceRoot,
-            rimeRoot: rimeRoot
+            rimeRoot: rimeRoot,
+            afterInstallingResources: {
+                guard syncCustomYamlFiles() else {
+                    throw RimeBuiltinResourceInstaller.InstallationError.fileOperationFailed
+                }
+            }
         )
         Logger.shared.info(
             "Built-in RIME resources installed fileCount=\(result.fileCount) "

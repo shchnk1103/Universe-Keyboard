@@ -146,8 +146,14 @@ public struct RimeBuiltinResourceInstaller {
 
     /// Source validation completes before any shared-runtime mutation. A
     /// synchronous move failure rolls every installed file back to its prior
-    /// value, preserving the last known-good runtime.
-    public func install(sourceRoot: URL, rimeRoot: URL) throws -> InstallationResult {
+    /// value, preserving the last known-good runtime. The optional completion
+    /// runs before installer backups are discarded so the main App can commit
+    /// generation-bound overlays inside the same recoverable boundary.
+    public func install(
+        sourceRoot: URL,
+        rimeRoot: URL,
+        afterInstallingResources: (() throws -> Void)? = nil
+    ) throws -> InstallationResult {
         let manifest = try validateResourceTree(at: sourceRoot)
         let manifestSHA256 = try Self.manifestSHA256(manifest)
         let stagingRoot = rimeRoot.appendingPathComponent(
@@ -237,11 +243,18 @@ public struct RimeBuiltinResourceInstaller {
             let receiptData = try Self.sortedJSONEncoder().encode(receipt)
             try receiptData.write(to: receiptURL, options: .atomic)
             _ = try validateInstalledResources(rimeRoot: rimeRoot)
-            // A resource-generation change invalidates every previously
-            // recorded overlay until the main App writes and hashes it again.
-            let overlayReceiptURL = rimeRoot.appendingPathComponent(Self.overlayReceiptFileName)
-            if fileManager.fileExists(atPath: overlayReceiptURL.path) {
-                try fileManager.removeItem(at: overlayReceiptURL)
+            if let afterInstallingResources {
+                // The callback owns overlay replacement and receipt creation.
+                // If it fails, its local rollback runs first, then this
+                // installer's catch restores the prior immutable generation.
+                try afterInstallingResources()
+            } else {
+                // Direct installer callers do not provide replacement
+                // overlays, so a prior authorization must not survive.
+                let overlayReceiptURL = rimeRoot.appendingPathComponent(Self.overlayReceiptFileName)
+                if fileManager.fileExists(atPath: overlayReceiptURL.path) {
+                    try fileManager.removeItem(at: overlayReceiptURL)
+                }
             }
             try? fileManager.removeItem(at: backupRoot)
             try? fileManager.removeItem(at: stagingRoot)
@@ -267,18 +280,7 @@ public struct RimeBuiltinResourceInstaller {
     /// the built-in generation in `Rime/shared`.
     @discardableResult
     func validateInstalledResources(rimeRoot: URL) throws -> ResourceReceipt {
-        let receiptURL = rimeRoot.appendingPathComponent(Self.resourceReceiptFileName)
-        let receipt: ResourceReceipt
-        do {
-            receipt = try JSONDecoder().decode(ResourceReceipt.self, from: Data(contentsOf: receiptURL))
-        } catch {
-            throw InstallationError.manifestInvalid
-        }
-        guard receipt.formatVersion == 1 else { throw InstallationError.manifestInvalid }
-        try validateManifest(receipt.manifest)
-        guard try Self.manifestSHA256(receipt.manifest) == receipt.manifestSHA256 else {
-            throw InstallationError.checksumMismatch
-        }
+        let receipt = try validatedResourceReceipt(rimeRoot: rimeRoot)
         try validateDeployedEntries(
             receipt.manifest,
             under: rimeRoot.appendingPathComponent("shared", isDirectory: true)
@@ -323,6 +325,47 @@ public struct RimeBuiltinResourceInstaller {
     /// corrupt resource/overlay receipt fails closed.
     func validateInstalledRuntime(rimeRoot: URL, userDataURL: URL) throws {
         let resourceReceipt = try validateInstalledResources(rimeRoot: rimeRoot)
+        try validateOverlayAuthorization(
+            resourceReceipt: resourceReceipt,
+            rimeRoot: rimeRoot,
+            userDataURL: userDataURL
+        )
+    }
+
+    /// Lightweight Extension-side authorization. The main App already hashes
+    /// the full immutable closure before publishing receipts; startup only
+    /// verifies that the resource and overlay receipts still form one identity
+    /// and that the small dynamic overlays retain their recorded hashes.
+    func validateInstalledRuntimeAuthorization(rimeRoot: URL, userDataURL: URL) throws {
+        let resourceReceipt = try validatedResourceReceipt(rimeRoot: rimeRoot)
+        try validateOverlayAuthorization(
+            resourceReceipt: resourceReceipt,
+            rimeRoot: rimeRoot,
+            userDataURL: userDataURL
+        )
+    }
+
+    private func validatedResourceReceipt(rimeRoot: URL) throws -> ResourceReceipt {
+        let receiptURL = rimeRoot.appendingPathComponent(Self.resourceReceiptFileName)
+        let receipt: ResourceReceipt
+        do {
+            receipt = try JSONDecoder().decode(ResourceReceipt.self, from: Data(contentsOf: receiptURL))
+        } catch {
+            throw InstallationError.manifestInvalid
+        }
+        guard receipt.formatVersion == 1 else { throw InstallationError.manifestInvalid }
+        try validateManifest(receipt.manifest)
+        guard try Self.manifestSHA256(receipt.manifest) == receipt.manifestSHA256 else {
+            throw InstallationError.checksumMismatch
+        }
+        return receipt
+    }
+
+    private func validateOverlayAuthorization(
+        resourceReceipt: ResourceReceipt,
+        rimeRoot: URL,
+        userDataURL: URL
+    ) throws {
         let overlayReceipt: OverlayReceipt
         do {
             overlayReceipt = try JSONDecoder().decode(

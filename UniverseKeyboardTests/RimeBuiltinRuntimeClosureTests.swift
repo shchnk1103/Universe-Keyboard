@@ -101,14 +101,22 @@ final class RimeBuiltinRuntimeClosureTests: XCTestCase {
             ? [
                 "ni": ["你", "里", "李", "离"],
                 "nihao": ["你好", "妳好", "利好", "立好"],
+                "sanjiaoxing": ["三角形", "三角", "山脚", "三教"],
+                "jintiantianqihenhao": ["今天天气很好", "今天天气", "今天", "金田"],
+                "fanti": ["繁体", "反踢", "反提", "饭"],
                 "`pspzzpn": ["你", "您"],
             ]
             : [
                 "ni": ["你", "拟", "尼", "泥"],
                 "nihao": ["你好", "妳好", "逆号", "拟好"],
+                "sanjiaoxing": ["三角形", "三角", "三教", "三焦"],
+                "jintiantianqihenhao": ["今天天气很好", "今天天气", "今天", "金田"],
+                "fanti": ["繁体", "反踢", "反提", "饭"],
                 "`pspzzpn": ["你", "您"],
             ]
-        for input in ["ni", "nihao", "`pspzzpn"] {
+        for input in [
+            "ni", "nihao", "sanjiaoxing", "jintiantianqihenhao", "fanti", "`pspzzpn",
+        ] {
             bridge.clearComposition()
             for character in input {
                 _ = bridge.processKey(RimeEngineImpl.keycode(for: String(character)), modifiers: 0)

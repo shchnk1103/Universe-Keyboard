@@ -1,4 +1,5 @@
 import Foundation
+import KeyboardCore
 
 private let runtimeDirectoriesAppGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 
@@ -21,6 +22,19 @@ extension RimeConfigManager {
             FileManager.default.fileExists(atPath: sharedDir.path),
             FileManager.default.fileExists(atPath: userDir.path)
         else { return nil }
+
+        // The Extension consumes only a generation that the main App
+        // authorized as one resource + overlay identity. This intentionally
+        // avoids full-closure hashing on keyboard startup.
+        do {
+            try RimeBuiltinResourceInstaller().validateInstalledRuntimeAuthorization(
+                rimeRoot: containerURL.appendingPathComponent("Rime", isDirectory: true),
+                userDataURL: userDir
+            )
+        } catch {
+            Logger.shared.error("RIME runtime receipt authorization failed", category: .config)
+            return nil
+        }
 
         return (sharedDir.path, userDir.path)
     }
