@@ -29,19 +29,42 @@ public struct RimeBuiltinResourceInstaller {
         let formatVersion: Int
         let generationID: String
         let sourcePins: [String: String]
+        let sourceInputs: [String: SourceInput]
         let generators: [String: Generator]
+        let toolchain: [String: Tool]
         let reproducibility: Reproducibility
         let overlayPolicy: OverlayPolicy
         let entries: [Entry]
 
+        struct SourceInput: Codable, Equatable, Sendable {
+            let repository: String
+            let revision: String
+            let files: [InputFile]
+        }
+
+        struct InputFile: Codable, Equatable, Sendable {
+            let path: String
+            let sha256: String
+        }
+
         struct Generator: Codable, Equatable, Sendable {
             let version: String
             let sha256: String?
+            let sourceRepository: String
             let sourceRevision: String?
+            let commandArguments: [[String]]
+        }
+
+        struct Tool: Codable, Equatable, Sendable {
+            let path: String
+            let version: String
+            let sha256: String
         }
 
         struct Reproducibility: Codable, Equatable, Sendable {
-            let host: String
+            let hostOSVersion: String
+            let hostOSBuild: String
+            let hostArchitecture: String
             let command: String
             let cleanOutputSHA256A: String
             let cleanOutputSHA256B: String
@@ -121,6 +144,31 @@ public struct RimeBuiltinResourceInstaller {
         "essay", "lunaPinyin", "opencc", "prelude", "stroke",
     ]
     private static let requiredGeneratorKeys: Set<String> = ["opencc", "rimeDeployer"]
+    private static let requiredToolchainKeys: Set<String> = [
+        "bash", "cmake", "cxxCompiler", "generationScript", "openccPython", "python3",
+    ]
+    private static let requiredSourceRepositories: [String: String] = [
+        "essay": "https://github.com/rime/rime-essay.git",
+        "lunaPinyin": "https://github.com/rime/rime-luna-pinyin.git",
+        "opencc": "https://github.com/BYVoid/OpenCC.git",
+        "prelude": "https://github.com/rime/rime-prelude.git",
+        "stroke": "https://github.com/rime/rime-stroke.git",
+    ]
+    private static let requiredSourceInputPaths: [String: Set<String>] = [
+        "essay": ["essay.txt"],
+        "lunaPinyin": [
+            "luna_pinyin.dict.yaml", "luna_pinyin.schema.yaml", "pinyin.yaml",
+        ],
+        "opencc": [
+            "data/config/s2t.json", "data/config/t2hk.json", "data/config/t2s.json",
+            "data/config/t2tw.json", "data/dictionary/HKVariants.txt",
+            "data/dictionary/STCharacters.txt", "data/dictionary/STPhrases.txt",
+            "data/dictionary/TSCharacters.txt", "data/dictionary/TSPhrases.txt",
+            "data/dictionary/TWVariants.txt",
+        ],
+        "prelude": ["default.yaml", "key_bindings.yaml", "punctuation.yaml", "symbols.yaml"],
+        "stroke": ["stroke.dict.yaml", "stroke.schema.yaml"],
+    ]
 
     private struct Mutation {
         let destination: URL
@@ -444,7 +492,7 @@ public struct RimeBuiltinResourceInstaller {
     }
 
     private func validateManifest(_ manifest: Manifest) throws {
-        guard manifest.formatVersion == 2 else {
+        guard manifest.formatVersion == 3 else {
             throw InstallationError.unsupportedManifestVersion(manifest.formatVersion)
         }
         guard
@@ -452,17 +500,23 @@ public struct RimeBuiltinResourceInstaller {
             Self.isSafeIdentifier(manifest.generationID),
             Set(manifest.sourcePins.keys) == Self.requiredSourcePinKeys,
             manifest.sourcePins.values.allSatisfy(Self.isSHA1),
+            Set(manifest.sourceInputs.keys) == Self.requiredSourcePinKeys,
             Set(manifest.generators.keys) == Self.requiredGeneratorKeys,
             let rimeGenerator = manifest.generators["rimeDeployer"],
             !rimeGenerator.version.isEmpty,
             rimeGenerator.sha256.map(Self.isSHA256) == true,
+            rimeGenerator.sourceRepository == "https://github.com/rime/librime.git",
             rimeGenerator.sourceRevision == nil,
             let openCCGenerator = manifest.generators["opencc"],
             !openCCGenerator.version.isEmpty,
             openCCGenerator.sha256 == nil,
+            openCCGenerator.sourceRepository == Self.requiredSourceRepositories["opencc"],
             openCCGenerator.sourceRevision.map(Self.isSHA1) == true,
             openCCGenerator.sourceRevision == manifest.sourcePins["opencc"],
-            !manifest.reproducibility.host.isEmpty,
+            Set(manifest.toolchain.keys) == Self.requiredToolchainKeys,
+            !manifest.reproducibility.hostOSVersion.isEmpty,
+            !manifest.reproducibility.hostOSBuild.isEmpty,
+            !manifest.reproducibility.hostArchitecture.isEmpty,
             !manifest.reproducibility.command.isEmpty,
             Self.isSHA256(manifest.reproducibility.cleanOutputSHA256A),
             manifest.reproducibility.cleanOutputSHA256A
@@ -470,6 +524,8 @@ public struct RimeBuiltinResourceInstaller {
             manifest.overlayPolicy.identifier == Self.overlayPolicyIdentifier,
             Set(manifest.overlayPolicy.requiredFiles) == Self.requiredOverlayPaths
         else { throw InstallationError.manifestInvalid }
+
+        try Self.validateProvenance(manifest)
 
         let paths = manifest.entries.map(\.path)
         guard Set(paths).count == paths.count else { throw InstallationError.duplicatePath }
@@ -483,6 +539,72 @@ public struct RimeBuiltinResourceInstaller {
                 Self.isSHA256(entry.sha256),
                 entry.role == Self.expectedRole(for: entry.path)
             else { throw InstallationError.manifestInvalid }
+        }
+    }
+
+    private static func validateProvenance(_ manifest: Manifest) throws {
+        for key in requiredSourcePinKeys {
+            guard
+                let source = manifest.sourceInputs[key],
+                source.repository == requiredSourceRepositories[key],
+                source.revision == manifest.sourcePins[key],
+                source.files.isEmpty == false,
+                Set(source.files.map(\.path)).count == source.files.count,
+                Set(source.files.map(\.path)) == requiredSourceInputPaths[key],
+                source.files.allSatisfy({
+                    isSafeRelativePath($0.path) && isSHA256($0.sha256)
+                })
+            else { throw InstallationError.manifestInvalid }
+        }
+
+        for generator in manifest.generators.values {
+            guard
+                generator.commandArguments.isEmpty == false,
+                generator.commandArguments.allSatisfy({ command in
+                    command.isEmpty == false && command.allSatisfy { $0.isEmpty == false }
+                })
+            else { throw InstallationError.manifestInvalid }
+        }
+
+        for tool in manifest.toolchain.values {
+            guard
+                tool.path.isEmpty == false,
+                tool.version.isEmpty == false,
+                isSHA256(tool.sha256)
+            else { throw InstallationError.manifestInvalid }
+        }
+
+        // Directly packaged source/config bytes must be the same bytes named by
+        // the upstream input receipt. Generated outputs remain bound by their
+        // own manifest entry hashes and the generator command/toolchain receipt.
+        let packagedMappings: [(source: String, input: String, entry: String)] = [
+            ("essay", "essay.txt", "essay.txt"),
+            ("lunaPinyin", "luna_pinyin.dict.yaml", "luna_pinyin.dict.yaml"),
+            ("lunaPinyin", "luna_pinyin.schema.yaml", "luna_pinyin.schema.yaml"),
+            ("lunaPinyin", "pinyin.yaml", "pinyin.yaml"),
+            ("prelude", "default.yaml", "default.yaml"),
+            ("prelude", "key_bindings.yaml", "key_bindings.yaml"),
+            ("prelude", "punctuation.yaml", "punctuation.yaml"),
+            ("prelude", "symbols.yaml", "symbols.yaml"),
+            ("stroke", "stroke.dict.yaml", "stroke.dict.yaml"),
+            ("stroke", "stroke.schema.yaml", "stroke.schema.yaml"),
+            ("opencc", "data/config/s2t.json", "opencc/s2t.json"),
+            ("opencc", "data/config/t2hk.json", "opencc/t2hk.json"),
+            ("opencc", "data/config/t2s.json", "opencc/t2s.json"),
+            ("opencc", "data/config/t2tw.json", "opencc/t2tw.json"),
+        ]
+        let entriesByPath = Dictionary(
+            uniqueKeysWithValues: manifest.entries.map {
+                ($0.path, $0.sha256)
+            }
+        )
+        for mapping in packagedMappings {
+            let inputHash = manifest.sourceInputs[mapping.source]?.files.first {
+                $0.path == mapping.input
+            }?.sha256
+            guard inputHash == entriesByPath[mapping.entry] else {
+                throw InstallationError.manifestInvalid
+            }
         }
     }
 

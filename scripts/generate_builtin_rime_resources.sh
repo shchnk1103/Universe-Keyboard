@@ -15,6 +15,7 @@ readonly PRELUDE_REVISION="082425ea0684bca36474415d4a0e8db9b016487e"
 readonly STROKE_REVISION="1e8fff9b9494ddec23b0cbc526bcfd8171a6fd48"
 readonly OPENCC_REVISION="25350017e81b40aa9e3e66c18446b57f83b0607d"
 readonly RIME_DEPLOYER_SHA256="84c3556b804579f604c70fb55fe4fc67175bbd3e1116dc863335e4e4b229b01a"
+readonly RIME_SOURCE_REPOSITORY="https://github.com/rime/librime.git"
 
 if [[ -z "$SOURCE_ROOT" ]]; then
   echo "usage: $0 <pinned-source-root> [output-root]" >&2
@@ -54,6 +55,19 @@ if [[ "$actual_deployer_sha" != "$RIME_DEPLOYER_SHA256" ]]; then
   echo "unexpected rime_deployer SHA-256: $actual_deployer_sha" >&2
   exit 65
 fi
+
+readonly PYTHON3="$(command -v python3)"
+readonly BASH_TOOL="${BASH:-/bin/bash}"
+readonly SCRIPT_SHA256="$(shasum -a 256 "$0" | awk '{print $1}')"
+readonly CMAKE_SHA256="$(shasum -a 256 "$CMAKE" | awk '{print $1}')"
+readonly PYTHON_SHA256="$(shasum -a 256 "$PYTHON3" | awk '{print $1}')"
+readonly BASH_SHA256="$(shasum -a 256 "$BASH_TOOL" | awk '{print $1}')"
+readonly CMAKE_VERSION="$($CMAKE --version | head -n 1)"
+readonly PYTHON_VERSION="$($PYTHON3 --version 2>&1)"
+readonly BASH_VERSION_OUTPUT="$($BASH_TOOL --version | head -n 1)"
+readonly HOST_OS_VERSION="$(sw_vers -productVersion)"
+readonly HOST_OS_BUILD="$(sw_vers -buildVersion)"
+readonly HOST_ARCHITECTURE="$(uname -m)"
 
 readonly WORK_ROOT="$(mktemp -d /tmp/universe-rime-builtin.XXXXXX)"
 trap 'rm -rf "$WORK_ROOT"' EXIT
@@ -117,6 +131,25 @@ generate_opencc() {
 generate_opencc "$WORK_ROOT/opencc-a"
 generate_opencc "$WORK_ROOT/opencc-b"
 
+readonly CXX_COMPILER="$(
+  sed -n 's/^CMAKE_CXX_COMPILER:FILEPATH=//p' "$WORK_ROOT/opencc-a/CMakeCache.txt" | head -n 1
+)"
+if [[ -z "$CXX_COMPILER" || ! -x "$CXX_COMPILER" ]]; then
+  echo "unable to resolve the OpenCC C++ compiler" >&2
+  exit 65
+fi
+readonly CXX_COMPILER_SHA256="$(shasum -a 256 "$CXX_COMPILER" | awk '{print $1}')"
+readonly CXX_COMPILER_VERSION="$($CXX_COMPILER --version | head -n 1)"
+readonly OPENCC_PYTHON="$(
+  sed -n 's/^PYTHON_EXECUTABLE:FILEPATH=//p' "$WORK_ROOT/opencc-a/CMakeCache.txt" | head -n 1
+)"
+if [[ -z "$OPENCC_PYTHON" || ! -x "$OPENCC_PYTHON" ]]; then
+  echo "unable to resolve the Python interpreter selected by OpenCC" >&2
+  exit 65
+fi
+readonly OPENCC_PYTHON_SHA256="$(shasum -a 256 "$OPENCC_PYTHON" | awk '{print $1}')"
+readonly OPENCC_PYTHON_VERSION="$($OPENCC_PYTHON --version 2>&1)"
+
 readonly OPENCC_OUTPUTS=(
   TSPhrases.ocd2
   TSCharacters.ocd2
@@ -152,11 +185,33 @@ readonly SECOND_STAGED_OUTPUT="$WORK_ROOT/output-b"
 stage_output "$WORK_ROOT/rime-a" "$WORK_ROOT/opencc-a" "$STAGED_OUTPUT"
 stage_output "$WORK_ROOT/rime-b" "$WORK_ROOT/opencc-b" "$SECOND_STAGED_OUTPUT"
 
-python3 - \
+"$PYTHON3" - \
   "$STAGED_OUTPUT" \
   "$SECOND_STAGED_OUTPUT" \
+  "$SOURCE_ROOT" \
+  "$WORK_ROOT" \
+  "$RIME_DEPLOYER" \
   "$actual_deployer_sha" \
-  "macOS $(sw_vers -productVersion) $(uname -m)" <<'PY'
+  "$RIME_SOURCE_REPOSITORY" \
+  "$CMAKE" \
+  "$CMAKE_VERSION" \
+  "$CMAKE_SHA256" \
+  "$CXX_COMPILER" \
+  "$CXX_COMPILER_VERSION" \
+  "$CXX_COMPILER_SHA256" \
+  "$OPENCC_PYTHON" \
+  "$OPENCC_PYTHON_VERSION" \
+  "$OPENCC_PYTHON_SHA256" \
+  "$PYTHON3" \
+  "$PYTHON_VERSION" \
+  "$PYTHON_SHA256" \
+  "$BASH_TOOL" \
+  "$BASH_VERSION_OUTPUT" \
+  "$BASH_SHA256" \
+  "$SCRIPT_SHA256" \
+  "$HOST_OS_VERSION" \
+  "$HOST_OS_BUILD" \
+  "$HOST_ARCHITECTURE" <<'PY'
 import hashlib
 import json
 import pathlib
@@ -164,8 +219,30 @@ import sys
 
 root = pathlib.Path(sys.argv[1])
 second_root = pathlib.Path(sys.argv[2])
-deployer_sha = sys.argv[3]
-host = sys.argv[4]
+source_root = pathlib.Path(sys.argv[3])
+work_root = pathlib.Path(sys.argv[4])
+rime_deployer = sys.argv[5]
+deployer_sha = sys.argv[6]
+rime_source_repository = sys.argv[7]
+cmake = sys.argv[8]
+cmake_version = sys.argv[9]
+cmake_sha = sys.argv[10]
+cxx_compiler = sys.argv[11]
+cxx_compiler_version = sys.argv[12]
+cxx_compiler_sha = sys.argv[13]
+opencc_python = sys.argv[14]
+opencc_python_version = sys.argv[15]
+opencc_python_sha = sys.argv[16]
+python3 = sys.argv[17]
+python_version = sys.argv[18]
+python_sha = sys.argv[19]
+bash = sys.argv[20]
+bash_version = sys.argv[21]
+bash_sha = sys.argv[22]
+script_sha = sys.argv[23]
+host_os_version = sys.argv[24]
+host_os_build = sys.argv[25]
+host_architecture = sys.argv[26]
 roles = {
     ".yaml": "source",
     ".txt": "preset-vocabulary",
@@ -200,9 +277,76 @@ second_digest = tree_digest(second_root)
 if first_digest != second_digest:
     raise SystemExit("clean output trees differ")
 
+source_specs = {
+    "lunaPinyin": {
+        "directory": "rime-luna-pinyin",
+        "repository": "https://github.com/rime/rime-luna-pinyin.git",
+        "revision": "56b934b099dfbeab842320f13aa8b461a6ab3e42",
+        "files": ["luna_pinyin.schema.yaml", "luna_pinyin.dict.yaml", "pinyin.yaml"],
+    },
+    "essay": {
+        "directory": "rime-essay",
+        "repository": "https://github.com/rime/rime-essay.git",
+        "revision": "e9b1a374a6ea015fca5bdd04318924b4483ac35a",
+        "files": ["essay.txt"],
+    },
+    "prelude": {
+        "directory": "rime-prelude",
+        "repository": "https://github.com/rime/rime-prelude.git",
+        "revision": "082425ea0684bca36474415d4a0e8db9b016487e",
+        "files": ["default.yaml", "key_bindings.yaml", "punctuation.yaml", "symbols.yaml"],
+    },
+    "stroke": {
+        "directory": "rime-stroke",
+        "repository": "https://github.com/rime/rime-stroke.git",
+        "revision": "1e8fff9b9494ddec23b0cbc526bcfd8171a6fd48",
+        "files": ["stroke.schema.yaml", "stroke.dict.yaml"],
+    },
+    "opencc": {
+        "directory": "OpenCC",
+        "repository": "https://github.com/BYVoid/OpenCC.git",
+        "revision": "25350017e81b40aa9e3e66c18446b57f83b0607d",
+        "files": [
+            "data/config/s2t.json", "data/config/t2hk.json", "data/config/t2s.json",
+            "data/config/t2tw.json", "data/dictionary/HKVariants.txt",
+            "data/dictionary/STCharacters.txt", "data/dictionary/STPhrases.txt",
+            "data/dictionary/TSCharacters.txt", "data/dictionary/TSPhrases.txt",
+            "data/dictionary/TWVariants.txt",
+        ],
+    },
+}
+source_inputs = {}
+for key, spec in source_specs.items():
+    files = []
+    for relative in spec["files"]:
+        data = (source_root / spec["directory"] / relative).read_bytes()
+        files.append({"path": relative, "sha256": hashlib.sha256(data).hexdigest()})
+    source_inputs[key] = {
+        "repository": spec["repository"],
+        "revision": spec["revision"],
+        "files": files,
+    }
+
+def rime_command(run: str, schema: str) -> list[str]:
+    root = work_root / run
+    return [
+        rime_deployer, "--compile", str(root / "shared" / schema),
+        str(root / "user"), str(root / "shared"), str(root / "staging"),
+    ]
+
+def opencc_commands(run: str) -> list[list[str]]:
+    build_root = work_root / run
+    return [
+        [
+            cmake, "-S", str(source_root / "OpenCC"), "-B", str(build_root),
+            "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_DOCUMENTATION=OFF", "-DENABLE_GTEST=OFF",
+        ],
+        [cmake, "--build", str(build_root), "--target", "Dictionaries", "-j", "8"],
+    ]
+
 manifest = {
-    "formatVersion": 2,
-    "generationID": "luna-official-2026-08-30-v2",
+    "formatVersion": 3,
+    "generationID": "luna-official-2026-08-31-v3",
     "sourcePins": {
         "lunaPinyin": "56b934b099dfbeab842320f13aa8b461a6ab3e42",
         "essay": "e9b1a374a6ea015fca5bdd04318924b4483ac35a",
@@ -210,18 +354,50 @@ manifest = {
         "stroke": "1e8fff9b9494ddec23b0cbc526bcfd8171a6fd48",
         "opencc": "25350017e81b40aa9e3e66c18446b57f83b0607d",
     },
+    "sourceInputs": source_inputs,
     "generators": {
         "rimeDeployer": {
             "version": "librime 1.17.0 (Homebrew 1.17.0_2)",
             "sha256": deployer_sha,
+            "sourceRepository": rime_source_repository,
+            "commandArguments": [
+                rime_command("rime-a", "luna_pinyin.schema.yaml"),
+                rime_command("rime-a", "stroke.schema.yaml"),
+                rime_command("rime-b", "luna_pinyin.schema.yaml"),
+                rime_command("rime-b", "stroke.schema.yaml"),
+            ],
         },
         "opencc": {
             "version": "1.3.1+g2535001",
+            "sourceRepository": "https://github.com/BYVoid/OpenCC.git",
             "sourceRevision": "25350017e81b40aa9e3e66c18446b57f83b0607d",
+            "commandArguments": opencc_commands("opencc-a") + opencc_commands("opencc-b"),
         },
     },
+    "toolchain": {
+        "bash": {"path": bash, "version": bash_version, "sha256": bash_sha},
+        "cmake": {"path": cmake, "version": cmake_version, "sha256": cmake_sha},
+        "cxxCompiler": {
+            "path": cxx_compiler,
+            "version": cxx_compiler_version,
+            "sha256": cxx_compiler_sha,
+        },
+        "generationScript": {
+            "path": "scripts/generate_builtin_rime_resources.sh",
+            "version": "repository script",
+            "sha256": script_sha,
+        },
+        "openccPython": {
+            "path": opencc_python,
+            "version": opencc_python_version,
+            "sha256": opencc_python_sha,
+        },
+        "python3": {"path": python3, "version": python_version, "sha256": python_sha},
+    },
     "reproducibility": {
-        "host": host,
+        "hostOSVersion": host_os_version,
+        "hostOSBuild": host_os_build,
+        "hostArchitecture": host_architecture,
         "command": "scripts/generate_builtin_rime_resources.sh <pinned-source-root> <output-root>",
         "cleanOutputSHA256A": first_digest,
         "cleanOutputSHA256B": second_digest,

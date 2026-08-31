@@ -118,6 +118,15 @@ final class SchemaManagerTests: XCTestCase {
         }
     }
 
+    func testOpenCCCatalogRequiresLicenseAndAuthorsDocuments() {
+        let openCC = ThirdPartyLicenseCatalog.bundledComponents.first { $0.id == "opencc" }
+
+        XCTAssertEqual(
+            Set(openCC?.offlineDocuments.map(\.resourceName) ?? []),
+            ["OPENCC-Apache-2.0", "OPENCC-AUTHORS"]
+        )
+    }
+
     func testLicenseAcceptanceIsIsolatedPerScheme() {
         let manager = makeManager()
 

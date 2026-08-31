@@ -146,6 +146,112 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         }
     }
 
+    func testMissingSourceInputReceiptIsRejected() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let manifestURL = fixture.source.appendingPathComponent(
+            RimeBuiltinResourceInstaller.manifestFileName
+        )
+        var manifest = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: Data(contentsOf: manifestURL)) as? [String: Any]
+        )
+        manifest["sourceInputs"] = [:]
+        try JSONSerialization.data(withJSONObject: manifest, options: [.sortedKeys]).write(
+            to: manifestURL
+        )
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().validateResourceTree(at: fixture.source)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .manifestInvalid
+            )
+        }
+    }
+
+    func testPackagedSourceHashMustMatchInputReceipt() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let manifestURL = fixture.source.appendingPathComponent(
+            RimeBuiltinResourceInstaller.manifestFileName
+        )
+        var manifest = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: Data(contentsOf: manifestURL)) as? [String: Any]
+        )
+        var sourceInputs = try XCTUnwrap(manifest["sourceInputs"] as? [String: Any])
+        var essay = try XCTUnwrap(sourceInputs["essay"] as? [String: Any])
+        var files = try XCTUnwrap(essay["files"] as? [[String: Any]])
+        files[0]["sha256"] = String(repeating: "f", count: 64)
+        essay["files"] = files
+        sourceInputs["essay"] = essay
+        manifest["sourceInputs"] = sourceInputs
+        try JSONSerialization.data(withJSONObject: manifest, options: [.sortedKeys]).write(
+            to: manifestURL
+        )
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().validateResourceTree(at: fixture.source)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .manifestInvalid
+            )
+        }
+    }
+
+    func testIncompleteToolchainReceiptIsRejected() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let manifestURL = fixture.source.appendingPathComponent(
+            RimeBuiltinResourceInstaller.manifestFileName
+        )
+        var manifest = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: Data(contentsOf: manifestURL)) as? [String: Any]
+        )
+        manifest["toolchain"] = [:]
+        try JSONSerialization.data(withJSONObject: manifest, options: [.sortedKeys]).write(
+            to: manifestURL
+        )
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().validateResourceTree(at: fixture.source)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .manifestInvalid
+            )
+        }
+    }
+
+    func testEmptyGeneratorCommandArgumentsAreRejected() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let manifestURL = fixture.source.appendingPathComponent(
+            RimeBuiltinResourceInstaller.manifestFileName
+        )
+        var manifest = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: Data(contentsOf: manifestURL)) as? [String: Any]
+        )
+        var generators = try XCTUnwrap(manifest["generators"] as? [String: Any])
+        var rime = try XCTUnwrap(generators["rimeDeployer"] as? [String: Any])
+        rime["commandArguments"] = []
+        generators["rimeDeployer"] = rime
+        manifest["generators"] = generators
+        try JSONSerialization.data(withJSONObject: manifest, options: [.sortedKeys]).write(
+            to: manifestURL
+        )
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().validateResourceTree(at: fixture.source)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .manifestInvalid
+            )
+        }
+    }
+
     func testInstalledResourceTamperInvalidatesReceipt() throws {
         let fixture = try makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
@@ -543,6 +649,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         try FileManager.default.createDirectory(at: source, withIntermediateDirectories: true)
 
         var entries: [[String: Any]] = []
+        var entryHashes: [String: String] = [:]
         for path in RimeBuiltinResourceInstaller.requiredRelativePaths.sorted() {
             guard omittedSuffix == nil || !path.hasSuffix(omittedSuffix!) else { continue }
             let data = Data("\(contentPrefix):\(path)".utf8)
@@ -552,15 +659,23 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
                 withIntermediateDirectories: true
             )
             try data.write(to: url)
+            let sha256 = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+            entryHashes[path] = sha256
             entries.append([
                 "path": path,
                 "byteCount": data.count,
-                "sha256": SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined(),
+                "sha256": sha256,
                 "role": expectedRole(for: path),
             ])
         }
+        func input(_ path: String, entryPath: String? = nil) -> [String: Any] {
+            [
+                "path": path,
+                "sha256": entryHashes[entryPath ?? path] ?? String(repeating: "c", count: 64),
+            ]
+        }
         let manifest: [String: Any] = [
-            "formatVersion": 2,
+            "formatVersion": 3,
             "generationID": generationID,
             "sourcePins": [
                 "essay": String(repeating: "1", count: 40),
@@ -569,18 +684,83 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
                 "prelude": String(repeating: "4", count: 40),
                 "stroke": String(repeating: "5", count: 40),
             ],
+            "sourceInputs": [
+                "essay": [
+                    "repository": "https://github.com/rime/rime-essay.git",
+                    "revision": String(repeating: "1", count: 40),
+                    "files": [input("essay.txt")],
+                ],
+                "lunaPinyin": [
+                    "repository": "https://github.com/rime/rime-luna-pinyin.git",
+                    "revision": String(repeating: "2", count: 40),
+                    "files": [
+                        input("luna_pinyin.dict.yaml"),
+                        input("luna_pinyin.schema.yaml"),
+                        input("pinyin.yaml"),
+                    ],
+                ],
+                "opencc": [
+                    "repository": "https://github.com/BYVoid/OpenCC.git",
+                    "revision": String(repeating: "3", count: 40),
+                    "files": [
+                        input("data/config/s2t.json", entryPath: "opencc/s2t.json"),
+                        input("data/config/t2hk.json", entryPath: "opencc/t2hk.json"),
+                        input("data/config/t2s.json", entryPath: "opencc/t2s.json"),
+                        input("data/config/t2tw.json", entryPath: "opencc/t2tw.json"),
+                        input("data/dictionary/HKVariants.txt"),
+                        input("data/dictionary/STCharacters.txt"),
+                        input("data/dictionary/STPhrases.txt"),
+                        input("data/dictionary/TSCharacters.txt"),
+                        input("data/dictionary/TSPhrases.txt"),
+                        input("data/dictionary/TWVariants.txt"),
+                    ],
+                ],
+                "prelude": [
+                    "repository": "https://github.com/rime/rime-prelude.git",
+                    "revision": String(repeating: "4", count: 40),
+                    "files": [
+                        input("default.yaml"), input("key_bindings.yaml"),
+                        input("punctuation.yaml"), input("symbols.yaml"),
+                    ],
+                ],
+                "stroke": [
+                    "repository": "https://github.com/rime/rime-stroke.git",
+                    "revision": String(repeating: "5", count: 40),
+                    "files": [input("stroke.dict.yaml"), input("stroke.schema.yaml")],
+                ],
+            ],
             "generators": [
                 "rimeDeployer": [
                     "version": "fixture",
                     "sha256": String(repeating: "a", count: 64),
+                    "sourceRepository": "https://github.com/rime/librime.git",
+                    "commandArguments": [["rime_deployer", "--compile", "fixture"]],
                 ],
                 "opencc": [
                     "version": "fixture",
+                    "sourceRepository": "https://github.com/BYVoid/OpenCC.git",
                     "sourceRevision": String(repeating: "3", count: 40),
+                    "commandArguments": [["cmake", "--build", "fixture"]],
                 ],
             ],
+            "toolchain": Dictionary(
+                uniqueKeysWithValues: [
+                    "bash", "cmake", "cxxCompiler", "generationScript", "openccPython", "python3",
+                ].map { key in
+                    (
+                        key,
+                        [
+                            "path": "fixture-\(key)",
+                            "version": "fixture",
+                            "sha256": String(repeating: "d", count: 64),
+                        ]
+                    )
+                }
+            ),
             "reproducibility": [
-                "host": "fixture-host",
+                "hostOSVersion": "fixture-os",
+                "hostOSBuild": "fixture-build",
+                "hostArchitecture": "fixture-architecture",
                 "command": "fixture-command",
                 "cleanOutputSHA256A": String(repeating: "b", count: 64),
                 "cleanOutputSHA256B": String(repeating: "b", count: 64),

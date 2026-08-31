@@ -1,6 +1,6 @@
 {
-  "formatVersion": 2,
-  "generationID": "luna-official-2026-08-30-v2",
+  "formatVersion": 3,
+  "generationID": "luna-official-2026-08-31-v3",
   "sourcePins": {
     "lunaPinyin": "56b934b099dfbeab842320f13aa8b461a6ab3e42",
     "essay": "e9b1a374a6ea015fca5bdd04318924b4483ac35a",
@@ -8,18 +8,240 @@
     "stroke": "1e8fff9b9494ddec23b0cbc526bcfd8171a6fd48",
     "opencc": "25350017e81b40aa9e3e66c18446b57f83b0607d"
   },
+  "sourceInputs": {
+    "lunaPinyin": {
+      "repository": "https://github.com/rime/rime-luna-pinyin.git",
+      "revision": "56b934b099dfbeab842320f13aa8b461a6ab3e42",
+      "files": [
+        {
+          "path": "luna_pinyin.schema.yaml",
+          "sha256": "668b4d4957e4cc8f9cea32ed3f08f0ecf4a7be8cdba058700507487bd96dd5c7"
+        },
+        {
+          "path": "luna_pinyin.dict.yaml",
+          "sha256": "75bcf6eb3ff62b129882ed89cc22b2d80a5347aa72bcfa2ccc839bac298e7314"
+        },
+        {
+          "path": "pinyin.yaml",
+          "sha256": "caa220b05172bf35775db07fed6ead7719c742e6139232d9797040dbe65f746c"
+        }
+      ]
+    },
+    "essay": {
+      "repository": "https://github.com/rime/rime-essay.git",
+      "revision": "e9b1a374a6ea015fca5bdd04318924b4483ac35a",
+      "files": [
+        {
+          "path": "essay.txt",
+          "sha256": "a6f8409c261e5d21bd78e6cbcde8f8e1ef7f68c07ff1c2692c07dd4ff4151cea"
+        }
+      ]
+    },
+    "prelude": {
+      "repository": "https://github.com/rime/rime-prelude.git",
+      "revision": "082425ea0684bca36474415d4a0e8db9b016487e",
+      "files": [
+        {
+          "path": "default.yaml",
+          "sha256": "0628ada16651d56c4cdfcb8e45ddba23d4d585cc8be0580a62c4e077c0bcc141"
+        },
+        {
+          "path": "key_bindings.yaml",
+          "sha256": "ee2476598b4cae89068b823868196eb07b5f72007a600814fe5804b39008b3ed"
+        },
+        {
+          "path": "punctuation.yaml",
+          "sha256": "d6f89592149098f0a2d0ed3e5c83f49adb6226cdf1d967b0bc0d293f4e5c496a"
+        },
+        {
+          "path": "symbols.yaml",
+          "sha256": "6d08969525bd66c67abf1791c99928079356bd0e673386c49c1959d2a52fdbba"
+        }
+      ]
+    },
+    "stroke": {
+      "repository": "https://github.com/rime/rime-stroke.git",
+      "revision": "1e8fff9b9494ddec23b0cbc526bcfd8171a6fd48",
+      "files": [
+        {
+          "path": "stroke.schema.yaml",
+          "sha256": "06f680cf7c9d9a69948681ee25e9f6aeccfde4d8d590f93e179d4c4b3caee879"
+        },
+        {
+          "path": "stroke.dict.yaml",
+          "sha256": "b3e93dce89c185f45c3d6e189b86b3a8626913352cc85e1094c786579a665791"
+        }
+      ]
+    },
+    "opencc": {
+      "repository": "https://github.com/BYVoid/OpenCC.git",
+      "revision": "25350017e81b40aa9e3e66c18446b57f83b0607d",
+      "files": [
+        {
+          "path": "data/config/s2t.json",
+          "sha256": "0b86f3aa92c72ac5fcb11bc9df21914ed42f6847416a1d4d7f52f8b5eb861e74"
+        },
+        {
+          "path": "data/config/t2hk.json",
+          "sha256": "3d5c1c7540992e821fef56858a001d8ea2720a394975b915fb5944fe42efc0fd"
+        },
+        {
+          "path": "data/config/t2s.json",
+          "sha256": "18d64a23de26c39d0e247d36e12d585653f44f2e231c3397050456565581a819"
+        },
+        {
+          "path": "data/config/t2tw.json",
+          "sha256": "7b2eb8aa8b76c1e2b1a41e8ce38a327d0aac5e49cfcefe763744b17fdeefb7b5"
+        },
+        {
+          "path": "data/dictionary/HKVariants.txt",
+          "sha256": "a5ea8ec2061f066bc7c2b4679ea32efb8e169b9b0ce3fb8d0ce6caed65d7df4f"
+        },
+        {
+          "path": "data/dictionary/STCharacters.txt",
+          "sha256": "9cedfb8bf13a220087103d9a96d9f56050c341c24a809cbce5c85c9045456557"
+        },
+        {
+          "path": "data/dictionary/STPhrases.txt",
+          "sha256": "fac97e31e69489b38e961d9cbea076326f8ece9daa45d0c386e3ec2a3f2c67cf"
+        },
+        {
+          "path": "data/dictionary/TSCharacters.txt",
+          "sha256": "ad870b4feeb494cfa7b3b05242bd79af574b22f6b2bdeb89a1633e4b50ed0a3c"
+        },
+        {
+          "path": "data/dictionary/TSPhrases.txt",
+          "sha256": "c2f9fa5cdc28629b3b9abb480958fa083df82d91be1f4f21e62ae372d8a9dae0"
+        },
+        {
+          "path": "data/dictionary/TWVariants.txt",
+          "sha256": "89473e96e3f61e9bd3f2e303b9d88ac9caa61effb1faadcef94ff5e65b8ed54b"
+        }
+      ]
+    }
+  },
   "generators": {
     "rimeDeployer": {
       "version": "librime 1.17.0 (Homebrew 1.17.0_2)",
-      "sha256": "84c3556b804579f604c70fb55fe4fc67175bbd3e1116dc863335e4e4b229b01a"
+      "sha256": "84c3556b804579f604c70fb55fe4fc67175bbd3e1116dc863335e4e4b229b01a",
+      "sourceRepository": "https://github.com/rime/librime.git",
+      "commandArguments": [
+        [
+          "/opt/homebrew/bin/rime_deployer",
+          "--compile",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-a/shared/luna_pinyin.schema.yaml",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-a/user",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-a/shared",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-a/staging"
+        ],
+        [
+          "/opt/homebrew/bin/rime_deployer",
+          "--compile",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-a/shared/stroke.schema.yaml",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-a/user",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-a/shared",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-a/staging"
+        ],
+        [
+          "/opt/homebrew/bin/rime_deployer",
+          "--compile",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-b/shared/luna_pinyin.schema.yaml",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-b/user",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-b/shared",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-b/staging"
+        ],
+        [
+          "/opt/homebrew/bin/rime_deployer",
+          "--compile",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-b/shared/stroke.schema.yaml",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-b/user",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-b/shared",
+          "/tmp/universe-rime-builtin.BGT1pW/rime-b/staging"
+        ]
+      ]
     },
     "opencc": {
       "version": "1.3.1+g2535001",
-      "sourceRevision": "25350017e81b40aa9e3e66c18446b57f83b0607d"
+      "sourceRepository": "https://github.com/BYVoid/OpenCC.git",
+      "sourceRevision": "25350017e81b40aa9e3e66c18446b57f83b0607d",
+      "commandArguments": [
+        [
+          "/opt/homebrew/bin/cmake",
+          "-S",
+          "/private/tmp/f02-rime-upstream.5ywEHF/OpenCC",
+          "-B",
+          "/tmp/universe-rime-builtin.BGT1pW/opencc-a",
+          "-DCMAKE_BUILD_TYPE=Release",
+          "-DBUILD_DOCUMENTATION=OFF",
+          "-DENABLE_GTEST=OFF"
+        ],
+        [
+          "/opt/homebrew/bin/cmake",
+          "--build",
+          "/tmp/universe-rime-builtin.BGT1pW/opencc-a",
+          "--target",
+          "Dictionaries",
+          "-j",
+          "8"
+        ],
+        [
+          "/opt/homebrew/bin/cmake",
+          "-S",
+          "/private/tmp/f02-rime-upstream.5ywEHF/OpenCC",
+          "-B",
+          "/tmp/universe-rime-builtin.BGT1pW/opencc-b",
+          "-DCMAKE_BUILD_TYPE=Release",
+          "-DBUILD_DOCUMENTATION=OFF",
+          "-DENABLE_GTEST=OFF"
+        ],
+        [
+          "/opt/homebrew/bin/cmake",
+          "--build",
+          "/tmp/universe-rime-builtin.BGT1pW/opencc-b",
+          "--target",
+          "Dictionaries",
+          "-j",
+          "8"
+        ]
+      ]
+    }
+  },
+  "toolchain": {
+    "bash": {
+      "path": "/bin/bash",
+      "version": "GNU bash, version 3.2.57(1)-release (arm64-apple-darwin26)",
+      "sha256": "4591272ca62ef60223eb8c7dbfd6d7bc96176b34bb382f4dac1a481e4dc5c7aa"
+    },
+    "cmake": {
+      "path": "/opt/homebrew/bin/cmake",
+      "version": "cmake version 4.4.3",
+      "sha256": "01bb5214684f5390e96e0d6aef7aafd7415b77ecbcfd59f6b55b018d8de0d9a2"
+    },
+    "cxxCompiler": {
+      "path": "/usr/bin/c++",
+      "version": "Apple clang version 21.0.0 (clang-2100.3.33.1)",
+      "sha256": "1685f2c90307faa05ef5ae8f707d3a18a519c9dad75882768f66abb475f1b3d7"
+    },
+    "generationScript": {
+      "path": "scripts/generate_builtin_rime_resources.sh",
+      "version": "repository script",
+      "sha256": "369cd0847c3083430a55298ae840380dd22730d78b4bf6d823ea2dd046d60784"
+    },
+    "openccPython": {
+      "path": "/Users/doubleshy0n/.pyenv/shims/python",
+      "version": "Python 3.12.4",
+      "sha256": "1f32c19dc8b71c8c793dfe4e4e86e4ffd6dcde0cd0b77272cdd3163a9b2d8942"
+    },
+    "python3": {
+      "path": "/opt/homebrew/bin/python3",
+      "version": "Python 3.14.7",
+      "sha256": "87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634"
     }
   },
   "reproducibility": {
-    "host": "macOS 27.0 arm64",
+    "hostOSVersion": "27.0",
+    "hostOSBuild": "26A5421a",
+    "hostArchitecture": "arm64",
     "command": "scripts/generate_builtin_rime_resources.sh <pinned-source-root> <output-root>",
     "cleanOutputSHA256A": "18642376d67f9bc74b42988262a2ce7815bee59a36b51dc0388006bc01c0adeb",
     "cleanOutputSHA256B": "18642376d67f9bc74b42988262a2ce7815bee59a36b51dc0388006bc01c0adeb"

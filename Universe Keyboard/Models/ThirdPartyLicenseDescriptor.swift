@@ -127,7 +127,10 @@ enum ThirdPartyLicenseCatalog {
             source: "https://github.com/BYVoid/OpenCC",
             licenseURL: "https://github.com/BYVoid/OpenCC/blob/master/LICENSE",
             usage: "简繁转换及随 App 分发的 OpenCC 数据。",
-            documents: [document("Apache-2.0 许可证原文", "OPENCC-Apache-2.0")]
+            documents: [
+                document("Apache-2.0 许可证原文", "OPENCC-Apache-2.0"),
+                document("上游作者与贡献者", "OPENCC-AUTHORS"),
+            ]
         ),
         component(
             id: "rime-essay",
