@@ -10,6 +10,7 @@
 | Findings-remediation commit | `1755006553037ab72fd175f65c2f9edfe62fc0a1` |
 | Review-conditions remediation commit | `85d0249d959803134a37c4a6f4442bf8d0cfe4b2` |
 | Final atomicity/quality remediation commit | `fa5dbaf1fded3e25ac39a6c0c675cddc786f01bb` |
+| Provenance implementation / Q-09 pin / normalized receipt | `6cb2fee90e9b0b7d603625b2bf9bca6798ae310e` / `3a9ce19c3303e639c78547dc7ce15eea51003336` / `7260ca292fb8226face92781cb1c335ad0f31d1b` |
 | Branch / worktree | `codex/f02-rime-builtin-quality-assignment` / `/tmp/universe-keyboard-f02-assignment` |
 | Base governance commit | `83626fd` |
 | Xcode / Swift | Xcode `27.0 (27A5252f)`; Apple Swift `6.4` |
@@ -28,10 +29,13 @@ Human Product Gate.
 - The closure contains 26 manifest entries and 34,104,314 payload bytes:
   official Luna, Essay, Prelude, Stroke, four OpenCC profiles, six OpenCC data
   artifacts and six generated RIME artifacts. No `.gram` is present.
-- `RimeBuiltin.manifest.json` format v2 pins source revisions, generator
-  identity and SHA-256, logical path, role, byte count and SHA-256. Generation
-  ID is `luna-official-2026-08-30-v2`; manifest-file SHA-256 is
-  `1715dc212b2f5190ac71563523ce93e953cb7bdb2ff8704a65b9956d2c47b8cf`.
+- `RimeBuiltin.manifest.json` format v3 pins source repositories/revisions and
+  20 exact source-input hashes, generator/toolchain versions and hashes,
+  normalized replayable command arguments, host identity, explicit
+  `payload-tree-excluding-manifest` digest scope, and each packaged entry.
+  Generation ID is `luna-official-2026-08-31-v3`; manifest-file SHA-256 is
+  `6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233`
+  (`13,582` bytes).
 - The generator performs two clean RIME/OpenCC generations, records the exact
   host and command, and requires both clean output-tree digests to equal
   `18642376d67f9bc74b42988262a2ce7815bee59a36b51dc0388006bc01c0adeb`
@@ -124,20 +128,33 @@ neither result is used as physical-device App Group evidence.
 | Q-02 normal candidate quality | `PARTIAL PASS` | automated exact complete first-page order for all frozen defect/representative vectors and fuzzy off/on passed across four clean deployments; true process cold starts and physical-device repetition remain pending |
 | Q-03 OpenCC four outputs | `LOCAL PASS` | exact linked OpenCC passed s2t, t2s, t2hk and t2tw behavior vectors; physical release-candidate evidence remains pending |
 | Q-04 Stroke reverse lookup | `PARTIAL PASS` | pinned full first-page reverse lookup vector and same-session return to ordinary pinyin passed in simulator; physical Full Access off/on and Extension lifecycle remain pending |
-| Q-05 reproducibility | `LOCAL PASS` | two clean output-tree digests, exact generator hash/host/command and bundle/deployed identity passed; independent reviewer and hosted clean-checkout repetition remain pending |
+| Q-05 reproducibility | `LOCAL PASS` | two clean payload-tree digests, exact source-input/toolchain receipts, normalized replayable generator commands and strict template/digest-scope validation passed; independent re-review and hosted clean-checkout repetition remain pending |
 | Q-06 fail-closed / last-good | `LOCAL PARTIAL PASS` | corrupt prior receipt, hidden/nested/lowercase-text extras, deployed tamper, overlay identity, all 26 switch interruption points and a production-sequence overlay failure restore the complete previous generation; Extension authorization is receipt-gated; process-death atomicity and physical Extension consumption remain pending |
 | Q-07 performance / size | `PENDING` | simulator allocated sizes and one integration duration are recorded but do not satisfy release-like physical samples, delta, median/worst or Product budget acceptance |
 | Q-08 Full Access / lifecycle | `PENDING` | named physical iPhone 13 Pro / iOS 27 matrix with exact commit/build is required |
-| Q-09 license / attribution | `ENGINEERING PARTIAL PASS` | offline files and catalog entries are implemented; independent inventory review and Human/legal sufficiency decision remain pending |
-| Q-10 CI / release reproducibility | `LOCAL PASS` | format, KeyboardCore, full RimeBridge, full App + Keyboard aggregate and Debug/Release builds pass; hosted CI, exact archive and independent Quality sign-off remain pending |
+| Q-09 license / attribution | `ENGINEERING PASS; HUMAN PENDING` | Luna/Essay/Prelude/Stroke/OpenCC offline documents are mapped and bundled; OpenCC AUTHORS exactly matches the accepted 277-byte upstream pin and hash. Human/legal sufficiency remains a separate decision. |
+| Q-10 CI / release reproducibility | `LOCAL PASS` | on the latest remediation chain: format/diff checks, KeyboardCore 1,068/1,068, RimeBridge 93 total with 20 existing conditional skips, App + Keyboard 256 total with 3 physical-only skips, and Debug/Release builds pass; hosted CI, exact archive and independent Quality sign-off remain pending |
+
+## Provenance and Q-09 closure checkpoint — 2026-08-31
+
+| Item | Bound result |
+|---|---|
+| Runtime payload | All 26 runtime resource files remain byte-identical to the previously reviewed closure; only the manifest receipt changed. |
+| Source/generator receipt | Manifest v3 records five pinned repositories, 20 source inputs, six toolchain entries, generator identity, normalized command templates and exact entry hashes. Runtime validation rejects missing/tampered source inputs, tools, commands, digest scope and directly packaged source hashes. |
+| Reproducibility boundary | Both clean runs produced payload-tree SHA-256 `18642376d67f9bc74b42988262a2ce7815bee59a36b51dc0388006bc01c0adeb`; `digestScope` explicitly excludes the receipt manifest itself. |
+| OpenCC inventory | `OPENCC-Apache-2.0.txt` and `OPENCC-AUTHORS.txt` are both required by the catalog. AUTHORS is 277 bytes with SHA-256 `cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006`, exactly matching the accepted upstream pin. |
+| Focused evidence | Installer provenance 23/23: `/tmp/f02-derived-provenance-normalized/Logs/Test/Test-RimeBridgeTests-2026.08.31_10-55-07-+0800.xcresult`; license bundle 2/2: `/tmp/f02-derived-q09-exact/Logs/Test/Test-Universe Keyboard-2026.08.31_10-50-08-+0800.xcresult`. |
+| Full affected gates | RimeBridge 93 total / 20 existing skips / 0 failures: `/tmp/f02-derived-final-rime/Logs/Test/Test-RimeBridgeTests-2026.08.31_10-55-46-+0800.xcresult`; App 245 total / 3 physical-only skips plus Keyboard 11/11, 0 failures: `/tmp/f02-derived-final-app/Logs/Test/Test-Universe Keyboard-2026.08.31_10-56-17-+0800.xcresult`; Debug and Release builds succeeded under `/tmp/f02-derived-final-debug` and `/tmp/f02-derived-final-release`. |
+| Non-claim | Human/legal sufficiency, hosted CI, archive, physical device, install, Product Gate, merge, TestFlight and Release remain pending/unauthorized. |
 
 ## Stop / Handoff
 
-Implementation commit `fa5dbaf1fded3e25ac39a6c0c675cddc786f01bb` plus this
-evidence checkpoint is ready for independent Architecture and Quality
-re-review, not Assignment Exit. The next human dependency is a named
-physical-device matrix only after review findings are resolved and an exact
-installable build is prepared. No merge, TestFlight upload or release action is
+Implementation chain through `7260ca292fb8226face92781cb1c335ad0f31d1b` plus
+this evidence checkpoint is ready for independent Architecture and Quality
+re-review, not Assignment Exit. The former `d4572d9` signed candidate is
+superseded. A replacement may be frozen only after the review findings are
+resolved; installation and the named physical-device matrix still require
+Human authorization. No merge, TestFlight upload or release action is
 authorized by this record.
 
 ## Final independent re-review and handoff — 2026-08-31
@@ -154,11 +171,10 @@ authorization. Complete generator provenance remains `fix`, and process-death
 whole-tree atomicity remains `tech_debt:TD-001`.
 
 The [physical-device handoff packet](rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md)
-now freezes a signed Debug device candidate produced from clean source
-`d4572d93bb9da269cb68051c941099a1e1dec808`. Deep/strict signature validation,
-App/Extension executable stub and code-dylib UUID/hash/size, CDHash, manifest
-hash and zero Extension-resource-duplicate evidence are recorded there. The
-candidate was built only; it was not installed or launched.
+retains the old `d4572d93bb9da269cb68051c941099a1e1dec808` identity only as
+historical evidence. Manifest/runtime validation changed afterward, so that
+candidate is superseded and must not be installed. A replacement candidate is
+not yet frozen.
 
 The handoff remains explicitly `HOLD` before installation: installed receipt,
 Human device authorization and all physical observations are absent. Assignment

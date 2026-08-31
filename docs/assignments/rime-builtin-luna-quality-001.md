@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Final independent Architecture and Quality re-reviews both returned `Pass with conditions` for `fa5dbaf` / `786f4c7`, with no P0/P1 findings. A signed Debug device candidate from clean `d4572d9` is frozen with App/Keyboard UUID, hash, CDHash and manifest identity; the physical-device handoff remains HOLD before installation. |
+| **Phase** | Machine-readable provenance and Q-09 inventory remediation are frozen in `6cb2fee` / `3a9ce19` / `7260ca2`; affected full local gates pass. The prior `d4572d9` signed candidate is superseded and cannot be installed. Independent re-review and a replacement signed candidate remain pending; physical-device handoff stays HOLD. |
 | **Non-claims** | No Assignment Exit, installed-device receipt, hosted CI, physical-device/Full Access/lifecycle/performance pass, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced. |
-| **Next** | Obtain Human Product Owner authorization for reserved Run ID `RIME-BUILTIN-LUNA-QUALITY-001-PHYSICAL-20260831-001`; only then install the frozen artifact, bind the device receipt and execute the one-run matrix one Human action at a time. |
+| **Next** | Complete independent Architecture/Quality re-review of the exact remediation commits, then prepare and freeze a replacement signed candidate. Human authorization is still required before any installation or physical run. |
 | **Residuals** | [`Architecture final re-review`](rime-builtin-luna-quality-001-architecture-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Quality final re-review`](rime-builtin-luna-quality-001-quality-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`physical-device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ---
@@ -333,3 +333,10 @@ built-in assets.
   KeyboardCore 1,068/1,068 plus Debug/Release builds pass. Assignment remains
   `Active` pending final independent Architecture/Quality review and the Human
   physical-device gates; no hosted-CI, merge or Release claim is inferred.
+- `2026-08-31 Asia/Shanghai` — Executor added manifest v3 source-input,
+  generator and toolchain receipts, normalized replayable command templates,
+  explicit payload-digest scope and fail-closed validation in `6cb2fee` plus
+  `7260ca2`. OpenCC AUTHORS now matches the accepted upstream 277-byte pin and
+  is enforced by the bundled-license test in `3a9ce19`. Full affected local
+  gates pass. The older `d4572d9` signed candidate is superseded; no device,
+  PR, merge, TestFlight or Release action is inferred.

@@ -1,32 +1,32 @@
 # RIME-BUILTIN-LUNA-QUALITY-001 — Physical-device handoff packet
 
-> **Packet state:** `Exact signed candidate prepared — HOLD before install/run`
+> **Packet state:** `HOLD — prior candidate superseded; replacement not frozen`
 > **Prepared:** `2026-08-31 Asia/Shanghai`
 > **Assignment:** [`RIME-BUILTIN-LUNA-QUALITY-001`](../assignments/rime-builtin-luna-quality-001.md)
 > **Run ID reserved:** `RIME-BUILTIN-LUNA-QUALITY-001-PHYSICAL-20260831-001`
-> **Evidence grade:** plan only; no build, install or device observation is
-> created by this packet
+> **Evidence grade:** planning plus historical build identity; no installation
+> or device observation is created by this packet
 
 ## Authority and boundary
 
-Independent Architecture and Quality re-reviews both returned
-`Pass with conditions`, with no P0/P1 findings, for implementation
-`fa5dbaf1fded3e25ac39a6c0c675cddc786f01bb` and evidence
-`786f4c720949784f4f66515228778bf6a012b952`. Both permit preparation of an
-exact installable build and this physical-device matrix. They do not authorize
-device execution, Assignment Exit, merge, TestFlight or Release.
+Independent Architecture and Quality previously returned `Pass with
+conditions` for `fa5dbaf` / `786f4c7`. Later machine-readable provenance and
+Q-09 remediation through `7260ca2` changed runtime validation, the manifest and
+license bundle. The former build permission therefore applies only to the
+historical candidate; new independent re-review is pending. Nothing here
+authorizes device execution, Assignment Exit, merge, TestFlight or Release.
 
 The main checkout and PR #91 are outside this packet. The candidate must be
 built from the isolated F-02 branch after its final governance-only commit. A
 source SHA, simulator build or successful local test is not an installable-build
 identity.
 
-## Candidate freeze — required before leaving HOLD
+## Historical candidate — superseded, never install
 
 | Field | Required value | Current state |
 |---|---|---|
-| Runtime implementation | `fa5dbaf1fded3e25ac39a6c0c675cddc786f01bb` is an ancestor of the candidate | Known source boundary; not yet bound to an installed payload |
-| Candidate source commit | Exact clean-worktree HEAD used by the build | `d4572d93bb9da269cb68051c941099a1e1dec808`; clean before and after build; `fa5dbaf` ancestry confirmed |
+| Runtime implementation | Historical identity only | `fa5dbaf`; superseded by runtime/manifest changes through `7260ca2` |
+| Candidate source commit | Historical clean-worktree HEAD | `d4572d93bb9da269cb68051c941099a1e1dec808`; **SUPERSEDED — DO NOT INSTALL** |
 | Product version / project build setting | `1.0 (1)` | Signed artifact reports `1.0 (1)` |
 | Configuration | One explicitly recorded signed device configuration | `Debug`, `generic/platform=iOS`, arm64, minimum iOS 18.0 |
 | Xcode / iPhoneOS SDK / Swift | Exact output from the build host | Xcode `27.0 (27A5252f)`; iPhoneOS SDK `27.0 (24A5422a)`; Apple Swift `6.4 (swiftlang-6.4.0.33.1 clang-2100.3.33.1)` |
@@ -35,18 +35,16 @@ identity.
 | App executable UUID / SHA-256 / bytes | Signed Debug executable stub plus code dylib | stub `1770F23D-D866-3773-B920-6EF713DB7E3B` / `b9fa5a2622d24a3dd30065f655ce81fc19c9763bc26fa561ec4cd9e2b2ed7877` / `92,128`; code dylib `4A660282-FE40-35FF-9A15-1F0E26FA12B6` / `1d252d58b59aeab1053bb716f01887ed43acdef43b332cbf03c5d83e646d8fec` / `28,417,616` |
 | Keyboard executable UUID / SHA-256 / bytes | Signed Debug executable stub plus code dylib | stub `36EBF8E3-5B05-3798-A5AC-BB6B201E1640` / `982d982270f60e08fdeff49d3ed50d113d30d0d1f9ab79d9269b0b5799119c29` / `89,504`; code dylib `6756A501-DCBD-3FC8-A4CD-A74A36CE1504` / `a55013d15ce39cef9647793deba8792959ca63f3fc22ffca17eae39e002b6ca3` / `15,852,032` |
 | Built-in manifest SHA-256 | Derived from the exact signed `.app` | `1715dc212b2f5190ac71563523ce93e953cb7bdb2ff8704a65b9956d2c47b8cf`, `6,140` bytes; Extension duplicate scan returned zero matches |
-| Candidate artifact | Exact local product | `/tmp/f02-device-candidate-d4572d9/Build/Products/Debug-iphoneos/Universe Keyboard.app`; `codesign --verify --deep --strict` passed; ephemeral until installed or deliberately retained |
+| Candidate artifact | Historical local product | `/tmp/f02-device-candidate-d4572d9/Build/Products/Debug-iphoneos/Universe Keyboard.app`; **SUPERSEDED — DO NOT INSTALL** |
 | Installation receipt | Device reports matching app/version/build | `UNKNOWN` |
 | Device | iPhone 13 Pro / iOS `27.0 (24A5424a)` | Human-reported target; must be reconfirmed at run start |
 | Full Access baseline | Off | Pending Human observation |
 | Network baseline | Airplane mode before first App launch/deployment | Pending Human observation |
 
-The only remaining `UNKNOWN` identity is the installation receipt, which cannot
-exist before installation. The run remains on HOLD until Human authorization;
-after installation, a missing/mismatched receipt, dirty/rebuilt source,
-artifact disappearance, bundle mismatch or unexpected automatic network
-restoration invalidates this candidate. Rebuilding creates a new artifact
-identity and requires a new freeze rather than silently reusing these hashes.
+The historical hashes remain only to prevent accidental reuse. Before this
+packet can leave HOLD, a clean post-review source commit must produce a new
+signed App/Extension/manifest identity table. That replacement still cannot be
+installed without explicit Human authorization.
 
 ## Privacy and observation contract
 
@@ -147,7 +145,7 @@ FAIL/HOLD pending symbolication against the frozen executable UUIDs.
 
 | Gate | Result | Evidence pointer |
 |---|---|---|
-| Candidate build freeze | `PASS` | signed Debug `.app` from clean `d4572d9`; deep/strict signature, App/Extension identity, manifest and no-duplicate scan recorded |
+| Candidate build freeze | `HOLD` | old `d4572d9` candidate superseded; replacement not yet frozen |
 | Installation receipt | `HOLD` | no install action authorized or performed |
 | Q-01 fresh/offline | `NOT RUN` | — |
 | Q-02 candidate quality/cold starts | `NOT RUN` | — |
@@ -163,8 +161,9 @@ FAIL/HOLD pending symbolication against the frozen executable UUIDs.
 
 - iOS 18 physical-device compatibility is not covered by the named iOS 27
   device and remains a separate Environment/Quality gate.
-- Hosted CI, exact archive provenance, complete machine-readable generator
-  provenance, independent license inventory and Human/legal sufficiency remain
-  separate gates.
+- Hosted CI, exact archive provenance and Human/legal sufficiency remain
+  separate gates. Machine-readable generator provenance and engineering license
+  inventory are implemented locally but remain subject to the current
+  independent re-review.
 - A passing physical run does not authorize PR creation, merge, TestFlight or
   Release and does not change PR #91.
