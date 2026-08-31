@@ -59,8 +59,8 @@ Current-snapshot results are `Executor-recorded` against `3f94073`:
 7. `git diff --check` and strict formatting for the changed scheduler/test files
    passed. The ViewModel retains unrelated pre-existing whole-file indentation
    findings; changed hunks introduced no new formatting issue.
-8. Final documentation checks against `a7b2b2e..6381520` passed changed-link
-   validation for `8` Markdown files, `12` classifier/final-gate unit tests and
+8. Final documentation checks against `3f94073..3f74f94` passed changed-link
+   validation for `7` Markdown files, `12` classifier/final-gate unit tests and
    KOS trigger-path checks. The pinned `kos-agent-kit@v0.5.0` advisory validator
    exited `0`; its six warnings are pre-existing records outside this change.
 
