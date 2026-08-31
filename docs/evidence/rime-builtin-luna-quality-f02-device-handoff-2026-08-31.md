@@ -1,11 +1,11 @@
 # RIME-BUILTIN-LUNA-QUALITY-001 — Physical-device handoff packet
 
-> **Packet state:** `HOLD — prior candidate superseded; replacement not frozen`
+> **Packet state:** `Replacement signed candidate frozen — HOLD before install/run`
 > **Prepared:** `2026-08-31 Asia/Shanghai`
 > **Assignment:** [`RIME-BUILTIN-LUNA-QUALITY-001`](../assignments/rime-builtin-luna-quality-001.md)
 > **Run ID reserved:** `RIME-BUILTIN-LUNA-QUALITY-001-PHYSICAL-20260831-001`
-> **Evidence grade:** planning plus historical build identity; no installation
-> or device observation is created by this packet
+> **Evidence grade:** exact signed-build identity plus plan; no installation or
+> device observation is created by this packet
 
 ## Authority and boundary
 
@@ -19,6 +19,27 @@ The main checkout and PR #91 are outside this packet. The candidate must be
 built from the isolated F-02 branch after its final governance-only commit. A
 source SHA, simulator build or successful local test is not an installable-build
 identity.
+
+## Current replacement candidate freeze
+
+| Field | Frozen value |
+|---|---|
+| Runtime implementation ancestry | `7260ca292fb8226face92781cb1c335ad0f31d1b` is an ancestor |
+| Candidate source commit | clean `c5f30048b139bcbc2d8ea5552c5f8d053e09efe9` before and after build |
+| Product / build / deployment | `1.0 (1)`; Debug; generic iOS arm64; minimum iOS 18.0 |
+| Toolchain | Xcode `27.0 (27A5252f)`; iPhoneOS SDK `27.0`; Apple Swift `6.4 (swiftlang-6.4.0.33.1 clang-2100.3.33.1)` |
+| Signing | Apple Development `SVGPGQXU8W`; Team `C33N6HTS9N`; App CDHash `2d879f70c1631c3a22add4826291c77046956512`; Extension CDHash `9e96c88307d8dbe348ea6cbbaada52b9adbde820` |
+| App bundle | `com.DoubleShy0N.Universe-Keyboard` |
+| App executable | stub UUID `C76D2B1A-37E6-36D3-8870-DE36272E7830`, SHA-256 `8f9594b9da614f91e23f5acf5ebd39a0df660821879f93f5a5afc094daf2d3d2`, 92,128 bytes; code dylib UUID `8EAABEA2-15B4-35A1-B909-67C595791F4B`, SHA-256 `08f7d338a89d2e33da9bef98c0cb04b0847e268a022c1afd0fdf9b966be005ca`, 28,567,344 bytes |
+| Keyboard executable | stub UUID `B9A34CEA-7F77-36DD-96BB-77D876781871`, SHA-256 `3afb3b2e87bac27c71100d4194f97a71851e89fcd5a93cf09170b4b00b465ac9`, 89,504 bytes; code dylib UUID `5F19B994-DE42-333E-BC22-9D877D87ADA1`, SHA-256 `2cb7d56daee5a679339a104c8553a9376e0450da22ae2374a37caeacb33378ce`, 16,001,952 bytes |
+| Built-in manifest | SHA-256 `6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233`, 13,582 bytes; Extension runtime-resource duplicate count `0` |
+| OpenCC AUTHORS in App | SHA-256 `cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006`, 277 bytes |
+| Candidate artifact | `/tmp/f02-device-candidate-c5f3004/Build/Products/Debug-iphoneos/Universe Keyboard.app`; `codesign --verify --deep --strict` passed |
+| Installation receipt | `UNKNOWN` — cannot exist before installation |
+
+The replacement remains on HOLD. Any source rebuild, artifact disappearance,
+signature/hash mismatch or unexpected install identity invalidates this freeze.
+Human authorization is required before installation or the reserved run.
 
 ## Historical candidate — superseded, never install
 
@@ -40,10 +61,9 @@ identity.
 | Full Access baseline | Off | Pending Human observation |
 | Network baseline | Airplane mode before first App launch/deployment | Pending Human observation |
 
-The historical hashes remain only to prevent accidental reuse. Before this
-packet can leave HOLD, a clean post-review source commit must produce a new
-signed App/Extension/manifest identity table. That replacement still cannot be
-installed without explicit Human authorization.
+The historical hashes remain only to prevent accidental reuse. The replacement
+identity table above supersedes them, but the packet remains on HOLD and the
+replacement cannot be installed without explicit Human authorization.
 
 ## Privacy and observation contract
 
@@ -144,7 +164,7 @@ FAIL/HOLD pending symbolication against the frozen executable UUIDs.
 
 | Gate | Result | Evidence pointer |
 |---|---|---|
-| Candidate build freeze | `HOLD` | old `d4572d9` candidate superseded; replacement not yet frozen |
+| Candidate build freeze | `PASS` | clean `c5f3004` signed Debug App; deep/strict signature, App/Extension UUID/hash/CDHash, manifest, AUTHORS and zero Extension duplicate evidence recorded above |
 | Installation receipt | `HOLD` | no install action authorized or performed |
 | Q-01 fresh/offline | `NOT RUN` | — |
 | Q-02 candidate quality/cold starts | `NOT RUN` | — |

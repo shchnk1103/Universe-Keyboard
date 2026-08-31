@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Machine-readable provenance and Q-09 inventory remediation are frozen in `6cb2fee` / `3a9ce19` / `7260ca2`; affected full local gates pass. Independent Architecture/Quality re-review of `bb43c5f` is `Pass with conditions`, with no P0/P1. The prior `d4572d9` candidate is superseded; replacement signed candidate preparation is permitted but physical-device handoff stays HOLD. |
+| **Phase** | Machine-readable provenance and Q-09 inventory remediation are frozen in `6cb2fee` / `3a9ce19` / `7260ca2`; affected full local gates pass. Independent Architecture/Quality re-review of `bb43c5f` is `Pass with conditions`, with no P0/P1. A replacement signed Debug candidate from clean `c5f3004` is frozen with App/Extension/manifest/AUTHORS identity; physical-device handoff stays HOLD before installation. |
 | **Non-claims** | No Assignment Exit, installed-device receipt, hosted CI, physical-device/Full Access/lifecycle/performance pass, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced. |
-| **Next** | Prepare and freeze a clean replacement signed candidate with App/Extension/manifest identities. Human authorization is still required before any installation or physical run. |
+| **Next** | Await Human Product Owner authorization for the reserved physical Run ID; only then install the exact `c5f3004` candidate and execute the one-run matrix one Human action at a time. |
 | **Residuals** | [`Architecture final re-review`](rime-builtin-luna-quality-001-architecture-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Quality final re-review`](rime-builtin-luna-quality-001-quality-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`physical-device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ---
@@ -340,3 +340,8 @@ built-in assets.
   is enforced by the bundled-license test in `3a9ce19`. Full affected local
   gates pass. The older `d4572d9` signed candidate is superseded; no device,
   PR, merge, TestFlight or Release action is inferred.
+- `2026-08-31 Asia/Shanghai` — Architecture and Quality independently accepted
+  the engineering provenance/Q-09 closure with no P0/P1. A replacement signed
+  Debug candidate was built from clean `c5f3004`; App/Extension UUID, hash,
+  CDHash, manifest, OpenCC AUTHORS and zero-duplicate evidence are frozen. It
+  was not installed or launched; the physical run remains on Human HOLD.

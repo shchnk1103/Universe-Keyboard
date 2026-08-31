@@ -156,13 +156,13 @@ not installation or physical execution.
 
 ## Stop / Handoff
 
-Implementation chain through `7260ca292fb8226face92781cb1c335ad0f31d1b` plus
-this evidence checkpoint is ready for independent Architecture and Quality
-re-review, not Assignment Exit. The former `d4572d9` signed candidate is
-superseded. A replacement may be frozen only after the review findings are
-resolved; installation and the named physical-device matrix still require
-Human authorization. No merge, TestFlight upload or release action is
-authorized by this record.
+Implementation chain through `7260ca292fb8226face92781cb1c335ad0f31d1b` and
+evidence HEAD `bb43c5f` passed independent Architecture/Quality re-review with
+no P0/P1. The former `d4572d9` signed candidate is superseded. A replacement
+signed candidate from clean `c5f3004` is now frozen in the handoff packet;
+installation and the named physical-device matrix still require Human
+authorization. No merge, TestFlight upload or release action is authorized by
+this record.
 
 ## Final independent re-review and handoff — 2026-08-31
 
@@ -181,7 +181,8 @@ The [physical-device handoff packet](rime-builtin-luna-quality-f02-device-handof
 retains the old `d4572d93bb9da269cb68051c941099a1e1dec808` identity only as
 historical evidence. Manifest/runtime validation changed afterward, so that
 candidate is superseded and must not be installed. A replacement candidate is
-not yet frozen.
+frozen from clean `c5f3004`; its exact identity is recorded in the handoff
+packet.
 
 The handoff remains explicitly `HOLD` before installation: installed receipt,
 Human device authorization and all physical observations are absent. Assignment
