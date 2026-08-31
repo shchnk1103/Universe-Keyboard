@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import KeyboardCore
 import RimeBridge
@@ -118,12 +119,28 @@ final class SchemaManagerTests: XCTestCase {
         }
     }
 
-    func testOpenCCCatalogRequiresLicenseAndAuthorsDocuments() {
+    func testOpenCCCatalogRequiresLicenseAndPinnedAuthorsDocument() throws {
         let openCC = ThirdPartyLicenseCatalog.bundledComponents.first { $0.id == "opencc" }
 
         XCTAssertEqual(
             Set(openCC?.offlineDocuments.map(\.resourceName) ?? []),
             ["OPENCC-Apache-2.0", "OPENCC-AUTHORS"]
+        )
+
+        let authorsURL =
+            Bundle.main.url(
+                forResource: "OPENCC-AUTHORS",
+                withExtension: "txt",
+                subdirectory: "ThirdPartyLicenses"
+            )
+            ?? Bundle.main.url(forResource: "OPENCC-AUTHORS", withExtension: "txt")
+        let resolvedAuthorsURL = try XCTUnwrap(authorsURL)
+        let authorsData = try Data(contentsOf: resolvedAuthorsURL)
+
+        XCTAssertEqual(authorsData.count, 277)
+        XCTAssertEqual(
+            SHA256.hash(data: authorsData).map { String(format: "%02x", $0) }.joined(),
+            "cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006"
         )
     }
 
