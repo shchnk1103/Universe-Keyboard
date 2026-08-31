@@ -147,6 +147,13 @@ neither result is used as physical-device App Group evidence.
 | Full affected gates | RimeBridge 93 total / 20 existing skips / 0 failures: `/tmp/f02-derived-final-rime/Logs/Test/Test-RimeBridgeTests-2026.08.31_10-55-46-+0800.xcresult`; App 245 total / 3 physical-only skips plus Keyboard 11/11, 0 failures: `/tmp/f02-derived-final-app/Logs/Test/Test-Universe Keyboard-2026.08.31_10-56-17-+0800.xcresult`; Debug and Release builds succeeded under `/tmp/f02-derived-final-debug` and `/tmp/f02-derived-final-release`. |
 | Non-claim | Human/legal sufficiency, hosted CI, archive, physical device, install, Product Gate, merge, TestFlight and Release remain pending/unauthorized. |
 
+Independent Architecture and Quality re-review of exact evidence HEAD
+`bb43c5f` both returned `Pass with conditions`, with no P0/P1. Architecture
+accepted `F02-A-P2-PROVENANCE-001` and the old-candidate supersede; Quality
+closed engineering Q-09/inventory while retaining Human/legal sufficiency as
+P2 pending. Both permit preparation of a clean replacement signed candidate,
+not installation or physical execution.
+
 ## Stop / Handoff
 
 Implementation chain through `7260ca292fb8226face92781cb1c335ad0f31d1b` plus

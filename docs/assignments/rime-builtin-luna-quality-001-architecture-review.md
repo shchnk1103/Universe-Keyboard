@@ -616,3 +616,24 @@ TestFlight or Release authorization.
 **Independence statement:** the reviewer performed a read-only review in the
 isolated F-02 worktree, did not modify files or run build/test/network/device
 actions, did not touch the main checkout and did not inspect or operate PR #91.
+
+## Provenance closure re-review — `bb43c5f` — 2026-08-31
+
+**Independent verdict: `Pass with conditions`.** P0: none. P1: none.
+
+`F02-A-P2-PROVENANCE-001` is engineering-closed (`accept`): manifest v3 binds
+five source pins, 20 source-input hashes, generator/toolchain identity,
+normalized replayable commands and the explicit
+`payload-tree-excluding-manifest` digest scope. Runtime validation rejects
+receipt shape, command-template, digest-scope and directly packaged source
+tampering. The current manifest SHA-256 is
+`6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233`.
+
+`F02-A-P2-CANDIDATE-SUPERSEDE-001` is also closed: the `d4572d9`
+candidate is historical only and explicitly forbidden from installation. A
+clean replacement candidate may now be prepared and frozen; installation,
+physical execution, hosted CI, archive, Product Gate, merge and Release remain
+unauthorized. `F02-A-P2-TD001` remains `tech_debt:TD-001` and is unchanged.
+
+**Independence statement:** this was a read-only review of `bb43c5f`; no files,
+builds, tests, network, devices, main checkout or PR #91 were touched.

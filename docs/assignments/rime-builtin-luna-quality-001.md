@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Machine-readable provenance and Q-09 inventory remediation are frozen in `6cb2fee` / `3a9ce19` / `7260ca2`; affected full local gates pass. The prior `d4572d9` signed candidate is superseded and cannot be installed. Independent re-review and a replacement signed candidate remain pending; physical-device handoff stays HOLD. |
+| **Phase** | Machine-readable provenance and Q-09 inventory remediation are frozen in `6cb2fee` / `3a9ce19` / `7260ca2`; affected full local gates pass. Independent Architecture/Quality re-review of `bb43c5f` is `Pass with conditions`, with no P0/P1. The prior `d4572d9` candidate is superseded; replacement signed candidate preparation is permitted but physical-device handoff stays HOLD. |
 | **Non-claims** | No Assignment Exit, installed-device receipt, hosted CI, physical-device/Full Access/lifecycle/performance pass, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced. |
-| **Next** | Complete independent Architecture/Quality re-review of the exact remediation commits, then prepare and freeze a replacement signed candidate. Human authorization is still required before any installation or physical run. |
+| **Next** | Prepare and freeze a clean replacement signed candidate with App/Extension/manifest identities. Human authorization is still required before any installation or physical run. |
 | **Residuals** | [`Architecture final re-review`](rime-builtin-luna-quality-001-architecture-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Quality final re-review`](rime-builtin-luna-quality-001-quality-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`physical-device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ---

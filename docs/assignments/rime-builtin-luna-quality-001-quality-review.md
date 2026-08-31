@@ -306,3 +306,28 @@ TestFlight or Release acceptance.
 **Independence statement:** the reviewer completed a read-only review without
 file changes or build/test/network/device actions, did not touch the main
 checkout and did not inspect or operate PR #91.
+
+## Q-09 inventory closure re-review — `bb43c5f` — 2026-08-31
+
+**Independent verdict: `Pass with conditions`.** P0: none. P1: none.
+
+Engineering Q-09/inventory is `PASS / CLOSED`. OpenCC now exposes both the
+Apache license and AUTHORS in the offline catalog; bundled AUTHORS is exactly
+277 bytes with pinned SHA-256
+`cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006`.
+Tests cover all offline catalog documents and hard-check the OpenCC document
+set, byte count and hash. The latest evidence binds manifest v3 and the affected
+full local gates.
+
+`F02-Q09-HUMAN-LEGAL-001` remains P2 / `fix`: Human/legal sufficiency is
+pending and cannot be inferred from engineering review. The reviewer could not
+independently read back the four `.xcresult` summaries because the local tool
+attempted a disallowed `TestReport` write; the test counts therefore remain
+Executor-recorded rather than reviewer-rerun evidence.
+
+A clean replacement signed candidate may be prepared and frozen. Installation,
+physical execution, hosted CI, archive, Product Gate, merge, TestFlight and
+Release remain unauthorized.
+
+**Independence statement:** this was a read-only review of `bb43c5f`; no files,
+builds, tests, network, devices, main checkout or PR #91 were touched.

@@ -9,12 +9,11 @@
 
 ## Authority and boundary
 
-Independent Architecture and Quality previously returned `Pass with
-conditions` for `fa5dbaf` / `786f4c7`. Later machine-readable provenance and
-Q-09 remediation through `7260ca2` changed runtime validation, the manifest and
-license bundle. The former build permission therefore applies only to the
-historical candidate; new independent re-review is pending. Nothing here
-authorizes device execution, Assignment Exit, merge, TestFlight or Release.
+Independent Architecture and Quality re-review of evidence HEAD `bb43c5f`
+both returned `Pass with conditions`, with no P0/P1. They closed the engineering
+provenance and Q-09 inventory residuals and permit preparation of a clean
+replacement signed candidate. Nothing here authorizes installation, device
+execution, Assignment Exit, merge, TestFlight or Release.
 
 The main checkout and PR #91 are outside this packet. The candidate must be
 built from the isolated F-02 branch after its final governance-only commit. A
