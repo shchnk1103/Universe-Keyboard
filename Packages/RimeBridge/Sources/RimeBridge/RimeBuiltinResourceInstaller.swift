@@ -66,6 +66,7 @@ public struct RimeBuiltinResourceInstaller {
             let hostOSBuild: String
             let hostArchitecture: String
             let command: String
+            let digestScope: String
             let cleanOutputSHA256A: String
             let cleanOutputSHA256B: String
         }
@@ -517,7 +518,9 @@ public struct RimeBuiltinResourceInstaller {
             !manifest.reproducibility.hostOSVersion.isEmpty,
             !manifest.reproducibility.hostOSBuild.isEmpty,
             !manifest.reproducibility.hostArchitecture.isEmpty,
-            !manifest.reproducibility.command.isEmpty,
+            manifest.reproducibility.command
+                == "scripts/generate_builtin_rime_resources.sh <pinned-source-root> <output-root>",
+            manifest.reproducibility.digestScope == "payload-tree-excluding-manifest",
             Self.isSHA256(manifest.reproducibility.cleanOutputSHA256A),
             manifest.reproducibility.cleanOutputSHA256A
                 == manifest.reproducibility.cleanOutputSHA256B,
@@ -566,6 +569,16 @@ public struct RimeBuiltinResourceInstaller {
             else { throw InstallationError.manifestInvalid }
         }
 
+        guard
+            let rimeDeployer = manifest.generators["rimeDeployer"],
+            let rimeDeployerPath = rimeDeployer.commandArguments.first?.first,
+            let cmakePath = manifest.toolchain["cmake"]?.path,
+            rimeDeployer.commandArguments
+                == expectedRimeCommands(executable: rimeDeployerPath),
+            manifest.generators["opencc"]?.commandArguments
+                == expectedOpenCCCommands(executable: cmakePath)
+        else { throw InstallationError.manifestInvalid }
+
         for tool in manifest.toolchain.values {
             guard
                 tool.path.isEmpty == false,
@@ -605,6 +618,34 @@ public struct RimeBuiltinResourceInstaller {
             guard inputHash == entriesByPath[mapping.entry] else {
                 throw InstallationError.manifestInvalid
             }
+        }
+    }
+
+    private static func expectedRimeCommands(executable: String) -> [[String]] {
+        ["rime-a", "rime-b"].flatMap { run in
+            ["luna_pinyin.schema.yaml", "stroke.schema.yaml"].map { schema in
+                let root = "<work-root>/\(run)"
+                return [
+                    executable, "--compile", "\(root)/shared/\(schema)",
+                    "\(root)/user", "\(root)/shared", "\(root)/staging",
+                ]
+            }
+        }
+    }
+
+    private static func expectedOpenCCCommands(executable: String) -> [[String]] {
+        ["opencc-a", "opencc-b"].flatMap { run in
+            let buildRoot = "<work-root>/\(run)"
+            return [
+                [
+                    executable, "-S", "<pinned-source-root>/OpenCC", "-B", buildRoot,
+                    "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_DOCUMENTATION=OFF",
+                    "-DENABLE_GTEST=OFF",
+                ],
+                [
+                    executable, "--build", buildRoot, "--target", "Dictionaries", "-j", "8",
+                ],
+            ]
         }
     }
 

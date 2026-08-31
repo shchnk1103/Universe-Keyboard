@@ -252,6 +252,62 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         }
     }
 
+    func testGeneratorCommandTemplateTamperingIsRejected() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let manifestURL = fixture.source.appendingPathComponent(
+            RimeBuiltinResourceInstaller.manifestFileName
+        )
+        var manifest = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: Data(contentsOf: manifestURL)) as? [String: Any]
+        )
+        var generators = try XCTUnwrap(manifest["generators"] as? [String: Any])
+        var openCC = try XCTUnwrap(generators["opencc"] as? [String: Any])
+        var commands = try XCTUnwrap(openCC["commandArguments"] as? [[String]])
+        commands[0][2] = "/mutable/source/OpenCC"
+        openCC["commandArguments"] = commands
+        generators["opencc"] = openCC
+        manifest["generators"] = generators
+        try JSONSerialization.data(withJSONObject: manifest, options: [.sortedKeys]).write(
+            to: manifestURL
+        )
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().validateResourceTree(at: fixture.source)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .manifestInvalid
+            )
+        }
+    }
+
+    func testReproducibilityDigestScopeMustNamePayloadBoundary() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let manifestURL = fixture.source.appendingPathComponent(
+            RimeBuiltinResourceInstaller.manifestFileName
+        )
+        var manifest = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: Data(contentsOf: manifestURL)) as? [String: Any]
+        )
+        var reproducibility = try XCTUnwrap(manifest["reproducibility"] as? [String: Any])
+        reproducibility["digestScope"] = "whole-receipt"
+        manifest["reproducibility"] = reproducibility
+        try JSONSerialization.data(withJSONObject: manifest, options: [.sortedKeys]).write(
+            to: manifestURL
+        )
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().validateResourceTree(at: fixture.source)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .manifestInvalid
+            )
+        }
+    }
+
     func testInstalledResourceTamperInvalidatesReceipt() throws {
         let fixture = try makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
@@ -734,13 +790,34 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
                     "version": "fixture",
                     "sha256": String(repeating: "a", count: 64),
                     "sourceRepository": "https://github.com/rime/librime.git",
-                    "commandArguments": [["rime_deployer", "--compile", "fixture"]],
+                    "commandArguments": ["rime-a", "rime-b"].flatMap { run in
+                        ["luna_pinyin.schema.yaml", "stroke.schema.yaml"].map { schema in
+                            [
+                                "fixture-rime-deployer", "--compile",
+                                "<work-root>/\(run)/shared/\(schema)",
+                                "<work-root>/\(run)/user", "<work-root>/\(run)/shared",
+                                "<work-root>/\(run)/staging",
+                            ]
+                        }
+                    },
                 ],
                 "opencc": [
                     "version": "fixture",
                     "sourceRepository": "https://github.com/BYVoid/OpenCC.git",
                     "sourceRevision": String(repeating: "3", count: 40),
-                    "commandArguments": [["cmake", "--build", "fixture"]],
+                    "commandArguments": ["opencc-a", "opencc-b"].flatMap { run in
+                        [
+                            [
+                                "fixture-cmake", "-S", "<pinned-source-root>/OpenCC", "-B",
+                                "<work-root>/\(run)", "-DCMAKE_BUILD_TYPE=Release",
+                                "-DBUILD_DOCUMENTATION=OFF", "-DENABLE_GTEST=OFF",
+                            ],
+                            [
+                                "fixture-cmake", "--build", "<work-root>/\(run)", "--target",
+                                "Dictionaries", "-j", "8",
+                            ],
+                        ]
+                    },
                 ],
             ],
             "toolchain": Dictionary(
@@ -761,7 +838,9 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
                 "hostOSVersion": "fixture-os",
                 "hostOSBuild": "fixture-build",
                 "hostArchitecture": "fixture-architecture",
-                "command": "fixture-command",
+                "command":
+                    "scripts/generate_builtin_rime_resources.sh <pinned-source-root> <output-root>",
+                "digestScope": "payload-tree-excluding-manifest",
                 "cleanOutputSHA256A": String(repeating: "b", count: 64),
                 "cleanOutputSHA256B": String(repeating: "b", count: 64),
             ],

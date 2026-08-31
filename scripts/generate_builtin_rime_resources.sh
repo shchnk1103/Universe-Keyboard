@@ -328,17 +328,17 @@ for key, spec in source_specs.items():
     }
 
 def rime_command(run: str, schema: str) -> list[str]:
-    root = work_root / run
+    root = pathlib.PurePosixPath("<work-root>") / run
     return [
         rime_deployer, "--compile", str(root / "shared" / schema),
         str(root / "user"), str(root / "shared"), str(root / "staging"),
     ]
 
 def opencc_commands(run: str) -> list[list[str]]:
-    build_root = work_root / run
+    build_root = pathlib.PurePosixPath("<work-root>") / run
     return [
         [
-            cmake, "-S", str(source_root / "OpenCC"), "-B", str(build_root),
+            cmake, "-S", "<pinned-source-root>/OpenCC", "-B", str(build_root),
             "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_DOCUMENTATION=OFF", "-DENABLE_GTEST=OFF",
         ],
         [cmake, "--build", str(build_root), "--target", "Dictionaries", "-j", "8"],
@@ -399,6 +399,7 @@ manifest = {
         "hostOSBuild": host_os_build,
         "hostArchitecture": host_architecture,
         "command": "scripts/generate_builtin_rime_resources.sh <pinned-source-root> <output-root>",
+        "digestScope": "payload-tree-excluding-manifest",
         "cleanOutputSHA256A": first_digest,
         "cleanOutputSHA256B": second_digest,
     },

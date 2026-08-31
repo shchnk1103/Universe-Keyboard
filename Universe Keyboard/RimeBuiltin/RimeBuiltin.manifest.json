@@ -129,34 +129,34 @@
         [
           "/opt/homebrew/bin/rime_deployer",
           "--compile",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-a/shared/luna_pinyin.schema.yaml",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-a/user",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-a/shared",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-a/staging"
+          "<work-root>/rime-a/shared/luna_pinyin.schema.yaml",
+          "<work-root>/rime-a/user",
+          "<work-root>/rime-a/shared",
+          "<work-root>/rime-a/staging"
         ],
         [
           "/opt/homebrew/bin/rime_deployer",
           "--compile",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-a/shared/stroke.schema.yaml",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-a/user",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-a/shared",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-a/staging"
+          "<work-root>/rime-a/shared/stroke.schema.yaml",
+          "<work-root>/rime-a/user",
+          "<work-root>/rime-a/shared",
+          "<work-root>/rime-a/staging"
         ],
         [
           "/opt/homebrew/bin/rime_deployer",
           "--compile",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-b/shared/luna_pinyin.schema.yaml",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-b/user",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-b/shared",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-b/staging"
+          "<work-root>/rime-b/shared/luna_pinyin.schema.yaml",
+          "<work-root>/rime-b/user",
+          "<work-root>/rime-b/shared",
+          "<work-root>/rime-b/staging"
         ],
         [
           "/opt/homebrew/bin/rime_deployer",
           "--compile",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-b/shared/stroke.schema.yaml",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-b/user",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-b/shared",
-          "/tmp/universe-rime-builtin.BGT1pW/rime-b/staging"
+          "<work-root>/rime-b/shared/stroke.schema.yaml",
+          "<work-root>/rime-b/user",
+          "<work-root>/rime-b/shared",
+          "<work-root>/rime-b/staging"
         ]
       ]
     },
@@ -168,9 +168,9 @@
         [
           "/opt/homebrew/bin/cmake",
           "-S",
-          "/private/tmp/f02-rime-upstream.5ywEHF/OpenCC",
+          "<pinned-source-root>/OpenCC",
           "-B",
-          "/tmp/universe-rime-builtin.BGT1pW/opencc-a",
+          "<work-root>/opencc-a",
           "-DCMAKE_BUILD_TYPE=Release",
           "-DBUILD_DOCUMENTATION=OFF",
           "-DENABLE_GTEST=OFF"
@@ -178,7 +178,7 @@
         [
           "/opt/homebrew/bin/cmake",
           "--build",
-          "/tmp/universe-rime-builtin.BGT1pW/opencc-a",
+          "<work-root>/opencc-a",
           "--target",
           "Dictionaries",
           "-j",
@@ -187,9 +187,9 @@
         [
           "/opt/homebrew/bin/cmake",
           "-S",
-          "/private/tmp/f02-rime-upstream.5ywEHF/OpenCC",
+          "<pinned-source-root>/OpenCC",
           "-B",
-          "/tmp/universe-rime-builtin.BGT1pW/opencc-b",
+          "<work-root>/opencc-b",
           "-DCMAKE_BUILD_TYPE=Release",
           "-DBUILD_DOCUMENTATION=OFF",
           "-DENABLE_GTEST=OFF"
@@ -197,7 +197,7 @@
         [
           "/opt/homebrew/bin/cmake",
           "--build",
-          "/tmp/universe-rime-builtin.BGT1pW/opencc-b",
+          "<work-root>/opencc-b",
           "--target",
           "Dictionaries",
           "-j",
@@ -225,7 +225,7 @@
     "generationScript": {
       "path": "scripts/generate_builtin_rime_resources.sh",
       "version": "repository script",
-      "sha256": "369cd0847c3083430a55298ae840380dd22730d78b4bf6d823ea2dd046d60784"
+      "sha256": "2ea2f60818ae9da5f59137fe6ef49567b74741444a9d8334909f6ab735e98715"
     },
     "openccPython": {
       "path": "/Users/doubleshy0n/.pyenv/shims/python",
@@ -243,6 +243,7 @@
     "hostOSBuild": "26A5421a",
     "hostArchitecture": "arm64",
     "command": "scripts/generate_builtin_rime_resources.sh <pinned-source-root> <output-root>",
+    "digestScope": "payload-tree-excluding-manifest",
     "cleanOutputSHA256A": "18642376d67f9bc74b42988262a2ce7815bee59a36b51dc0388006bc01c0adeb",
     "cleanOutputSHA256B": "18642376d67f9bc74b42988262a2ce7815bee59a36b51dc0388006bc01c0adeb"
   },
