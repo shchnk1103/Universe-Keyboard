@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Run ID | `RIME-SYNC-001-NATURAL-BG-20260901-02` |
-| State | `FROZEN — READINESS DELTA REVIEW PENDING` |
+| State | `READY — HUMAN ROUND NOT STARTED` |
 | Manifest frozen at | `2026-09-01T22:53:08+0800` |
 | Human-round budget | `1`; used `0` |
 | Formal claim boundary | One iOS-selected BGProcessingTask opportunity, one coherent automatic-sync operation, Diagnostics/v1 sequence, truthful phone notification and post-run crash/Jetsam receipts |
@@ -15,8 +15,12 @@ The new payload has been built and installed exactly once. It has not been
 launched by Xcode, `devicectl` or the Device Operator. At
 `2026-09-01T22:53:08+0800`, the Human Device Operator confirmed without changing
 settings that notifications, Full Access, network availability and all relevant
-sync configuration remain unchanged. The run remains on hold only until the
-independent readiness delta reviews accept this final manifest.
+sync configuration remain unchanged. The independent readiness delta reviews
+subsequently accepted this final manifest.
+
+At final delta review, Architecture returned `Ready` and Quality returned
+`Ready`; all prior Hold conditions were closed. This readiness authorizes only
+the Human Sequence below and does not pre-judge the run outcome.
 
 ## Frozen Source And Build
 
@@ -165,7 +169,7 @@ unlisted device/App Group mutation. Do not repair a mismatch inside this run.
   "keyboardJetsamVictim": null,
   "postRunPayloadMatch": null,
   "cleanupZeroResidue": true,
-  "result": "HOLD — readiness delta review pending"
+  "result": "READY — Human round not started"
 }
 ```
 
