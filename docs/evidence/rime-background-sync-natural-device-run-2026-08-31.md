@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Run ID | `RIME-SYNC-001-NATURAL-BG-20260831-01` |
-| State | `EXECUTED — FAIL; post-run machine receipts pending until device reconnects` |
+| State | `EXECUTED — FAIL; post-run read-only receipts complete` |
 | Freeze time | `2026-08-31T18:37:10+0800` |
 | Human-round budget | `1`; used `1`; only Product Lead may authorize another round |
 | Treatment | `N/A — observational natural-background run` |
@@ -27,7 +27,7 @@ does not alter the natural-run observation.
 | Private-only transaction | Independently started Universe settings and reported completion in the same minute |
 | Screenshot | Human-supplied phone-local Notification Center screenshot; SHA-256 `c4db91c88b0b3913ec28de14087c45a7194c8723f005070591321ce299a02cb5`; not copied into the repository |
 | Finding | Two independently owned automatic transactions reached the user surface. This disproves the required single coherent App-process transaction, but does not by itself prove the exact RIME failure code or temporal overlap inside librime. |
-| Disposition | `FAIL` for this installed build. Post-run installed-payload, crash, Keyboard crash and Jetsam receipts remain `UNKNOWN` until the physical device reconnects. |
+| Disposition | `FAIL` for this installed build. Later read-only receipts found the same installed-App receipt and no new in-window App crash, Keyboard crash or matching Jetsam victim. The exact RIME error remains `UNKNOWN`. |
 
 Static tracing after the run found separate foreground and background
 `RimeSyncViewModel` instances with instance-local synchronization state. The
@@ -49,6 +49,23 @@ The simulator used for App/RimeBridge evidence was an equivalent iPhone 16 Pro
 on iOS 18.0 because the locally available CI-named iPhone 17 Pro belongs to a
 different runtime. These results do not replace the pending physical-device
 evidence.
+
+### Post-run read-only receipts (`2026-09-01`)
+
+After the device reconnected, the frozen allowlisted read-only queries were
+completed. The installed-App receipt still matches the frozen receipt. No new
+App crash, Keyboard crash or Jetsam victim attributable to the frozen payload
+appeared inside `windowStart...windowEnd`. The phone had updated from iOS build
+`24A5424a` to `24A5430a` by the later device-details read, so that later read is
+not an exact current-OS match; it does not invalidate the device/OS observation
+recorded during the formal window.
+
+The current Diagnostics/v1 viewer contained no `rimeSync` records even though
+the user confirmed recording and all categories, including CONFIG, were enabled.
+Static tracing shows this old installed build emitted those messages only to the
+legacy `rime_diag_log` store. The whole App Group preferences plist was not
+copied because it can contain unrelated sensitive data. Consequently this run
+does not claim a precise RIME failure code.
 
 ## Frozen Source And Build
 
@@ -196,15 +213,19 @@ request. Any other launch or forbidden action invalidates the run.
   "taskTerminalOutcome": "MIXED — combined transaction failed; private-only transaction completed",
   "scopeSummaryTruthful": false,
   "phoneNotificationCenterMatch": true,
-  "newAppCrash": null,
-  "newKeyboardCrash": null,
-  "keyboardJetsamVictim": null,
-  "postRunPayloadMatch": null,
-  "cleanupZeroResidue": null,
+  "newAppCrash": false,
+  "newKeyboardCrash": false,
+  "keyboardJetsamVictim": false,
+  "postRunPayloadMatch": true,
+  "cleanupZeroResidue": true,
   "result": "FAIL — duplicate main-App automatic transactions reached the user surface",
   "rawArtifactPointers": [
     "human-supplied Notification Center screenshot sha256:c4db91c88b0b3913ec28de14087c45a7194c8723f005070591321ce299a02cb5",
-    "post-run device receipts: PENDING_DEVICE_RECONNECT"
+    "device-post-final.json sha256:ffdfee1658f1ffad268300e7083966866103c4e12c3c11573582e011292f9711",
+    "installed-app-post-final.json sha256:5f94f79921afea1f470be75025dfb6366b680cc380c828c37247a4aeaa7f9a4e",
+    "app-crashes-post-final.json sha256:ee563775f49ff3f10a7aa06996c301d4adcee71d4175aa693cdc6929acf00ff0",
+    "keyboard-crashes-post-final.json sha256:645eb0ca741eab6b461e0ffe9eaffd693f0d7315af3df04a22a1f4d7ce584080",
+    "jetsam-post-final.json sha256:57432af81236c6317b526ae9adccf1eb1cd35b2d90dcf37931f7456590d7fb95"
   ]
 }
 ```

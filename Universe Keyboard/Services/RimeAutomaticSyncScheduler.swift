@@ -237,12 +237,28 @@ final class RimeAutomaticSyncScheduler {
         Logger.shared.info("rimeSync automatic background task started", category: .config)
 
         let lifecycle = RimeAutomaticSyncTaskLifecycle()
+        let includesPrivateSettings =
+            (UserDefaults.standard.object(
+                forKey: RimeSyncStorageKey.automaticPrivateSettingsEnabled
+            ) as? Bool) ?? true
+        let diagnosticSession = RimeSyncDiagnosticSession(
+            source: .backgroundAutomatic,
+            requestedPhases: includesPrivateSettings
+                ? [.standardRimeData, .privateSettings]
+                : [.standardRimeData]
+        )
+        diagnosticSession.begin()
         let operation = Task { @MainActor in
             let model = RimeSyncViewModel(rimeStore: RimeSettingsStore())
-            let result = await model.synchronizeAutomatically()
+            let result = await model.synchronizeAutomatically(
+                diagnosticSession: diagnosticSession
+            )
             await Self.finishOperation(
                 result: result,
                 lifecycle: lifecycle,
+                recordDiagnosticTerminal: {
+                    diagnosticSession.commitProposedTerminal()
+                },
                 notifyCompletion: { await model.notifyAutomaticCompletion() },
                 reschedule: { self.refreshSchedule() },
                 completeTask: { task.setTaskCompleted(success: $0) }
@@ -252,10 +268,14 @@ final class RimeAutomaticSyncScheduler {
             guard
                 Self.expireOperation(
                     lifecycle: lifecycle,
+                    recordExpiration: {
+                        diagnosticSession.terminal(.expired)
+                    },
                     cancel: { operation.cancel() },
                     completeTask: { task.setTaskCompleted(success: $0) }
                 )
             else { return }
+            diagnosticSession.terminal(.expired)
             Task { @MainActor in
                 Logger.shared.warning("rimeSync automatic background task expired", category: .config)
                 Logger.shared.requestFlush()
@@ -269,6 +289,7 @@ final class RimeAutomaticSyncScheduler {
     static func finishOperation(
         result: RimeAutomaticSyncResult,
         lifecycle: RimeAutomaticSyncTaskLifecycle,
+        recordDiagnosticTerminal: () -> Void = {},
         notifyCompletion: () async -> Void,
         reschedule: () -> Void,
         completeTask: (Bool) -> Void
@@ -280,6 +301,7 @@ final class RimeAutomaticSyncScheduler {
         else {
             return false
         }
+        recordDiagnosticTerminal()
         let succeeded = claim == .succeeded
         reschedule()
         completeTask(succeeded)
@@ -293,10 +315,14 @@ final class RimeAutomaticSyncScheduler {
     @discardableResult
     nonisolated static func expireOperation(
         lifecycle: RimeAutomaticSyncTaskLifecycle,
+        recordExpiration: () -> Void = {},
         cancel: () -> Void,
         completeTask: (Bool) -> Void
     ) -> Bool {
         guard lifecycle.claimExpiration() else { return false }
+        // Persist the system-owned reason before cancellation can resume the
+        // async operation and propose a weaker `.cancelled` terminal.
+        recordExpiration()
         cancel()
         completeTask(false)
         return true

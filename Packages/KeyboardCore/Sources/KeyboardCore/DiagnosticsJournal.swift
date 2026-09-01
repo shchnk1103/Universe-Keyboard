@@ -290,7 +290,8 @@ public actor DiagnosticsJournalWriter {
                 level: event.level,
                 category: event.category,
                 fields: event.fields,
-                schemeDeliveryPayload: event.schemeDeliveryPayload
+                schemeDeliveryPayload: event.schemeDeliveryPayload,
+                rimeSyncPayload: event.rimeSyncPayload
             )
         }
         let hour = Self.hourStamp(for: normalizedEvents[0].utcTimestamp)

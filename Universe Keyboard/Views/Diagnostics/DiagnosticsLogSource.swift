@@ -390,8 +390,9 @@ enum DiagnosticsEventDisplayFormatter {
         let fields = event.fields.map(fieldDescription).joined(separator: " ")
         let action = event.actionSequence.map { "action=\($0)" }
         let delivery = event.schemeDeliveryPayload.map(schemeDeliveryDescription)
+        let rimeSync = event.rimeSyncPayload.map(rimeSyncDescription)
         let details =
-            ([action, delivery].compactMap { $0 } + (fields.isEmpty ? [] : [fields]))
+            ([action, delivery, rimeSync].compactMap { $0 } + (fields.isEmpty ? [] : [fields]))
             .joined(separator: " ")
         let suffix = details.isEmpty ? "" : " \(details)"
         return "[\(timestamp)] [\(event.level.rawValue)] [\(event.category.rawValue)] \(event.code.rawValue)\(suffix)"
@@ -447,6 +448,32 @@ enum DiagnosticsEventDisplayFormatter {
                 + " installed=\(event.installed) deployed=\(event.deployed)"
                 + (event.failure.map { " failure=\($0.rawValue)" } ?? "")
         }
+    }
+
+    private nonisolated static func rimeSyncDescription(
+        _ payload: DiagnosticEvent.RimeSyncPayload
+    ) -> String {
+        switch payload {
+        case .invoked(let event):
+            let phases = event.requestedPhases.map(\.rawValue).joined(separator: ",")
+            return rimeSyncPrefix(event.context) + " phases=\(phases)"
+        case .phaseChanged(let event):
+            return rimeSyncPrefix(event.context)
+                + " phase=\(event.phase.rawValue) result=\(event.result.rawValue)"
+        case .skipped(let event):
+            return rimeSyncPrefix(event.context) + " reason=\(event.reason.rawValue)"
+        case .terminal(let event):
+            let phase = event.phase.map { " phase=\($0.rawValue)" } ?? ""
+            let failure = event.failure.map { " failure=\($0.rawValue)" } ?? ""
+            return rimeSyncPrefix(event.context)
+                + " result=\(event.result.rawValue)\(phase)\(failure)"
+        }
+    }
+
+    private nonisolated static func rimeSyncPrefix(
+        _ context: DiagnosticEvent.RimeSyncContext
+    ) -> String {
+        "operation=\(context.operationID.uuidString.lowercased()) source=\(context.source.rawValue)"
     }
 
     private nonisolated static func deliveryPrefix(
