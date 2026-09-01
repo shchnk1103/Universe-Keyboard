@@ -7,10 +7,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | 最终本地实现 `3f94073` 已补齐直接模型取消测试并通过当前快照完整门禁；独立 Architecture / Quality delta review 均为 `Pass with conditions`，无实现级 blocker，尚未 push |
+| **Phase** | 冻结载荷 `b197226` 的自然真机轮次因双自动事务 `FAIL`；当前未提交的主 App 进程 gate 修复已通过 Architecture / Quality 独立终审 `Pass with conditions`，本地完整 App/Keyboard、RimeBridge、KeyboardCore 与 Debug/Release 门禁通过 |
 | **Non-claims** | 不代表自然 iOS 后台调度、手机锁屏/通知中心呈现、跨前端兼容、Product Gate、merge、TestFlight 或 Release 已通过 |
-| **Next** | 对已准备且保持 `HOLD` 的 manifest/receipt 前置包完成独立 readiness review；等 Device Operator 明确准备好后再冻结实际安装载荷并执行一轮正式真机观察 |
-| **Residuals** | [`Architecture re-review`](rime-sync-001-background-sync-lifecycle-architecture-rereview.md) · [`Quality re-review`](rime-sync-001-background-sync-lifecycle-quality-rereview.md) · [`device preflight`](../evidence/rime-background-sync-device-run-preflight-2026-08-31.md) · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) · [终止生命周期证据](../evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md) |
+| **Next** | Device Operator 回家并重新连接设备后补取旧轮次安装/crash/Jetsam/运行日志回执；随后冻结新载荷并另行授权自然真机复验 |
+| **Residuals** | [`Natural device run`](../evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Architecture`](rime-sync-001-process-gate-architecture-review.md) · [`Quality`](rime-sync-001-process-gate-quality-review.md) · post-run device receipts/logs pending · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) |
 
 ---
 

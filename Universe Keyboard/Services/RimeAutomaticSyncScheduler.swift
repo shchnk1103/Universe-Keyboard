@@ -308,16 +308,15 @@ final class RimeAutomaticSyncScheduler {
                 ?? true,
             defaults.string(forKey: RimeSyncStorageKey.provider) == RimeSyncProvider.localFolder.rawValue,
             defaults.data(forKey: RimeSyncStorageKey.folderBookmark) != nil,
-            !defaults.bool(forKey: RimeSyncStorageKey.folderSelectionNeedsRepair),
-            let lastAutomaticAttempt = defaults.object(
-                forKey: RimeSyncStorageKey.lastAutomaticAttempt
-            ) as? Date
+            !defaults.bool(forKey: RimeSyncStorageKey.folderSelectionNeedsRepair)
         else {
             return nil
         }
 
         return RimeAutomaticSyncPolicy.nextEligibleDate(
-            lastAutomaticAttempt: lastAutomaticAttempt,
+            lastAutomaticAttempt: defaults.object(
+                forKey: RimeSyncStorageKey.lastAutomaticAttempt
+            ) as? Date,
             cadence: automaticCadence(defaults: defaults),
             retryNotBefore: defaults.object(
                 forKey: RimeSyncStorageKey.automaticRetryNotBefore

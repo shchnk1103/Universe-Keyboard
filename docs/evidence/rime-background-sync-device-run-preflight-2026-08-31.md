@@ -96,8 +96,9 @@ other command is allowed after freeze.
 | `xcrun devicectl device info files --device <DEVICE> --domain-type systemCrashLogs --search JetsamEvent --timeout 10 --json-output <EVIDENCE_DIR>/jetsam.json` | Device crash-log index read-only | Yes, pre/post |
 | `xcrun dwarfdump --uuid <LOCAL_PRODUCT_OR_DSYM>` | Local artifact read-only | Yes |
 | `shasum -a 256 <LOCAL_PRODUCT_PAYLOAD>` and `stat -f %z <LOCAL_PRODUCT_PAYLOAD>` | Local artifact read-only | Yes |
+| `date '+%Y-%m-%dT%H:%M:%S%z'` written to the local content-free run receipt | Local clock read-only; writes only a local timestamp | Yes, exactly at `windowStart` and `windowEnd` |
 | Phone-local Notification Center inspection and screenshot | Human observation; creates a content-free screenshot | Once, after natural opportunity |
-| `xcodebuild`, Xcode Run/Test/Profile/Archive, `devicectl ... install/uninstall/launch`, manual BGTask simulation | Build/install/execute; may replace or perturb the frozen payload | **Forbidden** |
+| `xcodebuild`, Xcode Run/Test/Profile/Archive, `devicectl ... install/uninstall`, Executor/CLI `devicectl ... launch`, manual BGTask simulation | Build/install/execute; may replace or perturb the frozen payload | **Forbidden**; an instantiated run may separately allow one listed Human normal App open |
 | App Group/RIME copy, move, delete, deploy, download, schema/config edit or manual sync | Runtime mutation | **Forbidden** |
 
 CoreDevice may expose only an installed receipt/path rather than readable

@@ -2,6 +2,13 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-09-01 — 串行化主 App 自动同步入口
+
+- 自然真机轮次显示前台与后台自动同步在同一分钟各自启动，产生一条 RIME 失败和一条 Universe 设置成功通知；冻结载荷因此判为失败，精确 RIME 错误码仍待设备重连后读取。
+- 主 App 现在以进程级 lease 统一手动、前台自动与后台自动同步所有权；竞争事务不发布重复阶段通知，后台竞争会保留 15 分钟 retry floor，旧 lease 不能误释放新 owner。
+- 调度器在缺少历史 attempt 时仅在存在 retry floor 的情况下继续提交，避免丢失退避或形成立即重调度循环。双后台入口、取消释放、通知序列与 exactly-once 终态均有回归覆盖。
+- 本地 App/Keyboard `271/0`、RimeBridge `48/0`、KeyboardCore `1068/0` 和严格 Debug/Release build 通过；Architecture / Quality 均为 `Pass with conditions`。旧轮次机器回执、新载荷自然真机复验、TD-002、Product Gate、push、merge 与 Release 仍保持开放。
+
 ## 2026-08-31 — 原子化 RIME 后台任务终止所有权
 
 - 独立双审发现 expiration 异步跳主线程仍有交错窗口；现由线程安全状态门让 expiration 与正常返回原子争夺唯一终止权，过期路径不等待 librime 返回即可立即失败完成系统任务。

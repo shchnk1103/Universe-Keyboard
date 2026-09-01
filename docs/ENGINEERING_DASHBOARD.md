@@ -40,11 +40,11 @@
 
 - **Lifecycle:** `Active`
 - **Authority:** [`Assignment`](assignments/rime-sync-001.md) · [`Contract`](RIME_SYNC.md)
-- **Current evidence:** 最终本地实现 `a7b2b2e` 以原子终态所有权、各不可取消边界后的取消检查和 scope 事实门关闭竞态；完整 App 门禁与严格 Debug/Release build 通过，尚未 push
-- **Residual:** 正式自然调度、真实 expiration 后 retry 是否提交、手机端通知呈现和预冻结 manifest/receipt 未验证；`TD-002` 跨进程安全门与 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) 保持开放
+- **Current evidence:** 冻结载荷 `b197226` 已由 iOS 自然触发，但手机通知在同一分钟显示 combined 自动事务失败及 private-only 自动事务成功，证明主 App 内存在两条独立事务；当前未提交修复加入进程 gate 和 process-busy 退避，并修复无历史 attempt 时 retry floor 丢失
+- **Residual:** 旧轮次 post-run 安装/crash/Jetsam/运行日志待设备重连，新载荷真机轮次未授权；`TD-002` 与 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) 保持开放
 - **Non-claims:** 不代表 Product Gate、merge、TestFlight 或 Release 已授权
-- **Review:** [`Architecture`](assignments/rime-sync-001-background-sync-lifecycle-architecture-rereview.md) / [`Quality`](assignments/rime-sync-001-background-sync-lifecycle-quality-rereview.md) 对 `a7b2b2e` 均为 `Pass with conditions`；无实现级 blocker
-- **Next:** 准备预冻结 manifest/receipt 的自然后台、真实 expiration/retry 和手机通知正式轮次，最后交 Human Product Gate
+- **Review:** 当前 process-gate delta 的 [`Architecture`](assignments/rime-sync-001-process-gate-architecture-review.md) / [`Quality`](assignments/rime-sync-001-process-gate-quality-review.md) 均为 `Pass with conditions`
+- **Next:** 设备重连后补旧轮次只读回执和日志，再冻结并授权新载荷真机轮次
 
 ## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
 
