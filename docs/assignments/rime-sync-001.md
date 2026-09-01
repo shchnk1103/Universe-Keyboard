@@ -7,10 +7,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | 冻结载荷 `b197226` 的自然真机轮次因双自动事务 `FAIL`；主 App 进程 gate 与自动同步 Diagnostics/v1 已形成独立本地提交，旧轮次只读回执完整，子项双审和完整本地门禁完成 |
-| **Non-claims** | 不代表自然 iOS 后台调度、手机锁屏/通知中心呈现、跨前端兼容、Product Gate、merge、TestFlight 或 Release 已通过 |
-| **Next** | Product Review 已接受 Diagnostics/v1 子项；准备并冻结新签名载荷，设备与自然后台执行窗口另行确认 |
-| **Residuals** | [`Natural device run`](../evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Diagnostics/v1`](rime-sync-diagnostics-v1-001.md) · 旧轮次精确 RIME 错误码 `UNKNOWN` · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) |
+| **Phase** | 新载荷自然触发了一次单 operation 自动同步，Diagnostics/v1 与通知均为完成；但正式 run 因冻结后未列明的只读 Jetsam copy 命令及窗口内 Keyboard `long-idle-exit` 与原验收条件冲突而 `INVALID`，双独立终审均为 `HOLD` |
+| **Non-claims** | 技术观察不等于正式 run 通过，不关闭旧轮次精确错误、`TD-002` 或父 Assignment，也不授权 Product Gate、merge、TestFlight 或 Release |
+| **Next** | 等待 Product/Assignment owner 决定是否需要全新预冻结轮次，并在执行前明确只读 crash-report copy allowlist 与无关 `long-idle-exit` 的验收处置；不得修补或延续已失效 run |
+| **Residuals** | [`Run 01`](../evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Run 02 INVALID`](../evidence/rime-background-sync-natural-device-run-2026-09-01-r2.md) · [`Diagnostics/v1`](rime-sync-diagnostics-v1-001.md) · 旧轮次精确 RIME 错误码 `UNKNOWN` · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) |
 
 ---
 
