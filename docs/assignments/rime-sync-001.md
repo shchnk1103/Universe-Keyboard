@@ -7,10 +7,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | 冻结载荷 `b197226` 的自然真机轮次因双自动事务 `FAIL`；当前未提交的主 App 进程 gate 修复已通过 Architecture / Quality 独立终审 `Pass with conditions`，本地完整 App/Keyboard、RimeBridge、KeyboardCore 与 Debug/Release 门禁通过 |
+| **Phase** | 冻结载荷 `b197226` 的自然真机轮次因双自动事务 `FAIL`；主 App 进程 gate 与自动同步 Diagnostics/v1 已形成独立本地提交，旧轮次只读回执完整，子项双审和完整本地门禁完成 |
 | **Non-claims** | 不代表自然 iOS 后台调度、手机锁屏/通知中心呈现、跨前端兼容、Product Gate、merge、TestFlight 或 Release 已通过 |
-| **Next** | 收口旧轮次只读回执；完成 [`RIME-SYNC-DIAGNOSTICS-V1-001`](rime-sync-diagnostics-v1-001.md) 后冻结新载荷并另行授权自然真机复验 |
-| **Residuals** | [`Natural device run`](../evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Architecture`](rime-sync-001-process-gate-architecture-review.md) · [`Quality`](rime-sync-001-process-gate-quality-review.md) · 旧轮次精确 RIME 错误码 `UNKNOWN` · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) |
+| **Next** | Product Review；另行决定是否冻结新载荷并授权自然真机复验 |
+| **Residuals** | [`Natural device run`](../evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Diagnostics/v1`](rime-sync-diagnostics-v1-001.md) · 旧轮次精确 RIME 错误码 `UNKNOWN` · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) |
 
 ---
 

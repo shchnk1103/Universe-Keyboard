@@ -6,11 +6,11 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | 首轮独立复核 findings 已处置、最终完整本地门禁通过；Architecture / Quality 最终 diff 复核 pending |
+| **Lifecycle** | `Reviewed` |
+| **Phase** | 实现与完整本地门禁通过；Architecture `Pass with conditions`、Quality `Pass` |
 | **Non-claims** | 不恢复旧轮次 legacy 日志，不证明自然后台调度、真机成功、Product Gate、merge 或 Release |
-| **Next** | 分别完成 Architecture / Quality 独立复核并处置条件；随后交回 Product Review，另行决定是否冻结新真机载荷 |
-| **Residuals** | [`TD-013`](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)；旧轮次精确错误码保持 `UNKNOWN` |
+| **Next** | 交回 Product Review；另行决定是否冻结新真机载荷并授权自然后台轮次 |
+| **Residuals** | [`Architecture`](rime-sync-diagnostics-v1-001-architecture-review.md) 的未来动态阶段顺序硬化 · [`Quality`](rime-sync-diagnostics-v1-001-quality-review.md) 的测试深度 residual · [`TD-013`](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) · 旧轮次精确错误码保持 `UNKNOWN` |
 
 ---
 

@@ -7,6 +7,8 @@ RIME sync producer wiring. It does not recover the old natural run's legacy
 message, prove physical-device scheduling or success, or authorize Product
 Gate, merge, TestFlight or Release.
 
+Reviewed implementation commit: `d07b607` (`feat: add typed rime sync diagnostics`).
+
 ## Implementation receipt
 
 - `DiagnosticEvent` schema version 3 defines finite `rime_sync` invocation,
@@ -53,8 +55,14 @@ first write. It also found that expiration was not linearized with BGTask
 completion. The final diff copies the payload, tests the real journal round
 trip, records expiration after the lifecycle claim but before cancellation,
 defers normal terminal persistence until the operation lifecycle claim, and
-rejects unrequested or out-of-order phases. Final independent re-reviews remain
-required; the original findings are retained as evidence rather than erased.
+rejects unrequested or out-of-order phases. Final independent re-reviews were
+performed against commit `d07b607`; the original findings are retained as
+evidence rather than erased.
+
+## Independent review disposition
+
+- Architecture: [`Pass with conditions`](../assignments/rime-sync-diagnostics-v1-001-architecture-review.md). P0 writer preservation and P1 lifecycle linearization are closed. The remaining P2 condition applies if phases become dynamic or new phases are added.
+- Quality: [`Pass`](../assignments/rime-sync-diagnostics-v1-001-quality-review.md). Runtime persistence, viewer formatting, scheduler ordering and final gate receipts were independently checked.
 
 ## Explicit residuals
 
@@ -63,5 +71,4 @@ required; the original findings are retained as evidence rather than erased.
   prospective and do not migrate or reconstruct legacy logs.
 - Broader legacy producer migration and diagnostics query lifecycle remain
   tracked by TD-013.
-- Architecture and Quality independent final-diff re-reviews are pending at
-  this evidence revision.
+- Product Review and any newly frozen signed physical-device run remain pending.

@@ -40,11 +40,11 @@
 
 - **Lifecycle:** `Active`
 - **Authority:** [`Assignment`](assignments/rime-sync-001.md) · [`Contract`](RIME_SYNC.md)
-- **Current evidence:** 冻结载荷 `b197226` 已由 iOS 自然触发并暴露两条独立事务；旧轮次只读安装/crash/Jetsam 回执已收口且无匹配新 crash/Jetsam，精确 RIME 错误保持 `UNKNOWN`。进程 gate 已提交；`RIME-SYNC-DIAGNOSTICS-V1-001` 最小实现的完整本地门禁通过，双独立复核进行中
+- **Current evidence:** 冻结载荷 `b197226` 已由 iOS 自然触发并暴露两条独立事务；旧轮次只读安装/crash/Jetsam 回执已收口且无匹配新 crash/Jetsam，精确 RIME 错误保持 `UNKNOWN`。进程 gate 已提交；`RIME-SYNC-DIAGNOSTICS-V1-001` 提交 `d07b607` 的完整本地门禁通过，Architecture `Pass with conditions`、Quality `Pass`
 - **Residual:** 新载荷真机轮次未冻结或授权；`TD-002`、[`TD-013`](TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) 与 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) 保持开放
 - **Non-claims:** 不代表 Product Gate、merge、TestFlight 或 Release 已授权
 - **Review:** 当前 process-gate delta 的 [`Architecture`](assignments/rime-sync-001-process-gate-architecture-review.md) / [`Quality`](assignments/rime-sync-001-process-gate-quality-review.md) 均为 `Pass with conditions`
-- **Next:** 完成 Diagnostics/v1 双独立复核并处置条件；Product Review 后另行决定是否冻结新载荷并授权真机轮次
+- **Next:** Product Review 后另行决定是否冻结新载荷并授权真机轮次
 
 ## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
 
