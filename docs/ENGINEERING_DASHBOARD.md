@@ -44,7 +44,7 @@
 - **Residual:** 新载荷真机轮次未冻结或授权；`TD-002`、[`TD-013`](TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) 与 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) 保持开放
 - **Non-claims:** 不代表 Product Gate、merge、TestFlight 或 Release 已授权
 - **Review:** 当前 process-gate delta 的 [`Architecture`](assignments/rime-sync-001-process-gate-architecture-review.md) / [`Quality`](assignments/rime-sync-001-process-gate-quality-review.md) 均为 `Pass with conditions`
-- **Next:** Product Review 后另行决定是否冻结新载荷并授权真机轮次
+- **Next:** Diagnostics/v1 Product Review 已接受；准备并冻结新签名载荷，设备与自然后台执行窗口另行确认
 
 ## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
 

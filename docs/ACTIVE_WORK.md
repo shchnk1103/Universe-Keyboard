@@ -5,14 +5,14 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-09-01 Asia/Shanghai` — RIME 冻结载荷的自然真机轮次暴露双自动事务；进程 gate 已形成独立提交。旧轮次只读回执已收口。Diagnostics/v1 首轮 Architecture 阻塞项已修复；最终 App/Keyboard `278/0`、RimeBridge `48/0`、KeyboardCore `1071/0` 与严格 Debug/Release build 通过，Architecture `Pass with conditions`、Quality `Pass`，等待 Product Review。核心 Active Work 为 `4/10`。
+Last synced: `2026-09-01 Asia/Shanghai` — RIME 冻结载荷的自然真机轮次暴露双自动事务；进程 gate 已形成独立提交。旧轮次只读回执已收口。Diagnostics/v1 最终门禁与双独立复核完成，Human Product Review accepted；父项下一步准备新签名载荷冻结，自然后台执行窗口另行确认。核心 Active Work 为 `4/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；Task11 F-01/F-02 仍 Pending。F-03 工程片已随 #83 合入 `main`，TestFlight tester 仍在 Build 7（不含该修复）。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
-| 4 | RIME-SYNC-001 | Active | 冻结载荷 `b197226` 的自然轮次因双自动事务 `FAIL`；旧轮次只读回执完整但精确 RIME 错误仍为 `UNKNOWN`。进程 gate 已提交；子项 `RIME-SYNC-DIAGNOSTICS-V1-001` 已 `Reviewed`，完整本地门禁与双独立复核完成。新载荷真机复验、`TD-002` 与 Product Gate pending | [`assignment`](assignments/rime-sync-001.md) · [`diagnostics`](assignments/rime-sync-diagnostics-v1-001.md) · [`natural run`](evidence/rime-background-sync-natural-device-run-2026-08-31.md) |
+| 4 | RIME-SYNC-001 | Active | 冻结载荷 `b197226` 的自然轮次因双自动事务 `FAIL`；旧轮次只读回执完整但精确 RIME 错误仍为 `UNKNOWN`。进程 gate 已提交；Diagnostics/v1 子项已 `Completed` 且 Product Review accepted。下一步冻结新载荷；新载荷真机复验与 `TD-002` pending | [`assignment`](assignments/rime-sync-001.md) · [`diagnostics`](assignments/rime-sync-diagnostics-v1-001.md) · [`Product Review`](product-decisions/RIME-SYNC-DIAGNOSTICS-V1-001-product-gate.md) · [`natural run`](evidence/rime-background-sync-natural-device-run-2026-08-31.md) |
 
 ## Completed (not Active)
 
