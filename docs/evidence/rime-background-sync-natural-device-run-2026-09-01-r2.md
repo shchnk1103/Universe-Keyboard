@@ -5,9 +5,9 @@
 | Field | Value |
 |---|---|
 | Run ID | `RIME-SYNC-001-NATURAL-BG-20260901-02` |
-| State | `READY — HUMAN ROUND NOT STARTED` |
+| State | `EXECUTING — WAITING FOR NATURAL IOS OPPORTUNITY` |
 | Manifest frozen at | `2026-09-01T22:53:08+0800` |
-| Human-round budget | `1`; used `0` |
+| Human-round budget | `1`; used `1` |
 | Formal claim boundary | One iOS-selected BGProcessingTask opportunity, one coherent automatic-sync operation, Diagnostics/v1 sequence, truthful phone notification and post-run crash/Jetsam receipts |
 | Non-claims | No forced BGTask launch, no manual sync, no Product/merge/TestFlight/Release claim |
 
@@ -21,6 +21,11 @@ subsequently accepted this final manifest.
 At final delta review, Architecture returned `Ready` and Quality returned
 `Ready`; all prior Hold conditions were closed. This readiness authorizes only
 the Human Sequence below and does not pre-judge the run outcome.
+
+The Device Operator completed the single normal App open and returned to the
+iPhone Home Screen without pressing Sync or changing settings. The formal
+observation window started at `2026-09-01T22:58:38+0800`; local timestamp receipt
+SHA-256 is `b245e47ca91292f2ea25e125a56cd02dbc450724f822419d4ba0364dd0edf3b7`.
 
 ## Frozen Source And Build
 
@@ -152,14 +157,14 @@ unlisted device/App Group mutation. Do not repair a mismatch inside this run.
 {
   "runId": "RIME-SYNC-001-NATURAL-BG-20260901-02",
   "manifestFrozenAt": "2026-09-01T22:53:08+0800",
-  "windowStart": null,
+  "windowStart": "2026-09-01T22:58:38+0800",
   "windowEnd": null,
   "naturalOpportunityObserved": false,
   "installedPayloadMatch": true,
   "installedByteEqualityAvailable": false,
   "deviceAndOSMatch": true,
   "schemaAndConfigMatch": true,
-  "humanRoundsUsed": 0,
+  "humanRoundsUsed": 1,
   "taskTerminalOutcome": "UNKNOWN",
   "diagnosticsV1SequenceMatch": null,
   "scopeSummaryTruthful": null,
@@ -169,7 +174,7 @@ unlisted device/App Group mutation. Do not repair a mismatch inside this run.
   "keyboardJetsamVictim": null,
   "postRunPayloadMatch": null,
   "cleanupZeroResidue": true,
-  "result": "READY — Human round not started"
+  "result": "EXECUTING — waiting for natural iOS opportunity"
 }
 ```
 
