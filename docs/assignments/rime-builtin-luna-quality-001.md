@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Machine-readable provenance and Q-09 inventory remediation are frozen in `6cb2fee` / `3a9ce19` / `7260ca2`; affected full local gates pass. `b1d81fd` (`fix: write simplified Luna reset when simplification key is missing`) landed 2026-09-02 after the `c5f3004` freeze, so that freeze no longer represents current HEAD. Independent Architecture re-review of `b1d81fd` returned code `Pass` + KOS-consistency P1; Quality returned code `Pass with conditions` + KOS/lifecycle `Fail` (1 P1, 3 P2). A committed `RimeBridgeTests` rerun (95 total / 20 skipped / 0 failures) closes `F02-COMMITTED-TEST-RERUN-001`. Physical-device handoff stays HOLD pending re-freeze vs defer. |
+| **Phase** | Machine-readable provenance and Q-09 inventory remediation are frozen in `6cb2fee` / `3a9ce19` / `7260ca2`; affected full local gates pass. `b1d81fd` (`fix: write simplified Luna reset when simplification key is missing`) landed 2026-09-02 after the `c5f3004` freeze, so that freeze no longer represents current HEAD. Independent Architecture re-review of `b1d81fd` returned code `Pass` + KOS-consistency P1; Quality returned code `Pass with conditions` + KOS/lifecycle `Fail` (1 P1, 3 P2). A committed `RimeBridgeTests` rerun (95 total / 20 skipped / 0 failures) closes `F02-COMMITTED-TEST-RERUN-001`. Human Product Owner authorized re-freeze from clean `b1d81fd` (2026-09-02), formally superseding the `c5f3004` freeze; rebuild + identity re-recording pending Executor. Physical-device handoff stays HOLD until the new candidate is frozen. |
 | **Non-claims** | No Assignment Exit, installed-device receipt, hosted CI, physical-device/Full Access/lifecycle/performance pass, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced. |
-| **Next** | Await Human Product Owner decision: re-freeze the signed Debug candidate from clean `b1d81fd` (rebuild identity + hash evidence) or record an explicit defer keeping the `c5f3004` freeze valid with the missing-key behavior deferred. Also open: `F02-APPGROUP-MANUAL-001` (manual App Group write/deploy evidence). |
+| **Next** | Executor to rebuild + freeze the signed Debug candidate from clean `b1d81fd` (App/Extension UUID, hash, CDHash, manifest, AUTHORS identity + affected gate evidence), then update the handoff packet. Also open: `F02-APPGROUP-MANUAL-001` (manual App Group write/deploy evidence). |
 | **Residuals** | [`Architecture final re-review`](rime-builtin-luna-quality-001-architecture-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Quality final re-review`](rime-builtin-luna-quality-001-quality-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Quality b1d81fd re-review`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--b1d81fd--2026-09-02) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`physical-device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) · [`b1d81fd evidence`](../evidence/rime-builtin-luna-quality-f02-default-simplification-2026-09-02.md) |
 
 ---
@@ -356,3 +356,8 @@ built-in assets.
   (1 P1, 3 P2). `F02-COMMITTED-TEST-RERUN-001` is closed by the committed rerun.
   Re-freeze from clean `b1d81fd` or explicit defer remains a Human Product Owner
   decision; no device, merge, TestFlight or Release action is inferred.
+- `2026-09-02 Asia/Shanghai` — Human Product Owner authorized re-freeze of the
+  signed Debug candidate from clean `b1d81fd` (rebuild identity + hash evidence),
+  superseding the `c5f3004` freeze; no defer. Rebuild and identity re-recording
+  remain pending Executor execution; physical-device handoff stays HOLD until the
+  new candidate is frozen.
