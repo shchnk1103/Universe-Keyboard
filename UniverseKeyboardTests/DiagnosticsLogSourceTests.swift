@@ -61,6 +61,65 @@ final class DiagnosticsLogSourceTests: XCTestCase {
     }
 
     @MainActor
+    func testRimeSyncEventsDisplayFiniteCorrelatedContext() async throws {
+        let rootURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let operationID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append([
+            DiagnosticEvent(
+                utcTimestamp: Date(),
+                monotonicNanoseconds: 1,
+                origin: .mainApp,
+                processInstanceID: processID,
+                localSequence: 1,
+                code: .rimeSyncTerminal,
+                level: .error,
+                category: .config,
+                rimeSyncPayload: .terminal(
+                    .init(
+                        context: .init(
+                            operationID: operationID,
+                            source: .backgroundAutomatic
+                        ),
+                        result: .failed,
+                        phase: .standardRimeData,
+                        failure: .accessDenied
+                    )
+                )
+            )
+        ])
+        let source = V1DiagnosticsLogSource(
+            appGroupID: "test.group",
+            rootURLProvider: { rootURL }
+        )
+        let catalog = await source.availableLogDayCatalog()
+        guard case let .available(_, days) = catalog else {
+            return XCTFail("Expected an available day catalog")
+        }
+        await source.selectLogDay(try XCTUnwrap(days.first))
+
+        let loadedText = await source.loadLogText()
+        let text = try XCTUnwrap(loadedText)
+
+        XCTAssertTrue(text.contains("rime_sync.terminal"))
+        XCTAssertTrue(text.contains(operationID.uuidString.lowercased()))
+        XCTAssertTrue(text.contains("source=background_automatic"))
+        XCTAssertTrue(text.contains("phase=standard_rime_data"))
+        XCTAssertTrue(text.contains("result=failed"))
+        XCTAssertTrue(text.contains("failure=access_denied"))
+        XCTAssertFalse(text.contains("path="))
+        XCTAssertFalse(text.contains("message="))
+    }
+
+    @MainActor
     func testV1ReadFailureStaysInV1WithControlledUnavailableNotice() async {
         let missingRoot = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let source = V1DiagnosticsLogSource(

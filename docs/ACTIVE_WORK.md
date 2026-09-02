@@ -5,14 +5,15 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-08-31 Asia/Shanghai` — F-02 provenance/Q-09 工程补强通过本地门禁及独立复审，无 P0/P1；旧 `d4572d9` candidate 已 supersede，clean `c5f3004` replacement signed candidate 已冻结。真机 handoff 在安装前仍 HOLD，等待 Human 授权；下游 Gate 不前移。核心 Active Work 为 `4/10`。
+Last synced: `2026-09-02 Asia/Shanghai` — F-02 真机 run A–D 完成（candidate quality / Full Access / lifecycle `PASS`，三条 deferred 待 Product 决策）；RIME 新载荷自然触发单 operation 自动同步并产生完整 Diagnostics/v1/通知完成链，正式 Run 02 保留 `INVALID` 审计结果，Human Product Owner 接受范围化工程结论并决定暂不重测。核心 Active Work 为 `5/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；Task11 F-01/F-02 仍 Pending。F-03 工程片已随 #83 合入 `main`，TestFlight tester 仍在 Build 7（不含该修复）。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
-| 2 | RIME-BUILTIN-LUNA-QUALITY-001 | Active | P1；provenance/Q-09 remediation=`6cb2fee`/`3a9ce19`/`7260ca2`；`bb43c5f` 独立复审均 `Pass with conditions`、无 P0/P1；clean `c5f3004` replacement candidate 已冻结，下一步等待 Human 真机授权 | [`assignment`](assignments/rime-builtin-luna-quality-001.md) · [`evidence`](evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`handoff`](evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) · [`Architecture`](assignments/rime-builtin-luna-quality-001-architecture-review.md#provenance-closure-re-review--bb43c5f--2026-08-31) · [`Quality`](assignments/rime-builtin-luna-quality-001-quality-review.md#q-09-inventory-closure-re-review--bb43c5f--2026-08-31) |
+| 2 | RIME-BUILTIN-LUNA-QUALITY-001 | Active | P1；真机 run A–D 完成：candidate quality（fuzzy off/on 8/8 + `fanti`）、Full Access/lifecycle、install/redeploy/relaunch 均 `PASS`，crash/Jetsam `no match`；Q-03 OpenCC `DEFERRED`、Q-06/Q-07 `PARTIAL`；三条 deferred 待 Product 决策（`F02-FIRST-LAUNCH-AUTODEPLOY-001`、`F02-CONVERSION-LOOKUP-NOT-WIRED-001`、fuzzy-default-ON） | [`assignment`](assignments/rime-builtin-luna-quality-001.md) · [`handoff`](evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 | 3 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 4 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
+| 5 | RIME-SYNC-001 | Active | Run 02 单事务完成；正式 `INVALID` 审计结果保留，Human Product Owner 接受工程结论并决定暂不重测。仅在复发或路径实质变更时重开；旧轮次精确错误、`TD-002` pending | [`assignment`](assignments/rime-sync-001.md) · [`diagnostics`](assignments/rime-sync-diagnostics-v1-001.md) · [`Product Review`](product-decisions/RIME-SYNC-DIAGNOSTICS-V1-001-product-gate.md) · [`Run 01`](evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Run 02`](evidence/rime-background-sync-natural-device-run-2026-09-01-r2.md) |
 
 ## Completed (not Active)
 
