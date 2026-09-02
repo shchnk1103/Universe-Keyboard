@@ -2,6 +2,34 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-09-01 — 串行化主 App 自动同步入口
+
+- 自然真机轮次显示前台与后台自动同步在同一分钟各自启动，产生一条 RIME 失败和一条 Universe 设置成功通知；冻结载荷因此判为失败，精确 RIME 错误码仍待设备重连后读取。
+- 主 App 现在以进程级 lease 统一手动、前台自动与后台自动同步所有权；竞争事务不发布重复阶段通知，后台竞争会保留 15 分钟 retry floor，旧 lease 不能误释放新 owner。
+- 调度器在缺少历史 attempt 时仅在存在 retry floor 的情况下继续提交，避免丢失退避或形成立即重调度循环。双后台入口、取消释放、通知序列与 exactly-once 终态均有回归覆盖。
+- 本地 App/Keyboard `271/0`、RimeBridge `48/0`、KeyboardCore `1068/0` 和严格 Debug/Release build 通过；Architecture / Quality 均为 `Pass with conditions`。旧轮次机器回执、新载荷自然真机复验、TD-002、Product Gate、push、merge 与 Release 仍保持开放。
+
+## 2026-08-31 — 原子化 RIME 后台任务终止所有权
+
+- 独立双审发现 expiration 异步跳主线程仍有交错窗口；现由线程安全状态门让 expiration 与正常返回原子争夺唯一终止权，过期路径不等待 librime 返回即可立即失败完成系统任务。
+- 自动完成通知只在真实完成结果取得成功终止权后发布；安全跳过不误发完成通知。YAML、标准 RIME、私密 coordinator 与设置 apply 边界均闭合取消状态；已完成全部请求 scope 时不再补发矛盾失败通知。
+- 最终本地实现 `3f94073` 进一步为潜在非协作 phase 增加返回后取消检查，并用直接模型测试覆盖 late success、正常成功与未完成 scope 通知条件；聚焦 `23/23`、App `252 passed / 3 device-only skipped`、Keyboard `11/11`、严格 Debug/Release build 均通过，独立 Architecture / Quality delta review 均为 `Pass with conditions`。
+- 正式自然调度、真实 expiration 后 retry、手机通知、`TD-002`、Product Gate、push、merge 与 Release 仍保持开放。预冻结 manifest/receipt 前置包已准备但保持 `HOLD`，证据见 [`docs/evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md`](docs/evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md) 与 [`device preflight`](docs/evidence/rime-background-sync-device-run-preflight-2026-08-31.md)。
+
+## 2026-08-30 — 收紧 RIME 后台同步过期生命周期
+
+- 两阶段自动同步在标准 RIME 已完成后先切换到 Universe 设置语义，再观察取消；后台时间恰好在阶段间被系统收回时，不再把同一 RIME 范围同时显示为“已更新”和“未完成”。
+- `BGProcessingTask` 的正常返回与 expiration 统一经过一次性终止门：取消只请求一次，任务只完成一次，过期后不得报告成功。
+- 键盘活跃导致跳过时设置 15 分钟最早重试时间，避免向系统反复提交已经过去的执行日期；不改变用户选择的每日/每周正式冷却周期。
+- 本地 CI 等价门禁已通过；实现提交 `0f59770` 尚未 push / 独立复核，正式自然调度、手机通知、Product Gate、merge 与 Release 均未声明通过。证据见 [`docs/evidence/rime-background-sync-lifecycle-remediation-2026-08-30.md`](docs/evidence/rime-background-sync-lifecycle-remediation-2026-08-30.md)。
+
+## 2026-08-29 — 修复 RIME 后台自动同步回调隔离崩溃
+
+- `BGProcessingTask` 注册入口改为显式使用主队列，与 `RimeAutomaticSyncScheduler` 的 `MainActor` 隔离保持一致；实际 RIME 标准同步仍在可取消的异步任务中执行，不进入 Keyboard Extension 或按键热路径。
+- 后台标准同步成功继续复用统一 RIME 通知服务；只有用户已开启 App 通知、RIME 类别、对应通知子项且系统授权允许时，才发送“自动同步完成”。通知不包含目录、词典、恢复码或输入内容。
+- 新增注册队列不变量、自动标准同步成功文案和统一通知投递回归测试。自然后台调度与锁屏通知仍需新构建的真机证据，不由模拟器测试替代。
+- KOS 执行证据见 [`docs/evidence/rime-background-sync-crash-fix-2026-08-29.md`](docs/evidence/rime-background-sync-crash-fix-2026-08-29.md)。
+
 ## 2026-08-28 — 方案交付 PR #83 合入 main
 
 - PR [#83](https://github.com/shchnk1103/Universe-Keyboard/pull/83) 合入 `e9aea57`。Human Product Gate Passed（CNB 真机万象成功 + hosted full-path `33174305736`）。

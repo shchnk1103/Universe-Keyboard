@@ -5,7 +5,7 @@ import Foundation
 /// 这个类型是跨 target 的持久化协议，不接受自由文本。若需要新的诊断维度，
 /// 必须先扩展下面的受控枚举并经过 ADR 0027 要求的字段审查。
 public struct DiagnosticEvent: Codable, Sendable, Equatable {
-    public static let schemaVersion = 2
+    public static let schemaVersion = 3
 
     public enum Origin: String, Codable, CaseIterable, Sendable {
         case mainApp = "main_app"
@@ -31,6 +31,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case schemeDeliveryIntegrityFailed = "scheme_delivery.integrity_failed"
         case schemeDeliveryFallback = "scheme_delivery.fallback"
         case schemeDeliveryTerminal = "scheme_delivery.terminal"
+        case rimeSyncInvoked = "rime_sync.invoked"
+        case rimeSyncPhaseChanged = "rime_sync.phase_changed"
+        case rimeSyncSkipped = "rime_sync.skipped"
+        case rimeSyncTerminal = "rime_sync.terminal"
     }
 
     public enum Reason: String, Codable, CaseIterable, Sendable {
@@ -152,6 +156,163 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             case let .reason(reason):
                 try container.encode(Kind.reason, forKey: .type)
                 try container.encode(reason, forKey: .reason)
+            }
+        }
+    }
+
+    public enum RimeSyncSource: String, Codable, CaseIterable, Sendable {
+        case foregroundAutomatic = "foreground_automatic"
+        case backgroundAutomatic = "background_automatic"
+    }
+
+    public enum RimeSyncPhase: String, Codable, CaseIterable, Sendable {
+        case standardRimeData = "standard_rime_data"
+        case privateSettings = "private_settings"
+    }
+
+    public enum RimeSyncPhaseResult: String, Codable, CaseIterable, Sendable {
+        case started
+        case completed
+    }
+
+    public enum RimeSyncSkipReason: String, Codable, CaseIterable, Sendable {
+        case disabled
+        case standardRimeDataDisabled = "standard_rime_data_disabled"
+        case privateSettingsDisabled = "private_settings_disabled"
+        case notConfigured = "not_configured"
+        case waitingForFirstManualSync = "waiting_for_first_manual_sync"
+        case coolingDown = "cooling_down"
+        case keyboardActive = "keyboard_active"
+        case processBusy = "process_busy"
+        case modelBusy = "model_busy"
+    }
+
+    public enum RimeSyncTerminalResult: String, Codable, CaseIterable, Sendable {
+        case completed
+        case failed
+        case cancelled
+        case expired
+    }
+
+    /// Finite failure classes only. Raw error domains, paths and provider text
+    /// are intentionally excluded from the persisted protocol.
+    public enum RimeSyncFailure: String, Codable, CaseIterable, Sendable {
+        case accessDenied = "access_denied"
+        case invalidInstallationID = "invalid_installation_id"
+        case invalidInstallationConfiguration = "invalid_installation_configuration"
+        case unavailableUserDirectory = "unavailable_user_directory"
+        case unavailableSyncDirectory = "unavailable_sync_directory"
+        case standardSynchronizationFailed = "standard_synchronization_failed"
+        case missingEncryptionKey = "missing_encryption_key"
+        case unsupportedFormat = "unsupported_format"
+        case packageTooLarge = "package_too_large"
+        case corruptedPackage = "corrupted_package"
+        case remoteConflict = "remote_conflict"
+        case transport
+        case localIO = "local_io"
+        case unknown
+    }
+
+    public struct RimeSyncContext: Codable, Sendable, Equatable {
+        public let operationID: UUID
+        public let source: RimeSyncSource
+
+        public init(operationID: UUID, source: RimeSyncSource) {
+            self.operationID = operationID
+            self.source = source
+        }
+    }
+
+    public struct RimeSyncInvocationEvent: Codable, Sendable, Equatable {
+        public let context: RimeSyncContext
+        public let requestedPhases: [RimeSyncPhase]
+
+        public init(context: RimeSyncContext, requestedPhases: [RimeSyncPhase]) {
+            self.context = context
+            self.requestedPhases = requestedPhases
+        }
+
+        fileprivate var isValid: Bool {
+            !requestedPhases.isEmpty && Set(requestedPhases).count == requestedPhases.count
+        }
+    }
+
+    public struct RimeSyncPhaseEvent: Codable, Sendable, Equatable {
+        public let context: RimeSyncContext
+        public let phase: RimeSyncPhase
+        public let result: RimeSyncPhaseResult
+
+        public init(
+            context: RimeSyncContext,
+            phase: RimeSyncPhase,
+            result: RimeSyncPhaseResult
+        ) {
+            self.context = context
+            self.phase = phase
+            self.result = result
+        }
+    }
+
+    public struct RimeSyncSkippedEvent: Codable, Sendable, Equatable {
+        public let context: RimeSyncContext
+        public let reason: RimeSyncSkipReason
+
+        public init(context: RimeSyncContext, reason: RimeSyncSkipReason) {
+            self.context = context
+            self.reason = reason
+        }
+    }
+
+    public struct RimeSyncTerminalEvent: Codable, Sendable, Equatable {
+        public let context: RimeSyncContext
+        public let result: RimeSyncTerminalResult
+        public let phase: RimeSyncPhase?
+        public let failure: RimeSyncFailure?
+
+        public init(
+            context: RimeSyncContext,
+            result: RimeSyncTerminalResult,
+            phase: RimeSyncPhase? = nil,
+            failure: RimeSyncFailure? = nil
+        ) {
+            self.context = context
+            self.result = result
+            self.phase = phase
+            self.failure = failure
+        }
+
+        fileprivate var isValid: Bool {
+            switch result {
+            case .completed:
+                return phase == nil && failure == nil
+            case .failed:
+                return phase != nil && failure != nil
+            case .cancelled, .expired:
+                return failure == nil
+            }
+        }
+    }
+
+    public enum RimeSyncPayload: Codable, Sendable, Equatable {
+        case invoked(RimeSyncInvocationEvent)
+        case phaseChanged(RimeSyncPhaseEvent)
+        case skipped(RimeSyncSkippedEvent)
+        case terminal(RimeSyncTerminalEvent)
+
+        var code: Code {
+            switch self {
+            case .invoked: .rimeSyncInvoked
+            case .phaseChanged: .rimeSyncPhaseChanged
+            case .skipped: .rimeSyncSkipped
+            case .terminal: .rimeSyncTerminal
+            }
+        }
+
+        var isValid: Bool {
+            switch self {
+            case .invoked(let event): event.isValid
+            case .phaseChanged, .skipped: true
+            case .terminal(let event): event.isValid
             }
         }
     }
@@ -502,6 +663,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     public let category: Logger.Category
     public let fields: [Field]
     public let schemeDeliveryPayload: SchemeDeliveryPayload?
+    public let rimeSyncPayload: RimeSyncPayload?
 
     public init(
         utcTimestamp: Date,
@@ -515,7 +677,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         level: Logger.Level,
         category: Logger.Category,
         fields: [Field] = [],
-        schemeDeliveryPayload: SchemeDeliveryPayload? = nil
+        schemeDeliveryPayload: SchemeDeliveryPayload? = nil,
+        rimeSyncPayload: RimeSyncPayload? = nil
     ) {
         precondition(
             schemeDeliveryPayload?.code == code
@@ -525,6 +688,19 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         precondition(
             schemeDeliveryPayload == nil || (fields.isEmpty && schemeDeliveryPayload!.isValid),
             "Scheme-delivery payload must be valid and cannot use generic fields"
+        )
+        precondition(
+            rimeSyncPayload?.code == code
+                || (rimeSyncPayload == nil && !Self.rimeSyncCodes.contains(code)),
+            "DiagnosticEvent code and RIME-sync payload must match"
+        )
+        precondition(
+            rimeSyncPayload == nil || (fields.isEmpty && rimeSyncPayload!.isValid),
+            "RIME-sync payload must be valid and cannot use generic fields"
+        )
+        precondition(
+            schemeDeliveryPayload == nil || rimeSyncPayload == nil,
+            "DiagnosticEvent cannot contain multiple composite payloads"
         )
         schemaVersion = Self.schemaVersion
         self.utcTimestamp = utcTimestamp
@@ -539,6 +715,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         self.category = category
         self.fields = fields
         self.schemeDeliveryPayload = schemeDeliveryPayload
+        self.rimeSyncPayload = rimeSyncPayload
     }
 
     private static let schemeDeliveryCodes: Set<Code> = [
@@ -548,10 +725,17 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         .schemeDeliveryTerminal,
     ]
 
+    private static let rimeSyncCodes: Set<Code> = [
+        .rimeSyncInvoked,
+        .rimeSyncPhaseChanged,
+        .rimeSyncSkipped,
+        .rimeSyncTerminal,
+    ]
+
     private enum CodingKeys: String, CodingKey {
         case schemaVersion, utcTimestamp, monotonicNanoseconds, origin, processInstanceID
         case localSequence, appearanceID, actionSequence, code, level, category, fields
-        case schemeDeliveryPayload
+        case schemeDeliveryPayload, rimeSyncPayload
     }
 
     public init(from decoder: Decoder) throws {
@@ -572,6 +756,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             SchemeDeliveryPayload.self,
             forKey: .schemeDeliveryPayload
         )
+        rimeSyncPayload = try container.decodeIfPresent(
+            RimeSyncPayload.self,
+            forKey: .rimeSyncPayload
+        )
         guard
             schemeDeliveryPayload?.code == code
                 || (schemeDeliveryPayload == nil && !Self.schemeDeliveryCodes.contains(code))
@@ -587,6 +775,30 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
                 forKey: .schemeDeliveryPayload,
                 in: container,
                 debugDescription: "Invalid scheme-delivery payload or forbidden generic fields"
+            )
+        }
+        guard
+            rimeSyncPayload?.code == code
+                || (rimeSyncPayload == nil && !Self.rimeSyncCodes.contains(code))
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .rimeSyncPayload,
+                in: container,
+                debugDescription: "DiagnosticEvent code and RIME-sync payload do not match"
+            )
+        }
+        guard rimeSyncPayload == nil || (fields.isEmpty && rimeSyncPayload!.isValid) else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .rimeSyncPayload,
+                in: container,
+                debugDescription: "Invalid RIME-sync payload or forbidden generic fields"
+            )
+        }
+        guard schemeDeliveryPayload == nil || rimeSyncPayload == nil else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .rimeSyncPayload,
+                in: container,
+                debugDescription: "DiagnosticEvent contains multiple composite payloads"
             )
         }
     }
@@ -606,5 +818,6 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         try container.encode(category, forKey: .category)
         try container.encode(fields, forKey: .fields)
         try container.encodeIfPresent(schemeDeliveryPayload, forKey: .schemeDeliveryPayload)
+        try container.encodeIfPresent(rimeSyncPayload, forKey: .rimeSyncPayload)
     }
 }

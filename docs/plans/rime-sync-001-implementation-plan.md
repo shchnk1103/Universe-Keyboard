@@ -2,7 +2,7 @@
 
 > **Status:** Active
 >
-> **Current phase:** RIME standard sync main path implemented; automated core validation passed; physical-device and cross-front-end evidence pending
+> **Current phase:** final local implementation `a7b2b2e` passed the full App gate and independent Architecture / Quality `Pass with conditions`; no implementation-level blocker remains, while formal natural scheduling/expiration retry, phone notification, cross-process and cross-front-end evidence remain pending
 >
 > **Current source of truth:** `docs/RIME_SYNC.md`
 >

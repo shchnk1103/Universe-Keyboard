@@ -4,6 +4,52 @@ import XCTest
 @testable import Universe_Keyboard
 
 final class RimeSyncModelTests: XCTestCase {
+    @MainActor
+    func testCancellablePhaseRejectsLateSuccessAfterCancellation() async {
+        let gate = NonCooperativePhaseGate()
+        let task = Task { @MainActor in
+            try await RimeSyncViewModel.runCancellablePhase {
+                await gate.run()
+                return 42
+            }
+        }
+
+        await gate.waitUntilStarted()
+        task.cancel()
+        await gate.release()
+
+        do {
+            _ = try await task.value
+            XCTFail("A cancelled non-cooperative phase must not publish its late result")
+        } catch is CancellationError {
+            // Expected: the shared boundary observes cancellation after the phase returns.
+        } catch {
+            XCTFail("Expected CancellationError, got \(error)")
+        }
+    }
+
+    @MainActor
+    func testCancellablePhaseReturnsSuccessfulValueWhenStillActive() async throws {
+        let value = try await RimeSyncViewModel.runCancellablePhase { 42 }
+
+        XCTAssertEqual(value, 42)
+    }
+
+    func testAutomaticCancellationNotificationRequiresAnUnfinishedScope() {
+        XCTAssertFalse(
+            RimeSyncViewModel.shouldNotifyAutomaticCancellation(
+                requestedScopes: [.standardRimeData, .privateSettings],
+                completedScopes: [.standardRimeData, .privateSettings]
+            )
+        )
+        XCTAssertTrue(
+            RimeSyncViewModel.shouldNotifyAutomaticCancellation(
+                requestedScopes: [.standardRimeData, .privateSettings],
+                completedScopes: [.standardRimeData]
+            )
+        )
+    }
+
     func testSyncNotificationCopyFiltersAndCombinesSelectedScopes() throws {
         let standardPhaseStarted = RimeSyncNotificationEvent.phaseStarted(
             mode: .automatic,
@@ -59,6 +105,43 @@ final class RimeSyncModelTests: XCTestCase {
         )
         XCTAssertEqual(standardOnlyPayload.title, "同步完成")
         XCTAssertTrue(standardOnlyPayload.body.contains("RIME 常用词和标准资料已更新"))
+
+        let automaticStandardCompletion = RimeSyncNotificationEvent.completed(
+            mode: .automatic,
+            scopes: [.standardRimeData]
+        )
+        let automaticCompletionPayload = try XCTUnwrap(
+            automaticStandardCompletion.payload(enabledScopes: [.standardRimeData])
+        )
+        XCTAssertEqual(automaticCompletionPayload.title, "自动同步完成")
+        XCTAssertEqual(automaticCompletionPayload.body, "RIME 常用词和标准资料已更新。")
+
+        let automaticExpirationBetweenPhases = RimeSyncNotificationEvent.failed(
+            mode: .automatic,
+            failedScope: .privateSettings,
+            completedScopes: [.standardRimeData],
+            pendingScopes: []
+        )
+        let expirationPayload = try XCTUnwrap(
+            automaticExpirationBetweenPhases.payload(
+                enabledScopes: [.standardRimeData, .privateSettings]
+            )
+        )
+        XCTAssertEqual(expirationPayload.title, "自动同步失败")
+        XCTAssertTrue(expirationPayload.body.contains("RIME 常用词和标准资料已更新"))
+        XCTAssertTrue(expirationPayload.body.contains("Universe App 设置未完成"))
+        XCTAssertFalse(expirationPayload.body.contains("RIME 常用词和标准资料未完成"))
+
+        let inconsistentFailure = RimeSyncNotificationEvent.failed(
+            mode: .automatic,
+            failedScope: .standardRimeData,
+            completedScopes: [.standardRimeData],
+            pendingScopes: [.privateSettings]
+        )
+        let normalizedPayload = try XCTUnwrap(
+            inconsistentFailure.payload(enabledScopes: [.standardRimeData, .privateSettings])
+        )
+        XCTAssertFalse(normalizedPayload.body.contains("已更新；RIME 常用词和标准资料未完成"))
     }
 
     @MainActor
@@ -205,6 +288,33 @@ final class RimeSyncModelTests: XCTestCase {
     }
 }
 
+private actor NonCooperativePhaseGate {
+    private var isStarted = false
+    private var startWaiters: [CheckedContinuation<Void, Never>] = []
+    private var operationContinuation: CheckedContinuation<Void, Never>?
+
+    func run() async {
+        isStarted = true
+        startWaiters.forEach { $0.resume() }
+        startWaiters.removeAll()
+        await withCheckedContinuation { continuation in
+            operationContinuation = continuation
+        }
+    }
+
+    func waitUntilStarted() async {
+        guard !isStarted else { return }
+        await withCheckedContinuation { continuation in
+            startWaiters.append(continuation)
+        }
+    }
+
+    func release() {
+        operationContinuation?.resume()
+        operationContinuation = nil
+    }
+}
+
 final class RimeSyncCryptoTests: XCTestCase {
     func testEncryptionRoundTripAndRecoveryCodeRoundTrip() throws {
         let codec = RimeSyncPackageCodec()
@@ -297,7 +407,8 @@ final class RimeSyncTransportTests: XCTestCase {
             XCTAssertEqual(error as? RimeSyncError, .remoteConflict)
         }
 
-        let settingsURL = root
+        let settingsURL =
+            root
             .appendingPathComponent("universe-rime-sync/profiles/default/settings.json")
         XCTAssertTrue(FileManager.default.fileExists(atPath: settingsURL.path))
     }

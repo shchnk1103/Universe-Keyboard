@@ -18,11 +18,11 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 ## TD-002: Validate RIME/User Concurrent Access
 
 - **Priority:** High
-- **Risk:** Main-App backup/restore/configuration can overlap with Extension/librime writes to `Rime/user`.
-- **Current mitigation:** Heavy user-dictionary operations remain in the main App and are not run from the key hot path; documentation advises avoiding active-session overlap.
-- **Recommended fix:** Establish librime-supported cross-process semantics and add file/process coordination or an explicit quiesce workflow where required.
+- **Risk:** Main-App backup/restore/configuration or automatic standard sync can overlap with another foreground/background main-App operation or with Extension/librime writes to `Rime/user`. Per-instance actor serialization does not prove process-wide or cross-process exclusion.
+- **Current mitigation:** Heavy user-dictionary operations remain in the main App and are not run from the key hot path; automatic standard sync checks the keyboard-activity heartbeat; documentation advises avoiding active-session overlap. These controls reduce opportunity but are not a mutual-exclusion proof.
+- **Recommended fix:** Establish one process-wide main-App synchronization gate, define librime-supported cross-process semantics, and add file/process coordination or an explicit quiesce workflow where required.
 - **Owner area:** RimeBridge, main-App user dictionary, Extension lifecycle.
-- **Trigger to resolve:** Before enabling background/automatic restore or claiming safe operation while the Keyboard Extension may be writing.
+- **Trigger to resolve:** Before Product acceptance of unattended standard sync, enabling background/automatic restore, or claiming safe operation while another main-App operation or the Keyboard Extension may be writing.
 
 ## TD-003: Collect Extension Performance Baseline
 
@@ -242,7 +242,8 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
   5. 按 cohort 审计和迁移其余 legacy `Logger(String)` producer，最终移除 `rime_diag_log` 的兼容读取；任何新字段继续经过 typed allowlist/隐私审查。
   6. 为进入诊断页、手动刷新、日期 catalog、当日快照、分页扩展与筛选各阶段增加内容无关耗时/状态证据，定位真机长时间空白究竟来自 I/O、快照 fence、分页、MainActor 状态提交还是 UI 渲染；不得在 Extension 热路径同步计时或写额外自由文本。
   7. 明确搜索范围、水位与完整性状态：当页面已显示有界 500 条记录而查询无匹配时，UI 必须区分“当前窗口无匹配”“仍在扩展历史”“日志源未写入该事件”与“查询失败”，避免把部分窗口的空结果呈现为全部历史无记录。
-- **Current status:** `2026-08-11 Asia/Shanghai` P1 已完成本地质量门、独立 Architecture `Pass`、Quality `Pass with conditions` 与 Human Product Gate；权威记录为 [`TD-013-DIAGNOSTICS-V1-P1`](assignments/td-013-diagnostics-v1-p1.md)。`2026-08-15 Asia/Shanghai` 新增 Human-attested 真机 residual：进入诊断页、手动刷新或等待均可能长时间才显示；当天页面最终显示 `500` 条记录后搜索 `TOUCHPROBE` 仍显示“当前筛选无匹配日志”。截图不证明 producer 未写入，也不证明搜索已覆盖完整当天历史；该缺口一度阻断 `KEY-TOUCH-FILL-001` 的日志探针取证，后者已通过 LLDB 分层证据与 Human 真机 Product Gate 独立完成。通用 fault-injection matrix、真机三模式性能、搜索完整性/阶段耗时与广泛 legacy cohort migration/删除保持后续技术债。
+  8. 将 RIME 自动同步的开始、入口来源、阶段、跳过、终态及有限错误分类迁移为 `Diagnostics/v1` typed events，并用 operation ID 关联同一事务；不得桥接自由文本、路径、bookmark、NSError domain、词典或输入内容。旧 `rime_diag_log` 可在兼容期保留，但不能继续作为自动同步真机取证的唯一来源。
+- **Current status:** `2026-08-11 Asia/Shanghai` P1 已完成本地质量门、独立 Architecture `Pass`、Quality `Pass with conditions` 与 Human Product Gate；权威记录为 [`TD-013-DIAGNOSTICS-V1-P1`](assignments/td-013-diagnostics-v1-p1.md)。`2026-08-15 Asia/Shanghai` 新增 Human-attested 真机 residual：进入诊断页、手动刷新或等待均可能长时间才显示；当天页面最终显示 `500` 条记录后搜索 `TOUCHPROBE` 仍显示“当前筛选无匹配日志”。截图不证明 producer 未写入，也不证明搜索已覆盖完整当天历史；该缺口一度阻断 `KEY-TOUCH-FILL-001` 的日志探针取证，后者已通过 LLDB 分层证据与 Human 真机 Product Gate 独立完成。`2026-09-01 Asia/Shanghai` 的 `RIME-SYNC-001` 真机追查再次确认该迁移缺口：Human 确认记录总开关及全部分类均开启，但 v1 查看器搜索 `rimeSync` / `rime` 无匹配；相关 producer 仍只写 legacy `rime_diag_log`，而 v1 有结果或选择日期后查看器不会回退 legacy。由于原始 App Group 偏好可能含路径、bookmark 或其它私有配置，本轮未导出整份 plist，因此不能追认旧轮次的精确错误码。通用 fault-injection matrix、真机三模式性能、搜索完整性/阶段耗时与广泛 legacy cohort migration/删除保持后续技术债。
 - **Owner area:** KeyboardCore diagnostics journal、Main App diagnostics repository/settings、Quality/Release evidence。
 - **Trigger to resolve:** 获得明确实现授权后，按 P1 Assignment 的 phase/门禁推进；日志量/导出需求增长或再次出现无法归因的视觉异常可触发 Product revalidation。
 - **Related:** ADR 0027、`DIAGNOSTICS-OBSERVABILITY-001`、[`PD-TD-013-DIAGNOSTICS-V1-P1`](product-decisions/TD-013-DIAGNOSTICS-V1-P1-authorization.md)、`docs/DEBUGGING.md`。
@@ -285,6 +286,16 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Owner area:** Quality, Performance & Release Maintainer（CI/test selection）+ Architecture & Knowledge Steward（KOS/治理分类边界）。
 - **Trigger to resolve:** 仅当 Human 另行授权 required-check 迁移，并增加 CODEOWNERS/强制审查、受保护 reusable workflow 或等价 baseline-owned guard。
 - **Related:** `.github/workflows/swift6-quality.yml`、`docs/ASSIGNMENT_POLICY.md`、KOS 2.2 advisory、TD-014。
+
+## TD-017: Investigate Background Sync Sandbox Extension Consume Failure
+
+- **Priority:** Low–Medium。当前不阻塞 RIME 后台回调崩溃修复或强制真机同步通过；若与自然后台失败、目录授权失效或缺失输出同时出现则升级。
+- **Risk:** `2026-08-29` 真机强制后台同步在 librime 已报告 `3 tasks ran: 3 success, 0 failure` 且完成通知已生成后，控制台出现 `sandbox_extension_consume failed: 22 (Invalid argument)`。当前没有证据说明它来自 App、文件提供器、系统安全作用域实现或 librime，也没有证据证明它完全无害。若它代表 security-scoped resource 使用不对称，未来可能在自然后台或不同文件提供器上表现为目录访问失败。
+- **Current mitigation:** 标准同步仍由主 App 执行；文件夹 bookmark、写入预检和运行时目录访问失败会 fail closed 并暂停自动同步；本次真实 RIME 备份、完成通知及下一周期重排均成功。
+- **Recommended fix:** 在不改变同步语义的前提下先做只读归因：保留该行前后的系统日志时间窗，绑定调用阶段与文件提供器，检查 `startAccessingSecurityScopedResource()` / `stopAccessingSecurityScopedResource()` 配对及 bookmark 解析生命周期；必要时用符号断点或最小诊断点区分系统、File Provider 与 App producer。只有建立因果关系后才实现修复，不因单条系统日志猜改目录访问逻辑。
+- **Owner area:** Main App RIME sync folder access、File Provider/security-scoped bookmark、RimeBridge diagnostics。
+- **Trigger to resolve:** 自然后台运行再次出现该行；同步同时报告 access denied、目录暂停、缺少快照输出或崩溃；切换到非 iCloud 文件提供器可稳定复现；或发布前需要声明后台文件夹访问健壮性。
+- **Related:** [`RIME-SYNC-001`](assignments/rime-sync-001.md)、[`forced-launch evidence`](evidence/rime-background-sync-crash-fix-2026-08-29.md)、TD-002。
 
 ## Maintenance Rules
 

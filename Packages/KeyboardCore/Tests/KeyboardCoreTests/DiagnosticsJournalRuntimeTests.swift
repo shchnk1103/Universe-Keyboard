@@ -71,6 +71,38 @@ final class DiagnosticsJournalRuntimeTests: XCTestCase {
         )
     }
 
+    func testRimeSyncPayloadUsesSameBoundedAsynchronousIngress() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        let runtime = DiagnosticsJournalRuntime(
+            origin: .mainApp,
+            isMainAppWriter: true,
+            rootURL: { rootURL },
+            isCategoryEnabled: { _ in true },
+            flushDelay: 5
+        )
+        let context = DiagnosticEvent.RimeSyncContext(
+            operationID: UUID(),
+            source: .backgroundAutomatic
+        )
+        let payload = DiagnosticEvent.RimeSyncPayload.terminal(
+            .init(context: context, result: .completed)
+        )
+
+        runtime.recordRimeSync(payload)
+        runtime.requestFlush()
+
+        let snapshot = try await waitForEvent(at: rootURL)
+        XCTAssertEqual(snapshot.events.map(\.code), [.rimeSyncTerminal])
+        XCTAssertEqual(snapshot.events.first?.rimeSyncPayload, payload)
+    }
+
     private func makeTemporaryDirectory() -> URL {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try! FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

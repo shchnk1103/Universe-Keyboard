@@ -2,9 +2,19 @@
 
 **Policy version:** `1.0.0`
 
-**Decision source / date:** Human Product Owner authorization in the active cross-platform RIME sync objective, followed by explicit approval of RIME 标准同步主路径 / `2026-07-12 Asia/Shanghai`; manual RIME 用户词典安全恢复与设置入口调整、automatic-sync cooldown revalidated / `2026-07-13 Asia/Shanghai`; foreground cooldown consistency plus start/success/failure notifications, explicit user opt-in for automatic sync, independently selectable RIME standard / Universe settings scopes, migration of RIME notifications into the shared App notification settings contract, and independent notification-only controls for both sync parts, revalidated by the human Product Owner / `2026-07-15 Asia/Shanghai`
+## Current Status
 
-**Lifecycle status:** `Active`
+| Field | Value |
+|---|---|
+| **Lifecycle** | `Active` |
+| **Phase** | 新载荷自然触发单 operation 自动同步且 Diagnostics/v1/通知均完成；正式 Run 02 保留 `INVALID` 审计结果。Human Product Owner 已接受范围化工程结论，确认只读日志复制与无关 `long-idle-exit` 为正常行为，暂不安排重复真机测试 |
+| **Non-claims** | Product disposition 不追溯改写正式 run，不关闭旧轮次精确错误、`TD-002` 或父 Assignment，也不授权 merge、TestFlight 或 Release |
+| **Next** | 日常观察；仅在故障复发或该路径发生实质变更时重新开启真机验证。若重开，必须新建预冻结 manifest，并预列只读 crash-report copy 与 `long-idle-exit` 验收边界 |
+| **Residuals** | [`Run 01`](../evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Run 02 INVALID`](../evidence/rime-background-sync-natural-device-run-2026-09-01-r2.md) · [`Diagnostics/v1`](rime-sync-diagnostics-v1-001.md) · 旧轮次精确 RIME 错误码 `UNKNOWN` · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) |
+
+---
+
+**Decision source / date:** Human Product Owner authorization in the active cross-platform RIME sync objective, followed by explicit approval of RIME 标准同步主路径 / `2026-07-12 Asia/Shanghai`; manual RIME 用户词典安全恢复与设置入口调整、automatic-sync cooldown revalidated / `2026-07-13 Asia/Shanghai`; foreground cooldown consistency plus start/success/failure notifications, explicit user opt-in for automatic sync, independently selectable RIME standard / Universe settings scopes, migration of RIME notifications into the shared App notification settings contract, and independent notification-only controls for both sync parts, revalidated by the human Product Owner / `2026-07-15 Asia/Shanghai`
 
 **Repository change types:** `Contract`, `Documentation`; later `Implementation`, `Evidence`, `State`
 
@@ -22,7 +32,7 @@
 - **Architecture acknowledgement:** ADR 0012 accepted with implementation pending.
 - **Product lifecycle decision:** `Assigned -> Acknowledged -> Ready -> Active` for Contract and Architecture work only.
 - **Implementation authorization:** Human Product Owner explicitly opened code implementation on `2026-07-12 Asia/Shanghai`.
-- **Current phase:** Standard RIME sync main-path implementation, manual user-dictionary recovery safety hardening and automated validation active; physical-device, cross-front-end and configuration-import gates remain open.
+- **Current phase:** Historical activation detail; current phase is maintained in the Current Status block above.
 
 ## Assignment
 
