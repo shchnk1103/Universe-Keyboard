@@ -331,3 +331,49 @@ Release remain unauthorized.
 
 **Independence statement:** this was a read-only review of `bb43c5f`; no files,
 builds, tests, network, devices, main checkout or PR #91 were touched.
+
+## Independent Quality re-review — `b1d81fd` — 2026-09-02
+
+**Independent verdict：代码层 `Pass with conditions`（无 P0/P1）；KOS/生命周期层 `Fail`（无 P0，1 个 P1、3 个 P2）。** 本 addendum 不授权 device install、merge、Exit、TestFlight、Release 或 legal/Product Gate 通过。
+
+### 复审对象
+
+- 分支 `codex/f02-rime-builtin-quality-assignment`，HEAD `b1d81fd2f61522001bc1d15490563097bd581016`（2026-09-02 20:01，Cowork 3P），父 commit `688a8fe`，工作树 clean。
+- 范围 `git diff 688a8fe..b1d81fd`：3 个 Swift 文件（`RimeConfigManager+CustomYaml.swift`、`RimeConfigManager+Preferences.swift`、`RimeBuiltinResourceInstallerTests.swift`），+103/−23。
+
+### 代码层结论
+
+- 语义正确：`rime_simplification` 缺失时按产品默认简体写 `switches/@2/reset:1`；显式 `false` 仍写 `reset:0`。
+- 收敛点单一：`simplificationPreference(from:)` 同时供设置页与 sync 使用，消除两处默认逻辑漂移；生产入口无旁路，main-App 部署 / Extension session-only 边界未破坏。
+- 写入/验证链完整：plan → overlay（Luna switch 2，true→1 / false→0）→ 事务替换 → receipt 校验；两条 fixture 测试对实际落盘内容断言并通过 `validateInstalledRuntime`。
+
+### `F02-COMMITTED-TEST-RERUN-001` — 关闭（CLOSED）
+
+原条件：尚未对 committed `b1d81fd` 做独立复跑；此前证据为 pre-commit 运行 + mtime 一致性推断。
+
+现证据（commit 级复跑）：
+- xcresult：`/private/tmp/uk-f02-tests-dd/Logs/Test/Test-RimeBridgeTests-2026.09.02_20-15-20-+0800.xcresult`
+- 读回：`passedTests: 75` + `skippedTests: 20` = 95 total、`failedTests: 0`、`result: "Passed"`。
+- 时序：`b1d81fd` commit 于 20:01:48 → 复跑于 20:15:20 → 工作树 clean 且 HEAD=b1d81fd，无后续源码改动。
+
+结论：复跑对象即 committed `b1d81fd`，本条件关闭。
+
+证据等级（诚实标注）：复跑由 Executor 运行（`Executor-recorded`）；replacement reviewer 独立读回 xcresult 并核对 git state（`reviewer-readback`），未亲自重跑，故不标 `Quality-reverified`。
+
+### 剩余未关闭条件
+
+| ID | 级别 | 状态 | 说明 |
+|---|---|---|---|
+| `KOS-001` | P1 | open | `c5f3004` 冻结已失效（`b1d81fd` 在其后提交）；Assignment / ACTIVE_WORK / handoff packet 仍写 "clean c5f3004 已冻结"，需补 S-03 supersession 横幅并二选一：从 clean `b1d81fd` 重冻结，或显式记录 "c5f3004 冻结仍有效、缺 key 行为推迟"。此为 Product 决定，本 reviewer 不作。 |
+| `KOS-002` | P2 | closed | b1d81fd 的独立复审记录见本 addendum；09-02 evidence 见 [`rime-builtin-luna-quality-f02-default-simplification-2026-09-02.md`](../evidence/rime-builtin-luna-quality-f02-default-simplification-2026-09-02.md)。 |
+| `KOS-003` | P2 | closed | 09-02 测试结果证据等级已标注；committed 复跑已补（见上）。 |
+| `KOS-004` | P2 | open | `F02-APPGROUP-MANUAL-001` 仍 pending；08-31 结论不适用于 b1d81fd，本 addendum 为其 09-02 复审记录。 |
+| `F02-APPGROUP-MANUAL-001` | P2 | open | 缺 signed Simulator / physical 真实 App Group 写入与部署的 manual 证据。 |
+
+### 禁止动作
+
+不 merge、不 push、不安装 `c5f3004` 或按旧 packet 执行真机 Run ID；本结论不是 Exit / TestFlight / Release / legal / Product Gate 通过。
+
+### Independence statement
+
+Replacement Quality reviewer（Claude Code）接续 codex quality subagent（`/root/f02_quality_kos_review`）的 finding 历史。只读复审 `b1d81fd`：未改 Swift 源码、未运行 build/test/device，仅读回 xcresult 与 git state；未触碰主 checkout `/Users/doubleshy0n/Dev/Universe Keyboard` 或 PR #91。本 addendum 由 replacement reviewer 自行记录。
