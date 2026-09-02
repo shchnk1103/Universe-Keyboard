@@ -637,3 +637,37 @@ unauthorized. `F02-A-P2-TD001` remains `tech_debt:TD-001` and is unchanged.
 
 **Independence statement:** this was a read-only review of `bb43c5f`; no files,
 builds, tests, network, devices, main checkout or PR #91 were touched.
+
+## Independent Architecture re-review — `b1d81fd` — 2026-09-02
+
+**Independent verdict: code `Pass` + KOS-consistency P1.** P0: none. P1 (governance consistency): 1.
+
+### Reviewed object
+
+- Branch `codex/f02-rime-builtin-quality-assignment`, HEAD `b1d81fd2f61522001bc1d15490563097bd581016` (2026-09-02 20:01, Cowork 3P), parent `688a8fe`, worktree clean.
+- Scope `git diff 688a8fe..b1d81fd`: 3 Swift files (`RimeConfigManager+CustomYaml.swift`, `RimeConfigManager+Preferences.swift`, `RimeBuiltinResourceInstallerTests.swift`).
+
+### Code review
+
+- Simplification preference is centralized in one resolver; a missing `rime_simplification` key defaults to simplified (`reset=1`), explicit `false` still writes `reset=0`: `RimeConfigManager+Preferences.swift`.
+- The production wrapper still parses from the App Group then delegates to the internal overload; no new production deployment entry; the `nil`-overlay semantics (write the reset patch only when non-nil) is unchanged: `RimeConfigManager+CustomYaml.swift`.
+- New installer tests cover missing-key → `reset: 1`, explicit traditional → `reset: 0`, both continuing through `validateInstalledRuntime` overlay-receipt validation: `RimeBuiltinResourceInstallerTests.swift:695-752, 909-930`.
+- The main-App deployment / Extension session-only boundary is not broken.
+
+### KOS-consistency P1 — freeze supersession (matches Quality `KOS-001`)
+
+- `c5f3004` (08-31) is a docs commit whose source is equivalent to its parent `bb43c5f`; `688a8fe` froze the replacement signed candidate against clean `c5f3004`. `b1d81fd` (09-02) is a child of `688a8fe` that changes `RimeConfigManager` overlay generation — a source change landed after the freeze.
+- The `688a8fe` freeze record itself states any source rebuild invalidates the freeze; `b1d81fd` is exactly such a post-freeze source change, so the `c5f3004` identity table no longer represents the current branch source. No docs/evidence commit records the new test result, a re-freeze, or a supersession after `b1d81fd`.
+- Resolution is binary: rebuild + re-freeze the signed candidate from clean `b1d81fd` (re-record App/Extension/manifest/AUTHORS identity + deep/strict signature + affected-gate evidence), or record an explicit defer (keep the `c5f3004` freeze valid and defer the missing-key behavior). Until resolved, installation stays HOLD, `c5f3004` must not be installed, and Exit/merge/TestFlight/Release are not authorized.
+- Decision 2026-09-02: Human Product Owner authorized re-freeze from clean `b1d81fd` (see Assignment History). Rebuild + identity re-recording remain pending Executor execution.
+
+### Remaining Architecture residuals
+
+| ID | Severity | Owner / disposition | Remaining requirement |
+|---|---|---|---|
+| `F02-A-P1-FREEZE-001` | P1 | Human Product Owner + Executor / `fix` | Re-freeze from clean `b1d81fd` (decided) — rebuild + identity re-recording pending. |
+| `F02-A-P2-TD001` | P2 | Main App/Data Ops / `tech_debt:TD-001` | unchanged. |
+
+### Independence statement
+
+The codex Architecture reviewer (`/root/f02_arch_kos_review`) completed a read-only review of `b1d81fd`; no files, builds, tests, network, devices, main checkout or PR #91 were touched. This addendum was recorded by Claude Code (replacement coordinator) from that reviewer's returned verdict after codex went idle.
