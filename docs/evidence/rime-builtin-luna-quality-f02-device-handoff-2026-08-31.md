@@ -36,7 +36,7 @@ identity.
 | Built-in manifest | SHA-256 `6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233`, 13,582 bytes; Extension runtime-resource duplicate count `0` |
 | OpenCC AUTHORS in App | SHA-256 `cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006`, 277 bytes |
 | Candidate artifact | `/tmp/f02-device-candidate-b1d81fd/Build/Products/Debug-iphoneos/Universe Keyboard.app`; `codesign --verify --deep --strict` passed |
-| Installation receipt | `UNKNOWN` — cannot exist before installation |
+| Installation receipt | `com.DoubleShy0N.Universe-Keyboard` `1.0 (1)` installed via wired `devicectl` (container `B6DF6703-29C6-4113-9663-59D9E70D8D80`); not launched |
 
 This re-freeze supersedes the `c5f3004` freeze (S-03): `b1d81fd` landed a source
 change to `RimeConfigManager` overlay generation after the `c5f3004` freeze, so the
@@ -195,8 +195,8 @@ FAIL/HOLD pending symbolication against the frozen executable UUIDs.
 | Gate | Result | Evidence pointer |
 |---|---|---|
 | Candidate build freeze | `PASS` | clean `b1d81fd` signed Debug App; deep/strict signature, App/Extension UUID/hash/CDHash, manifest, AUTHORS and zero Extension duplicate evidence recorded above (re-frozen 2026-09-02, supersedes `c5f3004`) |
-| Installation receipt | `HOLD` | no install action authorized or performed |
-| Q-01 fresh/offline | `NOT RUN` | — |
+| Installation receipt | `PASS` | `com.DoubleShy0N.Universe-Keyboard` `1.0 (1)` installed via wired `devicectl`, not launched |
+| Q-01 fresh/offline | `PASS` | fresh App Group (app deleted + reinstalled), airplane-mode offline deployment (no network prompt), built-in Luna deployed and keyboard verified. NOTE: first-launch deployment is manual, not automatic — see run finding `F02-FIRST-LAUNCH-AUTODEPLOY-001`. |
 | Q-02 candidate quality/cold starts | `NOT RUN` | — |
 | Q-03 OpenCC physical RC | `NOT RUN` | — |
 | Q-04 Stroke/Full Access/lifecycle | `NOT RUN` | — |
@@ -205,6 +205,12 @@ FAIL/HOLD pending symbolication against the frozen executable UUIDs.
 | Q-08 install/redeploy/relaunch | `NOT RUN` | — |
 | Crash/Jetsam bounded query | `NOT RUN` | — |
 | Human Product Gate | `PENDING` | not implied by this packet |
+
+## Run findings
+
+| ID | Severity | Status | Finding |
+|---|---|---|---|
+| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | P2 | open (deferred) | Fresh install does not auto-trigger built-in resource deployment. The built-in Luna closure is bundled in the App, but `prepareDirectories` only runs on an explicit `triggerDeployment` (settings "应用并重新部署" / Guide "准备资源" step). `triggerPendingDeploymentIfNeeded()` no-ops on first launch because no `rime_needs_deploy` intent is seeded for a fresh App Group. Result: a fresh install shows a thin Luna schema (few candidates) until the user manually deploys. Recommended fix: seed `rime_needs_deploy = true` on first launch (empty App Group / no `rime_deployed`). Does not violate the no-download constraint (deployment is local). Deferred — does not block the current candidate-quality run (deployment completed manually). |
 
 ## Separate downstream gates
 
