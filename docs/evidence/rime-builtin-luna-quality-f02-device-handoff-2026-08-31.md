@@ -1,6 +1,6 @@
 # RIME-BUILTIN-LUNA-QUALITY-001 — Physical-device handoff packet
 
-> **Packet state:** `Replacement signed candidate re-frozen from b1d81fd — HOLD before install/run`
+> **Packet state:** `Replacement signed candidate re-frozen from b1d81fd — run authorized 2026-09-02`
 > **Prepared:** `2026-08-31 Asia/Shanghai` · **Re-frozen:** `2026-09-02 Asia/Shanghai` (supersedes `c5f3004` freeze)
 > **Assignment:** [`RIME-BUILTIN-LUNA-QUALITY-001`](../assignments/rime-builtin-luna-quality-001.md)
 > **Run ID reserved:** `RIME-BUILTIN-LUNA-QUALITY-001-PHYSICAL-20260831-001`

@@ -376,3 +376,11 @@ built-in assets.
   passed. Artifact `/tmp/f02-device-candidate-b1d81fd/Build/Products/Debug-iphoneos/Universe Keyboard.app`.
   The `c5f3004` freeze is marked superseded (S-03); no install/run, merge,
   TestFlight or Release action is inferred.
+- `2026-09-02 Asia/Shanghai` — Human Product Owner authorized the physical-device
+  run against the re-frozen `b1d81fd` candidate and authorized pushing the F-02
+  branch. Executor pushed `codex/f02-rime-builtin-quality-assignment` to origin
+  (first push; docs + `b1d81fd` fix). Device reconfirmed at run start: iPhone 13 Pro
+  (iPhone14,2), UDID `00008110-000A08440198801E`, iOS `27.0`, build `24A5430a`
+  (note: the 08-31 record said `24A5424a`; the device has since been updated),
+  Developer Mode enabled. The one authorized physical run is now in progress
+  (Q-01..Q-08, sections A–D).
