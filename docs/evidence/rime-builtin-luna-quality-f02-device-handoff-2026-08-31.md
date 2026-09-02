@@ -1,7 +1,7 @@
 # RIME-BUILTIN-LUNA-QUALITY-001 — Physical-device handoff packet
 
-> **Packet state:** `Replacement signed candidate frozen — HOLD before install/run`
-> **Prepared:** `2026-08-31 Asia/Shanghai`
+> **Packet state:** `Replacement signed candidate re-frozen from b1d81fd — HOLD before install/run`
+> **Prepared:** `2026-08-31 Asia/Shanghai` · **Re-frozen:** `2026-09-02 Asia/Shanghai` (supersedes `c5f3004` freeze)
 > **Assignment:** [`RIME-BUILTIN-LUNA-QUALITY-001`](../assignments/rime-builtin-luna-quality-001.md)
 > **Run ID reserved:** `RIME-BUILTIN-LUNA-QUALITY-001-PHYSICAL-20260831-001`
 > **Evidence grade:** exact signed-build identity plus plan; no installation or
@@ -25,6 +25,37 @@ identity.
 | Field | Frozen value |
 |---|---|
 | Runtime implementation ancestry | `7260ca292fb8226face92781cb1c335ad0f31d1b` is an ancestor |
+| Candidate source commit | clean `b1d81fd2f61522001bc1d15490563097bd581016` before and after build (source tree byte-identical at HEAD `f8c51f3`; docs-only commits on top) |
+| Product / build / deployment | `1.0 (1)`; Debug; generic iOS arm64; minimum iOS 18.0 |
+| Toolchain | Xcode `27.0 (27A5252f)`; iPhoneOS SDK `27.0 (24A5422a)`; Apple Swift `6.4 (swiftlang-6.4.0.33.1 clang-2100.3.33.1)` |
+| Signing | Apple Development `SVGPGQXU8W`; Team `C33N6HTS9N`; App CDHash `ed46a655e08d615fbc2d576837ae05fc3f37c579`; Extension CDHash `a3814d38e5d36c4ebb0bc4cb1f8eab9333083d60` |
+| Provisioning profile | `iOS Team Provisioning Profile: com.DoubleShy0N.Universe-Keyboard` (`06df90be-84d7-4d3a-987a-aceeb1fa8222`) |
+| App bundle | `com.DoubleShy0N.Universe-Keyboard` |
+| App executable | stub UUID `9A320701-2840-35A3-895F-4CAE62A7E7EC`, SHA-256 `72cc786de76c77561ffea94cae9a0f66f3efcc234cfa41b294925a7b69a2073f`, 92,128 bytes; code dylib UUID `473A0471-3176-3BD0-AE61-A86BC534F7F6`, SHA-256 `6d2ad897500b35af3d525b46ee6734a205b9696d32a0528b951415ee1ce071e1`, 28,570,160 bytes |
+| Keyboard executable | stub UUID `ED410A4F-7D73-3518-9B89-32B8012836A0`, SHA-256 `b8121a09316765eccb7d4c828bc9df26fc8de6c2e579e4388bd60175f805f10d`, 89,504 bytes; code dylib UUID `706C66FD-A0BB-3E61-AE04-F0C95A1B2F31`, SHA-256 `45d469796c0f25384115ea306f6a69f0cbe0ef0ec6f297c79880e6fa279830fe`, 16,004,768 bytes |
+| Built-in manifest | SHA-256 `6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233`, 13,582 bytes; Extension runtime-resource duplicate count `0` |
+| OpenCC AUTHORS in App | SHA-256 `cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006`, 277 bytes |
+| Candidate artifact | `/tmp/f02-device-candidate-b1d81fd/Build/Products/Debug-iphoneos/Universe Keyboard.app`; `codesign --verify --deep --strict` passed |
+| Installation receipt | `UNKNOWN` — cannot exist before installation |
+
+This re-freeze supersedes the `c5f3004` freeze (S-03): `b1d81fd` landed a source
+change to `RimeConfigManager` overlay generation after the `c5f3004` freeze, so the
+prior identity table no longer represents current HEAD. The manifest and OpenCC
+AUTHORS hashes are unchanged from `c5f3004` (committed resources the fix does not
+touch); the executable stub/code-dylib UUIDs and hashes reflect the rebuilt source.
+The replacement remains on HOLD. Any source rebuild, artifact disappearance,
+signature/hash mismatch or unexpected install identity invalidates this freeze.
+Human authorization is required before installation or the reserved run.
+
+## Historical candidate — superseded by `b1d81fd` re-freeze (2026-09-02)
+
+> **S-03 supersession:** the `c5f3004` freeze was invalidated by `b1d81fd` (a source
+> change after the freeze). Do not install. Identity retained only to prevent
+> accidental reuse.
+
+| Field | Frozen value |
+|---|---|
+| Runtime implementation ancestry | `7260ca292fb8226face92781cb1c335ad0f31d1b` is an ancestor |
 | Candidate source commit | clean `c5f30048b139bcbc2d8ea5552c5f8d053e09efe9` before and after build |
 | Product / build / deployment | `1.0 (1)`; Debug; generic iOS arm64; minimum iOS 18.0 |
 | Toolchain | Xcode `27.0 (27A5252f)`; iPhoneOS SDK `27.0`; Apple Swift `6.4 (swiftlang-6.4.0.33.1 clang-2100.3.33.1)` |
@@ -37,9 +68,8 @@ identity.
 | Candidate artifact | `/tmp/f02-device-candidate-c5f3004/Build/Products/Debug-iphoneos/Universe Keyboard.app`; `codesign --verify --deep --strict` passed |
 | Installation receipt | `UNKNOWN` — cannot exist before installation |
 
-The replacement remains on HOLD. Any source rebuild, artifact disappearance,
-signature/hash mismatch or unexpected install identity invalidates this freeze.
-Human authorization is required before installation or the reserved run.
+The `c5f3004` replacement remains on HOLD and cannot be installed. This identity is
+retained only to prevent accidental reuse.
 
 ## Historical candidate — superseded, never install
 
@@ -164,7 +194,7 @@ FAIL/HOLD pending symbolication against the frozen executable UUIDs.
 
 | Gate | Result | Evidence pointer |
 |---|---|---|
-| Candidate build freeze | `PASS` | clean `c5f3004` signed Debug App; deep/strict signature, App/Extension UUID/hash/CDHash, manifest, AUTHORS and zero Extension duplicate evidence recorded above |
+| Candidate build freeze | `PASS` | clean `b1d81fd` signed Debug App; deep/strict signature, App/Extension UUID/hash/CDHash, manifest, AUTHORS and zero Extension duplicate evidence recorded above (re-frozen 2026-09-02, supersedes `c5f3004`) |
 | Installation receipt | `HOLD` | no install action authorized or performed |
 | Q-01 fresh/offline | `NOT RUN` | — |
 | Q-02 candidate quality/cold starts | `NOT RUN` | — |

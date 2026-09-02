@@ -9,10 +9,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Machine-readable provenance and Q-09 inventory remediation are frozen in `6cb2fee` / `3a9ce19` / `7260ca2`; affected full local gates pass. `b1d81fd` (`fix: write simplified Luna reset when simplification key is missing`) landed 2026-09-02 after the `c5f3004` freeze, so that freeze no longer represents current HEAD. Independent Architecture re-review of `b1d81fd` returned code `Pass` + KOS-consistency P1; Quality returned code `Pass with conditions` + KOS/lifecycle `Fail` (1 P1, 3 P2). A committed `RimeBridgeTests` rerun (95 total / 20 skipped / 0 failures) closes `F02-COMMITTED-TEST-RERUN-001`. Human Product Owner authorized re-freeze from clean `b1d81fd` (2026-09-02), formally superseding the `c5f3004` freeze; rebuild + identity re-recording pending Executor. Physical-device handoff stays HOLD until the new candidate is frozen. |
+| **Phase** | Machine-readable provenance and Q-09 inventory remediation are frozen in `6cb2fee` / `3a9ce19` / `7260ca2`; affected full local gates pass. `b1d81fd` (`fix: write simplified Luna reset when simplification key is missing`) landed 2026-09-02 after the `c5f3004` freeze, so that freeze no longer represents current HEAD. Independent Architecture re-review of `b1d81fd` returned code `Pass` + KOS-consistency P1; Quality returned code `Pass with conditions` + KOS/lifecycle `Fail` (1 P1, 3 P2). A committed `RimeBridgeTests` rerun (95 total / 20 skipped / 0 failures) closes `F02-COMMITTED-TEST-RERUN-001`. Human Product Owner authorized re-freeze from clean `b1d81fd` (2026-09-02), formally superseding the `c5f3004` freeze. Executor rebuilt the signed Debug candidate from clean `b1d81fd` (2026-09-02) and recorded the new App/Extension UUID/hash/CDHash, manifest, AUTHORS and zero-duplicate identity in the handoff packet (S-03 supersession banner applied). Physical-device handoff stays HOLD until Human authorizes install/run. |
 | **Non-claims** | No Assignment Exit, installed-device receipt, hosted CI, physical-device/Full Access/lifecycle/performance pass, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced. |
-| **Next** | Executor to rebuild + freeze the signed Debug candidate from clean `b1d81fd` (App/Extension UUID, hash, CDHash, manifest, AUTHORS identity + affected gate evidence), then update the handoff packet. Also open: `F02-APPGROUP-MANUAL-001` — not docs-resolvable; deferred to Q-01 physical fresh-App-Group deployment evidence (signed device run, HOLD). |
-| **Residuals** | [`Architecture final re-review`](rime-builtin-luna-quality-001-architecture-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Quality final re-review`](rime-builtin-luna-quality-001-quality-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Quality b1d81fd re-review`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--b1d81fd--2026-09-02) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`physical-device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) · [`b1d81fd evidence`](../evidence/rime-builtin-luna-quality-f02-default-simplification-2026-09-02.md) |
+| **Next** | Human Product Owner to authorize the physical-device run (install + Q-01..Q-08) against the re-frozen `b1d81fd` candidate. `F02-APPGROUP-MANUAL-001` closes via Q-01 fresh-App-Group deployment evidence (signed device run, HOLD). |
+| **Residuals** | [`Architecture final re-review`](rime-builtin-luna-quality-001-architecture-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Architecture b1d81fd re-review`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--b1d81fd--2026-09-02) · [`Quality final re-review`](rime-builtin-luna-quality-001-quality-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Quality b1d81fd re-review`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--b1d81fd--2026-09-02) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`physical-device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) · [`b1d81fd evidence`](../evidence/rime-builtin-luna-quality-f02-default-simplification-2026-09-02.md) |
 
 ---
 
@@ -361,3 +361,18 @@ built-in assets.
   superseding the `c5f3004` freeze; no defer. Rebuild and identity re-recording
   remain pending Executor execution; physical-device handoff stays HOLD until the
   new candidate is frozen.
+- `2026-09-02 Asia/Shanghai` — Executor (replacement, Claude Code) rebuilt the
+  signed Debug candidate from clean `b1d81fd` (source tree byte-identical at HEAD
+  `f8c51f3`; docs-only commits on top) with Xcode `27.0 (27A5252f)` / iPhoneOS SDK
+  `27.0 (24A5422a)` / Swift `6.4`. New identity recorded in the handoff packet:
+  App stub UUID `9A320701-2840-35A3-895F-4CAE62A7E7EC` / code dylib UUID
+  `473A0471-3176-3BD0-AE61-A86BC534F7F6`; Keyboard stub `ED410A4F-7D73-3518-9B89-32B8012836A0`
+  / code dylib `706C66FD-A0BB-3E61-AE04-F0C95A1B2F31`; App CDHash
+  `ed46a655e08d615fbc2d576837ae05fc3f37c579`, Extension CDHash
+  `a3814d38e5d36c4ebb0bc4cb1f8eab9333083d60`; manifest
+  `6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233` and OpenCC AUTHORS
+  `cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006` unchanged from
+  `c5f3004`; Extension duplicate count `0`; `codesign --verify --deep --strict`
+  passed. Artifact `/tmp/f02-device-candidate-b1d81fd/Build/Products/Debug-iphoneos/Universe Keyboard.app`.
+  The `c5f3004` freeze is marked superseded (S-03); no install/run, merge,
+  TestFlight or Release action is inferred.
