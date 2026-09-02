@@ -7,9 +7,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | 新载荷自然触发了一次单 operation 自动同步，Diagnostics/v1 与通知均为完成；但正式 run 因冻结后未列明的只读 Jetsam copy 命令及窗口内 Keyboard `long-idle-exit` 与原验收条件冲突而 `INVALID`，双独立终审均为 `HOLD` |
-| **Non-claims** | 技术观察不等于正式 run 通过，不关闭旧轮次精确错误、`TD-002` 或父 Assignment，也不授权 Product Gate、merge、TestFlight 或 Release |
-| **Next** | 等待 Product/Assignment owner 决定是否需要全新预冻结轮次，并在执行前明确只读 crash-report copy allowlist 与无关 `long-idle-exit` 的验收处置；不得修补或延续已失效 run |
+| **Phase** | 新载荷自然触发单 operation 自动同步且 Diagnostics/v1/通知均完成；正式 Run 02 保留 `INVALID` 审计结果。Human Product Owner 已接受范围化工程结论，确认只读日志复制与无关 `long-idle-exit` 为正常行为，暂不安排重复真机测试 |
+| **Non-claims** | Product disposition 不追溯改写正式 run，不关闭旧轮次精确错误、`TD-002` 或父 Assignment，也不授权 merge、TestFlight 或 Release |
+| **Next** | 日常观察；仅在故障复发或该路径发生实质变更时重新开启真机验证。若重开，必须新建预冻结 manifest，并预列只读 crash-report copy 与 `long-idle-exit` 验收边界 |
 | **Residuals** | [`Run 01`](../evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Run 02 INVALID`](../evidence/rime-background-sync-natural-device-run-2026-09-01-r2.md) · [`Diagnostics/v1`](rime-sync-diagnostics-v1-001.md) · 旧轮次精确 RIME 错误码 `UNKNOWN` · [`TD-002`](../TECH_DEBT.md#td-002-validate-rimeuser-concurrent-access) · [`TD-017`](../TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) |
 
 ---

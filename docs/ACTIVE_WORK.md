@@ -5,14 +5,14 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-09-02 Asia/Shanghai` — RIME 新载荷自然触发单 operation 自动同步并产生完整 Diagnostics/v1/通知完成链；正式 Run 02 因 post-freeze allowlist 违例及 Keyboard `long-idle-exit` 与冻结验收冲突而 `INVALID`，双独立终审均 `HOLD`。核心 Active Work 为 `4/10`。
+Last synced: `2026-09-02 Asia/Shanghai` — RIME 新载荷自然触发单 operation 自动同步并产生完整 Diagnostics/v1/通知完成链；正式 Run 02 保留 `INVALID` 审计结果，Human Product Owner 接受范围化工程结论并决定暂不重测，仅在复发或路径实质变更时重开。核心 Active Work 为 `4/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；Task11 F-01/F-02 仍 Pending。F-03 工程片已随 #83 合入 `main`，TestFlight tester 仍在 Build 7（不含该修复）。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
 | 2 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 3 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
-| 4 | RIME-SYNC-001 | Active | Run 02 技术观察为单事务完成，但正式结果 `INVALID`；等待 Product/Assignment owner 决定是否开启全新预冻结轮次，并预先处置 crash-report copy 与无关 `long-idle-exit` 验收。旧轮次精确错误、`TD-002` pending | [`assignment`](assignments/rime-sync-001.md) · [`diagnostics`](assignments/rime-sync-diagnostics-v1-001.md) · [`Product Review`](product-decisions/RIME-SYNC-DIAGNOSTICS-V1-001-product-gate.md) · [`Run 01`](evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Run 02`](evidence/rime-background-sync-natural-device-run-2026-09-01-r2.md) |
+| 4 | RIME-SYNC-001 | Active | Run 02 单事务完成；正式 `INVALID` 审计结果保留，Human Product Owner 接受工程结论并决定暂不重测。仅在复发或路径实质变更时重开；旧轮次精确错误、`TD-002` pending | [`assignment`](assignments/rime-sync-001.md) · [`diagnostics`](assignments/rime-sync-diagnostics-v1-001.md) · [`Product Review`](product-decisions/RIME-SYNC-DIAGNOSTICS-V1-001-product-gate.md) · [`Run 01`](evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Run 02`](evidence/rime-background-sync-natural-device-run-2026-09-01-r2.md) |
 
 ## Completed (not Active)
 

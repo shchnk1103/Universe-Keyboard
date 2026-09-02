@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Run ID | `RIME-SYNC-001-NATURAL-BG-20260901-02` |
-| State | `INVALID — POST-FREEZE ALLOWLIST BREACH` |
+| State | `INVALID (FORMAL) — ENGINEERING RESULT ACCEPTED; NO RETEST PLANNED` |
 | Manifest frozen at | `2026-09-01T22:53:08+0800` |
 | Human-round budget | `1`; used `1` |
 | Formal claim boundary | One iOS-selected BGProcessingTask opportunity, one coherent automatic-sync operation, Diagnostics/v1 sequence, truthful phone notification and post-run crash/Jetsam receipts |
@@ -246,6 +246,28 @@ lists read-only crash-report copying and resolves whether an unrelated
 `long-idle-exit` is accepted before execution. That is a new authority decision,
 not a continuation or repair of this run.
 
+## Human Product Disposition
+
+On `2026-09-02 Asia/Shanghai`, the Human Product Owner accepted the scoped
+engineering result and decided not to schedule another device run at this time.
+The decision treats both disputed actions according to their observed product
+meaning:
+
+- The post-window `devicectl device copy from` operations were explicitly
+  authorized, read-only diagnostic collection. They did not change the App,
+  App Group, RIME state or device configuration.
+- The Keyboard `long-idle-exit` was normal iOS lifecycle reclamation while the
+  extension was suspended, occurred about 107 minutes before the sync, and did
+  not cause or interrupt the successful main-App background transaction.
+
+This Product disposition does not rewrite the frozen manifest or retroactively
+turn the formal run into `PASS`; the audit result remains `INVALID`. It accepts
+the narrower engineering conclusion that the reported double-transaction
+background-sync failure was not reproduced by the fixed payload and that the
+observed automatic transaction completed successfully. No repeat run is
+planned. Reopen device validation only if the failure recurs or a later change
+materially affects this path.
+
 ## Content-Free Receipt
 
 ```json
@@ -282,7 +304,10 @@ not a continuation or repair of this run.
     "JetsamEvent-2026-09-01-234023.ips",
     "JetsamEvent-2026-09-01-234057.ips"
   ],
-  "nextAuthority": "new pre-frozen run only",
+  "humanProductDisposition": "engineering_result_accepted",
+  "retestPlanned": false,
+  "reopenCondition": "failure recurrence or material path change",
+  "nextAuthority": "new pre-frozen run only if reopened",
   "result": "INVALID — post-freeze allowlist breach"
 }
 ```

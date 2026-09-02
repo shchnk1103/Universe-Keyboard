@@ -40,11 +40,11 @@
 
 - **Lifecycle:** `Active`
 - **Authority:** [`Assignment`](assignments/rime-sync-001.md) · [`Contract`](RIME_SYNC.md)
-- **Current evidence:** 新载荷由 iOS 自然触发单 operation 自动同步，Diagnostics/v1 与通知均为完成；正式 Run 02 因 post-freeze allowlist 违例及 Keyboard `long-idle-exit` 与冻结验收冲突而 `INVALID`，Architecture/Quality 终审均 `HOLD`
-- **Residual:** 是否开启全新预冻结轮次及其 crash-report copy / `long-idle-exit` 验收边界待 Product/Assignment owner 决定；旧轮次精确错误、`TD-002`、[`TD-013`](TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) 与 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) 保持开放
+- **Current evidence:** 新载荷由 iOS 自然触发单 operation 自动同步，Diagnostics/v1 与通知均为完成；正式 Run 02 保留 `INVALID` 审计结果。Human Product Owner 已接受范围化工程结论，确认只读日志复制及无关 `long-idle-exit` 属正常行为，暂不重测
+- **Residual:** 旧轮次精确错误、`TD-002`、[`TD-013`](TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) 与 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) 保持开放；复发或路径实质变更时再开启全新预冻结轮次
 - **Non-claims:** 不代表 Product Gate、merge、TestFlight 或 Release 已授权
 - **Review:** process-gate delta 的 [`Architecture`](assignments/rime-sync-001-process-gate-architecture-review.md) / [`Quality`](assignments/rime-sync-001-process-gate-quality-review.md) 均为 `Pass with conditions`；Run 02 最终 Architecture / Quality 均为 `HOLD`，理由记录于运行清单
-- **Next:** 不延续或修补已失效 Run 02；等待是否开启全新预冻结轮次的 Product/Assignment owner 决定
+- **Next:** 日常观察；不安排重复真机测试，复发或路径实质变更时再重开
 
 ## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
 
