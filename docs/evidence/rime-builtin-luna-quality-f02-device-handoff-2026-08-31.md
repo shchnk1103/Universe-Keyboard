@@ -165,6 +165,31 @@ Also verify the frozen conversion/lookup vectors:
 One unexpected candidate, order difference or missing page member is FAIL; do
 not accept “能打出汉字” or Top-1 alone.
 
+### B.1 fuzzy default — documented, not a defect (2026-09-02)
+
+The bundled `luna_pinyin.schema.yaml` carries **no** fuzzy switches and no
+`speller/algebra`; fuzzy pinyin is injected by the main App at deploy time via
+`RimeFuzzyPinyinPostProcessor`. The App-level default is **all enabled**:
+`RimeFuzzyPinyinSettings.init` defaults every group to `true`;
+`RimeSettingsStore` loads `fuzzy*Enabled` with `defaultValue: true`;
+`SchemaManager.currentFuzzyPinyinSettings()` falls back to `true`. This is
+documented and intentional — `docs/RIME_FUZZY_PINYIN.md`: “The master switch and
+all four groups default to enabled.”
+
+Consequence for this run: the fresh-install default is the **fuzzy-on** page
+(`ni -> 你/里/李/离`), not the fuzzy-off page. The B matrix lists both states, so
+there is no expected-value mismatch — “Off” requires an explicit toggle-off +
+redeploy; “On” is the default. The assignment exit criterion “exact-spelling
+results remain primary with fuzzy groups on and off” is still satisfied: `你`
+remains Top-1 in both states.
+
+This is **not** a code defect and requires no fix. It is a clarity note only: the
+assignment text never states the out-of-box fuzzy default, and the B matrix's
+“Off first” ordering could be misread as a default claim. Human Product Owner may
+optionally revisit whether a conservative off-default is preferred (cf.
+`docs/RIME_FUZZY_PINYIN.md` line 95 “prefer conservative defaults”), but that is
+a product decision, not an F-02 blocker.
+
 ### C. Full Access and lifecycle
 
 1. With Full Access still off, dismiss and reopen the keyboard in a second empty
@@ -190,6 +215,33 @@ Query crash and Jetsam reports in a bounded run window. A no-match proves only
 that no matching report was found in that window. Any new matching report is a
 FAIL/HOLD pending symbolication against the frozen executable UUIDs.
 
+## D-section observation results (2026-09-02)
+
+Device receipt: iPhone 13 Pro (iPhone14,2), iOS 27.0 (build 24A5430a), arm64e;
+`com.DoubleShy0N.Universe-Keyboard` 1.0 (1).
+
+### D.1 candidate-ready timing (5 cold samples, manual stopwatch)
+
+`ni` first-page candidate-ready after keyboard presentation: 1.06 / 0.94 / 1.10
+/ 1.03 / 1.17 s. Median 1.06 s, worst 1.17 s, min 0.94 s. Method: single operator
+stopwatch, start on first `n` keypress, stop when `你/里/李/离` appears. Caveat:
+single-operator two-hand timing adds human reaction latency, so these are an
+upper bound, not a measured Product budget (no budget is inferred).
+
+### D.2 size
+
+Frozen `.app` total 81.20 MB (83,148 KB). Code dylib delta vs `c5f3004`: App
++2,816 B (28,570,160), Keyboard +2,816 B (16,004,768) — the simplification
+default fix only. `stroke.*` (table/prism/dict/reverse, 12.35 MB) is bundled but
+never deployed by `prepareDirectories` and not referenced by the deployed Luna
+schema (see `F02-CONVERSION-LOOKUP-NOT-WIRED-001`).
+
+### D.3 crash/Jetsam (bounded window)
+
+No matching `Universe Keyboard`/`Keyboard`/Jetsam/LowMemory report in the run
+window (install 2026-09-02 → now). The device has older reports dated 2026-08-27,
+outside the window. A no-match proves only absence in the queried window.
+
 ## Result ledger
 
 | Gate | Result | Evidence pointer |
@@ -197,13 +249,13 @@ FAIL/HOLD pending symbolication against the frozen executable UUIDs.
 | Candidate build freeze | `PASS` | clean `b1d81fd` signed Debug App; deep/strict signature, App/Extension UUID/hash/CDHash, manifest, AUTHORS and zero Extension duplicate evidence recorded above (re-frozen 2026-09-02, supersedes `c5f3004`) |
 | Installation receipt | `PASS` | `com.DoubleShy0N.Universe-Keyboard` `1.0 (1)` installed via wired `devicectl`, not launched |
 | Q-01 fresh/offline | `PASS` | fresh App Group (app deleted + reinstalled), airplane-mode offline deployment (no network prompt), built-in Luna deployed and keyboard verified. NOTE: first-launch deployment is manual, not automatic — see run finding `F02-FIRST-LAUNCH-AUTODEPLOY-001`. |
-| Q-02 candidate quality/cold starts | `NOT RUN` | — |
-| Q-03 OpenCC physical RC | `NOT RUN` | — |
-| Q-04 Stroke/Full Access/lifecycle | `NOT RUN` | — |
-| Q-06 Extension consumption | `NOT RUN` | — |
-| Q-07 performance/size | `NOT RUN` | — |
-| Q-08 install/redeploy/relaunch | `NOT RUN` | — |
-| Crash/Jetsam bounded query | `NOT RUN` | — |
+| Q-02 candidate quality/cold starts | `PASS` | fuzzy-**off** 4/4 + fuzzy-**on** 4/4 + `fanti` (Traditional candidate) all exact. Conversion/lookup vectors deferred — see run finding `F02-CONVERSION-LOOKUP-NOT-WIRED-001`. |
+| Q-03 OpenCC physical RC | `DEFERRED` | s2t data bundled but not wired; t2hk/t2tw not bundled — see run finding `F02-CONVERSION-LOOKUP-NOT-WIRED-001` (Quality `Q-03` = `POST-READY EVIDENCE PENDING`). |
+| Q-04 Stroke/Full Access/lifecycle | `PASS` (Full Access/lifecycle) | Full Access off→on unchanged (`nihao` 你好/妳好/利好/立好 both); host-app reopen unchanged (`ni`/`sanjiaoxing`); device reboot + airplane mode unchanged, no redeploy/download/fallback. Stroke reverse lookup deferred — see `F02-CONVERSION-LOOKUP-NOT-WIRED-001`. |
+| Q-06 Extension consumption | `PARTIAL` | C.4 shows the Extension consumes the deployed state with no redeploy after reboot; the strict missing/corrupt/rollback fault-injection matrix (Quality `Q-06`, `POST-READY EVIDENCE PENDING`) was not run. |
+| Q-07 performance/size | `PARTIAL` | D.1: 5 cold candidate-ready samples median 1.06 s / worst 1.17 s (manual stopwatch, upper bound). D.2: `.app` 81.20 MB; code delta +2,816 B vs `c5f3004`; `stroke.*` 12.35 MB bundled-not-deployed. Not a release-like build; full Q-07 matrix (first-deploy/Rime session/OpenCC traces) remains `PENDING`. |
+| Q-08 install/redeploy/relaunch | `PASS` | A (fresh install) + repeated redeploys (fuzzy toggles) + C.3 host-app relaunch + C.4 device reboot, all on exact build `b1d81fd`, no download prompt, no fallback. |
+| Crash/Jetsam bounded query | `PASS` (no match) | No matching report in the run window; the device's 2026-08-27 reports are outside the window. |
 | Human Product Gate | `PENDING` | not implied by this packet |
 
 ## Run findings
@@ -211,6 +263,7 @@ FAIL/HOLD pending symbolication against the frozen executable UUIDs.
 | ID | Severity | Status | Finding |
 |---|---|---|---|
 | `F02-FIRST-LAUNCH-AUTODEPLOY-001` | P2 | open (deferred) | Fresh install does not auto-trigger built-in resource deployment. The built-in Luna closure is bundled in the App, but `prepareDirectories` only runs on an explicit `triggerDeployment` (settings "应用并重新部署" / Guide "准备资源" step). `triggerPendingDeploymentIfNeeded()` no-ops on first launch because no `rime_needs_deploy` intent is seeded for a fresh App Group. Result: a fresh install shows a thin Luna schema (few candidates) until the user manually deploys. Recommended fix: seed `rime_needs_deploy = true` on first launch (empty App Group / no `rime_deployed`). Does not violate the no-download constraint (deployment is local). Deferred — does not block the current candidate-quality run (deployment completed manually). |
+| `F02-CONVERSION-LOOKUP-NOT-WIRED-001` | P2 | open (deferred) | The B-section "conversion/lookup vectors" are not on-device testable on the re-frozen `b1d81fd` candidate. **OpenCC**: the deployed built-in Luna only wires `t2s` (`simplifier -> opencc/t2s.json`); `s2t` data is bundled (`s2t.json` + `ST*.ocd2`) but not wired, and `t2hk`/`t2tw` are not bundled at all (no `t2hk.json`/`t2tw.json`, no `HKVariants`/`TWVariants.ocd2`). **Stroke reverse lookup**: `luna_pinyin.reverse.bin` is bundled but the deployed Luna translator declares no `reverse_lookup` and no `stroke` schema is deployed (consistent with scope "while Luna exposes reverse lookup"). Already tracked as Quality `Q-03` (OpenCC four-output, `POST-READY EVIDENCE PENDING`), Quality `E-05`, and Architecture `AR-F02` OpenCC closure (enabled T2S/T2HK/T2TW + six `.ocd2`). Deferred — does not affect the candidate-quality core (fuzzy off/on 8/8 exact). The one on-device-testable vector (`fanti`) is run separately. |
 
 ## Separate downstream gates
 
