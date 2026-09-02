@@ -28,12 +28,17 @@ extension RimeConfigManager {
         requestDeploy()
     }
 
-    /// 获取默认简繁状态。true = 简体。
-    static func currentSimplification() -> Bool {
-        if defaults?.object(forKey: "rime_simplification") == nil {
+    /// 统一的简繁偏好读取：key 缺失时也按产品默认简体处理。
+    static func simplificationPreference(from defaults: UserDefaults?) -> Bool {
+        guard defaults?.object(forKey: "rime_simplification") != nil else {
             return true  // 默认简体
         }
         return defaults?.bool(forKey: "rime_simplification") ?? true
+    }
+
+    /// 获取默认简繁状态。true = 简体。
+    static func currentSimplification() -> Bool {
+        simplificationPreference(from: defaults)
     }
 
     /// 设置默认简繁。true = 简体（reset=1），false = 繁体（reset=0）。

@@ -4,7 +4,7 @@ import KeyboardCore
 private let customYamlAppGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 
 extension RimeConfigManager {
-    /// 从 UserDefaults 读取配置并生成 .custom.yaml 文件到 user_data_dir。
+    /// 从 App Group 的 UserDefaults 读取配置并生成 .custom.yaml 文件到 user_data_dir。
     /// 在部署前调用，确保用户通过主 App 修改的配置被写入。
     @discardableResult
     public static func syncCustomYamlFiles() -> Bool {
@@ -15,13 +15,20 @@ extension RimeConfigManager {
         else { return false }
 
         let rimeRoot = containerURL.appendingPathComponent("Rime", isDirectory: true)
+        return syncCustomYamlFiles(
+            defaults: UserDefaults(suiteName: customYamlAppGroupID),
+            rimeRoot: rimeRoot
+        )
+    }
 
-        let defs = UserDefaults(suiteName: customYamlAppGroupID)
-        let activeSchema = defs?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
+    /// 生产同步的可测试实现：defaults 与 rimeRoot 由调用方注入。
+    @discardableResult
+    static func syncCustomYamlFiles(defaults: UserDefaults?, rimeRoot: URL) -> Bool {
+        let activeSchema = defaults?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
 
         // default.custom.yaml — active schema and candidate page size.
         // The app writes this before full deployment so the keyboard only consumes compiled results.
-        let pageSize = defs?.integer(forKey: "rime_page_size") ?? 0
+        let pageSize = defaults?.integer(forKey: "rime_page_size") ?? 0
         // Keep t9 compiled and selectable when fog-song is installed/active.
         // Layout mode selects t9 at runtime; do not store t9 as base active schema.
         var defaultYaml = "patch:\n  schema_list:\n    - schema: \(activeSchema)\n"
@@ -32,12 +39,12 @@ extension RimeConfigManager {
             listed.insert(id)
         }
         // Fog-song family: keep t9 + rime_ice compiled when installed (layout-bound select).
-        if activeSchema == "rime_ice" || (defs?.bool(forKey: "rime_ice_installed") ?? false) {
+        if activeSchema == "rime_ice" || (defaults?.bool(forKey: "rime_ice_installed") ?? false) {
             appendSchema("t9")
             appendSchema("rime_ice")
         }
         // 万象拼音（全拼）when installed — ADR 0026 / PD-RIME-SCHEME-WANXIANG-001.
-        if activeSchema == "wanxiang" || (defs?.bool(forKey: "wanxiang_installed") ?? false) {
+        if activeSchema == "wanxiang" || (defaults?.bool(forKey: "wanxiang_installed") ?? false) {
             appendSchema("wanxiang")
         }
         if pageSize >= 5 {
@@ -52,31 +59,29 @@ extension RimeConfigManager {
         // User dictionary learning is intentionally written for both built-in
         // pinyin schemas so switching schemes does not silently lose the user's
         // selected learning policy. T9 uses the fog-song dictionary preference.
-        var simplification: Bool?
-        if defs?.object(forKey: "rime_simplification") != nil {
-            simplification = defs?.bool(forKey: "rime_simplification") ?? true
-        }
+        // 简繁 key 缺失时按产品默认简体写 reset=1，与设置页读取逻辑保持一致。
+        let simplificationEnabled = simplificationPreference(from: defaults)
         let userDictionarySettings = RimeUserDictionarySettings(
-            lunaPinyinEnabled: defs?.object(
+            lunaPinyinEnabled: defaults?.object(
                 forKey: RimeUserDictionarySettings.lunaPinyinEnabledKey
             ) as? Bool ?? true,
-            rimeIceEnabled: defs?.object(
+            rimeIceEnabled: defaults?.object(
                 forKey: RimeUserDictionarySettings.rimeIceEnabledKey
             ) as? Bool ?? true
         )
-        let iceInstalled = defs?.bool(forKey: "rime_ice_installed") ?? false
-        let wanxiangInstalled = defs?.bool(forKey: "wanxiang_installed") ?? false
+        let iceInstalled = defaults?.bool(forKey: "rime_ice_installed") ?? false
+        let wanxiangInstalled = defaults?.bool(forKey: "wanxiang_installed") ?? false
         let fuzzySettings = RimeFuzzyPinyinSettings(
-            enabled: defs?.object(forKey: RimeFuzzyPinyinSettings.enabledKey) as? Bool ?? true,
-            zhZEnabled: defs?.object(forKey: RimeFuzzyPinyinSettings.zhZKey) as? Bool ?? true,
-            chCEnabled: defs?.object(forKey: RimeFuzzyPinyinSettings.chCKey) as? Bool ?? true,
-            shSEnabled: defs?.object(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool ?? true,
-            nLEnabled: defs?.object(forKey: RimeFuzzyPinyinSettings.nLKey) as? Bool ?? true
+            enabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.enabledKey) as? Bool ?? true,
+            zhZEnabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.zhZKey) as? Bool ?? true,
+            chCEnabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.chCKey) as? Bool ?? true,
+            shSEnabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool ?? true,
+            nLEnabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.nLKey) as? Bool ?? true
         )
         let plan = planSchemaCustomYamlFiles(
             rimeIceInstalled: iceInstalled,
             wanxiangInstalled: wanxiangInstalled,
-            simplificationEnabled: simplification,
+            simplificationEnabled: simplificationEnabled,
             userDictionarySettings: userDictionarySettings,
             fuzzyPinyinSettings: fuzzySettings
         )

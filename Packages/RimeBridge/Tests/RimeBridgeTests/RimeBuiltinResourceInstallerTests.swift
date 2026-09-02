@@ -692,6 +692,60 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         )
     }
 
+    func testMissingSimplificationPreferenceSyncWritesSimplifiedLunaResetAndReceipt() throws {
+        let runtime = try makeInstalledRuntimeFixture()
+        defer { try? FileManager.default.removeItem(at: runtime.root) }
+        let suiteName = "uk.rime.custom-yaml-missing-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        XCTAssertNil(defaults.object(forKey: "rime_simplification"))
+
+        XCTAssertTrue(
+            RimeConfigManager.syncCustomYamlFiles(
+                defaults: defaults,
+                rimeRoot: runtime.rimeRoot
+            )
+        )
+        let lunaBody = try String(
+            contentsOf: runtime.userDir.appendingPathComponent("luna_pinyin.custom.yaml"),
+            encoding: .utf8
+        )
+        XCTAssertTrue(lunaBody.contains("\"switches/@2/reset\": 1"))
+        XCTAssertNoThrow(
+            try RimeBuiltinResourceInstaller().validateInstalledRuntime(
+                rimeRoot: runtime.rimeRoot,
+                userDataURL: runtime.userDir
+            )
+        )
+    }
+
+    func testExplicitTraditionalPreferenceSyncWritesTraditionalLunaResetAndReceipt() throws {
+        let runtime = try makeInstalledRuntimeFixture()
+        defer { try? FileManager.default.removeItem(at: runtime.root) }
+        let suiteName = "uk.rime.custom-yaml-traditional-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.set(false, forKey: "rime_simplification")
+
+        XCTAssertTrue(
+            RimeConfigManager.syncCustomYamlFiles(
+                defaults: defaults,
+                rimeRoot: runtime.rimeRoot
+            )
+        )
+        let lunaBody = try String(
+            contentsOf: runtime.userDir.appendingPathComponent("luna_pinyin.custom.yaml"),
+            encoding: .utf8
+        )
+        XCTAssertTrue(lunaBody.contains("\"switches/@2/reset\": 0"))
+        XCTAssertNoThrow(
+            try RimeBuiltinResourceInstaller().validateInstalledRuntime(
+                rimeRoot: runtime.rimeRoot,
+                userDataURL: runtime.userDir
+            )
+        )
+    }
+
     private func makeFixture(
         omitting omittedSuffix: String? = nil,
         generationID: String = "fixture-v1",
@@ -853,6 +907,22 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         try JSONSerialization.data(withJSONObject: manifest, options: [.prettyPrinted, .sortedKeys])
             .write(to: source.appendingPathComponent(RimeBuiltinResourceInstaller.manifestFileName))
         return (root, source)
+    }
+
+    private func makeInstalledRuntimeFixture() throws -> (
+        root: URL, rimeRoot: URL, userDir: URL
+    ) {
+        let fixture = try makeFixture()
+        let rimeRoot = fixture.root.appendingPathComponent("Rime", isDirectory: true)
+        _ = try RimeBuiltinResourceInstaller().install(
+            sourceRoot: fixture.source,
+            rimeRoot: rimeRoot
+        )
+        return (
+            root: fixture.root,
+            rimeRoot: rimeRoot,
+            userDir: rimeRoot.appendingPathComponent("user", isDirectory: true)
+        )
     }
 
     private func expectedRole(for path: String) -> String {
