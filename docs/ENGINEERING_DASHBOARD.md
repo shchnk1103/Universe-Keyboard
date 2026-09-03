@@ -10,15 +10,15 @@
 
 ## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory
 
-- **Lifecycle:** `Active` — Human Product Gate Passed; pin PR pending
+- **Lifecycle:** `Closed` — PR #96 merged `41c0dc5`
 - **Authority:** [`Assignment`](assignments/kos-upgrade-uk-003.md) · [`PD`](product-decisions/KOS-UPGRADE-UK-003-authorization.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-003-product-gate.md)
-- **Pin target:** `v0.6.0` (`a16c932`); mode remains `advisory`
+- **Pin:** `v0.6.0` (`a16c932`); mode remains `advisory`
 - **Non-claims:** not `required`; not orchestration plan instantiation; not Release
-- **Next:** merge docs PR, M-02, Close Assignment
+- **Next:** none for this pin
 
 ## KOS 2.2 advisory pin — current
 
-- **Lifecycle:** moving from UK-001 `v0.5.0` to UK-003 `v0.6.0` on this branch
+- **Lifecycle:** Adopted `v0.6.0` advisory (UK-003 / PR #96 `41c0dc5`)
 - **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
 
 ## KOS-UPGRADE-UK-002 — Record Deferred kos-agent-kit v0.6.0 (historical)

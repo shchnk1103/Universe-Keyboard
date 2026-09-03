@@ -32,7 +32,7 @@
 | Field | Value |
 |---|---|
 | Status | accepted |
-| Phase | Human Product Gate Passed for Adopt `v0.6.0` advisory pin |
+| Phase | Human Product Gate Passed；PR #96 merged `41c0dc5` |
 | Non-claims | Not `required`; not orchestration instantiation; not TestFlight / Release |
 | Residuals | [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) |
 

@@ -4,7 +4,7 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ## 2026-09-03 — Adopt KOS Agent Kit v0.6.0 advisory
 
-- Adopted pin 从 `v0.5.0` 改为 `v0.6.0`（`a16c932`）。Envelope 仍为 `advisory`，未启用 `required`。
+- PR [#96](https://github.com/shchnk1103/Universe-Keyboard/pull/96) merged `41c0dc5`。Adopted pin 从 `v0.5.0` 改为 `v0.6.0`（`a16c932`）。Envelope 仍为 `advisory`，未启用 `required`。
 - 可选编排合同仅对后续新 Assignment 可用；本仓库未实例化 `ORCHESTRATION_PLAN.md`。既有 Active Assignment 不迁移。
 
 ## 2026-09-03 — KOS v0.6.0 Upgrade Review 记为 Deferred
