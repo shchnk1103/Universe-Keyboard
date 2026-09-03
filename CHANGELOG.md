@@ -16,6 +16,11 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - 最终本地实现 `3f94073` 进一步为潜在非协作 phase 增加返回后取消检查，并用直接模型测试覆盖 late success、正常成功与未完成 scope 通知条件；聚焦 `23/23`、App `252 passed / 3 device-only skipped`、Keyboard `11/11`、严格 Debug/Release build 均通过，独立 Architecture / Quality delta review 均为 `Pass with conditions`。
 - 正式自然调度、真实 expiration 后 retry、手机通知、`TD-002`、Product Gate、push、merge 与 Release 仍保持开放。预冻结 manifest/receipt 前置包已准备但保持 `HOLD`，证据见 [`docs/evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md`](docs/evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md) 与 [`device preflight`](docs/evidence/rime-background-sync-device-run-preflight-2026-08-31.md)。
 
+## 2026-09-03 — F-02 内置朙月离线闭包合入 `main`
+
+- PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) merged `ec6c277`。Human Product Gate 接受本片 merge 残差（first-launch 手动部署、转换/反查范围收窄为 `t2s`、fuzzy 默认 ON、Q-06/Q-07/法律/archive）。
+- Assignment 仍为 `Active`。不代表 Assignment Exit、TestFlight 或 Release。
+
 ## 2026-08-30 — F-02 内置官方朙月拼音离线闭包（Active，未完成 Product Gate）
 
 - 主 App 内置并校验固定版本的朙月拼音、Essay、Prelude、Stroke 与完整启用范围 OpenCC 资源；用户无需额外下载，Keyboard Extension 不再携带第二份可部署资源。
