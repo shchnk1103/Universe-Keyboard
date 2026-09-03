@@ -8,6 +8,15 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## KOS-UPGRADE-UK-002 — Record Deferred kos-agent-kit v0.6.0
+
+- **Lifecycle:** `Active` — Human Product Gate pending
+- **Authority:** [`Assignment`](assignments/kos-upgrade-uk-002.md) · [`proposed Gate`](product-decisions/KOS-UPGRADE-UK-002-product-gate.md) · [`record`](kos/upgrade-records/KOS-UPGRADE-UK-002-v0.6.0.md)
+- **Current evidence:** Architecture / Quality `Pass` for docs-only Deferred record; original PR #92 docs CI green; branch merged `origin/main`
+- **Blocker:** Human 是否把 Deferred 记录合入 `main`。合入 ≠ Adopt `v0.6.0`
+- **Non-claims:** not `required`; not orchestration enablement; not Release
+- **Next:** Human Product Gate on [#92](https://github.com/shchnk1103/Universe-Keyboard/pull/92)
+
 ## RIME-BUILTIN-LUNA-QUALITY-001 — F-02 内置朙月候选质量（PR #93）
 
 - **Lifecycle:** `Active` — Human Product Gate Passed for this merge slice
