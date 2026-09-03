@@ -10,7 +10,7 @@
 | **Lifecycle** | `Closed` |
 | **Phase** | Human Product Gate Passed；PR [#92](https://github.com/shchnk1103/Universe-Keyboard/pull/92) merged `cb49e62` |
 | **Non-claims** | 不 Adopt `v0.6.0`；不启用 `required`；不改冻结 KOS 2.0；不迁移既有 Active Assignment；不是 TestFlight / Release |
-| **Next** | 无。`v0.6.0` 仅在确有编排需求、`required` 或更新 Kit Release 时再开 Upgrade Review |
+| **Next** | 无。Adopted pin 已由 [`KOS-UPGRADE-UK-003`](kos-upgrade-uk-003.md) 取代（S-03）；本 Assignment 仍是 Deferred-check 的历史关闭记录 |
 | **Residuals** | none · [`upgrade record`](../kos/upgrade-records/KOS-UPGRADE-UK-002-v0.6.0.md) · [`Gate`](../product-decisions/KOS-UPGRADE-UK-002-product-gate.md) |
 
 ---

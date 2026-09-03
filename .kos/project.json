@@ -17,6 +17,10 @@
     ],
     "include": [
       "docs/assignments/kos-upgrade-uk-001.md",
+      "docs/assignments/kos-upgrade-uk-003.md",
+      "docs/product-decisions/KOS-UPGRADE-UK-003-authorization.md",
+      "docs/product-decisions/KOS-UPGRADE-UK-003-product-gate.md",
+      "docs/evidence/kos-upgrade-uk-003-advisory-validate-2026-09-03.md",
       "docs/assignments/diagnostics-viewer-load-001.md",
       "docs/assignments/kos-2-2-doc-align-001.md",
       "docs/assignments/codex-github-auth-diag-001.md",
@@ -55,7 +59,7 @@
   "claims": [
     {
       "id": "CLAIM.KOS.ADVISORY_PIN",
-      "description": "Project has pinned KOS Agent Kit v0.5.0 in advisory mode without required envelopes on legacy records.",
+      "description": "Project has pinned KOS Agent Kit v0.6.0 in advisory mode without required envelopes on legacy records.",
       "owner": "Architecture and Knowledge Steward"
     },
     {
@@ -134,8 +138,8 @@
     "universe_keyboard": {
       "kos_kit": {
         "upstream_repository": "shchnk1103/kos-agent-kit",
-        "adopted_version": "v0.5.0",
-        "adopted_commit": "e11cbfb1dacaadc3441b70b2362b6b96d2803385",
+        "adopted_version": "v0.6.0",
+        "adopted_commit": "a16c93281718f97cb580935c5043562c39f3a1d1",
         "record_envelopes_mode": "advisory"
       }
     }

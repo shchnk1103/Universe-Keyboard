@@ -8,13 +8,26 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
-## KOS-UPGRADE-UK-002 — Record Deferred kos-agent-kit v0.6.0
+## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory
+
+- **Lifecycle:** `Active` — Human Product Gate Passed; pin PR pending
+- **Authority:** [`Assignment`](assignments/kos-upgrade-uk-003.md) · [`PD`](product-decisions/KOS-UPGRADE-UK-003-authorization.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-003-product-gate.md)
+- **Pin target:** `v0.6.0` (`a16c932`); mode remains `advisory`
+- **Non-claims:** not `required`; not orchestration plan instantiation; not Release
+- **Next:** merge docs PR, M-02, Close Assignment
+
+## KOS 2.2 advisory pin — current
+
+- **Lifecycle:** moving from UK-001 `v0.5.0` to UK-003 `v0.6.0` on this branch
+- **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
+
+## KOS-UPGRADE-UK-002 — Record Deferred kos-agent-kit v0.6.0 (historical)
 
 - **Lifecycle:** `Closed` — PR #92 merged `cb49e62`
 - **Authority:** [`Assignment`](assignments/kos-upgrade-uk-002.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-002-product-gate.md) · [`record`](kos/upgrade-records/KOS-UPGRADE-UK-002-v0.6.0.md)
 - **Current evidence:** Architecture / Quality `Pass`; Human Product Gate Passed; docs-only CI green
 - **Non-claims:** not Adopt `v0.6.0`; not `required`; not orchestration enablement; not Release
-- **Next:** 无；确有编排需求或更新 Kit 时再开 Upgrade Review
+- **Next:** 历史记录。Adopted pin 见 UK-003
 
 ## RIME-BUILTIN-LUNA-QUALITY-001 — F-02 内置朙月候选质量（PR #93）
 
@@ -30,7 +43,7 @@
 
 - **Lifecycle:** `KOS-UPGRADE-UK-001` `Reviewed` — Product Gate accepted；PR #84 merged `e7da77e`
 - **Authority:** [`PD`](product-decisions/KOS-UPGRADE-UK-001-authorization.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-001-product-gate.md) · [`Assignment`](assignments/kos-upgrade-uk-001.md)
-- **Pin:** `shchnk1103/kos-agent-kit@v0.5.0` (`e11cbfb`)
+- **Pin:** historical `v0.5.0`; current Adopted is UK-003 `v0.6.0` advisory
 - **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
 - **Non-claims:** not `required`; not diagnostics implementation; not TestFlight upload
 - **First workflow:** `DIAGNOSTICS-VIEWER-LOAD-001` `Closed` — Human Product Gate Passed；PR #85 merged `420322b`。Human 的 `<100 MB` 是本次真机观察，不是新内存合同；不开 `required`

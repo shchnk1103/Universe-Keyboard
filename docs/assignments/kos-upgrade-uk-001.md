@@ -31,7 +31,7 @@
 | Lifecycle | reviewed |
 | Current Phase | Product Gate accepted; PR #84 merged as e7da77e; advisory adoption operational; TD-014 remains |
 | Material non-claims | Not required mode; not diagnostics implementation; not PR #83 merge |
-| Next handoff / decision | Continue `v0.5.0` advisory; `v0.6.0` is Deferred via [`KOS-UPGRADE-UK-002`](kos-upgrade-uk-002.md) / PR #92 `cb49e62`; TD-014 remains |
+| Next handoff / decision | Adopted pin is [`KOS-UPGRADE-UK-003`](kos-upgrade-uk-003.md) `v0.6.0` advisory; TD-014 remains; `required` unauthorized |
 | Residuals | [`residual table`](#residual-disposition) |
 
 ---

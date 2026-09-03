@@ -1,5 +1,7 @@
 # KOS Upgrade Record: KOS-UPGRADE-UK-002-v0.6.0
 
+> **S-03:** Adopted pin superseded by [`KOS-UPGRADE-UK-003-v0.6.0`](KOS-UPGRADE-UK-003-v0.6.0.md) on `2026-09-03`. This file remains the historical Deferred-check record; it is not current Adopted truth.
+
 - Upstream repository: `shchnk1103/kos-agent-kit`
 - From version: `v0.5.0` (advisory; pinned `e11cbfb`)
 - To version: `v0.6.0`
@@ -45,5 +47,4 @@
 - Release notes: https://github.com/shchnk1103/kos-agent-kit/releases/tag/v0.6.0
 - Kit-side review closure: `KOS-AGENT-ORCH-001` (Architecture/Quality Pass;
   merged via PR #4 at `3849b26`; published at `a16c932`, tag `v0.6.0`).
-- Residual: none new. Universe Keyboard keeps its `v0.5.0` advisory pin until a
-  later upgrade review.
+- Residual: none new at check time. Adopted pin later moved to UK-003.

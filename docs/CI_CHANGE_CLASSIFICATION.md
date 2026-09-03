@@ -52,7 +52,7 @@ lightweight-checks -----------+
 
 ## KOS Validation Boundary
 
-The adopted `kos-agent-kit@v0.5.0` repository is private. This project does not add a
+The adopted `kos-agent-kit@v0.6.0` repository is private. This project does not add a
 PAT or assume sibling-private-repository access for `GITHUB_TOKEN`. Therefore:
 
 - CI always validates changed Markdown links and Profile JSON syntax;

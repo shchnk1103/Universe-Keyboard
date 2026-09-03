@@ -21,7 +21,7 @@
 4. 按 `docs/READING_MAPS.md` 中的任务类型加载对应文档
 5. 涉及代码改动时再阅读 `docs/PROJECT_CONTEXT.md`
 6. 运营卫生规则见 `docs/kos/kos-2.1-operational-maturity.md`（不替代 KOS 2.0 冻结原则）
-7. KOS 2.2 目前为 **advisory**：入口是 [`docs/kos/UPGRADE_STATUS.md`](docs/kos/UPGRADE_STATUS.md) 与 `.kos/project.json`。校验绿不是 Product / merge / Release。未授权 `required`。
+7. KOS 2.2 目前为 **advisory**，Adopted pin `v0.6.0`：入口是 [`docs/kos/UPGRADE_STATUS.md`](docs/kos/UPGRADE_STATUS.md) 与 `.kos/project.json`。校验绿不是 Product / merge / Release。未授权 `required`。
 
 `CONTEXT_INDEX.md` 保留为详细文档注册表，不再是新会话的第一导航入口。
 需要确定长期团队所有权、跨线程协作或永久线程 bootstrap 时，阅读 `docs/VIRTUAL_ENGINEERING_TEAM.md`。
