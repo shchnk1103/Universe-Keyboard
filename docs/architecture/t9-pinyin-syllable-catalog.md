@@ -8,13 +8,15 @@
 
 | Field | Value |
 |---|---|
-| In-repo path | `Keyboard/Resources/luna_pinyin.dict.yaml` |
+| In-repo path | `Universe Keyboard/RimeBuiltin/luna_pinyin.dict.yaml` |
 | Declared name | `luna_pinyin` |
-| Declared version | `0.12.20120711` |
-| SHA-256 | `971baa1f38a42d3d82f858b5bbdcad6482371f8d93a2f5d5c4ab341046419e3b` |
+| Declared version | `2024.02.10` |
+| SHA-256 | `75bcf6eb3ff62b129882ed89cc22b2d80a5347aa72bcfa2ccc839bac298e7314` |
 | Upstream project | [rime/rime-luna-pinyin](https://github.com/rime/rime-luna-pinyin) |
 
-The dictionary is already shipped inside this application’s keyboard resources for RIME. The catalog generator does not download network resources.
+The dictionary ships in the main App-owned built-in RIME closure. The catalog
+generator does not download network resources, and the keyboard extension does
+not package the source dictionary.
 
 ## License and attribution
 
@@ -38,7 +40,9 @@ python3 scripts/generate_t9_pinyin_syllable_catalog.py
 3. **Reject** tokens with no Mandarin vowel letter in `{a,e,i,o,u,v}`.
 4. De-duplicate, sort, map to T9 digit signatures, emit Swift source with provenance fields.
 
-Baseline after filtering: **417** legal syllables (418 raw unique tokens minus `xx`).
+F-02 official Luna baseline after filtering: **424** legal syllables (425 raw
+unique tokens minus `xx`). ADR 0023 retains the historical 417 baseline for its
+original source; ADR 0033 authorizes this pinned upstream replacement.
 
 Changing the baseline count is an intentional review event (ADR + tests + this document).
 

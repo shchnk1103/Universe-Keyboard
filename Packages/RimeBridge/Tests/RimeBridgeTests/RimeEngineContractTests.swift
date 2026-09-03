@@ -424,7 +424,7 @@ final class RimeEngineContractTests: XCTestCase {
     }
 
     func testDeploymentServiceObservesRealTerminalSuccessAndFunctionalSchema() async throws {
-        let fixture = try makeFunctionalLunaDeploymentFixture()
+        let fixture = try makeFunctionalContractDeploymentFixture()
         defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
 
         let result = try await RimeDeploymentService().deploy(
@@ -432,7 +432,7 @@ final class RimeEngineContractTests: XCTestCase {
                 mode: .fullCheck,
                 sharedDataURL: fixture.sharedURL,
                 userDataURL: fixture.userURL,
-                runtimeSmokeSchemaID: "luna_pinyin"
+                runtimeSmokeSchemaID: "contract_fixture"
             )
         )
 
@@ -484,6 +484,28 @@ final class RimeEngineContractTests: XCTestCase {
                 outputs: [RimeOutput(rawInput: "ni", composition: composing)],
                 window: hanWindow,
                 selectedRequestedSchema: true
+            ).passed
+        )
+        XCTAssertFalse(
+            RimeSchemaRuntimeSmokeProbe.Result(
+                selectedRequestedSchema: true,
+                compositionPresent: true,
+                rawInputMatched: true,
+                candidateCount: 1,
+                hasHanCandidate: true,
+                unexpectedCommit: false,
+                builtinQualityPassed: false
+            ).passed
+        )
+        XCTAssertTrue(
+            RimeSchemaRuntimeSmokeProbe.Result(
+                selectedRequestedSchema: true,
+                compositionPresent: true,
+                rawInputMatched: true,
+                candidateCount: 1,
+                hasHanCandidate: true,
+                unexpectedCommit: false,
+                builtinQualityPassed: nil
             ).passed
         )
     }
@@ -552,10 +574,10 @@ final class RimeEngineContractTests: XCTestCase {
     }
 
     func testRealDeployerFailsClosedForMalformedSchema() throws {
-        let fixture = try makeFunctionalLunaDeploymentFixture()
+        let fixture = try makeFunctionalContractDeploymentFixture()
         defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
         try "schema: [\n".write(
-            to: fixture.sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"),
+            to: fixture.sharedURL.appendingPathComponent("contract_fixture.schema.yaml"),
             atomically: true,
             encoding: .utf8
         )
@@ -590,11 +612,13 @@ final class RimeEngineContractTests: XCTestCase {
         return (rootURL, sharedURL, userURL)
     }
 
-    private func makeFunctionalLunaDeploymentFixture() throws -> (rootURL: URL, sharedURL: URL, userURL: URL) {
-        let fixture = try makeDeploymentInputFixture(schemaID: "luna_pinyin")
+    private func makeFunctionalContractDeploymentFixture() throws -> (
+        rootURL: URL, sharedURL: URL, userURL: URL
+    ) {
+        let fixture = try makeDeploymentInputFixture(schemaID: "contract_fixture")
         let schema = """
             schema:
-              schema_id: luna_pinyin
+              schema_id: contract_fixture
               name: Deployment Contract Fixture
             engine:
               processors:
@@ -610,10 +634,10 @@ final class RimeEngineContractTests: XCTestCase {
             speller:
               alphabet: zyxwvutsrqponmlkjihgfedcba
             translator:
-              dictionary: luna_pinyin
+              dictionary: contract_fixture
             """
         try RimeConfigTemplates.generateDefaultYaml(
-            activeSchemaID: "luna_pinyin",
+            activeSchemaID: "contract_fixture",
             rimeIceInstalled: false,
             pageSize: 9
         ).write(
@@ -622,12 +646,15 @@ final class RimeEngineContractTests: XCTestCase {
             encoding: .utf8
         )
         try schema.write(
-            to: fixture.sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"),
+            to: fixture.sharedURL.appendingPathComponent("contract_fixture.schema.yaml"),
             atomically: true,
             encoding: .utf8
         )
-        try RimeConfigTemplates.fallbackDict.write(
-            to: fixture.sharedURL.appendingPathComponent("luna_pinyin.dict.yaml"),
+        try RimeConfigTemplates.fallbackDict.replacingOccurrences(
+            of: "name: luna_pinyin",
+            with: "name: contract_fixture"
+        ).write(
+            to: fixture.sharedURL.appendingPathComponent("contract_fixture.dict.yaml"),
             atomically: true,
             encoding: .utf8
         )

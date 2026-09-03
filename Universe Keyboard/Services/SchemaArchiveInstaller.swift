@@ -146,13 +146,7 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
     }
 
     func deploymentDirectories() throws -> SchemaDeploymentDirectories {
-        guard
-            let plugInsURL = Bundle.main.builtInPlugInsURL,
-            let keyboardBundle = Bundle(url: plugInsURL.appendingPathComponent("Keyboard.appex")),
-            let prepared = RimeConfigManager.prepareDirectories(resourceBundle: keyboardBundle)
-        else {
-            throw DownloadError.networkError("键盘运行时资源不可用")
-        }
+        let prepared = try RimeConfigManager.prepareDirectories(resourceBundle: .main)
         return SchemaDeploymentDirectories(
             sharedDataURL: URL(fileURLWithPath: prepared.sharedDir),
             userDataURL: URL(fileURLWithPath: prepared.userDir)

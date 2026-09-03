@@ -4,19 +4,19 @@ import XCTest
 
 final class T9PinyinCatalogTests: XCTestCase {
     func testCatalogMetadataMatchesGeneratedLunaPinyinBaseline() {
-        XCTAssertEqual(T9PinyinSyllableCatalog.generatorVersion, "2")
+        XCTAssertEqual(T9PinyinSyllableCatalog.generatorVersion, "3")
         XCTAssertEqual(
             T9PinyinSyllableCatalog.sourceRelativePath,
-            "Keyboard/Resources/luna_pinyin.dict.yaml"
+            "Universe Keyboard/RimeBuiltin/luna_pinyin.dict.yaml"
         )
-        XCTAssertEqual(T9PinyinSyllableCatalog.sourceVersion, "0.12.20120711")
+        XCTAssertEqual(T9PinyinSyllableCatalog.sourceVersion, "2024.02.10")
         XCTAssertEqual(
             T9PinyinSyllableCatalog.sourceSHA256,
-            "971baa1f38a42d3d82f858b5bbdcad6482371f8d93a2f5d5c4ab341046419e3b"
+            "75bcf6eb3ff62b129882ed89cc22b2d80a5347aa72bcfa2ccc839bac298e7314"
         )
-        // 418 raw ASCII tokens minus filtered non-pinyin placeholders (`xx`).
-        XCTAssertEqual(T9PinyinSyllableCatalog.syllableCount, 417)
-        XCTAssertEqual(T9PinyinSyllableCatalog.syllables.count, 417)
+        // 425 raw ASCII tokens minus filtered non-pinyin placeholder (`xx`).
+        XCTAssertEqual(T9PinyinSyllableCatalog.syllableCount, 424)
+        XCTAssertEqual(T9PinyinSyllableCatalog.syllables.count, 424)
         XCTAssertFalse(T9PinyinSyllableCatalog.syllables.contains("xx"))
         XCTAssertTrue(T9PinyinSyllableCatalog.completeSyllables(matchingDigits: "99").isEmpty)
         XCTAssertFalse(T9PinyinSyllableCatalog.sourceLicenseNote.isEmpty)
@@ -51,13 +51,15 @@ final class T9PinyinCatalogTests: XCTestCase {
             compositionRevision: 1
         )
         XCTAssertEqual(paths.map(\.displayText), ["bu", "cu", "a", "b", "c"])
-        XCTAssertEqual(paths.map(\.kind), [
-            .completeSyllable,
-            .completeSyllable,
-            .completeSyllable,
-            .letterPrefix,
-            .letterPrefix,
-        ])
+        XCTAssertEqual(
+            paths.map(\.kind),
+            [
+                .completeSyllable,
+                .completeSyllable,
+                .completeSyllable,
+                .letterPrefix,
+                .letterPrefix,
+            ])
         XCTAssertEqual(paths.map(\.replacementRawInput), ["bu", "cu", "a8", "b8", "c8"])
     }
 
@@ -173,9 +175,11 @@ final class T9PinyinCatalogControllerTests: XCTestCase {
         _ = controller.handle(.insertKey("8"))
 
         let pathState = controller.state.t9PinyinPathState
-        guard let prefixB = pathState.compactPaths.first(where: {
-            $0.displayText == "b" && $0.kind == .letterPrefix
-        }) else {
+        guard
+            let prefixB = pathState.compactPaths.first(where: {
+                $0.displayText == "b" && $0.kind == .letterPrefix
+            })
+        else {
             return XCTFail("missing letter prefix b")
         }
 
@@ -195,9 +199,10 @@ final class T9PinyinCatalogControllerTests: XCTestCase {
         )
         XCTAssertEqual(engine.replaceInputCallCount, 1)
         XCTAssertEqual(engine.candidateWindowCallCount, 0)
-        XCTAssertFalse(client.markedTextHistory.contains { text in
-            text.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
-        })
+        XCTAssertFalse(
+            client.markedTextHistory.contains { text in
+                text.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+            })
     }
 
     func testUsesT9FalseDoesNotLoadCatalogPaths() {

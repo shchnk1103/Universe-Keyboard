@@ -16,6 +16,13 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - 最终本地实现 `3f94073` 进一步为潜在非协作 phase 增加返回后取消检查，并用直接模型测试覆盖 late success、正常成功与未完成 scope 通知条件；聚焦 `23/23`、App `252 passed / 3 device-only skipped`、Keyboard `11/11`、严格 Debug/Release build 均通过，独立 Architecture / Quality delta review 均为 `Pass with conditions`。
 - 正式自然调度、真实 expiration 后 retry、手机通知、`TD-002`、Product Gate、push、merge 与 Release 仍保持开放。预冻结 manifest/receipt 前置包已准备但保持 `HOLD`，证据见 [`docs/evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md`](docs/evidence/rime-background-sync-terminal-lifecycle-2026-08-31.md) 与 [`device preflight`](docs/evidence/rime-background-sync-device-run-preflight-2026-08-31.md)。
 
+## 2026-08-30 — F-02 内置官方朙月拼音离线闭包（Active，未完成 Product Gate）
+
+- 主 App 内置并校验固定版本的朙月拼音、Essay、Prelude、Stroke 与完整启用范围 OpenCC 资源；用户无需额外下载，Keyboard Extension 不再携带第二份可部署资源。
+- 新增确定性生成清单、SHA-256/大小/精确成员校验，以及 staging、备份、回滚和 last-good receipt；资源缺失、篡改或多余成员会在成功标记前 fail closed。
+- 朙月拼音改用官方 schema 加薄 overlay，候选质量 smoke 覆盖 `ni`、`nihao`、`sanjiaoxing`、OpenCC 与 Stroke，模糊音开关均由真实 iOS librime 集成测试验证。
+- 本条只记录 F-02 本地实现与模拟器门禁，不代表真机、Full Access、性能、hosted CI、独立复审、Human Product Gate、合并、TestFlight 或 Release 已通过；PR #91 不在本工作范围内。
+
 ## 2026-08-30 — 收紧 RIME 后台同步过期生命周期
 
 - 两阶段自动同步在标准 RIME 已完成后先切换到 Universe 设置语义，再观察取消；后台时间恰好在阶段间被系统收回时，不再把同一 RIME 范围同时显示为“已更新”和“未完成”。

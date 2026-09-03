@@ -948,10 +948,13 @@ final class RimeSyncViewModel {
 
             // 先把本 App 当前管理的选项刷新成 RIME 标准 .custom.yaml，
             // 再交给 librime 进行快照合并与 YAML/TXT 备份。
-            try await Self.runCancellablePhase {
+            let overlaysAuthorized = try await Self.runCancellablePhase {
                 await Task.detached(priority: .userInitiated) {
                     RimeConfigManager.syncCustomYamlFiles()
                 }.value
+            }
+            guard overlaysAuthorized else {
+                throw RimeStandardSyncError.invalidInstallationConfiguration
             }
             request = RimeStandardSyncRequest(
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir, isDirectory: true),
