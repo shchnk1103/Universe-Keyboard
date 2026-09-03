@@ -2,11 +2,21 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-28 Asia/Shanghai
+> **Updated:** 2026-09-03 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## RIME-BUILTIN-LUNA-QUALITY-001 — F-02 内置朙月候选质量（PR #93）
+
+- **Lifecycle:** `Active` — Human Product Gate Passed for this merge slice
+- **Authority:** [`Assignment`](assignments/rime-builtin-luna-quality-001.md) · [`Gate`](product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`AUTH`](authorizations/AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE.md) · ADR [`0033`](architecture/decisions/0033-main-app-owned-offline-rime-resource-closure.md) `Accepted`
+- **Current evidence:** Architecture / Quality 对 `ecd3446` 均为 `Pass with conditions`；KOS P1 freeze 已 `fix`；hosted CI [`33642643269`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33642643269) 全绿；真机 Q-01/Q-02/Q-04/Q-08 `Device-attested` PASS
+- **Blocker:** none for this merge slice
+- **Non-claims:** 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性
+- **Merged:** [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) `ec6c277`
+- **Next:** 不上传 TestFlight / Release；autodeploy 与转换/反查另开
 
 ## KOS 2.2 advisory pin — 2026-08-27
 
@@ -23,8 +33,8 @@
 
 ## Active Work 收敛 — 2026-08-24
 
-- **Authority:** Human Product Owner 当场拍板；详情以各 Assignment Current Status 为准，摘要见 [`ACTIVE_WORK.md`](ACTIVE_WORK.md)（`3/10`）。
-- **Still Active:** `RELEASE-2026-0801`（外部 TestFlight 候选；目标 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002`
+- **Authority:** Human Product Owner 当场拍板；详情以各 Assignment Current Status 为准，摘要见 [`ACTIVE_WORK.md`](ACTIVE_WORK.md)（`4/10`）。
+- **Still Active:** `RELEASE-2026-0801`（外部 TestFlight 候选；目标 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002` · `RIME-SYNC-001`
 - **Left Active:** `RELEASE-2026-0801-08` → `Closed`（PR #80 merged `54ce3bd`；功能分支已清理）
 - **Left Active:** `DEBUG-KEY-HITBOX-001` → `Closed`（PR #73 merged；Human Product Gate Passed）
 - **Left Active (not Closed / not Product Gate):**
@@ -35,6 +45,16 @@
 - **Redate Decision:** [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md)
 - **External TestFlight Decision:** [`PD-RELEASE-2026-0801-EXTERNAL-TESTFLIGHT-CANDIDATE`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md)
 - **Explicit non-claims:** 本段不关闭任何 Gate，不授权上传/发布。
+
+## RIME-SYNC-001 — RIME 后台自动同步启动崩溃修复
+
+- **Lifecycle:** `Active`
+- **Authority:** [`Assignment`](assignments/rime-sync-001.md) · [`Contract`](RIME_SYNC.md)
+- **Current evidence:** 新载荷由 iOS 自然触发单 operation 自动同步，Diagnostics/v1 与通知均为完成；正式 Run 02 保留 `INVALID` 审计结果。Human Product Owner 已接受范围化工程结论，确认只读日志复制及无关 `long-idle-exit` 属正常行为，暂不重测
+- **Residual:** 旧轮次精确错误、`TD-002`、[`TD-013`](TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) 与 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) 保持开放；复发或路径实质变更时再开启全新预冻结轮次
+- **Non-claims:** 不代表 Product Gate、merge、TestFlight 或 Release 已授权
+- **Review:** process-gate delta 的 [`Architecture`](assignments/rime-sync-001-process-gate-architecture-review.md) / [`Quality`](assignments/rime-sync-001-process-gate-quality-review.md) 均为 `Pass with conditions`；Run 02 最终 Architecture / Quality 均为 `HOLD`，理由记录于运行清单
+- **Next:** 日常观察；不安排重复真机测试，复发或路径实质变更时再重开
 
 ## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
 

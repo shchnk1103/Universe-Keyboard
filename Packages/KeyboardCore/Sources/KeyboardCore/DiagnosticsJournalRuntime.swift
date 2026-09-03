@@ -112,6 +112,29 @@ public final class DiagnosticsJournalRuntime: Sendable {
         )
     }
 
+    /// Records one reviewed automatic-sync payload. The payload contains only
+    /// finite enums and an opaque operation UUID; business execution never
+    /// waits for journal persistence.
+    public func recordRimeSync(
+        _ payload: DiagnosticEvent.RimeSyncPayload,
+        level: Logger.Level = .info
+    ) {
+        let sequence = nextSequence.next()
+        ingress.record(
+            DiagnosticEvent(
+                utcTimestamp: Date(),
+                monotonicNanoseconds: DispatchTime.now().uptimeNanoseconds,
+                origin: origin,
+                processInstanceID: processInstanceID,
+                localSequence: sequence,
+                code: payload.code,
+                level: level,
+                category: .config,
+                rimeSyncPayload: payload
+            )
+        )
+    }
+
     public func requestFlush() {
         ingress.requestFlush()
     }

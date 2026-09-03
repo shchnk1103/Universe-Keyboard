@@ -1,6 +1,8 @@
 import BackgroundTasks
+import Dispatch
 import Foundation
 import KeyboardCore
+import Synchronization
 
 /// 用户可以分别订阅 RIME 标准资料和 Universe 设置的同步通知。
 nonisolated enum RimeSyncNotificationScope: String, CaseIterable, Hashable, Sendable {
@@ -86,7 +88,10 @@ nonisolated enum RimeSyncNotificationEvent: Equatable, Sendable {
             )
 
         case .failed(let mode, let failedScope, let completedScopes, let pendingScopes):
-            let selectedCompleted = enabledScopes.intersection(completedScopes)
+            // 同一范围不能既成功又失败。调用方应保持这个不变量；这里再做一次
+            // fail-closed 归一化，避免生命周期竞态生成自相矛盾的用户通知。
+            let consistentCompletedScopes = completedScopes.subtracting([failedScope])
+            let selectedCompleted = enabledScopes.intersection(consistentCompletedScopes)
             let selectedPending = enabledScopes.intersection(pendingScopes)
 
             if enabledScopes.contains(failedScope) {
@@ -125,6 +130,45 @@ nonisolated enum RimeSyncNotificationEvent: Equatable, Sendable {
     }
 }
 
+/// 管理一次 `BGProcessingTask` 的终止所有权，确保过期与正常返回只有一方完成任务。
+///
+/// expiration callback 的调用队列不受 App 控制，因此这里必须同步抢占终止权，
+/// 不能先异步 hop 到 MainActor，否则正常返回可能越过系统已经发出的过期信号。
+nonisolated final class RimeAutomaticSyncTaskLifecycle: Sendable {
+    enum CompletionClaim: Equatable, Sendable {
+        case succeeded
+        case failed
+    }
+
+    private enum State: Sendable {
+        case active
+        case expirationClaimed
+        case operationClaimed
+    }
+
+    private let state = Mutex(State.active)
+
+    /// expiration 在回调线程同步抢占终止权；返回 `true` 时调用方必须立即取消操作
+    /// 并以失败完成系统任务。
+    @discardableResult
+    func claimExpiration() -> Bool {
+        state.withLock { state in
+            guard state == .active else { return false }
+            state = .expirationClaimed
+            return true
+        }
+    }
+
+    /// 正常返回只有在 expiration 尚未抢占时才能取得终止权。
+    func claimOperationCompletion(operationSucceeded: Bool) -> CompletionClaim? {
+        state.withLock { state in
+            guard state == .active else { return nil }
+            state = .operationClaimed
+            return operationSucceeded ? .succeeded : .failed
+        }
+    }
+}
+
 /// 后台自动同步的系统接入点。
 ///
 /// `BGProcessingTask` 的执行时刻由 iOS 决定；这里仅提交最早可执行时间，并在每次
@@ -133,6 +177,10 @@ nonisolated enum RimeSyncNotificationEvent: Equatable, Sendable {
 final class RimeAutomaticSyncScheduler {
     static let shared = RimeAutomaticSyncScheduler()
     static let taskIdentifier = "com.DoubleShy0N.Universe-Keyboard.rime-standard-sync"
+
+    /// 注册闭包继承 `MainActor` 隔离，因此系统必须从主队列进入该同步边界。
+    /// 实际同步仍由 `handle(_:)` 创建的可取消异步任务执行。
+    static let launchHandlerQueue = DispatchQueue.main
 
     private var hasRegisteredTask = false
 
@@ -144,15 +192,13 @@ final class RimeAutomaticSyncScheduler {
 
         BGTaskScheduler.shared.register(
             forTaskWithIdentifier: Self.taskIdentifier,
-            using: nil
+            using: Self.launchHandlerQueue
         ) { task in
             guard let processingTask = task as? BGProcessingTask else {
                 task.setTaskCompleted(success: false)
                 return
             }
-            Task { @MainActor in
-                Self.shared.handle(processingTask)
-            }
+            Self.shared.handle(processingTask)
         }
     }
 
@@ -190,36 +236,117 @@ final class RimeAutomaticSyncScheduler {
     private func handle(_ task: BGProcessingTask) {
         Logger.shared.info("rimeSync automatic background task started", category: .config)
 
+        let lifecycle = RimeAutomaticSyncTaskLifecycle()
+        let includesPrivateSettings =
+            (UserDefaults.standard.object(
+                forKey: RimeSyncStorageKey.automaticPrivateSettingsEnabled
+            ) as? Bool) ?? true
+        let diagnosticSession = RimeSyncDiagnosticSession(
+            source: .backgroundAutomatic,
+            requestedPhases: includesPrivateSettings
+                ? [.standardRimeData, .privateSettings]
+                : [.standardRimeData]
+        )
+        diagnosticSession.begin()
         let operation = Task { @MainActor in
             let model = RimeSyncViewModel(rimeStore: RimeSettingsStore())
-            let result = await model.synchronizeAutomatically()
-            task.setTaskCompleted(success: result.completedSuccessfully)
-            refreshSchedule()
+            let result = await model.synchronizeAutomatically(
+                diagnosticSession: diagnosticSession
+            )
+            await Self.finishOperation(
+                result: result,
+                lifecycle: lifecycle,
+                recordDiagnosticTerminal: {
+                    diagnosticSession.commitProposedTerminal()
+                },
+                notifyCompletion: { await model.notifyAutomaticCompletion() },
+                reschedule: { self.refreshSchedule() },
+                completeTask: { task.setTaskCompleted(success: $0) }
+            )
         }
         task.expirationHandler = {
-            operation.cancel()
-            Logger.shared.warning("rimeSync automatic background task expired", category: .config)
-            Logger.shared.requestFlush()
+            guard
+                Self.expireOperation(
+                    lifecycle: lifecycle,
+                    recordExpiration: {
+                        diagnosticSession.terminal(.expired)
+                    },
+                    cancel: { operation.cancel() },
+                    completeTask: { task.setTaskCompleted(success: $0) }
+                )
+            else { return }
+            diagnosticSession.terminal(.expired)
+            Task { @MainActor in
+                Logger.shared.warning("rimeSync automatic background task expired", category: .config)
+                Logger.shared.requestFlush()
+                Self.shared.refreshSchedule()
+            }
         }
+    }
+
+    /// 可控的正常返回 seam。只有取得终止权的一方可以完成 BGTask 或发布完成通知。
+    @discardableResult
+    static func finishOperation(
+        result: RimeAutomaticSyncResult,
+        lifecycle: RimeAutomaticSyncTaskLifecycle,
+        recordDiagnosticTerminal: () -> Void = {},
+        notifyCompletion: () async -> Void,
+        reschedule: () -> Void,
+        completeTask: (Bool) -> Void
+    ) async -> Bool {
+        guard
+            let claim = lifecycle.claimOperationCompletion(
+                operationSucceeded: result.completedSuccessfully
+            )
+        else {
+            return false
+        }
+        recordDiagnosticTerminal()
+        let succeeded = claim == .succeeded
+        reschedule()
+        completeTask(succeeded)
+        if succeeded, case .completed = result {
+            await notifyCompletion()
+        }
+        return true
+    }
+
+    /// expiration callback 直接使用的非隔离 seam；失败完成不等待 MainActor hop。
+    @discardableResult
+    nonisolated static func expireOperation(
+        lifecycle: RimeAutomaticSyncTaskLifecycle,
+        recordExpiration: () -> Void = {},
+        cancel: () -> Void,
+        completeTask: (Bool) -> Void
+    ) -> Bool {
+        guard lifecycle.claimExpiration() else { return false }
+        // Persist the system-owned reason before cancellation can resume the
+        // async operation and propose a weaker `.cancelled` terminal.
+        recordExpiration()
+        cancel()
+        completeTask(false)
+        return true
     }
 
     private func nextEligibleDate(defaults: UserDefaults) -> Date? {
         guard defaults.bool(forKey: RimeSyncStorageKey.automaticSyncEnabled),
-              (defaults.object(forKey: RimeSyncStorageKey.automaticStandardRimeDataEnabled) as? Bool)
+            (defaults.object(forKey: RimeSyncStorageKey.automaticStandardRimeDataEnabled) as? Bool)
                 ?? true,
-              defaults.string(forKey: RimeSyncStorageKey.provider) == RimeSyncProvider.localFolder.rawValue,
-              defaults.data(forKey: RimeSyncStorageKey.folderBookmark) != nil,
-              !defaults.bool(forKey: RimeSyncStorageKey.folderSelectionNeedsRepair),
-              let lastAutomaticAttempt = defaults.object(
-                  forKey: RimeSyncStorageKey.lastAutomaticAttempt
-              ) as? Date
+            defaults.string(forKey: RimeSyncStorageKey.provider) == RimeSyncProvider.localFolder.rawValue,
+            defaults.data(forKey: RimeSyncStorageKey.folderBookmark) != nil,
+            !defaults.bool(forKey: RimeSyncStorageKey.folderSelectionNeedsRepair)
         else {
             return nil
         }
 
         return RimeAutomaticSyncPolicy.nextEligibleDate(
-            lastAutomaticAttempt: lastAutomaticAttempt,
-            cadence: automaticCadence(defaults: defaults)
+            lastAutomaticAttempt: defaults.object(
+                forKey: RimeSyncStorageKey.lastAutomaticAttempt
+            ) as? Date,
+            cadence: automaticCadence(defaults: defaults),
+            retryNotBefore: defaults.object(
+                forKey: RimeSyncStorageKey.automaticRetryNotBefore
+            ) as? Date
         )
     }
 

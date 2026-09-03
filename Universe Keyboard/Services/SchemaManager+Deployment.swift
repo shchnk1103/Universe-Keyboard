@@ -51,15 +51,21 @@ extension SchemaManager {
         do {
             directories = try archiveInstaller.deploymentDirectories()
         } catch {
-            Logger.shared.error("deployRimeConfig: App Group 不可用", category: .deployment)
+            // Keep the log content-free while distinguishing preparation from
+            // the later librime deployment transaction.
+            Logger.shared.error(
+                "deployRimeConfig: 内置资源验证或 App Group 准备失败",
+                category: .deployment
+            )
             return false
         }
 
         Logger.shared.info("deployRimeConfig: 开始主 App 端全量部署", category: .deployment)
 
-        await Task.detached(priority: .userInitiated) {
-            RimeConfigManager.syncCustomYamlFiles()
-        }.value
+        // `deploymentDirectories()` commits immutable resources and dynamic
+        // overlays inside one recoverable main-App transaction. Do not repeat
+        // overlay writes here or split their authorization from the base
+        // generation receipt.
         applyAdvancedInputPostProcessing(to: directories.sharedDataURL)
         applyFuzzyPinyinPostProcessing(to: directories.sharedDataURL)
 
@@ -197,6 +203,9 @@ extension SchemaManager {
         }
 
         for schemaID in schemaIDs {
+            // The official Luna source is immutable. Its fuzzy rules live in
+            // luna_pinyin.custom.yaml, generated before deployment.
+            guard schemaID != "luna_pinyin" else { continue }
             let schemaURL = sharedDataURL.appendingPathComponent("\(schemaID).schema.yaml")
             guard let originalYaml = try? String(contentsOf: schemaURL, encoding: .utf8) else {
                 Logger.shared.warning(

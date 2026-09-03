@@ -18,7 +18,11 @@ final class RimeSyncViewModel {
     private let secretStore: RimeSyncSecretStore
     private let coordinator: RimeSyncCoordinator
     private let standardRimeSyncService: any RimeStandardSyncing
+    private let standardRimeSyncRequestFactory: (@MainActor @Sendable () async throws -> RimeStandardSyncRequest)?
     private let notificationService: any AppNotificationNotifying
+    private let processGate: RimeSyncProcessGate
+    private let keyboardActivityDefaults: UserDefaults
+    private let diagnostics: any RimeSyncDiagnosing
 
     var provider: RimeSyncProvider = .none
     var status: RimeSyncStatus = .idle
@@ -44,14 +48,24 @@ final class RimeSyncViewModel {
         secretStore: RimeSyncSecretStore = RimeSyncSecretStore(),
         coordinator: RimeSyncCoordinator = RimeSyncCoordinator(),
         standardRimeSyncService: any RimeStandardSyncing = RimeStandardSyncService(),
-        notificationService: any AppNotificationNotifying = AppNotificationService.shared
+        standardRimeSyncRequestFactory:
+            (@MainActor @Sendable () async throws -> RimeStandardSyncRequest)? = nil,
+        notificationService: any AppNotificationNotifying = AppNotificationService.shared,
+        processGate: RimeSyncProcessGate = .shared,
+        keyboardActivityDefaults: UserDefaults =
+            UserDefaults(suiteName: universeAppGroupID) ?? .standard,
+        diagnostics: any RimeSyncDiagnosing = RimeSyncDiagnostics.live
     ) {
         self.rimeStore = rimeStore
         self.defaults = defaults
         self.secretStore = secretStore
         self.coordinator = coordinator
         self.standardRimeSyncService = standardRimeSyncService
+        self.standardRimeSyncRequestFactory = standardRimeSyncRequestFactory
         self.notificationService = notificationService
+        self.processGate = processGate
+        self.keyboardActivityDefaults = keyboardActivityDefaults
+        self.diagnostics = diagnostics
         provider = RimeSyncProvider(rawValue: defaults.string(forKey: StorageKey.provider) ?? "") ?? .none
         webDAVURL = defaults.string(forKey: StorageKey.webDAVURL) ?? ""
         webDAVUsername = defaults.string(forKey: StorageKey.webDAVUsername) ?? ""
@@ -66,16 +80,38 @@ final class RimeSyncViewModel {
         automaticPrivateSettingsEnabled =
             (defaults.object(forKey: StorageKey.automaticPrivateSettingsEnabled) as? Bool) ?? true
         if automaticSyncEnabled,
-           !automaticStandardRimeDataEnabled,
-           !automaticPrivateSettingsEnabled {
+            !automaticStandardRimeDataEnabled,
+            !automaticPrivateSettingsEnabled
+        {
             // 修复旧状态中的矛盾组合：没有任何同步内容时，总开关不能保持开启。
             automaticSyncEnabled = false
             defaults.set(false, forKey: StorageKey.automaticSyncEnabled)
         }
-        automaticSyncCadence = RimeAutomaticSyncCadence(
-            rawValue: defaults.string(forKey: StorageKey.automaticSyncCadence) ?? ""
-        ) ?? .daily
+        automaticSyncCadence =
+            RimeAutomaticSyncCadence(
+                rawValue: defaults.string(forKey: StorageKey.automaticSyncCadence) ?? ""
+            ) ?? .daily
         status = isConfigured ? .idle : .notConfigured
+    }
+
+    /// 将不可协作取消的阶段统一收口为“返回后再观察取消”。
+    ///
+    /// librime、文件协调或设置应用可能无法在执行中停止；调用方仍必须在它们返回后、
+    /// 写成功时间或进入下一阶段之前 fail closed。
+    @discardableResult
+    static func runCancellablePhase<Result>(
+        _ operation: () async throws -> Result
+    ) async throws -> Result {
+        let result = try await operation()
+        try Task.checkCancellation()
+        return result
+    }
+
+    nonisolated static func shouldNotifyAutomaticCancellation(
+        requestedScopes: Set<RimeSyncNotificationScope>,
+        completedScopes: Set<RimeSyncNotificationScope>
+    ) -> Bool {
+        !requestedScopes.isSubset(of: completedScopes)
     }
 
     var isConfigured: Bool {
@@ -101,7 +137,8 @@ final class RimeSyncViewModel {
         case .syncing(let phase):
             return phase.progressMessage
         case .succeeded(let date, let completion):
-            return "\(completion.message) · \(Self.relativeDateFormatter.localizedString(for: date, relativeTo: Date()))"
+            return
+                "\(completion.message) · \(Self.relativeDateFormatter.localizedString(for: date, relativeTo: Date()))"
         case .failed(let message):
             return message
         }
@@ -237,7 +274,7 @@ final class RimeSyncViewModel {
             guard let url = normalizedWebDAVURL() else { throw RimeSyncError.invalidServerURL }
             guard isSecure(url) else { throw RimeSyncError.insecureServerURL }
             guard !webDAVUsername.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                  !webDAVPassword.isEmpty
+                !webDAVPassword.isEmpty
             else {
                 throw RimeSyncError.missingCredentials
             }
@@ -274,6 +311,12 @@ final class RimeSyncViewModel {
     /// WebDAV 不可作为其他 RIME 前端的 `sync_dir`，因此只执行私密设置同步。
     func synchronizeAllNow() async {
         guard isConfigured, !isSynchronizing else { return }
+        guard let processLease = processGate.claim(source: .manual) else {
+            Logger.shared.info("rimeSync manual sync skipped processBusy=true", category: .config)
+            return
+        }
+        defer { processGate.release(processLease) }
+
         let includesStandardRimeData = canSynchronizeStandardRimeData
         let isFirstStandardSync = includesStandardRimeData && standardRimeLastSuccessDate == nil
         Logger.shared.info(
@@ -281,10 +324,12 @@ final class RimeSyncViewModel {
             category: .config
         )
         var completedNotificationScopes: Set<RimeSyncNotificationScope> = []
-        var activeNotificationScope: RimeSyncNotificationScope = includesStandardRimeData
+        var activeNotificationScope: RimeSyncNotificationScope =
+            includesStandardRimeData
             ? .standardRimeData
             : .privateSettings
-        var pendingNotificationScopes: Set<RimeSyncNotificationScope> = includesStandardRimeData
+        var pendingNotificationScopes: Set<RimeSyncNotificationScope> =
+            includesStandardRimeData
             ? [.privateSettings]
             : []
         await notificationService.notify(
@@ -318,7 +363,8 @@ final class RimeSyncViewModel {
             setStatus(.syncing(.privateSettings))
             let completedAt = try await synchronizePrivateSettings()
             completedNotificationScopes.insert(.privateSettings)
-            let completion: RimeSyncCompletion = includesStandardRimeData
+            let completion: RimeSyncCompletion =
+                includesStandardRimeData
                 ? .standardRimeAndPrivateSettings
                 : .privateSettings
             setStatus(.succeeded(completedAt, completion))
@@ -342,11 +388,12 @@ final class RimeSyncViewModel {
             )
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
-            setStatus(.failed(
-                didPauseLocalFolderSync
-                    ? "无法访问或写入同步目录。同步已暂停，请重新选择一个可写文件夹。"
-                    : error.localizedDescription
-            ))
+            setStatus(
+                .failed(
+                    didPauseLocalFolderSync
+                        ? "无法访问或写入同步目录。同步已暂停，请重新选择一个可写文件夹。"
+                        : error.localizedDescription
+                ))
             Logger.shared.error(
                 "rimeSync manual sync failed code=\(RimeSyncFolderAccess.diagnosticErrorCode(for: error)) "
                     + "localSyncPaused=\(didPauseLocalFolderSync)",
@@ -368,20 +415,56 @@ final class RimeSyncViewModel {
     /// RIME 标准同步。启用自动同步后，这条前台路径也服从用户选择的冷却时间，
     /// 避免每次打开 App 都重复同步并展示成功 Toast。
     func synchronizeIfNeeded(minimumInterval: TimeInterval? = nil) async {
-        guard isConfigured, !isSynchronizing else { return }
-        if provider == .localFolder {
-            guard automaticSyncEnabled, automaticPrivateSettingsEnabled else { return }
+        let diagnosticSession = RimeSyncDiagnosticSession(
+            source: .foregroundAutomatic,
+            requestedPhases: [.privateSettings],
+            diagnostics: diagnostics
+        )
+        diagnosticSession.begin()
+
+        guard isConfigured else {
+            diagnosticSession.skip(.notConfigured)
+            return
         }
-        let effectiveInterval = minimumInterval
+        guard !isSynchronizing else {
+            diagnosticSession.skip(.modelBusy)
+            return
+        }
+        if provider == .localFolder {
+            guard automaticSyncEnabled else {
+                diagnosticSession.skip(.disabled)
+                return
+            }
+            guard automaticPrivateSettingsEnabled else {
+                diagnosticSession.skip(.privateSettingsDisabled)
+                return
+            }
+        }
+        let effectiveInterval =
+            minimumInterval
             ?? (provider == .localFolder ? automaticSyncCadence.interval : 60)
         let persistedLastSuccess = defaults.object(forKey: StorageKey.lastSuccess) as? Date
-        let lastAttempt = automaticSyncEnabled
+        let lastAttempt =
+            automaticSyncEnabled
             ? [
                 defaults.object(forKey: StorageKey.lastForegroundPrivateAttempt) as? Date,
                 persistedLastSuccess ?? lastSuccessDate,
             ].compactMap { $0 }.max()
             : persistedLastSuccess ?? lastSuccessDate
-        if let lastAttempt, Date().timeIntervalSince(lastAttempt) < effectiveInterval { return }
+        if let lastAttempt, Date().timeIntervalSince(lastAttempt) < effectiveInterval {
+            diagnosticSession.skip(.coolingDown)
+            return
+        }
+
+        guard let processLease = processGate.claim(source: .foregroundAutomatic) else {
+            diagnosticSession.skip(.processBusy)
+            Logger.shared.info(
+                "rimeSync automatic private sync skipped processBusy=true",
+                category: .config
+            )
+            return
+        }
+        defer { processGate.release(processLease) }
 
         if provider == .localFolder, automaticSyncEnabled {
             // 失败也算一次自动尝试，防止文件提供器暂时不可用时每次打开 App 都重试。
@@ -389,6 +472,7 @@ final class RimeSyncViewModel {
         }
 
         setStatus(.syncing(.privateSettings))
+        diagnosticSession.phase(.privateSettings, result: .started)
         let notificationScope = RimeSyncNotificationScope.privateSettings
         if provider == .localFolder {
             await notificationService.notify(
@@ -402,14 +486,17 @@ final class RimeSyncViewModel {
         }
         do {
             let completedAt = try await synchronizePrivateSettings()
+            diagnosticSession.phase(.privateSettings, result: .completed)
             setStatus(.succeeded(completedAt, .privateSettings))
             if provider == .localFolder {
                 await notificationService.notify(
                     .completed(mode: .automatic, scopes: [notificationScope])
                 )
             }
+            diagnosticSession.terminal(.completed)
         } catch is CancellationError {
             setStatus(.idle)
+            diagnosticSession.terminal(.cancelled)
             if provider == .localFolder {
                 await notificationService.notify(
                     .failed(
@@ -422,17 +509,23 @@ final class RimeSyncViewModel {
             }
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
-            setStatus(.failed(
-                didPauseLocalFolderSync
-                    ? "无法访问或写入同步目录。同步已暂停，请重新选择一个可写文件夹。"
-                    : error.localizedDescription
-            ))
+            setStatus(
+                .failed(
+                    didPauseLocalFolderSync
+                        ? "无法访问或写入同步目录。同步已暂停，请重新选择一个可写文件夹。"
+                        : error.localizedDescription
+                ))
             Logger.shared.error(
                 "rimeSync automatic private sync failed code=\(RimeSyncFolderAccess.diagnosticErrorCode(for: error)) "
                     + "localSyncPaused=\(didPauseLocalFolderSync)",
                 category: .config
             )
             Logger.shared.requestFlush()
+            diagnosticSession.terminal(
+                .failed,
+                phase: .privateSettings,
+                failure: RimeSyncDiagnosticFailureMapper.failure(for: error)
+            )
             if provider == .localFolder {
                 await notificationService.notify(
                     .failed(
@@ -448,37 +541,94 @@ final class RimeSyncViewModel {
 
     /// 后台自动同步只在主 App 获得系统执行时间后运行。
     /// 它延续官方快照合并路径，但会先检查冷却时间和键盘扩展的活动心跳。
-    func synchronizeAutomatically() async -> RimeAutomaticSyncResult {
-        guard automaticSyncEnabled else { return .skipped(.disabled) }
+    func synchronizeAutomatically(
+        diagnosticSession providedDiagnosticSession: RimeSyncDiagnosticSession? = nil
+    ) async -> RimeAutomaticSyncResult {
+        // A scheduler-provided session defers its terminal event until the
+        // BGTask lifecycle claim is won. Direct callers own their terminal here.
+        let defersDiagnosticTerminal = providedDiagnosticSession != nil
+        let requestedPhases: [DiagnosticEvent.RimeSyncPhase] =
+            automaticPrivateSettingsEnabled
+            ? [.standardRimeData, .privateSettings]
+            : [.standardRimeData]
+        let diagnosticSession =
+            providedDiagnosticSession
+            ?? RimeSyncDiagnosticSession(
+                source: .backgroundAutomatic,
+                requestedPhases: requestedPhases,
+                diagnostics: diagnostics
+            )
+        diagnosticSession.begin()
+
+        guard automaticSyncEnabled else {
+            diagnosticSession.skip(.disabled)
+            return .skipped(.disabled)
+        }
         guard automaticStandardRimeDataEnabled else {
+            diagnosticSession.skip(.standardRimeDataDisabled)
             return .skipped(.standardRimeDataDisabled)
         }
-        guard canSynchronizeStandardRimeData else { return .skipped(.notConfigured) }
+        guard canSynchronizeStandardRimeData else {
+            diagnosticSession.skip(.notConfigured)
+            return .skipped(.notConfigured)
+        }
         guard standardRimeLastSuccessDate != nil else {
+            diagnosticSession.skip(.waitingForFirstManualSync)
             return .skipped(.waitingForFirstManualSync)
         }
-        guard !isSynchronizing else { return .skipped(.alreadyRunning) }
-        guard RimeAutomaticSyncPolicy.isDue(
-            lastAutomaticAttempt: defaults.object(forKey: StorageKey.lastAutomaticAttempt) as? Date,
-            cadence: automaticSyncCadence
-        ) else {
+        guard !isSynchronizing else {
+            diagnosticSession.skip(.modelBusy)
+            return .skipped(.alreadyRunning)
+        }
+        guard
+            RimeAutomaticSyncPolicy.isDue(
+                lastAutomaticAttempt: defaults.object(forKey: StorageKey.lastAutomaticAttempt) as? Date,
+                cadence: automaticSyncCadence
+            )
+        else {
+            diagnosticSession.skip(.coolingDown)
             return .skipped(.coolingDown)
         }
 
-        let sharedDefaults = UserDefaults(suiteName: universeAppGroupID) ?? .standard
-        guard !RimeSyncKeyboardActivity.isKeyboardActive(in: sharedDefaults) else {
+        guard !RimeSyncKeyboardActivity.isKeyboardActive(in: keyboardActivityDefaults) else {
+            let retryNotBefore = Date().addingTimeInterval(
+                RimeAutomaticSyncPolicy.keyboardActiveRetryInterval
+            )
+            defaults.set(retryNotBefore, forKey: StorageKey.automaticRetryNotBefore)
+            diagnosticSession.skip(.keyboardActive)
             Logger.shared.info("rimeSync automatic standard sync skipped keyboardActive=true", category: .config)
             return .skipped(.keyboardActive)
         }
 
+        guard let processLease = processGate.claim(source: .backgroundAutomatic) else {
+            let retryNotBefore = Date().addingTimeInterval(
+                RimeAutomaticSyncPolicy.processBusyRetryInterval
+            )
+            defaults.set(retryNotBefore, forKey: StorageKey.automaticRetryNotBefore)
+            diagnosticSession.skip(.processBusy)
+            Logger.shared.info(
+                "rimeSync automatic standard sync skipped processBusy=true",
+                category: .config
+            )
+            return .skipped(.alreadyRunning)
+        }
+        defer { processGate.release(processLease) }
+
         let startedAt = Date()
         defaults.set(startedAt, forKey: StorageKey.lastAutomaticAttempt)
+        defaults.removeObject(forKey: StorageKey.automaticRetryNotBefore)
         var completedNotificationScopes: Set<RimeSyncNotificationScope> = []
+        let requestedNotificationScopes: Set<RimeSyncNotificationScope> =
+            automaticPrivateSettingsEnabled
+            ? [.standardRimeData, .privateSettings]
+            : [.standardRimeData]
         var activeNotificationScope = RimeSyncNotificationScope.standardRimeData
-        var pendingNotificationScopes: Set<RimeSyncNotificationScope> = automaticPrivateSettingsEnabled
+        var pendingNotificationScopes: Set<RimeSyncNotificationScope> =
+            automaticPrivateSettingsEnabled
             ? [.privateSettings]
             : []
         setStatus(.syncing(.standardRimeData))
+        diagnosticSession.phase(.standardRimeData, result: .started)
         Logger.shared.info("rimeSync automatic standard sync started", category: .config)
         await notificationService.notify(
             .phaseStarted(
@@ -492,13 +642,16 @@ final class RimeSyncViewModel {
         do {
             try Task.checkCancellation()
             try await synchronizeStandardRimeData()
+            diagnosticSession.phase(.standardRimeData, result: .completed)
             completedNotificationScopes.insert(.standardRimeData)
-            try Task.checkCancellation()
 
             let completedAt: Date
             if automaticPrivateSettingsEnabled {
+                // 标准阶段完成后先切换语义状态，再观察取消。否则系统恰好在两阶段
+                // 之间收回后台时间时，通知会把已完成的标准资料再次标成失败。
                 activeNotificationScope = .privateSettings
                 pendingNotificationScopes = []
+                try Task.checkCancellation()
                 await notificationService.notify(
                     .phaseStarted(
                         mode: .automatic,
@@ -508,37 +661,57 @@ final class RimeSyncViewModel {
                     )
                 )
                 setStatus(.syncing(.privateSettings))
+                diagnosticSession.phase(.privateSettings, result: .started)
+                try Task.checkCancellation()
                 completedAt = try await synchronizePrivateSettings()
+                diagnosticSession.phase(.privateSettings, result: .completed)
                 completedNotificationScopes.insert(.privateSettings)
+                try Task.checkCancellation()
                 setStatus(.succeeded(completedAt, .standardRimeAndPrivateSettings))
             } else {
                 completedAt = standardRimeLastSuccessDate ?? Date()
+                try Task.checkCancellation()
                 setStatus(.succeeded(completedAt, .standardRimeData))
             }
             Logger.shared.info("rimeSync automatic standard sync completed", category: .config)
-            await notificationService.notify(
-                .completed(mode: .automatic, scopes: completedNotificationScopes)
-            )
+            if defersDiagnosticTerminal {
+                diagnosticSession.proposeTerminal(.completed)
+            } else {
+                diagnosticSession.terminal(.completed)
+            }
             return .completed(completedAt)
         } catch is CancellationError {
             setStatus(.idle)
+            if defersDiagnosticTerminal {
+                diagnosticSession.proposeTerminal(.cancelled)
+            } else {
+                diagnosticSession.terminal(.cancelled)
+            }
             Logger.shared.warning("rimeSync automatic standard sync cancelled", category: .config)
-            await notificationService.notify(
-                .failed(
-                    mode: .automatic,
-                    failedScope: activeNotificationScope,
-                    completedScopes: completedNotificationScopes,
-                    pendingScopes: pendingNotificationScopes
+            // 最终阶段已返回时，scope 事实已记录；此时 expiration 只需由
+            // scheduler 抑制成功通知，不再发送与实际阶段相矛盾的失败通知。
+            if Self.shouldNotifyAutomaticCancellation(
+                requestedScopes: requestedNotificationScopes,
+                completedScopes: completedNotificationScopes
+            ) {
+                await notificationService.notify(
+                    .failed(
+                        mode: .automatic,
+                        failedScope: activeNotificationScope,
+                        completedScopes: completedNotificationScopes,
+                        pendingScopes: pendingNotificationScopes
+                    )
                 )
-            )
+            }
             return .skipped(.cancelled)
         } catch {
             let didPauseLocalFolderSync = pauseLocalFolderSyncIfNeeded(after: error)
-            setStatus(.failed(
-                didPauseLocalFolderSync
-                    ? "无法访问或写入同步目录。自动同步已暂停，请重新选择一个可写文件夹。"
-                    : "自动同步未完成，会在下个同步周期再试。"
-            ))
+            setStatus(
+                .failed(
+                    didPauseLocalFolderSync
+                        ? "无法访问或写入同步目录。自动同步已暂停，请重新选择一个可写文件夹。"
+                        : "自动同步未完成，会在下个同步周期再试。"
+                ))
             Logger.shared.error(
                 "rimeSync automatic standard sync failed code="
                     + "\(RimeSyncFolderAccess.diagnosticErrorCode(for: error)) "
@@ -546,6 +719,24 @@ final class RimeSyncViewModel {
                 category: .config
             )
             Logger.shared.requestFlush()
+            let diagnosticPhase: DiagnosticEvent.RimeSyncPhase =
+                activeNotificationScope == .standardRimeData
+                ? .standardRimeData
+                : .privateSettings
+            let diagnosticFailure = RimeSyncDiagnosticFailureMapper.failure(for: error)
+            if defersDiagnosticTerminal {
+                diagnosticSession.proposeTerminal(
+                    .failed,
+                    phase: diagnosticPhase,
+                    failure: diagnosticFailure
+                )
+            } else {
+                diagnosticSession.terminal(
+                    .failed,
+                    phase: diagnosticPhase,
+                    failure: diagnosticFailure
+                )
+            }
             await notificationService.notify(
                 .failed(
                     mode: .automatic,
@@ -556,6 +747,16 @@ final class RimeSyncViewModel {
             )
             return .failed
         }
+    }
+
+    /// 只有 BGTask lifecycle 抢到成功终止权后才允许发布完成通知。
+    /// expiration 已先完成系统任务时，scheduler 不会调用这里。
+    func notifyAutomaticCompletion() async {
+        var scopes: Set<RimeSyncNotificationScope> = [.standardRimeData]
+        if automaticPrivateSettingsEnabled {
+            scopes.insert(.privateSettings)
+        }
+        await notificationService.notify(.completed(mode: .automatic, scopes: scopes))
     }
 
     func setAutomaticSyncEnabled(_ enabled: Bool) {
@@ -623,6 +824,7 @@ final class RimeSyncViewModel {
             defaults.removeObject(forKey: StorageKey.automaticPrivateSettingsEnabled)
             defaults.removeObject(forKey: StorageKey.automaticSyncCadence)
             defaults.removeObject(forKey: StorageKey.lastAutomaticAttempt)
+            defaults.removeObject(forKey: StorageKey.automaticRetryNotBefore)
             defaults.removeObject(forKey: StorageKey.lastForegroundPrivateAttempt)
             provider = .none
             folderName = nil
@@ -676,13 +878,17 @@ final class RimeSyncViewModel {
             values: rimeStore.portableSyncValues(),
             deviceID: deviceID
         )
-        let result = try await coordinator.synchronize(
-            localProfile: localProfile,
-            keyData: keyData,
-            transport: transport
-        )
+        let result = try await Self.runCancellablePhase {
+            try await coordinator.synchronize(
+                localProfile: localProfile,
+                keyData: keyData,
+                transport: transport
+            )
+        }
         try saveProfile(result.profile)
-        await rimeStore.applyPortableSyncValues(result.profile.scalarValues)
+        try await Self.runCancellablePhase {
+            await rimeStore.applyPortableSyncValues(result.profile.scalarValues)
+        }
 
         let completedAt = Date()
         lastSuccessDate = completedAt
@@ -698,6 +904,7 @@ final class RimeSyncViewModel {
         }
         // 手动同步是自动模式的安全起点；冷却时间从这次尝试开始，避免刚完成就重复执行。
         defaults.set(Date(), forKey: StorageKey.lastAutomaticAttempt)
+        defaults.removeObject(forKey: StorageKey.automaticRetryNotBefore)
         defaults.set(Date(), forKey: StorageKey.lastForegroundPrivateAttempt)
         RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
     }
@@ -722,31 +929,46 @@ final class RimeSyncViewModel {
         defaults.removeObject(forKey: StorageKey.automaticStandardRimeDataEnabled)
         defaults.removeObject(forKey: StorageKey.automaticPrivateSettingsEnabled)
         defaults.removeObject(forKey: StorageKey.lastAutomaticAttempt)
+        defaults.removeObject(forKey: StorageKey.automaticRetryNotBefore)
         defaults.removeObject(forKey: StorageKey.lastForegroundPrivateAttempt)
         defaults.removeObject(forKey: StorageKey.standardRimeLastSuccess)
         RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
     }
 
     private func synchronizeStandardRimeData() async throws {
-        guard let directories = RimeConfigManager.runtimeDirectories() else {
-            throw RimeStandardSyncError.unavailableUserDirectory
-        }
-        let syncDirectoryURL = try selectedFolderURL()
+        let request: RimeStandardSyncRequest
+        if let standardRimeSyncRequestFactory {
+            // 测试 seam 只替换 App Group / bookmark 前置准备；生产始终走下方真实路径。
+            request = try await standardRimeSyncRequestFactory()
+        } else {
+            guard let directories = RimeConfigManager.runtimeDirectories() else {
+                throw RimeStandardSyncError.unavailableUserDirectory
+            }
+            let syncDirectoryURL = try selectedFolderURL()
 
-        // 先把本 App 当前管理的选项刷新成 RIME 标准 .custom.yaml，
-        // 再交给 librime 进行快照合并与 YAML/TXT 备份。
-        await Task.detached(priority: .userInitiated) {
-            RimeConfigManager.syncCustomYamlFiles()
-        }.value
-
-        try await standardRimeSyncService.synchronize(
-            RimeStandardSyncRequest(
+            // 先把本 App 当前管理的选项刷新成 RIME 标准 .custom.yaml，
+            // 再交给 librime 进行快照合并与 YAML/TXT 备份。
+            let overlaysAuthorized = try await Self.runCancellablePhase {
+                await Task.detached(priority: .userInitiated) {
+                    RimeConfigManager.syncCustomYamlFiles()
+                }.value
+            }
+            guard overlaysAuthorized else {
+                throw RimeStandardSyncError.invalidInstallationConfiguration
+            }
+            request = RimeStandardSyncRequest(
                 sharedDataURL: URL(fileURLWithPath: directories.sharedDir, isDirectory: true),
                 userDataURL: URL(fileURLWithPath: directories.userDir, isDirectory: true),
                 syncDirectoryURL: syncDirectoryURL,
                 installationID: standardRimeInstallationID
             )
-        )
+        }
+        // YAML 刷新不可协作取消；返回后先闭合过期状态，避免再启动
+        // 同样不可取消的 librime 标准维护。最终成功发布仍由 scheduler 终态门决定。
+
+        try await Self.runCancellablePhase {
+            try await standardRimeSyncService.synchronize(request)
+        }
 
         let completedAt = Date()
         standardRimeLastSuccessDate = completedAt
@@ -824,7 +1046,7 @@ final class RimeSyncViewModel {
 
     private func loadProfile() -> RimeSyncProfile {
         guard let data = defaults.data(forKey: StorageKey.profile),
-              let profile = try? JSONDecoder().decode(RimeSyncProfile.self, from: data)
+            let profile = try? JSONDecoder().decode(RimeSyncProfile.self, from: data)
         else {
             return RimeSyncProfile()
         }
@@ -840,16 +1062,17 @@ final class RimeSyncViewModel {
     private func normalizedWebDAVURL() -> URL? {
         let trimmed = webDAVURL.trimmingCharacters(in: .whitespacesAndNewlines)
         guard var components = URLComponents(string: trimmed),
-              let scheme = components.scheme?.lowercased(),
-              scheme == "https" || scheme == "http",
-              components.host != nil,
-              components.user == nil,
-              components.password == nil
+            let scheme = components.scheme?.lowercased(),
+            scheme == "https" || scheme == "http",
+            components.host != nil,
+            components.user == nil,
+            components.password == nil
         else {
             return nil
         }
-        components.path = components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-            .isEmpty ? "" : "/" + components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        components.path =
+            components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+                .isEmpty ? "" : "/" + components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         return components.url
     }
 

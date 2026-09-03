@@ -112,6 +112,25 @@ universe-rime-sync/
 - Extension 正在使用 RIME 时，不替换 `Rime/user` 或运行用户数据合并。
 - V1 配置同步可以在不接触运行中 `userdb` 的前提下交付。
 
+## Automatic Sync Diagnostics V1 Contract
+
+前台自动私密设置同步与后台自动标准同步必须把可观测闭环写入本机
+`Diagnostics/v1`，不能继续以 legacy `rime_diag_log` 作为唯一真机取证来源。
+每次入口生成独立 operation ID，并以有限枚举记录：
+
+- 来源：前台自动或后台自动；
+- 阶段：RIME 标准资料或 Universe 私密设置；
+- 结果：invoked、phase started/completed、skipped，以及唯一的
+  completed/failed/cancelled/expired 终态；
+- 跳过原因：关闭、未配置、首次手动同步未完成、冷却、键盘活跃或进程 gate 忙；
+- 失败分类：仅使用经过审查的本地有限枚举。
+
+同一 operation ID 最多出现一个终态；BGTask expiration 与迟到的异步取消/返回
+必须竞争同一个诊断终态所有权。诊断写入、过滤、队列满或 App Group 不可用只能
+降低可观测性，不能改变同步结果、通知、重试、gate lease 或 BGTask completion。
+事件不得包含路径、文件名、bookmark、任意 NSError domain/text、词典、候选、
+输入内容、密钥或凭据，也不得进入 Universe 私密同步包或网络传输。
+
 ## Acceptance
 
 - 同一 RIME `sync_dir` 在 iPhone、macOS、Windows、Linux 和 Android 的目标前端上可完成官方词典快照合并，并保留每设备 YAML/TXT 备份。

@@ -285,22 +285,23 @@ Current integration ownership and boundaries are defined in
 ### RIME Settings Sync Fails Or Repeats
 
 1. Confirm the failure is in the main App. The Keyboard Extension never performs network, private sync or RIME standard sync work.
-2. For WebDAV, verify the URL is HTTPS, credentials have read/write/create/delete permission and the service supports `GET`, `PUT`, `MKCOL`, `DELETE` and conditional requests.
-3. HTTP 401/403 is an authentication or permission failure; 412 is a concurrent-write conflict and should be retried from a fresh `GET`; 507 is remote storage exhaustion.
-4. For local-folder sync, first confirm diagnostics contains the non-sensitive `rimeSync folder selection` outcome. `preflight.coordinate` / `preflight.write` / `preflight.read` / `preflight.delete` identify the failed access stage; `bookmark` means the directory was accessible but its persistent authorization could not be saved. A failed selection pauses sync rather than falling back to the previous directory; reselect the folder and retry. Both paths use `NSFileCoordinator` and the file provider's coordinated URL.
-5. “数据损坏或密钥不匹配” is fail-closed authenticated-decryption behavior. Verify the recovery code; never bypass authentication or replace remote data automatically.
-6. Inspect `universe-rime-sync/format.json` and the existence/size of `profiles/default/settings.json`, but do not paste decrypted user settings or credentials into logs.
-7. If upload succeeds but keyboard behavior is unchanged, inspect the normal RIME deployment state separately. Remote persistence and local deployment are distinct operations.
-8. If two devices change the same field offline, the larger logical version and then device ID wins deterministically. Different fields should both survive.
-9. “立即同步” only runs standard user-data sync after explicit confirmation with a local/file-provider folder. Confirm the keyboard is not being used, then verify `Rime/user/installation.yaml` points to the selected `sync_dir`.
-10. Standard sync merges `*.userdb.txt` snapshots and backs up YAML/TXT per device. It does not copy live `*.userdb*`, auto-import another device's YAML, or sync a complete schema installation.
-11. User dictionaries and custom YAML are intentionally absent from the encrypted `universe-rime-sync` package; their absence from that package is not a failure when standard RIME sync is configured.
-12. For automatic standard sync, first confirm an initial manual standard sync succeeded. Then check `rimeSync automatic background task scheduled` and the result logs. `keyboardActive=true` means the App intentionally skipped the run; folder-access failure pauses sync and requires reselecting the folder. iOS can delay a background task, so a missing run at the earliest time is not by itself a product failure.
-13. Foreground private-settings maintenance requires both the automatic-sync master switch and “Universe 设置同步” child switch, and follows the selected daily or seven-day cooldown. Background standard sync also requires the master switch and “RIME 标准同步” child switch. The first successful manual sync only unlocks eligibility and resets both cooldown clocks; it must not enable the master switch. Missing child-switch values migrate to enabled without changing the master switch. Turning off the last child must also persist the master switch as disabled.
-14. For notifications, inspect `rimeSync notification scheduled` or `rimeSync notification skipped master=... category=... authorization=...`. A skipped event means the App total switch, RIME category, selected notification scopes or current system authorization blocked delivery; it is independent of whether automatic sync ran. Confirm the notification subject matches the phase that actually ran: RIME standard data, Universe settings or both. When both notification scopes are selected, one complete operation should combine its start/result messages; when only one is selected, another phase's failure must not be attributed to it. Payloads must never include paths, dictionary entries, recovery codes or input content.
-15. If the RIME page and global notification page appear inconsistent, confirm both receive the root `AppNotificationSettingsModel`, then check `app_notifications_enabled`, `rime_standard_sync_notifications_enabled`, `rime_standard_data_notifications_enabled` and `rime_private_settings_notifications_enabled`. Do not add a second view-local or RIME ViewModel boolean as a repair. These notification keys must never mutate `rime_standard_auto_sync_enabled` or `rime_private_auto_sync_enabled`.
-16. If a foreground sync shows both Toast and notification banner/sound, verify the scheduled request contains the known category and `prefersToastWhenForeground` metadata. Toast-enabled known events should use notification-center list only; unknown future categories must retain banner/sound.
-17. If operation Toasts still appear after being disabled, check `app_operation_toasts_enabled` at the root `ContentView` overlay and `presentToast` gate. Detail-page status should remain visible and must not be mistaken for a global Toast.
+2. On builds containing `RIME-SYNC-DIAGNOSTICS-V1-001`, search Diagnostics/v1 for `rime_sync`. Correlate records by the opaque operation ID: `invoked` identifies foreground/background automatic entry, `phase_changed` identifies standard/private start or completion, `skipped` gives a finite non-error reason such as `process_busy`, and `terminal` gives exactly one completed/failed/cancelled/expired outcome. These events intentionally contain no path, bookmark, raw error, filename, dictionary or input content. Older builds wrote RIME sync messages only to the legacy store, so an empty v1 search cannot recover or disprove an old run's exact error.
+3. For WebDAV, verify the URL is HTTPS, credentials have read/write/create/delete permission and the service supports `GET`, `PUT`, `MKCOL`, `DELETE` and conditional requests.
+4. HTTP 401/403 is an authentication or permission failure; 412 is a concurrent-write conflict and should be retried from a fresh `GET`; 507 is remote storage exhaustion.
+5. For local-folder sync, first confirm diagnostics contains the non-sensitive `rimeSync folder selection` outcome. `preflight.coordinate` / `preflight.write` / `preflight.read` / `preflight.delete` identify the failed access stage; `bookmark` means the directory was accessible but its persistent authorization could not be saved. A failed selection pauses sync rather than falling back to the previous directory; reselect the folder and retry. Both paths use `NSFileCoordinator` and the file provider's coordinated URL.
+6. “数据损坏或密钥不匹配” is fail-closed authenticated-decryption behavior. Verify the recovery code; never bypass authentication or replace remote data automatically.
+7. Inspect `universe-rime-sync/format.json` and the existence/size of `profiles/default/settings.json`, but do not paste decrypted user settings or credentials into logs.
+8. If upload succeeds but keyboard behavior is unchanged, inspect the normal RIME deployment state separately. Remote persistence and local deployment are distinct operations.
+9. If two devices change the same field offline, the larger logical version and then device ID wins deterministically. Different fields should both survive.
+10. “立即同步” only runs standard user-data sync after explicit confirmation with a local/file-provider folder. Confirm the keyboard is not being used, then verify `Rime/user/installation.yaml` points to the selected `sync_dir`.
+11. Standard sync merges `*.userdb.txt` snapshots and backs up YAML/TXT per device. It does not copy live `*.userdb*`, auto-import another device's YAML, or sync a complete schema installation.
+12. User dictionaries and custom YAML are intentionally absent from the encrypted `universe-rime-sync` package; their absence from that package is not a failure when standard RIME sync is configured.
+13. For automatic standard sync, first confirm an initial manual standard sync succeeded. Then check `rimeSync automatic background task scheduled` and the result logs. `keyboardActive=true` means the App intentionally skipped the run; folder-access failure pauses sync and requires reselecting the folder. iOS can delay a background task, so a missing run at the earliest time is not by itself a product failure.
+14. Foreground private-settings maintenance requires both the automatic-sync master switch and “Universe 设置同步” child switch, and follows the selected daily or seven-day cooldown. Background standard sync also requires the master switch and “RIME 标准同步” child switch. The first successful manual sync only unlocks eligibility and resets both cooldown clocks; it must not enable the master switch. Missing child-switch values migrate to enabled without changing the master switch. Turning off the last child must also persist the master switch as disabled.
+15. For notifications, inspect `rimeSync notification scheduled` or `rimeSync notification skipped master=... category=... authorization=...`. A skipped event means the App total switch, RIME category, selected notification scopes or current system authorization blocked delivery; it is independent of whether automatic sync ran. Confirm the notification subject matches the phase that actually ran: RIME standard data, Universe settings or both. When both notification scopes are selected, one complete operation should combine its start/result messages; when only one is selected, another phase's failure must not be attributed to it. Payloads must never include paths, dictionary entries, recovery codes or input content.
+16. If the RIME page and global notification page appear inconsistent, confirm both receive the root `AppNotificationSettingsModel`, then check `app_notifications_enabled`, `rime_standard_sync_notifications_enabled`, `rime_standard_data_notifications_enabled` and `rime_private_settings_notifications_enabled`. Do not add a second view-local or RIME ViewModel boolean as a repair. These notification keys must never mutate `rime_standard_auto_sync_enabled` or `rime_private_auto_sync_enabled`.
+17. If a foreground sync shows both Toast and notification banner/sound, verify the scheduled request contains the known category and `prefersToastWhenForeground` metadata. Toast-enabled known events should use notification-center list only; unknown future categories must retain banner/sound.
+18. If operation Toasts still appear after being disabled, check `app_operation_toasts_enabled` at the root `ContentView` overlay and `presentToast` gate. Detail-page status should remain visible and must not be mistaken for a global Toast.
 
 ## Crash, Performance And Memory
 
@@ -320,6 +321,34 @@ crash vs Jetsam classification, exact UUID/dSYM binding, Xcode/`atos`
 symbolication, privacy-safe storage and the content-free receipt—follow
 [`CRASH_JETSAM_SYMBOLICATION.md`](CRASH_JETSAM_SYMBOLICATION.md). Do not diagnose
 an Extension termination from a screenshot or Console excerpt alone.
+
+### Main App Crashes When A RIME Background Task Starts
+
+An `EXC_BREAKPOINT` / `SIGTRAP` whose first project frame is
+`closure #1 in RimeAutomaticSyncScheduler.registerBackgroundTask()` and whose
+system frames include `_dispatch_assert_queue_fail` plus
+`_swift_task_checkIsolatedSwift` is an executor mismatch at the BackgroundTasks
+entry point. It occurs before folder access, librime synchronization or notification
+delivery, so do not classify it as corrupt RIME data or a file-provider failure.
+
+`RimeAutomaticSyncScheduler` is `MainActor`-isolated. Its synchronous launch
+handler must therefore be registered on `DispatchQueue.main`; the handler then
+creates the cancellable asynchronous operation that performs the actual sync.
+Do not use unsafe isolation or move synchronization into the Keyboard Extension.
+
+After a repair, verify the queue invariant and automatic-success notification
+tests, then use Apple's device-only BackgroundTasks debugger launch and expiration
+commands. A Simulator pass does not prove natural scheduling, background folder
+bookmark access, lock-screen notification delivery or the absence of a new crash
+on the affected OS. Preserve the exact TestFlight build, device/OS and report UUID.
+
+If one result says the same RIME standard scope was both “updated” and
+“incomplete”, inspect the cancellation boundary between standard RIME data and
+private App settings. That payload means the standard completion was recorded
+while failure attribution still pointed at the old phase; it is not evidence of
+corrupt RIME data. The failure renderer must also remove the failed scope from
+completed scopes defensively. Correlate with the background-task expiration log
+before claiming expiration as a confirmed device cause.
 
 ### Extension Repeatedly Crashes Before The Keyboard Appears
 

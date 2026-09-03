@@ -8,10 +8,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Assignment Pending` |
-| **Phase** | Build 7 internal TestFlight Human feedback captured as three separate findings; tester device/layout/Full Access and F-03 region/network/scheme facts are partially captured; no implementation track has entered `Ready` |
-| **Non-claims** | No root cause is established for F-01/F-02; builtin multi-character failure is not yet proven to be an intentional Luna limitation; F-03 on TestFlight testers is still Build 7 and does not include PR #83 |
-| **Next** | Capture F-02's non-private input/host-App behavior. F-03 engineering slice is Closed on `main` via PR #83; a new TestFlight build is required before testers can use that fix |
-| **Residuals** | [`2026-08-25 internal TestFlight feedback`](../evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) |
+| **Phase** | Build 7 feedback remains historical; F-02 执行在 `RIME-BUILTIN-LUNA-QUALITY-001` / PR #93，待 Human Product Gate；F-03 engineering slice is Closed |
+| **Non-claims** | The original Build 7 / iPhone 16 Pro / iOS 18 multi-character root cause remains unknown; F-02 真机通过不等于 TestFlight 接受或本 Assignment Exit |
+| **Next** | F-02 PR #93 merged `ec6c277`；F-03 tester use still needs a new TestFlight build |
+| **Residuals** | [`2026-08-25 internal feedback`](../evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`F-02 repair Assignment`](rime-builtin-luna-quality-001.md) · [`F-02 proposed Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) |
 
 ---
 
@@ -63,7 +63,7 @@
 | ID | Human observation | Current release impact | Required next evidence |
 |---|---|---|---|
 | `F-01` | A first-time user unfamiliar with RIME found scheme selection and deployment confusing on first launch | Activation/product-language gap candidate; severity pending | Fresh-install journey, exact screen/step, expected plain-language outcome and whether the user could complete without coaching |
-| `F-02` | Before using 雾凇 or 万象, the reported builtin scheme could commit one Chinese character but failed when composing two or more characters at once | `P1` candidate because usable out-of-box sentence input may be broken; root cause remains unknown | On iPhone 16 Pro / iOS 18 / 26-key / Full Access off, confirm exact OS build, active schema, non-private raw input, candidates/marked text, host App, reproducibility and whether this is config/resource/runtime rather than intended vocabulary depth |
+| `F-02` | Before using 雾凇 or 万象, the reported builtin scheme could commit one Chinese character but failed when composing two or more characters at once | `P1` candidate. A later local build on iPhone 13 Pro / iOS 27 can compose `三角形`, but stable reproduction proves the built-in full table lacks normal preset weighting and ranks rare characters before `你/你好` | Execute [`RIME-BUILTIN-LUNA-QUALITY-001`](rime-builtin-luna-quality-001.md) using the accepted official runtime closure after roles, immutable pins and Architecture review are complete; preserve the original Build 7 root cause as `UNKNOWN` until separately reproduced |
 | `F-03` | 雾凇 download failed on Mainland China cellular without VPN; the remembered error contained “network”, but the exact text/code was not captured | Product Lead marked **urgent / plan advanced**; blocker for broader external testing where recommended schemes must be obtainable without private network workarounds | Decide and pilot [`RIME-SCHEME-DELIVERY-001`](rime-scheme-delivery-001.md): maintainer-linked Mainland candidates, immutable manifest/SHA-256, bounded endpoint selection, localized error recovery and a region/network matrix. Exact original error remains useful but is no longer a prerequisite for beginning the bounded pilot |
 
 ## Gates
@@ -93,6 +93,8 @@
   triggers.
 - **F-03 Delivery Handoff:** [`RIME-SCHEME-DELIVERY-001`](rime-scheme-delivery-001.md)
   and its [`source research`](../evidence/rime-scheme-delivery-source-research-2026-08-25.md).
+- **F-02 Repair Handoff:** [`RIME-BUILTIN-LUNA-QUALITY-001`](rime-builtin-luna-quality-001.md)
+  and its [`current reproduction/resource audit`](../evidence/rime-builtin-luna-quality-f02-2026-08-29.md).
 - **Revalidation Trigger:** build, first-run journey, builtin resources, scheme
   catalog/source URL, checksum/license contract, region/network path, iOS/RIME
   runtime or release-channel change.

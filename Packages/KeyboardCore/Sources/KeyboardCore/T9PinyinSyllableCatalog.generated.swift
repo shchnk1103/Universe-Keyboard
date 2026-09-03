@@ -4,49 +4,51 @@ import Foundation
 
 /// Compile-time T9 syllable catalog extracted from luna_pinyin.dict.yaml (ADR 0023).
 public enum T9PinyinSyllableCatalog {
-    public static let generatorVersion = "2"
-    public static let sourceRelativePath = "Keyboard/Resources/luna_pinyin.dict.yaml"
-    public static let sourceVersion = "0.12.20120711"
-    public static let sourceSHA256 = "971baa1f38a42d3d82f858b5bbdcad6482371f8d93a2f5d5c4ab341046419e3b"
-    public static let syllableCount = 417
-    public static let sourceLicenseNote = "Derived from in-repo luna_pinyin.dict.yaml; upstream rime-luna-pinyin is LGPL-3.0. See docs/architecture/t9-pinyin-syllable-catalog.md."
+    public static let generatorVersion = "3"
+    public static let sourceRelativePath = "Universe Keyboard/RimeBuiltin/luna_pinyin.dict.yaml"
+    public static let sourceVersion = "2024.02.10"
+    public static let sourceSHA256 = "75bcf6eb3ff62b129882ed89cc22b2d80a5347aa72bcfa2ccc839bac298e7314"
+    public static let syllableCount = 424
+    public static let sourceLicenseNote =
+        "Derived from in-repo luna_pinyin.dict.yaml; upstream rime-luna-pinyin is LGPL-3.0. See docs/architecture/t9-pinyin-syllable-catalog.md."
 
     /// Unique lowercase legal syllables in stable catalog order.
     public static let syllables: [String] = [
         "a", "ai", "an", "ang", "ao", "ba", "bai", "ban", "bang", "bao", "bei", "ben", "beng",
-        "bi", "bian", "biao", "bie", "bin", "bing", "bo", "bu", "ca", "cai", "can", "cang", "cao",
-        "ce", "cen", "ceng", "cha", "chai", "chan", "chang", "chao", "che", "chen", "cheng", "chi",
-        "chong", "chou", "chu", "chua", "chuai", "chuan", "chuang", "chui", "chun", "chuo", "ci",
-        "cong", "cou", "cu", "cuan", "cui", "cun", "cuo", "da", "dai", "dan", "dang", "dao", "de",
-        "dei", "den", "deng", "di", "dia", "dian", "diao", "die", "ding", "diu", "dong", "dou",
-        "du", "duan", "dui", "dun", "duo", "e", "eh", "ei", "en", "eng", "er", "fa", "fan", "fang",
-        "fei", "fen", "feng", "fiao", "fo", "fong", "fou", "fu", "ga", "gai", "gan", "gang", "gao",
-        "ge", "gei", "gen", "geng", "gong", "gou", "gu", "gua", "guai", "guan", "guang", "gui",
-        "gun", "guo", "ha", "hai", "han", "hang", "hao", "he", "hei", "hen", "heng", "hong", "hou",
-        "hu", "hua", "huai", "huan", "huang", "hui", "hun", "huo", "ji", "jia", "jian", "jiang",
-        "jiao", "jie", "jin", "jing", "jiong", "jiu", "ju", "juan", "jue", "jun", "ka", "kai",
-        "kan", "kang", "kao", "ke", "ken", "keng", "kong", "kou", "ku", "kua", "kuai", "kuan",
-        "kuang", "kui", "kun", "kuo", "la", "lai", "lan", "lang", "lao", "le", "lei", "leng", "li",
-        "lia", "lian", "liang", "liao", "lie", "lin", "ling", "liu", "lo", "long", "lou", "lu",
-        "luan", "lun", "luo", "lv", "lvan", "lve", "ma", "mai", "man", "mang", "mao", "me", "mei",
-        "men", "meng", "mi", "mian", "miao", "mie", "min", "ming", "miu", "mo", "mou", "mu", "na",
-        "nai", "nan", "nang", "nao", "ne", "nei", "nen", "neng", "ni", "nia", "nian", "niang",
-        "niao", "nie", "nin", "ning", "niu", "nong", "nou", "nu", "nuan", "nun", "nuo", "nv",
-        "nve", "o", "ou", "pa", "pai", "pan", "pang", "pao", "pei", "pen", "peng", "pi", "pian",
-        "piao", "pie", "pin", "ping", "po", "pou", "pu", "qi", "qia", "qian", "qiang", "qiao",
-        "qie", "qin", "qing", "qiong", "qiu", "qu", "quan", "que", "qun", "ran", "rang", "rao",
-        "re", "ren", "reng", "ri", "rong", "rou", "ru", "ruan", "rui", "run", "ruo", "sa", "sai",
-        "san", "sang", "sao", "se", "sei", "sen", "seng", "sha", "shai", "shan", "shang", "shao",
-        "she", "shei", "shen", "sheng", "shi", "shou", "shu", "shua", "shuai", "shuan", "shuang",
-        "shui", "shun", "shuo", "si", "song", "sou", "su", "suan", "sui", "sun", "suo", "ta",
-        "tai", "tan", "tang", "tao", "te", "tei", "teng", "ti", "tian", "tiao", "tie", "ting",
-        "tong", "tou", "tu", "tuan", "tui", "tun", "tuo", "wa", "wai", "wan", "wang", "wei", "wen",
-        "weng", "wo", "wu", "xi", "xia", "xian", "xiang", "xiao", "xie", "xin", "xing", "xiong",
-        "xiu", "xu", "xuan", "xue", "xun", "ya", "yai", "yan", "yang", "yao", "ye", "yi", "yin",
-        "ying", "yo", "yong", "you", "yu", "yuan", "yue", "yun", "za", "zai", "zan", "zang", "zao",
-        "ze", "zei", "zen", "zeng", "zha", "zhai", "zhan", "zhang", "zhao", "zhe", "zhei", "zhen",
-        "zheng", "zhi", "zhong", "zhou", "zhu", "zhua", "zhuai", "zhuan", "zhuang", "zhui", "zhun",
-        "zhuo", "zi", "zong", "zou", "zu", "zuan", "zui", "zun", "zuo"
+        "bi", "bian", "biang", "biao", "bie", "bin", "bing", "bo", "bu", "ca", "cai", "can",
+        "cang", "cao", "ce", "cei", "cen", "ceng", "cha", "chai", "chan", "chang", "chao", "che",
+        "chen", "cheng", "chi", "chong", "chou", "chu", "chua", "chuai", "chuan", "chuang", "chui",
+        "chun", "chuo", "ci", "cong", "cou", "cu", "cuan", "cui", "cun", "cuo", "da", "dai", "dan",
+        "dang", "dao", "de", "dei", "den", "deng", "di", "dia", "dian", "diao", "die", "din",
+        "ding", "diu", "dong", "dou", "du", "duan", "dui", "dun", "duo", "e", "eh", "ei", "en",
+        "eng", "er", "fa", "fan", "fang", "fei", "fen", "feng", "fiao", "fo", "fong", "fou", "fu",
+        "ga", "gai", "gan", "gang", "gao", "ge", "gei", "gen", "geng", "gong", "gou", "gu", "gua",
+        "guai", "guan", "guang", "gui", "gun", "guo", "ha", "hai", "han", "hang", "hao", "he",
+        "hei", "hen", "heng", "hong", "hou", "hu", "hua", "huai", "huan", "huang", "hui", "hun",
+        "huo", "ji", "jia", "jian", "jiang", "jiao", "jie", "jin", "jing", "jiong", "jiu", "ju",
+        "juan", "jue", "jun", "ka", "kai", "kan", "kang", "kao", "ke", "kei", "ken", "keng",
+        "kong", "kou", "ku", "kua", "kuai", "kuan", "kuang", "kui", "kun", "kuo", "la", "lai",
+        "lan", "lang", "lao", "le", "lei", "leng", "li", "lia", "lian", "liang", "liao", "lie",
+        "lin", "ling", "liu", "lo", "long", "lou", "lu", "luan", "lun", "luo", "lv", "lvan", "lve",
+        "ma", "mai", "man", "mang", "mao", "me", "mei", "men", "meng", "mi", "mian", "miao", "mie",
+        "min", "ming", "miu", "mo", "mou", "mu", "na", "nai", "nan", "nang", "nao", "ne", "nei",
+        "nen", "neng", "ni", "nia", "nian", "niang", "niao", "nie", "nin", "ning", "niu", "nong",
+        "nou", "nu", "nuan", "nun", "nuo", "nv", "nve", "o", "ou", "pa", "pai", "pan", "pang",
+        "pao", "pei", "pen", "peng", "pi", "pia", "pian", "piao", "pie", "pin", "ping", "po",
+        "pou", "pu", "qi", "qia", "qian", "qiang", "qiao", "qie", "qin", "qing", "qiong", "qiu",
+        "qu", "quan", "que", "qun", "ran", "rang", "rao", "re", "ren", "reng", "ri", "rong", "rou",
+        "ru", "rua", "ruan", "rui", "run", "ruo", "sa", "sai", "san", "sang", "sao", "se", "sei",
+        "sen", "seng", "sha", "shai", "shan", "shang", "shao", "she", "shei", "shen", "sheng",
+        "shi", "shou", "shu", "shua", "shuai", "shuan", "shuang", "shui", "shun", "shuo", "si",
+        "song", "sou", "su", "suan", "sui", "sun", "suo", "ta", "tai", "tan", "tang", "tao", "te",
+        "tei", "teng", "ti", "tian", "tiao", "tie", "ting", "tong", "tou", "tu", "tuan", "tui",
+        "tun", "tuo", "wa", "wai", "wan", "wang", "wei", "wen", "weng", "wo", "wong", "wu", "xi",
+        "xia", "xian", "xiang", "xiao", "xie", "xin", "xing", "xiong", "xiu", "xu", "xuan", "xue",
+        "xun", "ya", "yai", "yan", "yang", "yao", "ye", "yi", "yin", "ying", "yo", "yong", "you",
+        "yu", "yuan", "yue", "yun", "za", "zai", "zan", "zang", "zao", "ze", "zei", "zen", "zeng",
+        "zha", "zhai", "zhan", "zhang", "zhao", "zhe", "zhei", "zhen", "zheng", "zhi", "zhong",
+        "zhou", "zhu", "zhua", "zhuai", "zhuan", "zhuang", "zhui", "zhun", "zhuo", "zi", "zong",
+        "zou", "zu", "zuan", "zui", "zun", "zuo",
     ]
 
     /// Digit signature → catalog-ordered complete syllables.
@@ -94,7 +96,7 @@ public enum T9PinyinSyllableCatalog {
         "98": ["wu", "xu", "yu", "zu"],
         "224": ["bai", "cai"],
         "226": ["ban", "bao", "can", "cao"],
-        "234": ["bei"],
+        "234": ["bei", "cei"],
         "236": ["ben", "cen"],
         "242": ["cha"],
         "243": ["bie", "che"],
@@ -111,6 +113,7 @@ public enum T9PinyinSyllableCatalog {
         "336": ["den", "fen"],
         "342": ["dia"],
         "343": ["die"],
+        "346": ["din"],
         "348": ["diu"],
         "364": ["eng"],
         "368": ["dou", "fou"],
@@ -126,7 +129,7 @@ public enum T9PinyinSyllableCatalog {
         "486": ["gun", "guo", "hun", "huo"],
         "524": ["kai", "lai"],
         "526": ["kan", "kao", "lan", "lao"],
-        "534": ["lei"],
+        "534": ["kei", "lei"],
         "536": ["ken"],
         "542": ["jia", "lia"],
         "543": ["jie", "lie"],
@@ -152,12 +155,13 @@ public enum T9PinyinSyllableCatalog {
         "726": ["pan", "pao", "ran", "rao", "san", "sao"],
         "734": ["pei", "sei"],
         "736": ["pen", "ren", "sen"],
-        "742": ["qia", "sha"],
+        "742": ["pia", "qia", "sha"],
         "743": ["pie", "qie", "she"],
         "744": ["shi"],
         "746": ["pin", "qin"],
         "748": ["qiu", "shu"],
         "768": ["pou", "rou", "sou"],
+        "782": ["rua"],
         "783": ["que"],
         "784": ["rui", "sui"],
         "786": ["qun", "run", "ruo", "sun", "suo"],
@@ -247,9 +251,9 @@ public enum T9PinyinSyllableCatalog {
         "9482": ["zhua"],
         "9484": ["zhui"],
         "9486": ["zhun", "zhuo"],
-        "9664": ["yong", "zong"],
+        "9664": ["wong", "yong", "zong"],
         "9826": ["xuan", "yuan", "zuan"],
-        "24264": ["chang"],
+        "24264": ["biang", "chang"],
         "24364": ["cheng"],
         "24664": ["chong"],
         "24824": ["chuai"],

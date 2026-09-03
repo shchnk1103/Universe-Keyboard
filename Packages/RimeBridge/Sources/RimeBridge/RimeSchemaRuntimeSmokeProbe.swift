@@ -11,10 +11,29 @@ public enum RimeSchemaRuntimeSmokeProbe {
         public let candidateCount: Int
         public let hasHanCandidate: Bool
         public let unexpectedCommit: Bool
+        public let builtinQualityPassed: Bool?
+
+        public init(
+            selectedRequestedSchema: Bool,
+            compositionPresent: Bool,
+            rawInputMatched: Bool,
+            candidateCount: Int,
+            hasHanCandidate: Bool,
+            unexpectedCommit: Bool,
+            builtinQualityPassed: Bool? = nil
+        ) {
+            self.selectedRequestedSchema = selectedRequestedSchema
+            self.compositionPresent = compositionPresent
+            self.rawInputMatched = rawInputMatched
+            self.candidateCount = candidateCount
+            self.hasHanCandidate = hasHanCandidate
+            self.unexpectedCommit = unexpectedCommit
+            self.builtinQualityPassed = builtinQualityPassed
+        }
 
         public var passed: Bool {
             selectedRequestedSchema && compositionPresent && rawInputMatched && candidateCount > 0
-                && hasHanCandidate && !unexpectedCommit
+                && hasHanCandidate && !unexpectedCommit && builtinQualityPassed != false
         }
     }
 
@@ -23,6 +42,18 @@ public enum RimeSchemaRuntimeSmokeProbe {
         userDataDir: String,
         schemaID: String
     ) -> Result {
+        if schemaID == "luna_pinyin" {
+            do {
+                try RimeBuiltinResourceInstaller().validateInstalledRuntime(
+                    rimeRoot: URL(fileURLWithPath: sharedDataDir).deletingLastPathComponent(),
+                    userDataURL: URL(fileURLWithPath: userDataDir)
+                )
+            } catch {
+                // Luna must never fall back to the generic "some Han candidate"
+                // smoke when its exact resource/overlay identity is unproven.
+                return failedBuiltinResult
+            }
+        }
         let bridge = RimeSessionManager()
         guard bridge.setup(withSharedDataDir: sharedDataDir, userDataDir: userDataDir) else {
             return failedResult
@@ -49,7 +80,27 @@ public enum RimeSchemaRuntimeSmokeProbe {
         let window = RimeEngineImpl.parseCandidateWindowDictionary(
             bridge.candidates(from: 0, limit: 20)
         )
-        let result = evaluate(outputs: outputs, window: window, selectedRequestedSchema: true)
+        var result = evaluate(outputs: outputs, window: window, selectedRequestedSchema: true)
+        if schemaID == "luna_pinyin" {
+            let lunaOverlay = try? String(
+                contentsOf: URL(fileURLWithPath: userDataDir)
+                    .appendingPathComponent("luna_pinyin.custom.yaml"),
+                encoding: .utf8
+            )
+            result = Result(
+                selectedRequestedSchema: result.selectedRequestedSchema,
+                compositionPresent: result.compositionPresent,
+                rawInputMatched: result.rawInputMatched,
+                candidateCount: result.candidateCount,
+                hasHanCandidate: result.hasHanCandidate,
+                unexpectedCommit: result.unexpectedCommit,
+                builtinQualityPassed: evaluateBuiltinLunaQuality(
+                    using: bridge,
+                    requiresNLFuzzyDiscovery: lunaOverlay?.contains("derive/^n/l/") == true
+                        && lunaOverlay?.contains("derive/^l/n/") == true
+                )
+            )
+        }
         bridge.clearComposition()
         return result
     }
@@ -72,8 +123,85 @@ public enum RimeSchemaRuntimeSmokeProbe {
             candidateCount: candidates.count,
             hasHanCandidate: candidates.contains { containsHanScalar($0.text) },
             // Any host commit during the synthetic sequence makes the smoke unsafe.
-            unexpectedCommit: outputs.contains { !($0.committedText?.isEmpty ?? true) }
+            unexpectedCommit: outputs.contains { !($0.committedText?.isEmpty ?? true) },
+            builtinQualityPassed: nil
         )
+    }
+
+    private static func evaluateBuiltinLunaQuality(
+        using bridge: RimeSessionManager,
+        requiresNLFuzzyDiscovery: Bool
+    ) -> Bool {
+        let expectedNiPage = requiresNLFuzzyDiscovery ? ["你", "里", "李", "离"] : ["你", "拟", "尼", "泥"]
+        let expectedNihaoPage =
+            requiresNLFuzzyDiscovery
+            ? ["你好", "妳好", "利好", "立好"] : ["你好", "妳好", "逆号", "拟好"]
+        let expectedSanjiaoxingPage =
+            requiresNLFuzzyDiscovery
+            ? ["三角形", "三角", "山脚", "三教"] : ["三角形", "三角", "三教", "三焦"]
+        let cases: [(input: String, expectedTopCandidate: String, expectedFirstPage: [String]?)] = [
+            (input: "ni", expectedTopCandidate: "你", expectedFirstPage: expectedNiPage),
+            (input: "nihao", expectedTopCandidate: "你好", expectedFirstPage: expectedNihaoPage),
+            (
+                input: "sanjiaoxing", expectedTopCandidate: "三角形",
+                expectedFirstPage: expectedSanjiaoxingPage
+            ),
+            (
+                input: "jintiantianqihenhao", expectedTopCandidate: "今天天气很好",
+                expectedFirstPage: ["今天天气很好", "今天天气", "今天", "金田"]
+            ),
+            // Exercises Essay ranking plus the bundled t2s OpenCC profile.
+            (
+                input: "fanti", expectedTopCandidate: "繁体",
+                expectedFirstPage: ["繁体", "反踢", "反提", "饭"]
+            ),
+            // Exercises the Luna schema's bundled Stroke reverse lookup.
+            (input: "`pspzzpn", expectedTopCandidate: "你", expectedFirstPage: ["你", "您"]),
+        ]
+        for testCase in cases {
+            bridge.clearComposition()
+            var hadUnexpectedCommit = false
+            for character in testCase.input {
+                let output = RimeEngineImpl.parseOutputDictionary(
+                    bridge.processKey(RimeEngineImpl.keycode(for: String(character)), modifiers: 0)
+                )
+                hadUnexpectedCommit = hadUnexpectedCommit || !(output.committedText?.isEmpty ?? true)
+            }
+            let window = RimeEngineImpl.parseCandidateWindowDictionary(
+                bridge.candidates(from: 0, limit: 5)
+            )
+            let candidateTexts = window.candidates.map(\.text)
+            guard
+                !hadUnexpectedCommit,
+                candidateTexts.first == testCase.expectedTopCandidate,
+                testCase.expectedFirstPage == nil || candidateTexts == testCase.expectedFirstPage
+            else {
+                return false
+            }
+        }
+        // Reverse lookup must not leak into the ordinary pinyin session after
+        // composition is cleared.
+        bridge.clearComposition()
+        for character in "ni" {
+            _ = bridge.processKey(RimeEngineImpl.keycode(for: String(character)), modifiers: 0)
+        }
+        let pinyinAfterStroke = RimeEngineImpl.parseCandidateWindowDictionary(
+            bridge.candidates(from: 0, limit: 5)
+        )
+        guard pinyinAfterStroke.candidates.map(\.text) == expectedNiPage else { return false }
+        if requiresNLFuzzyDiscovery {
+            bridge.clearComposition()
+            for character in "li" {
+                _ = bridge.processKey(RimeEngineImpl.keycode(for: String(character)), modifiers: 0)
+            }
+            let fuzzyWindow = RimeEngineImpl.parseCandidateWindowDictionary(
+                bridge.candidates(from: 0, limit: 20)
+            )
+            guard fuzzyWindow.candidates.contains(where: { $0.text == "你" }) else {
+                return false
+            }
+        }
+        return true
     }
 
     private static let failedResult = Result(
@@ -82,7 +210,18 @@ public enum RimeSchemaRuntimeSmokeProbe {
         rawInputMatched: false,
         candidateCount: 0,
         hasHanCandidate: false,
-        unexpectedCommit: false
+        unexpectedCommit: false,
+        builtinQualityPassed: nil
+    )
+
+    private static let failedBuiltinResult = Result(
+        selectedRequestedSchema: false,
+        compositionPresent: false,
+        rawInputMatched: false,
+        candidateCount: 0,
+        hasHanCandidate: false,
+        unexpectedCommit: false,
+        builtinQualityPassed: false
     )
 
     static func containsHanScalar(_ text: String) -> Bool {

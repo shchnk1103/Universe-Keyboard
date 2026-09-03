@@ -1,4 +1,56 @@
 import Foundation
+import Synchronization
+
+/// 主 App 进程内所有同步事务共享的所有权门。
+///
+/// 前台界面与 `BGProcessingTask` 会分别创建 `RimeSyncViewModel`，因此不能依赖
+/// ViewModel、coordinator 或 RIME service 的实例状态互斥。这里仅闭合同一 App
+/// 进程内的同步入口；Keyboard Extension 与其他进程仍由 TD-002 单独约束。
+nonisolated final class RimeSyncProcessGate: Sendable {
+    enum Source: String, Equatable, Sendable {
+        case manual
+        case foregroundAutomatic
+        case backgroundAutomatic
+    }
+
+    struct Lease: Equatable, Sendable {
+        fileprivate let id: UInt64
+        let source: Source
+    }
+
+    static let shared = RimeSyncProcessGate()
+
+    private struct State: Sendable {
+        var activeLease: Lease?
+        var nextLeaseID: UInt64 = 0
+    }
+
+    private let state = Mutex(State())
+
+    func claim(source: Source) -> Lease? {
+        state.withLock { state in
+            guard state.activeLease == nil else { return nil }
+            state.nextLeaseID &+= 1
+            let lease = Lease(id: state.nextLeaseID, source: source)
+            state.activeLease = lease
+            return lease
+        }
+    }
+
+    /// 只有当前 owner 的 lease 可以释放 gate；迟到的旧任务不能清除新 owner。
+    @discardableResult
+    func release(_ lease: Lease) -> Bool {
+        state.withLock { state in
+            guard state.activeLease == lease else { return false }
+            state.activeLease = nil
+            return true
+        }
+    }
+
+    var activeSource: Source? {
+        state.withLock { $0.activeLease?.source }
+    }
+}
 
 /// 同步配置在主 App 沙盒中的稳定键名。
 ///
@@ -20,6 +72,7 @@ enum RimeSyncStorageKey {
     static let automaticPrivateSettingsEnabled = "rime_automatic_private_settings_enabled"
     static let automaticSyncCadence = "rime_standard_sync_automatic_cadence"
     static let lastAutomaticAttempt = "rime_standard_sync_last_automatic_attempt"
+    static let automaticRetryNotBefore = "rime_standard_sync_automatic_retry_not_before"
     static let lastForegroundPrivateAttempt = "rime_private_sync_last_foreground_attempt"
 }
 
@@ -63,9 +116,9 @@ nonisolated enum RimeAutomaticSyncResult: Equatable, Sendable {
     var completedSuccessfully: Bool {
         switch self {
         case .completed, .skipped(.disabled), .skipped(.standardRimeDataDisabled),
-             .skipped(.notConfigured),
-             .skipped(.waitingForFirstManualSync), .skipped(.coolingDown),
-             .skipped(.keyboardActive), .skipped(.alreadyRunning):
+            .skipped(.notConfigured),
+            .skipped(.waitingForFirstManualSync), .skipped(.coolingDown),
+            .skipped(.keyboardActive), .skipped(.alreadyRunning):
             return true
         case .skipped(.cancelled), .failed:
             return false
@@ -74,6 +127,11 @@ nonisolated enum RimeAutomaticSyncResult: Equatable, Sendable {
 }
 
 nonisolated enum RimeAutomaticSyncPolicy {
+    /// 键盘仍在使用时只短暂退避，避免把已过期的 earliestBeginDate 反复提交给系统。
+    static let keyboardActiveRetryInterval: TimeInterval = 15 * 60
+    /// 另一条主 App 同步事务持有进程 gate 时采用同样的有界退避。
+    static let processBusyRetryInterval: TimeInterval = 15 * 60
+
     static func isDue(
         lastAutomaticAttempt: Date?,
         cadence: RimeAutomaticSyncCadence,
@@ -84,10 +142,17 @@ nonisolated enum RimeAutomaticSyncPolicy {
     }
 
     static func nextEligibleDate(
-        lastAutomaticAttempt: Date,
-        cadence: RimeAutomaticSyncCadence
-    ) -> Date {
-        lastAutomaticAttempt.addingTimeInterval(cadence.interval)
+        lastAutomaticAttempt: Date?,
+        cadence: RimeAutomaticSyncCadence,
+        retryNotBefore: Date? = nil,
+        now: Date = Date()
+    ) -> Date? {
+        guard lastAutomaticAttempt != nil || retryNotBefore != nil else { return nil }
+        // 迁移或异常终止后可能只有 retry floor、没有 last attempt。此时仍要保留
+        // 下一次系统机会，不能因为缺少历史时间戳而永久停止调度。
+        let cadenceDate = lastAutomaticAttempt?.addingTimeInterval(cadence.interval) ?? now
+        guard let retryNotBefore else { return cadenceDate }
+        return max(cadenceDate, retryNotBefore)
     }
 }
 
@@ -190,7 +255,7 @@ nonisolated struct RimeSyncProfile: Codable, Equatable, Sendable {
     /// 字段级确定性合并。不同字段可同时保留；同字段冲突按逻辑版本和设备 ID 决定。
     func merging(_ other: RimeSyncProfile) throws -> RimeSyncProfile {
         guard schemaVersion == Self.currentSchemaVersion,
-              other.schemaVersion == Self.currentSchemaVersion
+            other.schemaVersion == Self.currentSchemaVersion
         else {
             throw RimeSyncError.unsupportedFormat
         }
@@ -204,8 +269,8 @@ nonisolated struct RimeSyncProfile: Codable, Equatable, Sendable {
             if localField.version < remoteField.version {
                 merged.fields[key] = remoteField
             } else if localField.version == remoteField.version,
-                      localField.value != remoteField.value,
-                      Self.stableScalar(remoteField.value) > Self.stableScalar(localField.value)
+                localField.value != remoteField.value,
+                Self.stableScalar(remoteField.value) > Self.stableScalar(localField.value)
             {
                 // 相同来源版本出现不同内容代表损坏或错误客户端；仍以稳定顺序收敛，
                 // 避免设备之间来回覆盖。

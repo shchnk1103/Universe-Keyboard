@@ -200,12 +200,14 @@ final class AppNotificationSettingsTests: XCTestCase {
             defaults.set(false, forKey: AppNotificationSettingsStore.StorageKey.operationToastsEnabled)
             await service.notify(
                 .completed(
-                    mode: .manual,
-                    scopes: [.standardRimeData, .privateSettings]
+                    mode: .automatic,
+                    scopes: [.standardRimeData]
                 )
             )
             XCTAssertEqual(client.requests.count, 2)
             XCTAssertFalse(client.requests[1].prefersToastWhenForeground)
+            XCTAssertEqual(client.requests[1].title, "自动同步完成")
+            XCTAssertEqual(client.requests[1].body, "RIME 常用词和标准资料已更新。")
         }
     }
 

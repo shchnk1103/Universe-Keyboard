@@ -173,7 +173,9 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
                     + "rawInputMatched=\(smokeResult.rawInputMatched) "
                     + "candidateCount=\(smokeResult.candidateCount) "
                     + "hasHanCandidate=\(smokeResult.hasHanCandidate) "
-                    + "unexpectedCommit=\(smokeResult.unexpectedCommit)",
+                    + "unexpectedCommit=\(smokeResult.unexpectedCommit) "
+                    + "builtinQualityReported=\(smokeResult.builtinQualityPassed != nil) "
+                    + "builtinQualityPassed=\(smokeResult.builtinQualityPassed == true)",
                 category: .deployment
             )
         }

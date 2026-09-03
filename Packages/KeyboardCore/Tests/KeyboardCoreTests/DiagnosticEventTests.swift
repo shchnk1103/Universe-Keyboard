@@ -55,6 +55,89 @@ final class DiagnosticEventTests: XCTestCase {
         XCTAssertFalse(encodedKeys.contains("text"))
     }
 
+    func testRimeSyncPayloadRoundTripUsesOnlyFiniteContentFreeFields() throws {
+        let operationID = UUID()
+        let context = DiagnosticEvent.RimeSyncContext(
+            operationID: operationID,
+            source: .backgroundAutomatic
+        )
+        let event = DiagnosticEvent(
+            utcTimestamp: .now,
+            monotonicNanoseconds: 2,
+            origin: .mainApp,
+            processInstanceID: UUID(),
+            localSequence: 2,
+            code: .rimeSyncTerminal,
+            level: .error,
+            category: .config,
+            rimeSyncPayload: .terminal(
+                .init(
+                    context: context,
+                    result: .failed,
+                    phase: .standardRimeData,
+                    failure: .standardSynchronizationFailed
+                )
+            )
+        )
+
+        let encoded = try JSONEncoder().encode(event)
+        XCTAssertEqual(try JSONDecoder().decode(DiagnosticEvent.self, from: encoded), event)
+
+        let text = try XCTUnwrap(String(data: encoded, encoding: .utf8))
+        XCTAssertTrue(text.contains(operationID.uuidString))
+        for forbiddenKey in ["message", "text", "path", "bookmark", "domain", "filename"] {
+            XCTAssertFalse(text.contains("\"\(forbiddenKey)\""))
+        }
+    }
+
+    func testRimeSyncDecoderRejectsEmptyInvocationAndCodeMismatch() throws {
+        let context = DiagnosticEvent.RimeSyncContext(
+            operationID: UUID(),
+            source: .foregroundAutomatic
+        )
+        let event = DiagnosticEvent(
+            utcTimestamp: .now,
+            monotonicNanoseconds: 3,
+            origin: .mainApp,
+            processInstanceID: UUID(),
+            localSequence: 3,
+            code: .rimeSyncInvoked,
+            level: .info,
+            category: .config,
+            rimeSyncPayload: .invoked(
+                .init(context: context, requestedPhases: [.privateSettings])
+            )
+        )
+        var object = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(event)) as? [String: Any]
+        )
+        var payload = try XCTUnwrap(object["rimeSyncPayload"] as? [String: Any])
+        var invocation = try XCTUnwrap(payload["invoked"] as? [String: Any])
+        var invocationValue = try XCTUnwrap(invocation["_0"] as? [String: Any])
+        invocationValue["requestedPhases"] = []
+        invocation["_0"] = invocationValue
+        payload["invoked"] = invocation
+        object["rimeSyncPayload"] = payload
+
+        XCTAssertThrowsError(
+            try JSONDecoder().decode(
+                DiagnosticEvent.self,
+                from: JSONSerialization.data(withJSONObject: object)
+            )
+        )
+
+        object = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: JSONEncoder().encode(event)) as? [String: Any]
+        )
+        object["code"] = DiagnosticEvent.Code.rimeSyncSkipped.rawValue
+        XCTAssertThrowsError(
+            try JSONDecoder().decode(
+                DiagnosticEvent.self,
+                from: JSONSerialization.data(withJSONObject: object)
+            )
+        )
+    }
+
     func testCandidateTouchBandUsesOnlyCoarseVerticalBuckets() {
         XCTAssertEqual(DiagnosticEvent.CandidateTouchBand.classify(y: 0, height: 30), .upper)
         XCTAssertEqual(DiagnosticEvent.CandidateTouchBand.classify(y: 9, height: 30), .upper)
