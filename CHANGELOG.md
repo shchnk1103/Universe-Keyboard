@@ -2,6 +2,11 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-09-03 — KOS v0.6.0 Upgrade Review 记为 Deferred
+
+- PR [#92](https://github.com/shchnk1103/Universe-Keyboard/pull/92) merged `cb49e62`。Latest checked = `v0.6.0`；Adopted 仍为 `v0.5.0` advisory。
+- 不 Adopt 可选编排合同，不启用 `required`。
+
 ## 2026-09-01 — 串行化主 App 自动同步入口
 
 - 自然真机轮次显示前台与后台自动同步在同一分钟各自启动，产生一条 RIME 失败和一条 Universe 设置成功通知；冻结载荷因此判为失败，精确 RIME 错误码仍待设备重连后读取。
