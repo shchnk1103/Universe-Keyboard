@@ -9,10 +9,32 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Machine-readable provenance and Q-09 inventory remediation are frozen in `6cb2fee` / `3a9ce19` / `7260ca2`; affected full local gates pass. `b1d81fd` (`fix: write simplified Luna reset when simplification key is missing`) landed 2026-09-02 after the `c5f3004` freeze, so that freeze no longer represents current HEAD. Independent Architecture re-review of `b1d81fd` returned code `Pass` + KOS-consistency P1; Quality returned code `Pass with conditions` + KOS/lifecycle `Fail` (1 P1, 3 P2). A committed `RimeBridgeTests` rerun (95 total / 20 skipped / 0 failures) closes `F02-COMMITTED-TEST-RERUN-001`. Human Product Owner authorized re-freeze from clean `b1d81fd` (2026-09-02), formally superseding the `c5f3004` freeze. Executor rebuilt the signed Debug candidate from clean `b1d81fd` (2026-09-02) and recorded the new App/Extension UUID/hash/CDHash, manifest, AUTHORS and zero-duplicate identity in the handoff packet (S-03 supersession banner applied). The authorized physical-device run against `b1d81fd` completed 2026-09-02: Q-01 fresh/offline `PASS`, Q-02 candidate quality `PASS` (fuzzy off/on 8/8 exact + `fanti`), Q-04 Full Access/lifecycle `PASS`, Q-08 install/redeploy/relaunch `PASS`, crash/Jetsam `no match`; Q-03 OpenCC `DEFERRED`, Q-06/Q-07 `PARTIAL` (strict fault-injection and release-like performance matrices remain `POST-READY EVIDENCE PENDING`). Three deferred findings recorded for later Product decision: `F02-FIRST-LAUNCH-AUTODEPLOY-001`, `F02-CONVERSION-LOOKUP-NOT-WIRED-001`, and the fuzzy-default-ON clarity note (documented intentional, not a defect). |
-| **Non-claims** | No Assignment Exit, strict Extension fault-injection (Q-06) or release-like performance/Q-07 matrix closure, OpenCC four-output (Q-03), hosted CI, legal acceptance, Human Product Gate, TestFlight acceptance, merge or Release; the historical Build 7 multi-character symptom is not claimed reproduced. The physical-device candidate-quality, Full Access/lifecycle and bounded performance/stability observations are now claimed (see the device handoff). |
-| **Next** | Human Product Owner to decide the three deferred findings (`F02-FIRST-LAUNCH-AUTODEPLOY-001`, `F02-CONVERSION-LOOKUP-NOT-WIRED-001`, fuzzy-default-ON) and whether to authorize the separate destructive C.5 Extension-process termination. Remaining Q-03/Q-06/Q-07 `POST-READY EVIDENCE PENDING` items stay open. No merge, TestFlight or Release action is inferred. |
-| **Residuals** | [`Architecture final re-review`](rime-builtin-luna-quality-001-architecture-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Architecture b1d81fd re-review`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--b1d81fd--2026-09-02) · [`Quality final re-review`](rime-builtin-luna-quality-001-quality-review.md#final-implementation-re-review--fa5dbaf--786f4c7--2026-08-31) · [`Quality b1d81fd re-review`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--b1d81fd--2026-09-02) · [`implementation evidence`](../evidence/rime-builtin-luna-quality-f02-implementation-2026-08-30.md) · [`physical-device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) · [`b1d81fd evidence`](../evidence/rime-builtin-luna-quality-f02-default-simplification-2026-09-02.md) |
+| **Phase** | KOS P1 freeze 已关闭；PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) HEAD `ecd3446` hosted CI 全绿；独立 Architecture / Quality 对 `ecd3446` 均为 `Pass with conditions`。剩余 merge 阻塞是 Human Product Gate（残差 disposition + merge 授权）。 |
+| **Non-claims** | 无 Assignment Exit、无 Human Product Gate、无 merge AUTH、无 TestFlight、无 Release、无法律充分性、无 Q-03 四输出闭合、无 Q-06 严格 fault-injection、无 Q-07 release-like 性能预算接受。历史 Build 7 多字症状未复现。 |
+| **Next** | Human Product Owner 填写下方 M-03 表中 `open (Product Gate)` 行（`fix` / `accept` / `tech_debt:<ID>`），并决定是否签发 merge AUTH。不得从 CI 绿或本复审推断 merge。 |
+| **Residuals** | [M-03 table](#m-03-residuals-before-merge) · [`Architecture ecd3446`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--ecd3446--2026-09-03) · [`Quality ecd3446`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--ecd3446--2026-09-03) · [`proposed Product Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
+
+### M-03 residuals before merge
+
+Close/merge is blocked while any row is missing a disposition. Quality/Architecture may close `fix` rows they own; Product-owned rows stay `open` until Human Product Gate.
+
+| ID | Owner | Disposition | Pointer |
+|---|---|---|---|
+| `F02-A-P1-FREEZE-001` / `KOS-001` | Executor + Architecture | `fix` (closed 2026-09-03) | [`handoff` re-freeze](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
+| `F02-APPGROUP-MANUAL-001` / `KOS-004` | Quality | `fix` (closed 2026-09-03) | Q-01 `Device-attested` PASS |
+| `F02-Q01-PHYSICAL-001` | Quality | `fix` (closed) | Q-01 PASS |
+| `F02-Q02-COLDSTART-001` | Quality | `fix` (closed) | Q-02 PASS |
+| `F02-Q04-DEVICE-001` | Quality | `fix` (closed for Full Access/lifecycle) | Q-04 PASS; Stroke lookup 并入 conversion finding |
+| `F02-Q05-HOSTED-001` | Quality | `fix` (closed for hosted CI) | GitHub run `33642643269` |
+| `F02-Q08-LIFECYCLE-001` | Quality | `fix` (closed) | Q-08 PASS |
+| `F02-A-P2-TD001` / `F02-Q06-PROCDEATH-001` | Main App/Data Ops | `tech_debt:TD-001` | ADR 0006 |
+| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | Human Product Owner | open (Product Gate) | 全新安装不自动 `triggerDeployment` |
+| `F02-CONVERSION-LOOKUP-NOT-WIRED-001` / `F02-A-P2-OPENCC-SCOPE-001` / `F02-Q03-RC-001` | Human Product Owner | open (Product Gate) | 仅 `t2s` 接线；s2t bundled-not-wired；t2hk/t2tw + Stroke reverse lookup 未接线 |
+| fuzzy-default-ON | Human Product Owner | open (Product Gate) | 文档记为有意行为，需确认 |
+| `F02-Q06-EXTENSION-001` | Human Product Owner | open (Product Gate) | 严格 Extension fault-injection 未跑 |
+| `F02-Q07-PERF-001` | Human Product Owner | open (Product Gate) | 非 release-like；无预算接受 |
+| `F02-Q09-HUMAN-LEGAL-001` | Human Product Owner | open (Product Gate) | 工程 inventory ≠ 法律充分性 |
+| `F02-Q10-ARCHIVE-001` | Human Product Owner | open (Product Gate) | 无 exact archive / Release provenance |
 
 ---
 
@@ -394,3 +416,10 @@ built-in assets.
   `F02-CONVERSION-LOOKUP-NOT-WIRED-001`, and the fuzzy-default-ON clarity note
   (documented intentional, not a defect). No merge, TestFlight or Release action
   is inferred; the destructive C.5 Extension termination remains unauthorized.
+- `2026-09-03 Asia/Shanghai` — Independent Architecture / Quality re-review of
+  PR #93 HEAD `ecd3446` closed KOS P1 freeze (`F02-A-P1-FREEZE-001` / `KOS-001`)
+  and `F02-APPGROUP-MANUAL-001`. Hosted CI run `33642643269` is green
+  (`classify-change`, `lightweight-checks`, `build-and-test`,
+  `final-quality-gate`). Remaining merge blocker is Human Product Gate over the
+  M-03 `open` rows. No merge AUTH is inferred. Proposed gate packet:
+  [`RIME-BUILTIN-LUNA-QUALITY-001-product-gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md).

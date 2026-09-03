@@ -2,11 +2,20 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-08-29 Asia/Shanghai
+> **Updated:** 2026-09-03 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## RIME-BUILTIN-LUNA-QUALITY-001 — F-02 内置朙月候选质量（PR #93）
+
+- **Lifecycle:** `Active` — Human Product Gate pending
+- **Authority:** [`Assignment`](assignments/rime-builtin-luna-quality-001.md) · [`proposed Gate`](product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · ADR [`0033`](architecture/decisions/0033-main-app-owned-offline-rime-resource-closure.md) `Accepted`
+- **Current evidence:** Architecture / Quality 对 `ecd3446` 均为 `Pass with conditions`；KOS P1 freeze 已 `fix`；hosted CI [`33642643269`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33642643269) 全绿；真机 Q-01/Q-02/Q-04/Q-08 `Device-attested` PASS
+- **Blocker:** Human 必须给 M-03 `open` 行 disposition，并另发 merge AUTH。CI 绿 ≠ merge
+- **Non-claims:** 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性
+- **Next:** Human Product Gate；通过后才允许合 [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93)
 
 ## KOS 2.2 advisory pin — 2026-08-27
 

@@ -2,18 +2,19 @@
 
 ## Status
 
-Accepted; implementation pending
+Accepted
 
 **Accepted:** `2026-08-29 Asia/Shanghai` after the independent Architecture
 follow-up accepted the main-App ownership, official-byte overlay, prebuilt
 generation, fail-closed manifest and Octagram G1 boundaries. See the
 [Architecture review](../../assignments/rime-builtin-luna-quality-001-architecture-review.md#architecture-follow-up-addendum--adr-0033-and-lifecycle-correction).
 
-Acceptance makes this ADR binding architecture; it does not claim that code,
-resources, generated receipts, bundle inspection, runtime behavior, physical-
-device evidence, CI, legal review, merge, TestFlight or Release is complete.
-Those implementation and acceptance results remain subject to the Assignment's
-independent Quality and Human Product gates.
+**Implementation landed:** PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) branch
+`codex/f02-rime-builtin-quality-assignment` (reviewed HEAD `ecd3446`) ships the
+main-App-owned official Luna closure and removes the Extension deployable copy.
+That does not complete Assignment Exit, Human Product Gate, merge, TestFlight or
+Release. Remaining capability residuals (first-launch autodeploy, unwired
+conversion/lookup profiles) require explicit Product review per Decision 2.
 
 ## Context
 

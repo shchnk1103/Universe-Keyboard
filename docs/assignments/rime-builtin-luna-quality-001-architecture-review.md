@@ -10,13 +10,15 @@ or `Device-attested` validation result.
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Assignment Pending` |
-| **Phase** | Architecture follow-up complete; the design package passes the Architecture gate, while implementation remains pending |
-| **Verdict** | **Architecture Pass for `Ready`, conditional on ADR 0033 becoming `Accepted; implementation pending`** |
-| **Non-claims** | No code, resource, target-membership, generated-output, Product, Quality, TestFlight, merge or Release acceptance is granted by this review |
-| **PR boundary** | PR [#91](https://github.com/shchnk1103/Universe-Keyboard/pull/91), including `e3e5d77`, is provenance only and was not inspected or changed as implementation work |
-| **Next handoff** | Coordinator records ADR 0033's pending-implementation acceptance; Assignment then evaluates its remaining Entry Criteria and Quality plan independently |
-| **Residuals** | See [Architecture residuals](#architecture-residuals) and the upstream audit [F-02 upstream pin and manifest audit](../evidence/rime-builtin-luna-quality-f02-upstream-pin-audit-2026-08-29.md) |
+| **Lifecycle** | Assignment `Active`; this review is not the Assignment SoT |
+| **Phase** | Independent Architecture re-review of PR #93 HEAD `ecd3446` complete |
+| **Verdict** | **Architecture `Pass with conditions` for the Human Product Gate packet.** KOS P1 freeze residual is closed. Merge, Exit, TestFlight and Release remain Human/Quality authorities. |
+| **Non-claims** | No merge, Assignment Exit, TestFlight, Release, legal acceptance, or OpenCC four-profile/Stroke reverse-lookup closure |
+| **PR boundary** | PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) HEAD `ecd3446` includes merged `origin/main` (historical PR #91 already on `main`). This review inspected the F-02 overlay-authorization guard after that merge; it does not re-open RIME-SYNC-001 |
+| **Next handoff** | Human Product Owner: Product Gate on remaining residuals. Coordinator does not infer merge |
+| **Residuals** | See [HEAD `ecd3446` re-review](#independent-architecture-re-review--ecd3446--2026-09-03) |
+
+> **S-03:** The 2026-08-29 `Pass for Ready` and the 2026-09-02 KOS-consistency P1 describe earlier phases. They are not current merge-packet truth.
 
 This review does not change the Assignment lifecycle or authorize
 implementation. The original pre-ADR `Pass with conditions — not Ready`
@@ -671,3 +673,48 @@ builds, tests, network, devices, main checkout or PR #91 were touched.
 ### Independence statement
 
 The codex Architecture reviewer (`/root/f02_arch_kos_review`) completed a read-only review of `b1d81fd`; no files, builds, tests, network, devices, main checkout or PR #91 were touched. This addendum was recorded by Claude Code (replacement coordinator) from that reviewer's returned verdict after codex went idle.
+
+## Independent Architecture re-review — `ecd3446` — 2026-09-03
+
+**Independent verdict: `Pass with conditions`.** P0: none. P1: none remaining.
+
+### Reviewed object
+
+- Branch `codex/f02-rime-builtin-quality-assignment`, HEAD `ecd3446a242f6309b5150f0d751fb6d4f155faa6` (merge of `2490431` + `origin/main` `29736b5`).
+- Scope: freeze supersession evidence after `b1d81fd`, physical-device handoff ledger, and the `RimeSyncViewModel` merge that kept the F-02 overlay-authorization guard.
+
+### Closed P1 — freeze supersession (`F02-A-P1-FREEZE-001` / Quality `KOS-001`)
+
+Human Product Owner authorized re-freeze from clean `b1d81fd` on 2026-09-02. Executor recorded the replacement signed Debug identity in the [device handoff](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) with an S-03 banner over the `c5f3004` freeze:
+
+- App CDHash `ed46a655e08d615fbc2d576837ae05fc3f37c579`; Extension CDHash `a3814d38e5d36c4ebb0bc4cb1f8eab9333083d60`
+- Manifest SHA-256 `6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233`; OpenCC AUTHORS SHA-256 `cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006`
+- Extension runtime-resource duplicate count `0`; `codesign --verify --deep --strict` recorded as passed
+
+`F02-A-P1-FREEZE-001` is `fix` / closed. Do not install the superseded `c5f3004` candidate.
+
+### Merge invariant
+
+`ecd3446` resolved `Universe Keyboard/Models/RimeSyncViewModel.swift` by keeping both the RIME-SYNC cancellation phase and the F-02 receipt guard: `syncCustomYamlFiles()` still runs inside `runCancellablePhase`, and `overlaysAuthorized == false` still throws `invalidInstallationConfiguration` before librime standard sync. That preserves main-App overlay authorization; the Extension remains a session consumer.
+
+### ADR 0033
+
+The Accepted architecture (main-App-owned immutable closure, thin overlay, fail-closed manifest, Octagram G1 only) is implemented on this branch. The ADR status line `Accepted; implementation pending` is stale relative to the landed code and is updated in the ADR itself. Follow-up evidence items that Product has not yet accepted (four-profile OpenCC, Stroke reverse lookup, first-launch autodeploy, release-like performance) remain Product Gate residuals, not Architecture P0/P1 defects.
+
+ADR 0033 already requires explicit Product capability review before disabling a conversion profile or omitting its data. `F02-CONVERSION-LOOKUP-NOT-WIRED-001` is that review, not a silent architecture exception.
+
+### Remaining Architecture residuals (M-03)
+
+| ID | Severity | Owner / disposition | Remaining requirement |
+|---|---|---|---|
+| `F02-A-P2-TD001` | P2 | Main App/Data Ops / `tech_debt:TD-001` | Process-death / cross-process whole-tree atomicity stays ADR 0006 / TD-001. F-02 claims synchronous failure recovery only. |
+| `F02-A-P2-OPENCC-SCOPE-001` | P2 | Human Product Owner / open (Product Gate) | Device finding `F02-CONVERSION-LOOKUP-NOT-WIRED-001`: deployed Luna wires `t2s` only; `s2t` bundled-not-wired; `t2hk`/`t2tw` and Stroke reverse lookup not wired. Requires `accept` (enabled-profile scope) or `fix`. |
+| `F02-A-P2-AUTODEPLOY-001` | P2 | Human Product Owner / open (Product Gate) | Device finding `F02-FIRST-LAUNCH-AUTODEPLOY-001`: first launch does not seed `rime_needs_deploy`. Bundled bytes exist; activation is still a manual main-App deploy. Not a download Stop Condition. Requires `accept`, `fix`, or `tech_debt:<ID>`. |
+
+Physical Q-01/Q-02/Q-04/Q-08 results are Quality/Device evidence, not Architecture re-execution.
+
+This review does not authorize merge, Exit, TestFlight or Release.
+
+### Independence statement
+
+Replacement Architecture reviewer (Grok 4.6) performed a read-only review of `ecd3446` in worktree `/private/tmp/universe-keyboard-f02-assignment`. No Swift production edits, builds, tests, network or device actions were taken for this verdict. Documentation records of this addendum are Coordinator/Architecture hygiene, not a Product Gate.

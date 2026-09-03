@@ -9,6 +9,19 @@
 | 审查范围 | 验证计划、证据门槛、当前实现的可验证性和发布风险；没有实现代码或资源变更，没有提交。 |
 **明确排除：** PR [#91](https://github.com/shchnk1103/Universe-Keyboard/pull/91)（包括 `e3e5d77`）不在本 Assignment 范围内；本审查不判断其合并与否。
 
+## Current Status
+
+| 字段 | 内容 |
+|---|---|
+| **Lifecycle** | Assignment `Active`；本文不是 Assignment SoT |
+| **Verdict** | KOS/生命周期 `Fail` 已关闭。实现证据对 Human Product Gate 材料为 `Pass with conditions`。Assignment Exit / TestFlight / Release 仍为 `Fail` |
+| **Reviewed HEAD** | PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) `ecd3446` |
+| **Non-claims** | 无 merge、Exit、TestFlight、Release、法律充分性、Q-03 四输出、Q-06 严格 fault-injection、Q-07 release-like 性能闭合 |
+| **Next** | Human Product Owner 处置剩余残差并决定是否授权 merge |
+| **Residuals** | 见 [`ecd3446` 复审](#independent-quality-re-review--ecd3446--2026-09-03) |
+
+> **S-03：** 下方 2026-08-29 的实现 `Fail` 与 2026-09-02 的 KOS `Fail` 已被文末 `ecd3446` addendum 取代为当前审查结论。Exit / TestFlight / Release `Fail` 仍有效。
+
 ## 结论
 
 **阶段化结论（生命周期 addendum 见文末）：**
@@ -377,3 +390,61 @@ builds, tests, network, devices, main checkout or PR #91 were touched.
 ### Independence statement
 
 Replacement Quality reviewer（Claude Code）接续 codex quality subagent（`/root/f02_quality_kos_review`）的 finding 历史。只读复审 `b1d81fd`：未改 Swift 源码、未运行 build/test/device，仅读回 xcresult 与 git state；未触碰主 checkout `/Users/doubleshy0n/Dev/Universe Keyboard` 或 PR #91。本 addendum 由 replacement reviewer 自行记录。
+
+## Independent Quality re-review — `ecd3446` — 2026-09-03
+
+**Independent verdict：代码与已记录证据 `Pass with conditions`（无 P0/P1）；KOS/生命周期 `Fail` 关闭。** Assignment Exit / TestFlight / Release 仍为 `Fail`。本 addendum 不授权 merge。
+
+### 复审对象
+
+- 分支 `codex/f02-rime-builtin-quality-assignment`，HEAD `ecd3446a242f6309b5150f0d751fb6d4f155faa6`。
+- 证据：[`physical-device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md)、hosted Swift 6 Quality run [`33642643269`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33642643269)、GitHub `statusCheckRollup` 全绿。
+- 未重新执行真机、未本地重跑 xcodebuild。
+
+### KOS P1/P2 关闭
+
+| ID | 级别 | 状态 | 处置 | 说明 |
+|---|---|---|---|---|
+| `KOS-001` | P1 | closed | `fix` | Human 授权并从 clean `b1d81fd` 重冻结；handoff 已加 S-03。与 Architecture `F02-A-P1-FREEZE-001` 对齐。 |
+| `KOS-002` | P2 | closed | `fix` | 保持 09-02 关闭。 |
+| `KOS-003` | P2 | closed | `fix` | 保持 09-02 关闭。 |
+| `KOS-004` / `F02-APPGROUP-MANUAL-001` | P2 | closed | `fix` | Q-01 真机：删除 App 后重装、空 App Group、飞行模式离线部署 `PASS`（`Device-attested`）。此前 defer 到 Q-01 的条件已满足。 |
+
+### Q-01–Q-10 当前处置
+
+| Gate | Result | 证据等级 | 剩余边界 |
+|---|---|---|---|
+| Q-01 | `PASS` | `Device-attested` | 首次自动部署缺失见 `F02-FIRST-LAUNCH-AUTODEPLOY-001`，不否定离线闭包可部署。 |
+| Q-02 | `PASS` | `Device-attested` | fuzzy off/on 8/8 exact + `fanti`。转换/反查向量不在本 gate 闭合范围内。 |
+| Q-03 | `DEFERRED` | n/a | `F02-CONVERSION-LOOKUP-NOT-WIRED-001`。本地四输出不能扩张为真机 RC 通过。 |
+| Q-04 | `PASS`（Full Access/lifecycle） | `Device-attested` | Stroke reverse lookup 随 Q-03 延期。 |
+| Q-05 | `PASS`（hosted checkout） | reviewer-readback of hosted CI | run `33642643269`：`classify-change` / `lightweight-checks` / `build-and-test` / `final-quality-gate` 均为 `SUCCESS`。不是 reviewer 本地重跑。 |
+| Q-06 | `PARTIAL` | `Device-attested`（C.4 消费） | 严格 missing/corrupt/rollback 真机 fault-injection 仍 `POST-READY EVIDENCE PENDING`。进程死亡原子性 = `tech_debt:TD-001`。 |
+| Q-07 | `PARTIAL` | `Device-attested`（D.1/D.2 观察） | 5 次冷启动 median 1.06 s / worst 1.17 s；`.app` 81.20 MB。非 release-like；无 Product 性能预算接受。 |
+| Q-08 | `PASS` | `Device-attested` | 精确 build `b1d81fd` 安装/重部署/重开/重启。 |
+| Q-09 | `PARTIAL` | `Executor-recorded` 工程清单 | `F02-Q09-HUMAN-LEGAL-001` 仍待 Human/legal。 |
+| Q-10 | `PARTIAL` | reviewer-readback of hosted CI | hosted CI 绿；exact archive / release provenance 未做。 |
+
+### 剩余 M-03 残差（merge 前须由 Product 给 disposition）
+
+| ID | Severity | Owner / disposition | Pointer |
+|---|---|---|---|
+| `F02-Q03-RC-001` | P2 | Human Product Owner / open | Q-03 deferred；[`handoff` Run findings](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
+| `F02-Q06-EXTENSION-001` | P2 | Human Product Owner / open | 严格 Extension fault-injection 未跑 |
+| `F02-Q06-PROCDEATH-001` | P2 | Main App/Data Ops / `tech_debt:TD-001` | ADR 0006 |
+| `F02-Q07-PERF-001` | P2 | Human Product Owner / open | release-like 性能/预算未接受 |
+| `F02-Q09-HUMAN-LEGAL-001` | P2 | Human Product Owner / open | 工程 inventory 不能代替法律充分性 |
+| `F02-Q10-ARCHIVE-001` | P2 | Human Product Owner / open | 无 exact archive；hosted CI 已绿，不覆盖 Release provenance |
+| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | P2 | Human Product Owner / open | 全新安装不自动部署 |
+| `F02-CONVERSION-LOOKUP-NOT-WIRED-001` | P2 | Human Product Owner / open | 与 Architecture `F02-A-P2-OPENCC-SCOPE-001` 同一事实 |
+| fuzzy-default-ON | note | Human Product Owner / open | handoff 记为有意行为，不是缺陷；仍需 Product 确认 |
+
+允许的 disposition 只有 `fix` / `accept` / `tech_debt:<ID>`。Quality 不代填 Product 决定。
+
+### 禁止动作
+
+不 merge、不发 AUTH、不把本结论写成 Exit / TestFlight / Release / legal 通过。
+
+### Independence statement
+
+Replacement Quality reviewer（Grok 4.6）只读复审 `ecd3446`（worktree `/private/tmp/universe-keyboard-f02-assignment`）：未改 Swift 源码、未跑 build/test/device，只读回已提交的真机 ledger 与 GitHub check rollup。本文档记录属于审查卫生，不是 Product Gate。

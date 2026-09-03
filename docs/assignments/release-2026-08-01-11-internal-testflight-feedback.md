@@ -8,10 +8,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Assignment Pending` |
-| **Phase** | Build 7 feedback remains historical; F-02 current-development-build candidate-quality reproduction is established and split into `RIME-BUILTIN-LUNA-QUALITY-001`; F-03 engineering slice is Closed |
-| **Non-claims** | The original Build 7 / iPhone 16 Pro / iOS 18 multi-character root cause remains unknown; the later local build is not TestFlight acceptance; the F-02 fix has not entered `Ready` |
-| **Next** | The bound F-02 Executor pins the accepted official Luna runtime closure and submits its license/manifest for independent Architecture review; a new TestFlight build is still required for F-03 tester use |
-| **Residuals** | [`2026-08-25 internal feedback`](../evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`F-02 repair Assignment`](rime-builtin-luna-quality-001.md) · [`F-02 2026-08-29 evidence`](../evidence/rime-builtin-luna-quality-f02-2026-08-29.md) |
+| **Phase** | Build 7 feedback remains historical; F-02 执行在 `RIME-BUILTIN-LUNA-QUALITY-001` / PR #93，待 Human Product Gate；F-03 engineering slice is Closed |
+| **Non-claims** | The original Build 7 / iPhone 16 Pro / iOS 18 multi-character root cause remains unknown; F-02 真机通过不等于 TestFlight 接受或本 Assignment Exit |
+| **Next** | Human Product Gate on F-02 residuals / PR #93 merge AUTH；F-03 tester use still needs a new TestFlight build |
+| **Residuals** | [`2026-08-25 internal feedback`](../evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`F-02 repair Assignment`](rime-builtin-luna-quality-001.md) · [`F-02 proposed Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) |
 
 ---
 
