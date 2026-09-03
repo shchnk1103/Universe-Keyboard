@@ -8,10 +8,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Upgrade Review 已写成 Deferred 记录；PR [#92](https://github.com/shchnk1103/Universe-Keyboard/pull/92) 已跟上 `origin/main`。剩余 merge 阻塞是 Human Product Gate。 |
+| **Phase** | Human Product Gate Passed；[`AUTH-KOS-UPGRADE-UK-002-MERGE`](../authorizations/AUTH-KOS-UPGRADE-UK-002-MERGE.md) issued。PR [#92](https://github.com/shchnk1103/Universe-Keyboard/pull/92) 待执行 merge。 |
 | **Non-claims** | 不 Adopt `v0.6.0`；不启用 `required`；不改冻结 KOS 2.0；不迁移既有 Active Assignment；不是 TestFlight / Release |
-| **Next** | Human Product Owner 决定是否把 Deferred 记录合入 `main` |
-| **Residuals** | none for this slice · [`upgrade record`](../kos/upgrade-records/KOS-UPGRADE-UK-002-v0.6.0.md) · [`proposed Gate`](../product-decisions/KOS-UPGRADE-UK-002-product-gate.md) |
+| **Next** | Executor 合并 PR #92，然后 M-02 并将本 Assignment 标为 `Closed` |
+| **Residuals** | none · [`upgrade record`](../kos/upgrade-records/KOS-UPGRADE-UK-002-v0.6.0.md) · [`Gate`](../product-decisions/KOS-UPGRADE-UK-002-product-gate.md) |
 
 ---
 
@@ -45,3 +45,5 @@
 
 - `2026-09-02 Asia/Shanghai` — Upgrade Review recorded Deferred; PR #92 opened with “暂不 merge” because RIME-SYNC overlapping writer was Active.
 - `2026-09-03 Asia/Shanghai` — PR #91 and #93 are on `main`. Overlapping-writer hold on *recording* the Deferred check is closed. Adoption of `v0.6.0` remains Deferred until a workflow needs orchestration.
+- `2026-09-03 Asia/Shanghai` — Human Product Owner authorized merge of PR #92
+  (Deferred record only; not Adopt `v0.6.0`). AUTH issued.

@@ -1,29 +1,27 @@
-# Product Decision: KOS-UPGRADE-UK-002 — Human Product Gate（proposed）
+# Product Decision: KOS-UPGRADE-UK-002 — Human Product Gate
 
 - **Decision ID:** `PD-KOS-UPGRADE-UK-002-GATE`
-- **Lifecycle status:** `proposed` — **not Accepted**
+- **Lifecycle status:** `Accepted`
 - **Date / timezone:** `2026-09-03 Asia/Shanghai`
-- **Authority:** Human Product Owner only
+- **Authority:** Human Product Owner
 - **Assignment:** [`KOS-UPGRADE-UK-002`](../assignments/kos-upgrade-uk-002.md)
 - **PR:** [#92](https://github.com/shchnk1103/Universe-Keyboard/pull/92)
+- **AUTH:** [`AUTH-KOS-UPGRADE-UK-002-MERGE`](../authorizations/AUTH-KOS-UPGRADE-UK-002-MERGE.md)
 
 ## Current Status
 
 | Field | Value |
 |---|---|
-| Status | proposed |
-| Phase | Gate packet ready；等待 Human 决定是否合入 Deferred 记录 |
-| Evidence | Architecture `Pass`；Quality `Pass` for docs-only packet；original hosted docs path green |
-| Non-claims | 本文件不是 Adopt `v0.6.0`、不是 `required`、不是 TestFlight / Release |
+| Status | accepted |
+| Phase | Human Product Gate Passed；merge AUTH issued |
+| Evidence | Architecture `Pass`；Quality `Pass` for docs-only packet |
+| Non-claims | Not Adopt `v0.6.0`; not `required`; not TestFlight / Release |
 | Residuals | none |
 
 ---
 
-## Decision required
+## Decision
 
-Human Product Owner 二选一：
+Human Product Owner 于 `2026-09-03 Asia/Shanghai` 授权合并 PR #92：把 kos-agent-kit `v0.6.0` 记为 **Deferred**，Adopted 仍为 `v0.5.0` advisory。
 
-1. **合入 PR #92（推荐）** — 接受 Upgrade Review Disposition = `Deferred`；`UPGRADE_STATUS.md` Latest checked = `v0.6.0`；Adopted 仍为 `v0.5.0` advisory。不 Adopt 编排合同。
-2. **先不合** — 保留 PR，Latest checked 继续显示过期的 `v0.5.0`。
-
-合入后 Assignment 可 `Closed`。不授权 `required`、编排模板落地、或任何 Release。
+不 Adopt 可选编排合同，不启用 `required`，不迁移既有 Active Assignment。
