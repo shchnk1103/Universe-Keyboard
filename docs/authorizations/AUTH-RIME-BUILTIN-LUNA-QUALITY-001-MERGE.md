@@ -6,14 +6,15 @@
   "record_id": "AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE",
   "record_type": "authorization",
   "title": "Merge F-02 builtin Luna quality PR #93",
-  "status": "issued",
-  "updated_at": "2026-09-03T12:30:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-03T18:42:34+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "head_sha_changed"],
   "authorization": {
     "action": "merge_pr_93",
     "target": "RIME-BUILTIN-LUNA-QUALITY-001",
     "artifact_bindings": [
-      {"kind": "url", "identity": "https://github.com/shchnk1103/Universe-Keyboard/pull/93"}
+      {"kind": "url", "identity": "https://github.com/shchnk1103/Universe-Keyboard/pull/93"},
+      {"kind": "commit", "identity": "ec6c277d2f052492c4a5adf80d5294d55804dbb5"}
     ],
     "scope": "Merge PR #93 to main after Human Product Gate accepted merge residuals as accept; run M-02 state sync; keep Assignment Active with Exit open",
     "exclusions": ["release", "testflight_upload", "testflight_external_review", "app_store_submission", "assignment_exit", "q03_four_profile_closure", "q06_strict_fault_injection", "q07_release_like_budget", "legal_sufficiency", "exact_archive", "c5_extension_process_kill"],
@@ -22,7 +23,7 @@
     "issued_at": "2026-09-03T12:30:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "issued"
+    "consumption_state": "consumed"
   }
 }
 ```
@@ -31,8 +32,8 @@
 
 | Field | Value |
 |---|---|
-| Status | issued |
-| Consumption | not consumed; merge SHA pending |
+| Status | consumed |
+| Consumption | PR #93 merged `ec6c277` |
 
 ---
 

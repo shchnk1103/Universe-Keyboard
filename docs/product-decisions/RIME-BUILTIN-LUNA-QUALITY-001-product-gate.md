@@ -14,7 +14,7 @@
     "authority_role": "Human Product Owner",
     "decision_source": "in-session 2026-09-03 Asia/Shanghai answers on the F-02 Product Gate packet",
     "scope": "Dispose remaining M-03 residuals as accept for this merge slice and authorize merge of PR #93. Does not authorize TestFlight, Release, or Assignment Exit.",
-    "outcome": "Human Product Gate passed for merge of PR #93; listed residuals accepted; Exit/TestFlight/Release not authorized",
+    "outcome": "Human Product Gate passed; PR #93 merged ec6c277; listed residuals accepted; Exit/TestFlight/Release not authorized",
     "expires_at": null
   }
 }
@@ -33,7 +33,7 @@
 | Field | Value |
 |---|---|
 | Status | accepted |
-| Phase | Human Product Gate Passed for this merge slice；merge AUTH issued |
+| Phase | Human Product Gate Passed for this merge slice；PR #93 merged `ec6c277` |
 | Evidence | Architecture `Pass with conditions`；Quality KOS Fail closed + `Pass with conditions`；hosted CI `33642643269` green on `ecd3446`；真机 A–D ledger |
 | Non-claims | No Assignment Exit; no TestFlight; no Release; no legal sufficiency; no Q-03 four-profile closure; no Q-06 strict fault-injection; no Q-07 release-like budget |
 | Residuals | Assignment [M-03 table](../assignments/rime-builtin-luna-quality-001.md#m-03-residuals-before-merge) — Product-owned rows `accept` for this merge |

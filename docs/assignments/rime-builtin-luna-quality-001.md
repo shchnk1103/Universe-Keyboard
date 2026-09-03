@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Human Product Gate Passed for this merge slice；[`AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE`](../authorizations/AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE.md) issued。PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) 待执行 merge。Assignment Exit 仍开放。 |
+| **Phase** | Human Product Gate Passed for this merge slice；PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) merged `ec6c277`。Assignment Exit 仍开放。 |
 | **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性、无 Q-03 四输出闭合、无 Q-06 严格 fault-injection、无 Q-07 release-like 性能预算接受。历史 Build 7 多字症状未复现。 |
-| **Next** | Executor 合并 PR #93，然后跑 KOS 2.1 M-02。不得上传 TestFlight 或 Release。 |
+| **Next** | 不上传 TestFlight 或 Release。后续另开：first-launch autodeploy、转换/反查能力、法律充分性。 |
 | **Residuals** | [M-03 table](#m-03-residuals-before-merge) · [`Architecture ecd3446`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--ecd3446--2026-09-03) · [`Quality ecd3446`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--ecd3446--2026-09-03) · [`Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ### M-03 residuals before merge
@@ -427,3 +427,6 @@ built-in assets.
   (`accept` for autodeploy, conversion/lookup, fuzzy-default-ON, Q-06, Q-07,
   legal, archive) and authorized merge of PR #93 without TestFlight, Release or
   Assignment Exit. AUTH `AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE` issued.
+- `2026-09-03 Asia/Shanghai` — PR #93 merged to `main` as `ec6c277`. AUTH
+  consumed. M-02 state sync applied. Assignment remains `Active`; Exit,
+  TestFlight and Release remain unauthorized.

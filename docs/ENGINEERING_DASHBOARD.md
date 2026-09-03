@@ -13,9 +13,10 @@
 - **Lifecycle:** `Active` — Human Product Gate Passed for this merge slice
 - **Authority:** [`Assignment`](assignments/rime-builtin-luna-quality-001.md) · [`Gate`](product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`AUTH`](authorizations/AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE.md) · ADR [`0033`](architecture/decisions/0033-main-app-owned-offline-rime-resource-closure.md) `Accepted`
 - **Current evidence:** Architecture / Quality 对 `ecd3446` 均为 `Pass with conditions`；KOS P1 freeze 已 `fix`；hosted CI [`33642643269`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33642643269) 全绿；真机 Q-01/Q-02/Q-04/Q-08 `Device-attested` PASS
-- **Blocker:** none for this merge slice；Executor 执行 PR #93 merge
+- **Blocker:** none for this merge slice
 - **Non-claims:** 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性
-- **Next:** 合并 [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93)，然后 M-02
+- **Merged:** [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) `ec6c277`
+- **Next:** 不上传 TestFlight / Release；autodeploy 与转换/反查另开
 
 ## KOS 2.2 advisory pin — 2026-08-27
 
