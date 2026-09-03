@@ -12,7 +12,7 @@
 - Change impact: [`KNOWLEDGE_DEPENDENCIES.md`](KNOWLEDGE_DEPENDENCIES.md)
 - Change classification: [`DECISION_TREES.md`](DECISION_TREES.md)
 - KOS 2.1 ops hygiene (under 2.0): [`kos/kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md)
-- KOS 2.2 advisory pin (`v0.5.0`; `v0.6.0` Deferred): [`kos/UPGRADE_STATUS.md`](kos/UPGRADE_STATUS.md) · [`.kos/project.json`](../.kos/project.json) · [`KOS-UPGRADE-UK-001`](assignments/kos-upgrade-uk-001.md) · [`KOS-UPGRADE-UK-002`](assignments/kos-upgrade-uk-002.md)
+- KOS 2.2 advisory pin (`v0.6.0`): [`kos/UPGRADE_STATUS.md`](kos/UPGRADE_STATUS.md) · [`.kos/project.json`](../.kos/project.json) · [`KOS-UPGRADE-UK-003`](assignments/kos-upgrade-uk-003.md)
 - Human-operated iOS evidence profile: [`kos/universe-keyboard-human-operated-evidence-profile.md`](kos/universe-keyboard-human-operated-evidence-profile.md)
 
 ## Current System
