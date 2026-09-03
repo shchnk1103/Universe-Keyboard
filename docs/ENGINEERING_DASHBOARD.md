@@ -10,12 +10,12 @@
 
 ## RIME-BUILTIN-LUNA-QUALITY-001 — F-02 内置朙月候选质量（PR #93）
 
-- **Lifecycle:** `Active` — Human Product Gate pending
-- **Authority:** [`Assignment`](assignments/rime-builtin-luna-quality-001.md) · [`proposed Gate`](product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · ADR [`0033`](architecture/decisions/0033-main-app-owned-offline-rime-resource-closure.md) `Accepted`
+- **Lifecycle:** `Active` — Human Product Gate Passed for this merge slice
+- **Authority:** [`Assignment`](assignments/rime-builtin-luna-quality-001.md) · [`Gate`](product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`AUTH`](authorizations/AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE.md) · ADR [`0033`](architecture/decisions/0033-main-app-owned-offline-rime-resource-closure.md) `Accepted`
 - **Current evidence:** Architecture / Quality 对 `ecd3446` 均为 `Pass with conditions`；KOS P1 freeze 已 `fix`；hosted CI [`33642643269`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33642643269) 全绿；真机 Q-01/Q-02/Q-04/Q-08 `Device-attested` PASS
-- **Blocker:** Human 必须给 M-03 `open` 行 disposition，并另发 merge AUTH。CI 绿 ≠ merge
+- **Blocker:** none for this merge slice；Executor 执行 PR #93 merge
 - **Non-claims:** 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性
-- **Next:** Human Product Gate；通过后才允许合 [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93)
+- **Next:** 合并 [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93)，然后 M-02
 
 ## KOS 2.2 advisory pin — 2026-08-27
 

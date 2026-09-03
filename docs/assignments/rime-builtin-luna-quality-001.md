@@ -9,10 +9,10 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | KOS P1 freeze 已关闭；PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) HEAD `ecd3446` hosted CI 全绿；独立 Architecture / Quality 对 `ecd3446` 均为 `Pass with conditions`。剩余 merge 阻塞是 Human Product Gate（残差 disposition + merge 授权）。 |
-| **Non-claims** | 无 Assignment Exit、无 Human Product Gate、无 merge AUTH、无 TestFlight、无 Release、无法律充分性、无 Q-03 四输出闭合、无 Q-06 严格 fault-injection、无 Q-07 release-like 性能预算接受。历史 Build 7 多字症状未复现。 |
-| **Next** | Human Product Owner 填写下方 M-03 表中 `open (Product Gate)` 行（`fix` / `accept` / `tech_debt:<ID>`），并决定是否签发 merge AUTH。不得从 CI 绿或本复审推断 merge。 |
-| **Residuals** | [M-03 table](#m-03-residuals-before-merge) · [`Architecture ecd3446`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--ecd3446--2026-09-03) · [`Quality ecd3446`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--ecd3446--2026-09-03) · [`proposed Product Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
+| **Phase** | Human Product Gate Passed for this merge slice；[`AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE`](../authorizations/AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE.md) issued。PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) 待执行 merge。Assignment Exit 仍开放。 |
+| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性、无 Q-03 四输出闭合、无 Q-06 严格 fault-injection、无 Q-07 release-like 性能预算接受。历史 Build 7 多字症状未复现。 |
+| **Next** | Executor 合并 PR #93，然后跑 KOS 2.1 M-02。不得上传 TestFlight 或 Release。 |
+| **Residuals** | [M-03 table](#m-03-residuals-before-merge) · [`Architecture ecd3446`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--ecd3446--2026-09-03) · [`Quality ecd3446`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--ecd3446--2026-09-03) · [`Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ### M-03 residuals before merge
 
@@ -28,13 +28,13 @@ Close/merge is blocked while any row is missing a disposition. Quality/Architect
 | `F02-Q05-HOSTED-001` | Quality | `fix` (closed for hosted CI) | GitHub run `33642643269` |
 | `F02-Q08-LIFECYCLE-001` | Quality | `fix` (closed) | Q-08 PASS |
 | `F02-A-P2-TD001` / `F02-Q06-PROCDEATH-001` | Main App/Data Ops | `tech_debt:TD-001` | ADR 0006 |
-| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | Human Product Owner | open (Product Gate) | 全新安装不自动 `triggerDeployment` |
-| `F02-CONVERSION-LOOKUP-NOT-WIRED-001` / `F02-A-P2-OPENCC-SCOPE-001` / `F02-Q03-RC-001` | Human Product Owner | open (Product Gate) | 仅 `t2s` 接线；s2t bundled-not-wired；t2hk/t2tw + Stroke reverse lookup 未接线 |
-| fuzzy-default-ON | Human Product Owner | open (Product Gate) | 文档记为有意行为，需确认 |
-| `F02-Q06-EXTENSION-001` | Human Product Owner | open (Product Gate) | 严格 Extension fault-injection 未跑 |
-| `F02-Q07-PERF-001` | Human Product Owner | open (Product Gate) | 非 release-like；无预算接受 |
-| `F02-Q09-HUMAN-LEGAL-001` | Human Product Owner | open (Product Gate) | 工程 inventory ≠ 法律充分性 |
-| `F02-Q10-ARCHIVE-001` | Human Product Owner | open (Product Gate) | 无 exact archive / Release provenance |
+| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | Human Product Owner | `accept` | 全新安装仍需手动部署；本片 merge 不阻塞 |
+| `F02-CONVERSION-LOOKUP-NOT-WIRED-001` / `F02-A-P2-OPENCC-SCOPE-001` / `F02-Q03-RC-001` | Human Product Owner | `accept` | 本片只承诺候选质量 + `t2s`；其余转换/反查另开 |
+| fuzzy-default-ON | Human Product Owner | `accept` | 产品意图，不是缺陷 |
+| `F02-Q06-EXTENSION-001` | Human Product Owner | `accept` | 严格 Extension fault-injection 不阻塞本片 merge |
+| `F02-Q07-PERF-001` | Human Product Owner | `accept` | Debug 观察 ≠ Release 预算 |
+| `F02-Q09-HUMAN-LEGAL-001` | Human Product Owner | `accept` | 工程 inventory 足够本片 merge；法律充分性另开 |
+| `F02-Q10-ARCHIVE-001` | Human Product Owner | `accept` | merge 不要求 exact archive |
 
 ---
 
@@ -423,3 +423,7 @@ built-in assets.
   `final-quality-gate`). Remaining merge blocker is Human Product Gate over the
   M-03 `open` rows. No merge AUTH is inferred. Proposed gate packet:
   [`RIME-BUILTIN-LUNA-QUALITY-001-product-gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md).
+- `2026-09-03 Asia/Shanghai` — Human Product Owner accepted the merge residuals
+  (`accept` for autodeploy, conversion/lookup, fuzzy-default-ON, Q-06, Q-07,
+  legal, archive) and authorized merge of PR #93 without TestFlight, Release or
+  Assignment Exit. AUTH `AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE` issued.

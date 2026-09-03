@@ -708,8 +708,8 @@ ADR 0033 already requires explicit Product capability review before disabling a 
 | ID | Severity | Owner / disposition | Remaining requirement |
 |---|---|---|---|
 | `F02-A-P2-TD001` | P2 | Main App/Data Ops / `tech_debt:TD-001` | Process-death / cross-process whole-tree atomicity stays ADR 0006 / TD-001. F-02 claims synchronous failure recovery only. |
-| `F02-A-P2-OPENCC-SCOPE-001` | P2 | Human Product Owner / open (Product Gate) | Device finding `F02-CONVERSION-LOOKUP-NOT-WIRED-001`: deployed Luna wires `t2s` only; `s2t` bundled-not-wired; `t2hk`/`t2tw` and Stroke reverse lookup not wired. Requires `accept` (enabled-profile scope) or `fix`. |
-| `F02-A-P2-AUTODEPLOY-001` | P2 | Human Product Owner / open (Product Gate) | Device finding `F02-FIRST-LAUNCH-AUTODEPLOY-001`: first launch does not seed `rime_needs_deploy`. Bundled bytes exist; activation is still a manual main-App deploy. Not a download Stop Condition. Requires `accept`, `fix`, or `tech_debt:<ID>`. |
+| `F02-A-P2-OPENCC-SCOPE-001` | P2 | Human Product Owner / `accept` | 2026-09-03 Product Gate: this slice commits to candidate quality + wired `t2s` only. |
+| `F02-A-P2-AUTODEPLOY-001` | P2 | Human Product Owner / `accept` | 2026-09-03 Product Gate: first-launch manual deploy accepted for this merge. |
 
 Physical Q-01/Q-02/Q-04/Q-08 results are Quality/Device evidence, not Architecture re-execution.
 
