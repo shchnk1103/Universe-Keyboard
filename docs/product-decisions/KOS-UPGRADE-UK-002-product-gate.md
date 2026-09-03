@@ -13,7 +13,7 @@
 | Field | Value |
 |---|---|
 | Status | accepted |
-| Phase | Human Product Gate Passed；merge AUTH issued |
+| Phase | Human Product Gate Passed；PR #92 merged `cb49e62` |
 | Evidence | Architecture `Pass`；Quality `Pass` for docs-only packet |
 | Non-claims | Not Adopt `v0.6.0`; not `required`; not TestFlight / Release |
 | Residuals | none |

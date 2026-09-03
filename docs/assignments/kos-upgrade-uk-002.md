@@ -7,10 +7,10 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | Human Product Gate Passed；[`AUTH-KOS-UPGRADE-UK-002-MERGE`](../authorizations/AUTH-KOS-UPGRADE-UK-002-MERGE.md) issued。PR [#92](https://github.com/shchnk1103/Universe-Keyboard/pull/92) 待执行 merge。 |
+| **Lifecycle** | `Closed` |
+| **Phase** | Human Product Gate Passed；PR [#92](https://github.com/shchnk1103/Universe-Keyboard/pull/92) merged `cb49e62` |
 | **Non-claims** | 不 Adopt `v0.6.0`；不启用 `required`；不改冻结 KOS 2.0；不迁移既有 Active Assignment；不是 TestFlight / Release |
-| **Next** | Executor 合并 PR #92，然后 M-02 并将本 Assignment 标为 `Closed` |
+| **Next** | 无。`v0.6.0` 仅在确有编排需求、`required` 或更新 Kit Release 时再开 Upgrade Review |
 | **Residuals** | none · [`upgrade record`](../kos/upgrade-records/KOS-UPGRADE-UK-002-v0.6.0.md) · [`Gate`](../product-decisions/KOS-UPGRADE-UK-002-product-gate.md) |
 
 ---
@@ -47,3 +47,4 @@
 - `2026-09-03 Asia/Shanghai` — PR #91 and #93 are on `main`. Overlapping-writer hold on *recording* the Deferred check is closed. Adoption of `v0.6.0` remains Deferred until a workflow needs orchestration.
 - `2026-09-03 Asia/Shanghai` — Human Product Owner authorized merge of PR #92
   (Deferred record only; not Adopt `v0.6.0`). AUTH issued.
+- `2026-09-03 Asia/Shanghai` — PR #92 merged `cb49e62`. AUTH consumed. Assignment Closed.

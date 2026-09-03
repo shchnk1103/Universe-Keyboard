@@ -5,7 +5,7 @@
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Last synced: `2026-09-03 Asia/Shanghai` — KOS-UPGRADE-UK-002 Deferred 记录待 Human Product Gate（PR #92）。F-02 PR #93 merged `ec6c277`。核心 Active Work 为 `6/10`。
+Last synced: `2026-09-03 Asia/Shanghai` — KOS-UPGRADE-UK-002 Closed（PR #92 merged `cb49e62`，v0.6.0 Deferred）。F-02 PR #93 merged `ec6c277`。核心 Active Work 为 `5/10`。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -14,12 +14,12 @@ Last synced: `2026-09-03 Asia/Shanghai` — KOS-UPGRADE-UK-002 Deferred 记录�
 | 3 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 4 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 5 | RIME-SYNC-001 | Active | Run 02 单事务完成；正式 `INVALID` 审计结果保留，Human Product Owner 接受工程结论并决定暂不重测。仅在复发或路径实质变更时重开；旧轮次精确错误、`TD-002` pending | [`assignment`](assignments/rime-sync-001.md) · [`diagnostics`](assignments/rime-sync-diagnostics-v1-001.md) · [`Product Review`](product-decisions/RIME-SYNC-DIAGNOSTICS-V1-001-product-gate.md) · [`Run 01`](evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Run 02`](evidence/rime-background-sync-natural-device-run-2026-09-01-r2.md) |
-| 6 | KOS-UPGRADE-UK-002 | Active | `v0.6.0` Upgrade Review = Deferred；PR [#92](https://github.com/shchnk1103/Universe-Keyboard/pull/92) 已跟上 `main`。Next = Human Product Gate（合入记录 ≠ Adopt） | [`assignment`](assignments/kos-upgrade-uk-002.md) · [`Gate proposed`](product-decisions/KOS-UPGRADE-UK-002-product-gate.md) · [`record`](kos/upgrade-records/KOS-UPGRADE-UK-002-v0.6.0.md) |
 
 ## Completed (not Active)
 
 | Work Item | Current handoff | Assignment |
 |---|---|---|
+| KOS-UPGRADE-UK-002 | `Closed`；PR [#92](https://github.com/shchnk1103/Universe-Keyboard/pull/92) merged `cb49e62`；`v0.6.0` Deferred；Adopted 仍 `v0.5.0` advisory | [`assignment`](assignments/kos-upgrade-uk-002.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-002-product-gate.md) · [`record`](kos/upgrade-records/KOS-UPGRADE-UK-002-v0.6.0.md) |
 | RIME-SCHEME-DELIVERY-001 | `Closed`；Human Product Gate Passed；PR [#83](https://github.com/shchnk1103/Universe-Keyboard/pull/83) merged `e9aea57`；GitHub 源与 acceptable-use 为 `accept` 残留；不授权 TestFlight | [`assignment`](assignments/rime-scheme-delivery-001.md) · [`Gate`](product-decisions/RIME-SCHEME-DELIVERY-001-product-gate.md) |
 | RIME-SCHEME-DELIVERY-INTEGRITY-001 | `Closed`；CNB staged_content 已分类；空 zip 条目已解压 | [`assignment`](assignments/rime-scheme-delivery-integrity-001.md) · [`ADR 0032`](architecture/decisions/0032-verified-scheme-source-recovery-and-integrity-classification.md) |
 | SCHEME-DELIVERY-JOURNAL-001 | `Closed`；Human v1 失败链与成功链均可见 | [`assignment`](assignments/scheme-delivery-journal-001.md) |
