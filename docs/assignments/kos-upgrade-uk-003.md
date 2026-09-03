@@ -6,10 +6,10 @@
   "record_id": "KOS-UPGRADE-UK-003",
   "record_type": "assignment",
   "title": "Adopt KOS Agent Kit v0.6.0 in advisory mode",
-  "lifecycle": "active",
-  "current_phase": "Human authorized Adopt v0.6.0 advisory pin; required remains unauthorized",
+  "lifecycle": "closed",
+  "current_phase": "Adopted v0.6.0 advisory; PR #96 merged 41c0dc5; required unauthorized",
   "authorization_action": "adopt_kos_kit_v0.6.0",
-  "updated_at": "2026-09-03T20:30:00+08:00",
+  "updated_at": "2026-09-03T21:00:00+08:00",
   "revalidation_triggers": ["kit_release_changed", "mode_changed", "scope_changed"],
   "authorization_refs": ["AUTH-KOS-UPGRADE-UK-003"],
   "responsibilities": {
@@ -32,10 +32,10 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | active |
-| Current Phase | Human authorized Adopt v0.6.0 advisory pin; required remains unauthorized |
+| Lifecycle | closed |
+| Current Phase | Adopted v0.6.0 advisory; PR #96 merged 41c0dc5; required unauthorized |
 | Material non-claims | Not required mode; not bulk Envelope migration; not Active Assignment migration; not orchestration plan instantiation; not TestFlight / Release |
-| Next handoff / decision | Merge the pin PR, run M-02, close this Assignment |
+| Next handoff / decision | None. `required` or orchestration instantiation need a new Assignment |
 | Residuals | [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生) · [`upgrade record`](../kos/upgrade-records/KOS-UPGRADE-UK-003-v0.6.0.md) |
 
 ---
@@ -72,3 +72,4 @@
 
 - `2026-09-02` — UK-002 Deferred the *check* of `v0.6.0` (no current orchestration workflow).
 - `2026-09-03 Asia/Shanghai` — Human Product Owner authorized Adopt `v0.6.0` as the advisory pin. Orchestration remains unused until a future Assignment needs it.
+- `2026-09-03 Asia/Shanghai` — PR [#96](https://github.com/shchnk1103/Universe-Keyboard/pull/96) merged `41c0dc5`. AUTH consumed. Assignment Closed.
