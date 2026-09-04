@@ -451,8 +451,10 @@ Replacement Quality reviewer（Grok 4.6）只读复审 `ecd3446`（worktree `/pr
 
 ## Independent Quality re-review — `eedc4a7` — 2026-09-04
 
-**本片 merge-slice Quality packet：`Pass with conditions`（无 P0；无阻塞本片的 P1）。**  
-**Assignment Exit / TestFlight / Release：`Fail`（未授权）。**  
+**本片 merge-slice Quality packet：`Pass with conditions`（无 P0；无阻塞本片的 P1）。**
+
+**Assignment Exit / TestFlight / Release：`Fail`（未授权）。**
+
 本 addendum **不**发 merge AUTH、**不**声明 Exit / TestFlight / Release，也**不**复用 [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) `ecd3446` 的 Quality verdict。
 
 ### Scope

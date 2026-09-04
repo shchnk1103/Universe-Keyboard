@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) HEAD `eedc4a7`：Architecture / Quality 本片均为 `Pass with conditions`。Human 真机删装已确认自动部署与 fuzzy 默认关。无 merge AUTH。 |
-| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性。搜索页网络弹窗未定性，不当作自动部署失败。 |
-| **Next** | Human Product Gate：是否接受本片残差（含搜索页网络弹窗）并签发 **新的** merge AUTH（不得复用 #93 AUTH）。不上传 TestFlight 或 Release。 |
+| **Phase** | Human Product Gate Passed for PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98)。AUTH `AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE-98` issued。等待 CI 绿后 merge。 |
+| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性。 |
+| **Next** | Merge PR #98；consume AUTH；M-02。不上传 TestFlight 或 Release。 |
 | **Residuals** | [M-03 table](#m-03-residuals-before-merge) · [`Architecture ecd3446`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--ecd3446--2026-09-03) · [`Quality ecd3446`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--ecd3446--2026-09-03) · [`Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ### M-03 residuals before merge
@@ -28,7 +28,8 @@ Close/merge is blocked while any row is missing a disposition. Quality/Architect
 | `F02-Q05-HOSTED-001` | Quality | `fix` (closed for hosted CI) | GitHub run `33642643269` |
 | `F02-Q08-LIFECYCLE-001` | Quality | `fix` (closed) | Q-08 PASS |
 | `F02-A-P2-TD001` / `F02-Q06-PROCDEATH-001` | Main App/Data Ops | `tech_debt:TD-001` | ADR 0006 |
-| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | Executor | `fix` (Human 真机删装 2026-09-04) | 打开主 App 已自动部署；无手动「应用并重新部署」；fuzzy 默认关；候选 `ni`/`nihao`/`sanjiaoxing`/`jintiantianqihenhao` 正常 |
+| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | Executor | `fix` (Human 真机删装 2026-09-04；Gate-98) | 打开主 App 已自动部署；无手动「应用并重新部署」；fuzzy 默认关 |
+| `F02-SEARCH-NETWORK-DIALOG-001` | Human Product Owner | `accept` (Gate-98) | 搜索页首次输入前系统网络弹窗不阻塞本片 merge |
 | `F02-CONVERSION-LOOKUP-NOT-WIRED-001` / `F02-A-P2-OPENCC-SCOPE-001` / `F02-Q03-RC-001` | Human Product Owner | `accept` | 本片只承诺候选质量 + `t2s`；其余转换/反查另开 |
 | fuzzy-default-ON | Human Product Owner | superseded — default OFF | Human 2026-09-03 授权将主开关默认关闭；分组开关仍默认开 |
 | `F02-Q06-EXTENSION-001` | Human Product Owner | `accept` | 严格 Extension fault-injection 不阻塞本片 merge |
@@ -463,3 +464,7 @@ built-in assets.
   Quality (`grok-4.5`) delta reviews of `eedc4a7`: both `Pass with conditions`.
   P0/P1 none for this slice. Search-network dialog remains P2 observation.
   No merge AUTH inferred.
+- `2026-09-04 Asia/Shanghai` — Human Product Owner authorized merge of PR #98
+  (`批准合并`). AUTH `AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE-98` issued.
+  Search-network dialog `accept` for this slice. Exit / TestFlight / Release
+  remain unauthorized. #93 AUTH is not reused.
