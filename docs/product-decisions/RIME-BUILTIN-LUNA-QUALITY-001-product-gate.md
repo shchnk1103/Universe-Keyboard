@@ -32,8 +32,8 @@
 
 | Field | Value |
 |---|---|
-| Status | accepted |
-| Phase | Human Product Gate Passed for this merge slice；PR #93 merged `ec6c277` |
+| Status | accepted（PR #93 切片；历史） |
+| Phase | Human Product Gate Passed for PR #93；merged `ec6c277`. PR #98 Gate 见 [`GATE-98`](RIME-BUILTIN-LUNA-QUALITY-001-product-gate-98.md) |
 | Evidence | Architecture `Pass with conditions`；Quality KOS Fail closed + `Pass with conditions`；hosted CI `33642643269` green on `ecd3446`；真机 A–D ledger |
 | Non-claims | No Assignment Exit; no TestFlight; no Release; no legal sufficiency; no Q-03 four-profile closure; no Q-06 strict fault-injection; no Q-07 release-like budget |
 | Residuals | Assignment [M-03 table](../assignments/rime-builtin-luna-quality-001.md#m-03-residuals-before-merge) — Product-owned rows `accept` for this merge |

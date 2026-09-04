@@ -270,7 +270,7 @@ extension SchemaManager {
 
     private func currentFuzzyPinyinSettings() -> RimeFuzzyPinyinSettings {
         RimeFuzzyPinyinSettings(
-            enabled: settings.object(forKey: RimeFuzzyPinyinSettings.enabledKey) as? Bool ?? true,
+            enabled: settings.object(forKey: RimeFuzzyPinyinSettings.enabledKey) as? Bool ?? false,
             zhZEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.zhZKey) as? Bool ?? true,
             chCEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.chCKey) as? Bool ?? true,
             shSEnabled: settings.object(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool ?? true,

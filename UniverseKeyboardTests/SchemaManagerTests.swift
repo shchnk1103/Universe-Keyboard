@@ -736,6 +736,7 @@ final class SchemaManagerTests: XCTestCase {
         let settings = StubSharedSettingsStore(
             values: [
                 "rime_active_schema": "rime_ice",
+                RimeFuzzyPinyinSettings.enabledKey: true,
                 RimeFuzzyPinyinSettings.zhZKey: true,
                 RimeFuzzyPinyinSettings.chCKey: false,
                 RimeFuzzyPinyinSettings.shSKey: false,

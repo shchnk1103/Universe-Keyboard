@@ -11,14 +11,14 @@ or `Device-attested` validation result.
 | Field | Value |
 |---|---|
 | **Lifecycle** | Assignment `Active`; this review is not the Assignment SoT |
-| **Phase** | Independent Architecture re-review of PR #93 HEAD `ecd3446` complete |
-| **Verdict** | **Architecture `Pass with conditions` for the Human Product Gate packet.** KOS P1 freeze residual is closed. Merge, Exit, TestFlight and Release remain Human/Quality authorities. |
-| **Non-claims** | No merge, Assignment Exit, TestFlight, Release, legal acceptance, or OpenCC four-profile/Stroke reverse-lookup closure |
-| **PR boundary** | PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) HEAD `ecd3446` includes merged `origin/main` (historical PR #91 already on `main`). This review inspected the F-02 overlay-authorization guard after that merge; it does not re-open RIME-SYNC-001 |
-| **Next handoff** | Human Product Owner: Product Gate on remaining residuals. Coordinator does not infer merge |
-| **Residuals** | See [HEAD `ecd3446` re-review](#independent-architecture-re-review--ecd3446--2026-09-03) |
+| **Phase** | Independent Architecture re-review of PR #98 HEAD `eedc4a7` complete |
+| **Verdict** | **Architecture `Pass with conditions` for this first-launch autodeploy / fuzzy-default-off slice.** P0: none. P1: none. Merge, Exit, TestFlight and Release remain Human/Quality/Coordinator authorities. |
+| **Non-claims** | No merge AUTH, Assignment Exit, TestFlight, Release, legal acceptance, or OpenCC four-profile/Stroke reverse-lookup closure |
+| **PR boundary** | PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) HEAD `eedc4a7` (docs after Human device pass). Implementation commit `9309a0d`. Diff vs `origin/main`. This is not a re-audit of the Luna closure and does not reuse the #93 `ecd3446` verdict. |
+| **Next handoff** | Independent Quality re-review of the same HEAD; Coordinator owns Assignment M-02 after both reviews. No merge inferred. |
+| **Residuals** | See [HEAD `eedc4a7` re-review](#independent-architecture-re-review--eedc4a7--2026-09-04) |
 
-> **S-03:** The 2026-08-29 `Pass for Ready` and the 2026-09-02 KOS-consistency P1 describe earlier phases. They are not current merge-packet truth.
+> **S-03:** The 2026-09-03 `ecd3446` Architecture re-review is historical for PR #93, not PR #98. Earlier `Pass for Ready` / KOS-consistency P1 phases are also not current packet truth.
 
 This review does not change the Assignment lifecycle or authorize
 implementation. The original pre-ADR `Pass with conditions — not Ready`
@@ -718,3 +718,73 @@ This review does not authorize merge, Exit, TestFlight or Release.
 ### Independence statement
 
 Replacement Architecture reviewer (Grok 4.6) performed a read-only review of `ecd3446` in worktree `/private/tmp/universe-keyboard-f02-assignment`. No Swift production edits, builds, tests, network or device actions were taken for this verdict. Documentation records of this addendum are Coordinator/Architecture hygiene, not a Product Gate.
+
+## Independent Architecture re-review — `eedc4a7` — 2026-09-04
+
+**Independent verdict: `Pass with conditions`.** P0: none. P1: none.
+
+### Independence statement
+
+Reviewer role: Architecture & Knowledge Steward (independent of the implementation Executor). Model: grok-4.6. High-thoroughness **delta** review of PR #98 only; not a full F-02 re-audit of the Luna closure. No production Swift edits, refactors, merge AUTH, Assignment Exit, TestFlight or Release claims. The only file written for this verdict is this Architecture review addendum.
+
+### Reviewed object
+
+- Branch `fix/f02-first-launch-autodeploy-fuzzy-off`, HEAD `eedc4a7b9fc10f058b2553764ade46c7d52236fd` (docs after Human device pass). Implementation commit `9309a0df4745c9688bb911f9c8e36a6257971aff`.
+- Diff vs `origin/main`: 7 production Swift files, tests, and docs. No Keyboard Extension sources.
+- Hosted CI run `33835843752` is green (`classify-change`, `lightweight-checks`, `build-and-test`, `final-quality-gate`). That is not Architecture Pass and not merge.
+- Human 2026-09-04 fresh-install pass is Assignment/Device evidence, not this reviewer's re-execution.
+
+The #93 `ecd3446` Architecture verdict is not reused as this PR's verdict.
+
+### Boundary
+
+This slice is: seed one local `rime_needs_deploy` on a fresh App Group, run one main-App pending deploy from `ContentView.task`, and change the fuzzy **master** product default to OFF (groups remain default ON).
+
+In scope: App-owned deploy intent + launch trigger; overlay/product-default ownership for fuzzy; XCTest-host skip; `nonisolated deinit` hygiene on three MainActor stores; whether the reported Search-tab network dialog is a deploy/network path.
+
+Out of scope: Luna/Essay/Prelude/Stroke/OpenCC closure re-audit; PR #91 / RIME-SYNC-001; conversion/lookup wiring; Octagram; merge AUTH.
+
+### Observed RIME State
+
+- First-launch seed lives in `RimeSettingsStore.load()` → `seedFirstLaunchBuiltinDeploymentIntentIfNeeded()`. It writes App Group `rime_needs_deploy = true` only when `rime_deployed` is false, deploy is not in progress, automatic retry is not suppressed, and no other pending deploy intent exists.
+- `ContentView.task` then calls `load()` and `triggerPendingDeploymentIfNeeded()`, which enters the existing `SchemaManager.deployRimeConfig()` / `RimeDeploymentService.deploy(.fullCheck)` path. That path stages the bundled built-in closure and overlays; it does not call scheme download APIs.
+- Keyboard Extension sources are unchanged. Session consumption remains receipt-authorized App Group read (ADR 0001 / 0003 / 0004 / 0033).
+- Fuzzy master default is now `false` at the settings struct, settings store, overlay generation (`RimeConfigManager+CustomYaml`), and deploy-time `currentFuzzyPinyinSettings()`. Group keys still default `true`. Stored keys still win via `object(forKey:)` / `hasValue`.
+- Search tab remains a local `TextField` + settings index. This slice does not add URLSession, Bonjour or a resource-download path to autodeploy.
+
+### Bridge Evidence
+
+1. **Main-App-owned, local, no-download, Extension session-only — Pass.** The seed is a UserDefaults intent, not a download. The one launch trigger is main-App `ContentView.task`. `performRimeDeployment()` still uses `archiveInstaller.deploymentDirectories()` then actor-serialized `.fullCheck`. Home/Settings/Search `onAppear { load() }` may re-enter the seed, but the guards make it idempotent. No Extension writer was added.
+
+2. **`XCTestConfigurationFilePath` skip — Pass (does not leak into production first-launch).** The env var is set when XCTest injects this process as the **unit-test host**. Production Run / device / App Store launches do not set it. The skip wraps only `load()` + `triggerPendingDeploymentIfNeeded()` so librime is not aimed at an unentitled simulator App Group; notification/sync work in the same `.task` is unchanged and pre-existing. UITest app processes are not this host-injection path. Human fresh-install autodeploy confirms the production branch runs.
+
+3. **`nonisolated deinit` on `AppGroupSharedSettingsStore` / `SchemaManager` / `RimeSettingsStore` — not an architecture defect.** These types stay `@MainActor`. Empty `nonisolated deinit {}` opts out of the Swift 6 isolated-deinit hop that aborted XCTest host teardown (`pointer being freed was not allocated`). It is not `@unchecked Sendable`. Production instances live with the scene; this is test-host hygiene, not a first-launch ownership break. Future deinit work that touches isolated tasks/continuations must hop back to MainActor.
+
+4. **Fuzzy master OFF / groups ON — Pass; no new ADR.** ADR 0033 already assigns product defaults to thin overlays (`default.custom.yaml` / `luna_pinyin.custom.yaml`). Human Product Owner authorized the conservative master-off default on 2026-09-03; groups remain default-on so enabling the master restores the previous selection. This is overlay/product-default ownership, not a durable contract break.
+
+5. **Search-tab network dialog — not Architecture P0.** No autodeploy/network acquisition path was added. SearchTab has no URLSession. Pre-existing `ContentView.task` sync/secret loads are outside this slice and are not a built-in-resource download. Exact system-dialog copy is still missing; classification stays Product/Quality observation.
+
+### Verification
+
+Focused store tests cover fresh-App-Group seed, already-deployed / retry-suppressed non-seed, and seed-then-`triggerPendingDeploymentIfNeeded` running one deploy. KeyboardCore default-off / groups-on assertions were updated; tests that still need fuzzy-on now pass `enabled: true` explicitly. Hosted CI `33835843752` is green. Human 2026-09-04 reinstall: autodeploy without a manual 「应用并重新部署」 tap; fuzzy master off; `ni` / `nihao` / `sanjiaoxing` / `jintiantianqihenhao` normal. Architecture did not re-run devices or xcodebuild.
+
+### Extension Safety
+
+No Extension deployment, download, repair, hashing or hot-path file work. Session recovery remains distinct from this main-App pending deploy.
+
+### Residual Risk
+
+Users can still open the keyboard before the first main-App deploy finishes (ADR 0001). Failed first deploy still sets automatic-retry suppression (existing). Process-death / cross-process whole-tree atomicity remains TD-001. Search-tab dialog is unclassified until Human provides copy.
+
+### Remaining Architecture residuals (M-03)
+
+| ID | Severity | Owner / disposition | Remaining requirement |
+|---|---|---|---|
+| `F02-FIRST-LAUNCH-AUTODEPLOY-001` / `F02-A-P2-AUTODEPLOY-001` | P2 | Executor + Architecture / `fix` (closed this slice) | Seed + one main-App pending deploy; Human 2026-09-04 fresh-install confirmed. Coordinator M-02 still owns Assignment table sync. |
+| fuzzy-default-ON | — | Human Product Owner / superseded | Master default OFF; groups default ON. Overlay ownership, not a new ADR. |
+| `F02-A-P2-DEINIT-HYGIENE-001` | P2 | Main App / `accept` | `nonisolated deinit` is XCTest-host hygiene, not a production first-launch crash or isolation bypass. |
+| `F02-A-P2-SEARCH-NETWORK-DIALOG-001` | P2 observation | Human Product Owner + Quality / classify (not Architecture `fix`) | No deploy/download path found. Wait for exact system-dialog copy. Not Architecture P0. |
+| `F02-A-P2-TD001` | P2 | Main App/Data Ops / `tech_debt:TD-001` | Unchanged. ADR 0006 / process-death whole-tree atomicity. |
+| `F02-A-P2-OPENCC-SCOPE-001` | P2 | Human Product Owner / `accept` | Unchanged. This slice still commits to candidate quality + wired `t2s` only. |
+
+This review does not authorize merge, Exit, TestFlight or Release.

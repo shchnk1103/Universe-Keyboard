@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Human Product Gate Passed for this merge slice；PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) merged `ec6c277`。Assignment Exit 仍开放。 |
-| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性、无 Q-03 四输出闭合、无 Q-06 严格 fault-injection、无 Q-07 release-like 性能预算接受。历史 Build 7 多字症状未复现。 |
-| **Next** | 不上传 TestFlight 或 Release。后续另开：first-launch autodeploy、转换/反查能力、法律充分性。 |
+| **Phase** | Human Product Gate Passed for PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98)。AUTH `AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE-98` issued。等待 CI 绿后 merge。 |
+| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性。 |
+| **Next** | Merge PR #98；consume AUTH；M-02。不上传 TestFlight 或 Release。 |
 | **Residuals** | [M-03 table](#m-03-residuals-before-merge) · [`Architecture ecd3446`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--ecd3446--2026-09-03) · [`Quality ecd3446`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--ecd3446--2026-09-03) · [`Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ### M-03 residuals before merge
@@ -28,9 +28,10 @@ Close/merge is blocked while any row is missing a disposition. Quality/Architect
 | `F02-Q05-HOSTED-001` | Quality | `fix` (closed for hosted CI) | GitHub run `33642643269` |
 | `F02-Q08-LIFECYCLE-001` | Quality | `fix` (closed) | Q-08 PASS |
 | `F02-A-P2-TD001` / `F02-Q06-PROCDEATH-001` | Main App/Data Ops | `tech_debt:TD-001` | ADR 0006 |
-| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | Human Product Owner | `accept` | 全新安装仍需手动部署；本片 merge 不阻塞 |
+| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | Executor | `fix` (Human 真机删装 2026-09-04；Gate-98) | 打开主 App 已自动部署；无手动「应用并重新部署」；fuzzy 默认关 |
+| `F02-SEARCH-NETWORK-DIALOG-001` | Human Product Owner | `accept` (Gate-98) | 搜索页首次输入前系统网络弹窗不阻塞本片 merge |
 | `F02-CONVERSION-LOOKUP-NOT-WIRED-001` / `F02-A-P2-OPENCC-SCOPE-001` / `F02-Q03-RC-001` | Human Product Owner | `accept` | 本片只承诺候选质量 + `t2s`；其余转换/反查另开 |
-| fuzzy-default-ON | Human Product Owner | `accept` | 产品意图，不是缺陷 |
+| fuzzy-default-ON | Human Product Owner | superseded — default OFF | Human 2026-09-03 授权将主开关默认关闭；分组开关仍默认开 |
 | `F02-Q06-EXTENSION-001` | Human Product Owner | `accept` | 严格 Extension fault-injection 不阻塞本片 merge |
 | `F02-Q07-PERF-001` | Human Product Owner | `accept` | Debug 观察 ≠ Release 预算 |
 | `F02-Q09-HUMAN-LEGAL-001` | Human Product Owner | `accept` | 工程 inventory 足够本片 merge；法律充分性另开 |
@@ -430,3 +431,40 @@ built-in assets.
 - `2026-09-03 Asia/Shanghai` — PR #93 merged to `main` as `ec6c277`. AUTH
   consumed. M-02 state sync applied. Assignment remains `Active`; Exit,
   TestFlight and Release remain unauthorized.
+- `2026-09-03 Asia/Shanghai` — Human Product Owner authorized fixing
+  `F02-FIRST-LAUNCH-AUTODEPLOY-001` (seed local `rime_needs_deploy` on a fresh
+  App Group and run one main-App pending deploy on launch) and changing the
+  fuzzy master-switch product default from ON to OFF. Group toggles stay
+  default-on. Conversion/lookup, legal, Q-06/Q-07, archive remain accepted
+  residuals.
+- `2026-09-03 Asia/Shanghai` — Executor implemented the authorized fix:
+  `RimeSettingsStore.load()` seeds a local no-download deploy intent on a
+  fresh App Group; `ContentView.task` runs one pending deploy. Fuzzy master
+  default is now OFF (groups remain default-on). XCTest host skips this
+  launch path. KeyboardCore `RimeFuzzyPinyinTests` 23/0; focused App tests
+  for seed/trigger/default-off passed on iPhone 17 Pro / iOS 26.0. No push,
+  no TestFlight, no Assignment Exit.
+- `2026-09-03 Asia/Shanghai` — Full `Universe Keyboard` scheme test on iOS 26
+  Simulator aborted in `AppGroupSharedSettingsStore` MainActor-isolated
+  deinit (`pointer being freed was not allocated`) while XCTest restarted
+  the host. Not treated as a Q-01 device crash. Scoped `nonisolated deinit`
+  on the settings store, `SchemaManager`, and `RimeSettingsStore`. Full
+  App/Keyboard suite was not re-run in a crash loop.
+- `2026-09-04 Asia/Shanghai` — Feature commit `9309a0d` pushed as PR
+  [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98). Stop for
+  Human fresh-install device check. No merge AUTH inferred.
+- `2026-09-04 Asia/Shanghai` — Human Product Owner reinstalled and confirmed
+  first-launch auto-deploy, fuzzy master default off, and normal candidates
+  (`ni` / `nihao` / `sanjiaoxing` / `jintiantianqihenhao`). Also reported a
+  system network-permission dialog on the main-App Search tab before first
+  input. SearchTab has no URLSession; likely first TextField / open-access
+  keyboard activation, not the local deploy path. Not treated as autodeploy
+  failure. Exact dialog copy still needed to classify.
+- `2026-09-04 Asia/Shanghai` — Independent Architecture (`grok-4.6`) and
+  Quality (`grok-4.5`) delta reviews of `eedc4a7`: both `Pass with conditions`.
+  P0/P1 none for this slice. Search-network dialog remains P2 observation.
+  No merge AUTH inferred.
+- `2026-09-04 Asia/Shanghai` — Human Product Owner authorized merge of PR #98
+  (`批准合并`). AUTH `AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE-98` issued.
+  Search-network dialog `accept` for this slice. Exit / TestFlight / Release
+  remain unauthorized. #93 AUTH is not reused.

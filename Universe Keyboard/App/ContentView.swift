@@ -55,7 +55,7 @@ struct ContentView: View {
         )
         _notificationSettingsModel = State(initialValue: AppNotificationSettingsModel())
         #if DEBUG
-        TypingIntelligencePreviewFixture.installIfRequested()
+            TypingIntelligencePreviewFixture.installIfRequested()
         #endif
     }
 
@@ -108,20 +108,20 @@ struct ContentView: View {
                         searchFocusRequestToken += 1
                     }
                 )
-                    .tabItem {
-                        Label("帮助", systemImage: "book.pages")
-                    }
-                    .tag(MainTab.help)
+                .tabItem {
+                    Label("帮助", systemImage: "book.pages")
+                }
+                .tag(MainTab.help)
             }
             SettingsTab(
                 rimeStore: rimeSettingsStore,
                 syncModel: rimeSyncViewModel,
                 notificationSettings: notificationSettingsModel
             )
-                .tabItem {
-                    Label("设置", systemImage: "gearshape")
-                }
-                .tag(MainTab.settings)
+            .tabItem {
+                Label("设置", systemImage: "gearshape")
+            }
+            .tag(MainTab.settings)
             // Always last (far right).
             SearchTab(
                 rimeStore: rimeSettingsStore,
@@ -129,18 +129,21 @@ struct ContentView: View {
                 notificationSettings: notificationSettingsModel,
                 focusRequestToken: searchFocusRequestToken
             )
-                .tabItem {
-                    Label("搜索", systemImage: "magnifyingglass")
-                }
-                .tag(MainTab.search)
+            .tabItem {
+                Label("搜索", systemImage: "magnifyingglass")
+            }
+            .tag(MainTab.search)
         }
         .tint(.primary)
         .preferredColorScheme(
             AppAppearance(rawValue: appearanceRawValue)?.colorScheme
         )
-        .sheet(isPresented: $showActivationWelcome, onDismiss: {
-            activationWelcomeSeen = true
-        }) {
+        .sheet(
+            isPresented: $showActivationWelcome,
+            onDismiss: {
+                activationWelcomeSeen = true
+            }
+        ) {
             ActivationWelcomeView(
                 onStart: {
                     if showHelpTab {
@@ -173,11 +176,13 @@ struct ContentView: View {
         .onChange(of: rimeSettingsStore.deploymentState) { _, _ in syncActivationTips() }
 
         // Phase 2 — Overlay + operation-toast .onChange
-        let withOverlay = anchored
+        let withOverlay =
+            anchored
             .overlay(alignment: .bottom) {
                 if notificationSettingsModel.operationToastsEnabled,
-                   showOperationToast,
-                   let operationToast {
+                    showOperationToast,
+                    let operationToast
+                {
                     AppOperationToast(state: operationToast)
                         .padding(.horizontal, 16)
                         .padding(.bottom, 74)
@@ -208,7 +213,8 @@ struct ContentView: View {
             }
 
         // Phase 3 — Scene phase + task
-        return withOverlay
+        return
+            withOverlay
             .onChange(of: scenePhase) { _, phase in
                 switch phase {
                 case .active:
@@ -229,6 +235,13 @@ struct ContentView: View {
                 await rimeSyncViewModel.loadSecrets()
                 await rimeSyncViewModel.synchronizeIfNeeded()
                 RimeAutomaticSyncScheduler.shared.refreshSchedule()
+                // Unit tests inject this process as the host app. Skip the
+                // first-launch seed/deploy so librime does not run against
+                // the unentitled simulator App Group.
+                if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+                    rimeSettingsStore.load()
+                    await rimeSettingsStore.triggerPendingDeploymentIfNeeded()
+                }
             }
     }
 

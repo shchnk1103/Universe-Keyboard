@@ -170,6 +170,9 @@ If any preflight check fails, classify it as device selection, signing/App Group
 1. Confirm `Rime/shared` and `Rime/user` exist by opening the main App deployment status.
 2. Confirm the desired schema is installed and active.
 3. Check `rime_deployed`, `rime_needs_deploy` and deployment diagnostics.
+   Fresh installs should seed `rime_needs_deploy` on first main-App `load()`
+   and run one local pending deploy from `ContentView.task`. If both flags
+   stay false, the first-launch seed did not run.
 4. Redeploy from the main App.
 5. Reopen the keyboard so a fresh process/session reads prepared runtime data.
 6. If directories are missing, fallback behavior is expected; do not add deployment to the Extension.
