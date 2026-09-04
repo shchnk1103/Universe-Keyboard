@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | 首次自动部署 + fuzzy 主开关默认关已开 PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98)（`9309a0d`）。PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) 已合；Assignment Exit 仍开放。 |
-| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性、无 Q-03 四输出闭合、无 Q-06 严格 fault-injection、无 Q-07 release-like 性能预算接受。历史 Build 7 多字症状未复现。本次未做真机首次安装复验。无本 PR 的 merge AUTH。 |
-| **Next** | Human 真机全新安装：确认自动部署与 fuzzy 主开关默认关。不上传 TestFlight 或 Release。转换/反查与法律充分性仍另开。 |
+| **Phase** | Human 真机删装确认：打开主 App 已自动部署；fuzzy 主开关默认关；`ni`/`nihao`/`sanjiaoxing`/`jintiantianqihenhao` 候选正常。PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98)。无 merge AUTH。 |
+| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性、无 Q-03 四输出闭合、无 Q-06 严格 fault-injection、无 Q-07 release-like 性能预算接受。搜索页首次输入前的系统网络弹窗未定性，不当作本片自动部署失败。 |
+| **Next** | 搜索页网络弹窗待 Human 提供原文案后再定性。独立复审与 merge AUTH 仍开放。不上传 TestFlight 或 Release。 |
 | **Residuals** | [M-03 table](#m-03-residuals-before-merge) · [`Architecture ecd3446`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--ecd3446--2026-09-03) · [`Quality ecd3446`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--ecd3446--2026-09-03) · [`Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ### M-03 residuals before merge
@@ -28,7 +28,7 @@ Close/merge is blocked while any row is missing a disposition. Quality/Architect
 | `F02-Q05-HOSTED-001` | Quality | `fix` (closed for hosted CI) | GitHub run `33642643269` |
 | `F02-Q08-LIFECYCLE-001` | Quality | `fix` (closed) | Q-08 PASS |
 | `F02-A-P2-TD001` / `F02-Q06-PROCDEATH-001` | Main App/Data Ops | `tech_debt:TD-001` | ADR 0006 |
-| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | Executor | `fix` (local 2026-09-03) | `load()` 对空 App Group 种子 `rime_needs_deploy`；`ContentView.task` 触发一次本地部署。未做真机全新安装复验 |
+| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | Executor | `fix` (Human 真机删装 2026-09-04) | 打开主 App 已自动部署；无手动「应用并重新部署」；fuzzy 默认关；候选 `ni`/`nihao`/`sanjiaoxing`/`jintiantianqihenhao` 正常 |
 | `F02-CONVERSION-LOOKUP-NOT-WIRED-001` / `F02-A-P2-OPENCC-SCOPE-001` / `F02-Q03-RC-001` | Human Product Owner | `accept` | 本片只承诺候选质量 + `t2s`；其余转换/反查另开 |
 | fuzzy-default-ON | Human Product Owner | superseded — default OFF | Human 2026-09-03 授权将主开关默认关闭；分组开关仍默认开 |
 | `F02-Q06-EXTENSION-001` | Human Product Owner | `accept` | 严格 Extension fault-injection 不阻塞本片 merge |
@@ -452,3 +452,10 @@ built-in assets.
 - `2026-09-04 Asia/Shanghai` — Feature commit `9309a0d` pushed as PR
   [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98). Stop for
   Human fresh-install device check. No merge AUTH inferred.
+- `2026-09-04 Asia/Shanghai` — Human Product Owner reinstalled and confirmed
+  first-launch auto-deploy, fuzzy master default off, and normal candidates
+  (`ni` / `nihao` / `sanjiaoxing` / `jintiantianqihenhao`). Also reported a
+  system network-permission dialog on the main-App Search tab before first
+  input. SearchTab has no URLSession; likely first TextField / open-access
+  keyboard activation, not the local deploy path. Not treated as autodeploy
+  failure. Exact dialog copy still needed to classify.
