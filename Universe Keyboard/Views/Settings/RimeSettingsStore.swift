@@ -116,7 +116,7 @@ final class RimeSettingsStore {
     private let userDictionaryBackupService: any RimeUserDictionaryBackingUp
     var pageSize: Double = 9
     var simplified = true
-    var fuzzyEnabled = true
+    var fuzzyEnabled = false
     var fuzzyZhZEnabled = true
     var fuzzyChCEnabled = true
     var fuzzyShSEnabled = true
@@ -148,6 +148,10 @@ final class RimeSettingsStore {
         self.persistence = persistence
         self.userDictionaryBackupService = userDictionaryBackupService
     }
+
+    /// See `AppGroupSharedSettingsStore`: XCTest host teardown must not hop
+    /// this MainActor class through the isolated-deinit task-local path.
+    nonisolated deinit {}
 
     var schemas: [SchemaMetadata] { schemaManager.schemas }
     var activeSchemaID: String { schemaManager.activeSchemaID }
@@ -196,7 +200,7 @@ final class RimeSettingsStore {
         simplified =
             persistence.hasValue(forKey: "rime_simplification")
             ? persistence.bool(forKey: "rime_simplification") : true
-        fuzzyEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.enabledKey, defaultValue: true)
+        fuzzyEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.enabledKey, defaultValue: false)
         fuzzyZhZEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.zhZKey, defaultValue: true)
         fuzzyChCEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.chCKey, defaultValue: true)
         fuzzyShSEnabled = boolPreference(forKey: RimeFuzzyPinyinSettings.shSKey, defaultValue: true)
@@ -228,6 +232,7 @@ final class RimeSettingsStore {
             forKey: UserDictionaryAutoBackup.enabledKey,
             defaultValue: false
         )
+        seedFirstLaunchBuiltinDeploymentIntentIfNeeded()
         refreshDeploymentState()
     }
 
@@ -752,6 +757,18 @@ final class RimeSettingsStore {
             masterEnabled: advancedInputMasterEnabled,
             featureEnabled: advancedInputFeatureEnabled
         )
+    }
+
+    /// Fresh App Group has no last-good deploy. Seed one local (no-download)
+    /// intent so first launch compiles the built-in Luna closure without a
+    /// manual “应用并重新部署” tap.
+    private func seedFirstLaunchBuiltinDeploymentIntentIfNeeded() {
+        if persistence.bool(forKey: "rime_deployed") { return }
+        if persistence.bool(forKey: "rime_deploying") { return }
+        if persistence.bool(forKey: DeploymentRetry.automaticRetrySuppressedKey) { return }
+        if hasPendingDeploymentIntent { return }
+        persistence.set(true, forKey: "rime_needs_deploy")
+        persistence.synchronize()
     }
 
     private var hasPendingDeploymentIntent: Bool {

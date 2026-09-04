@@ -75,6 +75,10 @@ final class SchemaManager {
         refreshSchemaList()
     }
 
+    /// See `AppGroupSharedSettingsStore`: avoid MainActor-isolated deinit hop
+    /// when the test host tears down a default SchemaManager.
+    nonisolated deinit {}
+
     func refreshSchemaList() {
         rimeIceVersion = installedVersion(for: "rime_ice")
         rimeIceLicenseAccepted = licenseAccepted(for: "rime_ice")

@@ -21,6 +21,11 @@ final class AppGroupSharedSettingsStore: SharedSettingsStoring {
         self.defaults = UserDefaults(suiteName: appGroupID) ?? .standard
     }
 
+    /// Isolated MainActor deinit hops through a task-local scope. On the
+    /// XCTest host (App Group not entitled) that hop has aborted with
+    /// `pointer being freed was not allocated` during SchemaManager teardown.
+    nonisolated deinit {}
+
     func string(forKey key: String) -> String? { defaults.string(forKey: key) }
     func bool(forKey key: String) -> Bool { defaults.bool(forKey: key) }
     func object(forKey key: String) -> Any? { defaults.object(forKey: key) }

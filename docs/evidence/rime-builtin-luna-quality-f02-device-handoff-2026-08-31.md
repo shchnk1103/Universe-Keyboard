@@ -183,12 +183,13 @@ redeploy; “On” is the default. The assignment exit criterion “exact-spelli
 results remain primary with fuzzy groups on and off” is still satisfied: `你`
 remains Top-1 in both states.
 
-This is **not** a code defect and requires no fix. It is a clarity note only: the
-assignment text never states the out-of-box fuzzy default, and the B matrix's
-“Off first” ordering could be misread as a default claim. Human Product Owner may
-optionally revisit whether a conservative off-default is preferred (cf.
-`docs/RIME_FUZZY_PINYIN.md` line 95 “prefer conservative defaults”), but that is
-a product decision, not an F-02 blocker.
+> **S-03 (2026-09-03):** Human Product Owner later authorized a conservative
+> **master-switch default OFF**. This B.1 note remains the historical
+> fuzzy-on default of the `b1d81fd` device run; it is not current product
+> default. Group toggles still default on.
+
+This was **not** a defect in the `b1d81fd` run. The later default-off change is
+a separate Product authorization, not a rewrite of this run's expected pages.
 
 ### C. Full Access and lifecycle
 
@@ -262,7 +263,7 @@ outside the window. A no-match proves only absence in the queried window.
 
 | ID | Severity | Status | Finding |
 |---|---|---|---|
-| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | P2 | open (deferred) | Fresh install does not auto-trigger built-in resource deployment. The built-in Luna closure is bundled in the App, but `prepareDirectories` only runs on an explicit `triggerDeployment` (settings "应用并重新部署" / Guide "准备资源" step). `triggerPendingDeploymentIfNeeded()` no-ops on first launch because no `rime_needs_deploy` intent is seeded for a fresh App Group. Result: a fresh install shows a thin Luna schema (few candidates) until the user manually deploys. Recommended fix: seed `rime_needs_deploy = true` on first launch (empty App Group / no `rime_deployed`). Does not violate the no-download constraint (deployment is local). Deferred — does not block the current candidate-quality run (deployment completed manually). |
+| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | P2 | fix local (2026-09-03) | Historical `b1d81fd` run: fresh install did not auto-trigger built-in resource deployment because `triggerPendingDeploymentIfNeeded()` no-oped without a seeded `rime_needs_deploy`. Executor later seeded that intent in `RimeSettingsStore.load()` and runs one main-App pending deploy from `ContentView.task`. Device re-verification of a true fresh install is still open. |
 | `F02-CONVERSION-LOOKUP-NOT-WIRED-001` | P2 | open (deferred) | The B-section "conversion/lookup vectors" are not on-device testable on the re-frozen `b1d81fd` candidate. **OpenCC**: the deployed built-in Luna only wires `t2s` (`simplifier -> opencc/t2s.json`); `s2t` data is bundled (`s2t.json` + `ST*.ocd2`) but not wired, and `t2hk`/`t2tw` are not bundled at all (no `t2hk.json`/`t2tw.json`, no `HKVariants`/`TWVariants.ocd2`). **Stroke reverse lookup**: `luna_pinyin.reverse.bin` is bundled but the deployed Luna translator declares no `reverse_lookup` and no `stroke` schema is deployed (consistent with scope "while Luna exposes reverse lookup"). Already tracked as Quality `Q-03` (OpenCC four-output, `POST-READY EVIDENCE PENDING`), Quality `E-05`, and Architecture `AR-F02` OpenCC closure (enabled T2S/T2HK/T2TW + six `.ocd2`). Deferred — does not affect the candidate-quality core (fuzzy off/on 8/8 exact). The one on-device-testable vector (`fanti`) is run separately. |
 
 ## Separate downstream gates

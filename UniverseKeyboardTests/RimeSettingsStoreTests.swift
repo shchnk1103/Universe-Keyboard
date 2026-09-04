@@ -7,17 +7,37 @@ import XCTest
 
 @MainActor
 final class RimeSettingsStoreTests: XCTestCase {
-    func testLoadReadsPreferencesThroughInjectedPersistence() {
+    func testDefaultAppGroupSettingsStoreDeinitDoesNotAbort() async {
+        var settings: AppGroupSharedSettingsStore? = AppGroupSharedSettingsStore(
+            appGroupID: SchemaManager.appGroupID
+        )
+        settings?.synchronize()
+        settings = nil
+        XCTAssertNil(settings)
+    }
+
+    func testDefaultSchemaManagerDeinitDoesNotAbort() async {
+        var manager: SchemaManager? = SchemaManager()
+        _ = manager?.activeSchemaID
+        manager = nil
+        XCTAssertNil(manager)
+    }
+
+    func testLoadReadsPreferencesThroughInjectedPersistence() async {
         let persistence = StubRimeSettingsPersistence(
             values: ["rime_page_size": 12, "rime_simplification": false]
         )
-        let store = RimeSettingsStore(persistence: persistence)
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let store = makeIsolatedStore(
+            persistence: persistence,
+            deploymentService: deploymentService
+        )
 
         store.load()
 
         XCTAssertEqual(store.pageSize, 12)
         XCTAssertFalse(store.simplified)
-        XCTAssertTrue(store.fuzzyEnabled)
+        XCTAssertFalse(store.fuzzyEnabled)
         XCTAssertTrue(store.fuzzyZhZEnabled)
         XCTAssertTrue(store.fuzzyChCEnabled)
         XCTAssertTrue(store.fuzzyShSEnabled)
@@ -29,7 +49,71 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertFalse(store.userDictionaryAutoBackupEnabled)
     }
 
-    func testLoadReadsStoredFuzzyPinyinPreferences() {
+    func testLoadSeedsBuiltinDeployIntentOnFreshAppGroup() async {
+        let persistence = StubRimeSettingsPersistence()
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let store = makeIsolatedStore(
+            persistence: persistence,
+            deploymentService: deploymentService
+        )
+
+        store.load()
+
+        XCTAssertEqual(persistence.value(forKey: "rime_needs_deploy") as? Bool, true)
+        XCTAssertEqual(store.deploymentState, .needsDeploy)
+    }
+
+    func testLoadDoesNotSeedDeployIntentWhenAlreadyDeployed() async {
+        let persistence = StubRimeSettingsPersistence(values: ["rime_deployed": true])
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let store = makeIsolatedStore(
+            persistence: persistence,
+            deploymentService: deploymentService
+        )
+
+        store.load()
+
+        XCTAssertNil(persistence.value(forKey: "rime_needs_deploy"))
+        XCTAssertEqual(store.deploymentState, .deployed)
+    }
+
+    func testLoadDoesNotSeedDeployIntentWhenAutomaticRetryIsSuppressed() async {
+        let persistence = StubRimeSettingsPersistence(
+            values: ["rime_deploy_auto_retry_suppressed": true]
+        )
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let store = makeIsolatedStore(
+            persistence: persistence,
+            deploymentService: deploymentService
+        )
+
+        store.load()
+
+        XCTAssertNil(persistence.value(forKey: "rime_needs_deploy"))
+        XCTAssertEqual(store.deploymentState, .idle)
+    }
+
+    func testTriggerPendingDeploymentIfNeededRunsAfterFreshLoadSeed() async {
+        let settings = StoreSharedSettingsStore()
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let persistence = StubRimeSettingsPersistence()
+        let store = makeIsolatedStore(
+            persistence: persistence,
+            deploymentService: deploymentService,
+            settings: settings
+        )
+
+        store.load()
+        XCTAssertEqual(persistence.value(forKey: "rime_needs_deploy") as? Bool, true)
+
+        await store.triggerPendingDeploymentIfNeeded()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(store.deploymentState, .deployed)
+    }
+
+    func testLoadReadsStoredFuzzyPinyinPreferences() async {
         let persistence = StubRimeSettingsPersistence(
             values: [
                 RimeFuzzyPinyinSettings.enabledKey: false,
@@ -39,7 +123,11 @@ final class RimeSettingsStoreTests: XCTestCase {
                 RimeFuzzyPinyinSettings.nLKey: false,
             ]
         )
-        let store = RimeSettingsStore(persistence: persistence)
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let store = makeIsolatedStore(
+            persistence: persistence,
+            deploymentService: deploymentService
+        )
 
         store.load()
 
@@ -57,7 +145,11 @@ final class RimeSettingsStoreTests: XCTestCase {
                 RimeUserDictionarySettings.rimeIceEnabledKey: true,
             ]
         )
-        let store = RimeSettingsStore(persistence: persistence)
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let store = makeIsolatedStore(
+            persistence: persistence,
+            deploymentService: deploymentService
+        )
 
         store.load()
 
@@ -73,7 +165,11 @@ final class RimeSettingsStoreTests: XCTestCase {
                 RimeAdvancedInputSettings.enabledKey(for: .calculator): true,
             ]
         )
-        let store = RimeSettingsStore(persistence: persistence)
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let store = makeIsolatedStore(
+            persistence: persistence,
+            deploymentService: deploymentService
+        )
 
         store.load()
 
@@ -84,7 +180,7 @@ final class RimeSettingsStoreTests: XCTestCase {
 
     func testSaveFuzzyPinyinSettingsPersistsAndMarksDeploymentNeeded() {
         let persistence = StubRimeSettingsPersistence()
-        let store = RimeSettingsStore(persistence: persistence)
+        let store = makeIsolatedStore(persistence: persistence)
         store.fuzzyEnabled = true
         store.fuzzyZhZEnabled = false
         store.fuzzyChCEnabled = true
@@ -110,7 +206,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let persistence = StubRimeSettingsPersistence(
             values: [RimeFuzzyPinyinSettings.deployedSignatureKey: signature]
         )
-        let store = RimeSettingsStore(persistence: persistence)
+        let store = makeIsolatedStore(persistence: persistence)
 
         store.saveFuzzyPinyinSettings()
 
@@ -121,7 +217,7 @@ final class RimeSettingsStoreTests: XCTestCase {
 
     func testSaveUserDictionarySettingsPersistsAndMarksDeploymentNeeded() {
         let persistence = StubRimeSettingsPersistence()
-        let store = RimeSettingsStore(persistence: persistence)
+        let store = makeIsolatedStore(persistence: persistence)
         store.lunaPinyinUserDictionaryEnabled = false
         store.rimeIceUserDictionaryEnabled = true
 
@@ -140,7 +236,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let persistence = StubRimeSettingsPersistence(
             values: [RimeUserDictionarySettings.deployedSignatureKey: signature]
         )
-        let store = RimeSettingsStore(persistence: persistence)
+        let store = makeIsolatedStore(persistence: persistence)
 
         store.saveUserDictionarySettings()
 
@@ -152,10 +248,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     func testSaveAdvancedInputSettingsPersistsAndMarksDeploymentNeeded() {
         let settings = StoreSharedSettingsStore(values: ["rime_active_schema": "rime_ice"])
         let persistence = StubRimeSettingsPersistence()
-        let store = RimeSettingsStore(
-            schemaManager: SchemaManager(settings: settings, archiveInstaller: StoreArchiveInstaller()),
-            persistence: persistence
-        )
+        let store = makeIsolatedStore(persistence: persistence, settings: settings)
         store.advancedInputMasterEnabled = true
         store.advancedInputFeatureEnabled[.dateTime] = false
 
@@ -181,10 +274,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let persistence = StubRimeSettingsPersistence(
             values: [RimeAdvancedInputSettings.deployedSignatureKey: signature]
         )
-        let store = RimeSettingsStore(
-            schemaManager: SchemaManager(settings: settings, archiveInstaller: StoreArchiveInstaller()),
-            persistence: persistence
-        )
+        let store = makeIsolatedStore(persistence: persistence, settings: settings)
 
         store.saveAdvancedInputSettings()
 
@@ -199,9 +289,7 @@ final class RimeSettingsStoreTests: XCTestCase {
             KeyboardLayoutSettingsKey.schemeBinding26: "luna_pinyin",
             KeyboardLayoutSettingsKey.layoutStyle: KeyboardLayoutStyle.twentySixKey.rawValue,
         ])
-        let store = RimeSettingsStore(
-            schemaManager: SchemaManager(settings: settings, archiveInstaller: StoreArchiveInstaller())
-        )
+        let store = makeIsolatedStore(settings: settings)
 
         XCTAssertFalse(store.activeSchemaSupportsAdvancedInput)
         XCTAssertFalse(store.supportsProductAdvancedInput)
@@ -220,11 +308,9 @@ final class RimeSettingsStoreTests: XCTestCase {
                 KeyboardLayoutSettingsKey.layoutStyle: KeyboardLayoutStyle.twentySixKey.rawValue,
             ]
         )
-        let store = RimeSettingsStore(
-            schemaManager: SchemaManager(
-                settings: settings,
-                archiveInstaller: StoreArchiveInstaller(containsInstalledSchema: true)
-            )
+        let store = makeIsolatedStore(
+            settings: settings,
+            archiveInstaller: StoreArchiveInstaller(containsInstalledSchema: true)
         )
 
         XCTAssertTrue(store.activeSchemaSupportsAdvancedInput)
@@ -245,14 +331,12 @@ final class RimeSettingsStoreTests: XCTestCase {
         )
         let persistence = StubRimeSettingsPersistence(
             values: [
+                "rime_deployed": true,
                 RimeFuzzyPinyinSettings.enabledKey: true,
                 RimeAdvancedInputSettings.masterEnabledKey: true,
             ]
         )
-        let store = RimeSettingsStore(
-            schemaManager: SchemaManager(settings: settings, archiveInstaller: StoreArchiveInstaller()),
-            persistence: persistence
-        )
+        let store = makeIsolatedStore(persistence: persistence, settings: settings)
         store.load()
 
         XCTAssertEqual(store.settingsCapabilitySchemaID, "wanxiang")
@@ -295,9 +379,7 @@ final class RimeSettingsStoreTests: XCTestCase {
                 KeyboardLayoutSettingsKey.layoutStyle: KeyboardLayoutStyle.nineKey.rawValue,
             ]
         )
-        let store = RimeSettingsStore(
-            schemaManager: SchemaManager(settings: settings, archiveInstaller: StoreArchiveInstaller())
-        )
+        let store = makeIsolatedStore(settings: settings)
         XCTAssertEqual(store.settingsCapabilitySchemaID, "rime_ice")
         XCTAssertTrue(store.supportsManagedFuzzyPinyin)
         XCTAssertTrue(store.supportsProductAdvancedInput)
@@ -474,10 +556,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let backupService = StoreUserDictionaryBackupService(
             backupResult: .init(succeeded: true, message: "已备份 朙月拼音 的学习记录。")
         )
-        let store = RimeSettingsStore(
-            persistence: StubRimeSettingsPersistence(),
-            userDictionaryBackupService: backupService
-        )
+        let store = makeIsolatedStore(userDictionaryBackupService: backupService)
 
         store.backupUserDictionary(for: "luna_pinyin")
 
@@ -491,7 +570,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let backupService = StoreUserDictionaryBackupService(
             restoreResult: .init(succeeded: true, message: "已恢复 朙月拼音 最近一次备份。")
         )
-        let store = RimeSettingsStore(
+        let store = makeIsolatedStore(
             persistence: persistence,
             userDictionaryBackupService: backupService
         )
@@ -509,7 +588,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let backupService = StoreUserDictionaryBackupService(
             restoreResult: .init(succeeded: false, message: "朙月拼音 还没有可恢复的备份。")
         )
-        let store = RimeSettingsStore(
+        let store = makeIsolatedStore(
             persistence: persistence,
             userDictionaryBackupService: backupService
         )
@@ -526,7 +605,7 @@ final class RimeSettingsStoreTests: XCTestCase {
         let backupService = StoreUserDictionaryBackupService(
             resetResult: .init(succeeded: false, message: "清空未完成，当前学习记录已还原。")
         )
-        let store = RimeSettingsStore(
+        let store = makeIsolatedStore(
             persistence: persistence,
             userDictionaryBackupService: backupService
         )
@@ -540,10 +619,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testUserDictionaryStatusUsesPlainTextForInstalledSchema() {
-        let store = RimeSettingsStore(
-            persistence: StubRimeSettingsPersistence(),
-            userDictionaryBackupService: StoreUserDictionaryBackupService()
-        )
+        let store = makeIsolatedStore()
 
         XCTAssertEqual(
             store.userDictionaryLearningStatusText(for: "luna_pinyin"),
@@ -553,8 +629,7 @@ final class RimeSettingsStoreTests: XCTestCase {
 
     func testUserDictionaryBackupStatusExplainsLearningAndBackupState() {
         let backupDate = Date(timeIntervalSince1970: 1_800_000_000)
-        let store = RimeSettingsStore(
-            persistence: StubRimeSettingsPersistence(),
+        let store = makeIsolatedStore(
             userDictionaryBackupService: StoreUserDictionaryBackupService(
                 status: .init(
                     hasLearningData: true,
@@ -572,8 +647,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testUserDictionaryBackupStatusDisablesBackupWhenUpToDate() {
-        let store = RimeSettingsStore(
-            persistence: StubRimeSettingsPersistence(),
+        let store = makeIsolatedStore(
             userDictionaryBackupService: StoreUserDictionaryBackupService(
                 status: .init(
                     hasLearningData: true,
@@ -597,10 +671,7 @@ final class RimeSettingsStoreTests: XCTestCase {
             status: .init(hasLearningData: true, latestBackupDate: nil, readiness: .needsInitialBackup),
             backupResult: .init(succeeded: true, message: "已备份 朙月拼音 的学习记录。")
         )
-        let store = RimeSettingsStore(
-            persistence: StubRimeSettingsPersistence(),
-            userDictionaryBackupService: backupService
-        )
+        let store = makeIsolatedStore(userDictionaryBackupService: backupService)
 
         store.runAutomaticUserDictionaryBackupIfNeeded()
 
@@ -616,8 +687,10 @@ final class RimeSettingsStoreTests: XCTestCase {
             status: .init(hasLearningData: true, latestBackupDate: nil, readiness: .needsInitialBackup),
             backupResult: .init(succeeded: true, message: "已备份 朙月拼音 的学习记录。")
         )
-        let store = RimeSettingsStore(
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let store = makeIsolatedStore(
             persistence: persistence,
+            deploymentService: deploymentService,
             userDictionaryBackupService: backupService
         )
         store.load()
@@ -641,8 +714,10 @@ final class RimeSettingsStoreTests: XCTestCase {
             ),
             backupResult: .init(succeeded: true, message: "已备份 朙月拼音 的学习记录。")
         )
-        let store = RimeSettingsStore(
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let store = makeIsolatedStore(
             persistence: persistence,
+            deploymentService: deploymentService,
             userDictionaryBackupService: backupService
         )
         store.load()
@@ -698,7 +773,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testAdvancedInputStatusUsesReadyTextForAvailableDiagnostic() {
-        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+        let store = makeIsolatedStore()
         let diagnostic = makeAdvancedInputDiagnostic(status: .available)
 
         XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "基础检查通过")
@@ -707,7 +782,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testAdvancedInputStatusOffersApplyWhenDeploymentIsPending() {
-        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+        let store = makeIsolatedStore()
         let diagnostic = makeAdvancedInputDiagnostic(status: .needsDeploy)
 
         XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "需要重新部署")
@@ -715,7 +790,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testAdvancedInputStatusRejectsSmokePassFromStaleDeployment() {
-        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+        let store = makeIsolatedStore()
         let diagnostic = RimeLuaCapabilityDiagnostic(
             luaCompiledIn: true,
             luaModuleRegistered: true,
@@ -743,7 +818,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testAdvancedInputStatusOffersRedownloadForStrippedOrMissingLuaFiles() {
-        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+        let store = makeIsolatedStore()
 
         XCTAssertEqual(
             store.advancedInputRecoveryAction(for: makeAdvancedInputDiagnostic(status: .schemaStripped)),
@@ -756,7 +831,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testAdvancedInputStatusOffersSchemaSwitchForInactiveRimeIce() {
-        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+        let store = makeIsolatedStore()
         let diagnostic = makeAdvancedInputDiagnostic(status: .inactiveSchema)
 
         XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "未使用")
@@ -764,12 +839,38 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testAdvancedInputStatusExplainsRuntimeLuaModuleMissing() {
-        let store = RimeSettingsStore(persistence: StubRimeSettingsPersistence())
+        let store = makeIsolatedStore()
         let diagnostic = makeAdvancedInputDiagnostic(status: .runtimeModuleMissing)
 
         XCTAssertEqual(store.advancedInputStatusText(for: diagnostic), "暂不可用")
         XCTAssertTrue(store.advancedInputStatusDetail(for: diagnostic).contains("没有加载高级输入能力"))
         XCTAssertNil(store.advancedInputRecoveryAction(for: diagnostic))
+    }
+
+    /// Keep SchemaManager off the default App-Group store. Isolated deinit of
+    /// `AppGroupSharedSettingsStore` still aborts some XCTest host teardowns.
+    private func makeIsolatedStore(
+        persistence: any RimeSettingsPersisting = StubRimeSettingsPersistence(),
+        deploymentService: StoreDeploymentService? = nil,
+        userDictionaryBackupService: (any RimeUserDictionaryBackingUp)? = nil,
+        settings: StoreSharedSettingsStore? = nil,
+        archiveInstaller: StoreArchiveInstaller = StoreArchiveInstaller()
+    ) -> RimeSettingsStore {
+        let settings = settings ?? StoreSharedSettingsStore()
+        let service = deploymentService ?? StoreDeploymentService(succeeded: true)
+        let backup =
+            userDictionaryBackupService ?? StoreUserDictionaryBackupService()
+        return RimeSettingsStore(
+            schemaManager: SchemaManager(
+                settings: settings,
+                sourceSelector: StoreSourceSelector(),
+                archiveDownloader: StoreArchiveDownloader(),
+                archiveInstaller: archiveInstaller,
+                deploymentService: service
+            ),
+            persistence: persistence,
+            userDictionaryBackupService: backup
+        )
     }
 
     private func makeAdvancedInputDiagnostic(

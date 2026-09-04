@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Human Product Gate Passed for this merge slice；PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) merged `ec6c277`。Assignment Exit 仍开放。 |
-| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性、无 Q-03 四输出闭合、无 Q-06 严格 fault-injection、无 Q-07 release-like 性能预算接受。历史 Build 7 多字症状未复现。 |
-| **Next** | 不上传 TestFlight 或 Release。后续另开：first-launch autodeploy、转换/反查能力、法律充分性。 |
+| **Phase** | 首次自动部署 + fuzzy 主开关默认关已落地（本地）。PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) 已合；Assignment Exit 仍开放。 |
+| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性、无 Q-03 四输出闭合、无 Q-06 严格 fault-injection、无 Q-07 release-like 性能预算接受。历史 Build 7 多字症状未复现。本次未做真机首次安装复验、未 push。 |
+| **Next** | 功能分支 `fix/f02-first-launch-autodeploy-fuzzy-off` 待 PR。下一步：Human 真机全新安装确认自动部署与 fuzzy 默认关。不上传 TestFlight 或 Release。转换/反查与法律充分性仍另开。 |
 | **Residuals** | [M-03 table](#m-03-residuals-before-merge) · [`Architecture ecd3446`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--ecd3446--2026-09-03) · [`Quality ecd3446`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--ecd3446--2026-09-03) · [`Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ### M-03 residuals before merge
@@ -28,9 +28,9 @@ Close/merge is blocked while any row is missing a disposition. Quality/Architect
 | `F02-Q05-HOSTED-001` | Quality | `fix` (closed for hosted CI) | GitHub run `33642643269` |
 | `F02-Q08-LIFECYCLE-001` | Quality | `fix` (closed) | Q-08 PASS |
 | `F02-A-P2-TD001` / `F02-Q06-PROCDEATH-001` | Main App/Data Ops | `tech_debt:TD-001` | ADR 0006 |
-| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | Human Product Owner | `accept` | 全新安装仍需手动部署；本片 merge 不阻塞 |
+| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | Executor | `fix` (local 2026-09-03) | `load()` 对空 App Group 种子 `rime_needs_deploy`；`ContentView.task` 触发一次本地部署。未做真机全新安装复验 |
 | `F02-CONVERSION-LOOKUP-NOT-WIRED-001` / `F02-A-P2-OPENCC-SCOPE-001` / `F02-Q03-RC-001` | Human Product Owner | `accept` | 本片只承诺候选质量 + `t2s`；其余转换/反查另开 |
-| fuzzy-default-ON | Human Product Owner | `accept` | 产品意图，不是缺陷 |
+| fuzzy-default-ON | Human Product Owner | superseded — default OFF | Human 2026-09-03 授权将主开关默认关闭；分组开关仍默认开 |
 | `F02-Q06-EXTENSION-001` | Human Product Owner | `accept` | 严格 Extension fault-injection 不阻塞本片 merge |
 | `F02-Q07-PERF-001` | Human Product Owner | `accept` | Debug 观察 ≠ Release 预算 |
 | `F02-Q09-HUMAN-LEGAL-001` | Human Product Owner | `accept` | 工程 inventory 足够本片 merge；法律充分性另开 |
@@ -430,3 +430,22 @@ built-in assets.
 - `2026-09-03 Asia/Shanghai` — PR #93 merged to `main` as `ec6c277`. AUTH
   consumed. M-02 state sync applied. Assignment remains `Active`; Exit,
   TestFlight and Release remain unauthorized.
+- `2026-09-03 Asia/Shanghai` — Human Product Owner authorized fixing
+  `F02-FIRST-LAUNCH-AUTODEPLOY-001` (seed local `rime_needs_deploy` on a fresh
+  App Group and run one main-App pending deploy on launch) and changing the
+  fuzzy master-switch product default from ON to OFF. Group toggles stay
+  default-on. Conversion/lookup, legal, Q-06/Q-07, archive remain accepted
+  residuals.
+- `2026-09-03 Asia/Shanghai` — Executor implemented the authorized fix:
+  `RimeSettingsStore.load()` seeds a local no-download deploy intent on a
+  fresh App Group; `ContentView.task` runs one pending deploy. Fuzzy master
+  default is now OFF (groups remain default-on). XCTest host skips this
+  launch path. KeyboardCore `RimeFuzzyPinyinTests` 23/0; focused App tests
+  for seed/trigger/default-off passed on iPhone 17 Pro / iOS 26.0. No push,
+  no TestFlight, no Assignment Exit.
+- `2026-09-03 Asia/Shanghai` — Full `Universe Keyboard` scheme test on iOS 26
+  Simulator aborted in `AppGroupSharedSettingsStore` MainActor-isolated
+  deinit (`pointer being freed was not allocated`) while XCTest restarted
+  the host. Not treated as a Q-01 device crash. Scoped `nonisolated deinit`
+  on the settings store, `SchemaManager`, and `RimeSettingsStore`. Full
+  App/Keyboard suite was not re-run in a crash loop.

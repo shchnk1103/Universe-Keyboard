@@ -20,7 +20,7 @@ public struct RimeFuzzyPinyinSettings: Equatable, Sendable {
     public var nLEnabled: Bool
 
     public init(
-        enabled: Bool = true,
+        enabled: Bool = false,
         zhZEnabled: Bool = true,
         chCEnabled: Bool = true,
         shSEnabled: Bool = true,

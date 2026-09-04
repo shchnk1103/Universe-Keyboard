@@ -20,7 +20,8 @@ Phase 1 supports four initial-consonant groups:
 | `sh / s` | `rime_fuzzy_sh_s_enabled` | `derive/^sh/s/`, `derive/^s/sh/` |
 | `n / l` | `rime_fuzzy_n_l_enabled` | `derive/^n/l/`, `derive/^l/n/` |
 
-The master switch and all four groups default to enabled.
+The master switch defaults to **disabled**. The four groups still default to
+enabled so turning the master switch on restores the previous group selection.
 
 ## Deployment Model
 

@@ -3,14 +3,21 @@ import XCTest
 @testable import KeyboardCore
 
 final class RimeFuzzyPinyinTests: XCTestCase {
-    func testDefaultSettingsEnableCommonInitialFuzzyRules() {
+    func testProductDefaultDisablesMasterSwitchAndKeepsGroupPreferences() {
         let settings = RimeFuzzyPinyinSettings()
 
-        XCTAssertTrue(settings.enabled)
+        XCTAssertFalse(settings.enabled)
         XCTAssertTrue(settings.zhZEnabled)
         XCTAssertTrue(settings.chCEnabled)
         XCTAssertTrue(settings.shSEnabled)
         XCTAssertTrue(settings.nLEnabled)
+        XCTAssertFalse(settings.hasEnabledRules)
+        XCTAssertEqual(settings.algebraRules, [])
+    }
+
+    func testEnabledSettingsEmitCommonInitialFuzzyRules() {
+        let settings = RimeFuzzyPinyinSettings(enabled: true)
+
         XCTAssertEqual(
             settings.algebraRules,
             [
@@ -35,6 +42,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
 
     func testRuleGeneratorOmitsDisabledGroups() {
         let settings = RimeFuzzyPinyinSettings(
+            enabled: true,
             zhZEnabled: true,
             chCEnabled: false,
             shSEnabled: false,
@@ -65,7 +73,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
               dictionary: luna_pinyin
             """
 
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
 
         XCTAssertEqual(result.status, .updated)
         XCTAssertTrue(result.yaml.contains("    # universe:fuzzy-pinyin begin"))
@@ -84,8 +92,8 @@ final class RimeFuzzyPinyinTests: XCTestCase {
                 - erase/^xx$/
             """
 
-        let first = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
-        let second = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: first.yaml)
+        let first = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
+        let second = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: first.yaml)
 
         XCTAssertEqual(second.status, .unchanged)
         XCTAssertEqual(second.yaml.components(separatedBy: RimeFuzzyPinyinPostProcessor.beginMarker).count - 1, 1)
@@ -105,7 +113,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
               import_preset: default
             """
 
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
 
         XCTAssertEqual(result.status, .unchanged)
         XCTAssertEqual(result.yaml, yaml)
@@ -128,7 +136,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
               import_preset: default
             """
 
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: malformedYaml)
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: malformedYaml)
 
         XCTAssertEqual(result.status, .removed)
         XCTAssertTrue(result.yaml.contains("      - wanxiang_algebra:/base/全拼"))
@@ -163,8 +171,8 @@ final class RimeFuzzyPinyinTests: XCTestCase {
                   - wanxiang_algebra:/base/全拼  #拼音转双拼码
             """
 
-        let first = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: previousOutput)
-        let second = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: first.yaml)
+        let first = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: previousOutput)
+        let second = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: first.yaml)
 
         XCTAssertEqual(first.status, .removed)
         XCTAssertEqual(first.yaml, expectedCleanup)
@@ -184,6 +192,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
                   - wanxiang_algebra:/base/全拼
             """
         let settings = RimeFuzzyPinyinSettings(
+            enabled: true,
             zhZEnabled: false,
             chCEnabled: true,
             shSEnabled: false,
@@ -207,7 +216,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
                   - derive/^n/l/
             """
 
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
 
         XCTAssertEqual(result.status, .skippedUnsupportedAlgebra)
         XCTAssertEqual(result.yaml, yaml)
@@ -226,7 +235,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
                   # universe:fuzzy-pinyin end
             """
 
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
 
         XCTAssertEqual(result.status, .removed)
         XCTAssertTrue(result.yaml.contains("- wanxiang_algebra:/unknown"))
@@ -244,7 +253,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
                   - wanxiang_algebra:/base/全拼
             """
 
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
 
         XCTAssertEqual(result.status, .skippedUnsupportedAlgebra)
         XCTAssertEqual(result.yaml, yaml)
@@ -258,7 +267,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
               alphabet: zyxwvutsrqponmlkjihgfedcba
             """
 
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
 
         XCTAssertEqual(result.status, .unchanged)
         XCTAssertEqual(result.yaml, yaml)
@@ -273,7 +282,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
                 - derive/^n/l/
             """
 
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
 
         XCTAssertEqual(result.status, .unchanged)
         XCTAssertEqual(result.yaml, yaml)
@@ -288,7 +297,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
                 # upstream structure unavailable
             """
 
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
 
         XCTAssertEqual(result.status, .unchanged)
         XCTAssertEqual(result.yaml, yaml)
@@ -304,7 +313,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
                   - wanxiang_algebra:/base/全拼#unknown
             """
 
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
 
         XCTAssertEqual(result.status, .unchanged)
         XCTAssertEqual(result.yaml, yaml)
@@ -354,7 +363,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
         ]
 
         for yaml in variants {
-            let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
+            let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
             XCTAssertEqual(result.status, .skippedMalformedManagedBlock)
             XCTAssertEqual(result.yaml, yaml)
         }
@@ -430,7 +439,9 @@ final class RimeFuzzyPinyinTests: XCTestCase {
             """
 
         let result = RimeFuzzyPinyinPostProcessor.apply(
-            settings: .init(zhZEnabled: true, chCEnabled: false, shSEnabled: false, nLEnabled: false), to: yaml)
+            settings: .init(
+                enabled: true, zhZEnabled: true, chCEnabled: false, shSEnabled: false, nLEnabled: false),
+            to: yaml)
 
         XCTAssertEqual(result.status, .updated)
         XCTAssertTrue(result.yaml.contains("  algebra:\n    # universe:fuzzy-pinyin begin\n    - derive/^zh/z/"))
@@ -445,7 +456,7 @@ final class RimeFuzzyPinyinTests: XCTestCase {
               dictionary: test
             """
 
-        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(), to: yaml)
+        let result = RimeFuzzyPinyinPostProcessor.apply(settings: .init(enabled: true), to: yaml)
 
         XCTAssertEqual(result.status, .skippedNoSpeller)
         XCTAssertEqual(result.yaml, yaml)

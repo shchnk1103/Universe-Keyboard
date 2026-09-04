@@ -72,7 +72,7 @@ extension RimeConfigManager {
         let iceInstalled = defaults?.bool(forKey: "rime_ice_installed") ?? false
         let wanxiangInstalled = defaults?.bool(forKey: "wanxiang_installed") ?? false
         let fuzzySettings = RimeFuzzyPinyinSettings(
-            enabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.enabledKey) as? Bool ?? true,
+            enabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.enabledKey) as? Bool ?? false,
             zhZEnabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.zhZKey) as? Bool ?? true,
             chCEnabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.chCKey) as? Bool ?? true,
             shSEnabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool ?? true,

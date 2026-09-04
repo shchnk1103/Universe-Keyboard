@@ -2,6 +2,12 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-09-03 — 首次安装自动部署内置朙月；模糊音主开关默认关
+
+- 空 App Group / 尚未成功部署时，主 App `load()` 会种子一次本地 `rime_needs_deploy`，并在 `ContentView.task` 触发部署。不下载、不经过 Keyboard Extension。
+- 模糊音主开关默认关闭；`zh/z`、`ch/c`、`sh/s`、`n/l` 分组仍默认开，打开主开关即可恢复。已写入的用户偏好不变。
+- 模拟器 XCTest 宿主拆掉默认 `SchemaManager` 时，MainActor isolated `deinit` 会 abort；对 App Group settings / SchemaManager / RimeSettingsStore 使用 `nonisolated deinit`。这不是真机首次安装崩溃证据。
+
 ## 2026-09-03 — Adopt KOS Agent Kit v0.6.0 advisory
 
 - PR [#96](https://github.com/shchnk1103/Universe-Keyboard/pull/96) merged `41c0dc5`。Adopted pin 从 `v0.5.0` 改为 `v0.6.0`（`a16c932`）。Envelope 仍为 `advisory`，未启用 `required`。
