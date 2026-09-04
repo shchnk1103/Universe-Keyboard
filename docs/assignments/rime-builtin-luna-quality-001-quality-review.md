@@ -14,13 +14,13 @@
 | 字段 | 内容 |
 |---|---|
 | **Lifecycle** | Assignment `Active`；本文不是 Assignment SoT |
-| **Verdict** | KOS/生命周期 `Fail` 已关闭。实现证据对 Human Product Gate 材料为 `Pass with conditions`。Assignment Exit / TestFlight / Release 仍为 `Fail` |
-| **Reviewed HEAD** | PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) `ecd3446` |
-| **Non-claims** | 无 merge、Exit、TestFlight、Release、法律充分性、Q-03 四输出、Q-06 严格 fault-injection、Q-07 release-like 性能闭合 |
-| **Next** | Human Product Owner 处置剩余残差并决定是否授权 merge |
-| **Residuals** | 见 [`ecd3446` 复审](#independent-quality-re-review--ecd3446--2026-09-03) |
+| **Verdict** | PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) 本片 Quality packet：`Pass with conditions`。Assignment Exit / TestFlight / Release 仍为 `Fail`（未授权）。无 merge AUTH。 |
+| **Reviewed HEAD** | PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) `eedc4a7`（实现 `9309a0d`） |
+| **Non-claims** | 无 merge、Exit、TestFlight、Release、法律充分性、Q-03 四输出、Q-06 严格 fault-injection、Q-07 release-like 性能闭合；搜索页网络弹窗未定性 |
+| **Next** | Coordinator / Product Lead：Architecture 复审对齐后决定是否申请 merge AUTH。搜索页原文案仍待 Human。 |
+| **Residuals** | 见 [`eedc4a7` 复审](#independent-quality-re-review--eedc4a7--2026-09-04) |
 
-> **S-03：** 下方 2026-08-29 的实现 `Fail` 与 2026-09-02 的 KOS `Fail` 已被文末 `ecd3446` addendum 取代为当前审查结论。Exit / TestFlight / Release `Fail` 仍有效。
+> **S-03（2026-09-04）：** 文末 [`ecd3446`](#independent-quality-re-review--ecd3446--2026-09-03) addendum 是 PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) 的历史结论，**不得**复用为本 PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) / `eedc4a7` 的 Quality verdict。当前审查结论以 [`eedc4a7` addendum](#independent-quality-re-review--eedc4a7--2026-09-04) 为准。Exit / TestFlight / Release `Fail` 仍有效。
 
 ## 结论
 
@@ -448,3 +448,110 @@ Replacement Quality reviewer（Claude Code）接续 codex quality subagent（`/r
 ### Independence statement
 
 Replacement Quality reviewer（Grok 4.6）只读复审 `ecd3446`（worktree `/private/tmp/universe-keyboard-f02-assignment`）：未改 Swift 源码、未跑 build/test/device，只读回已提交的真机 ledger 与 GitHub check rollup。本文档记录属于审查卫生，不是 Product Gate。
+
+## Independent Quality re-review — `eedc4a7` — 2026-09-04
+
+**本片 merge-slice Quality packet：`Pass with conditions`（无 P0；无阻塞本片的 P1）。**  
+**Assignment Exit / TestFlight / Release：`Fail`（未授权）。**  
+本 addendum **不**发 merge AUTH、**不**声明 Exit / TestFlight / Release，也**不**复用 [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) `ecd3446` 的 Quality verdict。
+
+### Scope
+
+| 项 | 值 |
+|---|---|
+| Object | PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) `fix/f02-first-launch-autodeploy-fuzzy-off` |
+| HEAD | `eedc4a7b9fc10f058b2553764ade46c7d52236fd` |
+| Implementation | `9309a0df4745c9688bb911f9c8e36a6257971aff` |
+| Diff base | `origin/main...HEAD`（17 files；核心为首次自动部署种子 + fuzzy 主开关默认关 + XCTest 隔离/`nonisolated deinit`） |
+| Hosted CI | GitHub Actions run [`33835843752`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33835843752) `SUCCESS`（classify / lightweight / build-and-test / final-quality-gate）+ GitGuardian |
+| Out of scope | 实现改代码、merge、AUTH、真机复跑、Exit / TestFlight / Release |
+
+本片只验收：`F02-FIRST-LAUNCH-AUTODEPLOY-001` 修复路径 + Human 授权的 fuzzy master default OFF；不重开 Q-03/Q-06/Q-07/法律/archive。
+
+### Evidence Matrix
+
+M-04 仅用 `Executor-recorded` / `Quality-reverified` / `Device-attested`。Human 会话报告计入 `Device-attested` 输入；本 reviewer **未**独立重跑真机或本地 xcodebuild，故不得把 Human 报告或 Executor 本地命令自动升格为 `Quality-reverified`。
+
+| ID | Claim | Grade | Exact receipt | Judgment |
+|---|---|---|---|---|
+| EQ-98-01 | Fresh App Group：`load()` 种子 `rime_needs_deploy`；已部署 / 自动重试抑制不种子；种子后 `triggerPendingDeploymentIfNeeded` 发一次本地部署 | `Executor-recorded` | PR body + `RimeSettingsStoreTests`（含 `testLoadSeedsBuiltinDeployIntentOnFreshAppGroup` 等）；声称 iPhone 17 Pro / iOS 26.0 上该类 **45/0**。Quality **未**本地复跑 | 单元路径覆盖足够支撑本片意图；单独不足以关闭真机首次安装 |
+| EQ-98-02 | Human 删装：打开主 App 即自动部署；无需手动「应用并重新部署」；无下载 | `Device-attested` | Assignment Current Status / timeline（`eedc4a7`）；Human Product Owner 2026-09-04 会话报告。Quality **未**复跑设备 | **PASS** 本片 autodeploy 谓词；关闭 `F02-FIRST-LAUNCH-AUTODEPLOY-001` 的真机缺口（相对 `bd5ad23` 时的 open re-ver） |
+| EQ-98-03 | Human：fuzzy 主开关默认关；候选 `ni` / `nihao` / `sanjiaoxing` / `jintiantianqihenhao` 正常 | `Device-attested` | 同上 Human 报告 + Assignment M-03 行 | **PASS** 本片 fuzzy-off + 候选烟雾；非完整 Q-02 矩阵重跑，也不扩张为 Exit |
+| EQ-98-04 | Fuzzy master default OFF；分组默认仍 ON；存储偏好不变 | `Executor-recorded`（代码+测试）+ `Device-attested`（真机关） | `RimeFuzzyPinyinSettings.enabled` 默认 `false`；`RimeSettingsStore` / `SchemaManager+Deployment` / `RimeConfigManager+CustomYaml` 缺省一致；`RimeFuzzyPinyinTests` 产品默认断言；KeyboardCore 声称 **1072/0**；`SchemaManagerTests` 为 ON 路径显式写入 `enabledKey: true` | 生产默认覆盖**足够本片**：四处读默认对齐 + 单测 + Human。不要求本片再扩矩阵 |
+| EQ-98-05 | Hosted CI 全绿（含完整 App+Keyboard 契约测试） | `Quality-reverified`（hosted path only） | run `33835843752` @ `eedc4a7`：`build-and-test` 中 KeyboardCore、RimeBridge、**Test app and keyboard contracts**（`UniverseKeyboardTests` **278** executed / 3 skipped / 0 failed；`KeyboardTests` **11/0**；`** TEST SUCCEEDED **`）、Debug/Release **BUILD SUCCEEDED**；`final-quality-gate` SUCCESS。本 reviewer 经 `gh run view` / log 独立核对 | Hosted 路径 **PASS**。CI 绿 ≠ Quality Pass for merge ≠ Release |
+| EQ-98-06 | Executor 本地跳过完整 `Universe Keyboard` scheme（XCTest-host malloc abort 后改隔离跑 store tests） | n/a（skip with reason） | PR body：**Not run** full scheme；随后隔离 `RimeSettingsStoreTests` 绿 | **可接受 skip**：本地理由成立，且 EQ-98-05 hosted 已跑通等价完整契约套件。**不是**本片 merge 的 P1 缺口 |
+| EQ-98-07 | `nonisolated deinit` + XCTest 跳过首次部署路径 | `Executor-recorded` | `AppGroupSharedSettingsStore` / `SchemaManager` / `RimeSettingsStore` 的 `nonisolated deinit`；`ContentView.task` 在 `XCTestConfigurationFilePath` 下跳过 seed/deploy；`testDefaultAppGroupSettingsStoreDeinitDoesNotAbort` / `testDefaultSchemaManagerDeinitDoesNotAbort` | **回归测试存在**。**禁止**扩张为“已修复生产真机崩溃”；CHANGELOG 已正确限定为模拟器宿主 teardown |
+| EQ-98-08 | 搜索页首次输入前系统网络弹窗 | open observation（Human）；代码侧无 SearchTab 下载 | Human 报告（原文案 `UNKNOWN`）；静态：`SearchTab.swift` 无 `URLSession` / download / http | **不失败 autodeploy**。保持开放观察，待 Human 原文案后再定性 |
+| EQ-98-09 | PR body vs 实际 | `Quality-reverified`（文档对照） | PR Verification 仍写「No physical-device fresh-install retest」且强调本地未跑全套；HEAD `eedc4a7` 已记录 Human 删装通过；hosted 已跑全套 App+Keyboard | PR body **落后于 HEAD 证据**。以 Assignment/`eedc4a7` + hosted log 为准，不以过期 PR 段落否定后续证据 |
+
+### Passed
+
+- 本片代码意图与边界：主 App `load()` 种子 + `ContentView.task` 一次 pending 本地部署；Extension 仍 session-only；无内置资源下载路径。
+- Fuzzy master default OFF 在 KeyboardCore / Store / Deployment / CustomYaml 一致；分组默认 ON；测试与 Human 真机一致。
+- Hosted CI `33835843752` 对 `eedc4a7` 完整门禁绿，且包含 Executor 本地跳过的 App+Keyboard 全契约套件。
+- `F02-FIRST-LAUNCH-AUTODEPLOY-001`：单元种子路径 + Human 删装确认 → 本片 Quality 接受 Assignment 上的 `fix` disposition（真机谓词）。
+- `nonisolated deinit` / XCTest skip 有对应测试与文档边界，未过度宣称生产崩溃修复。
+
+### Failed / Blocked
+
+- **无本片 P0 / 无阻塞本片 merge-slice 的 P1 技术失败。**
+- **Exit / TestFlight / Release 门禁：`Fail`（未授权）** — 与 merge-slice packet 分离。
+- **无 merge AUTH** — 本审查不签发。
+
+### Skipped With Reason
+
+| Item | Reason | Owner |
+|---|---|---|
+| Quality 本地重跑 KeyboardCore / RimeBridge / `RimeSettingsStoreTests` / 全 scheme | 独立复审未执行 xcodebuild；依赖 Executor 记录 + hosted `Quality-reverified` | Quality（本片接受） |
+| Quality 真机删装复跑 | 未操作设备；Human 报告为 `Device-attested` 输入 | Human / Quality |
+| 搜索页网络弹窗分类 | 缺系统原文案；SearchTab 无网络 API，不阻塞 autodeploy | Human Product Owner |
+| Q-03 / 严格 Q-06 / Q-07 release-like / 法律充分性 / exact archive | 既有 Product `accept` / 另开范围；本片不重开 | 既有 M-03 |
+
+### Release Decision
+
+| Gate | Decision |
+|---|---|
+| 本片 Quality packet（PR #98 / `eedc4a7`） | **`Pass with conditions`** |
+| Merge AUTH | **未授权**（待 Product / Coordinator；Architecture 对齐） |
+| Assignment Exit | **`Fail` / 未授权** |
+| TestFlight | **`Fail` / 未授权** |
+| Release / App Store | **`Fail` / 未授权** |
+
+CI 绿 ≠ Quality Pass for merge ≠ Release。
+
+### M-03 residuals（本片后仍须 disposition）
+
+| ID | Severity | Owner | Disposition | Notes |
+|---|---|---|---|---|
+| `F02-FIRST-LAUNCH-AUTODEPLOY-001` | P2→closed for slice | Executor + Quality | `fix` | Human 删装 2026-09-04；本 addendum 接受 |
+| fuzzy-default-ON | note | Human Product Owner | superseded — default OFF | 与实现一致 |
+| `F02-SEARCH-NETWORK-DIALOG-001`（新观察） | P2 observation | Human Product Owner | `open` | 搜索页首次输入前系统网络弹窗；原文案 `UNKNOWN`；**不**计为 autodeploy 失败 |
+| `F02-PR98-BODY-STALE-001` | P2 docs | Executor | `open` / 可在跟进 docs 修 | PR Verification 未反映 Human 删装与 hosted 全套通过 |
+| `F02-HANDOFF-AUTODEPLOY-LEDGER-LAG-001` | P2 docs | Executor | `open` | `device-handoff` 仍写「Device re-verification … still open」，与 Assignment `fix` 不同步 |
+| `F02-Q03-RC-001` / conversion-lookup | P2 | Human Product Owner | `accept`（既有） | 本片不重开 |
+| `F02-Q06-EXTENSION-001` | P2 | Human Product Owner | `accept`（既有） | 本片不重开 |
+| `F02-Q06-PROCDEATH-001` | P2 | Main App/Data Ops | `tech_debt:TD-001` | 既有 |
+| `F02-Q07-PERF-001` | P2 | Human Product Owner | `accept`（既有） | 本片不重开 |
+| `F02-Q09-HUMAN-LEGAL-001` | P2 | Human Product Owner | `accept`（既有） | 工程 ≠ 法律 |
+| `F02-Q10-ARCHIVE-001` | P2 | Human Product Owner | `accept`（既有） | merge 不要求 exact archive；仍 ≠ Release provenance |
+| Merge AUTH / Exit / TestFlight / Release | — | Product Lead | **unauthorized / Fail** | 本 Quality 不签发 |
+
+无缺失 disposition 的 **本片 P0**。docs lag 与搜索弹窗为 **P2**，不单独把本片 Quality 打成 Fail。
+
+### Owner Handoffs
+
+1. **Coordinator / Product Lead：** 待独立 Architecture 复审对齐后，决定是否申请 **新的** merge AUTH（历史 `AUTH-…-MERGE` 仅覆盖 #93）。
+2. **Human Product Owner：** 提供搜索页网络弹窗**原文案**后再定性；维持 Exit / TestFlight / Release 不上传。
+3. **Executor（docs）：** 可选更新 PR body Verification 与 `device-handoff` autodeploy 行，消除与 Assignment/`eedc4a7` 的 ledger 漂移。
+4. **Architecture：** 独立复审本 diff（首次部署种子、fuzzy 默认、deinit/XCTest 边界）；Quality 不代签架构结论。
+
+### Conditions（Pass with conditions）
+
+1. 搜索页网络弹窗保持开放观察，不得在未定性前写成部署/下载回归。
+2. 不得把 `nonisolated deinit` 说成已证明的生产崩溃修复。
+3. 不得把本 packet 写成 Assignment Exit / TestFlight / Release / merge AUTH。
+4. docs ledger 漂移（PR body / handoff）应在跟进中收敛，但不升格为本片 P1。
+
+### Independence statement
+
+Quality, Performance & Release Maintainer（**grok-4.5**；与 Architecture reviewer / 实现 parent 分离）。只读复审 PR #98 @ `eedc4a7`：核对 `git diff origin/main...HEAD`、PR body、Assignment、既有 `ecd3446` addendum、SearchTab 静态面、以及 hosted run `33835843752` 的 job/log。**无生产 Swift 编辑**；**未**本地重跑测试；**未**真机复跑；**未** push / commit / merge。仅允许编辑本 Quality review 文件（本 addendum + Current Status S-03）。
