@@ -37,7 +37,7 @@
 - **Blocker:** none for this merge slice
 - **Non-claims:** 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性
 - **Merged:** [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) `ec6c277`
-- **Next:** 首次自动部署 + fuzzy 默认关在分支 `fix/f02-first-launch-autodeploy-fuzzy-off`；等 PR 与 Human 真机删装确认。不上传 TestFlight / Release；转换/反查仍另开
+- **Next:** PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) 待 Human 真机删装确认自动部署与 fuzzy 默认关。无本 PR merge AUTH。不上传 TestFlight / Release；转换/反查仍另开
 
 ## KOS 2.2 advisory pin — 2026-08-27
 

@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | 首次自动部署 + fuzzy 主开关默认关已落地（本地）。PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) 已合；Assignment Exit 仍开放。 |
-| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性、无 Q-03 四输出闭合、无 Q-06 严格 fault-injection、无 Q-07 release-like 性能预算接受。历史 Build 7 多字症状未复现。本次未做真机首次安装复验、未 push。 |
-| **Next** | 功能分支 `fix/f02-first-launch-autodeploy-fuzzy-off` 待 PR。下一步：Human 真机全新安装确认自动部署与 fuzzy 默认关。不上传 TestFlight 或 Release。转换/反查与法律充分性仍另开。 |
+| **Phase** | 首次自动部署 + fuzzy 主开关默认关已开 PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98)（`9309a0d`）。PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) 已合；Assignment Exit 仍开放。 |
+| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性、无 Q-03 四输出闭合、无 Q-06 严格 fault-injection、无 Q-07 release-like 性能预算接受。历史 Build 7 多字症状未复现。本次未做真机首次安装复验。无本 PR 的 merge AUTH。 |
+| **Next** | Human 真机全新安装：确认自动部署与 fuzzy 主开关默认关。不上传 TestFlight 或 Release。转换/反查与法律充分性仍另开。 |
 | **Residuals** | [M-03 table](#m-03-residuals-before-merge) · [`Architecture ecd3446`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--ecd3446--2026-09-03) · [`Quality ecd3446`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--ecd3446--2026-09-03) · [`Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ### M-03 residuals before merge
@@ -449,3 +449,6 @@ built-in assets.
   the host. Not treated as a Q-01 device crash. Scoped `nonisolated deinit`
   on the settings store, `SchemaManager`, and `RimeSettingsStore`. Full
   App/Keyboard suite was not re-run in a crash loop.
+- `2026-09-04 Asia/Shanghai` — Feature commit `9309a0d` pushed as PR
+  [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98). Stop for
+  Human fresh-install device check. No merge AUTH inferred.
