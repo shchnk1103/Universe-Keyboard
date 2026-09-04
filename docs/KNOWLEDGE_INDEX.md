@@ -37,7 +37,7 @@
 - Post-commit continuation: [`POST_COMMIT_CONTINUATION.md`](POST_COMMIT_CONTINUATION.md)
 - Post-commit continuation synthetic quality and content review: [`POST_COMMIT_CONTINUATION_QUALITY.md`](POST_COMMIT_CONTINUATION_QUALITY.md)
 - Scheme management: [`RIME_SCHEME_MANAGEMENT.md`](RIME_SCHEME_MANAGEMENT.md)
-- Built-in offline Luna quality (F-02, Active；PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) merged `ec6c277`): [`RIME-BUILTIN-LUNA-QUALITY-001`](assignments/rime-builtin-luna-quality-001.md) · ADR [`0033`](architecture/decisions/0033-main-app-owned-offline-rime-resource-closure.md) · [`Gate`](product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md)
+- Built-in offline Luna quality (F-02, Active；PR [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) `ec6c277`；autodeploy/fuzzy-off PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) `f352f50`): [`RIME-BUILTIN-LUNA-QUALITY-001`](assignments/rime-builtin-luna-quality-001.md) · ADR [`0033`](architecture/decisions/0033-main-app-owned-offline-rime-resource-closure.md) · [`Gate-98`](product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate-98.md)
 - Keyboard layout (26-key / Chinese nine-key runtime + chrome): [`KEYBOARD_LAYOUT.md`](KEYBOARD_LAYOUT.md)
 - Nine-key chrome Assignment (closed): [`assignments/keyboard-layout-9key-ui-001.md`](assignments/keyboard-layout-9key-ui-001.md)
 - Path Bar upper-half tap delivery (`Completed`；Human 复验通过): [`assignments/path-bar-touch-001.md`](assignments/path-bar-touch-001.md)

@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Human Product Gate Passed for PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98)。AUTH `AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE-98` issued。等待 CI 绿后 merge。 |
+| **Phase** | PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) merged `f352f50`。AUTH consumed。Assignment 仍 Active。 |
 | **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性。 |
-| **Next** | Merge PR #98；consume AUTH；M-02。不上传 TestFlight 或 Release。 |
+| **Next** | 不上传 TestFlight 或 Release。搜索页网络弹窗已 `accept`，不必再挡本片。转换/反查仍另开。 |
 | **Residuals** | [M-03 table](#m-03-residuals-before-merge) · [`Architecture ecd3446`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--ecd3446--2026-09-03) · [`Quality ecd3446`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--ecd3446--2026-09-03) · [`Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
 
 ### M-03 residuals before merge
@@ -468,3 +468,5 @@ built-in assets.
   (`批准合并`). AUTH `AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE-98` issued.
   Search-network dialog `accept` for this slice. Exit / TestFlight / Release
   remain unauthorized. #93 AUTH is not reused.
+- `2026-09-04 Asia/Shanghai` — PR #98 merged to `main` as `f352f50`. AUTH
+  consumed. M-02 applied. Assignment remains `Active`.

@@ -2,6 +2,11 @@
 
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
+## 2026-09-04 — 首次安装自动部署与模糊音默认关合入 `main`
+
+- PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) merged `f352f50`。Human 删装确认打开主 App 已自动部署；模糊音主开关默认关。
+- 不代表 Assignment Exit、TestFlight 或 Release。
+
 ## 2026-09-03 — 首次安装自动部署内置朙月；模糊音主开关默认关
 
 - 空 App Group / 尚未成功部署时，主 App `load()` 会种子一次本地 `rime_needs_deploy`，并在 `ContentView.task` 触发部署。不下载、不经过 Keyboard Extension。

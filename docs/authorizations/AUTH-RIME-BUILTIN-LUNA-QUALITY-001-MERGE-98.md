@@ -6,14 +6,15 @@
   "record_id": "AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE-98",
   "record_type": "authorization",
   "title": "Merge F-02 first-launch autodeploy and fuzzy-default-off PR #98",
-  "status": "active",
-  "updated_at": "2026-09-04T13:10:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-04T13:15:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "head_sha_changed"],
   "authorization": {
     "action": "merge_pr_98",
     "target": "RIME-BUILTIN-LUNA-QUALITY-001",
     "artifact_bindings": [
-      {"kind": "url", "identity": "https://github.com/shchnk1103/Universe-Keyboard/pull/98"}
+      {"kind": "url", "identity": "https://github.com/shchnk1103/Universe-Keyboard/pull/98"},
+      {"kind": "commit", "identity": "f352f5056ad8bfd966af35774b82e8da89efd164"}
     ],
     "scope": "Merge PR #98 to main after Human Product Gate for this slice; run M-02 state sync; keep Assignment Active with Exit open",
     "exclusions": ["release", "testflight_upload", "testflight_external_review", "app_store_submission", "assignment_exit", "q03_four_profile_closure", "q06_strict_fault_injection", "q07_release_like_budget", "legal_sufficiency", "exact_archive", "c5_extension_process_kill"],
@@ -22,7 +23,7 @@
     "issued_at": "2026-09-04T13:10:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
@@ -31,8 +32,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | unconsumed |
+| Status | consumed |
+| Consumption | PR #98 merged `f352f50` |
 
 ---
 

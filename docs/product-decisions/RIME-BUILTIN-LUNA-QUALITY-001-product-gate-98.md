@@ -33,7 +33,7 @@
 | Field | Value |
 |---|---|
 | Status | accepted |
-| Phase | Human Product Gate Passed for PR #98 merge slice |
+| Phase | Human Product Gate Passed；PR #98 merged `f352f50` |
 | Evidence | Architecture / Quality `Pass with conditions` on `eedc4a7`; hosted CI green on that packet; Human delete+reinstall pass |
 | Non-claims | No Assignment Exit; no TestFlight; no Release |
 | Residuals | Search-tab network dialog accepted as non-blocking P2 observation |
