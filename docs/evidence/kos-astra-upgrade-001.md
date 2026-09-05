@@ -2,7 +2,7 @@
 
 - Date: 2026-09-05 Asia/Shanghai.
 - Executor: current Codex runtime, isolated clone; grade: Executor-recorded unless explicitly identified as independent review.
-- Base: origin/main at preparation; exact candidate commits and command results recorded below after validation.
+- Base and candidate input commits: exact immutable objects in Frozen verification inputs below.
 - Scope: eight instruction-audit findings, upstream optional execution package and local documentation/skills.
 - Expiry: final content/base/environment/policy change; no device, release or measured efficiency claim.
 
@@ -18,6 +18,28 @@
 | F6 source outside Envelope | PROJECT_CONTEXT Tab repair, instruction-audit coverage | ContentView source comparison; no runtime change |
 | F7 repeated tests | evidence reuse contract and scoped skill | full local parity required for .claude paths |
 | F8 effectiveness evidence | health expiry, upstream evaluation scenarios | executor walkthrough only; independent tabletop incomplete; real task efficiency unmeasured |
+
+## Frozen verification inputs — Q-001 remediation
+
+These are immutable **review/verification input snapshots**, not a claim that this evidence file contains
+its own commit ID. The following record-only correction is a descendant of these snapshots. Any subsequent
+non-record content change needs a new frozen snapshot and applicable review/verification before reuse.
+
+| Repository | Comparison base | Candidate input commit | Candidate tree | SHA-256 of git diff --binary base candidate |
+|---|---|---|---|---|
+| `kos-astra-v070` | `5b028ab722943ffd0b4095db0dee363a581e8b17` | `4ccf60144f5505844efa19af3aa5f79d21bde430` | `8772fa9d6c21dd172c8f688fd63893fdca6d9c6c` | `bf2ec62746cfa975feaa2756aba94083d3a330257a8a080eeb43bcc988315759` |
+| `uk-kos-astra-v070` | `281600903d04c08b1af70eee47ad1196e88fe8f7` | `afb6d2ce4abd1ee4bd2ce93f741bdb5ceed2ee60` | `9858e7d48c1463ca29cdff5b02f0f1f1f38c4856` | `8afc92207e185718a63c99bd0adc9956dd3a5050e76d84e69bcaf58d8715384d` |
+
+Test coverage binding: the UK input commit has an empty diff from its comparison base for `Packages/`,
+`Keyboard/`, `Universe Keyboard/`, `UniverseKeyboardTests/`, `KeyboardTests/`, `Universe Keyboard.xcodeproj/`,
+`scripts/` and `.github/`. Commands and environments below refer to that unchanged tested content; they
+never establish that the App gate passed. Instruction/skill changes are covered by structural checks and
+the independently frozen tabletop, not by product unit tests alone.
+
+Publication HEAD may add only evidence/review/status records after this freeze; those deltas require
+link/status checks and explicit review coverage. They do not retroactively change the inputs above.
+The PR must identify its exact publication HEAD separately. A code/config/policy change cannot be hidden
+as a record-only update; freeze and review it again. No claim is made about an unexamined future HEAD.
 
 ## Verification scope and commands
 
@@ -122,3 +144,13 @@ Full logs remain local, not portable Gate artifacts; reproduce with the commands
 - Result: exit 65; same 19 failed test identifiers; no source/test/project/CI diff in the candidate.
 - Baseline log: `/private/tmp/uk-kos-baseline-app.log`; SHA-256 `30838221a60abcddd6ba220b301f8adfe3d7d8dc0eadbd2f043c7f65d4a69c56`.
 - Environment: Xcode 27.0 beta, build 27A5252f. Root cause remains unproven; App parity remains non-green.
+
+## Subsequent environment comparison
+
+Hosted run [33953550107](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/33953550107)
+passed all CI jobs at UK afb6d2c, including actual App tests and Debug/Release build; executor inspected logs.
+Hosted Xcode: 26.6. Local beta remains 27.0/27A5252f. Command-local `DEVELOPER_DIR` selected installed
+Xcode 26.6/17F113 for a follow-up: Core 1072 tests PASS, but all four xcodebuild operations exited 70 because
+that Xcode could not select the installed iPhone 17 Pro destination (reported missing iOS 26.5 component).
+Local logs: `/private/tmp/uk-kos-parity-stable/`; no global Xcode selection changed. No runtime downloaded.
+Thus hosted green is preserved as separate evidence; local parity is still not green and no merge claim follows.
