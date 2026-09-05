@@ -10,7 +10,7 @@
 
 ## KOS-ASTRA-UPGRADE-001 — candidate preparation
 
-- [Assignment](assignments/kos-astra-upgrade-001.md): Blocked for independent review availability and App parity.
+- [Assignment](assignments/kos-astra-upgrade-001.md): Blocked for local App parity; independent review findings closed.
 - [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs prepared; no merge/Release/adoption claim.
 - Adopted pin remains v0.6.0 advisory; v0.7.0 is an upstream candidate.
 

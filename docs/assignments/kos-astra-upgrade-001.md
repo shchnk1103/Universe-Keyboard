@@ -7,10 +7,10 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Blocked |
-| Current Phase | Repairs prepared; independent review unavailable and App parity not green |
+| Current Phase | Independent review complete; local App parity not green |
 | Material non-claims | Adopted remains v0.6.0 advisory; no released v0.7.0, required, product Swift, device or Release claim |
-| Next handoff / decision | Independent review and candidate PR; Human decides merge/release/adoption |
-| Residuals | Independent review incomplete; 19 App test-host crashes; evidence below |
+| Next handoff / decision | Resolve local parity environment; Human decides merge/release/adoption |
+| Residuals | 19 baseline-reproduced App crashes; stable Xcode missing simulator component; hosted CI green |
 
 ## Authority
 
@@ -49,7 +49,7 @@ Revalidation: scope、基线、发布意图、独立性、所采用规则或环�
 本任务按 legacy Markdown 进入；v0.6.0 advisory 不要求所有新任务自动进入 Profile。
 本片审阅后选择不改 include/schema；此决定不豁免未来 required 迁移，不把模板假值写成授权。
 
-## 2026-09-05 execution checkpoint
+## Historical 2026-09-05 execution checkpoint (availability superseded)
 
 Candidate implementation is retained in an isolated feature branch. Reviewer CLI attempts reached account
 usage limits before final output; no independent conclusion exists. Draft PR only, not merge-ready.

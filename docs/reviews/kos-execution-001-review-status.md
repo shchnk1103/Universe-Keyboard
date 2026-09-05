@@ -1,5 +1,13 @@
 # KOS-EXECUTION-001 independent review status
 
+## Current outcome
+
+Architecture Round 2: no blocking findings (Kit ad61c21 / UK 801df5b). Quality Round 3: 12 tabletop scenes checked, Q-001 evidence-binding finding; Round 4 closed Q-001 against record-only corrections through Kit 329bc82 / UK efd895b. Executor independently recomputed both tree IDs and binary-diff hashes. These are static reviews, not test reruns or Human Gate approvals. Actual token/latency improvement remains unmeasured. See [incremental conclusion](KOS-EXECUTION-001-quality-r4.md).
+
+Subsequent changes are review/status/evidence records only and require link/diff checks; policy changes require a new frozen review. UK remains blocked on local parity; Kit awaits Human Product merge/Release decision.
+
+## Historical attempts (superseded availability status)
+
 - Date: 2026-09-05 Asia/Shanghai.
 - Grade: Executor-recorded report of reviewer availability; **not an independent review conclusion**.
 - Requested frozen inputs: upstream eb82862, Universe Keyboard b730537, each compared with origin/main.
