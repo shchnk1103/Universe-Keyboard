@@ -1,30 +1,52 @@
 # AI_WORKFLOW.md
 
-本文件定义多个 agent 协作时的分工、交接格式和决策边界。
+本文件负责有界执行、协作与交接；领域权限见 [playbooks](playbooks/)，Assignment 合同见
+[Policy](ASSIGNMENT_POLICY.md)，架构事实从 [Knowledge Index](KNOWLEDGE_INDEX.md) 路由。
+本次澄清依据 [KOS-ASTRA-UPGRADE-001](assignments/kos-astra-upgrade-001.md)；不修改冻结内核。
 
-本文件只负责多 agent 编排。每个角色的可执行权限、证据、停止与交接规则以 `docs/playbooks/` 下的对应 playbook 为准；架构事实仍以 Knowledge Index 指向的权威文档为准。
+## 当前指令与项目事实
 
-## 核心原则
+项目事实、已完成 Gate 和既有合同须回到权威文件。用户在本任务中明确给出的目标、约束、
+授权和纠正持续有效；不能因技能、上下文压缩或切换角色重复请求相同授权。
+当前有权用户改变既有决定时，记录来源、范围及生效边界，完成适用的 Contract/Assignment
+revalidation 后执行依赖动作。不能用聊天摘要替代证据，也不能用旧模板否定当前有效指令。
+所有执行仍服从宿主更高优先级指令和权限。用户问进度或补充要求时保留原任务，除非明确取消。
 
-- Coordinator 负责最终判断，subagent 只提供受限范围内的调查、建议或补丁。
-- 不让多个 subagent 同时修改同一责任区。
-- 并行适合调查，不适合无协调地并行写代码。
-- 先确认问题属于哪个系统边界，再决定是否写代码。
-- 正式任务先按 [`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md) 核对 Assignment；`UNKNOWN` 阻止进入 `Ready`，Coordinator/Program Manager 不得自行指派。
-- 运营卫生（Current Status、State sync、证据档位、Active Work）见
-  [`docs/kos/kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md)。
-- KOS 2.2 记录按 [`.kos/project.json`](../.kos/project.json) 渐进纳管；包含的工作先核对 Authorization → Assignment → Evidence/Review → Gate/Decision 引用。advisory validator 只证明结构，不替代 Coordinator 或 Human Gate。
-- GitHub CLI 在 Codex 沙箱内失败时，先按 [`kos/codex-github-cli-auth-troubleshooting.md`](kos/codex-github-cli-auth-troubleshooting.md) 做一次主机对照；沙箱文案不能单独证明 token 过期，也不能授权修改代理或重复登录。
-- GitHub Actions 变更分级以 [`CI_CHANGE_CLASSIFICATION.md`](CI_CHANGE_CLASSIFICATION.md) 为准；`final-quality-gate` 是稳定聚合结果，docs-only 的 heavy skip 必须来自已通过的 fail-closed 分类，不得靠 `paths-ignore`。
+## 阶段与停止
 
-## Stacked PR 约定（KOS 2.1 ops · S-02）
+- 先判断请求类型。边界明确的只读问题按 Assignment Policy 例外回答。
+- 正式实施先核对 Assignment 和当前阶段 Entry；必填 UNKNOWN 仍阻止 Ready/Active，Executor
+  不自行选择 assignee 或改为 N/A。未来阶段依赖必须有命名 owner 与解除证据。
+- 当前工作按已批准的阶段依赖进行；未来真机/Gate 未完成不自动阻止独立机器准备，但已有
+  全局 Entry 仍有效，不能临时解释为未来依赖以绕开阻塞。
+- 阻塞时保存检查点，完成其他独立、已授权且 Entry 满足的工作；缺少决定时给出具体待审结果、
+  阻塞动作、来源文件/条款，说明哪些是明文、哪些是自己的解释。
+- 根因不清先收集证据；已确定故障边界后执行授权修复。常规可逆实现选择自主完成；产品、
+  隐私、架构、独立评审和 Release 权威不由执行者推定。
 
-当多个 PR 形成提交栈（前缀 PR 的 commits 是 tip 的子集）时：
+## 验证与证据复用
 
-1. PR 正文声明：`Stack: base=<branch-or-main> tip=<tip-branch>`，并列出前缀 PR 编号。  
-2. **优先合并 tip**（含全部 commits）；前缀 PR 在 tip 合入后标记 superseded 或由 GitHub 识别为已合并。  
-3. tip 合并后执行 State sync 清单（Dashboard / Index / Assignment Current Status / `ACTIVE_WORK.md`）。  
-4. 不要对同一栈做互相冲突的 squash 重写，除非 Product 明确授权并重开 PR。
+必需检查与本地 CI 门禁以 [AGENTS](../AGENTS.md)、[CI 分级](CI_CHANGE_CLASSIFICATION.md)
+和当前 Assignment 为准。测试验证行为/不变式；机械编辑不强制新增镜像测试，合法合同变化
+可更新旧测试，不得弱化断言掩盖失败。改变测试必须运行实际 target。
+
+复用先核对：精确最终内容、比较基线、依赖、命令/覆盖 target、环境、通过结果、采集时间与
+重验证触发均适用；证据引用写入交付。rebase/merge 后默认重验证，除非有可审核的等价性证据
+且当前门禁允许。过期、内容/环境/依赖改变、覆盖不足、失败或用户明确要求重跑时重新执行。
+再次要求 merge 本身不使合格证据失效。必需检查通过后，无新变更/失败/未解疑点就推进交付。
+
+修 CI 时继续修复已授权、本 PR 拥有的失败；范围外失败记录并交回其 owner。测试通过不授予
+push、merge 或 Release 权限，草稿 PR 的验证缺口必须明确。
+
+## 委派与连续性
+
+当两个调查或评审子问题独立、有界，且并行能改善速度或覆盖时使用可用 subagent；短任务、
+共享状态或依赖链顺序处理。先给出精确输入、输出、文件边界与验收。一个责任区一个 writer，
+隔离 worktree/副本；不同时修改相同文件区域。
+Coordinator 负责汇总结论与范围控制；Product/Architecture/Quality 各自保留决定权。
+独立 reviewer 必须是未参与实现的 runtime；executor 自检不算独立评审。不可用时记录缺口。
+保持逻辑 review lane 和开放 findings，复审绑定新基线。可选上游编排合同只有被项目显式采用
+时才约束 lane；[升级状态](kos/UPGRADE_STATUS.md) 记录当前是否实例化，不自行声称采用。
 
 ## 推荐角色
 
@@ -40,156 +62,21 @@
 | Test / Release Agent | `docs/playbooks/test-release.md` |
 | Documentation Maintainer | `docs/playbooks/documentation-maintainer.md` |
 
-### Coordinator
+## Stacked PR 约定（KOS 2.1 ops · S-02）
 
-主协调者，负责：
+当多个 PR 形成提交栈（前缀 PR 的 commits 是 tip 的子集）时：
 
-- 理解用户目标
-- 划分任务范围
-- 决定需要哪些 subagent
-- 合并结论
-- 控制最终修改边界
-- 向用户说明方案和结果
+1. PR 正文声明：`Stack: base=<branch-or-main> tip=<tip-branch>`，并列出前缀 PR 编号。
+2. **优先合并 tip**（含全部 commits）；前缀 PR 在 tip 合入后标记 superseded 或由 GitHub 识别为已合并。
+3. tip 合并后执行 State sync 清单（Dashboard / Index / Assignment Current Status / `ACTIVE_WORK.md`）。
+4. 不要对同一栈做互相冲突的 squash 重写，除非 Product 明确授权并重开 PR。
 
-### Context Scout
+## 交接与输出
 
-只读上下文，不改代码。负责：
+交接包含目标/范围、精确基线、完成输出、证据、开放 findings、环境、副作用、授权边界与下一
+合法动作。跨任务/新会话将这些放进仓库记录；不能只靠聊天重建。
+用户回复默认简洁中文，先结果再证据和限制；playbook 格式是交接字段，不要求每次回复复制长表。
 
-- 从 `docs/KNOWLEDGE_INDEX.md` 和 `docs/READING_MAPS.md` 定位任务上下文
-- 找出任务相关文档
-- 摘要当前架构约束
-- 标记可能过时的信息
-
-输出格式：
-
-```md
-## Relevant Context
-
-- 相关文件：
-- 必须遵守的约束：
-- 可能过时或需要验证的信息：
-```
-
-### Bug Investigator
-
-负责诊断问题，不急于修复。适合卡死、延迟、状态错乱、候选异常等问题。
-
-职责：
-
-- 建立复现路径
-- 分析输入、状态、副作用、输出
-- 提出日志点
-- 区分 UI / Core / RIME / 文件系统 / App Group 边界
-- 给出最小诊断改动建议
-
-输出格式：
-
-```md
-## Diagnosis Plan
-
-- 现象：
-- 初始假设：
-- 需要观测的状态：
-- 建议日志点：
-- 不建议现在做的猜测性修复：
-```
-
-### KeyboardCore Agent
-
-负责 `Packages/KeyboardCore`。
-
-职责：
-
-- 处理纯逻辑状态机
-- 更新 `KeyboardAction` / `KeyboardState` / `KeyboardEffect`
-- 增加或修改单元测试
-- 避免引入 UIKit、文件系统或 RIME 具体实现依赖
-
-### RimeBridge Agent
-
-负责 `Packages/RimeBridge` 和 RIME 边界。
-
-职责：
-
-- 处理 RIME session、部署服务、ObjC bridge
-- 保持主 App 部署、Keyboard Extension session-only 的边界
-- 不把 full deployment 放进输入热路径
-
-### Keyboard UI Agent
-
-负责 `Keyboard/`。
-
-职责：
-
-- UIKit 键盘视图、候选栏、按键布局、手势、无障碍
-- 只把业务动作转交给 `KeyboardController`
-- 不把核心输入逻辑塞回 ViewController
-
-### Main App UI Agent
-
-负责 `Universe Keyboard/`。
-
-职责：
-
-- SwiftUI 设置页、引导页、诊断页
-- 遵守 Settings 风格和共享组件约束
-- 不影响 Keyboard Extension 输入路径
-
-### Test / Release Agent
-
-负责验证和发布前检查。
-
-职责：
-
-- 选择最小必要验证命令
-- 汇总测试结果
-- 检查是否需要更新 `CHANGELOG.md`
-- 标记需要真机验证的风险
-
-## 标准任务流程
-
-1. 检查 Assignment：Product Decision、Domain Owner、Executor、依赖、Reviewer、Entry/Exit/Stop Conditions 和 Handoff；存在 `UNKNOWN` 时停止并升级。
-2. 若 Assignment 被 `.kos/project.json` 纳管，核对 canonical envelope、Authorization receipt 和 Current Status mirror；未纳管的 legacy 记录在 advisory 下仍按 Markdown 权威执行，不擅自批量迁移。
-3. 归类任务：bug / UI / Core / RIME / docs / release。
-4. 读取上下文：先读 `AGENTS.md` 和 `docs/KNOWLEDGE_INDEX.md`，再按 `docs/READING_MAPS.md` 和领域 playbook 加载对应文档。
-5. 第一性原理拆解：输入、状态、副作用、输出、验证方式。
-6. 决定策略：
-   - 根因不清楚：先加日志或复现工具。
-   - 逻辑明确：先写测试，再改实现。
-   - UI 问题：先确认设计约束，再改界面。
-   - RIME 问题：先确认部署/session 边界。
-7. 执行修改。
-8. 验证；KOS validator 结果单列为结构证据，不写成 Product/Quality 通过。
-9. 汇报结果和残余风险并交给 Assignment Record 中的 Handoff Target。
-
-## 交接格式
-
-subagent 的结论必须短、具体、可验证：
-
-```md
-## Summary
-
-一句话结论。
-
-## Evidence
-
-- 文件/行号：
-- 命令输出：
-- 复现步骤：
-
-## Recommendation
-
-建议做什么，不做什么。
-
-## Risk
-
-剩余风险或未验证项。
-```
-
-## 禁止事项
-
-- 没有证据就大规模重构。
-- 为了消除编译错误而降低并发安全。
-- 在 Keyboard Extension 输入路径里做重部署、重文件同步或重 IO。
-- 把历史流水账加入 `docs/PROJECT_CONTEXT.md` 或 `CLAUDE.md`。
-- 同时让多个 agent 修改同一个文件区域。
+KOS validator 是结构证据，不能替代独立 review、Product Gate 或真机证据。
+GitHub 认证失败按 [诊断手册](kos/codex-github-cli-auth-troubleshooting.md) 做有界环境对照。
+Gate/合并后的状态同步按 [2.1 ops](kos/kos-2.1-operational-maturity.md)，只同步有关镜像。

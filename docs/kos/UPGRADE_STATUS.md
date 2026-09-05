@@ -15,6 +15,13 @@
 
 ---
 
+## Pending upgrade preparation
+
+[KOS-ASTRA-UPGRADE-001](../assignments/kos-astra-upgrade-001.md) prepares upstream `v0.7.0`
+and this project's instruction repairs. Candidate preparation is not adoption: the table above and
+`.kos/project.json` remain at published `v0.6.0` until an exact Release and local adoption decision exist.
+Existing Active Assignments are not migrated. The optional orchestration plan remains uninstantiated.
+
 - 钉住 GitHub Release [`v0.6.0`](https://github.com/shchnk1103/kos-agent-kit/releases/tag/v0.6.0)（commit `a16c932`）。
 - Envelope 模式为 `advisory`。校验绿不等于 Product / Quality / merge / Release 通过。
 - 未启用 `required`。未自动给历史 Assignment 补 Envelope。

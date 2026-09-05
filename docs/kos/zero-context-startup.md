@@ -71,25 +71,15 @@ Use this procedure before acting on a non-trivial request:
 4. **Find the authority.** Resolve which document owns the decision or fact using [`DOCUMENTATION_GOVERNANCE.md`](../DOCUMENTATION_GOVERNANCE.md) and [`KNOWLEDGE_DEPENDENCIES.md`](../KNOWLEDGE_DEPENDENCIES.md).
 5. **Find the role.** Resolve permanent ownership through [`VIRTUAL_ENGINEERING_TEAM.md`](../VIRTUAL_ENGINEERING_TEAM.md), then task-level responsibility through the applicable Assignment Record.
 6. **Find the lifecycle state.** Use the Assignment Record for lifecycle authority; use [`ENGINEERING_DASHBOARD.md`](../ENGINEERING_DASHBOARD.md) only as a status summary that links back to owner sources.
-7. **Check stop conditions.** Stop when required Assignment fields are `UNKNOWN`, required inputs are unavailable, repository sources conflict or the request exceeds authorized scope.
+7. **Check stop conditions.** Required Assignment fields at `UNKNOWN` or missing global Entry inputs still block the Assignment. Resolve stage-specific dependencies through the approved Assignment; see [AI Workflow](../AI_WORKFLOW.md) for independent work and current authorization.
 8. **Check the KOS 2.2 boundary.** If the owner record is included by `.kos/project.json`, verify its envelope, receipt references and same-record mirrors. If it is legacy, advisory omission does not invalidate the record.
 9. **Act only inside the resolved scope.** Change the owning source first, then update downstream navigation or status summaries only when their route changed.
 10. **Validate the result.** Run validation appropriate to the change type and report skipped checks with reasons. Validator green never closes a Gate by itself.
 
 ## Startup Reading Order
 
-Default startup order:
-
-1. [`AGENTS.md`](../../AGENTS.md)
-2. [`docs/KNOWLEDGE_INDEX.md`](../KNOWLEDGE_INDEX.md)
-3. [`docs/kos/zero-context-startup.md`](zero-context-startup.md)
-4. [`docs/READING_MAPS.md`](../READING_MAPS.md)
-5. Task-specific Assignment Record, when formal work is involved
-6. Task-specific owner sources from the selected reading map
-7. Applicable playbook under [`docs/playbooks/`](../playbooks/)
-8. Validation and release/evidence sources only when the task route requires them
-
-Do not start with broad repository search, historical plans, changelog archaeology or conversation memory unless the selected route requires history.
+Use the single order in **Bootstrap Workflow** above. Load this document when authority recovery is needed;
+do not repeat already completed entry reads. Selected task sources and playbook follow the Reading Map.
 
 ## Repository Discovery Rules
 
@@ -145,22 +135,18 @@ If a required task field is `UNKNOWN`, the task cannot enter `Ready` or `Active`
 
 ## Repository Truth Discovery
 
-Repository truth follows this order:
+For **recorded project facts**, use the applicable Assignment/Product Decision and owning canonical source;
+navigation, templates and historical conversation only help find them. This is fact provenance, not an
+instruction hierarchy that invalidates the current user's objective, correction or explicit authorization.
 
-1. Published Assignment.
-2. Repository canonical documents.
-3. Repository governance.
-4. User-provided Mission Charter or Work Order.
-5. Conversation.
+Current task direction and authorization persist as described in [AI Workflow](../AI_WORKFLOW.md).
+When an authorized user changes a decision, record scope/source/effective boundary and complete the required
+Contract/Assignment revalidation before dependent work. Do not fabricate previous acceptance or fill unknown
+responsibilities. Follow higher-priority host instructions and applicable permissions.
 
-When sources conflict:
-
-1. identify the owning source in [`DOCUMENTATION_GOVERNANCE.md`](../DOCUMENTATION_GOVERNANCE.md);
-2. check whether a more specific Assignment supersedes general navigation;
-3. preserve `UNKNOWN`, `Blocked` or conflict state when authority is missing;
-4. stop for the owning role instead of filling gaps from memory.
-
-Conversation explains intent. Repository sources decide current authority.
+If owner sources conflict, identify the owner and preserve the uncertainty. Block dependent actions, while
+independently authorized work whose Entry Criteria are satisfied may continue. An Assignment with missing
+required responsibilities or global required inputs remains blocked under the Assignment Policy.
 
 ## Startup Validation Procedure
 

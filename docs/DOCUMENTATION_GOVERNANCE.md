@@ -222,6 +222,15 @@ For every important PR or substantial Codex change, check:
 - [ ] If a legacy record was materially changed, was envelope onboarding reviewed without inventing historical facts?
 - [ ] If no documentation changed, is the reason explicit and defensible?
 
+## Model-visible Instruction Audit
+
+Include AGENTS, compatibility entrypoints, skills and their references/examples, playbooks and bootstrap
+prompts even when outside `.kos/project.json` include. Check current authorization versus factual provenance,
+side-effect scope, stage dependencies, actual test targets, evidence reuse and concise output. Envelope
+validation does not establish these documents' semantic correctness or exemption from governance.
+Use independent behavioral tabletop scenarios before declaring workflow usability; distinguish static
+routing evidence from measured end-to-end time/token gains. Record the dated result in Documentation Health.
+
 ## Monthly And Milestone Knowledge Audit
 
 Run a focused Knowledge Audit monthly or after every important milestone, whichever occurs first. The audit is read-only unless its scope explicitly includes repairs.
@@ -245,7 +254,7 @@ Record the measurable snapshot and audit history in `docs/DOCUMENTATION_HEALTH.m
 
 ## Enforcement
 
-- `CONTEXT_INDEX.md` routes readers to primary sources.
+- `KNOWLEDGE_INDEX.md` and the selected `READING_MAPS.md` route readers to primary sources; `CONTEXT_INDEX.md` is legacy lookup only.
 - `pre-push-review` applies the review checklist before commit/push.
 - Reviewers block changes that alter a durable contract without updating its source of truth or ADR.
 - Documentation-only changes still run `git diff --check` and link/status validation appropriate to their scope.

@@ -1,6 +1,6 @@
 # PROJECT_CONTEXT.md
 
-> **Maintenance Rule:** Do NOT add "Recent changes", chronological logs, or dated current-status snapshots to this file. All historical changes and status updates must go to `CHANGELOG.md`. Keep this file focused on permanent architecture, design decisions, and implementation constraints.
+> **Maintenance Rule:** Do NOT add "Recent changes", chronological logs, or dated current-status snapshots to this file. Historical changes go to `CHANGELOG.md`; current task state belongs in its Assignment and derived status views. Keep this file focused on permanent architecture, design decisions, and implementation constraints.
 
 Documentation ownership and update triggers are defined in `docs/DOCUMENTATION_GOVERNANCE.md`; this file is the architecture overview, not the source for history, debugging procedures or release evidence.
 
@@ -10,7 +10,7 @@ This file provides durable project context for AI assistants working with code i
 
 Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chinese input. It has two product targets plus four test targets (`RimeBridgeTests`, `UniverseKeyboardTests`, `KeyboardTests`, and `UniverseKeyboardUITests`):
 
-- **`Universe Keyboard`** (main App) — SwiftUI app (two tabs: Guide / Settings) for keyboard setup, RIME deployment, and feedback configuration.
+- **`Universe Keyboard`** (main App) — SwiftUI app (Home, Settings and Search; Guide is conditionally shown) for keyboard setup, RIME deployment, and feedback configuration.
 - **`Keyboard`** (Keyboard Extension, `Keyboard.appex`) — the actual keyboard that appears in other apps. Built with UIKit (`UIInputViewController`). Primary language: `zh-Hans`.
 
 The original development plan is archived as a historical reference in `docs/plans/ios-rime-keyboard-development-plan.md` (Superseded). Current architecture and decisions are governed by this document, `docs/architecture/` (including ADRs), `CONTEXT_INDEX.md`, and the Knowledge OS system.
@@ -30,7 +30,7 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 
 ## Status And History
 
-This file does not track the latest project status. Use `CHANGELOG.md` for recent changes, milestone progress, and dated status snapshots.
+This file does not track the latest project status. Use the owning Assignment for current task state, `ACTIVE_WORK.md` for active routes, and `CHANGELOG.md` for dated history.
 
 The durable implementation constraints are:
 
