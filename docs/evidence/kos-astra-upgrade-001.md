@@ -63,8 +63,10 @@ SWIFT_TREAT_WARNINGS_AS_ERRORS=YES`, with `-derivedDataPath /private/tmp/uk-kos-
 | Release build | PASS |
 
 The 19 failures are recorded as App test-host crashes in xcresult, not failed assertions. Do not infer their
-root cause. An unchanged origin/main snapshot is being compared separately; this does not authorize product
-Swift remediation in this governance task. Full CI parity is **not green** and merge-readiness is blocked.
+root cause. The unchanged origin/main snapshot completed the same scheme command with isolated DerivedData and
+reproduced the **same 19 failing test identifiers** (exit 65, no additional identifier in the candidate).
+This establishes baseline reproduction, not the root cause or acceptance of a skipped gate; it does not
+authorize product Swift remediation in this governance task. Full CI parity is **not green** and merge-readiness is blocked.
 
 ## Reading-footprint snapshot
 
@@ -112,3 +114,11 @@ Full logs remain local, not portable Gate artifacts; reproduce with the commands
 | `/private/tmp/uk-kos-parity/Universe_Keyboard-Debug-test.log` | `da1204057647bc8abfe19f738c7bdfe33c751af1fe47aa0dfd6ee5868eb7ce84` |
 | `/private/tmp/uk-kos-parity/Universe_Keyboard-Debug-build.log` | `026c2ec4a9097278d754797d466b18837639657dba67cfe2b735330871405a68` |
 | `/private/tmp/uk-kos-parity/Universe_Keyboard-Release-build.log` | `76df042b49e54bf19b88e0ec184227c66f8100ac293841d0fcb8ef45812c7bc5` |
+
+## Baseline comparison completion
+
+- Baseline: UK origin/main `281600903d04c08b1af70eee47ad1196e88fe8f7`, exported with git archive.
+- Method: same App scheme command/Simulator/strict flags; `-derivedDataPath /private/tmp/uk-kos-baseline-derived`.
+- Result: exit 65; same 19 failed test identifiers; no source/test/project/CI diff in the candidate.
+- Baseline log: `/private/tmp/uk-kos-baseline-app.log`; SHA-256 `30838221a60abcddd6ba220b301f8adfe3d7d8dc0eadbd2f043c7f65d4a69c56`.
+- Environment: Xcode 27.0 beta, build 27A5252f. Root cause remains unproven; App parity remains non-green.
