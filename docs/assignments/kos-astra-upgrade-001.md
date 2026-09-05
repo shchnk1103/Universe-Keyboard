@@ -8,7 +8,7 @@ Policy version: 1.0.0
 |---|---|
 | Lifecycle | Blocked |
 | Current Phase | Independent review complete; local App parity not green |
-| Material non-claims | Adopted remains v0.6.0 advisory; no released v0.7.0, required, product Swift, device or Release claim |
+| Material non-claims | Adopted remains v0.6.0 advisory; upstream v0.7.0 released; no required, product Swift, device or App Release claim |
 | Next handoff / decision | Resolve local parity environment; Human decides merge/release/adoption |
 | Residuals | 19 baseline-reproduced App crashes; stable Xcode missing simulator component; hosted CI green |
 

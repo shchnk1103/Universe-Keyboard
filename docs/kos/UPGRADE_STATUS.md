@@ -6,8 +6,8 @@
 |---|---|
 | Upstream repository | `shchnk1103/kos-agent-kit` |
 | Adopted version | `v0.6.0` |
-| Latest checked version | `v0.6.0` |
-| Last checked at | `2026-09-02T18:53:00+08:00` |
+| Latest checked version | `v0.7.0` |
+| Last checked at | `2026-09-05T23:49:08+08:00` |
 | Upgrade owner | Human Product Owner |
 | Current disposition | Adopted — advisory only (`v0.6.0`) |
 | Next review | When enabling `required`; when instantiating the optional orchestration contract; when fixing [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生); or when a newer Kit Release appears |
@@ -17,8 +17,8 @@
 
 ## Pending upgrade preparation
 
-[KOS-ASTRA-UPGRADE-001](../assignments/kos-astra-upgrade-001.md) prepares upstream `v0.7.0`
-and this project's instruction repairs. Candidate preparation is not adoption: the table above and
+[KOS-ASTRA-UPGRADE-001](../assignments/kos-astra-upgrade-001.md) tracks released upstream `v0.7.0`
+(commit `f7f4dad6750b59dc827c1366fcd276447b2820b2`) and this project's instruction repairs. Candidate preparation is not adoption: the table above and
 `.kos/project.json` remain at published `v0.6.0` until an exact Release and local adoption decision exist.
 Existing Active Assignments are not migrated. The optional orchestration plan remains uninstantiated.
 
@@ -30,3 +30,5 @@ Existing Active Assignments are not migrated. The optional orchestration plan re
 - 发现更新时人工核对上游 latest Release，并写新的 upgrade-record。不得把未检查写成“已是最新”。
 - 可选编排合同（`ops/agent-orchestration.md`）随 `v0.6.0` **可用**，仅供后续明确需要多 agent / 多 provider 的新 Assignment。既有 Active Assignment 保持 pinned、不迁移。本仓库 **未** 实例化 `ORCHESTRATION_PLAN.md`。
 - 历史：[`KOS-UPGRADE-UK-001-v0.5.0`](upgrade-records/KOS-UPGRADE-UK-001-v0.5.0.md) 首次 advisory 采用；[`KOS-UPGRADE-UK-002-v0.6.0`](upgrade-records/KOS-UPGRADE-UK-002-v0.6.0.md) 为 Deferred 检查记录，Adopted pin 已被 UK-003 取代（S-03）。
+
+Latest review: [v0.7.0 adoption preparation](upgrade-records/KOS-ASTRA-UPGRADE-001-v0.7.0.md).
