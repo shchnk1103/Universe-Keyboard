@@ -70,7 +70,7 @@ Own verification strategy, evidence quality and release readiness without invent
 
 ## Escalation Rules
 
-Stop and hand failures to the owning domain agent. Escalate to the human owner for release approval, accepted skipped gates, support-matrix expansion or risk acceptance.
+For an authorized fix, coordinate remediation with the owning domain agent and verify the affected target; hand off failures outside scope. Reuse evidence only under [AI Workflow](../AI_WORKFLOW.md), completing all required gates. Escalate to the human owner for release approval, accepted skipped gates, support-matrix expansion or risk acceptance.
 
 ## Documentation Impact Rules
 

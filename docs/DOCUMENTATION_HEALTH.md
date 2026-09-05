@@ -44,7 +44,14 @@ find docs -type f -name '*.md' -print | sort
 
 Counts are derived output. Do not copy them into README, PROJECT_CONTEXT or indexes.
 
-## Current Baseline Snapshot
+## Current Baseline Status
+
+The 2026-08-28 snapshot expired on the subsequent Kit/Profile upgrade. It remains historical evidence;
+its v0.5.0 observations do not establish current v0.6.0 health. The current bounded instruction audit is
+[KOS-ASTRA-UPGRADE-001](assignments/kos-astra-upgrade-001.md), with [results](evidence/kos-astra-upgrade-001.md).
+Full independent dry-runs of every domain playbook and real task efficiency comparisons remain unmeasured.
+
+## Historical Baseline Snapshot — 2026-08-28 (expired)
 
 Snapshot metadata:
 
@@ -93,7 +100,7 @@ Observed state:
 
 ## Documentation Debt Queue
 
-1. Run independent dry-runs of every playbook against real tasks and record routing failures.
+1. Complete independent dry-runs of every domain playbook; the bounded execution/skill tabletop is tracked in KOS-ASTRA-UPGRADE-001 and does not close this broader item.
 2. Dry-run permanent bootstrap prompts and Typo → Input Intelligence evidence handoff.
 3. Resolve remaining duplicated durable facts (lifecycle, deployment, Full Access, UI constants) by one owner + links.
 4. Convert historical acceptance records to fully qualified snapshots with expiry/evidence retention where still missing.

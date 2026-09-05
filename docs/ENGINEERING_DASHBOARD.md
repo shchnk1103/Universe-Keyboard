@@ -8,6 +8,12 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## KOS-ASTRA-UPGRADE-001 — candidate preparation
+
+- [Assignment](assignments/kos-astra-upgrade-001.md): Blocked for local App parity; independent review findings closed.
+- [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs prepared; no merge/Release/adoption claim.
+- Adopted pin remains v0.6.0 advisory; v0.7.0 is an upstream candidate.
+
 ## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory
 
 - **Lifecycle:** `Closed` — PR #96 merged `41c0dc5`
