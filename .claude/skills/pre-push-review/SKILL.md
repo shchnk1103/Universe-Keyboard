@@ -1,7 +1,6 @@
 ---
 name: pre-push-review
 description: Verify and prepare scoped Git commits, feature-branch pushes, or PRs when the user requests those actions. Execute only the requested publication steps.
-argument-hint: "[requested git action and scope]"
 ---
 
 # Pre-Push Review
