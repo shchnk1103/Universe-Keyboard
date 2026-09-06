@@ -14,9 +14,15 @@ struct SchemaDownloadSection: View {
             }
         }
 
-        if case .failed(_, let message) = store.downloadState {
+        if let failedSchemaID = store.downloadState.failedSchemaID,
+            let message = store.downloadState.failureMessage(for: "rime_ice"),
+            failedSchemaID == "rime_ice"
+        {
             Section {
-                RimeDownloadErrorContent(message: message, onRetry: { store.startDownload() })
+                RimeDownloadErrorContent(
+                    message: message,
+                    onRetry: { store.startDownload(schemaID: failedSchemaID) }
+                )
             } header: {
                 Text("下载失败")
             }

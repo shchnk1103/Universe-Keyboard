@@ -299,6 +299,39 @@ final class SchemaManagerTests: XCTestCase {
             downloadState: .completed(schemeName: "万象拼音")
         )
         XCTAssertEqual(completed?.message, "万象拼音已下载并部署")
+
+        let failed = AppOperationToastState(
+            downloadState: .failed(
+                schemaID: "wanxiang",
+                schemeName: "万象拼音",
+                message: "网络不可用"
+            )
+        )
+        XCTAssertEqual(failed?.message, "万象拼音下载或部署失败")
+        XCTAssertEqual(failed?.source, .download)
+        XCTAssertEqual(failed?.tone, .failure)
+        XCTAssertTrue(failed?.automaticallyDismisses == true)
+    }
+
+    func testDownloadFailureBindsSchemaIDFromDownloadOperation() async throws {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let sourceIDs = try XCTUnwrap(
+            entry.distribution?.manifest.sourceVariants.map(\.id)
+        )
+        let manager = makeManager(
+            archiveDownloader: ControlledArchiveDownloader(failingSourceIDs: Set(sourceIDs))
+        )
+        manager.acceptLicense(for: "wanxiang")
+
+        await manager.fetchAndDownload(schemaID: "wanxiang")
+
+        guard case .failed(let schemaID, let schemeName, let message) = manager.rimeIceDownloadState else {
+            return XCTFail("a failed download must retain its owning schema ID")
+        }
+        XCTAssertEqual(schemaID, "wanxiang")
+        XCTAssertEqual(schemeName, "万象拼音")
+        XCTAssertEqual(manager.rimeIceDownloadState.failureMessage(for: "wanxiang"), message)
+        XCTAssertNil(manager.rimeIceDownloadState.failureMessage(for: "rime_ice"))
     }
 
     func testInstallationPassesSharedLuaCapabilityToInstaller() throws {
@@ -1303,9 +1336,10 @@ final class SchemaManagerTests: XCTestCase {
 
         let waiterResult = await waiter.value
         XCTAssertTrue(waiterResult)
-        guard case .failed(let name, _) = manager.rimeIceDownloadState else {
+        guard case .failed(let schemaID, let name, _) = manager.rimeIceDownloadState else {
             return XCTFail("invalid deferred download must publish a recoverable failure")
         }
+        XCTAssertEqual(schemaID, "missing")
         XCTAssertEqual(name, "missing")
         let requestCount = await deploymentService.requests.count
         XCTAssertEqual(requestCount, 1)

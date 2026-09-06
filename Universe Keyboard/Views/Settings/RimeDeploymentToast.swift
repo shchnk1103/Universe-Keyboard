@@ -127,7 +127,7 @@ extension AppOperationToastState {
                 tone: .success,
                 automaticallyDismisses: true
             )
-        case .failed(let schemeName, _):
+        case .failed(_, let schemeName, _):
             self.init(
                 source: .download,
                 message: "\(schemeName)下载或部署失败",

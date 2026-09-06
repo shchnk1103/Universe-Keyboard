@@ -480,7 +480,9 @@ enum RimeSchemeCatalog {
 ///
 /// Active phases carry `schemeName` for multi-scheme honesty (TD-009).
 /// `downloading.progress` is `nil` when total size is unknown (indeterminate UI);
-/// otherwise a fraction in `0...1`.
+/// otherwise a fraction in `0...1`. Terminal failures additionally carry the
+/// stable schema ID so detail pages cannot attribute one scheme's failure to
+/// another scheme after navigation.
 enum DownloadState: Equatable {
     case idle
     case fetchingReleaseInfo(schemeName: String)
@@ -489,7 +491,7 @@ enum DownloadState: Equatable {
     case postProcessing(schemeName: String)
     case deploying(schemeName: String)
     case completed(schemeName: String)
-    case failed(schemeName: String, message: String)
+    case failed(schemaID: String, schemeName: String, message: String)
 
     var schemeName: String? {
         switch self {
@@ -502,9 +504,27 @@ enum DownloadState: Equatable {
             .postProcessing(let name),
             .deploying(let name),
             .completed(let name),
-            .failed(let name, _):
+            .failed(_, let name, _):
             return name
         }
+    }
+
+    var failedSchemaID: String? {
+        guard case .failed(let schemaID, _, _) = self else { return nil }
+        return schemaID
+    }
+
+    /// Returns a failure only when it belongs to the requested scheme.
+    ///
+    /// The shared state is intentionally single-operation, so consumers must
+    /// use the stable ID rather than whichever scheme detail page is visible.
+    func failureMessage(for schemaID: String) -> String? {
+        guard case .failed(let failedSchemaID, _, let message) = self,
+            failedSchemaID == schemaID
+        else {
+            return nil
+        }
+        return message
     }
 }
 

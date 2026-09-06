@@ -44,8 +44,8 @@ struct RimeSettingsView: View {
         switch store.downloadState {
         case .fetchingReleaseInfo, .downloading, .extracting, .postProcessing, .deploying:
             return schema.schemaID == "rime_ice" ? "正在下载" : "未安装"
-        case .failed:
-            return schema.schemaID == "rime_ice" ? "下载失败" : "未安装"
+        case .failed(let failedSchemaID, _, _) where failedSchemaID == schema.schemaID:
+            return "下载失败"
         default:
             return "可下载"
         }
@@ -61,8 +61,8 @@ struct RimeSettingsView: View {
         switch store.downloadState {
         case .fetchingReleaseInfo, .downloading, .extracting, .postProcessing, .deploying:
             return schema.schemaID == "rime_ice" ? .working : .downloadable
-        case .failed:
-            return schema.schemaID == "rime_ice" ? .failed : .downloadable
+        case .failed(let failedSchemaID, _, _) where failedSchemaID == schema.schemaID:
+            return .failed
         default:
             return .downloadable
         }
@@ -252,9 +252,15 @@ private struct RimeSchemaDetailView: View {
             }
         }
 
-        if case .failed(_, let message) = store.downloadState {
+        if let failedSchemaID = store.downloadState.failedSchemaID,
+            let message = store.downloadState.failureMessage(for: schema.schemaID),
+            failedSchemaID == schema.schemaID
+        {
             Section {
-                RimeDownloadErrorContent(message: message, onRetry: { store.startDownload(schemaID: schema.schemaID) })
+                RimeDownloadErrorContent(
+                    message: message,
+                    onRetry: { store.startDownload(schemaID: failedSchemaID) }
+                )
             } header: {
                 Text("下载失败")
             }

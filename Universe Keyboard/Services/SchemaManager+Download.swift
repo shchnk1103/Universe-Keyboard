@@ -323,6 +323,7 @@ extension SchemaManager {
                 activeDownloadOperationID = nil
                 currentDownloadTask = nil
                 rimeIceDownloadState = .failed(
+                    schemaID: schemaID,
                     schemeName: schemeName,
                     message: DownloadError.userFacingDescription(for: error)
                 )
