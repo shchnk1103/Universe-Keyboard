@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Completed |
-| Current Phase | Implementation and local gates complete; adoption delta review and final PR merge pending |
+| Current Phase | Implementation and local gates complete; adoption delta review complete; final PR merge pending |
 | Material non-claims | PR branch adopts v0.7.0 advisory; upstream v0.7.0 released; no required, product Swift, device or App Release claim |
-| Next handoff / decision | Finalize adoption delta review and hand off PR #99 merge decision |
+| Next handoff / decision | Hand off final PR #99 merge decision |
 | Residuals | Earlier failures retained historically; current local suites pass; final hosted run pending |
 
 ## Authority
@@ -58,3 +58,5 @@ See [review attempts](../reviews/kos-execution-001-review-status.md).
 ## 2026-09-06 continuation
 
 User authorized priority local-gate remediation and continued the unfinished upgrade. iOS 26.5 runtime installed; stable Xcode 26.6 cannot run on macOS 27 beta, so local parity uses Xcode 27 beta/iOS 26.5 with identical strict test/build commands. All pass. [Evidence](../evidence/kos-astra-local-gate-2026-09-06.md). Project pin changes to released v0.7.0 in this PR; existing Active task baselines and advisory mode remain unchanged. Final merge remains a separate publication decision.
+
+Adoption review: [independent review and finding closure](../reviews/kos-astra-adoption-review.md). No remaining technical review blockers.

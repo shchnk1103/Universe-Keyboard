@@ -8,10 +8,10 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
-## KOS-ASTRA-UPGRADE-001 — candidate preparation
+## KOS-ASTRA-UPGRADE-001 — v0.7.0 adoption
 
-- [Assignment](assignments/kos-astra-upgrade-001.md): Completed implementation/local gates; adoption delta review and PR merge pending.
-- [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs prepared; no merge/Release/adoption claim.
+- [Assignment](assignments/kos-astra-upgrade-001.md): Completed implementation/local gates; adoption review complete; PR merge pending.
+- [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs and local gates complete; no final merge or App Release claim.
 - This PR adopts released v0.7.0 advisory; default-branch publication pending #99 merge.
 
 ## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory (historical)
@@ -24,7 +24,7 @@
 
 ## KOS 2.2 advisory pin — current
 
-- **Lifecycle:** Adopted `v0.6.0` advisory (UK-003 / PR #96 `41c0dc5`)
+- **Lifecycle:** This PR adopts `v0.7.0` advisory; [current pin](kos/UPGRADE_STATUS.md). UK-003 / PR #96 remains historical.
 - **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
 
 ## KOS-UPGRADE-UK-002 — Record Deferred kos-agent-kit v0.6.0 (historical)

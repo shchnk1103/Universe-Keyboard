@@ -43,3 +43,17 @@ Logs: `/private/tmp/uk-kos-parity-beta265/`. Result bundles: `/private/tmp/uk-ko
 | Universe_Keyboard-Debug-build.log | `c0a240313a28e20768644520f0ca2572608bbd88a848767f0a2f58531cbfa52b` |
 | Universe_Keyboard-Debug-test.log | `279443550f0d9219898e98d687425d4984d9ca9022554c7c7284be43cddbe785` |
 | Universe_Keyboard-Release-build.log | `66c7865a4ba967631376d50f034d1ba46b509ce3c1b7d78962eb830c8a46d070` |
+
+## Adoption verification binding
+
+- 31bfbed: commit `31bfbed1a5214b1519558501cbe19ea4672d6036`, tree `2477a7abca7f04ca5713f4f9e284d748e0b3ab10`.
+- cc75ab7: commit `cc75ab76019fcfc98e21207cac12f5e7a9862edb`, tree `6cb1c7be31393a090ae86ac17bf8958b66183a5d`.
+- 11d8a18: commit `11d8a188889cc7325f3297c6ed56636d4fbf5352`, tree `8556a6e317527ea5064a06d77efe52863c8dede7`.
+
+SHA-256 of `git diff --binary 31bfbed 11d8a18`: `c717e832b9307c95c2f46e57dd7684f2db73060a05f78e8b8324c0b70bc5d3d6`.
+
+`31bfbed → cc75ab7` changes preparation records only; `cc75ab7 → 11d8a18` changes `.kos/project.json` (only adopted version/commit), AGENTS pin and documentation only. All production, test, project, scripts and workflow paths have empty diffs for `31bfbed → 11d8a18` and from `281600903d04c08b1af70eee47ad1196e88fe8f7`. Local product tests executed at cc75ab7 therefore cover the unchanged product contents of 11d8a18. This does not claim unit tests validate policy text.
+
+At 11d8a18, `KOS_AGENT_KIT_ROOT=/private/tmp/kos-agent-kit-release-v070 KOS_AS_OF=2026-09-05T10:30:00+08:00 bash scripts/ci/run_lightweight_checks.sh origin/main HEAD` passed against base 281600903d04c08b1af70eee47ad1196e88fe8f7. Independently, `git diff --check 31bfbed 11d8a18` and Markdown links for that exact pair pass. The fixed as-of retains the previous advisory comparison; it is not a freshness or current authorization pass. Nine existing unique warnings remain, with no newly introduced warning code/path/message.
+
+Later commits contain only review/evidence/status corrections; they require links/diff checks. A subsequent policy, Profile, source or environment change requires a new frozen review or applicable test run. Publication HEAD is recorded in the PR, avoiding an evidence-file self-reference.
