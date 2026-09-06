@@ -216,3 +216,8 @@ The bounded HEAD race reports finite source-local rejection reasons (`transport`
 unreachable sources. A successful alternative still undergoes full archive and staged checks.
 Cancellation does not become a source failure. Diagnostics contain only reviewed IDs/reasons,
 not raw URLs or transport exception strings. Legacy diagnostic identities remain readable.
+
+Download failures carry their owning `schemaID` separately from the display name. Detail pages
+and scheme-specific guide/layout panels only render failures for that ID, and retry captures
+the failed ID. Navigation alone does not clear the shared single-operation state; a newly
+started operation replaces it. Global toasts retain the original scheme name.

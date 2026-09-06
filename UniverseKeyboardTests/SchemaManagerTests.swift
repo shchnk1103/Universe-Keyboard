@@ -202,9 +202,15 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertTrue(updateAvailable)
     }
 
+    func testLegacyNightlyInstallationOffersPinnedReleaseUpdate() async {
+        let manager = makeManager(settings: StubSharedSettingsStore(values: ["rime_ice_version": "nightly"]))
+        let updateAvailable = await manager.checkForUpdate(schemaID: "rime_ice")
+        XCTAssertTrue(updateAvailable)
+    }
+
     func testCheckForUpdateReportsCurrentPinnedVersion() async {
         let manager = makeManager(
-            settings: StubSharedSettingsStore(values: ["rime_ice_version": "nightly"])
+            settings: StubSharedSettingsStore(values: ["rime_ice_version": "2026.06.30"])
         )
 
         let updateAvailable = await manager.checkForUpdate()

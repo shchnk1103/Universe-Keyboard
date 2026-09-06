@@ -754,7 +754,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testCheckForUpdateReportsAlreadyCurrentWithoutStartingDownload() async {
-        let settings = StoreSharedSettingsStore(values: ["rime_ice_version": "nightly"])
+        let settings = StoreSharedSettingsStore(values: ["rime_ice_version": "2026.06.30"])
         let store = RimeSettingsStore(
             schemaManager: SchemaManager(
                 settings: settings,

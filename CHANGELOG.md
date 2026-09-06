@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Scheme download source and failure-state repair
+
+- Pin Rime Ice to verified 2026.06.30 archives instead of the mutable nightly alias; retain archive and staged-content integrity checks.
+- Distinguish changed remote content from source availability failures and record finite per-source probe reasons.
+- Scope failure display/retry by scheme ID so Rime Ice errors do not appear on Wanxiang details.
+
+
 ## KOS v0.7.0 adoption (PR #99)
 
 - Pin released Kit v0.7.0 with advisory mode; adopt optional execution hygiene for new tasks, preserving existing Active baselines.
