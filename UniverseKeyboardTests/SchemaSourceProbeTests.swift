@@ -7,6 +7,27 @@ import XCTest
 
 @MainActor
 final class SchemaSourceProbeTests: XCTestCase {
+    func testProbeFailureDiagnosticsRemainTypedAndSearchable() throws {
+        let event = DiagnosticEvent(
+            utcTimestamp: .now, monotonicNanoseconds: 1, origin: .mainApp,
+            processInstanceID: UUID(), localSequence: 1, code: .schemeDeliveryPhaseChanged,
+            level: .info, category: .deployment,
+            schemeDeliveryPayload: .phaseChanged(
+                .init(
+                    context: .init(
+                        operationID: UUID(), artifact: .rimeIce20260630675D23B0,
+                        stagedIdentity: .rimeIce20260630Plan1Post1),
+                    attempt: nil, source: .nju, host: nil, phase: .selecting,
+                    result: .failed, probeFailure: .archiveSize
+                ))
+        )
+        let decoded = try JSONDecoder().decode(DiagnosticEvent.self, from: JSONEncoder().encode(event))
+        let line = DiagnosticsEventDisplayFormatter.line(decoded)
+        XCTAssertTrue(line.contains("source=nju"))
+        XCTAssertTrue(line.contains("probe_failure=archive_size"))
+        XCTAssertFalse(line.contains("https://"))
+    }
+
     func testProbeDistinguishesChangedArtifactFromUnavailableSource() async throws {
         let source = try XCTUnwrap(
             RimeSchemeCatalog.entry(for: "rime_ice")?.distribution?.manifest.sourceVariants.first)
