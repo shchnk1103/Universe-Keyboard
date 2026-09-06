@@ -1,123 +1,42 @@
 ---
 name: pre-push-review
-description: "Review code changes, verify recent test evidence, and push clean commits to GitHub. Use when the user says 'push', 'upload to GitHub', 'ship it', 'commit and push', or asks to create a commit for finished work."
-argument-hint: "[commit message description]"
+description: Verify and prepare scoped Git commits, feature-branch pushes, or PRs when the user requests those actions. Execute only the requested publication steps.
 ---
 
 # Pre-Push Review
 
-Reviews all code changes, confirms there is valid test/build evidence, and if the gate passes, commits and pushes to GitHub. Tailored for Universe Keyboard (Swift/iOS/SPM/Xcode).
+## 授权与范围
 
-## Workflow
+用户要求本地 commit 就只提交；push、PR、merge、Release 分别核对当前授权。
+“检查能否发布”是审查请求，不自动执行发布。已明确给出的同范围授权持续有效。
+根目录 `AGENTS.md` 和用户的具体范围约束是执行依据，技能不授予额外权限。
 
-### 1. Scan the workspace (run in parallel)
-- `git status` — check for untracked/backup files
-- `git diff --stat` + `git diff --cached --stat` — change summary
-- `git diff --check` — whitespace/conflict-marker sanity check
-- search changed/staged/untracked files for blocked patterns and obvious hazards
+先读取 status、unstaged/staged diff 与 diff --check，确定本任务文件 allowlist。
+保留其他任务的改动；发布前核对实际分支、远端、staged 路径和完整差异。禁止批量 git add -A。
+仅发布当前任务已审查的功能分支；在默认分支上工作时先建立隔离的功能分支。
 
-### 2. Test evidence policy
-Push requires valid verification evidence. **When the user asks to merge, ship, fix CI, or open a PR expected to land on `main`, treat this as a merge gate:** run (or re-confirm green) the **local CI parity suite** from `AGENTS.md` §「本地 CI 门禁」, not only a filtered subset of KeyboardCore tests.
+## 验证
 
-Reuse recent test/build results when all of these are true:
+merge-bound / ship / 修 CI 的本地门禁以 `AGENTS.md` 为准，路径分级以
+`docs/CI_CHANGE_CLASSIFICATION.md` 为准。未知路径不能自行按 docs-only 豁免。
 
-- The exact final code diff was already tested in the current conversation **with coverage matching the change surface** (App tests if App/tests changed).
-- No code, package, project, or test files changed after that verification.
-- The user explicitly asks for a draft/feature-only push without merge, **or** the prior evidence already matches full CI parity for that surface.
-- The prior evidence is reported in the final push summary with command names and results.
+最终内容、基线、依赖、覆盖 target、环境、新鲜度和结果均适用时，按 `docs/AI_WORKFLOW.md`
+复用已通过证据。内容变化、rebase/merge、环境/依赖变化、过期、失败、覆盖不足或用户明确要求
+重跑时重新验证。单纯再次要求 merge 不使完整有效证据失效。
 
-Rerun relevant tests/builds when any of these are true:
+草稿/仅功能分支发布可如实记录缺口，但不能声明可合并。改 App/Extension 测试后不能只跑 Core。
 
-- Code changed after the last successful verification.
-- The branch was rebased, merged, pulled, or otherwise changed since verification.
-- The previous verification failed, was incomplete, or did not cover the changed area (e.g. only KeyboardCore while `UniverseKeyboardTests` changed).
-- The request is separated from the prior verification enough that the evidence may be stale.
-- The user asks for a full pre-push check or merge.
+## 审查与修复
 
-Default verification (prefer CI parity from `AGENTS.md` when merging):
+检查新增敏感文件、备份文件、危险强制操作、文档 Source of Truth 和实际行为变化。
+文档影响使用 `docs/DOCUMENTATION_GOVERNANCE.md`，无影响给出简短理由。
 
-- **Merge-bound / main-bound:** full local CI door in `AGENTS.md` (format + KeyboardCore + RimeBridgeTests + Universe Keyboard scheme test + Debug/Release build).
-- **Narrow WIP push only:** `Packages/KeyboardCore/**` → `swift test --package-path Packages/KeyboardCore`; App/Extension/tests → scheme `Universe Keyboard` `test` on simulator.
-- Destination default: `platform=iOS Simulator,name=iPhone 17 Pro` (match workflow when possible).
+用户已授权修复的本任务检查失败，继续定位并修复、执行相关验证；不要只把可修问题退给用户。
+未授权修复、其他任务失败或真正缺少人类决定时，保留恢复点并报告具体缺口。
+需要暂停时，指出阻塞动作、精确规则文件和适用条款，区分明文要求与自身推断。
 
-If the user says "不用过多测试", "直接推", or equivalent: still refuse to **merge** without green CI-parity when Swift/tests/project changed; for draft push only, reuse recent evidence and state the gap explicitly.
+## 执行与交付
 
-### 3. Review gate
-Check each item before allowing a push:
-
-- `/\.bak$|\.DS_Store|\.env$|credentials/` — block newly changed, staged, or untracked files matching these patterns; do not fail solely because old unrelated tracked files already exist
-- `try!` in production code (`Sources/` not `Tests/`) — warn if unvalidated input
-- Test evidence — must be successful and current under the policy above
-- Staged files — prefer `git add <specific>` over `git add -A`
-- No orphaned `// MARK:` comments or dead code without explanation
-- Documentation governance — review changed behavior and documents against `docs/DOCUMENTATION_GOVERNANCE.md`
-- Source of Truth — block competing copies of durable facts or updates made only to a non-authoritative summary
-- Volatile data — block new hardcoded test counts, line counts, temporary simulator/branch names, unverified performance numbers, or planned status presented as current fact unless snapshot metadata and expiry are present
-- ADR coverage — block durable architecture/product/cross-target/user-data decisions without a new or superseding ADR
-- Debug/release coverage — block changed diagnostic or release behavior when `docs/DEBUGGING.md` or `docs/RELEASE_CHECKLIST.md` should change but did not
-- Plan lifecycle — block new/completed/replaced plans without `Active`/`Archived`/`Superseded`/`Abandoned` metadata and required closure links
-- Technical debt — block newly introduced or repaid material debt when `docs/TECH_DEBT.md` was not updated
-
-When none of these documents changes, the review summary must state why documentation impact is `none`; do not infer that from an empty docs diff.
-
-### 4. If gate passes
-- Craft a commit message matching existing style (brief descriptive title, Co-Authored-By footer)
-- Stage files explicitly by name (never `git add -A`)
-- `git commit` + push the current branch to its upstream; if no upstream exists, push to `origin <current-branch>`
-- Report: commit hash, file count, verification evidence used, push target
-
-### 5. If gate fails
-- Report each issue with `file:line`
-- Do NOT commit or push
-- Tell user what to fix
-
-## Branch Retention And Cleanup Gate
-
-`AGENTS.md` is authoritative for GitHub publication and branch cleanup. Enforce these conditions after publishing:
-
-- A pushed feature branch or an open PR is a recovery checkpoint, not permission to delete the branch.
-- Keep both local and remote feature branches while the PR is unmerged, checks are failing, or remote state cannot be verified.
-- Before cleanup, fetch the current remote state and prove the published work commit is an ancestor of the remote default branch.
-- Synchronize the local default branch before deleting the feature branch. Use safe local deletion; do not force-delete an unmerged branch.
-- Delete the remote feature branch only after rechecking that the remote default branch still contains the work commit.
-- If any reachability or synchronization check fails, stop cleanup and report the preserved recovery checkpoint.
-
-## Project Context
-
-- **KeyboardCore**: SPM at `Packages/KeyboardCore/`, tests via `swift test`
-- **Main app**: `Universe Keyboard/` — Xcode file-system-sync, all Swift files auto-included
-- **Keyboard extension**: `Keyboard/` — UIKit input controller
-- **Commit style**: bilingual zh/EN titles, e.g. "Fix zip format boundary + add regression tests"
-
-## Examples
-
-### Good: work complete, clean push
-```
-User: "push this"
-Agent scans → valid current test evidence, no newly changed .bak/.DS_Store, no issues
-       Commits: "Fix zip parsing off-by-2 bug + [X] new tests"
-       Pushes → reports success with hash 8a05113
-```
-
-### Good: user confirmed, recent tests already passed
-```
-User: "推送到GitHub上吧，不用过多测试了"
-Agent verifies no code changed since the earlier passing `swift test`/build,
-       runs only lightweight status/diff checks,
-       commits and pushes,
-       reports the reused verification evidence.
-```
-
-### Bad: .bak file blocks push
-```
-Agent: "Blocked — Universe Keyboard/Unzip.swift.bak matches exclusion pattern.
-        Remove or .gitignore it before retrying."
-Agent does NOT proceed to commit or push.
-```
-
-### Bad: test failure blocks push
-```
-Agent: "Blocked — ShiftStateTests.testRapidShiftToggle failed.
-        /Tests/ShiftStateTests.swift:122: expected .off, got .capsLock
-        Fix the failing test before retrying."
-```
+用显式文件名单 stage，复查 staged diff 后按授权提交、推功能分支、创建 PR。
+不自动推当前默认分支。报告 commit、目标分支、PR（如有）、验证与未运行项。
+分支清理遵循 `AGENTS.md` 的 fetch/远端默认分支可达性/安全删除门，不因 push 成功而清理。

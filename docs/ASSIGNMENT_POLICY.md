@@ -119,6 +119,21 @@ A reviewed determination that a responsibility is unnecessary for this task. It 
 - does not become the implementation owner by reviewing it;
 - must stop when required evidence or independence is missing.
 
+## Stage Dependency Clarification
+
+Assignment Authority may define separate preparation, independent/device validation and publication stages
+before Ready. Each stage names authorized outputs, Entry Criteria, dependency owner, release evidence and
+stop boundary. Future-stage availability is not a current-stage input unless the Assignment says so.
+All required responsibility fields must nevertheless be complete; UNKNOWN still blocks Ready/Active.
+
+This clarification does not waive existing global Entry Criteria, allow Executor reassignment, or let an
+Executor invent a separate work package to bypass a Gate. Changing those boundaries requires the existing
+Product revalidation process. When one stage blocks, independently authorized work with satisfied Entry
+Criteria can continue; report the blocked dependency explicitly. See [AI Workflow](AI_WORKFLOW.md).
+
+Current user direction is distinguished from historical factual evidence in AI Workflow. Record authorized
+changes and their effective boundary; do not treat conversational intent as proof a prior Gate passed.
+
 ## Required Assignment Fields
 
 Every formal Assignment Record must contain:

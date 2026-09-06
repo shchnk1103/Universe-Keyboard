@@ -1,6 +1,18 @@
 # CHANGELOG
 
+## KOS v0.7.0 adoption (PR #99)
+
+- Pin released Kit v0.7.0 with advisory mode; adopt optional execution hygiene for new tasks, preserving existing Active baselines.
+- Local strict test/build gates passed on Xcode 27 beta + iOS 26.5; earlier host/runtime failures retained in evidence.
+
+
 Change history for Universe Keyboard. Entries are in reverse chronological order.
+
+## Unreleased — KOS execution and instruction repair
+
+- 修正测试/发布技能、当前授权解释和阶段依赖；保留必填 UNKNOWN、独立评审与本地 CI 门。
+- 压缩入口历史摘要，修正 legacy 路由、九键状态和 App Tab 描述；标记过期文档健康基线。
+- 上游 v0.7.0 准备中；本项目 Adopted 仍 v0.6.0 advisory，未迁移既有 Active Assignment。
 
 ## 2026-09-04 — 首次安装自动部署与模糊音默认关合入 `main`
 

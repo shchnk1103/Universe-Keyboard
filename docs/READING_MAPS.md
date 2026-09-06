@@ -174,7 +174,7 @@ Required review: current non-atomic behavior, staging/rollback claims, download 
 
 Ownership: Primary [`RimeBridge`](playbooks/rime-bridge.md) for T9 schema compatibility, effective-scheme selection and deploy/session boundaries; secondary [`KeyboardCore`](playbooks/keyboard-core.md) for layout/readiness settings and T9 input semantics, [`Keyboard UI`](playbooks/keyboard-ui.md) for Extension nine-key chrome, [`Main App UI`](playbooks/main-app-ui.md) for settings/install/verify orchestration and [`Test / Release`](playbooks/test-release.md) for evidence; escalate librime binary changes or deployment-boundary changes to [`Coordinator`](playbooks/coordinator.md).
 
-1. `KEYBOARD_LAYOUT.md` (runtime + nine-key chrome), ADR 0018, closed Assignments `KEYBOARD-LAYOUT-9KEY-001` and `KEYBOARD-LAYOUT-9KEY-UI-001`, closed `KEYBOARD-LAYOUT-9KEY-PINYIN-001`, and active `KEYBOARD-LAYOUT-9KEY-PINYIN-004` / ADR 0023 when changing Path catalog, atomic presentation, or T9 Partial×Path residual-B cursor. For the nine-key `，。？！` pending/cycle contract, also read [`KEYBOARD-LAYOUT-9KEY-PUNCT-001`](assignments/keyboard-layout-9key-punct-001.md) and [`PD-KEYBOARD-LAYOUT-9KEY-PUNCT-001`](product-decisions/KEYBOARD-LAYOUT-9KEY-PUNCT-001-authorization.md); that work is `Closed`（PR [#75](https://github.com/shchnk1103/Universe-Keyboard/pull/75) merged）with ADR 0029 `Accepted`.
+1. `KEYBOARD_LAYOUT.md` (runtime + nine-key chrome), ADR 0018, closed Assignments `KEYBOARD-LAYOUT-9KEY-001` and `KEYBOARD-LAYOUT-9KEY-UI-001`, closed `KEYBOARD-LAYOUT-9KEY-PINYIN-001`, and closed `KEYBOARD-LAYOUT-9KEY-PINYIN-004` / ADR 0023 when changing Path catalog, atomic presentation, or T9 Partial×Path residual-B cursor. For the nine-key `，。？！` pending/cycle contract, also read [`KEYBOARD-LAYOUT-9KEY-PUNCT-001`](assignments/keyboard-layout-9key-punct-001.md) and [`PD-KEYBOARD-LAYOUT-9KEY-PUNCT-001`](product-decisions/KEYBOARD-LAYOUT-9KEY-PUNCT-001-authorization.md); that work is `Closed`（PR [#75](https://github.com/shchnk1103/Universe-Keyboard/pull/75) merged）with ADR 0029 `Accepted`.
 2. ADR 0018, then ADR 0001, 0003, 0004 and 0006. For Path/Partial residual-B: ADR 0023 + [`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md) + [`architecture/partial-commit.md`](architecture/partial-commit.md) §T9 Path residual-B.
 3. `architecture/shared-container-and-rime-lifecycle.md` and `architecture/input-pipeline-and-marked-text.md`.
 4. `RIME_SCHEME_MANAGEMENT.md`, `UI_STYLE_GUIDE.md`, `DEBUGGING.md` and `RELEASE_CHECKLIST.md`.
@@ -186,7 +186,7 @@ Required review: T9 Spike evidence against the pinned librime, base scheme vs ef
 
 1. `PROJECT_CONTEXT.md` KeyboardCore boundary.
 2. The domain architecture source for the affected action/state.
-3. `.claude/skills/keyboard-test-writer/SKILL.md` and `REFERENCE.md`.
+3. `.claude/skills/keyboard-test-writer/SKILL.md`; load its references only for the affected test target.
 4. Applicable ADRs.
 
 Required review: state ownership, `KeyboardAction -> KeyboardEffect`, MainActor constraints, focused unit tests and documentation impact.

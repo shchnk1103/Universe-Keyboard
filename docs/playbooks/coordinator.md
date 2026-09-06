@@ -69,7 +69,7 @@ Own task framing, agent boundaries, evidence synthesis, change-scope control and
 
 ## Escalation Rules
 
-Stop and ask the human owner when authority, product intent, user-data risk or an irreversible external action is unresolved. Hand domain diagnosis to the relevant playbook when a conclusion depends on expertise the Coordinator has not established.
+Preserve current explicit user authorization. Stop dependent actions and ask the human owner when authority, product intent, user-data risk or an irreversible external action is unresolved; independently authorized work with satisfied Entry Criteria may continue under [AI Workflow](../AI_WORKFLOW.md). Hand domain diagnosis to the relevant playbook when a conclusion depends on expertise the Coordinator has not established.
 
 ## Documentation Impact Rules
 
