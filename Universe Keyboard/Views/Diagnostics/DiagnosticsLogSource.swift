@@ -424,6 +424,7 @@ enum DiagnosticsEventDisplayFormatter {
             return deliveryPrefix(event.context)
                 + " phase=\(event.phase.rawValue) result=\(event.result.rawValue)"
                 + deliveryAttemptSourceHost(event.attempt, event.source, event.host)
+                + (event.probeFailure.map { " probe_failure=\($0.rawValue)" } ?? "")
         case .integrityFailed(let event):
             let observation: String
             switch event.observation {

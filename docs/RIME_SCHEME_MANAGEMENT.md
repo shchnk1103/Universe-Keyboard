@@ -201,3 +201,18 @@ When adding a new open-source scheme:
 - Keep global preferences, such as candidate count and simplification, outside individual scheme details unless the preference is genuinely scheme-specific.
 - If the scheme has user dictionary learning support, connect it through the per-scheme candidate-learning model documented in `docs/RIME_USER_DICTIONARY.md`.
 - Add tests for catalog metadata, version/update comparison, install/uninstall cleanup, and any special skip rules before exposing the scheme in the UI.
+
+## Pinned source and probe failures
+
+Rime Ice uses reviewed `2026.06.30/full.zip` assets from upstream GitHub and its NJU mirror,
+not the moving nightly alias. Both source archives are pinned by byte count and SHA-256;
+Lua-enabled/disabled installed-content fingerprints remain independently checked after
+production post-processing. A dated upstream release is not guaranteed immutable by GitHub;
+if it is replaced, verification must fail closed until a reviewed catalog update.
+
+The bounded HEAD race reports finite source-local rejection reasons (`transport`, `non_http`,
+`http_status`, `redirect_host`, `archive_size`). A changed Content-Length is classified as
+`source_artifact_changed` when no eligible alternative succeeds, including mixed changed and
+unreachable sources. A successful alternative still undergoes full archive and staged checks.
+Cancellation does not become a source failure. Diagnostics contain only reviewed IDs/reasons,
+not raw URLs or transport exception strings. Legacy diagnostic identities remain readable.

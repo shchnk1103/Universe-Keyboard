@@ -1,19 +1,43 @@
 import CryptoKit
 import Foundation
+import KeyboardCore
+
+/// The probe is advisory reachability metadata; archive verification remains mandatory.
+nonisolated enum SchemaSourceProbeResult: Equatable, Sendable {
+    case available
+    case rejected(DiagnosticEvent.SchemeSourceProbeFailure)
+}
 
 nonisolated protocol SchemaSourceSelecting: Sendable {
+    func selectSource(from variants: [RimeSchemeSourceVariant], preferredSourceID: String?) async throws
+        -> RimeSchemeSourceVariant
     func selectSource(
-        from variants: [RimeSchemeSourceVariant],
-        preferredSourceID: String?
+        from variants: [RimeSchemeSourceVariant], preferredSourceID: String?,
+        onProbe: @escaping @Sendable (RimeSchemeSourceVariant, SchemaSourceProbeResult) -> Void
     ) async throws -> RimeSchemeSourceVariant
+}
+
+extension SchemaSourceSelecting {
+    func selectSource(
+        from variants: [RimeSchemeSourceVariant], preferredSourceID: String?,
+        onProbe: @escaping @Sendable (RimeSchemeSourceVariant, SchemaSourceProbeResult) -> Void
+    ) async throws -> RimeSchemeSourceVariant {
+        try await selectSource(from: variants, preferredSourceID: preferredSourceID)
+    }
 }
 
 nonisolated protocol SchemaSourceProbing: Sendable {
     func isReachable(_ variant: RimeSchemeSourceVariant) async throws -> Bool
+    func probeSource(_ variant: RimeSchemeSourceVariant) async throws -> SchemaSourceProbeResult
 }
 
-/// Performs a bounded, header-only reachability race after user download intent.
-/// It does not infer location or run a separate payload speed test.
+extension SchemaSourceProbing {
+    func probeSource(_ variant: RimeSchemeSourceVariant) async throws -> SchemaSourceProbeResult {
+        try await isReachable(variant) ? .available : .rejected(.transport)
+    }
+}
+
+/// At most two header-only probes race; cancelled losers never become failures.
 nonisolated struct URLSessionSchemaSourceSelector: SchemaSourceSelecting {
     private let probe: any SchemaSourceProbing
     private let hedgeDelayNanoseconds: UInt64
@@ -26,70 +50,83 @@ nonisolated struct URLSessionSchemaSourceSelector: SchemaSourceSelecting {
         self.hedgeDelayNanoseconds = hedgeDelayNanoseconds
     }
 
+    func selectSource(from variants: [RimeSchemeSourceVariant], preferredSourceID: String?) async throws
+        -> RimeSchemeSourceVariant
+    {
+        try await selectSource(from: variants, preferredSourceID: preferredSourceID, onProbe: { _, _ in })
+    }
+
     func selectSource(
-        from variants: [RimeSchemeSourceVariant],
-        preferredSourceID: String?
+        from variants: [RimeSchemeSourceVariant], preferredSourceID: String?,
+        onProbe: @escaping @Sendable (RimeSchemeSourceVariant, SchemaSourceProbeResult) -> Void
     ) async throws -> RimeSchemeSourceVariant {
         var ordered = variants
-        if let preferredSourceID,
-            let preferredIndex = ordered.firstIndex(where: { $0.id == preferredSourceID })
-        {
-            ordered.insert(ordered.remove(at: preferredIndex), at: 0)
+        if let preferredSourceID, let index = ordered.firstIndex(where: { $0.id == preferredSourceID }) {
+            ordered.insert(ordered.remove(at: index), at: 0)
         }
         guard !ordered.isEmpty else { throw DownloadError.allSourcesUnavailable }
-
-        // The product contract caps source probing at two concurrent requests.
-        // Current manifests contain exactly two variants; keeping the cap here
-        // prevents a future manifest expansion from silently increasing traffic.
-        let candidates = Array(ordered.prefix(2))
-
-        return try await withThrowingTaskGroup(of: RimeSchemeSourceVariant?.self) { group in
-            for (index, variant) in candidates.enumerated() {
+        return try await withThrowingTaskGroup(of: (RimeSchemeSourceVariant, SchemaSourceProbeResult).self) { group in
+            for (index, variant) in ordered.prefix(2).enumerated() {
                 group.addTask {
-                    if index > 0 {
-                        try await Task.sleep(
-                            nanoseconds: self.hedgeDelayNanoseconds * UInt64(index)
-                        )
-                    }
-                    return try await self.probe.isReachable(variant) ? variant : nil
+                    if index > 0 { try await Task.sleep(nanoseconds: self.hedgeDelayNanoseconds * UInt64(index)) }
+                    let result = try await self.probe.probeSource(variant)
+                    try Task.checkCancellation()
+                    return (variant, result)
                 }
             }
-
-            while let candidate = try await group.next() {
-                if let candidate {
+            var sawChangedArtifact = false
+            while let (variant, result) = try await group.next() {
+                try Task.checkCancellation()
+                onProbe(variant, result)
+                if result == .available {
                     group.cancelAll()
-                    return candidate
+                    return variant
                 }
+                if result == .rejected(.archiveSize) { sawChangedArtifact = true }
             }
-            throw DownloadError.allSourcesUnavailable
+            // Mixed unavailable/changed sources still must not be presented as a network-only failure.
+            throw sawChangedArtifact ? DownloadError.sourceArtifactChanged : DownloadError.allSourcesUnavailable
         }
     }
 }
 
 nonisolated struct URLSessionHEADSchemaSourceProbe: SchemaSourceProbing {
+    private let response: @Sendable (URLRequest) async throws -> URLResponse
+
+    init(
+        response: @escaping @Sendable (URLRequest) async throws -> URLResponse = { request in
+            let (_, response) = try await URLSession.shared.data(for: request)
+            return response
+        }
+    ) {
+        self.response = response
+    }
+
     func isReachable(_ variant: RimeSchemeSourceVariant) async throws -> Bool {
+        try await probeSource(variant) == .available
+    }
+
+    func probeSource(_ variant: RimeSchemeSourceVariant) async throws -> SchemaSourceProbeResult {
         var request = URLRequest(url: variant.downloadURL)
         request.httpMethod = "HEAD"
         request.timeoutInterval = 5
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let response = try await response(request)
             try Task.checkCancellation()
-            guard let httpResponse = response as? HTTPURLResponse,
-                (200...299).contains(httpResponse.statusCode),
-                let finalHost = httpResponse.url?.host?.lowercased(),
-                variant.allowedRedirectHosts.contains(finalHost)
-            else {
-                return false
+            guard let http = response as? HTTPURLResponse else { return .rejected(.nonHTTP) }
+            guard (200...299).contains(http.statusCode) else { return .rejected(.httpStatus) }
+            guard let host = http.url?.host?.lowercased(), variant.allowedRedirectHosts.contains(host) else {
+                return .rejected(.redirectHost)
             }
-
-            let contentLength = response.expectedContentLength
-            return contentLength <= 0 || contentLength == variant.expectedByteCount
+            let count = response.expectedContentLength
+            guard count <= 0 || count == variant.expectedByteCount else { return .rejected(.archiveSize) }
+            return .available
         } catch is CancellationError {
             throw CancellationError()
         } catch {
-            return false
+            try Task.checkCancellation()
+            return .rejected(.transport)
         }
     }
 }

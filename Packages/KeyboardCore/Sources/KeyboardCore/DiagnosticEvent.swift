@@ -318,11 +318,13 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     }
 
     public enum SchemeArtifactIdentity: String, Codable, Sendable {
+        case rimeIce20260630675D23B0 = "rime_ice_20260630_675d23b0"
         case rimeIceNightlyF60AA4F3 = "rime_ice_nightly_f60aa4f3"
         case wanxiang1759CNB9BFCGitHub73F8 = "wanxiang_17_5_9_cnb9bfc_github73f8"
     }
 
     public enum SchemeStagedIdentity: String, Codable, Sendable {
+        case rimeIce20260630Plan1Post1 = "rime_ice_20260630_plan1_post1"
         case rimeIceNightlyPlan1Post1 = "rime_ice_nightly_plan1_post1"
         case wanxiang1759Plan1Post1 = "wanxiang_17_5_9_plan1_post1"
     }
@@ -380,6 +382,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     public enum SchemeDeliveryTerminalFailure: String, Codable, Sendable {
         case transport
         case allSourcesUnavailable = "all_sources_unavailable"
+        case sourceArtifactChanged = "source_artifact_changed"
         case allSourcesArchiveSize = "all_sources_archive_size"
         case allSourcesArchiveDigest = "all_sources_archive_digest"
         case allSourcesMixedIntegrity = "all_sources_mixed_integrity"
@@ -467,6 +470,15 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         }
     }
 
+    /// Bounded probe metadata only: never include a raw URL, error string or input text.
+    public enum SchemeSourceProbeFailure: String, Codable, Sendable {
+        case transport
+        case nonHTTP = "non_http"
+        case httpStatus = "http_status"
+        case redirectHost = "redirect_host"
+        case archiveSize = "archive_size"
+    }
+
     public struct SchemeDeliveryPhaseEvent: Codable, Sendable, Equatable {
         public let context: SchemeDeliveryContext
         public let attempt: SchemeDeliveryAttempt?
@@ -474,6 +486,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         public let host: SchemeHost?
         public let phase: SchemeDeliveryPhase
         public let result: SchemeDeliveryResult
+        public let probeFailure: SchemeSourceProbeFailure?
 
         public init(
             context: SchemeDeliveryContext,
@@ -481,7 +494,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             source: SchemeSource?,
             host: SchemeHost?,
             phase: SchemeDeliveryPhase,
-            result: SchemeDeliveryResult
+            result: SchemeDeliveryResult,
+            probeFailure: SchemeSourceProbeFailure? = nil
         ) {
             self.context = context
             self.attempt = attempt
@@ -489,6 +503,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             self.host = host
             self.phase = phase
             self.result = result
+            self.probeFailure = probeFailure
         }
     }
 
@@ -619,13 +634,17 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         var isValid: Bool {
             switch self {
             case .phaseChanged(let event):
+                guard event.probeFailure == nil || (event.phase == .selecting && event.result == .failed) else {
+                    return false
+                }
                 switch event.phase {
                 case .selecting:
                     // Selection starts without a source and completes with one,
                     // before an archive attempt exists.
                     return event.attempt == nil && event.host == nil
                         && ((event.result == .started && event.source == nil)
-                            || (event.result == .succeeded && event.source != nil))
+                            || (event.result == .succeeded && event.source != nil)
+                            || (event.result == .failed && event.source != nil && event.probeFailure != nil))
                 case .downloading:
                     return event.attempt != nil && event.source != nil
                         && (event.result == .started || event.result == .succeeded)

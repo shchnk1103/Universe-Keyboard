@@ -78,9 +78,23 @@ extension SchemaManager {
             let preferredSourceID = entry.storage.sourceVariant.flatMap {
                 settings.string(forKey: $0)
             }
+            let selectionContext = diagnosticContext
+            let diagnostics = deliveryDiagnostics
             let selectedSource = try await sourceSelector.selectSource(
                 from: manifest.sourceVariants,
-                preferredSourceID: preferredSourceID
+                preferredSourceID: preferredSourceID,
+                onProbe: { source, result in
+                    guard let context = selectionContext,
+                        case .rejected(let reason) = result,
+                        let sourceID = SchemeDeliveryDiagnosticMapper.source(source.id)
+                    else { return }
+                    diagnostics.record(
+                        .phaseChanged(
+                            .init(
+                                context: context, attempt: nil, source: sourceID, host: nil,
+                                phase: .selecting, result: .failed, probeFailure: reason
+                            )))
+                }
             )
             try ensureActive(operationID)
             recordPhase(
@@ -683,6 +697,8 @@ extension SchemaManager {
             return .invalidManifest
         case .allSourcesUnavailable:
             return .allSourcesUnavailable
+        case .sourceArtifactChanged:
+            return .sourceArtifactChanged
         case .allSourcesFailedIntegrity(let aggregate):
             switch aggregate {
             case .archiveSize: return .allSourcesArchiveSize
