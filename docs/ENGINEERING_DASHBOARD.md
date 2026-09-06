@@ -10,11 +10,11 @@
 
 ## KOS-ASTRA-UPGRADE-001 — candidate preparation
 
-- [Assignment](assignments/kos-astra-upgrade-001.md): Blocked for local App parity; independent review findings closed.
+- [Assignment](assignments/kos-astra-upgrade-001.md): Completed implementation/local gates; adoption delta review and PR merge pending.
 - [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs prepared; no merge/Release/adoption claim.
-- Adopted pin remains v0.6.0 advisory; v0.7.0 is an upstream candidate.
+- This PR adopts released v0.7.0 advisory; default-branch publication pending #99 merge.
 
-## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory
+## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory (historical)
 
 - **Lifecycle:** `Closed` — PR #96 merged `41c0dc5`
 - **Authority:** [`Assignment`](assignments/kos-upgrade-uk-003.md) · [`PD`](product-decisions/KOS-UPGRADE-UK-003-authorization.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-003-product-gate.md)
@@ -49,7 +49,7 @@
 
 - **Lifecycle:** `KOS-UPGRADE-UK-001` `Reviewed` — Product Gate accepted；PR #84 merged `e7da77e`
 - **Authority:** [`PD`](product-decisions/KOS-UPGRADE-UK-001-authorization.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-001-product-gate.md) · [`Assignment`](assignments/kos-upgrade-uk-001.md)
-- **Pin:** historical `v0.5.0`; current Adopted is UK-003 `v0.6.0` advisory
+- **Pin:** historical `v0.5.0`; current adoption is recorded in [UPGRADE_STATUS](kos/UPGRADE_STATUS.md)
 - **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
 - **Non-claims:** not `required`; not diagnostics implementation; not TestFlight upload
 - **First workflow:** `DIAGNOSTICS-VIEWER-LOAD-001` `Closed` — Human Product Gate Passed；PR #85 merged `420322b`。Human 的 `<100 MB` 是本次真机观察，不是新内存合同；不开 `required`

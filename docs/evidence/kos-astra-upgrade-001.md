@@ -1,5 +1,8 @@
 # KOS-ASTRA-UPGRADE-001 verification record
 
+Current local gate update: all required local test/build commands passed on Xcode 27 beta/iOS 26.5; [evidence](../evidence/kos-astra-local-gate-2026-09-06.md). Earlier local-blocked statements below are historical. Adoption delta review and final publication remain separately tracked.
+
+
 Current review status: Architecture R2 has no blockers; Quality R3 Q-001 is closed by [independent R4](../reviews/KOS-EXECUTION-001-quality-r4.md). Earlier unavailable/unperformed review statements below describe historical checkpoints. Real efficiency measurement remains unperformed; local App parity remains blocked. Frozen object/hash bindings were recomputed successfully by the executor.
 
 - Date: 2026-09-05 Asia/Shanghai.

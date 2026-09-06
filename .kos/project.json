@@ -138,8 +138,8 @@
     "universe_keyboard": {
       "kos_kit": {
         "upstream_repository": "shchnk1103/kos-agent-kit",
-        "adopted_version": "v0.6.0",
-        "adopted_commit": "a16c93281718f97cb580935c5043562c39f3a1d1",
+        "adopted_version": "v0.7.0",
+        "adopted_commit": "f7f4dad6750b59dc827c1366fcd276447b2820b2",
         "record_envelopes_mode": "advisory"
       }
     }

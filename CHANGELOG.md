@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## KOS v0.7.0 adoption (PR #99)
+
+- Pin released Kit v0.7.0 with advisory mode; adopt optional execution hygiene for new tasks, preserving existing Active baselines.
+- Local strict test/build gates passed on Xcode 27 beta + iOS 26.5; earlier host/runtime failures retained in evidence.
+
+
 Change history for Universe Keyboard. Entries are in reverse chronological order.
 
 ## Unreleased — KOS execution and instruction repair

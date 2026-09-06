@@ -47,7 +47,7 @@ Counts are derived output. Do not copy them into README, PROJECT_CONTEXT or inde
 ## Current Baseline Status
 
 The 2026-08-28 snapshot expired on the subsequent Kit/Profile upgrade. It remains historical evidence;
-its v0.5.0 observations do not establish current v0.6.0 health. The current bounded instruction audit is
+its v0.5.0 observations do not establish current Kit health. The current bounded instruction audit is
 [KOS-ASTRA-UPGRADE-001](assignments/kos-astra-upgrade-001.md), with [results](evidence/kos-astra-upgrade-001.md).
 Full independent dry-runs of every domain playbook and real task efficiency comparisons remain unmeasured.
 

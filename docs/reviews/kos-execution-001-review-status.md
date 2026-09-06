@@ -1,5 +1,8 @@
 # KOS-EXECUTION-001 independent review status
 
+Current local gate update: all required local test/build commands passed on Xcode 27 beta/iOS 26.5; [evidence](../evidence/kos-astra-local-gate-2026-09-06.md). Earlier local-blocked statements below are historical. Adoption delta review and final publication remain separately tracked.
+
+
 ## Current outcome
 
 Architecture Round 2: no blocking findings (Kit ad61c21 / UK 801df5b). Quality Round 3: 12 tabletop scenes checked, Q-001 evidence-binding finding; Round 4 closed Q-001 against record-only corrections through Kit 329bc82 / UK efd895b. Executor independently recomputed both tree IDs and binary-diff hashes. These are static reviews, not test reruns or Human Gate approvals. Actual token/latency improvement remains unmeasured. See [incremental conclusion](KOS-EXECUTION-001-quality-r4.md).
