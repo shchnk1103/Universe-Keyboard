@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-09-07 — P0 Ice/builtin `default.yaml` 冲突复现
+
+- 生产雾凇安装计划会覆盖 Prelude `default.yaml`；存在 builtin receipt 时再次 `install()` 抛 `byteCountMismatch`，且不回滚已覆盖文件。
+- 仅增加安装器容器根测试接缝；不放宽完整性校验，不进入恢复实现。
+
 ## 2026-09-07 — 多方案资源归属计划（docs-only）
 
 - 在 `SCHEME-DELIVERY-SOURCE-STATE-001` 记录共存/部署恢复规划，并新增 Proposed ADR 0034。

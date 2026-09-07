@@ -69,8 +69,8 @@ Codex 在额度耗尽前留下未跟踪草稿。本修订补齐治理缺口后�
 
 ### 2.3 尚未确认
 
-- 真机异常的具体 `InstallationError`（checksum / byteCount / resourceSet / manifest / fileOperation 等）。
-- 覆盖冲突在真实生产安装链上的完整复现。
+- 真机是否发出 `.byteCountMismatch`（受控链已复现该类型；设备日志只有 `resource_preparation` failed）。
+- 覆盖冲突在真实生产安装链上的完整复现：已在注入容器根的生产 `installSchemaFiles` + `install()` 上复现；未走 App Group `prepareDirectories` 全路径。
 - 此前设备是否已有有效 builtin generation/receipt。
 - 其他同名资源、OpenCC、编译产物冲突。
 - 所有升级/卸载/回滚后果。
@@ -133,13 +133,14 @@ RIME 允许替换配置，不等于允许本 App 的多个安装器争用同一�
 
 ### P0：冻结现场与复现（规划完成后的第一项技术工作）
 
-入口：Human 明确授权 P0。本规划提交 **不是** P0 授权。
+入口：Human 明确授权 P0。已于 `2026-09-07` 授权并完成受控复现，见 [P0 evidence](../evidence/scheme-delivery-source-state-001-p0-2026-09-07.md)。不得把 P0 完成当成 P1/P2 授权。
 
 - 保存工作树 checkpoint（用户授权后再 commit/push）；记录 HEAD、base、代码 diff hash、归档 hash 与环境。
 - 在临时根建立有效 builtin generation/receipt，通过真实雾凇安装逻辑写入同根，再调用生产使用的验证/准备步骤，捕获受控错误类型。
 - 对照：仅内置、内置+万象、无 prior receipt、重复部署。若现有 API 绑定 App Group，仅增加可测试的路径注入接缝，生产路径保持不变，不另写一套假安装器证明自己。
 - 必要时为 `resource_preparation` 加有限子阶段/`InstallationError` 分类；不输出 `localizedDescription`、路径或 YAML。错误分类失败仍保留 unknown，不猜测。未提交诊断增量可在另授权后复用或重做，不得从记忆补代码。
 - 出口：可以稳定复现并解释失败机制；否则停留调查，不修改校验或来源 pin。
+- P0 结果：有 builtin receipt 时，生产 Ice 计划写入 `default.yaml` 后 `install()` 抛 `.byteCountMismatch`，污染文件不被回滚。无 receipt 时可被官方字节覆盖回来。万象计划跳过该文件。Ice 卸载不删除它。真机仍未发出该枚举。
 
 ### P1：依赖审计与 ADR 决策
 
@@ -217,7 +218,7 @@ test -f docs/plans/scheme-resource-ownership-and-coexistence-plan.md
 test -f docs/architecture/decisions/0034-multi-scheme-resource-ownership.md
 ```
 
-**第一个技术工作包是 P0 的生产路径复现，不是删除 `default.yaml` 或关校验。** 当前只完成规划；不凭计划自行进入 P2/P3。
+**P0 已完成。** 不要删除 `default.yaml` 或关校验。不凭计划自行进入 P2/P3。
 
 ## 9. 停止条件
 

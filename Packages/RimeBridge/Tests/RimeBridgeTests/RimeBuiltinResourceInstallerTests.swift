@@ -31,6 +31,48 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         )
     }
 
+    func testRedeployFailsClosedWhenSharedDefaultYamlNoLongerMatchesReceipt() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
+        _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+
+        let defaultURL = rimeRoot.appendingPathComponent("shared/default.yaml")
+        let official = try Data(contentsOf: defaultURL)
+        let overwritten = Data(repeating: 0x61, count: official.count + 13_249)
+        try overwritten.write(to: defaultURL)
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .byteCountMismatch
+            )
+        }
+        // Validation runs before the installer's mutation list exists, so the
+        // foreign default.yaml is not rolled back.
+        XCTAssertEqual(try Data(contentsOf: defaultURL), overwritten)
+    }
+
+    func testRedeployRestoresDefaultYamlWhenNoPriorReceiptExists() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
+        _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+
+        let receiptURL = rimeRoot.appendingPathComponent(
+            RimeBuiltinResourceInstaller.resourceReceiptFileName
+        )
+        let defaultURL = rimeRoot.appendingPathComponent("shared/default.yaml")
+        let official = try Data(contentsOf: defaultURL)
+        try FileManager.default.removeItem(at: receiptURL)
+        try Data(repeating: 0x61, count: 14_842).write(to: defaultURL)
+
+        _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+        XCTAssertEqual(try Data(contentsOf: defaultURL), official)
+    }
+
     func testCorruptedBundledResourceFailsBeforeLastGoodRuntimeChanges() throws {
         let fixture = try makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }

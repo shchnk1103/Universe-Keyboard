@@ -21,7 +21,7 @@
 ## 领域权威
 
 - [键盘布局与九键](KEYBOARD_LAYOUT.md) · [方案管理](RIME_SCHEME_MANAGEMENT.md)
-- 方案下载来源状态 / 多方案资源归属（Active，规划切片完成；P0 未授权）：[`SCHEME-DELIVERY-SOURCE-STATE-001`](assignments/scheme-delivery-source-state-001.md) · [`plan`](plans/scheme-resource-ownership-and-coexistence-plan.md) · Proposed [`ADR 0034`](architecture/decisions/0034-multi-scheme-resource-ownership.md)
+- 方案下载来源状态 / 多方案资源归属（Active，P0 复现完成；P1 未授权）：[`SCHEME-DELIVERY-SOURCE-STATE-001`](assignments/scheme-delivery-source-state-001.md) · [`plan`](plans/scheme-resource-ownership-and-coexistence-plan.md) · [`P0 evidence`](evidence/scheme-delivery-source-state-001-p0-2026-09-07.md) · Proposed [`ADR 0034`](architecture/decisions/0034-multi-scheme-resource-ownership.md)
 - [模糊音](RIME_FUZZY_PINYIN.md) · [用户词典](RIME_USER_DICTIONARY.md) · [同步](RIME_SYNC.md)
 - [输入智能](TYPING_INTELLIGENCE.md) · [纠错](TYPO_CORRECTION.md)
 - [纠错 Benchmark](TYPO_BENCHMARK.md) · [Registry](TYPO_BENCHMARK_REGISTRY.md) · [V2 Registry](TYPO_BENCHMARK_REGISTRY_V2.md)

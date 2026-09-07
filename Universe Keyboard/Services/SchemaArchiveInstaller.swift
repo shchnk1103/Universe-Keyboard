@@ -32,10 +32,14 @@ protocol SchemaArchiveInstalling: AnyObject {
 final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
     private let appGroupID: String
     private let fileManager: FileManager
+    /// Tests inject a container root so production copy/uninstall can run
+    /// without the App Group. The production initializer leaves this nil.
+    private let containerURLOverride: URL?
 
-    init(appGroupID: String, fileManager: FileManager = .default) {
+    init(appGroupID: String, fileManager: FileManager = .default, containerURL: URL? = nil) {
         self.appGroupID = appGroupID
         self.fileManager = fileManager
+        self.containerURLOverride = containerURL
     }
 
     func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
@@ -154,7 +158,10 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
     }
 
     private func containerURL() -> URL? {
-        fileManager.containerURL(forSecurityApplicationGroupIdentifier: appGroupID)
+        if let containerURLOverride {
+            return containerURLOverride
+        }
+        return fileManager.containerURL(forSecurityApplicationGroupIdentifier: appGroupID)
     }
 
     private func sharedDirectory() -> URL? {
