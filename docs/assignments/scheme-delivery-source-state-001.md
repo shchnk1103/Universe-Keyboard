@@ -7,10 +7,10 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | P4 活跃方案卸载 fail-closed 工程切片已实现（本地未推送）。Quality 与 Wanxiang P4 / 升级合同仍待完成，ADR 0034 仍 Proposed |
-| Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no device-unique root-cause claim, no Device-attested payload identity |
-| Next handoff / decision | Independent Quality review；Human 已冻结活跃卸载回退合同（Luna 部署成功后再删文件，失败保留原方案）。Wanxiang 升级/卸载与 PR #100 merge / TestFlight 仍单独授权 |
-| Residuals | 真机未发出 `InstallationError`；无 App/Extension UUID·SHA；无万象复测；Wanxiang P4 升级/卸载未闭合；Ice Lua `dofile` 动态引用未闭合；backup cleanup 仍 best-effort；活跃卸载尚未真机 Product Gate |
+| Current Phase | P4 活跃卸载 fail-closed 工程已推送（`e213a25` + CI `eed453d`/`afa0c0e`，CI green）；Human-attested 活跃卸载烟雾已记录。Quality 与 Wanxiang P4 / 升级合同仍待完成，ADR 0034 仍 Proposed |
+| Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no device-unique root-cause claim, no Device-attested payload identity, no Product Gate Passed |
+| Next handoff / decision | Independent Quality review；Wanxiang 升级/卸载与 PR #100 merge / TestFlight / 真机 Product Gate 仍单独授权 |
+| Residuals | 真机未发出 `InstallationError`；无 App/Extension UUID·SHA；无万象复测；Wanxiang P4 升级/卸载未闭合；Ice Lua `dofile` 动态引用未闭合；backup cleanup 仍 best-effort；活跃卸载失败回滚未真机测；活跃卸载尚未真机 Product Gate |
 
 ## Authority and scope
 
@@ -111,3 +111,11 @@ Independent Quality then found one P1: a present-but-unreadable builtin resource
 Human authorized the active-scheme uninstall contract: switch to builtin `luna_pinyin` without treating deferred deploy as success; await successful Luna deployment before removing target files; then stage → commit scheme files (rollback on failure); any failure keeps the original scheme selection and files.
 
 Engineering: `SchemaManager.uninstallSchema` acquires the commit lease, deploys Luna under that lease when the target is active, stages removals, and only then commits. Restore redeploy runs before lease release. Unit coverage includes active success, Luna deploy failure, staging failure, and non-active uninstall. ADR 0034 remains Proposed. Wanxiang upgrade/uninstall and device Product Gate are not closed by this slice.
+
+## 2026-09-07 Human device (P4 active uninstall)
+
+Human Product Owner observed active Ice uninstall: first switches to Luna; no error; Luna input works after; Settings shows Ice as 未安装. Failure rollback was **not** tested.
+
+Evidence: [`scheme-delivery-source-state-001-p4-device-2026-09-07.md`](../evidence/scheme-delivery-source-state-001-p4-device-2026-09-07.md). Grade: **Human-attested ONLY** — not Device-attested, not Product Gate Passed, not ADR Accepted, not merge/TestFlight.
+
+Engineering HEAD at report: `afa0c0ef8caca04579f8f0dfa1b1122110463557` (P4 `e213a25`; CI fixes `eed453d`, `afa0c0e`; CI green).

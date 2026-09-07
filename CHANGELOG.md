@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-09-07 — Human-attested P4 活跃卸载烟雾
+
+- Human 报告：活跃雾凇卸载先切 Luna、无报错、之后 Luna 可输入，设置显示雾凇未安装；失败回滚未测。
+- 证据等级 Human-attested ONLY，不是 Device-attested / Product Gate / ADR Accepted / merge / TestFlight。
+
 ## 2026-09-07 — P4 活跃方案卸载 fail-closed
 
 - 卸载当前活跃已下载方案时，先切换并完成内置 `luna_pinyin` 部署，再 stage→commit 删除目标文件；任一步失败保留原方案选择与文件。
