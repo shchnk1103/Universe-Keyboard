@@ -6,10 +6,10 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Current Phase | Pinned Rime Ice artifact verification and scheme-scoped failure repair |
+| Lifecycle | Completed |
+| Current Phase | Implementation, automated gates and independent static reviews complete |
 | Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check |
-| Next handoff / decision | Independent review and local/hosted checks, then Human device and merge decisions |
+| Next handoff / decision | Human candidate-device retest and final merge decision |
 | Residuals | Device retest pending |
 
 ## Authority and scope
@@ -36,3 +36,7 @@ Entry: explicit repair authorization, isolated baseline 4c9f424, proven HEAD len
 Exit: exact source/digest/staged binding evidence; negative/fallback/cancel/UI regression tests; local strict CI-equivalent gates; independent review; human retest handoff.
 Stop: unverified artifact origin, staged mismatch, unsafe fallback, source contract expansion, scope conflict or failed cleanup. Do not waive these to make tests green.
 Handoff Target: Human Product Owner. Revalidate on artifact/pin, processing plan, schema identity, environment, evidence or scope change.
+
+## Engineering handoff
+
+[PR #100](https://github.com/shchnk1103/Universe-Keyboard/pull/100), [evidence](../evidence/scheme-delivery-source-state-001.md), [independent review](../reviews/scheme-delivery-source-state-001.md). Engineering completion is not Product acceptance or Closed; physical-device retest and merge/TestFlight authority remain with Human Product Owner.
