@@ -222,7 +222,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         ) { error in
             XCTAssertEqual(
                 error as? RimeBuiltinResourceInstaller.InstallationError,
-                .byteCountMismatch
+                .checksumMismatch
             )
         }
     }
