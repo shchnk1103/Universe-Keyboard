@@ -12,7 +12,7 @@
 
 内置 Luna 按 ADR 0033 把 Prelude `default.yaml` 当作官方不可变闭包的一部分，部署前按 receipt 校验字节。可下载雾凇的 `rime-ice-plan-1` 允许安装同名 `default.yaml`；万象 `wanxiang-plan-1` 跳过该文件。雾凇卸载列表不含 `default.yaml`，因此覆盖一旦发生，卸载也不会自动恢复官方字节。
 
-真机已定位 `resource_preparation` failed（operation `4169e168-de24-4e81-916a-e8d1f4d4a572`），但具体 `InstallationError` 尚待生产路径复现。雾凇 schema 仍 `__include` / `import_preset` 引用 `default`；T9 同样依赖。简单跳过该文件不保证上游行为。
+P0 已在生产 `installSchemaFiles` + `install()` 上复现：有 builtin receipt 时 Ice 覆盖 `default.yaml` 导致 `.byteCountMismatch`。P1 清单见 [`scheme-delivery-source-state-001-p1-2026-09-07.md`](../../evidence/scheme-delivery-source-state-001-p1-2026-09-07.md)：同名不同字节目前只有 `default.yaml`；Ice/T9/`melt_eng` 仍 `__include` / `import_preset` 该文件（含 `digit_separators`）。简单跳过不保证上游行为。Ice `s2t.json` 与内置 OpenCC 共享；`lua/` 与 `opencc/emoji*` 卸载列表未覆盖。
 
 RIME 官方允许配置替换及 custom patch；配置引用不提供多个发行包之间的文件所有权隔离。共享 `lua/` 前缀也不是所有权证明（TD-011）。详见 [实施计划的事实、官方依据与选项](../../plans/scheme-resource-ownership-and-coexistence-plan.md)。
 
@@ -62,14 +62,14 @@ RIME 官方允许配置替换及 custom patch；配置引用不提供多个发�
 
 ## Follow-up Work
 
-1. 按计划 P0 在生产安装链上复现并记录真实失败类型。
-2. 完成递归依赖/同名文件审计；证明候选 A 可保真，或提交明确产品差异。
+1. ~~按计划 P0 在生产安装链上复现并记录真实失败类型。~~ 完成：`.byteCountMismatch`；真机枚举仍未发出。
+2. ~~完成递归依赖/同名文件审计。~~ 工程清单已落盘。候选 A **尚未**保真：须把 Ice/T9/`melt_eng` 的 `default` 引用改到独立预设，并补 `lua/`、`opencc/` 卸载归属。万象 zip 未在本机，Lua 前缀交集未闭合。
 3. Human Product 与独立 Architecture 就计划 §5.1 决策点作出书面结论。
 4. 仅在接受后实现适配安装、ownership receipt 与有界恢复；独立 Quality/Architecture 复审。
 5. 真机验证内置 / 雾凇 / 万象安装顺序、卸载与失败回滚。
 6. 编号若冲突则改号后再接受。
 
-在 1–3 完成前，本 ADR 保持 Proposed。
+在 3 完成前，本 ADR 保持 Proposed。
 
 ## Related Documents
 

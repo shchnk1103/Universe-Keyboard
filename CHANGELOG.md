@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-09-07 — P1 多方案资源归属清单
+
+- 记录内置与雾凇 admitted 集合：同名不同字节目前只有 `default.yaml`；Ice/T9 仍引用该文件。
+- 雾凇卸载不收回 `lua/`、`opencc/`、`default.yaml`。不接受 ADR 0034，不开始 P2。
+
 ## 2026-09-07 — P0 Ice/builtin `default.yaml` 冲突复现
 
 - 生产雾凇安装计划会覆盖 Prelude `default.yaml`；存在 builtin receipt 时再次 `install()` 抛 `byteCountMismatch`，且不回滚已覆盖文件。

@@ -72,7 +72,7 @@ Codex 在额度耗尽前留下未跟踪草稿。本修订补齐治理缺口后�
 - 真机是否发出 `.byteCountMismatch`（受控链已复现该类型；设备日志只有 `resource_preparation` failed）。
 - 覆盖冲突在真实生产安装链上的完整复现：已在注入容器根的生产 `installSchemaFiles` + `install()` 上复现；未走 App Group `prepareDirectories` 全路径。
 - 此前设备是否已有有效 builtin generation/receipt。
-- 其他同名资源、OpenCC、编译产物冲突。
+- 其他同名资源、OpenCC、编译产物冲突：P1 显示 builtin∩Ice admitted 仅 `default.yaml`；Ice `s2t.json` 共享内置 OpenCC；`emoji.json` 无碰撞。编译产物仍只按 substring 清理。
 - 所有升级/卸载/回滚后果。
 - 未提交诊断增量若再落地，能否在不泄露路径/YAML 的前提下缩小失败分支。
 
@@ -105,7 +105,7 @@ RIME 允许替换配置，不等于允许本 App 的多个安装器争用同一�
 
 重点：`default.yaml`、`lua/`、OpenCC、`custom_phrase`、T9、编译输出与缓存清理。当前目录前缀 allowlist 不是文件所有权证明；`removeDirectory` 和 substring cache 删除不能推定安全。
 
-输出应落在本 Assignment 的 evidence 子文档，并记录输入 SHA、工具版本、命令、未覆盖项。不读取或导出用户词典/输入内容。本规划切片 **没有** 这份清单。
+输出应落在本 Assignment 的 evidence 子文档，并记录输入 SHA、工具版本、命令、未覆盖项。不读取或导出用户词典/输入内容。P1 工程清单：[`scheme-delivery-source-state-001-p1-2026-09-07.md`](../evidence/scheme-delivery-source-state-001-p1-2026-09-07.md)。万象 zip 未覆盖。
 
 ## 5. 架构选项
 
