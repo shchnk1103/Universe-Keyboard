@@ -36,6 +36,15 @@ or Octagram models are not part of this closure. Any pin, manifest, fuzzy
 overlay, OpenCC profile or generated-artifact change reopens ADR 0033 and F-02
 revalidation.
 
+Downloaded 雾凇 (`rime-ice-plan-1`) currently admits `default.yaml`; 万象
+skips it. Fog uninstall does not list `default.yaml` as removable. That is a
+known shared-file conflict with the built-in Prelude bytes, not an accepted
+ownership policy. Device evidence after a successful dated Ice install stopped
+at `resource_preparation`; the exact installer error is unproven. See
+[`SCHEME-DELIVERY-SOURCE-STATE-001`](assignments/scheme-delivery-source-state-001.md),
+the [coexistence plan](plans/scheme-resource-ownership-and-coexistence-plan.md)
+and Proposed [ADR 0034](architecture/decisions/0034-multi-scheme-resource-ownership.md).
+
 ## User-Facing Model
 
 普通用户只需要理解三件事：

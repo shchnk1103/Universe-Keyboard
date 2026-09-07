@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-09-07 — 多方案资源归属计划（docs-only）
+
+- 在 `SCHEME-DELIVERY-SOURCE-STATE-001` 记录共存/部署恢复规划，并新增 Proposed ADR 0034。
+- 事实、方案建议和待批准决策分开；不授权实现、真机恢复、ADR 接受或 PR #100 merge。
+
 ## Scheme download source and failure-state repair
 
 - Pin Rime Ice to verified 2026.06.30 archives instead of the mutable nightly alias; retain archive and staged-content integrity checks.

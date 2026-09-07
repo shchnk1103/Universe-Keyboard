@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | Completed |
-| Current Phase | Implementation, automated gates and independent static reviews complete |
-| Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check |
-| Next handoff / decision | Human candidate-device retest and final merge decision |
-| Residuals | Device retest pending |
+| Lifecycle | Active |
+| Current Phase | 共存/资源归属 **规划切片完成**（docs-only）。原 source-state 工程片仍 Complete pending Human retest。P0 复现未授权 |
+| Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no deploy-failure root-cause claim |
+| Next handoff / decision | Human 审阅计划与 Proposed ADR 0034；决定是否授权 P0。PR #100 merge 仍单独授权 |
+| Residuals | 真机下载/安装成功后 `resource_preparation` 失败，具体 `InstallationError` 未复现；未提交诊断增量不在本切片 |
 
 ## Authority and scope
 
@@ -40,3 +40,18 @@ Handoff Target: Human Product Owner. Revalidate on artifact/pin, processing plan
 ## Engineering handoff
 
 [PR #100](https://github.com/shchnk1103/Universe-Keyboard/pull/100), [evidence](../evidence/scheme-delivery-source-state-001.md), [independent review](../reviews/scheme-delivery-source-state-001.md). Engineering completion is not Product acceptance or Closed; physical-device retest and merge/TestFlight authority remain with Human Product Owner.
+
+## 2026-09-07 planning follow-up
+
+Human Product Owner authorized planning only: “很好，开始做计划吧” (`2026-09-07 Asia/Shanghai`), after device logs showed `resource_preparation` failed following a successful dated 雾凇 install.
+
+Scope of this slice: complete the coexistence/resource-ownership plan and a **Proposed** ADR; link them from this Assignment; keep facts, recommendations and pending decisions separate. Codex left an untracked draft in `/private/tmp/uk-scheme-delivery-fix` then exhausted quota; the current Grok session finished the planning documents only.
+
+Non-scope: Swift/ObjC/resource edits; committing the uncommitted deployment-phase journal diagnostics; P0 reproduction; accepting ADR 0034; device recovery; merge; TestFlight. P0+ Executor is not appointed by this follow-up.
+
+Planning outputs:
+
+- [计划](../plans/scheme-resource-ownership-and-coexistence-plan.md)
+- [ADR 0034 Proposed](../architecture/decisions/0034-multi-scheme-resource-ownership.md)
+
+Planning Exit for this follow-up: those two documents plus this Assignment/Active Work/index linkage exist on `codex/scheme-delivery-fix`, ADR has the required governance sections, and P0 remains explicitly unauthorized. Independent Architecture review of the plan is still outstanding and is not inferred from document completeness.
