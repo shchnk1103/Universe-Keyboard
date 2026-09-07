@@ -45,3 +45,15 @@ Initial conclusion: **Fail.** The reviewer found one blocking fail-closed defect
 Executor remediated all four points. Receipt absence is now distinguished from read failure before any runtime mutation; unreadable state throws `.fileOperationFailed`. The combined test restores the original pollution bytes and both prior receipts after overlay replacement fails partway through. The opt-in two-source/two-Lua archive test now rejects remaining `__include: default:/` and `import_preset: default` references in all four adapted schemas. The plan now distinguishes historical entry rules from completed P0–P3 work.
 
 Two requested delta-review turns completed without returning any review text through the task interface. A second independent reviewer turn behaved the same way. Therefore the remediation has executor test evidence but **no retrievable independent Quality delta conclusion**; Quality remains pending and no Pass is claimed.
+
+## P4 Quality review — 2026-09-07
+
+Reviewer: independent Quality Reviewer（本会话）；冻结 tip `18f0d07b14f46c35ec95253e46051c2caa49024a`（含 P4 `e213a25`、transaction/receipt `a01dbd3`、CI `eed453d`/`afa0c0e`、Human-attested P4 device docs）。
+
+全文：[`scheme-delivery-source-state-001-p4-quality-review.md`](scheme-delivery-source-state-001-p4-quality-review.md)。
+
+**Verdict: Pass with conditions**（P0=0 · P1=0 · P2=1 · P3=4）。P4 活跃卸载在 lease 内等待 Luna 部署成功后再 stage→commit；失败保留原选择与文件，restore redeploy 同 lease await。Human-attested 仅绑定成功烟雾；失败回滚未真机测；非 Product Gate。
+
+**Prior Quality pending（不可读 receipt）：已关闭。** 本审查在冻结 tip 上复核 `a01dbd3` 代码 + `testUnreadableReceiptObjectFailsBeforeUnknownRuntimeMutation` 等测试后，对该 residual 单独结论为 **Pass**。此前缺失的 delta-review 文本不再阻挡关闭。
+
+未 Accept ADR 0034；未 merge / undraft PR #100；Wanxiang P4、Ice Lua `dofile`、Device-attested、Product Gate / TestFlight 仍开放。
