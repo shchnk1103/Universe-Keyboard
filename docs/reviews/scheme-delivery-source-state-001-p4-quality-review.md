@@ -78,6 +78,7 @@ Finding counts: **P0: 0 · P1: 0 · P2: 1 · P3: 4**
 | `testNonActiveUninstallStillRemovesFilesWithoutLunaFallback` | 非活跃：无 deploy 请求；stage+commit；`rime_needs_deploy` |
 | `testNonActiveUninstallKeepsFilesWhenStagingFails` | 非活跃 staging 失败：保留文件与选择 |
 | `testIceUninstallStagingRollbackRestoresOwnedFiles` | 真实 shared-container installer rollback 字节 |
+| `testIceUninstallStagingMidMoveFailureRestoresOwnedFiles` | **Executor rem.** Q-P2-01：生产 path 第 N 次 `moveItem` 故障注入 + fail-closed 恢复（见 Findings 注） |
 
 **CI green 证明：** 上述自动化与既有门禁在托管 CI 上通过。**不证明：** 真机失败回滚、Device-attested 身份、Wanxiang P4、Product Gate、ADR Accepted。
 
@@ -127,6 +128,8 @@ Finding counts: **P0: 0 · P1: 0 · P2: 1 · P3: 4**
 `SharedContainerSchemaArchiveInstaller.stageSchemaUninstall` 的 `catch` 会 `rollbackSchemaUninstall`，但自动化只覆盖「stage 成功后显式 rollback」与 manager 层 Stub 抛错。没有把「第 N 个 `moveItem` 失败」注入到生产 installer 的测试。代码审查支持 fail-closed，但不得宣称中途失败矩阵已被测试钉死。
 
 **不要求本切片为 Pass 而改生产代码**；后续可加故障注入而不弱化现有断言。
+
+**Executor remediation (2026-09-07 Asia/Shanghai):** addressed by `testIceUninstallStagingMidMoveFailureRestoresOwnedFiles` in `SchemeResourcePreparationCoexistenceTests.swift`. Seam: existing production `SharedContainerSchemaArchiveInstaller(fileManager:)` dependency + test-only `MoveItemFailureFileManager` that fails once on the 2nd `moveItem` into the production `stageSchemaUninstall` path; asserts throw + owned bytes restored + no live `.schema-uninstall-*` pollution. No production fail-closed weakening. Does **not** rewrite this review Verdict — residual closed by engineering evidence pending independent delta Quality if required.
 
 ### Q-P3-01 — stage 成功到 commit 之间的崩溃窗口
 

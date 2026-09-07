@@ -165,6 +165,73 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         )
     }
 
+    /// Q-P2-01: inject failure on the 2nd production `moveItem` so stage catch
+    /// rolls back already-moved owned paths (fail-closed), without a manager Stub.
+    func testIceUninstallStagingMidMoveFailureRestoresOwnedFiles() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+
+        let icePlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+        let iceDefault = try iceDefaultYAMLData()
+        let schemaBytes = Data("ice-schema-mid-fail".utf8)
+        let emojiBytes = Data("emoji-mid-fail".utf8)
+        let luaBytes = Data("lua-mid-fail".utf8)
+        let extract = env.root.appendingPathComponent("ice-extract-mid-fail", isDirectory: true)
+        try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
+        try iceDefault.write(to: extract.appendingPathComponent("default.yaml"))
+        try iceDefault.write(to: extract.appendingPathComponent("rime_ice_preset.yaml"))
+        try schemaBytes.write(to: extract.appendingPathComponent("rime_ice.schema.yaml"))
+        try FileManager.default.createDirectory(
+            at: extract.appendingPathComponent("opencc", isDirectory: true),
+            withIntermediateDirectories: true
+        )
+        try FileManager.default.createDirectory(
+            at: extract.appendingPathComponent("lua", isDirectory: true),
+            withIntermediateDirectories: true
+        )
+        try emojiBytes.write(to: extract.appendingPathComponent("opencc/emoji.json"))
+        try luaBytes.write(to: extract.appendingPathComponent("lua/date_translator.lua"))
+        try env.installer.installSchemaFiles(from: extract, plan: icePlan, luaAvailable: true)
+
+        let container = env.root.appendingPathComponent("container", isDirectory: true)
+        let failingFileManager = MoveItemFailureFileManager(failOnMoveNumber: 2)
+        let failingInstaller = SharedContainerSchemaArchiveInstaller(
+            appGroupID: "group.com.DoubleShy0N.Universe-Keyboard",
+            fileManager: failingFileManager,
+            containerURL: container
+        )
+
+        XCTAssertThrowsError(try failingInstaller.stageSchemaUninstall(plan: icePlan)) { error in
+            guard case DownloadError.postProcessingFailed = error else {
+                return XCTFail("expected postProcessingFailed, got \(error)")
+            }
+        }
+        XCTAssertGreaterThanOrEqual(failingFileManager.moveCallCount, 2)
+
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml")),
+            schemaBytes
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("rime_ice_preset.yaml")),
+            iceDefault
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("opencc/emoji.json")),
+            emojiBytes
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("lua/date_translator.lua")),
+            luaBytes
+        )
+
+        let sharedNames = try FileManager.default.contentsOfDirectory(atPath: env.shared.path)
+        XCTAssertFalse(
+            sharedNames.contains(where: { $0.hasPrefix(".schema-uninstall-") }),
+            "staging root must not remain as live shared pollution"
+        )
+    }
+
     func testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds() throws {
         let env = try makeEnvironment()
         defer { env.tearDown() }
@@ -303,5 +370,28 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
 
     private func sha256(_ data: Data) -> String {
         SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    }
+}
+
+/// Test-only FileManager seam for Q-P2-01. Fails exactly once on the Nth
+/// `moveItem`, then delegates so production `rollbackSchemaUninstall` can
+/// restore already-moved paths. Default production installer behavior is unchanged.
+private final class MoveItemFailureFileManager: FileManager {
+    private let failOnMoveNumber: Int
+    private(set) var moveCallCount = 0
+    private var didInjectFailure = false
+
+    init(failOnMoveNumber: Int) {
+        self.failOnMoveNumber = failOnMoveNumber
+        super.init()
+    }
+
+    override func moveItem(at srcURL: URL, to dstURL: URL) throws {
+        moveCallCount += 1
+        if !didInjectFailure && moveCallCount == failOnMoveNumber {
+            didInjectFailure = true
+            throw CocoaError(.fileWriteUnknown)
+        }
+        try super.moveItem(at: srcURL, to: dstURL)
     }
 }

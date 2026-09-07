@@ -10,7 +10,7 @@ Policy version: 1.0.0
 | Current Phase | P4 活跃卸载 fail-closed 工程已推送；Independent Quality **Pass with conditions**（[`p4-quality-review`](../reviews/scheme-delivery-source-state-001-p4-quality-review.md)，冻结 `18f0d07`）。prior 不可读-receipt Quality residual 已关闭。Wanxiang P4 / 升级、ADR 0034 Proposed、Product Gate / merge / TestFlight 仍开放 |
 | Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no device-unique root-cause claim, no Device-attested payload identity, no Product Gate Passed |
 | Next handoff / decision | Wanxiang P4 升级/卸载合同；PR #100 merge / TestFlight / 真机 Product Gate 仍单独 Human 授权；ADR 0034 保持 Proposed 直至明确接受 |
-| Residuals | 真机未发出 `InstallationError`；无 App/Extension UUID·SHA / Device-attested；无万象复测；Wanxiang P4 升级/卸载未闭合；Ice Lua `dofile` 动态引用未闭合；backup/staging cleanup 仍 best-effort；活跃卸载失败回滚未真机测；活跃卸载尚未真机 Product Gate；Quality Q-P2-01（stage 中途故障注入测试）仍开放 |
+| Residuals | 真机未发出 `InstallationError`；无 App/Extension UUID·SHA / Device-attested；无万象复测；Wanxiang P4 升级/卸载未闭合；Ice Lua `dofile` 动态引用未闭合；backup/staging cleanup 仍 best-effort；活跃卸载失败回滚未真机测；活跃卸载尚未真机 Product Gate；Quality Q-P2-01 addressed by `testIceUninstallStagingMidMoveFailureRestoresOwnedFiles`（executor rem.；Verdict 未改写） |
 
 ## Authority and scope
 
@@ -127,3 +127,7 @@ Independent Quality review of freeze `18f0d07`: [`scheme-delivery-source-state-0
 - P4 active uninstall fail-closed: **Pass with conditions**（P0=0 · P1=0 · P2=1 · P3=4）。
 - Prior unreadable-receipt Quality pending: **closed (Pass)** on code+test evidence at tip.
 - Non-claims: not ADR Accepted, not Product Gate, not merge/TestFlight, not Wanxiang P4 closure.
+
+## 2026-09-07 Executor remediation — Q-P2-01
+
+Human authorized closing Quality finding Q-P2-01. Executor added `testIceUninstallStagingMidMoveFailureRestoresOwnedFiles` (FileManager Nth-`moveItem` seam into production `stageSchemaUninstall`; fail-closed restore asserted). Docs note only in the P4 Quality review; Verdict not rewritten. No ADR Accept / Product Gate / merge / Wanxiang.
