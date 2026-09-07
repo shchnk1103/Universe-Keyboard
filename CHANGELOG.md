@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-09-07 — P4 活跃方案卸载 fail-closed
+
+- 卸载当前活跃已下载方案时，先切换并完成内置 `luna_pinyin` 部署，再 stage→commit 删除目标文件；任一步失败保留原方案选择与文件。
+- 不把 `switchToSchema` 的延迟部署当作成功。ADR 0034 仍 Proposed；未宣称 Wanxiang P4 或真机 Product Gate 完成。
+
 ## 2026-09-07 — 已知污染恢复加入统一事务回滚
 
 - 将 P3 `default.yaml` 已知污染恢复纳入内置资源安装的同一 mutation 账本，并使用每次操作独立的 backup root。

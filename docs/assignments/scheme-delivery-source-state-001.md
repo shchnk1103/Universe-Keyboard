@@ -7,10 +7,10 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | P3 Human-attested 真机；Architecture 首审阻断已修复并通过 delta 复审。Quality 与 P4 仍待完成，ADR 0034 仍 Proposed |
+| Current Phase | P4 活跃方案卸载 fail-closed 工程切片已实现（本地未推送）。Quality 与 Wanxiang P4 / 升级合同仍待完成，ADR 0034 仍 Proposed |
 | Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no device-unique root-cause claim, no Device-attested payload identity |
-| Next handoff / decision | Independent Quality review；Human 决定 P4 的 Wanxiang 升级/卸载和活跃方案回退合同。PR #100 merge / TestFlight 仍单独授权 |
-| Residuals | 真机未发出 `InstallationError`；无 App/Extension UUID·SHA；无万象复测；Wanxiang P4 未闭合；Ice Lua `dofile` 动态引用未闭合；backup cleanup 仍 best-effort |
+| Next handoff / decision | Independent Quality review；Human 已冻结活跃卸载回退合同（Luna 部署成功后再删文件，失败保留原方案）。Wanxiang 升级/卸载与 PR #100 merge / TestFlight 仍单独授权 |
+| Residuals | 真机未发出 `InstallationError`；无 App/Extension UUID·SHA；无万象复测；Wanxiang P4 升级/卸载未闭合；Ice Lua `dofile` 动态引用未闭合；backup cleanup 仍 best-effort；活跃卸载尚未真机 Product Gate |
 
 ## Authority and scope
 
@@ -105,3 +105,10 @@ Independent Architecture first review found P3 recovery outside the install muta
 Architecture delta re-review closed those P1/P2 findings. It did not accept ADR 0034 and retained Wanxiang P4, dynamic Ice Lua references, best-effort cleanup observability and device-evidence limits as residuals.
 
 Independent Quality then found one P1: a present-but-unreadable builtin resource receipt was treated as absent. Executor changed receipt loading to fail before any runtime mutation, added deterministic unreadable-receipt coverage, strengthened real-archive reference-closure assertions, and added the combined pollution-recovery/partial-overlay rollback matrix. Full local gates passed. Delta-review tasks completed without returning retrievable conclusion text, so formal Quality remains pending rather than inferred from task status.
+
+## 2026-09-07 P4 active uninstall fail-closed
+
+Human authorized the active-scheme uninstall contract: switch to builtin `luna_pinyin` without treating deferred deploy as success; await successful Luna deployment before removing target files; then stage → commit scheme files (rollback on failure); any failure keeps the original scheme selection and files.
+
+Engineering: `SchemaManager.uninstallSchema` acquires the commit lease, deploys Luna under that lease when the target is active, stages removals, and only then commits. Restore redeploy runs before lease release. Unit coverage includes active success, Luna deploy failure, staging failure, and non-active uninstall. ADR 0034 remains Proposed. Wanxiang upgrade/uninstall and device Product Gate are not closed by this slice.
+

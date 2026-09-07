@@ -627,7 +627,7 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(diagnostic.status, .needsDeploy)
     }
 
-    func testUninstallDelegatesFileRemovalAndClearsInstalledMetadata() {
+    func testActiveUninstallAwaitsLunaDeployBeforeCommittingFiles() async {
         let settings = StubSharedSettingsStore(
             values: [
                 "rime_active_schema": "rime_ice",
@@ -637,13 +637,147 @@ final class SchemaManagerTests: XCTestCase {
             ]
         )
         let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
-        let manager = makeManager(settings: settings, installer: installer)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
 
-        manager.uninstallRimeIce()
+        let task = manager.uninstallRimeIce()
+        await task?.value
 
-        XCTAssertTrue(installer.didUninstall)
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 1)
+        XCTAssertEqual(requests.first?.runtimeSmokeSchemaID, "luna_pinyin")
+        XCTAssertTrue(installer.didStageUninstall)
+        XCTAssertTrue(installer.didCommitUninstall)
+        XCTAssertFalse(installer.didRollbackUninstall)
         XCTAssertNil(settings.object(forKey: "rime_ice_installed"))
         XCTAssertNil(settings.object(forKey: "rime_ice_version"))
+        XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "luna_pinyin")
+    }
+
+    func testActiveUninstallKeepsFilesAndRestoresSchemaWhenLunaDeployFails() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-version",
+                "rime_ice_license_accepted": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: false)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        let task = manager.uninstallSchema("rime_ice")
+        await task?.value
+
+        XCTAssertFalse(installer.didStageUninstall)
+        XCTAssertFalse(installer.didCommitUninstall)
+        XCTAssertEqual(settings.bool(forKey: "rime_ice_installed"), true)
+        XCTAssertEqual(settings.string(forKey: "rime_ice_version"), "test-version")
+        XCTAssertEqual(manager.activeSchemaID, "rime_ice")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "rime_ice")
+        let requests = await deploymentService.requests
+        // Luna fallback attempt + fail-closed restore redeploy.
+        XCTAssertEqual(requests.count, 2)
+        XCTAssertEqual(requests.first?.runtimeSmokeSchemaID, "luna_pinyin")
+        XCTAssertEqual(requests.last?.runtimeSmokeSchemaID, "rime_ice")
+    }
+
+    func testActiveUninstallRestoresSchemaWhenStagingFailsAfterLunaDeploy() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-version",
+                "rime_ice_license_accepted": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            stageUninstallError: DownloadError.postProcessingFailed("stage boom")
+        )
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        let task = manager.uninstallSchema("rime_ice")
+        await task?.value
+
+        XCTAssertTrue(installer.didStageUninstall)
+        XCTAssertFalse(installer.didCommitUninstall)
+        XCTAssertEqual(settings.bool(forKey: "rime_ice_installed"), true)
+        XCTAssertEqual(settings.string(forKey: "rime_ice_version"), "test-version")
+        XCTAssertEqual(manager.activeSchemaID, "rime_ice")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "rime_ice")
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 2)
+        XCTAssertEqual(requests.first?.runtimeSmokeSchemaID, "luna_pinyin")
+        XCTAssertEqual(requests.last?.runtimeSmokeSchemaID, "rime_ice")
+    }
+
+    func testNonActiveUninstallStillRemovesFilesWithoutLunaFallback() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "luna_pinyin",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-version",
+                "rime_ice_license_accepted": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        let task = manager.uninstallSchema("rime_ice")
+        await task?.value
+
+        let requests = await deploymentService.requests
+        XCTAssertTrue(requests.isEmpty)
+        XCTAssertTrue(installer.didStageUninstall)
+        XCTAssertTrue(installer.didCommitUninstall)
+        XCTAssertNil(settings.object(forKey: "rime_ice_installed"))
+        XCTAssertNil(settings.object(forKey: "rime_ice_version"))
+        XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+    }
+
+    func testNonActiveUninstallKeepsFilesWhenStagingFails() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "luna_pinyin",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-version",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            stageUninstallError: DownloadError.postProcessingFailed("stage boom")
+        )
+        let manager = makeManager(settings: settings, installer: installer)
+
+        let task = manager.uninstallSchema("rime_ice")
+        await task?.value
+
+        XCTAssertTrue(installer.didStageUninstall)
+        XCTAssertFalse(installer.didCommitUninstall)
+        XCTAssertEqual(settings.bool(forKey: "rime_ice_installed"), true)
+        XCTAssertEqual(settings.string(forKey: "rime_ice_version"), "test-version")
         XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
     }
 
@@ -1726,20 +1860,26 @@ private final class StubSchemaArchiveDownloader: SchemaArchiveDownloading {
 private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     let directories: SchemaDeploymentDirectories
     private let containsInstalledSchema: Bool
+    private let stageUninstallError: Error?
     private(set) var installedLuaAvailability: Bool?
     private(set) var didUninstall = false
+    private(set) var didStageUninstall = false
+    private(set) var didCommitUninstall = false
+    private(set) var didRollbackUninstall = false
     private(set) var didClearBuildCache = false
     private(set) var runtimeDirectoriesCallCount = 0
     private(set) var deploymentDirectoriesCallCount = 0
 
     init(
         containsInstalledSchema: Bool = false,
+        stageUninstallError: Error? = nil,
         directories: SchemaDeploymentDirectories = SchemaDeploymentDirectories(
             sharedDataURL: URL(fileURLWithPath: "/test/Rime/shared"),
             userDataURL: URL(fileURLWithPath: "/test/Rime/user")
         )
     ) {
         self.containsInstalledSchema = containsInstalledSchema
+        self.stageUninstallError = stageUninstallError
         self.directories = directories
     }
 
@@ -1755,7 +1895,24 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws {
         installedLuaAvailability = luaAvailable
     }
-    func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) { didUninstall = true }
+    func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging {
+        didStageUninstall = true
+        if let stageUninstallError {
+            throw stageUninstallError
+        }
+        return SchemaUninstallStaging(
+            rootURL: URL(fileURLWithPath: "/test/staging"),
+            movedRelativePaths: []
+        )
+    }
+    func commitSchemaUninstall(_ staging: SchemaUninstallStaging, plan: RimeSchemeInstallationPlan) {
+        didCommitUninstall = true
+        didUninstall = true
+        clearBuildCache(plan: plan)
+    }
+    func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) {
+        didRollbackUninstall = true
+    }
     func clearBuildCache(plan: RimeSchemeInstallationPlan) { didClearBuildCache = true }
     func sharedDataDirectoryURL() -> URL? { directories.sharedDataURL }
     func runtimeDirectories() throws -> SchemaDeploymentDirectories {

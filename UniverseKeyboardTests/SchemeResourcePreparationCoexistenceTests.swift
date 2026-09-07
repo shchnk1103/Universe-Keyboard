@@ -104,7 +104,8 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         )
         try env.installer.installSchemaFiles(from: extract, plan: icePlan, luaAvailable: true)
 
-        env.installer.uninstallSchemaFiles(plan: icePlan)
+        let staging = try env.installer.stageSchemaUninstall(plan: icePlan)
+        env.installer.commitSchemaUninstall(staging, plan: icePlan)
 
         XCTAssertFalse(
             FileManager.default.fileExists(
@@ -131,6 +132,36 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
             FileManager.default.fileExists(
                 atPath: env.shared.appendingPathComponent("opencc/s2t.json").path
             )
+        )
+    }
+
+    func testIceUninstallStagingRollbackRestoresOwnedFiles() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+
+        let icePlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+        let iceDefault = try iceDefaultYAMLData()
+        let extract = env.root.appendingPathComponent("ice-extract-rollback", isDirectory: true)
+        try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
+        try iceDefault.write(to: extract.appendingPathComponent("default.yaml"))
+        try iceDefault.write(to: extract.appendingPathComponent("rime_ice_preset.yaml"))
+        try Data("ice-schema".utf8).write(to: extract.appendingPathComponent("rime_ice.schema.yaml"))
+        try env.installer.installSchemaFiles(from: extract, plan: icePlan, luaAvailable: true)
+
+        let staging = try env.installer.stageSchemaUninstall(plan: icePlan)
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent("rime_ice.schema.yaml").path
+            )
+        )
+        env.installer.rollbackSchemaUninstall(staging)
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml")),
+            Data("ice-schema".utf8)
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("rime_ice_preset.yaml")),
+            iceDefault
         )
     }
 

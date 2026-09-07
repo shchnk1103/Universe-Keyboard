@@ -59,23 +59,80 @@ extension SchemaManager {
         requestDeploy(leaseOperationID: leaseOperationID)
     }
 
-    func uninstallRimeIce() {
+    @discardableResult
+    func uninstallRimeIce() -> Task<Void, Never>? {
         uninstallSchema("rime_ice")
     }
 
-    func uninstallSchema(_ schemaID: String) {
+    @discardableResult
+    func uninstallSchema(_ schemaID: String) -> Task<Void, Never>? {
         guard schemeDeliveryCommitLeaseOperationID == nil else {
             enqueueSchemeMutation(.uninstall(schemaID))
+            return nil
+        }
+        guard let entry = downloadableEntry(for: schemaID), let plan = entry.installationPlan else {
+            return nil
+        }
+
+        return Task { @MainActor [weak self] in
+            await self?.performSchemaUninstall(entry: entry, plan: plan)
+        }
+    }
+
+    private func performSchemaUninstall(
+        entry: RimeSchemeCatalogEntry,
+        plan: RimeSchemeInstallationPlan
+    ) async {
+        let operationID = UUID()
+        guard await acquireSchemeDeliveryCommitLease(operationID: operationID) else { return }
+        defer { releaseSchemeDeliveryCommitLease(operationID: operationID) }
+
+        let schemaID = entry.schemaID
+        let originalSchemaID = activeSchemaID
+        let requiresActiveFallback = originalSchemaID == schemaID
+
+        if requiresActiveFallback {
+            // Do not use `switchToSchema`: it only records a later deployment.
+            // P4 requires Luna's deployment to finish before any target files
+            // become removable.
+            setActiveSchemaWithoutDeployment("luna_pinyin")
+            let fallbackSucceeded = await deployRimeConfig(leaseOperationID: operationID)
+            guard fallbackSucceeded else {
+                await restoreSchemaAfterFailedUninstall(
+                    originalSchemaID,
+                    operationID: operationID,
+                    reason: "Luna 回退部署失败"
+                )
+                return
+            }
+        }
+
+        let staging: SchemaUninstallStaging
+        do {
+            staging = try archiveInstaller.stageSchemaUninstall(plan: plan)
+        } catch {
+            if requiresActiveFallback {
+                await restoreSchemaAfterFailedUninstall(
+                    originalSchemaID,
+                    operationID: operationID,
+                    reason: "方案文件暂存失败"
+                )
+            } else {
+                Logger.shared.error(
+                    "uninstallSchema: 方案文件暂存失败，保留原方案文件",
+                    category: .deployment
+                )
+            }
             return
         }
-        guard let entry = downloadableEntry(for: schemaID), let plan = entry.installationPlan else { return }
 
-        // ADR 0018: layout fallback and readiness invalidation before resource removal.
+        // ADR 0018: only invalidate T9 after Luna is deployed and the target
+        // files have been staged successfully.
         if schemaID == "rime_ice" {
             prepareRimeIceUninstallWithLayoutFallback()
         }
 
-        archiveInstaller.uninstallSchemaFiles(plan: plan)
+        archiveInstaller.commitSchemaUninstall(staging, plan: plan)
 
         for key in [
             entry.storage.installed,
@@ -90,10 +147,8 @@ extension SchemaManager {
             settings.removeObject(forKey: key)
         }
 
-        if activeSchemaID == schemaID {
-            switchToSchema("luna_pinyin")
-        } else {
-            requestDeploy()
+        if !requiresActiveFallback {
+            requestDeploy(leaseOperationID: operationID)
         }
         rimeIceDownloadState = .idle
         if schemaID == "rime_ice" {
@@ -101,6 +156,29 @@ extension SchemaManager {
             rimeIceVersion = nil
         }
         refreshSchemaList()
+    }
+
+    private func setActiveSchemaWithoutDeployment(_ schemaID: String) {
+        activeSchemaID = schemaID
+        settings.set(schemaID, forKey: "rime_active_schema")
+        settings.synchronize()
+    }
+
+    /// Fail-closed restore must finish while the uninstall lease is still held.
+    /// A detached Task would race `defer { release… }` and could observe a
+    /// foreign lease or skip the redeploy entirely.
+    private func restoreSchemaAfterFailedUninstall(
+        _ schemaID: String,
+        operationID: UUID,
+        reason: String
+    ) async {
+        setActiveSchemaWithoutDeployment(schemaID)
+        _ = await deployRimeConfig(leaseOperationID: operationID)
+        refreshSchemaList()
+        Logger.shared.error(
+            "uninstallSchema: \(reason)，已保留原方案文件并恢复原方案选择",
+            category: .deployment
+        )
     }
 
     func checkForUpdate() async -> Bool {
