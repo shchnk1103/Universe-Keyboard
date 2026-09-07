@@ -55,6 +55,36 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: defaultURL), overwritten)
     }
 
+    func testUnreadableReceiptObjectFailsBeforeUnknownRuntimeMutation() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
+        _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+
+        let defaultURL = rimeRoot.appendingPathComponent("shared/default.yaml")
+        let unknownBytes = Data("unknown-user-or-third-party-bytes".utf8)
+        try unknownBytes.write(to: defaultURL)
+        let receiptURL = rimeRoot.appendingPathComponent(
+            RimeBuiltinResourceInstaller.resourceReceiptFileName
+        )
+        try FileManager.default.removeItem(at: receiptURL)
+        try FileManager.default.createDirectory(at: receiptURL, withIntermediateDirectories: false)
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .fileOperationFailed
+            )
+        }
+
+        XCTAssertEqual(try Data(contentsOf: defaultURL), unknownBytes)
+        var isDirectory: ObjCBool = false
+        XCTAssertTrue(FileManager.default.fileExists(atPath: receiptURL.path, isDirectory: &isDirectory))
+        XCTAssertTrue(isDirectory.boolValue)
+    }
+
     func testKnownIceDefaultYamlPollutionIsRestoredFromOfficialSource() throws {
         let fixture = try makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
@@ -101,6 +131,39 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
             )
         }
         XCTAssertEqual(try Data(contentsOf: defaultURL), polluted)
+    }
+
+    func testKnownPollutionRecoveryRollsBackWhenLaterInstallationFails() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
+        _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+
+        let defaultURL = rimeRoot.appendingPathComponent("shared/default.yaml")
+        let polluted = Data(repeating: 0x63, count: 14_842)
+        try polluted.write(to: defaultURL)
+        let pollutedSHA = sha256ForTest(of: polluted)
+        let failurePath = try XCTUnwrap(
+            RimeBuiltinResourceInstaller.requiredRelativePaths.sorted().first { $0 != "default.yaml" }
+        )
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller(
+                testFailureBeforeInstallingPath: failurePath,
+                knownPreludePollutionSHA256: [pollutedSHA]
+            ).install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .fileOperationFailed
+            )
+        }
+
+        XCTAssertEqual(try Data(contentsOf: defaultURL), polluted)
+        let leftovers = try FileManager.default.contentsOfDirectory(
+            atPath: rimeRoot.path
+        ).filter { $0.hasPrefix(".builtin-backup-") }
+        XCTAssertTrue(leftovers.isEmpty)
     }
 
     func testRedeployRestoresDefaultYamlWhenNoPriorReceiptExists() throws {
@@ -159,7 +222,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         ) { error in
             XCTAssertEqual(
                 error as? RimeBuiltinResourceInstaller.InstallationError,
-                .checksumMismatch
+                .byteCountMismatch
             )
         }
     }
@@ -692,17 +755,15 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         )
     }
 
-    func testOverlayFailureDuringResourceInstallRestoresCompletePreviousGeneration() throws {
+    func testOverlayFailureAfterKnownPollutionRecoveryRestoresEntirePriorState() throws {
         enum InjectedFailure: Error { case beforeSecondReplacement }
 
         let previousFixture = try makeFixture(generationID: "fixture-v1", contentPrefix: "old")
         defer { try? FileManager.default.removeItem(at: previousFixture.root) }
-        let replacementFixture = try makeFixture(generationID: "fixture-v2", contentPrefix: "new")
-        defer { try? FileManager.default.removeItem(at: replacementFixture.root) }
         let rimeRoot = previousFixture.root.appendingPathComponent("Rime", isDirectory: true)
         let userDir = rimeRoot.appendingPathComponent("user", isDirectory: true)
-        let installer = RimeBuiltinResourceInstaller()
-        _ = try installer.install(sourceRoot: previousFixture.source, rimeRoot: rimeRoot)
+        let baselineInstaller = RimeBuiltinResourceInstaller()
+        _ = try baselineInstaller.install(sourceRoot: previousFixture.source, rimeRoot: rimeRoot)
         try FileManager.default.createDirectory(at: userDir, withIntermediateDirectories: true)
         let previousOverlays = [
             RimeConfigManager.CustomYamlArtifact(
@@ -721,7 +782,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
                 encoding: .utf8
             )
         }
-        try installer.recordOverlayReceipt(rimeRoot: rimeRoot, userDataURL: userDir)
+        try baselineInstaller.recordOverlayReceipt(rimeRoot: rimeRoot, userDataURL: userDir)
         let resourceReceiptURL = rimeRoot.appendingPathComponent(
             RimeBuiltinResourceInstaller.resourceReceiptFileName
         )
@@ -730,10 +791,16 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         )
         let previousResourceReceipt = try Data(contentsOf: resourceReceiptURL)
         let previousOverlayReceipt = try Data(contentsOf: overlayReceiptURL)
+        let defaultURL = rimeRoot.appendingPathComponent("shared/default.yaml")
+        let polluted = Data(repeating: 0x65, count: 14_842)
+        try polluted.write(to: defaultURL)
+        let installer = RimeBuiltinResourceInstaller(
+            knownPreludePollutionSHA256: [sha256ForTest(of: polluted)]
+        )
 
         XCTAssertThrowsError(
             try installer.install(
-                sourceRoot: replacementFixture.source,
+                sourceRoot: previousFixture.source,
                 rimeRoot: rimeRoot,
                 afterInstallingResources: {
                     try RimeConfigManager.replaceCustomYamlArtifacts(
@@ -762,9 +829,13 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: resourceReceiptURL), previousResourceReceipt)
         XCTAssertEqual(try Data(contentsOf: overlayReceiptURL), previousOverlayReceipt)
         for path in RimeBuiltinResourceInstaller.requiredRelativePaths {
+            let expected =
+                path == "default.yaml"
+                ? polluted
+                : try Data(contentsOf: previousFixture.source.appendingPathComponent(path))
             XCTAssertEqual(
                 try Data(contentsOf: rimeRoot.appendingPathComponent("shared/").appendingPathComponent(path)),
-                try Data(contentsOf: previousFixture.source.appendingPathComponent(path)),
+                expected,
                 "restoredPath=\(path)"
             )
         }
@@ -777,9 +848,17 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
                 artifact.content
             )
         }
-        XCTAssertNoThrow(
+        XCTAssertThrowsError(
             try installer.validateInstalledRuntime(rimeRoot: rimeRoot, userDataURL: userDir)
-        )
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .byteCountMismatch
+            )
+        }
+        let leftovers = try FileManager.default.contentsOfDirectory(atPath: rimeRoot.path)
+            .filter { $0.hasPrefix(".builtin-backup-") }
+        XCTAssertTrue(leftovers.isEmpty)
     }
 
     func testMissingSimplificationPreferenceSyncWritesSimplifiedLunaResetAndReceipt() throws {

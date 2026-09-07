@@ -7,10 +7,10 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | P3 有界恢复：已知雾凇 default.yaml 指纹可从官方源恢复。未知改动仍 fail-closed。ADR 0034 仍 Proposed |
-| Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no device-unique root-cause claim |
-| Next handoff / decision | Human 用隔离工程复测雾凇下载+部署；Architecture 评审 ADR 0034。PR #100 merge 仍单独授权 |
-| Residuals | 真机未发出 `InstallationError`；Ice Lua `dofile` 动态引用未闭合 |
+| Current Phase | P3 Human-attested 真机；Architecture 首审阻断已修复并通过 delta 复审。Quality 与 P4 仍待完成，ADR 0034 仍 Proposed |
+| Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no device-unique root-cause claim, no Device-attested payload identity |
+| Next handoff / decision | Independent Quality review；Human 决定 P4 的 Wanxiang 升级/卸载和活跃方案回退合同。PR #100 merge / TestFlight 仍单独授权 |
+| Residuals | 真机未发出 `InstallationError`；无 App/Extension UUID·SHA；无万象复测；Wanxiang P4 未闭合；Ice Lua `dofile` 动态引用未闭合；backup cleanup 仍 best-effort |
 
 ## Authority and scope
 
@@ -87,3 +87,21 @@ Stop: no whole-directory `lua/` or `opencc/` deletion; no Wanxiang preset rewrit
 Human: “继续做 P3 有界恢复.”
 
 Restore Prelude `default.yaml` from the already-validated builtin source only when the live file SHA matches the pinned Ice 2026.06.30 fingerprint. Unknown bytes still fail closed. Backup is discarded after a successful install. Does not rewrite on-disk Ice schemas; re-download Ice to get `rime_ice_preset.yaml`.
+
+## 2026-09-07 Human device (P3 follow-up)
+
+Human: “我已经重下了雾凇并确认能部署，并且可以切换LUNA也不报错，都可以正常输入。” 同日更早还有一次隔离工程 redeploy 不再报错的口头报告。
+
+Evidence: [`scheme-delivery-source-state-001-p3-device-2026-09-07.md`](../evidence/scheme-delivery-source-state-001-p3-device-2026-09-07.md). Grade: **Human-attested**, not Device-attested (no binary UUID/SHA, no journal paste).
+
+This does not accept ADR 0034, close P4, or authorize merge/TestFlight. Architecture review of ADR 0034 starts after this record.
+
+## 2026-09-07 Codex takeover and P3 transaction correction
+
+Human asked current Codex to take over Grok session `01a07b72-444a-7000-a7f2-49487a7f8469`. The Codex task API could not read that external session ID, so takeover reconstructed state from branch history, the current worktree and repository evidence. Grok's committed P0–P3 work through `b90d236` and its uncommitted Human-attested governance records were preserved.
+
+Independent Architecture first review found P3 recovery outside the install mutation ledger and using a static backup path. Executor corrected the existing P3 implementation: known-pollution recovery now uses the current operation-scoped `.builtin-backup-<UUID>` root and is the first mutation in the same reverse rollback ledger. A later install failure therefore restores the exact pre-transaction polluted bytes; success and handled failure clean the operation backup root. A focused failure-injection test covers this sequence.
+
+Architecture delta re-review closed those P1/P2 findings. It did not accept ADR 0034 and retained Wanxiang P4, dynamic Ice Lua references, best-effort cleanup observability and device-evidence limits as residuals.
+
+Independent Quality then found one P1: a present-but-unreadable builtin resource receipt was treated as absent. Executor changed receipt loading to fail before any runtime mutation, added deterministic unreadable-receipt coverage, strengthened real-archive reference-closure assertions, and added the combined pollution-recovery/partial-overlay rollback matrix. Full local gates passed. Delta-review tasks completed without returning retrievable conclusion text, so formal Quality remains pending rather than inferred from task status.

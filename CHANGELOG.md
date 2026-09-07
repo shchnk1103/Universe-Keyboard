@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 2026-09-07 — 已知污染恢复加入统一事务回滚
+
+- 将 P3 `default.yaml` 已知污染恢复纳入内置资源安装的同一 mutation 账本，并使用每次操作独立的 backup root。
+- 后续资源安装或 overlay 写入失败会恢复事务前字节与旧回执；存在但不可读的资源回执会在任何运行时修改前 fail-closed。
+- 新增失败注入与真实归档引用闭合测试。Architecture delta 复审关闭原事务阻断，ADR 0034 仍 Proposed。
+
+## 2026-09-07 — Human-attested 雾凇重下与 Luna 切换
+
+- Human 报告：隔离工程 P3 构建上重下雾凇可部署，切换 Luna 不报错，双方可输入。
+- 证据等级 Human-attested，不是 Device-attested / Product Gate；ADR 0034 仍 Proposed。
+
 ## 2026-09-07 — 已知雾凇 Prelude 污染的有界恢复
 
 - 仅当共享 `default.yaml` 匹配钉住的雾凇 2026.06.30 SHA 时，从已校验的官方源恢复。

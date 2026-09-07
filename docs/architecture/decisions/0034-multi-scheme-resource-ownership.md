@@ -64,12 +64,12 @@ RIME 官方允许配置替换及 custom patch；配置引用不提供多个发�
 
 1. ~~按计划 P0 在生产安装链上复现并记录真实失败类型。~~ 完成：`.byteCountMismatch`；真机枚举仍未发出。
 2. ~~完成递归依赖/同名文件审计。~~ 工程清单已落盘（含 CNB 万象 zip）。候选 A **尚未**保真：须把 Ice/T9/`melt_eng` 的 `default` 引用改到独立预设。卸载必须按文件归属，不能整目录删除 `lua/` 或 `opencc/`。万象与雾凇 Lua **无路径/基名碰撞**，但仍共用 `import_preset: default`。
-3. Human Product 与独立 Architecture 就计划 §5.1 决策点作出书面结论。
-4. 仅在接受后实现适配安装、ownership receipt 与有界恢复；独立 Quality/Architecture 复审。
-5. 真机验证内置 / 雾凇 / 万象安装顺序、卸载与失败回滚。已知雾凇 2026.06.30 `default.yaml` 指纹的有界恢复已实现；未知改动仍 fail-closed。
+3. Human Product 与独立 Architecture 就计划 §5.1 决策点作出书面结论。Human 已指定按候选 A 实现，并给出 Human-attested 真机：[P3 device](../../evidence/scheme-delivery-source-state-001-p3-device-2026-09-07.md)。Architecture 首审发现 P3 恢复未进入事务 mutation 账本并使用静态 backup；Codex takeover 增量修复后，delta 复审关闭这两个阻断。该复审不是 Acceptance。
+4. 工程上 P2 独立预设与 P3 已知指纹恢复已在 `codex/scheme-delivery-fix` `b90d236` 落地；takeover 增量又补齐事务回滚、不可读 receipt fail-closed 与验证矩阵。这是 Human 授权的实现切片，不是 ADR Accepted。独立 Quality 尚无可引用的 delta 结论，P4 升级/卸载矩阵仍未完成。
+5. 真机：Human-attested 重下雾凇可部署、切 Luna 不报错、双方可输入。无 Device-attested 载荷身份。万象复测、卸载与失败回滚未做。未知改动仍 fail-closed。
 6. 编号若冲突则改号后再接受。
 
-在 3 完成前，本 ADR 保持 Proposed。
+Architecture 对当前 P3 transaction delta 已无阻断，但在 Quality、P4 与 Human 明确接受前，本 ADR 保持 Proposed。
 
 ## Related Documents
 

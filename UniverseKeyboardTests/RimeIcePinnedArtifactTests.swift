@@ -50,6 +50,25 @@ final class RimeIcePinnedArtifactTests: XCTestCase {
                 )
                 .write(to: t9, atomically: true, encoding: .utf8)
                 try RimeIceSharedDefaultAdapter.apply(in: root)
+                for schemaName in [
+                    "rime_ice.schema.yaml",
+                    "t9.schema.yaml",
+                    "melt_eng.schema.yaml",
+                    "radical_pinyin.schema.yaml",
+                ] {
+                    let yaml = try String(
+                        contentsOf: root.appendingPathComponent(schemaName),
+                        encoding: .utf8
+                    )
+                    XCTAssertFalse(yaml.contains("__include: default:/"), schemaName)
+                    XCTAssertNil(
+                        yaml.range(
+                            of: #"import_preset:\s*default\b"#,
+                            options: .regularExpression
+                        ),
+                        schemaName
+                    )
+                }
                 let identity = try manifest.resolvedStagedIdentity(for: source)
                 XCTAssertEqual(
                     try verifier.stagedContentSHA256(in: root, plan: plan, luaAvailable: luaAvailable),

@@ -95,7 +95,7 @@ Codex 在额度耗尽前留下未跟踪草稿。本修订补齐治理缺口后�
 
 RIME 允许替换配置，不等于允许本 App 的多个安装器争用同一文件。由 App 统一管理公共配置是 **待批准** 的架构选择。
 
-## 4. 依赖与归属审计产物（P1，尚未执行）
+## 4. 依赖与归属审计产物（P1 工程清单已完成，剩余动态引用与 P4）
 
 对内置 manifest、两种已固定 source variant 和生产后处理输出生成一份清单，至少包含：
 
@@ -105,7 +105,7 @@ RIME 允许替换配置，不等于允许本 App 的多个安装器争用同一�
 
 重点：`default.yaml`、`lua/`、OpenCC、`custom_phrase`、T9、编译输出与缓存清理。当前目录前缀 allowlist 不是文件所有权证明；`removeDirectory` 和 substring cache 删除不能推定安全。
 
-输出应落在本 Assignment 的 evidence 子文档，并记录输入 SHA、工具版本、命令、未覆盖项。不读取或导出用户词典/输入内容。P1 工程清单：[`scheme-delivery-source-state-001-p1-2026-09-07.md`](../evidence/scheme-delivery-source-state-001-p1-2026-09-07.md)。万象 zip 未覆盖。
+输出应落在本 Assignment 的 evidence 子文档，并记录输入 SHA、工具版本、命令、未覆盖项。不读取或导出用户词典/输入内容。P1 工程清单：[`scheme-delivery-source-state-001-p1-2026-09-07.md`](../evidence/scheme-delivery-source-state-001-p1-2026-09-07.md)。后续已补验 CNB 万象 zip；Ice 动态 `dofile` / `loadfile` 引用仍标为 unresolved，P4 升级与卸载归属尚未闭合。
 
 ## 5. 架构选项
 
@@ -117,9 +117,9 @@ RIME 允许替换配置，不等于允许本 App 的多个安装器争用同一�
 
 选项 A 若获批，不得偷偷改写 ADR 0033 的官方不可变字节合同。需要改官方文件时，先修订 ADR 0033。选项 A 也不自动关闭 ADR 0006 / TD-001。
 
-### 5.1 待批准决策（阻塞 P2 实现）
+### 5.1 原 P2 入口决策与当前未决项
 
-未得到 Human Product 与独立 Architecture 书面结论前，不得进入 §6 P2/P3。
+以下是规划时的入口清单。Human 后续明确选择候选 A 的 Ice 切片并授权 P2/P3；该授权不等于 ADR Accepted，也不覆盖 P4。第 6 项仍是进入 P4 的 Product 阻塞项，其余结论与残余见 Assignment、ADR 0034 和独立评审记录。
 
 1. 是否采纳候选 A（或改为 B/C / 停做共存）。
 2. 全局设置、方案预设、用户 `*.custom.yaml` 的优先级。
@@ -218,7 +218,7 @@ test -f docs/plans/scheme-resource-ownership-and-coexistence-plan.md
 test -f docs/architecture/decisions/0034-multi-scheme-resource-ownership.md
 ```
 
-**P0 已完成。** 不要删除 `default.yaml` 或关校验。不凭计划自行进入 P2/P3。
+**当前工程进度：P0–P3 已实现并完成有界自动化与 Human-attested 真机验证。** 不要删除 `default.yaml` 或关闭校验。ADR 0034 仍为 Proposed；P4、正式 Quality 结论、Product Gate、merge 与 TestFlight 均未由这些工程结果自动授权。
 
 ## 9. 停止条件
 

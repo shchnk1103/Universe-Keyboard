@@ -223,20 +223,36 @@ public struct RimeBuiltinResourceInstaller {
         )
         let sharedRoot = rimeRoot.appendingPathComponent("shared", isDirectory: true)
         let receiptURL = rimeRoot.appendingPathComponent(Self.resourceReceiptFileName)
-        let priorReceiptData = try? Data(contentsOf: receiptURL)
-        // Never trust a stale-path ownership claim from receipt JSON alone.
-        // When a receipt exists, its manifest hash and every currently owned
-        // byte must validate before it may authorize removals.
-        let priorManifest = try priorReceiptData.map { _ in
-            try validateInstalledResourcesAllowingKnownPreludePollution(
-                rimeRoot: rimeRoot,
-                sourceRoot: sourceRoot,
-                sharedRoot: sharedRoot
-            ).manifest
+        let priorReceiptData: Data?
+        if fileManager.fileExists(atPath: receiptURL.path) {
+            do {
+                priorReceiptData = try Data(contentsOf: receiptURL)
+            } catch {
+                // A present but unreadable receipt is unknown ownership state.
+                // Do not treat it as a clean install and overwrite live bytes.
+                throw InstallationError.fileOperationFailed
+            }
+        } else {
+            priorReceiptData = nil
         }
         var mutations: [Mutation] = []
+        var priorManifest: Manifest?
 
         do {
+            // Never trust a stale-path ownership claim from receipt JSON alone.
+            // When a receipt exists, its manifest hash and every currently owned
+            // byte must validate before it may authorize removals. A known
+            // Prelude recovery joins the same mutation ledger so any later
+            // install failure restores the exact pre-transaction bytes.
+            if priorReceiptData != nil {
+                priorManifest = try validateInstalledResourcesAllowingKnownPreludePollution(
+                    rimeRoot: rimeRoot,
+                    sourceRoot: sourceRoot,
+                    sharedRoot: sharedRoot,
+                    backupRoot: backupRoot,
+                    mutations: &mutations
+                ).manifest
+            }
             try fileManager.createDirectory(at: stagedShared, withIntermediateDirectories: true)
             try copyManifestAndEntries(manifest, from: sourceRoot, to: stagedShared)
             _ = try validateResourceTree(at: stagedShared)
@@ -320,7 +336,6 @@ public struct RimeBuiltinResourceInstaller {
             }
             try? fileManager.removeItem(at: backupRoot)
             try? fileManager.removeItem(at: stagingRoot)
-            try? fileManager.removeItem(at: Self.preludePollutionBackupDirectory(in: rimeRoot))
             return InstallationResult(
                 generationID: manifest.generationID,
                 fileCount: manifest.entries.count,
@@ -339,40 +354,34 @@ public struct RimeBuiltinResourceInstaller {
         }
     }
 
-    private static func preludePollutionBackupDirectory(in rimeRoot: URL) -> URL {
-        rimeRoot.appendingPathComponent(".prelude-pollution-backup", isDirectory: true)
-    }
-
     /// Restores Prelude `default.yaml` only when the live file matches a pinned
     /// third-party fingerprint. Unknown bytes stay fail-closed.
-    @discardableResult
     private func recoverKnownDefaultYamlPollution(
         sharedRoot: URL,
         sourceRoot: URL,
-        rimeRoot: URL
-    ) throws -> Bool {
+        backupRoot: URL
+    ) throws -> Mutation? {
         let liveURL = sharedRoot.appendingPathComponent("default.yaml")
         let sourceURL = sourceRoot.appendingPathComponent("default.yaml")
         guard fileManager.fileExists(atPath: liveURL.path),
             fileManager.fileExists(atPath: sourceURL.path)
         else {
-            return false
+            return nil
         }
         let liveSHA = try Self.sha256(of: liveURL)
         guard knownPreludePollutionSHA256.contains(liveSHA) else {
-            return false
+            return nil
         }
-        let backupRoot = Self.preludePollutionBackupDirectory(in: rimeRoot)
-        let backupURL = backupRoot.appendingPathComponent("default.yaml")
-        try fileManager.createDirectory(at: backupRoot, withIntermediateDirectories: true)
-        if fileManager.fileExists(atPath: backupURL.path) {
-            try fileManager.removeItem(at: backupURL)
-        }
+        let backupURL = backupRoot.appendingPathComponent("known-prelude-pollution/default.yaml")
+        try fileManager.createDirectory(
+            at: backupURL.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
         try fileManager.copyItem(at: liveURL, to: backupURL)
         do {
             try fileManager.removeItem(at: liveURL)
             try fileManager.copyItem(at: sourceURL, to: liveURL)
-            return true
+            return Mutation(destination: liveURL, backup: backupURL, installedNew: true)
         } catch {
             if fileManager.fileExists(atPath: liveURL.path) {
                 try? fileManager.removeItem(at: liveURL)
@@ -385,7 +394,9 @@ public struct RimeBuiltinResourceInstaller {
     private func validateInstalledResourcesAllowingKnownPreludePollution(
         rimeRoot: URL,
         sourceRoot: URL,
-        sharedRoot: URL
+        sharedRoot: URL,
+        backupRoot: URL,
+        mutations: inout [Mutation]
     ) throws -> ResourceReceipt {
         do {
             return try validateInstalledResources(rimeRoot: rimeRoot)
@@ -393,14 +404,15 @@ public struct RimeBuiltinResourceInstaller {
             where error == .byteCountMismatch || error == .checksumMismatch
         {
             guard
-                try recoverKnownDefaultYamlPollution(
+                let recoveryMutation = try recoverKnownDefaultYamlPollution(
                     sharedRoot: sharedRoot,
                     sourceRoot: sourceRoot,
-                    rimeRoot: rimeRoot
+                    backupRoot: backupRoot
                 )
             else {
                 throw error
             }
+            mutations.append(recoveryMutation)
             return try validateInstalledResources(rimeRoot: rimeRoot)
         }
     }

@@ -88,3 +88,15 @@ First Architecture/Quality runtimes ended on quota without conclusions and later
 Use the candidate built from PR #100, not the old TestFlight binary. Verify Rime Ice can download/install/deploy, then normal input; verify Wanxiang remains installable. To exercise failure attribution, interrupt/deny a download, navigate to the other scheme and back: the unrelated page must show no stale error, the originating page must retain its own error, and retry must address that scheme. Switching the active input scheme is distinct from navigating its detail page.
 
 Physical-device and TestFlight acceptance remain pending; Simulator tests do not replace them. No device, merge or upload was performed.
+
+## 2026-09-07 takeover verification
+
+Current Codex reconstructed Grok's state from branch/worktree evidence because the supplied external session ID was not readable through the Codex task API. Frozen committed input was `b90d236`; the P3 transaction correction and Human-attested governance records remained uncommitted during this verification.
+
+- KeyboardCore: 1076 passed, zero failures.
+- RimeBridgeTests after transaction and unreadable-receipt corrections: 101 executed, 81 passed, 20 existing conditional skips, zero failures. Failure injection verifies both a later resource-install failure and a partially completed overlay replacement restore the exact pre-transaction pollution bytes; the latter also restores both prior receipts.
+- Full App/Keyboard: UniverseKeyboardTests 294 executed with 4 skips and zero failures; KeyboardTests 11 passed. The full run's opt-in fixture case was skipped because the first invocation used the test-process variable directly. A separate run then used launch-side `TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT=/private/tmp/rime-ice-20260630`; `testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing` passed without skip and covered both sources, both Lua modes, staged SHA and all four rewritten schema references.
+- Changed Swift strict format passed; 12 vendor artifacts passed structural verification.
+- Strict Debug and Release Simulator builds passed on Xcode-beta / iOS 26.5, simulator `36BAABED-6846-4F9A-A672-6884B54CF50E`, isolated DerivedData `/private/tmp/uk-scheme-takeover-derived`.
+
+Independent Architecture first returned Fail for recovery rollback/static backup. After the transaction correction, its delta review closed both findings and retained P4/Quality/Product residuals. This evidence is executor-run; the reviewer did not rerun tests. No fresh hosted CI, merge, TestFlight or device action was performed.
