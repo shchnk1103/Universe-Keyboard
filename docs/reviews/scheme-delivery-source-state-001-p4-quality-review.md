@@ -32,7 +32,7 @@ prior Quality P1（present-but-unreadable receipt 被当成缺省）在冻结 ti
 3. Wanxiang P4 / 升级、Ice Lua `dofile`、ADR Proposed、merge / TestFlight 等必须保持开放（见 Residuals）。
 4. 生产 installer「stage 中途失败」缺显式故障注入测试（Q-P2-01）；不阻断本切片合同，但不得宣称文件系统 fail-closed 已被全矩阵钉死。
 
-Finding counts: **P0: 0 · P1: 0 · P2: 1 · P3: 4**
+Finding counts: **P0: 0 · P1: 0 · P2: 1 · P3: 4**（冻结 `18f0d07` 时点）。**Q-P2-01 delta residual：P2: 0** — 见 [`p4-quality-rereview-qp201`](scheme-delivery-source-state-001-p4-quality-rereview-qp201.md)（冻结 `0315908`）；**不**改写本文件整体 Verdict。
 
 本 Verdict：
 
@@ -131,6 +131,8 @@ Finding counts: **P0: 0 · P1: 0 · P2: 1 · P3: 4**
 
 **Executor remediation (2026-09-07 Asia/Shanghai):** addressed by `testIceUninstallStagingMidMoveFailureRestoresOwnedFiles` in `SchemeResourcePreparationCoexistenceTests.swift`. Seam: existing production `SharedContainerSchemaArchiveInstaller(fileManager:)` dependency + test-only `MoveItemFailureFileManager` that fails once on the 2nd `moveItem` into the production `stageSchemaUninstall` path; asserts throw + owned bytes restored + no live `.schema-uninstall-*` pollution. No production fail-closed weakening. Does **not** rewrite this review Verdict — residual closed by engineering evidence pending independent delta Quality if required.
 
+**Independent Quality delta (2026-09-07 Asia/Shanghai):** **Closed** — [`scheme-delivery-source-state-001-p4-quality-rereview-qp201.md`](scheme-delivery-source-state-001-p4-quality-rereview-qp201.md) （冻结 `0315908ed4ebc0f9b947e0f922db9fd4d9add7dd`）。本 residual **P2: 0**。原 P4 Verdict 仍为 Pass with conditions；未 Accept ADR / Product Gate / merge。
+
 ### Q-P3-01 — stage 成功到 commit 之间的崩溃窗口
 
 **Severity: P3**
@@ -166,3 +168,18 @@ Human-attested 成功烟雾与工程合同方向一致；失败回滚未测；�
 - 未闭合 Wanxiang P4、Ice 动态 Lua、升级合同
 - 未将 CI green 或 Human 口头烟雾升级为失败回滚真机证明
 - 未修改生产 Swift/ObjC，未弱化测试
+
+---
+
+## Quality delta — Q-P2-01（Independent，2026-09-07 Asia/Shanghai）
+
+| Field | Value |
+|---|---|
+| Freeze SHA | `0315908ed4ebc0f9b947e0f922db9fd4d9add7dd` |
+| Independence | 本 delta 审查者 **未**撰写 `0315908`；生产 Swift 只读；未实现更多测试；未整体改写上方 Verdict |
+| Delta Verdict（仅 Q-P2-01） | **Closed**（本 residual **P2: 0**） |
+| Full write-up | [`scheme-delivery-source-state-001-p4-quality-rereview-qp201.md`](scheme-delivery-source-state-001-p4-quality-rereview-qp201.md) |
+
+**证据摘要：** remediation 仅测试 + 文档；生产 `SchemaArchiveInstaller` 无 diff。`MoveItemFailureFileManager(failOnMoveNumber: 2)` 注入生产 `stageSchemaUninstall` 非首次 `moveItem` 失败；断言 `postProcessingFailed`、owned 字节恢复、无 live `.schema-uninstall-*`。既有 `fileManager:` 默认 `.default` 路径不变。
+
+**Non-claims：** 不改写整体 Pass with conditions 为无条件 Pass；不 Accept ADR；不 Product Gate / Assignment Closed / merge / TestFlight；不闭合 P3 与 Wanxiang / 真机失败回滚。
