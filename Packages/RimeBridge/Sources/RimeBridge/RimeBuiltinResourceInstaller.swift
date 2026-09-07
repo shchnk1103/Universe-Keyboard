@@ -179,18 +179,27 @@ public struct RimeBuiltinResourceInstaller {
 
     private let fileManager: FileManager
     private let testFailureBeforeInstallingPath: String?
+    private let knownPreludePollutionSHA256: Set<String>
+
+    /// Ice 2026.06.30 `default.yaml` bytes that P0 proved overwrite Prelude.
+    static let productionKnownPreludePollutionSHA256: Set<String> = [
+        "0dacfbaca4774c07a0adb2ca2380dc290ada5dfb97e027d54063790ebaca37cd"
+    ]
 
     public init(fileManager: FileManager = .default) {
         self.fileManager = fileManager
         self.testFailureBeforeInstallingPath = nil
+        self.knownPreludePollutionSHA256 = Self.productionKnownPreludePollutionSHA256
     }
 
     init(
         fileManager: FileManager = .default,
-        testFailureBeforeInstallingPath: String?
+        testFailureBeforeInstallingPath: String? = nil,
+        knownPreludePollutionSHA256: Set<String> = productionKnownPreludePollutionSHA256
     ) {
         self.fileManager = fileManager
         self.testFailureBeforeInstallingPath = testFailureBeforeInstallingPath
+        self.knownPreludePollutionSHA256 = knownPreludePollutionSHA256
     }
 
     /// Source validation completes before any shared-runtime mutation. A
@@ -219,7 +228,11 @@ public struct RimeBuiltinResourceInstaller {
         // When a receipt exists, its manifest hash and every currently owned
         // byte must validate before it may authorize removals.
         let priorManifest = try priorReceiptData.map { _ in
-            try validateInstalledResources(rimeRoot: rimeRoot).manifest
+            try validateInstalledResourcesAllowingKnownPreludePollution(
+                rimeRoot: rimeRoot,
+                sourceRoot: sourceRoot,
+                sharedRoot: sharedRoot
+            ).manifest
         }
         var mutations: [Mutation] = []
 
@@ -307,6 +320,7 @@ public struct RimeBuiltinResourceInstaller {
             }
             try? fileManager.removeItem(at: backupRoot)
             try? fileManager.removeItem(at: stagingRoot)
+            try? fileManager.removeItem(at: Self.preludePollutionBackupDirectory(in: rimeRoot))
             return InstallationResult(
                 generationID: manifest.generationID,
                 fileCount: manifest.entries.count,
@@ -322,6 +336,72 @@ public struct RimeBuiltinResourceInstaller {
             try? fileManager.removeItem(at: stagingRoot)
             try? fileManager.removeItem(at: backupRoot)
             throw InstallationError.fileOperationFailed
+        }
+    }
+
+    private static func preludePollutionBackupDirectory(in rimeRoot: URL) -> URL {
+        rimeRoot.appendingPathComponent(".prelude-pollution-backup", isDirectory: true)
+    }
+
+    /// Restores Prelude `default.yaml` only when the live file matches a pinned
+    /// third-party fingerprint. Unknown bytes stay fail-closed.
+    @discardableResult
+    private func recoverKnownDefaultYamlPollution(
+        sharedRoot: URL,
+        sourceRoot: URL,
+        rimeRoot: URL
+    ) throws -> Bool {
+        let liveURL = sharedRoot.appendingPathComponent("default.yaml")
+        let sourceURL = sourceRoot.appendingPathComponent("default.yaml")
+        guard fileManager.fileExists(atPath: liveURL.path),
+            fileManager.fileExists(atPath: sourceURL.path)
+        else {
+            return false
+        }
+        let liveSHA = try Self.sha256(of: liveURL)
+        guard knownPreludePollutionSHA256.contains(liveSHA) else {
+            return false
+        }
+        let backupRoot = Self.preludePollutionBackupDirectory(in: rimeRoot)
+        let backupURL = backupRoot.appendingPathComponent("default.yaml")
+        try fileManager.createDirectory(at: backupRoot, withIntermediateDirectories: true)
+        if fileManager.fileExists(atPath: backupURL.path) {
+            try fileManager.removeItem(at: backupURL)
+        }
+        try fileManager.copyItem(at: liveURL, to: backupURL)
+        do {
+            try fileManager.removeItem(at: liveURL)
+            try fileManager.copyItem(at: sourceURL, to: liveURL)
+            return true
+        } catch {
+            if fileManager.fileExists(atPath: liveURL.path) {
+                try? fileManager.removeItem(at: liveURL)
+            }
+            try fileManager.copyItem(at: backupURL, to: liveURL)
+            throw error
+        }
+    }
+
+    private func validateInstalledResourcesAllowingKnownPreludePollution(
+        rimeRoot: URL,
+        sourceRoot: URL,
+        sharedRoot: URL
+    ) throws -> ResourceReceipt {
+        do {
+            return try validateInstalledResources(rimeRoot: rimeRoot)
+        } catch let error as InstallationError
+            where error == .byteCountMismatch || error == .checksumMismatch
+        {
+            guard
+                try recoverKnownDefaultYamlPollution(
+                    sharedRoot: sharedRoot,
+                    sourceRoot: sourceRoot,
+                    rimeRoot: rimeRoot
+                )
+            else {
+                throw error
+            }
+            return try validateInstalledResources(rimeRoot: rimeRoot)
         }
     }
 

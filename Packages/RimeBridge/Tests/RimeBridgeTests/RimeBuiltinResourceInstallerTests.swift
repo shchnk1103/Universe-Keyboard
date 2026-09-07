@@ -55,6 +55,54 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: defaultURL), overwritten)
     }
 
+    func testKnownIceDefaultYamlPollutionIsRestoredFromOfficialSource() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
+        _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+
+        let defaultURL = rimeRoot.appendingPathComponent("shared/default.yaml")
+        let official = try Data(contentsOf: defaultURL)
+        let polluted = Data(repeating: 0x61, count: 14_842)
+        try polluted.write(to: defaultURL)
+        let pollutedSHA = sha256ForTest(of: polluted)
+
+        _ = try RimeBuiltinResourceInstaller(
+            knownPreludePollutionSHA256: [pollutedSHA]
+        ).install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+
+        XCTAssertEqual(try Data(contentsOf: defaultURL), official)
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: rimeRoot.appendingPathComponent(".prelude-pollution-backup").path
+            )
+        )
+    }
+
+    func testUnknownDefaultYamlPollutionStaysFailClosed() throws {
+        let fixture = try makeFixture()
+        defer { try? FileManager.default.removeItem(at: fixture.root) }
+        let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
+        _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
+
+        let defaultURL = rimeRoot.appendingPathComponent("shared/default.yaml")
+        let polluted = Data(repeating: 0x62, count: 14_842)
+        try polluted.write(to: defaultURL)
+
+        XCTAssertThrowsError(
+            try RimeBuiltinResourceInstaller().install(
+                sourceRoot: fixture.source,
+                rimeRoot: rimeRoot
+            )
+        ) { error in
+            XCTAssertEqual(
+                error as? RimeBuiltinResourceInstaller.InstallationError,
+                .byteCountMismatch
+            )
+        }
+        XCTAssertEqual(try Data(contentsOf: defaultURL), polluted)
+    }
+
     func testRedeployRestoresDefaultYamlWhenNoPriorReceiptExists() throws {
         let fixture = try makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
@@ -949,6 +997,10 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         try JSONSerialization.data(withJSONObject: manifest, options: [.prettyPrinted, .sortedKeys])
             .write(to: source.appendingPathComponent(RimeBuiltinResourceInstaller.manifestFileName))
         return (root, source)
+    }
+
+    private func sha256ForTest(of data: Data) -> String {
+        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
     }
 
     private func makeInstalledRuntimeFixture() throws -> (

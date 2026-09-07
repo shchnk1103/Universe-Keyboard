@@ -66,7 +66,7 @@ RIME 官方允许配置替换及 custom patch；配置引用不提供多个发�
 2. ~~完成递归依赖/同名文件审计。~~ 工程清单已落盘（含 CNB 万象 zip）。候选 A **尚未**保真：须把 Ice/T9/`melt_eng` 的 `default` 引用改到独立预设。卸载必须按文件归属，不能整目录删除 `lua/` 或 `opencc/`。万象与雾凇 Lua **无路径/基名碰撞**，但仍共用 `import_preset: default`。
 3. Human Product 与独立 Architecture 就计划 §5.1 决策点作出书面结论。
 4. 仅在接受后实现适配安装、ownership receipt 与有界恢复；独立 Quality/Architecture 复审。
-5. 真机验证内置 / 雾凇 / 万象安装顺序、卸载与失败回滚。
+5. 真机验证内置 / 雾凇 / 万象安装顺序、卸载与失败回滚。已知雾凇 2026.06.30 `default.yaml` 指纹的有界恢复已实现；未知改动仍 fail-closed。
 6. 编号若冲突则改号后再接受。
 
 在 3 完成前，本 ADR 保持 Proposed。

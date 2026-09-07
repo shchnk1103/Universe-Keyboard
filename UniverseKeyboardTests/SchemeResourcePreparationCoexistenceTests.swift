@@ -134,6 +134,27 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         )
     }
 
+    func testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+
+        let official = try Data(contentsOf: env.defaultYAMLURL)
+        let iceDefault = try iceDefaultYAMLData()
+        guard
+            sha256(iceDefault)
+                == "0dacfbaca4774c07a0adb2ca2380dc290ada5dfb97e027d54063790ebaca37cd"
+        else {
+            throw XCTSkip("Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery")
+        }
+        try iceDefault.write(to: env.defaultYAMLURL)
+
+        _ = try RimeBuiltinResourceInstaller().install(
+            sourceRoot: env.sourceRoot,
+            rimeRoot: env.rimeRoot
+        )
+        XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
+    }
+
     func testBuiltinOnlyRepeatedDeployRemainsIdempotent() throws {
         let env = try makeEnvironment()
         defer { env.tearDown() }

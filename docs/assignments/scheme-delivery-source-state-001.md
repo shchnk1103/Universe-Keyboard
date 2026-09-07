@@ -7,7 +7,7 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | P2 雾凇独立预设实现中/已落地：禁止覆盖共享 default.yaml；万象继续 skip。ADR 0034 仍 Proposed |
+| Current Phase | P3 有界恢复：已知雾凇 default.yaml 指纹可从官方源恢复。未知改动仍 fail-closed。ADR 0034 仍 Proposed |
 | Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no device-unique root-cause claim |
 | Next handoff / decision | Human 用隔离工程复测雾凇下载+部署；Architecture 评审 ADR 0034。PR #100 merge 仍单独授权 |
 | Residuals | 真机未发出 `InstallationError`；Ice Lua `dofile` 动态引用未闭合 |
@@ -80,4 +80,10 @@ Human: “万象先继续跳过，政策统一禁止覆盖，继续下一步.”
 
 Implementation: Ice `rime-ice-plan-2` / `rime-ice-post-2` copies bundled `default.yaml` to `rime_ice_preset.yaml`, rewrites Ice/T9/melt_eng/radical includes, skips installing `default.yaml`, and uninstalls Ice lua files + `lua/cold_word_drop` + `opencc/emoji*` without removing official OpenCC. Wanxiang still skips `default.yaml`.
 
-Stop: no whole-directory `lua/` or `opencc/` deletion; no Wanxiang preset rewrite; no ADR Accepted; no device recovery of already-polluted phones (P3).
+Stop: no whole-directory `lua/` or `opencc/` deletion; no Wanxiang preset rewrite; no ADR Accepted.
+
+## 2026-09-07 P3 bounded recovery
+
+Human: “继续做 P3 有界恢复.”
+
+Restore Prelude `default.yaml` from the already-validated builtin source only when the live file SHA matches the pinned Ice 2026.06.30 fingerprint. Unknown bytes still fail closed. Backup is discarded after a successful install. Does not rewrite on-disk Ice schemas; re-download Ice to get `rime_ice_preset.yaml`.

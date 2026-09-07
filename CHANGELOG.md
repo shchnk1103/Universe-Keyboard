@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-09-07 — 已知雾凇 Prelude 污染的有界恢复
+
+- 仅当共享 `default.yaml` 匹配钉住的雾凇 2026.06.30 SHA 时，从已校验的官方源恢复。
+- 未知改动仍 fail-closed；成功后删除恢复备份。不整目录删除、不放宽 receipt。
+
 ## 2026-09-07 — 雾凇独立预设，禁止覆盖 Prelude `default.yaml`
 
 - 雾凇安装改为 `rime_ice_preset.yaml`，并改写 schema 引用；共享 `default.yaml` 保持官方 Prelude 字节。
