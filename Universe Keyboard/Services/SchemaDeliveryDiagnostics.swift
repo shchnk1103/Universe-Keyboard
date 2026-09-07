@@ -69,6 +69,7 @@ nonisolated enum SchemeDeliveryDiagnosticMapper {
     static func stagedIdentity(_ id: String) -> DiagnosticEvent.SchemeStagedIdentity? {
         switch id {
         case "rime-ice-20260630-plan1-post1": .rimeIce20260630Plan1Post1
+        case "rime-ice-20260630-plan2-post2": .rimeIce20260630Plan2Post2
         case "rime-ice-nightly-plan1-post1": .rimeIceNightlyPlan1Post1
         case "wanxiang-17.5.9-plan1-post1": .wanxiang1759Plan1Post1
         default: nil

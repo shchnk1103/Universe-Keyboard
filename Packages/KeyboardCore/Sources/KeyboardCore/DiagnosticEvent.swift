@@ -325,6 +325,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
 
     public enum SchemeStagedIdentity: String, Codable, Sendable {
         case rimeIce20260630Plan1Post1 = "rime_ice_20260630_plan1_post1"
+        case rimeIce20260630Plan2Post2 = "rime_ice_20260630_plan2_post2"
         case rimeIceNightlyPlan1Post1 = "rime_ice_nightly_plan1_post1"
         case wanxiang1759Plan1Post1 = "wanxiang_17_5_9_plan1_post1"
     }

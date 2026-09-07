@@ -1,5 +1,6 @@
 import CryptoKit
 import Foundation
+import KeyboardCore
 import XCTest
 
 @testable import RimeBridge
@@ -9,14 +10,15 @@ import XCTest
 /// Does not use App Group; the installer seam only substitutes the container root.
 @MainActor
 final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
-    func testIcePlanInstallsDefaultYamlAndBuiltinRedeployFailsWithByteCountMismatch() throws {
+    func testIcePlanSkipsDefaultYamlAndInstallsPrivatePreset() throws {
         let env = try makeEnvironment()
         defer { env.tearDown() }
 
         let official = try Data(contentsOf: env.defaultYAMLURL)
         let icePlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
-        XCTAssertTrue(icePlan.shouldInstall(relativePath: "default.yaml", luaAvailable: true))
-        XCTAssertFalse(icePlan.removableFiles.contains("default.yaml"))
+        XCTAssertFalse(icePlan.shouldInstall(relativePath: "default.yaml", luaAvailable: true))
+        XCTAssertTrue(icePlan.shouldInstall(relativePath: "rime_ice_preset.yaml", luaAvailable: true))
+        XCTAssertTrue(icePlan.skippedFiles.contains("default.yaml"))
 
         let iceDefault = try iceDefaultYAMLData()
         XCTAssertNotEqual(iceDefault.count, official.count)
@@ -24,28 +26,23 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         let extract = env.root.appendingPathComponent("ice-extract", isDirectory: true)
         try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
         try iceDefault.write(to: extract.appendingPathComponent("default.yaml"))
+        try iceDefault.write(to: extract.appendingPathComponent("rime_ice_preset.yaml"))
         try Data("ice-schema".utf8).write(to: extract.appendingPathComponent("rime_ice.schema.yaml"))
 
         try env.installer.installSchemaFiles(from: extract, plan: icePlan, luaAvailable: true)
 
-        XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), iceDefault)
+        XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
         XCTAssertEqual(
-            try Data(contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml")),
-            Data("ice-schema".utf8)
+            try Data(contentsOf: env.shared.appendingPathComponent("rime_ice_preset.yaml")),
+            iceDefault
         )
-
-        XCTAssertThrowsError(
+        XCTAssertNoThrow(
             try RimeBuiltinResourceInstaller().install(
                 sourceRoot: env.sourceRoot,
                 rimeRoot: env.rimeRoot
             )
-        ) { error in
-            XCTAssertEqual(
-                error as? RimeBuiltinResourceInstaller.InstallationError,
-                .byteCountMismatch
-            )
-        }
-        XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), iceDefault)
+        )
+        XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
     }
 
     func testWanxiangPlanSkipsDefaultYamlSoBuiltinRedeploySucceeds() throws {
@@ -79,16 +76,32 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
     }
 
-    func testIceUninstallLeavesOverwrittenDefaultYaml() throws {
+    func testIceUninstallRemovesPresetAndLeavesOfficialDefaultYaml() throws {
         let env = try makeEnvironment()
         defer { env.tearDown() }
 
+        let official = try Data(contentsOf: env.defaultYAMLURL)
         let icePlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
         let iceDefault = try iceDefaultYAMLData()
         let extract = env.root.appendingPathComponent("ice-extract", isDirectory: true)
         try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
         try iceDefault.write(to: extract.appendingPathComponent("default.yaml"))
+        try iceDefault.write(to: extract.appendingPathComponent("rime_ice_preset.yaml"))
         try Data("ice-schema".utf8).write(to: extract.appendingPathComponent("rime_ice.schema.yaml"))
+        try FileManager.default.createDirectory(
+            at: extract.appendingPathComponent("opencc", isDirectory: true),
+            withIntermediateDirectories: true
+        )
+        try FileManager.default.createDirectory(
+            at: extract.appendingPathComponent("lua", isDirectory: true),
+            withIntermediateDirectories: true
+        )
+        try Data("emoji".utf8).write(
+            to: extract.appendingPathComponent("opencc/emoji.json")
+        )
+        try Data("lua".utf8).write(
+            to: extract.appendingPathComponent("lua/date_translator.lua")
+        )
         try env.installer.installSchemaFiles(from: extract, plan: icePlan, luaAvailable: true)
 
         env.installer.uninstallSchemaFiles(plan: icePlan)
@@ -98,18 +111,27 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
                 atPath: env.shared.appendingPathComponent("rime_ice.schema.yaml").path
             )
         )
-        XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), iceDefault)
-        XCTAssertThrowsError(
-            try RimeBuiltinResourceInstaller().install(
-                sourceRoot: env.sourceRoot,
-                rimeRoot: env.rimeRoot
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent("rime_ice_preset.yaml").path
             )
-        ) { error in
-            XCTAssertEqual(
-                error as? RimeBuiltinResourceInstaller.InstallationError,
-                .byteCountMismatch
+        )
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent("lua/date_translator.lua").path
             )
-        }
+        )
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent("opencc/emoji.json").path
+            )
+        )
+        XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent("opencc/s2t.json").path
+            )
+        )
     }
 
     func testBuiltinOnlyRepeatedDeployRemainsIdempotent() throws {
@@ -124,31 +146,38 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
     }
 
-    func testProductionProcessedIceTreeOverwritesDefaultYamlWhenFixturePresent() throws {
-        let extract = try iceProcessedExtractURL()
+    func testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent() throws {
+        let fixture = try iceProcessedExtractURL()
         let env = try makeEnvironment()
         defer { env.tearDown() }
 
+        let extract = env.root.appendingPathComponent("ice-copy", isDirectory: true)
+        try FileManager.default.copyItem(at: fixture, to: extract)
+        try RimeIceSharedDefaultAdapter.apply(in: extract)
+
+        let official = try Data(contentsOf: env.defaultYAMLURL)
         let icePlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
         try env.installer.installSchemaFiles(from: extract, plan: icePlan, luaAvailable: true)
 
-        let installed = try Data(contentsOf: env.defaultYAMLURL)
-        XCTAssertEqual(installed.count, 14_842)
+        XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
+        let preset = try Data(contentsOf: env.shared.appendingPathComponent("rime_ice_preset.yaml"))
+        XCTAssertEqual(preset.count, 14_842)
         XCTAssertEqual(
-            sha256(installed),
+            sha256(preset),
             "0dacfbaca4774c07a0adb2ca2380dc290ada5dfb97e027d54063790ebaca37cd"
         )
-        XCTAssertThrowsError(
+        let schema = try String(
+            contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml"),
+            encoding: .utf8
+        )
+        XCTAssertTrue(schema.contains("__include: rime_ice_preset:/punctuator"))
+        XCTAssertNoThrow(
             try RimeBuiltinResourceInstaller().install(
                 sourceRoot: env.sourceRoot,
                 rimeRoot: env.rimeRoot
             )
-        ) { error in
-            XCTAssertEqual(
-                error as? RimeBuiltinResourceInstaller.InstallationError,
-                .byteCountMismatch
-            )
-        }
+        )
+        XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
     }
 
     private struct Environment {

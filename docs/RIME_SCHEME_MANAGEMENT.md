@@ -36,13 +36,13 @@ or Octagram models are not part of this closure. Any pin, manifest, fuzzy
 overlay, OpenCC profile or generated-artifact change reopens ADR 0033 and F-02
 revalidation.
 
-Downloaded 雾凇 (`rime-ice-plan-1`) currently admits `default.yaml`; 万象
-skips it. Fog uninstall does not list `default.yaml` as removable. That is a
-known shared-file conflict with the built-in Prelude bytes, not an accepted
-ownership policy. Device evidence after a successful dated Ice install stopped
-at `resource_preparation`; the exact installer error is unproven. See
-[`SCHEME-DELIVERY-SOURCE-STATE-001`](assignments/scheme-delivery-source-state-001.md),
-the [coexistence plan](plans/scheme-resource-ownership-and-coexistence-plan.md)
+Candidate A (Human `2026-09-07`): the shared file named `default.yaml` is
+always the official Prelude copy. Downloadable schemes must not overwrite it.
+Ice `rime-ice-plan-2` installs `rime_ice_preset.yaml` and rewrites schema
+references; Wanxiang continues to skip its bundled `default.yaml`. Uninstall
+deletes Ice-owned `lua/*` files, `lua/cold_word_drop/`, and `opencc/emoji*`,
+never the whole `lua/` or `opencc/` directories. See
+[`SCHEME-DELIVERY-SOURCE-STATE-001`](assignments/scheme-delivery-source-state-001.md)
 and Proposed [ADR 0034](architecture/decisions/0034-multi-scheme-resource-ownership.md).
 
 ## User-Facing Model

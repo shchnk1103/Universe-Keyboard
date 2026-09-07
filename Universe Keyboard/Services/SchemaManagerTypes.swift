@@ -272,7 +272,7 @@ enum RimeSchemeCatalog {
                             expectedByteCount: 16_050_491,
                             archiveSHA256: "675d23b070be00e1b800f9a6db033ef98f4493cd5b568ed8aa3b3541769c46ac",
                             allowedRedirectHosts: ["mirror.nju.edu.cn"],
-                            stagedIdentityID: "rime-ice-20260630-plan1-post1"
+                            stagedIdentityID: "rime-ice-20260630-plan2-post2"
                         ),
                         RimeSchemeSourceVariant(
                             id: "github",
@@ -287,21 +287,21 @@ enum RimeSchemeCatalog {
                                 "github.com", "release-assets.githubusercontent.com",
                                 "objects.githubusercontent.com",
                             ],
-                            stagedIdentityID: "rime-ice-20260630-plan1-post1"
+                            stagedIdentityID: "rime-ice-20260630-plan2-post2"
                         ),
                     ],
                     stagedIdentities: [
                         RimeSchemeStagedIdentity(
-                            id: "rime-ice-20260630-plan1-post1",
+                            id: "rime-ice-20260630-plan2-post2",
                             artifactIdentityID: "rime-ice-20260630-675d23b0",
                             schemeID: "rime_ice",
                             version: "2026.06.30",
                             stagedContentSHA256WithLua:
-                                "df0fd1c9b8634cef9f0c832f11b0ccc47940047f331242fc7476bc19d6693b37",
+                                "781f61ce95526bf117cc3316dde014b1ab8cd941be9ecbf0c975b2e7a9a57701",
                             stagedContentSHA256WithoutLua:
-                                "22d420406168ef53d7c94ac9cfe3bdf5401192334c1bf0518915c1f8317b1d51",
-                            installationPlanRevision: "rime-ice-plan-1",
-                            postProcessingRevision: "rime-ice-post-1"
+                                "9ea56858c4d77fd69daeeb6444ec5fc59ce29b7623b7de0a92cfc67801088654",
+                            installationPlanRevision: "rime-ice-plan-2",
+                            postProcessingRevision: "rime-ice-post-2"
                         )
                     ]
                 ),
@@ -310,7 +310,7 @@ enum RimeSchemeCatalog {
             ),
             storage: .downloaded(prefix: "rime_ice"),
             installationPlan: RimeSchemeInstallationPlan(
-                revision: "rime-ice-plan-1",
+                revision: "rime-ice-plan-2",
                 schemaFileName: "rime_ice.schema.yaml",
                 luaDirectoryPrefix: "lua/",
                 allowedFiles: [
@@ -318,11 +318,11 @@ enum RimeSchemeCatalog {
                     "radical_pinyin.schema.yaml", "radical_pinyin.dict.yaml",
                     "melt_eng.schema.yaml", "melt_eng.dict.yaml",
                     "symbols_v.yaml", "symbols_caps_v.yaml",
-                    "custom_phrase.txt", "default.yaml", "t9.schema.yaml",
+                    "custom_phrase.txt", "rime_ice_preset.yaml", "t9.schema.yaml",
                 ],
                 allowedPrefixes: ["cn_dicts/", "en_dicts/", "lua/", "opencc/"],
                 skippedPrefixes: ["squirrel", "weasel", "recipe", "others/"],
-                skippedFiles: [],
+                skippedFiles: ["default.yaml"],
                 removableFiles: [
                     "rime_ice.schema.yaml", "rime_ice.dict.yaml",
                     "radical_pinyin.schema.yaml", "radical_pinyin.dict.yaml",
@@ -330,10 +330,36 @@ enum RimeSchemeCatalog {
                     "symbols_v.yaml", "symbols_caps_v.yaml",
                     "custom_phrase.txt",
                     "rime.lua",
+                    "rime_ice_preset.yaml",
                     "t9.schema.yaml",
                     "t9.custom.yaml",
+                    "opencc/emoji.json",
+                    "opencc/emoji.txt",
+                    "opencc/others.txt",
+                    "lua/autocap_filter.lua",
+                    "lua/calc_translator.lua",
+                    "lua/cn_en_spacer.lua",
+                    "lua/convert_ar_num_to_zh.lua",
+                    "lua/corrector.lua",
+                    "lua/date_translator.lua",
+                    "lua/debuger.lua",
+                    "lua/en_spacer.lua",
+                    "lua/force_gc.lua",
+                    "lua/is_in_user_dict.lua",
+                    "lua/long_word_filter.lua",
+                    "lua/lunar.db",
+                    "lua/lunar.lua",
+                    "lua/number_translator.lua",
+                    "lua/pin_cand_filter.lua",
+                    "lua/reduce_english_filter.lua",
+                    "lua/search.lua",
+                    "lua/select_character.lua",
+                    "lua/t9_preedit.lua",
+                    "lua/unicode.lua",
+                    "lua/uuid.lua",
+                    "lua/v_filter.lua",
                 ],
-                removableDirectories: ["cn_dicts", "en_dicts"],
+                removableDirectories: ["cn_dicts", "en_dicts", "lua/cold_word_drop"],
                 removableBuildFileSubstrings: ["rime_ice", "melt_eng", "radical_pinyin", "t9"]
             )
         ),
@@ -430,6 +456,7 @@ enum RimeSchemeCatalog {
                 ],
                 skippedFiles: [
                     "weasel.yaml",
+                    // Candidate A: never install a third-party default.yaml over Prelude.
                     "default.yaml",
                     "README.md",
                     "CHANGELOG.md",

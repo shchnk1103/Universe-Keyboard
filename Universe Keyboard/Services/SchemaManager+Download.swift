@@ -162,6 +162,7 @@ extension SchemaManager {
             }
             if schemaID == "rime_ice" {
                 try await sanitizeT9SchemaIfPresent(in: extractDir)
+                try await adaptIceSharedDefault(in: extractDir)
             }
             try ensureActive(operationID)
             recordPhase(
@@ -732,7 +733,7 @@ extension SchemaManager {
     /// are downloaded or installed.
     private func postProcessingRevision(for schemaID: String) -> String? {
         switch schemaID {
-        case "rime_ice": "rime-ice-post-1"
+        case "rime_ice": "rime-ice-post-2"
         case "wanxiang": "wanxiang-post-1"
         default: nil
         }
@@ -773,6 +774,16 @@ extension SchemaManager {
                 throw DownloadError.postProcessingFailed("高级功能兼容处理后配置无效")
             }
             try processed.write(to: schemaURL, atomically: true, encoding: .utf8)
+        }.value
+    }
+
+    private func adaptIceSharedDefault(in extractionDirectory: URL) async throws {
+        try await Task.detached(priority: .userInitiated) {
+            do {
+                try RimeIceSharedDefaultAdapter.apply(in: extractionDirectory)
+            } catch {
+                throw DownloadError.postProcessingFailed("雾凇公共配置无法改写为独立预设")
+            }
         }.value
     }
 

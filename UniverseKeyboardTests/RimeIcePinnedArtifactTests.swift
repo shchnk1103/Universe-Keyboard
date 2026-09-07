@@ -49,6 +49,7 @@ final class RimeIcePinnedArtifactTests: XCTestCase {
                     fromUpstreamYAML: String(contentsOf: t9, encoding: .utf8)
                 )
                 .write(to: t9, atomically: true, encoding: .utf8)
+                try RimeIceSharedDefaultAdapter.apply(in: root)
                 let identity = try manifest.resolvedStagedIdentity(for: source)
                 XCTAssertEqual(
                     try verifier.stagedContentSHA256(in: root, plan: plan, luaAvailable: luaAvailable),

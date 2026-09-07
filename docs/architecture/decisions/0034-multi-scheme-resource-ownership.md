@@ -20,7 +20,7 @@ RIME 官方允许配置替换及 custom patch；配置引用不提供多个发�
 
 ## Decision
 
-**尚未作出绑定 Decision。** 以下为提交 Architecture / Product 审查的候选，不是现行合同。
+**尚未 Architecture Accepted。** Human Product Owner 已于 `2026-09-07` 指定按候选 A 实现：共享 `default.yaml` 禁止被下载方案覆盖；万象继续 skip；雾凇改为独立预设。下列条文指导本切片实现，不是独立 Architecture Gate。
 
 候选 A：主 App 保持单一公共配置基线与既有官方字节；第三方方案所需预设使用独立名称并显式适配依赖；每一安装路径拥有明确的 owner 或批准的共享关系，安装/升级/卸载均依据 manifest/receipt。
 

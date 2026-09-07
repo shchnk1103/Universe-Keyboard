@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | P1 依赖清单已落盘。候选 A 引用改写未闭合。P2 未授权。ADR 0034 仍 Proposed |
+| Current Phase | P2 雾凇独立预设实现中/已落地：禁止覆盖共享 default.yaml；万象继续 skip。ADR 0034 仍 Proposed |
 | Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no device-unique root-cause claim |
-| Next handoff / decision | Human / Architecture 就计划 §5.1 拍板（是否采纳 A、预设改写范围、卸载归属）。PR #100 merge 仍单独授权 |
+| Next handoff / decision | Human 用隔离工程复测雾凇下载+部署；Architecture 评审 ADR 0034。PR #100 merge 仍单独授权 |
 | Residuals | 真机未发出 `InstallationError`；Ice Lua `dofile` 动态引用未闭合 |
 
 ## Authority and scope
@@ -73,3 +73,11 @@ Evidence: [`scheme-delivery-source-state-001-p1-2026-09-07.md`](../evidence/sche
 P1 Exit (engineering): same-path different-bytes collision is only `default.yaml`; Ice/T9/`melt_eng` still import that file; Ice uninstall leaves `default.yaml`, `lua/**`, `opencc/**`. CNB Wanxiang zip verified; Lua paths do not collide with Ice; Wanxiang also `import_preset: default` but does not install its own `default.yaml`. Candidate A is not reference-closed.
 
 Stop: do not accept ADR 0034; do not start P2 rewrite or recovery.
+
+## 2026-09-07 P2 Ice preset
+
+Human: “万象先继续跳过，政策统一禁止覆盖，继续下一步.”
+
+Implementation: Ice `rime-ice-plan-2` / `rime-ice-post-2` copies bundled `default.yaml` to `rime_ice_preset.yaml`, rewrites Ice/T9/melt_eng/radical includes, skips installing `default.yaml`, and uninstalls Ice lua files + `lua/cold_word_drop` + `opencc/emoji*` without removing official OpenCC. Wanxiang still skips `default.yaml`.
+
+Stop: no whole-directory `lua/` or `opencc/` deletion; no Wanxiang preset rewrite; no ADR Accepted; no device recovery of already-polluted phones (P3).

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-09-07 — 雾凇独立预设，禁止覆盖 Prelude `default.yaml`
+
+- 雾凇安装改为 `rime_ice_preset.yaml`，并改写 schema 引用；共享 `default.yaml` 保持官方 Prelude 字节。
+- 卸载按文件删除雾凇 `lua` 与 `opencc/emoji*`，不删除整个 `lua/` 或 `opencc/`。万象仍跳过自带 `default.yaml`。
+
 ## 2026-09-07 — P1 多方案资源归属清单
 
 - 记录内置与雾凇 admitted 集合：同名不同字节目前只有 `default.yaml`；Ice/T9 仍引用该文件。
