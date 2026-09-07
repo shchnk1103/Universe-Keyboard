@@ -111,4 +111,3 @@ Independent Quality then found one P1: a present-but-unreadable builtin resource
 Human authorized the active-scheme uninstall contract: switch to builtin `luna_pinyin` without treating deferred deploy as success; await successful Luna deployment before removing target files; then stage → commit scheme files (rollback on failure); any failure keeps the original scheme selection and files.
 
 Engineering: `SchemaManager.uninstallSchema` acquires the commit lease, deploys Luna under that lease when the target is active, stages removals, and only then commits. Restore redeploy runs before lease release. Unit coverage includes active success, Luna deploy failure, staging failure, and non-active uninstall. ADR 0034 remains Proposed. Wanxiang upgrade/uninstall and device Product Gate are not closed by this slice.
-
