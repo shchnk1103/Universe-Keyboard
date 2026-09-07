@@ -63,7 +63,7 @@ RIME 官方允许配置替换及 custom patch；配置引用不提供多个发�
 ## Follow-up Work
 
 1. ~~按计划 P0 在生产安装链上复现并记录真实失败类型。~~ 完成：`.byteCountMismatch`；真机枚举仍未发出。
-2. ~~完成递归依赖/同名文件审计。~~ 工程清单已落盘。候选 A **尚未**保真：须把 Ice/T9/`melt_eng` 的 `default` 引用改到独立预设，并补 `lua/`、`opencc/` 卸载归属。万象 zip 未在本机，Lua 前缀交集未闭合。
+2. ~~完成递归依赖/同名文件审计。~~ 工程清单已落盘（含 CNB 万象 zip）。候选 A **尚未**保真：须把 Ice/T9/`melt_eng` 的 `default` 引用改到独立预设。卸载必须按文件归属，不能整目录删除 `lua/` 或 `opencc/`。万象与雾凇 Lua **无路径/基名碰撞**，但仍共用 `import_preset: default`。
 3. Human Product 与独立 Architecture 就计划 §5.1 决策点作出书面结论。
 4. 仅在接受后实现适配安装、ownership receipt 与有界恢复；独立 Quality/Architecture 复审。
 5. 真机验证内置 / 雾凇 / 万象安装顺序、卸载与失败回滚。

@@ -10,7 +10,7 @@ Policy version: 1.0.0
 | Current Phase | P1 依赖清单已落盘。候选 A 引用改写未闭合。P2 未授权。ADR 0034 仍 Proposed |
 | Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no device-unique root-cause claim |
 | Next handoff / decision | Human / Architecture 就计划 §5.1 拍板（是否采纳 A、预设改写范围、卸载归属）。PR #100 merge 仍单独授权 |
-| Residuals | 真机未发出 `InstallationError`；万象 zip 本机缺失；Lua 动态 require 未闭合 |
+| Residuals | 真机未发出 `InstallationError`；Ice Lua `dofile` 动态引用未闭合 |
 
 ## Authority and scope
 
@@ -70,6 +70,6 @@ Human: “先不上真机，继续下一步.” Executor: current Grok session.
 
 Evidence: [`scheme-delivery-source-state-001-p1-2026-09-07.md`](../evidence/scheme-delivery-source-state-001-p1-2026-09-07.md).
 
-P1 Exit (engineering): same-path different-bytes collision is only `default.yaml`; Ice/T9/`melt_eng` still import that file; Ice uninstall leaves `default.yaml`, `lua/**`, `opencc/**`; Wanxiang archive not present. Candidate A is not reference-closed.
+P1 Exit (engineering): same-path different-bytes collision is only `default.yaml`; Ice/T9/`melt_eng` still import that file; Ice uninstall leaves `default.yaml`, `lua/**`, `opencc/**`. CNB Wanxiang zip verified; Lua paths do not collide with Ice; Wanxiang also `import_preset: default` but does not install its own `default.yaml`. Candidate A is not reference-closed.
 
 Stop: do not accept ADR 0034; do not start P2 rewrite or recovery.
