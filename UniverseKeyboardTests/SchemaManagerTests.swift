@@ -283,6 +283,80 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertTrue(installer.didClearBuildCache)
     }
 
+    func testShouldSkipIdenticalReinstallWhenReceiptMatchesStagedContent() throws {
+        let iceIdentity = try XCTUnwrap(
+            RimeSchemeCatalog.entry(for: "rime_ice")?
+                .distribution?
+                .manifest
+                .stagedIdentities
+                .first
+        )
+        let stagedSHA = iceIdentity.stagedContentSHA256WithLua
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_ice_installed": true,
+                "rime_ice_staged_content_checksum": stagedSHA,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let manager = makeManager(settings: settings, installer: installer)
+
+        XCTAssertTrue(
+            manager.shouldSkipIdenticalReinstall(
+                schemaID: "rime_ice",
+                stagedContentSHA256: stagedSHA
+            )
+        )
+        XCTAssertFalse(
+            manager.shouldSkipIdenticalReinstall(
+                schemaID: "rime_ice",
+                stagedContentSHA256: iceIdentity.stagedContentSHA256WithoutLua
+            ),
+            "a different staged digest must not no-op"
+        )
+        XCTAssertFalse(
+            manager.shouldSkipIdenticalReinstall(
+                schemaID: "rime_ice",
+                stagedContentSHA256: ""
+            )
+        )
+    }
+
+    func testShouldSkipIdenticalReinstallRequiresInstalledSchemaPresence() throws {
+        let wanxiangIdentity = try XCTUnwrap(
+            RimeSchemeCatalog.entry(for: "wanxiang")?
+                .distribution?
+                .manifest
+                .stagedIdentities
+                .first
+        )
+        let stagedSHA = wanxiangIdentity.stagedContentSHA256WithLua
+        let settings = StubSharedSettingsStore(
+            values: [
+                "wanxiang_installed": true,
+                "wanxiang_staged_content_checksum": stagedSHA,
+            ]
+        )
+        let missingInstaller = StubSchemaArchiveInstaller(containsInstalledSchema: false)
+        let missingManager = makeManager(settings: settings, installer: missingInstaller)
+        XCTAssertFalse(
+            missingManager.shouldSkipIdenticalReinstall(
+                schemaID: "wanxiang",
+                stagedContentSHA256: stagedSHA
+            ),
+            "receipt alone is insufficient without on-disk schema presence"
+        )
+
+        let presentInstaller = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let presentManager = makeManager(settings: settings, installer: presentInstaller)
+        XCTAssertTrue(
+            presentManager.shouldSkipIdenticalReinstall(
+                schemaID: "wanxiang",
+                stagedContentSHA256: stagedSHA
+            )
+        )
+    }
+
     func testDownloadSchemeDisplayNameUsesCatalogName() {
         let manager = makeManager()
         XCTAssertEqual(manager.downloadSchemeDisplayName(for: "rime_ice"), "雾凇拼音")

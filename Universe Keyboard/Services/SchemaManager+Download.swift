@@ -22,7 +22,9 @@ extension SchemaManager {
         if let plan = entry.installationPlan {
             archiveInstaller.clearBuildCache(plan: plan)
         }
-        startVerifiedDownload(schemaID: schemaID)
+        // Force still verifies archive/staged identity; identical-receipt no-op is
+        // bypassed so a deliberate reinstall can repair same-identity corruption.
+        startVerifiedDownload(schemaID: schemaID, force: true)
     }
 
     func fetchAndDownload() async {
@@ -32,10 +34,10 @@ extension SchemaManager {
     func fetchAndDownload(schemaID: String) async {
         let operationID = activeDownloadOperationID ?? UUID()
         activeDownloadOperationID = operationID
-        await fetchAndDownload(schemaID: schemaID, operationID: operationID)
+        await fetchAndDownload(schemaID: schemaID, operationID: operationID, force: false)
     }
 
-    private func fetchAndDownload(schemaID: String, operationID: UUID) async {
+    private func fetchAndDownload(schemaID: String, operationID: UUID, force: Bool) async {
         let schemeName = downloadSchemeDisplayName(for: schemaID)
         var temporaryItems: [URL] = []
         var diagnosticContext: DiagnosticEvent.SchemeDeliveryContext?
@@ -222,6 +224,30 @@ extension SchemaManager {
                 result: .succeeded
             )
 
+            // CS-03/04: identical staged identity vs installed receipt → idempotent
+            // no-op (no checkpoint, no live replace, no selection thrash). Force
+            // redownload bypasses this gate.
+            if !force,
+                shouldSkipIdenticalReinstall(
+                    schemaID: schemaID,
+                    stagedContentSHA256: stagedContentSHA256
+                )
+            {
+                cleanupTemporaryItems(temporaryItems)
+                activeDownloadOperationID = nil
+                currentDownloadTask = nil
+                rimeIceDownloadState = .completed(schemeName: schemeName)
+                refreshSchemaList()
+                recordTerminal(
+                    diagnosticContext,
+                    result: .completed,
+                    installed: true,
+                    deployed: true,
+                    failure: nil
+                )
+                return
+            }
+
             try await acquireActiveSchemeDeliveryCommitLease(operationID: operationID)
             ownsCommitLease = true
             recordPhase(
@@ -401,13 +427,17 @@ extension SchemaManager {
         }
     }
 
-    private func startVerifiedDownload(schemaID: String) {
+    private func startVerifiedDownload(schemaID: String, force: Bool = false) {
         let operationID = UUID()
         activeDownloadOperationID = operationID
         let schemeName = downloadSchemeDisplayName(for: schemaID)
         rimeIceDownloadState = .fetchingReleaseInfo(schemeName: schemeName)
         currentDownloadTask = Task { [weak self] in
-            await self?.fetchAndDownload(schemaID: schemaID, operationID: operationID)
+            await self?.fetchAndDownload(
+                schemaID: schemaID,
+                operationID: operationID,
+                force: force
+            )
         }
     }
 
@@ -883,6 +913,24 @@ extension SchemaManager {
         if activeSchemaID != priorActiveSchemaID {
             setActiveSchemaWithoutDeployment(priorActiveSchemaID)
         }
+    }
+
+    /// Returns true when an installed receipt already matches the staged content
+    /// about to be committed. Callers skip destructive replace / upgrade
+    /// checkpoint and keep the current scheme selection.
+    func shouldSkipIdenticalReinstall(schemaID: String, stagedContentSHA256: String) -> Bool {
+        guard !stagedContentSHA256.isEmpty,
+            let entry = downloadableEntry(for: schemaID),
+            let installedKey = entry.storage.installed,
+            settings.bool(forKey: installedKey),
+            let plan = entry.installationPlan,
+            archiveInstaller.containsInstalledSchema(plan: plan),
+            let stagedKey = entry.storage.stagedContentChecksum,
+            settings.string(forKey: stagedKey) == stagedContentSHA256
+        else {
+            return false
+        }
+        return true
     }
 
     private func persistVerifiedInstallation(

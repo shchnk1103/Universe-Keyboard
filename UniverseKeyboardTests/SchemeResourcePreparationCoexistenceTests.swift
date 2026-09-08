@@ -837,8 +837,269 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         )
     }
 
+    // MARK: - Cross-scheme matrix CS-03 / CS-04 (repeat install; peer retain)
+
+    /// CS-03: Dual-installed; repeat Ice with unchanged staged identity → no-op.
+    /// Peer Wanxiang retained; selection not thrashed (activate-just-installed is
+    /// for real installs only).
+    func testCS03_RepeatIceSameIdentity_NoOpKeepsWanxiangPeerAndSelection() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        var selection = CrossSchemeSelectionTracker()
+
+        try plantSharedFile(
+            env.shared,
+            relativePath: CrossSchemeDualInstall.unknownRelativePath,
+            data: CrossSchemeDualInstall.unknownBytes
+        )
+        let preludeBefore = try Data(contentsOf: env.defaultYAMLURL)
+        let openccBefore = sampleBuiltinOpenCCFingerprint(shared: env.shared)
+
+        try installIcePinnedIntoShared(env: env, selection: &selection)
+        try installWanxiangPinnedIntoShared(env: env, selection: &selection)
+        XCTAssertEqual(selection.activeSchemaID, "wanxiang")
+
+        let iceSchemaBefore = try Data(
+            contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml")
+        )
+        let wanxiangSchemaBefore = try Data(
+            contentsOf: env.shared.appendingPathComponent("wanxiang.schema.yaml")
+        )
+        let iceIdentity = try catalogStagedIdentity(schemaID: "rime_ice")
+        let stagedSHA = iceIdentity.stagedContentSHA256WithLua
+        let settings = CrossSchemeHarnessSettingsStore(
+            values: [
+                "rime_active_schema": selection.activeSchemaID,
+                "rime_ice_installed": true,
+                "rime_ice_version": iceIdentity.version,
+                "rime_ice_staged_content_checksum": stagedSHA,
+                "wanxiang_installed": true,
+            ]
+        )
+        let manager = SchemaManager(settings: settings, archiveInstaller: env.installer)
+        XCTAssertTrue(
+            manager.shouldSkipIdenticalReinstall(
+                schemaID: "rime_ice",
+                stagedContentSHA256: stagedSHA
+            ),
+            "identical Ice receipt must take the production no-op seam"
+        )
+        // No-op path: do not reinstall / do not activateJustInstalled.
+        XCTAssertEqual(
+            selection.activeSchemaID,
+            "wanxiang",
+            "no-op must keep current selection (Wanxiang)"
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml")),
+            iceSchemaBefore,
+            "Ice files must not be wiped on identical reinstall no-op"
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("wanxiang.schema.yaml")),
+            wanxiangSchemaBefore,
+            "peer Wanxiang must be retained"
+        )
+        try assertDualInstallPeerInventory(
+            env: env,
+            preludeBefore: preludeBefore,
+            openccBefore: openccBefore
+        )
+        XCTAssertFalse(
+            manager.shouldSkipIdenticalReinstall(
+                schemaID: "rime_ice",
+                stagedContentSHA256: String(repeating: "a", count: 64)
+            ),
+            "mismatched staged identity must not no-op"
+        )
+    }
+
+    /// CS-04: Dual-installed; repeat Wanxiang with unchanged identity → no-op.
+    /// Peer Ice retained; selection unchanged.
+    func testCS04_RepeatWanxiangSameIdentity_NoOpKeepsIcePeerAndSelection() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        var selection = CrossSchemeSelectionTracker()
+
+        try plantSharedFile(
+            env.shared,
+            relativePath: CrossSchemeDualInstall.unknownRelativePath,
+            data: CrossSchemeDualInstall.unknownBytes
+        )
+        let preludeBefore = try Data(contentsOf: env.defaultYAMLURL)
+        let openccBefore = sampleBuiltinOpenCCFingerprint(shared: env.shared)
+
+        try installWanxiangPinnedIntoShared(env: env, selection: &selection)
+        try installIcePinnedIntoShared(env: env, selection: &selection)
+        XCTAssertEqual(selection.activeSchemaID, "rime_ice")
+
+        let iceSchemaBefore = try Data(
+            contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml")
+        )
+        let wanxiangSchemaBefore = try Data(
+            contentsOf: env.shared.appendingPathComponent("wanxiang.schema.yaml")
+        )
+        let wanxiangIdentity = try catalogStagedIdentity(schemaID: "wanxiang")
+        let stagedSHA = wanxiangIdentity.stagedContentSHA256WithLua
+        let settings = CrossSchemeHarnessSettingsStore(
+            values: [
+                "rime_active_schema": selection.activeSchemaID,
+                "wanxiang_installed": true,
+                "wanxiang_version": wanxiangIdentity.version,
+                "wanxiang_staged_content_checksum": stagedSHA,
+                "rime_ice_installed": true,
+            ]
+        )
+        let manager = SchemaManager(settings: settings, archiveInstaller: env.installer)
+        XCTAssertTrue(
+            manager.shouldSkipIdenticalReinstall(
+                schemaID: "wanxiang",
+                stagedContentSHA256: stagedSHA
+            ),
+            "identical Wanxiang receipt must take the production no-op seam"
+        )
+        XCTAssertEqual(
+            selection.activeSchemaID,
+            "rime_ice",
+            "no-op must keep current selection (Ice)"
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("wanxiang.schema.yaml")),
+            wanxiangSchemaBefore
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml")),
+            iceSchemaBefore,
+            "peer Ice must be retained"
+        )
+        try assertDualInstallPeerInventory(
+            env: env,
+            preludeBefore: preludeBefore,
+            openccBefore: openccBefore
+        )
+    }
+
+    /// CS-04 identity-change path: prior Wanxiang generation uses upgrade-rollback
+    /// checkpoint/replace; Ice peer paths and unknown/user files stay intact.
+    func testCS04_WanxiangIdentityChange_UpgradeRollbackPreservesIcePeer() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        var selection = CrossSchemeSelectionTracker()
+
+        try plantSharedFile(
+            env.shared,
+            relativePath: CrossSchemeDualInstall.unknownRelativePath,
+            data: CrossSchemeDualInstall.unknownBytes
+        )
+        let preludeBefore = try Data(contentsOf: env.defaultYAMLURL)
+        let openccBefore = sampleBuiltinOpenCCFingerprint(shared: env.shared)
+
+        try installIcePinnedIntoShared(env: env, selection: &selection)
+        try installWanxiangPinnedIntoShared(env: env, selection: &selection)
+
+        let iceSchemaBefore = try Data(
+            contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml")
+        )
+        let iceLuaURL = env.shared.appendingPathComponent(
+            CrossSchemeDualInstall.iceLuaRelativePath
+        )
+        let iceLuaBefore =
+            FileManager.default.fileExists(atPath: iceLuaURL.path)
+            ? try Data(contentsOf: iceLuaURL) : nil
+
+        let wanxiangPlan = try XCTUnwrap(
+            RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan
+        )
+        let wanxiangIdentity = try catalogStagedIdentity(schemaID: "wanxiang")
+        let settings = CrossSchemeHarnessSettingsStore(
+            values: [
+                "rime_active_schema": selection.activeSchemaID,
+                "wanxiang_installed": true,
+                "wanxiang_version": wanxiangIdentity.version,
+                // Prior receipt differs from the bytes we are about to stage.
+                "wanxiang_staged_content_checksum": wanxiangIdentity.stagedContentSHA256WithLua,
+                "rime_ice_installed": true,
+            ]
+        )
+        let manager = SchemaManager(settings: settings, archiveInstaller: env.installer)
+        let upgradedStaged = String(repeating: "b", count: 64)
+        XCTAssertFalse(
+            manager.shouldSkipIdenticalReinstall(
+                schemaID: "wanxiang",
+                stagedContentSHA256: upgradedStaged
+            ),
+            "changed identity must not no-op; upgrade-rollback path applies"
+        )
+
+        let checkpoint = try env.installer.createUpgradeCheckpoint(
+            plan: wanxiangPlan,
+            luaAvailable: true
+        )
+        XCTAssertNotNil(
+            checkpoint,
+            "prior Wanxiang generation must create an upgrade checkpoint"
+        )
+
+        let extract = env.root.appendingPathComponent(
+            "wanxiang-upgrade-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
+        let upgradedSchema = Data("wanxiang-schema-upgraded-identity".utf8)
+        try upgradedSchema.write(to: extract.appendingPathComponent("wanxiang.schema.yaml"))
+        try plantSharedFile(
+            extract,
+            relativePath: CrossSchemeDualInstall.wanxiangChaifenRelativePath,
+            data: Data("upgraded-chaifen".utf8)
+        )
+        try env.installer.installSchemaFiles(
+            from: extract,
+            plan: wanxiangPlan,
+            luaAvailable: true
+        )
+        selection.activateJustInstalled("wanxiang")
+
+        if let checkpoint {
+            env.installer.commitUpgradeCheckpoint(checkpoint)
+        }
+
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("wanxiang.schema.yaml")),
+            upgradedSchema
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml")),
+            iceSchemaBefore,
+            "Ice peer must survive Wanxiang upgrade-rollback replace"
+        )
+        if let iceLuaBefore {
+            XCTAssertEqual(try Data(contentsOf: iceLuaURL), iceLuaBefore)
+        }
+        XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), preludeBefore)
+        if let openccBefore {
+            XCTAssertEqual(
+                try Data(contentsOf: env.shared.appendingPathComponent(openccBefore.path)),
+                openccBefore.data
+            )
+        }
+        XCTAssertEqual(
+            try Data(
+                contentsOf: env.shared.appendingPathComponent(
+                    CrossSchemeDualInstall.unknownRelativePath
+                )
+            ),
+            CrossSchemeDualInstall.unknownBytes
+        )
+        XCTAssertTrue(
+            env.installer.containsInstalledSchema(
+                plan: try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+            )
+        )
+        XCTAssertEqual(selection.activeSchemaID, "wanxiang")
+    }
+
     /// In-harness selection for approved CS-01/02 policy (activate just-installed).
-    /// No SchemaManager production change in this freeze.
+    /// CS-03/04 no-op keeps this tracker unchanged; real installs still activate.
     private struct CrossSchemeSelectionTracker {
         var activeSchemaID: String = "luna_pinyin"
 
@@ -853,6 +1114,13 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         static let iceLuaRelativePath = "lua/date_translator.lua"
         static let wanxiangBitRelativePath = "lua/wanxiang/bit.lua"
         static let wanxiangChaifenRelativePath = "lua/data/chaifen.txt"
+    }
+
+    private func catalogStagedIdentity(schemaID: String) throws -> RimeSchemeStagedIdentity {
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: schemaID))
+        let manifest = try XCTUnwrap(entry.distribution?.manifest)
+        let source = try XCTUnwrap(manifest.sourceVariants.first)
+        return try manifest.resolvedStagedIdentity(for: source)
     }
 
     private func sampleBuiltinOpenCCFingerprint(shared: URL) -> (path: String, data: Data)? {
@@ -1223,6 +1491,24 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
     private func sha256(_ data: Data) -> String {
         SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
     }
+}
+
+/// Minimal settings store for CS-03/04 identical-receipt no-op decisions against
+/// the real dual-install container installer.
+@MainActor
+private final class CrossSchemeHarnessSettingsStore: SharedSettingsStoring {
+    private var values: [String: Any]
+
+    init(values: [String: Any] = [:]) {
+        self.values = values
+    }
+
+    func string(forKey key: String) -> String? { values[key] as? String }
+    func bool(forKey key: String) -> Bool { values[key] as? Bool ?? false }
+    func object(forKey key: String) -> Any? { values[key] }
+    func set(_ value: Any?, forKey key: String) { values[key] = value }
+    func removeObject(forKey key: String) { values.removeValue(forKey: key) }
+    func synchronize() {}
 }
 
 /// Test-only FileManager seam for Q-P2-01. Fails exactly once on the Nth
