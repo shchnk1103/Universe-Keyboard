@@ -27,9 +27,9 @@ Production `SchemaManager+Download` already restored via `restoreAfterFailedUpgr
 
 Required pin:
 
-1. Prior Wanxiang generation / installed state exists  
-2. Upgrade proceeds far enough to create checkpoint and mutate/install  
-3. **`deployRimeConfig` fails** (inject)  
+1. Prior Wanxiang generation / installed state exists
+2. Upgrade proceeds far enough to create checkpoint and mutate/install
+3. **`deployRimeConfig` fails** (inject)
 4. Assert: prior generation restored **or** checkpoint retained; **prior scheme selection restored**; **no new-version receipt** (`persistVerifiedInstallation` not applied / version keys unchanged)
 
 ---
