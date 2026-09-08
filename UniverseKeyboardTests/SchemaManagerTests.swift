@@ -1078,6 +1078,131 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "luna_pinyin")
     }
 
+    /// CS-09: the last active downloaded Ice scheme uses the same fail-closed
+    /// Luna path; a peer must not be required for the fallback to succeed.
+    func testCS09_UninstallLastActiveIceDeploysLunaAndClearsIceReceipt() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-ice-version",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.uninstallSchema("rime_ice")?.value
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin"])
+        XCTAssertTrue(installer.didStageUninstall)
+        XCTAssertTrue(installer.didCommitUninstall)
+        XCTAssertNil(settings.object(forKey: "rime_ice_installed"))
+        XCTAssertNil(settings.object(forKey: "rime_ice_version"))
+        XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "luna_pinyin")
+    }
+
+    /// CS-09: Wanxiang is symmetric when it is the only downloaded scheme.
+    func testCS09_UninstallLastActiveWanxiangDeploysLunaAndClearsWanxiangReceipt() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "wanxiang",
+                "wanxiang_installed": true,
+                "wanxiang_version": "17.5.9",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.uninstallSchema("wanxiang")?.value
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin"])
+        XCTAssertTrue(installer.didStageUninstall)
+        XCTAssertTrue(installer.didCommitUninstall)
+        XCTAssertNil(settings.object(forKey: "wanxiang_installed"))
+        XCTAssertNil(settings.object(forKey: "wanxiang_version"))
+        XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "luna_pinyin")
+    }
+
+    /// CS-10: after active Ice removal, the retained Wanxiang scheme can be
+    /// selected and deployed without reinstalling it.
+    func testCS10_RetainedWanxiangDeploysAfterActiveIceUninstall() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-ice-version",
+                "wanxiang_installed": true,
+                "wanxiang_version": "17.5.9",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.uninstallSchema("rime_ice")?.value
+        manager.activateSchema("wanxiang")
+        await manager.deployRimeConfig()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin", "wanxiang"])
+        XCTAssertNil(settings.object(forKey: "rime_ice_installed"))
+        XCTAssertTrue(settings.bool(forKey: "wanxiang_installed"))
+        XCTAssertEqual(manager.activeSchemaID, "wanxiang")
+        XCTAssertTrue(settings.bool(forKey: "rime_deployed"))
+        XCTAssertFalse(settings.bool(forKey: "rime_needs_deploy"))
+    }
+
+    /// CS-10: the retained Ice scheme is deployable after active Wanxiang
+    /// removal without reinstallation.
+    func testCS10_RetainedIceDeploysAfterActiveWanxiangUninstall() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "wanxiang",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-ice-version",
+                "wanxiang_installed": true,
+                "wanxiang_version": "17.5.9",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.uninstallSchema("wanxiang")?.value
+        manager.activateSchema("rime_ice")
+        await manager.deployRimeConfig()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin", "rime_ice"])
+        XCTAssertNil(settings.object(forKey: "wanxiang_installed"))
+        XCTAssertTrue(settings.bool(forKey: "rime_ice_installed"))
+        XCTAssertEqual(manager.activeSchemaID, "rime_ice")
+        XCTAssertTrue(settings.bool(forKey: "rime_deployed"))
+        XCTAssertFalse(settings.bool(forKey: "rime_needs_deploy"))
+    }
+
     /// CS-F2 for CS-07: a failed Luna deployment leaves both the active Ice
     /// target and its retained Wanxiang peer untouched, then restores Ice.
     func testCSF2_ActiveIceUninstallWithWanxiangPeerRestoresIceWhenLunaDeployFails() async {
