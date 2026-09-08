@@ -23,6 +23,7 @@ Product proposal for the upgrade slice: failed upgrades retain the prior scheme 
 
 Required validation: real pinned artifacts and production installer paths, exact ownership assertions, shared/user-file preservation, injected mid-operation failures, strict App/Keyboard gates, independent review. Physical-device and release decisions remain separate.
 
-## Progress note (2026-09-08, uncommitted)
+## Progress note (2026-09-08)
 
-Wanxiang exact-hash Lua ownership unit tests landed in `SchemeResourcePreparationCoexistenceTests` (uncommitted WIP). Evidence: [`../evidence/scheme-delivery-wanxiang-lua-ownership-2026-09-08.md`](../evidence/scheme-delivery-wanxiang-lua-ownership-2026-09-08.md). Ownership slice still open; not Product Gate / ADR Accept / merge.
+- Wanxiang exact-hash Lua ownership unit tests are **committed** (`8147034` and follow-ups on `codex/scheme-delivery-fix`). Evidence: [`../evidence/scheme-delivery-wanxiang-lua-ownership-2026-09-08.md`](../evidence/scheme-delivery-wanxiang-lua-ownership-2026-09-08.md). Ownership slice still open for full Wanxiang P4; not Product Gate / ADR Accept / merge.
+- **Upgrade-rollback contract Human Approved** + local implementation freeze (checkpoint / fail-closed restore / 4 coexistence tests + manager-level Q-UR-P2-01 deploy-failure test): [`scheme-delivery-wanxiang-upgrade-rollback-contract-2026-09-08.md`](scheme-delivery-wanxiang-upgrade-rollback-contract-2026-09-08.md). Independent Quality next; **no push / undraft / TestFlight / ADR Accept**.

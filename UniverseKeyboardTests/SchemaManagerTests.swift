@@ -692,6 +692,75 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(requests.last?.runtimeSmokeSchemaID, "rime_ice")
     }
 
+    /// Q-UR-P2-01: manager-level deploy-failure injection for Wanxiang upgrade-rollback.
+    /// Drives the production seam `deployInstalledUpgradeOrRestoreOnFailure` (shared with
+    /// `fetchAndDownload`) after a prior-generation checkpoint + install mutation.
+    func testWanxiangUpgradeRestoresPriorSelectionAndSkipsReceiptWhenDeployFails() async throws {
+        let priorVersion = "17.5.9"
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "luna_pinyin",
+                "wanxiang_installed": true,
+                "wanxiang_version": priorVersion,
+                "wanxiang_license_accepted": true,
+                "wanxiang_checksum": "prior-archive-sha",
+                "wanxiang_staged_content_checksum": "prior-staged-sha",
+                "wanxiang_source_variant": "cnb",
+            ]
+        )
+        let checkpoint = SchemaUpgradeCheckpoint(
+            rootURL: URL(fileURLWithPath: "/test/schema-upgrade-checkpoint"),
+            copiedRelativePaths: ["wanxiang.schema.yaml", "wanxiang.dict.yaml"]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            upgradeCheckpointToReturn: checkpoint
+        )
+        let deploymentService = StubDeploymentService(succeeded: false)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        let entry = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang"))
+        let plan = try XCTUnwrap(entry.installationPlan)
+
+        // 1–2. Prior generation present → checkpoint + mutate/install (manager install seam).
+        let created = try installer.createUpgradeCheckpoint(plan: plan, luaAvailable: true)
+        XCTAssertEqual(created?.copiedRelativePaths, checkpoint.copiedRelativePaths)
+        try installer.installSchemaFiles(
+            from: URL(fileURLWithPath: "/test/extract"),
+            plan: plan,
+            luaAvailable: true
+        )
+        XCTAssertTrue(installer.didInstallSchemaFiles)
+
+        // 3. Deploy fails via StubDeploymentService (same injection style as Luna uninstall).
+        var liveCheckpoint: SchemaUpgradeCheckpoint? = checkpoint
+        let deployed = await manager.deployInstalledUpgradeOrRestoreOnFailure(
+            schemaID: "wanxiang",
+            checkpoint: &liveCheckpoint,
+            priorActiveSchemaID: "luna_pinyin"
+        )
+
+        // 4. Assert restore + prior selection + no new-version receipt.
+        XCTAssertFalse(deployed)
+        XCTAssertTrue(installer.didRestoreUpgradeCheckpoint)
+        XCTAssertFalse(installer.didCommitUpgradeCheckpoint)
+        XCTAssertNil(liveCheckpoint, "successful restore must clear the live checkpoint")
+        XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "luna_pinyin")
+        XCTAssertEqual(settings.string(forKey: "wanxiang_version"), priorVersion)
+        XCTAssertEqual(settings.bool(forKey: "wanxiang_installed"), true)
+        XCTAssertEqual(settings.string(forKey: "wanxiang_checksum"), "prior-archive-sha")
+        XCTAssertEqual(settings.string(forKey: "wanxiang_staged_content_checksum"), "prior-staged-sha")
+        XCTAssertEqual(settings.string(forKey: "wanxiang_source_variant"), "cnb")
+        let requests = await deploymentService.requests
+        XCTAssertFalse(requests.isEmpty, "deploy must have been attempted")
+        XCTAssertEqual(requests.last?.runtimeSmokeSchemaID, "wanxiang")
+    }
+
     func testActiveUninstallRestoresSchemaWhenStagingFailsAfterLunaDeploy() async {
         let settings = StubSharedSettingsStore(
             values: [
@@ -1882,18 +1951,26 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     let directories: SchemaDeploymentDirectories
     private let containsInstalledSchema: Bool
     private let stageUninstallError: Error?
+    private let upgradeCheckpointToReturn: SchemaUpgradeCheckpoint?
+    private let restoreUpgradeError: Error?
     private(set) var installedLuaAvailability: Bool?
     private(set) var didUninstall = false
     private(set) var didStageUninstall = false
     private(set) var didCommitUninstall = false
     private(set) var didRollbackUninstall = false
     private(set) var didClearBuildCache = false
+    private(set) var didInstallSchemaFiles = false
+    private(set) var didCreateUpgradeCheckpoint = false
+    private(set) var didRestoreUpgradeCheckpoint = false
+    private(set) var didCommitUpgradeCheckpoint = false
     private(set) var runtimeDirectoriesCallCount = 0
     private(set) var deploymentDirectoriesCallCount = 0
 
     init(
         containsInstalledSchema: Bool = false,
         stageUninstallError: Error? = nil,
+        upgradeCheckpointToReturn: SchemaUpgradeCheckpoint? = nil,
+        restoreUpgradeError: Error? = nil,
         directories: SchemaDeploymentDirectories = SchemaDeploymentDirectories(
             sharedDataURL: URL(fileURLWithPath: "/test/Rime/shared"),
             userDataURL: URL(fileURLWithPath: "/test/Rime/user")
@@ -1901,6 +1978,8 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     ) {
         self.containsInstalledSchema = containsInstalledSchema
         self.stageUninstallError = stageUninstallError
+        self.upgradeCheckpointToReturn = upgradeCheckpointToReturn
+        self.restoreUpgradeError = restoreUpgradeError
         self.directories = directories
     }
 
@@ -1914,7 +1993,24 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool { containsInstalledSchema }
     func checkDiskSpace(needed: Int64) throws {}
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws {
+        didInstallSchemaFiles = true
         installedLuaAvailability = luaAvailable
+    }
+
+    func createUpgradeCheckpoint(plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
+        -> SchemaUpgradeCheckpoint?
+    {
+        didCreateUpgradeCheckpoint = true
+        return upgradeCheckpointToReturn
+    }
+    func restoreUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) throws {
+        didRestoreUpgradeCheckpoint = true
+        if let restoreUpgradeError {
+            throw restoreUpgradeError
+        }
+    }
+    func commitUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) {
+        didCommitUpgradeCheckpoint = true
     }
     func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging {
         didStageUninstall = true

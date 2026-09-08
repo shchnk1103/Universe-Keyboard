@@ -749,6 +749,12 @@ enum DownloadError: Error, LocalizedError, Equatable {
         if let downloadError = error as? DownloadError {
             return downloadError.localizedDescription
         }
+        if error is SchemaUpgradeRecoveryError {
+            return "方案升级回滚未完成，已保留恢复检查点，请稍后重试或联系支持"
+        }
+        if error is SchemaUninstallRecoveryError {
+            return "方案卸载回滚未完成，已保留恢复检查点，请稍后重试或联系支持"
+        }
         guard let urlError = error as? URLError else {
             return "操作未能完成，请稍后重试"
         }

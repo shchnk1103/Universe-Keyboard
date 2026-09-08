@@ -412,6 +412,14 @@ private final class NineKeySchemaArchiveInstaller: SchemaArchiveInstalling {
         plan: RimeSchemeInstallationPlan,
         luaAvailable: Bool
     ) throws {}
+
+    func createUpgradeCheckpoint(plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
+        -> SchemaUpgradeCheckpoint?
+    {
+        nil
+    }
+    func restoreUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) throws {}
+    func commitUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) {}
     func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging {
         SchemaUninstallStaging(rootURL: URL(fileURLWithPath: "/tmp/staging"), movedRelativePaths: [])
     }

@@ -166,7 +166,7 @@ extension SchemaManager {
         refreshSchemaList()
     }
 
-    private func setActiveSchemaWithoutDeployment(_ schemaID: String) {
+    func setActiveSchemaWithoutDeployment(_ schemaID: String) {
         activeSchemaID = schemaID
         settings.set(schemaID, forKey: "rime_active_schema")
         settings.synchronize()

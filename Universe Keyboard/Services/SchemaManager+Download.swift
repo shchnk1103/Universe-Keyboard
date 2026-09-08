@@ -42,6 +42,8 @@ extension SchemaManager {
         var ownsCommitLease = false
         var installed = false
         var deployed = false
+        var upgradeCheckpoint: SchemaUpgradeCheckpoint?
+        let priorActiveSchemaID = activeSchemaID
 
         do {
             guard
@@ -230,6 +232,11 @@ extension SchemaManager {
                 phase: .installing,
                 result: .started
             )
+            // Wanxiang upgrade-only: checkpoint prior generation before live replace.
+            upgradeCheckpoint = try archiveInstaller.createUpgradeCheckpoint(
+                plan: plan,
+                luaAvailable: luaAvailable
+            )
             try installSchemaFiles(from: extractDir, plan: plan, luaAvailable: luaAvailable)
             installed = true
             try ensureActive(operationID)
@@ -248,7 +255,6 @@ extension SchemaManager {
                 _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: shared)
             }
 
-            activateSchema(schemaID, leaseOperationID: operationID)
             rimeIceDownloadState = .deploying(schemeName: schemeName)
             recordPhase(
                 diagnosticContext,
@@ -258,7 +264,14 @@ extension SchemaManager {
                 phase: .deploying,
                 result: .started
             )
-            let deploymentSucceeded = await deployRimeConfig(leaseOperationID: operationID)
+            // Shared manager seam: activate → deploy; on failure restore checkpoint /
+            // prior selection (same path Q-UR-P2-01 pins). Receipt stays below.
+            let deploymentSucceeded = await deployInstalledUpgradeOrRestoreOnFailure(
+                schemaID: schemaID,
+                checkpoint: &upgradeCheckpoint,
+                priorActiveSchemaID: priorActiveSchemaID,
+                leaseOperationID: operationID
+            )
             try ensureActive(operationID)
             guard deploymentSucceeded else {
                 throw DownloadError.deploymentFailed
@@ -281,6 +294,10 @@ extension SchemaManager {
                 archiveSHA256: archiveSHA256,
                 stagedContentSHA256: stagedContentSHA256
             )
+            if let checkpoint = upgradeCheckpoint {
+                archiveInstaller.commitUpgradeCheckpoint(checkpoint)
+                upgradeCheckpoint = nil
+            }
             if schemaID == "rime_ice" {
                 rimeIceVersion = manifest.version
             }
@@ -304,6 +321,10 @@ extension SchemaManager {
             }
         } catch is CancellationError {
             cleanupTemporaryItems(temporaryItems)
+            restoreAfterFailedUpgradeIfNeeded(
+                checkpoint: &upgradeCheckpoint,
+                priorActiveSchemaID: priorActiveSchemaID
+            )
             if activeDownloadOperationID == operationID {
                 activeDownloadOperationID = nil
                 rimeIceDownloadState = .idle
@@ -320,13 +341,28 @@ extension SchemaManager {
             }
         } catch {
             cleanupTemporaryItems(temporaryItems)
+            restoreAfterFailedUpgradeIfNeeded(
+                checkpoint: &upgradeCheckpoint,
+                priorActiveSchemaID: priorActiveSchemaID
+            )
+            let failureMessage: String
+            if upgradeCheckpoint != nil {
+                // Restore failed: retain checkpoint and surface distinct recovery type.
+                failureMessage = DownloadError.userFacingDescription(
+                    for: SchemaUpgradeRecoveryError.upgradeRollbackIncomplete
+                )
+            } else if error is SchemaUpgradeRecoveryError {
+                failureMessage = DownloadError.userFacingDescription(for: error)
+            } else {
+                failureMessage = DownloadError.userFacingDescription(for: error)
+            }
             if activeDownloadOperationID == operationID {
                 activeDownloadOperationID = nil
                 currentDownloadTask = nil
                 rimeIceDownloadState = .failed(
                     schemaID: schemaID,
                     schemeName: schemeName,
-                    message: DownloadError.userFacingDescription(for: error)
+                    message: failureMessage
                 )
             }
             recordTerminal(
@@ -797,6 +833,56 @@ extension SchemaManager {
             let compatible = try T9SchemaCompatibility.makeCompatibleSchema(fromUpstreamYAML: upstream)
             try compatible.write(to: t9URL, atomically: true, encoding: .utf8)
         }.value
+    }
+
+    /// Manager-level seam for Wanxiang upgrade deploy-failure (Q-UR-P2-01).
+    /// After checkpoint + live install, activates the target scheme and attempts
+    /// `deployRimeConfig`. On deploy failure runs `restoreAfterFailedUpgradeIfNeeded`
+    /// (prior generation restore and/or retained checkpoint + prior selection).
+    /// Does **not** call `persistVerifiedInstallation` — receipt remains gated to
+    /// the success path in `fetchAndDownload` after this returns `true`.
+    @discardableResult
+    func deployInstalledUpgradeOrRestoreOnFailure(
+        schemaID: String,
+        checkpoint: inout SchemaUpgradeCheckpoint?,
+        priorActiveSchemaID: String,
+        leaseOperationID: UUID? = nil
+    ) async -> Bool {
+        activateSchema(schemaID, leaseOperationID: leaseOperationID)
+        let deploymentSucceeded = await deployRimeConfig(leaseOperationID: leaseOperationID)
+        guard deploymentSucceeded else {
+            restoreAfterFailedUpgradeIfNeeded(
+                checkpoint: &checkpoint,
+                priorActiveSchemaID: priorActiveSchemaID
+            )
+            return false
+        }
+        return true
+    }
+
+    /// Restores a Wanxiang upgrade checkpoint when present and returns prior
+    /// scheme selection. On restore failure the checkpoint is retained and the
+    /// inout remains non-nil so callers can surface upgrade recovery-required.
+    /// Internal so manager-level tests can pin the deploy-failure exit seam.
+    func restoreAfterFailedUpgradeIfNeeded(
+        checkpoint: inout SchemaUpgradeCheckpoint?,
+        priorActiveSchemaID: String
+    ) {
+        if let activeCheckpoint = checkpoint {
+            do {
+                try archiveInstaller.restoreUpgradeCheckpoint(activeCheckpoint)
+                checkpoint = nil
+            } catch {
+                // Retain the only surviving prior-generation copy.
+                Logger.shared.error(
+                    "upgrade: 回滚未完成，升级检查点已保留",
+                    category: .deployment
+                )
+            }
+        }
+        if activeSchemaID != priorActiveSchemaID {
+            setActiveSchemaWithoutDeployment(priorActiveSchemaID)
+        }
     }
 
     private func persistVerifiedInstallation(

@@ -589,6 +589,175 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         XCTAssertTrue(staging.movedRelativePaths.contains("rime_ice.schema.yaml"))
     }
 
+    // MARK: - Wanxiang upgrade-rollback (contract 2026-09-08)
+
+    func testWanxiangUpgradeMidCopyFailureRestoresPriorGeneration() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        let plan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+
+        let priorSchema = Data("prior-wanxiang-schema".utf8)
+        let priorDict = Data("prior-wanxiang-dict".utf8)
+        let unknownBytes = Data("user-unknown-keep".utf8)
+        try plantSharedFile(env.shared, relativePath: "wanxiang.schema.yaml", data: priorSchema)
+        try plantSharedFile(env.shared, relativePath: "wanxiang.dict.yaml", data: priorDict)
+        try plantSharedFile(env.shared, relativePath: "lua/user_custom.lua", data: unknownBytes)
+
+        let extract = env.root.appendingPathComponent("extract", isDirectory: true)
+        try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
+        try Data("new-wanxiang-schema".utf8).write(
+            to: extract.appendingPathComponent("wanxiang.schema.yaml")
+        )
+        try Data("new-wanxiang-dict".utf8).write(
+            to: extract.appendingPathComponent("wanxiang.dict.yaml")
+        )
+
+        let failingFM = CopyItemFailureFileManager(failOnCopyNumber: 3)
+        let installer = SharedContainerSchemaArchiveInstaller(
+            appGroupID: "test",
+            fileManager: failingFM,
+            containerURL: env.root.appendingPathComponent("container")
+        )
+
+        let checkpoint = try XCTUnwrap(
+            try installer.createUpgradeCheckpoint(plan: plan, luaAvailable: true)
+        )
+        XCTAssertTrue(checkpoint.rootURL.lastPathComponent.hasPrefix(".schema-upgrade-"))
+        XCTAssertTrue(checkpoint.copiedRelativePaths.contains("wanxiang.schema.yaml"))
+        XCTAssertFalse(checkpoint.copiedRelativePaths.contains("lua/user_custom.lua"))
+
+        XCTAssertThrowsError(
+            try installer.installSchemaFiles(from: extract, plan: plan, luaAvailable: true)
+        )
+
+        do {
+            try installer.restoreUpgradeCheckpoint(checkpoint)
+            XCTAssertEqual(
+                try Data(contentsOf: env.shared.appendingPathComponent("wanxiang.schema.yaml")),
+                priorSchema
+            )
+            XCTAssertEqual(
+                try Data(contentsOf: env.shared.appendingPathComponent("wanxiang.dict.yaml")),
+                priorDict
+            )
+            XCTAssertFalse(FileManager.default.fileExists(atPath: checkpoint.rootURL.path))
+        } catch {
+            // Restore itself failed: checkpoint must remain; no silent deletion.
+            XCTAssertTrue(error is SchemaUpgradeRecoveryError)
+            XCTAssertTrue(FileManager.default.fileExists(atPath: checkpoint.rootURL.path))
+            XCTAssertEqual(
+                try Data(contentsOf: checkpoint.rootURL.appendingPathComponent("wanxiang.schema.yaml")),
+                priorSchema
+            )
+        }
+
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("lua/user_custom.lua")),
+            unknownBytes,
+            "unknown/user path must be preserved on upgrade failure path"
+        )
+    }
+
+    func testWanxiangUpgradeRestoreFailureRetainsCheckpoint() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        let plan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+
+        let priorSchema = Data("prior-schema-bytes".utf8)
+        try plantSharedFile(env.shared, relativePath: "wanxiang.schema.yaml", data: priorSchema)
+        try plantSharedFile(
+            env.shared,
+            relativePath: "wanxiang.dict.yaml",
+            data: Data("prior-dict".utf8)
+        )
+
+        let installer = SharedContainerSchemaArchiveInstaller(
+            appGroupID: "test",
+            containerURL: env.root.appendingPathComponent("container")
+        )
+        let checkpoint = try XCTUnwrap(
+            try installer.createUpgradeCheckpoint(plan: plan, luaAvailable: true)
+        )
+
+        // Simulate a failed upgrade that mutated live files.
+        try Data("partial-new".utf8).write(
+            to: env.shared.appendingPathComponent("wanxiang.schema.yaml")
+        )
+
+        let failingRestore = SharedContainerSchemaArchiveInstaller(
+            appGroupID: "test",
+            fileManager: CopyItemFailureFileManager(failOnCopyNumber: 1),
+            containerURL: env.root.appendingPathComponent("container")
+        )
+        XCTAssertThrowsError(try failingRestore.restoreUpgradeCheckpoint(checkpoint)) { error in
+            XCTAssertTrue(error is SchemaUpgradeRecoveryError)
+        }
+        XCTAssertTrue(FileManager.default.fileExists(atPath: checkpoint.rootURL.path))
+        XCTAssertEqual(
+            try Data(contentsOf: checkpoint.rootURL.appendingPathComponent("wanxiang.schema.yaml")),
+            priorSchema
+        )
+    }
+
+    func testWanxiangFirstInstallCreatesNoUpgradeCheckpoint() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        let plan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+
+        // No prior Wanxiang generation present.
+        let checkpoint = try env.installer.createUpgradeCheckpoint(plan: plan, luaAvailable: true)
+        XCTAssertNil(checkpoint)
+
+        let extract = env.root.appendingPathComponent("extract-first", isDirectory: true)
+        try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
+        try Data("first-schema".utf8).write(
+            to: extract.appendingPathComponent("wanxiang.schema.yaml")
+        )
+        try env.installer.installSchemaFiles(from: extract, plan: plan, luaAvailable: true)
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("wanxiang.schema.yaml")),
+            Data("first-schema".utf8)
+        )
+        let pollution = try FileManager.default.contentsOfDirectory(atPath: env.shared.path)
+        XCTAssertFalse(
+            pollution.contains(where: { $0.hasPrefix(".schema-upgrade-") }),
+            "first install must not leave a spurious upgrade checkpoint"
+        )
+    }
+
+    func testWanxiangUpgradeFailurePreservesUnknownUserPath() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        let plan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+
+        let unknownBytes = Data("keep-me-unknown".utf8)
+        try plantSharedFile(env.shared, relativePath: "wanxiang.schema.yaml", data: Data("old".utf8))
+        try plantSharedFile(env.shared, relativePath: "lua/user_custom.lua", data: unknownBytes)
+
+        let extract = env.root.appendingPathComponent("extract-up", isDirectory: true)
+        try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
+        try Data("new".utf8).write(to: extract.appendingPathComponent("wanxiang.schema.yaml"))
+
+        let installer = SharedContainerSchemaArchiveInstaller(
+            appGroupID: "test",
+            fileManager: CopyItemFailureFileManager(failOnCopyNumber: 2),
+            containerURL: env.root.appendingPathComponent("container")
+        )
+        let checkpoint = try XCTUnwrap(
+            try installer.createUpgradeCheckpoint(plan: plan, luaAvailable: true)
+        )
+        XCTAssertThrowsError(
+            try installer.installSchemaFiles(from: extract, plan: plan, luaAvailable: true)
+        )
+        try? installer.restoreUpgradeCheckpoint(checkpoint)
+
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("lua/user_custom.lua")),
+            unknownBytes
+        )
+        XCTAssertFalse(checkpoint.copiedRelativePaths.contains("lua/user_custom.lua"))
+    }
+
     private struct Environment {
         let root: URL
         let sourceRoot: URL
@@ -709,5 +878,26 @@ private final class MoveItemFailureFileManager: FileManager {
             throw CocoaError(.fileWriteUnknown)
         }
         try super.moveItem(at: srcURL, to: dstURL)
+    }
+}
+
+/// Test-only FileManager seam for Wanxiang upgrade-rollback. Fails exactly
+/// once on the Nth `copyItem`, then delegates so checkpoint create/restore
+/// and `installSchemaFiles` can be fault-injected independently of moves.
+private final class CopyItemFailureFileManager: FileManager {
+    private let failOnCopyNumber: Int
+    private(set) var copyCallCount = 0
+
+    init(failOnCopyNumber: Int) {
+        self.failOnCopyNumber = failOnCopyNumber
+        super.init()
+    }
+
+    override func copyItem(at srcURL: URL, to dstURL: URL) throws {
+        copyCallCount += 1
+        if copyCallCount == failOnCopyNumber {
+            throw CocoaError(.fileWriteUnknown)
+        }
+        try super.copyItem(at: srcURL, to: dstURL)
     }
 }

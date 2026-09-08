@@ -19,6 +19,17 @@ struct SchemaUninstallStaging: Sendable {
     let movedRelativePaths: [String]
 }
 
+enum SchemaUpgradeRecoveryError: Error {
+    case upgradeRollbackIncomplete
+}
+
+/// Prior-generation files copied aside before a Wanxiang live replace.
+/// Distinct from uninstall staging (copy, not move); retained on restore failure.
+struct SchemaUpgradeCheckpoint: Sendable {
+    let rootURL: URL
+    let copiedRelativePaths: [String]
+}
+
 /// Owns schema file placement in the shared container. Its synchronous API
 /// preserves the existing installation sequence while making it replaceable
 /// in tests; installation can be moved off-main without changing the store API.
@@ -30,6 +41,10 @@ protocol SchemaArchiveInstalling: AnyObject {
     func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool
     func checkDiskSpace(needed: Int64) throws
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
+    func createUpgradeCheckpoint(plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
+        -> SchemaUpgradeCheckpoint?
+    func restoreUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) throws
+    func commitUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint)
     func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging
     func commitSchemaUninstall(_ staging: SchemaUninstallStaging, plan: RimeSchemeInstallationPlan)
     func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) throws
@@ -121,6 +136,97 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
             }
             try fileManager.copyItem(at: fileURL, to: destinationURL)
         }
+    }
+
+    /// Copies the prior plan-owned generation aside before live replace.
+    /// Returns nil when no prior owned paths exist (first install).
+    func createUpgradeCheckpoint(
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws -> SchemaUpgradeCheckpoint? {
+        // luaAvailable is part of the install seam; ownership paths today do not
+        // gate checkpoint membership on Lua availability.
+        _ = luaAvailable
+        guard let sharedDirectory = sharedDirectory() else {
+            throw DownloadError.networkError("App Group 不可用")
+        }
+
+        let checkpointRoot = sharedDirectory.appendingPathComponent(
+            ".schema-upgrade-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        var copiedRelativePaths: [String] = []
+
+        do {
+            try fileManager.createDirectory(at: checkpointRoot, withIntermediateDirectories: true)
+            let paths =
+                uninstallRelativePaths(for: plan)
+                + (try matchingWanxiangLuaPaths(plan: plan, sharedDirectory: sharedDirectory))
+            for relativePath in paths {
+                let sourceURL = sharedDirectory.appendingPathComponent(relativePath)
+                guard fileManager.fileExists(atPath: sourceURL.path) else { continue }
+
+                let checkpointURL = checkpointRoot.appendingPathComponent(relativePath)
+                try fileManager.createDirectory(
+                    at: checkpointURL.deletingLastPathComponent(),
+                    withIntermediateDirectories: true
+                )
+                try fileManager.copyItem(at: sourceURL, to: checkpointURL)
+                copiedRelativePaths.append(relativePath)
+            }
+
+            guard !copiedRelativePaths.isEmpty else {
+                try? fileManager.removeItem(at: checkpointRoot)
+                return nil
+            }
+            return SchemaUpgradeCheckpoint(
+                rootURL: checkpointRoot,
+                copiedRelativePaths: copiedRelativePaths
+            )
+        } catch {
+            try? fileManager.removeItem(at: checkpointRoot)
+            throw DownloadError.postProcessingFailed("无法创建方案升级检查点")
+        }
+    }
+
+    /// Restores prior-generation bytes from the upgrade checkpoint.
+    /// On any restore failure the checkpoint is retained and
+    /// `SchemaUpgradeRecoveryError.upgradeRollbackIncomplete` is thrown.
+    func restoreUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) throws {
+        guard let sharedDirectory = sharedDirectory() else {
+            throw SchemaUpgradeRecoveryError.upgradeRollbackIncomplete
+        }
+        var restorationFailed = false
+
+        for relativePath in checkpoint.copiedRelativePaths {
+            let checkpointURL = checkpoint.rootURL.appendingPathComponent(relativePath)
+            let destinationURL = sharedDirectory.appendingPathComponent(relativePath)
+            guard fileManager.fileExists(atPath: checkpointURL.path) else {
+                restorationFailed = true
+                continue
+            }
+            do {
+                try fileManager.createDirectory(
+                    at: destinationURL.deletingLastPathComponent(),
+                    withIntermediateDirectories: true
+                )
+                if fileManager.fileExists(atPath: destinationURL.path) {
+                    try fileManager.removeItem(at: destinationURL)
+                }
+                try fileManager.copyItem(at: checkpointURL, to: destinationURL)
+            } catch {
+                restorationFailed = true
+            }
+        }
+
+        guard !restorationFailed else {
+            throw SchemaUpgradeRecoveryError.upgradeRollbackIncomplete
+        }
+        try? fileManager.removeItem(at: checkpoint.rootURL)
+    }
+
+    func commitUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) {
+        try? fileManager.removeItem(at: checkpoint.rootURL)
     }
 
     func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging {

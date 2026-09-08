@@ -1200,6 +1200,14 @@ private final class StoreArchiveInstaller: SchemaArchiveInstalling {
     func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool { containsInstalledSchemaValue }
     func checkDiskSpace(needed: Int64) throws {}
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws {}
+
+    func createUpgradeCheckpoint(plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
+        -> SchemaUpgradeCheckpoint?
+    {
+        nil
+    }
+    func restoreUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) throws {}
+    func commitUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) {}
     func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging {
         SchemaUninstallStaging(rootURL: URL(fileURLWithPath: "/tmp/staging"), movedRelativePaths: [])
     }
