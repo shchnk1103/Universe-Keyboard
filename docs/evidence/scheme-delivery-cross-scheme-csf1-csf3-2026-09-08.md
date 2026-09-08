@@ -58,5 +58,6 @@ provenance proof.
 No symmetric Wanxiang CS-F1/CS-F3 injection; no combined production-manager
 selection assertion plus real-installer CS-F3 move-failure proof; no CS-09/10
 retained-scheme deployment/input proof; no Recovery persistence; no
-Device-attested or Product Gate evidence; no ADR 0034 Accept; and no push,
-undraft/merge, TestFlight, or App Release.
+Device-attested or Product Gate evidence; no ADR 0034 Accept; and no
+undraft/merge, TestFlight, or App Release. Push to the existing draft branch
+was later Human-authorized and does not change these non-claims.
