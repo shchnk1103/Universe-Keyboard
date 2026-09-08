@@ -1152,8 +1152,8 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
             relativePath: CrossSchemeDualInstall.unknownRelativePath,
             data: CrossSchemeDualInstall.unknownBytes
         )
-        try installWanxiangPinnedIntoShared(env: env, selection: &selection)
-        try installIcePinnedIntoShared(env: env, selection: &selection)
+        try installFullWanxiangPinnedIntoShared(env: env, selection: &selection)
+        try installFullIcePinnedIntoShared(env: env, selection: &selection)
         XCTAssertEqual(selection.activeSchemaID, "rime_ice")
 
         let iceSchemaURL = env.shared.appendingPathComponent("rime_ice.schema.yaml")
@@ -1173,6 +1173,76 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
             CrossSchemeDualInstall.unknownBytes
         )
         XCTAssertEqual(selection.activeSchemaID, "rime_ice")
+    }
+
+    /// CS09-10-01: the production installer must remove every present Ice-owned
+    /// path without changing any retained Wanxiang or builtin runtime bytes.
+    func testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        var selection = CrossSchemeSelectionTracker()
+
+        try installFullWanxiangPinnedIntoShared(env: env, selection: &selection)
+        try installFullIcePinnedIntoShared(env: env, selection: &selection)
+        XCTAssertEqual(selection.activeSchemaID, "rime_ice")
+
+        let icePlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+        let dualInventory = try regularFileInventory(in: env.shared)
+        let retainedInventory = dualInventory.filter { !isRemovablePath($0.key, data: $0.value, by: icePlan) }
+        let removedPaths = dualInventory.compactMap { path, data in
+            isRemovablePath(path, data: data, by: icePlan) ? path : nil
+        }
+        let userSentinel = env.rimeRoot.appendingPathComponent("user/cs0910-keep.txt")
+        let userBytes = Data("keep-user-data-after-ice-removal".utf8)
+        try FileManager.default.createDirectory(
+            at: userSentinel.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        try userBytes.write(to: userSentinel)
+
+        let staging = try env.installer.stageSchemaUninstall(plan: icePlan)
+        env.installer.commitSchemaUninstall(staging, plan: icePlan)
+
+        try assertInventory(retainedInventory, remainsIn: env.shared)
+        try assertPathsAbsent(removedPaths, from: env.shared)
+        XCTAssertEqual(try Data(contentsOf: userSentinel), userBytes)
+    }
+
+    /// CS09-10-01 symmetric direction: removing Wanxiang must keep the complete
+    /// Ice and builtin runtime inventory byte-for-byte intact.
+    func testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        var selection = CrossSchemeSelectionTracker()
+
+        try installFullIcePinnedIntoShared(env: env, selection: &selection)
+        try installFullWanxiangPinnedIntoShared(env: env, selection: &selection)
+        XCTAssertEqual(selection.activeSchemaID, "wanxiang")
+
+        let wanxiangPlan = try XCTUnwrap(
+            RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan
+        )
+        let dualInventory = try regularFileInventory(in: env.shared)
+        let retainedInventory = dualInventory.filter {
+            !isRemovablePath($0.key, data: $0.value, by: wanxiangPlan)
+        }
+        let removedPaths = dualInventory.compactMap { path, data in
+            isRemovablePath(path, data: data, by: wanxiangPlan) ? path : nil
+        }
+        let userSentinel = env.rimeRoot.appendingPathComponent("user/cs0910-keep.txt")
+        let userBytes = Data("keep-user-data-after-wanxiang-removal".utf8)
+        try FileManager.default.createDirectory(
+            at: userSentinel.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        try userBytes.write(to: userSentinel)
+
+        let staging = try env.installer.stageSchemaUninstall(plan: wanxiangPlan)
+        env.installer.commitSchemaUninstall(staging, plan: wanxiangPlan)
+
+        try assertInventory(retainedInventory, remainsIn: env.shared)
+        try assertPathsAbsent(removedPaths, from: env.shared)
+        XCTAssertEqual(try Data(contentsOf: userSentinel), userBytes)
     }
 
     /// CS-F3: a mid-stage Ice uninstall failure with Wanxiang active rolls back
@@ -1429,6 +1499,88 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         selection.activateJustInstalled("wanxiang")
     }
 
+    private func installFullIcePinnedIntoShared(
+        env: Environment,
+        selection: inout CrossSchemeSelectionTracker
+    ) throws {
+        guard let source = optionalIceExtractURL() else {
+            throw XCTSkip("CS09-10-01 requires the fixed Ice extract tree")
+        }
+        let plan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+        let extract = env.root.appendingPathComponent("full-ice-extract-\(UUID().uuidString)")
+        try FileManager.default.copyItem(at: source, to: extract)
+        try RimeIceSharedDefaultAdapter.apply(in: extract)
+        try env.installer.installSchemaFiles(from: extract, plan: plan, luaAvailable: true)
+        selection.activateJustInstalled("rime_ice")
+    }
+
+    private func installFullWanxiangPinnedIntoShared(
+        env: Environment,
+        selection: inout CrossSchemeSelectionTracker
+    ) throws {
+        guard let source = optionalWanxiangExtractURL() else {
+            throw XCTSkip("CS09-10-01 requires the fixed Wanxiang extract tree")
+        }
+        let plan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+        let extract = env.root.appendingPathComponent("full-wanxiang-extract-\(UUID().uuidString)")
+        try FileManager.default.copyItem(at: source, to: extract)
+        try env.installer.installSchemaFiles(from: extract, plan: plan, luaAvailable: true)
+        selection.activateJustInstalled("wanxiang")
+    }
+
+    private func regularFileInventory(in directory: URL) throws -> [String: Data] {
+        guard
+            let enumerator = FileManager.default.enumerator(
+                at: directory,
+                includingPropertiesForKeys: [.isRegularFileKey]
+            )
+        else {
+            throw CocoaError(.fileReadUnknown)
+        }
+
+        var inventory: [String: Data] = [:]
+        for case let fileURL as URL in enumerator {
+            let values = try fileURL.resourceValues(forKeys: [.isRegularFileKey])
+            guard values.isRegularFile == true else { continue }
+            let relativePath = fileURL.path.replacingOccurrences(
+                of: directory.path + "/",
+                with: ""
+            )
+            inventory[relativePath] = try Data(contentsOf: fileURL)
+        }
+        return inventory
+    }
+
+    private func isRemovablePath(
+        _ path: String,
+        data: Data,
+        by plan: RimeSchemeInstallationPlan
+    ) -> Bool {
+        if plan.removableFiles.contains(path)
+            || plan.removableDirectories.contains(where: { path == $0 || path.hasPrefix($0 + "/") })
+        {
+            return true
+        }
+        return plan.revision == "wanxiang-plan-1"
+            && WanxiangLuaOwnership.sha256ByPath[path] == sha256(data)
+    }
+
+    private func assertInventory(_ expected: [String: Data], remainsIn shared: URL) throws {
+        let actual = try regularFileInventory(in: shared)
+        for (path, expectedBytes) in expected {
+            XCTAssertEqual(actual[path], expectedBytes, "retained runtime path changed: \(path)")
+        }
+    }
+
+    private func assertPathsAbsent(_ paths: [String], from shared: URL) throws {
+        for path in paths {
+            XCTAssertFalse(
+                FileManager.default.fileExists(atPath: shared.appendingPathComponent(path).path),
+                "target-owned path was not removed: \(path)"
+            )
+        }
+    }
+
     private func assertDualInstallPeerInventory(
         env: Environment,
         preludeBefore: Data,
@@ -1605,6 +1757,16 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
             }
         }
         return nil
+    }
+
+    private func optionalWanxiangExtractURL() -> URL? {
+        let roots = [
+            ProcessInfo.processInfo.environment["SCHEME_WANXIANG_EXTRACT_ROOT"],
+            "/private/tmp/rime-wanxiang-1759/extract",
+        ].compactMap { $0 }
+        return roots.lazy.map(URL.init(fileURLWithPath:)).first {
+            FileManager.default.fileExists(atPath: $0.appendingPathComponent("wanxiang.schema.yaml").path)
+        }
     }
 
     private func sha256(_ data: Data) -> String {
