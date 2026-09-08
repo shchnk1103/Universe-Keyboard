@@ -357,6 +357,75 @@ final class SchemaManagerTests: XCTestCase {
         )
     }
 
+    /// CS-03 production-path proof: after verification, a matching receipt must
+    /// finish without taking the lease, replacing live files, or deploying.
+    func testFetchAndDownloadSkipsIdenticalIceReceiptBeforeLiveMutation() async throws {
+        let rootURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("schema-manager-identical-receipt-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+
+        let sharedURL = rootURL.appendingPathComponent("Rime/shared")
+        let userURL = rootURL.appendingPathComponent("Rime/user")
+        try FileManager.default.createDirectory(at: sharedURL, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: userURL, withIntermediateDirectories: true)
+        let liveSchemaURL = sharedURL.appendingPathComponent("rime_ice.schema.yaml")
+        let liveSchemaBefore = Data("schema_id: retained-peer-safe-live-state\n".utf8)
+        try liveSchemaBefore.write(to: liveSchemaURL)
+
+        let identity = try XCTUnwrap(
+            RimeSchemeCatalog.entry(for: "rime_ice")?
+                .distribution?
+                .manifest
+                .stagedIdentities
+                .first
+        )
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "wanxiang",
+                "rime_ice_installed": true,
+                "rime_ice_staged_content_checksum": identity.stagedContentSHA256WithLua,
+            ]
+        )
+        let installer = SharedContainerSchemaArchiveInstaller(
+            appGroupID: "test.scheme-delivery",
+            containerURL: rootURL
+        )
+        let downloader = FixtureArchiveDownloader()
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            archiveDownloader: downloader,
+            artifactVerifier: FixedStagedContentVerifier(
+                stagedContentSHA256: identity.stagedContentSHA256WithLua
+            ),
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.fetchAndDownload(schemaID: "rime_ice")
+
+        XCTAssertEqual(manager.rimeIceDownloadState, .completed(schemeName: "雾凇拼音"))
+        XCTAssertNil(manager.activeDownloadOperationID)
+        XCTAssertNil(manager.schemeDeliveryCommitLeaseOperationID)
+        XCTAssertEqual(manager.activeSchemaID, "wanxiang", "no-op must not thrash selection")
+        XCTAssertEqual(try Data(contentsOf: liveSchemaURL), liveSchemaBefore)
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: sharedURL.appendingPathComponent("rime_ice_preset.yaml").path
+            ),
+            "no-op must not replace the live resource tree"
+        )
+        let deploymentRequests = await deploymentService.requests
+        XCTAssertTrue(
+            deploymentRequests.isEmpty,
+            "no-op must not deploy or activate the already-installed scheme"
+        )
+        XCTAssertFalse(
+            FileManager.default.fileExists(atPath: try XCTUnwrap(downloader.downloadedURL()).path),
+            "no-op must clean the verified temporary archive"
+        )
+    }
+
     func testDownloadSchemeDisplayNameUsesCatalogName() {
         let manager = makeManager()
         XCTAssertEqual(manager.downloadSchemeDisplayName(for: "rime_ice"), "雾凇拼音")
@@ -1722,7 +1791,7 @@ final class SchemaManagerTests: XCTestCase {
         temporaryArtifactCleaner: any SchemaTemporaryArtifactCleaning =
             FileSystemSchemaTemporaryArtifactCleaner(),
         deliveryDiagnostics: any SchemaDeliveryDiagnosing = RecordingDeliveryDiagnostics(),
-        installer: StubSchemaArchiveInstaller = StubSchemaArchiveInstaller(),
+        installer: any SchemaArchiveInstalling = StubSchemaArchiveInstaller(),
         deploymentService: any RimeDeploymentServicing = StubDeploymentService(succeeded: true)
     ) -> SchemaManager {
         SchemaManager(
@@ -1835,6 +1904,58 @@ private final class ControlledArchiveDownloader: SchemaArchiveDownloading {
 
     func requestedSourceIDs() -> [String] { sourceIDs }
     func registeredArtifacts() -> [SchemaOwnedTemporaryArtifact] { registered }
+}
+
+/// Minimal valid Ice input for the production no-op path. Archive-integrity
+/// binding has dedicated coverage; this fixture isolates the state transition.
+@MainActor
+private final class FixtureArchiveDownloader: SchemaArchiveDownloading {
+    private static let archiveBase64 =
+        "UEsDBAoAAAAAAPhmKF0a9USgFAAAABQAAAAUABwAcmltZV9pY2Uuc2NoZW1hLnlhbWxVVAkAA1SVn2pUlZ9qdXgLAAEE9QEAAAQAAAAAc2NoZW1hX2lkOiByaW1lX2ljZQpQSwMECgAAAAAA+GYoXYE7L4EQAAAAEAAAAAwAHABkZWZhdWx0LnlhbWxVVAkAA1SVn2pUlZ9qdXgLAAEE9QEAAAQAAAAAcHJlc2V0OiBmaXh0dXJlClBLAwQKAAAAAAD4Zihd9JeuQ9QAAADUAAAADgAcAHQ5LnNjaGVtYS55YW1sVVQJAANUlZ9qVJWfanV4CwABBPUBAAAEAAAAAHNjaGVtYV9pZDogdDkKc3BlbGxlcjoKICBhbGdlYnJhOgogICAgLSBkZXJpdmUvW2FiY10vMi8KICAgIC0gZGVyaXZlL1tkZWZdLzMvCiAgICAtIGRlcml2ZS9baGdpXS80LwogICAgLSBkZXJpdmUvW2prbF0vNS8KICAgIC0gZGVyaXZlL1tvbW5dLzYvCiAgICAtIGRlcml2ZS9bcHFyc10vNy8KICAgIC0gZGVyaXZlL1t0dXZdLzgvCiAgICAtIGRlcml2ZS9bd3h5el0vOS8KUEsBAh4DCgAAAAAA+GYoXRr1RKAUAAAAFAAAABQAGAAAAAAAAAAAAKSBAAAAAHJpbWVfaWNlLnNjaGVtYS55YW1sVVQFAANUlZ9qdXgLAAEE9QEAAAQAAAAAUEsBAh4DCgAAAAAA+GYoXYE7L4EQAAAAEAAAAAwAGAAAAAAAAAAAAKSBYgAAAGRlZmF1bHQueWFtbFVUBQADVJWfanV4CwABBPUBAAAEAAAAAFBLAQIeAwoAAAAAAPhmKF30l65D1AAAANQAAAAOABgAAAAAAAAAAACkgbgAAAB0OS5zY2hlbWEueWFtbFVUBQADVJWfanV4CwABBPUBAAAEAAAAAFBLBQYAAAAAAwADAAABAADUAQAAAAA="
+
+    private var archiveURL: URL?
+
+    func downloadArchive(
+        from source: RimeSchemeSourceVariant,
+        operationID: UUID,
+        attemptID: UUID,
+        onProgress: (@Sendable (Double?) -> Void)?
+    ) async throws -> DownloadedSchemaArchive {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("identical-receipt-fixture-\(UUID().uuidString).zip")
+        try XCTUnwrap(Data(base64Encoded: Self.archiveBase64)).write(to: url)
+        archiveURL = url
+        onProgress?(1)
+        return DownloadedSchemaArchive(
+            localURL: url,
+            expectedContentLength: source.expectedByteCount,
+            operationID: operationID,
+            attemptID: attemptID,
+            sourceID: source.id,
+            artifactID: UUID(),
+            finalHost: source.downloadURL.host ?? "fixture"
+        )
+    }
+
+    func downloadedURL() -> URL? { archiveURL }
+}
+
+nonisolated private struct FixedStagedContentVerifier: SchemaArtifactVerifying {
+    let stagedContentSHA256: String
+
+    func verifyArchiveSize(at archiveURL: URL, source: RimeSchemeSourceVariant) throws {}
+
+    func verifyArchiveDigest(at archiveURL: URL, source: RimeSchemeSourceVariant) throws -> String {
+        source.archiveSHA256
+    }
+
+    func stagedContentSHA256(
+        in extractionDirectory: URL,
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws -> String {
+        stagedContentSHA256
+    }
 }
 
 nonisolated private struct SourceControlledArtifactVerifier: SchemaArtifactVerifying {
