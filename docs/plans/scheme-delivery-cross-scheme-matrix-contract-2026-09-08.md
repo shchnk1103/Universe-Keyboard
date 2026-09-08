@@ -2,7 +2,7 @@
 
 Contract proposal for the **cross-scheme matrix** remaining-matrix row, 2026-09-08 (Asia/Shanghai). Checkout `/private/tmp/uk-scheme-delivery-fix`, branch `codex/scheme-delivery-fix` (tip ~`87bf24e`).
 
-**Status:** **Human Approved** (2026-09-08 Asia/Shanghai) for **minimal implementation slices** only (§6.2 fixture dual-install harness + §6.3 CS-01/CS-02 happy paths). Recorded Human defaults: (1) active-uninstall fallback **(B) prefer retained peer** if deployable, else Luna; (2) post-install **activate the scheme just installed**; (3) repeat install when identity unchanged → **idempotent no-op**; (4) first freeze must include **both** Ice→Wanxiang and Wanxiang→Ice orders; (5) engineering done = automation + Independent Quality; device deferred to Product Gate; (6) Wanxiang pin: **CNB `9bfcf60e…` / `17.5.9` only**; (7) **No** ADR 0034 Accept; **no** Recovery persistence. §6.6 (CS-07/08 peer-prefer fallback B) is **approved** but **not** in this first coding freeze. Still **not** authorized: push (unless later asked), undraft/merge, TestFlight, ADR Accept, Product Gate.
+**Status:** **Human Approved** (2026-09-08 Asia/Shanghai) for the named matrix slices. Recorded Human defaults: (1) active-uninstall fallback **(A) Luna only**; (2) post-install **activate the scheme just installed**; (3) repeat install when identity unchanged → **idempotent no-op**; (4) first freeze must include **both** Ice→Wanxiang and Wanxiang→Ice orders; (5) engineering done = automation + Independent Quality; device deferred to Product Gate; (6) Wanxiang pin: **CNB `9bfcf60e…` / `17.5.9` only**; (7) **No** ADR 0034 Accept; **no** Recovery persistence. The Human superseded the earlier peer-prefer B decision with Luna-only for CS-07/08. Still **not** authorized: push (unless later asked), undraft/merge, TestFlight, ADR Accept, Product Gate.
 
 Related inputs:
 
@@ -80,8 +80,8 @@ All cases assume production installer paths (`SchemaManager` + `SharedContainerS
 | **CS-04** | Repeat install Wanxiang (Ice retained) | Dual-installed; Ice installed | Reinstall/upgrade Wanxiang uses upgrade-rollback contract when prior Wanxiang generation present; Ice Lua / Ice-owned paths preserved; unknown/user preserved | Same selection discipline as CS-03 with roles reversed |
 | **CS-05** | Uninstall **inactive** Ice (Wanxiang active) | Dual-installed; selection = Wanxiang | Ice-owned removable set removed per plan/exact rules; Wanxiang retained; **no** Luna deploy required for inactive uninstall; staging fail restores Ice files | Selection stays Wanxiang; Wanxiang input evidence; Luna not forced |
 | **CS-06** | Uninstall **inactive** Wanxiang (Ice active) | Dual-installed; selection = Ice | Wanxiang exact-hash owned paths removed; Ice retained (including Ice Lua); unknown/user preserved | Selection stays Ice; Ice input evidence |
-| **CS-07** | Uninstall **active** Ice (Wanxiang installed, inactive) | Dual-installed; selection = Ice | Fail-closed active uninstall: await successful **fallback deploy** before stage→commit; on any failure keep Ice selection+files | **Fallback policy (§7):** (A) Luna only (current single-scheme P4), or (B) prefer retained Wanxiang if deployable, else Luna. Input works on post-success selection; Ice marked 未安装 |
-| **CS-08** | Uninstall **active** Wanxiang (Ice installed, inactive) | Dual-installed; selection = Wanxiang | Symmetric to CS-07 with Wanxiang as target | Same fallback policy as CS-07 with roles reversed |
+| **CS-07** | Uninstall **active** Ice (Wanxiang installed, inactive) | Dual-installed; selection = Ice | Fail-closed active uninstall: await successful Luna deployment before stage→commit; on any failure keep Ice selection+files | **Fallback policy (§7):** Luna only. Input works on Luna after success; Ice marked 未安装; Wanxiang remains installed but is not selected as fallback |
+| **CS-08** | Uninstall **active** Wanxiang (Ice installed, inactive) | Dual-installed; selection = Wanxiang | Symmetric to CS-07 with Wanxiang as target | Luna only; Ice remains installed but is not selected as fallback |
 | **CS-09** | Uninstall last downloaded scheme (active) | Only Ice **or** only Wanxiang + builtin | Existing P4 Luna path remains valid; this matrix may **reuse** evidence rather than re-implement | Luna selected + deploy/input after success |
 | **CS-10** | Post-uninstall retained-scheme deploy/input | After CS-05–CS-08 success | Retained scheme files still match ownership; deploy of retained scheme succeeds; input path does not require reinstall | Settings show retained scheme installed; uninstalled peer 未安装 |
 
@@ -119,7 +119,7 @@ Claiming “cross-scheme matrix contract implemented” requires the automation 
 | CS-02 Wanxiang→Ice both installed + peer file assertions | **Required** | Optional |
 | CS-03 / CS-04 repeat install with peer retained | **Required** | Optional |
 | CS-05 / CS-06 inactive uninstall + retained active input hook/flags | **Required** | IQ: confirm no Luna forced when inactive |
-| CS-07 / CS-08 active uninstall with peer present + fallback deploy | **Required** (policy A or B per Human) | IQ: sequence + selection; device input strongly recommended before full Product Gate |
+| CS-07 / CS-08 active uninstall with peer present + fallback deploy | **Required** (Luna-only policy A) | IQ: sequence + selection; device input strongly recommended before full Product Gate |
 | CS-F1–F3 failure injections with peer present | **Required** | Device failure-rollback **not** required to call engineering done (mirror Limited P4 precedent) |
 | Preserve assertions (unknown / Prelude-OpenCC / Ice Lua / Wanxiang exact-hash / user) on install+uninstall paths | **Required** | IQ checklist item |
 | Strict App + Keyboard local gates | **Required** | — |
@@ -162,7 +162,7 @@ Smallest increments. Do not expand beyond the Human-named freeze without a new a
 3. **CS-01 / CS-02 happy paths** — Install order matrix + preserve assertions. **← authorized in first coding freeze**
 4. **CS-03 / CS-04 repeat install** — Peer retention; wire Wanxiang path through existing upgrade-rollback when prior generation exists.
 5. **CS-05 / CS-06 inactive uninstall with peer** — Extend current non-active uninstall coverage to assert peer retention + no Luna.
-6. **CS-07 / CS-08 active uninstall with peer** — Implement Human-chosen fallback policy **(B) prefer retained peer if deployable, else Luna**; failure overlays CS-F2/F3. **Policy approved; implementation deferred from first coding freeze.**
+6. **CS-07 / CS-08 active uninstall with peer** — Reuse the P4 fail-closed transaction with Human-chosen fallback policy **(A) Luna only**; the retained peer stays installed but is never selected as the fallback. Failure overlays CS-F2/F3.
 7. **App + Keyboard gates + Independent review** — Delta only; non-claims §5.
 8. **Later (separate authorizations)** — Device-attested dual-scheme input; Recovery persistence; Product Gate; ADR Accept; merge/TestFlight.
 
@@ -170,7 +170,7 @@ Smallest increments. Do not expand beyond the Human-named freeze without a new a
 
 ## 7. Human answers (recorded 2026-09-08)
 
-1. **Active-uninstall fallback when a peer scheme is installed:** **(B) prefer retained peer** if deployable, else Luna. *(Approved; CS-07/08 production implementation **not** in first coding freeze — see §6.6.)*
+1. **Active-uninstall fallback when a peer scheme is installed:** **(A) Luna only.** The Human superseded the earlier peer-prefer B decision because future downloadable schemes must not alter the uninstall fallback state machine. *(CS-07/08 is authorized in the current conversation.)*
 2. **Post-install selection after CS-01/CS-02:** **activate the scheme just installed**.
 3. **Repeat install semantics:** **idempotent no-op** when identity unchanged (cheaper path; not full upgrade-rollback unless identity changes).
 4. **First freeze order coverage:** **both** Ice→Wanxiang (**CS-01**) and Wanxiang→Ice (**CS-02**) must be included.
@@ -184,8 +184,8 @@ Smallest increments. Do not expand beyond the Human-named freeze without a new a
 
 **Human Approved** 2026-09-08 (Asia/Shanghai) with the seven defaults in the Status block and §7.
 
-**Authorized / landed:** §6.2–§6.3 (CS-01/CS-02) committed; **CS-03/CS-04** repeat-install evidence + identical-receipt no-op seam landed **locally** (Human continued per contract order; widget skipped). Prefer extending `SchemeResourcePreparationCoexistenceTests` with clear `testCS0N_…` names. **No** CS-05–CS-08 / peer-prefer fallback **production** changes until separately named. Pause for Codex after CS-03/04 local commits.
+**Authorized / landed:** §6.2–§6.3 (CS-01/CS-02) committed; **CS-03/CS-04** repeat-install evidence + identical-receipt no-op seam landed locally; **CS-05/06** inactive-uninstall peer-retain evidence landed locally. **CS-07/08** Luna-only active-uninstall peer coverage is authorized in the current conversation. Prefer extending `SchemeResourcePreparationCoexistenceTests` with clear `testCS0N_…` names.
 
-**Still NOT authorized:** push (unless later asked); undraft/merge PR #100; TestFlight; ADR 0034 Accept; Recovery persistence; Product Gate; removal-list broadening; CS-07/08 production fallback B (policy approved, coding deferred).
+**Still NOT authorized:** push (unless later asked); undraft/merge PR #100; TestFlight; ADR 0034 Accept; Recovery persistence; Product Gate; removal-list broadening; peer-prefer fallback B.
 
 Residuals outside the named freeze remain open.

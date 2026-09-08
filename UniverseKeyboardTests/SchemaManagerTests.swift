@@ -939,6 +939,136 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(requests.last?.runtimeSmokeSchemaID, "rime_ice")
     }
 
+    /// CS-07: active Ice removal always deploys stable builtin Luna first.
+    /// Wanxiang remains installed but must not become an uninstall fallback.
+    func testCS07_ActiveIceUninstallWithWanxiangPeerDeploysLunaBeforeRemovingIce() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-ice-version",
+                "wanxiang_installed": true,
+                "wanxiang_version": "17.5.9",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.uninstallSchema("rime_ice")?.value
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin"])
+        XCTAssertTrue(installer.didStageUninstall)
+        XCTAssertTrue(installer.didCommitUninstall)
+        XCTAssertNil(settings.object(forKey: "rime_ice_installed"))
+        XCTAssertTrue(settings.bool(forKey: "wanxiang_installed"))
+        XCTAssertEqual(settings.string(forKey: "wanxiang_version"), "17.5.9")
+        XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "luna_pinyin")
+    }
+
+    /// CS-08: active Wanxiang removal is symmetric and still uses Luna, never
+    /// the retained Ice peer, as the deterministic fallback.
+    func testCS08_ActiveWanxiangUninstallWithIcePeerDeploysLunaBeforeRemovingWanxiang() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "wanxiang",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-ice-version",
+                "wanxiang_installed": true,
+                "wanxiang_version": "17.5.9",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.uninstallSchema("wanxiang")?.value
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin"])
+        XCTAssertTrue(installer.didStageUninstall)
+        XCTAssertTrue(installer.didCommitUninstall)
+        XCTAssertNil(settings.object(forKey: "wanxiang_installed"))
+        XCTAssertTrue(settings.bool(forKey: "rime_ice_installed"))
+        XCTAssertEqual(settings.string(forKey: "rime_ice_version"), "test-ice-version")
+        XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "luna_pinyin")
+    }
+
+    /// CS-F2 for CS-07: a failed Luna deployment leaves both the active Ice
+    /// target and its retained Wanxiang peer untouched, then restores Ice.
+    func testCSF2_ActiveIceUninstallWithWanxiangPeerRestoresIceWhenLunaDeployFails() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-ice-version",
+                "wanxiang_installed": true,
+                "wanxiang_version": "17.5.9",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: false)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.uninstallSchema("rime_ice")?.value
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin", "rime_ice"])
+        XCTAssertFalse(installer.didStageUninstall)
+        XCTAssertFalse(installer.didCommitUninstall)
+        XCTAssertTrue(settings.bool(forKey: "rime_ice_installed"))
+        XCTAssertTrue(settings.bool(forKey: "wanxiang_installed"))
+        XCTAssertEqual(manager.activeSchemaID, "rime_ice")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "rime_ice")
+    }
+
+    /// CS-F2 for CS-08: the symmetric failure keeps Wanxiang selected and Ice
+    /// retained; fallback behavior stays independent of the peer inventory.
+    func testCSF2_ActiveWanxiangUninstallWithIcePeerRestoresWanxiangWhenLunaDeployFails() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "wanxiang",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-ice-version",
+                "wanxiang_installed": true,
+                "wanxiang_version": "17.5.9",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: false)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.uninstallSchema("wanxiang")?.value
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin", "wanxiang"])
+        XCTAssertFalse(installer.didStageUninstall)
+        XCTAssertFalse(installer.didCommitUninstall)
+        XCTAssertTrue(settings.bool(forKey: "wanxiang_installed"))
+        XCTAssertTrue(settings.bool(forKey: "rime_ice_installed"))
+        XCTAssertEqual(manager.activeSchemaID, "wanxiang")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "wanxiang")
+    }
+
     func testIncompleteRollbackStopsWithoutRedeployingOriginalSchema() async {
         let settings = StubSharedSettingsStore(
             values: ["rime_active_schema": "rime_ice", "rime_ice_installed": true]
