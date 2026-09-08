@@ -1,5 +1,11 @@
 # P4 remaining ownership and upgrade matrix
 
+> **Superseded decision note (2026-09-08):** The historical peer-prefer B
+> fallback below is superseded by the current cross-scheme contract's
+> Luna-only A policy for CS-07/08. This document remains an investigation
+> record; see `scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md` for
+> the current decision and Assignment for lifecycle state.
+
 Executor read-only investigation, 2026-09-08; checkout `/private/tmp/uk-scheme-delivery-fix`, base `bf9de51` plus rollback double-failure correction. This document does not authorize new deletion rules or accept ADR 0034.
 
 ## Reverified facts
@@ -28,5 +34,5 @@ Required validation: real pinned artifacts and production installer paths, exact
 - Wanxiang exact-hash Lua ownership unit tests are **committed** (`8147034` and follow-ups on `codex/scheme-delivery-fix`). Evidence: [`../evidence/scheme-delivery-wanxiang-lua-ownership-2026-09-08.md`](../evidence/scheme-delivery-wanxiang-lua-ownership-2026-09-08.md). Ownership slice still open for full Wanxiang P4; not Product Gate / ADR Accept / merge.
 - **Upgrade-rollback** Independent Quality **Pass with conditions**; **Q-UR-P2-01 Closed** (`d1c88e3`): [`../reviews/scheme-delivery-wanxiang-upgrade-rollback-quality-2026-09-08.md`](../reviews/scheme-delivery-wanxiang-upgrade-rollback-quality-2026-09-08.md) / [`../reviews/scheme-delivery-wanxiang-upgrade-rollback-quality-rereview-qurp201.md`](../reviews/scheme-delivery-wanxiang-upgrade-rollback-quality-rereview-qurp201.md). Contract: [`scheme-delivery-wanxiang-upgrade-rollback-contract-2026-09-08.md`](scheme-delivery-wanxiang-upgrade-rollback-contract-2026-09-08.md). **no push / undraft / TestFlight / ADR Accept**.
 
-- **Cross-scheme matrix** contract **Human Approved** (2026-09-08): [`scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md`](scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md). Authorized first coding freeze: **§6.2–§6.3** (fixture dual-install harness + CS-01/CS-02). Defaults: active-uninstall fallback **B** (prefer retained peer else Luna; CS-07/08 coding deferred), activate just-installed, idempotent repeat, both install orders, CNB `9bfcf60e…` only, engineering done = automation + IQ (device → Product Gate), **no** ADR Accept / Recovery persistence / push / undraft / TestFlight.
+- **Cross-scheme matrix** contract **Human Approved** (2026-09-08): [`scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md`](scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md). This historical note originally recorded fallback **B** (prefer retained peer else Luna; CS-07/08 deferred). The current Human decision supersedes it with **A: Luna only**, and CS-07/08 is now an authorized slice. Other defaults remain: activate just-installed, idempotent repeat, both install orders, CNB `9bfcf60e…` only, engineering done = automation + IQ (device → Product Gate), **no** ADR Accept / Recovery persistence / push / undraft / TestFlight.
 - **Cross-scheme CS-03/CS-04** landed **locally** (not pushed) on isolation checkout `/private/tmp/uk-scheme-delivery-fix`: identical-receipt idempotent no-op seam (`SchemaManager.shouldSkipIdenticalReinstall` + `fetchAndDownload` gate; force bypasses); coexistence tests `testCS03_…` / `testCS04_…` (same-identity no-op + Wanxiang identity-change upgrade preserves Ice). Base before slice: `944477a`. CS-01/02 remain at `2813428`. **Pause for Codex**; next named slice **CS-05+**. Peer-prefer **B** still deferred to CS-07/08. PR #100 draft; no undraft/merge/TestFlight/ADR Accept.

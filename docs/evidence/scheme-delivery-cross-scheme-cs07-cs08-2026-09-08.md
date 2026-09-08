@@ -34,10 +34,12 @@ Full App + Keyboard result:
 ## Evidence boundary
 
 These manager-level tests use the existing Stub installer to control staging
-and assert the transaction order, selection, receipts, peer settings, and
-deployment requests. CS-05/06 separately covers real-installer ownership
-removal and peer resource preservation. This is not a physical-device input
-proof, nor an end-to-end RIME deployment against a real peer resource tree.
+and assert the Luna fallback request, fail-closed staging gate, selection,
+receipts, and peer settings. Source review confirms the production order:
+deployment completes before staging. CS-05/06 separately covers
+real-installer ownership removal and peer resource preservation. This is not
+a physical-device input proof, a real peer-resource-tree rollback proof, or
+an end-to-end RIME deployment.
 
 ## Non-claims
 

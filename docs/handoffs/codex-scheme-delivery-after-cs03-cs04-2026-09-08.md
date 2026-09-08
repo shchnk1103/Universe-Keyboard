@@ -10,6 +10,11 @@
 **Isolation checkout:** `/private/tmp/uk-scheme-delivery-fix`
 **Also note:** User MacBook checkout `~/Dev/Universe Keyboard` may differ; prefer this isolation tree for scheme-delivery work.
 
+> **Superseded decision note (2026-09-08):** This handoff's peer-prefer B
+> statements were superseded by the current matrix contract: CS-07/08 uses
+> Luna-only A. This handoff remains historical; consult the Assignment and
+> matrix contract for current progress and authority.
+
 ---
 
 ## 1. Git tip (verify with `git rev-parse HEAD` + `git cat-file -t`)

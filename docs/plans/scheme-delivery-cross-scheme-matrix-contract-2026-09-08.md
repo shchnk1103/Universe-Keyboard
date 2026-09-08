@@ -153,7 +153,7 @@ This design does **not** authorize or claim:
 
 ## 6. Ordered implementation slices
 
-**Authorization (2026-09-08):** Human approved starting **minimal** slices **§6.2–§6.3 only** (fixture dual-install harness + CS-01/CS-02). Later slices remain planning until separately named. §6.6 (CS-07/08 peer-prefer fallback **B**) is approved as the policy answer but **deferred** from this first coding freeze.
+**Historical authorization (2026-09-08):** Human initially approved starting **minimal** slices **§6.2–§6.3 only** (fixture dual-install harness + CS-01/CS-02), with CS-07/08 peer-prefer fallback **B** deferred. This was superseded in the current conversation: CS-07/08 is authorized and its policy is **(A) Luna only**. The remaining slices still require separate naming.
 
 Smallest increments. Do not expand beyond the Human-named freeze without a new authorization.
 
