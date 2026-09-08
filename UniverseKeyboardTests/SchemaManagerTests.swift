@@ -499,6 +499,126 @@ final class SchemaManagerTests: XCTestCase {
         )
     }
 
+    /// CS-F1 symmetry: a failed Wanxiang deployment must not publish its
+    /// receipt or disturb the selected Ice peer.
+    func testCSF1_WanxiangDeployFailureWithIcePeerKeepsPeerAndSkipsWanxiangReceipt() async throws {
+        let rootURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("schema-manager-csf1-wanxiang-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+
+        let sharedURL = rootURL.appendingPathComponent("Rime/shared")
+        let userURL = rootURL.appendingPathComponent("Rime/user")
+        try FileManager.default.createDirectory(at: sharedURL, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: userURL, withIntermediateDirectories: true)
+        let iceSchemaURL = sharedURL.appendingPathComponent("rime_ice.schema.yaml")
+        let iceSchemaBefore = Data("schema_id: ice-peer-before-csf1\n".utf8)
+        try iceSchemaBefore.write(to: iceSchemaURL)
+
+        let identity = try XCTUnwrap(
+            RimeSchemeCatalog.entry(for: "wanxiang")?
+                .distribution?
+                .manifest
+                .stagedIdentities
+                .first
+        )
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-ice-version",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            extractionDirectory: rootURL.appendingPathComponent("extract", isDirectory: true),
+            installCopiesT9Fixture: true,
+            directories: SchemaDeploymentDirectories(
+                sharedDataURL: sharedURL,
+                userDataURL: userURL
+            )
+        )
+        let downloader = FixtureArchiveDownloader(schemaID: "wanxiang")
+        let deploymentService = StubDeploymentService(succeeded: false)
+        let manager = makeManager(
+            settings: settings,
+            archiveDownloader: downloader,
+            artifactVerifier: FixedStagedContentVerifier(
+                stagedContentSHA256: identity.stagedContentSHA256WithLua
+            ),
+            installer: installer,
+            deploymentService: deploymentService
+        )
+        manager.acceptLicense(for: "wanxiang")
+
+        await manager.fetchAndDownload(schemaID: "wanxiang")
+
+        XCTAssertNil(settings.object(forKey: "wanxiang_installed"))
+        XCTAssertNil(settings.object(forKey: "wanxiang_version"))
+        XCTAssertNil(settings.object(forKey: "wanxiang_checksum"))
+        XCTAssertNil(settings.object(forKey: "wanxiang_staged_content_checksum"))
+        XCTAssertNil(settings.object(forKey: "wanxiang_source_variant"))
+        XCTAssertTrue(settings.bool(forKey: "rime_ice_installed"))
+        XCTAssertEqual(settings.string(forKey: "rime_ice_version"), "test-ice-version")
+        XCTAssertEqual(try Data(contentsOf: iceSchemaURL), iceSchemaBefore)
+        XCTAssertEqual(manager.activeSchemaID, "rime_ice")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "rime_ice")
+        let deploymentRequests = await deploymentService.requests
+        XCTAssertEqual(deploymentRequests.map(\.runtimeSmokeSchemaID), ["wanxiang"])
+        XCTAssertFalse(
+            FileManager.default.fileExists(atPath: try XCTUnwrap(downloader.downloadedURL()).path),
+            "failed install must clean the temporary archive"
+        )
+    }
+
+    /// CS-F3 and CSF-PAIR-02: a real Ice staging rollback keeps Ice selected
+    /// and restores both its owned files while preserving Wanxiang bytes.
+    func testCSF3_ManagerIceStagingFailureRestoresSelectionAndWanxiangPeerFiles() async throws {
+        let fixture = try makeCrossSchemeStagingFailureFixture(
+            targetSchemaID: "rime_ice",
+            peerSchemaID: "wanxiang",
+            targetFiles: ["rime_ice.schema.yaml", "rime_ice.dict.yaml"],
+            peerFile: "wanxiang.schema.yaml"
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        await fixture.manager.uninstallSchema("rime_ice")?.value
+
+        XCTAssertEqual(fixture.manager.activeSchemaID, "rime_ice")
+        XCTAssertEqual(fixture.settings.string(forKey: "rime_active_schema"), "rime_ice")
+        XCTAssertTrue(fixture.settings.bool(forKey: "rime_ice_installed"))
+        XCTAssertTrue(fixture.settings.bool(forKey: "wanxiang_installed"))
+        for (url, data) in fixture.targetFilesBefore {
+            XCTAssertEqual(try Data(contentsOf: url), data)
+        }
+        XCTAssertEqual(try Data(contentsOf: fixture.peerFileURL), fixture.peerFileBefore)
+        let requests = await fixture.deploymentService.requests
+        XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin", "rime_ice"])
+    }
+
+    /// CS-F3 symmetry: a real Wanxiang staging rollback restores its target
+    /// files and selection without changing the Ice peer.
+    func testCSF3_ManagerWanxiangStagingFailureRestoresSelectionAndIcePeerFiles() async throws {
+        let fixture = try makeCrossSchemeStagingFailureFixture(
+            targetSchemaID: "wanxiang",
+            peerSchemaID: "rime_ice",
+            targetFiles: ["wanxiang.schema.yaml", "wanxiang.dict.yaml"],
+            peerFile: "rime_ice.schema.yaml"
+        )
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        await fixture.manager.uninstallSchema("wanxiang")?.value
+
+        XCTAssertEqual(fixture.manager.activeSchemaID, "wanxiang")
+        XCTAssertEqual(fixture.settings.string(forKey: "rime_active_schema"), "wanxiang")
+        XCTAssertTrue(fixture.settings.bool(forKey: "wanxiang_installed"))
+        XCTAssertTrue(fixture.settings.bool(forKey: "rime_ice_installed"))
+        for (url, data) in fixture.targetFilesBefore {
+            XCTAssertEqual(try Data(contentsOf: url), data)
+        }
+        XCTAssertEqual(try Data(contentsOf: fixture.peerFileURL), fixture.peerFileBefore)
+        let requests = await fixture.deploymentService.requests
+        XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin", "wanxiang"])
+    }
+
     func testDownloadSchemeDisplayNameUsesCatalogName() {
         let manager = makeManager()
         XCTAssertEqual(manager.downloadSchemeDisplayName(for: "rime_ice"), "雾凇拼音")
@@ -2187,6 +2307,79 @@ final class SchemaManagerTests: XCTestCase {
         manager.releaseSchemeDeliveryCommitLease(operationID: blockingOperationID)
     }
 
+    private struct CrossSchemeStagingFailureFixture {
+        let rootURL: URL
+        let settings: StubSharedSettingsStore
+        let manager: SchemaManager
+        let deploymentService: StubDeploymentService
+        let targetFilesBefore: [(URL, Data)]
+        let peerFileURL: URL
+        let peerFileBefore: Data
+    }
+
+    private func makeCrossSchemeStagingFailureFixture(
+        targetSchemaID: String,
+        peerSchemaID: String,
+        targetFiles: [String],
+        peerFile: String
+    ) throws -> CrossSchemeStagingFailureFixture {
+        let rootURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("schema-manager-csf3-\(UUID().uuidString)")
+        let sharedURL = rootURL.appendingPathComponent("Rime/shared", isDirectory: true)
+        let userURL = rootURL.appendingPathComponent("Rime/user", isDirectory: true)
+        try FileManager.default.createDirectory(at: sharedURL, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: userURL, withIntermediateDirectories: true)
+
+        let targetFilesBefore = try targetFiles.map { relativePath in
+            let url = sharedURL.appendingPathComponent(relativePath)
+            let data = Data("target:\(targetSchemaID):\(relativePath)".utf8)
+            try data.write(to: url)
+            return (url, data)
+        }
+        let peerFileURL = sharedURL.appendingPathComponent(peerFile)
+        let peerFileBefore = Data("peer:\(peerSchemaID):\(peerFile)".utf8)
+        try peerFileBefore.write(to: peerFileURL)
+
+        let targetPrefix = targetSchemaID == "rime_ice" ? "rime_ice" : "wanxiang"
+        let peerPrefix = peerSchemaID == "rime_ice" ? "rime_ice" : "wanxiang"
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": targetSchemaID,
+                "\(targetPrefix)_installed": true,
+                "\(targetPrefix)_version": "target-version",
+                "\(peerPrefix)_installed": true,
+                "\(peerPrefix)_version": "peer-version",
+            ]
+        )
+        let realInstaller = SharedContainerSchemaArchiveInstaller(
+            appGroupID: "test.scheme-delivery",
+            fileManager: SchemaManagerMoveItemFailureFileManager(
+                failOnStagingMoveNumber: 2,
+                sharedDirectoryURL: sharedURL
+            ),
+            containerURL: rootURL
+        )
+        let installer = DeploymentDirectoryOverrideSchemaArchiveInstaller(
+            underlying: realInstaller,
+            directories: SchemaDeploymentDirectories(sharedDataURL: sharedURL, userDataURL: userURL)
+        )
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+        return CrossSchemeStagingFailureFixture(
+            rootURL: rootURL,
+            settings: settings,
+            manager: manager,
+            deploymentService: deploymentService,
+            targetFilesBefore: targetFilesBefore,
+            peerFileURL: peerFileURL,
+            peerFileBefore: peerFileBefore
+        )
+    }
+
     private func makeManager(
         settings: StubSharedSettingsStore = StubSharedSettingsStore(),
         sourceSelector: any SchemaSourceSelecting = StubSchemaSourceSelector(),
@@ -2317,7 +2510,13 @@ private final class FixtureArchiveDownloader: SchemaArchiveDownloading {
     private static let archiveBase64 =
         "UEsDBAoAAAAAAPhmKF0a9USgFAAAABQAAAAUABwAcmltZV9pY2Uuc2NoZW1hLnlhbWxVVAkAA1SVn2pUlZ9qdXgLAAEE9QEAAAQAAAAAc2NoZW1hX2lkOiByaW1lX2ljZQpQSwMECgAAAAAA+GYoXYE7L4EQAAAAEAAAAAwAHABkZWZhdWx0LnlhbWxVVAkAA1SVn2pUlZ9qdXgLAAEE9QEAAAQAAAAAcHJlc2V0OiBmaXh0dXJlClBLAwQKAAAAAAD4Zihd9JeuQ9QAAADUAAAADgAcAHQ5LnNjaGVtYS55YW1sVVQJAANUlZ9qVJWfanV4CwABBPUBAAAEAAAAAHNjaGVtYV9pZDogdDkKc3BlbGxlcjoKICBhbGdlYnJhOgogICAgLSBkZXJpdmUvW2FiY10vMi8KICAgIC0gZGVyaXZlL1tkZWZdLzMvCiAgICAtIGRlcml2ZS9baGdpXS80LwogICAgLSBkZXJpdmUvW2prbF0vNS8KICAgIC0gZGVyaXZlL1tvbW5dLzYvCiAgICAtIGRlcml2ZS9bcHFyc10vNy8KICAgIC0gZGVyaXZlL1t0dXZdLzgvCiAgICAtIGRlcml2ZS9bd3h5el0vOS8KUEsBAh4DCgAAAAAA+GYoXRr1RKAUAAAAFAAAABQAGAAAAAAAAAAAAKSBAAAAAHJpbWVfaWNlLnNjaGVtYS55YW1sVVQFAANUlZ9qdXgLAAEE9QEAAAQAAAAAUEsBAh4DCgAAAAAA+GYoXYE7L4EQAAAAEAAAAAwAGAAAAAAAAAAAAKSBYgAAAGRlZmF1bHQueWFtbFVUBQADVJWfanV4CwABBPUBAAAEAAAAAFBLAQIeAwoAAAAAAPhmKF30l65D1AAAANQAAAAOABgAAAAAAAAAAACkgbgAAAB0OS5zY2hlbWEueWFtbFVUBQADVJWfanV4CwABBPUBAAAEAAAAAFBLBQYAAAAAAwADAAABAADUAQAAAAA="
 
+    private let schemaID: String
     private var archiveURL: URL?
+
+    init(schemaID: String = "rime_ice") {
+        precondition(schemaID.utf8.count == "rime_ice".utf8.count)
+        self.schemaID = schemaID
+    }
 
     func downloadArchive(
         from source: RimeSchemeSourceVariant,
@@ -2327,7 +2526,15 @@ private final class FixtureArchiveDownloader: SchemaArchiveDownloading {
     ) async throws -> DownloadedSchemaArchive {
         let url = FileManager.default.temporaryDirectory
             .appendingPathComponent("identical-receipt-fixture-\(UUID().uuidString).zip")
-        try XCTUnwrap(Data(base64Encoded: Self.archiveBase64)).write(to: url)
+        var archiveData = try XCTUnwrap(Data(base64Encoded: Self.archiveBase64))
+        if schemaID != "rime_ice" {
+            let iceSchemaID = Data("rime_ice".utf8)
+            let replacement = Data(schemaID.utf8)
+            while let range = archiveData.range(of: iceSchemaID) {
+                archiveData.replaceSubrange(range, with: replacement)
+            }
+        }
+        try archiveData.write(to: url)
         archiveURL = url
         onProgress?(1)
         return DownloadedSchemaArchive(
@@ -2543,6 +2750,109 @@ private final class StubSchemaArchiveDownloader: SchemaArchiveDownloading {
             finalHost: source.downloadURL.host ?? "github.com"
         )
     }
+}
+
+/// Test-only seam: fail once during production installer staging so its
+/// rollback path, rather than a manager stub, restores the resource tree.
+private final class SchemaManagerMoveItemFailureFileManager: FileManager {
+    private let failOnStagingMoveNumber: Int
+    private let sharedDirectoryURL: URL
+    private var stagingMoveCallCount = 0
+
+    init(failOnStagingMoveNumber: Int, sharedDirectoryURL: URL) {
+        self.failOnStagingMoveNumber = failOnStagingMoveNumber
+        self.sharedDirectoryURL = sharedDirectoryURL.standardizedFileURL
+        super.init()
+    }
+
+    override func moveItem(at srcURL: URL, to dstURL: URL) throws {
+        if isStagingMove(from: srcURL, to: dstURL) {
+            stagingMoveCallCount += 1
+        }
+        if stagingMoveCallCount == failOnStagingMoveNumber, isStagingMove(from: srcURL, to: dstURL) {
+            throw CocoaError(.fileWriteUnknown)
+        }
+        try super.moveItem(at: srcURL, to: dstURL)
+    }
+
+    private func isStagingMove(from sourceURL: URL, to destinationURL: URL) -> Bool {
+        sourceURL.deletingLastPathComponent().standardizedFileURL == sharedDirectoryURL
+            && destinationURL.path.hasPrefix(sharedDirectoryURL.path + "/.schema-uninstall-")
+    }
+}
+
+/// Keeps the production installer responsible for schema staging while giving
+/// this App Group-free test a deployable directory pair.
+@MainActor
+private final class DeploymentDirectoryOverrideSchemaArchiveInstaller: SchemaArchiveInstalling {
+    private let underlying: SharedContainerSchemaArchiveInstaller
+    private let directories: SchemaDeploymentDirectories
+
+    init(underlying: SharedContainerSchemaArchiveInstaller, directories: SchemaDeploymentDirectories) {
+        self.underlying = underlying
+        self.directories = directories
+    }
+
+    func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
+        underlying.cachedArchiveURL(for: distribution)
+    }
+
+    func prepareExtractionDirectory(for distribution: RimeSchemeDistribution) throws -> URL {
+        try underlying.prepareExtractionDirectory(for: distribution)
+    }
+
+    func removeTemporaryItem(at url: URL) { underlying.removeTemporaryItem(at: url) }
+
+    func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool {
+        underlying.containsInstalledSchema(plan: plan)
+    }
+
+    func checkDiskSpace(needed: Int64) throws { try underlying.checkDiskSpace(needed: needed) }
+
+    func installSchemaFiles(
+        from extractDir: URL,
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws {
+        try underlying.installSchemaFiles(from: extractDir, plan: plan, luaAvailable: luaAvailable)
+    }
+
+    func createUpgradeCheckpoint(
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws -> SchemaUpgradeCheckpoint? {
+        try underlying.createUpgradeCheckpoint(plan: plan, luaAvailable: luaAvailable)
+    }
+
+    func restoreUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) throws {
+        try underlying.restoreUpgradeCheckpoint(checkpoint)
+    }
+
+    func commitUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) {
+        underlying.commitUpgradeCheckpoint(checkpoint)
+    }
+
+    func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging {
+        try underlying.stageSchemaUninstall(plan: plan)
+    }
+
+    func commitSchemaUninstall(_ staging: SchemaUninstallStaging, plan: RimeSchemeInstallationPlan) {
+        underlying.commitSchemaUninstall(staging, plan: plan)
+    }
+
+    func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) throws {
+        try underlying.rollbackSchemaUninstall(staging)
+    }
+
+    func clearBuildCache(plan: RimeSchemeInstallationPlan) {
+        underlying.clearBuildCache(plan: plan)
+    }
+
+    func sharedDataDirectoryURL() -> URL? { underlying.sharedDataDirectoryURL() }
+
+    func runtimeDirectories() throws -> SchemaDeploymentDirectories { directories }
+
+    func deploymentDirectories() throws -> SchemaDeploymentDirectories { directories }
 }
 
 @MainActor
