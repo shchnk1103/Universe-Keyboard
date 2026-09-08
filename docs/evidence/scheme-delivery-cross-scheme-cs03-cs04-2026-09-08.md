@@ -19,7 +19,7 @@ Evidence grade: **Executor-recorded**
 drives the production `fetchAndDownload` path through ZIP extraction and
 post-processing with controlled dependencies. It proves the matching-receipt
 branch does not replace live files, acquire a commit lease, deploy, or change
-the active peer selection, and cleans both temporary artifacts.
+the active peer selection, and cleans the downloaded temporary archive.
 
 Honest limit: the production-path test uses controlled downloader/verifier
 dependencies; real pinned-archive binding remains covered by the dedicated
@@ -42,6 +42,19 @@ artifact-verifier tests.
 Focused result: `Test-Universe Keyboard-2026.09.08_12-57-15-+0800.xcresult`
 under `/private/tmp/uk-scheme-takeover-derived/Logs/Test/` — **TEST SUCCEEDED**
 (6 focused tests).
+
+## Independent review
+
+Independent Quality / Architecture delta review: **Pass with conditions**.
+The reviewer found no new blocking issue in `d1bf7eb`; this remains a local
+candidate only. The review did not repeat the executor's local gates.
+
+The controlled verifier means this test is not real pinned-archive end-to-end
+evidence. It exercises the Ice production path only; Wanxiang continues to
+have decision and coexistence-harness coverage. The installed-presence check
+also intentionally checks the main schema file rather than a full ownership
+inventory, so this slice makes no claim about repair after arbitrary external
+file deletion.
 
 ## Non-claims
 
