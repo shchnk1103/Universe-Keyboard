@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import RimeBridge
 
@@ -135,7 +136,9 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
 
         do {
             try fileManager.createDirectory(at: stagingRoot, withIntermediateDirectories: true)
-            for relativePath in uninstallRelativePaths(for: plan) {
+            let paths = uninstallRelativePaths(for: plan)
+                + (try matchingWanxiangLuaPaths(plan: plan, sharedDirectory: sharedDirectory))
+            for relativePath in paths {
                 let sourceURL = sharedDirectory.appendingPathComponent(relativePath)
                 guard fileManager.fileExists(atPath: sourceURL.path) else { continue }
 
@@ -261,4 +264,23 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         }
     }
 
+    private func matchingWanxiangLuaPaths(
+        plan: RimeSchemeInstallationPlan,
+        sharedDirectory: URL
+    ) throws -> [String] {
+        guard plan.schemaFileName == "wanxiang.schema.yaml", plan.revision == "wanxiang-plan-1" else {
+            return []
+        }
+        var matched: [String] = []
+        for path in WanxiangLuaOwnership.sha256ByPath.keys.sorted() {
+            let url = sharedDirectory.appendingPathComponent(path)
+            guard fileManager.fileExists(atPath: url.path) else { continue }
+            // Do not follow a user-created link out of the owned resource tree.
+            guard url.resolvingSymlinksInPath().path == url.standardizedFileURL.path else { continue }
+            let digest = SHA256.hash(data: try Data(contentsOf: url))
+                .map { String(format: "%02x", $0) }.joined()
+            if digest == WanxiangLuaOwnership.sha256ByPath[path] { matched.append(path) }
+        }
+        return matched
+    }
 }

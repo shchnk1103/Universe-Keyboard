@@ -183,3 +183,11 @@ Human-attested 成功烟雾与工程合同方向一致；失败回滚未测；�
 **证据摘要：** remediation 仅测试 + 文档；生产 `SchemaArchiveInstaller` 无 diff。`MoveItemFailureFileManager(failOnMoveNumber: 2)` 注入生产 `stageSchemaUninstall` 非首次 `moveItem` 失败；断言 `postProcessingFailed`、owned 字节恢复、无 live `.schema-uninstall-*`。既有 `fileManager:` 默认 `.default` 路径不变。
 
 **Non-claims：** 不改写整体 Pass with conditions 为无条件 Pass；不 Accept ADR；不 Product Gate / Assignment Closed / merge / TestFlight；不闭合 P3 与 Wanxiang / 真机失败回滚。
+
+---
+
+## Follow-up — Limited P4 Product Gate (docs pointer, 2026-09-08)
+
+Human recorded a **Limited Product Gate Passed (automation-backed failure rollback)** for this slice: [`scheme-delivery-source-state-001-p4-product-gate-2026-09-08.md`](../evidence/scheme-delivery-source-state-001-p4-product-gate-2026-09-08.md).
+
+This pointer does **not** rewrite the Quality Verdict above. Device failure-rollback remains untested on-device; the limited gate accepts automation coverage for that residual. Still not full Product Gate / Device-attested / ADR Accepted / merge / TestFlight.

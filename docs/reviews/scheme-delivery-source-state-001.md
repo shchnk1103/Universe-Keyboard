@@ -57,3 +57,11 @@ Reviewer: independent Quality Reviewer（本会话）；冻结 tip `18f0d07b14f4
 **Prior Quality pending（不可读 receipt）：已关闭。** 本审查在冻结 tip 上复核 `a01dbd3` 代码 + `testUnreadableReceiptObjectFailsBeforeUnknownRuntimeMutation` 等测试后，对该 residual 单独结论为 **Pass**。此前缺失的 delta-review 文本不再阻挡关闭。
 
 未 Accept ADR 0034；未 merge / undraft PR #100；Wanxiang P4、Ice Lua `dofile`、Device-attested、Product Gate / TestFlight 仍开放。
+
+## Limited P4 Product Gate — 2026-09-08
+
+Human Product Owner limited / conditional gate: [`scheme-delivery-source-state-001-p4-product-gate-2026-09-08.md`](../evidence/scheme-delivery-source-state-001-p4-product-gate-2026-09-08.md).
+
+**Grade:** **Limited Product Gate Passed (automation-backed failure rollback)**. Device failure-rollback untested; automation-backed (unit tests + Q-P2-01 / `0315908` + CI). Quality docs: `372ad8c` / `bf9de51`. Success path: [`p4-device`](../evidence/scheme-delivery-source-state-001-p4-device-2026-09-07.md).
+
+Does **not** undraft/merge PR #100, Accept ADR 0034, close Wanxiang P4, authorize TestFlight/App Release, or upgrade to Device-attested / full Product Gate.

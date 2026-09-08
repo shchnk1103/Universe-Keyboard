@@ -371,6 +371,224 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
     }
 
+    // MARK: - Wanxiang exact-hash Lua ownership (pinned CNB 17.5.9)
+
+    /// Empty `lua/data/chaifen.txt` matches the pinned empty SHA; a second
+    /// non-empty map entry is planted from the extracted CNB tree when present.
+    func testWanxiangExactHashLuaMatchIsStagedOnUninstall() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+
+        let wanxiangPlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+        XCTAssertEqual(wanxiangPlan.revision, "wanxiang-plan-1")
+        XCTAssertEqual(wanxiangPlan.schemaFileName, "wanxiang.schema.yaml")
+
+        let chaifenRel = "lua/data/chaifen.txt"
+        let emptyHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        XCTAssertEqual(WanxiangLuaOwnership.sha256ByPath[chaifenRel], emptyHash)
+
+        try plantSharedFile(env.shared, relativePath: chaifenRel, data: Data())
+        XCTAssertEqual(sha256(Data()), emptyHash)
+
+        var expectedMatched = [chaifenRel]
+        if let bitBytes = optionalWanxiangExtractBytes(relativePath: "lua/wanxiang/bit.lua") {
+            let bitRel = "lua/wanxiang/bit.lua"
+            XCTAssertEqual(sha256(bitBytes), WanxiangLuaOwnership.sha256ByPath[bitRel])
+            try plantSharedFile(env.shared, relativePath: bitRel, data: bitBytes)
+            expectedMatched.append(bitRel)
+        }
+
+        try plantSharedFile(
+            env.shared,
+            relativePath: "wanxiang.schema.yaml",
+            data: Data("wanxiang-schema".utf8)
+        )
+
+        let staging = try env.installer.stageSchemaUninstall(plan: wanxiangPlan)
+        defer { try? env.installer.rollbackSchemaUninstall(staging) }
+
+        for path in expectedMatched {
+            XCTAssertTrue(
+                staging.movedRelativePaths.contains(path),
+                "expected owned Lua path \(path) in staging"
+            )
+            XCTAssertFalse(
+                FileManager.default.fileExists(atPath: env.shared.appendingPathComponent(path).path),
+                "live tree should no longer hold staged \(path)"
+            )
+            XCTAssertTrue(
+                FileManager.default.fileExists(
+                    atPath: staging.rootURL.appendingPathComponent(path).path
+                )
+            )
+        }
+    }
+
+    func testWanxiangModifiedLuaBytesAreNotStaged() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+
+        let wanxiangPlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+        let chaifenRel = "lua/data/chaifen.txt"
+        let modified = Data("user-edited-chaifen".utf8)
+        XCTAssertNotEqual(sha256(modified), WanxiangLuaOwnership.sha256ByPath[chaifenRel])
+        try plantSharedFile(env.shared, relativePath: chaifenRel, data: modified)
+        try plantSharedFile(
+            env.shared,
+            relativePath: "wanxiang.schema.yaml",
+            data: Data("wanxiang-schema".utf8)
+        )
+
+        let staging = try env.installer.stageSchemaUninstall(plan: wanxiangPlan)
+        defer { try? env.installer.rollbackSchemaUninstall(staging) }
+
+        XCTAssertFalse(staging.movedRelativePaths.contains(chaifenRel))
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent(chaifenRel)),
+            modified
+        )
+    }
+
+    func testWanxiangUnknownLuaPathIsLeftInPlaceOnUninstallCommit() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+
+        let wanxiangPlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+        let chaifenRel = "lua/data/chaifen.txt"
+        let unknownRel = "lua/user_custom.lua"
+        let iceStyleRel = "lua/date_translator.lua"
+        let unknownBytes = Data("user-custom-lua".utf8)
+        let iceStyleBytes = Data("ice-style-lua".utf8)
+
+        try plantSharedFile(env.shared, relativePath: chaifenRel, data: Data())
+        try plantSharedFile(env.shared, relativePath: unknownRel, data: unknownBytes)
+        try plantSharedFile(env.shared, relativePath: iceStyleRel, data: iceStyleBytes)
+        try plantSharedFile(
+            env.shared,
+            relativePath: "wanxiang.schema.yaml",
+            data: Data("wanxiang-schema".utf8)
+        )
+
+        let staging = try env.installer.stageSchemaUninstall(plan: wanxiangPlan)
+        XCTAssertTrue(staging.movedRelativePaths.contains(chaifenRel))
+        XCTAssertFalse(staging.movedRelativePaths.contains(unknownRel))
+        XCTAssertFalse(staging.movedRelativePaths.contains(iceStyleRel))
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent(unknownRel)),
+            unknownBytes
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent(iceStyleRel)),
+            iceStyleBytes
+        )
+
+        env.installer.commitSchemaUninstall(staging, plan: wanxiangPlan)
+
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent(chaifenRel).path
+            )
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent(unknownRel)),
+            unknownBytes
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent(iceStyleRel)),
+            iceStyleBytes
+        )
+        XCTAssertFalse(FileManager.default.fileExists(atPath: staging.rootURL.path))
+    }
+
+    func testWanxiangSymlinkAtMappedLuaPathIsNotStaged() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+
+        let wanxiangPlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+        let chaifenRel = "lua/data/chaifen.txt"
+        let targetRel = "lua/data/chaifen-target-outside.txt"
+        let linkURL = env.shared.appendingPathComponent(chaifenRel)
+        let targetURL = env.shared.appendingPathComponent(targetRel)
+
+        try FileManager.default.createDirectory(
+            at: linkURL.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        // Empty payload matches the map hash, but the entry is a symlink so
+        // resolvingSymlinksInPath must differ from the standardized file URL.
+        try Data().write(to: targetURL)
+        do {
+            try FileManager.default.createSymbolicLink(
+                at: linkURL,
+                withDestinationURL: targetURL
+            )
+        } catch {
+            throw XCTSkip("Simulator FS rejected symlink creation: \(error)")
+        }
+
+        var isDir: ObjCBool = false
+        guard
+            FileManager.default.fileExists(atPath: linkURL.path, isDirectory: &isDir),
+            linkURL.resolvingSymlinksInPath().path != linkURL.standardizedFileURL.path
+        else {
+            throw XCTSkip("Created path is not a resolvable out-of-path symlink")
+        }
+
+        try plantSharedFile(
+            env.shared,
+            relativePath: "wanxiang.schema.yaml",
+            data: Data("wanxiang-schema".utf8)
+        )
+
+        let staging = try env.installer.stageSchemaUninstall(plan: wanxiangPlan)
+        defer { try? env.installer.rollbackSchemaUninstall(staging) }
+
+        XCTAssertFalse(staging.movedRelativePaths.contains(chaifenRel))
+        // Symlink node itself must remain; target bytes are untouched too.
+        XCTAssertTrue(FileManager.default.fileExists(atPath: linkURL.path))
+        XCTAssertEqual(try Data(contentsOf: targetURL), Data())
+    }
+
+    func testIceUninstallDoesNotStageWanxiangExactHashLuaPaths() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+
+        let icePlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+        let chaifenRel = "lua/data/chaifen.txt"
+        let bitRel = "lua/wanxiang/bit.lua"
+
+        try plantSharedFile(env.shared, relativePath: chaifenRel, data: Data())
+        if let bitBytes = optionalWanxiangExtractBytes(relativePath: bitRel) {
+            try plantSharedFile(env.shared, relativePath: bitRel, data: bitBytes)
+        } else {
+            // Still plant matching empty bytes under a Wanxiang map path Ice
+            // does not list in removableFiles.
+            try plantSharedFile(env.shared, relativePath: bitRel, data: Data())
+        }
+        try plantSharedFile(
+            env.shared,
+            relativePath: "rime_ice.schema.yaml",
+            data: Data("ice-schema".utf8)
+        )
+
+        let staging = try env.installer.stageSchemaUninstall(plan: icePlan)
+        defer { try? env.installer.rollbackSchemaUninstall(staging) }
+
+        XCTAssertFalse(staging.movedRelativePaths.contains(chaifenRel))
+        XCTAssertFalse(staging.movedRelativePaths.contains(bitRel))
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent(chaifenRel).path
+            )
+        )
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent(bitRel).path
+            )
+        )
+        XCTAssertTrue(staging.movedRelativePaths.contains("rime_ice.schema.yaml"))
+    }
+
     private struct Environment {
         let root: URL
         let sourceRoot: URL
@@ -435,6 +653,29 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
                 atPath: withLua.appendingPathComponent("default.yaml").path
             ) {
                 return withLua
+            }
+        }
+        return nil
+    }
+
+    private func plantSharedFile(_ shared: URL, relativePath: String, data: Data) throws {
+        let url = shared.appendingPathComponent(relativePath)
+        try FileManager.default.createDirectory(
+            at: url.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        try data.write(to: url)
+    }
+
+    private func optionalWanxiangExtractBytes(relativePath: String) -> Data? {
+        let roots = [
+            ProcessInfo.processInfo.environment["SCHEME_WANXIANG_EXTRACT_ROOT"],
+            "/private/tmp/rime-wanxiang-1759/extract",
+        ].compactMap { $0 }
+        for path in roots {
+            let url = URL(fileURLWithPath: path).appendingPathComponent(relativePath)
+            if let data = try? Data(contentsOf: url) {
+                return data
             }
         }
         return nil

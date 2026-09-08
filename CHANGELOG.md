@@ -5,6 +5,18 @@
 - 回滚移动失败时保留暂存目录并报告恢复未完成，避免清理唯一剩余文件副本。
 - 主 App 停止该次卸载，不重新部署不完整的原方案；增加双重移动失败及恢复重试测试。此前有限 Gate 不自动覆盖本次增量。
 
+## 2026-09-08 — Wanxiang Lua 精确哈希归属暂存（17.5.9）
+
+- 为 pinned CNB Wanxiang 17.5.9 增加 `WanxiangLuaOwnership` 与卸载时 exact-hash Lua 路径匹配暂存。
+- 共存测试覆盖匹配/修改/未知路径/符号链接/Ice 不误伤；**非**完整 Wanxiang P4 闭合。
+- 有限 Product Gate 文档仍为先前冻结的历史记录，不自动接受 rollback 修正后的实现，除非原文已写明。
+
+## 2026-09-08 — Limited P4 Product Gate（自动化覆盖失败回滚）
+
+- Human 有限 Product Gate：接受失败回滚未真机测，由单元测试 + Q-P2-01 mid-move 注入 + CI 覆盖本片残留风险。
+- 等级：**Limited Product Gate Passed (automation-backed failure rollback)**；非完整 Product Gate / 非 Device-attested。
+- 明确未授权：undraft/merge PR #100、TestFlight、App Release、ADR 0034 Accepted、Wanxiang P4 闭合。
+
 ## 2026-09-07 — Human-attested P4 活跃卸载烟雾
 
 - Human 报告：活跃雾凇卸载先切 Luna、无报错、之后 Luna 可输入，设置显示雾凇未安装；失败回滚未测。
