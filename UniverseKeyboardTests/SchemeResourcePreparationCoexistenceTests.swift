@@ -154,7 +154,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
                 atPath: env.shared.appendingPathComponent("rime_ice.schema.yaml").path
             )
         )
-        env.installer.rollbackSchemaUninstall(staging)
+        try env.installer.rollbackSchemaUninstall(staging)
         XCTAssertEqual(
             try Data(contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml")),
             Data("ice-schema".utf8)
@@ -230,6 +230,78 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
             sharedNames.contains(where: { $0.hasPrefix(".schema-uninstall-") }),
             "staging root must not remain as live shared pollution"
         )
+    }
+
+    func testUninstallDoubleFailurePreservesCheckpointAndAllowsRecoveryRetry() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        let plan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+        let bytes = Data("original-schema".utf8)
+        try bytes.write(to: env.shared.appendingPathComponent("rime_ice.schema.yaml"))
+        try bytes.write(to: env.shared.appendingPathComponent("rime_ice.dict.yaml"))
+        let installer = SharedContainerSchemaArchiveInstaller(
+            appGroupID: "test",
+            fileManager: MoveItemFailureFileManager(failingMoves: [2, 3]),
+            containerURL: env.root.appendingPathComponent("container")
+        )
+        XCTAssertThrowsError(try installer.stageSchemaUninstall(plan: plan)) { error in
+            XCTAssertTrue(error is SchemaUninstallRecoveryError)
+        }
+        let roots = try FileManager.default.contentsOfDirectory(
+            at: env.shared, includingPropertiesForKeys: nil
+        ).filter { $0.lastPathComponent.hasPrefix(".schema-uninstall-") }
+        XCTAssertEqual(roots.count, 1)
+        let root = try XCTUnwrap(roots.first)
+        XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent("rime_ice.schema.yaml")), bytes)
+        XCTAssertEqual(try Data(contentsOf: env.shared.appendingPathComponent("rime_ice.dict.yaml")), bytes)
+        let checkpoint = SchemaUninstallStaging(rootURL: root, movedRelativePaths: ["rime_ice.schema.yaml"])
+        try installer.rollbackSchemaUninstall(checkpoint)
+        XCTAssertEqual(try Data(contentsOf: env.shared.appendingPathComponent("rime_ice.schema.yaml")), bytes)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: root.path))
+    }
+
+    func testRollbackContinuesAfterMiddleFailureAndRetriesOriginalCheckpoint() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        let plan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+        let paths = ["rime_ice.schema.yaml", "rime_ice.dict.yaml", "rime_ice_preset.yaml"]
+        for path in paths {
+            try Data(path.utf8).write(to: env.shared.appendingPathComponent(path))
+        }
+        let installer = SharedContainerSchemaArchiveInstaller(
+            appGroupID: "test",
+            fileManager: MoveItemFailureFileManager(failingMoves: [5]),
+            containerURL: env.root.appendingPathComponent("container")
+        )
+        let checkpoint = try installer.stageSchemaUninstall(plan: plan)
+        XCTAssertEqual(checkpoint.movedRelativePaths.count, 3)
+        XCTAssertThrowsError(try installer.rollbackSchemaUninstall(checkpoint))
+        for path in paths {
+            let root = path == "rime_ice.dict.yaml" ? checkpoint.rootURL : env.shared
+            XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent(path)), Data(path.utf8))
+        }
+        try installer.rollbackSchemaUninstall(checkpoint)
+        for path in paths {
+            XCTAssertEqual(try Data(contentsOf: env.shared.appendingPathComponent(path)), Data(path.utf8))
+        }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: checkpoint.rootURL.path))
+    }
+
+    func testMissingStagedFileWithoutRestoreEvidenceRetainsCheckpoint() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        let plan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+        let path = "rime_ice.schema.yaml"
+        try Data("original".utf8).write(to: env.shared.appendingPathComponent(path))
+        let checkpoint = try env.installer.stageSchemaUninstall(plan: plan)
+        try FileManager.default.removeItem(at: checkpoint.rootURL.appendingPathComponent(path))
+        // An unrelated destination must not be mistaken for successful restore.
+        try Data("replacement".utf8).write(to: env.shared.appendingPathComponent(path))
+        XCTAssertThrowsError(try env.installer.rollbackSchemaUninstall(checkpoint)) { error in
+            XCTAssertTrue(error is SchemaUninstallRecoveryError)
+        }
+        XCTAssertTrue(FileManager.default.fileExists(atPath: checkpoint.rootURL.path))
+        XCTAssertEqual(try Data(contentsOf: env.shared.appendingPathComponent(path)), Data("replacement".utf8))
     }
 
     func testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds() throws {
@@ -377,19 +449,22 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
 /// `moveItem`, then delegates so production `rollbackSchemaUninstall` can
 /// restore already-moved paths. Default production installer behavior is unchanged.
 private final class MoveItemFailureFileManager: FileManager {
-    private let failOnMoveNumber: Int
+    private let failingMoves: Set<Int>
     private(set) var moveCallCount = 0
-    private var didInjectFailure = false
 
     init(failOnMoveNumber: Int) {
-        self.failOnMoveNumber = failOnMoveNumber
+        self.failingMoves = [failOnMoveNumber]
+        super.init()
+    }
+
+    init(failingMoves: Set<Int>) {
+        self.failingMoves = failingMoves
         super.init()
     }
 
     override func moveItem(at srcURL: URL, to dstURL: URL) throws {
         moveCallCount += 1
-        if !didInjectFailure && moveCallCount == failOnMoveNumber {
-            didInjectFailure = true
+        if failingMoves.contains(moveCallCount) {
             throw CocoaError(.fileWriteUnknown)
         }
         try super.moveItem(at: srcURL, to: dstURL)

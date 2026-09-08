@@ -727,6 +727,27 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(requests.last?.runtimeSmokeSchemaID, "rime_ice")
     }
 
+    func testIncompleteRollbackStopsWithoutRedeployingOriginalSchema() async {
+        let settings = StubSharedSettingsStore(
+            values: ["rime_active_schema": "rime_ice", "rime_ice_installed": true]
+        )
+        let installer = StubSchemaArchiveInstaller(
+            containsInstalledSchema: true,
+            stageUninstallError: SchemaUninstallRecoveryError.rollbackIncomplete
+        )
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings, installer: installer, deploymentService: deploymentService
+        )
+        await manager.uninstallSchema("rime_ice")?.value
+        XCTAssertFalse(installer.didCommitUninstall)
+        XCTAssertTrue(settings.bool(forKey: "rime_ice_installed"))
+        XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
+        let requests = await deploymentService.requests
+        XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin"])
+        XCTAssertNil(manager.schemeDeliveryCommitLeaseOperationID)
+    }
+
     func testNonActiveUninstallStillRemovesFilesWithoutLunaFallback() async {
         let settings = StubSharedSettingsStore(
             values: [

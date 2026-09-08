@@ -1,11 +1,13 @@
 # Active Work Summary
 
+Current SCHEME-DELIVERY increment: `2026-09-08` rollback double-failure repair passed App/Keyboard tests and independent delta review (P2 Closed); prior Limited Product Gate does not automatically accept this increment. See the Assignment's current-increment note.
+
 > **KOS 2.1 ops · M-05**
 > Cap: **≤ 10** items.
 > **Lifecycle Source of Truth = Assignment Record** (not this file, not Dashboard).
 > This page only **links** and restates **Current Status** fields.
 
-Status snapshot (existing rows): `2026-09-07 Asia/Shanghai` — 增补 `SCHEME-DELIVERY-SOURCE-STATE-001` 规划 follow-up。产品 Active Work 为 `6/10`。KOS-UPGRADE-UK-003 Closed 仍以 Assignment 为准。
+Status snapshot (existing rows): `2026-09-08 Asia/Shanghai` — `SCHEME-DELIVERY-SOURCE-STATE-001` rollback double-failure repair + independent delta。产品 Active Work 为 `6/10`。KOS-UPGRADE-UK-003 Closed 仍以 Assignment 为准。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
@@ -14,7 +16,7 @@ Status snapshot (existing rows): `2026-09-07 Asia/Shanghai` — 增补 `SCHEME-D
 | 3 | TYPING-INTELLIGENCE-001 | Active | 自动化验证完成；真机 / 无障碍 / 外观门未关 | [`assignments/typing-intelligence-001.md`](assignments/typing-intelligence-001.md) |
 | 4 | TYPO-CORRECTION-002 | Active | Contextual recovery；指定 Simulator 场景 pending | [`assignments/typo-correction-002.md`](assignments/typo-correction-002.md) |
 | 5 | RIME-SYNC-001 | Active | Run 02 单事务完成；正式 `INVALID` 审计结果保留，Human Product Owner 接受工程结论并决定暂不重测。仅在复发或路径实质变更时重开；旧轮次精确错误、`TD-002` pending | [`assignment`](assignments/rime-sync-001.md) · [`diagnostics`](assignments/rime-sync-diagnostics-v1-001.md) · [`Product Review`](product-decisions/RIME-SYNC-DIAGNOSTICS-V1-001-product-gate.md) · [`Run 01`](evidence/rime-background-sync-natural-device-run-2026-08-31.md) · [`Run 02`](evidence/rime-background-sync-natural-device-run-2026-09-01-r2.md) |
-| 6 | SCHEME-DELIVERY-SOURCE-STATE-001 | Active | P4 Quality **Pass with conditions**；prior receipt residual 已关闭；Wanxiang P4 / Product Gate / merge / TestFlight 仍待；ADR 仍 Proposed | [`assignment`](assignments/scheme-delivery-source-state-001.md) · [`plan`](plans/scheme-resource-ownership-and-coexistence-plan.md) · [`P4 Quality`](reviews/scheme-delivery-source-state-001-p4-quality-review.md) · [`P0`](evidence/scheme-delivery-source-state-001-p0-2026-09-07.md) · [`P1`](evidence/scheme-delivery-source-state-001-p1-2026-09-07.md) · [`P3 device`](evidence/scheme-delivery-source-state-001-p3-device-2026-09-07.md) · [`P4 device`](evidence/scheme-delivery-source-state-001-p4-device-2026-09-07.md) · [`ADR 0034`](architecture/decisions/0034-multi-scheme-resource-ownership.md) · [PR #100](https://github.com/shchnk1103/Universe-Keyboard/pull/100) |
+| 6 | SCHEME-DELIVERY-SOURCE-STATE-001 | Active | P4 Quality **Pass with conditions**；Q-P2-01 Closed；rollback double-failure repair + delta P2 Closed；Wanxiang P4 / Product Gate / merge / TestFlight 仍待；ADR 仍 Proposed | [`assignment`](assignments/scheme-delivery-source-state-001.md) · [`rollback delta`](reviews/scheme-delivery-rollback-double-failure-delta-2026-09-08.md) · [`plan`](plans/scheme-resource-ownership-and-coexistence-plan.md) · [`P4 Quality`](reviews/scheme-delivery-source-state-001-p4-quality-review.md) · [`P0`](evidence/scheme-delivery-source-state-001-p0-2026-09-07.md) · [`P1`](evidence/scheme-delivery-source-state-001-p1-2026-09-07.md) · [`P3 device`](evidence/scheme-delivery-source-state-001-p3-device-2026-09-07.md) · [`P4 device`](evidence/scheme-delivery-source-state-001-p4-device-2026-09-07.md) · [`ADR 0034`](architecture/decisions/0034-multi-scheme-resource-ownership.md) · [PR #100](https://github.com/shchnk1103/Universe-Keyboard/pull/100) |
 
 历史工作从 [Assignment 目录](assignments/) 查找；债务从 [TECH_DEBT](TECH_DEBT.md) 查找。
 这里只保留 Ready / Active 工作，上限十项；Assignment 是生命周期事实来源，冲突时修正本镜像。

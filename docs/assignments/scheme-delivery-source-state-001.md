@@ -4,15 +4,21 @@ Policy version: 1.0.0
 
 ## Current Status
 
+**2026-09-08 current increment:** rollback double-failure repair passed full App/Keyboard tests and [independent delta review](../reviews/scheme-delivery-rollback-double-failure-delta-2026-09-08.md): P2 Closed, no new P0/P1/P2 blocking finding. A failed restore retains the checkpoint and stops uninstall, rather than guaranteeing that every file has already returned to the live tree. Any prior limited Product Gate does not automatically accept this changed revision.
+
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | P4 活跃卸载 fail-closed 工程已推送；Independent Quality **Pass with conditions**（[`p4-quality-review`](../reviews/scheme-delivery-source-state-001-p4-quality-review.md)，冻结 `18f0d07`）。prior 不可读-receipt Quality residual 已关闭。Wanxiang P4 / 升级、ADR 0034 Proposed、Product Gate / merge / TestFlight 仍开放 |
-| Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no device-unique root-cause claim, no Device-attested payload identity, no Product Gate Passed |
+| Current Phase | P4 活跃卸载 fail-closed；Independent Quality **Pass with conditions**（[`p4-quality-review`](../reviews/scheme-delivery-source-state-001-p4-quality-review.md)，`372ad8c` / 冻结 `18f0d07`）；Q-P2-01 **Closed**（[`p4-quality-rereview-qp201`](../reviews/scheme-delivery-source-state-001-p4-quality-rereview-qp201.md)，`bf9de51` / `0315908`）；rollback double-failure repair + [`independent delta`](../reviews/scheme-delivery-rollback-double-failure-delta-2026-09-08.md) **P2 Closed**。Wanxiang P4 / 升级、ADR 0034 Proposed、Product Gate / PR #100 draft merge / TestFlight 仍开放 |
+| Material non-claims | No TestFlight/App Release, no device acceptance, no disabled integrity check, no ADR 0034 acceptance, no device-unique root-cause claim, no Device-attested payload identity, no Product Gate Passed, no Wanxiang P4 closure |
 | Next handoff / decision | Wanxiang P4 升级/卸载合同；PR #100 merge / TestFlight / 真机 Product Gate 仍单独 Human 授权；ADR 0034 保持 Proposed 直至明确接受 |
-| Residuals | 真机未发出 `InstallationError`；无 App/Extension UUID·SHA / Device-attested；无万象复测；Wanxiang P4 升级/卸载未闭合；Ice Lua `dofile` 动态引用未闭合；backup/staging cleanup 仍 best-effort；活跃卸载失败回滚未真机测；活跃卸载尚未真机 Product Gate；Quality Q-P2-01 **Closed**（Independent delta [`p4-quality-rereview-qp201`](../reviews/scheme-delivery-source-state-001-p4-quality-rereview-qp201.md)，冻结 `0315908`；本 residual P2: 0；原 P4 Verdict 未整体改写） |
+| Residuals | 真机未发出 `InstallationError`；无 App/Extension UUID·SHA / Device-attested；无万象复测；Wanxiang P4 升级/卸载未闭合；Ice Lua `dofile` 动态引用未闭合；backup/staging cleanup 仍 best-effort；活跃卸载失败回滚未真机测；活跃卸载尚未真机 Product Gate；Quality Q-P2-01 **Closed**（Independent delta，冻结 `0315908`；本 residual P2: 0；原 P4 Verdict 未整体改写）；rollback double-failure delta **P2 Closed**（有限 Gate 不自动覆盖本增量） |
 
 ## Authority and scope
+
+## 2026-09-08 rollback double-failure follow-up
+
+Human authorized Codex to repair a newly observed gap: failed rollback moves were ignored before deleting the staging root. This follow-up preserves the recovery checkpoint and reports incomplete rollback; the manager stops uninstall without redeploying the incomplete original tree. The prior limited gate remains historical evidence for its reviewed revision and does not accept this changed implementation. Fresh focused validation and review are required. Automatic recovery after restart and Wanxiang ownership/upgrade closure remain outside this bounded correction.
 
 Human Product Owner / Assignment Authority approved the proposed source-pin, probe-classification and per-scheme failure fixes in the current conversation: “你的建议比较合理，继续吧” (2026-09-06 Asia/Shanghai).
 

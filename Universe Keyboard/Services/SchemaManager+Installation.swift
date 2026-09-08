@@ -110,6 +110,14 @@ extension SchemaManager {
         let staging: SchemaUninstallStaging
         do {
             staging = try archiveInstaller.stageSchemaUninstall(plan: plan)
+        } catch is SchemaUninstallRecoveryError {
+            // The original resource tree may be incomplete. Keep the deployed
+            // fallback and the recovery files; do not redeploy the broken tree.
+            Logger.shared.error(
+                "uninstallSchema: 回滚未完成，恢复文件已保留，停止卸载",
+                category: .deployment
+            )
+            return
         } catch {
             if requiresActiveFallback {
                 await restoreSchemaAfterFailedUninstall(

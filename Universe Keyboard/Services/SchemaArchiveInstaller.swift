@@ -1,6 +1,10 @@
 import Foundation
 import RimeBridge
 
+enum SchemaUninstallRecoveryError: Error {
+    case rollbackIncomplete
+}
+
 struct SchemaDeploymentDirectories: Sendable {
     let sharedDataURL: URL
     let userDataURL: URL
@@ -27,7 +31,7 @@ protocol SchemaArchiveInstalling: AnyObject {
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
     func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging
     func commitSchemaUninstall(_ staging: SchemaUninstallStaging, plan: RimeSchemeInstallationPlan)
-    func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging)
+    func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) throws
     func clearBuildCache(plan: RimeSchemeInstallationPlan)
     func sharedDataDirectoryURL() -> URL?
     /// Resolves an already-deployed runtime tree without preparing resources.
@@ -45,6 +49,9 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
     /// Tests inject a container root so production copy/uninstall can run
     /// without the App Group. The production initializer leaves this nil.
     private let containerURLOverride: URL?
+    // In-process retry evidence: destination existence alone cannot prove that
+    // a missing staged file was restored by this transaction.
+    private var restoredUninstallPaths: Set<URL> = []
 
     init(appGroupID: String, fileManager: FileManager = .default, containerURL: URL? = nil) {
         self.appGroupID = appGroupID
@@ -142,7 +149,7 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
             }
             return SchemaUninstallStaging(rootURL: stagingRoot, movedRelativePaths: movedRelativePaths)
         } catch {
-            rollbackSchemaUninstall(
+            try rollbackSchemaUninstall(
                 SchemaUninstallStaging(rootURL: stagingRoot, movedRelativePaths: movedRelativePaths)
             )
             throw DownloadError.postProcessingFailed("无法安全暂存待卸载方案文件")
@@ -156,20 +163,43 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         try? fileManager.removeItem(at: staging.rootURL)
     }
 
-    func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) {
-        guard let sharedDirectory = sharedDirectory() else { return }
+    func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) throws {
+        guard let sharedDirectory = sharedDirectory() else {
+            throw SchemaUninstallRecoveryError.rollbackIncomplete
+        }
+        var restorationFailed = false
 
         for relativePath in staging.movedRelativePaths.reversed() {
             let stagedURL = staging.rootURL.appendingPathComponent(relativePath)
             let destinationURL = sharedDirectory.appendingPathComponent(relativePath)
-            guard fileManager.fileExists(atPath: stagedURL.path) else { continue }
-            try? fileManager.createDirectory(
-                at: destinationURL.deletingLastPathComponent(),
-                withIntermediateDirectories: true
-            )
-            try? fileManager.moveItem(at: stagedURL, to: destinationURL)
+            guard fileManager.fileExists(atPath: stagedURL.path) else {
+                if !restoredUninstallPaths.contains(stagedURL)
+                    || !fileManager.fileExists(atPath: destinationURL.path)
+                {
+                    restorationFailed = true
+                }
+                continue
+            }
+            do {
+                try fileManager.createDirectory(
+                    at: destinationURL.deletingLastPathComponent(),
+                    withIntermediateDirectories: true
+                )
+                try fileManager.moveItem(at: stagedURL, to: destinationURL)
+                restoredUninstallPaths.insert(stagedURL)
+            } catch {
+                restorationFailed = true
+            }
+        }
+        // A failed restore leaves the only surviving copy in staging. Keep the
+        // entire checkpoint and report failure rather than deleting that copy.
+        guard !restorationFailed else {
+            throw SchemaUninstallRecoveryError.rollbackIncomplete
         }
         try? fileManager.removeItem(at: staging.rootURL)
+        for path in staging.movedRelativePaths {
+            restoredUninstallPaths.remove(staging.rootURL.appendingPathComponent(path))
+        }
     }
 
     func clearBuildCache(plan: RimeSchemeInstallationPlan) {
@@ -230,4 +260,5 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
             }
         }
     }
+
 }
