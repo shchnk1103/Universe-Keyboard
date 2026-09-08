@@ -1014,6 +1014,78 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
     }
 
+    /// CS-05: removing inactive Ice must preserve the active Wanxiang session
+    /// and must not invoke the active-uninstall Luna fallback.
+    func testCS05_UninstallInactiveIceKeepsWanxiangSelectionWithoutLunaDeploy() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "wanxiang",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-ice-version",
+                "rime_ice_staged_content_checksum": "test-ice-staged-sha",
+                "wanxiang_installed": true,
+                "wanxiang_version": "17.5.9",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.uninstallSchema("rime_ice")?.value
+
+        XCTAssertTrue(installer.didStageUninstall)
+        XCTAssertTrue(installer.didCommitUninstall)
+        XCTAssertNil(settings.object(forKey: "rime_ice_installed"))
+        XCTAssertNil(settings.object(forKey: "rime_ice_staged_content_checksum"))
+        XCTAssertTrue(settings.bool(forKey: "wanxiang_installed"))
+        XCTAssertEqual(settings.string(forKey: "wanxiang_version"), "17.5.9")
+        XCTAssertEqual(manager.activeSchemaID, "wanxiang")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "wanxiang")
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+        let deploymentRequests = await deploymentService.requests
+        XCTAssertTrue(deploymentRequests.isEmpty, "inactive uninstall must not deploy Luna")
+    }
+
+    /// CS-06: symmetric inactive Wanxiang uninstall preserves the active Ice
+    /// session and must not invoke the active-uninstall Luna fallback.
+    func testCS06_UninstallInactiveWanxiangKeepsIceSelectionWithoutLunaDeploy() async {
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "rime_ice",
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-ice-version",
+                "wanxiang_installed": true,
+                "wanxiang_version": "17.5.9",
+                "wanxiang_staged_content_checksum": "test-wanxiang-staged-sha",
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.uninstallSchema("wanxiang")?.value
+
+        XCTAssertTrue(installer.didStageUninstall)
+        XCTAssertTrue(installer.didCommitUninstall)
+        XCTAssertNil(settings.object(forKey: "wanxiang_installed"))
+        XCTAssertNil(settings.object(forKey: "wanxiang_staged_content_checksum"))
+        XCTAssertTrue(settings.bool(forKey: "rime_ice_installed"))
+        XCTAssertEqual(settings.string(forKey: "rime_ice_version"), "test-ice-version")
+        XCTAssertEqual(manager.activeSchemaID, "rime_ice")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "rime_ice")
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+        let deploymentRequests = await deploymentService.requests
+        XCTAssertTrue(deploymentRequests.isEmpty, "inactive uninstall must not deploy Luna")
+    }
+
     func testSuccessfulDeploymentUsesFullCheckAndUpdatesSharedFlags() async {
         let settings = StubSharedSettingsStore(values: ["rime_needs_deploy": true])
         let installer = StubSchemaArchiveInstaller()

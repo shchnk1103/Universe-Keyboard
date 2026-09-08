@@ -4,17 +4,17 @@ Policy version: 1.0.0
 
 ## Current Status
 
-**2026-09-08 current increment:** Cross-scheme **CS-03/CS-04** landed **locally** (not pushed): identical-receipt idempotent no-op seam in `SchemaManager+Download` + dual-install harness evidence in `SchemeResourcePreparationCoexistenceTests` (`testCS03_…` / `testCS04_…`). Base tip before this slice: `944477a`. CS-01/02 already on branch (`2813428`). **Pause for Codex takeover** — do not start CS-05/06/07/08 in this handoff.
+**2026-09-08 current increment:** Cross-scheme **CS-03–CS-06** landed **locally** (not pushed): identical-receipt idempotent no-op seam plus inactive-uninstall peer-retain evidence in `SchemaManagerTests` and `SchemeResourcePreparationCoexistenceTests` (`testCS03_…` through `testCS06_…`). Base tip before the matrix work: `944477a`. CS-01/02 already on branch (`2813428`). **Pause for Codex takeover** — do not start CS-07/08 in this handoff.
 
 Prior increment (still valid history): rollback double-failure repair passed full App/Keyboard tests and [independent delta review](../reviews/scheme-delivery-rollback-double-failure-delta-2026-09-08.md): P2 Closed. The Limited Gate below describes prior revisions only.
 
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | Cross-scheme matrix: **CS-01/02 done** (committed `2813428`); **CS-03/04 done locally** (identical no-op + peer retain / Wanxiang identity-change upgrade path; eng `cb06a08`). Next coding slice when separately authorized: **CS-05+** (inactive uninstall with peer). Peer-prefer fallback **B** remains approved but **deferred to CS-07/08**. Isolation checkout: `/private/tmp/uk-scheme-delivery-fix` on `codex/scheme-delivery-fix`. PR #100 remains **draft**. Wanxiang P4 / ADR 0034 Proposed / TestFlight 仍开放 |
-| Material non-claims | No push of CS-03/04 unless Human authorizes; no TestFlight/App Release; no full Product Gate Passed; no Device-attested upgrade; no ADR 0034 acceptance; no undraft/merge of PR #100; no Wanxiang P4 closure; no CS-05–CS-08 production work in this slice; no Recovery persistence |
-| Next handoff / decision | **Codex takeover / pause.** Resume from local tip after CS-03/04 commits. Next matrix slice = **CS-05/06** when Human names it. CS-07/08 peer-prefer **B** coding still deferred. PR #100 undraft/merge / TestFlight / App Release / ADR Accept 仍单独 Human 授权 |
-| Residuals | CS-05–CS-10 / CS-F* not started; CS-07/08 peer-prefer production deferred; 真机失败回滚未测（Limited Gate 历史）；无 Device-attested；Wanxiang P4 未全闭合；Ice Lua `dofile` 动态引用未闭合；backup/staging cleanup 仍 best-effort |
+| Current Phase | Cross-scheme matrix: **CS-01/02 done** (committed `2813428`); **CS-03/04 done locally** (identical no-op + peer retain / Wanxiang identity-change upgrade path; eng `cb06a08`); **CS-05/06 done locally** (inactive uninstall retains active peer and does not force Luna; test/evidence only, existing production inactive branch exercised). Next coding slice when separately authorized: **CS-07/08** active uninstall with peer-prefer fallback **B**. Isolation checkout: `/private/tmp/uk-scheme-delivery-fix` on `codex/scheme-delivery-fix`. PR #100 remains **draft**. Wanxiang P4 / ADR 0034 Proposed / TestFlight 仍开放 |
+| Material non-claims | No push of local matrix work unless Human authorizes; no TestFlight/App Release; no full Product Gate Passed; no Device-attested upgrade; no ADR 0034 acceptance; no undraft/merge of PR #100; no Wanxiang P4 closure; no CS-07–CS-08 production work in this slice; no Recovery persistence |
+| Next handoff / decision | **Codex takeover / pause.** Resume from local tip after CS-05/06 evidence. Next matrix slice = **CS-07/08** when Human names it. Peer-prefer fallback **B** coding remains deferred. PR #100 undraft/merge / TestFlight / App Release / ADR Accept 仍单独 Human 授权 |
+| Residuals | CS-07–CS-10 / CS-F* not started; CS-07/08 peer-prefer production deferred; 真机失败回滚未测（Limited Gate 历史）；无 Device-attested；Wanxiang P4 未全闭合；Ice Lua `dofile` 动态引用未闭合；backup/staging cleanup 仍 best-effort |
 
 ## Authority and scope
 

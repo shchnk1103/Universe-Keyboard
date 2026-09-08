@@ -1098,6 +1098,83 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         XCTAssertEqual(selection.activeSchemaID, "wanxiang")
     }
 
+    /// CS-05: with Wanxiang active, uninstalling inactive Ice removes only Ice
+    /// ownership and leaves Wanxiang's schema, exact-hash Lua, and user paths.
+    func testCS05_UninstallInactiveIceRetainsWanxiangPeerInventory() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        var selection = CrossSchemeSelectionTracker()
+
+        try plantSharedFile(
+            env.shared,
+            relativePath: CrossSchemeDualInstall.unknownRelativePath,
+            data: CrossSchemeDualInstall.unknownBytes
+        )
+        try installIcePinnedIntoShared(env: env, selection: &selection)
+        try installWanxiangPinnedIntoShared(env: env, selection: &selection)
+        XCTAssertEqual(selection.activeSchemaID, "wanxiang")
+
+        let wanxiangSchemaURL = env.shared.appendingPathComponent("wanxiang.schema.yaml")
+        let wanxiangSchemaBefore = try Data(contentsOf: wanxiangSchemaURL)
+        let chaifenURL = env.shared.appendingPathComponent(
+            CrossSchemeDualInstall.wanxiangChaifenRelativePath
+        )
+        let chaifenBefore = try Data(contentsOf: chaifenURL)
+        let icePlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+
+        let staging = try env.installer.stageSchemaUninstall(plan: icePlan)
+        env.installer.commitSchemaUninstall(staging, plan: icePlan)
+
+        XCTAssertFalse(env.installer.containsInstalledSchema(plan: icePlan))
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent("rime_ice_preset.yaml").path
+            )
+        )
+        XCTAssertEqual(try Data(contentsOf: wanxiangSchemaURL), wanxiangSchemaBefore)
+        XCTAssertEqual(try Data(contentsOf: chaifenURL), chaifenBefore)
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent(CrossSchemeDualInstall.unknownRelativePath)),
+            CrossSchemeDualInstall.unknownBytes
+        )
+        XCTAssertEqual(selection.activeSchemaID, "wanxiang")
+    }
+
+    /// CS-06: with Ice active, uninstalling inactive Wanxiang removes only
+    /// Wanxiang ownership and retains Ice Lua plus unknown/user paths.
+    func testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        var selection = CrossSchemeSelectionTracker()
+
+        try plantSharedFile(
+            env.shared,
+            relativePath: CrossSchemeDualInstall.unknownRelativePath,
+            data: CrossSchemeDualInstall.unknownBytes
+        )
+        try installWanxiangPinnedIntoShared(env: env, selection: &selection)
+        try installIcePinnedIntoShared(env: env, selection: &selection)
+        XCTAssertEqual(selection.activeSchemaID, "rime_ice")
+
+        let iceSchemaURL = env.shared.appendingPathComponent("rime_ice.schema.yaml")
+        let iceSchemaBefore = try Data(contentsOf: iceSchemaURL)
+        let iceLuaURL = env.shared.appendingPathComponent(CrossSchemeDualInstall.iceLuaRelativePath)
+        let iceLuaBefore = try Data(contentsOf: iceLuaURL)
+        let wanxiangPlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+
+        let staging = try env.installer.stageSchemaUninstall(plan: wanxiangPlan)
+        env.installer.commitSchemaUninstall(staging, plan: wanxiangPlan)
+
+        XCTAssertFalse(env.installer.containsInstalledSchema(plan: wanxiangPlan))
+        XCTAssertEqual(try Data(contentsOf: iceSchemaURL), iceSchemaBefore)
+        XCTAssertEqual(try Data(contentsOf: iceLuaURL), iceLuaBefore)
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent(CrossSchemeDualInstall.unknownRelativePath)),
+            CrossSchemeDualInstall.unknownBytes
+        )
+        XCTAssertEqual(selection.activeSchemaID, "rime_ice")
+    }
+
     /// In-harness selection for approved CS-01/02 policy (activate just-installed).
     /// CS-03/04 no-op keeps this tracker unchanged; real installs still activate.
     private struct CrossSchemeSelectionTracker {
