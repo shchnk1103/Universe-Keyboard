@@ -4,7 +4,9 @@ Date: 2026-09-08 Asia/Shanghai
 Checkout: `/private/tmp/uk-scheme-delivery-fix` on `codex/scheme-delivery-fix`
 Base: `5e527b7`
 PR: [#100](https://github.com/shchnk1103/Universe-Keyboard/pull/100) remains **draft**
-Evidence grade: **Executor-recorded; independent review pending**
+Evidence grade: **Executor-recorded; independently reviewed Pass with conditions**
+
+Independent review: [Pass with conditions](../reviews/scheme-delivery-cross-scheme-cs09-cs10-inventory-2026-09-08.md).
 
 ## Scope
 
