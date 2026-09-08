@@ -18,6 +18,15 @@ the target is active. This slice adds the dual-scheme proof that the inactive
 branch preserves the active peer selection, clears only the target receipt,
 and leaves a later deploy request pending without invoking the Luna fallback.
 
+The manager tests exercise that branch with a Stub installer. Separate tests
+use `SharedContainerSchemaArchiveInstaller` with real catalog plans to prove
+target ownership removal and peer preservation. This is not a single complete
+`SchemaManager` plus production-installer end-to-end uninstall proof.
+
+When a pinned extraction directory is unavailable, the resource harness uses
+a minimal synthetic fixture. The tests therefore prove removal and retention
+mechanics, not full pinned-archive provenance or every upstream resource path.
+
 ## Tests
 
 `SchemaManagerTests`:
@@ -37,6 +46,13 @@ under `/private/tmp/uk-scheme-cs05-cs06-derived/Logs/Test/` — **TEST SUCCEEDED
 Full App + Keyboard result:
 `Test-Universe Keyboard-2026.09.08_13-18-46-+0800.xcresult` under
 `/private/tmp/uk-scheme-cs05-cs06-full-derived/Logs/Test/` — **TEST SUCCEEDED**.
+
+## Independent review
+
+Independent Quality / Architecture delta review: **Pass with conditions**.
+No new P0/P1 production blocker was found in `7d68633`. The reviewer did not
+repeat the executor's test gates. This remains a local candidate and keeps the
+limitations above as open evidence boundaries.
 
 ## Non-claims
 
