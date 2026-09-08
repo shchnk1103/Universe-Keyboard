@@ -7,6 +7,8 @@ PR: [#100](https://github.com/shchnk1103/Universe-Keyboard/pull/100) remains
 **draft**
 Evidence grade: **Executor-recorded**
 
+Independent review: [Pass with conditions](../reviews/scheme-delivery-cross-scheme-cs09-cs10-2026-09-08.md).
+
 ## Scope
 
 - **CS-09:** Uninstall the only active downloaded Ice or Wanxiang scheme and
@@ -50,4 +52,5 @@ remains the separate proof for those resource-ownership boundaries.
 
 No CSF-PAIR-01/02 closure; no Recovery persistence; no Device-attested or
 Product Gate evidence; no ADR 0034 Accept; and no undraft/merge, TestFlight,
-or App Release. This candidate is not yet independently reviewed or pushed.
+or App Release. This candidate is independently reviewed with conditions and
+is not pushed.
