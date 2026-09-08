@@ -6,6 +6,8 @@ Base tip before slice: `fde42c1`
 PR: [#100](https://github.com/shchnk1103/Universe-Keyboard/pull/100) remains **draft**
 Evidence grade: **Executor-recorded**
 
+Independent review: [Pass with conditions](../reviews/scheme-delivery-cross-scheme-csf1-csf3-2026-09-08.md).
+
 ## Scope
 
 - **CS-F1:** Ice deployment fails after install while Wanxiang is selected and
