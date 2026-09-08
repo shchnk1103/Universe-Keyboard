@@ -1175,6 +1175,48 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         XCTAssertEqual(selection.activeSchemaID, "rime_ice")
     }
 
+    /// CS-F3: a mid-stage Ice uninstall failure with Wanxiang active rolls back
+    /// target files and leaves the peer plus user paths untouched.
+    func testCSF3_IceUninstallStagingFailureRetainsWanxiangPeerAndTargetFiles() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        var selection = CrossSchemeSelectionTracker()
+
+        try plantSharedFile(
+            env.shared,
+            relativePath: CrossSchemeDualInstall.unknownRelativePath,
+            data: CrossSchemeDualInstall.unknownBytes
+        )
+        try installIcePinnedIntoShared(env: env, selection: &selection)
+        try installWanxiangPinnedIntoShared(env: env, selection: &selection)
+        XCTAssertEqual(selection.activeSchemaID, "wanxiang")
+
+        let iceSchemaURL = env.shared.appendingPathComponent("rime_ice.schema.yaml")
+        let iceSchemaBefore = try Data(contentsOf: iceSchemaURL)
+        let wanxiangSchemaURL = env.shared.appendingPathComponent("wanxiang.schema.yaml")
+        let wanxiangSchemaBefore = try Data(contentsOf: wanxiangSchemaURL)
+        let icePlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+        let failingInstaller = SharedContainerSchemaArchiveInstaller(
+            appGroupID: "group.com.DoubleShy0N.Universe-Keyboard",
+            fileManager: MoveItemFailureFileManager(failOnMoveNumber: 2),
+            containerURL: env.root.appendingPathComponent("container")
+        )
+
+        XCTAssertThrowsError(try failingInstaller.stageSchemaUninstall(plan: icePlan)) { error in
+            guard case DownloadError.postProcessingFailed = error else {
+                return XCTFail("expected postProcessingFailed, got \(error)")
+            }
+        }
+
+        XCTAssertEqual(try Data(contentsOf: iceSchemaURL), iceSchemaBefore)
+        XCTAssertEqual(try Data(contentsOf: wanxiangSchemaURL), wanxiangSchemaBefore)
+        XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent(CrossSchemeDualInstall.unknownRelativePath)),
+            CrossSchemeDualInstall.unknownBytes
+        )
+        XCTAssertEqual(selection.activeSchemaID, "wanxiang")
+    }
+
     /// In-harness selection for approved CS-01/02 policy (activate just-installed).
     /// CS-03/04 no-op keeps this tracker unchanged; real installs still activate.
     private struct CrossSchemeSelectionTracker {

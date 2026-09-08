@@ -426,6 +426,68 @@ final class SchemaManagerTests: XCTestCase {
         )
     }
 
+    /// CS-F1: a failed Ice deployment after install must not publish an Ice
+    /// receipt or disturb the already-installed Wanxiang peer and selection.
+    func testCSF1_IceDeployFailureWithWanxiangPeerKeepsPeerAndSkipsIceReceipt() async throws {
+        let rootURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("schema-manager-csf1-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+
+        let sharedURL = rootURL.appendingPathComponent("Rime/shared")
+        let userURL = rootURL.appendingPathComponent("Rime/user")
+        try FileManager.default.createDirectory(at: sharedURL, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: userURL, withIntermediateDirectories: true)
+        let wanxiangSchemaURL = sharedURL.appendingPathComponent("wanxiang.schema.yaml")
+        let wanxiangSchemaBefore = Data("schema_id: wanxiang-peer-before-csf1\n".utf8)
+        try wanxiangSchemaBefore.write(to: wanxiangSchemaURL)
+
+        let identity = try XCTUnwrap(
+            RimeSchemeCatalog.entry(for: "rime_ice")?
+                .distribution?
+                .manifest
+                .stagedIdentities
+                .first
+        )
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "wanxiang",
+                "wanxiang_installed": true,
+                "wanxiang_version": "17.5.9",
+            ]
+        )
+        let installer = SharedContainerSchemaArchiveInstaller(
+            appGroupID: "test.scheme-delivery",
+            containerURL: rootURL
+        )
+        let downloader = FixtureArchiveDownloader()
+        let deploymentService = StubDeploymentService(succeeded: false)
+        let manager = makeManager(
+            settings: settings,
+            archiveDownloader: downloader,
+            artifactVerifier: FixedStagedContentVerifier(
+                stagedContentSHA256: identity.stagedContentSHA256WithLua
+            ),
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.fetchAndDownload(schemaID: "rime_ice")
+
+        XCTAssertNil(settings.object(forKey: "rime_ice_installed"))
+        XCTAssertNil(settings.object(forKey: "rime_ice_staged_content_checksum"))
+        XCTAssertTrue(settings.bool(forKey: "wanxiang_installed"))
+        XCTAssertEqual(settings.string(forKey: "wanxiang_version"), "17.5.9")
+        XCTAssertEqual(try Data(contentsOf: wanxiangSchemaURL), wanxiangSchemaBefore)
+        XCTAssertEqual(manager.activeSchemaID, "wanxiang")
+        XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "wanxiang")
+        let deploymentRequests = await deploymentService.requests
+        XCTAssertEqual(deploymentRequests.map(\.runtimeSmokeSchemaID), ["rime_ice"])
+        XCTAssertFalse(
+            FileManager.default.fileExists(atPath: try XCTUnwrap(downloader.downloadedURL()).path),
+            "failed install must clean the temporary archive"
+        )
+    }
+
     func testDownloadSchemeDisplayNameUsesCatalogName() {
         let manager = makeManager()
         XCTAssertEqual(manager.downloadSchemeDisplayName(for: "rime_ice"), "雾凇拼音")
