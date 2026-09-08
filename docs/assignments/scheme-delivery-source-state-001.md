@@ -13,7 +13,7 @@ Prior increment (still valid history): rollback double-failure repair passed ful
 | Lifecycle | Active |
 | Current Phase | Cross-scheme matrix: **CS-01/02 done** (committed `2813428`); **CS-03/04 done locally** (identical no-op + peer retain / Wanxiang identity-change upgrade path; eng `cb06a08`); **CS-05/06 done locally** (inactive uninstall retains active peer and does not force Luna); **CS-07/08 done locally** (active uninstall always deploys Luna before target removal, preserves peer and restores the target on Luna failure). Existing P4 production transaction is reused; this slice adds dual-scheme evidence. Isolation checkout: `/private/tmp/uk-scheme-delivery-fix` on `codex/scheme-delivery-fix`. PR #100 remains **draft**. Wanxiang P4 / ADR 0034 Proposed / TestFlight 仍开放 |
 | Material non-claims | No push of local matrix work unless Human authorizes; no TestFlight/App Release; no full Product Gate Passed; no Device-attested upgrade; no ADR 0034 acceptance; no undraft/merge of PR #100; no Wanxiang P4 closure; no peer-prefer fallback B; no Recovery persistence |
-| Next handoff / decision | **Independent review pending.** Then pause for separately authorized CS-09/10, CS-F1/F3, device evidence, PR #100 undraft/merge, TestFlight, App Release or ADR Accept. |
+| Next handoff / decision | **CS-07/08 local engineering candidate reviewed (Pass with conditions).** Pause for separately authorized CS-09/10, CS-F1/F3, device evidence, PR #100 undraft/merge, TestFlight, App Release or ADR Accept. |
 | Residuals | CS-09/10 / CS-F1/F3 not started; 真机失败回滚未测（Limited Gate 历史）；无 Device-attested；Wanxiang P4 未全闭合；Ice Lua `dofile` 动态引用未闭合；backup/staging cleanup 仍 best-effort |
 
 ## Authority and scope
