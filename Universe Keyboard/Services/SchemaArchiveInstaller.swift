@@ -136,7 +136,8 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
 
         do {
             try fileManager.createDirectory(at: stagingRoot, withIntermediateDirectories: true)
-            let paths = uninstallRelativePaths(for: plan)
+            let paths =
+                uninstallRelativePaths(for: plan)
                 + (try matchingWanxiangLuaPaths(plan: plan, sharedDirectory: sharedDirectory))
             for relativePath in paths {
                 let sourceURL = sharedDirectory.appendingPathComponent(relativePath)
