@@ -189,4 +189,3 @@ Smallest increments. Do not expand beyond the Human-named freeze without a new a
 **Still NOT authorized:** push (unless later asked); undraft/merge PR #100; TestFlight; ADR 0034 Accept; Recovery persistence; Product Gate; removal-list broadening; CS-07/08 production fallback B (policy approved, coding deferred).
 
 Residuals outside the named freeze remain open.
-
