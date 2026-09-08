@@ -52,5 +52,6 @@ remains the separate proof for those resource-ownership boundaries.
 
 No CSF-PAIR-01/02 closure; no Recovery persistence; no Device-attested or
 Product Gate evidence; no ADR 0034 Accept; and no undraft/merge, TestFlight,
-or App Release. This candidate is independently reviewed with conditions and
-is not pushed.
+or App Release. This candidate is independently reviewed with conditions,
+pushed at `fd8ba55`, and has green GitHub CI; those facts do not change these
+non-claims.
