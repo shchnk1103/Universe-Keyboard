@@ -11,12 +11,27 @@ Prior increment (still valid history): rollback double-failure repair passed ful
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | Cross-scheme matrix: **CS-01/02 done** (committed `2813428`); **CS-03/04 done locally** (identical no-op + peer retain / Wanxiang identity-change upgrade path; eng `cb06a08`); **CS-05/06 done locally** (inactive uninstall retains active peer and does not force Luna); **CS-07/08 done locally** (active uninstall always deploys Luna before target removal); **CS-F1/CS-F3 pushed candidate, independently reviewed with conditions**; **CSF-PAIR-01/02 pushed at `a6771ed`, CI green, independently reviewed with conditions** (symmetric Wanxiang F1 plus production-manager selection, real-installer mid-move rollback, and peer-byte retention in both directions); **CS-09/10 pushed manager-contract candidate, independently reviewed with conditions and CI green** (last active scheme falls back to Luna; retained peer is reselected and receives a successful controlled deployment request without reinstall); **CS09-10-01 pushed at `6da6267`, independently reviewed with conditions and CI green** (real installer inventory and retained-peer byte proof in both directions). Existing P4 production transaction is reused; this slice adds dual-scheme evidence. Isolation checkout: `/private/tmp/uk-scheme-delivery-fix` on `codex/scheme-delivery-fix`. PR #100 remains **draft**. Wanxiang P4 / ADR 0034 Proposed / TestFlight 仍开放 |
+| Current Phase | Cross-scheme matrix: **CS-01/02 done** (committed `2813428`); **CS-03/04 done locally** (identical no-op + peer retain / Wanxiang identity-change upgrade path; eng `cb06a08`); **CS-05/06 done locally** (inactive uninstall retains active peer and does not force Luna); **CS-07/08 done locally** (active uninstall always deploys Luna before target removal); **CS-F1/CS-F3 pushed candidate, independently reviewed with conditions**; **CSF-PAIR-01/02 pushed at `a6771ed`, CI green, independently reviewed with conditions** (symmetric Wanxiang F1 plus production-manager selection, real-installer mid-move rollback, and peer-byte retention in both directions); **CS-09/10 pushed manager-contract candidate, independently reviewed with conditions and CI green** (last active scheme falls back to Luna; retained peer is reselected and receives a successful controlled deployment request without reinstall); **CS09-10-01 pushed at `6da6267`, independently reviewed with conditions and CI green** (real installer inventory and retained-peer byte proof in both directions); **CS09-10-02 device/runtime stage authorized, evidence pending** (real RIME session and candidate-input smoke on an App Group-backed physical device). Existing P4 production transaction is reused; this slice adds dual-scheme evidence. Isolation checkout: `/private/tmp/uk-scheme-delivery-fix` on `codex/scheme-delivery-fix`. PR #100 remains **draft**. Wanxiang P4 / ADR 0034 Proposed / TestFlight 仍开放 |
 | Material non-claims | 已推送的 reviewed candidates 均经 Human 授权；no TestFlight/App Release; no full Product Gate Passed; no Device-attested upgrade; no ADR 0034 acceptance; no undraft/merge of PR #100; no Wanxiang P4 closure; no peer-prefer fallback B; no Recovery persistence |
-| Next handoff / decision | `CSF-PAIR-01/02` and `CS09-10-01` are pushed, CI green, and independently reviewed. Device/runtime evidence (`CS09-10-02`), PR #100 undraft/merge, TestFlight, App Release and ADR Accept remain separate human decisions. |
+| Next handoff / decision | `CSF-PAIR-01/02` and `CS09-10-01` are pushed, CI green, and independently reviewed. Human authorized `CS09-10-02`; await the physical-device run and its evidence. PR #100 undraft/merge, TestFlight, App Release and ADR Accept remain separate human decisions. |
 | Residuals | CS09-10-01 的本地固定解压树 inventory 证明不重新验证 archive provenance，且不覆盖真实 RIME 输入、App Group 或 device transaction；其 review 还保留 admitted path/count、额外残留/staging root 断言的 P2/P3 限制；`CS09-10-02` 未做；CSF pair 的真实 RIME runtime input、App Group/device transaction 未证明；真机失败回滚未测（Limited Gate 历史）；无 Device-attested；Wanxiang P4 未全闭合；Ice Lua `dofile` 动态引用未闭合；backup/staging cleanup 仍 best-effort |
 
 ## Authority and scope
+
+### 2026-09-08 CS09-10-02 device/runtime evidence
+
+Human Product Owner authorized `CS09-10-02`: use a physical device to verify
+that the main App's completed scheme install/deployment can be consumed by the
+Keyboard Extension as a real RIME session with observable candidate input.
+The current executor is preparing the isolated checkout and runbook; no device
+operation or Device-attested result is recorded yet.
+
+Scope: run both cross-scheme directions through the existing UI, preserve the
+main-App deployment / Extension-session boundary, and record content-free
+deployment and session evidence plus the operator-observed candidate result.
+No product implementation change, archive/pin change, Recovery persistence,
+PR undraft/merge, TestFlight, App Release, Product Gate, or ADR acceptance is
+authorized by this stage.
 
 ### 2026-09-08 Wanxiang exact-hash Lua ownership tests
 
