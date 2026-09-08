@@ -758,6 +758,376 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         XCTAssertFalse(checkpoint.copiedRelativePaths.contains("lua/user_custom.lua"))
     }
 
+    // MARK: - Cross-scheme matrix CS-01 / CS-02 (first coding freeze §6.2–§6.3)
+
+    /// CS-01: Ice then Wanxiang. Both installed; peer retain / preserve; activate just-installed.
+    func testCS01_IceThenWanxiang_BothInstalledPeerRetainedAndJustInstalledActivated() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        var selection = CrossSchemeSelectionTracker()
+
+        try plantSharedFile(
+            env.shared,
+            relativePath: CrossSchemeDualInstall.unknownRelativePath,
+            data: CrossSchemeDualInstall.unknownBytes
+        )
+        let preludeBefore = try Data(contentsOf: env.defaultYAMLURL)
+        let openccBefore = sampleBuiltinOpenCCFingerprint(shared: env.shared)
+
+        try installIcePinnedIntoShared(env: env, selection: &selection)
+        XCTAssertEqual(selection.activeSchemaID, "rime_ice")
+        XCTAssertTrue(
+            env.installer.containsInstalledSchema(
+                plan: try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+            )
+        )
+
+        try installWanxiangPinnedIntoShared(env: env, selection: &selection)
+        XCTAssertEqual(
+            selection.activeSchemaID,
+            "wanxiang",
+            "approved post-install policy: activate the scheme just installed"
+        )
+
+        try assertDualInstallPeerInventory(
+            env: env,
+            preludeBefore: preludeBefore,
+            openccBefore: openccBefore
+        )
+    }
+
+    /// CS-02: Wanxiang then Ice. Symmetric to CS-01; Ice must not reclaim default.yaml.
+    func testCS02_WanxiangThenIce_BothInstalledPeerRetainedAndJustInstalledActivated() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+        var selection = CrossSchemeSelectionTracker()
+
+        try plantSharedFile(
+            env.shared,
+            relativePath: CrossSchemeDualInstall.unknownRelativePath,
+            data: CrossSchemeDualInstall.unknownBytes
+        )
+        let preludeBefore = try Data(contentsOf: env.defaultYAMLURL)
+        let openccBefore = sampleBuiltinOpenCCFingerprint(shared: env.shared)
+
+        try installWanxiangPinnedIntoShared(env: env, selection: &selection)
+        XCTAssertEqual(selection.activeSchemaID, "wanxiang")
+        XCTAssertTrue(
+            env.installer.containsInstalledSchema(
+                plan: try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+            )
+        )
+
+        try installIcePinnedIntoShared(env: env, selection: &selection)
+        XCTAssertEqual(
+            selection.activeSchemaID,
+            "rime_ice",
+            "approved post-install policy: activate the scheme just installed"
+        )
+
+        try assertDualInstallPeerInventory(
+            env: env,
+            preludeBefore: preludeBefore,
+            openccBefore: openccBefore
+        )
+        XCTAssertEqual(
+            try Data(contentsOf: env.defaultYAMLURL),
+            preludeBefore,
+            "Ice install must not reclaim Prelude default.yaml"
+        )
+    }
+
+    /// In-harness selection for approved CS-01/02 policy (activate just-installed).
+    /// No SchemaManager production change in this freeze.
+    private struct CrossSchemeSelectionTracker {
+        var activeSchemaID: String = "luna_pinyin"
+
+        mutating func activateJustInstalled(_ schemaID: String) {
+            activeSchemaID = schemaID
+        }
+    }
+
+    private enum CrossSchemeDualInstall {
+        static let unknownRelativePath = "lua/user_custom_cross_scheme.lua"
+        static let unknownBytes = Data("cross-scheme-unknown-keep".utf8)
+        static let iceLuaRelativePath = "lua/date_translator.lua"
+        static let wanxiangBitRelativePath = "lua/wanxiang/bit.lua"
+        static let wanxiangChaifenRelativePath = "lua/data/chaifen.txt"
+    }
+
+    private func sampleBuiltinOpenCCFingerprint(shared: URL) -> (path: String, data: Data)? {
+        let candidates = [
+            "opencc/t2s.json",
+            "opencc/s2t.json",
+            "opencc/TSCharacters.txt",
+            "opencc/STCharacters.txt",
+        ]
+        for rel in candidates {
+            let url = shared.appendingPathComponent(rel)
+            if let data = try? Data(contentsOf: url) {
+                return (rel, data)
+            }
+        }
+        return nil
+    }
+
+    private func installIcePinnedIntoShared(
+        env: Environment,
+        selection: inout CrossSchemeSelectionTracker
+    ) throws {
+        let icePlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+        XCTAssertEqual(icePlan.revision, "rime-ice-plan-2")
+        let extract = env.root.appendingPathComponent(
+            "ice-extract-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
+
+        if let fixture = optionalIceExtractURL() {
+            let admitted = [
+                "default.yaml",
+                "rime_ice.schema.yaml",
+                "rime_ice.dict.yaml",
+                "radical_pinyin.schema.yaml",
+                "radical_pinyin.dict.yaml",
+                "melt_eng.schema.yaml",
+                "melt_eng.dict.yaml",
+                "symbols_v.yaml",
+                "symbols_caps_v.yaml",
+                "custom_phrase.txt",
+                "t9.schema.yaml",
+                CrossSchemeDualInstall.iceLuaRelativePath,
+                "opencc/emoji.json",
+                "opencc/emoji.txt",
+            ]
+            for rel in admitted {
+                let src = fixture.appendingPathComponent(rel)
+                guard FileManager.default.fileExists(atPath: src.path) else { continue }
+                let dst = extract.appendingPathComponent(rel)
+                try FileManager.default.createDirectory(
+                    at: dst.deletingLastPathComponent(),
+                    withIntermediateDirectories: true
+                )
+                if FileManager.default.fileExists(atPath: dst.path) {
+                    try FileManager.default.removeItem(at: dst)
+                }
+                try FileManager.default.copyItem(at: src, to: dst)
+            }
+            let cold = fixture.appendingPathComponent("lua/cold_word_drop")
+            if FileManager.default.fileExists(atPath: cold.path) {
+                let names =
+                    (try? FileManager.default.contentsOfDirectory(atPath: cold.path)) ?? []
+                if let first = names.first {
+                    let rel = "lua/cold_word_drop/\(first)"
+                    let dst = extract.appendingPathComponent(rel)
+                    try FileManager.default.createDirectory(
+                        at: dst.deletingLastPathComponent(),
+                        withIntermediateDirectories: true
+                    )
+                    try FileManager.default.copyItem(
+                        at: cold.appendingPathComponent(first),
+                        to: dst
+                    )
+                }
+            }
+            try RimeIceSharedDefaultAdapter.apply(in: extract)
+        } else {
+            try plantSharedFile(
+                extract,
+                relativePath: CrossSchemeDualInstall.iceLuaRelativePath,
+                data: Data("ice-date-translator".utf8)
+            )
+            try Data("ice-schema".utf8).write(
+                to: extract.appendingPathComponent("rime_ice.schema.yaml")
+            )
+            try iceDefaultYAMLData().write(
+                to: extract.appendingPathComponent(RimeIceSharedDefaultAdapter.presetFileName)
+            )
+        }
+
+        try env.installer.installSchemaFiles(from: extract, plan: icePlan, luaAvailable: true)
+        selection.activateJustInstalled("rime_ice")
+    }
+
+    private func installWanxiangPinnedIntoShared(
+        env: Environment,
+        selection: inout CrossSchemeSelectionTracker
+    ) throws {
+        let wanxiangPlan = try XCTUnwrap(
+            RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan
+        )
+        XCTAssertEqual(wanxiangPlan.revision, "wanxiang-plan-1")
+        let extract = env.root.appendingPathComponent(
+            "wanxiang-extract-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
+
+        let pinRoots = [
+            ProcessInfo.processInfo.environment["SCHEME_WANXIANG_EXTRACT_ROOT"],
+            "/private/tmp/rime-wanxiang-1759/extract",
+        ].compactMap { $0 }
+        var usedPin = false
+        for path in pinRoots {
+            let root = URL(fileURLWithPath: path)
+            let schema = root.appendingPathComponent("wanxiang.schema.yaml")
+            guard FileManager.default.fileExists(atPath: schema.path) else { continue }
+            let admittedFiles = [
+                "wanxiang.schema.yaml",
+                "wanxiang.dict.yaml",
+                "wanxiang_algebra.yaml",
+                "wanxiang_symbols.yaml",
+                "wanxiang_english.schema.yaml",
+                "wanxiang_english.dict.yaml",
+                "wanxiang_mixedcode.schema.yaml",
+                "wanxiang_mixedcode.dict.yaml",
+                "wanxiang_reverse.schema.yaml",
+                "wanxiang_reverse.dict.yaml",
+                "wanxiang_t9.schema.yaml",
+                "wanxiang_t9i.schema.yaml",
+                "default.yaml",  // plan must skip installing over Prelude
+            ]
+            for rel in admittedFiles {
+                let src = root.appendingPathComponent(rel)
+                guard FileManager.default.fileExists(atPath: src.path) else { continue }
+                let dst = extract.appendingPathComponent(rel)
+                if FileManager.default.fileExists(atPath: dst.path) {
+                    try FileManager.default.removeItem(at: dst)
+                }
+                try FileManager.default.copyItem(at: src, to: dst)
+            }
+            let chaifenDst = extract.appendingPathComponent(
+                CrossSchemeDualInstall.wanxiangChaifenRelativePath
+            )
+            try FileManager.default.createDirectory(
+                at: chaifenDst.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            let chaifenSrc = root.appendingPathComponent(
+                CrossSchemeDualInstall.wanxiangChaifenRelativePath
+            )
+            if FileManager.default.fileExists(atPath: chaifenSrc.path) {
+                try FileManager.default.copyItem(at: chaifenSrc, to: chaifenDst)
+            } else {
+                try Data().write(to: chaifenDst)
+            }
+            if let bitBytes = optionalWanxiangExtractBytes(
+                relativePath: CrossSchemeDualInstall.wanxiangBitRelativePath
+            ) {
+                try plantSharedFile(
+                    extract,
+                    relativePath: CrossSchemeDualInstall.wanxiangBitRelativePath,
+                    data: bitBytes
+                )
+            }
+            usedPin = true
+            break
+        }
+        if !usedPin {
+            try Data("wanxiang-schema".utf8).write(
+                to: extract.appendingPathComponent("wanxiang.schema.yaml")
+            )
+            try plantSharedFile(
+                extract,
+                relativePath: CrossSchemeDualInstall.wanxiangChaifenRelativePath,
+                data: Data()
+            )
+        }
+
+        try env.installer.installSchemaFiles(
+            from: extract,
+            plan: wanxiangPlan,
+            luaAvailable: true
+        )
+        selection.activateJustInstalled("wanxiang")
+    }
+
+    private func assertDualInstallPeerInventory(
+        env: Environment,
+        preludeBefore: Data,
+        openccBefore: (path: String, data: Data)?
+    ) throws {
+        let icePlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.installationPlan)
+        let wanxiangPlan = try XCTUnwrap(
+            RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan
+        )
+        XCTAssertTrue(env.installer.containsInstalledSchema(plan: icePlan))
+        XCTAssertTrue(env.installer.containsInstalledSchema(plan: wanxiangPlan))
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent("rime_ice.schema.yaml").path
+            )
+        )
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent("wanxiang.schema.yaml").path
+            )
+        )
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent(
+                    RimeIceSharedDefaultAdapter.presetFileName
+                ).path
+            ),
+            "Ice private preset must coexist; Prelude default.yaml is not reclaimed"
+        )
+
+        XCTAssertEqual(
+            try Data(contentsOf: env.defaultYAMLURL),
+            preludeBefore,
+            "Prelude / official default.yaml baseline must remain intact"
+        )
+        if let openccBefore {
+            XCTAssertEqual(
+                try Data(contentsOf: env.shared.appendingPathComponent(openccBefore.path)),
+                openccBefore.data,
+                "Builtin OpenCC baseline \(openccBefore.path) must remain intact"
+            )
+        }
+
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent(
+                    CrossSchemeDualInstall.iceLuaRelativePath
+                ).path
+            ),
+            "Ice Lua must be retained across peer install"
+        )
+
+        let chaifenURL = env.shared.appendingPathComponent(
+            CrossSchemeDualInstall.wanxiangChaifenRelativePath
+        )
+        XCTAssertTrue(FileManager.default.fileExists(atPath: chaifenURL.path))
+        XCTAssertEqual(
+            sha256(try Data(contentsOf: chaifenURL)),
+            WanxiangLuaOwnership.sha256ByPath[
+                CrossSchemeDualInstall.wanxiangChaifenRelativePath
+            ]
+        )
+        let bitURL = env.shared.appendingPathComponent(
+            CrossSchemeDualInstall.wanxiangBitRelativePath
+        )
+        if FileManager.default.fileExists(atPath: bitURL.path) {
+            XCTAssertEqual(
+                sha256(try Data(contentsOf: bitURL)),
+                WanxiangLuaOwnership.sha256ByPath[
+                    CrossSchemeDualInstall.wanxiangBitRelativePath
+                ],
+                "Wanxiang exact-hash bit.lua when feasible"
+            )
+        }
+
+        XCTAssertEqual(
+            try Data(
+                contentsOf: env.shared.appendingPathComponent(
+                    CrossSchemeDualInstall.unknownRelativePath
+                )
+            ),
+            CrossSchemeDualInstall.unknownBytes,
+            "unknown/user files must remain untouched"
+        )
+    }
+
     private struct Environment {
         let root: URL
         let sourceRoot: URL
