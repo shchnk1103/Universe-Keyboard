@@ -1,12 +1,15 @@
-# Evidence: Cross-scheme CSF-PAIR-01 / CSF-PAIR-02 (local candidate)
+# Evidence: Cross-scheme CSF-PAIR-01 / CSF-PAIR-02
 
 Date: 2026-09-08 Asia/Shanghai
 Checkout: `/private/tmp/uk-scheme-delivery-fix` on `codex/scheme-delivery-fix`
-Base: `8acabd9`
+Base: `8acabd9`; reviewed commits: `1efb886` + `a6771ed`
 PR: [#100](https://github.com/shchnk1103/Universe-Keyboard/pull/100) remains **draft**
-Evidence grade: **Executor-recorded; independently reviewed Pass with conditions**
+Evidence grade: **Executor-recorded; independently reviewed Pass with conditions; GitHub CI green**
 
 Independent review: [Pass with conditions](../reviews/scheme-delivery-cross-scheme-csf-pair-2026-09-08.md).
+
+The reviewed commits were pushed to `codex/scheme-delivery-fix` at `a6771ed`;
+GitHub CI completed green. This does not alter the evidence boundaries below.
 
 ## Scope and result
 
