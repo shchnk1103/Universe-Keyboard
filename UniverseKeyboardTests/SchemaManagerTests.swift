@@ -455,9 +455,13 @@ final class SchemaManagerTests: XCTestCase {
                 "wanxiang_version": "17.5.9",
             ]
         )
-        let installer = SharedContainerSchemaArchiveInstaller(
-            appGroupID: "test.scheme-delivery",
-            containerURL: rootURL
+        let installer = StubSchemaArchiveInstaller(
+            extractionDirectory: rootURL.appendingPathComponent("extract", isDirectory: true),
+            installCopiesT9Fixture: true,
+            directories: SchemaDeploymentDirectories(
+                sharedDataURL: sharedURL,
+                userDataURL: userURL
+            )
         )
         let downloader = FixtureArchiveDownloader()
         let deploymentService = StubDeploymentService(succeeded: false)
@@ -474,13 +478,20 @@ final class SchemaManagerTests: XCTestCase {
         await manager.fetchAndDownload(schemaID: "rime_ice")
 
         XCTAssertNil(settings.object(forKey: "rime_ice_installed"))
+        XCTAssertNil(settings.object(forKey: "rime_ice_version"))
+        XCTAssertNil(settings.object(forKey: "rime_ice_checksum"))
         XCTAssertNil(settings.object(forKey: "rime_ice_staged_content_checksum"))
+        XCTAssertNil(settings.object(forKey: "rime_ice_source_variant"))
         XCTAssertTrue(settings.bool(forKey: "wanxiang_installed"))
         XCTAssertEqual(settings.string(forKey: "wanxiang_version"), "17.5.9")
         XCTAssertEqual(try Data(contentsOf: wanxiangSchemaURL), wanxiangSchemaBefore)
         XCTAssertEqual(manager.activeSchemaID, "wanxiang")
         XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "wanxiang")
         let deploymentRequests = await deploymentService.requests
+        guard case .failed(_, _, let failureMessage) = manager.rimeIceDownloadState else {
+            return XCTFail("expected a failed CS-F1 operation, got \(manager.rimeIceDownloadState)")
+        }
+        XCTAssertFalse(failureMessage.isEmpty)
         XCTAssertEqual(deploymentRequests.map(\.runtimeSmokeSchemaID), ["rime_ice"])
         XCTAssertFalse(
             FileManager.default.fileExists(atPath: try XCTUnwrap(downloader.downloadedURL()).path),
@@ -2412,6 +2423,8 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     private let stageUninstallError: Error?
     private let upgradeCheckpointToReturn: SchemaUpgradeCheckpoint?
     private let restoreUpgradeError: Error?
+    private let extractionDirectory: URL?
+    private let installCopiesT9Fixture: Bool
     private(set) var installedLuaAvailability: Bool?
     private(set) var didUninstall = false
     private(set) var didStageUninstall = false
@@ -2430,6 +2443,8 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
         stageUninstallError: Error? = nil,
         upgradeCheckpointToReturn: SchemaUpgradeCheckpoint? = nil,
         restoreUpgradeError: Error? = nil,
+        extractionDirectory: URL? = nil,
+        installCopiesT9Fixture: Bool = false,
         directories: SchemaDeploymentDirectories = SchemaDeploymentDirectories(
             sharedDataURL: URL(fileURLWithPath: "/test/Rime/shared"),
             userDataURL: URL(fileURLWithPath: "/test/Rime/user")
@@ -2439,6 +2454,8 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
         self.stageUninstallError = stageUninstallError
         self.upgradeCheckpointToReturn = upgradeCheckpointToReturn
         self.restoreUpgradeError = restoreUpgradeError
+        self.extractionDirectory = extractionDirectory
+        self.installCopiesT9Fixture = installCopiesT9Fixture
         self.directories = directories
     }
 
@@ -2446,14 +2463,32 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
         URL(fileURLWithPath: "/test/\(distribution.cachedArchiveFileName)")
     }
     func prepareExtractionDirectory(for distribution: RimeSchemeDistribution) throws -> URL {
-        URL(fileURLWithPath: "/test/\(distribution.extractionDirectoryName)")
+        if let extractionDirectory {
+            try FileManager.default.createDirectory(
+                at: extractionDirectory,
+                withIntermediateDirectories: true
+            )
+            return extractionDirectory
+        }
+        return URL(fileURLWithPath: "/test/\(distribution.extractionDirectoryName)")
     }
-    func removeTemporaryItem(at url: URL) {}
+    func removeTemporaryItem(at url: URL) {
+        try? FileManager.default.removeItem(at: url)
+    }
     func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool { containsInstalledSchema }
     func checkDiskSpace(needed: Int64) throws {}
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws {
         didInstallSchemaFiles = true
         installedLuaAvailability = luaAvailable
+        if installCopiesT9Fixture {
+            let source = extractDir.appendingPathComponent("t9.schema.yaml")
+            let destination = directories.sharedDataURL.appendingPathComponent("t9.schema.yaml")
+            try FileManager.default.createDirectory(
+                at: destination.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            try FileManager.default.copyItem(at: source, to: destination)
+        }
     }
 
     func createUpgradeCheckpoint(plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
