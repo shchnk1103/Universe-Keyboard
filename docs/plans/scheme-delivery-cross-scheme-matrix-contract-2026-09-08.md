@@ -184,7 +184,7 @@ Smallest increments. Do not expand beyond the Human-named freeze without a new a
 
 **Human Approved** 2026-09-08 (Asia/Shanghai) with the seven defaults in the Status block and §7.
 
-**Authorized now:** §6.2–§6.3 only (fixture dual-install harness + CS-01/CS-02 happy paths). Prefer extending `SchemeResourcePreparationCoexistenceTests` (or SchemaManagerTests) with clear CS-01/CS-02 names. Tiny in-harness selection helper for “activate just-installed” is allowed when needed for those tests. **No** CS-05–CS-08 / peer-prefer fallback **production** changes in this freeze.
+**Authorized / landed:** §6.2–§6.3 (CS-01/CS-02) committed; **CS-03/CS-04** repeat-install evidence + identical-receipt no-op seam landed **locally** (Human continued per contract order; widget skipped). Prefer extending `SchemeResourcePreparationCoexistenceTests` with clear `testCS0N_…` names. **No** CS-05–CS-08 / peer-prefer fallback **production** changes until separately named. Pause for Codex after CS-03/04 local commits.
 
 **Still NOT authorized:** push (unless later asked); undraft/merge PR #100; TestFlight; ADR 0034 Accept; Recovery persistence; Product Gate; removal-list broadening; CS-07/08 production fallback B (policy approved, coding deferred).
 

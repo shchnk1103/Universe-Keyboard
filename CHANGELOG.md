@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-09-08 — Cross-scheme CS-03/CS-04 (local)
+
+- Identical-receipt idempotent no-op for scheme reinstall (`SchemaManager.shouldSkipIdenticalReinstall`; force bypass).
+- Dual-install harness evidence: CS-03 Ice repeat no-op; CS-04 Wanxiang repeat no-op + identity-change upgrade preserves Ice.
+- Docs/handoff updated; **not pushed**; PR #100 remains draft.
+
 ## 2026-09-08 — 卸载回滚再次失败时保留恢复文件
 
 - 回滚移动失败时保留暂存目录并报告恢复未完成，避免清理唯一剩余文件副本。
