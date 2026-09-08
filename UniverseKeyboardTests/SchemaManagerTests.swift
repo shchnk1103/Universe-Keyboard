@@ -1036,7 +1036,6 @@ final class SchemaManagerTests: XCTestCase {
 
         let requests = await deploymentService.requests
         XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin"])
-        XCTAssertFalse(installer.didInstallSchemaFiles)
         XCTAssertTrue(installer.didStageUninstall)
         XCTAssertTrue(installer.didCommitUninstall)
         XCTAssertNil(settings.object(forKey: "rime_ice_installed"))
@@ -1070,7 +1069,6 @@ final class SchemaManagerTests: XCTestCase {
 
         let requests = await deploymentService.requests
         XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin"])
-        XCTAssertFalse(installer.didInstallSchemaFiles)
         XCTAssertTrue(installer.didStageUninstall)
         XCTAssertTrue(installer.didCommitUninstall)
         XCTAssertNil(settings.object(forKey: "wanxiang_installed"))
@@ -1102,6 +1100,7 @@ final class SchemaManagerTests: XCTestCase {
 
         let requests = await deploymentService.requests
         XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin"])
+        XCTAssertFalse(installer.didInstallSchemaFiles)
         XCTAssertTrue(installer.didStageUninstall)
         XCTAssertTrue(installer.didCommitUninstall)
         XCTAssertNil(settings.object(forKey: "rime_ice_installed"))
@@ -1131,6 +1130,7 @@ final class SchemaManagerTests: XCTestCase {
 
         let requests = await deploymentService.requests
         XCTAssertEqual(requests.map(\.runtimeSmokeSchemaID), ["luna_pinyin"])
+        XCTAssertFalse(installer.didInstallSchemaFiles)
         XCTAssertTrue(installer.didStageUninstall)
         XCTAssertTrue(installer.didCommitUninstall)
         XCTAssertNil(settings.object(forKey: "wanxiang_installed"))

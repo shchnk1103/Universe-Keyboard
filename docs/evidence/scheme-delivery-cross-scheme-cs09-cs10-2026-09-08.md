@@ -26,8 +26,8 @@ Evidence grade: **Executor-recorded**
 - `testCS10_RetainedWanxiangDeploysAfterActiveIceUninstall`
 - `testCS10_RetainedIceDeploysAfterActiveWanxiangUninstall`
 
-Focused result: `Test-Universe Keyboard-2026.09.08_15-10-52-+0800.xcresult`
-under `/private/tmp/uk-scheme-cs09-cs10-r2-derived/Logs/Test/` — **TEST
+Focused result: `Test-Universe Keyboard-2026.09.08_15-14-29-+0800.xcresult`
+under `/private/tmp/uk-scheme-cs09-cs10-r3-derived/Logs/Test/` — **TEST
 SUCCEEDED** (4 focused tests), on the available iOS 26.5 iPhone 17 Pro
 Simulator UUID `36BAABED-6846-4F9A-A672-6884B54CF50E`.
 
