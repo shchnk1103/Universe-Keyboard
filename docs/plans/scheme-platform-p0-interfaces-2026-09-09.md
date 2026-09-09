@@ -201,19 +201,21 @@ struct OwnedPath {
 - Plan `skippedFiles` includes `default.yaml` so Prelude is never installed over.
 - Hook: `SchemaManager+Download` `if schemaID == "rime_ice" { adaptIceSharedDefault }`.
 
-### 4.2 Wanxiang today
+### 4.2 Wanxiang today (transitional — not end-state)
 
-- Plan skips `default.yaml` (Candidate A).
-- **No** private preset rewrite adapter.
-- Product does not claim Ice-parity shared defaults.
+- Plan skips `default.yaml` (Candidate A) / may surface as skip or `consumePrelude`-shaped transitional adapter.
+- **No** private preset rewrite adapter **yet**.
+- Product does not claim Ice-parity shared defaults **today**.
+- **Human Decided (`2026-09-09`):** this skip/`consumePrelude` shape is **P1 transitional only**; **P2 end-state** = Ice-shaped **`privatePreset`** (same mode as Ice). `consumePrelude` is **not** Wanxiang end-state.
 
 ### 4.3 Proposed policy + adapter
 
 ```text
 enum SharedDefaultPolicy {
-  case neverInstallDefaultYAML          // both Ice + Wanxiang
-  case privatePreset(PrivatePresetSpec) // Ice reference
-  case skipOnly                         // Wanxiang today
+  case neverInstallDefaultYAML          // both Ice + Wanxiang (always)
+  case privatePreset(PrivatePresetSpec) // Ice reference = third-party SharedDefault end-state
+  case skipOnly                         // Wanxiang transitional (P1); not end-state
+  case consumePrelude                   // Wanxiang transitional label (P1 bridge); not end-state
 }
 
 struct PrivatePresetSpec {
@@ -231,10 +233,12 @@ protocol SharedDefaultAdapter {
 | Item | Status |
 |---|---|
 | Never overwrite Prelude `default.yaml` | **Decided** |
-| Ice private-preset as reference pattern | **Decided** |
-| Wanxiang must keep skip-`default.yaml` on platform migration | **Decided** |
-| Whether Wanxiang adopts private-preset later for Ice-parity defaults | **TBD** (product); optional P2+ adapter |
-| Moving `RimeIceSharedDefaultAdapter` behind `SharedDefaultAdapter` without behavior change | **Proposed (P0)** — P1 extract |
+| SharedDefault **end-state** for third-party schemes = Ice-shaped **`privatePreset`** (reference mode) | **Decided** (`2026-09-09`) |
+| **P1:** extract Ice `privatePreset` only; Wanxiang may temporarily keep skip / `consumePrelude` as transitional adapter | **Decided** |
+| **P2:** Wanxiang migrates to `privatePreset` (same mode as Ice); `consumePrelude` is **not** Wanxiang end-state | **Decided** |
+| Luna may remain Prelude / builtin exception | **Decided** |
+| Wanxiang preset migration **fidelity risk** → needs **product regression** (not a silent change) | **Decided** note |
+| Moving `RimeIceSharedDefaultAdapter` behind `SharedDefaultAdapter` without Ice behavior change | **Proposed (P0)** — P1 extract |
 
 ---
 
@@ -273,7 +277,7 @@ protocol SchemePostProcessAdapter {
 
 | Adapter | Ice reference | Wanxiang today → P2 |
 |---|---|---|
-| SharedDefault | `RimeIceSharedDefaultAdapter` | skipOnly (optional private preset **TBD**) |
+| SharedDefault | `RimeIceSharedDefaultAdapter` (`privatePreset`) | P1 transitional skip/`consumePrelude` → **P2 end-state `privatePreset`** (same as Ice); not optional |
 | Layout | T9 readiness + binding9=`t9` + uninstall layout fallback | 26-key only productized; nine-key **Human deferred** (later Assignment; not P1/P2 enablement) |
 | Ownership | plan removable list | plan list + `WanxiangLuaOwnership` exact-hash |
 | PostProcess | Ice shared-default + existing Ice post | `wanxiang-post-1` (keep) |
@@ -304,7 +308,7 @@ protocol SchemePlatformCatalog {
 
 Ordered for **Ice behavior unchanged**:
 
-1. **SharedDefaultAdapter** — wrap `RimeIceSharedDefaultAdapter`; replace `schemaID == "rime_ice"` post-process call with adapter lookup.
+1. **SharedDefaultAdapter** — wrap `RimeIceSharedDefaultAdapter` (`privatePreset`); replace `schemaID == "rime_ice"` post-process call with adapter lookup. Wanxiang stays transitional skip/`consumePrelude` in P1; **P2** migrates Wanxiang to `privatePreset`.
 2. **ResourceOwnershipStrategy** — Ice plan-list strategy; bridge Wanxiang exact-hash through same protocol without changing hashes/pins.
 3. **Lifecycle helpers** — `UpgradeCheckpointing` + uninstall staging already mostly plan-driven; remove Wanxiang-only private helpers from installer core where safe.
 4. **LayoutCapability** — P1 seams: Ice nine-key answers identical via adapter lookup; Wanxiang `supportsNineKey=false`; no Wanxiang nine-key enablement. Discovery / layout-picker = later Assignment (not this extract).

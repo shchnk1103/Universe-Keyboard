@@ -18,6 +18,7 @@
 | `2026-09-09 Asia/Shanghai` | Human approved **P1↔Discovery split**: P1 = LayoutCapability + ResourceCapability/ownership seams (adapter lookup; Ice-only nine-key; Wanxiang `supportsNineKey=false`; strategy APIs). Installed Capability Discovery / layout-picker = later Assignment (not yet drafted; separate Human Active). Wanxiang nine-key productization remains deferred (may ride Discovery later or stay further deferred). |
 | `2026-09-09 Asia/Shanghai` | Human approved **Discovery layout-page A/B UX** for later Discovery Assignment (A Confirmed / B Filename try; never auto-bind; P1 = query seams only). See [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md). |
 | `2026-09-09 Asia/Shanghai` | Human approved **uninstall layout-fallback** (warn → A-only among remaining installed / else 26-key + Luna/`luna_pinyin`; package capability manifest = Universe convention, not RIME built-in). See [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md). |
+| `2026-09-09 Asia/Shanghai` | Human approved **SharedDefault end-state**: Ice-shaped **`privatePreset`** = reference mode for third-party schemes. **P1** extract Ice `privatePreset` only; Wanxiang may temporarily keep skip/`consumePrelude`. **P2** Wanxiang → `privatePreset` (`consumePrelude` not end-state). Luna may remain Prelude/builtin exception. Fidelity risk → product regression (not silent). |
 
 ---
 
@@ -72,11 +73,14 @@ Unified API over **lua / opencc / dicts** (and similarly admitted owned sets):
 - Scheme supplies a **manifest** and/or **ownership strategy plugin** (exact-hash, plan removable list, preserve-unknown, etc.).
 - Cross-scheme coexistence follows preserve rules already Human-approved in the Ice↔Wanxiang matrix contract ([`scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md`](scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md)).
 
-### 2.5 Shared-default policy
+### 2.5 Shared-default policy（Human Decided `2026-09-09`）
 
 - **Never overwrite** Prelude / official `default.yaml`.
-- Scheme defaults via **private preset** (Ice mode: e.g. `rime_ice_preset.yaml` + include rewrite — P2 Ice pattern).
-- Wanxiang already skips installing `default.yaml`; platform migration must keep that invariant and may later adopt a private-preset adapter if product requires Ice-parity defaults **without** touching Prelude.
+- **End-state for third-party schemes:** Ice-shaped **`privatePreset`** is the **reference SharedDefault mode** (e.g. Ice `rime_ice_preset.yaml` + include/import rewrite).
+- **P1:** extract Ice `privatePreset` only; Wanxiang may **temporarily** keep skip / `consumePrelude` as a **transitional** adapter.
+- **P2:** Wanxiang **migrates to `privatePreset`** (same mode as Ice). **`consumePrelude` is not Wanxiang end-state.**
+- **Luna** may remain a Prelude / builtin exception.
+- **Fidelity risk:** Wanxiang preset migration needs **product regression** (separate from a silent change) — do not treat P2 preset cutover as behavior-free.
 
 ---
 
@@ -89,7 +93,7 @@ Each third-party scheme contributes:
 | **Manifest** | Identity, pin, plan/post IDs, layout capabilities, ownership map pointers, skip/admit rules |
 | **Optional adapters** | Preset strategy; layout fallback; ownership strategy; post-process |
 
-Ice’s adapters are the **reference**. Wanxiang’s existing exact-hash Lua ownership, upgrade-rollback, and skip-`default.yaml` are adapters (or become them) — not a second parallel platform.
+Ice’s adapters are the **reference**. Wanxiang’s existing exact-hash Lua ownership, upgrade-rollback, and skip/`consumePrelude`-shaped SharedDefault are adapters (or become them) — not a second parallel platform. SharedDefault **end-state** for Wanxiang is still Ice-shaped **`privatePreset`** (P2), not permanent skip-only.
 
 ---
 
@@ -116,7 +120,7 @@ Summary pointers from earlier coexistence / P4 / cross-scheme work (not a new de
 
 | Capability | Ice (reference) | Wanxiang (today) | Gap class |
 |---|---|---|---|
-| Skip / never overwrite Prelude `default.yaml` | P2+ private preset (`rime_ice_preset`); skip install of Prelude file | Plan skips `default.yaml`; no private preset rewrite | **Partial** — policy OK; preset adapter optional |
+| Skip / never overwrite Prelude `default.yaml` | P2+ private preset (`rime_ice_preset`); skip install of Prelude file | Plan skips `default.yaml`; no private preset rewrite **yet** | **Decided end-state** — third-party SharedDefault = Ice-shaped `privatePreset`; Wanxiang P1 transitional skip/`consumePrelude` → P2 migrate to `privatePreset` |
 | Lifecycle download→…→receipt + fail-closed | Mature Ice install/uninstall/rollback paths | Upgrade-rollback + install paths present; not fully “one platform API” | **Platform extract** |
 | Active uninstall → Luna-only | Evidenced | Evidenced (matrix / runtime-route) | **Shared** — keep; avoid schemaID forks |
 | Inactive uninstall preserves peer/unknown/Prelude | Evidenced | Exact-hash Lua + plan removable | **Adapter shape** (Ice plan list vs Wanxiang exact-hash) |
