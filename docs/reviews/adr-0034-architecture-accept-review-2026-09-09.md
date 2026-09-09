@@ -95,7 +95,7 @@
 
 | ID | Residual | Suggested owner | Disposition | Notes / evidence |
 |---|---|---|---|---|
-| A34-R1 | Wanxiang P4 未全闭合（升级/卸载/设备矩阵相对 ADR 全文） | Scheme Delivery / Quality | **`fix`（Human 拒绝 accept；见 [`WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md)）**；并行 **`tech_debt:TD-011`** | exact-hash + upgrade-rollback IQ Pass with conditions 已在 `main`；Assignment 仍记 “Wanxiang P4 not fully closed”。**非 P0 合同自相矛盾**，但是 Accept 条件项：Human 须书面接受「完整 Wanxiang P4 ≠ ADR Accept 前提」或先修。若 Human 拒绝接受该残余 → 升为 `fix` / **Block** |
+| A34-R1 | Wanxiang P4 未全闭合（升级/卸载/设备矩阵相对 ADR 全文） | Scheme Delivery / Quality | **`fix`（Human 拒绝 accept；见 [`WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md)，现 **Active**）**；并行 **`tech_debt:TD-011`** | exact-hash + upgrade-rollback IQ Pass with conditions 已在 `main`；Assignment Active；A34-R1 仍 open until Exit。**非 P0 合同自相矛盾**，但是 Accept 条件项：Human 须书面接受「完整 Wanxiang P4 ≠ ADR Accept 前提」或先修。若 Human 拒绝接受该残余 → 升为 `fix` / **Block** |
 | A34-R2 | Ice Lua `dofile`/`loadfile` 动态引用未闭合 | KeyboardCore / RIME | **`tech_debt:TD-011`**（或等价新债 ID） | P1 inventory 仍 unresolved；静态 `__include`/`import_preset` 已改独立预设。不阻断候选 A 决策字面，但阻断「引用改写已完全保真」宣称 |
 | A34-R3 | backup/staging cleanup 仍 best-effort | App & Data Ops | **`accept`** | P3 Architecture delta 已保留；可观测性不足，非归属合同错误 |
 | A34-R4 | Limited P4 Product Gate 仅为历史有限门；真机失败回滚未测 | Product / Quality | **`accept`** + **不**升格为完整 Product Gate | [`p4-product-gate-2026-09-08`](../evidence/scheme-delivery-source-state-001-p4-product-gate-2026-09-08.md)；**不**构成 ADR Accept |
@@ -181,3 +181,4 @@
 ## History
 
 - `2026-09-09 Asia/Shanghai`：Human 拒绝书面 `accept` A34-R1；A34-R1 按 `fix` 路径处理；独立 Assignment `SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001` 已起草（Ready，未 Active）。**ADR Status 仍为 Proposed。**
+- `2026-09-09 Asia/Shanghai`（稍后）：Human 授权 `SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001` **Active**；A34-R1 仍为 `fix` / open until Assignment Exit；缺口清单见 [`../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md`](../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)。**ADR Status 仍为 Proposed（未 Accept）。**

@@ -11,6 +11,8 @@ Status snapshot (existing rows): `2026-09-09 Asia/Shanghai` — PR #100 tip incl
 
 Current update: `2026-09-09 Asia/Shanghai` — ADR 0034 Architecture Accept **review completed**: [`adr-0034-architecture-accept-review-2026-09-09.md`](reviews/adr-0034-architecture-accept-review-2026-09-09.md) — **Conditional Accept**（清单 [`…-checklist…`](reviews/adr-0034-architecture-accept-checklist-2026-09-09.md)）。ADR **仍 Proposed**；非 Product Gate / TestFlight / Accept；`RTRD-01`/`RTRD-02` 仍独立；PR #101 docs draft。
 
+Current update: `2026-09-09 Asia/Shanghai` — [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](assignments/scheme-delivery-wanxiang-p4-closure-001.md) → **Active**（Human 授权）。冻结 tip `814abfd` / 分支 `codex/wanxiang-p4-closure-001`；缺口清单 [`scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md`](evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)。A34-R1 仍 `fix`；**不** Accept ADR；无 Swift 本片。
+
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
 | 1 | RELEASE-2026-08-01 | Active | Human 已创建 Build 7 内部组并邀请两名 tester；Task11 F-01/F-02 仍 Pending。F-03 工程片已随 #83 合入 `main`，TestFlight tester 仍在 Build 7（不含该修复）。04/TD-003/004/005 仍需不同/稳定采集环境 | [`assignment`](assignments/release-2026-08-01.md) · [`Task11`](assignments/release-2026-08-01-11-internal-testflight-feedback.md) · [`feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) · [`04 Assignment`](assignments/release-2026-08-01-04-device-performance.md) |
@@ -22,7 +24,7 @@ Current update: `2026-09-09 Asia/Shanghai` — ADR 0034 Architecture Accept **re
 
 | 7 | SCHEME-DELIVERY-RUNTIME-ROUTE-INTEGRATION-001 | Active | P1 已通过最终独立复审；真机与 hosted CI 门由 DEVICE Assignment 承接（功能 Pass with conditions；docs tip `a007681`）。无新增编码；Human 已授权 CI 绿后 undraft+merge #100；`RTRD-01`/`RTRD-02` 仍另案；不因 merge 关闭本 Assignment / Release。 | [`assignment`](assignments/scheme-delivery-runtime-route-integration-001.md) · [`P1 final review`](reviews/scheme-delivery-runtime-route-integration-001-p1-final-independent-review.md) |
 | 8 | SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001 | Active | 真机功能 Pass with conditions；docs tip `a007681`。`RTRD-01`/`RTRD-02` 仍 open（不进本 PR / 不因 merge 关闭）。Human 已授权 CI 绿后 undraft+merge #100；Product Gate/TestFlight/Release/ADR Accept 未授权。 | [`assignment`](assignments/scheme-delivery-runtime-route-device-001.md) · [`evidence`](evidence/scheme-delivery-runtime-route-device-001-2026-09-09.md) · [`review`](reviews/scheme-delivery-runtime-route-device-001-quality-review.md) |
-| 9 | SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001 | Ready | Human 拒绝 `accept` A34-R1，批准起草本 Assignment；**待授权 Active/实现**。闭合万象 P4 相对 ADR 0034 全文缺口；不自动 Accept ADR；不含 A34-R2/`RTRD-*`。 | [`assignment`](assignments/scheme-delivery-wanxiang-p4-closure-001.md) · [`A34 review`](reviews/adr-0034-architecture-accept-review-2026-09-09.md) · [`ADR 0034`](architecture/decisions/0034-multi-scheme-resource-ownership.md)
+| 9 | SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001 | **Active** | Human Active 授权；冻结 `814abfd` / `codex/wanxiang-p4-closure-001`；slice 1 缺口清单已落盘；A34-R1 仍 open/`fix`；不 Accept ADR；无 Swift 本片。 | [`assignment`](assignments/scheme-delivery-wanxiang-p4-closure-001.md) · [`gaps`](evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md) · [`A34 review`](reviews/adr-0034-architecture-accept-review-2026-09-09.md) · [`ADR 0034`](architecture/decisions/0034-multi-scheme-resource-ownership.md)
 
 历史工作从 [Assignment 目录](assignments/) 查找；债务从 [TECH_DEBT](TECH_DEBT.md) 查找。
 这里只保留 Ready / Active 工作，上限十项；Assignment 是生命周期事实来源，冲突时修正本镜像。

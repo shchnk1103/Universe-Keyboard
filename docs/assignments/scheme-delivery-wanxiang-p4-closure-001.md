@@ -6,11 +6,12 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | Ready |
-| Current Phase | Assignment 已起草；等待 Human 单独授权进入 `Active` / 实现。目标：闭合 ADR 0034 Architecture Accept 残余 **A34-R1**（Wanxiang P4 相对 ADR 全文未全闭合） |
-| Material non-claims | 本 Assignment **不是** ADR 0034 Accept；**不是**完整 Product Gate / TestFlight / Release；不把 Ice `dofile`（A34-R2 / TD-011）或 `RTRD-01`/`RTRD-02` 塞进本片；起草授权 ≠ 编码授权 |
-| Next handoff / decision | Human 确认本 Assignment 范围后，再授权 `Active` 与首个实现切片（建议先：缺口清单 + 测试/证据计划，再最小代码） |
-| Residuals | 进入 Active 前无执行残余；闭合后须回写 A34-R1 disposition 与 ADR Accept 路径 |
+| Lifecycle | **Active** |
+| Current Phase | Human 已授权 Active（`2026-09-09 Asia/Shanghai`）。冻结 tip：`origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`；工作分支 `codex/wanxiang-p4-closure-001`。Slice 1：缺口清单已落盘（见 Evidence）；**尚未**开始 Swift 实现。目标：闭合 ADR 0034 Architecture Accept 残余 **A34-R1**（Wanxiang P4 相对 ADR 全文）。A34-R1 仍 `fix` / open until Exit。 |
+| Material non-claims | 本 Assignment **不是** ADR 0034 Accept；**不是**完整 Product Gate / TestFlight / Release；不把 Ice `dofile`（A34-R2 / TD-011）或 `RTRD-01`/`RTRD-02` 塞进本片；不含 Recovery persistence、peer-prefer B、pin 变更、整目录 `lua/`/`opencc/` 清空 |
+| Next handoff / decision | 按缺口清单推荐顺序推进最小实现切片（若清单显示工程已齐，则走文档闭合核对 + Independent Quality / A34-R1 disposition 回写）。每片对外 push/merge 仍需 Human。 |
+| Residuals | A34-R1 open（`fix`）；闭合后须回写 A34-R1 disposition；**仍不**自动 Accept ADR 0034 |
+| Frozen tip | base `814abfd7c03002256978d7658c176b80002d2539` (`origin/main` / PR #100 merge)；branch `codex/wanxiang-p4-closure-001` |
 
 ---
 
@@ -46,7 +47,7 @@ Policy version: 1.0.0
 ## Assignment
 
 - **Domain Owner:** 📱 Main App UI / Scheme Delivery — Wanxiang install/upgrade/uninstall ownership and transaction correctness.
-- **Executor:** Current authorized executor（Grok Bot / Codex，以 Active 时 Human 指定为准）；仅本 Scope。
+- **Executor:** Grok Bot / iOS开发大师（Human Active 授权）；仅本 Scope。
 - **Environment Executor:** 同 Executor — 本地 format 硬门槛、Simulator / package tests；真机仅在另授权时。
 - **Human Dependency:** Product Lead — 授权本 Assignment 进入 `Active` 与每个对外 push/merge；Device Operator — 仅当本片 Exit 要求真机证据时。
 - **Architecture Reviewer:** Independent 🏛️ Architecture — 只读；本片若扩大 ADR 0034 决策面则先停。
@@ -58,10 +59,10 @@ Policy version: 1.0.0
   - 无 `UNKNOWN` 责任字段；
   - Human 已拒绝 `accept` A34-R1 并批准起草本 Assignment；
   - Architecture Accept review 已记录 Conditional Accept 与 A34-R1。
-- **Entry Criteria (→ Active / 实现):** （需另一次 Human 明确授权）
-  - Human 批准进入 Active；
-  - 冻结工作 tip / 分支策略已写明；
-  - 首个切片的缺口清单已附在 Evidence 或 Progress 笔记。
+- **Entry Criteria (→ Active / 实现):** （**已满足** `2026-09-09 Asia/Shanghai`）
+  - Human 批准进入 Active（会话授权 Active + full KOS adherence）；
+  - 冻结工作 tip / 分支策略已写明（见 Current Status Frozen tip）；
+  - 首个切片的缺口清单已附在 Evidence（见下）。
 - **Exit Criteria:**
   - 书面「Wanxiang P4 closure」范围与 ADR 0034 候选 A 对齐的核对表完成；
   - 缺口项均有 `Closed` 证据或 Human 书面缩窄范围（缩窄须 Architecture 知情）；
@@ -87,8 +88,11 @@ Human 拒绝书面接受 A34-R1 后，Architecture 路径上 A34-R1 视为 **`fi
 
 ## Evidence
 
-（Active 后追加）
+- Gap inventory (slice 1): [`../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md`](../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)
+- Architecture Accept review (A34-R1 = `fix`): [`../reviews/adr-0034-architecture-accept-review-2026-09-09.md`](../reviews/adr-0034-architecture-accept-review-2026-09-09.md)
+- Baseline: `main` @ `814abfd7c03002256978d7658c176b80002d2539`
 
 ## History
 
 - `2026-09-09 Asia/Shanghai`: Human 拒绝接受 Architecture Accept 残余 A34-R1，批准起草本独立 Assignment；Lifecycle = Ready；**未**授权实现 / Active。
+- `2026-09-09 Asia/Shanghai`（稍后）: Human 授权本 Assignment **Active** + full KOS adherence（`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`）。冻结 tip `814abfd` / 分支 `codex/wanxiang-p4-closure-001`；slice 1 = 缺口清单 + Active 治理（无 Swift）。**仍不** Accept ADR 0034。
