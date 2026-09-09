@@ -1,5 +1,81 @@
 # CHANGELOG
 
+## 2026-09-08 — Cross-scheme CS-03/CS-04 (local)
+
+- Identical-receipt idempotent no-op for scheme reinstall (`SchemaManager.shouldSkipIdenticalReinstall`; force bypass).
+- Dual-install harness evidence: CS-03 Ice repeat no-op; CS-04 Wanxiang repeat no-op + identity-change upgrade preserves Ice.
+- Docs/handoff updated; **not pushed**; PR #100 remains draft.
+
+## 2026-09-08 — 卸载回滚再次失败时保留恢复文件
+
+- 回滚移动失败时保留暂存目录并报告恢复未完成，避免清理唯一剩余文件副本。
+- 主 App 停止该次卸载，不重新部署不完整的原方案；增加双重移动失败及恢复重试测试。此前有限 Gate 不自动覆盖本次增量。
+
+## 2026-09-08 — Wanxiang Lua 精确哈希归属暂存（17.5.9）
+
+- 为 pinned CNB Wanxiang 17.5.9 增加 `WanxiangLuaOwnership` 与卸载时 exact-hash Lua 路径匹配暂存。
+- 共存测试覆盖匹配/修改/未知路径/符号链接/Ice 不误伤；**非**完整 Wanxiang P4 闭合。
+- 有限 Product Gate 文档仍为先前冻结的历史记录，不自动接受 rollback 修正后的实现，除非原文已写明。
+
+## 2026-09-08 — Limited P4 Product Gate（自动化覆盖失败回滚）
+
+- Human 有限 Product Gate：接受失败回滚未真机测，由单元测试 + Q-P2-01 mid-move 注入 + CI 覆盖本片残留风险。
+- 等级：**Limited Product Gate Passed (automation-backed failure rollback)**；非完整 Product Gate / 非 Device-attested。
+- 明确未授权：undraft/merge PR #100、TestFlight、App Release、ADR 0034 Accepted、Wanxiang P4 闭合。
+
+## 2026-09-07 — Human-attested P4 活跃卸载烟雾
+
+- Human 报告：活跃雾凇卸载先切 Luna、无报错、之后 Luna 可输入，设置显示雾凇未安装；失败回滚未测。
+- 证据等级 Human-attested ONLY，不是 Device-attested / Product Gate / ADR Accepted / merge / TestFlight。
+
+## 2026-09-07 — P4 活跃方案卸载 fail-closed
+
+- 卸载当前活跃已下载方案时，先切换并完成内置 `luna_pinyin` 部署，再 stage→commit 删除目标文件；任一步失败保留原方案选择与文件。
+- 不把 `switchToSchema` 的延迟部署当作成功。ADR 0034 仍 Proposed；未宣称 Wanxiang P4 或真机 Product Gate 完成。
+
+## 2026-09-07 — 已知污染恢复加入统一事务回滚
+
+- 将 P3 `default.yaml` 已知污染恢复纳入内置资源安装的同一 mutation 账本，并使用每次操作独立的 backup root。
+- 后续资源安装或 overlay 写入失败会恢复事务前字节与旧回执；存在但不可读的资源回执会在任何运行时修改前 fail-closed。
+- 新增失败注入与真实归档引用闭合测试。Architecture delta 复审关闭原事务阻断，ADR 0034 仍 Proposed。
+
+## 2026-09-07 — Human-attested 雾凇重下与 Luna 切换
+
+- Human 报告：隔离工程 P3 构建上重下雾凇可部署，切换 Luna 不报错，双方可输入。
+- 证据等级 Human-attested，不是 Device-attested / Product Gate；ADR 0034 仍 Proposed。
+
+## 2026-09-07 — 已知雾凇 Prelude 污染的有界恢复
+
+- 仅当共享 `default.yaml` 匹配钉住的雾凇 2026.06.30 SHA 时，从已校验的官方源恢复。
+- 未知改动仍 fail-closed；成功后删除恢复备份。不整目录删除、不放宽 receipt。
+
+## 2026-09-07 — 雾凇独立预设，禁止覆盖 Prelude `default.yaml`
+
+- 雾凇安装改为 `rime_ice_preset.yaml`，并改写 schema 引用；共享 `default.yaml` 保持官方 Prelude 字节。
+- 卸载按文件删除雾凇 `lua` 与 `opencc/emoji*`，不删除整个 `lua/` 或 `opencc/`。万象仍跳过自带 `default.yaml`。
+
+## 2026-09-07 — P1 多方案资源归属清单
+
+- 记录内置与雾凇 admitted 集合：同名不同字节目前只有 `default.yaml`；Ice/T9 仍引用该文件。
+- 雾凇卸载不收回 `lua/`、`opencc/`、`default.yaml`。不接受 ADR 0034，不开始 P2。
+
+## 2026-09-07 — P0 Ice/builtin `default.yaml` 冲突复现
+
+- 生产雾凇安装计划会覆盖 Prelude `default.yaml`；存在 builtin receipt 时再次 `install()` 抛 `byteCountMismatch`，且不回滚已覆盖文件。
+- 仅增加安装器容器根测试接缝；不放宽完整性校验，不进入恢复实现。
+
+## 2026-09-07 — 多方案资源归属计划（docs-only）
+
+- 在 `SCHEME-DELIVERY-SOURCE-STATE-001` 记录共存/部署恢复规划，并新增 Proposed ADR 0034。
+- 事实、方案建议和待批准决策分开；不授权实现、真机恢复、ADR 接受或 PR #100 merge。
+
+## Scheme download source and failure-state repair
+
+- Pin Rime Ice to verified 2026.06.30 archives instead of the mutable nightly alias; retain archive and staged-content integrity checks.
+- Distinguish changed remote content from source availability failures and record finite per-source probe reasons.
+- Scope failure display/retry by scheme ID so Rime Ice errors do not appear on Wanxiang details.
+
+
 ## KOS v0.7.0 adoption (PR #99)
 
 - Pin released Kit v0.7.0 with advisory mode; adopt optional execution hygiene for new tasks, preserving existing Active baselines.

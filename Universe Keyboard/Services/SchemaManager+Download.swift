@@ -22,7 +22,9 @@ extension SchemaManager {
         if let plan = entry.installationPlan {
             archiveInstaller.clearBuildCache(plan: plan)
         }
-        startVerifiedDownload(schemaID: schemaID)
+        // Force still verifies archive/staged identity; identical-receipt no-op is
+        // bypassed so a deliberate reinstall can repair same-identity corruption.
+        startVerifiedDownload(schemaID: schemaID, force: true)
     }
 
     func fetchAndDownload() async {
@@ -32,16 +34,18 @@ extension SchemaManager {
     func fetchAndDownload(schemaID: String) async {
         let operationID = activeDownloadOperationID ?? UUID()
         activeDownloadOperationID = operationID
-        await fetchAndDownload(schemaID: schemaID, operationID: operationID)
+        await fetchAndDownload(schemaID: schemaID, operationID: operationID, force: false)
     }
 
-    private func fetchAndDownload(schemaID: String, operationID: UUID) async {
+    private func fetchAndDownload(schemaID: String, operationID: UUID, force: Bool) async {
         let schemeName = downloadSchemeDisplayName(for: schemaID)
         var temporaryItems: [URL] = []
         var diagnosticContext: DiagnosticEvent.SchemeDeliveryContext?
         var ownsCommitLease = false
         var installed = false
         var deployed = false
+        var upgradeCheckpoint: SchemaUpgradeCheckpoint?
+        let priorActiveSchemaID = activeSchemaID
 
         do {
             guard
@@ -78,9 +82,23 @@ extension SchemaManager {
             let preferredSourceID = entry.storage.sourceVariant.flatMap {
                 settings.string(forKey: $0)
             }
+            let selectionContext = diagnosticContext
+            let diagnostics = deliveryDiagnostics
             let selectedSource = try await sourceSelector.selectSource(
                 from: manifest.sourceVariants,
-                preferredSourceID: preferredSourceID
+                preferredSourceID: preferredSourceID,
+                onProbe: { source, result in
+                    guard let context = selectionContext,
+                        case .rejected(let reason) = result,
+                        let sourceID = SchemeDeliveryDiagnosticMapper.source(source.id)
+                    else { return }
+                    diagnostics.record(
+                        .phaseChanged(
+                            .init(
+                                context: context, attempt: nil, source: sourceID, host: nil,
+                                phase: .selecting, result: .failed, probeFailure: reason
+                            )))
+                }
             )
             try ensureActive(operationID)
             recordPhase(
@@ -148,6 +166,7 @@ extension SchemaManager {
             }
             if schemaID == "rime_ice" {
                 try await sanitizeT9SchemaIfPresent(in: extractDir)
+                try await adaptIceSharedDefault(in: extractDir)
             }
             try ensureActive(operationID)
             recordPhase(
@@ -205,6 +224,30 @@ extension SchemaManager {
                 result: .succeeded
             )
 
+            // CS-03/04: identical staged identity vs installed receipt → idempotent
+            // no-op (no checkpoint, no live replace, no selection thrash). Force
+            // redownload bypasses this gate.
+            if !force,
+                shouldSkipIdenticalReinstall(
+                    schemaID: schemaID,
+                    stagedContentSHA256: stagedContentSHA256
+                )
+            {
+                cleanupTemporaryItems(temporaryItems)
+                activeDownloadOperationID = nil
+                currentDownloadTask = nil
+                rimeIceDownloadState = .completed(schemeName: schemeName)
+                refreshSchemaList()
+                recordTerminal(
+                    diagnosticContext,
+                    result: .completed,
+                    installed: true,
+                    deployed: true,
+                    failure: nil
+                )
+                return
+            }
+
             try await acquireActiveSchemeDeliveryCommitLease(operationID: operationID)
             ownsCommitLease = true
             recordPhase(
@@ -214,6 +257,11 @@ extension SchemaManager {
                 host: archive.finalHost,
                 phase: .installing,
                 result: .started
+            )
+            // Wanxiang upgrade-only: checkpoint prior generation before live replace.
+            upgradeCheckpoint = try archiveInstaller.createUpgradeCheckpoint(
+                plan: plan,
+                luaAvailable: luaAvailable
             )
             try installSchemaFiles(from: extractDir, plan: plan, luaAvailable: luaAvailable)
             installed = true
@@ -233,7 +281,6 @@ extension SchemaManager {
                 _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: shared)
             }
 
-            activateSchema(schemaID, leaseOperationID: operationID)
             rimeIceDownloadState = .deploying(schemeName: schemeName)
             recordPhase(
                 diagnosticContext,
@@ -243,7 +290,14 @@ extension SchemaManager {
                 phase: .deploying,
                 result: .started
             )
-            let deploymentSucceeded = await deployRimeConfig(leaseOperationID: operationID)
+            // Shared manager seam: activate → deploy; on failure restore checkpoint /
+            // prior selection (same path Q-UR-P2-01 pins). Receipt stays below.
+            let deploymentSucceeded = await deployInstalledUpgradeOrRestoreOnFailure(
+                schemaID: schemaID,
+                checkpoint: &upgradeCheckpoint,
+                priorActiveSchemaID: priorActiveSchemaID,
+                leaseOperationID: operationID
+            )
             try ensureActive(operationID)
             guard deploymentSucceeded else {
                 throw DownloadError.deploymentFailed
@@ -266,6 +320,10 @@ extension SchemaManager {
                 archiveSHA256: archiveSHA256,
                 stagedContentSHA256: stagedContentSHA256
             )
+            if let checkpoint = upgradeCheckpoint {
+                archiveInstaller.commitUpgradeCheckpoint(checkpoint)
+                upgradeCheckpoint = nil
+            }
             if schemaID == "rime_ice" {
                 rimeIceVersion = manifest.version
             }
@@ -289,6 +347,10 @@ extension SchemaManager {
             }
         } catch is CancellationError {
             cleanupTemporaryItems(temporaryItems)
+            restoreAfterFailedUpgradeIfNeeded(
+                checkpoint: &upgradeCheckpoint,
+                priorActiveSchemaID: priorActiveSchemaID
+            )
             if activeDownloadOperationID == operationID {
                 activeDownloadOperationID = nil
                 rimeIceDownloadState = .idle
@@ -305,12 +367,28 @@ extension SchemaManager {
             }
         } catch {
             cleanupTemporaryItems(temporaryItems)
+            restoreAfterFailedUpgradeIfNeeded(
+                checkpoint: &upgradeCheckpoint,
+                priorActiveSchemaID: priorActiveSchemaID
+            )
+            let failureMessage: String
+            if upgradeCheckpoint != nil {
+                // Restore failed: retain checkpoint and surface distinct recovery type.
+                failureMessage = DownloadError.userFacingDescription(
+                    for: SchemaUpgradeRecoveryError.upgradeRollbackIncomplete
+                )
+            } else if error is SchemaUpgradeRecoveryError {
+                failureMessage = DownloadError.userFacingDescription(for: error)
+            } else {
+                failureMessage = DownloadError.userFacingDescription(for: error)
+            }
             if activeDownloadOperationID == operationID {
                 activeDownloadOperationID = nil
                 currentDownloadTask = nil
                 rimeIceDownloadState = .failed(
+                    schemaID: schemaID,
                     schemeName: schemeName,
-                    message: DownloadError.userFacingDescription(for: error)
+                    message: failureMessage
                 )
             }
             recordTerminal(
@@ -349,13 +427,17 @@ extension SchemaManager {
         }
     }
 
-    private func startVerifiedDownload(schemaID: String) {
+    private func startVerifiedDownload(schemaID: String, force: Bool = false) {
         let operationID = UUID()
         activeDownloadOperationID = operationID
         let schemeName = downloadSchemeDisplayName(for: schemaID)
         rimeIceDownloadState = .fetchingReleaseInfo(schemeName: schemeName)
         currentDownloadTask = Task { [weak self] in
-            await self?.fetchAndDownload(schemaID: schemaID, operationID: operationID)
+            await self?.fetchAndDownload(
+                schemaID: schemaID,
+                operationID: operationID,
+                force: force
+            )
         }
     }
 
@@ -683,6 +765,8 @@ extension SchemaManager {
             return .invalidManifest
         case .allSourcesUnavailable:
             return .allSourcesUnavailable
+        case .sourceArtifactChanged:
+            return .sourceArtifactChanged
         case .allSourcesFailedIntegrity(let aggregate):
             switch aggregate {
             case .archiveSize: return .allSourcesArchiveSize
@@ -715,7 +799,7 @@ extension SchemaManager {
     /// are downloaded or installed.
     private func postProcessingRevision(for schemaID: String) -> String? {
         switch schemaID {
-        case "rime_ice": "rime-ice-post-1"
+        case "rime_ice": "rime-ice-post-2"
         case "wanxiang": "wanxiang-post-1"
         default: nil
         }
@@ -759,6 +843,16 @@ extension SchemaManager {
         }.value
     }
 
+    private func adaptIceSharedDefault(in extractionDirectory: URL) async throws {
+        try await Task.detached(priority: .userInitiated) {
+            do {
+                try RimeIceSharedDefaultAdapter.apply(in: extractionDirectory)
+            } catch {
+                throw DownloadError.postProcessingFailed("雾凇公共配置无法改写为独立预设")
+            }
+        }.value
+    }
+
     private func sanitizeT9SchemaIfPresent(in extractionDirectory: URL) async throws {
         let t9URL = extractionDirectory.appendingPathComponent("t9.schema.yaml")
         guard FileManager.default.fileExists(atPath: t9URL.path) else {
@@ -769,6 +863,74 @@ extension SchemaManager {
             let compatible = try T9SchemaCompatibility.makeCompatibleSchema(fromUpstreamYAML: upstream)
             try compatible.write(to: t9URL, atomically: true, encoding: .utf8)
         }.value
+    }
+
+    /// Manager-level seam for Wanxiang upgrade deploy-failure (Q-UR-P2-01).
+    /// After checkpoint + live install, activates the target scheme and attempts
+    /// `deployRimeConfig`. On deploy failure runs `restoreAfterFailedUpgradeIfNeeded`
+    /// (prior generation restore and/or retained checkpoint + prior selection).
+    /// Does **not** call `persistVerifiedInstallation` — receipt remains gated to
+    /// the success path in `fetchAndDownload` after this returns `true`.
+    @discardableResult
+    func deployInstalledUpgradeOrRestoreOnFailure(
+        schemaID: String,
+        checkpoint: inout SchemaUpgradeCheckpoint?,
+        priorActiveSchemaID: String,
+        leaseOperationID: UUID? = nil
+    ) async -> Bool {
+        activateSchema(schemaID, leaseOperationID: leaseOperationID)
+        let deploymentSucceeded = await deployRimeConfig(leaseOperationID: leaseOperationID)
+        guard deploymentSucceeded else {
+            restoreAfterFailedUpgradeIfNeeded(
+                checkpoint: &checkpoint,
+                priorActiveSchemaID: priorActiveSchemaID
+            )
+            return false
+        }
+        return true
+    }
+
+    /// Restores a Wanxiang upgrade checkpoint when present and returns prior
+    /// scheme selection. On restore failure the checkpoint is retained and the
+    /// inout remains non-nil so callers can surface upgrade recovery-required.
+    /// Internal so manager-level tests can pin the deploy-failure exit seam.
+    func restoreAfterFailedUpgradeIfNeeded(
+        checkpoint: inout SchemaUpgradeCheckpoint?,
+        priorActiveSchemaID: String
+    ) {
+        if let activeCheckpoint = checkpoint {
+            do {
+                try archiveInstaller.restoreUpgradeCheckpoint(activeCheckpoint)
+                checkpoint = nil
+            } catch {
+                // Retain the only surviving prior-generation copy.
+                Logger.shared.error(
+                    "upgrade: 回滚未完成，升级检查点已保留",
+                    category: .deployment
+                )
+            }
+        }
+        if activeSchemaID != priorActiveSchemaID {
+            setActiveSchemaWithoutDeployment(priorActiveSchemaID)
+        }
+    }
+
+    /// Returns true when an installed receipt already matches the staged content
+    /// about to be committed. Callers skip destructive replace / upgrade
+    /// checkpoint and keep the current scheme selection.
+    func shouldSkipIdenticalReinstall(schemaID: String, stagedContentSHA256: String) -> Bool {
+        guard !stagedContentSHA256.isEmpty,
+            let entry = downloadableEntry(for: schemaID),
+            let installedKey = entry.storage.installed,
+            settings.bool(forKey: installedKey),
+            let plan = entry.installationPlan,
+            archiveInstaller.containsInstalledSchema(plan: plan),
+            let stagedKey = entry.storage.stagedContentChecksum,
+            settings.string(forKey: stagedKey) == stagedContentSHA256
+        else {
+            return false
+        }
+        return true
     }
 
     private func persistVerifiedInstallation(

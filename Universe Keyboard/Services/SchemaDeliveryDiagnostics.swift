@@ -3,6 +3,7 @@ import KeyboardCore
 
 nonisolated protocol SchemaDeliveryDiagnosing: Sendable {
     func record(_ payload: DiagnosticEvent.SchemeDeliveryPayload)
+    func recordRuntimeRoute(_ payload: DiagnosticEvent.RuntimeRoutePhaseEvent, isFailure: Bool)
 }
 
 /// Main-App adapter for ADR 0027. It accepts only the reviewed composite value;
@@ -32,6 +33,10 @@ nonisolated final class SchemaDeliveryDiagnostics: SchemaDeliveryDiagnosing, Sen
     func record(_ payload: DiagnosticEvent.SchemeDeliveryPayload) {
         runtime.recordSchemeDelivery(payload)
     }
+
+    func recordRuntimeRoute(_ payload: DiagnosticEvent.RuntimeRoutePhaseEvent, isFailure: Bool) {
+        runtime.recordRuntimeRoute(payload, level: isFailure ? .error : .info)
+    }
 }
 
 nonisolated enum SchemeDeliveryDiagnosticMapper {
@@ -59,6 +64,7 @@ nonisolated enum SchemeDeliveryDiagnosticMapper {
 
     static func artifact(_ id: String) -> DiagnosticEvent.SchemeArtifactIdentity? {
         switch id {
+        case "rime-ice-20260630-675d23b0": .rimeIce20260630675D23B0
         case "rime-ice-nightly-f60aa4f3": .rimeIceNightlyF60AA4F3
         case "wanxiang-17.5.9-cnb9bfc-github73f8": .wanxiang1759CNB9BFCGitHub73F8
         default: nil
@@ -67,6 +73,8 @@ nonisolated enum SchemeDeliveryDiagnosticMapper {
 
     static func stagedIdentity(_ id: String) -> DiagnosticEvent.SchemeStagedIdentity? {
         switch id {
+        case "rime-ice-20260630-plan1-post1": .rimeIce20260630Plan1Post1
+        case "rime-ice-20260630-plan2-post2": .rimeIce20260630Plan2Post2
         case "rime-ice-nightly-plan1-post1": .rimeIceNightlyPlan1Post1
         case "wanxiang-17.5.9-plan1-post1": .wanxiang1759Plan1Post1
         default: nil

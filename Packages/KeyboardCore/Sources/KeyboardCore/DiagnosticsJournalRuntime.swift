@@ -112,6 +112,28 @@ public final class DiagnosticsJournalRuntime: Sendable {
         )
     }
 
+    /// Records a finite Main-App runtime-route transition without coupling its
+    /// journal availability to uninstall or rollback behavior.
+    public func recordRuntimeRoute(
+        _ payload: DiagnosticEvent.RuntimeRoutePhaseEvent,
+        level: Logger.Level = .info
+    ) {
+        let sequence = nextSequence.next()
+        ingress.record(
+            DiagnosticEvent(
+                utcTimestamp: Date(),
+                monotonicNanoseconds: DispatchTime.now().uptimeNanoseconds,
+                origin: origin,
+                processInstanceID: processInstanceID,
+                localSequence: sequence,
+                code: .runtimeRoutePhaseChanged,
+                level: level,
+                category: .deployment,
+                runtimeRoutePayload: payload
+            )
+        )
+    }
+
     /// Records one reviewed automatic-sync payload. The payload contains only
     /// finite enums and an opaque operation UUID; business execution never
     /// waits for journal persistence.

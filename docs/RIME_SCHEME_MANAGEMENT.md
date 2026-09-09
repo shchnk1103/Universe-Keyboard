@@ -36,6 +36,15 @@ or Octagram models are not part of this closure. Any pin, manifest, fuzzy
 overlay, OpenCC profile or generated-artifact change reopens ADR 0033 and F-02
 revalidation.
 
+Candidate A (Human `2026-09-07`): the shared file named `default.yaml` is
+always the official Prelude copy. Downloadable schemes must not overwrite it.
+Ice `rime-ice-plan-2` installs `rime_ice_preset.yaml` and rewrites schema
+references; Wanxiang continues to skip its bundled `default.yaml`. Uninstall
+deletes Ice-owned `lua/*` files, `lua/cold_word_drop/`, and `opencc/emoji*`,
+never the whole `lua/` or `opencc/` directories. See
+[`SCHEME-DELIVERY-SOURCE-STATE-001`](assignments/scheme-delivery-source-state-001.md)
+and Proposed [ADR 0034](architecture/decisions/0034-multi-scheme-resource-ownership.md).
+
 ## User-Facing Model
 
 普通用户只需要理解三件事：
@@ -201,3 +210,23 @@ When adding a new open-source scheme:
 - Keep global preferences, such as candidate count and simplification, outside individual scheme details unless the preference is genuinely scheme-specific.
 - If the scheme has user dictionary learning support, connect it through the per-scheme candidate-learning model documented in `docs/RIME_USER_DICTIONARY.md`.
 - Add tests for catalog metadata, version/update comparison, install/uninstall cleanup, and any special skip rules before exposing the scheme in the UI.
+
+## Pinned source and probe failures
+
+Rime Ice uses reviewed `2026.06.30/full.zip` assets from upstream GitHub and its NJU mirror,
+not the moving nightly alias. Both source archives are pinned by byte count and SHA-256;
+Lua-enabled/disabled installed-content fingerprints remain independently checked after
+production post-processing. A dated upstream release is not guaranteed immutable by GitHub;
+if it is replaced, verification must fail closed until a reviewed catalog update.
+
+The bounded HEAD race reports finite source-local rejection reasons (`transport`, `non_http`,
+`http_status`, `redirect_host`, `archive_size`). A changed Content-Length is classified as
+`source_artifact_changed` when no eligible alternative succeeds, including mixed changed and
+unreachable sources. A successful alternative still undergoes full archive and staged checks.
+Cancellation does not become a source failure. Diagnostics contain only reviewed IDs/reasons,
+not raw URLs or transport exception strings. Legacy diagnostic identities remain readable.
+
+Download failures carry their owning `schemaID` separately from the display name. Detail pages
+and scheme-specific guide/layout panels only render failures for that ID, and retry captures
+the failed ID. Navigation alone does not clear the shared single-operation state; a newly
+started operation replaces it. Global toasts retain the original scheme name.

@@ -754,7 +754,7 @@ final class RimeSettingsStoreTests: XCTestCase {
     }
 
     func testCheckForUpdateReportsAlreadyCurrentWithoutStartingDownload() async {
-        let settings = StoreSharedSettingsStore(values: ["rime_ice_version": "nightly"])
+        let settings = StoreSharedSettingsStore(values: ["rime_ice_version": "2026.06.30"])
         let store = RimeSettingsStore(
             schemaManager: SchemaManager(
                 settings: settings,
@@ -770,6 +770,56 @@ final class RimeSettingsStoreTests: XCTestCase {
 
         XCTAssertEqual(store.updateStatusMessage, "已是最新版本")
         XCTAssertEqual(store.downloadState, .idle)
+    }
+
+    func testDownloadFailureStaysWithItsSchemeAcrossNavigationAndReplacement() {
+        let schemaManager = SchemaManager(
+            settings: StoreSharedSettingsStore(),
+            sourceSelector: StoreSourceSelector(),
+            archiveDownloader: StoreArchiveDownloader(),
+            archiveInstaller: StoreArchiveInstaller(),
+            deploymentService: StoreDeploymentService(succeeded: true)
+        )
+        let store = RimeSettingsStore(
+            schemaManager: schemaManager,
+            persistence: StubRimeSettingsPersistence()
+        )
+        let rimeIceFailure = DownloadState.failed(
+            schemaID: "rime_ice",
+            schemeName: "雾凇拼音",
+            message: "网络不可用"
+        )
+        schemaManager.rimeIceDownloadState = rimeIceFailure
+
+        XCTAssertEqual(store.downloadState.failureMessage(for: "rime_ice"), "网络不可用")
+        XCTAssertNil(store.downloadState.failureMessage(for: "wanxiang"))
+
+        schemaManager.switchToSchema("wanxiang")
+        XCTAssertEqual(store.activeSchemaID, "wanxiang")
+        XCTAssertNil(
+            store.downloadState.failureMessage(for: store.activeSchemaID),
+            "万象详情页不能显示雾凇的失败"
+        )
+
+        schemaManager.switchToSchema("rime_ice")
+        XCTAssertEqual(store.activeSchemaID, "rime_ice")
+        XCTAssertEqual(
+            store.downloadState.failureMessage(for: store.activeSchemaID),
+            "网络不可用",
+            "返回雾凇详情页后仍应显示原失败"
+        )
+
+        // A new operation replaces the terminal state. Its failure must bind
+        // to the new scheme instead of resurrecting the previous one.
+        schemaManager.rimeIceDownloadState = .fetchingReleaseInfo(schemeName: "万象拼音")
+        XCTAssertNil(store.downloadState.failureMessage(for: "rime_ice"))
+        schemaManager.rimeIceDownloadState = .failed(
+            schemaID: "wanxiang",
+            schemeName: "万象拼音",
+            message: "网络不可用"
+        )
+        XCTAssertNil(store.downloadState.failureMessage(for: "rime_ice"))
+        XCTAssertEqual(store.downloadState.failureMessage(for: "wanxiang"), "网络不可用")
     }
 
     func testAdvancedInputStatusUsesReadyTextForAvailableDiagnostic() {
@@ -1150,7 +1200,19 @@ private final class StoreArchiveInstaller: SchemaArchiveInstalling {
     func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool { containsInstalledSchemaValue }
     func checkDiskSpace(needed: Int64) throws {}
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws {}
-    func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) {}
+
+    func createUpgradeCheckpoint(plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
+        -> SchemaUpgradeCheckpoint?
+    {
+        nil
+    }
+    func restoreUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) throws {}
+    func commitUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) {}
+    func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging {
+        SchemaUninstallStaging(rootURL: URL(fileURLWithPath: "/tmp/staging"), movedRelativePaths: [])
+    }
+    func commitSchemaUninstall(_ staging: SchemaUninstallStaging, plan: RimeSchemeInstallationPlan) {}
+    func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) {}
     func clearBuildCache(plan: RimeSchemeInstallationPlan) {}
     func sharedDataDirectoryURL() -> URL? { URL(fileURLWithPath: "/tmp/shared") }
     func runtimeDirectories() throws -> SchemaDeploymentDirectories {

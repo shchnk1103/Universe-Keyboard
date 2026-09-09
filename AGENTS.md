@@ -55,7 +55,7 @@
   [`docs/kos/codex-github-cli-auth-troubleshooting.md`](docs/kos/codex-github-cli-auth-troubleshooting.md)
   做一次沙箱／主机对照；主机成功后停止重复登录，不猜测或复用旧代理配置。
 - 发布按用户授权的具体动作推进：commit、push、PR、merge、Release 分别核对范围。仅要求本地提交不推送；推送使用边界清晰的功能分支。技能不能扩展外部动作权限。
-- **合并 / 视为可合并之前，必须先在本地跑通与 CI 等价的质量门**（见下「本地 CI 门禁」）。禁止在相关套件未绿时推送并请求合并到默认分支；若用户明确说「只推不合并 / 草稿 PR」，可推功能分支但必须在报告中写明本地未跑或未绿的步骤。
+- **合并 / 视为可合并之前，必须先在本地跑通与 CI 等价的质量门**（见下「本地 CI 门禁」）。禁止在相关套件未绿时推送并请求合并到默认分支；若用户明确说「只推不合并 / 草稿 PR」，可推功能分支但必须在报告中写明本地未跑或未绿的步骤。**例外不豁免 Swift 格式：** 只要本次提交/推送包含 `.swift` 变更，无论是否草稿 PR、是否只推不合并，都必须先通过下方「Swift 格式硬门槛」；格式失败不得 push。
 - “已推送功能分支”不等于“可以清理分支”。PR 未合并、检查失败或远端状态无法确认时，必须同时保留本地和远端功能分支。
 - 只有在拉取最新远端状态后，确认该工作的提交已经可从 `origin` 的默认分支到达，才允许清理功能分支。
 - 清理时先同步默认分支，再使用安全删除方式删除本地分支；确认远端默认分支仍包含对应提交后，才删除远端功能分支。禁止用强制删除掩盖未合并状态。
@@ -69,9 +69,19 @@
 
 在 **push 后预期合并**、或用户要求「上传并合并 / 修 CI / ship」时，在推送前（至少在 merge 前）于本地执行与 CI 同序的检查。默认模拟器名与 CI 一致：`iPhone 17 Pro`（本机无该机型时可用等价 iOS Simulator，并在报告中写明）。
 
+### Swift 格式硬门槛（任何含 `.swift` 的 commit / push）
+
+相对推送目标分支（通常为默认分支或当前 PR 基线）的变更 `.swift` 文件，在 **commit 前且 push 前** 必须全部通过：
+
+```bash
+xcrun swift-format format --in-place --configuration .swift-format <file>
+xcrun swift-format lint --strict --configuration .swift-format <file>
+```
+
+`lint --strict` 失败即停止；**不得** commit 或 push。草稿 PR、「只推不合并」、本地已跑过部分测试等情形 **均不豁免** 本条。推荐先 `format --in-place` 再 `lint`，避免 CI `Check Swift formatting` 反复红灯（历史：PR #100 多次卡在换行/折行）。
+
 1. **（若改了 RIME 二进制依赖）** `bash scripts/ensure_rime_vendor.sh fetch`
-2. **（若有 Swift 改动）** 对相对默认分支的变更 `.swift` 跑  
-   `xcrun swift-format lint --strict --configuration .swift-format <file>`
+2. **（若有 Swift 改动）** 先满足上方「Swift 格式硬门槛」（与 CI `Check Swift formatting` 对齐）
 3. **KeyboardCore：** `swift test --package-path Packages/KeyboardCore`
 4. **RimeBridgeTests：**  
    `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme RimeBridgeTests -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test`

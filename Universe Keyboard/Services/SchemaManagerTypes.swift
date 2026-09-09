@@ -258,7 +258,7 @@ enum RimeSchemeCatalog {
             distribution: RimeSchemeDistribution(
                 manifest: RimeSchemeArtifactManifest(
                     schemeID: "rime_ice",
-                    version: "nightly",
+                    version: "2026.06.30",
                     assetName: "full.zip",
                     sourceVariants: [
                         RimeSchemeSourceVariant(
@@ -266,42 +266,42 @@ enum RimeSchemeCatalog {
                             displayName: "南京大学开源镜像",
                             downloadURL: URL(
                                 string:
-                                    "https://mirror.nju.edu.cn/github-release/iDvel/rime-ice/nightly%20build/full.zip"
+                                    "https://mirror.nju.edu.cn/github-release/iDvel/rime-ice/2026.06.30/full.zip"
                             )!,
-                            upstreamRevision: "sha256:f60aa4f3bf5bcae5",
-                            expectedByteCount: 16_041_786,
-                            archiveSHA256: "f60aa4f3bf5bcae5f49697cd529fa0c990c91f7349acd350073bcae75ff7410f",
+                            upstreamRevision: "6810e8916d160498620a16fef2135956fecbd485",
+                            expectedByteCount: 16_050_491,
+                            archiveSHA256: "675d23b070be00e1b800f9a6db033ef98f4493cd5b568ed8aa3b3541769c46ac",
                             allowedRedirectHosts: ["mirror.nju.edu.cn"],
-                            stagedIdentityID: "rime-ice-nightly-plan1-post1"
+                            stagedIdentityID: "rime-ice-20260630-plan2-post2"
                         ),
                         RimeSchemeSourceVariant(
                             id: "github",
                             displayName: "GitHub 官方发布",
                             downloadURL: URL(
-                                string: "https://github.com/iDvel/rime-ice/releases/download/nightly/full.zip"
+                                string: "https://github.com/iDvel/rime-ice/releases/download/2026.06.30/full.zip"
                             )!,
-                            upstreamRevision: "sha256:f60aa4f3bf5bcae5",
-                            expectedByteCount: 16_041_786,
-                            archiveSHA256: "f60aa4f3bf5bcae5f49697cd529fa0c990c91f7349acd350073bcae75ff7410f",
+                            upstreamRevision: "6810e8916d160498620a16fef2135956fecbd485",
+                            expectedByteCount: 16_050_491,
+                            archiveSHA256: "675d23b070be00e1b800f9a6db033ef98f4493cd5b568ed8aa3b3541769c46ac",
                             allowedRedirectHosts: [
                                 "github.com", "release-assets.githubusercontent.com",
                                 "objects.githubusercontent.com",
                             ],
-                            stagedIdentityID: "rime-ice-nightly-plan1-post1"
+                            stagedIdentityID: "rime-ice-20260630-plan2-post2"
                         ),
                     ],
                     stagedIdentities: [
                         RimeSchemeStagedIdentity(
-                            id: "rime-ice-nightly-plan1-post1",
-                            artifactIdentityID: "rime-ice-nightly-f60aa4f3",
+                            id: "rime-ice-20260630-plan2-post2",
+                            artifactIdentityID: "rime-ice-20260630-675d23b0",
                             schemeID: "rime_ice",
-                            version: "nightly",
+                            version: "2026.06.30",
                             stagedContentSHA256WithLua:
-                                "1b42482113be8973869efe66f0d95e7b48bfb2d2af7e6b7cd7c94aa988fca17d",
+                                "781f61ce95526bf117cc3316dde014b1ab8cd941be9ecbf0c975b2e7a9a57701",
                             stagedContentSHA256WithoutLua:
-                                "2d6b9355c0719a60fbabb4c7b061a5b718e5edefc2f778c72799d91e23f9447c",
-                            installationPlanRevision: "rime-ice-plan-1",
-                            postProcessingRevision: "rime-ice-post-1"
+                                "9ea56858c4d77fd69daeeb6444ec5fc59ce29b7623b7de0a92cfc67801088654",
+                            installationPlanRevision: "rime-ice-plan-2",
+                            postProcessingRevision: "rime-ice-post-2"
                         )
                     ]
                 ),
@@ -310,7 +310,7 @@ enum RimeSchemeCatalog {
             ),
             storage: .downloaded(prefix: "rime_ice"),
             installationPlan: RimeSchemeInstallationPlan(
-                revision: "rime-ice-plan-1",
+                revision: "rime-ice-plan-2",
                 schemaFileName: "rime_ice.schema.yaml",
                 luaDirectoryPrefix: "lua/",
                 allowedFiles: [
@@ -318,11 +318,11 @@ enum RimeSchemeCatalog {
                     "radical_pinyin.schema.yaml", "radical_pinyin.dict.yaml",
                     "melt_eng.schema.yaml", "melt_eng.dict.yaml",
                     "symbols_v.yaml", "symbols_caps_v.yaml",
-                    "custom_phrase.txt", "default.yaml", "t9.schema.yaml",
+                    "custom_phrase.txt", "rime_ice_preset.yaml", "t9.schema.yaml",
                 ],
                 allowedPrefixes: ["cn_dicts/", "en_dicts/", "lua/", "opencc/"],
                 skippedPrefixes: ["squirrel", "weasel", "recipe", "others/"],
-                skippedFiles: [],
+                skippedFiles: ["default.yaml"],
                 removableFiles: [
                     "rime_ice.schema.yaml", "rime_ice.dict.yaml",
                     "radical_pinyin.schema.yaml", "radical_pinyin.dict.yaml",
@@ -330,10 +330,36 @@ enum RimeSchemeCatalog {
                     "symbols_v.yaml", "symbols_caps_v.yaml",
                     "custom_phrase.txt",
                     "rime.lua",
+                    "rime_ice_preset.yaml",
                     "t9.schema.yaml",
                     "t9.custom.yaml",
+                    "opencc/emoji.json",
+                    "opencc/emoji.txt",
+                    "opencc/others.txt",
+                    "lua/autocap_filter.lua",
+                    "lua/calc_translator.lua",
+                    "lua/cn_en_spacer.lua",
+                    "lua/convert_ar_num_to_zh.lua",
+                    "lua/corrector.lua",
+                    "lua/date_translator.lua",
+                    "lua/debuger.lua",
+                    "lua/en_spacer.lua",
+                    "lua/force_gc.lua",
+                    "lua/is_in_user_dict.lua",
+                    "lua/long_word_filter.lua",
+                    "lua/lunar.db",
+                    "lua/lunar.lua",
+                    "lua/number_translator.lua",
+                    "lua/pin_cand_filter.lua",
+                    "lua/reduce_english_filter.lua",
+                    "lua/search.lua",
+                    "lua/select_character.lua",
+                    "lua/t9_preedit.lua",
+                    "lua/unicode.lua",
+                    "lua/uuid.lua",
+                    "lua/v_filter.lua",
                 ],
-                removableDirectories: ["cn_dicts", "en_dicts"],
+                removableDirectories: ["cn_dicts", "en_dicts", "lua/cold_word_drop"],
                 removableBuildFileSubstrings: ["rime_ice", "melt_eng", "radical_pinyin", "t9"]
             )
         ),
@@ -430,6 +456,7 @@ enum RimeSchemeCatalog {
                 ],
                 skippedFiles: [
                     "weasel.yaml",
+                    // Candidate A: never install a third-party default.yaml over Prelude.
                     "default.yaml",
                     "README.md",
                     "CHANGELOG.md",
@@ -480,7 +507,9 @@ enum RimeSchemeCatalog {
 ///
 /// Active phases carry `schemeName` for multi-scheme honesty (TD-009).
 /// `downloading.progress` is `nil` when total size is unknown (indeterminate UI);
-/// otherwise a fraction in `0...1`.
+/// otherwise a fraction in `0...1`. Terminal failures additionally carry the
+/// stable schema ID so detail pages cannot attribute one scheme's failure to
+/// another scheme after navigation.
 enum DownloadState: Equatable {
     case idle
     case fetchingReleaseInfo(schemeName: String)
@@ -489,7 +518,7 @@ enum DownloadState: Equatable {
     case postProcessing(schemeName: String)
     case deploying(schemeName: String)
     case completed(schemeName: String)
-    case failed(schemeName: String, message: String)
+    case failed(schemaID: String, schemeName: String, message: String)
 
     var schemeName: String? {
         switch self {
@@ -502,9 +531,27 @@ enum DownloadState: Equatable {
             .postProcessing(let name),
             .deploying(let name),
             .completed(let name),
-            .failed(let name, _):
+            .failed(_, let name, _):
             return name
         }
+    }
+
+    var failedSchemaID: String? {
+        guard case .failed(let schemaID, _, _) = self else { return nil }
+        return schemaID
+    }
+
+    /// Returns a failure only when it belongs to the requested scheme.
+    ///
+    /// The shared state is intentionally single-operation, so consumers must
+    /// use the stable ID rather than whichever scheme detail page is visible.
+    func failureMessage(for schemaID: String) -> String? {
+        guard case .failed(let failedSchemaID, _, let message) = self,
+            failedSchemaID == schemaID
+        else {
+            return nil
+        }
+        return message
     }
 }
 
@@ -635,6 +682,7 @@ enum DownloadError: Error, LocalizedError, Equatable {
     case gitHubRateLimit
     case unsupportedScheme
     case allSourcesUnavailable
+    case sourceArtifactChanged
     case allSourcesFailedIntegrity(DownloadIntegrityAggregate)
     case integrityMismatch(DownloadIntegrityFailure)
     case invalidArtifactManifest
@@ -655,7 +703,9 @@ enum DownloadError: Error, LocalizedError, Equatable {
         case .unsupportedScheme:
             return "暂不支持下载这个方案"
         case .allSourcesUnavailable:
-            return "当前所有下载源均不可用，请检查网络后重试"
+            return "当前下载源暂不可用，请稍后重试"
+        case .sourceArtifactChanged:
+            return "下载源的方案文件已变化，当前版本无法验证，已停止安装；请更新应用后重试"
         case .allSourcesFailedIntegrity(let aggregate):
             switch aggregate {
             case .archiveSize:
@@ -698,6 +748,12 @@ enum DownloadError: Error, LocalizedError, Equatable {
     static func userFacingDescription(for error: Error) -> String {
         if let downloadError = error as? DownloadError {
             return downloadError.localizedDescription
+        }
+        if error is SchemaUpgradeRecoveryError {
+            return "方案升级回滚未完成，已保留恢复检查点，请稍后重试或联系支持"
+        }
+        if error is SchemaUninstallRecoveryError {
+            return "方案卸载回滚未完成，已保留恢复检查点，请稍后重试或联系支持"
         }
         guard let urlError = error as? URLError else {
             return "操作未能完成，请稍后重试"

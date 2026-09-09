@@ -104,6 +104,23 @@ Quality-verified.
 
 Dashboard may summarize Active Work but must not invent lifecycle states.
 
+## M-06 — Separate-authorization request packet
+
+Before asking the Product Approver to authorize a separately gated slice, the
+Executor first provides a short, decision-ready packet. It must state:
+
+1. **Objective** — the behavior or evidence gap the slice resolves.
+2. **Scope and effects** — affected production state, user-visible behavior,
+   external action, or an explicit statement that it is test/documentation only.
+3. **Non-goals** — adjacent slices and irreversible actions that remain out of
+   scope.
+4. **Completion evidence** — the focused validation, required gate, reviewer,
+   or human/device evidence that will make the result reviewable.
+
+The packet is an explanation before authorization, not a substitute for an
+Assignment decision or a new approval step for work already authorized. Keep it
+brief and use the current Assignment as the source of truth for scope.
+
 ## S-02 — Stacked PR convention
 
 When multiple PRs form a commit stack:

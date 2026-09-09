@@ -183,6 +183,65 @@ final class DiagnosticEventTests: XCTestCase {
         )
     }
 
+    func testRuntimeRoutePayloadRoundTripsWithOnlyFiniteFields() throws {
+        let payload = DiagnosticEvent.RuntimeRoutePhaseEvent(
+            operationID: UUID(),
+            phase: .fallbackDeploy,
+            result: .succeeded,
+            schema: .lunaPinyin,
+            layout: .twentySixKey,
+            state: .ready,
+            elapsedMilliseconds: 37
+        )
+        let event = DiagnosticEvent(
+            utcTimestamp: .now,
+            monotonicNanoseconds: 1,
+            origin: .mainApp,
+            processInstanceID: UUID(),
+            localSequence: 1,
+            code: .runtimeRoutePhaseChanged,
+            level: .info,
+            category: .deployment,
+            runtimeRoutePayload: payload
+        )
+
+        XCTAssertEqual(
+            try JSONDecoder().decode(DiagnosticEvent.self, from: JSONEncoder().encode(event)),
+            event
+        )
+    }
+
+    func testSourceProbeFailureRoundTripsAndRejectsWrongPhase() throws {
+        let context = DiagnosticEvent.SchemeDeliveryContext(
+            operationID: UUID(), artifact: .rimeIce20260630675D23B0,
+            stagedIdentity: .rimeIce20260630Plan1Post1
+        )
+        let phase = DiagnosticEvent.SchemeDeliveryPhaseEvent(
+            context: context, attempt: nil, source: .nju, host: nil,
+            phase: .selecting, result: .failed, probeFailure: .archiveSize
+        )
+        let payload = DiagnosticEvent.SchemeDeliveryPayload.phaseChanged(phase)
+        XCTAssertTrue(payload.isValid)
+        XCTAssertEqual(
+            try JSONDecoder().decode(
+                DiagnosticEvent.SchemeDeliveryPayload.self,
+                from: JSONEncoder().encode(payload)), payload)
+        XCTAssertFalse(
+            DiagnosticEvent.SchemeDeliveryPayload.phaseChanged(
+                .init(
+                    context: context, attempt: .init(1), source: .nju, host: .nju,
+                    phase: .downloading, result: .started, probeFailure: .archiveSize
+                )
+            ).isValid)
+        XCTAssertFalse(
+            DiagnosticEvent.SchemeDeliveryPayload.phaseChanged(
+                .init(
+                    context: context, attempt: nil, source: .nju, host: nil,
+                    phase: .selecting, result: .failed
+                )
+            ).isValid)
+    }
+
     func testSourceSelectionPhaseCanPrecedeArchiveAttempt() throws {
         let context = DiagnosticEvent.SchemeDeliveryContext(
             operationID: UUID(),

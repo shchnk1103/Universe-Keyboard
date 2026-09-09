@@ -31,6 +31,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case schemeDeliveryIntegrityFailed = "scheme_delivery.integrity_failed"
         case schemeDeliveryFallback = "scheme_delivery.fallback"
         case schemeDeliveryTerminal = "scheme_delivery.terminal"
+        case runtimeRoutePhaseChanged = "runtime_route.phase_changed"
         case rimeSyncInvoked = "rime_sync.invoked"
         case rimeSyncPhaseChanged = "rime_sync.phase_changed"
         case rimeSyncSkipped = "rime_sync.skipped"
@@ -318,11 +319,14 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     }
 
     public enum SchemeArtifactIdentity: String, Codable, Sendable {
+        case rimeIce20260630675D23B0 = "rime_ice_20260630_675d23b0"
         case rimeIceNightlyF60AA4F3 = "rime_ice_nightly_f60aa4f3"
         case wanxiang1759CNB9BFCGitHub73F8 = "wanxiang_17_5_9_cnb9bfc_github73f8"
     }
 
     public enum SchemeStagedIdentity: String, Codable, Sendable {
+        case rimeIce20260630Plan1Post1 = "rime_ice_20260630_plan1_post1"
+        case rimeIce20260630Plan2Post2 = "rime_ice_20260630_plan2_post2"
         case rimeIceNightlyPlan1Post1 = "rime_ice_nightly_plan1_post1"
         case wanxiang1759Plan1Post1 = "wanxiang_17_5_9_plan1_post1"
     }
@@ -363,6 +367,42 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case cancelled
     }
 
+    /// Content-free route reconciliation phases owned by the Main App.
+    public enum RuntimeRoutePhase: String, Codable, Sendable {
+        case before
+        case reconciliation
+        case fallbackDeploy = "fallback_deploy"
+        case staging
+        case commit
+        case rollbackDeploy = "rollback_deploy"
+        case inactive
+    }
+
+    public enum RuntimeRouteResult: String, Codable, Sendable {
+        case started
+        case succeeded
+        case failed
+        case skipped
+        case recoveryIncomplete = "recovery_incomplete"
+    }
+
+    public enum RuntimeRouteSchema: String, Codable, Sendable {
+        case lunaPinyin = "luna_pinyin"
+        case rimeIce = "rime_ice"
+        case wanxiang
+        case t9
+    }
+
+    public enum RuntimeRouteLayout: String, Codable, Sendable {
+        case twentySixKey = "26_key"
+        case nineKey = "9_key"
+    }
+
+    public enum RuntimeRouteState: String, Codable, Sendable {
+        case ready
+        case failClosed = "fail_closed"
+    }
+
     public enum SchemeDeliveryFallbackReason: String, Codable, Sendable {
         case archiveSize = "archive_size"
         case archiveDigest = "archive_digest"
@@ -380,6 +420,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     public enum SchemeDeliveryTerminalFailure: String, Codable, Sendable {
         case transport
         case allSourcesUnavailable = "all_sources_unavailable"
+        case sourceArtifactChanged = "source_artifact_changed"
         case allSourcesArchiveSize = "all_sources_archive_size"
         case allSourcesArchiveDigest = "all_sources_archive_digest"
         case allSourcesMixedIntegrity = "all_sources_mixed_integrity"
@@ -467,6 +508,15 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         }
     }
 
+    /// Bounded probe metadata only: never include a raw URL, error string or input text.
+    public enum SchemeSourceProbeFailure: String, Codable, Sendable {
+        case transport
+        case nonHTTP = "non_http"
+        case httpStatus = "http_status"
+        case redirectHost = "redirect_host"
+        case archiveSize = "archive_size"
+    }
+
     public struct SchemeDeliveryPhaseEvent: Codable, Sendable, Equatable {
         public let context: SchemeDeliveryContext
         public let attempt: SchemeDeliveryAttempt?
@@ -474,6 +524,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         public let host: SchemeHost?
         public let phase: SchemeDeliveryPhase
         public let result: SchemeDeliveryResult
+        public let probeFailure: SchemeSourceProbeFailure?
 
         public init(
             context: SchemeDeliveryContext,
@@ -481,7 +532,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             source: SchemeSource?,
             host: SchemeHost?,
             phase: SchemeDeliveryPhase,
-            result: SchemeDeliveryResult
+            result: SchemeDeliveryResult,
+            probeFailure: SchemeSourceProbeFailure? = nil
         ) {
             self.context = context
             self.attempt = attempt
@@ -489,6 +541,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             self.host = host
             self.phase = phase
             self.result = result
+            self.probeFailure = probeFailure
         }
     }
 
@@ -619,13 +672,17 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         var isValid: Bool {
             switch self {
             case .phaseChanged(let event):
+                guard event.probeFailure == nil || (event.phase == .selecting && event.result == .failed) else {
+                    return false
+                }
                 switch event.phase {
                 case .selecting:
                     // Selection starts without a source and completes with one,
                     // before an archive attempt exists.
                     return event.attempt == nil && event.host == nil
                         && ((event.result == .started && event.source == nil)
-                            || (event.result == .succeeded && event.source != nil))
+                            || (event.result == .succeeded && event.source != nil)
+                            || (event.result == .failed && event.source != nil && event.probeFailure != nil))
                 case .downloading:
                     return event.attempt != nil && event.source != nil
                         && (event.result == .started || event.result == .succeeded)
@@ -650,6 +707,37 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         }
     }
 
+    public struct RuntimeRoutePhaseEvent: Codable, Sendable, Equatable {
+        public let operationID: UUID
+        public let phase: RuntimeRoutePhase
+        public let result: RuntimeRouteResult
+        public let schema: RuntimeRouteSchema
+        public let layout: RuntimeRouteLayout
+        public let state: RuntimeRouteState
+        /// Monotonic elapsed time since the owning uninstall operation began.
+        /// It contains no user content and is bounded at construction.
+        public let elapsedMilliseconds: Int
+
+        public init(
+            operationID: UUID,
+            phase: RuntimeRoutePhase,
+            result: RuntimeRouteResult,
+            schema: RuntimeRouteSchema,
+            layout: RuntimeRouteLayout,
+            state: RuntimeRouteState,
+            elapsedMilliseconds: Int = 0
+        ) {
+            precondition((0...600_000).contains(elapsedMilliseconds))
+            self.operationID = operationID
+            self.phase = phase
+            self.result = result
+            self.schema = schema
+            self.layout = layout
+            self.state = state
+            self.elapsedMilliseconds = elapsedMilliseconds
+        }
+    }
+
     public let schemaVersion: Int
     public let utcTimestamp: Date
     public let monotonicNanoseconds: UInt64
@@ -663,6 +751,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     public let category: Logger.Category
     public let fields: [Field]
     public let schemeDeliveryPayload: SchemeDeliveryPayload?
+    public let runtimeRoutePayload: RuntimeRoutePhaseEvent?
     public let rimeSyncPayload: RimeSyncPayload?
 
     public init(
@@ -678,6 +767,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         category: Logger.Category,
         fields: [Field] = [],
         schemeDeliveryPayload: SchemeDeliveryPayload? = nil,
+        runtimeRoutePayload: RuntimeRoutePhaseEvent? = nil,
         rimeSyncPayload: RimeSyncPayload? = nil
     ) {
         precondition(
@@ -699,7 +789,12 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             "RIME-sync payload must be valid and cannot use generic fields"
         )
         precondition(
-            schemeDeliveryPayload == nil || rimeSyncPayload == nil,
+            runtimeRoutePayload == nil || (code == .runtimeRoutePhaseChanged && fields.isEmpty),
+            "DiagnosticEvent code and runtime-route payload must match"
+        )
+        precondition(
+            [schemeDeliveryPayload != nil, runtimeRoutePayload != nil, rimeSyncPayload != nil]
+                .filter { $0 }.count <= 1,
             "DiagnosticEvent cannot contain multiple composite payloads"
         )
         schemaVersion = Self.schemaVersion
@@ -715,6 +810,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         self.category = category
         self.fields = fields
         self.schemeDeliveryPayload = schemeDeliveryPayload
+        self.runtimeRoutePayload = runtimeRoutePayload
         self.rimeSyncPayload = rimeSyncPayload
     }
 
@@ -731,11 +827,12 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         .rimeSyncSkipped,
         .rimeSyncTerminal,
     ]
+    private static let runtimeRouteCodes: Set<Code> = [.runtimeRoutePhaseChanged]
 
     private enum CodingKeys: String, CodingKey {
         case schemaVersion, utcTimestamp, monotonicNanoseconds, origin, processInstanceID
         case localSequence, appearanceID, actionSequence, code, level, category, fields
-        case schemeDeliveryPayload, rimeSyncPayload
+        case schemeDeliveryPayload, runtimeRoutePayload, rimeSyncPayload
     }
 
     public init(from decoder: Decoder) throws {
@@ -755,6 +852,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         schemeDeliveryPayload = try container.decodeIfPresent(
             SchemeDeliveryPayload.self,
             forKey: .schemeDeliveryPayload
+        )
+        runtimeRoutePayload = try container.decodeIfPresent(
+            RuntimeRoutePhaseEvent.self,
+            forKey: .runtimeRoutePayload
         )
         rimeSyncPayload = try container.decodeIfPresent(
             RimeSyncPayload.self,
@@ -778,6 +879,17 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             )
         }
         guard
+            runtimeRoutePayload != nil
+                ? (code == .runtimeRoutePhaseChanged && fields.isEmpty)
+                : !Self.runtimeRouteCodes.contains(code)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .runtimeRoutePayload,
+                in: container,
+                debugDescription: "DiagnosticEvent code and runtime-route payload do not match"
+            )
+        }
+        guard
             rimeSyncPayload?.code == code
                 || (rimeSyncPayload == nil && !Self.rimeSyncCodes.contains(code))
         else {
@@ -794,7 +906,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
                 debugDescription: "Invalid RIME-sync payload or forbidden generic fields"
             )
         }
-        guard schemeDeliveryPayload == nil || rimeSyncPayload == nil else {
+        guard
+            [schemeDeliveryPayload != nil, runtimeRoutePayload != nil, rimeSyncPayload != nil]
+                .filter({ $0 }).count <= 1
+        else {
             throw DecodingError.dataCorruptedError(
                 forKey: .rimeSyncPayload,
                 in: container,
@@ -818,6 +933,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         try container.encode(category, forKey: .category)
         try container.encode(fields, forKey: .fields)
         try container.encodeIfPresent(schemeDeliveryPayload, forKey: .schemeDeliveryPayload)
+        try container.encodeIfPresent(runtimeRoutePayload, forKey: .runtimeRoutePayload)
         try container.encodeIfPresent(rimeSyncPayload, forKey: .rimeSyncPayload)
     }
 }

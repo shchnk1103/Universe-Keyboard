@@ -103,6 +103,28 @@ final class DiagnosticsJournalRuntimeTests: XCTestCase {
         XCTAssertEqual(snapshot.events.first?.rimeSyncPayload, payload)
     }
 
+    func testRuntimeRoutePayloadUsesSameBoundedAsynchronousIngress() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let writer = DiagnosticsJournalWriter(rootURL: rootURL, origin: .mainApp, isMainAppWriter: true)
+        try await writer.prepareRootIfOwnedByMainApp()
+        let runtime = DiagnosticsJournalRuntime(
+            origin: .mainApp, isMainAppWriter: true, rootURL: { rootURL },
+            isCategoryEnabled: { _ in true }, flushDelay: 5
+        )
+        let payload = DiagnosticEvent.RuntimeRoutePhaseEvent(
+            operationID: UUID(), phase: .fallbackDeploy, result: .succeeded,
+            schema: .lunaPinyin, layout: .twentySixKey, state: .ready,
+            elapsedMilliseconds: 37
+        )
+        runtime.recordRuntimeRoute(payload)
+        runtime.requestFlush()
+
+        let snapshot = try await waitForEvent(at: rootURL)
+        XCTAssertEqual(snapshot.events.map(\.code), [.runtimeRoutePhaseChanged])
+        XCTAssertEqual(snapshot.events.first?.runtimeRoutePayload, payload)
+    }
+
     private func makeTemporaryDirectory() -> URL {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try! FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

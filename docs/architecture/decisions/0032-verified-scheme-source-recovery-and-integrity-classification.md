@@ -150,3 +150,12 @@ temporary content or introducing free-form diagnostic data.
 - [`ADR 0027`](0027-enterprise-local-diagnostic-observability.md)
 - [`TD-001`](../../TECH_DEBT.md#td-001-atomic-schema-installation)
 - [`2026-08-26 failure evidence`](../../evidence/rime-scheme-delivery-wanxiang-integrity-failure-2026-08-26.md)
+
+## Source-selection diagnostic correction (2026-09-06)
+
+SCHEME-DELIVERY-SOURCE-STATE-001 preserves the decision above. A HEAD size mismatch is now
+reported as a changed pinned artifact instead of network unavailability. Selection failures
+may carry an optional finite `probeFailure` reason in the typed phase event; it is valid only
+for source-bound selecting/failed events. Existing records without the field still decode.
+Archive and staged verification, cleanup barrier, operation ownership and recovery limits
+are unchanged. This correction does not grant device, merge or Release acceptance.

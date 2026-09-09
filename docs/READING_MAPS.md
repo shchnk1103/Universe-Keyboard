@@ -162,13 +162,14 @@ Required review: transport-independent package format, authenticated encryption,
 
 Ownership: Primary [`Main App UI`](playbooks/main-app-ui.md) for download/install/deploy orchestration; secondary [`RimeBridge`](playbooks/rime-bridge.md) for deployment/runtime boundaries and [`Test / Release`](playbooks/test-release.md) for interruption evidence; escalate transaction-model, rollback or cross-target decisions to [`Coordinator`](playbooks/coordinator.md).
 
-1. ADR 0001, ADR 0003 and ADR 0006.
+1. ADR 0001, ADR 0003 and ADR 0006. Add ADR 0032 for verified source recovery and ADR 0033 when built-in official bytes are involved.
 2. `RIME_SCHEME_MANAGEMENT.md`.
 3. `architecture/shared-container-and-rime-lifecycle.md`.
-4. `TECH_DEBT.md` TD-001.
+4. `TECH_DEBT.md` TD-001. Add TD-011 when Lua/shared-prefix coexistence is in scope.
 5. `DEBUGGING.md` and `RELEASE_CHECKLIST.md`.
+6. For post-download `resource_preparation` failure or shared-file ownership: [`SCHEME-DELIVERY-SOURCE-STATE-001`](assignments/scheme-delivery-source-state-001.md), [`coexistence plan`](plans/scheme-resource-ownership-and-coexistence-plan.md) and Proposed [ADR 0034](architecture/decisions/0034-multi-scheme-resource-ownership.md). The plan is not an accepted architecture.
 
-Required review: current non-atomic behavior, staging/rollback claims, download verification, interruption recovery and no Extension deployment.
+Required review: current non-atomic behavior, staging/rollback claims, download verification, interruption recovery and no Extension deployment. Do not treat a Proposed ADR or an unproven `default.yaml` overwrite as the device root cause.
 
 ## Modify Keyboard Layout Or Chinese Nine-Key
 

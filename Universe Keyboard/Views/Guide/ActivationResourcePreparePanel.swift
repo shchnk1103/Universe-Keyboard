@@ -237,16 +237,23 @@ struct ActivationResourcePreparePanel: View {
             statusLine(systemImage: "archivebox", text: "正在安装…", color: .secondary)
         case .deploying:
             statusLine(systemImage: "arrow.triangle.2.circlepath", text: "下载后正在部署…", color: .secondary)
-        case .failed(_, let message):
-            VStack(alignment: .leading, spacing: 8) {
-                statusLine(systemImage: "exclamationmark.triangle.fill", text: message, color: .orange)
-                AppActionButton(
-                    title: "重试下载",
-                    systemImage: "arrow.clockwise",
-                    prominence: .secondary
-                ) {
-                    store.startDownload(schemaID: selectedSchemaID)
+        case .failed:
+            if let failedSchemaID = store.downloadState.failedSchemaID,
+                failedSchemaID == selectedSchemaID,
+                let message = store.downloadState.failureMessage(for: selectedSchemaID)
+            {
+                VStack(alignment: .leading, spacing: 8) {
+                    statusLine(systemImage: "exclamationmark.triangle.fill", text: message, color: .orange)
+                    AppActionButton(
+                        title: "重试下载",
+                        systemImage: "arrow.clockwise",
+                        prominence: .secondary
+                    ) {
+                        store.startDownload(schemaID: failedSchemaID)
+                    }
                 }
+            } else {
+                EmptyView()
             }
         }
     }

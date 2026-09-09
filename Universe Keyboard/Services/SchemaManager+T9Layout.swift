@@ -178,6 +178,100 @@ extension SchemaManager {
         return (raw?.isEmpty == false) ? raw : nil
     }
 
+    /// Captures the same resolved route that the Extension will derive from
+    /// layout-bound preferences. A persisted nine-key preference alone is not
+    /// enough: unavailable T9 resources must make the 26-key binding effective.
+    @MainActor
+    func currentRuntimeRouteSnapshot() -> RimeRuntimeRouteSnapshot {
+        ensureLayoutSchemeBindingsMigrated()
+
+        let persistedLayout = currentLayoutStyle()
+        let binding26 = schemeBinding26()
+        let binding9 = schemeBinding9()
+        let onDiskFingerprint = (try? archiveInstaller.runtimeDirectories()).flatMap {
+            T9DeploymentSupport.resourceFingerprint(sharedDataURL: $0.sharedDataURL)
+        }
+        let selection = RimeRuntimeSelection.resolve(
+            baseSchemaID: settings.string(forKey: "rime_active_schema") ?? activeSchemaID,
+            layoutRawValue: settings.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
+            readinessMarker: T9DeploymentSupport.loadMarker(settings: settings),
+            onDiskFingerprint: onDiskFingerprint,
+            schemeBinding26: binding26,
+            schemeBinding9: binding9
+        )
+        let effectiveState: RimeRuntimeEffectiveRoute.State =
+            selection.effectiveLayoutStyle == persistedLayout ? .ready : .failClosed
+        let supportedTwentySixKeySchemaIDs =
+            ["luna_pinyin"]
+            + schemeCatalog
+            .map(\.schemaID)
+            .filter {
+                $0 != "luna_pinyin" && RimeRuntimeSelection.isTwentySixKeyCapable($0)
+            }
+
+        return RimeRuntimeRouteSnapshot(
+            selectedLayoutStyle: persistedLayout,
+            effectiveRoute: RimeRuntimeEffectiveRoute(
+                schemaID: selection.effectiveSchemaID,
+                layoutStyle: selection.effectiveLayoutStyle,
+                usesT9InputSemantics: selection.usesT9InputSemantics,
+                state: effectiveState
+            ),
+            activeSchemaID: activeSchemaID,
+            slots: [
+                RimeRuntimeRouteSlot(
+                    preferenceKey: KeyboardLayoutSettingsKey.schemeBinding26,
+                    layoutStyle: .twentySixKey,
+                    boundSchemaID: binding26,
+                    supportedSchemaIDs: supportedTwentySixKeySchemaIDs,
+                    fallback: RimeRuntimeRouteFallback(
+                        layoutStyle: .twentySixKey,
+                        preferenceKey: KeyboardLayoutSettingsKey.schemeBinding26,
+                        schemaID: "luna_pinyin",
+                        // Luna is the immutable built-in closure. The subsequent
+                        // deployment remains the runtime availability proof.
+                        availability: .available
+                    )
+                ),
+                RimeRuntimeRouteSlot(
+                    preferenceKey: KeyboardLayoutSettingsKey.schemeBinding9,
+                    layoutStyle: .nineKey,
+                    boundSchemaID: binding9,
+                    supportedSchemaIDs: ["t9"],
+                    dependencySchemaIDs: ["rime_ice"],
+                    fallback: RimeRuntimeRouteFallback(
+                        layoutStyle: .twentySixKey,
+                        preferenceKey: KeyboardLayoutSettingsKey.schemeBinding26,
+                        schemaID: "luna_pinyin",
+                        availability: .available
+                    )
+                ),
+            ]
+        )
+    }
+
+    /// Applies a reconciler state as one ordered main-App write set. The caller
+    /// owns the schema-delivery lease and performs deployment afterwards.
+    ///
+    /// App Group preferences do not provide a multi-key transaction. Bindings
+    /// therefore move first, then layout, then the legacy alias: an Extension
+    /// observing a prefix can use only still-present resources or Luna, never
+    /// the scheme whose files will later be removed.
+    @MainActor
+    func applyRuntimeRouteState(_ state: RimeRuntimeRouteState) {
+        for binding in state.bindings {
+            if let schemaID = binding.schemaID {
+                settings.set(schemaID, forKey: binding.preferenceKey)
+            } else {
+                settings.removeObject(forKey: binding.preferenceKey)
+            }
+        }
+        settings.set(state.selectedLayoutStyle.rawValue, forKey: KeyboardLayoutSettingsKey.layoutStyle)
+        activeSchemaID = state.activeSchemaID
+        settings.set(state.activeSchemaID, forKey: "rime_active_schema")
+        settings.synchronize()
+    }
+
     @MainActor
     func setSchemeBinding26(_ schemaID: String) {
         guard RimeRuntimeSelection.isTwentySixKeyCapable(schemaID) else { return }

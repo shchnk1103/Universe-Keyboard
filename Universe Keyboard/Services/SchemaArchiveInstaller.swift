@@ -1,9 +1,33 @@
+import CryptoKit
 import Foundation
 import RimeBridge
+
+enum SchemaUninstallRecoveryError: Error {
+    case rollbackIncomplete
+}
 
 struct SchemaDeploymentDirectories: Sendable {
     let sharedDataURL: URL
     let userDataURL: URL
+}
+
+/// Files moved out of the live shared tree while an uninstall is still
+/// reversible. The manager commits this only after the active-scheme fallback
+/// has completed successfully.
+struct SchemaUninstallStaging: Sendable {
+    let rootURL: URL
+    let movedRelativePaths: [String]
+}
+
+enum SchemaUpgradeRecoveryError: Error {
+    case upgradeRollbackIncomplete
+}
+
+/// Prior-generation files copied aside before a Wanxiang live replace.
+/// Distinct from uninstall staging (copy, not move); retained on restore failure.
+struct SchemaUpgradeCheckpoint: Sendable {
+    let rootURL: URL
+    let copiedRelativePaths: [String]
 }
 
 /// Owns schema file placement in the shared container. Its synchronous API
@@ -17,7 +41,13 @@ protocol SchemaArchiveInstalling: AnyObject {
     func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool
     func checkDiskSpace(needed: Int64) throws
     func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
-    func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan)
+    func createUpgradeCheckpoint(plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
+        -> SchemaUpgradeCheckpoint?
+    func restoreUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) throws
+    func commitUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint)
+    func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging
+    func commitSchemaUninstall(_ staging: SchemaUninstallStaging, plan: RimeSchemeInstallationPlan)
+    func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) throws
     func clearBuildCache(plan: RimeSchemeInstallationPlan)
     func sharedDataDirectoryURL() -> URL?
     /// Resolves an already-deployed runtime tree without preparing resources.
@@ -32,10 +62,17 @@ protocol SchemaArchiveInstalling: AnyObject {
 final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
     private let appGroupID: String
     private let fileManager: FileManager
+    /// Tests inject a container root so production copy/uninstall can run
+    /// without the App Group. The production initializer leaves this nil.
+    private let containerURLOverride: URL?
+    // In-process retry evidence: destination existence alone cannot prove that
+    // a missing staged file was restored by this transaction.
+    private var restoredUninstallPaths: Set<URL> = []
 
-    init(appGroupID: String, fileManager: FileManager = .default) {
+    init(appGroupID: String, fileManager: FileManager = .default, containerURL: URL? = nil) {
         self.appGroupID = appGroupID
         self.fileManager = fileManager
+        self.containerURLOverride = containerURL
     }
 
     func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
@@ -101,17 +138,178 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         }
     }
 
-    func uninstallSchemaFiles(plan: RimeSchemeInstallationPlan) {
-        guard let sharedDirectory = sharedDirectory() else { return }
-
-        for file in plan.removableFiles {
-            try? fileManager.removeItem(at: sharedDirectory.appendingPathComponent(file))
+    /// Copies the prior plan-owned generation aside before live replace.
+    /// Returns nil when no prior owned paths exist (first install).
+    func createUpgradeCheckpoint(
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws -> SchemaUpgradeCheckpoint? {
+        // luaAvailable is part of the install seam; ownership paths today do not
+        // gate checkpoint membership on Lua availability.
+        _ = luaAvailable
+        guard let sharedDirectory = sharedDirectory() else {
+            throw DownloadError.networkError("App Group 不可用")
         }
-        for subdirectory in plan.removableDirectories {
-            try? fileManager.removeItem(at: sharedDirectory.appendingPathComponent(subdirectory))
+
+        let checkpointRoot = sharedDirectory.appendingPathComponent(
+            ".schema-upgrade-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        var copiedRelativePaths: [String] = []
+
+        do {
+            try fileManager.createDirectory(at: checkpointRoot, withIntermediateDirectories: true)
+            let paths =
+                uninstallRelativePaths(for: plan)
+                + (try matchingWanxiangLuaPaths(plan: plan, sharedDirectory: sharedDirectory))
+            for relativePath in paths {
+                let sourceURL = sharedDirectory.appendingPathComponent(relativePath)
+                guard fileManager.fileExists(atPath: sourceURL.path) else { continue }
+
+                let checkpointURL = checkpointRoot.appendingPathComponent(relativePath)
+                try fileManager.createDirectory(
+                    at: checkpointURL.deletingLastPathComponent(),
+                    withIntermediateDirectories: true
+                )
+                try fileManager.copyItem(at: sourceURL, to: checkpointURL)
+                copiedRelativePaths.append(relativePath)
+            }
+
+            guard !copiedRelativePaths.isEmpty else {
+                try? fileManager.removeItem(at: checkpointRoot)
+                return nil
+            }
+            return SchemaUpgradeCheckpoint(
+                rootURL: checkpointRoot,
+                copiedRelativePaths: copiedRelativePaths
+            )
+        } catch {
+            try? fileManager.removeItem(at: checkpointRoot)
+            throw DownloadError.postProcessingFailed("无法创建方案升级检查点")
+        }
+    }
+
+    /// Restores prior-generation bytes from the upgrade checkpoint.
+    /// On any restore failure the checkpoint is retained and
+    /// `SchemaUpgradeRecoveryError.upgradeRollbackIncomplete` is thrown.
+    func restoreUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) throws {
+        guard let sharedDirectory = sharedDirectory() else {
+            throw SchemaUpgradeRecoveryError.upgradeRollbackIncomplete
+        }
+        var restorationFailed = false
+
+        for relativePath in checkpoint.copiedRelativePaths {
+            let checkpointURL = checkpoint.rootURL.appendingPathComponent(relativePath)
+            let destinationURL = sharedDirectory.appendingPathComponent(relativePath)
+            guard fileManager.fileExists(atPath: checkpointURL.path) else {
+                restorationFailed = true
+                continue
+            }
+            do {
+                try fileManager.createDirectory(
+                    at: destinationURL.deletingLastPathComponent(),
+                    withIntermediateDirectories: true
+                )
+                if fileManager.fileExists(atPath: destinationURL.path) {
+                    try fileManager.removeItem(at: destinationURL)
+                }
+                try fileManager.copyItem(at: checkpointURL, to: destinationURL)
+            } catch {
+                restorationFailed = true
+            }
         }
 
+        guard !restorationFailed else {
+            throw SchemaUpgradeRecoveryError.upgradeRollbackIncomplete
+        }
+        try? fileManager.removeItem(at: checkpoint.rootURL)
+    }
+
+    func commitUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) {
+        try? fileManager.removeItem(at: checkpoint.rootURL)
+    }
+
+    func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging {
+        guard let sharedDirectory = sharedDirectory() else {
+            throw DownloadError.networkError("App Group 不可用")
+        }
+
+        let stagingRoot = sharedDirectory.appendingPathComponent(
+            ".schema-uninstall-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        var movedRelativePaths: [String] = []
+
+        do {
+            try fileManager.createDirectory(at: stagingRoot, withIntermediateDirectories: true)
+            let paths =
+                uninstallRelativePaths(for: plan)
+                + (try matchingWanxiangLuaPaths(plan: plan, sharedDirectory: sharedDirectory))
+            for relativePath in paths {
+                let sourceURL = sharedDirectory.appendingPathComponent(relativePath)
+                guard fileManager.fileExists(atPath: sourceURL.path) else { continue }
+
+                let stagedURL = stagingRoot.appendingPathComponent(relativePath)
+                try fileManager.createDirectory(
+                    at: stagedURL.deletingLastPathComponent(),
+                    withIntermediateDirectories: true
+                )
+                try fileManager.moveItem(at: sourceURL, to: stagedURL)
+                movedRelativePaths.append(relativePath)
+            }
+            return SchemaUninstallStaging(rootURL: stagingRoot, movedRelativePaths: movedRelativePaths)
+        } catch {
+            try rollbackSchemaUninstall(
+                SchemaUninstallStaging(rootURL: stagingRoot, movedRelativePaths: movedRelativePaths)
+            )
+            throw DownloadError.postProcessingFailed("无法安全暂存待卸载方案文件")
+        }
+    }
+
+    func commitSchemaUninstall(_ staging: SchemaUninstallStaging, plan: RimeSchemeInstallationPlan) {
+        // Build output is derived data. It is cleared only after all owned
+        // resources have moved out of the live tree.
         clearBuildCache(plan: plan)
+        try? fileManager.removeItem(at: staging.rootURL)
+    }
+
+    func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) throws {
+        guard let sharedDirectory = sharedDirectory() else {
+            throw SchemaUninstallRecoveryError.rollbackIncomplete
+        }
+        var restorationFailed = false
+
+        for relativePath in staging.movedRelativePaths.reversed() {
+            let stagedURL = staging.rootURL.appendingPathComponent(relativePath)
+            let destinationURL = sharedDirectory.appendingPathComponent(relativePath)
+            guard fileManager.fileExists(atPath: stagedURL.path) else {
+                if !restoredUninstallPaths.contains(stagedURL)
+                    || !fileManager.fileExists(atPath: destinationURL.path)
+                {
+                    restorationFailed = true
+                }
+                continue
+            }
+            do {
+                try fileManager.createDirectory(
+                    at: destinationURL.deletingLastPathComponent(),
+                    withIntermediateDirectories: true
+                )
+                try fileManager.moveItem(at: stagedURL, to: destinationURL)
+                restoredUninstallPaths.insert(stagedURL)
+            } catch {
+                restorationFailed = true
+            }
+        }
+        // A failed restore leaves the only surviving copy in staging. Keep the
+        // entire checkpoint and report failure rather than deleting that copy.
+        guard !restorationFailed else {
+            throw SchemaUninstallRecoveryError.rollbackIncomplete
+        }
+        try? fileManager.removeItem(at: staging.rootURL)
+        for path in staging.movedRelativePaths {
+            restoredUninstallPaths.remove(staging.rootURL.appendingPathComponent(path))
+        }
     }
 
     func clearBuildCache(plan: RimeSchemeInstallationPlan) {
@@ -154,10 +352,42 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
     }
 
     private func containerURL() -> URL? {
-        fileManager.containerURL(forSecurityApplicationGroupIdentifier: appGroupID)
+        if let containerURLOverride {
+            return containerURLOverride
+        }
+        return fileManager.containerURL(forSecurityApplicationGroupIdentifier: appGroupID)
     }
 
     private func sharedDirectory() -> URL? {
         containerURL()?.appendingPathComponent("Rime/shared")
+    }
+
+    private func uninstallRelativePaths(for plan: RimeSchemeInstallationPlan) -> [String] {
+        let candidates = plan.removableDirectories + plan.removableFiles
+        return candidates.filter { path in
+            !candidates.contains { other in
+                other != path && path.hasPrefix(other + "/")
+            }
+        }
+    }
+
+    private func matchingWanxiangLuaPaths(
+        plan: RimeSchemeInstallationPlan,
+        sharedDirectory: URL
+    ) throws -> [String] {
+        guard plan.schemaFileName == "wanxiang.schema.yaml", plan.revision == "wanxiang-plan-1" else {
+            return []
+        }
+        var matched: [String] = []
+        for path in WanxiangLuaOwnership.sha256ByPath.keys.sorted() {
+            let url = sharedDirectory.appendingPathComponent(path)
+            guard fileManager.fileExists(atPath: url.path) else { continue }
+            // Do not follow a user-created link out of the owned resource tree.
+            guard url.resolvingSymlinksInPath().path == url.standardizedFileURL.path else { continue }
+            let digest = SHA256.hash(data: try Data(contentsOf: url))
+                .map { String(format: "%02x", $0) }.joined()
+            if digest == WanxiangLuaOwnership.sha256ByPath[path] { matched.append(path) }
+        }
+        return matched
     }
 }

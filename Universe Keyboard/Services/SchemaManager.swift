@@ -205,6 +205,7 @@ final class SchemaManager {
         if case .startDownload(let schemaID, let force) = deferredStart {
             if downloadableEntry(for: schemaID) == nil || !licenseAccepted(for: schemaID) {
                 rimeIceDownloadState = .failed(
+                    schemaID: schemaID,
                     schemeName: downloadSchemeDisplayName(for: schemaID),
                     message: "下载请求已失效，请重新确认许可证后再试"
                 )
