@@ -84,3 +84,7 @@ This directory does not authorize by mere existence:
 - Runtime, RIME, Benchmark, Registry or ADR product changes;
 - Knowledge OS 2.1 or 3.0;
 - new roles, lifecycle concepts, object models or governance principles without a new Product Assignment.
+
+## 未采纳建议稿
+
+- [Scheme Delivery 工作复盘的 KOS 改进建议](kos-improvement-suggestions-scheme-delivery-2026-09-09.md) — **建议稿，未采纳**；不具有规范性，也不授权任何工作。
