@@ -56,26 +56,26 @@
 
 ### 4.1 决策完整性
 
-- [ ] 候选 A 仍是唯一拟 Accept 的决策（禁止覆盖 `default.yaml`；万象 skip；雾凇独立预设；按 owner/manifest 安装卸载）
-- [ ] §5.1 入口决策中仍开放项已列出结论：`Accept` / `fix` / `tech_debt:<ID>` / `out_of_scope`
-- [ ] 明确 **不** 通过本 ADR 偷偷修改 ADR 0033 官方不可变字节合同
-- [ ] 明确 **不** 借共存关闭 ADR 0006 / TD-001，除非另有书面还债授权
+- [x] 候选 A 仍是唯一拟 Accept 的决策（禁止覆盖 `default.yaml`；万象 skip；雾凇独立预设；按 owner/manifest 安装卸载）
+- [~] §5.1 入口决策中仍开放项已列出结论：`Accept` / `fix` / `tech_debt:<ID>` / `out_of_scope` — Architecture 已给推荐表，**Accept 时须写入 ADR**（见 review §4 / §5.1）
+- [x] 明确 **不** 通过本 ADR 偷偷修改 ADR 0033 官方不可变字节合同
+- [x] 明确 **不** 借共存关闭 ADR 0006 / TD-001，除非另有书面还债授权
 
 ### 4.2 与既有 Accepted ADR 的一致性
 
-- [ ] ADR 0001：主 App 仍为唯一完整 deployment writer
-- [ ] ADR 0003：共享容器读写边界未被下载方案安装路径破坏
-- [ ] ADR 0006：安装/卸载事务（lease / stage / commit / rollback）与归属规则相容
-- [ ] ADR 0032：来源恢复与完整性分类未被「按 owner 删除」削弱
-- [ ] ADR 0033：官方 Prelude/`default.yaml` 不可变闭包在候选 A 下仍成立
+- [x] ADR 0001：主 App 仍为唯一完整 deployment writer
+- [x] ADR 0003：共享容器读写边界未被下载方案安装路径破坏
+- [x] ADR 0006：安装/卸载事务（lease / stage / commit / rollback）与归属规则相容
+- [x] ADR 0032：来源恢复与完整性分类未被「按 owner 删除」削弱
+- [x] ADR 0033：官方 Prelude/`default.yaml` 不可变闭包在候选 A 下仍成立
 
 ### 4.3 实现对照（`main` @ `814abfd` 抽样）
 
-- [ ] Ice：独立预设 / 不再覆盖官方 `default.yaml` 的生产路径有证据指针
-- [ ] 卸载：按文件归属 staging，无整目录清空 `lua/` 或 `opencc/` 的合同违规
-- [ ] Wanxiang：exact-hash Lua ownership + upgrade-rollback 边界与 ADR 条文一致或已记残余
-- [ ] 跨方案矩阵：Luna-only active-uninstall（Human 已 supersede peer-prefer B）与 ADR 归属条文无冲突说明
-- [ ] Fail-closed：不可读 receipt / 失败回滚不会用失效 receipt 授权任意删除
+- [x] Ice：独立预设 / 不再覆盖官方 `default.yaml` 的生产路径有证据指针
+- [x] 卸载：按文件归属 staging，无整目录清空 `lua/` 或 `opencc/` 的合同违规
+- [~] Wanxiang：exact-hash Lua ownership + upgrade-rollback 边界与 ADR 条文一致或已记残余（完整 P4 仍开放 → A34-R1）
+- [x] 跨方案矩阵：Luna-only active-uninstall（Human 已 supersede peer-prefer B）与 ADR 归属条文无冲突说明
+- [x] Fail-closed：不可读 receipt / 失败回滚不会用失效 receipt 授权任意删除
 
 ### 4.4 残余与债务（Accept 前必须处置）
 
@@ -83,22 +83,22 @@
 
 | ID | Residual | Suggested owner | Disposition (fill) | Notes / evidence pointer |
 |---|---|---|---|---|
-| A34-R1 | Wanxiang P4 未全闭合（升级/卸载矩阵相对 ADR 全文） | Scheme Delivery / Quality | | |
-| A34-R2 | Ice Lua `dofile` 动态引用未闭合 | KeyboardCore / RIME | | |
-| A34-R3 | backup/staging cleanup 仍 best-effort | App & Data Ops | | |
-| A34-R4 | Limited P4 Product Gate 仅为历史有限门；真机失败回滚未测 | Product / Quality | | |
-| A34-R5 | CSF / 部分矩阵：真实 App Group·device transaction 证明有限 | Quality / Device | | |
-| A34-R6 | CS09-10-01 archive provenance / P2/P3 limits | Scheme Delivery | | |
-| A34-R7 | `RTRD-01` / `RTRD-02`（诊断 UI / elapsed） | Diagnostics | `defer` 默认：独立 Assignment，**不阻塞**归属 ADR 除非 Architecture 认定可观测性不足 | |
-| A34-R8 | ADR 正文 Follow-up 中过时 tip/分支表述需 Accept 时一并修订 | Architecture / Docs | | |
+| A34-R1 | Wanxiang P4 未全闭合（升级/卸载矩阵相对 ADR 全文） | Scheme Delivery / Quality | `accept`（Accept 时书面）+ `tech_debt:TD-011` | 见 review；若 Human 拒接受 → `fix`/Block |
+| A34-R2 | Ice Lua `dofile` 动态引用未闭合 | KeyboardCore / RIME | `tech_debt:TD-011` | P1 inventory unresolved；非 P0 |
+| A34-R3 | backup/staging cleanup 仍 best-effort | App & Data Ops | `accept` | P3 delta residual |
+| A34-R4 | Limited P4 Product Gate 仅为历史有限门；真机失败回滚未测 | Product / Quality | `accept` | 不升格完整 Product Gate；不构成 ADR Accept |
+| A34-R5 | CSF / 部分矩阵：真实 App Group·device transaction 证明有限 | Quality / Device | `accept` | IQ Pass with conditions |
+| A34-R6 | CS09-10-01 archive provenance / P2/P3 limits | Scheme Delivery | `accept` | 可不阻塞归属 ADR |
+| A34-R7 | `RTRD-01` / `RTRD-02`（诊断 UI / elapsed） | Diagnostics | `defer-with-owner` | 独立 Assignment，**不阻塞**归属 ADR |
+| A34-R8 | ADR 正文 Follow-up 中过时 tip/分支表述需 Accept 时一并修订 | Architecture / Docs | `fix` on Accept docs only | 本轮不改 Status |
 
 **规则：** 任一 `fix` 且 Architecture 标为 Accept 阻断 → **Block**。仅 `accept` / `tech_debt` / 明确 `defer` 时可给 Conditional 或 Recommend Accept。
 
 ### 4.5 编号与治理
 
-- [ ] `docs/architecture/decisions/` 在 `main` 上无第二份 `0034-*`
-- [ ] Accept 时 Status 行拟改为 `Accepted — <date>` 的草稿措辞已准备（**本轮不落盘为 Accepted**）
-- [ ] Accept 记录将链到本清单 + Architecture 结论文件 + Human 书面批准
+- [x] `docs/architecture/decisions/` 在 `main` 上无第二份 `0034-*`
+- [x] Accept 时 Status 行拟改为 `Accepted — <date>` 的草稿措辞已准备（**本轮不落盘为 Accepted**）
+- [x] Accept 记录将链到本清单 + Architecture 结论文件 + Human 书面批准
 
 ---
 
@@ -106,13 +106,13 @@
 
 | Field | Value |
 |---|---|
-| Reviewer | （独立 Architecture lane） |
-| Baseline SHA | |
-| Verdict | `Recommend Accept` / `Conditional Accept` / `Block` |
-| P0 / P1 open | |
-| Conditions（若 Conditional） | |
-| Blocking items（若 Block） | |
-| Recommended Human next step | |
+| Reviewer | Independent Architecture lane（Grok Bot executor subagent） |
+| Baseline SHA | `main` `814abfd`；docs 分支起点 `7d5a759` |
+| Verdict | **Conditional Accept** |
+| P0 / P1 open | P0=0；P1-C1…C4 见 [review](adr-0034-architecture-accept-review-2026-09-09.md) §5 |
+| Conditions（若 Conditional） | Human Accept 包须书面接受 A34-R1（或改 `fix`）；R2→TD-011；§5.1+R8 随 Accept docs；Limited Gate ≠ Accept |
+| Blocking items（若 Block） | 无现行 P0；若 Human 拒接受 R1/R2 且要求无条件 Accept → 升 Block |
+| Recommended Human next step | 读 review → Accept(Conditional) / Keep Proposed / Revise；**勿**在无另授权时改 ADR Status；PR #101 保持 draft |
 
 **禁止：** 在本文件勾选完成后自动改 ADR Status；须另有 Human「Accept ADR 0034」授权 + 独立 Architecture 结论文件。
 
@@ -142,3 +142,4 @@
 ## 8. History
 
 - `2026-09-09 Asia/Shanghai`：Human 批准单独开本 Architecture Accept 复审清单；Status 保持 Proposed。
+- `2026-09-09 Asia/Shanghai`：Architecture Accept **review 已完成** — [`adr-0034-architecture-accept-review-2026-09-09.md`](adr-0034-architecture-accept-review-2026-09-09.md)；Verdict = **Conditional Accept**。清单勾选已填。**仍不是** ADR Accept；Status 保持 Proposed。
