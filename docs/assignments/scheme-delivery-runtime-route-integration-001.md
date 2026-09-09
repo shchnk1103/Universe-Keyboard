@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | P1 recovery contract、完整诊断序列与 live lease identity 证据已通过最终独立复审；后续真机门由 [`SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001`](scheme-delivery-runtime-route-device-001.md) 承接并已记录功能 Pass with conditions + tip `33b35d3` hosted CI 绿 |
-| Material non-claims | 不改 Luna-only 产品策略、资源所有权、archive 删除范围、RimeBridge/Extension 代码；不 undraft/merge、TestFlight 或 Release；不把本 Assignment 自动 Closed |
-| Next handoff / decision | 集成工程片无新增编码动作。Product Owner 对 PR #100 undraft/merge 与 `RTRD-01`/`RTRD-02` 另案授权；勿在本 Assignment 内扩展诊断 UI 或耗时测量 |
+| Current Phase | P1 recovery contract、完整诊断序列与 live lease identity 证据已通过最终独立复审；后续真机门由 [`SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001`](scheme-delivery-runtime-route-device-001.md) 承接并已记录功能 Pass with conditions + docs tip `a007681`；Human 已授权 CI 绿后 undraft+merge #100 |
+| Material non-claims | 不改 Luna-only 产品策略、资源所有权、archive 删除范围、RimeBridge/Extension 代码；merge 不意味着 TestFlight、Release、Product Gate Passed 或本 Assignment / `RTRD-*` Closed |
+| Next handoff / decision | 集成工程片无新增编码动作。Human 已授权 docs tip + hosted CI 绿后 undraft+merge #100；`RTRD-01`/`RTRD-02` 仍另案；勿在本 Assignment 内扩展诊断 UI 或耗时测量 |
 | Residuals | `RTRI-01` resolver/snapshot 同源、`RTRI-02` route-state rollback、`RTRI-03` 部署与暂存顺序、`RTRI-04` Extension/真机矩阵均为 `fix`；`RTRI-05` recovery-incomplete 语义、完整序列与 lease 证据已满足 |
 
 ---
@@ -105,3 +105,4 @@ failures whose original resource tree remains provably deployable.
 - `2026-09-09 Asia/Shanghai`: Human Product Owner authorized this separate Assignment and its implementation after the pure KeyboardCore contract was implemented and independently re-reviewed. This record does not authorize device, publication, release or product acceptance actions.
 - `2026-09-09 Asia/Shanghai`: Human Product Owner authorized reconciliation of the `rollbackIncomplete` contract. The accepted in-scope meaning is the fail-closed terminal state in “Failure Recovery Contract”; P1 evidence, independent review and all later gates remain required.
 - `2026-09-09 Asia/Shanghai`: P1 final independent review passed. The seven frozen route sequences now prove their structured phase/result, operation UUID, bounded monotonic elapsed time, failure flag and route fields; deployment callbacks observe that same UUID while the commit lease is live. Local format, KeyboardCore, RimeBridgeTests, App/Keyboard tests and Debug/Release builds passed. This does not close `RTRI-01` through `RTRI-04` or authorize device, publication, merge or release work.
+- `2026-09-09 Asia/Shanghai`: Human Product Owner authorized undraft+merge of PR #100 after docs sync (tip includes `a007681`) + hosted CI green. `RTRD-01`/`RTRD-02` remain out of scope for this merge; Product Gate / TestFlight / Release / ADR Accept remain unauthorized.

@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | CS09-10-02 功能性观察已通过独立 Quality 复审；candidate 已推至 draft PR #100 tip `33b35d3` 且 hosted CI 全绿；**未获** undraft/merge 或 Release 授权 |
-| Material non-claims | 不把 `RTRD-01`/`RTRD-02` 塞进本 PR；不 undraft/merge、TestFlight、Release 或 Product Gate；本 Assignment 不因 CI 绿自动 Closed |
-| Next handoff / decision | Hosted CI gate **satisfied**. Product Owner 另行决定 undraft/merge #100，以及是否单开 Assignment 承接 `RTRD-01`（诊断 UI）与 `RTRD-02`（耗时对照） |
+| Current Phase | CS09-10-02 功能性观察已通过独立 Quality 复审；candidate 含 docs tip `a007681`（工程 tip `33b35d3`）；Human 已授权 **docs sync + hosted CI 全绿后** undraft+merge PR #100；Release / Product Gate 仍未授权 |
+| Material non-claims | 不把 `RTRD-01`/`RTRD-02` 塞进本 PR；不因 merge 关闭 `RTRD-01`/`RTRD-02`；不声称 TestFlight、Release、Product Gate Passed 或 ADR Accept；本 Assignment 不因 CI 绿或 merge 自动 Closed |
+| Next handoff / decision | Human 已授权：docs tip + hosted CI 全绿后 undraft+merge #100。`RTRD-01`（诊断 UI）与 `RTRD-02`（耗时对照）仍需另开 Assignment；Product Gate / TestFlight / Release 另案 |
 | Residuals | `RTRD-01` 当前诊断列表只展示 code/时间，未渲染 runtime-route 的结构化字段；`RTRD-02` 普通 Luna 与 fallback 的耗时暂无获得 |
 
 ---
@@ -77,3 +77,4 @@ phase/result、schema/layout/state 或 monotonic `elapsed_ms`。
 - `2026-09-09 Asia/Shanghai`: Human Device Operator reported both active-uninstall directions switch to Luna and produce a normal Chinese candidate for the controlled `ni` input. Product Lead directed that elapsed evidence be recorded as unavailable rather than widening diagnostic-file access.
 - `2026-09-09 Asia/Shanghai`: Independent Quality review returned Pass with conditions: functional CS09-10-02 Pass, no new P0/P1, and candidate push allowed. `RTRD-01` and `RTRD-02` remain `fix`; merge, Product Gate, TestFlight and Release remain unauthorized.
 - `2026-09-09 Asia/Shanghai`: Human Product Owner directed docs-only Assignment sync; tip `33b35d3` hosted CI all green; no undraft/merge; `RTRD-01`/`RTRD-02` stay out of this PR.
+- `2026-09-09 Asia/Shanghai`: Human Product Owner authorized undraft+merge of PR #100 after docs sync (tip includes `a007681`) + hosted CI green. `RTRD-01`/`RTRD-02` remain out of this PR and are not closed by merge; Product Gate / TestFlight / Release / ADR Accept remain unauthorized.
