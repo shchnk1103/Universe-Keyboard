@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | P1 recovery contract、完整诊断序列与 live lease identity 证据已通过最终独立复审；等待独立授权的 CS09-10-02 真机候选输入与部署耗时对照 |
-| Material non-claims | 不改 Luna-only 产品策略、资源所有权、archive 删除范围、RimeBridge/Extension 代码、真机、PR、merge、TestFlight 或 Release |
-| Next handoff / decision | Human 决定是否单独授权 CS09-10-02 真机验证及普通 Luna 部署耗时对照；不把自动化证据视为真机候选输入证明 |
+| Current Phase | P1 recovery contract、完整诊断序列与 live lease identity 证据已通过最终独立复审；后续真机门由 [`SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001`](scheme-delivery-runtime-route-device-001.md) 承接并已记录功能 Pass with conditions + tip `33b35d3` hosted CI 绿 |
+| Material non-claims | 不改 Luna-only 产品策略、资源所有权、archive 删除范围、RimeBridge/Extension 代码；不 undraft/merge、TestFlight 或 Release；不把本 Assignment 自动 Closed |
+| Next handoff / decision | 集成工程片无新增编码动作。Product Owner 对 PR #100 undraft/merge 与 `RTRD-01`/`RTRD-02` 另案授权；勿在本 Assignment 内扩展诊断 UI 或耗时测量 |
 | Residuals | `RTRI-01` resolver/snapshot 同源、`RTRI-02` route-state rollback、`RTRI-03` 部署与暂存顺序、`RTRI-04` Extension/真机矩阵均为 `fix`；`RTRI-05` recovery-incomplete 语义、完整序列与 lease 证据已满足 |
 
 ---
