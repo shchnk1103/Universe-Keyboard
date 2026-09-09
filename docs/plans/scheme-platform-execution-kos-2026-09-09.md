@@ -30,3 +30,4 @@ Governance + bring docs + embed this execution plan. Do **not** Accept ADR 0034,
 - `2026-09-09 Asia/Shanghai`: P0 docs complete (interfaces + Ice/Wanxiang matrix); local commit only; no push.
 - `2026-09-09 Asia/Shanghai`: Human approved P1↔Discovery split recorded (P1 seams vs later Discovery Assignment); local commit only; no push.
 - `2026-09-09 Asia/Shanghai`: Human approved Discovery layout-page A/B UX (later Assignment; P1 = query seams only); see [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md); local commit only; no push.
+- `2026-09-09 Asia/Shanghai`: Human approved uninstall layout-fallback (warn → A-only rebind / else 26-key+Luna; Universe package manifest ≠ RIME built-in); see [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md); local commit only; no push.

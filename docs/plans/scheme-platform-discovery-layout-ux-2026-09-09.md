@@ -1,9 +1,9 @@
 # Scheme Platform — Discovery layout-page UX (Human Approved)
 
-**Status:** **Human Approved** UX rules (`2026-09-09 Asia/Shanghai`) for a **later** Installed Capability Discovery / layout-picker Assignment (not yet drafted).  
-**Nature:** Product UX contract for the keyboard **layout settings page** (26-key / nine-key / future). **Docs only** — not this Assignment’s P1 UI; not Swift; not push.  
-**Carrier (P1 seams only):** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) — P1 = capability **query** seams; **not** this layout-page UI.  
-**Pointer from P0:** [`scheme-platform-p0-interfaces-2026-09-09.md`](scheme-platform-p0-interfaces-2026-09-09.md) §2 Layout.
+**Status:** **Human Approved** UX rules (`2026-09-09 Asia/Shanghai`) for a **later** Installed Capability Discovery / layout-picker Assignment (not yet drafted) — includes **layout settings page A/B** and **uninstall layout-fallback**.  
+**Nature:** Product UX / binding contract for keyboard **layout** (26-key / nine-key / future) honesty + uninstall rebind. **Docs only** — not this Assignment’s P1 UI; not Swift; not push.  
+**Carrier (P1 seams only):** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) — P1 = capability **query** seams + uninstall hook shape; **not** the Discovery layout-page UI.  
+**Pointer from P0:** [`scheme-platform-p0-interfaces-2026-09-09.md`](scheme-platform-p0-interfaces-2026-09-09.md) §2 Layout (`onUninstallPrepare` / UninstallHooks).
 
 ---
 
@@ -24,7 +24,7 @@ Applies per layout (26-key / nine-key / future): scheme picker honesty driven by
 Authority order (highest first):
 
 1. **User override** (explicit user choice / prior confirmed binding)
-2. **Package capability manifest**
+2. **Package capability manifest** — **Universe convention** (app/package-declared layout capability), **not** a RIME built-in schema field
 3. **Catalog adapter declaration**
 
 Eligibility: scheme is **installed** and **`supported = true`** for that layout.
@@ -46,6 +46,34 @@ Filename / `schema_id` string shape is **never** sole authority for layout capab
 
 ---
 
+## Uninstall layout-fallback (Human Approved)
+
+When **deleting / uninstalling** a scheme that **backs the current layout binding(s)** (26-key and/or nine-key), platform uninstall must **not** silently leave orphaned bindings.
+
+**Applies via:** `SchemeLayoutAdapter.onUninstallPrepare` / `SchemeUninstallHooks` (see P0 §2 / §5.2). Warn UI may live in uninstall flow and/or later Discovery surfaces — **must not be silent**.
+
+### Steps (order)
+
+1. **Warn the user** before delete — uninstall that affects current layout binding(s) **must not be silent**.
+2. Among **remaining installed** schemes, find **confirmed Section A** supporters of that layout, using the same authority order: **user override > package capability manifest > catalog adapter**. **Never** auto-pick **Section B** filename suggestions for rebind.
+3. If at least one A candidate exists → **rebind** to the chosen candidate. Preference among candidates: **previously used > primary > stable default**.
+4. Else (no A candidate) → fall back to **26-key + Luna (`luna_pinyin`)**; **clear** any invalid nine-key binding if needed.
+5. **Then** proceed with uninstall. Existing **Luna-only active-uninstall** rules still apply (await successful Luna deploy before stage→commit when the uninstalled scheme was active; peers may remain installed but are not auto-selected as active).
+
+### Non-negotiables
+
+- No silent layout orphan after deleting the scheme that backs a binding.
+- No auto-rebind from filename / Section B alone.
+- Package capability manifest used in step 2 is **Universe convention**, not RIME built-in.
+
+---
+
+## Section B try-failure (stub)
+
+**Stub only** (not fully specified this record): if a Section B “try” fails (schema missing, deploy/session fail, or user abandons), **do not** promote into Section A; leave the suggestion **unverified**; keep any prior confirmed A binding unchanged. Full try-failure UX can be drafted with the later Discovery Assignment.
+
+---
+
 ## Wanxiang nine-key (still deferred)
 
 - Wanxiang nine-key **productization** remains **deferred** (later Assignment; may ride Discovery later or stay further deferred).
@@ -56,9 +84,12 @@ Filename / `schema_id` string shape is **never** sole authority for layout capab
 ## Non-goals (this record)
 
 - Implementing the layout-page UI in Scheme Platform P1
-- Auto-binding from filename / `schema_id` alone
+- Auto-binding / auto-rebind from filename / `schema_id` / Section B alone
 - Treating filename as sole capability authority
+- Treating package capability manifest as a RIME built-in field
+- Silent uninstall when the deleted scheme backs current layout binding(s)
 - Enabling Wanxiang nine-key productization in P1/P2
+- Fully specifying Section B try-failure UX (stub only above)
 - Push / ADR Accept / Product Gate / TF / Swift implied by this UX approval
 
 ---
@@ -66,3 +97,4 @@ Filename / `schema_id` string shape is **never** sole authority for layout capab
 ## History
 
 - `2026-09-09 Asia/Shanghai`: Human approved layout settings page A/B UX for later Discovery Assignment; P1 remains capability query seams only; local docs + commit only; no push.
+- `2026-09-09 Asia/Shanghai`: Human approved **uninstall layout-fallback** (warn → A-only rebind among remaining installed → else 26-key + Luna/`luna_pinyin` + clear invalid nine-key → then uninstall; Luna-only active-uninstall still applies). Package capability manifest = **Universe convention**, not RIME built-in. Section B try-failure stubbed. Local docs + commit only; no push.

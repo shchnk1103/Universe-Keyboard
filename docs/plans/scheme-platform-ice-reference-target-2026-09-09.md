@@ -17,6 +17,7 @@
 | `2026-09-09 Asia/Shanghai` | Human deferred Wanxiang nine-key productization to later Assignment (not yet drafted); Scheme Platform P1/P2 must not enable; Ice `t9` remains reference shape. |
 | `2026-09-09 Asia/Shanghai` | Human approved **P1↔Discovery split**: P1 = LayoutCapability + ResourceCapability/ownership seams (adapter lookup; Ice-only nine-key; Wanxiang `supportsNineKey=false`; strategy APIs). Installed Capability Discovery / layout-picker = later Assignment (not yet drafted; separate Human Active). Wanxiang nine-key productization remains deferred (may ride Discovery later or stay further deferred). |
 | `2026-09-09 Asia/Shanghai` | Human approved **Discovery layout-page A/B UX** for later Discovery Assignment (A Confirmed / B Filename try; never auto-bind; P1 = query seams only). See [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md). |
+| `2026-09-09 Asia/Shanghai` | Human approved **uninstall layout-fallback** (warn → A-only among remaining installed / else 26-key + Luna/`luna_pinyin`; package capability manifest = Universe convention, not RIME built-in). See [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md). |
 
 ---
 
@@ -62,7 +63,7 @@ Whole-directory wipe of `lua/` or `opencc/` remains **forbidden**.
 
 26-key, 9-key, and future layouts are **declarative / plugin** capabilities on the scheme (or binding), **not** Ice-hardcoded `if schemaID == rime_ice` product logic. Ice’s current nine-key / binding behavior is the reference *shape*; the platform API must not bake Ice IDs into the only supported path.
 
-**P1 (this Assignment):** extract declarative `LayoutCapability` + adapter lookup (preserve Ice-only nine-key answers; Wanxiang `supportsNineKey = false`). **Later Assignment (not yet drafted):** Installed Capability Discovery / layout-picker — dynamically enumerate installed schemes’ capabilities for layout UI (separate Human Active). **Decided UX for that later Assignment:** layout-page A/B — [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md) (not P1 UI).
+**P1 (this Assignment):** extract declarative `LayoutCapability` + adapter lookup (preserve Ice-only nine-key answers; Wanxiang `supportsNineKey = false`). **Later Assignment (not yet drafted):** Installed Capability Discovery / layout-picker — dynamically enumerate installed schemes’ capabilities for layout UI (separate Human Active). **Decided UX for that later Assignment:** layout-page A/B + **uninstall layout-fallback** — [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md) (not P1 UI; uninstall hooks consume fallback contract).
 
 ### 2.4 Resource ownership
 

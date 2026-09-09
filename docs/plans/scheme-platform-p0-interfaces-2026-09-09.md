@@ -104,6 +104,9 @@ struct LayoutCapability: Equatable, Sendable {
 
 protocol SchemeLayoutAdapter {
   var layout: LayoutCapability { get }
+  // Human-approved uninstall layout-fallback (2026-09-09): warn → A-only rebind among remaining
+  // installed (override > Universe package manifest > adapter; never B) → else 26-key + Luna/
+  // luna_pinyin (+ clear invalid nine-key) → then uninstall. See discovery-layout-ux doc.
   func onUninstallPrepare(layoutBindings: inout LayoutBindingState) // Ice: prepareRimeIceUninstallWithLayoutFallback
   func normalizeSettingsSchemaID(_ raw: String) -> String
 }
@@ -116,7 +119,8 @@ protocol SchemeLayoutAdapter {
 | Wanxiang adapter `supportsNineKey = false` (no enablement in P1/P2) | **Decided** = **P1 seams** |
 | Wanxiang nine-key productization (which schema id, readiness, chrome) | **Human deferred** — later Assignment (not yet drafted); may ride Discovery later or stay further deferred. `wanxiang_t9*` may stay in plan ownership; product capability stays false |
 | **Installed Capability Discovery / layout-picker** (dynamically enumerate installed schemes’ capabilities for layout UI) | **Human deferred** — later Assignment (not yet drafted); **separate Human Active**; **not** P1 |
-| **Discovery layout-page UX** (26 / 9 / future settings page) | **Decided** for later Discovery Assignment — see [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md): **A Confirmed** = user override > package capability manifest > catalog adapter declaration (installed + `supported=true`); **B Filename suggestions (try)** = weak filename/`schema_id` hints (e.g. t9/nine), labeled unverified, user may try; **never auto-write binding** from filename alone; confirm/success **promotes** to A; filename never sole authority (RIME has no official layout-naming constraint). Wanxiang nine-key still deferred (`wanxiang_t9*` may appear in B later). **Not P1 UI** |
+| **Discovery layout-page UX** (26 / 9 / future settings page) | **Decided** for later Discovery Assignment — see [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md): **A Confirmed** = user override > package capability manifest (**Universe convention, not RIME built-in**) > catalog adapter declaration (installed + `supported=true`); **B Filename suggestions (try)** = weak filename/`schema_id` hints (e.g. t9/nine), labeled unverified, user may try; **never auto-write binding** from filename alone; confirm/success **promotes** to A; filename never sole authority (RIME has no official layout-naming constraint). Wanxiang nine-key still deferred (`wanxiang_t9*` may appear in B later). **Not P1 UI** |
+| **Uninstall layout-fallback** (scheme backs current binding(s)) | **Decided** — [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md): **warn** (not silent) → A-only among remaining installed (**never** B) → rebind (previously used > primary > stable default) **or else** 26-key + Luna (`luna_pinyin`) + clear invalid nine-key → then uninstall; Luna-only active-uninstall still applies. Consumed by `onUninstallPrepare` / UninstallHooks |
 | Future layouts beyond 26/9 | **TBD** — reserve capability flags only |
 
 ### 2.3 P1 extract guidance（Human-approved `2026-09-09`）
@@ -125,7 +129,8 @@ protocol SchemeLayoutAdapter {
 - Replace hardcoded `isNineKeyCapable == (id == "t9")` with adapter lookup **backed by Ice adapter returning the same Ice-only nine-key answers**.
 - Wanxiang adapter: **`supportsNineKey = false`** — do **not** enable Wanxiang nine-key in P1/P2.
 - **Out of P1:** Installed Capability Discovery / layout-picker (dynamic enumeration of installed schemes for layout UI) — **later Assignment (not yet drafted)**; separate Human Active. Today’s asymmetry note: `isTwentySixKeyCapable` ≈ “not `t9`” vs nine-key hardcode `== "t9"`; Discovery Assignment owns picker honesty, not this extract.
-- **Decided Discovery UX (later Assignment; not P1 UI):** layout settings page Sections **A/B** — A Confirmed authority = user override > package capability manifest > catalog adapter declaration (installed + `supported=true`); B = filename/`schema_id` suggestions (try), labeled unverified, **never auto-bind**, confirm→promote to A; filename never sole authority (RIME no official layout-naming constraint). Full rules: [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md).
+- **Decided Discovery UX (later Assignment; not P1 UI):** layout settings page Sections **A/B** — A Confirmed authority = user override > package capability manifest (**Universe convention, not RIME built-in**) > catalog adapter declaration (installed + `supported=true`); B = filename/`schema_id` suggestions (try), labeled unverified, **never auto-bind**, confirm→promote to A; filename never sole authority (RIME no official layout-naming constraint). Full rules: [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md).
+- **Decided uninstall layout-fallback (hook contract):** when uninstall deletes a scheme backing current layout binding(s) — warn → A-only rebind among remaining installed (**never** B) → else 26-key + Luna/`luna_pinyin` (+ clear invalid nine-key) → then uninstall; Luna-only active-uninstall still applies. `onUninstallPrepare` / UninstallHooks must follow [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md).
 
 ---
 
@@ -272,7 +277,7 @@ protocol SchemePostProcessAdapter {
 | Layout | T9 readiness + binding9=`t9` + uninstall layout fallback | 26-key only productized; nine-key **Human deferred** (later Assignment; not P1/P2 enablement) |
 | Ownership | plan removable list | plan list + `WanxiangLuaOwnership` exact-hash |
 | PostProcess | Ice shared-default + existing Ice post | `wanxiang-post-1` (keep) |
-| UninstallHooks | `prepareRimeIceUninstallWithLayoutFallback`, Ice license/version UI | generic path; fewer Ice-only UI forks |
+| UninstallHooks | `prepareRimeIceUninstallWithLayoutFallback` (**Human-approved fallback:** warn → A-only rebind / else Luna+26; see discovery-layout-ux), Ice license/version UI | generic path; fewer Ice-only UI forks |
 
 ### 5.3 Catalog / coordinator boundary (Proposed)
 
@@ -316,7 +321,7 @@ Stop if Ice UX/install/uninstall drifts without Human accept.
 - Product Gate / TestFlight  
 - Rewriting Wanxiang content to Ice  
 - **Wanxiang nine-key productization** — **Human deferred** to later Assignment (not yet drafted); may ride Discovery later or stay further deferred; P1/P2 must not enable  
-- **Installed Capability Discovery / layout-picker** (and Lua/OpenCC product-surface honesty) — **Human deferred** later Assignment (not yet drafted); separate Human Active; **not** P1 seams. **Layout-page A/B UX Decided** for that later Assignment — [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md)  
+- **Installed Capability Discovery / layout-picker** (and Lua/OpenCC product-surface honesty) — **Human deferred** later Assignment (not yet drafted); separate Human Active; **not** P1 seams. **Layout-page A/B UX + uninstall layout-fallback Decided** — [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md)  
 - Closing A34-R1 / unpausing Wanxiang P4  
 - Ice `dofile` full close (A34-R2 / TD-011), Recovery persistence, peer-prefer B  
 
@@ -328,3 +333,4 @@ Stop if Ice UX/install/uninstall drifts without Human accept.
 - `2026-09-09 Asia/Shanghai`: Human deferred Wanxiang nine-key productization to later Assignment; marked former TBD as **Human deferred** (not open for this Assignment); P1/P2 must not enable (local commit only; no push).
 - `2026-09-09 Asia/Shanghai`: Human approved **P1↔Discovery split** — Decided P1 seams = LayoutCapability + ResourceCapability/ownership (adapter lookup; Ice-only nine-key; Wanxiang `supportsNineKey=false`; strategy APIs). Discovery UI / layout-picker = later Assignment (not yet drafted). Local commit only; no push.
 - `2026-09-09 Asia/Shanghai`: Human approved **Discovery layout-page A/B UX** (later Assignment) — Decided pointer in §2; full rules in [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md). P1 remains query seams only (not this UI). Local commit only; no push.
+- `2026-09-09 Asia/Shanghai`: Human approved **uninstall layout-fallback** — Decided pointer in §2 / `onUninstallPrepare` / UninstallHooks; full rules in [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md) (warn → A-only among remaining / else 26-key+Luna; manifest = Universe convention not RIME built-in). Local commit only; no push.
