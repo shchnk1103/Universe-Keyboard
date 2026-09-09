@@ -20,6 +20,9 @@
 | KOS-SUG-04 | 让人工运行 manifest 声明预期的内容无关诊断链路 | 人工测试前就知道每个操作应产生的 operation UUID、阶段、耗时和终态；日志缺失可以被判为 `inconclusive`，而非事后猜测 producer 或 reader。 | `universe-keyboard-human-operated-evidence-profile.md` 的 run manifest |
 | KOS-SUG-05 | 固化“Proposed 工作包”交接头 | 当 Human 明确要求“只记录、不实现”时，未来线程可直接看到：问题、冻结事实、拟议 seam、授权边界、验证矩阵、停止条件和所需 reviewer。 | `docs/plans/` 模板；与 M-06 授权包相互链接 |
 | KOS-SUG-06 | 增加 KOS 导航 pin 一致性检查 | `docs/kos/README.md` 仍写 KOS Kit `v0.6.0`，而 `UPGRADE_STATUS.md` 记录当前 adopted `v0.7.0`。这种导航级漂移会让零上下文线程读取到相互矛盾的事实。 | docs-only 检查：README、UPGRADE_STATUS、`.kos/project.json` 与升级记录 |
+| KOS-SUG-07 | 在人工真机 Gate 前增加“可观测性就绪”检查 | 本次 `runtime_route.phase_changed` 事件已在诊断列表出现，但列表只显示 event code，不能证明 operation UUID、phase 或 elapsed 字段。应在操作前明确这些字段是否能从隐私安全的 UI 或导出中读取。 | 人工证据 Profile 的 preflight；不改变生产日志内容 |
+| KOS-SUG-08 | 为原始诊断读取定义最小数据请求包 | 当 UI 不足以回答某个字段时，整目录读取可能超出本次诊断所需的数据范围。先固定 operation、文件范围、字段 allowlist 和保留方式，才可请求一次性读取授权。 | 人工证据 Profile 与 M-06 授权包 |
+| KOS-SUG-09 | 将最终文档链接检查放入发布前状态同步 | 本次实现、测试和独立复审完成后，复审文档中的 `file.swift:line` 链接仍使 hosted lightweight CI 失败。最终证据与评审文档写入后还需跑一次同一链接检查。 | M-02 状态同步清单与 PR handoff |
 
 ## 建议的最小合同
 
@@ -94,13 +97,53 @@ Future-executor entrypoint:
 
 本次 runtime-route proposal 说明这种格式可避免未来线程把“布局无关的方向”误读为已批准的 Swift 改动。
 
+### KOS-SUG-07：人工 Gate 的可观测性就绪
+
+在要求人工执行真机操作前，run manifest 增加一项只读 preflight：逐项列出
+每个待验证 claim 所需的有限字段、该字段的可见位置，以及当前是否可读取。字段
+不可见时应在 manifest 中把对应 claim 预先标记为 `inconclusive`，不要求操作者
+绕过 UI 获取原始目录。
+
+对于本次 active-uninstall 流程，功能 claim（卸载后切到 Luna，`ni` 有中文候选）
+与 trace claim（同一 operation 的 phase、UUID、elapsed）必须分开记录。前者可以
+由 `Device-attested / pass` 支持；后者在有限字段不可见时保持
+`Device-attested / inconclusive`，不能由 event code 的出现推导。
+
+### KOS-SUG-08：最小原始诊断读取请求包
+
+当 KOS-SUG-07 的 preflight 显示 UI 不能提供必要字段，而继续诊断确有价值时，M-06
+授权包应额外列出：
+
+```text
+operation identity: <UUID or bounded time window>
+file scope: <exact file(s), never a directory by default>
+field allowlist: <finite keys>
+content exclusion: <input, candidate, host text, user dictionary>
+retention and reporting: <where the filtered result is recorded>
+```
+
+没有这些字段时，Executor 只能保留“未获得”结论。该规则不是原始日志读取的自动
+授权，也不要求新增持久化；它使人工决定能够针对最小数据范围作出判断。
+
+### KOS-SUG-09：评审文档完成后的发布前检查
+
+M-02 可增加一个适用于会触发 Markdown/KOS CI 的末尾步骤：在所有 Assignment、
+evidence 和 review 文档落盘后，运行仓库的轻量检查，并记录其比较基线与 HEAD。
+这一步必须位于最终文档编辑之后，因为先前通过的源代码测试不能覆盖后来写入的
+本地 Markdown 链接。
+
+Markdown 中引用仓库内具体行时使用可解析的锚点，例如
+`path/to/file.swift#L77`，不使用 `path/to/file.swift:77`。前者保留读者所需的
+定位信息，也能被现有本地链接检查识别为同一个文件。
+
 ## 采纳顺序建议
 
 1. 先评审 KOS-SUG-01 和 KOS-SUG-02；它们只澄清当前事实和授权边界，收益最大。
 2. 再将 KOS-SUG-03 纳入发布/CI handoff，形成可验证的交付状态。
 3. 将 KOS-SUG-04 作为人工真机 Profile 的专项改进，不把它扩展为所有日志系统的强制遥测。
 4. KOS-SUG-05 可作为 docs 模板试点；KOS-SUG-06 应先做一次 docs-only 一致性审计，再决定是否需要自动检查。
+5. KOS-SUG-07 至 KOS-SUG-09 可先在 Scheme Delivery 的下一份人工 run manifest 和 PR handoff 中试点，再评估是否写入 KOS 2.1。
 
 ## 非目标
 
-本建议不采纳任何新生命周期、新永久角色或自动授权机制；不改变 KOS 2.0 frozen constitution；不把 advisory 校验变成 Gate；不授权代码、真机、push、合并、TestFlight、Release 或 ADR Accept。
+本建议不采纳任何新生命周期、新永久角色或自动授权机制；不改变 KOS 2.0 frozen constitution；不把 advisory 校验变成 Gate；不授权代码、真机、原始日志读取、push、合并、TestFlight、Release 或 ADR Accept。

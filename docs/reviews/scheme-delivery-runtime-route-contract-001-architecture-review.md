@@ -270,37 +270,37 @@ mutation，不表示部署、暂存/提交、rollback、Extension 消费或 CS09
    effective route 的 layout 找 slot，而不是按 persisted `selectedLayoutStyle` 找
    active slot。`RimeRuntimeEffectiveRoute.State.failClosed` 明确保留了 ADR 0026
    的 26-key fallback 事实。对应实现见
-   [`RimeRuntimeRouteReconciliation.swift:77`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift:77)、
-   [`RimeRuntimeRouteReconciliation.swift:294`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift:294)，
+   [`RimeRuntimeRouteReconciliation.swift:77`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift#L77)、
+   [`RimeRuntimeRouteReconciliation.swift:294`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift#L294)，
    测试见
-   [`RimeRuntimeRouteReconciliationTests.swift:68`](../../Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeRuntimeRouteReconciliationTests.swift:68)。
+   [`RimeRuntimeRouteReconciliationTests.swift:68`](../../Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeRuntimeRouteReconciliationTests.swift#L68)。
    这覆盖了“九键 preference、T9 readiness fail-closed、实际 Wanxiang 26-key”移除
    Wanxiang，以及此时移除 Ice 仍为 inactive 的关键判断。
 
 2. `RimeRuntimeRouteMutation` 的 `before`/`after` 均保存 selected layout、effective
    route、legacy `activeSchemaID` 和所有 ordered bindings；binding mutation 只保留
    实际变化。对应实现见
-   [`RimeRuntimeRouteReconciliation.swift:154`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift:154)、
-   [`RimeRuntimeRouteReconciliation.swift:372`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift:372)，
+   [`RimeRuntimeRouteReconciliation.swift:154`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift#L154)、
+   [`RimeRuntimeRouteReconciliation.swift:372`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift#L372)，
    rollback 输入覆盖证据见
-   [`RimeRuntimeRouteReconciliationTests.swift:168`](../../Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeRuntimeRouteReconciliationTests.swift:168)。
+   [`RimeRuntimeRouteReconciliationTests.swift:168`](../../Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeRuntimeRouteReconciliationTests.swift#L168)。
    这关闭了纯契约中“只有目标值、无法恢复完整 route”的缺口；跨进程原子写入和失败
    rollback 仍属于未授权的 Main App 接线。
 
 3. 空 removed ID 进入 `invalidInput`，malformed/duplicate descriptor 进入
    `invalidSnapshot`，不引用 effective route 的卸载进入 `inactiveRoute`。测试覆盖
-   [`RimeRuntimeRouteReconciliationTests.swift:153`](../../Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeRuntimeRouteReconciliationTests.swift:153)、
-   [`RimeRuntimeRouteReconciliationTests.swift:255`](../../Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeRuntimeRouteReconciliationTests.swift:255)。
+   [`RimeRuntimeRouteReconciliationTests.swift:153`](../../Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeRuntimeRouteReconciliationTests.swift#L153)、
+   [`RimeRuntimeRouteReconciliationTests.swift:255`](../../Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeRuntimeRouteReconciliationTests.swift#L255)。
 
 ### P2 disposition and residual conditions
 
 - fallback descriptor 现在在产生 mutation 前检查 availability、approved schema、
   target preference key、target layout、target capability；registry 也拒绝空 key、
   空 schema、重复 key 和重复 layout。对应实现见
-  [`RimeRuntimeRouteReconciliation.swift:310`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift:310)、
-  [`RimeRuntimeRouteReconciliation.swift:422`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift:422)，
+  [`RimeRuntimeRouteReconciliation.swift:310`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift#L310)、
+  [`RimeRuntimeRouteReconciliation.swift:422`](../../Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift#L422)，
   负向测试见
-  [`RimeRuntimeRouteReconciliationTests.swift:308`](../../Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeRuntimeRouteReconciliationTests.swift:308)。
+  [`RimeRuntimeRouteReconciliationTests.swift:308`](../../Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeRuntimeRouteReconciliationTests.swift#L308)。
   这关闭了初审中 Q-RTR-P2-01、Q-RTR-P3-02 所指的 layout/capability/duplicate
   descriptor 缺口。
 - `fallbackSchemaID` 的 removed-schema 比较使用现有
