@@ -21,6 +21,7 @@
 | `2026-09-09 Asia/Shanghai` | Human approved **SharedDefault end-state**: Ice-shaped **`privatePreset`** = reference mode for third-party schemes. **P1** extract Ice `privatePreset` only; Wanxiang may temporarily keep skip/`consumePrelude`. **P2** Wanxiang → `privatePreset` (`consumePrelude` not end-state). Luna may remain Prelude/builtin exception. Fidelity risk → product regression (not silent). |
 | `2026-09-09 Asia/Shanghai` | Human approved **Lua/OpenCC Ownership**: unified ResourceOwnership/ResourceCapability; **long-term dual** `namedList` (Ice) + `exactHash` (Wanxiang) — **not** forced to one; no dangerous filename heuristics auto-remove; no whole-dir wipe; Settings confirmed honesty + optional user marking; OpenCC Wanxiang may `admitted=false`; P1 wire both unchanged; P2 Wanxiang platform path keeps `exactHash`. Contrast: SharedDefault → `privatePreset` in P2; Ownership stays dual. |
 | `2026-09-09 Asia/Shanghai` | Human approved **Luna presence + readiness greying**: Luna always on **26-key Section A**; never on nine-key A; not a B filename suggestion; builtin exception; uninstall fallback already → 26+Luna. Confirmed-but-unready → greyed in A with reason (prefer grey over hide); click guides fix; no direct binding until ready; uninstall auto-rebind **ready** A only. See [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md). |
+| `2026-09-09 Asia/Shanghai` | Human finalized [`universe-capabilities/v1`](scheme-platform-universe-capabilities-v1-2026-09-09.md): package-root `universe-capabilities.yaml` installed into shared dir; fail-closed whole-manifest validation; priority user override > manifest > catalog adapter > default unsupported; filename heuristics App Section B only; catalog may generate equivalent; community ships file or import wizard. |
 | `2026-09-09 Asia/Shanghai` | Human ADR/#101: **leave draft PR #101** until Scheme Platform progresses; **do not Accept ADR 0034 now**; **keep #101 and #102 separate**; cross-links / Accept prep (incl. A34-R8-style refresh) **later** after platform docs/impl. |
 
 ---
@@ -98,7 +99,7 @@ Each third-party scheme contributes:
 
 | Artifact | Role |
 |---|---|
-| **Manifest** | Identity, pin, plan/post IDs, layout capabilities, ownership map pointers, skip/admit rules |
+| **Manifest** | Human-finalized [`universe-capabilities/v1`](scheme-platform-universe-capabilities-v1-2026-09-09.md) for package capability fields (layout, Lua/OpenCC, SharedDefault); catalog/plan retains identity pins and may generate equivalent via adapter |
 | **Optional adapters** | Preset strategy; layout fallback; ownership strategy; post-process |
 
 Ice’s adapters are the **reference**. Wanxiang’s existing **`exactHash`** Lua ownership, upgrade-rollback, and skip/`consumePrelude`-shaped SharedDefault are adapters (or become them) — not a second parallel platform. SharedDefault **end-state** for Wanxiang is still Ice-shaped **`privatePreset`** (P2), not permanent skip-only. Ownership **stays dual** (`namedList` + `exactHash`) even after P2 — unlike SharedDefault consolidation.

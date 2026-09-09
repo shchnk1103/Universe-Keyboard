@@ -24,7 +24,7 @@ Applies per layout (26-key / nine-key / future): scheme picker honesty driven by
 Authority order (highest first):
 
 1. **User override** (explicit user choice / prior confirmed binding)
-2. **Package capability manifest** — **Universe convention** (app/package-declared layout capability), **not** a RIME built-in schema field
+2. **Package capability manifest** — **Universe convention** (app/package-declared layout capability), **not** a RIME built-in schema field. Format: [`universe-capabilities/v1`](scheme-platform-universe-capabilities-v1-2026-09-09.md) (`universe-capabilities.yaml` at package root → shared dir). Validation failure voids entire manifest (no partial apply).
 3. **Catalog adapter declaration**
 
 Eligibility: scheme is **installed** and **`supported = true`** for that layout.
@@ -80,7 +80,7 @@ When **deleting / uninstalling** a scheme that **backs the current layout bindin
 - No silent layout orphan after deleting the scheme that backs a binding.
 - No auto-rebind from filename / Section B alone.
 - Auto-rebind only among **ready** confirmed A candidates (align with readiness greying).
-- Package capability manifest used in step 2 is **Universe convention**, not RIME built-in.
+- Package capability manifest used in step 2 is **Universe convention**, not RIME built-in — see [`universe-capabilities/v1`](scheme-platform-universe-capabilities-v1-2026-09-09.md).
 - Luna always on 26-key A; never on nine-key A; not a B suggestion; builtin exception.
 
 ---
@@ -108,6 +108,7 @@ When **deleting / uninstalling** a scheme that **backs the current layout bindin
 - Treating Luna as a nine-key A candidate or as a Section B filename suggestion
 - Treating filename as sole capability authority
 - Treating package capability manifest as a RIME built-in field
+- Putting filename heuristics into `universe-capabilities.yaml` (Section B App only)
 - Silent uninstall when the deleted scheme backs current layout binding(s)
 - Enabling Wanxiang nine-key productization in P1/P2
 - Fully specifying Section B try-failure UX (stub only above)
@@ -120,3 +121,4 @@ When **deleting / uninstalling** a scheme that **backs the current layout bindin
 - `2026-09-09 Asia/Shanghai`: Human approved layout settings page A/B UX for later Discovery Assignment; P1 remains capability query seams only; local docs + commit only; no push.
 - `2026-09-09 Asia/Shanghai`: Human approved **uninstall layout-fallback** (warn → A-only rebind among remaining installed → else 26-key + Luna/`luna_pinyin` + clear invalid nine-key → then uninstall; Luna-only active-uninstall still applies). Package capability manifest = **Universe convention**, not RIME built-in. Section B try-failure stubbed. Local docs + commit only; no push.
 - `2026-09-09 Asia/Shanghai`: Human approved **Luna presence + readiness greying**: Luna **always** on **26-key Section A**; **never** on nine-key A; **not** a B filename suggestion; **builtin exception**; uninstall fallback already → 26+Luna. Confirmed-but-unready (missing deps / not deployable / readiness fail) → **greyed in A with reason** (prefer grey over hide); click guides fix; **no direct layout binding** until ready. Uninstall auto-rebind only among **ready** A candidates. Discovery Assignment scope; P1 only seams if needed for readiness query. Local docs + commit only; no push.
+- `2026-09-09 Asia/Shanghai`: Human finalized **`universe-capabilities/v1`** as the package capability manifest format (Section A authority #2). Pointer: [`scheme-platform-universe-capabilities-v1-2026-09-09.md`](scheme-platform-universe-capabilities-v1-2026-09-09.md). Filename heuristics remain App Section B only (not manifest fields). Local docs + commit only; no push.
