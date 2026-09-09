@@ -22,6 +22,7 @@ Current update: `2026-09-09 Asia/Shanghai` — ADR 0034 Architecture Accept **re
 
 | 7 | SCHEME-DELIVERY-RUNTIME-ROUTE-INTEGRATION-001 | Active | P1 已通过最终独立复审；真机与 hosted CI 门由 DEVICE Assignment 承接（功能 Pass with conditions；docs tip `a007681`）。无新增编码；Human 已授权 CI 绿后 undraft+merge #100；`RTRD-01`/`RTRD-02` 仍另案；不因 merge 关闭本 Assignment / Release。 | [`assignment`](assignments/scheme-delivery-runtime-route-integration-001.md) · [`P1 final review`](reviews/scheme-delivery-runtime-route-integration-001-p1-final-independent-review.md) |
 | 8 | SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001 | Active | 真机功能 Pass with conditions；docs tip `a007681`。`RTRD-01`/`RTRD-02` 仍 open（不进本 PR / 不因 merge 关闭）。Human 已授权 CI 绿后 undraft+merge #100；Product Gate/TestFlight/Release/ADR Accept 未授权。 | [`assignment`](assignments/scheme-delivery-runtime-route-device-001.md) · [`evidence`](evidence/scheme-delivery-runtime-route-device-001-2026-09-09.md) · [`review`](reviews/scheme-delivery-runtime-route-device-001-quality-review.md) |
+| 9 | SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001 | Ready | Human 拒绝 `accept` A34-R1，批准起草本 Assignment；**待授权 Active/实现**。闭合万象 P4 相对 ADR 0034 全文缺口；不自动 Accept ADR；不含 A34-R2/`RTRD-*`。 | [`assignment`](assignments/scheme-delivery-wanxiang-p4-closure-001.md) · [`A34 review`](reviews/adr-0034-architecture-accept-review-2026-09-09.md) · [`ADR 0034`](architecture/decisions/0034-multi-scheme-resource-ownership.md)
 
 历史工作从 [Assignment 目录](assignments/) 查找；债务从 [TECH_DEBT](TECH_DEBT.md) 查找。
 这里只保留 Ready / Active 工作，上限十项；Assignment 是生命周期事实来源，冲突时修正本镜像。
