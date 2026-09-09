@@ -71,8 +71,11 @@ RIME 官方允许配置替换及 custom patch；配置引用不提供多个发�
 
 Architecture 对当前 P3 transaction delta 已无阻断，但在 Quality、P4 与 Human 明确接受前，本 ADR 保持 Proposed。
 
+**2026-09-09：** Human 批准单独开一轮 Architecture Accept 复审清单（非 Acceptance）：[`adr-0034-architecture-accept-checklist-2026-09-09.md`](../../reviews/adr-0034-architecture-accept-checklist-2026-09-09.md)。在独立 Architecture 结论与 Human 书面 Accept 之前，Status 仍为 Proposed。
+
 ## Related Documents
 
+- [Architecture Accept 复审清单 2026-09-09](../../reviews/adr-0034-architecture-accept-checklist-2026-09-09.md)
 - [实施计划](../../plans/scheme-resource-ownership-and-coexistence-plan.md)
 - [`SCHEME-DELIVERY-SOURCE-STATE-001`](../../assignments/scheme-delivery-source-state-001.md)
 - [`ADR 0001`](0001-main-app-owns-rime-deployment.md)
