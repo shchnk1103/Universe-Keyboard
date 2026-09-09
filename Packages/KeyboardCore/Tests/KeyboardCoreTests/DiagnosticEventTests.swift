@@ -183,6 +183,34 @@ final class DiagnosticEventTests: XCTestCase {
         )
     }
 
+    func testRuntimeRoutePayloadRoundTripsWithOnlyFiniteFields() throws {
+        let payload = DiagnosticEvent.RuntimeRoutePhaseEvent(
+            operationID: UUID(),
+            phase: .fallbackDeploy,
+            result: .succeeded,
+            schema: .lunaPinyin,
+            layout: .twentySixKey,
+            state: .ready,
+            elapsedMilliseconds: 37
+        )
+        let event = DiagnosticEvent(
+            utcTimestamp: .now,
+            monotonicNanoseconds: 1,
+            origin: .mainApp,
+            processInstanceID: UUID(),
+            localSequence: 1,
+            code: .runtimeRoutePhaseChanged,
+            level: .info,
+            category: .deployment,
+            runtimeRoutePayload: payload
+        )
+
+        XCTAssertEqual(
+            try JSONDecoder().decode(DiagnosticEvent.self, from: JSONEncoder().encode(event)),
+            event
+        )
+    }
+
     func testSourceProbeFailureRoundTripsAndRejectsWrongPhase() throws {
         let context = DiagnosticEvent.SchemeDeliveryContext(
             operationID: UUID(), artifact: .rimeIce20260630675D23B0,

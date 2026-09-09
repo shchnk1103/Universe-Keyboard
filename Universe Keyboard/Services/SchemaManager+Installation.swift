@@ -1,3 +1,4 @@
+import Dispatch
 import Foundation
 import KeyboardCore
 
@@ -84,31 +85,88 @@ extension SchemaManager {
         plan: RimeSchemeInstallationPlan
     ) async {
         let operationID = UUID()
+        let operationStartedAt = DispatchTime.now().uptimeNanoseconds
         guard await acquireSchemeDeliveryCommitLease(operationID: operationID) else { return }
         defer { releaseSchemeDeliveryCommitLease(operationID: operationID) }
 
         let schemaID = entry.schemaID
-        let originalSchemaID = activeSchemaID
-        let requiresActiveFallback = originalSchemaID == schemaID
-
-        if requiresActiveFallback {
-            // Do not use `switchToSchema`: it only records a later deployment.
-            // P4 requires Luna's deployment to finish before any target files
-            // become removable.
-            setActiveSchemaWithoutDeployment("luna_pinyin")
+        let routeSnapshot = currentRuntimeRouteSnapshot()
+        recordActiveUninstallRoutePhase(
+            operationID: operationID,
+            phase: "route_before",
+            route: routeSnapshot.effectiveRoute,
+            operationStartedAt: operationStartedAt
+        )
+        let routeMutation: RimeRuntimeRouteMutation?
+        switch RimeRuntimeRouteReconciler.reconcileAfterSchemaRemoval(
+            snapshot: routeSnapshot,
+            removedSchemaID: schemaID
+        ) {
+        case .success(let mutation):
+            routeMutation = mutation
+            // Do not use `switchToSchema`: that path defers deployment. The
+            // route state must be durable before Luna deploys and before files
+            // belonging to the effective route can become removable.
+            applyRuntimeRouteState(mutation.after)
+            recordActiveUninstallRoutePhase(
+                operationID: operationID,
+                phase: "route_after_deploy_pending",
+                route: mutation.after.effectiveRoute,
+                operationStartedAt: operationStartedAt
+            )
             let fallbackSucceeded = await deployRimeConfig(leaseOperationID: operationID)
             guard fallbackSucceeded else {
-                await restoreSchemaAfterFailedUninstall(
-                    originalSchemaID,
+                recordActiveUninstallRoutePhase(
                     operationID: operationID,
-                    reason: "Luna 回退部署失败"
+                    phase: "fallback_deploy_failed",
+                    route: mutation.after.effectiveRoute,
+                    isFailure: true,
+                    operationStartedAt: operationStartedAt
+                )
+                await restoreSchemaAfterFailedUninstall(
+                    mutation.before,
+                    operationID: operationID,
+                    reason: "Luna 回退部署失败",
+                    operationStartedAt: operationStartedAt
                 )
                 return
             }
+            recordActiveUninstallRoutePhase(
+                operationID: operationID,
+                phase: "fallback_deploy_succeeded",
+                route: mutation.after.effectiveRoute,
+                operationStartedAt: operationStartedAt
+            )
+        case .failure(.inactiveRoute):
+            routeMutation = nil
+            recordActiveUninstallRoutePhase(
+                operationID: operationID,
+                phase: "inactive_route",
+                route: routeSnapshot.effectiveRoute,
+                operationStartedAt: operationStartedAt
+            )
+        case .failure:
+            // A malformed route descriptor must not be reclassified as an
+            // inactive uninstall: preserving target files is safer than
+            // deleting resources that a contradictory route may still use.
+            recordActiveUninstallRoutePhase(
+                operationID: operationID,
+                phase: "reconciliation_failed",
+                route: routeSnapshot.effectiveRoute,
+                isFailure: true,
+                operationStartedAt: operationStartedAt
+            )
+            return
         }
 
         let staging: SchemaUninstallStaging
         do {
+            recordActiveUninstallRoutePhase(
+                operationID: operationID,
+                phase: "staging_started",
+                route: routeMutation?.after.effectiveRoute ?? routeSnapshot.effectiveRoute,
+                operationStartedAt: operationStartedAt
+            )
             staging = try archiveInstaller.stageSchemaUninstall(plan: plan)
         } catch is SchemaUninstallRecoveryError {
             // The original resource tree may be incomplete. Keep the deployed
@@ -117,13 +175,28 @@ extension SchemaManager {
                 "uninstallSchema: 回滚未完成，恢复文件已保留，停止卸载",
                 category: .deployment
             )
+            recordActiveUninstallRoutePhase(
+                operationID: operationID,
+                phase: "staging_rollback_incomplete",
+                route: routeMutation?.after.effectiveRoute ?? routeSnapshot.effectiveRoute,
+                isFailure: true,
+                operationStartedAt: operationStartedAt
+            )
             return
         } catch {
-            if requiresActiveFallback {
+            recordActiveUninstallRoutePhase(
+                operationID: operationID,
+                phase: "staging_failed",
+                route: routeMutation?.after.effectiveRoute ?? routeSnapshot.effectiveRoute,
+                isFailure: true,
+                operationStartedAt: operationStartedAt
+            )
+            if let routeMutation {
                 await restoreSchemaAfterFailedUninstall(
-                    originalSchemaID,
+                    routeMutation.before,
                     operationID: operationID,
-                    reason: "方案文件暂存失败"
+                    reason: "方案文件暂存失败",
+                    operationStartedAt: operationStartedAt
                 )
             } else {
                 Logger.shared.error(
@@ -141,6 +214,12 @@ extension SchemaManager {
         }
 
         archiveInstaller.commitSchemaUninstall(staging, plan: plan)
+        recordActiveUninstallRoutePhase(
+            operationID: operationID,
+            phase: "commit_succeeded",
+            route: routeMutation?.after.effectiveRoute ?? routeSnapshot.effectiveRoute,
+            operationStartedAt: operationStartedAt
+        )
 
         for key in [
             entry.storage.installed,
@@ -155,7 +234,7 @@ extension SchemaManager {
             settings.removeObject(forKey: key)
         }
 
-        if !requiresActiveFallback {
+        if routeMutation == nil {
             requestDeploy(leaseOperationID: operationID)
         }
         rimeIceDownloadState = .idle
@@ -166,6 +245,9 @@ extension SchemaManager {
         refreshSchemaList()
     }
 
+    /// Download/upgrade rollback restores only the legacy active schema. The
+    /// active-uninstall route transaction uses `applyRuntimeRouteState(_:)`
+    /// instead because layout-bound bindings are part of its rollback state.
     func setActiveSchemaWithoutDeployment(_ schemaID: String) {
         activeSchemaID = schemaID
         settings.set(schemaID, forKey: "rime_active_schema")
@@ -176,16 +258,102 @@ extension SchemaManager {
     /// A detached Task would race `defer { release… }` and could observe a
     /// foreign lease or skip the redeploy entirely.
     private func restoreSchemaAfterFailedUninstall(
-        _ schemaID: String,
+        _ state: RimeRuntimeRouteState,
         operationID: UUID,
-        reason: String
+        reason: String,
+        operationStartedAt: UInt64
     ) async {
-        setActiveSchemaWithoutDeployment(schemaID)
-        _ = await deployRimeConfig(leaseOperationID: operationID)
+        applyRuntimeRouteState(state)
+        recordActiveUninstallRoutePhase(
+            operationID: operationID,
+            phase: "route_restored_deploy_pending",
+            route: state.effectiveRoute,
+            operationStartedAt: operationStartedAt
+        )
+        let restored = await deployRimeConfig(leaseOperationID: operationID)
+        recordActiveUninstallRoutePhase(
+            operationID: operationID,
+            phase: restored ? "rollback_deploy_succeeded" : "rollback_deploy_failed",
+            route: state.effectiveRoute,
+            isFailure: !restored,
+            operationStartedAt: operationStartedAt
+        )
         refreshSchemaList()
         Logger.shared.error(
-            "uninstallSchema: \(reason)，已保留原方案文件并恢复原方案选择",
+            restored
+                ? "uninstallSchema: \(reason)，已保留原方案文件并恢复原方案选择"
+                : "uninstallSchema: \(reason)，已保留原方案文件，但原方案部署恢复未完成",
             category: .deployment
+        )
+    }
+
+    /// These fields are finite route identifiers and an operation UUID only;
+    /// no text input, file path, source URL, or exception text enters logs.
+    private func recordActiveUninstallRoutePhase(
+        operationID: UUID,
+        phase: String,
+        route: RimeRuntimeEffectiveRoute,
+        isFailure: Bool = false,
+        operationStartedAt: UInt64? = nil
+    ) {
+        guard
+            let payload = runtimeRouteDiagnosticPayload(
+                operationID: operationID,
+                phase: phase,
+                route: route,
+                elapsedMilliseconds: operationStartedAt.map {
+                    min(Int((DispatchTime.now().uptimeNanoseconds &- $0) / 1_000_000), 600_000)
+                } ?? 0
+            )
+        else { return }
+        deliveryDiagnostics.recordRuntimeRoute(payload, isFailure: isFailure)
+        let message =
+            "uninstallRoute operation=\(operationID.uuidString)"
+            + " phase=\(phase) schema=\(route.schemaID)"
+            + " layout=\(route.layoutStyle.rawValue) state=\(route.state)"
+        if isFailure {
+            Logger.shared.error(message, category: .deployment)
+        } else {
+            Logger.shared.info(message, category: .deployment)
+        }
+    }
+
+    private func runtimeRouteDiagnosticPayload(
+        operationID: UUID,
+        phase: String,
+        route: RimeRuntimeEffectiveRoute,
+        elapsedMilliseconds: Int
+    ) -> DiagnosticEvent.RuntimeRoutePhaseEvent? {
+        guard let schema = DiagnosticEvent.RuntimeRouteSchema(rawValue: route.schemaID) else { return nil }
+        let layout: DiagnosticEvent.RuntimeRouteLayout =
+            route.layoutStyle == .nineKey ? .nineKey : .twentySixKey
+        let state: DiagnosticEvent.RuntimeRouteState =
+            route.state == .ready ? .ready : .failClosed
+        let value: (DiagnosticEvent.RuntimeRoutePhase, DiagnosticEvent.RuntimeRouteResult)
+        switch phase {
+        case "route_before": value = (.before, .started)
+        case "reconciliation_failed": value = (.reconciliation, .failed)
+        case "route_after_deploy_pending": value = (.fallbackDeploy, .started)
+        case "fallback_deploy_succeeded": value = (.fallbackDeploy, .succeeded)
+        case "fallback_deploy_failed": value = (.fallbackDeploy, .failed)
+        case "route_restored_deploy_pending": value = (.rollbackDeploy, .started)
+        case "rollback_deploy_succeeded": value = (.rollbackDeploy, .succeeded)
+        case "rollback_deploy_failed": value = (.rollbackDeploy, .failed)
+        case "staging_started": value = (.staging, .started)
+        case "staging_failed": value = (.staging, .failed)
+        case "staging_rollback_incomplete": value = (.staging, .recoveryIncomplete)
+        case "commit_succeeded": value = (.commit, .succeeded)
+        case "inactive_route": value = (.inactive, .skipped)
+        default: return nil
+        }
+        return .init(
+            operationID: operationID,
+            phase: value.0,
+            result: value.1,
+            schema: schema,
+            layout: layout,
+            state: state,
+            elapsedMilliseconds: elapsedMilliseconds
         )
     }
 

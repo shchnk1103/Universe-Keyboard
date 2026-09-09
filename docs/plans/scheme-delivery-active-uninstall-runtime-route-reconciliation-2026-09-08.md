@@ -96,6 +96,19 @@ This work is **not authorized for implementation** by this record.
 - Strict Swift format/lint and required App + Keyboard/RimeBridge gates.
 - Fresh CS09-10-02 physical-device matrix with the structured operation trace.
 
+## Recovery-incomplete boundary
+
+An archive `rollbackIncomplete` is outside the normal route-state rollback
+branch. It means the installer cannot prove the removed scheme's files are
+whole enough to redeploy. The safe terminal behavior is to retain the already
+deployed Luna route, preserve recovery files and installation metadata, skip
+original-route redeploy, and stop before commit. The operation must emit a
+content-free recovery-incomplete diagnostic under its operation UUID with
+`phase=staging`, `result=recovery_incomplete`, and `isFailure=true`.
+
+This is not an atomicity or restart-recovery claim. A later explicit recovery
+operation owns any retry after the resource tree is again provably complete.
+
 ## Stop conditions and non-goals
 
 Stop and return to Product/Architecture if a new layout has no Luna-compatible

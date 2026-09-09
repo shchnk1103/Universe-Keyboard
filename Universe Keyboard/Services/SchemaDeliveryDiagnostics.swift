@@ -3,6 +3,7 @@ import KeyboardCore
 
 nonisolated protocol SchemaDeliveryDiagnosing: Sendable {
     func record(_ payload: DiagnosticEvent.SchemeDeliveryPayload)
+    func recordRuntimeRoute(_ payload: DiagnosticEvent.RuntimeRoutePhaseEvent, isFailure: Bool)
 }
 
 /// Main-App adapter for ADR 0027. It accepts only the reviewed composite value;
@@ -31,6 +32,10 @@ nonisolated final class SchemaDeliveryDiagnostics: SchemaDeliveryDiagnosing, Sen
 
     func record(_ payload: DiagnosticEvent.SchemeDeliveryPayload) {
         runtime.recordSchemeDelivery(payload)
+    }
+
+    func recordRuntimeRoute(_ payload: DiagnosticEvent.RuntimeRoutePhaseEvent, isFailure: Bool) {
+        runtime.recordRuntimeRoute(payload, level: isFailure ? .error : .info)
     }
 }
 

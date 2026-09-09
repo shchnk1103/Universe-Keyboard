@@ -291,6 +291,7 @@ public actor DiagnosticsJournalWriter {
                 category: event.category,
                 fields: event.fields,
                 schemeDeliveryPayload: event.schemeDeliveryPayload,
+                runtimeRoutePayload: event.runtimeRoutePayload,
                 rimeSyncPayload: event.rimeSyncPayload
             )
         }
