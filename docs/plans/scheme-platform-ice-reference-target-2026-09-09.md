@@ -21,6 +21,7 @@
 | `2026-09-09 Asia/Shanghai` | Human approved **SharedDefault end-state**: Ice-shaped **`privatePreset`** = reference mode for third-party schemes. **P1** extract Ice `privatePreset` only; Wanxiang may temporarily keep skip/`consumePrelude`. **P2** Wanxiang → `privatePreset` (`consumePrelude` not end-state). Luna may remain Prelude/builtin exception. Fidelity risk → product regression (not silent). |
 | `2026-09-09 Asia/Shanghai` | Human approved **Lua/OpenCC Ownership**: unified ResourceOwnership/ResourceCapability; **long-term dual** `namedList` (Ice) + `exactHash` (Wanxiang) — **not** forced to one; no dangerous filename heuristics auto-remove; no whole-dir wipe; Settings confirmed honesty + optional user marking; OpenCC Wanxiang may `admitted=false`; P1 wire both unchanged; P2 Wanxiang platform path keeps `exactHash`. Contrast: SharedDefault → `privatePreset` in P2; Ownership stays dual. |
 | `2026-09-09 Asia/Shanghai` | Human approved **Luna presence + readiness greying**: Luna always on **26-key Section A**; never on nine-key A; not a B filename suggestion; builtin exception; uninstall fallback already → 26+Luna. Confirmed-but-unready → greyed in A with reason (prefer grey over hide); click guides fix; no direct binding until ready; uninstall auto-rebind **ready** A only. See [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md). |
+| `2026-09-09 Asia/Shanghai` | Human ADR/#101: **leave draft PR #101** until Scheme Platform progresses; **do not Accept ADR 0034 now**; **keep #101 and #102 separate**; cross-links / Accept prep (incl. A34-R8-style refresh) **later** after platform docs/impl. |
 
 ---
 
@@ -149,7 +150,7 @@ Earlier comparison / contract sources (do not re-litigate without new evidence):
 - Rewrite Wanxiang **content** to be Ice (schemas, triggers, Lua product surface)
 - **Wanxiang nine-key productization** — deferred to later Assignment (not yet drafted); may ride Discovery later or stay further deferred; P1/P2 must not enable
 - **Installed Capability Discovery / layout-picker** (and similar Lua/OpenCC product-surface honesty) — later Assignment (not yet drafted); separate Human Active; not P1 seams
-- ADR 0034 **Accept**
+- ADR 0034 **Accept** (Human: **not now**; leave draft #101; Accept prep later after platform progress)
 - Product Gate / TestFlight / App Release
 - Big Swift extract **before** P0 matrix exists and Human Activates the platform Assignment
 - Unilateral Pause of `SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001` (Human must choose parallel narrow A34-R1 vs pause-for-platform)
