@@ -26,13 +26,14 @@ Policy version: 1.0.0
 - **Scope:**
   1. **P0（docs）：** 定义 Scheme Platform 接口草案 + 矩阵「Ice already satisfies / Wanxiang gaps」；编码 Human 已批准的 north star（见 Required Inputs target plan）。
   2. **P1：** 将 Ice hooks 抽到 platform；**Ice 行为不变**（Ice regression）。
-  3. **P2：** 将 Wanxiang 迁到 platform（lua / layout / default 按 reference / adapter）。
+  3. **P2：** 将 Wanxiang 迁到 platform（lua / layout / default 按 reference / adapter）；**不含** Wanxiang nine-key productization（Human deferred — later Assignment）。
   4. **P3：** 删除冗余 forks；**仅在此后**再审视 A34-R1 处置与 ADR Accept 路径（Accept 仍需另授权）。
   5. 共享层能力：lifecycle（download→filter→stage-verify→upgrade checkpoint→install→deploy→receipt；fail-closed restore）；active uninstall→Luna-only；inactive 保 peer/unknown/Prelude；layout capability 声明式；resource ownership 统一 API；never overwrite Prelude `default.yaml`（scheme defaults via private preset / Ice mode）。
   6. 方案层：per-scheme manifest + optional adapters（preset、layout fallback、ownership strategy、post-process）。最小化 `if schemaID == …`。
 - **Non-goals:**
   - 在 Human **Active** 本 Assignment 之前开始 P1+ Swift；
   - 将 Wanxiang **内容**改写成 Ice；
+  - **Wanxiang nine-key productization**（enablement / capability claim）— **deferred to a later Assignment (not yet drafted)**；本 Assignment 的 P1/P2 **不得** enable Wanxiang nine-key；Ice `t9` 仍为 reference shape；`wanxiang_t9*` 可留在 install plan ownership，但 **product capability 保持 false** 直至该未来 Assignment；
   - Accept ADR 0034；Product Gate / TestFlight / App Release；
   - 把 `SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001` 扩成平台 mega-refactor（本 Assignment **supersedes** 该扩展意图）；
   - Ice `dofile` 全量（A34-R2 / TD-011）、`RTRD-01`/`RTRD-02`、Recovery persistence、peer-prefer B、整目录 `lua/`/`opencc/` 清空；
@@ -119,6 +120,7 @@ See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/sche
 | `2026-09-09 Asia/Shanghai` | Gate 0 Active | Assignment Active；Wanxiang P4 Paused；branch `codex/scheme-platform-001`；ask-before-push |
 | `2026-09-09 Asia/Shanghai` | **P0 start** | Begin docs-only interfaces + Ice/Wanxiang matrix (Ice-as-reference) |
 | `2026-09-09 Asia/Shanghai` | **P0 complete** | Interfaces + matrix landed；Assignment/ACTIVE_WORK updated；**local commit only**（no push） |
+| `2026-09-09 Asia/Shanghai` | Human deferral | Wanxiang nine-key productization deferred to later Assignment; P1/P2 must not enable; local docs + commit only |
 
 ## History
 
@@ -127,3 +129,4 @@ See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/sche
 - `2026-09-09 Asia/Shanghai`（Gate 0）: Human 授权本 Assignment **Active**；Pause `SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`（shelved for Scheme Platform；A34-R1 仍 open — NOT Closed/Done）。冻结 tip `814abfd` / 分支 `codex/scheme-platform-001`（自 `origin/main` 新建；不用 PR #101）。切片 = 治理 + bring docs + embed Execution/KOS cadence；**ask before first push/PR**；新 draft PR（not #101）。**无** ADR Accept；**无** Product Gate/TF；**无** Swift。
 - `2026-09-09 Asia/Shanghai`（P0 start）: 开始 P0 docs — platform interfaces/seams + Ice vs Wanxiang matrix（Ice-as-reference；对照 SchemaManagerTypes / RimeIceSharedDefaultAdapter / WanxiangLuaOwnership / Download+Installation Ice hooks）。
 - `2026-09-09 Asia/Shanghai`（P0 complete）: 落盘 [`scheme-platform-p0-interfaces-2026-09-09.md`](../plans/scheme-platform-p0-interfaces-2026-09-09.md) 与 [`scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)；更新 Progress/ACTIVE_WORK。**本地 commit only**；**未 push**；**无** ADR Accept；**无** Swift。
+- `2026-09-09 Asia/Shanghai`（Human decision）: **Defer Wanxiang nine-key productization** to a later Assignment (not yet drafted). Scheme Platform P1/P2 must **not** enable Wanxiang nine-key; Ice `t9` remains reference shape; `wanxiang_t9*` may remain in install plan ownership; product capability stays false until that future Assignment. Recorded in Non-goals / Boundary / P0 interfaces / matrix（local commit only; no push）.

@@ -113,14 +113,14 @@ protocol SchemeLayoutAdapter {
 |---|---|
 | 26 / 9 / future layouts are **declarative / plugin**, not `if schemaID == rime_ice` product logic | **Decided** (target §2.3) |
 | Ice `t9` + readiness + binding9 behavior as reference *shape* | **Decided** |
-| Wanxiang nine-key productization (which schema id, readiness, chrome) | **TBD** (product); P2 may land adapter stub that keeps current “no nine-key claim” |
+| Wanxiang nine-key productization (which schema id, readiness, chrome) | **Human deferred** — out of this Assignment; later Assignment (not yet drafted). P1/P2 must **not** enable; Ice `t9` remains reference shape; `wanxiang_t9*` may stay in plan ownership; product capability stays false. P2 may keep adapter stub with current “no nine-key claim” |
 | Future layouts beyond 26/9 | **TBD** — reserve capability flags only |
 
 ### 2.3 P1 extract guidance
 
 - Extract `LayoutCapability` from Ice’s current T9 path without changing Ice UX.
 - Replace `isNineKeyCapable == (id == "t9")` with adapter lookup **backed by Ice adapter returning the same answer**.
-- Do **not** enable Wanxiang nine-key in P1.
+- Do **not** enable Wanxiang nine-key in P1 (**Human deferred** to later Assignment; also not P2 enablement).
 
 ---
 
@@ -262,7 +262,7 @@ protocol SchemePostProcessAdapter {
 | Adapter | Ice reference | Wanxiang today → P2 |
 |---|---|---|
 | SharedDefault | `RimeIceSharedDefaultAdapter` | skipOnly (optional private preset **TBD**) |
-| Layout | T9 readiness + binding9=`t9` + uninstall layout fallback | 26-key only productized; nine-key **TBD** |
+| Layout | T9 readiness + binding9=`t9` + uninstall layout fallback | 26-key only productized; nine-key **Human deferred** (later Assignment; not P1/P2 enablement) |
 | Ownership | plan removable list | plan list + `WanxiangLuaOwnership` exact-hash |
 | PostProcess | Ice shared-default + existing Ice post | `wanxiang-post-1` (keep) |
 | UninstallHooks | `prepareRimeIceUninstallWithLayoutFallback`, Ice license/version UI | generic path; fewer Ice-only UI forks |
@@ -295,7 +295,7 @@ Ordered for **Ice behavior unchanged**:
 1. **SharedDefaultAdapter** — wrap `RimeIceSharedDefaultAdapter`; replace `schemaID == "rime_ice"` post-process call with adapter lookup.
 2. **ResourceOwnershipStrategy** — Ice plan-list strategy; bridge Wanxiang exact-hash through same protocol without changing hashes/pins.
 3. **Lifecycle helpers** — `UpgradeCheckpointing` + uninstall staging already mostly plan-driven; remove Wanxiang-only private helpers from installer core where safe.
-4. **LayoutCapability** — Ice nine-key answers identical; no Wanxiang nine-key enablement.
+4. **LayoutCapability** — Ice nine-key answers identical; no Wanxiang nine-key enablement (**Human deferred** — later Assignment).
 5. **Regression** — Ice install/uninstall/T9/active-uninstall automation + authorized IQ.
 
 Stop if Ice UX/install/uninstall drifts without Human accept.
@@ -308,6 +308,7 @@ Stop if Ice UX/install/uninstall drifts without Human accept.
 - ADR 0034 Accept  
 - Product Gate / TestFlight  
 - Rewriting Wanxiang content to Ice  
+- **Wanxiang nine-key productization** — **Human deferred** to later Assignment (not yet drafted); P1/P2 must not enable  
 - Closing A34-R1 / unpausing Wanxiang P4  
 - Ice `dofile` full close (A34-R2 / TD-011), Recovery persistence, peer-prefer B  
 
@@ -316,3 +317,4 @@ Stop if Ice UX/install/uninstall drifts without Human accept.
 ## 8. History
 
 - `2026-09-09 Asia/Shanghai`: P0 interface draft authored on `codex/scheme-platform-001` (docs only; local commit; no push).
+- `2026-09-09 Asia/Shanghai`: Human deferred Wanxiang nine-key productization to later Assignment; marked former TBD as **Human deferred** (not open for this Assignment); P1/P2 must not enable (local commit only; no push).

@@ -32,7 +32,7 @@ Sources: `SchemaManagerTypes` plans (`rime-ice-plan-2` / `wanxiang-plan-1`), `Ri
 | **Resource ownership: opencc** | Removable emoji/others Ice files; shared builtin OpenCC not wholesale owned | No opencc prefix in Wanxiang plan (base package focus) | Ownership API over admitted opencc paths; no directory wipe | **Yes** (Ice listed paths) | **Mostly N/A** unless Wanxiang admits opencc later |
 | **Resource ownership: dicts** | `cn_dicts/` `en_dicts/` removableDirectories | `dicts/` removableDirectory | Directory-owned under plan; never imply lua/opencc wipe | **Yes** | **Yes** |
 | **Layout 26-key** | Capable; binding26; activate writes binding when 26-capable | Capable as full-pinyin product; in 26-key picker | Declarative `supports26Key` on adapter | **Yes** | **Yes** |
-| **Layout 9-key / T9** | Productized: readiness → binding9=`t9`; depends on Ice; uninstall layout fallback | Plan admits `wanxiang_t9` / `wanxiang_t9i` files but `isNineKeyCapable` only `"t9"`; capability matrix does not productize Wanxiang nine-key | Declarative nine-key capability; Ice shape is reference | **Yes** — Ice-only answers unchanged | **Gap** — product TBD; migrate file ownership already; **enablement** only with Human product auth |
+| **Layout 9-key / T9** | Productized: readiness → binding9=`t9`; depends on Ice; uninstall layout fallback | Plan admits `wanxiang_t9` / `wanxiang_t9i` files but `isNineKeyCapable` only `"t9"`; capability matrix does not productize Wanxiang nine-key | Declarative nine-key capability; Ice `t9` shape is reference; Wanxiang product capability stays false until later Assignment | **Yes** — Ice-only answers unchanged; **do not** enable Wanxiang nine-key | **Human deferred** — file ownership (`wanxiang_t9*`) may remain in plan; **enablement / productization out of P2** (later Assignment, not yet drafted) |
 | **Capability honesty (fuzzy / advanced input)** | `RimeSchemeCapabilityMatrix`: fuzzy + advanced true for `rime_ice` | Both false for `wanxiang` (V1 honesty) | Keep matrix; drive from adapter/manifest flags | **Partial** — read from adapter | **Yes** — flags on Wanxiang adapter (values may stay false) |
 | **`if schemaID == …` sprawl** | Download post-process; T9 normalize; uninstall layout; UI `rimeIce*` state; lua diagnostics guard | Installer Wanxiang lua match; post revision switch; named helpers | Adapters + manifest; P3 delete redundant forks | **Yes** — start reducing Ice forks via adapters | **Yes** — Wanxiang-named bridges → adapters |
 | **Post-process revision binding** | `rime-ice-post-2` | `wanxiang-post-1` | `SchemePostProcessAdapter.revision` | **Yes** | **Yes** |
@@ -43,7 +43,7 @@ Sources: `SchemaManagerTypes` plans (`rime-ice-plan-2` / `wanxiang-plan-1`), `Ri
 
 ## Top Wanxiang gaps for P2 (summary)
 
-1. **Layout nine-key productization** — files exist in plan; runtime/capability still Ice/`t9`-only. Largest product gap; needs Human layout decision before enablement.  
+1. **Layout nine-key productization** — **Human deferred** (`2026-09-09 Asia/Shanghai`) to a later Assignment (not yet drafted). Files may remain in plan; runtime/capability stays Ice/`t9`-only; P1/P2 must **not** enable Wanxiang nine-key; product capability stays false until that future Assignment.  
 2. **Ownership API unification** — exact-hash lua works but is a special-case in `SchemaArchiveInstaller`; must become `ResourceOwnershipStrategy` without changing pin hashes.  
 3. **Shared-default** — skip policy OK; no private-preset. P2 default = `skipOnly` adapter; private preset only if product asks.  
 4. **Lifecycle surface** — upgrade checkpoint is Wanxiang-strong; fold into shared `UpgradeCheckpointing` so Ice/Wanxiang stop diverging helper paths.  
@@ -64,3 +64,4 @@ Sources: `SchemaManagerTypes` plans (`rime-ice-plan-2` / `wanxiang-plan-1`), `Ri
 ## History
 
 - `2026-09-09 Asia/Shanghai`: P0 matrix authored on `codex/scheme-platform-001` (docs only; local commit; no push).
+- `2026-09-09 Asia/Shanghai`: Human deferred Wanxiang nine-key productization to later Assignment; nine-key row / top-gaps note updated (**Human deferred**, not open TBD for this Assignment); local commit only; no push.
