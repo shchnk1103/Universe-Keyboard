@@ -9,7 +9,7 @@ Current SCHEME-DELIVERY increment: `2026-09-08` rollback double-failure repair p
 
 Status snapshot (existing rows): `2026-09-09 Asia/Shanghai` — PR #100 tip includes docs sync `a007681` (engineering tip `33b35d3`); Human authorized **undraft+merge after docs sync + hosted CI green**. `SCHEME-DELIVERY-SOURCE-STATE-001` matrix slices remain on branch with prior reviews. Runtime-route DEVICE Assignment recorded functional CS09-10-02 Pass with conditions; `RTRD-01`/`RTRD-02` stay out of this PR / not closed by merge. Luna-only active-uninstall policy supersedes peer-prefer B. Limited P4 Gate remains historical. 产品 Active Work 仍以本表计数为准。KOS-UPGRADE-UK-003 Closed 仍以 Assignment 为准。
 
-Current update: `2026-09-09 Asia/Shanghai` — Runtime-route CONTRACT reviewed；INTEGRATION P1 已复审；DEVICE 真机功能 Pass with conditions；docs tip `a007681`；Human 已授权 hosted CI 全绿后 undraft+merge PR #100。`RTRD-01`/`RTRD-02` 仍 out of PR / 不因 merge 关闭。Product Gate / TestFlight / Release / ADR Accept 仍未授权。
+Current update: `2026-09-09 Asia/Shanghai` — PR #100 已合入 `main` (`814abfd`)。Human 批准 ADR 0034 **Architecture Accept 复审清单**（非 Accept）：[`adr-0034-architecture-accept-checklist-2026-09-09.md`](reviews/adr-0034-architecture-accept-checklist-2026-09-09.md)。ADR 仍 Proposed；完整 Product Gate / TestFlight / ADR Accept 仍未授权；`RTRD-01`/`RTRD-02` 仍独立。
 
 | # | Work Item | Lifecycle (from Assignment) | Phase / next | Assignment |
 |---|---|---|---|---|
