@@ -7,10 +7,10 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | **Ready** |
-| Current Phase | Human 已批准 Ice-as-reference Scheme Platform **目标**（`2026-09-09 Asia/Shanghai`）。本 Assignment 已起草为 **Ready**；**尚未** Human Active。P0 = 接口 + 「Ice already satisfies / Wanxiang gaps」矩阵（仅文档）。工作可与分支 `codex/wanxiang-p4-closure-001` 上 docs-only 共存；**不**自动接管 Wanxiang P4 Active 实现权。 |
+| Current Phase | Human 已批准 Ice-as-reference Scheme Platform **目标**（`2026-09-09 Asia/Shanghai`）。本 Assignment **仍 Ready**；Human **deferred Active**（`2026-09-09` choice **(b)** — Wanxiang P4 继续窄 A34-R1，不含平台抽取）。P0 = 接口 + 「Ice already satisfies / Wanxiang gaps」矩阵（仅文档；**尚未**授权推进）。与 `codex/wanxiang-p4-closure-001` 上窄 P4 docs 并行共存；**不**接管 Wanxiang P4 Active 实现权；**无** P1 Swift until Human Active。 |
 | Material non-claims | **不是** ADR 0034 Accept；**不是** Product Gate / TestFlight / Release；**不是** Swift 实现授权；不把 Wanxiang 内容改写成 Ice；不单方面 Pause `SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001` |
-| Next handoff / decision | **Human Product Owner：** (1) 是否 **Active** 本 Assignment（方可推进正式 P0 矩阵 / 后续 P1）；(2) 对仍 Active 的 Wanxiang P4 选择 **(a)** Active 本片并 Pause/收窄 P4，或 **(b)** 继续窄 A34-R1（Scope 明确排除平台抽取） |
-| Residuals | A34-R1 仍由 Wanxiang P4 Assignment 跟踪直至 Human 决定平台优先或窄闭合；A34-R2 / TD-011 / RTRD-* 仍并行债 |
+| Next handoff / decision | Human 已选 **(b)**（`2026-09-09`）：本片 **保持 Ready**（deferred Active）。Wanxiang P4 继续窄 A34-R1 **并行**、不含平台抽取。后续仍需 Human 明确 **Active** 本 Assignment 方可推进正式 P0 矩阵 / P1+。 |
+| Residuals | A34-R1 由 Wanxiang P4 Assignment 继续窄闭合跟踪（Human **(b)**）；本片 Active 前不接管 A34-R1。A34-R2 / TD-011 / RTRD-* 仍并行债 |
 | Frozen tip | 起草时分支 tip ~`8006413` on `codex/wanxiang-p4-closure-001`（docs-only）；实现冻结 tip 在 Active 时由 Human 重申 |
 
 ---
@@ -102,3 +102,4 @@ Policy version: 1.0.0
 ## History
 
 - `2026-09-09 Asia/Shanghai`: Human 批准 Ice-as-reference Scheme Platform 目标；Lifecycle = **Ready**；授权本地 docs（target + 本 Assignment + ACTIVE_WORK / Wanxiang P4 状态注记）。**未**授权 Active / Swift / push / ADR Accept。
+- `2026-09-09 Asia/Shanghai`（稍后）: Human 选择 **(b)** — deferred Active for this Assignment；Lifecycle **仍 Ready**。Wanxiang P4（`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`）继续 **narrow A34-R1** in parallel without platform extract / Ice-as-reference P1–P3。**未**授权 Active / P1 Swift / push / ADR Accept。

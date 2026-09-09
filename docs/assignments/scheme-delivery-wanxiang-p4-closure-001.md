@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | **Active** |
-| Current Phase | Human 已授权 Active（`2026-09-09 Asia/Shanghai`）。冻结 tip：`origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`；工作分支 `codex/wanxiang-p4-closure-001`。Slice 1：缺口清单已落盘（见 Evidence）；**尚未**开始 Swift 实现。目标：闭合 ADR 0034 Architecture Accept 残余 **A34-R1**（Wanxiang P4 相对 ADR 全文）。A34-R1 仍 `fix` / open until Exit。<br><br>**Platform target (2026-09-09 Asia/Shanghai):** Human 已批准 Ice-as-reference **Scheme Platform** 目标（[`scheme-platform-ice-reference-target-2026-09-09.md`](../plans/scheme-platform-ice-reference-target-2026-09-09.md)；Ready Assignment [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](scheme-delivery-scheme-platform-001.md)）。Lifecycle **保持 Active**（Human 未授权 Pause）。**本 Assignment 下一实现/闭合工作 blocked pending Human 二选一：**(a) Active 平台 Assignment 并 Pause/收窄本片，或 (b) 继续 **窄** A34-R1（Scope **明确排除**平台抽取 / mega-refactor）。在选定前，Executor **不得**把本片扩成平台提取，也 **不得**单方面 Pause。 |
-| Material non-claims | 本 Assignment **不是** ADR 0034 Accept；**不是**完整 Product Gate / TestFlight / Release；不把 Ice `dofile`（A34-R2 / TD-011）或 `RTRD-01`/`RTRD-02` 塞进本片；不含 Recovery persistence、peer-prefer B、pin 变更、整目录 `lua/`/`opencc/` 清空 |
-| Next handoff / decision | **Blocked pending Human choice**（见 Current Phase）：(a) Active [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](scheme-delivery-scheme-platform-001.md) 并 Pause/收窄本片，或 (b) 授权继续窄 A34-R1（排除平台抽取）。选定 (b) 后才按缺口清单推进文档闭合 / 最小实现切片。每片对外 push/merge 仍需 Human。 |
+| Current Phase | Human 已授权 Active（`2026-09-09 Asia/Shanghai`）。冻结 tip：`origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`；工作分支 `codex/wanxiang-p4-closure-001`。目标：闭合 ADR 0034 Architecture Accept 残余 **A34-R1**（Wanxiang P4 相对 ADR 全文）。A34-R1 仍 `fix` / open until Exit。<br><br>**Human choice 2026-09-09 Asia/Shanghai: (b)** — keep Wanxiang P4 **Active** for **narrow A34-R1**；Scope **明确排除** Scheme Platform extract / Ice-as-reference P1–P3 / mega-refactor。`(a)/(b)` blocker **cleared**。下一阶段：**S2 narrow closure checklist（E14）** + residual disposition notes for **E15–E17/E20**（见 Evidence checklist）。**尚未**开始 Swift；无 Scheme Platform P1 Swift。<br><br>**Platform target:** Ice-as-reference Scheme Platform 目标已获 Human 批准（[`scheme-platform-ice-reference-target-2026-09-09.md`](../plans/scheme-platform-ice-reference-target-2026-09-09.md)；Ready Assignment [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](scheme-delivery-scheme-platform-001.md)）但对本片 **out of scope** until 该 Assignment 另获 Human **Active**。 |
+| Material non-claims | 本 Assignment **不是** ADR 0034 Accept；**不是**完整 Product Gate / TestFlight / Release；不把 Ice `dofile`（A34-R2 / TD-011）或 `RTRD-01`/`RTRD-02` 塞进本片；不含 Recovery persistence、peer-prefer B、pin 变更、整目录 `lua/`/`opencc/` 清空；**Scheme Platform** 目标已批准但对本片 **out of scope**（由 `SCHEME-DELIVERY-SCHEME-PLATFORM-001` 另 Active 承接；本片不含平台抽取 / P1 Swift） |
+| Next handoff / decision | Human 已选 **(b)**。推进 **S2**：[`scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md`](../evidence/scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md)（E14 writeback path）+ residual disposition notes（E15 IQ 仍 open；**E16/E17/E20 需 Human disposition** — 不静默 Closed）。每片对外 push/merge 仍需 Human。Scheme Platform 保持 Ready until 另 Active。 |
 | Residuals | A34-R1 open（`fix`）；闭合后须回写 A34-R1 disposition；**仍不**自动 Accept ADR 0034 |
 | Frozen tip | base `814abfd7c03002256978d7658c176b80002d2539` (`origin/main` / PR #100 merge)；branch `codex/wanxiang-p4-closure-001` |
 
@@ -27,7 +27,7 @@ Policy version: 1.0.0
   1. 相对 ADR 0034 候选 A 与已合入 `main` @ `814abfd` 的现状，盘点 **Wanxiang P4 仍未闭合** 的具体缺口（升级、卸载、跨方案矩阵、设备/自动化证据、与 exact-hash / upgrade-rollback 切片的差距）。
   2. 在 Human 授权 `Active` 后，按最小切片闭合那些缺口：生产行为仅限万象归属/升级/卸载合同所需；补充自动化测试与 Independent Quality（及 Human 另授权时的设备证据）。
   3. 闭合证据足够后，更新 Assignment / ACTIVE_WORK，并将 Architecture Accept 残余 **A34-R1** 从 `fix` 改为可 Accept 的处置（通常 `Closed` 或书面范围说明）；**仍不自动 Accept ADR 0034**。
-  4. **Progress / Boundary (platform):** Ice-as-reference Scheme Platform 目标已获 Human 批准；平台抽取与 mega-refactor **不在**本片默认 Scope。平台工作由 [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](scheme-delivery-scheme-platform-001.md)（Ready）承接。本片在 Human 选择 (a)/(b) 前 **blocked**（见 Current Status）。
+  4. **Progress / Boundary (platform):** Ice-as-reference Scheme Platform 目标已获 Human 批准但对本片 **out of scope** until [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](scheme-delivery-scheme-platform-001.md) 另获 Human **Active**。平台抽取 / Ice-as-reference P1–P3 / mega-refactor **明确排除**（Human choice **(b)** `2026-09-09`）。本片仅窄 A34-R1：S2 checklist / residual disposition / 仅在核对发现生产缺口时的最小 Swift。
 - **Non-goals:**
   - 修改 ADR 0034 Status 为 Accepted，或无 Human「Accept ADR 0034」授权时改 ADR 正文决策；
   - Ice `dofile`/`loadfile` 全量闭合（属 A34-R2 / `TD-011`）；
@@ -35,7 +35,7 @@ Policy version: 1.0.0
   - Recovery persistence、peer-prefer B、TestFlight、App Release、完整 Product Gate；
   - 更换 Wanxiang pin / 扩大到非 CNB `17.5.9` 范围（除非 Human 另授权）；
   - 整目录删除 `lua/` / `opencc/`，或削弱 ADR 0033 官方不可变字节合同；
-  - 将本片扩成 Scheme Platform 抽取 / Ice-as-reference mega-refactor（由 `SCHEME-DELIVERY-SCHEME-PLATFORM-001` 承接；见 Current Status 选择）。
+  - 将本片扩成 Scheme Platform 抽取 / Ice-as-reference P1–P3 / mega-refactor（Human **(b)**；由 `SCHEME-DELIVERY-SCHEME-PLATFORM-001` 另 Active 承接）。
 - **Required Inputs:**
   - [ADR 0034](../architecture/decisions/0034-multi-scheme-resource-ownership.md)（Proposed）
   - [Architecture Accept checklist](../reviews/adr-0034-architecture-accept-checklist-2026-09-09.md)
@@ -91,6 +91,7 @@ Human 拒绝书面接受 A34-R1 后，Architecture 路径上 A34-R1 视为 **`fi
 ## Evidence
 
 - Gap inventory (slice 1): [`../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md`](../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)
+- Narrow closure checklist (S2): [`../evidence/scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md`](../evidence/scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md)
 - Architecture Accept review (A34-R1 = `fix`): [`../reviews/adr-0034-architecture-accept-review-2026-09-09.md`](../reviews/adr-0034-architecture-accept-review-2026-09-09.md)
 - Baseline: `main` @ `814abfd7c03002256978d7658c176b80002d2539`
 
@@ -99,3 +100,4 @@ Human 拒绝书面接受 A34-R1 后，Architecture 路径上 A34-R1 视为 **`fi
 - `2026-09-09 Asia/Shanghai`: Human 拒绝接受 Architecture Accept 残余 A34-R1，批准起草本独立 Assignment；Lifecycle = Ready；**未**授权实现 / Active。
 - `2026-09-09 Asia/Shanghai`（稍后）: Human 授权本 Assignment **Active** + full KOS adherence（`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`）。冻结 tip `814abfd` / 分支 `codex/wanxiang-p4-closure-001`；slice 1 = 缺口清单 + Active 治理（无 Swift）。**仍不** Accept ADR 0034。
 - `2026-09-09 Asia/Shanghai`（再后）: Human 批准 Ice-as-reference **Scheme Platform** 目标；新建 Ready Assignment `SCHEME-DELIVERY-SCHEME-PLATFORM-001`。本片 Lifecycle **仍 Active**（未授权 Pause）。Current Status / Boundary：下一工作 **blocked pending** Human 选择 (a) Active 平台并 Pause/收窄本片，或 (b) 继续窄 A34-R1 且 Scope 排除平台抽取。**仍不** Accept ADR；无 Swift 平台抽取。
+- `2026-09-09 Asia/Shanghai`（再再后）: Human 选择 **(b)** — keep Wanxiang P4 Active for **narrow A34-R1**；Scope **明确排除** Scheme Platform extract / Ice-as-reference P1–P3。`(a)/(b)` blocker cleared。下一阶段 S2 narrow closure checklist（E14）+ E15–E17/E20 residual disposition notes（E16/E17/E20 **仍需 Human disposition**）。Scheme Platform Assignment **仍 Ready**（未 Active）。**仍不** Accept ADR；无 push；无 Scheme Platform P1 Swift；无 mega-refactor。

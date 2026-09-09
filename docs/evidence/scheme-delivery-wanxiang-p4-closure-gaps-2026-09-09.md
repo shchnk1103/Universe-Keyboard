@@ -100,7 +100,7 @@ A34-R1 仍为 `fix` 的原因不是「生产仍整目录 wipe / 覆盖 Prelude�
 | **S5** | Independent Quality closure delta | Review | 对冻结 tip 出具「无开放 P0/P1（本片范围）」或列出残留 | 把条件项静默当成 Closed |
 | **S6** | A34-R1 disposition writeback | Docs | Assignment / ACTIVE_WORK / Architecture review：A34-R1 → `Closed` 或 Human 书面缩窄；**仍不**改 ADR Status | 无 Human 对 writeback 的确认 |
 
-**本 run 只完成 S1。** 不开始 S3 Swift。
+**S1 已完成。** `2026-09-09` Human **(b)** 后推进 **S2** checklist（见上链）。不开始 S3 Swift / 平台抽取。
 
 ---
 
@@ -117,3 +117,4 @@ A34-R1 仍为 `fix` 的原因不是「生产仍整目录 wipe / 覆盖 Prelude�
 ## 6. History
 
 - `2026-09-09 Asia/Shanghai`：slice 1 缺口清单落盘于分支 `codex/wanxiang-p4-closure-001`（base `814abfd`）；Assignment → Active。
+- `2026-09-09 Asia/Shanghai`：Human 选择 **(b)** — keep Wanxiang P4 Active for **narrow A34-R1**；Scope 明确排除 Scheme Platform extract / Ice-as-reference P1–P3。S2 checklist：[`scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md`](scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md)。E14–E17/E20 仍 Open / needs disposition；**不**静默 Closed。
