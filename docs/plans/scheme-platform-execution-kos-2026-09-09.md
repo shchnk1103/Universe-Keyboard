@@ -27,3 +27,4 @@ Governance + bring docs + embed this execution plan. Do **not** Accept ADR 0034,
 ## History
 
 - `2026-09-09 Asia/Shanghai`: Human Gate 0 authorized Active platform + Pause Wanxiang P4; local branch `codex/scheme-platform-001` from `814abfd`; ask-before-first-push/PR.
+- `2026-09-09 Asia/Shanghai`: P0 docs complete (interfaces + Ice/Wanxiang matrix); local commit only; no push.

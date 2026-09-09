@@ -1,0 +1,318 @@
+# Scheme Platform P0 — Proposed interfaces / seams (2026-09-09)
+
+**Status:** P0 docs draft (Assignment Active). **Not** Swift; **not** ADR Accept; **not** Product Gate / TF.  
+**Assignment:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md)  
+**North star:** [`scheme-platform-ice-reference-target-2026-09-09.md`](scheme-platform-ice-reference-target-2026-09-09.md) (Human Approved)  
+**Companion matrix:** [`../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)  
+**Frozen tip base:** `origin/main` @ `814abfd`; branch `codex/scheme-platform-001`
+
+**Legend:** **Decided** = Human-approved target / existing production contract to preserve. **Proposed (P0)** = interface shape for P1 extract review. **TBD** = needs Human/Architecture before Swift.
+
+Ice is the **reference implementation**. P1 extracts Ice hooks into these seams with **Ice behavior unchanged**. Wanxiang migrates in P2 via adapters — not a second platform.
+
+---
+
+## 0. Design rules (Decided)
+
+1. Minimize production `if schemaID == …`. Scheme divergence lives in **manifest + adapters**.
+2. Never whole-directory wipe of `lua/` or `opencc/`.
+3. Never overwrite Prelude / official `default.yaml`.
+4. Active uninstall → **Luna-only** (await successful Luna deploy before stage→commit); peers may remain installed but are **not** auto-selected.
+5. Fail-closed at every mutation boundary: no success receipt until deploy; restore selection + files / keep upgrade checkpoint per existing contracts.
+6. Cross-scheme preserve rules: [`scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md`](scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md).
+
+---
+
+## 1. Lifecycle seam
+
+### 1.1 Pipeline (Decided shape; Proposed API names)
+
+Unified mutation pipeline for install / upgrade / uninstall:
+
+| Step | Responsibility | Ice reference today | Platform note |
+|---|---|---|---|
+| **download** | Pinned source variant / digest / staged identity | `SchemaManager+Download` + catalog manifest variants | Keep pin / staged-identity gates |
+| **filter plan** | Admit / skip / rewrite per plan | `RimeSchemeInstallationPlan.shouldInstall` | Plan stays declarative |
+| **stage-verify** | Content + ownership checks before commit | Staged identity SHA; post-process then verify | Fail-closed before live replace |
+| **upgrade checkpoint** | Prior generation when replacing | Ice has install path; Wanxiang `createUpgradeCheckpoint` | **Proposed:** one `UpgradeCheckpointing` protocol; Ice + Wanxiang both call it |
+| **install** | Commit lease; write owned paths only | `installSchemaFiles(plan:luaAvailable:)` | Lease unchanged (ADR 0001/0018 boundaries) |
+| **deploy** | Main App deploy before claiming success | Deploy phase in download pipeline | No success UI/receipt until deploy OK |
+| **receipt** | Success only after deploy | Existing success state | Unchanged contract |
+| **fail-closed restore** | No success receipt; restore selection+files / keep checkpoint | Active-uninstall Luna fail; Wanxiang upgrade rollback | Shared restore orchestration |
+
+### 1.2 Proposed types (P0 sketch — P1 names may rename)
+
+```text
+protocol SchemeLifecycleCoordinator {
+  func install(scheme: SchemeIdentity, intent: SchemeMutationIntent) async throws -> SchemeMutationReceipt
+  func upgrade(scheme: SchemeIdentity, intent: SchemeMutationIntent) async throws -> SchemeMutationReceipt
+  func uninstall(scheme: SchemeIdentity, mode: UninstallMode) async throws -> SchemeMutationReceipt
+}
+
+enum UninstallMode { case activeLunaOnly; case inactivePreservePeers }
+
+protocol UpgradeCheckpointing {
+  func createCheckpoint(plan: InstallationPlanView, sharedRoot: URL) throws -> UpgradeCheckpoint?
+  func restore(_ checkpoint: UpgradeCheckpoint) throws
+  func commit(_ checkpoint: UpgradeCheckpoint)  // success path only
+}
+
+protocol UninstallStaging {
+  func stage(plan: InstallationPlanView, ownership: ResourceOwnershipStrategy) throws -> StagingHandle
+  func commit(_ handle: StagingHandle) throws
+  func rollback(_ handle: StagingHandle) throws
+}
+```
+
+| Item | Status |
+|---|---|
+| Pipeline order download→…→receipt | **Decided** |
+| Active vs inactive uninstall outcomes | **Decided** (§2.2 target plan) |
+| Exact protocol / type names in Swift | **TBD** (P1 naming) |
+| Whether Ice upgrade checkpoint must match Wanxiang byte-for-byte API on day-1 extract | **TBD** — P1 may wrap Ice path first, unify signatures in P1.1 |
+
+### 1.3 Fail-closed invariants (Decided)
+
+- Mid-copy / mid-deploy failure with peer installed → peer generation retained; no success receipt (`CS-F1`).
+- Active-uninstall Luna/fallback deploy failure → original selection + files retained (`CS-F2`).
+- Staging mid-move failure → target restored; peer untouched (`CS-F3`).
+- Double-failure on uninstall rollback → keep staging checkpoint (existing repair contract).
+
+---
+
+## 2. Layout capability seam
+
+### 2.1 Problem (Ice reference / current forks)
+
+Today nine-key is effectively Ice-shaped:
+
+- `RimeRuntimeSelection.isNineKeyCapable` → only `"t9"`.
+- T9 enable path writes `schemeBinding9 = "t9"` and depends on Ice install / readiness (`SchemaManager+T9Layout`, route `dependencySchemaIDs: ["rime_ice"]`).
+- `RimeSchemeCapabilityMatrix.normalizeSchemaID`: `"t9"` → `"rime_ice"`.
+- Wanxiang ships `wanxiang_t9.schema.yaml` / `wanxiang_t9i.schema.yaml` in plan **allowedFiles**, but product nine-key capability is **not** Ice-parity.
+
+### 2.2 Proposed capability model
+
+```text
+struct LayoutCapability: Equatable, Sendable {
+  var supports26Key: Bool
+  var supports9Key: Bool
+  var nineKeySchemaIDs: [String]     // e.g. ["t9"] for Ice; future ["wanxiang_t9", ...]
+  var twentySixKeySchemaIDs: [String]
+  var nineKeyDependencies: [String]  // schemes that must be installed/ready
+}
+
+protocol SchemeLayoutAdapter {
+  var layout: LayoutCapability { get }
+  func onUninstallPrepare(layoutBindings: inout LayoutBindingState) // Ice: prepareRimeIceUninstallWithLayoutFallback
+  func normalizeSettingsSchemaID(_ raw: String) -> String
+}
+```
+
+| Item | Status |
+|---|---|
+| 26 / 9 / future layouts are **declarative / plugin**, not `if schemaID == rime_ice` product logic | **Decided** (target §2.3) |
+| Ice `t9` + readiness + binding9 behavior as reference *shape* | **Decided** |
+| Wanxiang nine-key productization (which schema id, readiness, chrome) | **TBD** (product); P2 may land adapter stub that keeps current “no nine-key claim” |
+| Future layouts beyond 26/9 | **TBD** — reserve capability flags only |
+
+### 2.3 P1 extract guidance
+
+- Extract `LayoutCapability` from Ice’s current T9 path without changing Ice UX.
+- Replace `isNineKeyCapable == (id == "t9")` with adapter lookup **backed by Ice adapter returning the same answer**.
+- Do **not** enable Wanxiang nine-key in P1.
+
+---
+
+## 3. Resource ownership seam (lua / opencc / dicts)
+
+### 3.1 Ice reference today
+
+- Plan `removableFiles` / `removableDirectories` / `removableBuildFileSubstrings` list Ice-owned lua scripts, emoji opencc files, `cn_dicts`/`en_dicts`, etc. (`rime-ice-plan-2`).
+- Uninstall staging moves plan paths only (plus Wanxiang exact-hash hook when plan matches Wanxiang).
+- `lua/` and `opencc/` prefixes are **allowlists for install**, not ownership proofs.
+- Unknown / user / peer / Prelude baselines preserved (matrix §3).
+
+### 3.2 Wanxiang today
+
+- Plan removable list covers named schemas/dicts + `dicts/` directory; **lua not on removableFiles**.
+- `WanxiangLuaOwnership.sha256ByPath` + `matchingWanxiangLuaPaths` (gated by `wanxiang.schema.yaml` + `wanxiang-plan-1`) adds exact-hash lua paths at checkpoint/uninstall.
+- Unknown or edited lua bytes left untouched.
+
+### 3.3 Proposed unified API
+
+```text
+protocol ResourceOwnershipStrategy {
+  /// Paths eligible for uninstall / upgrade-checkpoint capture under preserve rules.
+  func ownedPaths(sharedRoot: URL, plan: InstallationPlanView) throws -> [OwnedPath]
+
+  /// Install admission already covered by plan; optional extra checks.
+  func verifyAdmission(stagedRoot: URL, plan: InstallationPlanView) throws
+}
+
+enum OwnershipMatch {
+  case planListed           // Ice removable list
+  case exactContentHash(String)  // Wanxiang lua
+  case directoryOwned       // e.g. cn_dicts / dicts — still not whole lua/opencc
+}
+
+struct OwnedPath {
+  var relativePath: String
+  var match: OwnershipMatch
+}
+```
+
+| Item | Status |
+|---|---|
+| Unify behind one ownership API; Ice plan-list + Wanxiang exact-hash as strategies | **Decided** (target §2.4) |
+| Forbid whole-`lua/` / `opencc/` wipe | **Decided** |
+| Exact strategy registration mechanism (manifest pointer vs code plugin table) | **Proposed (P0)** — prefer manifest pointer + small plugin registry |
+| Opencc shared-with-builtin files (e.g. Ice `s2t.json` share case) uninstall policy | **TBD** if not already covered by plan omit — do not invent counters (ADR §5.1) |
+| Generalizing exact-hash beyond Wanxiang pin | **TBD** — pin-bound until Human extends |
+
+### 3.4 P1 extract guidance
+
+- Introduce `ResourceOwnershipStrategy`; Ice strategy = “plan removable set”.
+- Keep `matchingWanxiangLuaPaths` as Wanxiang strategy **called through the same API** (may still live behind Wanxiang adapter in P1 without behavior change).
+- Delete the `schemaFileName == wanxiang…` special-case only when Wanxiang adapter is registered (P2 preferred; P1 may leave a thin bridge).
+
+---
+
+## 4. Shared-default / preset policy seam
+
+### 4.1 Ice reference (P2+ production)
+
+`RimeIceSharedDefaultAdapter`:
+
+- Copy upstream `default.yaml` → `rime_ice_preset.yaml`.
+- Rewrite `__include: default:/` and `import_preset: default` in admitted schemas (`rime_ice`, `t9`, `melt_eng`, `radical_pinyin`).
+- Plan `skippedFiles` includes `default.yaml` so Prelude is never installed over.
+- Hook: `SchemaManager+Download` `if schemaID == "rime_ice" { adaptIceSharedDefault }`.
+
+### 4.2 Wanxiang today
+
+- Plan skips `default.yaml` (Candidate A).
+- **No** private preset rewrite adapter.
+- Product does not claim Ice-parity shared defaults.
+
+### 4.3 Proposed policy + adapter
+
+```text
+enum SharedDefaultPolicy {
+  case neverInstallDefaultYAML          // both Ice + Wanxiang
+  case privatePreset(PrivatePresetSpec) // Ice reference
+  case skipOnly                         // Wanxiang today
+}
+
+struct PrivatePresetSpec {
+  var presetConfigName: String   // "rime_ice_preset"
+  var presetFileName: String     // "rime_ice_preset.yaml"
+  var schemaFilesToRewrite: [String]
+}
+
+protocol SharedDefaultAdapter {
+  var policy: SharedDefaultPolicy { get }
+  func applyPostExtract(in extractionDirectory: URL) throws
+}
+```
+
+| Item | Status |
+|---|---|
+| Never overwrite Prelude `default.yaml` | **Decided** |
+| Ice private-preset as reference pattern | **Decided** |
+| Wanxiang must keep skip-`default.yaml` on platform migration | **Decided** |
+| Whether Wanxiang adopts private-preset later for Ice-parity defaults | **TBD** (product); optional P2+ adapter |
+| Moving `RimeIceSharedDefaultAdapter` behind `SharedDefaultAdapter` without behavior change | **Proposed (P0)** — P1 extract |
+
+---
+
+## 5. Per-scheme adapter surface + manifest
+
+### 5.1 Manifest (Decided roles; Proposed fields)
+
+Each third-party scheme contributes a declarative manifest (today mostly `RimeSchemeCatalogEntry` + `RimeSchemeInstallationPlan` + distribution pins):
+
+| Field group | Examples today | Platform |
+|---|---|---|
+| Identity | `schemaID`, version, license | Keep |
+| Pin / staged identity | source variants, archive SHA, staged content SHA, plan/post revisions | Keep |
+| Install plan | allowed/skipped/removable sets | Keep as `InstallationPlanView` |
+| Layout capabilities | **missing as data** — hardcoded elsewhere | **Add** `LayoutCapability` |
+| Ownership strategy id | Ice = plan-list; Wanxiang = plan-list + exact-hash lua | **Add** strategy id(s) |
+| Shared-default policy | Ice post-2 adapter; Wanxiang skip | **Add** policy id |
+| Post-process revision | `rime-ice-post-2` / `wanxiang-post-1` | Keep; bind to adapter |
+
+### 5.2 Optional adapters (Proposed registry)
+
+```text
+struct SchemePlatformAdapters {
+  var sharedDefault: SharedDefaultAdapter?
+  var layout: SchemeLayoutAdapter
+  var ownership: ResourceOwnershipStrategy
+  var postProcess: SchemePostProcessAdapter?   // fuzzy/advanced/T9 prepare hooks
+  var uninstallHooks: SchemeUninstallHooks?    // layout fallback, license flags, UI state
+}
+
+protocol SchemePostProcessAdapter {
+  var revision: String { get }
+  func apply(in extractionDirectory: URL, luaAvailable: Bool) throws
+}
+```
+
+| Adapter | Ice reference | Wanxiang today → P2 |
+|---|---|---|
+| SharedDefault | `RimeIceSharedDefaultAdapter` | skipOnly (optional private preset **TBD**) |
+| Layout | T9 readiness + binding9=`t9` + uninstall layout fallback | 26-key only productized; nine-key **TBD** |
+| Ownership | plan removable list | plan list + `WanxiangLuaOwnership` exact-hash |
+| PostProcess | Ice shared-default + existing Ice post | `wanxiang-post-1` (keep) |
+| UninstallHooks | `prepareRimeIceUninstallWithLayoutFallback`, Ice license/version UI | generic path; fewer Ice-only UI forks |
+
+### 5.3 Catalog / coordinator boundary (Proposed)
+
+```text
+protocol SchemePlatformCatalog {
+  func entry(schemaID: String) -> SchemePlatformEntry?
+  func adapters(for schemaID: String) -> SchemePlatformAdapters
+}
+
+// P1: thin façade over RimeSchemeCatalog + hardcoded Ice adapters.
+// P2: Wanxiang adapters registered; Download/Installation stop branching on schemaID for these concerns.
+```
+
+| Item | Status |
+|---|---|
+| Manifest + optional adapters per scheme | **Decided** (target §3) |
+| Ice adapters are reference | **Decided** |
+| Exact module placement (KeyboardCore vs Main App Services) | **TBD** — prefer keep Main-App mutation in Services; pure adapters in KeyboardCore when already there (`RimeIceSharedDefaultAdapter`) |
+| UI download-state still named `rimeIceDownloadState` | **TBD** cleanup in P3 (not P1 behavior) |
+
+---
+
+## 6. P1 extract map (docs guidance only)
+
+Ordered for **Ice behavior unchanged**:
+
+1. **SharedDefaultAdapter** — wrap `RimeIceSharedDefaultAdapter`; replace `schemaID == "rime_ice"` post-process call with adapter lookup.
+2. **ResourceOwnershipStrategy** — Ice plan-list strategy; bridge Wanxiang exact-hash through same protocol without changing hashes/pins.
+3. **Lifecycle helpers** — `UpgradeCheckpointing` + uninstall staging already mostly plan-driven; remove Wanxiang-only private helpers from installer core where safe.
+4. **LayoutCapability** — Ice nine-key answers identical; no Wanxiang nine-key enablement.
+5. **Regression** — Ice install/uninstall/T9/active-uninstall automation + authorized IQ.
+
+Stop if Ice UX/install/uninstall drifts without Human accept.
+
+---
+
+## 7. Non-goals (this P0 doc)
+
+- Swift implementation / P1 coding without separate auth  
+- ADR 0034 Accept  
+- Product Gate / TestFlight  
+- Rewriting Wanxiang content to Ice  
+- Closing A34-R1 / unpausing Wanxiang P4  
+- Ice `dofile` full close (A34-R2 / TD-011), Recovery persistence, peer-prefer B  
+
+---
+
+## 8. History
+
+- `2026-09-09 Asia/Shanghai`: P0 interface draft authored on `codex/scheme-platform-001` (docs only; local commit; no push).

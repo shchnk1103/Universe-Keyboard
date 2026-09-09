@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | **Active** |
-| Current Phase | Human Gate 0 授权本 Assignment **Active**（`2026-09-09 Asia/Shanghai`）。冻结 tip：`origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`；工作分支 `codex/scheme-platform-001`（**新建**自 `origin/main`；**不用** PR #101 分支）。切片范围 = 治理 + bring docs + embed execution plan；**无** ADR Accept；**无** Product Gate / TF；**无** Swift。Wanxiang P4（`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`）已 **Paused**（shelved for Scheme Platform；A34-R1 仍 open — **NOT** Closed/Done）。下一动作：按 Execution / KOS cadence 推进 **P0**（docs 接口 + Ice-satisfies / Wanxiang-gaps 矩阵）；首次 push/PR **须先问 Human**（新 draft PR；**不**动 #101）。 |
-| Material non-claims | **不是** ADR 0034 Accept；**不是** Product Gate / TestFlight / Release；**不是** Swift 实现授权（本 Active 切片不含 Swift）；不把 Wanxiang 内容改写成 Ice；**不**自动 Closed Wanxiang P4 / A34-R1（Pause ≠ Done；A34-R1 writeback 稍后） |
-| Next handoff / decision | 推进 **P0** docs；本地 commit OK；**ask before first push/PR**（无 ongoing draft push auth）。新 draft PR（not #101）；#101 left alone。P1+ Swift / ADR Accept / Product Gate / TF 均须另授权。 |
+| Current Phase | **P0 docs slice complete**（`2026-09-09 Asia/Shanghai`）：接口草案 [`scheme-platform-p0-interfaces-2026-09-09.md`](../plans/scheme-platform-p0-interfaces-2026-09-09.md) + Ice/Wanxiang 矩阵 [`scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)。冻结 tip base：`origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`；工作分支 `codex/scheme-platform-001`（draft PR #102 存在 — **本片仅本地 commit，不 push** unless Human 另说）。Gate 0 治理仍有效；Wanxiang P4 **Paused**（A34-R1 open — NOT Closed/Done）。**无** ADR Accept；**无** Product Gate / TF；**无** Swift。下一动作：Human/Architecture 知情 P0；**另授权**后才进 P1 Swift；push/PR 仍须先问 Human。 |
+| Material non-claims | **不是** ADR 0034 Accept；**不是** Product Gate / TestFlight / Release；**不是** Swift / P1 实现授权；不把 Wanxiang 内容改写成 Ice；**不**自动 Closed Wanxiang P4 / A34-R1（Pause ≠ Done）；本片 **不 push** |
+| Next handoff / decision | P0 docs 已本地落盘 — 交 Human/Architecture 知情。**ask before push/PR**（draft #102 不自动更新）。P1 Swift / ADR Accept / Product Gate / TF / A34-R1 writeback 均须另授权。 |
 | Residuals | A34-R1 仍 open（`fix`）于 Paused Wanxiang P4 Assignment；平台路径优先后回看 writeback。A34-R2 / TD-011 / RTRD-* 仍并行债 |
 | Frozen tip | base `814abfd7c03002256978d7658c176b80002d2539` (`origin/main` / PR #100 merge)；branch `codex/scheme-platform-001` |
 
@@ -108,10 +108,22 @@ See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/sche
 ## Evidence
 
 - Target (Human Approved): [`../plans/scheme-platform-ice-reference-target-2026-09-09.md`](../plans/scheme-platform-ice-reference-target-2026-09-09.md)
+- P0 interfaces: [`../plans/scheme-platform-p0-interfaces-2026-09-09.md`](../plans/scheme-platform-p0-interfaces-2026-09-09.md)
+- P0 Ice↔Wanxiang matrix: [`../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)
 - Prior matrix / gaps: cross-scheme contract；Wanxiang P4 gap inventory；coexistence plan（见 Required Inputs）
+
+## Progress
+
+| When | Slice | Outcome |
+|---|---|---|
+| `2026-09-09 Asia/Shanghai` | Gate 0 Active | Assignment Active；Wanxiang P4 Paused；branch `codex/scheme-platform-001`；ask-before-push |
+| `2026-09-09 Asia/Shanghai` | **P0 start** | Begin docs-only interfaces + Ice/Wanxiang matrix (Ice-as-reference) |
+| `2026-09-09 Asia/Shanghai` | **P0 complete** | Interfaces + matrix landed；Assignment/ACTIVE_WORK updated；**local commit only**（no push） |
 
 ## History
 
 - `2026-09-09 Asia/Shanghai`: Human 批准 Ice-as-reference Scheme Platform 目标；Lifecycle = **Ready**；授权本地 docs（target + 本 Assignment + ACTIVE_WORK / Wanxiang P4 状态注记）。**未**授权 Active / Swift / push / ADR Accept。
 - `2026-09-09 Asia/Shanghai`（稍后）: Human 选择 **(b)** — deferred Active for this Assignment；Lifecycle **仍 Ready**。Wanxiang P4（`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`）继续 **narrow A34-R1** in parallel without platform extract / Ice-as-reference P1–P3。**未**授权 Active / P1 Swift / push / ADR Accept。
 - `2026-09-09 Asia/Shanghai`（Gate 0）: Human 授权本 Assignment **Active**；Pause `SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`（shelved for Scheme Platform；A34-R1 仍 open — NOT Closed/Done）。冻结 tip `814abfd` / 分支 `codex/scheme-platform-001`（自 `origin/main` 新建；不用 PR #101）。切片 = 治理 + bring docs + embed Execution/KOS cadence；**ask before first push/PR**；新 draft PR（not #101）。**无** ADR Accept；**无** Product Gate/TF；**无** Swift。
+- `2026-09-09 Asia/Shanghai`（P0 start）: 开始 P0 docs — platform interfaces/seams + Ice vs Wanxiang matrix（Ice-as-reference；对照 SchemaManagerTypes / RimeIceSharedDefaultAdapter / WanxiangLuaOwnership / Download+Installation Ice hooks）。
+- `2026-09-09 Asia/Shanghai`（P0 complete）: 落盘 [`scheme-platform-p0-interfaces-2026-09-09.md`](../plans/scheme-platform-p0-interfaces-2026-09-09.md) 与 [`scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)；更新 Progress/ACTIVE_WORK。**本地 commit only**；**未 push**；**无** ADR Accept；**无** Swift。

@@ -13,6 +13,7 @@
 |---|---|
 | `2026-09-09 Asia/Shanghai` | Human approved **Ice-as-reference Scheme Platform** as the north-star target. Authorized local docs (this file + Ready Assignment + ACTIVE_WORK / Wanxiang P4 status note). **No** push; **no** ADR Accept; **no** Swift in this authorization. |
 | `2026-09-09 Asia/Shanghai` | Human Gate 0: Assignment **Active**; Wanxiang P4 **Paused** (shelved); branch `codex/scheme-platform-001` from `origin/main` @ `814abfd`; ask-before-first-push/PR; no ADR Accept / Product Gate / TF / Swift this slice. |
+| `2026-09-09 Asia/Shanghai` | P0 interfaces + matrix landed ([interfaces](scheme-platform-p0-interfaces-2026-09-09.md), [matrix](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)); local commit only; no push; no ADR Accept. |
 
 ---
 
