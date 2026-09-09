@@ -19,6 +19,7 @@
 | `2026-09-09 Asia/Shanghai` | Human approved **Discovery layout-page A/B UX** for later Discovery Assignment (A Confirmed / B Filename try; never auto-bind; P1 = query seams only). See [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md). |
 | `2026-09-09 Asia/Shanghai` | Human approved **uninstall layout-fallback** (warn → A-only among remaining installed / else 26-key + Luna/`luna_pinyin`; package capability manifest = Universe convention, not RIME built-in). See [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md). |
 | `2026-09-09 Asia/Shanghai` | Human approved **SharedDefault end-state**: Ice-shaped **`privatePreset`** = reference mode for third-party schemes. **P1** extract Ice `privatePreset` only; Wanxiang may temporarily keep skip/`consumePrelude`. **P2** Wanxiang → `privatePreset` (`consumePrelude` not end-state). Luna may remain Prelude/builtin exception. Fidelity risk → product regression (not silent). |
+| `2026-09-09 Asia/Shanghai` | Human approved **Lua/OpenCC Ownership**: unified ResourceOwnership/ResourceCapability; **long-term dual** `namedList` (Ice) + `exactHash` (Wanxiang) — **not** forced to one; no dangerous filename heuristics auto-remove; no whole-dir wipe; Settings confirmed honesty + optional user marking; OpenCC Wanxiang may `admitted=false`; P1 wire both unchanged; P2 Wanxiang platform path keeps `exactHash`. Contrast: SharedDefault → `privatePreset` in P2; Ownership stays dual. |
 
 ---
 
@@ -66,11 +67,16 @@ Whole-directory wipe of `lua/` or `opencc/` remains **forbidden**.
 
 **P1 (this Assignment):** extract declarative `LayoutCapability` + adapter lookup (preserve Ice-only nine-key answers; Wanxiang `supportsNineKey = false`). **Later Assignment (not yet drafted):** Installed Capability Discovery / layout-picker — dynamically enumerate installed schemes’ capabilities for layout UI (separate Human Active). **Decided UX for that later Assignment:** layout-page A/B + **uninstall layout-fallback** — [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md) (not P1 UI; uninstall hooks consume fallback contract).
 
-### 2.4 Resource ownership
+### 2.4 Resource ownership（Human Decided `2026-09-09`）
 
-Unified API over **lua / opencc / dicts** (and similarly admitted owned sets):
+Unified **ResourceOwnership** / ResourceCapability API over **lua / opencc / dicts** (and similarly admitted owned sets):
 
-- Scheme supplies a **manifest** and/or **ownership strategy plugin** (exact-hash, plan removable list, preserve-unknown, etc.).
+- **Long-term dual strategies:** Ice **`namedList`** (reference) + Wanxiang **`exactHash`** — **not** forced to one (contrast SharedDefault, which consolidates to `privatePreset` in P2).
+- Scheme supplies a **manifest** and/or **ownership strategy plugin** (`namedList` / `exactHash` / preserve-unknown, etc.).
+- **No** dangerous filename heuristics auto-removing lua/opencc; **no** whole-directory wipe of `lua/` or `opencc/`.
+- Settings: confirmed ownership/strategy honesty; optional user marking for third-party; heuristics only as confirm-gated hints if ever.
+- OpenCC: Wanxiang may keep **`admitted=false`**; same API.
+- **P1:** wire Ice+Wanxiang strategies, behavior unchanged; **P2:** Wanxiang uses platform path **keeping `exactHash`**.
 - Cross-scheme coexistence follows preserve rules already Human-approved in the Ice↔Wanxiang matrix contract ([`scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md`](scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md)).
 
 ### 2.5 Shared-default policy（Human Decided `2026-09-09`）
@@ -93,7 +99,7 @@ Each third-party scheme contributes:
 | **Manifest** | Identity, pin, plan/post IDs, layout capabilities, ownership map pointers, skip/admit rules |
 | **Optional adapters** | Preset strategy; layout fallback; ownership strategy; post-process |
 
-Ice’s adapters are the **reference**. Wanxiang’s existing exact-hash Lua ownership, upgrade-rollback, and skip/`consumePrelude`-shaped SharedDefault are adapters (or become them) — not a second parallel platform. SharedDefault **end-state** for Wanxiang is still Ice-shaped **`privatePreset`** (P2), not permanent skip-only.
+Ice’s adapters are the **reference**. Wanxiang’s existing **`exactHash`** Lua ownership, upgrade-rollback, and skip/`consumePrelude`-shaped SharedDefault are adapters (or become them) — not a second parallel platform. SharedDefault **end-state** for Wanxiang is still Ice-shaped **`privatePreset`** (P2), not permanent skip-only. Ownership **stays dual** (`namedList` + `exactHash`) even after P2 — unlike SharedDefault consolidation.
 
 ---
 
@@ -125,7 +131,7 @@ Summary pointers from earlier coexistence / P4 / cross-scheme work (not a new de
 | Active uninstall → Luna-only | Evidenced | Evidenced (matrix / runtime-route) | **Shared** — keep; avoid schemaID forks |
 | Inactive uninstall preserves peer/unknown/Prelude | Evidenced | Exact-hash Lua + plan removable | **Adapter shape** (Ice plan list vs Wanxiang exact-hash) |
 | Layout 26 / 9-key capability | Ice/`t9` historically hardcoded in places | Nine-key readiness not Ice-parity productized | **Declarative layout** gap |
-| Resource ownership API | Plan removable + Ice Lua conventions | Exact-hash Lua ownership plugin-like | **Unify behind API** |
+| Resource ownership API | **`namedList`** (Ice reference) | **`exactHash`** Lua ownership | **Decided** — unify behind API; **long-term dual** (not forced to one); P2 keeps `exactHash` |
 | `if schemaID == …` sprawl | Present in places (layout, ownership) | Present (Wanxiang-named helpers) | **P1–P3 reduce** |
 
 Earlier comparison / contract sources (do not re-litigate without new evidence):

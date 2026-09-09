@@ -134,11 +134,11 @@ protocol SchemeLayoutAdapter {
 
 ---
 
-## 3. Resource ownership seam (lua / opencc / dicts)
+## 3. Resource ownership seam (lua / opencc / dicts)（Human Decided `2026-09-09`）
 
 ### 3.1 Ice reference today
 
-- Plan `removableFiles` / `removableDirectories` / `removableBuildFileSubstrings` list Ice-owned lua scripts, emoji opencc files, `cn_dicts`/`en_dicts`, etc. (`rime-ice-plan-2`).
+- Plan `removableFiles` / `removableDirectories` / `removableBuildFileSubstrings` list Ice-owned lua scripts, emoji opencc files, `cn_dicts`/`en_dicts`, etc. (`rime-ice-plan-2`) — **`namedList`** strategy (Ice reference).
 - Uninstall staging moves plan paths only (plus Wanxiang exact-hash hook when plan matches Wanxiang).
 - `lua/` and `opencc/` prefixes are **allowlists for install**, not ownership proofs.
 - Unknown / user / peer / Prelude baselines preserved (matrix §3).
@@ -146,8 +146,9 @@ protocol SchemeLayoutAdapter {
 ### 3.2 Wanxiang today
 
 - Plan removable list covers named schemas/dicts + `dicts/` directory; **lua not on removableFiles**.
-- `WanxiangLuaOwnership.sha256ByPath` + `matchingWanxiangLuaPaths` (gated by `wanxiang.schema.yaml` + `wanxiang-plan-1`) adds exact-hash lua paths at checkpoint/uninstall.
+- `WanxiangLuaOwnership.sha256ByPath` + `matchingWanxiangLuaPaths` (gated by `wanxiang.schema.yaml` + `wanxiang-plan-1`) adds **`exactHash`** lua paths at checkpoint/uninstall.
 - Unknown or edited lua bytes left untouched.
+- **OpenCC:** Wanxiang may keep **`admitted=false`** (no wholesale opencc admit); still uses the **same** ResourceOwnership / ResourceCapability API.
 
 ### 3.3 Proposed unified API
 
@@ -161,9 +162,9 @@ protocol ResourceOwnershipStrategy {
 }
 
 enum OwnershipMatch {
-  case planListed           // Ice removable list
-  case exactContentHash(String)  // Wanxiang lua
-  case directoryOwned       // e.g. cn_dicts / dicts — still not whole lua/opencc
+  case namedList                 // Ice reference — plan removable / named paths
+  case exactHash(String)         // Wanxiang — exact content hash
+  case directoryOwned            // e.g. cn_dicts / dicts — still not whole lua/opencc
 }
 
 struct OwnedPath {
@@ -174,18 +175,25 @@ struct OwnedPath {
 
 | Item | Status |
 |---|---|
-| Unify behind one ownership API; Ice plan-list + Wanxiang exact-hash as strategies | **Decided** = **P1 seams** (this Assignment; Lua/OpenCC via strategy APIs) |
+| Unify behind one **ResourceOwnership** / ResourceCapability API (P1 extract) | **Decided** (`2026-09-09`) |
+| **Long-term dual strategies:** Ice **`namedList`** + Wanxiang **`exactHash`** — **not** forced to one | **Decided** |
 | Forbid whole-`lua/` / `opencc/` wipe | **Decided** |
+| **No** dangerous filename heuristics auto-removing lua/opencc | **Decided** |
+| Settings: confirmed ownership/strategy honesty; optional user marking for third-party; heuristics only as confirm-gated hints if ever | **Decided** |
+| OpenCC: Wanxiang may keep `admitted=false`; same API | **Decided** |
+| **P1:** wire Ice+Wanxiang strategies; behavior unchanged | **Decided** |
+| **P2:** Wanxiang uses platform path **keeping `exactHash`** (Ownership stays dual; contrast SharedDefault → `privatePreset`) | **Decided** |
 | Exact strategy registration mechanism (manifest pointer vs code plugin table) | **Proposed (P0)** — prefer manifest pointer + small plugin registry |
 | Opencc shared-with-builtin files (e.g. Ice `s2t.json` share case) uninstall policy | **TBD** if not already covered by plan omit — do not invent counters (ADR §5.1) |
-| Generalizing exact-hash beyond Wanxiang pin | **TBD** — pin-bound until Human extends |
+| Generalizing `exactHash` beyond Wanxiang pin | **TBD** — pin-bound until Human extends |
 | **Product-surface honesty for Lua/OpenCC** (UI that dynamically reflects installed ownership/capabilities) | **Human deferred** — later Assignment with Installed Capability Discovery (not yet drafted); **not** P1 seam extract |
 
 ### 3.4 P1 extract guidance（Human-approved `2026-09-09`）
 
-- Introduce `ResourceOwnershipStrategy` / ResourceCapability ownership seams; Ice strategy = “plan removable set”; Lua/OpenCC ownership via **strategy APIs** (**P1 seams**).
-- Keep `matchingWanxiangLuaPaths` as Wanxiang strategy **called through the same API** (may still live behind Wanxiang adapter in P1 without behavior change).
-- Delete the `schemaFileName == wanxiang…` special-case only when Wanxiang adapter is registered (P2 preferred; P1 may leave a thin bridge).
+- Introduce `ResourceOwnershipStrategy` / ResourceCapability ownership seams; Ice strategy = **`namedList`** (plan removable / named paths); Wanxiang strategy = **`exactHash`**; Lua/OpenCC ownership via **strategy APIs** (**P1 seams**).
+- Keep `matchingWanxiangLuaPaths` as Wanxiang **`exactHash`** strategy **called through the same API** (may still live behind Wanxiang adapter in P1 without behavior change).
+- **Do not** auto-remove lua/opencc via dangerous filename heuristics; Settings honesty = confirmed ownership/strategy; optional user marking for third-party; heuristics only as confirm-gated hints if ever.
+- Delete the `schemaFileName == wanxiang…` special-case only when Wanxiang adapter is registered (P2 preferred; P1 may leave a thin bridge). **P2** migrates Wanxiang onto the platform path **keeping `exactHash`** — Ownership does **not** consolidate to a single strategy (unlike SharedDefault → `privatePreset`).
 - **Out of P1:** product-surface Discovery honesty for Lua/OpenCC (enumerate installed ownership/capabilities in UI) — **later Assignment (not yet drafted)** with layout-picker Discovery; separate Human Active.
 
 ---
@@ -254,7 +262,7 @@ Each third-party scheme contributes a declarative manifest (today mostly `RimeSc
 | Pin / staged identity | source variants, archive SHA, staged content SHA, plan/post revisions | Keep |
 | Install plan | allowed/skipped/removable sets | Keep as `InstallationPlanView` |
 | Layout capabilities | **missing as data** — hardcoded elsewhere | **Add** `LayoutCapability` |
-| Ownership strategy id | Ice = plan-list; Wanxiang = plan-list + exact-hash lua | **Add** strategy id(s) |
+| Ownership strategy id | Ice = **`namedList`**; Wanxiang = **`exactHash`** (long-term dual) | **Add** strategy id(s) |
 | Shared-default policy | Ice post-2 adapter; Wanxiang skip | **Add** policy id |
 | Post-process revision | `rime-ice-post-2` / `wanxiang-post-1` | Keep; bind to adapter |
 
@@ -279,7 +287,7 @@ protocol SchemePostProcessAdapter {
 |---|---|---|
 | SharedDefault | `RimeIceSharedDefaultAdapter` (`privatePreset`) | P1 transitional skip/`consumePrelude` → **P2 end-state `privatePreset`** (same as Ice); not optional |
 | Layout | T9 readiness + binding9=`t9` + uninstall layout fallback | 26-key only productized; nine-key **Human deferred** (later Assignment; not P1/P2 enablement) |
-| Ownership | plan removable list | plan list + `WanxiangLuaOwnership` exact-hash |
+| Ownership | **`namedList`** (Ice reference) | **`exactHash`** (`WanxiangLuaOwnership`) — **long-term dual**; P2 keeps `exactHash` on platform path (contrast SharedDefault → `privatePreset`) |
 | PostProcess | Ice shared-default + existing Ice post | `wanxiang-post-1` (keep) |
 | UninstallHooks | `prepareRimeIceUninstallWithLayoutFallback` (**Human-approved fallback:** warn → A-only rebind / else Luna+26; see discovery-layout-ux), Ice license/version UI | generic path; fewer Ice-only UI forks |
 
@@ -309,7 +317,7 @@ protocol SchemePlatformCatalog {
 Ordered for **Ice behavior unchanged**:
 
 1. **SharedDefaultAdapter** — wrap `RimeIceSharedDefaultAdapter` (`privatePreset`); replace `schemaID == "rime_ice"` post-process call with adapter lookup. Wanxiang stays transitional skip/`consumePrelude` in P1; **P2** migrates Wanxiang to `privatePreset`.
-2. **ResourceOwnershipStrategy** — Ice plan-list strategy; bridge Wanxiang exact-hash through same protocol without changing hashes/pins.
+2. **ResourceOwnershipStrategy** — wire Ice **`namedList`** + Wanxiang **`exactHash`** through same protocol without changing hashes/pins/behavior; **long-term dual** (not forced to one). P2 Wanxiang uses platform path keeping `exactHash`.
 3. **Lifecycle helpers** — `UpgradeCheckpointing` + uninstall staging already mostly plan-driven; remove Wanxiang-only private helpers from installer core where safe.
 4. **LayoutCapability** — P1 seams: Ice nine-key answers identical via adapter lookup; Wanxiang `supportsNineKey=false`; no Wanxiang nine-key enablement. Discovery / layout-picker = later Assignment (not this extract).
 5. **Regression** — Ice install/uninstall/T9/active-uninstall automation + authorized IQ.
@@ -338,3 +346,5 @@ Stop if Ice UX/install/uninstall drifts without Human accept.
 - `2026-09-09 Asia/Shanghai`: Human approved **P1↔Discovery split** — Decided P1 seams = LayoutCapability + ResourceCapability/ownership (adapter lookup; Ice-only nine-key; Wanxiang `supportsNineKey=false`; strategy APIs). Discovery UI / layout-picker = later Assignment (not yet drafted). Local commit only; no push.
 - `2026-09-09 Asia/Shanghai`: Human approved **Discovery layout-page A/B UX** (later Assignment) — Decided pointer in §2; full rules in [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md). P1 remains query seams only (not this UI). Local commit only; no push.
 - `2026-09-09 Asia/Shanghai`: Human approved **uninstall layout-fallback** — Decided pointer in §2 / `onUninstallPrepare` / UninstallHooks; full rules in [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md) (warn → A-only among remaining / else 26-key+Luna; manifest = Universe convention not RIME built-in). Local commit only; no push.
+- `2026-09-09 Asia/Shanghai`: Human SharedDefault decision recorded in §4 (end-state `privatePreset`; P1 Ice only; P2 Wanxiang migrate). Local commit only; no push.
+- `2026-09-09 Asia/Shanghai`: Human **Lua/OpenCC Ownership** decision — unified ResourceOwnership/ResourceCapability; **long-term dual** `namedList` + `exactHash` (not forced to one); no dangerous filename heuristics auto-remove; no whole-dir wipe; Settings confirmed honesty + optional user marking; OpenCC Wanxiang may `admitted=false`; P1 wire both unchanged; P2 Wanxiang platform path keeps `exactHash`; contrast SharedDefault → `privatePreset`. Local commit only; no push.
