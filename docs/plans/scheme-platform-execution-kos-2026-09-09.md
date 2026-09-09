@@ -14,7 +14,7 @@
 | First push / PR | **Ask Human before first push/PR**; no ongoing draft push auth |
 | PR vehicle | **New** draft PR — **not** #101; leave #101 alone |
 | P0 | Interface draft + 「Ice already satisfies / Wanxiang gaps」 matrix (docs only) |
-| P1 | Extract Ice hooks → platform; Ice behavior unchanged (needs separate Swift auth beyond Gate 0 docs slice) |
+| P1 | Extract Ice hooks → platform; Ice behavior unchanged (needs separate Swift auth beyond Gate 0 docs slice). **Human-approved P1 scope:** LayoutCapability + ResourceCapability/ownership seams; adapter lookup (Ice-only nine-key; Wanxiang `supportsNineKey=false`); Lua/OpenCC strategy APIs. **Not P1:** Installed Capability Discovery / layout-picker (later Assignment, not yet drafted) |
 | P2 | Migrate Wanxiang onto platform (lua / layout / default via reference / adapter) |
 | P3 | Remove redundant forks; only then revisit A34-R1 disposition / ADR Accept path |
 | Wanxiang P4 | **Paused**; A34-R1 writeback **later** — Pause ≠ Closed/Done |
@@ -28,3 +28,4 @@ Governance + bring docs + embed this execution plan. Do **not** Accept ADR 0034,
 
 - `2026-09-09 Asia/Shanghai`: Human Gate 0 authorized Active platform + Pause Wanxiang P4; local branch `codex/scheme-platform-001` from `814abfd`; ask-before-first-push/PR.
 - `2026-09-09 Asia/Shanghai`: P0 docs complete (interfaces + Ice/Wanxiang matrix); local commit only; no push.
+- `2026-09-09 Asia/Shanghai`: Human approved P1↔Discovery split recorded (P1 seams vs later Discovery Assignment); local commit only; no push.

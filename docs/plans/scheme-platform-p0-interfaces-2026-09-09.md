@@ -111,16 +111,19 @@ protocol SchemeLayoutAdapter {
 
 | Item | Status |
 |---|---|
-| 26 / 9 / future layouts are **declarative / plugin**, not `if schemaID == rime_ice` product logic | **Decided** (target §2.3) |
-| Ice `t9` + readiness + binding9 behavior as reference *shape* | **Decided** |
-| Wanxiang nine-key productization (which schema id, readiness, chrome) | **Human deferred** — out of this Assignment; later Assignment (not yet drafted). P1/P2 must **not** enable; Ice `t9` remains reference shape; `wanxiang_t9*` may stay in plan ownership; product capability stays false. P2 may keep adapter stub with current “no nine-key claim” |
+| 26 / 9 / future layouts are **declarative / plugin**, not `if schemaID == rime_ice` product logic | **Decided** = **P1 seams** (this Assignment) |
+| Ice `t9` + readiness + binding9 behavior as reference *shape*; adapter lookup replaces `isNineKeyCapable == t9` with **identical Ice-only answers** | **Decided** = **P1 seams** |
+| Wanxiang adapter `supportsNineKey = false` (no enablement in P1/P2) | **Decided** = **P1 seams** |
+| Wanxiang nine-key productization (which schema id, readiness, chrome) | **Human deferred** — later Assignment (not yet drafted); may ride Discovery later or stay further deferred. `wanxiang_t9*` may stay in plan ownership; product capability stays false |
+| **Installed Capability Discovery / layout-picker** (dynamically enumerate installed schemes’ capabilities for layout UI) | **Human deferred** — later Assignment (not yet drafted); **separate Human Active**; **not** P1 |
 | Future layouts beyond 26/9 | **TBD** — reserve capability flags only |
 
-### 2.3 P1 extract guidance
+### 2.3 P1 extract guidance（Human-approved `2026-09-09`）
 
-- Extract `LayoutCapability` from Ice’s current T9 path without changing Ice UX.
-- Replace `isNineKeyCapable == (id == "t9")` with adapter lookup **backed by Ice adapter returning the same answer**.
-- Do **not** enable Wanxiang nine-key in P1 (**Human deferred** to later Assignment; also not P2 enablement).
+- Extract declarative `LayoutCapability` from Ice’s current T9 path without changing Ice UX (**P1 seams**).
+- Replace hardcoded `isNineKeyCapable == (id == "t9")` with adapter lookup **backed by Ice adapter returning the same Ice-only nine-key answers**.
+- Wanxiang adapter: **`supportsNineKey = false`** — do **not** enable Wanxiang nine-key in P1/P2.
+- **Out of P1:** Installed Capability Discovery / layout-picker (dynamic enumeration of installed schemes for layout UI) — **later Assignment (not yet drafted)**; separate Human Active. Today’s asymmetry note: `isTwentySixKeyCapable` ≈ “not `t9`” vs nine-key hardcode `== "t9"`; Discovery Assignment owns picker honesty, not this extract.
 
 ---
 
@@ -164,17 +167,19 @@ struct OwnedPath {
 
 | Item | Status |
 |---|---|
-| Unify behind one ownership API; Ice plan-list + Wanxiang exact-hash as strategies | **Decided** (target §2.4) |
+| Unify behind one ownership API; Ice plan-list + Wanxiang exact-hash as strategies | **Decided** = **P1 seams** (this Assignment; Lua/OpenCC via strategy APIs) |
 | Forbid whole-`lua/` / `opencc/` wipe | **Decided** |
 | Exact strategy registration mechanism (manifest pointer vs code plugin table) | **Proposed (P0)** — prefer manifest pointer + small plugin registry |
 | Opencc shared-with-builtin files (e.g. Ice `s2t.json` share case) uninstall policy | **TBD** if not already covered by plan omit — do not invent counters (ADR §5.1) |
 | Generalizing exact-hash beyond Wanxiang pin | **TBD** — pin-bound until Human extends |
+| **Product-surface honesty for Lua/OpenCC** (UI that dynamically reflects installed ownership/capabilities) | **Human deferred** — later Assignment with Installed Capability Discovery (not yet drafted); **not** P1 seam extract |
 
-### 3.4 P1 extract guidance
+### 3.4 P1 extract guidance（Human-approved `2026-09-09`）
 
-- Introduce `ResourceOwnershipStrategy`; Ice strategy = “plan removable set”.
+- Introduce `ResourceOwnershipStrategy` / ResourceCapability ownership seams; Ice strategy = “plan removable set”; Lua/OpenCC ownership via **strategy APIs** (**P1 seams**).
 - Keep `matchingWanxiangLuaPaths` as Wanxiang strategy **called through the same API** (may still live behind Wanxiang adapter in P1 without behavior change).
 - Delete the `schemaFileName == wanxiang…` special-case only when Wanxiang adapter is registered (P2 preferred; P1 may leave a thin bridge).
+- **Out of P1:** product-surface Discovery honesty for Lua/OpenCC (enumerate installed ownership/capabilities in UI) — **later Assignment (not yet drafted)** with layout-picker Discovery; separate Human Active.
 
 ---
 
@@ -295,7 +300,7 @@ Ordered for **Ice behavior unchanged**:
 1. **SharedDefaultAdapter** — wrap `RimeIceSharedDefaultAdapter`; replace `schemaID == "rime_ice"` post-process call with adapter lookup.
 2. **ResourceOwnershipStrategy** — Ice plan-list strategy; bridge Wanxiang exact-hash through same protocol without changing hashes/pins.
 3. **Lifecycle helpers** — `UpgradeCheckpointing` + uninstall staging already mostly plan-driven; remove Wanxiang-only private helpers from installer core where safe.
-4. **LayoutCapability** — Ice nine-key answers identical; no Wanxiang nine-key enablement (**Human deferred** — later Assignment).
+4. **LayoutCapability** — P1 seams: Ice nine-key answers identical via adapter lookup; Wanxiang `supportsNineKey=false`; no Wanxiang nine-key enablement. Discovery / layout-picker = later Assignment (not this extract).
 5. **Regression** — Ice install/uninstall/T9/active-uninstall automation + authorized IQ.
 
 Stop if Ice UX/install/uninstall drifts without Human accept.
@@ -308,7 +313,8 @@ Stop if Ice UX/install/uninstall drifts without Human accept.
 - ADR 0034 Accept  
 - Product Gate / TestFlight  
 - Rewriting Wanxiang content to Ice  
-- **Wanxiang nine-key productization** — **Human deferred** to later Assignment (not yet drafted); P1/P2 must not enable  
+- **Wanxiang nine-key productization** — **Human deferred** to later Assignment (not yet drafted); may ride Discovery later or stay further deferred; P1/P2 must not enable  
+- **Installed Capability Discovery / layout-picker** (and Lua/OpenCC product-surface honesty) — **Human deferred** later Assignment (not yet drafted); separate Human Active; **not** P1 seams  
 - Closing A34-R1 / unpausing Wanxiang P4  
 - Ice `dofile` full close (A34-R2 / TD-011), Recovery persistence, peer-prefer B  
 
@@ -318,3 +324,4 @@ Stop if Ice UX/install/uninstall drifts without Human accept.
 
 - `2026-09-09 Asia/Shanghai`: P0 interface draft authored on `codex/scheme-platform-001` (docs only; local commit; no push).
 - `2026-09-09 Asia/Shanghai`: Human deferred Wanxiang nine-key productization to later Assignment; marked former TBD as **Human deferred** (not open for this Assignment); P1/P2 must not enable (local commit only; no push).
+- `2026-09-09 Asia/Shanghai`: Human approved **P1↔Discovery split** — Decided P1 seams = LayoutCapability + ResourceCapability/ownership (adapter lookup; Ice-only nine-key; Wanxiang `supportsNineKey=false`; strategy APIs). Discovery UI / layout-picker = later Assignment (not yet drafted). Local commit only; no push.

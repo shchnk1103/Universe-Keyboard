@@ -7,7 +7,7 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | **Active** |
-| Current Phase | **P0 docs slice complete**（`2026-09-09 Asia/Shanghai`）：接口草案 [`scheme-platform-p0-interfaces-2026-09-09.md`](../plans/scheme-platform-p0-interfaces-2026-09-09.md) + Ice/Wanxiang 矩阵 [`scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)。冻结 tip base：`origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`；工作分支 `codex/scheme-platform-001`（draft PR #102 存在 — **本片仅本地 commit，不 push** unless Human 另说）。Gate 0 治理仍有效；Wanxiang P4 **Paused**（A34-R1 open — NOT Closed/Done）。**无** ADR Accept；**无** Product Gate / TF；**无** Swift。下一动作：Human/Architecture 知情 P0；**另授权**后才进 P1 Swift；push/PR 仍须先问 Human。 |
+| Current Phase | **P0 docs slice complete**（`2026-09-09 Asia/Shanghai`）：接口草案 [`scheme-platform-p0-interfaces-2026-09-09.md`](../plans/scheme-platform-p0-interfaces-2026-09-09.md) + Ice/Wanxiang 矩阵 [`scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)。**Human approved P1 vs Discovery split**（同日）：本 Assignment **P1** = declarative LayoutCapability + ResourceCapability/ownership seams（adapter lookup；Ice-only nine-key answers；Wanxiang `supportsNineKey = false`；Lua/OpenCC via strategy APIs）；**Installed Capability Discovery / layout-picker** = later Assignment (not yet drafted；须另 Human Active)。冻结 tip base：`origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`；工作分支 `codex/scheme-platform-001`（draft PR #102 存在 — **本片仅本地 commit，不 push** unless Human 另说）。Gate 0 治理仍有效；Wanxiang P4 **Paused**（A34-R1 open — NOT Closed/Done）。**无** ADR Accept；**无** Product Gate / TF；**无** Swift。下一动作：Human/Architecture 知情 P0；**另授权**后才进 P1 Swift；push/PR 仍须先问 Human。 |
 | Material non-claims | **不是** ADR 0034 Accept；**不是** Product Gate / TestFlight / Release；**不是** Swift / P1 实现授权；不把 Wanxiang 内容改写成 Ice；**不**自动 Closed Wanxiang P4 / A34-R1（Pause ≠ Done）；本片 **不 push** |
 | Next handoff / decision | P0 docs 已本地落盘 — 交 Human/Architecture 知情。**ask before push/PR**（draft #102 不自动更新）。P1 Swift / ADR Accept / Product Gate / TF / A34-R1 writeback 均须另授权。 |
 | Residuals | A34-R1 仍 open（`fix`）于 Paused Wanxiang P4 Assignment；平台路径优先后回看 writeback。A34-R2 / TD-011 / RTRD-* 仍并行债 |
@@ -25,15 +25,21 @@ Policy version: 1.0.0
 
 - **Scope:**
   1. **P0（docs）：** 定义 Scheme Platform 接口草案 + 矩阵「Ice already satisfies / Wanxiang gaps」；编码 Human 已批准的 north star（见 Required Inputs target plan）。
-  2. **P1：** 将 Ice hooks 抽到 platform；**Ice 行为不变**（Ice regression）。
-  3. **P2：** 将 Wanxiang 迁到 platform（lua / layout / default 按 reference / adapter）；**不含** Wanxiang nine-key productization（Human deferred — later Assignment）。
+  2. **P1（Human-approved scope `2026-09-09`）：** 将 Ice hooks 抽到 platform；**Ice 行为不变**（Ice regression）。本片 P1 明确包含：
+     - **declarative LayoutCapability** + **ResourceCapability / ownership** seams；
+     - 用 adapter lookup 替换硬编码 `isNineKeyCapable == t9`，**保留当前 Ice-only nine-key answers**；
+     - Wanxiang adapter **`supportsNineKey = false`**（不 enable）；
+     - Lua / OpenCC ownership 经 **strategy APIs**（Ice plan-list；Wanxiang exact-hash 经同一 API）。
+     - **不含** Installed Capability Discovery / layout-picker（动态枚举已装方案能力驱动 layout UI，及 Lua/OpenCC 产品面同类 honesty）— 见 Non-goals / later Assignment。
+  3. **P2：** 将 Wanxiang 迁到 platform（lua / layout / default 按 reference / adapter）；**不含** Wanxiang nine-key productization（Human deferred — later Assignment；may ride Discovery later or stay further deferred）。
   4. **P3：** 删除冗余 forks；**仅在此后**再审视 A34-R1 处置与 ADR Accept 路径（Accept 仍需另授权）。
   5. 共享层能力：lifecycle（download→filter→stage-verify→upgrade checkpoint→install→deploy→receipt；fail-closed restore）；active uninstall→Luna-only；inactive 保 peer/unknown/Prelude；layout capability 声明式；resource ownership 统一 API；never overwrite Prelude `default.yaml`（scheme defaults via private preset / Ice mode）。
   6. 方案层：per-scheme manifest + optional adapters（preset、layout fallback、ownership strategy、post-process）。最小化 `if schemaID == …`。
 - **Non-goals:**
   - 在 Human **Active** 本 Assignment 之前开始 P1+ Swift；
   - 将 Wanxiang **内容**改写成 Ice；
-  - **Wanxiang nine-key productization**（enablement / capability claim）— **deferred to a later Assignment (not yet drafted)**；本 Assignment 的 P1/P2 **不得** enable Wanxiang nine-key；Ice `t9` 仍为 reference shape；`wanxiang_t9*` 可留在 install plan ownership，但 **product capability 保持 false** 直至该未来 Assignment；
+  - **Wanxiang nine-key productization**（enablement / capability claim）— **deferred to a later Assignment (not yet drafted)**（may ride Discovery later or stay further deferred）；本 Assignment 的 P1/P2 **不得** enable Wanxiang nine-key；Ice `t9` 仍为 reference shape；`wanxiang_t9*` 可留在 install plan ownership，但 **product capability 保持 false** 直至该未来 Assignment；
+  - **Installed Capability Discovery / layout-picker** — 动态枚举已装方案的 capabilities 以驱动 layout UI（及 Lua/OpenCC 产品面同类 honesty）— **later Assignment (not yet drafted)**；须 **separate Human Active**；**不是**本 Assignment P1；P1 只落 declarative seams + adapter lookup（Ice-only answers）；
   - Accept ADR 0034；Product Gate / TestFlight / App Release；
   - 把 `SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001` 扩成平台 mega-refactor（本 Assignment **supersedes** 该扩展意图）；
   - Ice `dofile` 全量（A34-R2 / TD-011）、`RTRD-01`/`RTRD-02`、Recovery persistence、peer-prefer B、整目录 `lua/`/`opencc/` 清空；
@@ -121,6 +127,7 @@ See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/sche
 | `2026-09-09 Asia/Shanghai` | **P0 start** | Begin docs-only interfaces + Ice/Wanxiang matrix (Ice-as-reference) |
 | `2026-09-09 Asia/Shanghai` | **P0 complete** | Interfaces + matrix landed；Assignment/ACTIVE_WORK updated；**local commit only**（no push） |
 | `2026-09-09 Asia/Shanghai` | Human deferral | Wanxiang nine-key productization deferred to later Assignment; P1/P2 must not enable; local docs + commit only |
+| `2026-09-09 Asia/Shanghai` | Human P1↔Discovery split | **P1** = LayoutCapability + ResourceCapability/ownership seams (adapter lookup; Ice-only nine-key; Wanxiang `supportsNineKey=false`; Lua/OpenCC strategy APIs). **Discovery / layout-picker** = later Assignment (not yet drafted; separate Human Active). Local docs + commit only |
 
 ## History
 
@@ -130,3 +137,4 @@ See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/sche
 - `2026-09-09 Asia/Shanghai`（P0 start）: 开始 P0 docs — platform interfaces/seams + Ice vs Wanxiang matrix（Ice-as-reference；对照 SchemaManagerTypes / RimeIceSharedDefaultAdapter / WanxiangLuaOwnership / Download+Installation Ice hooks）。
 - `2026-09-09 Asia/Shanghai`（P0 complete）: 落盘 [`scheme-platform-p0-interfaces-2026-09-09.md`](../plans/scheme-platform-p0-interfaces-2026-09-09.md) 与 [`scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)；更新 Progress/ACTIVE_WORK。**本地 commit only**；**未 push**；**无** ADR Accept；**无** Swift。
 - `2026-09-09 Asia/Shanghai`（Human decision）: **Defer Wanxiang nine-key productization** to a later Assignment (not yet drafted). Scheme Platform P1/P2 must **not** enable Wanxiang nine-key; Ice `t9` remains reference shape; `wanxiang_t9*` may remain in install plan ownership; product capability stays false until that future Assignment. Recorded in Non-goals / Boundary / P0 interfaces / matrix（local commit only; no push）.
+- `2026-09-09 Asia/Shanghai`（Human approved split）: **P1 (this Assignment)** = declarative LayoutCapability + ResourceCapability/ownership seams; replace hardcoded `isNineKeyCapable == t9` with adapter lookup preserving Ice-only nine-key answers; Wanxiang `supportsNineKey = false`; Lua/OpenCC ownership via strategy APIs. **Later Assignment (not yet drafted):** Installed Capability Discovery / layout-picker — dynamically enumerate installed schemes’ capabilities for layout UI (and similar honesty for Lua/OpenCC product surfaces); **separate Human Active** required. Wanxiang nine-key productization remains deferred (may ride Discovery later or stay further deferred). Recorded in Boundary / Non-goals / P0 interfaces / matrix / KOS（local commit only; no push）.

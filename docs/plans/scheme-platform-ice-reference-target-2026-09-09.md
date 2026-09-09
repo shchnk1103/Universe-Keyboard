@@ -15,6 +15,7 @@
 | `2026-09-09 Asia/Shanghai` | Human Gate 0: Assignment **Active**; Wanxiang P4 **Paused** (shelved); branch `codex/scheme-platform-001` from `origin/main` @ `814abfd`; ask-before-first-push/PR; no ADR Accept / Product Gate / TF / Swift this slice. |
 | `2026-09-09 Asia/Shanghai` | P0 interfaces + matrix landed ([interfaces](scheme-platform-p0-interfaces-2026-09-09.md), [matrix](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)); local commit only; no push; no ADR Accept. |
 | `2026-09-09 Asia/Shanghai` | Human deferred Wanxiang nine-key productization to later Assignment (not yet drafted); Scheme Platform P1/P2 must not enable; Ice `t9` remains reference shape. |
+| `2026-09-09 Asia/Shanghai` | Human approved **P1↔Discovery split**: P1 = LayoutCapability + ResourceCapability/ownership seams (adapter lookup; Ice-only nine-key; Wanxiang `supportsNineKey=false`; strategy APIs). Installed Capability Discovery / layout-picker = later Assignment (not yet drafted; separate Human Active). Wanxiang nine-key productization remains deferred (may ride Discovery later or stay further deferred). |
 
 ---
 
@@ -59,6 +60,8 @@ Whole-directory wipe of `lua/` or `opencc/` remains **forbidden**.
 ### 2.3 Layout capability
 
 26-key, 9-key, and future layouts are **declarative / plugin** capabilities on the scheme (or binding), **not** Ice-hardcoded `if schemaID == rime_ice` product logic. Ice’s current nine-key / binding behavior is the reference *shape*; the platform API must not bake Ice IDs into the only supported path.
+
+**P1 (this Assignment):** extract declarative `LayoutCapability` + adapter lookup (preserve Ice-only nine-key answers; Wanxiang `supportsNineKey = false`). **Later Assignment (not yet drafted):** Installed Capability Discovery / layout-picker — dynamically enumerate installed schemes’ capabilities for layout UI (separate Human Active).
 
 ### 2.4 Resource ownership
 
@@ -131,7 +134,8 @@ Earlier comparison / contract sources (do not re-litigate without new evidence):
 ## 6. Non-goals (unless separately authorized)
 
 - Rewrite Wanxiang **content** to be Ice (schemas, triggers, Lua product surface)
-- **Wanxiang nine-key productization** — deferred to later Assignment (not yet drafted); P1/P2 must not enable
+- **Wanxiang nine-key productization** — deferred to later Assignment (not yet drafted); may ride Discovery later or stay further deferred; P1/P2 must not enable
+- **Installed Capability Discovery / layout-picker** (and similar Lua/OpenCC product-surface honesty) — later Assignment (not yet drafted); separate Human Active; not P1 seams
 - ADR 0034 **Accept**
 - Product Gate / TestFlight / App Release
 - Big Swift extract **before** P0 matrix exists and Human Activates the platform Assignment
