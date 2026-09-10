@@ -7,7 +7,7 @@
 | Status | Accepted — bounded documentation-only implementation |
 | Decision | Implement adopted KOS-SUG-07 as an opt-in observability-preflight table for **new** human-device Assignments only |
 | Non-claims | No device run; no SUG-04/08; no SUG-06 CI automation; no privacy-policy or diagnostics-UI change; no `required`, historical backfill, product code, push, merge, or Release |
-| Next | Independent Architecture and Quality document reviews; publication remains a separate action |
+| Next | None for this slice — PR [#107](https://github.com/shchnk1103/Universe-Keyboard/pull/107) merged `5ebf25f` |
 
 ---
 

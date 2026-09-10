@@ -53,9 +53,10 @@
 
 ## KOS-SUG-OBS-PREFLIGHT-001 — SUG-07 docs-only observability preflight
 
-- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-preflight-001.md) `Active` — opt-in preflight table for new human-device Assignments. Independent reviews pending. No device run.
-- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-PREFLIGHT-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-PREFLIGHT-001.md)
-- **Non-claims:** no SUG-04/08, no SUG-06 CI, no privacy/diagnostics/UI/log change, no `required`, no push/PR/merge/Release.
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-preflight-001.md) `Closed` — PR [#107](https://github.com/shchnk1103/Universe-Keyboard/pull/107) merged `5ebf25f` (head `daafe0b`). Opt-in SUG-07 preflight is on `main`. Remote feature branch deleted.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-PREFLIGHT-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-PREFLIGHT-001.md) (consumed)
+- **Non-claims:** no SUG-04/08, no SUG-06 CI, no privacy/diagnostics/UI/log change, no `required`, no device run, no Release.
+- **Next:** none for this slice
 
 ## KOS-SUG-PIN-AUDIT-001 — manual pin consistency audit
 

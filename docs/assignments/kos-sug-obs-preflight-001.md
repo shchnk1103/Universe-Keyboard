@@ -6,11 +6,11 @@ Policy version: `1.0.0`
 
 | Field | Value |
 |---|---|
-| Lifecycle | `Active` |
-| Current phase | Docs-only SUG-07 preflight convention written; Architecture Pass; Quality Pass after P1-Q-001 fix |
-| Non-claims | No device run; no SUG-04/08; no SUG-06 CI; no privacy/diagnostics/UI/log change; no `required`, historical backfill, product code, push, merge, or Release |
-| Next handoff / decision | Human publication (push / PR / merge) — not authorized in this slice |
-| Residuals | None known |
+| Lifecycle | `Closed` |
+| Current phase | Published: PR [#107](https://github.com/shchnk1103/Universe-Keyboard/pull/107) merged `5ebf25f`; head `daafe0b`; hosted CI same-head green; remote feature branch deleted |
+| Non-claims | No device run; no SUG-04/08; no SUG-06 CI; no privacy/diagnostics/UI/log change; no `required`, historical backfill, product code, or Release |
+| Next handoff / decision | None for this slice |
+| Residuals | None |
 
 ---
 
@@ -34,8 +34,8 @@ Policy version: `1.0.0`
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Current documentation slice | In progress | `implement_kos_sug_07_observability_preflight_template` | This Assignment → [Authorization](../authorizations/AUTH-KOS-SUG-OBS-PREFLIGHT-001.md) → [Accepted Product Decision](../product-decisions/KOS-SUG-OBS-PREFLIGHT-001-authorization.md) |
-| Push / PR / merge / Release | Not authorized | Any remote publication | New Human authorization required |
+| Current documentation slice | Authorized | Completed: opt-in SUG-07 preflight table on `main` | This Assignment → [Authorization](../authorizations/AUTH-KOS-SUG-OBS-PREFLIGHT-001.md) → [Accepted Product Decision](../product-decisions/KOS-SUG-OBS-PREFLIGHT-001-authorization.md) |
+| Push / PR / merge of #107 | Authorized | Consumed: PR [#107](https://github.com/shchnk1103/Universe-Keyboard/pull/107) merged `5ebf25f` | Human: push + PR; then CI green may merge; then this post-merge M-02 |
 | SUG-07 device run | Not authorized | Any Human Device Operator action | New human-device Assignment, privacy review, and Human Dependency |
 | SUG-08 / SUG-04 / SUG-06 automation | Not authorized | Raw-data read, diagnostic manifest, or CI scripts | New bounded Assignment and matching Authorization |
 | Environment or external slice | Not applicable | Documentation and local static validation only | No device, runtime, or raw-data operation belongs here |
@@ -117,3 +117,4 @@ claim’s **preflight readability** to `unreadable` without bypassing the UI.
 
 - `2026-09-10 Asia/Shanghai` — Human Product Owner said “批准 SUG-07 docs-only preflight Assignment”.
 - `2026-09-10 Asia/Shanghai` — Architecture Pass on `c34b6da` (`0/0/0/0`). Quality Pass with conditions (`0/1/0/0`) P1-Q-001. Vocabulary changed to `readable`/`unreadable`/`not-checked`. Addenda on `2d5263d`: Architecture Pass (`0/0/0/1` P3 wording); Quality Pass (`0/0/0/0`). P3 PD/Non-goals wording aligned in this packet. Push/PR still unauthorized.
+- `2026-09-10 Asia/Shanghai` — Human authorized push, PR, and merge after same-head CI green. PR [#107](https://github.com/shchnk1103/Universe-Keyboard/pull/107) merged `5ebf25f`. Remote `codex/kos-sug-obs-preflight-001` deleted after reachability. This History line is post-merge M-02.
