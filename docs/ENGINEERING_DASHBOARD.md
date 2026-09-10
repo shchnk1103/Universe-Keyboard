@@ -51,6 +51,12 @@
 - **Non-claims:** no SUG-04/07/08 implementation, no SUG-06 CI automation, no KOS 2.0/2.1 frozen-principle change, `required`, historical backfill, product code, device, or Release.
 - **Next:** none for this slice
 
+## KOS-SUG-OBS-DEVICE-001 — SUG-07 preflight execution
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-device-001.md) `Active` — preflight filled from diagnostics UI source; trace UUID/phase/elapsed `unreadable`; **no uninstall round**. Independent reviews pending.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-DEVICE-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-DEVICE-001.md)
+- **Non-claims:** no SUG-08, no RTRD-01 Swift, no push/PR/merge/Release, no Product Gate.
+
 ## KOS-SUG-OBS-PREFLIGHT-001 — SUG-07 docs-only observability preflight
 
 - **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-preflight-001.md) `Closed` — PR [#107](https://github.com/shchnk1103/Universe-Keyboard/pull/107) merged `5ebf25f` (head `daafe0b`). Opt-in SUG-07 preflight is on `main`. Remote feature branch deleted.
