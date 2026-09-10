@@ -268,6 +268,44 @@ Assignment enters `Ready` or `Active`.
 | Next independently gated slice | Select one status | | New bounded Assignment and matching Authorization required |
 | Environment or external slice | Select one status | | Named environment authority or explicit Not Applicable rationale |
 
+### Publication facts (P-01 only)
+
+When P-01 is Adopted, a commit/PR/hosted-CI handoff records these facts. The
+table describes candidate identity; it does not authorize push, merge, or
+Release. An unknown identity stays `unknown` and cannot be inferred from a
+later SHA, a green check on a different head, or chat.
+
+| Fact | Required content |
+|---|---|
+| `local_candidate` | SHA of the local tree being handed off |
+| `published_head` | SHA of the remote branch or PR head, or `none` |
+| `hosted_ci_head` | SHA actually covered by hosted checks, or `unknown` |
+| `hosted_ci_result` | `green`, `red`, `pending`, or `unknown` |
+| `coverage` | `same-head` when all three values are SHAs and equal; `mismatched` when all three are SHAs and not equal; `unknown` when any of the three is `none` or `unknown` |
+| `pr_state` | `draft`, `open`, `merged`, or `none` |
+| `local_ahead_of_published` | Non-negative count, or `unknown` |
+
+### Final-documentation receipt (D-01 only)
+
+When D-01 is Adopted, record the receipt after the last documentation edit of
+the slice. Earlier test or link-check passes do not cover later Markdown.
+In-repository line citations that are Markdown links use
+`path/to/file.ext#L77`, not `path/to/file.ext:77`. The repository markdown
+link checker only verifies that the path before `#` exists; it does not
+verify line numbers and does not scan prose or backtick `path:nn` citations.
+`path#Lnn` is a writing and review convention, not a CI-enforced rule.
+Ordinary docs-only checks without this opt-in must not be called a D-01 receipt.
+
+| Field | Required content |
+|---|---|
+| Final commit | SHA of the final documentation tree |
+| Final tree | `git rev-parse HEAD^{tree}` |
+| Baseline | Comparison base SHA |
+| Scope | Files and kinds covered by this receipt |
+| Local checks | Exact commands and results run after the last edit |
+| Hosted checks | Same-head hosted result when publication is in scope; otherwise `not-run` or `unknown` |
+| Result | Pass or Fail for this handoff only |
+
 ## Boundary
 
 - Scope:

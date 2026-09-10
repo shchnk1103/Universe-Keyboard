@@ -37,13 +37,13 @@
 |---|---|---|
 | KOS-SUG-01 | Adopted | New evidence records only; no historical backfill; implementation needs a new Assignment. |
 | KOS-SUG-02 | Adopted | New formal Assignments only; the frontier cannot create authority. |
-| KOS-SUG-03 | Adopted | Publication/PR handoffs only; unknown candidate identity remains unknown. |
+| KOS-SUG-03 | Adopted | Publication/PR handoffs only; unknown candidate identity remains unknown. Template implementation: [`KOS-SUG-PUB-HANDOFF-001`](../assignments/kos-sug-pub-handoff-001.md). |
 | KOS-SUG-04 | Deferred | Reconsider only after SUG-07 preflight proves required content-free fields are readable and a specific human-device claim needs the manifest. |
 | KOS-SUG-05 | Adopted | Proposed-plan template pilot only; it does not authorize implementation. |
 | KOS-SUG-06 | Adopted | Manual docs-only pin audit first; CI/script automation needs a separate Assignment. |
 | KOS-SUG-07 | Adopted | New human-device Assignments only; privacy and Human Dependency remain required. |
 | KOS-SUG-08 | Adopted | Only if SUG-07 is insufficient and a separate minimal data-read authorization exists. |
-| KOS-SUG-09 | Adopted | Commit/PR handoffs only; final documentation changes require a recheck. |
+| KOS-SUG-09 | Adopted | Commit/PR handoffs only; final documentation changes require a recheck. Template implementation: [`KOS-SUG-PUB-HANDOFF-001`](../assignments/kos-sug-pub-handoff-001.md). |
 
 ## 后续授权边界
 

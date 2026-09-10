@@ -15,12 +15,14 @@
 
 ---
 
-## v0.7.0 adoption
+## v0.7.0 adoption (historical)
 
-[KOS-ASTRA-UPGRADE-001](../assignments/kos-astra-upgrade-001.md) records the project adoption.
-The profile pins released `v0.7.0` at `f7f4dad6750b59dc827c1366fcd276447b2820b2`.
-This branch contains the adoption; publication to the default branch still requires PR #99 merge.
-Existing Active Assignments remain pinned. The optional orchestration plan stays uninstantiated.
+> **Superseded for current pin:** see [PD-KOS-UPGRADE-UK-004](../product-decisions/KOS-UPGRADE-UK-004-adoption.md) and the v0.8.0 section below. Text below is the historical v0.7.0 record.
+
+[KOS-ASTRA-UPGRADE-001](../assignments/kos-astra-upgrade-001.md) records the historical v0.7.0 adoption.
+The profile then pinned released `v0.7.0` at `f7f4dad6750b59dc827c1366fcd276447b2820b2`.
+Default-branch publication landed as PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged `4c9f424`.
+Existing Active Assignments remained pinned. The optional orchestration plan stayed uninstantiated.
 
 - Release: [v0.7.0](https://github.com/shchnk1103/kos-agent-kit/releases/tag/v0.7.0).
 - Adopt optional `ops/agent-execution.md` for new tasks; existing Active task contracts do not migrate.
@@ -41,4 +43,5 @@ Human Product Owner's `2026-09-10 Asia/Shanghai` adoption decision. The project
 pins `v0.8.0` in advisory mode. E-01, A-01/B-01, P-01 and D-01 are available
 only when a newly created Assignment or handoff explicitly opts in; existing
 Active Assignments remain pinned and are not migrated. H-02/W-01 and `required`
-remain outside this adoption.
+remain outside this adoption. Default-branch publication landed as PR
+[#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104) merged `77e5658`.
