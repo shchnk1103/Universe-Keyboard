@@ -131,6 +131,29 @@ exactly one grade ([`kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-m
 Do not present `Executor-recorded` results as Quality-verified. Volatile
 snapshot metadata (date, commit, method, evidence path) still applies.
 
+## Claim outcome for new evidence records (KOS v0.8.0 E-01)
+
+An evidence record that explicitly opts into E-01 must give each claim one
+result outcome in addition to its M-04 evidence grade. The outcome states what
+the observation established; the grade states who established it. Neither
+field replaces the other.
+
+| Field | Required content |
+|---|---|
+| Claim | A precise claim or stable claim reference |
+| Outcome | `pass`, `fail`, `inconclusive`, or `not-run` |
+| Evidence grade | Exactly one current M-04 grade |
+| Conflict / supersession | A pointer when a comparable current record conflicts with or supersedes this result; otherwise `None known` |
+
+Use this block only for **new** E-01-opted evidence records. Historical
+evidence remains an auditable snapshot and is not backfilled solely for this
+convention. A result is `inconclusive` when its provenance, environment,
+coverage, or a comparable unresolved result cannot support the stated claim.
+`not-run` records an intentionally unexecuted observation and must not be
+presented as a pass. The Assignment remains the authority for scope,
+environment and permitted claims; this block cannot authorize a device run,
+raw-data access, Product decision, publication, or closure.
+
 ## KOS 2.2 Record Envelope Policy
 
 Universe Keyboard currently uses KOS 2.2 in `advisory` mode. A `kos-record`
@@ -165,12 +188,38 @@ text may remain for audit; it must not read as current status.
 
 ## Plan Lifecycle
 
-Every file under `docs/plans/` must declare exactly one lifecycle state near the top:
+Every **new or materially changed** file under `docs/plans/` must declare
+exactly one lifecycle state near the top. This convention does not require a
+bulk backfill or lifecycle migration of historical or existing Active plans:
 
+- `Proposed`
 - `Active`
 - `Archived`
 - `Superseded`
 - `Abandoned`
+
+`Proposed` is a bounded planning and handoff artifact. It is not current
+development guidance and does not authorize implementation, a decision,
+device/data access, publication, or a lifecycle transition. A Proposed plan
+must use this work-package header (fields may retain `UNKNOWN`):
+
+```md
+## Proposed work-package handoff
+
+- Triggering evidence:
+- Frozen facts and unknowns:
+- Decision to preserve:
+- Proposed seam and alternatives rejected:
+- Verification matrix:
+- Stop conditions and non-goals:
+- Required authorization and reviewers:
+```
+
+The header records what a future bounded Assignment must decide or verify; it
+cannot substitute for that Assignment, its authorization, or an Accepted
+Product Decision. When a plan becomes implementation guidance, create or link
+the required Assignment and change its lifecycle deliberately; do not infer the
+transition from a reviewer, status mirror, chat, or validator result.
 
 When work ends, the plan header must include:
 

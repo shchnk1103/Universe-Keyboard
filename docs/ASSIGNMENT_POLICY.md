@@ -239,6 +239,35 @@ Policy version: 1.0.0
 - Decision Source / Date:
 - Product Approver:
 
+## KOS v0.8.0 optional-contract selection
+
+Use this section only when the new Assignment explicitly opts into one or more
+v0.8.0 advisory contracts. State each selected contract and its applicability;
+an omitted contract remains outside this Assignment.
+
+| Contract | Selection | Boundary and owner source |
+|---|---|---|
+| E-01 claim-bound observation | Adopted / Not applicable | |
+| A-01 / B-01 authorization chain and briefing | Adopted / Not applicable | |
+| P-01 publication facts | Adopted / Not applicable | |
+| D-01 final-documentation receipt | Adopted / Not applicable | |
+
+### Authorization frontier (A-01 / B-01 only)
+
+When A-01 / B-01 is Adopted, use this table to expose the current slice and
+the next independently gated boundary. It records authority; it never creates
+it. Add only the rows that apply to the Assignment. Each populated `Status`
+cell must contain exactly one of `Authorized`, `In progress`, `Not authorized`,
+`Awaiting environment`, `Not applicable`, or `UNKNOWN`. `UNKNOWN` is
+fail-closed: resolve it or stop and return to the named authority before the
+Assignment enters `Ready` or `Active`.
+
+| Slice | Status | Action / target / boundary | Authority source |
+|---|---|---|---|
+| Current authorized slice | Select one status | | Assignment → Authorization → Accepted Product Decision |
+| Next independently gated slice | Select one status | | New bounded Assignment and matching Authorization required |
+| Environment or external slice | Select one status | | Named environment authority or explicit Not Applicable rationale |
+
 ## Boundary
 
 - Scope:
