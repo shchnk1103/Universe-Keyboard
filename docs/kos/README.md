@@ -53,14 +53,17 @@ and does not authorize dual-track or Migration by itself.
 
 ## KOS 2.2 Advisory Reliability Layer
 
-Universe Keyboard has adopted `kos-agent-kit@v0.6.0` in `advisory` mode:
+Universe Keyboard has adopted `kos-agent-kit@v0.8.0` in `advisory` mode. Its
+optional E-01, A-01/B-01, P-01 and D-01 contracts require explicit opt-in on
+new records; see `UPGRADE_STATUS` for the current disposition:
 
 | Artifact | Role |
 |---|---|
 | [`UPGRADE_STATUS.md`](UPGRADE_STATUS.md) | Adopted version, disposition and next review Source of Truth |
 | [`.kos/project.json`](../../.kos/project.json) | Included records, claims, environments, Gate policies and mode |
 | [`KOS-UPGRADE-UK-001`](../assignments/kos-upgrade-uk-001.md) | First advisory adoption (`v0.5.0`) |
-| [`KOS-UPGRADE-UK-003`](../assignments/kos-upgrade-uk-003.md) | Current Adopted pin (`v0.6.0` advisory) |
+| [`KOS-ASTRA-UPGRADE-001`](../assignments/kos-astra-upgrade-001.md) | Historical v0.7.0 adoption |
+| [`KOS-UPGRADE-UK-004`](../assignments/kos-upgrade-uk-004-v0.8.0.md) | Current Adopted pin (`v0.8.0` advisory) |
 
 KOS 2.2 adds machine-readable record envelopes and deterministic read-only
 validation on top of KOS 2.0/2.1. It does not replace their authority or

@@ -81,7 +81,9 @@ Assignment Record.
 
 ## KOS 2.2 Machine-Readable Reliability Layer
 
-Universe Keyboard adopts KOS Agent Kit `v0.5.0` in **advisory** mode. KOS 2.2
+Universe Keyboard adopts KOS Agent Kit `v0.8.0` in **advisory** mode. E-01,
+A-01/B-01, P-01 and D-01 apply only through explicit opt-in on new records;
+[`UPGRADE_STATUS.md`](kos/UPGRADE_STATUS.md) is the current source. KOS 2.2
 adds machine-readable envelopes and deterministic, read-only validation; it does
 not replace the frozen KOS 2.0 authority model or KOS 2.1 operational hygiene.
 

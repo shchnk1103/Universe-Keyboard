@@ -59,7 +59,7 @@
   "claims": [
     {
       "id": "CLAIM.KOS.ADVISORY_PIN",
-      "description": "Project has pinned KOS Agent Kit v0.6.0 in advisory mode without required envelopes on legacy records.",
+      "description": "Project has pinned KOS Agent Kit v0.8.0 in advisory mode; optional E-01, A-01/B-01, P-01 and D-01 apply only through explicit opt-in on new records.",
       "owner": "Architecture and Knowledge Steward"
     },
     {
@@ -138,8 +138,8 @@
     "universe_keyboard": {
       "kos_kit": {
         "upstream_repository": "shchnk1103/kos-agent-kit",
-        "adopted_version": "v0.7.0",
-        "adopted_commit": "f7f4dad6750b59dc827c1366fcd276447b2820b2",
+        "adopted_version": "v0.8.0",
+        "adopted_commit": "2c9907565bf6b6fcd00e698cc539d9e2db573bc5",
         "record_envelopes_mode": "advisory"
       }
     }

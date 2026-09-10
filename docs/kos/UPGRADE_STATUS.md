@@ -5,13 +5,13 @@
 | Field | Value |
 |---|---|
 | Upstream repository | `shchnk1103/kos-agent-kit` |
-| Adopted version | `v0.7.0` |
-| Latest checked version | `v0.7.0` |
-| Last checked at | `2026-09-05T23:49:08+08:00` |
+| Adopted version | `v0.8.0` |
+| Latest checked version | `v0.8.0` |
+| Last checked at | `2026-09-10T00:19:00+08:00` |
 | Upgrade owner | Human Product Owner |
-| Current disposition | Adopted — advisory only (`v0.7.0`) |
-| Next review | When enabling `required`; when instantiating the optional orchestration contract; when fixing [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生); or when a newer Kit Release appears |
-| Latest decision record | [KOS-ASTRA-UPGRADE-001-v0.7.0](upgrade-records/KOS-ASTRA-UPGRADE-001-v0.7.0.md) |
+| Current disposition | Adopted — `v0.8.0` advisory; E-01, A-01/B-01, P-01 and D-01 are opt-in for new records only |
+| Next review | When enabling `required`; when changing the adopted optional-contract scope; when fixing [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生); or when a newer Kit Release appears |
+| Latest decision record | [PD-KOS-UPGRADE-UK-004](../product-decisions/KOS-UPGRADE-UK-004-adoption.md) |
 
 ---
 
@@ -32,4 +32,13 @@ Existing Active Assignments remain pinned. The optional orchestration plan stays
 - 可选编排合同（`ops/agent-orchestration.md`）随 `v0.6.0` **可用**，仅供后续明确需要多 agent / 多 provider 的新 Assignment。既有 Active Assignment 保持 pinned、不迁移。本仓库 **未** 实例化 `ORCHESTRATION_PLAN.md`。
 - 历史：[`KOS-UPGRADE-UK-001-v0.5.0`](upgrade-records/KOS-UPGRADE-UK-001-v0.5.0.md) 首次 advisory 采用；[`KOS-UPGRADE-UK-002-v0.6.0`](upgrade-records/KOS-UPGRADE-UK-002-v0.6.0.md) 为 Deferred 检查记录，Adopted pin 已被 UK-003 取代（S-03）。
 
-Latest review: [v0.7.0 adoption record](upgrade-records/KOS-ASTRA-UPGRADE-001-v0.7.0.md).
+Historical v0.7.0 adoption record: [KOS-ASTRA-UPGRADE-001](upgrade-records/KOS-ASTRA-UPGRADE-001-v0.7.0.md).
+
+## v0.8.0 adoption
+
+[KOS-UPGRADE-UK-004](../assignments/kos-upgrade-uk-004-v0.8.0.md) records the
+Human Product Owner's `2026-09-10 Asia/Shanghai` adoption decision. The project
+pins `v0.8.0` in advisory mode. E-01, A-01/B-01, P-01 and D-01 are available
+only when a newly created Assignment or handoff explicitly opts in; existing
+Active Assignments remain pinned and are not migrated. H-02/W-01 and `required`
+remain outside this adoption.

@@ -1,7 +1,9 @@
 # KOS 改进建议：Scheme Delivery 工作复盘
 
+> **Superseded for current disposition:** see [PD-KOS-IMPROVEMENT-SUGGESTIONS-001](../product-decisions/KOS-IMPROVEMENT-SUGGESTIONS-001-disposition.md) (`2026-09-10 Asia/Shanghai`). The text below remains historical proposal context and does not itself change rules or authorize implementation.
+
 日期：2026-09-09 Asia/Shanghai
-状态：**建议稿；未采纳，不改变 KOS 2.0 / 2.1 规则或任何 Active Assignment**
+状态：**历史建议稿；其原始建议不直接改变 KOS 2.0 / 2.1 规则或任何 Active Assignment**
 输入：[CS09-10-02 真机失败证据](../evidence/scheme-delivery-cross-scheme-cs09-cs10-device-2026-09-08.md)、[runtime-route 提案](../plans/scheme-delivery-active-uninstall-runtime-route-reconciliation-2026-09-08.md)、KOS 2.1 M-01 至 M-06 与人工真机证据 Profile。
 
 ## 目的
