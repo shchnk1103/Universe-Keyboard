@@ -226,3 +226,97 @@ Assignment → AUTH → PD，frontier 不创造权威；diff 为 docs-only。
 下一步仍属 Assignment 所有权：独立 Quality review（logical lane
 `KOS-SUG-OBS-PREFLIGHT-001/document-quality`）以及最后一次文档编辑后的
 scoped docs-only validation；publication 需新的 Human 授权。
+
+---
+
+## Vocabulary-delta addendum（`c34b6da` → `2d5263d`）
+
+| Field | Value |
+|---|---|
+| Addendum reviewer | same independent Architecture runtime；logical lane `KOS-SUG-OBS-PREFLIGHT-001/document-architecture` |
+| Addendum date / timezone | `2026-09-10 Asia/Shanghai` |
+| Reviewed SHA | `2d5263deaef0fbe6547ae0cf869042d1da647752`（`HEAD^{tree}=f18ff993e5148746b96041fdd3c76fc441200a5a`） |
+| Parent review SHA | `c34b6dacba74cd3aa939d8e323daa0e8a9f7bd49` |
+| Baseline | `56bad7f71009c104c783477876d577c2fa95861e` |
+| Mode | 只读；仅追加本 addendum |
+
+本 runtime 未撰写词表修复。Quality 对 `c34b6da` 的 `P1-Q-001` 是该增量的输入，
+不是本 Architecture 结论。本 addendum 不关闭 Assignment，不替代对该 SHA 的
+独立 Quality 复审。
+
+### 冻结输入（this SHA）
+
+| Input | SHA-256 |
+|---|---|
+| [`KOS-SUG-OBS-PREFLIGHT-001` Assignment](../assignments/kos-sug-obs-preflight-001.md) | `ea531612deefc6f2c70d84e700aa2d6cb48f41dceca162abccbd2e8db28834fe` |
+| [`AUTH-KOS-SUG-OBS-PREFLIGHT-001`](../authorizations/AUTH-KOS-SUG-OBS-PREFLIGHT-001.md) | `10e63043e3d872bb6b66874fc6e0b079dbeff13c6eb205068a3461403f08873a`（unchanged） |
+| [`KOS-SUG-OBS-PREFLIGHT-001` Product Decision](../product-decisions/KOS-SUG-OBS-PREFLIGHT-001-authorization.md) | `5957c6328cae89451ea7bfa971d6c8297bba0810484bfed186d7511ce782eeed`（unchanged） |
+| [`universe-keyboard-human-operated-evidence-profile.md`](../kos/universe-keyboard-human-operated-evidence-profile.md) | `b7588eeaec64e568945b74047828e455b68aa52f39877320bc813ce3135dd0ec` |
+| [`DOCUMENTATION_GOVERNANCE.md`](../DOCUMENTATION_GOVERNANCE.md) | `d13c15217037571c8df9a43257ecae6e5d8c90556e4512116cae8568999651af` |
+| [`KOS-SUG-OBS-PREFLIGHT-001-quality-review.md`](KOS-SUG-OBS-PREFLIGHT-001-quality-review.md) | `9066c6058c728f89159a2c0ca43a2bacb91682eddc7224b8bba3e3f2214785d5`（对 `c34b6da` 的快照，含 `P1-Q-001`） |
+
+`git diff --check c34b6da..2d5263d` 通过。范围内产品文档仍无 Swift / 隐私政策 /
+诊断 UI / 生产日志 / CI 脚本变更。相对 `origin/main` 新增的仅是两份 review
+文件与上述词表修复。
+
+### Delta 内容
+
+Executor 采用 Quality `P1-Q-001` 的更强可选修复：把 preflight 列从
+`Preflight outcome` / `pass` / `inconclusive` / `not-run` 改为
+`Preflight readability` / `readable` / `unreadable` / `not-checked`。
+
+Profile 现为该词表的 Source of Truth
+（[`profile:107-136`](../kos/universe-keyboard-human-operated-evidence-profile.md#L107)）：
+
+- `Readable now?` = `yes` → `readable`；`no` 或 `unknown` → `unreadable`（fail-closed）。
+- `not-checked` = 该 opted-in 行尚未检查；任一行仍为 `not-checked` 时不得发出第一条 operator 指令。
+- 三值只描述操作前字段可读性；禁止复制到 E-01 Outcome、M-04 grade、Device-attested、Quality-reverified 真机证据、Product Gate、Release 或 SUG-04 重开触发。
+- 不可读 → `unreadable`；不得要求打开原始目录；`unreadable` 不授权 SUG-08。
+- 该表仍不能授权真机 run、日志改动或采集用户内容。
+- Readiness Review 对 opted-in run 要求每行已是 `readable` 或 `unreadable`（无 `not-checked`），允许带着 `unreadable` 行继续（功能 claim 仍可测），但不把 `unreadable` 升格为 SUG-08。
+
+Governance 交叉引用同步为“preflight readability 不是 E-01 outcome；不可读 →
+`unreadable`；不授权 raw-directory / device run / SUG-08”
+（[`DOCUMENTATION_GOVERNANCE.md:182-186`](../DOCUMENTATION_GOVERNANCE.md#L182)）。
+Assignment Objective 与 Exit Criteria 使用同一词表
+（[`Assignment:47-50`](../assignments/kos-sug-obs-preflight-001.md#L47)、
+[`Assignment:97-100`](../assignments/kos-sug-obs-preflight-001.md#L97)）。
+
+### SoT / authority / scope
+
+父审查五项边界在本 SHA 上仍然成立，且词表碰撞被收紧：
+
+| Check | This SHA |
+|---|---|
+| Opt-in / 不回填 / 非 Kit v0.8 合同 | 未改；profile 仍要求点名该节 |
+| functional vs trace；event code ≠ UUID/phase/elapsed | 未改 |
+| 不可读不授权 SUG-08 / 真机 / 原始目录 | 词从 `inconclusive` 改为 `unreadable`；禁令仍在 |
+| Assignment → AUTH → PD；frontier 不创造权威 | AUTH 未改；frontier 仍为 `In progress` / 后续片 `Not authorized` |
+| docs-only | 产品增量仍只改 profile、Governance、Assignment；无代码/隐私/诊断/日志 |
+
+`readable` 也不是设备授权或 SUG-04 自动重开：profile 明确禁止把三值复制到
+SUG-04 触发器。未来 opted-in 真机 Assignment 仍需自己的 Human Dependency 与
+匹配授权。
+
+对 `c34b6da` 父审查中“preflight `pass`/`inconclusive`/`not-run` 描述可读性、
+不是 E-01 claim 成立”的解读：本 SHA 已用独立词表落实，父审查该项观察关闭。
+
+### Findings（this SHA）
+
+| ID | Severity | Disposition | Finding |
+|---|---|---|---|
+| `A-SUG-OBS-P3-01` | P3 | `fix`（non-blocking） | 本切片 PD 末句仍写 “An inconclusive preflight does not authorize SUG-08” （[`PD:24-25`](../product-decisions/KOS-SUG-OBS-PREFLIGHT-001-authorization.md#L24)），而表词表 SoT 已改为 `unreadable`。禁令本身正确，且 PD 不是表字段权威；但权威包内残留 E-01 碰撞词。应对齐为 “`unreadable` preflight readability does not authorize SUG-08”，或把旧短语标为历史同义。不因此授权 SUG-08，也不把本切片升格为真机。 |
+
+无 P0/P1/P2。无阻塞失败情景：即使 PD 用旧词，profile/Governance/Assignment/AUTH
+仍 fail-closed，禁止把 preflight 值当作 E-01 或 SUG-08 授权。
+
+### Verdict（this SHA）
+
+**Architecture verdict: Pass.**
+
+Counts for `2d5263d`: **P0/P1/P2/P3 = 0/0/0/1**.
+
+词表拆分修复了与 E-01 Outcome 的碰撞，没有扩大权威或范围。`A-SUG-OBS-P3-01`
+不阻止本 Architecture 结论；建议在最终 docs-only 收口前改 PD 一句。Quality
+须对该 SHA 独立复审 `P1-Q-001` 是否关闭。本 addendum 落盘会使工作树相对
+`2d5263d` 变脏，不覆盖后续文档树。

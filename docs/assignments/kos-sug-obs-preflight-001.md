@@ -7,9 +7,9 @@ Policy version: `1.0.0`
 | Field | Value |
 |---|---|
 | Lifecycle | `Active` |
-| Current phase | Docs-only SUG-07 preflight convention; independent reviews pending |
+| Current phase | Docs-only SUG-07 preflight convention written; Architecture Pass; Quality Pass after P1-Q-001 fix |
 | Non-claims | No device run; no SUG-04/08; no SUG-06 CI; no privacy/diagnostics/UI/log change; no `required`, historical backfill, product code, push, merge, or Release |
-| Next handoff / decision | Independent Architecture and Quality reviews; then Human publication decision |
+| Next handoff / decision | Human publication (push / PR / merge) — not authorized in this slice |
 | Residuals | None known |
 
 ---
@@ -64,7 +64,7 @@ claim’s **preflight readability** to `unreadable` without bypassing the UI.
 - Implement SUG-04, SUG-08, or SUG-06 CI/script automation.
 - Change production logs, diagnostics UI, privacy policy, or Swift.
 - Make the preflight globally mandatory or backfill historical/Active device Assignments.
-- Treat an inconclusive preflight as SUG-08 authorization.
+- Treat `unreadable` preflight readability as SUG-08 authorization.
 - Push, PR, merge, TestFlight, or Release.
 
 ### Required Inputs
@@ -116,3 +116,4 @@ claim’s **preflight readability** to `unreadable` without bypassing the UI.
 ## History
 
 - `2026-09-10 Asia/Shanghai` — Human Product Owner said “批准 SUG-07 docs-only preflight Assignment”.
+- `2026-09-10 Asia/Shanghai` — Architecture Pass on `c34b6da` (`0/0/0/0`). Quality Pass with conditions (`0/1/0/0`) P1-Q-001. Vocabulary changed to `readable`/`unreadable`/`not-checked`. Addenda on `2d5263d`: Architecture Pass (`0/0/0/1` P3 wording); Quality Pass (`0/0/0/0`). P3 PD/Non-goals wording aligned in this packet. Push/PR still unauthorized.

@@ -88,3 +88,62 @@ Authorization `kos-record` JSON 解析通过。Grade for these commands on `c34b
 ## Non-claims
 
 本 Quality review **不是**：Architecture 通过、D-01 final-documentation receipt、hosted CI 绿灯、Product Gate、merge 许可、Release 许可、SUG-07 真机 run，或对任何设备观察的 Quality-reverified / Device-attested 升级。
+
+---
+
+## Addendum — tip `2d5263d`（P1-Q-001 repair）
+
+### Current Status（本 tip）
+
+| Field | Value |
+|---|---|
+| Verdict | **Pass** |
+| Reviewed SHA | `2d5263deaef0fbe6547ae0cf869042d1da647752` |
+| Tree | `f18ff993e5148746b96041fdd3c76fc441200a5a` |
+| Baseline | `56bad7f71009c104c783477876d577c2fa95861e` |
+| Scope | Vocabulary repair delta plus full scoped docs range vs baseline |
+| Non-claims | Not D-01 publication receipt; not hosted CI; not Product Gate; not merge / Release; not device evidence |
+
+| 严重级别 | 数量 |
+|---|---:|
+| P0 | 0 |
+| P1 | 0 |
+| P2 | 0 |
+| P3 | 0 |
+
+### Prior-finding disposition
+
+| ID | Disposition | Evidence on this tip |
+|---|---|---|
+| P1-Q-001 | **Resolved** | Profile 列名改为 **Preflight readability**，词表为 `readable` / `unreadable` / `not-checked`，不再使用 E-01 的 `pass` / `inconclusive` / `not-run`。映射已写明：`Readable now=yes` → `readable`；`no` 或 `unknown` → `unreadable`（fail-closed）；`not-checked` = 该 opted-in 行尚未检查，任一 adopted 行为 `not-checked` 时不得发出第一条 operator 指令。非复制规则覆盖 E-01 Outcome、M-04 grade、Device-attested、Quality-reverified 真机证据、Product Gate、Release 与 SUG-04 重审触发。Governance 写明这些值不是 E-01 outcomes，不可读字段设置的是 **preflight readability** `unreadable`。Assignment Objective 与 Exit 已同步为 `unreadable` / 非 E-01。 |
+
+### Quality-reverified local checks（this SHA only）
+
+Environment: local Quality reviewer workstation; committed tip `2d5263d` / tree `f18ff99…`. 本 addendum 落盘会使工作树相对该 SHA 多出本文件未提交编辑。
+
+```text
+python3 scripts/ci/check_markdown_links.py --base 56bad7f71009c104c783477876d577c2fa95861e --head HEAD
+# PASS changed Markdown links (10 files)
+
+python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py'
+# Ran 12 tests in 0.495s  OK
+
+git diff --check 56bad7f71009c104c783477876d577c2fa95861e...HEAD
+# clean
+```
+
+Grade for these commands on `2d5263d`：**Quality-reverified** 本地 docs-only 检查。 **不是** D-01 publication receipt、hosted CI、merge/Release，也 **不是** Quality-reverified 真机证据。
+
+### New findings
+
+None.
+
+### Residual（non-blocking）
+
+- Assignment Non-goals 仍有一句 “Treat an inconclusive preflight as SUG-08 authorization”；Product Decision 仍有 “An inconclusive preflight does not authorize SUG-08”。禁止 SUG-08 的方向正确，但用词落后于 Profile SoT。不重开 P1；Close 前可改成 `unreadable`。
+- Assignment Exit 的 Architecture / final Quality 勾选仍待双方在最终文档 SHA 上收口。本 addendum 关闭首轮 Quality condition，不代替 Architecture 对 `2d5263d` 的独立结论，也不 Close Assignment。
+- 本 addendum 写入后 HEAD 将再移动；D-01 仍为 Not applicable，不得把本次检查称为最终文档 receipt。
+
+### Non-claims（addendum）
+
+本 tip 结论 **不是** Architecture 通过、D-01 publication receipt、hosted CI、Product Gate、merge 或 Release。

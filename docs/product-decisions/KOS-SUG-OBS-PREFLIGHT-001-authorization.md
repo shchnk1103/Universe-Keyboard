@@ -21,5 +21,5 @@
 This slice follows the accepted
 [nine-item disposition](KOS-IMPROVEMENT-SUGGESTIONS-001-disposition.md).
 SUG-07 remains inactive for any Assignment that does not explicitly adopt the
-preflight table. An inconclusive preflight does not authorize SUG-08 raw-data
-access.
+preflight table. `unreadable` preflight readability does not authorize SUG-08
+raw-data access.
