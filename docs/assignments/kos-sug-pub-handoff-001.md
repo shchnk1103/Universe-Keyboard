@@ -9,8 +9,8 @@ Policy version: `1.0.0`
 | Lifecycle | `Active` |
 | Current phase | Docs-only templates and post-#104 M-02 sync written; independent Architecture and Quality reviews pending |
 | Non-claims | No SUG-04/07/08; no SUG-06 CI automation; no frozen KOS 2.0 change; no `required`, historical backfill, product code, device, push, merge, or Release |
-| Next handoff / decision | Independent document reviews of the scoped diff; then Human publication decision |
-| Residuals | None known |
+| Next handoff / decision | Finding repair committed; independent addenda on the new SHA; then Human publication decision |
+| Residuals | First-round reviews Pass with conditions; P1/P2 items listed in History are being fixed in this slice |
 
 ---
 
@@ -126,3 +126,4 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 - `2026-09-10 Asia/Shanghai` — Human Product Owner said “批准继续”; this Assignment implements SUG-03 and SUG-09 together and repairs post-#104 M-02 drift.
 - `2026-09-10 Asia/Shanghai` — PR #103 closed as superseded for KOS publication; `codex/kos-v080-upgrade-review-clean` deleted after reachability from `origin/main`; `codex/kos-v080-upgrade-review` retained because unique SHAs are not on `main`.
 - `2026-09-10 Asia/Shanghai` — Local docs-only checks passed on `baab8c2`. Independent reviews remain the Exit gap.
+- `2026-09-10 Asia/Shanghai` — Independent reviews of `507c0d3`: Architecture Pass with conditions (`P0/P1/P2/P3 = 0/1/2/0`); Quality Pass with conditions (`0/0/3/1`). Repair this slice: add Active Work row; S-03 the ASTRA upgrade-record; clarify `path#Lnn` vs the link checker; define `mismatched` vs `unknown`; re-run docs-only checks after those edits.

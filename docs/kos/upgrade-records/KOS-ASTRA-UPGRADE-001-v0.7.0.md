@@ -1,10 +1,12 @@
 # KOS v0.7.0 adoption record
 
+> **Superseded for current pin:** [PD-KOS-UPGRADE-UK-004](../../product-decisions/KOS-UPGRADE-UK-004-adoption.md) adopted `v0.8.0` advisory; PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged `4c9f424`. Text below is the historical v0.7.0 record.
+
 - Owner: Human Product Owner; executor: current Codex runtime.
 - From: v0.6.0 advisory, `a16c93281718f97cb580935c5043562c39f3a1d1`.
 - Target: [v0.7.0 Release](https://github.com/shchnk1103/kos-agent-kit/releases/tag/v0.7.0), `f7f4dad6750b59dc827c1366fcd276447b2820b2`.
-- Disposition: Adopted in the PR #99 branch, advisory; default-branch publication pending merge.
-- Authority: after the recommendation to resolve local parity and update the exact v0.7.0 pin, Human Product Owner replied “OK，那你觉得接下来最优先做的事情是什么？你直接开始吧”, then “额度已恢复，请继续本次未完成的任务吧”. This authorizes the project upgrade implementation; the earlier Kit #5 approval alone did not. Final PR #99 merge is still pending.
+- Disposition: Historical Adopted `v0.7.0` advisory. Default-branch publication landed as PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged `4c9f424`. Current pin is `v0.8.0`.
+- Authority: after the recommendation to resolve local parity and update the exact v0.7.0 pin, Human Product Owner replied “OK，那你觉得接下来最优先做的事情是什么？你直接开始吧”, then “额度已恢复，请继续本次未完成的任务吧”. This authorized the v0.7.0 project upgrade implementation; the earlier Kit #5 approval alone did not.
 
 ## Impact and boundaries
 

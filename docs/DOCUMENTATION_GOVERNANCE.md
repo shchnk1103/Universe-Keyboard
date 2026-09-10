@@ -159,8 +159,8 @@ raw-data access, Product decision, publication, or closure.
 A publication or PR handoff that explicitly opts into P-01 must record local,
 published, and hosted-CI candidate identity as specified in
 [`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md) § Publication facts. The block
-cannot authorize a push, merge, or Release. `same-head` requires three present,
-equal SHAs; a green check on a different commit is `mismatched` or `unknown`.
+cannot authorize a push, merge, or Release. `same-head` requires three present, equal SHAs; all three known and unequal is
+`mismatched`; any `none`/`unknown` identity is `unknown`.
 
 ## Final-documentation receipt (KOS v0.8.0 D-01)
 
@@ -168,8 +168,10 @@ A docs or publication handoff that explicitly opts into D-01 must re-run the
 named local checks after the last documentation edit and record the receipt
 fields in [`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md) § Final-documentation
 receipt. Prior source-test or link-check passes do not cover later Markdown.
-In-repository line citations use `path#Lnn`. A D-01 receipt is not Product,
-Quality, merge, or Release approval.
+In-repository line citations that are Markdown links use `path#Lnn`. The
+link checker only verifies that the path before `#` exists; it does not
+verify line numbers or scan prose `path:nn` citations. A D-01 receipt is
+not Product, Quality, merge, or Release approval.
 
 ## KOS 2.2 Record Envelope Policy
 

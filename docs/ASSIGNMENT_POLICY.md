@@ -281,7 +281,7 @@ later SHA, a green check on a different head, or chat.
 | `published_head` | SHA of the remote branch or PR head, or `none` |
 | `hosted_ci_head` | SHA actually covered by hosted checks, or `unknown` |
 | `hosted_ci_result` | `green`, `red`, `pending`, or `unknown` |
-| `coverage` | `same-head` only when the three SHAs are present and equal; otherwise `mismatched` or `unknown` |
+| `coverage` | `same-head` when all three values are SHAs and equal; `mismatched` when all three are SHAs and not equal; `unknown` when any of the three is `none` or `unknown` |
 | `pr_state` | `draft`, `open`, `merged`, or `none` |
 | `local_ahead_of_published` | Non-negative count, or `unknown` |
 
@@ -289,7 +289,11 @@ later SHA, a green check on a different head, or chat.
 
 When D-01 is Adopted, record the receipt after the last documentation edit of
 the slice. Earlier test or link-check passes do not cover later Markdown.
-In-repository line citations use `path/to/file.ext#L77`, not `path/to/file.ext:77`.
+In-repository line citations that are Markdown links use
+`path/to/file.ext#L77`, not `path/to/file.ext:77`. The repository markdown
+link checker only verifies that the path before `#` exists; it does not
+verify line numbers and does not scan prose or backtick `path:nn` citations.
+`path#Lnn` is a writing and review convention, not a CI-enforced rule.
 Ordinary docs-only checks without this opt-in must not be called a D-01 receipt.
 
 | Field | Required content |
