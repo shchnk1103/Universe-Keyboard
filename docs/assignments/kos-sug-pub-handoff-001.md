@@ -7,10 +7,10 @@ Policy version: `1.0.0`
 | Field | Value |
 |---|---|
 | Lifecycle | `Closed` |
-| Current phase | Implementation and independent addenda complete; Quality P1-Q-001 (push/draft-PR authority surfaces) aligned; Human-authorized next action is push + draft PR |
-| Non-claims | No SUG-04/07/08; no SUG-06 CI automation; no frozen KOS 2.0 change; no `required`, historical backfill, product code, device, merge, undraft, or Release |
-| Next handoff / decision | Push `codex/kos-sug-pub-handoff-001` and open a draft PR; merge remains unauthorized |
-| Residuals | None for the implementation slice. D-01 publication receipt belongs in the draft PR body after this HEAD is published. |
+| Current phase | Published: PR [#105](https://github.com/shchnk1103/Universe-Keyboard/pull/105) merged `ebd5e54`; head `40c4b6b`; hosted CI same-head green; remote feature branch deleted |
+| Non-claims | No SUG-04/07/08; no SUG-06 CI automation; no frozen KOS 2.0 change; no `required`, historical backfill, product code, device, or Release |
+| Next handoff / decision | None for this slice |
+| Residuals | None |
 
 ---
 
@@ -34,9 +34,9 @@ Policy version: `1.0.0`
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Current documentation slice | In progress | `implement_kos_sug_pub_handoff_templates`: add P-01/D-01 conventions, M-02 recheck step, and post-#104 status mirrors | This Assignment → [Authorization](../authorizations/AUTH-KOS-SUG-PUB-HANDOFF-001.md) → [Accepted Product Decision](../product-decisions/KOS-SUG-PUB-HANDOFF-001-authorization.md) |
-| Push / draft PR | Authorized | Push `codex/kos-sug-pub-handoff-001` and open a draft PR only | Human Product Owner, this session: “批准先做1，再做2” |
-| Merge / Release | Not authorized | Merge to default branch, TestFlight, or Release | New Human authorization required |
+| Current documentation slice | Authorized | Completed: P-01/D-01 conventions, M-02 recheck step, post-#104 mirrors, and post-#105 status sync | This Assignment → [Authorization](../authorizations/AUTH-KOS-SUG-PUB-HANDOFF-001.md) → [Accepted Product Decision](../product-decisions/KOS-SUG-PUB-HANDOFF-001-authorization.md) |
+| Push / draft PR / merge of #105 | Authorized | Consumed: PR [#105](https://github.com/shchnk1103/Universe-Keyboard/pull/105) merged `ebd5e54` | Human: “批准先做1，再做2”; then “GitHub CI 已全绿，可以批准合并”; then delete remote branch + post-merge M-02 |
+| Further merge / Release | Not authorized | TestFlight, App Release, or a new publication | New Human authorization required |
 | SUG-04 / SUG-07 / SUG-08 / SUG-06 automation | Not authorized | Device, privacy, diagnostics, raw-data, or CI-script work | New bounded Assignment and matching Authorization required |
 | Environment or external slice | Not applicable | Documentation and local static validation only | No device, runtime, external service, or raw-data operation belongs to this Assignment |
 
@@ -120,7 +120,7 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 
 ## Handoff
 
-- **Required Handoff Content:** final document locations; both independent review records; scoped docs-only validation result; draft-PR URL after publication; explicit statement that merge/Release did not occur.
+- **Required Handoff Content:** final document locations; both independent review records; scoped docs-only validation; PR [#105](https://github.com/shchnk1103/Universe-Keyboard/pull/105) merged `ebd5e54`; remote feature branch deleted. Release did not occur.
 - **Revalidation Trigger:** the accepted disposition changes; either source policy changes materially; reviewer finding changes scope; or a request expands beyond SUG-03/SUG-09 and M-02 sync.
 
 ## History
@@ -131,3 +131,4 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 - `2026-09-10 Asia/Shanghai` — Independent reviews of `507c0d3`: Architecture Pass with conditions (`P0/P1/P2/P3 = 0/1/2/0`); Quality Pass with conditions (`0/0/3/1`). Repair this slice: add Active Work row; S-03 the ASTRA upgrade-record; clarify `path#Lnn` vs the link checker; define `mismatched` vs `unknown`; re-run docs-only checks after those edits.
 - `2026-09-10 Asia/Shanghai` — Addenda on `f997a54`: Quality **Pass** (`0/0/0/0`), Quality-reverified link check PASS 19 files and 12 tests OK; Architecture **Pass with conditions** (`0/0/1/0`), residual `A-SUG-PH-P2-02` = evidence/History must name that re-run. Human authorized addenda then push+draft PR; merge still unauthorized.
 - `2026-09-10 Asia/Shanghai` — Addendum 2 on `84dbc7e`: Architecture **Pass** (`0/0/0/0`); Quality **Pass with conditions** (`0/1/0/0`) P1-Q-001 push-authority surfaces. AUTH exclusions drop `push`; Non-goals allow this branch's draft PR only. Assignment Closed for implementation.
+- `2026-09-10 Asia/Shanghai` — Human authorized merge after hosted CI green on the same head. PR [#105](https://github.com/shchnk1103/Universe-Keyboard/pull/105) merged `ebd5e54` (`40c4b6b` on `main`). Local feature branch deleted; remote `codex/kos-sug-pub-handoff-001` deleted after reachability check. This History line is post-merge M-02.

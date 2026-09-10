@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | issued — implementation in progress; Human later authorized push + draft PR |
-| Consumption | Issued for this docs-only slice; Human `2026-09-10` follow-up authorized push and draft PR only. Not reusable for SUG-04/07/08, SUG-06 automation, merge, or Release |
+| Status | consumed |
+| Consumption | Consumed by Closed `KOS-SUG-PUB-HANDOFF-001` after PR #105 merged `ebd5e54`. Not reusable for SUG-04/07/08, SUG-06 automation, or Release |
 
 ---
 
@@ -17,8 +17,8 @@ Human Product Owner, current session `2026-09-10 Asia/Shanghai`: **“批准继�
   "record_id": "AUTH-KOS-SUG-PUB-HANDOFF-001",
   "record_type": "authorization",
   "title": "Implement bounded SUG-03 and SUG-09 documentation conventions and post-#104 M-02 sync",
-  "status": "issued",
-  "updated_at": "2026-09-10T19:00:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-10T19:45:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "review_finding"],
   "authorization": {
     "action": "implement_kos_sug_pub_handoff_templates",
@@ -37,13 +37,12 @@ Human Product Owner, current session `2026-09-10 Asia/Shanghai`: **“批准继�
     "issued_at": "2026-09-10T19:00:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "issued"
+    "consumption_state": "consumed"
   }
 }
 ```
 
-> **Issued:** [KOS-SUG-PUB-HANDOFF-001](../assignments/kos-sug-pub-handoff-001.md)
-> Implementation of the templates remains this receipt. Human Product Owner later
-> said “批准先做1，再做2”, which authorizes push of `codex/kos-sug-pub-handoff-001`
-> and a draft PR only. This receipt still cannot authorize SUG-04/07/08, CI
-> automation, `required`, merge, or Release.
+> **Consumed:** [KOS-SUG-PUB-HANDOFF-001](../assignments/kos-sug-pub-handoff-001.md)
+> Human later authorized addenda, push, draft PR, merge of PR #105 after same-head
+> hosted CI green, remote-branch deletion, and this post-merge M-02. The receipt
+> cannot authorize SUG-04/07/08, CI automation, `required`, or Release.
