@@ -1,6 +1,6 @@
 # Scheme Platform — Discovery layout-page UX (Human Approved)
 
-**Status:** **Human Approved** UX rules (`2026-09-09 Asia/Shanghai`) for a **later** Installed Capability Discovery / layout-picker Assignment (not yet drafted) — includes **layout settings page A/B**, **uninstall layout-fallback**, **Luna (builtin) presence**, and **confirmed-but-unready greying**.  
+**Status:** **Human Approved** UX rules (`2026-09-09`–`2026-09-10 Asia/Shanghai`) for a **later** Installed Capability Discovery / layout-picker Assignment (not yet drafted) — includes **layout settings page A/B**, **uninstall layout-fallback**, **Luna (builtin) presence**, **confirmed-but-unready greying**, and **Section B try-failure state machine**.  
 **Nature:** Product UX / binding contract for keyboard **layout** (26-key / nine-key / future) honesty + uninstall rebind. **Docs only** — not this Assignment’s P1 UI; not Swift; not push.  
 **Carrier (P1 seams only):** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) — P1 = capability **query** seams (+ readiness query if needed) + uninstall hook shape; **not** the Discovery layout-page UI.  
 **Pointer from P0:** [`scheme-platform-p0-interfaces-2026-09-09.md`](scheme-platform-p0-interfaces-2026-09-09.md) §2 Layout (`onUninstallPrepare` / UninstallHooks).
@@ -38,7 +38,7 @@ Section A is the only source that may drive a **confirmed** binding write for th
 - Weak **filename / `schema_id` hints** only (e.g. `t9` / `nine` → candidate for nine-key).
 - Labeled **unverified**; user **may try**.
 - **Never auto-write binding** from filename alone.
-- Successful try **or** explicit user confirm **promotes** the choice into **user override** (Section A).
+- **Promote** into **user override** (Section A) only after **successful try + user confirm** (see try-failure state machine below). Cancel after success restores snapshot and stays in B.
 
 ### Filename never sole authority
 
@@ -85,9 +85,49 @@ When **deleting / uninstalling** a scheme that **backs the current layout bindin
 
 ---
 
-## Section B try-failure (stub)
+## Section B try-failure (Human Finalized `2026-09-10`)
 
-**Stub only** (not fully specified this record): if a Section B “try” fails (schema missing, deploy/session fail, or user abandons), **do not** promote into Section A; leave the suggestion **unverified**; keep any prior confirmed A binding unchanged. Full try-failure UX can be drafted with the later Discovery Assignment.
+**States:** `idle` → `trying` → (`succeeded_pending_confirm` | `failed`) → `idle`
+
+### Start try
+- Snapshot **layout + bindings + active scheme**.
+- UI enters **trying**.
+- **No** long-term binding write yet.
+- Temp switch is **session / rollback-only** (not a confirmed binding).
+
+### Deps unready (pre-block)
+- **Pre-block** before entering `trying`.
+- Stay in **Section B**.
+- Prompt the user to **install deps** (do not start the try).
+
+### Fail path
+Triggers: **deploy / compile / readiness fail**, or **timeout / crash-class**.
+- **Immediate restore** of the snapshot.
+- Stay in **Section B**.
+- Show a **readable error**.
+- **No promote** into A.
+- **No** auto-blacklist / auto-hide from a **single** failure.
+
+### Success + user confirm
+- Record **user override** → **promote** into **Section A**.
+- **Then** write the **long-term binding**.
+
+### Success + cancel
+- **Restore** snapshot.
+- Stay in **Section B**.
+- **No promote**.
+
+### Optional hide-from-B (per layout)
+- **Manual only** (user chooses to hide a B suggestion for that layout).
+- **Clearable** in settings.
+- Failure does **not** auto-hide.
+
+### Hard rules
+- **No** `setSchemeBinding` (or equivalent long-term binding write) from the filename / B try path **until confirm**.
+- Session / rollback-only temp switch while trying; confirmed A binding unchanged until promote.
+- **B never feeds** uninstall auto-rebind (uninstall still **ready A-only**; never B).
+- Scope = **later Discovery Assignment** (not P1 UI).
+- **P1** may add a **rollback try-deploy seam** if needed for this contract (not the Discovery UI).
 
 ---
 
@@ -111,7 +151,10 @@ When **deleting / uninstalling** a scheme that **backs the current layout bindin
 - Putting filename heuristics into `universe-capabilities.yaml` (Section B App only)
 - Silent uninstall when the deleted scheme backs current layout binding(s)
 - Enabling Wanxiang nine-key productization in P1/P2
-- Fully specifying Section B try-failure UX (stub only above)
+- Implementing Section B try-failure state-machine UI in Scheme Platform P1 (Discovery Assignment; P1 may add rollback try-deploy seam only)
+- Auto-blacklist / auto-hide-from-B from a single try failure
+- Long-term binding write / `setSchemeBinding` from B filename path before user confirm
+- Feeding Section B into uninstall auto-rebind
 - Push / ADR Accept / Product Gate / TF / Swift implied by this UX approval
 
 ---
@@ -122,3 +165,4 @@ When **deleting / uninstalling** a scheme that **backs the current layout bindin
 - `2026-09-09 Asia/Shanghai`: Human approved **uninstall layout-fallback** (warn → A-only rebind among remaining installed → else 26-key + Luna/`luna_pinyin` + clear invalid nine-key → then uninstall; Luna-only active-uninstall still applies). Package capability manifest = **Universe convention**, not RIME built-in. Section B try-failure stubbed. Local docs + commit only; no push.
 - `2026-09-09 Asia/Shanghai`: Human approved **Luna presence + readiness greying**: Luna **always** on **26-key Section A**; **never** on nine-key A; **not** a B filename suggestion; **builtin exception**; uninstall fallback already → 26+Luna. Confirmed-but-unready (missing deps / not deployable / readiness fail) → **greyed in A with reason** (prefer grey over hide); click guides fix; **no direct layout binding** until ready. Uninstall auto-rebind only among **ready** A candidates. Discovery Assignment scope; P1 only seams if needed for readiness query. Local docs + commit only; no push.
 - `2026-09-09 Asia/Shanghai`: Human finalized **`universe-capabilities/v1`** as the package capability manifest format (Section A authority #2). Pointer: [`scheme-platform-universe-capabilities-v1-2026-09-09.md`](scheme-platform-universe-capabilities-v1-2026-09-09.md). Filename heuristics remain App Section B only (not manifest fields). Local docs + commit only; no push.
+- `2026-09-10 Asia/Shanghai`: Human finalized **Section B try-failure state machine** — `idle` → `trying` → (`succeeded_pending_confirm` | `failed`) → `idle`; start try snapshots layout+bindings+active scheme (UI trying; no long-term binding yet); deps unready **pre-blocks** before trying (stay B; prompt install deps); deploy/compile/readiness fail or timeout/crash-class → **immediate restore**, stay B, readable error, **no promote**, **no** auto-blacklist from one failure; success+confirm → user override promote A + long-term binding; success+cancel → restore, stay B; optional **hide-from-B** per layout = manual only / clearable in settings / failure does not auto-hide; hard rules: no `setSchemeBinding` from filename path until confirm; session/rollback-only temp switch; B never feeds uninstall auto-rebind; Discovery Assignment scope; P1 may add rollback try-deploy seam if needed. Local docs + commit only; no push.
