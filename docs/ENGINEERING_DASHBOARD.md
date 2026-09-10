@@ -2,17 +2,17 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-03 Asia/Shanghai
+> **Updated:** 2026-09-10 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
-## KOS-ASTRA-UPGRADE-001 — v0.7.0 adoption
+## KOS-ASTRA-UPGRADE-001 — v0.7.0 adoption (historical)
 
-- [Assignment](assignments/kos-astra-upgrade-001.md): Completed implementation/local gates; adoption review complete; PR merge pending.
-- [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs and local gates complete; no final merge or App Release claim.
-- This PR adopts released v0.7.0 advisory; default-branch publication pending #99 merge.
+- [Assignment](assignments/kos-astra-upgrade-001.md): `Closed` (historical). PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged `4c9f424`.
+- [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs and local gates complete; no App Release claim.
+- Adopted pin superseded by [`KOS-UPGRADE-UK-004`](assignments/kos-upgrade-uk-004-v0.8.0.md) / PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104). Current pin is [UPGRADE_STATUS](kos/UPGRADE_STATUS.md).
 
 ## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory (historical)
 
@@ -22,10 +22,39 @@
 - **Non-claims:** not `required`; not orchestration plan instantiation; not Release
 - **Next:** none for this pin
 
-## KOS 2.2 advisory pin — current
+## KOS advisory pin — current
 
-- **Lifecycle:** This PR adopts `v0.7.0` advisory; [current pin](kos/UPGRADE_STATUS.md). UK-003 / PR #96 remains historical.
+- **Lifecycle:** [`KOS-UPGRADE-UK-004`](assignments/kos-upgrade-uk-004-v0.8.0.md) is Closed after Human Product Owner adopted `v0.8.0` advisory; published by PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104) merged `77e5658`. E-01, A-01/B-01, P-01 and D-01 apply only through explicit opt-in on new records. [UPGRADE_STATUS](kos/UPGRADE_STATUS.md) remains the current source. UK-003 / PR #96 remains historical.
 - **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
+
+## KOS improvement suggestions — disposition recorded
+
+- **Lifecycle:** [`KOS-IMPROVEMENT-SUGGESTIONS-001`](assignments/kos-improvement-suggestions-001.md) `Closed` — eight directions Adopted and `KOS-SUG-04` Deferred by Human Product Owner; details and implementation boundaries are in the [ledger](kos/kos-improvement-suggestions-scheme-delivery-2026-09-09-disposition-ledger.md).
+- **Non-claims:** no suggestion implementation, KOS rule/CI/privacy/diagnostics/device change, `required`, migration, or publication authorization.
+
+## KOS-SUG-EVIDENCE-AUTH-001 — first bounded implementation
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-evidence-auth-001.md) `Closed` — the docs-only SUG-01/SUG-02 slice added optional E-01 claim outcomes for new evidence and optional A-01/B-01 authorization-frontier guidance for new formal Assignments. Both final independent reviews passed.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-EVIDENCE-AUTH-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-EVIDENCE-AUTH-001.md) (consumed) · [`Architecture review`](reviews/KOS-SUG-EVIDENCE-AUTH-001-architecture-review.md) · [`Quality review`](reviews/KOS-SUG-EVIDENCE-AUTH-001-quality-review.md)
+- **Non-claims:** no SUG-03–SUG-09 implementation, KOS 2.0/2.1 change, `required`, historical backfill, CI, product code, device, or publication action.
+
+## KOS-SUG-PROPOSAL-HANDOFF-001 — Proposed-plan pilot
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-proposal-handoff-001.md) `Closed` — the docs-only SUG-05 slice added a non-authorizing `Proposed` plan lifecycle and work-package handoff header, plus one bounded pilot. Both final independent reviews passed.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PROPOSAL-HANDOFF-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PROPOSAL-HANDOFF-001.md) (consumed) · [`Architecture review`](reviews/KOS-SUG-PROPOSAL-HANDOFF-001-architecture-review.md) · [`Quality review`](reviews/KOS-SUG-PROPOSAL-HANDOFF-001-quality-review.md)
+- **Non-claims:** no plan implementation, SUG-01–04/SUG-06–09 implementation, KOS 2.0/2.1 change, `required`, historical migration, CI, product code, device, or publication action.
+
+## KOS-SUG-PUB-HANDOFF-001 — SUG-03 / SUG-09 publication and final-docs receipt
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-pub-handoff-001.md) `Closed` — docs-only SUG-03/SUG-09 slice added optional P-01 publication facts and optional D-01 final-documentation receipt, plus M-02 post-#104 status sync. Architecture addendum 2 Pass; Quality addendum 2 Pass with conditions then P1-Q-001 aligned. Human authorized push + draft PR; merge unauthorized.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PUB-HANDOFF-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PUB-HANDOFF-001.md)
+- **Non-claims:** no SUG-04/07/08 implementation, no SUG-06 CI automation, no KOS 2.0/2.1 frozen-principle change, `required`, historical backfill, product code, device, merge, or Release.
+
+## KOS-SUG-PIN-AUDIT-001 — manual pin consistency audit
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-pin-audit-001.md) `Closed` — the docs-only SUG-06 audit confirmed all five named current mirrors match the canonical `v0.8.0` advisory pin and opt-in boundary. Both final independent reviews passed.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PIN-AUDIT-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PIN-AUDIT-001.md) (consumed) · [`Audit`](evidence/kos-sug-06-manual-pin-audit-2026-09-10.md) · [`Architecture review`](reviews/KOS-SUG-PIN-AUDIT-001-architecture-review.md) · [`Quality review`](reviews/KOS-SUG-PIN-AUDIT-001-quality-review.md)
+- **Non-claims:** no upstream-latest assertion, CI/script automation, KOS 2.0/2.1 change, `required`, migration, product code, device, or publication action.
 
 ## KOS-UPGRADE-UK-002 — Record Deferred kos-agent-kit v0.6.0 (historical)
 
