@@ -98,7 +98,7 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 - [x] The accepted Product Decision and Authorization resolve to this exact SUG-03/SUG-09 documentation slice plus post-#104 M-02 sync.
 - [x] Every selected v0.8.0 contract is explicit; unselected contracts are excluded.
 - [x] Existing Active product Assignments and historical evidence are outside scope.
-- [ ] Independent Architecture and Quality reviewer lanes are bound and have produced final records.
+- [ ] Independent Architecture and Quality reviewer lanes are bound and have produced final records on the final documentation SHA.
 
 ### Exit Criteria
 
@@ -108,7 +108,7 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 - [x] Post-#104 status mirrors no longer claim pending #99/#104 publication.
 - [ ] Independent Architecture review of the final diff.
 - [ ] Independent Quality review of the final diff.
-- [ ] Scoped docs-only validation after the last documentation edit.
+- [x] Scoped docs-only validation recorded in [evidence](../evidence/kos-sug-pub-handoff-001-docs-check-2026-09-10.md); must be re-run if this Assignment's documents change again.
 
 ### Stop Conditions
 
@@ -125,3 +125,4 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 
 - `2026-09-10 Asia/Shanghai` — Human Product Owner said “批准继续”; this Assignment implements SUG-03 and SUG-09 together and repairs post-#104 M-02 drift.
 - `2026-09-10 Asia/Shanghai` — PR #103 closed as superseded for KOS publication; `codex/kos-v080-upgrade-review-clean` deleted after reachability from `origin/main`; `codex/kos-v080-upgrade-review` retained because unique SHAs are not on `main`.
+- `2026-09-10 Asia/Shanghai` — Local docs-only checks passed on `baab8c2`. Independent reviews remain the Exit gap.
