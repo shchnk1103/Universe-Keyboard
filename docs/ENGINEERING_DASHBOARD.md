@@ -51,6 +51,11 @@
 - **Non-claims:** no SUG-04/07/08 implementation, no SUG-06 CI automation, no KOS 2.0/2.1 frozen-principle change, `required`, historical backfill, product code, device, or Release.
 - **Next:** none for this slice
 
+## SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001 — RTRD-01
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-diagnostics-ui-001.md) `Active` — show finite runtime-route fields in diagnostics list/copy and a bottom sheet.
+- **Non-claims:** no uninstall round, no SUG-08, no journal schema change, no Release.
+
 ## KOS-SUG-OBS-DEVICE-001 — SUG-07 preflight execution
 
 - **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-device-001.md) `Active` — preflight filled from diagnostics UI source; trace UUID/phase/elapsed `unreadable`; **no uninstall round**. Independent reviews pending.
