@@ -219,3 +219,62 @@ Remaining residual: **`A-SUG-PH-P2-02` only.** Record an Executor-recorded (or l
 ### Non-claims
 
 This addendum is not a Product Decision, Quality conclusion, D-01 final-documentation receipt, hosted-CI result, merge authorization, Release authorization, `required`-mode enablement, or closure of the Assignment. It does not create frontier authority and does not re-open resolved `A-SUG-PH-P1-01` or `A-SUG-PH-P2-01`.
+
+---
+
+## Addendum 2 — evidence record of `f997a54` re-run
+
+**复核日期 / 时区：** `2026-09-10 Asia/Shanghai`
+**Reviewed SHA:** `84dbc7e931315f746a74b9db6b18fa8aac13018d`
+**Tree:** `ece750b02c90dfc2a34dd0e26a0f841211aca8e5`
+**Comparison base:** `77e5658d7fa0b7b868517238cb2cf24aeb7e024f`
+**Delta inspected:** `f997a5452964c16bd4efc2805ddab7e3b7abf490..84dbc7e931315f746a74b9db6b18fa8aac13018d`
+**Mode:** Architecture addendum only; appends to this file; no other files edited by this reviewer.
+
+### Prior residual
+
+| Finding | Disposition on this tip | Basis |
+|---|---|---|
+| `A-SUG-PH-P2-02` | **Resolved — `fix` closed for the recorded `f997a54` re-run.** | Evidence now names Head `f997a545…` / Tree `49120c27…`, records Quality-reverified PASS (19 link-check files; 12 unit tests), and points at the Quality addendum ([`evidence:17-20,39-56`](../evidence/kos-sug-pub-handoff-001-docs-check-2026-09-10.md#L17)). Assignment History records the same Quality-reverified result and the prior Architecture residual ([`Assignment:131`](../assignments/kos-sug-pub-handoff-001.md#L131)). The `baab8c2` rows are explicitly superseded for later tips. The original failure scenario (Close citing only `baab8c2` as covering the repaired tree) is closed. |
+
+### Is tip `84dbc7e` a new blocking Architecture residual?
+
+**No — not a new P2 against Close of the *implementation* slice.**
+
+`84dbc7e` is the commit that lands the review addenda plus the evidence/History record of the already-verified `f997a54` tree. That tip is necessarily newer than the SHA it documents. Evidence states this explicitly: committing the evidence and addenda creates a newer HEAD that must be re-checked **before any publication receipt** ([`evidence:55-56`](../evidence/kos-sug-pub-handoff-001-docs-check-2026-09-10.md#L55)).
+
+| Concern | Classification |
+|---|---|
+| Implementation Architecture residual `A-SUG-PH-P2-02` | **Closed.** Templates / M-02 sync / finding repairs were verified at `f997a54`; that re-run is now named in evidence and History. |
+| Tip `84dbc7e` (and any later commit that only records addenda/receipts) newer than `f997a54` | **D-01 / P-01 publication fact**, not a reopened implementation Architecture P2. Executor plans to place the D-01 receipt in the draft PR body after this SHA; merge remains unauthorized. Do not treat the `f997a54` Quality-reverified pair as a D-01 receipt for `84dbc7e` or for a published head. |
+
+### Delta check (`f997a54..84dbc7e`)
+
+Docs-only (6 files). Material changes:
+
+- Evidence/History name the `f997a54` Quality-reverified re-run (closes `A-SUG-PH-P2-02`).
+- Frontier splits **Push / draft PR = Authorized** (Human “批准先做1，再做2”) from **Merge / Release = Not authorized**; Authorization prose matches ([`Assignment:38-39`](../assignments/kos-sug-pub-handoff-001.md#L38); [`AUTH`](../authorizations/AUTH-KOS-SUG-PUB-HANDOFF-001.md)).
+- `ACTIVE_WORK` row `#9` phase text updated; still Active, no merge/Release claim.
+
+No SUG-04/07/08, SUG-06 CI automation, `required`, frozen KOS 2.0 change, product code, or merge authorization appears. P-01/D-01 remain opt-in conventions; this tip still does not claim a filled D-01 publication receipt.
+
+### New findings
+
+None.
+
+### Updated verdict and counts (this SHA)
+
+**Architecture verdict: Pass.**
+Architecture findings remaining for the implementation slice: **none.**
+Leftover relative to tip `84dbc7e` is only the known **D-01 publication-receipt gap** (re-check the published/draft-PR candidate after the last docs edit of that handoff; record P-01 identities without inferring `same-head`). That gap does not reopen `A-SUG-PH-P2-02` and does not block Architecture acceptance of the SUG-03/SUG-09 + post-#104 M-02 implementation as verified at `f997a54` and now recorded.
+
+| Severity | Count |
+|---|---:|
+| P0 | 0 |
+| P1 | 0 |
+| P2 | 0 |
+| P3 | 0 |
+
+### Non-claims
+
+This addendum is not a D-01 final-documentation receipt for `84dbc7e` or any later tip, not hosted CI, not Product Gate, not merge or Release authorization, not `required`-mode enablement, and not Assignment Close. It does not authorize actions beyond the already-recorded Human draft-PR boundary. Appending this text, if later committed, again creates a newer HEAD in the same D-01 publication class.

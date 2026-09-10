@@ -46,7 +46,7 @@
 
 ## KOS-SUG-PUB-HANDOFF-001 — SUG-03 / SUG-09 publication and final-docs receipt
 
-- **Lifecycle:** [`Assignment`](assignments/kos-sug-pub-handoff-001.md) `Active` — docs-only SUG-03/SUG-09 slice adding optional P-01 publication facts and optional D-01 final-documentation receipt, plus M-02 post-#104 status sync. Independent reviews pending.
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-pub-handoff-001.md) `Closed` — docs-only SUG-03/SUG-09 slice added optional P-01 publication facts and optional D-01 final-documentation receipt, plus M-02 post-#104 status sync. Architecture addendum 2 Pass; Quality addendum 2 Pass with conditions then P1-Q-001 aligned. Human authorized push + draft PR; merge unauthorized.
 - **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PUB-HANDOFF-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PUB-HANDOFF-001.md)
 - **Non-claims:** no SUG-04/07/08 implementation, no SUG-06 CI automation, no KOS 2.0/2.1 frozen-principle change, `required`, historical backfill, product code, device, merge, or Release.
 

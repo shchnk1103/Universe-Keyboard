@@ -139,3 +139,69 @@ None.
 ### Non-claims（addendum）
 
 本 tip 结论 **不是** D-01 publication receipt、hosted CI、Product Gate、merge 或 Release。
+
+---
+
+## Addendum 2 — tip `84dbc7e`（addenda + f997a54 evidence land）
+
+### Current Status（本 tip）
+
+| Field | Value |
+|---|---|
+| Verdict | **Pass with conditions** |
+| Reviewed SHA | `84dbc7e931315f746a74b9db6b18fa8aac13018d` |
+| Tree | `ece750b02c90dfc2a34dd0e26a0f841211aca8e5` |
+| Baseline | `77e5658d7fa0b7b868517238cb2cf24aeb7e024f` |
+| Scope | Landing of prior Quality/Architecture addenda, `f997a54` recheck evidence, Assignment/Auth/ACTIVE_WORK sync for draft-PR follow-up |
+| Non-claims | Not D-01 publication receipt; not hosted CI; not merge / Release |
+
+| 严重级别 | 数量 |
+|---|---:|
+| P0 | 0 |
+| P1 | 1 |
+| P2 | 0 |
+| P3 | 0 |
+
+### Landing of prior addenda / `f997a54` evidence
+
+- Evidence now names `f997a54` / tree `49120c27…` with PASS 19 files + 12 tests, grade Quality-reverified, pointer to the Quality addendum, and an explicit note that committing that record creates a newer HEAD that must be re-checked before any publication receipt. That closes the prior Executor-evidence lag for `f997a54` without over-claiming coverage of `84dbc7e`.
+- Architecture residual `A-SUG-PH-P2-02` (as of its `f997a54` addendum) is addressed in substance by that evidence record; this Quality addendum does not close Architecture’s Exit checkbox.
+- **No new finding** from the chicken-egg of landing addenda+evidence itself: the tip discloses the need to re-check `84dbc7e`, and this addendum does that Quality-reverification.
+
+### Quality-reverified local checks（this SHA only）
+
+```text
+python3 scripts/ci/check_markdown_links.py --base 77e5658d7fa0b7b868517238cb2cf24aeb7e024f --head HEAD
+# PASS changed Markdown links (19 files)
+
+python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py'
+# Ran 12 tests, OK
+```
+
+Grade for these two commands on `84dbc7e` / tree `ece750b0…`: **Quality-reverified**. Not a D-01 publication receipt; not hosted CI; not merge/Release. Committing this addendum will again move HEAD; publication handoff must re-check that newer tip under P-01/D-01/M-02 rules.
+
+### New finding
+
+### P1-Q-001 — Push / draft-PR authority surfaces conflict (fail-closed gap)
+
+同一 tip 上授权叙述不一致：
+
+1. Assignment frontier：`Push / draft PR` = **Authorized**（Human “批准先做1，再做2”）。
+2. Authorization Markdown Status/Consumption/footer：同样声称已授权 push + draft PR。
+3. 但绑定的 `kos-record.exclusions` **仍包含** `"push"`（与 `"merge"` / `"release"` 并列）。
+4. Assignment **Non-goals** 仍写：`Push, open a PR, merge, TestFlight, or Release.`
+5. Handoff Required Content 仍要求声明 `no push/PR/merge/Release occurred`。
+
+**Failure scenario：** 执行者只读 `kos-record` / Non-goals 会拒绝已口头授权的 draft PR；只读 frontier / Auth 页眉则会 push，而机器可读收据仍把 `push` 列为 exclusion。A-01 链无法给出单一、可解析的权限值，违反 fail-closed。
+
+**Condition：** 在 push/draft PR 之前对齐三处：(a) 更新或追加与 Human follow-up 匹配的 authorization 记录（从 exclusions 去掉 `push` 或新增明确覆盖 draft-PR 的收据）；(b) 修正 Non-goals / Handoff 必填句，使 draft PR 不再写成全局禁止；(c) 保持 merge/Release 为 Not authorized。未对齐前 frontier 对该片段应视为 `UNKNOWN` 并停止远程动作。
+
+### Residual（non-blocking）
+
+- `f997a54` 的 Quality-reverified 行不覆盖 `84dbc7e`；本 addendum 覆盖 `84dbc7e`，但不覆盖此后再提交的审查/证据编辑。
+- Assignment / ACTIVE_WORK 相位仍部分指向 “Architecture residual = recording f997a54 re-run”；证据已写入后文案略旧，不另开 finding。
+- 首轮 Quality findings 保持 Resolved；不因本 tip 重开。
+
+### Non-claims（addendum 2）
+
+本 tip 结论 **不是** D-01 publication receipt、hosted CI、Product Gate、merge 或 Release，也不代替 Architecture 对 `84dbc7e` 的独立结论。

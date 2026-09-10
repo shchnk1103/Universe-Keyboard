@@ -30,10 +30,10 @@ Human Product Owner, current session `2026-09-10 Asia/Shanghai`: **“批准继�
       {"kind": "file", "identity": "docs/KNOWLEDGE_OS.md"},
       {"kind": "file", "identity": "docs/kos/kos-2.1-operational-maturity.md"}
     ],
-    "scope": "Add opt-in P-01 publication facts and opt-in D-01 final-documentation receipt for new handoffs; add M-02 markdown recheck step; sync stale post-#104 status mirrors.",
-    "exclusions": ["implement_sug_04", "implement_sug_07", "implement_sug_08", "sug_06_ci_automation", "change_kos_2_0_frozen_principles", "required_mode", "active_assignment_migration", "ci_workflow_or_script_change", "privacy_or_diagnostics_change", "device_or_raw_log_operation", "product_code_change", "push", "merge", "release"],
+    "scope": "Add opt-in P-01 publication facts and opt-in D-01 final-documentation receipt for new handoffs; add M-02 markdown recheck step; sync stale post-#104 status mirrors; after independent addenda, push branch codex/kos-sug-pub-handoff-001 and open a draft PR only.",
+    "exclusions": ["implement_sug_04", "implement_sug_07", "implement_sug_08", "sug_06_ci_automation", "change_kos_2_0_frozen_principles", "required_mode", "active_assignment_migration", "ci_workflow_or_script_change", "privacy_or_diagnostics_change", "device_or_raw_log_operation", "product_code_change", "merge", "release", "undraft", "testflight"],
     "issuer_role": "Human Product Owner",
-    "decision_source": "in-session 2026-09-10 Asia/Shanghai instruction: 批准继续",
+    "decision_source": "in-session 2026-09-10 Asia/Shanghai instructions: 批准继续; then 批准先做1，再做2 (addenda, then push and draft PR)",
     "issued_at": "2026-09-10T19:00:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,

@@ -6,11 +6,11 @@ Policy version: `1.0.0`
 
 | Field | Value |
 |---|---|
-| Lifecycle | `Active` |
-| Current phase | First-round findings repaired; Quality addendum Pass on `f997a54`; Architecture addendum Pass with conditions pending evidence record of that re-run; Human authorized draft-PR publication after addenda |
-| Non-claims | No SUG-04/07/08; no SUG-06 CI automation; no frozen KOS 2.0 change; no `required`, historical backfill, product code, device, merge, or Release |
-| Next handoff / decision | Land addenda + `f997a54` recheck record; re-check the resulting HEAD; then push draft PR |
-| Residuals | Architecture `A-SUG-PH-P2-02` being fixed by recording the `f997a54` Quality-reverified re-run |
+| Lifecycle | `Closed` |
+| Current phase | Implementation and independent addenda complete; Quality P1-Q-001 (push/draft-PR authority surfaces) aligned; Human-authorized next action is push + draft PR |
+| Non-claims | No SUG-04/07/08; no SUG-06 CI automation; no frozen KOS 2.0 change; no `required`, historical backfill, product code, device, merge, undraft, or Release |
+| Next handoff / decision | Push `codex/kos-sug-pub-handoff-001` and open a draft PR; merge remains unauthorized |
+| Residuals | None for the implementation slice. D-01 publication receipt belongs in the draft PR body after this HEAD is published. |
 
 ---
 
@@ -70,7 +70,8 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
   Active Assignments or historical evidence.
 - Change CI workflows/scripts, privacy or diagnostics behavior, device
   procedures, or product code.
-- Push, open a PR, merge, TestFlight, or Release.
+- Merge, undraft, TestFlight, or Release.
+- Push of any branch other than `codex/kos-sug-pub-handoff-001`, or opening a non-draft PR.
 
 ### Required Inputs
 
@@ -87,7 +88,7 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 - **Domain Owner:** Architecture & Knowledge Steward
 - **Executor:** Current Grok primary session
 - **Environment Executor:** Not Applicable — documentation and local static validation only
-- **Human Dependency:** Human Product Owner for any later push/PR/merge
+- **Human Dependency:** Human Product Owner for merge, undraft, TestFlight, or Release
 - **Architecture Reviewer:** independent runtime in logical lane `KOS-SUG-PUB-HANDOFF-001/document-architecture`
 - **Quality Reviewer:** independent runtime in logical lane `KOS-SUG-PUB-HANDOFF-001/document-quality`
 - **Handoff Target:** Product Lead
@@ -99,7 +100,7 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 - [x] The accepted Product Decision and Authorization resolve to this exact SUG-03/SUG-09 documentation slice plus post-#104 M-02 sync.
 - [x] Every selected v0.8.0 contract is explicit; unselected contracts are excluded.
 - [x] Existing Active product Assignments and historical evidence are outside scope.
-- [ ] Independent Architecture and Quality reviewer lanes are bound and have produced final records on the final documentation SHA.
+- [x] Independent Architecture and Quality reviewer lanes produced addenda; Architecture Pass on `84dbc7e`; Quality Pass with conditions on `84dbc7e` (P1-Q-001 aligned in this close packet).
 
 ### Exit Criteria
 
@@ -107,9 +108,9 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 - [x] D-01 specifies post-last-edit recheck, receipt fields, and `path#Lnn` citations.
 - [x] M-02 lists the final markdown link-check step.
 - [x] Post-#104 status mirrors no longer claim pending #99/#104 publication.
-- [ ] Independent Architecture review of the final diff.
-- [ ] Independent Quality review of the final diff.
-- [x] Scoped docs-only validation recorded in [evidence](../evidence/kos-sug-pub-handoff-001-docs-check-2026-09-10.md); must be re-run if this Assignment's documents change again.
+- [x] Independent Architecture review: [addendum 2 Pass](../reviews/KOS-SUG-PUB-HANDOFF-001-architecture-review.md) on `84dbc7e`.
+- [x] Independent Quality review: [addendum 2 Pass with conditions](../reviews/KOS-SUG-PUB-HANDOFF-001-quality-review.md) on `84dbc7e`; P1-Q-001 fixed by aligning AUTH exclusions and Non-goals.
+- [x] Scoped docs-only validation recorded in [evidence](../evidence/kos-sug-pub-handoff-001-docs-check-2026-09-10.md); re-run after this close packet and record the published HEAD in the draft PR D-01 block.
 
 ### Stop Conditions
 
@@ -119,7 +120,7 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 
 ## Handoff
 
-- **Required Handoff Content:** final document locations; both independent review records when available; scoped docs-only validation result; explicit statement that no push/PR/merge/Release occurred.
+- **Required Handoff Content:** final document locations; both independent review records; scoped docs-only validation result; draft-PR URL after publication; explicit statement that merge/Release did not occur.
 - **Revalidation Trigger:** the accepted disposition changes; either source policy changes materially; reviewer finding changes scope; or a request expands beyond SUG-03/SUG-09 and M-02 sync.
 
 ## History
@@ -129,3 +130,4 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 - `2026-09-10 Asia/Shanghai` — Local docs-only checks passed on `baab8c2`. Independent reviews remain the Exit gap.
 - `2026-09-10 Asia/Shanghai` — Independent reviews of `507c0d3`: Architecture Pass with conditions (`P0/P1/P2/P3 = 0/1/2/0`); Quality Pass with conditions (`0/0/3/1`). Repair this slice: add Active Work row; S-03 the ASTRA upgrade-record; clarify `path#Lnn` vs the link checker; define `mismatched` vs `unknown`; re-run docs-only checks after those edits.
 - `2026-09-10 Asia/Shanghai` — Addenda on `f997a54`: Quality **Pass** (`0/0/0/0`), Quality-reverified link check PASS 19 files and 12 tests OK; Architecture **Pass with conditions** (`0/0/1/0`), residual `A-SUG-PH-P2-02` = evidence/History must name that re-run. Human authorized addenda then push+draft PR; merge still unauthorized.
+- `2026-09-10 Asia/Shanghai` — Addendum 2 on `84dbc7e`: Architecture **Pass** (`0/0/0/0`); Quality **Pass with conditions** (`0/1/0/0`) P1-Q-001 push-authority surfaces. AUTH exclusions drop `push`; Non-goals allow this branch's draft PR only. Assignment Closed for implementation.
