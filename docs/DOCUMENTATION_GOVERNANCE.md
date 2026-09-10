@@ -179,9 +179,11 @@ A **new** human-device Assignment may opt into the observability-preflight
 table in
 [`universe-keyboard-human-operated-evidence-profile.md`](kos/universe-keyboard-human-operated-evidence-profile.md).
 This is a project profile convention, not a Kit v0.8.0 contract. It is not
-backfilled onto historical or currently Active device Assignments. An
-unreadable required field marks that claim `inconclusive` and does not
-authorize raw-directory access, a device run, or SUG-08.
+backfilled onto historical or currently Active device Assignments. Preflight
+readability values (`readable` / `unreadable` / `not-checked`) are not E-01
+outcomes. An unreadable required field sets that claim’s **preflight
+readability** to `unreadable` and does not authorize raw-directory access, a
+device run, or SUG-08.
 
 ## KOS 2.2 Record Envelope Policy
 

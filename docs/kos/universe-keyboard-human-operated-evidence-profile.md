@@ -104,9 +104,9 @@ are not backfilled. An Assignment that omits the table has not adopted SUG-07.
 Adopted runs add a **read-only** preflight to the frozen manifest **before** the
 first operator action. One row per claim:
 
-| Claim | Kind | Required content-free fields | Visible location | Readable now? | Preflight outcome |
+| Claim | Kind | Required content-free fields | Visible location | Readable now? | Preflight readability |
 |---|---|---|---|---|---|
-| Precise behavior or trace statement | `functional` or `trace` | Finite keys only (no input, candidate, host text, or user dictionary) | Privacy-safe UI, export, or `not visible` | `yes` / `no` / `unknown` | `pass` / `inconclusive` / `not-run` |
+| Precise behavior or trace statement | `functional` or `trace` | Finite keys only (no input, candidate, host text, or user dictionary) | Privacy-safe UI, export, or `not visible` | `yes` / `no` / `unknown` | `readable` / `unreadable` / `not-checked` |
 
 Rules:
 
@@ -116,15 +116,25 @@ Rules:
   elapsed” is `trace`.
 - An event code appearing in a diagnostics list does not prove UUID, phase, or
   elapsed.
+- Mapping: `Readable now?` = `yes` → preflight readability `readable`; `no` or
+  `unknown` → `unreadable` (fail-closed). `not-checked` means this opted-in
+  row has not yet been inspected. An opted-in run must not send the first
+  operator instruction while any adopted row is `not-checked`.
+- These three values describe **pre-operation field readability only**. Do not
+  copy them to E-01 Outcome, M-04 grade, Device-attested results,
+  Quality-reverified device evidence, Product Gate, Release, or the SUG-04
+  reopen trigger.
 - If a required field is not readable from a privacy-safe UI or export, that
-  claim’s preflight outcome is `inconclusive`. Do not ask the operator to open
-  a raw directory.
-- `inconclusive` does not authorize [SUG-08](kos-improvement-suggestions-scheme-delivery-2026-09-09.md)
+  claim’s **preflight readability** is `unreadable`. Do not ask the operator
+  to open a raw directory.
+- `unreadable` does not authorize
+  [SUG-08](kos-improvement-suggestions-scheme-delivery-2026-09-09.md)
   raw-data access. SUG-08 still needs its own Assignment and Human
   authorization.
 - This table cannot authorize a device run, a logging change, or capture of
-  user content. Readiness Review for an opted-in run must confirm the table is
-  complete before the first operator instruction.
+  user content. Readiness Review for an opted-in run must confirm every
+  adopted row is `readable` or `unreadable` (none `not-checked`) before the
+  first operator instruction.
 
 ## Content-free Receipt
 

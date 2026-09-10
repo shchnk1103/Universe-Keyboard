@@ -46,8 +46,8 @@ Policy version: `1.0.0`
 
 Before the first operator action of a **new, opted-in** human-device run, the
 manifest must list each claim’s required content-free fields, where they are
-visible, and whether they are readable now. Unreadable fields mark that claim
-`inconclusive` without bypassing the UI.
+visible, and whether they are readable now. Unreadable fields set that
+claim’s **preflight readability** to `unreadable` without bypassing the UI.
 
 ### Scope
 
@@ -95,9 +95,9 @@ visible, and whether they are readable now. Unreadable fields mark that claim
 
 ### Exit Criteria
 
-- [x] Profile states opt-in, no backfill, functional vs trace split, and `inconclusive` when a field is not UI/export-readable.
+- [x] Profile states opt-in, no backfill, functional vs trace split, and `unreadable` preflight readability when a field is not UI/export-readable.
 - [x] Event-code appearance cannot prove UUID/phase/elapsed.
-- [x] Inconclusive preflight cannot authorize SUG-08 or a raw directory read.
+- [x] `unreadable` preflight cannot authorize SUG-08 or a raw directory read; preflight values are not E-01 outcomes.
 - [ ] Independent Architecture review of the final diff.
 - [ ] Independent Quality review of the final diff.
 - [ ] Scoped docs-only validation after the last documentation edit.
