@@ -49,6 +49,8 @@ No Diagnostics detail sheet on this path renders runtime-route keys either (form
 
 ## Next independently gated slices (not authorized here)
 
-1. **RTRD-01** — Main App UI: show finite `runtimeRoutePayload` keys in the privacy-safe list or a tap-detail sheet.
-2. Optional **on-device glance** — Human confirms the list still shows only the event code (one round).
+> **S-03:** Item 1 below is historical. RTRD-01 later Closed via PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110). This preflight table remains a source-audit of the **pre-#110** formatter.
+
+1. **RTRD-01** — Main App UI: show finite `runtimeRoutePayload` keys in the privacy-safe list or a tap-detail sheet. **Completed** on `main` (`4e4164f` / head `8a3f05c`).
+2. Optional **on-device glance** — still not authorized. Human would confirm the post-#110 list/detail shows the allowlisted keys (one round).
 3. **SUG-08** — only if UI remains insufficient and a named-file read is separately authorized.
