@@ -56,7 +56,7 @@ Evidence 在 `baab8c2`（14 files）记录 PASS；随后 `507c0d3` 又改了 Ass
 
 ### P2-Q-003 — `path#Lnn` 与现有 markdown link checker 的关系说得不够可执行
 
-D-01 / M-02 step 7 要求仓库内行引用用 `path#Lnn` 而非 `path:nn`，并与「重跑 markdown link check」写在同一操作步骤。现有 `scripts/ci/check_markdown_links.py` 只检查 Markdown 链接目标文件是否存在：`urlsplit` 会去掉 `#Lnn` fragment；**不会**校验行号是否存在；也**不会**扫描散文/反引号中的 `path:nn` 引用。写成 Markdown 链接的 `` `[text](file.md:77)` `` 会把 `:77` 当成路径而失败；`` `[text](file.md#L77)` `` 仅验证文件。因此「link check PASS」≠「citation 格式符合 `path#Lnn`」。
+D-01 / M-02 step 7 要求仓库内行引用用 `path#Lnn` 而非 `path:nn`，并与「重跑 markdown link check」写在同一操作步骤。现有 `scripts/ci/check_markdown_links.py` 只检查 Markdown 链接目标文件是否存在：`urlsplit` 会去掉 `#Lnn` fragment；**不会**校验行号是否存在；也**不会**扫描散文或反引号中的 `path:nn` 引用。把 `file.md:77` 写进 Markdown 链接目标会把 `:77` 当成路径而失败；把 `file.md#L77` 写进链接目标只验证文件存在。因此「link check PASS」≠「citation 格式符合 `path#Lnn`」。
 
 **Failure scenario：** handoff 全文继续使用历史常见的 `path:nn` 散文引用，link check 仍 PASS，执行者声称已满足 M-02 step 7 的 citation 规则，审查无法从 CI 信号检出。
 
