@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | issued |
-| Consumption | Issued for this docs-only template only; not reusable for a device run, SUG-08, SUG-04, SUG-06 automation, merge, or Release |
+| Status | consumed |
+| Consumption | Consumed by Closed `KOS-SUG-OBS-PREFLIGHT-001` after PR #107 merged `5ebf25f`. Not reusable for a device run, SUG-08, SUG-04, SUG-06 automation, or Release |
 
 ---
 
@@ -17,8 +17,8 @@ Human Product Owner, current session `2026-09-10 Asia/Shanghai`: **“批准 SUG
   "record_id": "AUTH-KOS-SUG-OBS-PREFLIGHT-001",
   "record_type": "authorization",
   "title": "Implement bounded SUG-07 observability-preflight documentation convention",
-  "status": "issued",
-  "updated_at": "2026-09-10T20:10:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-10T20:20:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "review_finding"],
   "authorization": {
     "action": "implement_kos_sug_07_observability_preflight_template",
@@ -34,11 +34,12 @@ Human Product Owner, current session `2026-09-10 Asia/Shanghai`: **“批准 SUG
     "issued_at": "2026-09-10T20:10:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "issued"
+    "consumption_state": "consumed"
   }
 }
 ```
 
-> **Issued:** [KOS-SUG-OBS-PREFLIGHT-001](../assignments/kos-sug-obs-preflight-001.md)
-> Commit remains a local executor action inside this slice. Push, PR, merge,
-> device runs, and Release stay separately gated.
+> **Consumed:** [KOS-SUG-OBS-PREFLIGHT-001](../assignments/kos-sug-obs-preflight-001.md)
+> Human later authorized push, PR, and merge of #107 after same-head hosted CI
+> green, remote-branch deletion, and this post-merge M-02. The receipt cannot
+> authorize a device run, SUG-08, SUG-04, SUG-06 automation, `required`, or Release.
