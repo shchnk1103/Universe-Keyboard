@@ -15,6 +15,7 @@ struct DiagnosticsLogContentView: View {
     let isPartialWindow: Bool
     let colorTokenForLine: (String) -> String
     let onLoadMore: () -> Void
+    @State private var runtimeRouteDetail: DiagnosticsRuntimeRouteDetail?
 
     var body: some View {
         if displayedLines.isEmpty && isRefreshing {
@@ -58,10 +59,7 @@ struct DiagnosticsLogContentView: View {
                     }
 
                     ForEach(Array(displayedLines.enumerated()), id: \.offset) { _, line in
-                        Text(line)
-                            .font(.system(.caption, design: .monospaced))
-                            .foregroundStyle(color(for: colorTokenForLine(line)))
-                            .textSelection(.enabled)
+                        diagnosticsLine(line)
                     }
 
                     if hasMorePages {
@@ -80,6 +78,34 @@ struct DiagnosticsLogContentView: View {
                 .padding(12)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .sheet(item: $runtimeRouteDetail) { detail in
+                DiagnosticsRuntimeRouteDetailSheet(items: detail.items)
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func diagnosticsLine(_ line: String) -> some View {
+        let detailItems = DiagnosticsEventDisplayFormatter.runtimeRouteDetailItems(from: line)
+        if let detailItems {
+            Button {
+                runtimeRouteDetail = DiagnosticsRuntimeRouteDetail(items: detailItems)
+            } label: {
+                Text(line)
+                    .font(.system(.caption, design: .monospaced))
+                    .foregroundStyle(color(for: colorTokenForLine(line)))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint("显示运行时路由的有限字段")
+        } else {
+            Text(line)
+                .font(.system(.caption, design: .monospaced))
+                .foregroundStyle(color(for: colorTokenForLine(line)))
+                .textSelection(.enabled)
         }
     }
 
@@ -93,6 +119,34 @@ struct DiagnosticsLogContentView: View {
             return .primary
         default:
             return .secondary
+        }
+    }
+}
+
+private struct DiagnosticsRuntimeRouteDetail: Identifiable {
+    let id = UUID()
+    let items: [(title: String, value: String)]
+}
+
+private struct DiagnosticsRuntimeRouteDetailSheet: View {
+    let items: [(title: String, value: String)]
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(items, id: \.title) { item in
+                    KeyValueRow(title: item.title, value: item.value)
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("运行时路由")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("完成", action: dismiss.callAsFunction)
+                }
+            }
         }
     }
 }

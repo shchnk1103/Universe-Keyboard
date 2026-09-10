@@ -53,6 +53,7 @@ phase/result、schema/layout/state 或 monotonic `elapsed_ms`。
 后续独立的诊断 UI Assignment 应在点击某条日志时，于页面底部弹出详情窗口，且仅展示
 现有 finite runtime-route 字段；不展示用户输入、候选文字、宿主内容、文件路径、URL 或
 异常原文。该改进不属于本次真机验证，也不改变 journal 存储、RIME 路由或部署行为。
+Implementation: [`SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001`](scheme-delivery-runtime-route-diagnostics-ui-001.md) (`Active`).
 
 `RTRD-02` — **Owner:** Main App UI / Diagnostics; **Disposition:** `fix`。
 
