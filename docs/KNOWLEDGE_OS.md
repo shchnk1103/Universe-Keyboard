@@ -71,7 +71,8 @@ lifecycle language, confirm:
 3. `ENGINEERING_DASHBOARD.md` Work Item row  
 4. `KNOWLEDGE_INDEX.md` if it embeds status language  
 5. Active plan Status line (if any)  
-6. [`ACTIVE_WORK.md`](ACTIVE_WORK.md) add / update / remove  
+6. [`ACTIVE_WORK.md`](ACTIVE_WORK.md) add / update / remove
+7. After the last Markdown/KOS documentation edit of the slice, re-run the repository markdown link check against baseline and HEAD when lightweight CI would cover those files. Record the pair; use `path#Lnn` for in-repository line citations.
 
 ### Active Work Summary (M-05)
 

@@ -77,6 +77,10 @@ Coordinator 负责汇总结论与范围控制；Product/Architecture/Quality 各
 
 交接包含目标/范围、精确基线、完成输出、证据、开放 findings、环境、副作用、授权边界与下一
 合法动作。跨任务/新会话将这些放进仓库记录；不能只靠聊天重建。
+当新 Assignment 显式选择 P-01 时，交接必须包含
+[`ASSIGNMENT_POLICY`](ASSIGNMENT_POLICY.md) 的发布事实表，且不得把不同 SHA 上的
+hosted 绿灯写成 `same-head`。当显式选择 D-01 时，必须在最后一次文档改动之后重跑
+指定检查并留下 receipt；更早的测试通过不能覆盖后来写入的 Markdown。
 用户回复默认简洁中文，先结果再证据和限制；playbook 格式是交接字段，不要求每次回复复制长表。
 
 KOS validator 是结构证据，不能替代独立 review、Product Gate 或真机证据。

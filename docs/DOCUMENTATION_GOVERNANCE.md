@@ -154,6 +154,23 @@ presented as a pass. The Assignment remains the authority for scope,
 environment and permitted claims; this block cannot authorize a device run,
 raw-data access, Product decision, publication, or closure.
 
+## Publication facts for new handoffs (KOS v0.8.0 P-01)
+
+A publication or PR handoff that explicitly opts into P-01 must record local,
+published, and hosted-CI candidate identity as specified in
+[`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md) § Publication facts. The block
+cannot authorize a push, merge, or Release. `same-head` requires three present,
+equal SHAs; a green check on a different commit is `mismatched` or `unknown`.
+
+## Final-documentation receipt (KOS v0.8.0 D-01)
+
+A docs or publication handoff that explicitly opts into D-01 must re-run the
+named local checks after the last documentation edit and record the receipt
+fields in [`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md) § Final-documentation
+receipt. Prior source-test or link-check passes do not cover later Markdown.
+In-repository line citations use `path#Lnn`. A D-01 receipt is not Product,
+Quality, merge, or Release approval.
+
 ## KOS 2.2 Record Envelope Policy
 
 Universe Keyboard currently uses KOS 2.2 in `advisory` mode. A `kos-record`

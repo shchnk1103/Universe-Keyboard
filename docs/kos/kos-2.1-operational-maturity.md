@@ -55,6 +55,7 @@ runs:
 4. `docs/KNOWLEDGE_INDEX.md` if navigation text encodes status  
 5. Active plan Status line if the plan is still `Active`  
 6. `docs/ACTIVE_WORK.md` entry add/update/remove  
+7. If the slice wrote Markdown or KOS records that lightweight CI would check: after the **last** Assignment, evidence, or review edit, re-run the repository markdown link check against the comparison baseline and HEAD, and record that pair. Prior source-test passes do not cover later Markdown. In-repository line citations use `path#Lnn`, not `path:nn`.
 
 Failure to sync is a **documentation defect**, not optional polish.
 

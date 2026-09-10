@@ -88,6 +88,9 @@ This directory does not authorize by mere existence:
 - Knowledge OS 2.1 or 3.0;
 - new roles, lifecycle concepts, object models or governance principles without a new Product Assignment.
 
-## 未采纳建议稿
+## Scheme Delivery 复盘建议
 
-- [Scheme Delivery 工作复盘的 KOS 改进建议](kos-improvement-suggestions-scheme-delivery-2026-09-09.md) — **建议稿，未采纳**；不具有规范性，也不授权任何工作。
+> **Superseded for current status:** see [PD-KOS-IMPROVEMENT-SUGGESTIONS-001](../product-decisions/KOS-IMPROVEMENT-SUGGESTIONS-001-disposition.md) (`2026-09-10 Asia/Shanghai`). Eight directions are Adopted and `KOS-SUG-04` is Deferred. Adopted is not implementation authority.
+
+- [原始建议稿](kos-improvement-suggestions-scheme-delivery-2026-09-09.md) — 历史提案，不再是当前处置。
+- [处置台账](kos-improvement-suggestions-scheme-delivery-2026-09-09-disposition-ledger.md) — 当前方向、边界与后续 Assignment。

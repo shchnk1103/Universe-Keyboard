@@ -7,8 +7,8 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Closed |
-| Current Phase | Human Product Owner adopted v0.8.0 advisory; optional contracts apply only through explicit opt-in on new records |
-| Material non-claims | 未启用 `required`；不迁移现有 Active Assignment；不实施 H-02/W-01；未授权 commit、push、merge、Release |
+| Current Phase | Human Product Owner adopted v0.8.0 advisory; optional contracts apply only through explicit opt-in on new records; published by PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104) merged `77e5658` |
+| Material non-claims | 未启用 `required`；不迁移现有 Active Assignment；不实施 H-02/W-01；#104 merge 不是 Release |
 | Next handoff / decision | Future opt-in Assignment uses the adopted policy; `required`、H-02/W-01 或范围变化需新 Assignment |
 | Residuals | No blocking document-review finding. Historical compatibility reviews remain non-adoption evidence. |
 
@@ -51,3 +51,4 @@ Policy version: 1.0.0
 - `2026-09-10 Asia/Shanghai`: Product clarification: UK-004 requires a document-only governance review. The earlier compatibility-focused reviews remain historical inputs, but do not close this handoff. The independent lanes are rebound to assess only the frozen governance packet's source ownership, status/navigation mirrors, scope/non-claims, review binding and documentation validation receipts; no product implementation, CI/device sufficiency, upstream test sufficiency or adoption conclusion is in scope.
 - `2026-09-10 Asia/Shanghai`: The final document-only delta reviews both passed with `P0/P1/P2/P3 = 0/0/0/0`; see the [Architecture review](../reviews/KOS-UPGRADE-UK-004-v0.8.0-architecture-review.md) and [Quality review](../reviews/KOS-UPGRADE-UK-004-v0.8.0-quality-review.md). This Current Status update is their derived mirror, not a further contract change or adoption decision.
 - `2026-09-10 Asia/Shanghai`: Human Product Owner approved `Adopted`. The project pin is `v0.8.0` advisory; E-01, A-01/B-01, P-01 and D-01 apply only when future new records explicitly opt in. This closes UK-004 locally; commit, push, merge and Release remain separate actions.
+- `2026-09-10 Asia/Shanghai`: PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104) merged `77e5658` onto `main`. This Current Status update records the publication fact; it does not reopen UK-004 or authorize `required`, H-02/W-01, or Release.

@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | Completed |
-| Current Phase | Implementation and local gates complete; adoption delta review complete; final PR merge pending |
-| Material non-claims | PR branch adopts v0.7.0 advisory; upstream v0.7.0 released; no required, product Swift, device or App Release claim |
-| Next handoff / decision | Hand off final PR #99 merge decision |
-| Residuals | Earlier failures retained historically; current local suites pass; final hosted run pending |
+| Lifecycle | Closed (historical) |
+| Current Phase | v0.7.0 advisory published via PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged `4c9f424`; Adopted pin superseded by [`KOS-UPGRADE-UK-004`](kos-upgrade-uk-004-v0.8.0.md) / PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104) |
+| Material non-claims | Historical v0.7.0 pin only; no required, product Swift, device or App Release claim |
+| Next handoff / decision | None for this pin; current adoption is UK-004 `v0.8.0` advisory |
+| Residuals | Earlier failures retained historically |
 
 ## Authority
 
@@ -60,3 +60,7 @@ See [review attempts](../reviews/kos-execution-001-review-status.md).
 User authorized priority local-gate remediation and continued the unfinished upgrade. iOS 26.5 runtime installed; stable Xcode 26.6 cannot run on macOS 27 beta, so local parity uses Xcode 27 beta/iOS 26.5 with identical strict test/build commands. All pass. [Evidence](../evidence/kos-astra-local-gate-2026-09-06.md). Project pin changes to released v0.7.0 in this PR; existing Active task baselines and advisory mode remain unchanged. Final merge remains a separate publication decision.
 
 Adoption review: [independent review and finding closure](../reviews/kos-astra-adoption-review.md). No remaining technical review blockers.
+
+## 2026-09-10 post-merge status
+
+PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged `4c9f424`. The Adopted pin is no longer v0.7.0; see [`KOS-UPGRADE-UK-004`](kos-upgrade-uk-004-v0.8.0.md) and PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104). This Assignment stays historical and does not authorize `required`, H-02/W-01, or Release.
