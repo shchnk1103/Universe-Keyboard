@@ -79,3 +79,63 @@ P-01 写明 `same-head` 的充要条件，但对「otherwise `mismatched` or `un
 ## Non-claims
 
 本 Quality review **不是**：Architecture 通过、D-01 final-documentation receipt、hosted CI 绿灯、Product Gate、merge 许可、Release 许可，或对 Executor-recorded evidence 的 grade 升级。
+
+---
+
+## Addendum — tip `f997a54`（finding repair re-review）
+
+### Current Status（本 tip）
+
+| Field | Value |
+|---|---|
+| Verdict | **Pass** |
+| Reviewed SHA | `f997a5452964c16bd4efc2805ddab7e3b7abf490` |
+| Tree | `49120c271ccc4fc1a6c142c265ead72c9a35404b` |
+| Baseline | `77e5658d7fa0b7b868517238cb2cf24aeb7e024f` |
+| Scope | First-round Quality findings repair delta plus full scoped docs range vs baseline |
+| Non-claims | Not D-01 publication receipt; not hosted CI; not Product Gate; not merge / Release; does not rewrite Executor-recorded `baab8c2` numbers |
+
+| 严重级别 | 数量 |
+|---|---:|
+| P0 | 0 |
+| P1 | 0 |
+| P2 | 0 |
+| P3 | 0 |
+
+### Prior-finding dispositions
+
+| ID | Disposition | Evidence on this tip |
+|---|---|---|
+| P2-Q-001 | **Resolved** | `docs/ACTIVE_WORK.md` row `#9` lists `KOS-SUG-PUB-HANDOFF-001` as `Active` with Assignment / PD / review links. |
+| P2-Q-002 | **Resolved for this SHA** | Independent Quality re-run on `f997a54` / tree `49120c27…` passed (below). Executor evidence still keeps concrete PASS numbers only for `baab8c2` and a repair re-run placeholder; that lag is noted as residual hygiene, not a reopened finding, because Non-claims remain honest and this addendum Quality-reifies the tip. |
+| P2-Q-003 | **Resolved** | `ASSIGNMENT_POLICY` D-01、`DOCUMENTATION_GOVERNANCE`、`kos-2.1-operational-maturity` M-02 step 7、`KNOWLEDGE_OS` mirror all state: link checker only proves the path before `#` exists; it does not verify line numbers or scan prose/`path:nn`; `path#Lnn` is a writing/review convention, not CI-enforced. |
+| P3-Q-001 | **Resolved** | P-01 `coverage` now: `same-head` when all three values are SHAs and equal; `mismatched` when all three are SHAs and not equal; `unknown` when any is `none` or `unknown`. Governance mirror matches. |
+
+### Quality-reverified local checks（this SHA only）
+
+Environment: local Quality reviewer workstation; worktree `/private/tmp/universe-keyboard-kos-sug-pub-handoff`; committed tip `f997a54` (addendum text itself is a post-tip working-tree append to this file only).
+
+```text
+python3 scripts/ci/check_markdown_links.py --base 77e5658d7fa0b7b868517238cb2cf24aeb7e024f --head HEAD
+# PASS changed Markdown links (19 files)
+
+python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py'
+# Ran 12 tests, OK
+```
+
+Grade for these two commands on this SHA: **Quality-reverified**. Not a D-01 publication receipt; not hosted CI; not merge/Release.
+
+### New findings
+
+None.
+
+### Residual（non-blocking）
+
+- Assignment Exit 的 Architecture / final Quality checkboxes仍待双方在最终文档 SHA 上收口；本 addendum 关闭首轮 Quality conditions，不代替 Architecture addendum，也不 Close Assignment。
+- Executor evidence 的 repair 段尚未写入 `f997a54` 的具体 PASS 行数/tree；Close 前可由 Executor 补一行具体结果，或明确依赖本 Quality-reverified 记录。不得把 `baab8c2` 的 14-file PASS 说成已覆盖本 tip。
+- `ACTIVE_WORK` 相位仍写「finding 修复中」；与本 tip 已修复事实略旧，属镜像文案滞后，不单列 finding。
+- 本 addendum 落盘会使工作树相对 `f997a54` 多出本文件未提交编辑；那是审查记录动作，不是新的产品范围。
+
+### Non-claims（addendum）
+
+本 tip 结论 **不是** D-01 publication receipt、hosted CI、Product Gate、merge 或 Release。

@@ -169,3 +169,53 @@ substitute for Quality's independent conclusion or authorize publication.
 This review does not choose or alter any Product Decision, contract selection,
 Assignment lifecycle, Authorization, Active Work status, KOS rule, or external
 state. It is an independent Architecture conclusion only.
+
+---
+
+## Addendum — post-repair re-review
+
+**复核日期 / 时区：** `2026-09-10 Asia/Shanghai`
+**Reviewed SHA:** `f997a5452964c16bd4efc2805ddab7e3b7abf490`
+**Tree:** `49120c271ccc4fc1a6c142c265ead72c9a35404b`
+**Comparison base:** `77e5658d7fa0b7b868517238cb2cf24aeb7e024f`
+**Delta inspected:** `507c0d3efa67d28a39240574e94b99a9d78dbdc1..f997a5452964c16bd4efc2805ddab7e3b7abf490`
+**Mode:** Architecture addendum only; appends to this file; no other files edited by this reviewer.
+
+### Prior finding dispositions
+
+| Finding | Disposition | Basis |
+|---|---|---|
+| `A-SUG-PH-P1-01` | **Resolved — `fix` closed.** | [`ACTIVE_WORK.md`](../ACTIVE_WORK.md) now has row `#9` for `KOS-SUG-PUB-HANDOFF-001` as `Active`, with docs-only / no push-PR-merge-Release non-claims and links to Assignment, Product Decision, and both reviews. Cap remains ≤10. |
+| `A-SUG-PH-P2-01` | **Resolved — `fix` closed.** | [`KOS-ASTRA-UPGRADE-001-v0.7.0.md`](../kos/upgrade-records/KOS-ASTRA-UPGRADE-001-v0.7.0.md) opens with an S-03 supersession banner; Disposition records PR #99 merged `4c9f424` and current pin `v0.8.0`. No “pending merge” language remains. |
+| `A-SUG-PH-P2-02` | **Unresolved.** | Commands evidence still binds the only concrete PASS to `baab8c2` / tree `38bef322…` ([`evidence:22-35`](../evidence/kos-sug-pub-handoff-001-docs-check-2026-09-10.md#L22)). The added “Re-run after first-round finding repair” section defers the outcome to Assignment History ([`evidence:37-48`](../evidence/kos-sug-pub-handoff-001-docs-check-2026-09-10.md#L37)), but History only records the `baab8c2` pass and a repair plan that includes “re-run docs-only checks after those edits” ([`Assignment:128-129`](../assignments/kos-sug-pub-handoff-001.md#L128)) — it does **not** record a PASS (or Fail) for `305f58c`, `9b2d4fd`, or tip `f997a54` / tree `49120c2`. **Failure scenario unchanged:** Close or a publication handoff treats the `baab8c2` receipt as covering the repaired final tree. |
+
+### Delta check (`507c0d3..f997a54`)
+
+Docs-only under `docs/` (10 files). Additive clarifications only:
+
+- P-01 `coverage` now distinguishes `mismatched` (three known unequal SHAs) vs `unknown` (any `none`/`unknown`) — still does not authorize push/merge/Release.
+- D-01 / M-02 step 7 / governance mirrors clarify that the markdown link checker proves path existence only; `path#Lnn` remains a writing/review convention — does not replace frozen KOS 2.0 or make D-01 globally mandatory.
+- No SUG-04/07/08, SUG-06 CI automation, `required`, product code, CI workflow, or Active product-Assignment migration appears in the delta.
+- Authority chain and opt-in boundary are unchanged.
+
+No new Architecture finding on source-of-truth, authority, scope, or frozen KOS 2.0 compatibility.
+
+### New findings
+
+None.
+
+### Updated verdict and counts (this SHA)
+
+**Architecture verdict: Pass with conditions.**
+Remaining residual: **`A-SUG-PH-P2-02` only.** Record an Executor-recorded (or later Quality-reverified) docs-only recheck that names the final commit SHA and tree after the last documentation edit of this slice; keep non-claims that it is not a D-01 publication receipt unless that receipt is explicitly filled. After any further docs edit (including this addendum if committed into the Assignment tree), the recheck must cover that newer tip.
+
+| Severity | Count |
+|---|---:|
+| P0 | 0 |
+| P1 | 0 |
+| P2 | 1 |
+| P3 | 0 |
+
+### Non-claims
+
+This addendum is not a Product Decision, Quality conclusion, D-01 final-documentation receipt, hosted-CI result, merge authorization, Release authorization, `required`-mode enablement, or closure of the Assignment. It does not create frontier authority and does not re-open resolved `A-SUG-PH-P1-01` or `A-SUG-PH-P2-01`.

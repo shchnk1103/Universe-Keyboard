@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | issued |
-| Consumption | Issued for this docs-only slice only; not reusable for SUG-04/07/08, SUG-06 automation, merge, or Release |
+| Status | issued — implementation in progress; Human later authorized push + draft PR |
+| Consumption | Issued for this docs-only slice; Human `2026-09-10` follow-up authorized push and draft PR only. Not reusable for SUG-04/07/08, SUG-06 automation, merge, or Release |
 
 ---
 
@@ -43,6 +43,7 @@ Human Product Owner, current session `2026-09-10 Asia/Shanghai`: **“批准继�
 ```
 
 > **Issued:** [KOS-SUG-PUB-HANDOFF-001](../assignments/kos-sug-pub-handoff-001.md)
-> This receipt cannot authorize SUG-04/07/08, CI automation, `required`, merge,
-> or Release. Commit remains a local executor action inside this slice; push and
-> PR stay separately gated.
+> Implementation of the templates remains this receipt. Human Product Owner later
+> said “批准先做1，再做2”, which authorizes push of `codex/kos-sug-pub-handoff-001`
+> and a draft PR only. This receipt still cannot authorize SUG-04/07/08, CI
+> automation, `required`, merge, or Release.

@@ -14,8 +14,10 @@
 
 | Claim | Outcome | Evidence grade | Conflict / supersession |
 |---|---|---|---|
-| Changed Markdown links resolve against `origin/main` | pass | Executor-recorded | None known |
-| `scripts/ci` unit tests pass | pass | Executor-recorded | None known |
+| Changed Markdown links resolve against `origin/main` at `baab8c2` | pass | Executor-recorded | Superseded for later tips by the `f997a54` rows |
+| `scripts/ci` unit tests pass at `baab8c2` | pass | Executor-recorded | Superseded for later tips by the `f997a54` rows |
+| Changed Markdown links resolve at `f997a54` | pass | Quality-reverified | None known |
+| `scripts/ci` unit tests pass at `f997a54` | pass | Quality-reverified | None known |
 
 ## Commands
 
@@ -34,15 +36,21 @@ python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py'
 
 If later documentation edits land, these results do not cover them.
 
-## Re-run after first-round finding repair
+## Re-run on repaired tip `f997a54`
 
-Executor-recorded only. This section is updated in the same commit as the
-review-file example-link fix. After that commit exists, re-run:
+Head: `f997a5452964c16bd4efc2805ddab7e3b7abf490`
+Tree: `49120c271ccc4fc1a6c142c265ead72c9a35404b`
+Grade: Quality-reverified by the independent Quality addendum; Executor independently observed the same commands on this SHA before requesting addenda.
 
 ```text
 python3 scripts/ci/check_markdown_links.py --base 77e5658d7fa0b7b868517238cb2cf24aeb7e024f --head HEAD
+# PASS changed Markdown links (19 files)
+
 python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py'
+# Ran 12 tests, OK
 ```
 
-Outcome for that HEAD is recorded in the Assignment History, not claimed as
-hosted CI, Quality-reverified, D-01 publication receipt, merge, or Release.
+Pointer: [Quality addendum](../reviews/KOS-SUG-PUB-HANDOFF-001-quality-review.md).
+Not a D-01 publication receipt; not hosted CI; not merge/Release.
+Committing this evidence and the review addenda creates a newer HEAD that must
+be re-checked before any publication receipt.

@@ -7,10 +7,10 @@ Policy version: `1.0.0`
 | Field | Value |
 |---|---|
 | Lifecycle | `Active` |
-| Current phase | Docs-only templates and post-#104 M-02 sync written; independent Architecture and Quality reviews pending |
-| Non-claims | No SUG-04/07/08; no SUG-06 CI automation; no frozen KOS 2.0 change; no `required`, historical backfill, product code, device, push, merge, or Release |
-| Next handoff / decision | Finding repair committed; independent addenda on the new SHA; then Human publication decision |
-| Residuals | First-round reviews Pass with conditions; P1/P2 items listed in History are being fixed in this slice |
+| Current phase | First-round findings repaired; Quality addendum Pass on `f997a54`; Architecture addendum Pass with conditions pending evidence record of that re-run; Human authorized draft-PR publication after addenda |
+| Non-claims | No SUG-04/07/08; no SUG-06 CI automation; no frozen KOS 2.0 change; no `required`, historical backfill, product code, device, merge, or Release |
+| Next handoff / decision | Land addenda + `f997a54` recheck record; re-check the resulting HEAD; then push draft PR |
+| Residuals | Architecture `A-SUG-PH-P2-02` being fixed by recording the `f997a54` Quality-reverified re-run |
 
 ---
 
@@ -35,7 +35,8 @@ Policy version: `1.0.0`
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
 | Current documentation slice | In progress | `implement_kos_sug_pub_handoff_templates`: add P-01/D-01 conventions, M-02 recheck step, and post-#104 status mirrors | This Assignment → [Authorization](../authorizations/AUTH-KOS-SUG-PUB-HANDOFF-001.md) → [Accepted Product Decision](../product-decisions/KOS-SUG-PUB-HANDOFF-001-authorization.md) |
-| Push / PR / merge / Release | Not authorized | Any remote publication or Release | New Human authorization required |
+| Push / draft PR | Authorized | Push `codex/kos-sug-pub-handoff-001` and open a draft PR only | Human Product Owner, this session: “批准先做1，再做2” |
+| Merge / Release | Not authorized | Merge to default branch, TestFlight, or Release | New Human authorization required |
 | SUG-04 / SUG-07 / SUG-08 / SUG-06 automation | Not authorized | Device, privacy, diagnostics, raw-data, or CI-script work | New bounded Assignment and matching Authorization required |
 | Environment or external slice | Not applicable | Documentation and local static validation only | No device, runtime, external service, or raw-data operation belongs to this Assignment |
 
@@ -127,3 +128,4 @@ edit. Also repair the post-#104 M-02 mirrors that still read as pre-merge.
 - `2026-09-10 Asia/Shanghai` — PR #103 closed as superseded for KOS publication; `codex/kos-v080-upgrade-review-clean` deleted after reachability from `origin/main`; `codex/kos-v080-upgrade-review` retained because unique SHAs are not on `main`.
 - `2026-09-10 Asia/Shanghai` — Local docs-only checks passed on `baab8c2`. Independent reviews remain the Exit gap.
 - `2026-09-10 Asia/Shanghai` — Independent reviews of `507c0d3`: Architecture Pass with conditions (`P0/P1/P2/P3 = 0/1/2/0`); Quality Pass with conditions (`0/0/3/1`). Repair this slice: add Active Work row; S-03 the ASTRA upgrade-record; clarify `path#Lnn` vs the link checker; define `mismatched` vs `unknown`; re-run docs-only checks after those edits.
+- `2026-09-10 Asia/Shanghai` — Addenda on `f997a54`: Quality **Pass** (`0/0/0/0`), Quality-reverified link check PASS 19 files and 12 tests OK; Architecture **Pass with conditions** (`0/0/1/0`), residual `A-SUG-PH-P2-02` = evidence/History must name that re-run. Human authorized addenda then push+draft PR; merge still unauthorized.
