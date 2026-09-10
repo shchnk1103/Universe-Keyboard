@@ -1,17 +1,17 @@
 # Scheme Platform P0 — Ice vs Wanxiang matrix (2026-09-09)
 
-**Status:** P0 evidence / planning matrix (docs only). **Not** device claim; **Not** ADR Accept.  
-**Assignment:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md)  
-**Interfaces:** [`../plans/scheme-platform-p0-interfaces-2026-09-09.md`](../plans/scheme-platform-p0-interfaces-2026-09-09.md)  
-**Target:** [`../plans/scheme-platform-ice-reference-target-2026-09-09.md`](../plans/scheme-platform-ice-reference-target-2026-09-09.md)  
+**Status:** P0 evidence / planning matrix (docs only). **Not** device claim; **Not** ADR Accept.
+**Assignment:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md)
+**Interfaces:** [`../plans/scheme-platform-p0-interfaces-2026-09-09.md`](../plans/scheme-platform-p0-interfaces-2026-09-09.md)
+**Target:** [`../plans/scheme-platform-ice-reference-target-2026-09-09.md`](../plans/scheme-platform-ice-reference-target-2026-09-09.md)
 **Code freeze basis:** `origin/main` @ `814abfd` (Ice/Wanxiang production on `codex/scheme-platform-001` docs branch)
 
-**Columns:**  
-- **Ice today** — reference production behavior  
-- **Wanxiang today** — production behavior / known gap  
-- **Platform target** — shared seam goal  
-- **P1 extract?** — pull Ice hook into platform with Ice unchanged  
-- **P2 migrate?** — Wanxiang onto platform/adapters  
+**Columns:**
+- **Ice today** — reference production behavior
+- **Wanxiang today** — production behavior / known gap
+- **Platform target** — shared seam goal
+- **P1 extract?** — pull Ice hook into platform with Ice unchanged
+- **P2 migrate?** — Wanxiang onto platform/adapters
 
 Sources: `SchemaManagerTypes` plans (`rime-ice-plan-2` / `wanxiang-plan-1`), `RimeIceSharedDefaultAdapter`, `WanxiangLuaOwnership`, `SchemaManager+Download` / `+Installation` / `+T9Layout`, `SchemaArchiveInstaller`, `RimeSchemeCapabilityMatrix`, `RimeRuntimeSelection`, cross-scheme matrix contract, Wanxiang P4 gap inventory.
 
@@ -43,22 +43,22 @@ Sources: `SchemaManagerTypes` plans (`rime-ice-plan-2` / `wanxiang-plan-1`), `Ri
 
 ## Top Wanxiang gaps for P2 (summary)
 
-1. **Layout nine-key productization** — **Human deferred** (`2026-09-09 Asia/Shanghai`) to a later Assignment (not yet drafted; may ride Discovery later or stay further deferred). Files may remain in plan; runtime/capability stays Ice/`t9`-only; P1/P2 must **not** enable Wanxiang nine-key; product capability stays false until that future Assignment.  
-1b. **Installed Capability Discovery / layout-picker** — **Human deferred** later Assignment (not yet drafted; separate Human Active). P1 of *this* Assignment only extracts declarative LayoutCapability / ResourceCapability seams + adapter lookup (today: `isNineKeyCapable == "t9"` hardcode vs `isTwentySixKeyCapable` = not `t9`). Dynamic enumeration for layout UI (and Lua/OpenCC product-surface honesty) is **not** P1.  
-2. **Ownership API unification** — **Human Decided (`2026-09-09`)**: unified ResourceOwnership/ResourceCapability; **long-term dual** `namedList` (Ice) + `exactHash` (Wanxiang) — **not** forced to one. P1 wire both (behavior unchanged); P2 Wanxiang platform path keeps `exactHash`. No dangerous filename heuristics auto-remove; no whole-dir wipe; Settings confirmed honesty + optional user marking; OpenCC Wanxiang may `admitted=false`. Contrast: SharedDefault → `privatePreset` in P2; Ownership stays dual. Exact-hash today is special-case in `SchemaArchiveInstaller` — become strategy without changing pin hashes.  
-3. **Shared-default** — **Human Decided (`2026-09-09`)**: third-party SharedDefault **end-state** = Ice-shaped **`privatePreset`**. P1 = extract Ice `privatePreset` only; Wanxiang may temporarily keep skip/`consumePrelude`. **P2 = Wanxiang migrates to `privatePreset`** (`consumePrelude` not end-state). Luna may remain Prelude/builtin exception. Fidelity risk → product regression (not silent).  
-4. **Lifecycle surface** — upgrade checkpoint is Wanxiang-strong; fold into shared `UpgradeCheckpointing` so Ice/Wanxiang stop diverging helper paths.  
-5. **Capability / settings honesty** — keep fuzzy/advanced false unless product expands; drive from adapter to avoid new schemaID switches.  
+1. **Layout nine-key productization** — **Human deferred** (`2026-09-09 Asia/Shanghai`) to a later Assignment (not yet drafted; may ride Discovery later or stay further deferred). Files may remain in plan; runtime/capability stays Ice/`t9`-only; P1/P2 must **not** enable Wanxiang nine-key; product capability stays false until that future Assignment.
+1b. **Installed Capability Discovery / layout-picker** — **Human deferred** later Assignment (not yet drafted; separate Human Active). P1 of *this* Assignment only extracts declarative LayoutCapability / ResourceCapability seams + adapter lookup (today: `isNineKeyCapable == "t9"` hardcode vs `isTwentySixKeyCapable` = not `t9`). Dynamic enumeration for layout UI (and Lua/OpenCC product-surface honesty) is **not** P1.
+2. **Ownership API unification** — **Human Decided (`2026-09-09`)**: unified ResourceOwnership/ResourceCapability; **long-term dual** `namedList` (Ice) + `exactHash` (Wanxiang) — **not** forced to one. P1 wire both (behavior unchanged); P2 Wanxiang platform path keeps `exactHash`. No dangerous filename heuristics auto-remove; no whole-dir wipe; Settings confirmed honesty + optional user marking; OpenCC Wanxiang may `admitted=false`. Contrast: SharedDefault → `privatePreset` in P2; Ownership stays dual. Exact-hash today is special-case in `SchemaArchiveInstaller` — become strategy without changing pin hashes.
+3. **Shared-default** — **Human Decided (`2026-09-09`)**: third-party SharedDefault **end-state** = Ice-shaped **`privatePreset`**. P1 = extract Ice `privatePreset` only; Wanxiang may temporarily keep skip/`consumePrelude`. **P2 = Wanxiang migrates to `privatePreset`** (`consumePrelude` not end-state). Luna may remain Prelude/builtin exception. Fidelity risk → product regression (not silent).
+4. **Lifecycle surface** — upgrade checkpoint is Wanxiang-strong; fold into shared `UpgradeCheckpointing` so Ice/Wanxiang stop diverging helper paths.
+5. **Capability / settings honesty** — keep fuzzy/advanced false unless product expands; drive from adapter to avoid new schemaID switches.
 6. **Residual A34-R1** — not a P2 code gap by itself; platform P2 progress informs later writeback (Paused Wanxiang P4; Pause ≠ Done).
 
 ---
 
 ## P0 exit checklist
 
-- [x] Interface draft linked from Assignment  
-- [x] Ice-satisfies / Wanxiang-gaps matrix (this file)  
-- [ ] Human/Architecture informed (handoff; no Accept implied)  
-- [ ] Separate auth before P1 Swift  
+- [x] Interface draft linked from Assignment
+- [x] Ice-satisfies / Wanxiang-gaps matrix (this file)
+- [ ] Human/Architecture informed (handoff; no Accept implied)
+- [ ] Separate auth before P1 Swift
 
 ---
 

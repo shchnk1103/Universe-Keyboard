@@ -1,9 +1,9 @@
 # Scheme Platform — `universe-capabilities/v1` (Human Finalized)
 
-**Status:** **Human Finalized** (`2026-09-09 Asia/Shanghai`) — declarative package capability manifest format.  
-**Nature:** Universe convention (app/package-declared capabilities), **not** a RIME built-in schema field. **Docs only** — not Swift; not ADR Accept; not Product Gate / TF; not push.  
-**Carrier:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) (P0/P1 seams consume; Discovery UI later).  
-**Discovery UX consumer:** [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md) (Section A “package capability manifest”).  
+**Status:** **Human Finalized** (`2026-09-09 Asia/Shanghai`) — declarative package capability manifest format.
+**Nature:** Universe convention (app/package-declared capabilities), **not** a RIME built-in schema field. **Docs only** — not Swift; not ADR Accept; not Product Gate / TF; not push.
+**Carrier:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) (P0/P1 seams consume; Discovery UI later).
+**Discovery UX consumer:** [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md) (Section A “package capability manifest”).
 **P0 seams:** [`scheme-platform-p0-interfaces-2026-09-09.md`](scheme-platform-p0-interfaces-2026-09-09.md) §2 Layout / §3 ResourceOwnership / §4 SharedDefault / §5 Manifest.
 
 ---

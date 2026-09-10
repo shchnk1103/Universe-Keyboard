@@ -4,9 +4,9 @@
 
 **性质：** 只读缺口盘点 + 推荐实现顺序。**不是**实现授权执行记录；**不是** ADR 0034 Accept；**不是** Product Gate / TestFlight / Release。
 
-**Assignment：** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) — Lifecycle **Active**  
-**冻结 tip：** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`（PR #100 merge）  
-**工作分支：** `codex/wanxiang-p4-closure-001`  
+**Assignment：** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) — Lifecycle **Active**
+**冻结 tip：** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`（PR #100 merge）
+**工作分支：** `codex/wanxiang-p4-closure-001`
 **A34-R1：** 仍为 `fix` / open（Architecture Accept residual）；本清单是闭合路径的证据起点。
 
 ---

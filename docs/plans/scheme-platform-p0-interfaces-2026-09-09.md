@@ -1,9 +1,9 @@
 # Scheme Platform P0 — Proposed interfaces / seams (2026-09-09)
 
-**Status:** P0 docs draft (Assignment Active). **Not** Swift; **not** ADR Accept; **not** Product Gate / TF.  
-**Assignment:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md)  
-**North star:** [`scheme-platform-ice-reference-target-2026-09-09.md`](scheme-platform-ice-reference-target-2026-09-09.md) (Human Approved)  
-**Companion matrix:** [`../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)  
+**Status:** P0 docs draft (Assignment Active). **Not** Swift; **not** ADR Accept; **not** Product Gate / TF.
+**Assignment:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md)
+**North star:** [`scheme-platform-ice-reference-target-2026-09-09.md`](scheme-platform-ice-reference-target-2026-09-09.md) (Human Approved)
+**Companion matrix:** [`../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md)
 **Frozen tip base:** `origin/main` @ `814abfd`; branch `codex/scheme-platform-001`
 
 **Legend:** **Decided** = Human-approved target / existing production contract to preserve. **Proposed (P0)** = interface shape for P1 extract review. **TBD** = needs Human/Architecture before Swift.
@@ -330,14 +330,14 @@ Stop if Ice UX/install/uninstall drifts without Human accept.
 
 ## 7. Non-goals (this P0 doc)
 
-- Swift implementation / P1 coding without separate auth  
-- ADR 0034 Accept  
-- Product Gate / TestFlight  
-- Rewriting Wanxiang content to Ice  
-- **Wanxiang nine-key productization** — **Human deferred** to later Assignment (not yet drafted); may ride Discovery later or stay further deferred; P1/P2 must not enable  
+- Swift implementation / P1 coding without separate auth
+- ADR 0034 Accept
+- Product Gate / TestFlight
+- Rewriting Wanxiang content to Ice
+- **Wanxiang nine-key productization** — **Human deferred** to later Assignment (not yet drafted); may ride Discovery later or stay further deferred; P1/P2 must not enable
 - **Installed Capability Discovery / layout-picker** (and Lua/OpenCC product-surface honesty) — **Human deferred** later Assignment (not yet drafted); separate Human Active; **not** P1 UI. **Layout-page A/B UX + uninstall layout-fallback + Luna presence + readiness greying + Section B try-failure state machine Decided** — [`scheme-platform-discovery-layout-ux-2026-09-09.md`](scheme-platform-discovery-layout-ux-2026-09-09.md); package capability manifest format [`universe-capabilities/v1`](scheme-platform-universe-capabilities-v1-2026-09-09.md); P1 may add readiness **query** / rollback try-deploy seams if needed
-- Closing A34-R1 / unpausing Wanxiang P4  
-- Ice `dofile` full close (A34-R2 / TD-011), Recovery persistence, peer-prefer B  
+- Closing A34-R1 / unpausing Wanxiang P4
+- Ice `dofile` full close (A34-R2 / TD-011), Recovery persistence, peer-prefer B
 
 ---
 

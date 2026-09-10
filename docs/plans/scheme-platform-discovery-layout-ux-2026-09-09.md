@@ -1,8 +1,8 @@
 # Scheme Platform — Discovery layout-page UX (Human Approved)
 
-**Status:** **Human Approved** UX rules (`2026-09-09`–`2026-09-10 Asia/Shanghai`) for a **later** Installed Capability Discovery / layout-picker Assignment (not yet drafted) — includes **layout settings page A/B**, **uninstall layout-fallback**, **Luna (builtin) presence**, **confirmed-but-unready greying**, and **Section B try-failure state machine**.  
-**Nature:** Product UX / binding contract for keyboard **layout** (26-key / nine-key / future) honesty + uninstall rebind. **Docs only** — not this Assignment’s P1 UI; not Swift; not push.  
-**Carrier (P1 seams only):** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) — P1 = capability **query** seams (+ readiness query if needed) + uninstall hook shape; **not** the Discovery layout-page UI.  
+**Status:** **Human Approved** UX rules (`2026-09-09`–`2026-09-10 Asia/Shanghai`) for a **later** Installed Capability Discovery / layout-picker Assignment (not yet drafted) — includes **layout settings page A/B**, **uninstall layout-fallback**, **Luna (builtin) presence**, **confirmed-but-unready greying**, and **Section B try-failure state machine**.
+**Nature:** Product UX / binding contract for keyboard **layout** (26-key / nine-key / future) honesty + uninstall rebind. **Docs only** — not this Assignment’s P1 UI; not Swift; not push.
+**Carrier (P1 seams only):** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) — P1 = capability **query** seams (+ readiness query if needed) + uninstall hook shape; **not** the Discovery layout-page UI.
 **Pointer from P0:** [`scheme-platform-p0-interfaces-2026-09-09.md`](scheme-platform-p0-interfaces-2026-09-09.md) §2 Layout (`onUninstallPrepare` / UninstallHooks).
 
 ---

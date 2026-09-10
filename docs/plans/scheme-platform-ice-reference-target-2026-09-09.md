@@ -1,8 +1,8 @@
 # Scheme Platform — Ice-as-reference target (Human Approved)
 
-**Status:** **Human Approved** target (`2026-09-09 Asia/Shanghai`).  
-**Nature:** Product / Architecture north-star for third-party scheme delivery. **Docs only** in this slice — not implementation, not ADR Accept, not Product Gate / TestFlight.  
-**Assignment carrier (Active):** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md)  
+**Status:** **Human Approved** target (`2026-09-09 Asia/Shanghai`).
+**Nature:** Product / Architecture north-star for third-party scheme delivery. **Docs only** in this slice — not implementation, not ADR Accept, not Product Gate / TestFlight.
+**Assignment carrier (Active):** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md)
 **Related Paused:** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) (shelved for Scheme Platform; A34-R1 still open — NOT Closed/Done)
 
 ---
@@ -47,13 +47,13 @@ The platform owns these capabilities for every third-party scheme. Ice is the re
 
 Unified pipeline (fail-closed at every mutation boundary):
 
-1. **download** (pinned source / digest / staged identity)  
-2. **filter plan** (admit / skip / rewrite per plan)  
-3. **stage-verify** (content + ownership checks before commit)  
-4. **upgrade checkpoint** (prior generation when replacing)  
-5. **install** (commit lease; write owned paths only)  
-6. **deploy** (Main App deploy before claiming success)  
-7. **receipt** (success only after deploy)  
+1. **download** (pinned source / digest / staged identity)
+2. **filter plan** (admit / skip / rewrite per plan)
+3. **stage-verify** (content + ownership checks before commit)
+4. **upgrade checkpoint** (prior generation when replacing)
+5. **install** (commit lease; write owned paths only)
+6. **deploy** (Main App deploy before claiming success)
+7. **receipt** (success only after deploy)
 8. **fail-closed restore** (no success receipt; restore selection + files / keep upgrade checkpoint per existing contracts)
 
 ### 2.2 Active vs inactive uninstall
@@ -140,9 +140,9 @@ Summary pointers from earlier coexistence / P4 / cross-scheme work (not a new de
 
 Earlier comparison / contract sources (do not re-litigate without new evidence):
 
-- [`scheme-resource-ownership-and-coexistence-plan.md`](scheme-resource-ownership-and-coexistence-plan.md)  
-- [`scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md`](scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md)  
-- [`scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md`](../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)  
+- [`scheme-resource-ownership-and-coexistence-plan.md`](scheme-resource-ownership-and-coexistence-plan.md)
+- [`scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md`](scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md)
+- [`scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md`](../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)
 - ADR 0034 Proposed + Architecture Accept Conditional Accept (A34-R1 still `fix`)
 
 ---
@@ -162,6 +162,6 @@ Earlier comparison / contract sources (do not re-litigate without new evidence):
 
 ## 7. What Human must authorize next
 
-1. **Active authorized** (`2026-09-09` Gate 0) on [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md). Proceed **P0** docs per KOS cadence; **ask before first push/PR**; no P1 Swift until separately authorized.  
-2. Explicit choice on Wanxiang P4 (still Active): **(a)** Active platform and pause/narrow P4, or **(b)** continue narrow A34-R1 **without** platform extract.  
+1. **Active authorized** (`2026-09-09` Gate 0) on [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md). Proceed **P0** docs per KOS cadence; **ask before first push/PR**; no P1 Swift until separately authorized.
+2. Explicit choice on Wanxiang P4 (still Active): **(a)** Active platform and pause/narrow P4, or **(b)** continue narrow A34-R1 **without** platform extract.
 3. Separate auth for push/merge, ADR Accept, TF, Product Gate — never implied by this target approval.

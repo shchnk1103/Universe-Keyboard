@@ -1,8 +1,8 @@
 # Scheme Platform — Execution / KOS cadence (2026-09-09)
 
-**Assignment:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) (**Active**)  
-**Frozen tip:** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`  
-**Branch:** `codex/scheme-platform-001` (created from `origin/main`; **not** PR #101 branch)  
+**Assignment:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) (**Active**)
+**Frozen tip:** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`
+**Branch:** `codex/scheme-platform-001` (created from `origin/main`; **not** PR #101 branch)
 **Related:** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) (**Paused** — shelved for Scheme Platform; A34-R1 still open — NOT Closed/Done)
 
 ## Cadence

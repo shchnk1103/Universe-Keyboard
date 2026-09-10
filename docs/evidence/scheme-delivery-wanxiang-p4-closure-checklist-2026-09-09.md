@@ -4,10 +4,10 @@
 
 **性质：** Exit 核对表（窄 A34-R1）。映射 gap inventory E01–E28 → Exit 状态。**不是** ADR 0034 Accept；**不是** Product Gate / TestFlight / Release；**不是** Scheme Platform extract / P1 Swift。
 
-**Assignment：** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) — Lifecycle **Active**（Human choice **(b)**）  
-**Gap inventory：** [`scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md`](scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)  
-**冻结 tip：** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`  
-**工作分支：** `codex/wanxiang-p4-closure-001`  
+**Assignment：** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) — Lifecycle **Active**（Human choice **(b)**）
+**Gap inventory：** [`scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md`](scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)
+**冻结 tip：** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`
+**工作分支：** `codex/wanxiang-p4-closure-001`
 **Scope：** **narrow A34-R1 only** — Scheme Platform / Ice-as-reference P1–P3 **explicitly out of scope** until [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) is separately **Active**.
 
 ---

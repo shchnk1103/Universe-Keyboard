@@ -1,11 +1,11 @@
 # Scheme Platform P1 — Extract plan + Ice regression checklist (P1-0)
 
-**Status:** **Human Approved** order (`2026-09-10 Asia/Shanghai`). **P1-0 = this plan + Ice regression checklist (docs only).**  
-**Nature:** Execution plan for Ice-as-reference platform extract. **Not** Swift in P1-0; **not** ADR Accept; **not** Product Gate / TestFlight / Release.  
-**Assignment:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) (**Active**)  
-**Branch / PR:** `codex/scheme-platform-001` · draft PR #102 — **local commit only; ask before push**  
-**Base freeze:** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`  
-**P0 inputs:** [`scheme-platform-p0-interfaces-2026-09-09.md`](scheme-platform-p0-interfaces-2026-09-09.md) · [`scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md) · [`scheme-platform-ice-reference-target-2026-09-09.md`](scheme-platform-ice-reference-target-2026-09-09.md)  
+**Status:** **Human Approved** order (`2026-09-10 Asia/Shanghai`). **P1-0 = this plan + Ice regression checklist (docs only).**
+**Nature:** Execution plan for Ice-as-reference platform extract. **Not** Swift in P1-0; **not** ADR Accept; **not** Product Gate / TestFlight / Release.
+**Assignment:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) (**Active**)
+**Branch / PR:** `codex/scheme-platform-001` · draft PR #102 — **local commit only; ask before push**
+**Base freeze:** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`
+**P0 inputs:** [`scheme-platform-p0-interfaces-2026-09-09.md`](scheme-platform-p0-interfaces-2026-09-09.md) · [`scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md`](../evidence/scheme-platform-p0-ice-wanxiang-matrix-2026-09-09.md) · [`scheme-platform-ice-reference-target-2026-09-09.md`](scheme-platform-ice-reference-target-2026-09-09.md)
 **KOS:** [`scheme-platform-execution-kos-2026-09-09.md`](scheme-platform-execution-kos-2026-09-09.md)
 
 ---
