@@ -797,11 +797,15 @@ extension SchemaManager {
     /// Bump this reviewed value whenever deterministic processing for the
     /// corresponding scheme changes. A stale manifest then fails before bytes
     /// are downloaded or installed.
+    ///
+    /// P1-1: thin bridge to `SchemeAdapterRegistry` (same strings as today’s hardcodes).
     private func postProcessingRevision(for schemaID: String) -> String? {
+        // Literal schemaID match only — same as the former switch (no t9 alias).
         switch schemaID {
-        case "rime_ice": "rime-ice-post-2"
-        case "wanxiang": "wanxiang-post-1"
-        default: nil
+        case "rime_ice", "wanxiang":
+            return SchemeAdapterRegistry.postProcessingRevision(for: schemaID)
+        default:
+            return nil
         }
     }
 
