@@ -7,10 +7,10 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | CS09-10-02 功能性观察已通过独立 Quality 复审；candidate 含 docs tip `a007681`（工程 tip `33b35d3`）；Human 已授权 **docs sync + hosted CI 全绿后** undraft+merge PR #100；Release / Product Gate 仍未授权 |
-| Material non-claims | 不把 `RTRD-01`/`RTRD-02` 塞进本 PR；不因 merge 关闭 `RTRD-01`/`RTRD-02`；不声称 TestFlight、Release、Product Gate Passed 或 ADR Accept；本 Assignment 不因 CI 绿或 merge 自动 Closed |
-| Next handoff / decision | Human 已授权：docs tip + hosted CI 全绿后 undraft+merge #100。`RTRD-01`（诊断 UI）与 `RTRD-02`（耗时对照）仍需另开 Assignment；Product Gate / TestFlight / Release 另案 |
-| Residuals | `RTRD-01` 当前诊断列表只展示 code/时间，未渲染 runtime-route 的结构化字段；`RTRD-02` 普通 Luna 与 fallback 的耗时暂无获得 |
+| Current Phase | CS09-10-02 功能性观察仍为 Pass with conditions。`RTRD-01` 诊断 UI 已由独立 Assignment 合入 `main`（PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) `4e4164f` / head `8a3f05c`）。`RTRD-02` 仍 open。Release / Product Gate 仍未授权 |
+| Material non-claims | 不声称 TestFlight、Release、Product Gate Passed 或 ADR Accept；#110 合入不关闭本 Assignment、不补齐 2026-09-09 真机证据里缺失的 UUID/phase/elapsed 观察、不获得 `RTRD-02` 耗时对照 |
+| Next handoff / decision | `RTRD-02` 耗时对照仍需另开 Assignment。用新诊断 UI 做真机 glance 或卸载轮次需新的 Human 授权。Product Gate / TestFlight / Release 另案 |
+| Residuals | `RTRD-01` 实现已合入（见 Observability Follow-up）；`RTRD-02` 普通 Luna 与 fallback 的耗时暂无获得，仍为 `fix` |
 
 ---
 
@@ -43,17 +43,9 @@ Policy version: 1.0.0
 
 ## Observability Follow-up
 
-`RTRD-01` — **Owner:** Main App UI / Diagnostics; **Disposition:** `fix`。
+`RTRD-01` — **Owner:** Main App UI / Diagnostics; **Disposition:** `fix`（实现已合入，真机字段核验未重跑）。
 
-当前 `DiagnosticsEventDisplayFormatter` 会显示 `schemeDeliveryPayload` 与
-`rimeSyncPayload`，但未显示 `runtimeRoutePayload`。诊断列表因而只能证明
-`runtime_route.phase_changed` 已写入，不能让 Device Operator 核验 operation UUID、
-phase/result、schema/layout/state 或 monotonic `elapsed_ms`。
-
-后续独立的诊断 UI Assignment 应在点击某条日志时，于页面底部弹出详情窗口，且仅展示
-现有 finite runtime-route 字段；不展示用户输入、候选文字、宿主内容、文件路径、URL 或
-异常原文。该改进不属于本次真机验证，也不改变 journal 存储、RIME 路由或部署行为。
-Implementation: [`SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001`](scheme-delivery-runtime-route-diagnostics-ui-001.md) (`Active`).
+独立诊断 UI Assignment [`SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001`](scheme-delivery-runtime-route-diagnostics-ui-001.md) 已 **Closed**。PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) 将有限 `runtimeRoutePayload` 键写入隐私安全列表/复制行，并在点按时以底部详情展示同一 allowlist。2026-09-09 真机记录仍只有 event code，没有 UUID/phase/elapsed 观察；本残差不因 UI 合入而改写成 `accept`，也不授权卸载或 SUG-08。
 
 `RTRD-02` — **Owner:** Main App UI / Diagnostics; **Disposition:** `fix`。
 
@@ -78,4 +70,5 @@ Implementation: [`SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001`](scheme-deli
 - `2026-09-09 Asia/Shanghai`: Human Device Operator reported both active-uninstall directions switch to Luna and produce a normal Chinese candidate for the controlled `ni` input. Product Lead directed that elapsed evidence be recorded as unavailable rather than widening diagnostic-file access.
 - `2026-09-09 Asia/Shanghai`: Independent Quality review returned Pass with conditions: functional CS09-10-02 Pass, no new P0/P1, and candidate push allowed. `RTRD-01` and `RTRD-02` remain `fix`; merge, Product Gate, TestFlight and Release remain unauthorized.
 - `2026-09-09 Asia/Shanghai`: Human Product Owner directed docs-only Assignment sync; tip `33b35d3` hosted CI all green; no undraft/merge; `RTRD-01`/`RTRD-02` stay out of this PR.
+- `2026-09-10 Asia/Shanghai`: RTRD-01 UI merged as PR #110 (`4e4164f`). This Assignment stays Active because `RTRD-02` remains `fix` and Product Gate is unauthorized. The 2026-09-09 device evidence is not restated as containing UUID/phase/elapsed.
 - `2026-09-09 Asia/Shanghai`: Human Product Owner authorized undraft+merge of PR #100 after docs sync (tip includes `a007681`) + hosted CI green. `RTRD-01`/`RTRD-02` remain out of this PR and are not closed by merge; Product Gate / TestFlight / Release / ADR Accept remain unauthorized.

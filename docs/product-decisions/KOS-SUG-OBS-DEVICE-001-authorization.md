@@ -7,7 +7,7 @@
 | Status | Accepted — bounded SUG-07 device-slice: preflight only |
 | Decision | Adopt the SUG-07 table on the active-uninstall observability claims; fill readability from current diagnostics UI source; do **not** send uninstall operator instructions while trace fields are `unreadable` |
 | Non-claims | No uninstall round; no SUG-08; no RTRD-01 Swift; no privacy-policy change; no Product Gate, TestFlight, or Release |
-| Next | Independent document reviews; then Human decides whether to authorize RTRD-01 UI or a later device glance |
+| Next | None for this slice — PR [#109](https://github.com/shchnk1103/Universe-Keyboard/pull/109) merged `0fd3518`. RTRD-01 UI later Closed via [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) |
 
 ---
 

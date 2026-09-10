@@ -53,14 +53,16 @@
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001 — RTRD-01
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-diagnostics-ui-001.md) `Active` — show finite runtime-route fields in diagnostics list/copy and a bottom sheet.
-- **Non-claims:** no uninstall round, no SUG-08, no journal schema change, no Release.
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-diagnostics-ui-001.md) `Closed` — PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) merged `4e4164f` (head `8a3f05c`). Finite runtime-route fields are on `main` in diagnostics list/copy and a bottom sheet. Remote feature branch deleted.
+- **Non-claims:** no uninstall round, no SUG-08, no journal schema change, no Release, no `RTRD-02` close.
+- **Next:** none for this slice
 
 ## KOS-SUG-OBS-DEVICE-001 — SUG-07 preflight execution
 
-- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-device-001.md) `Active` — preflight filled from diagnostics UI source; trace UUID/phase/elapsed `unreadable`; **no uninstall round**. Independent reviews pending.
-- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-DEVICE-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-DEVICE-001.md)
-- **Non-claims:** no SUG-08, no RTRD-01 Swift, no push/PR/merge/Release, no Product Gate.
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-device-001.md) `Closed` — PR [#109](https://github.com/shchnk1103/Universe-Keyboard/pull/109) merged `0fd3518` (head `b481d70`). Preflight recorded trace UUID/phase/elapsed as `unreadable` in the then-current UI; **no uninstall round**. Remote feature branch deleted.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-DEVICE-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-DEVICE-001.md) (consumed)
+- **Non-claims:** no SUG-08, no Product Gate, no Release.
+- **Next:** none for this slice
 
 ## KOS-SUG-OBS-PREFLIGHT-001 — SUG-07 docs-only observability preflight
 

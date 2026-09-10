@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | issued |
-| Consumption | Issued for preflight execution only; not reusable for uninstall, SUG-08, RTRD-01 implementation, push, merge, or Release |
+| Status | consumed |
+| Consumption | Consumed by Closed `KOS-SUG-OBS-DEVICE-001` after PR #109 merged `0fd3518`. Not reusable for uninstall, SUG-08, or Release |
 
 ---
 
@@ -17,8 +17,8 @@ Human Product Owner, current session `2026-09-10 Asia/Shanghai`: **“批准继�
   "record_id": "AUTH-KOS-SUG-OBS-DEVICE-001",
   "record_type": "authorization",
   "title": "Execute SUG-07 observability preflight for active-uninstall claims",
-  "status": "issued",
-  "updated_at": "2026-09-10T20:40:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-10T22:40:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "review_finding", "diagnostics_ui_changed"],
   "authorization": {
     "action": "execute_kos_sug_07_preflight_for_active_uninstall_claims",
@@ -34,10 +34,12 @@ Human Product Owner, current session `2026-09-10 Asia/Shanghai`: **“批准继�
     "issued_at": "2026-09-10T20:40:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "issued"
+    "consumption_state": "consumed"
   }
 }
 ```
 
-> **Issued:** [KOS-SUG-OBS-DEVICE-001](../assignments/kos-sug-obs-device-001.md)
-> Push, PR, uninstall operator rounds, SUG-08, and Release stay separately gated.
+> **Consumed:** [KOS-SUG-OBS-DEVICE-001](../assignments/kos-sug-obs-device-001.md)
+> Human later authorized push, PR, and merge of #109 after same-head hosted CI
+> green, remote-branch deletion, RTRD-01 as #110, and this post-merge M-02.
+> The receipt cannot authorize uninstall, SUG-08, `required`, or Release.

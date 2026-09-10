@@ -6,11 +6,11 @@ Policy version: `1.0.0`
 
 | Field | Value |
 |---|---|
-| Lifecycle | `Active` |
-| Current phase | Preflight filled; Architecture and Quality **Pass**; uninstall operator round **not** started |
-| Non-claims | No uninstall; no SUG-08; no RTRD-01 Swift; no Product Gate / TestFlight / Release |
-| Next handoff / decision | Human publication (push/PR) and/or next gated slice: RTRD-01 UI, optional glance, or stop |
-| Residuals | Trace fields `unreadable` in privacy-safe UI — `RTRD-01` remains `fix` on [DEVICE-001](scheme-delivery-runtime-route-device-001.md) |
+| Lifecycle | `Closed` |
+| Current phase | Published: PR [#109](https://github.com/shchnk1103/Universe-Keyboard/pull/109) merged `0fd3518`; head `b481d70`; hosted CI same-head green; remote feature branch deleted |
+| Non-claims | No uninstall; no SUG-08; no Product Gate / TestFlight / Release. Closing this preflight does not close [DEVICE-001](scheme-delivery-runtime-route-device-001.md) |
+| Next handoff / decision | None for this slice |
+| Residuals | Historical preflight: trace fields were `unreadable` before #110. RTRD-01 UI later Closed via [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110). `RTRD-02` remains `fix` on DEVICE-001 |
 
 ---
 
@@ -27,18 +27,19 @@ Policy version: `1.0.0`
 |---|---|---|
 | E-01 claim-bound observation | Adopted | Source-audit claims about UI field visibility only. |
 | A-01 / B-01 authorization chain and briefing | Adopted | This Assignment → Authorization → Product Decision. |
-| P-01 publication facts | Not applicable | No push/PR authorized. |
-| D-01 final-documentation receipt | Not applicable | Local docs-only checks are not a publication receipt. |
+| P-01 publication facts | Adopted | PR [#109](https://github.com/shchnk1103/Universe-Keyboard/pull/109) merged `0fd3518`; head `b481d70` |
+| D-01 final-documentation receipt | Not applicable | Hosted docs-only CI on #109 is not this M-02 packet's D-01 receipt |
 
 ### Authorization frontier (A-01 / B-01)
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| SUG-07 preflight fill | In progress | Record readability of UUID / phase / elapsed in privacy-safe diagnostics UI | This Assignment → [AUTH](../authorizations/AUTH-KOS-SUG-OBS-DEVICE-001.md) → [PD](../product-decisions/KOS-SUG-OBS-DEVICE-001-authorization.md) |
-| Active-uninstall operator round | Not authorized | Ice/Wanxiang uninstall + `ni` candidate observation | New Human authorization **after** trace preflight is `readable`, or an explicit functional-only round |
-| RTRD-01 diagnostics UI | Not authorized | Render `runtimeRoutePayload` in the privacy-safe list/detail | New Main App UI Assignment |
+| SUG-07 preflight fill | Authorized | Completed: readability of UUID / phase / elapsed recorded as `unreadable` in the then-current privacy-safe UI | This Assignment → [AUTH](../authorizations/AUTH-KOS-SUG-OBS-DEVICE-001.md) → [PD](../product-decisions/KOS-SUG-OBS-DEVICE-001-authorization.md) |
+| Push / PR / merge of #109 | Authorized | Consumed: PR [#109](https://github.com/shchnk1103/Universe-Keyboard/pull/109) merged `0fd3518` | Human: push + PR; CI green may merge |
+| RTRD-01 diagnostics UI | Authorized | Completed on a later Assignment: PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) merged `4e4164f` | Human after this preflight: “之后开始RTRD-01” |
+| Active-uninstall operator round | Not authorized | Ice/Wanxiang uninstall + `ni` candidate observation | New Human authorization |
 | SUG-08 raw-file read | Not authorized | Read a named JSONL file | New Assignment + Human authorization |
-| Push / PR / merge / Release | Not authorized | Publication or Release | New Human authorization |
+| Release | Not authorized | TestFlight / App Release | New Human authorization |
 
 ## Boundary
 
@@ -109,3 +110,4 @@ to chase traces.
 
 - `2026-09-10 Asia/Shanghai` — Human said “批准继续SUG-07 真机执行”. This Assignment interprets that as **running the SUG-07 preflight**, not repeating CS09-10-02 uninstall while trace fields are unreadable.
 - `2026-09-10 Asia/Shanghai` — Architecture and Quality reviews of `708cda81` both **Pass** (`0/0/0/0`). Push/PR still unauthorized.
+- `2026-09-10 Asia/Shanghai` — Human authorized push/PR of `codex/kos-sug-obs-device-001`; PR #109 merged `0fd3518`. RTRD-01 UI later merged as #110. This M-02 Closes the Assignment and consumes AUTH.
