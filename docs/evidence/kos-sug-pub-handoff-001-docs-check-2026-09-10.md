@@ -33,3 +33,16 @@ python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py'
 ```
 
 If later documentation edits land, these results do not cover them.
+
+## Re-run after first-round finding repair
+
+Executor-recorded only. This section is updated in the same commit as the
+review-file example-link fix. After that commit exists, re-run:
+
+```text
+python3 scripts/ci/check_markdown_links.py --base 77e5658d7fa0b7b868517238cb2cf24aeb7e024f --head HEAD
+python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py'
+```
+
+Outcome for that HEAD is recorded in the Assignment History, not claimed as
+hosted CI, Quality-reverified, D-01 publication receipt, merge, or Release.
