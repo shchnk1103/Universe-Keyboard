@@ -51,6 +51,12 @@
 - **Non-claims:** no SUG-04/07/08 implementation, no SUG-06 CI automation, no KOS 2.0/2.1 frozen-principle change, `required`, historical backfill, product code, device, or Release.
 - **Next:** none for this slice
 
+## KOS-SUG-OBS-PREFLIGHT-001 — SUG-07 docs-only observability preflight
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-preflight-001.md) `Active` — opt-in preflight table for new human-device Assignments. Independent reviews pending. No device run.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-PREFLIGHT-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-PREFLIGHT-001.md)
+- **Non-claims:** no SUG-04/08, no SUG-06 CI, no privacy/diagnostics/UI/log change, no `required`, no push/PR/merge/Release.
+
 ## KOS-SUG-PIN-AUDIT-001 — manual pin consistency audit
 
 - **Lifecycle:** [`Assignment`](assignments/kos-sug-pin-audit-001.md) `Closed` — the docs-only SUG-06 audit confirmed all five named current mirrors match the canonical `v0.8.0` advisory pin and opt-in boundary. Both final independent reviews passed.
