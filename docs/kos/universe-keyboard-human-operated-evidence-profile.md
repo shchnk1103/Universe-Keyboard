@@ -94,6 +94,38 @@ machine preflight
 
 源码 review、CI 全绿和历史真机结果不能替代 readiness review。
 
+## Observability preflight (KOS-SUG-07, opt-in)
+
+This convention is **not** a KOS Agent Kit v0.8.0 contract. A **new**
+human-device Assignment adopts it only by naming this section in the Assignment
+or its frozen run manifest. Historical and currently Active device Assignments
+are not backfilled. An Assignment that omits the table has not adopted SUG-07.
+
+Adopted runs add a **read-only** preflight to the frozen manifest **before** the
+first operator action. One row per claim:
+
+| Claim | Kind | Required content-free fields | Visible location | Readable now? | Preflight outcome |
+|---|---|---|---|---|---|
+| Precise behavior or trace statement | `functional` or `trace` | Finite keys only (no input, candidate, host text, or user dictionary) | Privacy-safe UI, export, or `not visible` | `yes` / `no` / `unknown` | `pass` / `inconclusive` / `not-run` |
+
+Rules:
+
+- Functional claims and trace claims are separate rows. Example: “after
+  uninstall, Luna yields Chinese candidates for a probe syllable” is
+  `functional`; “the same operation records phase, operation UUID, and
+  elapsed” is `trace`.
+- An event code appearing in a diagnostics list does not prove UUID, phase, or
+  elapsed.
+- If a required field is not readable from a privacy-safe UI or export, that
+  claim’s preflight outcome is `inconclusive`. Do not ask the operator to open
+  a raw directory.
+- `inconclusive` does not authorize [SUG-08](kos-improvement-suggestions-scheme-delivery-2026-09-09.md)
+  raw-data access. SUG-08 still needs its own Assignment and Human
+  authorization.
+- This table cannot authorize a device run, a logging change, or capture of
+  user content. Readiness Review for an opted-in run must confirm the table is
+  complete before the first operator instruction.
+
 ## Content-free Receipt
 
 成功路径只向对话和 reviewer 提供小型结构化摘要，至少包含：
