@@ -29,6 +29,13 @@ struct SharedDefaultsRimeSettingsPersistence: RimeSettingsPersisting {
 enum RimeDeploymentState {
     case idle, needsDeploy, triggered, deploying, deployed, failed
 
+    var allowsCancel: Bool {
+        switch self {
+        case .triggered, .deploying, .failed: return true
+        case .idle, .needsDeploy, .deployed: return false
+        }
+    }
+
     var icon: String {
         switch self {
         case .idle: return "circle"
@@ -113,6 +120,9 @@ final class RimeSettingsStore {
 
     private let schemaManager: SchemaManager
     private let persistence: any RimeSettingsPersisting
+    /// Invalidates an in-flight `triggerDeployment()` so a cancelled attempt
+    /// cannot overwrite a later retry or an interrupted-failure UI state.
+    private var deploymentUIGeneration = UUID()
     private let userDictionaryBackupService: any RimeUserDictionaryBackingUp
     var pageSize: Double = 9
     var simplified = true
@@ -668,13 +678,19 @@ final class RimeSettingsStore {
 
     func triggerDeployment() async {
         guard deploymentState != .triggered, deploymentState != .deploying else { return }
+        let attemptID = UUID()
+        deploymentUIGeneration = attemptID
         deploymentState = .triggered
         deploymentLog = []
         appendDeploymentLog("→ 主 App 正在准备部署")
         deploymentState = .deploying
         appendDeploymentLog("→ 主 App 正在编译配置和词库…")
+        persistDeploymentInProgress()
 
-        if await schemaManager.deployRimeConfig() {
+        let succeeded = await schemaManager.deployRimeConfig()
+        guard deploymentUIGeneration == attemptID else { return }
+
+        if succeeded {
             persistence.set(false, forKey: DeploymentRetry.automaticRetrySuppressedKey)
             persistence.synchronize()
             deploymentState = .deployed
@@ -709,8 +725,16 @@ final class RimeSettingsStore {
     }
 
     func cancelDeployment() {
-        guard deploymentState == .failed else { return }
-        resetDeploymentStatus()
+        switch deploymentState {
+        case .failed:
+            resetDeploymentStatus()
+        case .triggered, .deploying:
+            deploymentUIGeneration = UUID()
+            schemaManager.cancelActiveRimeDeployment()
+            markCurrentDeploymentInterrupted(reason: "已取消部署，可在主 App 中重试")
+        case .idle, .needsDeploy, .deployed:
+            break
+        }
     }
 
     func resetDeploymentStatus() {
@@ -719,10 +743,11 @@ final class RimeSettingsStore {
     }
 
     func refreshDeploymentState() {
+        reconcileOrphanedInProgressDeploymentIfNeeded()
         if persistence.bool(forKey: "rime_deployed") {
             deploymentState = .deployed
             deploymentLog = ["✓ RIME 已部署"]
-        } else if persistence.bool(forKey: "rime_deploying") {
+        } else if persistence.bool(forKey: "rime_deploying"), schemaManager.hasLiveRimeDeployment {
             deploymentState = .deploying
         } else if persistence.bool(forKey: "rime_needs_deploy") {
             deploymentState =
@@ -891,6 +916,33 @@ final class RimeSettingsStore {
         case "luna_pinyin": return "朙月拼音"
         default: return id
         }
+    }
+
+    private func persistDeploymentInProgress() {
+        persistence.set(true, forKey: "rime_deploying")
+        persistence.set(false, forKey: "rime_deployed")
+        persistence.synchronize()
+        schemaManager.markDeploymentInProgress()
+    }
+
+    /// Process death or an explicit cancel can leave `rime_deploying` set with
+    /// no live task. Never restore a spinner that cannot be cancelled.
+    private func reconcileOrphanedInProgressDeploymentIfNeeded() {
+        let persistedInProgress =
+            persistence.bool(forKey: "rime_deploying") || schemaManager.isDeploymentMarkedInProgress
+        guard persistedInProgress, !schemaManager.hasLiveRimeDeployment else { return }
+        markCurrentDeploymentInterrupted(reason: "上次部署被中断，请在主 App 中重试")
+    }
+
+    private func markCurrentDeploymentInterrupted(reason: String) {
+        schemaManager.markDeploymentInterrupted()
+        persistence.set(false, forKey: "rime_deploying")
+        persistence.set(true, forKey: "rime_needs_deploy")
+        persistence.set(false, forKey: "rime_deployed")
+        persistence.set(true, forKey: DeploymentRetry.automaticRetrySuppressedKey)
+        persistence.synchronize()
+        deploymentState = .failed
+        deploymentLog = ["✗ \(reason)"]
     }
 
     private func markDeploymentNeeded(reason: String) {

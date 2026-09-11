@@ -297,6 +297,16 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Trigger to resolve:** 自然后台运行再次出现该行；同步同时报告 access denied、目录暂停、缺少快照输出或崩溃；切换到非 iCloud 文件提供器可稳定复现；或发布前需要声明后台文件夹访问健壮性。
 - **Related:** [`RIME-SYNC-001`](assignments/rime-sync-001.md)、[`forced-launch evidence`](evidence/rime-background-sync-crash-fix-2026-08-29.md)、TD-002。
 
+## TD-018: Foreground Auto-Deploy After Inactive Scheme Uninstall
+
+- **Priority:** Low–Medium。不阻塞已修复的「正在部署…」闩锁恢复；产品期望卸完非活动方案后前台也会自动编译剩余方案。
+- **Risk:** 非活动卸载（例如万象为 active 时卸雾凇）只 `requestDeploy()`，真正的 `triggerPendingDeploymentIfNeeded()` 只在冷启动或 `scenePhase` 进入 inactive/background 时运行。用户若一直停在设置页，界面不会自动开始部署，只能手动点「应用并重新部署」。这不是 CS-05 路由错误。
+- **Current mitigation:** 卸载仍留下 `rime_needs_deploy`；部署中可取消；残留 `rime_deploying` 在无 live task 时视为失败并可重试。`2026-09-11` Human-attested：覆盖安装后首次打开为部署失败且可重试；卸雾凇后前台未自动部署，手动部署成功。
+- **Recommended fix:** `RimeSettingsStore.uninstallSchema` 在卸载 Task 完成后调用 `triggerPendingDeploymentIfNeeded()`（或等价前台入口），刷新为 `.needsDeploy` / `.deploying`，并保持现有取消与中断恢复。不要为此改 CS-05 Luna-only 回退。
+- **Owner area:** Main App `RimeSettingsStore` / `SchemaManager` uninstall orchestration.
+- **Trigger to resolve:** 产品要求「卸完非活动方案后无需再点部署」；或设置页停留导致用户误以为卸载未完成。
+- **Related:** CS-05 inactive uninstall、ADR 0001（部署状态必须可操作）。
+
 ## Maintenance Rules
 
 - Update an item when priority, mitigation, owner area or trigger changes.

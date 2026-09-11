@@ -58,7 +58,7 @@ struct RimeDeploymentContent: View {
                 )
                 .disabled(state == .triggered || state == .deploying)
 
-                if state == .failed {
+                if state.allowsCancel {
                     AppActionButton(
                         title: "取消",
                         systemImage: "xmark",
