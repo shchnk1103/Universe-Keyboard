@@ -58,6 +58,13 @@
 - **Non-claims:** no SUG-08, no Product Gate, no `RTRD-02` numbers, no 2026-09-09 record rewrite.
 - **Next:** none for this slice
 
+## RIME-DEPLOY-INTERRUPT-RECOVER-001 — 部署中断恢复
+
+- **Lifecycle:** [`Assignment`](assignments/rime-deploy-interrupt-recover-001.md) `Closed` — engineering Close after PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115) merged `5bd7499` and Independent Quality Pass with conditions.
+- **Current phase:** Closed. Residuals `RDIR-01` accept, `RDIR-02` tech_debt:TD-018, `RDIR-03` accept.
+- **Non-claims:** not Product Gate / TestFlight; not Device-attested; not TD-018 implementation.
+- **Next:** none for this Assignment. TD-018 remains a later slice.
+
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001 — CS09-10-02 device
 
 - **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-device-001.md) `Closed` — engineering Close after functional Pass with conditions, RTRD-01 glance, RTRD-02 accept.
