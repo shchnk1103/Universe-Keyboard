@@ -7,9 +7,9 @@ Policy version: `1.0.0`
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Keep executed; Architecture/Quality Pass 0/0/0/0 after P2/P3 resolved; docs-only PR next |
+| **Phase** | Keep executed; Architecture/Quality Pass 0/0/0/0; docs-only PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) open |
 | **Non-claims** | No Group B delete; no merge of unique commits to `main`; no #101/#102; no Scheme Platform; no merge of this docs PR; no Product Gate / TestFlight / Release |
-| **Next** | Docs-only PR (merge not authorized) |
+| **Next** | Human names merge of [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) if accepted |
 | **Residuals** | `A-GB-HYG-003-P2-01` / `P3-01` / `GBAH-003-Q-P2-01` `resolved` |
 
 ---
@@ -35,7 +35,7 @@ Policy version: `1.0.0`
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Current authorized slice | In progress | Keep all three Group B names; Close 002; docs packet | This Assignment → [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003.md) → [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-003-authorization.md) |
+| Current authorized slice | In progress | Keep recorded; docs PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) open; merge remaining out of slice | This Assignment → [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003.md) → [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-003-authorization.md) |
 | Merge of this docs PR | Not authorized | Merge | New Human authorization |
 | Later Group B delete | Not authorized | Delete any of the three names | New bounded Assignment after Paused/Active owners Close or Product rejects the unique diffs |
 | Environment or external slice | Not applicable | No ref mutation in this slice | Docs and local verification only |
@@ -44,13 +44,13 @@ Policy version: `1.0.0`
 
 | Fact | Value |
 |---|---|
-| `local_candidate` | unknown until the docs commit exists |
-| `published_head` | none |
+| `local_candidate` | `c942b96` at PR open; this handoff commit follows |
+| `published_head` | `origin/docs/git-branch-archive-hygiene-003` (PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120)) |
 | `hosted_ci_head` | unknown |
-| `hosted_ci_result` | unknown |
+| `hosted_ci_result` | pending |
 | `coverage` | unknown |
-| `pr_state` | none |
-| `local_ahead_of_published` | unknown |
+| `pr_state` | `open` [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) |
+| `local_ahead_of_published` | this commit, then 0 after push |
 
 ## Boundary
 
@@ -104,7 +104,7 @@ archive tags exist, using KOS fail-closed rules and a live diff against
 
 - [x] Keep disposition recorded; no Group B name deleted.
 - [x] Independent Architecture and Quality document reviews: [`Architecture Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-architecture-review.md) · [`Quality Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-quality-review.md).
-- [ ] Docs-only PR opened. Merge is not an exit criterion.
+- [x] Docs-only PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) opened. Merge is not an exit criterion.
 - [x] Assignment 002 Closed and Active Work / Dashboard synced.
 
 ### Stop Conditions
