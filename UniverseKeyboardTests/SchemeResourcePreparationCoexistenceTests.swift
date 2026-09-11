@@ -385,7 +385,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
 
         let chaifenRel = "lua/data/chaifen.txt"
         let emptyHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        XCTAssertEqual(WanxiangLuaOwnership.sha256ByPath[chaifenRel], emptyHash)
+        XCTAssertEqual(WanxiangExactHashOwnership.sha256ByPath[chaifenRel], emptyHash)
 
         try plantSharedFile(env.shared, relativePath: chaifenRel, data: Data())
         XCTAssertEqual(sha256(Data()), emptyHash)
@@ -393,7 +393,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         var expectedMatched = [chaifenRel]
         if let bitBytes = optionalWanxiangExtractBytes(relativePath: "lua/wanxiang/bit.lua") {
             let bitRel = "lua/wanxiang/bit.lua"
-            XCTAssertEqual(sha256(bitBytes), WanxiangLuaOwnership.sha256ByPath[bitRel])
+            XCTAssertEqual(sha256(bitBytes), WanxiangExactHashOwnership.sha256ByPath[bitRel])
             try plantSharedFile(env.shared, relativePath: bitRel, data: bitBytes)
             expectedMatched.append(bitRel)
         }
@@ -431,7 +431,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         let wanxiangPlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
         let chaifenRel = "lua/data/chaifen.txt"
         let modified = Data("user-edited-chaifen".utf8)
-        XCTAssertNotEqual(sha256(modified), WanxiangLuaOwnership.sha256ByPath[chaifenRel])
+        XCTAssertNotEqual(sha256(modified), WanxiangExactHashOwnership.sha256ByPath[chaifenRel])
         try plantSharedFile(env.shared, relativePath: chaifenRel, data: modified)
         try plantSharedFile(
             env.shared,
@@ -1562,7 +1562,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
             return true
         }
         return plan.revision == "wanxiang-plan-1"
-            && WanxiangLuaOwnership.sha256ByPath[path] == sha256(data)
+            && WanxiangExactHashOwnership.sha256ByPath[path] == sha256(data)
     }
 
     private func assertInventory(_ expected: [String: Data], remainsIn shared: URL) throws {
@@ -1639,7 +1639,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: chaifenURL.path))
         XCTAssertEqual(
             sha256(try Data(contentsOf: chaifenURL)),
-            WanxiangLuaOwnership.sha256ByPath[
+            WanxiangExactHashOwnership.sha256ByPath[
                 CrossSchemeDualInstall.wanxiangChaifenRelativePath
             ]
         )
@@ -1649,7 +1649,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         if FileManager.default.fileExists(atPath: bitURL.path) {
             XCTAssertEqual(
                 sha256(try Data(contentsOf: bitURL)),
-                WanxiangLuaOwnership.sha256ByPath[
+                WanxiangExactHashOwnership.sha256ByPath[
                     CrossSchemeDualInstall.wanxiangBitRelativePath
                 ],
                 "Wanxiang exact-hash bit.lua when feasible"

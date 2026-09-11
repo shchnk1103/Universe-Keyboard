@@ -208,4 +208,18 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         let wanxiangNames = try FileManager.default.contentsOfDirectory(atPath: wanxiangRoot.path)
         XCTAssertEqual(Set(wanxiangNames), ["default.yaml"])
     }
+
+    func testResourceCapabilityRoutesOwnershipHonesty() {
+        XCTAssertEqual(
+            SchemeAdapterRegistry.resourceCapability(for: "rime_ice")?.ownershipStrategyID,
+            .namedList
+        )
+        XCTAssertEqual(SchemeAdapterRegistry.resourceCapability(for: "rime_ice")?.admitsOpenCC, true)
+        XCTAssertEqual(
+            SchemeAdapterRegistry.resourceCapability(for: "wanxiang")?.ownershipStrategyID,
+            .exactHash
+        )
+        XCTAssertEqual(SchemeAdapterRegistry.resourceCapability(for: "wanxiang")?.admitsOpenCC, false)
+        XCTAssertNil(SchemeAdapterRegistry.resourceCapability(for: "unknown_scheme"))
+    }
 }

@@ -55,7 +55,7 @@ public enum SchemeOwnershipStrategyID: String, Sendable, Equatable {
 ///
 /// P1-2 routes layout capability queries through this registry.
 /// P1-3 routes SharedDefault post-extract through `sharedDefaultMode` + applicator lookup.
-/// Ownership install hooks (P1-4) come later.
+/// P1-4 routes uninstall / checkpoint ownership through `ownershipStrategyID` + ResourceOwnership.
 public struct SchemeAdapter: Sendable, Equatable {
     /// Canonical letter-schema id (`rime_ice`, `wanxiang`, `luna_pinyin`).
     public let schemaID: String
