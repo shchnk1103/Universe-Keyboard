@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 2026-09-12 — Parked-branch archive hygiene Closed
+
+- `GIT-BRANCH-ARCHIVE-HYGIENE-003` engineering Close after PR #120; the parked-branch plan is Archived. Group B local names remain. Unique commits were not merged to `main`.
+
+## 2026-09-11 — Group B local branch names kept
+
+- After archive tags landed, KOS keep disposition left `codex/wanxiang-p4-closure-001`, `codex/release-2026-0801-kaomoji`, and `codex/release-2026-08-01-coordination-next` in place. Unique commits were not merged to `main` and were not deleted.
+
+## 2026-09-11 — Group B parked-branch archive tags
+
+- Local-only tips `codex/wanxiang-p4-closure-001`, `codex/release-2026-0801-kaomoji`, and `codex/release-2026-08-01-coordination-next` now also live behind annotated `archive/…/20260911` tags on `origin`. Branch names were **not** deleted. Unique commits were not merged to `main`.
+
+## 2026-09-11 — Group A parked-branch archive tags
+
+- Closed/superseded branches `codex/kos-v080-upgrade-review`, `codex/td016-docs-only-fixture`, and `docs/t9-single-key-mixed-candidates-discussion` now live behind annotated `archive/…/20260911` tags; the branch names were deleted. Unique commits were not merged to `main`. Group B / #101 / #102 were not touched.
+
 ## 2026-09-11 — 部署中断后可取消并重试
 
 - 主 App 不再把残留的 `rime_deploying` 恢复成无法操作的「正在部署…」。进程被结束后，该标志视为中断失败，抑制自动重试，并保留手动「应用并重新部署」。

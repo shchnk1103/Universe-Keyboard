@@ -72,6 +72,27 @@
 - **Non-claims:** not Product Gate, TestFlight, Release, or ADR Accept.
 - **Next:** none for this Assignment
 
+## GIT-BRANCH-ARCHIVE-HYGIENE-001 — Group A parked-branch archive
+
+- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-001.md) `Closed` — PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) merged `bb15b27` (head `fc7d8b1`).
+- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001-MERGE.md) (consumed)
+- **Non-claims:** unique leftover commits are not on `main`; not Product Gate / Release.
+- **Next:** none for this Assignment. Group B tags are [`002`](assignments/git-branch-archive-hygiene-002.md).
+
+## GIT-BRANCH-ARCHIVE-HYGIENE-002 — Group B parked-branch tags
+
+- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-002.md) `Closed` — PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) merged `bf0e6ec` (head `e372268`).
+- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002-MERGE.md) (consumed)
+- **Non-claims:** unique leftover commits are not on `main`; not Product Gate / Release.
+- **Next:** none for this Assignment. Keep disposition Closed as [`003`](assignments/git-branch-archive-hygiene-003.md).
+
+## GIT-BRANCH-ARCHIVE-HYGIENE-003 — Group B keep
+
+- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-003.md) `Closed` — PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) merged `04e2240`; plan Archived. Close reviews: [`Architecture`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-close-architecture-review.md) · [`Quality`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-close-quality-review.md).
+- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-003-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-MERGE.md) (consumed) · [`Close AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-CLOSE.md) (consumed)
+- **Non-claims:** no Group B delete; unique commits not on `main`; not Product Gate / Release.
+- **Next:** none for this Assignment.
+
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001 — RTRD-02
 
 - **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-elapsed-001.md) `Closed` — Human accepted the same-field comparison gap. AUTH consumed.
