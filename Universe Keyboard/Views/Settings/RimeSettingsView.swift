@@ -76,83 +76,65 @@ private struct RimeSchemaDetailView: View {
     @State private var showUninstallAlert = false
     @State private var schemaPendingSwitch: SchemaMetadata?
     @State private var showSchemaSwitchAlert = false
+    @State private var showProvenance = false
 
     var body: some View {
         Form {
             Section {
-                VStack(alignment: .leading, spacing: 10) {
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text(schema.name)
-                            .font(.headline)
-                        CapsuleBadge(text: sourceText, color: sourceColor, style: .tinted)
-                        if schema.schemaID == store.activeSchemaID {
-                            CapsuleBadge(text: "当前使用", color: .green, style: .tinted)
-                        }
-                    }
+                Button {
+                    showProvenance = true
+                } label: {
+                    HStack(alignment: .top, spacing: 8) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                                Text(schema.name)
+                                    .font(.headline)
+                                    .foregroundStyle(.primary)
+                                CapsuleBadge(text: sourceText, color: sourceColor, style: .tinted)
+                                if schema.schemaID == store.activeSchemaID {
+                                    CapsuleBadge(text: "当前使用", color: .green, style: .tinted)
+                                }
+                            }
 
-                    Text(schema.description)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                            Text(schema.description)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
 
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 118), spacing: 8)], spacing: 8) {
-                        RimeSchemaMetricLabel(
-                            systemImage: schema.installed ? "checkmark.circle" : "arrow.down.circle",
-                            text: schema.installed ? "已安装" : "可下载"
-                        )
-                        RimeSchemaMetricLabel(systemImage: "internaldrive", text: schema.downloadSize)
-                        if let version = schema.version {
-                            RimeSchemaMetricLabel(systemImage: "tag", text: version)
+                            LazyVGrid(
+                                columns: [GridItem(.adaptive(minimum: 118), spacing: 8)],
+                                spacing: 8
+                            ) {
+                                RimeSchemaMetricLabel(
+                                    systemImage: schema.installed
+                                        ? "checkmark.circle" : "arrow.down.circle",
+                                    text: schema.installed ? "已安装" : "可下载"
+                                )
+                                RimeSchemaMetricLabel(
+                                    systemImage: "internaldrive",
+                                    text: schema.downloadSize
+                                )
+                                if let version = schema.version {
+                                    RimeSchemaMetricLabel(systemImage: "tag", text: version)
+                                }
+                                if schema.requiresLua {
+                                    RimeSchemaMetricLabel(systemImage: "sparkles", text: "高级输入")
+                                }
+                            }
                         }
-                        if schema.requiresLua {
-                            RimeSchemaMetricLabel(systemImage: "sparkles", text: "高级输入")
-                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                        Image(systemName: "info.circle")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                            .accessibilityHidden(true)
                     }
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(schema.name)方案信息")
+                .accessibilityHint("查看版本与下载来源")
             } header: {
                 Text("方案信息")
-            }
-
-            if schema.isDownloadable {
-                Section {
-                    LabeledContent("版本", value: store.manifestVersion(for: schema.schemaID) ?? "未知")
-                    LabeledContent("下载来源", value: sourceVariant?.displayName ?? "下载时自动选择")
-                    LabeledContent("下载地址") {
-                        Text(sourceVariant?.downloadURL.absoluteString ?? "下载完成后显示")
-                            .font(.caption.monospaced())
-                            .multilineTextAlignment(.trailing)
-                            .textSelection(.enabled)
-                    }
-                    LabeledContent("上游版本") {
-                        Text(sourceVariant?.upstreamRevision ?? "下载完成后显示")
-                            .font(.caption.monospaced())
-                            .multilineTextAlignment(.trailing)
-                            .textSelection(.enabled)
-                    }
-                    LabeledContent(
-                        "归档大小",
-                        value: sourceVariant.map {
-                            ByteCountFormatter.string(
-                                fromByteCount: $0.expectedByteCount,
-                                countStyle: .file
-                            )
-                        } ?? "下载完成后显示"
-                    )
-                    LabeledContent("归档 SHA-256") {
-                        Text(sourceVariant?.archiveSHA256 ?? "下载完成后显示")
-                            .font(.caption.monospaced())
-                            .multilineTextAlignment(.trailing)
-                            .textSelection(.enabled)
-                    }
-                    LabeledContent(
-                        "完整性",
-                        value: store.hasVerifiedReceipt(for: schema.schemaID)
-                            ? "SHA-256 已验证" : "下载后验证"
-                    )
-                } header: {
-                    Text("版本与下载来源")
-                } footer: {
-                    Text("App 仅在你开始下载后轻量选择来源，并在解压和部署前校验固定版本与内容。")
-                }
             }
 
             schemaActionSections
@@ -171,6 +153,11 @@ private struct RimeSchemaDetailView: View {
                     .disabled(store.deploymentState == .triggered || store.deploymentState == .deploying)
                 }
             }
+        }
+        .sheet(isPresented: $showProvenance) {
+            SchemeProvenanceSheet(presentation: provenancePresentation)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
         .sheet(item: $licensePresentation) { presentation in
             SchemeLicenseView(
@@ -208,6 +195,16 @@ private struct RimeSchemaDetailView: View {
 
     private var sourceVariant: RimeSchemeSourceVariant? {
         store.sourceVariant(for: schema.schemaID)
+    }
+
+    private var provenancePresentation: SchemeProvenancePresentation {
+        SchemeProvenancePresentation.make(
+            isDistributionBacked: schema.isDownloadable,
+            installedVersion: schema.version,
+            manifestVersion: store.manifestVersion(for: schema.schemaID),
+            source: sourceVariant,
+            hasVerifiedReceipt: store.hasVerifiedReceipt(for: schema.schemaID)
+        )
     }
 
     private var switchConfirmationMessage: String {

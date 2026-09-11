@@ -69,6 +69,8 @@ Top-level screen:
 Scheme detail page:
 
 - Shows scheme source, version, download size, installed state, and capabilities such as Lua requirement.
+- The **方案信息** summary is tappable for every catalog scheme (trailing `info.circle` in secondary color). Tapping it presents a bottom sheet with **版本与下载来源** only.
+- Every scheme uses the same seven provenance rows. Distribution-backed schemes fill live source/receipt values; builtin / no-distribution schemes use **随 App 内置** / **不适用**. Future catalog entries inherit this mapping; do not add `schemaID` UI forks.
 - Installed schemes can be set as the current scheme.
 - Downloaded schemes may expose download, update, redownload, uninstall, and license actions.
 - Built-in schemes should not expose destructive download-management actions.
