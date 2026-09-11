@@ -61,9 +61,9 @@
 ## RIME-DEPLOY-INTERRUPT-RECOVER-001 — 部署中断恢复
 
 - **Lifecycle:** [`Assignment`](assignments/rime-deploy-interrupt-recover-001.md) `Active` — backfill after PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115) (`805f6ce`).
-- **Current phase:** Independent Quality review pending; hosted CI in progress. Architecture Reviewer is `Not Applicable`.
-- **Non-claims:** not Reviewed; not merge-ready; not Product Gate / TestFlight; not TD-018 implementation.
-- **Next:** Independent Quality reviewer (not the implementing executor) on `805f6ce`; Human merge decision later.
+- **Current phase:** Independent Quality **Pass with conditions** on `805f6ce` ([review](reviews/rime-deploy-interrupt-recover-001-quality-review.md)). Architecture `Not Applicable`. Merge not authorized.
+- **Non-claims:** not Closed; not merge-ready; not Product Gate / TestFlight; not Device-attested; not TD-018 implementation.
+- **Next:** Human whether to push the review record and whether to authorize merge.
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001 — CS09-10-02 device
 

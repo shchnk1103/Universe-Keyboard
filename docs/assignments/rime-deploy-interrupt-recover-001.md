@@ -13,10 +13,10 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are **not** opted in.
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | Independent Quality review pending; hosted CI running on PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115) head `805f6ce`. Architecture Reviewer is `Not Applicable`. Merge not authorized |
-| Material non-claims | Not Reviewed; not merge-ready; not Product Gate / TestFlight / Release; not TD-018 implementation; not CS-05 or ADR 0034 change; hosted CI green is not Quality Pass |
-| Next handoff / decision | Independent Quality reviewer (must not be the implementing executor) on `805f6ce`; Human may later authorize merge only after Quality Pass (or Pass with conditions + residual) **and** hosted CI green on the **same** head |
-| Residuals | [`TD-018`](../TECH_DEBT.md#td-018-foreground-auto-deploy-after-inactive-scheme-uninstall) (`tech_debt:TD-018`) |
+| Current Phase | Independent Quality **Pass with conditions** on implementation SHA `805f6ce` ([review](../reviews/rime-deploy-interrupt-recover-001-quality-review.md)). Architecture remains `Not Applicable`. Hosted CI was green on that SHA. Merge still **not** authorized |
+| Material non-claims | Not Closed; not merge-ready; not Product Gate / TestFlight / Release; not Device-attested; not TD-018 implementation; Quality Pass with conditions is not merge permission |
+| Next handoff / decision | Human Product Owner: whether to push this review record and whether to authorize merge of PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115). If a new tip is pushed, hosted CI must be green on **that** tip before merge |
+| Residuals | `RDIR-01` `accept` · `RDIR-02` `tech_debt:TD-018` · `RDIR-03` `accept` — see Quality review M-03 table |
 
 ---
 
@@ -64,3 +64,4 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are **not** opted in.
 - Same day: Human-attested overlay install — first launch showed deploy failed with retry/cancel/reset; manual deploy succeeded. Later inactive Ice uninstall did not auto-start deploy in the foreground; manual deploy succeeded. Recorded as TD-018.
 - Same day: Human authorized slice-A commit (`805f6ce`), then push and PR #115. No merge authorization.
 - Same day: Human authorized this Assignment backfill only. Independent Quality review was **not** started by this authorization.
+- Same day: Human reported hosted CI all-green on `805f6ce` and authorized independent Quality review. Independent Quality runtime (not the implementing executor) recorded **Pass with conditions** in [`rime-deploy-interrupt-recover-001-quality-review.md`](../reviews/rime-deploy-interrupt-recover-001-quality-review.md). Residuals `RDIR-01` accept, `RDIR-02` tech_debt:TD-018, `RDIR-03` accept. Merge not authorized.
