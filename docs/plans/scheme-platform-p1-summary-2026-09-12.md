@@ -151,4 +151,3 @@ Hosted CI snapshots used by IQ: see Independent Quality review（prior slice tip
 2. Human: authorize **P2** start when ready（Wanxiang → platform SharedDefault `privatePreset`; ownership stays dual `exactHash`）.
 
 3. Leave #101 alone; no ADR Accept; no Product Gate / TF.
-

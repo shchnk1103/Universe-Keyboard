@@ -88,7 +88,7 @@ Finding counts at freeze `3cfa355`: **P0: 0 · P1: 0 · P2: 2 · P3: 4**（见 F
 
 
 
-Source: [`scheme-platform-p1-extract-plan-2026-09-10.md` §4](../plans/scheme-platform-p1-extract-plan-2026-09-10.md).  
+Source: [`scheme-platform-p1-extract-plan-2026-09-10.md` §4](../plans/scheme-platform-p1-extract-plan-2026-09-10.md).
 
 **Method:** read-only code/test review + prior slice / hosted CI evidence. Items marked **Evidence** cite what supports them; **Not re-run** lists what this IQ did **not** execute locally.
 
@@ -383,4 +383,3 @@ Recording only: Exit Criteria for full Assignment still need P2/P3； Human has 
 3. Watch `3cfa355` `build-and-test` → update SP-P1-IQ-01 disposition when concluded（separate note OK； do not rewrite Pass into unconditional without evidence）.
 
 4. Do **not** start ADR Accept / Product Gate / Assignment Close from this file alone.
-
