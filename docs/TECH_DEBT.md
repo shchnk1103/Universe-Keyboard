@@ -305,7 +305,7 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Recommended fix:** `RimeSettingsStore.uninstallSchema` 在卸载 Task 完成后调用 `triggerPendingDeploymentIfNeeded()`（或等价前台入口），刷新为 `.needsDeploy` / `.deploying`，并保持现有取消与中断恢复。不要为此改 CS-05 Luna-only 回退。
 - **Owner area:** Main App `RimeSettingsStore` / `SchemaManager` uninstall orchestration.
 - **Trigger to resolve:** 产品要求「卸完非活动方案后无需再点部署」；或设置页停留导致用户误以为卸载未完成。
-- **Related:** CS-05 inactive uninstall、ADR 0001（部署状态必须可操作）。
+- **Related:** CS-05 inactive uninstall、ADR 0001（部署状态必须可操作）、[`RIME-DEPLOY-INTERRUPT-RECOVER-001`](assignments/rime-deploy-interrupt-recover-001.md)。
 
 ## Maintenance Rules
 
