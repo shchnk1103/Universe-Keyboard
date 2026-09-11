@@ -60,10 +60,10 @@
 
 ## RIME-DEPLOY-INTERRUPT-RECOVER-001 — 部署中断恢复
 
-- **Lifecycle:** [`Assignment`](assignments/rime-deploy-interrupt-recover-001.md) `Active` — PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115) merged `5bd7499` (engineering merge).
-- **Current phase:** Independent Quality **Pass with conditions** on implementation `805f6ce` ([review](reviews/rime-deploy-interrupt-recover-001-quality-review.md)). Architecture `Not Applicable`.
-- **Non-claims:** not Closed; not Product Gate / TestFlight; not Device-attested; not TD-018 implementation.
-- **Next:** none for merge. TD-018 remains. Optional later engineering Close is not Product Gate.
+- **Lifecycle:** [`Assignment`](assignments/rime-deploy-interrupt-recover-001.md) `Closed` — engineering Close after PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115) merged `5bd7499` and Independent Quality Pass with conditions.
+- **Current phase:** Closed. Residuals `RDIR-01` accept, `RDIR-02` tech_debt:TD-018, `RDIR-03` accept.
+- **Non-claims:** not Product Gate / TestFlight; not Device-attested; not TD-018 implementation.
+- **Next:** none for this Assignment. TD-018 remains a later slice.
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001 — CS09-10-02 device
 
