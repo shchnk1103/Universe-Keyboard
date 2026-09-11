@@ -8,7 +8,7 @@ Policy version: `1.0.0`
 |---|---|
 | Lifecycle | `Closed` |
 | Current phase | Human accepted the same-field comparison gap. PR [#112](https://github.com/shchnk1103/Universe-Keyboard/pull/112) merged `7caec79` (head `58179da`) |
-| Non-claims | No performance pass/fail; no Product Gate / TestFlight / Release; no SUG-08; no Swift; does not close DEVICE-001 |
+| Non-claims | No performance pass/fail; no Product Gate / TestFlight / Release; no SUG-08; no Swift |
 | Next handoff / decision | None for this slice |
 | Residuals | DEVICE-001 `RTRD-02` disposition `accept` |
 
