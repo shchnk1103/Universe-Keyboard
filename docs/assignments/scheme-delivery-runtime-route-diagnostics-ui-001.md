@@ -10,7 +10,7 @@ Policy version: `1.0.0`
 | Current phase | Published: PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) merged `4e4164f`; engineering head `8a3f05c`; hosted CI same-head green; remote feature branch deleted |
 | Non-claims | No uninstall device round; no SUG-08; no journal schema change; no Product Gate / TestFlight / Release; merge does not obtain `RTRD-02` elapsed comparison |
 | Next handoff / decision | None for this slice |
-| Residuals | `RTRD-02` elapsed comparison remains `fix` on [DEVICE-001](scheme-delivery-runtime-route-device-001.md) |
+| Residuals | `RTRD-02` same-field gap is `accept` on [DEVICE-001](scheme-delivery-runtime-route-device-001.md) |
 
 ---
 
