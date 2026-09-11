@@ -6,10 +6,10 @@ Policy version: `1.0.0`
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Current phase** | Human device visual Pass. Isolated PR [#122](https://github.com/shchnk1103/Universe-Keyboard/pull/122) engineering `19de5e4` from `origin/main`. |
-| **Non-claims** | No download/install/deploy behavior change; no Discovery UI; no Scheme Platform P1-5; no Keyboard Extension; no Product Gate / TestFlight / Release / merge |
-| **Next** | Hosted CI; merge remains separately gated. |
+| **Lifecycle** | `Closed` |
+| **Current phase** | Engineering Close: PR [#122](https://github.com/shchnk1103/Universe-Keyboard/pull/122) merged `2203c9d`; engineering `19de5e4`; hosted Swift 6 Quality same-head green on `d75a1ce`; remote feature branch deleted |
+| **Non-claims** | Not Product Gate / TestFlight / Release; not Discovery UI; no Scheme Platform P1-5 |
+| **Next** | None for this slice |
 | **Residuals** | None |
 
 ---
@@ -129,3 +129,4 @@ Do not hide rows for builtin schemes. Do not invent GitHub URLs or hashes for Lu
 - `2026-09-12 Asia/Shanghai` — Human: 真机目视效果很好；批准按 KOS 继续下一步。Device visual Pass. Next authorized slice = isolated feature-branch commit + push + PR; **no merge**.
 - `2026-09-12 Asia/Shanghai` — Isolated commit `19de5e4` on `grok/rime-scheme-detail-provenance-sheet-001` (base `origin/main` `ecbd6b7`). Not on `codex/scheme-platform-001`.
 - `2026-09-12 Asia/Shanghai` — Pushed feature branch; opened PR [#122](https://github.com/shchnk1103/Universe-Keyboard/pull/122). Merge not authorized.
+- `2026-09-12 Asia/Shanghai` — Human: CI 已全绿，允许合并 #122. Hosted Swift 6 Quality `SUCCESS` on same-head `d75a1ce` (classify / lightweight / build-and-test / final-quality-gate + GitGuardian). Merged `2203c9d`. Remote `grok/rime-scheme-detail-provenance-sheet-001` deleted after `origin/main` reachability. Engineering Close.

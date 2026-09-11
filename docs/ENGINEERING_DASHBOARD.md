@@ -10,10 +10,10 @@
 
 ## RIME-SCHEME-DETAIL-PROVENANCE-SHEET-001 — 方案信息入口收纳来源明细
 
-- **Lifecycle:** [`Assignment`](assignments/rime-scheme-detail-provenance-sheet-001.md) `Active` — Human device visual Pass; PR [#122](https://github.com/shchnk1103/Universe-Keyboard/pull/122) engineering `19de5e4`
+- **Lifecycle:** [`Assignment`](assignments/rime-scheme-detail-provenance-sheet-001.md) `Closed` — PR [#122](https://github.com/shchnk1103/Universe-Keyboard/pull/122) merged `2203c9d`; engineering `19de5e4`; hosted CI same-head green on `d75a1ce`; remote feature branch deleted
 - **Domain:** Main App UI (`RimeSchemaDetailView`)
-- **Non-claims:** no download/install/deploy behavior; no Discovery UI; no Scheme Platform P1-5; no Keyboard Extension; no Product Gate / TestFlight / Release / merge
-- **Next:** hosted CI; merge separately gated
+- **Non-claims:** not Product Gate / TestFlight / Release
+- **Next:** none for this Assignment
 
 ## KOS-ASTRA-UPGRADE-001 — v0.7.0 adoption (historical)
 
