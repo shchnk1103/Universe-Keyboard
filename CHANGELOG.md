@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-09-11 — Group A parked-branch archive tags
+
+- Closed/superseded branches `codex/kos-v080-upgrade-review`, `codex/td016-docs-only-fixture`, and `docs/t9-single-key-mixed-candidates-discussion` now live behind annotated `archive/…/20260911` tags; the branch names were deleted. Unique commits were not merged to `main`. Group B / #101 / #102 were not touched.
+
 ## 2026-09-11 — 部署中断后可取消并重试
 
 - 主 App 不再把残留的 `rime_deploying` 恢复成无法操作的「正在部署…」。进程被结束后，该标志视为中断失败，抑制自动重试，并保留手动「应用并重新部署」。

@@ -74,10 +74,11 @@
 
 ## GIT-BRANCH-ARCHIVE-HYGIENE-001 — Group A parked-branch archive
 
-- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-001.md) `Active` — Human authorized Group A tag-then-delete only.
-- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) (unconsumed)
+- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-001.md) `Active` — Group A tags on `origin`; three closed/superseded branch names deleted.
+- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) (unconsumed until Assignment Close)
+- **Evidence:** [`Group A run`](evidence/git-branch-archive-hygiene-001-group-a-2026-09-11.md) · [`Architecture Pass`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-001-architecture-review.md) · [`Quality Pass`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-001-quality-review.md)
 - **Non-claims:** no Group B tag/delete; no #101/#102; no Scheme Platform; no merge of the docs PR; unique leftover commits are not merged to `main`.
-- **Next:** evidence + independent document reviews; Human merge of the docs PR is separately gated.
+- **Next:** docs-only PR; Human merge is separately gated.
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001 — RTRD-02
 

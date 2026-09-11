@@ -7,10 +7,10 @@ Policy version: `1.0.0`
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Group A tag-then-delete authorized; execution from `origin/main` worktree `/private/tmp/universe-keyboard-group-a-hygiene` |
+| **Phase** | Group A tags/deletes done; Architecture Pass 0/0/0/0 after `A-GB-HYG-P2-01` resolved; Quality Pass 0/0/0/0; docs-only PR next |
 | **Non-claims** | No Group B tag/delete; no #101/#102; no Scheme Platform; no merge of the docs PR; no Product Gate / TestFlight / Release; unique Group A commits are **not** merged to `main` |
-| **Next** | Execute Group A tags and deletes, write evidence, independent document reviews, push docs-only PR (merge not authorized) |
-| **Residuals** | None yet |
+| **Next** | Push docs-only PR (merge not authorized) |
+| **Residuals** | `A-GB-HYG-P2-01` `fix` then `resolved` — [`Architecture review`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-001-architecture-review.md) |
 
 ---
 
@@ -34,7 +34,7 @@ Policy version: `1.0.0`
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Current authorized slice | Authorized | `execute_group_a_parked_branch_archive`: tag+push+delete the three Group A branches; record evidence; docs-only commit/push/PR | This Assignment → [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) → [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md) |
+| Current authorized slice | In progress | `execute_group_a_parked_branch_archive`: Group A tags/deletes done; evidence written; reviews and docs PR remaining | This Assignment → [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) → [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md) |
 | Merge of the docs PR | Not authorized | Merge / undraft-as-merge | New Human authorization |
 | Group B tag or delete | Not authorized | Wanxiang P4 / kaomoji extra / release polish | New bounded Assignment and matching Authorization |
 | Environment or external slice | Authorized | Current session GitHub: push annotated tags and `git push origin --delete` for the three Group A names only | Same AUTH; host GitHub |
@@ -110,11 +110,11 @@ the leftover unique commits into `main`.
 
 ### Exit Criteria
 
-- [ ] Each Group A tag exists on `origin` and points at the recorded tip.
-- [ ] Each Group A branch name is absent from `git ls-remote --heads origin <name>` and deleted locally.
-- [ ] Unique commits remain recoverable via `git fetch origin tag archive/…` / `git rev-parse`.
-- [ ] Evidence records commands, SHAs, tag names, `ls-remote` results, and the open-PR list.
-- [ ] Independent Architecture and Quality document reviews on the final docs diff.
+- [x] Each Group A tag exists on `origin` and points at the recorded tip. See [evidence](../evidence/git-branch-archive-hygiene-001-group-a-2026-09-11.md).
+- [x] Each Group A branch name is absent from `git ls-remote --heads origin <name>` and deleted locally.
+- [x] Unique commits remain recoverable via `git rev-parse archive/…^{commit}`.
+- [x] Evidence records commands, SHAs, tag names, `ls-remote` results, and the open-PR list.
+- [x] Independent Architecture and Quality document reviews on the final docs diff: [`Architecture Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-001-architecture-review.md) · [`Quality Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-001-quality-review.md).
 - [ ] Docs-only feature branch pushed; PR opened. Merge is not an exit criterion.
 
 ### Stop Conditions
@@ -134,3 +134,5 @@ the leftover unique commits into `main`.
 
 - `2026-09-11 Asia/Shanghai` — SUG-05 Proposed packet recorded at `2c12cea` on `docs/parked-branch-hygiene-proposed` (local only).
 - `2026-09-11 Asia/Shanghai` — Human Product Owner authorized Group A execution in the current Grok session. This Assignment implements Group A only.
+- `2026-09-11 Asia/Shanghai` — Group A annotated tags pushed; three branch names deleted on `origin` and locally. Evidence written. Unique commits not on `main`.
+- `2026-09-11 Asia/Shanghai` — Independent Architecture first Pass with conditions (`A-GB-HYG-P2-01` `fix`); plan Execution narrowed to Group A; Architecture re-review Pass 0/0/0/0 residual resolved. Quality Pass 0/0/0/0.

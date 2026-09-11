@@ -1,7 +1,7 @@
 # Plan: parked-branch archive hygiene
 
 **Lifecycle:** `Active`
-**Status:** Active for **Group A only** under [`GIT-BRANCH-ARCHIVE-HYGIENE-001`](../assignments/git-branch-archive-hygiene-001.md). Group B remains parked and **not** implementation-authorized.
+**Status:** Group A **executed** `2026-09-11 Asia/Shanghai` (tags on `origin`, branch names deleted). Group B remains parked and **not** implementation-authorized. See [`evidence`](../evidence/git-branch-archive-hygiene-001-group-a-2026-09-11.md).
 
 > **S-03:** The SUG-05 `Proposed` header below is historical recording context. It does **not** authorize Group A (that authority is the Assignment / AUTH / Product Decision). It still does **not** authorize Group B.
 
@@ -52,83 +52,51 @@ Do not treat this table as live truth. Re-run the commands in § Execution.
 - Remote `codex/kos-astra-adoption` deleted (PR #99 on `main`).
 - Local `main` fast-forwarded to `fe26551` / #114.
 
-## Execution (for the future Assignment only)
+## Execution
 
 Work from a **new** worktree of `origin/main`. Never from `codex/scheme-platform-001`.
 
-### 0. Revalidate
+Current Active slice is **Group A only**, under
+[`GIT-BRANCH-ARCHIVE-HYGIENE-001`](../assignments/git-branch-archive-hygiene-001.md).
+Do not treat the rest of this section as a command to run now.
 
-```bash
-git fetch --prune origin
-gh pr list --state open --json number,headRefName,isDraft,url
-# Abort Group A delete if #101 or #102 head appears in the allowlist.
-```
+### 0. Revalidate (done for Group A, `2026-09-11`)
 
-For each candidate tip:
+Open PRs were only #101 and #102. Group A tips still `7e090bd` / `bd4b6eb` /
+`270f45b`, none an ancestor of `origin/main` `6b24c37`.
 
-```bash
-git merge-base --is-ancestor <tip> origin/main && echo ON_MAIN || echo NOT_ON_MAIN
-git log --oneline origin/main..<tip>
-```
-
-If `NOT_ON_MAIN` and no archive tag yet, **do not delete**.
-
-### 1. Annotated tags (Group A and Group B)
+### 1. Annotated tags — Group A (executed)
 
 Tag pattern: `archive/<sanitized-branch-name>/<YYYYMMDD>`.
 
-```bash
-git tag -a archive/codex-kos-v080-upgrade-review/20260911 7e090bd \
-  -m "Park superseded #103 prefix; clean adopt is #104"
-git tag -a archive/codex-td016-docs-only-fixture/20260911 bd4b6eb \
-  -m "Park closed PR #88 hosted docs-only fixture"
-git tag -a archive/docs-t9-single-key-mixed-candidates-discussion/20260911 270f45b \
-  -m "Park closed PR #46 leftover discussion delta"
-git tag -a archive/codex-wanxiang-p4-closure-001/20260911 e83e635 \
-  -m "Park Paused Wanxiang P4; do not delete until Human says so"
-git tag -a archive/codex-release-2026-0801-kaomoji/20260911 d3680c3 \
-  -m "Park extra kaomoji handoff/tests after #80"
-git tag -a archive/codex-release-2026-08-01-coordination-next/20260911 3444826 \
-  -m "Park unmerged polish; review vs main before any delete"
-git push origin \
-  archive/codex-kos-v080-upgrade-review/20260911 \
-  archive/codex-td016-docs-only-fixture/20260911 \
-  archive/docs-t9-single-key-mixed-candidates-discussion/20260911 \
-  archive/codex-wanxiang-p4-closure-001/20260911 \
-  archive/codex-release-2026-0801-kaomoji/20260911 \
-  archive/codex-release-2026-08-01-coordination-next/20260911
+Group A tags are on `origin` and must not be recreated:
+
+```text
+archive/codex-kos-v080-upgrade-review/20260911 -> 7e090bd
+archive/codex-td016-docs-only-fixture/20260911 -> bd4b6eb
+archive/docs-t9-single-key-mixed-candidates-discussion/20260911 -> 270f45b
 ```
 
-If the tip SHA moved, retag the **current** tip; do not reuse this SHA list blindly. Dates in tag names are recording-time examples.
+> **S-03 / out of this Active slice:** The original Proposed packet also listed
+> Group B tag names (`wanxiang-p4-closure-001`, `release-2026-0801-kaomoji`,
+> `release-2026-08-01-coordination-next`). Those commands are **not** current
+> development guidance. Do **not** `git tag` or `git push` them in this
+> Assignment. A later bounded Assignment + Authorization is required.
 
-### 2. Delete Group A branches only (after tags are on `origin`)
+### 2. Delete Group A branches (executed)
 
-```bash
-git ls-remote --tags origin 'archive/codex-kos-v080-upgrade-review/*'
-# must be non-empty, and git rev-parse the tag must equal the tip being deleted
+After the three Group A tags were on `origin` and peeled to the recorded tips,
+the three branch names were deleted on `origin` and locally. See
+[`evidence`](../evidence/git-branch-archive-hygiene-001-group-a-2026-09-11.md).
 
-git push origin --delete \
-  codex/kos-v080-upgrade-review \
-  codex/td016-docs-only-fixture \
-  docs/t9-single-key-mixed-candidates-discussion
+### 3. Group B
 
-git branch -d codex/kos-v080-upgrade-review \
-  || git merge-base --is-ancestor <local-tip> archive/codex-kos-v080-upgrade-review/20260911 \
-  && git branch -D codex/kos-v080-upgrade-review
-# same pattern for the other two local names
-```
+Stop. Do not tag. Do not delete. Human later chooses a new Assignment.
 
-Use `-D` only after the matching **pushed** archive tag points at that tip. Report each delete.
+### 4. Evidence
 
-### 3. Group B after tags
-
-Stop. Do not delete. Report parked tags. Human later chooses delete vs keep.
-
-### 4. Evidence to write in the future Assignment
-
-- Commands, SHAs, tag names, `ls-remote` results.
-- Open PR list at execution time.
-- Explicit non-claims: no Scheme Platform push, no #101 merge, no Product Gate.
+Group A evidence is recorded. Remaining for this Assignment: independent
+reviews and a docs-only PR. Merge of that PR is separately gated.
 
 ## Recovering a parked tip
 
@@ -139,6 +107,6 @@ git checkout -b restore/kos-v080-upgrade-review archive/codex-kos-v080-upgrade-r
 
 ## Handoff target
 
-Product Lead, when there is time: create Assignment + Authorization to execute Group A (and optionally Group B tags). The grok bot on Scheme Platform is out of scope.
+Group A execution is owned by [`GIT-BRANCH-ARCHIVE-HYGIENE-001`](../assignments/git-branch-archive-hygiene-001.md). Next Human decisions: merge of that docs-only PR; any later Group B Assignment. Scheme Platform remains out of scope.
 
-This plan is obsolete if those branches are already gone or if a later accepted hygiene Assignment supersedes it.
+This Group A slice is obsolete only if a later accepted hygiene Assignment supersedes it.
