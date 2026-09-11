@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | issued |
-| Consumption | Issued for SUG-07 preflight of comparable elapsed only. Not reusable for operator uninstall, Swift, SUG-08, Product Gate, or Release |
+| Status | consumed |
+| Consumption | Consumed by Closed `SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001` after Human accepted the same-field gap. Not reusable for Swift, SUG-08, Product Gate, or Release |
 
 ---
 
@@ -17,8 +17,8 @@ Human Product Owner, current session `2026-09-11 Asia/Shanghai`: **“开始 RTR
   "record_id": "AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001",
   "record_type": "authorization",
   "title": "Start RTRD-02 elapsed comparison as SUG-07 preflight of same-field arms",
-  "status": "issued",
-  "updated_at": "2026-09-11T19:40:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-11T19:50:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "review_finding"],
   "authorization": {
     "action": "start_rtrd_02_elapsed_comparison_preflight",
@@ -34,9 +34,10 @@ Human Product Owner, current session `2026-09-11 Asia/Shanghai`: **“开始 RTR
     "issued_at": "2026-09-11T19:40:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "issued"
+    "consumption_state": "consumed"
   }
 }
 ```
 
-> **Issued:** [SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001](../assignments/scheme-delivery-runtime-route-elapsed-001.md)
+> **Consumed:** [SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001](../assignments/scheme-delivery-runtime-route-elapsed-001.md)
+> Human later accepted the same-field gap. The receipt cannot authorize Swift, SUG-08, Product Gate, or Release.

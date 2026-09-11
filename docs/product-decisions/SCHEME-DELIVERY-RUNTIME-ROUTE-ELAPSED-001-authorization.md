@@ -4,10 +4,10 @@
 
 | Field | Value |
 |---|---|
-| Status | Accepted — start RTRD-02 as SUG-07 measurement-contract preflight |
-| Decision | Open a bounded Assignment to see whether ordinary Luna and fallback `elapsed_ms` can be compared from the privacy-safe UI. Do not collect numbers while the ordinary Luna arm is `unreadable` |
-| Non-claims | No performance conclusion; no Swift; no SUG-08; no Product Gate / TestFlight / Release |
-| Next | Preflight outcome; then Human accepts the gap or authorizes a new producer |
+| Status | Accepted — RTRD-02 same-field gap accepted; Assignment Closed |
+| Decision | Ordinary Luna vs fallback `elapsed_ms` cannot be compared on the same `runtime_route` field. Product accepts that gap. No Swift producer in this slice |
+| Non-claims | No performance conclusion; no SUG-08; no Product Gate / TestFlight / Release; does not close DEVICE-001 |
+| Next | None for this slice |
 
 ---
 

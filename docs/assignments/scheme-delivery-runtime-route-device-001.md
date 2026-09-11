@@ -7,10 +7,10 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | CS09-10-02 功能性观察仍为 Pass with conditions。`RTRD-01` UI 合入 #110；Human glance 2026-09-11 报告七键与详情可见。`RTRD-02` 仍 open。Release / Product Gate 仍未授权 |
-| Material non-claims | 不声称 TestFlight、Release、Product Gate Passed 或 ADR Accept；glance 不补齐 2026-09-09 记录里的 UUID/phase/elapsed 数值、不获得 `RTRD-02` 对照、不关闭本 Assignment |
-| Next handoff / decision | `RTRD-02` 由 [`SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001`](scheme-delivery-runtime-route-elapsed-001.md) 承接（普通 Luna 同字段 `unreadable`）。Product Gate / TestFlight / Release 另案 |
-| Residuals | `RTRD-01` UI 已合入且 glance 确认键可见；`RTRD-02` 仍为 `fix`（见 elapsed Assignment） |
+| Current Phase | CS09-10-02 功能性观察仍为 Pass with conditions。`RTRD-01` UI 合入且 glance 确认键可见。`RTRD-02` 同字段对照缺口 Human **accept**。Release / Product Gate 仍未授权 |
+| Material non-claims | 不声称 TestFlight、Release、Product Gate Passed 或 ADR Accept；不关闭本 Assignment；不声称 fallback 与普通 Luna 耗时已可比 |
+| Next handoff / decision | Product Gate / TestFlight / Release 另案。普通 Luna 耗时埋点需新 Assignment |
+| Residuals | `RTRD-01` `fix`（实现+glance）；`RTRD-02` `accept` |
 
 ---
 
@@ -47,10 +47,9 @@ Policy version: 1.0.0
 
 独立诊断 UI Assignment [`SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001`](scheme-delivery-runtime-route-diagnostics-ui-001.md) 已 **Closed**（#110）。[`KOS-SUG-OBS-GLANCE-001`](kos-sug-obs-glance-001.md) Human 报告七键与底部详情均为 `是`（Debug `36b63c7`）。2026-09-09 真机记录仍不包含 UUID/phase/elapsed **数值**；本残差不改写成 `accept`，也不关闭本 Assignment。SUG-08 仍未授权。
 
-`RTRD-02` — **Owner:** Main App UI / Diagnostics; **Disposition:** `fix`。
+`RTRD-02` — **Owner:** Main App UI / Diagnostics; **Disposition:** `accept`。
 
-Implementation: [`SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001`](scheme-delivery-runtime-route-elapsed-001.md) (`Active`).
-`elapsed_ms` on `runtime_route.phase_changed` is visible after uninstall (glance 2026-09-11), but it is time since the **uninstall** began. Ordinary Luna deploy does not emit this event. Same-field comparison remains `unreadable`. No performance conclusion.
+[`SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001`](scheme-delivery-runtime-route-elapsed-001.md) **Closed**. Human 2026-09-11 accepted that ordinary Luna deploy does not emit `runtime_route.phase_changed`, so same-field `elapsed_ms` comparison is unavailable. No performance conclusion. No Swift in this slice.
 
 ## Handoff
 
@@ -71,4 +70,5 @@ Implementation: [`SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001`](scheme-delivery-ru
 - `2026-09-10 Asia/Shanghai`: RTRD-01 UI merged as PR #110 (`4e4164f`). This Assignment stays Active because `RTRD-02` remains `fix` and Product Gate is unauthorized. The 2026-09-09 device evidence is not restated as containing UUID/phase/elapsed.
 - `2026-09-10 Asia/Shanghai`: Human authorized one diagnostics glance ([`KOS-SUG-OBS-GLANCE-001`](kos-sug-obs-glance-001.md)). No uninstall. This Assignment stays Active.
 - `2026-09-11 Asia/Shanghai`: After Debug install, Human uninstalled one scheme and reported all seven allowlisted keys plus tap sheet. `RTRD-02` still `fix`. This Assignment stays Active.
+- `2026-09-11 Asia/Shanghai`: Human accepted the RTRD-02 same-field gap (`accept`). Elapsed Assignment Closed. This Assignment stays Active; Product Gate unauthorized.
 - `2026-09-09 Asia/Shanghai`: Human Product Owner authorized undraft+merge of PR #100 after docs sync (tip includes `a007681`) + hosted CI green. `RTRD-01`/`RTRD-02` remain out of this PR and are not closed by merge; Product Gate / TestFlight / Release / ADR Accept remain unauthorized.

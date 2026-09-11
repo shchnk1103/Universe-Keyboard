@@ -6,11 +6,11 @@ Policy version: `1.0.0`
 
 | Field | Value |
 |---|---|
-| Lifecycle | `Active` |
-| Current phase | SUG-07 preflight filled. Same-field ordinary Luna `elapsed_ms` is `unreadable`. No operator round started |
+| Lifecycle | `Closed` |
+| Current phase | Human accepted the same-field comparison gap. PR [#112](https://github.com/shchnk1103/Universe-Keyboard/pull/112) merged `7caec79` (head `58179da`) |
 | Non-claims | No performance pass/fail; no Product Gate / TestFlight / Release; no SUG-08; no Swift; does not close DEVICE-001 |
-| Next handoff / decision | Human: accept this measurement gap, or authorize a new diagnostic for ordinary Luna deploy elapsed |
-| Residuals | Ordinary Luna deploy does not emit `runtime_route.phase_changed` |
+| Next handoff / decision | None for this slice |
+| Residuals | DEVICE-001 `RTRD-02` disposition `accept` |
 
 ---
 
@@ -34,8 +34,9 @@ Policy version: `1.0.0`
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| SUG-07 preflight for comparable elapsed | Authorized | Record whether ordinary Luna and fallback expose the same `elapsed_ms` in diagnostics UI | This Assignment → [AUTH](../authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001.md) |
-| Operator uninstall / Luna deploy round | Not authorized | Another Human uninstall or schema switch to collect numbers | New Human authorization **after** both arms are `readable` |
+| SUG-07 preflight for comparable elapsed | Authorized | Completed: ordinary Luna same-field `unreadable` | This Assignment → [AUTH](../authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001.md) |
+| Accept same-field gap | Authorized | Product accepts unreadable ordinary Luna arm; no Swift; no operator round | Human: “接受 RTRD-02 缺口” |
+| Operator uninstall / Luna deploy round | Not authorized | Collect elapsed numbers | New Human authorization |
 | New Swift elapsed producer | Not authorized | Emit ordinary Luna deploy elapsed in privacy-safe UI | New Assignment |
 | SUG-08 | Not authorized | Raw JSONL read | New Assignment |
 | Product Gate / Release | Not authorized | | New Human authorization |
@@ -86,8 +87,8 @@ DEVICE-001 residual `RTRD-02`: compare ordinary Luna deploy `elapsed_ms` with fa
 
 ### Exit Criteria
 
-- Comparable same-field pair recorded **or** preflight shows ordinary Luna arm `unreadable` and Human accepts that gap / authorizes Swift.
-- No invented threshold.
+- [x] Comparable same-field pair recorded **or** preflight shows ordinary Luna arm `unreadable` and Human accepts that gap / authorizes Swift. Met: Human accepted the gap `2026-09-11`.
+- [x] No invented threshold.
 
 ### Stop Conditions
 
@@ -98,3 +99,4 @@ DEVICE-001 residual `RTRD-02`: compare ordinary Luna deploy `elapsed_ms` with fa
 ## History
 
 - `2026-09-11 Asia/Shanghai` — Human: “开始 RTRD-02”.
+- `2026-09-11 Asia/Shanghai` — Human: “批准合并 #112，接受 RTRD-02 缺口”. This Assignment Closes. DEVICE-001 residual `RTRD-02` → `accept`.

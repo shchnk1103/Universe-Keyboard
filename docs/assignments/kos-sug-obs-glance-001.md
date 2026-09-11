@@ -7,7 +7,7 @@ Policy version: `1.0.0`
 | Field | Value |
 |---|---|
 | Lifecycle | `Closed` |
-| Current phase | Human authorized push/Close of this packet. Observation: seven keys + tap sheet on Debug `36b63c7`. `RTRD-02` started as a separate Assignment |
+| Current phase | Published: PR [#112](https://github.com/shchnk1103/Universe-Keyboard/pull/112) merged `7caec79`; head `58179da`; hosted CI same-head green; remote feature branch deleted |
 | Non-claims | No SUG-08; no Product Gate / TestFlight / Release; does not close DEVICE-001; no elapsed numbers recorded |
 | Next handoff / decision | None for this slice. `RTRD-02` is [`SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001`](scheme-delivery-runtime-route-elapsed-001.md) |
 | Residuals | None for this glance |
@@ -27,7 +27,7 @@ Policy version: `1.0.0`
 |---|---|---|
 | E-01 claim-bound observation | Adopted | Source-audit of post-#110 list/sheet keys; later device yes/no are separate claims |
 | A-01 / B-01 authorization chain and briefing | Adopted | This Assignment → Authorization → Product Decision |
-| P-01 publication facts | Adopted | Branch `docs/rtrd-01-glance`; Human authorized push/Close of this packet |
+| P-01 publication facts | Adopted | PR [#112](https://github.com/shchnk1103/Universe-Keyboard/pull/112) merged `7caec79`; head `58179da` |
 | D-01 final-documentation receipt | Not applicable | Hosted docs-only CI is not this packet's D-01 receipt until after the last Markdown edit |
 
 ### Authorization frontier (A-01 / B-01)
@@ -40,7 +40,7 @@ Policy version: `1.0.0`
 | Human-operated uninstall observation | Authorized | Completed: Human uninstall + yes on seven keys and tap sheet | Human: “然后我会尝试卸载一个方案，到时候给你反馈” |
 | SUG-08 raw-file read | Not authorized | Read a named JSONL file | New Assignment + Human authorization |
 | Push / PR of this glance packet | Authorized | Branch `docs/rtrd-01-glance` | Human: “批准 push 这份 glance 包并 Close” |
-| Merge / Release | Not authorized until named, except Close is the Assignment lifecycle in this packet | GitHub merge of the PR | New Human authorization if merge is requested separately |
+| Merge of #112 | Authorized | Consumed: PR [#112](https://github.com/shchnk1103/Universe-Keyboard/pull/112) merged `7caec79` | Human: “批准合并 #112” |
 
 ## Boundary
 

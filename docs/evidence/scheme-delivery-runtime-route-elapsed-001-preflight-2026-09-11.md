@@ -42,6 +42,8 @@ SUG-07: do **not** send an operator uninstall/deploy round to chase the ordinary
 
 ## Next independently gated slices
 
-1. Human accepts `RTRD-02` as unreadable same-field comparison (keep DEVICE-001 residual `fix` or `accept`).
-2. New Assignment to emit ordinary Luna deploy elapsed in the privacy-safe UI (Swift).
+> **S-03:** Item 1 is completed. Human accepted the gap `2026-09-11`. DEVICE-001 residual `RTRD-02` is `accept`.
+
+1. Human accepts `RTRD-02` as unreadable same-field comparison — **Completed** (`accept`).
+2. New Assignment to emit ordinary Luna deploy elapsed in the privacy-safe UI (Swift) — still not authorized.
 3. SUG-08 remains unauthorized.
