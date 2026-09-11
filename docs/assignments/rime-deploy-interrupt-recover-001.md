@@ -4,7 +4,7 @@
 
 **Repository Change Type:** `Implementation` + `Documentation` + `State`
 
-This record is a **backfill**. Implementation, Human-attested smoke, commit, push and PR already happened under Human Product Owner authorization in session. It does **not** rewrite that history as `Ready` before code existed. Remaining authorized work is independent Quality review naming and hosted CI observation. Merge, TestFlight and Product Gate remain unauthorized.
+This record is a **backfill**. Implementation, Human-attested smoke, commit, push and PR already happened under Human Product Owner authorization in session. It does **not** rewrite that history as `Ready` before code existed. PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115) is merged to `main` (`5bd7499`). TestFlight and Product Gate remain unauthorized.
 
 KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are **not** opted in.
 
@@ -13,9 +13,9 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are **not** opted in.
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | Independent Quality **Pass with conditions** on implementation SHA `805f6ce` ([review](../reviews/rime-deploy-interrupt-recover-001-quality-review.md)). Architecture remains `Not Applicable`. Hosted CI was green on that SHA. Merge still **not** authorized |
-| Material non-claims | Not Closed; not merge-ready; not Product Gate / TestFlight / Release; not Device-attested; not TD-018 implementation; Quality Pass with conditions is not merge permission |
-| Next handoff / decision | Human Product Owner: whether to push this review record and whether to authorize merge of PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115). If a new tip is pushed, hosted CI must be green on **that** tip before merge |
+| Current Phase | Engineering merge complete: PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115) merged `5bd7499` (tip `edd3462`, implementation `805f6ce`). Independent Quality **Pass with conditions**. Architecture `Not Applicable`. Not Closed |
+| Material non-claims | Not Product Gate / TestFlight / Release; not Device-attested; not TD-018 implementation; engineering merge is not Assignment Close |
+| Next handoff / decision | None for merge. Residuals remain. Human may later Close this Assignment as engineering-only, which still would not be Product Gate |
 | Residuals | `RDIR-01` `accept` · `RDIR-02` `tech_debt:TD-018` · `RDIR-03` `accept` — see Quality review M-03 table |
 
 ---
@@ -54,7 +54,7 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are **not** opted in.
 
 ## Handoff
 
-- **Handoff Target:** Independent Quality reviewer for `805f6ce` / PR #115; Human Product Owner for any later merge.
+- **Handoff Target:** Human Product Owner for optional engineering Close; TD-018 remains a separate later slice.
 - **Revalidation Trigger:** New commits on the PR; change to cancel/interrupt persistence semantics; TD-018 implementation mixed into this PR; Architecture `Not Applicable` disputed.
 
 ## History
@@ -65,3 +65,4 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are **not** opted in.
 - Same day: Human authorized slice-A commit (`805f6ce`), then push and PR #115. No merge authorization.
 - Same day: Human authorized this Assignment backfill only. Independent Quality review was **not** started by this authorization.
 - Same day: Human reported hosted CI all-green on `805f6ce` and authorized independent Quality review. Independent Quality runtime (not the implementing executor) recorded **Pass with conditions** in [`rime-deploy-interrupt-recover-001-quality-review.md`](../reviews/rime-deploy-interrupt-recover-001-quality-review.md). Residuals `RDIR-01` accept, `RDIR-02` tech_debt:TD-018, `RDIR-03` accept. Merge not authorized.
+- Same day: Human authorized push of the review record, then merge after hosted CI green on the new tip. Tip `edd3462` CI green; PR #115 merged `5bd7499`. `edd3462` is reachable from `origin/main`. Not Product Gate / TestFlight / Assignment Close.
