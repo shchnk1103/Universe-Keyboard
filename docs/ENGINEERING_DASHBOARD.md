@@ -74,11 +74,17 @@
 
 ## GIT-BRANCH-ARCHIVE-HYGIENE-001 — Group A parked-branch archive
 
-- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-001.md) `Active` — Group A tags on `origin`; three closed/superseded branch names deleted.
-- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) (unconsumed until Assignment Close)
-- **Evidence:** [`Group A run`](evidence/git-branch-archive-hygiene-001-group-a-2026-09-11.md) · [`Architecture Pass`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-001-architecture-review.md) · [`Quality Pass`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-001-quality-review.md)
-- **Non-claims:** no Group B tag/delete; no #101/#102; no Scheme Platform; no merge of the docs PR; unique leftover commits are not merged to `main`.
-- **Next:** Human merge of docs-only PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) is separately gated.
+- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-001.md) `Closed` — PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) merged `bb15b27` (head `fc7d8b1`).
+- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001-MERGE.md) (consumed)
+- **Non-claims:** unique leftover commits are not on `main`; not Product Gate / Release.
+- **Next:** none for this Assignment. Group B tags are [`002`](assignments/git-branch-archive-hygiene-002.md).
+
+## GIT-BRANCH-ARCHIVE-HYGIENE-002 — Group B parked-branch tags
+
+- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-002.md) `Active` — Human authorized annotated tags only; do not delete branches.
+- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) (unconsumed)
+- **Non-claims:** no Group B delete; no #101/#102; no Scheme Platform; no merge of the docs PR; unique commits are not merged to `main`.
+- **Next:** tags + evidence + independent reviews; Human merge of the docs PR is separately gated.
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001 — RTRD-02
 

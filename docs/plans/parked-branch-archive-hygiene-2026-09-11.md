@@ -1,9 +1,9 @@
 # Plan: parked-branch archive hygiene
 
 **Lifecycle:** `Active`
-**Status:** Group A **executed** `2026-09-11 Asia/Shanghai` (tags on `origin`, branch names deleted). Group B remains parked and **not** implementation-authorized. See [`evidence`](../evidence/git-branch-archive-hygiene-001-group-a-2026-09-11.md).
+**Status:** Group A **Closed** after PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118). Group B **tags only** under [`GIT-BRANCH-ARCHIVE-HYGIENE-002`](../assignments/git-branch-archive-hygiene-002.md). Group B **delete** is still not authorized.
 
-> **S-03:** The SUG-05 `Proposed` header below is historical recording context. It does **not** authorize Group A (that authority is the Assignment / AUTH / Product Decision). It still does **not** authorize Group B.
+> **S-03:** The SUG-05 `Proposed` header below is historical recording context. Group A authority was Assignment 001 (now Closed). Group B **tag** authority is Assignment 002. Group B **delete** is still not authorized by this plan.
 
 **Inventory baseline at recording:** `origin/main` `fe2655152cbbefc61734afe519ef7b16e722aaa4` (PR #114).
 **Revalidation at Group A start:** `origin/main` `6b24c37` (PR #117); Group A SHAs unchanged; open PRs only #101 and #102.
@@ -91,7 +91,8 @@ the three branch names were deleted on `origin` and locally. See
 
 ### 3. Group B
 
-Stop. Do not tag. Do not delete. Human later chooses a new Assignment.
+**Tags** are Assignment [`002`](../assignments/git-branch-archive-hygiene-002.md) (this slice).
+**Delete** remains out of slice: do not `git branch -D` or `git push origin --delete` these names.
 
 ### 4. Evidence
 

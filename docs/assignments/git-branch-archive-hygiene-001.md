@@ -6,11 +6,11 @@ Policy version: `1.0.0`
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | Group A refs done; Architecture/Quality Pass 0/0/0/0; docs-only PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) open |
-| **Non-claims** | No Group B tag/delete; no #101/#102; no Scheme Platform; no merge of the docs PR; no Product Gate / TestFlight / Release; unique Group A commits are **not** merged to `main` |
-| **Next** | Human names merge of [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) if accepted |
-| **Residuals** | `A-GB-HYG-P2-01` `fix` then `resolved` — [`Architecture review`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-001-architecture-review.md) |
+| **Lifecycle** | `Closed` |
+| **Phase** | PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) merged `bb15b27` (head `fc7d8b1`); feature branch deleted after `origin/main` reachability |
+| **Non-claims** | No Group B tag/delete in this Assignment; no #101/#102; no Product Gate / TestFlight / Release; unique Group A commits are **not** merged to `main` |
+| **Next** | Group B tags are [`GIT-BRANCH-ARCHIVE-HYGIENE-002`](git-branch-archive-hygiene-002.md) |
+| **Residuals** | `A-GB-HYG-P2-01` `resolved` |
 
 ---
 
@@ -19,7 +19,7 @@ Policy version: `1.0.0`
 - **Assignment Authority:** Product Lead
 - **Decision Source / Date:** [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md), Human Product Owner, `2026-09-11 Asia/Shanghai`
 - **Product Approver:** Human Product Owner
-- **Authorization:** [AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md)
+- **Authorization:** [AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) (consumed) · [AUTH-…-MERGE](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001-MERGE.md) (consumed)
 
 ## KOS v0.8.0 optional-contract selection
 
@@ -34,22 +34,22 @@ Policy version: `1.0.0`
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Current authorized slice | In progress | `execute_group_a_parked_branch_archive`: Group A refs done; docs PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) open; merge remaining out of slice | This Assignment → [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) → [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md) |
-| Merge of the docs PR | Not authorized | Merge / undraft-as-merge | New Human authorization |
-| Group B tag or delete | Not authorized | Wanxiang P4 / kaomoji extra / release polish | New bounded Assignment and matching Authorization |
+| Current authorized slice | Not applicable | Group A execution and merge consumed; Assignment Closed | [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) · [MERGE AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001-MERGE.md) |
+| Merge of the docs PR | Authorized | Consumed: PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) merged `bb15b27` | Human: “批准合并 #118” |
+| Group B tag or delete | Not authorized | Successor [`GIT-BRANCH-ARCHIVE-HYGIENE-002`](git-branch-archive-hygiene-002.md) owns tags only | New bounded Assignment |
 | Environment or external slice | Authorized | Current session GitHub: push annotated tags and `git push origin --delete` for the three Group A names only | Same AUTH; host GitHub |
 
 ### Publication facts (P-01)
 
 | Fact | Value |
 |---|---|
-| `local_candidate` | `09e94ee6e1982d8746ecc19e5aae9ee7b8e409b0` at PR open; this handoff commit follows |
-| `published_head` | `origin/docs/git-branch-archive-hygiene-001` (PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118)) |
-| `hosted_ci_head` | unknown |
-| `hosted_ci_result` | pending |
-| `coverage` | unknown |
-| `pr_state` | `open` [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) |
-| `local_ahead_of_published` | this commit, then 0 after push |
+| `local_candidate` | `fc7d8b18ab1aa78914c00679c1efeeb13e2c4b8e` |
+| `published_head` | `fc7d8b18ab1aa78914c00679c1efeeb13e2c4b8e` |
+| `hosted_ci_head` | `fc7d8b18ab1aa78914c00679c1efeeb13e2c4b8e` |
+| `hosted_ci_result` | `green` (classify / lightweight / final-quality-gate SUCCESS; build-and-test SKIPPED) |
+| `coverage` | `same-head` |
+| `pr_state` | `merged` [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) `bb15b27` |
+| `local_ahead_of_published` | 0 |
 
 ## Boundary
 
@@ -136,3 +136,4 @@ the leftover unique commits into `main`.
 - `2026-09-11 Asia/Shanghai` — Human Product Owner authorized Group A execution in the current Grok session. This Assignment implements Group A only.
 - `2026-09-11 Asia/Shanghai` — Group A annotated tags pushed; three branch names deleted on `origin` and locally. Evidence written. Unique commits not on `main`.
 - `2026-09-11 Asia/Shanghai` — Independent Architecture first Pass with conditions (`A-GB-HYG-P2-01` `fix`); plan Execution narrowed to Group A; Architecture re-review Pass 0/0/0/0 residual resolved. Quality Pass 0/0/0/0.
+- `2026-09-11 Asia/Shanghai` — Human authorized merge of #118. Merged `bb15b27`; `fc7d8b1` is an ancestor of `origin/main`; remote and local feature branch deleted. Assignment Closed. Group B moved to 002.
