@@ -1,9 +1,9 @@
 # RIME-DEPLOY-INTERRUPT-RECOVER-001 独立质量、性能与发布复审
 
-**复审日期：** 2026-09-11（Asia/Shanghai）  
-**复审 lane：** KOS Quality, Performance & Release  
-**复审范围：** 隔离工作树 `/Users/doubleshy0n/Dev/uk-rime-deploy-recover`，实现基线 PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115) head `805f6ce`（完整 `805f6ceed42c3dc8abacb683015cb15ec01d1db8`）  
-**基线：** `origin/main` `fe2655152cbbefc61734afe519ef7b16e722aaa4`  
+**复审日期：** 2026-09-11（Asia/Shanghai）
+**复审 lane：** KOS Quality, Performance & Release
+**复审范围：** 隔离工作树 `/Users/doubleshy0n/Dev/uk-rime-deploy-recover`，实现基线 PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115) head `805f6ce`（完整 `805f6ceed42c3dc8abacb683015cb15ec01d1db8`）
+**基线：** `origin/main` `fe2655152cbbefc61734afe519ef7b16e722aaa4`
 **Assignment：** [RIME-DEPLOY-INTERRUPT-RECOVER-001](../assignments/rime-deploy-interrupt-recover-001.md)
 
 本复审只读核对 `805f6ce` 相对 `origin/main` 的生产/测试差异、中断/取消/重试不变量、CS-05 是否被碰到、隐私、hosted CI 与 Human-attested 覆盖安装记录。本 lane **没有** 修改产品 Swift、测试、`CHANGELOG` 行为或 Assignment Current Status；本文件是唯一新增产物。Architecture Reviewer 按 Assignment 为 `Not Applicable`，本文件 **不** 给出 Architecture 结论。
