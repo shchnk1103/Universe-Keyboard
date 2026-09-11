@@ -7,10 +7,10 @@ Policy version: `1.0.0`
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Group B tag-only slice authorized; worktree `/private/tmp/universe-keyboard-group-b-hygiene` from `origin/main` `bb15b27` |
+| **Phase** | Group B tags on `origin`; local branches kept; Architecture/Quality Pass 0/0/0/0 after `A-GB-HYG-002-P2-01` resolved; docs-only PR next |
 | **Non-claims** | No Group B delete; no #101/#102; no Scheme Platform; no merge of this docs PR; no Product Gate / TestFlight / Release; unique commits are **not** merged to `main` |
-| **Next** | Push three annotated tags; evidence; independent reviews; docs-only PR (merge not authorized) |
-| **Residuals** | None yet |
+| **Next** | Docs-only PR (merge not authorized) |
+| **Residuals** | `A-GB-HYG-002-P2-01` `resolved` — [`Architecture review`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-002-architecture-review.md) |
 
 ---
 
@@ -35,7 +35,7 @@ Policy version: `1.0.0`
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Current authorized slice | Authorized | `execute_group_b_parked_branch_archive_tags`: tag+push three local tips; do not delete; Close 001 M-02; docs PR | This Assignment → [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) → [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md) |
+| Current authorized slice | In progress | `execute_group_b_parked_branch_archive_tags`: tags pushed; branches kept; Close 001 recorded; reviews and docs PR remaining | This Assignment → [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) → [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md) |
 | Merge of this docs PR | Not authorized | Merge | New Human authorization |
 | Group B branch delete | Not authorized | Delete local or `origin` names after tagging | New bounded Assignment and matching Authorization |
 | Environment or external slice | Authorized | Current session GitHub: push the three archive tags and the docs-only branch | Same AUTH; host GitHub |
@@ -111,13 +111,13 @@ tags, without deleting the branch names and without merging those commits to
 
 ### Exit Criteria
 
-- [ ] Each Group B tag exists on `origin` and points at the recorded tip.
-- [ ] Each Group B local branch name still exists at the same tip.
-- [ ] `git ls-remote --heads origin` for those three names remains empty (they were local-only; this slice does not create remote heads).
-- [ ] Evidence records commands, SHAs, tag names, and the open-PR list.
-- [ ] Independent Architecture and Quality document reviews.
+- [x] Each Group B tag exists on `origin` and points at the recorded tip. See [evidence](../evidence/git-branch-archive-hygiene-002-group-b-2026-09-11.md).
+- [x] Each Group B local branch name still exists at the same tip.
+- [x] `git ls-remote --heads origin` for those three names remains empty.
+- [x] Evidence records commands, SHAs, tag names, and the open-PR list.
+- [x] Independent Architecture and Quality document reviews: [`Architecture Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-002-architecture-review.md) · [`Quality Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-002-quality-review.md).
 - [ ] Docs-only PR opened. Merge is not an exit criterion.
-- [ ] Assignment 001 Closed and Active Work / Dashboard synced.
+- [x] Assignment 001 Closed and Active Work / Dashboard synced.
 
 ### Stop Conditions
 
@@ -135,3 +135,5 @@ tags, without deleting the branch names and without merging those commits to
 ## History
 
 - `2026-09-11 Asia/Shanghai` — Human authorized merge of #118 and Group B work in the same instruction. This Assignment implements Group B **tags only**.
+- `2026-09-11 Asia/Shanghai` — Three Group B annotated tags pushed to `origin`. Local branch names kept. No origin heads created.
+- `2026-09-11 Asia/Shanghai` — Architecture first Pass with conditions (`A-GB-HYG-002-P2-01` `fix`); plan Execution/Handoff aligned to 002; re-review Pass 0/0/0/0. Quality Pass 0/0/0/0.

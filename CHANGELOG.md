@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-09-11 — Group B parked-branch archive tags
+
+- Local-only tips `codex/wanxiang-p4-closure-001`, `codex/release-2026-0801-kaomoji`, and `codex/release-2026-08-01-coordination-next` now also live behind annotated `archive/…/20260911` tags on `origin`. Branch names were **not** deleted. Unique commits were not merged to `main`.
+
 ## 2026-09-11 — Group A parked-branch archive tags
 
 - Closed/superseded branches `codex/kos-v080-upgrade-review`, `codex/td016-docs-only-fixture`, and `docs/t9-single-key-mixed-candidates-discussion` now live behind annotated `archive/…/20260911` tags; the branch names were deleted. Unique commits were not merged to `main`. Group B / #101 / #102 were not touched.

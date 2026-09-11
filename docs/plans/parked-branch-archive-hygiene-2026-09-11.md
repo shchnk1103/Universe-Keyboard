@@ -1,7 +1,7 @@
 # Plan: parked-branch archive hygiene
 
 **Lifecycle:** `Active`
-**Status:** Group A **Closed** after PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118). Group B **tags only** under [`GIT-BRANCH-ARCHIVE-HYGIENE-002`](../assignments/git-branch-archive-hygiene-002.md). Group B **delete** is still not authorized.
+**Status:** Group A **Closed** after PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118). Group B **tags executed** `2026-09-11` under [`GIT-BRANCH-ARCHIVE-HYGIENE-002`](../assignments/git-branch-archive-hygiene-002.md) (see [`evidence`](../evidence/git-branch-archive-hygiene-002-group-b-2026-09-11.md)). Group B **delete** is still not authorized.
 
 > **S-03:** The SUG-05 `Proposed` header below is historical recording context. Group A authority was Assignment 001 (now Closed). Group B **tag** authority is Assignment 002. Group B **delete** is still not authorized by this plan.
 
@@ -56,20 +56,20 @@ Do not treat this table as live truth. Re-run the commands in § Execution.
 
 Work from a **new** worktree of `origin/main`. Never from `codex/scheme-platform-001`.
 
-Current Active slice is **Group A only**, under
-[`GIT-BRANCH-ARCHIVE-HYGIENE-001`](../assignments/git-branch-archive-hygiene-001.md).
-Do not treat the rest of this section as a command to run now.
+Current Active slice is **Group B tags only**, under
+[`GIT-BRANCH-ARCHIVE-HYGIENE-002`](../assignments/git-branch-archive-hygiene-002.md).
+Group A is Closed after PR #118. Do not delete Group B branches.
 
-### 0. Revalidate (done for Group A, `2026-09-11`)
+### 0. Revalidate
 
-Open PRs were only #101 and #102. Group A tips still `7e090bd` / `bd4b6eb` /
-`270f45b`, none an ancestor of `origin/main` `6b24c37`.
+Group A revalidation (`2026-09-11`): open PRs only #101 and #102; tips
+`7e090bd` / `bd4b6eb` / `270f45b`; `origin/main` then `6b24c37`.
 
-### 1. Annotated tags — Group A (executed)
+Group B revalidation (`2026-09-11`, after #118): open PRs still only #101 and
+#102; tips `e83e635` / `d3680c3` / `3444826`; none an ancestor of
+`origin/main` `bb15b27`; no `origin` heads for those names.
 
-Tag pattern: `archive/<sanitized-branch-name>/<YYYYMMDD>`.
-
-Group A tags are on `origin` and must not be recreated:
+### 1. Annotated tags — Group A (executed; Closed)
 
 ```text
 archive/codex-kos-v080-upgrade-review/20260911 -> 7e090bd
@@ -77,37 +77,41 @@ archive/codex-td016-docs-only-fixture/20260911 -> bd4b6eb
 archive/docs-t9-single-key-mixed-candidates-discussion/20260911 -> 270f45b
 ```
 
-> **S-03 / out of this Active slice:** The original Proposed packet also listed
-> Group B tag names (`wanxiang-p4-closure-001`, `release-2026-0801-kaomoji`,
-> `release-2026-08-01-coordination-next`). Those commands are **not** current
-> development guidance. Do **not** `git tag` or `git push` them in this
-> Assignment. A later bounded Assignment + Authorization is required.
+Do not recreate these tags.
 
-### 2. Delete Group A branches (executed)
+### 2. Delete Group A branches (executed; Closed)
 
-After the three Group A tags were on `origin` and peeled to the recorded tips,
-the three branch names were deleted on `origin` and locally. See
-[`evidence`](../evidence/git-branch-archive-hygiene-001-group-a-2026-09-11.md).
+See [`Group A evidence`](../evidence/git-branch-archive-hygiene-001-group-a-2026-09-11.md).
 
-### 3. Group B
+### 3. Group B tags (executed this slice)
 
-**Tags** are Assignment [`002`](../assignments/git-branch-archive-hygiene-002.md) (this slice).
-**Delete** remains out of slice: do not `git branch -D` or `git push origin --delete` these names.
+```text
+archive/codex-wanxiang-p4-closure-001/20260911 -> e83e635
+archive/codex-release-2026-0801-kaomoji/20260911 -> d3680c3
+archive/codex-release-2026-08-01-coordination-next/20260911 -> 3444826
+```
+
+See [`Group B evidence`](../evidence/git-branch-archive-hygiene-002-group-b-2026-09-11.md).
+Local branch names remain. **Do not** `git branch -D` or
+`git push origin --delete` these names.
 
 ### 4. Evidence
 
-Group A evidence is recorded. Remaining for this Assignment: independent
-reviews and a docs-only PR. Merge of that PR is separately gated.
+Group A: recorded and Closed. Group B: recorded; remaining for Assignment 002
+are independent reviews and a docs-only PR. Merge of that PR is separately
+gated. Group B delete is separately gated.
 
 ## Recovering a parked tip
 
 ```bash
-git fetch origin tag archive/codex-kos-v080-upgrade-review/20260911
-git checkout -b restore/kos-v080-upgrade-review archive/codex-kos-v080-upgrade-review/20260911
+git fetch origin tag archive/codex-wanxiang-p4-closure-001/20260911
+git checkout -b restore/wanxiang-p4 archive/codex-wanxiang-p4-closure-001/20260911
 ```
+
+Group A tags use the same pattern with their `archive/…/20260911` names.
 
 ## Handoff target
 
-Group A execution is owned by [`GIT-BRANCH-ARCHIVE-HYGIENE-001`](../assignments/git-branch-archive-hygiene-001.md). Next Human decisions: merge of that docs-only PR; any later Group B Assignment. Scheme Platform remains out of scope.
-
-This Group A slice is obsolete only if a later accepted hygiene Assignment supersedes it.
+- Group A: [`GIT-BRANCH-ARCHIVE-HYGIENE-001`](../assignments/git-branch-archive-hygiene-001.md) **Closed** after PR #118.
+- Group B tags: [`GIT-BRANCH-ARCHIVE-HYGIENE-002`](../assignments/git-branch-archive-hygiene-002.md). Next Human decisions: merge of the 002 docs-only PR; any later **delete** Assignment.
+- Scheme Platform remains out of scope.
