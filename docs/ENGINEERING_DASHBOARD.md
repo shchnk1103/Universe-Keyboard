@@ -2,11 +2,18 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-11 Asia/Shanghai
+> **Updated:** 2026-09-12 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## RIME-SCHEME-DETAIL-PROVENANCE-SHEET-001 — 方案信息入口收纳来源明细
+
+- **Lifecycle:** [`Assignment`](assignments/rime-scheme-detail-provenance-sheet-001.md) `Active` — Human device visual Pass `2026-09-12 Asia/Shanghai`; isolated publish in progress
+- **Domain:** Main App UI (`RimeSchemaDetailView`)
+- **Non-claims:** no download/install/deploy behavior; no Discovery UI; no Scheme Platform P1-5; no Keyboard Extension; no Product Gate / TestFlight / Release / merge
+- **Next:** isolated feature-branch commit + push + PR from `origin/main`; merge separately gated
 
 ## KOS-ASTRA-UPGRADE-001 — v0.7.0 adoption (historical)
 

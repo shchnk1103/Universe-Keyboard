@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-09-12 — 方案详情用来源弹层收纳版本与下载来源
+
+- 方案详情页的「方案信息」整块可点，右上中性 `info.circle` 提示；底部 sheet 只显示版本与下载来源。
+- 内置与可下载方案共用同一套行；内置填「随 App 内置 / 不适用」。以后目录里新增第三方方案自动适用，不按 schema ID 特判。
+
 ## 2026-09-12 — Parked-branch archive hygiene Closed
 
 - `GIT-BRANCH-ARCHIVE-HYGIENE-003` engineering Close after PR #120; the parked-branch plan is Archived. Group B local names remain. Unique commits were not merged to `main`.
