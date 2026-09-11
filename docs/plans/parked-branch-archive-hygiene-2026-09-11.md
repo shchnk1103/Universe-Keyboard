@@ -1,9 +1,12 @@
-# Proposed work package: parked-branch archive hygiene
+# Plan: parked-branch archive hygiene
 
-**Lifecycle:** `Proposed`
-**Status:** Proposed — not implementation-authorized. Recorded `2026-09-11 Asia/Shanghai` so a later bounded Assignment can execute it. This is not current development guidance.
+**Lifecycle:** `Active`
+**Status:** Active for **Group A only** under [`GIT-BRANCH-ARCHIVE-HYGIENE-001`](../assignments/git-branch-archive-hygiene-001.md). Group B remains parked and **not** implementation-authorized.
 
-**Inventory baseline:** `origin/main` `fe2655152cbbefc61734afe519ef7b16e722aaa4` (PR #114). Revalidate every SHA and PR state before any tag or delete.
+> **S-03:** The SUG-05 `Proposed` header below is historical recording context. It does **not** authorize Group A (that authority is the Assignment / AUTH / Product Decision). It still does **not** authorize Group B.
+
+**Inventory baseline at recording:** `origin/main` `fe2655152cbbefc61734afe519ef7b16e722aaa4` (PR #114).
+**Revalidation at Group A start:** `origin/main` `6b24c37` (PR #117); Group A SHAs unchanged; open PRs only #101 and #102.
 
 ## Proposed work-package handoff
 

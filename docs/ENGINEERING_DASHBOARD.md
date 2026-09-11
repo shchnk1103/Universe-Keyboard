@@ -72,6 +72,13 @@
 - **Non-claims:** not Product Gate, TestFlight, Release, or ADR Accept.
 - **Next:** none for this Assignment
 
+## GIT-BRANCH-ARCHIVE-HYGIENE-001 — Group A parked-branch archive
+
+- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-001.md) `Active` — Human authorized Group A tag-then-delete only.
+- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) (unconsumed)
+- **Non-claims:** no Group B tag/delete; no #101/#102; no Scheme Platform; no merge of the docs PR; unique leftover commits are not merged to `main`.
+- **Next:** evidence + independent document reviews; Human merge of the docs PR is separately gated.
+
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001 — RTRD-02
 
 - **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-elapsed-001.md) `Closed` — Human accepted the same-field comparison gap. AUTH consumed.
