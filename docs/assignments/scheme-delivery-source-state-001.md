@@ -4,6 +4,8 @@ Policy version: 1.0.0
 
 ## Current Status
 
+**2026-09-11 follow-up:** [`SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001`](scheme-delivery-runtime-route-device-001.md) **Closed** (engineering; not Product Gate). `RTRD-02` remain `accept`. Does not close SOURCE-STATE-001, Product Gate, TestFlight, or ADR Accept.
+
 **2026-09-11 follow-up:** `RTRD-02` same-field elapsed gap Human **accept**. [`SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001`](scheme-delivery-runtime-route-elapsed-001.md) Closed. Does not close SOURCE-STATE-001, DEVICE-001, Product Gate, TestFlight, or ADR Accept.
 
 **2026-09-10 follow-up:** `RTRD-01` diagnostics UI Closed via PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) (`4e4164f`, head `8a3f05c`). `RTRD-02` remains open under [`SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001`](scheme-delivery-runtime-route-device-001.md). This does not close SOURCE-STATE-001, DEVICE-001, Product Gate, TestFlight, or ADR Accept.
@@ -17,7 +19,7 @@ Policy version: 1.0.0
 | Lifecycle | Active |
 | Current Phase | Cross-scheme matrix engineering on PR #100 tip including docs sync **`a007681`** (engineering `33b35d3`). Matrix slices CS-01–CS-10 / CS-F* / CSF-PAIR / CS09-10-01 are on branch with independent reviews as previously recorded. Runtime-route pure contract + main-App integration + device Assignment recorded functional CS09-10-02 Pass with conditions (Ice/Wanxiang active-uninstall → Luna with Chinese candidates for controlled `ni`). Isolation checkout `/private/tmp/uk-scheme-delivery-fix` synced with origin. Human authorized undraft+merge after hosted CI green on the docs-authorization tip. Wanxiang P4 / ADR 0034 Proposed / TestFlight 仍开放 |
 | Material non-claims | 已推送的 reviewed candidates 均经 Human 授权；Human (2026-09-09 later) authorized undraft+merge **only after** docs sync + hosted CI green — merge does **not** mean Product Gate Passed, TestFlight/App Release, Device-attested whole-Assignment upgrade, ADR 0034 acceptance, Wanxiang P4 closure, peer-prefer fallback B, or Recovery persistence; **RTRD-01/RTRD-02 not in this PR and not closed by merge** |
-| Next handoff / decision | `RTRD-01` Closed via #110. `RTRD-02` same-field gap **accept** (ELAPSED-001 Closed). Product Gate / TestFlight / ADR Accept remain separate. |
+| Next handoff / decision | DEVICE-001 **Closed**. Product Gate / TestFlight / ADR Accept remain separate. |
 | Residuals | `RTRD-01` implementation Closed via #110 (2026-09-09 device evidence still lacks UUID/phase/elapsed values); `RTRD-02` **accept** under DEVICE Assignment; historical pre-route [CS09-10-02 failure record](../evidence/scheme-delivery-cross-scheme-cs09-cs10-device-2026-09-08.md) retained for audit; CS09-10-01 provenance/P2/P3 limits; CSF pair App Group/device transaction limits; Limited Gate historical; no Device-attested whole-Assignment close; Wanxiang P4 not fully closed; Ice Lua `dofile` dynamic refs; backup/staging cleanup best-effort |
 
 ## Authority and scope

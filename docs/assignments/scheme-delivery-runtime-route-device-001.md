@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Current Phase | CS09-10-02 功能性观察仍为 Pass with conditions。`RTRD-01` UI 合入且 glance 确认键可见。`RTRD-02` 同字段对照缺口 Human **accept**。Release / Product Gate 仍未授权 |
-| Material non-claims | 不声称 TestFlight、Release、Product Gate Passed 或 ADR Accept；不关闭本 Assignment；不声称 fallback 与普通 Luna 耗时已可比 |
-| Next handoff / decision | Product Gate / TestFlight / Release 另案。普通 Luna 耗时埋点需新 Assignment |
-| Residuals | `RTRD-01` `fix`（实现+glance）；`RTRD-02` `accept` |
+| Lifecycle | Closed |
+| Current Phase | Human closed this Assignment. CS09-10-02 functional Pass with conditions; `RTRD-01` fix glanced; `RTRD-02` accept |
+| Material non-claims | Not Product Gate Passed, TestFlight, Release, or ADR Accept; not a performance comparison of Luna vs fallback |
+| Next handoff / decision | None for this Assignment. Product Gate / TestFlight / Release remain separate |
+| Residuals | `RTRD-01` `fix` (implemented + glanced); `RTRD-02` `accept` |
 
 ---
 
@@ -19,6 +19,7 @@ Policy version: 1.0.0
 - **Assignment Authority:** Product Lead
 - **Decision Source / Date:** Human Product Owner in-session approval “批准真机验证”，`2026-09-09 Asia/Shanghai`
 - **Product Approver:** Human Product Owner acting as Product Lead
+- **Close Authorization:** [AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001-CLOSE](../authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001-CLOSE.md)
 
 ## Boundary
 
@@ -45,7 +46,7 @@ Policy version: 1.0.0
 
 `RTRD-01` — **Owner:** Main App UI / Diagnostics; **Disposition:** `fix`（实现已合入；2026-09-11 glance 确认键可见）。
 
-独立诊断 UI Assignment [`SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001`](scheme-delivery-runtime-route-diagnostics-ui-001.md) 已 **Closed**（#110）。[`KOS-SUG-OBS-GLANCE-001`](kos-sug-obs-glance-001.md) Human 报告七键与底部详情均为 `是`（Debug `36b63c7`）。2026-09-09 真机记录仍不包含 UUID/phase/elapsed **数值**；本残差不改写成 `accept`，也不关闭本 Assignment。SUG-08 仍未授权。
+独立诊断 UI Assignment [`SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001`](scheme-delivery-runtime-route-diagnostics-ui-001.md) 已 **Closed**（#110）。[`KOS-SUG-OBS-GLANCE-001`](kos-sug-obs-glance-001.md) Human 报告七键与底部详情均为 `是`（Debug `36b63c7`）。2026-09-09 真机记录仍不包含 UUID/phase/elapsed **数值**；本残差不改写成 `accept`。SUG-08 仍未授权。Human 2026-09-11 closed this Assignment.
 
 `RTRD-02` — **Owner:** Main App UI / Diagnostics; **Disposition:** `accept`。
 
@@ -71,4 +72,5 @@ Policy version: 1.0.0
 - `2026-09-10 Asia/Shanghai`: Human authorized one diagnostics glance ([`KOS-SUG-OBS-GLANCE-001`](kos-sug-obs-glance-001.md)). No uninstall. This Assignment stays Active.
 - `2026-09-11 Asia/Shanghai`: After Debug install, Human uninstalled one scheme and reported all seven allowlisted keys plus tap sheet. `RTRD-02` still `fix`. This Assignment stays Active.
 - `2026-09-11 Asia/Shanghai`: Human accepted the RTRD-02 same-field gap (`accept`). Elapsed Assignment Closed. This Assignment stays Active; Product Gate unauthorized.
+- `2026-09-11 Asia/Shanghai`: Human: “批准关闭 DEVICE-001”. Engineering Close. Not Product Gate.
 - `2026-09-09 Asia/Shanghai`: Human Product Owner authorized undraft+merge of PR #100 after docs sync (tip includes `a007681`) + hosted CI green. `RTRD-01`/`RTRD-02` remain out of this PR and are not closed by merge; Product Gate / TestFlight / Release / ADR Accept remain unauthorized.

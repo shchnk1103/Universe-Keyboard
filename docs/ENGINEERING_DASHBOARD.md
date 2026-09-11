@@ -58,11 +58,18 @@
 - **Non-claims:** no SUG-08, no Product Gate, no `RTRD-02` numbers, no 2026-09-09 record rewrite.
 - **Next:** none for this slice
 
+## SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001 — CS09-10-02 device
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-device-001.md) `Closed` — engineering Close after functional Pass with conditions, RTRD-01 glance, RTRD-02 accept.
+- **Authority:** [`Close AUTH`](authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001-CLOSE.md) (consumed)
+- **Non-claims:** not Product Gate, TestFlight, Release, or ADR Accept.
+- **Next:** none for this Assignment
+
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001 — RTRD-02
 
 - **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-elapsed-001.md) `Closed` — Human accepted the same-field comparison gap. AUTH consumed.
 - **Authority:** [`Product Decision`](product-decisions/SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001-authorization.md) · [`Authorization`](authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001.md) (consumed)
-- **Non-claims:** no performance conclusion, no Swift, no SUG-08, no Product Gate, DEVICE-001 not Closed.
+- **Non-claims:** no performance conclusion, no Swift, no SUG-08, no Product Gate.
 - **Next:** none for this slice
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001 — RTRD-01
