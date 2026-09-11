@@ -1,20 +1,26 @@
 import Foundation
 
-/// Declarative layout claims for a scheme adapter (P1-1 registry surface).
+/// Declarative layout claims for a scheme adapter (P1-2 live authority).
 ///
-/// P1-1 records **today’s product truth** only. Routing
-/// `RimeRuntimeSelection.isNineKeyCapable` / `isTwentySixKeyCapable` through
-/// adapters is **P1-2** — do not treat these fields as live call-site authority yet.
+/// Product nine-key capability is the **literal** schema id listed in
+/// `nineKeySchemaIDs` on a family that claims `supportsNineKey` (Ice → `t9`).
+/// Family letter ids (`rime_ice`) stay non-capable for nine-key bindings.
 public struct SchemeLayoutCapability: Sendable, Equatable {
     /// Whether the canonical letter schema may appear in the 26-key picker.
     public let supportsTwentySixKey: Bool
     /// Whether this scheme **family** productizes nine-key (Ice via literal `t9`).
-    /// Literal nine-key capability remains `schemaID == "t9"` today.
     public let supportsNineKey: Bool
+    /// Literal nine-key schema ids productized by this family (Ice: `["t9"]`).
+    public let nineKeySchemaIDs: [String]
 
-    public init(supportsTwentySixKey: Bool, supportsNineKey: Bool) {
+    public init(
+        supportsTwentySixKey: Bool,
+        supportsNineKey: Bool,
+        nineKeySchemaIDs: [String] = []
+    ) {
         self.supportsTwentySixKey = supportsTwentySixKey
         self.supportsNineKey = supportsNineKey
+        self.nineKeySchemaIDs = nineKeySchemaIDs
     }
 }
 
@@ -37,8 +43,8 @@ public enum SchemeOwnershipStrategyID: String, Sendable, Equatable {
 
 /// Thin per-scheme adapter bundle mirroring today’s hardcoded product answers.
 ///
-/// P1-1 introduces registry lookup only. SharedDefault post-process (P1-3),
-/// ownership install hooks (P1-4), and layout call-site routing (P1-2) come later.
+/// P1-2 routes layout capability queries through this registry.
+/// SharedDefault post-process (P1-3) and ownership install hooks (P1-4) come later.
 public struct SchemeAdapter: Sendable, Equatable {
     /// Canonical letter-schema id (`rime_ice`, `wanxiang`, `luna_pinyin`).
     public let schemaID: String
@@ -74,7 +80,11 @@ public enum SchemeAdapterRegistry {
     /// Ice family (`rime_ice`); nine-key productized via literal `t9` alias.
     public static let ice = SchemeAdapter(
         schemaID: "rime_ice",
-        layout: SchemeLayoutCapability(supportsTwentySixKey: true, supportsNineKey: true),
+        layout: SchemeLayoutCapability(
+            supportsTwentySixKey: true,
+            supportsNineKey: true,
+            nineKeySchemaIDs: ["t9"]
+        ),
         sharedDefaultMode: .privatePreset,
         ownershipStrategyID: .namedList,
         postProcessingRevision: "rime-ice-post-2",
@@ -85,7 +95,11 @@ public enum SchemeAdapterRegistry {
     /// Wanxiang: 26-key only; nine-key product claim stays false.
     public static let wanxiang = SchemeAdapter(
         schemaID: "wanxiang",
-        layout: SchemeLayoutCapability(supportsTwentySixKey: true, supportsNineKey: false),
+        layout: SchemeLayoutCapability(
+            supportsTwentySixKey: true,
+            supportsNineKey: false,
+            nineKeySchemaIDs: []
+        ),
         sharedDefaultMode: .consumePrelude,
         ownershipStrategyID: .exactHash,
         postProcessingRevision: "wanxiang-post-1",
@@ -96,7 +110,11 @@ public enum SchemeAdapterRegistry {
     /// Luna builtin / Prelude exception.
     public static let luna = SchemeAdapter(
         schemaID: "luna_pinyin",
-        layout: SchemeLayoutCapability(supportsTwentySixKey: true, supportsNineKey: false),
+        layout: SchemeLayoutCapability(
+            supportsTwentySixKey: true,
+            supportsNineKey: false,
+            nineKeySchemaIDs: []
+        ),
         sharedDefaultMode: .builtinPrelude,
         ownershipStrategyID: .none,
         postProcessingRevision: nil,
@@ -123,14 +141,39 @@ public enum SchemeAdapterRegistry {
         }
     }
 
-    /// Mirrors today’s `RimeRuntimeSelection.isNineKeyCapable` — only literal `t9`.
+    /// Product nine-key capability via LayoutCapability (Ice-only `t9` today).
+    ///
+    /// Literal id must appear in the family’s `nineKeySchemaIDs` **and** the
+    /// family must claim `supportsNineKey`. Letter ids (`rime_ice`) stay false.
     public static func isNineKeyCapable(_ schemaID: String) -> Bool {
-        schemaID == "t9"
+        guard let adapter = adapter(for: schemaID), adapter.layout.supportsNineKey else {
+            return false
+        }
+        return adapter.layout.nineKeySchemaIDs.contains(schemaID)
     }
 
-    /// Mirrors today’s `RimeRuntimeSelection.isTwentySixKeyCapable`.
+    /// 26-key picker capability via LayoutCapability.
+    ///
+    /// Known adapters use `supportsTwentySixKey`. Unknown schemes stay `true`
+    /// (today’s hardcode: anything whose normalized base is not the literal
+    /// nine-key id — which after `t9`→Ice mapping is effectively always true).
     public static func isTwentySixKeyCapable(_ schemaID: String) -> Bool {
-        normalizeSchemaID(schemaID) != "t9"
+        if let adapter = adapter(for: schemaID) {
+            return adapter.layout.supportsTwentySixKey
+        }
+        return true
+    }
+
+    /// Family-level nine-key productization for letter-base migration paths.
+    ///
+    /// True only when `schemaID` is the family’s **letter** id (not `t9` alias)
+    /// and the adapter claims `supportsNineKey`. Preserves ADR 0018
+    /// `baseSchemaID == "rime_ice"` answers.
+    public static func familySupportsNineKey(_ schemaID: String) -> Bool {
+        guard let adapter = adapter(for: schemaID), adapter.layout.supportsNineKey else {
+            return false
+        }
+        return adapter.schemaID == schemaID
     }
 
     /// Post-process revision for known adapters; `nil` otherwise (same as today’s switch).

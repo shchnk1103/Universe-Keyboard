@@ -9,6 +9,7 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         XCTAssertEqual(adapter.schemaID, "rime_ice")
         XCTAssertTrue(adapter.layout.supportsTwentySixKey)
         XCTAssertTrue(adapter.layout.supportsNineKey)
+        XCTAssertEqual(adapter.layout.nineKeySchemaIDs, ["t9"])
         XCTAssertEqual(adapter.sharedDefaultMode, .privatePreset)
         XCTAssertEqual(adapter.ownershipStrategyID, .namedList)
         XCTAssertEqual(adapter.postProcessingRevision, "rime-ice-post-2")
@@ -21,6 +22,7 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         XCTAssertEqual(adapter.schemaID, "wanxiang")
         XCTAssertTrue(adapter.layout.supportsTwentySixKey)
         XCTAssertFalse(adapter.layout.supportsNineKey)
+        XCTAssertEqual(adapter.layout.nineKeySchemaIDs, [])
         XCTAssertEqual(adapter.sharedDefaultMode, .consumePrelude)
         XCTAssertEqual(adapter.ownershipStrategyID, .exactHash)
         XCTAssertEqual(adapter.postProcessingRevision, "wanxiang-post-1")
@@ -33,6 +35,7 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         XCTAssertEqual(adapter.schemaID, "luna_pinyin")
         XCTAssertTrue(adapter.layout.supportsTwentySixKey)
         XCTAssertFalse(adapter.layout.supportsNineKey)
+        XCTAssertEqual(adapter.layout.nineKeySchemaIDs, [])
         XCTAssertEqual(adapter.sharedDefaultMode, .builtinPrelude)
         XCTAssertEqual(adapter.ownershipStrategyID, .none)
         XCTAssertNil(adapter.postProcessingRevision)
@@ -52,8 +55,8 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         XCTAssertNil(SchemeAdapterRegistry.adapter(for: "unknown_scheme"))
     }
 
-    func testNineKeyCapableMatchesRimeRuntimeSelectionHardcode() {
-        let samples = ["t9", "rime_ice", "wanxiang", "luna_pinyin", "melt_eng"]
+    func testNineKeyCapableRoutesThroughLayoutCapability() {
+        let samples = ["t9", "rime_ice", "wanxiang", "luna_pinyin", "melt_eng", "wanxiang_t9"]
         for id in samples {
             XCTAssertEqual(
                 SchemeAdapterRegistry.isNineKeyCapable(id),
@@ -61,13 +64,16 @@ final class SchemeAdapterRegistryTests: XCTestCase {
                 id
             )
         }
+        // Ice-only literal t9; letter / Wanxiang / Luna stay false.
         XCTAssertTrue(SchemeAdapterRegistry.isNineKeyCapable("t9"))
         XCTAssertFalse(SchemeAdapterRegistry.isNineKeyCapable("rime_ice"))
         XCTAssertFalse(SchemeAdapterRegistry.isNineKeyCapable("wanxiang"))
         XCTAssertFalse(SchemeAdapterRegistry.isNineKeyCapable("luna_pinyin"))
+        XCTAssertFalse(SchemeAdapterRegistry.isNineKeyCapable("wanxiang_t9"))
+        XCTAssertFalse(SchemeAdapterRegistry.isNineKeyCapable("melt_eng"))
     }
 
-    func testTwentySixKeyCapableMatchesRimeRuntimeSelectionHardcode() {
+    func testTwentySixKeyCapableRoutesThroughLayoutCapability() {
         let samples = ["t9", "rime_ice", "wanxiang", "luna_pinyin", "melt_eng"]
         for id in samples {
             XCTAssertEqual(
@@ -76,6 +82,38 @@ final class SchemeAdapterRegistryTests: XCTestCase {
                 id
             )
         }
+        XCTAssertTrue(SchemeAdapterRegistry.isTwentySixKeyCapable("rime_ice"))
+        XCTAssertTrue(SchemeAdapterRegistry.isTwentySixKeyCapable("wanxiang"))
+        XCTAssertTrue(SchemeAdapterRegistry.isTwentySixKeyCapable("luna_pinyin"))
+        XCTAssertTrue(SchemeAdapterRegistry.isTwentySixKeyCapable("melt_eng"))
+        // Literal t9 resolves to Ice family which is 26-capable (today’s normalize path).
+        XCTAssertTrue(SchemeAdapterRegistry.isTwentySixKeyCapable("t9"))
+    }
+
+    func testFamilySupportsNineKeyPreservesIceLetterMigrationAnswers() {
+        XCTAssertTrue(SchemeAdapterRegistry.familySupportsNineKey("rime_ice"))
+        XCTAssertFalse(SchemeAdapterRegistry.familySupportsNineKey("t9"))
+        XCTAssertFalse(SchemeAdapterRegistry.familySupportsNineKey("wanxiang"))
+        XCTAssertFalse(SchemeAdapterRegistry.familySupportsNineKey("luna_pinyin"))
+        XCTAssertFalse(SchemeAdapterRegistry.familySupportsNineKey("melt_eng"))
+    }
+
+    func testSetSchemeBinding9RejectsNonCapableIDs() {
+        let suite = "test.scheme-adapter.binding9." + UUID().uuidString
+        guard let store = UserDefaults(suiteName: suite) else {
+            XCTFail("suite")
+            return
+        }
+        defer { store.removePersistentDomain(forName: suite) }
+
+        RimeRuntimeSelection.setSchemeBinding9("wanxiang", defaults: store)
+        XCTAssertNil(store.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9))
+
+        RimeRuntimeSelection.setSchemeBinding9("rime_ice", defaults: store)
+        XCTAssertNil(store.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9))
+
+        RimeRuntimeSelection.setSchemeBinding9("t9", defaults: store)
+        XCTAssertEqual(store.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9), "t9")
     }
 
     func testCapabilityHonestyMatchesCapabilityMatrix() {
