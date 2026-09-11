@@ -1,9 +1,13 @@
 # Plan: parked-branch archive hygiene
 
-**Lifecycle:** `Active`
-**Status:** Group A Closed after [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118). Group B tags Closed after [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119). Group B **names kept** under [`GIT-BRANCH-ARCHIVE-HYGIENE-003`](../assignments/git-branch-archive-hygiene-003.md). Delete is not authorized.
+**Lifecycle:** `Archived`
+**Status:** Archived `2026-09-12 Asia/Shanghai`. Group A tag-then-delete, Group B tags, and Group B keep are all Closed. This plan is **not** current development guidance.
+**Completion / closure date:** `2026-09-12 Asia/Shanghai`
+**Current source of truth:** Closed Assignments [`001`](../assignments/git-branch-archive-hygiene-001.md), [`002`](../assignments/git-branch-archive-hygiene-002.md), [`003`](../assignments/git-branch-archive-hygiene-003.md). Archive tags on `origin` (`archive/…/20260911`). Group B local names remain by 003 keep.
+**Related ADRs:** none required (git-ref hygiene; no architecture contract change).
+**No longer current development guidance.** Later Group B delete or merging unique commits needs a new Assignment.
 
-> **S-03:** The SUG-05 `Proposed` header below is historical. Group A = Closed 001. Group B tags = Closed 002. Current keep = 003. Group B **delete** is still not authorized.
+> **S-03:** The SUG-05 `Proposed` header and Execution notes below are historical. Group A = Closed 001. Group B tags = Closed 002. Group B keep = Closed 003. Group B **delete** is still not authorized.
 
 **Inventory baseline at recording:** `origin/main` `fe2655152cbbefc61734afe519ef7b16e722aaa4` (PR #114).
 **Revalidation at Group A start:** `origin/main` `6b24c37` (PR #117); Group A SHAs unchanged; open PRs only #101 and #102.
@@ -56,10 +60,8 @@ Do not treat this table as live truth. Re-run the commands in § Execution.
 
 Work from a **new** worktree of `origin/main`. Never from `codex/scheme-platform-001`.
 
-Current Active slice is **Group B keep**, under
-[`GIT-BRANCH-ARCHIVE-HYGIENE-003`](../assignments/git-branch-archive-hygiene-003.md).
-Group A Closed after #118. Group B tags Closed after #119. Do not delete
-Group B branches.
+No current Active slice. 001 / 002 / 003 are Closed. Do not delete Group B
+branches without a new Assignment.
 
 ### 0. Revalidate
 
@@ -113,7 +115,4 @@ Group A tags use the same pattern with their `archive/…/20260911` names.
 
 ## Handoff target
 
-- Group A: [`001`](../assignments/git-branch-archive-hygiene-001.md) Closed after #118.
-- Group B tags: [`002`](../assignments/git-branch-archive-hygiene-002.md) Closed after #119.
-- Group B keep: [`003`](../assignments/git-branch-archive-hygiene-003.md). Next Human decisions: merge of the 003 docs-only PR; any later **delete** Assignment.
-- Scheme Platform remains out of scope.
+All three Assignments Closed. Next Human decisions (not this plan): later **delete** of Group B names; merging unique commits onto `main`; #101/#102. Scheme Platform remains out of scope.

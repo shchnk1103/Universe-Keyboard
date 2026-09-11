@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | Unconsumed while the keep disposition and its documentation packet remain in this Assignment; not reusable for later delete, #101/#102, merge, or Release |
+| Status | consumed |
+| Consumption | Consumed by Closed `GIT-BRANCH-ARCHIVE-HYGIENE-003`. Not reusable for later delete or Release |
 
 ---
 
@@ -17,8 +17,8 @@ Human Product Owner, current session `2026-09-11 Asia/Shanghai`: **“请你按�
   "record_id": "AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003",
   "record_type": "authorization",
   "title": "Decide keep-or-delete for Group B branch names under KOS; execute keep",
-  "status": "active",
-  "updated_at": "2026-09-11T23:47:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-12T00:19:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "review_finding", "paused_assignment_closed"],
   "authorization": {
     "action": "decide_and_execute_group_b_branch_disposition",
@@ -35,10 +35,10 @@ Human Product Owner, current session `2026-09-11 Asia/Shanghai`: **“请你按�
     "issued_at": "2026-09-11T23:47:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
 
-> **Active:** [GIT-BRANCH-ARCHIVE-HYGIENE-003](../assignments/git-branch-archive-hygiene-003.md).
-> This receipt is not a later delete token.
+> **Consumed:** [GIT-BRANCH-ARCHIVE-HYGIENE-003](../assignments/git-branch-archive-hygiene-003.md) Closed after #120 merge.
+> Merge used [AUTH-…-MERGE](AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-MERGE.md). Close used [AUTH-…-CLOSE](AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-CLOSE.md).

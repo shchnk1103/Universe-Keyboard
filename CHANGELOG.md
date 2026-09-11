@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-09-12 — Parked-branch archive hygiene Closed
+
+- `GIT-BRANCH-ARCHIVE-HYGIENE-003` engineering Close after PR #120; the parked-branch plan is Archived. Group B local names remain. Unique commits were not merged to `main`.
+
 ## 2026-09-11 — Group B local branch names kept
 
 - After archive tags landed, KOS keep disposition left `codex/wanxiang-p4-closure-001`, `codex/release-2026-0801-kaomoji`, and `codex/release-2026-08-01-coordination-next` in place. Unique commits were not merged to `main` and were not deleted.

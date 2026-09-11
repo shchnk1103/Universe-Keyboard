@@ -4,10 +4,10 @@
 
 | Field | Value |
 |---|---|
-| Status | Accepted — keep all three Group B local branch names |
+| Status | Accepted — keep all three; Assignment Closed; plan Archived |
 | Decision | Do **not** delete `codex/wanxiang-p4-closure-001`, `codex/release-2026-0801-kaomoji`, or `codex/release-2026-08-01-coordination-next`. Archive tags already on `origin` remain the recovery path. Unique commits stay off `main`. |
 | Non-claims | No merge of unique commits onto `main`; no #101/#102; no Scheme Platform; no Product Gate / TestFlight / Release; no Swift |
-| Next | Record the disposition, independent document reviews, docs-only PR; Human separately authorizes merge of that PR |
+| Next | None for this PD. Later Group B delete needs a new Assignment |
 
 ---
 
