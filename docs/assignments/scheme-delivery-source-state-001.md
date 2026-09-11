@@ -6,7 +6,7 @@ Policy version: 1.0.0
 
 **2026-09-11 follow-up:** [`SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001`](scheme-delivery-runtime-route-device-001.md) **Closed** (engineering; not Product Gate). `RTRD-02` remain `accept`. Does not close SOURCE-STATE-001, Product Gate, TestFlight, or ADR Accept.
 
-**2026-09-11 follow-up:** `RTRD-02` same-field elapsed gap Human **accept**. [`SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001`](scheme-delivery-runtime-route-elapsed-001.md) Closed. Does not close SOURCE-STATE-001, DEVICE-001, Product Gate, TestFlight, or ADR Accept.
+**2026-09-11 follow-up:** `RTRD-02` same-field elapsed gap Human **accept**. [`SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001`](scheme-delivery-runtime-route-elapsed-001.md) Closed. Did not close SOURCE-STATE-001, Product Gate, TestFlight, or ADR Accept. **S-03:** the sentence “Does not close DEVICE-001” is superseded by the later DEVICE-001 Close in this packet.
 
 **2026-09-10 follow-up:** `RTRD-01` diagnostics UI Closed via PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) (`4e4164f`, head `8a3f05c`). `RTRD-02` remains open under [`SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001`](scheme-delivery-runtime-route-device-001.md). This does not close SOURCE-STATE-001, DEVICE-001, Product Gate, TestFlight, or ADR Accept.
 
