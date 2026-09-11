@@ -7,9 +7,9 @@ Policy version: `1.0.0`
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Group B tags on `origin`; local branches kept; Architecture/Quality Pass 0/0/0/0 after `A-GB-HYG-002-P2-01` resolved; docs-only PR next |
+| **Phase** | Group B tags on `origin`; local branches kept; Architecture/Quality Pass 0/0/0/0; docs-only PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) open |
 | **Non-claims** | No Group B delete; no #101/#102; no Scheme Platform; no merge of this docs PR; no Product Gate / TestFlight / Release; unique commits are **not** merged to `main` |
-| **Next** | Docs-only PR (merge not authorized) |
+| **Next** | Human names merge of [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) if accepted |
 | **Residuals** | `A-GB-HYG-002-P2-01` `resolved` — [`Architecture review`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-002-architecture-review.md) |
 
 ---
@@ -35,7 +35,7 @@ Policy version: `1.0.0`
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Current authorized slice | In progress | `execute_group_b_parked_branch_archive_tags`: tags pushed; branches kept; Close 001 recorded; reviews and docs PR remaining | This Assignment → [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) → [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md) |
+| Current authorized slice | In progress | `execute_group_b_parked_branch_archive_tags`: tags pushed; docs PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) open; merge remaining out of slice | This Assignment → [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) → [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md) |
 | Merge of this docs PR | Not authorized | Merge | New Human authorization |
 | Group B branch delete | Not authorized | Delete local or `origin` names after tagging | New bounded Assignment and matching Authorization |
 | Environment or external slice | Authorized | Current session GitHub: push the three archive tags and the docs-only branch | Same AUTH; host GitHub |
@@ -44,13 +44,13 @@ Policy version: `1.0.0`
 
 | Fact | Value |
 |---|---|
-| `local_candidate` | unknown until the docs commit exists |
-| `published_head` | none |
+| `local_candidate` | `b1759f5` at PR open; this handoff commit follows |
+| `published_head` | `origin/docs/git-branch-archive-hygiene-002` (PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119)) |
 | `hosted_ci_head` | unknown |
-| `hosted_ci_result` | unknown |
+| `hosted_ci_result` | pending |
 | `coverage` | unknown |
-| `pr_state` | none |
-| `local_ahead_of_published` | unknown |
+| `pr_state` | `open` [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) |
+| `local_ahead_of_published` | this commit, then 0 after push |
 
 ## Boundary
 
@@ -116,7 +116,7 @@ tags, without deleting the branch names and without merging those commits to
 - [x] `git ls-remote --heads origin` for those three names remains empty.
 - [x] Evidence records commands, SHAs, tag names, and the open-PR list.
 - [x] Independent Architecture and Quality document reviews: [`Architecture Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-002-architecture-review.md) · [`Quality Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-002-quality-review.md).
-- [ ] Docs-only PR opened. Merge is not an exit criterion.
+- [x] Docs-only PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) opened. Merge is not an exit criterion.
 - [x] Assignment 001 Closed and Active Work / Dashboard synced.
 
 ### Stop Conditions

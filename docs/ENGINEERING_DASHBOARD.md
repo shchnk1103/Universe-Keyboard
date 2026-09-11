@@ -85,7 +85,7 @@
 - **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) (unconsumed)
 - **Non-claims:** no Group B delete; no #101/#102; no Scheme Platform; no merge of the docs PR; unique commits are not merged to `main`.
 - **Evidence:** [`Group B run`](evidence/git-branch-archive-hygiene-002-group-b-2026-09-11.md) · [`Architecture Pass`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-002-architecture-review.md) · [`Quality Pass`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-002-quality-review.md)
-- **Next:** docs-only PR; Human merge is separately gated. No Group B delete.
+- **Next:** Human merge of docs-only PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) is separately gated. No Group B delete.
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001 — RTRD-02
 
