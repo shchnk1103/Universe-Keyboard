@@ -34,6 +34,16 @@ public enum SchemeSharedDefaultMode: String, Sendable, Equatable {
     case builtinPrelude
 }
 
+/// SharedDefault post-extract applicator (P1-3 live authority).
+///
+/// Ice `privatePreset` rewrites toward a private preset file and never overwrites
+/// Prelude `default.yaml`. Wanxiang stays transitional `consumePrelude` (no-op
+/// applicator) until P2 migrates it to `privatePreset`.
+public protocol SchemeSharedDefaultApplying: Sendable {
+    var mode: SchemeSharedDefaultMode { get }
+    func applyPostExtract(in extractionDirectory: URL) throws
+}
+
 /// Lua/OpenCC ownership strategy id (long-term dual: namedList + exactHash).
 public enum SchemeOwnershipStrategyID: String, Sendable, Equatable {
     case namedList
@@ -44,7 +54,8 @@ public enum SchemeOwnershipStrategyID: String, Sendable, Equatable {
 /// Thin per-scheme adapter bundle mirroring today’s hardcoded product answers.
 ///
 /// P1-2 routes layout capability queries through this registry.
-/// SharedDefault post-process (P1-3) and ownership install hooks (P1-4) come later.
+/// P1-3 routes SharedDefault post-extract through `sharedDefaultMode` + applicator lookup.
+/// Ownership install hooks (P1-4) come later.
 public struct SchemeAdapter: Sendable, Equatable {
     /// Canonical letter-schema id (`rime_ice`, `wanxiang`, `luna_pinyin`).
     public let schemaID: String
@@ -179,5 +190,30 @@ public enum SchemeAdapterRegistry {
     /// Post-process revision for known adapters; `nil` otherwise (same as today’s switch).
     public static func postProcessingRevision(for schemaID: String) -> String? {
         adapter(for: schemaID)?.postProcessingRevision
+    }
+
+    /// SharedDefault applicator for schemes whose mode requires post-extract rewrite.
+    ///
+    /// Ice (`privatePreset`) → `RimeIceSharedDefaultAdapter`. Wanxiang
+    /// (`consumePrelude`) and Luna (`builtinPrelude`) return `nil` (no-op).
+    public static func sharedDefaultApplicator(for schemaID: String) -> (
+        any SchemeSharedDefaultApplying
+    )? {
+        guard let adapter = adapter(for: schemaID) else { return nil }
+        switch adapter.sharedDefaultMode {
+        case .privatePreset:
+            return RimeIceSharedDefaultAdapter.shared
+        case .consumePrelude, .builtinPrelude:
+            return nil
+        }
+    }
+
+    /// Applies SharedDefault post-extract when an applicator is registered.
+    /// Ice still produces / uses `rime_ice_preset.yaml`; other modes are no-ops.
+    public static func applySharedDefaultPostExtract(
+        for schemaID: String,
+        in extractionDirectory: URL
+    ) throws {
+        try sharedDefaultApplicator(for: schemaID)?.applyPostExtract(in: extractionDirectory)
     }
 }

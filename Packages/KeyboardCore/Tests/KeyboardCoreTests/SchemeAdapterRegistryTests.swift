@@ -135,4 +135,77 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         XCTAssertEqual(SchemeAdapterRegistry.postProcessingRevision(for: "t9"), "rime-ice-post-2")
         XCTAssertNil(SchemeAdapterRegistry.postProcessingRevision(for: "unknown_scheme"))
     }
+
+    func testSharedDefaultApplicatorIsIcePrivatePresetOnly() {
+        let ice = SchemeAdapterRegistry.sharedDefaultApplicator(for: "rime_ice")
+        XCTAssertEqual(ice?.mode, .privatePreset)
+        // t9 normalizes to Ice family → same privatePreset applicator.
+        XCTAssertEqual(
+            SchemeAdapterRegistry.sharedDefaultApplicator(for: "t9")?.mode,
+            .privatePreset
+        )
+        // Wanxiang transitional consumePrelude — no post-extract applicator in P1.
+        XCTAssertNil(SchemeAdapterRegistry.sharedDefaultApplicator(for: "wanxiang"))
+        XCTAssertNil(SchemeAdapterRegistry.sharedDefaultApplicator(for: "luna_pinyin"))
+        XCTAssertNil(SchemeAdapterRegistry.sharedDefaultApplicator(for: "unknown_scheme"))
+    }
+
+    func testApplySharedDefaultPostExtractRoutesIceAndNoopsWanxiang() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(
+            "shared-default-seam-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        try "config_version: ice\n".write(
+            to: root.appendingPathComponent("default.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+        try "punctuator:\n  __include: default:/punctuator\n".write(
+            to: root.appendingPathComponent("rime_ice.schema.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+
+        try SchemeAdapterRegistry.applySharedDefaultPostExtract(for: "rime_ice", in: root)
+
+        XCTAssertTrue(
+            FileManager.default.fileExists(
+                atPath: root.appendingPathComponent("rime_ice_preset.yaml").path
+            )
+        )
+        let schema = try String(
+            contentsOf: root.appendingPathComponent("rime_ice.schema.yaml"),
+            encoding: .utf8
+        )
+        XCTAssertTrue(schema.contains("__include: rime_ice_preset:/punctuator"))
+        // Prelude upstream default remains in the extract tree (skip-list keeps it out).
+        XCTAssertEqual(
+            try String(contentsOf: root.appendingPathComponent("default.yaml"), encoding: .utf8),
+            "config_version: ice\n"
+        )
+
+        let wanxiangRoot = FileManager.default.temporaryDirectory.appendingPathComponent(
+            "shared-default-wanxiang-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        try FileManager.default.createDirectory(at: wanxiangRoot, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: wanxiangRoot) }
+        try "config_version: wanxiang\n".write(
+            to: wanxiangRoot.appendingPathComponent("default.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+        try SchemeAdapterRegistry.applySharedDefaultPostExtract(for: "wanxiang", in: wanxiangRoot)
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: wanxiangRoot.appendingPathComponent("rime_ice_preset.yaml").path
+            )
+        )
+        // No Wanxiang private preset migration in P1.
+        let wanxiangNames = try FileManager.default.contentsOfDirectory(atPath: wanxiangRoot.path)
+        XCTAssertEqual(Set(wanxiangNames), ["default.yaml"])
+    }
 }
