@@ -14,6 +14,7 @@ Classify the failure before changing code. Record the input, current page/mode, 
 | empty/stale candidates | candidate snapshot/paging vs RIME session |
 | no/stale suggestions after a commit | continuation eligibility/state vs candidate snapshot |
 | works after returning to App | deployment/shared-container state |
+| RIME 卡在「正在部署…」且不能取消/重试 | 主 App `RimeDeploymentState`；残留 `rime_deploying` 与无 live task；不要用 `rime_sync.terminal` 解释 |
 | works until app switch | visibility cleanup or session lifecycle |
 | Lua feature missing | compiled capability -> files/schema -> deployment -> smoke result |
 | simplification wrong | setting/custom YAML -> deployment -> OpenCC assets/filter |
@@ -91,6 +92,14 @@ separates librime `process_key` from bridge output collection; neither marker
 contains typed or candidate content.
 
 Always correlate a failure with its immediately preceding lifecycle/deployment event instead of reading isolated lines.
+
+### Stuck “正在部署…” after scheme uninstall
+
+The diagnostics journal records `runtime_route.phase_changed` for uninstall routing. It does **not** contain `Logger` lines such as `uninstallRoute` or `deployRimeConfig`. Absence of those strings is not evidence that deploy never started.
+
+Non-active uninstall (effective schema unchanged, `phase=inactive` then `commit/succeeded`) only sets `rime_needs_deploy`. A later main-App `triggerPendingDeploymentIfNeeded()` starts `.fullCheck`. If the process dies after the UI enters `.deploying`, a leftover `rime_deploying` flag must become `.failed` with retry — never a spinner without a live task. `rime_sync.terminal result=expired` is a background sync BGTask expiry, not this state machine.
+
+`2026-09-11` Human-attested overlay install: leftover in-progress deploy opened as `.failed` with retry/cancel/reset; a later inactive Ice uninstall while Wanxiang stayed active did **not** auto-start deploy in the foreground, and a manual deploy succeeded. Foreground auto-deploy after inactive uninstall is [`TD-018`](TECH_DEBT.md#td-018-foreground-auto-deploy-after-inactive-scheme-uninstall).
 
 ### Candidate touch routing probe (Debug high fidelity)
 

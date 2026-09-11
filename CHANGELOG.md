@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-09-11 — 部署中断后可取消并重试
+
+- 主 App 不再把残留的 `rime_deploying` 恢复成无法操作的「正在部署…」。进程被结束后，该标志视为中断失败，抑制自动重试，并保留手动「应用并重新部署」。
+- 部署进行中可以取消；取消不会让已失效的部署结果覆盖后续重试。不改变非活动卸载的 CS-05 路由合同。
+- Human-attested：覆盖安装后首次打开为部署失败且可重试。非活动卸载后的前台自动部署记为 [`TD-018`](docs/TECH_DEBT.md#td-018-foreground-auto-deploy-after-inactive-scheme-uninstall)，本片不做。
+
 ## 2026-09-08 — Cross-scheme CS-03/CS-04 (local)
 
 - Identical-receipt idempotent no-op for scheme reinstall (`SchemaManager.shouldSkipIdenticalReinstall`; force bypass).
