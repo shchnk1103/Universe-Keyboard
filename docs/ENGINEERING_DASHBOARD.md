@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-10 Asia/Shanghai
+> **Updated:** 2026-09-11 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -46,9 +46,51 @@
 
 ## KOS-SUG-PUB-HANDOFF-001 — SUG-03 / SUG-09 publication and final-docs receipt
 
-- **Lifecycle:** [`Assignment`](assignments/kos-sug-pub-handoff-001.md) `Closed` — docs-only SUG-03/SUG-09 slice added optional P-01 publication facts and optional D-01 final-documentation receipt, plus M-02 post-#104 status sync. Architecture addendum 2 Pass; Quality addendum 2 Pass with conditions then P1-Q-001 aligned. Human authorized push + draft PR; merge unauthorized.
-- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PUB-HANDOFF-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PUB-HANDOFF-001.md)
-- **Non-claims:** no SUG-04/07/08 implementation, no SUG-06 CI automation, no KOS 2.0/2.1 frozen-principle change, `required`, historical backfill, product code, device, merge, or Release.
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-pub-handoff-001.md) `Closed` — PR [#105](https://github.com/shchnk1103/Universe-Keyboard/pull/105) merged `ebd5e54` (head `40c4b6b`). Optional P-01/D-01 conventions and M-02 post-#104 sync are on `main`. Remote feature branch deleted.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PUB-HANDOFF-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PUB-HANDOFF-001.md) (consumed)
+- **Non-claims:** no SUG-04/07/08 implementation, no SUG-06 CI automation, no KOS 2.0/2.1 frozen-principle change, `required`, historical backfill, product code, device, or Release.
+- **Next:** none for this slice
+
+## KOS-SUG-OBS-GLANCE-001 — SUG-07 on-device glance
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-glance-001.md) `Closed` — PR [#112](https://github.com/shchnk1103/Universe-Keyboard/pull/112) merged `7caec79` (head `58179da`). Human reported seven allowlisted keys and tap sheet on Debug `36b63c7`. AUTHs consumed.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-GLANCE-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-GLANCE-001.md) (consumed) · [`Debug-install AUTH`](authorizations/AUTH-KOS-SUG-OBS-GLANCE-001-DEBUG-INSTALL.md) (consumed)
+- **Non-claims:** no SUG-08, no Product Gate, no `RTRD-02` numbers, no 2026-09-09 record rewrite.
+- **Next:** none for this slice
+
+## SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001 — CS09-10-02 device
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-device-001.md) `Closed` — engineering Close after functional Pass with conditions, RTRD-01 glance, RTRD-02 accept.
+- **Authority:** [`Close AUTH`](authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001-CLOSE.md) (consumed)
+- **Non-claims:** not Product Gate, TestFlight, Release, or ADR Accept.
+- **Next:** none for this Assignment
+
+## SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001 — RTRD-02
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-elapsed-001.md) `Closed` — Human accepted the same-field comparison gap. AUTH consumed.
+- **Authority:** [`Product Decision`](product-decisions/SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001-authorization.md) · [`Authorization`](authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001.md) (consumed)
+- **Non-claims:** no performance conclusion, no Swift, no SUG-08, no Product Gate.
+- **Next:** none for this slice
+
+## SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001 — RTRD-01
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-diagnostics-ui-001.md) `Closed` — PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) merged `4e4164f` (head `8a3f05c`). Finite runtime-route fields are on `main` in diagnostics list/copy and a bottom sheet. Remote feature branch deleted.
+- **Non-claims:** no uninstall round, no SUG-08, no journal schema change, no Release, no `RTRD-02` close.
+- **Next:** none for this slice
+
+## KOS-SUG-OBS-DEVICE-001 — SUG-07 preflight execution
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-device-001.md) `Closed` — PR [#109](https://github.com/shchnk1103/Universe-Keyboard/pull/109) merged `0fd3518` (head `b481d70`). Preflight recorded trace UUID/phase/elapsed as `unreadable` in the then-current UI; **no uninstall round**. Remote feature branch deleted.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-DEVICE-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-DEVICE-001.md) (consumed)
+- **Non-claims:** no SUG-08, no Product Gate, no Release.
+- **Next:** none for this slice
+
+## KOS-SUG-OBS-PREFLIGHT-001 — SUG-07 docs-only observability preflight
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-preflight-001.md) `Closed` — PR [#107](https://github.com/shchnk1103/Universe-Keyboard/pull/107) merged `5ebf25f` (head `daafe0b`). Opt-in SUG-07 preflight is on `main`. Remote feature branch deleted.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-PREFLIGHT-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-PREFLIGHT-001.md) (consumed)
+- **Non-claims:** no SUG-04/08, no SUG-06 CI, no privacy/diagnostics/UI/log change, no `required`, no device run, no Release.
+- **Next:** none for this slice
 
 ## KOS-SUG-PIN-AUDIT-001 — manual pin consistency audit
 

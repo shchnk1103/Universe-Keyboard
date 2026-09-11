@@ -173,6 +173,18 @@ link checker only verifies that the path before `#` exists; it does not
 verify line numbers or scan prose `path:nn` citations. A D-01 receipt is
 not Product, Quality, merge, or Release approval.
 
+## Observability preflight for new human-device runs (KOS-SUG-07)
+
+A **new** human-device Assignment may opt into the observability-preflight
+table in
+[`universe-keyboard-human-operated-evidence-profile.md`](kos/universe-keyboard-human-operated-evidence-profile.md).
+This is a project profile convention, not a Kit v0.8.0 contract. It is not
+backfilled onto historical or currently Active device Assignments. Preflight
+readability values (`readable` / `unreadable` / `not-checked`) are not E-01
+outcomes. An unreadable required field sets that claim’s **preflight
+readability** to `unreadable` and does not authorize raw-directory access, a
+device run, or SUG-08.
+
 ## KOS 2.2 Record Envelope Policy
 
 Universe Keyboard currently uses KOS 2.2 in `advisory` mode. A `kos-record`
