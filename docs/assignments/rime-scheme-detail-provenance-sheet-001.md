@@ -7,9 +7,9 @@ Policy version: `1.0.0`
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Current phase** | Human device visual Pass `2026-09-12 Asia/Shanghai`. Publishing an isolated feature branch from `origin/main` (must not ride `codex/scheme-platform-001` / #102). |
+| **Current phase** | Human device visual Pass. Isolated commit `19de5e4` on `grok/rime-scheme-detail-provenance-sheet-001` from `origin/main`. Push/PR in progress. |
 | **Non-claims** | No download/install/deploy behavior change; no Discovery UI; no Scheme Platform P1-5; no Keyboard Extension; no Product Gate / TestFlight / Release / merge |
-| **Next** | Isolated commit + feature-branch push + PR. Merge remains separately gated. |
+| **Next** | Feature-branch push + PR. Merge remains separately gated. |
 | **Residuals** | None |
 
 ---
@@ -127,3 +127,4 @@ Do not hide rows for builtin schemes. Do not invent GitHub URLs or hashes for Lu
 - `2026-09-12 Asia/Shanghai` — Human: 批准进入 Ready，并开始实现. Lifecycle `Assigned` → `Ready` → `Active`.
 - `2026-09-12 Asia/Shanghai` — Implementation: tappable 方案信息 + provenance sheet; `SchemeProvenancePresentation` catalog fill; 6 `SchemeProvenancePresentationTests` passed on iPhone 17 Pro / iOS 26.0. Markdown link check `--base origin/main --head HEAD` PASS (15 files). No push.
 - `2026-09-12 Asia/Shanghai` — Human: 真机目视效果很好；批准按 KOS 继续下一步。Device visual Pass. Next authorized slice = isolated feature-branch commit + push + PR; **no merge**.
+- `2026-09-12 Asia/Shanghai` — Isolated commit `19de5e4` on `grok/rime-scheme-detail-provenance-sheet-001` (base `origin/main` `ecbd6b7`). Not on `codex/scheme-platform-001`.
