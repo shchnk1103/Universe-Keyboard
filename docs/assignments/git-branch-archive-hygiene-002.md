@@ -6,10 +6,10 @@ Policy version: `1.0.0`
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | Group B tags on `origin`; local branches kept; Architecture/Quality Pass 0/0/0/0; docs-only PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) open |
-| **Non-claims** | No Group B delete; no #101/#102; no Scheme Platform; no merge of this docs PR; no Product Gate / TestFlight / Release; unique commits are **not** merged to `main` |
-| **Next** | Human names merge of [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) if accepted |
+| **Lifecycle** | `Closed` |
+| **Phase** | PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) merged `bf0e6ec` (head `e372268`); feature branch deleted after reachability |
+| **Non-claims** | No Group B delete in this Assignment; unique commits are **not** merged to `main`; not Product Gate / Release |
+| **Next** | Keep disposition is [`GIT-BRANCH-ARCHIVE-HYGIENE-003`](git-branch-archive-hygiene-003.md) |
 | **Residuals** | `A-GB-HYG-002-P2-01` `resolved` — [`Architecture review`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-002-architecture-review.md) |
 
 ---
@@ -19,7 +19,7 @@ Policy version: `1.0.0`
 - **Assignment Authority:** Product Lead
 - **Decision Source / Date:** [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md), Human Product Owner, `2026-09-11 Asia/Shanghai`
 - **Product Approver:** Human Product Owner
-- **Authorization:** [AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md)
+- **Authorization:** [AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) (consumed) · [AUTH-…-MERGE](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002-MERGE.md) (consumed)
 - **Predecessor:** Closed [GIT-BRANCH-ARCHIVE-HYGIENE-001](git-branch-archive-hygiene-001.md) (Group A tag-then-delete; PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) merged `bb15b27`)
 
 ## KOS v0.8.0 optional-contract selection
@@ -35,22 +35,22 @@ Policy version: `1.0.0`
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Current authorized slice | In progress | `execute_group_b_parked_branch_archive_tags`: tags pushed; docs PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) open; merge remaining out of slice | This Assignment → [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) → [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md) |
-| Merge of this docs PR | Not authorized | Merge | New Human authorization |
-| Group B branch delete | Not authorized | Delete local or `origin` names after tagging | New bounded Assignment and matching Authorization |
+| Current authorized slice | Not applicable | Group B tags and merge consumed; Assignment Closed | [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) · [MERGE AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002-MERGE.md) |
+| Merge of this docs PR | Authorized | Consumed: PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) merged `bf0e6ec` | Human: “批准合并 #119” |
+| Group B branch delete | Not authorized | Successor [`GIT-BRANCH-ARCHIVE-HYGIENE-003`](git-branch-archive-hygiene-003.md) decided **keep** | New Assignment |
 | Environment or external slice | Authorized | Current session GitHub: push the three archive tags and the docs-only branch | Same AUTH; host GitHub |
 
 ### Publication facts (P-01)
 
 | Fact | Value |
 |---|---|
-| `local_candidate` | `b1759f5` at PR open; this handoff commit follows |
-| `published_head` | `origin/docs/git-branch-archive-hygiene-002` (PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119)) |
-| `hosted_ci_head` | unknown |
-| `hosted_ci_result` | pending |
-| `coverage` | unknown |
-| `pr_state` | `open` [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) |
-| `local_ahead_of_published` | this commit, then 0 after push |
+| `local_candidate` | `e372268f3ce15c467e4abbf166dd6bfdda902249` |
+| `published_head` | `e372268f3ce15c467e4abbf166dd6bfdda902249` |
+| `hosted_ci_head` | `e372268f3ce15c467e4abbf166dd6bfdda902249` |
+| `hosted_ci_result` | `green` (classify / lightweight / final-quality-gate SUCCESS; build-and-test SKIPPED) |
+| `coverage` | `same-head` |
+| `pr_state` | `merged` [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) `bf0e6ec` |
+| `local_ahead_of_published` | 0 |
 
 ## Boundary
 
@@ -137,3 +137,4 @@ tags, without deleting the branch names and without merging those commits to
 - `2026-09-11 Asia/Shanghai` — Human authorized merge of #118 and Group B work in the same instruction. This Assignment implements Group B **tags only**.
 - `2026-09-11 Asia/Shanghai` — Three Group B annotated tags pushed to `origin`. Local branch names kept. No origin heads created.
 - `2026-09-11 Asia/Shanghai` — Architecture first Pass with conditions (`A-GB-HYG-002-P2-01` `fix`); plan Execution/Handoff aligned to 002; re-review Pass 0/0/0/0. Quality Pass 0/0/0/0.
+- `2026-09-11 Asia/Shanghai` — Human authorized merge of #119. Merged `bf0e6ec`; `e372268` is an ancestor of `origin/main`; feature branch deleted. Assignment Closed. Keep/delete moved to 003.

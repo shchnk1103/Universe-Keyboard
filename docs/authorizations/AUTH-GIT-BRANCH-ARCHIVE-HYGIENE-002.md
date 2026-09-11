@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | Unconsumed while Group B tags and the documentation packet remain in this Assignment; not reusable for Group B delete, #101/#102, merge, or Release |
+| Status | consumed |
+| Consumption | Consumed by Closed `GIT-BRANCH-ARCHIVE-HYGIENE-002`. Not reusable for Group B delete or Release |
 
 ---
 
@@ -17,8 +17,8 @@ Human Product Owner, current session `2026-09-11 Asia/Shanghai`: **“然后继�
   "record_id": "AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002",
   "record_type": "authorization",
   "title": "Push annotated archive tags for Group B local-only tips; do not delete branches",
-  "status": "active",
-  "updated_at": "2026-09-11T23:35:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-11T23:47:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "review_finding", "open_pr_on_target_head"],
   "authorization": {
     "action": "execute_group_b_parked_branch_archive_tags",
@@ -36,10 +36,10 @@ Human Product Owner, current session `2026-09-11 Asia/Shanghai`: **“然后继�
     "issued_at": "2026-09-11T23:35:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
 
-> **Active:** [GIT-BRANCH-ARCHIVE-HYGIENE-002](../assignments/git-branch-archive-hygiene-002.md).
-> This receipt is not a delete, merge, Scheme Platform, or Release token.
+> **Consumed:** [GIT-BRANCH-ARCHIVE-HYGIENE-002](../assignments/git-branch-archive-hygiene-002.md) Closed after PR #119 merge.
+> Merge used [AUTH-…-MERGE](AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002-MERGE.md). Keep disposition is Assignment 003.
