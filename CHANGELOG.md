@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-09-11 — Group B local branch names kept
+
+- After archive tags landed, KOS keep disposition left `codex/wanxiang-p4-closure-001`, `codex/release-2026-0801-kaomoji`, and `codex/release-2026-08-01-coordination-next` in place. Unique commits were not merged to `main` and were not deleted.
+
 ## 2026-09-11 — Group B parked-branch archive tags
 
 - Local-only tips `codex/wanxiang-p4-closure-001`, `codex/release-2026-0801-kaomoji`, and `codex/release-2026-08-01-coordination-next` now also live behind annotated `archive/…/20260911` tags on `origin`. Branch names were **not** deleted. Unique commits were not merged to `main`.

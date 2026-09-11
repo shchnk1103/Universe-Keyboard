@@ -1,9 +1,9 @@
 # Plan: parked-branch archive hygiene
 
 **Lifecycle:** `Active`
-**Status:** Group A **Closed** after PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118). Group B **tags executed** `2026-09-11` under [`GIT-BRANCH-ARCHIVE-HYGIENE-002`](../assignments/git-branch-archive-hygiene-002.md) (see [`evidence`](../evidence/git-branch-archive-hygiene-002-group-b-2026-09-11.md)). Group B **delete** is still not authorized.
+**Status:** Group A Closed after [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118). Group B tags Closed after [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119). Group B **names kept** under [`GIT-BRANCH-ARCHIVE-HYGIENE-003`](../assignments/git-branch-archive-hygiene-003.md). Delete is not authorized.
 
-> **S-03:** The SUG-05 `Proposed` header below is historical recording context. Group A authority was Assignment 001 (now Closed). Group B **tag** authority is Assignment 002. Group B **delete** is still not authorized by this plan.
+> **S-03:** The SUG-05 `Proposed` header below is historical. Group A = Closed 001. Group B tags = Closed 002. Current keep = 003. Group B **delete** is still not authorized.
 
 **Inventory baseline at recording:** `origin/main` `fe2655152cbbefc61734afe519ef7b16e722aaa4` (PR #114).
 **Revalidation at Group A start:** `origin/main` `6b24c37` (PR #117); Group A SHAs unchanged; open PRs only #101 and #102.
@@ -37,7 +37,7 @@ Do not treat this table as live truth. Re-run the commands in § Execution.
 | `codex/td016-docs-only-fixture` local+`origin` | `bd4b6eb` | 1 commit, `docs/evidence/td-016-docs-only-hosted-fixture.md` | PR #88 CLOSED unmerged. |
 | `docs/t9-single-key-mixed-candidates-discussion` local+`origin` | `270f45b` | 1 commit | PR #46 CLOSED. Discussion file already on `main`; leftover is a small diff. |
 
-### Group B — tag only; do not delete until a later Human decision
+### Group B — tagged; local names **kept** (`2026-09-11`, Assignment 003)
 
 | Ref | Tip at recording | Unique vs `main` | Why park |
 |---|---|---|---|
@@ -56,9 +56,10 @@ Do not treat this table as live truth. Re-run the commands in § Execution.
 
 Work from a **new** worktree of `origin/main`. Never from `codex/scheme-platform-001`.
 
-Current Active slice is **Group B tags only**, under
-[`GIT-BRANCH-ARCHIVE-HYGIENE-002`](../assignments/git-branch-archive-hygiene-002.md).
-Group A is Closed after PR #118. Do not delete Group B branches.
+Current Active slice is **Group B keep**, under
+[`GIT-BRANCH-ARCHIVE-HYGIENE-003`](../assignments/git-branch-archive-hygiene-003.md).
+Group A Closed after #118. Group B tags Closed after #119. Do not delete
+Group B branches.
 
 ### 0. Revalidate
 
@@ -83,7 +84,7 @@ Do not recreate these tags.
 
 See [`Group A evidence`](../evidence/git-branch-archive-hygiene-001-group-a-2026-09-11.md).
 
-### 3. Group B tags (executed this slice)
+### 3. Group B tags (executed; Closed 002)
 
 ```text
 archive/codex-wanxiang-p4-closure-001/20260911 -> e83e635
@@ -97,9 +98,9 @@ Local branch names remain. **Do not** `git branch -D` or
 
 ### 4. Evidence
 
-Group A: recorded and Closed. Group B: recorded; remaining for Assignment 002
-are independent reviews and a docs-only PR. Merge of that PR is separately
-gated. Group B delete is separately gated.
+Group A and Group B tags: recorded and Closed. Keep disposition:
+[`003 evidence`](../evidence/git-branch-archive-hygiene-003-keep-2026-09-11.md).
+Later **delete** still needs a new Assignment.
 
 ## Recovering a parked tip
 
@@ -112,6 +113,7 @@ Group A tags use the same pattern with their `archive/…/20260911` names.
 
 ## Handoff target
 
-- Group A: [`GIT-BRANCH-ARCHIVE-HYGIENE-001`](../assignments/git-branch-archive-hygiene-001.md) **Closed** after PR #118.
-- Group B tags: [`GIT-BRANCH-ARCHIVE-HYGIENE-002`](../assignments/git-branch-archive-hygiene-002.md). Next Human decisions: merge of the 002 docs-only PR; any later **delete** Assignment.
+- Group A: [`001`](../assignments/git-branch-archive-hygiene-001.md) Closed after #118.
+- Group B tags: [`002`](../assignments/git-branch-archive-hygiene-002.md) Closed after #119.
+- Group B keep: [`003`](../assignments/git-branch-archive-hygiene-003.md). Next Human decisions: merge of the 003 docs-only PR; any later **delete** Assignment.
 - Scheme Platform remains out of scope.
