@@ -7,10 +7,10 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | CS09-10-02 功能性观察仍为 Pass with conditions。`RTRD-01` 诊断 UI 已由独立 Assignment 合入 `main`（PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) `4e4164f` / head `8a3f05c`）。`RTRD-02` 仍 open。Release / Product Gate 仍未授权 |
-| Material non-claims | 不声称 TestFlight、Release、Product Gate Passed 或 ADR Accept；#110 合入不关闭本 Assignment、不补齐 2026-09-09 真机证据里缺失的 UUID/phase/elapsed 观察、不获得 `RTRD-02` 耗时对照 |
-| Next handoff / decision | `RTRD-02` 耗时对照仍需另开 Assignment。用新诊断 UI 做真机 glance 或卸载轮次需新的 Human 授权。Product Gate / TestFlight / Release 另案 |
-| Residuals | `RTRD-01` 实现已合入（见 Observability Follow-up）；`RTRD-02` 普通 Luna 与 fallback 的耗时暂无获得，仍为 `fix` |
+| Current Phase | CS09-10-02 功能性观察仍为 Pass with conditions。`RTRD-01` UI 合入 #110；Human glance 2026-09-11 报告七键与详情可见。`RTRD-02` 仍 open。Release / Product Gate 仍未授权 |
+| Material non-claims | 不声称 TestFlight、Release、Product Gate Passed 或 ADR Accept；glance 不补齐 2026-09-09 记录里的 UUID/phase/elapsed 数值、不获得 `RTRD-02` 对照、不关闭本 Assignment |
+| Next handoff / decision | `RTRD-02` 由 [`SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001`](scheme-delivery-runtime-route-elapsed-001.md) 承接（普通 Luna 同字段 `unreadable`）。Product Gate / TestFlight / Release 另案 |
+| Residuals | `RTRD-01` UI 已合入且 glance 确认键可见；`RTRD-02` 仍为 `fix`（见 elapsed Assignment） |
 
 ---
 
@@ -43,16 +43,14 @@ Policy version: 1.0.0
 
 ## Observability Follow-up
 
-`RTRD-01` — **Owner:** Main App UI / Diagnostics; **Disposition:** `fix`（实现已合入，真机字段核验未重跑）。
+`RTRD-01` — **Owner:** Main App UI / Diagnostics; **Disposition:** `fix`（实现已合入；2026-09-11 glance 确认键可见）。
 
-独立诊断 UI Assignment [`SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001`](scheme-delivery-runtime-route-diagnostics-ui-001.md) 已 **Closed**。PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) 将有限 `runtimeRoutePayload` 键写入隐私安全列表/复制行，并在点按时以底部详情展示同一 allowlist。2026-09-09 真机记录仍只有 event code，没有 UUID/phase/elapsed 观察；本残差不因 UI 合入而改写成 `accept`，也不授权卸载或 SUG-08。
+独立诊断 UI Assignment [`SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001`](scheme-delivery-runtime-route-diagnostics-ui-001.md) 已 **Closed**（#110）。[`KOS-SUG-OBS-GLANCE-001`](kos-sug-obs-glance-001.md) Human 报告七键与底部详情均为 `是`（Debug `36b63c7`）。2026-09-09 真机记录仍不包含 UUID/phase/elapsed **数值**；本残差不改写成 `accept`，也不关闭本 Assignment。SUG-08 仍未授权。
 
 `RTRD-02` — **Owner:** Main App UI / Diagnostics; **Disposition:** `fix`。
 
-本轮诊断页确认写入十条 `runtime_route.phase_changed` code，但其列表/复制输出没有
-展开 payload。CoreDevice 无法列出单个 App Group JSONL 文件；读取整个诊断目录的操作
-会超出本轮最小数据边界，因此没有执行。普通 Luna deployment 的可比较 `elapsed_ms`
-也没有可见来源。本轮将部署耗时标记为“暂无获得”，不推断性能回归是否已修复。
+Implementation: [`SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001`](scheme-delivery-runtime-route-elapsed-001.md) (`Active`).
+`elapsed_ms` on `runtime_route.phase_changed` is visible after uninstall (glance 2026-09-11), but it is time since the **uninstall** began. Ordinary Luna deploy does not emit this event. Same-field comparison remains `unreadable`. No performance conclusion.
 
 ## Handoff
 
@@ -71,4 +69,6 @@ Policy version: 1.0.0
 - `2026-09-09 Asia/Shanghai`: Independent Quality review returned Pass with conditions: functional CS09-10-02 Pass, no new P0/P1, and candidate push allowed. `RTRD-01` and `RTRD-02` remain `fix`; merge, Product Gate, TestFlight and Release remain unauthorized.
 - `2026-09-09 Asia/Shanghai`: Human Product Owner directed docs-only Assignment sync; tip `33b35d3` hosted CI all green; no undraft/merge; `RTRD-01`/`RTRD-02` stay out of this PR.
 - `2026-09-10 Asia/Shanghai`: RTRD-01 UI merged as PR #110 (`4e4164f`). This Assignment stays Active because `RTRD-02` remains `fix` and Product Gate is unauthorized. The 2026-09-09 device evidence is not restated as containing UUID/phase/elapsed.
+- `2026-09-10 Asia/Shanghai`: Human authorized one diagnostics glance ([`KOS-SUG-OBS-GLANCE-001`](kos-sug-obs-glance-001.md)). No uninstall. This Assignment stays Active.
+- `2026-09-11 Asia/Shanghai`: After Debug install, Human uninstalled one scheme and reported all seven allowlisted keys plus tap sheet. `RTRD-02` still `fix`. This Assignment stays Active.
 - `2026-09-09 Asia/Shanghai`: Human Product Owner authorized undraft+merge of PR #100 after docs sync (tip includes `a007681`) + hosted CI green. `RTRD-01`/`RTRD-02` remain out of this PR and are not closed by merge; Product Gate / TestFlight / Release / ADR Accept remain unauthorized.

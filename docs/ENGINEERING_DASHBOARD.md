@@ -51,6 +51,20 @@
 - **Non-claims:** no SUG-04/07/08 implementation, no SUG-06 CI automation, no KOS 2.0/2.1 frozen-principle change, `required`, historical backfill, product code, device, or Release.
 - **Next:** none for this slice
 
+## KOS-SUG-OBS-GLANCE-001 — SUG-07 on-device glance
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-glance-001.md) `Closed` — Human reported seven allowlisted keys and tap sheet on Debug `36b63c7`. AUTHs consumed.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-GLANCE-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-GLANCE-001.md) (consumed) · [`Debug-install AUTH`](authorizations/AUTH-KOS-SUG-OBS-GLANCE-001-DEBUG-INSTALL.md) (consumed)
+- **Non-claims:** no SUG-08, no Product Gate, no `RTRD-02` numbers, no 2026-09-09 record rewrite.
+- **Next:** none for this slice
+
+## SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001 — RTRD-02
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-elapsed-001.md) `Active` — SUG-07 preflight: fallback `elapsed_ms` readable; ordinary Luna same-field `unreadable`. No operator round.
+- **Authority:** [`Product Decision`](product-decisions/SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001-authorization.md) · [`Authorization`](authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001.md)
+- **Non-claims:** no performance conclusion, no Swift, no SUG-08, no Product Gate.
+- **Next:** Human accepts the gap or authorizes a new ordinary-Luna elapsed producer
+
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001 — RTRD-01
 
 - **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-diagnostics-ui-001.md) `Closed` — PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) merged `4e4164f` (head `8a3f05c`). Finite runtime-route fields are on `main` in diagnostics list/copy and a bottom sheet. Remote feature branch deleted.

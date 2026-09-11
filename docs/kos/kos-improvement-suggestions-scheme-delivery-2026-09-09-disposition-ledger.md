@@ -41,7 +41,7 @@
 | KOS-SUG-04 | Deferred | Reconsider only after SUG-07 preflight proves required content-free fields are readable and a specific human-device claim needs the manifest. |
 | KOS-SUG-05 | Adopted | Proposed-plan template pilot only; it does not authorize implementation. |
 | KOS-SUG-06 | Adopted | Manual docs-only pin audit first; CI/script automation needs a separate Assignment. |
-| KOS-SUG-07 | Adopted | New human-device Assignments only; privacy and Human Dependency remain required. Template: [`KOS-SUG-OBS-PREFLIGHT-001`](../assignments/kos-sug-obs-preflight-001.md) (Closed, PR #107). Execution: [`KOS-SUG-OBS-DEVICE-001`](../assignments/kos-sug-obs-device-001.md) (Closed, PR #109; preflight filled; no uninstall). |
+| KOS-SUG-07 | Adopted | New human-device Assignments only; privacy and Human Dependency remain required. Template: [`KOS-SUG-OBS-PREFLIGHT-001`](../assignments/kos-sug-obs-preflight-001.md) (Closed, PR #107). Execution: [`KOS-SUG-OBS-DEVICE-001`](../assignments/kos-sug-obs-device-001.md) (Closed, PR #109). Glance: [`KOS-SUG-OBS-GLANCE-001`](../assignments/kos-sug-obs-glance-001.md) (Closed). RTRD-02: [`SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001`](../assignments/scheme-delivery-runtime-route-elapsed-001.md) (Active; ordinary Luna same-field `unreadable`). |
 | KOS-SUG-08 | Adopted | Only if SUG-07 is insufficient and a separate minimal data-read authorization exists. |
 | KOS-SUG-09 | Adopted | Commit/PR handoffs only; final documentation changes require a recheck. Template implementation: [`KOS-SUG-PUB-HANDOFF-001`](../assignments/kos-sug-pub-handoff-001.md). |
 
