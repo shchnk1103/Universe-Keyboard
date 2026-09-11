@@ -72,7 +72,7 @@ Finding counts at freeze `3cfa355`: **P0: 0 · P1: 0 · P2: 2 · P3: 4**（见 F
 
 
 
-1. Hosted CI on prior merge tips used as machine evidence: `5bba4d2`（P1-2）、`d8e8299`（post–P1-3 merge）、`82bdd60`（post–P1-4 merge）— `classify-change` / `lightweight-checks` / `build-and-test` / `final-quality-gate` / GitGuardian **success**. Freeze tip `3cfa355` at review time: classify / lightweight / GitGuardian **success**；**`build-and-test` still in progress** — residual **SP-P1-IQ-01**（不得静默当绿）.
+1. Hosted CI on prior merge tips used as machine evidence: `5bba4d2`（P1-2）、`d8e8299`（post–P1-3 merge）、`82bdd60`（post–P1-4 merge）— `classify-change` / `lightweight-checks` / `build-and-test` / `final-quality-gate` / GitGuardian **success**. Freeze tip `3cfa355` at review time had `build-and-test` in progress（**SP-P1-IQ-01**）；**later fixed**: run `34628171114` **success** on `3cfa355`；tip `cd4fa65` run `34629774209` full green — residual **closed** with KOS writeback（not silent）.
 
 2. IQ **未**独立重跑全量 `xcodebuild` / Simulator NineKey suite；采信 prior-slice 测试源码 + 上述 hosted CI + KeyboardCore 单元锚点审查。
 
@@ -210,7 +210,7 @@ At review time, GitHub checks on `3cfa355`: `classify-change` / `lightweight-che
 
 
 
-**Disposition:** `open` — Owner: Environment Executor / Human watching draft #102. **Do not** treat freeze tip as hosted-full-green until `build-and-test`（and downstream `final-quality-gate` if required）complete success on **same** `3cfa355`. Does **not** invent a Pass by assuming green.
+**Disposition:** `fix`（`2026-09-12 Asia/Shanghai`；Human authorized KOS residual close record）— Owner: Env Executor / Human (#102). Evidence: freeze tip `3cfa355` hosted Swift 6 Quality run `34628171114` concluded **success**（`build-and-test` + `final-quality-gate`）；current draft #102 tip `cd4fa65`（P1-6 docs + main merge + whitespace/EOF）run `34629774209` also full green（classify / lightweight / build-and-test / final-quality-gate / GitGuardian）；PR `MERGEABLE` + `CLEAN`. Pointer: [run 34628171114](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/34628171114) · [run 34629774209](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/34629774209). **Does not** rewrite IQ Verdict to unconditional Pass；other residuals remain.
 
 
 
@@ -322,7 +322,7 @@ Recording only: Exit Criteria for full Assignment still need P2/P3； Human has 
 
 |---|---|---|---|
 
-| `SP-P1-IQ-01` | Env Executor / Human (#102) | `open` | Freeze tip hosted `build-and-test` pending at IQ time |
+| `SP-P1-IQ-01` | Env Executor / Human (#102) | `fix` | Freeze `3cfa355` run `34628171114` success；tip `cd4fa65` run `34629774209` full green / MERGEABLE CLEAN — closed `2026-09-12` |
 
 | `SP-P1-IQ-02` | Env Executor / Quality | `accept` | iOS 26 XCTest-host malloc flake — env residual |
 
@@ -360,7 +360,7 @@ Recording only: Exit Criteria for full Assignment still need P2/P3； Human has 
 
 - Not A34-R1 Closed/Done
 
-- Not “freeze tip fully hosted-green” until SP-P1-IQ-01 clears
+- SP-P1-IQ-01 **closed**（`fix`）— freeze tip + tip `cd4fa65` hosted-full-green evidenced；other residuals still explicit
 
 - Not a claim that IQ re-ran NineKey / full coexistence / CS matrix locally
 
@@ -380,6 +380,6 @@ Recording only: Exit Criteria for full Assignment still need P2/P3； Human has 
 
 2. **Ask Human before push** of P1-6 docs tip（and before any further #102 actions）.
 
-3. Watch `3cfa355` `build-and-test` → update SP-P1-IQ-01 disposition when concluded（separate note OK； do not rewrite Pass into unconditional without evidence）.
+3. **SP-P1-IQ-01 closed**（KOS residual writeback `2026-09-12`）— evidence runs `34628171114`（`3cfa355`）+ `34629774209`（`cd4fa65`）. Do **not** rewrite Pass into unconditional；remaining residuals stay listed.
 
 4. Do **not** start ADR Accept / Product Gate / Assignment Close from this file alone.

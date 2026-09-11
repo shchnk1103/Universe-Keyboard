@@ -112,7 +112,7 @@
 
 
 
-Hosted CI snapshots used by IQ: see Independent Quality review（prior slice tips green; freeze-tip `build-and-test` disposition recorded explicitly — not silently closed）.
+Hosted CI snapshots used by IQ: see Independent Quality review（prior slice tips green; **SP-P1-IQ-01 closed** `2026-09-12` — freeze `3cfa355` run `34628171114` + tip `cd4fa65` run `34629774209` full green；KOS residual writeback, not silent）.
 
 
 
