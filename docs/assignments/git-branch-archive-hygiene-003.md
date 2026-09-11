@@ -6,10 +6,10 @@ Policy version: `1.0.0`
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | Keep executed; Architecture/Quality Pass 0/0/0/0; docs-only PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) open |
-| **Non-claims** | No Group B delete; no merge of unique commits to `main`; no #101/#102; no Scheme Platform; no merge of this docs PR; no Product Gate / TestFlight / Release |
-| **Next** | Human names merge of [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) if accepted |
+| **Lifecycle** | `Closed` |
+| **Phase** | Engineering Close after PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) merged `04e2240` (head `e959417`); plan Archived |
+| **Non-claims** | No Group B delete; unique commits not on `main`; not Product Gate / TestFlight / Release |
+| **Next** | None for this Assignment. Later Group B delete still needs a new Assignment |
 | **Residuals** | `A-GB-HYG-003-P2-01` / `P3-01` / `GBAH-003-Q-P2-01` `resolved` |
 
 ---
@@ -19,7 +19,7 @@ Policy version: `1.0.0`
 - **Assignment Authority:** Product Lead
 - **Decision Source / Date:** [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-003-authorization.md), Human Product Owner, `2026-09-11 Asia/Shanghai`
 - **Product Approver:** Human Product Owner (delegated keep/delete judgment under KOS)
-- **Authorization:** [AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003.md)
+- **Authorization:** [AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003.md) (consumed) · [AUTH-…-MERGE](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-MERGE.md) (consumed) · [AUTH-…-CLOSE](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-CLOSE.md) (consumed)
 - **Predecessor:** Closed [GIT-BRANCH-ARCHIVE-HYGIENE-002](git-branch-archive-hygiene-002.md) after PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) merged `bf0e6ec`
 
 ## KOS v0.8.0 optional-contract selection
@@ -35,22 +35,22 @@ Policy version: `1.0.0`
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Current authorized slice | In progress | Keep recorded; docs PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) open; merge remaining out of slice | This Assignment → [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003.md) → [PD](../product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-003-authorization.md) |
-| Merge of this docs PR | Not authorized | Merge | New Human authorization |
-| Later Group B delete | Not authorized | Delete any of the three names | New bounded Assignment after Paused/Active owners Close or Product rejects the unique diffs |
+| Current authorized slice | Not applicable | Keep, merge of #120, and Close consumed | [AUTH](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003.md) · [MERGE](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-MERGE.md) · [CLOSE](../authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-CLOSE.md) |
+| Merge of keep docs PR | Authorized | Consumed: PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) merged `04e2240` | Human: “批准合并 #120” |
+| Later Group B delete | Not authorized | Delete any of the three names | New bounded Assignment |
 | Environment or external slice | Not applicable | No ref mutation in this slice | Docs and local verification only |
 
 ### Publication facts (P-01)
 
 | Fact | Value |
 |---|---|
-| `local_candidate` | `c942b96` at PR open; this handoff commit follows |
-| `published_head` | `origin/docs/git-branch-archive-hygiene-003` (PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120)) |
-| `hosted_ci_head` | unknown |
-| `hosted_ci_result` | pending |
-| `coverage` | unknown |
-| `pr_state` | `open` [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) |
-| `local_ahead_of_published` | this commit, then 0 after push |
+| `local_candidate` | `e95941791ac8b8660885f1caf71bb4d5d8711994` |
+| `published_head` | `e95941791ac8b8660885f1caf71bb4d5d8711994` |
+| `hosted_ci_head` | `e95941791ac8b8660885f1caf71bb4d5d8711994` |
+| `hosted_ci_result` | `green` (classify / lightweight / final-quality-gate SUCCESS; build-and-test SKIPPED) |
+| `coverage` | `same-head` |
+| `pr_state` | `merged` [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) `04e2240` |
+| `local_ahead_of_published` | 0 |
 
 ## Boundary
 
@@ -104,7 +104,7 @@ archive tags exist, using KOS fail-closed rules and a live diff against
 
 - [x] Keep disposition recorded; no Group B name deleted.
 - [x] Independent Architecture and Quality document reviews: [`Architecture Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-architecture-review.md) · [`Quality Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-quality-review.md).
-- [x] Docs-only PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) opened. Merge is not an exit criterion.
+- [x] Docs-only PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) opened and merged `04e2240`.
 - [x] Assignment 002 Closed and Active Work / Dashboard synced.
 
 ### Stop Conditions
@@ -138,3 +138,4 @@ Closed/superseded PRs. These three are not that.
 
 - `2026-09-11 Asia/Shanghai` — Human merged #119 and delegated Group B keep/delete to KOS. Disposition: keep all three.
 - `2026-09-11 Asia/Shanghai` — Architecture first Pass with conditions (missing Wanxiang link + plan §3 “this slice”); fixed; re-review Pass 0/0/0/0. Quality HOLD then Pass 0/0/0/0 after the same link fix.
+- `2026-09-12 Asia/Shanghai` — Human authorized merge of #120 (`04e2240`) and Close 003 with plan Archived. Engineering Close; not Product Gate. Group B names remain. Independent Close reviews: [`Architecture Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-close-architecture-review.md) · [`Quality Pass`](../reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-close-quality-review.md).

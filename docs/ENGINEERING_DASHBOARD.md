@@ -84,15 +84,14 @@
 - **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-002.md) `Closed` — PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) merged `bf0e6ec` (head `e372268`).
 - **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002-MERGE.md) (consumed)
 - **Non-claims:** unique leftover commits are not on `main`; not Product Gate / Release.
-- **Next:** none for this Assignment. Keep disposition is [`003`](assignments/git-branch-archive-hygiene-003.md).
+- **Next:** none for this Assignment. Keep disposition Closed as [`003`](assignments/git-branch-archive-hygiene-003.md).
 
 ## GIT-BRANCH-ARCHIVE-HYGIENE-003 — Group B keep
 
-- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-003.md) `Active` — keep all three local names; no deletes.
-- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-003-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003.md) (unconsumed)
-- **Evidence:** [`keep run`](evidence/git-branch-archive-hygiene-003-keep-2026-09-11.md) · [`Architecture Pass`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-architecture-review.md) · [`Quality Pass`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-quality-review.md)
-- **Non-claims:** no Group B delete; no merge of unique commits; no #101/#102; no merge of the docs PR.
-- **Next:** Human merge of docs-only PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) is separately gated. No Group B delete.
+- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-003.md) `Closed` — PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) merged `04e2240`; plan Archived. Close reviews: [`Architecture`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-close-architecture-review.md) · [`Quality`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-close-quality-review.md).
+- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-003-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-MERGE.md) (consumed) · [`Close AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-CLOSE.md) (consumed)
+- **Non-claims:** no Group B delete; unique commits not on `main`; not Product Gate / Release.
+- **Next:** none for this Assignment.
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001 — RTRD-02
 
