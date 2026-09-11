@@ -1691,6 +1691,59 @@ final class SchemaManagerTests: XCTestCase {
         )
     }
 
+    /// P1-5: Ice `onUninstallPrepare` still forces 26-key + clears T9 readiness
+    /// (unchanged vs pre-extract `prepareRimeIceUninstallWithLayoutFallback`).
+    func testInactiveIceUninstallForcesTwentySixKeyAndInvalidatesT9Readiness() async {
+        let readyMarker = RimeT9ReadinessMarker(
+            ready: true,
+            compatibilityVersion: RimeT9Readiness.currentCompatibilityVersion,
+            resourceFingerprint: "ice-uninstall-layout-fp"
+        )
+        let markerData = try! JSONEncoder().encode(readyMarker)
+        let settings = StubSharedSettingsStore(
+            values: [
+                "rime_active_schema": "luna_pinyin",
+                KeyboardLayoutSettingsKey.layoutStyle: KeyboardLayoutStyle.nineKey.rawValue,
+                KeyboardLayoutSettingsKey.schemeBinding26: "luna_pinyin",
+                KeyboardLayoutSettingsKey.schemeBinding9: "t9",
+                RimeT9Readiness.SettingsKey.marker: markerData,
+                RimeT9Readiness.SettingsKey.legacyReady: true,
+                "rime_ice_installed": true,
+                "rime_ice_version": "test-version",
+                "rime_ice_license_accepted": true,
+            ]
+        )
+        let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        await manager.uninstallSchema("rime_ice")?.value
+
+        XCTAssertTrue(installer.didCommitUninstall)
+        XCTAssertNil(settings.object(forKey: "rime_ice_installed"))
+        XCTAssertEqual(manager.activeSchemaID, "luna_pinyin")
+        XCTAssertEqual(
+            settings.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
+            KeyboardLayoutStyle.twentySixKey.rawValue
+        )
+        // Bindings are not rewritten by today’s Ice hook — layout + readiness only.
+        XCTAssertEqual(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26), "luna_pinyin")
+        XCTAssertEqual(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9), "t9")
+        XCTAssertEqual(settings.bool(forKey: RimeT9Readiness.SettingsKey.legacyReady), false)
+        guard let data = settings.object(forKey: RimeT9Readiness.SettingsKey.marker) as? Data,
+            let marker = try? JSONDecoder().decode(RimeT9ReadinessMarker.self, from: data)
+        else {
+            XCTFail("expected cleared readiness marker")
+            return
+        }
+        XCTAssertFalse(marker.ready)
+        XCTAssertEqual(marker.resourceFingerprint, "")
+    }
+
     func testNonActiveUninstallKeepsFilesWhenStagingFails() async {
         let settings = StubSharedSettingsStore(
             values: [

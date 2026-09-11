@@ -105,10 +105,13 @@ extension SchemaManager {
     }
 
     /// ADR order: layout → invalidate readiness → remove resources (existing uninstall).
+    /// P1-5: Ice semantics live in `IceUninstallLayoutFallback` / SchemeAdapter registry.
     @MainActor
     func prepareRimeIceUninstallWithLayoutFallback() {
-        T9DeploymentSupport.persistLayout(.twentySixKey, settings: settings)
-        T9DeploymentSupport.invalidateReadiness(settings: settings)
+        IceUninstallLayoutFallback.apply(
+            set: { self.settings.set($0, forKey: $1) },
+            synchronize: { self.settings.synchronize() }
+        )
     }
 
     /// When switching base scheme away from rime_ice, fall layout back only if nine-key is not ready.

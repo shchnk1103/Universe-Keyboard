@@ -222,4 +222,15 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         XCTAssertEqual(SchemeAdapterRegistry.resourceCapability(for: "wanxiang")?.admitsOpenCC, false)
         XCTAssertNil(SchemeAdapterRegistry.resourceCapability(for: "unknown_scheme"))
     }
+
+    func testUninstallHooksIceLayoutFallbackOnly() {
+        XCTAssertEqual(
+            SchemeAdapterRegistry.uninstallHooks(for: "rime_ice"),
+            .ice
+        )
+        XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "wanxiang"), .none)
+        XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "luna_pinyin"), .none)
+        XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "rime_ice"))
+        XCTAssertFalse(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "wanxiang"))
+    }
 }

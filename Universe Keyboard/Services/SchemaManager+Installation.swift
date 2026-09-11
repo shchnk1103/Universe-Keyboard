@@ -209,9 +209,13 @@ extension SchemaManager {
 
         // ADR 0018: only invalidate T9 after Luna is deployed and the target
         // files have been staged successfully.
-        if schemaID == "rime_ice" {
-            prepareRimeIceUninstallWithLayoutFallback()
-        }
+        // P1-5: route Ice uninstall layout fallback via SchemeUninstallHooks
+        // (behavior unchanged; no Discovery A/B UI).
+        SchemeAdapterRegistry.prepareUninstallLayoutFallback(
+            for: schemaID,
+            set: { self.settings.set($0, forKey: $1) },
+            synchronize: { self.settings.synchronize() }
+        )
 
         archiveInstaller.commitSchemaUninstall(staging, plan: plan)
         recordActiveUninstallRoutePhase(
