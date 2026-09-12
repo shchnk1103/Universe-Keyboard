@@ -4,10 +4,12 @@
 
 **性质：** 只读缺口盘点 + 推荐实现顺序。**不是**实现授权执行记录；**不是** ADR 0034 Accept；**不是** Product Gate / TestFlight / Release。
 
-**Assignment：** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) — Lifecycle **Active**
-**冻结 tip：** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`（PR #100 merge）
-**工作分支：** `codex/wanxiang-p4-closure-001`
-**A34-R1：** 仍为 `fix` / open（Architecture Accept residual）；本清单是闭合路径的证据起点。
+**Assignment：** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) — Lifecycle **Active（Resumed `2026-09-12`）**
+**冻结 tip（historical S1）：** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`（PR #100 merge）
+**Resume freeze tip：** draft #102 tip `72b5987` on `codex/scheme-platform-001`
+**工作分支（Resume）：** `codex/scheme-platform-001`（historical `codex/wanxiang-p4-closure-001` retained）
+**A34-R1：** 仍为 `fix` / open（Architecture Accept residual）— **do not silent-close**；writeback = S6 after S5。
+**E16/E17/E20：** Human `2026-09-12` **Accepted（narrow Exit）** — see [`scheme-delivery-wanxiang-p4-e16-e17-e20-disposition-2026-09-12.md`](scheme-delivery-wanxiang-p4-e16-e17-e20-disposition-2026-09-12.md)；**E14/E15 still Open**。
 
 ---
 
@@ -51,11 +53,11 @@ Pin under inventory（除非 Human 另授权）：CNB SHA-256 `9bfcf60e…` / `1
 | E13 | 生产路径 **禁止** 整目录删除 `lua/` / `opencc/` | **Closed** | Architecture Accept 抽样；`stageSchemaUninstall` 行为 |
 | E14 | 书面「Wanxiang P4 closure」核对表相对 ADR 全文完成，并可回写 A34-R1 | **Open** | 本文件为起点；Exit 前需正式 Closed 映射 + Assignment/ACTIVE_WORK 回写 |
 | E15 | Independent Quality：**对本闭合 tip** 无开放 P0/P1（相对本片范围） | **Open** | 既有切片 IQ 已 Pass with conditions，但尚未以「P4 closure Exit」名义对冻结 tip 做汇总 IQ |
-| E16 | 真机：万象 **升级失败回滚** Device-attested | **Open** | 升级切片明确不要求真机；若 Human 将 Exit 定为需真机则本项必修，否则可书面缩窄 |
-| E17 | 真机：万象 **卸载失败回滚** Device-attested | **Open** | Limited P4 Gate 接受「device failure-rollback 未测」（偏 Ice 活跃卸载）；万象对等真机失败回滚未记 |
+| E16 | 真机：万象 **升级失败回滚** Device-attested | **Accepted (narrow Exit)** | Human `2026-09-12`：书面缩窄 Exit — 无升级失败回滚真机要求；依赖自动化 + IQ |
+| E17 | 真机：万象 **卸载失败回滚** Device-attested | **Accepted (narrow Exit)** | Human `2026-09-12`：书面缩窄 Exit — 无卸载失败回滚真机要求（同 E16） |
 | E18 | 真机：万象安装/切换/输入成功路径 | **Closed**（历史 Human-attested） | `rime-scheme-delivery-wanxiang-success-2026-08-28.md` 等；**不**等同失败回滚闭合 |
 | E19 | Runtime-route 设备：活跃卸载后 Luna 候选输入（含万象方向） | **Closed**（功能 Pass with conditions） | `SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001`；不替代归属/升级合同 |
-| E20 | Cross-scheme **真实 App Group / device transaction** 全路径证明 | **Open**（有条件） | CSF / CS09-10 条件项；是否阻塞 A34-R1 需 Human 书面：接受条件 vs 补证据 |
+| E20 | Cross-scheme **真实 App Group / device transaction** 全路径证明 | **Accepted (narrow Exit)** | Human `2026-09-12`：接受现有 Pass-with-conditions 限度；不把全路径 App Group 真机交易当作 A34-R1 阻塞 |
 | E21 | Crash/restart Recovery persistence / checkpoint 发现 | **Out-of-scope** | 合同与 Assignment Non-goals |
 | E22 | Ice `dofile`/`loadfile` 全量闭合（A34-R2 / TD-011） | **Out-of-scope** | 并行债；本片不关闭 |
 | E23 | `RTRD-01` / `RTRD-02` | **Out-of-scope** | 独立 Assignment |
@@ -70,7 +72,8 @@ Pin under inventory（除非 Human 另授权）：CNB SHA-256 `9bfcf60e…` / `1
 | Status | Count |
 |---|---|
 | **Closed** | 16（E01–E13, E18, E19） |
-| **Open** | 5（E14–E17, E20） |
+| **Open** | 2（E14, E15） |
+| **Accepted (narrow Exit)** | 3（E16, E17, E20） — Human `2026-09-12` |
 | **Out-of-scope** | 7（E21–E28） |
 
 ---
@@ -82,7 +85,7 @@ Pin under inventory（除非 Human 另授权）：CNB SHA-256 `9bfcf60e…` / `1
 A34-R1 仍为 `fix` 的原因不是「生产仍整目录 wipe / 覆盖 Prelude」类 P0 合同自相矛盾，而是：
 
 1. **缺少正式闭合核对**（E14）把 ADR 全文期望映射到 Closed 证据并授权回写 disposition；
-2. **条件项是否可接受**尚未由 Human 对「Wanxiang P4 closed」书面拍板（E15 汇总 IQ；E16/E17 真机失败回滚；E20 App Group/device transaction 限度）；
+2. **条件项：** E16/E17/E20 Human 已 Accepted（narrow Exit）`2026-09-12`；**E15** 汇总 IQ 仍 Open；E14 writeback / A34-R1 仍 open（**不**静默 Closed）；
 3. 历史文档仍显式写 “Wanxiang P4 not fully closed”，Architecture Accept 因此不能无条件 Recommend Accept。
 
 本片优先路径：**文档与治理闭合 + Human 对 Open 项接受/缩窄/补证据**；仅当核对发现生产缺口时才开 Swift 最小片。
@@ -100,7 +103,7 @@ A34-R1 仍为 `fix` 的原因不是「生产仍整目录 wipe / 覆盖 Prelude�
 | **S5** | Independent Quality closure delta | Review | 对冻结 tip 出具「无开放 P0/P1（本片范围）」或列出残留 | 把条件项静默当成 Closed |
 | **S6** | A34-R1 disposition writeback | Docs | Assignment / ACTIVE_WORK / Architecture review：A34-R1 → `Closed` 或 Human 书面缩窄；**仍不**改 ADR Status | 无 Human 对 writeback 的确认 |
 
-**S1 已完成。** `2026-09-09` Human **(b)** 后推进 **S2** checklist（见上链）。不开始 S3 Swift / 平台抽取。
+**S1 已完成。** S2 checklist 已落盘。Human Resume `2026-09-12`：E16/E17/E20 Accepted（narrow）；next **S5** IQ on `72b5987` → **S6** A34-R1 writeback（**不** silent-close A34-R1；**不** Accept ADR）。
 
 ---
 
@@ -118,3 +121,4 @@ A34-R1 仍为 `fix` 的原因不是「生产仍整目录 wipe / 覆盖 Prelude�
 
 - `2026-09-09 Asia/Shanghai`：slice 1 缺口清单落盘于分支 `codex/wanxiang-p4-closure-001`（base `814abfd`）；Assignment → Active。
 - `2026-09-09 Asia/Shanghai`：Human 选择 **(b)** — keep Wanxiang P4 Active for **narrow A34-R1**；Scope 明确排除 Scheme Platform extract / Ice-as-reference P1–P3。S2 checklist：[`scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md`](scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md)。E14–E17/E20 仍 Open / needs disposition；**不**静默 Closed。
+- `2026-09-12 Asia/Shanghai`：Human **Accepted（narrow Exit）** for E16/E17/E20；Resume freeze tip `72b5987` on `codex/scheme-platform-001`；**E14/E15 still Open**；**do not silent-close A34-R1**；next S5→S6；no ADR Accept；leave #101。

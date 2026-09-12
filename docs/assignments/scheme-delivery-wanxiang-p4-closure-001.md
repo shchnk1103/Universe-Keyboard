@@ -6,12 +6,12 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | **Paused** |
-| Current Phase | Human Gate 0（`2026-09-09 Asia/Shanghai`）授权 **Pause**：shelved for Scheme Platform。**不是** Closed / Done。A34-R1 仍 `fix` / **open**（writeback later）。Active 实现权移交 [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](scheme-delivery-scheme-platform-001.md)（**Active**；冻结 tip `814abfd` / 分支 `codex/scheme-platform-001`）。历史分支 `codex/wanxiang-p4-closure-001` tip ~`e83e635` 保留本地未推送 docs 历史；本片不继续 S2 / Swift。 |
-| Material non-claims | Pause **≠** Closed/Done；**不** Accept ADR 0034；**不**关闭 A34-R1；**不是** Product Gate / TestFlight / Release；不把 Ice `dofile`（A34-R2 / TD-011）或 `RTRD-01`/`RTRD-02` 塞进本片 |
-| Next handoff / decision | 等待 Scheme Platform 进展后再回看 A34-R1 writeback；Resume / Closed 均须 Human 另授权。Pointer：**Active** = [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](scheme-delivery-scheme-platform-001.md)。 |
-| Residuals | A34-R1 open（`fix`）— **NOT** Closed/Done；E15–E17/E20 residual notes / checklist 仍为证据，不静默 Closed；**仍不**自动 Accept ADR 0034 |
-| Frozen tip | historical work branch `codex/wanxiang-p4-closure-001` tip ~`e83e635`（未推送）；base `814abfd7c03002256978d7658c176b80002d2539`；当前 Active 载体分支 `codex/scheme-platform-001` |
+| Lifecycle | **Active**（Resume authorized `2026-09-12 Asia/Shanghai`） |
+| Current Phase | **Resume** after Scheme Platform P3 Exit。Freeze tip = draft #102 tip `72b5987` on `codex/scheme-platform-001`。Human disposition **E16/E17/E20 = accept draft narrow Exit**（no device failure-rollback required；keep Pass-with-conditions for App Group）。Platform Assignment stays **Active**（P3 Exit certified；no Close）。历史分支 `codex/wanxiang-p4-closure-001` tip ~`e83e635` 保留本地未推送 docs 历史。 |
+| Material non-claims | Resume **≠** Closed/Done；**不** Accept ADR 0034；**不**静默关闭 A34-R1（仍 open until S6）；**不是** Product Gate / TestFlight / Release；leave draft #101 alone；keep #101≠#102；不把 Ice `dofile`（A34-R2 / TD-011）或 `RTRD-01`/`RTRD-02` 塞进本片 |
+| Next handoff / decision | **S5** Independent Quality closure delta on freeze tip `72b5987`；then **S6** A34-R1 writeback（**仍不** ADR Accept）；**ask before push**。Leave #101 alone。 |
+| Residuals | A34-R1 still open until S6（`fix`）— **NOT** Closed/Done；E16/E17/E20 disposition **recorded（narrow Exit）**；**E14** writeback path + **E15** IQ still open；**仍不**自动 Accept ADR 0034 |
+| Frozen tip | Resume path freeze = draft #102 tip `72b5987dc4434221f4b4aa57c836369723bd7fb9` on `codex/scheme-platform-001`；base `814abfd7c03002256978d7658c176b80002d2539`；historical work branch `codex/wanxiang-p4-closure-001` tip ~`e83e635`（未推送） |
 
 ---
 
@@ -27,7 +27,7 @@ Policy version: 1.0.0
   1. 相对 ADR 0034 候选 A 与已合入 `main` @ `814abfd` 的现状，盘点 **Wanxiang P4 仍未闭合** 的具体缺口（升级、卸载、跨方案矩阵、设备/自动化证据、与 exact-hash / upgrade-rollback 切片的差距）。
   2. 在 Human 授权 `Active` 后，按最小切片闭合那些缺口：生产行为仅限万象归属/升级/卸载合同所需；补充自动化测试与 Independent Quality（及 Human 另授权时的设备证据）。
   3. 闭合证据足够后，更新 Assignment / ACTIVE_WORK，并将 Architecture Accept 残余 **A34-R1** 从 `fix` 改为可 Accept 的处置（通常 `Closed` 或书面范围说明）；**仍不自动 Accept ADR 0034**。
-  4. **Progress / Boundary (platform):** Gate 0（`2026-09-09`）本片 **Paused**（shelved for Scheme Platform）。Active 载体 = [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](scheme-delivery-scheme-platform-001.md)。A34-R1 仍 open — NOT Closed/Done；writeback later。本片 **不**继续 S2 / Swift until Human Resume。
+  4. **Progress / Boundary (platform):** Gate 0（`2026-09-09`）曾 **Paused**（shelved for Scheme Platform）。Human Resume（`2026-09-12`）本片 **Active** 再走 A34-R1 narrow path。Platform Assignment = [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](scheme-delivery-scheme-platform-001.md) 仍 **Active**（P3 Exit certified；no Close）。A34-R1 仍 open — NOT Closed/Done until S6。Freeze tip `72b5987` on `codex/scheme-platform-001`。
 - **Non-goals:**
   - 修改 ADR 0034 Status 为 Accepted，或无 Human「Accept ADR 0034」授权时改 ADR 正文决策；
   - Ice `dofile`/`loadfile` 全量闭合（属 A34-R2 / `TD-011`）；
@@ -92,8 +92,9 @@ Human 拒绝书面接受 A34-R1 后，Architecture 路径上 A34-R1 视为 **`fi
 
 - Gap inventory (slice 1): [`../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md`](../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)
 - Narrow closure checklist (S2): [`../evidence/scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md`](../evidence/scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md)
+- E16/E17/E20 Human disposition: [`../evidence/scheme-delivery-wanxiang-p4-e16-e17-e20-disposition-2026-09-12.md`](../evidence/scheme-delivery-wanxiang-p4-e16-e17-e20-disposition-2026-09-12.md)
 - Architecture Accept review (A34-R1 = `fix`): [`../reviews/adr-0034-architecture-accept-review-2026-09-09.md`](../reviews/adr-0034-architecture-accept-review-2026-09-09.md)
-- Baseline: `main` @ `814abfd7c03002256978d7658c176b80002d2539`
+- Baseline: `main` @ `814abfd7c03002256978d7658c176b80002d2539`；Resume freeze tip `72b5987` on `codex/scheme-platform-001`
 
 ## History
 
@@ -102,3 +103,4 @@ Human 拒绝书面接受 A34-R1 后，Architecture 路径上 A34-R1 视为 **`fi
 - `2026-09-09 Asia/Shanghai`（再后）: Human 批准 Ice-as-reference **Scheme Platform** 目标；新建 Ready Assignment `SCHEME-DELIVERY-SCHEME-PLATFORM-001`。本片 Lifecycle **仍 Active**（未授权 Pause）。Current Status / Boundary：下一工作 **blocked pending** Human 选择 (a) Active 平台并 Pause/收窄本片，或 (b) 继续窄 A34-R1 且 Scope 排除平台抽取。**仍不** Accept ADR；无 Swift 平台抽取。
 - `2026-09-09 Asia/Shanghai`（再再后）: Human 选择 **(b)** — keep Wanxiang P4 Active for **narrow A34-R1**；Scope **明确排除** Scheme Platform extract / Ice-as-reference P1–P3。`(a)/(b)` blocker cleared。下一阶段 S2 narrow closure checklist（E14）+ E15–E17/E20 residual disposition notes（E16/E17/E20 **仍需 Human disposition**）。Scheme Platform Assignment **仍 Ready**（未 Active）。**仍不** Accept ADR；无 push；无 Scheme Platform P1 Swift；无 mega-refactor。
 - `2026-09-09 Asia/Shanghai`（Gate 0）: Human 授权 **Pause** 本 Assignment（reason: shelved for Scheme Platform）。Lifecycle = **Paused** — **NOT** Closed/Done。A34-R1 仍 open（`fix`）；writeback later。Active 指向 [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](scheme-delivery-scheme-platform-001.md)。无 ADR Accept；无 Swift。
+- `2026-09-12 Asia/Shanghai`（**Resume**）：Human 授权 A34-R1 path + accept draft defaults for **E16/E17/E20**（narrow Exit；no device failure-rollback；keep Pass-with-conditions for App Group）。Lifecycle **Paused → Active**。Freeze tip = draft #102 tip `72b5987` on `codex/scheme-platform-001`。Next：**S5** IQ closure delta on freeze tip → **S6** A34-R1 writeback（**仍不** Accept ADR）。E14/E15 still open；A34-R1 still open until S6。Platform Assignment stays Active（P3 Exit certified；no Close）。**Local docs only**；**no push**；leave #101 alone；**no** ADR Accept；**no** undraft/merge #102。

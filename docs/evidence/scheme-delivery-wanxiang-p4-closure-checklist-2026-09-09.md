@@ -4,11 +4,12 @@
 
 **性质：** Exit 核对表（窄 A34-R1）。映射 gap inventory E01–E28 → Exit 状态。**不是** ADR 0034 Accept；**不是** Product Gate / TestFlight / Release；**不是** Scheme Platform extract / P1 Swift。
 
-**Assignment：** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) — Lifecycle **Active**（Human choice **(b)**）
+**Assignment：** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) — Lifecycle **Active（Resumed `2026-09-12 Asia/Shanghai`）**
 **Gap inventory：** [`scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md`](scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)
-**冻结 tip：** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`
-**工作分支：** `codex/wanxiang-p4-closure-001`
-**Scope：** **narrow A34-R1 only** — Scheme Platform / Ice-as-reference P1–P3 **explicitly out of scope** until [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) is separately **Active**.
+**E16/E17/E20 disposition：** [`scheme-delivery-wanxiang-p4-e16-e17-e20-disposition-2026-09-12.md`](scheme-delivery-wanxiang-p4-e16-e17-e20-disposition-2026-09-12.md)
+**冻结 tip（Resume path）：** draft #102 tip `72b5987dc4434221f4b4aa57c836369723bd7fb9` on `codex/scheme-platform-001`（historical S2 base `814abfd` / branch `codex/wanxiang-p4-closure-001` retained）
+**工作分支（Resume）：** `codex/scheme-platform-001`（leave #101 alone）
+**Scope：** **narrow A34-R1 only** — Human accepted draft narrow Exit for E16/E17/E20。Platform Assignment [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) stays **Active**（P3 Exit certified；no Close）。**不** Accept ADR 0034。
 
 ---
 
@@ -31,7 +32,8 @@
 - **Closed（evidence）** = 冻结 tip 上已有可引用生产行为 + 自动化/IQ（或明确历史有限门）；本 checklist 复用 gap inventory 指针，**不**新宣称 Closed。
 - **Open — writeback path** = E14：本表是起点；正式回写 A34-R1 仍待后续 S6 + Human 确认。
 - **Open — IQ** = E15：尚未以「P4 closure Exit」名义对冻结 tip 做汇总 IQ。
-- **Needs Human disposition** = E16/E17/E20：不得静默 Closed；须 Human 选择接受条件 / 缩窄范围 / 补真机或证据。
+- **Accepted (narrow Exit)** = E16/E17/E20：Human（`2026-09-12`）接受 draft narrow Exit（不再 Needs Human disposition）。
+- **Needs Human disposition** = （历史）E16/E17/E20 曾用此态；现已 Accepted（narrow Exit）。
 - **Out-of-scope** = 本片 Non-goals（含平台抽取）。
 
 | # | Expectation | Exit status (narrow) | Evidence pointer / disposition note |
@@ -50,12 +52,12 @@
 | E12 | 卸载 fail-closed：rollback 失败保留 staging | **Closed（evidence）** | double-failure repair + Q-P2-01 |
 | E13 | 禁止整目录删除 `lua/` / `opencc/` | **Closed（evidence）** | Architecture Accept 抽样；`stageSchemaUninstall` |
 | E14 | 书面「Wanxiang P4 closure」核对表 + 可回写 A34-R1 | **Open — writeback path** | **本文件 = S2 核对表落盘**；A34-R1 disposition writeback（S6）仍待：须 Human 对 Open 项拍板后，再回写 Architecture review / Assignment / ACTIVE_WORK。**不**在本片自动 Closed A34-R1。 |
-| E15 | Independent Quality：对本闭合 tip 无开放 P0/P1（本片范围） | **Open — IQ** | 既有切片 IQ Pass with conditions；**尚未**以「P4 closure Exit」名义对 `814abfd` / 本分支 tip 做汇总 IQ（S5）。保持 Open。 |
-| E16 | 真机：万象 **升级失败回滚** Device-attested | **Needs Human disposition** | 升级切片未要求真机。**Draft default（非 Human accept）：** 书面缩窄 Exit — 接受「无万象升级失败回滚真机」为条件，依赖自动化 + IQ，直至 Human 另授权 Device。**仍需 Human 明示：接受条件 / 缩窄 / 补真机。** |
-| E17 | 真机：万象 **卸载失败回滚** Device-attested | **Needs Human disposition** | Limited P4 Gate 接受 device failure-rollback 未测（偏 Ice）。万象对等未记。**Draft default（非 Human accept）：** 书面缩窄 Exit — 同 E16 条件接受，直至另授权 Device。**仍需 Human 明示。** |
+| E15 | Independent Quality：对本闭合 tip 无开放 P0/P1（本片范围） | **Open — IQ** | 既有切片 IQ Pass with conditions；**尚未**以「P4 closure Exit」名义对 Resume freeze tip `72b5987` 做汇总 IQ（S5）。保持 Open。 |
+| E16 | 真机：万象 **升级失败回滚** Device-attested | **Accepted (narrow Exit)** | Human `2026-09-12 Asia/Shanghai`：**Accepted（narrow Exit）** — 接受「无万象升级失败回滚真机」；依赖自动化 + IQ；不要求 device failure-rollback 真机。详见 disposition note。 |
+| E17 | 真机：万象 **卸载失败回滚** Device-attested | **Accepted (narrow Exit)** | Human `2026-09-12 Asia/Shanghai`：**Accepted（narrow Exit）** — 同 E16；不要求卸载失败回滚真机。详见 disposition note。 |
 | E18 | 真机：万象安装/切换/输入成功路径 | **Closed（evidence）** | `rime-scheme-delivery-wanxiang-success-2026-08-28.md`；**不**等同失败回滚 |
 | E19 | Runtime-route 设备：活跃卸载后 Luna 候选 | **Closed（evidence）** | `SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001` Pass with conditions |
-| E20 | Cross-scheme **真实 App Group / device transaction** 全路径 | **Needs Human disposition** | CSF / CS09-10 条件项。**Draft default（非 Human accept）：** 接受现有 Pass with conditions 限度作为窄闭合条件，不把全路径 App Group 真机交易证明当作 A34-R1 阻塞，直至 Human 另要求补证据。**仍需 Human 明示。** |
+| E20 | Cross-scheme **真实 App Group / device transaction** 全路径 | **Accepted (narrow Exit)** | Human `2026-09-12 Asia/Shanghai`：**Accepted（narrow Exit）** — 保持现有 Pass-with-conditions 限度；不把全路径 App Group 真机交易证明当作 A34-R1 阻塞。详见 disposition note。 |
 | E21 | Crash/restart Recovery persistence | **Out-of-scope** | Non-goals |
 | E22 | Ice `dofile`/`loadfile`（A34-R2 / TD-011） | **Out-of-scope** | 并行债 |
 | E23 | `RTRD-01` / `RTRD-02` | **Out-of-scope** | 独立 Assignment |
@@ -73,48 +75,50 @@
 | **Closed（evidence）** | 16（E01–E13, E18, E19） |
 | **Open — writeback path** | 1（E14） |
 | **Open — IQ** | 1（E15） |
-| **Needs Human disposition** | 3（E16, E17, E20） |
+| **Accepted (narrow Exit)** | 3（E16, E17, E20） — Human `2026-09-12` |
+| **Needs Human disposition** | 0 |
 | **Out-of-scope** | 7（E21–E28）+ platform extract |
 
 ---
 
-## 2. Residual disposition notes（draft — not Human accept）
+## 2. Residual disposition notes
 
-> 以下「Draft default」仅为 Executor 便于 Human 决策的建议，**明确标注 draft**。**不得**解释为 Human 已接受 device residuals。
+> Human `2026-09-12 Asia/Shanghai` **Accepted（narrow Exit）** for E16/E17/E20（原 draft defaults）。E14/E15 仍 Open；A34-R1 仍 open until S6。
 
-| Residual | Status | Draft default（labeled draft） | What Human must still decide |
+| Residual | Status | Disposition | What remains |
 |---|---|---|---|
-| E14 writeback | Open | 完成本 checklist 后，待 E15–E17/E20 处置 + S5 IQ，再走 S6 A34-R1 writeback | 是否授权 A34-R1 disposition 回写（仍 **不** Accept ADR） |
-| E15 IQ | Open | 安排 Independent Quality「P4 narrow closure」delta on 冻结 tip | 何时 / 对哪个 tip 跑汇总 IQ |
-| E16 升级失败回滚真机 | **Needs Human disposition** | Draft：缩窄 Exit，接受无真机 | 接受条件 / 缩窄 / 补 Device |
-| E17 卸载失败回滚真机 | **Needs Human disposition** | Draft：缩窄 Exit，接受无真机 | 接受条件 / 缩窄 / 补 Device |
-| E20 App Group / device transaction | **Needs Human disposition** | Draft：接受现有 Pass with conditions 限度 | 接受条件 / 补证据 |
-| Platform Active | Deferred | 保持 Ready；与窄 P4 并行 | 何时 Active `SCHEME-DELIVERY-SCHEME-PLATFORM-001` |
-| Push / merge | Not authorized | 本地 docs only | 是否 push 本分支 |
-| ADR 0034 Accept | Out-of-scope | 不在本片 | 另授权 Accept |
+| E14 writeback | Open | Checklist + narrow dispositions recorded；S6 after S5 | Human 授权 A34-R1 disposition 回写（仍 **不** Accept ADR） |
+| E15 IQ | Open | S5 Independent Quality「P4 narrow closure」delta on freeze tip `72b5987` | 跑汇总 IQ；不静默 Closed 条件项 |
+| E16 升级失败回滚真机 | **Accepted (narrow Exit)** | Human accept draft：无升级失败回滚真机 | 无（直至另授权 Device） |
+| E17 卸载失败回滚真机 | **Accepted (narrow Exit)** | Human accept draft：无卸载失败回滚真机 | 无（直至另授权 Device） |
+| E20 App Group / device transaction | **Accepted (narrow Exit)** | Human accept：keep Pass-with-conditions | 无（直至另要求补证据） |
+| Platform Assignment | **Active**（P3 Exit certified） | Stays Active；no Close | #101 / undraft-merge #102 / optional Close = separate auth |
+| Push / merge | Not authorized | 本地 docs only | 是否 push（ask before push） |
+| ADR 0034 Accept | Out-of-scope | 不在本片；leave #101 | 另授权 Accept |
 
 ---
 
-## 3. Recommended next steps（narrow path）
+## 3. Recommended next steps（Resume path）
 
-1. Human 对 **E16 / E17 / E20** 明示 disposition（或明确采用上表 draft defaults）。
-2. **S5**：Independent Quality closure delta（本片范围；不静默 Closed 条件项）。
-3. **S6**：A34-R1 disposition writeback（仅在 Open 项处置后；**仍不**改 ADR Status）。
-4. **S3 Swift** 仅当核对发现具体生产缺口；**禁止**平台抽取。
-5. 对外 **push/merge** 仍需 Human。
+1. ~~Human 对 E16 / E17 / E20 disposition~~ — **Done** `2026-09-12`（Accepted narrow Exit）。
+2. **S5**：Independent Quality closure delta on freeze tip `72b5987`（本片范围；不静默 Closed 条件项）。
+3. **S6**：A34-R1 disposition writeback（E14 path；**仍不**改 ADR Status / **不** Accept ADR）。
+4. **S3 Swift** 仅当核对发现具体生产缺口；**禁止**平台 mega-refactor 扩 scope。
+5. 对外 **push/merge** 仍需 Human；**leave #101 alone**；no undraft/merge #102 without auth。
 
 ---
 
 ## 4. Explicit non-claims
 
-- 不宣称 Wanxiang P4 已 Closed / A34-R1 已关闭
-- 不把 E16/E17/E20 draft defaults 当作 Human accept
-- 不 Accept ADR 0034；不关闭 TD-011 / A34-R2 / RTRD-* / Recovery
+- 不宣称 Wanxiang P4 已 Closed / A34-R1 已关闭（E14/E15 仍 Open；A34-R1 open until S6）
+- E16/E17/E20 = Human **Accepted（narrow Exit）** — **不**等同 device evidence Closed；**不**等同 A34-R1 Closed
+- 不 Accept ADR 0034；leave #101 alone；不关闭 TD-011 / A34-R2 / RTRD-* / Recovery
 - 不授权 TestFlight、完整 Product Gate、push/merge（除非 Human 另说）
-- 不把本 checklist 解释为 Scheme Platform Active 或 P1 Swift 授权
+- Platform Assignment P3 Exit certified **≠** Assignment Close；keep Platform Active
 
 ---
 
 ## 5. History
 
 - `2026-09-09 Asia/Shanghai`：S2 narrow closure checklist 落盘；记录 Human **(b)**；E14 = writeback path；E15 IQ open；E16/E17/E20 = **needs Human disposition**（draft defaults 明确标注）。
+- `2026-09-12 Asia/Shanghai`：Human **Resume** Wanxiang P4（Paused→Active）for A34-R1；**Accepted（narrow Exit）** for E16/E17/E20；freeze tip now `72b5987` / `codex/scheme-platform-001`；counts updated（Needs Human disposition → 0）；next S5 then S6；leave #101；**no** ADR Accept；Assignment Lifecycle **Active（Resumed）**。
