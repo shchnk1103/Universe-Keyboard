@@ -99,7 +99,7 @@ S6 `2026-09-12`：**A34-R1 Closed（narrow Wanxiang P4 Exit）** — 不再是 o
 | **S5** | Independent Quality closure delta | Review | 对冻结 tip 出具「无开放 P0/P1（本片范围）」或列出残留 | 把条件项静默当成 Closed |
 | **S6** | A34-R1 disposition writeback | Docs | Assignment / ACTIVE_WORK / Architecture review：A34-R1 → `Closed` 或 Human 书面缩窄；**仍不**改 ADR Status | 无 Human 对 writeback 的确认 |
 
-**S1–S2 / S5 / S6 已完成。** Human Resume `2026-09-12`：E16/E17/E20 Accepted（narrow）；S5 IQ Done（E15 Closed）；**S6** A34-R1 **Closed（narrow）** / E14 Closed（**不** Accept ADR；**不** Assignment Close）。
+**S1–S2 / S5 / S6 / Assignment Close 已完成。** Human Resume `2026-09-12`：E16/E17/E20 Accepted（narrow）；S5 IQ Done（E15 Closed）；**S6** A34-R1 **Closed（narrow）** / E14 Closed；Human **Close** Assignment `2026-09-12`（**Close ≠ ADR Accept**；Platform stays Active）。
 
 ---
 
@@ -120,3 +120,4 @@ S6 `2026-09-12`：**A34-R1 Closed（narrow Wanxiang P4 Exit）** — 不再是 o
 - `2026-09-12 Asia/Shanghai`：Human **Accepted（narrow Exit）** for E16/E17/E20；Resume freeze tip `72b5987` on `codex/scheme-platform-001`；**E14/E15 still Open**；**do not silent-close A34-R1**；next S5→S6；no ADR Accept；leave #101。
 - `2026-09-12 Asia/Shanghai`（**S5**）：Independent Quality Pass with conditions on freeze `72b5987`；**E15 Closed**；E14 / A34-R1 still open until S6；hosted CI flake residual accept（run `34676751887`）；leave #101；no ADR Accept。
 - `2026-09-12 Asia/Shanghai`（**S6**）：Human-authorized A34-R1 writeback — **E14 Closed**；**A34-R1 Closed（narrow）** — no longer an open `fix` blocker；leave #101；no ADR Accept。
+- `2026-09-12 Asia/Shanghai`（**Close**）：Human-authorized Assignment Close；narrow Exit met；A34-R1 remains Closed；leave #101；**Close ≠ ADR Accept**；Platform stays Active。

@@ -89,7 +89,7 @@
 
 | Residual | Status | Disposition | What remains |
 |---|---|---|---|
-| E14 writeback | **Closed（writeback）** | S6 A34-R1 **Closed（narrow）** | **不** Accept ADR；**不** Assignment Close |
+| E14 writeback | **Closed（writeback）** | S6 A34-R1 **Closed（narrow）** | **不** Accept ADR；Assignment **Closed** via Human Close `2026-09-12` |
 | E15 IQ | **Closed（evidence）** | S5 IQ Pass with conditions — [`../reviews/scheme-delivery-wanxiang-p4-closure-001-s5-quality-review.md`](../reviews/scheme-delivery-wanxiang-p4-closure-001-s5-quality-review.md) | 无（直至 scope 变更）；残差见 IQ residuals |
 | E16 升级失败回滚真机 | **Accepted (narrow Exit)** | Human accept draft：无升级失败回滚真机 | 无（直至另授权 Device） |
 | E17 卸载失败回滚真机 | **Accepted (narrow Exit)** | Human accept draft：无卸载失败回滚真机 | 无（直至另授权 Device） |
@@ -105,8 +105,9 @@
 1. ~~Human 对 E16 / E17 / E20 disposition~~ — **Done** `2026-09-12`（Accepted narrow Exit）。
 2. ~~**S5**：Independent Quality closure delta~~ — **Done** `2026-09-12`（E15 Closed；Pass with conditions）。
 3. ~~**S6**：A34-R1 disposition writeback~~ — **Done** `2026-09-12`（E14 Closed；A34-R1 Closed narrow；**仍不**改 ADR Status / **不** Accept ADR）。
-4. **S3 Swift** 仅当核对发现具体生产缺口；**禁止**平台 mega-refactor 扩 scope。
-5. 对外 **push/merge** 仍需 Human；**leave #101 alone**；no undraft/merge #102 without auth。
+4. ~~**Assignment Close**~~ — **Done** `2026-09-12`（Human-authorized Close；narrow Exit met；**Close ≠ ADR Accept**）。
+5. **S3 Swift** 仅当另授权发现具体生产缺口；**禁止**平台 mega-refactor 扩 scope（Platform stays Active）。
+6. 对外 **push/merge** 仍需 Human；**leave #101 alone**；no undraft/merge #102 without auth；ADR Accept / Platform Close = separate auth。
 
 ---
 
@@ -126,3 +127,4 @@
 - `2026-09-12 Asia/Shanghai`：Human **Resume** Wanxiang P4（Paused→Active）for A34-R1；**Accepted（narrow Exit）** for E16/E17/E20；freeze tip now `72b5987` / `codex/scheme-platform-001`；counts updated（Needs Human disposition → 0）；next S5 then S6；leave #101；**no** ADR Accept；Assignment Lifecycle **Active（Resumed）**。
 - `2026-09-12 Asia/Shanghai`（**S5**）：Independent Quality **Pass with conditions** on freeze `72b5987`；**E15 → Closed（evidence）**；counts：Closed 17 / Open writeback 1（E14）/ Open IQ 0；A34-R1 still open until S6；leave #101；**no** ADR Accept；ask before push。
 - `2026-09-12 Asia/Shanghai`（**S6**）：Human-authorized A34-R1 writeback — **E14 → Closed（writeback）**；**A34-R1 Closed（narrow）**；counts：Closed(evidence) 17 / Closed(writeback) 1 / Open writeback 0；leave #101；**no** ADR Accept；ask before push。
+- `2026-09-12 Asia/Shanghai`（**Close**）：Human-authorized Assignment Close；narrow Exit Criteria met；Lifecycle → Closed；A34-R1 remains Closed；leave #101；**Close ≠ ADR Accept**；Platform stays Active；**no push**。

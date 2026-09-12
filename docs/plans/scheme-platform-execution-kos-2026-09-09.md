@@ -3,7 +3,7 @@
 **Assignment:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) (**Active**)
 **Frozen tip:** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`
 **Branch:** `codex/scheme-platform-001` (created from `origin/main`; **not** PR #101 branch)
-**Related:** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) (**Active / Resumed `2026-09-12`** — **A34-R1 Closed（narrow）** via S6; E14 Closed; still **no** ADR Accept; **no** Assignment Close)
+**Related:** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) (**Closed** `2026-09-12` — narrow A34-R1 Exit met; **A34-R1 Closed（narrow）** remains Closed; still **no** ADR Accept; Platform stays Active / no Close)
 
 ## Cadence
 
@@ -17,7 +17,7 @@
 | P1 | Extract Ice hooks → platform; Ice behavior unchanged. **Human-approved order (`2026-09-10`):** P1-0→P1-6 — see [`scheme-platform-p1-extract-plan-2026-09-10.md`](scheme-platform-p1-extract-plan-2026-09-10.md). **P1-0…P1-6 (done on #102 tip `cd4fa65` / CI full green):** registry → LayoutCapability → SharedDefault Ice `privatePreset` → ResourceOwnership dual → UninstallHooks Ice fallback → summary + IQ **Pass with conditions**（freeze `3cfa355`）。**SP-P1-IQ-01 `fix`**（KOS residual close；runs `34628171114` + `34629774209`）。keep Active；next P2 awaiting auth；ask before push；no silent close of remaining residuals；no ADR Accept；no undraft/merge #102 without auth. Scope: LayoutCapability + ResourceCapability/ownership; adapter lookup (Ice-only nine-key; Wanxiang `supportsNineKey=false`); SharedDefault = Ice `privatePreset` only; Ownership = `namedList`+`exactHash`; UninstallHooks = Ice layout fallback. **Not P1 UI:** Discovery / layout-picker |
 | P2 | **Done (`2026-09-12`) tip `7c93904`:** Wanxiang on platform (lua / layout / **SharedDefault → `privatePreset`** — `wanxiang_preset.yaml`; **Ownership dual / `exactHash`**); plan/post `wanxiang-plan-2`/`wanxiang-post-2`; hosted CI run `34672873379` full green; Simulator product smoke Pass; keep Active |
 | P3 | **Exit certified (`2026-09-12`) tip `a0d3481` / docs tip `72b5987`:** Human certified P3 Exit — plan DELETE+KEEP + smoke A–D Pass + hosted CI green ([`scheme-platform-p3-fork-cleanup-2026-09-12.md`](scheme-platform-p3-fork-cleanup-2026-09-12.md)). **Keep Active** — **no Assignment Close**. A34-R1 revisit **started** via Resume Wanxiang P4 (**no Accept ADR**); leave #101; no undraft/merge #102 without auth; **ask before push** |
-| Wanxiang P4 | **Active（Resumed）**; **A34-R1 Closed（narrow）** via S6；E14 Closed；Human E16/E17/E20 Accepted（narrow Exit）；freeze `72b5987` / S5 tip `6f29f64` — **no** ADR Accept；**no** Assignment Close |
+| Wanxiang P4 | **Closed**（Human Close `2026-09-12`；narrow Exit met）；**A34-R1 Closed（narrow）** remains Closed；E14 Closed；Human E16/E17/E20 Accepted（narrow Exit）；freeze `72b5987` / S5 tip `6f29f64` / S6 tip `a978160` — **no** ADR Accept；Platform stays Active / no Close |
 | Non-claims (Gate 0 slice) | No ADR Accept; no Product Gate / TestFlight; no Swift |
 
 ## Gate 0 slice boundary
@@ -51,3 +51,4 @@ Governance + bring docs + embed this execution plan. Do **not** Accept ADR 0034,
 - `2026-09-12 Asia/Shanghai`: Human started **A34-R1 revisit** — Resume Wanxiang P4; E16/E17/E20 Accepted (narrow Exit); freeze `72b5987`; platform stays Active / no Close; leave #101; **no** ADR Accept; Wanxiang next S5→S6.
 - `2026-09-12 Asia/Shanghai`: Wanxiang P4 **S5 IQ Done** (Pass with conditions; E15 Closed on freeze `72b5987`); platform stays Active / no Close; next Wanxiang **S6** A34-R1 writeback awaiting Human; leave #101; **no** ADR Accept; ask before push.
 - `2026-09-12 Asia/Shanghai`: Wanxiang P4 **S6** — **A34-R1 Closed（narrow Wanxiang P4 Exit）**; E14 Closed; platform stays Active / no Close; leave #101; **no** ADR Accept; ask before push.
+- `2026-09-12 Asia/Shanghai`: Wanxiang P4 **Closed** (Human Close; narrow Exit met); A34-R1 remains Closed; platform stays Active / no Close; leave #101; **no** ADR Accept; **Close ≠ ADR Accept**; ask before push; **no push**.
