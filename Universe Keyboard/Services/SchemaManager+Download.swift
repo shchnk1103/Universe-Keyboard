@@ -11,7 +11,7 @@ extension SchemaManager {
             enqueueSchemeMutation(.startDownload(schemaID: schemaID, force: true))
             return
         }
-        switch rimeIceDownloadState {
+        switch downloadState {
         case .idle, .completed, .failed:
             break
         default:
@@ -123,7 +123,7 @@ extension SchemaManager {
             try checkDiskSpace(needed: diskNeeded)
             try ensureActive(operationID)
 
-            rimeIceDownloadState = .extracting(schemeName: schemeName)
+            downloadState = .extracting(schemeName: schemeName)
             recordPhase(
                 diagnosticContext,
                 attempt: archiveResult.attempt,
@@ -151,7 +151,7 @@ extension SchemaManager {
                 throw DownloadError.corruptArchive
             }
 
-            rimeIceDownloadState = .postProcessing(schemeName: schemeName)
+            downloadState = .postProcessing(schemeName: schemeName)
             recordPhase(
                 diagnosticContext,
                 attempt: archiveResult.attempt,
@@ -164,7 +164,8 @@ extension SchemaManager {
             if !luaAvailable {
                 try await stripLuaIfNeeded(at: schemaURL)
             }
-            if schemaID == "rime_ice" {
+            // P3: Ice T9 sanitize via SchemePostExtractHooks (no literal schemaID fork).
+            if SchemeAdapterRegistry.shouldSanitizeT9OnExtract(for: schemaID) {
                 try await sanitizeT9SchemaIfPresent(in: extractDir)
             }
             // SharedDefault post-extract via SchemeAdapter registry
@@ -238,7 +239,7 @@ extension SchemaManager {
                 cleanupTemporaryItems(temporaryItems)
                 activeDownloadOperationID = nil
                 currentDownloadTask = nil
-                rimeIceDownloadState = .completed(schemeName: schemeName)
+                downloadState = .completed(schemeName: schemeName)
                 refreshSchemaList()
                 recordTerminal(
                     diagnosticContext,
@@ -277,13 +278,16 @@ extension SchemaManager {
                 result: .succeeded
             )
 
-            if schemaID == "rime_ice", let shared = archiveInstaller.sharedDataDirectoryURL() {
+            // P3: Ice T9 pre-deploy ensure via SchemePostExtractHooks (behavior unchanged).
+            if SchemeAdapterRegistry.shouldEnsureCompatibleT9PreDeploy(for: schemaID),
+                let shared = archiveInstaller.sharedDataDirectoryURL()
+            {
                 // T9 compatibility rewriting must precede deployment so RIME compiles
                 // the sanitized schema instead of the upstream Lua-dependent version.
                 _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: shared)
             }
 
-            rimeIceDownloadState = .deploying(schemeName: schemeName)
+            downloadState = .deploying(schemeName: schemeName)
             recordPhase(
                 diagnosticContext,
                 attempt: archiveResult.attempt,
@@ -334,7 +338,7 @@ extension SchemaManager {
             cleanupTemporaryItems(temporaryItems)
             activeDownloadOperationID = nil
             currentDownloadTask = nil
-            rimeIceDownloadState = .completed(schemeName: schemeName)
+            downloadState = .completed(schemeName: schemeName)
             refreshSchemaList()
             recordTerminal(
                 diagnosticContext,
@@ -355,7 +359,7 @@ extension SchemaManager {
             )
             if activeDownloadOperationID == operationID {
                 activeDownloadOperationID = nil
-                rimeIceDownloadState = .idle
+                downloadState = .idle
             }
             recordTerminal(
                 diagnosticContext,
@@ -387,7 +391,7 @@ extension SchemaManager {
             if activeDownloadOperationID == operationID {
                 activeDownloadOperationID = nil
                 currentDownloadTask = nil
-                rimeIceDownloadState = .failed(
+                downloadState = .failed(
                     schemaID: schemaID,
                     schemeName: schemeName,
                     message: failureMessage
@@ -433,7 +437,7 @@ extension SchemaManager {
         let operationID = UUID()
         activeDownloadOperationID = operationID
         let schemeName = downloadSchemeDisplayName(for: schemaID)
-        rimeIceDownloadState = .fetchingReleaseInfo(schemeName: schemeName)
+        downloadState = .fetchingReleaseInfo(schemeName: schemeName)
         currentDownloadTask = Task { [weak self] in
             await self?.fetchAndDownload(
                 schemaID: schemaID,
@@ -461,7 +465,7 @@ extension SchemaManager {
         for (index, source) in sources.enumerated() {
             let attempt = DiagnosticEvent.SchemeDeliveryAttempt(index + 1)!
             try ensureActive(operationID)
-            rimeIceDownloadState = .downloading(
+            downloadState = .downloading(
                 schemeName: schemeName,
                 sourceName: source.displayName,
                 progress: nil
@@ -482,10 +486,10 @@ extension SchemaManager {
                 ) { [weak self] fraction in
                     Task { @MainActor in
                         guard let self, self.activeDownloadOperationID == operationID else { return }
-                        guard case .downloading(let name, let sourceName, _) = self.rimeIceDownloadState,
+                        guard case .downloading(let name, let sourceName, _) = self.downloadState,
                             name == schemeName, sourceName == source.displayName
                         else { return }
-                        self.rimeIceDownloadState = .downloading(
+                        self.downloadState = .downloading(
                             schemeName: schemeName,
                             sourceName: source.displayName,
                             progress: fraction
@@ -800,15 +804,10 @@ extension SchemaManager {
     /// corresponding scheme changes. A stale manifest then fails before bytes
     /// are downloaded or installed.
     ///
-    /// P1-1: thin bridge to `SchemeAdapterRegistry` (same strings as today’s hardcodes).
+    /// P3: post-process revision comes from the registry for any id (nil when unknown).
+    /// Download production paths pass letter schema ids; `t9` inherits Ice via normalize.
     private func postProcessingRevision(for schemaID: String) -> String? {
-        // Literal schemaID match only — same as the former switch (no t9 alias).
-        switch schemaID {
-        case "rime_ice", "wanxiang":
-            return SchemeAdapterRegistry.postProcessingRevision(for: schemaID)
-        default:
-            return nil
-        }
+        SchemeAdapterRegistry.postProcessingRevision(for: schemaID)
     }
 
     private func ensureActive(_ operationID: UUID) throws {

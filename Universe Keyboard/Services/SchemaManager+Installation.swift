@@ -241,7 +241,7 @@ extension SchemaManager {
         if routeMutation == nil {
             requestDeploy(leaseOperationID: operationID)
         }
-        rimeIceDownloadState = .idle
+        downloadState = .idle
         if schemaID == "rime_ice" {
             rimeIceLicenseAccepted = false
             rimeIceVersion = nil

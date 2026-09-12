@@ -165,7 +165,7 @@ final class RimeSettingsStore {
 
     var schemas: [SchemaMetadata] { schemaManager.schemas }
     var activeSchemaID: String { schemaManager.activeSchemaID }
-    var downloadState: DownloadState { schemaManager.rimeIceDownloadState }
+    var downloadState: DownloadState { schemaManager.downloadState }
     /// Observation token: license acceptance lives on SchemaManager / defaults, so
     /// bump this whenever accept/reject changes so SwiftUI re-reads `licenseAccepted`.
     var licenseAcceptanceEpoch: Int = 0

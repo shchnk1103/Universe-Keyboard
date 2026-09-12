@@ -185,11 +185,11 @@ final class SchemaManagerTests: XCTestCase {
 
     func testDownloadIsBlockedUntilCurrentLicenseRevisionIsAccepted() {
         let manager = makeManager()
-        manager.rimeIceDownloadState = .completed(schemeName: "雾凇拼音")
+        manager.downloadState = .completed(schemeName: "雾凇拼音")
 
         manager.startDownload()
 
-        XCTAssertEqual(manager.rimeIceDownloadState, .completed(schemeName: "雾凇拼音"))
+        XCTAssertEqual(manager.downloadState, .completed(schemeName: "雾凇拼音"))
     }
 
     func testCheckForUpdateUsesPinnedManifestVersion() async {
@@ -250,12 +250,12 @@ final class SchemaManagerTests: XCTestCase {
     func testStartDownloadAllowsCompletedStateForInstalledSchemaUpdates() {
         let manager = makeManager()
         manager.acceptLicense()
-        manager.rimeIceDownloadState = .completed(schemeName: "雾凇拼音")
+        manager.downloadState = .completed(schemeName: "雾凇拼音")
 
         manager.startDownload()
 
         XCTAssertEqual(
-            manager.rimeIceDownloadState,
+            manager.downloadState,
             .fetchingReleaseInfo(schemeName: "雾凇拼音")
         )
     }
@@ -270,12 +270,12 @@ final class SchemaManagerTests: XCTestCase {
         let installer = StubSchemaArchiveInstaller()
         let manager = makeManager(settings: settings, installer: installer)
         manager.acceptLicense()
-        manager.rimeIceDownloadState = .completed(schemeName: "雾凇拼音")
+        manager.downloadState = .completed(schemeName: "雾凇拼音")
 
         manager.forceRedownload()
 
         XCTAssertEqual(
-            manager.rimeIceDownloadState,
+            manager.downloadState,
             .fetchingReleaseInfo(schemeName: "雾凇拼音")
         )
         XCTAssertEqual(settings.string(forKey: "rime_ice_etag"), "old-etag")
@@ -403,7 +403,7 @@ final class SchemaManagerTests: XCTestCase {
         )
         await manager.fetchAndDownload(schemaID: "rime_ice")
 
-        XCTAssertEqual(manager.rimeIceDownloadState, .completed(schemeName: "雾凇拼音"))
+        XCTAssertEqual(manager.downloadState, .completed(schemeName: "雾凇拼音"))
         XCTAssertNil(manager.activeDownloadOperationID)
         XCTAssertNil(manager.schemeDeliveryCommitLeaseOperationID)
         XCTAssertEqual(manager.activeSchemaID, "wanxiang", "no-op must not thrash selection")
@@ -486,8 +486,8 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(manager.activeSchemaID, "wanxiang")
         XCTAssertEqual(settings.string(forKey: "rime_active_schema"), "wanxiang")
         let deploymentRequests = await deploymentService.requests
-        guard case .failed(_, _, let failureMessage) = manager.rimeIceDownloadState else {
-            return XCTFail("expected a failed CS-F1 operation, got \(manager.rimeIceDownloadState)")
+        guard case .failed(_, _, let failureMessage) = manager.downloadState else {
+            return XCTFail("expected a failed CS-F1 operation, got \(manager.downloadState)")
         }
         XCTAssertFalse(failureMessage.isEmpty)
         XCTAssertEqual(deploymentRequests.map(\.runtimeSmokeSchemaID), ["rime_ice"])
@@ -665,13 +665,13 @@ final class SchemaManagerTests: XCTestCase {
 
         await manager.fetchAndDownload(schemaID: "wanxiang")
 
-        guard case .failed(let schemaID, let schemeName, let message) = manager.rimeIceDownloadState else {
+        guard case .failed(let schemaID, let schemeName, let message) = manager.downloadState else {
             return XCTFail("a failed download must retain its owning schema ID")
         }
         XCTAssertEqual(schemaID, "wanxiang")
         XCTAssertEqual(schemeName, "万象拼音")
-        XCTAssertEqual(manager.rimeIceDownloadState.failureMessage(for: "wanxiang"), message)
-        XCTAssertNil(manager.rimeIceDownloadState.failureMessage(for: "rime_ice"))
+        XCTAssertEqual(manager.downloadState.failureMessage(for: "wanxiang"), message)
+        XCTAssertNil(manager.downloadState.failureMessage(for: "rime_ice"))
     }
 
     func testInstallationPassesSharedLuaCapabilityToInstaller() throws {
@@ -2496,14 +2496,14 @@ final class SchemaManagerTests: XCTestCase {
         let manager = makeManager()
         let operationID = UUID()
         manager.activeDownloadOperationID = operationID
-        manager.rimeIceDownloadState = .deploying(schemeName: "万象拼音")
+        manager.downloadState = .deploying(schemeName: "万象拼音")
 
         let acquired = await manager.acquireSchemeDeliveryCommitLease(operationID: operationID)
         XCTAssertTrue(acquired)
         manager.cancelDownload()
 
         XCTAssertEqual(manager.activeDownloadOperationID, operationID)
-        XCTAssertEqual(manager.rimeIceDownloadState, .deploying(schemeName: "万象拼音"))
+        XCTAssertEqual(manager.downloadState, .deploying(schemeName: "万象拼音"))
         XCTAssertTrue(manager.deferredDownloadCancellationRequested)
 
         manager.releaseSchemeDeliveryCommitLease(operationID: operationID)
@@ -2564,7 +2564,7 @@ final class SchemaManagerTests: XCTestCase {
 
         let waiterResult = await waiter.value
         XCTAssertTrue(waiterResult)
-        guard case .failed(let schemaID, let name, _) = manager.rimeIceDownloadState else {
+        guard case .failed(let schemaID, let name, _) = manager.downloadState else {
             return XCTFail("invalid deferred download must publish a recoverable failure")
         }
         XCTAssertEqual(schemaID, "missing")

@@ -889,7 +889,7 @@ final class RimeSettingsStoreTests: XCTestCase {
             schemeName: "雾凇拼音",
             message: "网络不可用"
         )
-        schemaManager.rimeIceDownloadState = rimeIceFailure
+        schemaManager.downloadState = rimeIceFailure
 
         XCTAssertEqual(store.downloadState.failureMessage(for: "rime_ice"), "网络不可用")
         XCTAssertNil(store.downloadState.failureMessage(for: "wanxiang"))
@@ -911,9 +911,9 @@ final class RimeSettingsStoreTests: XCTestCase {
 
         // A new operation replaces the terminal state. Its failure must bind
         // to the new scheme instead of resurrecting the previous one.
-        schemaManager.rimeIceDownloadState = .fetchingReleaseInfo(schemeName: "万象拼音")
+        schemaManager.downloadState = .fetchingReleaseInfo(schemeName: "万象拼音")
         XCTAssertNil(store.downloadState.failureMessage(for: "rime_ice"))
-        schemaManager.rimeIceDownloadState = .failed(
+        schemaManager.downloadState = .failed(
             schemaID: "wanxiang",
             schemeName: "万象拼音",
             message: "网络不可用"

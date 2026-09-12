@@ -56,6 +56,7 @@ public enum SchemeOwnershipStrategyID: String, Sendable, Equatable {
 /// P1-3 routes SharedDefault post-extract through `sharedDefaultMode` + applicator lookup.
 /// P1-4 routes uninstall / checkpoint ownership through `ownershipStrategyID` + ResourceOwnership.
 /// P1-5 routes Ice uninstall layout fallback through `SchemeUninstallHooks` / `onUninstallPrepare`.
+/// P3 routes Ice T9 sanitize / pre-deploy ensure through `SchemePostExtractHooks`.
 public struct SchemeAdapter: Sendable, Equatable {
     /// Canonical letter-schema id (`rime_ice`, `wanxiang`, `luna_pinyin`).
     public let schemaID: String
