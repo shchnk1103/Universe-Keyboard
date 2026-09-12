@@ -4,6 +4,7 @@
 **Branch:** `codex/scheme-platform-001`
 **P2 tip (Done):** `7c93904` — hosted CI run `34672873379` full green; Simulator product smoke Pass (`wanxiang_preset` present; schemas rewritten; Prelude default intact; typing OK)
 **Exit Criteria (P3):** 「冗余 forks 删除计划完成或 Human 书面保留清单」— satisfied by this written DELETE + KEEP plan **and** completed safe deletions in this slice.
+**P3 Exit status:** **Human-certified** `2026-09-12 Asia/Shanghai` on tip `a0d3481`（plan DELETE+KEEP + smoke A–D Pass + hosted CI green）. Assignment **remains Active** — Exit certify **≠** Assignment Close.
 **Non-claims:** **no** ADR Accept; **no** Product Gate / TestFlight; **no** Assignment Close; **no** undraft/merge #102; leave #101 alone; leave `.codex-p4-wip.patch` untracked; **no** Wanxiang nine-key; **no** Discovery UI; **ask before push**.
 
 ## P2 closeout (context)
@@ -13,8 +14,8 @@
 | P2 | **Done** on tip `7c93904` |
 | Hosted CI | Full green — run `34672873379` |
 | Product smoke | Simulator Pass — Wanxiang `privatePreset` / `wanxiang_preset`; schemas rewritten; Prelude `default.yaml` intact; typing OK |
-| Assignment | Keep **Active** (Exit still needs P3 written keep-list + deletions) |
-| Next | P3 (this doc + implementation) |
+| Assignment | Keep **Active** — P3 Exit Human-certified on `a0d3481`; **no** Assignment Close |
+| Next | Awaiting Human on A34-R1 revisit / #101 / undraft-merge #102 / optional Close (all separate auth) |
 
 ---
 
@@ -72,3 +73,4 @@ After P3 Exit (this plan + D1–D4 landed), Human may **revisit** A34-R1 disposi
 - Local commit(s) only for P2 docs closeout + P3 cleanup
 - **Ask before push**
 - No Assignment Close; keep Active until Human confirms Exit / next phase
+- `2026-09-12 Asia/Shanghai`: **P3 Exit Human-certified** on tip `a0d3481` (smoke A–D Pass + hosted CI green); Assignment remains **Active** — no Close
