@@ -28,7 +28,7 @@ final class SchemaManager {
 
     var activeSchemaID: String
     var schemas: [SchemaMetadata] = []
-    var rimeIceDownloadState: DownloadState = .idle
+    var downloadState: DownloadState = .idle
     var rimeIceLicenseAccepted: Bool = false
     var rimeIceVersion: String?
     var currentDownloadTask: Task<Void, Never>?
@@ -118,7 +118,7 @@ final class SchemaManager {
             return
         }
         guard downloadableEntry(for: schemaID) != nil, licenseAccepted(for: schemaID) else { return }
-        switch rimeIceDownloadState {
+        switch downloadState {
         case .idle, .completed, .failed: break
         default: return
         }
@@ -139,7 +139,7 @@ final class SchemaManager {
         }
         currentDownloadTask = nil
         activeDownloadOperationID = nil
-        rimeIceDownloadState = .idle
+        downloadState = .idle
     }
 
     func acquireSchemeDeliveryCommitLease(operationID: UUID) async -> Bool {
@@ -204,7 +204,7 @@ final class SchemaManager {
         }
         if case .startDownload(let schemaID, let force) = deferredStart {
             if downloadableEntry(for: schemaID) == nil || !licenseAccepted(for: schemaID) {
-                rimeIceDownloadState = .failed(
+                downloadState = .failed(
                     schemaID: schemaID,
                     schemeName: downloadSchemeDisplayName(for: schemaID),
                     message: "下载请求已失效，请重新确认许可证后再试"

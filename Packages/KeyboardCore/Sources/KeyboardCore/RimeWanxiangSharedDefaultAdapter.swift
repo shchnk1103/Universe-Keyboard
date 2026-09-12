@@ -1,11 +1,11 @@
 import Foundation
 
 /// Keeps official Prelude `default.yaml` as the only shared config named
-/// `default`. Ice's bundled default is copied to a private preset and schema
-/// references are rewritten to that name.
-public struct RimeIceSharedDefaultAdapter: Sendable {
-    public static let presetConfigName = "rime_ice_preset"
-    public static let presetFileName = "rime_ice_preset.yaml"
+/// `default`. Wanxiang's bundled default is copied to a private preset and
+/// schema references are rewritten to that name (Ice-shaped `privatePreset`).
+public struct RimeWanxiangSharedDefaultAdapter: Sendable {
+    public static let presetConfigName = "wanxiang_preset"
+    public static let presetFileName = "wanxiang_preset.yaml"
     public static let upstreamDefaultFileName = "default.yaml"
 
     public enum AdapterError: Error, Equatable, Sendable {
@@ -13,10 +13,12 @@ public struct RimeIceSharedDefaultAdapter: Sendable {
     }
 
     private static let schemaFilesToRewrite = [
-        "rime_ice.schema.yaml",
-        "t9.schema.yaml",
-        "melt_eng.schema.yaml",
-        "radical_pinyin.schema.yaml",
+        "wanxiang.schema.yaml",
+        "wanxiang_english.schema.yaml",
+        "wanxiang_mixedcode.schema.yaml",
+        "wanxiang_reverse.schema.yaml",
+        "wanxiang_t9.schema.yaml",
+        "wanxiang_t9i.schema.yaml",
     ]
 
     /// Deterministic string rewrite used by extraction post-processing and tests.
@@ -32,9 +34,9 @@ public struct RimeIceSharedDefaultAdapter: Sendable {
         )
     }
 
-    /// Copies Ice `default.yaml` to `rime_ice_preset.yaml` and rewrites admitted
-    /// schema files. The upstream `default.yaml` stays in the tree so skip-lists
-    /// can keep it out of the staged identity.
+    /// Copies Wanxiang `default.yaml` to `wanxiang_preset.yaml` and rewrites
+    /// admitted schema files. The upstream `default.yaml` stays in the tree so
+    /// skip-lists can keep it out of the staged identity.
     public static func apply(in extractionDirectory: URL) throws {
         let fileManager = FileManager.default
         let source = extractionDirectory.appendingPathComponent(upstreamDefaultFileName)
@@ -58,9 +60,9 @@ public struct RimeIceSharedDefaultAdapter: Sendable {
     }
 }
 
-extension RimeIceSharedDefaultAdapter: SchemeSharedDefaultApplying {
-    /// Shared Default seam entry for Ice `privatePreset` (P1-3).
-    public static let shared = RimeIceSharedDefaultAdapter()
+extension RimeWanxiangSharedDefaultAdapter: SchemeSharedDefaultApplying {
+    /// Shared Default seam entry for Wanxiang `privatePreset` (P2).
+    public static let shared = RimeWanxiangSharedDefaultAdapter()
 
     public var mode: SchemeSharedDefaultMode { .privatePreset }
 

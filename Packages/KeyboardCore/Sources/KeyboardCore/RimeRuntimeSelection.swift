@@ -77,7 +77,8 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
             self.usesT9InputSemantics = resolved.usesT9
         } else {
             // ADR 0018 migration path (no explicit bindings).
-            let supportsNineKey = baseSchemaID == "rime_ice"
+            // Family LayoutCapability (Ice letter base only; not t9 alias).
+            let supportsNineKey = SchemeAdapterRegistry.familySupportsNineKey(baseSchemaID)
             if supportsNineKey, layoutStyle == .nineKey, t9ReadinessMatched {
                 self.effectiveSchemaID = "t9"
                 self.effectiveLayoutStyle = .nineKey
@@ -183,15 +184,14 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
         defaults.set(id, forKey: KeyboardLayoutSettingsKey.schemeBinding9)
     }
 
-    /// V1: only compatible `t9` is nine-key capable.
+    /// Product nine-key capability via SchemeAdapter LayoutCapability (Ice `t9` only today).
     public static func isNineKeyCapable(_ schemaID: String) -> Bool {
-        schemaID == "t9"
+        SchemeAdapterRegistry.isNineKeyCapable(schemaID)
     }
 
-    /// Schemes that may appear in the 26-key picker (V1 catalog).
+    /// Schemes that may appear in the 26-key picker (via LayoutCapability).
     public static func isTwentySixKeyCapable(_ schemaID: String) -> Bool {
-        let id = normalizedBase(schemaID)
-        return id != "t9"
+        SchemeAdapterRegistry.isTwentySixKeyCapable(schemaID)
     }
 
     /// Observable chrome + input policy derived from a realized selection.
@@ -257,8 +257,8 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
             // default the nine-key slot to `t9` rather than fail-closing to 26-key.
             let nineKeyID = binding9 ?? "t9"
             if isNineKeyCapable(nineKeyID),
-               nineKeyID == "t9",
-               t9ReadinessMatched
+                nineKeyID == "t9",
+                t9ReadinessMatched
             {
                 return ("t9", .nineKey, true)
             }
