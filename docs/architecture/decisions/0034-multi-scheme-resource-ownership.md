@@ -8,6 +8,8 @@
 
 **Numbering check (`2026-09-07`):** `main` `2816009` 与本分支 `codex/scheme-delivery-fix`（规划前提交 `5cec512`）的 `docs/architecture/decisions/` 均无既有 `0034`。若并行分支先合入同号，接受前改号，不静默覆盖。
 
+**Numbering re-check (`2026-09-12` Accept prep):** `main` @ `be91ca5`（含 #102 `a6fc6f0`）仍仅一份 `0034-multi-scheme-resource-ownership.md`。Status **仍为 Proposed**。
+
 ## Context
 
 内置 Luna 按 ADR 0033 把 Prelude `default.yaml` 当作官方不可变闭包的一部分，部署前按 receipt 校验字节。可下载雾凇的 `rime-ice-plan-1` 允许安装同名 `default.yaml`；万象 `wanxiang-plan-1` 跳过该文件。雾凇卸载列表不含 `default.yaml`，因此覆盖一旦发生，卸载也不会自动恢复官方字节。
@@ -63,15 +65,33 @@ RIME 官方允许配置替换及 custom patch；配置引用不提供多个发�
 ## Follow-up Work
 
 1. ~~按计划 P0 在生产安装链上复现并记录真实失败类型。~~ 完成：`.byteCountMismatch`；真机枚举仍未发出。
-2. ~~完成递归依赖/同名文件审计。~~ 工程清单已落盘（含 CNB 万象 zip）。候选 A **尚未**保真：须把 Ice/T9/`melt_eng` 的 `default` 引用改到独立预设。卸载必须按文件归属，不能整目录删除 `lua/` 或 `opencc/`。万象与雾凇 Lua **无路径/基名碰撞**，但仍共用 `import_preset: default`。
-3. Human Product 与独立 Architecture 就计划 §5.1 决策点作出书面结论。Human 已指定按候选 A 实现，并给出 Human-attested 真机：[P3 device](../../evidence/scheme-delivery-source-state-001-p3-device-2026-09-07.md)。Architecture 首审发现 P3 恢复未进入事务 mutation 账本并使用静态 backup；Codex takeover 增量修复后，delta 复审关闭这两个阻断。该复审不是 Acceptance。
-4. 工程上 P2 独立预设与 P3 已知指纹恢复已在 `codex/scheme-delivery-fix` `b90d236` 落地；takeover 增量又补齐事务回滚、不可读 receipt fail-closed 与验证矩阵。这是 Human 授权的实现切片，不是 ADR Accepted。独立 Quality 尚无可引用的 delta 结论，P4 升级/卸载矩阵仍未完成。
-5. 真机：Human-attested 重下雾凇可部署、切 Luna 不报错、双方可输入。无 Device-attested 载荷身份。万象复测、卸载与失败回滚未做。未知改动仍 fail-closed。
-6. 编号若冲突则改号后再接受。
+2. ~~完成递归依赖/同名文件审计。~~ 工程清单已落盘（含 CNB 万象 zip）。Ice/T9/`melt_eng` 的 `default` 引用已改独立预设路径（P2）。卸载按文件归属 / exact-hash，不整目录删除 `lua/` 或 `opencc/`。Wanxiang 与 Ice Lua **无路径/基名碰撞**；双方现均走独立预设（Ice `rime_ice_preset`；Wanxiang `wanxiang_preset` via Scheme Platform P2）。
+3. Human Product 与独立 Architecture 就计划 §5.1 决策点作出书面结论。Human 已指定按候选 A 实现，并给出 Human-attested 真机：[P3 device](../../evidence/scheme-delivery-source-state-001-p3-device-2026-09-07.md)。Architecture 首审发现 P3 恢复未进入事务 mutation 账本并使用静态 backup；Codex takeover 增量修复后，delta 复审关闭这两个阻断。该复审不是 Acceptance。**Accept prep（本注）**附 §5.1 推荐 disposition 表（见下）；**正式写入 Accept 包仍须 Human「Accept ADR 0034」** — 本注 **不**改变 Status。
+4. 工程落地指针（**Accept prep 2026-09-12 刷新**；取代过时的 `codex/scheme-delivery-fix` `b90d236` /「独立 Quality 尚无 delta」叙述）：
+   - PR #100 已合入 `main` @ `814abfd`（共存 / Ice 独立预设 / fail-closed 事务切片）。
+   - Scheme Platform 经 PR [#102](https://github.com/shchnk1103/Universe-Keyboard/pull/102) 合入：merge `a6fc6f0`；merge-record docs `main` @ `be91ca5`。P1–P3 Exit certified；Platform Assignment **仍 Active**（**no Close**）。
+   - Wanxiang P4 Assignment **Closed**（narrow A34-R1 Exit）；残差 **A34-R1 Closed（narrow）**。
+   - 独立 Quality 已有可引用 delta（含 Wanxiang P4 S5 IQ Pass with conditions；Platform P1 IQ Pass with conditions）。**这不是 ADR Accepted。**
+5. 真机 / 设备限度：Human-attested Ice 重下可部署等仍有效；Device-attested 全 Assignment / 失败回滚未升格。未知改动仍 fail-closed。A34-R2（Ice `dofile`）→ `tech_debt:TD-011`。
+6. 编号若冲突则改号后再接受。`main` @ `be91ca5` 抽样：`docs/architecture/decisions/` 仍仅一份 `0034-*`。
 
-Architecture 对当前 P3 transaction delta 已无阻断，但在 Quality、P4 与 Human 明确接受前，本 ADR 保持 Proposed。
+### §5.1 disposition（Accept **prep** draft — 推荐，非 Status 变更）
+
+| # | Topic | Recommended disposition |
+|---|---|---|
+| 1 | 采纳候选 A | **Accept**（唯一长期归属策略；B/C 拒绝为默认） |
+| 2 | 全局设置 / 方案预设 / 用户 `*.custom.yaml` 优先级 | **Accept** 方向：官方不可变基线 + App overlay + 方案独立预设 + 用户 custom；细节保持 ADR 0033 overlay 合同 |
+| 3 | 允许的上游行为差异 | **`accept`**：Ice / Wanxiang 经独立预设保真；不要求与 Prelude 逐键一致 |
+| 4 | 同名字节相同共享 / 引用计数 | **`tech_debt` / 有界**：Ice `namedList`；Wanxiang Lua `exactHash`；非通用引用计数器 |
+| 5 | 历史污染恢复 | **Accept** 已知 Ice fingerprint 有界恢复；未知修改 fail-closed（已实现） |
+| 6 | 活跃卸载回退 | **Accept**：Luna-only（Human 已 supersede peer-prefer B） |
+| 7 | 角色任命 | **`out_of_scope`**（会话角色不写入 ADR 决策体） |
+
+Architecture 对候选 A 决策层已无 P0 阻断；Verdict 仍为 **Conditional Accept**（A34-R2→TD-011；§5.1 正式 Accept-commit；Status 变更仅 Human Accept 后）。**在 Human 书面 Accept 之前，本 ADR 保持 Proposed。**
 
 **2026-09-09：** Human 批准单独开一轮 Architecture Accept 复审清单（非 Acceptance）：[`adr-0034-architecture-accept-checklist-2026-09-09.md`](../../reviews/adr-0034-architecture-accept-checklist-2026-09-09.md)。独立 Architecture 结论已出具：[`adr-0034-architecture-accept-review-2026-09-09.md`](../../reviews/adr-0034-architecture-accept-review-2026-09-09.md) — **Conditional Accept**。在 Human 书面 Accept 之前，Status **仍为 Proposed**（本注记不改变 Status）。
+
+**2026-09-12 Accept prep：** Human 授权 draft PR #101 **Accept prep only**（[#101](https://github.com/shchnk1103/Universe-Keyboard/pull/101)）。Freeze：`main` @ `be91ca5` / merge `a6fc6f0`。证据：[`adr-0034-accept-prep-2026-09-12.md`](../../evidence/adr-0034-accept-prep-2026-09-12.md)。A34-R8-style Follow-up tip 刷新已落盘；**prep ≠ Accept**；Status **仍为 Proposed**；leave #101 draft；Platform stays Active（no Close）。
 
 ## Related Documents
 
