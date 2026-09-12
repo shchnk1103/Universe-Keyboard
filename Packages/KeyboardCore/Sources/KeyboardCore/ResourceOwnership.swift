@@ -108,7 +108,7 @@ public struct ExactHashResourceOwnershipStrategy: ResourceOwnershipStrategy {
     /// 9bfcf60e62d85dd168cd2748e5b2d126fcb3355939969eb80455ba71cbf67732.
     public static let wanxiangPinnedArchive = ExactHashResourceOwnershipStrategy(
         expectedSchemaFileName: "wanxiang.schema.yaml",
-        expectedRevision: "wanxiang-plan-1",
+        expectedRevision: "wanxiang-plan-2",
         sha256ByPath: WanxiangExactHashOwnership.sha256ByPath
     )
 
@@ -132,8 +132,8 @@ public struct ExactHashResourceOwnershipStrategy: ResourceOwnershipStrategy {
         plan: SchemeOwnershipPlanView,
         fileManager: FileManager
     ) throws -> [OwnedResourcePath] {
-        // Thin plan-identity bridge (P1). P2 may drop schemaFileName/revision
-        // special-case once Wanxiang is fully on the platform path.
+        // Thin plan-identity bridge. Keep revision synced with Wanxiang
+        // installationPlan.revision (`wanxiang-plan-2` after P2 preset admit).
         guard plan.schemaFileName == expectedSchemaFileName,
             plan.revision == expectedRevision
         else {

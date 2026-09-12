@@ -23,9 +23,9 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         XCTAssertTrue(adapter.layout.supportsTwentySixKey)
         XCTAssertFalse(adapter.layout.supportsNineKey)
         XCTAssertEqual(adapter.layout.nineKeySchemaIDs, [])
-        XCTAssertEqual(adapter.sharedDefaultMode, .consumePrelude)
+        XCTAssertEqual(adapter.sharedDefaultMode, .privatePreset)
         XCTAssertEqual(adapter.ownershipStrategyID, .exactHash)
-        XCTAssertEqual(adapter.postProcessingRevision, "wanxiang-post-1")
+        XCTAssertEqual(adapter.postProcessingRevision, "wanxiang-post-2")
         XCTAssertFalse(adapter.supportsManagedFuzzyPinyin)
         XCTAssertFalse(adapter.supportsProductAdvancedInput)
     }
@@ -130,27 +130,30 @@ final class SchemeAdapterRegistryTests: XCTestCase {
 
     func testPostProcessingRevisionMirrorsTodaysSwitch() {
         XCTAssertEqual(SchemeAdapterRegistry.postProcessingRevision(for: "rime_ice"), "rime-ice-post-2")
-        XCTAssertEqual(SchemeAdapterRegistry.postProcessingRevision(for: "wanxiang"), "wanxiang-post-1")
+        XCTAssertEqual(SchemeAdapterRegistry.postProcessingRevision(for: "wanxiang"), "wanxiang-post-2")
         XCTAssertNil(SchemeAdapterRegistry.postProcessingRevision(for: "luna_pinyin"))
         XCTAssertEqual(SchemeAdapterRegistry.postProcessingRevision(for: "t9"), "rime-ice-post-2")
         XCTAssertNil(SchemeAdapterRegistry.postProcessingRevision(for: "unknown_scheme"))
     }
 
-    func testSharedDefaultApplicatorIsIcePrivatePresetOnly() {
+    func testSharedDefaultApplicatorRoutesIceAndWanxiangPrivatePreset() {
         let ice = SchemeAdapterRegistry.sharedDefaultApplicator(for: "rime_ice")
         XCTAssertEqual(ice?.mode, .privatePreset)
-        // t9 normalizes to Ice family → same privatePreset applicator.
-        XCTAssertEqual(
-            SchemeAdapterRegistry.sharedDefaultApplicator(for: "t9")?.mode,
-            .privatePreset
-        )
-        // Wanxiang transitional consumePrelude — no post-extract applicator in P1.
-        XCTAssertNil(SchemeAdapterRegistry.sharedDefaultApplicator(for: "wanxiang"))
+        XCTAssertTrue(ice is RimeIceSharedDefaultAdapter)
+        // t9 normalizes to Ice family → same Ice privatePreset applicator.
+        let t9 = SchemeAdapterRegistry.sharedDefaultApplicator(for: "t9")
+        XCTAssertEqual(t9?.mode, .privatePreset)
+        XCTAssertTrue(t9 is RimeIceSharedDefaultAdapter)
+        // Wanxiang P2 privatePreset — dedicated applicator, never Ice.
+        let wanxiang = SchemeAdapterRegistry.sharedDefaultApplicator(for: "wanxiang")
+        XCTAssertEqual(wanxiang?.mode, .privatePreset)
+        XCTAssertTrue(wanxiang is RimeWanxiangSharedDefaultAdapter)
+        XCTAssertFalse(wanxiang is RimeIceSharedDefaultAdapter)
         XCTAssertNil(SchemeAdapterRegistry.sharedDefaultApplicator(for: "luna_pinyin"))
         XCTAssertNil(SchemeAdapterRegistry.sharedDefaultApplicator(for: "unknown_scheme"))
     }
 
-    func testApplySharedDefaultPostExtractRoutesIceAndNoopsWanxiang() throws {
+    func testApplySharedDefaultPostExtractRoutesIceAndWanxiangPresets() throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(
             "shared-default-seam-\(UUID().uuidString)",
             isDirectory: true
@@ -193,8 +196,14 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         )
         try FileManager.default.createDirectory(at: wanxiangRoot, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: wanxiangRoot) }
-        try "config_version: wanxiang\n".write(
+        let wanxiangDefault = "config_version: wanxiang\n"
+        try wanxiangDefault.write(
             to: wanxiangRoot.appendingPathComponent("default.yaml"),
+            atomically: true,
+            encoding: .utf8
+        )
+        try "recognizer:\n  import_preset: default\n".write(
+            to: wanxiangRoot.appendingPathComponent("wanxiang.schema.yaml"),
             atomically: true,
             encoding: .utf8
         )
@@ -204,9 +213,23 @@ final class SchemeAdapterRegistryTests: XCTestCase {
                 atPath: wanxiangRoot.appendingPathComponent("rime_ice_preset.yaml").path
             )
         )
-        // No Wanxiang private preset migration in P1.
-        let wanxiangNames = try FileManager.default.contentsOfDirectory(atPath: wanxiangRoot.path)
-        XCTAssertEqual(Set(wanxiangNames), ["default.yaml"])
+        XCTAssertEqual(
+            try String(
+                contentsOf: wanxiangRoot.appendingPathComponent("wanxiang_preset.yaml"),
+                encoding: .utf8
+            ),
+            wanxiangDefault
+        )
+        XCTAssertEqual(
+            try String(contentsOf: wanxiangRoot.appendingPathComponent("default.yaml"), encoding: .utf8),
+            wanxiangDefault
+        )
+        let wanxiangSchema = try String(
+            contentsOf: wanxiangRoot.appendingPathComponent("wanxiang.schema.yaml"),
+            encoding: .utf8
+        )
+        XCTAssertTrue(wanxiangSchema.contains("import_preset: wanxiang_preset"))
+        XCTAssertFalse(wanxiangSchema.contains("import_preset: default"))
     }
 
     func testResourceCapabilityRoutesOwnershipHonesty() {

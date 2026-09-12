@@ -28,17 +28,16 @@ public struct SchemeLayoutCapability: Sendable, Equatable {
 public enum SchemeSharedDefaultMode: String, Sendable, Equatable {
     /// Ice reference — private preset (`rime_ice_preset`) + include rewrite.
     case privatePreset
-    /// Wanxiang P1 transitional skip / consume-Prelude shape (not end-state).
+    /// Historical transitional skip / consume-Prelude shape (not end-state).
     case consumePrelude
     /// Luna builtin / Prelude exception.
     case builtinPrelude
 }
 
-/// SharedDefault post-extract applicator (P1-3 live authority).
+/// SharedDefault post-extract applicator (P1-3 / P2 live authority).
 ///
-/// Ice `privatePreset` rewrites toward a private preset file and never overwrites
-/// Prelude `default.yaml`. Wanxiang stays transitional `consumePrelude` (no-op
-/// applicator) until P2 migrates it to `privatePreset`.
+/// Ice and Wanxiang `privatePreset` rewrite toward a private preset file and
+/// never overwrite Prelude `default.yaml`. Luna stays `builtinPrelude` (no-op).
 public protocol SchemeSharedDefaultApplying: Sendable {
     var mode: SchemeSharedDefaultMode { get }
     func applyPostExtract(in extractionDirectory: URL) throws
@@ -105,6 +104,7 @@ public enum SchemeAdapterRegistry {
     )
 
     /// Wanxiang: 26-key only; nine-key product claim stays false.
+    /// SharedDefault is Ice-shaped `privatePreset` (`wanxiang_preset`); ownership stays `exactHash`.
     public static let wanxiang = SchemeAdapter(
         schemaID: "wanxiang",
         layout: SchemeLayoutCapability(
@@ -112,9 +112,9 @@ public enum SchemeAdapterRegistry {
             supportsNineKey: false,
             nineKeySchemaIDs: []
         ),
-        sharedDefaultMode: .consumePrelude,
+        sharedDefaultMode: .privatePreset,
         ownershipStrategyID: .exactHash,
-        postProcessingRevision: "wanxiang-post-1",
+        postProcessingRevision: "wanxiang-post-2",
         supportsManagedFuzzyPinyin: false,
         supportsProductAdvancedInput: false
     )
@@ -195,22 +195,30 @@ public enum SchemeAdapterRegistry {
 
     /// SharedDefault applicator for schemes whose mode requires post-extract rewrite.
     ///
-    /// Ice (`privatePreset`) → `RimeIceSharedDefaultAdapter`. Wanxiang
-    /// (`consumePrelude`) and Luna (`builtinPrelude`) return `nil` (no-op).
+    /// Ice (`privatePreset`) → `RimeIceSharedDefaultAdapter`.
+    /// Wanxiang (`privatePreset`) → `RimeWanxiangSharedDefaultAdapter` (never Ice).
+    /// Luna (`builtinPrelude`) / transitional `consumePrelude` → `nil` (no-op).
     public static func sharedDefaultApplicator(for schemaID: String) -> (
         any SchemeSharedDefaultApplying
     )? {
         guard let adapter = adapter(for: schemaID) else { return nil }
         switch adapter.sharedDefaultMode {
         case .privatePreset:
-            return RimeIceSharedDefaultAdapter.shared
+            switch adapter.schemaID {
+            case "rime_ice":
+                return RimeIceSharedDefaultAdapter.shared
+            case "wanxiang":
+                return RimeWanxiangSharedDefaultAdapter.shared
+            default:
+                return nil
+            }
         case .consumePrelude, .builtinPrelude:
             return nil
         }
     }
 
     /// Applies SharedDefault post-extract when an applicator is registered.
-    /// Ice still produces / uses `rime_ice_preset.yaml`; other modes are no-ops.
+    /// Ice → `rime_ice_preset.yaml`; Wanxiang → `wanxiang_preset.yaml`.
     public static func applySharedDefaultPostExtract(
         for schemaID: String,
         in extractionDirectory: URL

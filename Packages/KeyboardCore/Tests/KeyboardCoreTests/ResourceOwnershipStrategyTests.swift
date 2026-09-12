@@ -68,7 +68,7 @@ final class ResourceOwnershipStrategyTests: XCTestCase {
         // We cannot reconstruct original bytes from hash; plant matching digest via strategy test double map.
         let strategy = ExactHashResourceOwnershipStrategy(
             expectedSchemaFileName: "wanxiang.schema.yaml",
-            expectedRevision: "wanxiang-plan-1",
+            expectedRevision: "wanxiang-plan-2",
             sha256ByPath: [samplePath: expected, "lua/custom.lua": expected]
         )
 
@@ -76,7 +76,7 @@ final class ResourceOwnershipStrategyTests: XCTestCase {
         let matchingDigest = SHA256.hash(data: matchingBytes).map { String(format: "%02x", $0) }.joined()
         let localStrategy = ExactHashResourceOwnershipStrategy(
             expectedSchemaFileName: "wanxiang.schema.yaml",
-            expectedRevision: "wanxiang-plan-1",
+            expectedRevision: "wanxiang-plan-2",
             sha256ByPath: [
                 samplePath: matchingDigest,
                 "lua/custom.lua": matchingDigest,
@@ -91,7 +91,7 @@ final class ResourceOwnershipStrategyTests: XCTestCase {
         try FileManager.default.createSymbolicLink(at: symlinkURL, withDestinationURL: fileURL)
         let symlinkStrategy = ExactHashResourceOwnershipStrategy(
             expectedSchemaFileName: "wanxiang.schema.yaml",
-            expectedRevision: "wanxiang-plan-1",
+            expectedRevision: "wanxiang-plan-2",
             sha256ByPath: [
                 samplePath: matchingDigest,
                 "lua/wanxiang/link.lua": matchingDigest,
@@ -100,7 +100,7 @@ final class ResourceOwnershipStrategyTests: XCTestCase {
 
         let plan = SchemeOwnershipPlanView(
             schemaFileName: "wanxiang.schema.yaml",
-            revision: "wanxiang-plan-1",
+            revision: "wanxiang-plan-2",
             removableFiles: ["wanxiang.schema.yaml"],
             removableDirectories: ["dicts"]
         )
@@ -153,7 +153,7 @@ final class ResourceOwnershipStrategyTests: XCTestCase {
         // Use production wanxiang strategies but with a temporary exact-hash override via direct call:
         let plan = SchemeOwnershipPlanView(
             schemaFileName: "wanxiang.schema.yaml",
-            revision: "wanxiang-plan-1",
+            revision: "wanxiang-plan-2",
             removableFiles: ["wanxiang.schema.yaml"],
             removableDirectories: ["dicts"]
         )

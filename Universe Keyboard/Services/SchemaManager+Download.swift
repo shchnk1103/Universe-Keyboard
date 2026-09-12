@@ -167,8 +167,8 @@ extension SchemaManager {
             if schemaID == "rime_ice" {
                 try await sanitizeT9SchemaIfPresent(in: extractDir)
             }
-            // P1-3: SharedDefault post-extract via SchemeAdapter registry
-            // (Ice privatePreset only; Wanxiang consumePrelude remains no-op).
+            // SharedDefault post-extract via SchemeAdapter registry
+            // (Ice / Wanxiang privatePreset; Luna no-op).
             try await applySharedDefaultPostExtractIfNeeded(for: schemaID, in: extractDir)
             try ensureActive(operationID)
             recordPhase(
@@ -849,8 +849,8 @@ extension SchemaManager {
         }.value
     }
 
-    /// P1-3: SharedDefault post-extract via `SchemeAdapterRegistry` (Ice
-    /// `privatePreset` → `RimeIceSharedDefaultAdapter`; Wanxiang / Luna no-op).
+    /// SharedDefault post-extract via `SchemeAdapterRegistry` (Ice / Wanxiang
+    /// `privatePreset`; Luna / consumePrelude no-op).
     private func applySharedDefaultPostExtractIfNeeded(
         for schemaID: String,
         in extractionDirectory: URL
@@ -865,7 +865,7 @@ extension SchemaManager {
                     in: extractionDirectory
                 )
             } catch {
-                throw DownloadError.postProcessingFailed("雾凇公共配置无法改写为独立预设")
+                throw DownloadError.postProcessingFailed("方案公共配置无法改写为独立预设")
             }
         }.value
     }
