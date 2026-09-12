@@ -310,7 +310,7 @@ protocol SchemePlatformCatalog {
 | Manifest + optional adapters per scheme | **Decided** (target §3) |
 | Ice adapters are reference | **Decided** |
 | Exact module placement (KeyboardCore vs Main App Services) | **TBD** — prefer keep Main-App mutation in Services; pure adapters in KeyboardCore when already there (`RimeIceSharedDefaultAdapter`) |
-| UI download-state still named `rimeIceDownloadState` | **TBD** cleanup in P3 (not P1 behavior) |
+| UI download-state still named `rimeIceDownloadState` | **Done in P3** — renamed to `downloadState` (see [`scheme-platform-p3-fork-cleanup-2026-09-12.md`](scheme-platform-p3-fork-cleanup-2026-09-12.md) D1) |
 
 ---
 
