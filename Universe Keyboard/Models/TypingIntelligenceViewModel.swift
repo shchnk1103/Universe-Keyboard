@@ -59,6 +59,10 @@ final class TypingIntelligenceViewModel {
         reload()
     }
 
+    /// XCTest host teardown must not route this MainActor-owned model through
+    /// the isolated-deinit task-local path.
+    nonisolated deinit {}
+
     func reload() {
         isEnabled = store.isEnabled
         storeState = store.loadState()
@@ -88,9 +92,10 @@ final class TypingIntelligenceViewModel {
 
     private func counts(for dayCount: Int?) -> TypingStatisticsDelta {
         guard let dayCount else { return snapshot.totals }
-        let allowedDays = Set((0..<dayCount).compactMap { offset in
-            calendar.date(byAdding: .day, value: -offset, to: now()).map(dayIdentifier)
-        })
+        let allowedDays = Set(
+            (0..<dayCount).compactMap { offset in
+                calendar.date(byAdding: .day, value: -offset, to: now()).map(dayIdentifier)
+            })
         return snapshot.dailyBuckets.reduce(into: TypingStatisticsDelta()) { result, bucket in
             guard allowedDays.contains(bucket.day) else { return }
             result += bucket.counts
@@ -133,7 +138,7 @@ final class TypingIntelligenceViewModel {
                 title: "空格与换行",
                 count: counts.whitespaceCount + counts.newlineCount,
                 colorName: "secondary"
-            )
+            ),
         ].filter { $0.count > 0 }
     }
 

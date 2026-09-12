@@ -105,6 +105,10 @@ final class AppNotificationSettingsStore {
         self.defaults = defaults
     }
 
+    /// XCTest host teardown must not route this MainActor-owned defaults wrapper
+    /// through the isolated-deinit task-local path.
+    nonisolated deinit {}
+
     var hasStoredNotificationsPreference: Bool {
         defaults.object(forKey: StorageKey.notificationsEnabled) != nil
     }
@@ -199,6 +203,10 @@ final class AppNotificationSettingsModel {
         notificationsEnabled = store.notificationsEnabled
         operationToastsEnabled = store.operationToastsEnabled
     }
+
+    /// XCTest host teardown must not route this MainActor-owned model through
+    /// the isolated-deinit task-local path.
+    nonisolated deinit {}
 
     var permissionSummary: String {
         switch authorizationStatus {

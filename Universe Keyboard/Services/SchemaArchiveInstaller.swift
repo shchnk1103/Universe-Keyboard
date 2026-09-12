@@ -75,6 +75,10 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         self.containerURLOverride = containerURL
     }
 
+    /// XCTest host teardown must not route this MainActor-owned installer
+    /// through the isolated-deinit task-local path.
+    nonisolated deinit {}
+
     func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
         fileManager.temporaryDirectory.appendingPathComponent(distribution.cachedArchiveFileName)
     }

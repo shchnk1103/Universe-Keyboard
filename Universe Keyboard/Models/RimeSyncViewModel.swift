@@ -94,6 +94,10 @@ final class RimeSyncViewModel {
         status = isConfigured ? .idle : .notConfigured
     }
 
+    /// XCTest host teardown must not route this MainActor-owned model through
+    /// the isolated-deinit task-local path.
+    nonisolated deinit {}
+
     /// 将不可协作取消的阶段统一收口为“返回后再观察取消”。
     ///
     /// librime、文件协调或设置应用可能无法在执行中停止；调用方仍必须在它们返回后、
