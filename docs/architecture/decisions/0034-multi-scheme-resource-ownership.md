@@ -2,13 +2,13 @@
 
 ## Status
 
-**Accepted — Conditional Accept package, 2026-09-12 Asia/Shanghai.** Human Product Owner authorized Accept ADR 0034 in-session. Cite draft PR [#101](https://github.com/shchnk1103/Universe-Keyboard/pull/101) tip (this Accept commit). Architecture Conditional Accept review 2026-09-09 + Accept prep 2026-09-12. Residuals: A34-R2 = TD-011; R3–R6 accept; R7 defer; R1 Closed narrow (device failure-rollback / App Group full-path not elevated). **Not** Product Gate / TF / Release / Platform Close.
+**Accepted — Conditional Accept package, 2026-09-12 Asia/Shanghai.** Human Product Owner authorized Accept ADR 0034 in-session. Cite merged via [#101](https://github.com/shchnk1103/Universe-Keyboard/pull/101) `543786c` (Accept tip before merge `77b62cd`). Architecture Conditional Accept review 2026-09-09 + Accept prep 2026-09-12. Residuals: A34-R2 = TD-011; R3–R6 accept; R7 defer; R1 Closed narrow (device failure-rollback / App Group full-path not elevated). **Not** Product Gate / TF / Release / Platform Close.
 
 本文不替代 Accepted ADR 0006 / 0032 / 0033；**不**授予 Product Gate / TestFlight / Release / Platform Assignment Close。实现已随 PR #100 / #102 落地；本 Accept 仅将候选 A 升为 binding architecture decision（附 Conditional residuals）。
 
 **Numbering check (`2026-09-07`):** `main` `2816009` 与本分支 `codex/scheme-delivery-fix`（规划前提交 `5cec512`）的 `docs/architecture/decisions/` 均无既有 `0034`。若并行分支先合入同号，接受前改号，不静默覆盖。
 
-**Numbering re-check (`2026-09-12` Accept / Accept prep freeze):** `main` @ `be91ca5`（含 #102 `a6fc6f0`）仍仅一份 `0034-multi-scheme-resource-ownership.md`。Freeze 保持；Status **Accepted**（Conditional）。
+**Numbering re-check (`2026-09-12` Accept / #101 merge):** `main` @ `543786c`（含 #102 `a6fc6f0` + #101 Accept）仍仅一份 `0034-multi-scheme-resource-ownership.md`。Status **Accepted**（Conditional）now on `main`。
 
 ## Context
 
@@ -69,11 +69,11 @@ Accepted A 的后果：
 3. Human Product 与独立 Architecture 就计划 §5.1 决策点作出书面结论。Human 已指定按候选 A 实现，并给出 Human-attested 真机：[P3 device](../../evidence/scheme-delivery-source-state-001-p3-device-2026-09-07.md)。Architecture 首审发现 P3 恢复未进入事务 mutation 账本并使用静态 backup；Codex takeover 增量修复后，delta 复审关闭这两个阻断。该复审不是 Acceptance。**Accept 2026-09-12：** §5.1 已升格为 **Accepted dispositions**（见下）；Human 书面 Accept ADR 0034（Conditional）。
 4. 工程落地指针（**Accept prep 2026-09-12 刷新**；Accept 日保持；取代过时的 `codex/scheme-delivery-fix` `b90d236` /「独立 Quality 尚无 delta」叙述）：
    - PR #100 已合入 `main` @ `814abfd`（共存 / Ice 独立预设 / fail-closed 事务切片）。
-   - Scheme Platform 经 PR [#102](https://github.com/shchnk1103/Universe-Keyboard/pull/102) 合入：merge `a6fc6f0`；merge-record docs `main` @ `be91ca5`。P1–P3 Exit certified；Platform Assignment **仍 Active**（**no Close**）。
+   - Scheme Platform 经 PR [#102](https://github.com/shchnk1103/Universe-Keyboard/pull/102) 合入：merge `a6fc6f0`。ADR Accept 经 PR [#101](https://github.com/shchnk1103/Universe-Keyboard/pull/101) 合入：merge `543786c`（Accept tip `77b62cd`）。P1–P3 Exit certified；Platform Assignment **仍 Active**（**no Close**）。
    - Wanxiang P4 Assignment **Closed**（narrow A34-R1 Exit）；残差 **A34-R1 Closed（narrow）**。
    - 独立 Quality 已有可引用 delta（含 Wanxiang P4 S5 IQ Pass with conditions；Platform P1 IQ Pass with conditions）。ADR 现为 **Accepted（Conditional）**；**仍不是** Product Gate / TF / Platform Close。
 5. 真机 / 设备限度：Human-attested Ice 重下可部署等仍有效；Device-attested 全 Assignment / 失败回滚未升格。未知改动仍 fail-closed。A34-R2（Ice `dofile`）→ `tech_debt:TD-011`。
-6. 编号若冲突则改号后再接受。`main` @ `be91ca5` 抽样：`docs/architecture/decisions/` 仍仅一份 `0034-*`。
+6. 编号若冲突则改号后再接受。`main` @ `543786c` 抽样：`docs/architecture/decisions/` 仍仅一份 `0034-*`。
 
 ### §5.1 Accepted dispositions（Human-accepted with Accept，2026-09-12）
 
@@ -93,7 +93,9 @@ Architecture 对候选 A 决策层无 P0 阻断；Verdict = **Conditional Accept
 
 **2026-09-12 Accept prep：** Human 授权 draft PR #101 **Accept prep only**（[#101](https://github.com/shchnk1103/Universe-Keyboard/pull/101)）。Freeze：`main` @ `be91ca5` / merge `a6fc6f0`。证据：[`adr-0034-accept-prep-2026-09-12.md`](../../evidence/adr-0034-accept-prep-2026-09-12.md)。A34-R8-style Follow-up tip 刷新已落盘（**Closed for Accept-commit docs**）；leave #101 draft；Platform stays Active（no Close）。
 
-**2026-09-12 Accept：** Human Product Owner authorized **Accept ADR 0034**（Conditional Accept package；in-session；typo 「Accrpt」= Accept）。Status → **Accepted**。授权记录：[`ADR-0034-ACCEPT-authorization.md`](../../product-decisions/ADR-0034-ACCEPT-authorization.md)。证据：[`adr-0034-accept-2026-09-12.md`](../../evidence/adr-0034-accept-2026-09-12.md)。A34-R8 Closed（Accept docs）。**Not** Product Gate / TF / Release / Platform Close；PR #101 **remains draft**（no undraft/merge without separate auth）。
+**2026-09-12 Accept：** Human Product Owner authorized **Accept ADR 0034**（Conditional Accept package；in-session；typo 「Accrpt」= Accept）。Status → **Accepted**。授权记录：[`ADR-0034-ACCEPT-authorization.md`](../../product-decisions/ADR-0034-ACCEPT-authorization.md)。证据：[`adr-0034-accept-2026-09-12.md`](../../evidence/adr-0034-accept-2026-09-12.md)。A34-R8 Closed（Accept docs）。**Not** Product Gate / TF / Release / Platform Close。
+
+**2026-09-12 #101 merged：** PR [#101](https://github.com/shchnk1103/Universe-Keyboard/pull/101) merged `543786c`（Accept tip before merge `77b62cd`）。ADR Status **Accepted** now on `main`。**no** undraft needed anymore。Platform stays Active（no Close）。
 
 ## Related Documents
 

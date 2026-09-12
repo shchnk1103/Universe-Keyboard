@@ -3,7 +3,7 @@
 **Assignment:** [`SCHEME-DELIVERY-SCHEME-PLATFORM-001`](../assignments/scheme-delivery-scheme-platform-001.md) (**Active**)
 **Frozen tip:** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`
 **Branch:** `codex/scheme-platform-001` (created from `origin/main`; **not** PR #101 branch)
-**Related:** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) (**Closed** `2026-09-12` — narrow A34-R1 Exit met; **A34-R1 Closed（narrow）** remains Closed; still **no** ADR Accept; Platform stays Active / no Close)
+**Related:** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](../assignments/scheme-delivery-wanxiang-p4-closure-001.md) (**Closed** `2026-09-12` — narrow A34-R1 Exit met; **A34-R1 Closed（narrow）** remains Closed; ADR 0034 **Accepted** on `main` via #101 `543786c`; Platform stays Active / no Close)
 
 ## Cadence
 
@@ -12,11 +12,11 @@
 | Update docs | Allowed on this Active Assignment (governance / P0 docs / pointers) |
 | Local commit | Allowed |
 | First push / PR | **Ask Human before first push/PR**; no ongoing draft push auth |
-| PR vehicle | **New** draft PR — **not** #101; leave #101 alone (Human: leave draft #101 until platform progresses; keep #101≠#102; no Accept ADR 0034 now; Accept prep/cross-links later) |
+| PR vehicle | **#101 merged** `543786c`（Accept tip `77b62cd`）；**#102 merged** `a6fc6f0`；**no** undraft needed anymore；keep #101≠#102 history |
 | P0 | Interface draft + 「Ice already satisfies / Wanxiang gaps」 matrix (docs only) |
 | P1 | Extract Ice hooks → platform; Ice behavior unchanged. **Human-approved order (`2026-09-10`):** P1-0→P1-6 — see [`scheme-platform-p1-extract-plan-2026-09-10.md`](scheme-platform-p1-extract-plan-2026-09-10.md). **P1-0…P1-6 (done on #102 tip `cd4fa65` / CI full green):** registry → LayoutCapability → SharedDefault Ice `privatePreset` → ResourceOwnership dual → UninstallHooks Ice fallback → summary + IQ **Pass with conditions**（freeze `3cfa355`）。**SP-P1-IQ-01 `fix`**（KOS residual close；runs `34628171114` + `34629774209`）。keep Active；next P2 awaiting auth；ask before push；no silent close of remaining residuals；no ADR Accept；no undraft/merge #102 without auth. Scope: LayoutCapability + ResourceCapability/ownership; adapter lookup (Ice-only nine-key; Wanxiang `supportsNineKey=false`); SharedDefault = Ice `privatePreset` only; Ownership = `namedList`+`exactHash`; UninstallHooks = Ice layout fallback. **Not P1 UI:** Discovery / layout-picker |
 | P2 | **Done (`2026-09-12`) tip `7c93904`:** Wanxiang on platform (lua / layout / **SharedDefault → `privatePreset`** — `wanxiang_preset.yaml`; **Ownership dual / `exactHash`**); plan/post `wanxiang-plan-2`/`wanxiang-post-2`; hosted CI run `34672873379` full green; Simulator product smoke Pass; keep Active |
-| P3 | **Exit certified (`2026-09-12`) tip `a0d3481` / docs tip `72b5987`:** Human certified P3 Exit — plan DELETE+KEEP + smoke A–D Pass + hosted CI green ([`scheme-platform-p3-fork-cleanup-2026-09-12.md`](scheme-platform-p3-fork-cleanup-2026-09-12.md)). **#102 merged** `a6fc6f0` to `main`（engineering merge only）. **Keep Active** — **no Assignment Close**. A34-R1 **Closed（narrow）** remains Closed (**no Accept ADR**); leave #101; next Human may #101 Accept prep / Platform Close / Accept ADR (separate); **ask before push** |
+| P3 | **Exit certified (`2026-09-12`) tip `a0d3481` / docs tip `72b5987`:** Human certified P3 Exit — plan DELETE+KEEP + smoke A–D Pass + hosted CI green ([`scheme-platform-p3-fork-cleanup-2026-09-12.md`](scheme-platform-p3-fork-cleanup-2026-09-12.md)). **#102 merged** `a6fc6f0`；**#101 merged** `543786c`（Accept tip `77b62cd`）. ADR 0034 **Accepted** now on `main`. **Keep Active** — **no Assignment Close**. A34-R1 **Closed（narrow）** remains Closed; **no** undraft needed; next Human may Close Platform (separate); **ask before push** |
 | Wanxiang P4 | **Closed**（Human Close `2026-09-12`；narrow Exit met）；**A34-R1 Closed（narrow）** remains Closed；E14 Closed；Human E16/E17/E20 Accepted（narrow Exit）；freeze `72b5987` / S5 tip `6f29f64` / S6 tip `a978160` — **no** ADR Accept；Platform stays Active / no Close |
 | Non-claims (Gate 0 slice) | No ADR Accept; no Product Gate / TestFlight; no Swift |
 
@@ -53,3 +53,4 @@ Governance + bring docs + embed this execution plan. Do **not** Accept ADR 0034,
 - `2026-09-12 Asia/Shanghai`: Wanxiang P4 **S6** — **A34-R1 Closed（narrow Wanxiang P4 Exit）**; E14 Closed; platform stays Active / no Close; leave #101; **no** ADR Accept; ask before push.
 - `2026-09-12 Asia/Shanghai`: Wanxiang P4 **Closed** (Human Close; narrow Exit met); A34-R1 remains Closed; platform stays Active / no Close; leave #101; **no** ADR Accept; **Close ≠ ADR Accept**; ask before push; **no push**.
 - `2026-09-12 Asia/Shanghai`: PR **#102 merged** `a6fc6f0`（tip before merge `92a0d0b`）to `main`. Engineering merge ≠ Product Gate / TestFlight / ADR Accept / Platform Close; platform stays Active; leave #101; A34-R1 remains Closed（narrow）; next Human may #101 Accept prep / Platform Close / Accept ADR (separate); **no push** this docs tip.
+- `2026-09-12 Asia/Shanghai`: PR **#101 merged** `543786c`（Accept tip before merge `77b62cd`）to `main`. ADR 0034 Status **Accepted** now on `main`. Engineering/docs merge ≠ Product Gate / TestFlight / Platform Close; platform stays Active; **no** undraft needed; next Human may Close Platform (separate); **no push** this docs tip.

@@ -7,11 +7,11 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | **Active** |
-| Current Phase | **merged via #102** `a6fc6f0`（`2026-09-12 Asia/Shanghai`；tip before merge `92a0d0b`）。**Lifecycle remains Active** — **no Assignment Close**。ADR 0034 **Accepted**（Conditional residuals；`2026-09-12`）。Engineering merge ≠ Product Gate / TestFlight / Platform Close。Wanxiang P4 **Closed**；**A34-R1 Closed（narrow）**。draft #101 **still draft** awaiting Human undraft/merge（**no** undraft without auth）。合并落点 `main` @ `be91ca5`（merge-record）/ `a6fc6f0`。 |
-| Material non-claims | ADR 0034 现为 **Accepted（Conditional）** — **仍不是** Product Gate / TestFlight / Release；**不是** Assignment Close（#102 engineering merge **≠** Close / Product Gate / TF）；**不** enable Wanxiang nine-key；**不** Discovery UI productization；A34-R1 **Closed（narrow）** **≠** Close 本 Assignment；**不** silent-close remaining IQ residuals（SP-P1-IQ-02…）；**SP-P1-IQ-01** 已显式 `fix`；leave draft #101；keep #101≠#102；**不** undraft/merge #101 without Human auth；**不** push without Human ask |
-| Next handoff / decision | **#102 merged** `a6fc6f0`（engineering merge only）。Wanxiang P4 **Closed** — **A34-R1 Closed（narrow）**。Human (`2026-09-12`) **Accept ADR 0034**（Conditional）— Status **Accepted**；A34-R8 Closed（Accept docs）。leave #101 **draft** awaiting Human undraft/merge；Platform stays **Active**（**no Close**）。Platform Close / undraft #101 仍 **separate auth**。**no** Product Gate/TF；**ask before push**。 |
+| Current Phase | **#101 merged** `543786c`（`2026-09-12 Asia/Shanghai`；Accept tip before merge `77b62cd`）+ **#102** `a6fc6f0`。**Lifecycle remains Active** — **no Assignment Close**。ADR 0034 **Accepted** now on `main`（Conditional residuals）。Engineering/docs merge ≠ Product Gate / TestFlight / Platform Close。Wanxiang P4 **Closed**；**A34-R1 Closed（narrow）**。**no** undraft needed anymore。合并落点 `main` @ `543786c`。 |
+| Material non-claims | ADR 0034 现为 **Accepted（Conditional）on main** — **仍不是** Product Gate / TestFlight / Release；**不是** Assignment Close（#101/#102 merge **≠** Close / Product Gate / TF）；**不** enable Wanxiang nine-key；**不** Discovery UI productization；A34-R1 **Closed（narrow）** **≠** Close 本 Assignment；**不** silent-close remaining IQ residuals（SP-P1-IQ-02…）；**SP-P1-IQ-01** 已显式 `fix`；#101 **merged**（no undraft needed）；keep #101≠#102 history；**不** Close without Human auth；**不** push without Human ask |
+| Next handoff / decision | **#101 merged** `543786c`（Accept tip `77b62cd`）；**#102 merged** `a6fc6f0`。Wanxiang P4 **Closed** — **A34-R1 Closed（narrow）**。ADR 0034 Status **Accepted** now on `main`；A34-R8 Closed（Accept docs）。**no** undraft needed anymore。Platform stays **Active**（**no Close**）。Platform Close 仍 **separate auth**。**no** Product Gate/TF；**ask before push**。 |
 | Residuals | KEEP list intentional（[`scheme-platform-p3-fork-cleanup-2026-09-12.md`](../plans/scheme-platform-p3-fork-cleanup-2026-09-12.md) K1–K12）。IQ：**SP-P1-IQ-01 `fix`**；SP-P1-IQ-02 `accept`；SP-P1-IQ-03 `open`；SP-P1-IQ-04 Discovery deferred；SP-P1-IQ-05/A34 **Closed（narrow）** via Wanxiang S6（**不** Accept ADR）；SP-P1-IQ-06/07 `accept`。**A34-R1 Closed（narrow）** via S6；A34-R2 / TD-011 / RTRD-* 并行债 |
-| Frozen tip | **main merge** `a6fc6f09f115ef96566de8711e8dc52b81ceb76f`（PR #102；tip before merge `92a0d0b`）；P3 Exit tip `a0d3481965c7e884b32ac8cf1f538286c1bb155b`；P2 Done tip `7c93904a12b562f5221817197c29e840c967c058`（CI `34672873379`）；IQ freeze `3cfa35515656cf7ac31a3dae3fd64960ecfc37f4`；base `814abfd7c03002256978d7658c176b80002d2539`；former branch `codex/scheme-platform-001` |
+| Frozen tip | **main tip** `543786c486b1605fd33dc89ca6a24035e35ac80e`（PR #101 merge；Accept tip before merge `77b62cd`）；prior **#102 merge** `a6fc6f09f115ef96566de8711e8dc52b81ceb76f`（tip before merge `92a0d0b`）；P3 Exit tip `a0d3481965c7e884b32ac8cf1f538286c1bb155b`；P2 Done tip `7c93904a12b562f5221817197c29e840c967c058`（CI `34672873379`）；IQ freeze `3cfa35515656cf7ac31a3dae3fd64960ecfc37f4`；base `814abfd7c03002256978d7658c176b80002d2539`；former branch `codex/scheme-platform-001` |
 
 ---
 
@@ -54,7 +54,7 @@ Policy version: 1.0.0
   - [Cross-scheme matrix contract](../plans/scheme-delivery-cross-scheme-matrix-contract-2026-09-08.md)
   - [Coexistence plan](../plans/scheme-resource-ownership-and-coexistence-plan.md)
   - [Wanxiang P4 gap inventory](../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)
-  - [ADR 0034](../architecture/decisions/0034-multi-scheme-resource-ownership.md)（Proposed）
+  - [ADR 0034](../architecture/decisions/0034-multi-scheme-resource-ownership.md)（**Accepted** on `main` via #101 `543786c`；Conditional）
   - [Architecture Accept review](../reviews/adr-0034-architecture-accept-review-2026-09-09.md)（Conditional Accept；A34-R1）
   - `ASSIGNMENT_POLICY.md` / `AGENTS.md` / `ACTIVE_WORK.md`
 
@@ -95,18 +95,18 @@ Policy version: 1.0.0
 
 本 Assignment **supersedes**「把 Wanxiang P4 / A34-R1 扩成平台级 mega-refactor」的意图。
 
-- **Current path:** Human **Active** 本片（P3 Exit certified；**no Close**）。Wanxiang P4 **Closed**（narrow Exit）；**A34-R1 Closed（narrow）** remains Closed；**不** Accept ADR；leave #101 alone。
-- **2026-09-12 Accept prep（cross-link）：** draft #101 Accept prep in progress（Human-authorized）；**prep ≠ Accept**；leave #101 draft；Platform **Active**（no Close）；ADR Status still Proposed。
-- **推荐路径：** 平台 P3 已 Exit → Wanxiang P4 **Closed**（A34-R1 Closed narrow）。ADR Accept / #101 / #102 undraft-merge / Platform Close 仍另授权。
-- Executor **不得**把 Pause/Resume 写成 Closed/Done，也不得在未获 Human 授权时 Accept ADR / undraft-merge #102。
+- **Current path:** Human **Active** 本片（P3 Exit certified；**no Close**）。Wanxiang P4 **Closed**（narrow Exit）；**A34-R1 Closed（narrow）** remains Closed；ADR 0034 **Accepted** on `main` via #101 `543786c`；**no** undraft needed。
+- **2026-09-12 #101 merged：** PR #101 merged `543786c`（Accept tip `77b62cd`）。ADR Status **Accepted** now on `main`。Platform **Active**（no Close）。**Engineering/docs merge ≠ Product Gate / TF / Platform Close**。
+- **推荐路径：** 平台 P3 已 Exit → Wanxiang P4 **Closed**（A34-R1 Closed narrow）→ #101/#102 merged。Platform Close 仍另授权。
+- Executor **不得**把 Pause/Resume 写成 Closed/Done，也不得在未获 Human 授权时 Close Platform。
 
 ## Execution / KOS cadence
 
 - **Docs / commit / push:** 可更新本 Assignment 与关联 docs 并 **本地 commit**；**ask before first push/PR**（无 ongoing draft push 授权）。首次对外动作须 Human 明示。
 - **Gates:** **P0** = 接口草案 + 「Ice already satisfies / Wanxiang gaps」矩阵（docs only）→ **P1** Ice hooks → platform（Ice 行为不变）→ **P2** Wanxiang 迁到 platform → **P3** 删冗余 forks；其后才再审视 A34-R1 / ADR Accept（Accept 仍另授权）。本 Active 切片 **止于** 治理 + bring docs + cadence；**无** Swift until 另授权进入 P1。
-- **PR policy:** 新 draft PR（**not** #101）；**#101 left alone**（Human `2026-09-09`：**leave draft PR #101** until Scheme Platform progresses；**keep #101 and #102 separate**；**do not Accept ADR 0034 now**；cross-links / Accept prep incl. A34-R8-style refresh **later** after platform docs/impl）。勿复用 PR #101 分支。
+- **PR policy:** #101 **merged** `543786c`；#102 **merged** `a6fc6f0`；**no** undraft needed anymore；keep #101≠#102 history。新工作勿复用已合入分支。
 - **Wanxiang P4:** **Closed**（Human Close `2026-09-12`；narrow A34-R1 Exit）— **A34-R1 Closed（narrow）** remains Closed；**do not reopen**；**no** ADR Accept；Platform **no** Close。
-- **Non-claims this slice:** no ADR Accept；no Product Gate / TF；no Swift。
+- **Non-claims this slice:** ADR already **Accepted** on `main`；**no** Platform Close；no Product Gate / TF；no Swift。
 
 See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/scheme-platform-execution-kos-2026-09-09.md).
 
@@ -170,6 +170,7 @@ See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/sche
 | `2026-09-12 Asia/Shanghai` | **Wanxiang P4 Closed** | Human Close Wanxiang P4 Assignment（narrow Exit met）；A34-R1 remains Closed；platform stays Active / no Close；leave #101；**no** ADR Accept |
 | `2026-09-12 Asia/Shanghai` | **#101 Accept prep（cross）** | Human authorized draft #101 Accept prep only；freeze `main` @ `be91ca5` / `a6fc6f0`；**prep ≠ Accept**；ADR still Proposed；leave #101 draft；Platform stays **Active** / no Close |
 | `2026-09-12 Asia/Shanghai` | **#102 merged** | PR #102 merged `a6fc6f0`（tip before merge `92a0d0b`）；engineering merge ≠ Product Gate / TF / ADR Accept / Platform Close；keep Active；leave #101；A34-R1 remains Closed（narrow）；next Human may #101 Accept prep / Platform Close / Accept ADR（separate） |
+| `2026-09-12 Asia/Shanghai` | **#101 merged** | PR #101 merged `543786c`（Accept tip before merge `77b62cd`）；ADR 0034 **Accepted** now on `main`；engineering/docs merge ≠ Product Gate / TF / Platform Close；keep Active；**no** undraft needed；next Human may Close Platform（separate） |
 
 ## History
 
@@ -205,3 +206,4 @@ See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/sche
 - `2026-09-12 Asia/Shanghai`（**Wanxiang P4 Closed**）：Human Close [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](scheme-delivery-wanxiang-p4-closure-001.md)（narrow Exit met）；A34-R1 remains Closed；platform stays **Active** / no Close；**Close ≠ ADR Accept**；leave #101；ask before push；**no push**。
 - `2026-09-12 Asia/Shanghai`（**#102 merged**）：PR [#102](https://github.com/shchnk1103/Universe-Keyboard/pull/102) merged `a6fc6f0`（tip before merge `92a0d0b`）。**Engineering merge ≠ Product Gate / TestFlight / ADR Accept / Platform Close**。Lifecycle stays **Active**；leave #101；**A34-R1 remains Closed（narrow）**。Next：Human may #101 Accept prep / Platform Close / Accept ADR（**separate auth**）。**no push** this docs tip。
 - `2026-09-12 Asia/Shanghai`（**ADR 0034 Accept**）：Human Accept ADR 0034（Conditional）。本 Assignment **stays Active / no Close**；#101 **still draft**；**not** Product Gate / TF / Release；cite [`../evidence/adr-0034-accept-2026-09-12.md`](../evidence/adr-0034-accept-2026-09-12.md)。**Local docs only**；**no push**。
+- `2026-09-12 Asia/Shanghai`（**#101 merged**）：PR [#101](https://github.com/shchnk1103/Universe-Keyboard/pull/101) merged `543786c`（Accept tip before merge `77b62cd`）。ADR 0034 Status **Accepted** now on `main`。**Engineering/docs merge ≠ Product Gate / TestFlight / Platform Close**。Lifecycle stays **Active**；**no** undraft needed anymore。Next：Human may Close Platform（**separate auth**）。**no push** this docs tip。
