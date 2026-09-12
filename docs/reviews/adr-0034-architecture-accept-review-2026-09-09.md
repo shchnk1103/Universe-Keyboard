@@ -18,7 +18,7 @@
 | Reviewer | Independent Architecture lane（Grok Bot executor subagent；只读审查，未实现生产代码） |
 | Baseline | 初审 `main` merge tip `814abfd7c03002256978d7658c176b80002d2539`（PR #100）；docs 分支 tip at review start `7d5a7591c47266d38c7da09a6c17c1923baf8732`；**Accept prep freeze** `main` @ `be91ca5` / merge `a6fc6f0` |
 | Checklist | [`adr-0034-architecture-accept-checklist-2026-09-09.md`](adr-0034-architecture-accept-checklist-2026-09-09.md) |
-| ADR under review | [`0034-multi-scheme-resource-ownership.md`](../architecture/decisions/0034-multi-scheme-resource-ownership.md) — **Status remains Proposed** |
+| ADR under review | [`0034-multi-scheme-resource-ownership.md`](../architecture/decisions/0034-multi-scheme-resource-ownership.md) — **Status Accepted** (Conditional package, 2026-09-12; review itself was Conditional Accept) |
 
 | Role | This review |
 |---|---|
@@ -102,11 +102,11 @@
 | A34-R5 | CSF / 部分矩阵：真实 App Group·device transaction 证明有限 | Quality / Device | **`accept`** | CSF / CS09-10 reviews：Pass with conditions；自动化 ≠ 真机全路径 |
 | A34-R6 | CS09-10-01 archive provenance / P2/P3 limits | Scheme Delivery | **`accept`**（或后续独立证据片 `fix` 但不阻塞归属 ADR） | inventory review 条件项；route device 已功能补偿 CS09-10-02 输入侧 |
 | A34-R7 | `RTRD-01` / `RTRD-02` | Diagnostics | **`defer-with-owner`**（DEVICE / 独立 Assignment） | **不阻塞**归属 ADR |
-| A34-R8 | ADR Follow-up 中过时 tip/分支/「Quality 尚无 delta」等表述 | Architecture / Docs | **Follow-up refreshed in Accept prep**（`2026-09-12`）；剩余 **Accept-commit-only** = Status 变更 | tip → `be91ca5`/`a6fc6f0`；Platform via #102；Wanxiang P4 Closed；A34-R1 Closed narrow。**Status still Proposed**；**不得**在本 prep 改 Status |
+| A34-R8 | ADR Follow-up 中过时 tip/分支/「Quality 尚无 delta」等表述 | Architecture / Docs | **Closed**（Accept docs） | Follow-up refreshed in prep；Accept commit Status → **Accepted**（Conditional）。tip → `be91ca5`/`a6fc6f0`。**leave #101 draft** |
 
-### §5.1 推荐书面结论（Accept 时写入 ADR 或附录）
+### §5.1 Accepted dispositions（Human-accepted with Accept，2026-09-12；同 ADR 正文）
 
-| # | Topic | Recommended disposition |
+| # | Topic | Accepted disposition |
 |---|---|---|
 | 1 | 采纳候选 A | **Accept**（唯一长期归属策略；B/C 拒绝为默认） |
 | 2 | 全局设置 / 方案预设 / 用户 `*.custom.yaml` 优先级 | **Accept** 方向：官方不可变基线 + App overlay + 方案独立预设 + 用户 custom；细节保持 ADR 0033 overlay 合同 |
@@ -135,7 +135,7 @@
 | **P0** | **无** |
 | **P1-C1** | A34-R1 **Closed（narrow Wanxiang P4 Exit）** via S6 `2026-09-12` — 不再是 Accept 前 `fix` 阻断。Human Accept ADR 时须知情：narrow ≠ 全文无条件闭合；device failure-rollback 未 attested；App Group 全路径未升格 |
 | **P1-C2** | A34-R2 转入 `tech_debt:TD-011`（或新债）并禁止宣称「动态 Lua 引用已完全闭合」 |
-| **P1-C3** | Accept 提交同步：§5.1 七项显式 disposition（prep draft 已在 ADR Follow-up；正式 Accept-commit 仍须 Human）+ A34-R8 Follow-up（**prep 已刷新**）；**仅在另有 Human「Accept ADR 0034」授权后**改 Status |
+| **P1-C3** | **Satisfied 2026-09-12：** §5.1 Accepted dispositions formalized；A34-R8 Closed（Accept docs）；Human「Accept ADR 0034」→ Status **Accepted**（Conditional） |
 | **P1-C4** | 明确 Limited P4 Product Gate / PR #100 merge **不等于** ADR Accept（A34-R4） |
 
 ### Conditions（Conditional）
@@ -151,7 +151,7 @@
 
 ## 6. Explicit non-claims
 
-- **不** Accept ADR 0034；Status 仍为 **Proposed**
+- ~~**不** Accept ADR 0034；Status 仍为 **Proposed**~~ — **superseded 2026-09-12：** Human Accept；Status **Accepted**（Conditional）。本 review 文件仍记录 Conditional Accept verdict 历史
 - **不** 通过完整 Product Gate；**不**授权 TestFlight / App Release
 - **不** 因 PR #100 合入（`814abfd`）或 Limited P4 Product Gate 而 Accept
 - **不** 关闭 Ice `dofile`、Device-attested 全 Assignment、Recovery persistence；A34-R1 **Closed（narrow）** ≠ 完整无条件 Wanxiang P4 / ADR Accept
@@ -171,6 +171,7 @@
    - **Revise ADR** — 若要对 ownership 模型（例如强制安装期 per-install receipt）做决策变更。
 3. **仅当**选择 Accept 并满足 P1-C1…C4 后，另授权 Executor 改 ADR Status 并更新 Assignment / ACTIVE_WORK / KNOWLEDGE_INDEX。
 4. 保持 PR #101 draft，直至 Human 另有指示。
+5. **2026-09-12 update：** Human chose Accept（Conditional）。ADR Status **Accepted**。**仍 leave #101 draft** — **no** Recommend undraft/merge without separate auth；Platform Active（no Close）；**not** Product Gate / TF / Release。
 
 ---
 
@@ -185,3 +186,4 @@
 - `2026-09-09 Asia/Shanghai`（稍后）：Human 授权 `SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001` **Active**；A34-R1 仍为 `fix` / open until Assignment Exit；缺口清单见 [`../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md`](../evidence/scheme-delivery-wanxiang-p4-closure-gaps-2026-09-09.md)。**ADR Status 仍为 Proposed（未 Accept）。**
 - `2026-09-12 Asia/Shanghai`（**S6**）：Human-authorized A34-R1 writeback — residual **A34-R1 → Closed**（narrow Wanxiang P4 Exit；cite S5 IQ Pass with conditions + Human E16/E17/E20 narrow + platform tip `72b5987` / S5 tip `6f29f64`）。**ADR Status still Proposed**；leave draft #101；**no** Accept。Verdict remains **Conditional Accept**（A34-R2 / §5.1 / A34-R8 still open — **not** Recommend Accept）。
 - `2026-09-12 Asia/Shanghai`（**Accept prep**）：Human-authorized draft #101 Accept prep only（freeze `main` @ `be91ca5` / `a6fc6f0`）。A34-R8 Follow-up refreshed；§5.1 draft prep in ADR body。Verdict remains **Conditional Accept**（R2 / formal §5.1 Accept-commit / Status）。**ADR Status still Proposed**；leave #101 draft；**prep ≠ Accept**；**not** Recommend Accept。证据：[`../evidence/adr-0034-accept-prep-2026-09-12.md`](../evidence/adr-0034-accept-prep-2026-09-12.md)。
+- `2026-09-12 Asia/Shanghai`（**Accept**）：Human authorized **Accept ADR 0034**（Conditional Accept package）。Status → **Accepted**。A34-R8 **Closed**（Accept docs）；§5.1 formalized。Verdict history remains **Conditional Accept**（residuals R2→TD-011；R3–R6 accept；R7 defer；R1 Closed narrow）。leave #101 **draft**；**no** Recommend undraft without auth；Platform Active（no Close）。证据：[`../evidence/adr-0034-accept-2026-09-12.md`](../evidence/adr-0034-accept-2026-09-12.md) · 授权：[`../product-decisions/ADR-0034-ACCEPT-authorization.md`](../product-decisions/ADR-0034-ACCEPT-authorization.md)。

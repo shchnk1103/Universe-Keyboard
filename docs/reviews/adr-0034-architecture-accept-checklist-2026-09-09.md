@@ -7,7 +7,7 @@
 **本文件性质：** 只读复审入口与核对表。
 **不是：** ADR Acceptance、Product Gate、TestFlight、Release、实现授权，或把 Status 从 Proposed 改为 Accepted。
 
-**审查对象：** [`docs/architecture/decisions/0034-multi-scheme-resource-ownership.md`](../architecture/decisions/0034-multi-scheme-resource-ownership.md)（当前 **Proposed**）
+**审查对象：** [`docs/architecture/decisions/0034-multi-scheme-resource-ownership.md`](../architecture/decisions/0034-multi-scheme-resource-ownership.md)（当前 **Accepted** — Conditional Accept package, 2026-09-12）
 **基线 tip：** `main` @ `814abfd`（PR #100 已合入）；**Accept prep 抽样补充：** post-#102 `main` @ `be91ca5` / merge `a6fc6f0`
 **关联 Assignment：** [`SCHEME-DELIVERY-SOURCE-STATE-001`](../assignments/scheme-delivery-source-state-001.md)
 
@@ -57,7 +57,7 @@
 ### 4.1 决策完整性
 
 - [x] 候选 A 仍是唯一拟 Accept 的决策（禁止覆盖 `default.yaml`；万象 skip；雾凇独立预设；按 owner/manifest 安装卸载）
-- [~] §5.1 入口决策中仍开放项已列出结论：`Accept` / `fix` / `tech_debt:<ID>` / `out_of_scope` — Architecture 已给推荐表，**Accept 时须写入 ADR**（见 review §4 / §5.1）
+- [x] §5.1 入口决策结论已写入 ADR 为 **Accepted dispositions**（Human Accept 2026-09-12）
 - [x] 明确 **不** 通过本 ADR 偷偷修改 ADR 0033 官方不可变字节合同
 - [x] 明确 **不** 借共存关闭 ADR 0006 / TD-001，除非另有书面还债授权
 
@@ -90,14 +90,14 @@
 | A34-R5 | CSF / 部分矩阵：真实 App Group·device transaction 证明有限 | Quality / Device | `accept` | IQ Pass with conditions |
 | A34-R6 | CS09-10-01 archive provenance / P2/P3 limits | Scheme Delivery | `accept` | 可不阻塞归属 ADR |
 | A34-R7 | `RTRD-01` / `RTRD-02`（诊断 UI / elapsed） | Diagnostics | `defer-with-owner` | 独立 Assignment，**不阻塞**归属 ADR |
-| A34-R8 | ADR 正文 Follow-up 中过时 tip/分支表述 | Architecture / Docs | **Follow-up refreshed in Accept prep**（`2026-09-12`）；剩余 **Accept-commit-only** = Status 变更（仍 blocked，须另授权） | tip 指针 → `be91ca5`/`a6fc6f0`；Platform landed；Wanxiang P4 Closed；A34-R1 Closed narrow。**本轮仍不改 Status** |
+| A34-R8 | ADR 正文 Follow-up 中过时 tip/分支表述 | Architecture / Docs | **Closed**（Accept docs） | Follow-up refreshed in Accept prep；Accept commit flipped Status → **Accepted**（Conditional）。tip → `be91ca5`/`a6fc6f0`。**leave #101 draft** |
 
 **规则：** 任一 `fix` 且 Architecture 标为 Accept 阻断 → **Block**。仅 `accept` / `tech_debt` / 明确 `defer` 时可给 Conditional 或 Recommend Accept。
 
 ### 4.5 编号与治理
 
 - [x] `docs/architecture/decisions/` 在 `main` 上无第二份 `0034-*`
-- [x] Accept 时 Status 行拟改为 `Accepted — <date>` 的草稿措辞已准备（**本轮不落盘为 Accepted**）
+- [x] Status 已落盘为 **Accepted — Conditional Accept package, 2026-09-12 Asia/Shanghai**
 - [x] Accept 记录将链到本清单 + Architecture 结论文件 + Human 书面批准
 
 ---
@@ -110,9 +110,9 @@
 | Baseline SHA | 初审 `main` `814abfd`；docs 分支起点 `7d5a759`；**Accept prep freeze** `main` @ `be91ca5` / `a6fc6f0` |
 | Verdict | **Conditional Accept** |
 | P0 / P1 open | P0=0；P1-C1…C4 见 [review](adr-0034-architecture-accept-review-2026-09-09.md) §5 |
-| Conditions（若 Conditional） | A34-R1 **Closed（narrow）**；R2→TD-011；§5.1 draft 已作 Accept prep（正式 Accept-commit 仍须 Human）；A34-R8 Follow-up **已在 prep 刷新**（Status 变更仍 Accept-commit-only）；Limited Gate ≠ Accept |
-| Blocking items（若 Block） | 无现行 P0；若 Human 拒接受 R1/R2 且要求无条件 Accept → 升 Block |
-| Recommended Human next step | 读 review → Accept(Conditional) / Keep Proposed / Revise；**勿**在无另授权时改 ADR Status；PR #101 保持 draft |
+| Conditions（若 Conditional） | A34-R1 **Closed（narrow）**；R2→TD-011；§5.1 **Accepted dispositions** formalized；A34-R8 **Closed**（Accept docs）；Limited Gate ≠ Accept；**Not** Product Gate / TF / Platform Close |
+| Blocking items（若 Block） | 无现行 P0 |
+| Recommended Human next step | **Done:** Human Accept ADR 0034（Conditional）。ADR Status **Accepted**。PR #101 **仍 draft** — **no** Recommend undraft without separate auth；Platform stays Active（no Close） |
 
 **禁止：** 在本文件勾选完成后自动改 ADR Status；须另有 Human「Accept ADR 0034」授权 + 独立 Architecture 结论文件。
 
@@ -145,3 +145,4 @@
 - `2026-09-09 Asia/Shanghai`：Architecture Accept **review 已完成** — [`adr-0034-architecture-accept-review-2026-09-09.md`](adr-0034-architecture-accept-review-2026-09-09.md)；Verdict = **Conditional Accept**。清单勾选已填。**仍不是** ADR Accept；Status 保持 Proposed。
 - `2026-09-12 Asia/Shanghai`（**S6**）：A34-R1 → **Closed（narrow Wanxiang P4 Exit）**。Verdict remains **Conditional Accept**（A34-R2 / §5.1 / A34-R8）。**ADR Status still Proposed**；leave #101；**no** Accept。
 - `2026-09-12 Asia/Shanghai`（**Accept prep**）：Human-authorized draft #101 Accept prep only。Freeze `main` @ `be91ca5` / `a6fc6f0`。A34-R8 Follow-up refreshed；§5.1 draft prep in ADR。Verdict remains **Conditional Accept**（R2 / formal §5.1 Accept-commit / Status）。**ADR Status still Proposed**；leave #101 draft；**prep ≠ Accept**；Platform Active（no Close）。证据：[`../evidence/adr-0034-accept-prep-2026-09-12.md`](../evidence/adr-0034-accept-prep-2026-09-12.md)。
+- `2026-09-12 Asia/Shanghai`（**Accept**）：Human authorized **Accept ADR 0034**（Conditional；typo Accrpt=Accept）。Status → **Accepted**。A34-R8 **Closed**（Accept docs）。§5.1 formalized。leave #101 **draft**（**no** Recommend undraft without auth）；Platform Active（no Close）；**not** Product Gate / TF / Release。证据：[`../evidence/adr-0034-accept-2026-09-12.md`](../evidence/adr-0034-accept-2026-09-12.md) · 授权：[`../product-decisions/ADR-0034-ACCEPT-authorization.md`](../product-decisions/ADR-0034-ACCEPT-authorization.md)。

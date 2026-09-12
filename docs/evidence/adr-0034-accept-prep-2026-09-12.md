@@ -2,7 +2,7 @@
 
 Date: `2026-09-12 Asia/Shanghai`
 
-**Nature:** Accept **prep** package only.  
+**Nature:** Accept **prep** package only.
 **Not:** ADR Acceptance; Product Gate; TestFlight; Release; undraft/merge of PR #101; Platform Assignment Close.
 
 **Human auth:** `#101 Accept prep` only (KOS strict). Leave #101 draft. Status of ADR 0034 remains **Proposed**.
@@ -56,3 +56,12 @@ Date: `2026-09-12 Asia/Shanghai`
 - #102 merge record / Platform Active: `main` @ `be91ca5`
 - Wanxiang P4 Close: [`scheme-delivery-wanxiang-p4-closure-close-2026-09-12.md`](scheme-delivery-wanxiang-p4-closure-close-2026-09-12.md)
 - A34-R1 writeback: [`scheme-delivery-wanxiang-p4-a34-r1-writeback-2026-09-12.md`](scheme-delivery-wanxiang-p4-a34-r1-writeback-2026-09-12.md)
+
+---
+
+## Supersession
+
+**Superseded for Status purposes by Accept** `2026-09-12 Asia/Shanghai`:
+[`adr-0034-accept-2026-09-12.md`](adr-0034-accept-2026-09-12.md) +
+[`../product-decisions/ADR-0034-ACCEPT-authorization.md`](../product-decisions/ADR-0034-ACCEPT-authorization.md).
+This prep file remains the freeze / residual readiness record; ADR Status is now **Accepted** (Conditional).
