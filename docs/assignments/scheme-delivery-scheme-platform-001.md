@@ -7,10 +7,10 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | **Active** |
-| Current Phase | **P3 Exit certified** by Human（`2026-09-12 Asia/Shanghai`）on tip `a0d3481` / docs tip `72b5987`：plan DELETE+KEEP + smoke A–D Pass + hosted CI green。**Lifecycle remains Active** — **no Assignment Close**。Human started **A34-R1 revisit** via Resume Wanxiang P4（narrow；**no** ADR Accept；leave #101）。分支 `codex/scheme-platform-001`。 |
-| Material non-claims | **不是** ADR 0034 Accept；**不是** Product Gate / TestFlight / Release；**不是** Assignment Close（P3 Exit certified **≠** Close）；**不** enable Wanxiang nine-key；**不** Discovery UI productization；**不**自动 Closed Wanxiang P4 / A34-R1（仍 `open`；Resume ≠ Done；writeback = Wanxiang S6）；**不** silent-close remaining IQ residuals（SP-P1-IQ-02…）；**SP-P1-IQ-01** 已显式 `fix`；leave draft #101；keep #101≠#102；**不** undraft/merge #102 without Human auth；**不** push without Human ask |
-| Next handoff / decision | **P3 Exit certified**（tip `a0d3481` / docs tip `72b5987`）。Wanxiang P4 **S5 IQ Done**（E15 Closed；Pass with conditions）；next **S6** A34-R1 writeback **awaiting Human**（still **no** ADR Accept；**不** silent-close A34-R1）。Still awaiting Human on #101 / undraft-merge #102 / optional Close（**separate auth**）。**no** ADR Accept；leave draft #101；keep #101≠#102；**no** Product Gate/TF；**no** Assignment Close；**ask before push**。 |
-| Residuals | KEEP list intentional（[`scheme-platform-p3-fork-cleanup-2026-09-12.md`](../plans/scheme-platform-p3-fork-cleanup-2026-09-12.md) K1–K12）。IQ：**SP-P1-IQ-01 `fix`**；SP-P1-IQ-02 `accept`；SP-P1-IQ-03 `open`；SP-P1-IQ-04 Discovery deferred；SP-P1-IQ-05/A34 open；SP-P1-IQ-06/07 `accept`。A34-R1 仍 open on **Resumed** Wanxiang P4（**S5 Done** / E15 Closed；**S6** awaiting Human；**不** silent-close；**不** Accept ADR）；A34-R2 / TD-011 / RTRD-* 并行债 |
+| Current Phase | **P3 Exit certified** by Human（`2026-09-12 Asia/Shanghai`）on tip `a0d3481` / docs tip `72b5987`：plan DELETE+KEEP + smoke A–D Pass + hosted CI green。**Lifecycle remains Active** — **no Assignment Close**。Wanxiang P4 **S6 Done** — **A34-R1 Closed（narrow）**；**still no** ADR Accept；leave #101。分支 `codex/scheme-platform-001`。 |
+| Material non-claims | **不是** ADR 0034 Accept；**不是** Product Gate / TestFlight / Release；**不是** Assignment Close（P3 Exit certified **≠** Close）；**不** enable Wanxiang nine-key；**不** Discovery UI productization；A34-R1 **Closed（narrow）** via Wanxiang S6 **≠** ADR Accept / **≠** Close 本 Assignment；**不** silent-close remaining IQ residuals（SP-P1-IQ-02…）；**SP-P1-IQ-01** 已显式 `fix`；leave draft #101；keep #101≠#102；**不** undraft/merge #102 without Human auth；**不** push without Human ask |
+| Next handoff / decision | **P3 Exit certified**（tip `a0d3481` / docs tip `72b5987`）。Wanxiang P4 **S6 Done** — **A34-R1 Closed（narrow）** / E14 Closed。Human may later reopen ADR Accept path via #101 / undraft-merge #102 / optional Close（**separate auth**；**not authorized now**）。**no** ADR Accept；leave draft #101；keep #101≠#102；**no** Product Gate/TF；**no** Assignment Close；**ask before push**。 |
+| Residuals | KEEP list intentional（[`scheme-platform-p3-fork-cleanup-2026-09-12.md`](../plans/scheme-platform-p3-fork-cleanup-2026-09-12.md) K1–K12）。IQ：**SP-P1-IQ-01 `fix`**；SP-P1-IQ-02 `accept`；SP-P1-IQ-03 `open`；SP-P1-IQ-04 Discovery deferred；SP-P1-IQ-05/A34 **Closed（narrow）** via Wanxiang S6（**不** Accept ADR）；SP-P1-IQ-06/07 `accept`。**A34-R1 Closed（narrow）** via S6；A34-R2 / TD-011 / RTRD-* 并行债 |
 | Frozen tip | P3 Exit tip `a0d3481965c7e884b32ac8cf1f538286c1bb155b`（plan DELETE+KEEP；smoke A–D Pass；hosted CI green）；P2 Done tip `7c93904a12b562f5221817197c29e840c967c058`（CI `34672873379`）；IQ freeze `3cfa35515656cf7ac31a3dae3fd64960ecfc37f4`（P1-5）；base `814abfd7c03002256978d7658c176b80002d2539`；branch `codex/scheme-platform-001` |
 
 ---
@@ -95,8 +95,8 @@ Policy version: 1.0.0
 
 本 Assignment **supersedes**「把 Wanxiang P4 / A34-R1 扩成平台级 mega-refactor」的意图。
 
-- **Current path:** Human **Active** 本片（P3 Exit certified；**no Close**）。Human `2026-09-12` **Resume** Wanxiang P4 for A34-R1 revisit（narrow Exit；E16/E17/E20 Accepted）。A34-R1 仍 open — **NOT** Closed/Done until Wanxiang P4 S6；**不** Accept ADR；leave #101 alone。
-- **推荐路径：** 平台 P3 已 Exit → Wanxiang P4 S5 IQ → S6 A34-R1 writeback（另授权；仍不 Accept ADR）。
+- **Current path:** Human **Active** 本片（P3 Exit certified；**no Close**）。Wanxiang P4 S6 **A34-R1 Closed（narrow）**；**不** Accept ADR；leave #101 alone。
+- **推荐路径：** 平台 P3 已 Exit → Wanxiang P4 S5/S6 Done（A34-R1 Closed narrow）。ADR Accept / #101 仍另授权。
 - Executor **不得**把 Pause/Resume 写成 Closed/Done，也不得在未获 Human 授权时 Accept ADR / undraft-merge #102。
 
 ## Execution / KOS cadence
@@ -104,7 +104,7 @@ Policy version: 1.0.0
 - **Docs / commit / push:** 可更新本 Assignment 与关联 docs 并 **本地 commit**；**ask before first push/PR**（无 ongoing draft push 授权）。首次对外动作须 Human 明示。
 - **Gates:** **P0** = 接口草案 + 「Ice already satisfies / Wanxiang gaps」矩阵（docs only）→ **P1** Ice hooks → platform（Ice 行为不变）→ **P2** Wanxiang 迁到 platform → **P3** 删冗余 forks；其后才再审视 A34-R1 / ADR Accept（Accept 仍另授权）。本 Active 切片 **止于** 治理 + bring docs + cadence；**无** Swift until 另授权进入 P1。
 - **PR policy:** 新 draft PR（**not** #101）；**#101 left alone**（Human `2026-09-09`：**leave draft PR #101** until Scheme Platform progresses；**keep #101 and #102 separate**；**do not Accept ADR 0034 now**；cross-links / Accept prep incl. A34-R8-style refresh **later** after platform docs/impl）。勿复用 PR #101 分支。
-- **Wanxiang P4:** **Active（Resumed `2026-09-12`）** for A34-R1 narrow path；A34-R1 writeback = S6 — Resume ≠ Closed/Done；**no** ADR Accept。
+- **Wanxiang P4:** **Active（Resumed `2026-09-12`）**；**A34-R1 Closed（narrow）** via S6 — **no** ADR Accept；**no** Assignment Close。
 - **Non-claims this slice:** no ADR Accept；no Product Gate / TF；no Swift。
 
 See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/scheme-platform-execution-kos-2026-09-09.md).
@@ -165,6 +165,7 @@ See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/sche
 | `2026-09-12 Asia/Shanghai` | **P2 closeout + P3** | P2 **Done** `7c93904` + CI `34672873379` + smoke Pass；P3 plan + DELETE D1–D4 + KEEP K1–K12；**local commit only**；**ask before push**；keep Active；A34-R1 revisit path note only（**no Accept**）；**no** Assignment Close；**no** nine-key；**no** Discovery |
 | `2026-09-12 Asia/Shanghai` | **P3 Exit certified** | Human certified P3 Exit tip `a0d3481`（DELETE+KEEP；smoke A–D Pass；hosted CI green）；**keep Active** — **no Assignment Close**；P3 Exit Criteria met；awaiting Human on A34-R1 / #101 / undraft-merge #102 / optional Close；**no** ADR Accept；**no** nine-key；**no** Discovery |
 | `2026-09-12 Asia/Shanghai` | **A34-R1 revisit** | Human Resume Wanxiang P4（narrow；E16/E17/E20 Accepted）；platform stays Active / no Close；leave #101；**no** ADR Accept |
+| `2026-09-12 Asia/Shanghai` | **A34-R1 Closed（narrow）** | Wanxiang P4 S6 writeback；A34-R1 Closed（narrow Exit）；E14 Closed；platform stays Active / no Close；leave #101；**no** ADR Accept |
 
 ## History
 
@@ -196,3 +197,4 @@ See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/sche
 - `2026-09-12 Asia/Shanghai`（**P3 Exit certified**）：Human authorized **P3 Exit certify**；explicitly **do NOT Close Assignment**。Tip `a0d3481` — plan DELETE+KEEP + smoke A–D Pass + hosted CI green。Updated Current Status / Progress / ACTIVE_WORK / KOS；optional note on P3 plan。**Lifecycle remains Active**；P3 Exit Criteria considered met；may stay Active for post-platform follow-ups（A34 revisit path / ADR Accept later — **not** authorized now）。**Local commit only**；**no push**；**no** ADR Accept；**no** Assignment Close；leave #101；keep #101≠#102；**no** undraft/merge #102；**no** Wanxiang nine-key；**no** Discovery UI；KEEP list intentional；A34-R1 still open on Paused Wanxiang P4；next handoff awaiting Human（separate auth）。
 - `2026-09-12 Asia/Shanghai`（**A34-R1 revisit**）：Human started A34-R1 revisit — **Resume** [`SCHEME-DELIVERY-WANXIANG-P4-CLOSURE-001`](scheme-delivery-wanxiang-p4-closure-001.md)；E16/E17/E20 Accepted（narrow Exit）；freeze tip `72b5987`。本 Assignment **stays Active / no Close**；leave #101；**no** ADR Accept；**local docs only**；ask before push。
 - `2026-09-12 Asia/Shanghai`（**Wanxiang S5 note**）：Wanxiang P4 S5 Independent Quality **Pass with conditions**（E15 Closed on freeze `72b5987`）；platform stays **Active** / no Close；next Wanxiang **S6** A34-R1 writeback awaiting Human；**no** ADR Accept；leave #101；ask before push。
+- `2026-09-12 Asia/Shanghai`（**Wanxiang S6 note**）：A34-R1 **Closed（narrow Wanxiang P4 Exit）** via S6 writeback；E14 Closed；platform stays **Active** / no Close；**no** ADR Accept；leave #101；ask before push。

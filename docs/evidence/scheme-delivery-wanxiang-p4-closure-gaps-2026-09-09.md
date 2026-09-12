@@ -8,8 +8,8 @@
 **冻结 tip（historical S1）：** `origin/main` @ `814abfd7c03002256978d7658c176b80002d2539`（PR #100 merge）
 **Resume freeze tip：** draft #102 tip `72b5987` on `codex/scheme-platform-001`
 **工作分支（Resume）：** `codex/scheme-platform-001`（historical `codex/wanxiang-p4-closure-001` retained）
-**A34-R1：** 仍为 `fix` / open（Architecture Accept residual）— **do not silent-close**；writeback = S6 after S5。
-**E16/E17/E20：** Human `2026-09-12` **Accepted（narrow Exit）** — see [`scheme-delivery-wanxiang-p4-e16-e17-e20-disposition-2026-09-12.md`](scheme-delivery-wanxiang-p4-e16-e17-e20-disposition-2026-09-12.md)；**E14 still Open**；**E15 Closed** via S5 IQ。
+**A34-R1：** **Closed（narrow Wanxiang P4 Exit）** via S6 `2026-09-12` — no longer an open `fix` blocker。**Does not** Accept ADR 0034。
+**E16/E17/E20：** Human `2026-09-12` **Accepted（narrow Exit）** — see [`scheme-delivery-wanxiang-p4-e16-e17-e20-disposition-2026-09-12.md`](scheme-delivery-wanxiang-p4-e16-e17-e20-disposition-2026-09-12.md)；**E14 Closed** via S6；**E15 Closed** via S5 IQ。
 
 ---
 
@@ -18,7 +18,7 @@
 | Pointer | Role |
 |---|---|
 | [`ADR 0034`](../architecture/decisions/0034-multi-scheme-resource-ownership.md) | Proposed；候选 A 归属合同 |
-| [`Architecture Accept review`](../reviews/adr-0034-architecture-accept-review-2026-09-09.md) | Conditional Accept；A34-R1 = `fix` |
+| [`Architecture Accept review`](../reviews/adr-0034-architecture-accept-review-2026-09-09.md) | Conditional Accept；A34-R1 = **Closed（narrow）** via S6 |
 | [`SOURCE-STATE-001`](../assignments/scheme-delivery-source-state-001.md) | Active parent；记 “Wanxiang P4 not fully closed” |
 | [`Wanxiang Lua ownership evidence`](scheme-delivery-wanxiang-lua-ownership-2026-09-08.md) | exact-hash uninstall staging 切片 |
 | [`upgrade-rollback contract`](../plans/scheme-delivery-wanxiang-upgrade-rollback-contract-2026-09-08.md) | Human Approved；有界 Wanxiang pin |
@@ -51,7 +51,7 @@ Pin under inventory（除非 Human 另授权）：CNB SHA-256 `9bfcf60e…` / `1
 | E11 | CS-09/10 / CS-F* 失败注入与保留方案证据（工程自动化） | **Closed** | 矩阵 IQ Pass with conditions；CSF pair / CS09-10 reviews |
 | E12 | 卸载 fail-closed：rollback 失败保留 staging checkpoint | **Closed** | double-failure repair（`fa9b3d1` 系）+ Q-P2-01 历史 Closed |
 | E13 | 生产路径 **禁止** 整目录删除 `lua/` / `opencc/` | **Closed** | Architecture Accept 抽样；`stageSchemaUninstall` 行为 |
-| E14 | 书面「Wanxiang P4 closure」核对表相对 ADR 全文完成，并可回写 A34-R1 | **Open** | 本文件为起点；Exit 前需正式 Closed 映射 + Assignment/ACTIVE_WORK 回写 |
+| E14 | 书面「Wanxiang P4 closure」核对表相对 ADR 全文完成，并可回写 A34-R1 | **Closed** | S6 `2026-09-12` writeback Done — A34-R1 **Closed（narrow）**；cite S5 IQ + Human E16/E17/E20 + freeze `72b5987` / S5 tip `6f29f64` |
 | E15 | Independent Quality：**对本闭合 tip** 无开放 P0/P1（相对本片范围） | **Closed** | S5 IQ [`../reviews/scheme-delivery-wanxiang-p4-closure-001-s5-quality-review.md`](../reviews/scheme-delivery-wanxiang-p4-closure-001-s5-quality-review.md) Pass with conditions on `72b5987`；hosted CI `34676751887` attempt 2 green |
 | E16 | 真机：万象 **升级失败回滚** Device-attested | **Accepted (narrow Exit)** | Human `2026-09-12`：书面缩窄 Exit — 无升级失败回滚真机要求；依赖自动化 + IQ |
 | E17 | 真机：万象 **卸载失败回滚** Device-attested | **Accepted (narrow Exit)** | Human `2026-09-12`：书面缩窄 Exit — 无卸载失败回滚真机要求（同 E16） |
@@ -71,8 +71,8 @@ Pin under inventory（除非 Human 另授权）：CNB SHA-256 `9bfcf60e…` / `1
 
 | Status | Count |
 |---|---|
-| **Closed** | 17（E01–E13, E15, E18, E19） |
-| **Open** | 1（E14） |
+| **Closed** | 18（E01–E15, E18, E19） |
+| **Open** | 0 |
 | **Accepted (narrow Exit)** | 3（E16, E17, E20） — Human `2026-09-12` |
 | **Out-of-scope** | 7（E21–E28） |
 
@@ -82,13 +82,9 @@ Pin under inventory（除非 Human 另授权）：CNB SHA-256 `9bfcf60e…` / `1
 
 在 `814abfd` 上，**Wanxiang 单方案工程切片**（skip `default.yaml`、exact-hash Lua 卸载、upgrade-rollback、跨方案矩阵自动化）大体已合入，且多份 Independent Quality 为 **Pass with conditions**。
 
-A34-R1 仍为 `fix` 的原因不是「生产仍整目录 wipe / 覆盖 Prelude」类 P0 合同自相矛盾，而是：
+A34-R1 曾为 `fix` 的原因不是「生产仍整目录 wipe / 覆盖 Prelude」类 P0 合同自相矛盾，而是缺少正式闭合核对 + Human 对条件项的书面缩窄。
 
-1. **缺少正式闭合核对**（E14）把 ADR 全文期望映射到 Closed 证据并授权回写 disposition；
-2. **条件项：** E16/E17/E20 Human 已 Accepted（narrow Exit）`2026-09-12`；**E15** 汇总 IQ **Closed** via S5；E14 writeback / A34-R1 仍 open（**不**静默 Closed）；
-3. 历史文档仍显式写 “Wanxiang P4 not fully closed”，Architecture Accept 因此不能无条件 Recommend Accept。
-
-本片优先路径：**文档与治理闭合 + Human 对 Open 项接受/缩窄/补证据**；仅当核对发现生产缺口时才开 Swift 最小片。
+S6 `2026-09-12`：**A34-R1 Closed（narrow Wanxiang P4 Exit）** — 不再是 open `fix` blocker。E14 Closed；E15 Closed via S5 IQ；E16/E17/E20 Human Accepted（narrow）。**Does not** Accept ADR 0034；device failure-rollback not attested；App Group full-path not elevated beyond Pass-with-conditions。Architecture Accept verdict remains **Conditional**（A34-R2 / §5.1 / A34-R8）。
 
 ---
 
@@ -103,13 +99,13 @@ A34-R1 仍为 `fix` 的原因不是「生产仍整目录 wipe / 覆盖 Prelude�
 | **S5** | Independent Quality closure delta | Review | 对冻结 tip 出具「无开放 P0/P1（本片范围）」或列出残留 | 把条件项静默当成 Closed |
 | **S6** | A34-R1 disposition writeback | Docs | Assignment / ACTIVE_WORK / Architecture review：A34-R1 → `Closed` 或 Human 书面缩窄；**仍不**改 ADR Status | 无 Human 对 writeback 的确认 |
 
-**S1 已完成。** S2 checklist 已落盘。Human Resume `2026-09-12`：E16/E17/E20 Accepted（narrow）；**S5** IQ Done（E15 Closed；Pass with conditions）→ next **S6** A34-R1 writeback awaiting Human（**不** silent-close A34-R1；**不** Accept ADR）。
+**S1–S2 / S5 / S6 已完成。** Human Resume `2026-09-12`：E16/E17/E20 Accepted（narrow）；S5 IQ Done（E15 Closed）；**S6** A34-R1 **Closed（narrow）** / E14 Closed（**不** Accept ADR；**不** Assignment Close）。
 
 ---
 
 ## 5. Explicit non-claims
 
-- 不宣称 Wanxiang P4 已 Closed / A34-R1 已关闭
+- A34-R1 **Closed（narrow）** via S6 — **不**宣称完整无条件 Wanxiang P4 / **不** Accept ADR
 - 不 Accept ADR 0034；Status 保持 Proposed
 - 不关闭 TD-011 / A34-R2 / RTRD-* / Recovery persistence
 - 不授权 TestFlight、完整 Product Gate、undraft/merge 本分支（除非 Human 另说）
@@ -123,3 +119,4 @@ A34-R1 仍为 `fix` 的原因不是「生产仍整目录 wipe / 覆盖 Prelude�
 - `2026-09-09 Asia/Shanghai`：Human 选择 **(b)** — keep Wanxiang P4 Active for **narrow A34-R1**；Scope 明确排除 Scheme Platform extract / Ice-as-reference P1–P3。S2 checklist：[`scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md`](scheme-delivery-wanxiang-p4-closure-checklist-2026-09-09.md)。E14–E17/E20 仍 Open / needs disposition；**不**静默 Closed。
 - `2026-09-12 Asia/Shanghai`：Human **Accepted（narrow Exit）** for E16/E17/E20；Resume freeze tip `72b5987` on `codex/scheme-platform-001`；**E14/E15 still Open**；**do not silent-close A34-R1**；next S5→S6；no ADR Accept；leave #101。
 - `2026-09-12 Asia/Shanghai`（**S5**）：Independent Quality Pass with conditions on freeze `72b5987`；**E15 Closed**；E14 / A34-R1 still open until S6；hosted CI flake residual accept（run `34676751887`）；leave #101；no ADR Accept。
+- `2026-09-12 Asia/Shanghai`（**S6**）：Human-authorized A34-R1 writeback — **E14 Closed**；**A34-R1 Closed（narrow）** — no longer an open `fix` blocker；leave #101；no ADR Accept。
