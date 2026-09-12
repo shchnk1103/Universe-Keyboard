@@ -74,6 +74,10 @@ final class DiagnosticsStore {
         self.searchMaximumByteCount = max(1, searchMaximumByteCount)
     }
 
+    /// XCTest host teardown must not route this MainActor-owned store through
+    /// the isolated-deinit task-local path.
+    nonisolated deinit {}
+
     var filteredLines: [String] {
         let scopedLines: [String]
         switch selectedSummaryFilter {

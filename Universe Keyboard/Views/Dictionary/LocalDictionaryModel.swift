@@ -21,6 +21,10 @@ final class LocalDictionaryModel {
         self.indexService = indexService
     }
 
+    /// XCTest host teardown must not route this MainActor-owned model through
+    /// the isolated-deinit task-local path.
+    nonisolated deinit {}
+
     var formattedEntryCount: String { totalEntries.formatted() }
     var formattedTotalSize: String { ByteCountFormatter.string(fromByteCount: totalBytes, countStyle: .file) }
 
@@ -90,6 +94,10 @@ final class LocalDictionaryPreviewModel {
         self.file = file
         self.indexService = indexService
     }
+
+    /// XCTest host teardown must not route this MainActor-owned preview model
+    /// through the isolated-deinit task-local path.
+    nonisolated deinit {}
 
     func loadIfNeeded() {
         guard !hasLoaded else { return }

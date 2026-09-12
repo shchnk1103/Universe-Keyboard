@@ -55,6 +55,10 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
         self.containerURLOverride = containerURL
     }
 
+    /// XCTest host teardown must not route this MainActor-owned service through
+    /// the isolated-deinit task-local path.
+    nonisolated deinit {}
+
     func status(for schemaID: String) -> RimeUserDictionaryBackupStatus {
         let items = learningItems(for: schemaID)
         let latestBackup = latestBackupDirectory(for: schemaID)
@@ -227,10 +231,12 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
 
     private func learningItems(for schemaID: String) -> [URL] {
         guard let userDir = userDirectoryURL() else { return [] }
-        guard let items = try? fileManager.contentsOfDirectory(
-            at: userDir,
-            includingPropertiesForKeys: nil
-        ) else { return [] }
+        guard
+            let items = try? fileManager.contentsOfDirectory(
+                at: userDir,
+                includingPropertiesForKeys: nil
+            )
+        else { return [] }
 
         let prefix = "\(schemaID).userdb"
         return items.filter { $0.lastPathComponent.hasPrefix(prefix) }
@@ -255,12 +261,15 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
 
     private func latestBackupDirectory(for schemaID: String) -> (url: URL, date: Date)? {
         guard let backupRoot = backupRootURL(for: schemaID) else { return nil }
-        guard let backups = try? fileManager.contentsOfDirectory(
-            at: backupRoot,
-            includingPropertiesForKeys: nil
-        ) else { return nil }
+        guard
+            let backups = try? fileManager.contentsOfDirectory(
+                at: backupRoot,
+                includingPropertiesForKeys: nil
+            )
+        else { return nil }
 
-        return backups
+        return
+            backups
             .compactMap { url -> (URL, Date)? in
                 guard let date = Self.date(fromBackupDirectoryName: url.lastPathComponent) else { return nil }
                 return (url, date)
@@ -270,12 +279,15 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
 
     private func pruneOldBackups(for schemaID: String, preserving backupURLs: [URL]) {
         guard let backupRoot = backupRootURL(for: schemaID) else { return }
-        guard let backups = try? fileManager.contentsOfDirectory(
-            at: backupRoot,
-            includingPropertiesForKeys: nil
-        ) else { return }
+        guard
+            let backups = try? fileManager.contentsOfDirectory(
+                at: backupRoot,
+                includingPropertiesForKeys: nil
+            )
+        else { return }
 
-        let sortedBackups = backups
+        let sortedBackups =
+            backups
             .compactMap { url -> (URL, Date)? in
                 guard let date = Self.date(fromBackupDirectoryName: url.lastPathComponent) else { return nil }
                 return (url, date)
@@ -297,7 +309,8 @@ final class AppGroupRimeUserDictionaryBackupService: RimeUserDictionaryBackingUp
 
     private func backupRootURL(for schemaID: String) -> URL? {
         guard let containerURL = containerURL() else { return nil }
-        return containerURL
+        return
+            containerURL
             .appendingPathComponent("Rime/user_dictionary_backups")
             .appendingPathComponent(schemaID)
     }
