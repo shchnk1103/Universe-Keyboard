@@ -6,12 +6,12 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | **Active** |
-| Current Phase | **#101 merged** `543786c`（`2026-09-12 Asia/Shanghai`；Accept tip before merge `77b62cd`）+ **#102** `a6fc6f0`。**Lifecycle remains Active** — **no Assignment Close**。ADR 0034 **Accepted** now on `main`（Conditional residuals）。Engineering/docs merge ≠ Product Gate / TestFlight / Platform Close。Wanxiang P4 **Closed**；**A34-R1 Closed（narrow）**。**no** undraft needed anymore。合并落点 `main` @ `543786c`。 |
-| Material non-claims | ADR 0034 现为 **Accepted（Conditional）on main** — **仍不是** Product Gate / TestFlight / Release；**不是** Assignment Close（#101/#102 merge **≠** Close / Product Gate / TF）；**不** enable Wanxiang nine-key；**不** Discovery UI productization；A34-R1 **Closed（narrow）** **≠** Close 本 Assignment；**不** silent-close remaining IQ residuals（SP-P1-IQ-02…）；**SP-P1-IQ-01** 已显式 `fix`；#101 **merged**（no undraft needed）；keep #101≠#102 history；**不** Close without Human auth；**不** push without Human ask |
-| Next handoff / decision | **#101 merged** `543786c`（Accept tip `77b62cd`）；**#102 merged** `a6fc6f0`。Wanxiang P4 **Closed** — **A34-R1 Closed（narrow）**。ADR 0034 Status **Accepted** now on `main`；A34-R8 Closed（Accept docs）。**no** undraft needed anymore。Platform stays **Active**（**no Close**）。Platform Close 仍 **separate auth**。**no** Product Gate/TF；**ask before push**。 |
-| Residuals | KEEP list intentional（[`scheme-platform-p3-fork-cleanup-2026-09-12.md`](../plans/scheme-platform-p3-fork-cleanup-2026-09-12.md) K1–K12）。IQ：**SP-P1-IQ-01 `fix`**；SP-P1-IQ-02 `accept`；SP-P1-IQ-03 `open`；SP-P1-IQ-04 Discovery deferred；SP-P1-IQ-05/A34 **Closed（narrow）** via Wanxiang S6（**不** Accept ADR）；SP-P1-IQ-06/07 `accept`。**A34-R1 Closed（narrow）** via S6；A34-R2 / TD-011 / RTRD-* 并行债 |
-| Frozen tip | **main tip** `543786c486b1605fd33dc89ca6a24035e35ac80e`（PR #101 merge；Accept tip before merge `77b62cd`）；prior **#102 merge** `a6fc6f09f115ef96566de8711e8dc52b81ceb76f`（tip before merge `92a0d0b`）；P3 Exit tip `a0d3481965c7e884b32ac8cf1f538286c1bb155b`；P2 Done tip `7c93904a12b562f5221817197c29e840c967c058`（CI `34672873379`）；IQ freeze `3cfa35515656cf7ac31a3dae3fd64960ecfc37f4`；base `814abfd7c03002256978d7658c176b80002d2539`；former branch `codex/scheme-platform-001` |
+| Lifecycle | **Closed** |
+| Current Phase | **Human Close** `2026-09-12 Asia/Shanghai`。Exit Criteria already met：P0–P3 done；P3 Exit certified；#102 merged `a6fc6f0`；merge-record `be91ca5`；Wanxiang P4 **Closed**；A34-R1 **Closed（narrow）**；ADR 0034 **Accepted** on `main` via #101 `543786c` + writeback `55ebfe9`。**Closed tip** = this docs tip on `main`。Product Gate / TF **still not authorized**；A34-R2 / TD-011 remain parallel（not this Assignment）。 |
+| Material non-claims | **Closed ≠** Product Gate / TestFlight / Release；**不** reopen ADR / change ADR Status；KEEP residuals intentional；SP-P1-IQ residuals documented（not silent-closed）；A34-R2 / TD-011 parallel debt remains **open**（not this Assignment）；**不** enable Wanxiang nine-key；**不** Discovery UI productization；#101/#102 history retained；**不** push without Human ask |
+| Next handoff / decision | **none** for this Assignment。Product Gate / TF still not authorized；A34-R2 / TD-011 remain parallel debt。 |
+| Residuals | KEEP list intentional（[`scheme-platform-p3-fork-cleanup-2026-09-12.md`](../plans/scheme-platform-p3-fork-cleanup-2026-09-12.md) K1–K12）。IQ：**SP-P1-IQ-01 `fix`**；SP-P1-IQ-02 `accept`；SP-P1-IQ-03 `open`；SP-P1-IQ-04 Discovery deferred；SP-P1-IQ-05/A34 **Closed（narrow）** via Wanxiang S6；SP-P1-IQ-06/07 `accept`。**A34-R1 Closed（narrow）**；**A34-R2 / TD-011 / RTRD-*** 并行债（remain open；not this Assignment） |
+| Frozen tip | **Closed tip** = this docs tip on `main`（base writeback `55ebfe94aa5fc3ce1fd97e02dfee0b0c97f051ca`）；#101 merge `543786c486b1605fd33dc89ca6a24035e35ac80e`（Accept tip before merge `77b62cd`）；merge-record `be91ca5`；**#102 merge** `a6fc6f09f115ef96566de8711e8dc52b81ceb76f`（tip before merge `92a0d0b`）；P3 Exit tip `a0d3481965c7e884b32ac8cf1f538286c1bb155b`；P2 Done tip `7c93904a12b562f5221817197c29e840c967c058`（CI `34672873379`）；IQ freeze `3cfa35515656cf7ac31a3dae3fd64960ecfc37f4`；base `814abfd7c03002256978d7658c176b80002d2539`；former branch `codex/scheme-platform-001` |
 
 ---
 
@@ -95,18 +95,18 @@ Policy version: 1.0.0
 
 本 Assignment **supersedes**「把 Wanxiang P4 / A34-R1 扩成平台级 mega-refactor」的意图。
 
-- **Current path:** Human **Active** 本片（P3 Exit certified；**no Close**）。Wanxiang P4 **Closed**（narrow Exit）；**A34-R1 Closed（narrow）** remains Closed；ADR 0034 **Accepted** on `main` via #101 `543786c`；**no** undraft needed。
-- **2026-09-12 #101 merged：** PR #101 merged `543786c`（Accept tip `77b62cd`）。ADR Status **Accepted** now on `main`。Platform **Active**（no Close）。**Engineering/docs merge ≠ Product Gate / TF / Platform Close**。
-- **推荐路径：** 平台 P3 已 Exit → Wanxiang P4 **Closed**（A34-R1 Closed narrow）→ #101/#102 merged。Platform Close 仍另授权。
-- Executor **不得**把 Pause/Resume 写成 Closed/Done，也不得在未获 Human 授权时 Close Platform。
+- **Current path:** Human **Closed** 本片 `2026-09-12`（Exit Criteria met；Closed tip = this docs tip on `main`）。Wanxiang P4 **Closed**（narrow Exit）；**A34-R1 Closed（narrow）** remains Closed；ADR 0034 **Accepted** on `main` via #101 `543786c` + writeback `55ebfe9`。
+- **2026-09-12 #101 merged：** PR #101 merged `543786c`（Accept tip `77b62cd`）。ADR Status **Accepted** now on `main`。Platform later **Closed** `2026-09-12`（separate Human auth）。**Engineering/docs merge ≠ Product Gate / TF / Release**。
+- **推荐路径：** 平台 P3 已 Exit → Wanxiang P4 **Closed**（A34-R1 Closed narrow）→ #101/#102 merged → Platform **Closed** `2026-09-12`。
+- Executor **不得**把 Pause/Resume 写成 Closed/Done；本片 Close 已获 Human 授权 `2026-09-12`。**不得** reopen ADR / 改 Status；**不得** Product Gate / TF / Release。
 
 ## Execution / KOS cadence
 
 - **Docs / commit / push:** 可更新本 Assignment 与关联 docs 并 **本地 commit**；**ask before first push/PR**（无 ongoing draft push 授权）。首次对外动作须 Human 明示。
 - **Gates:** **P0** = 接口草案 + 「Ice already satisfies / Wanxiang gaps」矩阵（docs only）→ **P1** Ice hooks → platform（Ice 行为不变）→ **P2** Wanxiang 迁到 platform → **P3** 删冗余 forks；其后才再审视 A34-R1 / ADR Accept（Accept 仍另授权）。本 Active 切片 **止于** 治理 + bring docs + cadence；**无** Swift until 另授权进入 P1。
 - **PR policy:** #101 **merged** `543786c`；#102 **merged** `a6fc6f0`；**no** undraft needed anymore；keep #101≠#102 history。新工作勿复用已合入分支。
-- **Wanxiang P4:** **Closed**（Human Close `2026-09-12`；narrow A34-R1 Exit）— **A34-R1 Closed（narrow）** remains Closed；**do not reopen**；**no** ADR Accept；Platform **no** Close。
-- **Non-claims this slice:** ADR already **Accepted** on `main`；**no** Platform Close；no Product Gate / TF；no Swift。
+- **Wanxiang P4:** **Closed**（Human Close `2026-09-12`；narrow A34-R1 Exit）— **A34-R1 Closed（narrow）** remains Closed；**do not reopen**。
+- **Platform Close:** Human Close `2026-09-12`；Closed tip = this docs tip on `main`；**no** Product Gate / TF / Release；**no** reopen ADR；A34-R2/TD-011 remain parallel；no Swift this Close；**no push**（ask before push）。
 
 See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/scheme-platform-execution-kos-2026-09-09.md).
 
@@ -171,6 +171,7 @@ See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/sche
 | `2026-09-12 Asia/Shanghai` | **#101 Accept prep（cross）** | Human authorized draft #101 Accept prep only；freeze `main` @ `be91ca5` / `a6fc6f0`；**prep ≠ Accept**；ADR still Proposed；leave #101 draft；Platform stays **Active** / no Close |
 | `2026-09-12 Asia/Shanghai` | **#102 merged** | PR #102 merged `a6fc6f0`（tip before merge `92a0d0b`）；engineering merge ≠ Product Gate / TF / ADR Accept / Platform Close；keep Active；leave #101；A34-R1 remains Closed（narrow）；next Human may #101 Accept prep / Platform Close / Accept ADR（separate） |
 | `2026-09-12 Asia/Shanghai` | **#101 merged** | PR #101 merged `543786c`（Accept tip before merge `77b62cd`）；ADR 0034 **Accepted** now on `main`；engineering/docs merge ≠ Product Gate / TF / Platform Close；keep Active；**no** undraft needed；next Human may Close Platform（separate） |
+| `2026-09-12 Asia/Shanghai` | **Assignment Closed** | Human-authorized **Close**；Exit Criteria met（P0–P3；#102 `a6fc6f0`；merge-record `be91ca5`；Wanxiang P4 Closed；A34-R1 Closed narrow；ADR Accepted via #101 `543786c` + writeback `55ebfe9`）；Closed tip = this docs tip on `main`；Next = none；**no** Product Gate/TF；A34-R2/TD-011 remain parallel；**no push** |
 
 ## History
 
@@ -207,3 +208,4 @@ See also: [`../plans/scheme-platform-execution-kos-2026-09-09.md`](../plans/sche
 - `2026-09-12 Asia/Shanghai`（**#102 merged**）：PR [#102](https://github.com/shchnk1103/Universe-Keyboard/pull/102) merged `a6fc6f0`（tip before merge `92a0d0b`）。**Engineering merge ≠ Product Gate / TestFlight / ADR Accept / Platform Close**。Lifecycle stays **Active**；leave #101；**A34-R1 remains Closed（narrow）**。Next：Human may #101 Accept prep / Platform Close / Accept ADR（**separate auth**）。**no push** this docs tip。
 - `2026-09-12 Asia/Shanghai`（**ADR 0034 Accept**）：Human Accept ADR 0034（Conditional）。本 Assignment **stays Active / no Close**；#101 **still draft**；**not** Product Gate / TF / Release；cite [`../evidence/adr-0034-accept-2026-09-12.md`](../evidence/adr-0034-accept-2026-09-12.md)。**Local docs only**；**no push**。
 - `2026-09-12 Asia/Shanghai`（**#101 merged**）：PR [#101](https://github.com/shchnk1103/Universe-Keyboard/pull/101) merged `543786c`（Accept tip before merge `77b62cd`）。ADR 0034 Status **Accepted** now on `main`。**Engineering/docs merge ≠ Product Gate / TestFlight / Platform Close**。Lifecycle stays **Active**；**no** undraft needed anymore。Next：Human may Close Platform（**separate auth**）。**no push** this docs tip。
+- `2026-09-12 Asia/Shanghai`（**Assignment Closed**）：Human authorized **Close** `SCHEME-DELIVERY-SCHEME-PLATFORM-001`。Exit Criteria already met：P0–P3 done；P3 Exit certified；#102 merged `a6fc6f0`；merge-record `be91ca5`；Wanxiang P4 Closed；A34-R1 Closed narrow；ADR 0034 Accepted on `main` via #101 `543786c` + writeback `55ebfe9`。Lifecycle → **Closed**；Current Phase = Human Close；Closed tip = this docs tip on `main`；Next = **none** for this Assignment。Evidence：[`../evidence/scheme-delivery-scheme-platform-001-close-2026-09-12.md`](../evidence/scheme-delivery-scheme-platform-001-close-2026-09-12.md)。**Closed ≠** Product Gate / TF / Release；**不** reopen ADR；KEEP / SP-P1-IQ residuals documented；A34-R2/TD-011 remain parallel；**no Swift**；**no push**（ask before push）。
