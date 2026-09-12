@@ -21,6 +21,32 @@ extension SchemaManager {
         settings.synchronize()
     }
 
+    var hasLiveRimeDeployment: Bool { activeRimeDeploymentTask != nil }
+
+    var isDeploymentMarkedInProgress: Bool { settings.bool(forKey: "rime_deploying") }
+
+    func markDeploymentInProgress() {
+        settings.set(true, forKey: "rime_deploying")
+        settings.set(false, forKey: "rime_deployed")
+        settings.synchronize()
+    }
+
+    func markDeploymentInterrupted() {
+        settings.set(false, forKey: "rime_deploying")
+        settings.set(true, forKey: "rime_needs_deploy")
+        settings.set(false, forKey: "rime_deployed")
+        settings.set(true, forKey: "rime_deploy_auto_retry_suppressed")
+        settings.synchronize()
+    }
+
+    func cancelActiveRimeDeployment() {
+        guard activeRimeDeploymentID != nil || activeRimeDeploymentTask != nil else { return }
+        activeRimeDeploymentID = nil
+        let task = activeRimeDeploymentTask
+        activeRimeDeploymentTask = nil
+        task?.cancel()
+    }
+
     @discardableResult
     func deployRimeConfig(leaseOperationID: UUID? = nil) async -> Bool {
         if let owner = schemeDeliveryCommitLeaseOperationID, owner != leaseOperationID {
@@ -30,11 +56,11 @@ extension SchemaManager {
             return await activeRimeDeploymentTask.value
         }
         let deploymentID = UUID()
+        activeRimeDeploymentID = deploymentID
         let task = Task { @MainActor [weak self] in
             guard let self else { return false }
-            return await self.performRimeDeployment()
+            return await self.performRimeDeployment(deploymentID: deploymentID)
         }
-        activeRimeDeploymentID = deploymentID
         activeRimeDeploymentTask = task
         let succeeded = await task.value
         if activeRimeDeploymentID == deploymentID {
@@ -46,7 +72,9 @@ extension SchemaManager {
 
     /// The only body that mutates shared deployment files. All public callers
     /// enter through `deployRimeConfig`, which provides process-local single-flight.
-    private func performRimeDeployment() async -> Bool {
+    private func performRimeDeployment(deploymentID: UUID) async -> Bool {
+        guard isActiveRimeDeployment(deploymentID) else { return false }
+
         let directories: SchemaDeploymentDirectories
         do {
             directories = try archiveInstaller.deploymentDirectories()
@@ -60,6 +88,7 @@ extension SchemaManager {
             return false
         }
 
+        guard isActiveRimeDeployment(deploymentID) else { return false }
         Logger.shared.info("deployRimeConfig: 开始主 App 端全量部署", category: .deployment)
 
         // `deploymentDirectories()` commits immutable resources and dynamic
@@ -84,6 +113,7 @@ extension SchemaManager {
             }
         }
 
+        guard isActiveRimeDeployment(deploymentID) else { return false }
         settings.set(true, forKey: "rime_deploying")
         settings.set(false, forKey: "rime_deployed")
         settings.synchronize()
@@ -97,6 +127,7 @@ extension SchemaManager {
                     runtimeSmokeSchemaID: activeSchemaIDForDeployment
                 )
             )
+            guard isActiveRimeDeployment(deploymentID) else { return false }
             Logger.shared.info(
                 "deployRimeConfig: deployment service completed "
                     + "succeeded=\(result.succeeded) runtimeSmokeReported=\(result.runtimeSmokePassed != nil)",
@@ -146,6 +177,10 @@ extension SchemaManager {
 
         settings.synchronize()
         return false
+    }
+
+    private func isActiveRimeDeployment(_ deploymentID: UUID) -> Bool {
+        activeRimeDeploymentID == deploymentID && !Task.isCancelled
     }
 
     private func applyAdvancedInputPostProcessing(to sharedDataURL: URL) {

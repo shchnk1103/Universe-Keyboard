@@ -552,6 +552,106 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertEqual(store.deploymentState, .failed)
     }
 
+    func testLoadTreatsOrphanedDeployingFlagAsFailedWithoutAutoRetry() async {
+        let persistence = StoreSharedSettingsStore(
+            values: [
+                "rime_deploying": true,
+                "rime_needs_deploy": true,
+            ]
+        )
+        let deploymentService = StoreDeploymentService(succeeded: true)
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(
+                settings: persistence,
+                sourceSelector: StoreSourceSelector(),
+                archiveDownloader: StoreArchiveDownloader(),
+                archiveInstaller: StoreArchiveInstaller(),
+                deploymentService: deploymentService
+            ),
+            persistence: persistence
+        )
+
+        store.load()
+        await store.triggerPendingDeploymentIfNeeded()
+
+        let requests = await deploymentService.requests
+        XCTAssertEqual(store.deploymentState, .failed)
+        XCTAssertTrue(store.deploymentState.allowsCancel)
+        XCTAssertEqual(persistence.object(forKey: "rime_deploying") as? Bool, false)
+        XCTAssertEqual(persistence.object(forKey: "rime_needs_deploy") as? Bool, true)
+        XCTAssertEqual(
+            persistence.object(forKey: "rime_deploy_auto_retry_suppressed") as? Bool,
+            true
+        )
+        XCTAssertEqual(requests.count, 0)
+
+        await store.triggerDeployment()
+
+        let retried = await deploymentService.requests
+        XCTAssertEqual(retried.count, 1)
+        XCTAssertEqual(store.deploymentState, .deployed)
+    }
+
+    func testCancelLiveDeploymentReleasesRetryWithoutWaitingForCompletion() async {
+        let persistence = StoreSharedSettingsStore(values: ["rime_needs_deploy": true])
+        let deploymentService = StoreDeploymentService(succeeded: true, hangCount: 1)
+        let store = RimeSettingsStore(
+            schemaManager: SchemaManager(
+                settings: persistence,
+                sourceSelector: StoreSourceSelector(),
+                archiveDownloader: StoreArchiveDownloader(),
+                archiveInstaller: StoreArchiveInstaller(),
+                deploymentService: deploymentService
+            ),
+            persistence: persistence
+        )
+
+        let deployTask = Task { await store.triggerDeployment() }
+        var spins = 0
+        var startedRequestCount = 0
+        while spins < 100 {
+            startedRequestCount = await deploymentService.requests.count
+            if store.deploymentState == .deploying, startedRequestCount >= 1 { break }
+            try? await Task.sleep(nanoseconds: 10_000_000)
+            spins += 1
+        }
+        XCTAssertEqual(store.deploymentState, .deploying)
+        XCTAssertGreaterThanOrEqual(startedRequestCount, 1)
+        XCTAssertTrue(store.deploymentState.allowsCancel)
+        XCTAssertEqual(persistence.object(forKey: "rime_deploying") as? Bool, true)
+
+        store.cancelDeployment()
+        XCTAssertEqual(store.deploymentState, .failed)
+        XCTAssertEqual(persistence.object(forKey: "rime_deploying") as? Bool, false)
+        XCTAssertEqual(
+            persistence.object(forKey: "rime_deploy_auto_retry_suppressed") as? Bool,
+            true
+        )
+
+        await deployTask.value
+        XCTAssertEqual(store.deploymentState, .failed)
+
+        await store.triggerPendingDeploymentIfNeeded()
+        var requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 1)
+
+        await store.triggerDeployment()
+        requests = await deploymentService.requests
+        XCTAssertEqual(requests.count, 2)
+        XCTAssertEqual(store.deploymentState, .deployed)
+    }
+
+    func testCancelFailedDeploymentStillResetsToIdle() {
+        let store = makeIsolatedStore()
+        store.deploymentState = .failed
+        store.deploymentLog = ["✗ 部署失败"]
+
+        store.cancelDeployment()
+
+        XCTAssertEqual(store.deploymentState, .idle)
+        XCTAssertEqual(store.deploymentLog, [])
+    }
+
     func testBackupUserDictionaryShowsPlainUserMessage() {
         let backupService = StoreUserDictionaryBackupService(
             backupResult: .init(succeeded: true, message: "已备份 朙月拼音 的学习记录。")
@@ -789,7 +889,7 @@ final class RimeSettingsStoreTests: XCTestCase {
             schemeName: "雾凇拼音",
             message: "网络不可用"
         )
-        schemaManager.rimeIceDownloadState = rimeIceFailure
+        schemaManager.downloadState = rimeIceFailure
 
         XCTAssertEqual(store.downloadState.failureMessage(for: "rime_ice"), "网络不可用")
         XCTAssertNil(store.downloadState.failureMessage(for: "wanxiang"))
@@ -811,9 +911,9 @@ final class RimeSettingsStoreTests: XCTestCase {
 
         // A new operation replaces the terminal state. Its failure must bind
         // to the new scheme instead of resurrecting the previous one.
-        schemaManager.rimeIceDownloadState = .fetchingReleaseInfo(schemeName: "万象拼音")
+        schemaManager.downloadState = .fetchingReleaseInfo(schemeName: "万象拼音")
         XCTAssertNil(store.downloadState.failureMessage(for: "rime_ice"))
-        schemaManager.rimeIceDownloadState = .failed(
+        schemaManager.downloadState = .failed(
             schemaID: "wanxiang",
             schemeName: "万象拼音",
             message: "网络不可用"
@@ -1231,14 +1331,23 @@ private final class StoreArchiveInstaller: SchemaArchiveInstalling {
 
 private actor StoreDeploymentService: RimeDeploymentServicing {
     let succeeded: Bool
+    private var remainingHangs: Int
     private(set) var requests: [RimeDeploymentRequest] = []
 
-    init(succeeded: Bool) {
+    init(succeeded: Bool, hangCount: Int = 0) {
         self.succeeded = succeeded
+        self.remainingHangs = hangCount
     }
 
     func deploy(_ request: RimeDeploymentRequest) async throws -> RimeDeploymentResult {
         requests.append(request)
+        if remainingHangs > 0 {
+            remainingHangs -= 1
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 20_000_000)
+            }
+            return RimeDeploymentResult(succeeded: false, diagnosticMessage: "cancelled")
+        }
         return RimeDeploymentResult(succeeded: succeeded, diagnosticMessage: "test")
     }
 }

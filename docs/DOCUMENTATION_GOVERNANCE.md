@@ -131,6 +131,60 @@ exactly one grade ([`kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-m
 Do not present `Executor-recorded` results as Quality-verified. Volatile
 snapshot metadata (date, commit, method, evidence path) still applies.
 
+## Claim outcome for new evidence records (KOS v0.8.0 E-01)
+
+An evidence record that explicitly opts into E-01 must give each claim one
+result outcome in addition to its M-04 evidence grade. The outcome states what
+the observation established; the grade states who established it. Neither
+field replaces the other.
+
+| Field | Required content |
+|---|---|
+| Claim | A precise claim or stable claim reference |
+| Outcome | `pass`, `fail`, `inconclusive`, or `not-run` |
+| Evidence grade | Exactly one current M-04 grade |
+| Conflict / supersession | A pointer when a comparable current record conflicts with or supersedes this result; otherwise `None known` |
+
+Use this block only for **new** E-01-opted evidence records. Historical
+evidence remains an auditable snapshot and is not backfilled solely for this
+convention. A result is `inconclusive` when its provenance, environment,
+coverage, or a comparable unresolved result cannot support the stated claim.
+`not-run` records an intentionally unexecuted observation and must not be
+presented as a pass. The Assignment remains the authority for scope,
+environment and permitted claims; this block cannot authorize a device run,
+raw-data access, Product decision, publication, or closure.
+
+## Publication facts for new handoffs (KOS v0.8.0 P-01)
+
+A publication or PR handoff that explicitly opts into P-01 must record local,
+published, and hosted-CI candidate identity as specified in
+[`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md) § Publication facts. The block
+cannot authorize a push, merge, or Release. `same-head` requires three present, equal SHAs; all three known and unequal is
+`mismatched`; any `none`/`unknown` identity is `unknown`.
+
+## Final-documentation receipt (KOS v0.8.0 D-01)
+
+A docs or publication handoff that explicitly opts into D-01 must re-run the
+named local checks after the last documentation edit and record the receipt
+fields in [`ASSIGNMENT_POLICY.md`](ASSIGNMENT_POLICY.md) § Final-documentation
+receipt. Prior source-test or link-check passes do not cover later Markdown.
+In-repository line citations that are Markdown links use `path#Lnn`. The
+link checker only verifies that the path before `#` exists; it does not
+verify line numbers or scan prose `path:nn` citations. A D-01 receipt is
+not Product, Quality, merge, or Release approval.
+
+## Observability preflight for new human-device runs (KOS-SUG-07)
+
+A **new** human-device Assignment may opt into the observability-preflight
+table in
+[`universe-keyboard-human-operated-evidence-profile.md`](kos/universe-keyboard-human-operated-evidence-profile.md).
+This is a project profile convention, not a Kit v0.8.0 contract. It is not
+backfilled onto historical or currently Active device Assignments. Preflight
+readability values (`readable` / `unreadable` / `not-checked`) are not E-01
+outcomes. An unreadable required field sets that claim’s **preflight
+readability** to `unreadable` and does not authorize raw-directory access, a
+device run, or SUG-08.
+
 ## KOS 2.2 Record Envelope Policy
 
 Universe Keyboard currently uses KOS 2.2 in `advisory` mode. A `kos-record`
@@ -165,12 +219,38 @@ text may remain for audit; it must not read as current status.
 
 ## Plan Lifecycle
 
-Every file under `docs/plans/` must declare exactly one lifecycle state near the top:
+Every **new or materially changed** file under `docs/plans/` must declare
+exactly one lifecycle state near the top. This convention does not require a
+bulk backfill or lifecycle migration of historical or existing Active plans:
 
+- `Proposed`
 - `Active`
 - `Archived`
 - `Superseded`
 - `Abandoned`
+
+`Proposed` is a bounded planning and handoff artifact. It is not current
+development guidance and does not authorize implementation, a decision,
+device/data access, publication, or a lifecycle transition. A Proposed plan
+must use this work-package header (fields may retain `UNKNOWN`):
+
+```md
+## Proposed work-package handoff
+
+- Triggering evidence:
+- Frozen facts and unknowns:
+- Decision to preserve:
+- Proposed seam and alternatives rejected:
+- Verification matrix:
+- Stop conditions and non-goals:
+- Required authorization and reviewers:
+```
+
+The header records what a future bounded Assignment must decide or verify; it
+cannot substitute for that Assignment, its authorization, or an Accepted
+Product Decision. When a plan becomes implementation guidance, create or link
+the required Assignment and change its lifecycle deliberately; do not infer the
+transition from a reviewer, status mirror, chat, or validator result.
 
 When work ends, the plan header must include:
 

@@ -45,17 +45,21 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
     }
 
-    func testWanxiangPlanSkipsDefaultYamlSoBuiltinRedeploySucceeds() throws {
+    func testWanxiangPlanSkipsDefaultYamlAndInstallsPrivatePreset() throws {
         let env = try makeEnvironment()
         defer { env.tearDown() }
 
         let official = try Data(contentsOf: env.defaultYAMLURL)
         let wanxiangPlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
         XCTAssertFalse(wanxiangPlan.shouldInstall(relativePath: "default.yaml", luaAvailable: true))
+        XCTAssertTrue(wanxiangPlan.shouldInstall(relativePath: "wanxiang_preset.yaml", luaAvailable: true))
+        XCTAssertTrue(wanxiangPlan.skippedFiles.contains("default.yaml"))
 
+        let wanxiangDefault = Data(repeating: 0x61, count: 14_842)
         let extract = env.root.appendingPathComponent("wanxiang-extract", isDirectory: true)
         try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
-        try Data(repeating: 0x61, count: 14_842).write(to: extract.appendingPathComponent("default.yaml"))
+        try wanxiangDefault.write(to: extract.appendingPathComponent("default.yaml"))
+        try wanxiangDefault.write(to: extract.appendingPathComponent("wanxiang_preset.yaml"))
         try Data("wanxiang-schema".utf8).write(
             to: extract.appendingPathComponent("wanxiang.schema.yaml")
         )
@@ -64,6 +68,10 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
 
         XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
         XCTAssertEqual(
+            try Data(contentsOf: env.shared.appendingPathComponent("wanxiang_preset.yaml")),
+            wanxiangDefault
+        )
+        XCTAssertEqual(
             try Data(contentsOf: env.shared.appendingPathComponent("wanxiang.schema.yaml")),
             Data("wanxiang-schema".utf8)
         )
@@ -71,6 +79,38 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
             try RimeBuiltinResourceInstaller().install(
                 sourceRoot: env.sourceRoot,
                 rimeRoot: env.rimeRoot
+            )
+        )
+        XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
+    }
+
+    func testWanxiangUninstallRemovesPresetAndLeavesOfficialDefaultYaml() throws {
+        let env = try makeEnvironment()
+        defer { env.tearDown() }
+
+        let official = try Data(contentsOf: env.defaultYAMLURL)
+        let wanxiangPlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
+        let wanxiangDefault = Data(repeating: 0x62, count: 256)
+        let extract = env.root.appendingPathComponent("wanxiang-extract-uninstall", isDirectory: true)
+        try FileManager.default.createDirectory(at: extract, withIntermediateDirectories: true)
+        try wanxiangDefault.write(to: extract.appendingPathComponent("default.yaml"))
+        try wanxiangDefault.write(to: extract.appendingPathComponent("wanxiang_preset.yaml"))
+        try Data("wanxiang-schema".utf8).write(
+            to: extract.appendingPathComponent("wanxiang.schema.yaml")
+        )
+        try env.installer.installSchemaFiles(from: extract, plan: wanxiangPlan, luaAvailable: true)
+
+        let staging = try env.installer.stageSchemaUninstall(plan: wanxiangPlan)
+        env.installer.commitSchemaUninstall(staging, plan: wanxiangPlan)
+
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent("wanxiang.schema.yaml").path
+            )
+        )
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: env.shared.appendingPathComponent("wanxiang_preset.yaml").path
             )
         )
         XCTAssertEqual(try Data(contentsOf: env.defaultYAMLURL), official)
@@ -380,12 +420,12 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         defer { env.tearDown() }
 
         let wanxiangPlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
-        XCTAssertEqual(wanxiangPlan.revision, "wanxiang-plan-1")
+        XCTAssertEqual(wanxiangPlan.revision, "wanxiang-plan-2")
         XCTAssertEqual(wanxiangPlan.schemaFileName, "wanxiang.schema.yaml")
 
         let chaifenRel = "lua/data/chaifen.txt"
         let emptyHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        XCTAssertEqual(WanxiangLuaOwnership.sha256ByPath[chaifenRel], emptyHash)
+        XCTAssertEqual(WanxiangExactHashOwnership.sha256ByPath[chaifenRel], emptyHash)
 
         try plantSharedFile(env.shared, relativePath: chaifenRel, data: Data())
         XCTAssertEqual(sha256(Data()), emptyHash)
@@ -393,7 +433,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         var expectedMatched = [chaifenRel]
         if let bitBytes = optionalWanxiangExtractBytes(relativePath: "lua/wanxiang/bit.lua") {
             let bitRel = "lua/wanxiang/bit.lua"
-            XCTAssertEqual(sha256(bitBytes), WanxiangLuaOwnership.sha256ByPath[bitRel])
+            XCTAssertEqual(sha256(bitBytes), WanxiangExactHashOwnership.sha256ByPath[bitRel])
             try plantSharedFile(env.shared, relativePath: bitRel, data: bitBytes)
             expectedMatched.append(bitRel)
         }
@@ -431,7 +471,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         let wanxiangPlan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
         let chaifenRel = "lua/data/chaifen.txt"
         let modified = Data("user-edited-chaifen".utf8)
-        XCTAssertNotEqual(sha256(modified), WanxiangLuaOwnership.sha256ByPath[chaifenRel])
+        XCTAssertNotEqual(sha256(modified), WanxiangExactHashOwnership.sha256ByPath[chaifenRel])
         try plantSharedFile(env.shared, relativePath: chaifenRel, data: modified)
         try plantSharedFile(
             env.shared,
@@ -1413,7 +1453,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         let wanxiangPlan = try XCTUnwrap(
             RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan
         )
-        XCTAssertEqual(wanxiangPlan.revision, "wanxiang-plan-1")
+        XCTAssertEqual(wanxiangPlan.revision, "wanxiang-plan-2")
         let extract = env.root.appendingPathComponent(
             "wanxiang-extract-\(UUID().uuidString)",
             isDirectory: true
@@ -1484,12 +1524,18 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
             try Data("wanxiang-schema".utf8).write(
                 to: extract.appendingPathComponent("wanxiang.schema.yaml")
             )
+            try "config_version: wanxiang\n".write(
+                to: extract.appendingPathComponent("default.yaml"),
+                atomically: true,
+                encoding: .utf8
+            )
             try plantSharedFile(
                 extract,
                 relativePath: CrossSchemeDualInstall.wanxiangChaifenRelativePath,
                 data: Data()
             )
         }
+        try RimeWanxiangSharedDefaultAdapter.apply(in: extract)
 
         try env.installer.installSchemaFiles(
             from: extract,
@@ -1524,6 +1570,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         let plan = try XCTUnwrap(RimeSchemeCatalog.entry(for: "wanxiang")?.installationPlan)
         let extract = env.root.appendingPathComponent("full-wanxiang-extract-\(UUID().uuidString)")
         try FileManager.default.copyItem(at: source, to: extract)
+        try RimeWanxiangSharedDefaultAdapter.apply(in: extract)
         try env.installer.installSchemaFiles(from: extract, plan: plan, luaAvailable: true)
         selection.activateJustInstalled("wanxiang")
     }
@@ -1561,8 +1608,8 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         {
             return true
         }
-        return plan.revision == "wanxiang-plan-1"
-            && WanxiangLuaOwnership.sha256ByPath[path] == sha256(data)
+        return plan.revision == "wanxiang-plan-2"
+            && WanxiangExactHashOwnership.sha256ByPath[path] == sha256(data)
     }
 
     private func assertInventory(_ expected: [String: Data], remainsIn shared: URL) throws {
@@ -1639,7 +1686,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: chaifenURL.path))
         XCTAssertEqual(
             sha256(try Data(contentsOf: chaifenURL)),
-            WanxiangLuaOwnership.sha256ByPath[
+            WanxiangExactHashOwnership.sha256ByPath[
                 CrossSchemeDualInstall.wanxiangChaifenRelativePath
             ]
         )
@@ -1649,7 +1696,7 @@ final class SchemeResourcePreparationCoexistenceTests: XCTestCase {
         if FileManager.default.fileExists(atPath: bitURL.path) {
             XCTAssertEqual(
                 sha256(try Data(contentsOf: bitURL)),
-                WanxiangLuaOwnership.sha256ByPath[
+                WanxiangExactHashOwnership.sha256ByPath[
                     CrossSchemeDualInstall.wanxiangBitRelativePath
                 ],
                 "Wanxiang exact-hash bit.lua when feasible"

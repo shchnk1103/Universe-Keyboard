@@ -391,8 +391,10 @@ enum DiagnosticsEventDisplayFormatter {
         let action = event.actionSequence.map { "action=\($0)" }
         let delivery = event.schemeDeliveryPayload.map(schemeDeliveryDescription)
         let rimeSync = event.rimeSyncPayload.map(rimeSyncDescription)
+        let runtimeRoute = event.runtimeRoutePayload.map(runtimeRouteDescription)
         let details =
-            ([action, delivery, rimeSync].compactMap { $0 } + (fields.isEmpty ? [] : [fields]))
+            ([action, delivery, rimeSync, runtimeRoute].compactMap { $0 }
+            + (fields.isEmpty ? [] : [fields]))
             .joined(separator: " ")
         let suffix = details.isEmpty ? "" : " \(details)"
         return "[\(timestamp)] [\(event.level.rawValue)] [\(event.category.rawValue)] \(event.code.rawValue)\(suffix)"
@@ -449,6 +451,44 @@ enum DiagnosticsEventDisplayFormatter {
                 + " installed=\(event.installed) deployed=\(event.deployed)"
                 + (event.failure.map { " failure=\($0.rawValue)" } ?? "")
         }
+    }
+
+    /// Finite runtime-route keys only. Used by the list/copy surface and the
+    /// tap-detail sheet so SUG-07 can read UUID, phase, and elapsed without
+    /// opening a raw journal file.
+    nonisolated static func runtimeRouteDetailItems(
+        from line: String
+    ) -> [(title: String, value: String)]? {
+        guard line.contains(DiagnosticEvent.Code.runtimeRoutePhaseChanged.rawValue) else {
+            return nil
+        }
+        let allowed = [
+            "operation", "phase", "result", "schema", "layout", "state", "elapsed_ms",
+        ]
+        var values: [String: String] = [:]
+        for token in line.split(whereSeparator: { $0.isWhitespace }) {
+            let parts = token.split(separator: "=", maxSplits: 1)
+            guard parts.count == 2 else { continue }
+            let key = String(parts[0])
+            guard allowed.contains(key), values[key] == nil else { continue }
+            values[key] = String(parts[1])
+        }
+        let items = allowed.compactMap { key in
+            values[key].map { (title: key, value: $0) }
+        }
+        return items.isEmpty ? nil : items
+    }
+
+    private nonisolated static func runtimeRouteDescription(
+        _ payload: DiagnosticEvent.RuntimeRoutePhaseEvent
+    ) -> String {
+        "operation=\(payload.operationID.uuidString.lowercased())"
+            + " phase=\(payload.phase.rawValue)"
+            + " result=\(payload.result.rawValue)"
+            + " schema=\(payload.schema.rawValue)"
+            + " layout=\(payload.layout.rawValue)"
+            + " state=\(payload.state.rawValue)"
+            + " elapsed_ms=\(payload.elapsedMilliseconds)"
     }
 
     private nonisolated static func rimeSyncDescription(

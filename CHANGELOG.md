@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## 2026-09-12 — 方案详情用来源弹层收纳版本与下载来源
+
+- 方案详情页的「方案信息」整块可点，右上中性 `info.circle` 提示；底部 sheet 只显示版本与下载来源。
+- 内置与可下载方案共用同一套行；内置填「随 App 内置 / 不适用」。以后目录里新增第三方方案自动适用，不按 schema ID 特判。
+
+## 2026-09-12 — Parked-branch archive hygiene Closed
+
+- `GIT-BRANCH-ARCHIVE-HYGIENE-003` engineering Close after PR #120; the parked-branch plan is Archived. Group B local names remain. Unique commits were not merged to `main`.
+
+## 2026-09-11 — Group B local branch names kept
+
+- After archive tags landed, KOS keep disposition left `codex/wanxiang-p4-closure-001`, `codex/release-2026-0801-kaomoji`, and `codex/release-2026-08-01-coordination-next` in place. Unique commits were not merged to `main` and were not deleted.
+
+## 2026-09-11 — Group B parked-branch archive tags
+
+- Local-only tips `codex/wanxiang-p4-closure-001`, `codex/release-2026-0801-kaomoji`, and `codex/release-2026-08-01-coordination-next` now also live behind annotated `archive/…/20260911` tags on `origin`. Branch names were **not** deleted. Unique commits were not merged to `main`.
+
+## 2026-09-11 — Group A parked-branch archive tags
+
+- Closed/superseded branches `codex/kos-v080-upgrade-review`, `codex/td016-docs-only-fixture`, and `docs/t9-single-key-mixed-candidates-discussion` now live behind annotated `archive/…/20260911` tags; the branch names were deleted. Unique commits were not merged to `main`. Group B / #101 / #102 were not touched.
+
+## 2026-09-11 — 部署中断后可取消并重试
+
+- 主 App 不再把残留的 `rime_deploying` 恢复成无法操作的「正在部署…」。进程被结束后，该标志视为中断失败，抑制自动重试，并保留手动「应用并重新部署」。
+- 部署进行中可以取消；取消不会让已失效的部署结果覆盖后续重试。不改变非活动卸载的 CS-05 路由合同。
+- Human-attested：覆盖安装后首次打开为部署失败且可重试。非活动卸载后的前台自动部署记为 [`TD-018`](docs/TECH_DEBT.md#td-018-foreground-auto-deploy-after-inactive-scheme-uninstall)，本片不做。
+
 ## 2026-09-08 — Cross-scheme CS-03/CS-04 (local)
 
 - Identical-receipt idempotent no-op for scheme reinstall (`SchemaManager.shouldSkipIdenticalReinstall`; force bypass).

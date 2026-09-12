@@ -57,3 +57,14 @@ public struct RimeIceSharedDefaultAdapter: Sendable {
         }
     }
 }
+
+extension RimeIceSharedDefaultAdapter: SchemeSharedDefaultApplying {
+    /// Shared Default seam entry for Ice `privatePreset` (P1-3).
+    public static let shared = RimeIceSharedDefaultAdapter()
+
+    public var mode: SchemeSharedDefaultMode { .privatePreset }
+
+    public func applyPostExtract(in extractionDirectory: URL) throws {
+        try Self.apply(in: extractionDirectory)
+    }
+}

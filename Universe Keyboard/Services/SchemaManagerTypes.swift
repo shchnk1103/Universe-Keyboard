@@ -392,7 +392,7 @@ enum RimeSchemeCatalog {
                             expectedByteCount: 35_027_247,
                             archiveSHA256: "9bfcf60e62d85dd168cd2748e5b2d126fcb3355939969eb80455ba71cbf67732",
                             allowedRedirectHosts: ["cnb.cool", "asset.cnb.cool"],
-                            stagedIdentityID: "wanxiang-17.5.9-plan1-post1"
+                            stagedIdentityID: "wanxiang-17.5.9-plan2-post2"
                         ),
                         RimeSchemeSourceVariant(
                             id: "github",
@@ -408,21 +408,21 @@ enum RimeSchemeCatalog {
                                 "github.com", "release-assets.githubusercontent.com",
                                 "objects.githubusercontent.com",
                             ],
-                            stagedIdentityID: "wanxiang-17.5.9-plan1-post1"
+                            stagedIdentityID: "wanxiang-17.5.9-plan2-post2"
                         ),
                     ],
                     stagedIdentities: [
                         RimeSchemeStagedIdentity(
-                            id: "wanxiang-17.5.9-plan1-post1",
+                            id: "wanxiang-17.5.9-plan2-post2",
                             artifactIdentityID: "wanxiang-17.5.9-cnb9bfc-github73f8",
                             schemeID: "wanxiang",
                             version: "17.5.9",
                             stagedContentSHA256WithLua:
-                                "5b182801298152236c790e29fd190d41b509c7da373babb0c02e65fa4eaf07cf",
+                                "7a80421ef37305c8a6cda24d816936786362c7bb6f60c4172a2a10e8e1b693b0",
                             stagedContentSHA256WithoutLua:
-                                "289929084bd8ebc751a9ef9e936327331bf14670be5eeae4722221c0bf810682",
-                            installationPlanRevision: "wanxiang-plan-1",
-                            postProcessingRevision: "wanxiang-post-1"
+                                "8dc858975c52b293440997e625888605f186a0fbac4fe62321c147a899261102",
+                            installationPlanRevision: "wanxiang-plan-2",
+                            postProcessingRevision: "wanxiang-post-2"
                         )
                     ]
                 ),
@@ -431,7 +431,7 @@ enum RimeSchemeCatalog {
             ),
             storage: .downloaded(prefix: "wanxiang"),
             installationPlan: RimeSchemeInstallationPlan(
-                revision: "wanxiang-plan-1",
+                revision: "wanxiang-plan-2",
                 schemaFileName: "wanxiang.schema.yaml",
                 luaDirectoryPrefix: "lua/",
                 allowedFiles: [
@@ -447,6 +447,7 @@ enum RimeSchemeCatalog {
                     "wanxiang_reverse.dict.yaml",
                     "wanxiang_t9.schema.yaml",
                     "wanxiang_t9i.schema.yaml",
+                    "wanxiang_preset.yaml",
                 ],
                 allowedPrefixes: ["dicts/", "lua/"],
                 skippedPrefixes: [
@@ -483,6 +484,7 @@ enum RimeSchemeCatalog {
                     "wanxiang_reverse.dict.yaml",
                     "wanxiang_t9.schema.yaml",
                     "wanxiang_t9i.schema.yaml",
+                    "wanxiang_preset.yaml",
                 ],
                 removableDirectories: [
                     "dicts"

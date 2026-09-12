@@ -1,5 +1,5 @@
-import CryptoKit
 import Foundation
+import KeyboardCore
 import RimeBridge
 
 enum SchemaUninstallRecoveryError: Error {
@@ -159,9 +159,7 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
 
         do {
             try fileManager.createDirectory(at: checkpointRoot, withIntermediateDirectories: true)
-            let paths =
-                uninstallRelativePaths(for: plan)
-                + (try matchingWanxiangLuaPaths(plan: plan, sharedDirectory: sharedDirectory))
+            let paths = try ownedRelativePaths(for: plan, sharedDirectory: sharedDirectory)
             for relativePath in paths {
                 let sourceURL = sharedDirectory.appendingPathComponent(relativePath)
                 guard fileManager.fileExists(atPath: sourceURL.path) else { continue }
@@ -242,9 +240,7 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
 
         do {
             try fileManager.createDirectory(at: stagingRoot, withIntermediateDirectories: true)
-            let paths =
-                uninstallRelativePaths(for: plan)
-                + (try matchingWanxiangLuaPaths(plan: plan, sharedDirectory: sharedDirectory))
+            let paths = try ownedRelativePaths(for: plan, sharedDirectory: sharedDirectory)
             for relativePath in paths {
                 let sourceURL = sharedDirectory.appendingPathComponent(relativePath)
                 guard fileManager.fileExists(atPath: sourceURL.path) else { continue }
@@ -362,32 +358,22 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         containerURL()?.appendingPathComponent("Rime/shared")
     }
 
-    private func uninstallRelativePaths(for plan: RimeSchemeInstallationPlan) -> [String] {
-        let candidates = plan.removableDirectories + plan.removableFiles
-        return candidates.filter { path in
-            !candidates.contains { other in
-                other != path && path.hasPrefix(other + "/")
-            }
-        }
-    }
-
-    private func matchingWanxiangLuaPaths(
-        plan: RimeSchemeInstallationPlan,
+    private func ownedRelativePaths(
+        for plan: RimeSchemeInstallationPlan,
         sharedDirectory: URL
     ) throws -> [String] {
-        guard plan.schemaFileName == "wanxiang.schema.yaml", plan.revision == "wanxiang-plan-1" else {
-            return []
-        }
-        var matched: [String] = []
-        for path in WanxiangLuaOwnership.sha256ByPath.keys.sorted() {
-            let url = sharedDirectory.appendingPathComponent(path)
-            guard fileManager.fileExists(atPath: url.path) else { continue }
-            // Do not follow a user-created link out of the owned resource tree.
-            guard url.resolvingSymlinksInPath().path == url.standardizedFileURL.path else { continue }
-            let digest = SHA256.hash(data: try Data(contentsOf: url))
-                .map { String(format: "%02x", $0) }.joined()
-            if digest == WanxiangLuaOwnership.sha256ByPath[path] { matched.append(path) }
-        }
-        return matched
+        let schemaID = SchemeAdapterRegistry.schemaID(forOwnershipPlanFileName: plan.schemaFileName)
+        let view = SchemeOwnershipPlanView(
+            schemaFileName: plan.schemaFileName,
+            revision: plan.revision,
+            removableFiles: plan.removableFiles,
+            removableDirectories: plan.removableDirectories
+        )
+        return try SchemeAdapterRegistry.ownedRelativePaths(
+            for: schemaID,
+            plan: view,
+            sharedRoot: sharedDirectory,
+            fileManager: fileManager
+        )
     }
 }

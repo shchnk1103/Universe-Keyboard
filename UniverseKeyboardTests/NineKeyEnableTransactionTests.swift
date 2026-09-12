@@ -256,7 +256,7 @@ final class NineKeyEnableTransactionTests: XCTestCase {
 
         manager.cancelDownload()
         await Task.yield()
-        XCTAssertEqual(manager.rimeIceDownloadState, .idle)
+        XCTAssertEqual(manager.downloadState, .idle)
         XCTAssertEqual(manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount, 0)
 
         await deploymentService.finish(succeeded: false)

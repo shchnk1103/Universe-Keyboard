@@ -73,7 +73,7 @@
 
 - [x] Ice：独立预设 / 不再覆盖官方 `default.yaml` 的生产路径有证据指针
 - [x] 卸载：按文件归属 staging，无整目录清空 `lua/` 或 `opencc/` 的合同违规
-- [~] Wanxiang：exact-hash Lua ownership + upgrade-rollback 边界与 ADR 条文一致或已记残余（完整 P4 仍开放 → A34-R1）
+- [~] Wanxiang：exact-hash Lua ownership + upgrade-rollback 边界与 ADR 条文一致；**A34-R1 Closed（narrow Wanxiang P4 Exit）** via S6 `2026-09-12`（仍 `[~]`：narrow ≠ ADR Accept / 全文无条件闭合）
 - [x] 跨方案矩阵：Luna-only active-uninstall（Human 已 supersede peer-prefer B）与 ADR 归属条文无冲突说明
 - [x] Fail-closed：不可读 receipt / 失败回滚不会用失效 receipt 授权任意删除
 
@@ -83,7 +83,7 @@
 
 | ID | Residual | Suggested owner | Disposition (fill) | Notes / evidence pointer |
 |---|---|---|---|---|
-| A34-R1 | Wanxiang P4 未全闭合（升级/卸载矩阵相对 ADR 全文） | Scheme Delivery / Quality | `accept`（Accept 时书面）+ `tech_debt:TD-011` | 见 review；若 Human 拒接受 → `fix`/Block |
+| A34-R1 | Wanxiang P4 未全闭合（升级/卸载矩阵相对 ADR 全文） | Scheme Delivery / Quality | **`Closed`** — narrow Wanxiang P4 Exit | S6 `2026-09-12` writeback；cite S5 IQ + Human E16/E17/E20 narrow + freeze `72b5987` / S5 tip `6f29f64`。**Does not** Accept ADR 0034。Ice `dofile` remains A34-R2 / `tech_debt:TD-011` |
 | A34-R2 | Ice Lua `dofile` 动态引用未闭合 | KeyboardCore / RIME | `tech_debt:TD-011` | P1 inventory unresolved；非 P0 |
 | A34-R3 | backup/staging cleanup 仍 best-effort | App & Data Ops | `accept` | P3 delta residual |
 | A34-R4 | Limited P4 Product Gate 仅为历史有限门；真机失败回滚未测 | Product / Quality | `accept` | 不升格完整 Product Gate；不构成 ADR Accept |
@@ -110,7 +110,7 @@
 | Baseline SHA | `main` `814abfd`；docs 分支起点 `7d5a759` |
 | Verdict | **Conditional Accept** |
 | P0 / P1 open | P0=0；P1-C1…C4 见 [review](adr-0034-architecture-accept-review-2026-09-09.md) §5 |
-| Conditions（若 Conditional） | Human Accept 包须书面接受 A34-R1（或改 `fix`）；R2→TD-011；§5.1+R8 随 Accept docs；Limited Gate ≠ Accept |
+| Conditions（若 Conditional） | A34-R1 **Closed（narrow）** via S6 — 不再是 Accept 前 `fix`。Human Accept 包须知情 narrow 限度；R2→TD-011；§5.1+R8 随 Accept docs；Limited Gate ≠ Accept |
 | Blocking items（若 Block） | 无现行 P0；若 Human 拒接受 R1/R2 且要求无条件 Accept → 升 Block |
 | Recommended Human next step | 读 review → Accept(Conditional) / Keep Proposed / Revise；**勿**在无另授权时改 ADR Status；PR #101 保持 draft |
 
@@ -143,3 +143,4 @@
 
 - `2026-09-09 Asia/Shanghai`：Human 批准单独开本 Architecture Accept 复审清单；Status 保持 Proposed。
 - `2026-09-09 Asia/Shanghai`：Architecture Accept **review 已完成** — [`adr-0034-architecture-accept-review-2026-09-09.md`](adr-0034-architecture-accept-review-2026-09-09.md)；Verdict = **Conditional Accept**。清单勾选已填。**仍不是** ADR Accept；Status 保持 Proposed。
+- `2026-09-12 Asia/Shanghai`（**S6**）：A34-R1 → **Closed（narrow Wanxiang P4 Exit）**。Verdict remains **Conditional Accept**（A34-R2 / §5.1 / A34-R8）。**ADR Status still Proposed**；leave #101；**no** Accept。

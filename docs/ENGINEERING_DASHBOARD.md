@@ -2,17 +2,24 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-03 Asia/Shanghai
+> **Updated:** 2026-09-12 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
-## KOS-ASTRA-UPGRADE-001 — v0.7.0 adoption
+## RIME-SCHEME-DETAIL-PROVENANCE-SHEET-001 — 方案信息入口收纳来源明细
 
-- [Assignment](assignments/kos-astra-upgrade-001.md): Completed implementation/local gates; adoption review complete; PR merge pending.
-- [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs and local gates complete; no final merge or App Release claim.
-- This PR adopts released v0.7.0 advisory; default-branch publication pending #99 merge.
+- **Lifecycle:** [`Assignment`](assignments/rime-scheme-detail-provenance-sheet-001.md) `Closed` — PR [#122](https://github.com/shchnk1103/Universe-Keyboard/pull/122) merged `2203c9d`; engineering `19de5e4`; hosted CI same-head green on `d75a1ce`; remote feature branch deleted
+- **Domain:** Main App UI (`RimeSchemaDetailView`)
+- **Non-claims:** not Product Gate / TestFlight / Release
+- **Next:** none for this Assignment
+
+## KOS-ASTRA-UPGRADE-001 — v0.7.0 adoption (historical)
+
+- [Assignment](assignments/kos-astra-upgrade-001.md): `Closed` (historical). PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged `4c9f424`.
+- [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs and local gates complete; no App Release claim.
+- Adopted pin superseded by [`KOS-UPGRADE-UK-004`](assignments/kos-upgrade-uk-004-v0.8.0.md) / PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104). Current pin is [UPGRADE_STATUS](kos/UPGRADE_STATUS.md).
 
 ## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory (historical)
 
@@ -22,10 +29,109 @@
 - **Non-claims:** not `required`; not orchestration plan instantiation; not Release
 - **Next:** none for this pin
 
-## KOS 2.2 advisory pin — current
+## KOS advisory pin — current
 
-- **Lifecycle:** This PR adopts `v0.7.0` advisory; [current pin](kos/UPGRADE_STATUS.md). UK-003 / PR #96 remains historical.
+- **Lifecycle:** [`KOS-UPGRADE-UK-004`](assignments/kos-upgrade-uk-004-v0.8.0.md) is Closed after Human Product Owner adopted `v0.8.0` advisory; published by PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104) merged `77e5658`. E-01, A-01/B-01, P-01 and D-01 apply only through explicit opt-in on new records. [UPGRADE_STATUS](kos/UPGRADE_STATUS.md) remains the current source. UK-003 / PR #96 remains historical.
 - **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
+
+## KOS improvement suggestions — disposition recorded
+
+- **Lifecycle:** [`KOS-IMPROVEMENT-SUGGESTIONS-001`](assignments/kos-improvement-suggestions-001.md) `Closed` — eight directions Adopted and `KOS-SUG-04` Deferred by Human Product Owner; details and implementation boundaries are in the [ledger](kos/kos-improvement-suggestions-scheme-delivery-2026-09-09-disposition-ledger.md).
+- **Non-claims:** no suggestion implementation, KOS rule/CI/privacy/diagnostics/device change, `required`, migration, or publication authorization.
+
+## KOS-SUG-EVIDENCE-AUTH-001 — first bounded implementation
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-evidence-auth-001.md) `Closed` — the docs-only SUG-01/SUG-02 slice added optional E-01 claim outcomes for new evidence and optional A-01/B-01 authorization-frontier guidance for new formal Assignments. Both final independent reviews passed.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-EVIDENCE-AUTH-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-EVIDENCE-AUTH-001.md) (consumed) · [`Architecture review`](reviews/KOS-SUG-EVIDENCE-AUTH-001-architecture-review.md) · [`Quality review`](reviews/KOS-SUG-EVIDENCE-AUTH-001-quality-review.md)
+- **Non-claims:** no SUG-03–SUG-09 implementation, KOS 2.0/2.1 change, `required`, historical backfill, CI, product code, device, or publication action.
+
+## KOS-SUG-PROPOSAL-HANDOFF-001 — Proposed-plan pilot
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-proposal-handoff-001.md) `Closed` — the docs-only SUG-05 slice added a non-authorizing `Proposed` plan lifecycle and work-package handoff header, plus one bounded pilot. Both final independent reviews passed.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PROPOSAL-HANDOFF-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PROPOSAL-HANDOFF-001.md) (consumed) · [`Architecture review`](reviews/KOS-SUG-PROPOSAL-HANDOFF-001-architecture-review.md) · [`Quality review`](reviews/KOS-SUG-PROPOSAL-HANDOFF-001-quality-review.md)
+- **Non-claims:** no plan implementation, SUG-01–04/SUG-06–09 implementation, KOS 2.0/2.1 change, `required`, historical migration, CI, product code, device, or publication action.
+
+## KOS-SUG-PUB-HANDOFF-001 — SUG-03 / SUG-09 publication and final-docs receipt
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-pub-handoff-001.md) `Closed` — PR [#105](https://github.com/shchnk1103/Universe-Keyboard/pull/105) merged `ebd5e54` (head `40c4b6b`). Optional P-01/D-01 conventions and M-02 post-#104 sync are on `main`. Remote feature branch deleted.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PUB-HANDOFF-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PUB-HANDOFF-001.md) (consumed)
+- **Non-claims:** no SUG-04/07/08 implementation, no SUG-06 CI automation, no KOS 2.0/2.1 frozen-principle change, `required`, historical backfill, product code, device, or Release.
+- **Next:** none for this slice
+
+## KOS-SUG-OBS-GLANCE-001 — SUG-07 on-device glance
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-glance-001.md) `Closed` — PR [#112](https://github.com/shchnk1103/Universe-Keyboard/pull/112) merged `7caec79` (head `58179da`). Human reported seven allowlisted keys and tap sheet on Debug `36b63c7`. AUTHs consumed.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-GLANCE-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-GLANCE-001.md) (consumed) · [`Debug-install AUTH`](authorizations/AUTH-KOS-SUG-OBS-GLANCE-001-DEBUG-INSTALL.md) (consumed)
+- **Non-claims:** no SUG-08, no Product Gate, no `RTRD-02` numbers, no 2026-09-09 record rewrite.
+- **Next:** none for this slice
+
+## RIME-DEPLOY-INTERRUPT-RECOVER-001 — 部署中断恢复
+
+- **Lifecycle:** [`Assignment`](assignments/rime-deploy-interrupt-recover-001.md) `Closed` — engineering Close after PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115) merged `5bd7499` and Independent Quality Pass with conditions.
+- **Current phase:** Closed. Residuals `RDIR-01` accept, `RDIR-02` tech_debt:TD-018, `RDIR-03` accept.
+- **Non-claims:** not Product Gate / TestFlight; not Device-attested; not TD-018 implementation.
+- **Next:** none for this Assignment. TD-018 remains a later slice.
+
+## SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001 — CS09-10-02 device
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-device-001.md) `Closed` — engineering Close after functional Pass with conditions, RTRD-01 glance, RTRD-02 accept.
+- **Authority:** [`Close AUTH`](authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001-CLOSE.md) (consumed)
+- **Non-claims:** not Product Gate, TestFlight, Release, or ADR Accept.
+- **Next:** none for this Assignment
+
+## GIT-BRANCH-ARCHIVE-HYGIENE-001 — Group A parked-branch archive
+
+- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-001.md) `Closed` — PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) merged `bb15b27` (head `fc7d8b1`).
+- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001-MERGE.md) (consumed)
+- **Non-claims:** unique leftover commits are not on `main`; not Product Gate / Release.
+- **Next:** none for this Assignment. Group B tags are [`002`](assignments/git-branch-archive-hygiene-002.md).
+
+## GIT-BRANCH-ARCHIVE-HYGIENE-002 — Group B parked-branch tags
+
+- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-002.md) `Closed` — PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) merged `bf0e6ec` (head `e372268`).
+- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002-MERGE.md) (consumed)
+- **Non-claims:** unique leftover commits are not on `main`; not Product Gate / Release.
+- **Next:** none for this Assignment. Keep disposition Closed as [`003`](assignments/git-branch-archive-hygiene-003.md).
+
+## GIT-BRANCH-ARCHIVE-HYGIENE-003 — Group B keep
+
+- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-003.md) `Closed` — PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) merged `04e2240`; plan Archived. Close reviews: [`Architecture`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-close-architecture-review.md) · [`Quality`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-close-quality-review.md).
+- **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-003-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-MERGE.md) (consumed) · [`Close AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-CLOSE.md) (consumed)
+- **Non-claims:** no Group B delete; unique commits not on `main`; not Product Gate / Release.
+- **Next:** none for this Assignment.
+
+## SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001 — RTRD-02
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-elapsed-001.md) `Closed` — Human accepted the same-field comparison gap. AUTH consumed.
+- **Authority:** [`Product Decision`](product-decisions/SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001-authorization.md) · [`Authorization`](authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001.md) (consumed)
+- **Non-claims:** no performance conclusion, no Swift, no SUG-08, no Product Gate.
+- **Next:** none for this slice
+
+## SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001 — RTRD-01
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-diagnostics-ui-001.md) `Closed` — PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) merged `4e4164f` (head `8a3f05c`). Finite runtime-route fields are on `main` in diagnostics list/copy and a bottom sheet. Remote feature branch deleted.
+- **Non-claims:** no uninstall round, no SUG-08, no journal schema change, no Release, no `RTRD-02` close.
+- **Next:** none for this slice
+
+## KOS-SUG-OBS-DEVICE-001 — SUG-07 preflight execution
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-device-001.md) `Closed` — PR [#109](https://github.com/shchnk1103/Universe-Keyboard/pull/109) merged `0fd3518` (head `b481d70`). Preflight recorded trace UUID/phase/elapsed as `unreadable` in the then-current UI; **no uninstall round**. Remote feature branch deleted.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-DEVICE-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-DEVICE-001.md) (consumed)
+- **Non-claims:** no SUG-08, no Product Gate, no Release.
+- **Next:** none for this slice
+
+## KOS-SUG-OBS-PREFLIGHT-001 — SUG-07 docs-only observability preflight
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-preflight-001.md) `Closed` — PR [#107](https://github.com/shchnk1103/Universe-Keyboard/pull/107) merged `5ebf25f` (head `daafe0b`). Opt-in SUG-07 preflight is on `main`. Remote feature branch deleted.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-PREFLIGHT-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-PREFLIGHT-001.md) (consumed)
+- **Non-claims:** no SUG-04/08, no SUG-06 CI, no privacy/diagnostics/UI/log change, no `required`, no device run, no Release.
+- **Next:** none for this slice
+
+## KOS-SUG-PIN-AUDIT-001 — manual pin consistency audit
+
+- **Lifecycle:** [`Assignment`](assignments/kos-sug-pin-audit-001.md) `Closed` — the docs-only SUG-06 audit confirmed all five named current mirrors match the canonical `v0.8.0` advisory pin and opt-in boundary. Both final independent reviews passed.
+- **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PIN-AUDIT-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PIN-AUDIT-001.md) (consumed) · [`Audit`](evidence/kos-sug-06-manual-pin-audit-2026-09-10.md) · [`Architecture review`](reviews/KOS-SUG-PIN-AUDIT-001-architecture-review.md) · [`Quality review`](reviews/KOS-SUG-PIN-AUDIT-001-quality-review.md)
+- **Non-claims:** no upstream-latest assertion, CI/script automation, KOS 2.0/2.1 change, `required`, migration, product code, device, or publication action.
 
 ## KOS-UPGRADE-UK-002 — Record Deferred kos-agent-kit v0.6.0 (historical)
 
