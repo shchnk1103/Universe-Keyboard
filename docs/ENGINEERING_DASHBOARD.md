@@ -2,11 +2,19 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-12 Asia/Shanghai
+> **Updated:** 2026-09-14 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## HELP-GUIDE-SHEET-001 — 引导 sheet 与设置「？」
+
+- **Lifecycle:** [`Assignment`](assignments/help-guide-sheet-001.md) `Closed`
+- **Current phase:** Human Product Gate Passed（[`Gate`](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)）
+- **Non-claims:** not push, TestFlight, Release, or F1/F2 device proof
+- **Next:** none for this Assignment; scoped commit of this slice is separately authorized
+- **Sources:** [Quality review](reviews/help-guide-sheet-001-quality-review.md) · [Product Gate](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)
 
 ## RIME-SCHEME-DETAIL-PROVENANCE-SHEET-001 — 方案信息入口收纳来源明细
 

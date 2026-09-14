@@ -1,9 +1,9 @@
 # Product Decision: HELP-J3-RESOURCES-001 — 帮助内嵌 J3 资源准备
 
-**Decision ID:** `PD-HELP-J3-RESOURCES-001`  
-**Lifecycle status:** `Recorded`  
-**Date / timezone:** `2026-07-25 Asia/Shanghai`  
-**Assignment:** [`HELP-J3-RESOURCES-001`](../assignments/help-j3-resources-001.md)  
+**Decision ID:** `PD-HELP-J3-RESOURCES-001`
+**Lifecycle status:** `Recorded`
+**Date / timezone:** `2026-07-25 Asia/Shanghai`
+**Assignment:** [`HELP-J3-RESOURCES-001`](../assignments/help-j3-resources-001.md)
 **Related:** [`PD-HELP-TIPKIT-001`](HELP-TIPKIT-001-authorization.md), [`PD-RELEASE-2026-0801-03`](RELEASE-2026-0801-03-activation-authorization.md), [`ONBOARDING_ACTIVATION.md`](../ONBOARDING_ACTIVATION.md)
 
 ## Authority
@@ -21,9 +21,9 @@ Activation step J3 (prepare input resources) only told users to find RIME/deploy
 
 ### 1. Presentation: slim embed in Help (not full RIME settings clone)
 
-1. When `nextStep == prepareResources` (or user expands J3 for re-read while incomplete), Help shows a **slim resource-prepare panel** in the main App.
+1. When `nextStep == prepareResources` (or user expands J3 for re-read while incomplete), the **activation sheet** shows a **slim resource-prepare panel** in the main App (carrier amended `2026-09-14`; previously the Help tab).
 2. Panel reuses main-App store/actions (`RimeSettingsStore` / SchemaManager). No second deployment engine.
-3. Full **设置 → RIME 方案设置** remains the complete management surface. Help must not offer uninstall, force redownload, update check, or advanced-input diagnostics.
+3. Full **设置 → RIME 方案设置** remains the complete management surface. The activation sheet must not offer uninstall, force redownload, update check, or advanced-input diagnostics.
 4. Optional link: “在设置中管理全部方案.”
 
 ### 2. Default recommendation: 雾凇 (`rime_ice`)
@@ -41,22 +41,22 @@ Activation step J3 (prepare input resources) only told users to find RIME/deploy
 
 J3 is complete only when **all** hold:
 
-1. A scheme is the **active** schema for the keyboard (`rime_active_schema` / store active id).  
-2. That active scheme is **installed**.  
+1. A scheme is the **active** schema for the keyboard (`rime_active_schema` / store active id).
+2. That active scheme is **installed**.
 3. Main-App **deployment succeeded** (`rime_deployed` / deployment success semantics) and is not currently failed or in-progress.
 
 Not sufficient alone: weak “I prepared it” affirmation; deploy flag without installed active scheme.
 
 ### 5. Non-goals
 
-- Extension TipKit or Extension deployment  
-- Auto-download 雾凇 without license accept  
-- Cloning full Rime settings Form into Help  
-- Changing ADR 0001 deployment ownership  
+- Extension TipKit or Extension deployment
+- Auto-download 雾凇 without license accept
+- Cloning full Rime settings Form into the activation sheet
+- Changing ADR 0001 deployment ownership
 
 ## Relationship
 
-Amends presentation and J3 readiness observation used by Help packaging under `PD-HELP-TIPKIT-001` without changing Full Access optionality or J1/J2/J4 success definitions in `PD-RELEASE-2026-0801-03`, except that J3 readiness is now scheme-installed + deployed as above.
+Amends presentation and J3 readiness observation used by activation packaging under `PD-HELP-TIPKIT-001` (sheet carrier as of `PD-HELP-GUIDE-SHEET-001`) without changing Full Access optionality or J1/J2/J4 success definitions in `PD-RELEASE-2026-0801-03`, except that J3 readiness is now scheme-installed + deployed as above. Recommended scheme, license gate and completion criteria are unchanged.
 
 ## Change Policy
 

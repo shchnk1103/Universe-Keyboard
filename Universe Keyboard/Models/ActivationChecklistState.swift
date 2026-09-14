@@ -66,8 +66,9 @@ nonisolated struct ActivationChecklistState: Equatable, Sendable {
         nextStep == nil
     }
 
-    /// Whether the top-level **帮助** tab should be visible (`PD-HELP-TIPKIT-001` P2).
-    var shouldShowHelpTab: Bool {
+    /// Incomplete / recovery marker on Settings **？**, and next-process auto-present.
+    /// (`PD-HELP-GUIDE-SHEET-001` F1; replaces Help-tab visibility.)
+    var shouldMarkHelpEntryIncomplete: Bool {
         if nextStep != nil { return true }
         if fullAccess == .sharedDataUnavailable { return true }
         if deploymentFailed { return true }
@@ -76,6 +77,9 @@ nonisolated struct ActivationChecklistState: Equatable, Sendable {
         if !activeSchemaInstalled { return true }
         return false
     }
+
+    /// Auto-present the activation sheet on the next main-App process launch.
+    var shouldOfferGuideSession: Bool { shouldMarkHelpEntryIncomplete }
 
     /// Full Access step is complete only when not blocked by shared-data failure
     /// and either user-affirmed or positively observed.
@@ -164,16 +168,24 @@ nonisolated enum ActivationCopy {
 
     /// Soft Welcome primary CTA (`PD-HELP-TIPKIT-001` P1).
     static let welcomeStartTitle = "开始设置"
-    /// Soft Welcome secondary CTA — leave on Home; Help remains available.
+    /// Soft Welcome / incomplete-sheet defer — not activation success (`F2`).
     static let welcomeSkipTitle = "稍后再说"
+    static let guideDeferHint = "不会标记为已完成；可从设置右上角问号继续，下次启动也会再次出现。"
     static let welcomeHeadline = "启用 Universe Keyboard"
 
-    /// Settings permanent entry title (`PD-HELP-TIPKIT-001` P2).
+    /// Settings toolbar **？** accessibility name (`PD-HELP-GUIDE-SHEET-001` F3).
     static let settingsHelpEntryTitle = "使用帮助与启用指南"
     static let settingsHelpEntrySubtitle = "重看启用步骤，不会清除进度"
-    /// In-Help re-read banner when checklist is complete.
+    static let helpEntryIncompleteValue = "启用未完成"
+    static let helpEntryCompleteValue = "可重看启用步骤"
+    /// Completed-manual banner (`PD-HELP-GUIDE-SHEET-001` re-read, not reset).
     static let reReadOnlyBanner =
-        "可在此重新查看启用说明（重新走一遍）。默认不会清除你的确认进度或部署状态。"
+        "这是已完成的启用说明，不会清除你的确认进度或部署状态。"
+    static let reReadFromStartTitle = "从第一步开始"
+    static let reReadFromStartHint =
+        "按添加键盘、完全访问、准备方案、试用输入的顺序，再看一遍首次启用的操作指引。"
+    static let reReadContinueTitle = "查看下一步"
+    static let reReadBackToManualTitle = "回到说明书"
 
     static let resourcesRecommendRimeIce = "推荐使用雾凇拼音（开源方案，需接受许可证后下载）。"
     static let resourcesSelectThenPrepare = "点选一个方案后，按提示完成许可证、下载与部署。"
@@ -196,13 +208,13 @@ nonisolated enum ActivationCopy {
         case .addKeyboard: return "打开设置，添加键盘"
         case .fullAccess: return "打开设置，开启完全访问"
         case .prepareResources: return "在下方选择方案并完成部署"
-        case .firstInput: return "到「搜索」试用输入，任意内容均可"
+        case .firstInput: return "在本页试用输入，任意内容均可"
         }
     }
 
-    static let firstInputTryCTA = "去搜索页试用输入"
+    static let firstInputTryCTA = "在此试用输入"
     static let firstInputTryHint =
-        "将打开「搜索」并聚焦输入框。请用地球键切换到 \(keyboardDisplayName)，输入任意内容即可；也可顺便搜索设置项。"
+        "请用地球键切换到 \(keyboardDisplayName)，在下方输入任意内容即可。"
     static let firstInputExample =
         "示例（可选）：输入「你好」或设置名如「模糊」。不必与示例一致。"
 

@@ -5,6 +5,8 @@ struct SettingsTab: View {
     @Bindable var rimeStore: RimeSettingsStore
     @Bindable var syncModel: RimeSyncViewModel
     @Bindable var notificationSettings: AppNotificationSettingsModel
+    var helpEntryNeedsAttention: Bool = false
+    var onOpenActivationGuide: (() -> Void)?
 
     @AppStorage(
         KeyboardInputSettingsKey.pairedSymbolCompletionEnabled,
@@ -47,6 +49,23 @@ struct SettingsTab: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("设置")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        onOpenActivationGuide?()
+                    } label: {
+                        Image(systemName: "questionmark.circle")
+                            .foregroundStyle(helpEntryNeedsAttention ? Color.red : Color.primary)
+                    }
+                    .accessibilityLabel(ActivationCopy.settingsHelpEntryTitle)
+                    .accessibilityValue(
+                        helpEntryNeedsAttention
+                            ? ActivationCopy.helpEntryIncompleteValue
+                            : ActivationCopy.helpEntryCompleteValue
+                    )
+                    .accessibilityHint(ActivationCopy.settingsHelpEntrySubtitle)
+                }
+            }
             .onAppear { rimeStore.load() }
         }
     }
@@ -222,21 +241,8 @@ struct SettingsTab: View {
     private var appSettingsSection: some View {
         SettingsGroup(
             title: "App 设置",
-            footer: "外观与通知只影响主 App；输入仍在键盘扩展里完成。启用指南可随时从这里重看。"
+            footer: "外观与通知只影响主 App；输入仍在键盘扩展里完成。启用指南可随时从右上角问号重看。"
         ) {
-            SettingsNavigationLink(
-                systemImage: "book.pages",
-                title: ActivationCopy.settingsHelpEntryTitle,
-                subtitle: ActivationCopy.settingsHelpEntrySubtitle
-            ) {
-                // Parent Settings already provides NavigationStack.
-                GuideTab(
-                    embedsOwnNavigationStack: false,
-                    rimeStore: rimeStore,
-                    onRequestTryInput: nil
-                )
-            }
-
             SettingsNavigationLink(
                 systemImage: "circle.lefthalf.filled",
                 title: "外观",

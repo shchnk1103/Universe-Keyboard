@@ -2,13 +2,14 @@
 
 > **Status:** Active product source for new-user activation and Full Access degradation presentation
 > **Decision source (semantics):** [`PD-RELEASE-2026-0801-03`](product-decisions/RELEASE-2026-0801-03-activation-authorization.md)
-> **Decision source (Help / soft first-run / TipKit packaging):** [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authorization.md)
+> **Decision source (presentation packaging):** [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authorization.md) as amended `2026-09-14` by [`PD-HELP-GUIDE-SHEET-001`](product-decisions/HELP-GUIDE-SHEET-001-authorization.md)
 > **Assignment (semantics V1):** [`RELEASE-2026-0801-03`](assignments/release-2026-08-01-03-onboarding-full-access.md) (`Closed`)
-> **Assignment (presentation):** [`HELP-TIPKIT-001`](assignments/help-tipkit-001.md)
+> **Assignment (presentation, historical):** [`HELP-TIPKIT-001`](assignments/help-tipkit-001.md) (`Completed` — shipping Help-tab UI until the sheet Assignment lands)
+> **Assignment (presentation, authorized next):** [`HELP-GUIDE-SHEET-001`](assignments/help-guide-sheet-001.md) (`Ready`; Swift not authorized)
 > **Architecture boundaries:** ADR 0007, ADR 0008, ADR 0001, ADR 0003
 > **Related debt:** TD-004
 
-This document owns the user journey, copy boundaries and capability matrix for activation. Implementation may present these semantics in Help, Settings recovery surfaces or TipKit, but must not invent competing product meaning. Presentation packaging (soft Welcome, Help tab visibility, Settings entry, TipKit phase) is authorized by `PD-HELP-TIPKIT-001`.
+This document owns the user journey, copy boundaries and capability matrix for activation. Implementation may present these semantics in the activation sheet, Settings **？** recovery, or TipKit, but must not invent competing product meaning. `HELP-GUIDE-SHEET-001` implementation is **Active**; Product Gate is not implied.
 
 ## Activation Definition
 
@@ -24,8 +25,7 @@ First-input smoke example for V1: type `nihao`, confirm candidates appear, commi
 ### J0 — Welcome
 
 - One-screen value: local RIME Chinese input; keystrokes are not uploaded.
-- Primary CTA enters the checklist (Help surface, focus next step). Skip is allowed.
-- **Presentation (`PD-HELP-TIPKIT-001`):** soft, skippable Welcome on first main-App open only; does not block Home; Welcome-seen is not activation success. Re-read after completion uses Help, not forced re-Welcome every launch.
+- **Presentation (`PD-HELP-TIPKIT-001` / `PD-HELP-GUIDE-SHEET-001`):** J0 is the first page of the multi-step activation sheet on first main-App process launch. Primary CTA continues into J1. **「稍后再说」** dismisses the current process sheet only; it is not activation success and does not suppress **？** or next-launch auto-present. The sheet must not block Home after defer. Re-read after completion uses **？**, not a forced Welcome every launch.
 
 ### J1 — Add keyboard
 
@@ -53,7 +53,7 @@ capabilities, not blocked basic typing.
 
 Main App owns deployment (ADR 0001). Extension never deploys.
 
-**Presentation (`PD-HELP-J3-RESOURCES-001`):** Help embeds a **slim** prepare panel (not a full RIME settings clone):
+**Presentation (`PD-HELP-J3-RESOURCES-001`):** the activation sheet embeds a **slim** prepare panel (not a full RIME settings clone):
 
 1. Recommend **雾凇** (`rime_ice`); user must tap to select (no auto-download).
 2. Downloadable open-source schemes require **view + accept license** before download (same gate as Settings).
@@ -65,13 +65,15 @@ Main App owns deployment (ADR 0001). Extension never deploys.
 
 ### J4 — First successful input
 
-Presentation (`PD-APP-SEARCH-001`): primary path uses the main-App **搜索** tab text field.
+Presentation (`PD-APP-SEARCH-001` amended `2026-09-14`): primary path is a trial field **inside the activation sheet**.
 
-1. Open the Search tab field (Help CTA may switch tab and focus it)
+1. Focus the in-sheet trial field (do not require switching to the Search tab)
 2. Globe key → Universe Keyboard
 3. Type **any content** the user chooses (settings names or free text are both fine; `nihao` / 「你好」 remain optional examples only)
 4. Commit if using candidates as usual
-5. Return and affirm success in Help (V1 remains user affirmation)
+5. Affirm success in the sheet (V1 remains user affirmation)
+
+The Search tab remains for settings search and optional extra trial; it is not the J4 primary CTA.
 
 ### J5 — Complete
 
@@ -86,8 +88,9 @@ Short confirmation, links to privacy and scheme settings, advanced diagnostics c
 | Full Access deferred | bool | Presentation order only; never evidence that Full Access is enabled |
 | RIME ready | `notReady`, `preparing`, `ready`, `failed` | Main-App deployment state |
 | First input | `no`, `userAffirmedSuccess` | User affirmation for V1 |
-| Guide dismissed / Welcome seen | bool | User preference only; does not equal activation success |
-| Help tab visible | derived | See [Help information architecture](#help-information-architecture) |
+| Guide session offer | derived | Auto-present on next process launch while incomplete or in recovery; not activation success |
+| 「稍后再说」 this process | bool | Presentation only; does not complete steps and does not suppress next-launch auto-present |
+| focusedStep (optional) | step | Scroll/expand memory only; never overrides `nextStep` |
 
 Rules:
 
@@ -159,30 +162,31 @@ User-facing recovery:
 
 ## Help information architecture
 
-Authorized by [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authorization.md).
+Authorized by [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authorization.md) as amended by [`PD-HELP-GUIDE-SHEET-001`](product-decisions/HELP-GUIDE-SHEET-001-authorization.md).
 
 ### Surfaces
 
 | Surface | Role |
 |---|---|
-| Soft Welcome (J0) | First open only; skippable; not a progress reset |
-| Tab **帮助** | Primary activation checklist while incomplete or in recovery |
-| Settings → 使用帮助 / 启用指南 | Permanent entry to the same Help / activation content |
+| Activation sheet (J0–J5) | Single bottom sheet; J0 is the first page; kept across system Settings round-trips |
+| Settings toolbar **？** | Only permanent entry; incomplete/recovery marker when F1 holds |
 | TipKit tips (optional phase) | Contextual one-action packaging of the same steps |
 
-### Help tab visibility
+There is **no** 帮助 / 引导 tab. The Settings list row 「使用帮助与启用指南」 is **removed**.
 
-Show the **帮助** tab when any of:
+### Incomplete marker and auto-present (F1)
+
+While any of:
 
 1. Recommended activation incomplete (`nextStep != nil`).
 2. `fullAccess == sharedDataUnavailable`.
-3. Resources recovery is actionable (deployment failed / not ready for complete experience under existing J3 authority).
+3. Resources recovery is actionable under existing J3 authority.
 
-When fully activated and healthy: **hide** the Help tab; users re-enter via Settings. If a recovery condition returns, **show the Help tab again**.
+the **？** control uses an incomplete/recovery marker (visual may be red; not color-only), and the **next main-App process launch** auto-presents the sheet. Same-process foreground after 「稍后再说」 does not auto-present. After healthy full activation: default **？**, no auto-present.
 
 ### Re-read policy（重新走一遍）
 
-Users may re-open Help and re-read every activation step after completion. Default re-read **must not** clear checklist affirmations, observation flags, or main-App deployment readiness truth. A destructive “reset activation progress” control is **out of scope** unless a new Product Decision authorizes it.
+Users re-open the sheet from **？** after completion. The surface remains a completed manual: default re-read **must not** clear checklist affirmations, observation flags, or main-App deployment readiness truth. 「从第一步开始」 replays J1–J4 instructions and system-Settings actions in first-run order without writing a new completion state. Incomplete/recovery sheets disable swipe-down; re-read sheets may dismiss. A destructive “reset activation progress” control is **out of scope** unless a new Product Decision authorizes it.
 
 ### Content scope (this presentation track)
 
@@ -199,16 +203,18 @@ TipKit presents the same steps as contextual tips (main App; iOS 17+; implemente
 5. TipKit is optional packaging, not a second product contract.
 6. **No TipKit (or equivalent tip UI) in the Keyboard Extension** under `PD-HELP-TIPKIT-001`.
 
-| Tip | Surface (P3) | Invalidate when |
+| Tip | Surface (authorized) | Invalidate when |
 |---|---|---|
-| Add keyboard | Help next-step | `addKeyboard` complete |
-| Full Access | Help next-step | Full Access satisfied for progress |
-| Prepare resources | Help next-step; Settings → RIME 方案设置 | Resources ready |
-| First input | Help next-step; Home keyboard card when next | First input affirmed |
+| Add keyboard | Activation sheet current step | `addKeyboard` complete |
+| Full Access | Activation sheet current step | Full Access satisfied for progress |
+| Prepare resources | Activation sheet current step; Settings → RIME 方案设置 | Resources ready |
+| First input | Activation sheet current step; Home keyboard card when next (optional) | First input affirmed |
+
+Shipping TipKit may still mention Help until `HELP-GUIDE-SHEET-001` implementation rebinds surfaces.
 
 ## Acceptance Scenarios
 
-1. Fresh install → Guide shows add-keyboard as next step; Settings limitation is visible.
+1. Fresh install → activation sheet auto-presents on add-keyboard as next step; Settings limitation is visible.
 2. User defers Full Access → Guide advances to resources, then first input, then returns Full Access
    as the final incomplete step; basic typing remains described as possible and complete activation
    is not claimed.

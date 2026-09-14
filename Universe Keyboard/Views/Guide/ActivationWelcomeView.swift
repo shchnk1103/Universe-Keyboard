@@ -75,7 +75,7 @@ struct ActivationWelcomeView: View {
             ) {
                 onStart()
             }
-            .accessibilityHint("进入帮助中的启用清单")
+            .accessibilityHint("进入启用清单")
 
             AppActionButton(
                 title: ActivationCopy.welcomeSkipTitle,
@@ -84,7 +84,7 @@ struct ActivationWelcomeView: View {
             ) {
                 onSkip()
             }
-            .accessibilityHint("稍后可在帮助页继续启用")
+            .accessibilityHint("稍后可从设置右上角问号继续，下次启动也会再次出现")
         }
     }
 }
