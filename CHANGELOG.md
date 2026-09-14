@@ -118,6 +118,16 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ## Unreleased — KOS execution and instruction repair
 
+- 新增发布证据增量计划与 Candidate receipt：普通小改动只刷新受影响证据，
+  键盘/RIME/工具链/权限等边界自动扩大验证范围；日常 Beta 证据可按产物身份
+  标记为当前证明或仅作 comparator，不自动替代 Quality、Product 或 Release 门禁。
+- 主 App Diagnostics 新增「发布证据」页面，保存有限的候选身份、验证档位、
+  阶段结果与 Beta→正式外部候选引用；不记录用户输入内容，也不执行上传或分发。
+- 收紧 Beta→外部候选证据晋级：待核对产物不会形成通过，current-proof 必须绑定
+  五字段 artifact identity、行为契约、验证档位、设备/系统、候选上下文、证据版本和
+  freshness；首次/后续 external receipt 分别强制 verified baseline / previous receipt。
+- 发布证据 archive 损坏时保留 quarantine 副本后恢复保存，步骤备注有界，并以自动化
+  测试确认诊断日志清除不会删除 release-evidence 子空间。
 - 修正测试/发布技能、当前授权解释和阶段依赖；保留必填 UNKNOWN、独立评审与本地 CI 门。
 - 压缩入口历史摘要，修正 legacy 路由、九键状态和 App Tab 描述；标记过期文档健康基线。
 - 上游 v0.7.0 准备中；本项目 Adopted 仍 v0.6.0 advisory，未迁移既有 Active Assignment。

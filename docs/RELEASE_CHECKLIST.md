@@ -62,6 +62,96 @@ Prefer uploading the already verified App Store package when preserving the
 frozen build identity. Changing a Cloud workflow and rebuilding is not an
 identity-preserving substitute merely because it uses the same source commit.
 
+## Incremental Release Evidence And Candidate Promotion
+
+每次新上传前先生成发布验证计划，而不是按 build number 机械重跑所有历史矩阵。
+首次正式外部候选要在 plan 命令中显式加入 `--first-external-candidate`，并让
+external receipt 使用该 verified baseline plan；后续 external receipt 必须引用上一份
+已验证 receipt。两条路径都缺失时命令 fail closed。之后的候选继续按变更路径和触发器选择档位：
+
+1. 用 scripts/release/release_evidence.py plan 计算相对基线的变更路径；
+2. 普通改动使用 delta，只补直接修改路径和受影响功能；
+3. 键盘、RIME、生命周期、性能/崩溃、Full Access 或 App Group 边界使用
+   triggered；
+4. 首次外部候选、工具链/权限/支持矩阵/产物闭包变化，或无法安全分类时使用
+   baseline；
+5. release profile 只决定发布证据范围，不改变现有 CI 分类。源码或工程改动仍
+   必须执行 CI full 门禁。
+
+最小命令路径如下；`<base-sha>` 应是本次候选的已核对基线，`HEAD` 可替换为
+实际候选提交：
+
+下面的 plan 命令适用于日常 Beta 和后续外部候选；首次正式外部候选请在同一命令的
+`--head HEAD` 后追加 `--first-external-candidate`。首次 external receipt 不能再传
+previous receipt；后续 external receipt 则必须传 `--previous-external-receipt`。
+
+~~~bash
+python3 scripts/release/release_evidence.py plan \
+  --base <base-sha> --head HEAD \
+  --output /tmp/release-validation-plan.json
+
+python3 scripts/release/release_evidence.py receipt \
+  --plan /tmp/release-validation-plan.json \
+  --kind daily_beta --candidate-id <candidate-id> \
+  --archive <archive-path> --package <upload-package-path> \
+  --behavior-contract <behavior-contract> \
+  --device-model <device-model> --os-version <os-version> \
+  --evidence-file <main-app-export.json> \
+  --output /tmp/daily-beta-receipt.json
+
+# 首次 external：先用同一基线重新生成带 marker 的 plan
+python3 scripts/release/release_evidence.py plan \
+  --base <base-sha> --head HEAD --first-external-candidate \
+  --output /tmp/first-external-validation-plan.json
+
+python3 scripts/release/release_evidence.py receipt \
+  --plan /tmp/first-external-validation-plan.json \
+  --kind external_candidate --candidate-id <candidate-id> \
+  --archive <archive-path> --package <upload-package-path> \
+  --behavior-contract <behavior-contract> \
+  --device-model <device-model> --os-version <os-version> \
+  --output /tmp/external-candidate-target.json
+
+# 后续 external：改用上一份已验证的 external receipt
+python3 scripts/release/release_evidence.py receipt \
+  --plan /tmp/release-validation-plan.json \
+  --kind external_candidate --candidate-id <candidate-id> \
+  --previous-external-receipt /tmp/previous-external-receipt.json \
+  --archive <archive-path> --package <upload-package-path> \
+  --output /tmp/external-candidate-target.json
+
+python3 scripts/release/release_evidence.py promote \
+  --source /tmp/daily-beta-receipt.json \
+  --target /tmp/external-candidate-target.json \
+  --output /tmp/external-candidate-promotion.json
+~~~
+
+正式外部候选必须先为该 build 生成 receipt；首次候选用带 verified baseline marker 的
+plan，后续候选用 `--previous-external-receipt /tmp/previous-external-receipt.json`。
+再将该 external receipt 作为 `--target` 传给 promote。省略 target 的 promotion 只
+产生 `pending_artifact_match` 记录，不会形成 current-proof 或总体通过；有新 build
+时，旧 Beta 证据只能标记为 comparator，并保留当前 delta、外部资格、独立 Quality
+review、Product Gate 与 Release Pass 的待办。
+
+日常 Beta 证据可以沿用到正式外部候选，但必须记录复用角色：
+
+- 五个最小 identity 字段（source commit、version、build、archive SHA-256、package
+  SHA-256）完整一致，并且行为合同、validation profile、候选/版本/构建绑定、设备/系统、
+  evidence contract 和 30 天 freshness 全部一致：可标记为 current-proof；
+- 新 build、身份字段未完整核对或只证明同一合同：只能标记为 comparator，并补做
+  当前 delta；
+- 身份不一致、未知、失败、未定或未执行的证据：不得作为当前证明。
+
+无论复用角色如何，external candidate readiness、独立 Quality review、Product Gate
+和 Release Pass 都要分别记录。Main App Diagnostics 的发布证据页面只保存内容无关的
+有限结果，不代替 CI、真机、签名、App Store Connect 或人类门禁。
+
+实现入口和字段语义见
+[RELEASE-EVIDENCE-PROMOTION-001 Assignment](assignments/release-evidence-promotion-001.md)、
+[Proposed ADR 0035](architecture/decisions/0035-release-evidence-accumulation-and-promotion.md)
+及 [外部公测复盘建议稿](kos/kos-improvement-suggestions-public-beta-release-2026-09-13.md)。
+这些实现目前仍是有界切片，未将 Proposed ADR 自动升级为冻结规则。
+
 ## Repository And Artifacts
 
 - [ ] Working tree contains only intended release changes.
