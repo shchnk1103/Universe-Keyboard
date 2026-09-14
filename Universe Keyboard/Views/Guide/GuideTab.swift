@@ -1,11 +1,13 @@
 import SwiftUI
 
 struct GuideTab: View {
-    /// When `false`, content is pushed inside an existing `NavigationStack` (Settings).
+    /// When `false`, content is pushed inside an existing `NavigationStack`.
     var embedsOwnNavigationStack: Bool = true
     @Bindable var rimeStore: RimeSettingsStore
-    /// J4: switch to Search tab and focus the trial field (`PD-APP-SEARCH-001`).
-    var onRequestTryInput: (() -> Void)?
+    /// Incomplete session: explicit 「稍后再说」 (`F2`). Nil on re-read.
+    var onDefer: (() -> Void)?
+    /// Re-read session: dismiss the sheet without changing progress.
+    var onClose: (() -> Void)?
 
     @AppStorage("rime_active_schema", store: UserDefaults(suiteName: universeAppGroupID))
     private var activeSchemaID = "luna_pinyin"
@@ -28,6 +30,11 @@ struct GuideTab: View {
     @Environment(\.scenePhase) private var scenePhase
     /// Expanded step for re-read (instruction only; does not clear progress).
     @State private var expandedReReadStep: ActivationChecklistState.Step?
+    /// Completed-manual walkthrough cursor. Nil means show the overview, not reset.
+    @State private var replayStep: ActivationChecklistState.Step?
+    /// J4 in-sheet trial field (`PD-APP-SEARCH-001` 2026-09-14).
+    @State private var trialInput = ""
+    @FocusState private var trialFieldFocused: Bool
 
     private var isDeploying: Bool {
         switch rimeStore.deploymentState {
@@ -80,22 +87,48 @@ struct GuideTab: View {
         }
     }
 
+    private var isReplayWalkthrough: Bool { replayStep != nil }
+
+    /// Featured step: live `nextStep`, or a completed-manual replay cursor.
+    private var featuredStep: ActivationChecklistState.Step? {
+        replayStep ?? checklist.nextStep
+    }
+
     private var guideScrollContent: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                headerSection
-                if checklist.isFullyActivated {
-                    reReadBannerSection
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    headerSection
+                    if checklist.isFullyActivated {
+                        reReadBannerSection
+                    }
+                    nextStepSection
+                        .id("guide-featured-step")
+                    checklistSection
                 }
-                nextStepSection
-                checklistSection
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
+            .onChange(of: replayStep) { _, step in
+                guard step != nil else { return }
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    proxy.scrollTo("guide-featured-step", anchor: .top)
+                }
+            }
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("启用指南")
         .navigationBarTitleDisplayMode(embedsOwnNavigationStack ? .large : .inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if let onClose {
+                    Button("完成", action: onClose)
+                } else if let onDefer {
+                    Button(ActivationCopy.welcomeSkipTitle, action: onDefer)
+                        .accessibilityHint(ActivationCopy.guideDeferHint)
+                }
+            }
+        }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active else { return }
             refreshSharedContainerObservation()
@@ -157,17 +190,27 @@ struct GuideTab: View {
             Text(ActivationCopy.reReadOnlyBanner)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-            Text("点开下方清单步骤可重看各步说明与操作指引。")
+            Text(ActivationCopy.reReadFromStartHint)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
+            AppActionButton(
+                title: ActivationCopy.reReadFromStartTitle,
+                systemImage: "arrow.trianglehead.counterclockwise",
+                prominence: .primary
+            ) {
+                startReplayFromFirstStep()
+            }
+            .accessibilityHint(ActivationCopy.reReadFromStartHint)
         }
-        .accessibilityElement(children: .combine)
     }
 
     @ViewBuilder
     private var nextStepSection: some View {
-        if let step = checklist.nextStep {
-            InfoSection(title: "下一步", systemImage: "arrow.right.circle") {
+        if let step = featuredStep {
+            InfoSection(
+                title: isReplayWalkthrough ? "按顺序查看" : "下一步",
+                systemImage: "arrow.right.circle"
+            ) {
                 Text(ActivationCopy.title(for: step))
                     .font(.headline)
                 Text(detail(for: step))
@@ -194,13 +237,16 @@ struct GuideTab: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                     ActivationResourcePreparePanel(store: rimeStore)
+                    if isReplayWalkthrough {
+                        replayAdvanceButton(for: .prepareResources)
+                    }
                 }
                 if step == .firstInput {
                     firstInputActions
                 }
             }
             // Contextual TipKit tip for the current next step only (one tip / one action).
-            .activationPopoverTip(for: step)
+            .activationPopoverTip(for: isReplayWalkthrough ? nil : step)
         } else {
             InfoSection(title: "启用状态", systemImage: "checkmark.circle") {
                 Text("清单步骤已确认完成")
@@ -269,9 +315,9 @@ struct GuideTab: View {
                     .foregroundStyle(.secondary)
                 // Numbered system steps / resource panel live under the matching checklist item.
                 stepGuideContent(for: step)
-                if step == .prepareResources, !checklist.isStepComplete(.prepareResources) {
+                if step == .prepareResources, showsInstallActions(for: step) {
                     ActivationResourcePreparePanel(store: rimeStore)
-                } else if checklist.nextStep == step, step != .prepareResources {
+                } else if showsInstallActions(for: step), step != .prepareResources {
                     if step == .addKeyboard || step == .fullAccess {
                         AppActionButton(
                             title: "打开设置",
@@ -297,15 +343,14 @@ struct GuideTab: View {
         Text(ActivationCopy.firstInputExample)
             .font(.caption)
             .foregroundStyle(.secondary)
-        if onRequestTryInput != nil {
-            AppActionButton(
-                title: ActivationCopy.firstInputTryCTA,
-                systemImage: "magnifyingglass",
-                prominence: .primary
-            ) {
-                onRequestTryInput?()
-            }
-        }
+        TextField(ActivationCopy.firstInputTryCTA, text: $trialInput)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+            .focused($trialFieldFocused)
+            .padding(AppSpacing.card)
+            .background(Color(.tertiarySystemFill))
+            .clipShape(RoundedRectangle(cornerRadius: AppRadius.control, style: .continuous))
+            .accessibilityLabel(ActivationCopy.firstInputTryCTA)
         affirmButtons(for: stepFirstInput)
     }
 
@@ -348,6 +393,30 @@ struct GuideTab: View {
 
     @ViewBuilder
     private func affirmButtons(for step: ActivationChecklistState.Step) -> some View {
+        if isReplayWalkthrough {
+            replayAdvanceButton(for: step)
+        } else {
+            liveAffirmButtons(for: step)
+        }
+    }
+
+    @ViewBuilder
+    private func replayAdvanceButton(for step: ActivationChecklistState.Step) -> some View {
+        let isLast = step == .firstInput
+        AppActionButton(
+            title: isLast
+                ? ActivationCopy.reReadBackToManualTitle
+                : ActivationCopy.reReadContinueTitle,
+            systemImage: isLast ? "book.pages" : "arrow.right",
+            prominence: .secondary
+        ) {
+            advanceReplayWalkthrough()
+        }
+        .accessibilityHint("不会清除已确认的启用进度")
+    }
+
+    @ViewBuilder
+    private func liveAffirmButtons(for step: ActivationChecklistState.Step) -> some View {
         switch step {
         case .addKeyboard:
             AppActionButton(
@@ -405,7 +474,7 @@ struct GuideTab: View {
         case .prepareResources:
             return "在下方选择输入方案并完成安装与部署后，完整候选才可用。"
         case .firstInput:
-            return "在「搜索」页输入框中切换到本键盘，输入任意内容试用即可。"
+            return "在下方输入框中切换到本键盘，输入任意内容试用即可。"
         }
     }
 
@@ -418,6 +487,34 @@ struct GuideTab: View {
             return .orange
         }
         return .secondary
+    }
+
+    private func showsInstallActions(for step: ActivationChecklistState.Step) -> Bool {
+        if checklist.nextStep == step { return true }
+        return isReplayWalkthrough && expandedReReadStep == step
+    }
+
+    private func startReplayFromFirstStep() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            replayStep = .addKeyboard
+            expandedReReadStep = .addKeyboard
+        }
+    }
+
+    private func advanceReplayWalkthrough() {
+        guard let replayStep else { return }
+        let steps = ActivationChecklistState.Step.allCases
+        guard let index = steps.firstIndex(of: replayStep), index + 1 < steps.count else {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                self.replayStep = nil
+            }
+            return
+        }
+        let next = steps[index + 1]
+        withAnimation(.easeInOut(duration: 0.2)) {
+            self.replayStep = next
+            expandedReReadStep = next
+        }
     }
 
     private func openSystemSettings() {

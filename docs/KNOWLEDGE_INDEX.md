@@ -27,6 +27,7 @@
 - [纠错 Benchmark](TYPO_BENCHMARK.md) · [Registry](TYPO_BENCHMARK_REGISTRY.md) · [V2 Registry](TYPO_BENCHMARK_REGISTRY_V2.md)
 - [上屏续写](POST_COMMIT_CONTINUATION.md) · [续写内容质量](POST_COMMIT_CONTINUATION_QUALITY.md)
 - [App 通知](APP_NOTIFICATIONS.md) · [隐私](PRIVACY_POLICY.md)
+- [首次启用 / 完全访问旅程](ONBOARDING_ACTIVATION.md) — 语义 `PD-RELEASE-2026-0801-03`；展示 `PD-HELP-TIPKIT-001` / [`HELP-GUIDE-SHEET-001`](assignments/help-guide-sheet-001.md)（Closed；Product Gate [`记录`](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)）
 
 ## 验证与运维
 

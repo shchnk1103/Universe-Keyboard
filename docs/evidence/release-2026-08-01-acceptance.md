@@ -6,6 +6,18 @@
 > **Evidence rule:** A historical or preliminary result is not final release evidence until it maps to the frozen release commit and archive.
 > **Current channel decision:** external TestFlight candidate under [`PD-RELEASE-2026-0801-EXTERNAL-TESTFLIGHT-CANDIDATE`](../product-decisions/RELEASE-2026-0801-external-testflight-candidate.md); Human-operated Build 7 internal group/invitations now exist, while external group, review and release remain unauthorized
 
+## Latest candidate update — Build 55 physical Product Gate
+
+On `2026-09-12 Asia/Shanghai`, the exact Xcode Cloud Build 55 archive/export from
+`main` commit `b8175129f26f787a6c7fee0be5977ebec46edf60` was installed by
+replacement on the designated iPhone 13 Pro / iOS 27.0. The Human Product Owner
+completed the declared keyboard-enable and functional smoke sequence and returned
+`通过，没有任何异常。` The bounded result is **Human Product Gate Pass for
+functional smoke**. It does not close the performance, Full Access off/on,
+crash/Jetsam/symbolication or fresh-install boundaries, and it does not authorize
+TestFlight distribution or release. Full record:
+[`Build 55 physical Product Gate`](release-2026-09-12-build55-physical-product-gate.md).
+
 ## Release Identity
 
 | Field | Current value |

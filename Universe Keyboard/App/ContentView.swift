@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Universe Keyboard
 //
-//  主页面：首页 / 帮助(条件) / 设置 / 搜索(最右，始终)。
+//  主页面：首页 / 设置 / 搜索(最右，始终)。引导为设置「？」sheet。
 //
 
 import SwiftUI
@@ -10,10 +10,9 @@ import SwiftUI
 let universeAppGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 
 struct ContentView: View {
-    /// Top-level tabs. Help is conditional; Search is always last (`PD-APP-SEARCH-001`).
+    /// Top-level tabs. Search is always last (`PD-APP-SEARCH-001`).
     private enum MainTab: Hashable {
         case home
-        case help
         case settings
         case search
     }
@@ -21,7 +20,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage(AppAppearance.storageKey, store: AppAppearance.storage)
     private var appearanceRawValue = AppAppearance.system.rawValue
-    /// Soft Welcome auto-present once (`PD-HELP-TIPKIT-001`). Not activation success.
+    /// J0 passed (开始设置). Not activation success.
     @AppStorage(ActivationPresentationStorage.welcomeSeenKey)
     private var activationWelcomeSeen = false
     /// Activation affirmations (standard defaults; same keys as GuideTab).
@@ -29,6 +28,8 @@ struct ContentView: View {
     private var keyboardAddedAffirmed = false
     @AppStorage("activation_full_access_affirmed")
     private var fullAccessAffirmed = false
+    @AppStorage(ActivationPresentationStorage.fullAccessDeferredKey)
+    private var fullAccessDeferred = false
     @AppStorage("activation_first_input_affirmed")
     private var firstInputAffirmed = false
     @AppStorage("activation_shared_data_unavailable")
@@ -36,9 +37,9 @@ struct ContentView: View {
     @AppStorage("rime_deployed", store: UserDefaults(suiteName: universeAppGroupID))
     private var rimeDeployed = false
     @State private var selectedTab: MainTab = .home
-    @State private var showActivationWelcome = false
-    /// Bumped when Help J4 asks Search to become first responder.
-    @State private var searchFocusRequestToken = 0
+    @State private var showActivationGuide = false
+    /// F2: dismisses the current process sheet only; next launch auto-presents again.
+    @State private var deferredGuideThisProcess = false
     @State private var rimeSettingsStore: RimeSettingsStore
     @State private var rimeSyncViewModel: RimeSyncViewModel
     @State private var notificationSettingsModel: AppNotificationSettingsModel
@@ -79,6 +80,7 @@ struct ContentView: View {
         return ActivationChecklistState(
             keyboardAddedAffirmed: keyboardAddedAffirmed,
             fullAccess: fullAccess,
+            fullAccessDeferred: fullAccessDeferred,
             activeSchemaID: rimeSettingsStore.activeSchemaID,
             activeSchemaInstalled: activeInstalled,
             rimeDeployed: rimeDeployed,
@@ -88,8 +90,8 @@ struct ContentView: View {
         )
     }
 
-    private var showHelpTab: Bool {
-        helpChecklist.shouldShowHelpTab
+    private var isActivationGuideReRead: Bool {
+        !helpChecklist.shouldOfferGuideSession
     }
 
     var body: some View {
@@ -100,23 +102,12 @@ struct ContentView: View {
                     Label("首页", systemImage: "house")
                 }
                 .tag(MainTab.home)
-            if showHelpTab {
-                GuideTab(
-                    rimeStore: rimeSettingsStore,
-                    onRequestTryInput: {
-                        selectedTab = .search
-                        searchFocusRequestToken += 1
-                    }
-                )
-                .tabItem {
-                    Label("帮助", systemImage: "book.pages")
-                }
-                .tag(MainTab.help)
-            }
             SettingsTab(
                 rimeStore: rimeSettingsStore,
                 syncModel: rimeSyncViewModel,
-                notificationSettings: notificationSettingsModel
+                notificationSettings: notificationSettingsModel,
+                helpEntryNeedsAttention: helpChecklist.shouldMarkHelpEntryIncomplete,
+                onOpenActivationGuide: { presentActivationGuide() }
             )
             .tabItem {
                 Label("设置", systemImage: "gearshape")
@@ -127,7 +118,7 @@ struct ContentView: View {
                 rimeStore: rimeSettingsStore,
                 syncModel: rimeSyncViewModel,
                 notificationSettings: notificationSettingsModel,
-                focusRequestToken: searchFocusRequestToken
+                onOpenActivationGuide: { presentActivationGuide() }
             )
             .tabItem {
                 Label("搜索", systemImage: "magnifyingglass")
@@ -138,35 +129,25 @@ struct ContentView: View {
         .preferredColorScheme(
             AppAppearance(rawValue: appearanceRawValue)?.colorScheme
         )
-        .sheet(
-            isPresented: $showActivationWelcome,
-            onDismiss: {
-                activationWelcomeSeen = true
-            }
-        ) {
-            ActivationWelcomeView(
-                onStart: {
-                    if showHelpTab {
-                        selectedTab = .help
-                    } else {
-                        selectedTab = .settings
-                    }
-                    showActivationWelcome = false
+        .sheet(isPresented: $showActivationGuide) {
+            ActivationGuideSheet(
+                rimeStore: rimeSettingsStore,
+                showsWelcome: !activationWelcomeSeen && helpChecklist.shouldOfferGuideSession,
+                isReRead: isActivationGuideReRead,
+                onStartFromWelcome: {
+                    activationWelcomeSeen = true
                 },
-                onSkip: {
-                    showActivationWelcome = false
+                onDefer: {
+                    deferActivationGuideThisProcess()
+                },
+                onDismiss: {
+                    showActivationGuide = false
                 }
             )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
         }
         .onAppear {
-            presentActivationWelcomeIfNeeded()
-            reconcileSelectedTabWithHelpVisibility()
+            presentActivationGuideIfNeeded()
             syncActivationTips()
-        }
-        .onChange(of: showHelpTab) { _, _ in
-            reconcileSelectedTabWithHelpVisibility()
         }
         .onChange(of: keyboardAddedAffirmed) { _, _ in syncActivationTips() }
         .onChange(of: fullAccessAffirmed) { _, _ in syncActivationTips() }
@@ -334,20 +315,30 @@ struct ContentView: View {
         showOperationToast = false
     }
 
-    private func presentActivationWelcomeIfNeeded() {
-        guard !activationWelcomeSeen else { return }
-        // Defer one turn so TabView is on-screen before the soft sheet.
+    private var isRunningUnderXCTest: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
+
+    private func presentActivationGuideIfNeeded() {
+        guard !isRunningUnderXCTest else { return }
+        guard helpChecklist.shouldOfferGuideSession else { return }
+        guard !deferredGuideThisProcess else { return }
+        // Defer one turn so TabView is on-screen before the sheet.
         DispatchQueue.main.async {
-            guard !activationWelcomeSeen else { return }
-            showActivationWelcome = true
+            guard helpChecklist.shouldOfferGuideSession else { return }
+            guard !deferredGuideThisProcess else { return }
+            showActivationGuide = true
         }
     }
 
-    /// If Help tab is hidden while it is selected, land on Home (Settings still has Help).
-    private func reconcileSelectedTabWithHelpVisibility() {
-        if !showHelpTab, selectedTab == .help {
-            selectedTab = .home
-        }
+    /// User-initiated present (toolbar **？** or Search). Allowed after 「稍后再说」 in this process.
+    private func presentActivationGuide() {
+        showActivationGuide = true
+    }
+
+    private func deferActivationGuideThisProcess() {
+        deferredGuideThisProcess = true
+        showActivationGuide = false
     }
 
     /// Keep TipKit `@Parameter` flags aligned with checklist (P3 invalidation).
