@@ -7,10 +7,10 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Phase | P1/P2 修复已完成；本地质量门已重验，Architecture re-review 已 Accept，Quality re-review 为 Conditional Accept；等待 final-SHA/实际 base-head provenance 与 Human Product Owner 决策 |
+| Phase | P1/P2 修复与 final-SHA provenance 已完成；本地质量门已重验，Architecture re-review 已 Accept，Quality re-review 为 Conditional Accept；candidate `ad39f443b7f77d96c28359bd652356a89bb173de` 的 hosted Swift 6 Quality same-head green |
 | Non-claims | 不宣称 Product Gate、Quality Pass、Release Pass、App Store Connect、TestFlight 或真机验收已完成 |
-| Next | 如需形成可合并提交，先取得单独 commit 授权并以实际 base/head 保存 CI/lightweight provenance；随后由 Human Product Owner 决定是否采纳为日常发布流程 |
-| Residuals | `REP-Q-01`：当前工作树没有 final SHA，尚未形成实际 final base/head 的 hosted provenance；真实 archive/export、外部专属检查、设备操作和正式发布仍在本 Assignment 之外 |
+| Next | `REP-Q-01` 已闭合；下一步仅由 Human Product Owner 决定是否采纳 Proposed ADR 0035 为日常发布合同 |
+| Residuals | `REP-Q-01`：已由 [final-SHA provenance receipt](../evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md) 闭合；真实 archive/export、外部专属检查、设备操作和正式发布仍在本 Assignment 之外 |
 
 ### Review Residual Ledger
 
@@ -22,7 +22,7 @@ Policy version: 1.0.0
 | `REP-P1-04` | ADR 0027 必须声明 release-evidence 子空间 owner、生命周期、clear 隔离与恢复合同（已闭合） | Architecture + App/Data | `fix` | ADR 0027 ownership row、clear isolation test、两份 re-review 记录 |
 | `REP-P2-01` | 损坏 archive 必须可恢复保存且保留原始副本（已闭合） | App & Data Operations | `fix` | quarantine/recovery test、Quality re-review |
 | `REP-P2-02` | evidence note 必须有持久化长度上限，并覆盖旧数据解码（已闭合） | App & Data Operations | `fix` | bounded note 与 legacy archive fixture、Architecture re-review |
-| `REP-Q-01` | 形成明确 final SHA 后，使用实际 base/head 保存 hosted CI/lightweight provenance | Executor / App & Data Operations | `fix` | Quality re-review handoff；等待单独 commit/hosted CI 授权 |
+| `REP-Q-01` | 形成明确 final SHA 后，使用实际 base/head 保存 hosted CI/lightweight provenance（已闭合） | Executor / App & Data Operations | `closed` | [final-SHA provenance receipt](../evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md)；hosted run `34865917284` same-head green |
 
 ## Authority
 
@@ -87,7 +87,7 @@ Policy version: 1.0.0
 - [x] 发布清单、建议稿、架构 ADR、Product Decision、Authorization、Active Work 和 Knowledge Index 已互相链接。
 - [x] Swift 格式、相关单元测试、KeyboardCore、RimeBridgeTests、App + Keyboard tests、Debug/Release build 已按本轮修复后的仓库门禁重验；条件性设备/Spike 用例的跳过原因保留在测试输出中。
 - [x] 独立 Architecture re-review 与 Quality re-review 完成；两者均未授予 Product/Release 权限。
-- [ ] 形成明确 final SHA 后保存实际 base/head 的 CI/lightweight provenance；该项需要另行 commit/hosted CI 授权。
+- [x] 形成明确 final SHA 后保存实际 base/head 的 CI/lightweight provenance；receipt 记录 candidate、published head、hosted head、结果和 coverage。
 - [ ] Human Product Owner 决定是否将 Proposed 设计纳入日常发布合同。
 
 ### Stop Conditions
@@ -102,7 +102,7 @@ Policy version: 1.0.0
 
 - Required Handoff Content: 变更分类规则、CI 独立边界、五字段 identity 与 provenance 区分、candidate context/current-proof/freshness 语义、首次/后续 external baseline 证明、Main App 存储位置与上限、损坏恢复与 clear 隔离、隐私 allowlist、自动化结果、未执行的设备/外部检查。
 - Initial Review Records: [Architecture review](../reviews/release-evidence-promotion-001-architecture-review.md)（Conditional Accept） · [Quality review](../reviews/release-evidence-promotion-001-quality-review.md)（Blocked）。
-- Final Review Records: [Architecture re-review](../reviews/release-evidence-promotion-001-architecture-rereview.md)（Accept，仅限修复范围） · [Quality re-review](../reviews/release-evidence-promotion-001-quality-rereview.md)（Conditional Accept，开放 `REP-Q-01`）。两份记录均为独立 Reviewer 的只读结论。
+- Final Review Records: [Architecture re-review](../reviews/release-evidence-promotion-001-architecture-rereview.md)（Accept，仅限修复范围） · [Quality re-review](../reviews/release-evidence-promotion-001-quality-rereview.md)（Conditional Accept，`REP-Q-01` 已由 final-SHA provenance receipt 闭合）。两份记录均为独立 Reviewer 的只读结论。
 - Revalidation Trigger: release profile 规则变化、artifact identity 字段变化、证据有效性合同变化、App Group 文件 owner 变化、日志隐私边界变化、外部动作授权变化或正式采纳 ADR。
 
 ## History
@@ -112,3 +112,4 @@ Policy version: 1.0.0
 - 2026-09-14: 独立 Architecture 结论为 Conditional Accept，独立 Quality 结论为 Beta → external current-proof Blocked；登记 `REP-P1-01`–`REP-P2-02`，进入本 Assignment 内 P1/P2 remediation，ADR 0035 仍 Proposed。
 - 2026-09-14: 完成 pending fail-closed、current-proof context/freshness、external baseline/history fail-closed、archive quarantine、note bound 与 Diagnostics clear isolation 修复；本地质量门和独立 re-review 待完成。
 - 2026-09-14: 修复 target candidate ID binding 与 legacy archive fixture；Architecture re-review Accept，Quality re-review Conditional Accept；`REP-P1-01`–`REP-P2-02` 闭合，新增 `REP-Q-01` 作为 final-SHA/实际 base-head provenance residual。ADR 0035 仍 Proposed，未执行 commit、push、merge 或外部发布。
+- 2026-09-15: candidate source `ad39f443b7f77d96c28359bd652356a89bb173de`（base `e7b2f602684553fc9b31cf32109839a3d6141e0d`）已在隔离功能分支提交并 push；hosted Swift 6 Quality run `34865917284` 的 `headSha` 与 candidate 完全一致，四个 job 均 success。见 [REP-Q-01 provenance receipt](../evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md)。`REP-Q-01` Closed；不代表 merge、Product Gate、Release Pass、TestFlight 或外部发布。
