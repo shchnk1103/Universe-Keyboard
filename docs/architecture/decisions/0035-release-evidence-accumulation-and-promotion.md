@@ -2,6 +2,8 @@
 
 ## Status
 
+> **Status reconciliation:** the acceptance applies to RELEASE-EVIDENCE-PROMOTION-001 only. It does not close or supersede the separate UK-005/P1-A adapter package or its deferred P1-B diagnostics slice. See the [P1-A / ADR 0035 status reconciliation](../../evidence/release-evidence-promotion-001-p1-a-adr-0035-status-reconciliation-2026-09-15.md).
+
 **Accepted — Conditional Accept package, 2026-09-15 Asia/Shanghai.** Human Product Owner formally accepted this ADR as the binding architecture decision for the bounded release-evidence workflow. The implementation candidate is recorded at `ad39f443b7f77d96c28359bd652356a89bb173de`; this adoption does not authorize merge or external distribution, and does not grant Product Gate, Quality Pass or Release Pass.
 
 ## Context

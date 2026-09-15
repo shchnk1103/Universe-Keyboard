@@ -12,6 +12,8 @@ Policy version: 1.0.0
 | Next | 无本 Assignment 的 Executor 动作；后续外部 archive/export、设备、签名和正式发布仍需各自的 Assignment 与授权 |
 | Residuals | 无未处置工程残差；真实 archive/export、外部专属检查、设备操作和正式发布仍在本 Assignment 之外 |
 
+Status reconciliation: [P1-A / ADR 0035 status reconciliation](../evidence/release-evidence-promotion-001-p1-a-adr-0035-status-reconciliation-2026-09-15.md) confirms that this Assignment's Reviewed / REP-Q-01 Closed state is not transferable to the separate UK-005 P1-A package or its deferred P1-B slice.
+
 ### Review Residual Ledger
 
 | ID | Residual / exit condition | Owner | Disposition | Evidence pointer |
