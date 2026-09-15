@@ -171,3 +171,44 @@ bash scripts/ci/run_lightweight_checks.sh \
   Assignment; this receipt only closes UK-005 engineering provenance residuals.
 
 The result is an engineering provenance closure, not a Product or Release decision.
+
+## 7. PR #132 merge-resolution integration candidate
+
+The conflict-resolution branch integrated the reviewed UK-005 candidate with the
+then-current `origin/main` after the original receipt was recorded. This is a new
+integration identity, not a rewrite of the historical exact-candidate evidence above.
+
+| Field | Value |
+|---|---|
+| Conflict count | `1` |
+| Conflicted path | `docs/KNOWLEDGE_INDEX.md` |
+| Main parent | `eb615be6f8c2da164baf49341a487c7979242e83` |
+| PR parent | `52b81e5d57695e11249abe0ec421c4270783d74c` |
+| Local merge-resolution commit | `1609a1bef8df47c7cf087b4fb82740425e7e4884` |
+| Resolved content | Retained both the UK-005 links and the newer public-beta retrospective link; no source or evaluator contract was discarded |
+| Six-file package digest after integration | `f16573fa96cd9e969bd42348f2ce99fa38bffc6133cc9de97dedbac2070620` |
+| Changed Swift files relative to `origin/main` | None |
+
+The historical exact package digest remains `45afdbf879c6b0054790342861254abbc6d9cde846f61b43a160bd22064d0382`.
+The new `f165…` digest is the full six-file package after composing the PR with
+`origin/main`; the difference is in the shared release checklist, while the adapter,
+fixture runner, fixture matrix, adapter tests and profile blobs remain unchanged.
+Therefore the original independent Architecture/Quality review is still bound only
+to `45af…`; it is not silently transferred to the new integration digest.
+
+The integration candidate passed the local CI-equivalent gate before push:
+
+- lightweight/KOS checks: exit `0`; existing repository validator warnings only;
+- release-evidence Python suite: `47` passed; fixture matrix: `76/76` passed;
+- KeyboardCore: `1125` passed; RimeBridgeTests: `101` executed, `20` skipped,
+  `0` failed;
+- UniverseKeyboardTests: `369` executed, `9` skipped, `0` failed; KeyboardTests:
+  `11` passed;
+- Debug test and Release build: `BUILD SUCCEEDED`;
+- RIME vendor structural verification: `12` framework artifacts verified;
+- Swift-format hard gate: not applicable because the integration candidate has no
+  changed `.swift` file relative to `origin/main`.
+
+At the time this section was added, the integration commit had not yet been pushed,
+so its hosted CI and PR merge state remained pending. This section makes no Product,
+Quality/Release, App Store Connect, TestFlight, device or publication claim.

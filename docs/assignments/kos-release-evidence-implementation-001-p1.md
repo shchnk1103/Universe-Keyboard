@@ -361,3 +361,10 @@ summary without per-case evidence does not close this condition:
   `666a421…`; hosted run `34924569095` returned `success` with the exact UK-005
   `headSha`. The scoped commit/push/PR authorization was exercised; no merge, Release
   or publication action was performed.
+- `2026-09-15T12:04:38+08:00`: PR #132's single documentation conflict in
+  `docs/KNOWLEDGE_INDEX.md` was resolved in an isolated integration branch by
+  retaining both link sets. Local CI-equivalent verification passed on merge
+  resolution commit `1609a1b…`. The resulting six-file package digest is
+  `f16573…`, which is a new integration identity; the prior exact-review digest
+  `45afdb…` remains historical and is not relabeled. Push, hosted CI and merge
+  remain separate authorized actions.
