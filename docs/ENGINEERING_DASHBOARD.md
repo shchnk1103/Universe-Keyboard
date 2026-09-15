@@ -8,6 +8,15 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## CI-HEAVY-JOB-SPLIT-001 — 拆分 full 路径 heavy job
+
+- **Lifecycle:** [Assignment](assignments/ci-heavy-job-split-001.md) Active
+- **Current phase:** Quality `fix` 残差均 closed；[#131](https://github.com/shchnk1103/Universe-Keyboard/pull/131) close without merge；[#130](https://github.com/shchnk1103/Universe-Keyboard/pull/130) draft
+- **Non-claims:** 不等于 Product Gate、merge 或 required-check 迁移
+- **Next:** Human 决定是否 undraft/merge #130
+- **Reviews:** [Architecture](reviews/ci-heavy-job-split-001-architecture-review.md) · [Quality](reviews/ci-heavy-job-split-001-quality-review.md)
+- **Local evidence:** [gate scripts](evidence/ci-heavy-job-split-001-local-gate-2026-09-15.md)
+
 ## HELP-GUIDE-SHEET-001 — 引导 sheet 与设置「？」
 
 - **Lifecycle:** [`Assignment`](assignments/help-guide-sheet-001.md) `Closed`

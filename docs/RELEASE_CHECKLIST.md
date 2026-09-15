@@ -165,11 +165,11 @@ ADR 0035 已正式采纳为 binding architecture decision；它仍是有界发�
 
 ## Automated Verification
 
-**Pre-merge / ship gate:** Agent and Human release owners should run the **local CI door** in [`AGENTS.md`](../AGENTS.md) §「本地 CI 门禁」 before treating a PR as merge-ready. That suite mirrors `.github/workflows/swift6-quality.yml` (format + KeyboardCore + RimeBridgeTests + full app scheme test + Debug/Release build). Prefer destination `iPhone 17 Pro` when available.
+**Pre-merge / ship gate:** Agent and Human release owners should run the **local CI door** in [`AGENTS.md`](../AGENTS.md) §「本地 CI 门禁」 before treating a PR as merge-ready. That suite mirrors `.github/workflows/swift6-quality.yml` (format + KeyboardCore + RimeBridgeTests + full app scheme test + Release build). Prefer destination `iPhone 17 Pro` when available.
 
 Remote selection follows [`CI_CHANGE_CLASSIFICATION.md`](CI_CHANGE_CLASSIFICATION.md):
 `classify-change`、`lightweight-checks` 与 `final-quality-gate` 始终运行；只有严格
-docs/KOS allowlist 才允许 `build-and-test` 为 `skipped`。workflow、分类脚本和未知路径
+docs/KOS allowlist 才允许全部 heavy jobs 为 `skipped`。workflow、分类脚本和未知路径
 必须 full。CI 分级不替代本清单中的真机、性能、签名、TestFlight 或 Release Gate。
 
 Minimal command set (same intent as CI; fill destination if the default simulator is missing):
@@ -192,13 +192,6 @@ xcodebuild -project "Universe Keyboard.xcodeproj" \
   CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 \
   SWIFT_STRICT_CONCURRENCY=complete \
   SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test
-
-xcodebuild -project "Universe Keyboard.xcodeproj" \
-  -scheme "Universe Keyboard" -configuration Debug \
-  -destination "$DEST" \
-  CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 \
-  SWIFT_STRICT_CONCURRENCY=complete \
-  SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build
 
 xcodebuild -project "Universe Keyboard.xcodeproj" \
   -scheme "Universe Keyboard" -configuration Release \
