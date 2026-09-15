@@ -94,3 +94,7 @@ This directory does not authorize by mere existence:
 
 - [原始建议稿](kos-improvement-suggestions-scheme-delivery-2026-09-09.md) — 历史提案，不再是当前处置。
 - [处置台账](kos-improvement-suggestions-scheme-delivery-2026-09-09-disposition-ledger.md) — 当前方向、边界与后续 Assignment。
+
+## 外部公测发布复盘建议
+
+- [证据分级与差异验证建议稿](kos-improvement-suggestions-public-beta-release-2026-09-13.md) — **建议稿；未采纳**，不改变当前 KOS、Release Gate 或任何授权边界。
