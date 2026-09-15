@@ -85,7 +85,7 @@ Current update: `2026-09-12 Asia/Shanghai` — Human-authorized **Close** [`SCHE
 
 | 7 | SCHEME-DELIVERY-RUNTIME-ROUTE-INTEGRATION-001 | Active | P1 已通过最终独立复审；DEVICE-001 **Closed**（功能 Pass with conditions；RTRD-01 glanced；RTRD-02 accept）。不因 DEVICE Close 关闭本 Assignment / Release。 | [`assignment`](assignments/scheme-delivery-runtime-route-integration-001.md) · [`P1 final review`](reviews/scheme-delivery-runtime-route-integration-001-p1-final-independent-review.md) |
 
-| 8 | CI-HEAVY-JOB-SPLIT-001 | Active | 独立 Architecture / Quality **Pass with conditions**。CHS-A-02 closed；隔离分支 commit/push 已授权。CHS-Q-01/02 待 hosted。无 merge。 | [assignment](assignments/ci-heavy-job-split-001.md) · [Architecture](reviews/ci-heavy-job-split-001-architecture-review.md) · [Quality](reviews/ci-heavy-job-split-001-quality-review.md) · [PD](product-decisions/CI-HEAVY-JOB-SPLIT-001-authorization.md) · [publish AUTH](authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH.md) |
+| 8 | CI-HEAVY-JOB-SPLIT-001 | Active | Draft [#130](https://github.com/shchnk1103/Universe-Keyboard/pull/130)；hosted `full` Quality-reverified。CHS-Q-01/Q-03 closed；CHS-Q-02 待不合并 docs_only fixture。无 merge。 | [assignment](assignments/ci-heavy-job-split-001.md) · [Architecture](reviews/ci-heavy-job-split-001-architecture-review.md) · [Quality](reviews/ci-heavy-job-split-001-quality-review.md) · [hosted full](evidence/ci-heavy-job-split-001-hosted-full-2026-09-15.md) |
 
 历史工作从 [Assignment 目录](assignments/) 查找；债务从 [TECH_DEBT](TECH_DEBT.md) 查找。
 这里只保留 Ready / Active 工作，上限十项；Assignment 是生命周期事实来源，冲突时修正本镜像。

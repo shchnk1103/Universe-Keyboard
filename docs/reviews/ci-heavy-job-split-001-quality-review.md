@@ -117,3 +117,62 @@ Executor 记录未把脚本 PASS 写成 Quality Pass 或 hosted 绿。本审查�
 - 独立 Architecture 结论需另记录；本文件不代替 Architecture Gate。
 - 残差均已给恰好一个 `fix` / `accept` / `tech_debt:<ID>`（KOS 2.1 M-03）。含 `fix` 的项在取得证据指针前 **Assignment 不得 Close**。
 - 下一步 Quality 复核应只读 hosted jobs API / 公开 run：核对五条 `name`、`full` 全 success、`docs_only` 全 skipped、Gate success，以及 classifier JSON。在此之前不得把本 Verdict 升级为 hosted 绿或 merge-ready。
+
+## Revalidation — hosted full (CHS-Q-01 / CHS-Q-03)
+
+| Field | Value |
+|---|---|
+| Reviewer | `ci_split_quality_review` |
+| Date / timezone | `2026-09-15 Asia/Shanghai` |
+| Frozen first Verdict | **Pass with conditions**（上表首次打分不改写） |
+| Independence | 独立 `gh` jobs API + classify 日志 + `git diff --name-only origin/main...HEAD`。未把 Human「全绿」或 Executor 证据文件当成 Quality-reverified。未改 workflow / 脚本 / 其它残差打分 |
+| Hosted `docs_only` | 仍无 fixture PR / skip 矩阵 run。**CHS-Q-02 保持 `fix`** |
+
+首次 Verdict 保持 **Pass with conditions**。本复核不授权 merge、Product Gate、Release 或 required-check 迁移。Assignment Close 仍被 CHS-Q-02 阻塞。
+
+### Residual disposition this round
+
+| ID | Previous | Current | Evidence |
+|---|---|---|---|
+| CHS-Q-01 | `fix` | **`closed`** | 见下：run [`34923523955`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/34923523955) 为 hosted `full`，五条 heavy 与 Gate 均为 `success`，无 heavy `skipped`。Grade: **Quality-reverified** |
+| CHS-Q-02 | `fix` | **`fix`（仍开放）** | 未见 docs_only hosted skip fixture。不得声称 docs_only 矩阵已绿 |
+| CHS-Q-03 | `fix` | **`closed`** | PR head `39a25bd` 在隔离分支 `feature/ci-heavy-job-split-001`；`origin/main...HEAD` 恰好 20 个本切片路径，无 `ReleaseEvidenceStore.swift` / `scripts/release/`。Grade: **Quality-reverified** |
+| CHS-Q-04 | `accept` | `accept`（未重开） | 本轮不复核 |
+| CHS-Q-05 | `tech_debt:TD-016` | `tech_debt:TD-016`（未重开） | hosted 绿仍不是独立 trust root |
+
+### Quality-reverified hosted full
+
+独立命令：
+
+```bash
+gh pr view 130 --repo shchnk1103/Universe-Keyboard --json number,isDraft,headRefName,headRefOid,baseRefOid,state,url
+gh run view 34923523955 --repo shchnk1103/Universe-Keyboard --json databaseId,conclusion,status,event,headSha,headBranch,url,workflowName
+gh api repos/shchnk1103/Universe-Keyboard/actions/runs/34923523955/jobs --jq '[.jobs[] | {name, conclusion}]'
+gh run view 34923523955 --repo shchnk1103/Universe-Keyboard --job 104236569682 --log
+git -C /tmp/uk-ci-heavy-job-split-001 diff --name-only origin/main...HEAD
+```
+
+| Fact | Independently observed |
+|---|---|
+| PR | [#130](https://github.com/shchnk1103/Universe-Keyboard/pull/130) `OPEN` **draft** |
+| Branch | `feature/ci-heavy-job-split-001` |
+| PR head | `39a25bd691dcf8ff18819741b29ea7a439849d09` |
+| Base | `1a405143229eff151f61d1c7fc789bc4368802d7` |
+| Run | `34923523955`；workflow `Swift 6 Quality`；event `pull_request`；`headSha` = PR head；`conclusion=success`；attempt 1 |
+| Classifier JSON（classify-change 日志，非 Executor 摘录） | `{"classification": "full", "requires_full": "true", "reason": "sensitive_or_unknown_path", "changed_count": "20", "base_sha": "1a405143229eff151f61d1c7fc789bc4368802d7", "head_sha": "9c64b5ae4058b55c19fabbfa1a7f1584ae01a62e", "full_required_paths": [".github/workflows/swift6-quality.yml", "scripts/ci/tests/test_verify_final_gate.sh", "scripts/ci/verify_final_gate.sh"]}` |
+| Swift 6 jobs（jobs API `total_count=8`） | `classify-change` / `lightweight-checks` / `format-swift` / `test-keyboardcore` / `test-rimebridge` / `test-app-keyboard` / `build-release` / `final-quality-gate` 全部 `success` |
+| Heavy skipped | **无** |
+
+PR-head 与 merge-ref `GITHUB_SHA`（`9c64b5a…`）身份不同，属 pull_request 工作流常态；分类按 merge-ref 对 base 的 20 路径 fail-closed 为 `full`，且 `full_required_paths` 含 workflow 与 Gate 脚本，符合 Assignment。
+
+Executor 稿 [`ci-heavy-job-split-001-hosted-full-2026-09-15.md`](../evidence/ci-heavy-job-split-001-hosted-full-2026-09-15.md) 与上述独立核对一致，但其 Grade 仍为 Executor-recorded；本段才是 Quality-reverified。
+
+### Quality-reverified isolation (CHS-Q-03)
+
+`origin/main...HEAD` 20 个路径均为本切片（workflow、Gate 脚本、ADR 0031 合同修订、Assignment/AUTH/PD、CI 文档、本审查与 Architecture 审查、CHANGELOG/导航）。无 `Universe Keyboard/Services/ReleaseEvidenceStore.swift`、`scripts/release/` 或其它 `RELEASE-EVIDENCE-PROMOTION-001` 源。`docs/RELEASE_CHECKLIST.md` 相对 `origin/main` 仅 CI 门禁文案（去掉 Debug `build` / `build-and-test` 跳过语）。隔离提交条件满足。
+
+### Still open
+
+- **CHS-Q-02 `fix`：** Assignment Close 仍须 hosted `docs_only`（五条 heavy 恰好 `skipped` 且 Gate `success`）。不得为取证而合并 fixture PR，除非另授权。
+- 本 Pass with conditions **不**因 CHS-Q-01/03 closed 变成无条件 Pass、merge-ready 或 Product Gate。
+

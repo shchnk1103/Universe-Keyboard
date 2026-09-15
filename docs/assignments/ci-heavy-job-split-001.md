@@ -7,7 +7,7 @@
   "record_type": "assignment",
   "title": "Split full-path Swift 6 heavy jobs for localization and drop redundant Debug build",
   "lifecycle": "active",
-  "current_phase": "Isolated-branch commit/push authorized; CHS-A-02 closed; hosted fixtures pending",
+  "current_phase": "CHS-Q-01/Q-03 closed on hosted full; CHS-Q-02 docs_only fixture pending; merge not authorized",
   "authorization_action": "implement_ci_heavy_job_split",
   "updated_at": "2026-09-15T11:00:00+08:00",
   "revalidation_triggers": ["scope_changed", "workflow_contract_changed", "required_checks_changed", "branch_protection_changed", "skip_rule_requested"],
@@ -34,9 +34,9 @@
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Phase | 独立审查 Pass with conditions；CHS-A-02 closed；隔离功能分支 commit/push 已授权 |
-| Non-claims | 不是 Product Gate、Quality Pass、hosted 绿、merge 或 required-check 迁移 |
-| Next | Push 后核对 hosted `full`（CHS-Q-01）；另开不合并的 `docs_only` fixture（CHS-Q-02） |
+| Phase | 独立审查 Pass with conditions；CHS-A-02 / CHS-Q-01 / CHS-Q-03 closed；CHS-Q-02 待不合并的 docs_only fixture |
+| Non-claims | 不是 Product Gate、Quality Pass、merge 或 required-check 迁移 |
+| Next | 不合并的 hosted `docs_only` fixture（CHS-Q-02）；merge 仍须另授权 |
 | Residuals | 见下方 ledger |
 
 ### Review Residual Ledger
@@ -48,9 +48,9 @@
 | `CHS-A-03` | A-P2-02 未关；禁止把五条 heavy 设为 required | Architecture | `tech_debt:TD-016` | [TD-016](../TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁) |
 | `CHS-A-04` | Gate 单测未穷举 | Architecture | `accept` | Architecture review |
 | `CHS-A-05` | 脏树混有 RELEASE-EVIDENCE | Architecture | `accept` | Architecture review；commit 须切开 |
-| `CHS-Q-01` | 无 hosted `full` | Quality | `fix` | [Quality review](../reviews/ci-heavy-job-split-001-quality-review.md) |
+| `CHS-Q-01` | 无 hosted `full` | Quality | `closed` | [hosted full evidence](../evidence/ci-heavy-job-split-001-hosted-full-2026-09-15.md) · [Quality revalidation](../reviews/ci-heavy-job-split-001-quality-review.md) · run `34923523955` |
 | `CHS-Q-02` | 无 hosted `docs_only` | Quality | `fix` | Quality review；fixture PR 不得默认合并 |
-| `CHS-Q-03` | 工作树未隔离本切片 | Quality | `fix` | 本 commit 只含本切片、基于 `origin/main` 隔离分支；SHA 在提交后写入；待 Quality 复核闭合 |
+| `CHS-Q-03` | 工作树未隔离本切片 | Quality | `closed` | Quality revalidation：`39a25bd` vs `origin/main` 恰好 20 个本切片文件 |
 | `CHS-Q-04` | Gate 单测抽样 | Quality | `accept` | Quality review |
 | `CHS-Q-05` | A-P2-02 仍开放 | Quality | `tech_debt:TD-016` | TD-016 |
 
@@ -167,7 +167,7 @@
 - [x] 无 Debug `test` 之后的 Debug `build`。
 - [x] `final-quality-gate` 按上文矩阵 fail-closed；本地脚本单测覆盖成功与失败组合。
 - [x] ADR 0031、`CI_CHANGE_CLASSIFICATION.md`、`AGENTS.md` 本地门禁与 job 名称一致。
-- [ ] Hosted `full` 证据：五条 heavy 为 success，Gate success。
+- [x] Hosted `full` 证据：五条 heavy 为 success，Gate success。
 - [ ] Hosted `docs_only` 证据：五条 heavy 为 skipped，Gate success。不得为取证而合并 docs-only fixture PR，除非另授权。
 - [x] 独立 Architecture 与 Quality 结论已记录；残差均有 `fix` / `accept` / `tech_debt:<ID>`。含 `fix` 的项在取得证据前不得 Close。
 - [ ] Human Product Owner 决定是否 merge。Merge 不是本 Exit 的默认项。
@@ -201,3 +201,4 @@
 - `2026-09-15 Asia/Shanghai`: Human 授权修复 CHS-A-02。回滚 SoT 现要求同时还原 workflow YAML 与 Gate 脚本及测试。该项仍为 `fix`，待独立 Architecture 复核。
 - `2026-09-15 Asia/Shanghai`: 独立 Architecture 专项复核 CHS-A-02 → **closed**。首次 Verdict 仍为 Pass with conditions；CHS-A-01/03/04/05 与 Quality 残差未改。无 commit / push。
 - `2026-09-15 Asia/Shanghai`: Human 授权隔离功能分支 commit/push。基线 `origin/main`；不含 RELEASE-EVIDENCE 产品文件。
+- `2026-09-15 Asia/Shanghai`: Draft PR #130；hosted run `34923523955` same-head `full` 五条 heavy + Gate success。独立 Quality 复核 CHS-Q-01 / CHS-Q-03 **closed**。CHS-Q-02 仍开放。无 merge。
