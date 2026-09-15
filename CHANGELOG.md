@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-09-15 — CI full 路径拆成并行 heavy jobs
+
+- `Swift 6 Quality` 在 `full` 分类下不再串行一个 `build-and-test`。改为并行 `format-swift`、`test-keyboardcore`、`test-rimebridge`、`test-app-keyboard`、`build-release`。
+- Debug `test` 之后不再追加 Debug `build`。`docs_only` / `full` 分类与 fail-closed 规则不变，没有按 UI/Rime 路径跳过。
+- `final-quality-gate` 要求 `full` 时五条 heavy 全 success，`docs_only` 时五条全 skipped。
+
 ## 2026-09-14 — 首次启用改为设置「？」与引导 sheet
 
 - 产品记录 `PD-HELP-GUIDE-SHEET-001`：未完成或恢复时设置「？」带标记，并在下次主 App 进程启动自动弹出引导 sheet；「稍后再说」只结束本次进程中的 sheet；设置列表帮助行删除。

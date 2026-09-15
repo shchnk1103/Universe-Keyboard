@@ -65,7 +65,9 @@
 
 远端工作流按 [`docs/CI_CHANGE_CLASSIFICATION.md`](docs/CI_CHANGE_CLASSIFICATION.md)
 分级：分类、轻量检查和 `final-quality-gate` 始终运行；只有严格的 docs/KOS allowlist
-可跳过 `build-and-test`。未知路径、workflow 或 `scripts/ci/**` 变更必须走完整门禁。
+可跳过全部 heavy jobs（`format-swift`、`test-keyboardcore`、`test-rimebridge`、
+`test-app-keyboard`、`build-release`）。未知路径、workflow 或 `scripts/ci/**`
+变更必须走完整门禁。不得按 UI/Rime 等源路径跳过其中一部分。
 
 在 **push 后预期合并**、或用户要求「上传并合并 / 修 CI / ship」时，在推送前（至少在 merge 前）于本地执行与 CI 同序的检查。默认模拟器名与 CI 一致：`iPhone 17 Pro`（本机无该机型时可用等价 iOS Simulator，并在报告中写明）。
 
@@ -87,7 +89,7 @@ xcrun swift-format lint --strict --configuration .swift-format <file>
    `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme RimeBridgeTests -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test`
 5. **App + Keyboard 测试（含 UniverseKeyboardTests / KeyboardTests）：**  
    `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test`
-6. **Debug / Release build：** 同上 destination，分别 `-configuration Debug|Release` 的 `build`（参数与 CI 一致）
+6. **Release build：** 同上 destination，`-configuration Release` 的 `build`（参数与 CI 一致）。Debug `test` 已覆盖 Debug 编译，不再单独跑 Debug `build`。
 
 **范围收窄（仅当改动极小时）：** 纯文档且无 Swift / 工程 / 测试文件改动时，可跳过 3–6，但须在完成报告中写明「docs-only，跳过 xcodebuild」。只改 `Packages/KeyboardCore` 时至少跑步骤 3；改主 App / Extension / 测试 target 时 **不得** 只跑 KeyboardCore 就声称可合并。
 

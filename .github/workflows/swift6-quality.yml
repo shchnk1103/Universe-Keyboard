@@ -77,8 +77,8 @@ jobs:
           '${{ needs.classify_change.outputs.base_sha }}'
           '${{ needs.classify_change.outputs.head_sha }}'
 
-  build_and_test:
-    name: build-and-test
+  format_swift:
+    name: format-swift
     needs: [classify_change, lightweight_checks]
     if: needs.classify_change.outputs.requires_full == 'true'
     runs-on: macos-26
@@ -87,9 +87,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Prepare pinned RIME artifacts
-        run: bash scripts/ensure_rime_vendor.sh fetch
 
       - name: Check Swift formatting
         env:
@@ -103,8 +100,33 @@ jobs:
             xcrun swift-format lint --strict --configuration .swift-format "${file}"
           done <<< "${changed_files}"
 
+  test_keyboardcore:
+    name: test-keyboardcore
+    needs: [classify_change, lightweight_checks]
+    if: needs.classify_change.outputs.requires_full == 'true'
+    runs-on: macos-26
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Test KeyboardCore
         run: swift test --package-path Packages/KeyboardCore
+
+  test_rimebridge:
+    name: test-rimebridge
+    needs: [classify_change, lightweight_checks]
+    if: needs.classify_change.outputs.requires_full == 'true'
+    runs-on: macos-26
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare pinned RIME artifacts
+        run: bash scripts/ensure_rime_vendor.sh fetch
 
       # The checked-in package binaries intentionally target iOS; test them on
       # the same simulator platform used by the host app.
@@ -122,6 +144,20 @@ jobs:
             SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
             test
 
+  test_app_keyboard:
+    name: test-app-keyboard
+    needs: [classify_change, lightweight_checks]
+    if: needs.classify_change.outputs.requires_full == 'true'
+    runs-on: macos-26
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare pinned RIME artifacts
+        run: bash scripts/ensure_rime_vendor.sh fetch
+
       - name: Test app and keyboard contracts on iOS Simulator
         run: |
           xcodebuild \
@@ -136,19 +172,19 @@ jobs:
             SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
             test
 
-      - name: Build Swift 6 app and keyboard extension for debug
-        run: |
-          xcodebuild \
-            -project "Universe Keyboard.xcodeproj" \
-            -scheme "Universe Keyboard" \
-            -configuration Debug \
-            -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
-            CODE_SIGNING_ALLOWED=NO \
-            SWIFT_VERSION=6.0 \
-            SWIFT_STRICT_CONCURRENCY=complete \
-            SWIFT_SUPPRESS_WARNINGS=NO \
-            SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
-            build
+  build_release:
+    name: build-release
+    needs: [classify_change, lightweight_checks]
+    if: needs.classify_change.outputs.requires_full == 'true'
+    runs-on: macos-26
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare pinned RIME artifacts
+        run: bash scripts/ensure_rime_vendor.sh fetch
 
       - name: Build Swift 6 app and keyboard extension for release
         run: |
@@ -167,7 +203,16 @@ jobs:
   final_quality_gate:
     name: final-quality-gate
     if: always()
-    needs: [classify_change, lightweight_checks, build_and_test]
+    needs:
+      [
+        classify_change,
+        lightweight_checks,
+        format_swift,
+        test_keyboardcore,
+        test_rimebridge,
+        test_app_keyboard,
+        build_release,
+      ]
     runs-on: ubuntu-latest
     steps:
       - name: Check out source
@@ -177,11 +222,19 @@ jobs:
         env:
           CLASSIFY_RESULT: ${{ needs.classify_change.result }}
           LIGHTWEIGHT_RESULT: ${{ needs.lightweight_checks.result }}
-          HEAVY_RESULT: ${{ needs.build_and_test.result }}
           REQUIRES_FULL: ${{ needs.classify_change.outputs.requires_full }}
+          FORMAT_RESULT: ${{ needs.format_swift.result }}
+          KEYBOARDCORE_RESULT: ${{ needs.test_keyboardcore.result }}
+          RIMEBRIDGE_RESULT: ${{ needs.test_rimebridge.result }}
+          APP_KEYBOARD_RESULT: ${{ needs.test_app_keyboard.result }}
+          RELEASE_RESULT: ${{ needs.build_release.result }}
         run: >-
           bash scripts/ci/verify_final_gate.sh
           "$CLASSIFY_RESULT"
           "$LIGHTWEIGHT_RESULT"
-          "$HEAVY_RESULT"
           "$REQUIRES_FULL"
+          "$FORMAT_RESULT"
+          "$KEYBOARDCORE_RESULT"
+          "$RIMEBRIDGE_RESULT"
+          "$APP_KEYBOARD_RESULT"
+          "$RELEASE_RESULT"
