@@ -17,6 +17,7 @@
 - [输入管线/marked text](architecture/input-pipeline-and-marked-text.md) · [Partial Commit](architecture/partial-commit.md)
 - [Swift 6](architecture/swift6-migration.md) · [RIME artifacts](architecture/rime-artifacts.md) · [OpenCC](architecture/opencc-integration.md)
 - [ADR](architecture/decisions/) · [架构时间线](ARCHITECTURE_TIMELINE.md)
+- [Build 55 公开外部测试例外提案](product-decisions/RELEASE-2026-09-13-build55-limited-external-trial-exception-proposal.md) — **已接受公开测试例外；不等于 Release Gate Pass**
 
 ## 领域权威
 
@@ -42,3 +43,4 @@
 - [运行入口](KNOWLEDGE_OS.md) · [冻结规范](kos/knowledge-os-2.0-specification.md) · [零上下文启动](kos/zero-context-startup.md)
 - [Assignment Policy](ASSIGNMENT_POLICY.md) · [2.1 ops](kos/kos-2.1-operational-maturity.md)
 - [实际采用版本](kos/UPGRADE_STATUS.md) · [Profile](../.kos/project.json) · [人工证据](kos/universe-keyboard-human-operated-evidence-profile.md)
+- [外部公测发布复盘建议稿](kos/kos-improvement-suggestions-public-beta-release-2026-09-13.md) — **建议稿；未采纳**
