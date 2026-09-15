@@ -50,10 +50,10 @@ However, the same owner map still has these object-level rows:
 - `promotion.previous_target_receipt.contract_version` ([Profile](../kos/release-evidence-profile.md#L148)).
 
 The pinned schema defines `contract_version` as an object with required `major` and
-`minor` leaves ([schema](../../../kos-agent-kit/schemas/release-evidence-v1.schema.json#L35)),
-and each of the three nested locations references that object ([target binding](../../../kos-agent-kit/schemas/release-evidence-v1.schema.json#L243),
-[baseline](../../../kos-agent-kit/schemas/release-evidence-v1.schema.json#L255),
-[previous receipt](../../../kos-agent-kit/schemas/release-evidence-v1.schema.json#L281)).
+`minor` leaves ([schema](https://github.com/shchnk1103/kos-agent-kit/blob/8e55551a3b56b57e7fc5ab5544d653f9c6854df9/schemas/release-evidence-v1.schema.json#L35)),
+and each of the three nested locations references that object ([target binding](https://github.com/shchnk1103/kos-agent-kit/blob/8e55551a3b56b57e7fc5ab5544d653f9c6854df9/schemas/release-evidence-v1.schema.json#L243),
+[baseline](https://github.com/shchnk1103/kos-agent-kit/blob/8e55551a3b56b57e7fc5ab5544d653f9c6854df9/schemas/release-evidence-v1.schema.json#L255),
+[previous receipt](https://github.com/shchnk1103/kos-agent-kit/blob/8e55551a3b56b57e7fc5ab5544d653f9c6854df9/schemas/release-evidence-v1.schema.json#L281)).
 The Profile simultaneously states that the only grouped entries are bounded identity
 maps ([Profile](../kos/release-evidence-profile.md#L50)). Therefore these three rows
 remain unclosed object-level/wildcard ownership and the owner map is not yet leaf-exact.
@@ -70,7 +70,7 @@ additional finding or changes the single verdict above.
 | Boundary | Result in this review | Current evidence |
 |---|---|---|
 | Owner/source and role separation | No regression outside `A-CLOSURE-P1-01` | Source IDs are explicit ([Profile](../kos/release-evidence-profile.md#L35)); canonical owner/source columns and separate Producer/Reviewer/Display/Human columns remain present ([Profile](../kos/release-evidence-profile.md#L65)); candidate identity production remains distinct from P-01/D-01 validation ([Profile](../kos/release-evidence-profile.md#L156)). |
-| Pinned evaluator precedence | No regression found | The Profile retains invalid-input/no-classification, unbound-target `pending`, bound-target blocker `none`, `current-proof`, unresolved-candidate `none`, all-`non-comparable` `comparator` and fallback `none` in that order ([Profile](../kos/release-evidence-profile.md#L247)); this matches the pinned evaluator's promotion and final classification branches ([pinned evaluator](../../../kos-agent-kit/scripts/validate_release_evidence.py#L708), [classification](../../../kos-agent-kit/scripts/validate_release_evidence.py#L920)). P0 still does not claim an Envelope evaluation. |
+| Pinned evaluator precedence | No regression found | The Profile retains invalid-input/no-classification, unbound-target `pending`, bound-target blocker `none`, `current-proof`, unresolved-candidate `none`, all-`non-comparable` `comparator` and fallback `none` in that order ([Profile](../kos/release-evidence-profile.md#L247)); this matches the pinned evaluator's promotion and final classification branches ([pinned evaluator](https://github.com/shchnk1103/kos-agent-kit/blob/8e55551a3b56b57e7fc5ab5544d653f9c6854df9/scripts/validate_release_evidence.py#L708), [classification](https://github.com/shchnk1103/kos-agent-kit/blob/8e55551a3b56b57e7fc5ab5544d653f9c6854df9/scripts/validate_release_evidence.py#L920)). P0 still does not claim an Envelope evaluation. |
 | Pointer SHA-256 and retention grammar | No regression found | All three pointer forms still require `sha256=<64-lower-hex>` and a closed retention class; repository scope, redacted-export access, expiry and deletion ownership remain explicit ([Profile](../kos/release-evidence-profile.md#L202)). |
 | P-01 / D-01 | No regression found | P-01 retains fresh candidate binding, `same-head`, hosted pass, comparison equality and all-head equality; D-01 retains fresh candidate binding, final-tree equality, resolved checker/scope/baseline/output, `pass` and exit code `0` ([Profile](../kos/release-evidence-profile.md#L312)). |
 | `REP-Q-01` non-claim | No regression found | Main-worktree implementation inputs remain pre-freeze and without a final SHA; final SHA, actual base/head and hosted provenance remain publication blockers ([Profile](../kos/release-evidence-profile.md#L40), [Assignment](../assignments/kos-release-evidence-implementation-001.md#L42)). No current-proof or publication readiness is inferred. |
