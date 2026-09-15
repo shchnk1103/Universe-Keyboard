@@ -7,12 +7,18 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Reviewed |
-| Phase | Reviewed — Human Product Owner 已于 2026-09-15 正式采纳 ADR 0035（Accepted，Conditional Accept package）；本地质量门已重验，Architecture re-review 已 Accept，Quality re-review 为 Conditional Accept；candidate `ad39f443b7f77d96c28359bd652356a89bb173de` 的 hosted Swift 6 Quality same-head green |
+| Phase | Reviewed — Human Product Owner 已于 2026-09-15 正式采纳 ADR 0035（Accepted，Conditional Accept package）；本地质量门已重验，Architecture re-review 已 Accept，Quality re-review 为 Conditional Accept；candidate `ad39f443b7f77d96c28359bd652356a89bb173de` 的 hosted Swift 6 Quality same-head green；PR #128 已合并至 `main`（merge commit `1a405143`），post-merge state sync 已执行 |
 | Non-claims | 不宣称 Product Gate、Quality Pass、Release Pass、App Store Connect、TestFlight 或真机验收已完成 |
 | Next | 无本 Assignment 的 Executor 动作；后续外部 archive/export、设备、签名和正式发布仍需各自的 Assignment 与授权 |
 | Residuals | 无未处置工程残差；真实 archive/export、外部专属检查、设备操作和正式发布仍在本 Assignment 之外 |
 
 Status reconciliation: [P1-A / ADR 0035 status reconciliation](../evidence/release-evidence-promotion-001-p1-a-adr-0035-status-reconciliation-2026-09-15.md) confirms that this Assignment's Reviewed / REP-Q-01 Closed state is not transferable to the separate UK-005 P1-A package or its deferred P1-B slice.
+
+### Post-merge State Sync — 2026-09-15
+
+- PR [#128](https://github.com/shchnk1103/Universe-Keyboard/pull/128) was merged into `main` at `1a405143` after hosted Swift 6 Quality run `34920137639` completed successfully.
+- This is an engineering/docs publication fact. It does not close this Assignment, create a Product Gate or Release Pass, or authorize TestFlight, App Store Connect, or P1-B.
+- P1-B remains `Not authorized / deferred`; if Product Lead still needs it, the remaining scope must be decided before a new bounded Assignment, matching Authorization, and ADR-0027 review are created.
 
 ### Review Residual Ledger
 
