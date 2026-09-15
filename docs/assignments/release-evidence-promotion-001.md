@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Phase | P1/P2 修复与 final-SHA provenance 已完成；本地质量门已重验，Architecture re-review 已 Accept，Quality re-review 为 Conditional Accept；candidate `ad39f443b7f77d96c28359bd652356a89bb173de` 的 hosted Swift 6 Quality same-head green |
+| Lifecycle | Reviewed |
+| Phase | Reviewed — Human Product Owner 已于 2026-09-15 正式采纳 ADR 0035（Accepted，Conditional Accept package）；本地质量门已重验，Architecture re-review 已 Accept，Quality re-review 为 Conditional Accept；candidate `ad39f443b7f77d96c28359bd652356a89bb173de` 的 hosted Swift 6 Quality same-head green |
 | Non-claims | 不宣称 Product Gate、Quality Pass、Release Pass、App Store Connect、TestFlight 或真机验收已完成 |
-| Next | `REP-Q-01` 已闭合；下一步仅由 Human Product Owner 决定是否采纳 Proposed ADR 0035 为日常发布合同 |
-| Residuals | `REP-Q-01`：已由 [final-SHA provenance receipt](../evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md) 闭合；真实 archive/export、外部专属检查、设备操作和正式发布仍在本 Assignment 之外 |
+| Next | 无本 Assignment 的 Executor 动作；后续外部 archive/export、设备、签名和正式发布仍需各自的 Assignment 与授权 |
+| Residuals | 无未处置工程残差；真实 archive/export、外部专属检查、设备操作和正式发布仍在本 Assignment 之外 |
 
 ### Review Residual Ledger
 
@@ -27,7 +27,7 @@ Policy version: 1.0.0
 ## Authority
 
 - Assignment Authority: Product Lead
-- Decision Source / Date: Human Product Owner 当前会话授权“开始实施改进工作”，2026-09-14 Asia/Shanghai
+- Decision Source / Date: 实施授权见原 Product Decision（2026-09-14）；ADR 0035 接受见 [`PD-ADR-0035-ACCEPT`](../product-decisions/ADR-0035-ACCEPT-authorization.md)（2026-09-15 Asia/Shanghai）
 - Product Approver: Human Product Owner / Product Lead
 - Authorization: AUTH-RELEASE-EVIDENCE-PROMOTION-001
 
@@ -88,7 +88,7 @@ Policy version: 1.0.0
 - [x] Swift 格式、相关单元测试、KeyboardCore、RimeBridgeTests、App + Keyboard tests、Debug/Release build 已按本轮修复后的仓库门禁重验；条件性设备/Spike 用例的跳过原因保留在测试输出中。
 - [x] 独立 Architecture re-review 与 Quality re-review 完成；两者均未授予 Product/Release 权限。
 - [x] 形成明确 final SHA 后保存实际 base/head 的 CI/lightweight provenance；receipt 记录 candidate、published head、hosted head、结果和 coverage。
-- [ ] Human Product Owner 决定是否将 Proposed 设计纳入日常发布合同。
+- [x] Human Product Owner 正式采纳 ADR 0035 为日常发布证据合同的 binding architecture decision；Conditional Accept 边界与外部门禁非授权已记录。
 
 ### Stop Conditions
 
@@ -103,7 +103,7 @@ Policy version: 1.0.0
 - Required Handoff Content: 变更分类规则、CI 独立边界、五字段 identity 与 provenance 区分、candidate context/current-proof/freshness 语义、首次/后续 external baseline 证明、Main App 存储位置与上限、损坏恢复与 clear 隔离、隐私 allowlist、自动化结果、未执行的设备/外部检查。
 - Initial Review Records: [Architecture review](../reviews/release-evidence-promotion-001-architecture-review.md)（Conditional Accept） · [Quality review](../reviews/release-evidence-promotion-001-quality-review.md)（Blocked）。
 - Final Review Records: [Architecture re-review](../reviews/release-evidence-promotion-001-architecture-rereview.md)（Accept，仅限修复范围） · [Quality re-review](../reviews/release-evidence-promotion-001-quality-rereview.md)（Conditional Accept，`REP-Q-01` 已由 final-SHA provenance receipt 闭合）。两份记录均为独立 Reviewer 的只读结论。
-- Revalidation Trigger: release profile 规则变化、artifact identity 字段变化、证据有效性合同变化、App Group 文件 owner 变化、日志隐私边界变化、外部动作授权变化或正式采纳 ADR。
+- Revalidation Trigger: release profile 规则变化、artifact identity 字段变化、证据有效性合同变化、App Group 文件 owner 变化、日志隐私边界变化、外部动作授权变化或已采纳 ADR 的实质修改。
 
 ## History
 
@@ -113,3 +113,4 @@ Policy version: 1.0.0
 - 2026-09-14: 完成 pending fail-closed、current-proof context/freshness、external baseline/history fail-closed、archive quarantine、note bound 与 Diagnostics clear isolation 修复；本地质量门和独立 re-review 待完成。
 - 2026-09-14: 修复 target candidate ID binding 与 legacy archive fixture；Architecture re-review Accept，Quality re-review Conditional Accept；`REP-P1-01`–`REP-P2-02` 闭合，新增 `REP-Q-01` 作为 final-SHA/实际 base-head provenance residual。ADR 0035 仍 Proposed，未执行 commit、push、merge 或外部发布。
 - 2026-09-15: candidate source `ad39f443b7f77d96c28359bd652356a89bb173de`（base `e7b2f602684553fc9b31cf32109839a3d6141e0d`）已在隔离功能分支提交并 push；hosted Swift 6 Quality run `34865917284` 的 `headSha` 与 candidate 完全一致，四个 job 均 success。见 [REP-Q-01 provenance receipt](../evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md)。`REP-Q-01` Closed；不代表 merge、Product Gate、Release Pass、TestFlight 或外部发布。
+- 2026-09-15: Human Product Owner 正式采纳 ADR 0035；采纳记录为 [`PD-ADR-0035-ACCEPT`](../product-decisions/ADR-0035-ACCEPT-authorization.md)，ADR Status → Accepted（Conditional package）。Assignment 进入 `Reviewed`，不进入 `Closed`；不代表 Product Gate、Quality Pass、Release Pass、TestFlight、merge 或外部发布。

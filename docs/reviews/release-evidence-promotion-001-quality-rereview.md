@@ -34,4 +34,4 @@
 
 ## Handoff
 
-`REP-Q-01` 由 Executor / App & Data Operations 在形成明确 final SHA 后，以真实 base/head 保存 CI/lightweight receipt。Human Product Owner 仍单独决定是否采纳 Proposed ADR 0035；任何外部动作仍需单独授权。
+`REP-Q-01` 由 Executor / App & Data Operations 在形成明确 final SHA 后，以真实 base/head 保存 CI/lightweight receipt。本次复审时 ADR 0035 是否采纳仍由 Human Product Owner 单独决定；该决定现已由 [`PD-ADR-0035-ACCEPT`](../product-decisions/ADR-0035-ACCEPT-authorization.md) 记录。任何外部动作仍需单独授权。

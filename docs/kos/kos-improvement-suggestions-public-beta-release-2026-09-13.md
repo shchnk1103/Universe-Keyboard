@@ -122,6 +122,10 @@ external_action: upload-only | internal-distribution | external-distribution | b
 和 [Authorization](../authorizations/AUTH-RELEASE-EVIDENCE-PROMOTION-001.md) 授权一个有界实现切片；
 这不是把本建议稿直接升级为 KOS 规则。
 
+其中派生的有界 [ADR 0035](../architecture/decisions/0035-release-evidence-accumulation-and-promotion.md)
+已于 2026-09-15 由 Human Product Owner 正式采纳为 binding architecture decision；
+本建议稿的其余方向仍未整体采纳，也不改变 KOS 2.0/2.1 或 KOS 2.2 advisory 边界。
+
 当前实现包括：
 
 - scripts/release/release_evidence.py：按变更路径输出 delta、triggered、baseline
@@ -140,9 +144,8 @@ external_action: upload-only | internal-distribution | external-distribution | b
 
 实现与治理边界见
 [RELEASE-EVIDENCE-PROMOTION-001 Assignment](../assignments/release-evidence-promotion-001.md)
-和 [Proposed ADR 0035](../architecture/decisions/0035-release-evidence-accumulation-and-promotion.md)。
-在独立 Architecture / Quality re-review 与后续 Product 决定之前，以上内容仍是有界工具
-实现，不是新的冻结合同。
+和 [ADR 0035](../architecture/decisions/0035-release-evidence-accumulation-and-promotion.md)。
+ADR 0035 已被单独采纳；以上建议稿仍是非权威复盘材料，不是整体冻结合同。
 
 ## 建议的后续 Beta 最小路径
 

@@ -21,7 +21,7 @@
 - App Group 文件数量上限为 50，并使用原子写入。
 - 证据不包含输入、候选文字、日志正文或 archive 内容。
 - `daily_beta`、`external_candidate`、`pending`、`comparator` 与外部专属门禁的职责方向清晰。
-- ADR 0035 保持 Proposed，未被实现或本次复核自动升级为 Accepted。
+- 在本次 `2026-09-14` 复核时，ADR 0035 保持 Proposed；该历史结论未自动升级 ADR，后续采纳另由 Human Product Owner 记录。
 
 ## Findings And Disposition
 
@@ -35,7 +35,7 @@
 
 ## Evidence Boundary
 
-本评审不是 Quality Pass、Release Pass、Product Gate、设备验收、签名 archive 验收或 App Store Connect/TestFlight 操作授权。修复后的状态仍需独立 Quality 复核，最终是否采纳 ADR 0035 由 Human Product Owner 决定。
+本评审不是 Quality Pass、Release Pass、Product Gate、设备验收、签名 archive 验收或 App Store Connect/TestFlight 操作授权。修复后的状态仍需独立 Quality 复核；本条记录完成后，ADR 0035 是否采纳仍由 Human Product Owner 单独决定。
 
 ## Handoff
 

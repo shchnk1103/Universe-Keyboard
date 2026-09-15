@@ -118,6 +118,7 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ## Unreleased — KOS execution and instruction repair
 
+- Human Product Owner 正式采纳 ADR 0035（Accepted，Conditional Accept package），将发布证据增量与 Beta → external promotion 作为有界架构合同；不改变 Product、Quality、Release 或外部动作授权。
 - 新增发布证据增量计划与 Candidate receipt：普通小改动只刷新受影响证据，
   键盘/RIME/工具链/权限等边界自动扩大验证范围；日常 Beta 证据可按产物身份
   标记为当前证明或仅作 comparator，不自动替代 Quality、Product 或 Release 门禁。

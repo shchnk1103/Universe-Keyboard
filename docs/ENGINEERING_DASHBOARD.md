@@ -18,11 +18,11 @@
 
 ## RELEASE-EVIDENCE-PROMOTION-001 — 发布证据增量与候选晋级
 
-- **Lifecycle:** [`Assignment`](assignments/release-evidence-promotion-001.md) `Active`；`REP-Q-01` `Closed`
-- **Current phase:** candidate source `ad39f443...` 已记录实际 base/head；hosted Swift 6 Quality run `34865917284` same-head green；等待 Human Product Owner 决定是否采纳 Proposed ADR 0035
-- **Evidence:** [REP-Q-01 provenance receipt](evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md)
+- **Lifecycle:** [`Assignment`](assignments/release-evidence-promotion-001.md) `Reviewed`；`REP-Q-01` `Closed`
+- **Current phase:** Human Product Owner 已正式采纳 ADR 0035（Accepted，Conditional Accept package）；candidate source `ad39f443...` 的 hosted Swift 6 Quality run `34865917284` same-head green
+- **Evidence:** [ADR 0035 acceptance](product-decisions/ADR-0035-ACCEPT-authorization.md) · [acceptance evidence](evidence/adr-0035-accept-2026-09-15.md) · [REP-Q-01 provenance receipt](evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md)
 - **Non-claims:** 不等于 Quality Pass、Product Gate、Release Pass、真机验收、签名、TestFlight、App Store Connect 或 merge
-- **Next:** Human Product Owner 单独决定是否将 Proposed ADR 0035 纳入日常发布合同
+- **Next:** 无本 Assignment 的 Executor 动作；未来外部 archive/export、设备和正式发布仍需单独证据与授权
 
 ## RIME-SCHEME-DETAIL-PROVENANCE-SHEET-001 — 方案信息入口收纳来源明细
 

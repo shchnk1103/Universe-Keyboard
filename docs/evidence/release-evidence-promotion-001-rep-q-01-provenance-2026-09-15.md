@@ -91,7 +91,7 @@ Candidate source commit 只包含以下 18 个 release-evidence 相关文件或�
 
 - `REP-Q-01` 现在有可复核的 final candidate SHA、真实 base/head、published/hosted head、same-head coverage 和 hosted result。
 - `REP-P1-01`–`REP-P2-02` 的独立 Architecture/Quality re-review 结论保持不变；Quality re-review 仍是有界的 Conditional Accept。
-- Proposed ADR 0035 仍是 Proposed；下一步由 Human Product Owner 单独决定是否纳入日常发布合同。
+- 本 receipt 创建时 ADR 0035 为 Proposed；Human Product Owner 随后于 2026-09-15 正式采纳 ADR 0035（Accepted，Conditional Accept package），见 [`PD-ADR-0035-ACCEPT`](../product-decisions/ADR-0035-ACCEPT-authorization.md)。该后续采纳不改变本 receipt 只闭合 `REP-Q-01` provenance 的边界。
 - 本记录没有生成 archive/export、签名、dSYM、设备、App Store Connect、TestFlight、Beta Review 或 external distribution 证据。
 - 所有记录和实现保持 content-free：不保存用户输入、候选文字、宿主文字、词典、完整日志、archive 内容或凭证。
 

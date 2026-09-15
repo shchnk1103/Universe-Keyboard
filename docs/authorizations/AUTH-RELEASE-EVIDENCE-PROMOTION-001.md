@@ -4,10 +4,12 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | 当前实现切片进行中；未授权外部发布动作 |
+| Status | consumed |
+| Consumption | 已由本地实现、独立复审、provenance 记录和文档写回消耗；未授权外部发布动作 |
 
 Human Product Owner, current session 2026-09-14 Asia/Shanghai: “ok，现在讨论可以先告一段落了，请你开始实施改进工作吧！”
+
+本授权仅覆盖有界实现切片；ADR 0035 的正式采纳由 [`PD-ADR-0035-ACCEPT`](../product-decisions/ADR-0035-ACCEPT-authorization.md) 于 2026-09-15 单独记录。
 
 ```kos-record
 {
@@ -15,8 +17,8 @@ Human Product Owner, current session 2026-09-14 Asia/Shanghai: “ok，现在讨
   "record_id": "AUTH-RELEASE-EVIDENCE-PROMOTION-001",
   "record_type": "authorization",
   "title": "Implement bounded release evidence delta and candidate promotion slice",
-  "status": "active",
-  "updated_at": "2026-09-14T09:40:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-15T00:00:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "review_finding", "artifact_contract_changed"],
   "authorization": {
     "action": "implement_release_evidence_promotion_slice",
@@ -33,9 +35,9 @@ Human Product Owner, current session 2026-09-14 Asia/Shanghai: “ok，现在讨
     "issued_at": "2026-09-14T09:40:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "active"
+    "consumption_state": "consumed"
   }
 }
 ```
 
-This authorization does not make the Proposed ADR binding. Independent Architecture / Quality review and any later external action require separate authority.
+This authorization was for the bounded implementation slice and is now consumed. It did not make ADR 0035 binding; the separate Human Product Owner acceptance is recorded in `PD-ADR-0035-ACCEPT`. Any later external action requires separate authority.

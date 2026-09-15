@@ -1,5 +1,7 @@
 # Product Decision: RELEASE-EVIDENCE-PROMOTION-001 — 授权实施发布证据增量切片
 
+> 本记录是 2026-09-14 的有界实施授权；ADR 0035 的正式采纳另见 [`PD-ADR-0035-ACCEPT`](ADR-0035-ACCEPT-authorization.md)。
+
 ## Decision
 
 Human Product Owner 在当前会话授权开始实施一项有界的发布流程改进：
@@ -19,7 +21,7 @@ Human Product Owner 在当前会话授权开始实施一项有界的发布流程
 
 - scripts/release/release_evidence.py 及其自动化测试；
 - Main App Diagnostics 下的发布证据会话、有限字段导出和 App Group 本地存储；
-- RELEASE_CHECKLIST.md、建议稿、Proposed ADR、Assignment 和索引路由的同步；
+- RELEASE_CHECKLIST.md、建议稿、ADR 0035、Assignment 和索引路由的同步；
 - 本地 Swift 格式、单元测试、Simulator/build 验证。
 
 ## Explicit Exclusions
@@ -32,11 +34,12 @@ Human Product Owner 在当前会话授权开始实施一项有界的发布流程
 
 ## Authority Boundary
 
-证据记录是可追溯性工具，不是批准状态。此决定不改变 KOS 2.0/2.1 冻结规则，也不把 KOS 2.2 advisory 合同变为 required。正式采纳 Proposed ADR、接受跳过风险、进入外部动作仍需各自的 Product / Quality / Release 权限。
+证据记录是可追溯性工具，不是批准状态。此决定不改变 KOS 2.0/2.1 冻结规则，也不把 KOS 2.2 advisory 合同变为 required。ADR 0035 的正式采纳已由独立 Product Decision 记录；接受跳过风险、进入外部动作仍需各自的 Product / Quality / Release 权限。
 
 ## Related Records
 
 - RELEASE-EVIDENCE-PROMOTION-001 Assignment: ../assignments/release-evidence-promotion-001.md
 - AUTH-RELEASE-EVIDENCE-PROMOTION-001: ../authorizations/AUTH-RELEASE-EVIDENCE-PROMOTION-001.md
-- Proposed ADR 0035: ../architecture/decisions/0035-release-evidence-accumulation-and-promotion.md
+- ADR 0035: ../architecture/decisions/0035-release-evidence-accumulation-and-promotion.md
+- ADR 0035 acceptance Product Decision: ../product-decisions/ADR-0035-ACCEPT-authorization.md
 - 外部公测发布复盘建议稿: ../kos/kos-improvement-suggestions-public-beta-release-2026-09-13.md

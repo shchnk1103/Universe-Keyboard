@@ -148,9 +148,11 @@ review、Product Gate 与 Release Pass 的待办。
 
 实现入口和字段语义见
 [RELEASE-EVIDENCE-PROMOTION-001 Assignment](assignments/release-evidence-promotion-001.md)、
-[Proposed ADR 0035](architecture/decisions/0035-release-evidence-accumulation-and-promotion.md)
+[ADR 0035](architecture/decisions/0035-release-evidence-accumulation-and-promotion.md)
+[ADR 0035 acceptance Product Decision](product-decisions/ADR-0035-ACCEPT-authorization.md)
 及 [外部公测复盘建议稿](kos/kos-improvement-suggestions-public-beta-release-2026-09-13.md)。
-这些实现目前仍是有界切片，未将 Proposed ADR 自动升级为冻结规则。
+ADR 0035 已正式采纳为 binding architecture decision；它仍是有界发布证据合同，
+不自动授予 Quality、Product、Release、设备或外部动作权限。
 
 ## Repository And Artifacts
 

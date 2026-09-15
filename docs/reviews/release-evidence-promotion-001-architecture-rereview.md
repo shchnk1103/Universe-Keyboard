@@ -21,7 +21,7 @@
 
 ## Evidence Boundary
 
-本结论不是 Quality Pass、Release Pass、Product Gate、设备验收、签名 artifact 验收或 App Store Connect/TestFlight 授权。ADR 0035 仍为 Proposed，是否采纳由 Human Product Owner 决定。
+本结论不是 Quality Pass、Release Pass、Product Gate、设备验收、签名 artifact 验收或 App Store Connect/TestFlight 授权。在本次 `2026-09-14` 复核时 ADR 0035 仍为 Proposed；后续采纳由 Human Product Owner 单独记录。
 
 ## Revalidation Evidence
 

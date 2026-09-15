@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed — bounded implementation started under RELEASE-EVIDENCE-PROMOTION-001 on 2026-09-14 Asia/Shanghai. This ADR is not yet a binding architecture decision and does not grant Product Gate, Quality Pass, Release Pass or external distribution.
+**Accepted — Conditional Accept package, 2026-09-15 Asia/Shanghai.** Human Product Owner formally accepted this ADR as the binding architecture decision for the bounded release-evidence workflow. The implementation candidate is recorded at `ad39f443b7f77d96c28359bd652356a89bb173de`; this adoption does not authorize merge or external distribution, and does not grant Product Gate, Quality Pass or Release Pass.
 
 ## Context
 
@@ -16,7 +16,13 @@ Proposed — bounded implementation started under RELEASE-EVIDENCE-PROMOTION-001
 4. 为当前候选补齐 changed path、affected path 和 external-only 检查；
 5. 保留 Product、Quality、Release 和 App Store Connect 的独立决定边界。
 
-## Decision (Proposed)
+## Decision (Accepted)
+
+Human Product Owner formally accepts the decision below as a binding architecture
+decision for the bounded implementation and future release-evidence records that
+adopt this contract. The Conditional Accept package preserves the independent CI,
+Quality, Product, device and Release boundaries described in this document; it does
+not make an evidence record an approval.
 
 ### 1. 两个分类器保持独立
 
@@ -89,16 +95,17 @@ Main App Diagnostics 增加本地发布证据会话，保存：
 
 ## Follow-up
 
-1. 独立 Architecture Reviewer 复核分类边界、App Group owner 和数据最小化。
-2. 独立 Quality Reviewer 复核 promotion 语义、失败闭合和与现有 CI/RELEASE_CHECKLIST 的关系。
-3. Product Owner 决定是否将本 Proposed ADR 纳入正式日常发布合同。
+1. ~~独立 Architecture Reviewer 复核分类边界、App Group owner 和数据最小化。~~ 已完成；结论见 Architecture review / re-review。
+2. ~~独立 Quality Reviewer 复核 promotion 语义、失败闭合和与现有 CI/RELEASE_CHECKLIST 的关系。~~ 已完成；结论为有界 Conditional Accept，见 Quality review / re-review。
+3. 已采纳的 ADR 0035 作为日常发布证据合同的架构依据；后续改变分类边界、证据身份、复用语义或数据 owner 时，必须通过新的 Assignment / revalidation 记录。
 4. 发布操作者在真实 archive/export 中补齐 candidate fact tuple，并保留原始证据位置。
 5. 若未来需要自动读取 Xcode Cloud/App Store Connect，应另行授权并单独设计凭证与网络边界。
 
 ## Related Documents
 
 - [RELEASE-EVIDENCE-PROMOTION-001 Assignment](../../assignments/release-evidence-promotion-001.md)
-- [RELEASE-EVIDENCE-PROMOTION-001 Product Decision](../../product-decisions/RELEASE-EVIDENCE-PROMOTION-001-authorization.md)
+- [RELEASE-EVIDENCE-PROMOTION-001 implementation Product Decision](../../product-decisions/RELEASE-EVIDENCE-PROMOTION-001-authorization.md)
+- [ADR-0035 acceptance Product Decision](../../product-decisions/ADR-0035-ACCEPT-authorization.md)
 - [Authorization](../../authorizations/AUTH-RELEASE-EVIDENCE-PROMOTION-001.md)
 - [外部公测发布复盘建议稿](../../kos/kos-improvement-suggestions-public-beta-release-2026-09-13.md)
 - [Release Checklist](../../RELEASE_CHECKLIST.md)
