@@ -209,6 +209,31 @@ The integration candidate passed the local CI-equivalent gate before push:
 - Swift-format hard gate: not applicable because the integration candidate has no
   changed `.swift` file relative to `origin/main`.
 
-At the time this section was added, the integration commit had not yet been pushed,
-so its hosted CI and PR merge state remained pending. This section makes no Product,
-Quality/Release, App Store Connect, TestFlight, device or publication claim.
+After the integration candidate was pushed to PR #132, the first pull-request
+attempt failed only because that hosted runner could not find the workflow's named
+`iPhone 17 Pro` simulator (`xcodebuild` exit `70`); it did not reach a test assertion.
+The failed attempt is retained as an environment observation, not converted into a
+code failure. The same head was then rerun on a fresh runner and passed:
+
+| Field | Value |
+|---|---|
+| Published PR head | `e039a9ae75827dd33a7e732a914cfeec5aefe329` |
+| Hosted run | [34927490938](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/34927490938) |
+| Run attempt | `2` |
+| API `headSha` | `e039a9ae75827dd33a7e732a914cfeec5aefe329` |
+| Run conclusion | `success` |
+| Coverage | `same-head`; all required jobs and `final-quality-gate` passed |
+
+| Job | Job ID | Result |
+|---|---:|---|
+| `classify-change` | `104249571193` | `success` |
+| `lightweight-checks` | `104249572841` | `success` |
+| `format-swift` | `104249573081` | `success` |
+| `test-keyboardcore` | `104249573367` | `success` |
+| `test-rimebridge` | `104249573266` | `success` |
+| `test-app-keyboard` | `104249572391` | `success` |
+| `build-release` | `104249573362` | `success` |
+| `final-quality-gate` | `104250625144` | `success` |
+
+This hosted evidence still makes no Product, Quality/Release, App Store Connect,
+TestFlight, device or publication claim.

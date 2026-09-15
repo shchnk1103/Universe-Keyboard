@@ -368,3 +368,10 @@ summary without per-case evidence does not close this condition:
   `f16573…`, which is a new integration identity; the prior exact-review digest
   `45afdb…` remains historical and is not relabeled. Push, hosted CI and merge
   remain separate authorized actions.
+- `2026-09-15T12:17:21+08:00`: PR #132 head `e039a9a…` passed hosted run
+  `34927490938` on rerun attempt `2`, including `test-app-keyboard` and
+  `final-quality-gate`. Attempt `1` failed only because its runner lacked the named
+  `iPhone 17 Pro` simulator; that environment observation is retained and was not
+  treated as a source or contract failure. The PR is now merge-ready under the
+  separately authorized merge action; no Product/Release or publication conclusion
+  is inferred.
