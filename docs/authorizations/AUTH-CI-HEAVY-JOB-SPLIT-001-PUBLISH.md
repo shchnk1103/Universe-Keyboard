@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | 隔离功能分支 commit/push 进行中；未授权 merge、PR 合并、docs-only fixture PR 合并 |
+| Status | consumed |
+| Consumption | 隔离分支与 #130 已发布；merge 由 AUTH-CI-HEAVY-JOB-SPLIT-001-MERGE 消耗 |
 
 Human Product Owner, current session `2026-09-15 Asia/Shanghai`: 「可以，按照你的建议在隔离功能分支上commit/push吧」
 
@@ -32,7 +32,7 @@ Human Product Owner, current session `2026-09-15 Asia/Shanghai`: 「可以，按
     "issued_at": "2026-09-15T12:00:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "active"
+    "consumption_state": "consumed"
   }
 }
 ```

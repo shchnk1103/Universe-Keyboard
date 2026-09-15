@@ -6,12 +6,12 @@
   "record_id": "CI-HEAVY-JOB-SPLIT-001",
   "record_type": "assignment",
   "title": "Split full-path Swift 6 heavy jobs for localization and drop redundant Debug build",
-  "lifecycle": "active",
-  "current_phase": "All Quality fix residuals closed; #130 draft awaiting merge authorization",
-  "authorization_action": "implement_ci_heavy_job_split",
-  "updated_at": "2026-09-15T11:00:00+08:00",
+  "lifecycle": "closed",
+  "current_phase": "PR #130 merged 52a400e; implementation branch deleted; fixture branch kept",
+  "authorization_action": "merge_pr_130_and_delete_merged_feature_branch",
+  "updated_at": "2026-09-15T11:40:00+08:00",
   "revalidation_triggers": ["scope_changed", "workflow_contract_changed", "required_checks_changed", "branch_protection_changed", "skip_rule_requested"],
-  "authorization_refs": ["AUTH-CI-HEAVY-JOB-SPLIT-001", "AUTH-CI-HEAVY-JOB-SPLIT-001-IMPLEMENT", "AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH"],
+  "authorization_refs": ["AUTH-CI-HEAVY-JOB-SPLIT-001", "AUTH-CI-HEAVY-JOB-SPLIT-001-IMPLEMENT", "AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH", "AUTH-CI-HEAVY-JOB-SPLIT-001-MERGE"],
   "parent_refs": ["TD-016-CI-TIERING-001"],
   "responsibilities": {
     "domain_owner": "Quality, Performance and Release Maintainer",
@@ -33,10 +33,10 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Phase | Quality `fix` 残差均 closed（Q-01/02/03）；#131 已 close without merge；#130 draft 待 Human merge 授权 |
-| Non-claims | 不是 Product Gate、无条件 Quality Pass、merge 或 required-check 迁移 |
-| Next | Human 决定是否 undraft/merge #130 |
+| Lifecycle | Closed |
+| Phase | PR [#130](https://github.com/shchnk1103/Universe-Keyboard/pull/130) merged `52a400e`；`feature/ci-heavy-job-split-001` 已删；fixture 分支因 unique commits 未合入而保留 |
+| Non-claims | 不是 Product Gate、Release 或 required-check 迁移 |
+| Next | none for this Assignment |
 | Residuals | 见下方 ledger |
 
 ### Review Residual Ledger
@@ -61,7 +61,7 @@
 - Assignment Authority: Product Lead
 - Decision Source / Date: Human Product Owner 当前会话「可以，按照你的建议写一个 Assignment 吧。」，`2026-09-15 Asia/Shanghai`
 - Product Approver: Human Product Owner / Product Lead
-- Authorization: [AUTH-CI-HEAVY-JOB-SPLIT-001](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001.md)（撰文，consumed）· [AUTH-CI-HEAVY-JOB-SPLIT-001-IMPLEMENT](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001-IMPLEMENT.md)（实施，active）· [AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH.md)（隔离 commit/push，active）
+- Authorization: [AUTH-CI-HEAVY-JOB-SPLIT-001](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001.md)（撰文，consumed）· [AUTH-CI-HEAVY-JOB-SPLIT-001-IMPLEMENT](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001-IMPLEMENT.md)（实施，consumed）· [AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH.md)（隔离 commit/push，consumed）· [AUTH-CI-HEAVY-JOB-SPLIT-001-MERGE](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001-MERGE.md)（merge，consumed）
 - Product Decision: [PD-CI-HEAVY-JOB-SPLIT-001](../product-decisions/CI-HEAVY-JOB-SPLIT-001-authorization.md)
 
 ## KOS v0.8.0 optional-contract selection
@@ -77,10 +77,10 @@
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Current authorized slice | In progress | 隔离功能分支 `feature/ci-heavy-job-split-001` 上 commit/push；不含 RELEASE-EVIDENCE | [AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH.md) |
+| Current authorized slice | Not applicable | Merge and merged-branch cleanup consumed; Assignment Closed | [AUTH-CI-HEAVY-JOB-SPLIT-001-MERGE](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001-MERGE.md) |
 | Author Assignment records | Authorized | 撰文切片已 consumed | [AUTH-CI-HEAVY-JOB-SPLIT-001](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001.md) |
-| Commit / push / PR | Authorized | 隔离功能分支 commit 与 push；不授权 merge 或开合入默认分支的 PR | [AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH.md) |
-| Merge / Release | Not authorized | 合入默认分支或任何发布动作 | 独立 Human 授权 |
+| Commit / push / PR | Authorized | Consumed via isolated branch and #130 | [AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001-PUBLISH.md) |
+| Merge / Release | Authorized | Consumed: #130 merged `52a400e`; not Release | [AUTH-CI-HEAVY-JOB-SPLIT-001-MERGE](../authorizations/AUTH-CI-HEAVY-JOB-SPLIT-001-MERGE.md) |
 | Required-check / branch protection | Not authorized | 仍属 [TD-016](../TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁) A-P2-02 | 不得借本 Assignment 迁移 |
 | Environment or external slice | Not authorized | GitHub Actions hosted full 与 docs-only fixture | 随发布授权给出 |
 
@@ -170,7 +170,7 @@
 - [x] Hosted `full` 证据：五条 heavy 为 success，Gate success。
 - [x] Hosted `docs_only` 证据：五条 heavy 为 skipped，Gate success。不得为取证而合并 docs-only fixture PR，除非另授权。
 - [x] 独立 Architecture 与 Quality 结论已记录；残差均有 `fix` / `accept` / `tech_debt:<ID>`。含 `fix` 的项在取得证据前不得 Close。
-- [ ] Human Product Owner 决定是否 merge。Merge 不是本 Exit 的默认项。
+- [x] Human Product Owner 决定是否 merge。Merge 不是本 Exit 的默认项。
 
 ### Stop Conditions
 
@@ -203,3 +203,4 @@
 - `2026-09-15 Asia/Shanghai`: Human 授权隔离功能分支 commit/push。基线 `origin/main`；不含 RELEASE-EVIDENCE 产品文件。
 - `2026-09-15 Asia/Shanghai`: Draft PR #130；hosted run `34923523955` same-head `full` 五条 heavy + Gate success。独立 Quality 复核 CHS-Q-01 / CHS-Q-03 **closed**。CHS-Q-02 仍开放。无 merge。
 - `2026-09-15 Asia/Shanghai`: Stacked fixture PR #131 run `34924821846` `docs_only`；五条 heavy skipped；Gate success。Quality 复核 CHS-Q-02 **closed**。#131 close without merge。#130 仍 draft；无 merge。
+- `2026-09-15 Asia/Shanghai`: Human 授权 merge。PR #130 merged `52a400e`（head `f5adc48` reachable from `origin/main`）。远端/本地 `feature/ci-heavy-job-split-001` 已删。`docs/ci-heavy-job-split-001-docs-only-fixture` unique commits 非 `origin/main` 祖先，按 AGENTS 保留。Assignment Closed。非 Product Gate / Release / required-check。

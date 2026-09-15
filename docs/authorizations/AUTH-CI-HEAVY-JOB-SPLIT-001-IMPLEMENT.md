@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | 实施进行中；未授权 commit / push / merge / hosted fixture / required-check |
+| Status | consumed |
+| Consumption | 实施已合入 #130；后续 merge 见 AUTH-CI-HEAVY-JOB-SPLIT-001-MERGE |
 
 Human Product Owner, current session `2026-09-15 Asia/Shanghai`: 「接受这份 Assignment 并开始实施吧」
 
@@ -36,7 +36,7 @@ Human Product Owner, current session `2026-09-15 Asia/Shanghai`: 「接受这份
     "issued_at": "2026-09-15T10:29:15+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "active"
+    "consumption_state": "consumed"
   }
 }
 ```
