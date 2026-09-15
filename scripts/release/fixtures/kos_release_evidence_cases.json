@@ -1,0 +1,1001 @@
+{
+  "as_of": "2026-09-14T12:00:00+08:00",
+  "base_input": {
+    "record_type": "universe-release-evidence-adapter-input",
+    "record_id": "UK-RE-DAILY-56",
+    "main_app_source": {
+      "source_identity": "SRC-MAIN-STORE",
+      "record_id": "RUN-DAILY-56",
+      "operation_id": "10000000-0000-4000-8000-000000000056",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "retention_class": "diagnostic-short"
+    },
+    "main_app_export": {
+      "schemaVersion": 1,
+      "evidenceContractVersion": "release-evidence-v1",
+      "recordType": "release_evidence_run",
+      "outcome": "pass",
+      "nonClaims": [
+        "does_not_replace_existing_ci_gate",
+        "does_not_grant_independent_quality_pass",
+        "does_not_grant_product_or_release_gate_pass",
+        "external_actions_remain_separately_authorized"
+      ],
+      "run": {
+        "schemaVersion": 1,
+        "id": "20000000-0000-4000-8000-000000000056",
+        "createdAt": "2026-09-14T09:00:00+08:00",
+        "updatedAt": "2026-09-14T10:00:00+08:00",
+        "lane": "daily_beta",
+        "profile": "delta",
+        "appVersion": "1.0",
+        "appBuild": "56",
+        "deviceModel": "iPhone17,1",
+        "osVersion": "iOS-26.0",
+        "candidateID": "Build-56",
+        "behaviorContract": "keyboard-behavior-v1",
+        "steps": [
+          {
+            "scope": "candidate_identity",
+            "outcome": "pass",
+            "note": "fixture note is intentionally discarded by the adapter"
+          },
+          {
+            "scope": "changed_path_validation",
+            "outcome": "pass"
+          },
+          {
+            "scope": "affected_path_smoke",
+            "outcome": "pass"
+          }
+        ]
+      }
+    },
+    "candidate": {
+      "artifact_identity": {
+        "source_commit": "1111111111111111111111111111111111111111",
+        "version": "1.0",
+        "build": "56",
+        "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "package_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "release_lineage": "universe-keyboard-main"
+      },
+      "artifact_or_input_ref": "opaque://universe-keyboard/artifact-build-56;sha256=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb;class=release-candidate",
+      "environment_ref": "opaque://universe-keyboard/ios-simulator-26;sha256=cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc;class=diagnostic-short",
+      "comparison_basis": "candidate-identity-context-exact-v1",
+      "final_tree_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "candidate_head": "1111111111111111111111111111111111111111"
+    },
+    "evidence": {
+      "observed_at": "2026-09-14T10:00:00+08:00",
+      "valid_until": "2026-10-14T10:00:00+08:00"
+    },
+    "provenance": {
+      "producer_ref": "opaque://universe-keyboard/main-app-export;sha256=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa;class=review-record"
+    },
+    "delivery": {
+      "observed_at": "2026-09-14T10:05:00+08:00",
+      "candidate_id": "Build-56",
+      "artifact_identity": {
+        "source_commit": "1111111111111111111111111111111111111111",
+        "version": "1.0",
+        "build": "56",
+        "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "package_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "release_lineage": "universe-keyboard-main"
+      },
+      "context_identity": {
+        "behavior_contract": "keyboard-behavior-v1",
+        "device_model": "iPhone17,1",
+        "os_version": "iOS-26.0",
+        "validation_profile": "delta"
+      },
+      "profile_ref": "profile://universe-keyboard/release-evidence-v1",
+      "local_head": "1111111111111111111111111111111111111111",
+      "published_head": "1111111111111111111111111111111111111111",
+      "hosted_ci_run_ref": "opaque://universe-keyboard/ci-run-build-56;sha256=eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee;class=release-candidate",
+      "hosted_ci_head": "1111111111111111111111111111111111111111",
+      "hosted_ci_result": "pass",
+      "pr_state": "not-applicable",
+      "comparison_basis": "candidate-identity-context-exact-v1",
+      "relation": "same-head"
+    },
+    "final_validation": {
+      "observed_at": "2026-09-14T10:06:00+08:00",
+      "candidate_id": "Build-56",
+      "artifact_identity": {
+        "source_commit": "1111111111111111111111111111111111111111",
+        "version": "1.0",
+        "build": "56",
+        "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "package_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "release_lineage": "universe-keyboard-main"
+      },
+      "context_identity": {
+        "behavior_contract": "keyboard-behavior-v1",
+        "device_model": "iPhone17,1",
+        "os_version": "iOS-26.0",
+        "validation_profile": "delta"
+      },
+      "profile_ref": "profile://universe-keyboard/release-evidence-v1",
+      "final_tree_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "checker_ref": "repo://scripts/ci#final-quality-gate;sha256=ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;class=review-record",
+      "checker_version": "final-quality-gate-v1",
+      "scope": "candidate-tree",
+      "comparison_baseline": "opaque://universe-keyboard/final-baseline-build-56;sha256=9999999999999999999999999999999999999999999999999999999999999999;class=review-record",
+      "exit_code": 0,
+      "result": "pass",
+      "output_ref": "opaque://universe-keyboard/final-output-build-56;sha256=8888888888888888888888888888888888888888888888888888888888888888;class=review-record"
+    }
+  },
+  "delta_candidate": {
+    "base_sha": "0000000000000000000000000000000000000000",
+    "head_sha": "1111111111111111111111111111111111111111",
+    "as_of": "2026-09-14T12:00:00+08:00",
+    "candidate_id": "Build-56",
+    "profile_ref": "profile://universe-keyboard/release-evidence-v1",
+    "source_identity": "SRC-MAIN-STORE",
+    "comparison_basis": "candidate-identity-context-exact-v1",
+    "artifact_identity": {
+      "source_commit": "1111111111111111111111111111111111111111",
+      "version": "1.0",
+      "build": "56",
+      "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "package_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "release_lineage": "universe-keyboard-main"
+    },
+    "context_identity": {
+      "behavior_contract": "keyboard-behavior-v1",
+      "device_model": "iPhone17,1",
+      "os_version": "iOS-26.0",
+      "validation_profile": "delta"
+    },
+    "evidence": [
+      {
+        "evidence_key": "EVIDENCE-CANDIDATE-IDENTITY-56",
+        "scope": "candidate_identity",
+        "claim_ref": "UK-RE-CANDIDATE-IDENTITY",
+        "coverage_ref": "UK-RE-COVERAGE-CANDIDATE-IDENTITY",
+        "candidate_id": "Build-56",
+        "artifact_identity": {
+          "source_commit": "1111111111111111111111111111111111111111",
+          "version": "1.0",
+          "build": "56",
+          "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "package_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "release_lineage": "universe-keyboard-main"
+        },
+        "context_identity": {
+          "behavior_contract": "keyboard-behavior-v1",
+          "device_model": "iPhone17,1",
+          "os_version": "iOS-26.0",
+          "validation_profile": "delta"
+        },
+        "profile_ref": "profile://universe-keyboard/release-evidence-v1",
+        "source_identity": "SRC-MAIN-STORE",
+        "comparison_basis": "candidate-identity-context-exact-v1",
+        "observed_at": "2026-09-14T10:00:00+08:00",
+        "valid_until": "2026-10-14T10:00:00+08:00",
+        "contract_pin": "kos.release-evidence",
+        "schema_pin": "4e48bcf127edb87e67c4d390a3baec93af26ef72aa251e8172cb1044dca893ce",
+        "evaluator_pin": "a45145681306c2da581f1054f002b7becd909d1bb4a8329ad14892f17839b9d9"
+      },
+      {
+        "evidence_key": "EVIDENCE-CHANGED-PATH-56",
+        "scope": "changed_path_validation",
+        "claim_ref": "UK-RE-CHANGED-PATH-VALIDATION",
+        "coverage_ref": "UK-RE-COVERAGE-CHANGED-PATH-VALIDATION",
+        "candidate_id": "Build-56",
+        "artifact_identity": {
+          "source_commit": "1111111111111111111111111111111111111111",
+          "version": "1.0",
+          "build": "56",
+          "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "package_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "release_lineage": "universe-keyboard-main"
+        },
+        "context_identity": {
+          "behavior_contract": "keyboard-behavior-v1",
+          "device_model": "iPhone17,1",
+          "os_version": "iOS-26.0",
+          "validation_profile": "delta"
+        },
+        "profile_ref": "profile://universe-keyboard/release-evidence-v1",
+        "source_identity": "SRC-MAIN-STORE",
+        "comparison_basis": "candidate-identity-context-exact-v1",
+        "observed_at": "2026-09-14T10:00:00+08:00",
+        "valid_until": "2026-10-14T10:00:00+08:00",
+        "contract_pin": "kos.release-evidence",
+        "schema_pin": "4e48bcf127edb87e67c4d390a3baec93af26ef72aa251e8172cb1044dca893ce",
+        "evaluator_pin": "a45145681306c2da581f1054f002b7becd909d1bb4a8329ad14892f17839b9d9"
+      },
+      {
+        "evidence_key": "EVIDENCE-AFFECTED-SMOKE-56",
+        "scope": "affected_path_smoke",
+        "claim_ref": "UK-RE-AFFECTED-PATH-SMOKE",
+        "coverage_ref": "UK-RE-COVERAGE-AFFECTED-PATH-SMOKE",
+        "candidate_id": "Build-56",
+        "artifact_identity": {
+          "source_commit": "1111111111111111111111111111111111111111",
+          "version": "1.0",
+          "build": "56",
+          "archive_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "package_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "release_lineage": "universe-keyboard-main"
+        },
+        "context_identity": {
+          "behavior_contract": "keyboard-behavior-v1",
+          "device_model": "iPhone17,1",
+          "os_version": "iOS-26.0",
+          "validation_profile": "delta"
+        },
+        "profile_ref": "profile://universe-keyboard/release-evidence-v1",
+        "source_identity": "SRC-MAIN-STORE",
+        "comparison_basis": "candidate-identity-context-exact-v1",
+        "observed_at": "2026-09-14T10:00:00+08:00",
+        "valid_until": "2026-10-14T10:00:00+08:00",
+        "contract_pin": "kos.release-evidence",
+        "schema_pin": "4e48bcf127edb87e67c4d390a3baec93af26ef72aa251e8172cb1044dca893ce",
+        "evaluator_pin": "a45145681306c2da581f1054f002b7becd909d1bb4a8329ad14892f17839b9d9"
+      }
+    ]
+  },
+  "delta_cases": [
+    {
+      "fixture_id": "UK-RE-DELTA-001",
+      "name": "ordinary-ui-reuses-untouched-claims",
+      "changed_surface": ["Universe Keyboard/Views/Settings/AppearanceView.swift"],
+      "expected_profile": "delta",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": ["EVIDENCE-CANDIDATE-IDENTITY-56"],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-CHANGED-PATH-56", "EVIDENCE-AFFECTED-SMOKE-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "ordinary Main-App changes require affected claims to rerun; CI remains full"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-002",
+      "name": "docs-only-reuses-all-claims",
+      "changed_surface": ["docs/RELEASE_CHECKLIST.md"],
+      "expected_profile": "delta",
+      "expected_ci_change_tier": "docs_only",
+      "expected_reusable_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_invalidated_evidence_keys": [],
+      "expected_stop_before_current_proof": false,
+      "non_claim": "docs-only reuse is not a release or Product approval"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-003",
+      "name": "candidate-identity-invalidates-all",
+      "changed_surface": ["candidate_identity"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "candidate binding changes cannot reuse prior evidence"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-004",
+      "name": "privacy-owner-change-invalidates-all",
+      "changed_surface": ["privacy_allowlist"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "privacy or source-owner changes require a new complete review path"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-005",
+      "name": "freshness-change-invalidates-all",
+      "changed_surface": ["observation_freshness"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "freshness policy changes invalidate prior freshness conclusions"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-006",
+      "name": "promotion-history-change-invalidates-all",
+      "changed_surface": ["promotion"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "promotion history is not reused across a changed rule"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-007",
+      "name": "schema-pin-change-invalidates-all",
+      "changed_surface": ["schema"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "schema changes require complete contract validation and fresh review"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-008",
+      "name": "delivery-boundary-forces-fresh-p01",
+      "changed_surface": ["delivery"],
+      "expected_profile": "triggered",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_invalidated_evidence_keys": [],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "P-01 delivery facts must be freshly produced even when observations remain reusable"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-009",
+      "name": "final-validation-boundary-forces-fresh-d01",
+      "changed_surface": ["final_validation"],
+      "expected_profile": "triggered",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_invalidated_evidence_keys": [],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "D-01 final-validation facts must be freshly produced"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-010",
+      "name": "unknown-path-fails-closed",
+      "changed_surface": ["mystery/unknown.swift"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "unknown paths cannot be classified as safe reuse or docs-only"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-011",
+      "name": "stale-evidence-is-not-reusable",
+      "changed_surface": ["docs/RELEASE_CHECKLIST.md"],
+      "evidence_overrides": {"observed_at": "2026-08-01T10:00:00+08:00"},
+      "expected_profile": "delta",
+      "expected_ci_change_tier": "docs_only",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "stale evidence is invalidated even when the changed path is documentation-only"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-012",
+      "name": "profile-path-invalidates-all",
+      "changed_surface": ["docs/kos/release-evidence-profile.md"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "docs_only",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "the adopted Profile is a release-evidence dependency, not docs-only content"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-013",
+      "name": "kos-project-path-invalidates-all",
+      "changed_surface": [".kos/project.json"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "docs_only",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "machine-readable KOS authority changes cannot reuse prior evidence"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-014",
+      "name": "wrong-claim-binding-invalidates-all",
+      "changed_surface": ["docs/RELEASE_CHECKLIST.md"],
+      "evidence_overrides": {"claim_ref": "UK-RE-OTHER-CLAIM"},
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "a claim ref must match the registered scope and coverage pair"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-015",
+      "name": "missing-coverage-binding-invalidates-all",
+      "changed_surface": ["docs/RELEASE_CHECKLIST.md"],
+      "evidence_overrides": {"coverage_ref": null},
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "missing coverage binding is fail-closed rather than silently skipped"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-016",
+      "name": "unknown-scope-binding-invalidates-all",
+      "changed_surface": ["docs/RELEASE_CHECKLIST.md"],
+      "evidence_overrides": {"scope": "unknown_scope"},
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "unknown evidence scope cannot be used for reuse or invalidation"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-017",
+      "name": "extra-evidence-field-invalidates-all",
+      "changed_surface": ["docs/RELEASE_CHECKLIST.md"],
+      "evidence_overrides": {"raw_user_input": "SENSITIVE"},
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "unallowlisted evidence fields are not ignored during reuse planning"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-018",
+      "name": "keyboard-triggered-path-reruns-affected-claims",
+      "changed_surface": ["Keyboard/Views/KeyboardView.swift"],
+      "expected_profile": "triggered",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": ["EVIDENCE-CANDIDATE-IDENTITY-56"],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "keyboard-boundary changes expand release evidence while CI remains full"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-019",
+      "name": "source-owner-semantic-change-invalidates-all",
+      "changed_surface": ["source_owner"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "changing the evidence owner boundary requires a complete fresh review"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-020",
+      "name": "unsafe-path-fails-closed-before-reuse",
+      "changed_surface": ["../escape.swift"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "unsafe path input cannot be treated as a safe delta or docs-only change"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-021",
+      "name": "empty-path-input-fails-closed-before-reuse",
+      "changed_surface": [],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "missing changed-surface coverage cannot support evidence reuse"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-022",
+      "name": "main-app-release-evidence-store-path-invalidates-all",
+      "changed_surface": ["Universe Keyboard/Services/ReleaseEvidenceStore.swift"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "the Main-App evidence store source seam is a release dependency, not an ordinary runtime delta"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-023",
+      "name": "equal-diff-heads-with-surface-fail-closed",
+      "base_sha": "2222222222222222222222222222222222222222",
+      "head_sha": "2222222222222222222222222222222222222222",
+      "changed_surface": ["docs/RELEASE_CHECKLIST.md"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "a non-empty changed surface cannot be bound to equal base and head commits"
+    },
+    {
+      "fixture_id": "UK-RE-DELTA-024",
+      "name": "duplicate-changed-surface-fails-closed",
+      "changed_surface": ["docs/RELEASE_CHECKLIST.md", "docs/RELEASE_CHECKLIST.md"],
+      "expected_profile": "full",
+      "expected_ci_change_tier": "full",
+      "expected_reusable_evidence_keys": [],
+      "expected_invalidated_evidence_keys": ["EVIDENCE-AFFECTED-SMOKE-56", "EVIDENCE-CANDIDATE-IDENTITY-56", "EVIDENCE-CHANGED-PATH-56"],
+      "expected_stop_before_current_proof": true,
+      "non_claim": "duplicate changed-surface entries are ambiguous input, not silently deduplicated"
+    }
+  ],
+  "cases": [
+    {
+      "fixture_id": "UK-RE-FX-001",
+      "name": "daily-source-binding-unresolved-none",
+      "variant": "daily",
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "REP-Q-01 is unresolved; Main-App source-seam evidence cannot become current-proof"
+    },
+    {
+      "fixture_id": "UK-RE-FX-002",
+      "name": "invalid-json",
+      "raw_content": "{\n",
+      "expected_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "invalid input emits no derived classification"
+    },
+    {
+      "fixture_id": "UK-RE-FX-003",
+      "name": "invalid-schema-unknown-key",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "unexpected_key", "value": true}],
+      "expected_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "unknown keys are rejected"
+    },
+    {
+      "fixture_id": "UK-RE-FX-004",
+      "name": "invalid-policy-required-claims",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "delete", "path": "policy.required_claim_bindings"}],
+      "expected_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "policy shape failure is not relabeled as a runtime result"
+    },
+    {
+      "fixture_id": "UK-RE-FX-005",
+      "name": "invalid-as-of-without-timezone",
+      "variant": "daily",
+      "as_of": "2026-09-14T12:00:00",
+      "expected_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "timezone-less as-of is invalid"
+    },
+    {
+      "fixture_id": "UK-RE-FX-006",
+      "name": "external-first-unbound-target-pending",
+      "variant": "external_first",
+      "promotion": {"target_binding": null, "baseline": null, "previous_target_receipt": null},
+      "expected_exit_code": 0,
+      "expected_derived_status": "pending",
+      "non_claim": "pending does not authorize upload or publication"
+    },
+    {
+      "fixture_id": "UK-RE-FX-007",
+      "name": "external-first-bound-target-missing-baseline-none",
+      "variant": "external_first",
+      "promotion": {"target_binding": true, "baseline": null, "previous_target_receipt": null},
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "bound-target promotion failure is not pending or pass"
+    },
+    {
+      "fixture_id": "UK-RE-FX-008",
+      "name": "all-non-comparable-comparator",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set_each", "path": "observations[*].candidate_id", "value": "Build-55"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "comparator",
+      "non_claim": "comparator is historical comparison only"
+    },
+    {
+      "fixture_id": "UK-RE-FX-009",
+      "name": "mixed-non-comparable-and-missing-none",
+      "variant": "daily",
+      "envelope_mutations": [
+        {"op": "set", "path": "observations[0].candidate_id", "value": "Build-55"},
+        {"op": "delete", "path": "observations[1]"}
+      ],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "mixed claim state cannot be treated as comparator"
+    },
+    {
+      "fixture_id": "UK-RE-FX-010",
+      "name": "external-first-with-baseline-source-binding-unresolved",
+      "variant": "external_first",
+      "promotion": {"target_binding": true, "baseline": "fixture_verified", "previous_target_receipt": null},
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "explicit baseline shape does not override unresolved Main-App source binding"
+    },
+    {
+      "fixture_id": "UK-RE-FX-011",
+      "name": "first-target-with-previous-receipt-none",
+      "variant": "external_first",
+      "promotion": {"target_binding": true, "baseline": "fixture_verified", "previous_target_receipt": true},
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "first target cannot carry previous target history"
+    },
+    {
+      "fixture_id": "UK-RE-FX-012",
+      "name": "subsequent-target-with-baseline-none",
+      "variant": "external_subsequent",
+      "promotion": {"target_binding": true, "baseline": "fixture_verified", "previous_target_receipt": true},
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "subsequent target cannot carry first-target baseline"
+    },
+    {
+      "fixture_id": "UK-RE-FX-013",
+      "name": "subsequent-target-with-lineage-history-source-binding-unresolved",
+      "variant": "external_subsequent",
+      "promotion": {"target_binding": true, "baseline": null, "previous_target_receipt": true},
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "history reuse does not override unresolved Main-App source binding"
+    },
+    {
+      "fixture_id": "UK-RE-FX-014",
+      "name": "subsequent-target-missing-release-lineage-none",
+      "variant": "external_subsequent",
+      "promotion": {"target_binding": true, "baseline": null, "previous_target_receipt": true},
+      "envelope_mutations": [{"op": "delete", "path": "promotion.previous_target_receipt.artifact_identity.release_lineage"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "missing release_lineage prevents subsequent promotion proof"
+    },
+    {
+      "fixture_id": "UK-RE-FX-015",
+      "name": "candidate-identity-mismatch-comparator",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "candidate.candidate_id", "value": "Build-55"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "comparator",
+      "non_claim": "candidate mismatch cannot support current proof"
+    },
+    {
+      "fixture_id": "UK-RE-FX-016",
+      "name": "future-observation-blocked",
+      "variant": "daily",
+      "envelope_mutations": [
+        {"op": "set_each", "path": "observations[*].observed_at", "value": "2026-09-14T13:00:00+08:00"},
+        {"op": "set_each", "path": "observations[*].freshness.observed_at", "value": "2026-09-14T13:00:00+08:00"}
+      ],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "future observations cannot support proof"
+    },
+    {
+      "fixture_id": "UK-RE-FX-017",
+      "name": "future-delivery-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "delivery.observed_at", "value": "2026-09-14T13:00:00+08:00"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "future delivery facts cannot support P-01"
+    },
+    {
+      "fixture_id": "UK-RE-FX-018",
+      "name": "future-final-validation-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "final_validation.observed_at", "value": "2026-09-14T13:00:00+08:00"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "future final validation cannot support D-01"
+    },
+    {
+      "fixture_id": "UK-RE-FX-019",
+      "name": "future-provenance-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "provenance.created_at", "value": "2026-09-14T13:00:00+08:00"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "future provenance cannot support current proof"
+    },
+    {
+      "fixture_id": "UK-RE-FX-020",
+      "name": "stale-observation-none",
+      "variant": "daily",
+      "envelope_mutations": [
+        {"op": "set_each", "path": "observations[*].observed_at", "value": "2026-08-01T10:00:00+08:00"},
+        {"op": "set_each", "path": "observations[*].freshness.observed_at", "value": "2026-08-01T10:00:00+08:00"}
+      ],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "stale observation is not invalid input and cannot support proof"
+    },
+    {
+      "fixture_id": "UK-RE-FX-021",
+      "name": "stale-delivery-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "delivery.observed_at", "value": "2026-08-01T10:05:00+08:00"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "stale delivery is not current P-01"
+    },
+    {
+      "fixture_id": "UK-RE-FX-022",
+      "name": "stale-final-validation-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "final_validation.observed_at", "value": "2026-08-01T10:06:00+08:00"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "stale final validation is not current D-01"
+    },
+    {
+      "fixture_id": "UK-RE-FX-023",
+      "name": "stale-provenance-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "provenance.created_at", "value": "2026-08-01T09:00:00+08:00"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "stale provenance is not current proof"
+    },
+    {
+      "fixture_id": "UK-RE-FX-024",
+      "name": "expired-observation-none",
+      "variant": "daily",
+      "envelope_mutations": [
+        {"op": "set_each", "path": "observations[*].observed_at", "value": "2026-09-10T12:00:00+08:00"},
+        {"op": "set_each", "path": "observations[*].freshness.observed_at", "value": "2026-09-10T12:00:00+08:00"},
+        {"op": "set_each", "path": "observations[*].freshness.valid_until", "value": "2026-09-13T12:00:00+08:00"}
+      ],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "expired valid_until cannot support proof"
+    },
+    {
+      "fixture_id": "UK-RE-FX-025",
+      "name": "p01-missing-head-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "delivery.published_head", "value": "UNKNOWN"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "P-01 requires all exact heads"
+    },
+    {
+      "fixture_id": "UK-RE-FX-026",
+      "name": "p01-unequal-head-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "delivery.hosted_ci_head", "value": "2222222222222222222222222222222222222222"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "unequal heads are not same-head delivery"
+    },
+    {
+      "fixture_id": "UK-RE-FX-027",
+      "name": "p01-hosted-fail-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "delivery.hosted_ci_result", "value": "fail"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "hosted CI failure is not a passing P-01 fact"
+    },
+    {
+      "fixture_id": "UK-RE-FX-028",
+      "name": "p01-comparison-basis-mismatch-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "delivery.comparison_basis", "value": "other-comparison-basis"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "P-01 comparison basis must equal candidate basis"
+    },
+    {
+      "fixture_id": "UK-RE-FX-029",
+      "name": "d01-final-tree-mismatch-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "final_validation.final_tree_digest", "value": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "D-01 must bind the exact candidate final tree"
+    },
+    {
+      "fixture_id": "UK-RE-FX-030",
+      "name": "d01-unresolved-checker-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "final_validation.checker_ref", "value": "UNKNOWN"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "D-01 checker identity is required"
+    },
+    {
+      "fixture_id": "UK-RE-FX-031",
+      "name": "d01-nonzero-exit-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "final_validation.exit_code", "value": 1}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "D-01 requires exit code zero"
+    },
+    {
+      "fixture_id": "UK-RE-FX-032",
+      "name": "d01-result-fail-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "final_validation.result", "value": "fail"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "D-01 non-pass result cannot support proof"
+    },
+    {
+      "fixture_id": "UK-RE-FX-033",
+      "name": "candidate-unresolved-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "candidate.candidate_head", "value": "UNKNOWN"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "unresolved candidate identity is fail-closed"
+    },
+    {
+      "fixture_id": "UK-RE-FX-034",
+      "name": "all-non-comparable-with-ahead-delivery-comparator",
+      "variant": "daily",
+      "envelope_mutations": [
+        {"op": "set_each", "path": "observations[*].candidate_id", "value": "Build-55"},
+        {"op": "set", "path": "delivery.relation", "value": "ahead"}
+      ],
+      "expected_exit_code": 0,
+      "expected_derived_status": "comparator",
+      "non_claim": "comparator precedence does not make delivery current"
+    },
+    {
+      "fixture_id": "UK-RE-FX-035",
+      "name": "adapter-rejects-unresolved-main-app-source",
+      "variant": "daily",
+      "adapter_input_mutations": [{"op": "set", "path": "main_app_source.record_id", "value": "UNKNOWN"}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "unresolved Main-App source identity cannot produce a current-proof envelope"
+    },
+    {
+      "fixture_id": "UK-RE-FX-036",
+      "name": "adapter-rejects-unsupported-main-app-schema-version",
+      "variant": "daily",
+      "adapter_input_mutations": [{"op": "set", "path": "main_app_export.schemaVersion", "value": 999}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "foreign Main-App export schema is rejected before envelope evaluation"
+    },
+    {
+      "fixture_id": "UK-RE-FX-037",
+      "name": "adapter-rejects-unsupported-main-app-contract-version",
+      "variant": "daily",
+      "adapter_input_mutations": [{"op": "set", "path": "main_app_export.evidenceContractVersion", "value": "foreign-contract"}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "foreign Main-App evidence contract is rejected before envelope evaluation"
+    },
+    {
+      "fixture_id": "UK-RE-FX-038",
+      "name": "adapter-rejects-direct-run-bypass",
+      "variant": "daily",
+      "input_mode": "direct_run",
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "a direct run object cannot bypass the canonical Main-App export wrapper"
+    },
+    {
+      "fixture_id": "UK-RE-FX-039",
+      "name": "adapter-rejects-unallowlisted-artifact-identity",
+      "variant": "daily",
+      "adapter_input_mutations": [{"op": "set", "path": "candidate.artifact_identity.raw_user_input", "value": "SENSITIVE"}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "artifact identities accept only the explicit content-free key set"
+    },
+    {
+      "fixture_id": "UK-RE-FX-040",
+      "name": "adapter-rejects-narrative-final-receipt-field",
+      "variant": "daily",
+      "adapter_input_mutations": [{"op": "set", "path": "final_validation.checker_version", "value": "contains narrative text"}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "final-validation receipt fields remain bounded opaque tokens"
+    },
+    {
+      "fixture_id": "UK-RE-FX-041",
+      "name": "adapter-rejects-mismatched-release-lineage",
+      "variant": "external_subsequent",
+      "adapter_input_mutations": [{"op": "set", "path": "promotion.previous_target.artifact_identity.release_lineage", "value": "different-lineage"}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": "none",
+      "non_claim": "the adapter rejects a subsequent history receipt from another release lineage"
+    },
+    {
+      "fixture_id": "UK-RE-FX-042",
+      "name": "d01-unresolved-checker-version-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "final_validation.checker_version", "value": "UNKNOWN"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "D-01 requires a resolved checker version"
+    },
+    {
+      "fixture_id": "UK-RE-FX-043",
+      "name": "d01-unresolved-scope-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "final_validation.scope", "value": "UNKNOWN"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "D-01 requires a resolved checker scope"
+    },
+    {
+      "fixture_id": "UK-RE-FX-044",
+      "name": "d01-unresolved-baseline-none",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "final_validation.comparison_baseline", "value": "UNKNOWN"}],
+      "expected_exit_code": 0,
+      "expected_derived_status": "none",
+      "non_claim": "D-01 requires a resolved comparison baseline"
+    },
+    {
+      "fixture_id": "UK-RE-FX-045",
+      "name": "d01-unresolved-output-invalid",
+      "variant": "daily",
+      "envelope_mutations": [{"op": "set", "path": "final_validation.output_ref", "value": "UNKNOWN"}],
+      "expected_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "the pinned contract rejects UNKNOWN output for a non-not-run D-01 result"
+    },
+    {
+      "fixture_id": "UK-RE-FX-046",
+      "name": "adapter-rejects-baseline-boolean-shortcut",
+      "variant": "external_first",
+      "adapter_input_mutations": [{"op": "set", "path": "promotion.baseline", "value": true}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "a first-target baseline must be an explicit independently produced receipt object"
+    },
+    {
+      "fixture_id": "UK-RE-FX-047",
+      "name": "adapter-rejects-unused-baseline-verification-alias",
+      "variant": "external_first",
+      "adapter_input_mutations": [{"op": "set", "path": "promotion.baseline_verification_ref", "value": "not-a-pointer"}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "baseline verification is carried by the explicit receipt object, not an ignored alias"
+    },
+    {
+      "fixture_id": "UK-RE-FX-048",
+      "name": "adapter-rejects-case-variant-unresolved-source",
+      "variant": "daily",
+      "adapter_input_mutations": [{"op": "set", "path": "main_app_source.record_id", "value": "unknown"}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "case-variant unresolved Main-App source identity cannot produce a current-proof envelope"
+    },
+    {
+      "fixture_id": "UK-RE-FX-049",
+      "name": "adapter-rejects-noncanonical-main-app-nonclaims",
+      "variant": "daily",
+      "adapter_input_mutations": [{"op": "set", "path": "main_app_export.nonClaims", "value": ["grant_release"]}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "canonical Main-App non-claims cannot be replaced by a narrower declaration"
+    },
+    {
+      "fixture_id": "UK-RE-FX-050",
+      "name": "adapter-rejects-main-app-outcome-contradiction",
+      "variant": "daily",
+      "adapter_input_mutations": [{"op": "set", "path": "main_app_export.outcome", "value": "fail"}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "canonical Main-App aggregate outcome must match the run-derived outcome"
+    },
+    {
+      "fixture_id": "UK-RE-FX-051",
+      "name": "adapter-rejects-unknown-main-app-run-field",
+      "variant": "daily",
+      "adapter_input_mutations": [{"op": "set", "path": "main_app_export.run.raw_user_input", "value": "SENSITIVE"}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "unknown Main-App run fields are rejected rather than silently projected away"
+    },
+    {
+      "fixture_id": "UK-RE-FX-052",
+      "name": "adapter-rejects-unknown-main-app-step-field",
+      "variant": "daily",
+      "adapter_input_mutations": [{"op": "set", "path": "main_app_export.run.steps[0].raw_user_input", "value": "SENSITIVE"}],
+      "expected_adapter_exit_code": 2,
+      "expected_derived_status": null,
+      "non_claim": "unknown Main-App step fields are rejected before portable envelope construction"
+    }
+  ]
+}

@@ -34,7 +34,7 @@
 
 - [调试](DEBUGGING.md) · [性能](PERFORMANCE_BASELINE.md) · [发布](RELEASE_CHECKLIST.md)
 - [发布证据增量与候选晋级](assignments/release-evidence-promotion-001.md) · [ADR 0035](architecture/decisions/0035-release-evidence-accumulation-and-promotion.md) · [正式采纳 Product Decision](product-decisions/ADR-0035-ACCEPT-authorization.md) · [REP-Q-01 receipt](evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md) · [P1-A / ADR 0035 状态对账](evidence/release-evidence-promotion-001-p1-a-adr-0035-status-reconciliation-2026-09-15.md) · [PR #128](https://github.com/shchnk1103/Universe-Keyboard/pull/128) merged `1a405143`
-- [CI 分级](CI_CHANGE_CLASSIFICATION.md) · [GitHub 环境诊断](kos/codex-github-cli-auth-troubleshooting.md)
+- [CI 分级](CI_CHANGE_CLASSIFICATION.md) · [拆分 full 路径 heavy job（Closed；#130 merged）](assignments/ci-heavy-job-split-001.md) · [Architecture](reviews/ci-heavy-job-split-001-architecture-review.md) · [Quality](reviews/ci-heavy-job-split-001-quality-review.md) · [GitHub 环境诊断](kos/codex-github-cli-auth-troubleshooting.md)
 - [Crash/Jetsam](CRASH_JETSAM_SYMBOLICATION.md) · [环境采集](ENVIRONMENT_CAPTURE_PROCEDURE.md) · [环境摘要](ENVIRONMENT_DIGEST_TOOLING.md)
 - [技术债](TECH_DEBT.md) · [文档健康](DOCUMENTATION_HEALTH.md) · [协调状态镜像](ENGINEERING_DASHBOARD.md)
 
@@ -43,4 +43,5 @@
 - [运行入口](KNOWLEDGE_OS.md) · [冻结规范](kos/knowledge-os-2.0-specification.md) · [零上下文启动](kos/zero-context-startup.md)
 - [Assignment Policy](ASSIGNMENT_POLICY.md) · [2.1 ops](kos/kos-2.1-operational-maturity.md)
 - [实际采用版本](kos/UPGRADE_STATUS.md) · [Profile](../.kos/project.json) · [人工证据](kos/universe-keyboard-human-operated-evidence-profile.md)
+- [UK-005 release-evidence](assignments/kos-release-evidence-implementation-001.md) · [P1-A](assignments/kos-release-evidence-implementation-001-p1.md) · [P1-A provenance closure](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md) · [P1-B Option A](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · [Upgrade Record](kos/upgrade-records/KOS-UPGRADE-UK-005-release-evidence-v1.md)
 - [外部公测发布复盘建议稿](kos/kos-improvement-suggestions-public-beta-release-2026-09-13.md) — **建议稿；未采纳**

@@ -4,6 +4,8 @@
 
 Accepted — Human Product Gate [`PD-TD-016-CI-TIERING-001-GATE`](../../product-decisions/TD-016-CI-TIERING-001-product-gate.md); independent Architecture revalidation Pass with conditions. Required-check trust-root migration remains [`TD-016`](../../TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁).
 
+Contract revision `2026-09-15` ([`CI-HEAVY-JOB-SPLIT-001`](../../assignments/ci-heavy-job-split-001.md)): the `full` heavy suite is five parallel jobs instead of one serial `build-and-test` job; Debug `test` is not followed by a Debug `build`. Classification remains `docs_only` / `full` only. This is not a new ADR.
+
 ## Context
 
 The current workflow runs the complete Swift/RIME/Xcode suite for every documentation change. That preserves safety but spends hosted-runner time and encourages AI polling. Using workflow-level `paths-ignore` would be faster but can remove the check entirely and is unsafe for future required-check configuration.
@@ -16,8 +18,8 @@ The adopted KOS Kit repository is private. The current repository token is not a
 2. Only root Markdown, `docs/**` and `.kos/**` are light-path eligible.
 3. Every other path, an empty diff, an invalid comparison or classifier error requires/fails toward the full path.
 4. An always-run lightweight job checks diff whitespace, changed Markdown links and `.kos/project.json` JSON syntax.
-5. The existing heavy Swift 6 steps remain together in `build-and-test` and run only when classification requires full validation.
-6. An always-run `final-quality-gate` succeeds only when classification/lightweight checks pass and the heavy result is exactly success for full changes or skipped for light changes.
+5. The heavy Swift 6 suite runs only when classification requires full validation. It is split into `format-swift`, `test-keyboardcore`, `test-rimebridge`, `test-app-keyboard` and `build-release` so failures localize and wall-clock time can overlap. There is no extra Debug `build` after Debug `test`. Path-based skips inside `full` are forbidden.
+6. An always-run `final-quality-gate` succeeds only when classification/lightweight checks pass and every named heavy job is exactly `success` for full changes or exactly `skipped` for light changes.
 7. Same-PR stale runs are cancelled with workflow concurrency.
 8. Full KOS validator remains a pinned local/pre-merge requirement for governance changes until a separately reviewed non-secret distribution path exists.
 
@@ -32,6 +34,8 @@ The adopted KOS Kit repository is private. The current repository token is not a
 ## Consequences
 
 - Documentation-only PRs receive a stable final result without macOS/Xcode work.
+- Full-path failures localize to a named heavy job. Wall-clock time can overlap;
+  billed macOS minutes may increase because each job cold-starts.
 - Any new or surprising path automatically runs the full suite.
 - Workflow changes validate themselves through the full path.
 - KOS governance changes get lightweight repository checks in CI and the pinned full validator locally; this residual is explicit rather than silently skipped.

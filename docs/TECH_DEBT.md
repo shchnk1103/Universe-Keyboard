@@ -285,7 +285,7 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Required-check migration residual:** 当前 classifier、workflow 与 final Gate 均来自 PR head，本身不是独立 trust root。未来若要把 `final-quality-gate` 设为 required，必须另行授权并增加 CODEOWNERS/强制审查、受保护 reusable workflow 或等价的 baseline-owned guard；在此之前不得把当前绿色结果当成不可绕过的强制边界。
 - **Owner area:** Quality, Performance & Release Maintainer（CI/test selection）+ Architecture & Knowledge Steward（KOS/治理分类边界）。
 - **Trigger to resolve:** 仅当 Human 另行授权 required-check 迁移，并增加 CODEOWNERS/强制审查、受保护 reusable workflow 或等价 baseline-owned guard。
-- **Related:** `.github/workflows/swift6-quality.yml`、`docs/ASSIGNMENT_POLICY.md`、KOS 2.2 advisory、TD-014。
+- **Related:** `.github/workflows/swift6-quality.yml`、`docs/ASSIGNMENT_POLICY.md`、KOS 2.2 advisory、TD-014。后续墙钟/定位改进见 Closed [`CI-HEAVY-JOB-SPLIT-001`](assignments/ci-heavy-job-split-001.md)（拆 heavy job、去掉重复 Debug build；**不**关闭本项 A-P2-02，**不**引入路径跳过）。
 
 ## TD-017: Investigate Background Sync Sandbox Extension Consume Failure
 

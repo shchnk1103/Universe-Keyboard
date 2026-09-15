@@ -3,9 +3,11 @@
 ## Purpose And Authority
 
 This document is the Source of Truth for deciding whether a GitHub change runs the
-lightweight documentation path or the full Swift 6 quality path. The implementation
+lightweight documentation path or the full Swift 6 quality path. Classification
 is owned by [`TD-016-CI-TIERING-001`](assignments/td-016-ci-tiering-001.md) and
 [`ADR 0031`](architecture/decisions/0031-fail-closed-ci-change-classification.md).
+The `full` heavy job graph is owned by
+[`CI-HEAVY-JOB-SPLIT-001`](assignments/ci-heavy-job-split-001.md).
 
 Classification selects validation work; it never grants merge, Product, Quality,
 TestFlight or Release authority.
@@ -30,12 +32,15 @@ hiding the original sensitive path.
 classify-change
        |
        v
-lightweight-checks -----------+
-       |                       |
-       +--> build-and-test     |
-            (full only)        |
-                               v
-                    final-quality-gate
+lightweight-checks -------------------+
+       |                               |
+       +--> format-swift               |
+       +--> test-keyboardcore          |
+       +--> test-rimebridge            |  (full only; parallel)
+       +--> test-app-keyboard          |
+       +--> build-release              |
+                                       v
+                            final-quality-gate
 ```
 
 - `classify-change` always runs and emits the exact base/head and tier.
@@ -43,11 +48,13 @@ lightweight-checks -----------+
   branch-wide decision from only `HEAD^`.
 - `lightweight-checks` always runs: diff whitespace, changed Markdown local links,
   `.kos/project.json` JSON syntax and classifier/link-checker unit tests.
-- `build-and-test` retains the existing artifact preparation, Swift formatting,
-  KeyboardCore, RimeBridge, App/Keyboard tests and Debug/Release builds. It is skipped
-  only for `docs_only`.
-- `final-quality-gate` always runs. It requires the heavy job to be `success` for
-  `full` or exactly `skipped` for `docs_only`; missing/contradictory outputs fail.
+- The five named heavy jobs run only when classification requires `full`. They
+  do not introduce path-based skips. Debug `test` covers Debug compilation; there
+  is no extra Debug `build`. `test-app-keyboard` and `build-release` still fetch
+  pinned RIME artifacts. `format-swift` and `test-keyboardcore` do not.
+- `final-quality-gate` always runs. For `full` every heavy job must be `success`.
+  For `docs_only` every heavy job must be exactly `skipped`. Missing or
+  contradictory outputs fail closed.
 - One concurrency group per PR/ref cancels older in-progress runs after a new commit.
 
 ## KOS Validation Boundary
@@ -81,8 +88,16 @@ this implementation must pass the full local/hosted suite before it is merge-rea
 making `final-quality-gate` required is a separate Human-authorized operation. Observe
 both a docs-only PR and a full PR before changing required checks.
 
-Rollback is one workflow revert: restore the single unconditional `build-and-test`
-job. Do not use workflow-level `paths-ignore` as a shortcut.
+Rollback restores the TD-016 single conditional `build-and-test` job, including
+its extra Debug `build` step. The revert set is both
+[`.github/workflows/swift6-quality.yml`](../.github/workflows/swift6-quality.yml)
+and [`scripts/ci/verify_final_gate.sh`](../scripts/ci/verify_final_gate.sh) with
+[`scripts/ci/tests/test_verify_final_gate.sh`](../scripts/ci/tests/test_verify_final_gate.sh).
+The Gate script now takes eight arguments (`requires_full` third); restoring
+only the YAML or only the script leaves a calling-convention mismatch. That
+mismatch fail-closes the Gate (safe) but is not a working rollback. Do not use
+workflow-level `paths-ignore` as a shortcut. Do not add UI/Rime/KeyboardCore
+path skips during rollback.
 
 ## Revalidation Triggers
 
