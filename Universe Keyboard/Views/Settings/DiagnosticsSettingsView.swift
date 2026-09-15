@@ -318,10 +318,21 @@ struct DiagnosticsSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             }
+
+            NavigationLink {
+                ReleaseEvidenceView()
+            } label: {
+                HStack {
+                    Label("发布证据", systemImage: "checklist")
+                    Spacer()
+                    Text("Beta / 外部候选")
+                        .foregroundStyle(.secondary)
+                }
+            }
         } header: {
             Text("查看与管理")
         } footer: {
-            Text("可在记录页刷新、筛选、复制或清空。请勿分享含敏感上下文的日志。")
+            Text("可在记录页刷新、筛选、复制或清空；发布证据页只保存有限字段。请勿分享含敏感上下文的日志。")
         }
     }
 

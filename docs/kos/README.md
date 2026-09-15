@@ -64,6 +64,12 @@ new records; see `UPGRADE_STATUS` for the current disposition:
 | [`KOS-UPGRADE-UK-001`](../assignments/kos-upgrade-uk-001.md) | First advisory adoption (`v0.5.0`) |
 | [`KOS-ASTRA-UPGRADE-001`](../assignments/kos-astra-upgrade-001.md) | Historical v0.7.0 adoption |
 | [`KOS-UPGRADE-UK-004`](../assignments/kos-upgrade-uk-004-v0.8.0.md) | Current Adopted pin (`v0.8.0` advisory) |
+| [`PD-KOS-UPGRADE-UK-005`](../product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) | Project-level `kos.release-evidence` v1.0 prospective adoption decision |
+| [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) | Option A residual disposition: duplicate UI/storage `Not applicable`; migration/backfill and background sync `Deferred`/unauthorized |
+| [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001`](../assignments/kos-release-evidence-implementation-001.md) | Parent handoff; P0 Profile/owner-map stage closed, child P1 remains active for P-01/D-01 and Product/Release boundaries; `REP-Q-01` and candidate-bound hosted provenance closed |
+| [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1`](../assignments/kos-release-evidence-implementation-001-p1.md) | P1-A delta-aware adapter/fixtures/focused-validation scope; [REP-Q-01 / hosted provenance receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md); no P1-B implementation handoff under Option A |
+| [`AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1`](../authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1.md) | Active P1-A implementation Authorization; scoped commit/push/PR separately authorized; no merge or publication authorization |
+| [`release-evidence-profile.md`](release-evidence-profile.md) | Project-owned adapter Profile; content-free fields and derived-state boundary |
 
 KOS 2.2 adds machine-readable record envelopes and deterministic read-only
 validation on top of KOS 2.0/2.1. It does not replace their authority or
@@ -98,3 +104,4 @@ This directory does not authorize by mere existence:
 ## 外部公测发布复盘建议
 
 - [证据分级与差异验证建议稿](kos-improvement-suggestions-public-beta-release-2026-09-13.md) — **建议稿；未采纳**，不改变当前 KOS、Release Gate 或任何授权边界。
+- 该建议稿派生的有界 [ADR 0035](../architecture/decisions/0035-release-evidence-accumulation-and-promotion.md) 已由 Human Product Owner 正式采纳；建议稿其余方向不因此自动采纳。

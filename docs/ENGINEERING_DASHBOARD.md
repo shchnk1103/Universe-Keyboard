@@ -8,6 +8,15 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## CI-HEAVY-JOB-SPLIT-001 — 拆分 full 路径 heavy job
+
+- **Lifecycle:** [Assignment](assignments/ci-heavy-job-split-001.md) Closed
+- **Current phase:** PR [#130](https://github.com/shchnk1103/Universe-Keyboard/pull/130) merged `52a400e`；实现分支已删；fixture 分支保留
+- **Non-claims:** 不等于 Product Gate、Release 或 required-check 迁移
+- **Next:** none for this Assignment
+- **Reviews:** [Architecture](reviews/ci-heavy-job-split-001-architecture-review.md) · [Quality](reviews/ci-heavy-job-split-001-quality-review.md)
+- **Local evidence:** [gate scripts](evidence/ci-heavy-job-split-001-local-gate-2026-09-15.md)
+
 ## APP-SWITCH-CONTRAST-001 — 主 App 系统开关深浅色对比度
 
 - **Lifecycle:** [`Assignment`](assignments/app-switch-contrast-001.md) `Closed`
@@ -23,6 +32,14 @@
 - **Non-claims:** not push, TestFlight, Release, or F1/F2 device proof
 - **Next:** none for this Assignment; scoped commit of this slice is separately authorized
 - **Sources:** [Quality review](reviews/help-guide-sheet-001-quality-review.md) · [Product Gate](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)
+
+## RELEASE-EVIDENCE-PROMOTION-001 — 发布证据增量与候选晋级
+
+- **Lifecycle:** [`Assignment`](assignments/release-evidence-promotion-001.md) `Reviewed`；`REP-Q-01` `Closed`；PR [#128](https://github.com/shchnk1103/Universe-Keyboard/pull/128) merged `1a405143`
+- **Current phase:** Human Product Owner 已正式采纳 ADR 0035（Accepted，Conditional Accept package）；candidate source `ad39f443...` 的 hosted Swift 6 Quality run `34865917284` same-head green；PR #128 的 hosted Swift 6 Quality run `34920137639` 全部通过并已合并至 `main`
+- **Evidence:** [ADR 0035 acceptance](product-decisions/ADR-0035-ACCEPT-authorization.md) · [acceptance evidence](evidence/adr-0035-accept-2026-09-15.md) · [REP-Q-01 provenance receipt](evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md) · [P1-A / ADR 0035 status reconciliation](evidence/release-evidence-promotion-001-p1-a-adr-0035-status-reconciliation-2026-09-15.md)
+- **Non-claims:** 不等于 Quality Pass、Product Gate、Release Pass、真机验收、签名、TestFlight 或 App Store Connect
+- **Next:** 无本 Assignment 的 Executor 动作；engineering/docs publication 已完成状态同步；未来外部 archive/export、设备和正式发布仍需单独证据与授权；P1-B 仍需新的 Product Decision、Assignment、Authorization 和 ADR-0027 review
 
 ## RIME-SCHEME-DETAIL-PROVENANCE-SHEET-001 — 方案信息入口收纳来源明细
 
@@ -49,6 +66,14 @@
 
 - **Lifecycle:** [`KOS-UPGRADE-UK-004`](assignments/kos-upgrade-uk-004-v0.8.0.md) is Closed after Human Product Owner adopted `v0.8.0` advisory; published by PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104) merged `77e5658`. E-01, A-01/B-01, P-01 and D-01 apply only through explicit opt-in on new records. [UPGRADE_STATUS](kos/UPGRADE_STATUS.md) remains the current source. UK-003 / PR #96 remains historical.
 - **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
+
+## KOS-UPGRADE-UK-005 — prospective `kos.release-evidence` adoption
+
+- **Lifecycle:** review Assignment [`KOS-UPGRADE-UK-005`](assignments/kos-upgrade-uk-005-release-evidence-v1.md) `Closed`; implementation parent and child remain `Active` because P-01/D-01 and Product/Release/publication handoff remain separate. `REP-Q-01` and candidate-bound hosted provenance are `Closed` by the [P1-A provenance receipt](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md).
+- **Authority:** project adoption [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) · P1-B Option A [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · P1-A [`Assignment`](assignments/kos-release-evidence-implementation-001-p1.md)
+- **Current phase:** P1-A implementation and exact-digest Architecture/Quality reviews passed; duplicate P1-B Main-App UI/storage is `Not applicable`; historical migration/backfill is `Deferred`; background sync/network is `Deferred` and unauthorized.
+- **Non-claims:** no current-proof, Product/Quality/Release Gate, TestFlight, App Store Connect, merge or Release conclusion; no new P1-B implementation is authorized.
+- **Next:** produce separately owned P-01/D-01 and Product/Release/publication handoff facts if needed; reopen P1-B only if Product supersedes Option A with precise scope.
 
 ## KOS improvement suggestions — disposition recorded
 
