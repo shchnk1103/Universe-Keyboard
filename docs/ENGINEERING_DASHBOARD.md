@@ -11,9 +11,9 @@
 ## CI-HEAVY-JOB-SPLIT-001 — 拆分 full 路径 heavy job
 
 - **Lifecycle:** [Assignment](assignments/ci-heavy-job-split-001.md) Active
-- **Current phase:** Draft [#130](https://github.com/shchnk1103/Universe-Keyboard/pull/130)；CHS-Q-01 / CHS-Q-03 Quality 复核 closed；CHS-Q-02 待 [#131](https://github.com/shchnk1103/Universe-Keyboard/pull/131) docs_only fixture
+- **Current phase:** Quality `fix` 残差均 closed；[#131](https://github.com/shchnk1103/Universe-Keyboard/pull/131) close without merge；[#130](https://github.com/shchnk1103/Universe-Keyboard/pull/130) draft
 - **Non-claims:** 不等于 Product Gate、merge 或 required-check 迁移
-- **Next:** 不合并的 hosted `docs_only` fixture（CHS-Q-02）；merge 另授权
+- **Next:** Human 决定是否 undraft/merge #130
 - **Reviews:** [Architecture](reviews/ci-heavy-job-split-001-architecture-review.md) · [Quality](reviews/ci-heavy-job-split-001-quality-review.md)
 - **Local evidence:** [gate scripts](evidence/ci-heavy-job-split-001-local-gate-2026-09-15.md)
 

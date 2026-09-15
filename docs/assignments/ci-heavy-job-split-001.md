@@ -7,7 +7,7 @@
   "record_type": "assignment",
   "title": "Split full-path Swift 6 heavy jobs for localization and drop redundant Debug build",
   "lifecycle": "active",
-  "current_phase": "CHS-Q-01/Q-03 closed on hosted full; CHS-Q-02 docs_only fixture pending; merge not authorized",
+  "current_phase": "All Quality fix residuals closed; #130 draft awaiting merge authorization",
   "authorization_action": "implement_ci_heavy_job_split",
   "updated_at": "2026-09-15T11:00:00+08:00",
   "revalidation_triggers": ["scope_changed", "workflow_contract_changed", "required_checks_changed", "branch_protection_changed", "skip_rule_requested"],
@@ -34,9 +34,9 @@
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Phase | 独立审查 Pass with conditions；CHS-A-02 / CHS-Q-01 / CHS-Q-03 closed；CHS-Q-02 待不合并的 docs_only fixture |
-| Non-claims | 不是 Product Gate、Quality Pass、merge 或 required-check 迁移 |
-| Next | 不合并的 hosted `docs_only` fixture（CHS-Q-02）；merge 仍须另授权 |
+| Phase | Quality `fix` 残差均 closed（Q-01/02/03）；#131 已 close without merge；#130 draft 待 Human merge 授权 |
+| Non-claims | 不是 Product Gate、无条件 Quality Pass、merge 或 required-check 迁移 |
+| Next | Human 决定是否 undraft/merge #130 |
 | Residuals | 见下方 ledger |
 
 ### Review Residual Ledger
@@ -49,7 +49,7 @@
 | `CHS-A-04` | Gate 单测未穷举 | Architecture | `accept` | Architecture review |
 | `CHS-A-05` | 脏树混有 RELEASE-EVIDENCE | Architecture | `accept` | Architecture review；commit 须切开 |
 | `CHS-Q-01` | 无 hosted `full` | Quality | `closed` | [hosted full evidence](../evidence/ci-heavy-job-split-001-hosted-full-2026-09-15.md) · [Quality revalidation](../reviews/ci-heavy-job-split-001-quality-review.md) · run `34923523955` |
-| `CHS-Q-02` | 无 hosted `docs_only` | Quality | `fix` | Quality review；fixture PR 不得默认合并 |
+| `CHS-Q-02` | 无 hosted `docs_only` | Quality | `closed` | [hosted docs_only evidence](../evidence/ci-heavy-job-split-001-hosted-docs-only-2026-09-15.md) · Quality revalidation · run `34924821846`；[#131](https://github.com/shchnk1103/Universe-Keyboard/pull/131) close without merge |
 | `CHS-Q-03` | 工作树未隔离本切片 | Quality | `closed` | Quality revalidation：`39a25bd` vs `origin/main` 恰好 20 个本切片文件 |
 | `CHS-Q-04` | Gate 单测抽样 | Quality | `accept` | Quality review |
 | `CHS-Q-05` | A-P2-02 仍开放 | Quality | `tech_debt:TD-016` | TD-016 |
@@ -168,7 +168,7 @@
 - [x] `final-quality-gate` 按上文矩阵 fail-closed；本地脚本单测覆盖成功与失败组合。
 - [x] ADR 0031、`CI_CHANGE_CLASSIFICATION.md`、`AGENTS.md` 本地门禁与 job 名称一致。
 - [x] Hosted `full` 证据：五条 heavy 为 success，Gate success。
-- [ ] Hosted `docs_only` 证据：五条 heavy 为 skipped，Gate success。不得为取证而合并 docs-only fixture PR，除非另授权。
+- [x] Hosted `docs_only` 证据：五条 heavy 为 skipped，Gate success。不得为取证而合并 docs-only fixture PR，除非另授权。
 - [x] 独立 Architecture 与 Quality 结论已记录；残差均有 `fix` / `accept` / `tech_debt:<ID>`。含 `fix` 的项在取得证据前不得 Close。
 - [ ] Human Product Owner 决定是否 merge。Merge 不是本 Exit 的默认项。
 
@@ -202,3 +202,4 @@
 - `2026-09-15 Asia/Shanghai`: 独立 Architecture 专项复核 CHS-A-02 → **closed**。首次 Verdict 仍为 Pass with conditions；CHS-A-01/03/04/05 与 Quality 残差未改。无 commit / push。
 - `2026-09-15 Asia/Shanghai`: Human 授权隔离功能分支 commit/push。基线 `origin/main`；不含 RELEASE-EVIDENCE 产品文件。
 - `2026-09-15 Asia/Shanghai`: Draft PR #130；hosted run `34923523955` same-head `full` 五条 heavy + Gate success。独立 Quality 复核 CHS-Q-01 / CHS-Q-03 **closed**。CHS-Q-02 仍开放。无 merge。
+- `2026-09-15 Asia/Shanghai`: Stacked fixture PR #131 run `34924821846` `docs_only`；五条 heavy skipped；Gate success。Quality 复核 CHS-Q-02 **closed**。#131 close without merge。#130 仍 draft；无 merge。

@@ -175,3 +175,59 @@ Executor 稿 [`ci-heavy-job-split-001-hosted-full-2026-09-15.md`](../evidence/ci
 
 - **CHS-Q-02 `fix`：** Assignment Close 仍须 hosted `docs_only`（五条 heavy 恰好 `skipped` 且 Gate `success`）。不得为取证而合并 fixture PR，除非另授权。
 - 本 Pass with conditions **不**因 CHS-Q-01/03 closed 变成无条件 Pass、merge-ready 或 Product Gate。
+
+## Revalidation — hosted docs_only (CHS-Q-02)
+
+| Field | Value |
+|---|---|
+| Reviewer | `ci_split_quality_review` |
+| Date / timezone | `2026-09-15 Asia/Shanghai` |
+| Frozen first Verdict | **Pass with conditions**（首次表与 CHS-Q-01/Q-03 `closed` 不改写） |
+| Independence | 独立 `gh` run/jobs API + classify 日志。未把 Executor 稿或 Human 口头绿当成 Quality-reverified。未 merge、未改 workflow |
+
+### Residual disposition this round
+
+| ID | Previous | Current | Evidence |
+|---|---|---|---|
+| CHS-Q-02 | `fix` | **`closed`** | 有效 run [`34924821846`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/34924821846)：`docs_only` / `requires_full=false`；五条 named heavy 恰好 `skipped`；classify / lightweight / `final-quality-gate` 均为 `success`。Grade: **Quality-reverified** |
+| CHS-Q-01 | `closed` | `closed`（冻结） | 本轮不重开 |
+| CHS-Q-03 | `closed` | `closed`（冻结） | 本轮不重开 |
+| CHS-Q-04 | `accept` | `accept` | 未重开 |
+| CHS-Q-05 | `tech_debt:TD-016` | `tech_debt:TD-016` | hosted 绿仍不是 required-check trust root |
+
+### Quality-reverified hosted docs_only
+
+独立命令：
+
+```bash
+gh pr view 131 --repo shchnk1103/Universe-Keyboard --json number,isDraft,headRefName,headRefOid,baseRefName,baseRefOid,state,url
+gh run view 34924821846 --repo shchnk1103/Universe-Keyboard --json databaseId,conclusion,status,event,headSha,headBranch,url,workflowName,attempt
+gh api repos/shchnk1103/Universe-Keyboard/actions/runs/34924821846/jobs --jq '[.jobs[] | {name, conclusion}]'
+gh run view 34924821846 --repo shchnk1103/Universe-Keyboard --job 104240533224 --log
+```
+
+| Fact | Independently observed |
+|---|---|
+| Fixture PR | [#131](https://github.com/shchnk1103/Universe-Keyboard/pull/131) `OPEN` **draft**；**不得 merge** |
+| Stack | `baseRefName=feature/ci-heavy-job-split-001`；`baseRefOid=7b0b8fc08d8a1eb9d81b81b4c8cea8decd589b7e` |
+| Head branch / OID | `docs/ci-heavy-job-split-001-docs-only-fixture` / `9c9c2a921c8ad397f097854d025363478bd1b16f` |
+| Run | `34924821846`；workflow `Swift 6 Quality`；event `pull_request`；`headSha` = fixture head；`conclusion=success`；attempt 1；`pull_requests[0].base.ref` = `feature/ci-heavy-job-split-001` |
+| Classifier JSON（classify-change 日志） | `{"classification": "docs_only", "requires_full": "false", "reason": "all_paths_in_lightweight_allowlist", "changed_count": "1", "base_sha": "7b0b8fc08d8a1eb9d81b81b4c8cea8decd589b7e", "head_sha": "e833f5ec36dd39cceb293e519829431f4c3bf796", "full_required_paths": []}` |
+| Jobs（`total_count=8`） | `classify-change` success；`lightweight-checks` success；`format-swift` skipped；`test-keyboardcore` skipped；`test-rimebridge` skipped；`test-app-keyboard` skipped；`build-release` skipped；`final-quality-gate` success |
+
+五条 named heavy 均为恰好 `skipped`，无 heavy `success` / `failure`。Gate 在 skip 矩阵上成功，符合 Assignment Exit 的 docs_only 合同。
+
+Executor 稿 [`ci-heavy-job-split-001-hosted-docs-only-2026-09-15.md`](../evidence/ci-heavy-job-split-001-hosted-docs-only-2026-09-15.md) 与上述核对一致，Grade 仍为 Executor-recorded；本段才是 Quality-reverified。
+
+### Discarded runs（不得当 proof）
+
+| Run | Why not CHS-Q-02 |
+|---|---|
+| [`34924357288`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/34924357288) | 第一次 #131（对 `main` 工作流）。jobs 仅 `build-and-test` skipped，不能证明五条 named heavy skip 合同 |
+| [`34924431580`](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/34924431580) | `conclusion=failure`。classify JSON 为 `full` / `requires_full=true` / `changed_count=22` / `base_sha=1a40514`（`main`），`head_sha=60297f95…`。lightweight `failure`，Gate `failure`。五条 heavy `skipped` 是依赖失败后的 skip，不是 docs_only 合法 skip |
+
+### Still not claimed
+
+- 首次 Verdict 保持 **Pass with conditions**，不升为无条件 Pass。
+- 不授权 merge #131 或 #130、Product Gate、Release、required-check 迁移。
+- CHS-Q-04 `accept` 与 CHS-Q-05 `tech_debt:TD-016` 仍列在条件残差中。
