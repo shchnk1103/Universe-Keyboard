@@ -3,8 +3,13 @@
 ## 2026-09-15 — 主 App 开关深色开启态对比度
 
 - 全部主 App 开关改走共享 `AppSwitch`（系统 `UISwitch` + `AppSwitchChrome`）。浅色开启黑槽白点；深色开启白槽黑点；关闭态小圆点保持白色。
-- 独立 Quality 结论为 **Pass with conditions**，新 SHA 增量核对完成；App + Keyboard Debug 测试为 `UniverseKeyboardTests 361 / 9 skipped`、`KeyboardTests 11`，历史记录的测试计数已校正。实现 SHA 为 `5d3880b13109a65b8e441ded74b82f9927ffb9b4`，仍不是 Product Gate、push 或 Release。
-- Human Product Owner 在 iPhone 13 Pro / iOS 27 完成设置首页、诊断页、模糊音 Form 的四态观察，详见 [`Human-attested record`](docs/evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md)；非 Device-attested、非 Product Gate。
+- 独立 Quality 结论为 **Pass with conditions**，新 SHA 增量核对完成；App + Keyboard Debug 测试为 `UniverseKeyboardTests 361 / 9 skipped`、`KeyboardTests 11`，历史记录的测试计数已校正。实现 SHA 为 `5d3880b13109a65b8e441ded74b82f9927ffb9b4`；Product Gate 已另行记录，push 或 Release 仍未授权。
+- Human Product Owner 在 iPhone 13 Pro / iOS 27 完成设置首页、诊断页、模糊音 Form 的四态观察，详见 [`Human-attested record`](docs/evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md)；该观察非 Device-attested，Gate 接受范围见下方 Product Gate 记录。
+
+## 2026-09-15 — APP-SWITCH-CONTRAST-001 Human Product Gate
+
+- Human Product Owner 接受主 App 开关对比度 Product Gate 及既有 Quality 条件；Assignment `APP-SWITCH-CONTRAST-001` 已关闭。
+- 本 Gate 只关闭主 App 开关对比度产品验收；不升级为 Device-attested，不授权 push、PR、merge、TestFlight、App Store Connect 或 Release。
 
 ## 2026-09-14 — 首次启用改为设置「？」与引导 sheet
 

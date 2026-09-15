@@ -10,11 +10,11 @@
 
 ## APP-SWITCH-CONTRAST-001 — 主 App 系统开关深浅色对比度
 
-- **Lifecycle:** [`Assignment`](assignments/app-switch-contrast-001.md) `Reviewed`
-- **Current phase:** 实现 SHA `5d3880b` 已形成并完成回写；新身份独立 Quality 增量核对 **Pass with conditions**；测试计数已校正为 `361 / 9 skipped` + `KeyboardTests 11`；Human-attested 观察已记录
-- **Non-claims:** 不等于 Product Gate、push / PR / merge、TestFlight 或 Release；真机仍为 Human-attested
-- **Next:** Product Gate 另授权；保持 Human-attested / 非 Device-attested 边界
-- **Sources:** [PD](product-decisions/APP-SWITCH-CONTRAST-001-authorization.md) · [Quality](reviews/app-switch-contrast-001-quality-review.md) · [Human observation](evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md) · [commit AUTH](authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md)
+- **Lifecycle:** [`Assignment`](assignments/app-switch-contrast-001.md) `Closed`
+- **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；实现 SHA `5d3880b`、Simulator 证据与 iPhone 13 Pro / iOS 27 Human-attested 观察均已记录
+- **Non-claims:** 不等于 Device-attested、push / PR / merge、TestFlight 或 Release
+- **Next:** none for this Assignment；任何发布或 Release gate 另授权
+- **Sources:** [PD](product-decisions/APP-SWITCH-CONTRAST-001-authorization.md) · [Product Gate](product-decisions/APP-SWITCH-CONTRAST-001-product-gate.md) · [Quality](reviews/app-switch-contrast-001-quality-review.md) · [Human observation](evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md)
 
 ## HELP-GUIDE-SHEET-001 — 引导 sheet 与设置「？」
 

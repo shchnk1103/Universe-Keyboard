@@ -9,10 +9,10 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Reviewed` |
-| **Phase** | 独立 Quality **Pass with conditions**；残差 `ASC-01`–`ASC-05` 均 `accept` |
-| **Non-claims** | 不等于无条件 Quality Pass、Product Gate、push / PR / merge / TestFlight / Release；真机仅为 Human-attested |
-| **Next** | 实现 SHA `5d3880b13109a65b8e441ded74b82f9927ffb9b4` 已形成并完成回写；新身份 Quality 增量核对与 Human-attested 观察均已记录；Product Gate 另授权 |
+| **Lifecycle** | `Closed` |
+| **Phase** | Human Product Gate **Passed with accepted evidence conditions**；残差 `ASC-01`–`ASC-05` 均 `accept` |
+| **Non-claims** | 不等于无条件 Quality Pass 或 Device-attested；不授权 push / PR / merge / TestFlight / Release；真机仅为 Human-attested |
+| **Next** | 无（本 Assignment）。任何发布、TestFlight 或 Release 动作仍需单独授权 |
 | **Residuals** | [`quality review`](../reviews/app-switch-contrast-001-quality-review.md) `ASC-01`–`ASC-05` `accept` |
 
 ---
@@ -26,8 +26,10 @@
 - **Authorization (implementation slice):** [`AUTH-APP-SWITCH-CONTRAST-001-IMPLEMENT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-IMPLEMENT.md) — consumed (implementation delivered)
 - **Authorization (Quality):** [`AUTH-APP-SWITCH-CONTRAST-001-QUALITY`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-QUALITY.md) — consumed
 - **Authorization (ASC-02 local commit):** [`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md) — consumed by `5d3880b`; isolated branch, no push
+- **Authorization (Product Gate):** [`AUTH-APP-SWITCH-CONTRAST-001-PRODUCT-GATE`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-PRODUCT-GATE.md) — consumed
 - **Quality review:** [`app-switch-contrast-001-quality-review.md`](../reviews/app-switch-contrast-001-quality-review.md) — **Pass with conditions**
 - **Human observation:** [`app-switch-contrast-001-human-attested-observation-2026-09-15.md`](../evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md) — SHA-bound **Human-attested** observation; not Device-attested
+- **Product Gate:** [`PD-APP-SWITCH-CONTRAST-001-PRODUCT-GATE`](../product-decisions/APP-SWITCH-CONTRAST-001-product-gate.md) — **Accepted**
 
 ## KOS v0.8.0 optional-contract selection
 
@@ -46,7 +48,7 @@
 | Current docs-only record | Authorized | `record_app_switch_contrast_product_decision_and_assignment` for `APP-SWITCH-CONTRAST-001` | Consumed [AUTH-APP-SWITCH-CONTRAST-001](../authorizations/AUTH-APP-SWITCH-CONTRAST-001.md) |
 | Main-App implementation | Authorized | Shared switch owner + all main-App call sites + style-guide amendment | [AUTH-APP-SWITCH-CONTRAST-001-IMPLEMENT](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-IMPLEMENT.md) |
 | Independent Quality | Authorized | Contrast + Form crash-contract regression — Pass with conditions | Consumed [AUTH-APP-SWITCH-CONTRAST-001-QUALITY](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-QUALITY.md) → [review](../reviews/app-switch-contrast-001-quality-review.md) |
-| Human Product Gate | Not authorized | Light/dark visual acceptance | New Authorization required |
+| Human Product Gate | Consumed | Main-App contrast acceptance; Assignment Closed | [`AUTH-APP-SWITCH-CONTRAST-001-PRODUCT-GATE`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-PRODUCT-GATE.md) → [`PD-APP-SWITCH-CONTRAST-001-PRODUCT-GATE`](../product-decisions/APP-SWITCH-CONTRAST-001-product-gate.md) |
 | Scoped local commit | Consumed | 实现 commit `5d3880b` + 本次 SHA 回写；不 push | [`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md) |
 | Push / PR / merge | Not authorized | | New Authorization required |
 | Environment or external slice | Not applicable | 无 H-01 冻结载荷；实施后 Simulator 目视即可进入 Quality，真机为可选 Human Dependency | 真机不是 `Ready` 前置 |
@@ -62,7 +64,7 @@ This is a manual advisory opt-in for A-01/B-01 only. This Assignment, its Author
 - **Architecture Reviewer:** 🏛️ Architecture & Knowledge Steward — **Not Applicable** while implementation preserves system `UISwitch` and the Form crash contract; **required** if a custom-drawn `ToggleStyle` is proposed, if Form section topology around toggles changes, or if a new crash-contract exception is requested
 - **Quality Reviewer:** 🧪 Quality, Performance & Release Maintainer — independent review **Pass with conditions** (`ASC-01`–`ASC-05` `accept`)
 - **Supporting Domain:** [`playbooks/main-app-ui.md`](../playbooks/main-app-ui.md)
-- **Handoff Target:** Human Product Lead for Product Gate
+- **Handoff Target:** None for this Assignment; future publication or Release gates are separate
 
 ## Acknowledgement And Activation
 
@@ -70,7 +72,7 @@ This is a manual advisory opt-in for A-01/B-01 only. This Assignment, its Author
 - **Executor acknowledgement (record slice):** `2026-09-15 Asia/Shanghai` — Scope、Non-goals、Stop Conditions 与对比度配对已接受；Form crash 合同保持。
 - **Entry Criteria status:** **Met** for `Active` implementation slice (`AUTH-APP-SWITCH-CONTRAST-001-IMPLEMENT`).
 - **Product lifecycle decision:** `Ready → Active` on Human instruction “开始实施，并允许写对应 Authorization”, `2026-09-15 Asia/Shanghai`.
-- **Current phase:** Reviewed after independent Quality Pass with conditions; Product Gate not authorized.
+- **Current phase:** Closed after Human Product Gate Passed with accepted evidence conditions; publication and Release actions remain separately authorized.
 
 ## Boundary
 
@@ -111,7 +113,7 @@ Authorize (and, **after a later implementation Authorization**, implement) a **s
 - 放宽 Form `AsyncRenderer` 合同
 - 本记录切片改 Swift、改 `UI_STYLE_GUIDE.md` 现行描述、commit / push / merge
 - Profile include / `required` mode
-- TestFlight / Release / Product Gate
+- TestFlight / Release / publication actions (the Product Gate is recorded separately)
 
 ### Required Inputs
 
@@ -151,7 +153,7 @@ Authorize (and, **after a later implementation Authorization**, implement) a **s
 - [x] `UI_STYLE_GUIDE.md` and `DEBUGGING.md` amended to the landed rule.
 - [x] Independent Quality **Pass with conditions** — [`app-switch-contrast-001-quality-review.md`](../reviews/app-switch-contrast-001-quality-review.md); new-SHA incremental check completed; residuals `ASC-01`–`ASC-05` remain accepted.
 - [x] `ASC-02` local commit `5d3880b13109a65b8e441ded74b82f9927ffb9b4` and SHA writeback on isolated branch — no push.
-- [ ] Human Product Gate for Assignment `Closed` — **not authorized**.
+- [x] Human Product Gate for Assignment `Closed` — [`PD-APP-SWITCH-CONTRAST-001-PRODUCT-GATE`](../product-decisions/APP-SWITCH-CONTRAST-001-product-gate.md); accepted Human-attested evidence conditions; no Device-attested or Release claim.
 
 ### Stop Conditions
 
@@ -173,10 +175,10 @@ Stop and escalate if:
   - Contrast: on-tint `.label`; thumb white except dark-on black.
   - Tests: `xcodebuild` scheme `Universe Keyboard` Debug test, destination `platform=iOS Simulator,name=iPhone 17 Pro,OS=26.0` (`name=iPhone 17 Pro` without OS unmatched because latest is iOS 27), `CODE_SIGNING_ALLOWED=NO` `SWIFT_VERSION=6.0` `SWIFT_STRICT_CONCURRENCY=complete` `SWIFT_TREAT_WARNINGS_AS_ERRORS=YES` — final SHA 增量复验 **TEST SUCCEEDED**（UniverseKeyboardTests 361 / 9 skipped；KeyboardTests 11）。Not run: KeyboardCore-only, RimeBridgeTests, Release `build`.
   - Docs: `UI_STYLE_GUIDE.md`, `DEBUGGING.md`, `CHANGELOG.md`.
-  - Independent Quality **Pass with conditions** (`ASC-01`–`ASC-05` `accept`) 的原始审查仍标注其脏树身份；新 SHA 增量核对已完成。Product Gate / push / PR / merge are not authorized.
+  - Independent Quality **Pass with conditions** (`ASC-01`–`ASC-05` `accept`) 的原始审查仍标注其脏树身份；新 SHA 增量核对已完成。Product Gate 已接受；push / PR / merge 仍未授权。
   - Human 真机：[`SHA-bound Human-attested record`](../evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md)，iPhone 13 Pro / iOS 27；非 Device-attested。
 - **Primary files:** `AppSwitch.swift`, `ToggleRow.swift`, Settings/Diagnostics toggle call sites, `ContentView.swift`, `AppSwitchChromeTests.swift`, `UI_STYLE_GUIDE.md`
-- **Handoff Target:** Human Product Lead (Product Gate)
+- **Handoff Target:** None for this Assignment; future publication or Release gates are separate
 - **Revalidation Trigger:** Human reverses the contrast pair; Form crash-contract exception requested; brand accent color is introduced for switches; a new main-App switch surface is added outside the shared owner; Keyboard Extension is pulled into scope
 
 ## History
@@ -190,3 +192,4 @@ Stop and escalate if:
 - `2026-09-15 Asia/Shanghai` — ASC-02 实现 commit `5d3880b13109a65b8e441ded74b82f9927ffb9b4` 已形成；本回写 commit 记录该身份。Quality 旧结论不自动跟随新 SHA；待独立增量核对。
 - `2026-09-15 Asia/Shanghai` — 新 SHA 增量 Quality 核对完成：最终 tip `63f1a6d95316187249bcd3f85c5f7883bc13bf7d` 上 App + Keyboard Debug 测试为 `UniverseKeyboardTests 361 / 9 skipped`、`KeyboardTests 11`，无新的代码质量阻断；历史记录的测试计数已按最终 SHA 证据校正。
 - `2026-09-15 Asia/Shanghai` — Human Product Owner 在 iPhone 13 Pro / iOS 27 完成设置首页、诊断页、模糊音 Form 的浅/深色 × 开/关观察；[`Human-attested record`](../evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md) 已写入。非 Device-attested，Product Gate 仍未授权。
+- `2026-09-15 Asia/Shanghai` — Human Product Owner 授权 [`AUTH-APP-SWITCH-CONTRAST-001-PRODUCT-GATE`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-PRODUCT-GATE.md)；Product Gate 接受既有 Quality 条件与 Human-attested 四态观察，Assignment `Reviewed → Closed`。无 Device-attested / push / PR / merge / TestFlight / Release。

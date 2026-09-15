@@ -1,21 +1,23 @@
 # Product Decision: APP-SWITCH-CONTRAST-001 — 主 App 系统开关深浅色对比度
 
 **Decision ID:** `PD-APP-SWITCH-CONTRAST-001`
-**Lifecycle status:** `Recorded`
+**Lifecycle status:** `Recorded — Product Gate Accepted; Assignment Closed`
 **Date / timezone:** `2026-09-15 Asia/Shanghai`
 **Assignment:** [`APP-SWITCH-CONTRAST-001`](../assignments/app-switch-contrast-001.md)
 **Authorization (this slice):** [`AUTH-APP-SWITCH-CONTRAST-001`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001.md)
 **Authorization (ASC-02 local commit):** [`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md)
+**Authorization (Product Gate):** [`AUTH-APP-SWITCH-CONTRAST-001-PRODUCT-GATE`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-PRODUCT-GATE.md)
+**Product Gate:** [`PD-APP-SWITCH-CONTRAST-001-PRODUCT-GATE`](APP-SWITCH-CONTRAST-001-product-gate.md) — Accepted
 
 ## Current Status
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | Recorded |
-| **Phase** | 合同仍有效；Assignment `Reviewed`（独立 Quality Pass with conditions） |
-| **Non-claims** | 不等于无条件 Quality Pass、Product Gate、commit / push / merge、TestFlight 或 Release |
-| **Next** | ASC-02 实现 SHA `5d3880b13109a65b8e441ded74b82f9927ffb9b4` 已形成；随后按新身份做 Quality 增量核对；Product Gate 另授权 |
-| **Residuals** | None |
+| **Lifecycle** | Recorded — Product Gate Accepted |
+| **Phase** | 合同仍有效；Assignment `Closed`（Human Product Gate Passed with accepted evidence conditions） |
+| **Non-claims** | 不等于 Device-attested、commit / push / merge、TestFlight 或 Release |
+| **Next** | 本 Assignment 无下一步；发布或 Release 另需授权 |
+| **Residuals** | `ASC-01`–`ASC-05` 已由 Product Gate 接受，边界保持不变 |
 
 ---
 
@@ -26,7 +28,10 @@
 - **Domain Owner:** 📱 App & Data Operations Maintainer（主 App 设置 / 诊断 SwiftUI）
 - **Architecture / Quality:** Architecture review **Not Applicable** while the Form crash contract is preserved (system `UISwitch`, no custom-drawn `ToggleStyle`). Quality, Performance & Release Maintainer is required after an implementation slice is authorized. Independent review is **Not Applicable** to this record slice.
 
-This Decision records the **visual contract** for main-App switches. It does **not** authorize Swift/UI implementation, commit, push, merge, TestFlight or Release.
+This Decision records the **visual contract** for main-App switches. The original
+record slice did not authorize implementation; implementation and the bounded
+Product Gate are now recorded separately. This Decision still does not authorize
+push, merge, TestFlight or Release.
 
 ## Product Problem
 
@@ -50,7 +55,11 @@ Human Product Owner locked:
 
 ## This slice vs implementation
 
-This Decision **records** the product contract and authorizes creating Assignment `APP-SWITCH-CONTRAST-001` in `Ready`. It does **not** authorize Swift implementation, migrating call sites, updating `UI_STYLE_GUIDE.md` as if the code already matches, commit, push, merge, TestFlight or Release. Implementation requires a later Human instruction and a matching Authorization whose action is implementation.
+At creation time, this Decision **recorded** the product contract and authorized
+creating Assignment `APP-SWITCH-CONTRAST-001` in `Ready`; it did **not** authorize
+Swift implementation, migrating call sites, updating `UI_STYLE_GUIDE.md` as if the
+code already matched, commit, push, merge, TestFlight or Release. The later
+implementation and Product Gate authorizations are linked above.
 
 ## Non-goals
 
@@ -70,3 +79,5 @@ This Decision **records** the product contract and authorizes creating Assignmen
 - Assignment: [`APP-SWITCH-CONTRAST-001`](../assignments/app-switch-contrast-001.md)
 - ASC-02 local commit authorization: [`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md)
 - ASC-02 implementation identity: `5d3880b13109a65b8e441ded74b82f9927ffb9b4` on `codex/app-switch-contrast-001-asc02`
+- Human Product Gate authorization: [`AUTH-APP-SWITCH-CONTRAST-001-PRODUCT-GATE`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-PRODUCT-GATE.md)
+- Human Product Gate decision: [`PD-APP-SWITCH-CONTRAST-001-PRODUCT-GATE`](APP-SWITCH-CONTRAST-001-product-gate.md)
