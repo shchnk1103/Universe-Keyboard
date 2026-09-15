@@ -24,10 +24,10 @@
 | Field | Value |
 |---|---|
 | Status | accepted |
-| Current phase | 隔离功能分支 commit/push 已授权；merge 仍未授权 |
-| Material non-claims | 不引入路径跳过；不迁移 required checks；不 merge；不 Release |
-| Next decision | hosted `full` 结果与是否另开不合并的 `docs_only` fixture；merge 仍须另授权 |
-| Residuals | 见 Assignment ledger：CHS-A-02 closed；CHS-Q-01/02/03 仍为 `fix`；A-P2-02 仍 TD-016 |
+| Current phase | #130 merged；Assignment Closed |
+| Material non-claims | 不迁移 required checks；不 Release；不是 Product Gate |
+| Next decision | none |
+| Residuals | 见 Assignment ledger：Quality `fix` closed；A-03/Q-05 仍 `tech_debt:TD-016` |
 
 ---
 
