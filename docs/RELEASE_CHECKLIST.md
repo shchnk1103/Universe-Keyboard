@@ -80,6 +80,50 @@ Remote selection follows [`CI_CHANGE_CLASSIFICATION.md`](CI_CHANGE_CLASSIFICATIO
 docs/KOS allowlist 才允许 `build-and-test` 为 `skipped`。workflow、分类脚本和未知路径
 必须 full。CI 分级不替代本清单中的真机、性能、签名、TestFlight 或 Release Gate。
 
+## KOS Release-Evidence Incremental Validation
+
+For newly opted-in `kos.release-evidence` records, rerun the evidence that the changed
+surface can affect and reuse only exact, still-fresh, candidate-bound evidence. The
+project adapter and fixed matrix are documented in
+[`release-evidence-profile.md`](kos/release-evidence-profile.md). The evaluator clock is
+always explicit; never infer `as_of` from a local wall clock in a release receipt.
+
+```bash
+python3 scripts/release/run_kos_release_evidence_fixtures.py \
+  --kos-kit-root <pinned-kos-agent-kit> \
+  --work-dir <bounded-local-fixture-output> \
+  --output <fixture-report.json>
+```
+
+The release-evidence delta profile and repository CI tier are independent. A small
+Main-App change may rerun only its changed/affected claim fixtures, but it remains CI
+`full`; a docs-only CI result does not waive release, device, performance, signing or
+human gates. The release-evidence docs-only allowlist is intentionally limited to
+`docs/RELEASE_CHECKLIST.md`; Profile, KOS machine-state, Assignment, Authorization,
+product-decision and architecture-decision changes are release-validation dependencies
+and force `full`/stop behavior even though the repository CI classifier may label their
+`docs/**` or `.kos/**` path `docs_only`. Candidate/profile/source/privacy/promotion/freshness/schema/
+evaluator changes empty the reuse set. The concrete
+`Universe Keyboard/Services/ReleaseEvidenceStore.swift` Main-App source-owner path is
+also a release dependency and forces `full`/no reuse. Every delta plan must retain its
+`base_sha`/`head_sha` binding; equal heads with a non-empty surface and duplicate or
+ambiguous surfaces fail closed. Delivery and final-validation changes require fresh
+P-01 or D-01 owner receipts and stop before current-proof/publication claims. Daily Beta
+evidence may seed the external-candidate record only after exact identity, freshness,
+claim/coverage binding and promotion-history checks; a first-target baseline must be an
+explicit `review-record` receipt object, never a Boolean presence flag. External
+delivery, Beta Review and Product/Release authority remain separate.
+
+The fixture runner first verifies the pinned Kit implementation/adoption commits, clean
+worktree, candidate tree digest and the three semantic source digests. The fixture report
+records each case ID, exact evaluator command, explicit `--as-of`, stdout/stderr, exit
+code and non-claim. `REP-Q-01` remains unresolved in this P1-A slice; the adapter's
+code-controlled source-binding gate downgrades otherwise passing Main-App observations
+to `inconclusive`, so an adapter-generated Envelope cannot produce `current-proof` until
+that residual is closed and a new package is reviewed. Any `current-proof` result is a derived contract
+classification only; it is not an upload authorization, Beta Review submission,
+Product Gate, Quality Gate, Release Pass or App Store publication.
+
 Minimal command set (same intent as CI; fill destination if the default simulator is missing):
 
 ```bash
