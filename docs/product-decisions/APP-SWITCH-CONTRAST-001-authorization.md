@@ -14,7 +14,7 @@
 | **Lifecycle** | Recorded |
 | **Phase** | 合同仍有效；Assignment `Reviewed`（独立 Quality Pass with conditions） |
 | **Non-claims** | 不等于无条件 Quality Pass、Product Gate、commit / push / merge、TestFlight 或 Release |
-| **Next** | ASC-02 按独立 Authorization 形成有界本地 SHA；随后按新身份做 Quality 增量核对；Product Gate 另授权 |
+| **Next** | ASC-02 实现 SHA `5d3880b13109a65b8e441ded74b82f9927ffb9b4` 已形成；随后按新身份做 Quality 增量核对；Product Gate 另授权 |
 | **Residuals** | None |
 
 ---
@@ -69,3 +69,4 @@ This Decision **records** the product contract and authorizes creating Assignmen
 - Playbook: [`playbooks/main-app-ui.md`](../playbooks/main-app-ui.md)
 - Assignment: [`APP-SWITCH-CONTRAST-001`](../assignments/app-switch-contrast-001.md)
 - ASC-02 local commit authorization: [`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md)
+- ASC-02 implementation identity: `5d3880b13109a65b8e441ded74b82f9927ffb9b4` on `codex/app-switch-contrast-001-asc02`

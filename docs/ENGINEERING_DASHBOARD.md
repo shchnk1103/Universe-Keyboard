@@ -11,9 +11,9 @@
 ## APP-SWITCH-CONTRAST-001 — 主 App 系统开关深浅色对比度
 
 - **Lifecycle:** [`Assignment`](assignments/app-switch-contrast-001.md) `Reviewed`
-- **Current phase:** 独立 Quality **Pass with conditions**（`ASC-01`–`ASC-05` `accept`）；已授权隔离分支本地 commit，SHA 待形成
+- **Current phase:** 实现 SHA `5d3880b` 已形成并完成回写；独立 Quality **Pass with conditions** 仍绑定脏树，待按新身份增量核对
 - **Non-claims:** 不等于 Product Gate、push / PR / merge、TestFlight 或 Release；真机仍为 Human-attested
-- **Next:** 形成新 SHA 后做 Quality 增量核对；Product Gate 另授权
+- **Next:** 完成新 SHA 的 Quality 增量核对，再记录 Human-attested 四态观察；Product Gate 另授权
 - **Sources:** [PD](product-decisions/APP-SWITCH-CONTRAST-001-authorization.md) · [Quality](reviews/app-switch-contrast-001-quality-review.md) · [commit AUTH](authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md)
 
 ## HELP-GUIDE-SHEET-001 — 引导 sheet 与设置「？」

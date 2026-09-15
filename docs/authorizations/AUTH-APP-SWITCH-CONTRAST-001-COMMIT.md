@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | 功能分支上切开开关切片并本地 commit；不授权 push / PR / merge |
+| Status | consumed |
+| Consumption | 已在隔离分支形成实现 commit `5d3880b13109a65b8e441ded74b82f9927ffb9b4`；本次记录回写 SHA；不授权 push / PR / merge |
 
 Human Product Owner, current session 2026-09-15 Asia/Shanghai: 认可先切开开关文件做本地 commit、不 push，以关闭 `ASC-02`。
 
@@ -15,8 +15,8 @@ Human Product Owner, current session 2026-09-15 Asia/Shanghai: 认可先切开�
   "record_id": "AUTH-APP-SWITCH-CONTRAST-001-COMMIT",
   "record_type": "authorization",
   "title": "Scoped local commit of APP-SWITCH-CONTRAST-001",
-  "status": "active",
-  "updated_at": "2026-09-15T12:45:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-15T18:07:34+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked"],
   "authorization": {
     "action": "scoped_commit_app_switch_contrast",
@@ -34,7 +34,7 @@ Human Product Owner, current session 2026-09-15 Asia/Shanghai: 认可先切开�
     "issued_at": "2026-09-15T12:45:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "active"
+    "consumption_state": "consumed"
   }
 }
 ```

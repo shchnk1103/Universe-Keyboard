@@ -12,7 +12,7 @@
 | **Lifecycle** | `Reviewed` |
 | **Phase** | 独立 Quality **Pass with conditions**；残差 `ASC-01`–`ASC-05` 均 `accept` |
 | **Non-claims** | 不等于无条件 Quality Pass、Product Gate、push / PR / merge / TestFlight / Release；真机仅为 Human-attested |
-| **Next** | 按 `AUTH-APP-SWITCH-CONTRAST-001-COMMIT` 完成有界本地 SHA；随后按新身份做 Quality 增量核对，Product Gate 另授权 |
+| **Next** | 实现 SHA `5d3880b13109a65b8e441ded74b82f9927ffb9b4` 已形成并完成回写；按新身份做 Quality 增量核对，随后记录 Human-attested 观察；Product Gate 另授权 |
 | **Residuals** | [`quality review`](../reviews/app-switch-contrast-001-quality-review.md) `ASC-01`–`ASC-05` `accept` |
 
 ---
@@ -25,7 +25,7 @@
 - **Authorization (record slice):** [`AUTH-APP-SWITCH-CONTRAST-001`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001.md) — consumed; Decision / Assignment / status mirrors only
 - **Authorization (implementation slice):** [`AUTH-APP-SWITCH-CONTRAST-001-IMPLEMENT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-IMPLEMENT.md) — consumed (implementation delivered)
 - **Authorization (Quality):** [`AUTH-APP-SWITCH-CONTRAST-001-QUALITY`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-QUALITY.md) — consumed
-- **Authorization (ASC-02 local commit):** [`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md) — active; isolated branch, no push
+- **Authorization (ASC-02 local commit):** [`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md) — consumed by `5d3880b`; isolated branch, no push
 - **Quality review:** [`app-switch-contrast-001-quality-review.md`](../reviews/app-switch-contrast-001-quality-review.md) — **Pass with conditions**
 
 ## KOS v0.8.0 optional-contract selection
@@ -46,7 +46,7 @@
 | Main-App implementation | Authorized | Shared switch owner + all main-App call sites + style-guide amendment | [AUTH-APP-SWITCH-CONTRAST-001-IMPLEMENT](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-IMPLEMENT.md) |
 | Independent Quality | Authorized | Contrast + Form crash-contract regression — Pass with conditions | Consumed [AUTH-APP-SWITCH-CONTRAST-001-QUALITY](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-QUALITY.md) → [review](../reviews/app-switch-contrast-001-quality-review.md) |
 | Human Product Gate | Not authorized | Light/dark visual acceptance | New Authorization required |
-| Scoped local commit | Authorized | 隔离功能分支；只提交开关切片并做 SHA 回写；不 push | [`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md) |
+| Scoped local commit | Consumed | 实现 commit `5d3880b` + 本次 SHA 回写；不 push | [`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md) |
 | Push / PR / merge | Not authorized | | New Authorization required |
 | Environment or external slice | Not applicable | 无 H-01 冻结载荷；实施后 Simulator 目视即可进入 Quality，真机为可选 Human Dependency | 真机不是 `Ready` 前置 |
 
@@ -149,7 +149,7 @@ Authorize (and, **after a later implementation Authorization**, implement) a **s
 - [x] App + Keyboard Debug tests on `platform=iOS Simulator,name=iPhone 17 Pro,OS=26.0` — **TEST SUCCEEDED** (UniverseKeyboardTests 373 / 9 skipped, including `AppSwitchChromeTests`; KeyboardTests 11). Swift format `--strict` on changed `.swift` files.
 - [x] `UI_STYLE_GUIDE.md` and `DEBUGGING.md` amended to the landed rule.
 - [x] Independent Quality **Pass with conditions** — [`app-switch-contrast-001-quality-review.md`](../reviews/app-switch-contrast-001-quality-review.md); residuals `ASC-01`–`ASC-05` `accept`.
-- [ ] `ASC-02` local commit and SHA writeback on isolated branch — authorized; no push.
+- [x] `ASC-02` local commit `5d3880b13109a65b8e441ded74b82f9927ffb9b4` and SHA writeback on isolated branch — no push.
 - [ ] Human Product Gate for Assignment `Closed` — **not authorized**.
 
 ### Stop Conditions
@@ -172,7 +172,7 @@ Stop and escalate if:
   - Contrast: on-tint `.label`; thumb white except dark-on black.
   - Tests: `xcodebuild` scheme `Universe Keyboard` Debug test, destination `platform=iOS Simulator,name=iPhone 17 Pro,OS=26.0` (`name=iPhone 17 Pro` without OS unmatched because latest is iOS 27), `CODE_SIGNING_ALLOWED=NO` `SWIFT_VERSION=6.0` `SWIFT_STRICT_CONCURRENCY=complete` `SWIFT_TREAT_WARNINGS_AS_ERRORS=YES` — **TEST SUCCEEDED**. Not run: KeyboardCore-only, RimeBridgeTests, Release `build`.
   - Docs: `UI_STYLE_GUIDE.md`, `DEBUGGING.md`, `CHANGELOG.md`.
-  - Independent Quality **Pass with conditions** (`ASC-01`–`ASC-05` `accept`). ASC-02 local commit is authorized separately; Product Gate / push / PR / merge are not authorized.
+  - Independent Quality **Pass with conditions** (`ASC-01`–`ASC-05` `accept`) remains bound to the pre-commit dirty-tree identity; new-SHA incremental Quality is still required. Product Gate / push / PR / merge are not authorized.
   - Human 真机：Human-attested「没什么问题」；非 Device-attested。
 - **Primary files:** `AppSwitch.swift`, `ToggleRow.swift`, Settings/Diagnostics toggle call sites, `ContentView.swift`, `AppSwitchChromeTests.swift`, `UI_STYLE_GUIDE.md`
 - **Handoff Target:** Human Product Lead (Product Gate)
@@ -186,3 +186,4 @@ Stop and escalate if:
 - `2026-09-15 Asia/Shanghai` — Human 真机口头确认无问题，并授权独立 Quality。[`AUTH-APP-SWITCH-CONTRAST-001-QUALITY`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-QUALITY.md)。
 - `2026-09-15 Asia/Shanghai` — 独立 Quality **Pass with conditions**（[`review`](../reviews/app-switch-contrast-001-quality-review.md)；`ASC-01`–`ASC-05` `accept`）。`Completed → Reviewed`。无 Product Gate / commit。
 - `2026-09-15 Asia/Shanghai` — Human 授权 `ASC-02` 有界本地 commit（[`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md)）。隔离分支、只提交开关切片并回写 SHA；无 push / PR / merge / Product Gate。
+- `2026-09-15 Asia/Shanghai` — ASC-02 实现 commit `5d3880b13109a65b8e441ded74b82f9927ffb9b4` 已形成；本回写 commit 记录该身份。Quality 旧结论不自动跟随新 SHA；待独立增量核对。
