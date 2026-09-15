@@ -7,12 +7,10 @@ struct SearchTab: View {
     @Bindable var syncModel: RimeSyncViewModel
     @Bindable var notificationSettings: AppNotificationSettingsModel
 
-    /// Incremented by ContentView when J4 requests focus.
-    var focusRequestToken: Int
+    var onOpenActivationGuide: (() -> Void)?
 
     @State private var query = ""
     @FocusState private var fieldFocused: Bool
-    @State private var lastHandledFocusToken = 0
 
     private var results: [SettingsSearchItem] {
         SettingsSearchCatalog.matches(query: query)
@@ -40,22 +38,8 @@ struct SearchTab: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle("搜索")
-            .onChange(of: focusRequestToken) { _, token in
-                guard token != lastHandledFocusToken else { return }
-                lastHandledFocusToken = token
-                // Defer so the tab is visible before becoming first responder.
-                DispatchQueue.main.async {
-                    fieldFocused = true
-                }
-            }
             .onAppear {
                 rimeStore.load()
-                if focusRequestToken != lastHandledFocusToken, focusRequestToken > 0 {
-                    lastHandledFocusToken = focusRequestToken
-                    DispatchQueue.main.async {
-                        fieldFocused = true
-                    }
-                }
             }
         }
     }
@@ -100,7 +84,7 @@ struct SearchTab: View {
             Text("试试：布局、雾凇、模糊、部署、诊断、隐私…")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-            Text("启用阶段也可在此试用输入法，再回到帮助确认「试一次输入」。")
+            Text("也可在此试用输入法。首次启用请从设置右上角问号打开指南。")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -110,7 +94,7 @@ struct SearchTab: View {
         InfoSection(title: "未找到设置项", systemImage: "text.magnifyingglass") {
             Text("没有与「\(trimmedQuery)」匹配的设置。")
                 .font(.subheadline)
-            Text("若你在试用 Universe Keyboard，这很正常——任意内容都可以。试用满意后可到「帮助」点「我已成功输入」。")
+            Text("若你在试用 Universe Keyboard，这很正常——任意内容都可以。启用确认请从设置右上角问号打开指南。")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -120,39 +104,51 @@ struct SearchTab: View {
         InfoSection(title: "设置", systemImage: "gearshape") {
             ForEach(Array(results.enumerated()), id: \.element.id) { index, item in
                 if index > 0 { Divider() }
-                NavigationLink {
-                    destinationView(for: item.destination)
-                } label: {
-                    HStack(spacing: AppSpacing.row) {
-                        AppIconTile(
-                            systemImage: item.systemImage,
-                            size: AppIconSize.standard,
-                            cornerRadius: AppRadius.control,
-                            symbolPointSize: 15
-                        )
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(item.title)
-                                .font(.body.weight(.medium))
-                                .foregroundStyle(.primary)
-                                .multilineTextAlignment(.leading)
-                            Text(item.subtitle)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.leading)
-                        }
-                        Spacer(minLength: 8)
-                        Image(systemName: "chevron.right")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.tertiary)
+                if item.destination == .activationHelp {
+                    Button {
+                        onOpenActivationGuide?()
+                    } label: {
+                        searchResultRow(item)
                     }
-                    .padding(.vertical, 4)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    // Full-row hit target (not only glyph/text bounds).
-                    .contentShape(Rectangle())
+                    .buttonStyle(.plain)
+                } else {
+                    NavigationLink {
+                        destinationView(for: item.destination)
+                    } label: {
+                        searchResultRow(item)
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
         }
+    }
+
+    private func searchResultRow(_ item: SettingsSearchItem) -> some View {
+        HStack(spacing: AppSpacing.row) {
+            AppIconTile(
+                systemImage: item.systemImage,
+                size: AppIconSize.standard,
+                cornerRadius: AppRadius.control,
+                symbolPointSize: 15
+            )
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.title)
+                    .font(.body.weight(.medium))
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.leading)
+                Text(item.subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.leading)
+            }
+            Spacer(minLength: 8)
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .padding(.vertical, 4)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
     }
 
     @ViewBuilder
@@ -190,7 +186,7 @@ struct SearchTab: View {
         case .diagnostics:
             DiagnosticsSettingsView(notificationSettings: notificationSettings)
         case .activationHelp:
-            GuideTab(embedsOwnNavigationStack: false, rimeStore: rimeStore)
+            EmptyView()
         }
     }
 }

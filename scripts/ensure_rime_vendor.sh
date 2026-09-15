@@ -79,7 +79,10 @@ verify_receipt() {
 }
 
 fetch_archive() {
-    curl --fail --location --retry 3 --output "${ARCHIVE}" "${RIME_VENDOR_ARCHIVE_URL}"
+    # `--fail` otherwise treats HTTP 5xx as a completed transfer and skips `--retry`.
+    # CI has failed on a single GitHub 504 before any Swift work ran.
+    curl --fail --location --retry 5 --retry-delay 2 --retry-all-errors \
+        --output "${ARCHIVE}" "${RIME_VENDOR_ARCHIVE_URL}"
 
     local received_sha
     received_sha="$(shasum -a 256 "${ARCHIVE}" | awk '{ print $1 }')"

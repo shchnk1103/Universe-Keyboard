@@ -39,7 +39,7 @@ TD-004 and ADR 0007 already require a truthful degradation matrix; scope freeze 
 ### 2. Journey and presentation
 
 1. The product source for the journey, copy boundaries and capability matrix is [`ONBOARDING_ACTIVATION.md`](../ONBOARDING_ACTIVATION.md).
-2. V1.0 presentation is **main-App Guide checklist + status cards**. TipKit is an authorized future presentation layer for the same semantics; TipKit is **not** required to close task 03. Post-close presentation packaging (soft Welcome, Help tab / Settings IA, TipKit phase, re-read policy) is authorized separately by [`PD-HELP-TIPKIT-001`](HELP-TIPKIT-001-authorization.md) without amending activation success or Full Access claims here.
+2. V1.0 presentation is **main-App Guide checklist + status cards**. TipKit is an authorized future presentation layer for the same semantics; TipKit is **not** required to close task 03. Post-close presentation packaging is authorized separately by [`PD-HELP-TIPKIT-001`](HELP-TIPKIT-001-authorization.md) as amended `2026-09-14` by [`PD-HELP-GUIDE-SHEET-001`](HELP-GUIDE-SHEET-001-authorization.md) (multi-step sheet, Settings **？**, no Help tab) without amending activation success or Full Access claims here.
 3. System Settings steps remain user-owned. The App may open the root Settings URL and must state that it cannot programmatically add the keyboard or enable Full Access.
 4. Main App must not invent a live Extension Full Access boolean. Allowed states are observation-based failures, deployment readiness owned by the main App, and weak user affirmations that later observation may overturn.
 
@@ -94,8 +94,9 @@ The Human Product Owner acting as Product Lead clarified and authorized the J2 d
 1. “稍后再开启” does not dismiss the journey and does not mark Full Access complete.
 2. It advances the guided presentation through J3 resource preparation and J4 first-input
    verification, then returns J2 as the final incomplete step.
-3. Full recommended activation still requires J2; the Help entry remains visible until it is
-   satisfied.
+3. Full recommended activation still requires J2; the incomplete/recovery marker on Settings **？**
+   and next-launch auto-present remain until it is satisfied (Help tab is no longer the carrier;
+   see `PD-HELP-TIPKIT-001` 2026-09-14 amendment).
 4. An observed `sharedDataUnavailable` condition overrides deferral and reopens J2 immediately.
 
 This amendment changes presentation order only. It does not change Full Access optionality for

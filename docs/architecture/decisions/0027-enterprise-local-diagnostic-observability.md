@@ -30,6 +30,7 @@ Accepted; P0 implemented, P1 deferred to TD-013
 | Object | Writer / owner | Reader | Lifecycle |
 |---|---|---|---|
 | `Diagnostics/v1/control.json` | Main App `DiagnosticsRepository` 唯一写者；以原子 replace 推进 generation | 两个 target 的后台 writer；main-App repository | writer 仅在启动、恢复、轮转或批次边界读取并缓存，绝不在键事件读取 |
+| `Diagnostics/v1/release-evidence/records.json` | Main App `ReleaseEvidenceFileStore` actor 唯一写者；Keyboard Extension 不读写 | Main App Release Evidence 页面、结构化 export 和 release tooling 的人工输入 | 独立于 JSONL generation；最多保留 50 条，原子 replace；clear generation 不删除；损坏 archive 在下一次明确 save 时以 `records.corrupt.<UUID>.json` 隔离后重建；只保存候选/环境/结果元数据，不保存输入、候选文字或日志正文 |
 | `g<generation>/open/<origin>-<processInstanceID>-<hour>-<part>.jsonl` | 对应 origin/process instance 的 writer 独占 create/append/seal | Main App 以 offset tail，容忍最后一条半行 | 小时或大小轮转时 writer seal；Extension 不触碰 App 段，App 不触碰 Extension 段 |
 | `g<generation>/leases/<origin>-<processInstanceID>.json` | 对应 writer 在自己的 utility flush 更新 | Main App retention coordinator | lease 是活动声明；唯一 process instance、generation、fence 和 UTC 过期时刻均在其中。只有经过本节围栏确认的 expired lease 才可进入恢复/清理流程 |
 | `Diagnostics/v1/locks/<origin>-<processInstanceID>.lock` | 对应 writer 创建；双方仅在 utility/repository 队列取得非阻塞的内核 advisory exclusive lock | 对应 writer、Main App retention coordinator | 稳定 lock 跨越 generation；不得以 replace lease JSON 的方式替换它。它是 append、reclaim 和删除的唯一互斥围栏，不进入键盘热路径 |
@@ -52,7 +53,7 @@ Main App 清空时先原子写入新的 `control.json` generation，再切换 re
 
 Main App 回收某个 open 段也必须先以**非阻塞**方式取得 shared `snapshot.lock`，再取得同一 identity `.lock`。持锁后它重新读取 `control.json` 和 lease，确认 `(generation, processInstanceID, fence)` 未变化且 `expiresAt` 已过，才按以下不可逆顺序执行：原子创建 reclaim tombstone → 将 open 段转为 recovered/sealed → 删除或标记 lease 为 revoked → 释放锁。任何一步失败都保留原段、延后重试，绝不猜测成功。tombstone 存在时，即使一个慢恢复的旧 writer 尚有内存队列或旧 fd，也会在下一次锁内重检时被 fence 拒绝，不能重新写入或使已清空记录重新可见。
 
-因此，进程在 batch 中被 suspend 时会暂时持有短时 lock，retention 只能跳过该段并以后重试；进程终止时内核释放 lock，后续回收才可能进行。这个小窗口优先保证活动 writer 不被误删；容量策略允许有限活动段造成短暂超过 100 MiB 的余量。保留只处理 sealed 或已按上述围栏 recovered 的段，绝不删除任何未取得同一 lock 并完成复核的 open 段。容量压力时 writer 记录 drop 并停止接收低优先级事件，而不是争抢锁或阻塞输入。
+因此，进程在 batch 中被 suspend 时会暂时持有短时 lock，retention 只能跳过该段并以后重试；进程终止时内核释放 lock，后续回收才可能进行。这个小窗口优先保证活动 writer 不被误删；容量策略允许有限活动段造成短暂超过 100 MiB 的余量。保留只处理 sealed 或已按上述围栏 recovered 的段，绝不删除任何未取得同一 lock 并完成复核的 open 段。容量压力时 writer 记录 drop 并停止接收低优先级事件，而不是争抢锁或阻塞输入。`release-evidence/` 不属于 generation 清理对象；其 50 条上限、损坏 quarantine 和 clear 隔离由 Main App 的独立 actor 合同负责。
 
 ### Extension suspension and unavailable capability
 
@@ -94,6 +95,7 @@ Main App 回收某个 open 段也必须先以**非阻塞**方式取得 shared `s
 ## Required Validation Before Acceptance
 
 - 并发 writer、部分行恢复、小时/体积轮转、generation clear、retention/active lease、磁盘满/App Group 不可用、bounded overload 的自动化证据。
+- release-evidence 文件的 50 条上限、损坏 archive quarantine、与 JSONL generation clear 的隔离，以及旧记录 note 边界的 Main App 自动化证据。
 - 搜索、分页、实时 tail 和 copy query snapshot 的主 App 测试。
 - 关闭/普通/高保真三档的 Simulator 与声明条件真机性能、内存和生命周期证据。
 - Privacy field allowlist review，确认 legacy YAML/任意字符串日志不进入新协议。

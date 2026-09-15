@@ -17,6 +17,7 @@
 - [输入管线/marked text](architecture/input-pipeline-and-marked-text.md) · [Partial Commit](architecture/partial-commit.md)
 - [Swift 6](architecture/swift6-migration.md) · [RIME artifacts](architecture/rime-artifacts.md) · [OpenCC](architecture/opencc-integration.md)
 - [ADR](architecture/decisions/) · [架构时间线](ARCHITECTURE_TIMELINE.md)
+- [Build 55 公开外部测试例外提案](product-decisions/RELEASE-2026-09-13-build55-limited-external-trial-exception-proposal.md) — **已接受公开测试例外；不等于 Release Gate Pass**
 
 ## 领域权威
 
@@ -27,11 +28,13 @@
 - [纠错 Benchmark](TYPO_BENCHMARK.md) · [Registry](TYPO_BENCHMARK_REGISTRY.md) · [V2 Registry](TYPO_BENCHMARK_REGISTRY_V2.md)
 - [上屏续写](POST_COMMIT_CONTINUATION.md) · [续写内容质量](POST_COMMIT_CONTINUATION_QUALITY.md)
 - [App 通知](APP_NOTIFICATIONS.md) · [隐私](PRIVACY_POLICY.md)
+- [首次启用 / 完全访问旅程](ONBOARDING_ACTIVATION.md) — 语义 `PD-RELEASE-2026-0801-03`；展示 `PD-HELP-TIPKIT-001` / [`HELP-GUIDE-SHEET-001`](assignments/help-guide-sheet-001.md)（Closed；Product Gate [`记录`](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)）
 
 ## 验证与运维
 
 - [调试](DEBUGGING.md) · [性能](PERFORMANCE_BASELINE.md) · [发布](RELEASE_CHECKLIST.md)
-- [CI 分级](CI_CHANGE_CLASSIFICATION.md) · [GitHub 环境诊断](kos/codex-github-cli-auth-troubleshooting.md)
+- [发布证据增量与候选晋级](assignments/release-evidence-promotion-001.md) · [ADR 0035](architecture/decisions/0035-release-evidence-accumulation-and-promotion.md) · [正式采纳 Product Decision](product-decisions/ADR-0035-ACCEPT-authorization.md) · [REP-Q-01 receipt](evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md) · [P1-A / ADR 0035 状态对账](evidence/release-evidence-promotion-001-p1-a-adr-0035-status-reconciliation-2026-09-15.md)
+- [CI 分级](CI_CHANGE_CLASSIFICATION.md) · [拆分 full 路径 heavy job（Closed；#130 merged）](assignments/ci-heavy-job-split-001.md) · [Architecture](reviews/ci-heavy-job-split-001-architecture-review.md) · [Quality](reviews/ci-heavy-job-split-001-quality-review.md) · [GitHub 环境诊断](kos/codex-github-cli-auth-troubleshooting.md)
 - [Crash/Jetsam](CRASH_JETSAM_SYMBOLICATION.md) · [环境采集](ENVIRONMENT_CAPTURE_PROCEDURE.md) · [环境摘要](ENVIRONMENT_DIGEST_TOOLING.md)
 - [技术债](TECH_DEBT.md) · [文档健康](DOCUMENTATION_HEALTH.md) · [协调状态镜像](ENGINEERING_DASHBOARD.md)
 
@@ -41,3 +44,4 @@
 - [Assignment Policy](ASSIGNMENT_POLICY.md) · [2.1 ops](kos/kos-2.1-operational-maturity.md)
 - [实际采用版本](kos/UPGRADE_STATUS.md) · [Profile](../.kos/project.json) · [人工证据](kos/universe-keyboard-human-operated-evidence-profile.md)
 - [UK-005 release-evidence](assignments/kos-release-evidence-implementation-001.md) · [P1-A](assignments/kos-release-evidence-implementation-001-p1.md) · [P1-A provenance closure](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md) · [P1-B Option A](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · [Upgrade Record](kos/upgrade-records/KOS-UPGRADE-UK-005-release-evidence-v1.md)
+- [外部公测发布复盘建议稿](kos/kos-improvement-suggestions-public-beta-release-2026-09-13.md) — **建议稿；未采纳**

@@ -70,7 +70,8 @@ final class ActivationChecklistStateTests: XCTestCase {
         state.firstInputAffirmed = true
         XCTAssertEqual(state.nextStep, .fullAccess)
         XCTAssertFalse(state.isFullyActivated)
-        XCTAssertTrue(state.shouldShowHelpTab)
+        XCTAssertTrue(state.shouldMarkHelpEntryIncomplete)
+        XCTAssertTrue(state.shouldOfferGuideSession)
     }
 
     func testSharedDataFailureOverridesFullAccessDeferral() {
@@ -181,12 +182,13 @@ final class ActivationChecklistStateTests: XCTestCase {
         XCTAssertTrue(ActivationCopy.fullAccessDeferHint.contains("不会标记为已开启"))
     }
 
-    func testHelpTabVisibleWhileActivationIncomplete() {
+    func testHelpMarkerVisibleWhileActivationIncomplete() {
         let state = baseState()
-        XCTAssertTrue(state.shouldShowHelpTab)
+        XCTAssertTrue(state.shouldMarkHelpEntryIncomplete)
+        XCTAssertTrue(state.shouldOfferGuideSession)
     }
 
-    func testHelpTabHiddenWhenFullyActivatedAndHealthy() {
+    func testHelpMarkerHiddenWhenFullyActivatedAndHealthy() {
         let state = baseState(
             keyboardAdded: true,
             fullAccess: .userAffirmed,
@@ -195,10 +197,11 @@ final class ActivationChecklistStateTests: XCTestCase {
             firstInput: true
         )
         XCTAssertTrue(state.isFullyActivated)
-        XCTAssertFalse(state.shouldShowHelpTab)
+        XCTAssertFalse(state.shouldMarkHelpEntryIncomplete)
+        XCTAssertFalse(state.shouldOfferGuideSession)
     }
 
-    func testHelpTabReturnsWhenSharedDataUnavailable() {
+    func testHelpMarkerReturnsWhenSharedDataUnavailable() {
         let state = baseState(
             keyboardAdded: true,
             fullAccess: .sharedDataUnavailable,
@@ -207,10 +210,11 @@ final class ActivationChecklistStateTests: XCTestCase {
             firstInput: true
         )
         XCTAssertFalse(state.isFullyActivated)
-        XCTAssertTrue(state.shouldShowHelpTab)
+        XCTAssertTrue(state.shouldMarkHelpEntryIncomplete)
+        XCTAssertTrue(state.shouldOfferGuideSession)
     }
 
-    func testHelpTabReturnsWhenDeploymentFailed() {
+    func testHelpMarkerReturnsWhenDeploymentFailed() {
         let state = baseState(
             keyboardAdded: true,
             fullAccess: .sharedCapabilityOK,
@@ -220,13 +224,19 @@ final class ActivationChecklistStateTests: XCTestCase {
             firstInput: true
         )
         XCTAssertEqual(state.nextStep, .prepareResources)
-        XCTAssertTrue(state.shouldShowHelpTab)
+        XCTAssertTrue(state.shouldMarkHelpEntryIncomplete)
+        XCTAssertTrue(state.shouldOfferGuideSession)
     }
 
     func testHelpSettingsEntryCopyDoesNotImplyProgressReset() {
         XCTAssertFalse(ActivationCopy.settingsHelpEntryTitle.isEmpty)
         XCTAssertTrue(ActivationCopy.settingsHelpEntrySubtitle.contains("不会清除"))
         XCTAssertTrue(ActivationCopy.reReadOnlyBanner.contains("不会清除"))
+        XCTAssertTrue(ActivationCopy.reReadOnlyBanner.contains("已完成"))
+        XCTAssertEqual(ActivationCopy.reReadFromStartTitle, "从第一步开始")
+        XCTAssertTrue(ActivationCopy.reReadFromStartHint.contains("首次启用"))
+        XCTAssertFalse(ActivationCopy.reReadContinueTitle.isEmpty)
+        XCTAssertEqual(ActivationCopy.reReadBackToManualTitle, "回到说明书")
     }
 
     func testTipInvalidationFlagsTrackChecklistSteps() {
@@ -260,10 +270,14 @@ final class ActivationChecklistStateTests: XCTestCase {
         XCTAssertFalse(ActivationCopy.resourcesActivateAndDeploy.isEmpty)
     }
 
-    func testFirstInputCopyAllowsAnyContentAndSearchCTA() {
+    func testFirstInputCopyAllowsAnyContentInSheet() {
         XCTAssertTrue(ActivationCopy.nextActionTitle(for: .firstInput).contains("任意"))
+        XCTAssertTrue(ActivationCopy.nextActionTitle(for: .firstInput).contains("本页"))
         XCTAssertFalse(ActivationCopy.firstInputTryCTA.isEmpty)
+        XCTAssertFalse(ActivationCopy.firstInputTryHint.contains("搜索页"))
         XCTAssertTrue(ActivationCopy.firstInputExample.contains("可选"))
+        XCTAssertTrue(ActivationCopy.guideDeferHint.contains("不会标记为已完成"))
+        XCTAssertFalse(ActivationCopy.helpEntryIncompleteValue.isEmpty)
     }
 
     func testSettingsSearchCatalogMatchesKeywords() {

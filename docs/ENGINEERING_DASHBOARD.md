@@ -8,6 +8,31 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## CI-HEAVY-JOB-SPLIT-001 — 拆分 full 路径 heavy job
+
+- **Lifecycle:** [Assignment](assignments/ci-heavy-job-split-001.md) Closed
+- **Current phase:** PR [#130](https://github.com/shchnk1103/Universe-Keyboard/pull/130) merged `52a400e`；实现分支已删；fixture 分支保留
+- **Non-claims:** 不等于 Product Gate、Release 或 required-check 迁移
+- **Next:** none for this Assignment
+- **Reviews:** [Architecture](reviews/ci-heavy-job-split-001-architecture-review.md) · [Quality](reviews/ci-heavy-job-split-001-quality-review.md)
+- **Local evidence:** [gate scripts](evidence/ci-heavy-job-split-001-local-gate-2026-09-15.md)
+
+## HELP-GUIDE-SHEET-001 — 引导 sheet 与设置「？」
+
+- **Lifecycle:** [`Assignment`](assignments/help-guide-sheet-001.md) `Closed`
+- **Current phase:** Human Product Gate Passed（[`Gate`](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)）
+- **Non-claims:** not push, TestFlight, Release, or F1/F2 device proof
+- **Next:** none for this Assignment; scoped commit of this slice is separately authorized
+- **Sources:** [Quality review](reviews/help-guide-sheet-001-quality-review.md) · [Product Gate](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)
+
+## RELEASE-EVIDENCE-PROMOTION-001 — 发布证据增量与候选晋级
+
+- **Lifecycle:** [`Assignment`](assignments/release-evidence-promotion-001.md) `Reviewed`；`REP-Q-01` `Closed`
+- **Current phase:** Human Product Owner 已正式采纳 ADR 0035（Accepted，Conditional Accept package）；candidate source `ad39f443...` 的 hosted Swift 6 Quality run `34865917284` same-head green
+- **Evidence:** [ADR 0035 acceptance](product-decisions/ADR-0035-ACCEPT-authorization.md) · [acceptance evidence](evidence/adr-0035-accept-2026-09-15.md) · [REP-Q-01 provenance receipt](evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md) · [P1-A / ADR 0035 status reconciliation](evidence/release-evidence-promotion-001-p1-a-adr-0035-status-reconciliation-2026-09-15.md)
+- **Non-claims:** 不等于 Quality Pass、Product Gate、Release Pass、真机验收、签名、TestFlight、App Store Connect 或 merge
+- **Next:** 无本 Assignment 的 Executor 动作；未来外部 archive/export、设备和正式发布仍需单独证据与授权
+
 ## RIME-SCHEME-DETAIL-PROVENANCE-SHEET-001 — 方案信息入口收纳来源明细
 
 - **Lifecycle:** [`Assignment`](assignments/rime-scheme-detail-provenance-sheet-001.md) `Closed` — PR [#122](https://github.com/shchnk1103/Universe-Keyboard/pull/122) merged `2203c9d`; engineering `19de5e4`; hosted CI same-head green on `d75a1ce`; remote feature branch deleted
@@ -337,12 +362,14 @@
 
 - **Lifecycle:** `Active — external TestFlight candidate coordination`
 - **Authority:** [`Release umbrella Assignment`](assignments/release-2026-08-01.md) + [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md) + [`PD-…-EXTERNAL-TESTFLIGHT-CANDIDATE`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md)
-- **Evidence source:** [`Release evidence and acceptance record`](evidence/release-2026-08-01-acceptance.md) + [`Build 7 artifact ledger`](evidence/release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md) + [`Task11 feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) + [`04 P4 device run`](evidence/release-2026-08-01-04-build7-device-run-p4-2026-08-24.md)
+- **Evidence source:** [`Release evidence and acceptance record`](evidence/release-2026-08-01-acceptance.md) + [`Build 7 artifact ledger`](evidence/release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md) + [`Task11 feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) + [`04 P4 device run`](evidence/release-2026-08-01-04-build7-device-run-p4-2026-08-24.md) + [`Build 55 Xcode 27 RC diagnostic receipt`](evidence/release-2026-09-12-build55-td003-xcode27rc-diagnostic.md) + [`Build 55 TD-003 follow-up`](evidence/release-2026-09-13-build55-td003-cold-warm-diagnostic.md) + [`Build 55 TD-004 matrix`](evidence/release-2026-09-13-build55-td004-full-access-matrix.md) + [`Build 55 TD-005 query`](evidence/release-2026-09-13-build55-td005-system-crash-query.md) + [`Build 55 TD-005 classification follow-up`](evidence/release-2026-09-13-build55-td005-classification-follow-up.md) + [`Build 55 Archive ↔ export reconciliation`](evidence/release-2026-09-13-build55-archive-export-reconciliation.md) + [`Build 55 fresh-install boundary`](evidence/release-2026-09-13-build55-fresh-install-boundary.md) + [`Build 55 雾凇九宫格 gate`](evidence/release-2026-09-13-build55-rime-ice-nine-key-gate.md) + [`Build 55 public-beta readiness handoff`](evidence/release-2026-09-13-build55-public-beta-readiness-handoff.md) + [`Build 55 Quality/Release review`](reviews/release-2026-09-13-build55-quality-release-review.md) + [`Build 55 Quality/Release re-review`](reviews/release-2026-09-13-build55-quality-release-re-review.md)
 - **Current state:** Target date is `2026-08-26 Asia/Shanghai` (historical `2026-08-01`). Exact RC `testflight-v1.0-rc1-build7` is frozen at `244b32d`, artifacts are independently Quality Reviewed, and the Store IPA is processed in TestFlight. Human has now created internal group `Build 7 Internal Smoke`, attached one build and invited two internal testers; at least one invitation delivery is confirmed. Three initial findings are captured under Pending Task11: first-run RIME/scheme/deploy confusion, unexplained builtin multi-character input failure, and scheme-download failure without VPN. F-03 is Product-prioritized urgent before broader external testing.
 - **Frozen Product scope:** iPhone + iPad, **iOS 18.0+**, Chinese nine-key, precise pinyin, post-commit continuation, kaomoji content and the Home local basic input-count display. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. The count card must not present as an AI capability in visual or accessibility copy. iOS 18 iPad Simulator compatibility preflight is recorded; physical iPad and TD-003/004/005 remain release residuals; kaomoji is Closed under `RELEASE-2026-0801-08`; see the [scope record](assignments/release-2026-08-01-02-scope-freeze.md) and [PD](product-decisions/RELEASE-2026-0801-minimum-os-ios18.md).
-- **Current blockers:** Task11 reproduction facts and implementation roles are `UNKNOWN`; F-02 may invalidate Build 7 as an external candidate, while F-03 blocks broader external testing until fixed or explicitly decided. Build 7 P4 still cannot be retried and TD-003/004/005 remain open pending a different/stable physical-device capture environment. Exact online What to Test content also needs read-only verification. iOS 18 iPad Simulator evidence remains in [`07 preflight`](evidence/release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md).
-- **Authority boundary:** Human-operated internal invitations do not authorize external group assignment, Beta Review, App Store submission, skipped-gate acceptance or manual release.
-- **Next Product action:** provide Task11 reproduction headers and name/split downstream Executors; advance a verified cross-region delivery proposal for F-03; separately choose a new Task04 evidence environment. Do not re-arm P4.
+- **Current blockers:** Task11 reproduction facts and implementation roles are `UNKNOWN`; F-02 may invalidate Build 7 as an external candidate, while F-03 blocks broader external testing until fixed or explicitly decided. The historical Build 7 P4 re-arm remains excluded, while two Build 55 / Xcode 27 RC diagnostic arms, one TD-004 off/on matrix, one bounded TD-005 systemCrashLogs query plus one read-only TD-005 classification follow-up and Archive/export reconciliation, one fresh-install App/J1/J2/J3/J4 observation and one scoped 雾凇 nine-key gate were retained; the independent Build 55 Quality/Release review and its re-review are **Blocked**; the re-review conditionally accepts the code-image/export provenance but keeps TD-003/TD-004/TD-005, clean App Group and the overall Release Gate open. The TD-003 follow-up still lacks a controlled cold/warm/numeric baseline, the TD-004 matrix has no shared-capability/self-diagnosing proof, the Jetsam rows remain unclassified without a victim marker, and the Archive/dSYM metadata remains `1.0 (1)` while exported packages/summaries report `1.0 (55)`; TD-003/004/005 still lack their full required evidence. Fresh-install J1, J2, automatic J3 deployment, basic Luna 26-key J4 output and the scoped 雾凇 nine-key gate are complete for this progress run; clean App Group state, remaining physical evidence and overall Product/Release Gate remain open. Exact online What to Test content also needs read-only verification. iOS 18 iPad Simulator evidence remains in [`07 preflight`](evidence/release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md).
+- **Latest channel execution (`2026-09-13`):** Human Product Owner accepted the [`Build 55 public external-testing exception`](product-decisions/RELEASE-2026-09-13-build55-limited-external-trial-exception-proposal.md). App Store Connect group `Build 55 Public Beta` contains Store export `1.0 (55)`; Beta Review is `Waiting for Review`, and the public `Open to Anyone` link is configured without a tester limit. Testers cannot join until Apple approves the build; the independent Quality/Release conclusion remains **Blocked**.
+- **Build-specific online copy:** Build 55 `What to Test` was submitted with the no-login Beta Review form; the older Build 7 online-copy gap remains a separate historical item.
+- **Authority boundary:** Internal invitations alone do not authorize external group assignment or Beta Review; this separate Product Decision authorizes the recorded Build 55 public-test channel action, but not skipped-gate acceptance, formal Release Gate Pass, App Store production submission or manual release.
+- **Next Product action:** monitor Beta Review and public-link availability while keeping TD-003/004/005, clean App Group and formal Release Gate open; track remaining screenshot and Task11/F-03 material. Do not re-arm P4.
 
 ## RELEASE-2026-0801-03 — 新用户启用与 Full Access 降级
 

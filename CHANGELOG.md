@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 2026-09-15 — CI full 路径拆成并行 heavy jobs
+
+- `Swift 6 Quality` 在 `full` 分类下不再串行一个 `build-and-test`。改为并行 `format-swift`、`test-keyboardcore`、`test-rimebridge`、`test-app-keyboard`、`build-release`。
+- Debug `test` 之后不再追加 Debug `build`。`docs_only` / `full` 分类与 fail-closed 规则不变，没有按 UI/Rime 路径跳过。
+- `final-quality-gate` 要求 `full` 时五条 heavy 全 success，`docs_only` 时五条全 skipped。
+
+## 2026-09-14 — 首次启用改为设置「？」与引导 sheet
+
+- 产品记录 `PD-HELP-GUIDE-SHEET-001`：未完成或恢复时设置「？」带标记，并在下次主 App 进程启动自动弹出引导 sheet；「稍后再说」只结束本次进程中的 sheet；设置列表帮助行删除。
+- 主 App 已去掉条件帮助 Tab；J4 试用框在 sheet 内；已完成说明书可「从第一步开始」重看且不清进度。Product Gate 已通过；本条随有界 commit 入库。
+
 ## 2026-09-12 — 方案详情用来源弹层收纳版本与下载来源
 
 - 方案详情页的「方案信息」整块可点，右上中性 `info.circle` 提示；底部 sheet 只显示版本与下载来源。
@@ -113,6 +124,17 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 
 ## Unreleased — KOS execution and instruction repair
 
+- Human Product Owner 正式采纳 ADR 0035（Accepted，Conditional Accept package），将发布证据增量与 Beta → external promotion 作为有界架构合同；不改变 Product、Quality、Release 或外部动作授权。
+- 新增发布证据增量计划与 Candidate receipt：普通小改动只刷新受影响证据，
+  键盘/RIME/工具链/权限等边界自动扩大验证范围；日常 Beta 证据可按产物身份
+  标记为当前证明或仅作 comparator，不自动替代 Quality、Product 或 Release 门禁。
+- 主 App Diagnostics 新增「发布证据」页面，保存有限的候选身份、验证档位、
+  阶段结果与 Beta→正式外部候选引用；不记录用户输入内容，也不执行上传或分发。
+- 收紧 Beta→外部候选证据晋级：待核对产物不会形成通过，current-proof 必须绑定
+  五字段 artifact identity、行为契约、验证档位、设备/系统、候选上下文、证据版本和
+  freshness；首次/后续 external receipt 分别强制 verified baseline / previous receipt。
+- 发布证据 archive 损坏时保留 quarantine 副本后恢复保存，步骤备注有界，并以自动化
+  测试确认诊断日志清除不会删除 release-evidence 子空间。
 - 修正测试/发布技能、当前授权解释和阶段依赖；保留必填 UNKNOWN、独立评审与本地 CI 门。
 - 压缩入口历史摘要，修正 legacy 路由、九键状态和 App Tab 描述；标记过期文档健康基线。
 - 上游 v0.7.0 准备中；本项目 Adopted 仍 v0.6.0 advisory，未迁移既有 Active Assignment。
