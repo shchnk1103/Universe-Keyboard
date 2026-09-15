@@ -12,7 +12,7 @@
 | **Lifecycle** | `Reviewed` |
 | **Phase** | 独立 Quality **Pass with conditions**；残差 `ASC-01`–`ASC-05` 均 `accept` |
 | **Non-claims** | 不等于无条件 Quality Pass、Product Gate、push / PR / merge / TestFlight / Release；真机仅为 Human-attested |
-| **Next** | 实现 SHA `5d3880b13109a65b8e441ded74b82f9927ffb9b4` 已形成并完成回写；按新身份做 Quality 增量核对，随后记录 Human-attested 观察；Product Gate 另授权 |
+| **Next** | 实现 SHA `5d3880b13109a65b8e441ded74b82f9927ffb9b4` 已形成并完成回写；新身份 Quality 增量核对与 Human-attested 观察均已记录；Product Gate 另授权 |
 | **Residuals** | [`quality review`](../reviews/app-switch-contrast-001-quality-review.md) `ASC-01`–`ASC-05` `accept` |
 
 ---
@@ -27,6 +27,7 @@
 - **Authorization (Quality):** [`AUTH-APP-SWITCH-CONTRAST-001-QUALITY`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-QUALITY.md) — consumed
 - **Authorization (ASC-02 local commit):** [`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md) — consumed by `5d3880b`; isolated branch, no push
 - **Quality review:** [`app-switch-contrast-001-quality-review.md`](../reviews/app-switch-contrast-001-quality-review.md) — **Pass with conditions**
+- **Human observation:** [`app-switch-contrast-001-human-attested-observation-2026-09-15.md`](../evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md) — SHA-bound **Human-attested** observation; not Device-attested
 
 ## KOS v0.8.0 optional-contract selection
 
@@ -143,12 +144,12 @@ Authorize (and, **after a later implementation Authorization**, implement) a **s
 **Implementation**
 
 - [x] One shared visual owner (`AppSwitch` / `.toggleStyle(.appSwitch)`); no remaining `.toggleStyle(.switch)` in main-App Swift.
-- [x] Light/dark × on/off visual pair — Human 真机口头确认「没什么问题」（**Human-attested**，非 Device-attested；Quality 分级见审查）。
+- [x] Light/dark × on/off visual pair — iPhone 13 Pro / iOS 27 上完成设置首页、诊断页、模糊音 Form 四态观察；[`Human-attested record`](../evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md)；非 Device-attested。
 - [x] No custom-drawn `ToggleStyle` Capsule / ZStack thumb.
 - [x] No new Form section insert/remove around master toggles.
-- [x] App + Keyboard Debug tests on `platform=iOS Simulator,name=iPhone 17 Pro,OS=26.0` — **TEST SUCCEEDED** (UniverseKeyboardTests 373 / 9 skipped, including `AppSwitchChromeTests`; KeyboardTests 11). Swift format `--strict` on changed `.swift` files.
+- [x] App + Keyboard Debug tests on `platform=iOS Simulator,name=iPhone 17 Pro,OS=26.0` — **TEST SUCCEEDED** (UniverseKeyboardTests 361 / 9 skipped, including `AppSwitchChromeTests`; KeyboardTests 11). Swift format `--strict` on changed `.swift` files.
 - [x] `UI_STYLE_GUIDE.md` and `DEBUGGING.md` amended to the landed rule.
-- [x] Independent Quality **Pass with conditions** — [`app-switch-contrast-001-quality-review.md`](../reviews/app-switch-contrast-001-quality-review.md); residuals `ASC-01`–`ASC-05` `accept`.
+- [x] Independent Quality **Pass with conditions** — [`app-switch-contrast-001-quality-review.md`](../reviews/app-switch-contrast-001-quality-review.md); new-SHA incremental check completed; residuals `ASC-01`–`ASC-05` remain accepted.
 - [x] `ASC-02` local commit `5d3880b13109a65b8e441ded74b82f9927ffb9b4` and SHA writeback on isolated branch — no push.
 - [ ] Human Product Gate for Assignment `Closed` — **not authorized**.
 
@@ -170,10 +171,10 @@ Stop and escalate if:
 - **Required Handoff Content:**
   - Shared owner: `Universe Keyboard/Views/Components/AppSwitch.swift` (`AppSwitchChrome` + `UISwitch` representable + `.toggleStyle(.appSwitch)`). `ContentView` and every former `.toggleStyle(.switch)` call site now use `.appSwitch`.
   - Contrast: on-tint `.label`; thumb white except dark-on black.
-  - Tests: `xcodebuild` scheme `Universe Keyboard` Debug test, destination `platform=iOS Simulator,name=iPhone 17 Pro,OS=26.0` (`name=iPhone 17 Pro` without OS unmatched because latest is iOS 27), `CODE_SIGNING_ALLOWED=NO` `SWIFT_VERSION=6.0` `SWIFT_STRICT_CONCURRENCY=complete` `SWIFT_TREAT_WARNINGS_AS_ERRORS=YES` — **TEST SUCCEEDED**. Not run: KeyboardCore-only, RimeBridgeTests, Release `build`.
+  - Tests: `xcodebuild` scheme `Universe Keyboard` Debug test, destination `platform=iOS Simulator,name=iPhone 17 Pro,OS=26.0` (`name=iPhone 17 Pro` without OS unmatched because latest is iOS 27), `CODE_SIGNING_ALLOWED=NO` `SWIFT_VERSION=6.0` `SWIFT_STRICT_CONCURRENCY=complete` `SWIFT_TREAT_WARNINGS_AS_ERRORS=YES` — final SHA 增量复验 **TEST SUCCEEDED**（UniverseKeyboardTests 361 / 9 skipped；KeyboardTests 11）。Not run: KeyboardCore-only, RimeBridgeTests, Release `build`.
   - Docs: `UI_STYLE_GUIDE.md`, `DEBUGGING.md`, `CHANGELOG.md`.
-  - Independent Quality **Pass with conditions** (`ASC-01`–`ASC-05` `accept`) remains bound to the pre-commit dirty-tree identity; new-SHA incremental Quality is still required. Product Gate / push / PR / merge are not authorized.
-  - Human 真机：Human-attested「没什么问题」；非 Device-attested。
+  - Independent Quality **Pass with conditions** (`ASC-01`–`ASC-05` `accept`) 的原始审查仍标注其脏树身份；新 SHA 增量核对已完成。Product Gate / push / PR / merge are not authorized.
+  - Human 真机：[`SHA-bound Human-attested record`](../evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md)，iPhone 13 Pro / iOS 27；非 Device-attested。
 - **Primary files:** `AppSwitch.swift`, `ToggleRow.swift`, Settings/Diagnostics toggle call sites, `ContentView.swift`, `AppSwitchChromeTests.swift`, `UI_STYLE_GUIDE.md`
 - **Handoff Target:** Human Product Lead (Product Gate)
 - **Revalidation Trigger:** Human reverses the contrast pair; Form crash-contract exception requested; brand accent color is introduced for switches; a new main-App switch surface is added outside the shared owner; Keyboard Extension is pulled into scope
@@ -187,3 +188,5 @@ Stop and escalate if:
 - `2026-09-15 Asia/Shanghai` — 独立 Quality **Pass with conditions**（[`review`](../reviews/app-switch-contrast-001-quality-review.md)；`ASC-01`–`ASC-05` `accept`）。`Completed → Reviewed`。无 Product Gate / commit。
 - `2026-09-15 Asia/Shanghai` — Human 授权 `ASC-02` 有界本地 commit（[`AUTH-APP-SWITCH-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md)）。隔离分支、只提交开关切片并回写 SHA；无 push / PR / merge / Product Gate。
 - `2026-09-15 Asia/Shanghai` — ASC-02 实现 commit `5d3880b13109a65b8e441ded74b82f9927ffb9b4` 已形成；本回写 commit 记录该身份。Quality 旧结论不自动跟随新 SHA；待独立增量核对。
+- `2026-09-15 Asia/Shanghai` — 新 SHA 增量 Quality 核对完成：最终 tip `63f1a6d95316187249bcd3f85c5f7883bc13bf7d` 上 App + Keyboard Debug 测试为 `UniverseKeyboardTests 361 / 9 skipped`、`KeyboardTests 11`，无新的代码质量阻断；历史记录的测试计数已按最终 SHA 证据校正。
+- `2026-09-15 Asia/Shanghai` — Human Product Owner 在 iPhone 13 Pro / iOS 27 完成设置首页、诊断页、模糊音 Form 的浅/深色 × 开/关观察；[`Human-attested record`](../evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md) 已写入。非 Device-attested，Product Gate 仍未授权。

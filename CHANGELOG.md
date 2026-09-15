@@ -3,7 +3,8 @@
 ## 2026-09-15 — 主 App 开关深色开启态对比度
 
 - 全部主 App 开关改走共享 `AppSwitch`（系统 `UISwitch` + `AppSwitchChrome`）。浅色开启黑槽白点；深色开启白槽黑点；关闭态小圆点保持白色。
-- 独立 Quality 结论为 **Pass with conditions**，残差 `ASC-01`–`ASC-05` 均为 `accept`；实现 SHA 为 `5d3880b13109a65b8e441ded74b82f9927ffb9b4`，仍不是 Product Gate、push 或 Release。旧 Quality 结论不自动跟随该 SHA。
+- 独立 Quality 结论为 **Pass with conditions**，新 SHA 增量核对完成；App + Keyboard Debug 测试为 `UniverseKeyboardTests 361 / 9 skipped`、`KeyboardTests 11`，历史记录的测试计数已校正。实现 SHA 为 `5d3880b13109a65b8e441ded74b82f9927ffb9b4`，仍不是 Product Gate、push 或 Release。
+- Human Product Owner 在 iPhone 13 Pro / iOS 27 完成设置首页、诊断页、模糊音 Form 的四态观察，详见 [`Human-attested record`](docs/evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md)；非 Device-attested、非 Product Gate。
 
 ## 2026-09-14 — 首次启用改为设置「？」与引导 sheet
 

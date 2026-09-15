@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-14 Asia/Shanghai
+> **Updated:** 2026-09-15 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -11,10 +11,10 @@
 ## APP-SWITCH-CONTRAST-001 — 主 App 系统开关深浅色对比度
 
 - **Lifecycle:** [`Assignment`](assignments/app-switch-contrast-001.md) `Reviewed`
-- **Current phase:** 实现 SHA `5d3880b` 已形成并完成回写；独立 Quality **Pass with conditions** 仍绑定脏树，待按新身份增量核对
+- **Current phase:** 实现 SHA `5d3880b` 已形成并完成回写；新身份独立 Quality 增量核对 **Pass with conditions**；测试计数已校正为 `361 / 9 skipped` + `KeyboardTests 11`；Human-attested 观察已记录
 - **Non-claims:** 不等于 Product Gate、push / PR / merge、TestFlight 或 Release；真机仍为 Human-attested
-- **Next:** 完成新 SHA 的 Quality 增量核对，再记录 Human-attested 四态观察；Product Gate 另授权
-- **Sources:** [PD](product-decisions/APP-SWITCH-CONTRAST-001-authorization.md) · [Quality](reviews/app-switch-contrast-001-quality-review.md) · [commit AUTH](authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md)
+- **Next:** Product Gate 另授权；保持 Human-attested / 非 Device-attested 边界
+- **Sources:** [PD](product-decisions/APP-SWITCH-CONTRAST-001-authorization.md) · [Quality](reviews/app-switch-contrast-001-quality-review.md) · [Human observation](evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md) · [commit AUTH](authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md)
 
 ## HELP-GUIDE-SHEET-001 — 引导 sheet 与设置「？」
 
