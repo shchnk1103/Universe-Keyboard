@@ -39,10 +39,10 @@ struct RimeAdvancedInputSettingsView: View {
                 // Unsupported: constant off binding so SwiftUI cannot clobber stored prefs.
                 if store.supportsProductAdvancedInput {
                     Toggle("启用高级输入功能", isOn: liveMasterBinding)
-                        .toggleStyle(.switch)
+                        .toggleStyle(.appSwitch)
                 } else {
                     Toggle("启用高级输入功能", isOn: .constant(false))
-                        .toggleStyle(.switch)
+                        .toggleStyle(.appSwitch)
                         .disabled(true)
                         .contentShape(Rectangle())
                         .onTapGesture { showUnsupportedAlert = true }
@@ -156,7 +156,7 @@ private struct AdvancedInputFeatureToggle: View {
                 AdvancedInputExamplesView(examples: feature.examples)
             }
         }
-        .toggleStyle(.switch)
+        .toggleStyle(.appSwitch)
         .padding(.vertical, 2)
     }
 
@@ -308,51 +308,51 @@ private extension RimeAdvancedInputFeature {
             ]
         case .calculator:
             return [
-                .init(input: "cC1+2*3", output: "计算结果：7，也会显示原算式结果"),
+                .init(input: "cC1+2*3", output: "计算结果：7，也会显示原算式结果")
             ]
         case .numberConversion:
             return [
-                .init(input: "R1234.56", output: "数字/金额大写：人民币大写等格式"),
+                .init(input: "R1234.56", output: "数字/金额大写：人民币大写等格式")
             ]
         case .unicode:
             return [
-                .init(input: "U62fc", output: "特殊字符：得到「拼」，并给出相邻编码候选"),
+                .init(input: "U62fc", output: "特殊字符：得到「拼」，并给出相邻编码候选")
             ]
         case .uuid:
             return [
-                .init(input: "uuid", output: "随机编号：生成一个 UUID v4"),
+                .init(input: "uuid", output: "随机编号：生成一个 UUID v4")
             ]
         case .vMode:
             return [
-                .init(input: "v...", output: "更多符号：按方案内置前缀显示符号和特殊内容"),
+                .init(input: "v...", output: "更多符号：按方案内置前缀显示符号和特殊内容")
             ]
         case .search:
             return [
-                .init(input: "自动", output: "辅助查询：在候选栏补充相关查询类结果"),
+                .init(input: "自动", output: "辅助查询：在候选栏补充相关查询类结果")
             ]
         case .correction:
             return [
-                .init(input: "自动", output: "输入提示：发现可能输错时给出提示候选"),
+                .init(input: "自动", output: "输入提示：发现可能输错时给出提示候选")
             ]
         case .longWordCandidates:
             return [
-                .init(input: "自动", output: "长词优化：输入较长拼音时改善候选表现"),
+                .init(input: "自动", output: "长词优化：输入较长拼音时改善候选表现")
             ]
         case .pinyinCandidateFilter:
             return [
-                .init(input: "自动", output: "拼音降噪：减少不需要的拼音类候选"),
+                .init(input: "自动", output: "拼音降噪：减少不需要的拼音类候选")
             ]
         case .englishCandidateFilter:
             return [
-                .init(input: "自动", output: "英文降噪：降低英文候选对中文输入的干扰"),
+                .init(input: "自动", output: "英文降噪：降低英文候选对中文输入的干扰")
             ]
         case .selectCharacter:
             return [
-                .init(input: "自动", output: "选字辅助：需要逐字选择时显示辅助候选"),
+                .init(input: "自动", output: "选字辅助：需要逐字选择时显示辅助候选")
             ]
         case .autoCapitalization:
             return [
-                .init(input: "英文", output: "大小写辅助：在英文输入场景中辅助大小写"),
+                .init(input: "英文", output: "大小写辅助：在英文输入场景中辅助大小写")
             ]
         }
     }

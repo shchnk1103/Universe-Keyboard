@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-09-15 — 主 App 开关深色开启态对比度
+
+- 全部主 App 开关改走共享 `AppSwitch`（系统 `UISwitch` + `AppSwitchChrome`）。浅色开启黑槽白点；深色开启白槽黑点；关闭态小圆点保持白色。
+- 独立 Quality 结论为 **Pass with conditions**，残差 `ASC-01`–`ASC-05` 均为 `accept`；本条仍不是 Product Gate、冻结 SHA、push 或 Release。
+
 ## 2026-09-14 — 首次启用改为设置「？」与引导 sheet
 
 - 产品记录 `PD-HELP-GUIDE-SHEET-001`：未完成或恢复时设置「？」带标记，并在下次主 App 进程启动自动弹出引导 sheet；「稍后再说」只结束本次进程中的 sheet；设置列表帮助行删除。

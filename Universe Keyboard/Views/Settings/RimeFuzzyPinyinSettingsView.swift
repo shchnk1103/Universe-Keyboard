@@ -11,10 +11,10 @@ struct RimeFuzzyPinyinSettingsView: View {
                 // "display off" into stored preferences (TD-010 preference preserve).
                 if store.supportsManagedFuzzyPinyin {
                     Toggle("启用模糊音", isOn: liveMasterBinding)
-                        .toggleStyle(.switch)
+                        .toggleStyle(.appSwitch)
                 } else {
                     Toggle("启用模糊音", isOn: .constant(false))
-                        .toggleStyle(.switch)
+                        .toggleStyle(.appSwitch)
                         .disabled(true)
                         .contentShape(Rectangle())
                         .onTapGesture { showUnsupportedAlert = true }
@@ -36,15 +36,15 @@ struct RimeFuzzyPinyinSettingsView: View {
             Section {
                 if store.supportsManagedFuzzyPinyin {
                     Toggle("zh / z", isOn: liveGroupBinding(\.fuzzyZhZEnabled))
-                        .toggleStyle(.switch)
+                        .toggleStyle(.appSwitch)
                     Toggle("ch / c", isOn: liveGroupBinding(\.fuzzyChCEnabled))
-                        .toggleStyle(.switch)
+                        .toggleStyle(.appSwitch)
                     Toggle("sh / s", isOn: liveGroupBinding(\.fuzzyShSEnabled))
-                        .toggleStyle(.switch)
+                        .toggleStyle(.appSwitch)
                 } else {
-                    Toggle("zh / z", isOn: .constant(false)).toggleStyle(.switch).disabled(true)
-                    Toggle("ch / c", isOn: .constant(false)).toggleStyle(.switch).disabled(true)
-                    Toggle("sh / s", isOn: .constant(false)).toggleStyle(.switch).disabled(true)
+                    Toggle("zh / z", isOn: .constant(false)).toggleStyle(.appSwitch).disabled(true)
+                    Toggle("ch / c", isOn: .constant(false)).toggleStyle(.appSwitch).disabled(true)
+                    Toggle("sh / s", isOn: .constant(false)).toggleStyle(.appSwitch).disabled(true)
                 }
             } header: {
                 Text("平翘舌")
@@ -59,9 +59,9 @@ struct RimeFuzzyPinyinSettingsView: View {
             Section {
                 if store.supportsManagedFuzzyPinyin {
                     Toggle("n / l", isOn: liveGroupBinding(\.fuzzyNLEnabled))
-                        .toggleStyle(.switch)
+                        .toggleStyle(.appSwitch)
                 } else {
-                    Toggle("n / l", isOn: .constant(false)).toggleStyle(.switch).disabled(true)
+                    Toggle("n / l", isOn: .constant(false)).toggleStyle(.appSwitch).disabled(true)
                 }
             } header: {
                 Text("鼻边音")

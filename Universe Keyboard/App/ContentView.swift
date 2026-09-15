@@ -126,6 +126,7 @@ struct ContentView: View {
             .tag(MainTab.search)
         }
         .tint(.primary)
+        .toggleStyle(.appSwitch)
         .preferredColorScheme(
             AppAppearance(rawValue: appearanceRawValue)?.colorScheme
         )

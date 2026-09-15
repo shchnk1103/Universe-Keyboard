@@ -8,6 +8,14 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## APP-SWITCH-CONTRAST-001 — 主 App 系统开关深浅色对比度
+
+- **Lifecycle:** [`Assignment`](assignments/app-switch-contrast-001.md) `Reviewed`
+- **Current phase:** 独立 Quality **Pass with conditions**（`ASC-01`–`ASC-05` `accept`）；已授权隔离分支本地 commit，SHA 待形成
+- **Non-claims:** 不等于 Product Gate、push / PR / merge、TestFlight 或 Release；真机仍为 Human-attested
+- **Next:** 形成新 SHA 后做 Quality 增量核对；Product Gate 另授权
+- **Sources:** [PD](product-decisions/APP-SWITCH-CONTRAST-001-authorization.md) · [Quality](reviews/app-switch-contrast-001-quality-review.md) · [commit AUTH](authorizations/AUTH-APP-SWITCH-CONTRAST-001-COMMIT.md)
+
 ## HELP-GUIDE-SHEET-001 — 引导 sheet 与设置「？」
 
 - **Lifecycle:** [`Assignment`](assignments/help-guide-sheet-001.md) `Closed`

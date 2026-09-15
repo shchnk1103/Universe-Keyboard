@@ -20,7 +20,7 @@ struct FeedbackSettingsView: View {
         Form {
             Section {
                 Toggle("按键音", isOn: keyClickBinding)
-                    .toggleStyle(.switch)
+                    .toggleStyle(.appSwitch)
             } header: {
                 Text("按键音")
             } footer: {
@@ -29,7 +29,7 @@ struct FeedbackSettingsView: View {
 
             Section {
                 Toggle("按键震动", isOn: hapticBinding)
-                    .toggleStyle(.switch)
+                    .toggleStyle(.appSwitch)
             } header: {
                 Text("触感反馈")
             } footer: {

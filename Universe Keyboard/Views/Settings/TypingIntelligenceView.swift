@@ -87,7 +87,7 @@ struct TypingIntelligenceView: View {
                     )
                 )
                 .labelsHidden()
-                .toggleStyle(.switch)
+                .toggleStyle(.appSwitch)
                 .fixedSize(horizontal: true, vertical: false)
             }
             .padding(14)

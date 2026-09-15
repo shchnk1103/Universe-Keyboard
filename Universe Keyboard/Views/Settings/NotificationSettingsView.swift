@@ -38,7 +38,7 @@ struct NotificationSettingsView: View {
                     }
                 )
             )
-            .toggleStyle(.switch)
+            .toggleStyle(.appSwitch)
 
             // Always mounted + disabled when master off or sync method unset (no Form remount).
             RimeSyncNotificationControls(
@@ -105,7 +105,7 @@ struct NotificationSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .toggleStyle(.switch)
+            .toggleStyle(.appSwitch)
         } header: {
             Text("App 内提示")
         } footer: {
@@ -145,7 +145,7 @@ struct NotificationSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .toggleStyle(.switch)
+            .toggleStyle(.appSwitch)
         }
     }
 #endif
@@ -180,7 +180,7 @@ struct RimeSyncNotificationControls: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .toggleStyle(.switch)
+        .toggleStyle(.appSwitch)
 
         // Always-mounted scopes; disabled when category off or sync method unset.
         Group {
@@ -208,7 +208,7 @@ struct RimeSyncNotificationControls: View {
                     }
                     .padding(.leading, 16)
                 }
-                .toggleStyle(.switch)
+                .toggleStyle(.appSwitch)
             }
         }
         .disabled(!categoryOn)
