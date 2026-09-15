@@ -13,6 +13,8 @@ Current update: `2026-09-13 Asia/Shanghai` — Human Product Owner accepted the 
 
 Current update: `2026-09-14 Asia/Shanghai` — Human Product Gate **Pass** on [`HELP-GUIDE-SHEET-001`](assignments/help-guide-sheet-001.md)；Assignment **Closed**（[`Gate`](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)）。不进入本表（Closed）。Commit 另授权且须切开无关脏树。无 TestFlight / Release。
 
+Current update: `2026-09-15 Asia/Shanghai` — Human Product Owner 已正式采纳 [`ADR 0035`](architecture/decisions/0035-release-evidence-accumulation-and-promotion.md)（Accepted，Conditional Accept package）；[`RELEASE-EVIDENCE-PROMOTION-001`](assignments/release-evidence-promotion-001.md) 进入 `Reviewed`，`REP-Q-01` 由 [final-SHA provenance receipt](evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md) **Closed**。本项移出 Active Work；不作 Product Gate / Quality Pass / Release / TestFlight / merge 结论。
+
 Current update: `2026-09-09 Asia/Shanghai` — ADR 0034 Architecture Accept **review completed**: [`adr-0034-architecture-accept-review-2026-09-09.md`](reviews/adr-0034-architecture-accept-review-2026-09-09.md) — **Conditional Accept**（清单 [`…-checklist…`](reviews/adr-0034-architecture-accept-checklist-2026-09-09.md)）。ADR **仍 Proposed**；非 Product Gate / TestFlight / Accept；`RTRD-01`/`RTRD-02` 仍独立；PR #101 docs draft。
 
 Current update: `2026-09-10 Asia/Shanghai` — PR [#109](https://github.com/shchnk1103/Universe-Keyboard/pull/109) merged `0fd3518`（SUG-07 preflight，无卸载）；PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) merged `4e4164f`（RTRD-01 诊断 UI）。本 M-02 将 `KOS-SUG-OBS-DEVICE-001` 与 `SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001` 标为 Closed 并从本表移除。`SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001` 仍 Active（`RTRD-02` open）。无卸载、无 SUG-08、无 Product Gate / TestFlight / Release。
