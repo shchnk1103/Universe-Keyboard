@@ -9,9 +9,11 @@
 | Latest checked version | `v0.8.0` |
 | Last checked at | `2026-09-10T00:19:00+08:00` |
 | Upgrade owner | Human Product Owner |
-| Current disposition | Adopted — `v0.8.0` advisory; E-01, A-01/B-01, P-01 and D-01 are opt-in for new records only |
-| Next review | When enabling `required`; when changing the adopted optional-contract scope; when fixing [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生); or when a newer Kit Release appears |
+| Current disposition | Adopted — `v0.8.0` advisory; E-01, A-01/B-01, P-01 and D-01 are opt-in for new records only; project-level `kos.release-evidence` v1.0 candidate is Adopted prospectively for new release-evidence records and handoffs |
+| Next review | When changing the adopted optional-contract scope or candidate pins; before `Ready`/publication when P-01/D-01 or hosted Release facts are produced; when enabling `required`; when fixing [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生); or when a newer Kit Release appears |
 | Latest decision record | [PD-KOS-UPGRADE-UK-004](../product-decisions/KOS-UPGRADE-UK-004-adoption.md) |
+| Latest project optional-contract decision | [PD-KOS-UPGRADE-UK-005 release-evidence adoption](../product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) |
+| Latest residual-scope decision | [PD-KOS-UPGRADE-UK-005-P1-B-SCOPE](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) — Option A: duplicate UI/storage `Not applicable`; migration/backfill and background sync `Deferred`/unauthorized |
 
 ---
 
@@ -45,3 +47,54 @@ only when a newly created Assignment or handoff explicitly opts in; existing
 Active Assignments remain pinned and are not migrated. H-02/W-01 and `required`
 remain outside this adoption. Default-branch publication landed as PR
 [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104) merged `77e5658`.
+
+## Project optional contract: `kos.release-evidence` v1.0
+
+The Human Product Owner's `2026-09-14 Asia/Shanghai` decision in
+[`PD-KOS-UPGRADE-UK-005`](../product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md)
+adopts the exact untagged candidate recorded by the UK-005 review packet. This does
+not change the adopted Kit version or claim that the candidate is a new Kit Release.
+
+- Scope is prospective: new release-evidence records and handoffs only; no historical
+  backfill or Active-Assignment migration.
+- The parent implementation handoff is
+  [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001`](../assignments/kos-release-evidence-implementation-001.md);
+  its P0 contract/Profile handoff is complete.
+- The separately authorized child implementation scope is
+  [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1`](../assignments/kos-release-evidence-implementation-001-p1.md)
+  with [`AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1`](../authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1.md).
+- Its accepted scope decision is [`PD-KOS-UPGRADE-UK-005-P1-A-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-A-scope.md);
+  the Product Decision is the repository-resolvable authority reference for P1-A.
+- Its current adopter Profile is [`release-evidence-profile.md`](release-evidence-profile.md),
+  which remains a project adapter rather than a copied Kit schema or a second evidence authority.
+- E-01, P-01 and D-01 are explicitly adopted in the parent/child Assignments for this
+  contract; A-01/B-01 is outside the current P1-A slice and `required` remains unauthorized.
+- Daily Beta evidence remains current proof only after exact identity, freshness,
+  coverage and comparison checks. Otherwise it remains comparator/pending/none.
+- The P1-A scope adds delta-aware validation: rerun the evidence touched by a change and
+  reuse only unchanged, identity-bound, still-fresh daily-Beta evidence. Daily-Beta
+  evidence can feed an external-candidate record, but external delivery, Beta Review,
+  hosted provenance and Product/Release decisions remain separate.
+- The P1-A adapter, fixed evaluator matrix and delta planner are implemented in the
+  isolated execution branch; the current `fix10` implementation receipt reports
+  52/52 Envelope and 24/24 Delta cases passing (76/76 total), including fail-closed
+  source/wrapper, identity, claim/coverage, authority-path and P-01/D-01 boundary cases.
+  The exact package digest is
+  `45afdbf879c6b0054790342861254abbc6d9cde846f61b43a160bd22064d0382`; fresh
+  independent Architecture and Quality/Release reviews both Passed that digest. The
+  [P1-A provenance receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md)
+  now binds the Main-App source-owner identity and the same-head hosted CI run for the
+  UK-005 candidate; it closes `REP-Q-01` and candidate-bound hosted provenance only.
+  It does not produce current-proof, P-01/D-01, Product/Release or publication
+  readiness.
+- The P1-B residual disposition is [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md): duplicate Main-App
+  Diagnostics UI/storage is `Not applicable` for the current objective because the
+  existing release-evidence implementation already owns that boundary. Historical
+  migration/backfill is `Deferred`; background sync/network is `Deferred` and
+  unauthorized. No new P1-B implementation Assignment exists unless Product later
+  supersedes this decision with a precise residual scope.
+- `REP-Q-01` and candidate-bound hosted CI provenance are closed by the [P1-A provenance
+  receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md).
+  Upstream tag/Release metadata, P-01/D-01 facts and any publication readiness remain
+  separately owned and unclaimed; adoption itself is not a Product, Quality, Gate or
+  Release approval.

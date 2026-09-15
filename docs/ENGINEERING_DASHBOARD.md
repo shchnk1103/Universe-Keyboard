@@ -59,6 +59,14 @@
 - **Lifecycle:** [`KOS-UPGRADE-UK-004`](assignments/kos-upgrade-uk-004-v0.8.0.md) is Closed after Human Product Owner adopted `v0.8.0` advisory; published by PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104) merged `77e5658`. E-01, A-01/B-01, P-01 and D-01 apply only through explicit opt-in on new records. [UPGRADE_STATUS](kos/UPGRADE_STATUS.md) remains the current source. UK-003 / PR #96 remains historical.
 - **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
 
+## KOS-UPGRADE-UK-005 — prospective `kos.release-evidence` adoption
+
+- **Lifecycle:** review Assignment [`KOS-UPGRADE-UK-005`](assignments/kos-upgrade-uk-005-release-evidence-v1.md) `Closed`; implementation parent and child remain `Active` because P-01/D-01 and Product/Release/publication handoff remain separate. `REP-Q-01` and candidate-bound hosted provenance are `Closed` by the [P1-A provenance receipt](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md).
+- **Authority:** project adoption [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) · P1-B Option A [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · P1-A [`Assignment`](assignments/kos-release-evidence-implementation-001-p1.md)
+- **Current phase:** P1-A implementation and exact-digest Architecture/Quality reviews passed; duplicate P1-B Main-App UI/storage is `Not applicable`; historical migration/backfill is `Deferred`; background sync/network is `Deferred` and unauthorized.
+- **Non-claims:** no current-proof, Product/Quality/Release Gate, TestFlight, App Store Connect, merge or Release conclusion; no new P1-B implementation is authorized.
+- **Next:** produce separately owned P-01/D-01 and Product/Release/publication handoff facts if needed; reopen P1-B only if Product supersedes Option A with precise scope.
+
 ## KOS improvement suggestions — disposition recorded
 
 - **Lifecycle:** [`KOS-IMPROVEMENT-SUGGESTIONS-001`](assignments/kos-improvement-suggestions-001.md) `Closed` — eight directions Adopted and `KOS-SUG-04` Deferred by Human Product Owner; details and implementation boundaries are in the [ledger](kos/kos-improvement-suggestions-scheme-delivery-2026-09-09-disposition-ledger.md).
