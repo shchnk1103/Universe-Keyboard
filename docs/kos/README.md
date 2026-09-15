@@ -66,9 +66,9 @@ new records; see `UPGRADE_STATUS` for the current disposition:
 | [`KOS-UPGRADE-UK-004`](../assignments/kos-upgrade-uk-004-v0.8.0.md) | Current Adopted pin (`v0.8.0` advisory) |
 | [`PD-KOS-UPGRADE-UK-005`](../product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) | Project-level `kos.release-evidence` v1.0 prospective adoption decision |
 | [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) | Option A residual disposition: duplicate UI/storage `Not applicable`; migration/backfill and background sync `Deferred`/unauthorized |
-| [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001`](../assignments/kos-release-evidence-implementation-001.md) | Parent handoff; P0 Profile/owner-map stage closed, child P1 remains active; `REP-Q-01` and hosted provenance remain open |
-| [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1`](../assignments/kos-release-evidence-implementation-001-p1.md) | P1-A delta-aware adapter/fixtures/focused-validation scope; no P1-B implementation handoff under Option A |
-| [`AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1`](../authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1.md) | Active P1-A implementation Authorization; no publication or GitHub actions |
+| [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001`](../assignments/kos-release-evidence-implementation-001.md) | Parent handoff; P0 Profile/owner-map stage closed, child P1 remains active for P-01/D-01 and Product/Release boundaries; `REP-Q-01` and candidate-bound hosted provenance closed |
+| [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1`](../assignments/kos-release-evidence-implementation-001-p1.md) | P1-A delta-aware adapter/fixtures/focused-validation scope; [REP-Q-01 / hosted provenance receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md); no P1-B implementation handoff under Option A |
+| [`AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1`](../authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1.md) | Active P1-A implementation Authorization; scoped commit/push/PR separately authorized; no merge or publication authorization |
 | [`release-evidence-profile.md`](release-evidence-profile.md) | Project-owned adapter Profile; content-free fields and derived-state boundary |
 
 KOS 2.2 adds machine-readable record envelopes and deterministic read-only

@@ -36,11 +36,11 @@
 
 ## KOS-UPGRADE-UK-005 — prospective `kos.release-evidence` adoption
 
-- **Lifecycle:** review Assignment [`KOS-UPGRADE-UK-005`](assignments/kos-upgrade-uk-005-release-evidence-v1.md) `Closed`; implementation parent and child remain `Active` while `REP-Q-01` and hosted provenance are open.
+- **Lifecycle:** review Assignment [`KOS-UPGRADE-UK-005`](assignments/kos-upgrade-uk-005-release-evidence-v1.md) `Closed`; implementation parent and child remain `Active` because P-01/D-01 and Product/Release/publication handoff remain separate. `REP-Q-01` and candidate-bound hosted provenance are `Closed` by the [P1-A provenance receipt](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md).
 - **Authority:** project adoption [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) · P1-B Option A [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · P1-A [`Assignment`](assignments/kos-release-evidence-implementation-001-p1.md)
 - **Current phase:** P1-A implementation and exact-digest Architecture/Quality reviews passed; duplicate P1-B Main-App UI/storage is `Not applicable`; historical migration/backfill is `Deferred`; background sync/network is `Deferred` and unauthorized.
 - **Non-claims:** no current-proof, Product/Quality/Release Gate, TestFlight, App Store Connect, merge or Release conclusion; no new P1-B implementation is authorized.
-- **Next:** close `REP-Q-01` and hosted provenance under the existing implementation boundary when separately authorized; reopen P1-B only if Product supersedes Option A with precise scope.
+- **Next:** produce separately owned P-01/D-01 and Product/Release/publication handoff facts if needed; reopen P1-B only if Product supersedes Option A with precise scope.
 
 ## KOS improvement suggestions — disposition recorded
 

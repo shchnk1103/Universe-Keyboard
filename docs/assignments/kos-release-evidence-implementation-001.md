@@ -7,9 +7,9 @@
   "record_type": "assignment",
   "title": "Implement the prospective kos.release-evidence adopter boundary",
   "lifecycle": "active",
-  "current_phase": "P0 complete; child P1-A implementation and exact-digest Architecture/Quality reviews complete; REP-Q-01 and hosted provenance remain open; P1-B Option A disposition recorded",
+  "current_phase": "P0 complete; child P1-A implementation, exact-digest Architecture/Quality reviews and candidate-bound provenance complete; P-01/D-01 and Product/Release handoff remain separate; P1-B Option A disposition recorded",
   "authorization_action": "implement_release_evidence_adopter",
-  "updated_at": "2026-09-15T10:44:38+08:00",
+  "updated_at": "2026-09-15T11:36:22+08:00",
   "revalidation_triggers": [
     "upstream_candidate_changed",
     "hosted_provenance_rechecked",
@@ -38,10 +38,10 @@
 | Field | Value |
 |---|---|
 | Lifecycle | active |
-| Current Phase | P0 complete; child P1-A implementation and exact-digest Architecture/Quality reviews complete; `REP-Q-01` and hosted provenance remain open; P1-B Option A disposition recorded |
-| Material non-claims | No historical migration; no Keyboard Extension hot-path I/O; no runtime network; no duplicate Main-App Diagnostics UI/storage change; no Product/Release Gate; no commit, push, merge or Release |
-| Next handoff / decision | Retain the child P1-A receipt and r4 reviews; any `current-proof`/publication path still requires separate `REP-Q-01` and hosted-provenance closure. P1-B has no implementation handoff under [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) |
-| Residuals | `REP-Q-01` and hosted provenance remain open. Duplicate P1-B UI/storage is `Not applicable`; migration/backfill and background sync/network are `Deferred` and unauthorized |
+| Current Phase | P0 complete; child P1-A implementation, exact-digest Architecture/Quality reviews and candidate-bound provenance complete; P-01/D-01 and Product/Release handoff remain separate; P1-B Option A disposition recorded |
+| Material non-claims | No historical migration; no Keyboard Extension hot-path I/O; no runtime network; no duplicate Main-App Diagnostics UI/storage change; no Product/Release Gate; no merge, tag or Release |
+| Next handoff / decision | The [UK-005 P1-A provenance receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md) closes `REP-Q-01` and candidate-bound hosted CI provenance. P-01/D-01 facts and any Product/Release/publication action still require their named owners and separate authority. P1-B has no implementation handoff under [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) |
+| Residuals | P-01/D-01 delivery/final-validation facts and later Product/Release/publication authority remain open. `REP-Q-01` and candidate-bound hosted provenance are closed. Duplicate P1-B UI/storage is `Not applicable`; migration/backfill and background sync/network are `Deferred` and unauthorized |
 
 ## Authority
 
@@ -153,7 +153,7 @@ validator, reviewer or Main-App status page into a Product/Quality/Release autho
 ### Full Assignment Exit Criteria
 
 - [x] P1-A implementation has focused contract tests and no observed hot-path/network/privacy regression; the exact package passed fresh Architecture and Quality/Release review.
-- [ ] `REP-Q-01` is closed with final SHA, actual base/head and hosted-CI provenance where claimed.
+- [x] `REP-Q-01` is closed with the final Main-App source-owner identity, UK-005 package SHA, actual base/head pairs and same-head hosted-CI provenance in the [P1-A closure receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md).
 - [ ] P-01/D-01 receipts bind the final candidate, artifact/context, checker scope and output.
 - [ ] Human Product/Release authority separately authorizes any publication action.
 
@@ -220,3 +220,7 @@ validator, reviewer or Main-App status page into a Product/Quality/Release autho
   residuals. The parent mirror now treats duplicate UI/storage as `Not applicable`,
   migration/backfill and background sync/network as `Deferred` and unauthorized, and
   retains only `REP-Q-01` and hosted provenance as open implementation residuals.
+- `2026-09-15T11:36:22+08:00`: The [UK-005 P1-A provenance receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md)
+  closed `REP-Q-01` and candidate-bound hosted provenance. The parent remains `Active`
+  because P-01/D-01 facts and Product/Release/publication authority are not produced by
+  this receipt; no merge or Release action was performed.

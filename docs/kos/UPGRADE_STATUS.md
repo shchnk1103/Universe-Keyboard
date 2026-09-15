@@ -10,7 +10,7 @@
 | Last checked at | `2026-09-10T00:19:00+08:00` |
 | Upgrade owner | Human Product Owner |
 | Current disposition | Adopted — `v0.8.0` advisory; E-01, A-01/B-01, P-01 and D-01 are opt-in for new records only; project-level `kos.release-evidence` v1.0 candidate is Adopted prospectively for new release-evidence records and handoffs |
-| Next review | When changing the adopted optional-contract scope or candidate pins; before `Ready`/publication after `REP-Q-01` or hosted-provenance revalidation; when enabling `required`; when fixing [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生); or when a newer Kit Release appears |
+| Next review | When changing the adopted optional-contract scope or candidate pins; before `Ready`/publication when P-01/D-01 or hosted Release facts are produced; when enabling `required`; when fixing [`TD-014`](../TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生); or when a newer Kit Release appears |
 | Latest decision record | [PD-KOS-UPGRADE-UK-004](../product-decisions/KOS-UPGRADE-UK-004-adoption.md) |
 | Latest project optional-contract decision | [PD-KOS-UPGRADE-UK-005 release-evidence adoption](../product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) |
 | Latest residual-scope decision | [PD-KOS-UPGRADE-UK-005-P1-B-SCOPE](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) — Option A: duplicate UI/storage `Not applicable`; migration/backfill and background sync `Deferred`/unauthorized |
@@ -82,7 +82,10 @@ not change the adopted Kit version or claim that the candidate is a new Kit Rele
   The exact package digest is
   `45afdbf879c6b0054790342861254abbc6d9cde846f61b43a160bd22064d0382`; fresh
   independent Architecture and Quality/Release reviews both Passed that digest. The
-  reviews do not close `REP-Q-01`, hosted provenance, current-proof or publication
+  [P1-A provenance receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md)
+  now binds the Main-App source-owner identity and the same-head hosted CI run for the
+  UK-005 candidate; it closes `REP-Q-01` and candidate-bound hosted provenance only.
+  It does not produce current-proof, P-01/D-01, Product/Release or publication
   readiness.
 - The P1-B residual disposition is [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md): duplicate Main-App
   Diagnostics UI/storage is `Not applicable` for the current objective because the
@@ -90,5 +93,8 @@ not change the adopted Kit version or claim that the candidate is a new Kit Rele
   migration/backfill is `Deferred`; background sync/network is `Deferred` and
   unauthorized. No new P1-B implementation Assignment exists unless Product later
   supersedes this decision with a precise residual scope.
-- `REP-Q-01` and hosted tag/Release revalidation remain prerequisites for publication
-  readiness; adoption itself is not a Product, Quality, Gate or Release approval.
+- `REP-Q-01` and candidate-bound hosted CI provenance are closed by the [P1-A provenance
+  receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md).
+  Upstream tag/Release metadata, P-01/D-01 facts and any publication readiness remain
+  separately owned and unclaimed; adoption itself is not a Product, Quality, Gate or
+  Release approval.

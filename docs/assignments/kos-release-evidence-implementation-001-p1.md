@@ -7,9 +7,9 @@
   "record_type": "assignment",
   "title": "Implement delta-aware release-evidence adoption for new records",
   "lifecycle": "active",
-  "current_phase": "P1-A implementation complete; exact-digest Architecture and Quality reviews passed; REP-Q-01 and hosted provenance remain open; P1-B Option A disposition recorded",
+  "current_phase": "P1-A implementation complete; exact-digest Architecture and Quality reviews passed; REP-Q-01 and candidate-bound hosted provenance closed; P1-B Option A disposition recorded",
   "authorization_action": "implement_release_evidence_adopter_p1",
-  "updated_at": "2026-09-15T10:44:38+08:00",
+  "updated_at": "2026-09-15T11:36:22+08:00",
   "revalidation_triggers": [
     "upstream_candidate_changed",
     "contract_schema_or_evaluator_changed",
@@ -44,10 +44,10 @@
 | Field | Value |
 |---|---|
 | Lifecycle | active |
-| Current Phase | P1-A implementation complete; exact-digest Architecture and Quality reviews passed; REP-Q-01 and hosted provenance remain open; P1-B Option A disposition recorded |
-| Material non-claims | No new Swift/runtime change in this Assignment; no historical migration; no Keyboard Extension hot-path I/O; no Product/Quality/Release Gate; no commit, push, merge, tag or publication |
-| Next handoff / decision | Retain the P1-A receipt and r4 reviews; any `current-proof`/publication path still requires separately reviewed `REP-Q-01` and hosted-provenance closure. P1-B has no implementation handoff under Option A |
-| Residuals | [`P1 Residuals`](#residuals): `REP-Q-01` and hosted provenance; P1-B disposition is recorded separately in [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) |
+| Current Phase | P1-A implementation complete; exact-digest Architecture and Quality reviews passed; REP-Q-01 and candidate-bound hosted provenance closed; P1-B Option A disposition recorded |
+| Material non-claims | No new Swift/runtime change in this Assignment; no historical migration; no Keyboard Extension hot-path I/O; no Product/Quality/Release Gate; no merge, tag, Release or publication |
+| Next handoff / decision | [`REP-Q-01 / hosted provenance closure receipt`](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md) binds the exact source-owner and UK-005 candidate identities. P-01/D-01 facts and any Product/Release handoff remain separate. P1-B has no implementation handoff under Option A |
+| Residuals | [`P1 Residuals`](#residuals): P-01/D-01 delivery/final-validation facts and later Product/Release authority; `REP-Q-01` and candidate-bound hosted provenance are closed. P1-B disposition is recorded separately in [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) |
 
 This is a child Assignment of the completed P0 contract/Profile handoff. It authorizes
 the P1-A implementation boundary through its separate Authorization record. It does not
@@ -75,11 +75,12 @@ daily incremental Beta work while preserving a later external-candidate handoff:
    records. The adapter must preserve the exact candidate pins, leaf-level owner map,
    pointer grammar, privacy allowlist and evaluator precedence in the P0 Profile.
 2. Reconcile and prepare a binding to the existing Main-App release-evidence authority
-   identified by `SRC-MAIN-STORE` and ADR 0027. Until `REP-Q-01` is closed with an exact
-   implementation identity, this is only a source seam and is not a completed binding;
-   no current-proof or publication claim may use it. Consume that owner boundary; do not
-   create a second store, move persistence into the Keyboard Extension, or change
-   clear/retention semantics.
+   identified by `SRC-MAIN-STORE` and ADR 0027. `REP-Q-01` is now closed by the exact
+   source-owner and candidate-bound provenance receipt; this closes the implementation
+   identity boundary, not a Product/Release decision. The reviewed adapter remains
+   fail-closed and no current-proof or publication claim may be inferred from this
+   receipt. Consume that owner boundary; do not create a second store, move persistence
+   into the Keyboard Extension, or change clear/retention semantics.
 3. Add bounded, content-free fixtures and run the pinned schema/evaluator against them
    with an explicit `--as-of` value. The fixture matrix must cover invalid input,
    unbound target, promotion reasons, current-proof prerequisites, unresolved candidate,
@@ -200,7 +201,9 @@ Quality, Release or App Store Connect acceptance.
   Product Decision, Assignment and Authorization.
 - No archive/export, App Store Connect, TestFlight upload, Beta Review submission,
   external publication, Product Gate, Quality Gate or Release Pass.
-- No commit, push, merge, tag, branch deletion or other external GitHub action.
+- No unscoped GitHub action: the current receipt permits only the separately authorized
+  scoped commit, push and PR; merge, tag, branch deletion and publication remain outside
+  this Assignment.
 - No activation of KOS `required` mode and no bulk legacy Envelope migration.
 
 ## Required Inputs
@@ -254,9 +257,9 @@ validator or reviewer a Product/Quality/Release authority.
 
 - [x] New-record adapter/profile mapping passes focused contract and privacy tests.
 - [x] Existing Main-App source seam is reconciled without a second store or hot-path I/O;
-      the source-binding exit still requires `REP-Q-01` to close with an exact
-      implementation identity. Until then it remains an explicit blocker and no
-      current-proof claim is made.
+      the source-binding exit is closed by the exact implementation identity and
+      candidate-bound hosted provenance in the [closure receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md).
+      This does not make the adapter's fail-closed observation a current-proof claim.
 - [x] The pinned schema/evaluator fixture matrix passes with explicit `as_of` evidence.
 - [x] Daily Beta first/subsequent baseline and previous-receipt rules pass.
 - [x] Delta-aware validation reruns touched evidence and safely reuses only unchanged,
@@ -311,8 +314,8 @@ summary without per-case evidence does not close this condition:
 
 | ID | Owner | Disposition | Boundary / pointer |
 |---|---|---|---|
-| `REP-Q-01` | Universe release-evidence owner | `fix` | Bind a stable identity for the Main-worktree implementation input before final candidate claims; current P0 source map remains pre-freeze |
-| `HOSTED-PROVENANCE` | Product/Release owner | `fix` | Revalidate hosted tag/Release and any claimed hosted CI relation before P2/publication; not produced by P1-A |
+| `REP-Q-01` | Universe release-evidence owner | `closed` | Exact Main-App source-owner candidate, source blobs, actual base/head and same-head hosted run are bound together with the UK-005 package in the [closure receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md) |
+| `HOSTED-PROVENANCE` | Product/Release owner | `closed` for candidate-bound CI | UK-005 branch head `666a421…` equals hosted run `34924569095` `headSha`; upstream tag/Release, P-01/D-01 and publication facts remain separate and unclaimed |
 | `P1-B-DIAGNOSTICS` | Human Product Owner | `accept` | Option A records duplicate Main-App UI/storage as Not applicable; historical migration/backfill and background sync remain Deferred and unauthorized. See [`P1-B scope decision`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) |
 
 ## Handoff
@@ -323,7 +326,8 @@ summary without per-case evidence does not close this condition:
 - Required Handoff Content: exact candidate pins; P0 digest/reference; changed-surface
   set; adapter/source bindings; fixture matrix; explicit `as_of`; daily-Beta reuse keys;
   invalidation/escalation results; P-01/D-01 facts; privacy/hot-path checks; reviewer
-  package digest; `REP-Q-01` and hosted-provenance status; explicit non-claims.
+  package digest; the [REP-Q-01 / hosted provenance closure receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md);
+  explicit non-claims.
 - Revalidation Trigger: any candidate, schema/evaluator, Profile, owner/source,
   privacy, Main-App diagnostics, publication or `required` boundary change.
 
@@ -351,3 +355,9 @@ summary without per-case evidence does not close this condition:
   historical migration/backfill and background sync remain `Deferred` and unauthorized.
   No new P1-B Assignment or Authorization was created. The P1-A `REP-Q-01` and
   hosted-provenance residuals remain unchanged.
+- `2026-09-15T11:36:22+08:00`: The [REP-Q-01 / hosted provenance closure
+  receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md)
+  bound the Main-App source-owner candidate `ad39f44…` and the UK-005 package head
+  `666a421…`; hosted run `34924569095` returned `success` with the exact UK-005
+  `headSha`. The scoped commit/push/PR authorization was exercised; no merge, Release
+  or publication action was performed.

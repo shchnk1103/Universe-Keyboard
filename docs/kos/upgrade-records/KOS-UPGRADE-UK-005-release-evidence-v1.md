@@ -21,9 +21,11 @@
 - Risk: pinning an untagged upstream implementation as if it were a Kit Release would
   make the project's Upgrade Status ambiguous; adopting before the current local candidate
   has a final SHA would also confuse a worktree snapshot with a publication fact.
-- Next handoff: the implementation Assignments own `REP-Q-01` and hosted-provenance
-  closure; the separate P1-B Product Decision records duplicate UI/storage as
-  `Not applicable` and migration/backfill/background sync as `Deferred`/unauthorized.
+- Next handoff: the implementation Assignments have closed `REP-Q-01` and
+  candidate-bound hosted CI provenance in the [P1-A closure receipt](../../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md);
+  P-01/D-01 and Product/Release/publication facts remain separate. The P1-B Product
+  Decision records duplicate UI/storage as `Not applicable` and
+  migration/backfill/background sync as `Deferred`/unauthorized.
 - Revalidation: new upstream tag/Release, any change to the pinned commits/digests, local
   finalization or semantic change of `RELEASE-EVIDENCE-PROMOTION-001`, or a request to
   migrate an existing Active Assignment.
@@ -47,8 +49,9 @@ The P1-B scope authority is [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../../product-d
 - no new P1-B implementation Assignment exists unless Product later supersedes this
   decision with a precise residual scope.
 
-These decisions do not close `REP-Q-01`, hosted provenance, current-proof or any
-Product/Quality/Release Gate.
+The [P1-A closure receipt](../../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md)
+closes UK-005 `REP-Q-01` and candidate-bound hosted CI provenance. It does not produce
+current-proof, P-01/D-01, or any Product/Quality/Release Gate.
 
 ## Frozen upstream source map
 
