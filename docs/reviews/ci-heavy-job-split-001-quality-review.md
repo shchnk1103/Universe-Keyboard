@@ -175,4 +175,3 @@ Executor 稿 [`ci-heavy-job-split-001-hosted-full-2026-09-15.md`](../evidence/ci
 
 - **CHS-Q-02 `fix`：** Assignment Close 仍须 hosted `docs_only`（五条 heavy 恰好 `skipped` 且 Gate `success`）。不得为取证而合并 fixture PR，除非另授权。
 - 本 Pass with conditions **不**因 CHS-Q-01/03 closed 变成无条件 Pass、merge-ready 或 Product Gate。
-
