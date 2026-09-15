@@ -73,7 +73,7 @@ Path: **设置 → 诊断** (`DiagnosticsSettingsView`).
 **Form crash class (`SwiftUI.AsyncRenderer` / libdispatch “Block was expected to execute on queue”):**
 
 1. Conditional `if flag { Section {…} }` remount under Toggle (historical).
-2. Custom `ToggleStyle` inside `Form` correlated with residual asserts. **All main-App toggles use system `.toggleStyle(.switch)`.**
+2. Custom-drawn `ToggleStyle` (Capsule / ZStack thumbs) inside `Form` correlated with residual asserts. **All main-App toggles use `.toggleStyle(.appSwitch)`, which hosts system `UISwitch` and `AppSwitchChrome`. Do not draw switch chrome in SwiftUI.**
 3. Avoid `.animation(_:value:)` on Form sections / opacity driven by the master flag.
 
 **Same Form-topology rule** for notifications detail rows, RIME automatic-sync children, haptic level: always-mounted + disabled/dimming.

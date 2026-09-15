@@ -7,11 +7,12 @@
 
 import SwiftUI
 
-/// Title + description + system switch.
+/// Title + description + shared `AppSwitch` chrome.
 ///
-/// Product preference: use native `.toggleStyle(.switch)` everywhere (including Form).
-/// Custom drawn switches were retired after Form + custom styles correlated with
-/// `SwiftUI.AsyncRenderer` / libdispatch crashes on the diagnostics page.
+/// All main-App switches use `.toggleStyle(.appSwitch)`, which hosts system
+/// `UISwitch` and applies `AppSwitchChrome`. Do not reintroduce custom-drawn
+/// `ToggleStyle` chrome — that class correlated with `SwiftUI.AsyncRenderer` /
+/// libdispatch crashes on the diagnostics page.
 struct ToggleRow: View {
     let title: String
     let description: String
@@ -23,7 +24,7 @@ struct ToggleRow: View {
                 Text(title)
                     .font(.body)
             }
-            .toggleStyle(.switch)
+            .toggleStyle(.appSwitch)
             Text(description)
                 .font(.footnote)
                 .foregroundStyle(.secondary)

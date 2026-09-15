@@ -5,8 +5,8 @@ import SwiftUI
 ///
 /// **Crash contract (Form + AsyncRenderer / libdispatch):**
 /// - Never insert/remove Form sections when the master switch flips.
-/// - Use **system** `Toggle` (`.switch`) — project-wide default; custom
-///   monochrome styles were retired after Form + custom styles correlated with
+/// - Use shared `.toggleStyle(.appSwitch)` (system `UISwitch` chrome). Do not
+///   reintroduce custom-drawn `ToggleStyle` Capsules; those correlated with
 ///   `SwiftUI.AsyncRenderer` / libdispatch asserts.
 /// - No `.animation(_:value: loggingEnabled)` on Form sections (opacity/status).
 /// - Category flags stay in a plain `@State` dictionary (no `@Observable` fan-out).
@@ -122,7 +122,7 @@ struct DiagnosticsSettingsView: View {
                 }
             }
             // System switch: native animation + Form-safe interaction path.
-            .toggleStyle(.switch)
+            .toggleStyle(.appSwitch)
         } header: {
             Text("记录控制")
         } footer: {
@@ -189,7 +189,7 @@ struct DiagnosticsSettingsView: View {
                 )
             )
             .labelsHidden()
-            .toggleStyle(.switch)
+            .toggleStyle(.appSwitch)
             .fixedSize(horizontal: true, vertical: false)
         }
         .padding(.vertical, 2)
@@ -213,7 +213,7 @@ struct DiagnosticsSettingsView: View {
                         .foregroundStyle(.secondary)
                     }
                 }
-                .toggleStyle(.switch)
+                .toggleStyle(.appSwitch)
                 .disabled(!loggingEnabled)
 
                 Toggle(isOn: diagnosticsExpiryNotificationBinding) {
@@ -224,7 +224,7 @@ struct DiagnosticsSettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .toggleStyle(.switch)
+                .toggleStyle(.appSwitch)
                 .disabled(!loggingEnabled)
             } header: {
                 Text("短时采样")
@@ -244,7 +244,7 @@ struct DiagnosticsSettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .toggleStyle(.switch)
+                .toggleStyle(.appSwitch)
             } header: {
                 Text("按键检查")
             } footer: {

@@ -126,7 +126,7 @@ struct RimeSyncSettingsView: View {
                     set: { model.setAutomaticSyncEnabled($0) }
                 )
             )
-            .toggleStyle(.switch)
+            .toggleStyle(.appSwitch)
             .disabled(!model.canEnableAutomaticStandardSync)
 
             // Always mounted when parent section is shown; dim when auto-sync off.
@@ -144,7 +144,7 @@ struct RimeSyncSettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .toggleStyle(.switch)
+                .toggleStyle(.appSwitch)
 
                 Toggle(
                     isOn: Binding(
@@ -159,7 +159,7 @@ struct RimeSyncSettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .toggleStyle(.switch)
+                .toggleStyle(.appSwitch)
 
                 Picker(
                     "同步间隔",

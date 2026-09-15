@@ -174,7 +174,7 @@ Reuse these components:
 - `LoadingStateView`: inline `ProgressView` ± message for Form/overview busy states.
 - `InfoSection`: titled grouped information sections (Guide and detail cards; radius `AppRadius.card`).
 - `SettingsNavigationLink`: settings-style navigation rows (built on `AppCard` + `AppIconTile`).
-- `ToggleRow` + **system** `.toggleStyle(.switch)` for all main-App switches (same look as Diagnostics). Do **not** reintroduce custom-drawn `ToggleStyle` implementations in `Form` — they correlated with `SwiftUI.AsyncRenderer` / libdispatch crashes. Page-level `.tint(.primary)` keeps on-state monochrome. For gated children: always-mounted + `.disabled` + opacity dimming (no section insert/remove on master toggle).
+- `ToggleRow` + shared `.toggleStyle(.appSwitch)` for all main-App switches (same look as Diagnostics). The style hosts system `UISwitch` and applies `AppSwitchChrome`: light on = black track + white thumb; dark on = white track + black thumb; off thumbs stay white. Do **not** reintroduce custom-drawn `ToggleStyle` Capsules in `Form` — they correlated with `SwiftUI.AsyncRenderer` / libdispatch crashes. Page-level `.tint(.primary)` keeps on-track monochrome and must not override the shared thumb pair. For gated children: always-mounted + `.disabled` + opacity dimming (no section insert/remove on master toggle).
 - `BulletRow`: concise feature/checklist rows.
 - `CapsuleBadge`: small metadata badges.
 - `AppMotion` helpers: press style and card entrance (see Motion below).

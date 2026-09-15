@@ -21,6 +21,8 @@ Current update: `2026-09-15 Asia/Shanghai` — Human Product Owner 已正式采�
 
 Current update: `2026-09-15 Asia/Shanghai` — PR [#128](https://github.com/shchnk1103/Universe-Keyboard/pull/128) 已合并至 `main`（merge commit `1a405143`）；hosted Swift 6 Quality run `34920137639` 全部通过。该合并仅记录 engineering/docs publication，不改变 Product Gate、Quality Pass、Release Pass、TestFlight 或外部发布边界；`RELEASE-EVIDENCE-PROMOTION-001` 仍为 `Reviewed`，P1-B 仍为 `Not authorized / deferred`，等待新的 Product Decision、Assignment、Authorization 和 ADR-0027 review。
 
+Current update: `2026-09-15 Asia/Shanghai` — [`APP-SWITCH-CONTRAST-001`](assignments/app-switch-contrast-001.md) 已完成新身份 Quality 增量核对与 iPhone 13 Pro / iOS 27 Human-attested 四态观察；Human Product Gate 已接受，Assignment `Closed`。不进入 Active Work 表；无 Device-attested / push / PR / merge / TestFlight / Release。
+
 Current update: `2026-09-09 Asia/Shanghai` — ADR 0034 Architecture Accept **review completed**: [`adr-0034-architecture-accept-review-2026-09-09.md`](reviews/adr-0034-architecture-accept-review-2026-09-09.md) — **Conditional Accept**（清单 [`…-checklist…`](reviews/adr-0034-architecture-accept-checklist-2026-09-09.md)）。ADR **仍 Proposed**；非 Product Gate / TestFlight / Accept；`RTRD-01`/`RTRD-02` 仍独立；PR #101 docs draft。
 
 Current update: `2026-09-10 Asia/Shanghai` — PR [#109](https://github.com/shchnk1103/Universe-Keyboard/pull/109) merged `0fd3518`（SUG-07 preflight，无卸载）；PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) merged `4e4164f`（RTRD-01 诊断 UI）。本 M-02 将 `KOS-SUG-OBS-DEVICE-001` 与 `SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001` 标为 Closed 并从本表移除。`SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001` 仍 Active（`RTRD-02` open）。无卸载、无 SUG-08、无 Product Gate / TestFlight / Release。
