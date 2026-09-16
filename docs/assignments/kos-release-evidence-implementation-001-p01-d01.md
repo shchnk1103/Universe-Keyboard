@@ -11,7 +11,7 @@ Policy version: 1.0.0
   "lifecycle": "closed",
   "current_phase": "P-01/D-01 facts recorded for the frozen candidate; fact-only handoff closed",
   "authorization_action": "produce_uk005_p01_d01_facts",
-  "updated_at": "2026-09-16T21:23:13+08:00",
+  "updated_at": "2026-09-16T21:30:22+08:00",
   "revalidation_triggers": [
     "candidate_head_changed",
     "final_tree_changed",
@@ -46,7 +46,8 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Closed |
-| Current Phase | P-01/D-01 facts recorded for frozen candidate `07b4a434…`; Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845) is same-head green; fact-only handoff closed |
+| Current Phase | P-01/D-01 facts recorded for the frozen candidate; fact-only handoff closed |
+| Fact binding | Candidate `07b4a434…`; Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845) is same-head green |
 | Material non-claims | No code or UI implementation; no current-proof, Product/Quality/Release Gate, TestFlight, App Store Connect, upload, Release or external-publication action |
 | Next handoff / decision | Fact-only handoff complete; hand the two receipts to the UK-005 release-evidence owner. Any later Product/Release/publication action needs a new Assignment and Authorization |
 | Residuals | None within this fact-only slice; Product/Release/publication remains outside scope and separately unauthorized |

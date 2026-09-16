@@ -13,7 +13,7 @@
 | Assignment | [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01`](../assignments/kos-release-evidence-implementation-001-p01-d01.md) |
 | Authorization | [`AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01`](../authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01.md) |
 | Receipt type | D-01 final-documentation validation only |
-| Observed at | `2026-09-16T21:23:13+08:00` Asia/Shanghai |
+| Observed at | `2026-09-16T21:30:22+08:00` Asia/Shanghai |
 | Final commit | `07b4a4346f178a770531dbfcb8f33373a896f223` |
 | Final tree | `421c313dea6082c5e5c4bb85e225b855224e7294` |
 | Baseline | `d5c53f2cbda85e16721b9eafae09a763f6a04471` |
@@ -36,20 +36,20 @@ its digest. This post-CI revision keeps that boundary unchanged.
 | Final-gate matrix | `bash scripts/ci/tests/test_verify_final_gate.sh` and KOS trigger-path checks: passed for `requires_full=false` |
 | Pinned KOS validator | Kit commit `f5c88d57f599d7ef352322ea7664f637fb288d60`; structural validation exited `0`, with pre-existing repository warnings only |
 
-After this lifecycle/status-mirror revision, the six changed Markdown files were checked with:
+After this corrective status-mirror revision, the three changed Markdown files were checked with:
 
 ```bash
-git diff --check 5edd06f HEAD
+git diff --check 98e8456 HEAD
 python3 scripts/ci/classify_changes.py \
-  --base 5edd06f \
+  --base 98e8456 \
   --head HEAD
 python3 scripts/ci/check_markdown_links.py \
-  --base 5edd06f \
+  --base 98e8456 \
   --head HEAD
 ```
 
-The lifecycle/status-mirror delta classified as `docs_only`, `requires_full=false`,
-with six changed Markdown files; the diff check and both local-link checks passed.
+The corrective status-mirror delta classified as `docs_only`, `requires_full=false`,
+with three changed Markdown files; the diff check and both local-link checks passed.
 
 The exact combined post-freeze command was:
 

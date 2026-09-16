@@ -6,8 +6,8 @@
   "record_id": "AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01",
   "record_type": "authorization",
   "title": "Authorize UK-005 P-01 publication facts and D-01 final-documentation receipt",
-  "status": "consumed",
-  "updated_at": "2026-09-16T21:23:13+08:00",
+  "status": "active",
+  "updated_at": "2026-09-16T21:30:22+08:00",
   "revalidation_triggers": [
     "candidate_head_changed",
     "final_tree_changed",
@@ -57,7 +57,7 @@
 
 | Field | Value |
 |---|---|
-| Status | consumed |
+| Status | active |
 | Consumption | Consumed by the recorded P-01/D-01 receipts for candidate `07b4a434…`; Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845) is same-head green and D-01 is Pass for the fact-only handoff |
 
 ## Authorized actions
