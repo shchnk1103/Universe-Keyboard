@@ -115,7 +115,34 @@ external_action: upload-only | internal-distribution | external-distribution | b
 
 全新安装只在 onboarding、App Group、RIME 部署/方案下载、用户词典或安装生命周期变化时重新触发；TD-003/004/005 也按触发器重新验证，而不是按 build number 自动全量重跑。
 
-本建议稿仍保持「建议稿；未采纳」。任何后续有界实现切片不在本文记录，也不把本稿升级为 KOS 规则或 Release Gate。
+本建议稿仍保持“建议稿；未采纳”的非权威状态。Human Product Owner 已通过单独的
+[RELEASE-EVIDENCE-PROMOTION-001 Product Decision](../product-decisions/RELEASE-EVIDENCE-PROMOTION-001-authorization.md)
+和 [Authorization](../authorizations/AUTH-RELEASE-EVIDENCE-PROMOTION-001.md) 授权一个有界实现切片；
+这不是把本建议稿直接升级为 KOS 规则。
+
+当前实现包括：
+
+- scripts/release/release_evidence.py：按变更路径输出 delta、triggered、baseline
+  或 docs_only 计划，同时明确现有 CI 仍为独立的 full 门禁；
+- Candidate receipt：记录版本/构建、提交和 archive/package 摘要，未知字段保持
+  UNKNOWN；五个最小 identity 字段与额外 provenance 分开；首次/后续 external receipt
+  分别要求 verified baseline plan / previous receipt；
+- Beta → 外部候选 promotion：pending 产物不会形成通过；只有完整且一致的 artifact
+  identity、行为契约、验证档位、候选/版本/构建绑定、设备/系统、证据契约和 freshness
+  才能成为 current-proof；新构建或身份未完整核对时只能是 comparator；
+- Main App Diagnostics 下的发布证据会话：记录内容无关的有限结果，保存在独立的
+  App Group 文件中，最多保留 50 条，不混入诊断 JSONL；pending external 总体不会
+  显示通过，损坏 archive 会保留隔离副本后恢复保存；
+- 发布清单增加复用边界，强调外部候选专属检查、独立 Quality、Product Gate 和
+  Release Pass 不会因 promotion 自动完成。
+
+实现与治理边界见
+[RELEASE-EVIDENCE-PROMOTION-001 Assignment](../assignments/release-evidence-promotion-001.md)
+和 [ADR 0035](../architecture/decisions/0035-release-evidence-accumulation-and-promotion.md)。
+ADR 0035 当前状态为 `Accepted — Conditional Accept package`，且仅适用于
+`RELEASE-EVIDENCE-PROMOTION-001`；它不关闭或替代 UK-005/P1-A adapter package、deferred
+P1-B diagnostics slice 或 Build 55 的独立 Quality/Release 状态。本文仍保持“建议稿；未采纳”；
+以上实现摘要是历史/非权威补充，不构成对本建议稿的采纳或新的冻结合同。
 
 ## 建议的后续 Beta 最小路径
 
