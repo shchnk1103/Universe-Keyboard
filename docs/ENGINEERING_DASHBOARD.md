@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-15 Asia/Shanghai
+> **Updated:** 2026-09-16 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -69,19 +69,26 @@
 
 ## KOS-UPGRADE-UK-005 — prospective `kos.release-evidence` adoption
 
-- **Lifecycle:** review Assignment [`KOS-UPGRADE-UK-005`](assignments/kos-upgrade-uk-005-release-evidence-v1.md) `Closed`; implementation parent and child remain `Active` because P-01/D-01 and Product/Release/publication handoff remain separate. `REP-Q-01` and candidate-bound hosted provenance are `Closed` by the [P1-A provenance receipt](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md).
-- **Authority:** project adoption [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) · P1-B Option A [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · P1-A [`Assignment`](assignments/kos-release-evidence-implementation-001-p1.md)
-- **Current phase:** P1-A implementation and exact-digest Architecture/Quality reviews passed; duplicate P1-B Main-App UI/storage is `Not applicable`; historical migration/backfill is `Deferred`; background sync/network is `Deferred` and unauthorized.
-- **Non-claims:** no current-proof, Product/Quality/Release Gate, TestFlight, App Store Connect, merge or Release conclusion; no new P1-B implementation is authorized.
-- **Next:** produce separately owned P-01/D-01 and Product/Release/publication handoff facts if needed; reopen P1-B only if Product supersedes Option A with precise scope.
+- **Lifecycle:** review Assignment [`KOS-UPGRADE-UK-005`](assignments/kos-upgrade-uk-005-release-evidence-v1.md) `Closed`; implementation parent and P1-A child remain `Active`; the fact-only P-01/D-01 child is `Closed`. `REP-Q-01` and candidate-bound hosted provenance are `Closed` by the [P1-A provenance receipt](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md), and P-01/D-01 facts are recorded by the [child receipts](evidence/kos-release-evidence-implementation-001-p01-delivery-facts-2026-09-16.md) / [D-01 receipt](evidence/kos-release-evidence-implementation-001-d01-final-documentation-2026-09-16.md).
+- **Authority:** project adoption [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) · P1-B Option A [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · P1-A [`Assignment`](assignments/kos-release-evidence-implementation-001-p1.md) · [P-01/D-01 Assignment](assignments/kos-release-evidence-implementation-001-p01-d01.md)
+- **Current phase:** P1-A implementation/reviews/provenance and F-001 engineering merge are complete; P-01/D-01 facts for candidate `07b4a434…` are recorded with same-head Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845), and the fact-only child is closed. Duplicate P1-B Main-App UI/storage is `Not applicable`; historical migration/backfill is `Deferred`; background sync/network is `Deferred` and unauthorized.
+- **Non-claims:** no current-proof, Product/Quality/Release Gate, TestFlight, App Store Connect, upload, external-publication or Release conclusion; no new P1-B implementation is authorized.
+- **Next:** none for this fact-only child; hand the recorded P-01/D-01 facts to the UK-005 release-evidence owner. Any Product/Release/publication action remains separately owned and unauthorized.
 
 ## KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001 — source identity fail-closed remediation
 
-- **Lifecycle:** [`Assignment`](assignments/kos-release-evidence-implementation-001-p1-f001.md) `Closed` after the narrow Human Product Gate; original, Coverage-R1 and Quality-R1 Authorizations remain recorded as `active / consumed`. Baseline remains exact `5692cf6`; adapter logic and fixture runner are unchanged.
+- **Lifecycle:** [`Assignment`](assignments/kos-release-evidence-implementation-001-p1-f001.md) `Closed` after the narrow Human Product Gate; PR #136 is later recorded as an engineering merge at `d5c53f2c`; original, Coverage-R1 and Quality-R1 Authorizations remain recorded as `active / consumed`. Baseline remains exact `5692cf6`; adapter logic and fixture runner are unchanged.
 - **Authority:** existing UK-005 P1-A scope decision · F-001 Assignment/Authorizations · accepted [`F-001 Coverage-R1 Product Decision`](product-decisions/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001-product-gate.md); previous P1 Authorization is not reused.
-- **Current phase:** Coverage-R1 accepted and Assignment transitioned `Reviewed → Closed`: `26/26` focused tests, `20/20` F-001 subTests and `76/76` pinned fixtures passed; Architecture status-only revalidation and fresh independent Quality-R1 review **approved** the exact handoff package with no blocking finding.
-- **Non-claims:** no current-proof authority, overall UK-005/P1 Product or Release Gate, TestFlight, App Store Connect, merge or Release; F-002–F-004, Quality P1-01/P1-02, P1-B and Build 55 TD-003/004/005 remain outside this slice and Build 55 items remain `open`.
-- **Next:** No further action for this narrow F-001 Assignment. Any Release, merge, external publication or work on another finding requires a separate Assignment/Authorization/Product decision. See the [Product Decision](product-decisions/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001-product-gate.md), [Quality-R1 review](reviews/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-p1-f001-quality-review-r1-2026-09-16.md) and [Architecture status revalidation](reviews/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-p1-f001-architecture-status-revalidation-2026-09-16.md).
+- **Current phase:** Coverage-R1 accepted and Assignment transitioned `Reviewed → Closed`: `26/26` focused tests, `20/20` F-001 subTests and `76/76` pinned fixtures passed; Architecture status-only revalidation and fresh independent Quality-R1 review **approved** the exact handoff package with no blocking finding. PR #136 was subsequently merged as an engineering action; it did not widen the Product Gate.
+- **Non-claims:** no current-proof authority, overall UK-005/P1 Product or Release Gate, TestFlight, App Store Connect, upload or Release; F-002–F-004, Quality P1-01/P1-02, P1-B and Build 55 TD-003/004/005 remain outside this slice and Build 55 items remain `open`.
+- **Next:** No further action for this narrow F-001 Assignment. P-01/D-01 is tracked by the separate fact-only child below; any Product/Release/publication action requires separate authority. See the [Product Decision](product-decisions/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001-product-gate.md), [Quality-R1 review](reviews/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-p1-f001-quality-review-r1-2026-09-16.md) and [Architecture status revalidation](reviews/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-p1-f001-architecture-status-revalidation-2026-09-16.md).
+
+## KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01 — UK-005 fact-only handoff
+
+- **Lifecycle:** [`Assignment`](assignments/kos-release-evidence-implementation-001-p01-d01.md) `Closed`; matching [`Authorization`](authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01.md) `consumed`
+- **Current phase:** P-01/D-01 facts are recorded for frozen candidate `07b4a434…`; candidate/published/Hosted CI heads are same-head, Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845) succeeded, and D-01 documentation validation is `Pass` for this handoff only.
+- **Non-claims:** no code/UI change, device, archive/export, signing, PR, merge, upload, TestFlight, App Store Connect, Product/Quality/Release Gate, current-proof or Release conclusion
+- **Next:** none for this fact-only slice. A later Product/Release/publication process requires a new bounded Assignment and matching human Authorization.
 
 ## KOS improvement suggestions — disposition recorded
 
