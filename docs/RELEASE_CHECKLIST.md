@@ -209,12 +209,28 @@ delivery, Beta Review and Product/Release authority remain separate.
 The fixture runner first verifies the pinned Kit implementation/adoption commits, clean
 worktree, candidate tree digest and the three semantic source digests. The fixture report
 records each case ID, exact evaluator command, explicit `--as-of`, stdout/stderr, exit
-code and non-claim. `REP-Q-01` remains unresolved in this P1-A slice; the adapter's
-code-controlled source-binding gate downgrades otherwise passing Main-App observations
-to `inconclusive`, so an adapter-generated Envelope cannot produce `current-proof` until
-that residual is closed and a new package is reviewed. Any `current-proof` result is a derived contract
-classification only; it is not an upload authorization, Beta Review submission,
-Product Gate, Quality Gate, Release Pass or App Store publication.
+code and non-claim. For the UK-005 P1-A implementation, `REP-Q-01` and
+candidate-bound hosted provenance are closed by the [closure receipt](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md),
+which binds the exact Main-App source-owner identity and same-head hosted CI relation for
+that candidate. This closes the implementation/source-owner identity boundary for that
+candidate only; it does not establish P-01/D-01 facts, current external-candidate
+readiness, Product Gate, Quality/Release Pass, App Store Connect, TestFlight or
+publication readiness.
+
+The earlier 2026-09-14 [`Needs work` exact-digest review](reviews/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-p1-architecture-remediation-exact-digest-review-2026-09-14.md)
+remains a historical result for its older package digest and does not supersede the later
+closure receipt. For any new or changed candidate, missing, unknown, stale or unbound
+source/candidate/provenance remains comparator, pending or inconclusive under the Profile;
+revalidation triggers require a new exact package and applicable review. Any
+`current-proof` result is a derived contract classification only; it is not an upload
+authorization, Beta Review submission, Product Gate, Quality Gate, Release Pass or App
+Store publication.
+
+For clarity, this checklist update itself changes `docs/RELEASE_CHECKLIST.md`, one of the
+six files in the historical UK-005 P1-A package. It therefore produces a new package
+digest; neither the historical exact-digest review nor the later closure receipt
+automatically covers this changed package. Keep any `current-proof` reuse pending until a
+new exact-digest review binds the resulting package.
 
 Minimal command set (same intent as CI; fill destination if the default simulator is missing):
 

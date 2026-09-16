@@ -29,7 +29,9 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 - **Priority:** High
 - **Risk:** Startup, input, candidate or memory regressions cannot be judged against evidence; jetsam may be mistaken for an ordinary lifecycle exit.
 - **Current mitigation:** Coarse performance logging and manual release checks.
-- **Current evidence status (`2026-08-24`):** Frozen Build 7 P4 reached an independently reviewed iPhone 13 Pro / iOS 27 cold baseline, but current Beta Time Profiler ended both allowed machine arms at about `1.3 s` with `Device disconnected` before any Human instruction. Both traces are excluded; this is an evidence-environment blocker, not a performance pass/fail. See [`P4 evidence`](evidence/release-2026-08-01-04-build7-device-run-p4-2026-08-24.md).
+- **Current evidence status (`2026-09-13`):** Frozen Build 7 P4 remains excluded after both allowed machine arms ended at about `1.3 s` with `Device disconnected` before any Human instruction. Build 55 / Xcode 27 RC now has a retained `61.170705 s` diagnostic run plus a separate `151.239897 s` follow-up. The follow-up observed both product processes in `48/48` read-only snapshots and sampled `3,625` Keyboard rows, but produced no Main App Time Profiler rows and no controlled cold/warm, fixed-cadence, candidate, first-key or memory metric. This removes only the collector-retention uncertainty for the two runs; TD-003 remains open. See [`Build 55 diagnostic receipt`](evidence/release-2026-09-12-build55-td003-xcode27rc-diagnostic.md) and [`TD-003 cold/warm diagnostic`](evidence/release-2026-09-13-build55-td003-cold-warm-diagnostic.md).
+- **Human observation:** The Human Product Owner completed the declared synthetic keyboard sequence twice without reporting an abnormality; this is functional observation only and does not close TD-003.
+- **Collector result:** Two further Time Profiler starts, one after process termination and one after a full reboot, ended at `1.180512 s` and `1.194239 s` with `Device disconnected` and are excluded from the performance baseline.
 - **Recommended fix:** Collect the metrics and traces defined in `docs/PERFORMANCE_BASELINE.md`, then review evidence before setting budgets.
 - **Owner area:** Keyboard Extension, KeyboardCore, RimeBridge, test/release.
 - **Trigger to resolve:** Before TestFlight expansion, App Store submission or accepting a performance-sensitive architecture change.
@@ -39,7 +41,7 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 - **Priority:** High
 - **Risk:** Shared features can fail silently or UI may claim a capability is active when App Group access is unavailable; design matrix may overstate RIME-off without FA on some OS builds.
 - **Current mitigation:** `RequestsOpenAccess=true`, activation Guide + `ONBOARDING_ACTIVATION.md` under `RELEASE-2026-0801-03` (Conditional Product Gate). Device matrix on iPhone 13 Pro / iOS 27 beta 3 shows basic+RIME `nihao` still works with FA off when 雾凇 is pre-deployed; **haptics** are the clear FA-linked gap; no Extension degradation banner.
-- **Current evidence status (`2026-08-24`):** Build 7 P4 froze Full Access off with Apple keyboard current and Universe process zero, but Time Profiler failed before the first keyboard switch. No new off/on behavior evidence was produced; TD-004 remains open and the prior conditional matrix is not upgraded.
+- **Current evidence status (`2026-09-13`):** Build 7 P4 froze Full Access off with Apple keyboard current and Universe process zero. A current Build 55 / iOS 27 physical off/on run now confirms basic input and candidate commit in both arms, haptics absent off and present on, sound present in both, and no degradation prompt in either arm. A follow-up explicitly toggled the main-App haptic switch with Full Access on: vibration disappeared and returned in the Extension while sound and selection remained normal. A second follow-up observed a candidate-learning effect after selecting a non-leftmost candidate and re-entering the same synthetic sequence with Full Access on. A third follow-up enabled main-App diagnostic recording, invoked the keyboard and observed a new diagnostic record after returning, with normal keyboard behavior. A fourth follow-up disabled Full Access, created a new Extension session and observed no new diagnostic record after keyboard use; basic input remained usable and no degradation prompt appeared. A fifth follow-up confirmed that leaving the uninstalled 万象拼音 marked「可下载」does not trigger RIME redeployment; the main App remained「已部署」, so the safe resource-not-ready induction did not reach its target state. Extension-restart persistence, Full Access-off learning/backup behavior, other shared settings, resource-not-ready recovery and clean-state App Group behavior remain unverified; TD-004 remains open because matrix fidelity and Extension-visible recovery are not closed. See [`Build 55 TD-004 matrix`](evidence/release-2026-09-13-build55-td004-full-access-matrix.md).
 - **Recommended fix:** (1) Architecture-verify App Group / `runtimeDirectories` under FA off after cold Extension launch; (2) rewrite user-facing matrix around **observed** dependencies (feedback first); (3) add Extension-visible degraded cue when shared feedback/settings fail; (4) re-run on/off evidence before claiming self-diagnosing setup.
 - **Owner area:** Main App onboarding/settings, Keyboard Extension bootstrap, diagnostics.
 - **Trigger to resolve:** Before broad external testing or any claim that setup failures are self-diagnosing.
@@ -47,19 +49,26 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 ## TD-005: Complete Crash, Jetsam And Symbolication Handbook
 
 - **Priority:** High
-- **Status:** Procedure implemented; frozen Build 7 Archive/dSYM mapping retained;
-  current iPhone 13 Pro / iOS 27 collection/classification exercise remains open. P4 retained unchanged pre-run crash/Jetsam
-  lists (`11/62`), but the Time Profiler environment failed before Human input, so no post-run classification window exists.
+- **Status:** Procedure implemented; Build 7 and Build 55 Archive/dSYM mappings retained, but the current iPhone 13 Pro / iOS 27
+  classification exercise remains open. The `2026-09-13` read-only query and follow-up found three Build 55 UUID-bearing
+  Jetsam snapshots without a victim marker and one unrelated Build 1 crash report. UUID/dSYM correlation was reconfirmed,
+  but Archive and dSYM metadata report `CFBundleVersion=1` while the Store/Ad Hoc exports and export summaries report
+  build `55`; exact Archive identity therefore requires reconciliation. See [`Build 55 TD-005 query receipt`](evidence/release-2026-09-13-build55-td005-system-crash-query.md)
+  and [`Build 55 TD-005 classification follow-up`](evidence/release-2026-09-13-build55-td005-classification-follow-up.md).
 - **Risk:** Extension termination cannot be reliably classified or traced to an exact release build.
 - **Current mitigation:** [`CRASH_JETSAM_SYMBOLICATION.md`](CRASH_JETSAM_SYMBOLICATION.md)
   defines acquisition, classification, UUID/dSYM matching, Xcode/`atos`
   symbolication, privacy-safe storage and receipts. Frozen RC Build 7 retains
-  matching App/Keyboard dSYMs and exports. The current physical-device path has
-  not yet been exercised, so this debt is not repaid.
-- **Recommended fix:** Exercise the documented collection/classification path on
-  the frozen Build 7 ad hoc package with iPhone 13 Pro / iOS 27, retain a
-  privacy-safe receipt and prove that any matching report can be bound to the
-  exact App/Keyboard UUID and dSYM.
+  matching App/Keyboard dSYMs and exports. The current physical-device
+  acquisition path and UUID filtering have now been exercised, and the retained
+  App/Keyboard dSYMs match the observed executable UUIDs. No matching report
+  identifies a victim, and the Archive/export build-number discrepancy remains open.
+- **Recommended fix:** Do not repeat the completed read-only query/UUID correlation.
+  Resolve the remaining Archive/export identity discrepancy by binding the authoritative
+  Build 55 Archive/dSYM and exported package to the same candidate; the current UUID/dSYM
+  match does not close this identity check. Then complete the documented
+  classification/symbolication path for a report with sufficient victim evidence and
+  retain a privacy-safe receipt.
 - **Owner area:** Test/release and Keyboard Extension operations.
 - **Trigger to resolve:** Before TestFlight or immediately after the first unexplained production/TestFlight termination.
 
