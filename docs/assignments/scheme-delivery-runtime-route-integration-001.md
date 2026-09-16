@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Current Phase | P1 recovery contract、完整诊断序列与 live lease identity 证据已通过最终独立复审；后续真机门由 [`SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001`](scheme-delivery-runtime-route-device-001.md) 承接并已记录功能 Pass with conditions + docs tip `a007681`；Human 已授权 CI 绿后 undraft+merge #100 |
-| Material non-claims | 不改 Luna-only 产品策略、资源所有权、archive 删除范围、RimeBridge/Extension 代码；merge 不意味着 TestFlight、Release、Product Gate Passed 或本 Assignment / `RTRD-*` Closed |
-| Next handoff / decision | 集成工程片无新增编码动作。DEVICE-001 **Closed**。勿在本 Assignment 内扩展诊断 UI 或耗时测量 |
-| Residuals | `RTRI-01` resolver/snapshot 同源、`RTRI-02` route-state rollback、`RTRI-03` 部署与暂存顺序、`RTRI-04` Extension/真机矩阵均为 `fix`；`RTRI-05` recovery-incomplete 语义、完整序列与 lease 证据已满足 |
+| Lifecycle | Closed |
+| Current Phase | P1 recovery contract、完整诊断序列与 live lease identity 证据已通过最终独立复审；DEVICE-001、RTRD-01 与 RTRD-02 已分别完成；本 Assignment 的工程集成 scope 于 `2026-09-16` 关闭。 |
+| Material non-claims | 不改 Luna-only 产品策略、资源所有权、archive 删除范围、RimeBridge/Extension 代码；Closed 不意味着 Product Gate、TestFlight、Release 或 `RTRI-01…04` 已被修复。 |
+| Next handoff / decision | 本 Assignment 无下一动作；若要解决 `RTRI-01…04`、增加耗时对照或扩大真实 App Group / Extension 矩阵，另建 bounded Assignment / Authorization。 |
+| Residuals | [`Close receipt`](../evidence/scheme-delivery-runtime-route-integration-001-close-2026-09-16.md)；`RTRI-01…04` 与完整 CI 等价门按当前 Human Close `accept` 保留，`RTRI-05` 已满足。 |
 
 ---
 
@@ -109,3 +109,8 @@ failures whose original resource tree remains provably deployable.
 - `2026-09-10 Asia/Shanghai`: RTRD-01 UI Closed via PR #110. This Assignment stays Active; `RTRD-02` remains another case.
 - `2026-09-11 Asia/Shanghai`: RTRD-02 same-field gap Human accept; ELAPSED-001 Closed. This Assignment stays Active.
 - `2026-09-11 Asia/Shanghai`: DEVICE-001 Closed (engineering). This Assignment stays Active.
+- `2026-09-16 Asia/Shanghai`: Human Product Owner authorized engineering Assignment
+  Close. `RTRI-01…04` remain explicit accepted evidence/behavior boundaries rather
+  than silently becoming “fixed”; `RTRI-05` and the recorded implementation evidence
+  are closed by the [Close receipt](../evidence/scheme-delivery-runtime-route-integration-001-close-2026-09-16.md).
+  No Product Gate, TestFlight or Release action is inferred.

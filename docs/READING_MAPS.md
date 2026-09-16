@@ -167,9 +167,9 @@ Ownership: Primary [`Main App UI`](playbooks/main-app-ui.md) for download/instal
 3. `architecture/shared-container-and-rime-lifecycle.md`.
 4. `TECH_DEBT.md` TD-001. Add TD-011 when Lua/shared-prefix coexistence is in scope.
 5. `DEBUGGING.md` and `RELEASE_CHECKLIST.md`.
-6. For post-download `resource_preparation` failure or shared-file ownership: [`SCHEME-DELIVERY-SOURCE-STATE-001`](assignments/scheme-delivery-source-state-001.md), [`coexistence plan`](plans/scheme-resource-ownership-and-coexistence-plan.md) and Proposed [ADR 0034](architecture/decisions/0034-multi-scheme-resource-ownership.md). The plan is not an accepted architecture.
+6. For post-download `resource_preparation` failure or shared-file ownership: [`SCHEME-DELIVERY-SOURCE-STATE-001`](assignments/scheme-delivery-source-state-001.md) (**engineering Assignment Closed**), [`coexistence plan`](plans/scheme-resource-ownership-and-coexistence-plan.md) and [ADR 0034](architecture/decisions/0034-multi-scheme-resource-ownership.md) (**Accepted — Conditional**). The plan remains supporting history; the ADR is the architecture source.
 
-Required review: current non-atomic behavior, staging/rollback claims, download verification, interruption recovery and no Extension deployment. Do not treat a Proposed ADR or an unproven `default.yaml` overwrite as the device root cause.
+Required review: current non-atomic behavior, staging/rollback claims, download verification, interruption recovery and no Extension deployment. Do not treat the conditional ADR dispositions or an unproven `default.yaml` overwrite as a general device root cause.
 
 ## Modify Keyboard Layout Or Chinese Nine-Key
 
