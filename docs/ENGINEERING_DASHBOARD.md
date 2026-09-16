@@ -69,11 +69,11 @@
 
 ## KOS-UPGRADE-UK-005 — prospective `kos.release-evidence` adoption
 
-- **Lifecycle:** review Assignment [`KOS-UPGRADE-UK-005`](assignments/kos-upgrade-uk-005-release-evidence-v1.md) `Closed`; implementation parent and P1-A child remain `Active`; the fact-only P-01/D-01 child is `Closed`. `REP-Q-01` and candidate-bound hosted provenance are `Closed` by the [P1-A provenance receipt](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md), and P-01/D-01 facts are recorded by the [child receipts](evidence/kos-release-evidence-implementation-001-p01-delivery-facts-2026-09-16.md) / [D-01 receipt](evidence/kos-release-evidence-implementation-001-d01-final-documentation-2026-09-16.md).
+- **Lifecycle:** review Assignment [`KOS-UPGRADE-UK-005`](assignments/kos-upgrade-uk-005-release-evidence-v1.md) `Closed`; implementation parent and P1-A child are now `Closed`; the fact-only P-01/D-01 child is `Closed`. `REP-Q-01` and candidate-bound hosted provenance are `Closed` by the [P1-A provenance receipt](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md), and the engineering Close is recorded in the [UK-005 Close receipt](evidence/kos-release-evidence-implementation-001-close-2026-09-16.md).
 - **Authority:** project adoption [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) · P1-B Option A [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · P1-A [`Assignment`](assignments/kos-release-evidence-implementation-001-p1.md) · [P-01/D-01 Assignment](assignments/kos-release-evidence-implementation-001-p01-d01.md)
-- **Current phase:** P1-A implementation/reviews/provenance and F-001 engineering merge are complete; P-01/D-01 facts for candidate `07b4a434…` are recorded with same-head Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845), and the fact-only child is closed. Duplicate P1-B Main-App UI/storage is `Not applicable`; historical migration/backfill is `Deferred`; background sync/network is `Deferred` and unauthorized.
+- **Current phase:** UK-005 engineering/KOS scope is now Closed: P1-A implementation/reviews/provenance, F-001 engineering merge and P-01/D-01 facts for candidate `07b4a434…` are recorded with same-head Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845). Duplicate P1-B Main-App UI/storage is `Not applicable`; historical migration/backfill is `Deferred`; background sync/network is `Deferred` and unauthorized.
 - **Non-claims:** no current-proof, Product/Quality/Release Gate, TestFlight, App Store Connect, upload, external-publication or Release conclusion; no new P1-B implementation is authorized.
-- **Next:** none for this fact-only child; hand the recorded P-01/D-01 facts to the UK-005 release-evidence owner. Any Product/Release/publication action remains separately owned and unauthorized.
+- **Next:** none for this UK-005 engineering scope. Any Product/Release/publication action remains separately owned and requires a new bounded Assignment and Authorization.
 
 ## KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001 — source identity fail-closed remediation
 
@@ -127,6 +127,20 @@
 - **Current phase:** Closed. Residuals `RDIR-01` accept, `RDIR-02` tech_debt:TD-018, `RDIR-03` accept.
 - **Non-claims:** not Product Gate / TestFlight; not Device-attested; not TD-018 implementation.
 - **Next:** none for this Assignment. TD-018 remains a later slice.
+
+## SCHEME-DELIVERY-SOURCE-STATE-001 — 方案来源与多方案资源归属
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-source-state-001.md) `Closed` — engineering/source-state scope closed 2026-09-16; PR #100 `814abfd`, Platform, Wanxiang P4 and ADR 0034 records retained.
+- **Current phase:** source-state / cross-scheme matrix implementation and its bounded device follow-ups are recorded; residuals are listed in the [Close receipt](evidence/scheme-delivery-source-state-001-close-2026-09-16.md).
+- **Non-claims:** not full Product Gate, whole-Assignment Device-attested, failure-rollback device proof, TestFlight, App Store Connect or Release.
+- **Next:** none for this Assignment; new residual work requires a new bounded Assignment / Authorization.
+
+## SCHEME-DELIVERY-RUNTIME-ROUTE-INTEGRATION-001 — 主 App 活动卸载运行路由接线
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-integration-001.md) `Closed` — P1 final review and the recorded implementation scope closed 2026-09-16.
+- **Current phase:** DEVICE-001, RTRD-01 and RTRD-02 are separate closed slices; `RTRI-01…04` remain explicit accepted boundaries in the [Close receipt](evidence/scheme-delivery-runtime-route-integration-001-close-2026-09-16.md).
+- **Non-claims:** not general App Group atomicity, complete Extension/runtime proof, ordinary-Luna performance comparison, Product Gate, TestFlight or Release.
+- **Next:** none for this Assignment; changes to the accepted boundaries require a new bounded Assignment / Authorization.
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001 — CS09-10-02 device
 
@@ -199,13 +213,13 @@
 
 ## RIME-BUILTIN-LUNA-QUALITY-001 — F-02 内置朙月候选质量（PR #93）
 
-- **Lifecycle:** `Active` — Human Product Gate Passed for this merge slice
+- **Lifecycle:** `Closed` — engineering Assignment Close recorded 2026-09-16 after Human Product Gate acceptance for the merge slice
 - **Authority:** [`Assignment`](assignments/rime-builtin-luna-quality-001.md) · [`Gate-98`](product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate-98.md) · [`AUTH-98`](authorizations/AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE-98.md) · ADR [`0033`](architecture/decisions/0033-main-app-owned-offline-rime-resource-closure.md) `Accepted`
 - **Current evidence:** #93 `ecd3446` Arch/Quality `Pass with conditions`；#98 `eedc4a7` Arch/Quality `Pass with conditions`；Human 删装确认自动部署与 fuzzy 默认关
 - **Blocker:** none for this merge slice
-- **Non-claims:** 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性
+- **Non-claims:** 不等于完整 Product/Quality Gate、TestFlight、Release 或法律充分性；`TD-001` 与接受的 F-02 范围限制仍保留
 - **Merged:** [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) `ec6c277`；[#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) `f352f50`
-- **Next:** 本片收工。Executor 无下一动作，除非 Product 再授权。无 Exit / TestFlight / Release
+- **Next:** none for this Assignment；详见 [Close receipt](evidence/rime-builtin-luna-quality-001-close-2026-09-16.md)。任何 residual 偿还或发布动作需另行授权
 
 ## KOS 2.2 advisory pin — 2026-08-27
 

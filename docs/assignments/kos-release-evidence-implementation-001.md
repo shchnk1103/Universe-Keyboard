@@ -6,10 +6,10 @@
   "record_id": "KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001",
   "record_type": "assignment",
   "title": "Implement the prospective kos.release-evidence adopter boundary",
-  "lifecycle": "active",
-  "current_phase": "P0 complete; child P1-A implementation, exact-digest Architecture/Quality reviews and candidate-bound provenance complete; F-001 engineering merge complete; P-01/D-01 fact-only child closed with same-head facts; Product/Release handoff remains separate; P1-B Option A disposition recorded",
+  "lifecycle": "closed",
+  "current_phase": "Engineering/KOS implementation and P-01/D-01 fact-handoff scope closed; Product/Release remains a separate authorization boundary; P1-B Option A disposition recorded",
   "authorization_action": "implement_release_evidence_adopter",
-  "updated_at": "2026-09-16T21:23:13+08:00",
+  "updated_at": "2026-09-16T22:37:06+08:00",
   "revalidation_triggers": [
     "upstream_candidate_changed",
     "hosted_provenance_rechecked",
@@ -37,13 +37,15 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | active |
-| Current Phase | P0 complete; child P1-A implementation, exact-digest Architecture/Quality reviews and candidate-bound provenance complete; F-001 engineering merge complete; P-01/D-01 fact-only child closed with same-head facts; Product/Release handoff remains separate; P1-B Option A disposition recorded |
-| Material non-claims | No historical migration; no Keyboard Extension hot-path I/O; no runtime network; no duplicate Main-App Diagnostics UI/storage change; no Product/Release Gate or current-proof. PR #136 is an engineering merge fact only; it is not Product/Release acceptance, a tag or a Release |
-| Next handoff / decision | The [UK-005 P1-A provenance receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md) and the child [P-01/D-01 facts](kos-release-evidence-implementation-001-p01-d01.md) close their respective evidence slices. The named Product/Release owner may decide whether a new, separately authorized handoff is needed. P1-B has no implementation handoff under [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) |
-| Residuals | No residual within the P-01/D-01 fact-only child. Later Product/Release/publication authority remains separate and unauthorized. `REP-Q-01` and candidate-bound hosted provenance are closed. Duplicate P1-B UI/storage is `Not applicable`; migration/backfill and background sync/network are `Deferred` and unauthorized |
+| Lifecycle | Closed |
+| Current Phase | Parent P0、P1-A implementation/reviews/provenance、F-001 engineering merge 与 P-01/D-01 fact-only handoff均已闭合；P1-B Option A 已处置。 |
+| Material non-claims | No historical migration; no Keyboard Extension hot-path I/O; no runtime network; no duplicate Main-App Diagnostics UI/storage change; no Product/Release Gate、current-proof、tag 或 Release conclusion。 |
+| Next handoff / decision | 本 Parent Assignment 无下一动作；任何 Product/Release/publication action 都需要新的 bounded Assignment 与匹配 Human Authorization。 |
+| Residuals | [`UK-005 Close receipt`](../evidence/kos-release-evidence-implementation-001-close-2026-09-16.md)；P1-B duplicate UI/storage `Not applicable`，migration/backfill 与 background sync/network `Deferred`/unauthorized。 |
 
-The current P-01/D-01 fact-only handoff is tracked by the [child Assignment](kos-release-evidence-implementation-001-p01-d01.md); it may produce only fresh candidate-bound facts and does not authorize Product/Release/publication action.
+The P-01/D-01 fact-only handoff is tracked by the [child Assignment](kos-release-evidence-implementation-001-p01-d01.md),
+which is now Closed. Its receipts remain candidate-bound facts and do not authorize
+Product/Release/publication action.
 
 ## Authority
 
@@ -231,3 +233,6 @@ validator, reviewer or Main-App status page into a Product/Quality/Release autho
   was verified. This did not produce current-proof, Product/Release acceptance or a Release.
   The new [P-01/D-01 fact-only Assignment](kos-release-evidence-implementation-001-p01-d01.md)
   was authorized separately; its final candidate and receipts remain unproduced.
+- `2026-09-16T22:37:06+08:00`: Human Product Owner authorized the engineering/KOS
+  Assignment Close recorded in the [UK-005 Close receipt](../evidence/kos-release-evidence-implementation-001-close-2026-09-16.md).
+  Parent and P1 are now Closed; this does not authorize Product/Release/publication.

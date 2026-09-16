@@ -8,11 +8,11 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) merged `f352f50`。本片收工。Assignment 仍 Active；无 Exit。 |
-| **Non-claims** | 无 Assignment Exit、无 TestFlight、无 Release、无法律充分性。 |
-| **Next** | Executor 无下一动作，除非 Product 再授权。不上传 TestFlight 或 Release。 |
-| **Residuals** | [M-03 table](#m-03-residuals-before-merge) · [`Architecture ecd3446`](rime-builtin-luna-quality-001-architecture-review.md#independent-architecture-re-review--ecd3446--2026-09-03) · [`Quality ecd3446`](rime-builtin-luna-quality-001-quality-review.md#independent-quality-re-review--ecd3446--2026-09-03) · [`Gate`](../product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate.md) · [`device handoff`](../evidence/rime-builtin-luna-quality-f02-device-handoff-2026-08-31.md) |
+| **Lifecycle** | `Closed` |
+| **Phase** | 工程实现、独立复审、M-03 residual disposition 与 PR [#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) merge scope 已关闭（`f352f50`）；Close receipt 已记录。 |
+| **Non-claims** | Assignment Close 不等于 Product/Quality Gate、TestFlight、Release 或法律充分性；`TD-001` 与已接受范围限制继续保留。 |
+| **Next** | 本 Assignment 无下一动作；任何 residual 偿还、产品范围扩展或发布动作需新的 bounded Assignment / Authorization。 |
+| **Residuals** | [`Close receipt`](../evidence/rime-builtin-luna-quality-001-close-2026-09-16.md) · [M-03 table](#m-03-residuals-before-merge) · [`TD-001`](../TECH_DEBT.md#td-001-atomic-schema-installation) |
 
 ### M-03 residuals before merge
 
@@ -472,3 +472,7 @@ built-in assets.
   consumed. M-02 applied. Assignment remains `Active`.
 - `2026-09-04 Asia/Shanghai` — Human Product Owner parked this line: no F-02
   Exit, no release-gate close. Executor idle until Product re-authorizes.
+- `2026-09-16T22:37:06+08:00` — Human Product Owner authorized the engineering
+  Assignment Close. All M-03 rows retain an explicit disposition; `TD-001` and
+  accepted scope limitations remain visible in the [Close receipt](../evidence/rime-builtin-luna-quality-001-close-2026-09-16.md).
+  This Close does not authorize TestFlight, Release or publication.
