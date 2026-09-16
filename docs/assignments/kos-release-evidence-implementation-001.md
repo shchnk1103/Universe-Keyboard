@@ -7,9 +7,9 @@
   "record_type": "assignment",
   "title": "Implement the prospective kos.release-evidence adopter boundary",
   "lifecycle": "active",
-  "current_phase": "P0 complete; child P1-A implementation, exact-digest Architecture/Quality reviews and candidate-bound provenance complete; P-01/D-01 and Product/Release handoff remain separate; P1-B Option A disposition recorded",
+  "current_phase": "P0 complete; child P1-A implementation, exact-digest Architecture/Quality reviews and candidate-bound provenance complete; F-001 engineering merge complete; P-01/D-01 fact-only handoff active; Product/Release handoff remains separate; P1-B Option A disposition recorded",
   "authorization_action": "implement_release_evidence_adopter",
-  "updated_at": "2026-09-15T11:36:22+08:00",
+  "updated_at": "2026-09-16T18:58:07+08:00",
   "revalidation_triggers": [
     "upstream_candidate_changed",
     "hosted_provenance_rechecked",
@@ -38,10 +38,12 @@
 | Field | Value |
 |---|---|
 | Lifecycle | active |
-| Current Phase | P0 complete; child P1-A implementation, exact-digest Architecture/Quality reviews and candidate-bound provenance complete; P-01/D-01 and Product/Release handoff remain separate; P1-B Option A disposition recorded |
-| Material non-claims | No historical migration; no Keyboard Extension hot-path I/O; no runtime network; no duplicate Main-App Diagnostics UI/storage change; no Product/Release Gate; no merge, tag or Release |
+| Current Phase | P0 complete; child P1-A implementation, exact-digest Architecture/Quality reviews and candidate-bound provenance complete; F-001 engineering merge complete; P-01/D-01 fact-only handoff active; Product/Release handoff remains separate; P1-B Option A disposition recorded |
+| Material non-claims | No historical migration; no Keyboard Extension hot-path I/O; no runtime network; no duplicate Main-App Diagnostics UI/storage change; no Product/Release Gate or current-proof. PR #136 is an engineering merge fact only; it is not Product/Release acceptance, a tag or a Release |
 | Next handoff / decision | The [UK-005 P1-A provenance receipt](../evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md) closes `REP-Q-01` and candidate-bound hosted CI provenance. P-01/D-01 facts and any Product/Release/publication action still require their named owners and separate authority. P1-B has no implementation handoff under [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) |
 | Residuals | P-01/D-01 delivery/final-validation facts and later Product/Release/publication authority remain open. `REP-Q-01` and candidate-bound hosted provenance are closed. Duplicate P1-B UI/storage is `Not applicable`; migration/backfill and background sync/network are `Deferred` and unauthorized |
+
+The current P-01/D-01 fact-only handoff is tracked by the [child Assignment](kos-release-evidence-implementation-001-p01-d01.md); it may produce only fresh candidate-bound facts and does not authorize Product/Release/publication action.
 
 ## Authority
 
@@ -224,3 +226,8 @@ validator, reviewer or Main-App status page into a Product/Quality/Release autho
   closed `REP-Q-01` and candidate-bound hosted provenance. The parent remains `Active`
   because P-01/D-01 facts and Product/Release/publication authority are not produced by
   this receipt; no merge or Release action was performed.
+- `2026-09-16T18:58:07+08:00`: PR #136 was merged into `main` as a separately authorized
+  engineering action at `d5c53f2…`; the feature branch cleanup completed after reachability
+  was verified. This did not produce current-proof, Product/Release acceptance or a Release.
+  The new [P-01/D-01 fact-only Assignment](kos-release-evidence-implementation-001-p01-d01.md)
+  was authorized separately; its final candidate and receipts remain unproduced.

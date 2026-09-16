@@ -9,9 +9,9 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Remediate UK-005 P1 F-001 Main-App source identity boundary",
   "lifecycle": "closed",
-  "current_phase": "Reviewed → Closed: narrow Human Product Gate accepted F-001 Coverage-R1; no Release or merge authorization",
+  "current_phase": "Reviewed → Closed: narrow Human Product Gate accepted F-001 Coverage-R1; PR #136 later merged as a separate engineering action; no Product/Release authorization",
   "authorization_action": "remediate_uk005_p1_f001",
-  "updated_at": "2026-09-16T17:30:56+08:00",
+  "updated_at": "2026-09-16T18:58:07+08:00",
   "revalidation_triggers": [
     "base_commit_changed",
     "scope_changed",
@@ -49,9 +49,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Closed |
-| Current Phase | Reviewed → Closed: narrow Human Product Gate accepted F-001 Coverage-R1; no Release or merge authorization |
-| Material non-claims | The narrow Product Gate accepts only F-001 Coverage-R1; no current-proof, overall UK-005/P1 Product or Release Gate, TestFlight, App Store Connect, merge or Release conclusion; Build 55 TD-003/004/005 remain open and untouched |
-| Next handoff / decision | No further action for this narrow Assignment; any Release, merge, external publication or other finding requires a separate Assignment/Authorization/Product decision |
+| Current Phase | Reviewed → Closed: narrow Human Product Gate accepted F-001 Coverage-R1; PR #136 later merged as a separate engineering action; no Product/Release authorization |
+| Material non-claims | The narrow Product Gate accepts only F-001 Coverage-R1; no current-proof, overall UK-005/P1 Product or Release Gate, TestFlight, App Store Connect or Release conclusion. PR #136 is an engineering merge fact only and does not change this boundary; Build 55 TD-003/004/005 remain open and untouched |
+| Next handoff / decision | No further action for this narrow Assignment. The [P-01/D-01 fact-only Assignment](kos-release-evidence-implementation-001-p01-d01.md) is the separate next handoff; any Product/Release, external publication or other finding requires its own Assignment/Authorization/Product decision |
 | Residuals | None within F-001. F-002–F-004 and other Quality findings remain outside this slice; P1-B stays under its existing `Not applicable` / `Deferred` disposition |
 
 This is a successor remediation Assignment under the existing UK-005 P1-A
@@ -225,6 +225,8 @@ targets of this Assignment.
 - **Revalidation Trigger:** base commit changes; any adapter/Profile/source-owner/contract/evaluator change; F-001 review finding; scope or authority change; P1-B disposition change; or a request to address another finding.
 
 ## History
+
+- `2026-09-16T18:58:07+08:00`: PR #136 was merged into `main` at `d5c53f2…` as a separately authorized engineering action; local/remote branch cleanup followed verified reachability. The merge did not alter the narrow Product Gate or create Product/Release/current-proof evidence. The [P-01/D-01 fact-only Assignment](kos-release-evidence-implementation-001-p01-d01.md) is a separate active handoff; Build 55 TD-003/004/005 remain open.
 
 - `2026-09-16 Asia/Shanghai`: Established from clean baseline `5692cf6` at the Human Product Owner's direction. This record authorizes a Ready F-001 remediation slice; no code implementation, commit, push or Release action has started.
 - `2026-09-16 Asia/Shanghai`: The historical `Needs work` review remains bound to its old exact package. The current baseline was read-only checked to contain case-folded unresolved handling and exact `SRC-MAIN-STORE` validation, but this was not promoted to a new F-001 closure or independent review result.

@@ -28,6 +28,11 @@
 }
 ```
 
+> **Current-status supersession (2026-09-16):** PR #136 was later merged into `main`
+> at `d5c53f2…` under a separate engineering authorization. This supersedes only the
+> historical fact that no merge had occurred at the time of this decision; it does not
+> amend this narrow F-001 Product Gate or authorize Product/Release/publication action.
+
 - **Decision ID:** `PD-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001-PRODUCT-GATE`
 - **Lifecycle status:** `Accepted`
 - **Date / timezone:** `2026-09-16 Asia/Shanghai`
