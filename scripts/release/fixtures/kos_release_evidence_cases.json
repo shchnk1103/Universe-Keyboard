@@ -128,6 +128,36 @@
       "output_ref": "opaque://universe-keyboard/final-output-build-56;sha256=8888888888888888888888888888888888888888888888888888888888888888;class=review-record"
     }
   },
+  "f001_negative_coverage": {
+    "unresolved_record_ids": [
+      "UNKNOWN",
+      "unknown",
+      " UNKNOWN ",
+      "TODO",
+      "todo",
+      "TBD",
+      "tbd",
+      " Tbd "
+    ],
+    "foreign_source_identities": [
+      "SRC-OTHER",
+      "unknown",
+      "src-main-store"
+    ],
+    "missing_source_keys": [
+      "source_identity",
+      "record_id",
+      "operation_id",
+      "sha256",
+      "retention_class"
+    ],
+    "caller_binding_aliases": [
+      "binding_status",
+      "is_verified",
+      "verified"
+    ],
+    "extra_source_keys": ["unexpected"]
+  },
   "delta_candidate": {
     "base_sha": "0000000000000000000000000000000000000000",
     "head_sha": "1111111111111111111111111111111111111111",

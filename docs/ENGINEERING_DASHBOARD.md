@@ -75,6 +75,14 @@
 - **Non-claims:** no current-proof, Product/Quality/Release Gate, TestFlight, App Store Connect, merge or Release conclusion; no new P1-B implementation is authorized.
 - **Next:** produce separately owned P-01/D-01 and Product/Release/publication handoff facts if needed; reopen P1-B only if Product supersedes Option A with precise scope.
 
+## KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001 — source identity fail-closed remediation
+
+- **Lifecycle:** [`Assignment`](assignments/kos-release-evidence-implementation-001-p1-f001.md) `Closed` after the narrow Human Product Gate; original, Coverage-R1 and Quality-R1 Authorizations remain recorded as `active / consumed`. Baseline remains exact `5692cf6`; adapter logic and fixture runner are unchanged.
+- **Authority:** existing UK-005 P1-A scope decision · F-001 Assignment/Authorizations · accepted [`F-001 Coverage-R1 Product Decision`](product-decisions/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001-product-gate.md); previous P1 Authorization is not reused.
+- **Current phase:** Coverage-R1 accepted and Assignment transitioned `Reviewed → Closed`: `26/26` focused tests, `20/20` F-001 subTests and `76/76` pinned fixtures passed; Architecture status-only revalidation and fresh independent Quality-R1 review **approved** the exact handoff package with no blocking finding.
+- **Non-claims:** no current-proof authority, overall UK-005/P1 Product or Release Gate, TestFlight, App Store Connect, merge or Release; F-002–F-004, Quality P1-01/P1-02, P1-B and Build 55 TD-003/004/005 remain outside this slice and Build 55 items remain `open`.
+- **Next:** No further action for this narrow F-001 Assignment. Any Release, merge, external publication or work on another finding requires a separate Assignment/Authorization/Product decision. See the [Product Decision](product-decisions/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001-product-gate.md), [Quality-R1 review](reviews/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-p1-f001-quality-review-r1-2026-09-16.md) and [Architecture status revalidation](reviews/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-p1-f001-architecture-status-revalidation-2026-09-16.md).
+
 ## KOS improvement suggestions — disposition recorded
 
 - **Lifecycle:** [`KOS-IMPROVEMENT-SUGGESTIONS-001`](assignments/kos-improvement-suggestions-001.md) `Closed` — eight directions Adopted and `KOS-SUG-04` Deferred by Human Product Owner; details and implementation boundaries are in the [ledger](kos/kos-improvement-suggestions-scheme-delivery-2026-09-09-disposition-ledger.md).

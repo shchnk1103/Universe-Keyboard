@@ -82,13 +82,20 @@ class ReleaseEvidenceAdapterTests(unittest.TestCase):
             {"inconclusive"},
         )
 
-        payload = copy.deepcopy(self.base)
-        payload["main_app_source"]["binding_status"] = "verified"
-        with self.assertRaises(adapter.AdapterInputError):
-            adapter.build_envelope(payload)
+        for binding_alias in self.fixture["f001_negative_coverage"][
+            "caller_binding_aliases"
+        ]:
+            with self.subTest(binding_alias=binding_alias):
+                payload = copy.deepcopy(self.base)
+                payload["main_app_source"][binding_alias] = True
+                with self.assertRaises(adapter.AdapterInputError):
+                    adapter.build_envelope(payload)
 
     def test_main_app_source_identity_must_be_resolved(self) -> None:
-        for unresolved in (adapter.UNKNOWN, "unknown", " UNKNOWN ", "Tbd"):
+        unresolved_values = self.fixture["f001_negative_coverage"][
+            "unresolved_record_ids"
+        ]
+        for unresolved in unresolved_values:
             with self.subTest(unresolved=unresolved):
                 payload = copy.deepcopy(self.base)
                 payload["main_app_source"]["record_id"] = unresolved
@@ -99,17 +106,35 @@ class ReleaseEvidenceAdapterTests(unittest.TestCase):
                     adapter.build_envelope(payload)
 
     def test_main_app_source_must_bind_the_canonical_store(self) -> None:
-        for source_identity in ("SRC-OTHER", "unknown"):
+        foreign_identities = self.fixture["f001_negative_coverage"][
+            "foreign_source_identities"
+        ]
+        for source_identity in foreign_identities:
             with self.subTest(source_identity=source_identity):
                 payload = copy.deepcopy(self.base)
                 payload["main_app_source"]["source_identity"] = source_identity
                 with self.assertRaises(adapter.AdapterInputError):
                     adapter.build_envelope(payload)
 
-        payload = copy.deepcopy(self.base)
-        payload["main_app_source"]["unexpected"] = "ignored"
-        with self.assertRaises(adapter.AdapterInputError):
-            adapter.build_envelope(payload)
+        for extra_key in self.fixture["f001_negative_coverage"]["extra_source_keys"]:
+            with self.subTest(extra_key=extra_key):
+                payload = copy.deepcopy(self.base)
+                payload["main_app_source"][extra_key] = "ignored"
+                with self.assertRaises(adapter.AdapterInputError):
+                    adapter.build_envelope(payload)
+
+    def test_main_app_source_requires_each_canonical_key(self) -> None:
+        missing_keys = self.fixture["f001_negative_coverage"][
+            "missing_source_keys"
+        ]
+        for missing_key in missing_keys:
+            with self.subTest(missing_key=missing_key):
+                payload = copy.deepcopy(self.base)
+                del payload["main_app_source"][missing_key]
+                with self.assertRaisesRegex(
+                    adapter.AdapterInputError, "canonical source seam"
+                ):
+                    adapter.build_envelope(payload)
 
     def test_main_app_wrapper_versions_and_direct_run_are_rejected(self) -> None:
         for field, value in (
