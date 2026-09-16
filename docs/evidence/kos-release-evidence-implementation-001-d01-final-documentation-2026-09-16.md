@@ -1,7 +1,7 @@
 # UK-005 — D-01 final-documentation receipt
 
 > **Receipt result:** `Pass` for this final-documentation handoff only; this revision
-> records the post-Hosted-CI fact revalidation.
+> records the post-Hosted-CI fact revalidation and lifecycle status-mirror close.
 >
 > This is an executor-recorded documentation-validation receipt. It does not approve
 > the product, Quality, a Release Gate, current-proof, merge or external publication.
@@ -13,7 +13,7 @@
 | Assignment | [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01`](../assignments/kos-release-evidence-implementation-001-p01-d01.md) |
 | Authorization | [`AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01`](../authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01.md) |
 | Receipt type | D-01 final-documentation validation only |
-| Observed at | `2026-09-16T21:15:38+08:00` Asia/Shanghai |
+| Observed at | `2026-09-16T21:23:13+08:00` Asia/Shanghai |
 | Final commit | `07b4a4346f178a770531dbfcb8f33373a896f223` |
 | Final tree | `421c313dea6082c5e5c4bb85e225b855224e7294` |
 | Baseline | `d5c53f2cbda85e16721b9eafae09a763f6a04471` |
@@ -36,20 +36,20 @@ its digest. This post-CI revision keeps that boundary unchanged.
 | Final-gate matrix | `bash scripts/ci/tests/test_verify_final_gate.sh` and KOS trigger-path checks: passed for `requires_full=false` |
 | Pinned KOS validator | Kit commit `f5c88d57f599d7ef352322ea7664f637fb288d60`; structural validation exited `0`, with pre-existing repository warnings only |
 
-After this receipt-only revision, the two changed Markdown files were checked with:
+After this lifecycle/status-mirror revision, the six changed Markdown files were checked with:
 
 ```bash
-git diff --check ab3f9b285e566e8ac23959edfe35a47b584548a6 HEAD
+git diff --check 5edd06f HEAD
 python3 scripts/ci/classify_changes.py \
-  --base ab3f9b285e566e8ac23959edfe35a47b584548a6 \
+  --base 5edd06f \
   --head HEAD
 python3 scripts/ci/check_markdown_links.py \
-  --base ab3f9b285e566e8ac23959edfe35a47b584548a6 \
+  --base 5edd06f \
   --head HEAD
 ```
 
-The receipt-only delta classified as `docs_only`, `requires_full=false`, with two
-changed Markdown files; the diff check and both local-link checks passed.
+The lifecycle/status-mirror delta classified as `docs_only`, `requires_full=false`,
+with six changed Markdown files; the diff check and both local-link checks passed.
 
 The exact combined post-freeze command was:
 

@@ -6,8 +6,8 @@
   "record_id": "AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01",
   "record_type": "authorization",
   "title": "Authorize UK-005 P-01 publication facts and D-01 final-documentation receipt",
-  "status": "active",
-  "updated_at": "2026-09-16T18:50:05+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-16T21:23:13+08:00",
   "revalidation_triggers": [
     "candidate_head_changed",
     "final_tree_changed",
@@ -48,7 +48,7 @@
     "issued_at": "2026-09-16T18:50:05+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
@@ -57,8 +57,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | unconsumed; creation is authorized, but no P-01/D-01 receipt has been produced |
+| Status | consumed |
+| Consumption | Consumed by the recorded P-01/D-01 receipts for candidate `07b4a434…`; Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845) is same-head green and D-01 is Pass for the fact-only handoff |
 
 ## Authorized actions
 
@@ -71,6 +71,11 @@
    result. A generic `git diff --check` alone is not a D-01 receipt.
 4. Record a bounded receipt and hand it to the UK-005 release-evidence owner. This
    handoff does not authorize the recipient or the Executor to publish or release.
+
+> **Consumed:** [KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01](../assignments/kos-release-evidence-implementation-001-p01-d01.md)
+> after the P-01/D-01 receipts were recorded. This Authorization is not reusable for
+> Product Gate, Quality/Release conclusion, PR, merge, upload, TestFlight, App Store
+> Connect or Release.
 
 ## Human authority boundary
 
@@ -87,6 +92,7 @@ authorization. Until such a candidate exists, the fact receipt must say `unknown
 ## Revalidation and consumption
 
 Revalidate before receipt production if the candidate, final tree, Hosted CI result,
-checker scope, privacy boundary or requested action changes. Consume this Authorization
-only when the bounded fact receipts are recorded; later Product/Release actions need a
-new Assignment and matching Authorization.
+checker scope, privacy boundary or requested action changes. This Authorization was
+consumed on `2026-09-16T21:23:13+08:00` after the bounded P-01/D-01 receipts were
+recorded. Later Product/Release actions need a new Assignment and matching
+Authorization.

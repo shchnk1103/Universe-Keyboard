@@ -69,11 +69,11 @@
 
 ## KOS-UPGRADE-UK-005 — prospective `kos.release-evidence` adoption
 
-- **Lifecycle:** review Assignment [`KOS-UPGRADE-UK-005`](assignments/kos-upgrade-uk-005-release-evidence-v1.md) `Closed`; implementation parent and P1-A child remain `Active`; the fact-only P-01/D-01 child is `Active`. `REP-Q-01` and candidate-bound hosted provenance are `Closed` by the [P1-A provenance receipt](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md).
+- **Lifecycle:** review Assignment [`KOS-UPGRADE-UK-005`](assignments/kos-upgrade-uk-005-release-evidence-v1.md) `Closed`; implementation parent and P1-A child remain `Active`; the fact-only P-01/D-01 child is `Closed`. `REP-Q-01` and candidate-bound hosted provenance are `Closed` by the [P1-A provenance receipt](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md), and P-01/D-01 facts are recorded by the [child receipts](evidence/kos-release-evidence-implementation-001-p01-delivery-facts-2026-09-16.md) / [D-01 receipt](evidence/kos-release-evidence-implementation-001-d01-final-documentation-2026-09-16.md).
 - **Authority:** project adoption [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) · P1-B Option A [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · P1-A [`Assignment`](assignments/kos-release-evidence-implementation-001-p1.md) · [P-01/D-01 Assignment](assignments/kos-release-evidence-implementation-001-p01-d01.md)
-- **Current phase:** P1-A implementation/reviews/provenance and F-001 engineering merge are complete; P-01/D-01 fact production is authorized but awaits final candidate freeze and final-documentation checks. Duplicate P1-B Main-App UI/storage is `Not applicable`; historical migration/backfill is `Deferred`; background sync/network is `Deferred` and unauthorized.
+- **Current phase:** P1-A implementation/reviews/provenance and F-001 engineering merge are complete; P-01/D-01 facts for candidate `07b4a434…` are recorded with same-head Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845), and the fact-only child is closed. Duplicate P1-B Main-App UI/storage is `Not applicable`; historical migration/backfill is `Deferred`; background sync/network is `Deferred` and unauthorized.
 - **Non-claims:** no current-proof, Product/Quality/Release Gate, TestFlight, App Store Connect, upload, external-publication or Release conclusion; no new P1-B implementation is authorized.
-- **Next:** produce only the P-01/D-01 facts for the frozen candidate; any Product/Release/publication action remains separately owned and unauthorized.
+- **Next:** none for this fact-only child; hand the recorded P-01/D-01 facts to the UK-005 release-evidence owner. Any Product/Release/publication action remains separately owned and unauthorized.
 
 ## KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001 — source identity fail-closed remediation
 
@@ -85,10 +85,10 @@
 
 ## KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01 — UK-005 fact-only handoff
 
-- **Lifecycle:** [`Assignment`](assignments/kos-release-evidence-implementation-001-p01-d01.md) `Active`; matching [`Authorization`](authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01.md) `active / unconsumed`
-- **Current phase:** Only P-01 delivery/publication facts and D-01 final-documentation facts are authorized; the final candidate is not yet frozen and no receipt has been produced.
-- **Non-claims:** no code/UI change, device, archive/export, signing, commit, push, PR, merge, upload, TestFlight, App Store Connect, Product/Quality/Release Gate, current-proof or Release conclusion
-- **Next:** after the last documentation edit, freeze the exact candidate and produce the two content-free receipts; unknown or mismatched heads remain fail-closed.
+- **Lifecycle:** [`Assignment`](assignments/kos-release-evidence-implementation-001-p01-d01.md) `Closed`; matching [`Authorization`](authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01.md) `consumed`
+- **Current phase:** P-01/D-01 facts are recorded for frozen candidate `07b4a434…`; candidate/published/Hosted CI heads are same-head, Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845) succeeded, and D-01 documentation validation is `Pass` for this handoff only.
+- **Non-claims:** no code/UI change, device, archive/export, signing, PR, merge, upload, TestFlight, App Store Connect, Product/Quality/Release Gate, current-proof or Release conclusion
+- **Next:** none for this fact-only slice. A later Product/Release/publication process requires a new bounded Assignment and matching human Authorization.
 
 ## KOS improvement suggestions — disposition recorded
 

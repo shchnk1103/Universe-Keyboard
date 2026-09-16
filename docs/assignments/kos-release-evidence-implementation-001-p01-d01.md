@@ -8,10 +8,10 @@ Policy version: 1.0.0
   "record_id": "KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01",
   "record_type": "assignment",
   "title": "Produce UK-005 P-01 publication facts and D-01 final-documentation receipt",
-  "lifecycle": "active",
-  "current_phase": "Fact-only handoff initialized; final candidate freeze and receipt production are pending",
+  "lifecycle": "closed",
+  "current_phase": "P-01/D-01 facts recorded for the frozen candidate; fact-only handoff closed",
   "authorization_action": "produce_uk005_p01_d01_facts",
-  "updated_at": "2026-09-16T18:50:05+08:00",
+  "updated_at": "2026-09-16T21:23:13+08:00",
   "revalidation_triggers": [
     "candidate_head_changed",
     "final_tree_changed",
@@ -45,11 +45,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Current Phase | Fact-only handoff initialized; final candidate freeze and receipt production are pending |
+| Lifecycle | Closed |
+| Current Phase | P-01/D-01 facts recorded for frozen candidate `07b4a434…`; Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845) is same-head green; fact-only handoff closed |
 | Material non-claims | No code or UI implementation; no current-proof, Product/Quality/Release Gate, TestFlight, App Store Connect, upload, Release or external-publication action |
-| Next handoff / decision | Produce content-free P-01 and D-01 receipts only after their exact candidate, final tree, checker scope and output are resolved |
-| Residuals | Final candidate and hosted/final-documentation receipt inputs are pending; see [Gates and required evidence](#gates-and-required-evidence) |
+| Next handoff / decision | Fact-only handoff complete; hand the two receipts to the UK-005 release-evidence owner. Any later Product/Release/publication action needs a new Assignment and Authorization |
+| Residuals | None within this fact-only slice; Product/Release/publication remains outside scope and separately unauthorized |
 
 This is a new child Assignment under the accepted UK-005 release-evidence adoption.
 Build 55 public-testing history remains owned by its existing Assignment; this record
@@ -94,7 +94,7 @@ hosted CI or status mirror a Product, Quality or Release authority.
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Current authorized slice | Authorized | Create this record and produce only P-01/D-01 fact receipts for a freshly frozen UK-005 candidate; read-only Git/GitHub observation and local documentation checks are allowed | This Assignment → matching Authorization → accepted UK-005 Product Decision |
+| Current authorized slice | Consumed | P-01/D-01 receipts recorded for candidate `07b4a434…`; read-only provenance and local documentation checks completed | This Assignment → matching Authorization → accepted UK-005 Product Decision |
 | Next independently gated slice | Not authorized | Product Gate, Quality/Release conclusion, archive/export, upload, TestFlight, App Store Connect or Release | New bounded Assignment and matching human Authorization required |
 | Environment or external slice | Not authorized | Device operation, signing, external distribution, remote mutation, commit, push, PR, merge, tag or branch deletion | Separate named environment/Release authority required |
 
@@ -157,17 +157,17 @@ the product, the build or the release.
   Authorizations are not reused or widened.
 - [x] The scope is limited to content-free fact receipts and explicit non-claims.
 - [x] Current `main`/`origin/main` identity is observed and recorded as context only.
-- [ ] Final candidate is frozen after the last documentation edit.
+- [x] Final candidate is frozen before the post-freeze receipts and remains commit `07b4a434…` / tree `421c313d…`.
 
 ### Exit Criteria
 
-- [ ] P-01 receipt records all required heads, Hosted CI result, relation and PR state;
+- [x] P-01 receipt records all required heads, Hosted CI result, relation and PR state;
   any missing or unequal identity is preserved as `unknown`/`mismatched`.
-- [ ] D-01 receipt records final commit/tree, baseline, checker/version/scope, output,
+- [x] D-01 receipt records final commit/tree, baseline, checker/version/scope, output,
   time and result after the last documentation edit.
-- [ ] Final receipt and this Assignment contain no Product, Quality, Release or external
+- [x] Final receipt and this Assignment contain no Product, Quality, Release or external
   publication conclusion.
-- [ ] Parent Assignment, Dashboard, Active Work and navigation mirrors link the final
+- [x] Parent Assignment, Dashboard, Active Work and navigation mirrors link the final
   receipt and preserve the non-claims.
 
 ### Stop Conditions
@@ -195,3 +195,7 @@ the product, the build or the release.
 - `2026-09-16T18:50:05+08:00 Asia/Shanghai`: Human Product Owner authorized this
   fact-only P-01/D-01 Assignment. At creation, `main` and `origin/main` both pointed
   to `d5c53f2c…`; no receipt was claimed and no external action was performed.
+- `2026-09-16T21:23:13+08:00 Asia/Shanghai`: P-01 and D-01 receipts recorded the
+  frozen candidate `07b4a434…`, same-head Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845),
+  and final-documentation checks. The Human-authorized lifecycle sync closes this
+  fact-only child; Product/Release/publication remains separately unauthorized.
