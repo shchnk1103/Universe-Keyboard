@@ -1,6 +1,7 @@
 # UK-005 — D-01 final-documentation receipt
 
-> **Receipt result:** `Pass` for this final-documentation handoff only.
+> **Receipt result:** `Pass` for this final-documentation handoff only; this revision
+> records the post-Hosted-CI fact revalidation.
 >
 > This is an executor-recorded documentation-validation receipt. It does not approve
 > the product, Quality, a Release Gate, current-proof, merge or external publication.
@@ -12,7 +13,7 @@
 | Assignment | [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01`](../assignments/kos-release-evidence-implementation-001-p01-d01.md) |
 | Authorization | [`AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01`](../authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01.md) |
 | Receipt type | D-01 final-documentation validation only |
-| Observed at | `2026-09-16T20:35:38+08:00` Asia/Shanghai |
+| Observed at | `2026-09-16T21:15:38+08:00` Asia/Shanghai |
 | Final commit | `07b4a4346f178a770531dbfcb8f33373a896f223` |
 | Final tree | `421c313dea6082c5e5c4bb85e225b855224e7294` |
 | Baseline | `d5c53f2cbda85e16721b9eafae09a763f6a04471` |
@@ -21,7 +22,7 @@
 The final tree covers exactly the ten paths in the frozen commit: one `.kos/project.json`
 file and nine Markdown files under `docs/`. The two P-01/D-01 receipt files were created
 after the candidate commit and are explicitly excluded from this final candidate tree and
-its digest.
+its digest. This post-CI revision keeps that boundary unchanged.
 
 ## Local checks after the last candidate edit
 
@@ -34,6 +35,21 @@ its digest.
 | CI lightweight unit tests | `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py'`: `12` tests, `OK` |
 | Final-gate matrix | `bash scripts/ci/tests/test_verify_final_gate.sh` and KOS trigger-path checks: passed for `requires_full=false` |
 | Pinned KOS validator | Kit commit `f5c88d57f599d7ef352322ea7664f637fb288d60`; structural validation exited `0`, with pre-existing repository warnings only |
+
+After this receipt-only revision, the two changed Markdown files were checked with:
+
+```bash
+git diff --check ab3f9b285e566e8ac23959edfe35a47b584548a6 HEAD
+python3 scripts/ci/classify_changes.py \
+  --base ab3f9b285e566e8ac23959edfe35a47b584548a6 \
+  --head HEAD
+python3 scripts/ci/check_markdown_links.py \
+  --base ab3f9b285e566e8ac23959edfe35a47b584548a6 \
+  --head HEAD
+```
+
+The receipt-only delta classified as `docs_only`, `requires_full=false`, with two
+changed Markdown files; the diff check and both local-link checks passed.
 
 The exact combined post-freeze command was:
 
@@ -52,18 +68,19 @@ Release build were not run. No `.swift`, project, test-target or workflow path c
 
 | Field | Value |
 |---|---|
-| Hosted checks | `not-run` — no push, PR or hosted dispatch was authorized or performed |
+| Hosted checks | Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845), head `07b4a434…`, conclusion `success`; `classify-change`, `lightweight-checks` and `final-quality-gate` succeeded, and docs-only heavy jobs were skipped |
 | Final result | `Pass` for documentation validation in this handoff only |
-| P-01 relation | `unknown`; no published or Hosted CI head exists for comparison |
+| P-01 relation | `same-head` (`07b4a434…` candidate, published and Hosted CI heads) |
 
 The receipt artifacts themselves are post-freeze handoff records and remain outside the
 frozen candidate commit. No later edit was made to the ten frozen governance documents.
 
 ## Non-claims
 
-- This D-01 result does not imply P-01 same-head coverage, Product/Quality acceptance,
+- This D-01 result records the same-head provenance fact but does not imply Product/Quality acceptance,
   current-proof, Release readiness, merge, TestFlight, App Store Connect or Release.
 - Build 55 public testing remains a separate historical channel fact; TD-003, TD-004 and
   TD-005 remain `open`.
-- No commit, push, PR, merge, tag, device, signing, archive/export or external-publication
-  action is authorized by this receipt.
+- No PR, merge, tag, device, signing, archive/export or external-publication action is
+  authorized by this receipt; the observed candidate push and Hosted CI dispatch do not
+  widen that boundary.

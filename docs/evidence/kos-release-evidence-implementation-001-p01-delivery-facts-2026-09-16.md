@@ -1,11 +1,12 @@
 # UK-005 — P-01 delivery/publication facts receipt
 
-> **Receipt status:** `recorded`; delivery classification is `unknown`.
+> **Receipt status:** `recorded`; delivery classification is `same-head`.
 >
-> This is an executor-recorded, content-free P-01 fact receipt for the frozen
-> governance-document candidate. It records delivery provenance only. It is not a
-> Product Gate, Quality Gate, Release Pass, current-proof, merge approval or external
-> publication authorization.
+> This post-Hosted-CI revision supersedes the earlier pre-push snapshot preserved in
+> Git history. It is an executor-recorded, content-free P-01 fact receipt for the
+> frozen governance-document candidate. It records delivery provenance only. It is
+> not a Product Gate, Quality Gate, Release Pass, current-proof, merge approval or
+> external publication authorization.
 
 ## Receipt identity and scope
 
@@ -14,11 +15,11 @@
 | Assignment | [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01`](../assignments/kos-release-evidence-implementation-001-p01-d01.md) |
 | Authorization | [`AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01`](../authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01.md) |
 | Receipt type | P-01 delivery/publication facts only |
-| Observed at | `2026-09-16T20:35:38+08:00` Asia/Shanghai |
+| Observed at | `2026-09-16T21:15:38+08:00` Asia/Shanghai |
 | Candidate branch | `codex/uk-005-p01-d01-facts` |
 | Comparison baseline | `d5c53f2cbda85e16721b9eafae09a763f6a04471` |
 | Frozen local candidate | commit `07b4a4346f178a770531dbfcb8f33373a896f223`; tree `421c313dea6082c5e5c4bb85e225b855224e7294` |
-| Git boundary | Local commit was authorized and performed; push, PR, merge, tag and Release were not performed |
+| Git boundary | Candidate `07b4a434…` was pushed to the named remote branch and covered by Hosted CI; no PR, merge, tag or Release was performed |
 
 The frozen candidate is the ten-file governance-document commit identified above. This
 receipt was generated after that freeze and is an evidence artifact, not a member of the
@@ -29,24 +30,30 @@ frozen candidate tree.
 | Fact | Observed value |
 |---|---|
 | `local_candidate` | `07b4a4346f178a770531dbfcb8f33373a896f223` |
-| `published_head` | `none` — read-only `git ls-remote --heads origin codex/uk-005-p01-d01-facts` returned no ref |
-| `hosted_ci_head` | `unknown` — no Hosted CI run was created for this unpushed commit |
-| `hosted_ci_result` | `unknown` (`not-run`) |
-| `coverage` | `unknown` — one required head is `none` and another is `unknown` |
+| `published_head` | `07b4a4346f178a770531dbfcb8f33373a896f223` — remote branch `codex/uk-005-p01-d01-facts`, as bound by Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845) |
+| `hosted_ci_head` | `07b4a4346f178a770531dbfcb8f33373a896f223` — Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845) commit `07b4a43` |
+| `hosted_ci_result` | `green` — Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845) conclusion `success` |
+| `coverage` | `same-head` — `local_candidate == published_head == hosted_ci_head` |
 | `pr_state` | `none` |
-| `local_ahead_of_published` | `unknown` — no published branch exists to compare |
+| `local_ahead_of_published` | `0` for the frozen candidate; the local branch tip additionally contains the receipt-only commit `ab3f9b2…`, which is outside the candidate |
 
 ## Provenance observations
 
-- Before receipt generation, the candidate worktree was clean at `07b4a434…`.
+- The frozen candidate remains commit `07b4a4346f178a770531dbfcb8f33373a896f223` with tree `421c313dea6082c5e5c4bb85e225b855224e7294`.
 - The local candidate classification was `docs_only`, `requires_full=false`, with ten
   changed paths in the lightweight allowlist.
-- No remote mutation, Hosted CI dispatch, PR creation, device operation, archive/export,
-  signing, App Store Connect, TestFlight or external distribution was performed.
+- Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845)
+  was manually dispatched on the candidate branch with comparison base
+  `d5c53f2cbda85e16721b9eafae09a763f6a04471`; `classify-change`, `lightweight-checks`
+  and `final-quality-gate` succeeded, while `format-swift`, the three test jobs and
+  `build-release` were skipped by the `docs_only` classification.
+- No PR creation, merge, device operation, archive/export, signing, App Store Connect,
+  TestFlight or external distribution was performed.
 
 ## Non-claims
 
-- `coverage=unknown` is not a same-head pass and does not establish hosted provenance.
+- `coverage=same-head` records candidate/remote/Hosted-CI identity only; it is not a
+  Product, Quality or Release approval.
 - Build 55 public testing is not used as a substitute for this candidate's P-01 facts;
   TD-003, TD-004 and TD-005 remain `open`.
 - This receipt does not authorize or conclude Product, Quality, Release, current-proof,
