@@ -66,7 +66,7 @@ xcodebuild -quiet -project "Universe Keyboard.xcodeproj" -scheme "Universe Keybo
 ```
 
 The retained result bundle is
-[`universe-keyboard-f01-audit-clean-02.xcresult`](/private/tmp/universe-keyboard-f01-audit-clean-02.xcresult).
+`/private/tmp/universe-keyboard-f01-audit-clean-02.xcresult`.
 Its summary reports `Passed`, `87` passed, `0` failed, and `0` skipped.
 Strict Swift formatting and `git diff --check` also passed.
 
@@ -78,16 +78,16 @@ Product receipts.
 
 | Audit run / command | Result | Retained evidence | Evidence class |
 |---|---|---|---|
-| `TC2-F01-AUDIT-20260918-CLEAN-02` — targeted `SchemaManagerTests` | 87 passed, 0 failed, 0 skipped | [`universe-keyboard-f01-audit-clean-02.xcresult`](/private/tmp/universe-keyboard-f01-audit-clean-02.xcresult) | Executor evidence |
-| `TC2-F01-AUDIT-20260918-RIME-SETTINGS-03` — targeted `RimeSettingsStoreTests` | 49 passed, 0 failed, 0 skipped | [`universe-keyboard-f01-rime-settings-store-03.xcresult`](/private/tmp/universe-keyboard-f01-rime-settings-store-03.xcresult) | Executor evidence |
-| `TC2-F01-AUDIT-20260918-FULL-01` — `RimeBridgeTests` | 81 passed, 0 failed, 20 skipped | [`universe-keyboard-f01-full-rimebridge.xcresult`](/private/tmp/universe-keyboard-f01-full-rimebridge.xcresult) | Executor evidence |
-| `TC2-F01-AUDIT-20260918-FULL-04` — App/Keyboard Debug tests | 377 passed, 0 failed, 9 skipped | [`universe-keyboard-f01-full-app-04.xcresult`](/private/tmp/universe-keyboard-f01-full-app-04.xcresult) | Executor evidence |
+| `TC2-F01-AUDIT-20260918-CLEAN-02` — targeted `SchemaManagerTests` | 87 passed, 0 failed, 0 skipped | `/private/tmp/universe-keyboard-f01-audit-clean-02.xcresult` | Executor evidence |
+| `TC2-F01-AUDIT-20260918-RIME-SETTINGS-03` — targeted `RimeSettingsStoreTests` | 49 passed, 0 failed, 0 skipped | `/private/tmp/universe-keyboard-f01-rime-settings-store-03.xcresult` | Executor evidence |
+| `TC2-F01-AUDIT-20260918-FULL-01` — `RimeBridgeTests` | 81 passed, 0 failed, 20 skipped | `/private/tmp/universe-keyboard-f01-full-rimebridge.xcresult` | Executor evidence |
+| `TC2-F01-AUDIT-20260918-FULL-04` — App/Keyboard Debug tests | 377 passed, 0 failed, 9 skipped | `/private/tmp/universe-keyboard-f01-full-app-04.xcresult` | Executor evidence |
 | `TC2-F01-AUDIT-20260918-RELEASE-05` — App/Keyboard Release build | exit 0 | `/private/tmp/universe-keyboard-f01-full-release-deriveddata-05` | Executor evidence |
 
 The first App/Keyboard full run before the test-double correction failed seven
 `RimeSettingsStoreTests` cases because the injected successful result omitted
 `librimeVersion`. It is retained as diagnostic evidence at
-[`universe-keyboard-f01-full-app.xcresult`](/private/tmp/universe-keyboard-f01-full-app.xcresult),
+`/private/tmp/universe-keyboard-f01-full-app.xcresult`,
 was corrected only in the test double, and is not counted as a passing gate.
 
 All four changed Swift files passed `swift-format format --in-place` followed
