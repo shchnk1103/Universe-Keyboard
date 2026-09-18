@@ -1,7 +1,7 @@
 # TYPO-CORRECTION-002 / F-01 Isolated Scope Manifest
 
 > **Status:** Executor-recorded isolated working-tree boundary; final
-> post-gate read-only review passed; commit/push pending; no Quality approval
+> post-gate read-only review passed; commit/push complete; no Quality approval
 > or Gate decision
 >
 > **Final validation run:** `TC2-F01-AUDIT-20260918-FULL-04`
@@ -73,13 +73,16 @@ Strict Swift formatting and `git diff --check` also passed.
 The final validation set was run with new test-only audit identifiers after the
 test-double contract correction:
 
-| Audit run / command | Result | Retained evidence |
-|---|---|---|
-| `TC2-F01-AUDIT-20260918-CLEAN-02` — targeted `SchemaManagerTests` | 87 passed, 0 failed, 0 skipped | [`universe-keyboard-f01-audit-clean-02.xcresult`](/private/tmp/universe-keyboard-f01-audit-clean-02.xcresult) |
-| `TC2-F01-AUDIT-20260918-RIME-SETTINGS-03` — targeted `RimeSettingsStoreTests` | 49 passed, 0 failed, 0 skipped | [`universe-keyboard-f01-rime-settings-store-03.xcresult`](/private/tmp/universe-keyboard-f01-rime-settings-store-03.xcresult) |
-| `TC2-F01-AUDIT-20260918-FULL-01` — `RimeBridgeTests` | 81 passed, 0 failed, 20 skipped | [`universe-keyboard-f01-full-rimebridge.xcresult`](/private/tmp/universe-keyboard-f01-full-rimebridge.xcresult) |
-| `TC2-F01-AUDIT-20260918-FULL-04` — App/Keyboard Debug tests | 377 passed, 0 failed, 9 skipped | [`universe-keyboard-f01-full-app-04.xcresult`](/private/tmp/universe-keyboard-f01-full-app-04.xcresult) |
-| `TC2-F01-AUDIT-20260918-RELEASE-05` — App/Keyboard Release build | exit 0 | `/private/tmp/universe-keyboard-f01-full-release-deriveddata-05` |
+All rows below are **Executor-recorded evidence**, not independent Quality or
+Product receipts.
+
+| Audit run / command | Result | Retained evidence | Evidence class |
+|---|---|---|---|
+| `TC2-F01-AUDIT-20260918-CLEAN-02` — targeted `SchemaManagerTests` | 87 passed, 0 failed, 0 skipped | [`universe-keyboard-f01-audit-clean-02.xcresult`](/private/tmp/universe-keyboard-f01-audit-clean-02.xcresult) | Executor evidence |
+| `TC2-F01-AUDIT-20260918-RIME-SETTINGS-03` — targeted `RimeSettingsStoreTests` | 49 passed, 0 failed, 0 skipped | [`universe-keyboard-f01-rime-settings-store-03.xcresult`](/private/tmp/universe-keyboard-f01-rime-settings-store-03.xcresult) | Executor evidence |
+| `TC2-F01-AUDIT-20260918-FULL-01` — `RimeBridgeTests` | 81 passed, 0 failed, 20 skipped | [`universe-keyboard-f01-full-rimebridge.xcresult`](/private/tmp/universe-keyboard-f01-full-rimebridge.xcresult) | Executor evidence |
+| `TC2-F01-AUDIT-20260918-FULL-04` — App/Keyboard Debug tests | 377 passed, 0 failed, 9 skipped | [`universe-keyboard-f01-full-app-04.xcresult`](/private/tmp/universe-keyboard-f01-full-app-04.xcresult) | Executor evidence |
+| `TC2-F01-AUDIT-20260918-RELEASE-05` — App/Keyboard Release build | exit 0 | `/private/tmp/universe-keyboard-f01-full-release-deriveddata-05` | Executor evidence |
 
 The first App/Keyboard full run before the test-double correction failed seven
 `RimeSettingsStoreTests` cases because the injected successful result omitted
@@ -128,6 +131,7 @@ and evidence boundary.
   Quality, TestFlight, Release, merge, or Assignment acceptance.
 - No existing Simulator or physical-device evidence Run ID was changed. No
   product RIME deployment or evidence recapture was performed.
-- Commit and push are now the only pending execution steps for this isolated
-  branch; this manifest represents the clean worktree diff and its exact
-  baseline identity.
+- Commit `581224874f1cd469d0785ceec7d5a2eef0dbe11b` was created and pushed to
+  `origin/codex/typo-correction-002-f01-audit`. No PR was created and no merge
+  was performed; this manifest represents the clean worktree diff and its
+  exact baseline identity.
