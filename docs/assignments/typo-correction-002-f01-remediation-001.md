@@ -17,7 +17,7 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are not opted in.
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | Draft PR `#139` opened; exact F-01 review is `Pass with conditions`; hosted PR gate is blocked by unavailable `iPhone 17 Pro` Simulator |
+| Current Phase | Draft PR `#139` opened; exact F-01 review is `Pass with conditions`; latest hosted run `35361209137` passed all test/format jobs but its required Release gate is blocked by unavailable `iPhone 17 Pro` Simulator |
 | Parent Assignment | `TYPO-CORRECTION-002` — remains Active and is not being closed or migrated |
 | Exact base | `409eeab8ad4f1dd66f0139b5d1c561dc927316ce` (`7d2e3b212daa7c8dc36d82d629e5ee15313b34bf`) |
 | Working branch | `codex/typo-correction-002-f01-remediation-001` |
@@ -150,4 +150,4 @@ Current revalidation Authorization: [`AUTH-TYPO-CORRECTION-002-F01-COMMIT-REVALI
 
 Current exact-commit revalidation evidence: [`typo-correction-002-f01-commit-revalidation-001.md`](../evidence/typo-correction-002-f01-commit-revalidation-001.md).
 
-Current PR/review handoff: [draft PR #139](https://github.com/shchnk1103/Universe-Keyboard/pull/139). Hosted run facts are recorded in [`typo-correction-002-f01-pr-review-001-hosted-run-2026-09-18.md`](../evidence/typo-correction-002-f01-pr-review-001-hosted-run-2026-09-18.md); the next decision is whether Product Lead authorizes an environment provision or a separate CI destination change.
+Current PR/review handoff: [draft PR #139](https://github.com/shchnk1103/Universe-Keyboard/pull/139). Hosted run facts for the latest follow-up `35361209137` are recorded in [`typo-correction-002-f01-pr-review-001-hosted-run-2026-09-18.md`](../evidence/typo-correction-002-f01-pr-review-001-hosted-run-2026-09-18.md); the next decision is whether Product Lead authorizes an environment provision or a separate CI destination change.
