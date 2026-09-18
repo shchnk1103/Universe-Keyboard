@@ -138,7 +138,11 @@ extension SchemaManager {
                 settings.set(Int(Date().timeIntervalSince1970), forKey: "rime_ice_lua_smoke_timestamp")
             }
             if result.succeeded {
-                guard let librimeVersion = result.librimeVersion, !librimeVersion.isEmpty else {
+                guard
+                    let librimeVersion = RimeDeploymentIdentity.normalizedVersion(
+                        from: result.librimeVersion
+                    )
+                else {
                     Logger.shared.error(
                         "deployRimeConfig: missing librime identity; deployment remains pending",
                         category: .deployment

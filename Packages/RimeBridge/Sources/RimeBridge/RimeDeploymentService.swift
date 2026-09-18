@@ -30,6 +30,27 @@ public struct RimeDeploymentRequest: Sendable {
     }
 }
 
+public enum RimeDeploymentIdentity {
+    /// Converts the bridge's version observation into a usable deployment identity.
+    ///
+    /// The Objective-C bridge uses human-readable sentinel strings when librime
+    /// is unavailable. They are diagnostic observations, not binary identities,
+    /// so every caller must treat them as unavailable.
+    public static func normalizedVersion(from rawVersion: String?) -> String? {
+        guard let rawVersion else { return nil }
+
+        let version = rawVersion.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !version.isEmpty else { return nil }
+
+        switch version.lowercased() {
+        case "(no api)", "(unknown)":
+            return nil
+        default:
+            return version
+        }
+    }
+}
+
 public struct RimeDeploymentResult: Sendable {
     public let succeeded: Bool
     public let diagnosticMessage: String
@@ -67,7 +88,7 @@ public protocol RimeDeploymentServicing: Sendable {
 public actor RimeDeploymentService: RimeDeploymentServicing {
     struct MaintenanceResult: Sendable {
         let succeeded: Bool
-        let librimeVersion: String
+        let librimeVersion: String?
     }
 
     typealias DeployOperation = @Sendable (String, String) -> MaintenanceResult
@@ -81,7 +102,9 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
     public init() {
         deployOperation = { sharedDataDir, userDataDir in
             let deployer = RimeDeployer()
-            let version = deployer.librimeVersion()
+            let version = RimeDeploymentIdentity.normalizedVersion(
+                from: deployer.librimeVersion()
+            )
             let succeeded = deployer.deploy(
                 withSharedDataDir: sharedDataDir,
                 userDataDir: userDataDir
@@ -126,10 +149,13 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
         #if DEBUG
             case .testFixtureMaintenanceOnly:
                 let result = deployOperation(request.sharedDataURL.path, request.userDataURL.path)
+                let librimeVersion = RimeDeploymentIdentity.normalizedVersion(
+                    from: result.librimeVersion
+                )
                 return RimeDeploymentResult(
                     succeeded: result.succeeded,
-                    diagnosticMessage: "librime \(result.librimeVersion), isolated test fixture",
-                    librimeVersion: result.librimeVersion
+                    diagnosticMessage: "librime \(librimeVersion ?? "unavailable"), isolated test fixture",
+                    librimeVersion: librimeVersion
                 )
         #endif
         }
@@ -158,6 +184,9 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
             request.userDataURL.path
         )
         let deploymentSucceeded = maintenanceResult.succeeded
+        let librimeVersion = RimeDeploymentIdentity.normalizedVersion(
+            from: maintenanceResult.librimeVersion
+        )
         let luaRegisteredAfterDeploy = RimeBridgeCapabilities.luaModuleRegistered
         Logger.shared.info(
             "deployRimeConfig: lua runtime after deploy registered=\(luaRegisteredAfterDeploy) "
@@ -201,12 +230,12 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
                 category: .deployment
             )
         }
-        let succeeded = deploymentSucceeded && runtimeSmokePassed == true
+        let succeeded = deploymentSucceeded && librimeVersion != nil && runtimeSmokePassed == true
         return RimeDeploymentResult(
             succeeded: succeeded,
-            diagnosticMessage: "librime \(maintenanceResult.librimeVersion), "
+            diagnosticMessage: "librime \(librimeVersion ?? "unavailable"), "
                 + "luaRuntimeRegistered=\(luaRegisteredAfterDeploy)",
-            librimeVersion: maintenanceResult.librimeVersion,
+            librimeVersion: librimeVersion,
             runtimeSmokePassed: runtimeSmokePassed,
             luaRuntimeSmokePassed: luaRuntimeSmokePassed
         )

@@ -1944,6 +1944,38 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
     }
 
+    func testSuccessfulDeploymentWithNoAPILibrimeIdentityRemainsPending() async {
+        let settings = StubSharedSettingsStore(values: ["rime_needs_deploy": true])
+        let deploymentService = StubDeploymentService(succeeded: true, librimeVersion: "(no api)")
+        let manager = makeManager(
+            settings: settings,
+            deploymentService: deploymentService
+        )
+
+        let succeeded = await manager.deployRimeConfig()
+
+        XCTAssertFalse(succeeded)
+        XCTAssertFalse(settings.bool(forKey: "rime_deployed"))
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+        XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
+    }
+
+    func testSuccessfulDeploymentWithUnknownLibrimeIdentityRemainsPending() async {
+        let settings = StubSharedSettingsStore(values: ["rime_needs_deploy": true])
+        let deploymentService = StubDeploymentService(succeeded: true, librimeVersion: "(unknown)")
+        let manager = makeManager(
+            settings: settings,
+            deploymentService: deploymentService
+        )
+
+        let succeeded = await manager.deployRimeConfig()
+
+        XCTAssertFalse(succeeded)
+        XCTAssertFalse(settings.bool(forKey: "rime_deployed"))
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+        XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
+    }
+
     func testDeploymentForwardsOnlyActiveWanxiangSchemaToSmoke() async {
         let settings = StubSharedSettingsStore(
             values: ["rime_active_schema": "wanxiang", "rime_needs_deploy": true]
