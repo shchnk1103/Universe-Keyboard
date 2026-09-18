@@ -1,13 +1,31 @@
 # TYPO-CORRECTION-002 F-01 PR review — hosted run evidence
 
 **PR:** [#139](https://github.com/shchnk1103/Universe-Keyboard/pull/139)
-**Latest run:** [Swift 6 Quality #35361209137](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35361209137)
-**Latest head under test:** `df36e19fb7c94cb8583774222346048fd4a86189`
+**Latest run:** [Swift 6 Quality #35362365167](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35362365167)
+**Latest head under test:** `6e6374ed42c0fa7348369e332fee2aa7a98bc963`
 **Base:** `9eb83158e49218c1e8f75dbe7dd9e0390db81409`
 **Recorded:** `2026-09-18 Asia/Shanghai`
 **Evidence class:** Hosted CI fact record; not a Product, Quality, Release, merge, or Assignment-closure decision
 
-## Latest follow-up result — run `35361209137`
+## Final hosted follow-up — run `35362365167`
+
+| Job | Result | Observation |
+|---|---|---|
+| `classify-change` | Pass | Classified the PR as full; Swift paths require the full gate |
+| `lightweight-checks` | Pass | Markdown links, CI tests, final-gate matrix, and KOS trigger paths passed |
+| `format-swift` | Pass | All Swift files changed relative to `main` passed strict format lint |
+| `test-keyboardcore` | Pass | Hosted KeyboardCore test job passed |
+| `test-rimebridge` | Pass | Hosted RimeBridge test job passed |
+| `test-app-keyboard` | Pass | Hosted App/Keyboard contract test job passed |
+| `build-release` | Pass | Hosted Release build passed |
+| `final-quality-gate` | Pass | All required classified jobs passed |
+| GitGuardian | Pass | Security check passed |
+
+This run is green for the exact PR head `6e6374e`. It records hosted CI
+completion only; it is not a Product Accept, Quality closure, Release
+decision, or Assignment-closure receipt.
+
+## Previous follow-up result — run `35361209137`
 
 | Job | Result | Observation |
 |---|---|---|
@@ -21,7 +39,7 @@
 | `final-quality-gate` | Failed as derived | Correctly rejected the failed required Release job |
 | GitGuardian | Pass | Security check passed |
 
-### Latest failure boundary
+### Failure boundary
 
 The failed Release job requested:
 
@@ -77,10 +95,10 @@ authorized by this evidence record.
 
 ## Disposition and non-claims
 
-**Disposition:** Hosted PR review remains blocked pending a Product-authorized
-environment decision: provide the required hosted Simulator, or separately
-authorize a CI destination/workflow change. This record does not choose either
-option.
+**Disposition:** The latest hosted PR review gate is green for head `6e6374e`
+on run `35362365167`; the earlier destination failures remain historical
+environment facts. The draft PR still requires a separate Product/Quality
+decision for any closure or merge action.
 
 The draft PR remains open. This is not a merge authorization, Product Accept,
 Quality Gate pass, Release pass, device/performance acceptance, `INT-003`,
