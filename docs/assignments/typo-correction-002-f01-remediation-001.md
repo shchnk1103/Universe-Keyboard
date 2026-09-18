@@ -17,11 +17,11 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are not opted in.
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | Bounded F-01 remediation authorized; implementation and focused verification in an isolated worktree |
+| Current Phase | Exact commit `781ba235009e19a0be8b810a3441647dbcc23eb0` revalidated; independent review is `Pass with conditions`; bounded draft PR/review lane authorized |
 | Parent Assignment | `TYPO-CORRECTION-002` — remains Active and is not being closed or migrated |
 | Exact base | `409eeab8ad4f1dd66f0139b5d1c561dc927316ce` (`7d2e3b212daa7c8dc36d82d629e5ee15313b34bf`) |
 | Working branch | `codex/typo-correction-002-f01-remediation-001` |
-| Merge / publication status | No merge-ready PR, merge, Release, TestFlight, or external publication is authorized |
+| Merge / publication status | Commit `781ba235009e19a0be8b810a3441647dbcc23eb0` is pushed; draft PR creation is authorized by the bounded PR/review Authorization; no merge, Release, TestFlight, or external publication is authorized |
 | Material non-claims | No Product, Quality, Release, Device, performance, INT-003, or QA-001 conclusion follows from this Assignment |
 
 ## Authority
@@ -30,6 +30,24 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are not opted in.
 - **Decision Source / Date:** Human Product Owner current-session authorization on `2026-09-18 Asia/Shanghai`: establish a new bounded F-01 remediation Assignment/Authorization, then repair F-01; do not open a merge-ready PR and do not close the parent Assignment.
 - **Product Approver:** Human Product Owner acting as Product Lead
 - **Authorization Record:** [`AUTH-TYPO-CORRECTION-002-F01-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-F01-REMEDIATION-001.md)
+- **Current PR/review Authorization:** [`AUTH-TYPO-CORRECTION-002-F01-PR-REVIEW-001`](../authorizations/AUTH-TYPO-CORRECTION-002-F01-PR-REVIEW-001.md)
+
+### Post-commit revalidation note
+
+On `2026-09-18 Asia/Shanghai`, the Human Product Owner separately authorized
+commit/push of the completed remediation candidate. That action produced
+commit `781ba235009e19a0be8b810a3441647dbcc23eb0` with tree
+`25f589b8633ae95dfdb5c1f60d1e9e7d55ecb3a4`, and did not authorize a PR, merge,
+or parent closure. The earlier Authorization's `candidate_commit_created`
+revalidation trigger therefore fired; the current exact-commit review is
+governed by [`AUTH-TYPO-CORRECTION-002-F01-COMMIT-REVALIDATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-F01-COMMIT-REVALIDATION-001.md).
+
+On `2026-09-18 Asia/Shanghai`, the Human Product Owner authorized a bounded
+draft PR/review lane. This permits governance-only state synchronization,
+commit/push of that documentation delta, and draft PR creation; it does not
+authorize merge, undraft, Product/Release closure, or either Assignment's
+closure. The lane is governed by
+[`AUTH-TYPO-CORRECTION-002-F01-PR-REVIEW-001`](../authorizations/AUTH-TYPO-CORRECTION-002-F01-PR-REVIEW-001.md).
 
 ## Boundary
 
@@ -110,8 +128,10 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are not opted in.
 
 ## Handoff and revalidation
 
-- **Handoff target:** Independent Architecture/Quality review, then Product
-  Lead for a separate decision. The parent Assignment remains Active.
+- **Handoff target:** Product Lead review of the exact-commit revalidation
+  result, after independent Architecture/Quality review of commit
+  `781ba235009e19a0be8b810a3441647dbcc23eb0` returned `Pass with conditions`.
+  The parent Assignment remains Active.
 - **Revalidation triggers:** base commit change; source identity or bridge API
   change; any scope expansion; new reviewer finding; candidate commit created;
   request for device/performance/evidence work; request for commit, push, PR,
@@ -124,4 +144,10 @@ records a separate conclusion. The previous `409eeab` evidence remains bound to
 that exact candidate and is not edited or relabeled as evidence for this
 remediation.
 
-Current executor receipt: [`typo-correction-002-f01-remediation-001-executor-evidence.md`](../evidence/typo-correction-002-f01-remediation-001-executor-evidence.md).
+Current executor receipt: [`typo-correction-002-f01-remediation-001-executor-evidence.md`](../evidence/typo-correction-002-f01-remediation-001-executor-evidence.md). It remains bound to the pre-commit executor candidate and is not relabeled as the independent review of `781ba235`.
+
+Current revalidation Authorization: [`AUTH-TYPO-CORRECTION-002-F01-COMMIT-REVALIDATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-F01-COMMIT-REVALIDATION-001.md).
+
+Current exact-commit revalidation evidence: [`typo-correction-002-f01-commit-revalidation-001.md`](../evidence/typo-correction-002-f01-commit-revalidation-001.md).
+
+Current PR/review handoff: pending the governance-only sync and draft PR head.
