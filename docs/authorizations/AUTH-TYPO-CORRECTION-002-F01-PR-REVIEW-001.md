@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | in progress for governance-only state sync, isolated push, draft PR creation, and review handoff |
+| Status | consumed |
+| Consumption | draft PR `#139` opened from the authorized branch; hosted and independent review remain pending |
 | Parent Assignment | `TYPO-CORRECTION-002` — remains Active |
 | Child Assignment | `TYPO-CORRECTION-002-F01-REMEDIATION-001` — remains Active |
 | Review base | `781ba235009e19a0be8b810a3441647dbcc23eb0` / tree `25f589b8633ae95dfdb5c1f60d1e9e7d55ecb3a4` |
@@ -19,7 +19,7 @@ PR/review lane，F-01 remediation 和 parent TYPO-CORRECTION-002 是否可以关
   "record_id": "AUTH-TYPO-CORRECTION-002-F01-PR-REVIEW-001",
   "record_type": "authorization",
   "title": "Authorize bounded draft PR and review lane for F-01 remediation",
-  "status": "active",
+  "status": "consumed",
   "updated_at": "2026-09-18T22:58:16+08:00",
   "parent_refs": [
     "TYPO-CORRECTION-002",
@@ -42,7 +42,7 @@ PR/review lane，F-01 remediation 和 parent TYPO-CORRECTION-002 是否可以关
     "issued_at": "2026-09-18T22:58:16+08:00",
     "expires_at": null,
     "supersedes_ref": "AUTH-TYPO-CORRECTION-002-F01-COMMIT-REVALIDATION-001",
-    "consumption_state": "in_progress"
+    "consumption_state": "consumed"
   },
   "revalidation_triggers": [
     "source_or_test_file_changed",
@@ -88,3 +88,8 @@ PR/review lane，F-01 remediation 和 parent TYPO-CORRECTION-002 是否可以关
   is recorded; all conditions and non-claims remain explicit.
 - Product Lead receives a separate decision request for any later undraft,
   merge, child closure, or parent closure.
+
+Opened draft PR: [#139](https://github.com/shchnk1103/Universe-Keyboard/pull/139).
+The PR was opened at head `e80e751d82c120cacf2e4e5eeb6eca728ec6bf16`; any
+governance-only state-sync commit after opening must be reflected in the PR's
+final head metadata before review handoff is considered complete.

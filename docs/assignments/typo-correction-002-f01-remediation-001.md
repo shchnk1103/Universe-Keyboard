@@ -17,11 +17,11 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are not opted in.
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current Phase | Exact commit `781ba235009e19a0be8b810a3441647dbcc23eb0` revalidated; independent review is `Pass with conditions`; bounded draft PR/review lane authorized |
+| Current Phase | Draft PR `#139` opened; exact F-01 review is `Pass with conditions`; hosted and independent PR review pending |
 | Parent Assignment | `TYPO-CORRECTION-002` — remains Active and is not being closed or migrated |
 | Exact base | `409eeab8ad4f1dd66f0139b5d1c561dc927316ce` (`7d2e3b212daa7c8dc36d82d629e5ee15313b34bf`) |
 | Working branch | `codex/typo-correction-002-f01-remediation-001` |
-| Merge / publication status | Commit `781ba235009e19a0be8b810a3441647dbcc23eb0` is pushed; draft PR creation is authorized by the bounded PR/review Authorization; no merge, Release, TestFlight, or external publication is authorized |
+| Merge / publication status | Draft PR `#139` is open; no merge, Release, TestFlight, or external publication is authorized |
 | Material non-claims | No Product, Quality, Release, Device, performance, INT-003, or QA-001 conclusion follows from this Assignment |
 
 ## Authority
@@ -150,4 +150,4 @@ Current revalidation Authorization: [`AUTH-TYPO-CORRECTION-002-F01-COMMIT-REVALI
 
 Current exact-commit revalidation evidence: [`typo-correction-002-f01-commit-revalidation-001.md`](../evidence/typo-correction-002-f01-commit-revalidation-001.md).
 
-Current PR/review handoff: pending the governance-only sync and draft PR head.
+Current PR/review handoff: [draft PR #139](https://github.com/shchnk1103/Universe-Keyboard/pull/139); its final head must be recorded after the governance-only state-sync commit.
