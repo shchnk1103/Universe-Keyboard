@@ -26,7 +26,8 @@ Policy version: 1.0.0
 |---|---|
 | Worktree | `/Users/doubleshy0n/.codex/worktrees/typo-correction-002-recall-remediation-001/Universe Keyboard` |
 | Branch | `codex/typo-correction-002-recall-remediation-001` |
-| HEAD | `15887247040fd2dcef43a906b14525f6f48d71ef` |
+| HEAD | `ddfe4f5360a42e538c9a9f7272c3e69ec22ae54b` |
+| Design/evidence review tip | `15887247040fd2dcef43a906b14525f6f48d71ef` |
 | Source implementation freeze | `fb27b24ff85c48302e85309e834dbbe9a777871e` — the later `5d55ce9` delta is docs-only lifecycle writeback |
 | `origin/main` context | `162b09fd58ba60538a944026b1902efa405c75aa` |
 | Worktree state | Clean after docs-only publication; no parent dirty residuals copied |
