@@ -16,8 +16,8 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are not opted in.
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Current Phase | Draft PR `#139` opened; latest hosted run `35362365167` is fully green for head `6e6374e`; exact F-01 review remains `Pass with conditions`; child closure still requires a separate Product/Assignment decision |
+| Lifecycle | Closed |
+| Current Phase | Bounded engineering Close recorded after Human Product Owner accepted `F01-R-01`–`F01-R-03`; close receipt is linked below. Draft PR `#139` remains open and unmerged; parent `TYPO-CORRECTION-002` remains Active |
 | Parent Assignment | `TYPO-CORRECTION-002` — remains Active and is not being closed or migrated |
 | Exact base | `409eeab8ad4f1dd66f0139b5d1c561dc927316ce` (`7d2e3b212daa7c8dc36d82d629e5ee15313b34bf`) |
 | Working branch | `codex/typo-correction-002-f01-remediation-001` |
@@ -31,6 +31,7 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are not opted in.
 - **Product Approver:** Human Product Owner acting as Product Lead
 - **Authorization Record:** [`AUTH-TYPO-CORRECTION-002-F01-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-F01-REMEDIATION-001.md)
 - **Current PR/review Authorization:** [`AUTH-TYPO-CORRECTION-002-F01-PR-REVIEW-001`](../authorizations/AUTH-TYPO-CORRECTION-002-F01-PR-REVIEW-001.md)
+- **Current closure Authorization:** [`AUTH-TYPO-CORRECTION-002-F01-CLOSE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-F01-CLOSE-001.md)
 
 ### Post-commit revalidation note
 
@@ -150,4 +151,24 @@ Current revalidation Authorization: [`AUTH-TYPO-CORRECTION-002-F01-COMMIT-REVALI
 
 Current exact-commit revalidation evidence: [`typo-correction-002-f01-commit-revalidation-001.md`](../evidence/typo-correction-002-f01-commit-revalidation-001.md).
 
-Current PR/review handoff: [draft PR #139](https://github.com/shchnk1103/Universe-Keyboard/pull/139). Hosted run `35362365167` is fully green for head `6e6374e`; the evidence is recorded in [`typo-correction-002-f01-pr-review-001-hosted-run-2026-09-18.md`](../evidence/typo-correction-002-f01-pr-review-001-hosted-run-2026-09-18.md). The next decision is a separate Product/Assignment decision on child closure; this PR/review authorization does not include closure.
+Current PR/review handoff: [draft PR #139](https://github.com/shchnk1103/Universe-Keyboard/pull/139). Final hosted run `35363231833` is fully green for head `f9781ce`; the evidence is recorded in [`typo-correction-002-f01-pr-review-001-hosted-run-2026-09-18.md`](../evidence/typo-correction-002-f01-pr-review-001-hosted-run-2026-09-18.md). The bounded closure lane is governed by [`AUTH-TYPO-CORRECTION-002-F01-CLOSE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-F01-CLOSE-001.md), and the resulting engineering Close is recorded in [`typo-correction-002-f01-remediation-001-close-2026-09-19.md`](../evidence/typo-correction-002-f01-remediation-001-close-2026-09-19.md). The child is Closed for its bounded scope; the parent remains Active.
+
+## Residual disposition at Close
+
+| Residual | Disposition | Boundary retained |
+|---|---|---|
+| `F01-R-01` | `accept` | The independent reviewer did not personally rerun every local gate after `781ba235`; the later hosted full matrix is recorded separately and is not relabeled as that reviewer’s rerun. |
+| `F01-R-02` | `accept` | The independent review’s live `git ls-remote` limitation remains historical; later executor/GitHub evidence confirms the published head but does not retroactively change the reviewer’s observation. |
+| `F01-R-03` | `accept as out-of-scope non-goal` | F-01 closes the deployment identity success gate only; global normalization of the ordinary `RimeEngineImpl` diagnostic path requires a new bounded Assignment if later needed. |
+
+Close receipt: [`typo-correction-002-f01-remediation-001-close-2026-09-19.md`](../evidence/typo-correction-002-f01-remediation-001-close-2026-09-19.md).
+
+## Close handoff
+
+- This Assignment is **Closed** for its bounded RIME identity sentinel
+  remediation scope.
+- Next for this Assignment: **none**. Any new source, diagnostic-normalization,
+  sidecar, device, performance, Product, or Release work requires a new
+  Assignment/Authorization.
+- Parent `TYPO-CORRECTION-002` remains **Active**; this Close does not satisfy
+  its sidecar, INT-003, QA-001, performance, or designated-device gates.
