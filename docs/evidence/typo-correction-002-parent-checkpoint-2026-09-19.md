@@ -49,11 +49,11 @@ PR #140 is already merged into `origin/main` at `162b09fd`; its AX/testability i
 
 - `Keyboard/Controllers/KeyboardInputHitAreaStackView.swift`
 - `Keyboard/Controllers/KeyboardViewController+KeyAccessibility.swift`
-- `UniverseKeyboardUITests/NativeExperienceKeyboardAutomationFeasibilityTests.swift`
+- `UniverseKeyboardUITests/NativeExperienceKeyboardAutomationFeasibilityTests.swift` — this is a separate parent test-only residual, not byte-equal to `origin/main`; its added INT-003 AX/coordinate methods have SHA-256 `3b4a57c1dc6033ce572b89812bb2ab80c4a079bcfdc8d4e166d273859b5be5f2` and are reconciled by [`residual reconciliation`](../assignments/typo-correction-002-residual-reconciliation-001.md).
 - the uncommitted child-only testability/accessibility Assignment, Authorization and post-publication review records;
 - `docs/evidence/typo-correction-002-f01-scope-manifest.md`.
 
-The three Swift paths above are byte-equal to the already-merged PR #140 content when compared with `origin/main`; their `M` status is only a consequence of this worktree's older local base. Their exclusion is intentional and is not a deletion from `main`.
+The first two Swift paths above are byte-equal to the already-merged PR #140 content when compared with `origin/main`; their `M` status is only a consequence of this worktree's older local base. The third path contains the separately authorized parent test-only harness delta and was intentionally held out of the checkpoint until this reconciliation. None of these paths represents a deletion from `main`.
 
 ## Next handoff
 
