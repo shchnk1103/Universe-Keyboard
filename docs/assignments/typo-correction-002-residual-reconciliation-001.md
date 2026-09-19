@@ -4,10 +4,10 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | Reconcile the intentionally excluded AX/testability residuals and publish the already-used test-only harness plus canonical child governance records. |
+| **Lifecycle** | `Closed` |
+| **Phase** | Reconciled and published the already-used test-only harness plus canonical child governance records. |
 | **Non-claims** | No new Run, build, install, Product/Quality/Release Gate, parent close, recall change, or PR/merge decision. |
-| **Next** | After reconciliation, use a clean worktree for the separate recall-remediation Assignment; the current dirty worktree is not the implementation workspace. |
+| **Next** | Parent remains Active. Start the separate recall-remediation work from a clean worktree at `fb27b24ff85c48302e85309e834dbbe9a777871e` with a new Assignment/Authorization; this dirty worktree is not the implementation workspace. |
 | **Residuals** | Two AX production files are origin-equivalent but local-base-dirty; the F-01 manifest remains outside this parent lane. |
 
 ---
@@ -57,3 +57,11 @@ The Executor may:
 - SHA-256 equality between the published test-only file and the already-bound evidence receipt;
 - changed-Markdown link check and lightweight CI result;
 - residual reconciliation receipt naming what remains intentionally outside the lane.
+
+## Closure
+
+- **Receipt:** [`typo-correction-002-residual-reconciliation-2026-09-19.md`](../evidence/typo-correction-002-residual-reconciliation-2026-09-19.md)
+- **Reconciliation commit:** `fb27b24ff85c48302e85309e834dbbe9a777871e`
+- **Remote:** `origin/codex/typo-correction-002-provenance-sidecar` at the same commit
+- **Authorization:** `AUTH-TYPO-CORRECTION-002-RESIDUAL-RECONCILIATION-001` consumed after checks passed and the commit was pushed
+- **No closure implied:** parent `TYPO-CORRECTION-002`, F-02 revalidation, F-01 lane, Product/Quality/Release Gates, PR, merge and Release remain outside this Assignment.

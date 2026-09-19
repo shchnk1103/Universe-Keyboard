@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | `active` |
+| **Status** | `consumed` |
 | **Assignment** | [`TYPO-CORRECTION-002-RESIDUAL-RECONCILIATION-001`](../assignments/typo-correction-002-residual-reconciliation-001.md) |
 | **Issuer** | Product Lead / Human Product Owner, current task instruction, 2026-09-19 Asia/Shanghai |
 | **Consumer** | Current Codex Executor |
@@ -16,8 +16,8 @@
   "record_id": "AUTH-TYPO-CORRECTION-002-RESIDUAL-RECONCILIATION-001",
   "record_type": "authorization",
   "title": "Reconcile the parent checkpoint residuals",
-  "status": "active",
-  "updated_at": "2026-09-19T21:30:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-19T22:05:07+08:00",
   "revalidation_triggers": [
     "worktree_content_changed",
     "origin_main_changed",
@@ -56,7 +56,10 @@
     "issued_at": "2026-09-19T21:30:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "active"
+    "consumption_state": "consumed",
+    "consumed_at": "2026-09-19T22:05:07+08:00",
+    "consumed_by_commit": "fb27b24ff85c48302e85309e834dbbe9a777871e",
+    "consumed_remote": "origin/codex/typo-correction-002-provenance-sidecar"
   }
 }
 ```
@@ -64,3 +67,7 @@
 ## Boundary
 
 This Authorization preserves the source identity already used for the INT-003 evidence. It does not authorize a new cadence attempt or imply that the prior inconclusive evidence is now a Gate pass.
+
+## Consumption
+
+Consumed after the explicit 20-path manifest passed `git diff --cached --check`, the test-only Swift strict lint, SHA-256 and blob identity checks, changed-Markdown link checks, lightweight CI, and push of `fb27b24ff85c48302e85309e834dbbe9a777871e`. The closure receipt is [`typo-correction-002-residual-reconciliation-2026-09-19.md`](../evidence/typo-correction-002-residual-reconciliation-2026-09-19.md).

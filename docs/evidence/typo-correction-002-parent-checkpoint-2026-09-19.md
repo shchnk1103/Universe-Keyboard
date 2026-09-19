@@ -45,16 +45,16 @@ The checkpoint therefore preserves prior Run IDs and their original UNKNOWN/inco
 
 ## Deliberately excluded from this checkpoint
 
-PR #140 is already merged into `origin/main` at `162b09fd`; its AX/testability implementation was not re-published from the old local base. The following remain uncommitted in this worktree and are not part of `8497874`:
+PR #140 is already merged into `origin/main` at `162b09fd`; its AX/testability implementation was not re-published from the old local base. The following were intentionally excluded from `8497874`; the later residual-reconciliation receipt records which test-only and governance records were subsequently published:
 
 - `Keyboard/Controllers/KeyboardInputHitAreaStackView.swift`
 - `Keyboard/Controllers/KeyboardViewController+KeyAccessibility.swift`
-- `UniverseKeyboardUITests/NativeExperienceKeyboardAutomationFeasibilityTests.swift` — this is a separate parent test-only residual, not byte-equal to `origin/main`; its added INT-003 AX/coordinate methods have SHA-256 `3b4a57c1dc6033ce572b89812bb2ab80c4a079bcfdc8d4e166d273859b5be5f2` and are reconciled by [`residual reconciliation`](../assignments/typo-correction-002-residual-reconciliation-001.md).
-- the uncommitted child-only testability/accessibility Assignment, Authorization and post-publication review records;
+- `UniverseKeyboardUITests/NativeExperienceKeyboardAutomationFeasibilityTests.swift` — this was a separate parent test-only residual, not byte-equal to `origin/main`; its added INT-003 AX/coordinate methods have SHA-256 `3b4a57c1dc6033ce572b89812bb2ab80c4a079bcfdc8d4e166d273859b5be5f2` and were published by [`residual reconciliation`](../evidence/typo-correction-002-residual-reconciliation-2026-09-19.md).
+- the child-only testability/accessibility Assignment, Authorization and post-publication review records, which were published by the same reconciliation commit;
 - `docs/evidence/typo-correction-002-f01-scope-manifest.md`.
 
-The first two Swift paths above are byte-equal to the already-merged PR #140 content when compared with `origin/main`; their `M` status is only a consequence of this worktree's older local base. The third path contains the separately authorized parent test-only harness delta and was intentionally held out of the checkpoint until this reconciliation. None of these paths represents a deletion from `main`.
+The first two Swift paths above are byte-equal to the already-merged PR #140 content when compared with `origin/main`; their `M` status is only a consequence of this worktree's older local base and they remain intentionally untouched. The third path contained the separately authorized parent test-only harness delta and is now recorded at `fb27b24ff85c48302e85309e834dbbe9a777871e`. None of these paths represents a deletion from `main`.
 
 ## Next handoff
 
-The parent remains **Active**. The next action is to create a new bounded `TYPO-CORRECTION-002` recall-remediation Assignment/Authorization from checkpoint `84978748d89d329a7d2c6e89400c1ff556cfd9b5`. That slice may evaluate a coverage-aware bounded hypothesis-recall change, but it must define focused tests and new source/build/package identities and new Run IDs before any new Simulator/device evidence. It must not reuse this checkpoint's old evidence as product proof.
+The parent remains **Active**. The residual reconciliation is recorded at `fb27b24ff85c48302e85309e834dbbe9a777871e`; the next action is to create a new bounded `TYPO-CORRECTION-002` recall-remediation Assignment/Authorization from that exact commit in a clean worktree. That slice may evaluate a coverage-aware bounded hypothesis-recall change, but it must define focused tests and new source/build/package identities and new Run IDs before any new Simulator/device evidence. It must not reuse this checkpoint's old evidence as product proof.
