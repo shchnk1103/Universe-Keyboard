@@ -117,6 +117,7 @@ separate:
 - [`typo-correction-002.md`](typo-correction-002.md)
 - [`typo-correction-002-parent-revalidation-002.md`](typo-correction-002-parent-revalidation-002.md)
 - [`typo-correction-002-file-provenance-audit-2026-09-19.md`](../evidence/typo-correction-002-file-provenance-audit-2026-09-19.md)
+- [`bounded recall design note`](../plans/typo-correction-002-recall-remediation-design-2026-09-19.md)
 - The exact source/package baseline at `fb27b24ff85c48302e85309e834dbbe9a777871e`.
 
 ## Exit criteria for this design slice
@@ -125,6 +126,8 @@ separate:
   paths and a reproducible reachability matrix.
 - The design note states a bounded recommendation, rejected alternatives,
   privacy/hot-path constraints and the required implementation evidence.
+- The design note explicitly keeps the production budget and preflight
+  budget separate and does not authorize implementation.
 - Independent Architecture receives only this design record and its exact
   source baseline; no old Simulator receipt is upgraded.
 - A later implementation request, if any, has a new Authorization, source
