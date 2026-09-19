@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-09-19 — 键盘按键可被 Simulator AX 独立发现并走 UIKit 路径
+
+- Keyboard 按键显式作为独立无障碍元素（`.keyboardKey`）；全幅 touch-routing overlay 不再占用 AX 空间，hit-routing 与 Debug overlay 绘制路径保持分离。
+- Simulator 上字母键、删除、空格、回车、键盘页面、输入语言可作为独立 Key 被 harness 发现；字母/删除经现有 target-action 触发。
+- Product 接受 F-01/F-02 为有界 Pass；缝区、九键、真机 VoiceOver 不纳入本切片。不构成 INT-003、QA-001、性能、parent Close 或 Release 结论。
+
 ## 2026-09-15 — CI full 路径拆成并行 heavy jobs
 
 - `Swift 6 Quality` 在 `full` 分类下不再串行一个 `build-and-test`。改为并行 `format-swift`、`test-keyboardcore`、`test-rimebridge`、`test-app-keyboard`、`build-release`。

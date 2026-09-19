@@ -30,6 +30,18 @@
 - **Product Approver:** Product Lead
 - **Handoff Target:** Product Lead for Product Review, then Program Manager for source-linked Dashboard synchronization
 
+## Related child records (link only)
+
+Keyboard UI testability/accessibility and F-02 overlay on/off **do not close this parent**. Canonical F-02/QR-01 residual for the child worktree is:
+
+- [`F-02 reconcile Assignment`](typo-correction-002-testability-accessibility-f02-reconcile-001.md) — `Reviewed`, not Closed
+- [`F-02/QR-01 evidence`](../evidence/typo-correction-002-testability-accessibility-f02-reconciliation.md) — **bounded Pass**
+- [`F-02 Architecture 最终处置`](../reviews/typo-correction-002-testability-accessibility-f02-architecture-final.md) — **有界 Pass**；不关闭本 parent
+- [`Child consolidated Quality`](../reviews/typo-correction-002-testability-accessibility-001-quality-consolidated.md) — **Pass with conditions**；不关闭本 parent
+- Sidecar implementation/revalidation records remain under `/private/tmp/universe-keyboard-typo-correction-002-provenance-sidecar/docs/` (do not fork status there)
+
+This parent remains **Active** for sidecar observability, INT-003, QA-001, and performance evidence.
+
 ## Gates
 
 ### Entry Criteria

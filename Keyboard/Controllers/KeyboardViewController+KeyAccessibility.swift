@@ -4,12 +4,17 @@ import UIKit
 extension KeyboardViewController {
     /// Adds semantic VoiceOver metadata without coupling accessibility text to visible key glyphs.
     func configureKeyAccessibility(_ button: UIButton, title: String, action: Selector) {
+        // UIButton(type:) does not reliably run subclass initializers, and
+        // image-only function keys can lose the default AX element flag.
+        // The UI harness queries `XCUIElementTypeKey` via `.keyboardKey`.
+        button.isAccessibilityElement = true
         button.accessibilityTraits = .keyboardKey
         button.accessibilityHint = nil
         button.accessibilityValue = nil
 
         switch action {
         case #selector(deleteKeyTouchUpInside(_:)):
+            button.accessibilityIdentifier = "delete"
             button.accessibilityLabel = "删除"
             button.accessibilityHint = "删除光标前的字符。按住可连续删除。"
 
@@ -24,6 +29,7 @@ extension KeyboardViewController {
             )
 
         case #selector(handleInputModeList(from:with:)):
+            button.accessibilityIdentifier = "nextKeyboard"
             button.accessibilityLabel = "切换键盘"
             button.accessibilityHint = "按住以选择其他键盘。"
 
@@ -38,11 +44,13 @@ extension KeyboardViewController {
             button.accessibilityHint = "切换中文与英文输入。"
 
         case #selector(insertSpace(_:)):
+            button.accessibilityIdentifier = "space"
             button.accessibilityLabel = "空格"
             button.accessibilityValue = spaceAccessibilityValue(for: title)
             button.accessibilityHint = "插入空格。左右滑动可移动光标。"
 
         case #selector(insertReturn(_:)):
+            button.accessibilityIdentifier = "return"
             button.accessibilityLabel = returnKeyAccessibilityLabel(for: title)
             button.accessibilityHint = "执行\(returnKeyAccessibilityLabel(for: title))。"
 
