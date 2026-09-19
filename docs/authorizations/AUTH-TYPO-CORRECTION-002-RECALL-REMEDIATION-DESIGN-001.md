@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | `active` |
+| **Status** | `consumed` |
 | **Assignment** | [`TYPO-CORRECTION-002-RECALL-REMEDIATION-001`](../assignments/typo-correction-002-recall-remediation-001.md) |
 | **Issuer** | Product Lead / Human Product Owner, current Codex task, `2026-09-19 Asia/Shanghai` |
 | **Consumer** | Current Codex Executor |
@@ -16,8 +16,8 @@
   "record_id": "AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-DESIGN-001",
   "record_type": "authorization",
   "title": "Read-only bounded recall-remediation design",
-  "status": "active",
-  "updated_at": "2026-09-19T22:30:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-19T22:38:14+08:00",
   "revalidation_triggers": [
     "worktree_content_changed",
     "source_baseline_changed",
@@ -61,14 +61,20 @@
     "issued_at": "2026-09-19T22:30:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "active"
+      "consumption_state": "consumed",
+      "consumed_at": "2026-09-19T22:38:14+08:00",
+      "consumed_artifacts": [
+        "13b0c4d6df174f77a7765d25edc9845ec9faa011",
+        "15887247040fd2dcef43a906b14525f6f48d71ef"
+      ]
   }
 }
 ```
 
 ## Boundary
 
-This Authorization does not authorize changing the production 12/8 budget or
-wiring the 60/64/8 preflight into production. It does not authorize any new
-Simulator/device evidence. A later implementation Authorization must bind a
-new source/package identity and its own focused tests before code is written.
+This Authorization has been consumed. It did not authorize changing the
+production 12/8 budget or wiring the 60/64/8 preflight into production, and it
+did not authorize any new Simulator/device evidence. A later implementation
+Authorization must bind a new source/package identity and its own focused tests
+before code is written.

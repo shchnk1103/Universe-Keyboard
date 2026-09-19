@@ -9,7 +9,7 @@ Policy version: 1.0.0
 | **Lifecycle** | `Active` |
 | **Phase** | Read-only coverage audit and bounded recall design; implementation is not yet authorized. |
 | **Non-claims** | No production recall change, no local model, no schema/vendor change, no new Run, no Product/Quality/Release Gate and no parent closure. |
-| **Next** | Verify the existing production/preflight reachability matrix, publish a design note, obtain independent Architecture/Product direction, then request a separate implementation Authorization only if the bounded strategy is accepted. |
+| **Next** | Independent Architecture review of the exact design tip `15887247040fd2dcef43a906b14525f6f48d71ef`; then Product direction. Implementation remains unauthorized. |
 | **Residuals** | F-01 scope manifest still lacks a dedicated F-01 Assignment/Authorization; it is outside this recall lane. |
 
 ## Authority
@@ -18,6 +18,7 @@ Policy version: 1.0.0
 - **Parent Assignment:** [`TYPO-CORRECTION-002`](typo-correction-002.md).
 - **Predecessor evidence:** [`TYPO-CORRECTION-002-PARENT-REVALIDATION-002`](typo-correction-002-parent-revalidation-002.md) and its inconclusive INT-003 / QA-001 / paired-performance receipts.
 - **Matching Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-DESIGN-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-DESIGN-001.md).
+- **Architecture Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-ARCHITECTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-ARCHITECTURE-001.md).
 
 ## Clean execution identity
 
@@ -25,10 +26,10 @@ Policy version: 1.0.0
 |---|---|
 | Worktree | `/Users/doubleshy0n/.codex/worktrees/typo-correction-002-recall-remediation-001/Universe Keyboard` |
 | Branch | `codex/typo-correction-002-recall-remediation-001` |
-| HEAD | `5d55ce981adc4ef5a34046292a6edbc727db280b` |
+| HEAD | `15887247040fd2dcef43a906b14525f6f48d71ef` |
 | Source implementation freeze | `fb27b24ff85c48302e85309e834dbbe9a777871e` — the later `5d55ce9` delta is docs-only lifecycle writeback |
 | `origin/main` context | `162b09fd58ba60538a944026b1902efa405c75aa` |
-| Worktree state | Clean at Assignment creation; no parent dirty residuals copied |
+| Worktree state | Clean after docs-only publication; no parent dirty residuals copied |
 
 ## Objective
 
