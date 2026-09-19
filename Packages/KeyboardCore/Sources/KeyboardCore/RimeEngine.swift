@@ -1,3 +1,5 @@
+import Foundation
+
 /// RIME 输入引擎的抽象协议。
 ///
 /// 这是整个 RIME 集成的"架构接缝"：KeyboardController 只依赖这个协议，
@@ -59,6 +61,10 @@ public protocol RimeEngine: AnyObject {
     /// Content-free native session identity for controlled diagnostics.
     var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? { get }
 
+    /// Stable ID of the Main-App runtime receipt consumed by this engine, when
+    /// the engine is backed by a provenance-capable deployment.
+    var runtimeProvenanceReceiptID: UUID? { get }
+
     /// Fired whenever `runtimeSelection` is published (success or fail-closed).
     /// Extension UI wires this to reload chrome and controller T9 policy immediately.
     var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)? { get set }
@@ -93,4 +99,6 @@ public extension RimeEngine {
     var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {
         nil
     }
+
+    var runtimeProvenanceReceiptID: UUID? { nil }
 }

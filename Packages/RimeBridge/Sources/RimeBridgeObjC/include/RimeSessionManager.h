@@ -5,7 +5,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Objective-C 封装层：将 librime C API 暴露为 Swift 可调用的 ObjC 方法。
 /// 内部使用 C++/ObjC++ 调用 librime，处理所有 C 指针和内存管理。
 ///
-/// 线程安全：所有方法必须在同一线程调用（键盘扩展中所有事件都在主线程）。
+/// 线程安全：所有方法必须在同一串行 owner 线程调用；同步路径使用主线程，
+/// thread-affine 路径使用 dedicated owner thread，二者都禁止并发进入。
 ///
 /// 编译依赖：
 /// - rime_api.h（已包含在本包中）
@@ -72,8 +73,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSDictionary *)replaceInput:(NSString *)input;
 
 /// 在独立的旁路 session 中查询指定拼音的候选，不改变主输入 session。
-/// 返回值仅包含 candidates，供有界智能纠错候选验证使用。
+/// 返回值仅包含 candidates，供有界智能纠错候选验证使用；limit 在桥接层
+/// 进一步限制为最多 8 个。
 - (NSDictionary *)correctionCandidatesForInput:(NSString *)input limit:(int)limit;
+
+/// 返回最近一次旁路查询的内容无关诊断快照。该快照只用于 Debug/受控证据，
+/// 不包含输入、候选文字或 host 内容；没有可用快照时返回 nil。
+- (nullable NSDictionary *)lastCorrectionQueryDiagnostic;
 
 /// 提交当前 composition（不选候选，直接上屏拼音）
 - (NSDictionary *)commitComposition;
@@ -155,5 +161,19 @@ extern NSString * const RimeKeyFirstProcessKeyTotalDurationMs;
 extern NSString * const RimeKeyProcessKeyLibrimeDurationMs;
 /// 每次 processKey：`collectOutput` / get_context 耗时（NSNumber double，毫秒）。
 extern NSString * const RimeKeyProcessKeyCollectDurationMs;
+/// 旁路查询诊断字典字段（仅内容无关的 session/计时/计数信息）。
+extern NSString * const RimeKeyCorrectionQuerySequence;
+extern NSString * const RimeKeyCorrectionQueryInputLength;
+extern NSString * const RimeKeyCorrectionQueryLimit;
+extern NSString * const RimeKeyCorrectionQueryResultCount;
+extern NSString * const RimeKeyCorrectionQueryElapsedMilliseconds;
+extern NSString * const RimeKeyCorrectionQueryLiveSessionIDBefore;
+extern NSString * const RimeKeyCorrectionQueryLiveSessionIDAfter;
+extern NSString * const RimeKeyCorrectionQueryLiveSessionValidBefore;
+extern NSString * const RimeKeyCorrectionQueryLiveSessionValidAfter;
+extern NSString * const RimeKeyCorrectionQuerySidecarSessionIDBefore;
+extern NSString * const RimeKeyCorrectionQuerySidecarSessionIDAfter;
+extern NSString * const RimeKeyCorrectionQuerySchemaID;
+extern NSString * const RimeKeyCorrectionQueryOutcome;
 
 NS_ASSUME_NONNULL_END

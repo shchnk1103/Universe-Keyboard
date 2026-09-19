@@ -392,8 +392,9 @@ enum DiagnosticsEventDisplayFormatter {
         let delivery = event.schemeDeliveryPayload.map(schemeDeliveryDescription)
         let rimeSync = event.rimeSyncPayload.map(rimeSyncDescription)
         let runtimeRoute = event.runtimeRoutePayload.map(runtimeRouteDescription)
+        let typoCorrection = event.typoCorrectionPayload.map(typoCorrectionDescription)
         let details =
-            ([action, delivery, rimeSync, runtimeRoute].compactMap { $0 }
+            ([action, delivery, rimeSync, runtimeRoute, typoCorrection].compactMap { $0 }
             + (fields.isEmpty ? [] : [fields]))
             .joined(separator: " ")
         let suffix = details.isEmpty ? "" : " \(details)"
@@ -508,6 +509,40 @@ enum DiagnosticsEventDisplayFormatter {
             let failure = event.failure.map { " failure=\($0.rawValue)" } ?? ""
             return rimeSyncPrefix(event.context)
                 + " result=\(event.result.rawValue)\(phase)\(failure)"
+        }
+    }
+
+    /// Exposes only bounded route identity and numeric query aggregates. The
+    /// formatter deliberately never renders input or candidate text.
+    private nonisolated static func typoCorrectionDescription(
+        _ payload: DiagnosticEvent.TypoCorrectionPayload
+    ) -> String {
+        switch payload {
+        case .queryRoute(let event):
+            return "route=\(event.route.rawValue)"
+                + (event.schemaID.map { " schema=\($0)" } ?? "")
+                + (event.provenanceReceiptID.map {
+                    " receipt=\($0.uuidString.lowercased())"
+                } ?? "")
+        case .sidecarQuery(let event):
+            let diagnostic = event.diagnostic
+            return "route=\(diagnostic.route.rawValue)"
+                + " seq=\(diagnostic.sequence)"
+                + " input_len=\(diagnostic.inputLength)"
+                + " limit=\(diagnostic.limit)"
+                + " results=\(diagnostic.resultCount)"
+                + " elapsed_ms=\(diagnostic.elapsedMilliseconds)"
+                + " live_before=\(diagnostic.liveSessionIDBefore ?? 0)"
+                + " live_after=\(diagnostic.liveSessionIDAfter ?? 0)"
+                + " live_valid_before=\(diagnostic.liveSessionValidBefore)"
+                + " live_valid_after=\(diagnostic.liveSessionValidAfter)"
+                + " sidecar_before=\(diagnostic.sidecarSessionIDBefore ?? 0)"
+                + " sidecar_after=\(diagnostic.sidecarSessionIDAfter ?? 0)"
+                + (diagnostic.schemaID.map { " schema=\($0)" } ?? "")
+                + (diagnostic.provenanceReceiptID.map {
+                    " receipt=\($0.uuidString.lowercased())"
+                } ?? "")
+                + " outcome=\(diagnostic.outcome.rawValue)"
         }
     }
 

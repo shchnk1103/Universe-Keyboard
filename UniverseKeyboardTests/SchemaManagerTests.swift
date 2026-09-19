@@ -1288,22 +1288,27 @@ final class SchemaManagerTests: XCTestCase {
     }
 
     func testActiveWanxiangUninstallRestoresCompleteRouteStateWhenLunaDeployFails() async {
-        let settings = StubSharedSettingsStore(
-            values: [
+        var settingsValues = downloadedProvenanceSettings(for: "wanxiang")
+        settingsValues.merge(
+            [
                 "rime_active_schema": "wanxiang",
                 KeyboardLayoutSettingsKey.layoutStyle: KeyboardLayoutStyle.nineKey.rawValue,
                 KeyboardLayoutSettingsKey.schemeBinding26: "wanxiang",
                 KeyboardLayoutSettingsKey.schemeBinding9: "t9",
                 "rime_ice_installed": true,
-                "wanxiang_installed": true,
                 "wanxiang_version": "17.5.9",
-            ]
+            ],
+            uniquingKeysWith: { _, newValue in newValue }
+        )
+        let settings = StubSharedSettingsStore(
+            values: settingsValues
         )
         let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
         let deploymentService = StubDeploymentService(results: [false, true])
         let diagnostics = RecordingDeliveryDiagnostics()
         let manager = makeManager(
             settings: settings,
+            artifactVerifier: FixedLiveManifestVerifier(),
             deliveryDiagnostics: diagnostics,
             installer: installer,
             deploymentService: deploymentService
@@ -1347,16 +1352,20 @@ final class SchemaManagerTests: XCTestCase {
     }
 
     func testActiveWanxiangUninstallRestoresCompleteRouteStateWhenStagingFails() async {
-        let settings = StubSharedSettingsStore(
-            values: [
+        var settingsValues = downloadedProvenanceSettings(for: "wanxiang")
+        settingsValues.merge(
+            [
                 "rime_active_schema": "wanxiang",
                 KeyboardLayoutSettingsKey.layoutStyle: KeyboardLayoutStyle.nineKey.rawValue,
                 KeyboardLayoutSettingsKey.schemeBinding26: "wanxiang",
                 KeyboardLayoutSettingsKey.schemeBinding9: "t9",
                 "rime_ice_installed": true,
-                "wanxiang_installed": true,
                 "wanxiang_version": "17.5.9",
-            ]
+            ],
+            uniquingKeysWith: { _, newValue in newValue }
+        )
+        let settings = StubSharedSettingsStore(
+            values: settingsValues
         )
         let installer = StubSchemaArchiveInstaller(
             containsInstalledSchema: true,
@@ -1366,6 +1375,7 @@ final class SchemaManagerTests: XCTestCase {
         let diagnostics = RecordingDeliveryDiagnostics()
         let manager = makeManager(
             settings: settings,
+            artifactVerifier: FixedLiveManifestVerifier(),
             deliveryDiagnostics: diagnostics,
             installer: installer,
             deploymentService: deploymentService
@@ -1472,19 +1482,25 @@ final class SchemaManagerTests: XCTestCase {
     /// CS-10: after active Ice removal, the retained Wanxiang scheme can be
     /// selected and deployed without reinstalling it.
     func testCS10_RetainedWanxiangDeploysAfterActiveIceUninstall() async {
-        let settings = StubSharedSettingsStore(
-            values: [
+        var settingsValues = downloadedProvenanceSettings(for: "wanxiang")
+        settingsValues.merge(
+            [
                 "rime_active_schema": "rime_ice",
                 "rime_ice_installed": true,
                 "rime_ice_version": "test-ice-version",
                 "wanxiang_installed": true,
                 "wanxiang_version": "17.5.9",
-            ]
+            ],
+            uniquingKeysWith: { _, newValue in newValue }
+        )
+        let settings = StubSharedSettingsStore(
+            values: settingsValues
         )
         let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
         let deploymentService = StubDeploymentService(succeeded: true)
         let manager = makeManager(
             settings: settings,
+            artifactVerifier: FixedLiveManifestVerifier(),
             installer: installer,
             deploymentService: deploymentService
         )
@@ -1506,19 +1522,25 @@ final class SchemaManagerTests: XCTestCase {
     /// CS-10: the retained Ice scheme is deployable after active Wanxiang
     /// removal without reinstallation.
     func testCS10_RetainedIceDeploysAfterActiveWanxiangUninstall() async {
-        let settings = StubSharedSettingsStore(
-            values: [
+        var settingsValues = downloadedProvenanceSettings(for: "rime_ice")
+        settingsValues.merge(
+            [
                 "rime_active_schema": "wanxiang",
                 "rime_ice_installed": true,
                 "rime_ice_version": "test-ice-version",
                 "wanxiang_installed": true,
                 "wanxiang_version": "17.5.9",
-            ]
+            ],
+            uniquingKeysWith: { _, newValue in newValue }
+        )
+        let settings = StubSharedSettingsStore(
+            values: settingsValues
         )
         let installer = StubSchemaArchiveInstaller(containsInstalledSchema: true)
         let deploymentService = StubDeploymentService(succeeded: true)
         let manager = makeManager(
             settings: settings,
+            artifactVerifier: FixedLiveManifestVerifier(),
             installer: installer,
             deploymentService: deploymentService
         )
@@ -1879,8 +1901,9 @@ final class SchemaManagerTests: XCTestCase {
             deploymentService: deploymentService
         )
 
-        await manager.deployRimeConfig()
+        let succeeded = await manager.deployRimeConfig()
 
+        XCTAssertTrue(succeeded)
         let requests = await deploymentService.requests
         XCTAssertEqual(requests.count, 1)
         guard let request = requests.first else { return }
@@ -1909,6 +1932,56 @@ final class SchemaManagerTests: XCTestCase {
             settings.string(forKey: RimeAdvancedInputSettings.deployedSignatureKey),
             RimeAdvancedInputSettings().deploymentSignature(activeSchemaID: "luna_pinyin", supportedFeatures: [])
         )
+        let receipt = RimeRuntimeProvenanceStore.load(from: installer.directories.userDataURL)
+        XCTAssertNotNil(receipt)
+        XCTAssertTrue(receipt?.isValid == true)
+        XCTAssertEqual(receipt?.schemeID, "luna_pinyin")
+        XCTAssertEqual(receipt?.activeSchemaID, "luna_pinyin")
+        XCTAssertEqual(receipt?.librimeVersion, "test-librime")
+        XCTAssertTrue(receipt?.runtimeSmokePassed == true)
+    }
+
+    func testSuccessfulDeploymentWithoutLibrimeIdentityRemainsPending() async {
+        let settings = StubSharedSettingsStore(values: ["rime_needs_deploy": true])
+        let deploymentService = StubDeploymentService(
+            succeeded: true,
+            librimeVersion: nil,
+            runtimeSmokePassed: true
+        )
+        let manager = makeManager(
+            settings: settings,
+            deploymentService: deploymentService
+        )
+
+        let succeeded = await manager.deployRimeConfig()
+
+        XCTAssertFalse(succeeded)
+        XCTAssertFalse(settings.bool(forKey: "rime_deployed"))
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+        XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
+    }
+
+    func testSuccessfulDeploymentWithEmptyLibrimeIdentityRemainsPending() async {
+        let settings = StubSharedSettingsStore(values: ["rime_needs_deploy": true])
+        let installer = StubSchemaArchiveInstaller()
+        let deploymentService = StubDeploymentService(
+            succeeded: true,
+            librimeVersion: "",
+            runtimeSmokePassed: true
+        )
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: deploymentService
+        )
+
+        let succeeded = await manager.deployRimeConfig()
+
+        XCTAssertFalse(succeeded)
+        XCTAssertFalse(settings.bool(forKey: "rime_deployed"))
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+        XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
+        XCTAssertNil(RimeRuntimeProvenanceStore.load(from: installer.directories.userDataURL))
     }
 
     func testDeploymentForwardsOnlyActiveWanxiangSchemaToSmoke() async {
@@ -1994,20 +2067,27 @@ final class SchemaManagerTests: XCTestCase {
         try schemaYaml.write(
             to: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"), atomically: true, encoding: .utf8)
 
-        let settings = StubSharedSettingsStore(
-            values: [
+        var settingsValues = downloadedProvenanceSettings(for: "rime_ice")
+        settingsValues.merge(
+            [
                 "rime_active_schema": "rime_ice",
                 RimeFuzzyPinyinSettings.enabledKey: true,
                 RimeFuzzyPinyinSettings.zhZKey: true,
                 RimeFuzzyPinyinSettings.chCKey: false,
                 RimeFuzzyPinyinSettings.shSKey: false,
                 RimeFuzzyPinyinSettings.nLKey: false,
-            ]
+            ],
+            uniquingKeysWith: { _, newValue in newValue }
         )
+        let settings = StubSharedSettingsStore(values: settingsValues)
         let installer = StubSchemaArchiveInstaller(
             directories: SchemaDeploymentDirectories(sharedDataURL: sharedURL, userDataURL: userURL)
         )
-        let manager = makeManager(settings: settings, installer: installer)
+        let manager = makeManager(
+            settings: settings,
+            artifactVerifier: FixedLiveManifestVerifier(),
+            installer: installer
+        )
 
         await manager.deployRimeConfig()
 
@@ -2711,6 +2791,30 @@ final class SchemaManagerTests: XCTestCase {
         )
     }
 
+    private func downloadedProvenanceSettings(for schemaID: String) -> [String: Any] {
+        guard
+            let entry = RimeSchemeCatalog.entry(for: schemaID),
+            let distribution = entry.distribution,
+            let source = distribution.manifest.sourceVariants.first,
+            let identity = try? distribution.manifest.resolvedStagedIdentity(for: source),
+            let installedKey = entry.storage.installed,
+            let checksumKey = entry.storage.checksum,
+            let sourceVariantKey = entry.storage.sourceVariant,
+            let stagedChecksumKey = entry.storage.stagedContentChecksum
+        else {
+            preconditionFailure("missing catalog provenance fixture for \(schemaID)")
+        }
+
+        return [
+            installedKey: true,
+            checksumKey: source.archiveSHA256,
+            sourceVariantKey: source.id,
+            stagedChecksumKey: identity.stagedContentSHA256WithLua,
+            "rime_lua_available": true,
+            "(schemaID)_version": distribution.manifest.version,
+        ]
+    }
+
     private func makeManager(
         settings: StubSharedSettingsStore = StubSharedSettingsStore(),
         sourceSelector: any SchemaSourceSelecting = StubSchemaSourceSelector(),
@@ -2936,6 +3040,50 @@ nonisolated private struct FixedStagedContentVerifier: SchemaArtifactVerifying {
         luaAvailable: Bool
     ) throws -> String {
         stagedContentSHA256
+    }
+}
+
+/// Test-only live manifest proof for deployments of a catalog-bound downloaded scheme.
+/// The returned file set is content-free and only exercises receipt validation.
+nonisolated private struct FixedLiveManifestVerifier: SchemaArtifactVerifying,
+    SchemaArtifactLiveManifestVerifying
+{
+    private let content: RimeRuntimeProvenanceContent
+
+    init() {
+        let sha256 = String(repeating: "0", count: 64)
+        content = RimeRuntimeProvenanceContent(
+            files: [
+                RimeRuntimeProvenanceFile(
+                    relativePath: "fixture.schema.yaml",
+                    byteCount: 1,
+                    sha256: sha256
+                )
+            ],
+            contentSHA256: sha256
+        )
+    }
+
+    func verifyArchiveSize(at archiveURL: URL, source: RimeSchemeSourceVariant) throws {}
+
+    func verifyArchiveDigest(at archiveURL: URL, source: RimeSchemeSourceVariant) throws -> String {
+        source.archiveSHA256
+    }
+
+    func stagedContentSHA256(
+        in extractionDirectory: URL,
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws -> String {
+        content.contentSHA256
+    }
+
+    func installedContentManifest(
+        in sharedDirectory: URL,
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws -> RimeRuntimeProvenanceContent {
+        content
     }
 }
 
@@ -3273,10 +3421,7 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
         restoreUpgradeError: Error? = nil,
         extractionDirectory: URL? = nil,
         installCopiesT9Fixture: Bool = false,
-        directories: SchemaDeploymentDirectories = SchemaDeploymentDirectories(
-            sharedDataURL: URL(fileURLWithPath: "/test/Rime/shared"),
-            userDataURL: URL(fileURLWithPath: "/test/Rime/user")
-        )
+        directories: SchemaDeploymentDirectories? = nil
     ) {
         self.containsInstalledSchema = containsInstalledSchema
         self.stageUninstallError = stageUninstallError
@@ -3284,7 +3429,14 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
         self.restoreUpgradeError = restoreUpgradeError
         self.extractionDirectory = extractionDirectory
         self.installCopiesT9Fixture = installCopiesT9Fixture
-        self.directories = directories
+        let rootURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("schema-manager-stub-\(UUID().uuidString)", isDirectory: true)
+        self.directories =
+            directories
+            ?? SchemaDeploymentDirectories(
+                sharedDataURL: rootURL.appendingPathComponent("Rime/shared", isDirectory: true),
+                userDataURL: rootURL.appendingPathComponent("Rime/user", isDirectory: true)
+            )
     }
 
     func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
@@ -3370,13 +3522,31 @@ private actor StubDeploymentService: RimeDeploymentServicing {
     private var leaseOwnerReader: (@MainActor @Sendable () -> UUID?)?
     private(set) var observedLeaseOwners: [UUID?] = []
 
-    init(succeeded: Bool) {
-        results = [RimeDeploymentResult(succeeded: succeeded, diagnosticMessage: "test")]
+    init(
+        succeeded: Bool,
+        librimeVersion: String? = "test-librime",
+        runtimeSmokePassed: Bool? = nil
+    ) {
+        results = [
+            RimeDeploymentResult(
+                succeeded: succeeded,
+                diagnosticMessage: "test",
+                librimeVersion: librimeVersion,
+                runtimeSmokePassed: runtimeSmokePassed ?? (succeeded ? true : nil)
+            )
+        ]
     }
 
     init(results: [Bool]) {
         precondition(!results.isEmpty)
-        self.results = results.map { RimeDeploymentResult(succeeded: $0, diagnosticMessage: "test") }
+        self.results = results.map {
+            RimeDeploymentResult(
+                succeeded: $0,
+                diagnosticMessage: "test",
+                librimeVersion: $0 ? "test-librime" : nil,
+                runtimeSmokePassed: $0 ? true : nil
+            )
+        }
     }
 
     func setLeaseOwnerReader(_ reader: @escaping @MainActor @Sendable () -> UUID?) {

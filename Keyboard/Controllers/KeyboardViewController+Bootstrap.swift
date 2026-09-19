@@ -141,6 +141,11 @@ extension KeyboardViewController {
             self.controller.typoCorrectionLearningSnapshot = self.typoCorrectionLearningStore.recordSelection(
                 correction)
         }
+        #if DEBUG
+            controller.onTypoCorrectionQueryDiagnostic = { [weak self] diagnostic in
+                self?.recordTypoCorrectionQueryDiagnostic(diagnostic)
+            }
+        #endif
         controller.onCommittedText = { [weak self] event in
             guard let self, self.cachedTypingIntelligenceEnabled else { return }
             let delta = TypingStatisticsClassifier.classify(event.text)
@@ -278,6 +283,13 @@ extension KeyboardViewController {
     private func prepareRimeRuntimeAvailability() {
         guard let (sharedDir, userDir) = RimeConfigManager.runtimeDirectories() else {
             controller.enableDefaultRimeEngine()
+            #if DEBUG
+                recordTypoCorrectionQueryRoute(
+                    .providerAdapter,
+                    schemaID: nil,
+                    provenanceReceiptID: nil
+                )
+            #endif
             Logger.shared.warning(
                 "RIME runtime data is unavailable; finish deployment in the main app before typing",
                 category: .engine
@@ -379,6 +391,13 @@ extension KeyboardViewController {
         // Rebuild bridge if responsive gate is ever enabled before/after engine install.
         controller.rebuildResponsiveRimeCoordinatorIfNeeded()
         applyRealizedRuntimeSelection(from: engine)
+        #if DEBUG
+            recordTypoCorrectionQueryRoute(
+                engine.runtimeProvenanceReceiptID != nil ? .realRimeSidecar : .unavailable,
+                schemaID: engine.runtimeSelection?.effectiveSchemaID,
+                provenanceReceiptID: engine.runtimeProvenanceReceiptID
+            )
+        #endif
         hasActivatedVisibleRimeRuntime = true
         #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             // Content-free path marker. Explicit device preflight uses the
@@ -448,16 +467,22 @@ extension KeyboardViewController {
                     preferredSchemaID: nil
                 )
             )
-            // Preflight residual: typo sidecar uses provider adapter (not live librime session).
-            controller.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
-                candidateProvider: controller.candidateProvider
-            )
             controller.rebuildResponsiveRimeCoordinatorIfNeeded()
 
             let active =
                 controller.threadAffineRimeCoordinator != nil
                 && controller.rimeEngine is ThreadAffineRimeEngineBridge
             let ownerReady = controller.threadAffineRimeCoordinator?.isOwnerReady == true
+            #if DEBUG
+                let queryEngine = controller.rimeEngine
+                recordTypoCorrectionQueryRoute(
+                    queryEngine?.runtimeProvenanceReceiptID != nil
+                        ? .realRimeSidecar
+                        : .unavailable,
+                    schemaID: queryEngine?.runtimeSelection?.effectiveSchemaID,
+                    provenanceReceiptID: queryEngine?.runtimeProvenanceReceiptID
+                )
+            #endif
             recordResponsivePreflightMarker(
                 ResponsiveRimePreflight.pathMarkerLine(
                     path: active ? .threadAffine : .fallbackMissingRuntime,
@@ -551,10 +576,6 @@ extension KeyboardViewController {
                     userDataDir: directories.userDataDir,
                     preferredSchemaID: nil
                 )
-            )
-            // CANARY-001 v1 forbids a second live typo-correction session.
-            controller.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
-                candidateProvider: controller.candidateProvider
             )
             controller.rebuildResponsiveRimeCoordinatorIfNeeded()
 
@@ -991,6 +1012,14 @@ extension KeyboardViewController {
                 candidateProvider: controller.candidateProvider
             )
             controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+
+            #if DEBUG
+                recordTypoCorrectionQueryRoute(
+                    .unavailable,
+                    schemaID: nil,
+                    provenanceReceiptID: nil
+                )
+            #endif
 
             let active =
                 controller.threadAffineRimeCoordinator != nil

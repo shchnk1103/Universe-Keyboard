@@ -1,6 +1,7 @@
 import Foundation
 import KeyboardCore
 import Observation
+import RimeBridge
 import SwiftUI
 
 @MainActor
@@ -792,6 +793,7 @@ final class RimeSettingsStore {
         if persistence.bool(forKey: "rime_deploying") { return }
         if persistence.bool(forKey: DeploymentRetry.automaticRetrySuppressedKey) { return }
         if hasPendingDeploymentIntent { return }
+        RimeRuntimeProvenanceStore.invalidateInAppGroup()
         persistence.set(true, forKey: "rime_needs_deploy")
         persistence.synchronize()
     }
@@ -946,6 +948,7 @@ final class RimeSettingsStore {
     }
 
     private func markDeploymentNeeded(reason: String) {
+        RimeRuntimeProvenanceStore.invalidateInAppGroup()
         persistence.set(false, forKey: "rime_deployed")
         persistence.set(true, forKey: "rime_needs_deploy")
         // A preference change is a new deployment intent, so it may receive

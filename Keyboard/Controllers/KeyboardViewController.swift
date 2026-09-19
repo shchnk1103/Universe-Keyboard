@@ -274,6 +274,8 @@ class KeyboardViewController: UIInputViewController {
     /// Cached T9 readiness match for Chinese nine-key chrome.
     var cachedT9ReadinessMatched: Bool = false
     var cachedHapticEnabled: Bool = false
+    /// Cached debug performance setting. Never read shared defaults from the key path.
+    var cachedContextualTypoCorrectionEnabled: Bool = true
 
     /// Feedback resources and cached levels stay owned by the view controller; methods live in +Feedback.
     let hapticGenerator = UIImpactFeedbackGenerator(style: .light)

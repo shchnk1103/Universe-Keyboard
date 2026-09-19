@@ -1,5 +1,6 @@
 import Foundation
 import KeyboardCore
+import RimeBridge
 
 /// Main-App runner: inspect on-disk T9 force_gc registration and write to shared Logger.
 enum T9SchemaForceGCDiagnosticsRunner {
@@ -53,6 +54,9 @@ enum T9SchemaForceGCDiagnosticsRunner {
                 category: .deployment
             )
             // Force next explicit deploy path to recompile schemas.
+            RimeRuntimeProvenanceStore.invalidate(
+                at: userURL ?? sharedURL.deletingLastPathComponent().appendingPathComponent("user")
+            )
             UserDefaults(suiteName: appGroupID)?.set(false, forKey: "rime_deployed")
             UserDefaults(suiteName: appGroupID)?.set(true, forKey: "rime_needs_deploy")
             UserDefaults(suiteName: appGroupID)?.synchronize()

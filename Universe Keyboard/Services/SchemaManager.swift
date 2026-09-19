@@ -3,6 +3,27 @@ import KeyboardCore
 import Observation
 import RimeBridge
 
+/// Main-App-only context carried across the install/deploy boundary.
+///
+/// A fresh archive has its exact source identity before the normal settings
+/// receipt is committed. Keeping this context in memory lets the deployment
+/// transaction mint the runtime receipt before it publishes `rime_deployed`.
+struct RimeRuntimeProvenanceDeploymentContext: Sendable {
+    let schemeID: String
+    let source: RimeRuntimeProvenanceReceipt.Source
+    let sourceVariantID: String?
+    let upstreamRevision: String?
+    let artifactVersion: String?
+    let artifactIdentityID: String?
+    let stagedIdentityID: String?
+    let archiveSHA256: String?
+    let stagedContentSHA256: String?
+    let installationPlanRevision: String?
+    let postProcessingRevision: String?
+    let luaAvailable: Bool
+    let installationPlan: RimeSchemeInstallationPlan?
+}
+
 // MARK: - Schema Manager
 
 @MainActor
@@ -33,6 +54,7 @@ final class SchemaManager {
     var rimeIceVersion: String?
     var currentDownloadTask: Task<Void, Never>?
     var activeDownloadOperationID: UUID?
+    var pendingRuntimeProvenanceContext: RimeRuntimeProvenanceDeploymentContext?
     var schemeDeliveryCommitLeaseOperationID: UUID?
     var schemeDeliveryCommitLeaseHandoffPending = false
     private var schemeDeliveryCommitLeaseAvailabilityWaiters: [CommitLeaseAvailabilityWaiter] = []

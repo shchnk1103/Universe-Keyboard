@@ -7,6 +7,8 @@ extension KeyboardViewController {
     func scheduleContextualTypoCorrectionRefresh() {
         contextualTypoCorrectionWorkItem?.cancel()
 
+        guard cachedContextualTypoCorrectionEnabled else { return }
+
         let expectedComposition = controller.state.currentComposition
         guard controller.state.currentPage == .letters,
             controller.state.inputMode == .chinese,
@@ -15,9 +17,11 @@ extension KeyboardViewController {
 
         let workItem = DispatchWorkItem { [weak self] in
             guard let self else { return }
-            guard self.controller.refreshContextualTypoCorrectionSuggestions(
-                for: expectedComposition
-            ) else { return }
+            guard
+                self.controller.refreshContextualTypoCorrectionSuggestions(
+                    for: expectedComposition
+                )
+            else { return }
 
             // 该刷新只会发生在 composition 未变化时，因此无需重建键盘或更新其他控件。
             self.refreshCandidateBar()
@@ -25,4 +29,64 @@ extension KeyboardViewController {
         contextualTypoCorrectionWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.18, execute: workItem)
     }
+
+    #if DEBUG
+        /// Converts the real sidecar observation into the typed, content-free
+        /// journal. Invalid or unbound observations stay visible in Logger but
+        /// are deliberately not promoted to evidence.
+        func recordTypoCorrectionQueryDiagnostic(
+            _ diagnostic: TypoCorrectionQueryDiagnostic
+        ) {
+            guard
+                let event = DiagnosticEvent.TypoCorrectionSidecarQueryEvent(
+                    diagnostic: diagnostic
+                )
+            else {
+                Logger.shared.warning(
+                    "TYPO-CORRECTION sidecar observation rejected by evidence bounds",
+                    category: .engine
+                )
+                return
+            }
+
+            Logger.shared.info(
+                "TYPO-CORRECTION sidecar observed route=\(diagnostic.route.rawValue) "
+                    + "seq=\(diagnostic.sequence) schema=\(diagnostic.schemaID ?? "unknown") "
+                    + "receipt=\(diagnostic.provenanceReceiptID?.uuidString ?? "unknown") "
+                    + "results=\(diagnostic.resultCount) outcome=\(diagnostic.outcome.rawValue)",
+                category: .engine
+            )
+            guard isHighFidelityDiagnosticsActive else { return }
+            diagnosticsJournal.recordTypoCorrection(.sidecarQuery(event))
+        }
+
+        /// Records which query implementation was installed for this visible
+        /// keyboard lifecycle. A real route is accepted only with a receipt ID.
+        func recordTypoCorrectionQueryRoute(
+            _ route: TypoCorrectionQueryRoute,
+            schemaID: String?,
+            provenanceReceiptID: UUID?
+        ) {
+            let event = DiagnosticEvent.TypoCorrectionQueryRouteEvent(
+                route: route,
+                schemaID: schemaID,
+                provenanceReceiptID: provenanceReceiptID
+            )
+            guard event.isValidForRecording else {
+                Logger.shared.warning(
+                    "TYPO-CORRECTION query route rejected by evidence bounds",
+                    category: .engine
+                )
+                return
+            }
+            Logger.shared.info(
+                "TYPO-CORRECTION query route=\(route.rawValue) "
+                    + "schema=\(schemaID ?? "unknown") "
+                    + "receipt=\(provenanceReceiptID?.uuidString ?? "unknown")",
+                category: .engine
+            )
+            guard isHighFidelityDiagnosticsActive else { return }
+            diagnosticsJournal.recordTypoCorrection(.queryRoute(event))
+        }
+    #endif
 }

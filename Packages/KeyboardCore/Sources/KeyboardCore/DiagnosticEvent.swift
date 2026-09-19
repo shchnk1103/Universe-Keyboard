@@ -5,7 +5,7 @@ import Foundation
 /// 这个类型是跨 target 的持久化协议，不接受自由文本。若需要新的诊断维度，
 /// 必须先扩展下面的受控枚举并经过 ADR 0027 要求的字段审查。
 public struct DiagnosticEvent: Codable, Sendable, Equatable {
-    public static let schemaVersion = 3
+    public static let schemaVersion = 4
 
     public enum Origin: String, Codable, CaseIterable, Sendable {
         case mainApp = "main_app"
@@ -32,6 +32,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case schemeDeliveryFallback = "scheme_delivery.fallback"
         case schemeDeliveryTerminal = "scheme_delivery.terminal"
         case runtimeRoutePhaseChanged = "runtime_route.phase_changed"
+        case typoCorrectionQueryRoute = "typo_correction.query_route"
+        case typoCorrectionSidecarQuery = "typo_correction.sidecar_query"
         case rimeSyncInvoked = "rime_sync.invoked"
         case rimeSyncPhaseChanged = "rime_sync.phase_changed"
         case rimeSyncSkipped = "rime_sync.skipped"
@@ -739,6 +741,111 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         }
     }
 
+    /// Content-free route identity for the typo-correction query seam.
+    public struct TypoCorrectionQueryRouteEvent: Codable, Sendable, Equatable {
+        public let route: TypoCorrectionQueryRoute
+        public let schemaID: String?
+        public let provenanceReceiptID: UUID?
+
+        public init(
+            route: TypoCorrectionQueryRoute,
+            schemaID: String? = nil,
+            provenanceReceiptID: UUID? = nil
+        ) {
+            self.route = route
+            self.schemaID = schemaID
+            self.provenanceReceiptID = provenanceReceiptID
+        }
+
+        fileprivate var isValid: Bool {
+            switch route {
+            case .realRimeSidecar:
+                return Self.isIdentifier(schemaID) && provenanceReceiptID != nil
+            case .providerAdapter:
+                return (schemaID == nil || Self.isIdentifier(schemaID))
+                    && provenanceReceiptID == nil
+            case .unavailable:
+                return schemaID == nil && provenanceReceiptID == nil
+            }
+        }
+
+        #if DEBUG
+            /// Main-App/Extension recording seam for the already bounded event.
+            public var isValidForRecording: Bool { isValid }
+        #endif
+
+        private static func isIdentifier(_ value: String?) -> Bool {
+            guard let value, (1...256).contains(value.utf8.count) else { return false }
+            return value.unicodeScalars.allSatisfy { scalar in
+                (48...57).contains(scalar.value)
+                    || (65...90).contains(scalar.value)
+                    || (97...122).contains(scalar.value)
+                    || scalar.value == 45
+                    || scalar.value == 46
+                    || scalar.value == 95
+            }
+        }
+    }
+
+    /// One direct sidecar call. The nested diagnostic has no input or candidate
+    /// text and is only admitted after its bounded fields are validated.
+    public struct TypoCorrectionSidecarQueryEvent: Codable, Sendable, Equatable {
+        public let diagnostic: TypoCorrectionQueryDiagnostic
+
+        public init?(diagnostic: TypoCorrectionQueryDiagnostic) {
+            self.diagnostic = diagnostic
+            guard Self.isValid(diagnostic) else { return nil }
+        }
+
+        fileprivate var isValid: Bool { Self.isValid(diagnostic) }
+
+        private static func isValid(_ diagnostic: TypoCorrectionQueryDiagnostic) -> Bool {
+            guard diagnostic.route == .realRimeSidecar,
+                (1...30).contains(diagnostic.inputLength),
+                (1...8).contains(diagnostic.limit),
+                (0...8).contains(diagnostic.resultCount),
+                (0...600_000).contains(diagnostic.elapsedMilliseconds),
+                diagnostic.sequence > 0,
+                diagnostic.liveSessionIDBefore != nil,
+                diagnostic.liveSessionIDAfter != nil,
+                diagnostic.sidecarSessionIDAfter != nil,
+                diagnostic.provenanceReceiptID != nil
+            else { return false }
+            return Self.isIdentifier(diagnostic.schemaID)
+        }
+
+        private static func isIdentifier(_ value: String?) -> Bool {
+            guard let value, (1...256).contains(value.utf8.count) else { return false }
+            return value.unicodeScalars.allSatisfy { scalar in
+                (48...57).contains(scalar.value)
+                    || (65...90).contains(scalar.value)
+                    || (97...122).contains(scalar.value)
+                    || scalar.value == 45
+                    || scalar.value == 46
+                    || scalar.value == 95
+            }
+        }
+    }
+
+    public enum TypoCorrectionPayload: Codable, Sendable, Equatable {
+        case queryRoute(TypoCorrectionQueryRouteEvent)
+        case sidecarQuery(TypoCorrectionSidecarQueryEvent)
+
+        var code: Code {
+            switch self {
+            case .queryRoute: .typoCorrectionQueryRoute
+            case .sidecarQuery: .typoCorrectionSidecarQuery
+            }
+        }
+
+        var isValid: Bool {
+            switch self {
+            case .queryRoute(let event): event.isValid
+            case .sidecarQuery(let event): event.isValid
+            }
+        }
+    }
+
     public let schemaVersion: Int
     public let utcTimestamp: Date
     public let monotonicNanoseconds: UInt64
@@ -754,6 +861,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     public let schemeDeliveryPayload: SchemeDeliveryPayload?
     public let runtimeRoutePayload: RuntimeRoutePhaseEvent?
     public let rimeSyncPayload: RimeSyncPayload?
+    public let typoCorrectionPayload: TypoCorrectionPayload?
 
     public init(
         utcTimestamp: Date,
@@ -769,7 +877,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         fields: [Field] = [],
         schemeDeliveryPayload: SchemeDeliveryPayload? = nil,
         runtimeRoutePayload: RuntimeRoutePhaseEvent? = nil,
-        rimeSyncPayload: RimeSyncPayload? = nil
+        rimeSyncPayload: RimeSyncPayload? = nil,
+        typoCorrectionPayload: TypoCorrectionPayload? = nil
     ) {
         precondition(
             schemeDeliveryPayload?.code == code
@@ -794,8 +903,22 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             "DiagnosticEvent code and runtime-route payload must match"
         )
         precondition(
-            [schemeDeliveryPayload != nil, runtimeRoutePayload != nil, rimeSyncPayload != nil]
-                .filter { $0 }.count <= 1,
+            typoCorrectionPayload?.code == code
+                || (typoCorrectionPayload == nil && !Self.typoCorrectionCodes.contains(code)),
+            "DiagnosticEvent code and typo-correction payload must match"
+        )
+        precondition(
+            typoCorrectionPayload == nil || (fields.isEmpty && typoCorrectionPayload!.isValid),
+            "Typo-correction payload must be valid and cannot use generic fields"
+        )
+        precondition(
+            [
+                schemeDeliveryPayload != nil,
+                runtimeRoutePayload != nil,
+                rimeSyncPayload != nil,
+                typoCorrectionPayload != nil,
+            ]
+            .filter { $0 }.count <= 1,
             "DiagnosticEvent cannot contain multiple composite payloads"
         )
         schemaVersion = Self.schemaVersion
@@ -813,6 +936,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         self.schemeDeliveryPayload = schemeDeliveryPayload
         self.runtimeRoutePayload = runtimeRoutePayload
         self.rimeSyncPayload = rimeSyncPayload
+        self.typoCorrectionPayload = typoCorrectionPayload
     }
 
     private static let schemeDeliveryCodes: Set<Code> = [
@@ -829,11 +953,15 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         .rimeSyncTerminal,
     ]
     private static let runtimeRouteCodes: Set<Code> = [.runtimeRoutePhaseChanged]
+    private static let typoCorrectionCodes: Set<Code> = [
+        .typoCorrectionQueryRoute,
+        .typoCorrectionSidecarQuery,
+    ]
 
     private enum CodingKeys: String, CodingKey {
         case schemaVersion, utcTimestamp, monotonicNanoseconds, origin, processInstanceID
         case localSequence, appearanceID, actionSequence, code, level, category, fields
-        case schemeDeliveryPayload, runtimeRoutePayload, rimeSyncPayload
+        case schemeDeliveryPayload, runtimeRoutePayload, rimeSyncPayload, typoCorrectionPayload
     }
 
     public init(from decoder: Decoder) throws {
@@ -861,6 +989,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         rimeSyncPayload = try container.decodeIfPresent(
             RimeSyncPayload.self,
             forKey: .rimeSyncPayload
+        )
+        typoCorrectionPayload = try container.decodeIfPresent(
+            TypoCorrectionPayload.self,
+            forKey: .typoCorrectionPayload
         )
         guard
             schemeDeliveryPayload?.code == code
@@ -908,8 +1040,33 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             )
         }
         guard
-            [schemeDeliveryPayload != nil, runtimeRoutePayload != nil, rimeSyncPayload != nil]
-                .filter({ $0 }).count <= 1
+            typoCorrectionPayload?.code == code
+                || (typoCorrectionPayload == nil && !Self.typoCorrectionCodes.contains(code))
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .typoCorrectionPayload,
+                in: container,
+                debugDescription: "DiagnosticEvent code and typo-correction payload do not match"
+            )
+        }
+        guard
+            typoCorrectionPayload == nil
+                || (fields.isEmpty && typoCorrectionPayload!.isValid)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .typoCorrectionPayload,
+                in: container,
+                debugDescription: "Invalid typo-correction payload or forbidden generic fields"
+            )
+        }
+        guard
+            [
+                schemeDeliveryPayload != nil,
+                runtimeRoutePayload != nil,
+                rimeSyncPayload != nil,
+                typoCorrectionPayload != nil,
+            ]
+            .filter({ $0 }).count <= 1
         else {
             throw DecodingError.dataCorruptedError(
                 forKey: .rimeSyncPayload,
@@ -936,5 +1093,6 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         try container.encodeIfPresent(schemeDeliveryPayload, forKey: .schemeDeliveryPayload)
         try container.encodeIfPresent(runtimeRoutePayload, forKey: .runtimeRoutePayload)
         try container.encodeIfPresent(rimeSyncPayload, forKey: .rimeSyncPayload)
+        try container.encodeIfPresent(typoCorrectionPayload, forKey: .typoCorrectionPayload)
     }
 }

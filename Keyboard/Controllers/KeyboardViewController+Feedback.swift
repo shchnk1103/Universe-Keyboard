@@ -96,6 +96,11 @@ extension KeyboardViewController {
         controller.isPairedSymbolCompletionEnabled = rawPairedSymbolCompletion as? Bool ?? true
         controller.setPostCommitContinuationEnabled(rawPostCommitContinuation as? Bool ?? true)
         controller.typoCorrectionExperimentalEdits = typoExperimentSettings.experimentalEdits
+        cachedContextualTypoCorrectionEnabled = typoExperimentSettings.contextualCorrectionEnabled
+        if !cachedContextualTypoCorrectionEnabled {
+            contextualTypoCorrectionWorkItem?.cancel()
+            contextualTypoCorrectionWorkItem = nil
+        }
         controller.typoCorrectionLearningSnapshot = typoCorrectionLearningStore.snapshot()
         cachedTypingIntelligenceEnabled =
             defaults?.bool(

@@ -4,6 +4,10 @@ import RimeBridge
 
 extension SchemaManager {
     func requestDeploy(leaseOperationID: UUID? = nil) {
+        // A deployment intent invalidates the receipt immediately. The
+        // extension must not continue claiming the previous runtime generation
+        // while settings or schema selection are waiting to be deployed.
+        RimeRuntimeProvenanceStore.invalidateInAppGroup()
         if let owner = schemeDeliveryCommitLeaseOperationID, owner != leaseOperationID {
             enqueueSchemeMutation(.requestDeploy)
             return
@@ -26,12 +30,14 @@ extension SchemaManager {
     var isDeploymentMarkedInProgress: Bool { settings.bool(forKey: "rime_deploying") }
 
     func markDeploymentInProgress() {
+        RimeRuntimeProvenanceStore.invalidateInAppGroup()
         settings.set(true, forKey: "rime_deploying")
         settings.set(false, forKey: "rime_deployed")
         settings.synchronize()
     }
 
     func markDeploymentInterrupted() {
+        RimeRuntimeProvenanceStore.invalidateInAppGroup()
         settings.set(false, forKey: "rime_deploying")
         settings.set(true, forKey: "rime_needs_deploy")
         settings.set(false, forKey: "rime_deployed")
@@ -116,6 +122,7 @@ extension SchemaManager {
         guard isActiveRimeDeployment(deploymentID) else { return false }
         settings.set(true, forKey: "rime_deploying")
         settings.set(false, forKey: "rime_deployed")
+        RimeRuntimeProvenanceStore.invalidateInAppGroup()
         settings.synchronize()
 
         do {
@@ -138,6 +145,24 @@ extension SchemaManager {
                 settings.set(Int(Date().timeIntervalSince1970), forKey: "rime_ice_lua_smoke_timestamp")
             }
             if result.succeeded {
+                do {
+                    try await writeRuntimeProvenanceReceipt(
+                        for: result,
+                        directories: directories
+                    )
+                } catch {
+                    // `rime_deployed` must never become the authority for a
+                    // runtime that has no exact source/binary/content receipt.
+                    Logger.shared.error(
+                        "deployRimeConfig: provenance receipt commit failed; deployment remains pending",
+                        category: .deployment
+                    )
+                    settings.set(false, forKey: "rime_deployed")
+                    settings.set(true, forKey: "rime_needs_deploy")
+                    settings.set(false, forKey: "rime_deploying")
+                    settings.synchronize()
+                    return false
+                }
                 Logger.shared.info("deployRimeConfig: 部署成功 ✓", category: .deployment)
                 settings.set(true, forKey: "rime_deployed")
                 settings.set(false, forKey: "rime_needs_deploy")
@@ -177,6 +202,150 @@ extension SchemaManager {
 
         settings.synchronize()
         return false
+    }
+
+    /// Mints the one receipt consumed by the Extension-side real RIME route.
+    /// The helper is called before `rime_deployed` is published, so any missing
+    /// live content or invalid binary identity fails the deployment transaction.
+    private func writeRuntimeProvenanceReceipt(
+        for result: RimeDeploymentResult,
+        directories: SchemaDeploymentDirectories
+    ) async throws {
+        guard let librimeVersion = result.librimeVersion, !librimeVersion.isEmpty else {
+            Logger.shared.warning(
+                "deployRimeConfig: deployment result has no librime provenance identity",
+                category: .deployment
+            )
+            throw RimeRuntimeProvenanceCommitError.binaryIdentityUnavailable
+        }
+
+        guard let context = pendingRuntimeProvenanceContext ?? currentRuntimeProvenanceContext() else {
+            throw RimeRuntimeProvenanceCommitError.contextUnavailable
+        }
+        let activeSchemaID = activeSchemaIDForDeployment
+        guard context.schemeID == activeSchemaID else {
+            throw RimeRuntimeProvenanceCommitError.activeSchemaMismatch
+        }
+
+        let installedContent: RimeRuntimeProvenanceContent?
+        switch context.source {
+        case .builtin:
+            installedContent = nil
+        case .downloaded:
+            guard let plan = context.installationPlan else {
+                throw RimeRuntimeProvenanceCommitError.contentUnavailable
+            }
+            guard let verifier = artifactVerifier as? any SchemaArtifactLiveManifestVerifying else {
+                throw RimeRuntimeProvenanceCommitError.contentUnavailable
+            }
+            installedContent = try await Task.detached(priority: .utility) {
+                try verifier.installedContentManifest(
+                    in: directories.sharedDataURL,
+                    plan: plan,
+                    luaAvailable: context.luaAvailable
+                )
+            }.value
+        }
+
+        let receipt = RimeRuntimeProvenanceReceipt(
+            schemeID: context.schemeID,
+            activeSchemaID: activeSchemaID,
+            source: context.source,
+            sourceVariantID: context.sourceVariantID,
+            upstreamRevision: context.upstreamRevision,
+            artifactVersion: context.artifactVersion,
+            artifactIdentityID: context.artifactIdentityID,
+            stagedIdentityID: context.stagedIdentityID,
+            archiveSHA256: context.archiveSHA256,
+            stagedContentSHA256: context.stagedContentSHA256,
+            installedContentSHA256: installedContent?.contentSHA256,
+            installationPlanRevision: context.installationPlanRevision,
+            postProcessingRevision: context.postProcessingRevision,
+            luaAvailable: context.luaAvailable,
+            librimeVersion: librimeVersion,
+            runtimeSmokePassed: result.runtimeSmokePassed == true,
+            luaRuntimeSmokePassed: result.luaRuntimeSmokePassed,
+            installedFiles: installedContent?.files ?? []
+        )
+        try RimeRuntimeProvenanceStore.write(receipt, to: directories.userDataURL)
+        Logger.shared.info(
+            "deployRimeConfig: provenance receipt committed "
+                + "scheme=\(receipt.schemeID) activeSchema=\(receipt.activeSchemaID) "
+                + "receipt=\(receipt.receiptID.uuidString) "
+                + "installedFileCount=\(receipt.installedFiles.count)",
+            category: .deployment
+        )
+    }
+
+    /// Reconstructs an exact downloaded identity only from catalog-bound
+    /// settings. Missing source/digest data is deliberately unavailable.
+    private func currentRuntimeProvenanceContext()
+        -> RimeRuntimeProvenanceDeploymentContext?
+    {
+        let schemaID = activeSchemaIDForDeployment
+        guard let entry = catalogEntry(for: schemaID) else { return nil }
+
+        guard entry.source == .downloaded else {
+            return RimeRuntimeProvenanceDeploymentContext(
+                schemeID: schemaID,
+                source: .builtin,
+                sourceVariantID: nil,
+                upstreamRevision: nil,
+                artifactVersion: nil,
+                artifactIdentityID: nil,
+                stagedIdentityID: nil,
+                archiveSHA256: nil,
+                stagedContentSHA256: nil,
+                installationPlanRevision: nil,
+                postProcessingRevision: nil,
+                luaAvailable: false,
+                installationPlan: nil
+            )
+        }
+
+        guard let distribution = entry.distribution,
+            let plan = entry.installationPlan,
+            let installedKey = entry.storage.installed,
+            settings.bool(forKey: installedKey),
+            let source = sourceVariant(for: schemaID),
+            let archiveKey = entry.storage.checksum,
+            let archiveSHA256 = settings.string(forKey: archiveKey),
+            archiveSHA256 == source.archiveSHA256.lowercased(),
+            let stagedKey = entry.storage.stagedContentChecksum,
+            let stagedContentSHA256 = settings.string(forKey: stagedKey)
+        else { return nil }
+
+        let luaAvailable = (settings.object(forKey: "rime_lua_available") as? Bool) ?? true
+        guard let stagedIdentity = try? distribution.manifest.resolvedStagedIdentity(for: source),
+            let postProcessingRevision = SchemeAdapterRegistry.postProcessingRevision(for: schemaID),
+            (try? distribution.manifest.validateImplementationBinding(
+                stagedIdentity,
+                installationPlan: plan,
+                postProcessingRevision: postProcessingRevision
+            )) != nil
+        else { return nil }
+
+        let expectedStagedContentSHA256 =
+            luaAvailable
+            ? stagedIdentity.stagedContentSHA256WithLua
+            : stagedIdentity.stagedContentSHA256WithoutLua
+        guard stagedContentSHA256 == expectedStagedContentSHA256 else { return nil }
+
+        return RimeRuntimeProvenanceDeploymentContext(
+            schemeID: schemaID,
+            source: .downloaded,
+            sourceVariantID: source.id,
+            upstreamRevision: source.upstreamRevision,
+            artifactVersion: distribution.manifest.version,
+            artifactIdentityID: stagedIdentity.artifactIdentityID,
+            stagedIdentityID: stagedIdentity.id,
+            archiveSHA256: archiveSHA256,
+            stagedContentSHA256: stagedContentSHA256,
+            installationPlanRevision: plan.revision,
+            postProcessingRevision: postProcessingRevision,
+            luaAvailable: luaAvailable,
+            installationPlan: plan
+        )
     }
 
     private func isActiveRimeDeployment(_ deploymentID: UUID) -> Bool {
@@ -345,4 +514,11 @@ extension SchemaManager {
             ? Set(RimeAdvancedInputFeature.allCases)
             : []
     }
+}
+
+private enum RimeRuntimeProvenanceCommitError: Error {
+    case binaryIdentityUnavailable
+    case contextUnavailable
+    case activeSchemaMismatch
+    case contentUnavailable
 }

@@ -134,6 +134,29 @@ public final class DiagnosticsJournalRuntime: Sendable {
         )
     }
 
+    /// Records the content-free typo-correction route or direct sidecar call.
+    /// The ingress remains non-blocking; the input/candidate strings never
+    /// cross this API.
+    public func recordTypoCorrection(
+        _ payload: DiagnosticEvent.TypoCorrectionPayload,
+        level: Logger.Level = .info
+    ) {
+        let sequence = nextSequence.next()
+        ingress.record(
+            DiagnosticEvent(
+                utcTimestamp: Date(),
+                monotonicNanoseconds: DispatchTime.now().uptimeNanoseconds,
+                origin: origin,
+                processInstanceID: processInstanceID,
+                localSequence: sequence,
+                code: payload.code,
+                level: level,
+                category: .engine,
+                typoCorrectionPayload: payload
+            )
+        )
+    }
+
     /// Records one reviewed automatic-sync payload. The payload contains only
     /// finite enums and an opaque operation UUID; business execution never
     /// waits for journal persistence.

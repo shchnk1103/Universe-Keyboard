@@ -33,27 +33,38 @@ extension KeyboardController {
         let singleEditSuggestions = TypoCorrectionEngine(
             experimentalEdits: typoCorrectionExperimentalEdits
         ).suggestions(for: correctionInput)
-        let contextualSuggestions = includingContextual
+        let contextualSuggestions =
+            includingContextual
             ? ContextualTypoCorrectionHypothesisEngine().hypotheses(for: correctionInput)
             : []
         let generated = contextualSuggestions + singleEditSuggestions
         #if DEBUG
-        TypoCorrectionDecisionTrace.record(
-            .effectiveFlags(
-                .init(
-                    insertionEnabled: typoCorrectionExperimentalEdits.contains(.insertion),
-                    transpositionEnabled: typoCorrectionExperimentalEdits.contains(.transposition),
-                    typoPartialCommitEnabled: isTypoCorrectionPartialCommitEnabled
+            TypoCorrectionDecisionTrace.record(
+                .effectiveFlags(
+                    .init(
+                        insertionEnabled: typoCorrectionExperimentalEdits.contains(.insertion),
+                        transpositionEnabled: typoCorrectionExperimentalEdits.contains(.transposition),
+                        typoPartialCommitEnabled: isTypoCorrectionPartialCommitEnabled
+                    )
                 )
             )
-        )
         #endif
         var resolved: [TypoCorrectionSuggestion] = []
         var seenCandidateTexts: Set<String> = []
 
         for suggestion in generated {
-            let candidates = typoCorrectionCandidateQuery
+            let queriedCandidates =
+                typoCorrectionCandidateQuery
                 .correctionCandidates(for: suggestion.correctedInput, limit: 3)
+            if includingContextual,
+                let diagnosticProvider = typoCorrectionCandidateQuery
+                    as? TypoCorrectionQueryDiagnosticsProviding,
+                let diagnostic = diagnosticProvider.lastTypoCorrectionQueryDiagnostic
+            {
+                onTypoCorrectionQueryDiagnostic?(diagnostic)
+            }
+            let candidates =
+                queriedCandidates
                 .filter { seenCandidateTexts.insert($0.text).inserted }
             guard !candidates.isEmpty else { continue }
 
@@ -76,17 +87,17 @@ extension KeyboardController {
                 // 整组丢弃可避免只剩下“次优纠错候选”的低价值噪声。
                 guard suggestion.candidates.first?.text != firstNormalCandidate.text else {
                     #if DEBUG
-                    traceSuppression(
-                        .suppressedNormalTopMatchesCorrectedBest,
-                        suggestion: suggestion,
-                        rankingWasSuppressed: true
-                    )
+                        traceSuppression(
+                            .suppressedNormalTopMatchesCorrectedBest,
+                            suggestion: suggestion,
+                            rankingWasSuppressed: true
+                        )
                     #endif
                     return nil
                 }
 
                 #if DEBUG
-                traceSuppression(.notSuppressed, suggestion: suggestion)
+                    traceSuppression(.notSuppressed, suggestion: suggestion)
                 #endif
 
                 let candidates = suggestion.candidates.filter { candidate in
@@ -101,11 +112,11 @@ extension KeyboardController {
                         correction: commit,
                         over: firstNormalCandidate.text
                     )
-                    || TypoCorrectionConfidence.isHighConfidenceDisplayCandidate(
-                        title: candidate.text,
-                        suggestion: suggestion,
-                        firstNormalCandidate: firstNormalCandidate.text
-                    )
+                        || TypoCorrectionConfidence.isHighConfidenceDisplayCandidate(
+                            title: candidate.text,
+                            suggestion: suggestion,
+                            firstNormalCandidate: firstNormalCandidate.text
+                        )
                 }
                 guard !candidates.isEmpty else { return nil }
                 return TypoCorrectionSuggestion(
@@ -117,11 +128,12 @@ extension KeyboardController {
             }
         } else {
             #if DEBUG
-            traceSuppression(.notApplicable, suggestion: nil)
+                traceSuppression(.notApplicable, suggestion: nil)
             #endif
         }
 
-        state.typoCorrection = resolved.isEmpty
+        state.typoCorrection =
+            resolved.isEmpty
             ? nil
             : TypoCorrectionState(originalInput: correctionInput, suggestions: resolved)
     }
@@ -136,8 +148,9 @@ extension KeyboardController {
     public func refreshContextualTypoCorrectionSuggestions(
         for expectedComposition: String
     ) -> Bool {
-        guard normalizedTypoCorrectionInput(state.currentComposition)
-            == normalizedTypoCorrectionInput(expectedComposition)
+        guard
+            normalizedTypoCorrectionInput(state.currentComposition)
+                == normalizedTypoCorrectionInput(expectedComposition)
         else { return false }
 
         refreshTypoCorrectionSuggestions(includingContextual: true)
@@ -149,38 +162,39 @@ extension KeyboardController {
     }
 
     #if DEBUG
-    private func traceSuppression(
-        _ decision: TypoCorrectionDecisionTrace.Suppression,
-        suggestion: TypoCorrectionSuggestion?,
-        rankingWasSuppressed: Bool = false
-    ) {
-        guard TypoCorrectionDecisionTrace.isCapturing else { return }
-        let subject = suggestion.map { typoTraceSubject(for: $0) }
-            ?? TypoCorrectionDecisionTrace.invocationSubject
-        TypoCorrectionDecisionTrace.record(
-            .suppression(.init(subject: subject, decision: decision))
-        )
-        if rankingWasSuppressed {
+        private func traceSuppression(
+            _ decision: TypoCorrectionDecisionTrace.Suppression,
+            suggestion: TypoCorrectionSuggestion?,
+            rankingWasSuppressed: Bool = false
+        ) {
+            guard TypoCorrectionDecisionTrace.isCapturing else { return }
+            let subject =
+                suggestion.map { typoTraceSubject(for: $0) }
+                ?? TypoCorrectionDecisionTrace.invocationSubject
             TypoCorrectionDecisionTrace.record(
-                .learning(.init(subject: subject, decision: .notEvaluatedDueSuppression))
+                .suppression(.init(subject: subject, decision: decision))
             )
+            if rankingWasSuppressed {
+                TypoCorrectionDecisionTrace.record(
+                    .learning(.init(subject: subject, decision: .notEvaluatedDueSuppression))
+                )
+            }
         }
-    }
 
-    private func typoTraceSubject(
-        for suggestion: TypoCorrectionSuggestion
-    ) -> TypoCorrectionDecisionTrace.DecisionSubject {
-        guard let candidate = suggestion.candidates.first else {
-            return TypoCorrectionDecisionTrace.invocationSubject
-        }
-        return TypoCorrectionDecisionTrace.subject(
-            for: TypoCorrectionCommit(
-                committedText: candidate.text,
-                originalInput: suggestion.originalInput,
-                correctedInput: suggestion.correctedInput,
-                edits: suggestion.edits
+        private func typoTraceSubject(
+            for suggestion: TypoCorrectionSuggestion
+        ) -> TypoCorrectionDecisionTrace.DecisionSubject {
+            guard let candidate = suggestion.candidates.first else {
+                return TypoCorrectionDecisionTrace.invocationSubject
+            }
+            return TypoCorrectionDecisionTrace.subject(
+                for: TypoCorrectionCommit(
+                    committedText: candidate.text,
+                    originalInput: suggestion.originalInput,
+                    correctedInput: suggestion.correctedInput,
+                    edits: suggestion.edits
+                )
             )
-        )
-    }
+        }
     #endif
 }

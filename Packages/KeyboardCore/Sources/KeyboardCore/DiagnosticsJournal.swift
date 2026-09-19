@@ -292,7 +292,8 @@ public actor DiagnosticsJournalWriter {
                 fields: event.fields,
                 schemeDeliveryPayload: event.schemeDeliveryPayload,
                 runtimeRoutePayload: event.runtimeRoutePayload,
-                rimeSyncPayload: event.rimeSyncPayload
+                rimeSyncPayload: event.rimeSyncPayload,
+                typoCorrectionPayload: event.typoCorrectionPayload
             )
         }
         let hour = Self.hourStamp(for: normalizedEvents[0].utcTimestamp)

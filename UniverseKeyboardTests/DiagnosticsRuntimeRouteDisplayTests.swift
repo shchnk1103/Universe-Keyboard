@@ -53,4 +53,51 @@ final class DiagnosticsRuntimeRouteDisplayTests: XCTestCase {
             )
         )
     }
+
+    func testTypoCorrectionLineExposesRouteAndSidecarIdentityWithoutUserContent() throws {
+        let receiptID = UUID(uuidString: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")!
+        let diagnostic = TypoCorrectionQueryDiagnostic(
+            sequence: 7,
+            inputLength: 18,
+            limit: 3,
+            resultCount: 3,
+            elapsedMilliseconds: 2,
+            liveSessionIDBefore: 101,
+            liveSessionIDAfter: 101,
+            liveSessionValidBefore: true,
+            liveSessionValidAfter: true,
+            sidecarSessionIDBefore: nil,
+            sidecarSessionIDAfter: 202,
+            schemaID: "rime_ice",
+            provenanceReceiptID: receiptID,
+            outcome: .returned
+        )
+        let sidecar = try XCTUnwrap(
+            DiagnosticEvent.TypoCorrectionSidecarQueryEvent(diagnostic: diagnostic)
+        )
+        let event = DiagnosticEvent(
+            utcTimestamp: Date(timeIntervalSince1970: 0),
+            monotonicNanoseconds: 1,
+            origin: .keyboardExtension,
+            processInstanceID: UUID(),
+            localSequence: 1,
+            code: .typoCorrectionSidecarQuery,
+            level: .info,
+            category: .engine,
+            typoCorrectionPayload: .sidecarQuery(sidecar)
+        )
+
+        let line = DiagnosticsEventDisplayFormatter.line(event)
+        XCTAssertTrue(line.contains("typo_correction.sidecar_query"))
+        XCTAssertTrue(line.contains("route=real_rime_sidecar"))
+        XCTAssertTrue(line.contains("seq=7"))
+        XCTAssertTrue(line.contains("input_len=18"))
+        XCTAssertTrue(line.contains("results=3"))
+        XCTAssertTrue(line.contains("schema=rime_ice"))
+        XCTAssertTrue(line.contains("receipt=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"))
+        XCTAssertTrue(line.contains("outcome=returned"))
+        XCTAssertFalse(line.contains("候选"))
+        XCTAssertFalse(line.contains("/var"))
+        XCTAssertFalse(line.contains("https://"))
+    }
 }

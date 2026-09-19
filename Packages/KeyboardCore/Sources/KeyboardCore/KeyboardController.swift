@@ -26,6 +26,10 @@ public final class KeyboardController {
     public var typoCorrectionExperimentalEdits: TypoCorrectionExperimentalEdits = []
     public var typoCorrectionLearningSnapshot: TypoCorrectionLearningSnapshot = .empty
     public var onTypoCorrectionSelected: ((TypoCorrectionCommit) -> Void)?
+    /// Content-free sidecar observations are handed to the Extension so its
+    /// typed journal can correlate a query with the deployment receipt.
+    /// The callback only runs during the debounced contextual refresh path.
+    public var onTypoCorrectionQueryDiagnostic: ((TypoCorrectionQueryDiagnostic) -> Void)?
     /// Called synchronously with ephemeral final text. Consumers must convert
     /// it to content-free aggregates before returning and must not persist it.
     public var onCommittedText: ((CommittedTextEvent) -> Void)?
@@ -205,6 +209,7 @@ public final class KeyboardController {
         }
 
         // Unwrap any previous bridge so we never nest bridges.
+        let wasThreadAffineBridge = rimeEngine is ThreadAffineRimeEngineBridge
         let underlying: RimeEngine? = {
             if let bridge = rimeEngine as? ResponsiveRimeEngineBridge {
                 return bridge.underlyingEngine
@@ -221,6 +226,11 @@ public final class KeyboardController {
                 || rimeEngine is ThreadAffineRimeEngineBridge
             if wasBridge {
                 rimeEngine = underlying
+            }
+            if wasThreadAffineBridge {
+                typoCorrectionCandidateQuery =
+                    (underlying as? TypoCorrectionCandidateQuerying)
+                    ?? CandidateProviderTypoCorrectionQuery(candidateProvider: candidateProvider)
             }
             responsiveRimeCoordinator = nil
             responsiveKeyApplyContexts.removeAll()
@@ -259,7 +269,11 @@ public final class KeyboardController {
             dualGatePendingPresentationSnapshot = nil
             dualGatePendingPresentationHasKnownSuccessor = false
             dualGatePresentationCoalesceScheduled = false
-            rimeEngine = ThreadAffineRimeEngineBridge(coordinator: coordinator)
+            let bridge = ThreadAffineRimeEngineBridge(coordinator: coordinator)
+            rimeEngine = bridge
+            // The production dual gate must query the same real owner-thread
+            // engine. The provider adapter remains a test/degraded path only.
+            typoCorrectionCandidateQuery = bridge
             #if T9_RESPONSIVE_CANARY_INTERNAL
                 responsiveCanaryPresentationFenced = false
                 pendingResponsiveCanaryVisibleSnapshot = nil

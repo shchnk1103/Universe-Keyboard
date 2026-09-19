@@ -7,46 +7,50 @@ final class TypoCorrectionTests: XCTestCase {
     func testEngineSuggestsNearbyReplacementForTrailingMistouch() {
         let suggestions = TypoCorrectionEngine().suggestions(for: "nihap")
 
-        XCTAssertTrue(suggestions.contains { suggestion in
-            suggestion.correctedInput == "nihao"
-                && suggestion.edits == [
-                    TypoCorrectionEdit(index: 4, original: "p", replacement: "o")
-                ]
-        })
+        XCTAssertTrue(
+            suggestions.contains { suggestion in
+                suggestion.correctedInput == "nihao"
+                    && suggestion.edits == [
+                        TypoCorrectionEdit(index: 4, original: "p", replacement: "o")
+                    ]
+            })
     }
 
     func testEngineSuggestsNearbyReplacementForInitialMistouch() {
         let suggestions = TypoCorrectionEngine().suggestions(for: "bihao")
 
-        XCTAssertTrue(suggestions.contains { suggestion in
-            suggestion.correctedInput == "nihao"
-                && suggestion.edits == [
-                    TypoCorrectionEdit(index: 0, original: "b", replacement: "n")
-                ]
-        })
+        XCTAssertTrue(
+            suggestions.contains { suggestion in
+                suggestion.correctedInput == "nihao"
+                    && suggestion.edits == [
+                        TypoCorrectionEdit(index: 0, original: "b", replacement: "n")
+                    ]
+            })
     }
 
     func testEngineSuggestsNearbyReplacementForMiddleMistouch() {
         let suggestions = TypoCorrectionEngine().suggestions(for: "nigao")
 
-        XCTAssertTrue(suggestions.contains { suggestion in
-            suggestion.correctedInput == "nihao"
-                && suggestion.edits == [
-                    TypoCorrectionEdit(index: 2, original: "g", replacement: "h")
-                ]
-        })
+        XCTAssertTrue(
+            suggestions.contains { suggestion in
+                suggestion.correctedInput == "nihao"
+                    && suggestion.edits == [
+                        TypoCorrectionEdit(index: 2, original: "g", replacement: "h")
+                    ]
+            })
     }
 
     func testEnginePrioritizesLongMiddleMistouchWithinLookupWindow() {
         let suggestions = TypoCorrectionEngine().suggestions(for: "zhonghuo")
 
         XCTAssertLessThanOrEqual(suggestions.count, 16)
-        XCTAssertTrue(suggestions.contains { suggestion in
-            suggestion.correctedInput == "zhongguo"
-                && suggestion.edits == [
-                    TypoCorrectionEdit(index: 5, original: "h", replacement: "g")
-                ]
-        })
+        XCTAssertTrue(
+            suggestions.contains { suggestion in
+                suggestion.correctedInput == "zhongguo"
+                    && suggestion.edits == [
+                        TypoCorrectionEdit(index: 5, original: "h", replacement: "g")
+                    ]
+            })
     }
 
     func testEngineSkipsUnsafeMiddleVowelConsonantReplacement() {
@@ -70,11 +74,12 @@ final class TypoCorrectionTests: XCTestCase {
 
         XCTAssertLessThanOrEqual(suggestions.count, 8)
         XCTAssertFalse(suggestions.isEmpty)
-        XCTAssertTrue(suggestions.allSatisfy {
-            $0.originalInput == input
-                && $0.correctedInput != input
-                && $0.edits.count == 2
-        })
+        XCTAssertTrue(
+            suggestions.allSatisfy {
+                $0.originalInput == input
+                    && $0.correctedInput != input
+                    && $0.edits.count == 2
+            })
     }
 
     func testContextualEngineSkipsShortAndOversizedCompositions() {
@@ -271,12 +276,13 @@ final class TypoCorrectionTests: XCTestCase {
     func testEngineSuggestsRepeatedFinalCharacterDeletion() {
         let suggestions = TypoCorrectionEngine().suggestions(for: "nihaoo")
 
-        XCTAssertTrue(suggestions.contains { suggestion in
-            suggestion.correctedInput == "nihao"
-                && suggestion.edits == [
-                    TypoCorrectionEdit(index: 5, original: "o", replacement: "o", kind: .deletion)
-                ]
-        })
+        XCTAssertTrue(
+            suggestions.contains { suggestion in
+                suggestion.correctedInput == "nihao"
+                    && suggestion.edits == [
+                        TypoCorrectionEdit(index: 5, original: "o", replacement: "o", kind: .deletion)
+                    ]
+            })
     }
 
     func testExperimentalSettingsDefaultToStableEdits() {
@@ -284,6 +290,7 @@ final class TypoCorrectionTests: XCTestCase {
 
         XCTAssertFalse(settings.insertionEnabled)
         XCTAssertFalse(settings.transpositionEnabled)
+        XCTAssertTrue(settings.contextualCorrectionEnabled)
         XCTAssertTrue(settings.experimentalEdits.isEmpty)
     }
 
@@ -295,6 +302,19 @@ final class TypoCorrectionTests: XCTestCase {
 
         XCTAssertTrue(settings.experimentalEdits.contains(.insertion))
         XCTAssertTrue(settings.experimentalEdits.contains(.transposition))
+        XCTAssertTrue(settings.contextualCorrectionEnabled)
+    }
+
+    func testExperimentalSettingsLoadContextualCorrectionFlagFromDefaults() {
+        let suiteName = "TypoCorrectionTests.settings.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        defaults.set(false, forKey: TypoCorrectionExperimentalSettings.contextualCorrectionEnabledKey)
+
+        let settings = TypoCorrectionExperimentalSettings.load(from: defaults)
+
+        XCTAssertFalse(settings.contextualCorrectionEnabled)
     }
 
     func testExperimentalTranspositionSuggestsLongPinyinSwap() {
@@ -302,18 +322,19 @@ final class TypoCorrectionTests: XCTestCase {
             experimentalEdits: [.transposition]
         ).suggestions(for: "zohngguo")
 
-        XCTAssertTrue(suggestions.contains { suggestion in
-            suggestion.correctedInput == "zhongguo"
-                && suggestion.edits == [
-                    TypoCorrectionEdit(
-                        index: 1,
-                        original: "o",
-                        replacement: "h",
-                        kind: .transposition,
-                        secondIndex: 2
-                    )
-                ]
-        })
+        XCTAssertTrue(
+            suggestions.contains { suggestion in
+                suggestion.correctedInput == "zhongguo"
+                    && suggestion.edits == [
+                        TypoCorrectionEdit(
+                            index: 1,
+                            original: "o",
+                            replacement: "h",
+                            kind: .transposition,
+                            secondIndex: 2
+                        )
+                    ]
+            })
     }
 
     func testLearningStoreRecordsInsertionAndTranspositionSelections() {
@@ -466,9 +487,11 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(correction?.originalInput, "nihap")
         XCTAssertEqual(correction?.suggestions.first?.correctedInput, "nihao")
         XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "你好")
-        XCTAssertEqual(correction?.suggestions.first?.edits, [
-            TypoCorrectionEdit(index: 4, original: "p", replacement: "o")
-        ])
+        XCTAssertEqual(
+            correction?.suggestions.first?.edits,
+            [
+                TypoCorrectionEdit(index: 4, original: "p", replacement: "o")
+            ])
     }
 
     func testControllerBuildsHighConfidenceCorrectionFromSegmentedRimePreedit() {
@@ -495,9 +518,11 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(correction?.suggestions.first?.originalInput, "nihap")
         XCTAssertEqual(correction?.suggestions.first?.correctedInput, "nihao")
         XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "你好")
-        XCTAssertEqual(correction?.suggestions.first?.edits, [
-            TypoCorrectionEdit(index: 4, original: "p", replacement: "o")
-        ])
+        XCTAssertEqual(
+            correction?.suggestions.first?.edits,
+            [
+                TypoCorrectionEdit(index: 4, original: "p", replacement: "o")
+            ])
     }
 
     func testControllerBuildsCorrectionStateForInitialMistouch() {
@@ -515,9 +540,11 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(correction?.originalInput, "bihao")
         XCTAssertEqual(correction?.suggestions.first?.correctedInput, "nihao")
         XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "你好")
-        XCTAssertEqual(correction?.suggestions.first?.edits, [
-            TypoCorrectionEdit(index: 0, original: "b", replacement: "n")
-        ])
+        XCTAssertEqual(
+            correction?.suggestions.first?.edits,
+            [
+                TypoCorrectionEdit(index: 0, original: "b", replacement: "n")
+            ])
     }
 
     func testControllerBuildsCorrectionStateForMiddleMistouch() {
@@ -535,9 +562,11 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(correction?.originalInput, "nigao")
         XCTAssertEqual(correction?.suggestions.first?.correctedInput, "nihao")
         XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "你好")
-        XCTAssertEqual(correction?.suggestions.first?.edits, [
-            TypoCorrectionEdit(index: 2, original: "g", replacement: "h")
-        ])
+        XCTAssertEqual(
+            correction?.suggestions.first?.edits,
+            [
+                TypoCorrectionEdit(index: 2, original: "g", replacement: "h")
+            ])
     }
 
     func testControllerBuildsCorrectionStateForLongMiddleMistouch() {
@@ -555,9 +584,11 @@ final class TypoCorrectionTests: XCTestCase {
         XCTAssertEqual(correction?.originalInput, "zhonghuo")
         XCTAssertEqual(correction?.suggestions.first?.correctedInput, "zhongguo")
         XCTAssertEqual(correction?.suggestions.first?.candidates.first?.text, "中国")
-        XCTAssertEqual(correction?.suggestions.first?.edits, [
-            TypoCorrectionEdit(index: 5, original: "h", replacement: "g")
-        ])
+        XCTAssertEqual(
+            correction?.suggestions.first?.edits,
+            [
+                TypoCorrectionEdit(index: 5, original: "h", replacement: "g")
+            ])
     }
 
     func testControllerDoesNotBuildCorrectionForValidNihaoInput() {
@@ -743,7 +774,7 @@ final class TypoCorrectionTests: XCTestCase {
         let client = FakeTextInputClient()
         let engine = FakeRimeEngine(dictionary: ["nihoa": ["你好", "你花"]])
         let provider = DictionaryCandidateProvider(dictionary: [
-            "nihao": ["你好", "拟好", "你号"],
+            "nihao": ["你好", "拟好", "你号"]
         ])
         let controller = KeyboardController(candidateProvider: provider)
         controller.textClient = client

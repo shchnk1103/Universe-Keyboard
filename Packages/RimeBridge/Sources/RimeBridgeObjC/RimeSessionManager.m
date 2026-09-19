@@ -37,6 +37,19 @@ NSString * const RimeKeyFirstProcessKeyOutputDurationMs = @"firstProcessKeyOutpu
 NSString * const RimeKeyFirstProcessKeyTotalDurationMs = @"firstProcessKeyTotalDurationMs";
 NSString * const RimeKeyProcessKeyLibrimeDurationMs = @"processKeyLibrimeDurationMs";
 NSString * const RimeKeyProcessKeyCollectDurationMs = @"processKeyCollectDurationMs";
+NSString * const RimeKeyCorrectionQuerySequence = @"sequence";
+NSString * const RimeKeyCorrectionQueryInputLength = @"inputLength";
+NSString * const RimeKeyCorrectionQueryLimit = @"limit";
+NSString * const RimeKeyCorrectionQueryResultCount = @"resultCount";
+NSString * const RimeKeyCorrectionQueryElapsedMilliseconds = @"elapsedMilliseconds";
+NSString * const RimeKeyCorrectionQueryLiveSessionIDBefore = @"liveSessionIDBefore";
+NSString * const RimeKeyCorrectionQueryLiveSessionIDAfter = @"liveSessionIDAfter";
+NSString * const RimeKeyCorrectionQueryLiveSessionValidBefore = @"liveSessionValidBefore";
+NSString * const RimeKeyCorrectionQueryLiveSessionValidAfter = @"liveSessionValidAfter";
+NSString * const RimeKeyCorrectionQuerySidecarSessionIDBefore = @"sidecarSessionIDBefore";
+NSString * const RimeKeyCorrectionQuerySidecarSessionIDAfter = @"sidecarSessionIDAfter";
+NSString * const RimeKeyCorrectionQuerySchemaID = @"schemaID";
+NSString * const RimeKeyCorrectionQueryOutcome = @"outcome";
 
 // MARK: - Private interface
 
@@ -48,6 +61,9 @@ NSString * const RimeKeyProcessKeyCollectDurationMs = @"processKeyCollectDuratio
 @property (nonatomic, assign) BOOL initialized;
 /// 每个新 session 仅细分首个真实 processKey，避免把常规按键路径的观测成本放大。
 @property (nonatomic, assign) BOOL shouldMeasureFirstProcessKey;
+/// Monotonic, content-free sequence for direct sidecar-query correlation.
+@property (nonatomic, assign) uint64_t correctionQuerySequence;
+@property (nonatomic, copy, nullable) NSDictionary *lastCorrectionQueryDiagnostic;
 - (void)claimRuntimeOwnership;
 - (void)relinquishRuntimeOwnership;
 - (BOOL)ensureCorrectionSession;
@@ -61,7 +77,8 @@ NSString * const RimeKeyProcessKeyCollectDurationMs = @"processKeyCollectDuratio
 // old keyboard controller alive while creating a replacement controller, so treating
 // each manager as an independent runtime can leave the old instance holding database
 // locks. Keep one explicit owner and retire it before another manager calls setup or
-// initialize. All keyboard RIME calls are required to stay on the main thread.
+// initialize. Calls are required to stay on one serialized owner thread; the
+// ordinary path uses main, while the thread-affine path uses its dedicated owner.
 static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
 
 - (instancetype)init {
@@ -75,6 +92,8 @@ static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
         _setupDone = NO;
         _initialized = NO;
         _shouldMeasureFirstProcessKey = NO;
+        _correctionQuerySequence = 0;
+        _lastCorrectionQueryDiagnostic = nil;
     }
     return self;
 }
@@ -360,36 +379,100 @@ static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
 }
 
 - (NSDictionary *)correctionCandidatesForInput:(NSString *)input limit:(int)limit {
-    int safeLimit = MAX(0, limit);
-    if (input.length == 0 || safeLimit == 0 || ![self ensureCorrectionSession]) {
-        return @{ RimeKeyCandidates: @[] };
-    }
-
-    // `set_input` 只作用于 correctionSessionId。主 session 的 composition、分页、
-    // commit 和 marked-text 状态均不参与这条旁路查询。
-    _api->set_input(_correctionSessionId, [input UTF8String]);
-
+    // Keep the sidecar bounded even if a future caller bypasses the Core
+    // lookup budget. This is a read-only control lane, not an unbounded RIME
+    // candidate dump.
+    int safeLimit = MIN(8, MAX(0, limit));
+    uint64_t sequence = ++_correctionQuerySequence;
+    uint64_t liveSessionIDBefore = (uint64_t)_sessionId;
+    BOOL liveSessionValidBefore = [self isCurrentSessionValid];
+    uint64_t sidecarSessionIDBefore = (uint64_t)_correctionSessionId;
+    NSString *schemaID = [self currentSchemaID];
+    CFAbsoluteTime startedAt = CFAbsoluteTimeGetCurrent();
+    NSString *outcome = @"returned";
     NSMutableArray *candidates = [NSMutableArray arrayWithCapacity:safeLimit];
-    RIME_STRUCT(RimeContext, context);
-    if (_api->get_context(_correctionSessionId, &context)) {
-        int count = MIN(context.menu.num_candidates, safeLimit);
-        for (int index = 0; index < count; index++) {
-            RimeCandidate *candidate = &context.menu.candidates[index];
-            if (!candidate->text) continue;
 
-            NSMutableDictionary *item = [NSMutableDictionary dictionary];
-            item[RimeKeyCandidateText] = [NSString stringWithUTF8String:candidate->text];
-            if (candidate->comment) {
-                item[RimeKeyCandidateComment] = [NSString stringWithUTF8String:candidate->comment];
+    if (input.length == 0) {
+        outcome = @"empty_input";
+    } else if (safeLimit == 0) {
+        outcome = @"invalid_limit";
+    } else if (![self ensureCorrectionSession]) {
+        outcome = @"unavailable";
+    } else {
+        // `set_input` 只作用于 correctionSessionId。主 session 的 composition、分页、
+        // commit 和 marked-text 状态均不参与这条旁路查询。
+        _api->set_input(_correctionSessionId, [input UTF8String]);
+
+        RIME_STRUCT(RimeContext, context);
+        if (_api->get_context(_correctionSessionId, &context)) {
+            int count = MIN(context.menu.num_candidates, safeLimit);
+            for (int index = 0; index < count; index++) {
+                RimeCandidate *candidate = &context.menu.candidates[index];
+                if (!candidate->text) continue;
+
+                NSMutableDictionary *item = [NSMutableDictionary dictionary];
+                item[RimeKeyCandidateText] = [NSString stringWithUTF8String:candidate->text];
+                if (candidate->comment) {
+                    item[RimeKeyCandidateComment] = [NSString stringWithUTF8String:candidate->comment];
+                }
+                item[RimeKeyCandidateGlobalIndex] = @(index);
+                [candidates addObject:item];
             }
-            item[RimeKeyCandidateGlobalIndex] = @(index);
-            [candidates addObject:item];
+            _api->free_context(&context);
+        } else {
+            outcome = @"context_unavailable";
         }
-        _api->free_context(&context);
+
+        _api->clear_composition(_correctionSessionId);
     }
 
-    _api->clear_composition(_correctionSessionId);
+    uint64_t liveSessionIDAfter = (uint64_t)_sessionId;
+    BOOL liveSessionValidAfter = [self isCurrentSessionValid];
+    uint64_t sidecarSessionIDAfter = (uint64_t)_correctionSessionId;
+    NSInteger elapsedMilliseconds = (NSInteger)llround(
+        (CFAbsoluteTimeGetCurrent() - startedAt) * 1000.0
+    );
+    NSMutableDictionary *diagnostic = [NSMutableDictionary dictionary];
+    diagnostic[RimeKeyCorrectionQuerySequence] = @(sequence);
+    diagnostic[RimeKeyCorrectionQueryInputLength] = @(
+        [input lengthOfBytesUsingEncoding:NSUTF8StringEncoding]
+    );
+    diagnostic[RimeKeyCorrectionQueryLimit] = @(safeLimit);
+    diagnostic[RimeKeyCorrectionQueryResultCount] = @(candidates.count);
+    diagnostic[RimeKeyCorrectionQueryElapsedMilliseconds] = @(MAX(0, elapsedMilliseconds));
+    diagnostic[RimeKeyCorrectionQueryLiveSessionIDBefore] = @(liveSessionIDBefore);
+    diagnostic[RimeKeyCorrectionQueryLiveSessionIDAfter] = @(liveSessionIDAfter);
+    diagnostic[RimeKeyCorrectionQueryLiveSessionValidBefore] = @(liveSessionValidBefore);
+    diagnostic[RimeKeyCorrectionQueryLiveSessionValidAfter] = @(liveSessionValidAfter);
+    diagnostic[RimeKeyCorrectionQuerySidecarSessionIDBefore] = @(sidecarSessionIDBefore);
+    diagnostic[RimeKeyCorrectionQuerySidecarSessionIDAfter] = @(sidecarSessionIDAfter);
+    if (schemaID.length > 0) {
+        diagnostic[RimeKeyCorrectionQuerySchemaID] = schemaID;
+    }
+    diagnostic[RimeKeyCorrectionQueryOutcome] = outcome;
+    _lastCorrectionQueryDiagnostic = [diagnostic copy];
+    RIME_DIAGNOSTIC_LOG(
+        @"[RIME] sidecarQuery seq=%llu sidecarBefore=%llu sidecarAfter=%llu "
+         "liveBefore=%llu liveAfter=%llu liveValidBefore=%@ liveValidAfter=%@ "
+         "schema=%@ limit=%d results=%lu outcome=%@ durationMs=%ld",
+        (unsigned long long)sequence,
+        (unsigned long long)sidecarSessionIDBefore,
+        (unsigned long long)sidecarSessionIDAfter,
+        (unsigned long long)liveSessionIDBefore,
+        (unsigned long long)liveSessionIDAfter,
+        liveSessionValidBefore ? @"YES" : @"NO",
+        liveSessionValidAfter ? @"YES" : @"NO",
+        schemaID ?: @"unknown",
+        safeLimit,
+        (unsigned long)candidates.count,
+        outcome,
+        (long)MAX(0, elapsedMilliseconds)
+    );
     return @{ RimeKeyCandidates: candidates };
+}
+
+- (NSDictionary *)lastCorrectionQueryDiagnostic {
+    return _lastCorrectionQueryDiagnostic;
 }
 
 - (NSDictionary *)commitComposition {

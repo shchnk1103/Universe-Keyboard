@@ -52,6 +52,7 @@ extension RimeConfigManager {
 
     /// 设置部署标记；完整部署必须由主 App 显式执行。
     static func requestDeploy() {
+        RimeRuntimeProvenanceStore.invalidateInAppGroup()
         defaults?.set(false, forKey: "rime_deployed")
         defaults?.set(true, forKey: "rime_needs_deploy")
         defaults?.synchronize()

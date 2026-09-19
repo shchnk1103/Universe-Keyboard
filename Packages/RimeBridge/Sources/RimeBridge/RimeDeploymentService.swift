@@ -33,6 +33,10 @@ public struct RimeDeploymentRequest: Sendable {
 public struct RimeDeploymentResult: Sendable {
     public let succeeded: Bool
     public let diagnosticMessage: String
+    /// Exact librime binary identity observed by the Main-App deployer.
+    /// `nil` is retained for injected legacy/test services that do not provide
+    /// a provenance-capable result; the real deployment service always sets it.
+    public let librimeVersion: String?
     /// Generic active-schema smoke. `nil` means the caller did not request one.
     public let runtimeSmokePassed: Bool?
     /// Fog-specific Lua capability smoke, kept separate from basic typing readiness.
@@ -41,11 +45,13 @@ public struct RimeDeploymentResult: Sendable {
     public init(
         succeeded: Bool,
         diagnosticMessage: String,
+        librimeVersion: String? = nil,
         runtimeSmokePassed: Bool? = nil,
         luaRuntimeSmokePassed: Bool? = nil
     ) {
         self.succeeded = succeeded
         self.diagnosticMessage = diagnosticMessage
+        self.librimeVersion = librimeVersion
         self.runtimeSmokePassed = runtimeSmokePassed
         self.luaRuntimeSmokePassed = luaRuntimeSmokePassed
     }
@@ -123,7 +129,8 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
                 let result = deployOperation(request.sharedDataURL.path, request.userDataURL.path)
                 return RimeDeploymentResult(
                     succeeded: result.succeeded,
-                    diagnosticMessage: "librime \(result.librimeVersion), isolated test fixture"
+                    diagnosticMessage: "librime \(result.librimeVersion), isolated test fixture",
+                    librimeVersion: result.librimeVersion
                 )
         #endif
         }
@@ -200,6 +207,7 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
             succeeded: succeeded,
             diagnosticMessage: "librime \(maintenanceResult.librimeVersion), "
                 + "luaRuntimeRegistered=\(luaRegisteredAfterDeploy)",
+            librimeVersion: maintenanceResult.librimeVersion,
             runtimeSmokePassed: runtimeSmokePassed,
             luaRuntimeSmokePassed: luaRuntimeSmokePassed
         )

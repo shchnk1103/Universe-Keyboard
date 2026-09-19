@@ -90,6 +90,71 @@ final class DiagnosticEventTests: XCTestCase {
         }
     }
 
+    func testTypoCorrectionSidecarPayloadRoundTripIsContentFree() throws {
+        let receiptID = UUID()
+        let diagnostic = TypoCorrectionQueryDiagnostic(
+            sequence: 3,
+            inputLength: 18,
+            limit: 3,
+            resultCount: 2,
+            elapsedMilliseconds: 7,
+            liveSessionIDBefore: 101,
+            liveSessionIDAfter: 101,
+            liveSessionValidBefore: true,
+            liveSessionValidAfter: true,
+            sidecarSessionIDBefore: 0,
+            sidecarSessionIDAfter: 202,
+            schemaID: "rime_ice",
+            provenanceReceiptID: receiptID,
+            outcome: .returned
+        )
+        let sidecar = try XCTUnwrap(
+            DiagnosticEvent.TypoCorrectionSidecarQueryEvent(diagnostic: diagnostic)
+        )
+        let event = DiagnosticEvent(
+            utcTimestamp: .now,
+            monotonicNanoseconds: 4,
+            origin: .keyboardExtension,
+            processInstanceID: UUID(),
+            localSequence: 4,
+            code: .typoCorrectionSidecarQuery,
+            level: .info,
+            category: .engine,
+            typoCorrectionPayload: .sidecarQuery(sidecar)
+        )
+
+        let encoded = try JSONEncoder().encode(event)
+        let decoded = try JSONDecoder().decode(DiagnosticEvent.self, from: encoded)
+        XCTAssertEqual(decoded, event)
+
+        let text = try XCTUnwrap(String(data: encoded, encoding: .utf8))
+        XCTAssertTrue(text.contains(receiptID.uuidString))
+        XCTAssertTrue(text.contains("inputLength"))
+        XCTAssertTrue(text.contains("resultCount"))
+        for forbiddenKey in ["input", "candidate", "candidates", "text", "message"] {
+            XCTAssertFalse(text.contains("\"\(forbiddenKey)\""))
+        }
+    }
+
+    #if DEBUG
+        func testTypoCorrectionRealSidecarRouteRequiresProvenanceReceipt() {
+            let route = DiagnosticEvent.TypoCorrectionQueryRouteEvent(
+                route: .realRimeSidecar,
+                schemaID: "rime_ice",
+                provenanceReceiptID: nil
+            )
+
+            XCTAssertFalse(route.isValidForRecording)
+
+            let missingSchema = DiagnosticEvent.TypoCorrectionQueryRouteEvent(
+                route: .realRimeSidecar,
+                schemaID: nil,
+                provenanceReceiptID: UUID()
+            )
+            XCTAssertFalse(missingSchema.isValidForRecording)
+        }
+    #endif
+
     func testRimeSyncDecoderRejectsEmptyInvocationAndCodeMismatch() throws {
         let context = DiagnosticEvent.RimeSyncContext(
             operationID: UUID(),

@@ -17,6 +17,12 @@ struct TypoCorrectionBenchmarkView: View {
         )
         private var experimentalTranspositionEnabled = false
 
+        @AppStorage(
+            TypoCorrectionExperimentalSettings.contextualCorrectionEnabledKey,
+            store: UserDefaults(suiteName: universeAppGroupID)
+        )
+        private var contextualCorrectionEnabled = true
+
         @State private var learnedCorrectionCount = 0
         @State private var learnedSelectionCount = 0
     #endif
@@ -153,6 +159,17 @@ struct TypoCorrectionBenchmarkView: View {
                     Text("用于审计 nihoa -> nihao 这类 transposition 候选；当前不进入前排展示。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+
+                    Divider()
+
+                    Toggle("启用上下文纠错 sidecar", isOn: $contextualCorrectionEnabled)
+                        .font(.subheadline.weight(.medium))
+                        .toggleStyle(.appSwitch)
+                    Text(
+                        "关闭时只保留普通 RIME 候选，用于同一安装载荷下的性能 baseline；切换后需重新打开键盘。"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
 
                     Divider()
 

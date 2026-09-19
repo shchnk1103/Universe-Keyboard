@@ -19,6 +19,18 @@
 - **Non-goals:** Network/cloud correction; host context; automatic commit; RIME schema/weight/user-dictionary changes; unbounded search; input-history persistence; changes to `TYPING-INTELLIGENCE-001`; substituting another simulator or physical device for the designated Device Hub target.
 - **Required Inputs:** `TYPO_CORRECTION.md`; ADR 0002, 0004, 0008, 0009, 0010 and 0015; `TYPO_BENCHMARK.md`; `TYPO_BENCHMARK_REGISTRY.md`; `PERFORMANCE_BASELINE.md`; `DEBUGGING.md`; `RELEASE_CHECKLIST.md`; current KeyboardCore/RimeBridge source and tests.
 
+### Scope Amendment — 2026-09-17
+
+- **Authorization:** The Human Product Owner explicitly authorizes a physical-device supplemental evidence arm in the current Codex task on 2026-09-17 Asia/Shanghai.
+- **Supplemental arm:** A connected physical iOS device may collect additional manual-cadence and stale-work observations for `TC2-CASE-INT-003` only. The run must capture the physical model, UDID, OS build, signed app/extension identity, active schema, exact RIME provenance receipt, Full Access state, host app and a new Run ID.
+- **No substitution:** This arm supplements the designated Device Hub iOS 27 iPhone 17 Pro Max simulator. It cannot satisfy `TC2-CASE-QA-001`, the paired performance case, the Product acceptance boundary or any Product, Quality, TestFlight, Release or merge decision.
+- **Revalidation boundary:** A physical-device run is a separately bound evidence receipt. Any rebuild, reinstall, device change, schema change or restarted capture requires a new Run ID and fresh identity capture.
+
+### Related child closure — 2026-09-19
+
+- [`TYPO-CORRECTION-002-TESTABILITY-ACCESSIBILITY-001`](typo-correction-002-testability-accessibility-001.md) is Closed only for the bounded keyboard UI testability/accessibility child after PR #140 merged as `162b09fd58ba60538a944026b1902efa405c75aa`.
+- This child closure does not close or satisfy the parent sidecar observability, INT-003, QA-001 or paired performance exits. The parent remains `Active`.
+
 ## Assignment
 
 - **Domain Owner:** Input Intelligence Maintainer

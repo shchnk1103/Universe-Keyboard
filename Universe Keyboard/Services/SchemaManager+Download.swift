@@ -1,5 +1,6 @@
 import Foundation
 import KeyboardCore
+import RimeBridge
 
 extension SchemaManager {
     func forceRedownload() {
@@ -39,6 +40,8 @@ extension SchemaManager {
 
     private func fetchAndDownload(schemaID: String, operationID: UUID, force: Bool) async {
         let schemeName = downloadSchemeDisplayName(for: schemaID)
+        pendingRuntimeProvenanceContext = nil
+        defer { pendingRuntimeProvenanceContext = nil }
         var temporaryItems: [URL] = []
         var diagnosticContext: DiagnosticEvent.SchemeDeliveryContext?
         var ownsCommitLease = false
@@ -250,6 +253,25 @@ extension SchemaManager {
                 )
                 return
             }
+
+            // Preserve the archive/staged identity until the deploy transaction
+            // mints the live runtime receipt. The ordinary settings receipt is
+            // intentionally committed only after that provenance step succeeds.
+            pendingRuntimeProvenanceContext = RimeRuntimeProvenanceDeploymentContext(
+                schemeID: schemaID,
+                source: .downloaded,
+                sourceVariantID: source.id,
+                upstreamRevision: source.upstreamRevision,
+                artifactVersion: manifest.version,
+                artifactIdentityID: stagedIdentity.artifactIdentityID,
+                stagedIdentityID: stagedIdentity.id,
+                archiveSHA256: archiveSHA256,
+                stagedContentSHA256: stagedContentSHA256,
+                installationPlanRevision: plan.revision,
+                postProcessingRevision: postProcessingRevision,
+                luaAvailable: luaAvailable,
+                installationPlan: plan
+            )
 
             try await acquireActiveSchemeDeliveryCommitLease(operationID: operationID)
             ownsCommitLease = true

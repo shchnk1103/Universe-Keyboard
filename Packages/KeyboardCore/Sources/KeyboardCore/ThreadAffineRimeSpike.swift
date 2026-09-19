@@ -46,6 +46,8 @@ public struct ThreadAffineRimeOwnerDiagnostics: Sendable, Equatable {
     public var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot?
     /// Immutable realized runtime selection captured on the owner thread.
     public var runtimeSelection: RimeRuntimeSelection?
+    /// Main-App receipt identity captured alongside the owner-thread engine.
+    public var runtimeProvenanceReceiptID: UUID?
 
     public init(
         pendingWorkDepth: Int = 0,
@@ -56,7 +58,8 @@ public struct ThreadAffineRimeOwnerDiagnostics: Sendable, Equatable {
         isDeliveryTerminal: Bool = false,
         sessionEpoch: UInt64 = 1,
         diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? = nil,
-        runtimeSelection: RimeRuntimeSelection? = nil
+        runtimeSelection: RimeRuntimeSelection? = nil,
+        runtimeProvenanceReceiptID: UUID? = nil
     ) {
         self.pendingWorkDepth = pendingWorkDepth
         self.rejectedAtBoundCount = rejectedAtBoundCount
@@ -67,6 +70,7 @@ public struct ThreadAffineRimeOwnerDiagnostics: Sendable, Equatable {
         self.sessionEpoch = sessionEpoch
         self.diagnosticSessionSnapshot = diagnosticSessionSnapshot
         self.runtimeSelection = runtimeSelection
+        self.runtimeProvenanceReceiptID = runtimeProvenanceReceiptID
     }
 }
 
@@ -177,10 +181,25 @@ public struct ThreadAffineRimeVisibilityTeardownResult: Sendable, Equatable {
 
 /// R4-Wire: full session work surface (same enum as the responsive pipeline).
 ///
-/// Spike/R4-Owner historically only exercised `processKey`. R4-Wire expands the
-/// owner to the complete `ResponsiveRimeWork` set so controller bridging cannot
-/// dual-enter a MainActor-held engine.
+/// R4-Wire expands the owner to the complete `ResponsiveRimeWork` set so
+/// controller bridging cannot dual-enter a MainActor-held engine. Read-only
+/// typo-correction queries use the separate control lane below and never become
+/// composition revisions.
 public typealias ThreadAffineRimeSpikeWork = ResponsiveRimeWork
+
+/// Result of one read-only sidecar query executed on the owner thread.
+public struct ThreadAffineRimeSidecarQueryResult: Sendable, Equatable {
+    public let candidates: [RimeCandidate]
+    public let diagnostic: TypoCorrectionQueryDiagnostic?
+
+    public init(
+        candidates: [RimeCandidate],
+        diagnostic: TypoCorrectionQueryDiagnostic? = nil
+    ) {
+        self.candidates = candidates
+        self.diagnostic = diagnostic
+    }
+}
 
 /// Result delivered from the dedicated RIME owner thread.
 ///
@@ -197,6 +216,7 @@ public struct ThreadAffineRimeSpikeResult: Equatable, Sendable {
     /// Native session identity captured on the owner thread for this result.
     public let diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot?
     public let runtimeSelection: RimeRuntimeSelection?
+    public let runtimeProvenanceReceiptID: UUID?
 
     public init(
         snapshot: ResponsiveRimeSnapshot,
@@ -204,7 +224,8 @@ public struct ThreadAffineRimeSpikeResult: Equatable, Sendable {
         engineCallStayedOnCreationThread: Bool,
         pendingWorkDepthAfterCompletion: Int = 0,
         diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? = nil,
-        runtimeSelection: RimeRuntimeSelection? = nil
+        runtimeSelection: RimeRuntimeSelection? = nil,
+        runtimeProvenanceReceiptID: UUID? = nil
     ) {
         self.snapshot = snapshot
         self.engineCreatedOffMainThread = engineCreatedOffMainThread
@@ -212,6 +233,7 @@ public struct ThreadAffineRimeSpikeResult: Equatable, Sendable {
         self.pendingWorkDepthAfterCompletion = pendingWorkDepthAfterCompletion
         self.diagnosticSessionSnapshot = diagnosticSessionSnapshot
         self.runtimeSelection = runtimeSelection
+        self.runtimeProvenanceReceiptID = runtimeProvenanceReceiptID
     }
 }
 
@@ -246,7 +268,7 @@ public final class ThreadAffineRimeSpikeApplyGate {
     public func apply(_ result: ThreadAffineRimeSpikeResult) -> Bool {
         let snapshot = result.snapshot
         guard snapshot.sessionEpoch == sessionEpoch,
-              snapshot.revision > lastAppliedRevision
+            snapshot.revision > lastAppliedRevision
         else {
             discardedResultCount += 1
             return false
@@ -296,11 +318,38 @@ private final class ThreadAffineCandidateWindowReply: Sendable {
     }
 }
 
+/// Sync reply for a read-only typo-correction query. It is deliberately
+/// separate from the revision delivery channel: a sidecar lookup must not
+/// publish or advance the live composition snapshot.
+private final class ThreadAffineSidecarQueryReply: Sendable {
+    private struct State: Sendable {
+        var result: ThreadAffineRimeSidecarQueryResult?
+    }
+
+    private let state = Mutex(State())
+    private let signal = DispatchSemaphore(value: 0)
+
+    func fulfill(_ result: ThreadAffineRimeSidecarQueryResult) {
+        state.withLock { $0.result = result }
+        signal.signal()
+    }
+
+    func wait(timeout: DispatchTime) -> ThreadAffineRimeSidecarQueryResult? {
+        if let result = state.withLock({ $0.result }) {
+            return result
+        }
+        _ = signal.wait(timeout: timeout)
+        return state.withLock { $0.result }
+    }
+}
+
 private enum ThreadAffineRimeControlCommand: Sendable {
     case advanceEpoch(UInt64)
     case stop
     /// Read-only; does not mutate composition or revision.
     case candidateWindow(from: Int, limit: Int, reply: ThreadAffineCandidateWindowReply)
+    /// Read-only; runs on the owner thread but is not part of the live work FIFO.
+    case sidecarQuery(input: String, limit: Int, reply: ThreadAffineSidecarQueryReply)
 }
 
 private enum ThreadAffineRimeOwnerCommand: Sendable {
@@ -503,8 +552,8 @@ private final class ThreadAffineRimeOwnerDestructionSignal: Sendable {
 /// - MainActor submits only Sendable work descriptors.
 /// - Results re-enter MainActor only through one ordered delivery channel.
 /// - Work mailbox is bounded (refuse-at-bound); control lane is priority.
-/// - Not wired into `KeyboardController`, the Extension, Release defaults or
-///   real `RimeEngineImpl` production paths.
+/// - Sidecar queries are read-only control-lane work and are only available when
+///   the owner-thread engine implements the real query seam.
 public final class ThreadAffineRimeSpikeOwner: Sendable {
     public typealias ResultHandler = @Sendable (ThreadAffineRimeSpikeResult) -> Void
 
@@ -524,6 +573,7 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         var visibilityAbandonmentReceipts: [ThreadAffineRimeVisibilityAbandonmentReceipt] = []
         var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot?
         var runtimeSelection: RimeRuntimeSelection?
+        var runtimeProvenanceReceiptID: UUID?
     }
 
     /// Owner-loop counters shared without moving a noncopyable Mutex parameter.
@@ -625,6 +675,22 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                 nextIndex: max(0, globalIndex),
                 hasMoreCandidates: false
             )
+    }
+
+    /// Executes a bounded typo-correction query on the owner thread after the
+    /// accepted live work prefix. A timeout is represented as an empty result;
+    /// it never falls back to a provider and never mutates the live session.
+    public func correctionCandidates(
+        for input: String,
+        limit: Int,
+        timeout: DispatchTime = .now() + 5
+    ) -> ThreadAffineRimeSidecarQueryResult {
+        let reply = ThreadAffineSidecarQueryReply()
+        mailbox.enqueueControl(
+            .sidecarQuery(input: input, limit: limit, reply: reply)
+        )
+        return reply.wait(timeout: timeout)
+            ?? ThreadAffineRimeSidecarQueryResult(candidates: [])
     }
 
     /// Hot-path entry (call from keyboard MainActor). Allocates a revision and
@@ -787,7 +853,8 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
             isDeliveryTerminal: delivery.isTerminal,
             sessionEpoch: snapshot.sessionEpoch,
             diagnosticSessionSnapshot: snapshot.diagnosticSessionSnapshot,
-            runtimeSelection: snapshot.runtimeSelection
+            runtimeSelection: snapshot.runtimeSelection,
+            runtimeProvenanceReceiptID: snapshot.runtimeProvenanceReceiptID
         )
     }
 
@@ -858,6 +925,7 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         counters.withAcceptance {
             $0.diagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
             $0.runtimeSelection = engine.runtimeSelection
+            $0.runtimeProvenanceReceiptID = engine.runtimeProvenanceReceiptID
             $0.isReady = true
         }
 
@@ -870,11 +938,13 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                     continue
                 }
 
-                guard let output = execute(
-                    envelope.work,
-                    engine: engine,
-                    lastAppliedRevision: &lastAppliedRevision
-                ) else {
+                guard
+                    let output = execute(
+                        envelope.work,
+                        engine: engine,
+                        lastAppliedRevision: &lastAppliedRevision
+                    )
+                else {
                     counters.withAcceptance { $0.skippedStaleEpochCount &+= 1 }
                     markSettled(envelope, counters: counters, settledSignal: settledSignal)
                     continue
@@ -884,6 +954,7 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                 counters.withAcceptance {
                     $0.diagnosticSessionSnapshot = diagnosticSessionSnapshot
                     $0.runtimeSelection = engine.runtimeSelection
+                    $0.runtimeProvenanceReceiptID = engine.runtimeProvenanceReceiptID
                 }
                 let result = ThreadAffineRimeSpikeResult(
                     snapshot: ResponsiveRimeSnapshot(
@@ -897,7 +968,8 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                         ObjectIdentifier(Thread.current) == creationThreadIdentity,
                     pendingWorkDepthAfterCompletion: mailbox.pendingWorkDepth,
                     diagnosticSessionSnapshot: diagnosticSessionSnapshot,
-                    runtimeSelection: engine.runtimeSelection
+                    runtimeSelection: engine.runtimeSelection,
+                    runtimeProvenanceReceiptID: engine.runtimeProvenanceReceiptID
                 )
                 delivery.enqueue(result)
                 markSettled(envelope, counters: counters, settledSignal: settledSignal)
@@ -907,6 +979,7 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                 counters.withAcceptance {
                     $0.diagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
                     $0.runtimeSelection = engine.runtimeSelection
+                    $0.runtimeProvenanceReceiptID = engine.runtimeProvenanceReceiptID
                 }
                 ownerEpoch = epoch
                 lastAppliedRevision = 0
@@ -918,6 +991,24 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
             case .control(.candidateWindow(let from, let limit, let reply)):
                 // Read-only: no revision bump, no snapshot delivery.
                 reply.fulfill(engine.candidateWindow(from: from, limit: limit))
+
+            case .control(.sidecarQuery(let input, let limit, let reply)):
+                // The concrete RimeEngineImpl owns the independent librime
+                // session. The owner only invokes the optional seam; a missing
+                // seam is unavailable, never a provider-backed “real” result.
+                guard let queryEngine = engine as? TypoCorrectionCandidateQuerying else {
+                    reply.fulfill(ThreadAffineRimeSidecarQueryResult(candidates: []))
+                    continue
+                }
+                let candidates = queryEngine.correctionCandidates(for: input, limit: limit)
+                let diagnostic = (queryEngine as? TypoCorrectionQueryDiagnosticsProviding)?
+                    .lastTypoCorrectionQueryDiagnostic
+                reply.fulfill(
+                    ThreadAffineRimeSidecarQueryResult(
+                        candidates: candidates,
+                        diagnostic: diagnostic
+                    )
+                )
 
             case .control(.stop):
                 // Control priority: stop is not buried behind work. Remaining

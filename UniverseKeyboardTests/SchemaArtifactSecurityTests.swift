@@ -97,6 +97,36 @@ final class SchemaArtifactSecurityTests: XCTestCase {
         )
     }
 
+    func testInstalledManifestBindsLiveBytesAndUsesTheSameAllowlist() throws {
+        let root = try makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let plan = makePlan()
+        try write("schema-v1", to: root.appendingPathComponent("wanxiang.schema.yaml"))
+        try write("dictionary-v1", to: root.appendingPathComponent("dicts/base.dict.yaml"))
+        try write("ignored-v1", to: root.appendingPathComponent("unmanaged/ignored.txt"))
+
+        let verifier = SchemaArtifactVerifier()
+        let first = try verifier.installedContentManifest(
+            in: root,
+            plan: plan,
+            luaAvailable: true
+        )
+        XCTAssertEqual(
+            first.files.map(\.relativePath),
+            ["dicts/base.dict.yaml", "wanxiang.schema.yaml"]
+        )
+        XCTAssertEqual(first.files.map(\.byteCount), [13, 9])
+
+        try write("dictionary-v2", to: root.appendingPathComponent("dicts/base.dict.yaml"))
+        let second = try verifier.installedContentManifest(
+            in: root,
+            plan: plan,
+            luaAvailable: true
+        )
+        XCTAssertNotEqual(first.contentSHA256, second.contentSHA256)
+        XCTAssertNotEqual(first.files, second.files)
+    }
+
     func testLocalizedNetworkErrorsDoNotExposeRawSystemText() {
         XCTAssertEqual(
             DownloadError.userFacingDescription(for: URLError(.notConnectedToInternet)),

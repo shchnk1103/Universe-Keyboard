@@ -27,8 +27,8 @@ import RimeBridgeObjC
 ///
 /// ── 线程安全 ─────────────────────────────────────────────────
 /// librime 不是线程安全的。所有 RIME API 调用必须在同一线程。
-/// 键盘扩展中所有输入事件都在主线程，所以这不存在问题。
-/// 但不要从后台队列调用 processKey/selectCandidate。
+/// 同步路径由键盘 MainActor 调用；thread-affine 路径由专用 owner thread
+/// 串行调用。不要从其它后台队列直接调用 processKey/selectCandidate。
 ///
 /// ── 配置路径 ─────────────────────────────────────────────────
 /// 使用 App Group 共享容器，主 App 和键盘扩展都可读写：
@@ -41,6 +41,10 @@ public final class RimeEngineImpl: RimeEngine {
     /// Immutable shared runtime directory; always used for readiness fingerprinting.
     public let sharedDataDir: String
     public let userDataDir: String
+    /// Main-App deployment receipt read once before the input session starts.
+    /// Extension query events carry only this receipt's stable ID.
+    public let runtimeProvenance: RimeRuntimeProvenanceIdentity?
+    public var runtimeProvenanceReceiptID: UUID? { runtimeProvenance?.receiptID }
     var nextRecoveryAttemptTime: CFTimeInterval = 0
     private var isSuspendedForVisibilityChange = false
     var activeSchemaID = "luna_pinyin"
@@ -48,15 +52,18 @@ public final class RimeEngineImpl: RimeEngine {
     public internal(set) var runtimeSelection: RimeRuntimeSelection?
     /// Propagates realized selection (including fail-closed) to extension chrome/controller.
     public var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)?
+    /// Most recent content-free sidecar observation. It is populated only by
+    /// the bounded contextual query path, never by normal key processing.
+    public internal(set) var lastTypoCorrectionQueryDiagnostic: TypoCorrectionQueryDiagnostic?
     #if DEBUG
-    /// Content-free timing exposed only to the controlled Simulator preflight.
-    internal var lastLibrimeProcessKeyDurationMs: Double?
-    /// Test-target-only boundary counter for exact auto-anchor mutation budgets.
-    internal private(set) var replaceInputCallCountForTesting = 0
-    /// Content-free counters freeze fail-closed behavior at the native boundary.
-    internal private(set) var processKeyCallCountForTesting = 0
-    internal private(set) var resetSessionCallCountForTesting = 0
-    internal private(set) var recoverSessionCallCountForTesting = 0
+        /// Content-free timing exposed only to the controlled Simulator preflight.
+        internal var lastLibrimeProcessKeyDurationMs: Double?
+        /// Test-target-only boundary counter for exact auto-anchor mutation budgets.
+        internal private(set) var replaceInputCallCountForTesting = 0
+        /// Content-free counters freeze fail-closed behavior at the native boundary.
+        internal private(set) var processKeyCallCountForTesting = 0
+        internal private(set) var resetSessionCallCountForTesting = 0
+        internal private(set) var recoverSessionCallCountForTesting = 0
     #endif
 
     public var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {
@@ -89,6 +96,10 @@ public final class RimeEngineImpl: RimeEngine {
         self.bridge = RimeSessionManager()
         self.sharedDataDir = sharedDataDir
         self.userDataDir = userDataDir
+        self.runtimeProvenance =
+            RimeRuntimeProvenanceStore.load(
+                from: URL(fileURLWithPath: userDataDir, isDirectory: true)
+            )?.identity
 
         // ── 1. Setup + Initialize ──────────────────────────────
         // setup: 设置 RIME 的数据目录和模块列表
@@ -111,6 +122,18 @@ public final class RimeEngineImpl: RimeEngine {
         // ── 3. 保留低成本版本诊断；完整 schema 枚举只在失败恢复时执行 ──
         let version = bridge.librimeVersion()
         Logger.shared.info("librime \(version)", category: .engine)
+        if let runtimeProvenance {
+            Logger.shared.info(
+                "RIME runtime provenance receipt=\(runtimeProvenance.receiptID.uuidString) "
+                    + "schema=\(runtimeProvenance.activeSchemaID)",
+                category: .engine
+            )
+        } else {
+            Logger.shared.warning(
+                "RIME runtime provenance receipt unavailable",
+                category: .engine
+            )
+        }
 
         // ── 4. Schema 快速选择 ────────────────────────────────
         // 主 App 已负责部署与完整运行时验证。健康冷启动只确认 schema 可以选中，
@@ -222,7 +245,7 @@ public final class RimeEngineImpl: RimeEngine {
     /// - Returns: RimeOutput（包含 composition、candidates、committed text）
     public func processKey(_ key: String) -> KeyboardCore.RimeOutput {
         #if DEBUG
-        processKeyCallCountForTesting += 1
+            processKeyCallCountForTesting += 1
         #endif
         return processInputKey(key)
     }
@@ -250,7 +273,7 @@ public final class RimeEngineImpl: RimeEngine {
     /// 用未格式化输入替换当前 RIME composition。
     public func replaceInput(_ input: String) -> KeyboardCore.RimeOutput {
         #if DEBUG
-        replaceInputCallCountForTesting += 1
+            replaceInputCallCountForTesting += 1
         #endif
         return parseOutput(bridge.replaceInput(input))
     }
@@ -258,7 +281,7 @@ public final class RimeEngineImpl: RimeEngine {
     /// 重置当前 RIME session 的输入状态（清除拼音 composition）。
     public func resetSession() {
         #if DEBUG
-        resetSessionCallCountForTesting += 1
+            resetSessionCallCountForTesting += 1
         #endif
         bridge.clearComposition()
     }
@@ -267,7 +290,7 @@ public final class RimeEngineImpl: RimeEngine {
     /// 先重建 session；若 librime 已无法创建 session，则重新初始化整个引擎。
     public func recoverSession() {
         #if DEBUG
-        recoverSessionCallCountForTesting += 1
+            recoverSessionCallCountForTesting += 1
         #endif
         restoreInputSession()
     }

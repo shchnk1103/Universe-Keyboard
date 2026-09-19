@@ -36,7 +36,7 @@ This incremental Registry adds V2 identities without modifying the frozen v1.0 R
 | `TC2-CASE-STB-002` | `TC2-CTR-STB-001` | A sentence-like synthetic input produces at most eight two-edit hypotheses | Core unit test | Passed locally |
 | `TC2-CASE-STB-003` | `TC2-CTR-STB-002` | Two-edit Chinese phrase candidate stays display-only | Core unit test | Passed locally |
 | `TC2-CASE-INT-001` | `TC2-CTR-INT-003` | Controller uses its dedicated corrected-input query seam | Core unit test | Passed locally |
-| `TC2-CASE-INT-002` | `TC2-CTR-INT-001` | Sidecar query preserves live composition | Real rime_ice runtime fixture | Skipped: fixture unavailable |
+| `TC2-CASE-INT-002` | `TC2-CTR-INT-001` | Sidecar query preserves live composition | Real rime_ice runtime fixture | Observed in [`TC2-PERF-20260918-184840-RIMEICE-01`](evidence/typo-correction-002-sim-run-2026-09-18-perf-rimeice-01.md); independent review pending |
 | `TC2-CASE-INT-003` | `TC2-CTR-INT-002` | Rapid typing cancels stale contextual work | iOS UI/Device Hub trace | Pending |
 | `TC2-CASE-QA-001` | `TC2-CTR-QA-001` | Curated multi-error sentence recovers intended candidate without interaction regression | Designated Device Hub iOS 27 iPhone 17 Pro Max simulator | Pending: contextual scenario not executed |
 | `TC2-CASE-EXP-001` | `TC2-CTR-EXP-001` | Progressive planner is not referenced by production controller/UI code | Source audit + Core tests | Passed locally |
@@ -49,6 +49,11 @@ This incremental Registry adds V2 identities without modifying the frozen v1.0 R
 - KeyboardCore tests prove local bounds, safety assessment and the injectable query seam. They do not prove RIME language-model quality.
 - The 2026-07-15 designated iOS 27 iPhone 17 Pro Max Simulator UI baseline (8 passed, 1 designed skip) proves existing activation and interaction coverage only. It does not exercise the contextual phrase-recovery scenario and therefore does not satisfy `TC2-CASE-QA-001`.
 - The canonical two-error phrase is proven only in the default-off 60/64/8 recall preflight, not inside the production 12-state/eight-hypothesis budget. The public RIME C API supplies no supported cross-hypothesis candidate-quality value; opaque ABI fields must not be interpreted as one.
-- The sidecar smoke test is intentionally skipped when no complete rime_ice fixture is supplied; a skipped fixture is not a pass.
+- The historical sidecar smoke-test skip is superseded by the deployed `rime_ice` receipt in [`TC2-PERF-20260918-184840-RIMEICE-01`](evidence/typo-correction-002-sim-run-2026-09-18-perf-rimeice-01.md): the treatment arm directly observed 70 real-RIME sidecar queries with unchanged live-session identity. This is executor evidence pending independent review, not a Product or Quality pass.
 - `TC2-CASE-QA-001` remains the sole Product-acceptance gate for the requested real-device restriction.
-- The prepared [Device Hub Validation Record](evidence/typo-correction-002-device-hub-validation.md) owns the current unavailable observation and the required fresh-run scenarios.
+- The prepared [Device Hub Validation Record](evidence/typo-correction-002-device-hub-validation.md) owns the historical unavailable observation, the paired diagnostic receipt and the required fresh-run scenarios.
+- **2026-09-17 Assignment amendment:** A physical-device trace may supplement
+  `TC2-CASE-INT-003` for manual-cadence and stale-work observation only. It does
+  not replace the designated iOS 27 iPhone 17 Pro Max simulator and cannot
+  satisfy `TC2-CASE-QA-001`, the paired performance case or any Product,
+  Quality, TestFlight, Release or merge decision.

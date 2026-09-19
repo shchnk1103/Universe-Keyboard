@@ -5,6 +5,13 @@ public protocol TypoCorrectionCandidateQuerying: AnyObject {
     func correctionCandidates(for input: String, limit: Int) -> [RimeCandidate]
 }
 
+/// Optional read-only diagnostics for a query implementation. The protocol is
+/// separate from `TypoCorrectionCandidateQuerying` so the deterministic
+/// provider adapter does not need to pretend it is a real RIME sidecar.
+public protocol TypoCorrectionQueryDiagnosticsProviding: AnyObject {
+    var lastTypoCorrectionQueryDiagnostic: TypoCorrectionQueryDiagnostic? { get }
+}
+
 public final class CandidateProviderTypoCorrectionQuery: TypoCorrectionCandidateQuerying {
     private let candidateProvider: CandidateProvider
 

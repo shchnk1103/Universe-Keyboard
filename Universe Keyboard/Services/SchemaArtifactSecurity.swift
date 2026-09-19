@@ -1,6 +1,7 @@
 import CryptoKit
 import Foundation
 import KeyboardCore
+import RimeBridge
 
 /// The probe is advisory reachability metadata; archive verification remains mandatory.
 nonisolated enum SchemaSourceProbeResult: Equatable, Sendable {
@@ -132,6 +133,12 @@ nonisolated struct URLSessionHEADSchemaSourceProbe: SchemaSourceProbing {
 }
 
 nonisolated struct SchemaArtifactVerifier: Sendable {
+    private struct AdmittedFile: Sendable {
+        let relativePath: String
+        let url: URL
+        let byteCount: UInt64
+    }
+
     func verifyArchive(
         at archiveURL: URL,
         source: RimeSchemeSourceVariant
@@ -171,10 +178,53 @@ nonisolated struct SchemaArtifactVerifier: Sendable {
         plan: RimeSchemeInstallationPlan,
         luaAvailable: Bool
     ) throws -> String {
+        try contentSHA256(
+            for: admittedFiles(
+                in: extractionDirectory,
+                plan: plan,
+                luaAvailable: luaAvailable
+            )
+        )
+    }
+
+    /// Reads the live shared tree through the same installation allowlist used
+    /// for staged verification. This keeps the receipt bound to the exact
+    /// post-processing result instead of trusting only the archive checksum.
+    func installedContentManifest(
+        in sharedDirectory: URL,
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws -> RimeRuntimeProvenanceContent {
+        let files = try admittedFiles(
+            in: sharedDirectory,
+            plan: plan,
+            luaAvailable: luaAvailable
+        )
+        let descriptors = try files.map { file -> RimeRuntimeProvenanceFile in
+            guard file.byteCount <= UInt64(Int64.max) else {
+                throw DownloadError.corruptArchive
+            }
+            return RimeRuntimeProvenanceFile(
+                relativePath: file.relativePath,
+                byteCount: Int64(file.byteCount),
+                sha256: try sha256(of: file.url)
+            )
+        }
+        return RimeRuntimeProvenanceContent(
+            files: descriptors,
+            contentSHA256: try contentSHA256(for: files)
+        )
+    }
+
+    private func admittedFiles(
+        in rootDirectory: URL,
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws -> [AdmittedFile] {
         let fileManager = FileManager.default
         guard
             let enumerator = fileManager.enumerator(
-                at: extractionDirectory,
+                at: rootDirectory,
                 includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .fileSizeKey],
                 options: [.skipsHiddenFiles]
             )
@@ -182,7 +232,7 @@ nonisolated struct SchemaArtifactVerifier: Sendable {
             throw DownloadError.corruptArchive
         }
 
-        var admittedFiles: [(relativePath: String, url: URL, byteCount: UInt64)] = []
+        var admittedFiles: [AdmittedFile] = []
         for case let fileURL as URL in enumerator {
             let values = try fileURL.resourceValues(
                 forKeys: [.isRegularFileKey, .isSymbolicLinkKey, .fileSizeKey]
@@ -191,25 +241,31 @@ nonisolated struct SchemaArtifactVerifier: Sendable {
                 throw DownloadError.corruptArchive
             }
             guard values.isRegularFile == true else { continue }
+            guard let fileSize = values.fileSize, fileSize >= 0 else {
+                throw DownloadError.corruptArchive
+            }
 
             let relativePath = try plan.normalizedRelativePath(
                 for: fileURL,
-                under: extractionDirectory
+                under: rootDirectory
             )
             guard plan.shouldInstall(relativePath: relativePath, luaAvailable: luaAvailable) else {
                 continue
             }
             admittedFiles.append(
-                (relativePath, fileURL, UInt64(values.fileSize ?? 0))
+                AdmittedFile(relativePath: relativePath, url: fileURL, byteCount: UInt64(fileSize))
             )
         }
 
         guard admittedFiles.contains(where: { $0.relativePath == plan.schemaFileName }) else {
             throw DownloadError.corruptArchive
         }
+        return admittedFiles.sorted(by: { $0.relativePath < $1.relativePath })
+    }
 
+    private func contentSHA256(for files: [AdmittedFile]) throws -> String {
         var hasher = SHA256()
-        for file in admittedFiles.sorted(by: { $0.relativePath < $1.relativePath }) {
+        for file in files {
             hasher.update(data: Data(file.relativePath.utf8))
             hasher.update(data: Data([0]))
             var byteCount = file.byteCount.bigEndian
@@ -245,4 +301,15 @@ nonisolated protocol SchemaArtifactVerifying: Sendable {
     ) throws -> String
 }
 
+/// Explicit opt-in for a verifier that can prove the post-install live tree.
+/// A staged-only fake must not satisfy this contract by default.
+nonisolated protocol SchemaArtifactLiveManifestVerifying: Sendable {
+    func installedContentManifest(
+        in sharedDirectory: URL,
+        plan: RimeSchemeInstallationPlan,
+        luaAvailable: Bool
+    ) throws -> RimeRuntimeProvenanceContent
+}
+
 extension SchemaArtifactVerifier: SchemaArtifactVerifying {}
+extension SchemaArtifactVerifier: SchemaArtifactLiveManifestVerifying {}
