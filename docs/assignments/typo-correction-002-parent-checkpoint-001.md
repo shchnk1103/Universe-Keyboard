@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | Freeze and publish the already-produced parent implementation/evidence snapshot before a separate recall-remediation slice. |
+| **Lifecycle** | `Closed` |
+| **Phase** | Checkpoint `84978748d89d329a7d2c6e89400c1ff556cfd9b5` was created and pushed; docs-only state sync completed. |
 | **Non-claims** | This checkpoint does not close `TYPO-CORRECTION-002`, does not establish INT-003, QA-001, paired performance, Product/Quality/Release approval, and does not change the RIME schema or search budget. |
 | **Next** | After the checkpoint is reachable from the remote branch, create a new bounded recall-remediation Assignment/Authorization from its exact commit. |
 | **Residuals** | Existing UNKNOWN/inconclusive receipts remain valid only for their original source/build/Run ID bindings; they are not reinterpreted by this publication. |
@@ -59,3 +59,9 @@ The Executor may, without changing file contents for product behavior:
 ## Future handoff
 
 The next work item is a separate bounded `TYPO-CORRECTION-002` recall-remediation Assignment. It must start from the exact checkpoint commit and define a coverage-aware, bounded hypothesis-recall change plus focused tests and new build/Run IDs. The existing sidecar observability, INT-003, QA-001 and paired-performance receipts remain historical evidence and cannot be promoted by the checkpoint.
+
+## Close receipt
+
+- Checkpoint evidence: [`parent checkpoint receipt`](../evidence/typo-correction-002-parent-checkpoint-2026-09-19.md).
+- Authorization: `AUTH-TYPO-CORRECTION-002-PARENT-CHECKPOINT-PUBLISH-001`, consumed after commit and push.
+- Parent `TYPO-CORRECTION-002` remains `Active`; no PR, merge, Product Gate, Quality Gate, Release or TestFlight action was performed.

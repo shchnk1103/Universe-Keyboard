@@ -26,6 +26,7 @@
 - [模糊音](RIME_FUZZY_PINYIN.md) · [用户词典](RIME_USER_DICTIONARY.md) · [同步](RIME_SYNC.md)
 - [输入智能](TYPING_INTELLIGENCE.md) · [纠错](TYPO_CORRECTION.md)
 - [纠错 Benchmark](TYPO_BENCHMARK.md) · [Registry](TYPO_BENCHMARK_REGISTRY.md) · [V2 Registry](TYPO_BENCHMARK_REGISTRY_V2.md)
+- [TYPO-CORRECTION-002 parent Assignment](assignments/typo-correction-002.md) · [four-lane revalidation](assignments/typo-correction-002-parent-revalidation-002.md) · [parent checkpoint receipt](evidence/typo-correction-002-parent-checkpoint-2026-09-19.md)
 - [上屏续写](POST_COMMIT_CONTINUATION.md) · [续写内容质量](POST_COMMIT_CONTINUATION_QUALITY.md)
 - [App 通知](APP_NOTIFICATIONS.md) · [隐私](PRIVACY_POLICY.md)
 - [首次启用 / 完全访问旅程](ONBOARDING_ACTIVATION.md) — 语义 `PD-RELEASE-2026-0801-03`；展示 `PD-HELP-TIPKIT-001` / [`HELP-GUIDE-SHEET-001`](assignments/help-guide-sheet-001.md)（Closed；Product Gate [`记录`](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)）

@@ -31,6 +31,12 @@
 - [`TYPO-CORRECTION-002-TESTABILITY-ACCESSIBILITY-001`](typo-correction-002-testability-accessibility-001.md) is Closed only for the bounded keyboard UI testability/accessibility child after PR #140 merged as `162b09fd58ba60538a944026b1902efa405c75aa`.
 - This child closure does not close or satisfy the parent sidecar observability, INT-003, QA-001 or paired performance exits. The parent remains `Active`.
 
+### Parent checkpoint publication — 2026-09-19
+
+- The existing parent implementation and KOS evidence pack were frozen and published in checkpoint [`84978748d89d329a7d2c6e89400c1ff556cfd9b5`](../evidence/typo-correction-002-parent-checkpoint-2026-09-19.md).
+- This is a recovery/provenance checkpoint, not a new Run and not a Product, Quality, Release or merge decision. Existing sidecar, INT-003, QA-001 and paired-performance receipts retain their original source/build/Run ID boundaries.
+- The next production change requires a separate bounded recall-remediation Assignment/Authorization rooted at the exact checkpoint commit. No search-budget or candidate-recall change is authorized by this checkpoint.
+
 ## Assignment
 
 - **Domain Owner:** Input Intelligence Maintainer

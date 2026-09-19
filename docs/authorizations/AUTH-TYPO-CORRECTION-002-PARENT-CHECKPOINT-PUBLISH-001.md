@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | `active` |
+| **Status** | `consumed` |
 | **Assignment** | [`TYPO-CORRECTION-002-PARENT-CHECKPOINT-001`](../assignments/typo-correction-002-parent-checkpoint-001.md) |
 | **Issuer** | Product Lead / Human Product Owner, current task instruction, 2026-09-19 Asia/Shanghai |
 | **Consumer** | Current Codex Executor |
@@ -16,8 +16,8 @@
   "record_id": "AUTH-TYPO-CORRECTION-002-PARENT-CHECKPOINT-PUBLISH-001",
   "record_type": "authorization",
   "title": "Publish the parent sidecar/provenance checkpoint only",
-  "status": "active",
-  "updated_at": "2026-09-19T00:00:00Z",
+  "status": "consumed",
+  "updated_at": "2026-09-19T21:27:40+08:00",
   "revalidation_triggers": [
     "allowlist_changed",
     "worktree_content_changed",
@@ -56,11 +56,14 @@
     "issued_at": "2026-09-19T00:00:00Z",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "active"
+    "consumption_state": "consumed",
+    "consumed_at": "2026-09-19T21:27:40+08:00",
+    "consumed_by_commit": "84978748d89d329a7d2c6e89400c1ff556cfd9b5",
+    "pushed_ref": "origin/codex/typo-correction-002-provenance-sidecar"
   }
 }
 ```
 
 ## Operational boundary
 
-This Authorization permits publication of existing work for recovery and traceability. It does not authorize implementing the proposed recall-remediation hypothesis, changing the production search budget, or claiming that the target candidate is now recoverable. Those actions require a new Assignment, Authorization, exact source/build identity and new Run IDs.
+This Authorization permitted publication of existing work for recovery and traceability and is now consumed. It did not authorize implementing the proposed recall-remediation hypothesis, changing the production search budget, or claiming that the target candidate is now recoverable. Those actions require a new Assignment, Authorization, exact source/build identity and new Run IDs.
