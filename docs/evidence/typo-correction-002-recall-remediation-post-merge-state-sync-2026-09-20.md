@@ -38,3 +38,11 @@ closure. The parent continues with sidecar observability, INT-003, QA-001 and pe
 No Swift, test, Xcode, RIME/vendor or runtime file was changed by this state sync. The two
 untracked parent residual files in the former staging worktree remain preserved and outside this
 scope.
+
+## Publication receipt
+
+- **Commit:** `2986884f30dd7837c26d552e4142be369a72f4c7`
+- **Branch:** `codex/typo-correction-002-post-merge-state-sync-001`
+- **Draft PR:** [#142](https://github.com/shchnk1103/Universe-Keyboard/pull/142)
+- **Merge status:** PR #142 remains draft and unmerged; it requires independent review and
+  separate merge authorization.
