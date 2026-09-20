@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | `active` |
+| **Status** | `consumed` |
 | **Assignment** | [`TYPO-CORRECTION-002-RECALL-REMEDIATION-001`](../assignments/typo-correction-002-recall-remediation-001.md) |
 | **Issuer** | Human Product Owner / Product Lead, current Codex task, `2026-09-20 Asia/Shanghai` |
 | **Consumer** | Independent Architecture reviewer |
@@ -12,6 +12,7 @@
 | **Exact review tip** | `73114ed6fefe8bda95553fe8636e8a43b7828537` |
 | **Source implementation freeze** | `fb27b24ff85c48302e85309e834dbbe9a777871e` |
 | **Origin context** | `origin/main` at `162b09fd58ba60538a944026b1902efa405c75aa` |
+| **Review execution tip** | `163aeef980cd3d6fd012d1edb3d3c631a7f00ed9` |
 
 ```kos-record
 {
@@ -19,8 +20,8 @@
   "record_id": "AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-ARCHITECTURE-001",
   "record_type": "authorization",
   "title": "Independent Architecture re-review of B1-B3 reconciliation",
-  "status": "active",
-  "updated_at": "2026-09-20T08:41:03+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-20T09:19:44+08:00",
   "revalidation_triggers": [
     "review_tip_changed",
     "source_baseline_changed",
@@ -78,7 +79,10 @@
       "Release",
       "commit_or_push_by_reviewer"
     ],
-    "consumption_rule": "Bind the verdict to the exact review tip, preserve UNKNOWN and non-claims, and consume only after the review record is complete. Any source, scope or evidence change invalidates this Authorization."
+    "consumption_rule": "Bind the verdict to the exact review tip, preserve UNKNOWN and non-claims, and consume only after the review record is complete. Any source, scope or evidence change invalidates this Authorization.",
+    "consumption_state": "consumed",
+    "consumed_at": "2026-09-20T09:19:44+08:00",
+    "review_record": "docs/reviews/typo-correction-002-recall-remediation-conditions-architecture-review-2026-09-20.md"
   }
 }
 ```
@@ -88,3 +92,7 @@
 This review does not authorize implementation, a numeric `maxQueryAttempts`, a
 new Run, a performance claim, real-RIME candidate acceptance, QA-001, INT-003,
 Product or Quality Gate, PR, merge, Release or parent closure.
+
+> **Consumed:** The re-review is recorded as **Pass with conditions** in
+> [`typo-correction-002-recall-remediation-conditions-architecture-review-2026-09-20.md`](../reviews/typo-correction-002-recall-remediation-conditions-architecture-review-2026-09-20.md).
+> Product decision and implementation require separate authority.

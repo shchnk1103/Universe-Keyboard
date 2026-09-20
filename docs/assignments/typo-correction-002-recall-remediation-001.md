@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | B1–B3 reconciled; fresh independent Architecture re-review pending; implementation is not yet authorized. |
+| **Phase** | Architecture conditions re-reviewed; Product bounded Accept recorded; implementation-preflight is next, production implementation remains unauthorized. |
 | **Non-claims** | No production recall change, no local model, no schema/vendor change, no new Run, no Product/Quality/Release Gate and no parent closure. |
-| **Next** | Independent Architecture re-review of exact tip `73114ed6fefe8bda95553fe8636e8a43b7828537`; implementation remains unauthorized. |
+| **Next** | Establish a separate implementation-preflight Assignment/Authorization for pure KeyboardCore coverage and contract tests. |
 | **Residuals** | F-01 scope manifest still lacks a dedicated F-01 Assignment/Authorization; it is outside this recall lane. |
 
 ## Authority
@@ -21,6 +21,8 @@ Policy version: 1.0.0
 - **Architecture Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-ARCHITECTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-ARCHITECTURE-001.md).
 - **Conditions Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-001.md).
 - **Conditions Architecture Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-ARCHITECTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-ARCHITECTURE-001.md).
+- **Product Decision Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-PRODUCT-DECISION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-PRODUCT-DECISION-001.md).
+- **Product Decision:** [`bounded Product decision`](../product-decisions/TYPO-CORRECTION-002-RECALL-REMEDIATION-001-bounded-product-decision.md).
 
 ## Clean execution identity
 
@@ -139,6 +141,8 @@ separate:
   candidate quality.
 - Architecture conditions B1–B3 are reconciled in a docs-only update and sent
   to a fresh independent Architecture re-review before implementation.
+- Product Lead records a bounded Accept for the direction only; a separate
+  implementation-preflight Authorization is still required.
 - Independent Architecture receives only this design record and its exact
   source baseline; no old Simulator receipt is upgraded.
 - A later implementation request, if any, has a new Authorization, source
