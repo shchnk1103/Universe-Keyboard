@@ -43,6 +43,10 @@ scope.
 
 - **Commit:** `2986884f30dd7837c26d552e4142be369a72f4c7`
 - **Branch:** `codex/typo-correction-002-post-merge-state-sync-001`
-- **Draft PR:** [#142](https://github.com/shchnk1103/Universe-Keyboard/pull/142)
-- **Merge status:** PR #142 remains draft and unmerged; it requires independent review and
-  separate merge authorization.
+- **PR at receipt creation:** [#142](https://github.com/shchnk1103/Universe-Keyboard/pull/142)
+- **Status at receipt creation:** PR #142 was draft and unmerged; independent review and
+  separate merge authorization were still required at that time.
+- **Post-merge reconciliation:** The independent review passed, PR #142 was marked ready and
+  squash merged at `2026-09-20T11:16:07Z` as
+  `5cbafa2cc1a469191fb31df540189ce298cea6eb`. The source and `origin/main` trees both equal
+  `ba2a9f1c4ef5f55b0b05b0340b0f65a1810c2783`.
