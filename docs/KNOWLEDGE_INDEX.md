@@ -26,6 +26,7 @@
 - [模糊音](RIME_FUZZY_PINYIN.md) · [用户词典](RIME_USER_DICTIONARY.md) · [同步](RIME_SYNC.md)
 - [输入智能](TYPING_INTELLIGENCE.md) · [纠错](TYPO_CORRECTION.md)
 - [纠错 Benchmark](TYPO_BENCHMARK.md) · [Registry](TYPO_BENCHMARK_REGISTRY.md) · [V2 Registry](TYPO_BENCHMARK_REGISTRY_V2.md)
+- [TYPO-CORRECTION-002 recall remediation](assignments/typo-correction-002-recall-remediation-001.md) · [quality Run 002](evidence/typo-correction-002-recall-remediation-quality-run-2026-09-20-002.md) · [Architecture review](reviews/typo-correction-002-recall-remediation-final-architecture-review-2026-09-20.md) · [Quality review](reviews/typo-correction-002-recall-remediation-final-quality-review-2026-09-20.md) · [Product decision](product-decisions/TYPO-CORRECTION-002-RECALL-REMEDIATION-FINAL-BOUNDED-PUBLICATION-PREPARATION-DECISION-2026-09-20.md) — final manifest `e2b4373c…` 已完成 bounded engineering review 与 Product Accept；publication Authorization 已消费用于 commit/push/PR，merge 仍需单独授权
 - [上屏续写](POST_COMMIT_CONTINUATION.md) · [续写内容质量](POST_COMMIT_CONTINUATION_QUALITY.md)
 - [App 通知](APP_NOTIFICATIONS.md) · [隐私](PRIVACY_POLICY.md)
 - [首次启用 / 完全访问旅程](ONBOARDING_ACTIVATION.md) — 语义 `PD-RELEASE-2026-0801-03`；展示 `PD-HELP-TIPKIT-001` / [`HELP-GUIDE-SHEET-001`](assignments/help-guide-sheet-001.md)（Closed；Product Gate [`记录`](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)）

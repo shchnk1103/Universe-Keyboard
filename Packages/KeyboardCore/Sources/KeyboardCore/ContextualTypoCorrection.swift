@@ -12,11 +12,16 @@ struct ContextualTypoCorrectionHypothesisEngine: Sendable {
     private static let insertionCharacters: [Character] = ["a", "e", "i", "o", "u"]
 
     private let budget: ContextualTypoCorrectionSearchBudget
+    private let editPolicy: TypoCorrectionEditPolicy
 
     /// 默认预算是已经发布的 V2.0 生产合同（12/8）。扩大预算必须显式传入，
     /// 避免纯预检能力被意外带入按键后的生产查询路径。
-    init(budget: ContextualTypoCorrectionSearchBudget = .productionV2) {
+    init(
+        budget: ContextualTypoCorrectionSearchBudget = .productionV2,
+        editPolicy: TypoCorrectionEditPolicy = .all
+    ) {
         self.budget = budget
+        self.editPolicy = editPolicy
     }
 
     func hypotheses(for input: String) -> [TypoCorrectionSuggestion] {
@@ -56,7 +61,8 @@ struct ContextualTypoCorrectionHypothesisEngine: Sendable {
             )
         }
 
-        return completed
+        return
+            completed
             .filter { $0.input != normalized }
             .sorted(by: Self.isPreferred)
             .prefix(budget.maximumHypotheses)
@@ -77,52 +83,62 @@ struct ContextualTypoCorrectionHypothesisEngine: Sendable {
         let lastIndex = letters.count - 1
         var result: [State] = []
 
-        for index in letters.indices {
-            let original = letters[index]
-            for replacement in TypoCorrectionKeyboard.nearbyKeys[original] ?? [] {
-                guard TypoCorrectionKeyboard.isSafeReplacement(
-                    original,
-                    replacement,
-                    at: index,
-                    lastIndex: lastIndex
-                ) else { continue }
+        if editPolicy.allows(.substitution) {
+            for index in letters.indices {
+                let original = letters[index]
+                for replacement in TypoCorrectionKeyboard.nearbyKeys[original] ?? [] {
+                    guard
+                        TypoCorrectionKeyboard.isSafeReplacement(
+                            original,
+                            replacement,
+                            at: index,
+                            lastIndex: lastIndex
+                        )
+                    else { continue }
 
+                    var corrected = letters
+                    corrected[index] = replacement
+                    result.append(
+                        state.appending(
+                            input: String(corrected),
+                            edit: TypoCorrectionEdit(
+                                index: index,
+                                original: original,
+                                replacement: replacement,
+                                kind: .substitution
+                            ),
+                            cost: 1.0
+                        )
+                    )
+                }
+            }
+        }
+
+        if editPolicy.allows(.transposition) {
+            for index in letters.indices.dropLast() where letters[index] != letters[index + 1] {
                 var corrected = letters
-                corrected[index] = replacement
+                corrected.swapAt(index, index + 1)
                 result.append(
                     state.appending(
                         input: String(corrected),
                         edit: TypoCorrectionEdit(
                             index: index,
-                            original: original,
-                            replacement: replacement,
-                            kind: .substitution
+                            original: letters[index],
+                            replacement: letters[index + 1],
+                            kind: .transposition,
+                            secondIndex: index + 1
                         ),
-                        cost: 1.0
+                        cost: 1.15
                     )
                 )
             }
         }
 
-        for index in letters.indices.dropLast() where letters[index] != letters[index + 1] {
-            var corrected = letters
-            corrected.swapAt(index, index + 1)
-            result.append(
-                state.appending(
-                    input: String(corrected),
-                    edit: TypoCorrectionEdit(
-                        index: index,
-                        original: letters[index],
-                        replacement: letters[index + 1],
-                        kind: .transposition,
-                        secondIndex: index + 1
-                    ),
-                    cost: 1.15
-                )
-            )
-        }
-
-        if let last = letters.last, letters.count >= 2, letters[letters.count - 2] == last {
+        if editPolicy.allows(.deletion),
+            let last = letters.last,
+            letters.count >= 2,
+            letters[letters.count - 2] == last
+        {
             var corrected = letters
             corrected.removeLast()
             result.append(
@@ -139,24 +155,26 @@ struct ContextualTypoCorrectionHypothesisEngine: Sendable {
             )
         }
 
-        let insertionStart = max(0, letters.count - 2)
-        for index in insertionStart...letters.count {
-            for inserted in Self.insertionCharacters {
-                var corrected = letters
-                corrected.insert(inserted, at: index)
-                result.append(
-                    state.appending(
-                        input: String(corrected),
-                        edit: TypoCorrectionEdit(
-                            index: index,
-                            original: inserted,
-                            replacement: inserted,
-                            kind: .insertion,
-                            inserted: inserted
-                        ),
-                        cost: 1.35
+        if editPolicy.allows(.insertion) {
+            let insertionStart = max(0, letters.count - 2)
+            for index in insertionStart...letters.count {
+                for inserted in Self.insertionCharacters {
+                    var corrected = letters
+                    corrected.insert(inserted, at: index)
+                    result.append(
+                        state.appending(
+                            input: String(corrected),
+                            edit: TypoCorrectionEdit(
+                                index: index,
+                                original: inserted,
+                                replacement: inserted,
+                                kind: .insertion,
+                                inserted: inserted
+                            ),
+                            cost: 1.35
+                        )
                     )
-                )
+                }
             }
         }
 
@@ -211,7 +229,8 @@ struct ContextualTypoCorrectionHypothesisEngine: Sendable {
     /// `TypoCorrectionAssessment` 为准。
     private static func heuristicScore(for state: State) -> Int {
         let replacementOrder = state.edits.reduce(into: 0) { score, edit in
-            score += TypoCorrectionKeyboard.nearbyKeys[edit.original]?
+            score +=
+                TypoCorrectionKeyboard.nearbyKeys[edit.original]?
                 .firstIndex(of: edit.replacement) ?? 4
         }
         let vowelReplacementBonus = state.edits.reduce(into: 0) { bonus, edit in
@@ -250,7 +269,7 @@ struct ContextualTypoCorrectionHypothesisEngine: Sendable {
 
 /// 纯字符串搜索的显式预算。这里不包含 RIME 查询数或候选显示数；后两者仍由
 /// 生产控制器合同独立约束。
-struct ContextualTypoCorrectionSearchBudget: Sendable {
+struct ContextualTypoCorrectionSearchBudget: Equatable, Sendable {
     let maximumFirstLayerStates: Int
     let maximumHypotheses: Int
 
@@ -274,9 +293,15 @@ struct ContextualTypoCorrectionSearchPlan: Sendable {
 
     let hypotheses: [TypoCorrectionSuggestion]
 
-    init(input: String) {
+    init(
+        input: String,
+        budget: ContextualTypoCorrectionSearchBudget = .progressiveRecallPreflight,
+        // Preflight is fail-closed by default. Widening the edit set must be explicit.
+        editPolicy: TypoCorrectionEditPolicy = .substitutionOnly
+    ) {
         hypotheses = ContextualTypoCorrectionHypothesisEngine(
-            budget: .progressiveRecallPreflight
+            budget: budget,
+            editPolicy: editPolicy
         ).hypotheses(for: input)
     }
 

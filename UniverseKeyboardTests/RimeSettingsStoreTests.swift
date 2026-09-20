@@ -1348,6 +1348,10 @@ private actor StoreDeploymentService: RimeDeploymentServicing {
             }
             return RimeDeploymentResult(succeeded: false, diagnosticMessage: "cancelled")
         }
-        return RimeDeploymentResult(succeeded: succeeded, diagnosticMessage: "test")
+        return RimeDeploymentResult(
+            succeeded: succeeded,
+            diagnosticMessage: "test",
+            runtimeSmokePassed: succeeded ? true : nil
+        )
     }
 }
