@@ -24,11 +24,16 @@ This Authorization binds any later publication decision to the exact reviewed st
 | **Source manifest** | `docs/evidence/typo-correction-002-recall-remediation-publication-staging-source-manifest-2026-09-20-002.txt` |
 | **Source manifest SHA-256** | `e2b4373c0797a0959b0b0da10c1db01cf4fa81cfe25903c7d9726942edab465c` |
 | **Architecture review SHA-256** | `25dba823b50d12c3090346f408ae681719c852e998b3044a6751f525b9d4412b` |
-| **Quality review SHA-256** | `a7070f9ff8c5e26312eed45cc9a6207de187acd99f086caa58036b95ac0a5692` |
-| **Product decision SHA-256** | `e731018f51ac58950276821aca19ada703ed53f95c3e4927e89b2dcfdf8ef8d1` |
+| **Quality review SHA-256** | `9e498f60b7bb7477f994089137f797424c90d4e308ae580ca2bf4e73116fb6ae` |
+| **Product decision SHA-256** | `f5f65777ee1584ed63fd87a04ea0244813442fbd13b7142d86f9cd0793481d24` |
 | **Quality Run** | `TC2-RECALL-QUALITY-20260920-002` |
 
 ## Allowed scope
+
+The current digest bindings above incorporate the separately Human-authorized
+[docs-only reconciliation](../evidence/typo-correction-002-recall-remediation-digest-reconciliation-2026-09-20.md).
+The original consumed publication permission is not reused; the historical allowed scope below
+remains a record of preparation before the later explicit commit/push/PR authorization.
 
 This Authorization permits only:
 

@@ -19,7 +19,7 @@
 | Architecture review | `docs/reviews/typo-correction-002-recall-remediation-final-architecture-review-2026-09-20.md` |
 | Architecture review SHA-256 | `25dba823b50d12c3090346f408ae681719c852e998b3044a6751f525b9d4412b` |
 | Quality review | `docs/reviews/typo-correction-002-recall-remediation-final-quality-review-2026-09-20.md` |
-| Quality review SHA-256 | `a7070f9ff8c5e26312eed45cc9a6207de187acd99f086caa58036b95ac0a5692` |
+| Quality review SHA-256 | `9e498f60b7bb7477f994089137f797424c90d4e308ae580ca2bf4e73116fb6ae` |
 | Quality Run | `TC2-RECALL-QUALITY-20260920-002` |
 
 本次只读复核确认：Architecture 与 Quality review、Quality Run 002 receipt 对上述

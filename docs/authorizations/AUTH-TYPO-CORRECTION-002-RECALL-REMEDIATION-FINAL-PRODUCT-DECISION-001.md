@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | **Authorization ID** | `AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-FINAL-PRODUCT-DECISION-001` |
-| **Status** | `Ready` / `active-unconsumed` |
+| **Status** | `Consumed` — see dated consumption receipt |
 | **Issued by** | Human Product Owner / Product Lead via current Codex task |
 | **Issued at** | `2026-09-20 Asia/Shanghai` |
 | **Decision mode** | Bounded Product decision for publication preparation only |
@@ -24,7 +24,7 @@ This Authorization binds the decision to the reviewed engineering snapshot:
 | **Source manifest SHA-256** | `e2b4373c0797a0959b0b0da10c1db01cf4fa81cfe25903c7d9726942edab465c` |
 | **Architecture review SHA-256** | `25dba823b50d12c3090346f408ae681719c852e998b3044a6751f525b9d4412b` |
 | **Quality review** | `docs/reviews/typo-correction-002-recall-remediation-final-quality-review-2026-09-20.md` |
-| **Quality review SHA-256** | `a7070f9ff8c5e26312eed45cc9a6207de187acd99f086caa58036b95ac0a5692` |
+| **Quality review SHA-256** | `9e498f60b7bb7477f994089137f797424c90d4e308ae580ca2bf4e73116fb6ae` |
 | **Quality Run** | `TC2-RECALL-QUALITY-20260920-002` |
 
 ## Allowed decision scope
@@ -67,6 +67,10 @@ Product decision. If the exact binding or residual inventory cannot be reproduce
 and stop; do not repair the snapshot under this Authorization.
 
 ## Dated consumed receipt — 2026-09-20
+
+Historical receipt below retains its originally recorded hash. The current binding above
+is corrected by the [2026-09-20 docs-only reconciliation](../evidence/typo-correction-002-recall-remediation-digest-reconciliation-2026-09-20.md):
+the committed Quality review differs from the old hash by exactly one trailing LF.
 
 - **Consumed at**：`2026-09-20 16:20:08 CST (+08:00)`
 - **Consumer**：bounded Product reviewer / current Codex task
