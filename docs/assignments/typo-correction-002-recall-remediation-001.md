@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Read-only coverage audit and bounded recall design; implementation is not yet authorized. |
+| **Phase** | Architecture-condition reconciliation B1–B3; implementation is not yet authorized. |
 | **Non-claims** | No production recall change, no local model, no schema/vendor change, no new Run, no Product/Quality/Release Gate and no parent closure. |
-| **Next** | Independent Architecture review of the exact design tip `15887247040fd2dcef43a906b14525f6f48d71ef`; then Product direction. Implementation remains unauthorized. |
+| **Next** | Complete docs-only B1–B3 reconciliation, then obtain a fresh independent Architecture re-review. Implementation remains unauthorized. |
 | **Residuals** | F-01 scope manifest still lacks a dedicated F-01 Assignment/Authorization; it is outside this recall lane. |
 
 ## Authority
@@ -19,6 +19,7 @@ Policy version: 1.0.0
 - **Predecessor evidence:** [`TYPO-CORRECTION-002-PARENT-REVALIDATION-002`](typo-correction-002-parent-revalidation-002.md) and its inconclusive INT-003 / QA-001 / paired-performance receipts.
 - **Matching Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-DESIGN-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-DESIGN-001.md).
 - **Architecture Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-ARCHITECTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-ARCHITECTURE-001.md).
+- **Conditions Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-001.md).
 
 ## Clean execution identity
 
@@ -121,6 +122,7 @@ separate:
 - [`typo-correction-002-file-provenance-audit-2026-09-19.md`](../evidence/typo-correction-002-file-provenance-audit-2026-09-19.md)
 - [`bounded recall design note`](../plans/typo-correction-002-recall-remediation-design-2026-09-19.md)
 - [`recall coverage matrix`](../evidence/typo-correction-002-recall-coverage-matrix-2026-09-19.md)
+- [`Architecture review`](../reviews/typo-correction-002-recall-remediation-architecture-review-2026-09-20.md)
 - The exact source/package baseline at `fb27b24ff85c48302e85309e834dbbe9a777871e`.
 
 ## Exit criteria for this design slice
@@ -134,6 +136,8 @@ separate:
 - The coverage matrix labels missing frontier/range measurements as `UNKNOWN`
   rather than deriving them from a reimplementation or treating recall as
   candidate quality.
+- Architecture conditions B1–B3 are reconciled in a docs-only update and sent
+  to a fresh independent Architecture re-review before implementation.
 - Independent Architecture receives only this design record and its exact
   source baseline; no old Simulator receipt is upgraded.
 - A later implementation request, if any, has a new Authorization, source

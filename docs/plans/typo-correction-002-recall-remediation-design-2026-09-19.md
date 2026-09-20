@@ -6,9 +6,9 @@
 |---|---|
 | **Status** | `Draft — read-only design; no implementation authorization` |
 | **Assignment** | [`TYPO-CORRECTION-002-RECALL-REMEDIATION-001`](../assignments/typo-correction-002-recall-remediation-001.md) |
-| **Authorization** | [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-DESIGN-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-DESIGN-001.md) |
+| **Authorization** | [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-001.md) |
 | **Worktree** | `/Users/doubleshy0n/.codex/worktrees/typo-correction-002-recall-remediation-001/Universe Keyboard` |
-| **Branch / HEAD** | `codex/typo-correction-002-recall-remediation-001` / `5d55ce981adc4ef5a34046292a6edbc727db280b` |
+| **Branch / HEAD at condition reconciliation start** | `codex/typo-correction-002-recall-remediation-001` / `c38578231baa05cf76821e0db5c4bd7d68b3acfb` |
 | **Source implementation freeze** | `fb27b24ff85c48302e85309e834dbbe9a777871e` |
 | **Evidence boundary** | Static source/contract analysis only; no new build, install, Run or device capture |
 
@@ -32,7 +32,10 @@ candidate-quality or RIME-provenance conclusion:
 This does **not** prove that the production target is absent solely because of
 the 12-state beam, and it does **not** prove that real RIME would return the
 intended Chinese sentence. The next safe decision is a deterministic coverage
-matrix followed by independent Architecture/Product review.
+matrix followed by independent Architecture/Product review. The first
+Architecture review has now accepted the direction **with conditions**; those
+conditions are recorded below and must be reconciled before implementation is
+considered.
 
 ## Source findings
 
@@ -67,9 +70,10 @@ that this planner does not query RIME or touch the production controller/UI.
 `KeyboardController+TypoCorrection.swift` constructs the default production
 engine only when contextual refresh is explicitly requested (`:36–40`). Each
 corrected input is queried with a limit of 3 candidates (`:55–58`), and the
-controller stops after 4 non-empty resolved groups (`:71–81`). This is a
-separate budget from hypothesis generation and must remain separate in any
-future design.
+controller stops after 4 non-empty resolved groups (`:71–81`). The controller
+also combines contextual and legacy suggestions, so the resolved-group limit
+is not a total query-attempt limit. This is a separate budget from hypothesis
+generation and must remain separate in any future design.
 
 ### 4. Existing contract and evidence
 
@@ -126,6 +130,53 @@ without making every keystroke pay for the expanded pool. The exact trigger,
 second-stage cap and candidate-query schedule are deliberately **undecided**
 until the coverage matrix and Architecture review are complete.
 
+## Architecture conditions before implementation
+
+The independent Architecture review returned **Pass with conditions**. The
+following requirements are now part of the design boundary; this docs-only
+reconciliation does not choose a runtime number or authorize code.
+
+### B1 — Separate work counters and a hard attempt fence
+
+Any future second-stage implementation must record these as distinct metrics:
+
+- `N_generated`: hypotheses produced by the selected search stage;
+- `N_query_attempts`: query invocations actually started, including empty or
+  failed responses;
+- `N_resolved_groups`: non-empty corrected-input groups accepted by the
+  controller;
+- `N_candidates_returned`: candidate texts returned by successful queries.
+
+`resolved-group = 4` and `candidate limit = 3` imply only a possible returned
+candidate ceiling under stated assumptions; they do not bound query attempts.
+A future implementation Authorization must bind a concrete stage-level
+`maxQueryAttempts`. This design slice intentionally leaves its numeric value
+`UNKNOWN` until coverage and paired cost evidence select it.
+
+The future execution contract must check cancellation before and after each
+query and between batches, carry the current composition revision/epoch into
+the operation, discard stale sidecar results, and refuse to publish
+`state.typoCorrection` after cancellation or a revision/epoch mismatch.
+
+### B2 — 7/8 contextual boundary remains explicit
+
+The Registry names a `7/31` boundary case, but the exact current contextual
+tests visibly cover `5/31`. The matrix therefore records the contextual
+7-character rejection and 8-character acceptance as `UNKNOWN`; the legacy
+single-edit `zhonghuo` test is not promoted to contextual two-edit evidence.
+The boundary cannot be silently closed by referring to the generic Registry
+row.
+
+### B3 — Narrow first implementation operation set
+
+The contextual generator has substitution, transposition, deletion and
+insertion paths. The recommended first second-stage slice is **substitution-
+only**, because the canonical target uses two safe substitutions and the
+existing replacement guard is explicit. Transposition, deletion and insertion
+remain excluded until each has a separately reviewed safety rule and evidence.
+Two-edit results remain display-only: no automatic promotion, silent rewrite,
+commit or host-text mutation.
+
 ## Options rejected at this stage
 
 | Option | Reason |
@@ -146,6 +197,12 @@ neighboring benchmark cases:
 - whether the target survives into the final 8;
 - the first bounded expansion size at which it enters the pool;
 - number of potential sidecar query groups and worst-case candidate count;
+- `N_generated`, `N_query_attempts`, `N_resolved_groups` and
+  `N_candidates_returned` as separate fields;
+- the stage-level `maxQueryAttempts` and cancellation/revision/epoch publish
+  fence;
+- the explicit 7-character/8-character contextual boundary pair;
+- the permitted second-stage edit operations and their safety guards;
 - pure generation cost separately from RIME query cost;
 - preservation of short/long input bounds and unsafe-edit exclusions.
 
@@ -170,7 +227,8 @@ No item in this design note authorizes those actions.
 
 ## Current decision
 
-**Proceed with the read-only coverage matrix and independent Architecture review.**
-Do not implement yet. The existing direction is compatible with the current
-product contract and leaves the local-model question deferred rather than
-foreclosed for all future products.
+**Proceed with docs-only reconciliation of Architecture conditions B1–B3 and a
+fresh independent Architecture re-review.** Do not implement yet. The
+existing direction is compatible with the current product contract and leaves
+the local-model question deferred rather than foreclosed for all future
+products.

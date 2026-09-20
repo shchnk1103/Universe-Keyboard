@@ -4,12 +4,13 @@
 
 | Field | Value |
 |---|---|
-| **Status** | `active` |
+| **Status** | `consumed` |
 | **Assignment** | [`TYPO-CORRECTION-002-RECALL-REMEDIATION-001`](../assignments/typo-correction-002-recall-remediation-001.md) |
 | **Issuer** | Human Product Owner / Product Lead, current Codex task, `2026-09-19 Asia/Shanghai` |
 | **Consumer** | Independent Architecture reviewer |
 | **Purpose** | Read-only review of the bounded coverage-aware second-stage recall design and its explicit UNKNOWN fields |
 | **Exact review tip** | `15887247040fd2dcef43a906b14525f6f48d71ef` |
+| **Review execution tip** | `c38578231baa05cf76821e0db5c4bd7d68b3acfb` |
 | **Source implementation freeze** | `fb27b24ff85c48302e85309e834dbbe9a777871e` |
 | **Origin context** | `origin/main` at `162b09fd58ba60538a944026b1902efa405c75aa` |
 
@@ -19,8 +20,8 @@
   "record_id": "AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-ARCHITECTURE-001",
   "record_type": "authorization",
   "title": "Independent Architecture review of bounded recall design",
-  "status": "active",
-  "updated_at": "2026-09-19T22:38:14+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-20T08:33:52+08:00",
   "revalidation_triggers": [
     "review_tip_changed",
     "source_baseline_changed",
@@ -71,7 +72,10 @@
       "Release",
       "commit_or_push_by_reviewer"
     ],
-    "consumption_rule": "The reviewer must bind the verdict to the exact review tip, preserve UNKNOWN and non-claims, and consume this authorization only after the review record is complete. Any source, scope or evidence change invalidates this authorization."
+    "consumption_rule": "The reviewer must bind the verdict to the exact review tip, preserve UNKNOWN and non-claims, and consume this authorization only after the review record is complete. Any source, scope or evidence change invalidates this authorization.",
+    "consumption_state": "consumed",
+    "consumed_at": "2026-09-20T08:33:52+08:00",
+    "review_record": "docs/reviews/typo-correction-002-recall-remediation-architecture-review-2026-09-20.md"
   }
 }
 ```
@@ -96,3 +100,8 @@ This review is not a Product decision, Quality Gate, implementation approval,
 performance result, QA-001 result, INT-003 result, RIME result, PR approval,
 merge approval or parent Assignment closure. A later implementation requires a
 new Authorization with a new source/package identity and focused tests.
+
+> **Consumed:** The independent Architecture review is recorded in
+> [`typo-correction-002-recall-remediation-architecture-review-2026-09-20.md`](../reviews/typo-correction-002-recall-remediation-architecture-review-2026-09-20.md)
+> as **Pass with conditions**. This Authorization cannot be reused for
+> condition reconciliation or implementation.
