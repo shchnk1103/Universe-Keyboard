@@ -137,3 +137,10 @@ Quality Run 002、独立 Architecture/Quality review 和 Product decision 已绑
 - Draft PR: [#141](https://github.com/shchnk1103/Universe-Keyboard/pull/141)
 - The commit contains the explicit allowlist plus this scope report; the two parent-revalidation residual files remain excluded and untracked in the staging worktree.
 - Merge, TestFlight, Release, deployment, and parent/child closure were not performed.
+
+## Current post-merge state
+
+The historical action boundary above was true when this scope report was created. PR [#141](https://github.com/shchnk1103/Universe-Keyboard/pull/141) was subsequently merged under a separate explicit Human authorization at merge commit
+`7e1515987b2c5a5f10c3de8cbceac3595aa058a1`. The reviewed source tip tree and
+`origin/main` tree both equal `bbc6deb49a641a1bc5ecc2b3dab4f064d8d7f78b`.
+See the [post-merge state-sync receipt](typo-correction-002-recall-remediation-post-merge-state-sync-2026-09-20.md).

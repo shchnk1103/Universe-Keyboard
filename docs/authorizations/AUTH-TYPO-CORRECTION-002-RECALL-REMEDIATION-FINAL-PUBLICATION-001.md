@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | **Authorization ID** | `AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-FINAL-PUBLICATION-001` |
-| **Status** | `Consumed` for commit + push + PR; merge remains separately unauthorized |
+| **Status** | `Consumed` for commit + push + PR; PR #141 later merged under explicit follow-up authorization |
 | **Issued by** | Human Product Owner / Product Lead via current Codex task |
 | **Issued at** | `2026-09-20 Asia/Shanghai` |
 | **Lane** | Final publication-scope binding; external Git actions remain separately gated |
@@ -83,4 +83,18 @@ runtime/device/real-RIME/INT-003/QA-001/paired-performance/180 ms or Gate claims
   - Remote branch: `origin/codex/typo-correction-002-recall-publication-staging-001`
   - Draft PR: [#141](https://github.com/shchnk1103/Universe-Keyboard/pull/141)
   - The source manifest remains `e2b4373c0797a0959b0b0da10c1db01cf4fa81cfe25903c7d9726942edab465c`; no source drift was observed before publication.
-  - Merge, TestFlight, Release, deployment, and Assignment close remain unperformed and separately unauthorized.
+- Merge, TestFlight, Release, deployment, and Assignment close remain unperformed and separately unauthorized.
+
+## Post-merge reconciliation receipt — 2026-09-20
+
+- **Follow-up authorization:** Human Product Owner authorization in the current Codex task:
+  `OK，授权按照你的建议继续进行下一步`。
+- **PR:** [#141](https://github.com/shchnk1103/Universe-Keyboard/pull/141), merged at
+  `2026-09-20T10:38:58Z`.
+- **Merge commit:** `7e1515987b2c5a5f10c3de8cbceac3595aa058a1`.
+- **Pre-merge source tip:** `e384062578c5a2291e4bdcdcbcf1a91df1bc8284`.
+- **Tree reconciliation:** source tip tree and `origin/main` tree both equal
+  `bbc6deb49a641a1bc5ecc2b3dab4f064d8d7f78b`.
+- **Disposition:** engineering publication is merged; TestFlight, Release, runtime/device
+  acceptance, parent/child closure, INT-003, QA-001 and performance remain unclaimed.
+- **Evidence:** [post-merge state sync](../evidence/typo-correction-002-recall-remediation-post-merge-state-sync-2026-09-20.md).

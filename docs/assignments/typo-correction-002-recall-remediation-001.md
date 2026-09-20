@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Quality Run 001 blocker was reconciled with bounded test-fixture alignment; Quality Run 002 passed the full local CI-equivalent matrix on final manifest `e2b4373c…`; independent Architecture and Quality reviews completed with bounded Pass conditions; Product recorded `Bounded Accept with conditions`; final publication Authorization is consumed for commit + push + PR, with merge separately unauthorized. |
-| **Non-claims** | No production RIME contract change, no local model, no schema/vendor change, no runtime/device behavior Run, no Product/Quality/Release Gate, no publication and no parent closure. |
-| **Next** | Complete the authorized commit + push + PR lane; do not merge, TestFlight, Release or close this Assignment without a separate authorization. |
+| **Phase** | Quality Run 002、独立 Architecture/Quality review、Product bounded Accept 与 PR #141 已完成；PR #141 已于合并提交 `7e151598…` squash merge 到 `main`。当前只保留 post-merge 状态同步与 parent lane 继续工作。 |
+| **Non-claims** | No production RIME contract change, no local model, no schema/vendor change, no runtime/device behavior Run, no Product/Quality/Release Gate, no TestFlight/Release, and no parent closure. |
+| **Next** | 保持本 child Assignment Active 以追踪 residual；回到 parent 的 sidecar observability、INT-003、QA-001 与 paired-performance 车道。 |
 | **Residuals** | F-01 scope manifest still lacks a dedicated F-01 Assignment/Authorization; it is outside this recall lane. |
 
 ## Authority

@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | publication preflight `TC2-RECALL-QUALITY-20260920-002` 已完成；final manifest `e2b4373c…` 已通过独立 Architecture/Quality bounded review；Product 已作 `Bounded Accept with conditions`；final publication Authorization 已消费用于明确的 commit/push/PR lane，merge 仍未授权。 |
-| **Non-claims** | 不代表 commit、push、PR、merge、runtime 接线、真实 RIME、设备 Run、180 ms、QA-001、INT-003、Product/Quality/Release Gate 或 parent Close。 |
-| **Next** | 按独立 publication Authorization 的精确范围执行已明确授权的外部动作；commit、push、PR、merge、TestFlight、Release 仍分别核对，当前尚未执行。 |
+| **Phase** | publication preflight `TC2-RECALL-QUALITY-20260920-002`、独立 Architecture/Quality review、Product bounded Accept、commit/push/PR 与 PR #141 squash merge 均已完成；当前进入 post-merge 状态同步。 |
+| **Non-claims** | 不代表 runtime 接线、真实 RIME、设备 Run、180 ms、QA-001、INT-003、Product/Quality/Release Gate、TestFlight、Release 或 parent Close。 |
+| **Next** | 完成并保留 post-merge 状态回执；随后回到 parent 的 sidecar observability、INT-003、QA-001 与 paired-performance 车道。 |
 | **Residuals** | 旧 manifest `bcbabcb7…` 已标记 superseded/not reproducible；runtime canonical group mapping/accounting 仍为 P1；pure-Core 测试不等于 async runtime coverage；contextual 7/8 仍为 `UNKNOWN`；App+Keyboard 权威结果为 `387 = 378 passed + 9 skipped`，`388` 仅为 wrapper/discovery；当前 AppIntents/optional-interpolation warnings 与 `CODE_SIGNING_ALLOWED=NO` 环境边界继续保留。 |
 
 ## Authority
