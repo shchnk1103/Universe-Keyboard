@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Architecture conditions re-reviewed; Product bounded Accept recorded; implementation-preflight is next, production implementation remains unauthorized. |
+| **Phase** | Architecture conditions re-reviewed; Product bounded Accept recorded; implementation-preflight child is Ready with an active bounded Authorization; production implementation remains unauthorized. |
 | **Non-claims** | No production recall change, no local model, no schema/vendor change, no new Run, no Product/Quality/Release Gate and no parent closure. |
-| **Next** | Establish a separate implementation-preflight Assignment/Authorization for pure KeyboardCore coverage and contract tests. |
+| **Next** | Execute [`implementation-preflight child`](typo-correction-002-recall-remediation-implementation-preflight-001.md) only within its active Authorization, then obtain independent Architecture/Quality review. |
 | **Residuals** | F-01 scope manifest still lacks a dedicated F-01 Assignment/Authorization; it is outside this recall lane. |
 
 ## Authority
@@ -23,6 +23,8 @@ Policy version: 1.0.0
 - **Conditions Architecture Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-ARCHITECTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-ARCHITECTURE-001.md).
 - **Product Decision Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-PRODUCT-DECISION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-PRODUCT-DECISION-001.md).
 - **Product Decision:** [`bounded Product decision`](../product-decisions/TYPO-CORRECTION-002-RECALL-REMEDIATION-001-bounded-product-decision.md).
+- **Implementation-preflight Assignment:** [`TYPO-CORRECTION-002-RECALL-REMEDIATION-IMPLEMENTATION-PREFLIGHT-001`](typo-correction-002-recall-remediation-implementation-preflight-001.md).
+- **Implementation-preflight Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-IMPLEMENTATION-PREFLIGHT-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-IMPLEMENTATION-PREFLIGHT-001.md).
 
 ## Clean execution identity
 
@@ -142,7 +144,8 @@ separate:
 - Architecture conditions B1–B3 are reconciled in a docs-only update and sent
   to a fresh independent Architecture re-review before implementation.
 - Product Lead records a bounded Accept for the direction only; a separate
-  implementation-preflight Authorization is still required.
+  implementation-preflight child is now Ready with an active Authorization;
+  production implementation remains separately gated.
 - Independent Architecture receives only this design record and its exact
   source baseline; no old Simulator receipt is upgraded.
 - A later implementation request, if any, has a new Authorization, source
