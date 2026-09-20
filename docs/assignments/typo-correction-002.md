@@ -42,6 +42,17 @@ Keyboard UI testability/accessibility and F-02 overlay on/off **do not close thi
 
 This parent remains **Active** for sidecar observability, INT-003, QA-001, and performance evidence.
 
+### Recall remediation child
+
+The bounded recall-remediation lane is tracked separately and does not close this parent:
+
+- [`Recall remediation Assignment`](typo-correction-002-recall-remediation-001.md) — `Active`
+- [`Final Product decision`](../product-decisions/TYPO-CORRECTION-002-RECALL-REMEDIATION-FINAL-BOUNDED-PUBLICATION-PREPARATION-DECISION-2026-09-20.md) — `Bounded Accept with conditions`; parent remains `Active`
+- [`Final publication Authorization`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-FINAL-PUBLICATION-001.md) — `Consumed` for commit/push/PR; merge remains separately unauthorized
+- [`Scope reconciliation evidence`](../evidence/typo-correction-002-recall-remediation-publication-scope-reconciliation-2026-09-20.md) — old mixed worktree retained; clean `origin/main` staging started
+
+The child remains bounded to recall remediation and its own provenance/quality handoff; it does not authorize parent closure, Product/Quality/Release Gate, device evidence, INT-003, QA-001 or paired-performance conclusions.
+
 ## Gates
 
 ### Entry Criteria
