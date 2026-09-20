@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Architecture-condition reconciliation B1–B3; implementation is not yet authorized. |
+| **Phase** | B1–B3 reconciled; fresh independent Architecture re-review pending; implementation is not yet authorized. |
 | **Non-claims** | No production recall change, no local model, no schema/vendor change, no new Run, no Product/Quality/Release Gate and no parent closure. |
-| **Next** | Complete docs-only B1–B3 reconciliation, then obtain a fresh independent Architecture re-review. Implementation remains unauthorized. |
+| **Next** | Independent Architecture re-review of exact tip `73114ed6fefe8bda95553fe8636e8a43b7828537`; implementation remains unauthorized. |
 | **Residuals** | F-01 scope manifest still lacks a dedicated F-01 Assignment/Authorization; it is outside this recall lane. |
 
 ## Authority
@@ -20,6 +20,7 @@ Policy version: 1.0.0
 - **Matching Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-DESIGN-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-DESIGN-001.md).
 - **Architecture Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-ARCHITECTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-ARCHITECTURE-001.md).
 - **Conditions Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-001.md).
+- **Conditions Architecture Authorization:** [`AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-ARCHITECTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-ARCHITECTURE-001.md).
 
 ## Clean execution identity
 

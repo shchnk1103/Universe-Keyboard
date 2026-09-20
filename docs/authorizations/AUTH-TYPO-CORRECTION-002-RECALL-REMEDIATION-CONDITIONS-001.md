@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | `active` |
+| **Status** | `consumed` |
 | **Assignment** | [`TYPO-CORRECTION-002-RECALL-REMEDIATION-001`](../assignments/typo-correction-002-recall-remediation-001.md) |
 | **Issuer** | Human Product Owner / Product Lead, current Codex task, `2026-09-20 Asia/Shanghai` |
 | **Consumer** | Current Codex Executor, docs-only |
@@ -12,6 +12,7 @@
 | **Review input** | [`Independent Architecture review`](../reviews/typo-correction-002-recall-remediation-architecture-review-2026-09-20.md) |
 | **Source implementation freeze** | `fb27b24ff85c48302e85309e834dbbe9a777871e` |
 | **Current docs tip at issuance** | `c38578231baa05cf76821e0db5c4bd7d68b3acfb` |
+| **Consumed by commit** | `73114ed6fefe8bda95553fe8636e8a43b7828537` |
 | **Origin context** | `origin/main` at `162b09fd58ba60538a944026b1902efa405c75aa` |
 
 ```kos-record
@@ -20,8 +21,8 @@
   "record_id": "AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-CONDITIONS-001",
   "record_type": "authorization",
   "title": "Docs-only reconciliation of bounded recall Architecture conditions",
-  "status": "active",
-  "updated_at": "2026-09-20T08:33:52+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-20T08:41:03+08:00",
   "revalidation_triggers": [
     "source_baseline_changed",
     "origin_main_changed",
@@ -70,7 +71,14 @@
       "parent_close",
       "Release"
     ],
-    "consumption_rule": "Consume only after the condition reconciliation is written, linked, checked and pushed. A fresh independent Architecture re-review requires a new Authorization."
+    "consumption_rule": "Consume only after the condition reconciliation is written, linked, checked and pushed. A fresh independent Architecture re-review requires a new Authorization.",
+    "consumption_state": "consumed",
+    "consumed_at": "2026-09-20T08:41:03+08:00",
+    "consumed_artifacts": [
+      "73114ed6fefe8bda95553fe8636e8a43b7828537",
+      "docs/plans/typo-correction-002-recall-remediation-design-2026-09-19.md",
+      "docs/evidence/typo-correction-002-recall-coverage-matrix-2026-09-19.md"
+    ]
   }
 }
 ```
@@ -80,3 +88,7 @@
 This Authorization does not authorize implementation, a numeric production
 budget, a runtime query schedule, a performance claim, a real-RIME result, a
 QA-001 result, a Product decision or closure of any parent/child Assignment.
+
+> **Consumed:** B1–B3 were reconciled in the docs-only commit `73114ed`.
+> Fresh independent Architecture review requires the separate Authorization
+> linked below.
