@@ -129,3 +129,11 @@ Quality Run 002、独立 Architecture/Quality review 和 Product decision 已绑
 - `git diff --check`、治理 validators、KOS trigger/final-gate checks 必须通过；
 - Quality Run 002 的完整 Xcode/KeyboardCore 结果作为已绑定证据复用；本次 docs-only 镜像更新不改变 source manifest bytes；
 - 如发现 source bytes、manifest、Allowlist 或 branch identity 漂移，停止 commit/push/PR。
+
+## Completion receipt
+
+- Commit: `61ad58b981fa97ec399dd7fc0c5fdaec458fe7fc` (`feat: add bounded typo recall remediation`)
+- Remote branch: `origin/codex/typo-correction-002-recall-publication-staging-001`
+- Draft PR: [#141](https://github.com/shchnk1103/Universe-Keyboard/pull/141)
+- The commit contains the explicit allowlist plus this scope report; the two parent-revalidation residual files remain excluded and untracked in the staging worktree.
+- Merge, TestFlight, Release, deployment, and parent/child closure were not performed.

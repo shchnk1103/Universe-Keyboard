@@ -73,4 +73,9 @@ runtime/device/real-RIME/INT-003/QA-001/paired-performance/180 ms or Gate claims
 - **Authorized actions:** commit the exact allowlist, push the named branch, and create one PR
 - **Not authorized:** merge, TestFlight, Release, deployment, or Assignment close
 - **Pre-action identity:** HEAD `162b09fd58ba60538a944026b1902efa405c75aa`; tree `92c5047c5d1a6dd6a751eb5344117f8138c14ef2`; source manifest `e2b4373c0797a0959b0b0da10c1db01cf4fa81cfe25903c7d9726942edab465c`
-- **Completion receipt:** final commit, remote branch and PR URL must be appended after the authorized actions complete.
+- **Completion receipt:** authorized actions completed as follows:
+  - Commit: `61ad58b981fa97ec399dd7fc0c5fdaec458fe7fc` (`feat: add bounded typo recall remediation`)
+  - Remote branch: `origin/codex/typo-correction-002-recall-publication-staging-001`
+  - Draft PR: [#141](https://github.com/shchnk1103/Universe-Keyboard/pull/141)
+  - The source manifest remains `e2b4373c0797a0959b0b0da10c1db01cf4fa81cfe25903c7d9726942edab465c`; no source drift was observed before publication.
+  - Merge, TestFlight, Release, deployment, and Assignment close remain unperformed and separately unauthorized.
