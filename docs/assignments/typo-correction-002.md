@@ -19,6 +19,24 @@
 - **Non-goals:** Network/cloud correction; host context; automatic commit; RIME schema/weight/user-dictionary changes; unbounded search; input-history persistence; changes to `TYPING-INTELLIGENCE-001`; substituting another simulator or physical device for the designated Device Hub target.
 - **Required Inputs:** `TYPO_CORRECTION.md`; ADR 0002, 0004, 0008, 0009, 0010 and 0015; `TYPO_BENCHMARK.md`; `TYPO_BENCHMARK_REGISTRY.md`; `PERFORMANCE_BASELINE.md`; `DEBUGGING.md`; `RELEASE_CHECKLIST.md`; current KeyboardCore/RimeBridge source and tests.
 
+### Scope Amendment — 2026-09-17
+
+- **Authorization:** The Human Product Owner explicitly authorizes a physical-device supplemental evidence arm in the current Codex task on 2026-09-17 Asia/Shanghai.
+- **Supplemental arm:** A connected physical iOS device may collect additional manual-cadence and stale-work observations for `TC2-CASE-INT-003` only. The run must capture the physical model, UDID, OS build, signed app/extension identity, active schema, exact RIME provenance receipt, Full Access state, host app and a new Run ID.
+- **No substitution:** This arm supplements the designated Device Hub iOS 27 iPhone 17 Pro Max simulator. It cannot satisfy `TC2-CASE-QA-001`, the paired performance case, the Product acceptance boundary or any Product, Quality, TestFlight, Release or merge decision.
+- **Revalidation boundary:** A physical-device run is a separately bound evidence receipt. Any rebuild, reinstall, device change, schema change or restarted capture requires a new Run ID and fresh identity capture.
+
+### Related child closure — 2026-09-19
+
+- [`TYPO-CORRECTION-002-TESTABILITY-ACCESSIBILITY-001`](typo-correction-002-testability-accessibility-001.md) is Closed only for the bounded keyboard UI testability/accessibility child after PR #140 merged as `162b09fd58ba60538a944026b1902efa405c75aa`.
+- This child closure does not close or satisfy the parent sidecar observability, INT-003, QA-001 or paired performance exits. The parent remains `Active`.
+
+### Parent checkpoint publication — 2026-09-19
+
+- The existing parent implementation and KOS evidence pack were frozen and published in checkpoint [`84978748d89d329a7d2c6e89400c1ff556cfd9b5`](../evidence/typo-correction-002-parent-checkpoint-2026-09-19.md).
+- This is a recovery/provenance checkpoint, not a new Run and not a Product, Quality, Release or merge decision. Existing sidecar, INT-003, QA-001 and paired-performance receipts retain their original source/build/Run ID boundaries.
+- The next production change requires a separate bounded recall-remediation Assignment/Authorization rooted at the exact checkpoint commit. No search-budget or candidate-recall change is authorized by this checkpoint.
+
 ## Assignment
 
 - **Domain Owner:** Input Intelligence Maintainer
@@ -52,6 +70,20 @@ The bounded recall-remediation lane is tracked separately and does not close thi
 - [`Scope reconciliation evidence`](../evidence/typo-correction-002-recall-remediation-publication-scope-reconciliation-2026-09-20.md) — old mixed worktree retained; clean `origin/main` staging started
 
 The child remains bounded to recall remediation and its own provenance/quality handoff; it does not authorize parent closure, Product/Quality/Release Gate, device evidence, INT-003, QA-001 or paired-performance conclusions.
+
+### Runtime integration child
+
+The bounded controller/sidecar runtime-integration lane is tracked separately and does not close this parent:
+
+- [`Runtime integration design`](typo-correction-002-runtime-integration-design-001.md) — `Reviewed`, Conditional Accept
+- [`Runtime integration implementation`](typo-correction-002-runtime-integration-implementation-001.md) — `Reviewed`; Product accepted bounded residuals
+- [`Product Decision`](../product-decisions/TYPO-CORRECTION-002-RUNTIME-INTEGRATION-IMPLEMENTATION-001.md) — bounded Grok implementation package
+- [`Residual Product Decision`](../product-decisions/TYPO-CORRECTION-002-RUNTIME-INTEGRATION-IMPLEMENTATION-RESIDUAL-001.md) — accepted named residuals; no publication
+- [`Implementation AUTH`](../authorizations/AUTH-TYPO-CORRECTION-002-RUNTIME-INTEGRATION-IMPLEMENTATION-001.md) — consumed
+- [`Residual-hardening Assignment`](typo-correction-002-runtime-integration-hardening-001.md) — `Active`; independent Architecture returned `Blocker`, so Quality is blocked
+- [`Blocker-remediation Assignment`](typo-correction-002-runtime-integration-hardening-blocker-remediation-001.md) — `Ready`; Grok-only Authorization is active/unconsumed; no execution, publication or parent-evidence authority
+
+This child does not authorize parent closure, Product/Quality/Release Gate, device evidence, INT-003, QA-001 or paired-performance conclusions.
 
 ## Gates
 

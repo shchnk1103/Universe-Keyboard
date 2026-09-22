@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `consumed` — local CI and final manifest preparation started |
+| Status | `active / unconsumed` |
 | Target Assignment | [`TYPO-CORRECTION-002-RUNTIME-INTEGRATION-HARDENING-BLOCKER-REMEDIATION-PUBLICATION-001`](../assignments/typo-correction-002-runtime-integration-hardening-blocker-remediation-publication-001.md) |
 | Scope | Full local CI, final manifest, commit, push and draft PR for the exact reviewed snapshot only |
 
@@ -12,7 +12,7 @@
   "record_id": "AUTH-TYPO-CORRECTION-002-RUNTIME-INTEGRATION-HARDENING-BLOCKER-REMEDIATION-PUBLISH-001",
   "record_type": "authorization",
   "title": "Publish reviewed controller-sidecar blocker remediation as a draft PR",
-  "status": "consumed",
+  "status": "active",
   "updated_at": "2026-09-22T16:00:00+08:00",
   "revalidation_triggers": ["reviewed_snapshot_changed", "staged_scope_changed", "local_CI_failure", "branch_or_base_changed", "merge_or_release_requested"],
   "authorization": {
@@ -26,10 +26,10 @@
     "issued_at": "2026-09-22T16:00:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "consumed",
-    "consumed_at": "2026-09-22T16:05:00+08:00",
-    "consumed_by": "Current Codex task",
-    "consumption_record": "docs/evidence/typo-correction-002-runtime-integration-hardening-blocker-remediation-publication-001.md"
+    "consumption_state": "active",
+    "consumed_at": null,
+    "consumed_by": null,
+    "consumption_record": "to be written after final commit/push/PR facts are known"
   }
 }
 ```
