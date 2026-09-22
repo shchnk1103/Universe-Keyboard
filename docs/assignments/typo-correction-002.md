@@ -69,6 +69,7 @@ This parent remains **Active** for sidecar observability, INT-003, QA-001, and p
 - Evidence [`typo-correction-002-int003-cadence-2026-09-22-003.md`](../evidence/typo-correction-002-int003-cadence-2026-09-22-003.md) — same process `F9245C6C-…`; rapid starts 3/3 <180 ms
 - Architecture **Pass with conditions** ([review](../reviews/typo-correction-002-int003-cadence-2026-09-22-003-architecture-review.md)); Quality **Bounded Pass with conditions** ([review](../reviews/typo-correction-002-int003-cadence-2026-09-22-003-quality-review.md))
 - Capture-002 process-churn and rapid <180 residuals addressed for this Run; same-agent-lineage review residual remains visible
+- Product residual [`TYPO-CORRECTION-002-INT003-CADENCE-003-PRODUCT-RESIDUAL`](../product-decisions/TYPO-CORRECTION-002-INT003-CADENCE-003-PRODUCT-RESIDUAL.md) **Accepted** under [`AUTH-…-PRODUCT-RESIDUAL-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-CADENCE-003-PRODUCT-RESIDUAL-001.md) after PR #147 merge `bfee5ff…` — cleared residuals for this Run; **not** Product Gate / parent Close
 
 This package does **not** close the parent, satisfy Product/Quality/Release Gate, or invent a global <180 ms product claim. Parent remains `Active`.
 
