@@ -9,9 +9,9 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Fresh-package QA-001 candidate observation after PR #144 merge tip e1b28ae",
   "lifecycle": "active",
-  "current_phase": "observation complete; evidence written; awaiting Product residual / commit auth",
+  "current_phase": "Architecture Pass with conditions recorded; awaiting Quality then Close AUTH",
   "authorization_action": "observe_qa001_target_candidate_on_fresh_package",
-  "updated_at": "2026-09-22T18:45:00+08:00",
+  "updated_at": "2026-09-22T19:05:00+08:00",
   "revalidation_triggers": [
     "install_source_tip_changed",
     "hosted_CI_binding_changed",
@@ -44,8 +44,8 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | Observation complete. Human attested target visible + selectable (position 2). Evidence: [`reval-08 receipt`](../evidence/typo-correction-002-sim-run-2026-09-22-qa001-reval-08-target-observed.md). Residual: tip `e1b28ae` lacks on-disk provenance writer; App Group Ice prefs bind env. |
-| **Next** | Docs commit authorized; push / Assignment Close / Architecture/Quality still need new AUTH. |
+| **Phase** | Architecture **Pass with conditions** on evidence boundary ([`review`](../reviews/typo-correction-002-sim-run-2026-09-22-qa001-reval-08-architecture-review.md)). |
+| **Next** | Independent Quality AUTH; then Product Close AUTH. |
 | **Non-claims** | No INT-003, paired performance, 180 ms, TestFlight, Release, Product/Quality/Release Gate, parent Close, Swift edit, commit/push/PR. |
 
 ## Authority and inputs
