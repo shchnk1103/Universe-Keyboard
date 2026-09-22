@@ -8,10 +8,10 @@ Policy version: 1.0.0
   "record_id": "TYPO-CORRECTION-002-RUNTIME-INTEGRATION-HARDENING-BLOCKER-REMEDIATION-PUBLICATION-001",
   "record_type": "assignment",
   "title": "Publish the exact reviewed blocker-remediation snapshot as a draft pull request",
-  "lifecycle": "active",
-  "current_phase": "Local full-CI revalidation and final publication manifest before commit, push and draft PR",
+  "lifecycle": "completed",
+  "current_phase": "Draft PR published; publication receipt recorded; hosted CI awaits separate read-only observation",
   "authorization_action": "publish_reviewed_controller_sidecar_blocker_remediation",
-  "updated_at": "2026-09-22T16:00:00+08:00",
+  "updated_at": "2026-09-22T16:05:00+08:00",
   "revalidation_triggers": [
     "staged_source_or_document_content_changed",
     "branch_or_base_identity_changed",
@@ -42,9 +42,9 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | Revalidate the exact named-branch snapshot, bind final staged contents, then publish a draft PR. |
-| **Next** | Complete local CI and exact staging checks before commit/push/PR. |
+| **Lifecycle** | `Completed` |
+| **Phase** | Draft PR #144 has been published and the publication receipt has been recorded. |
+| **Next** | Observe hosted CI; any merge requires separate authorization and fresh final-SHA review. |
 | **Residuals** | Inherited Architecture/Quality residuals remain bounded and explicit; they are not closed by publication. |
 | **Non-claims** | No merge, Release, TestFlight, Product Gate, parent Close, RIME/device capture, QA-001, INT-003 or paired-performance conclusion. |
 

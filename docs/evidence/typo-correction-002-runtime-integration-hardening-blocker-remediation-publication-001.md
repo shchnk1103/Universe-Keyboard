@@ -1,7 +1,7 @@
 # TYPO-CORRECTION-002 runtime-integration hardening blocker remediation — publication receipt 001
 
-> **Status:** publication in progress. This receipt records local validation and
-> scope identity only until the separately recorded push and draft-PR facts are available.
+> **Status:** published as a draft pull request. This receipt records the exact
+> local validation, push, and PR facts; it does not authorize merge.
 
 ## Bound source snapshot
 
@@ -30,4 +30,21 @@
 
 - The first two RimeBridge invocations using `name=iPhone 17 Pro` did not run tests because Xcode resolved `latest` to an unavailable runtime. They are environment diagnostics, not test failures or passing evidence. The exact booted UDID command above is the accepted result.
 - This is not real-RIME input evidence, QA-001, INT-003, paired-performance evidence, a Product/Quality/Release Gate, merge, Release, TestFlight or parent Close.
-- Commit, pushed head, hosted CI and draft-PR facts are appended only after those actions complete.
+- This receipt makes no hosted-CI green claim. Hosted CI must be checked afresh
+  before any separately authorized merge decision.
+
+## Publication facts
+
+| Fact | Value |
+|---|---|
+| Publication authorization | Consumed at `2026-09-22T16:05:00+08:00` by the Current Codex task |
+| Initial pushed tip | `eec461b37733e381b965b40c8fd86da434ed483a` |
+| Remote branch | `origin/codex/typo-correction-002-runtime-hardening-blockers` |
+| Pull request | [#144](https://github.com/shchnk1103/Universe-Keyboard/pull/144), **draft**, base `main` |
+| Implementation commit | `ce5861542629e203370cad031ebd6ec580e826fe` |
+| Documentation follow-up commits before this receipt | `f8dcb29770985ea9576db9278ab19feb1dae2c4d`, `4ca325d`, `87cfb66`, `93c91f9`, `24646f0`, `62c43af`, `eec461b` |
+| Hosted CI | Not yet accepted or used as merge evidence |
+
+This receipt is committed and pushed after the initial draft-PR creation. That
+later docs-only commit advances the PR head, while the initial push fact above
+remains historically accurate.
