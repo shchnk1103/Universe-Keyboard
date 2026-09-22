@@ -311,4 +311,19 @@ struct ContextualTypoCorrectionSearchPlan: Sendable {
             return Array(hypotheses[start..<end])
         }
     }
+
+    /// 为未来的第二阶段提供已选组的纯内存预检入口。
+    ///
+    /// 该方法不调用 RIME，不开始查询，也不会让现有 12/8 控制器路径使用
+    /// preflight 的 60/64 假设池；调用方仍需在每次外部工作前检查 operation。
+    func selectedGroups(
+        for operation: TypoCorrectionRecallPreflightOperation,
+        budget: TypoCorrectionRecallPreflightSelectionBudget = .substitutionOnly
+    ) -> [TypoCorrectionRecallPreflightSelectedGroup] {
+        var registry = TypoCorrectionRecallPreflightGroupRegistry(operation: operation)
+        return TypoCorrectionRecallPreflightCoverageSelector(budget: budget).select(
+            from: hypotheses,
+            registry: &registry
+        )
+    }
 }

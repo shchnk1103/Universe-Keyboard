@@ -393,4 +393,115 @@ final class TypoCorrectionRecallPreflightTests: XCTestCase {
         XCTAssertTrue(ledger.finishBatch(for: newOperation))
         XCTAssertTrue(ledger.canPublish(for: newOperation))
     }
+
+    func testCoverageSelectorUsesStructuralOrderInsteadOfHypothesisOrder() {
+        let plan = ContextualTypoCorrectionSearchPlan(input: canonicalInput)
+        let operation = TypoCorrectionRecallPreflightOperation(
+            compositionRevision: 3,
+            sessionEpoch: 2,
+            ordinal: 9
+        )
+        let selector = TypoCorrectionRecallPreflightCoverageSelector()
+
+        var forwardRegistry = TypoCorrectionRecallPreflightGroupRegistry(operation: operation)
+        let forward = selector.select(from: plan.hypotheses, registry: &forwardRegistry)
+
+        var reversedRegistry = TypoCorrectionRecallPreflightGroupRegistry(operation: operation)
+        let reversed = selector.select(
+            from: Array(plan.hypotheses.reversed()),
+            registry: &reversedRegistry
+        )
+
+        XCTAssertEqual(
+            forward.map(\.suggestion.correctedInput),
+            reversed.map(\.suggestion.correctedInput)
+        )
+        XCTAssertEqual(forward.count, 8)
+    }
+
+    func testCoverageSelectorKeepsCanonicalStructuralPatternWithinExplicitCap() {
+        let selectionBudget = TypoCorrectionRecallPreflightSelectionBudget(
+            maximumSelectedGroups: 8,
+            maxQueryAttempts: 3
+        )
+        let plan = ContextualTypoCorrectionSearchPlan(input: canonicalInput)
+        let operation = TypoCorrectionRecallPreflightOperation(
+            compositionRevision: 3,
+            sessionEpoch: 2,
+            ordinal: 10
+        )
+        var registry = TypoCorrectionRecallPreflightGroupRegistry(operation: operation)
+        let selected = TypoCorrectionRecallPreflightCoverageSelector(budget: selectionBudget).select(
+            from: plan.hypotheses,
+            registry: &registry
+        )
+
+        XCTAssertLessThanOrEqual(selected.count, selectionBudget.maximumSelectedGroups)
+        XCTAssertTrue(selected.contains { $0.suggestion.correctedInput == canonicalTarget })
+
+        let executionBudget = selectionBudget.executionBudget()
+        XCTAssertEqual(executionBudget.maximumBatchSize, 8)
+        XCTAssertEqual(executionBudget.maxQueryAttempts, 3)
+    }
+
+    func testGroupRegistryDeduplicatesNormalizedInputWithinOnlyOneOperation() {
+        let operation = TypoCorrectionRecallPreflightOperation(
+            compositionRevision: 4,
+            sessionEpoch: 2,
+            ordinal: 11
+        )
+        var registry = TypoCorrectionRecallPreflightGroupRegistry(operation: operation)
+
+        let normalizedDuplicate = registry.groupID(
+            for: "Women Jin Tian",
+            in: operation
+        )
+        let compactDuplicate = registry.groupID(
+            for: "womenjintian",
+            in: operation
+        )
+        let differentInput = registry.groupID(for: "womenjintianq", in: operation)
+
+        XCTAssertEqual(normalizedDuplicate, compactDuplicate)
+        XCTAssertNotEqual(normalizedDuplicate, differentInput)
+
+        let nextOperation = TypoCorrectionRecallPreflightOperation(
+            compositionRevision: 4,
+            sessionEpoch: 2,
+            ordinal: 12
+        )
+        XCTAssertNil(registry.groupID(for: "womenjintian", in: nextOperation))
+
+        var nextRegistry = TypoCorrectionRecallPreflightGroupRegistry(operation: nextOperation)
+        let nextOperationGroup = nextRegistry.groupID(for: "womenjintian", in: nextOperation)
+        XCTAssertNotEqual(normalizedDuplicate, nextOperationGroup)
+    }
+
+    func testOperationOrdinalFencesAStaleResultWithSameRevisionAndEpoch() {
+        let oldOperation = TypoCorrectionRecallPreflightOperation(
+            compositionRevision: 8,
+            sessionEpoch: 4,
+            ordinal: 1
+        )
+        let newOperation = TypoCorrectionRecallPreflightOperation(
+            compositionRevision: 8,
+            sessionEpoch: 4,
+            ordinal: 2
+        )
+        var ledger = TypoCorrectionRecallPreflightLedger(operation: oldOperation)
+
+        XCTAssertTrue(ledger.beginBatch(for: oldOperation))
+        XCTAssertTrue(ledger.beginQuery(for: oldOperation))
+        ledger.advanceCurrentOperation(to: newOperation)
+
+        XCTAssertFalse(
+            ledger.finishQuery(
+                for: oldOperation,
+                groupID: TypoCorrectionRecallPreflightGroupID(1),
+                candidateCount: 1
+            )
+        )
+        XCTAssertEqual(ledger.counters.nResolvedGroups, 0)
+        XCTAssertFalse(ledger.canPublish(for: oldOperation))
+    }
 }
