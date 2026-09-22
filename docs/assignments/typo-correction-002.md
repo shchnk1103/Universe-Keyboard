@@ -61,6 +61,17 @@ Keyboard UI testability/accessibility and F-02 overlay on/off **do not close thi
 This parent remains **Active** for sidecar observability, INT-003, QA-001, and performance evidence.
 
 
+
+### INT-003 evidence package — 2026-09-22 (Cadence-003)
+
+- Child [`TYPO-CORRECTION-002-INT003-CADENCE-003`](typo-correction-002-int003-cadence-003.md) **Closed** after same-process smoke→rapid
+- Run `TC2-SIM-20260922-225841-INT003-CADENCE-003` on tip `69f5bd1ad662be4d980787d9a496b0d85aa7428a`
+- Evidence [`typo-correction-002-int003-cadence-2026-09-22-003.md`](../evidence/typo-correction-002-int003-cadence-2026-09-22-003.md) — same process `F9245C6C-…`; rapid starts 3/3 <180 ms
+- Architecture **Pass with conditions** ([review](../reviews/typo-correction-002-int003-cadence-2026-09-22-003-architecture-review.md)); Quality **Bounded Pass with conditions** ([review](../reviews/typo-correction-002-int003-cadence-2026-09-22-003-quality-review.md))
+- Capture-002 process-churn and rapid <180 residuals addressed for this Run; same-agent-lineage review residual remains visible
+
+This package does **not** close the parent, satisfy Product/Quality/Release Gate, or invent a global <180 ms product claim. Parent remains `Active`.
+
 ### INT-003 evidence package — 2026-09-22 (Capture-002)
 
 Journal-backed controlled capture after Main App / App Group container diagnostics arm:
