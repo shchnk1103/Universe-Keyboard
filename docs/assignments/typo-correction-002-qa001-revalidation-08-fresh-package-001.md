@@ -8,10 +8,10 @@ Policy version: 1.0.0
   "record_id": "TYPO-CORRECTION-002-QA001-REVALIDATION-08-FRESH-PACKAGE-001",
   "record_type": "assignment",
   "title": "Fresh-package QA-001 candidate observation after PR #144 merge tip e1b28ae",
-  "lifecycle": "active",
-  "current_phase": "Architecture Pass with conditions recorded; awaiting Quality then Close AUTH",
+  "lifecycle": "closed",
+  "current_phase": "Closed — observation complete; Arch+Quality Pass with conditions; PR #145 merge authorized",
   "authorization_action": "observe_qa001_target_candidate_on_fresh_package",
-  "updated_at": "2026-09-22T19:05:00+08:00",
+  "updated_at": "2026-09-22T19:16:00+08:00",
   "revalidation_triggers": [
     "install_source_tip_changed",
     "hosted_CI_binding_changed",
@@ -21,7 +21,10 @@ Policy version: 1.0.0
     "AUTH_revoked_or_executor_changed"
   ],
   "authorization_refs": [
-    "AUTH-TYPO-CORRECTION-002-QA001-REVALIDATION-08-FRESH-PACKAGE-001"
+    "AUTH-TYPO-CORRECTION-002-QA001-REVALIDATION-08-FRESH-PACKAGE-001",
+    "AUTH-TYPO-CORRECTION-002-QA001-REVALIDATION-08-ARCHITECTURE-001",
+    "AUTH-TYPO-CORRECTION-002-QA001-REVALIDATION-08-QUALITY-001",
+    "AUTH-TYPO-CORRECTION-002-QA001-REVALIDATION-08-CLOSE-001"
   ],
   "parent_refs": [
     "TYPO-CORRECTION-002",
@@ -43,10 +46,10 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | Architecture **Pass with conditions** on evidence boundary ([`review`](../reviews/typo-correction-002-sim-run-2026-09-22-qa001-reval-08-architecture-review.md)). |
-| **Next** | Independent Quality AUTH; then Product Close AUTH. |
-| **Non-claims** | No INT-003, paired performance, 180 ms, TestFlight, Release, Product/Quality/Release Gate, parent Close, Swift edit, commit/push/PR. |
+| **Lifecycle** | `Closed` |
+| **Phase** | Closed under [`AUTH-…-CLOSE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-QA001-REVALIDATION-08-CLOSE-001.md). Observation + Arch/Quality Pass-with-conditions accepted. Draft PR #145 merge authorized. Parent remains Active. |
+| **Next** | None for this child. Parent `TYPO-CORRECTION-002` remains Active. |
+| **Non-claims** | No INT-003, paired performance, 180 ms, TestFlight, Release, Product/Quality/Release Gate, **parent** Close. Child Close + docs PR #145 merge are authorized separately under CLOSE-001. |
 
 ## Authority and inputs
 
