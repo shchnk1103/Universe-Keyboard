@@ -60,6 +60,20 @@ Keyboard UI testability/accessibility and F-02 overlay on/off **do not close thi
 
 This parent remains **Active** for sidecar observability, INT-003, QA-001, and performance evidence.
 
+
+### INT-003 evidence package — 2026-09-22 (Capture-002)
+
+Journal-backed controlled capture after Main App / App Group container diagnostics arm:
+
+- Assignment [`TYPO-CORRECTION-002-INT003-CONTROLLED-CAPTURE-002`](typo-correction-002-int003-controlled-capture-002.md) — execution complete for Run `TC2-SIM-20260922-223301-INT003-CONTROLLED-002`
+- Evidence [`typo-correction-002-int003-controlled-capture-2026-09-22-002.md`](../evidence/typo-correction-002-int003-controlled-capture-2026-09-22-002.md) — smoke Pass (`touch.terminal`); rapid timeline recorded; `<180 ms` cadence bar **not** met
+- Architecture [`…-002-architecture-review.md`](../reviews/typo-correction-002-int003-controlled-capture-2026-09-22-002-architecture-review.md) — **Pass with conditions**
+- Quality [`…-002-quality-review.md`](../reviews/typo-correction-002-int003-controlled-capture-2026-09-22-002-quality-review.md) — **Bounded Pass with conditions**
+
+Supporting diagnostics arm records: [`arm-preflight`](typo-correction-002-diagnostics-journal-arm-preflight-001.md), [`ui-arm-retest`](typo-correction-002-diagnostics-journal-ui-arm-retest-001.md).
+
+This package does **not** close the parent, satisfy Product/Quality/Release Gate, or clear the INT-003 cadence residual. Parent remains `Active`.
+
 ### Recall remediation child
 
 The bounded recall-remediation lane is tracked separately and does not close this parent:
