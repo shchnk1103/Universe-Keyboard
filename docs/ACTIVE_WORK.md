@@ -1,5 +1,8 @@
 # Active Work Summary
 
+Current update: `2026-09-22 Asia/Shanghai` — INT-003 Capture-002 package recorded on tip `e1b28ae`: journal UI-arm lesson + Run `TC2-SIM-20260922-223301-INT003-CONTROLLED-002` (smoke Pass with `touch.terminal`; rapid timeline ran; `<180 ms` cadence **not** met). Architecture **Pass with conditions**; Quality **Bounded Pass with conditions**. Parent [`TYPO-CORRECTION-002`](assignments/typo-correction-002.md) stays **Active** (cadence residual open; no Gate / Close). Evidence [`…-002.md`](evidence/typo-correction-002-int003-controlled-capture-2026-09-22-002.md); Arch [`…-architecture-review.md`](reviews/typo-correction-002-int003-controlled-capture-2026-09-22-002-architecture-review.md); Quality [`…-quality-review.md`](reviews/typo-correction-002-int003-controlled-capture-2026-09-22-002-quality-review.md).
+
+
 Current SCHEME-DELIVERY increment: `2026-09-16` engineering Close for the source-state and runtime-route integration Assignments; the recorded implementation, device and residual boundaries remain linked from their Close receipts. Older `2026-09-08` increment notes below are historical.
 
 > **KOS 2.1 ops · M-05**
