@@ -16,9 +16,9 @@
 | Item | Bound value |
 |---|---|
 | Evidence receipt | `docs/evidence/typo-correction-002-int003-controlled-capture-2026-09-22-002.md` |
-| Evidence SHA-256 (recomputed) | `d2169d4443720d9aa9013c14e02f7b7e24e3482768d23f5655750d0546cfee9d` |
+| Evidence SHA-256 (recomputed) | `30b30cc19fb1ada906160c088ec001c977d13df3f30cde62148f15e7fee92f46` |
 | Architecture receipt | `docs/reviews/typo-correction-002-int003-controlled-capture-2026-09-22-002-architecture-review.md` |
-| Architecture SHA-256 (recomputed) | `2b7e8772ba7c6b613fd0b28e8f1a74783a70972b5b3ea9d68aa5d9beed41ff05` |
+| Architecture SHA-256 (recomputed) | `de3a01fd2bc91936789b98d2c9ee44d542033c4581b7e509680906bac1a15ba6` |
 | Architecture verdict | Pass with conditions — bounded evidence-architecture review only |
 | Run ID | `TC2-SIM-20260922-223301-INT003-CONTROLLED-002` |
 | Source commit / tree | `e1b28aebe8f6b2f2a8587db1e525e332aa9bfe00` / `fa7905dc8451e49ff25c1443e4a141d4568804eb` |
@@ -105,7 +105,7 @@ This Quality review does not claim:
 
 ## Next legal action
 
-1. Product/parent accounting: record Capture-002 + Arch + Quality as the current INT-003 evidence package with **open cadence residual**.  
-2. Optional: new Capture AUTH for same-process sub-180 cadence re-Run.  
-3. Optional: docs-only publish of the clean-tip package (ask before push).  
+1. Product/parent accounting: record Capture-002 + Arch + Quality as the current INT-003 evidence package with **open cadence residual**.
+2. Optional: new Capture AUTH for same-process sub-180 cadence re-Run.
+3. Optional: docs-only publish of the clean-tip package (ask before push).
 4. Do **not** Close parent or open Gates from this review alone.

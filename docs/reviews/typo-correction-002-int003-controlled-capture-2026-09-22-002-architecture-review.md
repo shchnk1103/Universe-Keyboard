@@ -16,7 +16,7 @@
 | Item | Bound value |
 |---|---|
 | Evidence receipt | `docs/evidence/typo-correction-002-int003-controlled-capture-2026-09-22-002.md` |
-| Evidence SHA-256 (recomputed) | `d2169d4443720d9aa9013c14e02f7b7e24e3482768d23f5655750d0546cfee9d` |
+| Evidence SHA-256 (recomputed) | `30b30cc19fb1ada906160c088ec001c977d13df3f30cde62148f15e7fee92f46` |
 | Run ID | `TC2-SIM-20260922-223301-INT003-CONTROLLED-002` |
 | Source commit / tree | `e1b28aebe8f6b2f2a8587db1e525e332aa9bfe00` / `fa7905dc8451e49ff25c1443e4a141d4568804eb` |
 | Simulator | iPhone 17 Pro Max / iOS 27 / `06C5BC3E-7599-4761-A1A2-71DAEA991474` |
@@ -99,4 +99,4 @@ This Architecture review does not claim:
 
 ## Next legal action
 
-Open a **new** independent Quality Authorization bound to evidence SHA-256 `d2169d4443720d9aa9013c14e02f7b7e24e3482768d23f5655750d0546cfee9d` and this Architecture receipt. Do not reuse Capture-001 Quality AUTH. Do not Close parent from this review alone.
+Open a **new** independent Quality Authorization bound to evidence SHA-256 `30b30cc19fb1ada906160c088ec001c977d13df3f30cde62148f15e7fee92f46` and this Architecture receipt. Do not reuse Capture-001 Quality AUTH. Do not Close parent from this review alone.

@@ -7,7 +7,7 @@
 | **Status** | Consumed — Architecture receipt written |
 | **Assignment** | [TYPO-CORRECTION-002-INT003-CONTROLLED-CAPTURE-002-ARCHITECTURE-REVIEW](../assignments/typo-correction-002-int003-controlled-capture-002-architecture-review.md) |
 | **Review target** | [TC2-SIM-20260922-223301-INT003-CONTROLLED-002](../evidence/typo-correction-002-int003-controlled-capture-2026-09-22-002.md) |
-| **Evidence SHA-256** | `d2169d4443720d9aa9013c14e02f7b7e24e3482768d23f5655750d0546cfee9d` |
+| **Evidence SHA-256** | `30b30cc19fb1ada906160c088ec001c977d13df3f30cde62148f15e7fee92f46` |
 | **Issuer** | Human Product Owner |
 | **Consumer** | Grok Bot iOS开发大师 (read-only Architecture pass on frozen evidence) |
 | **Live at** | 2026-09-22T22:41:00+08:00 |
@@ -28,7 +28,7 @@
     "parent_assignment": "TYPO-CORRECTION-002",
     "artifact_bindings": [
       {"kind": "evidence", "identity": "docs/evidence/typo-correction-002-int003-controlled-capture-2026-09-22-002.md"},
-      {"kind": "evidence_sha256", "identity": "d2169d4443720d9aa9013c14e02f7b7e24e3482768d23f5655750d0546cfee9d"},
+      {"kind": "evidence_sha256", "identity": "30b30cc19fb1ada906160c088ec001c977d13df3f30cde62148f15e7fee92f46"},
       {"kind": "run", "identity": "TC2-SIM-20260922-223301-INT003-CONTROLLED-002"},
       {"kind": "source_commit", "identity": "e1b28aebe8f6b2f2a8587db1e525e332aa9bfe00"},
       {"kind": "source_tree", "identity": "fa7905dc8451e49ff25c1443e4a141d4568804eb"}

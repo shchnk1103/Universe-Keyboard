@@ -90,9 +90,9 @@ Growth after post-smoke baseline occurred on a **different** Extension processIn
 
 ### Inter-key start gaps (even indices 0,2,4,6,8 as pair starts)
 
-`[910.993, 177.128, 140.088, 193.310]` ms  
+`[910.993, 177.128, 140.088, 193.310]` ms
 
-- Gaps &lt; 180 ms: **2 / 4**  
+- Gaps &lt; 180 ms: **2 / 4**
 - Gaps ≥ 180 ms: **2 / 4** (including first ~911 ms)
 
 Also present in the same rapid window (content-free codes): `rime.owner.published`, `ui.applied`, `candidate.visibility_changed` interleaved with touches — useful lifecycle ordering for Architecture/Quality, not a cadence pass.
@@ -109,12 +109,12 @@ Also present in the same rapid window (content-free codes): `rime.owner.publishe
 
 ## Non-claims
 
-- No formal INT-003 Product pass/fail beyond this bounded Run receipt  
-- No global less-than-180-ms engineering or product claim  
-- No candidate selection / QA-001 / paired performance  
-- No Product / Quality / Release Gate; no parent Close  
-- No commit / push / merge under this AUTH  
-- No production code change; no `RimeRuntimeProvenance` restoration  
+- No formal INT-003 Product pass/fail beyond this bounded Run receipt
+- No global less-than-180-ms engineering or product claim
+- No candidate selection / QA-001 / paired performance
+- No Product / Quality / Release Gate; no parent Close
+- No commit / push / merge under this AUTH
+- No production code change; no `RimeRuntimeProvenance` restoration
 
 ## Checkout hygiene
 
@@ -122,6 +122,6 @@ Docs-only on clean tip `e1b28ae`. Home main and reval-08-docs worktrees not modi
 
 ## Recommended next
 
-1. Independent **Architecture** review AUTH on this evidence package.  
-2. Independent **Quality** review AUTH (cadence bar residual explicit).  
-3. Optional: docs-only commit/push of diagnostics + INT-003-002 package (ask before push).  
+1. Independent **Architecture** review AUTH on this evidence package.
+2. Independent **Quality** review AUTH (cadence bar residual explicit).
+3. Optional: docs-only commit/push of diagnostics + INT-003-002 package (ask before push).

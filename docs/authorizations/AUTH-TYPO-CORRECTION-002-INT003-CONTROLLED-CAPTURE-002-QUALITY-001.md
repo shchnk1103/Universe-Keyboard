@@ -6,8 +6,8 @@
 |---|---|
 | **Status** | Consumed — Quality receipt written |
 | **Assignment** | [TYPO-CORRECTION-002-INT003-CONTROLLED-CAPTURE-002-QUALITY-REVIEW](../assignments/typo-correction-002-int003-controlled-capture-002-quality-review.md) |
-| **Evidence SHA-256** | `d2169d4443720d9aa9013c14e02f7b7e24e3482768d23f5655750d0546cfee9d` |
-| **Architecture SHA-256** | `2b7e8772ba7c6b613fd0b28e8f1a74783a70972b5b3ea9d68aa5d9beed41ff05` |
+| **Evidence SHA-256** | `30b30cc19fb1ada906160c088ec001c977d13df3f30cde62148f15e7fee92f46` |
+| **Architecture SHA-256** | `de3a01fd2bc91936789b98d2c9ee44d542033c4581b7e509680906bac1a15ba6` |
 | **Issuer** | Human Product Owner |
 | **Consumer** | Grok Bot iOS开发大师 (read-only Quality pass; same lineage residual noted) |
 | **Live at** | 2026-09-22T22:43:30+08:00 |
@@ -27,8 +27,8 @@
     "target_assignment": "TYPO-CORRECTION-002-INT003-CONTROLLED-CAPTURE-002-QUALITY-REVIEW",
     "parent_assignment": "TYPO-CORRECTION-002",
     "artifact_bindings": [
-      {"kind": "evidence_sha256", "identity": "d2169d4443720d9aa9013c14e02f7b7e24e3482768d23f5655750d0546cfee9d"},
-      {"kind": "architecture_sha256", "identity": "2b7e8772ba7c6b613fd0b28e8f1a74783a70972b5b3ea9d68aa5d9beed41ff05"},
+      {"kind": "evidence_sha256", "identity": "30b30cc19fb1ada906160c088ec001c977d13df3f30cde62148f15e7fee92f46"},
+      {"kind": "architecture_sha256", "identity": "de3a01fd2bc91936789b98d2c9ee44d542033c4581b7e509680906bac1a15ba6"},
       {"kind": "run", "identity": "TC2-SIM-20260922-223301-INT003-CONTROLLED-002"},
       {"kind": "source_commit", "identity": "e1b28aebe8f6b2f2a8587db1e525e332aa9bfe00"},
       {"kind": "source_tree", "identity": "fa7905dc8451e49ff25c1443e4a141d4568804eb"}

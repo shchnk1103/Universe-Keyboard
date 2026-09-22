@@ -28,6 +28,6 @@ Policy version: 1.0.0
 
 ## Authority
 
-- **Review target evidence:** [typo-correction-002-int003-controlled-capture-2026-09-22-002.md](../evidence/typo-correction-002-int003-controlled-capture-2026-09-22-002.md) SHA-256 `d2169d4443720d9aa9013c14e02f7b7e24e3482768d23f5655750d0546cfee9d`
+- **Review target evidence:** [typo-correction-002-int003-controlled-capture-2026-09-22-002.md](../evidence/typo-correction-002-int003-controlled-capture-2026-09-22-002.md) SHA-256 `30b30cc19fb1ada906160c088ec001c977d13df3f30cde62148f15e7fee92f46`
 - **Matching AUTH:** [AUTH-…-ARCHITECTURE-001](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-CONTROLLED-CAPTURE-002-ARCHITECTURE-001.md)
 - **Human authorization:** 2026-09-22 — proceed with recommended Architecture next step

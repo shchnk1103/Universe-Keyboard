@@ -28,6 +28,6 @@ Policy version: 1.0.0
 
 ## Authority
 
-- Evidence: […-2026-09-22-002.md](../evidence/typo-correction-002-int003-controlled-capture-2026-09-22-002.md) SHA `d2169d4443720d9aa9013c14e02f7b7e24e3482768d23f5655750d0546cfee9d`
-- Architecture prerequisite: […-architecture-review.md](../reviews/typo-correction-002-int003-controlled-capture-2026-09-22-002-architecture-review.md) SHA `2b7e8772ba7c6b613fd0b28e8f1a74783a70972b5b3ea9d68aa5d9beed41ff05` (Pass with conditions)
+- Evidence: […-2026-09-22-002.md](../evidence/typo-correction-002-int003-controlled-capture-2026-09-22-002.md) SHA `30b30cc19fb1ada906160c088ec001c977d13df3f30cde62148f15e7fee92f46`
+- Architecture prerequisite: […-architecture-review.md](../reviews/typo-correction-002-int003-controlled-capture-2026-09-22-002-architecture-review.md) SHA `de3a01fd2bc91936789b98d2c9ee44d542033c4581b7e509680906bac1a15ba6` (Pass with conditions)
 - Matching AUTH: [AUTH-…-QUALITY-001](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-CONTROLLED-CAPTURE-002-QUALITY-001.md)
