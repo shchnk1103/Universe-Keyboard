@@ -238,6 +238,11 @@ class KeyboardViewController: UIInputViewController {
     var lastT9DigitKeyTime: CFTimeInterval?
     /// 多错误纠错只在用户短暂停顿后执行；新输入会取消旧任务，避免占用按键热路径。
     var contextualTypoCorrectionWorkItem: DispatchWorkItem?
+    /// Controller-owned recall fence. Incremented before composition, page/mode,
+    /// visibility, engine-rebind or correction-disable work.
+    var recallEpoch: UInt64 = 0
+    var recallCompositionRevision: UInt64 = 0
+    lazy var typoCorrectionRecallCoordinator = TypoCorrectionRecallCoordinator(host: self)
 
     // MARK: - 光标移动状态
 
@@ -430,6 +435,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
         diagnosticsJournal.record(
             code: .presentationFrame,
             category: .display,

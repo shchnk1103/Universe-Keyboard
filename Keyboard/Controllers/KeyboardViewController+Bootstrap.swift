@@ -366,6 +366,7 @@ extension KeyboardViewController {
         }
 
         Logger.shared.info("Keyboard visible; creating RimeEngineImpl", category: .engine)
+        typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
         let engine = RimeEngineImpl(
             sharedDataDir: directories.sharedDataDir,
             userDataDir: directories.userDataDir
@@ -375,7 +376,7 @@ extension KeyboardViewController {
             self?.applyRealizedRuntimeSelection(selection)
         }
         controller.rimeEngine = engine
-        controller.typoCorrectionCandidateQuery = engine
+        installTypoCorrectionSidecarOwner(engine)
         // Rebuild bridge if responsive gate is ever enabled before/after engine install.
         controller.rebuildResponsiveRimeCoordinatorIfNeeded()
         applyRealizedRuntimeSelection(from: engine)
@@ -438,6 +439,7 @@ extension KeyboardViewController {
                 return false
             }
 
+            typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
             // Bootstrap-only: no MainActor live RimeEngineImpl session when dual-gate is active.
             controller.isResponsiveRimePipelineEnabled = true
             controller.isThreadAffineRimeOwnerEnabled = true
@@ -449,8 +451,10 @@ extension KeyboardViewController {
                 )
             )
             // Preflight residual: typo sidecar uses provider adapter (not live librime session).
-            controller.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
-                candidateProvider: controller.candidateProvider
+            installTypoCorrectionSidecarOwner(
+                CandidateProviderTypoCorrectionQuery(
+                    candidateProvider: controller.candidateProvider
+                )
             )
             controller.rebuildResponsiveRimeCoordinatorIfNeeded()
 
@@ -542,6 +546,7 @@ extension KeyboardViewController {
                 return false
             }
 
+            typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
             responsiveCanaryRunID = configuration.runID
             controller.isResponsiveRimePipelineEnabled = true
             controller.isThreadAffineRimeOwnerEnabled = true
@@ -553,8 +558,10 @@ extension KeyboardViewController {
                 )
             )
             // CANARY-001 v1 forbids a second live typo-correction session.
-            controller.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
-                candidateProvider: controller.candidateProvider
+            installTypoCorrectionSidecarOwner(
+                CandidateProviderTypoCorrectionQuery(
+                    candidateProvider: controller.candidateProvider
+                )
             )
             controller.rebuildResponsiveRimeCoordinatorIfNeeded()
 
@@ -979,6 +986,7 @@ extension KeyboardViewController {
                 return ownerReady
             }
 
+            typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
             controller.isResponsiveRimePipelineEnabled = true
             controller.isThreadAffineRimeOwnerEnabled = true
             controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
@@ -987,8 +995,10 @@ extension KeyboardViewController {
                     runID: p3d1LifecycleRunID
                 )
             )
-            controller.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
-                candidateProvider: controller.candidateProvider
+            installTypoCorrectionSidecarOwner(
+                CandidateProviderTypoCorrectionQuery(
+                    candidateProvider: controller.candidateProvider
+                )
             )
             controller.rebuildResponsiveRimeCoordinatorIfNeeded()
 

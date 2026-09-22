@@ -58,18 +58,206 @@ struct TypoCorrectionRecallPreflightExecutionBudget: Equatable, Sendable {
     }
 }
 
-struct TypoCorrectionRecallPreflightOperation: Equatable, Sendable {
+struct TypoCorrectionRecallPreflightOperation: Hashable, Sendable {
     let compositionRevision: UInt64
     let sessionEpoch: UInt64
+    /// 仅在内存中递增，用来区分恰好复用了 revision/epoch 的新一轮操作。
+    /// 它不是用户输入，也不应写入常规诊断。
+    let ordinal: UInt64
+
+    init(compositionRevision: UInt64, sessionEpoch: UInt64, ordinal: UInt64 = 0) {
+        self.compositionRevision = compositionRevision
+        self.sessionEpoch = sessionEpoch
+        self.ordinal = ordinal
+    }
 }
 
 /// Stable identity for one corrected-input group within a preflight operation.
 /// The ledger never needs the raw input to deduplicate accepted groups.
 struct TypoCorrectionRecallPreflightGroupID: Hashable, Sendable {
-    let rawValue: UInt64
+    private let operation: TypoCorrectionRecallPreflightOperation?
+    private let ordinal: UInt64
 
+    /// 保留给纯 Core 测试与调用方手动构造不透明标识；生产映射应使用
+    /// `TypoCorrectionRecallPreflightGroupRegistry`，从而带上 operation 边界。
     init(_ rawValue: UInt64) {
-        self.rawValue = rawValue
+        operation = nil
+        ordinal = rawValue
+    }
+
+    fileprivate init(operation: TypoCorrectionRecallPreflightOperation, ordinal: UInt64) {
+        self.operation = operation
+        self.ordinal = ordinal
+    }
+}
+
+/// Preflight-only selection caps. Selection and sidecar attempts deliberately
+/// remain different values: a future scheduler may abstain before querying a
+/// selected group, but it may never exceed either bound.
+struct TypoCorrectionRecallPreflightSelectionBudget: Equatable, Sendable {
+    let maximumSelectedGroups: Int
+    let maxQueryAttempts: Int
+
+    static let substitutionOnly = TypoCorrectionRecallPreflightSelectionBudget(
+        maximumSelectedGroups: 8,
+        maxQueryAttempts: 8
+    )
+
+    init(maximumSelectedGroups: Int, maxQueryAttempts: Int) {
+        precondition(maximumSelectedGroups > 0)
+        precondition(maxQueryAttempts > 0)
+        self.maximumSelectedGroups = maximumSelectedGroups
+        self.maxQueryAttempts = maxQueryAttempts
+    }
+
+    func executionBudget(
+        candidateLimit: Int = 3,
+        maximumResolvedGroups: Int = 4
+    ) -> TypoCorrectionRecallPreflightExecutionBudget {
+        TypoCorrectionRecallPreflightExecutionBudget(
+            maximumBatchSize: maximumSelectedGroups,
+            candidateLimit: candidateLimit,
+            maximumResolvedGroups: maximumResolvedGroups,
+            maxQueryAttempts: maxQueryAttempts
+        )
+    }
+}
+
+/// Operation-private normalization and opaque identity allocation.
+///
+/// The dictionary contains corrected inputs only while a preflight operation
+/// exists. Its caller passes GroupID to accounting; no caller needs to expose
+/// the input when recording counters or deciding whether publication is safe.
+struct TypoCorrectionRecallPreflightGroupRegistry: Sendable {
+    let operation: TypoCorrectionRecallPreflightOperation
+
+    private var groupIDsByNormalizedInput: [String: TypoCorrectionRecallPreflightGroupID] = [:]
+    private var nextOrdinal: UInt64 = 0
+
+    init(operation: TypoCorrectionRecallPreflightOperation) {
+        self.operation = operation
+    }
+
+    mutating func groupID(
+        for correctedInput: String,
+        in operation: TypoCorrectionRecallPreflightOperation
+    ) -> TypoCorrectionRecallPreflightGroupID? {
+        guard operation == self.operation else { return nil }
+        let normalized = correctedInput.lowercased().filter { !$0.isWhitespace }
+        guard !normalized.isEmpty else { return nil }
+
+        if let existing = groupIDsByNormalizedInput[normalized] {
+            return existing
+        }
+
+        nextOrdinal += 1
+        let groupID = TypoCorrectionRecallPreflightGroupID(
+            operation: operation,
+            ordinal: nextOrdinal
+        )
+        groupIDsByNormalizedInput[normalized] = groupID
+        return groupID
+    }
+}
+
+/// A single selected group remains purely in memory until a future scheduler
+/// decides whether it may start a sidecar query. This type does not publish or
+/// carry candidate results.
+struct TypoCorrectionRecallPreflightSelectedGroup: Sendable {
+    let groupID: TypoCorrectionRecallPreflightGroupID
+    let suggestion: TypoCorrectionSuggestion
+}
+
+/// Deterministic, substitution-only structural coverage selector.
+///
+/// It intentionally sorts by edit geometry rather than the hypothesis engine's
+/// global rank: wider edit spans cover independent touch regions first, then
+/// nearer keyboard-neighbor pairs, then a stable structural tie-break. This is
+/// a local preflight policy, not a semantic scorer or a production ranking.
+struct TypoCorrectionRecallPreflightCoverageSelector: Sendable {
+    let budget: TypoCorrectionRecallPreflightSelectionBudget
+
+    init(budget: TypoCorrectionRecallPreflightSelectionBudget = .substitutionOnly) {
+        self.budget = budget
+    }
+
+    func select(
+        from hypotheses: [TypoCorrectionSuggestion],
+        registry: inout TypoCorrectionRecallPreflightGroupRegistry
+    ) -> [TypoCorrectionRecallPreflightSelectedGroup] {
+        let ordered = hypotheses.compactMap { suggestion -> RankedSuggestion? in
+            guard let signature = StructuralSignature(suggestion: suggestion) else { return nil }
+            return RankedSuggestion(suggestion: suggestion, signature: signature)
+        }
+        .sorted(by: RankedSuggestion.isPreferred)
+
+        var selected: [TypoCorrectionRecallPreflightSelectedGroup] = []
+        var seenGroupIDs = Set<TypoCorrectionRecallPreflightGroupID>()
+        for ranked in ordered {
+            guard selected.count < budget.maximumSelectedGroups else { break }
+            guard
+                let groupID = registry.groupID(
+                    for: ranked.suggestion.correctedInput,
+                    in: registry.operation
+                ),
+                seenGroupIDs.insert(groupID).inserted
+            else { continue }
+
+            selected.append(
+                TypoCorrectionRecallPreflightSelectedGroup(
+                    groupID: groupID,
+                    suggestion: ranked.suggestion
+                )
+            )
+        }
+        return selected
+    }
+
+    private struct StructuralSignature: Sendable {
+        let minimumIndex: Int
+        let maximumIndex: Int
+        let editSpan: Int
+        let replacementOrderSum: Int
+        let correctedInput: String
+
+        init?(suggestion: TypoCorrectionSuggestion) {
+            let edits = suggestion.edits.sorted { $0.index < $1.index }
+            guard edits.count == 2, edits.allSatisfy({ $0.kind == .substitution }) else {
+                return nil
+            }
+
+            let replacementOrders = edits.compactMap { edit in
+                TypoCorrectionKeyboard.nearbyKeys[edit.original]?.firstIndex(of: edit.replacement)
+            }
+            guard replacementOrders.count == edits.count else { return nil }
+
+            minimumIndex = edits[0].index
+            maximumIndex = edits[1].index
+            editSpan = maximumIndex - minimumIndex
+            replacementOrderSum = replacementOrders.reduce(0, +)
+            correctedInput = suggestion.correctedInput
+        }
+    }
+
+    private struct RankedSuggestion: Sendable {
+        let suggestion: TypoCorrectionSuggestion
+        let signature: StructuralSignature
+
+        static func isPreferred(_ lhs: RankedSuggestion, _ rhs: RankedSuggestion) -> Bool {
+            if lhs.signature.editSpan != rhs.signature.editSpan {
+                return lhs.signature.editSpan > rhs.signature.editSpan
+            }
+            if lhs.signature.replacementOrderSum != rhs.signature.replacementOrderSum {
+                return lhs.signature.replacementOrderSum < rhs.signature.replacementOrderSum
+            }
+            if lhs.signature.minimumIndex != rhs.signature.minimumIndex {
+                return lhs.signature.minimumIndex < rhs.signature.minimumIndex
+            }
+            if lhs.signature.maximumIndex != rhs.signature.maximumIndex {
+                return lhs.signature.maximumIndex < rhs.signature.maximumIndex
+            }
+            return lhs.signature.correctedInput < rhs.signature.correctedInput
+        }
     }
 }
 
