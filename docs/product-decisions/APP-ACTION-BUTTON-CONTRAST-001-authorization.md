@@ -42,7 +42,7 @@ This Decision records the **visual contract** for main-App content action button
 
 深色模式下 60% 黑玻璃叠在 grouped 深色底上几乎消失（Human 截图 1）。浅色模式下半透明黑玻璃合成成中灰胶囊，可点击却像禁用（Human 截图 2，「立即同步」）。根因在共享组件，不是同步页单点样式。
 
-既有约束（[`UI_STYLE_GUIDE.md`](../UI_STYLE_GUIDE.md)）：中性黑白灰层次、不引入品牌强调色、明确页内命令必须走 `AppActionButton`、与 [`APP-SWITCH-CONTRAST-001`](app-switch-contrast-001.md) 的深浅反转配对保持同一套对比语言。
+既有约束（[`UI_STYLE_GUIDE.md`](../UI_STYLE_GUIDE.md)）：中性黑白灰层次、不引入品牌强调色、明确页内命令必须走 `AppActionButton`、与 [`APP-SWITCH-CONTRAST-001`](../assignments/app-switch-contrast-001.md) 的深浅反转配对保持同一套对比语言。
 
 ## Bound Product Decisions
 
