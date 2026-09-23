@@ -9,6 +9,7 @@
 | **Assignment** | [`TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001`](../assignments/typo-correction-002-int003-cancel-observability-markers-001.md) |
 | **ADR** | [`0027-enterprise-local-diagnostic-observability`](../architecture/decisions/0027-enterprise-local-diagnostic-observability.md) |
 | **Baseline tip** | `9b8b7a73f4d373adbd7ee436d318cde3d9bc4c78` (main after #151 Live mark) |
+| **Implementation / squash tip** | `c1869cf9dda9f1643495e8ebdcfb67acc788b843` (#152) |
 | **Reviewer / consumer** | Grok Bot iOS开发大师 under Human continue-auth (2026-09-23 Asia/Shanghai) |
 | **Recorded at** | `2026-09-23T18:47:17+08:00` |
 
@@ -67,10 +68,24 @@ No new `Flag` values in this slice (existing HF / candidate flags unchanged).
 | Dimension | Before | After (this slice) | Budget note |
 |---|---|---|---|
 | `Code` cases | 23 | 29 (+6) | New family namespaced `typo_recall.*` |
-| `CountMetric` cases | 9 | 14 (+5) | Integers only; fingerprint is hash, not text |
+| Integer field budget (`CountMetric`+`DurationMetric`) | **11** | **16** (+5) | Tip-verified at `c1869cf9…` — Quality correction vs draft 9→14; see note |
 | `Reason` cases | 10 | 13 (+3) | Finite query outcomes only |
 | `Flag` cases | 6 | 6 (+0) | No new flags |
 | `schemaVersion` | 3 | 4 | Additive event-family bump |
+
+### CountMetrics arithmetic correction (tip `c1869cf9…`)
+
+Quality noted the earlier draft claimed **`CountMetric` 9→14**, but the tip baseline numeric vocabulary at `c1869cf9dda9f1643495e8ebdcfb67acc788b843` is **11→16** (+5 correct additive set). No new metric names invented.
+
+| Bucket | Before (`9b8b7a7…`) | After (`c1869cf9…`) |
+|---|---|---|
+| `CountMetric` enum cases | 9 | 14 |
+| `DurationMetric` enum cases (unchanged companions in the same integer-field budget) | 2 | 2 |
+| **Tip baseline total (Quality reading)** | **11** | **16** |
+
+Additive `CountMetric` set (+5): `recall_epoch`, `composition_revision`, `operation_ordinal`, `composition_length`, `composition_fingerprint`.
+
+`DurationMetric` remains `elapsed_ms` / `presentation_age_ms` only (**2→2**). The corrected budget line uses the tip total **11→16**; the enum split above is the DiagnosticEvent vocabulary at the squash tip.
 
 ## Non-claims
 
@@ -84,3 +99,4 @@ No new `Flag` values in this slice (existing HF / candidate flags unchanged).
 |---|---|
 | **External Run / JSONL** | **N/A** — field-budget docs review only |
 | **Baseline tip** | `9b8b7a73f4d373adbd7ee436d318cde3d9bc4c78` |
+| **Squash tip** | `c1869cf9dda9f1643495e8ebdcfb67acc788b843` |

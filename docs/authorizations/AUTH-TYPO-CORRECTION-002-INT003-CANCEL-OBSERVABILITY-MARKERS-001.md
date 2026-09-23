@@ -11,6 +11,8 @@
 | **Live at** | `2026-09-23T18:31:00+08:00` |
 | **Consumed at** | `2026-09-23T18:47:17+08:00` |
 | **Consumer** | Grok Bot iOS开发大师 under Human continue-auth |
+| **implementation_tip** | `c1869cf9dda9f1643495e8ebdcfb67acc788b843` (#152 squash-merge onto main) |
+| **Branch tip (historical)** | `862014483a4a879e55a159b298184c870d116124` (pre-squash impl branch tip) |
 
 ```kos-record
 {
@@ -19,7 +21,7 @@
   "record_type": "authorization",
   "title": "Consumed implementation AUTH: INT-003 cancel/debounce/epoch Diagnostics journal markers",
   "status": "consumed",
-  "updated_at": "2026-09-23T18:47:17+08:00",
+  "updated_at": "2026-09-23T19:33:31+08:00",
   "revalidation_triggers": [
     "docs_tip_changed_from_implementation_tip",
     "observability_audit_or_gap_matrix_superseded",
@@ -46,7 +48,9 @@
       {"kind": "reasons", "identity": "typo_recall_query_succeeded,typo_recall_query_discarded,typo_recall_query_cancelled"},
       {"kind": "flags_added", "identity": "none"},
       {"kind": "schema_version", "identity": "DiagnosticEvent.schemaVersion 3->4"},
-      {"kind": "implementation_tip", "identity": "862014483a4a879e55a159b298184c870d116124"}
+      {"kind": "implementation_tip", "identity": "c1869cf9dda9f1643495e8ebdcfb67acc788b843"},
+      {"kind": "squash_merge_pr", "identity": "152"},
+      {"kind": "branch_implementation_tip_historical", "identity": "862014483a4a879e55a159b298184c870d116124"}
     ],
     "artifact_bindings": [
       {"kind": "docs_tip_live_mark", "identity": "9b8b7a73f4d373adbd7ee436d318cde3d9bc4c78"},
@@ -88,7 +92,7 @@
 }
 ```
 
-## Scope (consumed; implementation in progress on matching branch)
+## Scope (consumed; markers landed; #152 squash-merged on main)
 
 - Case `TC2-CASE-INT-003` / contract `TC2-CTR-INT-002`.
 - Add **minimal controlled Diagnostics journal markers** so a future Live product capture can **prove** cancel / stale discard (positive observations), not infer from absence.
@@ -143,9 +147,9 @@ Product Gate; parent Close; Release/TestFlight; Capture under this AUTH; `RimeRu
 | Proposed binding (historical; #150) | Tip `d74462ed26ec4c09cac35386ed71ec99b212aebc` |
 | Live-at tip binding | Tip `9b8b7a73f4d373adbd7ee436d318cde3d9bc4c78` (#151); Live at `2026-09-23T18:31:00+08:00` |
 | Field-budget (now) | [`…-field-budget-2026-09-23.md`](../evidence/typo-correction-002-int003-cancel-observability-markers-field-budget-2026-09-23.md) |
-| Live implementation (this PR) | Tip SHA of marker landing; Codes/CountMetrics/Reasons list; focused test summary; no PII dump |
+| Live implementation (merged #152) | Squash tip `c1869cf9dda9f1643495e8ebdcfb67acc788b843`; historical branch tip `862014483a4a879e55a159b298184c870d116124`; Codes/CountMetrics/Reasons list; focused test summary; no PII dump |
 | Non-claims | Intact: no Capture Live, no Product Gate, no parent Close, no `RimeRuntimeProvenance` restore, no cancel proof claim from markers alone |
 
 ## Depends on / Outcome
 
-AUTH is **Consumed** at `2026-09-23T18:47:17+08:00`. Swift markers land on the matching implementation branch/PR. Parent remains Active. Capture AUTH stays Proposed and separate. PR must **not** be merged by the executor.
+AUTH is **Consumed** at `2026-09-23T18:47:17+08:00` (status remains **Consumed** — not re-Live). Swift markers landed; Human squash-merged [#152](https://github.com/shchnk1103/Universe-Keyboard/pull/152) to main as `implementation_tip` / squash tip `c1869cf9dda9f1643495e8ebdcfb67acc788b843` (`2026-09-23T11:21:28Z` / `2026-09-23 19:21:28 CST`). Parent remains Active. Capture AUTH stays **Proposed** and untouched. This AUTH does **not** authorize Capture Live, Product Gate, parent Close, or further merges.

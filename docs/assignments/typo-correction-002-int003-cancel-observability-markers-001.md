@@ -1,4 +1,4 @@
-# Assignment: TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001 — INT-003 cancel/debounce/epoch Diagnostics journal markers (AUTH consumed; implementing)
+# Assignment: TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001 — INT-003 cancel/debounce/epoch Diagnostics journal markers (AUTH consumed; #152 merged on main)
 
 Policy version: 1.0.0
 
@@ -7,11 +7,11 @@ Policy version: 1.0.0
   "schema_version": {"major": 1, "minor": 0},
   "record_id": "TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001",
   "record_type": "assignment",
-  "title": "INT-003 cancel/debounce/epoch Diagnostics journal markers (AUTH consumed; implementing)",
+  "title": "INT-003 cancel/debounce/epoch Diagnostics journal markers (AUTH consumed; #152 squash-merged on main)",
   "lifecycle": "active",
-  "current_phase": "Markers slice Done on implementation tip; AUTH consumed; PR unmerged; Capture still Proposed",
+  "current_phase": "Markers slice merged on main via #152 squash tip; AUTH consumed; Arch Pass with conditions + Quality Bounded Pass with conditions (2026-09-23 Asia/Shanghai); Capture still Proposed; parent Active",
   "authorization_action": "implement_int003_cancel_observability_journal_markers",
-  "updated_at": "2026-09-23T18:47:17+08:00",
+  "updated_at": "2026-09-23T19:33:31+08:00",
   "revalidation_triggers": [
     "docs_tip_changed_from_implementation_tip",
     "observability_audit_or_gap_matrix_superseded",
@@ -28,17 +28,18 @@ Policy version: 1.0.0
     "docs/evidence/typo-correction-002-int003-cadence-003-to-product-gap-matrix-2026-09-23.md",
     "docs/evidence/typo-correction-002-int003-cancel-observability-markers-field-budget-2026-09-23.md",
     "docs/evidence/typo-correction-002-int003-cancel-observability-markers-impl-2026-09-23.md",
+    "docs/evidence/typo-correction-002-int003-cancel-observability-markers-tip-rebind-2026-09-23.md",
     "docs/assignments/typo-correction-002-int003-stale-cancel-product-capture-001.md",
     "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md",
     "docs/architecture/decisions/0027-enterprise-local-diagnostic-observability.md"
   ],
   "responsibilities": {
     "domain_owner": "Input Intelligence Maintainer",
-    "executor": "Grok Bot (iOS开发大师) — AUTH consumed; implementing markers under Human continue-auth",
+    "executor": "Grok Bot (iOS开发大师) — AUTH consumed; markers landed + #152 squash-merged; tip rebound to main squash SHA",
     "environment_executor": "Not Applicable for Simulator/Device Hub arm under this Assignment; Capture remains a separate AUTH",
-    "human_dependency": "Human Product Owner / Product Lead — continue-auth granted consume + open implementation PR; do not merge without separate ask",
-    "architecture_reviewer": "Architecture & Knowledge Steward — ADR 0027 field-budget recorded; post-tip Architecture review still separate",
-    "quality_reviewer": "Independent Quality reviewer — required after implementation tip for focused emit/non-regression tests",
+    "human_dependency": "Human Product Owner / Product Lead — continue-auth consume+impl satisfied; #152 squash-merged by Human; Capture/Gate still separate asks",
+    "architecture_reviewer": "Architecture & Knowledge Steward — Arch Pass with conditions recorded 2026-09-23 Asia/Shanghai on squash tip (docs hygiene rebind)",
+    "quality_reviewer": "Independent Quality reviewer — Bounded Pass with conditions recorded 2026-09-23 Asia/Shanghai (incl. CountMetric tip arithmetic reconciliation)",
     "product_approver": "Human Product Owner / Product Lead"
   }
 }
@@ -48,14 +49,17 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | **Active** (AUTH **Consumed**; markers implementing) |
-| **Phase** | Markers slice Done on implementation tip; AUTH consumed; PR unmerged; Capture still Proposed |
+| **Lifecycle** | **Active** (AUTH **Consumed**; markers landed; child not Closed) |
+| **Phase** | Markers slice **merged on main** via [#152](https://github.com/shchnk1103/Universe-Keyboard/pull/152) squash tip; AUTH consumed; Capture still Proposed |
 | **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001.md) — **Consumed** at `2026-09-23T18:47:17+08:00` |
-| **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** |
+| **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** (not Closed by markers) |
 | **Tip baseline (docs Live mark)** | `9b8b7a73f4d373adbd7ee436d318cde3d9bc4c78` (#151) |
+| **Implementation / squash tip** | `c1869cf9dda9f1643495e8ebdcfb67acc788b843` (#152 squash-merge onto main) |
+| **Architecture review** | **Pass with conditions** — `2026-09-23 Asia/Shanghai` (bound to squash tip; does not Close parent / Gate) |
+| **Quality review** | **Bounded Pass with conditions** — `2026-09-23 Asia/Shanghai` (incl. CountMetric field-budget tip arithmetic; does not Close parent / Gate) |
 | **Assignment Authority** | Human Product Owner / Product Lead |
-| **Decision Source / Date** | Human chose audit **Option B**; Live mark after #150; continue-auth consume+impl PR — `2026-09-23 Asia/Shanghai` |
-| **Next** | Land markers tip → hosted CI → Human merge decision; then separate Architecture/Quality; Capture AUTH stays Proposed |
+| **Decision Source / Date** | Human chose audit **Option B**; Live mark after #150; continue-auth consume+impl; Human squash-merged #152 — `2026-09-23 Asia/Shanghai` |
+| **Next** | Capture AUTH stays **Proposed**; separate Live Capture AUTH required before product cancel proof; no Product Gate / parent Close from markers alone |
 | **Non-claims** | Not Capture Live; not Product Gate; not parent Close; no cancel proof from markers alone; Capture Assignment/AUTH remains Proposed |
 
 ## Authority
@@ -86,12 +90,12 @@ See AUTH + field-budget evidence. Emit gated by high-fidelity window. No composi
 - Product Gate / parent Close / Release / TestFlight
 - Capturing under this AUTH
 - Changing 180 ms / eligibility unless emit correctness requires it
-- Merging the implementation PR without separate Human ask
+- Merging further work without separate Human ask (markers #152 already Human-merged)
 - Marking Capture AUTH Live
 
 ## Exit Criteria (Live implementation slice)
 
-1. AUTH consumed before first Swift change; tip + schema/HF discipline recorded — **in progress on this PR**.
+1. AUTH consumed before first Swift change; tip + schema/HF discipline recorded — **met**; squash tip on main via #152.
 2. ADR 0027 field-budget review completed — **met**.
 3. Minimal emit points land; focused unit/contract tests for schema/fields.
 4. Observe-only by default (no 180 ms / eligibility change).
@@ -105,4 +109,4 @@ See AUTH + field-budget evidence. Emit gated by high-fidelity window. No composi
 
 ## Outcome (current)
 
-AUTH **Consumed** at `2026-09-23T18:47:17+08:00` under Human continue-auth. Field-budget accepted. Markers implementation follows on the same PR. Capture AUTH remains Proposed. Parent Active. No Gate.
+AUTH **Consumed** at `2026-09-23T18:47:17+08:00` under Human continue-auth. Field-budget accepted. Markers landed and Human squash-merged [#152](https://github.com/shchnk1103/Universe-Keyboard/pull/152) to main tip `c1869cf9dda9f1643495e8ebdcfb67acc788b843`. Architecture **Pass with conditions** and Quality **Bounded Pass with conditions** noted `2026-09-23 Asia/Shanghai` (docs hygiene rebind). Capture AUTH remains Proposed. Parent Active. No Gate. Parent TYPO-CORRECTION-002 **not** Closed.
