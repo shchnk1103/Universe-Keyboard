@@ -115,7 +115,7 @@ Reference screenshots used during design may live only under local `photos/` (gi
 | Kind | Size |
 |---|---|
 | SF Symbols (delete / return / globe / emoji) | **22** pt |
-| Letter groups / character titles | **16** pt |
+| Letter groups / character titles | **17** pt |
 | Function text (中、选拼音、123、#+=、`^_^`) | **15** pt |
 | Space title（拼音） | **14** pt |
 

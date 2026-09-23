@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-09-23 — 键盘字母与标点字号微调
+
+- 英文字母、标点字符及九键字母组字号从 `16 pt` 调整为 `17 pt`，回应公测用户反馈偏小的问题；按键尺寸和布局不变。
+
 ## 2026-09-23 — 主 App 操作按钮深浅色对比度
 
 - 共享 `AppActionButton` 的可点击 primary 改为浅色黑底白字、深色白底黑字；iOS 26 保留 Liquid Glass（Reduce Transparency 时走实心 fallback）。
