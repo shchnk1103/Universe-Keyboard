@@ -9,9 +9,9 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Consumed AUTH: INT-003 product capture — long composition, <180 cadence, stale cancel observation",
   "lifecycle": "active",
-  "current_phase": "AUTH Consumed; Bounded/Pass-with-conditions on main; Architecture Pass-with-conditions on main via #158; Quality Bounded Pass-with-conditions receipt opened (docs PR, unmerged); still not Product Gate",
+  "current_phase": "AUTH Consumed; Evidence+Arch+Quality on main via #157/#158/#159; Product residual Decision pending Human (Accept vs Remediate undecided); still not Product Gate",
   "authorization_action": "capture_int003_stale_cancel_product_observation_designated_simulator",
-  "updated_at": "2026-09-23T21:30:02+08:00",
+  "updated_at": "2026-09-23T21:41:00+08:00",
   "revalidation_triggers": [
     "docs_tip_changed_from_c1869cf",
     "observability_audit_or_gap_matrix_superseded",
@@ -35,7 +35,8 @@ Policy version: 1.0.0
     "docs/reviews/typo-correction-002-int003-stale-cancel-product-capture-2026-09-23-001-architecture-review.md",
     "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-ARCHITECTURE-001.md",
     "docs/reviews/typo-correction-002-int003-stale-cancel-product-capture-2026-09-23-001-quality-review.md",
-    "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-QUALITY-001.md"
+    "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-QUALITY-001.md",
+    "docs/product-decisions/TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-PRODUCT-RESIDUAL.md"
   ],
   "responsibilities": {
     "domain_owner": "Input Intelligence Maintainer",
@@ -43,7 +44,7 @@ Policy version: 1.0.0
     "environment_executor": "Grok Bot — designated Device Hub Simulator arm/capture under consumed AUTH",
     "human_dependency": "Human Product Owner / Product Lead — visual attestation during Live capture (required for Product-grade claims; may be pending/absent for journal-only bounded observation)",
     "architecture_reviewer": "Architecture Pass-with-conditions on main via #158 under AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-ARCHITECTURE-001",
-    "quality_reviewer": "Quality receipt opened under AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-QUALITY-001 (docs PR, leave unmerged until Human asks)",
+    "quality_reviewer": "Quality Bounded Pass-with-conditions on main via #159 under AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-QUALITY-001",
     "product_approver": "Human Product Owner / Product Lead"
   }
 }
@@ -54,7 +55,7 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | **Active** (AUTH **Consumed**; evidence amended under continue-auth) |
-| **Phase** | AUTH Consumed; evidence + Architecture on main (#157/#158) — **Bounded / Pass-with-conditions**; Quality **Bounded Pass-with-conditions** receipt (docs PR, unmerged); Capture ≠ Gate |
+| **Phase** | AUTH Consumed; evidence + Architecture + Quality on main (#157/#158/#159) — **Bounded / Pass-with-conditions**; Product residual **Decision pending Human**; Capture ≠ Gate |
 | **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) — **Consumed** |
 | **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** (do **not** Close) |
 | **Capture install tip** | `80091f35cc5411b292eca78662f39e2b91694045` (includes markers_impl `c1869cf9…`) |
@@ -99,4 +100,4 @@ QA-001 Product Gate; paired performance; physical substitute; parent Close; Rele
 
 ## Outcome (current)
 
-AUTH **Consumed**. Evidence on main via #157; Architecture on main via #158 (`f555670f574c…`). Disposition: **Bounded / Pass-with-conditions**. Independent Quality **Bounded Pass with conditions** under AUTH-…-QUALITY-001 (receipt + AUTH/Assignment on docs PR; **do not auto-merge** Quality PR). Parent Active. Markers AUTH Consumed. No Product Gate. Next: Product accounting; Gate only under separate AUTH (usually not yet).
+AUTH **Consumed**. Evidence / Architecture / Quality on main via #157 / #158 / #159 (`73de0d44…`). Disposition: **Bounded / Pass-with-conditions**. Product residual [`…-PRODUCT-RESIDUAL`](../product-decisions/TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-PRODUCT-RESIDUAL.md) is **Decision pending Human** (Accept conditions vs Open remediation AUTH — undecided). Parent Active. Markers AUTH Consumed. No Product Gate / Close / Swift / TestFlight / Release from this residual draft.
