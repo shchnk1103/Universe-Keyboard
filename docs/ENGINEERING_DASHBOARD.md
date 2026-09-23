@@ -8,6 +8,42 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## SCHEME-LICENSE-DOWNLOAD-CTA-001 — 第三方方案许可下载单按钮
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-001.md) `Closed`
+- **Current phase:** Human Product Gate **Pass with conditions**；`SLD-CTA-GATE-01`–`04` 均 `accept`；父 Assignment 与 Gate Assignment 均已关闭（[`Product Decision`](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate.md)）
+- **Non-claims:** 不声称真实网络下载/RIME 部署成功；Simulator observation 仍是 Human-attested，非 Device-attested；Quality receipt 只绑定写回前 22-file package；无 commit / push / PR / merge / TestFlight / Release
+- **Next:** publication 由独立 [`SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001`](assignments/scheme-license-download-cta-publication-001.md) 执行；该 child 只到 draft PR，不含 rebase 或 merge
+- **Sources:** [PD](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-authorization.md) · [Implementation AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-001.md) · [Quality revalidation](reviews/scheme-license-download-cta-quality-revalidation-001.md) · [Human-attested Simulator observation](evidence/scheme-license-download-cta-simulator-observation-2026-09-23.md) · [Gate packet](evidence/scheme-license-download-cta-product-gate-packet-2026-09-23.md) · [Product Gate decision](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate.md) · [Gate Assignment](assignments/scheme-license-download-cta-product-gate-001.md) · [Gate decision AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PRODUCT-GATE-DECISION-001.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `grok/scheme-license-download-cta-001`
+
+## SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001 — 有界 commit、push 与 draft PR
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-publication-001.md) `Active`
+- **Current phase:** MAIN-SYNC-001 已完成；本地候选 `270273a` 已 rebase 到最新 `main`，strict Swift format、KeyboardCore 1,158/0、RimeBridgeTests 82 passed + 20 skipped、App + Keyboard 394 passed + 9 skipped、Release build 与 RIME Vendor verify 均通过
+- **Non-claims:** 未 push/开 PR；旧 Product Gate/Quality 不覆盖 post-rebase 候选；原 publication AUTH 已 superseded；不 merge
+- **Next:** fresh independent Quality revalidation → Human Product Gate → 新 publication AUTH；这些前置完成前不 push/开 PR
+- **Sources:** [Assignment](assignments/scheme-license-download-cta-publication-001.md) · [Authorization](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001.md) · [Product Gate](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate.md) · [Quality revalidation](reviews/scheme-license-download-cta-quality-revalidation-001.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `grok/scheme-license-download-cta-001`
+
+## SCHEME-LICENSE-DOWNLOAD-CTA-REGRESSION-001 — 许可下载流程回归覆盖
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-regression-tests-001.md) `Completed`
+- **Current phase:** 五条许可流程回归通过；strict format 通过；App + Keyboard Debug：UniverseKeyboardTests 379 passed / 9 skipped，KeyboardTests 15 passed
+- **Non-claims:** 不等于独立 Quality、Product Gate、XCUITest/人工验收、commit / push / merge 或 Release
+- **Next:** XCUITest/人工交互/真实下载未覆盖；最终树独立 Quality 已由 [`revalidation receipt`](reviews/scheme-license-download-cta-quality-revalidation-001.md) 复核
+- **Sources:** [Parent Assignment](assignments/scheme-license-download-cta-001.md) · [P2 Quality finding](reviews/scheme-license-download-cta-quality-review-001.md) · [AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-REGRESSION-001.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `grok/scheme-license-download-cta-001`
+
+## SCHEME-LICENSE-DOWNLOAD-CTA-QUALITY-REVALIDATION-001 — 最终树独立 Quality revalidation
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-quality-revalidation-001.md) `Reviewed`
+- **Current phase:** fixed 22-file package 的独立 GPT-6 Luna Quality **Pass with conditions**；strict lint 9 files passed；App + Keyboard Debug 为 UniverseKeyboardTests 379 passed / 9 skipped、KeyboardTests 15 passed
+- **Non-claims:** 不等于 Product Gate、人工/真机验收、commit / push / merge 或 Release
+- **Next:** Product Gate 已完成；Quality child 保持 `Reviewed`，其 receipt 仍绑定状态写回前的精确 22-file package，不覆盖写回后的文档树
+- **Sources:** [Parent Assignment](assignments/scheme-license-download-cta-001.md) · [Prior Quality receipt](reviews/scheme-license-download-cta-quality-review-001.md) · [Revalidation receipt](reviews/scheme-license-download-cta-quality-revalidation-001.md) · [AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-QUALITY-REVALIDATION-001.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `grok/scheme-license-download-cta-001`
+
 ## APP-ACTION-BUTTON-CONTRAST-001 — 主 App 操作按钮深浅色对比度
 
 - **Lifecycle:** [`Assignment`](assignments/app-action-button-contrast-001.md) `Closed`

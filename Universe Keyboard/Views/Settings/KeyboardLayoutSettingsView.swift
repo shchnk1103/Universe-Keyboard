@@ -82,12 +82,25 @@ struct KeyboardLayoutSettingsView: View {
         .sheet(item: $presentedLicense) { presentation in
             SchemeLicenseView(
                 license: presentation.license,
-                acceptTitle: "已阅读并继续安装",
+                acceptTitle: SchemeLicenseDownloadCopy.agreeAndDownload,
                 acceptSystemImage: "arrow.down.to.line"
             ) {
                 pendingNineKeyAfterInstall = true
-                rimeStore.acceptLicense(for: presentation.schemaID)
-                rimeStore.startDownload(schemaID: presentation.schemaID)
+                for effect in SchemeLicenseDownloadFlow.effects(
+                    for: .agreeToFirstDownload(
+                        entryPoint: .nineKeyInstall,
+                        schemaID: presentation.schemaID
+                    )
+                ) {
+                    switch effect {
+                    case .acceptLicense(_, let schemaID):
+                        rimeStore.acceptLicense(for: schemaID)
+                    case .startDownload(_, let schemaID):
+                        rimeStore.startDownload(schemaID: schemaID)
+                    default:
+                        assertionFailure("Download confirmation emitted an unexpected effect")
+                    }
+                }
             }
         }
         .onChange(of: rimeStore.downloadState) { _, newValue in
@@ -218,27 +231,34 @@ struct KeyboardLayoutSettingsView: View {
 
     @MainActor
     private func enableNineKey() async {
-        if rimeStore.t9ReadinessMatched, rimeStore.rimeIceInstalledFilesExist {
+        let route = SchemeLicenseDownloadFlow.nineKeyRoute(
+            readinessMatched: rimeStore.t9ReadinessMatched,
+            resourcesExist: rimeStore.rimeIceInstalledFilesExist,
+            licenseAccepted: rimeStore.licenseAccepted(for: "rime_ice")
+        )
+
+        if route == .alreadyReady {
             rimeStore.persistNineKeyLayoutWhenReady()
             reload()
             rimeStore.presentLayoutToast("已启用九宫格拼音", succeeded: true)
             return
         }
 
-        if !rimeStore.rimeIceInstalledFilesExist {
-            if !rimeStore.licenseAccepted {
-                if let schema = rimeStore.schemas.first(where: { $0.schemaID == "rime_ice" }),
-                    let license = schema.licenseDescriptor
-                {
-                    presentedLicense = PresentedSchemeLicense(schemaID: schema.schemaID, license: license)
-                }
+        if case .presentLicense = route {
+            guard let schema = rimeStore.schemas.first(where: { $0.schemaID == "rime_ice" }),
+                let license = schema.licenseDescriptor
+            else {
                 return
             }
-            pendingNineKeyAfterInstall = true
-            isBusy = true
-            // Download progress uses the existing global download toast.
-            rimeStore.startDownload(schemaID: "rime_ice")
-            isBusy = false
+            for effect in SchemeLicenseDownloadFlow.effects(
+                for: .requestFirstDownload(entryPoint: .nineKeyInstall, schemaID: schema.schemaID)
+            ) {
+                guard case .presentLicense(_, let schemaID) = effect else {
+                    assertionFailure("First-download request emitted an unexpected effect")
+                    continue
+                }
+                presentedLicense = PresentedSchemeLicense(schemaID: schemaID, license: license)
+            }
             return
         }
 
