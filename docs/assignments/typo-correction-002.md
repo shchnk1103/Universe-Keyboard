@@ -65,11 +65,12 @@ This parent remains **Active** for sidecar observability, INT-003, QA-001, and p
 ### INT-003 evidence package — 2026-09-23 (Stale-cancel Product Capture)
 
 - Capture AUTH [`AUTH-…-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) **Consumed**; Assignment [`…-stale-cancel-product-capture-001`](typo-correction-002-int003-stale-cancel-product-capture-001.md)
-- Squash-merge PR [#157](https://github.com/shchnk1103/Universe-Keyboard/pull/157) → main tip `b9b5f3b565b06845297cd2fdfbb5c4454bd83ba4` (`merged_at` 2026-09-23T13:22:01Z / 21:22 CST)
-- Evidence [`…-int003-stale-cancel-product-001.md`](../evidence/typo-correction-002-sim-run-2026-09-23-int003-stale-cancel-product-001.md) SHA-256 `3dde0362923fb36071c611134c6c0022ce70d20839afa2dd67894260428835b4` — **Bounded / Pass-with-conditions** (Capture ≠ Gate)
-- Architecture [`…-001-architecture-review.md`](../reviews/typo-correction-002-int003-stale-cancel-product-capture-2026-09-23-001-architecture-review.md) — **Pass with conditions** (docs PR; leave unmerged until Human asks); AUTH [`…-ARCHITECTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-ARCHITECTURE-001.md)
-- Residuals: `fence_discarded=0`; high `query_*` volume (Human visual covers post-pause narrative; journal alone insufficient)
-- Markers AUTH remains **Consumed**. Parent remains **Active**. No Product Gate / Close.
+- Squash-merge PR [#157](https://github.com/shchnk1103/Universe-Keyboard/pull/157) → evidence on main; squash-merge PR [#158](https://github.com/shchnk1103/Universe-Keyboard/pull/158) → Architecture on main tip `f555670f574c2eb19ffff16d93cf676b4beecebb` (`merged_at` 2026-09-23T13:26:08Z / 21:26 CST)
+- Evidence [`…-int003-stale-cancel-product-001.md`](../evidence/typo-correction-002-sim-run-2026-09-23-int003-stale-cancel-product-001.md) SHA-256 `3dde0362923fb36071c611134c6c0022ce70d20839afa2dd67894260428835b4` — **Bounded / Pass-with-conditions** (Capture ≠ Gate); re-verified on tip after #158
+- Architecture [`…-001-architecture-review.md`](../reviews/typo-correction-002-int003-stale-cancel-product-capture-2026-09-23-001-architecture-review.md) SHA-256 `50fba2bc918c26a39a86419ef15a444e4fd28105629cdfcbcba85a18d85b13a4` — **Pass with conditions** (now on main via #158); AUTH [`…-ARCHITECTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-ARCHITECTURE-001.md) **Consumed**
+- Quality [`…-001-quality-review.md`](../reviews/typo-correction-002-int003-stale-cancel-product-capture-2026-09-23-001-quality-review.md) — **Bounded Pass with conditions** (docs PR; leave unmerged until Human asks); AUTH [`…-QUALITY-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-QUALITY-001.md) **Consumed**
+- Residuals: `fence_discarded=0`; high `query_*` volume (574/574) — Human visual covers post-pause narrative; journal alone insufficient
+- Markers AUTH remains **Consumed**. Parent remains **Active**. No Product Gate / Close. Gate only under separate AUTH (usually not yet).
 
 ### INT-003 evidence package — 2026-09-22 (Cadence-003)
 
