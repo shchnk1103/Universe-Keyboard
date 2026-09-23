@@ -10,9 +10,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Closed` |
-| **Phase** | Human Product Gate **Passed with accepted evidence conditions**；实现 commit `ab98e346d8cca67f2c77287e7ebb6516f4483160`；残差 `AABC-01`–`AABC-06` 均 `accept` |
-| **Non-claims** | 不等于无条件 Quality Pass 或 Device-attested；不授权 push / PR / merge / TestFlight / Release；目视为 Human-attested |
-| **Next** | 无（本 Assignment）。Human 观察 hosted CI 后自行 merge；本 Executor 不 merge |
+| **Phase** | Human Product Gate **Passed with accepted evidence conditions**；PR [#154](https://github.com/shchnk1103/Universe-Keyboard/pull/154) squash-merged `4d90b1c`；残差 `AABC-01`–`AABC-06` 均 `accept` |
+| **Non-claims** | 不等于无条件 Quality Pass 或 Device-attested；不授权 TestFlight / Release；目视为 Human-attested |
+| **Next** | 无（本 Assignment）。任何 TestFlight 或 Release 动作仍需单独授权 |
 | **Residuals** | [`quality review`](../reviews/app-action-button-contrast-001-quality-review.md) `AABC-01`–`AABC-06` `accept` |
 
 ---
@@ -27,7 +27,8 @@
 - **Quality review:** [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-QUALITY`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-QUALITY.md) — consumed；[`review`](../reviews/app-action-button-contrast-001-quality-review.md) **Pass with conditions**
 - **Authorization (Product Gate):** [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE.md) — consumed
 - **Authorization (scoped local commit):** [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT.md) — consumed; pre-rebase `ab98e34`, post-rebase implementation `a7cfc65`
-- **Authorization (push / PR):** [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-PUSH-PR`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-PUSH-PR.md) — consumed; Human owns CI observation and merge
+- **Authorization (push / PR):** [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-PUSH-PR`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-PUSH-PR.md) — consumed
+- **Authorization (merge):** [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-MERGE`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-MERGE.md) — consumed by squash `4d90b1c`
 - **Human observation:** [`app-action-button-contrast-001-human-attested-observation-2026-09-23.md`](../evidence/app-action-button-contrast-001-human-attested-observation-2026-09-23.md) — snapshot-bound **Human-attested** observation; not Device-attested
 - **Product Gate:** [`PD-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE`](../product-decisions/APP-ACTION-BUTTON-CONTRAST-001-product-gate.md) — **Accepted**
 
@@ -51,7 +52,7 @@
 | Human Product Gate | Consumed | Main-App contrast acceptance; Assignment Closed | [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE.md) → [`PD-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE`](../product-decisions/APP-ACTION-BUTTON-CONTRAST-001-product-gate.md) |
 | Scoped local commit | Consumed | 实现 commit post-rebase `a7cfc65f63e360d4c1179ab4108d778c016ce6e7`；SHA 回写 `ab86ca9f15d5bc4d8e03fcf85a2b9b855c0d9275` | [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT.md) |
 | Push / PR | Consumed | Push isolated branch and open PR; Human observes CI | [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-PUSH-PR`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-PUSH-PR.md) |
-| Merge | Not authorized | Human owns merge after hosted CI green | Human Product Owner |
+| Merge | Consumed | PR #154 squash-merged `4d90b1c48661a78f2d3c83262e53392e22570a04`; feature branch deleted | [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-MERGE`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-MERGE.md) |
 | Environment or external slice | Not applicable | 无 H-01 冻结载荷；实施后 Simulator 目视即可进入 Quality，真机为可选 Human Dependency | 真机不是 `Ready` 前置 |
 
 This is a manual advisory opt-in for A-01/B-01 only. This Assignment, its Authorization and its Product Decision are **not** Profile-included; validator coverage does not apply. Changing `.kos/project.json` requires a separate onboarding Assignment.
@@ -166,7 +167,7 @@ Stop and escalate if:
   - Docs: `UI_STYLE_GUIDE.md`, `CHANGELOG.md`, Assignment / PD / Dashboard mirrors
   - Independent Quality **Pass with conditions**（`AABC-01`–`AABC-06` `accept`）。Quality 独立重跑 App+Keyboard Debug **TEST SUCCEEDED**（381 / 9 skipped；KeyboardTests 15）。
   - Human 目视：[`SHA-bound Human-attested record`](../evidence/app-action-button-contrast-001-human-attested-observation-2026-09-23.md)；非 Device-attested。
-  - Product Gate 已接受；实现 commit `ab98e346d8cca67f2c77287e7ebb6516f4483160`；push / PR / merge 仍未授权。
+  - Product Gate 已接受；PR #154 squash-merged `4d90b1c48661a78f2d3c83262e53392e22570a04`。
 - **Primary files:** `AppActionButton.swift`, `AppActionButtonChromeTests.swift`, `UI_STYLE_GUIDE.md`, [`quality review`](../reviews/app-action-button-contrast-001-quality-review.md), [`Product Gate`](../product-decisions/APP-ACTION-BUTTON-CONTRAST-001-product-gate.md)
 - **Handoff Target:** None for this Assignment; future publication or Release gates are separate
 - **Revalidation Trigger:** Human reverses the primary pair; Liquid Glass is forbidden; brand accent is introduced; a new main-App action button surface is added outside `AppActionButton`; Keyboard Extension is pulled into scope
@@ -180,3 +181,4 @@ Stop and escalate if:
 - `2026-09-23 Asia/Shanghai` — Human Product Owner 接受残差并授权独立 Product Gate（[`AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE.md)）。Product Gate 接受既有 Quality 条件与 Human-attested 目视，Assignment `Reviewed → Closed`。无 Device-attested / commit / push / PR / merge / TestFlight / Release。
 - `2026-09-23 Asia/Shanghai` — Human 授权隔离分支有界 commit（[`AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT.md)）。实现 commit `ab98e346d8cca67f2c77287e7ebb6516f4483160`；本回写记录该身份。无 push / PR / merge。
 - `2026-09-23 Asia/Shanghai` — Human 授权 push 并开 PR，自行观察 CI 后再 merge（[`AUTH-APP-ACTION-BUTTON-CONTRAST-001-PUSH-PR`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-PUSH-PR.md)）。rebase onto `origin/main` `c1869cf` 后实现 SHA `a7cfc65`。Executor 不 merge。
+- `2026-09-23 Asia/Shanghai` — Human 授权 merge 与收尾。PR [#154](https://github.com/shchnk1103/Universe-Keyboard/pull/154) squash-merged `4d90b1c48661a78f2d3c83262e53392e22570a04`（same-head CI run 35856041750）。功能分支与隔离 worktree 已删。无 TestFlight / Release。
