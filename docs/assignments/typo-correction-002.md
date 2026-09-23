@@ -62,6 +62,15 @@ This parent remains **Active** for sidecar observability, INT-003, QA-001, and p
 
 
 
+### INT-003 evidence package — 2026-09-23 (Stale-cancel Product Capture)
+
+- Capture AUTH [`AUTH-…-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) **Consumed**; Assignment [`…-stale-cancel-product-capture-001`](typo-correction-002-int003-stale-cancel-product-capture-001.md)
+- Squash-merge PR [#157](https://github.com/shchnk1103/Universe-Keyboard/pull/157) → main tip `b9b5f3b565b06845297cd2fdfbb5c4454bd83ba4` (`merged_at` 2026-09-23T13:22:01Z / 21:22 CST)
+- Evidence [`…-int003-stale-cancel-product-001.md`](../evidence/typo-correction-002-sim-run-2026-09-23-int003-stale-cancel-product-001.md) SHA-256 `3dde0362923fb36071c611134c6c0022ce70d20839afa2dd67894260428835b4` — **Bounded / Pass-with-conditions** (Capture ≠ Gate)
+- Architecture [`…-001-architecture-review.md`](../reviews/typo-correction-002-int003-stale-cancel-product-capture-2026-09-23-001-architecture-review.md) — **Pass with conditions** (docs PR; leave unmerged until Human asks); AUTH [`…-ARCHITECTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-ARCHITECTURE-001.md)
+- Residuals: `fence_discarded=0`; high `query_*` volume (Human visual covers post-pause narrative; journal alone insufficient)
+- Markers AUTH remains **Consumed**. Parent remains **Active**. No Product Gate / Close.
+
 ### INT-003 evidence package — 2026-09-22 (Cadence-003)
 
 - Child [`TYPO-CORRECTION-002-INT003-CADENCE-003`](typo-correction-002-int003-cadence-003.md) **Closed** after same-process smoke→rapid
