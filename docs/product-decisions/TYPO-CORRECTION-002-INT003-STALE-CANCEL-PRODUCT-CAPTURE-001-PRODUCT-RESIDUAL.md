@@ -5,9 +5,9 @@
   "schema_version": {"major": 1, "minor": 0},
   "record_id": "PD-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-RESIDUAL",
   "record_type": "decision",
-  "title": "INT-003 Capture residual disposition options — Accept conditions vs Open remediation AUTH (undecided)",
-  "status": "decision_pending_human",
-  "updated_at": "2026-09-23T21:41:00+08:00",
+  "title": "INT-003 Capture residual disposition — Human selected Open remediation (narrow query_* Proposed AUTH)",
+  "status": "remediate_path_selected_proposed_auth_opened",
+  "updated_at": "2026-09-23T21:49:00+08:00",
   "revalidation_triggers": [
     "human_chooses_accept_or_remediate",
     "new_int003_run_requested",
@@ -19,9 +19,9 @@
   ],
   "decision": {
     "authority_role": "Human Product Owner / Product Lead",
-    "decision_source": "Human 2026-09-23 Asia/Shanghai: draft docs-only Capture Product residual / disposition; explain Accept vs Open remediation impacts; Human chooses later",
-    "scope": "Document the open residuals of TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001 after Architecture Pass-with-conditions and Quality Bounded Pass-with-conditions; present two disposition options without choosing",
-    "outcome": "Decision pending Human — neither Accept conditions nor Open remediation AUTH is selected by this docs residual",
+    "decision_source": "Human 2026-09-23 Asia/Shanghai after #161: chose Open remediation — narrow query_* Proposed AUTH (not Accept; not fence; not Live yet)",
+    "scope": "After #161 on main, Human selected Option B Open remediation narrowed to typo_recall.query_begin/query_outcome density; formalize via Proposed AUTH (not Live)",
+    "outcome": "Open remediation selected (narrow query_*). Proposed AUTH AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001 drafted; Accept not chosen; fence_discarded remains follow-on; not Live / no Swift / no Gate",
     "expires_at": null
   }
 }
@@ -31,13 +31,15 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | **`Decision pending Human`** — docs residual only; Accept vs Remediate **not** chosen |
+| Lifecycle | **`Remediate path selected`** — Human chose Option B (narrow `query_*`); Accept **not** chosen |
 | Target | `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` |
 | Evidence state | Same-process smoke→rapid; rapid consecutive &lt;180 (15/15); positive debounce cancel/reschedule; Human visual both Pass; Architecture Pass with conditions; Quality Bounded Pass with conditions |
-| Main tip after #159 | `73de0d4481051d9706c76a552ba73e23186f3846` |
+| Main tip after #161 | `65a0a11d197616928c66f3c148193982c9935945` |
+| Remediation Proposed AUTH | [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) — **Proposed / unconsumed** (not Live) |
+| Remediation Assignment | [`…-query-density-remediation-001`](../assignments/typo-correction-002-int003-query-density-remediation-001.md) |
 | Parent | `TYPO-CORRECTION-002` remains **Active** |
-| Non-claims | Not INT-003 Product Gate, Quality Gate, Release Gate, parent Close, Swift, TestFlight, Release; does **not** choose Accept vs Remediate for the Human |
-| Next | Human selects **Accept conditions** or **Open remediation AUTH**; until then child accounting stays open and Gate remains ineligible under this residual alone |
+| Non-claims | Not INT-003 Product Gate, Quality Gate, Release Gate, parent Close, Swift, TestFlight, Release; Proposed AUTH ≠ Live; Capture AUTH stays Consumed |
+| Next | Merge Proposed remediation docs PR when CI green (separate ask already in flight); later Live mark (separate ask) → diagnose-first |
 
 ## Package binding
 
@@ -87,7 +89,7 @@ Capture ≠ Gate. Markers AUTH Consumed. This docs residual does **not** invent 
 
 ## Two disposition options (undecided — Human chooses later)
 
-This section describes impacts only. **Neither option is selected by this document.**
+Option B (narrow `query_*`) is **selected**. Option A remains documented for contrast only and is **not** the active disposition.
 
 ### Option A — Accept conditions
 
@@ -104,9 +106,11 @@ This section describes impacts only. **Neither option is selected by this docume
 
 Accept conditions ≠ Product Pass. It is bounded evidence disposition only.
 
-### Option B — Open remediation AUTH
+### Option B — Open remediation AUTH — **SELECTED (narrow)**
 
-**Meaning if Human later chooses Open remediation:**
+**Human chose this path after #161** — formalized as narrow Proposed AUTH [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) (**Proposed**, not Live). Scope locked to `query_*` density diagnose-first; `fence_discarded` remains out-of-scope follow-on. Accept (Option A) was **not** chosen.
+
+**Meaning of Open remediation (narrow `query_*`):**
 
 | Area | Impact |
 |---|---|
@@ -126,7 +130,7 @@ This document does **not**:
 - Close parent `TYPO-CORRECTION-002` or auto-Close the Capture child;
 - authorize Swift / ObjC / RIME / `RimeRuntimeProvenance` restore;
 - authorize TestFlight or Release;
-- choose **Accept conditions** vs **Open remediation AUTH** for the Human;
+- mark the remediation AUTH **Live**, implement Swift, or grant Gate (those need separate asks);
 - invent a Gate AUTH or consume a Product residual Accept AUTH;
 - reopen Markers AUTH;
 - convert Capture disposition into Gate.
@@ -137,4 +141,4 @@ Docs-only hygiene after #159: bind the observation package and surface undecided
 
 ## Limits and revalidation
 
-Status remains **`Decision pending Human`** until a separate Human decision (and matching AUTH if Accept or Remediate is chosen) updates it. Revalidate on Human choice, new INT-003 Run, package/schema/provenance change, contradictory evidence, expanded scope, third-runtime re-review request, Gate AUTH request, or parent Close request. No ADR or CHANGELOG update is required for this draft alone.
+Disposition path is **Open remediation (narrow `query_*`)** via Proposed AUTH (not Live). Revalidate on Live mark, diagnose outcome, new INT-003 Run, package/schema/provenance change, contradictory evidence, expanded scope (e.g. fence follow-on), third-runtime re-review request, Gate AUTH request, or parent Close request. No ADR or CHANGELOG update is required for this Proposed remediation docs slice alone.

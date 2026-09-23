@@ -9,9 +9,9 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Consumed AUTH: INT-003 product capture — long composition, <180 cadence, stale cancel observation",
   "lifecycle": "active",
-  "current_phase": "AUTH Consumed; Evidence+Arch+Quality on main via #157/#158/#159; Product residual Decision pending Human (Accept vs Remediate undecided); still not Product Gate",
+  "current_phase": "AUTH Consumed; Evidence+Arch+Quality+#161 residual on main; Human selected narrow query_* Open remediation Proposed AUTH (not Live); still not Product Gate",
   "authorization_action": "capture_int003_stale_cancel_product_observation_designated_simulator",
-  "updated_at": "2026-09-23T21:41:00+08:00",
+  "updated_at": "2026-09-23T21:49:00+08:00",
   "revalidation_triggers": [
     "docs_tip_changed_from_c1869cf",
     "observability_audit_or_gap_matrix_superseded",
@@ -55,7 +55,7 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | **Active** (AUTH **Consumed**; evidence amended under continue-auth) |
-| **Phase** | AUTH Consumed; evidence + Architecture + Quality on main (#157/#158/#159) — **Bounded / Pass-with-conditions**; Product residual **Decision pending Human**; Capture ≠ Gate |
+| **Phase** | AUTH Consumed; evidence + Architecture + Quality + residual on main (#157/#158/#159/#161) — **Bounded / Pass-with-conditions**; Human selected narrow `query_*` remediation Proposed AUTH (not Live); Capture ≠ Gate |
 | **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) — **Consumed** |
 | **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** (do **not** Close) |
 | **Capture install tip** | `80091f35cc5411b292eca78662f39e2b91694045` (includes markers_impl `c1869cf9…`) |
@@ -100,4 +100,4 @@ QA-001 Product Gate; paired performance; physical substitute; parent Close; Rele
 
 ## Outcome (current)
 
-AUTH **Consumed**. Evidence / Architecture / Quality on main via #157 / #158 / #159 (`73de0d44…`). Disposition: **Bounded / Pass-with-conditions**. Product residual [`…-PRODUCT-RESIDUAL`](../product-decisions/TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-PRODUCT-RESIDUAL.md) is **Decision pending Human** (Accept conditions vs Open remediation AUTH — undecided). Parent Active. Markers AUTH Consumed. No Product Gate / Close / Swift / TestFlight / Release from this residual draft.
+AUTH **Consumed**. Evidence / Architecture / Quality on main via #157 / #158 / #159 (`73de0d44…`). Disposition: **Bounded / Pass-with-conditions**. Product residual [`…-PRODUCT-RESIDUAL`](../product-decisions/TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-PRODUCT-RESIDUAL.md) — Human selected **Open remediation (narrow `query_*`)**; Proposed AUTH [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) (**Proposed**, not Live). Parent Active. Markers AUTH Consumed. Capture AUTH Consumed (not Live remediation authority). No Product Gate / Close / Swift / TestFlight / Release from residual or Proposed remediation docs alone.
