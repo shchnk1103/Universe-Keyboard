@@ -327,7 +327,7 @@ class KeyboardViewController: UIInputViewController {
     /// 功能键 SF Symbol 字号（Delete / Return / Globe / 表情）。与文字标题字号分离。
     let functionKeySymbolPointSize: CGFloat = 22
     /// 字母键文字字号（26 键字母、九键 ABC… 字母组）。
-    let characterKeyTitlePointSize: CGFloat = 16
+    let characterKeyTitlePointSize: CGFloat = 17
     /// 功能键文字标题字号（中/英、123、选拼音、#+= 等），小于符号键。
     let functionKeyTitlePointSize: CGFloat = 15
     /// 空格键文字字号（含「拼音」）。
