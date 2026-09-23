@@ -457,4 +457,69 @@ final class DiagnosticEventTests: XCTestCase {
             )
         )
     }
+
+    func testTypoRecallCodesRoundTripWithFenceFieldsOnly() throws {
+        let fields = TypoCorrectionRecallDiagnosticMarkers.fenceFields(
+            recallEpoch: 3,
+            compositionRevision: 9,
+            operationOrdinal: 2,
+            normalizedComposition: "nihaoshijie"
+        )
+        let event = DiagnosticEvent(
+            utcTimestamp: Date(timeIntervalSince1970: 1_800_000_000),
+            monotonicNanoseconds: 99,
+            origin: .keyboardExtension,
+            processInstanceID: UUID(),
+            localSequence: 11,
+            appearanceID: UUID(),
+            code: .typoRecallDebounceCancelled,
+            level: .info,
+            category: .performance,
+            fields: fields
+        )
+
+        let decoded = try JSONDecoder().decode(
+            DiagnosticEvent.self,
+            from: JSONEncoder().encode(event)
+        )
+        XCTAssertEqual(decoded, event)
+        XCTAssertEqual(decoded.schemaVersion, 4)
+        XCTAssertEqual(decoded.code, .typoRecallDebounceCancelled)
+
+        let text = try XCTUnwrap(String(data: JSONEncoder().encode(event), encoding: .utf8))
+        XCTAssertFalse(text.contains("nihaoshijie"))
+        for forbidden in ["message", "preedit", "composition_text", "correctedInput"] {
+            XCTAssertFalse(text.contains("\"\(forbidden)\""))
+        }
+    }
+
+    func testTypoRecallQueryOutcomeCarriesFiniteReason() throws {
+        var fields = TypoCorrectionRecallDiagnosticMarkers.fenceFields(
+            recallEpoch: 1,
+            compositionRevision: 1,
+            operationOrdinal: 1,
+            normalizedComposition: "abcdefgh"
+        )
+        fields.append(.reason(.typoRecallQueryDiscarded))
+        let event = DiagnosticEvent(
+            utcTimestamp: .now,
+            monotonicNanoseconds: 5,
+            origin: .keyboardExtension,
+            processInstanceID: UUID(),
+            localSequence: 5,
+            code: .typoRecallQueryOutcome,
+            level: .info,
+            category: .performance,
+            fields: fields
+        )
+        XCTAssertEqual(
+            try JSONDecoder().decode(DiagnosticEvent.self, from: JSONEncoder().encode(event)),
+            event
+        )
+        XCTAssertEqual(DiagnosticEvent.Code.typoRecallQueryBegin.rawValue, "typo_recall.query_begin")
+        XCTAssertEqual(
+            DiagnosticEvent.Reason.typoRecallQuerySucceeded.rawValue,
+            "typo_recall_query_succeeded"
+        )
+    }
 }

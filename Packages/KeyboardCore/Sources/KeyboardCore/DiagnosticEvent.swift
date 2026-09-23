@@ -5,7 +5,7 @@ import Foundation
 /// 这个类型是跨 target 的持久化协议，不接受自由文本。若需要新的诊断维度，
 /// 必须先扩展下面的受控枚举并经过 ADR 0027 要求的字段审查。
 public struct DiagnosticEvent: Codable, Sendable, Equatable {
-    public static let schemaVersion = 3
+    public static let schemaVersion = 4
 
     public enum Origin: String, Codable, CaseIterable, Sendable {
         case mainApp = "main_app"
@@ -36,6 +36,18 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case rimeSyncPhaseChanged = "rime_sync.phase_changed"
         case rimeSyncSkipped = "rime_sync.skipped"
         case rimeSyncTerminal = "rime_sync.terminal"
+        /// INT-003: debounce work-item armed after eligibility (HF-gated).
+        case typoRecallDebounceScheduled = "typo_recall.debounce_scheduled"
+        /// INT-003: prior pending debounce cancelled on re-schedule or invalidate.
+        case typoRecallDebounceCancelled = "typo_recall.debounce_cancelled"
+        /// INT-003: hard invalidate bumped recallEpoch.
+        case typoRecallEpochBumped = "typo_recall.epoch_bumped"
+        /// INT-003: in-flight fence / yield / apply discarded as stale.
+        case typoRecallFenceDiscarded = "typo_recall.fence_discarded"
+        /// INT-003: contextual correction query about to run.
+        case typoRecallQueryBegin = "typo_recall.query_begin"
+        /// INT-003: contextual correction query finished with a finite Reason.
+        case typoRecallQueryOutcome = "typo_recall.query_outcome"
     }
 
     public enum Reason: String, Codable, CaseIterable, Sendable {
@@ -49,6 +61,12 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case generationChanged = "generation_changed"
         case writerReclaimed = "writer_reclaimed"
         case highFidelityExpired = "high_fidelity_expired"
+        /// INT-003 query outcome: fence held and candidates returned.
+        case typoRecallQuerySucceeded = "typo_recall_query_succeeded"
+        /// INT-003 query outcome: fence mismatch / stale discard after query.
+        case typoRecallQueryDiscarded = "typo_recall_query_discarded"
+        /// INT-003 query outcome: operation cancelled before/during query.
+        case typoRecallQueryCancelled = "typo_recall_query_cancelled"
     }
 
     public enum CountMetric: String, Codable, CaseIterable, Sendable {
@@ -63,6 +81,16 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         /// 0 = upper, 1 = middle, 2 = lower. Kept coarse so diagnostics never
         /// persist precise pointer coordinates.
         case candidateTouchBand = "candidate_touch_band"
+        /// Typo-recall fence epoch (content-free).
+        case recallEpoch = "recall_epoch"
+        /// Typo-recall composition revision (content-free).
+        case compositionRevision = "composition_revision"
+        /// Typo-recall operation ordinal (content-free).
+        case operationOrdinal = "operation_ordinal"
+        /// Normalized composition length only — never the text itself.
+        case compositionLength = "composition_length"
+        /// FNV-1a 32-bit of normalized composition; correlation fingerprint only.
+        case compositionFingerprint = "composition_fingerprint"
     }
 
     public enum DurationMetric: String, Codable, CaseIterable, Sendable {
