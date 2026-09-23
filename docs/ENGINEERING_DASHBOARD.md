@@ -11,11 +11,10 @@
 ## APP-ACTION-BUTTON-CONTRAST-001 — 主 App 操作按钮深浅色对比度
 
 - **Lifecycle:** [`Assignment`](assignments/app-action-button-contrast-001.md) `Closed`
-- **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；隔离分支实现 commit `ab98e34`；无 push
-- **Non-claims:** 不等于 Device-attested、push / PR / merge、TestFlight 或 Release
-- **Next:** Human 观察 hosted CI 后自行 merge；本 Assignment 无 Executor merge 动作
-- **Sources:** [PD](product-decisions/APP-ACTION-BUTTON-CONTRAST-001-authorization.md) · [Product Gate](product-decisions/APP-ACTION-BUTTON-CONTRAST-001-product-gate.md) · [Quality](reviews/app-action-button-contrast-001-quality-review.md) · [Human observation](evidence/app-action-button-contrast-001-human-attested-observation-2026-09-23.md)
-- **Worktree:** `/private/tmp/universe-keyboard-app-action-button-contrast-001` · branch `grok/app-action-button-contrast-001` @ `origin/main` `9b8b7a7`
+- **Current phase:** PR [#154](https://github.com/shchnk1103/Universe-Keyboard/pull/154) squash-merged `4d90b1c`；功能分支已删
+- **Non-claims:** 不等于 Device-attested、TestFlight 或 Release
+- **Next:** none for this Assignment
+- **Sources:** [PD](product-decisions/APP-ACTION-BUTTON-CONTRAST-001-authorization.md) · [Product Gate](product-decisions/APP-ACTION-BUTTON-CONTRAST-001-product-gate.md) · [Quality](reviews/app-action-button-contrast-001-quality-review.md) · [AUTH merge](authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-MERGE.md) · [Human observation](evidence/app-action-button-contrast-001-human-attested-observation-2026-09-23.md)
 
 ## CI-HEAVY-JOB-SPLIT-001 — 拆分 full 路径 heavy job
 
