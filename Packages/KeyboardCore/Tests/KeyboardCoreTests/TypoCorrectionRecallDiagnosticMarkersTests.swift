@@ -32,6 +32,7 @@ final class TypoCorrectionRecallDiagnosticMarkersTests: XCTestCase {
             category: .performance,
             fields: fields
         )
+
         let object = try JSONSerialization.jsonObject(with: JSONEncoder().encode(event))
             as? [String: Any]
         let encodedFields = try XCTUnwrap(object?["fields"] as? [[String: Any]])

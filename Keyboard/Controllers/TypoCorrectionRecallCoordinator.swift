@@ -279,20 +279,22 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         _ reason: DiagnosticEvent.Reason,
         token: TypoCorrectionRecallFenceSnapshot
     ) {
-        guard host.isHighFidelityDiagnosticsActive else { return }
-        var fields = TypoCorrectionRecallDiagnosticMarkers.fenceFields(
-            recallEpoch: token.recallEpoch,
-            compositionRevision: token.compositionRevision,
-            operationOrdinal: token.operationOrdinal,
-            normalizedComposition: token.normalizedComposition
-        )
-        fields.append(.reason(reason))
-        host.diagnosticsJournal.record(
-            code: .typoRecallQueryOutcome,
-            category: .performance,
-            appearanceID: host.diagnosticsAppearanceID,
-            fields: fields
-        )
+        #if DEBUG
+            guard host.isHighFidelityDiagnosticsActive else { return }
+            var fields = TypoCorrectionRecallDiagnosticMarkers.fenceFields(
+                recallEpoch: token.recallEpoch,
+                compositionRevision: token.compositionRevision,
+                operationOrdinal: token.operationOrdinal,
+                normalizedComposition: token.normalizedComposition
+            )
+            fields.append(.reason(reason))
+            host.diagnosticsJournal.record(
+                code: .typoRecallQueryOutcome,
+                category: .performance,
+                appearanceID: host.diagnosticsAppearanceID,
+                fields: fields
+            )
+        #endif
     }
 
     private func recordTypoRecallMarker(
@@ -329,17 +331,19 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         operationOrdinal: UInt64,
         normalizedComposition: String
     ) {
-        guard host.isHighFidelityDiagnosticsActive else { return }
-        host.diagnosticsJournal.record(
-            code: code,
-            category: .performance,
-            appearanceID: host.diagnosticsAppearanceID,
-            fields: TypoCorrectionRecallDiagnosticMarkers.fenceFields(
-                recallEpoch: recallEpoch,
-                compositionRevision: compositionRevision,
-                operationOrdinal: operationOrdinal,
-                normalizedComposition: normalizedComposition
+        #if DEBUG
+            guard host.isHighFidelityDiagnosticsActive else { return }
+            host.diagnosticsJournal.record(
+                code: code,
+                category: .performance,
+                appearanceID: host.diagnosticsAppearanceID,
+                fields: TypoCorrectionRecallDiagnosticMarkers.fenceFields(
+                    recallEpoch: recallEpoch,
+                    compositionRevision: compositionRevision,
+                    operationOrdinal: operationOrdinal,
+                    normalizedComposition: normalizedComposition
+                )
             )
-        )
+        #endif
     }
 }
