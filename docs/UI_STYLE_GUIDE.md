@@ -163,7 +163,7 @@ The main app lives under `Universe Keyboard/` and is SwiftUI-based. It should fe
 Reuse these components:
 
 - `AppTokens` (`AppRadius`, `AppSpacing`, `AppIconSize`): semantic layout constants — prefer these over raw `14` / `16` in shared chrome.
-- `AppActionButton`: main-app content actions such as download, deploy, retry, reset, and destructive management commands.
+- `AppActionButton`: main-app content actions such as download, deploy, retry, reset, and destructive management commands. Visual owner is `AppActionButtonChrome` (`PD-APP-ACTION-BUTTON-CONTRAST-001`): iOS 26 uses Liquid Glass (`.regular.interactive()`) unless Reduce Transparency is on. Primary enabled = label fill + systemBackground text (light black/white text, dark white/black text) with `0.92` glass tint; secondary = untinted glass + label text (iOS 18 grouped fill + `0.5 pt` separator); destructive = red-tinted glass + red text. Disabled/busy keep the same pair at `0.40` opacity. Do not hand-style a gray pill that reads as disabled.
 - `AppIconTile`: neutral grayscale soft icon tiles for lists and home cards.
 - `AppCard`: secondary grouped card chrome (default continuous corner `AppRadius.card`).
 - `SettingsGroup`: settings section title + content + optional caption footer.
@@ -191,7 +191,7 @@ Do not duplicate navigation row markup when `SettingsNavigationLink` fits. Do no
 - **Neutral palette (phase 1):** black / white / gray hierarchy (label / secondary / tertiary). Do not introduce a brand accent color yet. Global tab tint may stay `.primary`.
 - **Semantic color exceptions:** clear status only—e.g. home streak flame may use `.orange` when the user has input today. Do not repaint whole sections with category rainbows.
 - Copy tone: practical first, **slightly warm** one-liners OK on Home status captions and Settings group footers; avoid marketing slogans and long promotional blocks.
-- Use `AppActionButton` for explicit in-page commands. Do not hand-style `.bordered` / `.borderedProminent` buttons for download, deploy, retry, reset, license acceptance, or destructive management actions unless a new reusable variant is added first.
+- Use `AppActionButton` for explicit in-page commands. Do not hand-style `.bordered` / `.borderedProminent` buttons for download, deploy, retry, reset, license acceptance, or destructive management actions unless a new reusable variant is added first. Do not override fill or foreground at call sites; pass `prominence` and `.disabled` only.
 - For dense management actions inside `Form` sections, prefer a two-column adaptive grid with stable full-width action buttons over a single horizontal button row. Button labels must remain one line at normal text sizes and avoid vertical wrapping on narrow devices.
 - RIME deployment progress, success, and failure notifications should use the main-app global bottom toast instead of one-off page-local popups. Detail pages may keep logs and retry actions, but should not duplicate transient deployment notifications.
 - RIME candidate-learning backup, restore, reset, and automatic-backup operation results should also use the global bottom toast. The settings page should show stable per-scheme status with short text and compact icons, not a persistent message section for the last operation.

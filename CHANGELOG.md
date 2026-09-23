@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-09-23 — 主 App 操作按钮深浅色对比度
+
+- 共享 `AppActionButton` 的可点击 primary 改为浅色黑底白字、深色白底黑字；iOS 26 保留 Liquid Glass（Reduce Transparency 时走实心 fallback）。
+- Secondary 用近无 tint 的玻璃板；destructive 保持语义红；disabled 沿用同一颜色对并整体 40% 透明。
+- 独立 Quality 为 **Pass with conditions**；Human Product Gate 已接受既有残差与 Human-attested 目视。commit / push / Release 仍未授权。
+
 ## 2026-09-19 — 键盘按键可被 Simulator AX 独立发现并走 UIKit 路径
 
 - Keyboard 按键显式作为独立无障碍元素（`.keyboardKey`）；全幅 touch-routing overlay 不再占用 AX 空间，hit-routing 与 Debug overlay 绘制路径保持分离。
