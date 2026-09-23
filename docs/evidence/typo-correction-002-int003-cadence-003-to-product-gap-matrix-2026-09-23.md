@@ -64,4 +64,3 @@ Cadence-003 cleared **process-churn** and **rapid &lt;180** residuals for its Ru
 | **External Run artifact SHA** | **N/A** — matrix only; Cadence-003 JSONL SHA remains in the Cadence-003 evidence receipt (`b90e9fdc…`), not re-hashed here |
 | **Tip SHA verified** | `4a51228fc8e435d538e9a5f7342ae325502e1e66` |
 | **Cadence evidence SHA (cited, not recomputed)** | See Cadence-003 evidence / Product residual AUTH bindings; this matrix does not invent new hashes |
-

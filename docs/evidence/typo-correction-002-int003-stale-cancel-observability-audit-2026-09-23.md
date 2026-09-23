@@ -143,4 +143,3 @@ This audit recommends documenting A vs B in the Proposed capture Assignment/AUTH
 | **External Run / JSONL artifact SHA** | **N/A** — docs-only tip audit; no Simulator capture or journal file was produced under this receipt |
 | **Tip SHA verified** | `4a51228fc8e435d538e9a5f7342ae325502e1e66` (ancestor of this branch; matches `origin/main` after #148) |
 | **Sources** | Read-only inspection of coordinator + `DiagnosticEvent.Code` on that tip; no invented content hashes |
-
