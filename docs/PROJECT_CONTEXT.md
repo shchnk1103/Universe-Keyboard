@@ -100,7 +100,7 @@ Universe Keyboard/
 │   └── ContentView.swift                 — 双 Tab 布局（引导 / 设置）
 ├── Views/
 │   ├── Components/
-│   │   ├── AppActionButton.swift         — 主 App 内容操作按钮（Liquid Glass + fallback）
+│   │   ├── AppActionButton.swift         — 主 App 内容操作按钮（Liquid Glass + 深浅反转对比度）
 │   │   ├── InfoSection.swift             — 信息卡片容器
 │   │   ├── ToggleRow.swift               — 设置开关行
 │   │   ├── BulletRow.swift               — 项目符号行（dot / checkmark）
