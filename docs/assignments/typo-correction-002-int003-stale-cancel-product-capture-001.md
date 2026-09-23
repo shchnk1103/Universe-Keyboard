@@ -1,4 +1,4 @@
-# Assignment: TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001 — Proposed INT-003 product capture (stale cancel)
+# Assignment: TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001 — Live INT-003 product capture (stale cancel; unconsumed)
 
 Policy version: 1.0.0
 
@@ -7,18 +7,19 @@ Policy version: 1.0.0
   "schema_version": {"major": 1, "minor": 0},
   "record_id": "TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001",
   "record_type": "assignment",
-  "title": "Proposed INT-003 product capture: long composition, <180 cadence, stale cancel observation",
-  "lifecycle": "ready",
-  "current_phase": "Ready/Proposed — preflight docs only; waiting Human to mark matching AUTH Live before any capture",
+  "title": "Live AUTH: INT-003 product capture — long composition, <180 cadence, stale cancel observation (unconsumed)",
+  "lifecycle": "active",
+  "current_phase": "Active Live AUTH (unconsumed); waiting consume + separate Human ask before any Simulator/arm/Capture; markers already on main tip c1869cf9…",
   "authorization_action": "capture_int003_stale_cancel_product_observation_designated_simulator",
-  "updated_at": "2026-09-23T11:21:00+08:00",
+  "updated_at": "2026-09-23T19:39:00+08:00",
   "revalidation_triggers": [
-    "docs_tip_changed_from_4a51228",
+    "docs_tip_changed_from_c1869cf",
     "observability_audit_or_gap_matrix_superseded",
     "designated_simulator_or_arm_method_changed",
     "scope_expansion_toward_implementation_or_gates",
     "AUTH_revoked_or_executor_changed",
-    "parent_close_or_int003_product_gate_granted_elsewhere"
+    "parent_close_or_int003_product_gate_granted_elsewhere",
+    "markers_schema_or_emit_contract_changed_without_rebind"
   ],
   "authorization_refs": ["AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001"],
   "parent_refs": ["TYPO-CORRECTION-002"],
@@ -26,15 +27,18 @@ Policy version: 1.0.0
     "docs/evidence/typo-correction-002-int003-stale-cancel-observability-audit-2026-09-23.md",
     "docs/evidence/typo-correction-002-int003-cadence-003-to-product-gap-matrix-2026-09-23.md",
     "docs/evidence/typo-correction-002-int003-cadence-2026-09-22-003.md",
-    "docs/evidence/typo-correction-002-device-hub-validation.md"
+    "docs/evidence/typo-correction-002-device-hub-validation.md",
+    "docs/evidence/typo-correction-002-int003-cancel-observability-markers-impl-2026-09-23.md",
+    "docs/reviews/typo-correction-002-int003-cadence-2026-09-22-003-architecture-review.md",
+    "docs/reviews/typo-correction-002-int003-cadence-2026-09-22-003-quality-review.md"
   ],
   "responsibilities": {
     "domain_owner": "Input Intelligence Maintainer",
-    "executor": "Grok Bot (iOS开发大师) — docs preflight now; capture only after AUTH Live",
-    "environment_executor": "Grok Bot — designated Device Hub Simulator arm/capture only when AUTH Live",
-    "human_dependency": "Human Product Owner / Product Lead — must mark matching AUTH Live before any Simulator/capture; visual attestation during Live capture",
-    "architecture_reviewer": "Not Applicable for this Proposed preflight / capture slice — separate Architecture AUTH required after Live capture package",
-    "quality_reviewer": "Not Applicable for this Proposed preflight / capture slice — separate Quality AUTH required after Live capture package",
+    "executor": "Grok Bot (iOS开发大师) — AUTH Live/unconsumed; Capture only after consume + separate Human ask",
+    "environment_executor": "Grok Bot — designated Device Hub Simulator arm/capture only when AUTH consumed under separate Human ask",
+    "human_dependency": "Human Product Owner / Product Lead — AUTH Live marked; must separately authorize consume/run before any Simulator/capture; visual attestation during Live capture",
+    "architecture_reviewer": "Not Applicable for this Live-unconsumed docs / future capture slice — separate Architecture AUTH required after Live capture package",
+    "quality_reviewer": "Not Applicable for this Live-unconsumed docs / future capture slice — separate Quality AUTH required after Live capture package",
     "product_approver": "Human Product Owner / Product Lead"
   }
 }
@@ -44,26 +48,28 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | **Ready / Proposed** (not Active Live capture) |
-| **Phase** | Office-hours docs-only preflight complete; **no** Simulator / capture until AUTH is Live |
-| **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) — **Proposed / unconsumed** |
-| **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** |
-| **Tip baseline (docs)** | `4a51228fc8e435d538e9a5f7342ae325502e1e66` (after #148) |
+| **Lifecycle** | **Active** (AUTH Live / unconsumed) |
+| **Phase** | Active Live AUTH (unconsumed); waiting consume + separate Human ask before any Simulator/arm/Capture |
+| **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) — **Live / unconsumed** |
+| **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** (do **not** Close) |
+| **Tip baseline (docs)** | `c1869cf9dda9f1643495e8ebdcfb67acc788b843` (#152 markers on main); Proposed historical tip `4a51228fc8e435d538e9a5f7342ae325502e1e66` (#148/#149 path) |
+| **Markers AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001.md) remains **Consumed** |
 | **Assignment Authority** | Human Product Owner / Product Lead |
-| **Decision Source / Date** | Docs-only preflight package for Human review — `2026-09-23 Asia/Shanghai`; Live mark is a separate Human decision |
-| **Next** | Human reviews AUDIT + gap matrix + this Assignment/AUTH; marks AUTH **Live** when capture is wanted — until then stay Proposed |
-| **Non-claims** | Not Live; not Product Gate; not parent Close; not cancel-marker implementation; no Run ID |
+| **Decision Source / Date** | Human docs-only Live mark for Capture AUTH — `2026-09-23T19:39:00+08:00` Asia/Shanghai; still do not auto-run Capture |
+| **Next** | Separate Human ask to consume AUTH, then run Capture; do **not** auto-run from Live alone |
+| **Non-claims** | AUTH is Live but not consumed; Capture **not** run; not Product Gate; not parent Close; no Run ID; Markers AUTH stays Consumed; no Swift under this child |
 
 ## Authority
 
 - **Case / contract:** `TC2-CASE-INT-003` / `TC2-CTR-INT-002` ([Registry V2](../TYPO_BENCHMARK_REGISTRY_V2.md) — Pending).
 - **Scenario owner:** [Device Hub Validation](../evidence/typo-correction-002-device-hub-validation.md).
-- **Cadence lessons (carry forward):** [Cadence-003](../evidence/typo-correction-002-int003-cadence-2026-09-22-003.md) + [Product residual](../product-decisions/TYPO-CORRECTION-002-INT003-CADENCE-003-PRODUCT-RESIDUAL.md) — same-process and rapid &lt;180 cleared for that Run only; **not** Product Gate.
+- **Cadence lessons (carry forward):** [Cadence-003](../evidence/typo-correction-002-int003-cadence-2026-09-22-003.md) + [Product residual](../product-decisions/TYPO-CORRECTION-002-INT003-CADENCE-003-PRODUCT-RESIDUAL.md) — same-process and rapid &lt;180 cleared for that Run only; Architecture **Pass-with-conditions** + Quality **Bounded Pass** noted; **not** Product Gate; **not** Live authority for this Capture.
 - **Observability binding:** [Stale-cancel observability audit 2026-09-23](../evidence/typo-correction-002-int003-stale-cancel-observability-audit-2026-09-23.md).
 - **Gap matrix:** [Cadence-003 → Product gap matrix](../evidence/typo-correction-002-int003-cadence-003-to-product-gap-matrix-2026-09-23.md).
-- **Does not reuse** consumed Cadence-003 / Capture-002 capture AUTHs as Live authority.
+- **Markers on tip:** [Markers impl evidence](../evidence/typo-correction-002-int003-cancel-observability-markers-impl-2026-09-23.md) — tip `c1869cf9…`; Capture may later collect positive `typo_recall.*` cancel/debounce/epoch evidence.
+- **Does not reuse** consumed Cadence-003 / Capture-002 / Markers AUTHs as Live authority for this capture.
 
-## Environment (when Live)
+## Environment (when Live — execute only after consume)
 
 | Item | Value |
 |---|---|
@@ -71,19 +77,21 @@ Policy version: 1.0.0
 | Arm | App Group **container** prefs (`logging_enabled`, category); high-fidelity window refreshed; dismiss/reopen keyboard |
 | Journal | Dynamic `keyboard_extension-&lt;processInstanceID&gt;-…jsonl`; even-index `touch.terminal` starts for cadence math |
 | Package binding | Record tip + installed identities as demanded; do **not** restore `RimeRuntimeProvenance` under this Assignment |
+| Markers tip | `c1869cf9dda9f1643495e8ebdcfb67acc788b843` — positive `typo_recall.*` codes available |
 
-## Scope (Proposed; executes only after AUTH Live)
+## Scope (Live AUTH unconsumed; execute Capture only after consume + Human ask)
 
 1. Long synthetic composition on designated Simulator via **visible-key** taps (no `typeText` / pasteboard / host injection / candidate select).
 2. Continuous intervals with rapid inter-key **starts** &lt;180 ms, then pause ≥180 ms.
 3. Observe / attempt to prove:
    - no contextual candidate while typing;
-   - stale work cancelled (see observation plan — journal marker currently **missing**);
+   - stale work cancelled (journal markers now present on tip — prefer positive `typo_recall.*` evidence);
    - only the final unchanged composition receives a post-pause lookup.
 4. Same-process smoke→rapid binding (Cadence-003 lesson).
 5. Write a fresh Run evidence receipt under `docs/evidence/`; Architecture / Quality / Product Gate need **separate** AUTHs afterward.
+6. **Do not** invent new Capture procedures beyond this Assignment’s existing Live-when-consumed scope. **Do not** authorize Swift changes under this child.
 
-## Observation plan (cites audit)
+## Observation plan (cites audit + markers tip)
 
 | Collect | Rule |
 |---|---|
@@ -92,8 +100,9 @@ Policy version: 1.0.0
 | HF + dynamic JSONL growth | If absent → stop; re-arm; new Run ID |
 | Human visual: contextual during typing | Attest absence; journal alone cannot strongly prove |
 | Human visual: post-pause single lookup | Attest; correlate pause gap ≥180 ms |
-| Cancel / query / epoch journal markers | **Expected absent** on tip `4a51228` per audit — **do not** convert absence into cancel claim |
-| Stop if cancel unobservable | Produce **bounded Human+journal observation** only; do **not** self-declare Product Gate; escalate marker gap (docs-only Product condition vs future implementation AUTH) |
+| Cancel / query / epoch journal markers | **Present on tip `c1869cf9…`** — may collect positive `typo_recall.debounce_*` / `epoch_bumped` / `fence_discarded` / `query_*`; still do **not** self-declare Product Gate from Capture alone |
+| Post-bump epoch caveat | On invalidate: `epoch_bumped` then optional `debounce_cancelled` carry **post-bump** `recall_epoch`; correlators must not bind invalidate-path `debounce_cancelled` to the pre-bump epoch |
+| Stop if stimulus/arm fails | Produce **bounded Human+journal observation** only; do **not** self-declare Product Gate |
 
 ## Explicit non-goals
 
@@ -104,58 +113,64 @@ Policy version: 1.0.0
 - Release / TestFlight
 - Swift / ObjC / RIME changes under this Assignment / AUTH
 - Restoring `RimeRuntimeProvenance`
-- Treating this Ready/Proposed record as Live capture authority
+- Treating Live/unconsumed as already-consumed Capture authority
+- Auto-running Capture from Live alone
+- Reopening or altering Consumed Markers AUTH
 
 ## Dependencies
 
-1. Human marks matching AUTH **Live** before any Simulator / capture.
-2. Office-hours / docs-only now: assignment + AUTH remain Proposed/Ready.
-3. Parent TYPO-CORRECTION-002 stays Active regardless of this child’s Ready state.
+1. Matching AUTH is **Live / unconsumed**; still **consume** before any Simulator / capture; separate Human ask required before run.
+2. Markers already on main tip `c1869cf9…`; Markers AUTH stays **Consumed**.
+3. Parent TYPO-CORRECTION-002 stays Active regardless of this child’s Active Live-unconsumed state.
 
 ## Entry Criteria
 
 1. No required Assignment responsibility field is `UNKNOWN`.
-2. Observability audit + Cadence-003→Product gap matrix exist on tip baseline `4a51228…` and do not claim Product Gate / cancel proof.
-3. Matching AUTH exists as **Proposed / unconsumed** (this child’s Ready state does **not** authorize capture).
+2. Observability audit + Cadence-003→Product gap matrix exist and do not claim Product Gate / cancel proof from docs alone.
+3. Matching AUTH exists as **Live / unconsumed** (docs Proposed entry satisfied via #149; Live mark at `2026-09-23T19:39:00+08:00`).
 4. Parent [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active**.
 5. Designated Simulator UDID and Cadence-003 arm method are recorded.
-6. **Ready for docs preflight only.** Entering Active Live capture additionally requires Human marking the matching AUTH **Live**.
+6. Markers tip `c1869cf9…` (or revalidated) is the Live binding tip.
+7. **Active Live AUTH (unconsumed).** Entering Capture additionally requires consuming the matching AUTH and a separate Human ask before the first Simulator/arm/capture.
 
-## Exit Criteria (docs preflight slice — current)
+## Exit Criteria (docs Proposed slice — met via #149)
 
-1. Assignment + Proposed AUTH + audit + gap matrix are written under `docs/` with tip `4a51228…`, non-claims, and Cadence-003 residual dependency without overclaiming Product Gate.
-2. Explicit statement that journal cannot prove cancel on this tip remains intact.
-3. No Simulator / capture / Run ID / ACTIVE_WORK Live implication under this slice.
+1. Assignment + Proposed AUTH + audit + gap matrix written under `docs/` with tip `4a51228…`, non-claims, and Cadence-003 residual dependency without overclaiming Product Gate — **met** via #149.
+2. Explicit statement that journal could not prove cancel on pre-markers tip remained intact for that slice — **met**.
+3. No Simulator / capture / Run ID under the Proposed slice — **met**.
 
-## Exit Criteria (future Live capture slice — only after AUTH Live)
+## Exit Criteria (future Live capture slice — only after AUTH consume + Human ask)
 
 1. New Run ID on designated Simulator; tip + installed identities recorded as demanded.
 2. Same-process smoke→rapid binding and rapid even-index starts &lt;180 ms (or **inconclusive** with reason).
 3. Human visual attestations for contextual-while-typing and post-pause lookup (or bounded stop).
-4. Fresh evidence receipt under `docs/evidence/`; cancel absence not converted into cancel claim.
+4. Fresh evidence receipt under `docs/evidence/`; positive `typo_recall.*` observations preferred; correlators respect post-bump epoch caveat; Capture alone still does not imply Product Gate.
 5. Architecture / Quality / Product Gate remain **separate** AUTHs — not implied by capture alone.
 
 ## Stop Conditions
 
-- AUTH still Proposed → **stop** before any Simulator / capture.
-- Tip drifts from `4a51228…` without revalidation → stop and reopen.
+- AUTH revoked or not Live → **stop** before any Simulator / capture.
+- AUTH still unconsumed / no separate Human ask to run → **stop** before any Simulator / capture.
+- Tip drifts from `c1869cf9…` without revalidation → stop and reopen.
 - Rapid starts fail &lt;180 / process churn / HF-JSONL absent → **inconclusive**; new Run ID after fix.
-- Cancel markers absent (expected) → do **not** claim journal-proven cancel; bounded observation only; escalate marker gap via Product disposition vs future implementation AUTH — **do not implement** under this Assignment.
 - Any request for Swift / ObjC / RIME / `RimeRuntimeProvenance` restore / parent Close / Product Gate / Release → stop; needs separate AUTH.
+- Attempt to reuse consumed Cadence-003 / Capture-002 / Markers AUTH as Live Capture authority → stop.
 
 ## Required Evidence
 
 | Slice | Evidence |
 |---|---|
-| Preflight (now) | [`stale-cancel observability audit`](../evidence/typo-correction-002-int003-stale-cancel-observability-audit-2026-09-23.md); [`gap matrix`](../evidence/typo-correction-002-int003-cadence-003-to-product-gap-matrix-2026-09-23.md) |
-| Cadence residual (input) | [`Cadence-003`](../evidence/typo-correction-002-int003-cadence-2026-09-22-003.md); [`Product residual`](../product-decisions/TYPO-CORRECTION-002-INT003-CADENCE-003-PRODUCT-RESIDUAL.md) |
-| Live capture (future) | Fresh `docs/evidence/typo-correction-002-*-int003-*-….md` Run receipt — **not minted yet** |
+| Preflight (historical; met via #149) | [`stale-cancel observability audit`](../evidence/typo-correction-002-int003-stale-cancel-observability-audit-2026-09-23.md); [`gap matrix`](../evidence/typo-correction-002-int003-cadence-003-to-product-gap-matrix-2026-09-23.md) |
+| Cadence residual (input) | [`Cadence-003`](../evidence/typo-correction-002-int003-cadence-2026-09-22-003.md); [`Product residual`](../product-decisions/TYPO-CORRECTION-002-INT003-CADENCE-003-PRODUCT-RESIDUAL.md); Arch Pass-with-conditions + Quality Bounded Pass |
+| Live mark (now) | Matching AUTH **Live / unconsumed** at `2026-09-23T19:39:00+08:00`; tip baseline `c1869cf9…`; Markers AUTH Consumed |
+| Markers context | [`markers impl`](../evidence/typo-correction-002-int003-cancel-observability-markers-impl-2026-09-23.md) |
+| Live capture (future) | Fresh `docs/evidence/typo-correction-002-*-int003-*-….md` Run receipt — **not minted yet**; requires consume + separate Human ask |
 
 ## Handoff Target
 
-- **Now:** Human Product Owner / Product Lead — review Proposed AUTH + audit finding (journal cannot prove cancel).
+- **Now:** AUTH is Live / unconsumed. Next is Human squash-merge of this Live-mark PR after CI green, then a **separate** Human ask before any Capture consume/run.
 - **After Live capture:** Independent Architecture / Quality reviewers under **new** AUTHs; Product Gate only under an explicit Gate AUTH.
 
 ## Outcome (current)
 
-Preflight package written. Assignment is **Ready/Proposed**. No Run ID. No capture. Still not Live.
+AUTH is **Live / unconsumed** after Human authorization with tip `c1869cf9…` (markers already on main). Assignment lifecycle **Active**. Capture **not** run. Markers AUTH remains **Consumed**. Parent Active (not Closed). No Gate. Next = Human merge of Live mark, then separate ask before consume/Capture.
