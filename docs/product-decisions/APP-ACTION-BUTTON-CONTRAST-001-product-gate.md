@@ -35,8 +35,8 @@
 |---|---|
 | Status | accepted |
 | Phase | Human Product Gate **Passed with accepted evidence conditions**；Assignment `Closed` |
-| Evidence | Uncommitted snapshot on `HEAD` `9b8b7a73…`; `AppActionButton.swift` SHA-256 `a25c6a8d…`; independent Quality App + Keyboard `UniverseKeyboardTests 381 / 9 skipped`, `KeyboardTests 15`; Human-attested visual observation |
-| Non-claims | Not Device-attested; not a Quality-reverified physical-device result; not commit / push / PR / merge / TestFlight / App Store Connect / Release |
+| Evidence | Implementation commit `ab98e346d8cca67f2c77287e7ebb6516f4483160` on isolated branch; `AppActionButton.swift` SHA-256 `a25c6a8d…`; independent Quality App + Keyboard `UniverseKeyboardTests 381 / 9 skipped`, `KeyboardTests 15`; Human-attested visual observation |
+| Non-claims | Not Device-attested; not a Quality-reverified physical-device result; not push / PR / merge / TestFlight / App Store Connect / Release |
 | Next | None for this Assignment; any publication, commit or release gate requires separate authorization |
 
 ## Decision
@@ -50,7 +50,7 @@ Human Product Owner accepted the main-App action-button contrast Product Gate fo
 
 The accepted evidence is bounded to:
 
-1. Shared `AppActionButton` / `AppActionButtonChrome` uncommitted snapshot in `/private/tmp/universe-keyboard-app-action-button-contrast-001` (`HEAD` `9b8b7a73f4d373adbd7ee436d318cde3d9bc4c78`; `AppActionButton.swift` SHA-256 `a25c6a8d1962fcdde1413bae39e5151f2aad37d0b008cc2d94e6e6ad1a38f595`).
+1. Shared `AppActionButton` / `AppActionButtonChrome` at isolated-branch commit `ab98e346d8cca67f2c77287e7ebb6516f4483160` (`AppActionButton.swift` SHA-256 `a25c6a8d1962fcdde1413bae39e5151f2aad37d0b008cc2d94e6e6ad1a38f595`). Product Gate itself was accepted on the matching uncommitted snapshot.
 2. Independent Quality Pass with conditions, including independently re-run App + Keyboard Debug **TEST SUCCEEDED** (`UniverseKeyboardTests` 381 executed, 9 skipped; `KeyboardTests` 15).
 3. Human Product Owner in-session visual verification: 「视觉上我觉得可以通过。」 Grade remains Human-attested.
 
@@ -59,7 +59,7 @@ The accepted evidence is bounded to:
 | Residual | Gate disposition |
 |---|---|
 | `AABC-01` — no Device-attested UUID/SHA-256/dSYM/frozen manifest | `accept` — Human-attested observation is sufficient for this bounded Product Gate; no Device-attested claim is made |
-| `AABC-02` — no frozen implementation SHA / dirty-tree identity | `accept` — worktree snapshot hashes are recorded; commit / push remain unauthorized |
+| `AABC-02` — no frozen implementation SHA / dirty-tree identity | `accept` — implementation `ab98e34` is now recorded on the isolated branch; push remains unauthorized |
 | `AABC-03` — three call sites add extra `.opacity(0.45)` on disabled | `accept` — existing Quality disposition remains accepted; optional later cleanup |
 | `AABC-04` — chrome unit tests do not cover `glassEffect` / call sites | `accept` — existing Quality disposition remains accepted |
 | `AABC-05` — dark secondary glass lift not Quality-glanced | `accept` — existing Quality disposition remains accepted |

@@ -10,7 +10,7 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Closed` |
-| **Phase** | Human Product Gate **Passed with accepted evidence conditions**；残差 `AABC-01`–`AABC-06` 均 `accept` |
+| **Phase** | Human Product Gate **Passed with accepted evidence conditions**；实现 commit `ab98e346d8cca67f2c77287e7ebb6516f4483160`；残差 `AABC-01`–`AABC-06` 均 `accept` |
 | **Non-claims** | 不等于无条件 Quality Pass 或 Device-attested；不授权 push / PR / merge / TestFlight / Release；目视为 Human-attested |
 | **Next** | 无（本 Assignment）。任何 push、发布、TestFlight 或 Release 动作仍需单独授权 |
 | **Residuals** | [`quality review`](../reviews/app-action-button-contrast-001-quality-review.md) `AABC-01`–`AABC-06` `accept` |
@@ -26,7 +26,7 @@
 - **Authorization (implementation slice):** [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-IMPLEMENT`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-IMPLEMENT.md) — consumed on delivery
 - **Quality review:** [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-QUALITY`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-QUALITY.md) — consumed；[`review`](../reviews/app-action-button-contrast-001-quality-review.md) **Pass with conditions**
 - **Authorization (Product Gate):** [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE.md) — consumed
-- **Authorization (scoped local commit):** [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT.md) — isolated branch, no push
+- **Authorization (scoped local commit):** [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT.md) — consumed by `ab98e346d8cca67f2c77287e7ebb6516f4483160`; isolated branch, no push
 - **Human observation:** [`app-action-button-contrast-001-human-attested-observation-2026-09-23.md`](../evidence/app-action-button-contrast-001-human-attested-observation-2026-09-23.md) — snapshot-bound **Human-attested** observation; not Device-attested
 - **Product Gate:** [`PD-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE`](../product-decisions/APP-ACTION-BUTTON-CONTRAST-001-product-gate.md) — **Accepted**
 
@@ -48,7 +48,7 @@
 | Main-App implementation | Authorized | Shared `AppActionButton` chrome + tests + style-guide amendment | Consumed [AUTH-APP-ACTION-BUTTON-CONTRAST-001-IMPLEMENT](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-IMPLEMENT.md) |
 | Independent Quality | Authorized | Light/dark × primary/secondary/destructive × enabled/disabled — Pass with conditions | Consumed [AUTH-APP-ACTION-BUTTON-CONTRAST-001-QUALITY](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-QUALITY.md) → [review](../reviews/app-action-button-contrast-001-quality-review.md) |
 | Human Product Gate | Consumed | Main-App contrast acceptance; Assignment Closed | [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE.md) → [`PD-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE`](../product-decisions/APP-ACTION-BUTTON-CONTRAST-001-product-gate.md) |
-| Scoped local commit | Authorized | Isolated branch only; no push | [AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT.md) |
+| Scoped local commit | Consumed | 实现 commit `ab98e346d8cca67f2c77287e7ebb6516f4483160` + 本次 SHA 回写；不 push | [`AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT.md) |
 | Push / PR / merge | Not authorized | | New Authorization required |
 | Environment or external slice | Not applicable | 无 H-01 冻结载荷；实施后 Simulator 目视即可进入 Quality，真机为可选 Human Dependency | 真机不是 `Ready` 前置 |
 
@@ -164,7 +164,7 @@ Stop and escalate if:
   - Docs: `UI_STYLE_GUIDE.md`, `CHANGELOG.md`, Assignment / PD / Dashboard mirrors
   - Independent Quality **Pass with conditions**（`AABC-01`–`AABC-06` `accept`）。Quality 独立重跑 App+Keyboard Debug **TEST SUCCEEDED**（381 / 9 skipped；KeyboardTests 15）。
   - Human 目视：[`SHA-bound Human-attested record`](../evidence/app-action-button-contrast-001-human-attested-observation-2026-09-23.md)；非 Device-attested。
-  - Product Gate 已接受；commit / push / PR / merge 仍未授权。
+  - Product Gate 已接受；实现 commit `ab98e346d8cca67f2c77287e7ebb6516f4483160`；push / PR / merge 仍未授权。
 - **Primary files:** `AppActionButton.swift`, `AppActionButtonChromeTests.swift`, `UI_STYLE_GUIDE.md`, [`quality review`](../reviews/app-action-button-contrast-001-quality-review.md), [`Product Gate`](../product-decisions/APP-ACTION-BUTTON-CONTRAST-001-product-gate.md)
 - **Handoff Target:** None for this Assignment; future publication or Release gates are separate
 - **Revalidation Trigger:** Human reverses the primary pair; Liquid Glass is forbidden; brand accent is introduced; a new main-App action button surface is added outside `AppActionButton`; Keyboard Extension is pulled into scope
@@ -176,3 +176,4 @@ Stop and escalate if:
 - `2026-09-23 Asia/Shanghai` — Executor 交付 `AppActionButtonChrome`、指南修订与 App+Keyboard 测试绿。`Active → Completed`。无 Quality / Gate / commit。
 - `2026-09-23 Asia/Shanghai` — Human 授权独立 Quality；[`AUTH-APP-ACTION-BUTTON-CONTRAST-001-QUALITY`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-QUALITY.md)。独立审查 **Pass with conditions**（[`review`](../reviews/app-action-button-contrast-001-quality-review.md)；`AABC-01`–`AABC-06` `accept`）。`Completed → Reviewed`。无 Product Gate / commit。
 - `2026-09-23 Asia/Shanghai` — Human Product Owner 接受残差并授权独立 Product Gate（[`AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-PRODUCT-GATE.md)）。Product Gate 接受既有 Quality 条件与 Human-attested 目视，Assignment `Reviewed → Closed`。无 Device-attested / commit / push / PR / merge / TestFlight / Release。
+- `2026-09-23 Asia/Shanghai` — Human 授权隔离分支有界 commit（[`AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT`](../authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-COMMIT.md)）。实现 commit `ab98e346d8cca67f2c77287e7ebb6516f4483160`；本回写记录该身份。无 push / PR / merge。

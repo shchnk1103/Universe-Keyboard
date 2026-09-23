@@ -20,7 +20,8 @@ Later Gate instruction: 「接受残差，授权独立 Product Gate。」
 | Worktree | `/private/tmp/universe-keyboard-app-action-button-contrast-001` |
 | Branch | `grok/app-action-button-contrast-001` |
 | `HEAD` | `9b8b7a73f4d373adbd7ee436d318cde3d9bc4c78` |
-| Implementation | uncommitted snapshot |
+| Implementation commit | `ab98e346d8cca67f2c77287e7ebb6516f4483160` |
+| Implementation at observation | uncommitted snapshot later committed as `ab98e34` |
 | `AppActionButton.swift` SHA-256 | `a25c6a8d1962fcdde1413bae39e5151f2aad37d0b008cc2d94e6e6ad1a38f595` |
 | `AppActionButtonChromeTests.swift` SHA-256 | `bc9a49ff826faff8f4fc3e2da62bc91bdd83582400419e10009b07b8df6ba9a0` |
 

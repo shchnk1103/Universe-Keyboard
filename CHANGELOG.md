@@ -4,7 +4,7 @@
 
 - 共享 `AppActionButton` 的可点击 primary 改为浅色黑底白字、深色白底黑字；iOS 26 保留 Liquid Glass（Reduce Transparency 时走实心 fallback）。
 - Secondary 用近无 tint 的玻璃板；destructive 保持语义红；disabled 沿用同一颜色对并整体 40% 透明。
-- 独立 Quality 为 **Pass with conditions**；Human Product Gate 已接受既有残差与 Human-attested 目视。commit / push / Release 仍未授权。
+- 独立 Quality 为 **Pass with conditions**；Human Product Gate 已接受既有残差与 Human-attested 目视。隔离分支实现 commit `ab98e346d8cca67f2c77287e7ebb6516f4483160`；push / Release 仍未授权。
 
 ## 2026-09-19 — 键盘按键可被 Simulator AX 独立发现并走 UIKit 路径
 

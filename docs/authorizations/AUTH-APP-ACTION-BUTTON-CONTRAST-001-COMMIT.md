@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Status | consumed |
-| Consumption | 隔离分支有界 commit；SHA 由同分支回写记录。不授权 push / PR / merge |
+| Consumption | 已在隔离分支形成实现 commit `ab98e346d8cca67f2c77287e7ebb6516f4483160`；本次记录回写 SHA；不授权 push / PR / merge |
 
 Human Product Owner, current session 2026-09-23 Asia/Shanghai: 「授权隔离分支上的有界 commit。」
 
@@ -22,6 +22,7 @@ Human Product Owner, current session 2026-09-23 Asia/Shanghai: 「授权隔离�
     "action": "scoped_commit_app_action_button_contrast",
     "target": "APP-ACTION-BUTTON-CONTRAST-001",
     "artifact_bindings": [
+      {"kind": "commit", "identity": "ab98e346d8cca67f2c77287e7ebb6516f4483160"},
       {"kind": "file", "identity": "Universe Keyboard/Views/Components/AppActionButton.swift"},
       {"kind": "file", "identity": "UniverseKeyboardTests/AppActionButtonChromeTests.swift"},
       {"kind": "file", "identity": "docs/assignments/app-action-button-contrast-001.md"}
