@@ -33,6 +33,7 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
     }
 
     func invalidateTypoCorrectionRecall() {
+        let hadPendingDebounce = debounceWorkItem != nil || host.contextualTypoCorrectionWorkItem != nil
         host.recallEpoch &+= 1
         host.recallCompositionRevision &+= 1
         debounceWorkItem?.cancel()
@@ -40,13 +41,31 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         finishRecallOperation()
         host.contextualTypoCorrectionWorkItem?.cancel()
         host.contextualTypoCorrectionWorkItem = nil
+        recordTypoRecallMarker(
+            code: .typoRecallEpochBumped,
+            normalizedComposition: host.controller.state.currentComposition
+        )
+        if hadPendingDebounce {
+            recordTypoRecallMarker(
+                code: .typoRecallDebounceCancelled,
+                normalizedComposition: host.controller.state.currentComposition
+            )
+        }
     }
 
     func scheduleAfterCompositionSettled() {
+        let hadPendingDebounce = debounceWorkItem != nil || host.contextualTypoCorrectionWorkItem != nil
         debounceWorkItem?.cancel()
         host.contextualTypoCorrectionWorkItem?.cancel()
 
         let expectedComposition = host.controller.state.currentComposition
+        if hadPendingDebounce {
+            recordTypoRecallMarker(
+                code: .typoRecallDebounceCancelled,
+                normalizedComposition: expectedComposition
+            )
+        }
+
         guard isEligible(for: expectedComposition) else { return }
 
         let workItem = DispatchWorkItem { [weak self] in
@@ -55,6 +74,10 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         debounceWorkItem = workItem
         host.contextualTypoCorrectionWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.18, execute: workItem)
+        recordTypoRecallMarker(
+            code: .typoRecallDebounceScheduled,
+            normalizedComposition: expectedComposition
+        )
     }
 
     private func startOperation(expectedComposition: String) {
@@ -81,6 +104,7 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         let live = liveFence(matching: currentDriver.token)
         switch currentDriver.nextEvent(currentFence: live) {
         case .discarded:
+            recordFenceDiscarded(token: currentDriver.token)
             finishRecallOperation()
         case .waitForYield:
             driver = currentDriver
@@ -106,6 +130,7 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         guard var currentDriver = driver else { return }
         switch event {
         case .discarded:
+            recordFenceDiscarded(token: currentDriver.token)
             finishRecallOperation()
         case .waitForYield:
             driver = currentDriver
@@ -130,10 +155,16 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         guard var currentDriver = driver else { return }
         let pre = liveFence(matching: currentDriver.token)
         guard pre == currentDriver.token else {
+            recordFenceDiscarded(token: currentDriver.token)
+            recordQueryOutcome(.typoRecallQueryCancelled, token: currentDriver.token)
             finishRecallOperation()
             return
         }
 
+        recordTypoRecallMarker(
+            code: .typoRecallQueryBegin,
+            token: currentDriver.token
+        )
         let owner = host.controller.typoCorrectionCandidateQuery
         let candidates = owner.correctionCandidates(
             for: suggestion.correctedInput,
@@ -143,9 +174,12 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         let event = currentDriver.finishQuery(currentFence: post, candidates: candidates)
         driver = currentDriver
         if case .discarded = event {
+            recordFenceDiscarded(token: currentDriver.token)
+            recordQueryOutcome(.typoRecallQueryDiscarded, token: currentDriver.token)
             finishRecallOperation()
             return
         }
+        recordQueryOutcome(.typoRecallQuerySucceeded, token: currentDriver.token)
         scheduleYieldedTurn(for: YieldedTurnToken(currentDriver.token))
     }
 
@@ -165,6 +199,7 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         guard expectedToken.matches(currentDriver.token) else { return }
         let live = liveFence(matching: currentDriver.token)
         guard currentDriver.acknowledgeYield(currentFence: live) else {
+            recordFenceDiscarded(token: currentDriver.token)
             finishRecallOperation()
             return
         }
@@ -175,6 +210,7 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
     private func apply(_ material: TypoCorrectionRecallMaterial) {
         let live = liveFence(matching: material.token)
         guard live == material.token else {
+            recordFenceDiscarded(token: material.token)
             finishRecallOperation()
             return
         }
@@ -231,5 +267,83 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
     private func finishRecallOperation() {
         driver = nil
         sidecarOwner?.endTypoCorrectionRecall()
+    }
+
+    // MARK: - INT-003 journal markers (HF-gated; observe-only)
+
+    private func recordFenceDiscarded(token: TypoCorrectionRecallFenceSnapshot) {
+        recordTypoRecallMarker(code: .typoRecallFenceDiscarded, token: token)
+    }
+
+    private func recordQueryOutcome(
+        _ reason: DiagnosticEvent.Reason,
+        token: TypoCorrectionRecallFenceSnapshot
+    ) {
+        #if DEBUG
+            guard host.isHighFidelityDiagnosticsActive else { return }
+            var fields = TypoCorrectionRecallDiagnosticMarkers.fenceFields(
+                recallEpoch: token.recallEpoch,
+                compositionRevision: token.compositionRevision,
+                operationOrdinal: token.operationOrdinal,
+                normalizedComposition: token.normalizedComposition
+            )
+            fields.append(.reason(reason))
+            host.diagnosticsJournal.record(
+                code: .typoRecallQueryOutcome,
+                category: .performance,
+                appearanceID: host.diagnosticsAppearanceID,
+                fields: fields
+            )
+        #endif
+    }
+
+    private func recordTypoRecallMarker(
+        code: DiagnosticEvent.Code,
+        token: TypoCorrectionRecallFenceSnapshot
+    ) {
+        recordTypoRecallMarker(
+            code: code,
+            recallEpoch: token.recallEpoch,
+            compositionRevision: token.compositionRevision,
+            operationOrdinal: token.operationOrdinal,
+            normalizedComposition: token.normalizedComposition
+        )
+    }
+
+    private func recordTypoRecallMarker(
+        code: DiagnosticEvent.Code,
+        normalizedComposition: String
+    ) {
+        let normalized = host.controller.normalizedTypoCorrectionInput(normalizedComposition)
+        recordTypoRecallMarker(
+            code: code,
+            recallEpoch: host.recallEpoch,
+            compositionRevision: host.recallCompositionRevision,
+            operationOrdinal: operationOrdinal,
+            normalizedComposition: normalized
+        )
+    }
+
+    private func recordTypoRecallMarker(
+        code: DiagnosticEvent.Code,
+        recallEpoch: UInt64,
+        compositionRevision: UInt64,
+        operationOrdinal: UInt64,
+        normalizedComposition: String
+    ) {
+        #if DEBUG
+            guard host.isHighFidelityDiagnosticsActive else { return }
+            host.diagnosticsJournal.record(
+                code: code,
+                category: .performance,
+                appearanceID: host.diagnosticsAppearanceID,
+                fields: TypoCorrectionRecallDiagnosticMarkers.fenceFields(
+                    recallEpoch: recallEpoch,
+                    compositionRevision: compositionRevision,
+                    operationOrdinal: operationOrdinal,
+                    normalizedComposition: normalizedComposition
+                )
+            )
+        #endif
     }
 }
