@@ -9,7 +9,7 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Consumed AUTH: INT-003 product capture — long composition, <180 cadence, stale cancel observation",
   "lifecycle": "active",
-  "current_phase": "AUTH Consumed; Capture running / evidence finalize on designated Simulator under Human continue-auth",
+  "current_phase": "AUTH Consumed; Capture Bounded/Inconclusive for stimulus — arm+install ready; Human visual taps pending (evidence written)",
   "authorization_action": "capture_int003_stale_cancel_product_observation_designated_simulator",
   "updated_at": "2026-09-23T20:19:10+08:00",
   "revalidation_triggers": [
@@ -50,7 +50,7 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | **Active** (AUTH **Consumed**; Capture running / evidence finalize) |
-| **Phase** | AUTH Consumed at `2026-09-23T20:19:10+08:00`; Capture on designated Simulator under Human continue-auth |
+| **Phase** | AUTH Consumed; evidence `…-int003-stale-cancel-product-001.md` — Bounded/Inconclusive stimulus; Human visual pending |
 | **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) — **Consumed** |
 | **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** (do **not** Close) |
 | **Capture install tip** | `80091f35cc5411b292eca78662f39e2b91694045` (includes markers_impl `c1869cf9…`) |
