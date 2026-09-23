@@ -46,7 +46,7 @@
       {"kind": "reasons", "identity": "typo_recall_query_succeeded,typo_recall_query_discarded,typo_recall_query_cancelled"},
       {"kind": "flags_added", "identity": "none"},
       {"kind": "schema_version", "identity": "DiagnosticEvent.schemaVersion 3->4"},
-      {"kind": "implementation_tip", "identity": "PENDING_IMPL_TIP_ON_BRANCH"}
+      {"kind": "implementation_tip", "identity": "862014483a4a879e55a159b298184c870d116124"}
     ],
     "artifact_bindings": [
       {"kind": "docs_tip_live_mark", "identity": "9b8b7a73f4d373adbd7ee436d318cde3d9bc4c78"},

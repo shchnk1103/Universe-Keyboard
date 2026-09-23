@@ -9,7 +9,7 @@
 | **Assignment** | [`TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001`](../assignments/typo-correction-002-int003-cancel-observability-markers-001.md) |
 | **Baseline tip** | `9b8b7a73f4d373adbd7ee436d318cde3d9bc4c78` (#151 Live mark) |
 | **Consume docs tip** | `70d2bf24258dacd47fda7e0c5bfdfa744befd549` |
-| **Implementation tip** | `PENDING_IMPL_TIP` |
+| **Implementation tip** | `862014483a4a879e55a159b298184c870d116124` |
 | **Branch** | `codex/typo-correction-002-int003-cancel-observability-markers-impl` |
 | **Executor** | Grok Bot iOS开发大师 under Human continue-auth |
 | **Recorded at** | `2026-09-23T18:47:17+08:00` (consume); tip filled at land |
@@ -85,4 +85,4 @@ All emits gated by `host.isHighFidelityDiagnosticsActive`. Category `.performanc
 |---|---|
 | **External Run / JSONL** | **N/A** — no Simulator capture under this AUTH |
 | **Consume tip** | `70d2bf24258dacd47fda7e0c5bfdfa744befd549` |
-| **Implementation tip** | `PENDING_IMPL_TIP` |
+| **Implementation tip** | `862014483a4a879e55a159b298184c870d116124` |

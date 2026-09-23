@@ -9,7 +9,7 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "INT-003 cancel/debounce/epoch Diagnostics journal markers (AUTH consumed; implementing)",
   "lifecycle": "active",
-  "current_phase": "AUTH consumed; ADR 0027 field-budget accepted; Swift markers + focused tests landing on implementation branch/PR (unmerged)",
+  "current_phase": "Markers slice Done on implementation tip; AUTH consumed; PR unmerged; Capture still Proposed",
   "authorization_action": "implement_int003_cancel_observability_journal_markers",
   "updated_at": "2026-09-23T18:47:17+08:00",
   "revalidation_triggers": [
@@ -49,7 +49,7 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | **Active** (AUTH **Consumed**; markers implementing) |
-| **Phase** | AUTH consumed; ADR 0027 field-budget accepted; Swift markers + focused tests landing on implementation branch/PR (unmerged) |
+| **Phase** | Markers slice Done on implementation tip; AUTH consumed; PR unmerged; Capture still Proposed |
 | **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001.md) — **Consumed** at `2026-09-23T18:47:17+08:00` |
 | **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** |
 | **Tip baseline (docs Live mark)** | `9b8b7a73f4d373adbd7ee436d318cde3d9bc4c78` (#151) |
