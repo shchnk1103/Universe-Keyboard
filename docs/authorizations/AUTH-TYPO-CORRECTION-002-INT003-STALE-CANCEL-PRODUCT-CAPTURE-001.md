@@ -18,7 +18,7 @@
   "record_type": "authorization",
   "title": "Proposed INT-003 stale-cancel product capture on designated Simulator",
   "status": "proposed",
-  "updated_at": "2026-09-23T09:30:00+08:00",
+  "updated_at": "2026-09-23T11:21:00+08:00",
   "authorization": {
     "action": "capture_int003_stale_cancel_product_observation_designated_simulator",
     "target_assignment": "TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001",
@@ -77,6 +77,23 @@
 ## Explicit non-goals
 
 QA-001 Product Gate; paired performance; physical-as-substitute; parent Close; Release/TestFlight; Swift changes; `RimeRuntimeProvenance` restore; treating Proposed status as Live.
+
+## Consume rules
+
+1. Status remains **Proposed / unconsumed** until Human explicitly marks **Live**.
+2. While Proposed: **no** Simulator, arm, capture, Run ID, or ACTIVE_WORK Live claim.
+3. When Live: Executor may perform only `allowed_external_effects_when_live`; write one fresh evidence receipt; then mark **consumed** with Run ID + evidence path.
+4. Consumption of this AUTH does **not** grant Architecture, Quality, Product Gate, parent Close, implementation, or publication.
+5. Do **not** reuse consumed Cadence-003 / Controlled-Capture-002 AUTHs as Live authority for this capture.
+
+## Required Evidence (when Live)
+
+| Artifact | Requirement |
+|---|---|
+| Preflight binding | Cite tip `4a51228…` + [`observability audit`](../evidence/typo-correction-002-int003-stale-cancel-observability-audit-2026-09-23.md) + [`gap matrix`](../evidence/typo-correction-002-int003-cadence-003-to-product-gap-matrix-2026-09-23.md) |
+| Run receipt | New `docs/evidence/…` path with Run ID, UDID, process/appearance IDs, cadence table, Human attestations |
+| Cancel observability | Record present/absent journal codes; **absence ≠ cancel claim** |
+| Non-claims | Intact: no Product Gate, no parent Close, no Swift, no `RimeRuntimeProvenance` restore |
 
 ## Depends on
 
