@@ -9,9 +9,9 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Consumed AUTH: INT-003 product capture — long composition, <180 cadence, stale cancel observation",
   "lifecycle": "active",
-  "current_phase": "AUTH Consumed; Capture Bounded/Inconclusive for stimulus — arm+install ready; Human visual taps pending (evidence written)",
+  "current_phase": "AUTH Consumed; evidence amend — Bounded/Pass-with-conditions observation package (Human visual + journal); still not Product Gate",
   "authorization_action": "capture_int003_stale_cancel_product_observation_designated_simulator",
-  "updated_at": "2026-09-23T20:19:10+08:00",
+  "updated_at": "2026-09-23T21:10:00+08:00",
   "revalidation_triggers": [
     "docs_tip_changed_from_c1869cf",
     "observability_audit_or_gap_matrix_superseded",
@@ -49,8 +49,8 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | **Active** (AUTH **Consumed**; Capture running / evidence finalize) |
-| **Phase** | AUTH Consumed; evidence `…-int003-stale-cancel-product-001.md` — Bounded/Inconclusive stimulus; Human visual pending |
+| **Lifecycle** | **Active** (AUTH **Consumed**; evidence amended under continue-auth) |
+| **Phase** | AUTH Consumed; evidence amend — **Bounded / Pass-with-conditions** observation package (Human visual + journal); Capture ≠ Gate |
 | **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) — **Consumed** |
 | **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** (do **not** Close) |
 | **Capture install tip** | `80091f35cc5411b292eca78662f39e2b91694045` (includes markers_impl `c1869cf9…`) |
@@ -95,4 +95,4 @@ QA-001 Product Gate; paired performance; physical substitute; parent Close; Rele
 
 ## Outcome (current)
 
-AUTH **Consumed** under Human continue-auth. Capture install/arm/run authorized on designated Simulator only. Parent Active. Markers AUTH Consumed. No Gate.
+AUTH **Consumed** under Human continue-auth (covers evidence amend on consume PR). Human visible-key Capture + journal analysis amended into evidence. Disposition: **Bounded / Pass-with-conditions** for INT-003 stale-cancel observation package. Parent Active. Markers AUTH Consumed. No Product Gate. No merge without separate ask.

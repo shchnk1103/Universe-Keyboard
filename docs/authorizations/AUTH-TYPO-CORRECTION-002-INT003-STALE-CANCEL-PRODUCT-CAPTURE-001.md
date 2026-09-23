@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| **Status** | **Consumed** — Capture running / evidence finalize on designated Simulator under Human continue-auth |
+| **Status** | **Consumed** — Capture complete; evidence amend (Human visual + journal) under continue-auth; still no Gate / no merge |
 | **Assignment** | [`TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001`](../assignments/typo-correction-002-int003-stale-cancel-product-capture-001.md) |
 | **Parent** | [`TYPO-CORRECTION-002`](../assignments/typo-correction-002.md) (Active — do **not** Close) |
 | **Consumer** | Grok Bot iOS开发大师 under Human continue-auth (KOS) |
@@ -82,9 +82,9 @@
     ],
     "decision_source": "Human continue-auth 「授权你按照KOS设定继续」 (2026-09-23 Asia/Shanghai) — separate ask to consume + run Capture",
     "consumed_artifacts": [
-      "Run TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001 (planned at consume; finalized in evidence)",
+      "Run TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001 (bound; Human visual + journal amended 2026-09-23T21:10+08:00)",
       "capture_install_tip 80091f35cc5411b292eca78662f39e2b91694045 (includes markers_impl c1869cf9…)",
-      "evidence docs/evidence/typo-correction-002-sim-run-2026-09-23-int003-stale-cancel-product-001.md"
+      "evidence docs/evidence/typo-correction-002-sim-run-2026-09-23-int003-stale-cancel-product-001.md (Bounded/Pass-with-conditions observation package)"
     ]
   }
 }
@@ -133,4 +133,4 @@ QA-001 Product Gate; paired performance; physical-as-substitute; parent Close; R
 
 ## Depends on / Outcome
 
-AUTH is **Consumed**. Capture may proceed on designated Simulator under this AUTH only. Parent remains Active. Markers AUTH stays **Consumed**. No Gate until separate Gate AUTH.
+AUTH is **Consumed**. Capture observation package amended into evidence under continue-auth (Human visual + journal). Parent remains Active. Markers AUTH stays **Consumed**. No Gate until separate Gate AUTH. Squash-merge of consume PR still requires separate parent/Human ask.
