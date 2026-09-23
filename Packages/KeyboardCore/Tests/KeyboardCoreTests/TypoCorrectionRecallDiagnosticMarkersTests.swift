@@ -33,8 +33,7 @@ final class TypoCorrectionRecallDiagnosticMarkersTests: XCTestCase {
             fields: fields
         )
 
-        let object = try JSONSerialization.jsonObject(with: JSONEncoder().encode(event))
-            as? [String: Any]
+        let object = try JSONSerialization.jsonObject(with: JSONEncoder().encode(event)) as? [String: Any]
         let encodedFields = try XCTUnwrap(object?["fields"] as? [[String: Any]])
         let names = Set(encodedFields.compactMap { $0["name"] as? String })
         XCTAssertEqual(
