@@ -238,8 +238,6 @@ Current update: `2026-09-22 Asia/Shanghai` — Current Codex task consumed [`blo
 
 Current update: `2026-09-22 Asia/Shanghai` — Current Codex task completed the three named blocker repairs in the isolated worktree. Final remediation delta `15b6c539…`; strict format/lint, KeyboardCore `1153/0`, RimeBridgeTests `82/0/20`, and App + Keyboard `379/0/9` passed. A separately authorized symlink to the pre-verified ignored Vendor directory was used only for local dependency resolution and was removed afterward. The first App compile attempt exposed and then closed a Swift 6 Sendable error in the yielded callback. No capture, Run ID, QA-001, INT-003, performance, commit, push, PR, merge, Gate or Close occurred; independent Architecture review is next.
 
-| 10 | RELEASE-2026-09-25-BUILD94-RECORD-PUBLICATION-001 | Active | docs-only 发布两份 Build 94 记录；本地检查、PR / hosted checks 与 merge 后 M-02 状态同步待完成 | [`assignment`](assignments/release-2026-09-25-build94-record-publication-001.md) · [`Product Decision`](product-decisions/RELEASE-2026-09-25-BUILD94-public-beta-decision.md) · [`TestFlight execution`](assignments/release-2026-09-25-build94-external-testflight.md) |
-
 历史工作从 [Assignment 目录](assignments/) 查找；债务从 [TECH_DEBT](TECH_DEBT.md) 查找。
 这里只保留 Ready / Active 工作，上限十项；Assignment 是生命周期事实来源，冲突时修正本镜像。
 
