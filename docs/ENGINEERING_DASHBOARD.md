@@ -13,9 +13,9 @@
 - **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-001.md) `Closed`
 - **Current phase:** PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 于 `2026-09-24T02:16:12Z` squash merge 为 [`204d0c2b`](https://github.com/shchnk1103/Universe-Keyboard/commit/204d0c2b3c3ec5253f31fad8e15cfa0501c83416)；Hosted Swift 6 Quality 同头全绿；publication Assignment 已完成
 - **Non-claims:** 不声称真实网络下载/RIME 部署成功；Simulator observation 仍是 Human-attested，非 Device-attested；Quality 绑定 22-file package digest `6146c454…`；merge 不等于 TestFlight / Release
-- **Next:** KOS M-02 生命周期状态同步见 docs-only Draft PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166)；保持 Draft，未获 ready/merge 授权
+- **Next:** PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) 已合并；当前 Assignment 正在整理后续 docs-only M-02 状态同步，完成后将以 Draft PR 发布
 - **Sources:** [PD](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-authorization.md) · [Implementation AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-001.md) · [Quality revalidation 002](reviews/scheme-license-download-cta-quality-revalidation-002.md) · [Human-attested Simulator observation](evidence/scheme-license-download-cta-simulator-observation-2026-09-23.md) · [Product Gate packet 002](evidence/scheme-license-download-cta-product-gate-packet-2026-09-24.md) · [Product Gate decision 002](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md) · [Gate Assignment 002](assignments/scheme-license-download-cta-product-gate-002.md) · [Gate AUTH 002](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PRODUCT-GATE-002.md)
-- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · branch `codex/scheme-license-download-cta-status-sync-merge`
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · branch `codex/scheme-license-download-cta-status-sync-merge-002`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001 — 有界 commit、push 与 draft PR
 
@@ -29,11 +29,20 @@
 ## SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001 — PR #164 合并与 M-02 收尾
 
 - **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-merge-001.md) `Completed`
-- **Current phase:** PR #165 于 `2026-09-24T02:49:14Z` squash merge 为 `99a7ef88`，已验证到达 `origin/main`；旧远端分支已删除。本地旧分支仍保留，因为其 Git 管理目录位于用户明确排除的旧主仓库，系统拒绝管理元数据写入；未强制删除。后续 M-02 镜像已在 docs-only Draft PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) 发布
-- **Non-claims:** PR #166 未获 ready/merge 授权；无 TestFlight / Release
-- **Next:** Human review PR #166；将其标记 Ready 或合并需另行授权；若需删除旧本地分支，需在其管理仓库可写的工作环境中安全处理
+- **Current phase:** PR #165 于 `2026-09-24T02:49:14Z` squash merge 为 `99a7ef88`，已验证到达 `origin/main`；PR #166 随后独立授权并合入 `29241ea1`。对应旧本地/远端状态分支已安全删除；正在整理下一份 M-02 状态 PR
+- **Non-claims:** 后续状态 PR 尚未创建；无 TestFlight / Release
+- **Next:** 完成本 Assignment 后创建一个 docs-only Draft PR；其 Ready/merge 需另行授权
 - **Sources:** [Merge AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001.md) · [Publication Assignment](assignments/scheme-license-download-cta-publication-001.md)
-- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · branch `codex/scheme-license-download-cta-status-sync-merge`
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · branch `codex/scheme-license-download-cta-status-sync-merge-002`
+
+## SCHEME-LICENSE-DOWNLOAD-CTA-STATUS-SYNC-MERGE-002 — PR #166 合并与 M-02 收尾
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-status-sync-merge-002.md) `Active`
+- **Current phase:** PR #166 于 `2026-09-24T04:02:35Z` squash merge 为 `29241ea1`，已验证到达 `origin/main`；旧本地与远端分支均在 tree 等价核验后安全删除；正在整理 M-02 状态 PR
+- **Non-claims:** 后续状态 PR 尚未创建；无 TestFlight / Release
+- **Next:** 完成文档状态同步并创建一个 docs-only Draft PR；不标记 Ready 或合并
+- **Sources:** [Merge Assignment](assignments/scheme-license-download-cta-status-sync-merge-002.md) · [Merge AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-STATUS-SYNC-MERGE-002.md) · [Parent Assignment](assignments/scheme-license-download-cta-status-sync-merge-001.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · branch `codex/scheme-license-download-cta-status-sync-merge-002`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-REGRESSION-001 — 许可下载流程回归覆盖
 
