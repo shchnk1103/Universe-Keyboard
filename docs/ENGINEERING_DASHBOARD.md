@@ -2,7 +2,7 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-23 Asia/Shanghai
+> **Updated:** 2026-09-24 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
@@ -11,19 +11,19 @@
 ## SCHEME-LICENSE-DOWNLOAD-CTA-001 — 第三方方案许可下载单按钮
 
 - **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-001.md) `Closed`
-- **Current phase:** Human Product Gate **Pass with conditions**；`SLD-CTA-GATE-01`–`04` 均 `accept`；父 Assignment 与 Gate Assignment 均已关闭（[`Product Decision`](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate.md)）
-- **Non-claims:** 不声称真实网络下载/RIME 部署成功；Simulator observation 仍是 Human-attested，非 Device-attested；Quality receipt 只绑定写回前 22-file package；无 commit / push / PR / merge / TestFlight / Release
+- **Current phase:** HEAD `d614b8e03006ff305137754ac118e50445938068` 的独立 Quality revalidation **Pass（有界）**；Human Product Gate **Pass with conditions**，四项边界均接受（[`Product Decision 002`](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md)）
+- **Non-claims:** 不声称真实网络下载/RIME 部署成功；Simulator observation 仍是 Human-attested，非 Device-attested；Quality 绑定 22-file package digest `6146c454…`；候选未 push/开 PR，也不等于 merge / TestFlight / Release
 - **Next:** publication 由独立 [`SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001`](assignments/scheme-license-download-cta-publication-001.md) 执行；该 child 只到 draft PR，不含 rebase 或 merge
-- **Sources:** [PD](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-authorization.md) · [Implementation AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-001.md) · [Quality revalidation](reviews/scheme-license-download-cta-quality-revalidation-001.md) · [Human-attested Simulator observation](evidence/scheme-license-download-cta-simulator-observation-2026-09-23.md) · [Gate packet](evidence/scheme-license-download-cta-product-gate-packet-2026-09-23.md) · [Product Gate decision](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate.md) · [Gate Assignment](assignments/scheme-license-download-cta-product-gate-001.md) · [Gate decision AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PRODUCT-GATE-DECISION-001.md)
+- **Sources:** [PD](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-authorization.md) · [Implementation AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-001.md) · [Quality revalidation 002](reviews/scheme-license-download-cta-quality-revalidation-002.md) · [Human-attested Simulator observation](evidence/scheme-license-download-cta-simulator-observation-2026-09-23.md) · [Product Gate packet 002](evidence/scheme-license-download-cta-product-gate-packet-2026-09-24.md) · [Product Gate decision 002](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md) · [Gate Assignment 002](assignments/scheme-license-download-cta-product-gate-002.md) · [Gate AUTH 002](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PRODUCT-GATE-002.md)
 - **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `grok/scheme-license-download-cta-001`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001 — 有界 commit、push 与 draft PR
 
 - **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-publication-001.md) `Active`
-- **Current phase:** MAIN-SYNC-001 已完成；本地候选 `270273a` 已 rebase 到最新 `main`，strict Swift format、KeyboardCore 1,158/0、RimeBridgeTests 82 passed + 20 skipped、App + Keyboard 394 passed + 9 skipped、Release build 与 RIME Vendor verify 均通过
-- **Non-claims:** 未 push/开 PR；旧 Product Gate/Quality 不覆盖 post-rebase 候选；原 publication AUTH 已 superseded；不 merge
-- **Next:** fresh independent Quality revalidation → Human Product Gate → 新 publication AUTH；这些前置完成前不 push/开 PR
-- **Sources:** [Assignment](assignments/scheme-license-download-cta-publication-001.md) · [Authorization](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001.md) · [Product Gate](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate.md) · [Quality revalidation](reviews/scheme-license-download-cta-quality-revalidation-001.md)
+- **Current phase:** MAIN-SYNC-001 本地门禁通过；HEAD `d614b8e` 的独立 Quality 为 **Pass（有界）**，Human Product Gate **Pass with conditions**，四项条件已接受
+- **Non-claims:** PR 保持 Draft；不授权 ready、merge、TestFlight 或 Release
+- **Next:** 完成 draft PR 后由 Human 查看 PR 描述和 hosted checks；merge 另行授权
+- **Sources:** [Publication Assignment](assignments/scheme-license-download-cta-publication-001.md) · [Publication AUTH 002](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-002.md) · [Product Gate 002](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md) · [Quality revalidation 002](reviews/scheme-license-download-cta-quality-revalidation-002.md)
 - **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `grok/scheme-license-download-cta-001`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-REGRESSION-001 — 许可下载流程回归覆盖
