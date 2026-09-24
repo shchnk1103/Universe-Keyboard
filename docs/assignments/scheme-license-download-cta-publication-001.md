@@ -7,10 +7,10 @@ Repository Change Type: Publication + Documentation
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | 独立 Quality **Pass（有界）**、Human Product Gate **Pass with conditions**；publication AUTH 002 已消费；Draft PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已打开，等待 Human review 和 hosted checks |
-| **Non-claims** | PR 将保持 Draft；不授权 ready、merge、TestFlight 或 Release；旧 publication AUTH 已 superseded |
-| **Next** | Human 检查 PR 描述和 hosted checks；merge 另行授权 |
+| **Lifecycle** | `Completed` |
+| **Phase** | PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已于 `2026-09-24T02:16:12Z` squash merge 为 `204d0c2b3c3ec5253f31fad8e15cfa0501c83416`；同头 Swift 6 CI 全绿；本地与远端功能分支已安全删除 |
+| **Non-claims** | 不声称真实网络下载/RIME 部署成功或 Device-attested；PR merge 不等于 TestFlight 或 Release |
+| **Next** | None for this publication Assignment |
 | **Residuals** | RimeBridge 20 个 fixture/真实引擎用例、App + Keyboard 9 个 fixture/设备用例跳过；未声称真实下载/RIME 部署成功或 Device-attested |
 
 ## Authority
