@@ -18,6 +18,7 @@
 - [Swift 6](architecture/swift6-migration.md) · [RIME artifacts](architecture/rime-artifacts.md) · [OpenCC](architecture/opencc-integration.md)
 - [ADR](architecture/decisions/) · [架构时间线](ARCHITECTURE_TIMELINE.md)
 - [Build 55 公开外部测试例外提案](product-decisions/RELEASE-2026-09-13-build55-limited-external-trial-exception-proposal.md) — **已接受公开测试例外；不等于 Release Gate Pass**
+- [Build 94 公开外部 TestFlight 决定](product-decisions/RELEASE-2026-09-25-BUILD94-public-beta-decision.md) — 已在既有测试组开放；**不等于 Quality/Release Pass 或正式 App Store 发布**
 
 ## 领域权威
 

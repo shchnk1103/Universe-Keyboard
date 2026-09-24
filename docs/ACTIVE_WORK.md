@@ -1,5 +1,7 @@
 # Active Work Summary
 
+Current update: `2026-09-25 Asia/Shanghai` — Human Product Owner authorized the docs-only publication of the completed Build 94 Product Decision and TestFlight execution records. [`RELEASE-2026-09-25-BUILD94-RECORD-PUBLICATION-001`](assignments/release-2026-09-25-build94-record-publication-001.md) is Active; this work does not change TestFlight state or close release residuals.
+
 Current update: `2026-09-24 Asia/Shanghai` — PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) 已于 `2026-09-24T04:02:35Z` squash merge 为 `29241ea19ea49c227faa589176a3e18cd7685e22`，并验证可从 `origin/main` 到达；旧本地和远端状态分支均已在确认 merge tree 等价后安全删除。后续 CTA M-02 状态镜像已在 docs-only Draft PR [#167](https://github.com/shchnk1103/Universe-Keyboard/pull/167) 发布；保持 Draft，未获 ready/merge 授权。无 TestFlight / Release。
 
 Review-start checkpoint (superseded by the result above): `2026-09-24 Asia/Shanghai` — Human 明确授权对最终提交 `d614b8e03006ff305137754ac118e50445938068` 做新鲜独立 Quality revalidation。旧 AUTH 因 HEAD 变化不适用于该候选；新的 [`QUALITY-REVALIDATION-002 Assignment`](assignments/scheme-license-download-cta-quality-revalidation-002.md) 与 [`AUTH`](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-QUALITY-REVALIDATION-002.md) 已绑定 22-file package digest `6146c454c0f0305f0f6055bbe141db8e1473fc6c99657c525f11bb3b3ef6fe39`。该 checkpoint 当时未作新 Quality 结论、Product Gate 或 publication 授权。
@@ -237,6 +239,8 @@ Current update: `2026-09-22 Asia/Shanghai` — New-worktree pre-copy inspection 
 Current update: `2026-09-22 Asia/Shanghai` — Current Codex task consumed [`blocker-remediation AUTH`](authorizations/AUTH-TYPO-CORRECTION-002-RUNTIME-INTEGRATION-HARDENING-BLOCKER-REMEDIATION-001.md) after a new isolated worktree matched the required HEAD/tree and was clean. The 16-path predecessor bootstrap begins now; no remediation result, test/build, RIME/device/capture, commit, publication, Gate or Close is claimed.
 
 Current update: `2026-09-22 Asia/Shanghai` — Current Codex task completed the three named blocker repairs in the isolated worktree. Final remediation delta `15b6c539…`; strict format/lint, KeyboardCore `1153/0`, RimeBridgeTests `82/0/20`, and App + Keyboard `379/0/9` passed. A separately authorized symlink to the pre-verified ignored Vendor directory was used only for local dependency resolution and was removed afterward. The first App compile attempt exposed and then closed a Swift 6 Sendable error in the yielded callback. No capture, Run ID, QA-001, INT-003, performance, commit, push, PR, merge, Gate or Close occurred; independent Architecture review is next.
+
+| 10 | RELEASE-2026-09-25-BUILD94-RECORD-PUBLICATION-001 | Active | docs-only 发布两份 Build 94 记录；本地检查、PR / hosted checks 与 merge 后 M-02 状态同步待完成 | [`assignment`](assignments/release-2026-09-25-build94-record-publication-001.md) · [`Product Decision`](product-decisions/RELEASE-2026-09-25-BUILD94-public-beta-decision.md) · [`TestFlight execution`](assignments/release-2026-09-25-build94-external-testflight.md) |
 
 历史工作从 [Assignment 目录](assignments/) 查找；债务从 [TECH_DEBT](TECH_DEBT.md) 查找。
 这里只保留 Ready / Active 工作，上限十项；Assignment 是生命周期事实来源，冲突时修正本镜像。
