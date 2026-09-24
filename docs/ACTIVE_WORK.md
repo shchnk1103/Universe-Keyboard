@@ -1,7 +1,5 @@
 # Active Work Summary
 
-Current update: `2026-09-25 Asia/Shanghai` — Human Product Owner authorized the docs-only publication of the completed Build 94 Product Decision and TestFlight execution records. [`RELEASE-2026-09-25-BUILD94-RECORD-PUBLICATION-001`](assignments/release-2026-09-25-build94-record-publication-001.md) is Active; this work does not change TestFlight state or close release residuals.
-
 Current update: `2026-09-24 Asia/Shanghai` — PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) 已于 `2026-09-24T04:02:35Z` squash merge 为 `29241ea19ea49c227faa589176a3e18cd7685e22`，并验证可从 `origin/main` 到达；旧本地和远端状态分支均已在确认 merge tree 等价后安全删除。后续 CTA M-02 状态镜像已在 docs-only Draft PR [#167](https://github.com/shchnk1103/Universe-Keyboard/pull/167) 发布；保持 Draft，未获 ready/merge 授权。无 TestFlight / Release。
 
 Review-start checkpoint (superseded by the result above): `2026-09-24 Asia/Shanghai` — Human 明确授权对最终提交 `d614b8e03006ff305137754ac118e50445938068` 做新鲜独立 Quality revalidation。旧 AUTH 因 HEAD 变化不适用于该候选；新的 [`QUALITY-REVALIDATION-002 Assignment`](assignments/scheme-license-download-cta-quality-revalidation-002.md) 与 [`AUTH`](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-QUALITY-REVALIDATION-002.md) 已绑定 22-file package digest `6146c454c0f0305f0f6055bbe141db8e1473fc6c99657c525f11bb3b3ef6fe39`。该 checkpoint 当时未作新 Quality 结论、Product Gate 或 publication 授权。
