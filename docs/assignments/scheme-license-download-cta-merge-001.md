@@ -8,9 +8,9 @@ Repository Change Type: Merge + Post-merge status sync
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Completed` |
-| **Phase** | PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已 squash merge 为 [`204d0c2b`](https://github.com/shchnk1103/Universe-Keyboard/commit/204d0c2b3c3ec5253f31fad8e15cfa0501c83416)，且已验证可从 `origin/main` 到达；本地与远端功能分支均已非强制删除；M-02 镜像已由 docs-only Draft PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165) 发布（创建时 head `c58214c4a55b4ca1708facc1629536674f583d94`）；本地轻量检查通过，Hosted `classify-change` 仍运行、GitGuardian 通过（`2026-09-24T02:26:13Z` 观察） |
-| **Non-claims** | 不涉及 TestFlight、Release 或额外产品/源码变更；不声称真实下载/RIME 部署或 Device-attested；后续状态 PR 未获 merge 授权 |
-| **Next** | Human review PR #165；将其标记 Ready 或合并需另行授权 |
+| **Phase** | PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已 squash merge 为 [`204d0c2b`](https://github.com/shchnk1103/Universe-Keyboard/commit/204d0c2b3c3ec5253f31fad8e15cfa0501c83416)。后续 AUTH [`STATUS-SYNC-MERGE-001`](../authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-STATUS-SYNC-MERGE-001.md) 独立授权并完成 PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165)，于 `2026-09-24T02:49:14Z` squash merge 为 [`99a7ef88`](https://github.com/shchnk1103/Universe-Keyboard/commit/99a7ef8825265936c536a4801dfafa93a6b9abb3)，已验证从 `origin/main` 可达；旧远端分支已非强制删除。该旧本地分支仍保留，因为其管理目录位于明确排除的旧主仓库，系统拒绝写入管理元数据。后续 M-02 状态 PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) 以 Draft 发布 |
+| **Non-claims** | 不涉及 TestFlight、Release 或额外产品/源码变更；不声称真实下载/RIME 部署或 Device-attested；#166 未获 ready/merge 授权 |
+| **Next** | Human review PR #166；将其标记 Ready 或合并需另行授权 |
 | **Residuals** | CTA Gate 接受的四项边界继续保留；未声称真实下载/RIME 部署或 Device-attested |
 
 ## Authority and responsibility
@@ -62,4 +62,4 @@ Repository Change Type: Merge + Post-merge status sync
 
 ## Handoff
 
-Handoff: docs-only Draft PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165), initial head at PR creation `c58214c4a55b4ca1708facc1629536674f583d94`, base `204d0c2b3c3ec5253f31fad8e15cfa0501c83416`; local lightweight checks passed, Hosted `classify-change` was in progress and GitGuardian passed at the recorded observation. Keep #165 Draft. No ready/merge of this follow-up PR is included here.
+Handoff: PR #165 was independently authorized and merged under [`STATUS-SYNC-MERGE-001`](../authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-STATUS-SYNC-MERGE-001.md). The next docs-only M-02 status PR is [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166), opened as Draft; its ready/merge requires separate Human authorization. Local old-branch cleanup remains outstanding because the permitted task path cannot write the excluded parent repository's Git administration directory.
