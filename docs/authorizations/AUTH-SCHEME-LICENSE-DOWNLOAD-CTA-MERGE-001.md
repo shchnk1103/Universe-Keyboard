@@ -4,14 +4,16 @@
 
 | Field | Value |
 |---|---|
-| Status | `active` |
+| Status | `consumed` |
 | Assignment | [`SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001`](../assignments/scheme-license-download-cta-merge-001.md) |
 | Issuer | Human Product Owner |
 | Decision source | Current session: “GitHub CI 已全绿，授权 merge，并处理后续工作。” |
 | Consumer | Current Codex task |
 | Action | Mark PR #164 ready, squash-merge the bound head, verify merge provenance, safely remove the old feature branch, and prepare one docs-only post-merge M-02 status-sync PR |
 | Issued at | `2026-09-24T10:11:38+08:00` |
-| Boundary | No direct push to `main`; the status-sync PR may be opened but not merged under this Authorization |
+| Boundary | No direct push to `main`; status-sync PR #165 was opened as Draft and is not authorized to be marked ready or merged under this Authorization |
+| Consumed at | `2026-09-24T10:26:06+08:00` |
+| Consumption result | PR #164 squash-merged as `204d0c2b3c3ec5253f31fad8e15cfa0501c83416`; merge commit verified on `origin/main`; old local and remote feature branches deleted without force; docs-only status-sync commit `c58214c4a55b4ca1708facc1629536674f583d94` pushed and Draft PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165) opened |
 
 ```kos-record
 {
@@ -19,8 +21,8 @@
   "record_id": "AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001",
   "record_type": "authorization",
   "title": "Squash-merge PR 164 and complete bounded post-merge follow-up",
-  "status": "active",
-  "updated_at": "2026-09-24T10:11:38+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-24T10:26:06+08:00",
   "revalidation_triggers": ["pr_head_changed", "pr_base_changed", "ci_not_green", "merge_state_changed", "authority_revoked"],
   "authorization": {
     "action": "squash_merge_pr_and_post_merge_status_sync",
@@ -43,10 +45,10 @@
     "issued_at": "2026-09-24T10:11:38+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "active",
-    "consumed_at": null,
-    "consumed_by": null,
-    "consumption_record": null
+    "consumption_state": "consumed",
+    "consumed_at": "2026-09-24T10:26:06+08:00",
+    "consumed_by": "PR #164 squash merge 204d0c2b3c3ec5253f31fad8e15cfa0501c83416; post-merge status-sync commit c58214c4a55b4ca1708facc1629536674f583d94 and Draft PR #165",
+    "consumption_record": "Fresh preflight confirmed PR #164 OPEN at bound head f20d4026d4ecf5ed3bf3ae5be4a1200ad9526ec3, unchanged base a9b82a58cac0c28e8a5d8a957d464d803d6d92d1, all hosted checks successful and MERGEABLE/CLEAN. Marked ready and squash-merged at 2026-09-24T02:16:12Z as 204d0c2b3c3ec5253f31fad8e15cfa0501c83416; fetched origin/main and verified merge-commit reachability. Deleted local grok/scheme-license-download-cta-001 with git branch -d and deleted its remote ref without force. On codex/scheme-license-download-cta-post-merge-sync, committed docs-only M-02 status mirrors as c58214c4a55b4ca1708facc1629536674f583d94, passed local lightweight checks, pushed without force, and opened Draft PR #165 targeting main. At the recorded PR check observation, classify-change was in progress and GitGuardian succeeded. PR #165 remains Draft and is not authorized to be marked ready or merged. No TestFlight or Release action was taken."
   }
 }
 ```

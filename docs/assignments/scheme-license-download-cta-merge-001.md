@@ -7,10 +7,10 @@ Repository Change Type: Merge + Post-merge status sync
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已 squash merge 为 [`204d0c2b`](https://github.com/shchnk1103/Universe-Keyboard/commit/204d0c2b3c3ec5253f31fad8e15cfa0501c83416)，且已验证可从 `origin/main` 到达；本地与远端功能分支均已非强制删除；M-02 镜像已在后续分支更新 |
+| **Lifecycle** | `Completed` |
+| **Phase** | PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已 squash merge 为 [`204d0c2b`](https://github.com/shchnk1103/Universe-Keyboard/commit/204d0c2b3c3ec5253f31fad8e15cfa0501c83416)，且已验证可从 `origin/main` 到达；本地与远端功能分支均已非强制删除；M-02 镜像已由 docs-only Draft PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165) 发布（创建时 head `c58214c4a55b4ca1708facc1629536674f583d94`）；本地轻量检查通过，Hosted `classify-change` 仍运行、GitGuardian 通过（`2026-09-24T02:26:13Z` 观察） |
 | **Non-claims** | 不涉及 TestFlight、Release 或额外产品/源码变更；不声称真实下载/RIME 部署或 Device-attested；后续状态 PR 未获 merge 授权 |
-| **Next** | 完成 docs-only 检查、非强制 push 并打开一个 Draft 状态 PR；该 PR 的 ready/merge 需另行授权 |
+| **Next** | Human review PR #165；将其标记 Ready 或合并需另行授权 |
 | **Residuals** | CTA Gate 接受的四项边界继续保留；未声称真实下载/RIME 部署或 Device-attested |
 
 ## Authority and responsibility
@@ -62,4 +62,4 @@ Repository Change Type: Merge + Post-merge status sync
 
 ## Handoff
 
-After the post-merge status-sync PR is open, hand its URL, exact head and checks to the Human Product Owner. No merge of that follow-up PR is included here.
+Handoff: docs-only Draft PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165), initial head at PR creation `c58214c4a55b4ca1708facc1629536674f583d94`, base `204d0c2b3c3ec5253f31fad8e15cfa0501c83416`; local lightweight checks passed, Hosted `classify-change` was in progress and GitGuardian passed at the recorded observation. Keep #165 Draft. No ready/merge of this follow-up PR is included here.

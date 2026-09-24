@@ -13,7 +13,7 @@
 - **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-001.md) `Closed`
 - **Current phase:** PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 于 `2026-09-24T02:16:12Z` squash merge 为 [`204d0c2b`](https://github.com/shchnk1103/Universe-Keyboard/commit/204d0c2b3c3ec5253f31fad8e15cfa0501c83416)；Hosted Swift 6 Quality 同头全绿；publication Assignment 已完成
 - **Non-claims:** 不声称真实网络下载/RIME 部署成功；Simulator observation 仍是 Human-attested，非 Device-attested；Quality 绑定 22-file package digest `6146c454…`；merge 不等于 TestFlight / Release
-- **Next:** KOS M-02 生命周期状态同步已在 [`SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001`](assignments/scheme-license-download-cta-merge-001.md) 对应分支更新，待以 docs-only Draft PR 发布；该 PR 不含 ready/merge 授权
+- **Next:** KOS M-02 生命周期状态同步见 docs-only Draft PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165)，创建时 head `c58214c4`；`classify-change` 仍运行、GitGuardian 通过；#165 不含 ready/merge 授权
 - **Sources:** [PD](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-authorization.md) · [Implementation AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-001.md) · [Quality revalidation 002](reviews/scheme-license-download-cta-quality-revalidation-002.md) · [Human-attested Simulator observation](evidence/scheme-license-download-cta-simulator-observation-2026-09-23.md) · [Product Gate packet 002](evidence/scheme-license-download-cta-product-gate-packet-2026-09-24.md) · [Product Gate decision 002](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md) · [Gate Assignment 002](assignments/scheme-license-download-cta-product-gate-002.md) · [Gate AUTH 002](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PRODUCT-GATE-002.md)
 - **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · current branch `codex/scheme-license-download-cta-post-merge-sync`
 
@@ -28,10 +28,10 @@
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001 — PR #164 合并与 M-02 收尾
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-merge-001.md) `Active`
-- **Current phase:** PR #164 squash merge `204d0c2b` 已验证到达 `origin/main`；旧本地与远端分支已删除；M-02 镜像已在后续分支更新
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-merge-001.md) `Completed`
+- **Current phase:** PR #164 squash merge `204d0c2b` 已验证到达 `origin/main`；旧本地与远端分支已删除；M-02 镜像已在 docs-only Draft PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165) 发布，创建时 head `c58214c4`
 - **Non-claims:** 后续状态 PR 未获 ready/merge 授权；无 TestFlight / Release
-- **Next:** 完成 docs-only 检查并打开一个 Draft 状态 PR；ready/merge 需另行授权
+- **Next:** Human review PR #165；将其标记 Ready 或合并需另行授权
 - **Sources:** [Merge AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001.md) · [Publication Assignment](assignments/scheme-license-download-cta-publication-001.md)
 - **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `codex/scheme-license-download-cta-post-merge-sync`
 
