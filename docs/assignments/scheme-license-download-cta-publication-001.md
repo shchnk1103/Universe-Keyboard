@@ -8,9 +8,9 @@ Repository Change Type: Publication + Documentation
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | HEAD `d614b8e` 的新鲜独立 Quality revalidation **Pass（有界）**；Human Product Gate **Pass with conditions**，四项条件均接受；当前 publication AUTH 已签发，正在执行有界 commit/push/draft PR |
+| **Phase** | 独立 Quality **Pass（有界）**、Human Product Gate **Pass with conditions**；publication AUTH 002 已消费；Draft PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已打开，等待 Human review 和 hosted checks |
 | **Non-claims** | PR 将保持 Draft；不授权 ready、merge、TestFlight 或 Release；旧 publication AUTH 已 superseded |
-| **Next** | 创建 draft PR 后交 Human 检查描述和 hosted checks；merge 另行授权 |
+| **Next** | Human 检查 PR 描述和 hosted checks；merge 另行授权 |
 | **Residuals** | RimeBridge 20 个 fixture/真实引擎用例、App + Keyboard 9 个 fixture/设备用例跳过；未声称真实下载/RIME 部署成功或 Device-attested |
 
 ## Authority
@@ -19,7 +19,7 @@ Repository Change Type: Publication + Documentation
 - **Decision Source / Date:** 当前会话明确授权“commit push 以及开 PR”；`2026-09-24 Asia/Shanghai`
 - **Product Contract:** [`PD-SCHEME-LICENSE-DOWNLOAD-CTA-001`](../product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-authorization.md)
 - **Product Gate:** [`post-rebase Pass with conditions`](../product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md)；四项条件均接受，精确绑定 HEAD `d614b8e03006ff305137754ac118e50445938068`
-- **Current Publication Authorization:** [`AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-002`](../authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-002.md) — active; commit, push, and one draft PR only
+- **Current Publication Authorization:** [`AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-002`](../authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-002.md) — consumed; commit `9ed7537350db91cf1ac037c912d86a622273fb69`, non-force push, Draft PR #164
 - **Prior Authorization:** [`AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001`](../authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001.md) — superseded before push after remote conflict
 - **Sync Authorization:** [`AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-MAIN-SYNC-001`](../authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-MAIN-SYNC-001.md) — consumed; bounded rebase, named doc conflict resolution, and local validation completed
 - **Domain Owner:** App & Data Operations Maintainer
@@ -83,4 +83,4 @@ The Human Product Owner authorized presentation-only whitespace normalization an
 
 ## Handoff
 
-After the draft PR and its status writeback are complete, hand the PR URL, exact head SHA, local validation record, and non-claims to the Human Product Owner for review of the PR and hosted checks. Merge remains outside this Assignment's authorization.
+Draft PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) is open against `main` at head `9ed7537350db91cf1ac037c912d86a622273fb69`. Hand the PR description, exact head SHA, local validation record, and non-claims to the Human Product Owner for review of the PR and hosted checks. Merge remains outside this Assignment's authorization.

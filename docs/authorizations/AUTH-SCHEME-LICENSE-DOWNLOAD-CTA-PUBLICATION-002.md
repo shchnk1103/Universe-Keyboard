@@ -4,13 +4,15 @@
 
 | Field | Value |
 |---|---|
-| Status | `active` |
+| Status | `consumed` |
 | Assignment | [`SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001`](../assignments/scheme-license-download-cta-publication-001.md) |
 | Issuer | Human Product Owner |
 | Decision source | Current session: “授权 commit push 以及开 PR”；`2026-09-24 Asia/Shanghai` |
 | Consumer | Current Codex task |
 | Action | Commit the listed CTA governance writeback, push `grok/scheme-license-download-cta-001`, and open one draft PR targeting `main` |
 | Scope boundary | Draft PR only; no ready, merge, TestFlight, or Release |
+| Consumed at | `2026-09-24T08:49:37+08:00` |
+| Publication result | Commit `9ed7537350db91cf1ac037c912d86a622273fb69` pushed without force; Draft PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) opened against `main` |
 
 ```kos-record
 {
@@ -18,8 +20,8 @@
   "record_id": "AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-002",
   "record_type": "authorization",
   "title": "Publish the exact-gated scheme license CTA candidate as a draft PR",
-  "status": "active",
-  "updated_at": "2026-09-24T08:41:20+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-24T08:49:37+08:00",
   "revalidation_triggers": ["candidate_head_changed", "origin_main_changed", "product_gate_changed", "quality_receipt_changed", "scope_changed", "authority_revoked"],
   "authorization": {
     "action": "commit_push_and_open_draft_pull_request",
@@ -42,10 +44,10 @@
     "issued_at": "2026-09-24T08:41:20+08:00",
     "expires_at": null,
     "supersedes_ref": "Supersedes the publication scope only for the exact candidate after fresh Quality revalidation 002 and Product Gate 002; prior publication AUTH remains historical and superseded.",
-    "consumption_state": "active",
-    "consumed_at": null,
-    "consumed_by": null,
-    "consumption_record": null
+    "consumption_state": "consumed",
+    "consumed_at": "2026-09-24T08:49:37+08:00",
+    "consumed_by": "Commit 9ed7537350db91cf1ac037c912d86a622273fb69 and https://github.com/shchnk1103/Universe-Keyboard/pull/164",
+    "consumption_record": "Committed the authorized CTA governance and evidence writeback as 9ed7537350db91cf1ac037c912d86a622273fb69, pushed grok/scheme-license-download-cta-001 without force, and opened Draft PR #164 targeting main. PR was verified OPEN and Draft with head 9ed7537350db91cf1ac037c912d86a622273fb69. At the first status observation, classify-change and GitGuardian succeeded; lightweight-checks was in progress and the four full-path heavy jobs were queued. This authorization is consumed; no ready, merge, TestFlight, or Release action was performed."
   }
 }
 ```
