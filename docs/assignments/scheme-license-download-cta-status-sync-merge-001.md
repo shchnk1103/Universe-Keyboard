@@ -7,11 +7,11 @@ Repository Change Type: Merge + Post-merge status sync
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165) was squash-merged at `2026-09-24T02:49:14Z` as `99a7ef8825265936c536a4801dfafa93a6b9abb3`, verified reachable from `origin/main`; its old remote branch was deleted without force. Docs-only status PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) is open as Draft. Local cleanup of the old branch is outstanding: this worktree's Git admin directory is in the explicitly excluded parent checkout, and the system rejected writes there. |
-| **Non-claims** | No source/test changes, Product Gate change, TestFlight or Release; PR #166 remains Draft and is outside this merge authorization |
-| **Next** | Human review PR #166; Ready/merge requires separate authorization. If local branch cleanup is required, perform it in an allowed environment that can write the worktree's Git admin directory. |
-| **Residuals** | Exact pinned KOS validator completed with no warning for this Assignment/AUTH; it reports unchanged historical warnings elsewhere. Old local feature branch retained due the explicit filesystem boundary; no force deletion attempted. |
+| **Lifecycle** | `Completed` |
+| **Phase** | PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165) was squash-merged at `2026-09-24T02:49:14Z` as `99a7ef8825265936c536a4801dfafa93a6b9abb3`, verified reachable from `origin/main`. PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) was then independently authorized and squash-merged at `2026-09-24T04:02:35Z` as `29241ea19ea49c227faa589176a3e18cd7685e22`, also verified reachable. Both old local and remote status branches are now safely deleted after tree-equivalence checks. The latest M-02 mirror is docs-only Draft PR [#167](https://github.com/shchnk1103/Universe-Keyboard/pull/167). |
+| **Non-claims** | No source/test changes, Product Gate change, TestFlight or Release; PR #167 remains Draft and is outside this Assignment's authorization. |
+| **Next** | Human review PR #167; Ready/merge requires separate authorization. |
+| **Residuals** | Exact pinned KOS validator reports unchanged historical warnings elsewhere; no new warning for this Assignment/AUTH. |
 
 ## Authority and responsibility
 
@@ -59,4 +59,4 @@ Repository Change Type: Merge + Post-merge status sync
 
 ## Handoff
 
-After opening status PR #166, hand its URL, final head, base and hosted check results to the Human Product Owner. No ready/merge of that status PR is included here.
+PR #166 was independently authorized and merged under [`STATUS-SYNC-MERGE-002`](../authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-STATUS-SYNC-MERGE-002.md). The next docs-only M-02 status PR is #167 and remains Draft; its ready/merge requires separate Human authorization.
