@@ -8,9 +8,9 @@ Repository Change Type: Merge + Post-merge status sync
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Completed` |
-| **Phase** | PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已 squash merge 为 [`204d0c2b`](https://github.com/shchnk1103/Universe-Keyboard/commit/204d0c2b3c3ec5253f31fad8e15cfa0501c83416)。后续状态 PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165) 已在独立授权下于 `2026-09-24T02:49:14Z` squash merge 为 [`99a7ef88`](https://github.com/shchnk1103/Universe-Keyboard/commit/99a7ef8825265936c536a4801dfafa93a6b9abb3)；PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) 随后在另一独立授权下于 `2026-09-24T04:02:35Z` squash merge 为 [`29241ea1`](https://github.com/shchnk1103/Universe-Keyboard/commit/29241ea19ea49c227faa589176a3e18cd7685e22)。两个 merge commit 均已验证可从 `origin/main` 到达；旧本地与远端状态分支均在 tree 等价核对后非强制删除。后续 M-02 状态同步正在独立 Assignment 下整理 |
-| **Non-claims** | 不涉及 TestFlight、Release 或额外产品/源码变更；不声称真实下载/RIME 部署或 Device-attested；后续状态 PR 尚未创建 |
-| **Next** | 完成本 Assignment 下 M-02 状态同步后再发布 Draft PR；ready/merge 需另行授权 |
+| **Phase** | PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已 squash merge 为 [`204d0c2b`](https://github.com/shchnk1103/Universe-Keyboard/commit/204d0c2b3c3ec5253f31fad8e15cfa0501c83416)。后续状态 PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165) 已在独立授权下于 `2026-09-24T02:49:14Z` squash merge 为 [`99a7ef88`](https://github.com/shchnk1103/Universe-Keyboard/commit/99a7ef8825265936c536a4801dfafa93a6b9abb3)；PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) 随后在另一独立授权下于 `2026-09-24T04:02:35Z` squash merge 为 [`29241ea1`](https://github.com/shchnk1103/Universe-Keyboard/commit/29241ea19ea49c227faa589176a3e18cd7685e22)。两个 merge commit 均已验证可从 `origin/main` 到达；旧本地与远端状态分支均在 tree 等价核对后安全删除。最新 M-02 状态镜像见 docs-only Draft PR [#167](https://github.com/shchnk1103/Universe-Keyboard/pull/167) |
+| **Non-claims** | 不涉及 TestFlight、Release 或额外产品/源码变更；不声称真实下载/RIME 部署或 Device-attested；#167 未获 ready/merge 授权 |
+| **Next** | Human review PR #167；ready/merge 需另行授权 |
 | **Residuals** | CTA Gate 接受的四项边界继续保留；未声称真实下载/RIME 部署或 Device-attested |
 
 ## Authority and responsibility

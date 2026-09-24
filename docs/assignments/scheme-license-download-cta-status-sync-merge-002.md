@@ -7,10 +7,10 @@ Repository Change Type: Merge + Post-merge status sync
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) was squash-merged at `2026-09-24T04:02:35Z` as `29241ea19ea49c227faa589176a3e18cd7685e22`, verified reachable from `origin/main`; local and remote branch `codex/scheme-license-download-cta-status-sync-merge` were safely deleted after exact tree-equivalence verification. Final M-02 documentation is being prepared for one Draft PR. |
-| **Non-claims** | No source/test change, new Product Gate, TestFlight, App Store Connect or Release; post-merge status PR is not authorized to be marked ready or merged. |
-| **Next** | Finish status mirrors, validate, and open one docs-only Draft PR; hand off its final URL/head/checks. |
+| **Lifecycle** | `Completed` |
+| **Phase** | PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) was squash-merged at `2026-09-24T04:02:35Z` as `29241ea19ea49c227faa589176a3e18cd7685e22`, verified reachable from `origin/main`; local and remote branch `codex/scheme-license-download-cta-status-sync-merge` were safely deleted after exact tree-equivalence verification. Final M-02 mirror is published in docs-only Draft PR [#167](https://github.com/shchnk1103/Universe-Keyboard/pull/167). |
+| **Non-claims** | No source/test change, new Product Gate, TestFlight, App Store Connect or Release; PR #167 remains Draft and is not authorized to be marked ready or merged. |
+| **Next** | Human review PR #167; separate authorization is required for Ready/merge. |
 | **Residuals** | Exact KOS Kit v0.8.0 checks report unchanged historical warnings elsewhere; no new warning for this Assignment/AUTH. |
 
 ## Authority and responsibility
