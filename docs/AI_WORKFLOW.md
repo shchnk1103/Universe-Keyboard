@@ -43,13 +43,21 @@ push、merge 或 Release 权限，草稿 PR 的验证缺口必须明确。
 ## 委派与连续性
 
 当两个调查或评审子问题独立、有界，且并行能改善速度或覆盖时使用可用 subagent；短任务、
-共享状态或依赖链顺序处理。先给出精确输入、输出、文件边界与验收。一个责任区一个 writer，
-隔离 worktree/副本；不同时修改相同文件区域。
+共享状态或依赖链顺序处理。一个责任区一个 writer；对并行写入指定不重叠的文件边界。
 Coordinator 负责汇总结论与范围控制；Product/Architecture/Quality 各自保留决定权。
 独立 reviewer 必须是未参与实现的 runtime；executor 自检不算独立评审。不可用时记录缺口。
-保持逻辑 review lane 和开放 findings，复审绑定新基线。可选上游编排合同只有被项目显式采用
-时才约束 lane；[升级状态](kos/UPGRADE_STATUS.md) 记录当前是否实例化，不自行声称采用。
+保持逻辑 review lane 和开放 findings，复审绑定新基线。
 
+对决定后新分配的独立 review lane，派发前必须按
+[Assignment Policy 的 reviewer packet 合同](ASSIGNMENT_POLICY.md#independent-reviewer-lane-packet-kos-kit-v090-selective-adoption)
+冻结目标、排除项、权限/工具/数据边界、正向与完整覆盖条件、预算检查点和停止授权。
+Reviewer 越界时先报一个定位、标记未覆盖并停止依赖部分；只能由 Assignment 中指定的权威
+批准精确扩围。不得等审查启动后反复发送范围收窄指令。未完整覆盖时结论为 Partial / incomplete。
+
+项目仅选择采用了 KOS Kit v0.9.0 的 reviewer 范围、预算和停止条款，适用于新分配的独立审查
+lane；既有 Assignment 和已经分配的 lane 不自动迁移。完整的可选 agent-orchestration 包、
+provider/model 路由规则及全局 ORCHESTRATION_PLAN 均未采用。细节与生效边界见
+[升级状态](kos/UPGRADE_STATUS.md)；执行时不从线程状态推断权威。
 ## 推荐角色
 
 | 角色 | 执行手册 |

@@ -20,7 +20,7 @@ Ownership: Architecture & Knowledge Steward owns startup routing; Product Lead o
 4. `KNOWLEDGE_OS.md` — only when operational layers, navigation protocol or self-healing behavior are required (not for frozen governance tables).
 5. The task-specific reading map selected after startup.
 
-Required review: repository truth comes from Assignment and canonical documents, not conversation; current Work Item and lifecycle are discovered before action; missing Assignment or `UNKNOWN` fields stop formal work unless the user objective authorizes governance bootstrap. After KOS-MIG-001, frozen Knowledge OS rules live under `docs/kos/`; do not treat pre-migration dual-track language as current. KOS 2.2 is advisory only; see [`kos/UPGRADE_STATUS.md`](kos/UPGRADE_STATUS.md) and the current [`KOS-UPGRADE-UK-004`](assignments/kos-upgrade-uk-004-v0.8.0.md) adoption record. Do not treat advisory validator output as a Gate pass.
+Required review: repository truth comes from Assignment and canonical documents, not conversation; current Work Item and lifecycle are discovered before action; missing Assignment or UNKNOWN fields stop formal work unless the user objective authorizes governance bootstrap. After KOS-MIG-001, frozen Knowledge OS rules live under docs/kos/; do not treat pre-migration dual-track language as current. KOS 2.2 remains advisory at the v0.9.0 pin; see [UPGRADE_STATUS](kos/UPGRADE_STATUS.md), [PD-KOS-UPGRADE-UK-006](product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md) and [the v0.9.0 reviewer-lane contract](ASSIGNMENT_POLICY.md#independent-reviewer-lane-packet-kos-kit-v090-selective-adoption). Do not treat validator output as a Gate pass.
 
 ## Create, Review Or Change A Task Assignment
 

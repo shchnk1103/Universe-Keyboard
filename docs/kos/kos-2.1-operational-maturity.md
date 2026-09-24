@@ -45,21 +45,52 @@ Template: see [`ASSIGNMENT_POLICY.md`](../ASSIGNMENT_POLICY.md) § Current Statu
 
 ## M-02 — State sync checklist
 
-After any of: Product Gate, ADR Accept, Assignment Close, or merge of a tip PR
-that changes lifecycle language, the Executor (or PM with Executor confirmation)
-runs:
+Run M-02 once after an independently occurring:
+- Product Gate;
+- ADR Accept;
+- Assignment Close; or
+- merge of a tip PR that changes lifecycle language.
 
-1. Owning Assignment **Current Status** matches reality  
-2. Parent Assignment Current Status / checkboxes if any  
-3. `docs/ENGINEERING_DASHBOARD.md` row for the Work Item  
-4. `docs/KNOWLEDGE_INDEX.md` if navigation text encodes status  
-5. Active plan Status line if the plan is still `Active`  
-6. `docs/ACTIVE_WORK.md` entry add/update/remove  
-7. If the slice wrote Markdown or KOS records that lightweight CI would check: after the **last** Assignment, evidence, or review edit, re-run the repository markdown link check against the comparison baseline and HEAD, and record that pair. Prior source-test passes do not cover later Markdown. Markdown links to in-repository lines use `path#Lnn`, not `path:nn`. The checker only proves the linked file exists; `path#Lnn` remains a writing/review convention.
+### Trigger identity and non-recursive closeout
 
-Failure to sync is a **documentation defect**, not optional polish.
+Record a stable trigger identity in the owning Assignment or closeout record:
+Work Item, exact event and authority record. For a merge event, also record the
+merged tip PR and commit. The identity explains why this closeout ran and
+prevents the closeout from being mistaken for a new event.
 
-Detail: [`KNOWLEDGE_OS.md`](../KNOWLEDGE_OS.md) § State Sync.
+Before merge, synchronize facts already known and mark merge-dependent facts
+pending. After merge, use one traceable closeout to record the final state and
+merge pointer; that closeout may itself be a documentation PR.
+
+The closeout transaction does not recursively trigger M-02 for the same
+identity. If a dedicated Assignment or PR only completes that synchronization,
+its administrative completion and merge are part of the same closeout
+transaction. Do not create another M-02 PR just to synchronize that closeout.
+If the same change independently closes a different Work Item, that separate
+close is a new trigger. Any later independent Product Gate, ADR Accept,
+Assignment Close or lifecycle-changing merge is also a new trigger; record its
+own identity. If the closeout itself makes an independent lifecycle decision,
+record that event and trigger identity separately. Ordinary documentation edits
+alone are not triggers.
+
+For the identified trigger, synchronize:
+
+1. Owning Assignment Current Status;
+2. Parent Assignment Current Status / checkboxes if any;
+3. docs/ENGINEERING_DASHBOARD.md row for the Work Item;
+4. docs/KNOWLEDGE_INDEX.md if its navigation text encodes status;
+5. Active plan Status line if the plan is still Active;
+6. docs/ACTIVE_WORK.md entry add/update/remove;
+7. If the slice wrote Markdown or KOS records that lightweight CI would
+   check, rerun the repository Markdown link check against the comparison
+   baseline and HEAD after the last Assignment, evidence or review edit, and
+   record that pair. Prior source-test passes do not cover later Markdown.
+   In-repository line citations use path#Lnn, not path:nn; the checker
+   confirms file existence but not line-number validity.
+
+Failure to sync is a documentation defect, not optional polish.
+
+Detail: [KNOWLEDGE_OS](../KNOWLEDGE_OS.md) § State Sync.
 
 ## M-03 — Residual disposition (hard close)
 
