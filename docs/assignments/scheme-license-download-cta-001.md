@@ -11,8 +11,8 @@
 |---|---|
 | **Lifecycle** | `Closed` |
 | **Phase** | Human Product Gate **Pass with conditions**；`SLD-CTA-GATE-01`–`04` 均由 Product Owner 接受；见 [Product Decision](../product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate.md) |
-| **Non-claims** | 不声称真实网络下载/RIME 部署成功；Simulator observation 仍为 Human-attested；Quality receipt 只绑定写回前 22-file package；无 commit / push / PR / merge / TestFlight / Release |
-| **Next** | None for this Assignment；任何 commit 或 publication 另行授权 |
+| **Non-claims** | 不声称真实网络下载/RIME 部署成功；Simulator observation 仍为 Human-attested；Quality receipt 只绑定写回前 22-file package；PR merge 不等于 TestFlight 或 Release |
+| **Next** | None for this Assignment；发布状态见子 Assignment [`SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001`](scheme-license-download-cta-publication-001.md) |
 | **Residuals** | [Gate conditions](../product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate.md#accepted-evidence-conditions)：`SLD-CTA-GATE-01`–`04`，逐项处置见下表并保留在关闭记录 |
 
 ---

@@ -11,20 +11,29 @@
 ## SCHEME-LICENSE-DOWNLOAD-CTA-001 — 第三方方案许可下载单按钮
 
 - **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-001.md) `Closed`
-- **Current phase:** HEAD `d614b8e03006ff305137754ac118e50445938068` 的独立 Quality revalidation **Pass（有界）**；Human Product Gate **Pass with conditions**，四项边界均接受（[`Product Decision 002`](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md)）
-- **Non-claims:** 不声称真实网络下载/RIME 部署成功；Simulator observation 仍是 Human-attested，非 Device-attested；Quality 绑定 22-file package digest `6146c454…`；PR 保持 Draft，不等于 merge / TestFlight / Release
-- **Next:** publication 由独立 [`SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001`](assignments/scheme-license-download-cta-publication-001.md) 执行；该 child 只到 draft PR，不含 rebase 或 merge
+- **Current phase:** PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 于 `2026-09-24T02:16:12Z` squash merge 为 [`204d0c2b`](https://github.com/shchnk1103/Universe-Keyboard/commit/204d0c2b3c3ec5253f31fad8e15cfa0501c83416)；Hosted Swift 6 Quality 同头全绿；publication Assignment 已完成
+- **Non-claims:** 不声称真实网络下载/RIME 部署成功；Simulator observation 仍是 Human-attested，非 Device-attested；Quality 绑定 22-file package digest `6146c454…`；merge 不等于 TestFlight / Release
+- **Next:** KOS M-02 生命周期状态同步见 docs-only Draft PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165)，创建时 head `c58214c4`；`classify-change` 仍运行、GitGuardian 通过；#165 不含 ready/merge 授权
 - **Sources:** [PD](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-authorization.md) · [Implementation AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-001.md) · [Quality revalidation 002](reviews/scheme-license-download-cta-quality-revalidation-002.md) · [Human-attested Simulator observation](evidence/scheme-license-download-cta-simulator-observation-2026-09-23.md) · [Product Gate packet 002](evidence/scheme-license-download-cta-product-gate-packet-2026-09-24.md) · [Product Gate decision 002](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md) · [Gate Assignment 002](assignments/scheme-license-download-cta-product-gate-002.md) · [Gate AUTH 002](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PRODUCT-GATE-002.md)
-- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `grok/scheme-license-download-cta-001`
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · current branch `codex/scheme-license-download-cta-post-merge-sync`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001 — 有界 commit、push 与 draft PR
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-publication-001.md) `Active`
-- **Current phase:** HEAD `d614b8e` 的独立 Quality **Pass（有界）**；Human Product Gate **Pass with conditions**；Draft PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已打开，等待 Human review/hosted checks
-- **Non-claims:** PR 保持 Draft；不授权 ready、merge、TestFlight 或 Release
-- **Next:** 完成 draft PR 后由 Human 查看 PR 描述和 hosted checks；merge 另行授权
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-publication-001.md) `Completed`
+- **Current phase:** PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已 squash merge 为 `204d0c2b`; 原功能分支已删除
+- **Non-claims:** 不声称真实网络下载/RIME 部署成功或 Device-attested；不含 TestFlight / Release
+- **Next:** None for the publication Assignment；merge 后 M-02 镜像见下方收尾 Assignment
 - **Sources:** [Publication Assignment](assignments/scheme-license-download-cta-publication-001.md) · [Publication AUTH 002](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-002.md) · [Product Gate 002](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md) · [Quality revalidation 002](reviews/scheme-license-download-cta-quality-revalidation-002.md)
-- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `grok/scheme-license-download-cta-001`
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · current status-sync branch `codex/scheme-license-download-cta-post-merge-sync`; publication branch `grok/scheme-license-download-cta-001` deleted after merge
+
+## SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001 — PR #164 合并与 M-02 收尾
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-merge-001.md) `Completed`
+- **Current phase:** PR #164 squash merge `204d0c2b` 已验证到达 `origin/main`；旧本地与远端分支已删除；M-02 镜像已在 docs-only Draft PR [#165](https://github.com/shchnk1103/Universe-Keyboard/pull/165) 发布，创建时 head `c58214c4`
+- **Non-claims:** 后续状态 PR 未获 ready/merge 授权；无 TestFlight / Release
+- **Next:** Human review PR #165；将其标记 Ready 或合并需另行授权
+- **Sources:** [Merge AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001.md) · [Publication Assignment](assignments/scheme-license-download-cta-publication-001.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `codex/scheme-license-download-cta-post-merge-sync`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-REGRESSION-001 — 许可下载流程回归覆盖
 
@@ -33,7 +42,7 @@
 - **Non-claims:** 不等于独立 Quality、Product Gate、XCUITest/人工验收、commit / push / merge 或 Release
 - **Next:** XCUITest/人工交互/真实下载未覆盖；最终树独立 Quality 已由 [`revalidation receipt`](reviews/scheme-license-download-cta-quality-revalidation-001.md) 复核
 - **Sources:** [Parent Assignment](assignments/scheme-license-download-cta-001.md) · [P2 Quality finding](reviews/scheme-license-download-cta-quality-review-001.md) · [AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-REGRESSION-001.md)
-- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `grok/scheme-license-download-cta-001`
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · original branch `grok/scheme-license-download-cta-001` (deleted after PR #164 merge)
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-QUALITY-REVALIDATION-001 — 最终树独立 Quality revalidation
 
@@ -42,7 +51,7 @@
 - **Non-claims:** 不等于 Product Gate、人工/真机验收、commit / push / merge 或 Release
 - **Next:** Product Gate 已完成；Quality child 保持 `Reviewed`，其 receipt 仍绑定状态写回前的精确 22-file package，不覆盖写回后的文档树
 - **Sources:** [Parent Assignment](assignments/scheme-license-download-cta-001.md) · [Prior Quality receipt](reviews/scheme-license-download-cta-quality-review-001.md) · [Revalidation receipt](reviews/scheme-license-download-cta-quality-revalidation-001.md) · [AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-QUALITY-REVALIDATION-001.md)
-- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · branch `grok/scheme-license-download-cta-001`
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · original branch `grok/scheme-license-download-cta-001` (deleted after PR #164 merge)
 
 ## APP-ACTION-BUTTON-CONTRAST-001 — 主 App 操作按钮深浅色对比度
 
