@@ -9,11 +9,11 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Live AUTH: narrow typo_recall.query_begin / query_outcome density remediation (diagnose-first; unconsumed)",
   "lifecycle": "active",
-  "current_phase": "Active Live AUTH (unconsumed); waiting consume + separate Human ask before diagnose/Swift; no diagnose run yet; no Swift in this Live-mark slice",
+  "current_phase": "Active Live AUTH (unconsumed); PR #163 merged; post-merge M-02 status sync in progress; waiting separate Human authorization to consume and diagnose; no diagnose run or Swift",
   "authorization_action": "diagnose_and_optionally_remediate_int003_query_density",
-  "updated_at": "2026-09-25T14:24:06+08:00",
+  "updated_at": "2026-09-25T15:05:41+08:00",
   "revalidation_triggers": [
-    "docs_tip_changed_from_1ee2728",
+    "docs_tip_changed_from_15e2be5",
     "capture_package_or_evidence_sha_superseded",
     "scope_expansion_to_fence_or_gate_or_provenance",
     "AUTH_revoked_or_executor_changed",
@@ -49,15 +49,15 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | **Active** (AUTH Live / unconsumed) |
-| **Phase** | Active Live AUTH (unconsumed); waiting consume + separate Human ask before diagnose/Swift |
+| **Phase** | Active Live AUTH (unconsumed); PR #163 merged; M-02 status sync in progress; waiting separate Human authorization to consume and diagnose |
 | **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) — **Live / unconsumed** |
 | **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** (do **not** Close) |
-| **Designated tip** | `1ee2728712e67a32ff908a27befad2c537445077` (verified `origin/main` tip before #163 merge, 2026-09-25); initial Live-mark binding was `a9b82a58cac0c28e8a5d8a957d464d803d6d92d1` after #162; Proposed historical tip `65a0a11d197616928c66f3c148193982c9935945` (#161 path) |
+| **Designated tip** | `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a` (verified `main` tip after PR #163 merged, 2026-09-25); pre-merge rebind was `1ee2728712e67a32ff908a27befad2c537445077`; initial Live-mark binding was `a9b82a58cac0c28e8a5d8a957d464d803d6d92d1` after #162; Proposed historical tip `65a0a11d197616928c66f3c148193982c9935945` (#161 path) |
 | **Capture AUTH** | [`AUTH-…-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) remains **Consumed** |
 | **Markers AUTH** | [`AUTH-…-CANCEL-OBSERVABILITY-MARKERS-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001.md) remains **Consumed** |
 | **Assignment Authority** | Human Product Owner / Product Lead |
-| **Decision Source / Date** | Human docs-only Live mark — `2026-09-23T22:10:00+08:00` Asia/Shanghai 「授权 docs-only 将 query_* remediation AUTH 标为 Live/unconsumed，开 PR，不自动合、不诊断、不改 Swift」; Human separately authorized a docs-only tip rebind to the verified current main tip on `2026-09-25` Asia/Shanghai; this does not authorize consume, diagnose, or Swift |
-| **Next** | Human squash-merge this Live-mark PR after CI green (executor does **not** merge); revalidate the main-tip binding after that merge, then obtain a separate Human authorization to consume and diagnose; further continue before Swift if needed |
+| **Decision Source / Date** | Human docs-only Live mark — `2026-09-23T22:10:00+08:00` Asia/Shanghai; Human separately authorized pre-merge tip rebind and PR #163 squash merge; Human authorized this docs-only M-02 status sync after merge on `2026-09-25` Asia/Shanghai. None of these grants consume, diagnosis, or Swift authority |
+| **Next** | Complete this docs-only M-02 closeout PR; then obtain separate Human authorization before consuming AUTH and performing read-only diagnosis. Any Swift change still requires a further separate continue |
 | **Non-claims** | AUTH is Live but **not consumed**; **no diagnose run yet**; **no Swift**; not Product Gate / QA-001 Gate; not parent Close; Capture AUTH stays Consumed; Markers AUTH stays Consumed; Live alone does **not** authorize diagnose without consume + separate ask |
 
 ## Authority
@@ -116,6 +116,7 @@ Capture Run `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` recorded *
 5. Capture AUTH stays **Consumed**; Markers AUTH stays **Consumed**.
 6. Human authorized a docs-only rebind to the verified `origin/main` tip `1ee2728712e67a32ff908a27befad2c537445077` on `2026-09-25`; this does not consume AUTH or authorize diagnosis.
 7. **Active Live AUTH (unconsumed).** Diagnose still requires consuming the matching AUTH and a separate Human ask before the first non-docs remediation action.
+8. PR #163 merged under separate Human authorization as `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`; Human authorized this docs-only M-02 state sync, which revalidates the current main-tip binding without consuming AUTH or authorizing diagnosis.
 
 ## Exit Criteria (docs Proposed slice — met via #162)
 
@@ -125,10 +126,20 @@ Capture Run `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` recorded *
 
 ## Exit Criteria (docs Live-mark slice — current)
 
-1. AUTH Status **Live / unconsumed**; original `live_at` retained; `consumed_at` empty; current pre-merge tip rebound to `1ee2728712e67a32ff908a27befad2c537445077`.
+1. AUTH Status **Live / unconsumed**; original `live_at` retained; `consumed_at` empty; post-merge binding revalidated to `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`.
 2. Assignment phase **Active Live AUTH (unconsumed)**; waiting consume + separate Human ask.
 3. Explicit non-claims intact: not consumed; no diagnose; no Swift; no Gate; Capture/Markers stay Consumed; Live alone ≠ diagnose authority.
-4. Light cross-links updated minimally; PR #163 remains unmerged and executor does **not** merge it.
+4. PR #163 merged after separate Human authorization; this M-02 closeout records the merge pointer and cross-document state without closing the parent or consuming AUTH.
+
+## M-02 merge-trigger state sync — PR #163
+
+- **Work Item:** `TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001`.
+- **Exact event:** Lifecycle-changing merge of the tip PR that published the Live / unconsumed query-density AUTH state.
+- **Authority record:** [`AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md); the AUTH remains Live / unconsumed.
+- **Merged tip PR:** [#163](https://github.com/shchnk1103/Universe-Keyboard/pull/163), source head `079bc3c12e36756c96ace8bd0b26b7f94cffe4c2`, base `1ee2728712e67a32ff908a27befad2c537445077`.
+- **Merge pointer:** `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`, merged at `2026-09-25T06:54:54Z`; after fetching GitHub `main`, the merge commit was verified reachable and was the observed main tip.
+- **Post-merge revalidation:** the merged diff contains only the five docs-only files from PR #163; the parent remains Active, this child remains Active, the remediation AUTH is still unconsumed, and Capture / Markers AUTH remain Consumed. The current binding is therefore `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`.
+- **Closeout boundary:** this docs-only M-02 PR records the one synchronization for this trigger. Its administrative merge will not recursively trigger M-02 for the same identity; a later independent lifecycle-changing event needs its own trigger identity.
 
 ## Exit Criteria (future Live diagnose / remediation — only after AUTH consume + separate continue asks)
 
@@ -141,11 +152,11 @@ Capture Run `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` recorded *
 
 - AUTH revoked or not Live → stop before diagnose/Swift.
 - AUTH still unconsumed / no separate Human ask to diagnose → **stop** before diagnose/Swift.
-- Tip drifts from `1ee2728…` without revalidation → stop and reopen.
+- Tip drifts from `15e2be5…` without revalidation → stop and reopen.
 - Request to expand to fence / Gate / parent Close / provenance restore / Markers reopen → stop.
 - Attempt to treat Live/unconsumed as consumed diagnose authority or reuse Consumed Capture AUTH as Live remediation → stop.
-- Request to merge this Live-mark PR without separate Human merge ask → stop (executor does not merge).
+- Any further PR merge without separate Human merge authorization → stop.
 
 ## Outcome (current)
 
-AUTH is **Live / unconsumed**, marked at `2026-09-23T22:10:00+08:00` and initially bound to `a9b82a58…` after #162. Human authorized a docs-only rebind to current pre-merge `origin/main` tip `1ee2728712e67a32ff908a27befad2c537445077` on `2026-09-25`. Assignment lifecycle **Active**. **Not consumed.** **No diagnose run yet.** **No Swift.** Capture AUTH remains **Consumed**. Markers AUTH remains **Consumed**. Parent Active (not Closed). No Gate. Live alone does **not** authorize diagnose without consume + separate ask. After #163 merges, revalidate the new main tip before any separately authorized consume/diagnose step.
+AUTH is **Live / unconsumed**, marked at `2026-09-23T22:10:00+08:00` and initially bound to `a9b82a58…` after #162. The pre-merge rebind was `1ee2728712e67a32ff908a27befad2c537445077`; after PR #163 merged as `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`, M-02 revalidated that merge tip as current main. Assignment lifecycle **Active**. **Not consumed.** **No diagnose run yet.** **No Swift.** Capture AUTH remains **Consumed**. Markers AUTH remains **Consumed**. Parent Active (not Closed). No Gate. Live alone does **not** authorize diagnose without consume + separate ask. Revalidate again if main changes before any separately authorized consume/diagnose step.

@@ -562,6 +562,7 @@
 ## TYPO-CORRECTION-002 — Contextual Multi-Error Pinyin Recovery
 
 - **Confirmed status:** `Active`
+- **INT-003 query-density child:** PR [#163](https://github.com/shchnk1103/Universe-Keyboard/pull/163) merged from `079bc3c` as `15e2be5`; child Assignment remains Active, AUTH Live / unconsumed and revalidated to merge tip. No diagnose / Swift / Gate; M-02 docs-only closeout is pending separate merge authorization.
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/typo-correction-002.md)
 - **Product source:** [`Contextual Typo Correction Product Contract`](TYPO_CORRECTION.md)
 - **Architecture source:** [ADR 0015](architecture/decisions/0015-contextual-multi-error-typo-correction.md) and [ADR 0016](architecture/decisions/0016-progressive-contextual-recall-preflight.md)
