@@ -8,10 +8,10 @@ Repository Change Type: Documentation — Environment procedure v1.1.0 amendment
 | Field | Value |
 |---|---|
 | Lifecycle | Reviewed — Architecture **Pass** and Human Product Owner publication acceptance recorded |
-| Current phase | Environment Capture Procedure 1.1.0 publication candidate prepared; no GitHub publication action recorded |
-| Non-claims | No current CoreDevice/CoreSimulator/device health or device operation is claimed; no Quality, commit, push, PR, merge or Release result is claimed |
-| Next handoff / decision | Complete docs-only preflight; commit, push and PR require their specific authorization; merge remains separate |
-| Residuals | Candidate remains local; default branch continues to govern until publication is merged |
+| Current phase | Environment Capture Procedure 1.1.0 was published by PR #171, merged as `2c3b0e242aa9a2465ffecc419a0266b894732f11`; its single post-merge M-02 synchronization is recorded below |
+| Non-claims | No current CoreDevice/CoreSimulator/device health or device operation is claimed; this documentation publication does not make a Quality, Product Gate, TestFlight or Release conclusion |
+| Next handoff / decision | None for this documentation publication. Any live host/device diagnosis or stateful simulator/device operation requires its own bounded Assignment and authority |
+| Residuals | No publication-documentation residual is known. The underlying host-versus-Codex discovery symptom was not reproduced or resolved by this docs-only scope |
 
 ## Authority
 
@@ -78,7 +78,7 @@ The local proposal and navigation are drafted, independently reviewed, and accep
 - The procedure requires exact operation/channel/status/duration evidence for failures and prohibits cross-layer health conclusions.
 - All repository routes point to the accepted procedure and review record.
 - Whitespace and changed-document internal-link checks pass.
-- The final handoff links the independent Architecture result and records that no device operation or GitHub publication action occurred.
+- The final handoff links the independent Architecture result, records the merged publication pointer, and confirms that no device operation or current environment-health claim was made.
 
 ### Stop Conditions
 
@@ -89,11 +89,11 @@ The local proposal and navigation are drafted, independently reviewed, and accep
 
 ### Handoff
 
-Return the review receipt and local publication candidate to the Human Product Owner. Product publication acceptance is recorded; commit, push, PR, merge and Release remain separate actions. Any material change to the reviewed diagnostic rules requires a fresh bounded review.
+The procedure amendment was published by PR #171. The post-merge M-02 synchronization is recorded in the receipt below. No device operation, current environment finding or Release claim is part of this documentation Assignment. Any material change to the reviewed diagnostic rules requires a fresh bounded review.
 
 ### Lifecycle
 
-The documentation draft is `Reviewed` after independent Architecture **Pass** and Human Product Owner acceptance for publication. The PR candidate is still local; the default branch remains authoritative until merge, which is not authorized here.
+The documentation amendment remains `Reviewed` after independent Architecture **Pass** and Human Product Owner publication acceptance. PR #171 is merged. The M-02 closeout records that publication state and does not change the Assignment lifecycle to `Closed` or authorize runtime/device validation.
 
 ### Revalidation Triggers
 
@@ -113,8 +113,18 @@ The accepted procedure:
 - attributes a timeout only to the exact operation that timed out, including its elapsed duration; it requires independent CLI observations before making a layer-specific availability claim;
 - avoids repeated retries of a failing Device Hub/Accessibility operation and permits a fallback only when the current Assignment authorizes it.
 
+## M-02 merge-trigger closeout
+
+- Work Item: `KOS-DEVICE-DISCOVERY-DIAGNOSTICS-001`.
+- Exact event: the lifecycle-changing merge that published Environment Capture Procedure 1.1.0.
+- Authority record: this Assignment, including the Human Product Owner's recorded acceptance for publication; the prospective M-02 scope is defined by [PD-KOS-UPGRADE-UK-006](../product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md).
+- Merged tip: PR [#171](https://github.com/shchnk1103/Universe-Keyboard/pull/171), source tip `05f435460c55e3a528ee8011cb2b4e6f09e350ce`, based on `7c77312fe1bcc001e722cd632146722b031239fe`.
+- Merge pointer: `2c3b0e242aa9a2465ffecc419a0266b894732f11`, merged at `2026-09-25T05:35:17Z` (`2026-09-25T13:35:17+08:00`).
+- This trigger occurred on the effective date of the prospective UK-006 M-02 rule. The one post-merge synchronization is recorded in the [M-02 receipt](../evidence/kos-device-discovery-diagnostics-001-post-merge-state-sync-2026-09-25.md). The receipt's publication and administrative merge complete this same transaction; it does not recursively trigger another M-02 for this identity.
+
 ## History
 
 - `2026-09-25 Asia/Shanghai` — Initial executor draft handoff, before independent review: Human had authorized this local documentation slice; the proposed procedure and navigation were drafted. No device command or UI operation, Architecture review, Product publication acceptance, commit, push or PR had yet occurred.
 - `2026-09-25 Asia/Shanghai` — Fresh independent Architecture review recorded **Pass** with no P0–P3 findings. Receipt binds the five-file pre-status-sync package to manifest SHA-256 `9985853266a3a6fb6536c4aa5d82dd300e637961fd3cf20871b590de63ff17fc`. This entry synchronizes status only; it does not change the reviewed proposal text. No device operation, Product publication acceptance, commit, push or PR occurred.
 - `2026-09-25 Asia/Shanghai` — Human Product Owner accepted the amendment for publication. Procedure version and route status were synchronized in the local candidate; the hosted repository remains unchanged. Commit, push, PR, merge and Release have not occurred.
+- `2026-09-25 Asia/Shanghai` — Human authorized completion of the pre-archive work. The single M-02 closeout now records PR #171 and its merge pointer; its own publication and administrative merge complete this same trigger transaction. No device operation or runtime diagnosis was performed.
