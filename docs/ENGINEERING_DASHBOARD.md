@@ -114,7 +114,7 @@
 
 - [Assignment](assignments/kos-astra-upgrade-001.md): `Closed` (historical). PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged `4c9f424`.
 - [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs and local gates complete; no App Release claim.
-- Adopted pin superseded by [`KOS-UPGRADE-UK-004`](assignments/kos-upgrade-uk-004-v0.8.0.md) / PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104). Current pin is [UPGRADE_STATUS](kos/UPGRADE_STATUS.md).
+- Historical v0.7.0 pin superseded by UK-004, then by [UK-006](product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md). Current pin and scope are in [UPGRADE_STATUS](kos/UPGRADE_STATUS.md).
 
 ## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory (historical)
 
