@@ -5,9 +5,9 @@
   "schema_version": {"major": 1, "minor": 0},
   "record_id": "PD-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-RESIDUAL",
   "record_type": "decision",
-  "title": "INT-003 Capture residual disposition — Human selected Open remediation (narrow query_* Proposed AUTH)",
-  "status": "remediate_path_selected_proposed_auth_opened",
-  "updated_at": "2026-09-23T21:49:00+08:00",
+  "title": "INT-003 Capture residual disposition — Human selected Open remediation (narrow query_* AUTH now Live/unconsumed)",
+  "status": "remediate_path_selected_auth_live_unconsumed",
+  "updated_at": "2026-09-25T14:24:06+08:00",
   "revalidation_triggers": [
     "human_chooses_accept_or_remediate",
     "new_int003_run_requested",
@@ -19,9 +19,9 @@
   ],
   "decision": {
     "authority_role": "Human Product Owner / Product Lead",
-    "decision_source": "Human 2026-09-23 Asia/Shanghai after #161: chose Open remediation — narrow query_* Proposed AUTH (not Accept; not fence; not Live yet)",
-    "scope": "After #161 on main, Human selected Option B Open remediation narrowed to typo_recall.query_begin/query_outcome density; formalize via Proposed AUTH (not Live)",
-    "outcome": "Open remediation selected (narrow query_*). Proposed AUTH AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001 drafted; Accept not chosen; fence_discarded remains follow-on; not Live / no Swift / no Gate",
+    "decision_source": "Human 2026-09-23 Asia/Shanghai after #161 Option B; after #162 Proposed merge Human marked AUTH Live/unconsumed (not Accept; not fence; not consumed; no diagnose/Swift yet)",
+    "scope": "After #161/#162 on main, Option B Open remediation narrowed to typo_recall.query_begin/query_outcome density; AUTH Live/unconsumed; diagnose/Swift still require consume + separate ask",
+    "outcome": "Open remediation selected (narrow query_*). AUTH AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001 Live/unconsumed at 2026-09-23T22:10:00+08:00, initially bound to a9b82a58…; Human-authorized docs-only rebind to current pre-merge main tip 1ee2728712e67a32ff908a27befad2c537445077 on 2026-09-25; Accept not chosen; fence_discarded remains follow-on; not consumed / no diagnose / no Swift / no Gate",
     "expires_at": null
   }
 }
@@ -34,12 +34,13 @@
 | Lifecycle | **`Remediate path selected`** — Human chose Option B (narrow `query_*`); Accept **not** chosen |
 | Target | `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` |
 | Evidence state | Same-process smoke→rapid; rapid consecutive &lt;180 (15/15); positive debounce cancel/reschedule; Human visual both Pass; Architecture Pass with conditions; Quality Bounded Pass with conditions |
-| Main tip after #161 | `65a0a11d197616928c66f3c148193982c9935945` |
-| Remediation Proposed AUTH | [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) — **Proposed / unconsumed** (not Live) |
+| Main tip after #162 | `a9b82a58cac0c28e8a5d8a957d464d803d6d92d1` (Proposed historical `65a0a11…` after #161) |
+| Current remediation AUTH binding | `1ee2728712e67a32ff908a27befad2c537445077` — Human-authorized docs-only revalidation against `origin/main` on `2026-09-25`, before #163 merge |
+| Remediation AUTH | [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) — **Live / unconsumed** since `2026-09-23T22:10:00+08:00`; current binding is the pre-merge tip above (not consumed) |
 | Remediation Assignment | [`…-query-density-remediation-001`](../assignments/typo-correction-002-int003-query-density-remediation-001.md) |
 | Parent | `TYPO-CORRECTION-002` remains **Active** |
-| Non-claims | Not INT-003 Product Gate, Quality Gate, Release Gate, parent Close, Swift, TestFlight, Release; Proposed AUTH ≠ Live; Capture AUTH stays Consumed |
-| Next | Merge Proposed remediation docs PR when CI green (separate ask already in flight); later Live mark (separate ask) → diagnose-first |
+| Non-claims | Not INT-003 Product Gate, Quality Gate, Release Gate, parent Close, Swift, TestFlight, Release; Live AUTH ≠ consumed diagnose authority; Capture AUTH stays Consumed; Markers AUTH stays Consumed |
+| Next | Human squash-merge PR #163 after CI green (executor does not merge); revalidate the main-tip binding after merge, then obtain separate Human authorization before consuming and diagnosing; further continue before Swift |
 
 ## Package binding
 
@@ -87,7 +88,7 @@ Capture ≠ Gate. Markers AUTH Consumed. This docs residual does **not** invent 
 | Same-lineage reviewer residual | Accept-with-condition class | Capture + Architecture + Quality share same agent lineage; not third-runtime independence |
 | Raw JSONL not re-hashed on review hosts | Accept-with-condition class | Evidence file hash + evidence-bound journal SHA used; designated Simulator App Group path unavailable on review hosts |
 
-## Two disposition options (undecided — Human chooses later)
+## Disposition options considered (Human selected Option B)
 
 Option B (narrow `query_*`) is **selected**. Option A remains documented for contrast only and is **not** the active disposition.
 
@@ -108,7 +109,7 @@ Accept conditions ≠ Product Pass. It is bounded evidence disposition only.
 
 ### Option B — Open remediation AUTH — **SELECTED (narrow)**
 
-**Human chose this path after #161** — formalized as narrow Proposed AUTH [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) (**Proposed**, not Live). Scope locked to `query_*` density diagnose-first; `fence_discarded` remains out-of-scope follow-on. Accept (Option A) was **not** chosen.
+**Human chose this path after #161** — formalized via #162 as narrow AUTH [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md). It was marked **Live / unconsumed** at `2026-09-23T22:10:00+08:00` on then-current tip `a9b82a58…`; Human authorized a docs-only rebind to `1ee2728712e67a32ff908a27befad2c537445077` on `2026-09-25` before #163 merge. Scope remains locked to `query_*` density diagnose-first; `fence_discarded` is out-of-scope. Accept (Option A) was **not** chosen. **Not consumed.** Live alone does **not** authorize diagnose without consume + separate ask.
 
 **Meaning of Open remediation (narrow `query_*`):**
 
@@ -130,15 +131,15 @@ This document does **not**:
 - Close parent `TYPO-CORRECTION-002` or auto-Close the Capture child;
 - authorize Swift / ObjC / RIME / `RimeRuntimeProvenance` restore;
 - authorize TestFlight or Release;
-- mark the remediation AUTH **Live**, implement Swift, or grant Gate (those need separate asks);
+- itself serve as the authority that marked the remediation AUTH Live; the separate Human-authorized Live mark is recorded in the AUTH and Assignment;
 - invent a Gate AUTH or consume a Product residual Accept AUTH;
 - reopen Markers AUTH;
 - convert Capture disposition into Gate.
 
 ## Product boundary
 
-Docs-only hygiene after #159: bind the observation package and surface undecided disposition options. Runtime, architecture, and product contracts are unchanged by this draft. Other Active children (runtime hardening, QA-001, paired performance, etc.) keep their own evidence requirements and must not be inferred from this residual.
+Docs-only status synchronization after #159–#162: bind the observation package and record Human-selected Option B plus its separate Live/unconsumed AUTH state. Runtime, architecture, and product contracts are unchanged by this record. Other Active children (runtime hardening, QA-001, paired performance, etc.) keep their own evidence requirements and must not be inferred from this residual.
 
 ## Limits and revalidation
 
-Disposition path is **Open remediation (narrow `query_*`)** via Proposed AUTH (not Live). Revalidate on Live mark, diagnose outcome, new INT-003 Run, package/schema/provenance change, contradictory evidence, expanded scope (e.g. fence follow-on), third-runtime re-review request, Gate AUTH request, or parent Close request. No ADR or CHANGELOG update is required for this Proposed remediation docs slice alone.
+Disposition path is **Open remediation (narrow `query_*`)** via AUTH now **Live / unconsumed** and bound to pre-merge main tip `1ee2728712e67a32ff908a27befad2c537445077`. Revalidate on any main-tip change (including #163 merge), consume/diagnose outcome, new INT-003 Run, package/schema/provenance change, contradictory evidence, expanded scope (e.g. fence follow-on), third-runtime re-review request, Gate AUTH request, or parent Close request. No ADR or CHANGELOG update is required for this docs-only binding revalidation.
