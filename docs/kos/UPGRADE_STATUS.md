@@ -86,8 +86,9 @@ Round 3 receipt](../reviews/KOS-UPGRADE-UK-006-v0.9.0-quality-r3-review.md).
 The UK-006 upgrade review is recorded in the [Round 2 applicability
 assessment](KOS-UPGRADE-UK-006-v0.9.0-round-2.md), with its exact sources in
 the [Round 2 source map](../evidence/kos-upgrade-uk-006-v0.9.0-round-2-source-freeze-2026-09-25.md).
-Local application is tracked by
-[KOS-UPGRADE-UK-006-ADOPTION](../assignments/kos-upgrade-uk-006-v0.9.0-adoption.md).
+The local application merged as PR [#170](https://github.com/shchnk1103/Universe-Keyboard/pull/170)
+at commit 1c14ab66d628f1a291b5484da0255c40492a80be; the single merge-trigger
+closeout is recorded in the [post-merge M-02 receipt](../evidence/kos-upgrade-uk-006-v0.9.0-post-merge-state-sync-2026-09-25.md).
 
 ## Project optional contract: `kos.release-evidence` v1.0
 
