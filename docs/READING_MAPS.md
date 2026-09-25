@@ -53,6 +53,8 @@ Ownership: The task Assignment names the Domain Owner and Environment Executor; 
 
 Required review: no `UNKNOWN` Assignment field; frozen inputs and archive location; current-run provenance; tool failures not treated as absence; actual SHA-256 values and complete manifest; immutable handoff; no Product, Runtime or Quality conclusion inferred by the Executor.
 
+For a mismatch between host Terminal discovery and Codex/Xcode UI operations, read [KOS-DEVICE-DISCOVERY-DIAGNOSTICS-001](assignments/kos-device-discovery-diagnostics-001.md) and the accepted diagnostic section in `ENVIRONMENT_CAPTURE_PROCEDURE.md`.
+
 For `ENV-TOOLING-001` capability implementation or Quality verification, also read `ENVIRONMENT_DIGEST_TOOLING.md`. It is the authority for digest roots, include/exclude rules, user-configuration separation, canonical manifest bytes, privacy and non-shipping boundaries. Fixture results validate tooling only and cannot replace a new Environment Capture.
 
 ## Publish Or Maintain A GitHub Pull Request
