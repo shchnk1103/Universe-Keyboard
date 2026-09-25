@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Reviewed |
-| Current phase | Architecture Round 2 passed; Quality Round 2 partial findings were resolved by Quality Round 3 Pass. Product disposition and local prospective adoption are recorded separately under UK-006-ADOPTION. |
+| Current phase | Architecture Round 2 passed; Quality Round 2 partial findings were resolved by Quality Round 3 Pass. Product disposition and local prospective adoption are recorded separately under UK-006-ADOPTION; that docs-only application merged as PR #170 at 1c14ab66d628f1a291b5484da0255c40492a80be. This review Assignment remains Reviewed, not Closed. |
 | Material non-claims | This review Assignment grants no required-mode change, Active-Assignment migration, backfill, Product/Release Gate or publication authorization; v0.9.0 adoption is a separate accepted Product Decision. |
-| Next handoff / decision | Local adoption documentation is complete under [UK-006-ADOPTION](kos-upgrade-uk-006-v0.9.0-adoption.md); any commit, PR, merge or Release action remains separately gated. |
+| Next handoff / decision | No remaining review-lane action. The accepted Product Decision and local application are published under [UK-006-ADOPTION](kos-upgrade-uk-006-v0.9.0-adoption.md); future Kit upgrades, Product/Release gates or scope changes require their own authority. |
 | Residuals | No open Architecture or Quality findings remain across the completed review lanes. Simulator/CoreDevice discovery remains a separate project-specific issue outside v0.9.0. |
 
 ---

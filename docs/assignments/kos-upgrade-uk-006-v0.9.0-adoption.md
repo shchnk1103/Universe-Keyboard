@@ -7,10 +7,10 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Completed |
-| Current phase | The accepted UK-006 Product Decision has been applied to the local Kit pin, M-02 rule, new-lane reviewer contract and navigation/status mirrors in this isolated worktree. |
-| Material non-claims | No KOS 2.0/schema/validator change, required mode, migration, backfill, runtime/device action, final independent review receipt, commit, push, PR, merge, tag or Release. |
-| Next handoff / decision | Human Product Owner for any separate publication authorization; the adopted prospective rules apply to eligible future events and newly assigned lanes. |
-| Residuals | No known local-link, whitespace or JSON syntax issue after the recorded checks; hosted CI and independent review of this final local document set were not run. |
+| Current phase | The accepted UK-006 Product Decision is applied to the local Kit pin, M-02 rule, new-lane reviewer contract and navigation/status mirrors; the docs-only application merged as PR #170 at commit 1c14ab66d628f1a291b5484da0255c40492a80be. |
+| Material non-claims | No KOS 2.0/schema/validator change, required mode, migration, backfill, runtime/device action, new KOS Kit tag or Release, App Product/Quality/Release Gate, TestFlight or App Store release. |
+| Next handoff / decision | None for this completed adoption Assignment; prospective rules apply to eligible future M-02 triggers and newly assigned independent review lanes. |
+| Residuals | No known documentation or Profile syntax issue; the merge-trigger M-02 closeout is recorded in the linked post-merge state-sync receipt. |
 
 ---
 
@@ -59,9 +59,17 @@ Policy version: 1.0.0
 - The Round 2 assessment and source-map SHA-256 values remain
   eab2d1e27137d75120c06980be6356ccc092bbd7de20b89b8e4de10fc3e09af9 and
   49cba1b2881b33621e8690953cf2de60abb263cd35586bfc0f2cdaaf597d5eea.
-- No code tests, builds, hosted CI, simulator/device operation or GitHub write
-  was run; those are outside this local docs-only Assignment.
+- At the local-application stage, no code tests, builds, hosted CI, simulator/device operation or GitHub write was run; those were outside that local docs-only Assignment. The later PR #170 publication passed its pinned KOS validator, lightweight checks, final hosted quality gate and GitGuardian.
+
+## M-02 merge-trigger closeout
+
+- Work Item: KOS-UPGRADE-UK-006-ADOPTION.
+- Exact event: lifecycle-changing tip PR merge that published the prospective v0.9.0 adoption.
+- Authority record: [PD-KOS-UPGRADE-UK-006](../product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md).
+- Merged tip: PR [#170](https://github.com/shchnk1103/Universe-Keyboard/pull/170), source tip 36e5079a218cc909109078b8077e3bf1ef03bd98, merged at 2026-09-25T05:56:07Z as 1c14ab66d628f1a291b5484da0255c40492a80be.
+- The single post-merge synchronization is documented in [the M-02 receipt](../evidence/kos-upgrade-uk-006-v0.9.0-post-merge-state-sync-2026-09-25.md). Its administrative publication and merge are part of this closeout transaction; it does not recursively trigger another M-02 for this identity.
 
 ## History
 
-- 2026-09-25 Asia/Shanghai: Established from the Human Product Owner's prospective adoption decision and completed locally in the isolated worktree. No commit, push, PR, merge, tag or Release action was performed.
+- 2026-09-25 Asia/Shanghai: Established from the Human Product Owner's prospective adoption decision and completed locally in the isolated worktree. No commit, push, PR, merge, tag or Release action was performed at that time.
+- 2026-09-25 Asia/Shanghai: Docs-only adoption published via PR #170 and merged as 1c14ab66d628f1a291b5484da0255c40492a80be; post-merge M-02 is tracked above.

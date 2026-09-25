@@ -116,6 +116,12 @@
 - [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs and local gates complete; no App Release claim.
 - Historical v0.7.0 pin superseded by UK-004, then by [UK-006](product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md). Current pin and scope are in [UPGRADE_STATUS](kos/UPGRADE_STATUS.md).
 
+## KOS-UPGRADE-UK-006 — KOS Kit v0.9.0 prospective adoption
+
+- **Lifecycle:** Product Decision adopted; local adoption Assignment Completed; review Assignment remains Reviewed (not Closed). Docs-only PR [#170](https://github.com/shchnk1103/Universe-Keyboard/pull/170) merged at 2026-09-25T05:56:07Z as 1c14ab66d628f1a291b5484da0255c40492a80be; merge-trigger closeout is recorded in the [M-02 receipt](evidence/kos-upgrade-uk-006-v0.9.0-post-merge-state-sync-2026-09-25.md).
+- **Pin:** KOS Kit v0.9.0 at c98b2813240e22b2ac7fec44b2445321b03f73e0, advisory mode.
+- **Non-claims:** no required mode, migration/backfill, schema/validator change, Simulator/CoreDevice repair, App Product/Release Gate, TestFlight or App Store release.
+
 ## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory (historical)
 
 - **Lifecycle:** `Closed` — PR #96 merged `41c0dc5`
