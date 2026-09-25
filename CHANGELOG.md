@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-09-25 — 环境采集中的设备发现诊断分层
+
+- Environment Capture Procedure 升至 `1.1.0`：分别记录 `devicectl`、`simctl`、Device Hub、Accessibility Inspector 与 XCTest/XCUITest 结果；目标模拟器操作使用当次发现的显式 UDID，并按具体失败操作记录状态和耗时。
+- 独立 Architecture review 为 **Pass**，Human Product Owner 已接受发布。此项是 docs-only 发布候选；在合并到默认分支前，已发布流程仍为 `1.0.0`。
+
 ## 2026-09-23 — 键盘字母与标点字号微调
 
 - 英文字母、标点字符及九键字母组字号从 `16 pt` 调整为 `17 pt`，回应公测用户反馈偏小的问题；按键尺寸和布局不变。

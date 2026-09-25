@@ -1,6 +1,6 @@
-# Universe Keyboard Environment Capture Procedure v1.0
+# Universe Keyboard Environment Capture Procedure v1.1
 
-> **Version:** `1.0.0`
+> **Version:** `1.1.0`
 >
 > **Status:** Accepted
 >
@@ -101,6 +101,35 @@ In particular, `devicectl` access to an `appGroupDataContainer` can produce a fa
 An absence claim requires a template-authorized observation that can actually enumerate or inspect the relevant boundary in the current run. Otherwise record the field as unavailable and preserve the command, arguments, exit status, timestamp and redacted output as supporting evidence. Matching entitlements or a reachable container also cannot, by themselves, prove that both running processes accessed the same container.
 
 Tool limitations are environment blockers or retry conditions; they are not Product failures and must not trigger a runtime change from this procedure.
+
+## Simulator And Device Discovery Diagnostics
+
+This procedure keeps host command-line observations separate from Device Hub, Accessibility Inspector and XCTest/XCUITest operations. The host checks reported in the originating discussion are motivation only, not current environment evidence. The roles of `devicectl`, `simctl` and Device Hub are described in Apple's [Xcode command-line tool reference](https://developer.apple.com/documentation/xcode/xcode-command-line-tool-reference) and [Devices and Simulator documentation](https://developer.apple.com/documentation/xcode/devices-and-simulator).
+
+### Keep Observations In Their Own Layer
+
+| Observation | What it can establish | What it does not establish |
+|---|---|---|
+| `xcode-select -p`, `xcodebuild -version`, `xcrun --find <tool>` | Selected developer directory, reported Xcode version, or whether the named tool resolves in that context | Device visibility or health of CoreDevice, CoreSimulator, Device Hub, Accessibility or XCTest |
+| `xcrun devicectl list devices` | The result of that CoreDevice/devicectl listing in the recorded execution context | Simulator availability, Device Hub/Accessibility success, or app testability |
+| `xcrun simctl list devices` | The result of that CoreSimulator/simctl listing in the recorded execution context | Physical-device availability, Device Hub/Accessibility success, or app testability |
+| Device Hub operation | The result of that specific Xcode device-management operation | A general CoreDevice health verdict when a separate `devicectl` listing succeeds |
+| Accessibility Inspector operation | The result of that specific accessibility inspection | General device discovery or CoreDevice health |
+| XCTest/XCUITest operation | The result of that test operation and its recorded destination | A general verdict about Device Hub or Accessibility Inspector |
+
+A failure or timeout in one row must not be attributed to another row without an independent observation of that other layer.
+
+### Diagnostic Sequence
+
+1. Record the execution context and provider for each observation: host Terminal, Codex terminal/sandbox, XcodeBuildMCP, Device Hub, Accessibility Inspector or XCTest/XCUITest. Do not merge results from different providers without labeling them.
+2. For simulator automation, prefer `xcrun simctl`. Use device listing to discover the current target, then supply its explicit UDID to every target-specific operation, including boot-state queries, launch, termination, installation and lifecycle actions. Do not rely on a simulator name, a default destination or a previously reported UDID.
+3. For connected-device discovery, inspect `xcrun devicectl list devices` separately. Do not use Device Hub Accessibility availability as a CoreDevice health check.
+4. If a Device Hub or Accessibility operation fails or times out, record the exact command/action and arguments, provider, elapsed duration, exit code or operation status, timestamp and bounded redacted output. Attribute the result to that operation only.
+5. Before reporting CoreDevice listing unavailable, run and record `time xcrun devicectl list devices`; separately run and record `xcrun simctl list devices` to distinguish the CoreSimulator result. Preserve each command's own duration, status and error.
+6. If both command-line listings succeed while a Device Hub or Accessibility operation times out, classify the observed failure as specific to that operation and execution context. Do not repeatedly retry the same failing UI operation.
+7. Use simctl or XCTest/XCUITest as a fallback only when the current Assignment authorizes the corresponding simulator or test action. A fallback does not authorize boot, install, launch, test or inspection by itself.
+8. If one command-line listing fails, report only that command's layer and evidence. If both fail, report both independently. A failed or empty listing alone does not prove a particular named resource is absent.
+9. Do not restart services, change Xcode selection, or change automation routing under this procedure. Those actions require a separate Assignment with explicit scope.
 
 ## Artifact Integrity And Archive
 
