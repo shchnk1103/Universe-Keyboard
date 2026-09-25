@@ -7,10 +7,10 @@
 | **Status** | **Live / unconsumed** (not consumed) |
 | **Assignment** | [`TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001`](../assignments/typo-correction-002-int003-query-density-remediation-001.md) |
 | **Parent** | [`TYPO-CORRECTION-002`](../assignments/typo-correction-002.md) (Active) |
-| **Decision source** | Human authorized docs-only Live mark for narrow `query_*` remediation AUTH (2026-09-23 Asia/Shanghai) 「授权 docs-only 将 query_* remediation AUTH 标为 Live/unconsumed，开 PR，不自动合、不诊断、不改 Swift」; Human separately authorized a docs-only rebind on `2026-09-25` to the verified current main tip; this adds no consume/diagnose/Swift authority; Capture AUTH stays **Consumed**; Markers AUTH stays **Consumed** |
+| **Decision source** | Human authorized docs-only Live mark for narrow `query_*` remediation AUTH (2026-09-23 Asia/Shanghai); Human separately authorized pre-merge tip rebind and PR #163 squash merge; Human authorized this docs-only post-merge M-02 sync on `2026-09-25`; none adds consume/diagnose/Swift authority; Capture AUTH stays **Consumed**; Markers AUTH stays **Consumed** |
 | **Live at** | `2026-09-23T22:10:00+08:00` |
 | **Consumed at** | — |
-| **Designated tip** | `1ee2728712e67a32ff908a27befad2c537445077` (verified `origin/main` before #163 merge, 2026-09-25; original Live-mark tip after #162 was `a9b82a58cac0c28e8a5d8a957d464d803d6d92d1`) |
+| **Designated tip** | `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a` (verified main tip after PR #163 merge, 2026-09-25; pre-merge rebind `1ee2728712e67a32ff908a27befad2c537445077`; original Live-mark tip after #162 `a9b82a58cac0c28e8a5d8a957d464d803d6d92d1`) |
 
 ```kos-record
 {
@@ -19,9 +19,9 @@
   "record_type": "authorization",
   "title": "Live remediation AUTH: narrow typo_recall.query_begin / query_outcome density (diagnose-first; unconsumed)",
   "status": "live",
-  "updated_at": "2026-09-25T14:24:06+08:00",
+  "updated_at": "2026-09-25T15:05:41+08:00",
   "revalidation_triggers": [
-    "docs_tip_changed_from_1ee2728",
+    "docs_tip_changed_from_15e2be5",
     "capture_package_or_evidence_sha_superseded",
     "scope_expansion_to_fence_or_gate_or_provenance",
     "AUTH_revoked_or_executor_changed",
@@ -35,9 +35,9 @@
     "parent_assignment": "TYPO-CORRECTION-002",
     "consumption_state": "unconsumed",
     "live_at": "2026-09-23T22:10:00+08:00",
-    "live_gate": "Human marked this AUTH Live after #162 with original tip a9b82a58; on 2026-09-25 Human authorized a docs-only rebind to current pre-merge main tip 1ee2728712e67a32ff908a27befad2c537445077; still unconsumed; Live alone does not authorize diagnose or Swift — consume + separate Human ask required before diagnose/Swift; revalidate after any main-tip change before consume",
+    "live_gate": "Human marked this AUTH Live after #162 with original tip a9b82a58; Human authorized the pre-merge docs-only rebind to 1ee2728712e67a32ff908a27befad2c537445077, then separately authorized PR #163 squash merge as 15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a; the post-merge M-02 sync revalidated that current main tip; AUTH remains unconsumed; Live alone does not authorize diagnose or Swift — consume + separate Human ask required before diagnose/Swift; revalidate after any later main-tip change",
     "artifact_bindings": [
-      {"kind": "docs_tip_designated", "identity": "1ee2728712e67a32ff908a27befad2c537445077"},
+      {"kind": "docs_tip_designated", "identity": "15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a"},
       {"kind": "docs_tip_proposed_historical", "identity": "65a0a11d197616928c66f3c148193982c9935945"},
       {"kind": "product_residual_pr", "identity": "161"},
       {"kind": "proposed_auth_pr", "identity": "162"},
@@ -110,7 +110,7 @@ Product Gate; QA-001 Gate; parent Close; TestFlight/Release; `RimeRuntimeProvena
 
 ## Consume rules
 
-1. Status is **Live / unconsumed**. Human marked Live at `2026-09-23T22:10:00+08:00`, initially bound to `a9b82a58…` (#162); Human later authorized a docs-only rebind to current pre-merge `main` tip `1ee2728712e67a32ff908a27befad2c537445077` on `2026-09-25`.
+1. Status is **Live / unconsumed**. Human marked Live at `2026-09-23T22:10:00+08:00`, initially bound to `a9b82a58…` (#162); the pre-merge rebind was `1ee2728712e67a32ff908a27befad2c537445077`; after Human-authorized PR #163 merge, M-02 revalidated current main tip `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a` on `2026-09-25`.
 2. Still **no** Swift / ObjC / RIME; **no diagnose-as-Live execution**; no ACTIVE_WORK diagnose claim from Live alone. **Live alone does not authorize diagnose** — consume + separate Human ask are required before diagnose or Swift.
 3. **Consume before the first non-docs remediation action**; perform only `allowed_external_effects_when_live`; prefer diagnose evidence before any code fix; code fixes need separate continue after diagnose unless Human's continue ask already covers both (document which).
 4. Consumption does **not** grant Product Gate, QA-001 Gate, parent Close, TestFlight/Release, fence expansion, or Markers reopen.
@@ -122,11 +122,12 @@ Product Gate; QA-001 Gate; parent Close; TestFlight/Release; `RimeRuntimeProvena
 |---|---|
 | Proposed binding (historical; landed via #162) | Tip `65a0a11d197616928c66f3c148193982c9935945` after #161; residual Option B narrow `query_*`; Capture/Markers cited as Consumed non-authorizing — Proposed package merged as tip `a9b82a58cac0c28e8a5d8a957d464d803d6d92d1` (#162) |
 | Initial Live-at tip binding (historical) | Tip `a9b82a58cac0c28e8a5d8a957d464d803d6d92d1` (#162 merge); Live at `2026-09-23T22:10:00+08:00` |
-| Current pre-merge binding | Tip `1ee2728712e67a32ff908a27befad2c537445077`; Human-authorized docs-only revalidation on `2026-09-25`; `consumption_state` still unconsumed; after #163 merge, revalidate the new main tip before consume |
+| Pre-merge binding (historical) | Tip `1ee2728712e67a32ff908a27befad2c537445077`; Human-authorized docs-only revalidation on `2026-09-25`; superseded by post-merge M-02 revalidation |
+| Current post-merge binding | Tip `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`; PR #163 source head `079bc3c12e36756c96ace8bd0b26b7f94cffe4c2`, merged at `2026-09-25T06:54:54Z`; `consumption_state` remains unconsumed |
 | Live diagnose (future, after consume + separate ask) | Root-cause note: over-emit vs real storms; journal/code correlation; tip SHA |
 | Live remediation (future, if continue) | Minimal tip SHA; tests; document any 180 ms budget necessity |
 | Non-claims | Intact: not consumed; no diagnose run yet; no Swift; no Gate; Capture AUTH stays Consumed; Markers AUTH stays Consumed; Live alone ≠ diagnose authority |
 
 ## Depends on / Outcome
 
-AUTH is **Live / unconsumed**, with current pre-merge binding `1ee2728712e67a32ff908a27befad2c537445077` after Human-authorized docs-only revalidation on `2026-09-25`. Still no diagnose / Swift until consume + separate Human ask. Parent remains Active. Capture AUTH stays **Consumed**. Markers AUTH stays **Consumed**. No Gate. PR #163 must not be merged without separate Human authorization; revalidate the new main tip after merge before consume.
+AUTH is **Live / unconsumed**, with current post-merge binding `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a` after the Human-authorized PR #163 squash merge and M-02 revalidation on `2026-09-25`. Still no diagnose / Swift until consume + separate Human ask. Parent remains Active. Capture AUTH stays **Consumed**. Markers AUTH stays **Consumed**. No Gate. Any later main-tip change requires revalidation before consume.

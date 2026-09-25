@@ -7,7 +7,7 @@
   "record_type": "decision",
   "title": "INT-003 Capture residual disposition — Human selected Open remediation (narrow query_* AUTH now Live/unconsumed)",
   "status": "remediate_path_selected_auth_live_unconsumed",
-  "updated_at": "2026-09-25T14:24:06+08:00",
+  "updated_at": "2026-09-25T15:05:41+08:00",
   "revalidation_triggers": [
     "human_chooses_accept_or_remediate",
     "new_int003_run_requested",
@@ -19,9 +19,9 @@
   ],
   "decision": {
     "authority_role": "Human Product Owner / Product Lead",
-    "decision_source": "Human 2026-09-23 Asia/Shanghai after #161 Option B; after #162 Proposed merge Human marked AUTH Live/unconsumed (not Accept; not fence; not consumed; no diagnose/Swift yet)",
+    "decision_source": "Human 2026-09-23 Asia/Shanghai after #161 Option B; after #162 Proposed merge Human marked AUTH Live/unconsumed; Human later authorized PR #163 squash merge and this docs-only M-02 status sync (not Accept; not fence; not consumed; no diagnose/Swift yet)",
     "scope": "After #161/#162 on main, Option B Open remediation narrowed to typo_recall.query_begin/query_outcome density; AUTH Live/unconsumed; diagnose/Swift still require consume + separate ask",
-    "outcome": "Open remediation selected (narrow query_*). AUTH AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001 Live/unconsumed at 2026-09-23T22:10:00+08:00, initially bound to a9b82a58…; Human-authorized docs-only rebind to current pre-merge main tip 1ee2728712e67a32ff908a27befad2c537445077 on 2026-09-25; Accept not chosen; fence_discarded remains follow-on; not consumed / no diagnose / no Swift / no Gate",
+    "outcome": "Open remediation selected (narrow query_*). AUTH AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001 Live/unconsumed at 2026-09-23T22:10:00+08:00, initially bound to a9b82a58…; pre-merge docs-only rebind was 1ee2728712e67a32ff908a27befad2c537445077; PR #163 merged from 079bc3c12e36756c96ace8bd0b26b7f94cffe4c2 as 15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a at 2026-09-25T06:54:54Z; M-02 revalidated current main tip 15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a; Accept not chosen; fence_discarded remains follow-on; not consumed / no diagnose / no Swift / no Gate",
     "expires_at": null
   }
 }
@@ -35,12 +35,12 @@
 | Target | `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` |
 | Evidence state | Same-process smoke→rapid; rapid consecutive &lt;180 (15/15); positive debounce cancel/reschedule; Human visual both Pass; Architecture Pass with conditions; Quality Bounded Pass with conditions |
 | Main tip after #162 | `a9b82a58cac0c28e8a5d8a957d464d803d6d92d1` (Proposed historical `65a0a11…` after #161) |
-| Current remediation AUTH binding | `1ee2728712e67a32ff908a27befad2c537445077` — Human-authorized docs-only revalidation against `origin/main` on `2026-09-25`, before #163 merge |
-| Remediation AUTH | [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) — **Live / unconsumed** since `2026-09-23T22:10:00+08:00`; current binding is the pre-merge tip above (not consumed) |
+| Current remediation AUTH binding | `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a` — post-merge M-02 revalidation against verified `main` after PR #163 |
+| Remediation AUTH | [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) — **Live / unconsumed** since `2026-09-23T22:10:00+08:00`; current binding is the post-merge tip above (not consumed) |
 | Remediation Assignment | [`…-query-density-remediation-001`](../assignments/typo-correction-002-int003-query-density-remediation-001.md) |
 | Parent | `TYPO-CORRECTION-002` remains **Active** |
 | Non-claims | Not INT-003 Product Gate, Quality Gate, Release Gate, parent Close, Swift, TestFlight, Release; Live AUTH ≠ consumed diagnose authority; Capture AUTH stays Consumed; Markers AUTH stays Consumed |
-| Next | Human squash-merge PR #163 after CI green (executor does not merge); revalidate the main-tip binding after merge, then obtain separate Human authorization before consuming and diagnosing; further continue before Swift |
+| Next | Complete the currently authorized docs-only M-02 state sync PR; it requires separate Human authorization before merge. After that, obtain separate Human authorization before consuming and diagnosing; further continue before Swift |
 
 ## Package binding
 
@@ -109,7 +109,7 @@ Accept conditions ≠ Product Pass. It is bounded evidence disposition only.
 
 ### Option B — Open remediation AUTH — **SELECTED (narrow)**
 
-**Human chose this path after #161** — formalized via #162 as narrow AUTH [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md). It was marked **Live / unconsumed** at `2026-09-23T22:10:00+08:00` on then-current tip `a9b82a58…`; Human authorized a docs-only rebind to `1ee2728712e67a32ff908a27befad2c537445077` on `2026-09-25` before #163 merge. Scope remains locked to `query_*` density diagnose-first; `fence_discarded` is out-of-scope. Accept (Option A) was **not** chosen. **Not consumed.** Live alone does **not** authorize diagnose without consume + separate ask.
+**Human chose this path after #161** — formalized via #162 as narrow AUTH [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md). It was marked **Live / unconsumed** at `2026-09-23T22:10:00+08:00` on then-current tip `a9b82a58…`; the pre-merge rebind was `1ee2728712e67a32ff908a27befad2c537445077`, and M-02 revalidated the post-merge tip `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`. Scope remains locked to `query_*` density diagnose-first; `fence_discarded` is out-of-scope. Accept (Option A) was **not** chosen. **Not consumed.** Live alone does **not** authorize diagnose without consume + separate ask.
 
 **Meaning of Open remediation (narrow `query_*`):**
 
@@ -142,4 +142,4 @@ Docs-only status synchronization after #159–#162: bind the observation package
 
 ## Limits and revalidation
 
-Disposition path is **Open remediation (narrow `query_*`)** via AUTH now **Live / unconsumed** and bound to pre-merge main tip `1ee2728712e67a32ff908a27befad2c537445077`. Revalidate on any main-tip change (including #163 merge), consume/diagnose outcome, new INT-003 Run, package/schema/provenance change, contradictory evidence, expanded scope (e.g. fence follow-on), third-runtime re-review request, Gate AUTH request, or parent Close request. No ADR or CHANGELOG update is required for this docs-only binding revalidation.
+Disposition path is **Open remediation (narrow `query_*`)** via AUTH now **Live / unconsumed** and bound to verified post-merge main tip `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`. Revalidate on any later main-tip change, consume/diagnose outcome, new INT-003 Run, package/schema/provenance change, contradictory evidence, expanded scope (e.g. fence follow-on), third-runtime re-review request, Gate AUTH request, or parent Close request. No ADR or CHANGELOG update is required for this docs-only M-02 synchronization.
