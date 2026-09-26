@@ -1,4 +1,4 @@
-# Assignment: TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001 — Live narrow query_* density remediation (diagnose-first; unconsumed)
+# Assignment: TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001 — Consumed narrow query_* density diagnosis
 
 Policy version: 1.0.0
 
@@ -7,13 +7,13 @@ Policy version: 1.0.0
   "schema_version": {"major": 1, "minor": 0},
   "record_id": "TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001",
   "record_type": "assignment",
-  "title": "Live AUTH: narrow typo_recall.query_begin / query_outcome density remediation (diagnose-first; unconsumed)",
-  "lifecycle": "active",
-  "current_phase": "Active Live AUTH (unconsumed); PR #163 merged; post-merge M-02 status sync in progress; waiting separate Human authorization to consume and diagnose; no diagnose run or Swift",
+  "title": "Consumed AUTH: narrow typo_recall.query_begin / query_outcome density diagnosis (diagnose-first)",
+  "lifecycle": "completed",
+  "current_phase": "Bounded diagnose-first output complete: duplicate marker-only emission ruled out; fresh run confirms 359 real query pairs across 12 operations (26–32 per operation). Product removed the follow-up's 180 ms hard pass condition. Original rapid-window attribution remains unresolved and the wider query-density Product residual remains open; no Swift, Gate, or parent Close",
   "authorization_action": "diagnose_and_optionally_remediate_int003_query_density",
-  "updated_at": "2026-09-25T15:05:41+08:00",
+  "updated_at": "2026-09-26T10:37:24+08:00",
   "revalidation_triggers": [
-    "docs_tip_changed_from_15e2be5",
+    "docs_tip_changed_from_e28491a",
     "capture_package_or_evidence_sha_superseded",
     "scope_expansion_to_fence_or_gate_or_provenance",
     "AUTH_revoked_or_executor_changed",
@@ -21,10 +21,15 @@ Policy version: 1.0.0
     "180_ms_product_budget_changed_without_emit_necessity",
     "markers_auth_reopened_or_schema_contract_changed_without_rebind"
   ],
-  "authorization_refs": ["AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001"],
+  "authorization_refs": [
+    "AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001",
+    "AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSIS-DOCS-PUBLICATION-001"
+  ],
   "parent_refs": ["TYPO-CORRECTION-002"],
   "evidence_refs": [
+    "docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md",
     "docs/evidence/typo-correction-002-sim-run-2026-09-23-int003-stale-cancel-product-001.md",
+    "docs/evidence/typo-correction-002-int003-query-density-diagnosis-001.md",
     "docs/product-decisions/TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-PRODUCT-RESIDUAL.md",
     "docs/reviews/typo-correction-002-int003-stale-cancel-product-capture-2026-09-23-001-architecture-review.md",
     "docs/reviews/typo-correction-002-int003-stale-cancel-product-capture-2026-09-23-001-quality-review.md",
@@ -34,11 +39,11 @@ Policy version: 1.0.0
   ],
   "responsibilities": {
     "domain_owner": "Input Intelligence Maintainer",
-    "executor": "Grok Bot (iOS开发大师) — AUTH Live/unconsumed docs mark now; diagnose / optional emit or scheduling fixes only after AUTH consume + separate Human ask",
-    "environment_executor": "Not Applicable for Simulator/Device Hub arm under this Live-unconsumed docs slice; any later Live diagnose uses existing Capture journal / code correlation only",
-    "human_dependency": "Human Product Owner / Product Lead — AUTH Live marked; must separately authorize consume before diagnose/code; Live alone does not authorize diagnose; merge of this Live-mark PR is a separate ask (executor does not merge)",
-    "architecture_reviewer": "Architecture & Knowledge Steward — Not Applicable for this docs-only Live-mark slice; required later if Live remediation changes emit/scheduling semantics",
-    "quality_reviewer": "Independent Quality reviewer — Not Applicable for this docs-only Live-mark slice; required later after any Live remediation tip",
+    "executor": "Codex current task — Human reassigned executor on 2026-09-25; Codex acknowledged the bounded Scope and dependencies. Previous executor Grok Bot (iOS开发大师) retained in Assignment history",
+    "environment_executor": "Not used for the bounded source diagnosis; any fresh Simulator capture requires its own current Capture Assignment/AUTH",
+    "human_dependency": "Human authorized the remaining narrow query-density work on 2026-09-25; no additional decision is pending for the partial diagnosis. Human Product Owner / Product Lead retains Product, Gate, parent-close, release, and scope-expansion decisions",
+    "architecture_reviewer": "Architecture & Knowledge Steward — required if a later source remediation changes emit/scheduling semantics",
+    "quality_reviewer": "Independent Quality reviewer — required for any later remediation tip review",
     "product_approver": "Human Product Owner / Product Lead"
   }
 }
@@ -48,17 +53,26 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | **Active** (AUTH Live / unconsumed) |
-| **Phase** | Active Live AUTH (unconsumed); PR #163 merged; M-02 status sync in progress; waiting separate Human authorization to consume and diagnose |
-| **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) — **Live / unconsumed** |
+| **Lifecycle** | **Completed — bounded diagnostic output; not Reviewed or Closed** (matching AUTH **Consumed**) |
+| **Phase** | Source diagnosis plus a distinct diagnostic capture found 359 real query pairs in 12 operations (26–32 each); first queries began 219–260 ms after scheduling. [Product removed](../product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md) the follow-up's 180 ms hard pass condition. Measured manual intervals remain 285–576 ms; the original Product Capture's rapid-window attribution is unresolved. No Swift |
+| **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) — **Consumed at `2026-09-25T15:35:47+08:00`** |
+| **Docs publication AUTH** | [`AUTH-…-DIAGNOSIS-DOCS-PUBLICATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSIS-DOCS-PUBLICATION-001.md) — separate **Consumed** docs-only publication permission; no merge |
 | **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** (do **not** Close) |
-| **Designated tip** | `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a` (verified `main` tip after PR #163 merged, 2026-09-25); pre-merge rebind was `1ee2728712e67a32ff908a27befad2c537445077`; initial Live-mark binding was `a9b82a58cac0c28e8a5d8a957d464d803d6d92d1` after #162; Proposed historical tip `65a0a11d197616928c66f3c148193982c9935945` (#161 path) |
+| **Designated tip** | Diagnosis binding `e28491a8e4ae6e5127c3241228c6fa9a1f4f082c`; the capture was installed from `80091f35cc5411b292eca78662f39e2b91694045`, an ancestor whose relevant source blobs match e284. GitHub main was verified by explicit HTTPS URL; the worktree `origin` points to the protected local checkout and its stale ref was not used |
 | **Capture AUTH** | [`AUTH-…-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) remains **Consumed** |
 | **Markers AUTH** | [`AUTH-…-CANCEL-OBSERVABILITY-MARKERS-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-CANCEL-OBSERVABILITY-MARKERS-001.md) remains **Consumed** |
 | **Assignment Authority** | Human Product Owner / Product Lead |
-| **Decision Source / Date** | Human docs-only Live mark — `2026-09-23T22:10:00+08:00` Asia/Shanghai; Human separately authorized pre-merge tip rebind and PR #163 squash merge; Human authorized this docs-only M-02 status sync after merge on `2026-09-25` Asia/Shanghai. None of these grants consume, diagnosis, or Swift authority |
-| **Next** | Complete this docs-only M-02 closeout PR; then obtain separate Human authorization before consuming AUTH and performing read-only diagnosis. Any Swift change still requires a further separate continue |
-| **Non-claims** | AUTH is Live but **not consumed**; **no diagnose run yet**; **no Swift**; not Product Gate / QA-001 Gate; not parent Close; Capture AUTH stays Consumed; Markers AUTH stays Consumed; Live alone does **not** authorize diagnose without consume + separate ask |
+| **Decision Source / Date** | Human authorized the remaining narrow query-density work and reassigned execution to the current Codex task on `2026-09-25` Asia/Shanghai; Codex acknowledged the Scope and dependencies. The AUTH was rebound to current main tip `e28491a8e4ae6e5127c3241228c6fa9a1f4f082c` and consumed before diagnosis. No Gate / parent-close / TestFlight / Release / ADR Accept authority |
+| **Next** | Keep the parent Active. Product must separately dispose of the wider query-density residual before any Gate claim. No source fix is justified by this run alone; a new rapid-behavior claim needs qualifying evidence under a distinct plan/AUTH |
+| **Non-claims** | `query_*` markers are not duplicate writes, but the scheduler-level cause is unresolved; raw JSONL was not available for rehash; **no Swift change**; not Product Gate / QA-001 Gate; not parent Close; Capture AUTH and Markers AUTH remain Consumed; no fence expansion |
+
+> **2026-09-26 criterion supersession:** The follow-up diagnosis no longer has a 180 ms hard pass condition. Historical entry/exit text below describes the original AUTH; it does not reopen the prepared rapid run or change the runtime debounce budget. See the [Product decision](../product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md).
+
+### Executor reassignment — 2026-09-25
+
+- **Previous executor:** Grok Bot (iOS开发大师), as recorded in the prior Assignment envelope.
+- **Current executor:** Codex in this task. Human Product Owner / Product Lead authorized Codex to perform the remaining work on 2026-09-25 Asia/Shanghai; Codex acknowledged the Scope, dependencies, and Stop Conditions before resuming.
+- **Remaining work:** complete operation-level correlation using the evidence-bound raw journal or a distinct Capture AUTH, then determine whether the observed real query calls violate the intended post-pause schedule. Any source fix must stay within the narrow query-density touch zones. Parent Close, Gate, TestFlight/Release, ADR Accept, fence expansion, and provenance restoration remain excluded.
 
 ## Authority
 
@@ -74,16 +88,16 @@ Policy version: 1.0.0
 
 ## Why (narrow residual)
 
-Capture Run `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` recorded **574/574** `typo_recall.query_begin` / `query_outcome` while Product narrative (Human visual) claims post-pause-only contextual lookup. Journal density alone cannot currently support that claim without Human visual cover. This child formalizes a **diagnose-first** remediation AUTH. AUTH is now **Live / unconsumed**; a future consume + separate Human ask can distinguish **observability over-emit** vs **real lookup storms** in `TypoCorrectionRecallCoordinator`, then (only if Human continues) apply minimal emit/semantics or scheduling fixes under a separate continue.
+Capture Run `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` reports **574/574** `typo_recall.query_begin` / `query_outcome`, including **16/16** during the reported rapid window. The original evidence report's SHA-256 was reverified, but its raw journal remains unavailable on this host. On the exact capture install source, each `query_begin` immediately precedes a candidate-query facade call and each `query_outcome` follows the driver's fence classification; duplicate marker emission does not explain the density. Counts are per hypothesis query, not per debounce operation. A distinct follow-up run on source tip `4ef275b…` recorded 359 paired query calls across 12 operations, with 26–32 calls per operation; the user's fastest repeatable manual input remained above the 180 ms threshold. This supports per-operation hypothesis fan-out as a density factor, but does not correlate the earlier 16 rapid-window pairs. The diagnosis is recorded in [`typo-correction-002-int003-query-density-diagnosis-001.md`](../evidence/typo-correction-002-int003-query-density-diagnosis-001.md). No source change is claimed.
 
-## Scope (Live AUTH unconsumed; execute diagnose/Swift only after consume + separate Human ask)
+## Scope (Consumed AUTH; bounded query-density diagnosis)
 
-### In scope when later consumed under separate ask (stated now; **not** authorized while unconsumed)
+### Current authorized scope
 
-1. **Diagnose-first (preferred):** read-only code + journal correlation against Run `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` / evidence SHA `3dde0362…`; document root-cause (over-emit vs real storms).
-2. Docs evidence of root-cause under clean tip.
-3. **Only if Human continues after diagnose:** minimal emit/semantics or scheduling fixes in `TypoCorrectionRecallCoordinator` (and tightly related DiagnosticEvent/marker helpers if required for emit correctness) — under separate continue-auth after Live consume; default observe-correctness first.
-4. Focused unit/contract tests for any Live emit/scheduling change; docs tip evidence.
+1. Read-only code/journal correlation against Run `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` / evidence SHA `3dde0362…`; distinguish marker over-emission from candidate-query calls.
+2. Docs evidence of findings under the clean, verified source tip.
+3. The Human's 2026-09-25 continuation authorization covers the remaining narrow query-density work. Any source change must remain minimal and within `TypoCorrectionRecallCoordinator` (and tightly related marker helpers only if needed for emit correctness); do not change the 180 ms budget without evidence.
+4. Any fresh Simulator capture requires a distinct current Capture Assignment/AUTH; the Consumed Product Capture AUTH is not reusable.
 
 ### Explicit exclusions
 
@@ -107,16 +121,17 @@ Capture Run `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` recorded *
 4. Parent remains **Active** — **met**.
 5. No Swift / Gate / Capture under Proposed slice — **met**.
 
-## Entry Criteria (Live-mark slice — current)
+## Entry Criteria (Live-mark slice — historical; superseded after consume)
 
 1. #162 squash-merged; the original Live-mark binding was `a9b82a58…`.
 2. Human authorized the docs-only Live mark (still do not auto-merge; do not diagnose; do not change Swift).
 3. Matching AUTH is **Live / unconsumed** at `2026-09-23T22:10:00+08:00`.
 4. Parent remains **Active**.
 5. Capture AUTH stays **Consumed**; Markers AUTH stays **Consumed**.
-6. Human authorized a docs-only rebind to the verified `origin/main` tip `1ee2728712e67a32ff908a27befad2c537445077` on `2026-09-25`; this does not consume AUTH or authorize diagnosis.
-7. **Active Live AUTH (unconsumed).** Diagnose still requires consuming the matching AUTH and a separate Human ask before the first non-docs remediation action.
-8. PR #163 merged under separate Human authorization as `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`; Human authorized this docs-only M-02 state sync, which revalidates the current main-tip binding without consuming AUTH or authorizing diagnosis.
+6. Human authorized a docs-only rebind to `1ee2728712e67a32ff908a27befad2c537445077` before PR #163; historical only.
+7. PR #163 merged as `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`; the M-02 closeout PR #173 merged as `e28491a8e4ae6e5127c3241228c6fa9a1f4f082c`.
+8. On 2026-09-25 Human authorized the remaining scoped work and reassigned execution to Codex; Codex acknowledged.
+9. AUTH was rebound to verified current main tip `e28491a8e4ae6e5127c3241228c6fa9a1f4f082c` and consumed at `2026-09-25T15:35:47+08:00` before diagnosis.
 
 ## Exit Criteria (docs Proposed slice — met via #162)
 
@@ -124,39 +139,38 @@ Capture Run `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` recorded *
 2. Light cross-links from residual + parent + `ACTIVE_WORK` — **met**.
 3. Explicit: **not Live**; **no Swift**; **no Gate** for that slice — **met**.
 
-## Exit Criteria (docs Live-mark slice — current)
+## Exit Criteria (docs Live-mark slice — historical; superseded after consume)
 
-1. AUTH Status **Live / unconsumed**; original `live_at` retained; `consumed_at` empty; post-merge binding revalidated to `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`.
-2. Assignment phase **Active Live AUTH (unconsumed)**; waiting consume + separate Human ask.
-3. Explicit non-claims intact: not consumed; no diagnose; no Swift; no Gate; Capture/Markers stay Consumed; Live alone ≠ diagnose authority.
-4. PR #163 merged after separate Human authorization; this M-02 closeout records the merge pointer and cross-document state without closing the parent or consuming AUTH.
+1. AUTH was Live / unconsumed with original `live_at` retained; the later consume is recorded below.
+2. PR #163 and M-02 closeout PR #173 merge pointers are recorded; parent remains Active.
+3. This historical slice made no diagnosis, Swift, Gate, or parent-close claim.
 
 ## M-02 merge-trigger state sync — PR #163
 
 - **Work Item:** `TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001`.
 - **Exact event:** Lifecycle-changing merge of the tip PR that published the Live / unconsumed query-density AUTH state.
-- **Authority record:** [`AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md); the AUTH remains Live / unconsumed.
+- **Authority record at merge:** [`AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) was Live / unconsumed at this historical trigger; it was consumed later on `2026-09-25` under Human continuation authorization.
 - **Merged tip PR:** [#163](https://github.com/shchnk1103/Universe-Keyboard/pull/163), source head `079bc3c12e36756c96ace8bd0b26b7f94cffe4c2`, base `1ee2728712e67a32ff908a27befad2c537445077`.
 - **Merge pointer:** `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`, merged at `2026-09-25T06:54:54Z`; after fetching GitHub `main`, the merge commit was verified reachable and was the observed main tip.
-- **Post-merge revalidation:** the merged diff contains only the five docs-only files from PR #163; the parent remains Active, this child remains Active, the remediation AUTH is still unconsumed, and Capture / Markers AUTH remain Consumed. The current binding is therefore `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`.
+- **M-02 closeout pointer:** PR [#173](https://github.com/shchnk1103/Universe-Keyboard/pull/173) merged as `e28491a8e4ae6e5127c3241228c6fa9a1f4f082c` at `2026-09-25T07:28:01Z`; it completes the one synchronization for the #163 trigger and does not recursively trigger another M-02.
+- **Post-closeout revalidation and consume:** after fetching GitHub `main`, `e28491a8e4ae6e5127c3241228c6fa9a1f4f082c` was verified as current main. Human reassigned this bounded work to Codex and authorized continuation; the AUTH was rebound to this tip and consumed at `2026-09-25T15:35:47+08:00`. Parent remains Active; Capture / Markers AUTH remain Consumed.
 - **Closeout boundary:** this docs-only M-02 PR records the one synchronization for this trigger. Its administrative merge will not recursively trigger M-02 for the same identity; a later independent lifecycle-changing event needs its own trigger identity.
 
-## Exit Criteria (future Live diagnose / remediation — only after AUTH consume + separate continue asks)
+## Diagnosis / remediation exit criteria (current authorized path)
 
-1. AUTH consumed before first non-docs remediation action.
-2. Diagnose distinguishes over-emit vs real lookup storms; root-cause evidence recorded.
-3. Any code change stays minimal and in-scope; 180 ms budget untouched unless documented necessity.
-4. Still no Gate / parent Close / TestFlight / Release / fence expansion / Markers reopen from this AUTH alone.
+1. Correlate each observed query pair with its operation token and timing using the raw journal bound by SHA-256, or a new run under a distinct Capture AUTH.
+2. Determine whether the 16 rapid-window calls are multiple hypothesis queries in an operation or additional operations crossing the intended 180 ms debounce.
+3. If a source fix is indicated, keep it minimal and within the AUTH touch zones; preserve the 180 ms budget unless evidence proves a correctness need.
+4. No Gate / parent Close / TestFlight / Release / fence expansion / Markers reopen.
 
 ## Stop Conditions
 
-- AUTH revoked or not Live → stop before diagnose/Swift.
-- AUTH still unconsumed / no separate Human ask to diagnose → **stop** before diagnose/Swift.
-- Tip drifts from `15e2be5…` without revalidation → stop and reopen.
+- AUTH revoked or current Human authorization withdrawn → stop before further work.
+- Main tip differs from the bound diagnostic source `e28491a8e4ae6e5127c3241228c6fa9a1f4f082c` before diagnosis begins → stop and revalidate.
 - Request to expand to fence / Gate / parent Close / provenance restore / Markers reopen → stop.
 - Attempt to treat Live/unconsumed as consumed diagnose authority or reuse Consumed Capture AUTH as Live remediation → stop.
 - Any further PR merge without separate Human merge authorization → stop.
 
 ## Outcome (current)
 
-AUTH is **Live / unconsumed**, marked at `2026-09-23T22:10:00+08:00` and initially bound to `a9b82a58…` after #162. The pre-merge rebind was `1ee2728712e67a32ff908a27befad2c537445077`; after PR #163 merged as `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a`, M-02 revalidated that merge tip as current main. Assignment lifecycle **Active**. **Not consumed.** **No diagnose run yet.** **No Swift.** Capture AUTH remains **Consumed**. Markers AUTH remains **Consumed**. Parent Active (not Closed). No Gate. Live alone does **not** authorize diagnose without consume + separate ask. Revalidate again if main changes before any separately authorized consume/diagnose step.
+The remediation AUTH is **Consumed** at `2026-09-25T15:35:47+08:00`, after revalidation to GitHub main tip `e28491a8e4ae6e5127c3241228c6fa9a1f4f082c` and Human reassignment/continuation authorization. The separate diagnostic Capture AUTH is **Consumed** at `2026-09-25T16:06:56+08:00` and its run is complete. The paired query markers are real facade calls; the new run shows 26–32 queries per operation after the debounce delay. The original rapid-window cause remains **unresolved** because the original raw journal is unavailable and the follow-up did not reach `<180 ms`. No Swift change. Capture AUTHs and Markers AUTH remain **Consumed**; parent remains **Active**; no Gate. Any fresh capture requires a distinct Capture AUTH.

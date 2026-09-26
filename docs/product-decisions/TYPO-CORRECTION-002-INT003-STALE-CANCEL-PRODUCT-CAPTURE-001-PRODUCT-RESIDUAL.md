@@ -5,9 +5,9 @@
   "schema_version": {"major": 1, "minor": 0},
   "record_id": "PD-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-RESIDUAL",
   "record_type": "decision",
-  "title": "INT-003 Capture residual disposition — Human selected Open remediation (narrow query_* AUTH now Live/unconsumed)",
-  "status": "remediate_path_selected_auth_live_unconsumed",
-  "updated_at": "2026-09-25T15:05:41+08:00",
+  "title": "INT-003 Capture residual disposition — narrow query_* investigation completed, Product residual open",
+  "status": "remediate_path_selected_diagnosis_completed_residual_open",
+  "updated_at": "2026-09-26T10:37:24+08:00",
   "revalidation_triggers": [
     "human_chooses_accept_or_remediate",
     "new_int003_run_requested",
@@ -19,9 +19,9 @@
   ],
   "decision": {
     "authority_role": "Human Product Owner / Product Lead",
-    "decision_source": "Human 2026-09-23 Asia/Shanghai after #161 Option B; after #162 Proposed merge Human marked AUTH Live/unconsumed; Human later authorized PR #163 squash merge and this docs-only M-02 status sync (not Accept; not fence; not consumed; no diagnose/Swift yet)",
-    "scope": "After #161/#162 on main, Option B Open remediation narrowed to typo_recall.query_begin/query_outcome density; AUTH Live/unconsumed; diagnose/Swift still require consume + separate ask",
-    "outcome": "Open remediation selected (narrow query_*). AUTH AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001 Live/unconsumed at 2026-09-23T22:10:00+08:00, initially bound to a9b82a58…; pre-merge docs-only rebind was 1ee2728712e67a32ff908a27befad2c537445077; PR #163 merged from 079bc3c12e36756c96ace8bd0b26b7f94cffe4c2 as 15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a at 2026-09-25T06:54:54Z; M-02 revalidated current main tip 15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a; Accept not chosen; fence_discarded remains follow-on; not consumed / no diagnose / no Swift / no Gate",
+    "decision_source": "Human 2026-09-23 Asia/Shanghai chose Option B narrow query_* remediation; Human 2026-09-25 authorized the bounded diagnosis; Human 2026-09-26 removed the 180 ms hard pass condition for that follow-up only",
+    "scope": "Original Product Capture query_* residual. The narrow source/journal diagnosis is completed; the wider Product residual has not been accepted or gated",
+    "outcome": "Narrow diagnosis rules out duplicate marker-only emission and shows 26–32 real candidate-query calls per operation in the fresh run. The original rapid-window operation attribution remains unresolved. The follow-up's 180 ms hard pass condition is removed; original Capture facts and runtime debounce remain unchanged. Product residual stays open; no Swift, fence remediation, Gate, or parent Close",
     "expires_at": null
   }
 }
@@ -31,16 +31,19 @@
 
 | Field | Value |
 |---|---|
-| Lifecycle | **`Remediate path selected`** — Human chose Option B (narrow `query_*`); Accept **not** chosen |
+| Lifecycle | **`Remediate path selected; diagnosis completed; wider residual open`** — Human chose Option B (narrow `query_*`); Accept **not** chosen |
 | Target | `TC2-SIM-20260923-201910-INT003-STALE-CANCEL-PRODUCT-001` |
 | Evidence state | Same-process smoke→rapid; rapid consecutive &lt;180 (15/15); positive debounce cancel/reschedule; Human visual both Pass; Architecture Pass with conditions; Quality Bounded Pass with conditions |
 | Main tip after #162 | `a9b82a58cac0c28e8a5d8a957d464d803d6d92d1` (Proposed historical `65a0a11…` after #161) |
-| Current remediation AUTH binding | `15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a` — post-merge M-02 revalidation against verified `main` after PR #163 |
-| Remediation AUTH | [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) — **Live / unconsumed** since `2026-09-23T22:10:00+08:00`; current binding is the post-merge tip above (not consumed) |
+| Remediation AUTH | [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) — **Consumed** at `2026-09-25T15:35:47+08:00` after binding to `e28491a…`; the follow-up Capture AUTHs are also Consumed |
 | Remediation Assignment | [`…-query-density-remediation-001`](../assignments/typo-correction-002-int003-query-density-remediation-001.md) |
 | Parent | `TYPO-CORRECTION-002` remains **Active** |
 | Non-claims | Not INT-003 Product Gate, Quality Gate, Release Gate, parent Close, Swift, TestFlight, Release; Live AUTH ≠ consumed diagnose authority; Capture AUTH stays Consumed; Markers AUTH stays Consumed |
-| Next | Complete the currently authorized docs-only M-02 state sync PR; it requires separate Human authorization before merge. After that, obtain separate Human authorization before consuming and diagnosing; further continue before Swift |
+| Next | [Bounded diagnosis](../evidence/typo-correction-002-int003-query-density-diagnosis-001.md) rules out duplicate marker-only writes; [Product removed](TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md) the 180 ms hard pass bar for the follow-up only. Wider query-density residual and old rapid-window attribution remain open for separate Product disposition; no Gate |
+
+> **Current-state supersession:** The package-binding table and Option B history below retain the 2026-09-23 to 2026-09-25 Live/unconsumed sequence. Those are historical facts, not present authorization. The current AUTH state is Consumed, and this Product decision has not accepted the wider residual.
+
+## History — original Capture disposition and AUTH activation
 
 ## Package binding
 
