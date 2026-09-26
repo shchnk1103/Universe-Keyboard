@@ -35,7 +35,7 @@
 | Remaining boundary | The 2026-09-23 Product Capture's 16/16 rapid-window query pairs cannot be grouped by operation without its original raw journal. This exact attribution remains unresolved |
 | Parent | [`TYPO-CORRECTION-002`](../assignments/typo-correction-002.md) remains **Active** |
 | Non-claims | No rapid-behavior Pass, Product/QA-001 Gate, parent Close, Swift change, 180 ms runtime-budget change, or acceptance of the wider `query_*` residual |
-| Next | Publish the bounded diagnostic accounting; Product may separately decide whether the remaining query fan-out and unknown old rapid-window attribution are acceptable or require a new scoped remediation |
+| Publication / next | Bounded accounting merged in [PR #175](https://github.com/shchnk1103/Universe-Keyboard/pull/175) as `10faa51caf20e3c558f21f26b625eff7f3aa941d`; [M-02 closeout](../evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md) is pending publication. Product may separately decide whether the remaining query fan-out and unknown old rapid-window attribution are acceptable or require a new scoped remediation |
 
 ## Decision boundary
 

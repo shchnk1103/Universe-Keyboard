@@ -11,7 +11,7 @@ Policy version: 1.0.0
   "lifecycle": "completed",
   "current_phase": "One bounded capture completed; raw journal hashed before inspection and grouped by operation. Product removed the under-180 ms hard pass condition for this follow-up diagnosis on 2026-09-26. Actual 285.075–575.942 ms intervals remain recorded; no rapid-behavior or Product claim",
   "authorization_action": "capture_int003_query_density_raw_journal_diagnostic",
-  "updated_at": "2026-09-26T10:37:24+08:00",
+  "updated_at": "2026-09-26T10:47:54+08:00",
   "revalidation_triggers": [
     "github_main_tip_changed_from_4ef275b",
     "designated_simulator_unavailable_or_changed",
@@ -23,6 +23,7 @@ Policy version: 1.0.0
   "authorization_refs": ["AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CAPTURE-001"],
   "parent_refs": ["TYPO-CORRECTION-002"],
   "evidence_refs": [
+    "docs/evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md",
     "docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md",
     "docs/evidence/typo-correction-002-int003-query-density-diagnosis-001.md",
     "docs/evidence/typo-correction-002-sim-run-2026-09-23-int003-stale-cancel-product-001.md",
@@ -46,6 +47,7 @@ Policy version: 1.0.0
 |---|---|
 | **Lifecycle** | **Completed — diagnostic evidence delivered; not Reviewed or Closed** |
 | **Phase** | AUTH **Consumed at `2026-09-25T16:06:56+08:00`**; Run `TC2-SIM-20260925-161830-INT003-QUERY-DENSITY-DIAGNOSTIC-001` completed. [Product removed](../product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md) the follow-up's 180 ms hard pass condition; the recorded manual cadence did not reach that value and supplies no rapid-behavior claim |
+| **Publication** | [PR #175](https://github.com/shchnk1103/Universe-Keyboard/pull/175) squash merged as `10faa51caf20e3c558f21f26b625eff7f3aa941d`; [M-02 receipt](../evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md) is the one closeout trigger for the three diagnostic children |
 | **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** |
 | **Source binding** | GitHub `main` `4ef275b57d16f116b4edbae99a0e244a28d6bf25`, reverified by explicit HTTPS query after PR #174. The `e28491a…` → `4ef275b…` delta contains only three unrelated KOS documents; all six scoped runtime source paths are unchanged |
 | **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CAPTURE-001.md) — **Consumed** |

@@ -11,7 +11,7 @@ Policy version: 1.0.0
   "lifecycle": "completed",
   "current_phase": "Product removed the 180 ms hard pass condition on 2026-09-26. The reserved rapid Run had a read-only UI snapshot only; no input or new journal. The consumed AUTH remains spent, and this no-run disposition completes the revised diagnostic accounting without a rapid-behavior claim",
   "authorization_action": "capture_int003_query_density_rapid_visible_key_diagnostic",
-  "updated_at": "2026-09-26T10:37:24+08:00",
+  "updated_at": "2026-09-26T10:47:54+08:00",
   "revalidation_triggers": [
     "github_main_tip_changed_from_4ef275b",
     "designated_simulator_unavailable_or_changed",
@@ -23,6 +23,7 @@ Policy version: 1.0.0
   "authorization_refs": ["AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-RAPID-DIAGNOSTIC-001"],
   "parent_refs": ["TYPO-CORRECTION-002"],
   "evidence_refs": [
+    "docs/evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md",
     "docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md",
     "docs/evidence/typo-correction-002-int003-query-density-diagnosis-001.md",
     "docs/evidence/typo-correction-002-sim-run-2026-09-25-int003-query-density-diagnostic-001.md"
@@ -45,6 +46,7 @@ Policy version: 1.0.0
 |---|---|
 | **Lifecycle** | **Completed — revised no-run accounting; not Reviewed or Closed** |
 | **Phase** | Product removed this follow-up's 180 ms hard pass condition. The reserved Run had one read-only UI snapshot; no diagnostic re-arm, keyboard input, or new raw journal. The remaining run permission will not be exercised |
+| **Publication** | [PR #175](https://github.com/shchnk1103/Universe-Keyboard/pull/175) squash merged as `10faa51caf20e3c558f21f26b625eff7f3aa941d`; [M-02 receipt](../evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md) records this no-run lifecycle state |
 | **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** |
 | **Source binding** | GitHub `main` `4ef275b57d16f116b4edbae99a0e244a28d6bf25`, reverified read-only immediately before this Assignment/AUTH; the installed Debug app and extension binaries were built from this tip |
 | **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-RAPID-DIAGNOSTIC-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-RAPID-DIAGNOSTIC-001.md) — **Consumed** |

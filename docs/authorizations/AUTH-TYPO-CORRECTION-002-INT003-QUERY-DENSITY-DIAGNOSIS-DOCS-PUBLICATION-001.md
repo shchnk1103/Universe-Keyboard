@@ -55,6 +55,6 @@
 | Source binding | GitHub `main` `4ef275b57d16f116b4edbae99a0e244a28d6bf25`, verified read-only on 2026-09-26 before publication |
 | Stop | Any non-doc delta, changed source tip, invalid KOS/Markdown link, or missing commit/PR provenance |
 | Non-claims | No Swift, raw journal upload, merge, Gate, parent Close, TestFlight, Release, or ADR Accept |
-| Next | Human separately decides whether and when to merge the docs PR after CI |
+| Outcome | [PR #175](https://github.com/shchnk1103/Universe-Keyboard/pull/175) was separately authorized by Human and squash merged as `10faa51caf20e3c558f21f26b625eff7f3aa941d`. The [M-02 closeout](../evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md) is a distinct Consumed AUTH and pending docs PR |
 
 This AUTH does not make the 2026-09-23 Capture or its reviews newly valid. The original query-density Product residual remains open, and the parent Assignment remains Active.
