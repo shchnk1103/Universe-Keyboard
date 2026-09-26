@@ -9,9 +9,9 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Decision-ready measurement of INT-003 query count, usefulness and runtime cost",
   "lifecycle": "active",
-  "current_phase": "P0 measurement plan completed under a consumed docs-only AUTH; P1 instrumentation and controlled capture require a distinct Product authorization and evidence freeze. No Swift or device action has begun",
+  "current_phase": "P0 completed; P1 source authority active but unconsumed pending independent Architecture field review; P2 capture authority proposed pending exact installed-payload freeze. No Swift or device action has begun",
   "authorization_action": "plan_int003_query_cost_measurement",
-  "updated_at": "2026-09-26T22:57:57+08:00",
+  "updated_at": "2026-09-26T23:16:00+08:00",
   "revalidation_triggers": [
     "github_main_tip_changes_from_7b0025a",
     "source_or_diagnostic_schema_changes",
@@ -19,7 +19,7 @@ Policy version: 1.0.0
     "Product_query_budget_or_parent_scope_changes",
     "request_for_Swift_capture_Gate_or_Release"
   ],
-  "authorization_refs": ["AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001"],
+  "authorization_refs": ["AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001", "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-INSTRUMENTATION-001", "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-SIM-CAPTURE-001"],
   "parent_refs": ["TYPO-CORRECTION-002"],
   "evidence_refs": [
     "docs/evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md",
@@ -27,11 +27,11 @@ Policy version: 1.0.0
   ],
   "responsibilities": {
     "domain_owner": "Input Intelligence Maintainer",
-    "executor": "Codex current task for P0 measurement design; any P1/P2 executor must be named in a distinct authorization before execution",
-    "environment_executor": "Not Applicable for P0 docs-only planning; a later capture stage must name the exact machine/device operator and operations",
-    "human_dependency": "Human Product Owner / Product Lead decides the P1 instrumentation/capture boundary; no Human typing is requested by P0",
-    "architecture_reviewer": "Not Applicable for P0 plan-only scope; Architecture & Knowledge Steward must review any later diagnostic schema, sidecar route or concurrency-boundary change",
-    "quality_reviewer": "Not Applicable for P0 plan-only scope; Test / Release or a separately assigned independent Quality lane reviews a later performance evidence package",
+    "executor": "Codex current task for P1 after independent review and consumption; P2 executor bound in its separate AUTH before capture",
+    "environment_executor": "Codex isolated worktree for P1; Codex designated Simulator operator for P2 after exact run/payload freeze and consumption",
+    "human_dependency": "Human Product Owner / Product Lead authorized separate P1/P2 scopes; any physical-device performance round requires a later Human decision and operator",
+    "architecture_reviewer": "Independent Architecture & Knowledge Steward before P1 diagnostic field or bridge implementation",
+    "quality_reviewer": "Independent Test / Release lane after P1/P2 evidence, before any Quality claim",
     "product_approver": "Human Product Owner / Product Lead"
   }
 }
@@ -41,11 +41,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | **Active** — P0 design output ready for Product review; P1/P2 not entered |
+| Lifecycle | **Active** — P0 complete; P1 review pending, P2 environment freeze pending |
 | Current phase | [Measurement plan](../plans/typo-correction-002-int003-query-cost-measurement-001.md) records the data needed to distinguish useful Stage 1/2 calls from empty or unavailable-sidecar calls and to assess elapsed cost |
-| Authority | Human 2026-09-26 authorized this new Assignment/AUTH; [P0 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001.md) is Consumed for docs-only planning/publication |
+| Authority | [P0 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001.md) Consumed; [P1 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-INSTRUMENTATION-001.md) Active/unconsumed; [P2 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-SIM-CAPTURE-001.md) Proposed/unconsumed |
 | Non-claims | No Swift/ObjC change, new Capture, Release-like result, numeric budget, independent Quality conclusion, Product/QA-001 Gate, parent Close, TestFlight/Release or `RimeRuntimeProvenance` restore |
-| Next | Product Lead decides whether to issue a separate P1 instrumentation/capture AUTH after reviewing the plan and environment boundary; parent remains [Active](typo-correction-002.md) |
+| Next | Independent Architecture review of [P1 field packet](../plans/typo-correction-002-int003-query-cost-p1-field-review-001.md); then consume P1 before source edits. Freeze P2 installed payload and run separately; parent remains [Active](typo-correction-002.md) |
 
 ## Assignment authority and inputs
 
