@@ -11,7 +11,7 @@ Policy version: 1.0.0
   "lifecycle": "completed",
   "current_phase": "Bounded diagnose-first output complete: duplicate marker-only emission ruled out; fresh run confirms 359 real query pairs across 12 operations (26–32 per operation). Product removed the follow-up's 180 ms hard pass condition. Original rapid-window attribution remains unresolved and the wider query-density Product residual remains open; no Swift, Gate, or parent Close",
   "authorization_action": "diagnose_and_optionally_remediate_int003_query_density",
-  "updated_at": "2026-09-26T10:37:24+08:00",
+  "updated_at": "2026-09-26T10:47:54+08:00",
   "revalidation_triggers": [
     "docs_tip_changed_from_e28491a",
     "capture_package_or_evidence_sha_superseded",
@@ -23,10 +23,12 @@ Policy version: 1.0.0
   ],
   "authorization_refs": [
     "AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001",
-    "AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSIS-DOCS-PUBLICATION-001"
+    "AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSIS-DOCS-PUBLICATION-001",
+    "AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-POST-MERGE-STATE-SYNC-001"
   ],
   "parent_refs": ["TYPO-CORRECTION-002"],
   "evidence_refs": [
+    "docs/evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md",
     "docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md",
     "docs/evidence/typo-correction-002-sim-run-2026-09-23-int003-stale-cancel-product-001.md",
     "docs/evidence/typo-correction-002-int003-query-density-diagnosis-001.md",
@@ -56,7 +58,8 @@ Policy version: 1.0.0
 | **Lifecycle** | **Completed — bounded diagnostic output; not Reviewed or Closed** (matching AUTH **Consumed**) |
 | **Phase** | Source diagnosis plus a distinct diagnostic capture found 359 real query pairs in 12 operations (26–32 each); first queries began 219–260 ms after scheduling. [Product removed](../product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md) the follow-up's 180 ms hard pass condition. Measured manual intervals remain 285–576 ms; the original Product Capture's rapid-window attribution is unresolved. No Swift |
 | **Matching AUTH** | [`AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) — **Consumed at `2026-09-25T15:35:47+08:00`** |
-| **Docs publication AUTH** | [`AUTH-…-DIAGNOSIS-DOCS-PUBLICATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSIS-DOCS-PUBLICATION-001.md) — separate **Consumed** docs-only publication permission; no merge |
+| **Docs publication AUTH** | [`AUTH-…-DIAGNOSIS-DOCS-PUBLICATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSIS-DOCS-PUBLICATION-001.md) — separate **Consumed** docs-only publication permission; PR #175 merge was separately authorized by Human |
+| **Published package** | [PR #175](https://github.com/shchnk1103/Universe-Keyboard/pull/175) squash merged as `10faa51caf20e3c558f21f26b625eff7f3aa941d`; [single M-02 receipt](../evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md) records the trigger. Closeout PR merge remains pending |
 | **Parent** | [`TYPO-CORRECTION-002`](typo-correction-002.md) remains **Active** (do **not** Close) |
 | **Designated tip** | Diagnosis binding `e28491a8e4ae6e5127c3241228c6fa9a1f4f082c`; the capture was installed from `80091f35cc5411b292eca78662f39e2b91694045`, an ancestor whose relevant source blobs match e284. GitHub main was verified by explicit HTTPS URL; the worktree `origin` points to the protected local checkout and its stale ref was not used |
 | **Capture AUTH** | [`AUTH-…-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) remains **Consumed** |
