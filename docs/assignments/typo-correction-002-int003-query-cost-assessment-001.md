@@ -9,9 +9,9 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Bounded read-only assessment of INT-003 query count and observed timing cost",
   "lifecycle": "completed",
-  "current_phase": "Bounded existing-journal count and elapsed-timing assessment recorded; Product decision on the wider residual remains open. No new capture or Product performance acceptance",
+  "current_phase": "Bounded assessment published by PR 177 squash merge 501299dd; its single KOS M-02 closeout is being synchronized. Product decision on the wider residual remains open; no new capture or performance acceptance",
   "authorization_action": "assess_int003_query_count_and_observed_timing_cost",
-  "updated_at": "2026-09-26T11:03:25+08:00",
+  "updated_at": "2026-09-26T22:48:29+08:00",
   "revalidation_triggers": [
     "github_main_tip_changes_from_9f6f83e",
     "raw_journal_sha_differs_from_aa523a6",
@@ -20,13 +20,15 @@ Policy version: 1.0.0
   ],
   "authorization_refs": [
     "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-ASSESSMENT-001",
-    "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-DOCS-PUBLICATION-001"
+    "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-DOCS-PUBLICATION-001",
+    "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-POST-MERGE-STATE-SYNC-001"
   ],
   "parent_refs": ["TYPO-CORRECTION-002"],
   "evidence_refs": [
     "docs/evidence/typo-correction-002-sim-run-2026-09-25-int003-query-density-diagnostic-001.md",
     "docs/evidence/typo-correction-002-int003-query-density-diagnosis-001.md",
-    "docs/evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md"
+    "docs/evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-post-merge-state-sync-2026-09-26.md"
   ],
   "responsibilities": {
     "domain_owner": "Input Intelligence Maintainer",
@@ -48,6 +50,7 @@ Policy version: 1.0.0
 | Authority | Human 2026-09-26 Asia/Shanghai authorized a new evaluation of query cost and total count, plus KOS follow-through; matching [AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-ASSESSMENT-001.md) is Consumed for this slice |
 | Source / raw binding | GitHub `main` `9f6f83edb13c8dd7d5598c1b398587bf4aa76f5b`; prior Debug journal SHA-256 `aa523a6e8330b529e0ffc03283b142f842401b2321e2b323e6ce2762d5b59f84`, reverified before row inspection |
 | Output | [Content-free assessment](../evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md): 359 real query pairs across 12 operations, 26–32 per operation; Debug elapsed timing only; no product cost acceptance |
+| Publication / M-02 | [PR #177](https://github.com/shchnk1103/Universe-Keyboard/pull/177) squash merged `501299dd14f317d67965330cb32dbf2e04ea2780`; [single closeout receipt](../evidence/typo-correction-002-int003-query-cost-post-merge-state-sync-2026-09-26.md) records this exact trigger; its own draft PR is pending |
 | Non-claims | No new capture, Swift/test change, Release-like performance claim, Product/QA-001 Gate, parent Close, TestFlight/Release, or `RimeRuntimeProvenance` restore |
 | Next | Human Product Lead decides whether to authorize a distinct controlled measurement/budget task; independent Quality and new evidence are needed for performance acceptance or a source budget change |
 
