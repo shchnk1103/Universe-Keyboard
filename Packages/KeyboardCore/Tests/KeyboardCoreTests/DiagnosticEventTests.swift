@@ -90,6 +90,14 @@ final class DiagnosticEventTests: XCTestCase {
         }
     }
 
+    func testRimeSyncKeychainFailureHasDistinctPersistedCode() throws {
+        let failure = DiagnosticEvent.RimeSyncFailure.keychainAccessDenied
+        let encoded = try JSONEncoder().encode(failure)
+
+        XCTAssertEqual(String(decoding: encoded, as: UTF8.self), "\"keychain_access_denied\"")
+        XCTAssertEqual(try JSONDecoder().decode(DiagnosticEvent.RimeSyncFailure.self, from: encoded), failure)
+    }
+
     func testRimeSyncDecoderRejectsEmptyInvocationAndCodeMismatch() throws {
         let context = DiagnosticEvent.RimeSyncContext(
             operationID: UUID(),

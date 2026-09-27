@@ -227,6 +227,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     /// are intentionally excluded from the persisted protocol.
     public enum RimeSyncFailure: String, Codable, CaseIterable, Sendable {
         case accessDenied = "access_denied"
+        case keychainAccessDenied = "keychain_access_denied"
         case invalidInstallationID = "invalid_installation_id"
         case invalidInstallationConfiguration = "invalid_installation_configuration"
         case unavailableUserDirectory = "unavailable_user_directory"

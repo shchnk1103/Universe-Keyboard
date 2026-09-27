@@ -1,9 +1,436 @@
 import Foundation
+import RimeBridge
+import Security
 import XCTest
 
 @testable import Universe_Keyboard
 
 final class RimeSyncModelTests: XCTestCase {
+    @MainActor
+    func testUITestFixtureDisablesProductionBackgroundScheduling() throws {
+        let suiteName = "RimeSyncUITestFixture-\(UUID().uuidString)"
+        let arguments = [
+            RimeSyncUITestFixture.localFolderArgument,
+            RimeSyncUITestFixture.defaultsSuiteArgument,
+            suiteName,
+        ]
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let model = try XCTUnwrap(
+            RimeSyncUITestFixture.makeViewModelIfRequested(
+                rimeStore: RimeSettingsStore(),
+                arguments: arguments
+            )
+        )
+
+        XCTAssertFalse(model.backgroundSchedulingEnabled)
+    }
+
+    func testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem() async throws {
+        let account = "integration-test-\(UUID().uuidString)"
+        try requireKeychainEntitlement(for: account)
+
+        let secretStore = RimeSyncSecretStore()
+        let firstValue = Data("first-test-value".utf8)
+        let updatedValue = Data("updated-test-value".utf8)
+
+        let initialValue = try await secretStore.data(for: account)
+        XCTAssertNil(initialValue)
+
+        do {
+            try await secretStore.set(firstValue, for: account)
+            let storedFirstValue = try await secretStore.data(for: account)
+            XCTAssertEqual(storedFirstValue, firstValue)
+
+            try await secretStore.set(updatedValue, for: account)
+            let storedUpdatedValue = try await secretStore.data(for: account)
+            XCTAssertEqual(storedUpdatedValue, updatedValue)
+
+            try await secretStore.remove(account)
+            let removedValue = try await secretStore.data(for: account)
+            XCTAssertNil(removedValue)
+        } catch {
+            try? await secretStore.remove(account)
+            throw error
+        }
+    }
+
+    func testKeychainAccessDeniedGuidanceDoesNotReferToSyncFolder() {
+        let message = RimeSyncError.keychainAccessDenied.errorDescription
+
+        XCTAssertEqual(message, "无法访问本机 Keychain 同步凭据，请检查钥匙串权限后重试。")
+        XCTAssertFalse(message?.contains("同步目录") ?? true)
+        XCTAssertFalse(message?.contains("重新选择") ?? true)
+        XCTAssertEqual(
+            RimeSyncFolderAccess.diagnosticErrorCode(for: RimeSyncError.keychainAccessDenied),
+            "keychain.access_denied"
+        )
+        XCTAssertEqual(
+            RimeSyncDiagnosticFailureMapper.failure(for: RimeSyncError.keychainAccessDenied),
+            .keychainAccessDenied
+        )
+        XCTAssertEqual(
+            RimeSyncDiagnosticFailureMapper.failure(for: RimeSyncError.accessDenied),
+            .accessDenied
+        )
+    }
+
+    private func requireKeychainEntitlement(for account: String) throws {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: "com.DoubleShy0N.Universe-Keyboard.rime-sync",
+            kSecAttrAccount as String: account,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne,
+        ]
+        var result: CFTypeRef?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+
+        if status == errSecMissingEntitlement {
+            throw XCTSkip(
+                "Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration."
+            )
+        }
+
+        guard status == errSecItemNotFound else {
+            XCTFail("Keychain preflight expected an absent unique account, got OSStatus \(status).")
+            return
+        }
+    }
+
+    @MainActor
+    func testRemoteDeletionDisconnectRemovesSecretsAndSyncConfiguration() async throws {
+        let suiteName = "RimeSyncDisconnect-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.set(RimeSyncProvider.webDAV.rawValue, forKey: RimeSyncStorageKey.provider)
+        defaults.set("https://sync.example.test/dav", forKey: RimeSyncStorageKey.webDAVURL)
+        defaults.set("tester", forKey: RimeSyncStorageKey.webDAVUsername)
+        defaults.set(Date(), forKey: RimeSyncStorageKey.lastSuccess)
+        defaults.set(true, forKey: RimeSyncStorageKey.automaticSyncEnabled)
+
+        let secretStore = MemoryRimeSyncSecretStore()
+        try await secretStore.set(Data("password".utf8), for: "webdav-password")
+        try await secretStore.set(Data(repeating: 0x42, count: 32), for: "encryption-key")
+        let transport = DeletionRecordingSyncTransport()
+        let model = RimeSyncViewModel(
+            rimeStore: RimeSettingsStore(),
+            defaults: defaults,
+            secretStore: secretStore,
+            syncTransportFactory: { transport }
+        )
+        await model.loadSecrets()
+
+        XCTAssertTrue(model.isConfigured)
+        await model.disconnect(deleteRemoteData: true)
+
+        let deletionCount = await transport.deletionCount()
+        let password = try await secretStore.data(for: "webdav-password")
+        let encryptionKey = try await secretStore.data(for: "encryption-key")
+        XCTAssertEqual(deletionCount, 1)
+        XCTAssertNil(password)
+        XCTAssertNil(encryptionKey)
+        XCTAssertNil(defaults.object(forKey: RimeSyncStorageKey.provider))
+        XCTAssertNil(defaults.object(forKey: RimeSyncStorageKey.webDAVURL))
+        XCTAssertNil(defaults.object(forKey: RimeSyncStorageKey.webDAVUsername))
+        XCTAssertNil(defaults.object(forKey: RimeSyncStorageKey.lastSuccess))
+        XCTAssertNil(defaults.object(forKey: RimeSyncStorageKey.automaticSyncEnabled))
+        XCTAssertEqual(model.provider, .none)
+        XCTAssertFalse(model.isConfigured)
+        XCTAssertEqual(model.webDAVPassword, "")
+        XCTAssertEqual(model.recoveryCode, "")
+    }
+
+    @MainActor
+    func testRemoteDeletionReportsPartialKeychainCleanupAndCanBeRetried() async throws {
+        let suiteName = "RimeSyncDisconnectPartialCleanup-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.set(RimeSyncProvider.webDAV.rawValue, forKey: RimeSyncStorageKey.provider)
+        defaults.set("https://sync.example.test/dav", forKey: RimeSyncStorageKey.webDAVURL)
+        defaults.set("tester", forKey: RimeSyncStorageKey.webDAVUsername)
+
+        let secretStore = FailingRemovalRimeSyncSecretStore(
+            values: [
+                "webdav-password": Data("password".utf8),
+                "encryption-key": Data(repeating: 0x2A, count: 32),
+            ],
+            failingAccount: "webdav-password"
+        )
+        let transport = DeletionRecordingSyncTransport()
+        let model = RimeSyncViewModel(
+            rimeStore: RimeSettingsStore(),
+            defaults: defaults,
+            secretStore: secretStore,
+            syncTransportFactory: { transport }
+        )
+        await model.loadSecrets()
+
+        await model.disconnect(deleteRemoteData: true)
+
+        let firstDeletionCount = await transport.deletionCount()
+        XCTAssertEqual(firstDeletionCount, 1)
+        XCTAssertTrue(model.isConfigured)
+        XCTAssertTrue(model.statusText.contains("云端加密设置包已删除"))
+        XCTAssertTrue(model.statusText.contains("Keychain 凭据清理未完成"))
+        XCTAssertTrue(model.statusText.contains("重试“删除云端数据并断开”"))
+        XCTAssertTrue(model.statusText.contains("无需重新选择同步文件夹"))
+        XCTAssertFalse(model.statusText.contains("无法访问或写入同步目录"))
+        let keyAfterFirstAttempt = try await secretStore.data(for: "encryption-key")
+        let passwordAfterFirstAttempt = try await secretStore.data(for: "webdav-password")
+        XCTAssertNil(keyAfterFirstAttempt)
+        XCTAssertEqual(passwordAfterFirstAttempt, Data("password".utf8))
+
+        await secretStore.allowAllRemovals()
+        await model.disconnect(deleteRemoteData: true)
+
+        let deletionCountAfterRetry = await transport.deletionCount()
+        XCTAssertEqual(deletionCountAfterRetry, 2)
+        XCTAssertEqual(model.provider, .none)
+        XCTAssertFalse(model.isConfigured)
+        let passwordAfterRetry = try await secretStore.data(for: "webdav-password")
+        XCTAssertNil(passwordAfterRetry)
+    }
+
+    @MainActor
+    func testDisconnectDoesNotMutateStateWhileAnotherProcessSyncOwnsGate() async throws {
+        let suiteName = "RimeSyncDisconnectBusy-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.set(RimeSyncProvider.webDAV.rawValue, forKey: RimeSyncStorageKey.provider)
+        defaults.set("https://sync.example.test/dav", forKey: RimeSyncStorageKey.webDAVURL)
+        defaults.set("tester", forKey: RimeSyncStorageKey.webDAVUsername)
+
+        let secretStore = MemoryRimeSyncSecretStore()
+        let password = Data("password".utf8)
+        let encryptionKey = Data(repeating: 0x42, count: 32)
+        try await secretStore.set(password, for: "webdav-password")
+        try await secretStore.set(encryptionKey, for: "encryption-key")
+
+        let transport = DeletionRecordingSyncTransport()
+        let processGate = RimeSyncProcessGate()
+        let backgroundLease = try XCTUnwrap(processGate.claim(source: .backgroundAutomatic))
+        defer { processGate.release(backgroundLease) }
+
+        let model = RimeSyncViewModel(
+            rimeStore: RimeSettingsStore(),
+            defaults: defaults,
+            secretStore: secretStore,
+            syncTransportFactory: { transport },
+            processGate: processGate,
+            keyboardActivityDefaults: defaults,
+            backgroundSchedulingEnabled: false
+        )
+        await model.loadSecrets()
+
+        await model.disconnect(deleteRemoteData: true)
+
+        let deletionCount = await transport.deletionCount()
+        let storedPassword = try await secretStore.data(for: "webdav-password")
+        let storedEncryptionKey = try await secretStore.data(for: "encryption-key")
+        XCTAssertEqual(processGate.activeSource, .backgroundAutomatic)
+        XCTAssertEqual(deletionCount, 0)
+        XCTAssertEqual(storedPassword, password)
+        XCTAssertEqual(storedEncryptionKey, encryptionKey)
+        XCTAssertEqual(defaults.string(forKey: RimeSyncStorageKey.provider), RimeSyncProvider.webDAV.rawValue)
+        XCTAssertEqual(defaults.string(forKey: RimeSyncStorageKey.webDAVURL), "https://sync.example.test/dav")
+        XCTAssertTrue(model.isConfigured)
+        guard case .failed(let message) = model.status else {
+            return XCTFail("Busy disconnect must report an actionable status")
+        }
+        XCTAssertEqual(message, "另一个同步操作正在进行，请完成后再试。")
+    }
+
+    @MainActor
+    func testConfigurationAndManualSyncAreRejectedWhileAnotherProcessOwnsGate() async throws {
+        let suiteName = "RimeSyncConfigurationBusy-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        defaults.set(RimeSyncProvider.webDAV.rawValue, forKey: RimeSyncStorageKey.provider)
+        defaults.set("https://sync.example.test/dav", forKey: RimeSyncStorageKey.webDAVURL)
+        defaults.set("tester", forKey: RimeSyncStorageKey.webDAVUsername)
+        defaults.set(Data([0x01, 0x02]), forKey: RimeSyncStorageKey.folderBookmark)
+        defaults.set("Existing Folder", forKey: RimeSyncStorageKey.folderName)
+        defaults.set(true, forKey: RimeSyncStorageKey.automaticPrivateSettingsEnabled)
+        defaults.set(RimeAutomaticSyncCadence.daily.rawValue, forKey: RimeSyncStorageKey.automaticSyncCadence)
+
+        let secretStore = MemoryRimeSyncSecretStore()
+        let password = Data("existing-password".utf8)
+        let existingKey = Data(repeating: 0x42, count: 32)
+        let replacementKey = Data(repeating: 0x24, count: 32)
+        try await secretStore.set(password, for: "webdav-password")
+        try await secretStore.set(existingKey, for: "encryption-key")
+
+        let processGate = RimeSyncProcessGate()
+        let backgroundLease = try XCTUnwrap(processGate.claim(source: .backgroundAutomatic))
+        defer { processGate.release(backgroundLease) }
+
+        let model = RimeSyncViewModel(
+            rimeStore: RimeSettingsStore(),
+            defaults: defaults,
+            secretStore: secretStore,
+            processGate: processGate,
+            keyboardActivityDefaults: defaults,
+            backgroundSchedulingEnabled: false
+        )
+        await model.loadSecrets()
+
+        model.recoveryCodeInput = RimeSyncPackageCodec.recoveryCode(for: replacementKey)
+        await model.importRecoveryCode()
+        model.selectProvider(.none)
+        await model.configureLocalFolder(
+            FileManager.default.temporaryDirectory.appendingPathComponent("not-selected"),
+            hasActivePickerScope: false
+        )
+        model.setAutomaticPrivateSettingsEnabled(false)
+        model.setAutomaticSyncCadence(.weekly)
+        await model.saveWebDAVConfiguration()
+        await model.synchronizeAllNow()
+
+        let storedPassword = try await secretStore.data(for: "webdav-password")
+        let storedKey = try await secretStore.data(for: "encryption-key")
+        XCTAssertEqual(processGate.activeSource, .backgroundAutomatic)
+        XCTAssertEqual(storedPassword, password)
+        XCTAssertEqual(storedKey, existingKey)
+        XCTAssertEqual(defaults.string(forKey: RimeSyncStorageKey.provider), RimeSyncProvider.webDAV.rawValue)
+        XCTAssertEqual(defaults.data(forKey: RimeSyncStorageKey.folderBookmark), Data([0x01, 0x02]))
+        XCTAssertEqual(defaults.string(forKey: RimeSyncStorageKey.folderName), "Existing Folder")
+        XCTAssertTrue(defaults.bool(forKey: RimeSyncStorageKey.automaticPrivateSettingsEnabled))
+        XCTAssertEqual(
+            defaults.string(forKey: RimeSyncStorageKey.automaticSyncCadence),
+            RimeAutomaticSyncCadence.daily.rawValue
+        )
+        XCTAssertEqual(model.provider, .webDAV)
+        XCTAssertTrue(model.isConfigured)
+        guard case .failed(let message) = model.status else {
+            return XCTFail("A rejected manual sync must report an actionable status")
+        }
+        XCTAssertEqual(message, "另一个同步操作正在进行，请完成后再试。")
+    }
+
+    @MainActor
+    func testLocalFolderDeletionFailurePreservesPackageConfigurationAndSecrets() async throws {
+        let suiteName = "RimeSyncLocalFolderDeleteFailure-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let bookmark = Data([0x01])
+        let lastSuccess = Date(timeIntervalSince1970: 1_000)
+        defaults.set(RimeSyncProvider.localFolder.rawValue, forKey: RimeSyncStorageKey.provider)
+        defaults.set(bookmark, forKey: RimeSyncStorageKey.folderBookmark)
+        defaults.set("Test Sync Folder", forKey: RimeSyncStorageKey.folderName)
+        defaults.set(lastSuccess, forKey: RimeSyncStorageKey.lastSuccess)
+        defaults.set(true, forKey: RimeSyncStorageKey.automaticSyncEnabled)
+
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-sync-delete-denied-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let packageRoot = root.appendingPathComponent("universe-rime-sync", isDirectory: true)
+        try FileManager.default.createDirectory(at: packageRoot, withIntermediateDirectories: true)
+        let markerURL = packageRoot.appendingPathComponent("settings.json")
+        try Data("encrypted-settings".utf8).write(to: markerURL)
+
+        let secretStore = MemoryRimeSyncSecretStore()
+        let password = Data("local-provider-password".utf8)
+        let encryptionKey = Data(repeating: 0x42, count: 32)
+        try await secretStore.set(password, for: "webdav-password")
+        try await secretStore.set(encryptionKey, for: "encryption-key")
+
+        let transport = LocalFolderRimeSyncTransport(
+            selectedFolderURL: root,
+            packageRootState: { _ in throw CocoaError(.fileReadNoPermission) }
+        )
+        let model = RimeSyncViewModel(
+            rimeStore: RimeSettingsStore(),
+            defaults: defaults,
+            secretStore: secretStore,
+            syncTransportFactory: { transport }
+        )
+        await model.loadSecrets()
+
+        XCTAssertTrue(model.isConfigured)
+        await model.disconnect(deleteRemoteData: true)
+
+        XCTAssertEqual(model.provider, .localFolder)
+        XCTAssertTrue(model.isConfigured)
+        XCTAssertEqual(defaults.data(forKey: RimeSyncStorageKey.folderBookmark), bookmark)
+        XCTAssertEqual(defaults.string(forKey: RimeSyncStorageKey.folderName), "Test Sync Folder")
+        XCTAssertEqual(defaults.object(forKey: RimeSyncStorageKey.lastSuccess) as? Date, lastSuccess)
+        XCTAssertTrue(defaults.bool(forKey: RimeSyncStorageKey.automaticSyncEnabled))
+        if case .failed = model.status {
+            // Failure feedback is expected; local configuration must remain retryable.
+        } else {
+            XCTFail("An indeterminate package state must not be reported as a successful disconnect")
+        }
+
+        let storedPassword = try await secretStore.data(for: "webdav-password")
+        let storedKey = try await secretStore.data(for: "encryption-key")
+        XCTAssertEqual(storedPassword, password)
+        XCTAssertEqual(storedKey, encryptionKey)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: markerURL.path))
+    }
+
+    @MainActor
+    func testUnknownPackageRootTypePreservesConfigurationAndSecrets() async throws {
+        let suiteName = "RimeSyncLocalFolderUnknownRootType-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let bookmark = Data([0x02])
+        defaults.set(RimeSyncProvider.localFolder.rawValue, forKey: RimeSyncStorageKey.provider)
+        defaults.set(bookmark, forKey: RimeSyncStorageKey.folderBookmark)
+        defaults.set("Unknown Type Folder", forKey: RimeSyncStorageKey.folderName)
+
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-sync-unknown-root-type-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let packageRoot = root.appendingPathComponent("universe-rime-sync", isDirectory: true)
+        try FileManager.default.createDirectory(at: packageRoot, withIntermediateDirectories: true)
+        let markerURL = packageRoot.appendingPathComponent("settings.json")
+        try Data("encrypted-settings".utf8).write(to: markerURL)
+
+        let secretStore = MemoryRimeSyncSecretStore()
+        let password = Data("local-provider-password".utf8)
+        let encryptionKey = Data(repeating: 0x24, count: 32)
+        try await secretStore.set(password, for: "webdav-password")
+        try await secretStore.set(encryptionKey, for: "encryption-key")
+
+        let transport = LocalFolderRimeSyncTransport(
+            selectedFolderURL: root,
+            packageRootState: { _ in .unknown }
+        )
+        let model = RimeSyncViewModel(
+            rimeStore: RimeSettingsStore(),
+            defaults: defaults,
+            secretStore: secretStore,
+            syncTransportFactory: { transport }
+        )
+        await model.loadSecrets()
+
+        XCTAssertTrue(model.isConfigured)
+        await model.disconnect(deleteRemoteData: true)
+
+        XCTAssertEqual(model.provider, .localFolder)
+        XCTAssertTrue(model.isConfigured)
+        XCTAssertEqual(defaults.data(forKey: RimeSyncStorageKey.folderBookmark), bookmark)
+        XCTAssertEqual(defaults.string(forKey: RimeSyncStorageKey.folderName), "Unknown Type Folder")
+        if case .failed = model.status {
+            // Unknown package type must remain retryable instead of reporting deletion success.
+        } else {
+            XCTFail("Unknown package-root metadata must fail closed")
+        }
+        let storedPassword = try await secretStore.data(for: "webdav-password")
+        let storedKey = try await secretStore.data(for: "encryption-key")
+        XCTAssertEqual(storedPassword, password)
+        XCTAssertEqual(storedKey, encryptionKey)
+        XCTAssertEqual(try Data(contentsOf: markerURL), Data("encrypted-settings".utf8))
+    }
+
     @MainActor
     func testCancellablePhaseRejectsLateSuccessAfterCancellation() async {
         let gate = NonCooperativePhaseGate()
@@ -348,19 +775,100 @@ final class RimeSyncCryptoTests: XCTestCase {
             XCTAssertEqual(error as? RimeSyncError, .corruptedPackage)
         }
     }
+
+    func testTamperedCiphertextFailsClosedAndContainsNoManagedValue() throws {
+        let codec = RimeSyncPackageCodec()
+        let key = RimeSyncPackageCodec.generateKey()
+        let privateValue = "rime-sync-security-canary-9f31"
+        let profile = RimeSyncProfile(fields: [
+            "private.setting": RimeSyncField(
+                value: .string(privateValue),
+                version: .init(counter: 1, deviceID: "test-device")
+            )
+        ])
+
+        let encrypted = try codec.encrypt(profile: profile, keyData: key)
+        XCTAssertNil(encrypted.range(of: Data(privateValue.utf8)))
+
+        var envelope = try JSONDecoder().decode(RimeSyncEncryptedSettings.self, from: encrypted)
+        var ciphertext = try XCTUnwrap(Data(base64Encoded: envelope.combined))
+        ciphertext[ciphertext.startIndex] ^= 0x01
+        envelope = RimeSyncEncryptedSettings(
+            version: envelope.version,
+            algorithm: envelope.algorithm,
+            combined: ciphertext.base64EncodedString()
+        )
+        let tamperedPackage = try JSONEncoder().encode(envelope)
+
+        XCTAssertThrowsError(try codec.decrypt(data: tamperedPackage, keyData: key)) { error in
+            XCTAssertEqual(error as? RimeSyncError, .corruptedPackage)
+        }
+    }
+
+    func testCoordinatorRejectsTamperedRemoteBeforePublishingMergedSettings() async throws {
+        let key = RimeSyncPackageCodec.generateKey()
+        let codec = RimeSyncPackageCodec()
+        var tamperedData = try codec.encrypt(profile: RimeSyncProfile(), keyData: key)
+        tamperedData[tamperedData.startIndex] ^= 0x01
+        let transport = TamperedRemotePackageSyncTransport(data: tamperedData)
+        let localProfile = RimeSyncProfile(fields: [
+            "private.setting": RimeSyncField(
+                value: .string("keep-local-value"),
+                version: .init(counter: 3, deviceID: "local-device")
+            )
+        ])
+
+        do {
+            _ = try await RimeSyncCoordinator().synchronize(
+                localProfile: localProfile,
+                keyData: key,
+                transport: transport
+            )
+            XCTFail("A modified authenticated remote package must be rejected")
+        } catch {
+            XCTAssertEqual(error as? RimeSyncError, .corruptedPackage)
+        }
+
+        let publishCount = await transport.publishCount()
+        XCTAssertEqual(publishCount, 0)
+    }
 }
 
 final class RimeSyncTransportTests: XCTestCase {
     func testFolderPreflightDiagnosticIncludesTheFailingStage() {
-        let missingFolder = NSError(domain: NSCocoaErrorDomain, code: 260)
+        let privateUnderlyingError = NSError(domain: "private.path", code: 260)
         let error = RimeSyncFolderAccessError.preflight(
             stage: "coordinate",
-            underlying: missingFolder
+            underlying: privateUnderlyingError
         )
 
         XCTAssertEqual(
             RimeSyncFolderAccess.diagnosticErrorCode(for: error),
-            "preflight.coordinate.NSCocoaErrorDomain#260"
+            "folder.preflight.coordinate"
+        )
+    }
+
+    func testDiagnosticErrorCodesAreStableAndExcludeUnderlyingDetails() {
+        let bookmarkError = RimeSyncFolderAccessError.bookmark(
+            underlying: NSError(domain: "/private/user/folder", code: 17)
+        )
+
+        XCTAssertEqual(RimeSyncFolderAccess.diagnosticErrorCode(for: bookmarkError), "folder.bookmark")
+        XCTAssertEqual(
+            RimeSyncFolderAccess.diagnosticErrorCode(for: RimeSyncError.transport("private URL")),
+            "transport.failure"
+        )
+        XCTAssertEqual(
+            RimeSyncFolderAccess.diagnosticErrorCode(
+                for: RimeStandardSyncError.unavailableSyncDirectory
+            ),
+            "standard_sync.sync_directory_unavailable"
+        )
+        XCTAssertEqual(
+            RimeSyncFolderAccess.diagnosticErrorCode(
+                for: NSError(domain: "private.example", code: 42)
+            ),
+            "unknown"
         )
     }
 
@@ -411,6 +919,98 @@ final class RimeSyncTransportTests: XCTestCase {
             root
             .appendingPathComponent("universe-rime-sync/profiles/default/settings.json")
         XCTAssertTrue(FileManager.default.fileExists(atPath: settingsURL.path))
+    }
+
+    func testLocalFolderPublishFailsClosedWhenExistingSettingsCannotBeRead() async throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-sync-unreadable-settings-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let packageRoot = root.appendingPathComponent("universe-rime-sync", isDirectory: true)
+        let settingsURL =
+            packageRoot
+            .appendingPathComponent("profiles", isDirectory: true)
+            .appendingPathComponent("default", isDirectory: true)
+            .appendingPathComponent("settings.json", isDirectory: true)
+        try FileManager.default.createDirectory(at: settingsURL, withIntermediateDirectories: true)
+
+        let transport = LocalFolderRimeSyncTransport(selectedFolderURL: root)
+        do {
+            try await transport.publish(
+                formatData: Data("new-format".utf8),
+                settingsData: Data("new-settings".utf8),
+                matching: nil
+            )
+            XCTFail("Expected an existing unreadable settings object to fail closed")
+        } catch {
+            XCTAssertNotEqual(error as? RimeSyncError, .remoteConflict)
+        }
+
+        XCTAssertFalse(
+            FileManager.default.fileExists(atPath: packageRoot.appendingPathComponent("format.json").path),
+            "A failed read must not write any part of the package"
+        )
+        var isDirectory: ObjCBool = false
+        XCTAssertTrue(FileManager.default.fileExists(atPath: settingsURL.path, isDirectory: &isDirectory))
+        XCTAssertTrue(isDirectory.boolValue)
+    }
+
+    func testLocalFolderDeletionRemovesPrivatePackageOnly() async throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-sync-delete-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let standardDataURL = root.appendingPathComponent("installation.yaml")
+        let userDictionarySnapshotURL = root.appendingPathComponent("userdb.txt")
+        let privatePackageURL = root.appendingPathComponent("universe-rime-sync", isDirectory: true)
+        try Data("standard-config".utf8).write(to: standardDataURL)
+        try Data("user-dictionary-snapshot".utf8).write(to: userDictionarySnapshotURL)
+        try FileManager.default.createDirectory(at: privatePackageURL, withIntermediateDirectories: true)
+        try Data("encrypted-settings".utf8)
+            .write(to: privatePackageURL.appendingPathComponent("settings.json"))
+
+        try await LocalFolderRimeSyncTransport(selectedFolderURL: root).deleteRemoteData()
+
+        XCTAssertFalse(FileManager.default.fileExists(atPath: privatePackageURL.path))
+        XCTAssertEqual(try Data(contentsOf: standardDataURL), Data("standard-config".utf8))
+        XCTAssertEqual(
+            try Data(contentsOf: userDictionarySnapshotURL),
+            Data("user-dictionary-snapshot".utf8)
+        )
+    }
+
+    func testLocalFolderDeletionSucceedsWhenPrivatePackageIsConfirmedMissing() async throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-sync-delete-missing-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let packageRoot = root.appendingPathComponent("universe-rime-sync", isDirectory: true)
+        try await LocalFolderRimeSyncTransport(selectedFolderURL: root).deleteRemoteData()
+
+        XCTAssertFalse(FileManager.default.fileExists(atPath: packageRoot.path))
+    }
+
+    func testLocalFolderDeletionDoesNotRemoveNonDirectoryAtPackageRoot() async throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("rime-sync-delete-nondirectory-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let packageRoot = root.appendingPathComponent("universe-rime-sync", isDirectory: false)
+        let existingData = Data("user-owned-file".utf8)
+        try existingData.write(to: packageRoot)
+
+        do {
+            try await LocalFolderRimeSyncTransport(selectedFolderURL: root).deleteRemoteData()
+            XCTFail("A non-directory at the reserved package root must not be deleted")
+        } catch {
+            XCTAssertEqual(error as? RimeSyncError, .accessDenied)
+        }
+
+        XCTAssertEqual(try Data(contentsOf: packageRoot), existingData)
     }
 
     func testCoordinatorRetriesOneConcurrentWrite() async throws {
@@ -479,6 +1079,25 @@ final class RimeSyncTransportTests: XCTestCase {
         )
         XCTAssertEqual(settingsPut.value(forHTTPHeaderField: "If-Match"), "etag-1")
         XCTAssertNotNil(settingsPut.value(forHTTPHeaderField: "Authorization"))
+    }
+
+    func testWebDAVDeletionIsScopedToThePrivatePackageRoot() async throws {
+        let baseURL = try XCTUnwrap(URL(string: "https://sync.example.test/dav/universe-rime-sync"))
+        let client = RecordingRimeSyncHTTPClient(baseURL: baseURL)
+        let transport = WebDAVRimeSyncTransport(
+            baseURL: baseURL,
+            username: "user",
+            password: "secret",
+            client: client
+        )
+
+        try await transport.deleteRemoteData()
+
+        let deleteRequests = await client.requests.filter { $0.httpMethod == "DELETE" }
+        let deleteRequest = try XCTUnwrap(deleteRequests.onlyElement)
+        XCTAssertEqual(deleteRequest.url?.path, "/dav/universe-rime-sync")
+        XCTAssertEqual(deleteRequest.url?.scheme, "https")
+        XCTAssertNotNil(deleteRequest.value(forHTTPHeaderField: "Authorization"))
     }
 }
 
@@ -563,5 +1182,94 @@ private actor RecordingRimeSyncHTTPClient: RimeSyncHTTPClient {
             )
         )
         return (data, response)
+    }
+}
+
+private actor MemoryRimeSyncSecretStore: RimeSyncSecretStoring {
+    private var values: [String: Data] = [:]
+
+    func data(for account: String) async throws -> Data? {
+        values[account]
+    }
+
+    func set(_ data: Data, for account: String) async throws {
+        values[account] = data
+    }
+
+    func remove(_ account: String) async throws {
+        values.removeValue(forKey: account)
+    }
+}
+
+private actor FailingRemovalRimeSyncSecretStore: RimeSyncSecretStoring {
+    private var values: [String: Data]
+    private var failingAccount: String?
+
+    init(values: [String: Data], failingAccount: String?) {
+        self.values = values
+        self.failingAccount = failingAccount
+    }
+
+    func data(for account: String) async throws -> Data? {
+        values[account]
+    }
+
+    func set(_ data: Data, for account: String) async throws {
+        values[account] = data
+    }
+
+    func remove(_ account: String) async throws {
+        guard account != failingAccount else {
+            throw RimeSyncError.keychainAccessDenied
+        }
+        values.removeValue(forKey: account)
+    }
+
+    func allowAllRemovals() {
+        failingAccount = nil
+    }
+}
+
+private actor DeletionRecordingSyncTransport: RimeSyncTransport {
+    private var deletions = 0
+
+    func fetchSettings() async throws -> RimeSyncRemoteObject {
+        RimeSyncRemoteObject(data: nil, eTag: nil)
+    }
+
+    func publish(formatData: Data, settingsData: Data, matching eTag: String?) async throws {}
+
+    func deleteRemoteData() async throws {
+        deletions += 1
+    }
+
+    func deletionCount() -> Int { deletions }
+}
+
+private actor TamperedRemotePackageSyncTransport: RimeSyncTransport {
+    private let data: Data
+    private var publishes = 0
+
+    init(data: Data) {
+        self.data = data
+    }
+
+    func fetchSettings() async throws -> RimeSyncRemoteObject {
+        RimeSyncRemoteObject(data: data, eTag: "remote-etag")
+    }
+
+    func publish(formatData: Data, settingsData: Data, matching eTag: String?) async throws {
+        publishes += 1
+    }
+
+    func deleteRemoteData() async throws {}
+
+    func publishCount() -> Int { publishes }
+}
+
+private extension Collection {
+    var onlyElement: Element? {
+        guard count == 1 else { return nil }
+        return first
     }
 }

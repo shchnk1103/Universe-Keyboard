@@ -15,14 +15,16 @@ final class RimeSyncViewModel {
 
     private let rimeStore: RimeSettingsStore
     private let defaults: UserDefaults
-    private let secretStore: RimeSyncSecretStore
+    private let secretStore: any RimeSyncSecretStoring
     private let coordinator: RimeSyncCoordinator
     private let standardRimeSyncService: any RimeStandardSyncing
     private let standardRimeSyncRequestFactory: (@MainActor @Sendable () async throws -> RimeStandardSyncRequest)?
+    private let syncTransportFactory: (@MainActor @Sendable () async throws -> any RimeSyncTransport)?
     private let notificationService: any AppNotificationNotifying
     private let processGate: RimeSyncProcessGate
     private let keyboardActivityDefaults: UserDefaults
     private let diagnostics: any RimeSyncDiagnosing
+    let backgroundSchedulingEnabled: Bool
 
     var provider: RimeSyncProvider = .none
     var status: RimeSyncStatus = .idle
@@ -45,15 +47,17 @@ final class RimeSyncViewModel {
     init(
         rimeStore: RimeSettingsStore,
         defaults: UserDefaults = .standard,
-        secretStore: RimeSyncSecretStore = RimeSyncSecretStore(),
+        secretStore: any RimeSyncSecretStoring = RimeSyncSecretStore(),
         coordinator: RimeSyncCoordinator = RimeSyncCoordinator(),
         standardRimeSyncService: any RimeStandardSyncing = RimeStandardSyncService(),
         standardRimeSyncRequestFactory:
             (@MainActor @Sendable () async throws -> RimeStandardSyncRequest)? = nil,
+        syncTransportFactory: (@MainActor @Sendable () async throws -> any RimeSyncTransport)? = nil,
         notificationService: any AppNotificationNotifying = AppNotificationService.shared,
         processGate: RimeSyncProcessGate = .shared,
         keyboardActivityDefaults: UserDefaults =
             UserDefaults(suiteName: universeAppGroupID) ?? .standard,
+        backgroundSchedulingEnabled: Bool = true,
         diagnostics: any RimeSyncDiagnosing = RimeSyncDiagnostics.live
     ) {
         self.rimeStore = rimeStore
@@ -62,9 +66,11 @@ final class RimeSyncViewModel {
         self.coordinator = coordinator
         self.standardRimeSyncService = standardRimeSyncService
         self.standardRimeSyncRequestFactory = standardRimeSyncRequestFactory
+        self.syncTransportFactory = syncTransportFactory
         self.notificationService = notificationService
         self.processGate = processGate
         self.keyboardActivityDefaults = keyboardActivityDefaults
+        self.backgroundSchedulingEnabled = backgroundSchedulingEnabled
         self.diagnostics = diagnostics
         provider = RimeSyncProvider(rawValue: defaults.string(forKey: StorageKey.provider) ?? "") ?? .none
         webDAVURL = defaults.string(forKey: StorageKey.webDAVURL) ?? ""
@@ -213,19 +219,25 @@ final class RimeSyncViewModel {
     }
 
     func selectProvider(_ newProvider: RimeSyncProvider) {
-        provider = newProvider
-        defaults.set(newProvider.rawValue, forKey: StorageKey.provider)
-        status = isConfigured ? .idle : .notConfigured
-        if newProvider != .localFolder {
-            automaticSyncEnabled = false
-            defaults.set(false, forKey: StorageKey.automaticSyncEnabled)
-            RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
+        guard !isSynchronizing else { return }
+        guard let lease = processGate.claim(source: .configuration) else {
+            setConfigurationBusyStatus()
+            return
         }
+        defer { processGate.release(lease) }
+        applyProvider(newProvider)
     }
 
     /// `hasActivePickerScope` 必须由文件选择回调同步取得，保证进入异步任务前
     /// 已经持有外部目录的安全作用域；否则 iCloud URL 可能在任务执行时失效。
     func configureLocalFolder(_ url: URL, hasActivePickerScope: Bool) async {
+        guard !isSynchronizing else { return }
+        guard let lease = processGate.claim(source: .configuration) else {
+            setConfigurationBusyStatus()
+            return
+        }
+        defer { processGate.release(lease) }
+
         let selectedFolderName = url.lastPathComponent
         Logger.shared.info(
             "rimeSync folder selection started pickerScopeActive=\(hasActivePickerScope)",
@@ -243,7 +255,7 @@ final class RimeSyncViewModel {
             defaults.set(false, forKey: StorageKey.folderSelectionNeedsRepair)
             folderName = selectedFolderName
             folderSelectionNeedsRepair = false
-            selectProvider(.localFolder)
+            applyProvider(.localFolder)
             resetAutomaticStandardSyncEligibility()
             try await ensureEncryptionKey()
             setStatus(.idle)
@@ -274,6 +286,13 @@ final class RimeSyncViewModel {
     }
 
     func saveWebDAVConfiguration() async {
+        guard !isSynchronizing else { return }
+        guard let lease = processGate.claim(source: .configuration) else {
+            setConfigurationBusyStatus()
+            return
+        }
+        defer { processGate.release(lease) }
+
         do {
             guard let url = normalizedWebDAVURL() else { throw RimeSyncError.invalidServerURL }
             guard isSecure(url) else { throw RimeSyncError.insecureServerURL }
@@ -288,7 +307,7 @@ final class RimeSyncViewModel {
             defaults.set(webDAVURL, forKey: StorageKey.webDAVURL)
             defaults.set(webDAVUsername, forKey: StorageKey.webDAVUsername)
             try await secretStore.set(Data(webDAVPassword.utf8), for: SecretAccount.webDAVPassword)
-            selectProvider(.webDAV)
+            applyProvider(.webDAV)
             try await ensureEncryptionKey()
             setStatus(.idle)
         } catch {
@@ -297,6 +316,13 @@ final class RimeSyncViewModel {
     }
 
     func importRecoveryCode() async {
+        guard !isSynchronizing else { return }
+        guard let lease = processGate.claim(source: .configuration) else {
+            setConfigurationBusyStatus()
+            return
+        }
+        defer { processGate.release(lease) }
+
         do {
             let keyData = try RimeSyncPackageCodec.keyData(fromRecoveryCode: recoveryCodeInput)
             try await secretStore.set(keyData, for: SecretAccount.encryptionKey)
@@ -316,6 +342,7 @@ final class RimeSyncViewModel {
     func synchronizeAllNow() async {
         guard isConfigured, !isSynchronizing else { return }
         guard let processLease = processGate.claim(source: .manual) else {
+            setStatus(.failed("另一个同步操作正在进行，请完成后再试。"))
             Logger.shared.info("rimeSync manual sync skipped processBusy=true", category: .config)
             return
         }
@@ -764,6 +791,13 @@ final class RimeSyncViewModel {
     }
 
     func setAutomaticSyncEnabled(_ enabled: Bool) {
+        guard !isSynchronizing else { return }
+        guard let lease = processGate.claim(source: .configuration) else {
+            setConfigurationBusyStatus()
+            return
+        }
+        defer { processGate.release(lease) }
+
         guard enabled == false || canEnableAutomaticStandardSync else {
             automaticSyncNotice = "请先完成一次“立即同步”，以确认共享文件夹可用。"
             return
@@ -780,41 +814,70 @@ final class RimeSyncViewModel {
         automaticSyncEnabled = enabled
         defaults.set(enabled, forKey: StorageKey.automaticSyncEnabled)
         automaticSyncNotice = nil
-        RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
+        refreshAutomaticSchedule()
     }
 
     func setAutomaticStandardRimeDataEnabled(_ enabled: Bool) {
+        guard !isSynchronizing else { return }
+        guard let lease = processGate.claim(source: .configuration) else {
+            setConfigurationBusyStatus()
+            return
+        }
+        defer { processGate.release(lease) }
+
         automaticStandardRimeDataEnabled = enabled
         defaults.set(enabled, forKey: StorageKey.automaticStandardRimeDataEnabled)
         disableAutomaticSyncWhenNoScopeRemains()
-        RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
+        refreshAutomaticSchedule()
     }
 
     func setAutomaticPrivateSettingsEnabled(_ enabled: Bool) {
+        guard !isSynchronizing else { return }
+        guard let lease = processGate.claim(source: .configuration) else {
+            setConfigurationBusyStatus()
+            return
+        }
+        defer { processGate.release(lease) }
+
         automaticPrivateSettingsEnabled = enabled
         defaults.set(enabled, forKey: StorageKey.automaticPrivateSettingsEnabled)
         disableAutomaticSyncWhenNoScopeRemains()
-        RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
+        refreshAutomaticSchedule()
     }
 
     func setAutomaticSyncCadence(_ cadence: RimeAutomaticSyncCadence) {
+        guard !isSynchronizing else { return }
+        guard let lease = processGate.claim(source: .configuration) else {
+            setConfigurationBusyStatus()
+            return
+        }
+        defer { processGate.release(lease) }
+
         automaticSyncCadence = cadence
         defaults.set(cadence.rawValue, forKey: StorageKey.automaticSyncCadence)
-        RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
+        refreshAutomaticSchedule()
     }
 
     func disconnect(deleteRemoteData: Bool) async {
         guard !isSynchronizing else { return }
+        guard let processLease = processGate.claim(source: .disconnect) else {
+            setStatus(.failed("另一个同步操作正在进行，请完成后再试。"))
+            return
+        }
+        defer { processGate.release(processLease) }
+
+        var remoteDataDeleted = false
         do {
             if deleteRemoteData, isConfigured {
                 let transport = try await makeTransport()
                 try await transport.deleteRemoteData()
+                remoteDataDeleted = true
             }
-            try await secretStore.remove(SecretAccount.webDAVPassword)
             if deleteRemoteData {
                 try await secretStore.remove(SecretAccount.encryptionKey)
                 recoveryCode = ""
             }
+            try await secretStore.remove(SecretAccount.webDAVPassword)
             defaults.removeObject(forKey: StorageKey.provider)
             defaults.removeObject(forKey: StorageKey.webDAVURL)
             defaults.removeObject(forKey: StorageKey.webDAVUsername)
@@ -841,8 +904,16 @@ final class RimeSyncViewModel {
             automaticPrivateSettingsEnabled = true
             automaticSyncNotice = nil
             setStatus(.notConfigured)
-            RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
+            refreshAutomaticSchedule()
         } catch {
+            if remoteDataDeleted {
+                setStatus(
+                    .failed(
+                        "云端加密设置包已删除，但本机 Keychain 凭据清理未完成。请保留当前同步配置并重试“删除云端数据并断开”；无需重新选择同步文件夹。"
+                    )
+                )
+                return
+            }
             setStatus(.failed(error.localizedDescription))
         }
     }
@@ -850,6 +921,21 @@ final class RimeSyncViewModel {
     private var isSynchronizing: Bool {
         if case .syncing(_) = status { return true }
         return false
+    }
+
+    private func setConfigurationBusyStatus() {
+        setStatus(.failed("同步正在进行，设置未更改，请完成后再试。"))
+    }
+
+    private func applyProvider(_ newProvider: RimeSyncProvider) {
+        provider = newProvider
+        defaults.set(newProvider.rawValue, forKey: StorageKey.provider)
+        status = isConfigured ? .idle : .notConfigured
+        if newProvider != .localFolder {
+            automaticSyncEnabled = false
+            defaults.set(false, forKey: StorageKey.automaticSyncEnabled)
+            refreshAutomaticSchedule()
+        }
     }
 
     /// 文件访问被撤销或提供器拒绝写入时，不能在下一次前台自动同步里悄悄回退到
@@ -910,7 +996,7 @@ final class RimeSyncViewModel {
         defaults.set(Date(), forKey: StorageKey.lastAutomaticAttempt)
         defaults.removeObject(forKey: StorageKey.automaticRetryNotBefore)
         defaults.set(Date(), forKey: StorageKey.lastForegroundPrivateAttempt)
-        RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
+        refreshAutomaticSchedule()
     }
 
     private func disableAutomaticSyncWhenNoScopeRemains() {
@@ -936,7 +1022,14 @@ final class RimeSyncViewModel {
         defaults.removeObject(forKey: StorageKey.automaticRetryNotBefore)
         defaults.removeObject(forKey: StorageKey.lastForegroundPrivateAttempt)
         defaults.removeObject(forKey: StorageKey.standardRimeLastSuccess)
-        RimeAutomaticSyncScheduler.shared.refreshSchedule(defaults: defaults)
+        refreshAutomaticSchedule()
+    }
+
+    private func refreshAutomaticSchedule() {
+        RimeAutomaticSyncScheduler.shared.refreshSchedule(
+            defaults: defaults,
+            isEnabled: backgroundSchedulingEnabled
+        )
     }
 
     private func synchronizeStandardRimeData() async throws {
@@ -1008,6 +1101,10 @@ final class RimeSyncViewModel {
     }
 
     private func makeTransport() async throws -> any RimeSyncTransport {
+        if let syncTransportFactory {
+            return try await syncTransportFactory()
+        }
+
         switch provider {
         case .none:
             throw RimeSyncError.notConfigured

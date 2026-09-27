@@ -26,11 +26,15 @@ struct RimeSyncSettingsView: View {
                 managementSection
             }
         }
+        .disabled(isSynchronizing)
         .navigationTitle("RIME 云同步")
         .tint(.primary)
         .task {
             await notificationSettings.refreshAuthorizationStatus()
             await model.loadSecrets()
+            #if DEBUG
+                RimeSyncUITestFixture.applyStatusIfRequested(to: model)
+            #endif
         }
         .fileImporter(
             isPresented: $showFolderPicker,
@@ -386,9 +390,11 @@ struct RimeSyncSettingsView: View {
             Button("断开本机同步", role: .destructive) {
                 showDisconnectConfirmation = true
             }
+            .disabled(isSynchronizing)
             Button("删除云端数据并断开", role: .destructive) {
                 showRemoteDeletionConfirmation = true
             }
+            .disabled(isSynchronizing)
         } header: {
             Text("管理")
         }
