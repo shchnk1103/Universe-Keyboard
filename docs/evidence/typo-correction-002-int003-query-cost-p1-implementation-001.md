@@ -11,6 +11,7 @@ Status: **implementation committed; KeyboardCore verification passed; independen
 - Frozen source baseline: `1160ac6fd8696c3036391cdf59bc9fe096d0b219`; manifest `docs/evidence/typo-correction-002-int003-query-cost-p1-arch-source-freeze-r3.json`, SHA-256 `a98a722b03e2c66de61ab41ae30f59791ccb53a3b365f55a18e96d373732b395`.
 - Implementation commit: `6606fbe0ad57cb0a2c636c2383f066a0a09e55e7` (`feat(int003): measure correction query cost`), parent `5c6a18b30a70921aec9a3286e446f9010bc3506a`, on isolated branch `codex/typo-correction-002-int003-query-cost-p1-implementation-20260927`.
 - Independent implementation review: [review](../reviews/typo-correction-002-int003-query-cost-p1-implementation-review-001.md) and [usage record](typo-correction-002-int003-query-cost-p1-implementation-review-001-usage.md), bound to implementation `6606fbe0ad57cb0a2c636c2383f066a0a09e55e7`, parent `5c6a18b30a70921aec9a3286e446f9010bc3506a`, and patch SHA-256 `1fc7bfc3de343d48509c4670a80ac055fbe27e925df5ee50265d466bacc0099a`; verdict **Pass with conditions**.
+- Draft source PR: [#184](https://github.com/shchnk1103/Universe-Keyboard/pull/184), open as Draft; it was opened at head `c62f5f5af78e94fd3fbf713af74885d068241247` on base `main` at `1160ac6fd8696c3036391cdf59bc9fe096d0b219`. Hosted CI was left for Human observation; no CI result is claimed here.
 - P2 AUTH remains **Active / unconsumed**. No Simulator boot, install, diagnostics arm, or input was performed.
 
 ## Implemented boundary
@@ -32,6 +33,6 @@ Status: **implementation committed; KeyboardCore verification passed; independen
 ## Remaining conditions and non-claims
 
 - The independent Architecture implementation review found no new Blocker or Uncovered item. Its conditions remain open: coordinator-level assertions for measured-stage payload, post-call discard and pre-call cancellation; executable RimeBridge target evidence; applicable local iOS lanes and Hosted CI; and P2 raw-segment sealing, gap/drop/decode/truncation censoring. This review is not an independent Quality conclusion.
-- The draft source PR has not yet been published. The strict Swift lint, KeyboardCore suite and Objective-C syntax check are executor-reported evidence; the full local CI-equivalent iOS lanes and hosted evidence are not green/verified.
+- PR #184 is open as Draft and has not been merged. The strict Swift lint, KeyboardCore suite and Objective-C syntax check are executor-reported evidence; the full local CI-equivalent iOS lanes are unverified. Hosted CI status is not recorded in this receipt.
 - P2 still requires a separately reviewed P1 implementation, exact installed App/Extension hashes, designated Simulator/OS, schema/access/host/diagnostics state, Run ID and archive location in a frozen Run manifest. Consume P2 before any Simulator operation.
 - No Product query-cost acceptability, numeric budget, Gate, parent Close, TestFlight, Release, ADR Accept, or `RimeRuntimeProvenance` restoration is claimed.
