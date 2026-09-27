@@ -7,9 +7,9 @@
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Completed` |
-| **Phase** | Human Product Review accepted；实现、完整本地门禁与双独立复核完成，交回父项准备新载荷冻结 |
-| **Non-claims** | 不恢复旧轮次 legacy 日志，不证明自然后台调度、真机成功、merge 或 Release |
-| **Next** | 父项 `RIME-SYNC-001` 冻结新签名载荷；自然后台轮次仍需单独确认设备与执行窗口 |
+| **Phase** | Human Product Review accepted；实现、完整本地门禁与双独立复核完成，父项已补录 2026-09-22 与 2026-09-23 两次真机自然后台成功观察及一次 `process_busy` 竞争跳过 |
+| **Non-claims** | 不恢复旧轮次 legacy 日志，不把补充观察升级为新的冻结 formal run、Quality re-verification、merge 或 Release |
+| **Next** | 父项自动同步子路径不再需要主动观察；仅在故障复发或路径实质变更时准备新的预冻结设备轮次，父项关闭仍按其 Close Boundary 处理 |
 | **Residuals** | [`Architecture`](rime-sync-diagnostics-v1-001-architecture-review.md) 的未来动态阶段顺序硬化 · [`Quality`](rime-sync-diagnostics-v1-001-quality-review.md) 的测试深度 residual · [`TD-013`](../TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) · 旧轮次精确错误码保持 `UNKNOWN` |
 
 ---

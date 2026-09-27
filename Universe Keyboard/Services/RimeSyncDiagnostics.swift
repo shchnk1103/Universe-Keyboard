@@ -242,6 +242,7 @@ nonisolated enum RimeSyncDiagnosticFailureMapper {
         if let error = error as? RimeSyncError {
             switch error {
             case .notConfigured, .accessDenied: return .accessDenied
+            case .keychainAccessDenied: return .keychainAccessDenied
             case .missingEncryptionKey: return .missingEncryptionKey
             case .unsupportedFormat: return .unsupportedFormat
             case .packageTooLarge: return .packageTooLarge

@@ -172,6 +172,39 @@ jobs:
             SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
             test
 
+  test_rime_sync_keychain:
+    name: test-rime-sync-keychain
+    needs: [classify_change, lightweight_checks]
+    if: needs.classify_change.outputs.requires_full == 'true'
+    runs-on: macos-26
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare pinned RIME artifacts
+        run: bash scripts/ensure_rime_vendor.sh fetch
+
+      # This focused integration test needs a signed Simulator host to access
+      # Keychain. An ad-hoc identity avoids requiring a team signing secret.
+      - name: Test RIME Keychain integration on iOS Simulator
+        run: |
+          xcodebuild \
+            -project "Universe Keyboard.xcodeproj" \
+            -scheme "Universe Keyboard" \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGN_IDENTITY=- \
+            CODE_SIGNING_REQUIRED=NO \
+            SWIFT_VERSION=6.0 \
+            SWIFT_STRICT_CONCURRENCY=complete \
+            SWIFT_SUPPRESS_WARNINGS=NO \
+            SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
+            -only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem \
+            test
+
   build_release:
     name: build-release
     needs: [classify_change, lightweight_checks]
@@ -211,6 +244,7 @@ jobs:
         test_keyboardcore,
         test_rimebridge,
         test_app_keyboard,
+        test_rime_sync_keychain,
         build_release,
       ]
     runs-on: ubuntu-latest
@@ -227,6 +261,7 @@ jobs:
           KEYBOARDCORE_RESULT: ${{ needs.test_keyboardcore.result }}
           RIMEBRIDGE_RESULT: ${{ needs.test_rimebridge.result }}
           APP_KEYBOARD_RESULT: ${{ needs.test_app_keyboard.result }}
+          KEYCHAIN_RESULT: ${{ needs.test_rime_sync_keychain.result }}
           RELEASE_RESULT: ${{ needs.build_release.result }}
         run: >-
           bash scripts/ci/verify_final_gate.sh
@@ -237,4 +272,5 @@ jobs:
           "$KEYBOARDCORE_RESULT"
           "$RIMEBRIDGE_RESULT"
           "$APP_KEYBOARD_RESULT"
+          "$KEYCHAIN_RESULT"
           "$RELEASE_RESULT"

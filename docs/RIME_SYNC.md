@@ -1,6 +1,6 @@
 # RIME Portable Sync
 
-> **Status:** Product Contract accepted; RIME 标准同步主路径实现中，验收证据待补齐
+> **Status:** Product Contract accepted; the bounded iOS V1 local-folder Assignment is closed. Live WebDAV validation is deferred to [`TD-019`](TECH_DEBT.md#td-019-live-webdav-provider-validation); CloudKit is deferred; full cross-platform compatibility remains in [`TD-008`](TECH_DEBT.md#td-008-complete-portable-rime-data-compatibility).
 >
 > **Assignment:** [`RIME-SYNC-001`](assignments/rime-sync-001.md)
 >
@@ -12,6 +12,33 @@
 
 “云同步”是主 App 的数据操作能力，不是键盘按键路径能力。Keyboard Extension 不访问网络、不扫描同步目录，也不负责冲突处理或部署。
 
+## Current V1 Closure Boundary
+
+The current `RIME-SYNC-001` closure covers the delivered iOS V1 local-folder
+path: librime standard sync and the encrypted Universe settings package through
+one user-selected local folder, Main-App-only orchestration, and the
+corresponding scoped UI/security evidence.
+
+- The WebDAV implementation and UI remain available, but live-server validation
+  is deferred to [`TD-019`](TECH_DEBT.md#td-019-live-webdav-provider-validation)
+  by the Human Product Owner decision on `2026-09-24 Asia/Shanghai`. Existing
+  fake-transport/unit/UI checks do not establish live WebDAV server behavior;
+  re-entry requires a separate bounded Assignment and authorization.
+- The local-folder Simulator run uses a newly created isolated target. Its
+  evidence is limited to that Simulator and selected folder provider; it does
+  not prove physical-device, iCloud/third-party File Provider propagation, or
+  live WebDAV behavior.
+
+- CloudKit/iCloud is deferred and is not part of this V1 closure. It requires
+  verified membership, container, entitlement and physical-device prerequisites
+  under a separately scoped implementation and validation effort.
+- Full cross-platform fixture round-trips, full scheme portability and safe
+  cross-device custom YAML/TXT import remain deferred to
+  [`TD-008`](TECH_DEBT.md#td-008-complete-portable-rime-data-compatibility).
+- This boundary does not claim compatibility with every third-party RIME
+  frontend. It preserves the existing safety rules: no live `*.userdb*` copy,
+  no automatic YAML import/overwrite, and no full scheme-directory copy.
+
 ## Product Decision
 
 采用“RIME 标准同步 + Universe 私密设置包”的双层方案：
@@ -19,7 +46,7 @@
 1. **RIME 标准同步** 是跨 App 的主路径。用户选定一个本地/文件提供器目录；Universe 将它写为 librime 的 `sync_dir`，首次由用户在主 App 手动发起官方 `sync_user_data`，之后可按用户的自动同步设置继续维护。
 2. **Universe 私密设置包** 是辅助路径。它继续以端到端加密同步本 App 的字段级设置；本地文件夹和 WebDAV 都可承载它，但其他 RIME 前端不会读取它。
 3. **WebDAV** 仅承载 Universe 私密设置，除非用户在其他平台将它挂载为真实本地目录；不能被表述为其他 RIME 前端可直接使用的 `sync_dir`。
-4. **CloudKit / iCloud** 是后续 Apple 生态适配器。只有 Apple Developer Program、iCloud container、entitlement 和真实设备环境可用后才能进入实现和验证。
+4. **CloudKit / iCloud** 是明确延后的 Apple 生态适配器，不属于当前 V1 关闭范围。只有 Apple Developer Program、iCloud container、entitlement 和真实设备环境可用后，才能在单独范围内进入实现和验证。
 
 当用户用系统文件选择器指定标准同步目录时，主 App 必须在选择回调内立即取得目录的安全作用域，并一直持有到读写预检和 bookmark 保存完成；之后才允许异步任务使用持久化 bookmark 重新获取访问权。这样 iCloud Drive 和第三方文件提供器目录不会因回调结束而失效。
 
@@ -125,6 +152,16 @@ universe-rime-sync/
 - 跳过原因：关闭、未配置、首次手动同步未完成、冷却、键盘活跃或进程 gate 忙；
 - 失败分类：仅使用经过审查的本地有限枚举。
 
+记录目录访问和同步失败时，错误码使用应用定义的稳定类别（例如
+`folder.preflight.coordinate`、`folder.bookmark`、`transport.failure`、
+`standard_sync.failed`）；不得把底层 NSError domain、数值 code、localized
+message 或任意关联字符串直接拼入错误码。未识别错误统一记为 `unknown`；新增码
+须同步更新映射测试，保持既有码的语义稳定。
+
+Keychain 访问失败在一般操作诊断中使用 `keychain.access_denied`，在自动同步
+终态的有限失败分类中使用 `keychain_access_denied`；两者均不携带 OSStatus、
+账号或密钥，也不得并入文件夹访问失败分类。
+
 同一 operation ID 最多出现一个终态；BGTask expiration 与迟到的异步取消/返回
 必须竞争同一个诊断终态所有权。诊断写入、过滤、队列满或 App Group 不可用只能
 降低可观测性，不能改变同步结果、通知、重试、gate lease 或 BGTask completion。
@@ -133,14 +170,24 @@ universe-rime-sync/
 
 ## Acceptance
 
-- 同一 RIME `sync_dir` 在 iPhone、macOS、Windows、Linux 和 Android 的目标前端上可完成官方词典快照合并，并保留每设备 YAML/TXT 备份。
-- Universe 私密设置包在兼容客户端或兼容工具上可往返，不丢失未知字段。
+### Bounded iOS V1
+
+- 同一 RIME `sync_dir` 在受支持的 iOS 路径上可完成官方词典快照合并，并保留每设备 YAML/TXT 备份；这不表示所有第三方 RIME 客户端均兼容。
+- Universe 私密设置包在当前闭环范围的 iOS local-folder transport 上可往返，不丢失未知字段。WebDAV 合同仍有实现，但 live-server 验证延期至 [`TD-019`](TECH_DEBT.md#td-019-live-webdav-provider-validation)，不作为当前闭环证据。
 - 离线并发修改产生确定性结果且不静默覆盖文件。
-- 无 Apple Developer Program 时，WebDAV 与本地文件夹路径仍可开发和验证。
-- CloudKit 构建只有在 entitlement、container、签名和设备证据均成立时才宣称可用。
 - 网络失败、认证失败、密钥错误、损坏包、不兼容版本、存储不足和部署失败均保持本地输入可用。
 - 同步、哈希、加密、文件扫描和部署不进入键盘按键热路径。
 - iOS 的 `earliestBeginDate` 只是最早执行时间；系统可以延后、合并或不执行一次后台机会。自动同步仅为便利功能，不能被表述为定时或实时服务。
+
+### Deferred compatibility acceptance — `TD-008`
+
+- 同一 RIME `sync_dir` 在 iPhone、macOS、Windows、Linux 和 Android 的代表性目标前端上完成官方词典快照合并，并保留每设备 YAML/TXT 备份。
+- Universe 私密设置包由兼容客户端或兼容工具跨平台往返，且保留未知字段。
+- 完整平台 fixture round-trips、scheme portability 与 staged custom YAML/TXT import 的验收范围见 [`TD-008`](TECH_DEBT.md#td-008-complete-portable-rime-data-compatibility)；不是本次 iOS V1 close gate。
+
+### Separately deferred CloudKit follow-up
+
+CloudKit 构建只有在 entitlement、container、签名和设备证据均成立时才宣称可用；CloudKit 不属于本次 iOS V1 验收或关闭范围。
 
 ## Non-goals
 

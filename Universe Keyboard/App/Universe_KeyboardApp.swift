@@ -19,7 +19,13 @@ struct Universe_KeyboardApp: App {
         #endif
         AppAppearance.migrateLegacyPreferenceIfNeeded()
         SystemAppNotificationClient.shared.configure()
-        RimeAutomaticSyncScheduler.shared.registerBackgroundTask()
+        #if DEBUG
+            if !RimeSyncUITestFixture.isRequested() {
+                RimeAutomaticSyncScheduler.shared.registerBackgroundTask()
+            }
+        #else
+            RimeAutomaticSyncScheduler.shared.registerBackgroundTask()
+        #endif
         prepareDiagnosticsJournalRoot()
         // Main-App TipKit only (`PD-HELP-TIPKIT-001` P3). Never configure tips in Keyboard Extension.
         ActivationTips.configure()

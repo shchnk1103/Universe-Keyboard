@@ -19,6 +19,15 @@
 - 共享 `AppActionButton` 的可点击 primary 改为浅色黑底白字、深色白底黑字；iOS 26 保留 Liquid Glass（Reduce Transparency 时走实心 fallback）。
 - Secondary 用近无 tint 的玻璃板；destructive 保持语义红；disabled 沿用同一颜色对并整体 40% 透明。
 - 独立 Quality 为 **Pass with conditions**；Human Product Gate 已接受既有残差与 Human-attested 目视。隔离分支实现 commit `ab98e346d8cca67f2c77287e7ebb6516f4483160`；push / Release 仍未授权。
+## 2026-09-24 — RIME-SYNC-001 当前闭环范围限于本地文件夹
+
+- Human Product Owner 将当前 iOS V1 收尾验证限定为 local-folder 路径；已实现的 WebDAV 功能保留，但 live-server 验证延期至 `TD-019`，CloudKit 与跨平台债务边界不变。
+- 授权在 iPhone 18 Pro / iOS 27.0 Simulator 创建隔离同步目录并进行本地路径验证；该工作不证明实体设备、iCloud/第三方文件提供器传播或 live WebDAV 行为。
+
+## 2026-09-23 — RIME 同步诊断错误码隐私边界
+
+- 同步诊断改用有限、稳定的错误码映射；不再输出任意 NSError domain/code 或底层错误文本，未知错误映射为 `unknown`。
+- 增加错误码映射回归测试并更新 RIME 同步诊断合同；不改变同步行为或产品范围。
 
 ## 2026-09-19 — 键盘按键可被 Simulator AX 独立发现并走 UIKit 路径
 

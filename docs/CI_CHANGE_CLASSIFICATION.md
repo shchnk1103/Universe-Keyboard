@@ -38,6 +38,7 @@ lightweight-checks -------------------+
        +--> test-keyboardcore          |
        +--> test-rimebridge            |  (full only; parallel)
        +--> test-app-keyboard          |
+       +--> test-rime-sync-keychain    |
        +--> build-release              |
                                        v
                             final-quality-gate
@@ -48,10 +49,14 @@ lightweight-checks -------------------+
   branch-wide decision from only `HEAD^`.
 - `lightweight-checks` always runs: diff whitespace, changed Markdown local links,
   `.kos/project.json` JSON syntax and classifier/link-checker unit tests.
-- The five named heavy jobs run only when classification requires `full`. They
+- The six named heavy jobs run only when classification requires `full`. They
   do not introduce path-based skips. Debug `test` covers Debug compilation; there
-  is no extra Debug `build`. `test-app-keyboard` and `build-release` still fetch
+  is no extra Debug `build`. `test-app-keyboard`, `test-rime-sync-keychain`, and `build-release` fetch
   pinned RIME artifacts. `format-swift` and `test-keyboardcore` do not.
+- The broad app/keyboard test job remains unsigned; Keychain integration is
+  exercised separately by `test-rime-sync-keychain` using an ad-hoc signed
+  Simulator host, so CI needs no developer-team signing secret. The unsigned
+  suite skips only when the OS reports the expected missing Keychain entitlement.
 - `final-quality-gate` always runs. For `full` every heavy job must be `success`.
   For `docs_only` every heavy job must be exactly `skipped`. Missing or
   contradictory outputs fail closed.
@@ -93,7 +98,7 @@ its extra Debug `build` step. The revert set is both
 [`.github/workflows/swift6-quality.yml`](../.github/workflows/swift6-quality.yml)
 and [`scripts/ci/verify_final_gate.sh`](../scripts/ci/verify_final_gate.sh) with
 [`scripts/ci/tests/test_verify_final_gate.sh`](../scripts/ci/tests/test_verify_final_gate.sh).
-The Gate script now takes eight arguments (`requires_full` third); restoring
+The Gate script now takes nine arguments (`requires_full` third); restoring
 only the YAML or only the script leaves a calling-convention mismatch. That
 mismatch fail-closes the Gate (safe) but is not a working rollback. Do not use
 workflow-level `paths-ignore` as a shortcut. Do not add UI/Rime/KeyboardCore
