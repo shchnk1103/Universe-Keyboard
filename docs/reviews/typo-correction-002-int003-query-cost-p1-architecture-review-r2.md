@@ -230,4 +230,3 @@ proposal 的“构造一个 terminal event、放在 measured facade interval 之
 - Independent Test / Release reviewer：实现后验证 drop/censor、observer overhead 与 Debug/Simulator 限制。
 
 本轮停止于 Blocker/Uncovered，未消费 P1/P2 AUTH，未编辑 source，未作 Product budget、Quality、QA-001 Gate、merge、TestFlight、Release、ADR acceptance 或 parent Close 判断。
-
