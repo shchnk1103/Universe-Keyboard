@@ -9,9 +9,9 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Decision-ready measurement of INT-003 query count, usefulness and runtime cost",
   "lifecycle": "active",
-  "current_phase": "P0 measurement plan completed under a consumed docs-only AUTH; P1 instrumentation and controlled capture require a distinct Product authorization and evidence freeze. No Swift or device action has begun",
+  "current_phase": "P0 measurement plan published by PR 179 squash merge 9838c092; its single KOS M-02 closeout is being synchronized. P1/P2 have separate authorization and environment boundaries; no Swift or device action has begun",
   "authorization_action": "plan_int003_query_cost_measurement",
-  "updated_at": "2026-09-26T22:57:57+08:00",
+  "updated_at": "2026-09-26T23:08:37+08:00",
   "revalidation_triggers": [
     "github_main_tip_changes_from_7b0025a",
     "source_or_diagnostic_schema_changes",
@@ -19,11 +19,15 @@ Policy version: 1.0.0
     "Product_query_budget_or_parent_scope_changes",
     "request_for_Swift_capture_Gate_or_Release"
   ],
-  "authorization_refs": ["AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001"],
+  "authorization_refs": [
+    "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001",
+    "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-M02-001"
+  ],
   "parent_refs": ["TYPO-CORRECTION-002"],
   "evidence_refs": [
     "docs/evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md",
-    "docs/plans/typo-correction-002-int003-query-cost-measurement-001.md"
+    "docs/plans/typo-correction-002-int003-query-cost-measurement-001.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-measurement-plan-m02-2026-09-26.md"
   ],
   "responsibilities": {
     "domain_owner": "Input Intelligence Maintainer",
@@ -44,6 +48,7 @@ Policy version: 1.0.0
 | Lifecycle | **Active** — P0 design output ready for Product review; P1/P2 not entered |
 | Current phase | [Measurement plan](../plans/typo-correction-002-int003-query-cost-measurement-001.md) records the data needed to distinguish useful Stage 1/2 calls from empty or unavailable-sidecar calls and to assess elapsed cost |
 | Authority | Human 2026-09-26 authorized this new Assignment/AUTH; [P0 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001.md) is Consumed for docs-only planning/publication |
+| Publication / M-02 | [PR #179](https://github.com/shchnk1103/Universe-Keyboard/pull/179) merged `9838c092672dae60c63b34e4d9be6dffafc3869f`; [single closeout receipt](../evidence/typo-correction-002-int003-query-cost-measurement-plan-m02-2026-09-26.md) binds this trigger; its own draft PR is pending |
 | Non-claims | No Swift/ObjC change, new Capture, Release-like result, numeric budget, independent Quality conclusion, Product/QA-001 Gate, parent Close, TestFlight/Release or `RimeRuntimeProvenance` restore |
 | Next | Product Lead decides whether to issue a separate P1 instrumentation/capture AUTH after reviewing the plan and environment boundary; parent remains [Active](typo-correction-002.md) |
 
