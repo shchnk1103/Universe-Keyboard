@@ -6,6 +6,47 @@ import XCTest
 
 @MainActor
 final class DiagnosticsRuntimeRouteDisplayTests: XCTestCase {
+    func testTypoRecallQueryLineDisplaysFinitePayloadWithoutUserContent() {
+        let event = DiagnosticEvent(
+            utcTimestamp: Date(timeIntervalSince1970: 0),
+            monotonicNanoseconds: 1,
+            origin: .keyboardExtension,
+            processInstanceID: UUID(),
+            localSequence: 1,
+            code: .typoRecallQueryMeasured,
+            level: .info,
+            category: .general,
+            fields: [
+                .typoRecallQuery(
+                    .init(
+                        operationOrdinal: 42,
+                        stage: .stageOne,
+                        readiness: .ready,
+                        resultState: .candidatesReturned,
+                        returnedCandidateBucket: .oneToThree,
+                        disposition: .applied,
+                        facadeElapsedMicroseconds: 420,
+                        durationState: .measured
+                    )
+                )
+            ]
+        )
+
+        let line = DiagnosticsEventDisplayFormatter.line(event)
+
+        XCTAssertTrue(line.contains("typo_recall.query_measured"))
+        XCTAssertTrue(line.contains("query_operation_ordinal=42"))
+        XCTAssertTrue(line.contains("query_stage=stage_one"))
+        XCTAssertTrue(line.contains("query_readiness=ready"))
+        XCTAssertTrue(line.contains("query_result_state=candidates_returned"))
+        XCTAssertTrue(line.contains("query_returned_bucket=one_to_three"))
+        XCTAssertTrue(line.contains("query_disposition=applied"))
+        XCTAssertTrue(line.contains("query_facade_us=420"))
+        XCTAssertTrue(line.contains("query_duration_state=measured"))
+        XCTAssertFalse(line.contains("nihao"))
+        XCTAssertFalse(line.contains("候选文本"))
+    }
+
     func testRuntimeRouteLineExposesFiniteFieldsWithoutUserContent() {
         let operationID = UUID(uuidString: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")!
         let event = DiagnosticEvent(

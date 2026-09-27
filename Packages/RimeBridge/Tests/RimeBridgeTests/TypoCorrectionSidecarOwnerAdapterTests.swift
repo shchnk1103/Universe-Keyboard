@@ -109,8 +109,8 @@ final class TypoCorrectionSidecarOwnerAdapterTests: XCTestCase {
 private final class QueryStub: TypoCorrectionCandidateQuerying {
     private(set) var inputs: [String] = []
 
-    func correctionCandidates(for input: String, limit: Int) -> [RimeCandidate] {
+    func correctionCandidates(for input: String, limit: Int) -> [KeyboardCore.RimeCandidate] {
         inputs.append(input)
-        return [RimeCandidate(text: "你好")].prefix(max(0, limit)).map { $0 }
+        return [KeyboardCore.RimeCandidate(text: "你好")].prefix(max(0, limit)).map { $0 }
     }
 }

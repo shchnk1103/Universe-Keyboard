@@ -4,7 +4,7 @@ import RimeBridgeObjC
 extension RimeEngineImpl: TypoCorrectionCandidateQuerying {
     /// Runs a bounded candidate lookup in RimeSessionManager's sidecar session.
     /// The live session remains responsible for the visible composition and selection.
-    public func correctionCandidates(for input: String, limit: Int) -> [RimeCandidate] {
+    public func correctionCandidates(for input: String, limit: Int) -> [KeyboardCore.RimeCandidate] {
         correctionQueryResult(for: input, limit: limit).candidates
     }
 
