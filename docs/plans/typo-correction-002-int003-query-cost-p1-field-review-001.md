@@ -1,6 +1,6 @@
 # INT-003 P1 diagnostic field review packet
 
-Status: **awaiting independent Architecture & Knowledge Steward review**. This is a source-bound design packet, not implementation evidence. Source baseline: `c3cc229619604131d6358bbc85f74e81f2874dc6` after PR #180; PR #180 changed documentation only, and the production source files are unchanged from #179 merge `9838c092672dae60c63b34e4d9be6dffafc3869f`. [P1 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-INSTRUMENTATION-001.md) is Active but unconsumed; [P2 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-SIM-CAPTURE-001.md) is Active but unconsumed pending payload and Run manifest freeze.
+Status: **awaiting independent Architecture & Knowledge Steward review**. This is a source-bound design packet, not implementation evidence. P1 source baseline: `2b9b15ee2d1d903b3a948109b2c2217535bd5248`, the PR #181 merge tip recorded for this baseline rebind; the P1 source manifest is SHA-256 `5c19b79be205ba9afe2e50f321283071695c0b2dd9c4bdda9a4723af535b6d8a`. [P1 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-INSTRUMENTATION-001.md) is Active but unconsumed; [P2 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-SIM-CAPTURE-001.md) is Active but unconsumed pending payload and Run manifest freeze.
 
 ## Source facts and proposed signal
 

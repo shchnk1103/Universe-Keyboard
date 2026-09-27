@@ -7,9 +7,9 @@
   "record_type": "authorization",
   "title": "P1 content-free query-cost instrumentation on a frozen source baseline",
   "status": "active",
-  "updated_at": "2026-09-27T15:02:00+08:00",
+  "updated_at": "2026-09-27T16:31:00+08:00",
   "revalidation_triggers": [
-    "execution_source_tip_changes_from_c3cc229619604131d6358bbc85f74e81f2874dc6",
+    "p1_source_manifest_sha256_changes_from_5c19b79be205ba9afe2e50f321283071695c0b2dd9c4bdda9a4723af535b6d8a",
     "field_semantics_or_allowed_files_change",
     "independent_Architecture_review_finds_boundary_change",
     "P1_execution_environment_or_executor_changes",
@@ -31,14 +31,18 @@
       "RimeRuntimeProvenance_restore"
     ],
     "issuer_role": "Human Product Owner acting as Product Lead",
-    "decision_source": "Human 2026-09-26 Asia/Shanghai explicitly authorized PR 179 merge and required separate P1 instrumentation and P2 capture execution authority and evidence environment; earlier Human authorized continuing the query-cost Assignment under KOS",
+    "decision_source": "Human 2026-09-26 Asia/Shanghai explicitly authorized PR 179 merge and required separate P1 instrumentation and P2 capture execution authority and evidence environment; earlier Human authorized continuing the query-cost Assignment under KOS. Human 2026-09-27 Asia/Shanghai authorized completion of the independent Architecture review, P1 baseline update, and subsequent work under the separate P1/P2 AUTHs",
     "issued_at": "2026-09-26T23:16:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
     "consumption_state": "unconsumed",
     "artifact_bindings": [
-      {"kind": "source_baseline", "identity": "c3cc229619604131d6358bbc85f74e81f2874dc6"},
-      {"kind": "source_rebind_reason", "identity": "PR_180_docs_only_M02_merge;production_source_files_unchanged;before_P1_consumption"},
+      {"kind": "source_baseline", "identity": "2b9b15ee2d1d903b3a948109b2c2217535bd5248"},
+      {"kind": "source_manifest", "identity": "docs/evidence/typo-correction-002-int003-query-cost-p1-arch-source-freeze-r1.json"},
+      {"kind": "source_manifest_sha256", "identity": "5c19b79be205ba9afe2e50f321283071695c0b2dd9c4bdda9a4723af535b6d8a"},
+      {"kind": "source_rebind_reason", "identity": "PR_180_and_PR_181_docs_only_merges;source_baseline_frozen_at_PR_181_merge_tip_with_28_scoped_source_test_and_governance_files_before_P1_consumption"},
+      {"kind": "architecture_review_lane", "identity": "TYPO-CORRECTION-002-INT003-QUERY-COST-P1-ARCH-001/round-1"},
+      {"kind": "architecture_review_packet", "identity": "docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-packet-r1.md"},
       {"kind": "measurement_plan", "identity": "docs/plans/typo-correction-002-int003-query-cost-measurement-001.md"},
       {"kind": "field_review_packet", "identity": "docs/plans/typo-correction-002-int003-query-cost-p1-field-review-001.md"},
       {"kind": "execution_environment", "identity": "isolated_macOS_worktree;/private/tmp/universe-keyboard-int003-query-density-diagnosis-20260925;Debug_HF_only_for_journal_semantics;no_device_capture_under_P1"}
@@ -52,7 +56,7 @@
 | Field | Binding |
 |---|---|
 | Status | **Active, unconsumed**. Human issued P1 authority; the Architecture field review is an entry condition, not a substitute for consumption. |
-| Executor | Codex current task in the isolated worktree above; source baseline `c3cc229619604131d6358bbc85f74e81f2874dc6`. Rebind if the source baseline changes before execution. |
+| Executor | Codex current task in the isolated worktree above; source baseline `2b9b15ee2d1d903b3a948109b2c2217535bd5248` with the bound 28-file manifest. Revalidate if any bound source blob changes before execution. |
 | Domain owner | Input Intelligence Maintainer; KeyboardCore, Keyboard UI and RimeBridge ownership are reviewed at their existing boundaries. |
 | Architecture reviewer | Independent Architecture & Knowledge Steward for ADR 0027 field allowlist, ADR 0004 session route and privacy. Review [field packet](../plans/typo-correction-002-int003-query-cost-p1-field-review-001.md) before source edits. |
 | Quality reviewer | Independent Test / Release lane after implementation evidence; P1 author does not self-declare Quality. |

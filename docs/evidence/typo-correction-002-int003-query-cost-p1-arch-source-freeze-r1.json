@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "work_item": "TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-001",
+  "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P1-ARCH-001",
+  "review_round": 1,
+  "baseline_commit": "2b9b15ee2d1d903b3a948109b2c2217535bd5248",
+  "files": [
+    {
+      "path": "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+      "git_blob": "c60178c1f36f0eb430d7e2a8c52dde4c8a4fb8fc",
+      "sha256": "6a64e51891d55cb33cb75db299834a4b679b2a61833b964e099022c9d1674cf2"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallMaterial.swift",
+      "git_blob": "610969a4e2746f3160413574a162d71d0814d688",
+      "sha256": "6bbb6f86ca119e0974dd6888fb147d8b27142a70619d7a5ebe90dbb51e3cbf58"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionCandidateQuery.swift",
+      "git_blob": "4099ecd65a3c12a2a29810bbafe4c838ea9e92e8",
+      "sha256": "266563235bae60b8985083c428f26042f75e2cc1db497c116e985b87e3ae7679"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+      "git_blob": "32b3c99ffd1fa3c265817b1e766696ec3eea1f05",
+      "sha256": "054c72993c5574cb0c724ee334c8a56b591e3a598c6f81b51f3c140ff1f4a4ac"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallDiagnosticMarkers.swift",
+      "git_blob": "ff1bad7ea5648418b319407d9af779e18ee75949",
+      "sha256": "e27d0d0cd51425f84120cca300c99b40c332c48327977deefa87c57fee9c5154"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift",
+      "git_blob": "5a12759677c2a6fdd93821ecefa6f231b54a06b7",
+      "sha256": "3bac9976cda665661587955e228c0e0b70f3c56e0dad4f9c7117258d6f71fbe5"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift",
+      "git_blob": "e8658512c6cb54d9491c7d4c4055426cd03e623d",
+      "sha256": "9720d22bb3ec5668b7a9f466ac84c34d77c7a7ed2969da01b5c6f2568c41b406"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift",
+      "git_blob": "3fca1d10bc10cfae167c8069c98d6f6afbd27052",
+      "sha256": "22df98f25a44704763e4669d60787c2157477a97587645645e5b10af3437a696"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift",
+      "git_blob": "6e33fc67cd48afbb090e20fcc9de003a98aaf57b",
+      "sha256": "9c999e18645573da1519d0f84be0f83152e800a41b109783b5730788f7a4f005"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/TypoCorrectionSidecarOwnerAdapters.swift",
+      "git_blob": "bb48603b5227391a6f6d89c61289a6cc674fcfe1",
+      "sha256": "434a019c11aad73b821cd74dc457172af03f2ab4e7c4ad1105ca687b5afd2300"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift",
+      "git_blob": "ccff8d815d43a28d8c1a17fe7c5ed993982941de",
+      "sha256": "b2528a8f4ae51685f5abb7f96b127dcf723f2ee945329faa0117ede6ece5b11c"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Output.swift",
+      "git_blob": "50e227599fc331cebecb84b24633ab6bb8e38212",
+      "sha256": "ec1e4b1e1a964f91d6004278a11e530c2aa6940c4fe71d246231667ebd7ba015"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m",
+      "git_blob": "7c2b57bfcbfc993a1112f3e66a07e93a47d28b7e",
+      "sha256": "412ea599a9485ad18b5026d9bf0d762d280d5e17db78bdd5a17deae61cd07ecc"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeSessionManager.h",
+      "git_blob": "bae33e1c8b0e18bf4731bdeb0376ed43764cab43",
+      "sha256": "eee000ebdb54a09ddee505b8cbef8e3a65f58d6f9e9a52e7e24efad012b69085"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/TypoCorrectionRuntimeIntegrationTests.swift",
+      "git_blob": "6eb5475a381368c085bfeebe5fcbb7065b154664",
+      "sha256": "fa0e7dafdf89bfe887946a7f21321dd1e2b47823a75ceabf94c11630889f15ca"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/TypoCorrectionRecallDiagnosticMarkersTests.swift",
+      "git_blob": "0757be31e9b8786a9c70da8fe5f011e502105351",
+      "sha256": "86143eb2ac6c41d5f7d9003a7c280cf63391bcc5c73b9eb2cf91566fb7bb81ff"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticEventTests.swift",
+      "git_blob": "7dbff49f0d9fbbe64b7e467872e41c8546d58c66",
+      "sha256": "e426ded5212d31148ba2683d57ba61499eb1d8db2076b8f8cde79aec38b43df5"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/TypoCorrectionSidecarOwnerAdapterTests.swift",
+      "git_blob": "ae5ba6a0dda1ef2f77faed15c0cdee02558108b6",
+      "sha256": "1ac17d8b74fda4c90f39826cdc0cedc37b6bd3d3dd57f73ef62d72027c345f7c"
+    },
+    {
+      "path": "docs/PROJECT_CONTEXT.md",
+      "git_blob": "d94e76e2e0bbf7cd0162a563e261535e7dbbf955",
+      "sha256": "4f21b2c2394ddb19e0a47ad7b5f9951db6c0693c413480bd651334e2e4378324"
+    },
+    {
+      "path": "docs/ASSIGNMENT_POLICY.md",
+      "git_blob": "fcf778b3059d856b9fc156d2b603bb9b13bf2a09",
+      "sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680"
+    },
+    {
+      "path": "docs/AI_WORKFLOW.md",
+      "git_blob": "a51cc29501047943fb39b71cd22dd900077c3c72",
+      "sha256": "fd3ff24fc0d38ed134cace8ffd5479f76e6261b009d6f661d218e4e260b07413"
+    },
+    {
+      "path": "docs/READING_MAPS.md",
+      "git_blob": "cb5595b4e4ea81842ce3ef8c5d67c1ca56db5b01",
+      "sha256": "cdcf2a2f3168e8efd48405793d24ec968f59555f619fcf92eadacdc4bd0196d4"
+    },
+    {
+      "path": "docs/architecture/decisions/0004-rime-runtime-session-model.md",
+      "git_blob": "b7cb58a45d23ccbb1b5a8429f320a7abd2db20a2",
+      "sha256": "1426dc961b36d101c5c13201b229d7cc6418e998e3a99090f016243e86a46790"
+    },
+    {
+      "path": "docs/architecture/decisions/0025-responsive-rime-serial-input-pipeline.md",
+      "git_blob": "19670118ca1e79e4edfe26edaf1ebc3ad107a0db",
+      "sha256": "37e8fbab342472cb7673e986d4ad790fd25e2fb142dd9c5ee5a76e721d534c0c"
+    },
+    {
+      "path": "docs/architecture/decisions/0027-enterprise-local-diagnostic-observability.md",
+      "git_blob": "248e587aa7e00803ac5eca8f6eb6299e535a4e22",
+      "sha256": "9e922b2b815714f2e647a4037be21871a3c163f52895640a16ed57dc26fa5f99"
+    },
+    {
+      "path": "docs/architecture/shared-container-and-rime-lifecycle.md",
+      "git_blob": "77a25f3c215a4457a69c662088f0781c3522ab8e",
+      "sha256": "2e1c57a7b5e49d803b74a2e851b2b3f62fba140ebe1bfce55d6330b3324923e8"
+    },
+    {
+      "path": "docs/playbooks/keyboard-core.md",
+      "git_blob": "6143df276507938ad84a9aaddb681acdd75ac913",
+      "sha256": "86b7a48d3040b719b3fc8f38bca5bcf6e4592037631c13da747d6efb996d5068"
+    },
+    {
+      "path": "docs/playbooks/rime-bridge.md",
+      "git_blob": "9cef2bad4fdcdca76e3adb5fb7588a7e32f285fb",
+      "sha256": "a800c4d62b8ecb122aaa9f45ba49b2da06c4ea699aec109770613321e0faebe3"
+    }
+  ]
+}
