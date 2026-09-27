@@ -9,10 +9,10 @@
 | Source baseline | P1 source baseline `2b9b15ee2d1d903b3a948109b2c2217535bd5248` (PR #181 merge tip recorded for the rebound) |
 | Source manifest | [`source freeze r1`](../evidence/typo-correction-002-int003-query-cost-p1-arch-source-freeze-r1.json), SHA-256 `5c19b79be205ba9afe2e50f321283071695c0b2dd9c4bdda9a4723af535b6d8a` |
 | Mutable review-input snapshots | Assignment `138e8aa795f4ab9f16cd1fc1fec2206f7455fb5d443598c912d96f986fbbb347`; P1 AUTH `aa8ed1780114a38ec277a92e63eebe47d6c4d5d1a37ef7ef1073922f5fb0b125`; P2 AUTH `ed0c6c559ab3ae53e6945ac43ed538d137a2579d13cc64caf1497b799d1944ff`; P1 field design `9d010f86c132c19179d867d78eff70332f06cfa5ddfbb85abbae7ae1b2a3a4a2`; measurement plan `2381b36e5ce566fc6bb8e2d6af84a8b3437a3a1d75e3aab52a9b36c028900825` (SHA-256, exact current bytes at packet freeze) |
-| Packet digest | `b65c69dbfdaef71d96a50c23840f737e3381a5bd8142ff0975b382b0edb3cc26` — SHA-256 of the full UTF-8 file after replacing the value in this row with 64 ASCII `0` characters. The reviewer must independently reproduce the stored value by making that replacement. |
+| Packet digest | `ecc05ba189e9115d76e645c0a3d32e7ccae3beb0095efeacce5c23c4535fa986` — SHA-256 of the full UTF-8 file after replacing the value in this row with 64 ASCII `0` characters. The reviewer must independently reproduce the stored value by making that replacement. |
 | Assignment authority / expansion owner | Human Product Owner acting as Product Lead |
 | Decision source | Human 2026-09-27 expressly authorized completion of the independent Architecture review, P1 baseline update, and subsequent work under the separate P1/P2 AUTHs. |
-| Required outputs | [`Architecture review result r1`](typo-correction-002-int003-query-cost-p1-architecture-review-r1.md) and [`review usage r1`](../evidence/typo-correction-002-int003-query-cost-p1-architecture-review-r1-usage.md) |
+| Required outputs | `docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-r1.md` and `docs/evidence/typo-correction-002-int003-query-cost-p1-architecture-review-r1-usage.md` |
 
 ## Review question
 
