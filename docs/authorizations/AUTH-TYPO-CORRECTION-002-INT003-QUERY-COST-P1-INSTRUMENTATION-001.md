@@ -6,8 +6,8 @@
   "record_id": "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-INSTRUMENTATION-001",
   "record_type": "authorization",
   "title": "P1 content-free query-cost instrumentation on a frozen source baseline",
-  "status": "active",
-  "updated_at": "2026-09-27T17:33:00+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-27T18:01:36+08:00",
   "revalidation_triggers": [
     "p1_source_manifest_sha256_changes_from_a98a722b03e2c66de61ab41ae30f59791ccb53a3b365f55a18e96d373732b395",
     "field_semantics_or_allowed_files_change",
@@ -35,7 +35,10 @@
     "issued_at": "2026-09-26T23:16:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed",
+    "consumption_state": "consumed",
+    "consumed_at": "2026-09-27T18:01:36+08:00",
+    "consumed_by": "Current Codex task as P1 executor",
+    "consumption_record": "Round-3 independent Architecture review passed with conditions; exact reviewed baseline and evidence are bound above before the first source edit",
     "artifact_bindings": [
       {"kind": "source_baseline", "identity": "1160ac6fd8696c3036391cdf59bc9fe096d0b219"},
       {"kind": "source_manifest", "identity": "docs/evidence/typo-correction-002-int003-query-cost-p1-arch-source-freeze-r3.json"},
@@ -49,6 +52,9 @@
       {"kind": "architecture_review_round_2_result_sha256", "identity": "d91e2a0aa7c62695d56959ddf1d6fe102f8024ccf37c555a8fb895e9732319ee"},
       {"kind": "architecture_review_round_2_usage_sha256", "identity": "817c7813dcac3ea32e9a4325d544a04074ea847b2ef8348a570b326eb9e4aee9"},
       {"kind": "architecture_review_round_3_packet", "identity": "docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-packet-r3.md"},
+      {"kind": "architecture_review_round_3_packet_commit", "identity": "7ef0b4679f4f8cff9dd9e3cc9bcf93b666c86acc"},
+      {"kind": "architecture_review_round_3_result_sha256", "identity": "08136d4a0fbc1afb3d74d2626306dda9b2b6795a939a35225368d81fe2d760bd"},
+      {"kind": "architecture_review_round_3_usage_sha256", "identity": "7a7ecf6515314ff99d7e531f27a30af7bf5594124cd49c20640a524a290be6a5"},
       {"kind": "measurement_plan", "identity": "docs/plans/typo-correction-002-int003-query-cost-measurement-001.md"},
       {"kind": "field_review_packet", "identity": "docs/plans/typo-correction-002-int003-query-cost-p1-field-review-001.md"},
       {"kind": "execution_environment", "identity": "isolated_macOS_worktree;/private/tmp/universe-keyboard-int003-query-density-diagnosis-20260925;Debug_HF_only_for_journal_semantics;no_device_capture_under_P1"}
@@ -61,15 +67,15 @@
 
 | Field | Binding |
 |---|---|
-| Status | **Active, unconsumed**. Human issued P1 authority; the Architecture field review is an entry condition, not a substitute for consumption. |
+| Status | **Consumed** at `2026-09-27T18:01:36+08:00`, before the first source edit. The separate P1 Assignment remains Active. |
 | Executor | Codex current task in the isolated worktree above; source baseline `1160ac6fd8696c3036391cdf59bc9fe096d0b219` with the bound 28-file manifest. Revalidate if any bound source blob changes before execution. |
 | Domain owner | Input Intelligence Maintainer; KeyboardCore, Keyboard UI and RimeBridge ownership are reviewed at their existing boundaries. |
-| Architecture reviewer | Independent Architecture & Knowledge Steward for ADR 0027 field allowlist, ADR 0004 session route and privacy. Review [field packet](../plans/typo-correction-002-int003-query-cost-p1-field-review-001.md) before source edits. |
+| Architecture reviewer | Independent Architecture & Knowledge Steward completed round 3 with **Pass with conditions** for ADR 0027 field allowlist, ADR 0004 session route and privacy. Implementation must satisfy the conditions in [round-3 review](../reviews/typo-correction-002-int003-query-cost-p1-architecture-review-r3.md). |
 | Quality reviewer | Independent Test / Release lane after implementation evidence; P1 author does not self-declare Quality. |
 | Human dependency | Product Lead issued this P1 scope; no Human typing or Simulator interaction in P1. |
 | Evidence environment | Frozen source SHA and isolated macOS worktree; local format/build evidence identifies Xcode/Swift version and exact source tip. Debug high-fidelity journal can validate semantics only after P2 separately consumes its AUTH. |
 
-Architecture rounds 1 and 2 withheld P1 approval. Round 2 (`docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-r2.md`, SHA-256 `d91e2a0aa7c62695d56959ddf1d6fe102f8024ccf37c555a8fb895e9732319ee`) kept query semantics bounded but found its typed writer API would require an out-of-scope `DiagnosticsJournalRuntime.swift` change (Claim 5 Blocker; Claim 7 Uncovered). Round 3 changes only the typed representation: one closed `Field.typoRecallQuery` member through the existing `record(code:fields:)` API, keeping the same P1 allowed files. It also addresses the schema4/schema5 and PR #182 enum compatibility questions. PR #183 advanced main with docs-only changes outside the 28 frozen source paths; this AUTH is rebound to latest main `1160ac6fd8696c3036391cdf59bc9fe096d0b219` with the manifest above. P1 remains Active/unconsumed; do not edit Swift/Objective-C or consume this AUTH until independent round-3 review approves the exact revised packet. Any actual scope/allowed-path/product-budget change requires Human reauthorization.
+Architecture rounds 1 and 2 withheld P1 approval. Round 2 (`docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-r2.md`, SHA-256 `d91e2a0aa7c62695d56959ddf1d6fe102f8024ccf37c555a8fb895e9732319ee`) kept query semantics bounded but found its typed writer API would require an out-of-scope `DiagnosticsJournalRuntime.swift` change (Claim 5 Blocker; Claim 7 Uncovered). Round 3 (`docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-r3.md`, SHA-256 `08136d4a0fbc1afb3d74d2626306dda9b2b6795a939a35225368d81fe2d760bd`) returned **Pass with conditions** for all seven claims: the closed `Field.typoRecallQuery` uses the existing `record(code:fields:)` API, preserves the allowed file set, and freezes schema-4/schema-5 compatibility. The conditions require the focused tests and evidence listed in the review and plan. PR #183 advanced the last verified main baseline with docs-only changes outside the 28 frozen source paths; the exact P1 baseline remains `1160ac6fd8696c3036391cdf59bc9fe096d0b219` with the bound manifest above. This P1 AUTH was consumed at `2026-09-27T18:01:36+08:00` after review and before the first source edit. Any actual scope/allowed-path/product-budget change requires Human reauthorization.
 
 Allowed source paths after review: `Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallMaterial.swift`, `TypoCorrectionSidecarOwner.swift`, `TypoCorrectionCandidateQuery.swift`, `DiagnosticEvent.swift`; `Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift`; `Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift`, `Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m` and its public header. Focused tests under the directly affected KeyboardCore/RimeBridge/Keyboard test targets and directly affected docs are allowed. Any broader path requires revalidation.
 
