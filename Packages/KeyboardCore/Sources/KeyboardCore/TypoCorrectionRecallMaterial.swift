@@ -78,8 +78,23 @@ public struct TypoCorrectionRecallMaterial: Equatable {
     }
 }
 
+public enum TypoCorrectionRecallStage: String, Codable, Sendable {
+    case stageOne = "stage_one"
+    case stageTwo = "stage_two"
+}
+
+public struct TypoCorrectionRecallQuery: Equatable, Sendable {
+    public let suggestion: TypoCorrectionSuggestion
+    public let stage: TypoCorrectionRecallStage
+
+    public init(suggestion: TypoCorrectionSuggestion, stage: TypoCorrectionRecallStage) {
+        self.suggestion = suggestion
+        self.stage = stage
+    }
+}
+
 public enum TypoCorrectionRecallDriveEvent: Equatable {
-    case query(TypoCorrectionSuggestion)
+    case query(TypoCorrectionRecallQuery)
     case waitForYield
     case assessCoverage([TypoCorrectionSuggestion])
     case readyToApply(TypoCorrectionRecallMaterial)
@@ -110,7 +125,7 @@ public struct TypoCorrectionRecallDriver {
     private var awaitingCoverageDecision = false
     private var stageOne: [TypoCorrectionSuggestion] = []
     private var stageTwo: [TypoCorrectionSuggestion] = []
-    private var inFlight: TypoCorrectionSuggestion?
+    private var inFlight: TypoCorrectionRecallQuery?
     private var accountedInputs: Set<String> = []
 
     public init(
@@ -147,16 +162,18 @@ public struct TypoCorrectionRecallDriver {
             return .query(inFlight)
         }
         if let next = takeNextStageOne() {
-            inFlight = next
-            return .query(next)
+            let query = TypoCorrectionRecallQuery(suggestion: next, stage: .stageOne)
+            inFlight = query
+            return .query(query)
         }
         if !startedStageTwo {
             awaitingCoverageDecision = true
             return .assessCoverage(stageOne)
         }
         if let next = takeNextStageTwo() {
-            inFlight = next
-            return .query(next)
+            let query = TypoCorrectionRecallQuery(suggestion: next, stage: .stageTwo)
+            inFlight = query
+            return .query(query)
         }
         return finishApply()
     }
@@ -172,7 +189,7 @@ public struct TypoCorrectionRecallDriver {
         candidates: [RimeCandidate]
     ) -> TypoCorrectionRecallDriveEvent {
         guard currentFence == token else { return .discarded }
-        guard let suggestion = inFlight else { return .discarded }
+        guard let suggestion = inFlight?.suggestion else { return .discarded }
         inFlight = nil
 
         let limited = Array(candidates.prefix(TypoCorrectionRecallRuntimeBudget.candidateLimit))

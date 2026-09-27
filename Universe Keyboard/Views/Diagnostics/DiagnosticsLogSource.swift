@@ -415,6 +415,16 @@ enum DiagnosticsEventDisplayFormatter {
             return "\(name.rawValue)=\(value)"
         case let .reason(reason):
             return "reason=\(reason.rawValue)"
+        case let .typoRecallQuery(payload):
+            // Keep the display within the payload's closed, content-free schema.
+            return "query_operation_ordinal=\(payload.operationOrdinal)"
+                + " query_stage=\(payload.stage.rawValue)"
+                + " query_readiness=\(payload.readiness.rawValue)"
+                + " query_result_state=\(payload.resultState.rawValue)"
+                + " query_returned_bucket=\(payload.returnedCandidateBucket.rawValue)"
+                + " query_disposition=\(payload.disposition.rawValue)"
+                + " query_facade_us=\(payload.facadeElapsedMicroseconds)"
+                + " query_duration_state=\(payload.durationState.rawValue)"
         }
     }
 

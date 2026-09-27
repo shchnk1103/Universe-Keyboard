@@ -9,11 +9,11 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Decision-ready measurement of INT-003 query count, usefulness and runtime cost",
   "lifecycle": "active",
-  "current_phase": "P0 completed; P1 authority active/unconsumed pending independent Architecture field review; P2 authority active/unconsumed and bound to the designated Simulator, with execution pending exact P1 payload and Run manifest freeze. No Swift or device action has begun",
+  "current_phase": "P0 completed; independent Architecture round 3 returned Pass with conditions for all seven claims on baseline 1160ac6 and the refreshed 28-file source freeze. P1 AUTH was consumed at 2026-09-27T18:01:36+08:00 before source edits. P1 implementation is committed as 6606fbe; its independent Architecture implementation review returned Pass with conditions on that exact commit and patch SHA 1fc7bfc3…. Draft PR 184 run 36315031868 exposed RimeCandidate type ambiguity and an unhandled typoRecallQuery display case. The Human-directed CI remediation AUTH was separately consumed at 2026-09-27T19:32:19+08:00; bounded type/display fixes and the formatter test are committed as fe4c935. Local CI-equivalent checks passed. Hosted run 36316970577 passed at repair head fe4c935; latest PR head ae081a21 is green on run 36317747195 attempt 2 after attempt 1's Release runner had no installed iOS Simulator destination. Coordinator assertions, raw-segment censoring evidence and independent Quality remain open. P2 AUTH remains Active/unconsumed pending exact installed-payload/Run-manifest freeze",
   "authorization_action": "plan_int003_query_cost_measurement",
-  "updated_at": "2026-09-27T15:04:00+08:00",
+  "updated_at": "2026-09-27T21:20:57+08:00",
   "revalidation_triggers": [
-    "execution_source_tip_changes_from_c3cc229",
+    "p1_source_manifest_sha256_changes_from_a98a722b03e2c66de61ab41ae30f59791ccb53a3b365f55a18e96d373732b395",
     "source_or_diagnostic_schema_changes",
     "measurement_environment_or_Human_operator_changes",
     "Product_query_budget_or_parent_scope_changes",
@@ -23,20 +23,39 @@ Policy version: 1.0.0
     "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001",
     "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-M02-001",
     "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-INSTRUMENTATION-001",
+    "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-CI-REMEDIATION-001",
     "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-SIM-CAPTURE-001"
   ],
   "parent_refs": ["TYPO-CORRECTION-002"],
   "evidence_refs": [
     "docs/evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md",
     "docs/plans/typo-correction-002-int003-query-cost-measurement-001.md",
-    "docs/evidence/typo-correction-002-int003-query-cost-measurement-plan-m02-2026-09-26.md"
+    "docs/evidence/typo-correction-002-int003-query-cost-measurement-plan-m02-2026-09-26.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-arch-source-freeze-r1.json",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-arch-source-freeze-r2.json",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-arch-source-freeze-r3.json",
+    "docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-packet-r1.md",
+    "docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-r1.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-architecture-review-r1-usage.md",
+    "docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-r2.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-architecture-review-r2-usage.md",
+    "docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-r3.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-architecture-review-r3-usage.md",
+    "docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-packet-r3.md",
+    "docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-packet-r2.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-p2-authorization-post-merge-state-sync-2026-09-27.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-implementation-001.md",
+    "docs/reviews/typo-correction-002-int003-query-cost-p1-implementation-review-001.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-implementation-review-001-usage.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-ci-format-remediation-001.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-ci-remediation-001.md"
   ],
   "responsibilities": {
     "domain_owner": "Input Intelligence Maintainer",
     "executor": "Codex current task for P1 after independent review and consumption; P2 executor bound in its separate AUTH before capture",
     "environment_executor": "Codex isolated worktree for P1; Codex designated Simulator operator for P2 after exact run/payload freeze and consumption",
     "human_dependency": "Human Product Owner / Product Lead authorized separate P1/P2 scopes; any physical-device performance round requires a later Human decision and operator",
-    "architecture_reviewer": "Independent Architecture & Knowledge Steward before P1 diagnostic field or bridge implementation",
+    "architecture_reviewer": "Fresh independent Architecture & Knowledge Steward lane TYPO-CORRECTION-002-INT003-QUERY-COST-P1-ARCH-001 round 3 completed with Pass with conditions; implementation conditions are recorded in the review",
     "quality_reviewer": "Independent Test / Release lane after P1/P2 evidence, before any Quality claim",
     "product_approver": "Human Product Owner / Product Lead"
   }
@@ -47,12 +66,12 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | **Active** — P0 complete; P1 review pending, P2 environment freeze pending |
-| Current phase | [Measurement plan](../plans/typo-correction-002-int003-query-cost-measurement-001.md) records the data needed to distinguish useful Stage 1/2 calls from empty or unavailable-sidecar calls and to assess elapsed cost |
-| Authority | [P0 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001.md) Consumed; [P1 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-INSTRUMENTATION-001.md) Active/unconsumed; [P2 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-SIM-CAPTURE-001.md) Active/unconsumed, execution gated on exact payload and Run freeze |
-| Publication / M-02 | [PR #179](https://github.com/shchnk1103/Universe-Keyboard/pull/179) merged `9838c092672dae60c63b34e4d9be6dffafc3869f`; [PR #180](https://github.com/shchnk1103/Universe-Keyboard/pull/180) merged `c3cc229619604131d6358bbc85f74e81f2874dc6` with the single non-recursive closeout receipt |
-| Non-claims | No Swift/ObjC change, new Capture, Release-like result, numeric budget, independent Quality conclusion, Product/QA-001 Gate, parent Close, TestFlight/Release or `RimeRuntimeProvenance` restore |
-| Next | Independent Architecture review of [P1 field packet](../plans/typo-correction-002-int003-query-cost-p1-field-review-001.md); then consume P1 before source edits. Freeze P2 installed payload and run separately; parent remains [Active](typo-correction-002.md) |
+| Lifecycle | **Active** — P0 complete; P1 implementation committed and independently Architecture-reviewed **Pass with conditions**; local CI-equivalent and latest hosted revalidation pass; coordinator/censoring conditions and independent Quality remain open; P2 freeze pending |
+| Current phase | Round-3 Architecture review is **Pass with conditions** for all seven claims. P1 implementation commit `6606fbe` and its independent review remain bound to their original exact inputs. Hosted run `36315031868` exposed ambiguous `RimeCandidate` names and the App diagnostics renderer's missing `.typoRecallQuery` case. The separate Human-directed [CI remediation AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-CI-REMEDIATION-001.md) was consumed without reusing the prior P1 AUTH. The [CI remediation evidence](../evidence/typo-correction-002-int003-query-cost-p1-ci-remediation-001.md) records the bounded repair; local CI-equivalent checks passed; hosted run [36316970577](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36316970577) passed at exact repair head fe4c935; latest Draft PR head ae081a21 is green on run [36317747195](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36317747195) attempt 2 after attempt 1's Release runner lacked an installed iOS Simulator destination. Coordinator-level stage/discard/cancel assertions, raw-segment censoring and independent Quality remain open. PR #184 remains Draft; P2 stays unconsumed pending exact installed-payload/Run-manifest freeze |
+| Authority | [P0 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001.md) Consumed; [P1 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-INSTRUMENTATION-001.md) Consumed for its reviewed source scope; [CI remediation AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-CI-REMEDIATION-001.md) separately Consumed for the bounded CI fix and Draft PR update; [P2 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-SIM-CAPTURE-001.md) Active/unconsumed, gated on exact payload and Run freeze |
+| Publication / M-02 | [PR #179](https://github.com/shchnk1103/Universe-Keyboard/pull/179) merged `9838c092672dae60c63b34e4d9be6dffafc3869f`; [PR #180](https://github.com/shchnk1103/Universe-Keyboard/pull/180) merged `c3cc229619604131d6358bbc85f74e81f2874dc6` with the single non-recursive closeout receipt. [PR #181](https://github.com/shchnk1103/Universe-Keyboard/pull/181) merged `2b9b15ee2d1d903b3a948109b2c2217535bd5248`, adding the separate P1/P2 authority records; its M-02 receipt is prepared at [post-merge state sync](../evidence/typo-correction-002-int003-query-cost-p1-p2-authorization-post-merge-state-sync-2026-09-27.md). P1 source commit `6606fbe` and its CI repair `fe4c935` are published in open Draft [PR #184](https://github.com/shchnk1103/Universe-Keyboard/pull/184), on base `1160ac6`; latest PR head ae081a21 passed hosted run [36317747195](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36317747195) on attempt 2. No merge is claimed |
+| Non-claims | No P2 Simulator capture, independent Quality conclusion, Product query-cost acceptance, numeric budget, Product/QA-001 Gate, parent Close, TestFlight/Release, ADR Accept or `RimeRuntimeProvenance` restore |
+| Next | Continue the open P1 coordinator assertions, raw-segment censoring and independent Quality conditions. Any merge of PR #184 requires separate Human authorization. Before P2, freeze the exact installed payload and Run manifest and consume its separate AUTH. Parent remains [Active](typo-correction-002.md) |
 
 ## Assignment authority and inputs
 
@@ -66,8 +85,8 @@ Policy version: 1.0.0
 | Stage | Entry | Exit / handoff |
 |---|---|---|
 | P0 plan (complete) | Clean isolated worktree at verified GitHub main; Human authorized new Assignment/AUTH; prior raw/evidence identity already bound | [Plan](../plans/typo-correction-002-int003-query-cost-measurement-001.md), P0 AUTH and one M-02 closeout are published and merged |
-| P1 instrumentation (active, unconsumed) | Separate P1 AUTH bound to current main `c3cc2296…`, allowed paths, isolated macOS worktree and independent Architecture field review; consume before source edits. Swift format strict lint before any Swift commit/push | Content-free, low-overhead instrumentation with focused correctness/overhead evidence and independent review; no numeric Product acceptance |
-| P2 controlled capture (active, unconsumed) | Separate P2 AUTH bound to the designated Simulator; after P1 review/implementation, bind exact installed payload, run ID, schema/access/host state and archive location; consume before any Simulator operation | Multiple cold/warm runs, exact build/environment/attachment hashes, count/usefulness/timing distributions, negative cases and independent Quality handoff |
+| P1 instrumentation (consumed; active) | P1 AUTH consumed at `2026-09-27T18:01:36+08:00` after independent round-3 **Pass with conditions**, bound to baseline `1160ac6f…` and the 28-file manifest `a98a722b…`. Implementation commit `6606fbe` satisfies the scoped field, route, timing, schema and bounded-ingress design. The separate CI remediation AUTH was consumed at `2026-09-27T19:32:19+08:00` after hosted compile failures. The type qualifications and content-free display fix are committed as `fe4c935`; local checks passed; hosted run [36316970577](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36316970577) passed at that exact commit, and latest PR head ae081a21 passed run [36317747195](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36317747195) on attempt 2. The prior independent Architecture implementation review remains bound to `6606fbe`; coordinator assertions, raw-segment censoring and independent Quality remain open | Continue open P1 evidence conditions; preserve the separate P2 capture/censoring boundary and do not infer numeric Product acceptance |
+| P2 controlled capture (active, unconsumed) | Separate P2 AUTH remains unconsumed and bound to the designated Simulator. Independent P1 implementation review is now **Pass with conditions**; before P2, verify exact installed payload, bind source/review, App/Extension hashes, Simulator/OS, schema/access/host/diagnostics state, Run ID and archive; consume before boot/install/arming/input. Do not operate the Simulator while another task has its lease | Bounded synthetic cold/warm capture, exact build/environment/journal hashes, query count and facade-duration distributions, censoring analysis and independent Quality handoff |
 
 Stop on `UNKNOWN` required responsibility for the current stage, source/plan drift, inability to distinguish an empty result from unavailable sidecar, any sensitive input/candidate/host logging, synchronous hot-path persistence, wrong device, missing installed-payload identity, Human round exhaustion, or scope expansion to budget change, Gate, release or parent Close. Record a bounded limitation rather than a guessed performance conclusion.
 

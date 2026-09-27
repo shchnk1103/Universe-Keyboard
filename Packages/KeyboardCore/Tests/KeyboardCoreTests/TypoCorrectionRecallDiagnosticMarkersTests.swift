@@ -56,8 +56,8 @@ final class TypoCorrectionRecallDiagnosticMarkersTests: XCTestCase {
         XCTAssertFalse(text.contains("abcdefghi"))
     }
 
-    func testSchemaVersionIsFourAfterTypoRecallVocabulary() {
-        XCTAssertEqual(DiagnosticEvent.schemaVersion, 4)
+    func testSchemaVersionIsFiveForMeasuredTypoRecallQueries() {
+        XCTAssertEqual(DiagnosticEvent.schemaVersion, 5)
         XCTAssertTrue(
             DiagnosticEvent.Code.allCases.map(\.rawValue).contains("typo_recall.fence_discarded")
         )

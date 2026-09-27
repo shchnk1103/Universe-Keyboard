@@ -72,7 +72,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSDictionary *)replaceInput:(NSString *)input;
 
 /// 在独立的旁路 session 中查询指定拼音的候选，不改变主输入 session。
-/// 返回值仅包含 candidates，供有界智能纠错候选验证使用。
+/// 返回 candidates 与本次调用的有限 readiness/result 元数据，供有界纠错查询使用。
 - (NSDictionary *)correctionCandidatesForInput:(NSString *)input limit:(int)limit;
 
 /// 提交当前 composition（不选候选，直接上屏拼音）
@@ -129,6 +129,11 @@ extern NSString * const RimeKeyCommitPreviewLen;
 extern NSString * const RimeKeyRawInput;
 /// candidates — 候选词数组，每个元素是 @{@"text": ..., @"comment": ...}
 extern NSString * const RimeKeyCandidates;
+/// Correction-query readiness: ready, unavailable or unknown (finite values).
+extern NSString * const RimeKeyCorrectionQueryReadiness;
+/// Correction-query result state: candidates_returned, sidecar_unavailable,
+/// context_unavailable, empty_input or zero_limit (finite values).
+extern NSString * const RimeKeyCorrectionQueryResultState;
 /// candidate.text
 extern NSString * const RimeKeyCandidateText;
 /// candidate.comment（可为空字符串）

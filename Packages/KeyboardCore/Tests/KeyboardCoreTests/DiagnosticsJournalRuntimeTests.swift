@@ -125,6 +125,45 @@ final class DiagnosticsJournalRuntimeTests: XCTestCase {
         XCTAssertEqual(snapshot.events.first?.runtimeRoutePayload, payload)
     }
 
+    func testTypoRecallQueryMeasurementUsesTheExistingBoundedAsyncIngress() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        let runtime = DiagnosticsJournalRuntime(
+            origin: .keyboardExtension,
+            isMainAppWriter: false,
+            rootURL: { rootURL },
+            isCategoryEnabled: { _ in true },
+            flushDelay: 5
+        )
+        let payload = DiagnosticEvent.TypoRecallQueryPayload(
+            operationOrdinal: 3,
+            stage: .stageTwo,
+            readiness: .ready,
+            resultState: .candidatesReturned,
+            returnedCandidateBucket: .zero,
+            disposition: .discardedAfterFacade,
+            facadeElapsedMicroseconds: 7,
+            durationState: .measured
+        )
+
+        runtime.record(
+            code: .typoRecallQueryMeasured,
+            category: .performance,
+            fields: [.typoRecallQuery(payload)]
+        )
+        runtime.requestFlush()
+
+        let snapshot = try await waitForEvent(at: rootURL)
+        XCTAssertEqual(snapshot.events.map(\.code), [.typoRecallQueryMeasured])
+        XCTAssertEqual(snapshot.events.first?.fields, [.typoRecallQuery(payload)])
+    }
+
     private func makeTemporaryDirectory() -> URL {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try! FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

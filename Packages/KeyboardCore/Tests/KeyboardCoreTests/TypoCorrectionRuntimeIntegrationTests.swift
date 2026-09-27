@@ -43,7 +43,8 @@ final class TypoCorrectionRuntimeIntegrationTests: XCTestCase {
         guard case .query(let query) = driver.nextEvent(currentFence: token) else {
             return XCTFail("expected first query")
         }
-        XCTAssertEqual(query.correctedInput, first.correctedInput)
+        XCTAssertEqual(query.suggestion.correctedInput, first.correctedInput)
+        XCTAssertEqual(query.stage, .stageOne)
 
         let afterReturn = driver.finishQuery(
             currentFence: token,
@@ -56,6 +57,109 @@ final class TypoCorrectionRuntimeIntegrationTests: XCTestCase {
         guard case .assessCoverage = driver.nextEvent(currentFence: token) else {
             return XCTFail("expected coverage assessment after the yielded turn")
         }
+    }
+
+    func testStageTwoQueryRetainsItsStageAfterTheYieldedCoverageTurn() {
+        let token = fence(composition: "wimenjintianquhongyuan")
+        var driver = TypoCorrectionRecallDriver(
+            token: token,
+            stageOneHypotheses: [suggestion("womenjintianquhongyuan")]
+        )
+
+        guard case .query(let stageOne) = driver.nextEvent(currentFence: token) else {
+            return XCTFail("expected stage-one query")
+        }
+        XCTAssertEqual(stageOne.stage, .stageOne)
+        _ = driver.finishQuery(currentFence: token, candidates: [])
+        XCTAssertTrue(driver.acknowledgeYield(currentFence: token))
+
+        guard case .assessCoverage = driver.nextEvent(currentFence: token) else {
+            return XCTFail("expected coverage assessment after the first yield")
+        }
+        guard
+            case .query(let stageTwo) = driver.completeCoverageAssessment(
+                currentFence: token,
+                acceptedDisplayCount: 0
+            )
+        else {
+            return XCTFail("expected stage-two query after coverage assessment")
+        }
+        XCTAssertEqual(stageTwo.stage, .stageTwo)
+
+        _ = driver.finishQuery(currentFence: token, candidates: [])
+        XCTAssertTrue(driver.acknowledgeYield(currentFence: token))
+        XCTAssertEqual(stageTwo.stage, .stageTwo)
+    }
+
+    func testFacadeDurationFloorsSaturatesAndCensorsClockRegression() {
+        let subMicrosecond = TypoCorrectionFacadeDuration(startTick: 100, endTick: 999)
+        XCTAssertEqual(subMicrosecond.microseconds, 0)
+        XCTAssertEqual(subMicrosecond.state, .measured)
+
+        let floored = TypoCorrectionFacadeDuration(startTick: 1_000, endTick: 3_999)
+        XCTAssertEqual(floored.microseconds, 2)
+        XCTAssertEqual(floored.state, .measured)
+
+        let exactMaximum = TypoCorrectionFacadeDuration(
+            startTick: 0,
+            endTick: UInt64(UInt32.max) * 1_000
+        )
+        XCTAssertEqual(exactMaximum.microseconds, .max)
+        XCTAssertEqual(exactMaximum.state, .measured)
+
+        let saturated = TypoCorrectionFacadeDuration(
+            startTick: 0,
+            endTick: (UInt64(UInt32.max) + 1) * 1_000
+        )
+        XCTAssertEqual(saturated.microseconds, .max)
+        XCTAssertEqual(saturated.state, .saturated)
+
+        let regressed = TypoCorrectionFacadeDuration(startTick: 10, endTick: 9)
+        XCTAssertEqual(regressed.microseconds, 0)
+        XCTAssertEqual(regressed.state, .clockRegression)
+    }
+
+    func testCandidateBucketUsesTheDriverLimitAndKeepsUnavailableResultsSeparate() {
+        for count in [0, 1, 3, 4] {
+            let candidates = (0..<count).map { RimeCandidate(text: "candidate-\($0)") }
+            let expected: DiagnosticEvent.TypoRecallCandidateBucket = count == 0 ? .zero : .oneToThree
+            XCTAssertEqual(
+                DiagnosticEvent.TypoRecallCandidateBucket.classify(
+                    candidates: candidates,
+                    resultState: .candidatesReturned
+                ),
+                expected
+            )
+        }
+        XCTAssertEqual(
+            DiagnosticEvent.TypoRecallCandidateBucket.classify(
+                candidates: [RimeCandidate(text: "candidate")],
+                resultState: .contextUnavailable
+            ),
+            .notApplicable
+        )
+    }
+
+    func testDefaultFacadeResultKeepsEmptyInputPrecedenceAndAvoidsTheProviderCall() {
+        let query = RecordingRuntimeTypoCorrectionQuery(dictionary: ["nihao": ["你好"]])
+        let owner = InstalledTypoCorrectionSidecarOwner(query: query)
+
+        let empty = owner.correctionQueryResult(for: "", limit: 0)
+        XCTAssertEqual(empty.readiness, .unknown)
+        XCTAssertEqual(empty.state, .emptyInput)
+        XCTAssertTrue(empty.candidates.isEmpty)
+        XCTAssertTrue(query.inputs.isEmpty)
+
+        let zeroLimit = owner.correctionQueryResult(for: "nihao", limit: 0)
+        XCTAssertEqual(zeroLimit.readiness, .unknown)
+        XCTAssertEqual(zeroLimit.state, .zeroLimit)
+        XCTAssertTrue(query.inputs.isEmpty)
+
+        let nonempty = owner.correctionQueryResult(for: "nihao", limit: 3)
+        XCTAssertEqual(nonempty.state, .candidatesReturned)
+        XCTAssertEqual(nonempty.readiness, .unknown)
+        XCTAssertEqual(nonempty.candidates.map(\.text), ["你好"])
+        XCTAssertEqual(query.inputs, ["nihao"])
     }
 
     func testStaleFenceAfterReturnDiscardsAndDoesNotApply() {

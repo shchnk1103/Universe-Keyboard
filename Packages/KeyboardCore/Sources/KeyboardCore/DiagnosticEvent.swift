@@ -5,7 +5,7 @@ import Foundation
 /// 这个类型是跨 target 的持久化协议，不接受自由文本。若需要新的诊断维度，
 /// 必须先扩展下面的受控枚举并经过 ADR 0027 要求的字段审查。
 public struct DiagnosticEvent: Codable, Sendable, Equatable {
-    public static let schemaVersion = 4
+    public static let schemaVersion = 5
 
     public enum Origin: String, Codable, CaseIterable, Sendable {
         case mainApp = "main_app"
@@ -48,6 +48,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case typoRecallQueryBegin = "typo_recall.query_begin"
         /// INT-003: contextual correction query finished with a finite Reason.
         case typoRecallQueryOutcome = "typo_recall.query_outcome"
+        /// INT-003 P1: one content-free terminal measurement per facade invocation.
+        case typoRecallQueryMeasured = "typo_recall.query_measured"
     }
 
     public enum Reason: String, Codable, CaseIterable, Sendable {
@@ -98,6 +100,180 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case presentationAgeMilliseconds = "presentation_age_ms"
     }
 
+    public enum TypoRecallCandidateBucket: String, Codable, CaseIterable, Sendable {
+        case zero
+        case oneToThree = "one_to_three"
+        case notApplicable = "not_applicable"
+
+        public static func classify(
+            candidates: [RimeCandidate],
+            resultState: TypoCorrectionQueryResultState
+        ) -> Self {
+            guard resultState == .candidatesReturned else { return .notApplicable }
+            return candidates.prefix(TypoCorrectionRecallRuntimeBudget.candidateLimit).isEmpty
+                ? .zero
+                : .oneToThree
+        }
+    }
+
+    public enum TypoRecallQueryDisposition: String, Codable, CaseIterable, Sendable {
+        case applied
+        case discardedAfterFacade = "discarded_after_facade"
+    }
+
+    public enum TypoRecallQueryDurationState: String, Codable, CaseIterable, Sendable {
+        case measured
+        case saturated
+        case clockRegression = "clock_regression"
+    }
+
+    /// Closed query metadata. This intentionally has no field for input, candidates,
+    /// host content or a composition fingerprint.
+    public struct TypoRecallQueryPayload: Codable, Sendable, Equatable {
+        public let operationOrdinal: UInt64
+        public let stage: TypoCorrectionRecallStage
+        public let readiness: TypoCorrectionQueryReadiness
+        public let resultState: TypoCorrectionQueryResultState
+        public let returnedCandidateBucket: TypoRecallCandidateBucket
+        public let disposition: TypoRecallQueryDisposition
+        public let facadeElapsedMicroseconds: UInt32
+        public let durationState: TypoRecallQueryDurationState
+
+        public init(
+            operationOrdinal: UInt64,
+            stage: TypoCorrectionRecallStage,
+            readiness: TypoCorrectionQueryReadiness,
+            resultState: TypoCorrectionQueryResultState,
+            returnedCandidateBucket: TypoRecallCandidateBucket,
+            disposition: TypoRecallQueryDisposition,
+            facadeElapsedMicroseconds: UInt32,
+            durationState: TypoRecallQueryDurationState
+        ) {
+            precondition(
+                Self.isValid(
+                    readiness: readiness,
+                    resultState: resultState,
+                    returnedCandidateBucket: returnedCandidateBucket,
+                    facadeElapsedMicroseconds: facadeElapsedMicroseconds,
+                    durationState: durationState
+                ),
+                "Invalid typo-recall query measurement"
+            )
+            self.operationOrdinal = operationOrdinal
+            self.stage = stage
+            self.readiness = readiness
+            self.resultState = resultState
+            self.returnedCandidateBucket = returnedCandidateBucket
+            self.disposition = disposition
+            self.facadeElapsedMicroseconds = facadeElapsedMicroseconds
+            self.durationState = durationState
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case operationOrdinal, stage, readiness, resultState
+            case returnedCandidateBucket, disposition, facadeElapsedMicroseconds, durationState
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let operationOrdinal = try container.decode(UInt64.self, forKey: .operationOrdinal)
+            let stage = try container.decode(TypoCorrectionRecallStage.self, forKey: .stage)
+            let readiness = try container.decode(
+                TypoCorrectionQueryReadiness.self,
+                forKey: .readiness
+            )
+            let resultState = try container.decode(
+                TypoCorrectionQueryResultState.self,
+                forKey: .resultState
+            )
+            let bucket = try container.decode(
+                TypoRecallCandidateBucket.self,
+                forKey: .returnedCandidateBucket
+            )
+            let disposition = try container.decode(
+                TypoRecallQueryDisposition.self,
+                forKey: .disposition
+            )
+            let elapsed = try container.decode(UInt32.self, forKey: .facadeElapsedMicroseconds)
+            let durationState = try container.decode(
+                TypoRecallQueryDurationState.self,
+                forKey: .durationState
+            )
+            guard
+                Self.isValid(
+                    readiness: readiness,
+                    resultState: resultState,
+                    returnedCandidateBucket: bucket,
+                    facadeElapsedMicroseconds: elapsed,
+                    durationState: durationState
+                )
+            else {
+                throw DecodingError.dataCorruptedError(
+                    forKey: .resultState,
+                    in: container,
+                    debugDescription: "Invalid typo-recall query measurement"
+                )
+            }
+            self.operationOrdinal = operationOrdinal
+            self.stage = stage
+            self.readiness = readiness
+            self.resultState = resultState
+            returnedCandidateBucket = bucket
+            self.disposition = disposition
+            facadeElapsedMicroseconds = elapsed
+            self.durationState = durationState
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(operationOrdinal, forKey: .operationOrdinal)
+            try container.encode(stage, forKey: .stage)
+            try container.encode(readiness, forKey: .readiness)
+            try container.encode(resultState, forKey: .resultState)
+            try container.encode(returnedCandidateBucket, forKey: .returnedCandidateBucket)
+            try container.encode(disposition, forKey: .disposition)
+            try container.encode(facadeElapsedMicroseconds, forKey: .facadeElapsedMicroseconds)
+            try container.encode(durationState, forKey: .durationState)
+        }
+
+        private static func isValid(
+            readiness: TypoCorrectionQueryReadiness,
+            resultState: TypoCorrectionQueryResultState,
+            returnedCandidateBucket: TypoRecallCandidateBucket,
+            facadeElapsedMicroseconds: UInt32,
+            durationState: TypoRecallQueryDurationState
+        ) -> Bool {
+            let resultIsValid: Bool
+            switch resultState {
+            case .candidatesReturned:
+                resultIsValid =
+                    (readiness == .ready || readiness == .unknown)
+                    && (returnedCandidateBucket == .zero || returnedCandidateBucket == .oneToThree)
+            case .sidecarUnavailable:
+                resultIsValid =
+                    readiness == .unavailable
+                    && returnedCandidateBucket == .notApplicable
+            case .contextUnavailable:
+                resultIsValid =
+                    readiness == .ready
+                    && returnedCandidateBucket == .notApplicable
+            case .emptyInput, .zeroLimit:
+                resultIsValid =
+                    readiness == .unknown
+                    && returnedCandidateBucket == .notApplicable
+            }
+            guard resultIsValid else { return false }
+            switch durationState {
+            case .measured:
+                return true
+            case .saturated:
+                return facadeElapsedMicroseconds == UInt32.max
+            case .clockRegression:
+                return facadeElapsedMicroseconds == 0
+            }
+        }
+    }
+
     public enum Flag: String, Codable, CaseIterable, Sendable {
         case isHighFidelityEnabled = "high_fidelity_enabled"
         case isCandidateBarVisible = "candidate_bar_visible"
@@ -128,6 +304,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case duration(DurationMetric, Int)
         case flag(Flag, Bool)
         case reason(Reason)
+        case typoRecallQuery(TypoRecallQueryPayload)
 
         private enum CodingKeys: String, CodingKey {
             case type
@@ -135,6 +312,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             case integerValue
             case booleanValue
             case reason
+            case typoRecallQuery
         }
 
         private enum Kind: String, Codable {
@@ -142,6 +320,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             case duration
             case flag
             case reason
+            case typoRecallQuery
         }
 
         public init(from decoder: Decoder) throws {
@@ -164,6 +343,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
                 )
             case .reason:
                 self = .reason(try container.decode(Reason.self, forKey: .reason))
+            case .typoRecallQuery:
+                self = .typoRecallQuery(
+                    try container.decode(TypoRecallQueryPayload.self, forKey: .typoRecallQuery)
+                )
             }
         }
 
@@ -185,6 +368,9 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             case let .reason(reason):
                 try container.encode(Kind.reason, forKey: .type)
                 try container.encode(reason, forKey: .reason)
+            case let .typoRecallQuery(payload):
+                try container.encode(Kind.typoRecallQuery, forKey: .type)
+                try container.encode(payload, forKey: .typoRecallQuery)
             }
         }
     }
@@ -827,6 +1013,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
                 .filter { $0 }.count <= 1,
             "DiagnosticEvent cannot contain multiple composite payloads"
         )
+        precondition(
+            Self.isValidTypoRecallQuery(code: code, schemaVersion: Self.schemaVersion, fields: fields),
+            "Typo-recall query measurement requires one schema-v5 typed field"
+        )
         schemaVersion = Self.schemaVersion
         self.utcTimestamp = utcTimestamp
         self.monotonicNanoseconds = monotonicNanoseconds
@@ -859,6 +1049,23 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     ]
     private static let runtimeRouteCodes: Set<Code> = [.runtimeRoutePhaseChanged]
 
+    private static func isValidTypoRecallQuery(
+        code: Code,
+        schemaVersion: Int,
+        fields: [Field]
+    ) -> Bool {
+        let queryFields = fields.filter {
+            if case .typoRecallQuery = $0 { return true }
+            return false
+        }
+        if code == .typoRecallQueryMeasured {
+            guard schemaVersion == Self.schemaVersion, fields.count == 1 else { return false }
+            if case .typoRecallQuery = fields[0] { return true }
+            return false
+        }
+        return queryFields.isEmpty
+    }
+
     private enum CodingKeys: String, CodingKey {
         case schemaVersion, utcTimestamp, monotonicNanoseconds, origin, processInstanceID
         case localSequence, appearanceID, actionSequence, code, level, category, fields
@@ -868,6 +1075,13 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         schemaVersion = try container.decode(Int.self, forKey: .schemaVersion)
+        guard schemaVersion == 4 || schemaVersion == Self.schemaVersion else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .schemaVersion,
+                in: container,
+                debugDescription: "Unsupported diagnostic schema version"
+            )
+        }
         utcTimestamp = try container.decode(Date.self, forKey: .utcTimestamp)
         monotonicNanoseconds = try container.decode(UInt64.self, forKey: .monotonicNanoseconds)
         origin = try container.decode(Origin.self, forKey: .origin)
@@ -891,6 +1105,14 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             RimeSyncPayload.self,
             forKey: .rimeSyncPayload
         )
+        guard Self.isValidTypoRecallQuery(code: code, schemaVersion: schemaVersion, fields: fields)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .fields,
+                in: container,
+                debugDescription: "Invalid typo-recall query code, schema or typed fields"
+            )
+        }
         guard
             schemeDeliveryPayload?.code == code
                 || (schemeDeliveryPayload == nil && !Self.schemeDeliveryCodes.contains(code))

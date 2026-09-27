@@ -109,9 +109,9 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         case .waitForYield:
             driver = currentDriver
             scheduleYieldedTurn(for: YieldedTurnToken(currentDriver.token))
-        case .query(let suggestion):
+        case .query(let query):
             driver = currentDriver
-            performQuery(suggestion)
+            performQuery(query)
         case .assessCoverage(let stageOne):
             let accepted = host.controller.acceptedDisplayCount(for: stageOne)
             let event = currentDriver.completeCoverageAssessment(
@@ -135,9 +135,9 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         case .waitForYield:
             driver = currentDriver
             scheduleYieldedTurn(for: YieldedTurnToken(currentDriver.token))
-        case .query(let suggestion):
+        case .query(let query):
             driver = currentDriver
-            performQuery(suggestion)
+            performQuery(query)
         case .assessCoverage(let stageOne):
             let accepted = host.controller.acceptedDisplayCount(for: stageOne)
             let nested = currentDriver.completeCoverageAssessment(
@@ -151,35 +151,53 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         }
     }
 
-    private func performQuery(_ suggestion: TypoCorrectionSuggestion) {
+    private func performQuery(_ query: TypoCorrectionRecallQuery) {
         guard var currentDriver = driver else { return }
         let pre = liveFence(matching: currentDriver.token)
         guard pre == currentDriver.token else {
             recordFenceDiscarded(token: currentDriver.token)
-            recordQueryOutcome(.typoRecallQueryCancelled, token: currentDriver.token)
             finishRecallOperation()
             return
         }
 
-        recordTypoRecallMarker(
-            code: .typoRecallQueryBegin,
-            token: currentDriver.token
-        )
         let owner = host.controller.typoCorrectionCandidateQuery
-        let candidates = owner.correctionCandidates(
-            for: suggestion.correctedInput,
+        let startTick = DispatchTime.now().uptimeNanoseconds
+        let result = owner.correctionQueryResult(
+            for: query.suggestion.correctedInput,
             limit: TypoCorrectionRecallRuntimeBudget.candidateLimit
         )
+        let endTick = DispatchTime.now().uptimeNanoseconds
+        let duration = TypoCorrectionFacadeDuration(startTick: startTick, endTick: endTick)
         let post = liveFence(matching: currentDriver.token)
-        let event = currentDriver.finishQuery(currentFence: post, candidates: candidates)
+        let event = currentDriver.finishQuery(currentFence: post, candidates: result.candidates)
         driver = currentDriver
+
+        let bucket = DiagnosticEvent.TypoRecallCandidateBucket.classify(
+            candidates: result.candidates,
+            resultState: result.state
+        )
+        let disposition: DiagnosticEvent.TypoRecallQueryDisposition
         if case .discarded = event {
-            recordFenceDiscarded(token: currentDriver.token)
-            recordQueryOutcome(.typoRecallQueryDiscarded, token: currentDriver.token)
+            disposition = .discardedAfterFacade
+        } else {
+            disposition = .applied
+        }
+        let payload = DiagnosticEvent.TypoRecallQueryPayload(
+            operationOrdinal: currentDriver.token.operationOrdinal,
+            stage: query.stage,
+            readiness: result.readiness,
+            resultState: result.state,
+            returnedCandidateBucket: bucket,
+            disposition: disposition,
+            facadeElapsedMicroseconds: duration.microseconds,
+            durationState: duration.state
+        )
+        recordQueryMeasured(payload)
+
+        if case .discarded = event {
             finishRecallOperation()
             return
         }
-        recordQueryOutcome(.typoRecallQuerySucceeded, token: currentDriver.token)
         scheduleYieldedTurn(for: YieldedTurnToken(currentDriver.token))
     }
 
@@ -275,24 +293,16 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         recordTypoRecallMarker(code: .typoRecallFenceDiscarded, token: token)
     }
 
-    private func recordQueryOutcome(
-        _ reason: DiagnosticEvent.Reason,
-        token: TypoCorrectionRecallFenceSnapshot
+    private func recordQueryMeasured(
+        _ payload: DiagnosticEvent.TypoRecallQueryPayload
     ) {
         #if DEBUG
             guard host.isHighFidelityDiagnosticsActive else { return }
-            var fields = TypoCorrectionRecallDiagnosticMarkers.fenceFields(
-                recallEpoch: token.recallEpoch,
-                compositionRevision: token.compositionRevision,
-                operationOrdinal: token.operationOrdinal,
-                normalizedComposition: token.normalizedComposition
-            )
-            fields.append(.reason(reason))
             host.diagnosticsJournal.record(
-                code: .typoRecallQueryOutcome,
+                code: .typoRecallQueryMeasured,
                 category: .performance,
                 appearanceID: host.diagnosticsAppearanceID,
-                fields: fields
+                fields: [.typoRecallQuery(payload)]
             )
         #endif
     }
