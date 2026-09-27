@@ -58,6 +58,10 @@ public final class InstalledTypoCorrectionSidecarOwner: TypoCorrectionSidecarOwn
         query.correctionCandidates(for: input, limit: limit)
     }
 
+    public func correctionQueryResult(for input: String, limit: Int) -> TypoCorrectionCandidateQueryResult {
+        query.correctionQueryResult(for: input, limit: limit)
+    }
+
     public func beginTypoCorrectionRecall() {
         isTypoCorrectionRecallActive = true
     }

@@ -491,7 +491,7 @@ final class DiagnosticEventTests: XCTestCase {
             from: JSONEncoder().encode(event)
         )
         XCTAssertEqual(decoded, event)
-        XCTAssertEqual(decoded.schemaVersion, 4)
+        XCTAssertEqual(decoded.schemaVersion, 5)
         XCTAssertEqual(decoded.code, .typoRecallDebounceCancelled)
 
         let text = try XCTUnwrap(String(data: JSONEncoder().encode(event), encoding: .utf8))
@@ -529,5 +529,165 @@ final class DiagnosticEventTests: XCTestCase {
             DiagnosticEvent.Reason.typoRecallQuerySucceeded.rawValue,
             "typo_recall_query_succeeded"
         )
+    }
+
+    func testTypoRecallQueryMeasuredRoundTripsOneFiniteContentFreeField() throws {
+        let event = measuredQueryEvent()
+        let encoded = try JSONEncoder().encode(event)
+        let decoded = try JSONDecoder().decode(DiagnosticEvent.self, from: encoded)
+        XCTAssertEqual(decoded, event)
+        XCTAssertEqual(decoded.schemaVersion, 5)
+
+        let text = try XCTUnwrap(String(data: encoded, encoding: .utf8))
+        for forbidden in [
+            "wimenjintianquhongyuan",
+            "我们今天去公园",
+            "candidate-text",
+            "compositionFingerprint",
+            "composition_fingerprint",
+            "host",
+            "correctedInput",
+        ] {
+            XCTAssertFalse(text.contains(forbidden))
+        }
+        XCTAssertTrue(text.contains("stage_one"))
+        XCTAssertTrue(text.contains("one_to_three"))
+        XCTAssertTrue(text.contains("facadeElapsedMicroseconds"))
+    }
+
+    func testTypoRecallQueryMeasuredRejectsInvalidSchemaCodeAndFieldCardinality() throws {
+        let object = try eventObject(measuredQueryEvent())
+        let field = try XCTUnwrap((object["fields"] as? [[String: Any]])?.first)
+
+        var invalid: [[String: Any]] = []
+
+        var missing = object
+        missing["fields"] = []
+        invalid.append(missing)
+
+        var duplicate = object
+        duplicate["fields"] = [field, field]
+        invalid.append(duplicate)
+
+        var extra = object
+        extra["fields"] = [field, ["type": "reason", "reason": "queue_full"]]
+        invalid.append(extra)
+
+        var wrongCode = object
+        wrongCode["code"] = "candidate.visibility_changed"
+        invalid.append(wrongCode)
+
+        var schemaFour = object
+        schemaFour["schemaVersion"] = 4
+        invalid.append(schemaFour)
+
+        var unknownSchema = object
+        unknownSchema["schemaVersion"] = 6
+        invalid.append(unknownSchema)
+
+        var unknownCode = object
+        unknownCode["code"] = "typo_recall.unknown"
+        invalid.append(unknownCode)
+
+        var unknownStage = object
+        unknownStage["fields"] = [mutatingQueryField(field) { $0["stage"] = "stage_three" }]
+        invalid.append(unknownStage)
+
+        var mismatchedReadiness = object
+        mismatchedReadiness["fields"] = [
+            mutatingQueryField(field) { $0["readiness"] = "unavailable" }
+        ]
+        invalid.append(mismatchedReadiness)
+
+        for candidate in invalid {
+            XCTAssertThrowsError(try JSONDecoder().decode(DiagnosticEvent.self, from: jsonData(candidate)))
+        }
+    }
+
+    func testOtherCodesCannotCarryTypoRecallTypedField() throws {
+        let event = measuredQueryEvent()
+        var object = try eventObject(event)
+        object["code"] = "journal.dropped"
+        XCTAssertThrowsError(try JSONDecoder().decode(DiagnosticEvent.self, from: jsonData(object)))
+    }
+
+    func testSchemaFourRimeSyncFixturesRemainReadableAcrossTheKnownEnumBoundary() throws {
+        for failure in [
+            DiagnosticEvent.RimeSyncFailure.accessDenied,
+            .keychainAccessDenied,
+        ] {
+            let event = DiagnosticEvent(
+                utcTimestamp: .now,
+                monotonicNanoseconds: 11,
+                origin: .mainApp,
+                processInstanceID: UUID(),
+                localSequence: 11,
+                code: .rimeSyncTerminal,
+                level: .error,
+                category: .config,
+                rimeSyncPayload: .terminal(
+                    .init(
+                        context: .init(operationID: UUID(), source: .foregroundAutomatic),
+                        result: .failed,
+                        phase: .standardRimeData,
+                        failure: failure
+                    )
+                )
+            )
+            var fixture = try eventObject(event)
+            fixture["schemaVersion"] = 4
+
+            let decoded = try JSONDecoder().decode(DiagnosticEvent.self, from: jsonData(fixture))
+            XCTAssertEqual(decoded.schemaVersion, 4)
+            XCTAssertEqual(decoded.rimeSyncPayload, event.rimeSyncPayload)
+            let roundTripped = try eventObject(decoded)
+            XCTAssertEqual(roundTripped["schemaVersion"] as? Int, 4)
+        }
+    }
+
+    private func measuredQueryEvent() -> DiagnosticEvent {
+        DiagnosticEvent(
+            utcTimestamp: Date(timeIntervalSince1970: 1_800_000_000),
+            monotonicNanoseconds: 12,
+            origin: .keyboardExtension,
+            processInstanceID: UUID(),
+            localSequence: 12,
+            code: .typoRecallQueryMeasured,
+            level: .info,
+            category: .performance,
+            fields: [
+                .typoRecallQuery(
+                    .init(
+                        operationOrdinal: 9,
+                        stage: .stageOne,
+                        readiness: .ready,
+                        resultState: .candidatesReturned,
+                        returnedCandidateBucket: .oneToThree,
+                        disposition: .applied,
+                        facadeElapsedMicroseconds: 124,
+                        durationState: .measured
+                    )
+                )
+            ]
+        )
+    }
+
+    private func eventObject(_ event: DiagnosticEvent) throws -> [String: Any] {
+        try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(event)) as? [String: Any])
+    }
+
+    private func jsonData(_ object: [String: Any]) throws -> Data {
+        try JSONSerialization.data(withJSONObject: object)
+    }
+
+    private func mutatingQueryField(
+        _ field: [String: Any],
+        update: (inout [String: Any]) -> Void
+    ) -> [String: Any] {
+        var copy = field
+        guard var payload = copy["typoRecallQuery"] as? [String: Any] else { return copy }
+        update(&payload)
+        copy["typoRecallQuery"] = payload
+        return copy
     }
 }

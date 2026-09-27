@@ -22,6 +22,8 @@ NSString * const RimeKeyCaretPos         = @"caretPos";
 NSString * const RimeKeyCommitPreviewLen = @"commitPreviewLen";
 NSString * const RimeKeyRawInput         = @"rawInput";
 NSString * const RimeKeyCandidates       = @"candidates";
+NSString * const RimeKeyCorrectionQueryReadiness = @"correctionQueryReadiness";
+NSString * const RimeKeyCorrectionQueryResultState = @"correctionQueryResultState";
 NSString * const RimeKeyCandidateText    = @"text";
 NSString * const RimeKeyCandidateComment = @"comment";
 NSString * const RimeKeyCommit           = @"commit";
@@ -361,8 +363,26 @@ static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
 
 - (NSDictionary *)correctionCandidatesForInput:(NSString *)input limit:(int)limit {
     int safeLimit = MAX(0, limit);
-    if (input.length == 0 || safeLimit == 0 || ![self ensureCorrectionSession]) {
-        return @{ RimeKeyCandidates: @[] };
+    if (input.length == 0) {
+        return @{
+            RimeKeyCandidates: @[],
+            RimeKeyCorrectionQueryReadiness: @"unknown",
+            RimeKeyCorrectionQueryResultState: @"empty_input",
+        };
+    }
+    if (safeLimit == 0) {
+        return @{
+            RimeKeyCandidates: @[],
+            RimeKeyCorrectionQueryReadiness: @"unknown",
+            RimeKeyCorrectionQueryResultState: @"zero_limit",
+        };
+    }
+    if (![self ensureCorrectionSession]) {
+        return @{
+            RimeKeyCandidates: @[],
+            RimeKeyCorrectionQueryReadiness: @"unavailable",
+            RimeKeyCorrectionQueryResultState: @"sidecar_unavailable",
+        };
     }
 
     // `set_input` 只作用于 correctionSessionId。主 session 的 composition、分页、
@@ -371,7 +391,8 @@ static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
 
     NSMutableArray *candidates = [NSMutableArray arrayWithCapacity:safeLimit];
     RIME_STRUCT(RimeContext, context);
-    if (_api->get_context(_correctionSessionId, &context)) {
+    BOOL contextAvailable = _api->get_context(_correctionSessionId, &context);
+    if (contextAvailable) {
         int count = MIN(context.menu.num_candidates, safeLimit);
         for (int index = 0; index < count; index++) {
             RimeCandidate *candidate = &context.menu.candidates[index];
@@ -389,7 +410,13 @@ static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
     }
 
     _api->clear_composition(_correctionSessionId);
-    return @{ RimeKeyCandidates: candidates };
+    return @{
+        RimeKeyCandidates: candidates,
+        RimeKeyCorrectionQueryReadiness: @"ready",
+        RimeKeyCorrectionQueryResultState: contextAvailable
+            ? @"candidates_returned"
+            : @"context_unavailable",
+    };
 }
 
 - (NSDictionary *)commitComposition {
