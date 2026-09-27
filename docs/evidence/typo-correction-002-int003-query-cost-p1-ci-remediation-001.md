@@ -1,6 +1,6 @@
 # INT-003 P1 CI remediation 001
 
-Status: **bounded source repair and local CI-equivalent checks passed; commit/push and hosted revalidation pending.** PR #184 remains Draft.
+Status: **bounded source repair, local CI-equivalent checks, and hosted CI passed.** PR #184 remains Draft.
 
 ## Authority and trigger
 
@@ -29,7 +29,8 @@ All checks used the isolated worktree and the non-conflicting iPhone 17 Pro / iO
 | App + Keyboard | **421 tests passed**, including the new formatter case | `/private/tmp/uk-int003-p1-ci-app-keyboard-retry-20260927.xcresult` |
 | RIME Keychain integration | **1 test passed** | `/private/tmp/uk-int003-p1-ci-keychain-20260927.xcresult` |
 | Release build | Pass | `xcodebuild … -configuration Release … build` |
+| Hosted Swift 6 Quality workflow | **All jobs passed** | [Run 36316970577](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36316970577), exact head `fe4c935ec1e561a0529ed3146c58d4252a7af6bb` |
 
-The new `xcresulttool get test-results summary` command could not read TestReport due host permissions. The legacy result-object API returned the counts above; each `xcodebuild test` exited successfully.
+The new `xcresulttool get test-results summary` command could not read TestReport due host permissions. The legacy result-object API returned the counts above; each `xcodebuild test` exited successfully. The hosted run passed `classify-change`, `lightweight-checks`, `format-swift`, `test-keyboardcore`, `test-rimebridge`, `test-app-keyboard`, `test-rime-sync-keychain`, `build-release`, and `final-quality-gate` at the same head.
 
-Hosted CI for the repaired head has not run yet. No independent Architecture/Quality verdict is claimed for the repair delta. The parent remains **Active**; P2 AUTH remains Active/unconsumed, and no capture, Gate, merge, parent Close, TestFlight, Release, ADR Accept or `RimeRuntimeProvenance` restoration occurred.
+No independent Architecture/Quality verdict is claimed for the repair delta. The parent remains **Active**; P2 AUTH remains Active/unconsumed, and no capture, Gate, merge, parent Close, TestFlight, Release, ADR Accept or `RimeRuntimeProvenance` restoration occurred.
