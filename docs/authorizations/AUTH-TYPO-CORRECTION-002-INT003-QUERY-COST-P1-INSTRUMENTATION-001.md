@@ -7,9 +7,9 @@
   "record_type": "authorization",
   "title": "P1 content-free query-cost instrumentation on a frozen source baseline",
   "status": "active",
-  "updated_at": "2026-09-26T23:16:00+08:00",
+  "updated_at": "2026-09-27T15:02:00+08:00",
   "revalidation_triggers": [
-    "source_tip_changes_from_9838c092672dae60c63b34e4d9be6dffafc3869f",
+    "execution_source_tip_changes_from_c3cc229619604131d6358bbc85f74e81f2874dc6",
     "field_semantics_or_allowed_files_change",
     "independent_Architecture_review_finds_boundary_change",
     "P1_execution_environment_or_executor_changes",
@@ -37,7 +37,8 @@
     "supersedes_ref": null,
     "consumption_state": "unconsumed",
     "artifact_bindings": [
-      {"kind": "source_baseline", "identity": "9838c092672dae60c63b34e4d9be6dffafc3869f"},
+      {"kind": "source_baseline", "identity": "c3cc229619604131d6358bbc85f74e81f2874dc6"},
+      {"kind": "source_rebind_reason", "identity": "PR_180_docs_only_M02_merge;production_source_files_unchanged;before_P1_consumption"},
       {"kind": "measurement_plan", "identity": "docs/plans/typo-correction-002-int003-query-cost-measurement-001.md"},
       {"kind": "field_review_packet", "identity": "docs/plans/typo-correction-002-int003-query-cost-p1-field-review-001.md"},
       {"kind": "execution_environment", "identity": "isolated_macOS_worktree;/private/tmp/universe-keyboard-int003-query-density-diagnosis-20260925;Debug_HF_only_for_journal_semantics;no_device_capture_under_P1"}
@@ -51,7 +52,7 @@
 | Field | Binding |
 |---|---|
 | Status | **Active, unconsumed**. Human issued P1 authority; the Architecture field review is an entry condition, not a substitute for consumption. |
-| Executor | Codex current task in the isolated worktree above; source baseline `9838c092672dae60c63b34e4d9be6dffafc3869f`. Rebind if the source baseline changes before execution. |
+| Executor | Codex current task in the isolated worktree above; source baseline `c3cc229619604131d6358bbc85f74e81f2874dc6`. Rebind if the source baseline changes before execution. |
 | Domain owner | Input Intelligence Maintainer; KeyboardCore, Keyboard UI and RimeBridge ownership are reviewed at their existing boundaries. |
 | Architecture reviewer | Independent Architecture & Knowledge Steward for ADR 0027 field allowlist, ADR 0004 session route and privacy. Review [field packet](../plans/typo-correction-002-int003-query-cost-p1-field-review-001.md) before source edits. |
 | Quality reviewer | Independent Test / Release lane after implementation evidence; P1 author does not self-declare Quality. |

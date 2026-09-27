@@ -6,8 +6,8 @@
   "record_id": "AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-SIM-CAPTURE-001",
   "record_type": "authorization",
   "title": "P2 controlled Simulator capture requiring exact installed-payload freeze",
-  "status": "proposed",
-  "updated_at": "2026-09-26T23:16:00+08:00",
+  "status": "active",
+  "updated_at": "2026-09-27T15:04:00+08:00",
   "revalidation_triggers": [
     "P1_instrumentation_tip_or_review_changes",
     "designated_Simulator_UDID_or_OS_changes",
@@ -31,7 +31,7 @@
       "RimeRuntimeProvenance_restore"
     ],
     "issuer_role": "Human Product Owner acting as Product Lead",
-    "decision_source": "Human 2026-09-26 Asia/Shanghai authorized subsequent work while explicitly requiring separate P1 and P2 execution permissions and evidence environments. P2 remains Proposed because the P1 binary, installed payload and run manifest do not yet exist; this record must be rebound Live and consumed before any capture operation",
+    "decision_source": "Human 2026-09-26 Asia/Shanghai explicitly authorized the P1 instrumentation and P2 capture scopes while requiring separate execution permissions and evidence environments. P2 is Active/unconsumed and bound to the designated Simulator; the installed P1 payload and Run manifest must be added and the AUTH consumed before any capture operation",
     "issued_at": "2026-09-26T23:16:00+08:00",
     "expires_at": null,
     "supersedes_ref": null,
@@ -49,6 +49,6 @@
 
 ## Freeze and stop rules
 
-P2 is **Proposed / unconsumed**, despite the Human's general authorization to continue. Its executable authority is conditional on a new Live binding and subsequent consumption; it does not inherit P0 or P1. The environment executor will be Codex for controlled Simulator discovery, install, arming, preservation and hash, with Human input only if the synthetic fixture cannot be produced without typing. The independent Test / Release reviewer owns the Quality conclusion.
+P2 is **Active / unconsumed** under the Human's explicit authorization. It does not inherit P0 or P1 authority. Its designated evidence target is the iPhone 17 Pro Max / iOS 27 Simulator identified below; no Simulator operation may begin until P1's exact installed payload and the complete Run manifest are bound here and this AUTH is consumed. The environment executor will be Codex for controlled Simulator discovery, install, arming, preservation and hash, with Human input only if the synthetic fixture cannot be produced without typing. The independent Test / Release reviewer owns the Quality conclusion.
 
 Before Live, bind the exact P1 source commit and independent review, build configuration, Xcode/SDK, App and Extension hashes, designated device UDID/OS, schema and installed data, Full Access, host and field type, diagnostics settings, run ID, raw archive location and one-round stimulus. Rediscover the Simulator and verify the installed payload at the time of freeze; the historical UDID above is a target, not current proof of availability. If any required field is unknown or changes after freeze, stop and issue a new run/binding. The Debug Simulator result can validate instrumentation and comparative shape only; a Release-like Product cost judgment requires a distinct physical-device decision and AUTH.
