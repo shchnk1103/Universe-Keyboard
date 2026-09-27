@@ -1,6 +1,6 @@
 # INT-003 P1 query-cost instrumentation implementation receipt
 
-Status: **implementation committed and KeyboardCore verification passed; independent implementation/Quality review, full iOS Simulator lanes, and P2 capture are still pending.** This is not a Product cost conclusion.
+Status: **implementation committed; KeyboardCore verification passed; independent Architecture implementation review returned Pass with conditions. Full iOS Simulator lanes, Hosted CI, independent Quality, and P2 capture remain pending.** This is not a Product cost conclusion.
 
 ## Identity and authority
 
@@ -10,6 +10,7 @@ Status: **implementation committed and KeyboardCore verification passed; indepen
 - Architecture input: round-3 packet commit `7ef0b4679f4f8cff9dd9e3cc9bcf93b666c86acc`; independent review **Pass with conditions**, result SHA-256 `08136d4a0fbc1afb3d74d2626306dda9b2b6795a939a35225368d81fe2d760bd`.
 - Frozen source baseline: `1160ac6fd8696c3036391cdf59bc9fe096d0b219`; manifest `docs/evidence/typo-correction-002-int003-query-cost-p1-arch-source-freeze-r3.json`, SHA-256 `a98a722b03e2c66de61ab41ae30f59791ccb53a3b365f55a18e96d373732b395`.
 - Implementation commit: `6606fbe0ad57cb0a2c636c2383f066a0a09e55e7` (`feat(int003): measure correction query cost`), parent `5c6a18b30a70921aec9a3286e446f9010bc3506a`, on isolated branch `codex/typo-correction-002-int003-query-cost-p1-implementation-20260927`.
+- Independent implementation review: [review](../reviews/typo-correction-002-int003-query-cost-p1-implementation-review-001.md) and [usage record](typo-correction-002-int003-query-cost-p1-implementation-review-001-usage.md), bound to implementation `6606fbe0ad57cb0a2c636c2383f066a0a09e55e7`, parent `5c6a18b30a70921aec9a3286e446f9010bc3506a`, and patch SHA-256 `1fc7bfc3de343d48509c4670a80ac055fbe27e925df5ee50265d466bacc0099a`; verdict **Pass with conditions**.
 - P2 AUTH remains **Active / unconsumed**. No Simulator boot, install, diagnostics arm, or input was performed.
 
 ## Implemented boundary
@@ -30,6 +31,7 @@ Status: **implementation committed and KeyboardCore verification passed; indepen
 
 ## Remaining conditions and non-claims
 
-- Independent implementation/Quality review remains pending. The focused RimeBridge Simulator tests and full local CI-equivalent iOS lanes remain unverified; hosted CI evidence is also pending.
+- The independent Architecture implementation review found no new Blocker or Uncovered item. Its conditions remain open: coordinator-level assertions for measured-stage payload, post-call discard and pre-call cancellation; executable RimeBridge target evidence; applicable local iOS lanes and Hosted CI; and P2 raw-segment sealing, gap/drop/decode/truncation censoring. This review is not an independent Quality conclusion.
+- The draft source PR has not yet been published. The strict Swift lint, KeyboardCore suite and Objective-C syntax check are executor-reported evidence; the full local CI-equivalent iOS lanes and hosted evidence are not green/verified.
 - P2 still requires a separately reviewed P1 implementation, exact installed App/Extension hashes, designated Simulator/OS, schema/access/host/diagnostics state, Run ID and archive location in a frozen Run manifest. Consume P2 before any Simulator operation.
 - No Product query-cost acceptability, numeric budget, Gate, parent Close, TestFlight, Release, ADR Accept, or `RimeRuntimeProvenance` restoration is claimed.

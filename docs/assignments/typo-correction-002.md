@@ -110,7 +110,8 @@ This package does **not** close the parent, satisfy Product/Quality/Release Gate
 
 - Child [`query-cost measurement Assignment`](typo-correction-002-int003-query-cost-measurement-001.md) remains **Active**; P1 AUTH is Consumed and P2 AUTH remains Active/unconsumed.
 - P1 implementation commit `6606fbe0ad57cb0a2c636c2383f066a0a09e55e7` is recorded in the [implementation receipt](../evidence/typo-correction-002-int003-query-cost-p1-implementation-001.md). KeyboardCore passed 1,170/0 and the changed Objective-C file passed syntax checking; iOS Simulator tests and Release build remain unverified because Xcode package resolution/CoreSimulatorService were unavailable in the task sandbox.
-- Independent implementation/Quality review and draft source PR publication are pending. P2 requires its own exact installed-payload/Run-manifest freeze and consumption before any Simulator operation.
+- Independent Architecture implementation review returned **Pass with conditions** for the exact P1 implementation commit; see the [review](../reviews/typo-correction-002-int003-query-cost-p1-implementation-review-001.md) and [usage record](../evidence/typo-correction-002-int003-query-cost-p1-implementation-review-001-usage.md). Coordinator-level stage/discard/cancel assertions, executable RimeBridge evidence, local iOS/Hosted CI, and P2 sealed-journal censoring remain open. Draft source PR publication is next under P1 AUTH.
+- P2 requires its own exact installed-payload/Run-manifest freeze and consumption before any Simulator operation. Another task currently needs the Simulator, so P2 device work is deferred until that task releases it.
 - No Product cost acceptance, budget, Gate, parent Close, TestFlight, Release, ADR Accept or `RimeRuntimeProvenance` restoration is claimed; parent remains **Active**.
 
 ### Recall remediation child
