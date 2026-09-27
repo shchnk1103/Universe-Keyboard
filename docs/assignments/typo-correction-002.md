@@ -106,6 +106,13 @@ Supporting diagnostics arm records: [`arm-preflight`](typo-correction-002-diagno
 
 This package does **not** close the parent, satisfy Product/Quality/Release Gate, or clear the INT-003 cadence residual. Parent remains `Active`.
 
+### INT-003 query-cost P1 implementation — 2026-09-27
+
+- Child [`query-cost measurement Assignment`](typo-correction-002-int003-query-cost-measurement-001.md) remains **Active**; P1 AUTH is Consumed and P2 AUTH remains Active/unconsumed.
+- P1 implementation commit `6606fbe0ad57cb0a2c636c2383f066a0a09e55e7` is recorded in the [implementation receipt](../evidence/typo-correction-002-int003-query-cost-p1-implementation-001.md). KeyboardCore passed 1,170/0 and the changed Objective-C file passed syntax checking; iOS Simulator tests and Release build remain unverified because Xcode package resolution/CoreSimulatorService were unavailable in the task sandbox.
+- Independent implementation/Quality review and draft source PR publication are pending. P2 requires its own exact installed-payload/Run-manifest freeze and consumption before any Simulator operation.
+- No Product cost acceptance, budget, Gate, parent Close, TestFlight, Release, ADR Accept or `RimeRuntimeProvenance` restoration is claimed; parent remains **Active**.
+
 ### Recall remediation child
 
 The bounded recall-remediation lane is tracked separately and does not close this parent:

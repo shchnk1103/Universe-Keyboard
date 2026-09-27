@@ -9,9 +9,9 @@ Policy version: 1.0.0
   "record_type": "assignment",
   "title": "Decision-ready measurement of INT-003 query count, usefulness and runtime cost",
   "lifecycle": "active",
-  "current_phase": "P0 completed; independent Architecture round 3 returned Pass with conditions for all seven claims on baseline 1160ac6 and the refreshed 28-file source freeze. P1 AUTH was consumed at 2026-09-27T18:01:36+08:00 before the first source edit; implement only the reviewed closed DiagnosticEvent.Field through the existing writer and satisfy the review's focused-test/evidence conditions. P2 AUTH remains Active/unconsumed, bound to the designated Simulator, and gated on exact installed P1 payload and Run-manifest freeze",
+  "current_phase": "P0 completed; independent Architecture round 3 returned Pass with conditions for all seven claims on baseline 1160ac6 and the refreshed 28-file source freeze. P1 AUTH was consumed at 2026-09-27T18:01:36+08:00 before source edits. P1 implementation is committed as 6606fbe; KeyboardCore passed 1170/0 and the changed ObjC file passed clang syntax checking. Independent implementation/Quality review and full iOS Simulator lanes remain pending. P2 AUTH remains Active/unconsumed pending that review and exact installed-payload/Run-manifest freeze",
   "authorization_action": "plan_int003_query_cost_measurement",
-  "updated_at": "2026-09-27T18:01:36+08:00",
+  "updated_at": "2026-09-27T18:34:50+08:00",
   "revalidation_triggers": [
     "p1_source_manifest_sha256_changes_from_a98a722b03e2c66de61ab41ae30f59791ccb53a3b365f55a18e96d373732b395",
     "source_or_diagnostic_schema_changes",
@@ -42,7 +42,8 @@ Policy version: 1.0.0
     "docs/evidence/typo-correction-002-int003-query-cost-p1-architecture-review-r3-usage.md",
     "docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-packet-r3.md",
     "docs/reviews/typo-correction-002-int003-query-cost-p1-architecture-review-packet-r2.md",
-    "docs/evidence/typo-correction-002-int003-query-cost-p1-p2-authorization-post-merge-state-sync-2026-09-27.md"
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-p2-authorization-post-merge-state-sync-2026-09-27.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-implementation-001.md"
   ],
   "responsibilities": {
     "domain_owner": "Input Intelligence Maintainer",
@@ -60,12 +61,12 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | **Active** — P0 complete; P1 review pending, P2 environment freeze pending |
-| Current phase | Round-3 Architecture review is **Pass with conditions** for all seven claims. P1 AUTH is consumed at `2026-09-27T18:01:36+08:00` on the exact reviewed baseline before source edits; implementation and focused verification are now authorized within its unchanged allowlist. P2 remains gated on exact installed payload and Run-manifest freeze |
+| Lifecycle | **Active** — P0 complete; P1 implementation committed; independent implementation/Quality review and full iOS Simulator lanes pending; P2 freeze pending |
+| Current phase | Round-3 Architecture review is **Pass with conditions** for all seven claims. P1 AUTH was consumed before source edits. Implementation commit `6606fbe0ad57cb0a2c636c2383f066a0a09e55e7` is bound in the [P1 implementation receipt](../evidence/typo-correction-002-int003-query-cost-p1-implementation-001.md); KeyboardCore passed 1,170/0 and ObjC syntax check passed. Xcode Simulator lanes were not run because project package resolution/CoreSimulatorService were unavailable in the task sandbox. P2 remains unconsumed pending independent P1 review and exact installed-payload/Run-manifest freeze |
 | Authority | [P0 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001.md) Consumed; [P1 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-INSTRUMENTATION-001.md) Consumed for the reviewed P1 source scope; [P2 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-SIM-CAPTURE-001.md) Active/unconsumed, execution gated on exact payload and Run freeze |
-| Publication / M-02 | [PR #179](https://github.com/shchnk1103/Universe-Keyboard/pull/179) merged `9838c092672dae60c63b34e4d9be6dffafc3869f`; [PR #180](https://github.com/shchnk1103/Universe-Keyboard/pull/180) merged `c3cc229619604131d6358bbc85f74e81f2874dc6` with the single non-recursive closeout receipt. [PR #181](https://github.com/shchnk1103/Universe-Keyboard/pull/181) merged `2b9b15ee2d1d903b3a948109b2c2217535bd5248`, adding the separate P1/P2 authority records; its M-02 receipt is prepared at [post-merge state sync](../evidence/typo-correction-002-int003-query-cost-p1-p2-authorization-post-merge-state-sync-2026-09-27.md) |
-| Non-claims | No Swift/ObjC change, new Capture, Release-like result, numeric budget, independent Quality conclusion, Product/QA-001 Gate, parent Close, TestFlight/Release or `RimeRuntimeProvenance` restore |
-| Next | Implement and verify P1 within the reviewed source allowlist; then freeze the exact installed payload and Run manifest and consume P2 before any Simulator operation. Parent remains [Active](typo-correction-002.md) |
+| Publication / M-02 | [PR #179](https://github.com/shchnk1103/Universe-Keyboard/pull/179) merged `9838c092672dae60c63b34e4d9be6dffafc3869f`; [PR #180](https://github.com/shchnk1103/Universe-Keyboard/pull/180) merged `c3cc229619604131d6358bbc85f74e81f2874dc6` with the single non-recursive closeout receipt. [PR #181](https://github.com/shchnk1103/Universe-Keyboard/pull/181) merged `2b9b15ee2d1d903b3a948109b2c2217535bd5248`, adding the separate P1/P2 authority records; its M-02 receipt is prepared at [post-merge state sync](../evidence/typo-correction-002-int003-query-cost-p1-p2-authorization-post-merge-state-sync-2026-09-27.md). P1 source commit `6606fbe` is local; independent review and draft PR publication remain pending |
+| Non-claims | No P2 Simulator capture, independent implementation/Quality conclusion, Product query-cost acceptance, numeric budget, Product/QA-001 Gate, parent Close, TestFlight/Release, ADR Accept or `RimeRuntimeProvenance` restore |
+| Next | Complete independent implementation review, publish the authorized draft source PR, then freeze the exact installed payload and Run manifest and consume P2 before any Simulator operation. Parent remains [Active](typo-correction-002.md) |
 
 ## Assignment authority and inputs
 
@@ -79,8 +80,8 @@ Policy version: 1.0.0
 | Stage | Entry | Exit / handoff |
 |---|---|---|
 | P0 plan (complete) | Clean isolated worktree at verified GitHub main; Human authorized new Assignment/AUTH; prior raw/evidence identity already bound | [Plan](../plans/typo-correction-002-int003-query-cost-measurement-001.md), P0 AUTH and one M-02 closeout are published and merged |
-| P1 instrumentation (consumed; active) | P1 AUTH consumed at `2026-09-27T18:01:36+08:00` after independent round-3 **Pass with conditions**, bound to baseline `1160ac6f…` and the 28-file manifest `a98a722b…`. Keep the reviewed typed Field and allowed paths; implement the review's Stage, bucket, readiness, timing, schema, ownership and censoring conditions. Strict Swift-format lint before any Swift commit/push | Content-free instrumentation with focused correctness evidence and bounded observer-cost validation; no numeric Product acceptance |
-| P2 controlled capture (active, unconsumed) | Separate P2 AUTH remains unconsumed and bound to the designated Simulator. After P1 implementation and exact installed-payload verification, bind source/review, App/Extension hashes, Simulator/OS, schema/access/host/diagnostics state, Run ID and archive; consume before boot/install/arming/input | Bounded synthetic cold/warm capture, exact build/environment/journal hashes, query count and facade-duration distributions, censoring analysis and independent Quality handoff |
+| P1 instrumentation (consumed; active) | P1 AUTH consumed at `2026-09-27T18:01:36+08:00` after independent round-3 **Pass with conditions**, bound to baseline `1160ac6f…` and the 28-file manifest `a98a722b…`. Implementation commit `6606fbe` satisfies the scoped field, route, timing, schema and bounded-ingress design. KeyboardCore passed 1,170/0; changed ObjC passed syntax check. The independent implementation/Quality review and full iOS Simulator lanes remain pending | Content-free instrumentation, review, and full applicable verification; no numeric Product acceptance |
+| P2 controlled capture (active, unconsumed) | Separate P2 AUTH remains unconsumed and bound to the designated Simulator. After independent P1 implementation review and exact installed-payload verification, bind source/review, App/Extension hashes, Simulator/OS, schema/access/host/diagnostics state, Run ID and archive; consume before boot/install/arming/input | Bounded synthetic cold/warm capture, exact build/environment/journal hashes, query count and facade-duration distributions, censoring analysis and independent Quality handoff |
 
 Stop on `UNKNOWN` required responsibility for the current stage, source/plan drift, inability to distinguish an empty result from unavailable sidecar, any sensitive input/candidate/host logging, synchronous hot-path persistence, wrong device, missing installed-payload identity, Human round exhaustion, or scope expansion to budget change, Gate, release or parent Close. Record a bounded limitation rather than a guessed performance conclusion.
 
