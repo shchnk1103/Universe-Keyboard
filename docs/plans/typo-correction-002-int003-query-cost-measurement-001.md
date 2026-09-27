@@ -1,6 +1,6 @@
 # INT-003 query count and cost measurement plan
 
-Status: **P0 design complete; execution not authorized**. Owning [Assignment](../assignments/typo-correction-002-int003-query-cost-measurement-001.md) remains Active. The [P0 AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001.md) is Consumed. This plan does not set a query budget or accept the [Product residual](../product-decisions/TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-PRODUCT-RESIDUAL.md).
+Status: **P0 complete; P1 implementation merged with conditions; P2 execution not yet live**. PR [#184](https://github.com/shchnk1103/Universe-Keyboard/pull/184) merged as `03f4d0cc68ce22df60e1f0545afe6ae3b27d30ab`. The owning [Assignment](../assignments/typo-correction-002-int003-query-cost-measurement-001.md) remains Active. P1 coordinator assertions and real same-call RimeBridge setup/get_context/schema evidence remain open. The P2 AUTH is Active/unconsumed until exact P1 source/review, installed payload and Run manifest are frozen; no Simulator operation or capture has occurred. This plan does not set a query budget or accept the [Product residual](../product-decisions/TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-PRODUCT-RESIDUAL.md).
 
 ## Decision question
 

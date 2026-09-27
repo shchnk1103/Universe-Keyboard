@@ -4,6 +4,15 @@
 
 **Lifecycle status:** `Active`
 
+## Current Status
+
+| Field | Value |
+|---|---|
+| Lifecycle | **Active** — INT-003 query-cost P1 instrumentation is on main; this does not close the parent |
+| Current phase | PR #184 merged as `03f4d0cc68ce22df60e1f0545afe6ae3b27d30ab`. P1 coordinator assertions and the real same-call RimeBridge readiness/setup/schema matrix remain open; P2 capture awaits exact source/review, installed-payload and Run-manifest freeze plus its separate AUTH consumption. |
+| Non-claims | No Product cost acceptance or budget, QA-001/Product Gate, parent Close, TestFlight/Release, ADR Accept, or `RimeRuntimeProvenance` restoration |
+| Next | Complete the bounded P1 evidence conditions, then freeze and execute the separately authorized P2 Simulator capture; keep this parent Active |
+
 **Repository change types:** `Contract`, `Implementation`, `Evidence`, `State`
 
 ## Authority
@@ -108,10 +117,11 @@ This package does **not** close the parent, satisfy Product/Quality/Release Gate
 
 ### INT-003 query-cost P1 implementation — 2026-09-27
 
-- Child [`query-cost measurement Assignment`](typo-correction-002-int003-query-cost-measurement-001.md) remains **Active**; P1 AUTH is Consumed and P2 AUTH remains Active/unconsumed.
-- P1 implementation commit `6606fbe0ad57cb0a2c636c2383f066a0a09e55e7` is recorded in the [implementation receipt](../evidence/typo-correction-002-int003-query-cost-p1-implementation-001.md). KeyboardCore passed 1,170/0 and the changed Objective-C file passed syntax checking; iOS Simulator tests and Release build remain unverified because Xcode package resolution/CoreSimulatorService were unavailable in the task sandbox.
-- Independent Architecture implementation review returned **Pass with conditions** for the exact P1 implementation commit; see the [review](../reviews/typo-correction-002-int003-query-cost-p1-implementation-review-001.md) and [usage record](../evidence/typo-correction-002-int003-query-cost-p1-implementation-review-001-usage.md). Coordinator-level stage/discard/cancel assertions, executable RimeBridge evidence, local iOS CI, and P2 sealed-journal censoring remain open. P1 source work is published in open Draft [PR #184](https://github.com/shchnk1103/Universe-Keyboard/pull/184), opened at head `c62f5f5`. Its first hosted run failed at EOF whitespace in two frozen Round-2 review artifacts; the [correction receipt](../evidence/typo-correction-002-int003-query-cost-p1-ci-format-remediation-001.md) preserves the original hashes and records the local fix, with hosted rerun pending.
-- P2 requires its own exact installed-payload/Run-manifest freeze and consumption before any Simulator operation. Another task currently needs the Simulator, so P2 device work is deferred until that task releases it.
+- Child [`query-cost measurement Assignment`](typo-correction-002-int003-query-cost-measurement-001.md) remains **Active**; P1 and CI-remediation AUTHs are Consumed; P2 AUTH is Active/unconsumed.
+- PR [#184](https://github.com/shchnk1103/Universe-Keyboard/pull/184) squash-merged as `03f4d0cc68ce22df60e1f0545afe6ae3b27d30ab` at `2026-09-27T13:59:18Z`. The [implementation receipt](../evidence/typo-correction-002-int003-query-cost-p1-implementation-001.md) and independent Architecture review remain linked; the review is bound to implementation commit `6606fbe` and returned **Pass with conditions**.
+- Local CI-equivalent passed at `fe4c935` (strict Swift format, KeyboardCore 1,170, RimeBridge 105, App + Keyboard 421, Keychain 1, Release build); only docs changed between that tested source state and merged PR head `a572765`. Hosted run [36322160611](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36322160611) passed every job at exact head `a572765`. The pinned KOS v0.9.0 validator and lightweight checks passed with pre-existing legacy warnings.
+- Open P1 conditions: coordinator stage/ready-empty/post-call-discard/pre-call-cancel/one-event assertions and real same-call RimeBridge setup/get_context/schema evidence. P2 sealed-journal censoring and independent Quality remain open. The [single M-02 receipt](../evidence/typo-correction-002-int003-query-cost-p1-implementation-post-merge-state-sync-2026-09-27.md) binds PR #184's merge.
+- P2 requires its own exact source/review, installed-payload and Run-manifest freeze and consumption before any Simulator operation. A read-only `simctl` query failed because CoreSimulatorService was unavailable; no P2 boot, install, diagnostics arm or input was performed.
 - No Product cost acceptance, budget, Gate, parent Close, TestFlight, Release, ADR Accept or `RimeRuntimeProvenance` restoration is claimed; parent remains **Active**.
 
 ### Recall remediation child
