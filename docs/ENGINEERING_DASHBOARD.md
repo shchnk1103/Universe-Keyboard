@@ -13,7 +13,7 @@
 - **Lifecycle:** [`Assignment`](assignments/app-about-001.md) `Closed`
 - **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；残差 `ABOUT-01`–`ABOUT-05` `accept`
 - **Non-claims:** 不等于 Device-attested；不授权 commit / push / merge、TestFlight 或 Release
-- **Next:** 无（本 Assignment）。commit / push 另授权
+- **Next:** push / PR 进行中；merge 另授权
 - **Sources:** [PD](product-decisions/APP-ABOUT-001-authorization.md) · [Product Gate](product-decisions/APP-ABOUT-001-product-gate.md) · [Gate AUTH](authorizations/AUTH-APP-ABOUT-001-PRODUCT-GATE.md) · [Quality review](reviews/app-about-001-quality-review.md)
 - **Worktree:** `/private/tmp/universe-keyboard-app-about-001` · branch `grok/app-about-001` · baseline `origin/main` `a536dca74acc18deebe1de9b7a2c22421cba9f95`
 

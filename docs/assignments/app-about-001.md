@@ -27,7 +27,7 @@
 - **Quality review:** [`AUTH-APP-ABOUT-001-QUALITY`](../authorizations/AUTH-APP-ABOUT-001-QUALITY.md) — consumed；[`review`](../reviews/app-about-001-quality-review.md) **Pass with conditions**
 - **Authorization (Product Gate):** [`AUTH-APP-ABOUT-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ABOUT-001-PRODUCT-GATE.md) — consumed
 - **Product Gate:** [`PD-APP-ABOUT-001-PRODUCT-GATE`](../product-decisions/APP-ABOUT-001-product-gate.md) — **Accepted**
-- **Authorization (scoped local commit):** [`AUTH-APP-ABOUT-001-COMMIT`](../authorizations/AUTH-APP-ABOUT-001-COMMIT.md) — active / unconsumed until delivery
+- **Authorization (scoped local commit):** [`AUTH-APP-ABOUT-001-COMMIT`](../authorizations/AUTH-APP-ABOUT-001-COMMIT.md) — consumed; implementation `28cd2ea440d0054e566cb7e7222e318bc9d2338c`
 - **Authorization (push / PR):** [`AUTH-APP-ABOUT-001-PUSH-PR`](../authorizations/AUTH-APP-ABOUT-001-PUSH-PR.md) — active / unconsumed until delivery
 
 ## KOS v0.8.0 optional-contract selection
@@ -48,7 +48,7 @@
 | Main-App implementation | Authorized | About page + Settings IA move + search catalog | Consumed [`AUTH-APP-ABOUT-001-IMPLEMENT`](../authorizations/AUTH-APP-ABOUT-001-IMPLEMENT.md) |
 | Independent Quality | Authorized | Settings / About / mailto / 小红书 / search — Pass with conditions | Consumed [`AUTH-APP-ABOUT-001-QUALITY`](../authorizations/AUTH-APP-ABOUT-001-QUALITY.md) → [`review`](../reviews/app-about-001-quality-review.md) |
 | Human Product Gate | Authorized | Main-App About acceptance; Assignment Closed | Consumed [`AUTH-APP-ABOUT-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ABOUT-001-PRODUCT-GATE.md) → [`PD-APP-ABOUT-001-PRODUCT-GATE`](../product-decisions/APP-ABOUT-001-product-gate.md) |
-| Scoped local commit | In progress | Isolated-branch commit + SHA writeback | [`AUTH-APP-ABOUT-001-COMMIT`](../authorizations/AUTH-APP-ABOUT-001-COMMIT.md) |
+| Scoped local commit | Authorized | Isolated-branch implementation `28cd2ea440d0054e566cb7e7222e318bc9d2338c` | Consumed [`AUTH-APP-ABOUT-001-COMMIT`](../authorizations/AUTH-APP-ABOUT-001-COMMIT.md) |
 | Push / PR | In progress | Push isolated branch and open PR; Human observes CI | [`AUTH-APP-ABOUT-001-PUSH-PR`](../authorizations/AUTH-APP-ABOUT-001-PUSH-PR.md) |
 | Merge | Not authorized | Merge to default branch | New AUTH required |
 | Environment or external slice | Not applicable | 记录切片无设备动作 | 真机不是 `Ready` 前置 |
@@ -159,3 +159,4 @@ Stop and escalate if:
 - `2026-09-28 Asia/Shanghai` — Human 要求把 Debug 显示 Build 1、公测/正式版显示当次上传包构建号写进关于页合同与 [`RELEASE_CHECKLIST.md`](../RELEASE_CHECKLIST.md)。无 Swift 变更。
 - `2026-09-28 Asia/Shanghai` — Human 授权独立 Quality。审查 **Pass with conditions**（`ABOUT-01`–`ABOUT-05` `accept`）。`Completed → Reviewed`。无 Product Gate / commit。
 - `2026-09-28 Asia/Shanghai` — Human Product Owner 接受残差并授权 Product Gate。Assignment `Reviewed → Closed`。无 Device-attested / commit / push / PR / merge / TestFlight / Release。
+- `2026-09-28 Asia/Shanghai` — Human 授权隔离分支有界 commit / push / PR。实现 commit `28cd2ea440d0054e566cb7e7222e318bc9d2338c`。无 merge。
