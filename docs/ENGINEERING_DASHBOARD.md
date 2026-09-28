@@ -2,11 +2,20 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-25 Asia/Shanghai
+> **Updated:** 2026-09-28 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## APP-ACTION-BUTTON-HIT-AREA-001 — 主 App 操作按钮整块可点
+
+- **Lifecycle:** [`Assignment`](assignments/app-action-button-hit-area-001.md) `Closed`
+- **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；残差 `AABH-01`–`AABH-05` `accept`
+- **Non-claims:** 不等于 Device-attested；不授权 commit / push / merge、TestFlight 或 Release；合同只覆盖共享 `AppActionButton`
+- **Next:** 无（本 Assignment）。commit / push 另授权
+- **Sources:** [PD](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-authorization.md) · [Product Gate](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) · [Gate AUTH](authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE.md) · [Quality review](reviews/app-action-button-hit-area-001-quality-review.md)
+- **Worktree:** `/private/tmp/universe-keyboard-app-action-button-hit-area-001` · branch `grok/app-action-button-hit-area-001` · baseline `origin/main` `b92a59b91b15073f457cbb7cd856f015117f4ac7`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-001 — 第三方方案许可下载单按钮
 
