@@ -179,8 +179,12 @@ struct SearchTab: View {
                 model: notificationSettings,
                 isRimeSyncMethodConfigured: syncModel.provider != .none
             )
+        case .about:
+            AboutSettingsView()
         case .privacy:
             PrivacyDataView()
+        case .openSource:
+            OpenSourceLicensesView()
         case .localDictionary:
             DictionaryBrowserView()
         case .diagnostics:

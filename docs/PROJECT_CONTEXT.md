@@ -110,6 +110,7 @@ Universe Keyboard/
 │   │   └── GuideTab.swift                — 首次启用与系统设置引导
 │   ├── Settings/
 │   │   ├── SettingsTab.swift             — 设置导航
+│   │   ├── AboutSettingsView.swift       — 关于（版本、联系、隐私/开源入口）
 │   │   ├── RimeSettings*.swift           — RIME 多方案设置与状态
 │   │   └── *SettingsView.swift           — 反馈、外观、高级输入、模糊音、用户词典与纠错
 │   ├── Diagnostics/

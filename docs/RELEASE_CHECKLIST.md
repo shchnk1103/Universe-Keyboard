@@ -17,6 +17,42 @@ Documentation review for a release follows `docs/DOCUMENTATION_GOVERNANCE.md`; t
 
 Do not report a historical user/thread statement as current release evidence.
 
+## Installed Version And Build Identity
+
+The main-App About page (`PD-APP-ABOUT-001`) displays the **installed package**
+`CFBundleShortVersionString` (marketing version) and `CFBundleVersion` (build).
+It does not invent or increment those values.
+
+| Field | Xcode setting | What testers see on About |
+|---|---|---|
+| Marketing version | `MARKETING_VERSION` | e.g. `1.0` |
+| Build | `CURRENT_PROJECT_VERSION` | e.g. `1` on a Debug/Simulator install of the current project defaults |
+
+Current repository defaults are `MARKETING_VERSION=1.0` and
+`CURRENT_PROJECT_VERSION=1` for both the App and the Keyboard Extension. A
+Debug or Simulator run therefore shows `1.0` and Build `1`. That is expected.
+
+Public TestFlight and App Store identities are the values **written into that
+upload package**, not the About-page code:
+
+- App Store Connect requires `CFBundleVersion` to increase for every new
+  upload of the same bundle ID. A new public-beta or production upload is a
+  new candidate (56, 57, … after a prior `55`). Rebuild or build-number change
+  requires new artifact mapping and release revalidation.
+- App and Keyboard Extension in the same package must carry the same marketing
+  version and the same build.
+- Historical Build 55: git still recorded `CURRENT_PROJECT_VERSION=1`; the
+  Store/Ad Hoc export carried `buildNumber=55`, so testers who installed that
+  package saw `1.0 (55)` on About. The retained Archive metadata remaining
+  `1.0 (1)` is a recorded provenance fact, not an About-page bug.
+- A user-visible product release may raise `MARKETING_VERSION` (for example
+  `1.0` → `1.1`) under a release Product Decision. Every such release still
+  needs a unique increasing build.
+
+Record the frozen marketing version and build of the exact upload package in
+the release acceptance record. This section does not authorize TestFlight
+upload, external assignment, or App Store production submission.
+
 ## Minimum Acceptance Matrix
 
 For the current development phase, record results for:
