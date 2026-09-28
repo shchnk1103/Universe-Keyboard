@@ -153,6 +153,7 @@ The main app lives under `Universe Keyboard/` and is SwiftUI-based. It should fe
 
 - Use `NavigationStack` per tab.
 - Use `TabView` only for top-level main-App tabs (Home, optional Help while activation/recovery requires it, Settings). Help packaging: `PD-HELP-TIPKIT-001`.
+- Settings **App 设置** lists appearance, notifications, then **关于** (`PD-APP-ABOUT-001`). About owns version/Build, 联系我们 (mail + 小红书), and navigation into Privacy and OSS license pages. Version and Build are the installed Info.plist values; Debug/Simulator showing `1.0` / Build `1` matches current project defaults. Do not add a fourth tab or put identity/contact on Home. Help stays the trailing question-mark control.
 - Prefer `Form` for detailed settings screens.
 - Prefer grouped-background scroll layouts for guide/overview screens.
 - Keep custom containers close to system grouped list appearance.

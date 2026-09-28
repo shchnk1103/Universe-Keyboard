@@ -1,5 +1,15 @@
 # Active Work Summary
 
+Current update: `2026-09-28 Asia/Shanghai` — [`APP-ABOUT-001`](assignments/app-about-001.md) 已 push 并开 PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188)（实现 `28cd2ea`，回写 `cd18e3e`）。Assignment 仍 **Closed**。Human 观察 hosted CI；merge 另授权。无 TestFlight / Release。
+
+Current update: `2026-09-28 Asia/Shanghai` — Human Product Gate **Pass** on [`APP-ABOUT-001`](assignments/app-about-001.md)；Assignment **Closed**（[`Gate`](product-decisions/APP-ABOUT-001-product-gate.md)）。残差 `ABOUT-01`–`ABOUT-05` 接受。不进入本表（Closed）。Commit 当时另授权。无 TestFlight / Release。
+
+Current update: `2026-09-28 Asia/Shanghai` — [`APP-ABOUT-001`](assignments/app-about-001.md) 独立 Quality **Pass with conditions**（[`review`](reviews/app-about-001-quality-review.md)；`ABOUT-01`–`ABOUT-05` `accept`）。Assignment 当时 `Reviewed`。无 Product Gate / commit / push。
+
+Current update: `2026-09-28 Asia/Shanghai` — [`APP-ABOUT-001`](assignments/app-about-001.md) 实施已交付，Assignment 当时 `Completed`。关于页与设置 IA 落地；App+Keyboard Debug **TEST SUCCEEDED**（iPhone 17 / iOS 26.0，UniverseKeyboardTests 410 / 10 skipped；KeyboardTests 15）。无 Quality / Gate / commit / push。
+
+Current update: `2026-09-28 Asia/Shanghai` — Human 授权记录 [`APP-ABOUT-001`](assignments/app-about-001.md)（当时 `Ready`）：设置「App 设置」末行「关于」页；邮箱与小红书短链；邮件预填版本/Build 主题；隐私与开源入口挪进关于页。隔离 worktree `/private/tmp/universe-keyboard-app-about-001`，基线 `origin/main` `a536dca`。无 Swift / Quality / Gate / commit / push。
+
 Current update: `2026-09-28 Asia/Shanghai` — PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) squash-merged `e3eb27b51caa289eae734d9194d3d5ba10f75bc6`（same-head CI run [36416106485](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36416106485)）。[`APP-ACTION-BUTTON-HIT-AREA-001`](assignments/app-action-button-hit-area-001.md) 仍 **Closed**。远端功能分支已删。无 TestFlight / Release。
 
 Current update: `2026-09-28 Asia/Shanghai` — [`APP-ACTION-BUTTON-HIT-AREA-001`](assignments/app-action-button-hit-area-001.md) 已 push 并开 PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186)（实现 `08f37e5`，回写 `fee9dce`）。Assignment 仍 **Closed**。Human 观察 hosted CI；merge 当时另授权。无 TestFlight / Release。

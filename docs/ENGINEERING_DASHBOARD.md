@@ -8,6 +8,15 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## APP-ABOUT-001 — 主 App「关于」页
+
+- **Lifecycle:** [`Assignment`](assignments/app-about-001.md) `Closed`
+- **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；残差 `ABOUT-01`–`ABOUT-05` `accept`
+- **Non-claims:** 不等于 Device-attested；不授权 commit / push / merge、TestFlight 或 Release
+- **Next:** Human 观察 [PR #188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) hosted CI；merge 另授权
+- **Sources:** [PD](product-decisions/APP-ABOUT-001-authorization.md) · [Product Gate](product-decisions/APP-ABOUT-001-product-gate.md) · [PR #188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) · [Quality review](reviews/app-about-001-quality-review.md)
+- **Worktree:** `/private/tmp/universe-keyboard-app-about-001` · branch `grok/app-about-001` · baseline `origin/main` `a536dca74acc18deebe1de9b7a2c22421cba9f95`
+
 ## APP-ACTION-BUTTON-HIT-AREA-001 — 主 App 操作按钮整块可点
 
 - **Lifecycle:** [`Assignment`](assignments/app-action-button-hit-area-001.md) `Closed`

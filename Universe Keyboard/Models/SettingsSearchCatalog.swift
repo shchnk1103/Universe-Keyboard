@@ -16,7 +16,9 @@ nonisolated struct SettingsSearchItem: Identifiable, Equatable, Sendable {
         case userDictionary
         case appearance
         case notifications
+        case about
         case privacy
+        case openSource
         case localDictionary
         case diagnostics
         case activationHelp
@@ -134,12 +136,28 @@ nonisolated enum SettingsSearchCatalog {
             destination: .notifications
         ),
         SettingsSearchItem(
+            id: "about",
+            title: "关于",
+            subtitle: "版本、联系我们、隐私与开源",
+            systemImage: "info.circle",
+            keywords: ["关于", "版本", "build", "邮箱", "邮件", "小红书", "联系", "反馈"],
+            destination: .about
+        ),
+        SettingsSearchItem(
             id: "privacy",
             title: "隐私与数据",
             subtitle: "本地处理与完全访问说明",
             systemImage: "hand.raised",
             keywords: ["隐私", "完全访问", "数据", "full access"],
             destination: .privacy
+        ),
+        SettingsSearchItem(
+            id: "openSource",
+            title: "开源软件与内容",
+            subtitle: "许可证、来源与修改说明",
+            systemImage: "doc.text",
+            keywords: ["开源", "许可证", "license", "GPL"],
+            destination: .openSource
         ),
         SettingsSearchItem(
             id: "localDictionary",
