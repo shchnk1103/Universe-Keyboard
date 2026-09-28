@@ -13,8 +13,8 @@
 - **Lifecycle:** [`Assignment`](assignments/app-action-button-hit-area-001.md) `Closed`
 - **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；残差 `AABH-01`–`AABH-05` `accept`
 - **Non-claims:** 不等于 Device-attested；不授权 merge、TestFlight 或 Release；合同只覆盖共享 `AppActionButton`
-- **Next:** push / PR 进行中；merge 另授权
-- **Sources:** [PD](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-authorization.md) · [Product Gate](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) · [Gate AUTH](authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE.md) · [Quality review](reviews/app-action-button-hit-area-001-quality-review.md)
+- **Next:** Human 观察 [PR #186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) hosted CI；merge 另授权
+- **Sources:** [PD](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-authorization.md) · [Product Gate](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) · [PR #186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) · [Quality review](reviews/app-action-button-hit-area-001-quality-review.md)
 - **Worktree:** `/private/tmp/universe-keyboard-app-action-button-hit-area-001` · branch `grok/app-action-button-hit-area-001` · baseline `origin/main` `b92a59b91b15073f457cbb7cd856f015117f4ac7`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-001 — 第三方方案许可下载单按钮

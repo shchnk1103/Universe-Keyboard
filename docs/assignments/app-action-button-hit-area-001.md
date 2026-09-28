@@ -12,7 +12,7 @@
 | **Lifecycle** | `Closed` |
 | **Phase** | Human Product Gate **Passed with accepted evidence conditions**；残差 `AABH-01`–`AABH-05` 均 `accept` |
 | **Non-claims** | 不等于无条件 Quality Pass 或 Device-attested；不授权 merge、TestFlight 或 Release |
-| **Next** | 隔离分支有界 commit / push / PR 进行中；merge 另授权 |
+| **Next** | Human 观察 PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) hosted CI；merge 另授权 |
 | **Residuals** | [`quality review`](../reviews/app-action-button-hit-area-001-quality-review.md) `AABH-01`–`AABH-05` `accept`；[`Product Gate`](../product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) 接受 |
 
 ---
@@ -28,7 +28,7 @@
 - **Authorization (Product Gate):** [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE.md) — consumed
 - **Product Gate:** [`PD-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE`](../product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) — **Accepted**
 - **Authorization (scoped local commit):** [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-COMMIT`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-COMMIT.md) — consumed; implementation `08f37e5e48630d68670335b888a87d1b2330cd52`
-- **Authorization (push / PR):** [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR.md) — active / unconsumed until delivery
+- **Authorization (push / PR):** [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR.md) — consumed；PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186)
 
 ## KOS v0.8.0 optional-contract selection
 
@@ -49,7 +49,7 @@
 | Independent Quality | Authorized | Shared `AppActionButton` full-capsule hit fill — Pass with conditions | Consumed [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-QUALITY`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-QUALITY.md) → [`review`](../reviews/app-action-button-hit-area-001-quality-review.md) |
 | Human Product Gate | Authorized | Main-App hit-area acceptance; Assignment Closed | Consumed [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE.md) → [`PD-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE`](../product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) |
 | Scoped local commit | Authorized | Isolated-branch implementation `08f37e5e48630d68670335b888a87d1b2330cd52` | Consumed [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-COMMIT`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-COMMIT.md) |
-| Push / PR | In progress | Push isolated branch and open PR; Human observes CI | [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR.md) |
+| Push / PR | Authorized | Push `grok/app-action-button-hit-area-001` and open PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186); Human observes CI | Consumed [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR.md) |
 | Merge | Not authorized | Merge to default branch | New AUTH required |
 | Environment or external slice | Not applicable | 无 H-01 冻结载荷；实施后 Simulator 目视为可选 Human Dependency | 真机不是 `Ready` 前置 |
 
@@ -165,4 +165,5 @@ Stop and escalate if:
 - `2026-09-28 Asia/Shanghai` — Executor 交付 `hitFillShape`、`contentShape`、指南修订与 App+Keyboard 测试绿。`Active → Completed`。无 Quality / Gate / commit。
 - `2026-09-28 Asia/Shanghai` — Human 授权独立 Quality；[`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-QUALITY`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-QUALITY.md)。独立审查 **Pass with conditions**（[`review`](../reviews/app-action-button-hit-area-001-quality-review.md)；`AABH-01`–`AABH-05` `accept`）。`Completed → Reviewed`。无 Product Gate / commit。
 - `2026-09-28 Asia/Shanghai` — Human Product Owner 接受残差并授权 Product Gate（[`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE.md)）。Product Gate 接受既有 Quality 条件，Assignment `Reviewed → Closed`。无 Device-attested / commit / push / PR / merge / TestFlight / Release。
-- `2026-09-28 Asia/Shanghai` — Human 授权隔离分支有界 commit / push / PR。实现 commit `08f37e5e48630d68670335b888a87d1b2330cd52`；本回写记录该身份。无 merge。
+- `2026-09-28 Asia/Shanghai` — Human 授权隔离分支有界 commit / push / PR。实现 commit `08f37e5e48630d68670335b888a87d1b2330cd52`；SHA 回写 `fee9dce66cd80e9dd3f2ff9f8ff2bb50cbefe7d3`。无 merge。
+- `2026-09-28 Asia/Shanghai` — 已推送隔离分支并开 PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186)。Executor 不 merge。Human 观察 hosted CI。无 TestFlight / Release。
