@@ -34,7 +34,7 @@
 |---|---|
 | Status | accepted |
 | Phase | Human Product Gate **Passed with accepted evidence conditions**；Assignment `Closed` |
-| Evidence | Dirty isolated worktree on `grok/candidate-bar-idle-dismiss-001`; `HEAD` `fbb4eb3bbbc2926ff6e248db9dcdfdf6a331f821`; `CandidateBarView.swift` SHA-256 `606b5553c14f86f1963116b977bcb5ccb905e9c64515273a581f98a74fab95de`; independent Quality App + Keyboard on iPhone 17 `D3C353BE…` `UniverseKeyboardTests 410 / 10 skipped`, `KeyboardTests 16` |
+| Evidence | PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) squash `944a76bd049d717dd1048a6b4eb5bc7fd9124347`; `CandidateBarView.swift` SHA-256 `606b5553c14f86f1963116b977bcb5ccb905e9c64515273a581f98a74fab95de`; independent Quality App + Keyboard `UniverseKeyboardTests 410 / 10 skipped`, `KeyboardTests 16`; hosted same-head run [36434767922](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36434767922) |
 | Non-claims | Not Device-attested; not commit / push / PR / merge / TestFlight / App Store Connect / Release; not the rounded-corner follow-up |
 | Next | None for this Assignment. Commit remains separately authorized. Rounded-corner host bleed (`CBID-CORNER`) starts only after Close, as a new work item. |
 

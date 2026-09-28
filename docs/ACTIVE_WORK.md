@@ -1,6 +1,8 @@
 # Active Work Summary
 
-Current update: `2026-09-28 Asia/Shanghai` — [`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md) 已 push 并开 PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190)（实现 `997c56a`，回写 `fc53118`）。Assignment 仍 **Closed**。Human 观察 hosted CI；merge 另授权。`CBID-CORNER` 另开。无 TestFlight / Release。
+Current update: `2026-09-28 Asia/Shanghai` — PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) squash-merged `944a76bd049d717dd1048a6b4eb5bc7fd9124347`（same-head CI run [36434767922](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36434767922)）。[`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md) 仍 **Closed**。远端功能分支已删。`CBID-CORNER` 另开。无 TestFlight / Release。
+
+Current update: `2026-09-28 Asia/Shanghai` — [`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md) 已 push 并开 PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190)（实现 `997c56a`，回写 `fc53118`）。Assignment 仍 **Closed**。Human 观察 hosted CI；merge 当时另授权。`CBID-CORNER` 另开。无 TestFlight / Release。
 
 Current update: `2026-09-28 Asia/Shanghai` — Human Product Gate **Pass** on [`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md)；Assignment **Closed**（[`Gate`](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md)）。残差接受。`CBID-CORNER` 圆角透白另开。Commit 当时另授权。无 TestFlight / Release。
 
