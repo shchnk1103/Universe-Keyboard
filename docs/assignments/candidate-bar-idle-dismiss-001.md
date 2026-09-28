@@ -12,7 +12,7 @@
 | **Lifecycle** | `Closed` |
 | **Phase** | Human Product Gate **Passed with accepted evidence conditions**；残差 `CBID-01`–`CBID-04`、`CBID-CORNER` 均 `accept` |
 | **Non-claims** | 不等于无条件 Quality Pass 或 Device-attested；不授权 commit / push / merge、TestFlight 或 Release |
-| **Next** | 隔离分支有界 commit / push / PR 进行中；merge 另授权。`CBID-CORNER` 另开 |
+| **Next** | Human 观察 PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) hosted CI；merge 另授权。`CBID-CORNER` 另开 |
 | **Residuals** | [`quality review`](../reviews/candidate-bar-idle-dismiss-001-quality-review.md)；[`Product Gate`](../product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md) 接受 |
 
 ---
@@ -28,7 +28,7 @@
 - **Authorization (Product Gate):** [`AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PRODUCT-GATE`](../authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PRODUCT-GATE.md) — consumed
 - **Product Gate:** [`PD-CANDIDATE-BAR-IDLE-DISMISS-001-PRODUCT-GATE`](../product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md) — **Accepted**
 - **Authorization (scoped local commit):** [`AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-COMMIT`](../authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-COMMIT.md) — consumed; implementation `997c56ad114a3b5335e4e883b0dee78c7678043f`
-- **Authorization (push / PR):** [`AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PUSH-PR`](../authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PUSH-PR.md) — active / unconsumed until delivery
+- **Authorization (push / PR):** [`AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PUSH-PR`](../authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PUSH-PR.md) — consumed；PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190)
 
 ## KOS v0.8.0 optional-contract selection
 
@@ -49,7 +49,7 @@
 | Independent Quality | Authorized | Expand vs dismiss glyphs, AX, swipe, all layouts — Pass with conditions | Consumed [`AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-QUALITY`](../authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-QUALITY.md) → [`review`](../reviews/candidate-bar-idle-dismiss-001-quality-review.md) |
 | Human Product Gate | Authorized | Idle dismiss acceptance; Assignment Closed | Consumed [`AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PRODUCT-GATE`](../authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PRODUCT-GATE.md) → [`PD-CANDIDATE-BAR-IDLE-DISMISS-001-PRODUCT-GATE`](../product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md) |
 | Scoped local commit | Authorized | Isolated-branch implementation `997c56ad114a3b5335e4e883b0dee78c7678043f` | Consumed [`AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-COMMIT`](../authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-COMMIT.md) |
-| Push / PR | In progress | Push isolated branch and open PR; Human observes CI | [`AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PUSH-PR`](../authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PUSH-PR.md) |
+| Push / PR | Authorized | Push `grok/candidate-bar-idle-dismiss-001` and open PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190); Human observes CI | Consumed [`AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PUSH-PR`](../authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PUSH-PR.md) |
 | Merge | Not authorized | Merge to default branch | New AUTH required |
 | Environment or external slice | Not applicable | 记录切片无设备动作 | 真机不是 `Ready` 前置 |
 
@@ -161,4 +161,5 @@ Stop and escalate if:
 - `2026-09-28 Asia/Shanghai` — Human 确认键盘顶左右圆角透白为既有 light-mode 现象，本切片保持现状；Close 之后另开工作。授权独立 Quality。
 - `2026-09-28 Asia/Shanghai` — 独立 Quality **Pass with conditions**（`CBID-01`–`CBID-04`、`CBID-CORNER` `accept`）。`Completed → Reviewed`。无 Product Gate / commit。
 - `2026-09-28 Asia/Shanghai` — Human Product Owner 接受残差并授权 Product Gate。Assignment `Reviewed → Closed`。`CBID-CORNER` 另开。无 Device-attested / commit / push / PR / merge / TestFlight / Release。
-- `2026-09-28 Asia/Shanghai` — Human 授权隔离分支有界 commit / push / PR。实现 commit `997c56ad114a3b5335e4e883b0dee78c7678043f`。无 merge。
+- `2026-09-28 Asia/Shanghai` — Human 授权隔离分支有界 commit / push / PR。实现 commit `997c56ad114a3b5335e4e883b0dee78c7678043f`；SHA 回写 `fc53118ae81609c5e3d9994e3dd10c487d907565`。无 merge。
+- `2026-09-28 Asia/Shanghai` — 已推送隔离分支并开 PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190)。Executor 不 merge。Human 观察 hosted CI。无 TestFlight / Release。
